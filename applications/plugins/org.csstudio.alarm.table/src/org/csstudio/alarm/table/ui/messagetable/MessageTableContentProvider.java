@@ -54,8 +54,8 @@ public class MessageTableContentProvider implements IMessageViewer,
             public void run() {
                 try {
                     _tableViewer.add(jmsm);
-                    _tableViewer.refresh();
-                    CentralLogger.getInstance().debug(this, "Number of Msg in Model: " + _messageList.getSize() + "; Number of Msg in Table: " + _tableViewer.getTable().getItemCount());
+//                    _tableViewer.refresh();
+                    CentralLogger.getInstance().debug(this, "Add Message, Number of Msg in Model: " + _messageList.getSize() + "; Number of Msg in Table: " + _tableViewer.getTable().getItemCount());
                 } catch (Exception e) {
                     e.printStackTrace();
                     JmsLogsPlugin.logException("", e); //$NON-NLS-1$
@@ -70,7 +70,8 @@ public class MessageTableContentProvider implements IMessageViewer,
             public void run() {
                 try {
                     _tableViewer.add(jmsm);
-                    _tableViewer.refresh();
+//                    _tableViewer.refresh();
+                    CentralLogger.getInstance().debug(this, "Add Messages[], Number of Msg in Model: " + _messageList.getSize() + "; Number of Msg in Table: " + _tableViewer.getTable().getItemCount());
                 } catch (Exception e) {
                     e.printStackTrace();
                     JmsLogsPlugin.logException("", e); //$NON-NLS-1$
@@ -84,7 +85,8 @@ public class MessageTableContentProvider implements IMessageViewer,
             public void run() {
                 try {
                     _tableViewer.remove(jmsm);
-                    _tableViewer.refresh();
+//                    _tableViewer.refresh();
+                    CentralLogger.getInstance().debug(this, "Remove Message, Number of Msg in Model: " + _messageList.getSize() + "; Number of Msg in Table: " + _tableViewer.getTable().getItemCount());
                 } catch (Exception e) {
                     e.printStackTrace();
                     JmsLogsPlugin.logException("", e); //$NON-NLS-1$
@@ -98,7 +100,8 @@ public class MessageTableContentProvider implements IMessageViewer,
             public void run() {
                 try {
                     _tableViewer.remove(jmsm);
-                    _tableViewer.refresh();
+//                    _tableViewer.refresh();
+                    CentralLogger.getInstance().debug(this, "Remove Messages[], Number of Msg in Model: " + _messageList.getSize() + "; Number of Msg in Table: " + _tableViewer.getTable().getItemCount());
                 } catch (Exception e) {
                     e.printStackTrace();
                     JmsLogsPlugin.logException("", e); //$NON-NLS-1$
@@ -125,7 +128,7 @@ public class MessageTableContentProvider implements IMessageViewer,
                                 directTableItem.setChecked(true);
                                 _tableViewer.refresh();
                                 _tableViewer.update(item, new String[] {"ACK"});
-//                                break;
+                                break;
                             }
                         }
                     }
@@ -133,6 +136,7 @@ public class MessageTableContentProvider implements IMessageViewer,
                     e.printStackTrace();
                     JmsLogsPlugin.logException("", e); //$NON-NLS-1$
                 }
+                CentralLogger.getInstance().debug(this, "Update Message, Number of Msg in Model: " + _messageList.getSize() + "; Number of Msg in Table: " + _tableViewer.getTable().getItemCount());
             }
         });
     }

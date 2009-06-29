@@ -33,6 +33,7 @@ import org.csstudio.alarm.table.internal.localization.Messages;
 import org.csstudio.alarm.table.jms.JmsMessageReceiver;
 import org.csstudio.alarm.table.jms.SendMapMessage;
 import org.csstudio.alarm.table.preferences.AmsVerifyViewPreferenceConstants;
+import org.csstudio.alarm.table.preferences.LogViewPreferenceConstants;
 import org.csstudio.alarm.table.ui.messagetable.MessageTable;
 import org.csstudio.platform.CSSPlatformInfo;
 import org.csstudio.platform.logging.CentralLogger;
@@ -74,9 +75,10 @@ public class AmsVerifyView extends LogView {
     public void createPartControl(Composite parent) {
 
         // in alarm table the 'ack' column must be the first one!
+        _preferenceColumnString = AmsVerifyViewPreferenceConstants.P_STRING;
         String[] _columnNames = JmsLogsPlugin.getDefault()
                 .getPluginPreferences().getString(
-                        AmsVerifyViewPreferenceConstants.P_STRING).split(";");
+                        _preferenceColumnString).split(";");
         readPreferenceTopics(JmsLogsPlugin.getDefault().getPluginPreferences()
                 .getString(AmsVerifyViewPreferenceConstants.TOPIC_SET));
 

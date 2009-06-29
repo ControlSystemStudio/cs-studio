@@ -110,15 +110,19 @@ public class LogView extends ViewPart {
      */
     TableViewer _tableViewer;
 
+    
+    String _preferenceColumnString;
+    
     /**
      * {@inheritDoc}
      */
     public void createPartControl(Composite parent) {
 
         // Read column names and JMS topic settings from preferences
+        _preferenceColumnString = LogViewPreferenceConstants.P_STRING;
         String[] _columnNames = JmsLogsPlugin.getDefault()
                 .getPluginPreferences().getString(
-                        LogViewPreferenceConstants.P_STRING).split(";"); //$NON-NLS-1$
+                        _preferenceColumnString).split(";"); //$NON-NLS-1$
         readPreferenceTopics(JmsLogsPlugin.getDefault().getPluginPreferences()
                 .getString(LogViewPreferenceConstants.TOPIC_SET));
 
@@ -343,7 +347,7 @@ public class LogView extends ViewPart {
      */
     @Override
     public void dispose() {
-        _columnMapping.saveColumn(LogViewPreferenceConstants.P_STRING);
+        _columnMapping.saveColumn(_preferenceColumnString);
         _jmsMessageReceiver.stopJMSConnection();
         _messageTable = null;
         // JmsLogsPlugin.getDefault().getPluginPreferences()

@@ -596,7 +596,7 @@ public class ArchiveView extends ViewPart {
             public void onReadFinished(final Result result) {
                 Display.getDefault().syncExec(new Runnable() {
                     public void run() {
-                        _jmsMessageList.clearList();
+                        _jmsMessageList.deleteAllMessages();
                         _tableViewer.refresh();
                         int size = result.getMessagesFromDatabase().size();
                         if (result.isMaxSize()) {

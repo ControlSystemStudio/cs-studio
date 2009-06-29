@@ -22,19 +22,13 @@
 
 package org.csstudio.alarm.table.ui.messagetable;
 
-import java.util.StringTokenizer;
+import java.util.HashMap;
+import java.util.Set;
 
 import org.csstudio.alarm.table.dataModel.AlarmMessage;
-import org.csstudio.alarm.table.dataModel.BasicMessage;
-import org.csstudio.alarm.table.preferences.JmsLogPreferenceConstants;
-import org.csstudio.alarm.table.preferences.JmsLogPreferencePage;
-import org.csstudio.platform.logging.CentralLogger;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.ITableColorProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Image;
 
 /**
  * Label Provider to manage the text and color of the fields
@@ -46,8 +40,47 @@ import org.eclipse.swt.graphics.Image;
 public class AlarmMessageTableLabelProvider extends MessageTableLabelProvider implements
 		ITableLabelProvider, ITableColorProvider {
 
-	public AlarmMessageTableLabelProvider(String[] colNames) {
+	private HashMap<String, Color> _severityColorOutdated;
+
+    public AlarmMessageTableLabelProvider(String[] colNames) {
         super(colNames);
+        setSeverityColorMappingOutdated();
+    }
+
+	/**
+	 * Set severity color for outdated messages depending on sevrity color
+	 * set in preferences. (Performance)
+	 */
+    private void setSeverityColorMappingOutdated() {
+        _severityColorOutdated = new HashMap<String, Color>();
+        Color outdatedColor;
+        Set<String> keySet = _severityColorMapping.keySet();
+        for (String key : keySet) {
+            Color backgroundColor = _severityColorMapping.get(key);
+            if (backgroundColor == null) {
+                outdatedColor = new Color(null, 255, 255, 255);
+            }
+            int red = backgroundColor.getRed();
+            int green = backgroundColor.getGreen();
+            int blue = backgroundColor.getBlue();
+            if (red < 125) {
+                red = red + 130;
+            } else {
+                red = 255;
+            }
+            if (green < 125) {
+                green = green + 130;
+            } else {
+                green = 255;
+            }
+            if (blue < 125) {
+                blue = blue + 130;
+            } else {
+                blue = 255;
+            }
+            outdatedColor = new Color(null, red, green, blue);
+            _severityColorOutdated.put(key, outdatedColor);
+        }
     }
 
     /**
@@ -59,30 +92,30 @@ public class AlarmMessageTableLabelProvider extends MessageTableLabelProvider im
 	public Color getBackground(Object element, int columnIndex) {
 		AlarmMessage jmsm = (AlarmMessage) element;
         Color backgroundColor = readSeverityColor(jmsm);
-	    super.getBackground(element, columnIndex);
 		if (jmsm.isOutdated()) {
-			if (backgroundColor == null) {
-				backgroundColor = new Color(null, 255, 255, 255);
-			}
-			int red = backgroundColor.getRed();
-			int green = backgroundColor.getGreen();
-			int blue = backgroundColor.getBlue();
-			if (red < 125) {
-				red = red + 130;
-			} else {
-				red = 255;
-			}
-			if (green < 125) {
-				green = green + 130;
-			} else {
-				green = 255;
-			}
-			if (blue < 125) {
-				blue = blue + 130;
-			} else {
-				blue = 255;
-			}
-			backgroundColor = new Color(null, red, green, blue);
+		    backgroundColor = _severityColorOutdated.get(jmsm.getProperty("SEVERITY_KEY"));
+//			if (backgroundColor == null) {
+//				backgroundColor = new Color(null, 255, 255, 255);
+//			}
+//			int red = backgroundColor.getRed();
+//			int green = backgroundColor.getGreen();
+//			int blue = backgroundColor.getBlue();
+//			if (red < 125) {
+//				red = red + 130;
+//			} else {
+//				red = 255;
+//			}
+//			if (green < 125) {
+//				green = green + 130;
+//			} else {
+//				green = 255;
+//			}
+//			if (blue < 125) {
+//				blue = blue + 130;
+//			} else {
+//				blue = 255;
+//			}
+//			backgroundColor = new Color(null, red, green, blue);
 		}
 		return backgroundColor;
 	}

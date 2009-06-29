@@ -40,7 +40,7 @@ public class AmsVerifyViewPreferenceInitializer extends
 	public void initializeDefaultPreferences() {
 		IPreferenceStore store = JmsLogsPlugin.getDefault()
 				.getPreferenceStore();
-		store.setDefault(LogViewPreferenceConstants.P_STRING, 
+		store.setDefault(AmsVerifyViewPreferenceConstants.P_STRING, 
 				"TYPE" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
 				"EVENTTIME" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
 				"TEXT" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
@@ -59,9 +59,9 @@ public class AmsVerifyViewPreferenceInitializer extends
 				"DESTINATION" //$NON-NLS-1$
 		);
 
-		store.setDefault(LogViewPreferenceConstants.MAX, 200);
+		store.setDefault(AmsVerifyViewPreferenceConstants.MAX, 200);
 		store
-				.setDefault(LogViewPreferenceConstants.TOPIC_SET,
+				.setDefault(AmsVerifyViewPreferenceConstants.TOPIC_SET,
 						"?LOG,ALARM,PUT_LOG,ACK?MKS-2;?TEST_FOREWARD?test foreward filter;"); //$NON-NLS-1$
 	}
 }

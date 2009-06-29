@@ -21,11 +21,15 @@
  */
  package org.csstudio.alarm.table.ui.messagetable;
 
+import org.csstudio.alarm.table.dataModel.AlarmMessage;
+import org.csstudio.alarm.table.dataModel.BasicMessage;
 import org.csstudio.alarm.table.dataModel.MessageList;
+import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
@@ -60,7 +64,18 @@ public class DeleteAllMessagesAction extends Action
 
 	@Override
 	public void run() {
-        _messageList.clearList(); 
-		_table.refresh();
+        TableItem[] allItems = _table.getTable().getItems();
+        BasicMessage[] messages = new BasicMessage[allItems.length];
+        int i = 0;
+        for (TableItem tableItem : allItems) {
+            if (tableItem.getData() instanceof BasicMessage) {
+                messages[i] = (BasicMessage) tableItem.getData();
+                i++;
+            } else {
+                CentralLogger.getInstance().warn(this,
+                        "Unknown object in selection!");
+            }
+        }
+        _messageList.deleteAllMessages(messages); 
 	}
 }

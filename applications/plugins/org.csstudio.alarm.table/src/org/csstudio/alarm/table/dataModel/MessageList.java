@@ -96,9 +96,10 @@ abstract public class MessageList {
         changeListeners.add(viewer);
     }
 
+    abstract public void deleteAllMessages(BasicMessage[] messages);
+
     abstract public Vector<? extends BasicMessage> getJMSMessageList();
 
-    abstract public void clearList();
 
     abstract public Integer getSize();
 }

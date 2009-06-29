@@ -47,8 +47,8 @@ public class AmsVerifyViewPreferencePage extends FieldEditorPreferencePage
 	public void createFieldEditors() {
 
 		addField(new ListEditor(
-				LogViewPreferenceConstants.P_STRING,
-				LogViewPreferenceConstants.P_STRING + ": ", getFieldEditorParent()) { //$NON-NLS-1$
+				AmsVerifyViewPreferenceConstants.P_STRING,
+				AmsVerifyViewPreferenceConstants.P_STRING + ": ", getFieldEditorParent()) { //$NON-NLS-1$
 
 			public String[] parseString(String stringList) {
 				return stringList.split(";"); //$NON-NLS-1$
@@ -73,7 +73,7 @@ public class AmsVerifyViewPreferencePage extends FieldEditorPreferencePage
 			}
 		});
 		addField(new PreferenceTableEditor(
-				LogViewPreferenceConstants.TOPIC_SET, "&Topic Sets: ",
+				AmsVerifyViewPreferenceConstants.TOPIC_SET, "&Topic Sets: ",
 				getFieldEditorParent()));
 	}
 

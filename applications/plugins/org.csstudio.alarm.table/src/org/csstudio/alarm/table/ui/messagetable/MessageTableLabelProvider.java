@@ -22,6 +22,7 @@
 
 package org.csstudio.alarm.table.ui.messagetable;
 
+import java.util.HashMap;
 import java.util.StringTokenizer;
 
 import org.csstudio.alarm.table.dataModel.BasicMessage;
@@ -44,6 +45,7 @@ public class MessageTableLabelProvider extends LabelProvider implements
         ITableLabelProvider, ITableColorProvider {
 
     String[] columnNames;
+    HashMap<String, Color> _severityColorMapping;
 
     /**
      * Contructor gets the column names from the table viewer
@@ -52,6 +54,98 @@ public class MessageTableLabelProvider extends LabelProvider implements
      */
     public MessageTableLabelProvider(String[] colNames) {
         columnNames = colNames;
+        mapSeverityToColor();
+    }
+
+    /**
+     * Read mapping of severities to colors from preferences and put mapping in
+     * a local HashMap. (Performance)
+     */
+    private void mapSeverityToColor() {
+        IPreferenceStore store = new JmsLogPreferencePage()
+                .getPreferenceStore();
+        //
+        // if we connect to the ALARM topic - we get alarms
+        // we do not have to check for the type!
+        // if ((jmsm.getProperty("TYPE").equalsIgnoreCase("Alarm"))) {
+        _severityColorMapping = new HashMap<String, Color>();
+
+        StringTokenizer st = new StringTokenizer(store
+                .getString(JmsLogPreferenceConstants.COLOR0), ",");
+        _severityColorMapping.put(store
+                .getString(JmsLogPreferenceConstants.KEY0), new Color(null,
+                Integer.parseInt(st.nextToken()), Integer.parseInt(st
+                        .nextToken()), Integer.parseInt(st.nextToken())));
+
+        st = new StringTokenizer(store
+                .getString(JmsLogPreferenceConstants.COLOR1), ",");
+        _severityColorMapping.put(store
+                .getString(JmsLogPreferenceConstants.KEY1), new Color(null,
+                Integer.parseInt(st.nextToken()), Integer.parseInt(st
+                        .nextToken()), Integer.parseInt(st.nextToken())));
+
+        st = new StringTokenizer(store
+                .getString(JmsLogPreferenceConstants.COLOR2), ",");
+        _severityColorMapping.put(store
+                .getString(JmsLogPreferenceConstants.KEY2), new Color(null,
+                Integer.parseInt(st.nextToken()), Integer.parseInt(st
+                        .nextToken()), Integer.parseInt(st.nextToken())));
+        
+        st = new StringTokenizer(store
+                .getString(JmsLogPreferenceConstants.COLOR3), ",");
+        _severityColorMapping.put(store
+                .getString(JmsLogPreferenceConstants.KEY3), new Color(null,
+                Integer.parseInt(st.nextToken()), Integer.parseInt(st
+                        .nextToken()), Integer.parseInt(st.nextToken())));
+        
+        st = new StringTokenizer(store
+                .getString(JmsLogPreferenceConstants.COLOR3), ",");
+        _severityColorMapping.put(store
+                .getString(JmsLogPreferenceConstants.KEY3), new Color(null,
+                Integer.parseInt(st.nextToken()), Integer.parseInt(st
+                        .nextToken()), Integer.parseInt(st.nextToken())));
+        
+        st = new StringTokenizer(store
+                .getString(JmsLogPreferenceConstants.COLOR4), ",");
+        _severityColorMapping.put(store
+                .getString(JmsLogPreferenceConstants.KEY4), new Color(null,
+                Integer.parseInt(st.nextToken()), Integer.parseInt(st
+                        .nextToken()), Integer.parseInt(st.nextToken())));
+        
+        st = new StringTokenizer(store
+                .getString(JmsLogPreferenceConstants.COLOR5), ",");
+        _severityColorMapping.put(store
+                .getString(JmsLogPreferenceConstants.KEY5), new Color(null,
+                Integer.parseInt(st.nextToken()), Integer.parseInt(st
+                        .nextToken()), Integer.parseInt(st.nextToken())));
+        
+        st = new StringTokenizer(store
+                .getString(JmsLogPreferenceConstants.COLOR6), ",");
+        _severityColorMapping.put(store
+                .getString(JmsLogPreferenceConstants.KEY6), new Color(null,
+                Integer.parseInt(st.nextToken()), Integer.parseInt(st
+                        .nextToken()), Integer.parseInt(st.nextToken())));
+
+        st = new StringTokenizer(store
+                .getString(JmsLogPreferenceConstants.COLOR7), ",");
+        _severityColorMapping.put(store
+                .getString(JmsLogPreferenceConstants.KEY7), new Color(null,
+                Integer.parseInt(st.nextToken()), Integer.parseInt(st
+                        .nextToken()), Integer.parseInt(st.nextToken())));
+        
+        st = new StringTokenizer(store
+                .getString(JmsLogPreferenceConstants.COLOR8), ",");
+        _severityColorMapping.put(store
+                .getString(JmsLogPreferenceConstants.KEY8), new Color(null,
+                Integer.parseInt(st.nextToken()), Integer.parseInt(st
+                        .nextToken()), Integer.parseInt(st.nextToken())));
+        
+        st = new StringTokenizer(store
+                .getString(JmsLogPreferenceConstants.COLOR9), ",");
+        _severityColorMapping.put(store
+                .getString(JmsLogPreferenceConstants.KEY9), new Color(null,
+                Integer.parseInt(st.nextToken()), Integer.parseInt(st
+                        .nextToken()), Integer.parseInt(st.nextToken())));
     }
 
     /*
@@ -100,112 +194,113 @@ public class MessageTableLabelProvider extends LabelProvider implements
     public Color getBackground(Object element, int columnIndex) {
         BasicMessage jmsm = (BasicMessage) element;
         Color backgroundColor = readSeverityColor(jmsm);
-//        if (jmsm.isBackgroundColorGray()) {
-//            if (backgroundColor == null) {
-//                backgroundColor = new Color(null, 255, 255, 255);
-//            }
-//            int red = backgroundColor.getRed();
-//            int green = backgroundColor.getGreen();
-//            int blue = backgroundColor.getBlue();
-//            if (red < 125) {
-//                red = red + 130;
-//            } else {
-//                red = 255;
-//            }
-//            if (green < 125) {
-//                green = green + 130;
-//            } else {
-//                green = 255;
-//            }
-//            if (blue < 125) {
-//                blue = blue + 130;
-//            } else {
-//                blue = 255;
-//            }
-//            backgroundColor = new Color(null, red, green, blue);
-//        }
+        // if (jmsm.isBackgroundColorGray()) {
+        // if (backgroundColor == null) {
+        // backgroundColor = new Color(null, 255, 255, 255);
+        // }
+        // int red = backgroundColor.getRed();
+        // int green = backgroundColor.getGreen();
+        // int blue = backgroundColor.getBlue();
+        // if (red < 125) {
+        // red = red + 130;
+        // } else {
+        // red = 255;
+        // }
+        // if (green < 125) {
+        // green = green + 130;
+        // } else {
+        // green = 255;
+        // }
+        // if (blue < 125) {
+        // blue = blue + 130;
+        // } else {
+        // blue = 255;
+        // }
+        // backgroundColor = new Color(null, red, green, blue);
+        // }
         return backgroundColor;
     }
 
     Color readSeverityColor(BasicMessage jmsm) {
-        IPreferenceStore lvpp = new JmsLogPreferencePage().getPreferenceStore();
+//        IPreferenceStore lvpp = new JmsLogPreferencePage().getPreferenceStore();
         //
         // if we connect to the ALARM topic - we get alarms
         // we do not have to check for the type!
         // if ((jmsm.getProperty("TYPE").equalsIgnoreCase("Alarm"))) {
-        Color backgroundColor = null;
-        if ((jmsm.getProperty("SEVERITY_KEY").equals(lvpp
-                .getString(JmsLogPreferenceConstants.KEY0)))) {
-            StringTokenizer st = new StringTokenizer(lvpp
-                    .getString(JmsLogPreferenceConstants.COLOR0), ",");
-            backgroundColor = new Color(null, Integer.parseInt(st.nextToken()),
-                    Integer.parseInt(st.nextToken()), Integer.parseInt(st
-                            .nextToken()));
-        } else if ((jmsm.getProperty("SEVERITY_KEY").equals(lvpp
-                .getString(JmsLogPreferenceConstants.KEY1)))) {
-            StringTokenizer st = new StringTokenizer(lvpp
-                    .getString(JmsLogPreferenceConstants.COLOR1), ",");
-            backgroundColor = new Color(null, Integer.parseInt(st.nextToken()),
-                    Integer.parseInt(st.nextToken()), Integer.parseInt(st
-                            .nextToken()));
-        } else if ((jmsm.getProperty("SEVERITY_KEY").equals(lvpp
-                .getString(JmsLogPreferenceConstants.KEY2)))) {
-            StringTokenizer st = new StringTokenizer(lvpp
-                    .getString(JmsLogPreferenceConstants.COLOR2), ",");
-            backgroundColor = new Color(null, Integer.parseInt(st.nextToken()),
-                    Integer.parseInt(st.nextToken()), Integer.parseInt(st
-                            .nextToken()));
-        } else if ((jmsm.getProperty("SEVERITY_KEY").equals(lvpp
-                .getString(JmsLogPreferenceConstants.KEY3)))) {
-            StringTokenizer st = new StringTokenizer(lvpp
-                    .getString(JmsLogPreferenceConstants.COLOR3), ",");
-            backgroundColor = new Color(null, Integer.parseInt(st.nextToken()),
-                    Integer.parseInt(st.nextToken()), Integer.parseInt(st
-                            .nextToken()));
-        } else if ((jmsm.getProperty("SEVERITY_KEY").equals(lvpp
-                .getString(JmsLogPreferenceConstants.KEY4)))) {
-            StringTokenizer st = new StringTokenizer(lvpp
-                    .getString(JmsLogPreferenceConstants.COLOR4), ",");
-            backgroundColor = new Color(null, Integer.parseInt(st.nextToken()),
-                    Integer.parseInt(st.nextToken()), Integer.parseInt(st
-                            .nextToken()));
-        } else if ((jmsm.getProperty("SEVERITY_KEY").equals(lvpp
-                .getString(JmsLogPreferenceConstants.KEY5)))) {
-            StringTokenizer st = new StringTokenizer(lvpp
-                    .getString(JmsLogPreferenceConstants.COLOR5), ",");
-            backgroundColor = new Color(null, Integer.parseInt(st.nextToken()),
-                    Integer.parseInt(st.nextToken()), Integer.parseInt(st
-                            .nextToken()));
-        } else if ((jmsm.getProperty("SEVERITY_KEY").equals(lvpp
-                .getString(JmsLogPreferenceConstants.KEY6)))) {
-            StringTokenizer st = new StringTokenizer(lvpp
-                    .getString(JmsLogPreferenceConstants.COLOR6), ",");
-            backgroundColor = new Color(null, Integer.parseInt(st.nextToken()),
-                    Integer.parseInt(st.nextToken()), Integer.parseInt(st
-                            .nextToken()));
-        } else if ((jmsm.getProperty("SEVERITY_KEY").equals(lvpp
-                .getString(JmsLogPreferenceConstants.KEY7)))) {
-            StringTokenizer st = new StringTokenizer(lvpp
-                    .getString(JmsLogPreferenceConstants.COLOR7), ",");
-            backgroundColor = new Color(null, Integer.parseInt(st.nextToken()),
-                    Integer.parseInt(st.nextToken()), Integer.parseInt(st
-                            .nextToken()));
-        } else if ((jmsm.getProperty("SEVERITY_KEY").equals(lvpp
-                .getString(JmsLogPreferenceConstants.KEY8)))) {
-            StringTokenizer st = new StringTokenizer(lvpp
-                    .getString(JmsLogPreferenceConstants.COLOR8), ",");
-            backgroundColor = new Color(null, Integer.parseInt(st.nextToken()),
-                    Integer.parseInt(st.nextToken()), Integer.parseInt(st
-                            .nextToken()));
-        } else if ((jmsm.getProperty("SEVERITY_KEY").equals(lvpp
-                .getString(JmsLogPreferenceConstants.KEY9)))) {
-            StringTokenizer st = new StringTokenizer(lvpp
-                    .getString(JmsLogPreferenceConstants.COLOR9), ",");
-            backgroundColor = new Color(null, Integer.parseInt(st.nextToken()),
-                    Integer.parseInt(st.nextToken()), Integer.parseInt(st
-                            .nextToken()));
-        }
-        return backgroundColor;
+//        Color backgroundColor = null;
+        return _severityColorMapping.get(jmsm.getProperty("SEVERITY_KEY"));
+//        return backgroundColor;
+//        if ((jmsm.getProperty("SEVERITY_KEY").equals(lvpp
+//                .getString(JmsLogPreferenceConstants.KEY0)))) {
+//            StringTokenizer st = new StringTokenizer(lvpp
+//                    .getString(JmsLogPreferenceConstants.COLOR0), ",");
+//            backgroundColor = new Color(null, Integer.parseInt(st.nextToken()),
+//                    Integer.parseInt(st.nextToken()), Integer.parseInt(st
+//                            .nextToken()));
+//        } else if ((jmsm.getProperty("SEVERITY_KEY").equals(lvpp
+//                .getString(JmsLogPreferenceConstants.KEY1)))) {
+//            StringTokenizer st = new StringTokenizer(lvpp
+//                    .getString(JmsLogPreferenceConstants.COLOR1), ",");
+//            backgroundColor = new Color(null, Integer.parseInt(st.nextToken()),
+//                    Integer.parseInt(st.nextToken()), Integer.parseInt(st
+//                            .nextToken()));
+//        } else if ((jmsm.getProperty("SEVERITY_KEY").equals(lvpp
+//                .getString(JmsLogPreferenceConstants.KEY2)))) {
+//            StringTokenizer st = new StringTokenizer(lvpp
+//                    .getString(JmsLogPreferenceConstants.COLOR2), ",");
+//            backgroundColor = new Color(null, Integer.parseInt(st.nextToken()),
+//                    Integer.parseInt(st.nextToken()), Integer.parseInt(st
+//                            .nextToken()));
+//        } else if ((jmsm.getProperty("SEVERITY_KEY").equals(lvpp
+//                .getString(JmsLogPreferenceConstants.KEY3)))) {
+//            StringTokenizer st = new StringTokenizer(lvpp
+//                    .getString(JmsLogPreferenceConstants.COLOR3), ",");
+//            backgroundColor = new Color(null, Integer.parseInt(st.nextToken()),
+//                    Integer.parseInt(st.nextToken()), Integer.parseInt(st
+//                            .nextToken()));
+//        } else if ((jmsm.getProperty("SEVERITY_KEY").equals(lvpp
+//                .getString(JmsLogPreferenceConstants.KEY4)))) {
+//            StringTokenizer st = new StringTokenizer(lvpp
+//                    .getString(JmsLogPreferenceConstants.COLOR4), ",");
+//            backgroundColor = new Color(null, Integer.parseInt(st.nextToken()),
+//                    Integer.parseInt(st.nextToken()), Integer.parseInt(st
+//                            .nextToken()));
+//        } else if ((jmsm.getProperty("SEVERITY_KEY").equals(lvpp
+//                .getString(JmsLogPreferenceConstants.KEY5)))) {
+//            StringTokenizer st = new StringTokenizer(lvpp
+//                    .getString(JmsLogPreferenceConstants.COLOR5), ",");
+//            backgroundColor = new Color(null, Integer.parseInt(st.nextToken()),
+//                    Integer.parseInt(st.nextToken()), Integer.parseInt(st
+//                            .nextToken()));
+//        } else if ((jmsm.getProperty("SEVERITY_KEY").equals(lvpp
+//                .getString(JmsLogPreferenceConstants.KEY6)))) {
+//            StringTokenizer st = new StringTokenizer(lvpp
+//                    .getString(JmsLogPreferenceConstants.COLOR6), ",");
+//            backgroundColor = new Color(null, Integer.parseInt(st.nextToken()),
+//                    Integer.parseInt(st.nextToken()), Integer.parseInt(st
+//                            .nextToken()));
+//        } else if ((jmsm.getProperty("SEVERITY_KEY").equals(lvpp
+//                .getString(JmsLogPreferenceConstants.KEY7)))) {
+//            StringTokenizer st = new StringTokenizer(lvpp
+//                    .getString(JmsLogPreferenceConstants.COLOR7), ",");
+//            backgroundColor = new Color(null, Integer.parseInt(st.nextToken()),
+//                    Integer.parseInt(st.nextToken()), Integer.parseInt(st
+//                            .nextToken()));
+//        } else if ((jmsm.getProperty("SEVERITY_KEY").equals(lvpp
+//                .getString(JmsLogPreferenceConstants.KEY8)))) {
+//            StringTokenizer st = new StringTokenizer(lvpp
+//                    .getString(JmsLogPreferenceConstants.COLOR8), ",");
+//            backgroundColor = new Color(null, Integer.parseInt(st.nextToken()),
+//                    Integer.parseInt(st.nextToken()), Integer.parseInt(st
+//                            .nextToken()));
+//        } else if ((jmsm.getProperty("SEVERITY_KEY").equals(lvpp
+//                .getString(JmsLogPreferenceConstants.KEY9)))) {
+//            StringTokenizer st = new StringTokenizer(lvpp
+//                    .getString(JmsLogPreferenceConstants.COLOR9), ",");
+//            backgroundColor = new Color(null, Integer.parseInt(st.nextToken()),
+//                    Integer.parseInt(st.nextToken()), Integer.parseInt(st
+//                            .nextToken()));
+//        }
     }
 
     public Color getForeground(Object element, int columnIndex) {

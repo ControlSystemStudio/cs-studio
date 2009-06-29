@@ -60,14 +60,14 @@ public class JMSAlarmMessageListTest {
 		Assert.assertEquals(1, messageList.getJMSMessageList().size());
 		Assert.assertEquals(true, checkForAlarm("NAME", "MINOR", false,
 				false, messageList, "DISCONNECTED"));
-		messageList.clearList();
+//		messageList.deleteAllMessages();
 		
 		addJMSMessage("NAME", "INVALID", "event", false, null, messageList);
 		addJMSMessage("NAME", "MINOR", "status", false, null, messageList, "DISCONNECTED");
 		Assert.assertEquals(1, messageList.getJMSMessageList().size());
 		Assert.assertEquals(true, checkForAlarm("NAME", "INVALID", false,
 				false, messageList, "DISCONNECTED"));
-		messageList.clearList();
+//		messageList.deleteAllMessages();
 		
 		addJMSMessage("NAME", "MINOR", "event", false, null, messageList);
 		addJMSMessage("NAME", "NO_ALARM", "status", false, null, messageList, "DISCONNECTED");
@@ -83,7 +83,7 @@ public class JMSAlarmMessageListTest {
 		Assert.assertEquals(1, messageList.getJMSMessageList().size());
 		addJMSMessage("NAME_NEU", "MINOR", "status", false, null, messageList, "DISCONNECTED");
 		Assert.assertEquals(1, messageList.getJMSMessageList().size());
-		messageList.clearList();
+//		messageList.deleteAllMessages();
 	}
 	
 	

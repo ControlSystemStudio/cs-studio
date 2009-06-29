@@ -97,12 +97,17 @@ public class ArchiveMessageList extends MessageList {
         return _messages;
     }
 
-    public void clearList() {
+    public void deleteAllMessages() {
         _messages.clear();
     }
     
     @Override
     public Integer getSize() {
        return _messages.size();
+    }
+
+    @Override
+    public void deleteAllMessages(BasicMessage[] messages) {
+        removeMessageArray(messages);
     }
 }

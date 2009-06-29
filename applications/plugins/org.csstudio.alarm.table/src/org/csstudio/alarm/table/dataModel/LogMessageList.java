@@ -88,8 +88,8 @@ public class LogMessageList extends MessageList {
         return _messages;
     }
 
-    public void clearList() {
-        _messages.clear();
+    public void deleteAllMessages(BasicMessage[] messages) {
+        removeMessageArray(messages);
     }
 
     /**

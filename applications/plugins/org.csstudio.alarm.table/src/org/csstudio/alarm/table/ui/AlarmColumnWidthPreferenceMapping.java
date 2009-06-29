@@ -18,9 +18,9 @@ public class AlarmColumnWidthPreferenceMapping extends
         String newPreferenceColumnString = ""; //$NON-NLS-1$
         String[] columns = JmsLogsPlugin.getDefault().getPluginPreferences()
                 .getString(preferenceColumnConstant).split(";"); //$NON-NLS-1$
-        for (int i = 1; i < columns.length; i++) {
+        for (int i = 0; i < columns.length; i++) {
             newPreferenceColumnString = newPreferenceColumnString
-                    .concat(columns[i].split(",")[0] + "," + _columnWidth[i+1] + ";"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    .concat(columns[i].split(",")[0] + "," + _columnWidth[i + 1] + ";"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
         newPreferenceColumnString = newPreferenceColumnString.substring(0,
                 newPreferenceColumnString.length() - 1);
