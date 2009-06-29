@@ -124,6 +124,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         		Messages.Menu_Help_CheatSheet);
         
         about = ActionFactory.ABOUT.create(window);
+        about.setImageDescriptor(Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/css16.gif")); //$NON-NLS-1$
         register(about);
         
         createWeblinkActions(window);
