@@ -220,6 +220,13 @@ public abstract class ArchiveServer
      */
     public void cancel()
     {
-        // NOP
+        // System.out.println("Cancel requested for " + toString());
+    }
+
+    /** @return String representation for debugging */
+    @Override
+    public String toString()
+    {
+        return getServerName() + " " + getURL();
     }
 }
