@@ -69,13 +69,16 @@ public class Label extends Widget {
             if(row[0].equals("textix")){ //$NON-NLS-1$
 //              <property type="sds.string" id="value.text" value="CMTB" />
                 String[] textit = ADLHelper.cleanString(row[1]);
-                _widget.setPropertyValue(LabelModel.PROP_TEXTVALUE, textit[1]);
-                labelText = textit[1];
                 _widget.setPropertyValue(LabelModel.PROP_VALUE_TYPE, TextTypeEnum.TYPE_TEXT);
                 if(textit[1].startsWith("$")&&textit.length>1){ //$NON-NLS-1$
+                    labelText = textit[1];
                     _widget.setPrimarPv(textit[1]);
                     _widget.setPropertyValue(LabelModel.PROP_VALUE_TYPE, TextTypeEnum.TYPE_ALIAS);
+                }else {
+                    labelText = textit[0];
                 }
+                _widget.setPropertyValue(LabelModel.PROP_TEXTVALUE, labelText);
+                
                 
             // The Text alignment.
             }else if(row[0].equals("alignment")||row[0].equals("align")){ //$NON-NLS-1$ //$NON-NLS-2$

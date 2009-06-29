@@ -147,7 +147,7 @@ public class ADLMenuItem extends WidgetPart{
                 path = path.append(_command.replaceAll("\"", "").replace(".adl", ".css-sds")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                 action.getProperty(OpenDisplayActionModel.PROP_RESOURCE)
                 .setPropertyValue(path);//TODO: set the correct Path 
-                actionData.addAction(action);
+//                actionData.addAction(action);
             }
 
             if(_args!=null){  
