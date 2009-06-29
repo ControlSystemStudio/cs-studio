@@ -1,10 +1,11 @@
 package org.csstudio.archive.channelarchiver;
 
+import java.net.URL;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import org.apache.xmlrpc.AsyncCallback;
 import org.apache.xmlrpc.XmlRpcClient;
-import org.apache.xmlrpc.XmlRpcException;
 import org.csstudio.archive.ArchiveValues;
 import org.csstudio.platform.data.IEnumeratedMetaData;
 import org.csstudio.platform.data.IMetaData;
@@ -18,7 +19,7 @@ import org.csstudio.platform.data.ValueFactory;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class ValuesRequest
+public class ValuesRequest implements AsyncCallback
 {
 	final private ArchiveServer server;
 	final private int key;
@@ -43,6 +44,8 @@ public class ValuesRequest
 
     // The result of the query
 	private ArchiveValues archived_samples[];
+    private Vector<Object> xml_rpc_result;
+    private Exception xml_rpc_exception;
 
 	/** Constructor for new value request.
 	 *  <p>
@@ -115,32 +118,44 @@ public class ValuesRequest
     @SuppressWarnings("unchecked")
     public void read(XmlRpcClient xmlrpc) throws Exception
 	{
-		Vector<Object> result;
-		try
+        xml_rpc_result = null;
+        xml_rpc_exception = null;
+		final Vector<Object> params = new Vector<Object>(8);
+		params.add(new Integer(key));
+		params.add(channels);
+		params.add(new Integer((int)start.seconds()));
+		params.add(new Integer((int)start.nanoseconds()));
+		params.add(new Integer((int)end.seconds()));
+		params.add(new Integer((int)end.nanoseconds()));
+        params.add(parms[0]);
+		params.add(new Integer(how));
+		// xmlrpc.execute("archiver.values", params);
+        xmlrpc.executeAsync("archiver.values", params, this);
+		// Wait for AsynCallback to set the xml_rpc_result or .._exception
+		synchronized (this)
+        {
+		    wait();
+        }
+		if (xml_rpc_exception != null)
+		    throw new Exception("archiver.values call failed: " + xml_rpc_exception.getMessage());
+		// Cancelled?
+		if (xml_rpc_result == null)
 		{
-			final Vector<Object> params = new Vector<Object>(8);
-			params.add(new Integer(key));
-			params.add(channels);
-			params.add(new Integer((int)start.seconds()));
-			params.add(new Integer((int)start.nanoseconds()));
-			params.add(new Integer((int)end.seconds()));
-			params.add(new Integer((int)end.nanoseconds()));
-            params.add(parms[0]);
-			params.add(new Integer(how));
-			result = (Vector<Object>) xmlrpc.execute("archiver.values", params);
+		    archived_samples = new ArchiveValues[channels.length];
+	        for (int i=0; i<archived_samples.length; ++i)
+	            archived_samples[i] =
+	                new ArchiveValues(server, channels[i], new IValue[0]);
+		    return;
 		}
-		catch (XmlRpcException ex)
-		{
-			throw new Exception("archiver.values call failed: " + ex.getMessage());
-		}
+		
 		// result := { string name,  meta, int32 type,
         //              int32 count,  values }[]
-		final int num_returned_channels = result.size();
+		final int num_returned_channels = xml_rpc_result.size();
 		archived_samples = new ArchiveValues[num_returned_channels];
 		for (int channel_idx=0; channel_idx<num_returned_channels; ++channel_idx)
 		{
 			final Hashtable<String, Object> channel_data =
-			    (Hashtable<String, Object>) result.get(channel_idx);
+			    (Hashtable<String, Object>) xml_rpc_result.get(channel_idx);
             final String name = (String)channel_data.get("name");
             final int type = (Integer)channel_data.get("type");
             final int count = (Integer)channel_data.get("count");
@@ -161,8 +176,45 @@ public class ValuesRequest
 				new ArchiveValues(server, name, samples);
 		}
 	}
+    
+    /** Cancel an ongoing read.
+     *  <p>
+     *  Somewhat fake, because there is no way to stop the underlying
+     *  XML-RPC request, but we can abandon the read and pretend
+     *  that we didn't receive any data.
+     */
+	public void cancel()
+    {
+        synchronized (this)
+        {
+            xml_rpc_exception = null;
+            xml_rpc_result = null;
+            notifyAll();
+        }
+    }
 
-	/** Parse the MetaData from the received XML-RPC response. 
+	/** @see AsyncCallback */
+    public void handleError(Exception error, URL arg1, String arg2)
+    {
+        synchronized (this)
+        {
+            xml_rpc_exception = error;
+            notifyAll();
+        }
+    }
+
+    /** @see AsyncCallback */
+    @SuppressWarnings("unchecked")
+    public void handleResult(Object result, URL arg1, String arg2)
+    {
+        synchronized (this)
+        {
+            xml_rpc_result = (Vector<Object>) result;
+            notifyAll();
+        }
+    }
+
+    /** Parse the MetaData from the received XML-RPC response. 
 	 * @param name */
 	@SuppressWarnings("unchecked")
     private IMetaData decodeMetaData(final String name, int value_type, Hashtable meta_hash)

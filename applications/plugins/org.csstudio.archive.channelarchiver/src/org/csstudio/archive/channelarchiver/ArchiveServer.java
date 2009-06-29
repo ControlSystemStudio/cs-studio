@@ -1,6 +1,7 @@
 package org.csstudio.archive.channelarchiver;
 
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 import org.apache.xmlrpc.XmlRpcClient;
 import org.csstudio.archive.ArchiveInfo;
@@ -147,6 +148,9 @@ public class ArchiveServer extends org.csstudio.archive.ArchiveServer
 		return infos.getNameInfos();
 	}
 
+    /** Active requests. Synchronize for access */
+    final private ArrayList<ValuesRequest> requests = new ArrayList<ValuesRequest>();
+    
     /** {@inheritDoc} */
     @Override
 	public ArchiveValues[] getSamples(int key, String[] names,
@@ -157,7 +161,32 @@ public class ArchiveServer extends org.csstudio.archive.ArchiveServer
         final int request_code = getRequestCode(request_type);
 		ValuesRequest values = new ValuesRequest(this,
 				key, names, start, end, request_code, request_parms);
-		values.read(xmlrpc);
+		synchronized (requests)
+        {
+		    requests.add(values);
+        }
+		try
+		{
+		    values.read(xmlrpc);
+		}
+		finally
+		{
+	        synchronized (requests)
+	        {
+	            requests.remove(values);
+	        }
+		}
 		return values.getArchivedSamples();
 	}
+
+    /** {@inheritDoc} */
+    @Override
+    public void cancel()
+    {
+        synchronized (requests)
+        {
+            for (ValuesRequest request : requests)
+                request.cancel();
+        }
+    }
 }
