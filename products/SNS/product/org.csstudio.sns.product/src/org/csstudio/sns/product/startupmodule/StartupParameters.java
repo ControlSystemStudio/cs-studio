@@ -26,6 +26,9 @@ public class StartupParameters implements StartupParametersExtPoint {
 	 /** Command-line switch for help */
     private static final String HELP = "-help"; //$NON-NLS-1$
     
+    /** Command-line switch to show login dialog */
+    private static final String LOGIN_PROMPT = "-login"; //$NON-NLS-1$
+    
     /** Command-line switch to force workspace dialog */
     private static final String WORKSPACE_PROMPT = "-workspace_prompt"; //$NON-NLS-1$
 
@@ -37,6 +40,10 @@ public class StartupParameters implements StartupParametersExtPoint {
    
     /** Command-line switch to provide the password of default user in login dialog */
     private static final String PASSWORD = "-p"; //$NON-NLS-1$
+
+    /** Parameter tag which defines if login dialog should be displayed
+     *  The value is stored in the returned map. */ 
+    public static final String LOGIN_PROMPT_PARAM = "css.showLogin"; //$NON-NLS-1$
     
     /** Parameter tag which defines if prompt for workspace is forced. 
      * The value is stored in the returned map. */ 
@@ -55,6 +62,7 @@ public class StartupParameters implements StartupParametersExtPoint {
             (String []) context.getArguments().get("application.args"); //$NON-NLS-1$
         
         boolean force_workspace_prompt = false;
+        boolean login = false;
         URL default_workspace = null;
         String share_link = null;
         String username = null;
@@ -73,8 +81,11 @@ public class StartupParameters implements StartupParametersExtPoint {
                 System.exit(0);
                 return parameters;
             }
-            
-            if (arg.equalsIgnoreCase(WORKSPACE_PROMPT))
+            else if (arg.equalsIgnoreCase(LOGIN_PROMPT))
+            {
+                login = true;
+            }
+            else if (arg.equalsIgnoreCase(WORKSPACE_PROMPT))
             {
                 force_workspace_prompt = true;
                 if ((i + 1) < args.length)
@@ -87,8 +98,7 @@ public class StartupParameters implements StartupParametersExtPoint {
                     }
                 }
             }
-            
-            if (arg.equalsIgnoreCase(SHARE_LINK))
+            else if (arg.equalsIgnoreCase(SHARE_LINK))
             {
                 if ((i + 1) < args.length)
                 {
@@ -109,8 +119,8 @@ public class StartupParameters implements StartupParametersExtPoint {
                     return parameters;
                 }
             }
-            
-            if (arg.equalsIgnoreCase(USER)) {
+            else if (arg.equalsIgnoreCase(USER))
+            {
             	if ((i + 1) < args.length)
                 {
                     final String next = args[i+1];
@@ -130,7 +140,8 @@ public class StartupParameters implements StartupParametersExtPoint {
                     return parameters;
                 }
             }
-            if (arg.equalsIgnoreCase(PASSWORD)) {
+            else if (arg.equalsIgnoreCase(PASSWORD))
+            {
             	if ((i + 1) < args.length)
                 {
                     final String next = args[i+1];
@@ -146,10 +157,11 @@ public class StartupParameters implements StartupParametersExtPoint {
                 }
             }
         }
-        
+
+        parameters.put(LOGIN_PROMPT_PARAM, login);
         parameters.put(LoginExtPoint.USERNAME, username);
         parameters.put(LoginExtPoint.PASSWORD, password);
-        parameters.put(FORCE_WORKSPACE_PROMPT_PARAM, new Boolean(force_workspace_prompt));
+        parameters.put(FORCE_WORKSPACE_PROMPT_PARAM, force_workspace_prompt);
         parameters.put(WorkspaceExtPoint.WORKSPACE, default_workspace);
         parameters.put(SHARE_LINK_PARAM, share_link);
         
@@ -176,6 +188,8 @@ public class StartupParameters implements StartupParametersExtPoint {
         System.out.format("  %-35s : Create '%s' link to shared folder\n",
                 SHARE_LINK + " /path/to/some/folder",
                 Messages.Project_SharedFolderName);
+        System.out.format("  %-35s : Present login dialog (user, password)\n",
+                LOGIN_PROMPT);
         System.out.format("  %-35s : provide the default user in login dialog\n",
                 USER + " username");
         System.out.format("  %-35s : provide the password of default user in login dialog\n",

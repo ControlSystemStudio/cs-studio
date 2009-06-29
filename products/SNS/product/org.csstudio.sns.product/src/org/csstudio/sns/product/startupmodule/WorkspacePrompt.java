@@ -37,18 +37,25 @@ public class WorkspacePrompt implements WorkspaceExtPoint {
 	 * @see org.csstudio.startup.extensions.WorkspacePromptExtPoint#promptForWorkspace(org.eclipse.swt.widgets.Display, org.eclipse.equinox.app.IApplicationContext, java.util.Map)
 	 */
 	public Object promptForWorkspace(Display display,
-			IApplicationContext context, Map<String, Object> parameters) {
+			IApplicationContext context, Map<String, Object> parameters)
+	{
 	    
-		Object o = parameters.get(LoginExtPoint.USERNAME);
-		String username = o != null ? (String)o : null;
-		o = parameters.get(LoginExtPoint.PASSWORD);
-		String password = o != null ? (String)o : null;
-		o = parameters.get(StartupParameters.FORCE_WORKSPACE_PROMPT_PARAM);
-		boolean force_workspace_prompt = o != null ? (Boolean)o : false;
-		o = parameters.get(WorkspaceExtPoint.WORKSPACE);
-		URL default_workspace = o != null ? (URL)o : null;
+		Object o = parameters.get(StartupParameters.LOGIN_PROMPT_PARAM);
+        final boolean login = o != null ? (Boolean)o : false;
 		
-		if (! checkInstanceLocation(force_workspace_prompt,
+        o = parameters.get(LoginExtPoint.USERNAME);
+		final String username = o != null ? (String)o : null;
+		
+		o = parameters.get(LoginExtPoint.PASSWORD);
+		final String password = o != null ? (String)o : null;
+		
+		o = parameters.get(StartupParameters.FORCE_WORKSPACE_PROMPT_PARAM);
+		final boolean force_workspace_prompt = o != null ? (Boolean)o : false;
+		
+		o = parameters.get(WorkspaceExtPoint.WORKSPACE);
+		final URL default_workspace = o != null ? (URL)o : null;
+		
+		if (! checkInstanceLocation(login, force_workspace_prompt,
 				default_workspace, username, password, parameters)) {
 			// The <code>stop()</code> routine of many UI plugins writes
 			// the current settings to the workspace.
@@ -75,6 +82,7 @@ public class WorkspacePrompt implements WorkspaceExtPoint {
      *  Its first use loads the main CSS plugin, which checks preferences
      *  and thus already activates the default workspace, after which we can no
      *  longer change it...
+     *  @param show_login Show the login (user/password) dialog?
      *  @param force_prompt Set <code>true</code> in a Control Room
      *         setting where the initial suggestion is always the "default"
      *         workspace, and there is no way to suppress the "ask again" option.
@@ -86,7 +94,8 @@ public class WorkspacePrompt implements WorkspaceExtPoint {
      *  @param password the password for the given username
      *  @return <code>true</code> if all OK
      */
-    private boolean checkInstanceLocation(final boolean force_prompt,
+    private boolean checkInstanceLocation(boolean show_login,
+            final boolean force_prompt,
     		URL default_workspace, String username, String password, 
     		Map<String, Object> parameters)
     {
@@ -141,7 +150,6 @@ public class WorkspacePrompt implements WorkspaceExtPoint {
         
         // Prompt in any case? Or did user decide to be asked again?
         boolean show_Workspace = force_prompt | workspace_info.getShowDialog();
-        boolean show_Login = true;
         
         //if no user name provided, display last login user.
         if(username == null) 
@@ -149,20 +157,20 @@ public class WorkspacePrompt implements WorkspaceExtPoint {
         
         //initialize startupHelper
         StartupHelper startupHelper = new StartupHelper(null, force_prompt, 
-        		workspace_info, username, password, show_Login, show_Workspace);
+        		workspace_info, username, password, show_login, show_Workspace);
         
         while (true)
         {
-        	startupHelper.setShow_Login(show_Login);
+        	startupHelper.setShow_Login(show_login);
         	startupHelper.setShow_Workspace(show_Workspace);
         	
-            if (show_Workspace || show_Login)
+            if (show_Workspace || show_login)
             {                
                 if (! startupHelper.openStartupDialog())
                     return false; // canceled
 
                 //get user name and password from startup dialog
-                if(show_Login) {
+                if(show_login) {
                 	username = startupHelper.getUserName();
                 	password = startupHelper.getPassword();
                 }
@@ -170,7 +178,7 @@ public class WorkspacePrompt implements WorkspaceExtPoint {
             // In case of errors, we will have to ask the workspace,
             // but don't bother to ask user name and password again.
             show_Workspace = true;
-            show_Login = false;
+            show_login = false;
 
             try
             {
@@ -193,7 +201,7 @@ public class WorkspacePrompt implements WorkspaceExtPoint {
             }
             // by this point it has been determined that the workspace is
             // already in use -- force the user to choose again
-            show_Login = false;
+            show_login = false;
             MessageDialog.openError(null,
                     org.csstudio.platform.workspace.Messages.Workspace_InUseErrorTitle, 
                     NLS.bind(org.csstudio.platform.workspace.Messages.Workspace_InUseError,
