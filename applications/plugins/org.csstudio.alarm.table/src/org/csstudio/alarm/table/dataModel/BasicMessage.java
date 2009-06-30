@@ -123,7 +123,7 @@ public class BasicMessage extends PlatformObject implements IProcessVariable {
     }
 
     public String getName() {
-        return _messageProperties.get("NAME"); //$NON-NLS-1$
+        return this.getProperty("NAME"); //$NON-NLS-1$
     }
 
     public String getTypeId() {
