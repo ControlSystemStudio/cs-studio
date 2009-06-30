@@ -126,7 +126,7 @@ public class MessageTableContentProvider implements IMessageViewer,
                             if ((jmsm.getProperty("NAME").equals(messageInTable.getProperty("NAME"))) && 
                                     (jmsm.getProperty("EVENTTIME").equals(messageInTable.getProperty("EVENTTIME")))) {
                                 directTableItem.setChecked(true);
-                                _tableViewer.refresh();
+//                                _tableViewer.refresh();
                                 _tableViewer.update(item, new String[] {"ACK"});
                                 break;
                             }
