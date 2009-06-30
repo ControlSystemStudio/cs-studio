@@ -255,13 +255,6 @@ public class LogClientThread extends Thread
                     last_message  = map;
                 }
                 rdb_writer.write(map);
-                if (logger.isDebugEnabled())
-                {
-                	String text = map.getString("TEXT");
-                	if (text == null)
-                		text = "message";
-            		logger.debug("Received and wrote " + text);
-                }
             }
             else
                 logger.debug("Received " + message.getClass().getName());                

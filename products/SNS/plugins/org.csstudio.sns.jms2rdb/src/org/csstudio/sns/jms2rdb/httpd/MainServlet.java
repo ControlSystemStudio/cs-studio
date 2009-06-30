@@ -1,12 +1,15 @@
 package org.csstudio.sns.jms2rdb.httpd;
 
+import java.util.Dictionary;
 import java.util.Enumeration;
 
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.sns.jms2rdb.Activator;
 import org.csstudio.sns.jms2rdb.LogClientThread;
+import org.osgi.framework.Constants;
 
 /** Servlet to display overall status of JMS Log Tool.
  *  @author Kay Kasemir
@@ -20,9 +23,17 @@ public class MainServlet extends AbstractServlet
     
     final private LogClientThread log_client_thread;
 
+    private final String app_name;
+
+    @SuppressWarnings("unchecked")
     public MainServlet(final LogClientThread log_client_thread)
     {
         this.log_client_thread = log_client_thread;
+        
+        final Dictionary<String, String> headers =
+            Activator.getInstance().getBundle().getHeaders();
+        app_name = headers.get(Constants.BUNDLE_NAME) + " " +
+                   headers.get(Constants.BUNDLE_VERSION);
     }
     
     /** Create status page */
@@ -30,7 +41,7 @@ public class MainServlet extends AbstractServlet
 	@Override
     protected void fillBody(final HTMLWriter html)
     {
-        html.h1("<h1>JMS-to-RDB Tool Status</h1>\n");
+        html.h1(app_name);
         
         html.h2("Message Count: " + log_client_thread.getMessageCount());
         

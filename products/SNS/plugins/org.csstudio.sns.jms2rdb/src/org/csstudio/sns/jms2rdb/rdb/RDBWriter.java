@@ -12,6 +12,8 @@ import java.util.HashMap;
 
 import javax.jms.MapMessage;
 
+import org.apache.log4j.Logger;
+import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.logging.JMSLogMessage;
 import org.csstudio.platform.utility.rdb.RDBUtil;
@@ -29,6 +31,9 @@ public class RDBWriter
 	
     /** Enable statistics for Jeff Patton ? */
 	private static final boolean enable_trace = false;
+
+	/** Log4J logger */
+    final private Logger logger;
 
     /** RDB Utility */
     final private RDBUtil rdb_util;
@@ -63,6 +68,7 @@ public class RDBWriter
      */
     public RDBWriter(final String url, final String schema) throws Exception
     {
+        logger = CentralLogger.getInstance().getLogger(this);
         rdb_util = RDBUtil.connect(url, false);
         
         if (enable_trace)
@@ -313,6 +319,15 @@ public class RDBWriter
         final int rows = insert_message_statement.executeUpdate();
         if (rows != 1)
             throw new Exception("Inserted " + rows + " instead of 1 Message");
+        
+        if (logger.isDebugEnabled())
+        {
+            logger.debug("Message " + message_id + ":");
+            logger.debug("  TYPE          : " + type);
+            logger.debug("  DATUM         : " + TimestampFactory.fromCalendar(now).toString());
+            logger.debug("  NAME          : " + name);
+            logger.debug("  SEVERITY      : " + severity);
+        }
     }
 
     /** Insert a property, add content to a message
@@ -343,6 +358,9 @@ public class RDBWriter
         }
         insert_property_statement.setString(4, value);
         insert_property_statement.addBatch();
+        
+        if (logger.isDebugEnabled())
+            logger.debug(String.format("  %-14s: %s", property, value));
         return true;
     }
     

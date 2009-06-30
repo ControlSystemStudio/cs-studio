@@ -47,6 +47,7 @@ public class HTMLWriter
         text("<hr width='50%' align='left'>");
         
         text("<a href=\"/main\">-Main-</a> ");
+        text("<a href=\"/versions.html\">-Versions-</a> ");
         
         text("<address>");
         text(TimestampFactory.now().format(ITimestamp.Format.DateTimeSeconds));

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.4"?>
 
-<product name="JMS to RDB" id="org.csstudio.sns.jms2rdb.product" application="org.csstudio.sns.jms2rdb.application" useFeatures="false">
+<product name="JMS-to-RDB" id="org.csstudio.sns.jms2rdb.product" application="org.csstudio.sns.jms2rdb.application" useFeatures="false">
 
    <configIni use="default">
    </configIni>

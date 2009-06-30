@@ -16,11 +16,4 @@ Need -vmargs  -D java.awt.headless=true ?
 See also https://bugs.eclipse.org/bugs/show_bug.cgi?id=201414
 
 
-Versions:
-
-1.0.2
-Bug when NAME == null
-
-1.0.1
-Catch NAME properties that are too long
-
+Versions: See webroot/versions.html
