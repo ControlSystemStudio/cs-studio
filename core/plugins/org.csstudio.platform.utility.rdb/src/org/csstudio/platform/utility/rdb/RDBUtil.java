@@ -54,47 +54,35 @@ abstract public class RDBUtil
     /** Statement used to check the connection */
     private PreparedStatement test_query;
     
+    /** Connect with only a url.
+     *  @deprecated Use the version with autoReconnect: {@link #connect(String, boolean)}
+     */
+    @Deprecated
+    public static RDBUtil connect(final String url) throws Exception
+    {
+        return connect(url, null, null, false);
+    }
+
     /** Connect to the database.
-     *  <p>
-     *  The URL format depends on the database dialect.
-     *  <p>
-     *  For MySQL resp. Oracle, the formats are:
-     *  <pre>
-     *     jdbc:mysql://[host]:[port]/[database]?user=[user]&password=[password]
-     *     jdbc:oracle:thin:[user]/[password]@//[host]:[port]/[database]
-     *  </pre>
-     *  
-     *  For Oracle, the port is usually 1521.
-     *  
-     *  @param url Database URL
-     *  @param user User name or <code>null</code> if part of url
-     *  @param password Password or <code>null</code> if part of url
-     *  @return RDBUtil
-     *  @throws Exception on error
-     *  @see #close()
      *  @deprecated Use the version with autoReconnect: {@link #connect(String, String, String, boolean)}
      */
+    @Deprecated
     public static RDBUtil connect(final String url,
             final String user, final String password) throws Exception
     {
-    	Activator.getLogger().debug("RDBUtil connects to " + url);
-        if (url.startsWith(JDBC_MYSQL))
-            return new MySQL_RDB(url, user, password, false);
-        if (url.startsWith(JDBC_ORACLE))
-            return new OracleRDB(url, user, password, false);
-        throw new Error("Unsupported database dialect");
+        return connect(url, user, password, false);
     }
 
     /** Connect with only a url.
-     *  @see #connect(String, String, String)
-     *  @deprecated Use the version with autoReconnect: {@link #connect(String, boolean)}
+     *  @param url URL
+     *  @param autoReconnect Handle reconnect?
+     *  @see #connect(String, String, String, Boolean)  
      */
-    public static RDBUtil connect(final String url) throws Exception
+    public static RDBUtil connect(final String url, final boolean autoReconnect) throws Exception
     {
-        return connect(url, null, null);
+        return connect(url, null, null, autoReconnect);
     }
 
-    
     /** Connect to the database.
      *  <p>
      *  The URL format depends on the database dialect.
@@ -108,10 +96,10 @@ abstract public class RDBUtil
      *  For Oracle, the port is usually 1521.
      *  
      *  @param url Database URL
-     *  @param user User name or <code>null</code> if part of url
-     *  @param password Password or <code>null</code> if part of url
+     *  @param user User name or <code>null</code> if part of URL
+     *  @param password Password or <code>null</code> if part of URL
      *  @param autoReconnect If true, reconnect to RDB automatically 
-     *  in case of connection lost
+     *                       in case of lost connection
      *  @return RDBUtil
      *  @throws Exception on error
      *  @see #close()   
@@ -124,19 +112,9 @@ abstract public class RDBUtil
             return new MySQL_RDB(url, user, password, autoReconnect);
         if (url.startsWith(JDBC_ORACLE))
             return new OracleRDB(url, user, password, autoReconnect);
-        throw new Error("Unsupported database dialect");
+        throw new Exception("Unsupported database dialect " + url);
     }
 
-    /** Connect with only a url.
-     *  @see #connect(String, String, String, Boolean)  
-     */
-    public static RDBUtil connect(final String url, final boolean autoReconnect) throws Exception
-    {
-        return connect(url, null, null, autoReconnect);
-    }
-    
-    
-    
     /** Constructor for derived classes.
      *  @param url Database URL
      *  @param user ... user
