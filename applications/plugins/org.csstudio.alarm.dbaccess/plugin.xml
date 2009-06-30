@@ -3,7 +3,7 @@
 <plugin>
    <extension
          point="org.eclipse.core.runtime.preferences">
-      <initializer class="org.csstudio.alarm.dbaccess.archivedb.preferences.PreferenceInitializer"/>
+      <initializer class="org.csstudio.alarm.dbaccess.preferences.AlarmArchiveDBPreferenceInitializer"/>
    </extension>
 
    <extension
@@ -13,10 +13,6 @@
             class="org.csstudio.alarm.dbaccess.preferences.AlarmArchiveDBPreferences"
             id="org.csstudio.alarm.dbaccess.preferences.AlarmArchiveDBPreferences"
             name="AlarmArchiveDBPreferences"/>
-   </extension>
-   <extension
-         point="org.eclipse.core.runtime.preferences">
-      <initializer class="org.csstudio.alarm.dbaccess.preferences.AlarmArchiveDBPreferenceInitializer"/>
    </extension>
 
 </plugin>
