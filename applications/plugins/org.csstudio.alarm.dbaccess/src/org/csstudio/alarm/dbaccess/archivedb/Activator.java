@@ -42,7 +42,7 @@ public class Activator extends AbstractCssUiPlugin {
     private Connection databaseConnection = null;
 
     // The plug-in ID
-    public static final String PLUGIN_ID = "org.csstudio.diag.jmssender";
+    public static final String PLUGIN_ID = "org.csstudio.alarm.dbaccess";
 
     // The shared instance
     private static Activator plugin;
