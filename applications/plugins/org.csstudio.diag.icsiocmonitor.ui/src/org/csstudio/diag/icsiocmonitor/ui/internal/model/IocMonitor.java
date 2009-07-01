@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.csstudio.diag.icsiocmonitor.service.IocConnectionReport;
-import org.csstudio.diag.icsiocmonitor.service.IocConnectionReporter;
+import org.csstudio.diag.icsiocmonitor.service.IIocConnectionReporter;
 import org.csstudio.diag.icsiocmonitor.service.IocConnectionState;
 
 /**
@@ -39,7 +39,7 @@ import org.csstudio.diag.icsiocmonitor.service.IocConnectionState;
  */
 public class IocMonitor {
 	
-	private List<IocConnectionReporter> _reporters;
+	private List<IIocConnectionReporter> _reporters;
 	private List<String> _interconnectionServers;
 	private List<IocState> _iocs;
 	
@@ -49,7 +49,7 @@ public class IocMonitor {
 	IocMonitor() {
 		_interconnectionServers = new ArrayList<String>();
 		_iocs = new ArrayList<IocState>();
-		_reporters = new ArrayList<IocConnectionReporter>();
+		_reporters = new ArrayList<IIocConnectionReporter>();
 	}
 
 	/**
@@ -78,7 +78,7 @@ public class IocMonitor {
 	 * @param service
 	 *            the service.
 	 */
-	public void addReporterService(IocConnectionReporter service) {
+	public void addReporterService(IIocConnectionReporter service) {
 		_reporters.add(service);
 		update();
 	}
@@ -89,7 +89,7 @@ public class IocMonitor {
 	 * @param service
 	 *            the service.
 	 */
-	public void removeReporterService(IocConnectionReporter service) {
+	public void removeReporterService(IIocConnectionReporter service) {
 		_reporters.remove(service);
 		update();
 	}
@@ -103,7 +103,7 @@ public class IocMonitor {
 		_iocs.clear();
 		
 		List<IocConnectionReport> reports = new ArrayList<IocConnectionReport>();
-		for (IocConnectionReporter reporter : _reporters) {
+		for (IIocConnectionReporter reporter : _reporters) {
 			reports.add(reporter.getReport());
 		}
 		

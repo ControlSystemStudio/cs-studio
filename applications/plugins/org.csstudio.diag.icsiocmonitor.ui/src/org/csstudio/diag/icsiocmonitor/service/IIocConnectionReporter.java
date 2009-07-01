@@ -29,7 +29,7 @@ package org.csstudio.diag.icsiocmonitor.service;
  * 
  * @author Joerg Rathlev
  */
-public interface IocConnectionReporter {
+public interface IIocConnectionReporter {
 	
 	/**
 	 * Returns the report of the IOC states as observed by the server

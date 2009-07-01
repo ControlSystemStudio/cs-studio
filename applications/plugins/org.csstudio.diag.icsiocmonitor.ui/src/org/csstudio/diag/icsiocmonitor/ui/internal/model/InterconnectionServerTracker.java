@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.csstudio.diag.icsiocmonitor.service.IocConnectionReporter;
+import org.csstudio.diag.icsiocmonitor.service.IIocConnectionReporter;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.presence.IPresence;
@@ -41,7 +41,7 @@ import org.remotercp.ecf.session.ISessionService;
 
 /**
  * Tracks the available interconnection servers via XMPP, retrieves their
- * {@link IocConnectionReporter} services and gives them to an
+ * {@link IIocConnectionReporter} services and gives them to an
  * {@link IocMonitor}.
  * 
  * @author Joerg Rathlev
@@ -52,7 +52,7 @@ class InterconnectionServerTracker implements IPresenceListener {
 	
 	private IocMonitor _iocMonitor;
 	private ISessionService _sessionService;
-	private Map<ID, IocConnectionReporter> _interconnectionServers;
+	private Map<ID, IIocConnectionReporter> _interconnectionServers;
 	private CentralLogger _log = CentralLogger.getInstance();
 
 	/**
@@ -63,7 +63,7 @@ class InterconnectionServerTracker implements IPresenceListener {
 	 */
 	InterconnectionServerTracker(IocMonitor monitor) {
 		_iocMonitor = monitor;
-		_interconnectionServers = new HashMap<ID, IocConnectionReporter>();
+		_interconnectionServers = new HashMap<ID, IIocConnectionReporter>();
 	}
 
 	/**
@@ -179,7 +179,7 @@ class InterconnectionServerTracker implements IPresenceListener {
 		synchronized (_interconnectionServers) {
 			if (!_interconnectionServers.containsKey(id)) {
 				_log.debug(this, "Server is now available: " + id);
-				IocConnectionReporter service = getConnectionReporterService(id);
+				IIocConnectionReporter service = getConnectionReporterService(id);
 				if (service != null) {
 					_interconnectionServers.put(id, service);
 					_iocMonitor.addReporterService(service);
@@ -189,7 +189,7 @@ class InterconnectionServerTracker implements IPresenceListener {
 	}
 
 	/**
-	 * Gets the {@link IocConnectionReporter} service from the interconnection
+	 * Gets the {@link IIocConnectionReporter} service from the interconnection
 	 * server with the given ID. Returns <code>null</code> if the
 	 * interconnection server does not offer that service.
 	 * 
@@ -198,10 +198,10 @@ class InterconnectionServerTracker implements IPresenceListener {
 	 * @return the service, or <code>null</code> if the service is not
 	 *         available.
 	 */
-	private IocConnectionReporter getConnectionReporterService(ID id) {
-		List<IocConnectionReporter> remoteServiceProxies =
+	private IIocConnectionReporter getConnectionReporterService(ID id) {
+		List<IIocConnectionReporter> remoteServiceProxies =
 			_sessionService.getRemoteServiceProxies(
-					IocConnectionReporter.class,
+					IIocConnectionReporter.class,
 					new ID[] {id});
 		if (remoteServiceProxies.size() > 0) {
 			return remoteServiceProxies.get(0);
@@ -219,7 +219,7 @@ class InterconnectionServerTracker implements IPresenceListener {
 	 */
 	private void handleInterconnectionServerUnavailable(ID id) {
 		synchronized (_interconnectionServers) {
-			IocConnectionReporter service = _interconnectionServers.remove(id);
+			IIocConnectionReporter service = _interconnectionServers.remove(id);
 			if (service != null) {
 				_log.debug(this, "Server no longer available: " + id);
 				_iocMonitor.removeReporterService(service);

@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.csstudio.diag.icsiocmonitor.service.IocConnectionReport;
-import org.csstudio.diag.icsiocmonitor.service.IocConnectionReporter;
+import org.csstudio.diag.icsiocmonitor.service.IIocConnectionReporter;
 import org.csstudio.diag.icsiocmonitor.service.IocConnectionState;
 import org.csstudio.diag.icsiocmonitor.ui.internal.model.IocMonitor;
 import org.csstudio.diag.icsiocmonitor.ui.internal.model.IocState;
@@ -44,20 +44,20 @@ import org.mockito.Mockito;
 public class IocMonitorTest {
 	
 	private IocMonitor _im;
-	private IocConnectionReporter _r1;
-	private IocConnectionReporter _r2;
+	private IIocConnectionReporter _r1;
+	private IIocConnectionReporter _r2;
 
 	@Before
 	public void setUp() throws Exception {
 		_im = new IocMonitor();
 
-		_r1 = Mockito.mock(IocConnectionReporter.class);
+		_r1 = Mockito.mock(IIocConnectionReporter.class);
 		Map<String, IocConnectionState> s1 = new HashMap<String, IocConnectionState>();
 		s1.put("ioc1", IocConnectionState.CONNECTED);
 		s1.put("ioc2", IocConnectionState.DISCONNECTED);
 		Mockito.when(_r1.getReport()).thenReturn(new IocConnectionReport("r1", s1));
 
-		_r2 = Mockito.mock(IocConnectionReporter.class);
+		_r2 = Mockito.mock(IIocConnectionReporter.class);
 		Map<String, IocConnectionState> s2 = new HashMap<String, IocConnectionState>();
 		s2.put("ioc1", IocConnectionState.CONNECTED);
 		s2.put("ioc2", IocConnectionState.CONNECTED);
