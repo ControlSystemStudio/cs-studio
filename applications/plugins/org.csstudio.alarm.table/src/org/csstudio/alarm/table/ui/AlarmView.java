@@ -37,6 +37,7 @@ import org.csstudio.alarm.table.preferences.JmsLogPreferenceConstants;
 import org.csstudio.alarm.table.preferences.LogViewPreferenceConstants;
 import org.csstudio.alarm.table.ui.messagetable.AlarmMessageTable;
 import org.csstudio.alarm.table.utility.Functions;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.security.SecurityFacade;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.TableViewer;
@@ -214,6 +215,9 @@ public class AlarmView extends LogView {
 					}
 
 				}
+				CentralLogger.getInstance().debug(this, "Number of msg in list to send: " + msgList.size());
+				CentralLogger.getInstance().debug(this, "Number of msg in table: " + _tableViewer.getTable().getItemCount());
+				
 				SendAcknowledge sendAck = SendAcknowledge
 						.newFromJMSMessage(msgList);
 				sendAck.schedule();
