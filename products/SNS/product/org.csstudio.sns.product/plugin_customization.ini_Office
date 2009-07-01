@@ -106,11 +106,13 @@ org.csstudio.platform.libs.epics/addr_list=127.0.0.1 160.91.228.17
 # Data Browser
 # Removal of these settings results in empty defaults
 # URLs to suggest in the "Archives" view
-org.csstudio.trends.databrowser/urls=xnds://ics-srv-web2.sns.ornl.gov/archive/cgi/ArchiveDataServer.cgi*xnds://ics-srv-testf1.sns.ornl.gov/archive/cgi/ArchiveDataServer.cgi*jdbc:oracle:thin:@//172.31.75.138:1521/prod
+org.csstudio.trends.databrowser/urls=jdbc:oracle:thin:@//172.31.75.138:1521/prod*xnds://ics-srv-web2.sns.ornl.gov/archive/cgi/ArchiveDataServer.cgi*xnds://ics-srv-testf1.sns.ornl.gov/archive/cgi/ArchiveDataServer.cgi
+
 # Default data sources for newly added channels
 # Format:  <name>|<key>|<url>
 # xnds: URLs use the key. Other URLs might ignore the key.
-org.csstudio.trends.databrowser/archives=- All -|1|xnds://ics-srv-web2.sns.ornl.gov/archive/cgi/ArchiveDataServer.cgi*- All - (last restart)|2|xnds://ics-srv-web2.sns.ornl.gov/archive/cgi/ArchiveDataServer.cgi
+#org.csstudio.trends.databrowser/archives=- All -|1|xnds://ics-srv-web2.sns.ornl.gov/archive/cgi/ArchiveDataServer.cgi*- All - (last restart)|2|xnds://ics-srv-web2.sns.ornl.gov/archive/cgi/ArchiveDataServer.cgi
+org.csstudio.trends.databrowser/archives=RDB|1|jdbc:oracle:thin:@//172.31.75.138:1521/prod*- All -|1|xnds://ics-srv-web2.sns.ornl.gov/archive/cgi/ArchiveDataServer.cgi*- All - (last restart)|2|xnds://ics-srv-web2.sns.ornl.gov/archive/cgi/ArchiveDataServer.cgi
 
 # RDB schema used for Oracle archive
 # User/password may be empty, they can be specified in the URL.
@@ -144,9 +146,7 @@ org.csstudio.alarm/jms_password=$alarm
 org.csstudio.alarm/jms_alarm_server_topic=ANC_SERVER
 org.csstudio.alarm/jms_alarm_client_topic=ANC_CLIENT
 org.csstudio.alarm/jms_talk_topic=ANC_TALK
-
-# Office test
-org.csstudio.alarm/rdb_url=jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS_LIST=(LOAD_BALANCE=OFF)(ADDRESS=(PROTOCOL=TCP)(HOST=172.31.75.141)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=172.31.75.138)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=ics_arch_ap)))
+org.csstudio.alarm/rdb_url=jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS_LIST=(LOAD_BALANCE=OFF)(ADDRESS=(PROTOCOL=TCP)(HOST=172.31.75.138)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=172.31.75.141)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=ics_prod_lba)))
 org.csstudio.alarm/rdb_user=alarm
 org.csstudio.alarm/rdb_password=SetViaPreferenceGUI
 org.csstudio.alarm/jms_url=failover\:(http://ics-srv-web2.sns.ornl.gov/jms)
