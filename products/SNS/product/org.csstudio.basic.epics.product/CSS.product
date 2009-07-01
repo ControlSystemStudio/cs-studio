@@ -96,9 +96,11 @@ See http://ics-web.sns.ornl.gov/css
       <plugin id="org.csstudio.sds.samples"/>
       <plugin id="org.csstudio.sds.settings.desy"/>
       <plugin id="org.csstudio.sds.ui"/>
+      <plugin id="org.csstudio.sns.passwordprovider"/>
       <plugin id="org.csstudio.startup"/>
       <plugin id="org.csstudio.startuphelper"/>
       <plugin id="org.csstudio.swt.chart"/>
+      <plugin id="org.csstudio.swt.xygraph"/>
       <plugin id="org.csstudio.trends.databrowser"/>
       <plugin id="org.csstudio.utility.clock"/>
       <plugin id="org.csstudio.utility.eliza"/>
