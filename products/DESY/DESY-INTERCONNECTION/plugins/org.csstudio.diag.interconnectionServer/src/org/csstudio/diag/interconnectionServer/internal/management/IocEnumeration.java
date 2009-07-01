@@ -22,6 +22,12 @@
 
 package org.csstudio.diag.interconnectionServer.internal.management;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
+import org.csstudio.diag.interconnectionServer.server.IocConnection;
 import org.csstudio.diag.interconnectionServer.server.IocConnectionManager;
 import org.csstudio.platform.management.CommandParameterEnumValue;
 import org.csstudio.platform.management.IDynamicParamterValues;
@@ -37,17 +43,17 @@ public class IocEnumeration implements IDynamicParamterValues {
 	 * {@inheritDoc}
 	 */
 	public CommandParameterEnumValue[] getEnumerationValues() {
-		
-		String[] iocs = IocConnectionManager.getInstance().getNodeNameArrayWithLogicalName();
-		CommandParameterEnumValue[] result = new CommandParameterEnumValue[iocs.length];
-		for (int i = 0; i < iocs.length; i++) {
-			String hostname = iocs[i].substring(0, iocs[i].indexOf('|'));
-			String logicalName = iocs[i].substring(iocs[i].indexOf('|') + 1);
+		Collection<IocConnection> iocs =
+			IocConnectionManager.getInstance().getIocConnections();
+		List<CommandParameterEnumValue> result =
+			new ArrayList<CommandParameterEnumValue>(iocs.size());
+		for (IocConnection ioc : iocs) {
+			String hostname = ioc.getHost();
+			String logicalName = ioc.getLogicalIocName();
 			String label = logicalName + " (" + hostname + ")";
-			result[i] = new CommandParameterEnumValue(hostname, label);
+			result.add(new CommandParameterEnumValue(hostname, label));
 		}
-		
-		return result;
+		return result.toArray(new CommandParameterEnumValue[result.size()]);
 	}
 
 }
