@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.4"?>
 
-<product name="CSS (EPICS)" id="org.csstudio.basic.epics.product.product" application="org.csstudio.basic.epics.application" version="1.0.0" useFeatures="false">
+<product name="CSS (EPICS)" id="org.csstudio.basic.epics.product.product" application="org.csstudio.basic.epics.application" version="1.0.19" useFeatures="false">
 
    <aboutInfo>
       <image path="/org.csstudio.basic.epics.product/icons/about.gif"/>
