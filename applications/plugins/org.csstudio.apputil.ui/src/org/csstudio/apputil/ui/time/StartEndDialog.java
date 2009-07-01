@@ -52,6 +52,8 @@ public class StartEndDialog extends Dialog
         super(shell);
         start_specification = start;
         end_specification = end;
+        // Allow resize
+        setShellStyle(getShellStyle() | SWT.RESIZE);
     }
     
     /** @return Start specification. */

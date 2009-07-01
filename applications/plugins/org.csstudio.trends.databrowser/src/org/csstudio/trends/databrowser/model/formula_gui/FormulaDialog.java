@@ -86,6 +86,8 @@ public class FormulaDialog extends Dialog
     {
         super(shell);
         this.formula_item = formula_item;
+        // Allow resize
+        setShellStyle(getShellStyle() | SWT.RESIZE);
     }
     
     /** Set the dialog title. */
