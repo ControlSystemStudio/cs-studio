@@ -34,7 +34,9 @@ import org.csstudio.sds.model.WidgetProperty;
 import org.csstudio.sds.model.properties.ActionData;
 import org.csstudio.sds.model.properties.actions.OpenDisplayActionModel;
 import org.csstudio.sds.model.properties.actions.OpenDisplayActionModelFactory;
+import org.csstudio.utility.adlconverter.Activator;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
+import org.csstudio.utility.adlconverter.ui.preferences.ADLConverterPreferenceConstants;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.FileLine;
@@ -88,7 +90,7 @@ public class RelatedDisplayItem extends WidgetPart {
      */
     @Override
     final void init() {
-        _path = "/CSS/SDS";//"C:/Helge_Projekte/CSS 3.3 Workspace/SDS/"; //$NON-NLS-1$
+        _path = Activator.getDefault().getPreferenceStore().getString(ADLConverterPreferenceConstants.P_STRING_Path_Target);
     }
 
     /**

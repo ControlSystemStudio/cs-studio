@@ -26,7 +26,9 @@ package org.csstudio.utility.adlconverter.utility.widgets;
 
 import org.csstudio.sds.components.model.ImageModel;
 import org.csstudio.sds.model.AbstractWidgetModel;
+import org.csstudio.utility.adlconverter.Activator;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
+import org.csstudio.utility.adlconverter.ui.preferences.ADLConverterPreferenceConstants;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.FileLine;
@@ -62,7 +64,8 @@ public class Image extends Widget {
             }else if(row[0].equals("\"image name\"")){ //$NON-NLS-1$ //$NON-NLS-2$
                 row[1] = ADLHelper.cleanString(row[1])[0];
                 IResource res = ResourcesPlugin.getWorkspace().getRoot();
-                IPath path = res.getFullPath().append("/CSS/SDS"); //$NON-NLS-1$
+                String target = Activator.getDefault().getPreferenceStore().getString(ADLConverterPreferenceConstants.P_STRING_Path_Target);
+                IPath path = res.getFullPath().append(target); //$NON-NLS-1$
                 path = res.getFullPath().append(row[1]);
                 _widget.setPropertyValue(ImageModel.PROP_FILENAME, path);
             }else{                

@@ -294,8 +294,11 @@ public final class ADLHelper {
      * @return
      */
     public static String cleanFilePath(String path) {
-        path = path.replace("/applic/graphic", "");
-        path = path.replace("/graphic", "");
+        String source = Activator.getDefault().getPreferenceStore().getString(ADLConverterPreferenceConstants.P_STRING_Path_Remove_Absolut_Part);
+        do {
+            path = path.replace(source, "");
+            source = source.substring(source.indexOf('/', 1));
+        } while(source.lastIndexOf('/')>0);
         return path;
     }
 

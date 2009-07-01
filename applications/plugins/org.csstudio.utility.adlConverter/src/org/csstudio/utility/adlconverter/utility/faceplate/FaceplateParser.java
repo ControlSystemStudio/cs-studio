@@ -30,6 +30,8 @@ import java.util.Map;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.model.DisplayModel;
 import org.csstudio.sds.model.LinkingContainerModel;
+import org.csstudio.utility.adlconverter.Activator;
+import org.csstudio.utility.adlconverter.ui.preferences.ADLConverterPreferenceConstants;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.FileLine;
 import org.eclipse.core.runtime.Path;
@@ -79,8 +81,9 @@ public class FaceplateParser {
             String attribute = lineParts[0].trim();
             if (attribute.equals("faceplateAdl")) {
                 // e.g. faceplateAdl=/applic/graphic/common/FP_xctl.adl
-                
-                String path = lineParts[1].replace("/applic/graphic/", "/CSS/SDS/").replace(".adl", ".css-sds");
+                String source = Activator.getDefault().getPreferenceStore().getString(ADLConverterPreferenceConstants.P_STRING_Path_Remove_Absolut_Part);
+                String target = Activator.getDefault().getPreferenceStore().getString(ADLConverterPreferenceConstants.P_STRING_Path_Target);
+                String path = lineParts[1].replace(source+"/", target+"/").replace(".adl", ".css-sds");
                 facePlate.setPropertyValue(LinkingContainerModel.PROP_RESOURCE,
                                 new Path(path));
             
