@@ -42,26 +42,106 @@ public class LogMessageList extends MessageList {
      * 
      */
     synchronized public void addMessage(BasicMessage newMessage) {
-        if (newMessage != null) {
-            if (newMessage.getProperty("ACK") != null
-                    && newMessage.getProperty("ACK").toUpperCase().equals(
-                            "TRUE")) {
-                CentralLogger.getInstance().debug(this,
-                        "received acknowledge message");
-                for (BasicMessage message : _messages) {
-                    if (message.getName()
-                            .equals(newMessage.getProperty("NAME"))
-                            && message.getProperty("EVENTTIME").equals(
-                                    newMessage.getProperty("EVENTTIME"))) {
-                        message.getHashMap().put("ACK", "TRUE"); //$NON-NLS-1$ //$NON-NLS-2$
-                        super.updateMessage(newMessage);
-                        break;
+
+        //for debugging
+        BasicMessage tempMsg = null;
+        try {
+            if (newMessage != null) {
+                if (newMessage.getProperty("ACK") != null
+                        && newMessage.getProperty("ACK").toUpperCase().equals(
+                                "TRUE")) {
+                    CentralLogger.getInstance().debug(this,
+                            "received acknowledge message");
+                    for (BasicMessage message : _messages) {
+                        //for debugging
+                        tempMsg = message;
+                        if (message.getName().equals(
+                                newMessage.getProperty("NAME"))
+                                && message.getProperty("EVENTTIME").equals(
+                                        newMessage.getProperty("EVENTTIME"))) {
+                            message.getHashMap().put("ACK", "TRUE"); //$NON-NLS-1$ //$NON-NLS-2$
+                            super.updateMessage(newMessage);
+                            break;
+                        }
                     }
+                } else {
+                    limitMessageListSize();
+                    _messages.add(_messages.size(), newMessage);
+                    super.addMessage(newMessage);
+                }
+            }
+        } catch (NullPointerException e) {
+            CentralLogger.getInstance().debug(this,
+                    "Null Pointer Excetion in add message " + e.getMessage());
+            if (newMessage != null) {
+                if (newMessage.getProperty("ACK") != null) {
+                    CentralLogger.getInstance().debug(
+                            this,
+                            "ACK property of new received message: "
+                                    + newMessage.getProperty("ACK"));
+                } else {
+                    CentralLogger.getInstance().debug(
+                            this,
+                            "ACK property of new received message is not set");
+                }
+                if (newMessage.getProperty("NAME") != null) {
+                    CentralLogger.getInstance().debug(
+                            this,
+                            "NAME property of new received message: "
+                            + newMessage.getProperty("NAME"));
+                } else {
+                    CentralLogger.getInstance().debug(
+                            this,
+                    "NAME property of new received message is not set");
+                }
+                if (newMessage.getProperty("EVENTTIME") != null) {
+                    CentralLogger.getInstance().debug(
+                            this,
+                            "EVENTTIME property of new received message: "
+                            + newMessage.getProperty("EVENTTIME"));
+                } else {
+                    CentralLogger.getInstance().debug(
+                            this,
+                    "EVENTTIME property of new received message is not set");
                 }
             } else {
-                limitMessageListSize();
-                _messages.add(_messages.size(), newMessage);
-                super.addMessage(newMessage);
+                CentralLogger.getInstance().debug(this,
+                        "New received message is NULL");
+            }
+            if (tempMsg != null) {
+                if (tempMsg.getProperty("ACK") != null) {
+                    CentralLogger.getInstance().debug(
+                            this,
+                            "ACK property of current table message: "
+                            + tempMsg.getProperty("ACK"));
+                } else {
+                    CentralLogger.getInstance().debug(
+                            this,
+                    "ACK property of current table message is not set");
+                }
+                if (tempMsg.getProperty("NAME") != null) {
+                    CentralLogger.getInstance().debug(
+                            this,
+                            "NAME property of current table message: "
+                            + tempMsg.getProperty("NAME"));
+                } else {
+                    CentralLogger.getInstance().debug(
+                            this,
+                    "NAME property of current table message is not set");
+                }
+                if (tempMsg.getProperty("EVENTTIME") != null) {
+                    CentralLogger.getInstance().debug(
+                            this,
+                            "EVENTTIME property of current table message: "
+                            + tempMsg.getProperty("EVENTTIME"));
+                } else {
+                    CentralLogger.getInstance().debug(
+                            this,
+                    "EVENTTIME property of current table message is not set");
+                }
+            } else {
+                CentralLogger.getInstance().debug(this,
+                "current table message is NULL");
             }
         }
     }
@@ -106,6 +186,6 @@ public class LogMessageList extends MessageList {
 
     @Override
     public Integer getSize() {
-       return _messages.size();
+        return _messages.size();
     }
 }
