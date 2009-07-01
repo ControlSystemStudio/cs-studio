@@ -12,8 +12,6 @@ import org.apache.xmlrpc.XmlRpcException;
 @SuppressWarnings("nls")
 final class ServerInfoRequest
 {
-    final private static int EXPECTED_VERSION = 1;
-    
     /** String used for an OK status and severity
      *  (more generic than the EPICS 'NO_ALARM')
      */
