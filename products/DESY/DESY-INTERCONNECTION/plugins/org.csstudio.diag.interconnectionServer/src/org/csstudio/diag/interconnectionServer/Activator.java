@@ -21,6 +21,11 @@ package org.csstudio.diag.interconnectionServer;
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
+import java.util.Dictionary;
+import java.util.Hashtable;
+
+import org.csstudio.diag.icsiocmonitor.service.IIocConnectionReporter;
+import org.csstudio.diag.interconnectionServer.server.IocConnectionReporter;
 import org.csstudio.platform.AbstractCssPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -53,6 +58,11 @@ public class Activator extends AbstractCssPlugin {
 
 	@Override
 	protected void doStart(BundleContext context) throws Exception {
+		IIocConnectionReporter reporter = new IocConnectionReporter();
+		Dictionary<String, Object> props = new Hashtable<String, Object>();
+		props.put("org.csstudio.management.remoteservice", Boolean.TRUE);
+		context.registerService(IIocConnectionReporter.class.getName(),
+				reporter, props);
 	}
 
 	@Override

@@ -22,6 +22,8 @@
 package org.csstudio.diag.interconnectionServer.server;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
@@ -77,6 +79,15 @@ public class IocConnectionManager {
 			connectionList.put(internalId, connection);
 			return connection;
 		}
+	}
+
+	/**
+	 * Returns the IOC connections managed by this manager.
+	 * 
+	 * @return the IOC connections managed by this manager.
+	 */
+	public Collection<IocConnection> getIocConnections() {
+		return new ArrayList<IocConnection>(connectionList.values());
 	}
 
 	public String getStatisticAsString() {
