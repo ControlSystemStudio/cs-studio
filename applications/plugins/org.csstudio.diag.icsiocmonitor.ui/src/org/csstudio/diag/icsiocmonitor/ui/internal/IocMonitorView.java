@@ -32,6 +32,10 @@ import org.csstudio.diag.icsiocmonitor.ui.internal.model.IReportListener;
 import org.csstudio.diag.icsiocmonitor.ui.internal.model.IocMonitor;
 import org.csstudio.diag.icsiocmonitor.ui.internal.model.IocMonitorFactory;
 import org.csstudio.diag.icsiocmonitor.ui.internal.model.MonitorItem;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.BaseLabelProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -46,6 +50,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
 
 /**
  * A view which displays the state of all IOCs as reported by the
@@ -172,10 +177,31 @@ public class IocMonitorView extends ViewPart implements IReportListener {
 		_tableViewer = new TableViewer(_table);
 		_tableViewer.setContentProvider(new IocMonitorContentProvider());
 		_tableViewer.setLabelProvider(new IocMonitorLabelProvider());
-		_iocMonitor = IocMonitorFactory.createMonitor();
-		_iocMonitor.update();
-		setInput(_iocMonitor);
-		_iocMonitor.addListener(this);
+		
+		// Run an initial update in a background Job
+		Job initializer = new Job("Initializing IOC monitor") {
+			@Override
+			protected IStatus run(IProgressMonitor monitor) {
+				monitor.beginTask("Initializing IOC monitor", IProgressMonitor.UNKNOWN);
+				_iocMonitor = IocMonitorFactory.createMonitor();
+				Display.getDefault().asyncExec(new Runnable() {
+					public void run() {
+						setInput(_iocMonitor);
+					}
+				});
+				_iocMonitor.addListener(IocMonitorView.this);
+				monitor.done();
+				return Status.OK_STATUS;
+			}
+		};
+		final IWorkbenchSiteProgressService progressService =
+			(IWorkbenchSiteProgressService) getSite().getAdapter(
+					IWorkbenchSiteProgressService.class);
+		if (progressService != null) {
+			progressService.schedule(initializer);
+		} else {
+			initializer.schedule();
+		}
 	}
 
 	/**
