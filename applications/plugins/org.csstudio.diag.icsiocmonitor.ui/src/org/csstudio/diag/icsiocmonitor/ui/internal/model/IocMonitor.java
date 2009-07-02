@@ -30,6 +30,7 @@ import java.util.Map;
 
 import org.csstudio.diag.icsiocmonitor.service.IocConnectionReport;
 import org.csstudio.diag.icsiocmonitor.service.IIocConnectionReporter;
+import org.csstudio.diag.icsiocmonitor.service.IocConnectionReportItem;
 import org.csstudio.diag.icsiocmonitor.service.IocConnectionState;
 
 /**
@@ -117,10 +118,10 @@ public class IocMonitor {
 		for (IocConnectionReport report : reports) {
 			String server = report.getReportingServer();
 			_interconnectionServers.add(server);
-			Map<String, IocConnectionState> connStates = report.getConnectionStates();
-			for (Map.Entry<String, IocConnectionState> connState : connStates.entrySet()) {
-				String iocName = connState.getKey();
-				IocConnectionState state = connState.getValue();
+			List<IocConnectionReportItem> reportItems = report.getItems();
+			for (IocConnectionReportItem item : reportItems) {
+				String iocName = item.getIocName();
+				IocConnectionState state = item.getConnectionState();
 				IocState iocState = iocStates.get(iocName);
 				if (iocState == null) {
 					iocState = new IocState(iocName);

@@ -22,12 +22,15 @@
 
 package org.csstudio.diag.interconnectionServer.server;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.csstudio.diag.icsiocmonitor.service.IIocConnectionReporter;
 import org.csstudio.diag.icsiocmonitor.service.IocConnectionReport;
+import org.csstudio.diag.icsiocmonitor.service.IocConnectionReportItem;
 import org.csstudio.diag.icsiocmonitor.service.IocConnectionState;
 
 /**
@@ -43,7 +46,7 @@ public class IocConnectionReporter implements IIocConnectionReporter {
 	 */
 	public IocConnectionReport getReport() {
 		String serverName = InterconnectionServer.getInstance().getLocalHostName();
-		Map<String, IocConnectionState> iocStates = new HashMap<String, IocConnectionState>();
+		List<IocConnectionReportItem> items = new ArrayList<IocConnectionReportItem>();
 		Collection<IocConnection> iocConnections = IocConnectionManager.getInstance().getIocConnections();
 		for (IocConnection ioc : iocConnections) {
 			IocConnectionState state =
@@ -52,9 +55,11 @@ public class IocConnectionReporter implements IIocConnectionReporter {
 							? IocConnectionState.CONNECTED_SELECTED
 							: IocConnectionState.CONNECTED)
 					: IocConnectionState.DISCONNECTED;
-			iocStates.put(ioc.getLogicalIocName(), state);
+			IocConnectionReportItem item = new IocConnectionReportItem(
+					ioc.getHost(), ioc.getLogicalIocName(), state);
+			items.add(item);
 		}
-		return new IocConnectionReport(serverName, iocStates);
+		return new IocConnectionReport(serverName, items);
 	}
 
 }

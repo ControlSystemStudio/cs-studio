@@ -24,40 +24,36 @@ package org.csstudio.diag.icsiocmonitor.service;
 
 import static org.junit.Assert.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.junit.Test;
 
 
 /**
  * @author Joerg Rathlev
  */
-public class IocConnectionReportTest {
+public class IocConnectionReportItemTest {
 
 	@Test
-	public void testConstructorAndGetters() throws Exception {
-		List<IocConnectionReportItem> items = new ArrayList<IocConnectionReportItem>();
-		items.add(new IocConnectionReportItem("ioc1.example.com", "ioc1", IocConnectionState.CONNECTED));
-		IocConnectionReport r = new IocConnectionReport("server", items);
-		assertEquals("server", r.getReportingServer());
-		assertEquals(1, r.getItems().size());
-		IocConnectionReportItem item0 = r.getItems().get(0);
-		assertEquals("ioc1.example.com", item0.getIocHostname());
-		assertEquals("ioc1", item0.getIocName());
-		assertEquals(IocConnectionState.CONNECTED, item0.getConnectionState());
+	public void testConstructorAndProperties() throws Exception {
+		IocConnectionReportItem i =
+			new IocConnectionReportItem("test.example.com", "testioc",
+					IocConnectionState.CONNECTED);
+		assertEquals("test.example.com", i.getIocHostname());
+		assertEquals("testioc", i.getIocName());
+		assertEquals(IocConnectionState.CONNECTED, i.getConnectionState());
 	}
 	
 	@Test(expected = NullPointerException.class)
-	public void testReportingServerIsNull() throws Exception {
-		new IocConnectionReport(null, Collections.<IocConnectionReportItem>emptyList());
+	public void testDoesNotAcceptNullHostname() throws Exception {
+		new IocConnectionReportItem(null, "test", IocConnectionState.CONNECTED);
 	}
-	
+
 	@Test(expected = NullPointerException.class)
-	public void testIocStatesIsNull() throws Exception {
-		new IocConnectionReport("server", null);
+	public void testDoesNotAcceptNullIocName() throws Exception {
+		new IocConnectionReportItem("test", null, IocConnectionState.CONNECTED);
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void testDoesNotAcceptNullConnectionState() throws Exception {
+		new IocConnectionReportItem("test", "test", null);
 	}
 }

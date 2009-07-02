@@ -24,12 +24,14 @@ package org.csstudio.diag.icsiocmonitor.ui.internal.model;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.csstudio.diag.icsiocmonitor.service.IocConnectionReport;
 import org.csstudio.diag.icsiocmonitor.service.IIocConnectionReporter;
+import org.csstudio.diag.icsiocmonitor.service.IocConnectionReportItem;
 import org.csstudio.diag.icsiocmonitor.service.IocConnectionState;
 import org.csstudio.diag.icsiocmonitor.ui.internal.model.IocMonitor;
 import org.csstudio.diag.icsiocmonitor.ui.internal.model.IocState;
@@ -52,17 +54,17 @@ public class IocMonitorTest {
 		_im = new IocMonitor();
 
 		_r1 = Mockito.mock(IIocConnectionReporter.class);
-		Map<String, IocConnectionState> s1 = new HashMap<String, IocConnectionState>();
-		s1.put("ioc1", IocConnectionState.CONNECTED);
-		s1.put("ioc2", IocConnectionState.DISCONNECTED);
-		Mockito.when(_r1.getReport()).thenReturn(new IocConnectionReport("r1", s1));
+		List<IocConnectionReportItem> i1 = new ArrayList<IocConnectionReportItem>();
+		i1.add(new IocConnectionReportItem("ioc1.example.com", "ioc1", IocConnectionState.CONNECTED));
+		i1.add(new IocConnectionReportItem("ioc2.example.com", "ioc2", IocConnectionState.DISCONNECTED));
+		Mockito.when(_r1.getReport()).thenReturn(new IocConnectionReport("r1", i1));
 
 		_r2 = Mockito.mock(IIocConnectionReporter.class);
-		Map<String, IocConnectionState> s2 = new HashMap<String, IocConnectionState>();
-		s2.put("ioc1", IocConnectionState.CONNECTED);
-		s2.put("ioc2", IocConnectionState.CONNECTED);
-		s2.put("ioc3", IocConnectionState.DISCONNECTED);
-		Mockito.when(_r2.getReport()).thenReturn(new IocConnectionReport("r2", s2));
+		List<IocConnectionReportItem> i2 = new ArrayList<IocConnectionReportItem>();
+		i2.add(new IocConnectionReportItem("ioc1.example.com", "ioc1", IocConnectionState.CONNECTED));
+		i2.add(new IocConnectionReportItem("ioc2.example.com", "ioc2", IocConnectionState.CONNECTED));
+		i2.add(new IocConnectionReportItem("ioc3.example.com", "ioc3", IocConnectionState.DISCONNECTED));
+		Mockito.when(_r2.getReport()).thenReturn(new IocConnectionReport("r2", i2));
 	}
 	
 	/**

@@ -23,60 +23,69 @@
 package org.csstudio.diag.icsiocmonitor.service;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 /**
- * A report about the state of the connection to the IOCs as observed by an
- * interconnection server. This is basically a data transfer object to transfer
- * the information from the interconnection server to a monitor application.
+ * An item of an {@link IocConnectionReport}. An item contains information about
+ * the connection state of a single IOC.
  * 
  * @author Joerg Rathlev
  */
-public final class IocConnectionReport implements Serializable {
+public final class IocConnectionReportItem implements Serializable {
 
-	private static final long serialVersionUID = 2L;
+	private static final long serialVersionUID = 1L;
 	
-	private final String _reportingServer;
-	private final List<IocConnectionReportItem> _items;
+	private final String _hostname;
+	private final String _iocName;
+	private final IocConnectionState _connectionState;
 
 	/**
-	 * Creates a new report.
+	 * Creates a new report item.
 	 * 
-	 * @param server
-	 *            the interconnection server which created this report.
-	 * @param items
-	 *            the report items.
+	 * @param hostname
+	 *            the hostname of the IOC.
+	 * @param iocName
+	 *            the logical name of the IOC.
+	 * @param connectionState
+	 *            the observed connection state of the IOC.
 	 * @throws NullPointerException
-	 *             if <code>server</code> or <code>items</code> is
-	 *             <code>null</code>.
+	 *             if one of the parameters is <code>null</code>.
 	 */
-	public IocConnectionReport(String server, Collection<IocConnectionReportItem> items) {
-		if (server == null || items == null) {
-			throw new NullPointerException();
+	public IocConnectionReportItem(String hostname, String iocName,
+			IocConnectionState connectionState) {
+		if (hostname == null || iocName == null || connectionState == null) {
+			throw new NullPointerException("Parameter was null.");
 		}
 		
-		_reportingServer = server;
-		_items = new ArrayList<IocConnectionReportItem>(items);
+		_hostname = hostname;
+		_iocName = iocName;
+		_connectionState = connectionState;
 	}
 
 	/**
-	 * Returns the name of the interconnection server which created this report.
+	 * Returns the hostname of the IOC.
 	 * 
-	 * @return the name of the interconnection server.
+	 * @return the hostname of the IOC.
 	 */
-	public String getReportingServer() {
-		return _reportingServer;
+	public String getIocHostname() {
+		return _hostname;
 	}
-	
+
 	/**
-	 * Returns the items of this report.
+	 * Returns the logical name of the IOC.
 	 * 
-	 * @return an unmodifiable list containing the items of this report.
+	 * @return the logical name of the IOC.
 	 */
-	public List<IocConnectionReportItem> getItems() {
-		return Collections.unmodifiableList(_items);
+	public String getIocName() {
+		return _iocName;
 	}
+
+	/**
+	 * Returns the state of the connection to the IOC.
+	 * 
+	 * @return the state of the connection to the IOC.
+	 */
+	public IocConnectionState getConnectionState() {
+		return _connectionState;
+	}
+
 }
