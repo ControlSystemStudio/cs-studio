@@ -42,6 +42,7 @@ org.eclipse.core.resources/refresh.enabled=true
 # Web links to SNS Electronic Logbook, Wiki, ...
 # When left blank, there won't be any web links.
 # This selects the web links to show and defines their order
+#org.csstudio.sns.product/weblinks=sns_elog sns_wiki
 org.csstudio.sns.product/weblinks=sns_elog reports sns_wiki 
 
 # This defines the Label and link for the web links.
@@ -96,10 +97,16 @@ org.csstudio.platform/log4j.appender.css_file.MaxBackupIndex=2
 org.csstudio.platform/log4j.appender.css_jms.providerURL=failover\:(tcp\://ics-srv-epics1.ics.sns.gov\:61616)
 
 # Channel Access
-# Changes for SNS Accelerator and Target network
+# Removal of these settings results in empty addr list
 org.csstudio.platform.libs.epics/auto_addr_list=false
+# SNS Office
+#org.csstudio.platform.libs.epics/use_pure_java=true
+#org.csstudio.platform.libs.epics/addr_list=127.0.0.1 160.91.228.17
+
+# SNS Accelerator and Target network
 org.csstudio.platform.libs.epics/use_pure_java=false
 org.csstudio.platform.libs.epics/addr_list=172.31.75.255 172.31.127.255 172.31.83.255 172.31.91.255 172.31.67.255
+
 
 # Changes for ics-testf1
 # org.csstudio.platform.libs.epics/use_pure_java=false
@@ -108,11 +115,13 @@ org.csstudio.platform.libs.epics/addr_list=172.31.75.255 172.31.127.255 172.31.8
 # Data Browser
 # Removal of these settings results in empty defaults
 # URLs to suggest in the "Archives" view
-org.csstudio.trends.databrowser/urls=xnds://ics-srv-web2.sns.ornl.gov/archive/cgi/ArchiveDataServer.cgi*xnds://ics-srv-testf1.sns.ornl.gov/archive/cgi/ArchiveDataServer.cgi*jdbc:oracle:thin:@//172.31.75.138:1521/prod
+org.csstudio.trends.databrowser/urls=jdbc:oracle:thin:@//172.31.75.138:1521/prod*xnds://ics-srv-web2.sns.ornl.gov/archive/cgi/ArchiveDataServer.cgi*xnds://ics-srv-testf1.sns.ornl.gov/archive/cgi/ArchiveDataServer.cgi
+
 # Default data sources for newly added channels
 # Format:  <name>|<key>|<url>
 # xnds: URLs use the key. Other URLs might ignore the key.
-org.csstudio.trends.databrowser/archives=- All -|1|xnds://ics-srv-web2.sns.ornl.gov/archive/cgi/ArchiveDataServer.cgi*- All - (last restart)|2|xnds://ics-srv-web2.sns.ornl.gov/archive/cgi/ArchiveDataServer.cgi
+#org.csstudio.trends.databrowser/archives=- All -|1|xnds://ics-srv-web2.sns.ornl.gov/archive/cgi/ArchiveDataServer.cgi*- All - (last restart)|2|xnds://ics-srv-web2.sns.ornl.gov/archive/cgi/ArchiveDataServer.cgi
+org.csstudio.trends.databrowser/archives=RDB|1|jdbc:oracle:thin:@//172.31.75.138:1521/prod*- All -|1|xnds://ics-srv-web2.sns.ornl.gov/archive/cgi/ArchiveDataServer.cgi*- All - (last restart)|2|xnds://ics-srv-web2.sns.ornl.gov/archive/cgi/ArchiveDataServer.cgi
 
 # RDB schema used for Oracle archive
 # User/password may be empty, they can be specified in the URL.
@@ -123,6 +132,7 @@ org.csstudio.archive.rdb/password=sns
 # Authentication
 org.csstudio.platform.jaasAuthentication/jaas_config_source=File
 # jaas_config_source=File: Use this entry from config/auth.conf in plugin
+#org.csstudio.platform.jaasAuthentication/jaas_config_file_entry=Dummy
 org.csstudio.platform.jaasAuthentication/jaas_config_file_entry=SNS_ICS
 # jaas_config_source=PreferencePage: Use the following
 org.csstudio.platform.jaasAuthentication/jaas_prefs_config=org.csstudio.platform.internal.jaasauthentication.LDAPBindLoginModule required|debug=false|user.provider.url="ldaps://ics-srv-ldapdev.ics.sns.gov/ou=Users,dc=ics,dc=sns,dc=gov"|user.dn.format="uid={0},ou=Users,dc=ics,dc=sns,dc=gov";
@@ -130,6 +140,8 @@ org.csstudio.platform.jaasAuthentication/jaas_prefs_config=org.csstudio.platform
 # Authorization
 # URL of LDAP server used for authorization
 org.csstudio.sns.ldapAuthorization/ldap_url=ldaps://ics-srv-ldapdev.ics.sns.gov/ou=CSSAuthorization,dc=ics,dc=sns,dc=gov
+#org.csstudio.sns.ldapAuthorization/ldap_url=ldap://localhost:389/ou=CSSAuthorization,dc=test,dc=ics
+#org.csstudio.sns.ldapAuthorization/ldap_url=ldap://titan-terrier.sns.ornl.gov:389/ou=CSSAuthorization,dc=test,dc=ics
 
 # Name and password used for connection.
 # Leave empty for anonymous access (read-only)
@@ -144,17 +156,13 @@ org.csstudio.alarm/jms_password=$alarm
 org.csstudio.alarm/jms_alarm_server_topic=ANC_SERVER
 org.csstudio.alarm/jms_alarm_client_topic=ANC_CLIENT
 org.csstudio.alarm/jms_talk_topic=ANC_TALK
-
-# ICS
 org.csstudio.alarm/rdb_url=jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS_LIST=(LOAD_BALANCE=OFF)(ADDRESS=(PROTOCOL=TCP)(HOST=172.31.75.138)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=172.31.75.141)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=ics_prod_lba)))
-
-
 org.csstudio.alarm/rdb_user=alarm
-org.csstudio.alarm/rdb_password=SetViaPreferenceGUI
-
+org.csstudio.alarm/rdb_password=ProvideViaGUI
+#org.csstudio.alarm/jms_url=failover\:(http://ics-srv-web2.sns.ornl.gov/jms)
+#org.csstudio.alarm/command_directory=$(user.home)
 org.csstudio.alarm/jms_url=failover:(tcp://ics-srv-epics1.ics.sns.gov:61616)
 org.csstudio.alarm/command_directory=/usr/local/css/alarm_scripts
-
 
 #
 # IDE sometimes adds stuff below this line...
