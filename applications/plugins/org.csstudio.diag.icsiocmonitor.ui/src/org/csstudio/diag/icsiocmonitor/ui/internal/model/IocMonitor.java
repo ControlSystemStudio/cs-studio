@@ -53,6 +53,15 @@ public class IocMonitor {
 		_items = new ArrayList<MonitorItem>();
 		_reporters = new ArrayList<IIocConnectionReporter>();
 	}
+	
+	/*
+	 * XXX: This is not a good design. It is possible that a client retrieves
+	 * the list of interconnection servers, and then afterwards gets a list of
+	 * items which is inconsistent with the first list if an ICS went online or
+	 * offline in the meantime. A better design might be to separate the
+	 * aggregator (which aggregates reports into a consolidated view grouped by
+	 * IOCs) from the aggregated report.
+	 */
 
 	/**
 	 * Returns the list of interconnection servers.
