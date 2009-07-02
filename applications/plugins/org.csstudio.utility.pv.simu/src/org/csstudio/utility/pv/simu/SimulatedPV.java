@@ -1,6 +1,8 @@
 package org.csstudio.utility.pv.simu;
 
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.csstudio.platform.data.INumericMetaData;
 import org.csstudio.platform.data.ISeverity;
@@ -14,17 +16,32 @@ import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
 import org.eclipse.core.runtime.PlatformObject;
 
-/** Simulated PV that generates 1 Hz noise
+/** Simulated PV.
+ *  <p>
+ *  By default, it generates 1 Hz noise.
+ *  <p>
+ *  Names "noise(-5, 5, 0.2)" would result in noise from -5 to 5,
+ *  updating every 0.2 seconds.
+ *  
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
 public class SimulatedPV extends PlatformObject implements PV, Runnable
 {
+    /** Defaults */
+    private static final int DEFAULT_MIN = -5,
+                             DEFAULT_MAX = 5,
+                             DEFAULT_UPDATE = 1000,
+                             MIN_UPDATE_PERIOD = 10;
+
     /** PV Name */
     final private String name;
     
-    /** Value range: 0...range */
-    final private double range;
+    /** Value range: min...max */
+    private double min, max;
+
+    /** Update period (millisec) */
+    private long update_period;
 
     /** PVListeners of this PV */
     final private CopyOnWriteArrayList<PVListener> listeners
@@ -52,27 +69,43 @@ public class SimulatedPV extends PlatformObject implements PV, Runnable
      */
     private volatile Thread update_thread = null;
 
-    /** Update period (millisec) */
-    private long update_period = 1000;
-
     /** Initialize
      *  @param name PV name
      */
     public SimulatedPV(final String name)
     {
-        this(name, 10.0);
-    }
-
-    /** Initialize
-     *  @param name PV name
-     */
-    public SimulatedPV(final String name, final double range)
-    {
         this.name = name;
-        this.range = range;
-        meta = ValueFactory.createNumericMetaData(0, range, 0.2*range, 0.8*range, 0.1*range, 0.9*range, 3, "a.u.");
+        // Parse "name(min, max, update_seconds)"
+        final Pattern name_pattern = Pattern.compile("\\w+\\(\\s*([-0-9.]+)\\s*,\\s*([-0-9.]+)\\s*,\\s*([0-9.]+)\\s*\\)");
+        final Matcher matcher = name_pattern.matcher(name);
+        if (matcher.matches())
+        {
+            try
+            {
+                min = Double.parseDouble(matcher.group(1));
+                max = Double.parseDouble(matcher.group(2));
+                update_period = Math.round(Double.parseDouble(matcher.group(3))*1000);
+            }
+            catch (Throwable ex)
+            {   // Number parse error
+                min = DEFAULT_MIN;
+                max = DEFAULT_MAX;
+                update_period = DEFAULT_UPDATE;
+            }
+        }
+        else
+        {
+            min = DEFAULT_MIN;
+            max = DEFAULT_MAX;
+            update_period = DEFAULT_UPDATE;
+        }
+        // Enfore minimum
+        if (update_period < MIN_UPDATE_PERIOD)
+            update_period = MIN_UPDATE_PERIOD;
+        final double range = max - min;
+        meta = ValueFactory.createNumericMetaData(min, max, min+0.2*range, min+0.8*range, min+0.1*range, min+0.9*range, 3, "a.u.");
     }
-
+    
     /** {@inheritDoc} */
     public String getName()
     {
@@ -175,7 +208,7 @@ public class SimulatedPV extends PlatformObject implements PV, Runnable
     {
         while (true)
         {
-            setValue(Math.random() * range);
+            setValue(min + (Math.random() * (max - min)));
             
             for (PVListener listener : listeners)
                 listener.pvValueUpdate(this);
