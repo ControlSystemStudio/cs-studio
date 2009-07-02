@@ -2,6 +2,7 @@ package org.csstudio.display.pace.model;
 
 import java.util.List;
 
+import org.csstudio.apputil.macros.Macro;
 import org.csstudio.apputil.xml.DOMHelper;
 import org.w3c.dom.Element;
 

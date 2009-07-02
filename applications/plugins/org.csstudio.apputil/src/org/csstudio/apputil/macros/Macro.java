@@ -1,4 +1,4 @@
-package org.csstudio.display.pace.model;
+package org.csstudio.apputil.macros;
 
 import java.util.ArrayList;
 import java.util.regex.Pattern;

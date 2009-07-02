@@ -1,4 +1,4 @@
-package org.csstudio.display.pace.model;
+package org.csstudio.apputil.macros;
 
 import static org.junit.Assert.*;
 

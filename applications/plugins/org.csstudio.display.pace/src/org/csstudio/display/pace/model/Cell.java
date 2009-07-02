@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.csstudio.apputil.macros.Macro;
 import org.csstudio.display.pace.Messages;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueUtil;
