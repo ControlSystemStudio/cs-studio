@@ -73,12 +73,12 @@ public class StartupDialog extends TitleAreaDialog {
 	/**
 	 * User name initially displayed in the dialog, then read from dialog.
 	 */
-    private String user_name;
+    private String user_name = null;
     
 	/**
 	 * Password initially displayed in the dialog, then read from dialog.
 	 */
-    private String password;
+    private String password = "";
 
 	/**
 	 * The dialog title.

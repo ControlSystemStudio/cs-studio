@@ -18,7 +18,7 @@ public class StartupHelper {
     private boolean force_prompt;
 	private WorkspaceInfo workspace_info = null;
 	private String username = null;
-	private String password = null;
+	private String password = ""; //$NON-NLS-1$
 	private Boolean show_Workspace = false;
 	private Boolean show_Login = false;		
 	private String productName;
@@ -75,18 +75,20 @@ public class StartupHelper {
 	
 	@SuppressWarnings("nls")
     public boolean openStartupDialog(){
-		if(username == null) {
-			username = WorkspaceIndependentStore.readLastLoginUser();
-			password = "";
-		}
 		
 		String title="", message="";
-		if(show_Login) {
+		if (show_Login)
+		{
+	        if(username == null)
+	        {
+	            username = WorkspaceIndependentStore.readLastLoginUser();
+	            password = "";
+	        }
 			title += Messages.StartupHelper_Login;
 			message += Messages.StartupHelper_LoginTip;
 		}
-		if(show_Workspace) {			
-						
+		if (show_Workspace)
+		{								
 			if(!title.equals(""))
 				title += Messages.StartupHelper_And;
 			if(!message.equals(""))
@@ -102,10 +104,8 @@ public class StartupHelper {
 		if(!startupDialog.prompt())
 			return false; // in case of cancel selected
 		
-		if(show_Login) {
-			this.username = startupDialog.getUser();
-			this.password = startupDialog.getPassword();
-		}
+		username = startupDialog.getUser();
+		password = startupDialog.getPassword();
 		return true;
 	}
 	
