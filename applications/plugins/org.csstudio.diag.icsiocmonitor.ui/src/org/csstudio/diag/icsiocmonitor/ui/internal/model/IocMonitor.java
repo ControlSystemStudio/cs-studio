@@ -43,18 +43,28 @@ import org.csstudio.diag.icsiocmonitor.service.IocConnectionState;
 public class IocMonitor {
 	
 	private final List<IIocConnectionReporter> _reporters;
-	private final List<String> _interconnectionServers;
-	private final List<MonitorItem> _items;
 	private final List<IReportListener> _reportListeners;
+	private MonitorReport _report;
 	
 	/**
 	 * Creates a new IOC monitor. 
 	 */
 	IocMonitor() {
-		_interconnectionServers = new ArrayList<String>();
-		_items = new ArrayList<MonitorItem>();
 		_reporters = new ArrayList<IIocConnectionReporter>();
 		_reportListeners = new CopyOnWriteArrayList<IReportListener>();
+		
+		// initial report is simply an empty report
+		_report = new MonitorReport(Collections.<String>emptyList(),
+				Collections.<MonitorItem>emptyList());
+	}
+	
+	/**
+	 * Returns the current report.
+	 * 
+	 * @return the current report.
+	 */
+	public MonitorReport getReport() {
+		return _report;
 	}
 
 	/**
@@ -85,36 +95,6 @@ public class IocMonitor {
 			listener.onReportUpdated();
 		}
 	}
-	
-	/*
-	 * XXX: This is not a good design. It is possible that a client retrieves
-	 * the list of interconnection servers, and then afterwards gets a list of
-	 * items which is inconsistent with the first list if an ICS went online or
-	 * offline in the meantime. A better design might be to separate the
-	 * aggregator (which aggregates reports into a consolidated view grouped by
-	 * IOCs) from the aggregated report.
-	 */
-
-	/**
-	 * Returns the list of interconnection servers.
-	 * 
-	 * @return the list of interconnection servers. The returned list is
-	 *         unmodifiable.
-	 */
-	public List<String> getInterconnectionServers() {
-		return Collections.unmodifiableList(
-				new ArrayList<String>(_interconnectionServers));
-	}
-	
-	/**
-	 * Returns the list of IOC states.
-	 * 
-	 * @return the list of IOC states. The returned list is unmodifiable.
-	 */
-	public List<MonitorItem> getItems() {
-		return Collections.unmodifiableList(
-				new ArrayList<MonitorItem>(_items));
-	}
 
 	/**
 	 * Adds an IOC state reporter service from which this monitor will receive
@@ -144,8 +124,8 @@ public class IocMonitor {
 	 * services and then update its state based on the reports received.
 	 */
 	public void update() {
-		_interconnectionServers.clear();
-		_items.clear();
+		List<String> interconnectionServers = new ArrayList<String>();
+		List<MonitorItem> items = new ArrayList<MonitorItem>();
 		
 		List<IocConnectionReport> reports = new ArrayList<IocConnectionReport>();
 		for (IIocConnectionReporter reporter : _reporters) {
@@ -161,7 +141,7 @@ public class IocMonitor {
 		Map<String, MonitorItem> iocStates = new HashMap<String, MonitorItem>();
 		for (IocConnectionReport report : reports) {
 			String server = report.getReportingServer();
-			_interconnectionServers.add(server);
+			interconnectionServers.add(server);
 			List<IocConnectionReportItem> reportItems = report.getItems();
 			for (IocConnectionReportItem item : reportItems) {
 				String iocHostname = item.getIocHostname();
@@ -175,7 +155,8 @@ public class IocMonitor {
 				iocState.setIcsConnectionState(server, state);
 			}
 		}
-		_items.addAll(iocStates.values());
+		items.addAll(iocStates.values());
+		_report = new MonitorReport(interconnectionServers, items);
 		fireReportUpdatedEvent();
 	}
 }

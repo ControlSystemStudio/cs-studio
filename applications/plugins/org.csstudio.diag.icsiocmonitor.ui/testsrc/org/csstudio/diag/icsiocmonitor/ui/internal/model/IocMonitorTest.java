@@ -22,7 +22,6 @@
 
 package org.csstudio.diag.icsiocmonitor.ui.internal.model;
 
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -82,17 +81,19 @@ public class IocMonitorTest {
 	
 	@Test
 	public void testNoReportersAdded() throws Exception {
-		// No reporters configured, so lists should be empty
-		assertTrue(_im.getInterconnectionServers().isEmpty());
-		assertTrue(_im.getItems().isEmpty());
+		// No reporters configured, so report should be empty
+		MonitorReport report = _im.getReport();
+		assertTrue(report.getInterconnectionServers().isEmpty());
+		assertTrue(report.getItems().isEmpty());
 	}
 	
 	@Test
 	public void testSingleReporter() throws Exception {
 		_im.addReporterService(_r1);
-		assertEquals(1, _im.getInterconnectionServers().size());
-		assertTrue(_im.getInterconnectionServers().contains("r1"));
-		List<MonitorItem> is = _im.getItems();
+		MonitorReport report = _im.getReport();
+		assertEquals(1, report.getInterconnectionServers().size());
+		assertTrue(report.getInterconnectionServers().contains("r1"));
+		List<MonitorItem> is = report.getItems();
 		assertEquals(2, is.size());
 		assertTrue(containsState(is, "ioc1", "r1", IocConnectionState.CONNECTED));
 		assertTrue(containsState(is, "ioc2", "r1", IocConnectionState.DISCONNECTED));
@@ -111,10 +112,11 @@ public class IocMonitorTest {
 		 */
 		_im.addReporterService(_r1);
 		_im.addReporterService(_r2);
-		assertEquals(2, _im.getInterconnectionServers().size());
-		assertTrue(_im.getInterconnectionServers().contains("r1"));
-		assertTrue(_im.getInterconnectionServers().contains("r2"));
-		List<MonitorItem> is = _im.getItems();
+		MonitorReport report = _im.getReport();
+		assertEquals(2, report.getInterconnectionServers().size());
+		assertTrue(report.getInterconnectionServers().contains("r1"));
+		assertTrue(report.getInterconnectionServers().contains("r2"));
+		List<MonitorItem> is = report.getItems();
 		assertEquals(3, is.size());
 		assertTrue(containsState(is, "ioc1", "r1", IocConnectionState.CONNECTED));
 		assertTrue(containsState(is, "ioc1", "r2", IocConnectionState.CONNECTED));
@@ -129,9 +131,10 @@ public class IocMonitorTest {
 		_im.addReporterService(_r1);
 		_im.addReporterService(_r2);
 		_im.removeReporterService(_r2);
-		assertEquals(1, _im.getInterconnectionServers().size());
-		assertTrue(_im.getInterconnectionServers().contains("r1"));
-		List<MonitorItem> is = _im.getItems();
+		MonitorReport report = _im.getReport();
+		assertEquals(1, report.getInterconnectionServers().size());
+		assertTrue(report.getInterconnectionServers().contains("r1"));
+		List<MonitorItem> is = report.getItems();
 		assertEquals(2, is.size());
 		assertTrue(containsState(is, "ioc1", "r1", IocConnectionState.CONNECTED));
 		assertTrue(containsState(is, "ioc2", "r1", IocConnectionState.DISCONNECTED));

@@ -121,7 +121,9 @@ public class IocMonitorView extends ViewPart implements IReportListener {
 		 */
 		public Object[] getElements(Object inputElement) {
 			if (inputElement instanceof IocMonitor) {
-				return ((IocMonitor) inputElement).getItems().toArray();
+				// XXX: This is a workaround until the report itself is used
+				// as the input element for the viewer.
+				return ((IocMonitor) inputElement).getReport().getItems().toArray();
 			} else {
 				return new Object[0];
 			}
@@ -211,8 +213,9 @@ public class IocMonitorView extends ViewPart implements IReportListener {
 	 *            the IOC monitor which will be used as the input.
 	 */
 	private void setInput(IocMonitor iocMonitor) {
-		List<String> ics = iocMonitor.getInterconnectionServers();
+		List<String> ics = iocMonitor.getReport().getInterconnectionServers();
 		updateDynamicColumns(ics);
+		// TODO: use the report as the input element, not the monitor!
 		_tableViewer.setInput(iocMonitor);
 	}
 
