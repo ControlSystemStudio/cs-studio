@@ -108,12 +108,12 @@ public class IocMonitor {
 		for (IIocConnectionReporter reporter : _reporters) {
 			reports.add(reporter.getReport());
 		}
-		
+
 		/*
-		 * The reports each contain a map IOC -> State, but we want to have a
-		 * list of IocState objects each of which aggregates for one IOC the
-		 * information from all interconnection servers. The map below maps
-		 * IOC -> IocState for the translation.
+		 * The code below aggregates the reports from the different
+		 * interconnection servers and saves the information in instances of
+		 * type MonitorItem, which contain the information grouped by IOC (one
+		 * MonitorItem per IOC).
 		 */
 		Map<String, MonitorItem> iocStates = new HashMap<String, MonitorItem>();
 		for (IocConnectionReport report : reports) {
