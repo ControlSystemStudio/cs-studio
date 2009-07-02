@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.csstudio.diag.icsiocmonitor.service.IocConnectionState;
+import org.csstudio.diag.icsiocmonitor.ui.internal.model.IReportListener;
 import org.csstudio.diag.icsiocmonitor.ui.internal.model.IocMonitor;
 import org.csstudio.diag.icsiocmonitor.ui.internal.model.IocMonitorFactory;
 import org.csstudio.diag.icsiocmonitor.ui.internal.model.MonitorItem;
@@ -41,6 +42,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.part.ViewPart;
@@ -51,7 +53,7 @@ import org.eclipse.ui.part.ViewPart;
  * 
  * @author Joerg Rathlev
  */
-public class IocMonitorView extends ViewPart {
+public class IocMonitorView extends ViewPart implements IReportListener {
 	
 	/**
 	 * @author Joerg Rathlev
@@ -141,6 +143,19 @@ public class IocMonitorView extends ViewPart {
 	private int _fixedColumnCount;
 	private List<TableColumn> _dynamicTableColumns;
 	private Map<Integer, String> _columnIndexToIcs;
+	private IocMonitor _iocMonitor;
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void onReportUpdated() {
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				setInput(_iocMonitor);
+				_tableViewer.refresh();
+			}
+		});
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -157,9 +172,10 @@ public class IocMonitorView extends ViewPart {
 		_tableViewer = new TableViewer(_table);
 		_tableViewer.setContentProvider(new IocMonitorContentProvider());
 		_tableViewer.setLabelProvider(new IocMonitorLabelProvider());
-		IocMonitor iocMonitor = IocMonitorFactory.createMonitor();
-		iocMonitor.update();
-		setInput(iocMonitor);
+		_iocMonitor = IocMonitorFactory.createMonitor();
+		_iocMonitor.update();
+		setInput(_iocMonitor);
+		_iocMonitor.addListener(this);
 	}
 
 	/**

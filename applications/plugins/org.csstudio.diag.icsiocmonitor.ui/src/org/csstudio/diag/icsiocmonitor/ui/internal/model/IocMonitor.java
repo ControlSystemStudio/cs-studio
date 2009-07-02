@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.csstudio.diag.icsiocmonitor.service.IocConnectionReport;
 import org.csstudio.diag.icsiocmonitor.service.IIocConnectionReporter;
@@ -41,9 +42,10 @@ import org.csstudio.diag.icsiocmonitor.service.IocConnectionState;
  */
 public class IocMonitor {
 	
-	private List<IIocConnectionReporter> _reporters;
-	private List<String> _interconnectionServers;
-	private List<MonitorItem> _items;
+	private final List<IIocConnectionReporter> _reporters;
+	private final List<String> _interconnectionServers;
+	private final List<MonitorItem> _items;
+	private final List<IReportListener> _reportListeners;
 	
 	/**
 	 * Creates a new IOC monitor. 
@@ -52,6 +54,36 @@ public class IocMonitor {
 		_interconnectionServers = new ArrayList<String>();
 		_items = new ArrayList<MonitorItem>();
 		_reporters = new ArrayList<IIocConnectionReporter>();
+		_reportListeners = new CopyOnWriteArrayList<IReportListener>();
+	}
+
+	/**
+	 * Adds a listener to this monitor.
+	 * 
+	 * @param listener
+	 *            the listener.
+	 */
+	public void addListener(IReportListener listener) {
+		_reportListeners.add(listener);
+	}
+
+	/**
+	 * Removes a listener from this monitor.
+	 * 
+	 * @param listener
+	 *            the listener.
+	 */
+	public void removeListener(IReportListener listener) {
+		_reportListeners.remove(listener);
+	}
+	
+	/**
+	 * Notifies the listeners of this monitor that the report was updated.
+	 */
+	private void fireReportUpdatedEvent() {
+		for (IReportListener listener : _reportListeners) {
+			listener.onReportUpdated();
+		}
 	}
 	
 	/*
@@ -144,5 +176,6 @@ public class IocMonitor {
 			}
 		}
 		_items.addAll(iocStates.values());
+		fireReportUpdatedEvent();
 	}
 }

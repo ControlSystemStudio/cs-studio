@@ -22,6 +22,7 @@
 
 package org.csstudio.diag.icsiocmonitor.ui.internal.model;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -134,6 +135,21 @@ public class IocMonitorTest {
 		assertEquals(2, is.size());
 		assertTrue(containsState(is, "ioc1", "r1", IocConnectionState.CONNECTED));
 		assertTrue(containsState(is, "ioc2", "r1", IocConnectionState.DISCONNECTED));
+	}
+	
+	@Test
+	public void testListenersAreNotified() throws Exception {
+		IReportListener listener = Mockito.mock(IReportListener.class);
+		_im.addListener(listener);
+		_im.addReporterService(_r1);
+		Mockito.verify(listener).onReportUpdated();
+		_im.removeReporterService(_r1);
+		Mockito.verify(listener, Mockito.times(2)).onReportUpdated();
+		
+		// after the listener is removed, it must not be notified any longer
+		_im.removeListener(listener);
+		_im.addReporterService(_r1);
+		Mockito.verifyNoMoreInteractions(listener);
 	}
 
 }
