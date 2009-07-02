@@ -814,6 +814,10 @@ public class Chart extends Canvas
             // Restore what the TracePainter might have changed
             gc.setLineWidth(0);
             gc.setForeground(foreground);
+            // On Linux, painting a transparent area enables 'Cairo',
+            // and then multi-line drawText no longer handles line breaks.
+            // So turn advanced features off before painting markers
+            gc.setAdvanced(false);
             for (YAxis yaxis : yaxes)
                 yaxis.paintMarkers(gc, xaxis);
             // Done

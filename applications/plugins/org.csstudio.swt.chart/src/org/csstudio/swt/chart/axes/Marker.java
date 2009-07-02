@@ -1,5 +1,6 @@
 package org.csstudio.swt.chart.axes;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -27,7 +28,7 @@ public class Marker
     {
         this.position = position;
         this.value = value;
-        this.text = text;
+        setText(text);
     }
 
     /** @return Position (x-axis value, time) of this marker */
@@ -48,9 +49,11 @@ public class Marker
         return text;
     }
     
+    /** @param text New marker text, may include '\n' */
+    @SuppressWarnings("nls")
     final public void setText(final String text)
     {
-        this.text = text;
+        this.text = text.replaceAll("\\\\n", "\n");
     }
 
     /** @return <code>true</code> if currently selected */
@@ -87,7 +90,7 @@ public class Marker
         //  O
         final int x = xaxis.getScreenCoord(position);
         final int y = yaxis.getScreenCoord(value);
-        final Point text_size = gc.textExtent(text);
+        final Point text_size = gc.textExtent(text, SWT.DRAW_DELIMITER);
         final int label_dist = gc.getAdvanceWidth('x');
         final int tx = x+label_dist, ty = y-label_dist;
         // Marker 'O' around the actual x/y point
@@ -96,7 +99,7 @@ public class Marker
         gc.drawLine(x+X_RADIUS, y-X_RADIUS, tx, ty);
         // Text
         final int txt_top = ty-text_size.y;
-        gc.drawText(text, tx, txt_top, true);
+        gc.drawText(text, tx, txt_top, SWT.DRAW_DELIMITER | SWT.DRAW_TRANSPARENT);
         // Update the screen position so that we can later 'select' this marker.
         screen_pos = new Rectangle(tx, txt_top, text_size.x, text_size.y);
         if (selected)
