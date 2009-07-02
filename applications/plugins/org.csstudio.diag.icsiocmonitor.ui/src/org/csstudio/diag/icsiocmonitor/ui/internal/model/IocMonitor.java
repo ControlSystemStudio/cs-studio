@@ -61,7 +61,8 @@ public class IocMonitor {
 	 *         unmodifiable.
 	 */
 	public List<String> getInterconnectionServers() {
-		return Collections.unmodifiableList(_interconnectionServers);
+		return Collections.unmodifiableList(
+				new ArrayList<String>(_interconnectionServers));
 	}
 	
 	/**
@@ -70,7 +71,8 @@ public class IocMonitor {
 	 * @return the list of IOC states. The returned list is unmodifiable.
 	 */
 	public List<MonitorItem> getIocStates() {
-		return Collections.unmodifiableList(_iocs);
+		return Collections.unmodifiableList(
+				new ArrayList<MonitorItem>(_iocs));
 	}
 
 	/**
