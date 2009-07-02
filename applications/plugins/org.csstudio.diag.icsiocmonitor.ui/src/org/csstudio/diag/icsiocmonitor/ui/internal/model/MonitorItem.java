@@ -28,31 +28,48 @@ import java.util.Map;
 import org.csstudio.diag.icsiocmonitor.service.IocConnectionState;
 
 /**
- * Represents the state of an IOC.
+ * Contains information about an IOC and its connection state to the different
+ * interconnection servers. Objects of this class are intended to be displayed
+ * as items in the monitor view.
  * 
  * @author Joerg Rathlev
  */
-public class IocState {
+public class MonitorItem {
 
 	private final String _iocName;
-	private Map<String, IocConnectionState> _icsConnections;
+	private final String _iocHostname;
+	private final Map<String, IocConnectionState> _icsConnections;
 
 	/**
 	 * Creates a new IOC state object.
 	 * 
+	 * @param iocHostname
+	 *            the hostname of the IOC.
 	 * @param iocName
-	 *            the name of the IOC.
+	 *            the logical name of the IOC.
 	 */
-	public IocState(String iocName) {
+	public MonitorItem(String iocHostname, String iocName) {
+		_iocHostname = iocHostname;
 		_iocName = iocName;
 		_icsConnections = new HashMap<String, IocConnectionState>();
 	}
 
 	/**
-	 * @return the IOC name.
+	 * Returns the logical name of the IOC.
+	 * 
+	 * @return the logical name of the IOC.
 	 */
 	public String getIocName() {
 		return _iocName;
+	}
+	
+	/**
+	 * Returns the hostname of the IOC.
+	 * 
+	 * @return the hostname of the IOC.
+	 */
+	public String getIocHostname() {
+		return _iocHostname;
 	}
 
 	/**

@@ -31,17 +31,18 @@ import org.junit.Test;
 /**
  * @author Joerg Rathlev
  */
-public class IocStateTest {
+public class MonitorItemTest {
 
 	@Test
 	public void testContructionAndIocName() throws Exception {
-		IocState s = new IocState("ioc");
+		MonitorItem s = new MonitorItem("ioc.example.com", "ioc");
+		assertEquals("ioc.example.com", s.getIocHostname());
 		assertEquals("ioc", s.getIocName());
 	}
 	
 	@Test
 	public void testSetAndGetIocConnectionState() throws Exception {
-		IocState s = new IocState("ioc");
+		MonitorItem s = new MonitorItem("ioc.example.com", "ioc");
 		s.setIcsConnectionState("ics1", IocConnectionState.CONNECTED);
 		s.setIcsConnectionState("ics2", IocConnectionState.DISCONNECTED);
 		assertEquals(IocConnectionState.CONNECTED, s.getIcsConnectionState("ics1"));
@@ -53,7 +54,7 @@ public class IocStateTest {
 	
 	@Test
 	public void testGetSelectedInterconnectionServer() throws Exception {
-		IocState s = new IocState("ioc");
+		MonitorItem s = new MonitorItem("ioc.example.com", "ioc");
 		s.setIcsConnectionState("ics1", IocConnectionState.CONNECTED);
 		s.setIcsConnectionState("ics2", IocConnectionState.CONNECTED_SELECTED);
 		assertEquals("ics2", s.getSelectedInterconnectionServer());

@@ -30,7 +30,7 @@ import java.util.Map;
 import org.csstudio.diag.icsiocmonitor.service.IocConnectionState;
 import org.csstudio.diag.icsiocmonitor.ui.internal.model.IocMonitor;
 import org.csstudio.diag.icsiocmonitor.ui.internal.model.IocMonitorFactory;
-import org.csstudio.diag.icsiocmonitor.ui.internal.model.IocState;
+import org.csstudio.diag.icsiocmonitor.ui.internal.model.MonitorItem;
 import org.eclipse.jface.viewers.BaseLabelProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -64,18 +64,19 @@ public class IocMonitorView extends ViewPart {
 		 * {@inheritDoc}
 		 */
 		public String getColumnText(Object element, int columnIndex) {
-			if (element instanceof IocState) {
-				IocState iocState = (IocState) element;
+			if (element instanceof MonitorItem) {
+				MonitorItem item = (MonitorItem) element;
 				switch (columnIndex) {
 				case 0:
-					return iocState.getIocName();
+					return item.getIocName() +
+							" (" + item.getIocHostname() + ")";
 				case 1:
-					return iocState.getSelectedInterconnectionServer();
+					return item.getSelectedInterconnectionServer();
 				default:
 					String server = _columnIndexToIcs.get(columnIndex);
 					if (server != null) {
 						IocConnectionState connectionState =
-							iocState.getIcsConnectionState(server);
+							item.getIcsConnectionState(server);
 						switch (connectionState) {
 						case CONNECTED:
 							return "connected";

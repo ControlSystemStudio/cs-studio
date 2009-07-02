@@ -34,7 +34,8 @@ import org.csstudio.diag.icsiocmonitor.service.IocConnectionReportItem;
 import org.csstudio.diag.icsiocmonitor.service.IocConnectionState;
 
 /**
- * Monitors the state of the IOCs as reported by the interconnection servers.
+ * Aggregates the connection states reported by multiple interconnection servers
+ * and converts the information into instances of {@link MonitorItem}.
  * 
  * @author Joerg Rathlev
  */
@@ -42,14 +43,14 @@ public class IocMonitor {
 	
 	private List<IIocConnectionReporter> _reporters;
 	private List<String> _interconnectionServers;
-	private List<IocState> _iocs;
+	private List<MonitorItem> _iocs;
 	
 	/**
 	 * Creates a new IOC monitor. 
 	 */
 	IocMonitor() {
 		_interconnectionServers = new ArrayList<String>();
-		_iocs = new ArrayList<IocState>();
+		_iocs = new ArrayList<MonitorItem>();
 		_reporters = new ArrayList<IIocConnectionReporter>();
 	}
 
@@ -68,7 +69,7 @@ public class IocMonitor {
 	 * 
 	 * @return the list of IOC states. The returned list is unmodifiable.
 	 */
-	public List<IocState> getIocStates() {
+	public List<MonitorItem> getIocStates() {
 		return Collections.unmodifiableList(_iocs);
 	}
 
@@ -114,17 +115,18 @@ public class IocMonitor {
 		 * information from all interconnection servers. The map below maps
 		 * IOC -> IocState for the translation.
 		 */
-		Map<String, IocState> iocStates = new HashMap<String, IocState>();
+		Map<String, MonitorItem> iocStates = new HashMap<String, MonitorItem>();
 		for (IocConnectionReport report : reports) {
 			String server = report.getReportingServer();
 			_interconnectionServers.add(server);
 			List<IocConnectionReportItem> reportItems = report.getItems();
 			for (IocConnectionReportItem item : reportItems) {
+				String iocHostname = item.getIocHostname();
 				String iocName = item.getIocName();
 				IocConnectionState state = item.getConnectionState();
-				IocState iocState = iocStates.get(iocName);
+				MonitorItem iocState = iocStates.get(iocName);
 				if (iocState == null) {
-					iocState = new IocState(iocName);
+					iocState = new MonitorItem(iocHostname, iocName);
 					iocStates.put(iocName, iocState);
 				}
 				iocState.setIcsConnectionState(server, state);

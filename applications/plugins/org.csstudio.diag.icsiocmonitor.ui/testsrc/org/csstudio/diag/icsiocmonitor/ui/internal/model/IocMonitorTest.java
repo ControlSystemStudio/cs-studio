@@ -34,7 +34,7 @@ import org.csstudio.diag.icsiocmonitor.service.IIocConnectionReporter;
 import org.csstudio.diag.icsiocmonitor.service.IocConnectionReportItem;
 import org.csstudio.diag.icsiocmonitor.service.IocConnectionState;
 import org.csstudio.diag.icsiocmonitor.ui.internal.model.IocMonitor;
-import org.csstudio.diag.icsiocmonitor.ui.internal.model.IocState;
+import org.csstudio.diag.icsiocmonitor.ui.internal.model.MonitorItem;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -72,9 +72,9 @@ public class IocMonitorTest {
 	 * the given IOC and that the state for that IOC and the given server is the
 	 * given state.
 	 */
-	private boolean containsState(List<IocState> states, String ioc,
+	private boolean containsState(List<MonitorItem> states, String ioc,
 			String server, IocConnectionState state) {
-		for (IocState iocState : states) {
+		for (MonitorItem iocState : states) {
 			if (iocState.getIocName().equals(ioc)) {
 				return iocState.getIcsConnectionState(server) == state;
 			}
@@ -94,7 +94,7 @@ public class IocMonitorTest {
 		_im.addReporterService(_r1);
 		assertEquals(1, _im.getInterconnectionServers().size());
 		assertTrue(_im.getInterconnectionServers().contains("r1"));
-		List<IocState> is = _im.getIocStates();
+		List<MonitorItem> is = _im.getIocStates();
 		assertEquals(2, is.size());
 		assertTrue(containsState(is, "ioc1", "r1", IocConnectionState.CONNECTED));
 		assertTrue(containsState(is, "ioc2", "r1", IocConnectionState.DISCONNECTED));
@@ -116,7 +116,7 @@ public class IocMonitorTest {
 		assertEquals(2, _im.getInterconnectionServers().size());
 		assertTrue(_im.getInterconnectionServers().contains("r1"));
 		assertTrue(_im.getInterconnectionServers().contains("r2"));
-		List<IocState> is = _im.getIocStates();
+		List<MonitorItem> is = _im.getIocStates();
 		assertEquals(3, is.size());
 		assertTrue(containsState(is, "ioc1", "r1", IocConnectionState.CONNECTED));
 		assertTrue(containsState(is, "ioc1", "r2", IocConnectionState.CONNECTED));
@@ -133,7 +133,7 @@ public class IocMonitorTest {
 		_im.removeReporterService(_r2);
 		assertEquals(1, _im.getInterconnectionServers().size());
 		assertTrue(_im.getInterconnectionServers().contains("r1"));
-		List<IocState> is = _im.getIocStates();
+		List<MonitorItem> is = _im.getIocStates();
 		assertEquals(2, is.size());
 		assertTrue(containsState(is, "ioc1", "r1", IocConnectionState.CONNECTED));
 		assertTrue(containsState(is, "ioc2", "r1", IocConnectionState.DISCONNECTED));
