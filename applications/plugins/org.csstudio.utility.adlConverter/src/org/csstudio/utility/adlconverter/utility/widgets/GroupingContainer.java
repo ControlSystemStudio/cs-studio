@@ -33,6 +33,7 @@ import org.csstudio.utility.adlconverter.utility.FileLine;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
 import org.csstudio.utility.adlconverter.utility.widgetparts.ADLChildren;
 import org.csstudio.utility.adlconverter.utility.widgetparts.ADLMenuItem;
+import org.eclipse.core.runtime.IPath;
 
 /**
  * 
@@ -52,13 +53,14 @@ public class GroupingContainer extends Widget {
      * @param groupingContainer ADLWidget that describe the groupingContainer.
      * @param storedDynamicAttribute 
      * @param storedBasicAttribute 
+     * @param targetPath 
      * @throws WrongADLFormatException WrongADLFormatException Wrong ADL format or untreated parameter found.
      */
-    public GroupingContainer(final ADLWidget groupingContainer, ADLWidget storedBasicAttribute, ADLWidget storedDynamicAttribute) throws WrongADLFormatException {
+    public GroupingContainer(final ADLWidget groupingContainer, ADLWidget storedBasicAttribute, ADLWidget storedDynamicAttribute, IPath targetPath) throws WrongADLFormatException {
         super(groupingContainer, storedBasicAttribute, storedDynamicAttribute);
         getObject().setHeight(getObject().getHeight()+5);
         getObject().setWidth(getObject().getWidth()+5);
-        handleObject(groupingContainer.getObjects());
+        handleObject(groupingContainer.getObjects(), targetPath);
         handleBody(groupingContainer.getBody());
 //        <property type="sds.boolean" id="transparency" value="true" />
         _widget.setPropertyValue(GroupingContainerModel.PROP_TRANSPARENT, true);
@@ -67,12 +69,13 @@ public class GroupingContainer extends Widget {
 
     /**
      * @param objects the Object to handle
+     * @param targetPath 
      * @throws WrongADLFormatException WrongADLFormatException Wrong ADL format or untreated parameter found.
      */
-    private void handleObject(final ArrayList<ADLWidget> objects) throws WrongADLFormatException {
+    private void handleObject(final ArrayList<ADLWidget> objects, IPath targetPath) throws WrongADLFormatException {
         for (ADLWidget obj : objects) {
             if(obj.isType("children")){ //$NON-NLS-1$
-                _children = new ADLChildren(obj,_widget);
+                _children = new ADLChildren(obj,_widget, targetPath);
                 for (Widget elem : _children.getAdlChildrens()) {
                     elem.convertCoordinate(getObject().getX(), getObject().getY());
                     ((GroupingContainerModel) _widget).addWidget(elem.getElement());

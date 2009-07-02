@@ -135,7 +135,7 @@ public class ADLDisplayImporter extends AbstractDisplayImporter {
                     display(adlWidget, displayModel);
                 } else if (adlWidget.getType().equals("composite")) { //$NON-NLS-1$
                     displayModel.addWidget(new GroupingContainer(adlWidget, storedBasicAttribute,
-                            storedDynamicAttribute).getElement());
+                            storedDynamicAttribute, targetProject).getElement());
                 } else if (adlWidget.getType().startsWith("display")) { //$NON-NLS-1$
                     display(adlWidget, displayModel);
                 } else if (adlWidget.getType().equals("dynamic symbol")) { //$NON-NLS-1$
@@ -145,7 +145,7 @@ public class ADLDisplayImporter extends AbstractDisplayImporter {
                     // TODO: FILE --> Name and Version
                 } else if (adlWidget.getType().equals("image")) { //$NON-NLS-1$
                     displayModel.addWidget(new Image(adlWidget, displayModel, storedBasicAttribute,
-                            storedDynamicAttribute).getElement());
+                            storedDynamicAttribute, targetProject).getElement());
                 } else if (adlWidget.getType().equals("indicator")) { //$NON-NLS-1$
                     displayModel.addWidget(new Bargraph(adlWidget, storedBasicAttribute,
                             storedDynamicAttribute).getElement());

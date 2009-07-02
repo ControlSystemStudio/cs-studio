@@ -49,9 +49,10 @@ public class Image extends Widget {
      * @param image ADLWidget that describe the Image.
      * @param storedDynamicAttribute 
      * @param storedBasicAttribute 
+     * @param targetProject 
      * @throws WrongADLFormatException WrongADLFormatException Wrong ADL format or untreated parameter found.
      */
-    public Image(final ADLWidget image, AbstractWidgetModel abstractWidgetModel, ADLWidget storedBasicAttribute, ADLWidget storedDynamicAttribute) throws WrongADLFormatException {
+    public Image(final ADLWidget image, AbstractWidgetModel abstractWidgetModel, ADLWidget storedBasicAttribute, ADLWidget storedDynamicAttribute, IPath targetPath) throws WrongADLFormatException {
         super(image, storedBasicAttribute, storedDynamicAttribute);
         for (FileLine fileLine : image.getBody()) {
             String obj = fileLine.getLine();
@@ -61,12 +62,18 @@ public class Image extends Widget {
             }
             if(row[0].equals("type")){ //$NON-NLS-1$
                 ;// not used
-            }else if(row[0].equals("\"image name\"")){ //$NON-NLS-1$ //$NON-NLS-2$
+            }else if(row[0].equals("\"image name\"")){ //$NON-NLS-1$
                 row[1] = ADLHelper.cleanString(row[1])[0];
                 IResource res = ResourcesPlugin.getWorkspace().getRoot();
                 String target = Activator.getDefault().getPreferenceStore().getString(ADLConverterPreferenceConstants.P_STRING_Path_Target);
-                IPath path = res.getFullPath().append(target); //$NON-NLS-1$
-                path = res.getFullPath().append(row[1]);
+                IPath path;
+                if(!row[1].contains("/")) { //$NON-NLS-1$
+                    path = targetPath;
+                } else {
+                    path = res.getFullPath().append(target); //$NON-NLS-1$
+                }
+                path = path.append(row[1]);
+                System.out.println(" - - - Path: "+ path.toOSString());
                 _widget.setPropertyValue(ImageModel.PROP_FILENAME, path);
             }else{                
                 throw new WrongADLFormatException(Messages.Label_WrongADLFormatException_Parameter_Begin+ obj+Messages.Label_WrongADLFormatException_Parameter_End);

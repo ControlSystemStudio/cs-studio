@@ -50,6 +50,7 @@ import org.csstudio.utility.adlconverter.utility.widgets.Textinput;
 import org.csstudio.utility.adlconverter.utility.widgets.Valuator;
 import org.csstudio.utility.adlconverter.utility.widgets.Waveform;
 import org.csstudio.utility.adlconverter.utility.widgets.Widget;
+import org.eclipse.core.runtime.IPath;
 
 /**
  * @author hrickens
@@ -67,7 +68,7 @@ public class ADLChildren {
     /**
      * @param adlChildren 
      */
-    public ADLChildren(final ADLWidget adlChildren, AbstractWidgetModel displayModel) {
+    public ADLChildren(final ADLWidget adlChildren, AbstractWidgetModel displayModel, IPath targetPath) {
 //        for (ADLWidget strings : adlChildren.getObjects()) {
 //            try {
 //               
@@ -142,7 +143,7 @@ public class ADLChildren {
                     storedBasicAttribute = null;
                     storedDynamicAttribute = null;
                 } else if (adlWidget.getType().equals("composite")) { //$NON-NLS-1$
-                    _childrens.add(new GroupingContainer(adlWidget, storedBasicAttribute, storedDynamicAttribute));
+                    _childrens.add(new GroupingContainer(adlWidget, storedBasicAttribute, storedDynamicAttribute, targetPath));
                     storedBasicAttribute = null;
                     storedDynamicAttribute = null;
                 } else if (adlWidget.getType().equals("dynamic symbol")) { //$NON-NLS-1$
@@ -154,7 +155,7 @@ public class ADLChildren {
                     storedBasicAttribute = null;
                     storedDynamicAttribute = null;
                 } else if (adlWidget.getType().equals("image")) { //$NON-NLS-1$
-                    _childrens.add(new Image(adlWidget, displayModel, storedBasicAttribute, storedDynamicAttribute));
+                    _childrens.add(new Image(adlWidget, displayModel, storedBasicAttribute, storedDynamicAttribute, targetPath));
                     storedBasicAttribute = null;
                     storedDynamicAttribute = null;
                 } else if (adlWidget.getType().equals("indicator")) { //$NON-NLS-1$
