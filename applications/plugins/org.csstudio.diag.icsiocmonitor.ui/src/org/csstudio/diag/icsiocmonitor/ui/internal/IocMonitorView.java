@@ -114,7 +114,7 @@ public class IocMonitorView extends ViewPart {
 		 */
 		public Object[] getElements(Object inputElement) {
 			if (inputElement instanceof IocMonitor) {
-				return ((IocMonitor) inputElement).getIocStates().toArray();
+				return ((IocMonitor) inputElement).getItems().toArray();
 			} else {
 				return new Object[0];
 			}

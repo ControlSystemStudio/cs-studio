@@ -43,14 +43,14 @@ public class IocMonitor {
 	
 	private List<IIocConnectionReporter> _reporters;
 	private List<String> _interconnectionServers;
-	private List<MonitorItem> _iocs;
+	private List<MonitorItem> _items;
 	
 	/**
 	 * Creates a new IOC monitor. 
 	 */
 	IocMonitor() {
 		_interconnectionServers = new ArrayList<String>();
-		_iocs = new ArrayList<MonitorItem>();
+		_items = new ArrayList<MonitorItem>();
 		_reporters = new ArrayList<IIocConnectionReporter>();
 	}
 
@@ -70,9 +70,9 @@ public class IocMonitor {
 	 * 
 	 * @return the list of IOC states. The returned list is unmodifiable.
 	 */
-	public List<MonitorItem> getIocStates() {
+	public List<MonitorItem> getItems() {
 		return Collections.unmodifiableList(
-				new ArrayList<MonitorItem>(_iocs));
+				new ArrayList<MonitorItem>(_items));
 	}
 
 	/**
@@ -104,7 +104,7 @@ public class IocMonitor {
 	 */
 	public void update() {
 		_interconnectionServers.clear();
-		_iocs.clear();
+		_items.clear();
 		
 		List<IocConnectionReport> reports = new ArrayList<IocConnectionReport>();
 		for (IIocConnectionReporter reporter : _reporters) {
@@ -134,6 +134,6 @@ public class IocMonitor {
 				iocState.setIcsConnectionState(server, state);
 			}
 		}
-		_iocs.addAll(iocStates.values());
+		_items.addAll(iocStates.values());
 	}
 }

@@ -83,7 +83,7 @@ public class IocMonitorTest {
 	public void testNoReportersAdded() throws Exception {
 		// No reporters configured, so lists should be empty
 		assertTrue(_im.getInterconnectionServers().isEmpty());
-		assertTrue(_im.getIocStates().isEmpty());
+		assertTrue(_im.getItems().isEmpty());
 	}
 	
 	@Test
@@ -91,7 +91,7 @@ public class IocMonitorTest {
 		_im.addReporterService(_r1);
 		assertEquals(1, _im.getInterconnectionServers().size());
 		assertTrue(_im.getInterconnectionServers().contains("r1"));
-		List<MonitorItem> is = _im.getIocStates();
+		List<MonitorItem> is = _im.getItems();
 		assertEquals(2, is.size());
 		assertTrue(containsState(is, "ioc1", "r1", IocConnectionState.CONNECTED));
 		assertTrue(containsState(is, "ioc2", "r1", IocConnectionState.DISCONNECTED));
@@ -113,7 +113,7 @@ public class IocMonitorTest {
 		assertEquals(2, _im.getInterconnectionServers().size());
 		assertTrue(_im.getInterconnectionServers().contains("r1"));
 		assertTrue(_im.getInterconnectionServers().contains("r2"));
-		List<MonitorItem> is = _im.getIocStates();
+		List<MonitorItem> is = _im.getItems();
 		assertEquals(3, is.size());
 		assertTrue(containsState(is, "ioc1", "r1", IocConnectionState.CONNECTED));
 		assertTrue(containsState(is, "ioc1", "r2", IocConnectionState.CONNECTED));
@@ -130,7 +130,7 @@ public class IocMonitorTest {
 		_im.removeReporterService(_r2);
 		assertEquals(1, _im.getInterconnectionServers().size());
 		assertTrue(_im.getInterconnectionServers().contains("r1"));
-		List<MonitorItem> is = _im.getIocStates();
+		List<MonitorItem> is = _im.getItems();
 		assertEquals(2, is.size());
 		assertTrue(containsState(is, "ioc1", "r1", IocConnectionState.CONNECTED));
 		assertTrue(containsState(is, "ioc2", "r1", IocConnectionState.DISCONNECTED));
