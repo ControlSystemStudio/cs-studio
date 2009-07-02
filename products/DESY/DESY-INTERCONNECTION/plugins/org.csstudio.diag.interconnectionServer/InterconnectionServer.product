@@ -3,6 +3,7 @@
 
 <product name="Interconnection Server" id="org.csstudio.diag.interconnectionServer.product" application="org.csstudio.diag.interconnectionServer.application" version="1.2.0.M4" useFeatures="true">
 
+
    <configIni use="default">
    </configIni>
 
@@ -13,12 +14,14 @@
 
    <windowImages/>
 
-   <launcher name="icsecf">
+
+   <launcher name="icserver">
       <solaris/>
       <win useIco="false">
          <bmp/>
       </win>
    </launcher>
+
 
    <vm>
    </vm>
