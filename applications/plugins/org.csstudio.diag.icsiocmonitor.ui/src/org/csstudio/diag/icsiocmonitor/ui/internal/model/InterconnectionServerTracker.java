@@ -50,10 +50,10 @@ class InterconnectionServerTracker implements IPresenceListener {
 	
 	private static final String ICSERVER_NAME = "icserver-alarm";
 	
-	private IocMonitor _iocMonitor;
+	private final IocMonitor _iocMonitor;
 	private ISessionService _sessionService;
-	private Map<ID, IIocConnectionReporter> _interconnectionServers;
-	private CentralLogger _log = CentralLogger.getInstance();
+	private final Map<ID, IIocConnectionReporter> _interconnectionServers;
+	private final CentralLogger _log = CentralLogger.getInstance();
 
 	/**
 	 * Creates a new tracker.
