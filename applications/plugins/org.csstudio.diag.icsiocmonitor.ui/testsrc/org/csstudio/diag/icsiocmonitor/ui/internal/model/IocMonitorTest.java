@@ -22,19 +22,16 @@
 
 package org.csstudio.diag.icsiocmonitor.ui.internal.model;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.csstudio.diag.icsiocmonitor.service.IocConnectionReport;
 import org.csstudio.diag.icsiocmonitor.service.IIocConnectionReporter;
+import org.csstudio.diag.icsiocmonitor.service.IocConnectionReport;
 import org.csstudio.diag.icsiocmonitor.service.IocConnectionReportItem;
 import org.csstudio.diag.icsiocmonitor.service.IocConnectionState;
-import org.csstudio.diag.icsiocmonitor.ui.internal.model.IocMonitor;
-import org.csstudio.diag.icsiocmonitor.ui.internal.model.MonitorItem;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
