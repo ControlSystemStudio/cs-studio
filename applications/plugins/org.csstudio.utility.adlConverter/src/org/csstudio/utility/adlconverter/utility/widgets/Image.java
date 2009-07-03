@@ -73,7 +73,6 @@ public class Image extends Widget {
                     path = res.getFullPath().append(target); //$NON-NLS-1$
                 }
                 path = path.append(row[1]);
-                System.out.println(" - - - Path: "+ path.toOSString());
                 _widget.setPropertyValue(ImageModel.PROP_FILENAME, path);
             }else{                
                 throw new WrongADLFormatException(Messages.Label_WrongADLFormatException_Parameter_Begin+ obj+Messages.Label_WrongADLFormatException_Parameter_End);
