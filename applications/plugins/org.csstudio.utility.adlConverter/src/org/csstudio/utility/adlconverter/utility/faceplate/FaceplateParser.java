@@ -171,6 +171,13 @@ public class FaceplateParser {
             }
 
         }
+        if(facePlate!=null) {
+            try {
+                displayModel.addWidget(facePlate);
+            } catch (RuntimeException rte) {
+                CentralLogger.getInstance().warn(FaceplateParser.class, "Can not added:\nFacePlate: "+facePlate, rte);
+            }
+        }
 //        displayModel.setSize(width, height);
         displayModel.setSize(X_OFFSET*(_maxX+1), Y_OFFSET*(_maxY+1));
     }
