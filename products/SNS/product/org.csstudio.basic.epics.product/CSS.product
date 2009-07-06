@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?pde version="3.4"?>
+<?pde version="3.5"?>
 
-<product name="CSS (EPICS)" id="org.csstudio.basic.epics.product.product" application="org.csstudio.basic.epics.application" version="1.0.19" useFeatures="false">
+<product name="CSS (EPICS)" id="org.csstudio.basic.epics.product.product" application="org.csstudio.basic.epics.application" version="1.0.19" useFeatures="false" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/org.csstudio.basic.epics.product/icons/about.gif"/>
@@ -106,6 +106,8 @@ See http://ics-web.sns.ornl.gov/css
       <plugin id="org.csstudio.utility.eliza"/>
       <plugin id="org.csstudio.utility.pv"/>
       <plugin id="org.csstudio.utility.pv.epics"/>
+      <plugin id="org.csstudio.utility.pv.simu"/>
+      <plugin id="org.csstudio.utility.pv.ui"/>
       <plugin id="org.csstudio.utility.sysmon"/>
       <plugin id="org.eclipse.core.commands"/>
       <plugin id="org.eclipse.core.contenttype"/>
@@ -189,7 +191,8 @@ See http://ics-web.sns.ornl.gov/css
       <plugin id="org.eclipse.update.ui"/>
       <plugin id="org.junit"/>
       <plugin id="org.junit4"/>
-      <plugin id="org.mortbay.jetty"/>
+      <plugin id="org.mortbay.jetty" fragment=""/>
    </plugins>
+
 
 </product>
