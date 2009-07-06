@@ -1,0 +1,51 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<title>Process Variables</title>
+</head>
+
+<body>
+<h1>Process Variables</h1>
+Most CSS tools support several types of process variables (PVs).
+When simply using a PV name like
+<pre>
+   some_pv_name
+</pre>
+this will refer to a default PV type which can be configured
+in the PV preferences.
+<p>
+To select a specific PV type, use the PV name format
+<pre>
+   type://some_pv_name
+</pre>
+
+<h2>Preferences</h2>
+The default PV type can be selected via the menu
+CSS/Preferences/Applications/Configuration/Process Variables.
+
+<h2>Type-Specific PV Name Formats</h2>
+<h3>ca://</h3>
+EPICS Channel Access PVs can be any record name
+or record-name-with-field:
+<pre>
+  ca://some:record:name
+  ca://some_record_name
+  ca://some_record_name.SCAN
+</pre>
+The "ca://" prefix can be avoided by configuring it as the default.
+
+<h3>sim://</h3>
+Simulated PVs can have these formats:
+<pre>
+  sim://noise
+</pre>
+generates simulated noise from -5 to 5, updating once every second.
+<pre>
+  sim://noise(-10, 10, 0.2)
+</pre>
+generates simulated noise from -10 to 10, updating every 0.2 seconds.
+
+</body>
+</html>
