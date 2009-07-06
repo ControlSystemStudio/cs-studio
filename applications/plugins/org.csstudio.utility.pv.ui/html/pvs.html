@@ -36,16 +36,34 @@ or record-name-with-field:
 </pre>
 The "ca://" prefix can be avoided by configuring it as the default.
 
+<h3>loc://</h3>
+'Local' PVs can be used to communicate between CSS tools within one
+CSS instance. For example, an instance of Probe and the Data Browser
+can both use a PV
+<pre>
+  loc://demo
+</pre>
+When adjusting the value in Probe, the Data Browser will reflect the
+changes.
+
 <h3>sim://</h3>
 Simulated PVs can have these formats:
 <pre>
   sim://noise
 </pre>
 generates simulated noise from -5 to 5, updating once every second.
+
 <pre>
   sim://noise(-10, 10, 0.2)
 </pre>
 generates simulated noise from -10 to 10, updating every 0.2 seconds.
+
+<pre>
+  sim://sine(0, 10, 0.5)
+</pre>
+generates a simulated sine wave signal valued 0 to 10, updating every 0.5 seconds.
+A full period takes 20 updates, i.e. 5 seconds in this example.
+
 
 </body>
 </html>
