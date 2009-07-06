@@ -1,14 +1,12 @@
 package org.csstudio.utility.pv;
 
 import org.apache.log4j.Logger;
-import org.csstudio.platform.AbstractCssPlugin;
 import org.csstudio.platform.logging.CentralLogger;
-import org.osgi.framework.BundleContext;
 
 /** Plugin-activator for the PV.
  *  @author Kay Kasemir
  */
-public class Plugin extends AbstractCssPlugin
+public class Plugin extends org.eclipse.core.runtime.Plugin
 {
 	public final static String ID = "org.csstudio.utility.pv"; //$NON-NLS-1$
     
@@ -22,23 +20,6 @@ public class Plugin extends AbstractCssPlugin
     public Plugin()
     {
         plugin = this;
-    }
-    
-	@Override
-    public String getPluginId()
-	{   return ID; }
-
-    /** @see AbstractCssPlugin */
-    @SuppressWarnings("nls")
-    @Override
-    protected void doStart(BundleContext context) throws Exception
-    { /* NOP */ }
-
-    /** @see AbstractCssPlugin */
-    @Override
-    protected void doStop(BundleContext context) throws Exception
-    {
-        plugin = null;
     }
     
     /** @return Log4j Logger */

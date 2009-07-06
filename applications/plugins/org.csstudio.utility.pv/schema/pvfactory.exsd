@@ -2,9 +2,9 @@
 <!-- Schema file written by PDE -->
 <schema targetNamespace="org.csstudio.utility.pv" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
-      <appinfo>
+      <appInfo>
          <meta.schema plugin="org.csstudio.utility.pv" id="pvfactory" name="PVFactory"/>
-      </appinfo>
+      </appInfo>
       <documentation>
          Provider of Process Variables, must implement org.csstudio.utility.pv.IPVFactory
       </documentation>
@@ -12,13 +12,13 @@
 
    <element name="extension">
       <annotation>
-         <appinfo>
+         <appInfo>
             <meta.element />
-         </appinfo>
+         </appInfo>
       </annotation>
       <complexType>
          <sequence>
-            <element ref="PVFactory"/>
+            <element ref="PVFactory" minOccurs="1" maxOccurs="unbounded"/>
          </sequence>
          <attribute name="id" type="string">
             <annotation>
@@ -39,9 +39,9 @@
                <documentation>
                   
                </documentation>
-               <appinfo>
+               <appInfo>
                   <meta.attribute translatable="true"/>
-               </appinfo>
+               </appInfo>
             </annotation>
          </attribute>
       </complexType>
@@ -49,9 +49,12 @@
 
    <element name="PVFactory">
       <annotation>
-         <appinfo>
+         <appInfo>
             <meta.element labelAttribute="class"/>
-         </appinfo>
+         </appInfo>
+         <documentation>
+            Extension that provides a PV factory, which in turn can create PVs of a certain type
+         </documentation>
       </annotation>
       <complexType>
          <attribute name="name" type="string" use="required">
@@ -61,32 +64,39 @@
                </documentation>
             </annotation>
          </attribute>
+         <attribute name="prefix" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Prefix used by PVs that this PVFactory handles
+               </documentation>
+            </annotation>
+         </attribute>
          <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
                   The class that implements the PV
                </documentation>
-               <appinfo>
+               <appInfo>
                   <meta.attribute kind="java" basedOn="org.csstudio.utility.pv.IPVFactory"/>
-               </appinfo>
+               </appInfo>
             </annotation>
          </attribute>
       </complexType>
    </element>
 
    <annotation>
-      <appinfo>
+      <appInfo>
          <meta.section type="since"/>
-      </appinfo>
+      </appInfo>
       <documentation>
          1.0
       </documentation>
    </annotation>
 
    <annotation>
-      <appinfo>
+      <appInfo>
          <meta.section type="examples"/>
-      </appinfo>
+      </appInfo>
       <documentation>
          &lt;pre&gt;
    &lt;extension point=&quot;org.csstudio.utility.pv.pvfactory&quot;&gt;
@@ -100,9 +110,9 @@
    </annotation>
 
    <annotation>
-      <appinfo>
+      <appInfo>
          <meta.section type="apiInfo"/>
-      </appinfo>
+      </appInfo>
       <documentation>
          Must implement the interface
 org.csstudio.utility.pv.IPVFactory
@@ -110,18 +120,18 @@ org.csstudio.utility.pv.IPVFactory
    </annotation>
 
    <annotation>
-      <appinfo>
+      <appInfo>
          <meta.section type="implementation"/>
-      </appinfo>
+      </appInfo>
       <documentation>
          See org.csstudio.utility.pv.epics plugin.
       </documentation>
    </annotation>
 
    <annotation>
-      <appinfo>
+      <appInfo>
          <meta.section type="copyright"/>
-      </appinfo>
+      </appInfo>
       <documentation>
          Kay Kasemir
       </documentation>

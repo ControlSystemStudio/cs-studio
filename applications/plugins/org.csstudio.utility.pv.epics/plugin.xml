@@ -5,6 +5,7 @@
          point="org.csstudio.utility.pv.pvfactory">
       <PVFactory
             class="org.csstudio.utility.pv.epics.EPICSPVFactory"
-            name="EPICS PVFactory"/>
+            name="EPICS PVFactory"
+            prefix="ca"/>
    </extension>
 </plugin>

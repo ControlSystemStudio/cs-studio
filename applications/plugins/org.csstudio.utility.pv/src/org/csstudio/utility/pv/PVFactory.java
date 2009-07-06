@@ -1,5 +1,10 @@
 package org.csstudio.utility.pv;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 
@@ -44,38 +49,88 @@ import org.eclipse.core.runtime.Platform;
 @SuppressWarnings("nls")
 public class PVFactory
 {
+    /** Separator between PV type indicator and rest of PV name.
+     *  <p>
+     *  This one is URL-ish, and works OK with EPICS PVs because
+     *  those are unlikely to contain "://" themself, while
+     *  just ":" for example is likely to be inside the PV name
+     */
+    final public static String SEPARATOR = "://";
+
     /** ID of the extension point */
-    private static final String PVFACTORY_EXT_ID =
+    final private static String PVFACTORY_EXT_ID =
         "org.csstudio.utility.pv.pvfactory";
 
-    /** Lazyly intialized PV factory found in extension registry */
-    private static IPVFactory pv_factory = null;
-    
-    /** Create a PV for the given channel name.
-     *  @param name Channel name
-     *  @return PV
-     *  @exception Exception on error
-     */
-    public static final PV createPV(final String name) throws Exception
+    /** Lazyly intialized PV factories found in extension registry */
+    private static Map<String, IPVFactory> pv_factory = null;
+
+    /** Default PV type, initiliazed from preferences */
+    private static String default_type;
+
+    /** Initialize from preferences and extension point registry */
+    final private static void initialize() throws Exception
     {
-        if (pv_factory == null)
-            locatePVFactory();
-        return pv_factory.createPV(name);
-    }
+        // Get default type from preferences
+        default_type = Preferences.getDefaultType();
     
-    /** Locate the PV factory via the extension point registry */
-    private static final void locatePVFactory() throws Exception
-    {
         // Get extension point info from registry
+        pv_factory = new HashMap<String, IPVFactory>();
         final IConfigurationElement[] configs = Platform.getExtensionRegistry()
             .getConfigurationElementsFor(PVFACTORY_EXT_ID);
         // Allow one and only implementation
-        if (configs.length != 1)
-            throw new Exception("Found " + configs.length
-                            + " instead of one " + PVFACTORY_EXT_ID);
-        Plugin.getLogger().debug("Found PVFactory implementation "
-                        + configs[0].getContributor().getName());
-        // Create instance of that implementation
-        pv_factory = (IPVFactory) configs[0].createExecutableExtension("class");
+        if (configs.length < 1)
+            throw new Exception("No extensions to " + PVFACTORY_EXT_ID + " found");
+        for (IConfigurationElement config : configs)
+        {
+            final String plugin = config.getContributor().getName();
+            final String name = config.getAttribute("name");
+            final String prefix = config.getAttribute("prefix");
+            final IPVFactory factory = (IPVFactory) config.createExecutableExtension("class");
+            Plugin.getLogger().debug("Found PVFactory implementation '"
+                    + name + "', prefix '" + prefix + "' in " + plugin);
+            pv_factory.put(prefix, factory);
+        }
+    }
+
+    /** @return Supported PV type prefixes */
+    final public static String[] getSupportedPrefixes()
+    {
+        final ArrayList<String> prefixes = new ArrayList<String>();
+        final Iterator<String> iterator = pv_factory.keySet().iterator();
+        while (iterator.hasNext())
+            prefixes.add(iterator.next());  
+        return (String[]) prefixes.toArray(new String[prefixes.size()]);
+    }
+
+    /** Create a PV for the given channel name, using the PV factory
+     *  selected via the prefix of the channel name, or the default
+     *  PV factory if no prefix is included in the channel name.
+     *  
+     *  @param name Channel name, format "prefix://name" or just "name"
+     *  @return PV
+     *  @exception Exception on error
+     */
+    final public static PV createPV(final String name) throws Exception
+    {
+        if (pv_factory == null)
+            initialize();
+        // Identify type of PV
+        // PV name = "type:...."
+        final String type, base;
+        final int sep = name.indexOf(SEPARATOR);
+        if (sep > 0)
+        {
+            type = name.substring(0, sep);
+            base = name.substring(sep+SEPARATOR.length());
+        }
+        else
+        {
+            type = default_type;
+            base = name;
+        }
+        final IPVFactory factory = pv_factory.get(type);
+        if (factory == null)
+            throw new Exception("Unknown PV type in PV " + name);
+        return factory.createPV(base);
     }
 }

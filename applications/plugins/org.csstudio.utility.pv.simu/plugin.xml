@@ -5,7 +5,8 @@
          point="org.csstudio.utility.pv.pvfactory">
       <PVFactory
             class="org.csstudio.utility.pv.simu.SimulatedPVFactory"
-            name="org.csstudio.utility.pv.simu.pvfactory">
+            name="org.csstudio.utility.pv.simu.pvfactory"
+            prefix="sim">
       </PVFactory>
    </extension>
 
