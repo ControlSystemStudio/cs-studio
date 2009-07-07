@@ -6,7 +6,6 @@ import java.util.regex.Pattern;
 import org.csstudio.platform.data.INumericMetaData;
 import org.csstudio.platform.data.ISeverity;
 import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.platform.data.ValueFactory;
 import org.csstudio.platform.data.IValue.Quality;
@@ -155,7 +154,6 @@ abstract public class DynamicValue extends Value implements Runnable
         while (true)
         {
             update();
-            fireValueUpdate();
             // Period delay, may be interrupted by stop()
             try
             {
