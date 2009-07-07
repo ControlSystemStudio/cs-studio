@@ -25,6 +25,8 @@ package org.csstudio.diag.interconnectionServer.server;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.util.GregorianCalendar;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -77,6 +79,9 @@ public class InterconnectionServer
     private Collector	clientRequestTheadCollector = null;
     private Collector	numberOfMessagesCollector = null;
     private Collector	numberOfIocFailoverCollector = null;
+    private Collector	beaconReplyTimeCollector = null;
+    private Collector	messageReplyTimeCollector = null;
+    private Collector	numberOfDuplicateMessagesCollector = null;
     
     private ISharedConnectionHandle _sharedSenderConnection;
     
@@ -110,6 +115,7 @@ public class InterconnectionServer
     
     private void disconnectFromIocs() {
     	String[] listOfNodes = IocConnectionManager.getInstance().getNodeNameArray();
+    	InetAddress[] listOfIocInetAddresses = IocConnectionManager.getInstance().getListOfIocInetAdresses();
     	
         IPreferencesService prefs = Platform.getPreferencesService();
 	    String commandPortNumber = prefs.getString(Activator.getDefault().getPluginId(),
@@ -119,7 +125,7 @@ public class InterconnectionServer
 
     	for ( int i=0; i<listOfNodes.length; i++ ) {
     		CentralLogger.getInstance().warn(this, "InterconnectionServer: disconnect from IOC: " + listOfNodes[i]);
-    		IocCommandSender sendCommandToIoc = new IocCommandSender( listOfNodes[i], commandPortNum, PreferenceProperties.COMMAND_DISCONNECT);
+    		IocCommandSender sendCommandToIoc = new IocCommandSender( listOfIocInetAddresses[i], commandPortNum, PreferenceProperties.COMMAND_DISCONNECT);
     		getCommandExecutor().execute(sendCommandToIoc);
     	}
     }
@@ -286,6 +292,7 @@ public class InterconnectionServer
         CentralLogger.getInstance().info(this, "IC-Server starting to receive messages from Port: " + dataPortNum);
         while(!isQuit())
         {
+
         	/*
         	 * count the number of messages and write out one line after each 100 messages
         	 */
@@ -305,6 +312,10 @@ public class InterconnectionServer
 
                 serverSocket.receive(packet);
                 
+                //
+            	// start time to calculate the beacon reply time
+            	GregorianCalendar startTime = new GregorianCalendar();
+                
                 /*
                  * unpack the packet here!
                  * if we do this way down in the thread - it might be overwritten!!
@@ -314,8 +325,9 @@ public class InterconnectionServer
                 
                 CentralLogger.getInstance().debug(this, "Received packet: " + packetData);
                 
+                
                 newClient = new ClientRequest( this, packetData, serverSocket,
-                		packet.getAddress(), packet.getPort(), packet.getLength());
+                		packet.getAddress(), packet.getPort(), packet.getLength(), startTime);
                 
                 /*
                  * execute runnable by thread pool executor
@@ -413,6 +425,30 @@ public class InterconnectionServer
         numberOfIocFailoverCollector = new Collector();
         numberOfIocFailoverCollector.setApplication("IC-Server-" + getLocalHostName());
         numberOfIocFailoverCollector.setDescriptor("Number of IOC failover");
+        
+        numberOfDuplicateMessagesCollector = new Collector();
+        numberOfDuplicateMessagesCollector.setApplication("IC-Server-" + getLocalHostName());
+        numberOfDuplicateMessagesCollector.setDescriptor("Number DUPLICATE Messages");
+        
+        beaconReplyTimeCollector = new Collector();
+        beaconReplyTimeCollector.setApplication("IC-Server-" + getLocalHostName());
+        beaconReplyTimeCollector.setDescriptor("Time to reply to beacons");
+        beaconReplyTimeCollector.setContinuousPrint(false);
+        beaconReplyTimeCollector.setContinuousPrintCount(1000.0);
+        beaconReplyTimeCollector.getAlarmHandler().setDeadband(10.0);
+        beaconReplyTimeCollector.getAlarmHandler().setHighAbsoluteLimit(PreferenceProperties.IOC_BEACON_TIMEOUT);	// 500ms
+        beaconReplyTimeCollector.getAlarmHandler().setHighRelativeLimit(500.0);	// 500%
+        beaconReplyTimeCollector.setHardLimit( 2* PreferenceProperties.IOC_BEACON_TIMEOUT);
+        
+        messageReplyTimeCollector = new Collector();
+        messageReplyTimeCollector.setApplication("IC-Server-" + getLocalHostName());
+        messageReplyTimeCollector.setDescriptor("Time to reply to messages");
+        messageReplyTimeCollector.setContinuousPrint(false);
+        messageReplyTimeCollector.setContinuousPrintCount(1000.0);
+        messageReplyTimeCollector.getAlarmHandler().setDeadband(10.0);
+        messageReplyTimeCollector.getAlarmHandler().setHighAbsoluteLimit(PreferenceProperties.IOC_MESSAGE_TIMEOUT);	// 500ms
+        messageReplyTimeCollector.getAlarmHandler().setHighRelativeLimit(500.0);	// 500%
+        messageReplyTimeCollector.setHardLimit( 2* PreferenceProperties.IOC_MESSAGE_TIMEOUT);
 	}
     
     // TODO: not only checks but also reconnects! Should be renamed.
@@ -469,6 +505,18 @@ public class InterconnectionServer
 
 	public Collector getClientRequestTheadCollector() {
 		return clientRequestTheadCollector;
+	}
+	
+	public Collector getBeaconReplyTimeCollector() {
+		return beaconReplyTimeCollector;
+	}
+	
+	public Collector getMessageReplyTimeCollector() {
+		return messageReplyTimeCollector;
+	}
+	
+	public Collector getNumberOfDuplicateMessagesCollector() {
+		return numberOfDuplicateMessagesCollector;
 	}
 
 	public synchronized int getSendCommandId() {

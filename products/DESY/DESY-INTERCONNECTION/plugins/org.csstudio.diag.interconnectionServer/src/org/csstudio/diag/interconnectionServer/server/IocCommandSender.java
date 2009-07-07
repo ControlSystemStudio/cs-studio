@@ -43,7 +43,8 @@ import org.eclipse.core.runtime.Platform;
  */
 public class IocCommandSender implements Runnable {
 	
-	private String hostName = "locahost";
+	private String hostName = "iocNodeName";
+	private InetAddress iocInetAddress = null;
 	private int port = 0;
 	private String command = "NONE";
 	private int id = 0;
@@ -58,10 +59,10 @@ public class IocCommandSender implements Runnable {
 	 * @param port Port to be used.
 	 * @param command One of the supported commands.
 	 */
-	public IocCommandSender ( String hostName, int port, String command) {
+	public IocCommandSender ( InetAddress iocInetAddress, int port, String command) {
 
 		this.id = InterconnectionServer.getInstance().getSendCommandId();
-		this.hostName = hostName;
+		this.iocInetAddress = iocInetAddress;
 		this.port = port;
 		this.command = command;
 		
@@ -72,7 +73,7 @@ public class IocCommandSender implements Runnable {
 		// of this object having to search in in this way. 
 		int dataPort = Integer.parseInt(Platform.getPreferencesService().getString(Activator.getDefault().getPluginId(),
 				PreferenceConstants.DATA_PORT_NUMBER, "", null));
-		iocConnection = IocConnectionManager.getInstance().getIocConnection(hostName, dataPort);
+		iocConnection = IocConnectionManager.getInstance().getIocConnection(iocInetAddress, dataPort);
 		
 		if (this.hostName == null || this.hostName.equals(""))  {
 			// FIXME: This is not sufficient for error handling. The command
@@ -93,6 +94,7 @@ public class IocCommandSender implements Runnable {
 		this.command = command;
 
 		this.hostName = connection.getHost();
+		this.iocInetAddress = connection.getIocInetAddress();
 		this.port = connection.getPort();
 		this.iocConnection = connection;
 	}
@@ -132,7 +134,7 @@ public class IocCommandSender implements Runnable {
 		{
 			socket = new DatagramSocket( );	// do NOT specify the port
 			
-			DatagramPacket newPacket = new DatagramPacket(preparedMessage, preparedMessage.length, InetAddress.getByName( hostName), PreferenceProperties.COMMAND_PORT_NUMBER);
+			DatagramPacket newPacket = new DatagramPacket(preparedMessage, preparedMessage.length, iocInetAddress, PreferenceProperties.COMMAND_PORT_NUMBER);
 			
 			CentralLogger.getInstance().debug(this, "Sending packet to host: " + hostName + "; packet: " + new String(preparedMessage));
 			socket.send(newPacket);
@@ -214,7 +216,7 @@ public class IocCommandSender implements Runnable {
 						 * yes - did set all channel to disconnect
 						 * we'll have to get all alarm-states from the IOC
 						 */
-						IocCommandSender sendCommandToIoc = new IocCommandSender( hostName, port, PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
+						IocCommandSender sendCommandToIoc = new IocCommandSender( iocInetAddress, port, PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
 						InterconnectionServer.getInstance().getCommandExecutor().execute(sendCommandToIoc);
 						iocConnection.setGetAllAlarmsOnSelectChange(false);	// we set the trigger to get the alarms...
 						iocConnection.setDidWeSetAllChannelToDisconnect(false);
@@ -226,13 +228,13 @@ public class IocCommandSender implements Runnable {
 					/*
 					 * get host name of interconnection server
 					 */
-					String localHostName = null;
-					try {
-						java.net.InetAddress localMachine = java.net.InetAddress.getLocalHost();
-						localHostName = localMachine.getHostName();
-					}
-					catch (java.net.UnknownHostException uhe) { 
-					}
+					String localHostName = InterconnectionServer.getInstance().getLocalHostName();
+//					try {
+//						java.net.InetAddress localMachine = java.net.InetAddress.getLocalHost();
+//						localHostName = localMachine.getHostName();
+//					}
+//					catch (java.net.UnknownHostException uhe) { 
+//					}
 					String selectMessage = "SELECTED";
 					if (iocConnection.wasPreviousBeaconWithinThreeBeaconTimeouts()) {
 						selectMessage = "SELECTED - switch over";
@@ -261,7 +263,7 @@ public class IocCommandSender implements Runnable {
 					if ( (!iocConnection.wasPreviousBeaconWithinThreeBeaconTimeouts()) ||
 							(!iocConnection.areWeConnectedLongerThenThreeBeaconTimeouts() &&
 									iocConnection.isGetAllAlarmsOnSelectChange()) )  {
-						IocCommandSender sendCommandToIoc = new IocCommandSender( hostName, port, PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
+						IocCommandSender sendCommandToIoc = new IocCommandSender( iocInetAddress, port, PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
 						InterconnectionServer.getInstance().getCommandExecutor().execute(sendCommandToIoc);
 						iocConnection.setGetAllAlarmsOnSelectChange(false); // one time is enough
 						CentralLogger.getInstance().info(this, "This is a fail over from one IC-Server to this one - get an update on all alarms!");
@@ -284,13 +286,13 @@ public class IocCommandSender implements Runnable {
 					/*
 					 * get host name of interconnection server
 					 */
-					String localHostName = null;
-					try {
-						java.net.InetAddress localMachine = java.net.InetAddress.getLocalHost();
-						localHostName = localMachine.getHostName();
-					}
-					catch (java.net.UnknownHostException uhe) { 
-					}
+					String localHostName = InterconnectionServer.getInstance().getLocalHostName();
+//					try {
+//						java.net.InetAddress localMachine = java.net.InetAddress.getLocalHost();
+//						localHostName = localMachine.getHostName();
+//					}
+//					catch (java.net.UnknownHostException uhe) { 
+//					}
 					JmsMessage.getInstance().sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM, 
 							JmsMessage.MESSAGE_TYPE_IOC_ALARM, 									// type
 							localHostName + ":" + iocConnection.getLogicalIocName() + ":selectState",					// name
@@ -318,13 +320,13 @@ public class IocCommandSender implements Runnable {
 					/*
 					 * get host name of interconnection server
 					 */
-					String localHostName = null;
-					try {
-						java.net.InetAddress localMachine = java.net.InetAddress.getLocalHost();
-						localHostName = localMachine.getHostName();
-					}
-					catch (java.net.UnknownHostException uhe) { 
-					}
+					String localHostName = InterconnectionServer.getInstance().getLocalHostName();
+//					try {
+//						java.net.InetAddress localMachine = java.net.InetAddress.getLocalHost();
+//						localHostName = localMachine.getHostName();
+//					}
+//					catch (java.net.UnknownHostException uhe) { 
+//					}
 					JmsMessage.getInstance().sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM, 
 							JmsMessage.MESSAGE_TYPE_IOC_ALARM, 									// type
 							localHostName + ":" + iocConnection.getLogicalIocName() + ":selectState",					// name

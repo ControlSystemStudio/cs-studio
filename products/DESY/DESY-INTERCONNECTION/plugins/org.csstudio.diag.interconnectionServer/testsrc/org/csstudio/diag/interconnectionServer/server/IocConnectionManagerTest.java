@@ -35,13 +35,13 @@ public class IocConnectionManagerTest {
 	@Test
 	public void testGetIocConnection() throws Exception {
 		IocConnectionManager cm = IocConnectionManager.getInstance();
-		IocConnection conn = cm.getIocConnection("host", 123);
+		IocConnection conn = cm.getIocConnection(cm.getIocInetAdressByName("host"), 123);
 		assertNotNull(conn);
 		assertEquals("host", conn.getHost());
 		assertEquals(123, conn.getPort());
 		
 		// Multiple requests must return the same IocConnection instance
-		assertSame(conn, cm.getIocConnection("host", 123));
+		assertSame(conn, cm.getIocConnection(cm.getIocInetAdressByName("host"), 123));
 	}
 
 }

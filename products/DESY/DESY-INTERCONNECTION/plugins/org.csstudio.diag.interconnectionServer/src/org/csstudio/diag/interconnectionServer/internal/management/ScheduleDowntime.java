@@ -55,7 +55,7 @@ public class ScheduleDowntime implements IManagementCommand {
 
 		int dataPort = Integer.parseInt(Platform.getPreferencesService().getString(Activator.getDefault().getPluginId(),
 				PreferenceConstants.DATA_PORT_NUMBER, "", null));
-		IocConnection iocConnection = IocConnectionManager.getInstance().getIocConnection(ioc, dataPort);
+		IocConnection iocConnection = IocConnectionManager.getInstance().getIocConnection( IocConnectionManager.getInstance().getIocInetAdressByName(ioc), dataPort);
 		iocConnection.scheduleDowntime(duration, TimeUnit.SECONDS);
 		
 		return CommandResult.createSuccessResult();

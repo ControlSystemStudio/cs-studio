@@ -43,6 +43,7 @@ public class PreferenceProperties {
 	public static String JMS_LOG_CONTEXT = "LOG";
 	public static String JMS_ALARM_CONTEXT = "ALARM";
 	public static String JMS_PUT_LOG_CONTEXT = "PUT_LOG";
+	public static String JMS_SNL_LOG_CONTEXT = "SNL_LOG";
 	
 	public static String COMMAND_TAKE_OVER 			= "takeOver";
 	public static String COMMAND_DISCONNECT 		= "disconnect";
@@ -63,6 +64,9 @@ public class PreferenceProperties {
 	public static final int	TIME_TO_GET_ANSWER_FROM_IOC_AFTER_COMMAND	= 1000; // 8.7.2008 10 -> 3 sec MCL
 	
 	public static final int BEACON_TIMEOUT = 15000;	// 15 sec
+	
+	public static final int IOC_BEACON_TIMEOUT = 600;	// 0.6 sec
+	public static final int IOC_MESSAGE_TIMEOUT = 1000;	// 1 sec
 	
 	public static String JMS_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
 	

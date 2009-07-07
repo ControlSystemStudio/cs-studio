@@ -42,7 +42,7 @@ public class IocConnectionTest {
 	@Before
 	public void setUp() {
 		_timeSource = new StubTimeSource(10);
-		_conn = new IocConnection("host", 1234, _timeSource);
+		_conn = new IocConnection(IocConnectionManager.getInstance().getIocInetAdressByName("host"), 1234, _timeSource);
 	}
 
 	@Test

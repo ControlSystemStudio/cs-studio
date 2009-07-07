@@ -74,9 +74,10 @@ public class ClientRequest implements Runnable
 	private static Map<String, DuplicateMessageDetector>
 			_duplicateMessageDetectors =
 				new HashMap<String, DuplicateMessageDetector>();
+	private GregorianCalendar _startTime = null;
     
 	public ClientRequest( InterconnectionServer icServer, String packetData,
-			DatagramSocket d, InetAddress replyAddress, int replyPort, int packetLength)
+			DatagramSocket d, InetAddress replyAddress, int replyPort, int packetLength, GregorianCalendar startTime)
 	{
         this.icServer = icServer;
         this.packetData = packetData;
@@ -86,6 +87,7 @@ public class ClientRequest implements Runnable
         _length = packetLength;
 		
         this.statistic	  = IocConnectionManager.getInstance();
+        this._startTime = startTime;
 	}
 	
 	public void run()
@@ -93,16 +95,7 @@ public class ClientRequest implements Runnable
 	    String hostName = null;
 	    String hostAndPort = null;
 	    MapMessage message = null;
-        
-        hostName = _address.getHostName();
-        /*
-         * in case the host name is null
-         * keep the IP address instead
-         */
-        if ( hostName == null) {
-        	hostName = _address.getHostAddress();
-        }
-        hostAndPort = hostName + ":" + _port;
+
         GregorianCalendar parseTime = new GregorianCalendar();
 
         IPreferencesService prefs = Platform.getPreferencesService();
@@ -128,15 +121,20 @@ public class ClientRequest implements Runnable
 
         
         /*
-         * increase stistic counter
+         * increase statistic counter
          */
         icServer.getClientRequestTheadCollector().incrementValue();
         
         // write out some statistics
+        
+        // 2009-07-06 MCL
+        // change statistic ID from hostName to hostAddress        
         //
-        statisticContent = statistic.getIocConnection(hostName, _port);
+        statisticContent = statistic.getIocConnection( _address, _port);
         statisticContent.setTime( true);
         statisticContent.setLastMessageSize( _length);
+        hostName = statisticContent.getHost();
+        hostAndPort = hostName + ":" + _port;
         /*
 		 * find logical name of IOC by the IP address
 		 * do NOT check on the LDAP server if the name was already found...
@@ -250,6 +248,8 @@ public class ClientRequest implements Runnable
         		if (showMessageIndicatorB) {
         			System.out.print("A");
         		}
+        		// statistic for message reply time
+        		icServer.getMessageReplyTimeCollector().setValue(LegacyUtil.timeSince(_startTime));
         		break;
         		
         	case TagList.STATUS_MESSAGE:
@@ -315,10 +315,12 @@ public class ClientRequest implements Runnable
         		if (showMessageIndicatorB) {
         			System.out.print("AS");
         		}
-
+        		// statistic for message reply time
+        		icServer.getMessageReplyTimeCollector().setValue(LegacyUtil.timeSince(_startTime));
+        		
         		break;
         		
-        	case TagList.SNL_LOG_MESSAGE:  // TODO send SNL log to its own topic
+//        	case TagList.SNL_LOG_MESSAGE:  // TODO send SNL log to its own topic
         	case TagList.SYSTEM_LOG_MESSAGE:
         	case TagList.APPLICATION_LOG_MESSAGE:
         		
@@ -368,6 +370,8 @@ public class ClientRequest implements Runnable
         		if (showMessageIndicatorB) {
         			System.out.print("S");
         		}
+        		// statistic for message reply time
+        		icServer.getMessageReplyTimeCollector().setValue(LegacyUtil.timeSince(_startTime));
         		break;
         		
         	case TagList.BEACON_MESSAGE:
@@ -400,7 +404,7 @@ public class ClientRequest implements Runnable
         			 * send the command to the command port configured in the
         			 * preferences.
         			 */
-        			IocCommandSender sendCommandToIoc = new IocCommandSender( hostName, _port, PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
+        			IocCommandSender sendCommandToIoc = new IocCommandSender( _address, _port, PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
     				icServer.getCommandExecutor().execute(sendCommandToIoc);
     				statisticContent.setGetAllAlarmsOnSelectChange(false);	// we set the trigger to get the alarms...
     				statisticContent.setDidWeSetAllChannelToDisconnect(false);
@@ -442,7 +446,7 @@ public class ClientRequest implements Runnable
 	        			 * send the command to the command port configured in the
 	        			 * preferences.
         				 */
-        				IocCommandSender sendCommandToIoc = new IocCommandSender( hostName, _port, PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
+        				IocCommandSender sendCommandToIoc = new IocCommandSender( _address, _port, PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
         				icServer.getCommandExecutor().execute(sendCommandToIoc);
         				statisticContent.setGetAllAlarmsOnSelectChange(false);	// we set the trigger to get the alarms...
         				CentralLogger.getInstance().info(this, "This is a fail over from one IC-Server to this one - get an update on all alarms!");
@@ -504,6 +508,8 @@ public class ClientRequest implements Runnable
         		if (showMessageIndicatorB) {
         			System.out.print("B");
         		}
+        		// statistic for beacon reply time
+        		icServer.getBeaconReplyTimeCollector().setValue(LegacyUtil.timeSince(_startTime));
         		break;
         		
         	case TagList.IOC_SYSTEM_MESSAGE:
@@ -545,6 +551,8 @@ public class ClientRequest implements Runnable
         		if (showMessageIndicatorB) {
         			System.out.print("SO");
         		}
+        		// statistic for message reply time
+        		icServer.getMessageReplyTimeCollector().setValue(LegacyUtil.timeSince(_startTime));
         		break;
         		
         	case TagList.BEACON_MESSAGE_NOT_SELECTED:
@@ -624,6 +632,8 @@ public class ClientRequest implements Runnable
         		if (showMessageIndicatorB) {
         			System.out.print("B");
         		}
+        		// statistic for beacon reply time
+        		icServer.getBeaconReplyTimeCollector().setValue(LegacyUtil.timeSince(_startTime));
         		break;
         		
         	case TagList.PUT_LOG_MESSAGE:
@@ -663,7 +673,51 @@ public class ClientRequest implements Runnable
         		if (showMessageIndicatorB) {
         			System.out.print("P");
         		}
+        		// statistic for message reply time
+        		icServer.getMessageReplyTimeCollector().setValue(LegacyUtil.timeSince(_startTime));
         		break;
+        		
+        	case TagList.SNL_LOG_MESSAGE:
+        		//
+        		// SNL-LOG jms server
+        		//
+        		session = null;
+        		try {
+                    // Create the destination (Topic or Queue)
+        			session = icServer.createJmsSession();
+        			Destination snlLogDestination = session.createTopic(PreferenceProperties.JMS_SNL_LOG_CONTEXT);
+
+                    // Create a MessageProducer from the Session to the Topic or Queue
+                	MessageProducer snlLogSender = session.createProducer( snlLogDestination);
+                	snlLogSender.setDeliveryMode( DeliveryMode.PERSISTENT);
+                	snlLogSender.setTimeToLive( jmsTimeToLivePutLogsInt);
+                    message = session.createMapMessage();
+                    prepareTypedJmsMessage(message, tagValuePairs, iocMessage.getMessageTypeString());
+                    snlLogSender.send(message);
+                    snlLogSender.close();
+        		}
+        		catch(JMSException jmse)
+                {
+        			status = false;
+        			icServer.checkSendMessageErrorCount();
+                    System.out.println("ClientRequest : send ALARM message : *** EXCEPTION *** : " + jmse.getMessage());
+                } finally {
+        			if (session != null) {
+						try {
+							session.close();
+						} catch (JMSException e) {
+							CentralLogger.getInstance().warn(this, "Failed to close JMS session", e);
+						}
+					}
+        		}
+        		ReplySender.send(iocMessage.getMessageId(), status, sender);
+        		if (showMessageIndicatorB) {
+        			System.out.print("SN");
+        		}
+        		// statistic for message reply time
+        		icServer.getMessageReplyTimeCollector().setValue(LegacyUtil.timeSince(_startTime));
+        		break;
+        		
         	case TagList.TEST_COMMAND:
             	if (showMessageIndicatorB) {
         			System.out.print("T");
@@ -681,6 +735,7 @@ public class ClientRequest implements Runnable
         }
      
         icServer.getClientRequestTheadCollector().decrementValue();
+		
 	}
 
 	/**

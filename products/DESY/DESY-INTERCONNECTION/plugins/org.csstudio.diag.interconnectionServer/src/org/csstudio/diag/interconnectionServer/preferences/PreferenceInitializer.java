@@ -50,7 +50,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		prefs.put(PreferenceConstants.JMS_TIME_TO_LIVE_LOGS, "600000");
 		prefs.put(PreferenceConstants.JMS_TIME_TO_LIVE_PUT_LOGS, "3600000");
 		prefs.put(PreferenceConstants.PRIMARY_JMS_URL, "failover:(tcp://krynfs.desy.de:62616,tcp://krykjmsb.desy.de:64616)?maxReconnectDelay=5000");
-		prefs.put(PreferenceConstants.NUMBER_OF_READ_THREADS, "50");
-		prefs.put(PreferenceConstants.NUMBER_OF_COMMAND_THREADS, "25");
+		prefs.put(PreferenceConstants.NUMBER_OF_READ_THREADS, "99");  //2009-07-06 MCL 50 was already reached
+		prefs.put(PreferenceConstants.NUMBER_OF_COMMAND_THREADS, "50");
 	}
 }

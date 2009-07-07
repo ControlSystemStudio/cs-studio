@@ -1,5 +1,7 @@
 package org.csstudio.diag.interconnectionServer.internal.iocmessage;
 
+import org.csstudio.diag.interconnectionServer.server.InterconnectionServer;
+
 
 /**
  * <p>
@@ -87,6 +89,9 @@ public class DuplicateMessageDetector {
 		// deadlocks is reduced.
 		if (firstMessageWithSameId != null) {
 			_handler.duplicateMessageDetected(firstMessageWithSameId, message);
+			//
+			// increase counter in statistic
+			InterconnectionServer.getInstance().getNumberOfDuplicateMessagesCollector().incrementValue();
 		}
 	}
 

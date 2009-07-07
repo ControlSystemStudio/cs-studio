@@ -73,14 +73,14 @@ public class AlarmSimulatorThread extends Thread{
 		
 		//get local host name
 		
-		String localHostName = null;
+		String localHostName = InterconnectionServer.getInstance().getLocalHostName();
 		
-		try {
-			java.net.InetAddress localMachine = java.net.InetAddress.getLocalHost();
-			localHostName = localMachine.getHostName();
-		}
-		catch (java.net.UnknownHostException uhe) { 
-		}
+//		try {
+//			java.net.InetAddress localMachine = java.net.InetAddress.getLocalHost();
+//			localHostName = localMachine.getHostName();
+//		}
+//		catch (java.net.UnknownHostException uhe) { 
+//		}
 		
 		// tell logging - we are running
 		CentralLogger.getInstance().info(this, "AlarmSimulator started on: " + localHostName);

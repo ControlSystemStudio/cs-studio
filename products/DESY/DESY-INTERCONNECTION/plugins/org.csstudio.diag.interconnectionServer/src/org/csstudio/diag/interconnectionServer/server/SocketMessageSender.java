@@ -67,10 +67,10 @@ public class SocketMessageSender implements IIocMessageSender {
 			_socket.send(packet);
 			
 			// TODO: should not have to call getter here. Refactor!
-			IocConnectionManager.getInstance().getIocConnection(_address.getHostName(), _port).setTime(false); // false = sent
+			IocConnectionManager.getInstance().getIocConnection(_address, _port).setTime(false); // false = sent
 		} catch (IOException e) {
 			// XXX: Is this enough error handling?
-			IocConnectionManager.getInstance().getIocConnection(_address.getHostName(), _port).incrementErrorCounter();
+			IocConnectionManager.getInstance().getIocConnection(_address, _port).incrementErrorCounter();
 		}
 	}
 

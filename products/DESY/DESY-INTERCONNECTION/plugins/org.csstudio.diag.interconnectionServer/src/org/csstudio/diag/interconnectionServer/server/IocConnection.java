@@ -22,6 +22,7 @@
 
 package org.csstudio.diag.interconnectionServer.server;
 
+import java.net.InetAddress;
 import java.util.GregorianCalendar;
 import java.util.concurrent.TimeUnit;
 
@@ -41,6 +42,8 @@ public class IocConnection {
 	private final int port;
 	private String logicalIocName = null;
 	private String ldapIocName = null;
+	private String _hostName = null;
+	private InetAddress _iocInetAddress = null;
 	
 	private long timeReConnected = 0;
 	private long timeLastBeaconReceived = 0;
@@ -76,10 +79,29 @@ public class IocConnection {
 	 *            the time source that will be used by this IOC connection for
 	 *            timeout calculations, statistical information etc.
 	 */
-	public IocConnection(String host, int port, TimeSource timeSource) {
-		this.host = host;
+	public IocConnection(InetAddress iocInetAddress, int port, TimeSource timeSource) {
+
 		this.port = port;
 		_timeSource = timeSource;
+		
+		//  2009-07-06 MCL
+		// a good chance to get the host name...
+	    /*
+	     * getHostName is a blocking activity 
+	     * this may cause the process to wait for the answer from the name server
+	     * if the primary name server is NOT online it will take several seconds to fail over to the next in line
+	     * it seems that this will occur EACH time getHostName() is called! 
+	     */
+        String hostName = iocInetAddress.getHostName();
+        /*
+         * in case the host name is null
+         * keep the IP address instead
+         */
+        if ( hostName == null) {
+        	hostName = iocInetAddress.getHostAddress();
+        }
+		this.host = hostName;
+		this._iocInetAddress = iocInetAddress;
 		
 		//
 		// init time
@@ -149,6 +171,10 @@ public class IocConnection {
 
 	public int getPort() {
 		return port;
+	}
+	
+	public InetAddress getIocInetAddress() {
+		return _iocInetAddress;
 	}
 
 	public void setLastMessageSize(int lastMessageSize) {

@@ -26,6 +26,7 @@ import org.csstudio.diag.interconnectionServer.Activator;
 import org.csstudio.diag.interconnectionServer.preferences.PreferenceConstants;
 import org.csstudio.diag.interconnectionServer.server.InterconnectionServer;
 import org.csstudio.diag.interconnectionServer.server.IocCommandSender;
+import org.csstudio.diag.interconnectionServer.server.IocConnectionManager;
 import org.csstudio.platform.management.CommandParameters;
 import org.csstudio.platform.management.CommandResult;
 import org.csstudio.platform.management.IManagementCommand;
@@ -47,7 +48,7 @@ public class SendCommandToIoc implements IManagementCommand {
 		int port = commandPort();
 		String command = (String) parameters.get("command");
 		
-		IocCommandSender sender = new IocCommandSender(ioc, port, command);
+		IocCommandSender sender = new IocCommandSender(IocConnectionManager.getInstance().getIocInetAdressByName(ioc), port, command);
 		InterconnectionServer.getInstance().getCommandExecutor().execute(sender);
 		return CommandResult.createSuccessResult();
 	}

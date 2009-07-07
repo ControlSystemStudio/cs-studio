@@ -21,6 +21,7 @@
  */
 package org.csstudio.diag.interconnectionServer.server;
 
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -64,18 +65,21 @@ public class IocConnectionManager {
 	 * Returns the IOC connection object representing the connection to the IOC
 	 * on the specified host and port.
 	 * 
-	 * @param host
-	 *            the hostname of the IOC.
+	 * @param hostAddress
+	 *            the host address of the IOC.
 	 * @param port
 	 *            the port from which messages from the IOC are received.
 	 * @return the IOC connection.
 	 */
-	public IocConnection getIocConnection(String host, int port) {
-		String internalId = host + ":" + port;
+	// 2009-07-06 MCL
+    // change internal ID from hostName to hostAddress        
+    //
+	public IocConnection getIocConnection(InetAddress iocInetAddress, int port) {
+		String internalId = iocInetAddress.getHostAddress() + ":" + port;
 		if (connectionList.containsKey(internalId)) {
 			return connectionList.get(internalId);
 		} else {
-			IocConnection connection = new IocConnection(host, port, TimeUtil.systemClock());
+			IocConnection connection = new IocConnection(iocInetAddress, port, TimeUtil.systemClock());
 			connectionList.put(internalId, connection);
 			return connection;
 		}
@@ -129,9 +133,9 @@ public class IocConnectionManager {
 
 	}
 
+	
 	public String[] getNodeNameArray() {
 		List<String> nodeNames = new ArrayList<String>();
-		boolean first = true;
 
 		Enumeration connections = this.connectionList.elements();
 		while (connections.hasMoreElements()) {
@@ -142,10 +146,36 @@ public class IocConnectionManager {
 		return nodeNames.toArray(new String[0]);
 
 	}
+	
+	public InetAddress[] getListOfIocInetAdresses() {
+		List<InetAddress> nodeNames = new ArrayList<InetAddress>();
+
+		Enumeration connections = this.connectionList.elements();
+		while (connections.hasMoreElements()) {
+			IocConnection thisContent = (IocConnection) connections.nextElement();
+			nodeNames.add(thisContent.getIocInetAddress());
+		}
+		return nodeNames.toArray(new InetAddress[0]);
+
+	}
+	
+	public InetAddress getIocInetAdressByName( String iocName) {
+		
+		if (iocName == null) return null;
+
+		Enumeration connections = this.connectionList.elements();
+		while (connections.hasMoreElements()) {
+			IocConnection thisContent = (IocConnection) connections.nextElement();
+			if ( thisContent.getHost().equals(iocName)) {
+				return thisContent.getIocInetAddress();
+			}
+		}
+		return null;
+
+	}
 
 	public String[] getNodeNameArrayWithLogicalName() {
 		List<String> nodeNames = new ArrayList<String>();
-		boolean first = true;
 
 		// just in case no enum is possible
 		Enumeration connections = this.connectionList.elements();
