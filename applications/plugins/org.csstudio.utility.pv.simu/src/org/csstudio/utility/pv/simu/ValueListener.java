@@ -8,5 +8,5 @@ public interface ValueListener
     /** Notification of change in value
      *  @param value The value that changed
      */
-    public void changed(DynamicValue value);
+    public void changed(Value value);
 }
