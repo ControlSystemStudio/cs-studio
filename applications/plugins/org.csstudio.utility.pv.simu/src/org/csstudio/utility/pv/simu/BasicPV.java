@@ -8,35 +8,38 @@ import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
 import org.eclipse.core.runtime.PlatformObject;
 
-/** Base class for local as well as simulated PVs.
+/** Base class for Local and Simulated PV:
+ *  Has value and listeners.
+ *  Value changes are forwarded to listeners
+ *  
+ *  @param <T> Value type
+ *  
  *  @author Kay Kasemir
  */
-@SuppressWarnings("nls")
-public abstract class BasicPV extends PlatformObject implements PV
+abstract public class BasicPV<T extends Value> extends PlatformObject implements PV, ValueListener
 {
-    /** PV Name */
-    protected final String name;
-
-    /** PVListeners of this PV */
-    private final CopyOnWriteArrayList<PVListener> listeners = new CopyOnWriteArrayList<PVListener>();
-    
     /** Most recent value */
-    protected IValue value = null;
+    final protected T value;
     
+    /** PVListeners of this PV */
+    private final CopyOnWriteArrayList<PVListener> listeners =
+        new CopyOnWriteArrayList<PVListener>();
+
+    /** Started ? */
     protected boolean running = false;
 
     /** Initialize
      *  @param name PV name
      */
-    public BasicPV(final String name)
+    public BasicPV(final T value)
     {
-        this.name = name;
+        this.value = value;
     }
 
     /** {@inheritDoc} */
     public String getName()
     {
-        return name;
+        return value.getName();
     }
 
     /** {@inheritDoc} */
@@ -57,14 +60,19 @@ public abstract class BasicPV extends PlatformObject implements PV
         listeners.remove(listener);
     }
     
-    /** Inform all registered listeners about value update */
-    protected void fireValueUpdate()
+    /** Inform all registered listeners about value update
+     *  @see ValueListener#changed(Value)
+     */
+    public void changed(Value value)
     {
+        if (! running)
+            return;
         for (PVListener listener : listeners)
             listener.pvValueUpdate(this);
     }
 
     /** {@inheritDoc} */
+    @SuppressWarnings("nls")
     public String getStateInfo()
     {
         return running ? "running" : "stopped";
@@ -73,7 +81,7 @@ public abstract class BasicPV extends PlatformObject implements PV
     /** {@inheritDoc} */
     public IValue getValue()
     {
-        return value;
+        return value.getValue();
     }
 
     /** {@inheritDoc} */
@@ -93,4 +101,17 @@ public abstract class BasicPV extends PlatformObject implements PV
     {
         return running;
     }
+
+    /** {@inheritDoc} */
+    public boolean isWriteAllowed()
+    {
+        return false;
+    }
+
+    /** {@inheritDoc} */
+    public void setValue(Object newValue) throws Exception
+    {
+        // NOP
+    }
+
 }

@@ -12,18 +12,18 @@ import org.csstudio.utility.pv.PV;
 public class LocalPVFactory implements IPVFactory
 {
     /** All the 'local' PVs, mapped by name */
-    private static Map<String, DynamicValue> values =
-        new HashMap<String, DynamicValue>();
+    private static Map<String, Value> values =
+        new HashMap<String, Value>();
 
     /** Create a 'local' PV.
      *  @param name Name of the PV
      */
     public PV createPV(final String name)
     {
-        DynamicValue value = values.get(name);
+        Value value = values.get(name);
         if (value == null)
         {
-            value = new DynamicValue(name);
+            value = new Value(name);
             values.put(name, value);
         }
         return new LocalPV(value);
