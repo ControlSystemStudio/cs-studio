@@ -23,6 +23,7 @@ import org.eclipse.draw2d.KeyListener;
 import org.eclipse.draw2d.LightweightSystem;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
+import org.eclipse.draw2d.XYAnchor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.ImageLoader;
@@ -89,13 +90,18 @@ class XYGraphTest extends Figure {
 
 		Axis x2Axis = new Axis("X-2", false);	
 		x2Axis.setTickLableSide(LabelSide.Secondary);
+		//x2Axis.setAutoScale(true);
 		xyGraph.addAxis(x2Axis);
 		
-		Axis y2Axis = new Axis("Y-2", true);
+		
+		Axis y2Axis = new Axis("Log Scale", true);
+		y2Axis.setRange(10, 1000);
+		y2Axis.setLogScale(true);
+		//y2Axis.setAutoScale(true);
 		y2Axis.setForegroundColor(XYGraphMediaFactory.getInstance().getColor(XYGraphMediaFactory.COLOR_PINK));
-		y2Axis.setOrientation(Orientation.VERTICAL);		
+		y2Axis.setTickLableSide(LabelSide.Secondary);				
 		xyGraph.addAxis(y2Axis);
-	
+		/*
 		Axis y3Axis = new Axis("Y-3", true);
 		y3Axis.setForegroundColor(XYGraphMediaFactory.getInstance().getColor(XYGraphMediaFactory.COLOR_BLUE));
 		y3Axis.setTickLableSide(LabelSide.Secondary);
@@ -104,32 +110,38 @@ class XYGraphTest extends Figure {
 		y3Axis.setAutoScale(true);
 		xyGraph.addAxis(y3Axis);
 		
-		Axis y4Axis = new Axis("Y-4", true);
-		
+		Axis y4Axis = new Axis("Log Scale", true);		
 		y4Axis.setForegroundColor(XYGraphMediaFactory.getInstance().getColor(XYGraphMediaFactory.COLOR_ORANGE));
-		y4Axis.setTickLableSide(LabelSide.Secondary);
+		
 		y4Axis.setShowMajorGrid(false);
 		y4Axis.setRange(new Range(-100, 10000));	
 		y4Axis.setAutoScale(true);
 		y4Axis.setAutoScaleThreshold(0);
 		y4Axis.setLogScale(true);
 		xyGraph.addAxis(y4Axis);
-					
-		CircularBufferDataProvider trace1Provider = new CircularBufferDataProvider(false);
-		trace1Provider.setCurrentXDataArray(new double[]{0, 5,10,20,30,40,50,60.9,70, 76,90,95, 98});
-		trace1Provider.setCurrentYDataArray(new double[]{10, 20, 2342,233,
-				50,50,48,36.5,78.5, -50, 12, 121, 1212});	
 		
-		trace1 = new Trace("Trace1-XY Plot", x2Axis, y4Axis, trace1Provider);		
+		//large amount of data test
+		CircularBufferDataProvider trace1Provider = new CircularBufferDataProvider(false);
+		trace1Provider.setBufferSize(100000);
+		double[] xArray = new double[100000];
+		double[] yArray = new double[100000];
+		for(int i=0; i<100000; i++){
+			xArray[i] = i;
+			yArray[i] = Math.random() * i;
+		}
+		trace1Provider.setCurrentXDataArray(xArray);
+		trace1Provider.setCurrentYDataArray(yArray);	
+		
+		trace1 = new Trace("Trace1-XY Plot", x2Axis, y2Axis, trace1Provider);		
 		trace1.setAntiAliasing(false);
 		trace1.setTraceColor(XYGraphMediaFactory.getInstance().getColor(
 				new RGB(0,64,128)));
-		trace1.setTraceType(TraceType.SOLID_LINE);
-		trace1.setPointStyle(PointStyle.FILLED_TRIANGLE);
-		trace1.setPointSize(10);		
+		trace1.setTraceType(TraceType.POINT);
+		trace1.setPointStyle(PointStyle.POINT);
+		trace1.setPointSize(1);		
 		
 		xyGraph.addTrace(trace1);			
-	
+		*/ 	
 		trace2Provider = new CircularBufferDataProvider(true);
 		trace2Provider.setBufferSize(100);
 		trace2Provider.setUpdateDelay(100);		
@@ -144,10 +156,10 @@ class XYGraphTest extends Figure {
 		trace2.setAreaAlpha(100);
 		trace2.setAntiAliasing(true);
 		trace2.setErrorBarEnabled(true);
-		trace2.setDrawYErrorInArea(true);
+		//trace2.setDrawYErrorInArea(true);
 		trace2.setYErrorBarType(ErrorBarType.BOTH);
 		trace2.setXErrorBarType(ErrorBarType.NONE);
-		trace2.setErrorBarCapWidth(2);
+		trace2.setErrorBarCapWidth(3);
 		xyGraph.addTrace(trace2);		
 			
 		final CircularBufferDataProvider trace3Provider = new CircularBufferDataProvider(true);
@@ -164,7 +176,7 @@ class XYGraphTest extends Figure {
 		trace4.setPointSize(2);
 
 		trace4Provider.setUpdateDelay(100);
-		trace4Provider.setBufferSize(10);
+		trace4Provider.setBufferSize(100);
 		xyGraph.addTrace(trace4);
 		
 		toolbarArmedXYGraph = new ToolbarArmedXYGraph(xyGraph);		
@@ -233,36 +245,20 @@ class XYGraphTest extends Figure {
 			}
 		});		
 		
-		xyGraph.addTrace((new Trace("trace5", xyGraph.primaryXAxis, xyGraph.primaryYAxis, 
-				new  CircularBufferDataProvider(false))));
-		xyGraph.addTrace((new Trace("trace6", xyGraph.primaryXAxis, xyGraph.primaryYAxis, 
-				new  CircularBufferDataProvider(false))));
-		xyGraph.addTrace((new Trace("trace7", xyGraph.primaryXAxis, xyGraph.primaryYAxis, 
-				new  CircularBufferDataProvider(false))));
-		xyGraph.addTrace((new Trace("trace8", xyGraph.primaryXAxis, xyGraph.primaryYAxis, 
-				new  CircularBufferDataProvider(false))));
-		xyGraph.addTrace((new Trace("trace9", xyGraph.primaryXAxis, xyGraph.primaryYAxis, 
-				new  CircularBufferDataProvider(false))));
-		xyGraph.addTrace((new Trace("trace10sfsdfffffffffffffffffffffffffffffffffffffff", xyGraph.primaryXAxis, xyGraph.primaryYAxis, 
-				new  CircularBufferDataProvider(false))));
-		
 		updater = new Runnable(){
 			public void run() {
 				 t+=60000;
 				trace3Provider.setCurrentYData(Math.cos(updateIndex), t);
 				if((updateIndex >= 10 && updateIndex <=10.5) ||
 					(updateIndex >= 20 && updateIndex <=20.2)	){
-					trace2Provider.addSample(new Sample(t, Double.NaN));
-					//xyGraph.removeTrace(trace1);
-					//xyGraph.removeTrace(trace4);
+					trace2Provider.addSample(new Sample(t, Double.NaN));					
 					running = false;
 				}
 				else{
 					Sample sampe = new Sample(t, Math.sin(updateIndex), 0.1* Math.random(),
 							0.1*Math.random(), t*0.0000001* Math.random(),t*0.0000001* Math.random());
 					sampe.setInfo("sdfsf");
-					trace2Provider.addSample(sampe);
-		
+					trace2Provider.addSample(sampe);		
 				}
 						
 				trace2Provider.setCurrentYDataTimestamp(t);
@@ -283,7 +279,7 @@ class XYGraphTest extends Figure {
 	
 	@Override
 	protected void layout() {
-		toolbarArmedXYGraph.setBounds(bounds);
+		toolbarArmedXYGraph.setBounds(bounds.getCopy().shrink(5, 5));
 		super.layout();		
 	}
 
