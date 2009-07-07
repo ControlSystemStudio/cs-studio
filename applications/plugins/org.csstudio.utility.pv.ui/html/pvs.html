@@ -45,6 +45,10 @@ can both use a PV
 </pre>
 When adjusting the value in Probe, the Data Browser will reflect the
 changes.
+<p>
+Note that local PVs have no initial value. Setting them to anything that
+parses as a number will create a numeric (double-typed) PV. Otherwise,
+they behave as String PVs.
 
 <h3>sim://</h3>
 Simulated PVs can have these formats:
