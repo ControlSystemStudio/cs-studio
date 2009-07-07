@@ -341,6 +341,7 @@ public class XYGraph extends Figure{
 		}
 		plotArea.addTrace(trace);	
 		trace.setXYGraph(this);
+		trace.dataChanged(null);
 		revalidate();
 	}
 	
