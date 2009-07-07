@@ -1,0 +1,68 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=GBK"/>
+<link rel="stylesheet" href="default.css" type="text/css" />
+<title>Getting Started with SWT XYGraph</title>
+</head>
+<body>
+	<h3> 
+   		1. Getting started
+	</h3> 
+	<h4> 
+    	1.1. Installation
+	</h4> 
+	<p> 
+	    For Eclipse user, copy the org.csstudio.swt.xygraph.jar into ../eclipse/plugins directory.
+	    Restart Eclipse and include the plug-in org.csstudio.swt.xygraph and org.eclipse.draw2d in your plug-in dependencies list
+	    or add the jar files into your build path. Now you are ready to use SWT XYGraph! 
+	</p>  
+	<h4> 
+    	1.2. Create your first XY Graph
+	</h4> 
+	<p>
+		Just few simple steps, you can create your first XYGraph with a trace added.<br>
+		See <a href = "../examples/SimpleExample.java">SimpleExample.java</a>		
+	</p>
+	<p><strong>Step 1</strong>. Establish the bridge between Draw2D and SWT.
+	</p>
+	<p> 
+		The XY Graph is a Draw2D figure, so if you want to display an XY Graph as an SWT widget,
+		you have to create the bridge between Draw2D and SWT: 	
+	</p> 
+	<pre class="example_code"><strong>final</strong> LightweightSystem lws = <strong>new</strong> LightweightSystem(shell);	</pre> 
+	<p>
+	The shell can also be replaced with an SWT Canvas. 	
+	</p>
+	
+	<p><strong>Step 2</strong>. Create a new XYGraph.</p>	
+	<pre class="example_code">XYGraph xyGraph = <strong>new</strong> XYGraph();
+xyGraph.setTitle(<span class = "string">"Simple Example"</span>);	</pre> 
+	
+	<p><strong>Step 3</strong>. Set it as the content of LightwightSystem.</p>	
+	<pre class="example_code">lws.setContents(xyGraph);</pre> 
+	
+	<p><strong>Step 4</strong>. Create a trace data provider, 
+		which will provide the data to the trace. Here we use CircularBufferDataProvider which 
+		is a default provided data provider in XY Graph package. You can also create your own data provider by implementing
+		the interface <code>IDataProvider </code>.
+	</p>	
+	<pre class="example_code">
+CircularBufferDataProvider traceDataProvider = <strong>new</strong> CircularBufferDataProvider(<strong>false</strong>);
+traceDataProvider.setBufferSize(100);		
+traceDataProvider.setCurrentXDataArray(<strong>new double</strong>[]{10, 23, 34, 45, 56, 78, 88, 99});
+traceDataProvider.setCurrentYDataArray(<strong>new double</strong>[]{11, 44, 55, 45, 88, 98, 52, 23});
+</pre> 
+	<p><strong>Step 5</strong>. Create a trace and set its properties.</p>	
+	<pre class="example_code">
+Trace trace = new Trace(<span class="string">"Trace1-XY Plot"</span>, 
+	xyGraph.primaryXAxis, xyGraph.primaryYAxis, traceDataProvider);			
+trace.setPointStyle(PointStyle.<i>XCROSS</i>);</pre> 
+	<p><strong>Step 6</strong>. Add the trace to xyGraph.</p>	
+	<pre class="example_code">xyGraph.addTrace(trace);</pre> 
+	<p>
+		Congratulations! You just created your first XYGraph which has the basic elements: title, axes, trace and legend. 
+	</p><p>	
+		<img src = "./img/SimpleExample.PNG" alt = "Simple Example"/>
+	</p>
+</body>
+</html>
