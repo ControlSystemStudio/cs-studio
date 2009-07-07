@@ -785,7 +785,9 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 	public void dataChanged(IDataProvider dataProvider) {		
 		//if the axis has been repainted, it will cause the trace to be repainted autoly,
 		//the trace doesn't have to be repainted again.
-		if(!xAxis.performAutoScale(false) && !yAxis.performAutoScale(false))
+		boolean xRepainted = xAxis.performAutoScale(false);
+		boolean yRepainted = yAxis.performAutoScale(false);
+		if( !xRepainted && !yRepainted )
 			repaint();
 	}	
 
