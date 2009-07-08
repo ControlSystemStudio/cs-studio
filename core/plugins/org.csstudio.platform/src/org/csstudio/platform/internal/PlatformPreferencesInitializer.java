@@ -97,7 +97,7 @@ public final class PlatformPreferencesInitializer extends
 	private void initializeConsoleAppenderPreferences(
 			final IEclipsePreferences node) {
 		node.put(CentralLogger.PROP_LOG4J_CONSOLE_APPENDER,
-				"org.apache.log4j.ConsoleAppender"); //$NON-NLS-1$
+				"org.csstudio.platform.internal.logging.AsyncConsoleAppender"); //$NON-NLS-1$
 		node.put(CentralLogger.PROP_LOG4J_CONSOLE_LAYOUT,
 				"org.apache.log4j.PatternLayout"); //$NON-NLS-1$
 		node.put(CentralLogger.PROP_LOG4J_CONSOLE_PATTERN,
