@@ -86,8 +86,8 @@ public class PVFactory
             final String name = config.getAttribute("name");
             final String prefix = config.getAttribute("prefix");
             final IPVFactory factory = (IPVFactory) config.createExecutableExtension("class");
-            Plugin.getLogger().debug("Found PVFactory implementation '"
-                    + name + "', prefix '" + prefix + "' in " + plugin);
+            Plugin.getLogger().debug(plugin + " provides '" + name +
+                                     "', prefix '" + prefix);
             pv_factory.put(prefix, factory);
         }
     }
