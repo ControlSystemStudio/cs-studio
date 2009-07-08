@@ -37,6 +37,9 @@ System PVs can be used to display information internal to CSS or the local compu
 <tr><td><pre>sys://used_mb</pre></td><td>Used Java VM memory in MB</td></tr>
 <tr><td><pre>sys://max_mb</pre></td><td>Maximum available Java VM memory in MB</td></tr>
 <tr><td><pre>sys://user</pre></td><td>User Name</td></tr>
+<tr><td><pre>sys://host_name</pre></td><td>Host name</td></tr>
+<tr><td><pre>sys://qualified_host_name</pre></td><td>Full Host Name</td></tr>
+<tr><td><pre>sys://system.*</pre></td><td>Any system property, e.g. "sys://system.user.name"</td></tr>
 </table>
 
 <h3>ca://</h3>
@@ -76,16 +79,16 @@ generates simulated noise from -5 to 5, updating once every second.
 generates simulated noise from -10 to 10, updating every 0.2 seconds.
 
 <pre>
-  sim://sine(0, 10, 0.5)
+  sim://sine(0, 10, 20, 0.5)
 </pre>
-generates a simulated sine wave signal valued 0 to 10, updating every 0.5 seconds.
+generates a simulated sine wave signal valued 0 to 10,
+split into 20 updates, updating every 0.5 seconds.
 A full period takes 20 updates, i.e. 5 seconds in this example.
 
 <pre>
-  sim://ramp(0, 10, 0.5)
+  sim://ramp(0, 10, 0.1, 0.5)
 </pre>
-generates a ramp (saw-tooth) valued 0 to 10, updating every 0.5 seconds.
-A full ramp takes 20 updates, i.e. 5 seconds in this example.
+generates a ramp (saw-tooth) valued 0 to 10, stepping 0.1 every 0.5 seconds.
 
 </body>
 </html>

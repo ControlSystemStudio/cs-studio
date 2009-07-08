@@ -5,9 +5,6 @@ package org.csstudio.utility.pv.simu;
  */
 public class SineValue extends DynamicValue
 {
-    /** A full sinewave is created in these many updates */
-    final private static int steps = 20;
-
     private double x = 0;
 
     /** Initialize
@@ -23,6 +20,6 @@ public class SineValue extends DynamicValue
     protected void update()
     {
         setValue(min + ((Math.sin(x)+1.0)/2.0 * (max - min)));
-        x += 2.0*Math.PI / steps;
+        x += 2.0*Math.PI / step;
     }
 }
