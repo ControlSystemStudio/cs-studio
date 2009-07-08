@@ -62,8 +62,8 @@ abstract public class DynamicValue extends Value implements Runnable
         super(name);
 
         // Parse "name(min, max, update_seconds)"
-        final Pattern name_pattern = Pattern.compile("\\w+\\(\\s*([-0-9.]+)\\s*,\\s*([-0-9.]+)\\s*,\\s*([-0-9.]+)\\s*,\\s*([0-9.]+)\\s*\\)");
-        final Matcher matcher = name_pattern.matcher(name);
+        Pattern name_pattern = Pattern.compile("\\w+\\(\\s*([-0-9.]+)\\s*,\\s*([-0-9.]+)\\s*,\\s*([-0-9.]+)\\s*,\\s*([0-9.]+)\\s*\\)");
+        Matcher matcher = name_pattern.matcher(name);
         if (matcher.matches())
         {
             try
@@ -75,18 +75,29 @@ abstract public class DynamicValue extends Value implements Runnable
             }
             catch (Throwable ex)
             {   // Number parse error
-                min = DEFAULT_MIN;
-                max = DEFAULT_MAX;
-                step = DEFAULT_STEP;
-                update_period = DEFAULT_UPDATE;
+            	useDefault();
             }
         }
         else
         {
-            min = DEFAULT_MIN;
-            max = DEFAULT_MAX;
-            step = DEFAULT_STEP;
-            update_period = DEFAULT_UPDATE;
+        	name_pattern = Pattern.compile("\\w+\\(\\s*([-0-9.]+)\\s*,\\s*([-0-9.]+)\\s*,\\s*([0-9.]+)\\s*\\)");
+        	matcher = name_pattern.matcher(name);
+        	 if (matcher.matches())
+             {
+                 try
+                 {
+                     min = Double.parseDouble(matcher.group(1));
+                     max = Double.parseDouble(matcher.group(2));
+                     update_period = Math.round(Double.parseDouble(matcher.group(3))*1000);
+                     step = DEFAULT_STEP;
+                 }
+                 catch (Throwable ex)
+                 {   // Number parse error
+                     useDefault();
+                 }
+             }else{
+	            useDefault();
+             }            
         }
         // Enforce minimum period delay
         if (update_period < MIN_UPDATE_PERIOD)
@@ -94,6 +105,16 @@ abstract public class DynamicValue extends Value implements Runnable
         final double range = max - min;
         meta = ValueFactory.createNumericMetaData(min, max, min+0.3*range, min+0.7*range, min+0.1*range, min+0.9*range, 3, "a.u.");
     }
+
+	/**
+	 * use default settings.
+	 */
+	private void useDefault() {
+		    min = DEFAULT_MIN;
+		    max = DEFAULT_MAX;
+		    step = DEFAULT_STEP;
+		    update_period = DEFAULT_UPDATE;
+	}
     
     /** {@inheritDoc} */
     public synchronized void start() throws Exception

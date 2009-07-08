@@ -6,6 +6,7 @@ package org.csstudio.utility.pv.simu;
 public class SineValue extends DynamicValue
 {
     private double x = 0;
+    private int DEFAULT_COUNT =10;
 
     /** Initialize
      *  @param name
@@ -13,6 +14,8 @@ public class SineValue extends DynamicValue
     public SineValue(final String name)
     {
         super(name);
+        if(step <= 1)
+        	step = DEFAULT_COUNT;
     }
 
     /** {@inheritDoc} */
