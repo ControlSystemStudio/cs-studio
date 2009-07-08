@@ -19,11 +19,12 @@ import org.csstudio.platform.data.IValue.Quality;
 public class LocalPV extends BasicPV<Value>
 {
     /** Initialize
+     *  @param prefix PV type prefix
      *  @param value PV name
      */
-    public LocalPV(final Value value)
+    public LocalPV(final String prefix, final Value value)
     {
-        super(LocalPVFactory.PREFIX, value);
+        super(prefix, value);
     }
 
     /** {@inheritDoc} */

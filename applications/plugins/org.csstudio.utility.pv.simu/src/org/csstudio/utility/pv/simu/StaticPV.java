@@ -1,36 +1,34 @@
 package org.csstudio.utility.pv.simu;
 
 
-/** Simulated PV.
+/** Static PV.
  *  <p>
- *  Provides updates based on changes of the underlying DynamicValue.
+ *  PV that displays the underlying Value, but never changes.
  *  
  *  @author Kay Kasemir
  */
-public class SimulatedPV extends BasicPV<DynamicValue>
+public class StaticPV extends BasicPV<Value>
 {
     /** Initialize
      *  @param prefix PV type prefix
-     *  @param name PV name
+     *  @param value PV name
      */
-    public SimulatedPV(final String prefix, final DynamicValue value)
+    public StaticPV(final String prefix, final Value value)
     {
         super(prefix, value);
     }
-    
+
     /** {@inheritDoc} */
     public synchronized void start() throws Exception
     {
         running = true;
-        value.addListener(this);
-        value.start();
+        // Send initial update
+        changed(value);
     }
 
     /** {@inheritDoc} */
     public void stop()
     {
-        value.removeListener(this);
-        value.stop();
         running = false;
     }
 }

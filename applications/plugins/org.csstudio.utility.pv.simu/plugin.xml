@@ -13,6 +13,11 @@
             name="Local PV"
             prefix="loc">
       </PVFactory>
+      <PVFactory
+            class="org.csstudio.utility.pv.simu.SystemPVFactory"
+            name="System PV"
+            prefix="sys">
+      </PVFactory>
    </extension>
 
 </plugin>

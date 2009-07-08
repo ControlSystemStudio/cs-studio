@@ -33,6 +33,6 @@ public class SimulatedPVFactory implements IPVFactory
                 value = new NoiseValue(name);
             values.put(name, value);
         }
-        return new SimulatedPV(value);
+        return new SimulatedPV(PREFIX, value);
     }
 }

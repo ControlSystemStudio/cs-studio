@@ -117,4 +117,10 @@ abstract public class BasicPV<T extends Value> extends PlatformObject implements
     {
         // NOP
     }
+
+    @Override
+    public String toString()
+    {
+        return getName();
+    }
 }

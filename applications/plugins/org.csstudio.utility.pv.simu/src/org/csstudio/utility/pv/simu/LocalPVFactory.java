@@ -30,6 +30,6 @@ public class LocalPVFactory implements IPVFactory
             value = new Value(name);
             values.put(name, value);
         }
-        return new LocalPV(value);
+        return new LocalPV(PREFIX, value);
     }
 }
