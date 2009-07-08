@@ -1,5 +1,7 @@
 package org.csstudio.utility.pv.simu;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,9 +37,28 @@ public class SystemPVFactory implements IPVFactory
                 value = new UsedMemValue(name);
             else if (name.equals("max_mb"))
                 value = new MaxMemValue(name);
-            else if (name.equals("user"))
-                value = new TextValue(name, System.getProperty("user.name"));
-            else
+            else if (name.startsWith("system.")){
+            	String prop = name.substring(7);
+            	String prop_value = System.getProperty(prop);
+            	if(prop_value != null)
+            		value = new TextValue(name, prop_value);
+            	else
+            		value = new TextValue(name,
+                        "Unknown system property '" + prop + "'", false);
+            }                
+            else if (name.equals("host_name"))
+				try {
+					value = new TextValue(name, InetAddress.getLocalHost().getHostName());
+				} catch (UnknownHostException e) {
+					value = new TextValue(name, "Unknown Host", false);
+				}
+			else if (name.equals("qualified_host_name"))
+				try {
+					value = new TextValue(name, InetAddress.getLocalHost().getCanonicalHostName());
+				} catch (UnknownHostException e) {
+					value = new TextValue(name, "Unknown Host", false);
+				}
+			else
                 value = new TextValue(name,
                         "Unknown system property '" + name + "'", false);
             values.put(name, value);
