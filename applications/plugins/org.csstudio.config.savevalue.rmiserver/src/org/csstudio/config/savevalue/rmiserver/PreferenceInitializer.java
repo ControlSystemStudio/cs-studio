@@ -48,6 +48,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		prefs.put(PreferenceConstants.SHUTDOWN_PASSWORD, "rmiAdmin");
 		prefs.put(PreferenceConstants.XMPP_USERNAME, "savevaluermi");
 		prefs.put(PreferenceConstants.XMPP_PASSWORD, "savevaluermi");
+		prefs.put(PreferenceConstants.XMPP_SERVER, "krynfs.desy.de");
 		prefs.put(PreferenceConstants.FILE_PATH_PREFERENCE, "/applic/caSave/dataSaveButton/");
 	}
 

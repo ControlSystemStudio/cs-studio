@@ -22,10 +22,11 @@
 
 package org.csstudio.config.savevalue.rmiserver;
 
-import java.util.Map;
 
-import org.csstudio.platform.libs.dcf.actions.IAction;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.management.CommandParameters;
+import org.csstudio.platform.management.CommandResult;
+import org.csstudio.platform.management.IManagementCommand;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
@@ -34,7 +35,7 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  * 
  * @author Joerg Rathlev
  */
-public class ShutdownAction implements IAction {
+public class ShutdownAction implements IManagementCommand {
 
 	/**
 	 * The logger used by this class.
@@ -49,23 +50,18 @@ public class ShutdownAction implements IAction {
 	 *            <code>Map</code> containing a password string.
 	 * @return a message.
 	 */
-	public final Object run(final Object param) {
+	public CommandResult execute(CommandParameters parameters) {
 		String password = null;
-		if (!(param instanceof Map)) {
-			return "Parameter not available.";
-		}
+		password = (String) parameters.get("PASSWORD");
 		
-		@SuppressWarnings("unchecked")
-		Map<String, String> params = (Map<String, String>) param;
-		password = params.get("password");
 		
 		if (isCorrectPassword(password)) {
 			_log.info(this, "Received shutdown command, shutting down now.");
 			SaveValueServer.getRunningServer().stop();
-			return "Save Value RMI Server is shutting down...";
+			return CommandResult.createSuccessResult();
 		} else {
 			_log.warn(this, "Received shutdown command with invalid password.");
-			return "Incorrect password.";
+			return CommandResult.createMessageResult("Invalid password");
 		}
 	}
 

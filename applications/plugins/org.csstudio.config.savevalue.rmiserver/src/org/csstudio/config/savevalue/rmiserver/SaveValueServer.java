@@ -32,8 +32,13 @@ import org.csstudio.config.savevalue.service.SocketFactory;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.startupservice.IStartupServiceListener;
 import org.csstudio.platform.startupservice.StartupServiceEnumerator;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
+import org.remotercp.common.servicelauncher.ServiceLauncher;
+import org.remotercp.ecf.ECFConstants;
+import org.remotercp.login.connection.HeadlessConnection;
 
 /**
  * Server application for the save value services. 
@@ -73,6 +78,8 @@ public class SaveValueServer implements IApplication {
 	public final Object start(final IApplicationContext context) throws Exception {
 		
 		_instance = this;
+		
+	    connectToXmppServer();  
 		
         for (IStartupServiceListener s : StartupServiceEnumerator.getServices()) {
             _log.debug(this, "Running startup service: " + s.toString());
@@ -119,6 +126,23 @@ public class SaveValueServer implements IApplication {
 		return IApplication.EXIT_OK;
 	}
 
+	   /**
+     * Connects to the XMPP server for remote management (ECF-based).
+     */
+    private void connectToXmppServer() throws Exception {
+        IPreferencesService prefs = Platform.getPreferencesService();
+        String username = prefs.getString(Activator.PLUGIN_ID,
+                PreferenceConstants.XMPP_USERNAME, "anonymous", null);
+        String password = prefs.getString(Activator.PLUGIN_ID,
+                PreferenceConstants.XMPP_PASSWORD, "anonymous", null);
+        String server = prefs.getString(Activator.PLUGIN_ID,
+                PreferenceConstants.XMPP_SERVER, "krykxmpp.desy.de", null);
+        
+        HeadlessConnection.connect(username, password, server, ECFConstants.XMPP);
+        ServiceLauncher.startRemoteServices();
+    }
+
+	
 	/**
 	 * {@inheritDoc}
 	 */

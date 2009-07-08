@@ -50,6 +50,8 @@ final class PreferenceConstants {
 	 */
 	static final String XMPP_PASSWORD = "xmpp.password";
 
+	static final String XMPP_SERVER = "xmppServer";
+	
 	/**
 	 * Private constructor.
 	 */

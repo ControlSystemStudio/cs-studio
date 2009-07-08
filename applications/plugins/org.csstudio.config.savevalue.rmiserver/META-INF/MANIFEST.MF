@@ -8,7 +8,7 @@ Bundle-Vendor: DESY
 Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.config.savevalue.service,
  org.csstudio.platform,
- org.csstudio.platform.libs.xmpp,
- org.csstudio.platform.libs.dcf,
- org.junit4
+ org.junit4,
+ org.remotercp.common;bundle-version="1.0.0",
+ org.remotercp.ecf;bundle-version="1.0.0"
 Eclipse-LazyStart: true
