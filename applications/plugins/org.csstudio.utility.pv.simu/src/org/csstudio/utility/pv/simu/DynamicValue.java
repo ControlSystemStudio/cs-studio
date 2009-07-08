@@ -16,12 +16,12 @@ import org.csstudio.platform.data.IValue.Quality;
  *  current value, and parses the value range as well as processing
  *  period from its name:
  *  <p>
- *  Names "something(-10, 10, 0.2)" would result in a value range of -10 to 10,
- *  updating every 0.2 seconds.
+ *  Names "something(-10, 10, 0.5, 0.2)" would result in a value range of -10 to 10,
+ *  updating every 0.2 seconds on a step of 0.5.
  *  <p>
- *  By default, it processes at 1 Hz with a value range of -5 .. 5.
+ *  By default, it processes at 1 Hz with a value range of -5 .. 5 on a step of 1.
  *  
- *  @author Kay Kasemir
+ *  @author Kay Kasemir, Xihui Chen
  */
 @SuppressWarnings("nls")
 abstract public class DynamicValue extends Value implements Runnable
@@ -30,10 +30,11 @@ abstract public class DynamicValue extends Value implements Runnable
     private static final int DEFAULT_MIN = -5,
                              DEFAULT_MAX = 5,
                              DEFAULT_UPDATE = 1000,
+                             DEFAULT_STEP = 1,
                              MIN_UPDATE_PERIOD = 10;
 
     /** Value range: min...max */
-    protected double min, max;
+    protected double min, max, step;
 
     /** Update period (millisec) */
     protected long update_period;
@@ -61,7 +62,7 @@ abstract public class DynamicValue extends Value implements Runnable
         super(name);
 
         // Parse "name(min, max, update_seconds)"
-        final Pattern name_pattern = Pattern.compile("\\w+\\(\\s*([-0-9.]+)\\s*,\\s*([-0-9.]+)\\s*,\\s*([0-9.]+)\\s*\\)");
+        final Pattern name_pattern = Pattern.compile("\\w+\\(\\s*([-0-9.]+)\\s*,\\s*([-0-9.]+)\\s*,\\s*([-0-9.]+)\\s*,\\s*([0-9.]+)\\s*\\)");
         final Matcher matcher = name_pattern.matcher(name);
         if (matcher.matches())
         {
@@ -69,12 +70,14 @@ abstract public class DynamicValue extends Value implements Runnable
             {
                 min = Double.parseDouble(matcher.group(1));
                 max = Double.parseDouble(matcher.group(2));
-                update_period = Math.round(Double.parseDouble(matcher.group(3))*1000);
+                step = Double.parseDouble(matcher.group(3));
+                update_period = Math.round(Double.parseDouble(matcher.group(4))*1000);
             }
             catch (Throwable ex)
             {   // Number parse error
                 min = DEFAULT_MIN;
                 max = DEFAULT_MAX;
+                step = DEFAULT_STEP;
                 update_period = DEFAULT_UPDATE;
             }
         }
@@ -82,6 +85,7 @@ abstract public class DynamicValue extends Value implements Runnable
         {
             min = DEFAULT_MIN;
             max = DEFAULT_MAX;
+            step = DEFAULT_STEP;
             update_period = DEFAULT_UPDATE;
         }
         // Enforce minimum period delay
