@@ -51,4 +51,10 @@ public class BenchmarkTimer
         return elapsed / 1.0e9;
     }
 
+    @Override
+    public String toString()
+    {
+        RelativeTime passed = new RelativeTime(getSeconds());
+        return passed.toString();
+    }
 }
