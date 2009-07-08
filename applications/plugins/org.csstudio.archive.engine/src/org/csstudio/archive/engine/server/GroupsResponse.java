@@ -86,6 +86,7 @@ class GroupsResponse extends AbstractResponse
         html.tableLine(new String[]
         {
             Messages.HTTP_Total,
+            "",
             Integer.toString(total_channels),
             connected,
             "",

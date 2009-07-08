@@ -38,10 +38,12 @@ public class EngineServer
         http.registerServlet("/disconnected", new DisconnectedResponse(model), null, http_context);
         http.registerServlet("/group", new GroupResponse(model), null, http_context);
         http.registerServlet("/channel", new ChannelResponse(model), null, http_context);
+        http.registerServlet("/channels", new ChannelListResponse(model), null, http_context);
         http.registerServlet("/environment", new EnvironmentResponse(model), null, http_context);
         http.registerServlet("/restart", new RestartResponse(model), null, http_context);
         http.registerServlet("/reset", new ResetResponse(model), null, http_context);
         http.registerServlet("/stop", new StopResponse(model), null, http_context);
+        http.registerServlet("/debug", new DebugResponse(model), null, http_context);
         
         CentralLogger.getInstance().getLogger(this).info("Engine HTTP Server port " + port);
     }

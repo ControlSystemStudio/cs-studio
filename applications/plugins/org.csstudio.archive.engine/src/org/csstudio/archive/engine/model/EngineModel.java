@@ -190,6 +190,18 @@ public class EngineModel
         return null;
     }
     
+    /** @return Number of channels */
+    public int getChannelCount()
+    {
+        return channels.size();
+    }
+
+    /** @param i Channel index, 0 ... <code>getChannelCount()-1</code> */
+    public ArchiveChannel getChannel(int i)
+    {
+        return channels.get(i);
+    }
+
     /** @return Channel by that name or <code>null</code> if not found */
     final public ArchiveChannel getChannel(final String name)
     {
@@ -417,5 +429,32 @@ public class EngineModel
             throw new IllegalStateException("Only allowed in IDLE state");
         groups.clear();
         channels.clear();
+    }
+
+    /** Write debug info to stdout */
+    @SuppressWarnings("nls")
+    public void dumpDebugInfo()
+    {
+        System.out.println(TimestampFactory.now().toString() + ": Debug info");
+        for (ArchiveChannel channel : channels)
+        {
+            StringBuilder buf = new StringBuilder();
+            buf.append("'" + channel.getName() + "' (");
+            for (int i=0; i<channel.getGroupCount(); ++i)
+            {
+                if (i > 0)
+                    buf.append(", ");
+                buf.append(channel.getGroup(i).getName());
+            }
+            buf.append("): ");
+            buf.append(channel.getMechanism());
+            
+            buf.append(channel.isEnabled() ? ", enabled" : ", DISABLED");
+            buf.append(channel.isConnected() ? ", connected (" : ", DISCONNECTED (");
+            buf.append(channel.getInternalState() + ")");
+            buf.append(", value " + channel.getCurrentValue());
+            buf.append(", last stored " + channel.getLastArchivedValue());
+            System.out.println(buf.toString());        
+        }
     }
 }
