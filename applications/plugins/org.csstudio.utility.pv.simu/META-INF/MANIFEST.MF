@@ -5,4 +5,4 @@ Bundle-SymbolicName: org.csstudio.utility.pv.simu;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Vendor: Kay Kasemir
 Require-Bundle: org.csstudio.utility.pv;bundle-version="1.0.8",
- org.junit
+ org.junit4
