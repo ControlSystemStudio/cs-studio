@@ -19,6 +19,7 @@ import org.csstudio.utility.pv.PVListener;
  *
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 abstract public class ArchiveChannel
 {
     /** Throttled log for NaN samples */
@@ -89,6 +90,8 @@ abstract public class ArchiveChannel
     
     /** Buffer of received samples, periodically written */
     private final SampleBuffer buffer;
+
+    private Logger log;
     
     /** Construct an archive channel
      *  @param name Name of the channel (PV)
@@ -105,9 +108,11 @@ abstract public class ArchiveChannel
         this.enablement = enablement;
         this.last_archived_value = last_archived_value;
         this.buffer = new SampleBuffer(name, buffer_capacity);
+        log = CentralLogger.getInstance().getLogger(this);
         if (last_archived_value == null)
-            CentralLogger.getInstance().getLogger(this).info(
-                    name + ": No known last value"); //$NON-NLS-1$
+            log.info(name + ": No known last value");
+        if (!log.isDebugEnabled())
+            log = null;
         
         pv = PVFactory.createPV(name);
         pv.addListener(new PVListener()
@@ -172,7 +177,6 @@ abstract public class ArchiveChannel
     }
 
     /** Tell channel that it no longer belogs to group */
-    @SuppressWarnings("nls")
     final void removeGroup(final ArchiveGroup group)
     {
         if (!groups.remove(group))
@@ -268,7 +272,6 @@ abstract public class ArchiveChannel
      *               it's the first value after startup or error,
      *               so there's no need to write that sample again.
      */
-    @SuppressWarnings("nls")
     protected boolean handleNewValue(final IValue value)
     {
         synchronized (this)
@@ -292,6 +295,8 @@ abstract public class ArchiveChannel
             SampleBuffer.isInErrorState() == false)
         {
             need_write_error_sample = false;
+            if (log != null)
+                log.debug(getName() + " wrote error sample");
             addInfoToBuffer(ValueButcher.createWriteError());
             need_first_sample = true;
         }
@@ -299,7 +304,10 @@ abstract public class ArchiveChannel
         if (!need_first_sample)
             return false;
         need_first_sample = false;
-        addInfoToBuffer(ValueButcher.transformTimestampToNow(value));
+        final IValue updated = ValueButcher.transformTimestampToNow(value);
+        if (log != null)
+            log.debug(getName() + " wrote first sample " + updated);
+        addInfoToBuffer(updated);
         return true;
     }
     
@@ -315,6 +323,8 @@ abstract public class ArchiveChannel
         {
             most_recent_value = null;
         }
+        if (log != null)
+            log.debug(getName() + " wrote disconnect sample");
         addInfoToBuffer(ValueButcher.createDisconnected());
         need_first_sample = true;
     }
@@ -347,7 +357,6 @@ abstract public class ArchiveChannel
      *  @return <code>false</code> if value failed back-in-time check,
      *          <code>true</code> if value was added.
      */
-    @SuppressWarnings("nls")
     final protected boolean addValueToBuffer(final IValue value)
     {
         synchronized (this)
@@ -426,7 +435,6 @@ abstract public class ArchiveChannel
             addInfoToBuffer(ValueButcher.createDisabled());
     }
 
-    @SuppressWarnings("nls")
     @Override
     public String toString()
     {

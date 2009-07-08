@@ -48,7 +48,7 @@ public class MonitoredArchiveChannel extends ArchiveChannel
         if (isEnabled())
         {
             if (log != null)
-                log.debug(getName() + " wrote " + value);
+                log.debug(getName() + " writes " + value);
             addValueToBuffer(value);
             return true;
         }

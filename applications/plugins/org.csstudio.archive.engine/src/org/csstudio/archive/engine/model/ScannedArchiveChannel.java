@@ -2,6 +2,7 @@ package org.csstudio.archive.engine.model;
 
 import java.util.Arrays;
 
+import org.apache.log4j.Logger;
 import org.csstudio.apputil.time.PeriodFormat;
 import org.csstudio.platform.data.IDoubleValue;
 import org.csstudio.platform.data.IEnumeratedValue;
@@ -20,6 +21,7 @@ public class ScannedArchiveChannel extends ArchiveChannel implements Runnable
     final private double scan_period;
     final private int max_repeats;
     private int repeats = 0;
+    private Logger log;
     
     /** @see ArchiveChannel#ArchiveChannel(String, int, IValue) */
     public ScannedArchiveChannel(final String name,
@@ -31,6 +33,9 @@ public class ScannedArchiveChannel extends ArchiveChannel implements Runnable
         super(name, enablement, buffer_capacity, last_archived_value);
         this.scan_period = scan_period;
         this.max_repeats = max_repeats;
+        log = CentralLogger.getInstance().getLogger(this);
+        if (! log.isDebugEnabled())
+            log = null;
     }
     
     /** @return Scan period in seconds */
@@ -54,29 +59,40 @@ public class ScannedArchiveChannel extends ArchiveChannel implements Runnable
     {
         if (! isEnabled())
             return;
-        final IValue recent;
+        final IValue value;
         synchronized (this)
         {   // Have anything?
             if (most_recent_value == null)
+            {
+                if (log != null)
+                    log.debug(getName() + " scan: No data");
                 return;
+            }
             // Is it a new value?
             if (isMatchingValue(last_archived_value, most_recent_value))
             {
                 ++repeats ;
                 if (repeats < max_repeats)
+                {
+                    if (log != null)
+                        log.debug(getName() + ": " + most_recent_value + " repeat " + repeats);
                     return;
+                }
             }
             // New value, or exceeded repeats
             repeats = 0;
-            recent = most_recent_value;
+            value = most_recent_value;
         }
         // unlocked w/ reference to most_recent_value
-        final IValue value = ValueButcher.transformTimestampToNow(recent);
-        if (value == null)
+        final IValue updated = ValueButcher.transformTimestampToNow(value);
+        if (updated == null)
             CentralLogger.getInstance().getLogger(this).error("Channel " + getName()
                             + ": Cannot handle value type "
-                            + recent.getClass().getName());
-        addValueToBuffer(value);
+                            + value.getClass().getName());
+        if (log != null)
+            log.debug(getName() + " writes " + updated + " (orig. " + value.getTime() + ")");
+        addValueToBuffer(updated);
+        
     }
 
     /** Check if values match in status, severity, and value. Time is ignored.
