@@ -218,7 +218,9 @@ public class EPICS_V3_PV
 
     /** @return Returns the name. */
     public String getName()
-    {   return name;  }
+    {
+        return EPICSPVFactory.PREFIX + "://" + name;
+    }
     
     /** @return CSS type ID for IProcessVariable */
     public String getTypeId()

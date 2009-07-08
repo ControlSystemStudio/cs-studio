@@ -8,6 +8,9 @@ import org.csstudio.utility.pv.PV;
  */
 public class EPICSPVFactory implements IPVFactory
 {
+    /** PV type prefix */
+    public static final String PREFIX = "ca"; //$NON-NLS-1$
+
     /** {@inheritDoc} */
     public PV createPV(String name)
     {
