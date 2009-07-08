@@ -261,9 +261,15 @@ abstract public class ArchiveChannel
      *  Base class remembers the <code>most_recent_value</code>,
      *  and asserts that one 'first' sample is archived.
      *  Derived class <b>must</b> call <code>super()</code>.
+     *  
+     *  @param value Value received from PV
+     *  
+     *  @return true if the value was already written because
+     *               it's the first value after startup or error,
+     *               so there's no need to write that sample again.
      */
     @SuppressWarnings("nls")
-    protected void handleNewValue(final IValue value)
+    protected boolean handleNewValue(final IValue value)
     {
         synchronized (this)
         {
@@ -279,7 +285,7 @@ abstract public class ArchiveChannel
             
         }
         if (!enabled)
-            return;
+            return false;
         
         // Did we recover from write errors?
         if (need_write_error_sample &&
@@ -290,11 +296,11 @@ abstract public class ArchiveChannel
             need_first_sample = true;
         }
         // Is this the first sample after startup or an error?
-        if (need_first_sample)
-        {
-            need_first_sample = false;
-            addInfoToBuffer(ValueButcher.transformTimestampToNow(value));
-        }
+        if (!need_first_sample)
+            return false;
+        need_first_sample = false;
+        addInfoToBuffer(ValueButcher.transformTimestampToNow(value));
+        return true;
     }
     
     /** Handle a disconnect event.

@@ -5,6 +5,7 @@ import org.csstudio.apputil.args.ArgParser;
 import org.csstudio.apputil.args.BooleanOption;
 import org.csstudio.apputil.args.IntegerOption;
 import org.csstudio.apputil.args.StringOption;
+import org.csstudio.apputil.time.BenchmarkTimer;
 import org.csstudio.archive.engine.model.EngineModel;
 import org.csstudio.archive.engine.server.EngineServer;
 import org.csstudio.archive.rdb.RDBArchive;
@@ -141,6 +142,7 @@ public class Application implements IApplication
             while (run)
             {
                 logger.info("Reading configuration '" + engine_name + "'");
+                BenchmarkTimer timer = new BenchmarkTimer();
                 try
                 {
                     model.readConfig(engine_name, port);
@@ -150,6 +152,9 @@ public class Application implements IApplication
                     logger.fatal(ex.getMessage());
                     return EXIT_OK;
                 }
+                timer.stop();
+                logger.info("Read configuration: " + model.getChannelCount() +
+                            " channels in " + timer.toString());
         
                 // Run until model gets stopped via HTTPD or #stop()
                 logger.info("Running, CA addr list: "
