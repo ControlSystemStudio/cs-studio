@@ -89,10 +89,11 @@ public class ScannedArchiveChannel extends ArchiveChannel implements Runnable
             CentralLogger.getInstance().getLogger(this).error("Channel " + getName()
                             + ": Cannot handle value type "
                             + value.getClass().getName());
-        if (log != null)
-            log.debug(getName() + " writes " + updated + " (orig. " + value.getTime() + ")");
-        addValueToBuffer(updated);
-        
+        if (addValueToBuffer(updated))
+        {
+            if (log != null)
+                log.debug(getName() + " writes " + updated + " (orig. " + value.getTime() + ")");
+        }
     }
 
     /** Check if values match in status, severity, and value. Time is ignored.

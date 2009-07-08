@@ -122,6 +122,13 @@ public class EngineModel
         return name;
     }
     
+    /** @return Seconds into the future that should be ignored */
+    public static long getIgnoredFutureSeconds()
+    {
+        // 1 day
+        return 24*60*60;
+    }
+
     /** @return Write period in seconds */
     final public int getWritePeriod()
     {

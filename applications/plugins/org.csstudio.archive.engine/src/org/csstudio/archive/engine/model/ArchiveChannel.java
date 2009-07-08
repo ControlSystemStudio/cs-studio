@@ -23,9 +23,9 @@ import org.csstudio.utility.pv.PVListener;
 abstract public class ArchiveChannel
 {
     /** Throttled log for NaN samples */
-    private static ThrottledLogger NaN_log = 
-                    new ThrottledLogger(Level.INFO, "log_nan"); //$NON-NLS-1$
-    
+    private static ThrottledLogger trouble_sample_log = 
+                    new ThrottledLogger(Level.INFO, "log_trouble_samples"); //$NON-NLS-1$
+
     /** Group to which this channel belongs.
      *  <p>
      *  Using thread safe array so that HTTPD can access
@@ -283,7 +283,7 @@ abstract public class ArchiveChannel
         {
             final IDoubleValue dbl = (IDoubleValue) value;
             if (Double.isNaN(dbl.getValue()))
-                NaN_log.log("NaN for '" + getName() + "': "
+                trouble_sample_log.log("'" + getName() + "': NaN "
                         + value.format());
             
         }
@@ -351,18 +351,36 @@ abstract public class ArchiveChannel
         addValueToBuffer(value);
     }
 
+    /** @param time Timestamp to check
+     *  @return <code>true</code> if time is too far into the future; better ignore.
+     */
+    private boolean isFuturistic(final ITimestamp time)
+    {
+        final long threshold = System.currentTimeMillis()/1000 + EngineModel.getIgnoredFutureSeconds();
+        return time.seconds() >= threshold;
+    }
+
     /** Add given sample to buffer, performing a back-in-time check,
      *  updating the sample buffer error state.
      *  @param value Value to archive
-     *  @return <code>false</code> if value failed back-in-time check,
+     *  @return <code>false</code> if value failed back-in-time or future check,
      *          <code>true</code> if value was added.
      */
     final protected boolean addValueToBuffer(final IValue value)
     {
+        // Suppress samples that are too far in the future
+        final ITimestamp time = value.getTime();
+
+        if (isFuturistic(time))
+        {
+            trouble_sample_log.log("'" + getName() + "': Futuristic " + value);
+            return false;
+        }
+        
         synchronized (this)
         {
             if (last_archived_value != null &&
-                last_archived_value.getTime().isGreaterOrEqual(value.getTime()))
+                last_archived_value.getTime().isGreaterOrEqual(time))
             {   // Cannot use this sample because of back-in-time problem.
                 // Usually this is NOT an error:
                 // We logged an initial sample, disconnected, disabled, ...,
