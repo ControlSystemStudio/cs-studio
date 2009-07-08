@@ -43,15 +43,22 @@ public class PreferencePage extends FieldEditorPreferencePage
     {
         final Composite parent = getFieldEditorParent();
 
-        final String prefixes[] = PVFactory.getSupportedPrefixes();
-        final String values[][] = new String[prefixes.length][2];
-        for (int i = 0; i < prefixes.length; i++)
-        {           
-            values[i][0] = prefixes[i] + PVFactory.SEPARATOR;
-            values[i][1] = prefixes[i];
+        try
+        {
+            final String prefixes[] = PVFactory.getSupportedPrefixes();
+            final String values[][] = new String[prefixes.length][2];
+            for (int i = 0; i < prefixes.length; i++)
+            {           
+                values[i][0] = prefixes[i] + PVFactory.SEPARATOR;
+                values[i][1] = prefixes[i];
+            }
+            addField(new ComboFieldEditor(Preferences.DEFAULT_TYPE,
+                    Messages.PreferencePage_DefaultPV, values, parent));
         }
-        addField(new ComboFieldEditor(Preferences.DEFAULT_TYPE,
-                Messages.PreferencePage_DefaultPV, values, parent));
+        catch (Exception ex)
+        {
+            setMessage("Error: " + ex.getMessage(), ERROR); //$NON-NLS-1$
+        }
     }
 
     @Override

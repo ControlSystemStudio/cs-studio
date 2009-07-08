@@ -93,8 +93,10 @@ public class PVFactory
     }
 
     /** @return Supported PV type prefixes */
-    final public static String[] getSupportedPrefixes()
+    final public static String[] getSupportedPrefixes() throws Exception
     {
+        if (pv_factory == null)
+            initialize();
         final ArrayList<String> prefixes = new ArrayList<String>();
         final Iterator<String> iterator = pv_factory.keySet().iterator();
         while (iterator.hasNext())
