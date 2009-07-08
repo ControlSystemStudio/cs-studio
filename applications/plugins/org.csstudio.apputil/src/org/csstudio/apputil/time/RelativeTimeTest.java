@@ -4,6 +4,10 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+/** JUnit test of RelativeTime
+ *  @author Kay Kasemir
+ */
+@SuppressWarnings("nls")
 public class RelativeTimeTest
 {
     @Test
@@ -72,6 +76,11 @@ public class RelativeTimeTest
         assertEquals(-30, rel.get(RelativeTime.MINUTES));
         assertEquals(23, rel.get(RelativeTime.SECONDS));
         assertEquals(321, rel.get(RelativeTime.MILLISECONDS));
+        
+        rel = new RelativeTime(3.14);
+        assertEquals("3.14 seconds", rel.toString());
 
+        rel = new RelativeTime(0.001);
+        assertEquals("0.0010 seconds", rel.toString());
     }
 }

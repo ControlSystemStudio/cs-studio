@@ -266,7 +266,7 @@ public class RelativeTime
     /** Add piece==YEAR etc. to buffer; value and token. */
     private void addToStringBuffer(StringBuffer buf, int piece)
     {
-        if (rel_time[piece] == 0)
+        if (rel_time[piece] == 0   &&  piece != SECONDS)
             return;
         if (buf.length() > 0)
             buf.append(' ');
@@ -274,7 +274,6 @@ public class RelativeTime
         {   // Special handling: show seconds.milliseconds
             double secs = rel_time[SECONDS] + rel_time[MILLISECONDS] / 1000.0;
             buf.append(secs);
-            
         }
         else
             buf.append(rel_time[piece]);
