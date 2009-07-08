@@ -29,6 +29,8 @@ public class SimulatedPVFactory implements IPVFactory
         {
             if (name.startsWith("sine"))
                 value = new SineValue(name);
+            else if (name.startsWith("ramp"))
+                    value = new RampValue(name);
             else
                 value = new NoiseValue(name);
             values.put(name, value);
