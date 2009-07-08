@@ -67,14 +67,6 @@
       </initializer>
    </extension>
    <extension
-         point="org.csstudio.dct.sensoridservices">
-      <sensoridservice
-            class="org.csstudio.dct.DummySensorIdService"
-            id="dummySensorIdService"
-            name="Dummy Sensor Id Service">
-      </sensoridservice>
-   </extension>
-   <extension
          point="org.csstudio.dct.recordfunctions">
       <recordfunction
             class="org.csstudio.dct.ArchiveRecordsFunction"
