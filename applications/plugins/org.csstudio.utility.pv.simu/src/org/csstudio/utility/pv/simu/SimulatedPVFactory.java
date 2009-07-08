@@ -12,7 +12,10 @@ import org.csstudio.utility.pv.PV;
 @SuppressWarnings("nls")
 public class SimulatedPVFactory implements IPVFactory
 {
-    /** All the 'local' PVs, mapped by name */
+    /** PV type prefix */
+    public static final String PREFIX = "sim";
+
+    /** All the 'simulated' PVs, mapped by name */
     private static Map<String, DynamicValue> values =
         new HashMap<String, DynamicValue>();
 

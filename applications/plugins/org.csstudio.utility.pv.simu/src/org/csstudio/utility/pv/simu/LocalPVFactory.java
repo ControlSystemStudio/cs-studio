@@ -9,8 +9,12 @@ import org.csstudio.utility.pv.PV;
 /** PV Factory for 'local' PVs
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class LocalPVFactory implements IPVFactory
 {
+    /** PV type prefix */
+    public static final String PREFIX = "loc";
+    
     /** All the 'local' PVs, mapped by name */
     private static Map<String, Value> values =
         new HashMap<String, Value>();

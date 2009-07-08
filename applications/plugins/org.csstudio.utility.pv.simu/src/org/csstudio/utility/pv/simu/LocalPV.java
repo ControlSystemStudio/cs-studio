@@ -23,7 +23,7 @@ public class LocalPV extends BasicPV<Value>
      */
     public LocalPV(final Value value)
     {
-        super(value);
+        super(LocalPVFactory.PREFIX, value);
     }
 
     /** {@inheritDoc} */

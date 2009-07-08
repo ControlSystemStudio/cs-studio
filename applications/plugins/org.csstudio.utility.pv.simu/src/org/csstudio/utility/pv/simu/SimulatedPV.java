@@ -14,7 +14,7 @@ public class SimulatedPV extends BasicPV<DynamicValue>
      */
     public SimulatedPV(final DynamicValue value)
     {
-        super(value);
+        super(SimulatedPVFactory.PREFIX, value);
     }
     
     /** {@inheritDoc} */

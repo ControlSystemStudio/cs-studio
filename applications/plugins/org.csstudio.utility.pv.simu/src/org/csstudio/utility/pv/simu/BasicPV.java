@@ -18,6 +18,9 @@ import org.eclipse.core.runtime.PlatformObject;
  */
 abstract public class BasicPV<T extends Value> extends PlatformObject implements PV, ValueListener
 {
+    /** PV type prefix */
+    final String prefix;
+    
     /** Most recent value */
     final protected T value;
     
@@ -31,15 +34,16 @@ abstract public class BasicPV<T extends Value> extends PlatformObject implements
     /** Initialize
      *  @param name PV name
      */
-    public BasicPV(final T value)
+    public BasicPV(final String prefix, final T value)
     {
+        this.prefix = prefix;
         this.value = value;
     }
 
     /** {@inheritDoc} */
     public String getName()
     {
-        return value.getName();
+        return prefix + "://" + value.getName(); //$NON-NLS-1$
     }
 
     /** {@inheritDoc} */
@@ -113,5 +117,4 @@ abstract public class BasicPV<T extends Value> extends PlatformObject implements
     {
         // NOP
     }
-
 }
