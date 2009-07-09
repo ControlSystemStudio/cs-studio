@@ -46,6 +46,7 @@ public class Ellipse extends Widget {
      */
     public Ellipse(final ADLWidget ellipse, AbstractWidgetModel abstractWidgetModel, ADLWidget storedBasicAttribute, ADLWidget storedDynamicAttribute) {
         super(ellipse, storedBasicAttribute, storedDynamicAttribute);
+        _widget.setDynamicsDescriptor(EllipseModel.PROP_FILL, null);
         if(getBasicAttribute()!=null){
             if((getBasicAttribute()!=null&&(getBasicAttribute().getWidth()==null||getBasicAttribute().getWidth().equals("0")))){ //$NON-NLS-1$
                 getBasicAttribute().setStyle("0"); //$NON-NLS-1$

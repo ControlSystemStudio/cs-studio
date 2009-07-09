@@ -25,6 +25,7 @@
 package org.csstudio.utility.adlconverter.utility.widgetparts;
 
 import org.csstudio.sds.model.AbstractWidgetModel;
+import org.csstudio.sds.model.initializers.WidgetInitializationService;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
 
@@ -52,7 +53,10 @@ public abstract class WidgetPart {
      */
     public WidgetPart(final ADLWidget widgetPart, final AbstractWidgetModel parentWidgetModel) throws WrongADLFormatException {
         _widgetModel = parentWidgetModel;
-        
+        if (this instanceof ADLMonitor || this instanceof ADLDynamicAttribute || this instanceof ADLControl) {
+            WidgetInitializationService instance = WidgetInitializationService.getInstance();
+            instance.initialize(parentWidgetModel);
+        }
         init();
         parseWidgetPart(widgetPart);
         generateElements();
@@ -80,6 +84,14 @@ public abstract class WidgetPart {
 
     public final void setParentWidgetModel(AbstractWidgetModel parentWidgetModel) {
         _widgetModel = parentWidgetModel;
+    }
+
+    protected void uninit() {
+        _widgetModel.setDynamicsDescriptor(AbstractWidgetModel.PROP_BORDER_COLOR, null);
+        _widgetModel.setDynamicsDescriptor(AbstractWidgetModel.PROP_BORDER_STYLE, null);
+        _widgetModel.setDynamicsDescriptor(AbstractWidgetModel.PROP_BORDER_WIDTH, null);
+        _widgetModel.setDynamicsDescriptor(AbstractWidgetModel.PROP_COLOR_BACKGROUND, null);
+        _widgetModel.setDynamicsDescriptor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, null);
     }
 
 

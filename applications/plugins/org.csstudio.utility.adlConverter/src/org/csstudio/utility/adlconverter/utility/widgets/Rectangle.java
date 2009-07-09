@@ -24,6 +24,7 @@
  */
 package org.csstudio.utility.adlconverter.utility.widgets;
 
+import org.csstudio.sds.components.model.EllipseModel;
 import org.csstudio.sds.components.model.RectangleModel;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
@@ -45,6 +46,7 @@ public class Rectangle extends Widget{
      */
     public Rectangle(final ADLWidget rectangle, AbstractWidgetModel abstractWidgetModel, ADLWidget storedBasicAttribute, ADLWidget storedDynamicAttribute) {
         super(rectangle, storedBasicAttribute, storedDynamicAttribute);
+        _widget.setDynamicsDescriptor(RectangleModel.PROP_FILL, null);
         if(getBasicAttribute()!=null&&getBasicAttribute().getFill()!=null){
             _widget.setPropertyValue(RectangleModel.PROP_FILL, getBasicAttribute().getFill());
         }

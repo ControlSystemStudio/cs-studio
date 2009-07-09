@@ -26,6 +26,8 @@ package org.csstudio.utility.adlconverter.utility.widgetparts;
 
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
+import org.csstudio.sds.model.LabelModel;
+import org.csstudio.sds.model.initializers.WidgetInitializationService;
 import org.csstudio.sds.model.logic.ParameterDescriptor;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
@@ -125,6 +127,9 @@ public class ADLDynamicAttribute extends WidgetPart{
                 _vis=row[0];
             }else if(head.equals("chan")){ //$NON-NLS-1$
                 _chan=row;
+                if(_chan[0].contains("[")) {
+                    uninit();
+                }
             }else if(head.equals("chanb")){ //$NON-NLS-1$
 //                CentralLogger.getInstance().debug(this, "chanB"+adlDynamicAttribute.toString());
             }else if(head.equals("colorrule")){ //$NON-NLS-1$
@@ -147,7 +152,8 @@ public class ADLDynamicAttribute extends WidgetPart{
             ADLHelper.setChan(_widgetModel, _chan);
             String channel = "$channel$";
             if(_chan.length>2){ //$NON-NLS-1$
-                channel = channel.concat("."+_chan[2]);
+                // Beim Oval als Led AN/Aus wird post fix doppelet gesetzt.
+                //channel = channel.concat("."+_chan[2]);
             }
             if(_vis!=null && _vis.equals("if not zero")){ //$NON-NLS-1$
                 _bool=true;
@@ -183,9 +189,12 @@ public class ADLDynamicAttribute extends WidgetPart{
                     _color = true;
                     _adlColorDynamicAttribute = new DynamicsDescriptor("org.css.sds.color.default_epics_alarm_background"); //$NON-NLS-1$
                     String temp = _chan[0];
-                    if(!temp.endsWith(".SEVR")){
-                        temp= temp.concat(".SEVR");
+                    if(temp.contains("[")) {
+                        temp = String.format("%1$s[severity]", temp.substring(0,temp.indexOf('[')));
                     }
+//                    if(!temp.endsWith(".SEVR")){
+//                        temp= temp.concat("[severity]");
+//                    }
                     _adlColorDynamicAttribute.addInputChannel(new ParameterDescriptor(temp,Double.class)); //$NON-NLS-1$
                 }
             }
@@ -218,5 +227,4 @@ public class ADLDynamicAttribute extends WidgetPart{
     public final boolean isColor() {
         return _color;
     }
-
 }

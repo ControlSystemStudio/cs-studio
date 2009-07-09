@@ -66,11 +66,11 @@ public class RelatedDisplay extends Widget {
         int n =0;
         for (ADLWidget obj : relatedDisplay.getObjects()) {
             if(obj.isType("display["+n+"]")){ //$NON-NLS-1$ //$NON-NLS-2$
-                if(n==0){
-                    label=new RelatedDisplayItem(obj, _widget).getLabel();
-                }else{
+//                if(n==0){
+//                    label=new RelatedDisplayItem(obj, _widget).getLabel();
+//                }else{
                     new RelatedDisplayItem(obj, _widget);
-                }
+//                }
                 n++;
             }else if(obj.isType("sensitive")){ //$NON-NLS-1$
                 //TODO: RelatedDisplay(Menu)-->sensitive
@@ -143,6 +143,9 @@ public class RelatedDisplay extends Widget {
         }
         if(bclr!=null){
             _widget.setBackgroundColor(ADLHelper.getRGB(bclr));
+        }
+        if(label==null) {
+            label="[_]";
         }
         _widget.setPropertyValue(MenuButtonModel.PROP_LABEL, label);
         

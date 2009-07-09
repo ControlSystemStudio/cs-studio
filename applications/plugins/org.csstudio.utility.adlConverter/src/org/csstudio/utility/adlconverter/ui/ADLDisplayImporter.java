@@ -29,7 +29,9 @@ import java.util.Formatter;
 
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.importer.AbstractDisplayImporter;
+import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DisplayModel;
+import org.csstudio.sds.model.initializers.WidgetInitializationService;
 import org.csstudio.sds.model.layers.Layer;
 import org.csstudio.sds.model.persistence.DisplayModelInputStream;
 import org.csstudio.sds.model.persistence.PersistenceUtil;
@@ -116,11 +118,13 @@ public class ADLDisplayImporter extends AbstractDisplayImporter {
         for (ADLWidget adlWidget : root.getObjects()) {
             try {
                 if (adlWidget.getType().equals("arc")) { //$NON-NLS-1$
-                    displayModel.addWidget(new Arc(adlWidget, displayModel, storedBasicAttribute,
-                            storedDynamicAttribute).getElement());
+                    AbstractWidgetModel element = new Arc(adlWidget, displayModel, storedBasicAttribute,
+                            storedDynamicAttribute).getElement();
+                    displayModel.addWidget(element);
                 } else if (adlWidget.getType().equals("bar")) { //$NON-NLS-1$
-                    displayModel.addWidget(new Bargraph(adlWidget, storedBasicAttribute,
-                            storedDynamicAttribute).getElement());
+                    AbstractWidgetModel element = new Bargraph(adlWidget, storedBasicAttribute,
+                            storedDynamicAttribute).getElement();
+                    displayModel.addWidget(element);
                 } else if (adlWidget.getType().equals("byte")) { //$NON-NLS-1$
                     displayModel.addWidget(new SixteenBinaryBar(adlWidget, storedBasicAttribute,
                             storedDynamicAttribute).getElement());

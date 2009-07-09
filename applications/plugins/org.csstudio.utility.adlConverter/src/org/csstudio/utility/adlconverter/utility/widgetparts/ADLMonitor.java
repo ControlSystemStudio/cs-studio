@@ -26,6 +26,7 @@ package org.csstudio.utility.adlconverter.utility.widgetparts;
 
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
+import org.csstudio.sds.model.initializers.WidgetInitializationService;
 import org.csstudio.sds.model.logic.ParameterDescriptor;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
@@ -99,6 +100,9 @@ public class ADLMonitor extends WidgetPart{
                 _bclr=row[1].trim();
             }else if(row[0].trim().toLowerCase().equals("chan")){   // chan and rdbk means both the same. Readback channel. //$NON-NLS-1$
                 _chan=ADLHelper.cleanString(row[1]);
+                if(_chan[0].contains("[")) {
+                    uninit();
+                }
             }else if(row[0].trim().toLowerCase().equals("rdbk")){ //$NON-NLS-1$
                 _chan=ADLHelper.cleanString(row[1]);
             }else {

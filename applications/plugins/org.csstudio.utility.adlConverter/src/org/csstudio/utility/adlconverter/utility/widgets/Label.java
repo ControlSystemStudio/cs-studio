@@ -58,7 +58,10 @@ public class Label extends Widget {
         if(getBasicAttribute()!=null){
             getBasicAttribute().setWidth("0"); //$NON-NLS-1$
         }
-
+        String alias = _widget.getAliases().get("$channel$");
+        if(alias!=null&&alias.contains("[")) {
+            _widget.setPropertyValue(LabelModel.PROP_VALUE_TYPE, TextTypeEnum.TYPE_TEXT);
+        }
         for (FileLine fileLine : label.getBody()) {
             String bodyPart = fileLine.getLine();
             String[] row = bodyPart.trim().split("="); //$NON-NLS-1$
@@ -133,7 +136,11 @@ public class Label extends Widget {
             DynamicsDescriptor dd = new DynamicsDescriptor("directConnection"); //$NON-NLS-1$
             dd.addInputChannel(new ParameterDescriptor("$channel$"+postfix+", string",Double.class)); //$NON-NLS-1$ //$NON-NLS-2$
             _widget.setDynamicsDescriptor(LabelModel.PROP_TEXTVALUE, dd);
-
+//            if(alias!=null&&alias.contains("[")) {
+//                uninit();
+//            }
+        }else {
+//            uninitAll();
         }
         int fontSize = ADLHelper.getFontSize("Times New Roman",labelText, getObject().getHeight(), getObject().getWidth(),"0"); //$NON-NLS-1$ //$NON-NLS-2$
         _widget.setPropertyValue(LabelModel.PROP_FONT, new FontData("Times New Roman", fontSize, SWT.NONE)); //$NON-NLS-1$
@@ -145,6 +152,17 @@ public class Label extends Widget {
         }
         _widget.setLayer(Messages.ADLDisplayImporter_ADLActionLayerName);
     }
+
+    private void uninitAll() {
+        _widget.setDynamicsDescriptor(LabelModel.PROP_BORDER_COLOR, null);
+        _widget.setDynamicsDescriptor(LabelModel.PROP_BORDER_STYLE, null);
+        _widget.setDynamicsDescriptor(LabelModel.PROP_BORDER_WIDTH, null);
+        _widget.setDynamicsDescriptor(LabelModel.PROP_COLOR_BACKGROUND, null);
+        _widget.setDynamicsDescriptor(LabelModel.PROP_COLOR_FOREGROUND, null);
+        _widget.setDynamicsDescriptor(LabelModel.PROP_TEXTVALUE, null);
+        
+    }
+
 
     /**
      * {@inheritDoc}

@@ -33,6 +33,8 @@ import org.csstudio.sds.importer.AbstractDisplayImporter;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DisplayModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
+import org.csstudio.sds.model.LabelModel;
+import org.csstudio.sds.model.initializers.WidgetInitializationService;
 import org.csstudio.sds.model.logic.ParameterDescriptor;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
@@ -43,6 +45,7 @@ import org.csstudio.utility.adlconverter.utility.widgetparts.ADLMonitor;
 import org.csstudio.utility.adlconverter.utility.widgetparts.ADLObject;
 import org.csstudio.utility.adlconverter.utility.widgetparts.ADLPoints;
 import org.csstudio.utility.adlconverter.utility.widgetparts.ADLSensitive;
+import org.csstudio.utility.adlconverter.utility.widgetparts.WidgetPart;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.swt.graphics.RGB;
 
@@ -130,6 +133,8 @@ public abstract class Widget extends AbstractDisplayImporter {
         setWidgetType();
         _widget.setLayer(""); //$NON-NLS-1$
         _widget.setEnabled(true);
+//        WidgetInitializationService instance = WidgetInitializationService.getInstance();
+//        instance.initialize(_widget);
     }
 
     /**
@@ -210,17 +215,26 @@ public abstract class Widget extends AbstractDisplayImporter {
      *             parameter found.
      */
     private void makeObject(final ADLWidget widget) throws WrongADLFormatException {
+        
+        for (ADLWidget obj : widget.getObjects()) {
+            if (obj.isType("dynamic attribute")) { //$NON-NLS-1$
+                _dynamicAttribute = new ADLDynamicAttribute(obj, _widget);
+            } else if (obj.isType("monitor")) { //$NON-NLS-1$
+                _monitor = new ADLMonitor(obj, _widget);
+            }
+        }
+        
         for (ADLWidget obj : widget.getObjects()) {
             if (obj.isType("object")) { //$NON-NLS-1$
                 _object = new ADLObject(obj, _widget);
             } else if (obj.isType("basic attribute")) { //$NON-NLS-1$
                 _basicAttribute = new ADLBasicAttribute(obj, _widget);
             } else if (obj.isType("dynamic attribute")) { //$NON-NLS-1$
-                _dynamicAttribute = new ADLDynamicAttribute(obj, _widget);
+//                _dynamicAttribute = new ADLDynamicAttribute(obj, _widget);
             } else if (obj.isType("points")) { //$NON-NLS-1$
                 _points = new ADLPoints(obj, _widget);
             } else if (obj.isType("monitor")) { //$NON-NLS-1$
-                _monitor = new ADLMonitor(obj, _widget);
+//                _monitor = new ADLMonitor(obj, _widget);
             } else if (obj.isType("control")) { //$NON-NLS-1$
                 _control = new ADLControl(obj, _widget);
             } else if (obj.isType("sensitive")) { //$NON-NLS-1$
@@ -258,7 +272,7 @@ public abstract class Widget extends AbstractDisplayImporter {
      * 
      * @return the Widgetpart {@link ADLDynamicAttribute} of this Widget.
      */
-    public ADLDynamicAttribute getDynamicAttribute() {
+    public WidgetPart getDynamicAttribute() {
         return _dynamicAttribute;
     }
 
@@ -331,6 +345,15 @@ public abstract class Widget extends AbstractDisplayImporter {
             final String targetFileName) throws Exception {
         // Do nothing.
         return false;
+    }
+    
+    void uninit() {
+        _widget.setDynamicsDescriptor(LabelModel.PROP_BORDER_COLOR, null);
+        _widget.setDynamicsDescriptor(LabelModel.PROP_BORDER_STYLE, null);
+        _widget.setDynamicsDescriptor(LabelModel.PROP_BORDER_WIDTH, null);
+        _widget.setDynamicsDescriptor(LabelModel.PROP_COLOR_BACKGROUND, null);
+        _widget.setDynamicsDescriptor(LabelModel.PROP_COLOR_FOREGROUND, null);
+        
     }
 
 }

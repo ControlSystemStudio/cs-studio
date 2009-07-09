@@ -40,6 +40,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
@@ -155,6 +156,7 @@ public class ADLConverterMainView extends ViewPart {
         _avaibleFiles = new ListViewer(sourceGroup);
         _avaibleFiles.getList().setLayoutData(gridData);
         _avaibleFiles.setContentProvider(new ArrayContentProvider());
+        _avaibleFiles.setLabelProvider(new LabelProvider());
 
         Button openSourceButton = new Button(sourceGroup, SWT.PUSH);
         openSourceButton.setLayoutData(new GridData(80, 25));

@@ -24,6 +24,7 @@
  */
 package org.csstudio.utility.adlconverter.utility;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -171,6 +172,32 @@ public final class ADLHelper {
                 cleanString[0] = cleanString[0].replaceAll(PATH_REMOVE_PART, ""); //$NON-NLS-1$ //$NON-NLS-2$
             }
             cleanString[0] = cleanString[0].replaceAll("\\.adl", ".css-sds"); //$NON-NLS-1$ //$NON-NLS-2$
+        }else if (cleanString[0].endsWith(".HOPR")) { //$NON-NLS-1$
+            cleanString[0] = cleanString[0].replaceAll("\\.HOPR", "[graphMax]");
+        }else if (cleanString[0].endsWith(".LOPR")) { //$NON-NLS-1$
+            cleanString[0] = cleanString[0].replaceAll("\\.LOPR", "[graphMin]");
+        }else if (cleanString[0].endsWith(".EGU")) { //$NON-NLS-1$
+            cleanString[0] = cleanString[0].replaceAll("\\.EGU", "[units]");
+        }else if (cleanString[0].endsWith(".EGUF")) { //$NON-NLS-1$
+            cleanString[0] = cleanString[0].replaceAll("\\.EGUF", "[maximum]");
+        }else if (cleanString[0].endsWith(".EGUL")) { //$NON-NLS-1$
+            cleanString[0] = cleanString[0].replaceAll("\\.EGUL", "[minimum]");
+        }else if (cleanString[0].endsWith(".HIGH")) { //$NON-NLS-1$
+            cleanString[0] = cleanString[0].replaceAll("\\.HIGH", "[warningMax]");
+        }else if (cleanString[0].endsWith(".LOW")) { //$NON-NLS-1$
+            cleanString[0] = cleanString[0].replaceAll("\\.LOW", "[warningMin]");
+        }else if (cleanString[0].endsWith(".HIHI")) { //$NON-NLS-1$
+            cleanString[0] = cleanString[0].replaceAll("\\.HIHI", "[alarmMax]");
+        }else if (cleanString[0].endsWith(".LOLO")) { //$NON-NLS-1$
+            cleanString[0] = cleanString[0].replaceAll("\\.LOLO", "[alarmMin]");
+        }else if (cleanString[0].endsWith(".NAME")) { //$NON-NLS-1$
+            cleanString[0] = cleanString[0].replaceAll("\\.NAME", "[displayName]");
+        }else if (cleanString[0].endsWith(".LINR")) { //$NON-NLS-1$
+            cleanString[0] = cleanString[0].replaceAll("\\.LINR", "[scaleType]");
+        }else if (cleanString[0].endsWith(".SEVR")) { //$NON-NLS-1$
+            cleanString[0] = cleanString[0].replaceAll("\\.SEVR", "[severity]");
+        }else if (cleanString[0].endsWith(".STAT")) { //$NON-NLS-1$
+            cleanString[0] = cleanString[0].replaceAll("\\.STAT", "[status]");
         }
 //        if (cleanString[1].startsWith("$")) { //$NON-NLS-1$
 //        // String temp =
@@ -252,18 +279,21 @@ public final class ADLHelper {
         if (chan[0].length() == 0) {
             return ""; //$NON-NLS-1$
         } else if (chan.length > 2 && chan[1].startsWith("$")) { //$NON-NLS-1$
-            widgetModel.setAliasValue("channel", chan[1]); //$NON-NLS-1$
+            CentralLogger.getInstance().debug(ADLHelper.class, Arrays.toString(chan));
+            widgetModel.setAliasValue("channel", chan[0]); //$NON-NLS-1$
             widgetModel.setPrimarPv("$channel$");
         } else {
+            CentralLogger.getInstance().debug(ADLHelper.class, Arrays.toString(chan));
             widgetModel.setAliasValue("channel", chan[1]); //$NON-NLS-1$
             widgetModel.setPrimarPv("$channel$");
         }
         // if(chan.length>2&&chan[chan.length-1].startsWith(".")){ //$NON-NLS-1$
         // postfix = chan[chan.length-1];
         // }
-        if (chan.length > 2) { //$NON-NLS-1$
-            postfix = "." + chan[chan.length - 1]; //$NON-NLS-1$
-        }
+        // Beim Bargraph wird der Postfix doppelt gesetzt.
+//        if (chan.length > 2) { //$NON-NLS-1$
+//            postfix = "." + chan[chan.length - 1]; //$NON-NLS-1$
+//        }
 //        assert chan.length > 3 : "Length =<3 is "+chan.length; //$NON-NLS-1$
         return postfix;
     }
