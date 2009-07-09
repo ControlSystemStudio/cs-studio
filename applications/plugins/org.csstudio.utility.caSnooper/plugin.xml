@@ -30,30 +30,22 @@
       </initializer>
    </extension>
    <extension
-         point="org.csstudio.platform.libs.xmpp.loginHandlers">
-      <loginHandler
-            class="org.csstudio.utility.casnooper.LoginCallbackHandler1"
-            id="org.csstudio.utility.caSnooper.loginHandler"
-            name="LoginCallbackHandler1">
-      </loginHandler>
-   </extension>
-   <extension
-         point="org.csstudio.platform.libs.dcf.action">
-      <simpleAction
+         point="org.csstudio.platform.managementCommands">
+      <command
             class="org.csstudio.utility.casnooper.GetBroadcastPerSecond"
             id="org.csstudio.utility.casnooper.GetBroadcastPerSecond"
-            name="GetBroadcastPerSecond">
-      </simpleAction>
-      <simpleAction
+            label="Get broadcast per second">
+      </command>
+      <command
             class="org.csstudio.utility.casnooper.GetTable"
             id="org.csstudio.utility.casnooper.GetTable"
-            name="GetTable">
-      </simpleAction>
-      <simpleAction
+            label="Get Table">
+      </command>
+      <command
             class="org.csstudio.utility.casnooper.StopCaSnooper"
-            id="org.csstudio.utility.casnooper.stopcasnooper"
-            name="StopCaSnooper">
-      </simpleAction>
+            id="org.csstudio.utility.casnooper.StopCaSnooper"
+            label="Stop CA Snooper">
+      </command>
    </extension>
 
 </plugin>

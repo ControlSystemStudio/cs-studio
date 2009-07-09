@@ -1,4 +1,8 @@
 package org.csstudio.utility.casnooper;
+
+import org.csstudio.platform.management.CommandParameters;
+import org.csstudio.platform.management.CommandResult;
+import org.csstudio.platform.management.IManagementCommand;
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchroton, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -21,13 +25,13 @@ package org.csstudio.utility.casnooper;
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
-import org.csstudio.platform.libs.dcf.actions.IAction;
 
 
-public class StopCaSnooper implements IAction {
+public class StopCaSnooper implements IManagementCommand {
 
-	public Object run(Object param) {
-		SnooperServer.getInstance().destroy();
-		return "DONE";
-	}
+
+    public CommandResult execute(CommandParameters parameters) {
+        SnooperServer.getInstance().destroy();
+        return CommandResult.createMessageResult("DONE");
+    }
 }

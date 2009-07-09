@@ -19,26 +19,28 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.utility.casnooper;
+package org.csstudio.utility.casnooper;
 
-import org.csstudio.platform.libs.dcf.actions.IAction;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.management.CommandParameters;
+import org.csstudio.platform.management.CommandResult;
+import org.csstudio.platform.management.IManagementCommand;
 import org.csstudio.utility.casnooper.channel.SnooperStringParser;
 import org.csstudio.utility.casnooper.channel.ChannelCollector;
 
-public class GetTable implements IAction {
+public class GetTable implements IManagementCommand {
 
-	private SnooperStringParser parser = new SnooperStringParser();
-	private ChannelCollector channel;
-	
-	public Object run(Object param) {
-		
-		channel = ChannelCollector.getInstance();
-		if(channel.getSnoops() == null){
-			CentralLogger.getInstance().info(this,
-				"No data was captured"); 
-			return "";
-		}
-		return parser.parse(channel.getStatistics(channel.getSnoops()),channel.getSnoops());
-	}
+    private SnooperStringParser parser = new SnooperStringParser();
+    private ChannelCollector channel;
+
+    public CommandResult execute(CommandParameters parameters) {
+        channel = ChannelCollector.getInstance();
+        if (channel.getSnoops() == null) {
+            CentralLogger.getInstance().info(this, "No data was captured");
+            return CommandResult.createMessageResult("No data was captured");
+        }
+        return CommandResult.createSuccessResult(parser.parse(channel
+                .getStatistics(channel.getSnoops()), channel.getSnoops()),
+                "org.csstudio.utility.casnooper.Table");
+    }
 }

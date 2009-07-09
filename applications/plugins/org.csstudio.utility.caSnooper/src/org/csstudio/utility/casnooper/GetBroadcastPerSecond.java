@@ -1,4 +1,9 @@
 package org.csstudio.utility.casnooper;
+
+import org.csstudio.platform.management.CommandParameters;
+import org.csstudio.platform.management.CommandResult;
+import org.csstudio.platform.management.IManagementCommand;
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchroton, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -21,12 +26,11 @@ package org.csstudio.utility.casnooper;
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
-import org.csstudio.platform.libs.dcf.actions.IAction;
+public class GetBroadcastPerSecond implements IManagementCommand {
 
-public class GetBroadcastPerSecond implements IAction {
-
-	public Object run(Object param) {
-		return ""+SnooperServer.getInstance().getTimerProcessor().getBroadcastDoubleValuePerSecond();
-		//return PreferenceProperties.COMMAND_LIST;  //commandos
-	}
+    public CommandResult execute(CommandParameters parameters) {
+        return CommandResult.createMessageResult(""
+                + SnooperServer.getInstance().getTimerProcessor()
+                        .getBroadcastDoubleValuePerSecond());
+    }
 }

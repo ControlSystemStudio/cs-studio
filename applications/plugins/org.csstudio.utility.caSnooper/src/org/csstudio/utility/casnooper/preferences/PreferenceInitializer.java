@@ -42,6 +42,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
 		prefs.put(PreferenceConstants.XMPP_USER_NAME, "casnooper");
 		prefs.put(PreferenceConstants.XMPP_PASSWORD, "casnooper");
+		prefs.put(PreferenceConstants.XMPP_SERVER, "krynfs.desy.de");
 		prefs.put(PreferenceConstants.UPDATE_TIME, "30000");	//30sec
 		prefs.put(PreferenceConstants.SHOW_MESSAGE_INDICATOR, "false");
 		prefs.put(PreferenceConstants.SENT_START_ID, "5000000");

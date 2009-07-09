@@ -28,6 +28,7 @@ public class PreferenceConstants {
 
 	public static final String XMPP_USER_NAME = "xmppUserName";
 	public static final String XMPP_PASSWORD = "xmppPassword";
+    public static final String XMPP_SERVER = "xmppServer";
 	public static final String UPDATE_TIME = "updateTime";
 	public static final String SHOW_MESSAGE_INDICATOR = "showMessageIndicator";
 	public static final String SENT_START_ID = "sentStartID";
