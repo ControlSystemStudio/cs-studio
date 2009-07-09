@@ -2,7 +2,6 @@ package org.csstudio.archive.engine.scanner;
 
 import java.util.ArrayList;
 
-import org.csstudio.archive.engine.Activator;
 import org.csstudio.platform.logging.CentralLogger;
 
 /** A Scan list scans a list of channels at a given rate.
@@ -27,8 +26,8 @@ public class ScanList implements Scheduleable
     public ScanList(final double scan_period)
     {
         scan_period_millis = (long)(scan_period * 1000.0);
-        // Request an initial run ASAP
-        next_due_time = System.currentTimeMillis();
+        // Schedule initial run
+        next_due_time = System.currentTimeMillis() + scan_period_millis;
     }
 
     /** @return Scan period in seconds */
