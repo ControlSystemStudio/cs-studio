@@ -38,12 +38,11 @@
       </toc>
    </extension>
    <extension
-         point="org.csstudio.platform.libs.dcf.ui.extViewer">
-      <extViewer
-            class="org.csstudio.utility.caSnooperUi.ExtViewer"
-            name="org.csstudio.utility.caSnooperUi.extViewer"
-            viewerID="org.csstudio.utility.casnooper.GetTable">
-      </extViewer>
+         point="org.csstudio.platform.managementCommandResultReceivers">
+      <receiver
+            class="org.csstudio.utility.caSnooperUi.TableReceiver"
+            resultType="org.csstudio.utility.casnooper.Table">
+      </receiver>
    </extension>
 
 </plugin>
