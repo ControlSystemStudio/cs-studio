@@ -96,6 +96,12 @@ public class Scanner implements Scheduleable
             }
     }
 
+    /** Remove all items from this scanner */
+    public void clear()
+    {
+        lists.clear();
+    }
+
     /** @return Number of scan lists. */
     public long size()
     {
@@ -142,8 +148,7 @@ public class Scanner implements Scheduleable
     {
         next_due_time = Long.MAX_VALUE;
         for (ScanList list : lists)
-            if (list.getNextDueTime() < next_due_time)
-                next_due_time = list.getNextDueTime();
+            next_due_time = Math.min(list.getNextDueTime(), next_due_time);
     }
     
     /** Average idle time in percent.

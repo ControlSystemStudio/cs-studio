@@ -436,6 +436,7 @@ public class EngineModel
             throw new IllegalStateException("Only allowed in IDLE state");
         groups.clear();
         channels.clear();
+        scanner.clear();
     }
 
     /** Write debug info to stdout */

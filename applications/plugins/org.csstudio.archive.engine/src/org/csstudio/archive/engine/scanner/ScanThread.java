@@ -1,6 +1,5 @@
 package org.csstudio.archive.engine.scanner;
 
-import org.csstudio.archive.engine.Activator;
 import org.csstudio.platform.logging.CentralLogger;
 
 /** Thread that runs a Scanner.
@@ -15,7 +14,7 @@ public class ScanThread implements Runnable
     private Thread thread;
     
     /** Flag, set <code>false</code> to cause thread to exit */
-    private boolean do_run;
+    private volatile boolean do_run;
 
     /** Construct thread which runs scanner */
     public ScanThread(final Scanner scanner)

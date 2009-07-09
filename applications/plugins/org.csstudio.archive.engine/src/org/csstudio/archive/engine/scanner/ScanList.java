@@ -10,6 +10,7 @@ import org.csstudio.platform.logging.CentralLogger;
  *  the scan list, so many methods are package-scoped.
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class ScanList implements Scheduleable
 {
     /** Scan period in seconds */
@@ -46,7 +47,7 @@ public class ScanList implements Scheduleable
     public long getNextDueTime()
     {
         if (items.size() == 0)
-            throw new Error(toString() + " never due"); //$NON-NLS-1$
+            throw new Error(toString() + " never due");
         return next_due_time;
     }
 
@@ -92,7 +93,7 @@ public class ScanList implements Scheduleable
             }
             catch (Throwable ex)
             {
-                CentralLogger.getInstance().getLogger(this).error(toString() + " scan error", ex); //$NON-NLS-1$
+                CentralLogger.getInstance().getLogger(this).error(toString() + " scan error", ex);
             }
         }
         // Determine next due time relative to start,
@@ -103,6 +104,6 @@ public class ScanList implements Scheduleable
     @Override
     public String toString()
     {
-        return "ScanList " + getPeriod(); //$NON-NLS-1$
+        return "ScanList " + getPeriod() + " sec";
     }
 }
