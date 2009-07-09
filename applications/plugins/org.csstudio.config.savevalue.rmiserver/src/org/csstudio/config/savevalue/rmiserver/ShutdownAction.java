@@ -47,7 +47,7 @@ public class ShutdownAction implements IManagementCommand {
 	 * 
 	 * @param param
 	 *            the parameter supplied by the client. This must be a
-	 *            <code>Map</code> containing a password string.
+	 *            <code>CommandParamters</code> containing a password string.
 	 * @return a message.
 	 */
 	public CommandResult execute(CommandParameters parameters) {
@@ -61,7 +61,7 @@ public class ShutdownAction implements IManagementCommand {
 			return CommandResult.createSuccessResult();
 		} else {
 			_log.warn(this, "Received shutdown command with invalid password.");
-			return CommandResult.createMessageResult("Invalid password");
+			return CommandResult.createFailureResult("Invalid password");
 		}
 	}
 
