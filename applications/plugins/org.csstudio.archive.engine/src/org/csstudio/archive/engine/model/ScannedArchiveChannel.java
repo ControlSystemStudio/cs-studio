@@ -51,8 +51,18 @@ public class ScannedArchiveChannel extends ArchiveChannel implements Runnable
             + max_repeats + " repeats";
     }
 
+    // Just for debugging...
+    @Override
+    protected boolean handleNewValue(final IValue value)
+    {
+        final boolean written = super.handleNewValue(value);
+        if (! written  &&   log != null)
+            log.debug(getName() + ": cached " + value);
+        return written;
+    }
+
     /** Invoked by periodic scanner.
-     *  Try to add the current value to the archive.
+     *  Try to add the most recent value to the archive.
      *  Skip repeated values, unless we exceed the max. repeat count.
      */
     final public void run()
@@ -75,25 +85,33 @@ public class ScannedArchiveChannel extends ArchiveChannel implements Runnable
                 if (repeats < max_repeats)
                 {
                     if (log != null)
-                        log.debug(getName() + ": " + most_recent_value + " repeat " + repeats);
+                        log.debug(getName() + " skips  " + most_recent_value + ": repeat " + repeats);
+                    return;
+                }
+                // No new value, but we'd like to write a sample every once in a while
+                value = ValueButcher.transformTimestampToNow(most_recent_value);
+                if (log != null)
+                    log.debug(getName() + " writes " + most_recent_value + " as " + value.getTime());
+                if (value == null)
+                {
+                    CentralLogger.getInstance().getLogger(this).error("Channel " + getName()
+                                    + ": Cannot handle value type "
+                                    + most_recent_value.getClass().getName());
                     return;
                 }
             }
+            else
+            {   // It's a new value, so we should be able to write it
+                // "as is"
+                value = most_recent_value;
+                if (log != null)
+                    log.debug(getName() + " writes " + value);
+            }
             // New value, or exceeded repeats
             repeats = 0;
-            value = most_recent_value;
         }
-        // unlocked w/ reference to most_recent_value
-        final IValue updated = ValueButcher.transformTimestampToNow(value);
-        if (updated == null)
-            CentralLogger.getInstance().getLogger(this).error("Channel " + getName()
-                            + ": Cannot handle value type "
-                            + value.getClass().getName());
-        if (addValueToBuffer(updated))
-        {
-            if (log != null)
-                log.debug(getName() + " writes " + updated + " (orig. " + value.getTime() + ")");
-        }
+        // unlocked, should have 'value'
+        addValueToBuffer(value);
     }
 
     /** Check if values match in status, severity, and value. Time is ignored.
