@@ -189,6 +189,20 @@ public final class BargraphEditPart extends AbstractWidgetEditPart {
 		};
 		setPropertyChangeHandler(BargraphModel.PROP_DEFAULT_FILL_COLOR,
 				defaultFillColorHandler);
+		
+		IWidgetPropertyChangeHandler backgrundFillColorHandler = new IWidgetPropertyChangeHandler() {
+		    public boolean handleChange(final Object oldValue,
+		            final Object newValue,
+		            final IFigure refreshableFigure) {
+		        RefreshableBargraphFigure bargraph = (RefreshableBargraphFigure) refreshableFigure;
+		        bargraph.setFillBackgroundColor((RGB) newValue);
+		        return true;
+		    }
+		};
+		setPropertyChangeHandler(BargraphModel.PROP_FILLBACKGROUND_COLOR,
+		        backgrundFillColorHandler);
+		
+		
 		IWidgetPropertyChangeHandler borderHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
