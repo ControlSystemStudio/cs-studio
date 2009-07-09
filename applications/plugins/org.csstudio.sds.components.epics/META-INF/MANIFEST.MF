@@ -11,3 +11,4 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.swt,
  org.csstudio.sds.settings.desy
 Eclipse-LazyStart: true
+Export-Package: org.csstudio.sds.components.epics
