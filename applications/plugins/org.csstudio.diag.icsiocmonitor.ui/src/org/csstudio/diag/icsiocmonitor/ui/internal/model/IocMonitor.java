@@ -33,6 +33,7 @@ import org.csstudio.diag.icsiocmonitor.service.IocConnectionReport;
 import org.csstudio.diag.icsiocmonitor.service.IIocConnectionReporter;
 import org.csstudio.diag.icsiocmonitor.service.IocConnectionReportItem;
 import org.csstudio.diag.icsiocmonitor.service.IocConnectionState;
+import org.csstudio.platform.logging.CentralLogger;
 
 /**
  * Aggregates the connection states reported by multiple interconnection servers
@@ -129,7 +130,20 @@ public class IocMonitor {
 		
 		List<IocConnectionReport> reports = new ArrayList<IocConnectionReport>();
 		for (IIocConnectionReporter reporter : _reporters) {
-			reports.add(reporter.getReport());
+			try {
+				reports.add(reporter.getReport());
+			} catch (RuntimeException e) {
+				/*
+				 * Unfortunately, the reporter instance is a Proxy object and
+				 * calling its toString() method here raises an Exception. Also,
+				 * the proxy's InvocationHandler does not provide any public
+				 * information about the remote object it calls to. This means
+				 * that here, we can only display that an error occurred, but
+				 * we don't know on which server.
+				 */
+				CentralLogger.getInstance().error(this,
+						"Could not retrieve report.", e);
+			}
 		}
 
 		/*
