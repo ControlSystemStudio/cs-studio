@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+<title>Alarm Table</title>
+</head>
+<body>
+<h1>Alarm Table</h1>
+<img src="./image/AlarmTable.png" />
+
+<p align="justify">
+Alarm Table erhält Nachrichten von den JMS Servern und zeigt nur AlarmNachrichten aus
+dem Control System. Das erste Ordnungskriterium ist die Severity
+(1. MAJOR, 2. MINOR, 3. NO_ALARM, 4. INVALID). Das zweite Kriterium ist der time stamp.</p>
+<br>
+<h2>Context Menu</h2>
+<img src="./image/LogTableContextMenu.png" />
+<p align="justify">Das Kontextmenu wird durch einen Rechtsklick auf eine Nachricht / Tabellenzeile aktiviert:</p>
+<img src="./image/ContextIconShowProperties.png"/> Zeigt die Eigenschaften der ausgewählten Nachricht 
+in einer externen Tabellenansicht<br>
+<img src="./image/ContextIconShowProperties.png"/> Verschickt die Eigenschaften der ausgewählten Nachricht 
+per e-mail.<br>
+<img src="./image/ContextIconDelete.png"/> Löscht die ausgewählte Nachricht vom log view.<br>
+<img src="./image/ContextIconDelete.png"/> Löscht alle Nachricht vom log view.<br>
+<img src="./image/ContextMenuClipboard.png"/> Kopiert den Wert der Eigenschaft NAME in die Windows Zwischenablage.<br>
+<img src="./image/ContextMenuCSS.png"/> Startet weitere Anwendungen / plug-ins aus der aktuellen
+CSS-Installation, die mit Process Variablen arbeiten. Diese Option ist nur sinnvoll,
+wenn die Eigenschaft NAME der ausgewählten Nachricht eine Process-Variable ist.
+<br>
+</body>
+</html>
