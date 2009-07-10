@@ -37,7 +37,7 @@ public class ReplySenderTest {
 	public void testSendSuccess() throws Exception {
 		IIocMessageSender sender = Mockito.mock(IIocMessageSender.class);
 		ReplySender.sendSuccess(123, sender);
-		Mockito.verify(sender).send("ID=123;REPLY=Ok;");
+		Mockito.verify(sender).send("ID=123;STATUS=Ok;");
 		Mockito.verifyNoMoreInteractions(sender);
 	}
 	
@@ -45,7 +45,7 @@ public class ReplySenderTest {
 	public void testSendError() throws Exception {
 		IIocMessageSender sender = Mockito.mock(IIocMessageSender.class);
 		ReplySender.sendError(123, sender);
-		Mockito.verify(sender).send("ID=123;REPLY=Error;");
+		Mockito.verify(sender).send("ID=123;STATUS=Error;");
 		Mockito.verifyNoMoreInteractions(sender);
 	}
 	
@@ -53,9 +53,9 @@ public class ReplySenderTest {
 	public void testSend() throws Exception {
 		IIocMessageSender sender = Mockito.mock(IIocMessageSender.class);
 		ReplySender.send(123, true, sender);
-		Mockito.verify(sender).send("ID=123;REPLY=Ok;");
+		Mockito.verify(sender).send("ID=123;STATUS=Ok;");
 		ReplySender.send(124, false, sender);
-		Mockito.verify(sender).send("ID=124;REPLY=Error;");
+		Mockito.verify(sender).send("ID=124;STATUS=Error;");
 		Mockito.verifyNoMoreInteractions(sender);
 	}
 }

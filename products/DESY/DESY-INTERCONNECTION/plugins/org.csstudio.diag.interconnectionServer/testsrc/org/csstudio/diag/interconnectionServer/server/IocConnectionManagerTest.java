@@ -24,6 +24,8 @@ package org.csstudio.diag.interconnectionServer.server;
 
 import static org.junit.Assert.*;
 
+import java.net.InetAddress;
+
 import org.junit.Test;
 
 
@@ -34,14 +36,17 @@ public class IocConnectionManagerTest {
 	
 	@Test
 	public void testGetIocConnection() throws Exception {
+		
 		IocConnectionManager cm = IocConnectionManager.getInstance();
-		IocConnection conn = cm.getIocConnection(cm.getIocInetAdressByName("host"), 123);
+		java.net.InetAddress localMachine = java.net.InetAddress.getLocalHost();
+		String localHostName = localMachine.getHostName();
+		IocConnection conn = cm.getIocConnection( localMachine, 123);
 		assertNotNull(conn);
-		assertEquals("host", conn.getHost());
+		assertEquals(localHostName, conn.getHost());
 		assertEquals(123, conn.getPort());
 		
 		// Multiple requests must return the same IocConnection instance
-		assertSame(conn, cm.getIocConnection(cm.getIocInetAdressByName("host"), 123));
+		assertSame(conn, cm.getIocConnection(cm.getIocInetAdressByName(localHostName), 123));
 	}
 
 }
