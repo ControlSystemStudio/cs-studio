@@ -23,14 +23,15 @@
 package org.csstudio.diag.icsiocmonitor.ui.internal.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.csstudio.diag.icsiocmonitor.service.IocConnectionReport;
 import org.csstudio.diag.icsiocmonitor.service.IIocConnectionReporter;
+import org.csstudio.diag.icsiocmonitor.service.IocConnectionReport;
 import org.csstudio.diag.icsiocmonitor.service.IocConnectionReportItem;
 import org.csstudio.diag.icsiocmonitor.service.IocConnectionState;
 import org.csstudio.platform.logging.CentralLogger;
@@ -43,7 +44,7 @@ import org.csstudio.platform.logging.CentralLogger;
  */
 public class IocMonitor {
 	
-	private final List<IIocConnectionReporter> _reporters;
+	private List<IIocConnectionReporter> _reporters;
 	private final List<IReportListener> _reportListeners;
 	private MonitorReport _report;
 	
@@ -51,7 +52,7 @@ public class IocMonitor {
 	 * Creates a new IOC monitor. 
 	 */
 	IocMonitor() {
-		_reporters = new ArrayList<IIocConnectionReporter>();
+		_reporters = Collections.emptyList();
 		_reportListeners = new CopyOnWriteArrayList<IReportListener>();
 		
 		// initial report is simply an empty report
@@ -98,28 +99,24 @@ public class IocMonitor {
 	}
 
 	/**
-	 * Adds an IOC state reporter service from which this monitor will receive
-	 * reports.
+	 * Sets the reporter services that this monitor will use.
 	 * 
-	 * @param service
-	 *            the service.
+	 * @param reporters
+	 *            the reporters.
 	 */
-	public void addReporterService(IIocConnectionReporter service) {
-		_reporters.add(service);
+	public void setReporterServices(Collection<IIocConnectionReporter> reporters) {
+		/*
+		 * Implementation note: This class previously had two methods to add and
+		 * remove services, but that didn't work because the reporters are proxy
+		 * objects and caused an exception when trying to remove them from the
+		 * list, probably because they could not be compared for equality (the
+		 * actual error was caused by an InvocationTargetException on toString). 
+		 */
+		
+		_reporters = new ArrayList<IIocConnectionReporter>(reporters);
 		update();
 	}
 
-	/**
-	 * Removes an IOC state reporter service from this monitor.
-	 * 
-	 * @param service
-	 *            the service.
-	 */
-	public void removeReporterService(IIocConnectionReporter service) {
-		_reporters.remove(service);
-		update();
-	}
-	
 	/**
 	 * Updates this monitor. This monitor will send a request to the reporter
 	 * services and then update its state based on the reports received.

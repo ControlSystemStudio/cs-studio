@@ -160,8 +160,9 @@ class InterconnectionServerTracker implements IPresenceListener {
 	 * {@inheritDoc}
 	 */
 	public void handlePresence(ID fromID, IPresence presence) {
+		_log.debug(this, "Received presence event from: " + fromID + ", presence: " + presence);
 		if (isInterconnectionServerID(fromID)) {
-			if (presence.getMode() == IPresence.Mode.AVAILABLE) {
+			if (presence.getType() == IPresence.Type.AVAILABLE) {
 				handleInterconnectionServerAvailable(fromID);
 			} else {
 				handleInterconnectionServerUnavailable(fromID);
@@ -182,7 +183,7 @@ class InterconnectionServerTracker implements IPresenceListener {
 				IIocConnectionReporter service = getConnectionReporterService(id);
 				if (service != null) {
 					_interconnectionServers.put(id, service);
-					_iocMonitor.addReporterService(service);
+					_iocMonitor.setReporterServices(_interconnectionServers.values());
 				}
 			}
 		}
@@ -222,7 +223,7 @@ class InterconnectionServerTracker implements IPresenceListener {
 			IIocConnectionReporter service = _interconnectionServers.remove(id);
 			if (service != null) {
 				_log.debug(this, "Server no longer available: " + id);
-				_iocMonitor.removeReporterService(service);
+				_iocMonitor.setReporterServices(_interconnectionServers.values());
 			}
 		}
 	}

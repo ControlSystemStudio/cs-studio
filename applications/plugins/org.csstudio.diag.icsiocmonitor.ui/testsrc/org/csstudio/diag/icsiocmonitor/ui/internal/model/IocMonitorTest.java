@@ -26,6 +26,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.csstudio.diag.icsiocmonitor.service.IIocConnectionReporter;
@@ -89,7 +91,7 @@ public class IocMonitorTest {
 	
 	@Test
 	public void testSingleReporter() throws Exception {
-		_im.addReporterService(_r1);
+		_im.setReporterServices(Arrays.asList(_r1));
 		MonitorReport report = _im.getReport();
 		assertEquals(1, report.getInterconnectionServers().size());
 		assertTrue(report.getInterconnectionServers().contains("r1"));
@@ -110,8 +112,7 @@ public class IocMonitorTest {
 		 * The expected result is that there should be three IocState objects
 		 * with the correct states. ioc3/r1 should be reported as DISCONNECTED.
 		 */
-		_im.addReporterService(_r1);
-		_im.addReporterService(_r2);
+		_im.setReporterServices(Arrays.asList(_r1, _r2));
 		MonitorReport report = _im.getReport();
 		assertEquals(2, report.getInterconnectionServers().size());
 		assertTrue(report.getInterconnectionServers().contains("r1"));
@@ -127,10 +128,9 @@ public class IocMonitorTest {
 	}
 	
 	@Test
-	public void testRemoveReporter() throws Exception {
-		_im.addReporterService(_r1);
-		_im.addReporterService(_r2);
-		_im.removeReporterService(_r2);
+	public void testUpdateReporterList() throws Exception {
+		_im.setReporterServices(Arrays.asList(_r1, _r2));
+		_im.setReporterServices(Arrays.asList(_r1));
 		MonitorReport report = _im.getReport();
 		assertEquals(1, report.getInterconnectionServers().size());
 		assertTrue(report.getInterconnectionServers().contains("r1"));
@@ -144,14 +144,14 @@ public class IocMonitorTest {
 	public void testListenersAreNotified() throws Exception {
 		IReportListener listener = Mockito.mock(IReportListener.class);
 		_im.addListener(listener);
-		_im.addReporterService(_r1);
+		_im.setReporterServices(Arrays.asList(_r1));
 		Mockito.verify(listener).onReportUpdated();
-		_im.removeReporterService(_r1);
+		_im.setReporterServices(Collections.<IIocConnectionReporter>emptyList());
 		Mockito.verify(listener, Mockito.times(2)).onReportUpdated();
 		
 		// after the listener is removed, it must not be notified any longer
 		_im.removeListener(listener);
-		_im.addReporterService(_r1);
+		_im.setReporterServices(Arrays.asList(_r1));
 		Mockito.verifyNoMoreInteractions(listener);
 	}
 
