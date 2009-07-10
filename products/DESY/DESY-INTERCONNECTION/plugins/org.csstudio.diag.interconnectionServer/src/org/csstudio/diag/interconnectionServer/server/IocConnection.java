@@ -40,10 +40,9 @@ public class IocConnection {
 	
 	private final String host;
 	private final int port;
-	private String logicalIocName = null;
-	private String ldapIocName = null;
 	private String _hostName = null;
 	private InetAddress _iocInetAddress = null;
+	private IocNameDefinitions iocNameDefinitions = null;
 	
 	private long timeReConnected = 0;
 	private long timeLastBeaconReceived = 0;
@@ -103,6 +102,8 @@ public class IocConnection {
 		this.host = hostName;
 		this._iocInetAddress = iocInetAddress;
 		
+		this.iocNameDefinitions = new IocNameDefinitions( iocInetAddress, hostName);
+		
 		//
 		// init time
 		//
@@ -115,7 +116,7 @@ public class IocConnection {
 		this.time3rdToLastBeaconReceived = 0;
 		this._statTimeLastErrorOccured = 0;
 	}
-
+	
 	public boolean isGetAllAlarmsOnSelectChange() {
 		return getAllAlarmsOnSelectChange;
 	}
@@ -220,25 +221,25 @@ public class IocConnection {
 	}
 
 	public String getLogicalIocName() {
-		return logicalIocName;
+		return iocNameDefinitions.get_logicalIocName();
 	}
 
 	// TODO: This is currently called by the ClientRequest#run method, which
 	// basically is responsible in part for the initialization of this object.
 	// Refactor and move responsibility here, or into a builder class.
 	public void setLogicalIocName(String logicalIocName) {
-		this.logicalIocName = logicalIocName;
+		iocNameDefinitions.set_logicalIocName( logicalIocName);
 	}
 
 	public String getLdapIocName() {
-		return ldapIocName;
+		return iocNameDefinitions.get_logicalIocName();
 	}
 
 	// TODO: This is currently called by the ClientRequest#run method, which
 	// basically is responsible in part for the initialization of this object.
 	// Refactor and move responsibility here, or into a builder class.
 	public void setLdapIocName(String ldapIocName) {
-		this.ldapIocName = ldapIocName;
+		iocNameDefinitions.set_ldapIocName(ldapIocName);
 	}
 
 	/*
@@ -372,5 +373,40 @@ public class IocConnection {
 	 */
 	public void scheduleDowntime(long duration, TimeUnit unit) {
 		_scheduledDowntimeUntil = _timeSource.now() + unit.toMillis(duration);
+	}
+	
+	public class IocNameDefinitions {
+		
+		private String _logicalIocName = null;
+		private String _ldapIocName = null;
+		
+		public IocNameDefinitions ( InetAddress iocInetAddress, String iocName) {
+			/*
+	    	 * new IOC - ask LDAP for logical name
+	    	 */
+	    	String[] iocNames = LdapSupport.getInstance().getLogicalIocName ( iocInetAddress.getHostAddress(), iocName);
+	    	_logicalIocName = iocNames[0];
+	    	/*
+	    	 * save ldapIocName 
+	    	 */
+	    	System.out.println("ClientRequest:  ldapIocName = " + iocNames[1]);
+	    	_ldapIocName = iocNames[1];
+		}
+		
+		synchronized private String get_logicalIocName() {
+			return _logicalIocName;
+		}
+
+		synchronized private void set_logicalIocName(String iocName) {
+			_logicalIocName = iocName;
+		}
+
+		synchronized private String get_ldapIocName() {
+			return _ldapIocName;
+		}
+
+		synchronized private void set_ldapIocName(String iocName) {
+			_ldapIocName = iocName;
+		}
 	}
 }

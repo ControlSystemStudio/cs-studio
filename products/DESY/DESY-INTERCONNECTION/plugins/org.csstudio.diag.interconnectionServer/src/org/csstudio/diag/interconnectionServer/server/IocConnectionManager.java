@@ -74,7 +74,7 @@ public class IocConnectionManager {
 	// 2009-07-06 MCL
     // change internal ID from hostName to hostAddress        
     //
-	public IocConnection getIocConnection(InetAddress iocInetAddress, int port) {
+	synchronized public IocConnection getIocConnection(InetAddress iocInetAddress, int port) {
 		String internalId = iocInetAddress.getHostAddress() + ":" + port;
 		if (connectionList.containsKey(internalId)) {
 			return connectionList.get(internalId);
@@ -171,7 +171,28 @@ public class IocConnectionManager {
 			}
 		}
 		return null;
+	}
+	
+	public void resetIocNameDefinition( String iocName) {
 
+		Enumeration connections = this.connectionList.elements();
+		while (connections.hasMoreElements()) {
+			IocConnection thisContent = (IocConnection) connections.nextElement();
+			if ( thisContent.getHost().equals(iocName)) {
+				/*
+				 * in case that the IOC name was not properly stored in LDAP we need a way to reset the name
+				 */
+				// find IP address
+				String[] iocNames = LdapSupport.getInstance().getLogicalIocName ( 
+						thisContent.getIocInetAddress().getHostAddress(), 
+						iocName);
+				/*
+				 * these methods are synchronized in the subclass IocNameDefinitions
+				 */
+				thisContent.setLogicalIocName(iocNames[0]);
+				thisContent.setLdapIocName(iocNames[1]);
+			}
+		}
 	}
 
 	public String[] getNodeNameArrayWithLogicalName() {

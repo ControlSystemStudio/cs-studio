@@ -139,18 +139,18 @@ public class ClientRequest implements Runnable
 		 * find logical name of IOC by the IP address
 		 * do NOT check on the LDAP server if the name was already found...
 		 */
-        if ( statisticContent.getLogicalIocName() == null) {
-        	/*
-        	 * new IOC - ask LDAP for logical name
-        	 */
-        	String[] iocNames = LdapSupport.getInstance().getLogicalIocName ( _address.getHostAddress(), hostName);
-        	statisticContent.setLogicalIocName( iocNames[0]);
-        	/*
-        	 * save ldapIocName 
-        	 */
-        	System.out.println("ClientRequest:  ldapIocName = " + iocNames[1]);
-        	statisticContent.setLdapIocName(iocNames[1]);
-        }
+//        if ( statisticContent.getLogicalIocName() == null) {
+//        	/*
+//        	 * new IOC - ask LDAP for logical name
+//        	 */
+//        	String[] iocNames = LdapSupport.getInstance().getLogicalIocName ( _address.getHostAddress(), hostName);
+//        	statisticContent.setLogicalIocName( iocNames[0]);
+//        	/*
+//        	 * save ldapIocName 
+//        	 */
+//        	System.out.println("ClientRequest:  ldapIocName = " + iocNames[1]);
+//        	statisticContent.setLdapIocName(iocNames[1]);
+//        }
         
         
         Vector<TagValuePair> tagValuePairs	= new Vector<TagValuePair>();
