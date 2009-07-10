@@ -71,6 +71,14 @@ abstract public class DynamicValue extends Value implements Runnable
                 min = Double.parseDouble(matcher.group(1));
                 max = Double.parseDouble(matcher.group(2));
                 step = Double.parseDouble(matcher.group(3));
+                // Assert min <= max
+                if (min > max)
+                {
+                    final double tmp = max;
+                    max = min;
+                    min = tmp;
+                    step = -step;
+                }
                 update_period = Math.round(Double.parseDouble(matcher.group(4))*1000);
             }
             catch (Throwable ex)
@@ -102,13 +110,6 @@ abstract public class DynamicValue extends Value implements Runnable
         // Enforce minimum period delay
         if (update_period < MIN_UPDATE_PERIOD)
             update_period = MIN_UPDATE_PERIOD;
-        // Assert min <= max
-        if (min > max)
-        {
-            final double tmp = max;
-            max = min;
-            min = tmp;
-        }
         final double range = max - min;
         meta = ValueFactory.createNumericMetaData(min, max, min+0.3*range, min+0.7*range, min+0.1*range, min+0.9*range, 3, "a.u.");
     }
