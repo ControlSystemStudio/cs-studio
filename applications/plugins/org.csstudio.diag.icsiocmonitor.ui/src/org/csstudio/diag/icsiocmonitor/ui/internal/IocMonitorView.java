@@ -61,6 +61,16 @@ import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
 public class IocMonitorView extends ViewPart implements IReportListener {
 	
 	/**
+	 * Width of the column which displays the IOC name.
+	 */
+	private static final int IOC_COLUMN_WIDTH = 250;
+
+	/**
+	 * Width of the columns for the individual servers.
+	 */
+	private static final int SERVER_COLUMN_WIDTH = 120;
+
+	/**
 	 * @author Joerg Rathlev
 	 *
 	 */
@@ -234,7 +244,7 @@ public class IocMonitorView extends ViewPart implements IReportListener {
 		for (String server : ics) {
 			TableColumn col = new TableColumn(_table, SWT.LEFT);
 			col.setText(server);
-			col.setWidth(200);
+			col.setWidth(SERVER_COLUMN_WIDTH);
 			_dynamicTableColumns.add(col);
 			_columnIndexToIcs.put(_fixedColumnCount + i++, server);
 		}
@@ -249,10 +259,10 @@ public class IocMonitorView extends ViewPart implements IReportListener {
 		_table.setHeaderVisible(true);
 		TableColumn iocCol = new TableColumn(_table, SWT.LEFT);
 		iocCol.setText("IOC");
-		iocCol.setWidth(200);
+		iocCol.setWidth(IOC_COLUMN_WIDTH);
 		TableColumn selectedIcsCol = new TableColumn(_table, SWT.LEFT);
 		selectedIcsCol.setText("Selected ICS");
-		selectedIcsCol.setWidth(200);
+		selectedIcsCol.setWidth(SERVER_COLUMN_WIDTH);
 		
 		// IMPORTANT: Update this if the number of fixed columns changes!
 		_fixedColumnCount = 2;
