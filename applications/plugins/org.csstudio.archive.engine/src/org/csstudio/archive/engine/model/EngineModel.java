@@ -376,14 +376,15 @@ public class EngineModel
     final public void stop() throws Exception
     {
         state = State.STOPPING;
+        CentralLogger.getInstance().getLogger(this).info("Stopping scanner");
         // Stop scanning
         scan_thread.stop();
+        // Assert that scanning has stopped before we add 'off' events
+        scan_thread.join();
         // Disconnect from network
         CentralLogger.getInstance().getLogger(this).info("Stopping archive groups");
         for (ArchiveGroup group : groups)
             group.stop();
-        // Assert that scanning has stopped
-        scan_thread.join();
         // Flush all values out
         CentralLogger.getInstance().getLogger(this).info("Stopping writer");
         writer.shutdown();
