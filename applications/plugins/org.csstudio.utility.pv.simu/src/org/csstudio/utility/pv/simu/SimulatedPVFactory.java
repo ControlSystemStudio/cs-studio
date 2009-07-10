@@ -19,6 +19,12 @@ public class SimulatedPVFactory implements IPVFactory
     private static Map<String, DynamicValue> values =
         new HashMap<String, DynamicValue>();
 
+    /** @return Number of values */
+    public static int getValueCount()
+    {
+        return values.size();
+    }
+
     /** Create a 'dynamic' PV.
      *  @param name Name of the PV
      */

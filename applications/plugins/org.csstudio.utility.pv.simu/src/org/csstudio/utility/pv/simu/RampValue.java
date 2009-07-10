@@ -5,8 +5,8 @@ package org.csstudio.utility.pv.simu;
  */
 public class RampValue extends DynamicValue
 {
+    final private boolean down;
     private double value;
-    private int sign;
 
     /** Initialize
      *  @param name
@@ -14,20 +14,31 @@ public class RampValue extends DynamicValue
     public RampValue(final String name)
     {
         super(name);
-        sign = max == min ? 0 : (max>min ? 1 : -1);
+        down = step < 0;
         step = Math.abs(step);
+        if (step <= 0)
+            step = 1;
         if(step > Math.abs(max-min))
         	step = Math.abs((max-min)/10);
-        value = min - step*sign;
+        value = down ? max : min;
     }
 
     /** {@inheritDoc} */
     @Override
     protected void update()
     {    	
-    	value = value + step*sign;        
-        if (max > min ? (value > max) : (value < max))
-            value = min;     
-        setValue(value);
+        if (down)
+        {
+            value = value - step;
+            if (value < min)
+                value = max;
+        }
+        else
+        {
+            value = value + step;
+            if (value > max)
+                value = min;
+        }
+           setValue(value);
     }
 }

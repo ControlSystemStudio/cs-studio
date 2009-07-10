@@ -17,9 +17,15 @@ public class SystemPVFactory implements IPVFactory
     /** PV type prefix */
     public static final String PREFIX = "sys";
 
-    /** All the 'simulated' PVs, mapped by name */
+    /** All the 'system' PVs, mapped by name */
     private static Map<String, Value> values =
         new HashMap<String, Value>();
+
+    /** @return Number of values */
+    public static int getValueCount()
+    {
+        return values.size();
+    }
 
     /** Create a 'dynamic' PV.
      *  @param name Name of the PV
@@ -29,7 +35,9 @@ public class SystemPVFactory implements IPVFactory
         Value value = values.get(name);
         if (value == null)
         {
-            if (name.equals("time"))
+            if (name.equals("pv_count"))
+                value = new PVCountValue(name);
+            else if (name.equals("time"))
                 value = new TimeValue(name);
             else if (name.equals("free_mb"))
                 value = new FreeMemValue(name);
@@ -60,7 +68,7 @@ public class SystemPVFactory implements IPVFactory
 				}
 			else
                 value = new TextValue(name,
-                        "Unknown system property '" + name + "'", false);
+                        "Unknown system PV '" + name + "'", false);
             values.put(name, value);
         }
         if (value instanceof DynamicValue)

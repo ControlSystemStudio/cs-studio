@@ -61,7 +61,7 @@ abstract public class DynamicValue extends Value implements Runnable
     {
         super(name);
 
-        // Parse "name(min, max, update_seconds)"
+        // Parse "name(min, max, step, update_seconds)"
         Pattern name_pattern = Pattern.compile("\\w+\\(\\s*([-0-9.]+)\\s*,\\s*([-0-9.]+)\\s*,\\s*([-0-9.]+)\\s*,\\s*([0-9.]+)\\s*\\)");
         Matcher matcher = name_pattern.matcher(name);
         if (matcher.matches())
@@ -79,7 +79,7 @@ abstract public class DynamicValue extends Value implements Runnable
             }
         }
         else
-        {
+        {   // Parse "name(min, max, update_seconds)"
         	name_pattern = Pattern.compile("\\w+\\(\\s*([-0-9.]+)\\s*,\\s*([-0-9.]+)\\s*,\\s*([0-9.]+)\\s*\\)");
         	matcher = name_pattern.matcher(name);
         	 if (matcher.matches())
@@ -102,6 +102,13 @@ abstract public class DynamicValue extends Value implements Runnable
         // Enforce minimum period delay
         if (update_period < MIN_UPDATE_PERIOD)
             update_period = MIN_UPDATE_PERIOD;
+        // Assert min <= max
+        if (min > max)
+        {
+            final double tmp = max;
+            max = min;
+            min = tmp;
+        }
         final double range = max - min;
         meta = ValueFactory.createNumericMetaData(min, max, min+0.3*range, min+0.7*range, min+0.1*range, min+0.9*range, 3, "a.u.");
     }

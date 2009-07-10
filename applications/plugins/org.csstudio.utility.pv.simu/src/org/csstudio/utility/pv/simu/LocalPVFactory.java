@@ -19,6 +19,12 @@ public class LocalPVFactory implements IPVFactory
     private static Map<String, Value> values =
         new HashMap<String, Value>();
 
+    /** @return Number of values */
+    public static int getValueCount()
+    {
+        return values.size();
+    }
+
     /** Create a 'local' PV.
      *  @param name Name of the PV
      */

@@ -40,6 +40,7 @@ System PVs can be used to display information internal to CSS or the local compu
 <tr><td><pre>sys://host_name</pre></td><td>Host name</td></tr>
 <tr><td><pre>sys://qualified_host_name</pre></td><td>Full Host Name</td></tr>
 <tr><td><pre>sys://system.*</pre></td><td>Any system property, e.g. "sys://system.user.name"</td></tr>
+<tr><td><pre>sys://pv_count</pre></td><td>Number of "loc:", "sys:" and "sim:" values.</td></tr>
 </table>
 
 <h3>ca://</h3>
@@ -89,6 +90,11 @@ A full period takes 20 updates, i.e. 5 seconds in this example.
   sim://ramp(0, 10, 0.1, 0.5)
 </pre>
 generates a ramp (saw-tooth) valued 0 to 10, stepping 0.1 every 0.5 seconds.
+
+<pre>
+  sim://ramp(0, 100, -1, 2)
+</pre>
+generates a negative ramp, i.e. count-down, from 100 to 0, stepping 1 every 2 seconds.
 
 </body>
 </html>
