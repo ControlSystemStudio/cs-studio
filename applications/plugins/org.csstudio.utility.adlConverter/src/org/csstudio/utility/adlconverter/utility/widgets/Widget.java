@@ -36,6 +36,7 @@ import org.csstudio.sds.model.DynamicsDescriptor;
 import org.csstudio.sds.model.LabelModel;
 import org.csstudio.sds.model.initializers.WidgetInitializationService;
 import org.csstudio.sds.model.logic.ParameterDescriptor;
+import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
 import org.csstudio.utility.adlconverter.utility.widgetparts.ADLBasicAttribute;
@@ -72,30 +73,37 @@ public abstract class Widget extends AbstractDisplayImporter {
     private ADLControl _control;
     /** The Widget sensitive Attribute. */
     private ADLSensitive _sensitive;
-    
+
     /**
      * @param widget
      *            ADLWidget that describe the Widget.
-     * @param storedDynamicAttribute 
-     * @param storedBasicAttribute 
+     * @param storedDynamicAttribute
+     * @param storedBasicAttribute
      */
-    public Widget(final ADLWidget widget, ADLWidget storedBasicAttribute, ADLWidget storedDynamicAttribute) {
+    public Widget(final ADLWidget widget, ADLWidget storedBasicAttribute,
+            ADLWidget storedDynamicAttribute) {
         setDefaults();
         try {
-            if(storedBasicAttribute!=null){
-                _basicAttribute = new ADLBasicAttribute(storedBasicAttribute,_widget);
+            if (storedBasicAttribute != null) {
+                _basicAttribute = new ADLBasicAttribute(storedBasicAttribute, _widget);
             }
-            if(storedDynamicAttribute!=null){
-                _dynamicAttribute = new ADLDynamicAttribute(storedDynamicAttribute,_widget);
+            if (storedDynamicAttribute != null) {
+                _dynamicAttribute = new ADLDynamicAttribute(storedDynamicAttribute, _widget);
             }
         } catch (WrongADLFormatException e1) {
             CentralLogger.getInstance().info(this, e1);
         }
-        
-        if(_basicAttribute!=null){
+
+        if (_basicAttribute != null && _dynamicAttribute != null) {
+            Map<ConnectionState, Object> connectionStateDependentPropertyValues = _dynamicAttribute
+                    .getColorAdlDynamicAttributes().getConnectionStateDependentPropertyValues();
+            connectionStateDependentPropertyValues.put(ConnectionState.CONNECTED, _basicAttribute
+                    .getClr());
+        }
+        if (_basicAttribute != null) {
             _basicAttribute.setParentWidgetModel(_widget);
         }
-        if(_dynamicAttribute!=null){
+        if (_dynamicAttribute != null) {
             _dynamicAttribute.setParentWidgetModel(_widget);
         }
         try {
@@ -113,12 +121,12 @@ public abstract class Widget extends AbstractDisplayImporter {
      */
     public Widget(ADLWidget widget, DisplayModel root) {
         _widget = root;
-//        if(_basicAttribute!=null){
-//            _basicAttribute.setParentWidgetModel(_widget);    
-//        }
-//        if(_dynamicAttribute!=null){
-//            _dynamicAttribute.setParentWidgetModel(_widget);
-//        }
+        // if(_basicAttribute!=null){
+        // _basicAttribute.setParentWidgetModel(_widget);
+        // }
+        // if(_dynamicAttribute!=null){
+        // _dynamicAttribute.setParentWidgetModel(_widget);
+        // }
         try {
             makeObject(widget);
         } catch (WrongADLFormatException e) {
@@ -133,8 +141,8 @@ public abstract class Widget extends AbstractDisplayImporter {
         setWidgetType();
         _widget.setLayer(""); //$NON-NLS-1$
         _widget.setEnabled(true);
-//        WidgetInitializationService instance = WidgetInitializationService.getInstance();
-//        instance.initialize(_widget);
+        // WidgetInitializationService instance = WidgetInitializationService.getInstance();
+        // instance.initialize(_widget);
     }
 
     /**
@@ -158,13 +166,15 @@ public abstract class Widget extends AbstractDisplayImporter {
                 _widget.setDynamicsDescriptor(AbstractWidgetModel.PROP_VISIBILITY,
                         _dynamicAttribute.getBooleanAdlDynamicAttributes());
             }
-            if (_dynamicAttribute.isColor()) {
-                _widget.setDynamicsDescriptor(AbstractWidgetModel.PROP_COLOR_FOREGROUND,
-                        _dynamicAttribute.getColorAdlDynamicAttributes());
-                if (getControl() == null && getMonitor() == null) {
-                    // ???
-                }
-            }
+            // Wird vom Initializer erledigt.
+             if (_dynamicAttribute.isColor()) {
+             _widget.setDynamicsDescriptor(AbstractWidgetModel.PROP_COLOR_FOREGROUND,
+             _dynamicAttribute.getColorAdlDynamicAttributes());
+            // if (getControl() == null && getMonitor() == null) {
+            // // ???
+            // }
+             }else {
+             }
         }
         makeConnectionState();
     }
@@ -173,36 +183,30 @@ public abstract class Widget extends AbstractDisplayImporter {
      * Generate the default Desy Connenction State XML-Element.
      */
     protected void makeConnectionState() {
-        if (Messages.Widget_DesySwitch.equals("DESY")) {
-//TODO: check new connection states
-        	// Desy Settings
-            // -- Set ConnectionState Border width
-            DynamicsDescriptor state = new DynamicsDescriptor("directConnection");
-            state.addInputChannel(new ParameterDescriptor("$channel$", Double.class));
-            Map<ConnectionState, Object> cState = new HashMap<ConnectionState, Object>();
-            cState.put(ConnectionState.DISCONNECTED, Integer.valueOf(3));
-            cState.put(ConnectionState.CONNECTION_FAILED, Integer.valueOf(3));
-//            cState.put(ConnectionState.CONNECTING, Integer.valueOf(2));
-//            cState.put(ConnectionState.INITIAL, Integer.valueOf(2));
-            cState.put(ConnectionState.CONNECTION_LOST, Integer.valueOf(3));
-//            cState.put(ConnectionState.DISCONNECTING, Integer.valueOf(3));
-//            cState.put(ConnectionState.DESTROYED, Integer.valueOf(3));
-            state.setConnectionStateDependentPropertyValues(cState);
-            _widget.setDynamicsDescriptor(AbstractWidgetModel.PROP_BORDER_WIDTH, state);
-            // -- Set ConnectionState Border color
-            state = new DynamicsDescriptor("directConnection");
-            state.addInputChannel(new ParameterDescriptor("$channel$", Double.class));
-            cState = new HashMap<ConnectionState, Object>();
-            cState.put(ConnectionState.DISCONNECTED, new RGB(255, 255, 255));
-            cState.put(ConnectionState.CONNECTION_FAILED, new RGB(255, 128, 0));
-//            cState.put(ConnectionState.CONNECTING, new RGB(128, 255, 0));
-//            cState.put(ConnectionState.INITIAL, new RGB(0, 255, 0));
-            cState.put(ConnectionState.CONNECTION_LOST, new RGB(255, 128, 0));
-//            cState.put(ConnectionState.DISCONNECTING, new RGB(255, 255, 0));
-//            cState.put(ConnectionState.DESTROYED, new RGB(255, 0, 0));
-            state.setConnectionStateDependentPropertyValues(cState);
-            _widget.setDynamicsDescriptor(AbstractWidgetModel.PROP_BORDER_COLOR, state);
+//        if (_dynamicAttribute != null) {
+//            DynamicsDescriptor colorAdlDynamicAttributes = _dynamicAttribute
+//                    .getColorAdlDynamicAttributes();
+//            _widget.setDynamicsDescriptor(AbstractWidgetModel.PROP_COLOR_BACKGROUND,
+//                    colorAdlDynamicAttributes);
+//        } else 
+            if (_monitor != null) {
+            DynamicsDescriptor dynamicsDescriptor = _widget.getDynamicsDescriptor(AbstractWidgetModel.PROP_COLOR_BACKGROUND);
+            if(dynamicsDescriptor!=null) {
+                Map<ConnectionState, Object> connectionStateDependentPropertyValues = dynamicsDescriptor.getConnectionStateDependentPropertyValues();
+                if(connectionStateDependentPropertyValues!=null) {
+                    connectionStateDependentPropertyValues.put(ConnectionState.CONNECTED,ADLHelper.getRGB(_monitor.getBclr()));
+                }
+            }
         }
+        // DynamicsDescriptor state = new DynamicsDescriptor("directConnection");
+        // state.addInputChannel(new ParameterDescriptor("$channel$", Double.class));
+        // Map<ConnectionState, Object> cState = new HashMap<ConnectionState, Object>();
+        // cState.put(ConnectionState.DISCONNECTED, Integer.valueOf(3));
+        // cState.put(ConnectionState.CONNECTION_FAILED, Integer.valueOf(3));
+        // cState.put(ConnectionState.CONNECTION_LOST, Integer.valueOf(3));
+        // state.setConnectionStateDependentPropertyValues(cState);
+        // _widget.setDynamicsDescriptor(AbstractWidgetModel.PROP_BORDER_WIDTH, state);
+
     }
 
     /**
@@ -211,11 +215,10 @@ public abstract class Widget extends AbstractDisplayImporter {
      * @param widget
      *            The ADLWidget to generate the XML-Element.
      * @throws WrongADLFormatException
-     *             WrongADLFormatException Wrong ADL format or untreated
-     *             parameter found.
+     *             WrongADLFormatException Wrong ADL format or untreated parameter found.
      */
     private void makeObject(final ADLWidget widget) throws WrongADLFormatException {
-        
+
         for (ADLWidget obj : widget.getObjects()) {
             if (obj.isType("dynamic attribute")) { //$NON-NLS-1$
                 _dynamicAttribute = new ADLDynamicAttribute(obj, _widget);
@@ -223,18 +226,18 @@ public abstract class Widget extends AbstractDisplayImporter {
                 _monitor = new ADLMonitor(obj, _widget);
             }
         }
-        
+
         for (ADLWidget obj : widget.getObjects()) {
             if (obj.isType("object")) { //$NON-NLS-1$
                 _object = new ADLObject(obj, _widget);
             } else if (obj.isType("basic attribute")) { //$NON-NLS-1$
                 _basicAttribute = new ADLBasicAttribute(obj, _widget);
             } else if (obj.isType("dynamic attribute")) { //$NON-NLS-1$
-//                _dynamicAttribute = new ADLDynamicAttribute(obj, _widget);
+                // _dynamicAttribute = new ADLDynamicAttribute(obj, _widget);
             } else if (obj.isType("points")) { //$NON-NLS-1$
                 _points = new ADLPoints(obj, _widget);
             } else if (obj.isType("monitor")) { //$NON-NLS-1$
-//                _monitor = new ADLMonitor(obj, _widget);
+                // _monitor = new ADLMonitor(obj, _widget);
             } else if (obj.isType("control")) { //$NON-NLS-1$
                 _control = new ADLControl(obj, _widget);
             } else if (obj.isType("sensitive")) { //$NON-NLS-1$
@@ -309,8 +312,7 @@ public abstract class Widget extends AbstractDisplayImporter {
     }
 
     /**
-     * Convert the absolute coordinate to the relative coordinate of this
-     * Widget.
+     * Convert the absolute coordinate to the relative coordinate of this Widget.
      * 
      * @param x
      *            the x coordinate.
@@ -324,8 +326,7 @@ public abstract class Widget extends AbstractDisplayImporter {
     }
 
     /**
-     * Convert the absolute coordinate to the relative coordinate of this
-     * Widget.
+     * Convert the absolute coordinate to the relative coordinate of this Widget.
      * 
      * @param x
      *            the x coordinate.
@@ -346,14 +347,14 @@ public abstract class Widget extends AbstractDisplayImporter {
         // Do nothing.
         return false;
     }
-    
+
     void uninit() {
         _widget.setDynamicsDescriptor(LabelModel.PROP_BORDER_COLOR, null);
         _widget.setDynamicsDescriptor(LabelModel.PROP_BORDER_STYLE, null);
         _widget.setDynamicsDescriptor(LabelModel.PROP_BORDER_WIDTH, null);
         _widget.setDynamicsDescriptor(LabelModel.PROP_COLOR_BACKGROUND, null);
         _widget.setDynamicsDescriptor(LabelModel.PROP_COLOR_FOREGROUND, null);
-        
+
     }
 
 }

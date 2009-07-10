@@ -53,7 +53,6 @@ public class Label extends Widget {
      */
     public Label(final ADLWidget label, ADLWidget storedBasicAttribute, ADLWidget storedDynamicAttribute) throws WrongADLFormatException {
         super(label, storedBasicAttribute, storedDynamicAttribute);
-        
         String labelText=null;
         if(getBasicAttribute()!=null){
             getBasicAttribute().setWidth("0"); //$NON-NLS-1$
@@ -128,6 +127,7 @@ public class Label extends Widget {
                 throw new WrongADLFormatException(Messages.Label_WrongADLFormatException_Parameter_Begin+ bodyPart+Messages.Label_WrongADLFormatException_Parameter_End);
             } //Label have no Parameter
         }
+        _widget.setDynamicsDescriptor(LabelModel.PROP_TEXTVALUE, null);
         if(getMonitor()!=null){
             String postfix = ""; //$NON-NLS-1$
             if(getMonitor()!=null&&getMonitor().getPostfix()!=null){
@@ -136,11 +136,6 @@ public class Label extends Widget {
             DynamicsDescriptor dd = new DynamicsDescriptor("directConnection"); //$NON-NLS-1$
             dd.addInputChannel(new ParameterDescriptor("$channel$"+postfix+", string",Double.class)); //$NON-NLS-1$ //$NON-NLS-2$
             _widget.setDynamicsDescriptor(LabelModel.PROP_TEXTVALUE, dd);
-//            if(alias!=null&&alias.contains("[")) {
-//                uninit();
-//            }
-        }else {
-//            uninitAll();
         }
         int fontSize = ADLHelper.getFontSize("Times New Roman",labelText, getObject().getHeight(), getObject().getWidth(),"0"); //$NON-NLS-1$ //$NON-NLS-2$
         _widget.setPropertyValue(LabelModel.PROP_FONT, new FontData("Times New Roman", fontSize, SWT.NONE)); //$NON-NLS-1$
@@ -152,17 +147,6 @@ public class Label extends Widget {
         }
         _widget.setLayer(Messages.ADLDisplayImporter_ADLActionLayerName);
     }
-
-    private void uninitAll() {
-        _widget.setDynamicsDescriptor(LabelModel.PROP_BORDER_COLOR, null);
-        _widget.setDynamicsDescriptor(LabelModel.PROP_BORDER_STYLE, null);
-        _widget.setDynamicsDescriptor(LabelModel.PROP_BORDER_WIDTH, null);
-        _widget.setDynamicsDescriptor(LabelModel.PROP_COLOR_BACKGROUND, null);
-        _widget.setDynamicsDescriptor(LabelModel.PROP_COLOR_FOREGROUND, null);
-        _widget.setDynamicsDescriptor(LabelModel.PROP_TEXTVALUE, null);
-        
-    }
-
 
     /**
      * {@inheritDoc}

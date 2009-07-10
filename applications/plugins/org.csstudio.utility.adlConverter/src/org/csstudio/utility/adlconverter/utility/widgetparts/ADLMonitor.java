@@ -119,17 +119,9 @@ public class ADLMonitor extends WidgetPart{
     final void generateElements() {
         if(_clr!=null){
             _widgetModel.setForegroundColor(ADLHelper.getRGB(_clr));
-//          /* alarm displayed as foreground color */
-            DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor("org.css.sds.color.default_epics_alarm_foreground"); //$NON-NLS-1$
-            dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$[severity]",Double.class)); //$NON-NLS-1$
-            _widgetModel.setDynamicsDescriptor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, dynamicsDescriptor);
         }
         if(_bclr!=null){
             _widgetModel.setBackgroundColor(ADLHelper.getRGB(_bclr));
-//          /* alarm displayed as background color */
-//            DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor("org.css.sds.color.default_epics_alarm_background");
-//            dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$",Double.class));
-//            _widgetModel.setDynamicsDescriptor(AbstractWidgetModel.PROP_COLOR_BACKGROUND, dynamicsDescriptor);
         }
         if(_chan!=null){
             /*

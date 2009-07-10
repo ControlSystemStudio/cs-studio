@@ -163,7 +163,8 @@ public class ADLDynamicAttribute extends WidgetPart{
                 _bool=true;
                 _adlBooleanDynamicAttribute = new DynamicsDescriptor("org.css.sds.color.if_zero"); //$NON-NLS-1$
                 _adlBooleanDynamicAttribute.addInputChannel(new ParameterDescriptor(channel,Double.class)); //$NON-NLS-1$
-            }else if( _colorRule!=null){
+            }
+            if( _colorRule!=null){
                 _color = true;
             //            <dynamicsDescriptor ruleId="cosyrules.color.aend_dlog">
             //                <inputChannel name="$channel$" type="java.lang.Double" />
@@ -173,7 +174,7 @@ public class ADLDynamicAttribute extends WidgetPart{
 //                if(_chan.length>2&&_chan[2].startsWith("$")){ //$NON-NLS-1$
 //                    ADLHelper.setChan(_parentWidgetModel, _chan);
 //                }
-                ADLHelper.setConnectionState(_adlColorDynamicAttribute);
+//                ADLHelper.setConnectionState(_adlColorDynamicAttribute);
             }
 //            else {
 //                _color = true;

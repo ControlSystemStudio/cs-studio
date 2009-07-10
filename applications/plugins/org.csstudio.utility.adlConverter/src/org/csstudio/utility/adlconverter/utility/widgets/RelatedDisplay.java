@@ -66,11 +66,11 @@ public class RelatedDisplay extends Widget {
         int n =0;
         for (ADLWidget obj : relatedDisplay.getObjects()) {
             if(obj.isType("display["+n+"]")){ //$NON-NLS-1$ //$NON-NLS-2$
-//                if(n==0){
-//                    label=new RelatedDisplayItem(obj, _widget).getLabel();
-//                }else{
+                if(n==0){
+                    label=new RelatedDisplayItem(obj, _widget).getLabel();
+                }else{
                     new RelatedDisplayItem(obj, _widget);
-//                }
+                }
                 n++;
             }else if(obj.isType("sensitive")){ //$NON-NLS-1$
                 //TODO: RelatedDisplay(Menu)-->sensitive
@@ -106,6 +106,20 @@ public class RelatedDisplay extends Widget {
 //            _control.setConnectionStateDependentPropertyValues(values);
         }
         
+        if(n<2) {
+            label="[_]";
+        }
+        if(getControl()!=null||n>1){ // if Label text Dyn?
+            // <dynamicsDescriptor ruleId="directConnection">               
+            //   <inputChannel name="local://out" type="java.lang.Object" />
+            // </dynamicsDescriptor>
+            DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor("directConnection"); //$NON-NLS-1$
+            dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$, string",Object.class)); //$NON-NLS-1$
+            _widget.setDynamicsDescriptor(MenuButtonModel.PROP_LABEL, dynamicsDescriptor);
+            _widget.setDynamicsDescriptor(AbstractWidgetModel.PROP_ACTIONDATA, _control);
+        }
+
+
         for (FileLine fileLine : relatedDisplay.getBody()) {
             String obj = fileLine.getLine();
             String[] row = obj.trim().split("="); //$NON-NLS-1$
@@ -144,25 +158,8 @@ public class RelatedDisplay extends Widget {
         if(bclr!=null){
             _widget.setBackgroundColor(ADLHelper.getRGB(bclr));
         }
-        if(label==null) {
-            label="[_]";
-        }
         _widget.setPropertyValue(MenuButtonModel.PROP_LABEL, label);
         
-        if(getControl()!=null){ // if Label text Dyn?
-            // <dynamicsDescriptor ruleId="directConnection">               
-            //   <inputChannel name="local://out" type="java.lang.Object" />
-            // </dynamicsDescriptor>
-            DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor("directConnection"); //$NON-NLS-1$
-//            dynamicsDescriptor.addInputChannel(new ParameterDescriptor("local://out",Object.class)); //$NON-NLS-1$
-            dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$, string",Object.class)); //$NON-NLS-1$
-            _widget.setDynamicsDescriptor(MenuButtonModel.PROP_LABEL, dynamicsDescriptor);
-        }
-
-        if(_control!=null){
-            _widget.setDynamicsDescriptor(AbstractWidgetModel.PROP_ACTIONDATA, _control);
-//            elem.addContent(_control);
-        }
         
         // <property type="sds.integer" id="border.width" value="1" />
         _widget.setPropertyValue(MenuButtonModel.PROP_BORDER_WIDTH, 1);
