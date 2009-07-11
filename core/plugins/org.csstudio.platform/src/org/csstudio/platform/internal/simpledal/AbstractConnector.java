@@ -219,6 +219,11 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
         if (_latestError != null) {
             listener.errorOccured(_latestError);
         }
+        
+		// send characteristics
+		if (characteristicId != null) {
+			getCharacteristicAsynchronously(characteristicId, getValueType(), listener);
+		}
     }
     /**
      * Removes the specified value listener. This is optional - a connector does reference its
