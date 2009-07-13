@@ -54,7 +54,7 @@ public class BenchmarkTimer
     @Override
     public String toString()
     {
-        RelativeTime passed = new RelativeTime(getSeconds());
+        final RelativeTime passed = new RelativeTime(getSeconds());
         return passed.toString();
     }
 }
