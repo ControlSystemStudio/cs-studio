@@ -1,0 +1,74 @@
+<html>
+<head>
+<title>Data Browser</title>
+</head>
+<body>
+<h2>Formula</h2>
+Die Kontextmenus des <a href=plot_window.html>Plot Window</a> und des
+<a href=config_view.html>Data Browser Config View</a>
+gestatten das Hinzufügen von Formeln. 
+<h2>Formula Configuration</h2>
+Wenn man eine Formel hinzufügt oder sie später im Konfigurations-View auswählt,
+öffnet sich der Formel-Konfigurations-Dialog.
+<p>
+<img src="./formula_cfg.png" width="831" height="436" alt="Formula Config">
+<p>
+<ol>
+<li>Der <u>Inputs</u>-Abschnitt enthält eine Liste aller PVs der aktuellen 
+    Konfiguration als mögliche inputs und erlaubt die Zuweisung kürzerer 
+    <u>Variable</u> Namen, die in der Formel benutzt werden können.
+    Anklicken eines Variable Namen zum editieren.
+
+<li>Editieren der Formel, entweder direktes Eintippen in das <u>Formula</u>
+    Textfeld oder mit Hilfe von Benutzung von <u>Functions</u> and <u>Basic Calculations</u>.
+<li>Die <u>Parsed Formula</u>-Info unten zeigt 'basic error messages'.
+</ol>
+
+<h3>Basic Calculations</h3>
+... bedienen wie einen gewöhnlichen Taschenrechner
+
+<h3>Functions</h3>
+<ul>
+<li>Alle im Dialog gezeigten Funktionen haben ein Argument, 
+    solange nicht ausdrücklich etwas andere erwähnt ist, 
+    beispielsweise <code>sin(x)</code>.
+<li><code>atan2(y,x)</code> hat 2 Argumente und berechnet 
+     <code>atan(y/x)</code> mit zusätzlicher Berücksichtigung 
+     von 4 möglichen Quadranten.
+<li>Alle trigonometrischen Funktionen arbeiten in radians.
+    Die Funktionen <code>toDegrees</code> bzw. <code>toRadians</code>
+    können für Umwandlungen benutzt werden, z.B.:
+    <code>toDegrees(sin(x+toRadians(30)))</code>.
+<li><code>min</code>, <code>max</code> haben ein oder mehr Argumente,
+    z.B. <code>min(x, y, 1)</code>.
+<li><code>^</code> wie in <code>x^y</code>
+    rechnet <code>x</code> hoch <code>y</code>.
+<li><code>? :</code> ist ein if-then-else-Operator,
+    z.B. <code>x > 0 ? x^2 : 0</code>.
+<li>Boolesche Operatoren
+    <code>==</code>,
+    <code>!=</code>,
+    <code>&gt;</code>,
+    <code>&gt;=</code>,
+    <code>&lt;</code>,
+    <code>&lt;=</code>
+    werden unterstützt, aber müssen direkt in die Formel eingetippt werden.
+<li><code>rnd(x)</code> gibt eine Zufallszahl aus dem Bereich <code>[0...x]</code> zurück.
+<li><code>PI</code>, <code>E</code> sind vordefinierte Konstanten.
+</ul>
+
+
+<h2>Formula Behavior at Runtime</h2>
+Die Formel wird basierend auf den Daten, die im Plot gezeigt werden, 
+ausgewertet, weil dies übergangsloses Arbeiten mit Archivdaten und 
+'life'-Daten aus verschiedenen Quellen erlaubt.
+<p>
+<img src="./formula_runtime.png" width="627" height="291" alt="Formula in Plot">
+<p>
+Ein Nachteil ist, dass die Qualität der berechneten Daten immer als "interpoliert" 
+betrachtet werden muss und durch die Zeitfenster-Granularität der 
+Daten, die im Plot sichtbar sind, limitiert ist.
+Der Versuch, Daten vom Archiv UND einer Formel zu exportieren,
+wird durch eine entsprechende Warnung angezeigt.
+</body>
+</html>

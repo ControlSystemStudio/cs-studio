@@ -1,0 +1,84 @@
+<html>
+<head>
+<title>Data Browser</title>
+</head>
+<body>
+
+<h2>Starting a new, empty Data Browser</h2>
+Öffnen eines neuen Datenbrowsers mit dem Menu-Eintrag
+<pre>CSS/Trends/Data Browser</pre>
+<p>
+Man gelangt in ein leeres Plot-Window, in welches man nun
+mit <a href=add_pvs.html>add PVs</a> PVs hinzufügen kann.
+Man kann meherer Datenbrowser-Instanzen gleichzeitig öffnen.
+<h2>Data Browser Perspective</h2>
+Speziell für neue Benutzer empfiehlt sich das Umschalten 
+auf eine voreingestellte Datenbrowser-Perspektive, die
+eine vordefinierte Anordnung des Plot-Windows, sowie 
+einiger ähnlicher Views (Navigator, Konfiguraion, Archiv und Export)
+zur Verfügung stellt.
+<br>
+Aktivieren des Plot-Kontext-Menus mit Rechtsklick in den
+Datenbrowser-Plot, dann Auswählen des Menu-Eintrags 
+<pre>Data Browser Perspective</pre>.
+<p>
+Wenn sich der aktuelle Schirm von dem hier unten dargestellten 
+Schnappschuss signifikant unterscheidet, dann hat schon irgendjemand
+die Datenbrowser-Perspektive angepasst.
+Um diese Anpassungen rückgängig zu machen, Kontextmenu der Perspektive 
+auswählen (Rechtsklick auf den Datenbrowser-Tab) und "Reset" auswählen.
+<p>
+<img src="./perspective.png" width=1015 height=650 alt=Perspective>
+
+<h2>Stopping a Data Browser Instance</h2>
+Man kann ein Datenbrowser-Plot-Window einfach schliessen entweder
+über das übliche Symbol in der Window-Titelleiste oder über das
+Kontextmenu der Titelleiste.
+<p>
+Wenn die Datenbrowser-Konfiguration nicht gesichert wurde,
+entweder weil sie noch nie gesichert wurde,
+oder weil sie nach der letzten Sicherung geändert wurde,
+öffnet sich eine Dialogbox, in welchern man die Konfiguration sichern kann
+oder sie ohne sichern schliessen kann.
+
+<h2>The Workspace, "Project" Folders</h2>
+Konfigurationsdateien werden im Verzeichnis "Projects" im "Workspace" gesichert.
+Die CSS-Anwendung legt für den Benutzer ein Start-CSS-Projektverzeichnis an.
+Organisieren der Dateistruktur zur Erzeugung weiterer Projekte:
+<ol>
+<li>Wenn es nicht sowieso schon geöffnet ist, erzeugen eines "Navigator"-View,
+zugreifbar über das Menu <pre>Window/Show View.../GeneralNavigator</pre>
+	
+<li>Jedes top level Verzeichnis in der view ist ein "Projekt" im "Workspace".
+    Erzeugen neuer Projekte über das Navigator-Kontextmenu
+    <pre>New Project</pre>
+    Im erscheinenden  Dialog "New Project" einen Projektnamen eingeben.
+</ol>
+
+<h2>Saving Data Browser Configurations</h2>
+Konfigurationsdateien werden in "Projekt"-Verzeichnissen gesichert.
+siehe im vorigen Abschnitt.
+Um Dateien zu sichern, kann man das Menu "File/Save As.." benutzen.
+Wenn die Konfiguration schon gesichert wurde, steht der aktuelle 
+Konfigurationsdateiname in der Plow-Window-Titelleiste und der Eintrag
+"File/Save" im Menu erlaubt das Sichern von Änderungen in der aktuellen 
+Konfigurationsdatei.
+
+<h2>Re-loading a Data Browser Configurations</h2>
+Man öffnet eine gesicherte Datenbrowser-Konfiguration durch Doppelklick auf 
+die Konfigurationsdatei im "Navigator"
+
+<h2>Creating a new, empty Data Browser Configurations</h2>
+Man kann natürlich ein neues Datenbrowser-Plot-Window öffnen und
+dann, wie oben beschrieben,  die Konfiguration mit "File/Save As" sichern.
+<p>
+Andererseits kann man eine neue, leere Datenbrowser-Konfigurationsdatei so erzeugen:
+<ul>
+<li>Öffnen der "Navigator"-View mit Menu <pre>Window/Show View.../GeneralNavigator</pre>
+<li>Aktivieren des Kontextmenu <pre>New/Other../CSS/Data Browser</pre>
+<li>Im der erscheinenden Dialogbox das Projektverzeichnis und 
+den Konfigurationsdateinamen auswählen.
+</ul>
+
+</body>
+</html>

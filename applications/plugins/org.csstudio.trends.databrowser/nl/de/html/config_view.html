@@ -1,0 +1,91 @@
+<html>
+<head>
+<title>Data Browser</title>
+</head>
+<body>
+<h2>Data Browser Config View</h2>
+Der Großteil der Konfiguration ist in dieser View dargestellt.
+Der Zufgriff erfolgt über das Kontextmenu des
+<a href=plot_window.html>Plot Windows</a>.
+<br>
+Es hat verschiedene Unterabschnitte oder "Tabs".
+
+<img src="./config.png" width=751 height=365/>
+
+<h3>"Process Variables" Tab</h3>
+Dies Kapitel erklärt, welche PVs im Plot gezeigt werden und wie das geht.
+Man kann PVs hinzufügen, indem man ihre Namen in der 
+"&lt;Add PV&gt;" Zelle der "Process Variables" Tabelle eingibt.
+Zum Löschen von PVs: auswählen und über Kontextmenu der PV-Tabelle löschen.
+
+<p>
+Man kann die Achsenbelegung, Farbe und Linienbreite von jedem PV ändern.
+Die Nummer in der "Axis"-Spalte kennzeichnet die entsprechende Y-Achse 0, 1, 2 ... 
+Um PVs auf die gleiche, erste Achse zu legen, "0" eingeben.
+Um sie auf zwei Achsen zu legen, "0" oder "1" für die jeweilige PV eingeben.
+
+<p>
+Die "Min" und "Max"-Einstellungen bestimmen den Y-Achsen-Bereich. Über "Type"
+wird eine lineare oder logarithmische Y-Achsen-Skala bestimmt.
+Weil diese Werte die Y-Achse verändern, betreffen sie alle PVs, die sich auf diese
+Achse beziehen.
+<p>
+Mehr Details siehe unter
+<a href=display_types.html>Display Types</a>
+und
+<a href=request_types.html>Request Types</a>.
+
+<h4>Archive Table, Formula</h4>
+Die untere Hälfte des PV Tabs ändert sich abhängig vom PV-Type.
+Für PVs: Es wird eine Tabelle mit Archivdatenquellen  dargestellt, die
+benutzt werden können, um Beispiele für die ausgewählten PVs zu lesen.
+<p>
+
+Die "Re-scale for new archived data"-Auswahl bestimmt, wie
+mit kürzlich archivierten Daten umbegangen wird:
+<ul>
+<li>No: Kein re-scale durchführen; Achsen-Settings nicht verändern.
+<li>Autoscale: Wenn neue Archiv-Daten empfangen werden, dann die Y-Achsen autoskalieren.
+<li>Stagger: ..., stagger die Y-Achsen.
+</ul>
+
+<p>
+Formeln : Formeln werden angezeigt.
+<p>
+<u>Change archive data sources</u><br>
+Um Archivdatenquellen hinzuzufügen, Drag-and-Drop ein Archiv vom
+<a href=archive_view.html>Archive View</a>
+auf einen PV. 
+Man kann sie auf das Plot-Window droppen, 
+welches die Quelle zu allen PVs im Plot hinzufügt,
+oder auf einen ausgewählten PV in der Konfigurations-View.
+<br>
+Im Kontextmenu der  "Archives used for ..."-Tabelle kann man 
+die Reihenfolge der Archive für einen PV neu ordnen.
+<br>
+Um eine Archivdatenquelle von einem PV zu löschen,
+PV im Konfigurations-View auswählen, Archivdatenquelle
+in der "Archives used for ..."-Tabelle auswählen und
+über das Kontextmenu löschen.
+
+<h3>"Live Data Config" Tab</h3>
+Dies Kapitel beschreibt die Einstellungen,
+wie oft 'life'-Daten für die PVs genommen werden und wie oft
+der Plot neu gezeichnet wird.
+Man kann beispielsweise einen PV alle 2 Sekunden auslesen und
+den Plot alle 4 Sekunden neu zeichnen.
+Man beachte, dass Neuzeichnen viel CPU-Zeit verbraucht.
+Man spart CPU-Zeit, wenn man die Neuzeichnen-Rate kleiner 
+und die Update-Rate größer dreht.
+
+<h3>"Time Config" Tab</h3>
+Gestattet Eingabe von Start- und End-Zeitpunkt.
+<p>
+Für ein	"scrolling" Display gibt man relative Zeiten mit Endwert "now" ein.
+Beispiel: Startzeit = "-30 minutes" und Endzeit "now".
+Man benutzt besser den "start/end time dialog", der über die "..."-Knöpfe 
+erreichbar ist, wenn die start/end Time Syntax nicht klar ist.
+
+
+</body>
+</html>

@@ -1,0 +1,75 @@
+<html>
+<head>
+<title>Data Browser</title>
+</head>
+<body>
+<h2>Data Browser Archive View</h2>
+Diese View gestattet browsen von auf einem Archiv-Server verfügbaren Archiven,
+suchen nach Prozessvariablen-Namen und ziehen von Namen aus Suchergebnissen in den Plot.
+Man kann die View über das Kontextmenu des
+<a href=plot_window.html>plot windows</a> öffnen.
+<p>
+<img src="./archive.png" width=604 height=464/>
+
+<h3>URL: ..</h3>
+Auswählen der Archivdaten-Server-URL. Der "Info"-Knopf weiss mehr über den Server.
+<p>
+Man kann neue URLs manuell eingeben. Die Initial-URL ist in "Einstellungen" gesetzt.
+Fragen Sie Ihren Site-Archiv-Administrator nach gültigen URLs.
+
+<h3>Archive/Key/Description Table</h3>
+Eine Liste von Archiven auf der gewählten URL. Man kann ein oder mehrere
+Archive auswählen, um PVs zu suchen.
+Man kann auch Archivnamen in das 
+<ul>
+<li> <a href=plot_window.html>Plot Window</a> oder das
+<li> <a href=config_view.html>Config View</a> 
+</ul>
+des Databrowsers reinziehen, was den Databrowser veranlasst, diese Archive für alle
+oder ausgewählte PVs zu benutzen.
+Einzelheiten zu "drop" siehe "plot window" and "config view" Dokumente.
+
+<h3>Pattern:...</h3>
+Man kann ein Suchmuster für Prozessvariablen-Namen eingeben, um
+in der Archivtabelle ausgewählte Archive zu durchsuchen.
+Ist kein Archiv ausgewählt, werden alle Archive durchsucht.
+Betätigen "&lt;Return&gt;" oder des "Search"-Knopfes startet die Suche.
+
+<p>
+Das Muster ist ein regulärer Ausdruck:
+
+<CENTER>
+<TABLE BORDER=0>
+<TR BGCOLOR=#FFCC66><TH>Reg.Exp..</TH><TH>Meaning</TH></TR>
+<TR><TD>.</TD><TD>Ein beliebiges einzelnes Zeichen</TD></TR>
+<TR BGCOLOR=#DFDFFF><TD>.*</TD><TD>Kein oder mehr Zeichen</TD></TR>
+<TR><TD>^</TD><TD>Start</TD></TR>
+<TR BGCOLOR=#DFDFFF><TD>$</TD><TD>End</TD></TR>
+<TR><TD>a?</TD><TD>Einzelnes 'a' oder kein 'a'</TD></TR>
+<TR BGCOLOR=#DFDFFF><TD>a*</TD><TD>Kein oder mehr 'a'</TD></TR>
+<TR><TD>a+</TD><TD>Ein oder mehr 'a'</TD></TR>
+<TR BGCOLOR=#DFDFFF><TD>.+</TD><TD>Ein oder mehr arb. Zeichen</TD></TR>
+<TR><TD>a|b</TD><TD>Entweder einzelnes 'a' oder 'b'</TD></TR>
+<TR BGCOLOR=#DFDFFF><TD>[0-9]</TD><TD>'0' oder '1' oder ... oder '9'</TD></TR>
+<TR><TD>()</TD><TD>Gruppe von Teilausdrücken</TD></TR>
+<TR BGCOLOR=#DFDFFF><TD>Temp</TD><TD>Jeder Kanal, der 'Temp' enthält</TD></TR>
+<TR><TD>Temp$</TD><TD>Jeder Kanal der in 'Temp' <I>endet</I></TD></TR>
+<TR BGCOLOR=#DFDFFF><TD>^RFQHR</TD><TD>Jeder Kanal, der mit 'RFQHR' <I>beginnt</I></TD></TR>
+<TR><TD>Tin_[0-9]+_sig$</TD><TD>Kanäle, die in 'Tin_&lt;NUMBER&gt;_sig' enden</TD></TR>
+<TR BGCOLOR=#DFDFFF><TD>^XYZSys_Temp[2-3]$</TD><TD>'XYZSys_Temp2' oder 'XYZSys_Temp3' </TD></TR>
+<TR><TD>Pwr_(in)|(out)</TD><TD>Kanäle, die 'Pwr_in' oder  'Pwr_out' enthalten</TD></TR>
+</TABLE>
+</CENTER>
+
+<h3>Name/Archive/Start/End Table</h3>
+Diese Tabelle listet die Ergebnisse einer Suche auf.
+Für jeden Namen wird angegeben, in welchem Archiv er gefunden wurde.
+Wenn möglich, wird auch Start- und End-Zeit des Messwert-bereichs angegeben,
+der im Archiv verfügbar ist.
+<p>
+Man kann einen oder mehrere PVs mit ihrer Archivinformation in das
+Datatbrowser-Plot-Fenster bzw. das Konfigurations-View reinziehen
+oder man kann das Kontextmenu der Tabelle benutzen, um ausgewählte PVs 
+an andere CSS-Anwendungen zu schicken.
+</body>
+</html>

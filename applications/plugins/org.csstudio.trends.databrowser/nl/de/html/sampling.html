@@ -1,0 +1,58 @@
+<html>
+<head>
+<title>Data Browser</title>
+</head>
+<body>
+
+<h2>Internals: Sampling</h2>
+Jeder Datenwert hat einen timestamp, der ihn auf der X-Achse (=Zeit-Achse)
+plaziert. Für historische Daten werden die entsprechenden timestamps aus 
+dem Archiv benutzt.
+<p>
+'live'-Daten haben normalerweise auch einen timestamp, der dem Kontrollsystem
+mitteilt, wann ein Datenwert genommen wurde.
+Aus verschiedenene Gründen kann der timestamp, wenn er im Datenbrowser ankommt,
+um bis zu einige Sekunden von der aktuellen Uhrzeit abweichen.
+Es gibt unvorhersehbare Netzwerk-Verzögerungen; der Front-End-Computer kann
+mit anderen Tasks als dem Senden von Updates beschäftigt sein, oder der Datenwert
+hat sich einfach für eine lange Zeit nicht geändert und deswegen ist kein neuer
+timestamp zugeordnet. Der letzte Grund gilt speziel für 'setpoint-type' PVs.
+<p>
+Alle Versuche, den Original 'live' timestamp zu verwenden, wenn ein
+'scrolling stripchart' Display verwendet wird, sind fehlgeschlagen.
+
+	
+	
+The author has so far failed in all attempts of using that original 'live'
+time stamps when it comes to a scrolling, strip-chart type display.
+
+Offenbar möchten wir die aktuelle Zeit an der Rechten Kante des Displays anzeigen.
+Angenommen, wir scrollen, d.h. aktualisieren die rechts angezeigte Zeit sekündlich.
+Auch angenommen, dass wir einen Datensatz mit einem timestamp empfange, der eine
+Sekunde alt ist. Dann könnten wir den Datensatz eine Sekunde links von der rechten
+Plot-Kante darstellen. Wenn eine Sekunde später kein weiterer Datensatz ankommt,
+könnten wir entweder eine zwei Sekunden lange Lücke ausgeben oder annehmen, dass der
+Messwert sich nicht geändert hat und einfach den alten Messwert dauernd ausgeben.
+Beide Verfahren sind zweifelhaft:
+
+Wenn ein Messwert wie ein 'setpoint value' sich nur einmal wöchentlich ändert
+und wir nur den einen Wert ausgeben, ist der Plot wunderbar leer,
+obwohl Menschen annehmen würden, dass der Messwert konstant ist.
+Andererseits, wenn wir einfach den letzten Messwert, beispielsweise 42, der einen
+timestamp aus ferner Vergangenheit hat,  bis 'now' erweitern, indem wir eine
+Gerade bei y=42 ziehen, und dann kommt vielleicht ein neuer Messwert, z.B. 43,
+beispielsweise mit eine eine Sekunde alten timestamp, wird der Plot den Benutzer 
+verwirren, weil der Wert auf der rechten Seite des Plots plötzlich für die leitzen 
+paar Sekunden von 42 nach 43 springt.
+
+<p>
+Das Resultat ist, dass der Datenbrowser 'live'-Daten so behandelt wie die
+meisten anderen 'strip-chart' tools:
+Jedem ankommenden Datenwert wird die aktuelle Wanduhrzeit zugeordnet.
+In einem konsistenten Strip-Chart wird dies Ergebnis auf der rechten Seite 
+des Plots dargestellt. Der Nachteil ist eine kleine Inkonsistenz von vielleicht 
+ein paar Sekunden, wenn später ein Schnappschuss von 'live'-Daten mit Archivdaten
+verglichen wird, weil die Archivdaten den exakten timestamp enthalten, der 
+mit einem Messwert übertragen wurde.
+</body>
+</html>

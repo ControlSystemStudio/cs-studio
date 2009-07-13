@@ -1,0 +1,29 @@
+<html>
+<head>
+<title>Data Browser</title>
+</head>
+<body>
+<h2>Data Browser Sample View</h2>
+Diese View erlaubt die Auswahl eines PVs aus dem aktiven Plot
+und zeigt seine Daten in tabellarischer Form.
+Man kann sie über das Kontextmenu von
+<a href=plot_window.html>plot window</a> öffnen.
+<p>
+<img src="./samples.png" width=418 height=219/>
+<p>
+Dies Kommando ist nützlich, wenn man exakte numerische Werte 
+und timestamps eines PV benötigt.
+Der Marker von <a href=plot_window.html>plot Window</a>
+kann diese Info für ein paar Daten liefern, aber ein 
+Tabellen-View ist manchmal nützlicher.
+<p>
+Man kann auch <a href=export_view.html>Export View</a> benutzen,
+um so eine Datenliste auf eine Datei zu sichern.
+<p>
+Man beachte, dass die Daten-View <u>nicht</u> automatisch refresht wird,
+sobald neue Daten von einer Archiv-Anfrage oder, als 'live'-Daten, vom
+Kontrollsystem ankommen, weil die dann notwendigen Tabellenaktualisierungen
+zu aufwändig wären. Stattdessen muss man die Tabellen-Aktualisierung mithilfe
+des entsprechenden "Refresh"-Knopfes manuell triggern.
+</body>
+</html>

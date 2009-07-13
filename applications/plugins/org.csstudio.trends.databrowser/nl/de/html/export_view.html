@@ -1,0 +1,104 @@
+<html>
+<head>
+<title>Data Browser</title>
+</head>
+<body>
+<h2>Data Browser Export View</h2>
+Diese View erlaubt das Exportieren von Daten aus dem aktuellen Plot
+auf Dateien zur späteren Analyse. Beispiel :
+
+<a href="#Excel">Excel</a>
+or
+<a href="#OpenOffice">Open Office.</a>
+Man kann eine Datei über das Kontextmenu eines 
+<a href=plot_window.html>Plot-Windows</a> öffnen.
+<p>
+<img src="./export.png" width=494 height=298/>
+<ul>
+<li>Start/End Time:<br>
+Man kann die Start- und End-Zeit des aktuellen Plots benutzen,
+entweder den X-Achsen-Zeitbereich benutzen oder manuell Zeiten einstellen.
+Man kann Zeiten entweder im Format YYYY/MM/DD HH:MM:SS (year, month,
+day, hours, minutes, seconds) oder den "select"-Knopf benutzen, um einen
+Kalender-Dialog zu öffnen.
+<li>Source:<br>
+    Man kann die Daten des aktuellen Plots, die gerade im Databrowser-Memory 
+    gehalten werden, exportieren. Hier sind auch die 'life'-Daten eingeschlossen,
+    die noch nicht archiviert sind. Der Nachteil ist, dass die historischen Daten 
+    so exportiert werden, wie sie im Plot gezeigt werden, normalerweise (in der Auflösung)
+    herabgesetzt und nicht mit allen Archiv-Details.
+    <br>
+    Um Original-Archivdaten zu exportieren, "Raw Archive" anklicken.
+    Alternativ kann man auch Archivdaten exportieren, die über ein gegebenes Zeitinterval
+    gemittelt sind. "00:01:00", wie im Beispiel bedeutet: Ein gemittelter Datenwert pro
+    Minute (HH:MM:SS-Format).
+<li>Output:<br>
+    Meist möchte man Daten in ein Spreadsheet-Format exportieren, mit einer 
+    zusätzlichen Spalte mit 'severity'/'status'-Information.
+    Im Spreadsheet werden Datenfelder, für die es noch keinen 'neuen' Wert gibt,
+    jeweils mit dem vorigen Wert aus der vorigen Zeile gefüllt.
+    Andererseits kann man die PVs einen nach dem anderen in eine Datei exportieren,
+    indem man 'spreadsheet output' nicht auswählt. Man kann auch die  severity/
+    status-Spalte weglassen.
+<li>Format:<br>
+    Das vorgegebene Format entspricht dem Format des PV aus dem Controlsystem.
+    Man kann das Format verändern auf "decimal" oder "exponential" 
+    Notation mit einer einstellbaren Anzahl von Nachkommastellen.
+<li>Filename:<br>
+    Eingabe des Dateinamens der Datei, in welche die Export-Daten geschrieben werden sollen
+    oder "Browse", um eine Dateinamen-Dialogbox zu öffnen.
+</ul>
+Schließlich startet das Anklicken des "Export"-Knopfes den aktuellen Export.
+<a name="Excel">
+<h2>Using the Exported Data in MS Excel</h2>
+</a>
+Die Export-Datendateien werden als Text-Dateien mit TAB als Delimiter erzeugt,
+damit sie in Spreadsheet-Programmen vie Excel gut verwendbar sind.
+
+Wenn man auf dem Desktop einen Dateinamen "test.dat" auswählt, sind folgende Schritte
+für den Datenimport in Excel auszführen:
+<ol>
+<li>In Excel File/Open, um die Datei "test.dat" zu öffnen.<br>
+    Vielleicht muss man "Files of type: All Files (*.*)"
+    im Datei-"Öffnen"-Dialog einstellen.
+<li>Ein "Text Import Wizard" sollte aufklappen und die Einstellungen
+    sollten schon so gesetzt sein:
+   <ul>
+   <li>"Delimited - Characters such as ... tabs ..."
+   <li>"Delimiters: Tab"
+   </ul>
+<li>Excel benutzt ein wenig brauchbares Format für die erste Spalte, die "Zeit"-Spalte,
+    in welchem nur Minuten, aber keine Sekunden und Millisekunden angezeigt werden.
+    Man kan das Zeitformat ändern: Klicken auf den "A"-Tabellenkopf, d.h. die ganze 
+    erste Spalte auswählen, dann Rechtsklick, um den "Format Cells..."-Dialog zu öffnen
+    und dort ein "Custom"-Format eingeben: <pre>  m/d/yy h:mm:ss.000</pre>
+</ol>
+Wenn man Berechnungen mit den Daten durchführt, sollten Werte, die mit "#N/A"
+gekennzeichnet sind, die keinen numerischen Wert enthalten, weil sie Status- oder
+Fehler-Information enthalten, von Excel ignoriert werden.
+<p>
+Wenn man Plots erzeugt, funktioniert der "X/Y scatter"-Plot
+mit der Zeit-Spalte auf der X-Achse und der Werte-Spalte auf der Y-Achse
+am besten.
+<p>
+Achtung: Die Excel-Zeilenanzahl ist auf 65000 limitiert.
+Wenn eine Datendatei mehr Zeilen enthält, gehen diese beim Import verloren.
+Man kann dies Problem umschiffen, indem man die Daten mit kleineren Zeitfenstern 
+in mehrere Dateien exportiert oder indem man Mittelwertdaten exportiert.
+<p>
+Die Werte-Spalten für Mittelwert-Daten enthalten Text wie "5 [0 ... 10]",
+womit dargestellet wird, dass der Mittelwert für das Intervall 5 ist und der
+Minimum/Maximum-Bereich von 0 bis 10 geht.
+Wenn man Berechnungen mit Mittelwert-Daten durchführen will, kann man vorher
+die Spalte auswählen und eine Text-Ersetzung von "[*]" nach "" (nichts) durchführen,
+um die Min/Max-Info zu löschen.
+<a name="OpenOffice">
+<h2>Using the Exported Data in Open Office</h2>
+</a>
+Wenn die exportierte Datendatei die Dateierweiterung ".csv" hat, 
+öffnet Open Office die Datei mit einem "Import"-Dialog ähnlich wie Excel.
+Man kann Spalten auswählen, wie oben beschrieben.
+Dateiname, die mit ".dat", ".txt" etc. enden, öffnen den Open Office word processor,
+deswegen sollte man das richtige Suffix benutzen.
+</body>
+</html>
