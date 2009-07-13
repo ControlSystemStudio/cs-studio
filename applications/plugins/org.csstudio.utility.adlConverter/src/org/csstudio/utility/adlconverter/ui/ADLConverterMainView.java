@@ -27,6 +27,8 @@ package org.csstudio.utility.adlconverter.ui;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.regex.Pattern;
 
 import org.csstudio.platform.logging.CentralLogger;
@@ -39,6 +41,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Preferences;
+import org.eclipse.jface.viewers.AbstractListViewer;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.ListViewer;
@@ -106,6 +109,9 @@ public class ADLConverterMainView extends ViewPart {
      * The Viewer with the list of the files to Convert.
      */
     private ListViewer _avaibleFiles;
+    
+    
+    private LinkedList<File> _avaibleFilesList = new LinkedList<File>();
 
     /**
      * The ADL Converter Preferences. Contain the different default path.
@@ -124,7 +130,8 @@ public class ADLConverterMainView extends ViewPart {
     public final void createPartControl(final Composite parent) {
         _shell = parent.getShell();
         _preferences = Activator.getDefault().getPluginPreferences();
-        PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, Activator.PLUGIN_ID + ".adl_converter");
+        PlatformUI.getWorkbench().getHelpSystem().setHelp(parent,
+                Activator.PLUGIN_ID + ".adl_converter");
         parent.setLayout(new GridLayout(1, true));
 
         // Source and Destination Groups
@@ -165,7 +172,7 @@ public class ADLConverterMainView extends ViewPart {
         Button subFolderButton = new Button(sourceGroup, SWT.PUSH);
         subFolderButton.setLayoutData(new GridData(80, 25));
         subFolderButton.setText(Messages.ADLConverterMainView_ADLSourceFolderDialogButton);
-        
+
         Button clearSourceButton = new Button(sourceGroup, SWT.PUSH);
         clearSourceButton.setText(Messages.ADLConverterMainView_ClearButtonText);
         gridData = new GridData(80, 25);
@@ -187,21 +194,23 @@ public class ADLConverterMainView extends ViewPart {
 
             public void widgetSelected(final SelectionEvent e) {
                 FileDialog dialog = new FileDialog(_shell, SWT.MULTI);
-                dialog.setFilterNames(new String[] { Messages.ADLConverterMainView_BothFileSourceDialogFileDes,
-                        Messages.ADLConverterMainView_ADLFileSourceDialogFileDes, Messages.ADLConverterMainView_MDPFileSourceDialogFileDes,
+                dialog.setFilterNames(new String[] {
+                        Messages.ADLConverterMainView_BothFileSourceDialogFileDes,
+                        Messages.ADLConverterMainView_ADLFileSourceDialogFileDes,
+                        Messages.ADLConverterMainView_MDPFileSourceDialogFileDes,
                         Messages.ADLConverterMainView_AllFileSourceDialogFileDes });
                 dialog.setFilterExtensions(new String[] { "*.adl;*.mfp", "*.adl", "*.mfp", "*.*" }); // Windows
                 // wild cards //$NON-NLS-1$ //$NON-NLS-2$
                 String path = _preferences
                         .getString(ADLConverterPreferenceConstants.P_STRING_Path_Source);
-                // path = initial.getProjectRelativePath().toOSString()
                 dialog.setFilterPath(path);
                 dialog.open();
                 path = dialog.getFilterPath();
                 String[] files = dialog.getFileNames();
                 for (String name : files) {
-                    _avaibleFiles.add(new File(path, name));
+                    _avaibleFilesList.add(new File(path, name));
                 }
+                _avaibleFiles.setInput(_avaibleFilesList);
                 _avaibleFiles.getList().selectAll();
                 refreshexamplePathLabel();
                 checkRelativPath();
@@ -213,18 +222,18 @@ public class ADLConverterMainView extends ViewPart {
 
             public void widgetDefaultSelected(SelectionEvent e) {
                 // TODO Auto-generated method stub
-                
+
             }
 
             public void widgetSelected(SelectionEvent e) {
                 DirectoryDialog dialog = new DirectoryDialog(_shell, SWT.MULTI);
                 String path = _preferences
                         .getString(ADLConverterPreferenceConstants.P_STRING_Path_Source);
-//                path = initial.getProjectRelativePath().toOSString();
-                System.out.println("Path_: "+path);
+                // path = initial.getProjectRelativePath().toOSString();
+                System.out.println("Path_: " + path);
                 dialog.setFilterPath(path);
                 String open = dialog.open();
-                if(open==null) {
+                if (open == null) {
                     return;
                 }
                 path = dialog.getFilterPath();
@@ -232,44 +241,61 @@ public class ADLConverterMainView extends ViewPart {
                 fillFiles(file);
                 _avaibleFiles.getList().selectAll();
                 refreshexamplePathLabel();
-                checkRelativPath();               
-                _preferences.setValue(ADLConverterPreferenceConstants.P_STRING_Path_Source,path);
+                checkRelativPath();
+                _preferences.setValue(ADLConverterPreferenceConstants.P_STRING_Path_Source, path);
             }
 
             private void fillFiles(File file) {
                 String[] list = file.list(new FilenameFilter() {
 
                     public boolean accept(File dir, String name) {
-                        
+
                         boolean adl = false;
                         adl |= dir.isDirectory();
                         adl |= name.endsWith(".adl");
                         adl |= name.endsWith(".mfp");
                         return adl;
                     }
-                    
+
                 });
                 for (String name : list) {
                     File element = new File(file, name);
-                    if(element.isFile()) {
+                    if (element.isFile()) {
                         _avaibleFiles.add(element);
-                    }else {
+                    } else {
                         fillFiles(element);
                     }
                 }
             }
-            
+
         });
-        
+
         clearSourceButton.addSelectionListener(new SelectionListener() {
 
             public void widgetDefaultSelected(final SelectionEvent e) {
             }
 
             public void widgetSelected(final SelectionEvent e) {
-                _avaibleFiles.getList().removeAll();
+                StructuredSelection structuredSelection = (StructuredSelection) _avaibleFiles
+                        .getSelection();
+                if (structuredSelection.size() < 1) {
+                    
+                    Iterator<File> iterator = _avaibleFilesList.iterator();
+                    while (iterator.hasNext()) {
+                        File file = (File) iterator.next();
+                        if (file != null) {
+                            String lowerCase = file.getName().toLowerCase();
+                            if (lowerCase.contains("_bak") || lowerCase.contains(".bak")) {
+                                iterator.remove();
+                            }
+                        }
+                        _avaibleFiles.setInput(_avaibleFilesList);
+                    }
+                } else {
+                    _avaibleFilesList.removeAll(structuredSelection.toList());
+                    _avaibleFiles.setInput(_avaibleFilesList);
+                }
                 _pathPos = 0;
-                // _relativePathText.setText("");
             }
 
         });

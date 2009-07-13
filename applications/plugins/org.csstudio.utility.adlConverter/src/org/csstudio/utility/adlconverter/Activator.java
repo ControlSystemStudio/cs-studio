@@ -56,7 +56,6 @@ public class Activator extends AbstractCssUiPlugin{
      * @exception Exception The Thrown excepton
      */
     public void doStart(final BundleContext context) throws Exception {
-//      super.start(context);
     }
 
     /*
@@ -69,7 +68,6 @@ public class Activator extends AbstractCssUiPlugin{
      */
     public final void doStop(final BundleContext context) throws Exception {
         _plugin = null;
-//      super.stop(context);
     }
 
     /**

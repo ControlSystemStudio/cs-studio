@@ -31,7 +31,6 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.importer.AbstractDisplayImporter;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DisplayModel;
-import org.csstudio.sds.model.initializers.WidgetInitializationService;
 import org.csstudio.sds.model.layers.Layer;
 import org.csstudio.sds.model.persistence.DisplayModelInputStream;
 import org.csstudio.sds.model.persistence.PersistenceUtil;
