@@ -284,7 +284,8 @@ public class TracePainter
         final int N = pos.size();
         if (N <= 0)
             return;
-        // Turn pos/min/max into array required by fillPolygon
+        // Turn pos/min/max into array required by fillPolygon:
+        // pos[0], min[0], pos[1], min[1], ..., pos[N-1], max[N-1], pos[N], max[N]
         final int points[] = new int[N * 4];
         for (int i=0; i<N; ++i)
         {
