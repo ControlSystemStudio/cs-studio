@@ -53,24 +53,23 @@ public class EpicsUtil {
 		};
 
 		synchronized (link) {
-			property.addLinkListener(link);
-
 			if (property.isConnected()) {
-				property.removeLinkListener(link);
 				return true;
 			}
-			if (property.isConnectionFailed()) {
-				property.removeLinkListener(link);
+			else if (property.isConnectionFailed()) {
 				return false;
+			} else {
+				property.addLinkListener(link);
+				
+				try {
+					link.wait(timeout);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				property.removeLinkListener(link);
 			}
 
-			try {
-				link.wait(timeout);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
 
-			property.removeLinkListener(link);
 		}
 
 		return property.isConnected();
