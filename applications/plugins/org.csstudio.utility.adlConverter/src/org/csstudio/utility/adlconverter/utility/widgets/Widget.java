@@ -24,7 +24,6 @@
  */
 package org.csstudio.utility.adlconverter.utility.widgets;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.csstudio.platform.logging.CentralLogger;
@@ -34,8 +33,6 @@ import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DisplayModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
 import org.csstudio.sds.model.LabelModel;
-import org.csstudio.sds.model.initializers.WidgetInitializationService;
-import org.csstudio.sds.model.logic.ParameterDescriptor;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
@@ -48,7 +45,6 @@ import org.csstudio.utility.adlconverter.utility.widgetparts.ADLPoints;
 import org.csstudio.utility.adlconverter.utility.widgetparts.ADLSensitive;
 import org.csstudio.utility.adlconverter.utility.widgetparts.WidgetPart;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.swt.graphics.RGB;
 
 /**
  * @author hrickens

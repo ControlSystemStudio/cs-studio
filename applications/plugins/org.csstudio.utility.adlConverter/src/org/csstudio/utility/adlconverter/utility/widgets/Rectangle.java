@@ -24,7 +24,6 @@
  */
 package org.csstudio.utility.adlconverter.utility.widgets;
 
-import org.csstudio.sds.components.model.EllipseModel;
 import org.csstudio.sds.components.model.RectangleModel;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
