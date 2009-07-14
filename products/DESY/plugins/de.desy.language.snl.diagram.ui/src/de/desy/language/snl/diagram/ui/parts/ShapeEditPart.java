@@ -146,18 +146,18 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements
 				});
 	}
 	
-	@SuppressWarnings("unchecked")
-	@Override
-	protected List getModelChildren() {
-		Object model = getModel();
-		if (model instanceof SNLElement) {
-			SNLElement element = (SNLElement)model;
-			if (element.hasChildren()) {
-				return element.getChildren();
-			}
-		}
-		return super.getModelChildren();
-	}
+//	@SuppressWarnings("unchecked")
+//	@Override
+//	protected List getModelChildren() {
+//		Object model = getModel();
+//		if (model instanceof SNLElement) {
+//			SNLElement element = (SNLElement)model;
+//			if (element.hasChildren()) {
+//				return element.getChildren();
+//			}
+//		}
+//		return super.getModelChildren();
+//	}
 
 	/*
 	 * (non-Javadoc)

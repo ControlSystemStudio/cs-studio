@@ -8,11 +8,14 @@ import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 
 import de.desy.language.editor.core.parser.Node;
+import de.desy.language.snl.diagram.model.ModelElement;
 import de.desy.language.snl.diagram.model.SNLDiagram;
 import de.desy.language.snl.diagram.model.SNLElement;
+import de.desy.language.snl.diagram.model.SNLModel;
 import de.desy.language.snl.diagram.model.StateModel;
 import de.desy.language.snl.diagram.model.StateSetModel;
 import de.desy.language.snl.diagram.model.WhenConnection;
+import de.desy.language.snl.diagram.persistence.StateLayoutData;
 import de.desy.language.snl.parser.nodes.StateNode;
 import de.desy.language.snl.parser.nodes.StateSetNode;
 import de.desy.language.snl.parser.nodes.WhenNode;
@@ -54,20 +57,19 @@ public class DiagramCreator {
 		return diagram;
 	}
 
-	public SNLDiagram createDiagram(final Node rootNode, int separation) {
-		return this.createDiagram(rootNode, new HashMap<Node, List<Point>>(),
-				separation);
-	}
-
 	public SNLDiagram createDiagram(final Node rootNode,
-			Map<Node, List<Point>> storedCoordinates, int separation) {
+			Map<String, StateLayoutData> stateData,
+			Map<String, List<Point>> connectionData, int separation) {
+		assert stateData != null : "stateData != null";
+		assert connectionData != null : "connectionData != null";
+
 		resetContainer();
 
 		_bendPointCreator.setSeparation(separation);
 
 		_diagram = new SNLDiagram();
-		addStateNodes(_diagram, rootNode, storedCoordinates);
-		addWhenNodes(storedCoordinates);
+		addStateNodes(_diagram, rootNode, stateData);
+		addWhenNodes(connectionData);
 		return _diagram;
 	}
 
@@ -77,71 +79,87 @@ public class DiagramCreator {
 	}
 
 	private void addStateNodes(final SNLElement parentModel, final Node node,
-			Map<Node, List<Point>> storedCoordinates) {
+			Map<String, StateLayoutData> stateData) {
 		for (final Node child : node.getChildrenNodes()) {
 			if (child instanceof StateNode) {
 				final HashMap<String, StateModel> stateMap = _stateSetMap
 						.get(parentModel);
 				final int size = stateMap.size();
-				
+
 				final StateNode stateNode = (StateNode) child;
 				final StateModel state = new StateModel();
-
-				List<Point> list = storedCoordinates.get(stateNode);
-				if (list == null || list.isEmpty()) {
-					int x = 2 * START_X + size * DISTANCE_X;
-					int y = START_Y + (_stateSetMap.size() - 1) * DISTANCE_Y + (STATESET_HEIGHT - STATE_HEIGHT) / 2;
-					state.setLocation(new Point(x, y ));
-					System.out.println("\tState at "+x+"/"+y);
-				} else {
-					state.setLocation(list.get(0));
-				}
-				state.setSize(new Dimension(STATE_WIDTH, STATE_HEIGHT));
 				state.setStateNode(stateNode);
+
+				state.setPropertyValue(SNLModel.PARENT, parentModel
+						.getIdentifier());
+				String name = assembleMapKey(parentModel, state);
+				StateLayoutData data = stateData.get(name);
+				if (data == null) {
+					int x = 2 * START_X + size * DISTANCE_X;
+					int y = START_Y + (_stateSetMap.size() - 1) * DISTANCE_Y
+							+ (STATESET_HEIGHT - STATE_HEIGHT) / 2;
+					state.setLocation(new Point(x, y));
+					state.setSize(new Dimension(STATE_WIDTH, STATE_HEIGHT));
+				} else {
+					state.setLocation(data.getPoint());
+					state.setSize(data.getDimension());
+				}
 				stateMap.put(stateNode.getSourceIdentifier(), state);
-//				parentModel.addChild(state);
+				parentModel.addChild(state);
 				_diagram.addChild(state);
 			} else if (child instanceof StateSetNode) {
 				StateSetModel setModel = new StateSetModel();
 				setModel.setStateSetNode((StateSetNode) child);
 				parentModel.addChild(setModel);
-				
+
 				if (!_stateSetMap.containsKey(setModel)) {
-					_stateSetMap.put(setModel, new HashMap<String, StateModel>());
+					_stateSetMap.put(setModel,
+							new HashMap<String, StateModel>());
 				}
 				if (child.hasChildren()) {
-					addStateNodes(setModel, child, storedCoordinates);
+					addStateNodes(setModel, child, stateData);
 				}
-				int childCount = _stateSetMap.get(setModel).size();
-				int setWidth = 2 * START_X + (childCount-1) * DISTANCE_X + STATE_WIDTH;
-				setModel.setSize(new Dimension(setWidth, STATESET_HEIGHT));
-				int y = START_Y + (_stateSetMap.size() - 1) * DISTANCE_Y;
-				System.out.println("StateSet at "+START_X+"/"+y);
-				setModel.setLocation(new Point(START_X, y));
+
+				String name = setModel.getIdentifier();
+				StateLayoutData data = stateData.get(name);
+				if (data == null) {
+					int childCount = _stateSetMap.get(setModel).size();
+					int setWidth = 2 * START_X + (childCount - 1) * DISTANCE_X
+							+ STATE_WIDTH;
+					setModel.setSize(new Dimension(setWidth, STATESET_HEIGHT));
+
+					int y = START_Y + (_stateSetMap.size() - 1) * DISTANCE_Y;
+					setModel.setLocation(new Point(START_X, y));
+				} else {
+					setModel.setLocation(data.getPoint());
+					setModel.setSize(data.getDimension());
+				}
 			} else {
 				if (child.hasChildren()) {
-					addStateNodes(parentModel, child, storedCoordinates);
+					addStateNodes(parentModel, child, stateData);
 				}
 			}
 		}
 	}
 
-	private void addWhenNodes(Map<Node, List<Point>> storedCoordinates) {
-		for (final HashMap<String, StateModel> map : _stateSetMap.values()) {
+	private void addWhenNodes(Map<String, List<Point>> connectionData) {
+		for (StateSetModel parentModel : _stateSetMap.keySet()) {
+			Map<String, StateModel> map = _stateSetMap.get(parentModel);
 			for (final StateModel stateModel : map.values()) {
 				final StateNode stateNode = stateModel.getStateNode();
 				if (stateNode.hasChildren()) {
 					for (final Node child : stateNode.getChildrenNodes()) {
-						addWhenNodes(map, stateModel, child, storedCoordinates);
+						addWhenNodes(parentModel, stateModel, map, child,
+								connectionData);
 					}
 				}
 			}
 		}
 	}
 
-	private void addWhenNodes(final Map<String, StateModel> map,
-			final StateModel stateModel, final Node node,
-			Map<Node, List<Point>> storedCoordinates) {
+	private void addWhenNodes(final StateSetModel parentModel,
+			final StateModel stateModel, final Map<String, StateModel> map,
+			final Node node, Map<String, List<Point>> connectionData) {
 		if (node instanceof WhenNode) {
 			final WhenNode when = (WhenNode) node;
 			final String followingState = when.getFollowingState();
@@ -150,8 +168,11 @@ public class DiagramCreator {
 				final WhenConnection whenCon = new WhenConnection(stateModel,
 						destination);
 				whenCon.setWhenNode(when);
+				whenCon.setPropertyValue(SNLModel.PARENT, parentModel.getIdentifier());
 
-				List<Point> list = storedCoordinates.get(when);
+				String name = assembleMapKey(parentModel, stateModel).concat(
+						".(" + whenCon.getIdentifier() + ")");
+				List<Point> list = connectionData.get(name);
 				if (list == null) {
 					final WhenConnectionAnchors anchors = new WhenConnectionAnchors(
 							stateModel, destination);
@@ -178,6 +199,10 @@ public class DiagramCreator {
 				}
 			}
 		}
+	}
+
+	private String assembleMapKey(ModelElement parent, ModelElement child) {
+		return parent.getIdentifier() + "." + child.getIdentifier();
 	}
 
 }

@@ -40,6 +40,7 @@ public abstract class SNLModel extends SNLElement {
 	public static final String SOURCE_CONNECTIONS_PROP = "Shape.SourceConn";
 	/** Property ID to use when the list of incoming connections is modified. */
 	public static final String TARGET_CONNECTIONS_PROP = "Shape.TargetConn";
+	
 	/**
 	 * ID for the Width property value (used for by the corresponding property
 	 * descriptor).

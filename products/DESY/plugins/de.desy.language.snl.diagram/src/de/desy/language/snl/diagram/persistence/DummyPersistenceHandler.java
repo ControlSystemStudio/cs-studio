@@ -1,7 +1,8 @@
-package de.desy.language.snl.diagram.ui.persistence;
+package de.desy.language.snl.diagram.persistence;
 
 import java.util.List;
 
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.geometry.Point;
 
 import de.desy.language.snl.diagram.model.SNLDiagram;
@@ -10,9 +11,9 @@ import de.desy.language.snl.diagram.model.WhenConnection;
 
 public class DummyPersistenceHandler implements IPersistenceHandler {
 
-	public void store(String fileName, SNLDiagram diagram) {
+	public void store(IPath originalFilePath, SNLDiagram diagram) {
 		StringBuffer output = new StringBuffer("<file>\"");
-		output.append(fileName);
+		output.append(originalFilePath.lastSegment());
 		output.append("\"\n");
 		List<SNLModel> children = diagram.getChildren();
 		output.append(generateOutput("\t", children));

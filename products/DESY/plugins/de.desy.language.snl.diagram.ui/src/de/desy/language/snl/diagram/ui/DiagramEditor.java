@@ -11,13 +11,18 @@
 package de.desy.language.snl.diagram.ui;
 
 import java.util.EventObject;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.draw2d.ConnectionLayer;
 import org.eclipse.draw2d.ShortestPathConnectionRouter;
+import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.gef.ContextMenuProvider;
 import org.eclipse.gef.DefaultEditDomain;
 import org.eclipse.gef.EditPartViewer;
@@ -54,10 +59,12 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import de.desy.language.editor.core.parser.AbstractLanguageParser;
 import de.desy.language.editor.core.parser.Node;
 import de.desy.language.snl.diagram.model.SNLDiagram;
+import de.desy.language.snl.diagram.persistence.DummyPersistenceHandler;
+import de.desy.language.snl.diagram.persistence.IPersistenceHandler;
+import de.desy.language.snl.diagram.persistence.StateLayoutData;
+import de.desy.language.snl.diagram.persistence.XMLPersistenceHandler;
 import de.desy.language.snl.diagram.ui.parts.ShapesEditPartFactory;
 import de.desy.language.snl.diagram.ui.parts.ShapesTreeEditPartFactory;
-import de.desy.language.snl.diagram.ui.persistence.DummyPersistenceHandler;
-import de.desy.language.snl.diagram.ui.persistence.IPersistenceHandler;
 import de.desy.language.snl.parser.SNLParser;
 
 /**
@@ -72,16 +79,17 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 
 	/** This is the root of the editor's model. */
 	private SNLDiagram diagram;
-	private IDocumentProvider fImplicitDocumentProvider;
+	private IDocumentProvider _implicitDocumentProvider;
 	/** Palette component, holding the tools and shapes. */
 	private static PaletteRoot PALETTE_MODEL;
 	private ScalableFreeformRootEditPart _scalableFreeformRootEditPart;
-	private IPersistenceHandler _persistenceHandler;
+	private final IPersistenceHandler _persistenceHandler;
 
 	/** Create a new ShapesEditor instance. This is called by the Workspace. */
 	public DiagramEditor() {
 		setEditDomain(new DefaultEditDomain(this));
-		_persistenceHandler = new DummyPersistenceHandler();
+//		_persistenceHandler = new DummyPersistenceHandler();
+		_persistenceHandler = new XMLPersistenceHandler();
 	}
 
 	/**
@@ -191,8 +199,8 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 		// } catch (IOException ioe) {
 		// ioe.printStackTrace();
 		// }
-		final IFile file = ((IFileEditorInput) getEditorInput()).getFile();
-		_persistenceHandler.store(file.getName(), diagram);
+		final IPath path = ((IFileEditorInput) getEditorInput()).getFile().getFullPath();
+		_persistenceHandler.store(path, diagram);
 		getCommandStack().markSaveLocation();
 	}
 
@@ -320,13 +328,13 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 		super.setInput(input);
 		// try {
 		final IFile file = ((IFileEditorInput) input).getFile();
-		fImplicitDocumentProvider = new TextFileDocumentProvider();
+		_implicitDocumentProvider = new TextFileDocumentProvider();
 		try {
-			fImplicitDocumentProvider.connect(input);
+			_implicitDocumentProvider.connect(input);
 		} catch (final CoreException e) {
 			e.printStackTrace();
 		}
-		final IDocument document = fImplicitDocumentProvider.getDocument(input);
+		final IDocument document = _implicitDocumentProvider.getDocument(input);
 		if (document != null) {
 			IFile sourceRessource = null;
 			if (input instanceof FileEditorInput) {
@@ -335,7 +343,11 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 			}
 			final Node rootNode = this.getLanguageParser().parse(
 					document.get(), sourceRessource, new NullProgressMonitor());
-			diagram = DiagramCreator.getInstance().createDiagram(rootNode, ROUTING_SEPARATION);
+			
+			Map<String, StateLayoutData> stateData = new HashMap<String, StateLayoutData>();
+			Map<String, List<Point>> connectionData = new HashMap<String, List<Point>>();
+			
+			diagram = DiagramCreator.getInstance().createDiagram(rootNode, stateData, connectionData, ROUTING_SEPARATION);
 		} else {
 			diagram = DiagramCreator.getInstance().createDefaultDiagram();
 		}

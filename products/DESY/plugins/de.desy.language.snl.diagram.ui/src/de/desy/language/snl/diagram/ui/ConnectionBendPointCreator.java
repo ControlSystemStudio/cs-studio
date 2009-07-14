@@ -24,7 +24,6 @@ public class ConnectionBendPointCreator {
 			final List<Point> points = calculateNewPoints(source, target, count);
 			for (int index = 0; index < points.size(); index++) {
 				Point bendPoint = points.get(index);
-				System.out.println("BendPoint: " + bendPoint + " for Source: "+source.getLocation());
 				whenCon.addBendPoint(bendPoint, index);
 			}
 		}

@@ -6,6 +6,11 @@ Bundle-Version: 1.0.0
 Bundle-Activator: de.desy.language.snl.diagram.DiagramActivator
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.draw2d,
- de.desy.language.snl
-Eclipse-LazyStart: true
-Export-Package: de.desy.language.snl.diagram.model
+ de.desy.language.snl,
+ org.eclipse.core.resources;bundle-version="3.4.2"
+Bundle-ActivationPolicy: lazy
+Export-Package: de.desy.language.snl.diagram.model,
+ de.desy.language.snl.diagram.persistence
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-ClassPath: lib/jdom.jar,
+ .

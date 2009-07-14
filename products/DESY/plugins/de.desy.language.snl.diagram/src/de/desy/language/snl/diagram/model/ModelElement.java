@@ -30,15 +30,18 @@ import java.io.Serializable;
  * this, if you store the model a non-binary form like XML).</li>
  * </ul>
  * 
- * @author Elias Volanakis
  */
 public abstract class ModelElement implements Serializable {
-	/** An empty property descriptor. */
+	
+	public static final String PARENT = "Shape.Parent";
 
 	private static final long serialVersionUID = 1;
-	/** Delegate used to implemenent property-change-support. */
+	/** Delegate used to implement property-change-support. */
 	private transient PropertyChangeSupport pcsDelegate = new PropertyChangeSupport(
 			this);
+
+	private String parent;
+	
 
 	/**
 	 * Attach a non-null PropertyChangeListener to this object.
@@ -97,7 +100,10 @@ public abstract class ModelElement implements Serializable {
 	/**
 	 * Children should override this. The default implementation returns null.
 	 */
-	public Object getPropertyValue(Object id) {
+	public Object getPropertyValue(Object propertyId) {
+		if (PARENT.equals(propertyId)) {
+			return parent;
+		}
 		return null;
 	}
 
@@ -142,8 +148,10 @@ public abstract class ModelElement implements Serializable {
 	/**
 	 * Children should override this. The default implementation does nothing.
 	 */
-	public void setPropertyValue(Object id, Object value) {
-		// do nothing
+	public void setPropertyValue(Object propertyId, Object value) {
+		if (PARENT.equals(propertyId)) {
+			parent = (String)value;
+		}
 	}
 	
 	public abstract String getIdentifier();
