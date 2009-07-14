@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.jdom.Document;
 import org.jdom.input.SAXBuilder;
+import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 
 import com.cosylab.vdct.Console;
@@ -45,8 +46,11 @@ public final class PersistenceService implements IPersistenceService {
 	 *{@inheritDoc}
 	 */
 	public void saveProject(IFile file, Project project) throws Exception {
+		Format format = Format.getPrettyFormat();
+//		format.setEncoding("ISO-8859-1");
+		
 		XMLOutputter outp = new XMLOutputter();
-
+		outp.setFormat(format);
 		ProjectToXml projectToXml = new ProjectToXml(project);
 
 		Document doc = projectToXml.createDocument();
