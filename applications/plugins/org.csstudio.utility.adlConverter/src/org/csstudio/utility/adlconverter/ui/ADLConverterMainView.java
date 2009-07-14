@@ -239,6 +239,7 @@ public class ADLConverterMainView extends ViewPart {
                 path = dialog.getFilterPath();
                 File file = new File(path);
                 fillFiles(file);
+                _avaibleFiles.setInput(_avaibleFilesList);
                 _avaibleFiles.getList().selectAll();
                 refreshexamplePathLabel();
                 checkRelativPath();
@@ -261,7 +262,7 @@ public class ADLConverterMainView extends ViewPart {
                 for (String name : list) {
                     File element = new File(file, name);
                     if (element.isFile()) {
-                        _avaibleFiles.add(element);
+                    	_avaibleFilesList.add(element);
                     } else {
                         fillFiles(element);
                     }
@@ -449,7 +450,7 @@ public class ADLConverterMainView extends ViewPart {
                     if (e.keyCode == SWT.ARROW_LEFT) {
                         if (_pathPos > 0) {
                             _pathPos--;
-                            File file = (File) _avaibleFiles.getElementAt(0);
+                            File file = _avaibleFilesList.getFirst();
                             pathPart = file.getAbsolutePath().split(Pattern.quote(File.separator));
                             if (pathPart.length > _pathPos) {
                                 if (_pathPos == 0) {
@@ -463,7 +464,7 @@ public class ADLConverterMainView extends ViewPart {
                             }
                         }
                     } else if (e.keyCode == SWT.ARROW_RIGHT) {
-                        File file = (File) _avaibleFiles.getElementAt(0);
+                    	File file = _avaibleFilesList.getFirst();
                         if (file != null) {
                             pathPart = file.getAbsolutePath().split(Pattern.quote(File.separator));
                             if (_pathPos < pathPart.length - 1) {
@@ -501,12 +502,12 @@ public class ADLConverterMainView extends ViewPart {
      * Refresh the path example label.
      */
     private void refreshexamplePathLabel() {
-        IPath relPath = getRelativPath((File) _avaibleFiles.getElementAt(0));
+        IPath relPath = getRelativPath(_avaibleFilesList.getFirst());
         _examplePathLabel.setText(relPath.toOSString());
     }
 
     private void checkRelativPath() {
-        File path = (File) _avaibleFiles.getElementAt(0);
+        File path = _avaibleFilesList.getFirst();
         if (!path.getAbsolutePath().contains(_relativePathText.getText())) {
             _relativePathText.setText("");
         }
