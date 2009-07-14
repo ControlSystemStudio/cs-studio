@@ -75,7 +75,7 @@ public class LocalConnector extends AbstractConnector implements ILocalChannelLi
 			}
 		};
 
-		ExecutionService.getInstance().execute(r);
+		ExecutionService.getInstance().executeWithNormalPriority(r);
 	}
 
 	/**
@@ -120,7 +120,7 @@ public class LocalConnector extends AbstractConnector implements ILocalChannelLi
 			}
 		};
 
-		ExecutionService.getInstance().execute(r);
+		ExecutionService.getInstance().executeWithNormalPriority(r);
 
 	}
 
