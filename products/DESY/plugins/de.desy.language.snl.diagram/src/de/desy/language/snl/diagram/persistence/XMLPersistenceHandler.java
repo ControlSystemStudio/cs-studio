@@ -3,7 +3,12 @@ package de.desy.language.snl.diagram.persistence;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
@@ -21,23 +26,12 @@ import de.desy.language.snl.diagram.model.WhenConnection;
 public class XMLPersistenceHandler implements IPersistenceHandler {
 
 	public void store(IPath originalFilePath, SNLDiagram diagram) {
-		String fileExtension = originalFilePath.getFileExtension();
-		String fileName = originalFilePath.lastSegment();
-		fileName = fileName.replace("." + fileExtension, ".layout");
-		int segmentCount = originalFilePath.segmentCount();
-
-		IPath constraintFilePath = originalFilePath
-				.uptoSegment(segmentCount - 1);
-		constraintFilePath = constraintFilePath.append(fileName);
-		System.out.println("XMLPersistenceHandler.store()");
-		System.out.println(constraintFilePath.toString());
-
 		XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
 		Element diagramElement = createDiagramTag(diagram);
 
 		IPath workspacePath = ResourcesPlugin.getWorkspace().getRoot()
 				.getLocation();
-		IPath layoutDataPath = workspacePath.append(constraintFilePath);
+		IPath layoutDataPath = workspacePath.append(getLayoutDataPath(originalFilePath));
 
 		try {
 			FileOutputStream outputStream = new FileOutputStream(layoutDataPath
@@ -48,6 +42,22 @@ public class XMLPersistenceHandler implements IPersistenceHandler {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	private IPath getLayoutDataPath(IPath originalFilePath) {
+		String fileExtension = originalFilePath.getFileExtension();
+		String fileName = originalFilePath.lastSegment();
+		fileName = fileName.replace("." + fileExtension, ".layout");
+		int segmentCount = originalFilePath.segmentCount();
+
+		IPath constraintFilePath = originalFilePath
+				.uptoSegment(segmentCount - 1);
+		constraintFilePath = constraintFilePath.append(fileName);
+		
+		IPath workspacePath = ResourcesPlugin.getWorkspace().getRoot()
+		.getLocation();
+		IPath layoutDataPath = workspacePath.append(constraintFilePath);
+		return layoutDataPath;
 	}
 
 	private Element createDiagramTag(SNLDiagram diagram) {
@@ -138,6 +148,33 @@ public class XMLPersistenceHandler implements IPersistenceHandler {
 		stateSetElement.setAttribute("height", String
 				.valueOf(model.getSize().height));
 		return stateSetElement;
+	}
+
+	public Map<String, List<Point>> loadConnectionLayoutData(
+			IPath originalFilePath) {
+		HashMap<String, List<Point>> result = new HashMap<String, List<Point>>();
+		
+		IPath layoutDataPath = getLayoutDataPath(originalFilePath);
+		return result;
+	}
+
+	public Map<String, StateLayoutData> loadStateLayoutData(
+			IPath originalFilePath) {
+		Map<String, StateLayoutData> result = new HashMap<String, StateLayoutData>();
+		
+		IPath layoutDataPath = getLayoutDataPath(originalFilePath);
+		
+		try {
+			SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
+			
+			StateLayoutHandler handler = new StateLayoutHandler(result);
+			
+			parser.parse(layoutDataPath.toFile(), handler);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
 	}
 
 }

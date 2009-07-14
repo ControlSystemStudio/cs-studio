@@ -1,6 +1,8 @@
 package de.desy.language.snl.diagram.persistence;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.geometry.Point;
@@ -67,6 +69,16 @@ public class DummyPersistenceHandler implements IPersistenceHandler {
 
 	private void writeOutput(String output) {
 		System.out.println(output);
+	}
+
+	public Map<String, List<Point>> loadConnectionLayoutData(
+			IPath originalFilePath) {
+		return new HashMap<String, List<Point>>();
+	}
+
+	public Map<String, StateLayoutData> loadStateLayoutData(
+			IPath originalFilePath) {
+		return new HashMap<String, StateLayoutData>();
 	}
 
 }

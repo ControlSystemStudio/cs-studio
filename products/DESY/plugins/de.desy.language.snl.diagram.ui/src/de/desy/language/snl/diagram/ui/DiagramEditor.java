@@ -59,7 +59,6 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import de.desy.language.editor.core.parser.AbstractLanguageParser;
 import de.desy.language.editor.core.parser.Node;
 import de.desy.language.snl.diagram.model.SNLDiagram;
-import de.desy.language.snl.diagram.persistence.DummyPersistenceHandler;
 import de.desy.language.snl.diagram.persistence.IPersistenceHandler;
 import de.desy.language.snl.diagram.persistence.StateLayoutData;
 import de.desy.language.snl.diagram.persistence.XMLPersistenceHandler;
@@ -88,7 +87,6 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 	/** Create a new ShapesEditor instance. This is called by the Workspace. */
 	public DiagramEditor() {
 		setEditDomain(new DefaultEditDomain(this));
-//		_persistenceHandler = new DummyPersistenceHandler();
 		_persistenceHandler = new XMLPersistenceHandler();
 	}
 
@@ -344,7 +342,7 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 			final Node rootNode = this.getLanguageParser().parse(
 					document.get(), sourceRessource, new NullProgressMonitor());
 			
-			Map<String, StateLayoutData> stateData = new HashMap<String, StateLayoutData>();
+			Map<String, StateLayoutData> stateData = _persistenceHandler.loadStateLayoutData(sourceRessource.getFullPath());
 			Map<String, List<Point>> connectionData = new HashMap<String, List<Point>>();
 			
 			diagram = DiagramCreator.getInstance().createDiagram(rootNode, stateData, connectionData, ROUTING_SEPARATION);
