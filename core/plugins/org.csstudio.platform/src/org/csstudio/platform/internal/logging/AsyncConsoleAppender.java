@@ -112,6 +112,13 @@ public class AsyncConsoleAppender extends AppenderSkeleton {
 	 */
 	@Override
 	protected void append(LoggingEvent event) {
+		/*
+		 * Calling getThreadName() makes sure that the thread name stored in the
+		 * event is the current thread (which logged the event). Without this,
+		 * the dispatcher thread could appear in the log output.
+		 */
+		event.getThreadName();
+		
 		if (!_eventQueue.offer(event)) {
 			LogLog.error("Could not enqueue log message in AsyncConsoleAppender.");
 		}
