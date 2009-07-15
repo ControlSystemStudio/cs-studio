@@ -36,6 +36,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.BaseLabelProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -50,6 +51,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
 
 /**
@@ -152,6 +154,28 @@ public class IocMonitorView extends ViewPart implements IReportListener {
 		}
 
 	}
+	
+	/**
+	 * Action which refreshes the contents of the IOC monitor view.
+	 */
+	private class RefreshAction extends Action {
+		
+		/**
+		 * Creates the refresh action.
+		 */
+		RefreshAction() {
+			super("Refresh", AbstractUIPlugin.imageDescriptorFromPlugin(
+					Activator.PLUGIN_ID, "icons/refresh.gif"));
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void run() {
+			IocMonitorView.this._iocMonitor.update();
+		}
+	}
 
 	static final String ID = "org.csstudio.diag.icsiocmonitor.ui.IocMonitorView";
 
@@ -189,6 +213,8 @@ public class IocMonitorView extends ViewPart implements IReportListener {
 		_tableViewer = new TableViewer(_table);
 		_tableViewer.setContentProvider(new IocMonitorContentProvider());
 		_tableViewer.setLabelProvider(new IocMonitorLabelProvider());
+		
+		getViewSite().getActionBars().getToolBarManager().add(new RefreshAction());
 		
 		// Run an initial update in a background Job
 		Job initializer = new Job("Initializing IOC monitor") {
