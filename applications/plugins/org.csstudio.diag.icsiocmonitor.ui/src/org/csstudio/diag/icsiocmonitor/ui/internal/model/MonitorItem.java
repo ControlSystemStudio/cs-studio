@@ -110,4 +110,14 @@ public class MonitorItem {
 		}
 		return null;
 	}
+
+	/**
+	 * Returns whether an interconnection server is selected.
+	 * 
+	 * @return <code>true</code> if an interconnection server is selected,
+	 *         <code>false</code> otherwise.
+	 */
+	public boolean isInterconnectionServerSelected() {
+		return getSelectedInterconnectionServer() != null;
+	}
 }

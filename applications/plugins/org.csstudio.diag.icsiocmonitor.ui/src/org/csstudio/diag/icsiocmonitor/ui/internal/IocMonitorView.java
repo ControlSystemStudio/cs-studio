@@ -22,6 +22,7 @@
 
 package org.csstudio.diag.icsiocmonitor.ui.internal;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,17 +33,21 @@ import org.csstudio.diag.icsiocmonitor.ui.internal.model.IReportListener;
 import org.csstudio.diag.icsiocmonitor.ui.internal.model.IocMonitor;
 import org.csstudio.diag.icsiocmonitor.ui.internal.model.IocMonitorFactory;
 import org.csstudio.diag.icsiocmonitor.ui.internal.model.MonitorItem;
+import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.BaseLabelProvider;
+import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -71,6 +76,65 @@ public class IocMonitorView extends ViewPart implements IReportListener {
 	 * Width of the columns for the individual servers.
 	 */
 	private static final int SERVER_COLUMN_WIDTH = 120;
+
+	/**
+	 * Label provider for the IOC column. Outputs the IOC name and hostname as
+	 * the label and color-codes the label based on the IOC state.
+	 */
+	private static final class IocColumnLabelProvider extends
+			ColumnLabelProvider {
+		
+		@Override
+		public String getText(Object element) {
+			if (element instanceof MonitorItem) {
+				MonitorItem i = (MonitorItem) element;
+				return i.getIocName() + " (" +  i.getIocHostname() + ")";
+			}
+			return "ERROR: element is not of expected type MonitorItem";
+		}
+
+		@Override
+		public Color getForeground(Object element) {
+			if (element instanceof MonitorItem) {
+				MonitorItem i = (MonitorItem) element;
+				if (!i.isInterconnectionServerSelected()) {
+					// no interconnection server is selected
+					return systemColor(SWT.COLOR_RED);
+				} else if (i.getIocName().startsWith("~")) {
+					// the logical IOC name is not configured
+					return systemColor(SWT.COLOR_DARK_YELLOW);
+				} else {
+					// everything is OK
+					// FIXME: only if all ICS are connected!
+//					return systemColor(SWT.COLOR_DARK_GREEN);
+				}
+			}
+			return null;
+		}
+
+		/**
+		 * @param id
+		 * @return
+		 */
+		private Color systemColor(int id) {
+			return Display.getCurrent().getSystemColor(id);
+		}
+	}
+
+	/**
+	 * Label provider for the Selected ICS column.
+	 */
+	private static final class SelectedIcsColumnLabelProvider extends
+			ColumnLabelProvider {
+
+		@Override
+		public String getText(Object element) {
+			if (element instanceof MonitorItem) {
+				return ((MonitorItem) element).getSelectedInterconnectionServer();
+			}
+			return null;
+		}
+	}
 
 	/**
 	 * @author Joerg Rathlev
@@ -208,11 +272,25 @@ public class IocMonitorView extends ViewPart implements IReportListener {
 		layout.marginHeight = 0;
 		parent.setLayout(layout);
 		
-		createTable(parent);
+		_tableViewer = new TableViewer(parent, SWT.H_SCROLL | SWT.V_SCROLL);
+		_table = _tableViewer.getTable();
 		_table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		_tableViewer = new TableViewer(_table);
+		_table.setLinesVisible(true);
+		_table.setHeaderVisible(true);
+		TableViewerColumn col = new TableViewerColumn(_tableViewer, SWT.NONE);
+		col.getColumn().setText("IOC");
+		col.getColumn().setWidth(IOC_COLUMN_WIDTH);
+		col.setLabelProvider(new IocColumnLabelProvider());
+		col = new TableViewerColumn(_tableViewer, SWT.NONE);
+		col.getColumn().setText("Selected ICS");
+		col.getColumn().setWidth(SERVER_COLUMN_WIDTH);
+		col.setLabelProvider(new SelectedIcsColumnLabelProvider());
+		_fixedColumnCount = 2;
+		_dynamicTableColumns = new ArrayList<TableColumn>();
+		_columnIndexToIcs = new HashMap<Integer, String>();
+		
 		_tableViewer.setContentProvider(new IocMonitorContentProvider());
-		_tableViewer.setLabelProvider(new IocMonitorLabelProvider());
+//		_tableViewer.setLabelProvider(new IocMonitorLabelProvider());
 		
 		getViewSite().getActionBars().getToolBarManager().add(new RefreshAction());
 		
@@ -274,27 +352,6 @@ public class IocMonitorView extends ViewPart implements IReportListener {
 			_dynamicTableColumns.add(col);
 			_columnIndexToIcs.put(_fixedColumnCount + i++, server);
 		}
-	}
-
-	/**
-	 * Creates the table control.
-	 */
-	private void createTable(Composite parent) {
-		_table = new Table(parent, SWT.H_SCROLL | SWT.V_SCROLL);
-		_table.setLinesVisible(true);
-		_table.setHeaderVisible(true);
-		TableColumn iocCol = new TableColumn(_table, SWT.LEFT);
-		iocCol.setText("IOC");
-		iocCol.setWidth(IOC_COLUMN_WIDTH);
-		TableColumn selectedIcsCol = new TableColumn(_table, SWT.LEFT);
-		selectedIcsCol.setText("Selected ICS");
-		selectedIcsCol.setWidth(SERVER_COLUMN_WIDTH);
-		
-		// IMPORTANT: Update this if the number of fixed columns changes!
-		_fixedColumnCount = 2;
-		
-		_dynamicTableColumns = new ArrayList<TableColumn>();
-		_columnIndexToIcs = new HashMap<Integer, String>();
 	}
 
 	/**

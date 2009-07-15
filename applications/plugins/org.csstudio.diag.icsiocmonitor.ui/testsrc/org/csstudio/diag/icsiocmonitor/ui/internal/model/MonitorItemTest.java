@@ -35,31 +35,35 @@ public class MonitorItemTest {
 
 	@Test
 	public void testContructionAndIocName() throws Exception {
-		MonitorItem s = new MonitorItem("ioc.example.com", "ioc");
-		assertEquals("ioc.example.com", s.getIocHostname());
-		assertEquals("ioc", s.getIocName());
+		MonitorItem i = new MonitorItem("ioc.example.com", "ioc");
+		assertEquals("ioc.example.com", i.getIocHostname());
+		assertEquals("ioc", i.getIocName());
+		assertNull(i.getSelectedInterconnectionServer());
+		assertFalse(i.isInterconnectionServerSelected());
 	}
 	
 	@Test
 	public void testSetAndGetIocConnectionState() throws Exception {
-		MonitorItem s = new MonitorItem("ioc.example.com", "ioc");
-		s.setIcsConnectionState("ics1", IocConnectionState.CONNECTED);
-		s.setIcsConnectionState("ics2", IocConnectionState.DISCONNECTED);
-		assertEquals(IocConnectionState.CONNECTED, s.getIcsConnectionState("ics1"));
-		assertEquals(IocConnectionState.DISCONNECTED, s.getIcsConnectionState("ics2"));
+		MonitorItem i = new MonitorItem("ioc.example.com", "ioc");
+		i.setIcsConnectionState("ics1", IocConnectionState.CONNECTED);
+		i.setIcsConnectionState("ics2", IocConnectionState.DISCONNECTED);
+		assertEquals(IocConnectionState.CONNECTED, i.getIcsConnectionState("ics1"));
+		assertEquals(IocConnectionState.DISCONNECTED, i.getIcsConnectionState("ics2"));
 		
 		// State of a server which is not set explicitly is DISCONNECTED:
-		assertEquals(IocConnectionState.DISCONNECTED, s.getIcsConnectionState("foo"));
+		assertEquals(IocConnectionState.DISCONNECTED, i.getIcsConnectionState("foo"));
 	}
 	
 	@Test
 	public void testGetSelectedInterconnectionServer() throws Exception {
-		MonitorItem s = new MonitorItem("ioc.example.com", "ioc");
-		s.setIcsConnectionState("ics1", IocConnectionState.CONNECTED);
-		s.setIcsConnectionState("ics2", IocConnectionState.CONNECTED_SELECTED);
-		assertEquals("ics2", s.getSelectedInterconnectionServer());
+		MonitorItem i = new MonitorItem("ioc.example.com", "ioc");
+		i.setIcsConnectionState("ics1", IocConnectionState.CONNECTED);
+		i.setIcsConnectionState("ics2", IocConnectionState.CONNECTED_SELECTED);
+		assertEquals("ics2", i.getSelectedInterconnectionServer());
+		assertTrue(i.isInterconnectionServerSelected());
 
-		s.setIcsConnectionState("ics2", IocConnectionState.CONNECTED);
-		assertNull(s.getSelectedInterconnectionServer());
+		i.setIcsConnectionState("ics2", IocConnectionState.CONNECTED);
+		assertNull(i.getSelectedInterconnectionServer());
+		assertFalse(i.isInterconnectionServerSelected());
 	}
 }
