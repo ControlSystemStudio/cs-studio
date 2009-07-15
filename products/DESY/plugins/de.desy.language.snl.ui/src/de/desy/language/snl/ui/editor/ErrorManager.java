@@ -29,7 +29,6 @@ public class ErrorManager {
 	
 	public ErrorManager() {
 		_lineSeparator = System.getProperty("line.separator");
-		System.out.println("Value of 'line.separator': '"+_lineSeparator+"'");
 	}
 
 	/**

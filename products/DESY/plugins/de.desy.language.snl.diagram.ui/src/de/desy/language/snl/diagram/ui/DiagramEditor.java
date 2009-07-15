@@ -183,22 +183,13 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 	 */
 	@Override
 	public void doSave(final IProgressMonitor monitor) {
-		// ByteArrayOutputStream out = new ByteArrayOutputStream();
-		// try {
-		// createOutputStream(out);
-		// IFile file = ((IFileEditorInput) getEditorInput()).getFile();
-		// file.setContents(new ByteArrayInputStream(out.toByteArray()), true,
-		// keep saving, even if IFile is out of sync with the Workspace false,
-		// don't keep history
-		// monitor); // progress monitor
-		// getCommandStack().markSaveLocation();
-		// } catch (CoreException ce) {
-		// ce.printStackTrace();
-		// } catch (IOException ioe) {
-		// ioe.printStackTrace();
-		// }
-		final IPath path = ((IFileEditorInput) getEditorInput()).getFile().getFullPath();
-		_persistenceHandler.store(path, diagram);
+		final IPath path = ((IFileEditorInput) getEditorInput()).getFile()
+				.getFullPath();
+		try {
+			_persistenceHandler.store(path, diagram);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		getCommandStack().markSaveLocation();
 	}
 
@@ -209,50 +200,6 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 	 */
 	@Override
 	public void doSaveAs() {
-		// // Show a SaveAs dialog
-		// Shell shell = getSite().getWorkbenchWindow().getShell();
-		// SaveAsDialog dialog = new SaveAsDialog(shell);
-		// dialog.setOriginalFile(((IFileEditorInput)
-		// getEditorInput()).getFile());
-		// dialog.open();
-		//
-		// IPath path = dialog.getResult();
-		// if (path != null) {
-		// // try to save the editor's contents under a different file name
-		// final IFile file = ResourcesPlugin.getWorkspace().getRoot()
-		// .getFile(path);
-		// try {
-		// new ProgressMonitorDialog(shell).run(false, // don't fork
-		// false, // not cancelable
-		// new WorkspaceModifyOperation() { // run this
-		// // operation
-		// public void execute(final IProgressMonitor monitor) {
-		// try {
-		// ByteArrayOutputStream out = new ByteArrayOutputStream();
-		// createOutputStream(out);
-		// file.create(new ByteArrayInputStream(out
-		// .toByteArray()), // contents
-		// true, // keep saving, even if
-		// // IFile is out of sync with
-		// // the Workspace
-		// monitor); // progress monitor
-		// } catch (CoreException ce) {
-		// ce.printStackTrace();
-		// } catch (IOException ioe) {
-		// ioe.printStackTrace();
-		// }
-		// }
-		// });
-		// // set input to the new file
-		// setInput(new FileEditorInput(file));
-		// getCommandStack().markSaveLocation();
-		// } catch (InterruptedException ie) {
-		// // should not happen, since the monitor dialog is not cancelable
-		// ie.printStackTrace();
-		// } catch (InvocationTargetException ite) {
-		// ite.printStackTrace();
-		// }
-		// }
 	}
 
 	// @Override
@@ -341,11 +288,20 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 			}
 			final Node rootNode = this.getLanguageParser().parse(
 					document.get(), sourceRessource, new NullProgressMonitor());
-			
-			Map<String, StateLayoutData> stateData = _persistenceHandler.loadStateLayoutData(sourceRessource.getFullPath());
-			Map<String, List<Point>> connectionData = _persistenceHandler.loadConnectionLayoutData(sourceRessource.getFullPath());
-			
-			diagram = DiagramCreator.getInstance().createDiagram(rootNode, stateData, connectionData, ROUTING_SEPARATION);
+
+			Map<String, StateLayoutData> stateData = new HashMap<String, StateLayoutData>();
+			Map<String, List<Point>> connectionData = new HashMap<String, List<Point>>();
+			try {
+				stateData = _persistenceHandler
+						.loadStateLayoutData(sourceRessource.getFullPath());
+				connectionData = _persistenceHandler
+						.loadConnectionLayoutData(sourceRessource.getFullPath());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			diagram = DiagramCreator.getInstance().createDiagram(rootNode,
+					stateData, connectionData, ROUTING_SEPARATION);
 		} else {
 			diagram = DiagramCreator.getInstance().createDefaultDiagram();
 		}
