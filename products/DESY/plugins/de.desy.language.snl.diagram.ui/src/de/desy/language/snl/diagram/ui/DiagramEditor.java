@@ -343,7 +343,7 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 					document.get(), sourceRessource, new NullProgressMonitor());
 			
 			Map<String, StateLayoutData> stateData = _persistenceHandler.loadStateLayoutData(sourceRessource.getFullPath());
-			Map<String, List<Point>> connectionData = new HashMap<String, List<Point>>();
+			Map<String, List<Point>> connectionData = _persistenceHandler.loadConnectionLayoutData(sourceRessource.getFullPath());
 			
 			diagram = DiagramCreator.getInstance().createDiagram(rootNode, stateData, connectionData, ROUTING_SEPARATION);
 		} else {

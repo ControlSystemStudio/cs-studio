@@ -1,5 +1,6 @@
 package de.desy.language.snl.diagram.persistence;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -16,6 +17,7 @@ import org.eclipse.draw2d.geometry.Point;
 import org.jdom.Element;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
+import org.xml.sax.helpers.DefaultHandler;
 
 import de.desy.language.snl.diagram.model.SNLDiagram;
 import de.desy.language.snl.diagram.model.SNLModel;
@@ -29,9 +31,7 @@ public class XMLPersistenceHandler implements IPersistenceHandler {
 		XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
 		Element diagramElement = createDiagramTag(diagram);
 
-		IPath workspacePath = ResourcesPlugin.getWorkspace().getRoot()
-				.getLocation();
-		IPath layoutDataPath = workspacePath.append(getLayoutDataPath(originalFilePath));
+		IPath layoutDataPath = getLayoutDataPath(originalFilePath);
 
 		try {
 			FileOutputStream outputStream = new FileOutputStream(layoutDataPath
@@ -48,8 +48,8 @@ public class XMLPersistenceHandler implements IPersistenceHandler {
 		String fileExtension = originalFilePath.getFileExtension();
 		String fileName = originalFilePath.lastSegment();
 		fileName = fileName.replace("." + fileExtension, ".layout");
-		int segmentCount = originalFilePath.segmentCount();
 
+		int segmentCount = originalFilePath.segmentCount();
 		IPath constraintFilePath = originalFilePath
 				.uptoSegment(segmentCount - 1);
 		constraintFilePath = constraintFilePath.append(fileName);
@@ -61,8 +61,8 @@ public class XMLPersistenceHandler implements IPersistenceHandler {
 	}
 
 	private Element createDiagramTag(SNLDiagram diagram) {
-		Element rootElement = new Element("diagram");
-		rootElement.setAttribute("name", diagram.getIdentifier());
+		Element rootElement = new Element(XMLConstant.DIAGRAM.getIdentifier());
+		rootElement.setAttribute(XMLConstant.NAME.getIdentifier(), diagram.getIdentifier());
 
 		rootElement.addContent(createStateDataTag(diagram));
 		rootElement.addContent(createConnectionDataTag(diagram));
@@ -70,7 +70,7 @@ public class XMLPersistenceHandler implements IPersistenceHandler {
 	}
 
 	private Element createConnectionDataTag(SNLDiagram diagram) {
-		Element connectionDataElement = new Element("connectionData");
+		Element connectionDataElement = new Element(XMLConstant.CONNECTION_DATA.getIdentifier());
 		for (SNLModel model : diagram.getChildren()) {
 			List<WhenConnection> sourceConnections = model
 					.getSourceConnections();
@@ -86,8 +86,8 @@ public class XMLPersistenceHandler implements IPersistenceHandler {
 
 	private Element createConnectionTag(WhenConnection connection,
 			String sourceIdentifier) {
-		Element connectionElement = new Element("connection");
-		connectionElement.setAttribute("name", connection
+		Element connectionElement = new Element(XMLConstant.CONNECTION.getIdentifier());
+		connectionElement.setAttribute(XMLConstant.NAME.getIdentifier(), connection
 				.getPropertyValue(SNLModel.PARENT)
 				+ "."
 				+ sourceIdentifier
@@ -101,14 +101,14 @@ public class XMLPersistenceHandler implements IPersistenceHandler {
 	}
 
 	private Element createPointTag(Point point) {
-		Element pointElement = new Element("point");
-		pointElement.setAttribute("location_x", String.valueOf(point.x));
-		pointElement.setAttribute("location_y", String.valueOf(point.y));
+		Element pointElement = new Element(XMLConstant.POINT.getIdentifier());
+		pointElement.setAttribute(XMLConstant.LOCATION_X.getIdentifier(), String.valueOf(point.x));
+		pointElement.setAttribute(XMLConstant.LOCATION_Y.getIdentifier(), String.valueOf(point.y));
 		return pointElement;
 	}
 
 	private Element createStateDataTag(SNLDiagram diagram) {
-		Element stateDataElement = new Element("stateData");
+		Element stateDataElement = new Element(XMLConstant.STATE_DATA.getIdentifier());
 		for (SNLModel model : diagram.getChildren()) {
 			if (model instanceof StateSetModel) {
 				stateDataElement
@@ -121,60 +121,67 @@ public class XMLPersistenceHandler implements IPersistenceHandler {
 	}
 
 	private Element createStateTag(StateModel model) {
-		Element stateElement = new Element("state");
-		stateElement.setAttribute("name", model
+		Element stateElement = new Element(XMLConstant.STATE.getIdentifier());
+		stateElement.setAttribute(XMLConstant.NAME.getIdentifier(), model
 				.getPropertyValue(SNLModel.PARENT)
 				+ "." + model.getIdentifier());
-		stateElement.setAttribute("location_x", String.valueOf(model
+		stateElement.setAttribute(XMLConstant.LOCATION_X.getIdentifier(), String.valueOf(model
 				.getLocation().x));
-		stateElement.setAttribute("location_y", String.valueOf(model
+		stateElement.setAttribute(XMLConstant.LOCATION_Y.getIdentifier(), String.valueOf(model
 				.getLocation().y));
-		stateElement.setAttribute("width", String
+		stateElement.setAttribute(XMLConstant.WIDTH.getIdentifier(), String
 				.valueOf(model.getSize().width));
-		stateElement.setAttribute("height", String
+		stateElement.setAttribute(XMLConstant.HEIGHT.getIdentifier(), String
 				.valueOf(model.getSize().height));
 		return stateElement;
 	}
 
 	private Element createStateSetTag(StateSetModel model) {
-		Element stateSetElement = new Element("stateSet");
-		stateSetElement.setAttribute("name", model.getIdentifier());
-		stateSetElement.setAttribute("location_x", String.valueOf(model
+		Element stateSetElement = new Element(XMLConstant.STATE_SET.getIdentifier());
+		stateSetElement.setAttribute(XMLConstant.NAME.getIdentifier(), model.getIdentifier());
+		stateSetElement.setAttribute(XMLConstant.LOCATION_X.getIdentifier(), String.valueOf(model
 				.getLocation().x));
-		stateSetElement.setAttribute("location_y", String.valueOf(model
+		stateSetElement.setAttribute(XMLConstant.LOCATION_Y.getIdentifier(), String.valueOf(model
 				.getLocation().y));
-		stateSetElement.setAttribute("width", String
+		stateSetElement.setAttribute(XMLConstant.WIDTH.getIdentifier(), String
 				.valueOf(model.getSize().width));
-		stateSetElement.setAttribute("height", String
+		stateSetElement.setAttribute(XMLConstant.HEIGHT.getIdentifier(), String
 				.valueOf(model.getSize().height));
 		return stateSetElement;
 	}
 
 	public Map<String, List<Point>> loadConnectionLayoutData(
 			IPath originalFilePath) {
-		HashMap<String, List<Point>> result = new HashMap<String, List<Point>>();
+		Map<String, List<Point>> result = new HashMap<String, List<Point>>();
+		ConnectionLayoutHandler handler = new ConnectionLayoutHandler(result);
 		
-		IPath layoutDataPath = getLayoutDataPath(originalFilePath);
+		fillMap(originalFilePath, handler);
+
 		return result;
 	}
 
 	public Map<String, StateLayoutData> loadStateLayoutData(
 			IPath originalFilePath) {
 		Map<String, StateLayoutData> result = new HashMap<String, StateLayoutData>();
+		StateLayoutHandler handler = new StateLayoutHandler(result);
 		
-		IPath layoutDataPath = getLayoutDataPath(originalFilePath);
-		
-		try {
-			SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
-			
-			StateLayoutHandler handler = new StateLayoutHandler(result);
-			
-			parser.parse(layoutDataPath.toFile(), handler);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		fillMap(originalFilePath, handler);
 		
 		return result;
+	}
+
+	private void fillMap(IPath originalFilePath, DefaultHandler handler) {
+		IPath layoutDataPath = getLayoutDataPath(originalFilePath);
+		File file = layoutDataPath.toFile();
+		if (file.exists()) {
+			try {
+				SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
+				
+				parser.parse(file, handler);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 }
