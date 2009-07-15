@@ -139,7 +139,8 @@ public class IocMonitor {
 				 * we don't know on which server.
 				 */
 				CentralLogger.getInstance().error(this,
-						"Could not retrieve report.", e);
+						"Could not retrieve report from one of the " +
+						"interconnection servers.", e);
 			}
 		}
 
