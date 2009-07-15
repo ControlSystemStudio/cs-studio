@@ -137,7 +137,7 @@ public class LocalConnector extends AbstractConnector implements ILocalChannelLi
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void init() {
+	protected void doInit() {
 		LocalChannelPool.getInstance().getChannel(getProcessVariableAddress(), getValueType()).addListener(this);
 		forwardConnectionState(ConnectionState.CONNECTED);
 	}

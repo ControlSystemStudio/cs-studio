@@ -10,6 +10,11 @@ import org.csstudio.platform.model.pvs.IProcessVariableAddress;
  */
 public interface IConnector {
 
+    /**
+     * Initializes the connector.
+     */
+	void init();
+	
 	/**
 	 * Returns the number of listeners that are currently attached to this
 	 * connector.

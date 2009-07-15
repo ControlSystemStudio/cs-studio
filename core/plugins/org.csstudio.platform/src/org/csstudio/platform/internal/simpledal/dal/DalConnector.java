@@ -389,9 +389,10 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
 	/**
 	 * {@inheritDoc}
 	 */
-	protected void init() {
+	protected void doInit() {
 		// get or create a real DAL property
 		DynamicValueProperty property = null;
+		
 		try {
 			RemoteInfo ri = getProcessVariableAddress().toDalRemoteInfo();
 

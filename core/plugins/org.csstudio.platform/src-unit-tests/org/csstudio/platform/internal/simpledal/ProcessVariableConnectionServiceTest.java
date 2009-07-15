@@ -80,7 +80,7 @@ public class ProcessVariableConnectionServiceTest {
 		}
 
 		@Override
-		protected void init() throws Exception {
+		protected void doInit() throws Exception {
 
 		}
 	}

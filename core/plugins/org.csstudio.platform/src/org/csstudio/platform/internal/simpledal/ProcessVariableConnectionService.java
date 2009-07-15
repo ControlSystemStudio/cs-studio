@@ -200,8 +200,11 @@ public class ProcessVariableConnectionService implements IProcessVariableConnect
 
 			connector.block();
 		}
-
+		
 		assert connector != null;
+		
+		connector.init(); 
+
 
 		return connector;
 	}

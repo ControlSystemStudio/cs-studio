@@ -46,9 +46,9 @@ public class ExecutionService {
 	private static ExecutionService _instance;
 
 	private static final int HIGH_PRIORITY_THREADS = 10;
-	private static final int NORMAL_PRIORITY_THREADS = 200;
+	private static final int NORMAL_PRIORITY_THREADS = 50;
 	private static final int LOW_PRIORITY_THREADS = 10;
-	private static final int SCHEDULED_THREADS = 200;
+	private static final int SCHEDULED_THREADS = 10;
 
 	private static LinkedBlockingQueue<Runnable> _lowPriorityQueue;
 	private static LinkedBlockingQueue<Runnable> _normalPriorityQueue;
