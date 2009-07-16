@@ -22,39 +22,31 @@
 
 package org.csstudio.diag.icsiocmonitor.ui.internal;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.csstudio.diag.icsiocmonitor.service.IocConnectionState;
 import org.csstudio.diag.icsiocmonitor.ui.internal.model.IReportListener;
 import org.csstudio.diag.icsiocmonitor.ui.internal.model.IocMonitor;
 import org.csstudio.diag.icsiocmonitor.ui.internal.model.IocMonitorFactory;
 import org.csstudio.diag.icsiocmonitor.ui.internal.model.MonitorItem;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.viewers.BaseLabelProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
@@ -135,52 +127,50 @@ public class IocMonitorView extends ViewPart implements IReportListener {
 			return null;
 		}
 	}
-
+	
 	/**
-	 * @author Joerg Rathlev
-	 *
+	 * Label provider for the interconnection server columns.
 	 */
-	private class IocMonitorLabelProvider extends BaseLabelProvider
-			implements ITableLabelProvider {
+	private static final class IcsColumnLabelProvider extends
+			ColumnLabelProvider {
+		
+		private final String _server;
 
 		/**
-		 * {@inheritDoc}
+		 * Creates a label provider.
+		 * 
+		 * @param server
+		 *            the name of the interconnection server.
 		 */
-		public String getColumnText(Object element, int columnIndex) {
+		IcsColumnLabelProvider(String server) {
+			_server = server;
+		}
+		
+		@Override
+		public String getText(Object element) {
 			if (element instanceof MonitorItem) {
-				MonitorItem item = (MonitorItem) element;
-				switch (columnIndex) {
-				case 0:
-					return item.getIocName() +
-							" (" + item.getIocHostname() + ")";
-				case 1:
-					return item.getSelectedInterconnectionServer();
+				switch (((MonitorItem) element).getIcsConnectionState(_server)) {
+				case CONNECTED:
+					return "connected";
+				case CONNECTED_SELECTED:
+					return "connected, selected";
+				case DISCONNECTED:
+					return "disconnected";
 				default:
-					String server = _columnIndexToIcs.get(columnIndex);
-					if (server != null) {
-						IocConnectionState connectionState =
-							item.getIcsConnectionState(server);
-						switch (connectionState) {
-						case CONNECTED:
-							return "connected";
-						case CONNECTED_SELECTED:
-							return "connected, selected";
-						case DISCONNECTED:
-							return "disconnected";
-						default:
-							return "?";
-						}
-					}
-					return "ERROR no server associated with column";
+					return "ERROR: unknown state";
 				}
 			}
 			return null;
 		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		public Image getColumnImage(Object element, int columnIndex) {
+		
+		@Override
+		public Color getForeground(Object element) {
+			if (element instanceof MonitorItem) {
+				if (((MonitorItem) element).getIcsConnectionState(_server)
+						== IocConnectionState.DISCONNECTED) {
+					return Display.getCurrent().getSystemColor(SWT.COLOR_RED);
+				}
+			}
 			return null;
 		}
 	}
@@ -245,9 +235,9 @@ public class IocMonitorView extends ViewPart implements IReportListener {
 
 	private TableViewer _tableViewer;
 	private Table _table;
-	private int _fixedColumnCount;
-	private List<TableColumn> _dynamicTableColumns;
-	private Map<Integer, String> _columnIndexToIcs;
+//	private int _fixedColumnCount;
+	private List<TableViewerColumn> _dynamicTableColumns;
+//	private Map<Integer, String> _columnIndexToIcs;
 	private IocMonitor _iocMonitor;
 	
 	/**
@@ -285,9 +275,9 @@ public class IocMonitorView extends ViewPart implements IReportListener {
 		col.getColumn().setText("Selected ICS");
 		col.getColumn().setWidth(SERVER_COLUMN_WIDTH);
 		col.setLabelProvider(new SelectedIcsColumnLabelProvider());
-		_fixedColumnCount = 2;
-		_dynamicTableColumns = new ArrayList<TableColumn>();
-		_columnIndexToIcs = new HashMap<Integer, String>();
+//		_fixedColumnCount = 2;
+		_dynamicTableColumns = new ArrayList<TableViewerColumn>();
+//		_columnIndexToIcs = new HashMap<Integer, String>();
 		
 		_tableViewer.setContentProvider(new IocMonitorContentProvider());
 //		_tableViewer.setLabelProvider(new IocMonitorLabelProvider());
@@ -340,17 +330,16 @@ public class IocMonitorView extends ViewPart implements IReportListener {
 	 *            list of interconnection servers.
 	 */
 	private void updateDynamicColumns(List<String> ics) {
-		for (TableColumn col : _dynamicTableColumns) {
-			col.dispose();
+		for (TableViewerColumn viewerCol : _dynamicTableColumns) {
+			viewerCol.getColumn().dispose();
 		}
 		
-		int i = 0;
 		for (String server : ics) {
-			TableColumn col = new TableColumn(_table, SWT.LEFT);
-			col.setText(server);
-			col.setWidth(SERVER_COLUMN_WIDTH);
-			_dynamicTableColumns.add(col);
-			_columnIndexToIcs.put(_fixedColumnCount + i++, server);
+			TableViewerColumn viewerCol = new TableViewerColumn(_tableViewer, SWT.NONE);
+			viewerCol.getColumn().setText(server);
+			viewerCol.getColumn().setWidth(SERVER_COLUMN_WIDTH);
+			viewerCol.setLabelProvider(new IcsColumnLabelProvider(server));
+			_dynamicTableColumns.add(viewerCol);
 		}
 	}
 
