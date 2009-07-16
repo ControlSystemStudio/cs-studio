@@ -1,6 +1,5 @@
 package org.csstudio.platform.ui.security;
 
-
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.security.SecureStorage;
 import org.eclipse.equinox.security.storage.ISecurePreferences;
@@ -15,11 +14,25 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
-
 /** StringFieldEditor for Passwords
  *  <p>
  *  Copied StringFieldEditor sources, stripped,
- *  replaced Text style with password option
+ *  replaced Text style with password option.
+ *  <p>
+ *  On Win32 and OS X the SWT.PASSWORD option will create a text field
+ *  that only shows '*' and prohibits cut/copy to read the secret value.
+ *  On Linux, however, one can still cut/copy the value out.
+ *  To prevent this in all cases, this field editor will only put
+ *  a FAKE_PASSWORD into its text box, not the secret preference setting.
+ *  <p>
+ *  Removed access to the value and text field, so that this
+ *  field editor directly reads/writes from preferences or
+ *  preferably secure storage.
+ *  <p>
+ *  In fact when 'encrypted', the field editor never reads
+ *  the original value, it will only write a new value in case
+ *  one was entered.
+ *  
  *  @author Kay Kasemir
  *  @author Xihui Chen
  */
@@ -68,16 +81,8 @@ public class PasswordFieldEditor extends FieldEditor
      */
     private static final String FAKE_PASSWORD = "*********"; //$NON-NLS-1$
     
-    private boolean passwordChanged = false;
-    
     private boolean loadFromDefault = false;
     
-    /**
-     * Creates a new string field editor 
-     */
-    protected PasswordFieldEditor() {
-    }
-
     /**
      * Creates a string field editor of unlimited width.
      * Use the method <code>setTextLimit</code> to limit the text.
@@ -120,6 +125,7 @@ public class PasswordFieldEditor extends FieldEditor
     /* (non-Javadoc)
      * Method declared on FieldEditor.
      */
+    @Override
     protected void adjustForNumColumns(int numColumns) {
         GridData gd = (GridData) textField.getLayoutData();
         gd.horizontalSpan = numColumns - 1;
@@ -184,6 +190,7 @@ public class PasswordFieldEditor extends FieldEditor
      * but must call <code>super.doFillIntoGrid</code>.
      * </p>
      */
+    @Override
     protected void doFillIntoGrid(Composite parent, int numColumns) {
         getLabelControl(parent);
 
@@ -202,34 +209,34 @@ public class PasswordFieldEditor extends FieldEditor
     @Override
     protected void doLoad()
     {
-        if (textField != null)
-        {
-        	String value = null;
-        	if(!encrypt) {	        	
-	         	try
-	         	{
-					value = SecureStorage.getNode(nodePath).get(getPreferenceName(), null);
-					if(value == null)
-						value = getPreferenceStore().getString(getPreferenceName());
-	         	}
-	         	catch (Exception e)
-	         	{
-					CentralLogger.getInstance().getLogger(this).error(
-								"Error in retrieving data from secure storage. " +
-								"The default preference value of _" +
-								getPreferenceName()+ "_ will be loaded.", e);				
+        if (textField == null)
+            return;
+    	String value = null;
+    	if(!encrypt) {	        	
+         	try
+         	{
+				value = SecureStorage.getNode(nodePath).get(getPreferenceName(), null);
+				if(value == null)
 					value = getPreferenceStore().getString(getPreferenceName());
-				}        	
-        	} else
-        		value = FAKE_PASSWORD;
-			textField.setText(value);
-			oldValue = value;
-        }
+         	}
+         	catch (Exception e)
+         	{
+				CentralLogger.getInstance().getLogger(this).error(
+							"Error in retrieving data from secure storage. " +
+							"The default preference value of _" +
+							getPreferenceName()+ "_ will be loaded.", e);				
+				value = getPreferenceStore().getString(getPreferenceName());
+			}        	
+    	} else
+    		value = FAKE_PASSWORD;
+		textField.setText(value);
+		oldValue = value;
     }
 
     /* (non-Javadoc)
      * Method declared on FieldEditor.
      */
+    @Override
     protected void doLoadDefault() {
         if (textField != null) {
         	if(!encrypt){
@@ -250,36 +257,30 @@ public class PasswordFieldEditor extends FieldEditor
     @Override
     protected void doStore()
     {    	
+        final boolean encrypted_pw_changed =
+            !textField.getText().equals(FAKE_PASSWORD); 
+
     	try
-    	{   if(!encrypt || passwordChanged) {  		
+    	{ 
+    	    if (!encrypt || encrypted_pw_changed)
+    	    {  		
 				final ISecurePreferences node = SecureStorage.getNode(nodePath);
 	            node.put(getPreferenceName(), textField.getText(), encrypt);
 				node.flush();
-				passwordChanged = false;
-	    	} else if(encrypt && loadFromDefault && !passwordChanged) {
+	    	}
+    	    else if (encrypt && loadFromDefault && !encrypted_pw_changed)
+    	    {
     			final ISecurePreferences node = SecureStorage.getNode(nodePath);
 	            node.put(getPreferenceName(), getPreferenceStore().getDefaultString(
 	                    getPreferenceName()), encrypt);
 				node.flush();
 				loadFromDefault = false;
     		}
-    			
 		}
     	catch (Exception e)
     	{
 			CentralLogger.getInstance().getLogger(this).error(e);
 		}
-    }
-
-    /**
-     * Returns the error message that will be displayed when and if 
-     * an error occurs.
-     *
-     * @return the error message, or <code>null</code> if none
-     */
-    public String getErrorMessage()
-    {
-        return errorMessage;
     }
 
     /* (non-Javadoc)
@@ -292,29 +293,6 @@ public class PasswordFieldEditor extends FieldEditor
     }
 
     /**
-     * Returns the field editor's value.
-     *
-     * @return the current value
-     */
-    public String getStringValue() {
-        if (textField != null) {
-            return textField.getText();
-        }
-        
-        return getPreferenceStore().getString(getPreferenceName());
-    }
-
-    /**
-     * Returns this field editor's text control.
-     *
-     * @return the text control, or <code>null</code> if no
-     * text field is created yet
-     */
-    protected Text getTextControl() {
-        return textField;
-    }
-
-    /**
      * Returns this field editor's text control.
      * <p>
      * The control is created if it does not yet exist
@@ -323,7 +301,7 @@ public class PasswordFieldEditor extends FieldEditor
      * @param parent the parent
      * @return the text control
      */
-    public Text getTextControl(Composite parent) {
+    private Text getTextControl(Composite parent) {
         if (textField == null) {
         	if(encrypt) {
         		textField = new Text(parent, SWT.SINGLE | SWT.BORDER | SWT.PASSWORD);
@@ -331,10 +309,13 @@ public class PasswordFieldEditor extends FieldEditor
         	else
         		textField = new Text(parent, SWT.SINGLE | SWT.BORDER);   		
             textField.setFont(parent.getFont());
+            // Note: On OS X with Eclipse 3.5, i.e. using Cocoa,
+            // the SWT.PASSWORD text box doesn't seem to send out
+            // key updates, so updating a 'password changed' flag
+            // in the key listener as was done originally no longer works.
             textField.addKeyListener(new KeyAdapter() {
+                @Override
                 public void keyReleased(KeyEvent e) {
-                	if(encrypt)
-                		passwordChanged = !textField.getText().equals(FAKE_PASSWORD); 
                     valueChanged();
                 }
             });
@@ -349,20 +330,10 @@ public class PasswordFieldEditor extends FieldEditor
         return textField;
     }
 
-    /**
-     * Returns whether an empty string is a valid value.
-     *
-     * @return <code>true</code> if an empty string is a valid value, and
-     *  <code>false</code> if an empty string is invalid
-     * @see #setEmptyStringAllowed
-     */
-    public boolean isEmptyStringAllowed() {
-        return emptyStringAllowed;
-    }
-
     /* (non-Javadoc)
      * Method declared on FieldEditor.
      */
+    @Override
     public boolean isValid() {
         return isValid;
     }
@@ -370,6 +341,7 @@ public class PasswordFieldEditor extends FieldEditor
     /* (non-Javadoc)
      * Method declared on FieldEditor.
      */
+    @Override
     protected void refreshValidState() {
         isValid = checkState();
     }
@@ -384,48 +356,14 @@ public class PasswordFieldEditor extends FieldEditor
         emptyStringAllowed = b;
     }
 
-    /**
-     * Sets the error message that will be displayed when and if 
-     * an error occurs.
-     *
-     * @param message the error message
-     */
-    public void setErrorMessage(String message) {
-        errorMessage = message;
-    }
-
     /* (non-Javadoc)
      * Method declared on FieldEditor.
      */
+    @Override
     public void setFocus() {
         if (textField != null) {
             textField.setFocus();
         }
-    }
-
-    /**
-     * Sets this field editor's value.
-     *
-     * @param value the new value, or <code>null</code> meaning the empty string
-     */
-    public void setStringValue(String value) {
-        if (textField != null) {
-            if (value == null) {
-                value = "";//$NON-NLS-1$
-            }
-            oldValue = textField.getText();
-            if (!oldValue.equals(value)) {
-                textField.setText(value);
-                valueChanged();
-            }
-        }
-    }
-
-    /**
-     * Shows the error message set via <code>setErrorMessage</code>.
-     */
-    public void showErrorMessage() {
-        showErrorMessage(errorMessage);
     }
 
     /**
@@ -456,6 +394,7 @@ public class PasswordFieldEditor extends FieldEditor
     /*
      * @see FieldEditor.setEnabled(boolean,Composite).
      */
+    @Override
     public void setEnabled(boolean enabled, Composite parent) {
         super.setEnabled(enabled, parent);
         getTextControl(parent).setEnabled(enabled);
