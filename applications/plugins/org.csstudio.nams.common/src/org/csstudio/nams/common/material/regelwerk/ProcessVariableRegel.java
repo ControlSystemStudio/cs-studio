@@ -87,8 +87,10 @@ public class ProcessVariableRegel implements VersandRegel {
 		 * {@inheritDoc}
 		 */
 		public void valueChanged(final T value, final Timestamp e) {
-			ProcessVariableRegel.logger.logDebugMessage(this, e.toString()
-					+ " Value changed, new Value: " + value.toString());
+		    String temp = null;
+		    temp = (value != null) ? value.toString() : "null";
+		    ProcessVariableRegel.logger.logDebugMessage(this, e.toString()
+					+ " Value changed, new Value: " + temp);
 			this._lastReceivedValue = value;
 		}
 	}
