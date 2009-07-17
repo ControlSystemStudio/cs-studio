@@ -210,6 +210,19 @@ public class SmsConnectorWork extends Thread implements AmsConstants
 
                     if(iErr == SmsConnectorStart.STAT_OK)
                     {
+                        // Look for a modem test message
+                        message = null;
+                        try
+                        {
+                            message = amsReceiver.receive("amsSubscriberSmsModemtest");
+                            iErr = smsContainer.addModemtestSms(message);
+                        }
+                        catch(Exception e)
+                        {
+                            Log.log(this, Log.FATAL, "Could not receive from internal jms: amsSubscriberSmsModemtest", e);
+                            iErr = SmsConnectorStart.STAT_ERR_JMSCON;
+                        }
+                        
                         // TODO: The methods should throw an exception
                         // Now look for SMS messages
                         message = null;
@@ -224,7 +237,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                             iErr = SmsConnectorStart.STAT_ERR_JMSCON;
                         }
                         
-                        if (message != null)
+                        if(smsContainer.hasContent())
                         {
                             //FIXME:
                             //TODO:
@@ -372,7 +385,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
             {
                 modemCount = Integer.parseInt(store.getString(SampleService.P_MODEM_COUNT));
                 
-                modemCount = (modemCount < 1) ? 1 : modemCount;
+                modemCount = (modemCount < 0) ? 0 : modemCount;
                 modemCount = (modemCount > 3) ? 3 : modemCount;
                 
                 Log.log(this, Log.INFO, "Number of modems: " + modemCount);
@@ -453,7 +466,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
             
             modemService.setGatewayStatusNotification(new GatewayStatusNotification(modemInfo.getModemNames()));
             
-            if(result == true)
+            if((result == true) && (modemCount > 0))
             {
                 Log.log(this, Log.INFO, "Try to start service");
                 modemService.startService();
@@ -575,7 +588,19 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                 return false;
             }
             
-            // Create second subscriber (topic for message management)
+            // Create second subscriber (topic for the modem test) 
+            result = amsReceiver.createRedundantSubscriber(
+                    "amsSubscriberSmsModemtest",
+                    storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_SMS_CONNECTOR_MODEMTEST),
+                    storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TSUB_SMS_CONNECTOR_MODEMTEST),
+                    durable);
+            if(result == false)
+            {
+                Log.log(this, Log.FATAL, "could not create amsSubscriberSmsModemtest");
+                return false;
+            }
+
+            // Create third subscriber (topic for message management)
             // TODO: Replace constant with preference entry 
             result = amsReceiver.createRedundantSubscriber(
                     "amsConnectorManager",
@@ -1171,11 +1196,20 @@ public class SmsConnectorWork extends Thread implements AmsConstants
             }
             
             int totalOutAfter = modemService.getOutboundMessageCount();// total number of outbound messages since restart
-            if (totalOutBefore < totalOutAfter)
+            if(totalOutBefore < totalOutAfter)
             {
                 Log.log(this, Log.INFO, "sms sent to: '" + recNo + "' with text: '" + text + "'");
                 bRet = true;
             }
+            else
+            {
+                // If no modems are defined, return true anyhow
+                if(modemInfo.getModemCount() == 0)
+                {
+                    bRet = true;
+                }
+            }
+            
             Log.log(this, Log.INFO, "totalOut sms = " + totalOutAfter);
         }
         else

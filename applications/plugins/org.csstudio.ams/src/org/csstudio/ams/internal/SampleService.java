@@ -86,9 +86,11 @@ public class SampleService
 	public static final String P_JMS_AMS_TSUB_REPLY = "org.csstudio.ams.preferences.jmsAmsTSubReply";
 
 	public static final String P_JMS_AMS_TOPIC_SMS_CONNECTOR = "org.csstudio.ams.preferences.jmsAmsTopicSmsConnector";
+    public static final String P_JMS_AMS_TOPIC_SMS_CONNECTOR_MODEMTEST = "org.csstudio.ams.preferences.jmsAmsTopicSmsConnectorModemtest";
     public static final String P_JMS_AMS_TOPIC_SMS_CONNECTOR_FORWARD = "org.csstudio.ams.preferences.jmsAmsTopicSmsConnectorForward";
 	public static final String P_JMS_AMS_TSUB_SMS_CONNECTOR = "org.csstudio.ams.preferences.jmsAmsTSubSmsConnector";
-	public static final String P_JMS_AMS_TOPIC_EMAIL_CONNECTOR = "org.csstudio.ams.preferences.jmsAmsTopicEMailConnector";
+	public static final String P_JMS_AMS_TSUB_SMS_CONNECTOR_MODEMTEST = "org.csstudio.ams.preferences.jmsAmsTSubSmsConnectorModemtest";
+    public static final String P_JMS_AMS_TOPIC_EMAIL_CONNECTOR = "org.csstudio.ams.preferences.jmsAmsTopicEMailConnector";
     public static final String P_JMS_AMS_TOPIC_EMAIL_CONNECTOR_FORWARD = "org.csstudio.ams.preferences.jmsAmsTopicEMailConnectorForward";
 	public static final String P_JMS_AMS_TSUB_EMAIL_CONNECTOR = "org.csstudio.ams.preferences.jmsAmsTSubEMailConnector";
 	public static final String P_JMS_AMS_TOPIC_VOICEMAIL_CONNECTOR = "org.csstudio.ams.preferences.jmsAmsTopicVoiceMailConnector";

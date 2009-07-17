@@ -58,6 +58,11 @@ public class Sms implements Serializable
     /** Timestamp of the JMS message */
     private long smsTimestamp;
     
+    /** Priority of the SMS. Affects the order of the SMS.
+     *  LOW = 3, NORMAL = 2, HIGH = 1
+     */
+    private int priority;
+    
     /** Cell phone number of the receiver */
     private String phoneNumber;
     
@@ -70,17 +75,30 @@ public class Sms implements Serializable
     /** Type of the SMS */
     private Sms.Type type;
 
-    /** The one and only constructor. Every attributes have to be set if we create a new object. */
+    /** First constructor. Assumes the priority is 2 (NORMAL) */
     public Sms(long id, long timestamp, String number, String text, Sms.Type type)
     {
         this.id = id;
-        smsTimestamp = timestamp;
-        phoneNumber = number;
-        message = text;
+        this.smsTimestamp = timestamp;
+        this.priority = 2;
+        this.phoneNumber = number;
+        this.message = text;
         this.type = type;
-        state = Sms.State.NEW;
+        this.state = Sms.State.NEW;
     }
     
+    /** Second constructor. Contains also the priority field. */
+    public Sms(long id, long timestamp, int priority, String number, String text, Sms.Type type)
+    {
+        this.id = id;
+        this.smsTimestamp = timestamp;
+        this.priority = priority;
+        this.phoneNumber = number;
+        this.message = text;
+        this.type = type;
+        this.state = Sms.State.NEW;
+    }
+
     /**
      * Overwrites the method <code>toString()</code> from Object. Creates a nice string containg the content
      * of this SMS message.
@@ -92,6 +110,7 @@ public class Sms implements Serializable
         result.append("SMS{");
         result.append(this.id + ",");
         result.append(this.smsTimestamp + ",");
+        result.append(this.priority + ",");
         result.append(this.phoneNumber + ",");
         result.append(this.message + ",");
         result.append(this.state + ",");
@@ -120,6 +139,16 @@ public class Sms implements Serializable
         this.smsTimestamp = smsTimestamp;
     }
 
+    public void setPriority(int priority)
+    {
+        this.priority = priority;
+    }
+    
+    public int getPriority()
+    {
+        return this.priority;
+    }
+    
     public String getPhoneNumber()
     {
         return phoneNumber;

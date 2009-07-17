@@ -112,5 +112,11 @@ public class SampleService
         System.out.println(P_MODEM2_MANUFACTURE + ": " + store.getString(P_MODEM2_MANUFACTURE));
         System.out.println(P_MODEM2_MODEL + ": " + store.getString(P_MODEM2_MODEL));
         System.out.println(P_MODEM2_SIMPIM + ": " + store.getString(P_MODEM2_SIMPIM));
+        
+        System.out.println(P_MODEM3_COMPORT + ": " + store.getString(P_MODEM3_COMPORT));
+        System.out.println(P_MODEM3_COMBAUDRATE + ": " + store.getString(P_MODEM3_COMBAUDRATE));
+        System.out.println(P_MODEM3_MANUFACTURE + ": " + store.getString(P_MODEM3_MANUFACTURE));
+        System.out.println(P_MODEM3_MODEL + ": " + store.getString(P_MODEM3_MODEL));
+        System.out.println(P_MODEM3_SIMPIM + ": " + store.getString(P_MODEM3_SIMPIM));
 	}
 }

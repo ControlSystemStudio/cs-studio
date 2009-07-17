@@ -31,11 +31,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.TreeSet;
-
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
-
 import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.Log;
 
@@ -145,6 +143,68 @@ public class SmsContainer implements AmsConstants
         return result;
     }
 
+    /**
+     * Creates a special Sms object from the given MapMessage object that starts a modem test.
+     * It takes the property EVENTTIME from the message and creates the string MODEM_CHECK{$EVENTTIME$}.
+     * It acknowledges the JMS message.
+     * 
+     * @param message
+     * @return At the moment a "nice" error number. Will be changed in future versions.
+     */
+    public int addModemtestSms(Message message)
+    {
+        Sms sms = null;
+        String eventTime = null;
+        long timestamp = 0;
+        int result = SmsConnectorStart.STAT_ERR_UNDEFINED;
+        
+        if(message == null)
+        {
+            return SmsConnectorStart.STAT_OK;
+        }
+        
+        if(!(message instanceof MapMessage))
+        {
+            Log.log(this, Log.DEBUG, "Received message is not a MapMessage object.");
+            if(!acknowledge(message))
+            {
+                result = SmsConnectorStart.STAT_ERR_JMSCON;
+            }
+            else
+            {
+                result = SmsConnectorStart.STAT_OK;
+            }
+        }
+        else
+        {
+            MapMessage msg = (MapMessage) message;
+            
+            try
+            {
+                eventTime = msg.getString("EVENTTIME");
+                timestamp = msg.getJMSTimestamp();
+                
+                if(!acknowledge(message))
+                {
+                    result = SmsConnectorStart.STAT_ERR_JMSCON;
+                }
+                else
+                {            
+                    sms = new Sms(smsId++, timestamp, 1, "NONE", "MODEM_CHECK{" + eventTime + "}", Sms.Type.OUT);
+                    content.add(sms);
+                    
+                    result = SmsConnectorStart.STAT_OK;
+                }
+            }
+            catch(JMSException jmse)
+            {
+                result = SmsConnectorStart.STAT_ERR_JMSCON;
+            }            
+        }
+        
+        return result;
+    }
+    
     /**
      * Removes the given Sms object from the content.
      * 
