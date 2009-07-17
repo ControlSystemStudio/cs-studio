@@ -275,9 +275,10 @@ public class ProcessVariableConnectionService implements IProcessVariableConnect
 		 * Performs the cleanup.
 		 */
 		private void doCleanup() {
+			List<AbstractConnector> deletedConnectors = new ArrayList<AbstractConnector>();
+			
 			synchronized (_connectors) {
 				List<ConnectorIdentification> deleteCandidates = new ArrayList<ConnectorIdentification>();
-
 				Iterator<ConnectorIdentification> it = _connectors.keySet().iterator();
 
 				while (it.hasNext()) {
@@ -291,8 +292,13 @@ public class ProcessVariableConnectionService implements IProcessVariableConnect
 
 				for (ConnectorIdentification key : deleteCandidates) {
 					AbstractConnector connector = _connectors.remove(key);
-					connector.dispose();
+					deletedConnectors.add(connector);
 				}
+			}
+			
+			// important: dispose the connectors outside the synchronized block
+			for (AbstractConnector connector : deletedConnectors) {
+				connector.dispose();
 			}
 		}
 	}
