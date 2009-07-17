@@ -24,7 +24,7 @@ public class NewConfiguratorActivator extends AbstractBundleActivator implements
 		BundleActivator {
 
 	/** The plug-in ID */
-	public static final String PLUGIN_ID = "org.csstudio.nams.newconfigurator"; //$NON-NLS-1$
+	public static final String PLUGIN_ID = "org.csstudio.nams.configurator.ui"; //$NON-NLS-1$
 
 	@OSGiBundleActivationMethod
 	public void startBundle(@OSGiService
