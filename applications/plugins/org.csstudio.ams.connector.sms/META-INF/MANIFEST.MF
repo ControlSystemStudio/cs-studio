@@ -19,5 +19,5 @@ Bundle-ClassPath: libs/comm.jar,
  libs/commons-net-1.4.1.jar,
  libs/slf4j-api-1.5.6.jar,
  libs/slf4j-log4j12-1.5.6.jar,
- libs/smslib-3.4.1.jar,
+ libs/smslib-3.4.2.jar,
  .
