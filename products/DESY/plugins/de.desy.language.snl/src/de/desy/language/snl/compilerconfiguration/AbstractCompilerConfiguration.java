@@ -41,7 +41,7 @@ public abstract class AbstractCompilerConfiguration {
 	 *            The path to the result of the compilation
 	 * @return A list of error messages occurred during compilation
 	 */
-	public abstract List<String> getCompilerParameter(String sourceFile,
+	public abstract List<String> getCompilerParameters(String sourceFile,
 			String targetFile);
 
 	/**

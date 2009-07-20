@@ -288,7 +288,8 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 			}
 			final Node rootNode = this.getLanguageParser().parse(
 					document.get(), sourceRessource, new NullProgressMonitor());
-
+			
+			if (rootNode.hasChildren()) {
 			Map<String, StateLayoutData> stateData = new HashMap<String, StateLayoutData>();
 			Map<String, List<Point>> connectionData = new HashMap<String, List<Point>>();
 			try {
@@ -302,6 +303,9 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 
 			diagram = DiagramCreator.getInstance().createDiagram(rootNode,
 					stateData, connectionData, ROUTING_SEPARATION);
+			} else {
+				diagram = DiagramCreator.getInstance().createDefaultDiagram();
+			}
 		} else {
 			diagram = DiagramCreator.getInstance().createDefaultDiagram();
 		}

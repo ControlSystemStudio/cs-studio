@@ -4,17 +4,9 @@ import java.io.InputStream;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
@@ -56,48 +48,48 @@ public class SNLFilePage extends WizardNewFileCreationPage {
 	public void createControl(final Composite parent) {
 		// inherit default container and name specification widgets
 		super.createControl(parent);
-		final Composite composite = (Composite) this.getControl();
-		final Button[] radios = new Button[2];
-		final String[] fileTypes = new String[] { ".st", ".sth" };
-
-		final SelectionListener RadioListener = new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				for (int i = 0; i < radios.length; i++) {
-					if (radios[i].getSelection()) {
-						SNLFilePage.this.suffix = fileTypes[i];
-						for (int j = 0; j < i; j++) {
-							radios[j].setSelection(false);
-						}
-						for (int j = i + 1; j < radios.length; j++) {
-							radios[j].setSelection(false);
-						}
-					}
-				}
-			}
-		};
+//		final Composite composite = (Composite) this.getControl();
+//		final Button[] radios = new Button[2];
+//		final String[] fileTypes = new String[] { ".st", ".sth" };
+//
+//		final SelectionListener RadioListener = new SelectionAdapter() {
+//			@Override
+//			public void widgetSelected(SelectionEvent e) {
+//				for (int i = 0; i < radios.length; i++) {
+//					if (radios[i].getSelection()) {
+//						SNLFilePage.this.suffix = fileTypes[i];
+//						for (int j = 0; j < i; j++) {
+//							radios[j].setSelection(false);
+//						}
+//						for (int j = i + 1; j < radios.length; j++) {
+//							radios[j].setSelection(false);
+//						}
+//					}
+//				}
+//			}
+//		};
 
 		// sample section generation group
-		new Label(composite, SWT.NONE).setText("");
-		final Group group = new Group(composite, SWT.NONE);
-		group.setLayout(new GridLayout());
-		group.setText("Choose the desired type:");
-		group.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
-				| GridData.HORIZONTAL_ALIGN_FILL));
-
-		radios[0] = new Button(group, SWT.RADIO);
-		radios[0].setSelection(true);
-		radios[0].setText("Source file (*.st)");
-		radios[0].pack();
-
-		radios[1] = new Button(group, SWT.RADIO);
-		radios[1].setText("Header file (*.sth)");
-		radios[1].pack();
-
-		for (final Button element : radios) {
-			element.pack();
-			element.addSelectionListener(RadioListener);
-		}
+//		new Label(composite, SWT.NONE).setText("");
+//		final Group group = new Group(composite, SWT.NONE);
+//		group.setLayout(new GridLayout());
+//		group.setText("Choose the desired type:");
+//		group.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
+//				| GridData.HORIZONTAL_ALIGN_FILL));
+//
+//		radios[0] = new Button(group, SWT.RADIO);
+//		radios[0].setSelection(true);
+//		radios[0].setText("Source file (*.st)");
+//		radios[0].pack();
+//
+//		radios[1] = new Button(group, SWT.RADIO);
+//		radios[1].setText("Header file (*.sth)");
+//		radios[1].pack();
+//
+//		for (final Button element : radios) {
+//			element.pack();
+//			element.addSelectionListener(RadioListener);
+//		}
 		this.setPageComplete(this.validatePage());
 	}
 

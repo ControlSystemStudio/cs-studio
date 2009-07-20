@@ -220,7 +220,7 @@ public class SNLEditor extends LanguageEditor {
 					.getTargetFolder(), sourceFileName, configuration
 					.getTargetFileExtension());
 
-			errorUnit = compiler.compile(configuration.getCompilerParameter(
+			errorUnit = compiler.compile(configuration.getCompilerParameters(
 					sourceFile, targetFile), configuration.getErrorPattern());
 
 			if (errorUnit != null) {

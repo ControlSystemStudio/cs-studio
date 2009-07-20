@@ -14,9 +14,6 @@ import de.desy.language.snl.configurationservice.ICompilerOptionsService;
 public class LinuxTargetConfigurationProvider extends
 		AbstractTargetConfigurationProvider {
 
-	public LinuxTargetConfigurationProvider() {
-	}
-
 	@Override
 	public List<AbstractCompilerConfiguration> getConfigurations(ICompilerOptionsService service) {
 		List<AbstractCompilerConfiguration> configurations = new ArrayList<AbstractCompilerConfiguration>();

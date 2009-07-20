@@ -24,7 +24,7 @@ public class ApplicationCompilerConfiguration extends
 	}
 
 	@Override
-	public List<String> getCompilerParameter(String sourceFile,
+	public List<String> getCompilerParameters(String sourceFile,
 			String targetFile) {
 		List<String> result = new ArrayList<String>();
 		result.add(getCompilerPath());

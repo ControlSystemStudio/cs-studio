@@ -17,7 +17,7 @@ public class SNCompilerConfiguration extends AbstractCompilerConfiguration {
 	/* (non-Javadoc)
 	 * @see de.desy.language.snl.ui.editor.compilerconfiguration.ICompilerConfiguration#getCompilerOptions()
 	 */
-	public List<String> getCompilerParameter(String sourceFile, String targetFile) {
+	public List<String> getCompilerParameters(String sourceFile, String targetFile) {
 		List<String> result = new ArrayList<String>();
 		result.add(getCompilerPath());
 		result.addAll(getCompilerOptionService().getCCompilerOptions());
