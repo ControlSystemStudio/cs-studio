@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.platform.feature"
       label="CSS Platform Feature"
-      version="1.1.1">
+      version="1.2.0">
 
    <description url="http://css.desy.de">
       The Control System Studio defines a platform for control system
