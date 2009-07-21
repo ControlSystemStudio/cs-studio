@@ -96,10 +96,6 @@ public class IocMonitorView extends ViewPart implements IReportListener {
 				} else if (i.getIocName().startsWith("~")) {
 					// the logical IOC name is not configured
 					return systemColor(SWT.COLOR_DARK_YELLOW);
-				} else {
-					// everything is OK
-					// FIXME: only if all ICS are connected!
-//					return systemColor(SWT.COLOR_DARK_GREEN);
 				}
 			}
 			return null;
