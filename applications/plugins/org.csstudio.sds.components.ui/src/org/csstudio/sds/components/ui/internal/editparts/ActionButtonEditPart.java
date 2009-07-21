@@ -88,7 +88,7 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 		buttonFigure.setTextAlignment(model.getTextAlignment());
 		buttonFigure.setEnabled(getExecutionMode().equals(
 				ExecutionMode.RUN_MODE)
-				&& model.isEnabled());
+				&& model.isAccesible());
 		buttonFigure.setStyle(model.isToggleButton());
 		return buttonFigure;
 	}
@@ -115,7 +115,7 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
         if (type != null
                 && (type.equals(RequestConstants.REQ_OPEN) || type
                         .equals(RequestConstants.REQ_DIRECT_EDIT))) {
-            if (getExecutionMode() == ExecutionMode.RUN_MODE && getCastedModel().isEnabled()) {
+            if (getExecutionMode() == ExecutionMode.RUN_MODE && getCastedModel().isAccesible()) {
                 super.performRequest(req);
             } else if(getExecutionMode() == ExecutionMode.EDIT_MODE ){
                 performEditTextValue();

@@ -132,7 +132,10 @@ public final class ScaledSliderEditPart extends AbstractMarkedWidgetEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				ScaledSliderFigure slider = (ScaledSliderFigure) refreshableFigure;
-				slider.setEnabled((Boolean) newValue);
+				
+//				slider.setEnabled((Boolean) newValue);
+				// 2009-07-21 KM: Changed to mkae the ScaledSlider only editable when the user has the permission for it
+				slider.setEnabled(getWidgetModel().isAccesible());
 				return true;
 			}
 		};

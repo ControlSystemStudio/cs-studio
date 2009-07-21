@@ -75,7 +75,7 @@ public final class MenuButtonEditPart extends AbstractWidgetEditPart implements
 						model.getFont()));
 		label.setTextAlignment(model.getTextAlignment());
 		label.setTransparent(false);
-		label.setEnabled(model.isEnabled()
+		label.setEnabled(model.isAccesible()
 				&& getExecutionMode().equals(ExecutionMode.RUN_MODE));
 		label.addMouseListener(new MouseListener() {
 			public void mouseDoubleClicked(final MouseEvent me) {
@@ -111,7 +111,7 @@ public final class MenuButtonEditPart extends AbstractWidgetEditPart implements
 	 */
 	private void performDirectEdit(final Point point, final int absolutX,
 			final int absolutY) {
-		if (this.getCastedModel().isEnabled()
+		if (this.getCastedModel().isAccesible()
 				&& getExecutionMode().equals(ExecutionMode.RUN_MODE)) {
 			final Shell shell = PlatformUI.getWorkbench()
 					.getActiveWorkbenchWindow().getShell();

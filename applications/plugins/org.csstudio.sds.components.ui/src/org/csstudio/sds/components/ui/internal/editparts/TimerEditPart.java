@@ -52,7 +52,9 @@ public final class TimerEditPart extends AbstractWidgetEditPart {
 
 	private long _lastExecution;
 
+	@SuppressWarnings("unchecked")
 	private ScheduledFuture _scheduledFuture1;
+	@SuppressWarnings("unchecked")
 	private ScheduledFuture _scheduledFuture2;
 
 	/**
@@ -106,7 +108,7 @@ public final class TimerEditPart extends AbstractWidgetEditPart {
 	private void startScriptExecution() {
 		final TimerModel model = this.getTimerModel();
 
-		if (model.isEnabled() && model.getDelay() > 0
+		if (model.isAccesible() && model.getDelay() > 0
 				&& model.getScriptPath() != null
 				&& getExecutionMode().equals(ExecutionMode.RUN_MODE)
 				&& _scheduledFuture1 == null && _scheduledFuture2 == null) {
@@ -193,6 +195,7 @@ public final class TimerEditPart extends AbstractWidgetEditPart {
 		setPropertyChangeHandler(AbstractWidgetModel.PROP_ENABLED, handler);
 		setPropertyChangeHandler(TimerModel.PROP_DELAY, handler);
 		setPropertyChangeHandler(TimerModel.PROP_SCRIPT, handler);
+		setPropertyChangeHandler(TimerModel.PROP_ACCESS_GRANTED, handler);
 	}
 
 

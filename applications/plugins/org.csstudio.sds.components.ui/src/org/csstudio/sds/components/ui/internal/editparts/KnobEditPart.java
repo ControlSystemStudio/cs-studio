@@ -120,7 +120,9 @@ public final class KnobEditPart extends AbstractMarkedWidgetEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				KnobFigure knob = (KnobFigure) refreshableFigure;
-				knob.setEnabled((Boolean) newValue);
+//				knob.setEnabled((Boolean) newValue);
+				// 2009-07-21 KM: Changed to mkae the ScaledSlider only editable when the user has the permission for it
+				knob.setEnabled(getWidgetModel().isAccesible());
 				return true;
 			}
 		};

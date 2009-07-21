@@ -331,7 +331,7 @@ public final class LabelEditPart extends AbstractWidgetEditPart {
         if (type != null
                 && (type.equals(RequestConstants.REQ_OPEN) || type
                         .equals(RequestConstants.REQ_DIRECT_EDIT)) ) {
-            if (getExecutionMode() == ExecutionMode.RUN_MODE&& getCastedModel().isEnabled()) {
+            if (getExecutionMode() == ExecutionMode.RUN_MODE&& getCastedModel().isAccesible()) {
                 super.performRequest(req);
             } else if(getExecutionMode() == ExecutionMode.EDIT_MODE){
                 performEditTextValue();

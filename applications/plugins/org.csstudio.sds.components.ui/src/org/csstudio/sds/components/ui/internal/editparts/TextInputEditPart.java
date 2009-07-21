@@ -116,7 +116,7 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements
         label.setTextAlignment(model.getTextAlignment());
         label.setTransparent(model.getTransparent());
 
-        label.setEnabled(model.isEnabled() && getExecutionMode().equals(ExecutionMode.RUN_MODE));
+        label.setEnabled(model.isAccesible() && getExecutionMode().equals(ExecutionMode.RUN_MODE));
 
         return label;
     }
