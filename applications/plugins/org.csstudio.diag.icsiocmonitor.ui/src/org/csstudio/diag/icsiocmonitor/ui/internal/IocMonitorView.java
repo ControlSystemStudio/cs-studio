@@ -290,7 +290,7 @@ public class IocMonitorView extends ViewPart implements IReportListener {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				monitor.beginTask("Initializing IOC monitor", IProgressMonitor.UNKNOWN);
-				_iocMonitor = IocMonitorFactory.createMonitor();
+				_iocMonitor = IocMonitorFactory.createAndStartMonitor();
 				Display.getDefault().asyncExec(new Runnable() {
 					public void run() {
 						setInput(_iocMonitor.getReport());
@@ -349,5 +349,14 @@ public class IocMonitorView extends ViewPart implements IReportListener {
 	@Override
 	public void setFocus() {
 		_tableViewer.getControl().setFocus();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void dispose() {
+		IocMonitorFactory.stopAndDisposeIocMonitor();
+		super.dispose();
 	}
 }

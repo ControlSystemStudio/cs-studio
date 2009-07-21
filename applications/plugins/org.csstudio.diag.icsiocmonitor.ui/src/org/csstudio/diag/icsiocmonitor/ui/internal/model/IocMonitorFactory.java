@@ -23,32 +23,66 @@
 package org.csstudio.diag.icsiocmonitor.ui.internal.model;
 
 import org.csstudio.diag.icsiocmonitor.ui.internal.Activator;
+import org.osgi.framework.ServiceReference;
+import org.osgi.util.tracker.ServiceTracker;
 import org.remotercp.ecf.session.ISessionService;
-import org.remotercp.util.osgi.OsgiServiceLocatorUtil;
-
 
 /**
  * Factory class which creates an {@link IocMonitor} and connects it to the
- * necessary support objects.
+ * necessary support objects. This class basically acts as a bridge which is
+ * used by the UI code (the view) to use objects which require OSGi services.
  * 
  * @author Joerg Rathlev
  */
 public class IocMonitorFactory {
 
-	private static InterconnectionServerTracker tracker;
+	private static InterconnectionServerTracker icsTracker;
+	private static ServiceTracker sessionServiceTracker;
+	private static IocMonitor iocMonitor;
 
 	/**
-	 * Creates an IOC monitor.
+	 * Creates and starts the IOC monitor.
 	 * 
 	 * @return the IOC monitor object.
 	 */
-	public static IocMonitor createMonitor() {
-		IocMonitor monitor = new IocMonitor();
-		tracker = new InterconnectionServerTracker(monitor);
-		ISessionService service =
-			OsgiServiceLocatorUtil.getOSGiService(Activator.getDefault().getBundleContext(),
-					ISessionService.class);
-		tracker.bindService(service);
-		return monitor;
+	public static synchronized IocMonitor createAndStartMonitor() {
+		stopAndDisposeIocMonitor();
+		iocMonitor = new IocMonitor();
+		icsTracker = new InterconnectionServerTracker(iocMonitor);
+		
+		sessionServiceTracker = new ServiceTracker(
+				Activator.getDefault().getBundleContext(),
+				ISessionService.class.getName(), null) {
+			
+			@Override
+			public Object addingService(ServiceReference reference) {
+				Object service = super.addingService(reference);
+				icsTracker.bindService((ISessionService) service);
+				return service;
+			}
+			
+			@Override
+			public void removedService(ServiceReference reference,
+					Object service) {
+				icsTracker.unbindService((ISessionService) service);
+				super.removedService(reference, service);
+			}
+		};
+		sessionServiceTracker.open();
+		return iocMonitor;
+	}
+	
+	/**
+	 * Stops the IOC monitor created by this factory.
+	 */
+	public static synchronized void stopAndDisposeIocMonitor() {
+		if (iocMonitor != null) {
+			// This also unbinds the service from the icsTracker
+			sessionServiceTracker.close();
+			
+			sessionServiceTracker = null;
+			icsTracker = null;
+			iocMonitor = null;
+		}
 	}
 }
