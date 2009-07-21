@@ -1,4 +1,4 @@
-package org.csstudio.opibuilder.property;
+package org.csstudio.opibuilder.properties;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -23,17 +23,21 @@ public abstract class AbstractWidgetProperty {
 	
 	protected Object defaultValue;
 	
-	private WidgetPropertyCategory category;
+	protected WidgetPropertyCategory category;
 	
 	protected boolean visibleInPropSheet;
 	
 	
 	public AbstractWidgetProperty(String prop_id, String description,
-			WidgetPropertyCategory category, boolean visibleInPropSheet) {
+			WidgetPropertyCategory category, boolean visibleInPropSheet,
+			Object defaultValue) {
 		this.prop_id = prop_id;
 		this.description = description;
 		this.category = category;
-		this.visibleInPropSheet = visibleInPropSheet;		
+		this.visibleInPropSheet = visibleInPropSheet;
+		this.defaultValue = defaultValue;
+		this.propertyValue = defaultValue;
+		createPropertyDescriptor(visibleInPropSheet);
 	}
 	
 	public synchronized final void addPropertyChangeListener(PropertyChangeListener listener){
@@ -44,13 +48,13 @@ public abstract class AbstractWidgetProperty {
 	}
 	
 	/**Check if the requestNewValue is convertible or legal.
-	 * @param requestNewValue
+	 * @param value the value to be checked.
 	 * @return The value after being checked. It might be coerced if the requestValue 
 	 * is illegal. return null if it is not convertible or illegal.
 	 */
-	public abstract Object checkValue(Object requestNewValue);
+	public abstract Object checkValue(final Object value);
 	
-	protected final void firePropertyChange(Object oldValue, Object newValue){
+	public final void firePropertyChange(final Object oldValue, final Object newValue){
 		if(pcsDelegate.hasListeners(prop_id))
 			pcsDelegate.firePropertyChange(prop_id, oldValue, newValue);
 	}
@@ -71,7 +75,7 @@ public abstract class AbstractWidgetProperty {
 		return propertyDescriptor;
 	}
 
-	public final String getPropertyName() {
+	public final String getPropertyID() {
 		return prop_id;
 	}
 
@@ -86,8 +90,8 @@ public abstract class AbstractWidgetProperty {
 	}
 
 	public final void removeAllPropertyChangeListeners(){
-		for(PropertyChangeListener l : pcsDelegate.getPropertyChangeListeners())
-			pcsDelegate.removePropertyChangeListener(prop_id, l);
+		for(PropertyChangeListener l : pcsDelegate.getPropertyChangeListeners(prop_id))
+			pcsDelegate.removePropertyChangeListener(l);
 	}
 
 	public final void setCategory(WidgetPropertyCategory category) {
@@ -98,17 +102,20 @@ public abstract class AbstractWidgetProperty {
 		this.description = description;
 	}
 
+	/**
+	 * @param defaultValue the defaultValue to set
+	 */
+	public void setDefaultValue(Object defaultValue) {
+		this.defaultValue = defaultValue;
+	}
+
 	public final void setPCSDelegate(PropertyChangeSupport pcsDelegate){
 		this.pcsDelegate = pcsDelegate;
 	}
 
-	public final void setPropertyDescriptor(IPropertyDescriptor propertyDescriptor) {
-		this.propertyDescriptor = propertyDescriptor;
-	}
-
-	public final void setPropertyValue(Object propertyValue) {
+	public final void setPropertyValue(Object value) {
 		//do conversion and legally check
-		Object newValue = checkValue(propertyValue);
+		Object newValue = checkValue(value);
 		if(newValue == null || newValue.equals(propertyValue))
 			return;
 		firePropertyChange(propertyValue, newValue);
@@ -122,9 +129,21 @@ public abstract class AbstractWidgetProperty {
 	public final boolean setVisibleInPropSheet(boolean visibleInPropSheet) {
 		if(visibleInPropSheet == this.visibleInPropSheet)
 			return false;
+		createPropertyDescriptor(visibleInPropSheet);
 		this.visibleInPropSheet = visibleInPropSheet;
 		return true;
 	}
 	
+	private void createPropertyDescriptor(final boolean visibleInPropSheet){
+		if(visibleInPropSheet)
+			propertyDescriptor = createPropertyDescriptor();
+		else
+			propertyDescriptor = null;
+	}
+	
+	/**
+	 * Create the {@link IPropertyDescriptor}
+	 */
+	protected abstract IPropertyDescriptor createPropertyDescriptor();
 	
 }

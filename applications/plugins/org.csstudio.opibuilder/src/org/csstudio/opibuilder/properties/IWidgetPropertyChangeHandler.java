@@ -1,4 +1,4 @@
-package org.csstudio.opibuilder.property;
+package org.csstudio.opibuilder.properties;
 
 import org.eclipse.draw2d.IFigure;
 

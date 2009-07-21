@@ -1,11 +1,11 @@
-package org.csstudio.opibuilder.property;
+package org.csstudio.opibuilder.properties;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.opibuilder.editpart.AbstractBaseEditpart;
+import org.csstudio.opibuilder.editparts.AbstractBaseEditpart;
 import org.csstudio.opibuilder.util.UIBundlingThread;
 import org.eclipse.draw2d.IFigure;
 
