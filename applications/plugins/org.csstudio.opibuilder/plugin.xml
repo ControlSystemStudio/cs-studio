@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="org.csstudio.opibuilder.editor.OPIEditor"
+            contributorClass="org.csstudio.opibuilder.editor.OPIEditorActionBarContributor"
+            default="false"
+            extensions="opi"
+            icon="icons/OPIBuilder.png"
+            id="org.csstudio.opibuilder.OPIEditor"
+            name="OPI Editor">
+      </editor>
+   </extension>
+
+</plugin>

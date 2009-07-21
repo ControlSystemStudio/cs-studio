@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: OPI Builder
+Bundle-SymbolicName: org.csstudio.opibuilder;singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Activator: org.csstudio.opibuilder.OPIBuilderPlugin
+Bundle-Vendor: Xihui Chen
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.csstudio.platform;bundle-version="1.1.0",
+ org.csstudio.platform.ui;bundle-version="1.1.1",
+ org.eclipse.gef;bundle-version="3.5.0"
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-ActivationPolicy: lazy
