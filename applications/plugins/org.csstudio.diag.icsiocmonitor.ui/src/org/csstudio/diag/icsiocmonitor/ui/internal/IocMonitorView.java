@@ -30,6 +30,7 @@ import org.csstudio.diag.icsiocmonitor.ui.internal.model.IReportListener;
 import org.csstudio.diag.icsiocmonitor.ui.internal.model.IocMonitor;
 import org.csstudio.diag.icsiocmonitor.ui.internal.model.IocMonitorFactory;
 import org.csstudio.diag.icsiocmonitor.ui.internal.model.MonitorItem;
+import org.csstudio.diag.icsiocmonitor.ui.internal.model.MonitorReport;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -186,10 +187,8 @@ public class IocMonitorView extends ViewPart implements IReportListener {
 		 * {@inheritDoc}
 		 */
 		public Object[] getElements(Object inputElement) {
-			if (inputElement instanceof IocMonitor) {
-				// XXX: This is a workaround until the report itself is used
-				// as the input element for the viewer.
-				return ((IocMonitor) inputElement).getReport().getItems().toArray();
+			if (inputElement instanceof MonitorReport) {
+				return ((MonitorReport) inputElement).getItems().toArray();
 			} else {
 				return new Object[0];
 			}
@@ -234,10 +233,7 @@ public class IocMonitorView extends ViewPart implements IReportListener {
 	static final String ID = "org.csstudio.diag.icsiocmonitor.ui.IocMonitorView";
 
 	private TableViewer _tableViewer;
-	private Table _table;
-//	private int _fixedColumnCount;
 	private List<TableViewerColumn> _dynamicTableColumns;
-//	private Map<Integer, String> _columnIndexToIcs;
 	private IocMonitor _iocMonitor;
 	
 	/**
@@ -246,7 +242,7 @@ public class IocMonitorView extends ViewPart implements IReportListener {
 	public void onReportUpdated() {
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
-				setInput(_iocMonitor);
+				setInput(_iocMonitor.getReport());
 				_tableViewer.refresh();
 			}
 		});
@@ -263,10 +259,10 @@ public class IocMonitorView extends ViewPart implements IReportListener {
 		parent.setLayout(layout);
 		
 		_tableViewer = new TableViewer(parent, SWT.H_SCROLL | SWT.V_SCROLL);
-		_table = _tableViewer.getTable();
-		_table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		_table.setLinesVisible(true);
-		_table.setHeaderVisible(true);
+		Table table = _tableViewer.getTable();
+		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		table.setLinesVisible(true);
+		table.setHeaderVisible(true);
 		TableViewerColumn col = new TableViewerColumn(_tableViewer, SWT.NONE);
 		col.getColumn().setText("IOC");
 		col.getColumn().setWidth(IOC_COLUMN_WIDTH);
@@ -275,16 +271,21 @@ public class IocMonitorView extends ViewPart implements IReportListener {
 		col.getColumn().setText("Selected ICS");
 		col.getColumn().setWidth(SERVER_COLUMN_WIDTH);
 		col.setLabelProvider(new SelectedIcsColumnLabelProvider());
-//		_fixedColumnCount = 2;
 		_dynamicTableColumns = new ArrayList<TableViewerColumn>();
-//		_columnIndexToIcs = new HashMap<Integer, String>();
 		
 		_tableViewer.setContentProvider(new IocMonitorContentProvider());
-//		_tableViewer.setLabelProvider(new IocMonitorLabelProvider());
-		
+		initializeIocMonitor();
+
 		getViewSite().getActionBars().getToolBarManager().add(new RefreshAction());
-		
-		// Run an initial update in a background Job
+	}
+
+	/**
+	 * Runs an initial update of the IOC monitor as a background job. Adds this
+	 * object as a listener to the IOC monitor, so that the
+	 * {@link #onReportUpdated()} method will be called when the report is
+	 * available or updated.
+	 */
+	private void initializeIocMonitor() {
 		Job initializer = new Job("Initializing IOC monitor") {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
@@ -292,7 +293,7 @@ public class IocMonitorView extends ViewPart implements IReportListener {
 				_iocMonitor = IocMonitorFactory.createMonitor();
 				Display.getDefault().asyncExec(new Runnable() {
 					public void run() {
-						setInput(_iocMonitor);
+						setInput(_iocMonitor.getReport());
 					}
 				});
 				_iocMonitor.addListener(IocMonitorView.this);
@@ -313,14 +314,13 @@ public class IocMonitorView extends ViewPart implements IReportListener {
 	/**
 	 * Sets the input of the view.
 	 * 
-	 * @param iocMonitor
-	 *            the IOC monitor which will be used as the input.
+	 * @param monitorReport
+	 *            the report that will be used as the input.
 	 */
-	private void setInput(IocMonitor iocMonitor) {
-		List<String> ics = iocMonitor.getReport().getInterconnectionServers();
+	private void setInput(MonitorReport monitorReport) {
+		List<String> ics = monitorReport.getInterconnectionServers();
 		updateDynamicColumns(ics);
-		// TODO: use the report as the input element, not the monitor!
-		_tableViewer.setInput(iocMonitor);
+		_tableViewer.setInput(monitorReport);
 	}
 
 	/**
