@@ -47,6 +47,7 @@ import java.util.TimerTask;
 import javax.naming.NamingException;
 import javax.naming.directory.DirContext;
 
+import org.csstudio.platform.logging.CentralLogger;
 import org.epics.css.dal.EventSystemListener;
 import org.epics.css.dal.RemoteException;
 import org.epics.css.dal.SimpleProperty;
@@ -195,9 +196,8 @@ public class EPICSPlug extends AbstractPlug
 		} else {
 			use_pure_java = new Boolean(getConfiguration().getProperty(USE_JNI, "true"));
 		}
-		
+		CentralLogger.getInstance().debug(this, "pure java: " + use_pure_java);
 		if (use_pure_java) {
-			System.out.println("> EPICSPlug using JNI");
 			context = createJCAContext();
 		} else {
 			context = createThreadSafeContext();
