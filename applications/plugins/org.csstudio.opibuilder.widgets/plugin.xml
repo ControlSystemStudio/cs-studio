@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.csstudio.opibuilder.widget">
+      <widget
+            category="Graphics"
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.RectangleEditpart"
+            icon="icons/rectangle.gif"
+            model_class="org.csstudio.opibuilder.widgets.model.RectangleModel"
+            name="Rectangle"
+            typeId="org.csstudio.opibuilder.widgets.Rectangle">
+      </widget>     
+   </extension>
+
+</plugin>
