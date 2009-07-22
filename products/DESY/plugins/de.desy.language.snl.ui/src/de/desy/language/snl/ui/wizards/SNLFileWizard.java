@@ -35,7 +35,7 @@ public class SNLFileWizard extends Wizard implements INewWizard {
 			final IStructuredSelection selection1) {
 		this.workbench = workbench1;
 		this.selection = selection1;
-		this.setWindowTitle("C File Creation Wizard");
+		this.setWindowTitle("SNL File Creation Wizard");
 		this.setDefaultPageImageDescriptor(ImageDescriptor.createFromFile(
 				NewSNLProjectWizard.class, "sheet.gif"));
 	}
