@@ -34,7 +34,7 @@ import org.csstudio.config.savevalue.service.ChangelogEntry;
  * 
  * @author Joerg Rathlev
  */
-public final class ChangelogFileFormat {
+final class ChangelogFileFormat {
 
 	/**
 	 * The character used to separate the columns of changelog file entries.
@@ -74,7 +74,7 @@ public final class ChangelogFileFormat {
 	 *            the serialized changelog entry.
 	 * @return the changelog entry.
 	 */
-	public static ChangelogEntry deserialize(String serialized) {
+	static ChangelogEntry deserialize(String serialized) {
 		String[] tokens = splitAndUnescape(serialized);
 		if (tokens.length != 5) {
 			throw new IllegalArgumentException("invalid number of tokens");

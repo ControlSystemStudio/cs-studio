@@ -22,18 +22,14 @@
 
 package org.csstudio.config.savevalue.rmiserver;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
-import org.csstudio.config.savevalue.internal.changelog.ChangelogFileFormat;
-import org.csstudio.config.savevalue.internal.changelog.ChangelogFileFormatTest;
+import org.csstudio.config.savevalue.internal.changelog.ChangelogReader;
 import org.csstudio.config.savevalue.service.ChangelogEntry;
 import org.csstudio.config.savevalue.service.ChangelogService;
 import org.csstudio.config.savevalue.service.SaveValueServiceException;
@@ -72,28 +68,22 @@ public class ChangelogServiceImpl implements ChangelogService {
 	 *             if an error occurs.
 	 */
 	private ChangelogEntry[] readChangelog(final File changelog) throws SaveValueServiceException {
-		// Entries are stored in a map from pv -> entry. The map is
-		// used to see if there already is an entry for a given pv,
-		// and update the entry if a newer one is read later.
-		Map<String, ChangelogEntry> entries =
-			new HashMap<String, ChangelogEntry>();
-		
 		if (changelog.exists()) {
-			BufferedReader reader = null;
+			ChangelogReader reader = null;
 			try {
-				reader = new BufferedReader(new FileReader(changelog));
-				String line;
-				while ((line = reader.readLine()) != null) {
-					ChangelogEntry entry = parseLine(line);
-					entries.put(entry.getPvName(), entry);
-				}
+
+				reader = new ChangelogReader(new FileReader(changelog));
+				Collection<ChangelogEntry> entries = reader.readEntries();
+				return (ChangelogEntry[]) entries.toArray(
+						new ChangelogEntry[entries.size()]);
+				
 			} catch (FileNotFoundException e) {
 				_log.error(this,
 						"File exists but could not be opened: " + changelog, e);
 				throw new SaveValueServiceException("Could not open changelog file", e);
 			} catch (IOException e) {
 				_log.error(this, "Error reading changelog file", e);
-				throw new SaveValueServiceException("Error reading changelog file", e);
+				throw new SaveValueServiceException("Error reading changelog file: " + e.getMessage(), e);
 			} finally {
 				if (reader != null) {
 					try {
@@ -103,24 +93,8 @@ public class ChangelogServiceImpl implements ChangelogService {
 					}
 				}
 			}
+		} else {
+			return new ChangelogEntry[0];
 		}
-		
-		Collection<ChangelogEntry> values = entries.values();
-		return (ChangelogEntry[]) values.toArray(
-				new ChangelogEntry[values.size()]);
 	}
-
-	/**
-	 * Parses a line read from a changelog file.
-	 * 
-	 * @param line
-	 *            the line to parse.
-	 * @return the parsed changelog entry.
-	 * @throws SaveValueServiceException
-	 *             if the line does not have the expected syntax.
-	 */
-	private ChangelogEntry parseLine(final String line) throws SaveValueServiceException {
-		return ChangelogFileFormat.deserialize(line);
-	}
-
 }

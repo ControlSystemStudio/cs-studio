@@ -26,6 +26,7 @@ import org.csstudio.config.savevalue.internal.changelog.ChangelogAppenderTest;
 import org.csstudio.config.savevalue.internal.changelog.ChangelogFileFormatTest;
 import org.csstudio.config.savevalue.internal.changelog.ChangelogFileFormatTest_Escape;
 import org.csstudio.config.savevalue.internal.changelog.ChangelogFileFormatTest_SplitAndUnescape;
+import org.csstudio.config.savevalue.internal.changelog.ChangelogReaderTest;
 import org.csstudio.config.savevalue.internal.dbfile.FieldTest;
 import org.csstudio.config.savevalue.internal.dbfile.RecordInstanceDatabaseLexerTest;
 import org.csstudio.config.savevalue.internal.dbfile.RecordInstanceDatabaseParserTest;
@@ -50,6 +51,7 @@ import org.junit.runners.Suite.SuiteClasses;
 	ChangelogFileFormatTest.class,
 	ChangelogFileFormatTest_Escape.class,
 	ChangelogFileFormatTest_SplitAndUnescape.class,
+	ChangelogReaderTest.class,
 })
 public class AllTests {
 	// no code
