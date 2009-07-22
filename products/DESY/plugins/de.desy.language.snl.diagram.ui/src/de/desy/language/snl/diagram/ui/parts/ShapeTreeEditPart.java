@@ -1,13 +1,3 @@
-/*******************************************************************************
- * Copyright (c) 2004, 2005 Elias Volanakis and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *    Elias Volanakis - initial API and implementation
- *******************************************************************************/
 package de.desy.language.snl.diagram.ui.parts;
 
 import java.beans.PropertyChangeEvent;
@@ -31,7 +21,6 @@ import de.desy.language.snl.diagram.ui.ShapesPlugin;
  * be notified of property changes in the corresponding model element.
  * </p>
  * 
- * @author Elias Volanakis
  */
 class ShapeTreeEditPart extends AbstractTreeEditPart implements
 		PropertyChangeListener {
@@ -115,6 +104,6 @@ class ShapeTreeEditPart extends AbstractTreeEditPart implements
 	 */
 	public void propertyChange(final PropertyChangeEvent evt) {
 		refreshVisuals(); // this will cause an invocation of getImage() and
-							// getText(), see below
+		// getText(), see below
 	}
 }

@@ -1,13 +1,3 @@
-/*******************************************************************************
- * Copyright (c) 2004, 2005 Elias Volanakis and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *    Elias Volanakis - initial API and implementation
- *******************************************************************************/
 package de.desy.language.snl.diagram.ui.commands;
 
 import java.util.Iterator;
@@ -36,7 +26,6 @@ import de.desy.language.snl.diagram.model.SNLModel;
  * @see de.desy.language.snl.diagram.ui.parts.ShapeEditPart#createEditPolicies() for an
  * 			 example of the above procedure.
  * @see org.eclipse.gef.editpolicies.GraphicalNodeEditPolicy
- * @author Elias Volanakis
  */
 public class ConnectionCreateCommand extends Command {
 /** The connection instance. */

@@ -156,5 +156,19 @@
             sequence="M1+G">
       </key>
    </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="false"
+            id="de.desy.language.snl.ui.AbstractSNLNode"
+            objectClass="de.desy.language.snl.parser.nodes.AbstractSNLNode">
+         <action
+               class="de.desy.language.snl.ui.editor.OpenSNLEditorAction"
+               icon="icons/nodes/program.gif"
+               id="de.desy.language.snl.ui.OpenSNLEditor"
+               label="Open SNL Editor">
+         </action>
+      </objectContribution>
+   </extension>
 
 </plugin>

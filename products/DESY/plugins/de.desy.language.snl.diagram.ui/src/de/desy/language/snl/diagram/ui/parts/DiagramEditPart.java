@@ -1,13 +1,3 @@
-/*******************************************************************************
- * Copyright (c) 2004, 2005 Elias Volanakis and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *    Elias Volanakis - initial API and implementation
- *******************************************************************************/
 package de.desy.language.snl.diagram.ui.parts;
 
 import java.beans.PropertyChangeEvent;
@@ -46,7 +36,7 @@ import de.desy.language.snl.diagram.ui.commands.ShapeSetConstraintCommand;
  * <p>
  * This edit part server as the main diagram container, the white area where
  * everything else is in. Also responsible for the container's layout (the way
- * the container rearanges is contents) and the container's capabilities (edit
+ * the container rearranges is contents) and the container's capabilities (edit
  * policies).
  * </p>
  * <p>

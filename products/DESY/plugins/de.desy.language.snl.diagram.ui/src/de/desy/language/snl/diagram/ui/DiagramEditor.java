@@ -1,13 +1,3 @@
-/*******************************************************************************
- * Copyright (c) 2004, 2005 Elias Volanakis and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- * Elias Volanakis - initial API and implementation
- *******************************************************************************/
 package de.desy.language.snl.diagram.ui;
 
 import java.util.EventObject;
@@ -288,21 +278,22 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 			}
 			final Node rootNode = this.getLanguageParser().parse(
 					document.get(), sourceRessource, new NullProgressMonitor());
-			
-			if (rootNode.hasChildren()) {
-			Map<String, StateLayoutData> stateData = new HashMap<String, StateLayoutData>();
-			Map<String, List<Point>> connectionData = new HashMap<String, List<Point>>();
-			try {
-				stateData = _persistenceHandler
-						.loadStateLayoutData(sourceRessource.getFullPath());
-				connectionData = _persistenceHandler
-						.loadConnectionLayoutData(sourceRessource.getFullPath());
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
 
-			diagram = DiagramCreator.getInstance().createDiagram(rootNode,
-					stateData, connectionData, ROUTING_SEPARATION);
+			if (rootNode.hasChildren()) {
+				Map<String, StateLayoutData> stateData = new HashMap<String, StateLayoutData>();
+				Map<String, List<Point>> connectionData = new HashMap<String, List<Point>>();
+				try {
+					stateData = _persistenceHandler
+							.loadStateLayoutData(sourceRessource.getFullPath());
+					connectionData = _persistenceHandler
+							.loadConnectionLayoutData(sourceRessource
+									.getFullPath());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
+				diagram = DiagramCreator.getInstance().createDiagram(rootNode,
+						stateData, connectionData, ROUTING_SEPARATION);
 			} else {
 				diagram = DiagramCreator.getInstance().createDefaultDiagram();
 			}

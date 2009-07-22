@@ -1,13 +1,3 @@
-/*******************************************************************************
- * Copyright (c) 2004, 2005 Elias Volanakis and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *    Elias Volanakis - initial API and implementation
- *******************************************************************************/
 package de.desy.language.snl.diagram.ui;
 
 import org.eclipse.gef.palette.CombinedTemplateCreationEntry;
@@ -34,13 +24,6 @@ import de.desy.language.snl.diagram.model.StateSetModel;
  */
 final class ShapesEditorPaletteFactory {
 
-	/** Preference ID used to persist the palette location. */
-	private static final String PALETTE_DOCK_LOCATION = "ShapesEditorPaletteFactory.Location";
-	/** Preference ID used to persist the palette size. */
-	private static final String PALETTE_SIZE = "ShapesEditorPaletteFactory.Size";
-	/** Preference ID used to persist the flyout palette's state. */
-	private static final String PALETTE_STATE = "ShapesEditorPaletteFactory.State";
-
 	/** Create the "Shapes" drawer. */
 	private static PaletteContainer createShapesDrawer() {
 		final PaletteDrawer componentsDrawer = new PaletteDrawer("Shapes");
@@ -53,8 +36,8 @@ final class ShapesEditorPaletteFactory {
 		componentsDrawer.add(component);
 
 		component = new CombinedTemplateCreationEntry("StateSet",
-				"Create a StateSet", StateSetModel.class,
-				new SimpleFactory(StateSetModel.class), ShapesPlugin
+				"Create a StateSet", StateSetModel.class, new SimpleFactory(
+						StateSetModel.class), ShapesPlugin
 						.getImageDescriptor("icons/rectangle16.gif"),
 				ShapesPlugin.getImageDescriptor("icons/rectangle24.gif"));
 		componentsDrawer.add(component);
