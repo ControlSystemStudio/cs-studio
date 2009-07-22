@@ -20,37 +20,45 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
-package org.csstudio.config.savevalue;
+package org.csstudio.config.savevalue.internal.changelog;
 
-import org.csstudio.config.savevalue.internal.changelog.ChangelogAppenderTest;
-import org.csstudio.config.savevalue.internal.changelog.ChangelogFileFormatTest;
-import org.csstudio.config.savevalue.internal.changelog.ChangelogFileFormatTest_Escape;
-import org.csstudio.config.savevalue.internal.changelog.ChangelogFileFormatTest_SplitAndUnescape;
-import org.csstudio.config.savevalue.internal.dbfile.FieldTest;
-import org.csstudio.config.savevalue.internal.dbfile.RecordInstanceDatabaseLexerTest;
-import org.csstudio.config.savevalue.internal.dbfile.RecordInstanceDatabaseParserTest;
-import org.csstudio.config.savevalue.internal.dbfile.RecordInstanceTest;
-import org.csstudio.config.savevalue.internal.dbfile.TokenTest;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import static org.junit.Assert.*;
+
+import java.io.StringWriter;
+import java.io.Writer;
+
+import org.csstudio.config.savevalue.service.ChangelogEntry;
+import org.junit.Test;
+import org.mockito.Mockito;
 
 
 /**
  * @author Joerg Rathlev
  */
-@RunWith(Suite.class)
-@SuiteClasses({
-	RecordInstanceTest.class,
-	FieldTest.class,
-	RecordInstanceDatabaseParserTest.class,
-	RecordInstanceDatabaseLexerTest.class,
-	TokenTest.class,
-	ChangelogAppenderTest.class,
-	ChangelogFileFormatTest.class,
-	ChangelogFileFormatTest_Escape.class,
-	ChangelogFileFormatTest_SplitAndUnescape.class,
-})
-public class AllTests {
-	// no code
+public class ChangelogAppenderTest {
+
+	@Test
+	public void testAppend() throws Exception {
+		StringWriter sw = new StringWriter();
+		ChangelogAppender appender = new ChangelogAppender(sw);
+		appender.append(new ChangelogEntry("pv", "1.0", "user", "host", "20090101T000000"));
+		assertEquals("pv 1.0 user host 20090101T000000\n", sw.toString());
+	}
+	
+	@Test
+	public void testAppendWithValueThatRequiresEscaping() throws Exception {
+		StringWriter sw = new StringWriter();
+		ChangelogAppender appender = new ChangelogAppender(sw);
+		appender.append(new ChangelogEntry("pv", "test test", "user", "host", "20090101T000000"));
+		assertEquals("pv test\\ test user host 20090101T000000\n", sw.toString());
+	}
+	
+	@Test
+	public void testClose() throws Exception {
+		Writer w = Mockito.mock(Writer.class);
+		ChangelogAppender appender = new ChangelogAppender(w);
+		appender.close();
+		Mockito.verify(w).close();
+		Mockito.verifyNoMoreInteractions(w);
+	}
 }

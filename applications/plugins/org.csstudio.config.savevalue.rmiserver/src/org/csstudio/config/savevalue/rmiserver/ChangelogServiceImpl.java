@@ -32,6 +32,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.csstudio.config.savevalue.internal.changelog.ChangelogFileFormat;
+import org.csstudio.config.savevalue.internal.changelog.ChangelogFileFormatTest;
 import org.csstudio.config.savevalue.service.ChangelogEntry;
 import org.csstudio.config.savevalue.service.ChangelogService;
 import org.csstudio.config.savevalue.service.SaveValueServiceException;
@@ -54,6 +56,7 @@ public class ChangelogServiceImpl implements ChangelogService {
 	 */
 	public final ChangelogEntry[] readChangelog(final String iocName)
 			throws SaveValueServiceException, RemoteException {
+		_log.debug(this, "Reading changelog for: " + iocName);
 		IocFiles files = new IocFiles(iocName);
 		ChangelogEntry[] entries = readChangelog(files.getChangelog());
 		return entries;
@@ -117,13 +120,7 @@ public class ChangelogServiceImpl implements ChangelogService {
 	 *             if the line does not have the expected syntax.
 	 */
 	private ChangelogEntry parseLine(final String line) throws SaveValueServiceException {
-		String[] cols = line.split(" ");
-		if (cols.length != 5) {
-			throw new SaveValueServiceException(
-					"Invalid syntax, following line does not have the " +
-					"expected number of columns:\n" + line, null);
-		}
-		return new ChangelogEntry(cols[0], cols[1], cols[2], cols[3], cols[4]);
+		return ChangelogFileFormat.deserialize(line);
 	}
 
 }

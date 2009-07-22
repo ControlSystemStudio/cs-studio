@@ -20,37 +20,51 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
-package org.csstudio.config.savevalue;
+package org.csstudio.config.savevalue.internal.changelog;
 
-import org.csstudio.config.savevalue.internal.changelog.ChangelogAppenderTest;
-import org.csstudio.config.savevalue.internal.changelog.ChangelogFileFormatTest;
-import org.csstudio.config.savevalue.internal.changelog.ChangelogFileFormatTest_Escape;
-import org.csstudio.config.savevalue.internal.changelog.ChangelogFileFormatTest_SplitAndUnescape;
-import org.csstudio.config.savevalue.internal.dbfile.FieldTest;
-import org.csstudio.config.savevalue.internal.dbfile.RecordInstanceDatabaseLexerTest;
-import org.csstudio.config.savevalue.internal.dbfile.RecordInstanceDatabaseParserTest;
-import org.csstudio.config.savevalue.internal.dbfile.RecordInstanceTest;
-import org.csstudio.config.savevalue.internal.dbfile.TokenTest;
+import static org.junit.Assert.assertEquals;
+
+import java.util.Arrays;
+import java.util.Collection;
+
+import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 
 /**
+ * Test for the method {@link ChangelogFileFormat#escape(String)}.
+ * 
  * @author Joerg Rathlev
  */
-@RunWith(Suite.class)
-@SuiteClasses({
-	RecordInstanceTest.class,
-	FieldTest.class,
-	RecordInstanceDatabaseParserTest.class,
-	RecordInstanceDatabaseLexerTest.class,
-	TokenTest.class,
-	ChangelogAppenderTest.class,
-	ChangelogFileFormatTest.class,
-	ChangelogFileFormatTest_Escape.class,
-	ChangelogFileFormatTest_SplitAndUnescape.class,
-})
-public class AllTests {
-	// no code
+@RunWith(Parameterized.class)
+public class ChangelogFileFormatTest_Escape {
+	
+	private String _raw;
+	private String _expected;
+	
+	public ChangelogFileFormatTest_Escape(String raw, String expected) {
+		_raw = raw;
+		_expected = expected;
+	}
+	
+	@Parameters
+	public static Collection<String[]> parameters() {
+		return Arrays.asList(new String[][] {
+				{"", ""},
+				{"foo", "foo"},
+				{"foo bar", "foo\\ bar"},
+				{"\"foo\" bar", "\"foo\"\\ bar"},
+				{"\n", "\\n"},
+				{"\r", "\\r"},
+				{"\r\n", "\\r\\n"},
+				{"C:\\Program Files\\test", "C:\\\\Program\\ Files\\\\test"},
+		});
+	}
+	
+	@Test
+	public void testEscape() throws Exception {
+		assertEquals(_expected, ChangelogFileFormat.escape(_raw));
+	}
 }

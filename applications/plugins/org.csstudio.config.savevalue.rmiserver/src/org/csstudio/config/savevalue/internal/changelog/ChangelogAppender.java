@@ -20,37 +20,55 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
-package org.csstudio.config.savevalue;
+package org.csstudio.config.savevalue.internal.changelog;
 
-import org.csstudio.config.savevalue.internal.changelog.ChangelogAppenderTest;
-import org.csstudio.config.savevalue.internal.changelog.ChangelogFileFormatTest;
-import org.csstudio.config.savevalue.internal.changelog.ChangelogFileFormatTest_Escape;
-import org.csstudio.config.savevalue.internal.changelog.ChangelogFileFormatTest_SplitAndUnescape;
-import org.csstudio.config.savevalue.internal.dbfile.FieldTest;
-import org.csstudio.config.savevalue.internal.dbfile.RecordInstanceDatabaseLexerTest;
-import org.csstudio.config.savevalue.internal.dbfile.RecordInstanceDatabaseParserTest;
-import org.csstudio.config.savevalue.internal.dbfile.RecordInstanceTest;
-import org.csstudio.config.savevalue.internal.dbfile.TokenTest;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import java.io.IOException;
+import java.io.Writer;
 
+import org.csstudio.config.savevalue.service.ChangelogEntry;
 
 /**
+ * Appends changelog entries to a changelog file.
+ * 
  * @author Joerg Rathlev
  */
-@RunWith(Suite.class)
-@SuiteClasses({
-	RecordInstanceTest.class,
-	FieldTest.class,
-	RecordInstanceDatabaseParserTest.class,
-	RecordInstanceDatabaseLexerTest.class,
-	TokenTest.class,
-	ChangelogAppenderTest.class,
-	ChangelogFileFormatTest.class,
-	ChangelogFileFormatTest_Escape.class,
-	ChangelogFileFormatTest_SplitAndUnescape.class,
-})
-public class AllTests {
-	// no code
+public class ChangelogAppender {
+
+	private final Writer _writer;
+
+	/**
+	 * Creates a changelog appender that writes changelog entries to the
+	 * provided writer.
+	 * 
+	 * @param writer
+	 *            a writer.
+	 */
+	public ChangelogAppender(Writer writer) {
+		if (writer == null) {
+			throw new IllegalArgumentException("writer was null");
+		}
+		_writer = writer;
+	}
+
+	/**
+	 * Appends the entry to this appender's output.
+	 * 
+	 * @param entry
+	 *            a changelog entry.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 */
+	public void append(ChangelogEntry entry) throws IOException {
+		_writer.append(ChangelogFileFormat.serialize(entry));
+	}
+
+	/**
+	 * Closes this appender and its writer.
+	 * 
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 */
+	public void close() throws IOException {
+		_writer.close();
+	}
 }

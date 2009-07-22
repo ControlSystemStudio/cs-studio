@@ -20,37 +20,33 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
-package org.csstudio.config.savevalue;
+package org.csstudio.config.savevalue.internal.changelog;
 
-import org.csstudio.config.savevalue.internal.changelog.ChangelogAppenderTest;
-import org.csstudio.config.savevalue.internal.changelog.ChangelogFileFormatTest;
-import org.csstudio.config.savevalue.internal.changelog.ChangelogFileFormatTest_Escape;
-import org.csstudio.config.savevalue.internal.changelog.ChangelogFileFormatTest_SplitAndUnescape;
-import org.csstudio.config.savevalue.internal.dbfile.FieldTest;
-import org.csstudio.config.savevalue.internal.dbfile.RecordInstanceDatabaseLexerTest;
-import org.csstudio.config.savevalue.internal.dbfile.RecordInstanceDatabaseParserTest;
-import org.csstudio.config.savevalue.internal.dbfile.RecordInstanceTest;
-import org.csstudio.config.savevalue.internal.dbfile.TokenTest;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import static org.junit.Assert.*;
+
+import org.csstudio.config.savevalue.service.ChangelogEntry;
+import org.junit.Test;
 
 
 /**
  * @author Joerg Rathlev
+ *
  */
-@RunWith(Suite.class)
-@SuiteClasses({
-	RecordInstanceTest.class,
-	FieldTest.class,
-	RecordInstanceDatabaseParserTest.class,
-	RecordInstanceDatabaseLexerTest.class,
-	TokenTest.class,
-	ChangelogAppenderTest.class,
-	ChangelogFileFormatTest.class,
-	ChangelogFileFormatTest_Escape.class,
-	ChangelogFileFormatTest_SplitAndUnescape.class,
-})
-public class AllTests {
-	// no code
+public class ChangelogFileFormatTest {
+
+	@Test
+	public void testSerialize() throws Exception {
+		ChangelogEntry entry = new ChangelogEntry("pv", "value", "user", "host", "2009-01-01T00:00:00");
+		assertEquals("pv value user host 2009-01-01T00:00:00\n", ChangelogFileFormat.serialize(entry));
+	}
+	
+	@Test
+	public void testDeserialize() throws Exception {
+		ChangelogEntry entry = ChangelogFileFormat.deserialize("pv value user host 2009-01-01T00:00:00");
+		assertEquals("pv", entry.getPvName());
+		assertEquals("value", entry.getValue());
+		assertEquals("user", entry.getUsername());
+		assertEquals("host", entry.getHostname());
+		assertEquals("2009-01-01T00:00:00", entry.getLastModified());
+	}
 }

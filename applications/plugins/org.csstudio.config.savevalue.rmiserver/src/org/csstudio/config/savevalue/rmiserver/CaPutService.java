@@ -39,6 +39,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.csstudio.config.savevalue.internal.changelog.ChangelogAppender;
+import org.csstudio.config.savevalue.service.ChangelogEntry;
 import org.csstudio.config.savevalue.service.SaveValueRequest;
 import org.csstudio.config.savevalue.service.SaveValueResult;
 import org.csstudio.config.savevalue.service.SaveValueService;
@@ -61,12 +63,6 @@ public class CaPutService implements SaveValueService {
 	 * The character used to separate channel and value in ca file entries.
 	 */
 	private static final String CA_SEPARATOR = " ";
-	
-	/**
-	 * The character used to separate the columns (channel, value, user, host,
-	 * date) of changelog file entries.
-	 */
-	private static final String CHANGELOG_SEPARATOR = " ";
 
 	/**
 	 * The date format to use for changelog entries.
@@ -100,22 +96,25 @@ public class CaPutService implements SaveValueService {
 	 * @param request the request that was executed.
 	 */
 	private void writeChangelog(final File file, final SaveValueRequest request) {
-		PrintWriter writer = null;
+		ChangelogAppender appender = null;
 		try {
-			writer = new PrintWriter(new BufferedWriter(
-					new FileWriter(file, true)));
-			String date = CHANGELOG_DATE_FORMAT.format(new Date());
-			writer.println(
-					request.getPvName() + CHANGELOG_SEPARATOR
-					+ request.getValue() + CHANGELOG_SEPARATOR
-					+ request.getUsername() + CHANGELOG_SEPARATOR
-					+ request.getHostname() + CHANGELOG_SEPARATOR
-					+ date);
+			appender = new ChangelogAppender(new FileWriter(file, true));
+			ChangelogEntry entry = new ChangelogEntry(
+					request.getPvName(),
+					request.getValue(),
+					request.getUsername(),
+					request.getHostname(),
+					CHANGELOG_DATE_FORMAT.format(new Date()));
+			appender.append(entry);
 		} catch (IOException e) {
 			_log.warn(this, "Error writing to changelog file", e);
 		} finally {
-			if (writer != null) {
-				writer.close();
+			if (appender != null) {
+				try {
+					appender.close();
+				} catch (IOException e) {
+					_log.error(this, "Error closing changelog file", e);
+				}
 			}
 		}
 	}
