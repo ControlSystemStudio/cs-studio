@@ -44,14 +44,20 @@ public class SmsComperator implements Comparator<Sms>, Serializable
     {
         int resultTimestamp;
         int resultPriority;
+        int resultId;
         int result;
         
         resultTimestamp = Long.signum(sms0.getSmsTimestamp() - sms1.getSmsTimestamp());
         resultPriority = Integer.signum(sms0.getPriority() - sms1.getPriority());
+        resultId = Long.signum(sms0.getId() - sms1.getId());
         
-        if(resultPriority == -1)
+        if(resultPriority == 1)
         {
             result = resultPriority;
+        }
+        else if(resultTimestamp == 0)
+        {
+            result = resultId;
         }
         else
         {

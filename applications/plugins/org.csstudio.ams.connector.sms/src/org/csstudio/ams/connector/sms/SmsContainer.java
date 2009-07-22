@@ -30,6 +30,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Iterator;
 import java.util.TreeSet;
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
@@ -510,5 +511,22 @@ public class SmsContainer implements AmsConstants
         }
         
         return false;
+    }
+    
+    public String showContent()
+    {
+        StringBuffer result = new StringBuffer();
+        
+        Iterator<Sms> iter = content.descendingIterator();
+        
+        result.append("Inhalt des TreeSets:\n");
+        while(iter.hasNext())
+        {
+            result.append(iter.next().toString() + "\n");
+        }
+        
+        result.append("\n");
+        
+        return result.toString();
     }
 }
