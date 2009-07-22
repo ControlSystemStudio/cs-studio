@@ -51,6 +51,12 @@ public final class OPIEditorContextMenuProvider extends ContextMenuProvider {
 		
 		menu.appendToGroup(GEFActionConstants.GROUP_UNDO, 
 				getAction(ActionFactory.UNDO.getId()));
+		menu.appendToGroup(
+				GEFActionConstants.GROUP_UNDO, 
+				getAction(ActionFactory.REDO.getId()));
+		menu.appendToGroup(
+				GEFActionConstants.GROUP_EDIT,
+				getAction(ActionFactory.DELETE.getId()));
 		
 		MenuManager cssMenu = new MenuManager("CSS", "css");
 		cssMenu.add(new Separator("additions"));

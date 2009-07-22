@@ -41,9 +41,18 @@ public abstract class AbstractContainerModel extends AbstractWidgetModel {
 		};
 	}
 	
+	/**add child to the end of the children list.
+	 * @param child the widget to be added
+	 */
 	public void addChild(AbstractWidgetModel child){
 		assert child != null : "child is null";
 		childrenList.add(child);
+		childrenProperty.firePropertyChange(null, childrenList);
+	}
+	
+	public void addChild(int index, AbstractWidgetModel child){
+		assert child != null : "child is null";
+		childrenList.add(index, child);
 		childrenProperty.firePropertyChange(null, childrenList);
 	}
 	
@@ -62,4 +71,15 @@ public abstract class AbstractContainerModel extends AbstractWidgetModel {
 	public List<AbstractWidgetModel> getChildren() {
 		return childrenList;
 	}
+	
+	/**
+	 * @param widget
+	 * @return the index of the widget in the children list, which is also 
+	 * the order of the widget in the display.
+	 */
+	public final int getIndexOf(final AbstractWidgetModel widget){
+		return childrenList.indexOf(widget);
+	}
+	
+	
 }

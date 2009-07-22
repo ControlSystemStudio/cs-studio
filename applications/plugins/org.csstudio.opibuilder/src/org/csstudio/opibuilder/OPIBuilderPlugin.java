@@ -12,6 +12,11 @@ public class OPIBuilderPlugin extends AbstractCssUiPlugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.csstudio.opibuilder";
+	
+	/**
+	 * The ID of the widget extension point.
+	 */
+	public static final String EXTPOINT_WIDGET = PLUGIN_ID + ".widget"; //$NON-NLS-1$
 
 	// The shared instance
 	private static OPIBuilderPlugin plugin;

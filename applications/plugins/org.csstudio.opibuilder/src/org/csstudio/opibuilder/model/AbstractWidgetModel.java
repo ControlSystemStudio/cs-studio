@@ -10,6 +10,8 @@ import java.util.Set;
 import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.csstudio.platform.model.pvs.IProcessVariableAddress;
+import org.csstudio.platform.model.pvs.IProcessVariableAdressProvider;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
@@ -209,6 +211,7 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 		setPropertyValue(PROP_YPOS, y);
 	}
 	
+
 	
 	
 }
