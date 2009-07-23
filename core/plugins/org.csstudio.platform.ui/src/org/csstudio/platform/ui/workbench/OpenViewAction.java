@@ -67,6 +67,7 @@ public class OpenViewAction extends Action
         run();
     }
 
+    @SuppressWarnings("nls")
     @Override
     public void run()
     {
@@ -79,7 +80,8 @@ public class OpenViewAction extends Action
         }
         catch (Exception ex)
         {
-            CentralLogger.getInstance().getLogger(this).error(ex);
+            CentralLogger.getInstance().getLogger(this)
+                .error("Error opening view '" + id + "': " + ex);
         }
     }
 
