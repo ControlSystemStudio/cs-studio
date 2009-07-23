@@ -5,6 +5,8 @@ import org.eclipse.osgi.util.NLS;
 public class Messages extends NLS
 {
     private static final String BUNDLE_NAME = "org.csstudio.logbook.ui.messages"; //$NON-NLS-1$
+    public static String ELogEntryView_AddImage;
+    public static String ELogEntryView_AddImageTT;
     public static String LogEntry_ErrorCannotConnectFMT;
     public static String LogEntry_ErrorFMT;
     public static String LogEntry_ErrorNoLog;

@@ -129,8 +129,8 @@ public class ELogEntryView extends ViewPart
         image.setLayoutData(new GridData());
         
         add_image = new Button(box, SWT.PUSH);
-        add_image.setText("Add Image");
-        add_image.setToolTipText("Select an image to add to the entry");
+        add_image.setText(Messages.ELogEntryView_AddImage);
+        add_image.setToolTipText(Messages.ELogEntryView_AddImageTT);
         add_image.setLayoutData(new GridData());
         add_image.addSelectionListener(new SelectionAdapter()
         {
@@ -182,8 +182,8 @@ public class ELogEntryView extends ViewPart
     protected void addImage()
     {
         final FileDialog dlg = new FileDialog(add_image.getShell(), SWT.OPEN);
-        dlg.setFilterExtensions(new String [] { "*.png" });
-        dlg.setFilterNames(new String [] { "PNG Image" });
+        dlg.setFilterExtensions(new String [] { "*.png" }); //$NON-NLS-1$
+        dlg.setFilterNames(new String [] { "PNG Image" }); //$NON-NLS-1$
         final String filename = dlg.open();
         image.setImage(filename);
     }

@@ -40,6 +40,7 @@ public class ImagePreview extends Canvas implements DisposeListener, PaintListen
             image = null;
             this.filename = null;
         }
+        setToolTipText(""); //$NON-NLS-1$
         if (filename == null)
             return;
         try
@@ -48,6 +49,7 @@ public class ImagePreview extends Canvas implements DisposeListener, PaintListen
         }
         catch (Exception ex)
         {
+            setToolTipText("Error: " + ex.getMessage()); //$NON-NLS-1$
             return;
         }
         setToolTipText(filename);
