@@ -23,10 +23,11 @@ package org.csstudio.ams.connector.sms;
 
 import org.csstudio.ams.connector.sms.internal.SampleService;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.startupservice.IStartupServiceListener;
-import org.csstudio.platform.startupservice.StartupServiceEnumerator;
 import org.csstudio.platform.ui.AbstractCssUiPlugin;
 import org.osgi.framework.BundleContext;
+import org.remotercp.common.servicelauncher.ServiceLauncher;
+import org.remotercp.ecf.ECFConstants;
+import org.remotercp.login.connection.HeadlessConnection;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -55,12 +56,20 @@ public class SmsConnectorPlugin extends AbstractCssUiPlugin
 	public final void doStart(final BundleContext context) throws Exception
 	{
 		SampleService.getInstance().showPreferences();
-        
-		for(IStartupServiceListener s : StartupServiceEnumerator.getServices())
+
+        String xmppUser = "ams-sms-connector";
+        String xmppPassword= "ams";
+
+        try
         {
-            s.run();
+            HeadlessConnection.connect(xmppUser, xmppPassword, "krykxmpp.desy.de", ECFConstants.XMPP);
+            ServiceLauncher.startRemoteServices();     
         }
-		
+        catch(Exception e)
+        {
+            CentralLogger.getInstance().warn(this, "Could not connect to XMPP server: " + e.getMessage());
+        }
+
 		CentralLogger.getInstance().info(this, "SmsConnector started...");
 	}
 

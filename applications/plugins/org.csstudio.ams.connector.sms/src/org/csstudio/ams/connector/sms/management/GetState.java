@@ -1,5 +1,6 @@
+
 /* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+ * Copyright (c) 2009 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
@@ -18,20 +19,28 @@
  * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
- *
  */
 
-package org.csstudio.ams.connector.sms.actions;
+package org.csstudio.ams.connector.sms.management;
 
 import org.csstudio.ams.connector.sms.SmsConnectorStart;
-import org.csstudio.platform.libs.dcf.actions.IAction;
+import org.csstudio.platform.management.CommandParameters;
+import org.csstudio.platform.management.CommandResult;
+import org.csstudio.platform.management.IManagementCommand;
 
-public class GetStateAction implements IAction
-{    
-    public Object run(Object param)
+/**
+ * @author Markus Moeller
+ *
+ */
+public class GetState implements IManagementCommand
+{
+    /* (non-Javadoc)
+     * @see org.csstudio.platform.management.IManagementCommand#execute(org.csstudio.platform.management.CommandParameters)
+     */
+    public CommandResult execute(CommandParameters parameters)
     {
         int state = SmsConnectorStart.getInstance().getStatus();
         
-        return SmsConnectorStart.STATE_TEXT[state];
+        return CommandResult.createMessageResult(SmsConnectorStart.STATE_TEXT[state]);
     }
 }

@@ -21,34 +21,6 @@
             name="Connector SMS"/>
    </extension>
    <extension
-         point="org.csstudio.platform.libs.xmpp.loginHandlers">
-      <loginHandler
-            class="org.csstudio.ams.connector.sms.xmpp.SmsConnectorLoginCallbackHandler"
-            id="org.csstudio.ams.connector.sms.SmsConnectorLoginHandler"
-            name="SmsConnectorLoginHandler">
-      </loginHandler>
-   </extension>
-   <extension
-         point="org.csstudio.platform.libs.dcf.action">
-      <simpleAction
-            class="org.csstudio.ams.connector.sms.actions.GetStateAction"
-            id="org.csstudio.ams.connector.sms.GetStateAction"
-            name="Get State">
-      </simpleAction>
-      <parametrizedAction
-            class="org.csstudio.ams.connector.sms.actions.SmsConnectorStopAction"
-            id="org.csstudio.ams.connector.sms.StopAction"
-            name="Stop"
-            parameters="Password">
-      </parametrizedAction>
-      <parametrizedAction
-            class="org.csstudio.ams.connector.sms.actions.RestartAction"
-            id="org.csstudio.ams.connector.sms.SmsConnectorRestartAction"
-            name="Restart"
-            parameters="Password">
-      </parametrizedAction>
-   </extension>
-   <extension
          id="AmsSmsConnectorProduct"
          point="org.eclipse.core.runtime.products">
       <product
@@ -59,6 +31,32 @@
                value="AmsSmsConnector">
          </property>
       </product>
+   </extension>
+   <extension
+         point="org.csstudio.platform.managementCommands">
+      <command
+            class="org.csstudio.ams.connector.sms.management.GetState"
+            id="org.csstudio.ams.connector.sms.management.GetState"
+            label="Get State">
+      </command>
+      <command
+            class="org.csstudio.ams.connector.sms.management.Restart"
+            id="org.csstudio.ams.connector.sms.management.Restart"
+            label="Restart">
+         <stringParameter
+               id="org.csstudio.ams.connector.sms.param.Password"
+               label="Password">
+         </stringParameter>
+      </command>
+      <command
+            class="org.csstudio.ams.connector.sms.management.Stop"
+            id="org.csstudio.ams.connector.sms.management.Stop"
+            label="Stop">
+         <stringParameter
+               id="org.csstudio.ams.connector.sms.param.Password"
+               label="Password">
+         </stringParameter>
+      </command>
    </extension>
 
 </plugin>

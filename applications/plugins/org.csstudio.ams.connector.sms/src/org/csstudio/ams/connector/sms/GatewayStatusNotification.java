@@ -52,7 +52,7 @@ public class GatewayStatusNotification implements IGatewayStatusNotification
                 {
                     c = new Collector();
                     c.setApplication("AmsSmsConnector");
-                    c.setDescriptor("Restarts of " + s);
+                    c.setDescriptor("Restart count of " + s);
                     c.setContinuousPrint(false);
                     c.setContinuousPrintCount(1000.0);
                     gatewayRestart.put(s, c);

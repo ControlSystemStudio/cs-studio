@@ -433,7 +433,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
             }
             
             modemService = new Service();
-            
+
             for(int i = 0;i < modemCount;i++)
             {
                 if(strComPort[i].length() > 0)
@@ -451,7 +451,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                     // modem.setOutboundNotification(outboundNotification);
                     modemService.addGateway(modem);
                     modemInfo.addModemName(m, strPhoneNumber[i]);
-                    
+                                        
                     sleep(2000);
                 }
                 else
@@ -1858,5 +1858,5 @@ public class SmsConnectorWork extends Thread implements AmsConstants
         {
             Log.log(this, Log.FATAL, e);
         }
-    }  
+    }
 }
