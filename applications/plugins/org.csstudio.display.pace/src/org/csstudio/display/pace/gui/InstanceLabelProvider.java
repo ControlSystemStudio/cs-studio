@@ -113,10 +113,11 @@ public class InstanceLabelProvider extends CellLabelProvider
              gui_cell.setBackground(null);
          // Highlight read-only cells with "inactive" background, usually
          // a light grey.
-         // This includes both cells configured to be read-only
-         // and those which are meant to be writable, but PV doesn't allow it,
-         // for example because of Channel Access security
-         if (cell.isReadOnly() || !cell.isPVWriteAllowed())
+         // This is for cells configured to be read-only.
+         // Those meant to be writable, but PV doesn't allow it,
+         // for example because of Channel Access security,
+         // say so in the tool tip.
+         if (cell.isReadOnly())
          {
              final Display display = Display.getCurrent();
              gui_cell.setBackground(display.getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND));
