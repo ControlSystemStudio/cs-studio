@@ -12,6 +12,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.part.ViewPart;
@@ -31,9 +32,13 @@ public class ELogEntryView extends ViewPart
     private Text title;
     private Text text;
 
+    private Button add_image;
+
     private Label status;
 
     private ILogbookFactory logbook_factory;
+
+    private ImagePreview image;
 
     /** Create elog entry form */
     @Override
@@ -111,8 +116,7 @@ public class ELogEntryView extends ViewPart
         text.setToolTipText(Messages.LogEntry_Text_TT);
         text.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, layout.numColumns, 1));
         
-        // Box with
-        // __status__ Submit
+        // Box with...
         final Composite box = new Composite(parent, 0);
         box.setLayoutData(new GridData(SWT.FILL, 0, true, false, layout.numColumns, 1));
         final GridLayout box_layout = new GridLayout(2, false);
@@ -120,6 +124,24 @@ public class ELogEntryView extends ViewPart
         box_layout.marginRight = 0;
         box_layout.marginBottom = 0;
         box.setLayout(box_layout);
+        
+        image = new ImagePreview(box);
+        image.setLayoutData(new GridData());
+        
+        add_image = new Button(box, SWT.PUSH);
+        add_image.setText("Add Image");
+        add_image.setToolTipText("Select an image to add to the entry");
+        add_image.setLayoutData(new GridData());
+        add_image.addSelectionListener(new SelectionAdapter()
+        {
+            @Override
+            public void widgetSelected(SelectionEvent e)
+            {
+                addImage();
+            }
+        });
+        
+        // __status__ Submit
         status = new Label(box, 0);
         status.setLayoutData(new GridData(SWT.FILL, 0, true, false));
         
@@ -156,6 +178,16 @@ public class ELogEntryView extends ViewPart
             status.setForeground(null);
     }
 
+    /** Prompt for image file to add */
+    protected void addImage()
+    {
+        final FileDialog dlg = new FileDialog(add_image.getShell(), SWT.OPEN);
+        dlg.setFilterExtensions(new String [] { "*.png" });
+        dlg.setFilterNames(new String [] { "PNG Image" });
+        final String filename = dlg.open();
+        image.setImage(filename);
+    }
+
     /** Create Logbook entry with current GUI values */
     protected void makeLogEntry()
     {
@@ -174,7 +206,7 @@ public class ELogEntryView extends ViewPart
         }
         try
         {
-            log.createEntry(title.getText().trim(), text.getText().trim(), null);
+            log.createEntry(title.getText().trim(), text.getText().trim(), image.getImage());
         }
         catch (Exception ex)
         {
