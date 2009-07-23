@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            id="org.csstudio.logbook.ui.actionSet"
+            label="CSS Action Set"
+            visible="true">
+         <action
+               class="org.csstudio.logbook.ui.MakeLogEntry"
+               icon="icons/elog.gif"
+               id="org.csstudio.logbook.ui.makelogentry"
+               label="%MakeLogEntry"
+               menubarPath="css/utility/"
+               style="push"/>
+      </actionSet>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            id="org.csstudio"
+            name="CSS">
+      </category>
+      <view
+            category="org.csstudio"
+            class="org.csstudio.logbook.ui.ELogEntryView"
+            icon="icons/elog.gif"
+            id="org.csstudio.logbook.ui.ELogEntryView"
+            name="%MakeLogEntry"
+            restorable="true">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="toc.xml"
+            primary="true"/>
+   </extension>
+</plugin>
