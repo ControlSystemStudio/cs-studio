@@ -47,8 +47,19 @@ import org.remotercp.ecf.session.ISessionService;
  * @author Joerg Rathlev
  */
 class InterconnectionServerTracker implements IPresenceListener {
-	
+
+	/**
+	 * The XMPP user name of XMPP servers. When this name is found in the user
+	 * ID of an XMPP user, that user is recognized as an interconnection server
+	 * and tracked by this tracker.
+	 */
 	private static final String ICSERVER_NAME = "icserver-alarm";
+
+	/**
+	 * The delay in milliseconds before the reporter service is requested from
+	 * an interconnection server which went online.
+	 */
+	private static final long GET_REPORTER_SERVICE_DELAY = 500;
 	
 	private final IocMonitor _iocMonitor;
 	private ISessionService _sessionService;
@@ -180,6 +191,12 @@ class InterconnectionServerTracker implements IPresenceListener {
 		synchronized (_interconnectionServers) {
 			if (!_interconnectionServers.containsKey(id)) {
 				_log.debug(this, "Server is now available: " + id);
+				try {
+					Thread.sleep(GET_REPORTER_SERVICE_DELAY);
+				} catch (InterruptedException e) {
+					// reassert interrupt status
+					Thread.currentThread().interrupt();
+				}
 				IIocConnectionReporter service = getConnectionReporterService(id);
 				if (service != null) {
 					_interconnectionServers.put(id, service);
@@ -205,6 +222,7 @@ class InterconnectionServerTracker implements IPresenceListener {
 					IIocConnectionReporter.class,
 					new ID[] {id});
 		if (remoteServiceProxies.size() > 0) {
+			_log.debug(this, "Found IIocConnectionReporter service offered by: " + id);
 			return remoteServiceProxies.get(0);
 		} else {
 			_log.info(this, "ICS does not offer IIocConnectionReporter service: " + id);
