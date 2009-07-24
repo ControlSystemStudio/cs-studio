@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.4"?>
 
-<product name="Save Value RMI Server" id="org.csstudio.config.savevalue.rmiserver.SaveValueRmiServer" application="org.csstudio.config.savevalue.rmiserver.SaveValueRmiServer" useFeatures="false">
+<product name="Save Value RMI Server" id="org.csstudio.config.savevalue.rmiserver.SaveValueRmiServer" application="org.csstudio.config.savevalue.rmiserver.SaveValueRmiServer" version="1.0.0" useFeatures="false">
 
    <configIni use="default">
    </configIni>

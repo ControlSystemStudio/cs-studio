@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Save Value RMI Server
 Bundle-SymbolicName: org.csstudio.config.savevalue.rmiserver;singleton:=true
-Bundle-Version: 0.9.2
+Bundle-Version: 1.0.0
 Bundle-Activator: org.csstudio.config.savevalue.rmiserver.Activator
 Bundle-Vendor: DESY
 Require-Bundle: org.eclipse.core.runtime,
