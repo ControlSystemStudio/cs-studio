@@ -1,22 +1,29 @@
 package org.csstudio.opibuilder.editor;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.List;
 
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.editparts.WidgetEditPartFactory;
+import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.model.RulerModel;
 import org.csstudio.opibuilder.palette.OPIEditorPaletteFactory;
 import org.csstudio.opibuilder.palette.WidgetCreationFactory;
+import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.draw2d.PositionConstants;
+import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.gef.AutoexposeHelper;
 import org.eclipse.gef.ContextMenuProvider;
 import org.eclipse.gef.DefaultEditDomain;
 import org.eclipse.gef.GraphicalViewer;
+import org.eclipse.gef.LayerConstants;
 import org.eclipse.gef.MouseWheelHandler;
 import org.eclipse.gef.MouseWheelZoomHandler;
+import org.eclipse.gef.SnapToGrid;
 import org.eclipse.gef.dnd.TemplateTransferDragSourceListener;
 import org.eclipse.gef.dnd.TemplateTransferDropTargetListener;
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
@@ -47,6 +54,7 @@ import org.eclipse.gef.ui.rulers.RulerComposite;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.util.TransferDropTargetListener;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IEditorPart;
@@ -111,7 +119,7 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 				}
 				return super.getAdapter(key);
 			}
-		};
+		};		
 		viewer.setRootEditPart(root);
 		viewer.setKeyHandler(new GraphicalViewerKeyHandler(viewer));
 		ContextMenuProvider cmProvider = 
@@ -163,7 +171,29 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 		GraphicalViewer viewer = getGraphicalViewer();
 		
 		displayModel = new DisplayModel();
-		
+		displayModel.getProperty(AbstractWidgetModel.PROP_COLOR_BACKGROUND).
+			addPropertyChangeListener(new PropertyChangeListener(){
+				public void propertyChange(PropertyChangeEvent evt) {
+					getGraphicalViewer().getControl().setBackground(CustomMediaFactory.getInstance()
+							.getColor((RGB)evt.getNewValue()));
+				}
+			});
+		displayModel.getProperty(AbstractWidgetModel.PROP_COLOR_FOREGROUND).
+			addPropertyChangeListener(new PropertyChangeListener(){
+				public void propertyChange(PropertyChangeEvent evt) {
+					((ScalableFreeformRootEditPart)getGraphicalViewer().getRootEditPart())
+					.getLayer(LayerConstants.GRID_LAYER).setForegroundColor(CustomMediaFactory.getInstance()
+							.getColor((RGB)evt.getNewValue()));
+				}
+			});
+		displayModel.getProperty(DisplayModel.PROP_GRID_SPACE).
+		addPropertyChangeListener(new PropertyChangeListener(){
+			public void propertyChange(PropertyChangeEvent evt) {
+				getGraphicalViewer().setProperty(SnapToGrid.PROPERTY_GRID_SPACING, 
+						new Dimension((Integer)evt.getNewValue(), 
+								(Integer)evt.getNewValue()));
+			}
+		});
 		viewer.setContents(displayModel);
 		
 		viewer.addDropTargetListener(createTransferDropTargetListener());

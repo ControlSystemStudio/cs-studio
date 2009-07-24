@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.opibuilder.model.DisplayModel;
+import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FreeformLayer;
 import org.eclipse.draw2d.FreeformLayout;
@@ -17,6 +18,8 @@ import org.eclipse.gef.SnapToGuides;
 import org.eclipse.gef.SnapToHelper;
 import org.eclipse.gef.editpolicies.RootComponentEditPolicy;
 import org.eclipse.gef.rulers.RulerProvider;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.RGB;
 
 public class DisplayEditpart extends AbstractContainerEditpart {
 

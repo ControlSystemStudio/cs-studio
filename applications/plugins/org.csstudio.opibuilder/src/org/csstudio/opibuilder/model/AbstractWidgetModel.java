@@ -8,13 +8,17 @@ import java.util.Map;
 import java.util.Set;
 
 import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
+import org.csstudio.opibuilder.properties.ColorProperty;
+import org.csstudio.opibuilder.properties.ComboProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.csstudio.opibuilder.visualparts.BorderStyle;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.model.pvs.IProcessVariableAdressProvider;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
 
@@ -58,17 +62,13 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 
 	private Map<String, AbstractWidgetProperty> propertyMap;
 	
-	protected PropertyChangeSupport pcsDelegate;
-	
 	private Map<String, IPropertyDescriptor> propertyDescriptors;
 
 	public AbstractWidgetModel() {
 		propertyMap = new HashMap<String, AbstractWidgetProperty>();
-		pcsDelegate = new PropertyChangeSupport(this);
 		propertyDescriptors = new HashMap<String, IPropertyDescriptor>();
 		configureBaseProperties();
 		configureProperties();	
-		setSize(100, 100);
 	}
 	
 	protected void configureBaseProperties() {
@@ -80,6 +80,16 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 				WidgetPropertyCategory.Position, true, 100));
 		addProperty(new IntegerProperty(PROP_YPOS, "Y", 
 				WidgetPropertyCategory.Position, true, 100));	
+		addProperty(new ColorProperty(PROP_COLOR_BACKGROUND, "Background Color",
+				WidgetPropertyCategory.Display, true, new RGB(240, 240, 240)));
+		addProperty(new ColorProperty(PROP_COLOR_FOREGROUND, "Foreground Color",
+				WidgetPropertyCategory.Display, true, new RGB(192, 192, 192)));
+		addProperty(new ComboProperty(PROP_BORDER_STYLE,"Border Style", 
+				WidgetPropertyCategory.Border, true, BorderStyle.stringValues(), 0));
+		addProperty(new ColorProperty(PROP_BORDER_COLOR, "Border Color",
+				WidgetPropertyCategory.Border, true, new RGB(0, 128, 255)));
+		addProperty(new IntegerProperty(PROP_BORDER_WIDTH, "Border Width", 
+				WidgetPropertyCategory.Border, true, 1, 0, 1000));
 	}
 	
 	/**
@@ -89,7 +99,6 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	
 	public void addProperty(final AbstractWidgetProperty property){
 		assert property != null;
-		property.setPCSDelegate(pcsDelegate);
 		propertyMap.put(property.getPropertyID(), property);
 		if(property.isVisibleInPropSheet())
 			propertyDescriptors.put(property.getPropertyID(), property.getPropertyDescriptor());		
@@ -101,6 +110,7 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	public void removeProperty(final String prop_id){
 		assert propertyMap.containsKey(prop_id);
 		AbstractWidgetProperty property = propertyMap.get(prop_id);
+		property.removeAllPropertyChangeListeners();
 		if(property.isVisibleInPropSheet())
 			propertyDescriptors.remove(prop_id);
 		propertyMap.remove(prop_id);
@@ -134,7 +144,7 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 
 	public Object getPropertyValue(Object id) {
 		assert propertyMap.containsKey(id);
-		return propertyMap.get(id).getPropertyValueInString();
+		return propertyMap.get(id).getPropertyValue();
 	}
 	
 	public boolean isPropertySet(Object id) {
@@ -193,13 +203,29 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 		return new Dimension(
 				((Integer)getCastedPropertyValue(PROP_WIDTH)).intValue(),
 				((Integer)getCastedPropertyValue(PROP_HEIGHT)).intValue());
-	}
+	}	
 	
 	public Point getLocation(){
 		return new Point(
 				((Integer)getCastedPropertyValue(PROP_XPOS)).intValue(),
 				((Integer)getCastedPropertyValue(PROP_YPOS)).intValue());
 	}
+	
+	public BorderStyle getBorderStyle(){
+		Integer i = (Integer)getCastedPropertyValue(PROP_BORDER_STYLE);
+		return BorderStyle.values()[i];
+	}
+	
+	
+	public RGB getBorderColor(){
+		return (RGB)getCastedPropertyValue(PROP_BORDER_COLOR);
+	}
+	
+	public int getBorderWidth(){
+		return (Integer)getCastedPropertyValue(PROP_BORDER_WIDTH);
+	}
+	
+	
 	
 	
 	public void setSize(int width, int height){

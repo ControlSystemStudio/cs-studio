@@ -37,7 +37,7 @@ public abstract class AbstractWidgetProperty {
 		this.visibleInPropSheet = visibleInPropSheet;
 		this.defaultValue = defaultValue;
 		this.propertyValue = defaultValue;
-		createPropertyDescriptor(visibleInPropSheet);
+		pcsDelegate = new PropertyChangeSupport(this);	
 	}
 	
 	public synchronized final void addPropertyChangeListener(PropertyChangeListener listener){
@@ -72,6 +72,8 @@ public abstract class AbstractWidgetProperty {
 	}
 
 	public final IPropertyDescriptor getPropertyDescriptor() {
+		if(propertyDescriptor == null)
+			createPropertyDescriptor(visibleInPropSheet);
 		return propertyDescriptor;
 	}
 
@@ -83,7 +85,10 @@ public abstract class AbstractWidgetProperty {
 		return propertyValue;
 	}
 
-	public abstract String getPropertyValueInString();
+	/**Get the formatted value to be displayed in property sheet. 
+	 * @return 
+	 */
+	//public abstract Object getFormattedPropertyValue();
 	
 	public final boolean isVisibleInPropSheet() {
 		return visibleInPropSheet;
@@ -107,10 +112,6 @@ public abstract class AbstractWidgetProperty {
 	 */
 	public void setDefaultValue(Object defaultValue) {
 		this.defaultValue = defaultValue;
-	}
-
-	public final void setPCSDelegate(PropertyChangeSupport pcsDelegate){
-		this.pcsDelegate = pcsDelegate;
 	}
 
 	public final void setPropertyValue(Object value) {

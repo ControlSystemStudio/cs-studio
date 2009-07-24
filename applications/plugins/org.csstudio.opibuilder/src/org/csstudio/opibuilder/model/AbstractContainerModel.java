@@ -32,14 +32,8 @@ public abstract class AbstractContainerModel extends AbstractWidgetModel {
 			protected IPropertyDescriptor createPropertyDescriptor() {
 				return null;
 			}
-
-			@Override
-			public String getPropertyValueInString() {
-				return "";
-			}
 			
 		};
-		childrenProperty.setPCSDelegate(pcsDelegate);
 	}
 	
 	/**add child to the end of the children list.

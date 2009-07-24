@@ -6,12 +6,17 @@ import java.util.Map;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.properties.WidgetPropertyChangeListener;
+import org.csstudio.opibuilder.visualparts.BorderFactory;
+import org.csstudio.opibuilder.visualparts.BorderStyle;
+import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.eclipse.draw2d.AbstractBorder;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
+import org.eclipse.swt.graphics.RGB;
 
 public abstract class AbstractBaseEditpart extends AbstractGraphicalEditPart{
 
@@ -37,9 +42,18 @@ public abstract class AbstractBaseEditpart extends AbstractGraphicalEditPart{
 			}
 			registerBasePropertyChangeHandlers();
 			registerPropertyChangeHandlers();
+			initProperties();
 		}		
 	}
 	
+	private void initProperties() {
+		for(String prop_id : getCastedModel().getAllPropertyIDs()){
+			getCastedModel().getProperty(prop_id).firePropertyChange(null, 
+					getCastedModel().getPropertyValue(prop_id));
+		}
+		
+	}
+
 	@Override
 	public void deactivate() {
 		if(isActive()){
@@ -81,6 +95,62 @@ public abstract class AbstractBaseEditpart extends AbstractGraphicalEditPart{
 		setPropertyChangeHandler(AbstractWidgetModel.PROP_YPOS, refreshVisualHandler);
 		setPropertyChangeHandler(AbstractWidgetModel.PROP_WIDTH, refreshVisualHandler);
 		setPropertyChangeHandler(AbstractWidgetModel.PROP_HEIGHT, refreshVisualHandler);
+		
+		IWidgetPropertyChangeHandler backColorHandler = new IWidgetPropertyChangeHandler(){
+			public boolean handleChange(Object oldValue, Object newValue,
+					IFigure figure) {
+				figure.setBackgroundColor(CustomMediaFactory.getInstance().getColor((RGB)newValue));				
+				return true;
+			}
+		};		
+		setPropertyChangeHandler(AbstractWidgetModel.PROP_COLOR_BACKGROUND, backColorHandler);
+		
+		IWidgetPropertyChangeHandler foreColorHandler = new IWidgetPropertyChangeHandler(){
+			public boolean handleChange(Object oldValue, Object newValue,
+					IFigure figure) {
+				figure.setForegroundColor(CustomMediaFactory.getInstance().getColor((RGB)newValue));				
+				return true;
+			}
+		};		
+		setPropertyChangeHandler(AbstractWidgetModel.PROP_COLOR_FOREGROUND, foreColorHandler);
+		
+		IWidgetPropertyChangeHandler borderStyleHandler = new IWidgetPropertyChangeHandler(){
+			public boolean handleChange(Object oldValue, Object newValue,
+					IFigure figure) {
+				figure.setBorder(
+					BorderFactory.createBorder(BorderStyle.values()[(Integer)newValue],
+					getCastedModel().getBorderWidth(), getCastedModel().getBorderColor()));
+				return true;
+			}
+		};
+		
+		setPropertyChangeHandler(AbstractWidgetModel.PROP_BORDER_STYLE, borderStyleHandler);
+		
+		
+		IWidgetPropertyChangeHandler borderColorHandler = new IWidgetPropertyChangeHandler(){
+			public boolean handleChange(Object oldValue, Object newValue,
+					IFigure figure) {
+				figure.setBorder(
+					BorderFactory.createBorder(getCastedModel().getBorderStyle(),
+					getCastedModel().getBorderWidth(), (RGB)newValue));
+				return true;
+			}
+		};
+		
+		setPropertyChangeHandler(AbstractWidgetModel.PROP_BORDER_COLOR, borderColorHandler);
+	
+		IWidgetPropertyChangeHandler borderWidthHandler = new IWidgetPropertyChangeHandler(){
+			public boolean handleChange(Object oldValue, Object newValue,
+					IFigure figure) {
+				figure.setBorder(
+					BorderFactory.createBorder(getCastedModel().getBorderStyle(),
+					(Integer)newValue, getCastedModel().getBorderColor()));
+				return true;
+			}
+		};
+		
+		setPropertyChangeHandler(AbstractWidgetModel.PROP_BORDER_WIDTH, borderWidthHandler);
+	
 		
 	}
 	

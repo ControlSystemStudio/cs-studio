@@ -1,5 +1,6 @@
 package org.csstudio.opibuilder.properties;
 
+import org.csstudio.opibuilder.visualparts.IntegerPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
@@ -19,7 +20,7 @@ public class IntegerProperty extends AbstractWidgetProperty {
 	public IntegerProperty(final String prop_id, final String description,
 			final WidgetPropertyCategory category, final boolean visibleInPropSheet,
 			final int defaultValue) {
-		super(prop_id, description, category, visibleInPropSheet, defaultValue);
+		super(prop_id, description, category, visibleInPropSheet, Integer.valueOf(defaultValue));
 		min = Integer.MIN_VALUE;
 		max = Integer.MAX_VALUE;
 	}
@@ -27,7 +28,7 @@ public class IntegerProperty extends AbstractWidgetProperty {
 	public IntegerProperty(final String prop_id, final String description,
 			final WidgetPropertyCategory category, final boolean visibleInPropSheet,
 			final int defaultValue, final int minValue, final int maxValue) {
-		super(prop_id, description, category, visibleInPropSheet, defaultValue);
+		super(prop_id, description, category, visibleInPropSheet, Integer.valueOf(defaultValue));
 		assert minValue < maxValue;
 		min = minValue;
 		max = maxValue;
@@ -65,16 +66,11 @@ public class IntegerProperty extends AbstractWidgetProperty {
 		}
 
 		return acceptedValue;
-	}
-
-	@Override
-	public String getPropertyValueInString() {
-		return propertyValue.toString();
-	}
+	}	
 
 	@Override
 	protected IPropertyDescriptor createPropertyDescriptor() {
-		PropertyDescriptor descriptor = new TextPropertyDescriptor(prop_id, description);
+		PropertyDescriptor descriptor = new IntegerPropertyDescriptor(prop_id, description);
 		descriptor.setCategory(category.toString());	
 		return descriptor;
 	}
