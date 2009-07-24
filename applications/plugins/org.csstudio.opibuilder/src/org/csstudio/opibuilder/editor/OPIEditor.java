@@ -1,18 +1,26 @@
 package org.csstudio.opibuilder.editor;
+import java.util.ArrayList;
 import java.util.EventObject;
+import java.util.List;
 
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.editparts.WidgetEditPartFactory;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.model.RulerModel;
+import org.csstudio.opibuilder.palette.OPIEditorPaletteFactory;
+import org.csstudio.opibuilder.palette.WidgetCreationFactory;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.draw2d.PositionConstants;
+import org.eclipse.gef.AutoexposeHelper;
 import org.eclipse.gef.ContextMenuProvider;
 import org.eclipse.gef.DefaultEditDomain;
 import org.eclipse.gef.GraphicalViewer;
+import org.eclipse.gef.MouseWheelHandler;
+import org.eclipse.gef.MouseWheelZoomHandler;
 import org.eclipse.gef.dnd.TemplateTransferDragSourceListener;
 import org.eclipse.gef.dnd.TemplateTransferDropTargetListener;
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
+import org.eclipse.gef.editparts.ViewportAutoexposeHelper;
 import org.eclipse.gef.editparts.ZoomManager;
 import org.eclipse.gef.palette.PaletteRoot;
 import org.eclipse.gef.requests.CreationFactory;
@@ -27,6 +35,8 @@ import org.eclipse.gef.ui.actions.MatchWidthAction;
 import org.eclipse.gef.ui.actions.ToggleGridAction;
 import org.eclipse.gef.ui.actions.ToggleRulerVisibilityAction;
 import org.eclipse.gef.ui.actions.ToggleSnapToGeometryAction;
+import org.eclipse.gef.ui.actions.ZoomInAction;
+import org.eclipse.gef.ui.actions.ZoomOutAction;
 import org.eclipse.gef.ui.palette.PaletteViewer;
 import org.eclipse.gef.ui.palette.PaletteViewerProvider;
 import org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette;
@@ -89,7 +99,20 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 		super.configureGraphicalViewer();
 		ScrollingGraphicalViewer viewer = (ScrollingGraphicalViewer)getGraphicalViewer();
 		viewer.setEditPartFactory(new WidgetEditPartFactory(ExecutionMode.EDIT_MODE));
-		viewer.setRootEditPart(new ScalableFreeformRootEditPart());
+		ScalableFreeformRootEditPart root = new ScalableFreeformRootEditPart() {
+			/**
+			 * {@inheritDoc}
+			 */
+			@SuppressWarnings("unchecked")
+			@Override
+			public Object getAdapter(final Class key) {
+				if (key == AutoexposeHelper.class) {
+					return new ViewportAutoexposeHelper(this);
+				}
+				return super.getAdapter(key);
+			}
+		};
+		viewer.setRootEditPart(root);
 		viewer.setKeyHandler(new GraphicalViewerKeyHandler(viewer));
 		ContextMenuProvider cmProvider = 
 			new OPIEditorContextMenuProvider(viewer, getActionRegistry());
@@ -106,8 +129,32 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 		getActionRegistry().registerAction(action);
 		
 		// Snap to Geometry Action
-		action = new ToggleSnapToGeometryAction(getGraphicalViewer());		
-		getActionRegistry().registerAction(action);
+		IAction geometryAction = new ToggleSnapToGeometryAction(getGraphicalViewer());		
+		getActionRegistry().registerAction(geometryAction);
+		
+		// configure zoom actions
+		ZoomManager zm = root.getZoomManager();
+
+		List<String> zoomLevels = new ArrayList<String>(3);
+		zoomLevels.add(ZoomManager.FIT_ALL);
+		zoomLevels.add(ZoomManager.FIT_WIDTH);
+		zoomLevels.add(ZoomManager.FIT_HEIGHT);
+		zm.setZoomLevelContributions(zoomLevels);
+
+		zm.setZoomLevels(createZoomLevels());
+
+		if (zm != null) {
+			IAction zoomIn = new ZoomInAction(zm);
+			IAction zoomOut = new ZoomOutAction(zm);
+			getActionRegistry().registerAction(zoomIn);
+			getActionRegistry().registerAction(zoomOut);
+		}
+
+		/* scroll-wheel zoom */
+		getGraphicalViewer().setProperty(
+				MouseWheelHandler.KeyGenerator.getKey(SWT.MOD1),
+				MouseWheelZoomHandler.SINGLETON);
+
 	}
 	
 	@Override
@@ -116,8 +163,9 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 		GraphicalViewer viewer = getGraphicalViewer();
 		
 		displayModel = new DisplayModel();
+		
 		viewer.setContents(displayModel);
-				
+		
 		viewer.addDropTargetListener(createTransferDropTargetListener());
 
 	}
@@ -153,7 +201,7 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 		return new TemplateTransferDropTargetListener(getGraphicalViewer()) {
 			@SuppressWarnings("unchecked")
 			protected CreationFactory getFactory(Object template) {
-				return new SimpleFactory((Class) template);
+				return (WidgetCreationFactory)template;
 			}
 		};
 	}
@@ -161,7 +209,7 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 	@Override
 	protected PaletteRoot getPaletteRoot() {
 		if(paletteRoot == null)
-			paletteRoot = new PaletteRoot();
+			paletteRoot = OPIEditorPaletteFactory.createPalette();
 		return paletteRoot;
 	}
 
@@ -222,9 +270,6 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 		action = new DirectEditAction((IWorkbenchPart) this);
 		registry.registerAction(action);
 		getSelectionActions().add(action.getId());
-
-		
-
 
 		String id = ActionFactory.DELETE.getId();
 		action = getActionRegistry().getAction(id);
@@ -290,5 +335,37 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 				RulerProvider.PROPERTY_VERTICAL_RULER, vprovider);
 		getGraphicalViewer().setProperty(
 				RulerProvider.PROPERTY_RULER_VISIBILITY, Boolean.TRUE);
+	}
+	
+	/**
+	 * Create a double array that contains the pre-defined zoom levels.
+	 * 
+	 * @return A double array that contains the pre-defined zoom levels.
+	 */
+	private double[] createZoomLevels() {
+		List<Double> zoomLevelList = new ArrayList<Double>();
+
+		double level = 0.1;
+		while (level < 1.0) {
+			zoomLevelList.add(level);
+			level = level + 0.05;
+		}
+
+		zoomLevelList.add(1.0);
+		zoomLevelList.add(1.5);
+		zoomLevelList.add(2.0);
+		zoomLevelList.add(2.5);
+		zoomLevelList.add(3.0);
+		zoomLevelList.add(3.5);
+		zoomLevelList.add(4.0);
+		zoomLevelList.add(4.5);
+		zoomLevelList.add(5.0);
+
+		double[] result = new double[zoomLevelList.size()];
+		for (int i = 0; i < zoomLevelList.size(); i++) {
+			result[i] = zoomLevelList.get(i);
+		}
+
+		return result;
 	}
 }

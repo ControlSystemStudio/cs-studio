@@ -39,6 +39,7 @@ public abstract class AbstractContainerModel extends AbstractWidgetModel {
 			}
 			
 		};
+		childrenProperty.setPCSDelegate(pcsDelegate);
 	}
 	
 	/**add child to the end of the children list.
@@ -79,6 +80,10 @@ public abstract class AbstractContainerModel extends AbstractWidgetModel {
 	 */
 	public final int getIndexOf(final AbstractWidgetModel widget){
 		return childrenList.indexOf(widget);
+	}
+
+	public AbstractWidgetProperty getChildrenProperty() {
+		return childrenProperty;
 	}
 	
 	

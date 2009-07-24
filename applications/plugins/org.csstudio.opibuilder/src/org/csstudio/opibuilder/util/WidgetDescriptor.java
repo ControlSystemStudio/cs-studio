@@ -29,6 +29,12 @@ public class WidgetDescriptor {
 	private String name;
 	
 	/**
+	 * The description of the widget
+	 */
+	private String description;
+	
+	
+	/**
 	 * The relative icon path of the widget relative to its plugin
 	 */
 	private String iconPath;
@@ -52,10 +58,11 @@ public class WidgetDescriptor {
 	 * @param pluginId The pluginID where the widget belongs to.
 	 */
 	public WidgetDescriptor(IConfigurationElement element, String typeID,
-			String name, String iconPath, String category, String pluginId) {
+			String name, String description, String iconPath, String category, String pluginId) {
 		this.element = element;
 		this.typeID = typeID;
 		this.name = name;
+		this.description = description;
 		this.iconPath = iconPath;
 		this.category = category;
 		this.pluginId = pluginId;
@@ -79,7 +86,7 @@ public class WidgetDescriptor {
 	 */
 	public final AbstractWidgetEditpart getWidgetEditpart(){
 		try {
-			return (AbstractWidgetEditpart) element.createExecutableExtension("model_class");
+			return (AbstractWidgetEditpart) element.createExecutableExtension("editpart_class");
 		} catch (CoreException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -124,7 +131,9 @@ public class WidgetDescriptor {
 	}
 
 	
-	
+	public String getDescription() {
+		return description;
+	}
 	
 	
 	

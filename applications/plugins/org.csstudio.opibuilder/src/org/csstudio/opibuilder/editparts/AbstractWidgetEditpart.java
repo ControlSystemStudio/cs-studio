@@ -4,6 +4,7 @@ import org.csstudio.opibuilder.commands.WidgetDeleteCommand;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.eclipse.gef.EditPolicy;
+import org.eclipse.gef.Request;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editpolicies.ComponentEditPolicy;
 import org.eclipse.gef.requests.GroupRequest;
@@ -24,7 +25,10 @@ public abstract class AbstractWidgetEditpart extends AbstractBaseEditpart {
 							(AbstractWidgetModel)widget);				
 				return super.createDeleteCommand(deleteRequest);
 			}
+	
 		});
+		
+		
 		
 	}
 

@@ -88,7 +88,7 @@ public abstract class AbstractBaseEditpart extends AbstractGraphicalEditPart{
 	
 	
 	
-	private AbstractWidgetModel getCastedModel(){
+	public AbstractWidgetModel getCastedModel(){
 		return (AbstractWidgetModel)getModel();
 	}
 	

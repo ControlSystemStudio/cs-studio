@@ -34,6 +34,7 @@ public class WidgetCreateCommand extends Command {
 	@Override
 	public void execute() {
 		newWidget.setLocation(bounds.x, bounds.y);
+		if (bounds.width > 0 && bounds.height > 0)
 		newWidget.setSize(bounds.width, bounds.height);
 		redo();
 	}

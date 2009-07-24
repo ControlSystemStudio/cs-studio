@@ -1,12 +1,22 @@
 package org.csstudio.opibuilder.editparts;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.csstudio.opibuilder.model.DisplayModel;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FreeformLayer;
 import org.eclipse.draw2d.FreeformLayout;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.MarginBorder;
+import org.eclipse.gef.CompoundSnapToHelper;
 import org.eclipse.gef.EditPolicy;
+import org.eclipse.gef.SnapToGeometry;
+import org.eclipse.gef.SnapToGrid;
+import org.eclipse.gef.SnapToGuides;
+import org.eclipse.gef.SnapToHelper;
 import org.eclipse.gef.editpolicies.RootComponentEditPolicy;
+import org.eclipse.gef.rulers.RulerProvider;
 
 public class DisplayEditpart extends AbstractContainerEditpart {
 
@@ -32,5 +42,6 @@ public class DisplayEditpart extends AbstractContainerEditpart {
 		
 		return f;
 	}
+	
 
 }

@@ -30,7 +30,7 @@ public class WidgetSetConstraintCommand extends Command {
 		this.request = req;
 		setLabel("move/reize");
 	}
-	
+	/*
 	@Override
 	public boolean canExecute() {
 		Object type = request.getType();
@@ -38,9 +38,10 @@ public class WidgetSetConstraintCommand extends Command {
 		return (RequestConstants.REQ_MOVE.equals(type)
 				|| RequestConstants.REQ_MOVE_CHILDREN.equals(type) 
 				|| RequestConstants.REQ_RESIZE.equals(type)
-				|| RequestConstants.REQ_RESIZE_CHILDREN.equals(type));
+				|| RequestConstants.REQ_RESIZE_CHILDREN.equals(type)
+				|| RequestConstants.REQ_ALIGN.equals(type));
 	}
-	
+	*/
 	@Override
 	public void execute() {
 		oldBounds = new Rectangle(widget.getLocation(), widget.getSize());

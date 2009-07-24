@@ -3,6 +3,7 @@ package org.csstudio.opibuilder.util;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -41,7 +42,7 @@ public final class WidgetsService {
 
 	public WidgetsService() {
 		allWidgetDescriptorsMap = new HashMap<String, WidgetDescriptor>();
-		allCategoriesMap = new HashMap<String, List<String>>();
+		allCategoriesMap = new LinkedHashMap<String, List<String>>();
 		for(MajorCategories mc : MajorCategories.values())
 			allCategoriesMap.put(mc.toString(), new ArrayList<String>());
 		loadAllWidgets();
@@ -60,10 +61,15 @@ public final class WidgetsService {
 			String icon = element.getAttribute("icon"); //$NON-NLS-1$
 			String pluginId = element.getDeclaringExtension()
 					.getNamespaceIdentifier();
+			String description = element.getAttribute("description");
+			if (description == null || description.trim().length() == 0) {
+				description = "";
+			}
 			String category = element.getAttribute("category");
 			if (category == null || category.trim().length() == 0) {
 				category = DEFAULT_CATEGORY;
 			}
+			
 			if(typeId != null){
 				List<String> list = allCategoriesMap.get(category);
 				if(list == null){
@@ -72,7 +78,7 @@ public final class WidgetsService {
 				}
 				list.add(typeId);
 				allWidgetDescriptorsMap.put(typeId, new WidgetDescriptor(
-						element, typeId, name, icon, category, pluginId));
+						element, typeId, name, description, icon, category, pluginId));
 			}			
 		}
 		

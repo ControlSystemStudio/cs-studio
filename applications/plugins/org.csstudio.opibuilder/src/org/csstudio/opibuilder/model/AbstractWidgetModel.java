@@ -58,7 +58,7 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 
 	private Map<String, AbstractWidgetProperty> propertyMap;
 	
-	private PropertyChangeSupport pcsDelegate;
+	protected PropertyChangeSupport pcsDelegate;
 	
 	private Map<String, IPropertyDescriptor> propertyDescriptors;
 
@@ -67,7 +67,8 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 		pcsDelegate = new PropertyChangeSupport(this);
 		propertyDescriptors = new HashMap<String, IPropertyDescriptor>();
 		configureBaseProperties();
-		configureProperties();		
+		configureProperties();	
+		setSize(100, 100);
 	}
 	
 	protected void configureBaseProperties() {

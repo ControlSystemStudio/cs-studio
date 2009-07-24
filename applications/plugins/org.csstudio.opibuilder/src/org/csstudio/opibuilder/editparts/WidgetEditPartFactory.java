@@ -1,7 +1,10 @@
 package org.csstudio.opibuilder.editparts;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
+import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.DisplayModel;
+
+import org.csstudio.opibuilder.util.WidgetsService;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartFactory;
 
@@ -30,6 +33,12 @@ public class WidgetEditPartFactory implements EditPartFactory {
 	private EditPart getPartForModel(Object model){
 		if(model instanceof DisplayModel)
 			return new DisplayEditpart();
+		if(model instanceof AbstractWidgetModel){
+			AbstractWidgetEditpart editpart = 
+				WidgetsService.getInstance().getWidgetDescriptor(
+					((AbstractWidgetModel)model).getTypeID()).getWidgetEditpart();
+			return editpart;
+		}
 		OPIBuilderPlugin.getLogger().error("Cannot create editpart for model object: "
 				+ model);
 		return null;
