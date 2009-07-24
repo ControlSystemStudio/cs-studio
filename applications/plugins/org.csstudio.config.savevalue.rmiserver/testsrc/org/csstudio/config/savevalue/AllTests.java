@@ -23,9 +23,9 @@
 package org.csstudio.config.savevalue;
 
 import org.csstudio.config.savevalue.internal.changelog.ChangelogAppenderTest;
-import org.csstudio.config.savevalue.internal.changelog.ChangelogFileFormatTest;
-import org.csstudio.config.savevalue.internal.changelog.ChangelogFileFormatTest_Escape;
-import org.csstudio.config.savevalue.internal.changelog.ChangelogFileFormatTest_SplitAndUnescape;
+import org.csstudio.config.savevalue.internal.changelog.ChangelogEntrySerializerTest;
+import org.csstudio.config.savevalue.internal.changelog.ChangelogEntrySerializerTest_Escape;
+import org.csstudio.config.savevalue.internal.changelog.ChangelogEntrySerializerTest_SplitAndUnescape;
 import org.csstudio.config.savevalue.internal.changelog.ChangelogReaderTest;
 import org.csstudio.config.savevalue.internal.dbfile.FieldTest;
 import org.csstudio.config.savevalue.internal.dbfile.RecordInstanceDatabaseLexerTest;
@@ -48,9 +48,9 @@ import org.junit.runners.Suite.SuiteClasses;
 	RecordInstanceDatabaseLexerTest.class,
 	TokenTest.class,
 	ChangelogAppenderTest.class,
-	ChangelogFileFormatTest.class,
-	ChangelogFileFormatTest_Escape.class,
-	ChangelogFileFormatTest_SplitAndUnescape.class,
+	ChangelogEntrySerializerTest.class,
+	ChangelogEntrySerializerTest_Escape.class,
+	ChangelogEntrySerializerTest_SplitAndUnescape.class,
 	ChangelogReaderTest.class,
 })
 public class AllTests {

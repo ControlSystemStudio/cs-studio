@@ -59,7 +59,7 @@ public class ChangelogAppender {
 	 *             if an I/O error occurs.
 	 */
 	public void append(ChangelogEntry entry) throws IOException {
-		_writer.append(ChangelogFileFormat.serialize(entry));
+		_writer.append(ChangelogEntrySerializer.serialize(entry)).append('\n');
 	}
 
 	/**

@@ -70,7 +70,7 @@ public class ChangelogReader {
 		String line;
 		while ((line = _reader.readLine()) != null) {
 			try {
-				ChangelogEntry entry = ChangelogFileFormat.deserialize(line);
+				ChangelogEntry entry = ChangelogEntrySerializer.deserialize(line);
 				entries.put(entry.getPvName(), entry);
 			} catch (IllegalArgumentException e) {
 				throw new IOException("Error reading the following line:\n"

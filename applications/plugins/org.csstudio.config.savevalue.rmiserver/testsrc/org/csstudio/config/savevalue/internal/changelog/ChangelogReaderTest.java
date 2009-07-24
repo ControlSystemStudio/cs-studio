@@ -22,11 +22,11 @@
 
 package org.csstudio.config.savevalue.internal.changelog;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
+import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-import java.io.Writer;
 import java.util.Collection;
 
 import org.csstudio.config.savevalue.service.ChangelogEntry;
@@ -88,5 +88,21 @@ public class ChangelogReaderTest {
 		reader.close();
 		Mockito.verify(r).close();
 		Mockito.verifyNoMoreInteractions(r);
+	}
+	
+	@Test(expected=IOException.class)
+	public void testInvalidLineTooManyTokens() throws Exception {
+		StringReader sr = new StringReader(
+				"pv test test user host 20090101T000000\n");
+		ChangelogReader reader = new ChangelogReader(sr);
+		reader.readEntries();
+	}
+
+	@Test(expected=IOException.class)
+	public void testInvalidLineNotEnoughTokens() throws Exception {
+		StringReader sr = new StringReader(
+				"pv user host 20090101T000000\n");
+		ChangelogReader reader = new ChangelogReader(sr);
+		reader.readEntries();
 	}
 }

@@ -22,7 +22,7 @@
 
 package org.csstudio.config.savevalue.internal.changelog;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -34,37 +34,37 @@ import org.junit.runners.Parameterized.Parameters;
 
 
 /**
- * Test for the method {@link ChangelogFileFormat#escape(String)}.
+ * Test for the method {@link ChangelogEntrySerializer#splitAndUnescape(String)}.
  * 
  * @author Joerg Rathlev
  */
 @RunWith(Parameterized.class)
-public class ChangelogFileFormatTest_Escape {
+public class ChangelogEntrySerializerTest_SplitAndUnescape {
+
+	private String _line;
+	private String[] _expectedTokens;
 	
-	private String _raw;
-	private String _expected;
-	
-	public ChangelogFileFormatTest_Escape(String raw, String expected) {
-		_raw = raw;
-		_expected = expected;
+	public ChangelogEntrySerializerTest_SplitAndUnescape(Object line, Object expectedTokens) {
+		_line = (String) line;
+		_expectedTokens = (String[]) expectedTokens;
 	}
 	
 	@Parameters
-	public static Collection<String[]> parameters() {
-		return Arrays.asList(new String[][] {
-				{"", ""},
-				{"foo", "foo"},
-				{"foo bar", "foo\\ bar"},
-				{"\"foo\" bar", "\"foo\"\\ bar"},
-				{"\n", "\\n"},
-				{"\r", "\\r"},
-				{"\r\n", "\\r\\n"},
-				{"C:\\Program Files\\test", "C:\\\\Program\\ Files\\\\test"},
+	public static Collection<Object[]> parameters() {
+		return Arrays.asList(new Object[][] {
+				{"", new String[] {""}},
+				{"foo", new String[] {"foo"}},
+				{"foo bar", new String[] {"foo", "bar"}},
+				{"foo\\ bar", new String[] {"foo bar"}},
+				{"C:\\\\Program\\ Files\\\\ test", new String[] {"C:\\Program Files\\", "test"}},
+				{"foo\\nbar x y\\ z", new String[] {"foo\nbar", "x", "y z"}},
+				{"foo\\r\\ bar x", new String[] {"foo\r bar", "x"}},
 		});
 	}
 	
 	@Test
-	public void testEscape() throws Exception {
-		assertEquals(_expected, ChangelogFileFormat.escape(_raw));
+	public void testSplitAndUnescape() throws Exception {
+		String[] tokens = ChangelogEntrySerializer.splitAndUnescape(_line);
+		assertArrayEquals(_expectedTokens, tokens);
 	}
 }

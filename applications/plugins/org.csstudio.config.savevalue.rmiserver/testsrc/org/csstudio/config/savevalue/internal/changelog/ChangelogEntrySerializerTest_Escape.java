@@ -22,31 +22,49 @@
 
 package org.csstudio.config.savevalue.internal.changelog;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-import org.csstudio.config.savevalue.service.ChangelogEntry;
+import java.util.Arrays;
+import java.util.Collection;
+
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 
 /**
+ * Test for the method {@link ChangelogEntrySerializer#escape(String)}.
+ * 
  * @author Joerg Rathlev
- *
  */
-public class ChangelogFileFormatTest {
-
-	@Test
-	public void testSerialize() throws Exception {
-		ChangelogEntry entry = new ChangelogEntry("pv", "value", "user", "host", "2009-01-01T00:00:00");
-		assertEquals("pv value user host 2009-01-01T00:00:00\n", ChangelogFileFormat.serialize(entry));
+@RunWith(Parameterized.class)
+public class ChangelogEntrySerializerTest_Escape {
+	
+	private String _raw;
+	private String _expected;
+	
+	public ChangelogEntrySerializerTest_Escape(String raw, String expected) {
+		_raw = raw;
+		_expected = expected;
+	}
+	
+	@Parameters
+	public static Collection<String[]> parameters() {
+		return Arrays.asList(new String[][] {
+				{"", ""},
+				{"foo", "foo"},
+				{"foo bar", "foo\\ bar"},
+				{"\"foo\" bar", "\"foo\"\\ bar"},
+				{"\n", "\\n"},
+				{"\r", "\\r"},
+				{"\r\n", "\\r\\n"},
+				{"C:\\Program Files\\test", "C:\\\\Program\\ Files\\\\test"},
+		});
 	}
 	
 	@Test
-	public void testDeserialize() throws Exception {
-		ChangelogEntry entry = ChangelogFileFormat.deserialize("pv value user host 2009-01-01T00:00:00");
-		assertEquals("pv", entry.getPvName());
-		assertEquals("value", entry.getValue());
-		assertEquals("user", entry.getUsername());
-		assertEquals("host", entry.getHostname());
-		assertEquals("2009-01-01T00:00:00", entry.getLastModified());
+	public void testEscape() throws Exception {
+		assertEquals(_expected, ChangelogEntrySerializer.escape(_raw));
 	}
 }
