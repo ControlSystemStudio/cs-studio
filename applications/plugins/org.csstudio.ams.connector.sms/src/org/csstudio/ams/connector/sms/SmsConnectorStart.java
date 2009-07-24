@@ -39,9 +39,13 @@ import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.Log;
 import org.csstudio.ams.SynchObject;
 import org.csstudio.ams.Utils;
+import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.remotercp.common.servicelauncher.ServiceLauncher;
+import org.remotercp.ecf.ECFConstants;
+import org.remotercp.login.connection.HeadlessConnection;
 
 public class SmsConnectorStart implements IApplication
 {
@@ -82,35 +86,6 @@ public class SmsConnectorStart implements IApplication
         sObj = new SynchObject(STAT_INIT, System.currentTimeMillis());
         bStop = false;
     }
-    
-    public void stop()
-    {
-        Log.log(Log.INFO, "method: stop()");
-        return;
-    }
-
-    public static SmsConnectorStart getInstance()
-    {
-        return _me;
-    }
-    
-    /**
-     * Sets the restart flag to force a restart.
-     */
-    public synchronized void setRestart()
-    {
-        restart = true;
-        bStop = true;
-    }
-    
-    /**
-     * Sets the shutdown flag to force a shutdown.
-     */
-    public synchronized void setShutdown()
-    {
-        restart = false;
-        bStop = true;
-    }
 
     public Object start(IApplicationContext context) throws Exception
     {
@@ -121,6 +96,8 @@ public class SmsConnectorStart implements IApplication
         // use synchronized method
         lastStatus = getStatus();
 
+        connectToXMPPServer();
+        
         while(bStop == false)
         {
             try
@@ -265,6 +242,52 @@ public class SmsConnectorStart implements IApplication
             return EXIT_RESTART;
         else
             return EXIT_OK;
+    }
+
+    public void connectToXMPPServer()
+    {
+        String xmppUser = "ams-sms-connector";
+        String xmppPassword = "ams";
+        String xmppServer = "krykxmpp.desy.de";
+
+        try
+        {
+            HeadlessConnection.connect(xmppUser, xmppPassword, xmppServer, ECFConstants.XMPP);
+            ServiceLauncher.startRemoteServices();     
+        }
+        catch(Exception e)
+        {
+            CentralLogger.getInstance().warn(this, "Could not connect to XMPP server: " + e.getMessage());
+        }
+    }
+    
+    public void stop()
+    {
+        Log.log(Log.INFO, "method: stop()");
+        return;
+    }
+
+    public static SmsConnectorStart getInstance()
+    {
+        return _me;
+    }
+    
+    /**
+     * Sets the restart flag to force a restart.
+     */
+    public synchronized void setRestart()
+    {
+        restart = true;
+        bStop = true;
+    }
+    
+    /**
+     * Sets the shutdown flag to force a shutdown.
+     */
+    public synchronized void setShutdown()
+    {
+        restart = false;
+        bStop = true;
     }
 
     public int getStatus()
