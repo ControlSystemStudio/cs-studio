@@ -5,6 +5,7 @@
          point="org.csstudio.opibuilder.widget">
       <widget
             category="Graphics"
+            description="Create a rectangle widget"
             editpart_class="org.csstudio.opibuilder.widgets.editparts.RectangleEditpart"
             icon="icons/rectangle.gif"
             model_class="org.csstudio.opibuilder.widgets.model.RectangleModel"
