@@ -238,7 +238,11 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 		setPropertyValue(PROP_YPOS, y);
 	}
 	
-
+	public void setPropertyDescription(String prop_id, String description){
+		getProperty(prop_id).setDescription(description);
+		if(propertyDescriptors.containsKey(prop_id))
+			propertyDescriptors.put(prop_id, getProperty(prop_id).getPropertyDescriptor());
+	}
 	
 	
 }

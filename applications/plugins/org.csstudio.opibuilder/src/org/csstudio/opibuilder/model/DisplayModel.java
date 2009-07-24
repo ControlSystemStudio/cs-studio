@@ -25,6 +25,8 @@ public class DisplayModel extends AbstractContainerModel {
 		removeProperty(PROP_BORDER_COLOR);
 		removeProperty(PROP_BORDER_STYLE);
 		removeProperty(PROP_BORDER_WIDTH);
+		setPropertyDescription(PROP_COLOR_FOREGROUND, "Grid Color");
+		
 	}
 
 	@Override

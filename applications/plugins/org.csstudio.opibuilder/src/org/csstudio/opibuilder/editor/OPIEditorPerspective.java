@@ -28,7 +28,7 @@ public class OPIEditorPerspective implements IPerspectiveFactory
 
         // Stuff for 'left'
         left.addView(ID_NAVIGATOR);
-        left.addPlaceholder(IPageLayout.ID_PROJECT_EXPLORER);
+        left.addPlaceholder(IPageLayout.ID_RES_NAV);
         
         // Stuff for 'right'
         right.addView(IPageLayout.ID_PROP_SHEET);

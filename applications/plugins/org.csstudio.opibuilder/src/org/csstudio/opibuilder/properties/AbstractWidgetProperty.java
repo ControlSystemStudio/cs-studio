@@ -103,8 +103,9 @@ public abstract class AbstractWidgetProperty {
 		this.category = category;
 	}
 
-	public final void setDescription(String description) {
+	public final void setDescription(String description) {		
 		this.description = description;
+		createPropertyDescriptor(visibleInPropSheet);
 	}
 
 	/**
