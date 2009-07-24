@@ -14,5 +14,14 @@
             name="OPI Editor">
       </editor>
    </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.csstudio.opibuilder.editor.OPIEditorPerspective"
+            icon="icons/OPIBuilder.png"
+            id="org.csstudio.opibuilder.opieditor"
+            name="%OPIEditor">
+      </perspective>
+   </extension>
 
 </plugin>
