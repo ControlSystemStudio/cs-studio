@@ -34,13 +34,11 @@
       <plugin id="org.csstudio.ams.connector.jms"/>
       <plugin id="org.csstudio.platform"/>
       <plugin id="org.csstudio.platform.libs.dal"/>
-      <plugin id="org.csstudio.platform.libs.dcf"/>
       <plugin id="org.csstudio.platform.libs.epics"/>
       <plugin id="org.csstudio.platform.libs.epics.ui"/>
       <plugin id="org.csstudio.platform.libs.jdbc"/>
       <plugin id="org.csstudio.platform.libs.jmock"/>
       <plugin id="org.csstudio.platform.libs.jms"/>
-      <plugin id="org.csstudio.platform.libs.xmpp"/>
       <plugin id="org.csstudio.platform.ui"/>
       <plugin id="org.csstudio.platform.utility.jms"/>
       <plugin id="org.csstudio.platform.workspace"/>
@@ -49,16 +47,16 @@
       <plugin id="org.eclipse.core.databinding"/>
       <plugin id="org.eclipse.core.expressions"/>
       <plugin id="org.eclipse.core.filesystem"/>
-      <plugin id="org.eclipse.core.filesystem.hpux.ia64_32" fragment="true"/>
-      <plugin id="org.eclipse.core.filesystem.linux.ppc" fragment="true"/>
-      <plugin id="org.eclipse.core.filesystem.linux.x86" fragment="true"/>
-      <plugin id="org.eclipse.core.filesystem.linux.x86_64" fragment="true"/>
-      <plugin id="org.eclipse.core.filesystem.macosx" fragment="true"/>
-      <plugin id="org.eclipse.core.filesystem.solaris.sparc" fragment="true"/>
+      <plugin id="org.eclipse.core.filesystem.hpux.ia64_32"/>
+      <plugin id="org.eclipse.core.filesystem.linux.ppc"/>
+      <plugin id="org.eclipse.core.filesystem.linux.x86"/>
+      <plugin id="org.eclipse.core.filesystem.linux.x86_64"/>
+      <plugin id="org.eclipse.core.filesystem.macosx"/>
+      <plugin id="org.eclipse.core.filesystem.solaris.sparc"/>
       <plugin id="org.eclipse.core.filesystem.win32.x86" fragment="true"/>
       <plugin id="org.eclipse.core.jobs"/>
       <plugin id="org.eclipse.core.net"/>
-      <plugin id="org.eclipse.core.net.linux.x86" fragment="true"/>
+      <plugin id="org.eclipse.core.net.linux.x86"/>
       <plugin id="org.eclipse.core.net.win32.x86" fragment="true"/>
       <plugin id="org.eclipse.core.resources"/>
       <plugin id="org.eclipse.core.resources.compatibility" fragment="true"/>
@@ -67,6 +65,19 @@
       <plugin id="org.eclipse.core.runtime.compatibility.auth"/>
       <plugin id="org.eclipse.core.runtime.compatibility.registry" fragment="true"/>
       <plugin id="org.eclipse.core.variables"/>
+      <plugin id="org.eclipse.ecf"/>
+      <plugin id="org.eclipse.ecf.datashare"/>
+      <plugin id="org.eclipse.ecf.discovery"/>
+      <plugin id="org.eclipse.ecf.filetransfer"/>
+      <plugin id="org.eclipse.ecf.identity"/>
+      <plugin id="org.eclipse.ecf.presence"/>
+      <plugin id="org.eclipse.ecf.provider"/>
+      <plugin id="org.eclipse.ecf.provider.datashare"/>
+      <plugin id="org.eclipse.ecf.provider.remoteservice"/>
+      <plugin id="org.eclipse.ecf.provider.xmpp"/>
+      <plugin id="org.eclipse.ecf.remoteservice"/>
+      <plugin id="org.eclipse.ecf.sharedobject"/>
+      <plugin id="org.eclipse.ecf.ssl" fragment="true"/>
       <plugin id="org.eclipse.equinox.app"/>
       <plugin id="org.eclipse.equinox.common"/>
       <plugin id="org.eclipse.equinox.http.jetty"/>
@@ -77,7 +88,7 @@
       <plugin id="org.eclipse.equinox.preferences"/>
       <plugin id="org.eclipse.equinox.registry"/>
       <plugin id="org.eclipse.equinox.security"/>
-      <plugin id="org.eclipse.equinox.security.macosx" fragment="true"/>
+      <plugin id="org.eclipse.equinox.security.macosx"/>
       <plugin id="org.eclipse.equinox.security.win32.x86" fragment="true"/>
       <plugin id="org.eclipse.help"/>
       <plugin id="org.eclipse.help.appserver"/>
@@ -90,19 +101,19 @@
       <plugin id="org.eclipse.osgi"/>
       <plugin id="org.eclipse.osgi.services"/>
       <plugin id="org.eclipse.swt"/>
-      <plugin id="org.eclipse.swt.carbon.macosx" fragment="true"/>
-      <plugin id="org.eclipse.swt.gtk.linux.ppc" fragment="true"/>
-      <plugin id="org.eclipse.swt.gtk.linux.x86" fragment="true"/>
-      <plugin id="org.eclipse.swt.gtk.linux.x86_64" fragment="true"/>
-      <plugin id="org.eclipse.swt.gtk.solaris.sparc" fragment="true"/>
-      <plugin id="org.eclipse.swt.motif.aix.ppc" fragment="true"/>
-      <plugin id="org.eclipse.swt.motif.hpux.ia64_32" fragment="true"/>
+      <plugin id="org.eclipse.swt.carbon.macosx"/>
+      <plugin id="org.eclipse.swt.gtk.linux.ppc"/>
+      <plugin id="org.eclipse.swt.gtk.linux.x86"/>
+      <plugin id="org.eclipse.swt.gtk.linux.x86_64"/>
+      <plugin id="org.eclipse.swt.gtk.solaris.sparc"/>
+      <plugin id="org.eclipse.swt.motif.aix.ppc"/>
+      <plugin id="org.eclipse.swt.motif.hpux.ia64_32"/>
       <plugin id="org.eclipse.swt.win32.win32.x86" fragment="true"/>
-      <plugin id="org.eclipse.swt.win32.win32.x86_64" fragment="true"/>
-      <plugin id="org.eclipse.swt.wpf.win32.x86" fragment="true"/>
+      <plugin id="org.eclipse.swt.win32.win32.x86_64"/>
+      <plugin id="org.eclipse.swt.wpf.win32.x86"/>
       <plugin id="org.eclipse.text"/>
       <plugin id="org.eclipse.ui"/>
-      <plugin id="org.eclipse.ui.carbon" fragment="true"/>
+      <plugin id="org.eclipse.ui.carbon"/>
       <plugin id="org.eclipse.ui.console"/>
       <plugin id="org.eclipse.ui.forms"/>
       <plugin id="org.eclipse.ui.ide"/>
@@ -115,12 +126,17 @@
       <plugin id="org.eclipse.ui.workbench.texteditor"/>
       <plugin id="org.eclipse.update.configurator"/>
       <plugin id="org.eclipse.update.core"/>
-      <plugin id="org.eclipse.update.core.linux" fragment="true"/>
+      <plugin id="org.eclipse.update.core.linux"/>
       <plugin id="org.eclipse.update.core.win32" fragment="true"/>
       <plugin id="org.eclipse.update.ui"/>
+      <plugin id="org.jivesoftware.smack"/>
       <plugin id="org.junit"/>
       <plugin id="org.junit4"/>
       <plugin id="org.mortbay.jetty"/>
+      <plugin id="org.remotercp.common"/>
+      <plugin id="org.remotercp.ecf"/>
+      <plugin id="org.remotercp.libs"/>
+      <plugin id="org.remotercp.util"/>
    </plugins>
 
 </product>
