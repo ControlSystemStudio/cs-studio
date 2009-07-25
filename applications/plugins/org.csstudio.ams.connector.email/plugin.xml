@@ -21,23 +21,6 @@
             name="Connector EMail"/>
    </extension>
    <extension
-         point="org.csstudio.platform.libs.xmpp.loginHandlers">
-      <loginHandler
-            class="org.csstudio.ams.connector.email.xmpp.EMailLoginCallbackHandler"
-            id="org.csstudio.ams.connector.email.EMailLoginHandler"
-            name="EMailLoginHandler">
-      </loginHandler>
-   </extension>
-   <extension
-         point="org.csstudio.platform.libs.dcf.action">
-      <parametrizedAction
-            class="org.csstudio.ams.connector.email.actions.EMailStopAction"
-            id="org.csstudio.ams.connector.email.StopAction"
-            name="Stop"
-            parameters="Password">
-      </parametrizedAction>
-   </extension>
-   <extension
          id="AmsEMailConnectorProductId"
          point="org.eclipse.core.runtime.products">
       <product
@@ -48,6 +31,27 @@
                value="AmsEMailConnectorProduct">
          </property>
       </product>
+   </extension>
+   <extension
+         point="org.csstudio.platform.managementCommands">
+      <command
+            class="org.csstudio.ams.connector.email.management.Stop"
+            id="org.csstudio.ams.connector.email.management.Stop"
+            label="Stop">
+         <stringParameter
+               id="org.csstudio.ams.connector.email.param.Password"
+               label="Password">
+         </stringParameter>
+      </command>
+      <command
+            class="org.csstudio.ams.connector.email.management.Restart"
+            id="org.csstudio.ams.connector.email.management.Restart"
+            label="Restart">
+         <stringParameter
+               id="org.csstudio.ams.connector.email.param.Password"
+               label="Password">
+         </stringParameter>
+      </command>
    </extension>
 
 </plugin>
