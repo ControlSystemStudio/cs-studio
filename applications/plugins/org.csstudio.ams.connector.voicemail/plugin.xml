@@ -21,23 +21,6 @@
             name="Connector Voice Mail"/>
    </extension>
    <extension
-         point="org.csstudio.platform.libs.xmpp.loginHandlers">
-      <loginHandler
-            class="org.csstudio.ams.connector.voicemail.xmpp.VoicemailCallbackHandler"
-            id="org.csstudio.ams.connector.voicemail.VoicemailLoginHandler"
-            name="VoicemailLoginHandler">
-      </loginHandler>
-   </extension>
-   <extension
-         point="org.csstudio.platform.libs.dcf.action">
-      <parametrizedAction
-            class="org.csstudio.ams.connector.voicemail.actions.VoicemalConnectorStopAction"
-            id="org.csstudio.ams.connector.voicemail.VoicemalConnectorStopAction"
-            name="Stop"
-            parameters="Password">
-      </parametrizedAction>
-   </extension>
-   <extension
          id="VoicemailConnectorProduct"
          point="org.eclipse.core.runtime.products">
       <product
@@ -48,6 +31,27 @@
                value="VoicemailConnector">
          </property>
       </product>
+   </extension>
+   <extension
+         point="org.csstudio.platform.managementCommands">
+      <command
+            class="org.csstudio.ams.connector.voicemail.management.Stop"
+            id="org.csstudio.ams.connector.voicemail.management.Stop"
+            label="Stop">
+         <stringParameter
+               id="org.csstudio.ams.connector.voicemail.param.Password"
+               label="Password">
+         </stringParameter>
+      </command>
+      <command
+            class="org.csstudio.ams.connector.voicemail.management.Restart"
+            id="org.csstudio.ams.connector.voicemail.management.Restart"
+            label="Restart">
+         <stringParameter
+               id="org.csstudio.ams.connector.voicemail.param.Password"
+               label="Password">
+         </stringParameter>
+      </command>
    </extension>
 
 </plugin>
