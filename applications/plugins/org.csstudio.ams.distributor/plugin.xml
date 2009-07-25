@@ -9,23 +9,6 @@
       </application>
    </extension>
    <extension
-         point="org.csstudio.platform.libs.xmpp.loginHandlers">
-      <loginHandler
-            class="org.csstudio.ams.distributor.xmpp.DistributorLoginCallbackHandler"
-            id="org.csstudio.ams.distributor.DistributorLoginHandler"
-            name="DistributorLoginHandler">
-      </loginHandler>
-   </extension>
-   <extension
-         point="org.csstudio.platform.libs.dcf.action">
-      <parametrizedAction
-            class="org.csstudio.ams.distributor.actions.DistributorStopAction"
-            id="org.csstudio.ams.distributor.DistributorStopAction"
-            name="Stop"
-            parameters="Password">
-      </parametrizedAction>
-   </extension>
-   <extension
          id="AmsDistributorProduct"
          point="org.eclipse.core.runtime.products">
       <product
@@ -36,6 +19,27 @@
                value="AmsDistributor">
          </property>
       </product>
+   </extension>
+   <extension
+         point="org.csstudio.platform.managementCommands">
+      <command
+            class="org.csstudio.ams.distributor.management.Stop"
+            id="org.csstudio.ams.distributor.management.Stop"
+            label="Stop">
+         <stringParameter
+               id="org.csstudio.ams.distributor.param.Password"
+               label="Password">
+         </stringParameter>
+      </command>
+      <command
+            class="org.csstudio.ams.distributor.management.Restart"
+            id="org.csstudio.ams.distributor.management.Restart"
+            label="Restart">
+         <stringParameter
+               id="org.csstudio.ams.distributor.param.Password"
+               label="Password">
+         </stringParameter>
+      </command>
    </extension>
 
 </plugin>

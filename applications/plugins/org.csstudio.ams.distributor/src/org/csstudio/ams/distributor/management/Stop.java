@@ -1,6 +1,6 @@
 
 /* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+ * Copyright (c) 2009 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
@@ -19,34 +19,26 @@
  * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
- *
  */
 
-package org.csstudio.ams.distributor.xmpp;
+package org.csstudio.ams.distributor.management;
 
-import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.security.Credentials;
-import org.csstudio.platform.security.ILoginCallbackHandler;
+import org.csstudio.platform.management.CommandParameters;
+import org.csstudio.platform.management.CommandResult;
+import org.csstudio.platform.management.IManagementCommand;
 
 /**
  * @author Markus Moeller
  *
  */
-public class DistributorLoginCallbackHandler implements ILoginCallbackHandler
+public class Stop implements IManagementCommand
 {
-    /**
-     * 
+    /* (non-Javadoc)
+     * @see org.csstudio.platform.management.IManagementCommand#execute(org.csstudio.platform.management.CommandParameters)
      */
-    public Credentials getCredentials()
+    public CommandResult execute(CommandParameters parameters)
     {
-        return new Credentials("ams-distributor", "ams");
-    }
-
-    /**
-     * 
-     */
-    public void signalFailedLoginAttempt()
-    {
-        CentralLogger.getInstance().error(this, "XMPP login failed");
+        // TODO Auto-generated method stub
+        return null;
     }
 }

@@ -38,11 +38,13 @@ import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.Log;
 import org.csstudio.ams.SynchObject;
 import org.csstudio.ams.Utils;
-import org.csstudio.platform.startupservice.IStartupServiceListener;
-import org.csstudio.platform.startupservice.StartupServiceEnumerator;
+import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.remotercp.common.servicelauncher.ServiceLauncher;
+import org.remotercp.ecf.ECFConstants;
+import org.remotercp.login.connection.HeadlessConnection;
 
 public class DistributorStart implements IApplication
 {
@@ -68,15 +70,15 @@ public class DistributorStart implements IApplication
     
     private static DistributorStart _instance = null;
 
-    private Context             extContext                  = null;
-    private ConnectionFactory   extFactory                  = null;
-    private Connection          extConnection               = null;
-    private Session             extSession                  = null;
+    private Context extContext = null;
+    private ConnectionFactory extFactory = null;
+    private Connection extConnection = null;
+    private Session extSession = null;
     
-    private MessageProducer     extPublisherStatusChange    = null;
+    private MessageProducer extPublisherStatusChange = null;
     
-    private SynchObject         sObj                        = null;
-    private int                 lastStatus                  = 0;
+    private SynchObject sObj = null;
+    private int lastStatus = 0;
     private boolean bStop;
     private boolean restart;
     
@@ -85,12 +87,6 @@ public class DistributorStart implements IApplication
         _instance = this;
         
         sObj = new SynchObject(STAT_INIT, System.currentTimeMillis());
-
-        // For XMPP login
-        for(IStartupServiceListener s : StartupServiceEnumerator.getServices())
-        {
-            s.run();
-        }
     }
     
     public void stop()
@@ -124,6 +120,8 @@ public class DistributorStart implements IApplication
 
         bStop = false;
         restart = false;
+        
+        connectToXMPPServer();
         
         while(bStop == false)
         {
@@ -237,6 +235,23 @@ public class DistributorStart implements IApplication
             return EXIT_RESTART;
         else
             return EXIT_OK;
+    }
+
+    public void connectToXMPPServer()
+    {
+        String xmppUser = "ams-distributor";
+        String xmppPassword = "ams";
+        String xmppServer = "krykxmpp.desy.de";
+
+        try
+        {
+            HeadlessConnection.connect(xmppUser, xmppPassword, xmppServer, ECFConstants.XMPP);
+            ServiceLauncher.startRemoteServices();     
+        }
+        catch(Exception e)
+        {
+            CentralLogger.getInstance().warn(this, "Could not connect to XMPP server: " + e.getMessage());
+        }
     }
 
     public int getStatus()
