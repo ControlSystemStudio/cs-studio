@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) C1 WPS mbH, HAMBURG, GERMANY. All Rights Reserved.
  *
@@ -21,16 +22,16 @@
  * MAY FIND A COPY AT
  * {@link http://www.eclipse.org/org/documents/epl-v10.html}.
  */
+
 package org.csstudio.nams.application.department.decision;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.List;
+import org.csstudio.nams.application.department.decision.management.Stop;
 import org.csstudio.nams.application.department.decision.office.decision.AlarmEntscheidungsBuero;
 import org.csstudio.nams.application.department.decision.remote.RemotelyStoppable;
-import org.csstudio.nams.application.department.decision.remote.xmpp.XMPPLoginCallbackHandler;
-import org.csstudio.nams.application.department.decision.remote.xmpp.XMPPRemoteShutdownAction;
 import org.csstudio.nams.common.activatorUtils.AbstractBundleActivator;
 import org.csstudio.nams.common.activatorUtils.OSGiBundleActivationMethod;
 import org.csstudio.nams.common.activatorUtils.OSGiBundleDeactivationMethod;
@@ -62,12 +63,14 @@ import org.csstudio.nams.service.preferenceservice.declaration.PreferenceService
 import org.csstudio.nams.service.preferenceservice.declaration.PreferenceServiceDatabaseKeys;
 import org.csstudio.nams.service.preferenceservice.declaration.PreferenceServiceJMSKeys;
 import org.csstudio.nams.service.regelwerkbuilder.declaration.RegelwerkBuilderService;
-import org.csstudio.platform.startupservice.IStartupServiceListener;
-import org.csstudio.platform.startupservice.StartupServiceEnumerator;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.statistic.Collector;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.osgi.framework.BundleActivator;
+import org.remotercp.common.servicelauncher.ServiceLauncher;
+import org.remotercp.ecf.ECFConstants;
+import org.remotercp.login.connection.HeadlessConnection;
 
 /**
  * <p>
@@ -327,7 +330,7 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 	 */
 	public Object start(final IApplicationContext context)
 	{
-        XMPPRemoteShutdownAction.staticInject(this);
+        Stop.staticInject(this);
         
         ackMessages = new Collector();
         ackMessages.setApplication("AmsDecisionDepartment");
@@ -348,12 +351,8 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 		DecisionDepartmentActivator.logger
 				.logInfoMessage(this,
 						"Decision department application is going to be initialized...");
-
-        /* For XMPP login ADDED BY Markus Moeller 2008-11-26 */
-		for(IStartupServiceListener service : StartupServiceEnumerator.getServices())
-        {
-            service.run();
-        }
+		
+		connectToXMPPServer();
 		
 		configureExecutionService();
 
@@ -440,6 +439,23 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 
 		return IApplication.EXIT_OK;
 	}
+
+    public void connectToXMPPServer()
+    {
+        String xmppUser = "ams-department-decision";
+        String xmppPassword = "ams";
+        String xmppServer = "krykxmpp.desy.de";
+
+        try
+        {
+            HeadlessConnection.connect(xmppUser, xmppPassword, xmppServer, ECFConstants.XMPP);
+            ServiceLauncher.startRemoteServices();     
+        }
+        catch(Exception e)
+        {
+            CentralLogger.getInstance().warn(this, "Could not connect to XMPP server: " + e.getMessage());
+        }
+    }
 
 	private void closeMessagingConnections() {
 		// Alle Verbindungen schließen
@@ -741,10 +757,7 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 
 		DecisionDepartmentActivator.executionService = injectedExecutionService;
 
-		XMPPLoginCallbackHandler
-				.staticInject(DecisionDepartmentActivator.logger);
-		XMPPRemoteShutdownAction
-				.staticInject(DecisionDepartmentActivator.logger);
+		Stop.staticInject(DecisionDepartmentActivator.logger);
 
 		DecisionDepartmentActivator.logger.logInfoMessage(this, "plugin "
 				+ DecisionDepartmentActivator.PLUGIN_ID

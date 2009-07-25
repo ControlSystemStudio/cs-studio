@@ -12,23 +12,6 @@
       </application>
    </extension>
    <extension
-         point="org.csstudio.platform.libs.xmpp.loginHandlers">
-      <loginHandler
-            class="org.csstudio.nams.application.department.decision.remote.xmpp.XMPPLoginCallbackHandler"
-            id="org.csstudio.nams.application.department.decision.remote.xmpp.XMPPLoginCallbackHandler"
-            name="DecissionDepartmentLoginHandler">
-      </loginHandler>
-   </extension>
-   <extension
-         point="org.csstudio.platform.libs.dcf.action">
-      <parametrizedAction
-            class="org.csstudio.nams.application.department.decision.remote.xmpp.XMPPRemoteShutdownAction"
-            id="org.csstudio.nams.application.department.decision.remote.RemoteShutdownAction"
-            name="Stop"
-            parameters="Password">
-      </parametrizedAction>
-   </extension>
-   <extension
          id="DepartmentDecision"
          point="org.eclipse.core.runtime.products">
       <product
@@ -39,6 +22,18 @@
                value="AmsDepartmentDecision">
          </property>
       </product>
+   </extension>
+   <extension
+         point="org.csstudio.platform.managementCommands">
+      <command
+            class="org.csstudio.nams.application.department.decision.management.Stop"
+            id="org.csstudio.nams.application.department.decision.org.csstudio.nams.application.department.decision.management.Stop"
+            label="Stop">
+         <stringParameter
+               id="org.csstudio.nams.application.department.decision.param.Password"
+               label="Password">
+         </stringParameter>
+      </command>
    </extension>
 
 </plugin>
