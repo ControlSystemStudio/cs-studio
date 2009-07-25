@@ -23,6 +23,8 @@
 
 package org.csstudio.ams.distributor.management;
 
+import org.csstudio.ams.Messages;
+import org.csstudio.ams.distributor.DistributorStart;
 import org.csstudio.platform.management.CommandParameters;
 import org.csstudio.platform.management.CommandResult;
 import org.csstudio.platform.management.IManagementCommand;
@@ -38,7 +40,19 @@ public class Stop implements IManagementCommand
      */
     public CommandResult execute(CommandParameters parameters)
     {
-        // TODO Auto-generated method stub
-        return null;
+        String password = (String)parameters.get("org.csstudio.ams.distributor.param.Password");
+        if(password == null)
+        {
+            return CommandResult.createFailureResult("ERROR: [1] - Parameter not available.");
+        }
+
+        if(password.compareTo(Messages.Pref_Password_ShutdownAction) != 0)
+        {
+            return CommandResult.createFailureResult("ERROR: [2] - Invalid password");
+        }
+
+        DistributorStart.getInstance().setShutdown();
+
+        return CommandResult.createMessageResult("OK: [0] - Distributor is stopping now...");
     }
 }
