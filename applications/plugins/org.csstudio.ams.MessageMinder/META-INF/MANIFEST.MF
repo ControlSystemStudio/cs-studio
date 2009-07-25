@@ -7,11 +7,11 @@ Bundle-Activator: org.csstudio.ams.messageminder.MessageMinderActivator
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Require-Bundle: org.eclipse.core.runtime.compatibility.auth,
- org.eclipse.ui,
  org.eclipse.core.runtime,
+ org.eclipse.ui,
  org.csstudio.platform,
  org.csstudio.platform.ui,
  org.csstudio.ams,
- org.csstudio.platform.libs.xmpp,
- org.csstudio.platform.libs.dcf,
- org.csstudio.platform.utility.jms
+ org.csstudio.platform.utility.jms,
+ org.remotercp.common;bundle-version="1.0.0",
+ org.remotercp.ecf;bundle-version="1.0.0"

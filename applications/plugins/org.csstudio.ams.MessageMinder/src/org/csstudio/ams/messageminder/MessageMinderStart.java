@@ -27,11 +27,12 @@
 package org.csstudio.ams.messageminder;
 
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.startupservice.IStartupServiceListener;
-import org.csstudio.platform.startupservice.StartupServiceEnumerator;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
+import org.remotercp.common.servicelauncher.ServiceLauncher;
+import org.remotercp.ecf.ECFConstants;
+import org.remotercp.login.connection.HeadlessConnection;
 
 /**
  * @author hrickens
@@ -52,10 +53,9 @@ public final class MessageMinderStart implements IApplication {
      */
     public Object start(IApplicationContext context) throws Exception {
         _instance = this;
-        for (IStartupServiceListener s : StartupServiceEnumerator.getServices()) {
-            System.out.println("Service: " + s.toString());
-            s.run();
-        }
+        
+        connectToXMPPServer();
+
         CentralLogger.getInstance().info(this, "MessageMinder started...");
 
         _commander = new MessageGuardCommander("MessageMinder");
@@ -73,6 +73,23 @@ public final class MessageMinderStart implements IApplication {
         }
     }
 
+    public void connectToXMPPServer()
+    {
+        String xmppUser = "ams-message-minder";
+        String xmppPassword = "ams";
+        String xmppServer = "krykxmpp.desy.de";
+
+        try
+        {
+            HeadlessConnection.connect(xmppUser, xmppPassword, xmppServer, ECFConstants.XMPP);
+            ServiceLauncher.startRemoteServices();     
+        }
+        catch(Exception e)
+        {
+            CentralLogger.getInstance().warn(this, "Could not connect to XMPP server: " + e.getMessage());
+        }
+    }
+
     /* (non-Javadoc)
      * @see org.eclipse.equinox.app.IApplication#stop()
      */
@@ -85,8 +102,9 @@ public final class MessageMinderStart implements IApplication {
         return _restart;
     }
 
-    public synchronized void setRestart(boolean restart) {
-        _restart = restart;
+    public synchronized void setRestart() {
+        _restart = true;
+        setRun(false);
     }
 
 
