@@ -1,6 +1,6 @@
 
 /* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+ * Copyright (c) 2009 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
@@ -19,50 +19,40 @@
  * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
- *
  */
 
-package org.csstudio.ams.connector.jms.actions;
-
-import java.util.Map;
+package org.csstudio.ams.connector.jms.management;
 
 import org.csstudio.ams.Messages;
 import org.csstudio.ams.connector.jms.JMSConnectorStart;
-import org.csstudio.platform.libs.dcf.actions.IAction;
+import org.csstudio.platform.management.CommandParameters;
+import org.csstudio.platform.management.CommandResult;
+import org.csstudio.platform.management.IManagementCommand;
 
 /**
- *  @author Markus Moeller
+ * @author Markus Moeller
  *
  */
-public class JMSConnectorStopAction implements IAction
+public class Stop implements IManagementCommand
 {
-    public Object run(Object param)
+    /* (non-Javadoc)
+     * @see org.csstudio.platform.management.IManagementCommand#execute(org.csstudio.platform.management.CommandParameters)
+     */
+    public CommandResult execute(CommandParameters parameters)
     {
-        String password = null;
-        
-        if(!(param instanceof Map))
+        String password = (String)parameters.get("org.csstudio.ams.connector.jms.param.Password");
+        if(password == null)
         {
-            return "ERROR: [1] - Parameter not available.";
+            return CommandResult.createFailureResult("ERROR: [1] - Parameter not available.");
         }
-        
-        Map<?, ?> map = (Map<?, ?>)param;
-        
-        try
+
+        if(password.compareTo(Messages.Pref_Password_ShutdownAction) != 0)
         {
-            password = (String)map.get("Password");
-        
-            if(password.compareTo(Messages.Pref_Password_ShutdownAction) != 0)
-            {
-                return "ERROR: [2] - Invalid password";
-            }
+            return CommandResult.createFailureResult("ERROR: [2] - Invalid password");
         }
-        catch(Exception e)
-        {
-            return e.getMessage();
-        }
-        
+
         JMSConnectorStart.getInstance().setShutdown();
-        
-        return "OK: [0] - JMSConnector is stopping now...";
+
+        return CommandResult.createMessageResult("OK: [0] - JmsConnector is stopping now...");
     }
 }

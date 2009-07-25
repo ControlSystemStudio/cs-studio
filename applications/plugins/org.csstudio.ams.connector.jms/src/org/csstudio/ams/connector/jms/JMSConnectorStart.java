@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,7 +20,8 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.ams.connector.jms;
+
+package org.csstudio.ams.connector.jms;
 
 import java.net.InetAddress;
 import java.util.Hashtable;
@@ -38,11 +40,13 @@ import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.Log;
 import org.csstudio.ams.SynchObject;
 import org.csstudio.ams.Utils;
-import org.csstudio.platform.startupservice.IStartupServiceListener;
-import org.csstudio.platform.startupservice.StartupServiceEnumerator;
+import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.remotercp.common.servicelauncher.ServiceLauncher;
+import org.remotercp.ecf.ECFConstants;
+import org.remotercp.login.connection.HeadlessConnection;
 
 public class JMSConnectorStart implements IApplication
 {
@@ -57,15 +61,15 @@ public class JMSConnectorStart implements IApplication
 
     private static JMSConnectorStart _instance = null;
 
-    private Context             extContext                  = null;
-    private ConnectionFactory   extFactory                  = null;
-    private Connection          extConnection               = null;
-    private Session             extSession                  = null;
+    private Context extContext = null;
+    private ConnectionFactory extFactory = null;
+    private Connection extConnection = null;
+    private Session extSession = null;
     
-    private MessageProducer     extPublisherStatusChange    = null;
+    private MessageProducer extPublisherStatusChange = null;
     
-    private SynchObject         sObj                        = null;
-    private int                 lastStatus                  = 0;
+    private SynchObject sObj = null;
+    private int lastStatus = 0;
     
     private boolean bStop;
     private boolean restart;
@@ -75,12 +79,6 @@ public class JMSConnectorStart implements IApplication
         _instance = this;
         
         sObj = new SynchObject(STAT_INIT, System.currentTimeMillis());
-        
-        // For XMPP login
-        for(IStartupServiceListener s : StartupServiceEnumerator.getServices())
-        {
-            s.run();
-        }
     }
     
     public void stop()
@@ -110,8 +108,10 @@ public class JMSConnectorStart implements IApplication
         Log.log(this, Log.INFO, "start");
         JMSConnectorWork ecw = null;
         boolean bInitedJms = false;
-        lastStatus = getStatus();                                               // use synchronized method
+        lastStatus = getStatus(); // use synchronized method
 
+        connectToXMPPServer();
+        
         bStop = false;
         restart = false;
         
@@ -211,6 +211,23 @@ public class JMSConnectorStart implements IApplication
             return EXIT_OK;
     }
     
+    public void connectToXMPPServer()
+    {
+        String xmppUser = "ams-jms-connector";
+        String xmppPassword = "ams";
+        String xmppServer = "krykxmpp.desy.de";
+
+        try
+        {
+            HeadlessConnection.connect(xmppUser, xmppPassword, xmppServer, ECFConstants.XMPP);
+            ServiceLauncher.startRemoteServices();     
+        }
+        catch(Exception e)
+        {
+            CentralLogger.getInstance().warn(this, "Could not connect to XMPP server: " + e.getMessage());
+        }
+    }
+
     public int getStatus()
     {
         return sObj.getSynchStatus();

@@ -1,6 +1,6 @@
 
 /* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+ * Copyright (c) 2009 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
@@ -19,35 +19,40 @@
  * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
- *
  */
 
-package org.csstudio.ams.connector.jms.xmpp;
+package org.csstudio.ams.connector.jms.management;
 
-import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.security.Credentials;
-import org.csstudio.platform.security.ILoginCallbackHandler;
+import org.csstudio.ams.Messages;
+import org.csstudio.ams.connector.jms.JMSConnectorStart;
+import org.csstudio.platform.management.CommandParameters;
+import org.csstudio.platform.management.CommandResult;
+import org.csstudio.platform.management.IManagementCommand;
 
 /**
- *  @author Markus Moeller
+ * @author Markus Moeller
  *
  */
-public class JMSConnectorCallbackHandler implements ILoginCallbackHandler
+public class Restart implements IManagementCommand
 {
-
     /* (non-Javadoc)
-     * @see org.csstudio.platform.security.ILoginCallbackHandler#getCredentials()
+     * @see org.csstudio.platform.management.IManagementCommand#execute(org.csstudio.platform.management.CommandParameters)
      */
-    public Credentials getCredentials()
+    public CommandResult execute(CommandParameters parameters)
     {
-        return new Credentials("ams-jms-connector", "ams");
-    }
+        String password = (String)parameters.get("org.csstudio.ams.connector.jms.param.Password");
+        if(password == null)
+        {
+            return CommandResult.createFailureResult("\nParameter not available.");
+        }
 
-    /* (non-Javadoc)
-     * @see org.csstudio.platform.security.ILoginCallbackHandler#signalFailedLoginAttempt()
-     */
-    public void signalFailedLoginAttempt()
-    {
-        CentralLogger.getInstance().error(this, "XMPP login failed");
+        if(password.compareTo(Messages.Pref_Password_ShutdownAction) != 0)
+        {
+            return CommandResult.createFailureResult("\nInvalid password");
+        }
+
+        JMSConnectorStart.getInstance().setRestart();
+
+        return CommandResult.createMessageResult("Restarting application JmsConnector");
     }
 }

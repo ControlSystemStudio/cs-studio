@@ -23,21 +23,25 @@
       </product>
    </extension>
    <extension
-         point="org.csstudio.platform.libs.xmpp.loginHandlers">
-      <loginHandler
-            class="org.csstudio.ams.connector.jms.xmpp.JMSConnectorCallbackHandler"
-            id="org.csstudio.ams.connector.jms.JMSConnectorLoginHandler"
-            name="JMSConnectorLoginHandler">
-      </loginHandler>
-   </extension>
-   <extension
-         point="org.csstudio.platform.libs.dcf.action">
-      <parametrizedAction
-            class="org.csstudio.ams.connector.jms.actions.JMSConnectorStopAction"
-            id="org.csstudio.ams.connector.jms.JMSConnectorStopAction"
-            name="Stop"
-            parameters="Password">
-      </parametrizedAction>
+         point="org.csstudio.platform.managementCommands">
+      <command
+            class="org.csstudio.ams.connector.jms.management.Stop"
+            id="org.csstudio.ams.connector.jms.management.Stop"
+            label="Stop">
+         <stringParameter
+               id="org.csstudio.ams.connector.jms.param.Password"
+               label="Password">
+         </stringParameter>
+      </command>
+      <command
+            class="org.csstudio.ams.connector.jms.management.Restart"
+            id="org.csstudio.ams.connector.jms.management.Restart"
+            label="Restart">
+         <stringParameter
+               id="org.csstudio.ams.connector.jms.param.Password"
+               label="Password">
+         </stringParameter>
+      </command>
    </extension>
 
 </plugin>
