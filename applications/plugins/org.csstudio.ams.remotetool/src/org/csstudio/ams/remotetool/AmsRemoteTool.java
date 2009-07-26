@@ -23,22 +23,27 @@
 
 package org.csstudio.ams.remotetool;
 
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import org.csstudio.platform.libs.dcf.actions.ActionDescriptor;
-import org.csstudio.platform.libs.dcf.actions.ActionExecutor;
-import org.csstudio.platform.libs.dcf.actions.ActionQueryActions;
-import org.csstudio.platform.libs.dcf.directory.ContactElement;
-import org.csstudio.platform.libs.dcf.messaging.ConnectionManager;
+import java.util.Vector;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.startupservice.IStartupServiceListener;
-import org.csstudio.platform.startupservice.StartupServiceEnumerator;
+import org.csstudio.platform.management.CommandDescription;
+import org.csstudio.platform.management.CommandParameters;
+import org.csstudio.platform.management.CommandResult;
+import org.csstudio.platform.management.IManagementCommandService;
+import org.eclipse.ecf.core.identity.ID;
+import org.eclipse.ecf.presence.roster.IRoster;
+import org.eclipse.ecf.presence.roster.IRosterEntry;
+import org.eclipse.ecf.presence.roster.IRosterGroup;
+import org.eclipse.ecf.presence.roster.IRosterItem;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.remotercp.common.servicelauncher.ServiceLauncher;
 import org.remotercp.ecf.ECFConstants;
+import org.remotercp.ecf.session.ISessionService;
 import org.remotercp.login.connection.HeadlessConnection;
+import org.remotercp.util.osgi.OsgiServiceLocatorUtil;
 
 /**
  * @author Markus Moeller
@@ -51,6 +56,8 @@ public class AmsRemoteTool implements IApplication
     
     /** The logger */
     private CentralLogger logger;
+    
+    private ISessionService session;
     
     private final int RESULT_OK = 0;
     private final int RESULT_ERROR_GENERAL = 1;
@@ -68,14 +75,18 @@ public class AmsRemoteTool implements IApplication
     /**
      * @see org.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.IApplicationContext)
      */
+    @SuppressWarnings({ "deprecation", "unchecked" })
     public Object start(IApplicationContext context) throws Exception
     {
-        ActionDescriptor[] descriptors = null;
-        ActionDescriptor stopDescriptor = null;
-        ContactElement[] element = null;
-        HashMap<String, String> parameter = null;
-        String applicInfo = null;
+        IRoster roster = null;
+        Vector<IRosterItem> rosterItems = null;
+        Vector<IRosterEntry> rosterEntries = null;
+        IRosterGroup jmsApplics = null;
+        IRosterEntry currentApplic = null;
+        CommandParameters parameter = null;
+        CommandDescription stopAction = null;
         String applicName = null;
+        String name = null;
         String user = null;
         String host = null;
         String pw = null;
@@ -104,7 +115,7 @@ public class AmsRemoteTool implements IApplication
             usage();
             return iResult;
         }
-        
+                
         applicName = cl.value("applicname");
         host = cl.value("host");
         user = cl.value("username");
@@ -112,75 +123,67 @@ public class AmsRemoteTool implements IApplication
         
         logger.info(this, "Try to stop " + applicName + " on host " + host + ". Running under the account: " + user);
         
-        List<ContactElement> applics = null;
-        ContactElement jmsApplic = null;
-        
         connectToXMPPServer();
 
-        for(IStartupServiceListener s : StartupServiceEnumerator.getServices())
-        {
-            s.run();
-        }
-        
-        int count = 0;
-        
         // We have to wait until the DCF connection manager have been initialized
         synchronized(this)
         {
-            do
+            try
             {
-                try
-                {
-                    this.wait(2000);
-                }
-                catch(InterruptedException ie)
-                {
-                    logger.error(this, "*** InterruptedException ***: " + ie.getMessage());
-                }
-                
-                // Get the directory
-                element = ConnectionManager.getDefault().getDirectory();
+                this.wait(2000);
             }
-            while((++count <= 10) && (element.length == 0));
+            catch(InterruptedException ie)
+            {
+                logger.error(this, "*** InterruptedException ***: " + ie.getMessage());
+            }
         }
         
-        if(element.length == 0)
+        session = OsgiServiceLocatorUtil.getOSGiService(Activator.getDefault().getBundle().getBundleContext(), ISessionService.class);
+        roster = session.getRoster();
+        
+        // Get the roster items
+        rosterItems = new Vector<IRosterItem>((Collection<IRosterItem>)roster.getItems());
+
+        if(rosterItems.size() == 0)
         {
-            logger.info(this, "XMPP directory not found. Stopping application.");
+            logger.info(this, "XMPP roster not found. Stopping application.");
             return RESULT_ERROR_XMPP;
         }
         else
         {
-            logger.info(this, "Manager initialized after " + count + " try/tries.");
+            logger.info(this, "Manager initialized");
         }
         
-        logger.info(this, "Anzahl Directory-Elemente: " + element.length);
+        logger.info(this, "Anzahl Directory-Elemente: " + rosterItems.size());
         
         // Get the group of JMS applications
-        for(ContactElement ce : element)
+        for(IRosterItem ri : rosterItems)
         {
-            if(ce.toString().compareToIgnoreCase("jms-applications") == 0)
+            if(ri.getName().compareToIgnoreCase("jms-applications") == 0)
             {
-                jmsApplic = ce;
+                System.out.println(ri.getName());
+                jmsApplics = (IRosterGroup)ri;
                 break;
             }
         }
         
         // Get the application container
-        if(jmsApplic != null)
+        if(jmsApplics != null)
         {
-            applics = jmsApplic.getChildren();
+            rosterEntries = new Vector<IRosterEntry>((Collection<IRosterEntry>)jmsApplics.getEntries());
             
-            jmsApplic = null;
-            
-            Iterator<ContactElement> list = applics.iterator();
+            Iterator<IRosterEntry> list = rosterEntries.iterator();
             while(list.hasNext())
             {
-                ContactElement ce = list.next();
-                if(ce.toString().startsWith(applicName))
+                IRosterEntry ce = list.next();
+                name = ce.getUser().getID().toExternalForm();
+                if(name.contains(applicName))
                 {
-                    jmsApplic = ce;
-                    break;
+                    if((name.indexOf(host) > -1) && (name.indexOf(user) > -1))
+                    {
+                        currentApplic = ce;
+                        break;
+                    }
                 }
             }
         }
@@ -189,93 +192,57 @@ public class AmsRemoteTool implements IApplication
             iResult = this.RESULT_ERROR_UNKNOWN;
         }
         
-        // Get the running application
-        if(jmsApplic != null)
+        IManagementCommandService service = null;
+        
+        if(currentApplic != null)
         {
-            applics = jmsApplic.getChildren();
+            logger.info(this, "Anwendung gefunden: " + currentApplic.getUser().getID().getName());
             
-            jmsApplic = null;
+            List<IManagementCommandService> managementServices =
+                session.getRemoteServiceProxies(
+                    IManagementCommandService.class, new ID[] {currentApplic.getUser().getID()});
             
-            Iterator<ContactElement> list = applics.iterator();
-            while(list.hasNext())
+            if (managementServices.size() == 1)
             {
-                ContactElement ce = list.next();
-                applicInfo = ce.toString();
-                if(applicInfo != null)
+                service = managementServices.get(0);
+                CommandDescription[] commands = service.getSupportedCommands();
+                
+                for (int i = 0; i < commands.length; i++)
                 {
-                    if(applicInfo.startsWith(applicName))
+                    System.out.println(commands[i].getLabel());
+                    
+                    if(commands[i].getLabel().compareToIgnoreCase("stop") == 0)
                     {
-                        if((applicInfo.indexOf(host) > -1) && (applicInfo.indexOf(user) > -1))
-                        {
-                            jmsApplic = ce;
-                            break;
-                        }
+                        stopAction = commands[i];
+                        break;
+                    }
+                }
+            }
+            
+            if(stopAction != null)
+            {
+                parameter = new CommandParameters();
+                parameter.set("Password", pw);
+                
+                CommandResult retValue = service.execute(stopAction.getIdentifier(), parameter);
+                if(retValue != null)
+                {
+                    String result = (String)retValue.getValue();
+                    if((result.trim().startsWith("OK:")) || (result.indexOf("stopping") > -1))
+                    {
+                        logger.info(this, "Application stopped: " + result);
+                        iResult = RESULT_OK;
+                    }
+                    else
+                    {
+                        logger.error(this, "Something went wrong: " + result);
+                        iResult = RESULT_ERROR_INVALID_PASSWORD;
                     }
                 }
                 else
                 {
-                    logger.info(this, "Application is not running yet.");
-                    iResult = RESULT_ERROR_NOT_FOUND;
-                }
-            }
-        }
-        else
-        {
-            iResult = RESULT_ERROR_UNKNOWN;
-        }
-        
-        if(jmsApplic != null)
-        {
-            logger.info(this, "Anwendung gefunden: isManageable: " + jmsApplic.isManageable());
-        
-            Object retValue = ActionExecutor.executeObjectSynchronous(ActionQueryActions.ACTION_ID, null, jmsApplic);
-            if(retValue instanceof ActionDescriptor[])
-            {
-                descriptors = (ActionDescriptor[])retValue;
-                logger.info(this, "Actions queried: " + descriptors.length);
-                
-                for(ActionDescriptor ad : descriptors)
-                {
-                    if(ad.getName().compareToIgnoreCase("stop") == 0)
-                    {
-                        logger.info(this, ad.getId() + " / " + ad.getName() + " / " + ad.getType());
-                        stopDescriptor = ad;
-                        break;
-                    }
-                }
-                
-                if(stopDescriptor != null)
-                {
-                    parameter = new HashMap<String, String>();
-                    parameter.put("Password", pw);
-                    retValue = ActionExecutor.executeObjectSynchronous(stopDescriptor.getId(), parameter, jmsApplic);
-                    if(retValue != null)
-                    {
-                        if(retValue instanceof String)
-                        {
-                            String result = (String)retValue;
-                            if((result.trim().startsWith("OK:")) || (result.indexOf("stopping") > -1))
-                            {
-                                logger.info(this, "Application stopped: " + result);
-                                iResult = RESULT_OK;
-                            }
-                            else
-                            {
-                                logger.error(this, "Something went wrong: " + result);
-                                iResult = RESULT_ERROR_INVALID_PASSWORD;
-                            }
-                        }
-                        else
-                        {
-                            logger.info(this, "Unknown return value. Class: " + retValue.getClass().getName());
-                            iResult = RESULT_ERROR_UNKNOWN;
-                        }
-                    }
-                    else
-                    {
-                        logger.info(this, "Return value is null!");
-                        iResult = RESULT_ERROR_UNKNOWN;
-                    }
+                    logger.info(this, "Return value is null!");
+                    iResult = RESULT_ERROR_UNKNOWN;
                 }
             }
         }        
