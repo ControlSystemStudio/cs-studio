@@ -29,7 +29,7 @@
             id="org.csstudio.ams.connector.jms.management.Stop"
             label="Stop">
          <stringParameter
-               id="org.csstudio.ams.connector.jms.param.Password"
+               id="Password"
                label="Password">
          </stringParameter>
       </command>
@@ -38,7 +38,7 @@
             id="org.csstudio.ams.connector.jms.management.Restart"
             label="Restart">
          <stringParameter
-               id="org.csstudio.ams.connector.jms.param.Password"
+               id="Password"
                label="Password">
          </stringParameter>
       </command>

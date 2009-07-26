@@ -65,7 +65,7 @@ public class Stop implements IManagementCommand
      */
     public CommandResult execute(CommandParameters parameters)
     {
-        String value = (String)parameters.get("org.csstudio.nams.application.department.decision.param.Password");
+        String value = (String)parameters.get("Password");
         if(Stop.ADMIN_PASSWORD.equals(value))
         {
             Stop.thingToBeStopped

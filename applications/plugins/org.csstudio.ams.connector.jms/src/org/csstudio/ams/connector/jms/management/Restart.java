@@ -40,7 +40,7 @@ public class Restart implements IManagementCommand
      */
     public CommandResult execute(CommandParameters parameters)
     {
-        String password = (String)parameters.get("org.csstudio.ams.connector.jms.param.Password");
+        String password = (String)parameters.get("Password");
         if(password == null)
         {
             return CommandResult.createFailureResult("\nParameter not available.");

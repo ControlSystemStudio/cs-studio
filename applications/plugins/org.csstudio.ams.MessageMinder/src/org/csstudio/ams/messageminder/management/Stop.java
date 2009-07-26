@@ -40,7 +40,7 @@ public class Stop implements IManagementCommand
      */
     public CommandResult execute(CommandParameters parameters)
     {
-        String password = (String)parameters.get("org.csstudio.ams.MessageMinder.param.Password");
+        String password = (String)parameters.get("Password");
         if(password == null)
         {
             return CommandResult.createFailureResult("ERROR: [1] - Parameter not available.");

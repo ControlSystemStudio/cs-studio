@@ -27,7 +27,7 @@
             id="org.csstudio.ams.distributor.management.Stop"
             label="Stop">
          <stringParameter
-               id="org.csstudio.ams.distributor.param.Password"
+               id="Password"
                label="Password">
          </stringParameter>
       </command>
@@ -36,7 +36,7 @@
             id="org.csstudio.ams.distributor.management.Restart"
             label="Restart">
          <stringParameter
-               id="org.csstudio.ams.distributor.param.Password"
+               id="Password"
                label="Password">
          </stringParameter>
       </command>

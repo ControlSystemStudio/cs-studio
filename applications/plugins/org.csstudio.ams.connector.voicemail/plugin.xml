@@ -39,7 +39,7 @@
             id="org.csstudio.ams.connector.voicemail.management.Stop"
             label="Stop">
          <stringParameter
-               id="org.csstudio.ams.connector.voicemail.param.Password"
+               id="Password"
                label="Password">
          </stringParameter>
       </command>
@@ -48,7 +48,7 @@
             id="org.csstudio.ams.connector.voicemail.management.Restart"
             label="Restart">
          <stringParameter
-               id="org.csstudio.ams.connector.voicemail.param.Password"
+               id="Password"
                label="Password">
          </stringParameter>
       </command>

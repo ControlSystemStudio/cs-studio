@@ -47,7 +47,7 @@
             id="org.csstudio.ams.MessageMinder.management.Stop"
             label="Stop">
          <stringParameter
-               id="org.csstudio.ams.MessageMinder.param.Password"
+               id="Password"
                label="Password">
          </stringParameter>
       </command>
@@ -56,7 +56,7 @@
             id="org.csstudio.ams.MessageMinder.management.Restart"
             label="Restart">
          <stringParameter
-               id="org.csstudio.ams.MessageMinder.param.Password"
+               id="Password"
                label="Password">
          </stringParameter>
       </command>

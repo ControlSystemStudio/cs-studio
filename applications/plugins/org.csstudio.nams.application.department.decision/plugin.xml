@@ -30,7 +30,7 @@
             id="org.csstudio.nams.application.department.decision.org.csstudio.nams.application.department.decision.management.Stop"
             label="Stop">
          <stringParameter
-               id="org.csstudio.nams.application.department.decision.param.Password"
+               id="Password"
                label="Password">
          </stringParameter>
       </command>
