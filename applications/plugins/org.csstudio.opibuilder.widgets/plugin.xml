@@ -11,6 +11,15 @@
             model_class="org.csstudio.opibuilder.widgets.model.RectangleModel"
             name="Rectangle"
             typeId="org.csstudio.opibuilder.widgets.Rectangle">
+      </widget>
+      <widget
+            category="Controls"
+            description="A knob widget which could be used to read/write a PV"
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.KnobEditPart"
+            icon="icons/knob.gif"
+            model_class="org.csstudio.opibuilder.widgets.model.KnobModel"
+            name="Knob"
+            typeId="org.csstudio.opibuilder.widgets.knob">
       </widget>     
    </extension>
 

@@ -1,11 +1,11 @@
 package org.csstudio.opibuilder.widgets.editparts;
 
-import org.csstudio.opibuilder.editparts.AbstractWidgetEditpart;
+import org.csstudio.opibuilder.editparts.AbstractWidgetEditPart;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.RectangleFigure;
 
-public class RectangleEditpart extends AbstractWidgetEditpart {
+public class RectangleEditpart extends AbstractWidgetEditPart {
 
 	
 	@Override

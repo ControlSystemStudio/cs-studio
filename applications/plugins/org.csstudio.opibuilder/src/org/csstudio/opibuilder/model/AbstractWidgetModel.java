@@ -238,6 +238,14 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 		setPropertyValue(PROP_YPOS, y);
 	}
 	
+	public void setForegroundColor(RGB color){
+		setPropertyValue(PROP_COLOR_FOREGROUND, color);
+	}
+	
+	public void setBackgroundColor(RGB color){
+		setPropertyValue(PROP_COLOR_BACKGROUND, color);
+	}
+	
 	public void setPropertyDescription(String prop_id, String description){
 		getProperty(prop_id).setDescription(description);
 		if(propertyDescriptors.containsKey(prop_id))

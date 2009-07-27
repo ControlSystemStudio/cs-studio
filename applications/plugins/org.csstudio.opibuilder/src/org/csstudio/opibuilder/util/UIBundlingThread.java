@@ -41,7 +41,7 @@ public final class UIBundlingThread implements Runnable {
 		tasksQueue = new ConcurrentLinkedQueue<Runnable>();
 
 		ExecutionService.getInstance().getScheduledExecutorService()
-				.scheduleAtFixedRate(this, 100, 10, TimeUnit.MILLISECONDS);
+				.scheduleAtFixedRate(this, 100, 1, TimeUnit.MILLISECONDS);
 	}
 
 	/**

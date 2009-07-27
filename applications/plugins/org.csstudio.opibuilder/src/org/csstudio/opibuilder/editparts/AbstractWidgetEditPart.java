@@ -9,7 +9,7 @@ import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editpolicies.ComponentEditPolicy;
 import org.eclipse.gef.requests.GroupRequest;
 
-public abstract class AbstractWidgetEditpart extends AbstractBaseEditpart {	
+public abstract class AbstractWidgetEditPart extends AbstractBaseEditPart {	
 
 	@Override
 	protected void createEditPolicies() {

@@ -1,9 +1,7 @@
 package org.csstudio.opibuilder.properties;
 
 import org.csstudio.opibuilder.visualparts.IntegerPropertyDescriptor;
-import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
-import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 
 public class IntegerProperty extends AbstractWidgetProperty {
 
@@ -69,10 +67,8 @@ public class IntegerProperty extends AbstractWidgetProperty {
 	}	
 
 	@Override
-	protected IPropertyDescriptor createPropertyDescriptor() {
-		PropertyDescriptor descriptor = new IntegerPropertyDescriptor(prop_id, description);
-		descriptor.setCategory(category.toString());	
-		return descriptor;
+	protected PropertyDescriptor createPropertyDescriptor() {
+		return new IntegerPropertyDescriptor(prop_id, description);
 	}
 
 	

@@ -5,9 +5,10 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.opibuilder.editparts.AbstractBaseEditpart;
+import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.util.UIBundlingThread;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * The listener on widget property change.
@@ -16,14 +17,14 @@ import org.eclipse.draw2d.IFigure;
  */
 public class WidgetPropertyChangeListener implements PropertyChangeListener {
 
-	private AbstractBaseEditpart editpart;
+	private AbstractBaseEditPart editpart;
 	
 	private List<IWidgetPropertyChangeHandler> handlers;
 	
 	/**Constructor.
 	 * @param editpart backlint to the editpart, which uses this listener.
 	 */
-	public WidgetPropertyChangeListener(AbstractBaseEditpart editpart) {
+	public WidgetPropertyChangeListener(AbstractBaseEditPart editpart) {
 		assert editpart != null;
 		this.editpart = editpart;
 		handlers = new ArrayList<IWidgetPropertyChangeHandler>();
@@ -41,8 +42,8 @@ public class WidgetPropertyChangeListener implements PropertyChangeListener {
 				}
 			}
 		};
-		
-		UIBundlingThread.getInstance().addRunnable(task);
+		Display.getCurrent().asyncExec(task);
+		//UIBundlingThread.getInstance().addRunnable(task);
 	}
 	
 	/**Add handler, which is informed when a property changed.

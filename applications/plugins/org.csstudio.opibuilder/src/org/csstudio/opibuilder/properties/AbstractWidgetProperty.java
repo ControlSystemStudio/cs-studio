@@ -4,6 +4,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
+import org.eclipse.ui.views.properties.PropertyDescriptor;
 
 /**The base widget property class for all kinds of widget property.
  * @author Xihui Chen
@@ -17,7 +18,7 @@ public abstract class AbstractWidgetProperty {
 	
 	private PropertyChangeSupport pcsDelegate;
 	
-	private IPropertyDescriptor propertyDescriptor;
+	private PropertyDescriptor propertyDescriptor;
 	
 	protected Object propertyValue;
 	
@@ -137,8 +138,10 @@ public abstract class AbstractWidgetProperty {
 	}
 	
 	private void createPropertyDescriptor(final boolean visibleInPropSheet){
-		if(visibleInPropSheet)
+		if(visibleInPropSheet){
 			propertyDescriptor = createPropertyDescriptor();
+			propertyDescriptor.setCategory(category.toString());
+		}
 		else
 			propertyDescriptor = null;
 	}
@@ -146,6 +149,6 @@ public abstract class AbstractWidgetProperty {
 	/**
 	 * Create the {@link IPropertyDescriptor}
 	 */
-	protected abstract IPropertyDescriptor createPropertyDescriptor();
+	protected abstract PropertyDescriptor createPropertyDescriptor();
 	
 }

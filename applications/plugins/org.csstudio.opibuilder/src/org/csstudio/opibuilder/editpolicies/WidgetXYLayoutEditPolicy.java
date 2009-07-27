@@ -3,7 +3,7 @@ package org.csstudio.opibuilder.editpolicies;
 import org.csstudio.opibuilder.commands.ChangeGuideCommand;
 import org.csstudio.opibuilder.commands.WidgetCreateCommand;
 import org.csstudio.opibuilder.commands.WidgetSetConstraintCommand;
-import org.csstudio.opibuilder.editparts.AbstractBaseEditpart;
+import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.GuideModel;
@@ -31,9 +31,9 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
 	@Override
 	protected Command createChangeConstraintCommand(
 			ChangeBoundsRequest request, EditPart child, Object constraint) {
-		if(!(child instanceof AbstractBaseEditpart) || !(constraint instanceof Rectangle))
+		if(!(child instanceof AbstractBaseEditPart) || !(constraint instanceof Rectangle))
 			return super.createChangeConstraintCommand(request, child, constraint);
-		AbstractBaseEditpart part = (AbstractBaseEditpart) child;
+		AbstractBaseEditPart part = (AbstractBaseEditPart) child;
 		AbstractWidgetModel widgetModel = part.getCastedModel();
 		Command cmd = new WidgetSetConstraintCommand(
 					widgetModel, request, (Rectangle)constraint);
@@ -132,7 +132,7 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
 	 * @return Command The given command
 	 */
 	private Command chainGuideAttachmentCommand(final Request request,
-			final AbstractBaseEditpart part, final Command cmd,
+			final AbstractBaseEditPart part, final Command cmd,
 			final boolean horizontal) {
 		Command result = cmd;
 
@@ -169,7 +169,7 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
 	 * @return Command The given command
 	 */
 	private Command chainGuideDetachmentCommand(final Request request,
-			final AbstractBaseEditpart part, final Command cmd,
+			final AbstractBaseEditPart part, final Command cmd,
 			final boolean horizontal) {
 		Command result = cmd;
 

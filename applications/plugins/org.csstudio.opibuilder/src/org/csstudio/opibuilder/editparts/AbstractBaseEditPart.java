@@ -18,13 +18,13 @@ import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.swt.graphics.RGB;
 
-public abstract class AbstractBaseEditpart extends AbstractGraphicalEditPart{
+public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 
 	protected Map<String, WidgetPropertyChangeListener> propertyListenerMap;
 	
 	private ExecutionMode executionMode;
 	
-	public AbstractBaseEditpart() {
+	public AbstractBaseEditPart() {
 		propertyListenerMap = new HashMap<String, WidgetPropertyChangeListener>();	
 	}
 	
@@ -154,6 +154,10 @@ public abstract class AbstractBaseEditpart extends AbstractGraphicalEditPart{
 		
 	}
 	
+	/**
+	 * Register the property change handlers. Widget's editpart should override
+	 * this to register its properties.
+	 */
 	protected abstract void registerPropertyChangeHandlers();
 	
 	

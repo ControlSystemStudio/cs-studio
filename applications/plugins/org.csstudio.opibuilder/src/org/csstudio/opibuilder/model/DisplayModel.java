@@ -3,6 +3,11 @@ package org.csstudio.opibuilder.model;
 import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 
+/**
+ * The root model for an OPI Display.
+ * @author Xihui Chen
+ *
+ */
 public class DisplayModel extends AbstractContainerModel {
 	
 	/**

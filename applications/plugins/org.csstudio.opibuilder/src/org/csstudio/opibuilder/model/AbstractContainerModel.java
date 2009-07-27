@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
-import org.eclipse.ui.views.properties.IPropertyDescriptor;
+import org.eclipse.ui.views.properties.PropertyDescriptor;
 
 public abstract class AbstractContainerModel extends AbstractWidgetModel {
 	
@@ -29,7 +29,7 @@ public abstract class AbstractContainerModel extends AbstractWidgetModel {
 			}
 
 			@Override
-			protected IPropertyDescriptor createPropertyDescriptor() {
+			protected PropertyDescriptor createPropertyDescriptor() {
 				return null;
 			}
 			

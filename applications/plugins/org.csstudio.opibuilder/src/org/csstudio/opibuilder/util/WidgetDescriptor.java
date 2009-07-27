@@ -1,6 +1,6 @@
 package org.csstudio.opibuilder.util;
 
-import org.csstudio.opibuilder.editparts.AbstractWidgetEditpart;
+import org.csstudio.opibuilder.editparts.AbstractWidgetEditPart;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -84,9 +84,9 @@ public class WidgetDescriptor {
 	/**
 	 * @return the editpart of the widget.
 	 */
-	public final AbstractWidgetEditpart getWidgetEditpart(){
+	public final AbstractWidgetEditPart getWidgetEditpart(){
 		try {
-			return (AbstractWidgetEditpart) element.createExecutableExtension("editpart_class");
+			return (AbstractWidgetEditPart) element.createExecutableExtension("editpart_class");
 		} catch (CoreException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

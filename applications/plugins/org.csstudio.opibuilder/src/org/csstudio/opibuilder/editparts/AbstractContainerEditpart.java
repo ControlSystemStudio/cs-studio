@@ -16,7 +16,7 @@ import org.eclipse.gef.SnapToHelper;
 import org.eclipse.gef.editpolicies.SnapFeedbackPolicy;
 import org.eclipse.gef.rulers.RulerProvider;
 
-public abstract class AbstractContainerEditpart extends AbstractBaseEditpart {	
+public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {	
 
 	@Override
 	protected void createEditPolicies() {

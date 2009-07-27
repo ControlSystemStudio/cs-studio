@@ -2,7 +2,7 @@ package org.csstudio.opibuilder.properties;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
-import org.eclipse.ui.views.properties.IPropertyDescriptor;
+import org.eclipse.ui.views.properties.PropertyDescriptor;
 
 /**
  * @author Xihui Chen
@@ -50,11 +50,9 @@ public class ComboProperty extends AbstractWidgetProperty {
 	}
 
 	@Override
-	protected IPropertyDescriptor createPropertyDescriptor() {
-		ComboBoxPropertyDescriptor descriptor = new ComboBoxPropertyDescriptor(
+	protected PropertyDescriptor createPropertyDescriptor() {
+		return new ComboBoxPropertyDescriptor(
 				prop_id, description, labelsArray);
-		descriptor.setCategory(category.toString());
-		return descriptor;
 	}
 
 }

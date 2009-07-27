@@ -3,7 +3,6 @@ package org.csstudio.opibuilder.properties;
 
 import org.csstudio.opibuilder.visualparts.RGBColorPropertyDescriptor;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 
 /**
@@ -38,10 +37,8 @@ public class ColorProperty extends AbstractWidgetProperty {
 	 * @see org.csstudio.opibuilder.properties.AbstractWidgetProperty#createPropertyDescriptor()
 	 */
 	@Override
-	protected IPropertyDescriptor createPropertyDescriptor() {
-		PropertyDescriptor descriptor = new RGBColorPropertyDescriptor(prop_id, description);
-		descriptor.setCategory(category.toString());	
-		return descriptor;
+	protected PropertyDescriptor createPropertyDescriptor() {
+		return new RGBColorPropertyDescriptor(prop_id, description);		
 	}
 
 }
