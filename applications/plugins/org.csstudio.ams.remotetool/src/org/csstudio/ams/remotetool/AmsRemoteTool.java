@@ -125,6 +125,32 @@ public class AmsRemoteTool implements IApplication
         
         connectToXMPPServer();
 
+        session = OsgiServiceLocatorUtil.getOSGiService(Activator.getDefault().getBundle().getBundleContext(), ISessionService.class);
+
+        int count = 0;
+  
+        // We have to wait until the DCF connection manager have been initialized
+        synchronized(this)
+        {
+            do
+            {
+                try
+                {
+                    this.wait(2000);
+                }
+                catch(InterruptedException ie)
+                {
+                    logger.error(this, "*** InterruptedException ***: " + ie.getMessage());
+                }
+  
+                roster = session.getRoster();
+
+                // Get the roster items
+                rosterItems = new Vector<IRosterItem>((Collection<IRosterItem>)roster.getItems());
+            }
+            while((++count <= 10) && (rosterItems.isEmpty()));
+        }
+
         // We have to wait until the DCF connection manager have been initialized
         synchronized(this)
         {
@@ -138,12 +164,6 @@ public class AmsRemoteTool implements IApplication
             }
         }
         
-        session = OsgiServiceLocatorUtil.getOSGiService(Activator.getDefault().getBundle().getBundleContext(), ISessionService.class);
-        roster = session.getRoster();
-        
-        // Get the roster items
-        rosterItems = new Vector<IRosterItem>((Collection<IRosterItem>)roster.getItems());
-
         if(rosterItems.size() == 0)
         {
             logger.info(this, "XMPP roster not found. Stopping application.");
@@ -161,7 +181,6 @@ public class AmsRemoteTool implements IApplication
         {
             if(ri.getName().compareToIgnoreCase("jms-applications") == 0)
             {
-                System.out.println(ri.getName());
                 jmsApplics = (IRosterGroup)ri;
                 break;
             }
@@ -209,8 +228,6 @@ public class AmsRemoteTool implements IApplication
                 
                 for (int i = 0; i < commands.length; i++)
                 {
-                    System.out.println(commands[i].getLabel());
-                    
                     if(commands[i].getLabel().compareToIgnoreCase("stop") == 0)
                     {
                         stopAction = commands[i];
