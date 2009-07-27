@@ -34,7 +34,7 @@
                value="icons/about.gif"/>
          <property
                name="aboutText"
-               value="Control System Studio (CSS) provides control system&#x0A;tools in a common environment, based on Eclipse.&#x0A;It is a combined effort of several parties, including&#x0A;- DESY (Hamburg, Germany)&#x0A;- SNS (Oak Ridge, TN).&#x0A;&#x0A;This product is meant for use at the SNS.&#x0A;See http://ics-web.sns.ornl.gov/css for news/updates."/>
+               value="Control System Studio (CSS)&#x0A;&#x0A;(using aboutText in plugin.xml)"/>
          <property
                name="appName"
                value="SNS CSS">
