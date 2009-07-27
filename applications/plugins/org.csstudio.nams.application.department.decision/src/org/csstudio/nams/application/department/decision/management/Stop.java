@@ -40,7 +40,7 @@ public class Stop implements IManagementCommand
     
     private static String ACTION_LOGIN_SUCCEDED = "OK: [0] - Login succeded for user "
     + "ams-department-decision"
-    + ", shutdown has been initiated [requested action: \"shutdown\"]";
+    + ", stopping has been initiated [requested action: \"stopping\"]";
 
     static final String ADMIN_PASSWORD = "admin4AMS";
 
