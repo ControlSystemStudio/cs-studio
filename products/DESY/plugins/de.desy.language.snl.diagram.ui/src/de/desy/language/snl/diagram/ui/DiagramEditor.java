@@ -18,17 +18,13 @@ import org.eclipse.gef.DefaultEditDomain;
 import org.eclipse.gef.EditPartViewer;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.LayerConstants;
-import org.eclipse.gef.dnd.TemplateTransferDragSourceListener;
 import org.eclipse.gef.dnd.TemplateTransferDropTargetListener;
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
-import org.eclipse.gef.palette.PaletteRoot;
 import org.eclipse.gef.requests.CreationFactory;
 import org.eclipse.gef.requests.SimpleFactory;
 import org.eclipse.gef.ui.actions.ActionRegistry;
-import org.eclipse.gef.ui.palette.PaletteViewer;
-import org.eclipse.gef.ui.palette.PaletteViewerProvider;
 import org.eclipse.gef.ui.parts.ContentOutlinePage;
-import org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette;
+import org.eclipse.gef.ui.parts.GraphicalEditor;
 import org.eclipse.gef.ui.parts.GraphicalViewerKeyHandler;
 import org.eclipse.gef.ui.parts.TreeViewer;
 import org.eclipse.jface.text.IDocument;
@@ -56,25 +52,20 @@ import de.desy.language.snl.diagram.ui.parts.ShapesEditPartFactory;
 import de.desy.language.snl.diagram.ui.parts.ShapesTreeEditPartFactory;
 import de.desy.language.snl.parser.SNLParser;
 
-/**
- * A graphical editor with flyout palette that can edit .shapes files. The
- * binding between the .shapes file extension and this editor is done in
- * plugin.xml
- * 
- */
-public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
+public class DiagramEditor extends GraphicalEditor {
+//public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 
 	private static final int ROUTING_SEPARATION = 20;
 
 	/** This is the root of the editor's model. */
 	private SNLDiagram diagram;
 	private IDocumentProvider _implicitDocumentProvider;
-	/** Palette component, holding the tools and shapes. */
-	private static PaletteRoot PALETTE_MODEL;
+//	/** Palette component, holding the tools and shapes. */
+//	private static PaletteRoot PALETTE_MODEL;
 	private ScalableFreeformRootEditPart _scalableFreeformRootEditPart;
 	private final IPersistenceHandler _persistenceHandler;
 
-	/** Create a new ShapesEditor instance. This is called by the Workspace. */
+	/** Create a new DiagrammEditor instance. This is called by the Workspace. */
 	public DiagramEditor() {
 		setEditDomain(new DefaultEditDomain(this));
 		_persistenceHandler = new XMLPersistenceHandler();
@@ -122,31 +113,31 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 		super.commandStackChanged(event);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @seeorg.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette#
-	 * createPaletteViewerProvider()
-	 */
-	@Override
-	protected PaletteViewerProvider createPaletteViewerProvider() {
-		return new PaletteViewerProvider(getEditDomain()) {
-			@Override
-			protected void configurePaletteViewer(final PaletteViewer viewer) {
-				super.configurePaletteViewer(viewer);
-				// create a drag source listener for this palette viewer
-				// together with an appropriate transfer drop target listener,
-				// this will enable
-				// model element creation by dragging a
-				// CombinatedTemplateCreationEntries
-				// from the palette into the editor
-				// @see ShapesEditor#createTransferDropTargetListener()
-				viewer
-						.addDragSourceListener(new TemplateTransferDragSourceListener(
-								viewer));
-			}
-		};
-	}
+//	/*
+//	 * (non-Javadoc)
+//	 * 
+//	 * @seeorg.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette#
+//	 * createPaletteViewerProvider()
+//	 */
+//	@Override
+//	protected PaletteViewerProvider createPaletteViewerProvider() {
+//		return new PaletteViewerProvider(getEditDomain()) {
+//			@Override
+//			protected void configurePaletteViewer(final PaletteViewer viewer) {
+//				super.configurePaletteViewer(viewer);
+//				// create a drag source listener for this palette viewer
+//				// together with an appropriate transfer drop target listener,
+//				// this will enable
+//				// model element creation by dragging a
+//				// CombinatedTemplateCreationEntries
+//				// from the palette into the editor
+//				// @see ShapesEditor#createTransferDropTargetListener()
+//				viewer
+//						.addDragSourceListener(new TemplateTransferDragSourceListener(
+//								viewer));
+//			}
+//		};
+//	}
 
 	/**
 	 * Create a transfer drop target listener. When using a
@@ -208,19 +199,19 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 		return diagram;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette#getPaletteRoot
-	 * ()
-	 */
-	@Override
-	protected PaletteRoot getPaletteRoot() {
-		if (PALETTE_MODEL == null)
-			PALETTE_MODEL = ShapesEditorPaletteFactory.createPalette();
-		return PALETTE_MODEL;
-	}
+//	/*
+//	 * (non-Javadoc)
+//	 * 
+//	 * @see
+//	 * org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette#getPaletteRoot
+//	 * ()
+//	 */
+//	@Override
+//	protected PaletteRoot getPaletteRoot() {
+//		if (PALETTE_MODEL == null)
+//			PALETTE_MODEL = ShapesEditorPaletteFactory.createPalette();
+//		return PALETTE_MODEL;
+//	}
 
 	/**
 	 * Set up the editor's inital content (after creation).
@@ -229,7 +220,7 @@ public class DiagramEditor extends GraphicalEditorWithFlyoutPalette {
 	 */
 	@Override
 	protected void initializeGraphicalViewer() {
-		super.initializeGraphicalViewer();
+//		super.initializeGraphicalViewer();
 		final GraphicalViewer viewer = getGraphicalViewer();
 		viewer.setContents(getModel()); // set the contents of this editor
 		final ConnectionLayer layer = (ConnectionLayer) _scalableFreeformRootEditPart

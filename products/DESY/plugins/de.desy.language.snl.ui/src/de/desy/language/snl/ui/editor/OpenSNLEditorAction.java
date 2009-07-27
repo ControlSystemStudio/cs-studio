@@ -3,57 +3,43 @@ package de.desy.language.snl.ui.editor;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.ui.IEditorActionDelegate;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IViewActionDelegate;
-import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.part.FileEditorInput;
 
-public class OpenSNLEditorAction extends Action implements
-		IEditorActionDelegate, IViewActionDelegate {
+import de.desy.language.snl.ui.Identifier;
 
-	private IWorkbenchWindow window;
+public class OpenSNLEditorAction extends Action {
 
-	/**
-	 * Konstruktor, meldet die AccountEditorAction als SelectionListener an
-	 */
-	public OpenSNLEditorAction() {
-		this.window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-	}
+	private IWorkbenchWindow _window;
+	private final IPath _stFilePath;
 
-	public void setActiveEditor(IAction action, IEditorPart targetEditor) {
-		Logger.getAnonymousLogger().log(Level.INFO,
-				"AccountEditorAction.setActiveEditor(...)");
+	public OpenSNLEditorAction(IPath stFilePath) {
+		assert stFilePath != null : "stFilePath != null";
+
+		_stFilePath = stFilePath;
+		_window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
 	}
 
 	public void run(IAction action) {
-//		if (_accountNumber != null) {
-//			IWorkbenchPage page = this.window.getActivePage();
-//
-//			AccountEditorInput input = new AccountEditorInput(
-//					this._accountNumber);
-//			try {
-//				page.openEditor(input, AccountEditor.ID);
-//			} catch (PartInitException e) {
-//				Logger.getAnonymousLogger().log(Level.SEVERE,
-//						"Unable to open the AccountEditor", e);
-//			}
-//		}
-	}
+		IWorkbenchPage page = _window.getActivePage();
 
-	public void selectionChanged(IAction action, ISelection selection) {
-		setEnabled(selection != null);
-
-		IStructuredSelection sel = (IStructuredSelection) selection;
-	}
-
-	public void init(IViewPart view) {
-		// Logger.getAnonymousLogger().log(Level.INFO, "initView");
+		IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(
+				_stFilePath);
+		FileEditorInput input = new FileEditorInput(file);
+		try {
+			page.openEditor(input, Identifier.SNL_EDITOR_ID.getId());
+		} catch (PartInitException e) {
+			Logger.getAnonymousLogger().log(Level.SEVERE,
+					"Unable to open the SNL Editor", e);
+		}
 	}
 
 }
