@@ -59,13 +59,6 @@ public class AmsRemoteTool implements IApplication
     
     private ISessionService session;
     
-    private final int RESULT_OK = 0;
-    private final int RESULT_ERROR_GENERAL = 1;
-    private final int RESULT_ERROR_NOT_FOUND = 2;
-    private final int RESULT_ERROR_INVALID_PASSWORD = 3;
-    private final int RESULT_ERROR_XMPP = 4;
-    private final int RESULT_ERROR_UNKNOWN = 5;
-
     public AmsRemoteTool()
     {
         cl = null;
@@ -90,7 +83,7 @@ public class AmsRemoteTool implements IApplication
         String user = null;
         String host = null;
         String pw = null;
-        int iResult = RESULT_ERROR_GENERAL;
+        int iResult = ApplicResult.RESULT_ERROR_GENERAL.ordinal();
         
         String[] args = (String[])context.getArguments().get(IApplicationContext.APPLICATION_ARGS);
         cl = new CommandLine(args);
@@ -167,7 +160,7 @@ public class AmsRemoteTool implements IApplication
         if(rosterItems.size() == 0)
         {
             logger.info(this, "XMPP roster not found. Stopping application.");
-            return RESULT_ERROR_XMPP;
+            return ApplicResult.RESULT_ERROR_XMPP.ordinal();
         }
         else
         {
@@ -208,7 +201,7 @@ public class AmsRemoteTool implements IApplication
         }
         else
         {
-            iResult = this.RESULT_ERROR_UNKNOWN;
+            iResult = ApplicResult.RESULT_ERROR_UNKNOWN.ordinal();
         }
         
         IManagementCommandService service = null;
@@ -248,24 +241,24 @@ public class AmsRemoteTool implements IApplication
                     if((result.trim().startsWith("OK:")) || (result.indexOf("stopping") > -1))
                     {
                         logger.info(this, "Application stopped: " + result);
-                        iResult = RESULT_OK;
+                        iResult = ApplicResult.RESULT_OK.ordinal();
                     }
                     else
                     {
                         logger.error(this, "Something went wrong: " + result);
-                        iResult = RESULT_ERROR_INVALID_PASSWORD;
+                        iResult = ApplicResult.RESULT_ERROR_INVALID_PASSWORD.ordinal();
                     }
                 }
                 else
                 {
                     logger.info(this, "Return value is null!");
-                    iResult = RESULT_ERROR_UNKNOWN;
+                    iResult = ApplicResult.RESULT_ERROR_UNKNOWN.ordinal();
                 }
             }
         }        
         else
         {
-            iResult = RESULT_ERROR_NOT_FOUND;
+            iResult = ApplicResult.RESULT_ERROR_NOT_FOUND.ordinal();
         }
 
         return iResult;
