@@ -15,14 +15,6 @@
       </application>
    </extension>
    <extension
-         point="org.csstudio.platform.libs.xmpp.loginHandlers">
-      <loginHandler
-            class="org.csstudio.ams.remotetool.xmpp.LoginCallbackHandler"
-            id="org.csstudio.ams.remotetool.LoginHandler"
-            name="RemoteToolLoginHandler">
-      </loginHandler>
-   </extension>
-   <extension
          id="AmsRemoteToolProduct"
          point="org.eclipse.core.runtime.products">
       <product

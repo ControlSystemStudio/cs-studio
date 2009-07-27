@@ -12,18 +12,6 @@
       </application>
    </extension>
    <extension
-         id="DepartmentDecision"
-         point="org.eclipse.core.runtime.products">
-      <product
-            application="org.csstudio.nams.application.department.decision.application"
-            name="AmsDepartmentDecision">
-         <property
-               name="appName"
-               value="AmsDepartmentDecision">
-         </property>
-      </product>
-   </extension>
-   <extension
          point="org.csstudio.platform.managementCommands">
       <command
             class="org.csstudio.nams.application.department.decision.management.Stop"
@@ -34,6 +22,18 @@
                label="Password">
          </stringParameter>
       </command>
+   </extension>
+   <extension
+         id="AmsDepartmentDecisionProduct"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.csstudio.nams.application.department.decision.application"
+            name="AmsDepartmentDecision">
+         <property
+               name="appName"
+               value="AmsDepartmentDecision">
+         </property>
+      </product>
    </extension>
 
 </plugin>
