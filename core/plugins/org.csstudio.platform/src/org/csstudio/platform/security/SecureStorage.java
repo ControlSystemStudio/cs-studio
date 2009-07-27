@@ -5,7 +5,6 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.securestore.SecureStore;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.equinox.security.storage.ISecurePreferences;
@@ -87,8 +86,15 @@ public class SecureStorage
     	}
     	catch (Exception e)
     	{
-    	    CentralLogger.getInstance().getLogger(new SecureStorage()).error(
-	            "Failed to read value of " + key + " from secure storage", e);
+    	    // Cannot call CentralLogger for the case that CentralLogger
+    	    // is just starting up, loading preferences, calling SecureStorage,
+    	    // running into an error:
+    	    // In that case, calling CentralLogger from here would create
+    	    // infinite loop.
+    	    System.err.println("Failed to read value of " + key + " from secure storage");
+    	    e.printStackTrace(System.err);
+//    	    CentralLogger.getInstance().getLogger(new SecureStorage()).error(
+//	            "Failed to read value of " + key + " from secure storage", e);
 		}		
     	//in case of no value in secure storage, return the preference value 
     	return Platform.getPreferencesService().getString(qualifier, key, null, null);
