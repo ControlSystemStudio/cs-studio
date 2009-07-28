@@ -170,6 +170,17 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 		super.initializeGraphicalViewer();
 		GraphicalViewer viewer = getGraphicalViewer();
 		
+		initDisplayModel();
+		viewer.setContents(displayModel);
+		
+		viewer.addDropTargetListener(createTransferDropTargetListener());
+
+	}
+
+	/**
+	 * 
+	 */
+	private void initDisplayModel() {
 		displayModel = new DisplayModel();
 		displayModel.getProperty(AbstractWidgetModel.PROP_COLOR_BACKGROUND).
 			addPropertyChangeListener(new PropertyChangeListener(){
@@ -194,10 +205,10 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 								(Integer)evt.getNewValue()));
 			}
 		});
-		viewer.setContents(displayModel);
-		
-		viewer.addDropTargetListener(createTransferDropTargetListener());
-
+	}
+	
+	public DisplayModel getDisplayModel(){
+		return displayModel;
 	}
 	
 	@Override

@@ -13,6 +13,14 @@
             id="org.csstudio.opibuilder.OPIEditor"
             name="OPI Editor">
       </editor>
+      <editor
+            class="org.csstudio.opibuilder.runmode.OPIRunner"
+            default="false"
+            extensions="opi"
+            icon="icons/OPIBuilder.png"
+            id="org.csstudio.opibuilder.OPIRunner"
+            name="OPI Runner">
+      </editor>
    </extension>
    <extension
          point="org.eclipse.ui.perspectives">

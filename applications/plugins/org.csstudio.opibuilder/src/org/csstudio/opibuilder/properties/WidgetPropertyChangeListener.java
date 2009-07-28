@@ -41,9 +41,8 @@ public class WidgetPropertyChangeListener implements PropertyChangeListener {
 						figure.repaint();
 				}
 			}
-		};
-		Display.getCurrent().asyncExec(task);
-		//UIBundlingThread.getInstance().addRunnable(task);
+		};		
+		UIBundlingThread.getInstance().addRunnable(task);
 	}
 	
 	/**Add handler, which is informed when a property changed.

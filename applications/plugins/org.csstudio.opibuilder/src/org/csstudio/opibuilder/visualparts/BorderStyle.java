@@ -54,7 +54,11 @@ public enum BorderStyle {
 	/**
      * A dashed dot dotted border.
      */
-    DASH_DOT_DOT("Dash Dot Dot Style");    
+    DASH_DOT_DOT("Dash Dot Dot Style"), 
+	
+	TITLE_BAR("Title Bar Style"),
+	
+    GROUP_BOX("Group Box Style");
    
 	
 	private String description;

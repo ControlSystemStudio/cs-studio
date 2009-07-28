@@ -2,6 +2,7 @@ package org.csstudio.opibuilder.widgets.editparts;
 
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
+import org.csstudio.opibuilder.widgets.model.AbstractScaledWidgetModel;
 import org.csstudio.opibuilder.widgets.model.KnobModel;
 import org.csstudio.sds.components.ui.internal.figures.KnobFigure;
 import org.eclipse.draw2d.IFigure;
@@ -33,13 +34,16 @@ public final class KnobEditPart extends AbstractMarkedWidgetEditPart {
 		knob.setValueLabelVisibility(model.isShowValueLabel());
 		knob.setGradient(model.isRampGradient());
 		knob.setIncrement(model.getIncrement());
+		*/
 		knob.addKnobListener(new KnobFigure.IKnobListener() {
 			public void knobValueChanged(final double newValue) {
-				if (getExecutionMode() == ExecutionMode.RUN_MODE){}
+				if (getExecutionMode() == ExecutionMode.RUN_MODE){
+					setPVValue(AbstractScaledWidgetModel.PROP_PV_NAME, newValue);
+				}
 									
 			}
 		});		
-		*/
+		
 		return knob;
 
 	}
@@ -113,18 +117,8 @@ public final class KnobEditPart extends AbstractMarkedWidgetEditPart {
 		};
 		setPropertyChangeHandler(KnobModel.PROP_RAMP_GRADIENT, gradientHandler);	
 		
-		//enabled. WidgetBaseEditPart will force the widget as disabled in edit model,
-		//which is not the case for the knob		
-		IWidgetPropertyChangeHandler enableHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				KnobFigure knob = (KnobFigure) refreshableFigure;
-				knob.setEnabled((Boolean) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(KnobModel.PROP_ENABLED, enableHandler);	
+		
+		
 		
 		//increment
 		IWidgetPropertyChangeHandler incrementHandler = new IWidgetPropertyChangeHandler() {

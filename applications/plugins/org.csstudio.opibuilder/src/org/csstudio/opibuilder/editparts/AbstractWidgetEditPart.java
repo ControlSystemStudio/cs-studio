@@ -3,12 +3,17 @@ package org.csstudio.opibuilder.editparts;
 import org.csstudio.opibuilder.commands.WidgetDeleteCommand;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
+import org.csstudio.opibuilder.properties.StringProperty;
+import org.csstudio.platform.model.IProcessVariable;
 import org.eclipse.gef.EditPolicy;
-import org.eclipse.gef.Request;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editpolicies.ComponentEditPolicy;
 import org.eclipse.gef.requests.GroupRequest;
 
+/**The abstract editpart for all widgets.
+ * @author Xihui Chen
+ *
+ */
 public abstract class AbstractWidgetEditPart extends AbstractBaseEditPart {	
 
 	@Override
@@ -26,10 +31,8 @@ public abstract class AbstractWidgetEditPart extends AbstractBaseEditPart {
 				return super.createDeleteCommand(deleteRequest);
 			}
 	
-		});
-		
-		
-		
+		});	
 	}
+	
 
 }

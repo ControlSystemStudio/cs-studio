@@ -94,6 +94,10 @@ public class OPIEditorActionBarContributor extends ActionBarContributor {
 		tbm.add(getAction(GEFActionConstants.ZOOM_OUT));
 		tbm.add(new ZoomComboContributionItem(getPage()));
 		
+		tbm.add(new Separator());
+		tbm.add(new RunOPIAction());
+		
+		
 	}
 	
 	@Override

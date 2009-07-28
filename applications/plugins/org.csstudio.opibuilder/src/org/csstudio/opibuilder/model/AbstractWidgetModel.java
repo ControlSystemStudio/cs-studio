@@ -3,18 +3,23 @@ package org.csstudio.opibuilder.model;
 import java.beans.PropertyChangeSupport;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
+import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.ColorProperty;
 import org.csstudio.opibuilder.properties.ComboProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
+import org.csstudio.opibuilder.properties.PVValueProperty;
+import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.model.pvs.IProcessVariableAdressProvider;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
@@ -63,10 +68,13 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	private Map<String, AbstractWidgetProperty> propertyMap;
 	
 	private Map<String, IPropertyDescriptor> propertyDescriptors;
+	
+	private LinkedHashMap<StringProperty, PVValueProperty> pvMap;
 
 	public AbstractWidgetModel() {
 		propertyMap = new HashMap<String, AbstractWidgetProperty>();
 		propertyDescriptors = new HashMap<String, IPropertyDescriptor>();
+		pvMap = new LinkedHashMap<StringProperty, PVValueProperty>();
 		configureBaseProperties();
 		configureProperties();	
 	}
@@ -90,6 +98,15 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 				WidgetPropertyCategory.Border, true, new RGB(0, 128, 255)));
 		addProperty(new IntegerProperty(PROP_BORDER_WIDTH, "Border Width", 
 				WidgetPropertyCategory.Border, true, 1, 0, 1000));
+		addProperty(new BooleanProperty(PROP_ENABLED, "Enabled", 
+				WidgetPropertyCategory.Behavior, true, true));
+		addProperty(new BooleanProperty(PROP_VISIBLE, "Visible", 
+				WidgetPropertyCategory.Behavior, true, true));
+		addProperty(new StringProperty(PROP_NAME, "Name",
+				WidgetPropertyCategory.Display, true, getTypeID().substring(
+						getTypeID().lastIndexOf(".")+1)));
+		
+		
 	}
 	
 	/**
@@ -97,12 +114,38 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	 */
 	public abstract String getTypeID();
 	
+	/**Add a property to the widget.
+	 * @param property the property to be added.
+	 */
 	public void addProperty(final AbstractWidgetProperty property){
 		assert property != null;
 		propertyMap.put(property.getPropertyID(), property);
 		if(property.isVisibleInPropSheet())
 			propertyDescriptors.put(property.getPropertyID(), property.getPropertyDescriptor());		
 	}
+	
+	/**Add a PVNameProperty and its value property correspondingly.
+	 * @param pvNameProperty
+	 * @param pvValueProperty
+	 */
+	public void addPVProperty(final StringProperty pvNameProperty, 
+			final PVValueProperty pvValueProperty){
+		addProperty(pvNameProperty);
+		addProperty(pvValueProperty);
+		pvMap.put(pvNameProperty, pvValueProperty);
+	}
+	
+	/**Remove a PV p
+	 * @param pvNamePropId
+	 * @param pvValuePropId
+	 */
+	public void removePVProperty(final String pvNamePropId, final String pvValuePropId){
+		removeProperty(pvNamePropId);
+		removeProperty(pvValuePropId);
+		pvMap.remove(getProperty(pvNamePropId));
+	}
+	
+	
 	
 	/**Remove a property from the model.
 	 * @param prop_id
@@ -117,7 +160,7 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	}
 	
 	public void setPropertyVisible(final String prop_id, final boolean visible){
-		assert propertyMap.containsKey(prop_id);
+		Assert.isTrue(propertyMap.containsKey(prop_id));
 		AbstractWidgetProperty property = propertyMap.get(prop_id);
 		if(property.setVisibleInPropSheet(visible)){
 			if(visible)
@@ -143,7 +186,7 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	}
 
 	public Object getPropertyValue(Object id) {
-		assert propertyMap.containsKey(id);
+		Assert.isTrue(propertyMap.containsKey(id));
 		return propertyMap.get(id).getPropertyValue();
 	}
 	
@@ -155,7 +198,7 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	}
 
 	public void setPropertyValue(Object id, Object value) {
-		assert propertyMap.containsKey(id);
+		Assert.isTrue(propertyMap.containsKey(id));
 		propertyMap.get(id).setPropertyValue(value);
 	}
 	
@@ -177,10 +220,15 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	}
 	
 	public AbstractWidgetProperty getProperty(String prop_id){
-		assert prop_id != null;
-		assert propertyMap.containsKey(prop_id);
+		Assert.isTrue(prop_id != null);
+		Assert.isTrue(propertyMap.containsKey(prop_id));
 		return propertyMap.get(prop_id);
 	}
+	
+	public LinkedHashMap<StringProperty, PVValueProperty> getPVMap(){
+		return pvMap;
+	}
+	
 	/**
 	 * Return the casted value of a property of this widget model.
 	 * 
@@ -196,7 +244,11 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	}
 	
 	public String getName(){
-		return getCastedPropertyValue(PROP_NAME);
+		return (String)getCastedPropertyValue(PROP_NAME);
+	}
+	
+	public Boolean isEnabled(){
+		return (Boolean)getCastedPropertyValue(PROP_ENABLED);
 	}
 	
 	public Dimension getSize(){

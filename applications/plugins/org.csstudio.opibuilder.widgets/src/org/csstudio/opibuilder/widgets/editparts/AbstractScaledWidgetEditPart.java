@@ -1,8 +1,12 @@
 package org.csstudio.opibuilder.widgets.editparts;
+import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.editparts.AbstractWidgetEditPart;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.widgets.model.AbstractScaledWidgetModel;
+import org.csstudio.platform.data.IValue;
+import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.sds.components.ui.internal.figures.AbstractScaledWidgetFigure;
+import org.csstudio.utility.pv.PV;
 import org.eclipse.draw2d.IFigure;
 
 /**
@@ -11,7 +15,7 @@ import org.eclipse.draw2d.IFigure;
  * @author Xihui Chen
  * 
  */
-public abstract class AbstractScaledWidgetEditPart extends AbstractWidgetEditPart {
+public abstract class AbstractScaledWidgetEditPart extends AbstractPVWidgetEditPart {
 
 	/**
 	 * Sets those properties on the figure that are defined in the
@@ -28,7 +32,6 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractWidgetEditPar
 			final AbstractScaledWidgetFigure figure, final AbstractScaledWidgetModel model) {
 		
 		figure.setRange(model.getMinimum(), model.getMaximum());
-		figure.setValue(model.getValue());
 		figure.setMajorTickMarkStepHint(model.getMajorTickStepHint());
 		figure.setLogScale(model.isLogScaleEnabled());
 		figure.setShowScale(model.isShowScale());
@@ -50,12 +53,14 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractWidgetEditPar
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IFigure refreshableFigure) {
+				if(newValue == null)
+					return false;
 				AbstractScaledWidgetFigure figure = (AbstractScaledWidgetFigure) refreshableFigure;
-				figure.setValue((Double) newValue);
+				figure.setValue(ValueUtil.getDouble((IValue)newValue));
 				return true;
 			}
 		};
-		setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_VALUE, valueHandler);
+		setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_PV_VALUE, valueHandler);
 		
 		//minimum
 		IWidgetPropertyChangeHandler minimumHandler = new IWidgetPropertyChangeHandler() {

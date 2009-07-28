@@ -2,8 +2,12 @@ package org.csstudio.opibuilder.visualparts;
 
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.AbstractBorder;
+import org.eclipse.draw2d.AbstractLabeledBorder;
+import org.eclipse.draw2d.FrameBorder;
+import org.eclipse.draw2d.GroupBoxBorder;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.SchemeBorder;
+import org.eclipse.draw2d.TitleBarBorder;
 import org.eclipse.draw2d.SchemeBorder.Scheme;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -15,7 +19,8 @@ import org.eclipse.swt.graphics.RGB;
  */
 public class BorderFactory {
 
-	public static AbstractBorder createBorder(BorderStyle style, int width, RGB rgbColor){
+	public static AbstractBorder createBorder(BorderStyle style, int width, RGB rgbColor,
+			String text){
 		Color color = CustomMediaFactory.getInstance().getColor(rgbColor);
 		
 		switch (style) {
@@ -41,6 +46,10 @@ public class BorderFactory {
 			return createLineBorder(SWT.LINE_DOT, width, color);			
 		case DASH_DOT_DOT:
 			return createLineBorder(SWT.LINE_DASHDOTDOT, width, color);
+		case GROUP_BOX:
+			return createGroupBoxBorder(text);
+		case TITLE_BAR:
+			return createTitleBarBorder(text, color);
 		case NONE:			
 		default:
 			return null;
@@ -69,4 +78,14 @@ public class BorderFactory {
 		return border;
 	}
 	
+	private static AbstractBorder createGroupBoxBorder(String text) {
+		AbstractLabeledBorder border = new GroupBoxBorder(text);
+		return border;
+	}
+		
+	private static AbstractBorder createTitleBarBorder(String text, Color color) {
+		WidgetFrameBorder border = new WidgetFrameBorder(text);
+		((TitleBarBorder)border.getInnerBorder()).setBackgroundColor(color);
+		return border;
+	}
 }

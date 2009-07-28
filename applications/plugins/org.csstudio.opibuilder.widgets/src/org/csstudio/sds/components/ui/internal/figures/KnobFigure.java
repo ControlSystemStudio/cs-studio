@@ -74,12 +74,10 @@ public class KnobFigure extends AbstractRoundRampedFigure {
 		super();
 		transparent = true;
 		scale.setScaleLineVisible(false);
-		ramp.setRampWidth(12);
-		
-		valueLabel = new Label();
-		valueLabel.setText("20.00");
+		ramp.setRampWidth(12);		
+		valueLabel = new Label();		
 		valueLabel.setFont(DEFAULT_LABEL_FONT);
-		
+		setValue(20);
 		bulb = new Bulb();
 		
 		thumb = new Thumb();

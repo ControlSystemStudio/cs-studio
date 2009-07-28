@@ -3,6 +3,8 @@ package org.csstudio.opibuilder.widgets.model;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.ColorProperty;
 import org.csstudio.opibuilder.properties.DoubleProperty;
+import org.csstudio.opibuilder.properties.PVValueProperty;
+import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.eclipse.swt.graphics.RGB;
 
@@ -34,6 +36,8 @@ public class KnobModel extends AbstractMarkedWidgetModel{
 	 */
 	public static final String PROP_INCREMENT = "increment"; //$NON-NLS-1$
 	
+	
+	
 	/** The default value of the default knob color property. */
 	private static final RGB DEFAULT_KNOB_COLOR = new RGB(150,150,150);
 	
@@ -57,7 +61,8 @@ public class KnobModel extends AbstractMarkedWidgetModel{
 
 	@Override
 	protected void configureProperties() {
-		super.configureProperties();		
+		super.configureProperties();	
+		
 		addProperty(new ColorProperty(PROP_KNOB_COLOR, "Knob Color",
 				WidgetPropertyCategory.Display, true, DEFAULT_KNOB_COLOR));	
 		
