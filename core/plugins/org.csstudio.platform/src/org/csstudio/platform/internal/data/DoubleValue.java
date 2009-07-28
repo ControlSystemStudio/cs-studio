@@ -77,8 +77,11 @@ public class DoubleValue extends Value implements IDoubleValue
                 fmt = NumberFormat.getNumberInstance();
                 if (how == Format.Default)
                 {
-                    INumericMetaData num_meta = (INumericMetaData)getMetaData();
-                    precision = num_meta.getPrecision();
+                    final INumericMetaData num_meta = (INumericMetaData)getMetaData();
+                    // Should have numeric meta data, but in case of errors
+                    // that might be null.
+                    if (num_meta != null)
+                        precision = num_meta.getPrecision();
                 }
                 fmt.setMinimumFractionDigits(precision);
                 fmt.setMaximumFractionDigits(precision);
