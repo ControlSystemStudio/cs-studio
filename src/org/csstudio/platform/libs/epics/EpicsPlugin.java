@@ -174,6 +174,16 @@ public class EpicsPlugin extends Plugin
 	        monitor_mask = MonitorMask.valueOf(
                 prefs.getString(ID, PreferenceConstants.MONITOR, "VALUE", null));
 	        
+	        /*
+	         * selects common Executor in EPICSPlug (if true) for all PropertyProxyImpls or
+	         * (if false) individual Executors for every PropertyProxyImpl
+	         */
+	        setSystemProperty("EPICSPlug.property.use_common_executor", Boolean.toString(false));
+	        // sets the number of core threads in the selected Executor
+	        setSystemProperty("EPICSPlug.property.core_threads", Integer.toString(2));
+	        // sets the maximum number of threads in the selected Executor
+	        setSystemProperty("EPICSPlug.property.max_threads", Integer.toString(10));
+	        
 	        // Set the 'CAJ' and 'JNI' copies of the settings
 	        setSystemProperty("com.cosylab.epics.caj.CAJContext.use_pure_java", Boolean.toString(use_pure_java));
 	        final String addr_list =
