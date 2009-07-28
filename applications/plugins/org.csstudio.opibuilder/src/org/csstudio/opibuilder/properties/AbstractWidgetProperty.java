@@ -96,8 +96,11 @@ public abstract class AbstractWidgetProperty {
 	}
 
 	public final void removeAllPropertyChangeListeners(){
-		for(PropertyChangeListener l : pcsDelegate.getPropertyChangeListeners(prop_id))
+		for(PropertyChangeListener l : pcsDelegate.getPropertyChangeListeners(prop_id)){
+			if(l instanceof WidgetPropertyChangeListener)
+				((WidgetPropertyChangeListener) l).removeAllHandlers();
 			pcsDelegate.removePropertyChangeListener(l);
+		}
 	}
 
 	public final void setCategory(WidgetPropertyCategory category) {

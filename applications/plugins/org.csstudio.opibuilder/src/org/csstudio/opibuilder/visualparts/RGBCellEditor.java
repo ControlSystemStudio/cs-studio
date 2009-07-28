@@ -9,6 +9,7 @@ import org.eclipse.swt.widgets.ColorDialog;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 
 /**
@@ -49,8 +50,8 @@ public final class RGBCellEditor extends CellEditor {
 	 */
 	public RGBCellEditor(final Composite parent) {
 		super(parent, SWT.NONE);
-		//_shell = parent.getShell();
-		//if(_shell == null)
+		_shell = parent.getShell();
+		if(_shell == null)
 			_shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
 	}
 
@@ -59,7 +60,7 @@ public final class RGBCellEditor extends CellEditor {
 	 */
 	@Override
 	public void activate() {
-		ColorDialog dialog = new ColorDialog(_shell);
+		ColorDialog dialog = new ColorDialog(_shell,SWT.ON_TOP);
 		if (_value != null) {
 			dialog.setRGB(_value);
 		}

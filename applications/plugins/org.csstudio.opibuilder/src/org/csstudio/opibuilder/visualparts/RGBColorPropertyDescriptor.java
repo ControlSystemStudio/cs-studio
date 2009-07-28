@@ -3,6 +3,7 @@ package org.csstudio.opibuilder.visualparts;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.ColorCellEditor;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;

@@ -53,5 +53,9 @@ public class WidgetPropertyChangeListener implements PropertyChangeListener {
 		assert handler != null;
 		handlers.add(handler);
 	}
+	
+	public void removeAllHandlers(){
+		handlers.clear();
+	}
 
 }
