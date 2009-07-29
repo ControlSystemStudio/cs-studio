@@ -482,6 +482,7 @@ public class EPICS_V3_PV
             {
                 public void run()
                 {
+                    unsubscribe();
                     fireDisconnected();
                 }
             });
@@ -493,10 +494,10 @@ public class EPICS_V3_PV
      */
     private void handleConnected(final Channel channel)
     {
+        Activator.getLogger().debug(name + " connected (" + state.name() + ")");
     	if (state == State.Connected)
     		return;
         state = State.Connected;
-        Activator.getLogger().debug(name + " connected");
         
         // If we're "running", we need to get the meta data and
         // then subscribe.
@@ -546,14 +547,24 @@ public class EPICS_V3_PV
    /** MonitorListener interface. */
     public void monitorChanged(final MonitorEvent ev)
     {
+        final Logger log = Activator.getLogger();
         // This runs in a CA thread.
         // Ignore values that arrive after stop()
         if (!running)
+        {
+            log.debug(name + " monitor while not running (" + state.name() + ")");
             return;
+        }
+        
+        if (subscription == null)
+        {
+            log.debug(name + " monitor while not subscribed (" + state.name() + ")");
+            return;
+        }
+
         if (! ev.getStatus().isSuccessful())
         {
-            Activator.getLogger().error(name + " monitor error :"
-                               + ev.getStatus().getMessage());
+            log.error(name + " monitor error :" + ev.getStatus().getMessage());
             return;
         }
     
@@ -566,14 +577,13 @@ public class EPICS_V3_PV
                 connected = true;
             // Logging every received value is expensive and chatty.
             // Use TRACE Level? But CSS GUI doesn't support this...
-            final Logger log = Activator.getLogger();
             if (log.isDebugEnabled())
-                log.debug(name + " monitor: " + value);
+                log.debug(name + " monitor: " + value + " (" + value.getClass().getName() + ")");
             fireValueUpdate();
         }
         catch (Exception ex)
         {
-            Activator.getLogger().error(name + " monitor value error", ex);
+            log.error(name + " monitor value error", ex);
         }
     }
 
