@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.List;
 
+import org.csstudio.opibuilder.commands.SetWidgetPropertyCommand;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.editparts.WidgetEditPartFactory;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
@@ -78,10 +79,13 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 	
 	public OPIEditor() {
 		setEditDomain(new DefaultEditDomain(this));
+		
 	}
 
 	@Override
 	protected void createGraphicalViewer(Composite parent) {
+		initDisplayModel();
+		
 		rulerComposite = new RulerComposite(parent, SWT.NONE);
 
 		GraphicalViewer viewer = new PatchedScrollingGraphicalViewer();
@@ -128,16 +132,50 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 		getSite().registerContextMenu(cmProvider, viewer);		
 		
 		// Grid Action
-		IAction action = new ToggleGridAction(getGraphicalViewer());		
+		IAction action = new ToggleGridAction(getGraphicalViewer()){
+			@Override
+			public void run() {
+				getCommandStack().execute(new SetWidgetPropertyCommand(displayModel,
+						DisplayModel.PROP_SHOW_GRID, !isChecked()));				
+			}
+			@Override
+			public boolean isChecked() {
+				return getDisplayModel().isShowGrid();
+			}
+		};		
+		
 		getActionRegistry().registerAction(action);
 		
 		// Ruler Action
 		configureRuler();
-		action = new ToggleRulerVisibilityAction(getGraphicalViewer());		
+		action = new ToggleRulerVisibilityAction(getGraphicalViewer()){
+			@Override
+			public void run() {
+				getCommandStack().execute(new SetWidgetPropertyCommand(displayModel,
+						DisplayModel.PROP_SHOW_RULER, !isChecked()));	
+			}
+			
+			@Override
+			public boolean isChecked() {
+				return getDisplayModel().isShowRuler();
+			}
+			
+		};		
 		getActionRegistry().registerAction(action);
 		
 		// Snap to Geometry Action
-		IAction geometryAction = new ToggleSnapToGeometryAction(getGraphicalViewer());		
+		IAction geometryAction = new ToggleSnapToGeometryAction(getGraphicalViewer()){
+			@Override
+			public void run() {
+				getCommandStack().execute(new SetWidgetPropertyCommand(displayModel,
+						DisplayModel.PROP_SNAP_GEOMETRY, !isChecked()));	
+			}
+			@Override
+			public boolean isChecked() {
+				return getDisplayModel().isSnapToGeometry();
+			}
+			
+		};		
 		getActionRegistry().registerAction(geometryAction);
 		
 		// configure zoom actions
@@ -170,10 +208,11 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 		super.initializeGraphicalViewer();
 		GraphicalViewer viewer = getGraphicalViewer();
 		
-		initDisplayModel();
+		
 		viewer.setContents(displayModel);
 		
 		viewer.addDropTargetListener(createTransferDropTargetListener());
+		setPartName(getEditorInput().getName());
 
 	}
 
@@ -182,29 +221,6 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 	 */
 	private void initDisplayModel() {
 		displayModel = new DisplayModel();
-		displayModel.getProperty(AbstractWidgetModel.PROP_COLOR_BACKGROUND).
-			addPropertyChangeListener(new PropertyChangeListener(){
-				public void propertyChange(PropertyChangeEvent evt) {
-					getGraphicalViewer().getControl().setBackground(CustomMediaFactory.getInstance()
-							.getColor((RGB)evt.getNewValue()));
-				}
-			});
-		displayModel.getProperty(AbstractWidgetModel.PROP_COLOR_FOREGROUND).
-			addPropertyChangeListener(new PropertyChangeListener(){
-				public void propertyChange(PropertyChangeEvent evt) {
-					((ScalableFreeformRootEditPart)getGraphicalViewer().getRootEditPart())
-					.getLayer(LayerConstants.GRID_LAYER).setForegroundColor(CustomMediaFactory.getInstance()
-							.getColor((RGB)evt.getNewValue()));
-				}
-			});
-		displayModel.getProperty(DisplayModel.PROP_GRID_SPACE).
-		addPropertyChangeListener(new PropertyChangeListener(){
-			public void propertyChange(PropertyChangeEvent evt) {
-				getGraphicalViewer().setProperty(SnapToGrid.PROPERTY_GRID_SPACING, 
-						new Dimension((Integer)evt.getNewValue(), 
-								(Integer)evt.getNewValue()));
-			}
-		});
 	}
 	
 	public DisplayModel getDisplayModel(){
@@ -373,9 +389,7 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 		getGraphicalViewer().setProperty(
 				RulerProvider.PROPERTY_HORIZONTAL_RULER, hprovider);
 		getGraphicalViewer().setProperty(
-				RulerProvider.PROPERTY_VERTICAL_RULER, vprovider);
-		getGraphicalViewer().setProperty(
-				RulerProvider.PROPERTY_RULER_VISIBILITY, Boolean.TRUE);
+				RulerProvider.PROPERTY_VERTICAL_RULER, vprovider);		
 	}
 	
 	/**
@@ -409,4 +423,6 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 
 		return result;
 	}
+	
+	
 }

@@ -22,7 +22,7 @@ public class OPIEditorPerspective implements IPerspectiveFactory
     {
         final String editor = layout.getEditorArea();
         final IFolderLayout left = layout.createFolder("left",
-                IPageLayout.LEFT, 0.25f, editor);
+                IPageLayout.LEFT, 0.2f, editor);
         final IFolderLayout right = layout.createFolder("right",
                 IPageLayout.RIGHT, 0.75f, editor);
 

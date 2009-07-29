@@ -15,6 +15,7 @@
       </editor>
       <editor
             class="org.csstudio.opibuilder.runmode.OPIRunner"
+            contributorClass="org.csstudio.opibuilder.runmode.OPIRunnerContributor"
             default="false"
             extensions="opi"
             icon="icons/OPIBuilder.png"
@@ -29,6 +30,12 @@
             icon="icons/OPIBuilder.png"
             id="org.csstudio.opibuilder.opieditor"
             name="%OPIEditor">
+      </perspective>
+      <perspective
+            class="org.csstudio.opibuilder.runmode.OPIRunnerPerspective"
+            icon="icons/OPIBuilder.png"
+            id="org.csstudio.opibuilder.OPIRunner"
+            name="%OPIRunner">
       </perspective>
    </extension>
 

@@ -277,8 +277,13 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 		return (Integer)getCastedPropertyValue(PROP_BORDER_WIDTH);
 	}
 	
+	public RGB getBackgroundColor(){
+		return (RGB)getCastedPropertyValue(PROP_COLOR_BACKGROUND);
+	}
 	
-	
+	public RGB getForegroundColor(){
+		return (RGB)getCastedPropertyValue(PROP_COLOR_FOREGROUND);
+	}
 	
 	public void setSize(int width, int height){
 		setPropertyValue(PROP_WIDTH, width);

@@ -20,7 +20,8 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
 
 	@Override
 	protected void createEditPolicies() {
-		installEditPolicy(EditPolicy.LAYOUT_ROLE, new WidgetXYLayoutEditPolicy());
+		installEditPolicy(EditPolicy.LAYOUT_ROLE, 
+				getExecutionMode() == ExecutionMode.EDIT_MODE ? new WidgetXYLayoutEditPolicy() : null);
 	
 		//the snap feedback effect
 		installEditPolicy("Snap Feedback", new SnapFeedbackPolicy()); //$NON-NLS-1$

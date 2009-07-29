@@ -5,6 +5,7 @@ import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.DisplayModel;
 
 import org.csstudio.opibuilder.util.WidgetsService;
+import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartFactory;
 
@@ -39,7 +40,7 @@ public class WidgetEditPartFactory implements EditPartFactory {
 					((AbstractWidgetModel)model).getTypeID()).getWidgetEditpart();
 			return editpart;
 		}
-		OPIBuilderPlugin.getLogger().error("Cannot create editpart for model object: "
+		CentralLogger.getInstance().error(this, "Cannot create editpart for model object: "
 				+ model);
 		return null;
 	}

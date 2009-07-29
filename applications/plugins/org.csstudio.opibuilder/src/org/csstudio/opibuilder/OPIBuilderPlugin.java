@@ -1,14 +1,17 @@
 package org.csstudio.opibuilder;
 
 import org.apache.log4j.Logger;
+import org.csstudio.opibuilder.runmode.RunModeService;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.AbstractCssUiPlugin;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle
  */
-public class OPIBuilderPlugin extends AbstractCssUiPlugin {
+public class OPIBuilderPlugin extends AbstractUIPlugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.csstudio.opibuilder";
@@ -30,7 +33,7 @@ public class OPIBuilderPlugin extends AbstractCssUiPlugin {
 		plugin = this;
 	}
 
-	
+
 
 	/**
 	 * Returns the shared instance
@@ -44,31 +47,10 @@ public class OPIBuilderPlugin extends AbstractCssUiPlugin {
 
 
 	@Override
-	protected void doStart(BundleContext context) throws Exception {
-	
-	}
-
-
-
-	@Override
-	protected void doStop(BundleContext context) throws Exception {
+	public void stop(BundleContext context) throws Exception {
 		plugin = null;
+		
 	}
 
-
-	/**
-	 * @return the central CSS logger.
-	 */
-	public static Logger getLogger(){
-		if(log == null)
-			log = CentralLogger.getInstance().getLogger(plugin);
-		return log;
-	}
-
-	@Override
-	public String getPluginId() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 }
