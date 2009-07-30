@@ -1,14 +1,9 @@
 package org.csstudio.sds.components.ui.internal.figures;
 
-import java.util.Calendar;
-
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.components.ui.internal.figureparts.Bulb;
 import org.csstudio.sds.components.ui.internal.figureparts.RoundScale;
 import org.csstudio.sds.components.ui.internal.figureparts.RoundScaledRamp;
-import org.csstudio.sds.components.ui.internal.figureparts.RoundScaledRamp.Threshold;
-import org.csstudio.swt.xygraph.linearscale.Range;
-import org.csstudio.swt.xygraph.linearscale.AbstractScale.LabelSide;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.LightweightSystem;

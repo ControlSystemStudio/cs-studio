@@ -1,9 +1,9 @@
 package org.csstudio.language.script;
 
-import org.csstudio.language.script.parser.statementParser.AllStatementParserTests;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
+
+import org.csstudio.language.script.parser.statementParser.AllStatementParserTests;
 
 public class AllTests {
 	

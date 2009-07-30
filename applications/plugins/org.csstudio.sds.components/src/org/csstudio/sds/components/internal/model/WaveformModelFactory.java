@@ -21,6 +21,7 @@
  */
 package org.csstudio.sds.components.internal.model;
 
+import org.csstudio.sds.components.model.TextInputModel;
 import org.csstudio.sds.components.model.WaveformModel;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.IWidgetModelFactory;

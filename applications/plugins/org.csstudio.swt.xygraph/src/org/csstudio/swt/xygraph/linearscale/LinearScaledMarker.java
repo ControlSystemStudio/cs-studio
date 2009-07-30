@@ -4,7 +4,6 @@ package org.csstudio.swt.xygraph.linearscale;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-
 import java.util.Map;
 
 import org.csstudio.swt.xygraph.linearscale.AbstractScale.LabelSide;

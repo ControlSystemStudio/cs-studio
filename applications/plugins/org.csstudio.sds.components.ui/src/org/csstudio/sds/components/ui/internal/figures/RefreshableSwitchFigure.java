@@ -25,19 +25,18 @@ import java.util.HashMap;
 
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.sds.components.common.CosySwitch;
+import org.csstudio.sds.components.common.SwitchPlugins;
+import org.csstudio.sds.components.ui.internal.utils.Trigonometry;
 import org.csstudio.sds.ui.figures.BorderAdapter;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.util.AntialiasingUtil;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.draw2d.Shape;
 import org.eclipse.draw2d.Graphics;
+import org.eclipse.draw2d.Shape;
 import org.eclipse.draw2d.geometry.Rectangle;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Color;
-
-import org.csstudio.sds.components.common.CosySwitch;
-import org.csstudio.sds.components.common.SwitchPlugins;
-import org.csstudio.sds.components.ui.internal.utils.Trigonometry;
+import org.eclipse.swt.graphics.RGB;
 
 /**
  * A switch figure.

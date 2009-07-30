@@ -21,13 +21,12 @@
  */
  package org.csstudio.sds.components.ui.internal.editparts;
 
+import org.csstudio.sds.components.model.ArcModel;
+import org.csstudio.sds.components.ui.internal.figures.RefreshableArcFigure;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.graphics.RGB;
-
-import org.csstudio.sds.components.model.ArcModel;
-import org.csstudio.sds.components.ui.internal.figures.RefreshableArcFigure;
 
 /**
  * EditPart controller for the arc widget.

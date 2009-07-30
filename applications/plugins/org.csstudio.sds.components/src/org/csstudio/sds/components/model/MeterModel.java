@@ -23,12 +23,11 @@
 
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
-import org.csstudio.sds.model.properties.DoubleProperty;
+import org.csstudio.sds.model.properties.BooleanProperty;
 import org.csstudio.sds.model.properties.ColorProperty;
+import org.csstudio.sds.model.properties.DoubleProperty;
 import org.csstudio.sds.model.properties.FontProperty;
 import org.csstudio.sds.model.properties.IntegerProperty;
-import org.csstudio.sds.model.properties.BooleanProperty;
-import org.csstudio.sds.model.properties.StringProperty;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;

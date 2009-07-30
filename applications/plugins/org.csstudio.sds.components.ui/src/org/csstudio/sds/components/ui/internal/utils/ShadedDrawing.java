@@ -22,9 +22,6 @@
  package org.csstudio.sds.components.ui.internal.utils;
 
 import org.eclipse.draw2d.Graphics;
-import org.eclipse.swt.graphics.GC;
-
-import org.csstudio.sds.components.ui.internal.utils.Trigonometry;
 
 /**
  * Utility class for drawing nice 3D-looking things.

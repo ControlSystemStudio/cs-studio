@@ -21,10 +21,9 @@
  */
  package org.csstudio.sds.cosywidgets.epics;
 
+import org.csstudio.sds.components.model.MeterModel;
 import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
 import org.csstudio.sds.model.initializers.AbstractWidgetModelInitializer;
-
-import org.csstudio.sds.components.model.MeterModel;
 
 /**
  * Initializes a meter with EPICS specific property values.

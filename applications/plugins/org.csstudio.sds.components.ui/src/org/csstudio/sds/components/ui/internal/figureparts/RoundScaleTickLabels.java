@@ -1,7 +1,6 @@
 package org.csstudio.sds.components.ui.internal.figureparts;
 
 import java.math.BigDecimal;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;

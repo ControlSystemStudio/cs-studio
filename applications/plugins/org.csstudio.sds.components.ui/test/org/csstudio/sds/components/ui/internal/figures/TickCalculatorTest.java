@@ -21,11 +21,11 @@
  */
  package org.csstudio.sds.components.ui.internal.figures;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import org.csstudio.sds.components.ui.internal.figures.TickCalculator;
 import org.junit.Before;
 import org.junit.Test;
 

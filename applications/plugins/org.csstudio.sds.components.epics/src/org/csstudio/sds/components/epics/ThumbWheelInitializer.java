@@ -25,8 +25,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.csstudio.platform.simpledal.ConnectionState;
-import org.csstudio.sds.components.model.MeterModel;
-import org.csstudio.sds.components.model.RectangleModel;
 import org.csstudio.sds.components.model.ThumbWheelModel;
 import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
 import org.eclipse.swt.graphics.RGB;

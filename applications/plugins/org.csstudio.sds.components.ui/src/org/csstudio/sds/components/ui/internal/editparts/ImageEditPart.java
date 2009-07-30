@@ -22,13 +22,13 @@
  package org.csstudio.sds.components.ui.internal.editparts;
 
 
+import org.csstudio.sds.components.model.ImageModel;
+import org.csstudio.sds.components.ui.internal.figures.RefreshableImageFigure;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
-import org.csstudio.sds.components.model.ImageModel;
-import org.csstudio.sds.components.ui.internal.figures.RefreshableImageFigure;
 
 /**
  * EditPart controller for the image widget.

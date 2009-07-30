@@ -1,10 +1,10 @@
 package org.csstudio.swt.xygraph.linearscale;
 
 import java.math.BigDecimal;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FigureUtilities;
 import org.eclipse.draw2d.Graphics;

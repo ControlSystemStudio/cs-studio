@@ -1,8 +1,8 @@
 package org.csstudio.sds.language.script.parser.statementParser;
 
-import de.desy.language.libraries.utils.contract.Contract;
-
 import org.csstudio.sds.language.script.parser.nodes.AbstractScriptNode;
+
+import de.desy.language.libraries.utils.contract.Contract;
 
 /**
  * Abstract base class for all SNL specific element parser (not the root

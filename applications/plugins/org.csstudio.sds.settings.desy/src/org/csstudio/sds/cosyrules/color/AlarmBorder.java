@@ -1,7 +1,6 @@
 package org.csstudio.sds.cosyrules.color;
 
 import org.csstudio.sds.model.logic.IRule;
-import org.eclipse.swt.graphics.RGB;
 import org.epics.css.dal.DynamicValueState;
 
 /**

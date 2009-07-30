@@ -21,10 +21,9 @@
  */
  package org.csstudio.sds.components.internal.model;
 
+import org.csstudio.sds.components.model.SwitchModel;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.IWidgetModelFactory;
-
-import org.csstudio.sds.components.model.SwitchModel;
 
 /**
  * A switch model factory for {@link SwitchModel}.

@@ -21,13 +21,12 @@
  */
  package org.csstudio.sds.components.ui.internal.editparts;
 
-import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
-import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
-import org.eclipse.draw2d.IFigure;
-
 import org.csstudio.sds.components.common.SwitchPlugins;
 import org.csstudio.sds.components.model.SwitchModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableSwitchFigure;
+import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
+import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
+import org.eclipse.draw2d.IFigure;
 
 /**
  * EditPart controller for the switch widget.

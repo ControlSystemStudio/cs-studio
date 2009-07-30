@@ -21,13 +21,12 @@
  */
  package org.csstudio.sds.components.model;
 
+import org.csstudio.sds.components.common.SwitchPlugins;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
-import org.csstudio.sds.model.properties.BooleanProperty;
 import org.csstudio.sds.model.properties.ArrayOptionProperty;
+import org.csstudio.sds.model.properties.BooleanProperty;
 import org.csstudio.sds.model.properties.IntegerProperty;
-
-import org.csstudio.sds.components.common.SwitchPlugins;
 
 /**
  * A switch widget model.

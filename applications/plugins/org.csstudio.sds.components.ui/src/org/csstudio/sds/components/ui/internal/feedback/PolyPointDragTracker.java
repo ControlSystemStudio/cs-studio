@@ -21,7 +21,6 @@
  */
 package org.csstudio.sds.components.ui.internal.feedback;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.components.model.AbstractPolyModel;
 import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.IFigure;

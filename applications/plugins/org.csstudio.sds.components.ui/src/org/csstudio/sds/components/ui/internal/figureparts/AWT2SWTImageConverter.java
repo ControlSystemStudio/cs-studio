@@ -6,7 +6,9 @@ import java.awt.image.DirectColorModel;
 import java.awt.image.IndexColorModel;
 import java.awt.image.WritableRaster;
 
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.PaletteData;
+import org.eclipse.swt.graphics.RGB;
 
 /**
  * A converter between AWT BufferedImage and SWT ImageData. 

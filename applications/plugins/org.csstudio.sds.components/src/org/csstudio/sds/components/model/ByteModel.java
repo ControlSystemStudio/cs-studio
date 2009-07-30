@@ -24,11 +24,9 @@
  */
 package org.csstudio.sds.components.model;
 
-import org.csstudio.sds.components.internal.localization.Messages;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.properties.BooleanProperty;
-import org.csstudio.sds.model.properties.DoubleProperty;
 
 /**
  * @author hrickens

@@ -23,7 +23,6 @@ package org.csstudio.sds.components.ui.internal.editparts;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.regex.Pattern;
 
 import org.csstudio.platform.data.INumericMetaData;
 import org.csstudio.platform.data.ISeverity;

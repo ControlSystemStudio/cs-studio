@@ -25,15 +25,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.csstudio.platform.simpledal.ConnectionState;
-import org.csstudio.sds.components.model.BargraphModel;
-import org.csstudio.sds.components.model.MeterModel;
-import org.csstudio.sds.components.model.RectangleModel;
 import org.csstudio.sds.components.model.SixteenBinaryBarModel;
-import org.csstudio.sds.cosyrules.color.Alarm;
-import org.csstudio.sds.cosyrules.color.AlarmBorder;
-import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
-import org.csstudio.sds.model.initializers.AbstractWidgetModelInitializer;
 import org.eclipse.swt.graphics.RGB;
 
 /**

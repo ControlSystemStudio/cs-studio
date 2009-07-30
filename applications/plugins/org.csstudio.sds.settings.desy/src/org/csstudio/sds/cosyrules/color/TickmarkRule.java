@@ -25,7 +25,6 @@
 package org.csstudio.sds.cosyrules.color;
 
 import org.csstudio.sds.model.logic.IRule;
-import org.epics.css.dal.DynamicValueState;
 
 /**
  * @author hrickens

@@ -3,7 +3,6 @@ package org.csstudio.swt.xygraph.figures;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import org.csstudio.swt.xygraph.Activator;
 import org.csstudio.swt.xygraph.linearscale.Range;
 import org.csstudio.swt.xygraph.undo.ZoomCommand;

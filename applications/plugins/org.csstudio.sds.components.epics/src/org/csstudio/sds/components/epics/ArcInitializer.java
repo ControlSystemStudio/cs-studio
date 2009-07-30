@@ -21,16 +21,7 @@
  */
  package org.csstudio.sds.components.epics;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.csstudio.platform.simpledal.ConnectionState;
-import org.csstudio.sds.components.model.ArcModel;
-import org.csstudio.sds.model.AbstractWidgetModel;
-import org.csstudio.sds.model.LabelModel;
 import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
-import org.csstudio.sds.model.initializers.AbstractWidgetModelInitializer;
-import org.eclipse.swt.graphics.RGB;
 
 /**
  * Initializes a arc with EPICS specific property values.
