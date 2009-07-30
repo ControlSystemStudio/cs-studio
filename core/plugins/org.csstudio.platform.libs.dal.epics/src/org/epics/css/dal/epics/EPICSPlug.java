@@ -43,6 +43,9 @@ import java.util.Iterator;
 import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import javax.naming.NamingException;
 import javax.naming.directory.DirContext;
@@ -92,7 +95,7 @@ public class EPICSPlug extends AbstractPlug
 			}
 		}
 	}
-
+	
 	/**
 	 * Plug type string.
 	 */
@@ -116,7 +119,51 @@ public class EPICSPlug extends AbstractPlug
 	 * Property defined in System properties take precedence before property in defined in configuration.
 	 */
 	public static final String USE_JNI = "EPICSPlug.use_jni";
-
+	
+	/**
+	 * Property name for use common executor flag: {@link #useCommonExecutor}
+	 */
+	public static final String PROPERTY_USE_COMMON_EXECUTOR = "EPICSPlug.property.use_common_executor";
+	
+	/**
+	 * Property name for core threads property: {@link #coreThreads}
+	 * <p>
+	 * The number of core threads must be non-negative.
+	 * </p>
+	 */
+	public static final String PROPERTY_CORE_THREADS = "EPICSPlug.property.core_threads";
+	
+	/**
+	 * Property name for max threads property: {@link #maxThreads}
+	 * <p>
+	 * The number of core threads must be non-negative and greater than the number of core threads.
+	 * </p>
+	 */
+	public static final String PROPERTY_MAX_THREADS = "EPICSPlug.property.max_threads";
+	
+	/**
+	 * Defines if a common <code>Executor</code> from this <code>EPICSPlug</code> should be used instead of
+	 * individual <code>Executor<code>s in <code>PropertyProxyImpl</code>s.
+	 * 
+	 * @see PropertyProxyImpl
+	 */
+	private boolean useCommonExecutor;
+	
+	/**
+	 * Defines the number of core threads to be used with <code>ThreadPoolExecutor</code> from this
+	 * <code>EPICSPlug</code> or <code>PropertyProxyImpl</code>.
+	 * 
+	 * @see PropertyProxyImpl
+	 */
+	private int coreThreads;
+	
+	/**
+	 * Defines the maximum number of threads to be used with <code>ThreadPoolExecutor</code> from this
+	 * <code>EPICSPlug</code> or <code>PropertyProxyImpl</code>.
+	 * 
+	 * @see PropertyProxyImpl
+	 */
+	private int maxThreads;
 	
 	/**
 	 * Timer instance (used for on-time monitors).
@@ -135,6 +182,12 @@ public class EPICSPlug extends AbstractPlug
 	private Context context;
 
 	private static EPICSPlug sharedInstance;
+	
+	/**
+	 * <code>ThreadPoolExecutor</code> used by this <code>EPICSPlug</code> if {@link #useCommonExecutor}
+	 * is selected.
+	 */
+	private ThreadPoolExecutor executor;
 	
 	/**
 	 * Create EPICS plug instance.
@@ -174,6 +227,14 @@ public class EPICSPlug extends AbstractPlug
 	 * @see org.epics.css.dal.proxy.AbstractPlug#releaseInstance()
 	 */
 	public synchronized void releaseInstance() throws Exception {
+		if (executor!=null) {
+			// TODO is this OK?
+			getExecutor().shutdown();
+	        try {
+	            if (!getExecutor().awaitTermination(1, TimeUnit.SECONDS))
+	                getExecutor().shutdownNow();
+	        } catch (InterruptedException ie) {  }
+		}
 		if (context!=null) {
 			if (!cachedPropertyProxiesIterator().hasNext()) {
 				context.destroy();
@@ -190,14 +251,57 @@ public class EPICSPlug extends AbstractPlug
 	 * @throws RemoteException 
 	 */
 	private void initialize() throws RemoteException {
-		boolean use_pure_java=true;
-		if (System.getProperties().containsKey(USE_JNI)) {
-			use_pure_java = new Boolean(System.getProperty(USE_JNI, "true"));
+		useCommonExecutor = false;
+		if (System.getProperties().containsKey(PROPERTY_USE_COMMON_EXECUTOR)) {
+			useCommonExecutor = new Boolean(System.getProperty(PROPERTY_USE_COMMON_EXECUTOR, "false"));
 		} else {
-			use_pure_java = new Boolean(getConfiguration().getProperty(USE_JNI, "true"));
+			useCommonExecutor = new Boolean(getConfiguration().getProperty(PROPERTY_USE_COMMON_EXECUTOR, "false"));
 		}
-		CentralLogger.getInstance().debug(this, "pure java: " + use_pure_java);
-		if (use_pure_java) {
+		
+		coreThreads = 2;
+		if (System.getProperties().containsKey(PROPERTY_CORE_THREADS)) {
+			coreThreads = new Integer(System.getProperty(PROPERTY_CORE_THREADS, "2"));
+		} else {
+			coreThreads = new Integer(getConfiguration().getProperty(PROPERTY_CORE_THREADS, "2"));
+		}
+		
+		maxThreads = 10;
+		if (System.getProperties().containsKey(PROPERTY_MAX_THREADS)) {
+			maxThreads = new Integer(System.getProperty(PROPERTY_MAX_THREADS, "10"));
+		} else {
+			maxThreads = new Integer(getConfiguration().getProperty(PROPERTY_MAX_THREADS, "10"));
+		}
+		
+		// checks for coreThreads and maxThreads values
+		if (maxThreads == 0) { 
+			if (coreThreads != 0) {
+				System.out.print("> EPICSPlug number of core threads can not be "+coreThreads+". It was changed to ");
+				coreThreads = 0;
+				System.out.println(coreThreads+".");
+			}
+		}
+		else {
+			if (coreThreads < 1) {
+				System.out.print("> EPICSPlug number of core threads can not be "+coreThreads+". It was changed to ");
+				coreThreads = 1;
+				System.out.println(coreThreads+".");
+			}
+			if (maxThreads < 0 || maxThreads < coreThreads) {
+				System.out.print("> EPICSPlug maximum number of threads can not be "+maxThreads+". It was changed to ");
+				maxThreads = coreThreads;
+				System.out.println(maxThreads+".");
+			}
+		}
+		
+		
+		boolean use_jni=false;
+		if (System.getProperties().containsKey(USE_JNI)) {
+			use_jni = new Boolean(System.getProperty(USE_JNI, "false"));
+		} else {
+			use_jni = new Boolean(getConfiguration().getProperty(USE_JNI, "false"));
+		}
+		CentralLogger.getInstance().debug(this, "pure java: " + !use_jni);
+		if (!use_jni) {
 			context = createJCAContext();
 		} else {
 			context = createThreadSafeContext();
@@ -464,6 +568,54 @@ public class EPICSPlug extends AbstractPlug
 	 */
 	public double getTimeout() {
 		return timeout;
+	}
+	
+	/**
+	 * Gets {@link #useCommonExecutor} property.
+	 * @return <code>true</code> if common executor should be used and <code>false</code> otherwise.
+	 */
+	public boolean isUseCommonExecutor() {
+		return useCommonExecutor;
+	}
+	
+	/**
+	 * Gets {@link #coreThreads} property.
+	 * @return the number of core threads.
+	 */
+	public int getCoreThreads() {
+		return coreThreads;
+	}
+	
+	/**
+	 * Gets {@link #maxThreads} property.
+	 * @return the maximum number of threads.
+	 */
+	public int getMaxThreads() {
+		return maxThreads;
+	}
+	
+	/**
+	 * This method should be called only if {@link #PROPERTY_USE_COMMON_EXECUTOR} is set to 
+	 * <code>true</code>. Also in order to use this method the {@link #PROPERTY_MAX_THREADS}
+	 * must be greater than 0.
+	 * 
+	 * @return a <code>ThreadPoolExecutor</code>
+	 * @throws IllegalStateException if useCommonExecutor property is set to <code>false</code>
+	 * or maximum number of threads is equal to 0.
+	 */
+	public ThreadPoolExecutor getExecutor() {
+		if (executor==null) {
+			synchronized (this) {
+				if (!useCommonExecutor) throw new IllegalStateException("EPICSPlug is configured not to use a common executor.");
+				if (maxThreads == 0) throw new IllegalStateException("Maximum number of threads must be greater than 0.");
+				if (executor==null) {
+					executor= new ThreadPoolExecutor(coreThreads,maxThreads,Long.MAX_VALUE, TimeUnit.NANOSECONDS,
+			                new ArrayBlockingQueue<Runnable>(maxThreads));
+					executor.prestartAllCoreThreads();
+				}				
+			}
+		}
+		return executor;
 	}
 
 	/* (non-Javadoc)

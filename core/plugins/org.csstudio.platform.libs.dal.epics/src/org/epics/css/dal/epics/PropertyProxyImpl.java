@@ -158,8 +158,6 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 
 	protected int elementCount;
 	
-	private int MIN_SPARE_THREADS = 2;
-	private int MAX_THREADS = 10;
 	private ThreadPoolExecutor executor;
 	
 	private class CharacteristicsMap extends HashMap<String,Object>
@@ -195,15 +193,16 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 		if (type.getValue() >= DBR_STS_String.TYPE.getValue())
 			throw new IllegalArgumentException("type must be value-only type");
 		
-		this.type = type;
-		this.dataType = dataType;
-		condition = new DynamicValueCondition(EnumSet.of(DynamicValueState.LINK_NOT_AVAILABLE), 0, null);
-
-		// create channel
-		try {
-			this.channel = plug.getContext().createChannel(name, this);
-		} catch (Throwable th) {
-			throw new RemoteException(this, "Failed create CA channel", th);
+		synchronized (this) {
+			this.type = type;
+			this.dataType = dataType;
+			condition = new DynamicValueCondition(EnumSet.of(DynamicValueState.LINK_NOT_AVAILABLE), 0, null);
+			// create channel
+			try {
+				this.channel = plug.getContext().createChannel(name, this);
+			} catch (Throwable th) {
+				throw new RemoteException(this, "Failed create CA channel", th);
+			}
 		}
 
 		
@@ -812,7 +811,7 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 			}
 			
 		};
-		getExecutor().execute(getCharsAsync);
+		execute(getCharsAsync);
 		
 		return r;
 	}
@@ -853,6 +852,8 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 
 		condDesc = st.getName();
 		
+		DynamicValueState dbrState = this.dbrState;
+		
 		if (se == Severity.NO_ALARM) {
 			dbrState = DynamicValueState.NORMAL;
 		} else if (se == Severity.MINOR_ALARM) {
@@ -868,7 +869,7 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 			timestamp = PlugUtilities.convertTimestamp(((TIME) dbr).getTimeStamp());
 		}
 
-		checkStates(timestamp);
+		checkStates(dbrState, connState, timestamp);
 	}
 
 	/*
@@ -900,9 +901,12 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 			}
 			
 		};
-
-		if (!getExecutor().isShutdown()) {
-			getExecutor().execute(connChangedRunnable);
+		
+		if (getPlug().getMaxThreads() == 0) {
+			execute(connChangedRunnable);
+		}
+		else if (!getExecutor().isShutdown()) {
+			execute(connChangedRunnable);
 		}
 	}
 
@@ -912,24 +916,26 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 	@Override
 	protected void setConnectionState(ConnectionState s) {
 		super.setConnectionState(s);
+		DynamicValueState connState = this.connState;
 		if (s == ConnectionState.CONNECTED) {
 			connState = DynamicValueState.NORMAL;
-			checkStates(null);
+			checkStates(dbrState, connState, null);
 		} else if (s == ConnectionState.DISCONNECTED) {
 			connState = DynamicValueState.LINK_NOT_AVAILABLE;
-			checkStates(null);
+			checkStates(dbrState, connState, null);
 		} else if (s == ConnectionState.CONNECTION_LOST) {
 			connState = DynamicValueState.LINK_NOT_AVAILABLE;
-			checkStates(null);
+			checkStates(dbrState, connState, null);
 		} else if (s == ConnectionState.DESTROYED) {
 			connState = DynamicValueState.LINK_NOT_AVAILABLE;
-			checkStates(null);
-			getExecutor().shutdown();
-	        try {
-	            if (!getExecutor().awaitTermination(1, TimeUnit.SECONDS))
-	                getExecutor().shutdownNow();
-	        } catch (InterruptedException ie) {  }
-
+			checkStates(dbrState, connState, null);
+			if (getPlug().getMaxThreads() != 0 && !getPlug().isUseCommonExecutor()) {
+				getExecutor().shutdown();
+		        try {
+		            if (!getExecutor().awaitTermination(1, TimeUnit.SECONDS))
+		                getExecutor().shutdownNow();
+		        } catch (InterruptedException ie) {  }
+			}
 		}
 	}
 
@@ -937,14 +943,17 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 	 * Check states.
 	 * @param timestamp
 	 */
-	private void checkStates(Timestamp timestamp) {
+	private void checkStates(DynamicValueState dbrState, DynamicValueState connState, Timestamp timestamp) {
 		
 		// noop check (state already reported)
-		if (condition.containsStates(dbrState, connState)
-				&& condDesc == condition.getDescription()) {
+		if (this.dbrState == dbrState && this.connState == connState
+				&& equal(condDesc, condition.getDescription())) {
 			return;
 		}
 
+		this.dbrState = dbrState;
+		this.connState = connState;
+		
 		EnumSet<DynamicValueState> en = null;
 
 		if (dbrState == connState && connState == DynamicValueState.NORMAL) {
@@ -984,18 +993,57 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 	}
 
 	/**
-	 * @return the executor
+	 * Executes a <code>Runnable</code>. The <code>Runnable</code> is run in the same thread if
+	 * {@link EPICSPlug#PROPERTY_MAX_THREADS} is equal to 0. Otherwise it is delegated to the
+	 * <code>Executor</code> ({@link #getExecutor()}).
+	 * 
+	 * @param r the <code>Runnable</code> to run
 	 */
-	protected ThreadPoolExecutor getExecutor() {
+	protected void execute(Runnable r) {
+		if (getPlug().getMaxThreads() > 0) {
+			getExecutor().execute(r);
+		}
+		else {
+			r.run();
+		}
+	}
+	
+	/**
+	 * This method should be called only if {@link EPICSPlug#PROPERTY_MAX_THREADS} is
+	 * a number greater than 0. 
+	 * <p>
+	 * If {@link EPICSPlug#PROPERTY_USE_COMMON_EXECUTOR} is set to <code>true</code> the 
+	 * <code>Executor</code> from {@link EPICSPlug#getExecutor()} is returned. Otherwise
+	 * a new </code>ThreadPoolExecutor</code> is created.
+	 * </p>
+	 * 
+	 * @return the executor
+	 * @throws IllegalStateException if maximum number of threads defined by {@link EPICSPlug}
+	 * is equal to 0.
+	 */
+	private ThreadPoolExecutor getExecutor() {
 		if (executor==null) {
 			synchronized (this) {
-				if (executor==null) {
-					executor= new ThreadPoolExecutor(MIN_SPARE_THREADS,MAX_THREADS,Long.MAX_VALUE, TimeUnit.NANOSECONDS,
-			                new ArrayBlockingQueue<Runnable>(MAX_THREADS));
+				if (getPlug().getMaxThreads() == 0) throw new IllegalStateException("Maximum number of threads must be greater than 0.");
+				if (getPlug().isUseCommonExecutor()) executor = getPlug().getExecutor();
+				else {
+					executor= new ThreadPoolExecutor(getPlug().getCoreThreads(),getPlug().getMaxThreads(),Long.MAX_VALUE, TimeUnit.NANOSECONDS,
+			                new ArrayBlockingQueue<Runnable>(getPlug().getMaxThreads()));
 					executor.prestartAllCoreThreads();
 				}				
 			}
 		}
 		return executor;
 	}
+	
+	private static boolean equal(String s1, String s2) {
+		if (s1 == null || s2 == null) {
+			if (s1 == s2) {
+				return true;
+			}
+			return false;
+		}
+		return s1.equals(s2);
+	}
+	
 }

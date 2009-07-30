@@ -57,9 +57,9 @@ public class Activator extends Plugin {
 		//Read preference 'use_pure_java' from plug-in 'org.csstudio.libs.epics' and
 		//set it to the DAL configuration.
         if (EpicsPlugin.getDefault().usePureJava()) {
-            DALPropertyFactoriesProvider.getInstance().getApplicationContext().getConfiguration().setProperty("EPICSPlug.use_jni", "true");
-        } else {
             DALPropertyFactoriesProvider.getInstance().getApplicationContext().getConfiguration().setProperty("EPICSPlug.use_jni", "false");
+        } else {
+            DALPropertyFactoriesProvider.getInstance().getApplicationContext().getConfiguration().setProperty("EPICSPlug.use_jni", "true");
         }
 	}
 
