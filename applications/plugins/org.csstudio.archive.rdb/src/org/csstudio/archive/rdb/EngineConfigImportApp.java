@@ -11,6 +11,7 @@ import org.csstudio.apputil.args.IntegerOption;
 import org.csstudio.apputil.args.StringOption;
 import org.csstudio.archive.rdb.engineconfig.SampleEngineConfig;
 import org.csstudio.archive.rdb.engineconfig.SampleEngineHelper;
+import org.csstudio.archive.rdb.engineconfig.XMLExport;
 import org.csstudio.archive.rdb.engineconfig.XMLImport;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.equinox.app.IApplication;
@@ -43,6 +44,8 @@ public class EngineConfigImportApp implements IApplication
                 "-rdb_password", "RDB Password", RDBArchivePreferences.getPassword());
         final StringOption  engine_name = new StringOption(parser,
                 "-engine", "Engine Name", "");
+        final BooleanOption export = new BooleanOption(parser,
+                "-export", "export configuration as XML");
         final StringOption  engine_description = new StringOption(parser,
                 "-description", "Engine Description", "Imported");
         final StringOption  engine_host = new StringOption(parser,
@@ -92,6 +95,13 @@ public class EngineConfigImportApp implements IApplication
         final Logger logger = CentralLogger.getInstance().getLogger(this);
         try
         {
+            if (export.get())
+            {
+                new XMLExport(rdb_url.get(),
+                    user.get(), password.get(),
+                    engine_name.get());
+                return IApplication.EXIT_OK;
+            }
             // Delete existing config?
             if (delete_config.get())
             {
