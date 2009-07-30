@@ -25,6 +25,9 @@
  */
 package org.epics.css.dal.spi;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.naming.NamingException;
 
 import org.epics.css.dal.DynamicValueProperty;
@@ -52,6 +55,7 @@ public abstract class AbstractPropertyFactory extends AbstractFactorySupport
 	implements PropertyFactory
 {
 	private PropertyFamilyImpl family;
+	private Set<String> connecting;
 
 	/**
 	 * Default constructor.
@@ -60,6 +64,7 @@ public abstract class AbstractPropertyFactory extends AbstractFactorySupport
 	{
 		super();
 		family = new PropertyFamilyImpl(this);
+		connecting= new HashSet<String>();
 	}
 
 	/* (non-Javadoc)
@@ -84,17 +89,30 @@ public abstract class AbstractPropertyFactory extends AbstractFactorySupport
 	private DynamicValueProperty<?> createProperty (String uniqueName,
 		    Class<? extends DynamicValueProperty<?>> type, LinkListener<?> l) throws RemoteException
 	{
+		String uid= uniqueName+type;
+
 		if (propertiesCached) {
-			if (type == null) {
-				DynamicValueProperty<?> p= family.getFirst(uniqueName);
+			DynamicValueProperty<?> p = getFromFamily(uniqueName, type);
+			if (p!=null) {
+				return p;
+			}
+			
+			synchronized (this) {
+				long timer= System.currentTimeMillis();
+				while (connecting.contains(uid) && System.currentTimeMillis()-timer<60000) {
+					try {
+						wait(60000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+				
+				p = getFromFamily(uniqueName, type);
 				if (p!=null) {
 					return p;
 				}
-			} else {
-				DynamicValueProperty<?> p= family.getFirst(uniqueName,type);
-				if (p!=null) {
-					return p;
-				}
+
+				connecting.add(uid);
 			}
 		}
 		
@@ -125,9 +143,31 @@ public abstract class AbstractPropertyFactory extends AbstractFactorySupport
 			throw e;
 		} catch (Exception e) {
 			throw new RemoteException(this, "Failed to instantiate '"+uniqueName+"'.", e);
+		} finally {
+			if (propertiesCached) {
+				synchronized (this) {
+					connecting.remove(uid);
+					this.notifyAll();
+				}
+			}
 		}
-		
 	}
+
+	/**
+	 * Tries to get property from family (cache).
+	 * @param uniqueName
+	 * @param type
+	 * @return property if found, otherwise null
+	 */
+	private DynamicValueProperty<?> getFromFamily(String uniqueName,
+			Class<? extends DynamicValueProperty<?>> type) {
+		if (type == null) {
+			return family.getFirst(uniqueName);
+		} 
+		
+		return family.getFirst(uniqueName,type);
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.epics.css.dal.spi.PropertyFactory#getProperty(java.lang.String, java.lang.Class, org.epics.css.dal.context.LinkListener)
 	 */
@@ -160,54 +200,80 @@ public abstract class AbstractPropertyFactory extends AbstractFactorySupport
 		throws InstantiationException, RemoteException
 	{
 		
+		String uid= name.getRemoteName()+type;
+
 		DynamicValuePropertyImpl<?> property = null;
 		
 		if (propertiesCached) {
-			if (type == null) {
-				property= (DynamicValuePropertyImpl)family.getFirst(name.getRemoteName());
-			} else {
-				property= (DynamicValuePropertyImpl)family.getFirst(name.getRemoteName(),type);
-			}
-		}
-
-		Class<?extends SimpleProperty<?>> impClass = getPlugInstance()
-		.getPropertyImplementationClass(type, name.getRemoteName());
-
-		boolean newProp= false;
-		
-		if (property == null) {
-			// Creates device implementation
+			property= (DynamicValuePropertyImpl<?>)getFromFamily(name.getRemoteName(), type);
 			
-			try {
-				property = (DynamicValuePropertyImpl)impClass.getConstructor(String.class,
-					    PropertyContext.class)
-					.newInstance(name.getRemoteName(), family);
-				family.add(property);
+			if (property==null) {
+				synchronized (this) {
+					long timer= System.currentTimeMillis();
+					while (connecting.contains(uid) && System.currentTimeMillis()-timer<60000) {
+						try {
+							wait(60000);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+					
+					property= (DynamicValuePropertyImpl<?>)getFromFamily(name.getRemoteName(), type);
 
-				newProp=true;
-			} catch (Exception e) {
-				throw new RemoteException(this, "Failed to instantiate '"+name+"'.", e);
+					if (property==null) {
+						connecting.add(uid);
+					}
+				}
 			}
 		}
 
-		if (l != null) {
-			property.addLinkListener(l);
-		}
-		
-		if (!newProp && property.isConnected()) {
-			l.connected(new ConnectionEvent(property, ConnectionState.CONNECTED));
-		} else if (!newProp && property.isConnectionFailed()) {
-			l.connectionFailed(new ConnectionEvent(property,
-			        ConnectionState.CONNECTION_FAILED));
-		} else 
-		{
-			try {
-				connect(name.getRemoteName(),type, impClass, property);
-			} catch (ConnectionException e) {
-				throw e;
+		try {
+			Class<?extends SimpleProperty<?>> impClass = getPlugInstance()
+			.getPropertyImplementationClass(type, name.getRemoteName());
+	
+			boolean newProp= false;
+			
+			if (property == null) {
+				// Creates device implementation
+				
+				try {
+					property = (DynamicValuePropertyImpl)impClass.getConstructor(String.class,
+						    PropertyContext.class)
+						.newInstance(name.getRemoteName(), family);
+					family.add(property);
+	
+					newProp=true;
+				} catch (Exception e) {
+					throw new RemoteException(this, "Failed to instantiate '"+name+"'.", e);
+				}
+			}
+	
+			if (l != null) {
+				property.addLinkListener(l);
+			}
+			
+			if (!newProp && property.isConnected()) {
+				l.connected(new ConnectionEvent(property, ConnectionState.CONNECTED));
+			} else if (!newProp && property.isConnectionFailed()) {
+				l.connectionFailed(new ConnectionEvent(property,
+				        ConnectionState.CONNECTION_FAILED));
+			} else 
+			{
+				try {
+					connect(name.getRemoteName(),type, impClass, property);
+				} catch (ConnectionException e) {
+					throw e;
+				}
+			}
+			return name;
+		} finally {
+			if (propertiesCached) {
+				synchronized (this) {
+					connecting.remove(uid);
+					this.notifyAll();
+				}
 			}
 		}
-		return name;
 	}
 
 	/* (non-Javadoc)
