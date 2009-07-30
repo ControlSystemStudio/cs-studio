@@ -23,7 +23,6 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 public class OPIEditorActionBarContributor extends ActionBarContributor {
 
 	public OPIEditorActionBarContributor() {
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override

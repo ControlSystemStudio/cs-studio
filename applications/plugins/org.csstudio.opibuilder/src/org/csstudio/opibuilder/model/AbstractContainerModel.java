@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 
 public abstract class AbstractContainerModel extends AbstractWidgetModel {
@@ -40,13 +41,13 @@ public abstract class AbstractContainerModel extends AbstractWidgetModel {
 	 * @param child the widget to be added
 	 */
 	public void addChild(AbstractWidgetModel child){
-		assert child != null : "child is null";
+		Assert.isNotNull(child);
 		childrenList.add(child);
 		childrenProperty.firePropertyChange(null, childrenList);
 	}
 	
 	public void addChild(int index, AbstractWidgetModel child){
-		assert child != null : "child is null";
+		Assert.isNotNull(child);
 		childrenList.add(index, child);
 		childrenProperty.firePropertyChange(null, childrenList);
 	}
@@ -79,6 +80,21 @@ public abstract class AbstractContainerModel extends AbstractWidgetModel {
 	public AbstractWidgetProperty getChildrenProperty() {
 		return childrenProperty;
 	}
+	
+	/**Change the order of the child.
+	 * @param child
+	 * @param newIndex
+	 */
+	public final void changeChildOrder(final AbstractWidgetModel child, final int newIndex){
+		if(childrenList.contains(child) && newIndex >= 0 && newIndex < childrenList.size()){
+			if(newIndex == childrenList.indexOf(child))
+				return;
+			childrenList.remove(child);
+			childrenList.add(newIndex, child);
+			childrenProperty.firePropertyChange(null, childrenList);
+		}
+	}
+	
 	
 	
 }

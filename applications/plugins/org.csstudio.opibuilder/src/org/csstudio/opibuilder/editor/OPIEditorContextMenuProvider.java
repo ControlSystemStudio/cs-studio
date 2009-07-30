@@ -4,6 +4,9 @@ package org.csstudio.opibuilder.editor;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.csstudio.opibuilder.OPIBuilderPlugin;
+import org.csstudio.opibuilder.actions.ChangeOrderAction.OrderType;
+import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.gef.ContextMenuProvider;
 import org.eclipse.gef.EditPartViewer;
 import org.eclipse.gef.commands.CommandStack;
@@ -57,6 +60,17 @@ public final class OPIEditorContextMenuProvider extends ContextMenuProvider {
 		menu.appendToGroup(
 				GEFActionConstants.GROUP_EDIT,
 				getAction(ActionFactory.DELETE.getId()));
+		
+		String orderGroup = "Order";
+		MenuManager orderMenu = new MenuManager(orderGroup, 
+				CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
+						OPIBuilderPlugin.PLUGIN_ID, "icons/order.png"), null);	 //$NON-NLS-1$	
+		orderMenu.add(new Separator(orderGroup));
+		orderMenu.appendToGroup(orderGroup, getAction(OrderType.TO_FRONT.getActionID()));
+		orderMenu.appendToGroup(orderGroup, getAction(OrderType.STEP_FRONT.getActionID()));
+		orderMenu.appendToGroup(orderGroup, getAction(OrderType.STEP_BACK.getActionID()));
+		orderMenu.appendToGroup(orderGroup, getAction(OrderType.TO_BACK.getActionID()));
+		menu.appendToGroup(GEFActionConstants.GROUP_EDIT, orderMenu);
 		
 		MenuManager cssMenu = new MenuManager("CSS", "css");
 		cssMenu.add(new Separator("additions"));

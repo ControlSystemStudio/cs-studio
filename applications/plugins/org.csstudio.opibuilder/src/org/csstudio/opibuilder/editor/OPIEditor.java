@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.List;
 
+import org.csstudio.opibuilder.OPIBuilderPlugin;
+import org.csstudio.opibuilder.actions.ChangeOrderAction;
+import org.csstudio.opibuilder.actions.ChangeOrderAction.OrderType;
 import org.csstudio.opibuilder.commands.SetWidgetPropertyCommand;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.editparts.WidgetEditPartFactory;
@@ -14,16 +17,27 @@ import org.csstudio.opibuilder.model.RulerModel;
 import org.csstudio.opibuilder.palette.OPIEditorPaletteFactory;
 import org.csstudio.opibuilder.palette.WidgetCreationFactory;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.draw2d.FigureCanvas;
+import org.eclipse.draw2d.LightweightSystem;
+import org.eclipse.draw2d.MarginBorder;
 import org.eclipse.draw2d.PositionConstants;
+import org.eclipse.draw2d.Viewport;
 import org.eclipse.draw2d.geometry.Dimension;
+import org.eclipse.draw2d.parts.ScrollableThumbnail;
+import org.eclipse.draw2d.parts.Thumbnail;
 import org.eclipse.gef.AutoexposeHelper;
 import org.eclipse.gef.ContextMenuProvider;
 import org.eclipse.gef.DefaultEditDomain;
+import org.eclipse.gef.EditPartViewer;
 import org.eclipse.gef.GraphicalViewer;
+import org.eclipse.gef.KeyHandler;
+import org.eclipse.gef.KeyStroke;
 import org.eclipse.gef.LayerConstants;
 import org.eclipse.gef.MouseWheelHandler;
 import org.eclipse.gef.MouseWheelZoomHandler;
+import org.eclipse.gef.RootEditPart;
 import org.eclipse.gef.SnapToGrid;
 import org.eclipse.gef.dnd.TemplateTransferDragSourceListener;
 import org.eclipse.gef.dnd.TemplateTransferDropTargetListener;
@@ -38,6 +52,7 @@ import org.eclipse.gef.ui.actions.ActionRegistry;
 import org.eclipse.gef.ui.actions.AlignmentAction;
 import org.eclipse.gef.ui.actions.CopyTemplateAction;
 import org.eclipse.gef.ui.actions.DirectEditAction;
+import org.eclipse.gef.ui.actions.GEFActionConstants;
 import org.eclipse.gef.ui.actions.MatchHeightAction;
 import org.eclipse.gef.ui.actions.MatchWidthAction;
 import org.eclipse.gef.ui.actions.ToggleGridAction;
@@ -47,21 +62,37 @@ import org.eclipse.gef.ui.actions.ZoomInAction;
 import org.eclipse.gef.ui.actions.ZoomOutAction;
 import org.eclipse.gef.ui.palette.PaletteViewer;
 import org.eclipse.gef.ui.palette.PaletteViewerProvider;
+import org.eclipse.gef.ui.parts.ContentOutlinePage;
 import org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette;
 import org.eclipse.gef.ui.parts.GraphicalViewerKeyHandler;
 import org.eclipse.gef.ui.parts.ScrollingGraphicalViewer;
+import org.eclipse.gef.ui.parts.TreeViewer;
 import org.eclipse.gef.ui.properties.UndoablePropertySheetEntry;
 import org.eclipse.gef.ui.rulers.RulerComposite;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.util.TransferDropTargetListener;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IKeyBindingService;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.part.IPageSite;
+import org.eclipse.ui.part.Page;
+import org.eclipse.ui.part.PageBook;
+import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.PropertySheetPage;
 
@@ -76,6 +107,10 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 	private DisplayModel displayModel;
 
 	private RulerComposite rulerComposite;
+
+	private KeyHandler sharedKeyHandler;
+
+	private OverviewOutlinePage overviewOutlinePage;
 	
 	public OPIEditor() {
 		setEditDomain(new DefaultEditDomain(this));
@@ -125,7 +160,7 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 			}
 		};		
 		viewer.setRootEditPart(root);
-		viewer.setKeyHandler(new GraphicalViewerKeyHandler(viewer));
+		viewer.setKeyHandler(new GraphicalViewerKeyHandler(viewer).setParent(getCommonKeyHandler()));
 		ContextMenuProvider cmProvider = 
 			new OPIEditorContextMenuProvider(viewer, getActionRegistry());
 		viewer.setContextMenu(cmProvider);
@@ -299,8 +334,11 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 		if(type == IPropertySheetPage.class)
 			return getPropertySheetPage();
 		else if (type == ZoomManager.class)
-		return ((ScalableFreeformRootEditPart) getGraphicalViewer()
+			return ((ScalableFreeformRootEditPart) getGraphicalViewer()
 				.getRootEditPart()).getZoomManager();
+		else if (type == IContentOutlinePage.class) 
+			return getOverviewOutlinePage();
+			
 		return super.getAdapter(type);
 	}
 	
@@ -332,7 +370,7 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 		action = getActionRegistry().getAction(id);
 		action.setActionDefinitionId("org.eclipse.ui.edit.delete"); //$NON-NLS-1$
 		keyBindingService.registerAction(action);
-
+	
 		id = ActionFactory.SELECT_ALL.getId();
 		action = getActionRegistry().getAction(id);
 		action.setActionDefinitionId("org.eclipse.ui.edit.selectAll");
@@ -377,6 +415,23 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 				PositionConstants.MIDDLE);
 		registry.registerAction(action);
 		getSelectionActions().add(action.getId());
+		
+		action = new ChangeOrderAction((IWorkbenchPart)this, OrderType.TO_FRONT);
+		registry.registerAction(action);
+		getSelectionActions().add(action.getId());
+		
+		action = new ChangeOrderAction((IWorkbenchPart)this, OrderType.STEP_FRONT);
+		registry.registerAction(action);
+		getSelectionActions().add(action.getId());
+		
+		action = new ChangeOrderAction((IWorkbenchPart)this, OrderType.STEP_BACK);
+		registry.registerAction(action);
+		getSelectionActions().add(action.getId());
+		
+		action = new ChangeOrderAction((IWorkbenchPart)this, OrderType.TO_BACK);
+		registry.registerAction(action);
+		getSelectionActions().add(action.getId());
+		
 	}
 	
 	/**
@@ -424,5 +479,38 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 		return result;
 	}
 	
+	/**
+	 * Returns the KeyHandler with common bindings for both the Outline and Graphical Views.
+	 * For example, delete is a common action.
+	 */
+	protected KeyHandler getCommonKeyHandler(){
+		if (sharedKeyHandler == null){
+			sharedKeyHandler = new KeyHandler();
+			sharedKeyHandler.put(
+				KeyStroke.getPressed(SWT.F2, 0),
+				getActionRegistry().getAction(GEFActionConstants.DIRECT_EDIT));
+		}
+		return sharedKeyHandler;
+	}
+	/**
+	* Returns the overview for the outline view.
+	*
+	* @return the overview
+	*/
+	protected OverviewOutlinePage getOverviewOutlinePage()
+	{
+		if (null == overviewOutlinePage && null != getGraphicalViewer())
+		{
+			RootEditPart rootEditPart = getGraphicalViewer().getRootEditPart();
+			if (rootEditPart instanceof ScalableFreeformRootEditPart)
+			{
+				overviewOutlinePage =
+					new OverviewOutlinePage(
+							(ScalableFreeformRootEditPart) rootEditPart);
+			}
+		}
+		return overviewOutlinePage;
+	}
+
 	
 }

@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.csstudio.opibuilder.editpolicies.WidgetXYLayoutEditPolicy;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
+import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.eclipse.gef.CompoundSnapToHelper;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.SnapToGeometry;
@@ -39,12 +40,22 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
 				});
 	}
 	
+	@Override
+	public void deactivate() {
+		super.deactivate();
+		((AbstractContainerModel)getModel()).getChildrenProperty().removeAllPropertyChangeListeners();
+	}
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	protected List getModelChildren() {
 		return ((AbstractContainerModel)getModel()).getChildren();
 	}
 
+	@Override
+	public AbstractContainerModel getCastedModel() {
+		return (AbstractContainerModel)getModel();
+	}
 
 	/**
 	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)

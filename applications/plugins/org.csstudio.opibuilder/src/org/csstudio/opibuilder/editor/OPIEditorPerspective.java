@@ -21,10 +21,13 @@ public class OPIEditorPerspective implements IPerspectiveFactory
     public void createInitialLayout(IPageLayout layout)
     {
         final String editor = layout.getEditorArea();
+        
         final IFolderLayout left = layout.createFolder("left",
                 IPageLayout.LEFT, 0.2f, editor);
         final IFolderLayout right = layout.createFolder("right",
                 IPageLayout.RIGHT, 0.75f, editor);
+        final IFolderLayout bottom = layout.createFolder("bottom",
+                IPageLayout.BOTTOM, 0.75f, editor);
 
         // Stuff for 'left'
         left.addView(ID_NAVIGATOR);
@@ -32,11 +35,15 @@ public class OPIEditorPerspective implements IPerspectiveFactory
         
         // Stuff for 'right'
         right.addView(IPageLayout.ID_PROP_SHEET);
-        right.addPlaceholder(IPageLayout.ID_PROGRESS_VIEW);
-        right.addPlaceholder(IPageLayout.ID_OUTLINE);
+             
+        
+        //Stuff for 'bottom'
+        bottom.addView(IPageLayout.ID_OUTLINE);
+        bottom.addPlaceholder(IPageLayout.ID_PROGRESS_VIEW);
         
         // Populate the "Window/Views..." menu with suggested views
         layout.addShowViewShortcut(ID_NAVIGATOR);
         layout.addShowViewShortcut(IPageLayout.ID_PROP_SHEET);
+        layout.addShowViewShortcut(IPageLayout.ID_OUTLINE);
     }
 }
