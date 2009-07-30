@@ -18,17 +18,13 @@ import org.eclipse.gef.DefaultEditDomain;
 import org.eclipse.gef.EditPartViewer;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.LayerConstants;
-import org.eclipse.gef.dnd.TemplateTransferDropTargetListener;
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
-import org.eclipse.gef.requests.CreationFactory;
-import org.eclipse.gef.requests.SimpleFactory;
 import org.eclipse.gef.ui.actions.ActionRegistry;
 import org.eclipse.gef.ui.parts.ContentOutlinePage;
 import org.eclipse.gef.ui.parts.GraphicalEditor;
 import org.eclipse.gef.ui.parts.GraphicalViewerKeyHandler;
 import org.eclipse.gef.ui.parts.TreeViewer;
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.util.TransferDropTargetListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IActionBars;
@@ -139,21 +135,21 @@ public class DiagramEditor extends GraphicalEditor {
 //		};
 //	}
 
-	/**
-	 * Create a transfer drop target listener. When using a
-	 * CombinedTemplateCreationEntry tool in the palette, this will enable model
-	 * element creation by dragging from the palette.
-	 * 
-	 * @see #createPaletteViewerProvider()
-	 */
-	private TransferDropTargetListener createTransferDropTargetListener() {
-		return new TemplateTransferDropTargetListener(getGraphicalViewer()) {
-			@Override
-			protected CreationFactory getFactory(final Object template) {
-				return new SimpleFactory((Class) template);
-			}
-		};
-	}
+//	/**
+//	 * Create a transfer drop target listener. When using a
+//	 * CombinedTemplateCreationEntry tool in the palette, this will enable model
+//	 * element creation by dragging from the palette.
+//	 * 
+//	 * @see #createPaletteViewerProvider()
+//	 */
+//	private TransferDropTargetListener createTransferDropTargetListener() {
+//		return new TemplateTransferDropTargetListener(getGraphicalViewer()) {
+//			@Override
+//			protected CreationFactory getFactory(final Object template) {
+//				return new SimpleFactory((Class) template);
+//			}
+//		};
+//	}
 
 	/*
 	 * (non-Javadoc)
@@ -188,6 +184,7 @@ public class DiagramEditor extends GraphicalEditor {
 	// return false;
 	// }
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Object getAdapter(final Class type) {
 		if (type == IContentOutlinePage.class)
@@ -216,7 +213,6 @@ public class DiagramEditor extends GraphicalEditor {
 	/**
 	 * Set up the editor's inital content (after creation).
 	 * 
-	 * @see org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette#initializeGraphicalViewer()
 	 */
 	@Override
 	protected void initializeGraphicalViewer() {
@@ -231,7 +227,7 @@ public class DiagramEditor extends GraphicalEditor {
 		pathRouter.setSpacing(ROUTING_SEPARATION);
 
 		// listen for dropped parts
-		viewer.addDropTargetListener(createTransferDropTargetListener());
+//		viewer.addDropTargetListener(createTransferDropTargetListener());
 	}
 
 	/*
