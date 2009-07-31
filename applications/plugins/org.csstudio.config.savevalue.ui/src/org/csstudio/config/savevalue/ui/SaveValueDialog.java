@@ -46,6 +46,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -401,8 +402,9 @@ public class SaveValueDialog extends Dialog {
 							}
 							_resultLabel.setVisible(true);
 							_resultImage.setVisible(true);
-							getButton(IDialogConstants.CANCEL_ID)
-									.setEnabled(true);
+							Button close = getButton(IDialogConstants.CANCEL_ID);
+							close.setEnabled(true);
+							close.setFocus();
 						}
 					});
 				} catch (RemoteException e) {
