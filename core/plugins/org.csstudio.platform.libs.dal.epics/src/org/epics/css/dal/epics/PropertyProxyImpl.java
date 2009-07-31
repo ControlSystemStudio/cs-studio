@@ -218,6 +218,15 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 		// destroy all monitors
 		destroyMonitors();
 		
+		try {
+			channel.removeConnectionListener(this);
+		} catch (IllegalStateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CAException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		// destory channel
 		channel.dispose();
 		

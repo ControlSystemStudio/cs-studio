@@ -210,7 +210,7 @@ public class EPICSPlug extends AbstractPlug
 	 * @return
 	 * @throws Exception
 	 */
-	public static AbstractPlug getInstance(Properties configuration) throws Exception {
+	public static synchronized AbstractPlug getInstance(Properties configuration) throws Exception {
 		if (sharedInstance == null) {
 			sharedInstance = new EPICSPlug(configuration);
 		}
