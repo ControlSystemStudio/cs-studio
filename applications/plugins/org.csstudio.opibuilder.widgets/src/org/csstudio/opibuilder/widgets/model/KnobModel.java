@@ -49,6 +49,16 @@ public class KnobModel extends AbstractMarkedWidgetModel{
 	
 	/** The default value of the thumb color property. */
 	private static final RGB DEFAULT_THUMB_COLOR = new RGB(127, 127, 127);
+	
+	/**
+	 * The ID of the pv name property.
+	 */
+	public static final String PROP_CONTROL_PV= "control_pv"; //$NON-NLS-1$
+	
+	/**
+	 * The ID of the pv value property.
+	 */
+	public static final String PROP_CONTROL_PV_VALUE= "control_pv_value"; //$NON-NLS-1$
 	/**
 	 * The ID of this widget model.
 	 */
@@ -62,6 +72,9 @@ public class KnobModel extends AbstractMarkedWidgetModel{
 	@Override
 	protected void configureProperties() {
 		super.configureProperties();	
+		
+		addPVProperty(new StringProperty(PROP_CONTROL_PV, "Control PV", WidgetPropertyCategory.Behavior,
+				true, ""), new PVValueProperty(PROP_CONTROL_PV_VALUE, null));
 		
 		addProperty(new ColorProperty(PROP_KNOB_COLOR, "Knob Color",
 				WidgetPropertyCategory.Display, true, DEFAULT_KNOB_COLOR));	

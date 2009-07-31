@@ -60,7 +60,7 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractPVWidgetEditP
 				return true;
 			}
 		};
-		setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_PV_VALUE, valueHandler);
+		setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_READBACK_PV_VALUE, valueHandler);
 		
 		//minimum
 		IWidgetPropertyChangeHandler minimumHandler = new IWidgetPropertyChangeHandler() {

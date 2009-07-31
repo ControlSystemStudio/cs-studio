@@ -38,7 +38,7 @@ public final class KnobEditPart extends AbstractMarkedWidgetEditPart {
 		knob.addKnobListener(new KnobFigure.IKnobListener() {
 			public void knobValueChanged(final double newValue) {
 				if (getExecutionMode() == ExecutionMode.RUN_MODE){
-					setPVValue(AbstractScaledWidgetModel.PROP_PV_NAME, newValue);
+					setPVValue(KnobModel.PROP_CONTROL_PV, newValue);
 				}
 									
 			}

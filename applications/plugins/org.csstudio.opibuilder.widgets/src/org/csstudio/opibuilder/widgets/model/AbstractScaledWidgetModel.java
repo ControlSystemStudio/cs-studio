@@ -51,18 +51,18 @@ public abstract class AbstractScaledWidgetModel extends AbstractWidgetModel {
 	/**
 	 * The ID of the pv name property.
 	 */
-	public static final String PROP_PV_NAME= "pv_name"; //$NON-NLS-1$
+	public static final String PROP_READBACK_PV= "readback_pv"; //$NON-NLS-1$
 	
 	/**
 	 * The ID of the pv value property.
 	 */
-	public static final String PROP_PV_VALUE= "pv_value"; //$NON-NLS-1$
+	public static final String PROP_READBACK_PV_VALUE= "readback_pv_value"; //$NON-NLS-1$
 
 	@Override
 	protected void configureProperties() {
 		
-		addPVProperty(new StringProperty(PROP_PV_NAME, "PV Name", WidgetPropertyCategory.Behavior,
-				true, ""), new PVValueProperty(PROP_PV_VALUE, null));
+		addPVProperty(new StringProperty(PROP_READBACK_PV, "Readback PV", WidgetPropertyCategory.Behavior,
+				true, ""), new PVValueProperty(PROP_READBACK_PV_VALUE, null));
 		
 		addProperty(new BooleanProperty(PROP_TRANSPARENT, "Transparent Background",
 				WidgetPropertyCategory.Display, true, true));
