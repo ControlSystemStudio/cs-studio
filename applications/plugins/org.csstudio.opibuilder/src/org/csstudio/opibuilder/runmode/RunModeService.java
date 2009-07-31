@@ -15,7 +15,7 @@ import org.eclipse.ui.actions.ActionFactory;
 
 public class RunModeService {
 
-	private IWorkbenchWindow runWorkbenchWindow, mainWorkbenchWindow;
+	private IWorkbenchWindow runWorkbenchWindow;
 	
 	
 	private static RunModeService instance;
@@ -38,14 +38,27 @@ public class RunModeService {
 	public void runOPI(IFile file, DisplayModel displayModel){
 		
 		if(runWorkbenchWindow == null)
-			try {
-				mainWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();						
-				
+			try {				
 				runWorkbenchWindow = 
 					PlatformUI.getWorkbench().openWorkbenchWindow("org.csstudio.opibuilder.OPIRunner", null); //$NON-NLS-1$
 				ActionFactory.IWorkbenchAction toggleToolbar = ActionFactory.TOGGLE_COOLBAR.create(runWorkbenchWindow); 
 				toggleToolbar.run(); 
 				runWorkbenchWindow.getShell().setSize(displayModel.getSize().width+36, displayModel.getSize().height + 125);
+				runWorkbenchWindow.addPageListener(new IPageListener(){
+
+					public void pageActivated(IWorkbenchPage page) {
+						
+					}
+
+					public void pageClosed(IWorkbenchPage page) {
+						runWorkbenchWindow = null;
+					}
+
+					public void pageOpened(IWorkbenchPage page) {
+						
+					}
+					
+				});
 			
 			} catch (WorkbenchException e) {
 				CentralLogger.getInstance().error(this, "Failed to open new window", e);

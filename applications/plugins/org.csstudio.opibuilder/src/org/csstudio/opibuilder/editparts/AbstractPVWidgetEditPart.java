@@ -1,6 +1,7 @@
 package org.csstudio.opibuilder.editparts;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,11 +35,14 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 	private static RGB DISCONNECTED_COLOR = new RGB(255, 0, 255);
 	
 	private Map<String, PV> pvMap = new HashMap<String, PV>(); 
+	private Map<String, Boolean> pvConnectedStatusMap = new HashMap<String, Boolean>();
+	
 	private boolean connected = true;
 	private boolean preEnableState;
 	private Border preBorder;
+	private String currentDisconnectPVName = "";
 	
-	private void markWidgetAsDisconnected(){
+	private void markWidgetAsDisconnected(final String pvName){
 		if(!connected)
 			return;
 		connected = false;
@@ -47,9 +51,15 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 		
 		UIBundlingThread.getInstance().addRunnable(new Runnable(){
 			public void run() {
-				figure.setEnabled(false);
+				boolean allDisconnected = true;
+				for(boolean c : pvConnectedStatusMap.values()){
+					allDisconnected &= !c;
+				}
+				figure.setEnabled(!allDisconnected);
 				figure.setBorder(BorderFactory.createBorder(
-						BorderStyle.TITLE_BAR, 1, DISCONNECTED_COLOR, "Disconnected"));
+						BorderStyle.TITLE_BAR, 1, DISCONNECTED_COLOR, 
+						allDisconnected ? "Disconnected" : pvName + ": Disconnected"));
+				currentDisconnectPVName = pvName;
 				figure.repaint();
 			}
 		});
@@ -57,14 +67,30 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 		
 	}
 	
-	private void widgetConnectionRecovered(){
+	private void widgetConnectionRecovered(final String pvName){
 		if(connected)
 			return;
 		connected = true;
 		UIBundlingThread.getInstance().addRunnable(new Runnable(){
 			public void run() {
+				boolean allConnected = true;
+				String nextDisconnecteName = ""; //$NON-NLS-1$
+				
+				for(String s : pvConnectedStatusMap.keySet()){
+					boolean c = pvConnectedStatusMap.get(s);
+					allConnected &= c;
+					if(!c)
+						nextDisconnecteName = s;					
+				}
 				figure.setEnabled(preEnableState);
-				figure.setBorder(preBorder);
+				if(allConnected)
+					figure.setBorder(preBorder);
+				else if(currentDisconnectPVName.equals(pvName) || currentDisconnectPVName.equals("")){ //$NON-NLS-1$
+					figure.setBorder(BorderFactory.createBorder(
+						BorderStyle.TITLE_BAR, 1, DISCONNECTED_COLOR, 
+						nextDisconnecteName + " : Disconnected"));
+					currentDisconnectPVName = nextDisconnecteName;
+				}
 				figure.repaint();
 			}
 		});		
@@ -74,9 +100,10 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 	public void activate() {
 		if(!isActive()){
 			super.activate();
-			pvMap.clear();			
+			pvMap.clear();	
+			pvConnectedStatusMap.clear();
 			if(getExecutionMode() == ExecutionMode.RUN_MODE){
-				markWidgetAsDisconnected();
+				markWidgetAsDisconnected("");
 				final Map<StringProperty, PVValueProperty> pvValueMap = getCastedModel().getPVMap();
 				for(final StringProperty sp : pvValueMap.keySet()){
 					if(sp.getPropertyValue() == null || 
@@ -85,25 +112,31 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 					
 					try {
 						PV pv = PVFactory.createPV((String) sp.getPropertyValue());
+						pvConnectedStatusMap.put(pv.getName(), false);
 						if(!pv.isWriteAllowed()){
 							figure.setCursor(new Cursor(null, SWT.CURSOR_NO));
 							figure.setEnabled(false);
 						}
 						pv.addListener(new PVListener(){
 							public void pvDisconnected(PV pv) {
-								markWidgetAsDisconnected();
+								pvConnectedStatusMap.put(pv.getName(), false);
+								markWidgetAsDisconnected(pv.getName());
 							}
 
 							public void pvValueUpdate(PV pv) {
-								if(!connected)
-									widgetConnectionRecovered();
-								pvValueMap.get(sp).setPropertyValue(pv.getValue());								
+								if(!pvConnectedStatusMap.get(pv.getName())){
+									pvConnectedStatusMap.put(pv.getName(), true);
+									widgetConnectionRecovered(pv.getName());
+								}
+								pvValueMap.get(sp).setPropertyValue(pv.getValue());		
+								
 							}							
 						});
 						pv.start();
 						pvMap.put(sp.getPropertyID(), pv);
 					} catch (Exception e) {
-						markWidgetAsDisconnected();
+						pvConnectedStatusMap.put((String) sp.getPropertyValue(), false);
+						markWidgetAsDisconnected((String) sp.getPropertyValue());
 						CentralLogger.getInstance().error(this, "Unable to connect to PV:" +
 								(String)sp.getPropertyValue());
 					}					
