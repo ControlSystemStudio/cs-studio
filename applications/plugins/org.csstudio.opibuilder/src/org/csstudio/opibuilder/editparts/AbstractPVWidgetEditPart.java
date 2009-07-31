@@ -41,12 +41,14 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 	private boolean preEnableState;
 	private Border preBorder;
 	private String currentDisconnectPVName = "";
+
+	private String controlPVPropId = null;
 	
 	private void markWidgetAsDisconnected(final String pvName){
 		if(!connected)
 			return;
 		connected = false;
-		preEnableState = getCastedModel().isEnabled();
+		
 		preBorder = figure.getBorder();
 		
 		UIBundlingThread.getInstance().addRunnable(new Runnable(){
@@ -55,7 +57,8 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 				for(boolean c : pvConnectedStatusMap.values()){
 					allDisconnected &= !c;
 				}
-				figure.setEnabled(!allDisconnected);
+				preEnableState = figure.isEnabled();
+				figure.setEnabled(preEnableState && !allDisconnected);
 				figure.setBorder(BorderFactory.createBorder(
 						BorderStyle.TITLE_BAR, 1, DISCONNECTED_COLOR, 
 						allDisconnected ? "Disconnected" : pvName + ": Disconnected"));
@@ -113,9 +116,15 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 					try {
 						PV pv = PVFactory.createPV((String) sp.getPropertyValue());
 						pvConnectedStatusMap.put(pv.getName(), false);
-						if(!pv.isWriteAllowed()){
-							figure.setCursor(new Cursor(null, SWT.CURSOR_NO));
-							figure.setEnabled(false);
+						if(controlPVPropId != null && controlPVPropId.equals((String)sp.getPropertyID())
+								&& !pv.isWriteAllowed()){
+							UIBundlingThread.getInstance().addRunnable(new Runnable(){
+								public void run() {
+									figure.setCursor(new Cursor(null, SWT.CURSOR_NO));
+									figure.setEnabled(false);
+									preEnableState = false;									
+								}
+							});							
 						}
 						pv.addListener(new PVListener(){
 							public void pvDisconnected(PV pv) {
@@ -185,6 +194,10 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 				
 			}
 		}
+	}
+	
+	protected void markAsControlPV(String pvPropId){
+		controlPVPropId  = pvPropId;
 	}
 
 }

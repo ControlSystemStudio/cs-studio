@@ -44,6 +44,8 @@ public final class KnobEditPart extends AbstractMarkedWidgetEditPart {
 			}
 		});		
 		
+		markAsControlPV(KnobModel.PROP_CONTROL_PV);
+		
 		return knob;
 
 	}
