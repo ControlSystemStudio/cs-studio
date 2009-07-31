@@ -20,4 +20,5 @@ Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.opibuilder.editparts,
  org.csstudio.opibuilder.model,
  org.csstudio.opibuilder.properties,
- org.csstudio.opibuilder.util
+ org.csstudio.opibuilder.util,
+ org.csstudio.opibuilder.visualparts

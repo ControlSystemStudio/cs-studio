@@ -105,10 +105,12 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 			super.activate();
 			pvMap.clear();	
 			pvConnectedStatusMap.clear();
-			if(getExecutionMode() == ExecutionMode.RUN_MODE){
-				markWidgetAsDisconnected("");
+			if(getExecutionMode() == ExecutionMode.RUN_MODE){				
 				final Map<StringProperty, PVValueProperty> pvValueMap = getCastedModel().getPVMap();
+				if(!pvValueMap.isEmpty())
+					markWidgetAsDisconnected("");
 				for(final StringProperty sp : pvValueMap.keySet()){
+					
 					if(sp.getPropertyValue() == null || 
 							sp.getPropertyValue().equals("")) 
 						continue;
