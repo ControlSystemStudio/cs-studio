@@ -20,6 +20,7 @@ import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.progress.UIJob;
 
@@ -179,10 +180,17 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 				figure.setEnabled((Boolean)newValue);
 				return true;
 			}
-		};
-		
+		};		
 		setPropertyChangeHandler(AbstractWidgetModel.PROP_ENABLED, enableHandler);
 		
+		IWidgetPropertyChangeHandler fontHandler = new IWidgetPropertyChangeHandler(){
+			public boolean handleChange(Object oldValue, Object newValue,
+					IFigure figure) {
+				figure.setFont(CustomMediaFactory.getInstance().getFont((FontData)newValue));
+				return true;
+			}
+		};		
+		setPropertyChangeHandler(AbstractWidgetModel.PROP_FONT, fontHandler);
 		
 		IWidgetPropertyChangeHandler visibilityHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue, final Object newValue, final IFigure refreshableFigure) {

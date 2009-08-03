@@ -7,6 +7,9 @@ import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.UIBundlingThread;
 import org.csstudio.opibuilder.widgets.model.LabelModel;
+import org.csstudio.opibuilder.widgets.model.TextIndicatorModel;
+import org.csstudio.platform.data.IValue;
+import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.sds.components.ui.internal.figures.LabelFigure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -18,79 +21,26 @@ import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
 
-public class LabelEditPart extends AbstractPVWidgetEditPart {
+public class TextIndicatorEditPart extends LabelEditPart {
 
-	
-	@Override
-	protected IFigure createFigure() {
-		return new LabelFigure(false);
-	}
-
-	@Override
-	protected void createEditPolicies() {
-		super.createEditPolicies();
-		if(getExecutionMode() == ExecutionMode.EDIT_MODE)
-			installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new LabelDirectEditPolicy());
-		
-	}
 	
 	@Override
 	protected void registerPropertyChangeHandlers() {
+		super.registerPropertyChangeHandlers();
+		
 		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
 					final IFigure figure) {
-				((LabelFigure)figure).setText((String)newValue);
-				Display.getCurrent().timerExec(100, new Runnable() {
-					
-					public void run() {
-						if(getCastedModel().isAutoSize())
-							getCastedModel().setSize(((LabelFigure)figure).getAutoSizeDimension());
-					}
-				});
+				if(newValue == null)
+					return false;
 				
-				return true;
+				getCastedModel().setText(ValueUtil.getString((IValue)newValue));
+							
+				return false;
 			}
 		};
-		setPropertyChangeHandler(LabelModel.PROP_TEXT, handler);
-		
-		
-		handler = new IWidgetPropertyChangeHandler(){
-			public boolean handleChange(Object oldValue, Object newValue,
-					final IFigure figure) {
-				Display.getCurrent().timerExec(100, new Runnable() {
-					
-					public void run() {
-						if(getCastedModel().isAutoSize())
-							getCastedModel().setSize(((LabelFigure)figure).getAutoSizeDimension());
-					}
-				});
-				
-				return true;
-			}
-		};
-		setPropertyChangeHandler(LabelModel.PROP_FONT, handler);
-		
-		handler = new IWidgetPropertyChangeHandler(){
-			public boolean handleChange(Object oldValue, Object newValue,
-					IFigure figure) {
-				((LabelFigure)figure).setFill(!(Boolean)newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(LabelModel.PROP_TRANSPARENT, handler);
-		
-		handler = new IWidgetPropertyChangeHandler(){
-			public boolean handleChange(Object oldValue, Object newValue,
-					IFigure figure) {
-				
-				if((Boolean)newValue)
-					getCastedModel().setSize(((LabelFigure)figure).getAutoSizeDimension());
-				return true;
-			}
-		};
-		setPropertyChangeHandler(LabelModel.PROP_AUTOSIZE, handler);
-		
-		
+		setPropertyChangeHandler(TextIndicatorModel.PROP_PVVALUE, handler);
+
 		
 	}
 

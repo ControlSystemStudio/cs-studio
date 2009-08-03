@@ -12,6 +12,7 @@ import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.ColorProperty;
 import org.csstudio.opibuilder.properties.ComboProperty;
+import org.csstudio.opibuilder.properties.FontProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.PVValueProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
@@ -19,6 +20,7 @@ import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.model.pvs.IProcessVariableAdressProvider;
+import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.geometry.Dimension;
@@ -64,6 +66,7 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 
 	public static final String PROP_BORDER_STYLE = "border.style"; //$NON-NLS-1$
 	
+	public static final String PROP_FONT= "font"; //$NON-NLS-1$
 
 	private Map<String, AbstractWidgetProperty> propertyMap;
 	
@@ -105,7 +108,8 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 		addProperty(new StringProperty(PROP_NAME, "Name",
 				WidgetPropertyCategory.Display, true, getTypeID().substring(
 						getTypeID().lastIndexOf(".")+1)));
-		
+		addProperty(new FontProperty(PROP_FONT, "Font", 
+				WidgetPropertyCategory.Display, true, CustomMediaFactory.FONT_TAHOMA));
 		
 	}
 	
@@ -288,6 +292,10 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	public void setSize(int width, int height){
 		setPropertyValue(PROP_WIDTH, width);
 		setPropertyValue(PROP_HEIGHT, height);
+	}
+	
+	public void setSize(Dimension dimension){
+		setSize(dimension.width, dimension.height);
 	}
 	
 	public void setLocation(int x, int y){

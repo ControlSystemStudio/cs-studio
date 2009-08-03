@@ -22,13 +22,22 @@
             typeId="org.csstudio.opibuilder.widgets.knob">
       </widget>
       <widget
-            category="Monitors"
+            category="Graphics"
             description="A label for displaying static text or string from PV."
             editpart_class="org.csstudio.opibuilder.widgets.editparts.LabelEditPart"
             icon="icons/label.gif"
             model_class="org.csstudio.opibuilder.widgets.model.LabelModel"
             name="Label"
             typeId="org.csstudio.opibuilder.widgets.Label">
+      </widget>
+      <widget
+            category="Monitors"
+            description="A text indicator for displaying string from PV."
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.TextIndicatorEditPart"
+            icon="icons/label.gif"
+            model_class="org.csstudio.opibuilder.widgets.model.TextIndicatorModel"
+            name="Text Indicator"
+            typeId="org.csstudio.opibuilder.widgets.TextIndicator">
       </widget>     
    </extension>
 

@@ -167,6 +167,12 @@ public class KnobFigure extends AbstractRoundRampedFigure {
 		valueLabel.setVisible(visible);
 	}
 	
+	
+	@Override
+	public void setFont(Font f) {
+		scale.setFont(f);
+		super.setFont(f);
+	}
 	/**Convert the difference of two points to the corresponding value to be changed.
 	 * @param difference the different theta value in degrees between two polar points.	 
 	 * @param oldValue the old value before this change 
