@@ -36,7 +36,11 @@ import org.epics.css.dal.spi.DeviceFactory;
 
 
 /**
- * Default device family implementation.
+ * Default device family implementation. This class is based on the 
+ * {@link DeviceCollectionMap} which means that all devices are stored 
+ * in a HashMap, which is not synchronized. Therefore, when adding
+ * and removing devices one should be careful about the synchronization
+ * because HashMap is not syncrhonized.
  *
  */
 public class DeviceFamilyImpl<T extends AbstractDevice>

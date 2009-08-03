@@ -25,6 +25,8 @@
  */
 package org.epics.css.dal.impl;
 
+import java.util.HashMap;
+
 import org.epics.css.dal.DynamicValueProperty;
 import org.epics.css.dal.context.AbstractApplicationContext;
 import org.epics.css.dal.context.PropertyFamily;
@@ -38,6 +40,12 @@ import org.epics.css.dal.spi.PropertyFactory;
 
 
 /**
+ * The default implementation of the {@link PropertyFamily}. This class is
+ * based on the {@link PropertyCollectionMap}, which means that all properties
+ * are stored within a {@link HashMap}. Note that HashMap is not synchronized
+ * and therefore if multiple threads add or remove properties to this family
+ * the calls should be synchronized externally.
+ * 
  * @author ikriznar
  *
  */
@@ -48,7 +56,7 @@ public class PropertyFamilyImpl
 	static final Class<? extends DynamicValueProperty> c = DynamicValueProperty.class;
 	
 	/**
-	 *
+	 * Constructs a new PropertyFamilyImpl that belongs to the given {@link PropertyFactory}.
 	 */
 	public PropertyFamilyImpl(PropertyFactory pf)
 	{

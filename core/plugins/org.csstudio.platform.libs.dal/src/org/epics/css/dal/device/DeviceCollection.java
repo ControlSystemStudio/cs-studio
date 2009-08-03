@@ -31,10 +31,10 @@ import org.epics.css.dal.group.DeviceGroupListener;
 
 
 /**
- * Colection represents group of <code>TypelessProperty</code> objects. It is
+ * Colection represents group of <code>AbstractDevice</code> objects. It is
  * designed by <code>Collection</code> interface. Primary functionality is
- * implementation of unspecific acces to group of properties, it has no
- * modification accessors..
+ * implementation of unspecific acces to group of devices, it has no
+ * modification accessors.
  *
  * @author <a href="mailto:igor.kriznar@cosylab.com">Igor Kriznar</a>
  *

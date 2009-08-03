@@ -33,6 +33,7 @@ import javax.naming.NamingException;
 import org.epics.css.dal.DynamicValueProperty;
 import org.epics.css.dal.RemoteException;
 import org.epics.css.dal.SimpleProperty;
+import org.epics.css.dal.context.AbstractApplicationContext;
 import org.epics.css.dal.context.ConnectionEvent;
 import org.epics.css.dal.context.ConnectionException;
 import org.epics.css.dal.context.ConnectionState;
@@ -43,6 +44,7 @@ import org.epics.css.dal.context.PropertyFamily;
 import org.epics.css.dal.context.RemoteInfo;
 import org.epics.css.dal.impl.DynamicValuePropertyImpl;
 import org.epics.css.dal.impl.PropertyFamilyImpl;
+import org.epics.css.dal.impl.SynchronizedPropertyFamilyImpl;
 import org.epics.css.dal.proxy.DirectoryProxy;
 import org.epics.css.dal.proxy.PropertyProxy;
 
@@ -65,6 +67,21 @@ public abstract class AbstractPropertyFactory extends AbstractFactorySupport
 		super();
 		family = new PropertyFamilyImpl(this);
 		connecting= new HashSet<String>();
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.epics.css.dal.spi.AbstractFactorySupport#initialize(org.epics.css.dal.context.AbstractApplicationContext, org.epics.css.dal.spi.LinkPolicy)
+	 */
+	@Override
+	public void initialize(AbstractApplicationContext ctx, LinkPolicy policy) {
+		super.initialize(ctx,policy);
+		boolean sync = Boolean.parseBoolean(ctx.getConfiguration().getProperty(AbstractFactory.SYNCHRONIZE_FAMILY,"false"));
+		if (sync) {
+			family = new SynchronizedPropertyFamilyImpl(this);
+		} else {
+			family = new PropertyFamilyImpl(this);
+		}
 	}
 
 	/* (non-Javadoc)

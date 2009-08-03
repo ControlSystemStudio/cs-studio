@@ -23,6 +23,7 @@
 package org.epics.css.dal.spi;
 
 import org.epics.css.dal.RemoteException;
+import org.epics.css.dal.context.AbstractApplicationContext;
 import org.epics.css.dal.context.Connectable;
 import org.epics.css.dal.context.ConnectionEvent;
 import org.epics.css.dal.context.ConnectionException;
@@ -36,6 +37,7 @@ import org.epics.css.dal.device.AbstractDevice;
 import org.epics.css.dal.impl.AbstractDeviceImpl;
 import org.epics.css.dal.impl.DeviceBean;
 import org.epics.css.dal.impl.DeviceFamilyImpl;
+import org.epics.css.dal.impl.SynchronizedDeviceFamilyImpl;
 import org.epics.css.dal.proxy.DeviceProxy;
 import org.epics.css.dal.proxy.DirectoryProxy;
 
@@ -63,6 +65,21 @@ public abstract class AbstractDeviceFactory extends AbstractFactorySupport
 	protected AbstractDeviceFactory()
 	{
 		family = new DeviceFamilyImpl<AbstractDevice>(this);
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.epics.css.dal.spi.AbstractFactorySupport#initialize(org.epics.css.dal.context.AbstractApplicationContext, org.epics.css.dal.spi.LinkPolicy)
+	 */
+	@Override
+	public void initialize(AbstractApplicationContext ctx, LinkPolicy policy) {
+		super.initialize(ctx,policy);
+		boolean sync = Boolean.parseBoolean(ctx.getConfiguration().getProperty(AbstractFactory.SYNCHRONIZE_FAMILY,"false"));
+		if (sync) {
+			family = new SynchronizedDeviceFamilyImpl<AbstractDevice>(this);
+		} else {
+			family = new DeviceFamilyImpl<AbstractDevice>(this);
+		}
 	}
 
 	/* (non-Javadoc)

@@ -21,6 +21,16 @@ public interface AbstractFactory {
 	 * @see AbstractFactory#isPlugShared()
 	 */
 	String SHARE_PLUG = "AbstractFactory.plug_shared";
+	
+	/**
+	 * If property withi this name and value true is provided through
+	 * the configuration to the AbstractFactorySupport, the factory will
+	 * use a synchronized family to store the properties/devices. If the
+	 * value is false, the factory will use nonsynchronized version which
+	 * will have to be synchronized from the outside when the structure of 
+	 * the family is changed (elements added or removed). 
+	 */
+	String SYNCHRONIZE_FAMILY = "AbstractFactory.synchronizeFamily";
 	/**
 	 * Returns link policy code. This policy affects how
 	 * <code>getProperty</code> methods are behaving when new property is

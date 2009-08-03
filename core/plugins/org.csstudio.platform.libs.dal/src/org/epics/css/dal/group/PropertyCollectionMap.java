@@ -79,7 +79,7 @@ public class PropertyCollectionMap<T extends DynamicValueProperty<?>>
 	
 	protected Class<T> type;
 	protected ListenerList groupListeners;
-	private Map<String, T[]> properties;
+	protected Map<String, T[]> properties;
 	private int size=0;
 	private T[] zero_length;
 
