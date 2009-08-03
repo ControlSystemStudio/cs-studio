@@ -1,6 +1,7 @@
 package org.csstudio.opibuilder.widgets.editparts;
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.editparts.AbstractWidgetEditPart;
+import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.widgets.model.AbstractScaledWidgetModel;
 import org.csstudio.platform.data.IValue;
@@ -60,7 +61,7 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractPVWidgetEditP
 				return true;
 			}
 		};
-		setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_READBACK_PV_VALUE, valueHandler);
+		setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVVALUE, valueHandler);
 		
 		//minimum
 		IWidgetPropertyChangeHandler minimumHandler = new IWidgetPropertyChangeHandler() {

@@ -1,29 +1,26 @@
 package org.csstudio.opibuilder.widgets.editparts;
 
 
-import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
-import org.csstudio.opibuilder.widgets.model.LabelModel;
+import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.components.ui.internal.figures.LabelFigure;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Text;
-
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.TextCellEditor;
-import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.actions.ActionFactory;
-import org.eclipse.ui.part.CellEditorActionHandler;
-
 import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.editparts.ZoomListener;
 import org.eclipse.gef.editparts.ZoomManager;
 import org.eclipse.gef.tools.CellEditorLocator;
 import org.eclipse.gef.tools.DirectEditManager;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.TextCellEditor;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.part.CellEditorActionHandler;
 
 
 /**The manager help to managing the label direct editing.
@@ -86,16 +83,15 @@ private void disposeScaledFont() {
 protected void initCellEditor() {
 	// update text
 	LabelFigure label = (LabelFigure)getEditPart().getFigure();
-	LabelModel labelModel = (LabelModel)getEditPart().getModel();
+	AbstractWidgetModel labelModel = (AbstractWidgetModel) getEditPart().getModel();
 	getCellEditor().setValue(label.getText());
-	if(!labelModel.isTransparent()){
+	if(label.isFill()){
 		getCellEditor().getControl().setBackground(
 			CustomMediaFactory.getInstance().getColor(
 					labelModel.getBackgroundColor()));	
 	}
 	getCellEditor().getControl().setForeground(
-		CustomMediaFactory.getInstance().getColor(
-				((AbstractBaseEditPart)getEditPart()).getCastedModel().getForegroundColor()));
+		CustomMediaFactory.getInstance().getColor(labelModel.getForegroundColor()));
 	// update font
 	ZoomManager zoomMgr = (ZoomManager)getEditPart().getViewer()
 			.getProperty(ZoomManager.class.toString());

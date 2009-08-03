@@ -21,20 +21,20 @@ public final class KnobEditPart extends AbstractMarkedWidgetEditPart {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected IFigure createFigure() {
+	protected IFigure doCreateFigure() {
 		final KnobModel model = (KnobModel) getModel();
 
 		KnobFigure knob = new KnobFigure();
-	/*
-		//initializeCommonFigureProperties(knob, model);		
+	
+		initializeCommonFigureProperties(knob, model);		
 		
-		//knob.setBulbColor(model.getKnobColor());
-		//knob.setEffect3D(model.isEffect3D());	
+		knob.setBulbColor(model.getKnobColor());
+		knob.setEffect3D(model.isEffect3D());	
 		knob.setThumbColor(model.getThumbColor());
 		knob.setValueLabelVisibility(model.isShowValueLabel());
 		knob.setGradient(model.isRampGradient());
 		knob.setIncrement(model.getIncrement());
-		*/
+		
 		knob.addKnobListener(new KnobFigure.IKnobListener() {
 			public void knobValueChanged(final double newValue) {
 				if (getExecutionMode() == ExecutionMode.RUN_MODE){

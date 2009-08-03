@@ -21,14 +21,7 @@ public final class DoubleCellEditor extends TextCellEditor {
 		super(parent);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected Object doGetValue() {
-		Object value = super.doGetValue();
-		return Double.parseDouble(value.toString());
-	}
+
 
 	/**
 	 * {@inheritDoc}

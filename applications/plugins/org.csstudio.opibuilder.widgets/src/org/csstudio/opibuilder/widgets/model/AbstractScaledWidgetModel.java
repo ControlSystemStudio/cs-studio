@@ -1,6 +1,6 @@
 package org.csstudio.opibuilder.widgets.model;
 
-import org.csstudio.opibuilder.model.AbstractWidgetModel;
+import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.DoubleProperty;
 import org.csstudio.opibuilder.properties.PVValueProperty;
@@ -12,7 +12,7 @@ import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
  * which has a scale. 
  * @author Xihui Chen
  */
-public abstract class AbstractScaledWidgetModel extends AbstractWidgetModel {
+public abstract class AbstractScaledWidgetModel extends AbstractPVWidgetModel {
 	
 	
 	/** The ID of the <i>transparent</i> property. */
@@ -47,22 +47,9 @@ public abstract class AbstractScaledWidgetModel extends AbstractWidgetModel {
 	
 		/** The default value of the major tick step hint property. */
 	private static final double DEFAULT_MAJOR_TICK_STEP_HINT = 50;	
-	
-	/**
-	 * The ID of the pv name property.
-	 */
-	public static final String PROP_READBACK_PV= "readback_pv"; //$NON-NLS-1$
-	
-	/**
-	 * The ID of the pv value property.
-	 */
-	public static final String PROP_READBACK_PV_VALUE= "readback_pv_value"; //$NON-NLS-1$
 
 	@Override
 	protected void configureProperties() {
-		
-		addPVProperty(new StringProperty(PROP_READBACK_PV, "Readback PV", WidgetPropertyCategory.Behavior,
-				true, ""), new PVValueProperty(PROP_READBACK_PV_VALUE, null));
 		
 		addProperty(new BooleanProperty(PROP_TRANSPARENT, "Transparent Background",
 				WidgetPropertyCategory.Display, true, true));

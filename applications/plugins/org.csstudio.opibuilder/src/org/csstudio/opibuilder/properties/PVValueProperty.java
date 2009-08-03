@@ -19,7 +19,8 @@ public class PVValueProperty extends AbstractWidgetProperty {
 
 	@Override
 	public Object checkValue(Object value) {
-		Assert.isTrue(value != null);
+		if(value == null)
+			return null;
 		IValue acceptableValue = null;
 		if(value instanceof IValue)
 			acceptableValue = (IValue) value;		

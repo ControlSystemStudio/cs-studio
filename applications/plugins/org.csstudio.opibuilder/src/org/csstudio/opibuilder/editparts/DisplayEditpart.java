@@ -1,8 +1,5 @@
 package org.csstudio.opibuilder.editparts;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
@@ -17,20 +14,14 @@ import org.eclipse.draw2d.MarginBorder;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
-import org.eclipse.gef.CompoundSnapToHelper;
 import org.eclipse.gef.EditPolicy;
-import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.LayerConstants;
 import org.eclipse.gef.SnapToGeometry;
 import org.eclipse.gef.SnapToGrid;
-import org.eclipse.gef.SnapToGuides;
-import org.eclipse.gef.SnapToHelper;
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
 import org.eclipse.gef.editpolicies.RootComponentEditPolicy;
 import org.eclipse.gef.rulers.RulerProvider;
-import org.eclipse.gef.ui.actions.ToggleGridAction;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 
 public class DisplayEditpart extends AbstractContainerEditpart {
@@ -42,6 +33,19 @@ public class DisplayEditpart extends AbstractContainerEditpart {
 		// disallows the removal of this edit part from its parent
 		installEditPolicy(EditPolicy.COMPONENT_ROLE,
 				new RootComponentEditPolicy());
+	}
+	
+	@Override
+	public void activate() {
+		super.activate();
+		initProperties();
+	}
+	
+	private void initProperties() {
+		for(String prop_id : getCastedModel().getAllPropertyIDs()){
+			getCastedModel().getProperty(prop_id).firePropertyChange(null, 
+					getCastedModel().getPropertyValue(prop_id));
+		}		
 	}
 	
 	@Override
@@ -119,7 +123,7 @@ public class DisplayEditpart extends AbstractContainerEditpart {
 	}
 
 	@Override
-	protected IFigure createFigure() {
+	protected IFigure doCreateFigure() {
 		
 		Figure f = new FreeformLayer(){
 			@Override

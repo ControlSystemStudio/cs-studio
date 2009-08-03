@@ -26,24 +26,6 @@ public final class IntegerCellEditor extends TextCellEditor {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected Object doGetValue() {
-		Object value = super.doGetValue();
-
-		Integer result = 0;
-
-		try {
-			result = Integer.parseInt(value.toString());
-		} catch (NumberFormatException nfe) {
-			result = 0;
-		}
-
-		return result;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
 	protected void doSetValue(final Object value) {
 		if (value==null) {
 			super.doSetValue(String.valueOf(new Integer(0)));

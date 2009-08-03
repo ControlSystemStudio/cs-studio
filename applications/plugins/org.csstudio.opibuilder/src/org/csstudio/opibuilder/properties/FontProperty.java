@@ -25,7 +25,8 @@ public class FontProperty extends AbstractWidgetProperty {
 	 */
 	@Override
 	public Object checkValue(Object value) {
-		Assert.isNotNull(value);
+		if(value == null)
+			return null;
 		
 		Object acceptedValue = value;
 

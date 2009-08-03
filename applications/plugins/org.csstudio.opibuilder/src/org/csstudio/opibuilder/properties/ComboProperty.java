@@ -22,8 +22,8 @@ public class ComboProperty extends AbstractWidgetProperty {
 
 	@Override
 	public Object checkValue(Object value) {
-		Assert.isTrue(value != null);
-
+		if(value == null)
+			return null;
 		Integer acceptedValue = null;
 
 		// check type

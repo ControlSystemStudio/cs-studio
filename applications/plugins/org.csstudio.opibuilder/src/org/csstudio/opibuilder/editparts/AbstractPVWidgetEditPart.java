@@ -1,24 +1,28 @@
 package org.csstudio.opibuilder.editparts;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
+import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
+import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.properties.PVValueProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.util.UIBundlingThread;
+import org.csstudio.opibuilder.visualparts.AlarmColorScheme;
 import org.csstudio.opibuilder.visualparts.BorderFactory;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
+import org.csstudio.platform.data.ISeverity;
+import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.IProcessVariable;
+import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;
 import org.eclipse.draw2d.Border;
-import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.MessageBox;
@@ -43,6 +47,43 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 	private String currentDisconnectPVName = "";
 
 	private String controlPVPropId = null;
+	
+	private Border saveBorder;
+	private Color saveForeColor, saveBackColor;
+	private interface AlarmSeverity extends ISeverity{
+		public void copy(ISeverity severity);
+	}
+	private AlarmSeverity lastAlarmSeverity = new AlarmSeverity(){
+		
+		boolean isOK = true;
+		boolean isMajor = false;
+		boolean isMinor = false;
+		boolean isInvalid = false;
+		
+		public void copy(ISeverity severity){
+			isOK = severity.isOK();
+			isMajor = severity.isMajor();
+			isMinor = severity.isMinor();
+			isInvalid = severity.isInvalid();
+		}
+		
+		public boolean hasValue() {
+			return false;
+		}
+		public boolean isInvalid() {
+			return isInvalid;
+		}
+		public boolean isMajor() {
+			return isMajor;
+		}
+		public boolean isMinor() {
+			return isMinor;
+		}
+		public boolean isOK() {
+			return isOK;
+		}		
+	}; 
+	
 	
 	private void markWidgetAsDisconnected(final String pvName){
 		if(!connected)
@@ -104,8 +145,9 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 		if(!isActive()){
 			super.activate();
 			pvMap.clear();	
-			pvConnectedStatusMap.clear();
-			if(getExecutionMode() == ExecutionMode.RUN_MODE){				
+			pvConnectedStatusMap.clear();			
+			if(getExecutionMode() == ExecutionMode.RUN_MODE){	
+				saveFigureOKStatus(getFigure());
 				final Map<StringProperty, PVValueProperty> pvValueMap = getCastedModel().getPVMap();
 				if(!pvValueMap.isEmpty())
 					markWidgetAsDisconnected("");
@@ -157,6 +199,76 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 	}
 	
 	@Override
+	protected void registerBasePropertyChangeHandlers() {
+		super.registerBasePropertyChangeHandlers();
+		// value
+		IWidgetPropertyChangeHandler valueHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure figure) {
+				AbstractPVWidgetModel model = getCastedModel();
+				if(!model.isBorderAlarmSensitve() && !model.isBackColorAlarmSensitve() &&
+						!model.isForeColorAlarmSensitve())
+					return false;			
+				ISeverity severity = ((IValue)newValue).getSeverity();				
+				if(severity.isOK() && lastAlarmSeverity.isOK())
+					return false;
+				else if(severity.isOK() && !lastAlarmSeverity.isOK()){					
+					lastAlarmSeverity.copy(severity);
+					restoreFigureToOKStatus(figure);
+					return true;
+				}
+				if(severity.isMajor() && lastAlarmSeverity.isMajor())
+					return false;
+				if(severity.isMinor() && lastAlarmSeverity.isMinor())
+					return false;
+				if(severity.isInvalid() && lastAlarmSeverity.isInvalid())
+					return false;
+				
+				if(lastAlarmSeverity.isOK()){
+					saveFigureOKStatus(figure);
+				}
+				
+				RGB alarmColor; 
+				if(severity.isMajor()){
+					alarmColor = AlarmColorScheme.getMajorColor();					
+				}else if(severity.isMinor()){
+					alarmColor = AlarmColorScheme.getMinorColor();
+				}else{
+					alarmColor = AlarmColorScheme.getInValidColor();
+				}			
+								
+				if(model.isBorderAlarmSensitve()){
+					figure.setBorder(BorderFactory.createBorder(BorderStyle.LINE, 2, alarmColor, ""));
+				}
+				if(model.isBackColorAlarmSensitve()){
+					figure.setBackgroundColor(CustomMediaFactory.getInstance().getColor(alarmColor));
+				}
+				if(model.isForeColorAlarmSensitve()){
+					figure.setForegroundColor(CustomMediaFactory.getInstance().getColor(alarmColor));
+				}				
+				lastAlarmSeverity.copy(severity);
+				return true;
+			}
+
+			
+		};
+		setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVVALUE, valueHandler);
+	}
+
+
+	private void restoreFigureToOKStatus(IFigure figure) {
+		figure.setBorder(saveBorder);
+		figure.setBackgroundColor(saveBackColor);
+		figure.setForegroundColor(saveForeColor);
+	}
+	private void saveFigureOKStatus(IFigure figure) {
+		saveBorder = figure.getBorder();
+		saveForeColor = figure.getForegroundColor();
+		saveBackColor = figure.getBackgroundColor();
+	}
+	
+	@Override
 	public void deactivate() {
 		if(isActive()){
 			super.deactivate();
@@ -200,6 +312,11 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 	
 	protected void markAsControlPV(String pvPropId){
 		controlPVPropId  = pvPropId;
+	}
+	
+	@Override
+	public AbstractPVWidgetModel getCastedModel() {
+		return (AbstractPVWidgetModel)getModel();
 	}
 
 }

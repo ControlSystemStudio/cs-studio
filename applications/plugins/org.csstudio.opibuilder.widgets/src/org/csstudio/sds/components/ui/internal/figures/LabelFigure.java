@@ -23,6 +23,7 @@ public class LabelFigure extends RectangleFigure
 /** The inner TextFlow **/
 private TextFlow textFlow;
 private FlowPage flowPage;
+private boolean isFill;
 
 
 /** 
@@ -37,7 +38,7 @@ public LabelFigure(boolean withEditorBorder) {
 	
 	setOutline(false);
 	flowPage = new FlowPage();
-
+	isFill = true;
 	textFlow = new TextFlow();
 	textFlow.setLayoutManager(new ParagraphTextLayout(textFlow,
 				ParagraphTextLayout.WORD_WRAP_HARD));
@@ -71,12 +72,20 @@ public LabelFigure(boolean withEditorBorder) {
 	}
 	
 	@Override
-		public void setFont(Font f) {
-			textFlow.setFont(f);
-			flowPage.setFont(f);
-			super.setFont(f);
-			revalidate();
+	public void setFont(Font f) {
+		textFlow.setFont(f);
+		flowPage.setFont(f);
+		super.setFont(f);
+		revalidate();			
+	}
+	@Override
+	public void setFill(boolean b) {
+		isFill = b;
+		super.setFill(b);
 			
-		}
+	}
+	public boolean isFill(){
+		return isFill;
+	}
 
 }

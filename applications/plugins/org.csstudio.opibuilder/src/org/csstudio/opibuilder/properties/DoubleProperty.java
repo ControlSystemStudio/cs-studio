@@ -45,7 +45,8 @@ public final class DoubleProperty extends AbstractWidgetProperty {
 	 */
 	@Override
 	public Object checkValue(final Object value) {
-		Assert.isTrue(value != null);
+		if(value == null)
+			return null;
 
 		Double acceptedValue = null;
 

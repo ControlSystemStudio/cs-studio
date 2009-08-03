@@ -32,9 +32,9 @@
       </widget>
       <widget
             category="Monitors"
-            description="A text indicator for displaying string from PV."
+            description="A text indicator for displaying PV value."
             editpart_class="org.csstudio.opibuilder.widgets.editparts.TextIndicatorEditPart"
-            icon="icons/label.gif"
+            icon="icons/TextIndicator.png"
             model_class="org.csstudio.opibuilder.widgets.model.TextIndicatorModel"
             name="Text Indicator"
             typeId="org.csstudio.opibuilder.widgets.TextIndicator">

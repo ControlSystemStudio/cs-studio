@@ -1,49 +1,113 @@
 package org.csstudio.opibuilder.widgets.editparts;
 
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
-import org.csstudio.opibuilder.editparts.AbstractWidgetEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
+import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
-import org.csstudio.opibuilder.util.UIBundlingThread;
 import org.csstudio.opibuilder.widgets.model.LabelModel;
 import org.csstudio.opibuilder.widgets.model.TextIndicatorModel;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.sds.components.ui.internal.figures.LabelFigure;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
-import org.eclipse.gef.tools.CellEditorLocator;
-import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Text;
 
-public class TextIndicatorEditPart extends LabelEditPart {
+public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 
+	@Override
+	protected IFigure doCreateFigure() {
+		LabelFigure labelFigure = new LabelFigure(false);
+		labelFigure.setText(getCastedModel().getText());	
+		labelFigure.setFill(!getCastedModel().isTransparent());		
+		return labelFigure;
+	}
 	
 	@Override
-	protected void registerPropertyChangeHandlers() {
-		super.registerPropertyChangeHandlers();
+	protected void createEditPolicies() {
+		super.createEditPolicies();
+		if(getExecutionMode() == ExecutionMode.EDIT_MODE)
+			installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new TextIndicatorDirectEditPolicy());		
+	}
+	
+	@Override
+	protected void registerPropertyChangeHandlers() {	
 		
 		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
 					final IFigure figure) {
-				if(newValue == null)
-					return false;
+				((LabelFigure)figure).setText((String)newValue);
+				Display.getCurrent().timerExec(10, new Runnable() {					
+					public void run() {
+						if(getCastedModel().isAutoSize())
+							getCastedModel().setSize(((LabelFigure)figure).getAutoSizeDimension());
+					}
+				});
 				
-				getCastedModel().setText(ValueUtil.getString((IValue)newValue));
-							
-				return false;
+				return true;
 			}
 		};
-		setPropertyChangeHandler(TextIndicatorModel.PROP_PVVALUE, handler);
-
+		setPropertyChangeHandler(TextIndicatorModel.PROP_TEXT, handler);
 		
+		handler = new IWidgetPropertyChangeHandler(){
+			public boolean handleChange(Object oldValue, Object newValue,
+					final IFigure figure) {
+				if(newValue == null)
+					return false;				
+				((LabelFigure)figure).setText(ValueUtil.getString((IValue)newValue));		
+				if(getCastedModel().isAutoSize())
+					getCastedModel().setSize(((LabelFigure)figure).getAutoSizeDimension());				
+				return true;
+			}
+		};
+		setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVVALUE, handler);		
+		
+		
+		handler = new IWidgetPropertyChangeHandler(){
+			public boolean handleChange(Object oldValue, Object newValue,
+					IFigure figure) {
+				((LabelFigure)figure).setFill(!(Boolean)newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(TextIndicatorModel.PROP_TRANSPARENT, handler);
+		
+		handler = new IWidgetPropertyChangeHandler(){
+			public boolean handleChange(Object oldValue, Object newValue,
+					IFigure figure) {				
+				if((Boolean)newValue)
+					getCastedModel().setSize(((LabelFigure)figure).getAutoSizeDimension());
+				return true;
+			}
+		};
+		setPropertyChangeHandler(TextIndicatorModel.PROP_AUTOSIZE, handler);
+		
+		handler = new IWidgetPropertyChangeHandler(){
+			public boolean handleChange(Object oldValue, Object newValue,
+					final IFigure figure) {
+				if(getCastedModel().isAutoSize()){
+					Display.getCurrent().timerExec(10, new Runnable() {					
+						public void run() {							
+							getCastedModel().setSize(((LabelFigure)figure).getAutoSizeDimension());
+						}
+					});					
+				}				
+				return true;
+			}
+		};
+		setPropertyChangeHandler(AbstractWidgetModel.PROP_FONT, handler);
+		setPropertyChangeHandler(AbstractWidgetModel.PROP_BORDER_STYLE, handler);
+		setPropertyChangeHandler(AbstractWidgetModel.PROP_BORDER_WIDTH, handler);
 	}
-
+	
+	@Override
+	public TextIndicatorModel getCastedModel() {
+		return (TextIndicatorModel)getModel();
+	}
+	
 	private void performDirectEdit(){
 		new LabelEditManager(this, new LabelCellEditorLocator((LabelFigure)getFigure())).show();
 	}
@@ -57,47 +121,4 @@ public class TextIndicatorEditPart extends LabelEditPart {
 	}
 	
 	
-	@Override
-	public LabelModel getCastedModel() {
-		return (LabelModel)getModel();
-	}
-
-	class LabelCellEditorLocator
-		implements CellEditorLocator
-	{
-
-		private LabelFigure stickyNote;
-	
-		public LabelCellEditorLocator(LabelFigure stickyNote) {
-			setLabel(stickyNote);
-		}
-	
-		public void relocate(CellEditor celleditor) {
-			Text text = (Text)celleditor.getControl();
-			Rectangle rect = stickyNote.getClientArea();
-			stickyNote.translateToAbsolute(rect);
-			org.eclipse.swt.graphics.Rectangle trim = text.computeTrim(0, 0, 0, 0);
-			rect.translate(trim.x, trim.y);
-			rect.width += trim.width;
-			rect.height += trim.height;
-			text.setBounds(rect.x, rect.y, rect.width, rect.height);
-		}
-	
-		/**
-		 * Returns the stickyNote figure.
-		 */
-		protected LabelFigure getLabel() {
-			return stickyNote;
-		}
-	
-		/**
-		 * Sets the Sticky note figure.
-		 * @param stickyNote The stickyNote to set
-		 */
-		protected void setLabel(LabelFigure stickyNote) {
-			this.stickyNote = stickyNote;
-		}
-
-
-	}
 }

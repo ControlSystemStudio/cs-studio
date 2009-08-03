@@ -22,7 +22,8 @@ public class ColorProperty extends AbstractWidgetProperty {
 	 */
 	@Override
 	public Object checkValue(Object value) {
-		assert value != null : "value is null"; //$NON-NLS-1$
+		if(value == null)
+			return null;
 		
 		Object acceptedValue = value;
 

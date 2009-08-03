@@ -62,4 +62,13 @@ public interface WidgetPropertyCategory {
 			return "Border";
 		}
 	};
+	
+	/**
+	 * Misc category.
+	 */
+	public final static WidgetPropertyCategory Basic = new WidgetPropertyCategory(){
+		public String toString() {			
+			return "Basic";
+		}
+	};
 }

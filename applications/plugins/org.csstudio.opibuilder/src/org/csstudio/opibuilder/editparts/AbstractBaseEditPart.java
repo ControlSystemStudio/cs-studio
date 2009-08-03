@@ -2,6 +2,7 @@ package org.csstudio.opibuilder.editparts;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
@@ -34,6 +35,48 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 		propertyListenerMap = new HashMap<String, WidgetPropertyChangeListener>();	
 	}
 	
+	
+	@Override
+	protected IFigure createFigure() {
+		IFigure figure = doCreateFigure();
+		if(figure == null)
+			throw new IllegalArgumentException("Editpart does not provide a figure!"); //$NON-NLS-1$
+		Set<String> allPropIds = getCastedModel().getAllPropertyIDs();
+		if(allPropIds.contains(AbstractWidgetModel.PROP_COLOR_BACKGROUND))
+			figure.setBackgroundColor(CustomMediaFactory.getInstance().getColor(
+				getCastedModel().getBackgroundColor()));
+
+		if(allPropIds.contains(AbstractWidgetModel.PROP_COLOR_FOREGROUND))
+			figure.setForegroundColor(CustomMediaFactory.getInstance().getColor(
+				getCastedModel().getForegroundColor()));
+		
+		if(allPropIds.contains(AbstractWidgetModel.PROP_VISIBLE))
+			figure.setVisible(getExecutionMode() == ExecutionMode.RUN_MODE ? 
+				getCastedModel().isVisible() : true);
+		
+		if(allPropIds.contains(AbstractWidgetModel.PROP_ENABLED))
+			figure.setEnabled(getCastedModel().isEnabled());
+		
+		if(allPropIds.contains(AbstractWidgetModel.PROP_WIDTH) && 
+				allPropIds.contains(AbstractWidgetModel.PROP_HEIGHT))
+			figure.setSize(getCastedModel().getSize());
+		
+		if(allPropIds.contains(AbstractWidgetModel.PROP_BORDER_COLOR) &&
+				allPropIds.contains(AbstractWidgetModel.PROP_BORDER_STYLE) &&
+				allPropIds.contains(AbstractWidgetModel.PROP_BORDER_WIDTH))
+			figure.setBorder(BorderFactory.createBorder(
+				getCastedModel().getBorderStyle(), getCastedModel().getBorderWidth(), 
+				getCastedModel().getBorderColor(), getCastedModel().getName()));
+		
+		if(allPropIds.contains(AbstractWidgetModel.PROP_FONT))
+			figure.setFont(CustomMediaFactory.getInstance().getFont(getCastedModel().getFont()));
+		
+		return figure;
+	}
+	
+	protected abstract IFigure doCreateFigure();
+
+
 	@Override
 	public void activate() {
 		if(!isActive()){
@@ -48,16 +91,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 			}
 			registerBasePropertyChangeHandlers();
 			registerPropertyChangeHandlers();
-			initProperties();
 		}		
-	}
-	
-	private void initProperties() {
-		for(String prop_id : getCastedModel().getAllPropertyIDs()){
-			getCastedModel().getProperty(prop_id).firePropertyChange(null, 
-					getCastedModel().getPropertyValue(prop_id));
-		}
-		
 	}
 
 	@Override
@@ -88,7 +122,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 		}
 	}
 	
-	private void registerBasePropertyChangeHandlers(){
+	protected void registerBasePropertyChangeHandlers(){
 		IWidgetPropertyChangeHandler refreshVisualHandler = new IWidgetPropertyChangeHandler(){
 
 				public boolean handleChange(Object oldValue, Object newValue,

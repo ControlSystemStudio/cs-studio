@@ -9,7 +9,7 @@ public class RectangleEditpart extends AbstractWidgetEditPart {
 
 	
 	@Override
-	protected IFigure createFigure() {
+	protected IFigure doCreateFigure() {
 		IFigure figure = new RectangleFigure();
 		return figure;
 	}	

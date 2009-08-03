@@ -73,7 +73,7 @@ public class KnobModel extends AbstractMarkedWidgetModel{
 	protected void configureProperties() {
 		super.configureProperties();	
 		
-		addPVProperty(new StringProperty(PROP_CONTROL_PV, "Control PV", WidgetPropertyCategory.Behavior,
+		addPVProperty(new StringProperty(PROP_CONTROL_PV, "Control PV", WidgetPropertyCategory.Basic,
 				true, ""), new PVValueProperty(PROP_CONTROL_PV_VALUE, null));
 		
 		addProperty(new ColorProperty(PROP_KNOB_COLOR, "Knob Color",
@@ -95,6 +95,7 @@ public class KnobModel extends AbstractMarkedWidgetModel{
 				WidgetPropertyCategory.Behavior, true, 1.0));
 		
 		setPropertyDescription(PROP_SHOW_MARKERS, "Show Ramp");
+		setPropertyDescription(PROP_PVNAME, "Readback PV Name");
 	}	
 
 	@Override

@@ -16,7 +16,10 @@ import org.csstudio.opibuilder.properties.FontProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.PVValueProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
+import org.csstudio.opibuilder.properties.UnchangableStringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.csstudio.opibuilder.util.WidgetDescriptor;
+import org.csstudio.opibuilder.util.WidgetsService;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.model.pvs.IProcessVariableAdressProvider;
@@ -25,6 +28,7 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
@@ -68,6 +72,8 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	
 	public static final String PROP_FONT= "font"; //$NON-NLS-1$
 
+	public static final String PROP_TYPE= "type"; //$NON-NLS-1$
+	
 	private Map<String, AbstractWidgetProperty> propertyMap;
 	
 	private Map<String, IPropertyDescriptor> propertyDescriptors;
@@ -105,11 +111,17 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 				WidgetPropertyCategory.Behavior, true, true));
 		addProperty(new BooleanProperty(PROP_VISIBLE, "Visible", 
 				WidgetPropertyCategory.Behavior, true, true));
+			addProperty(new FontProperty(PROP_FONT, "Font", 
+				WidgetPropertyCategory.Display, true, CustomMediaFactory.FONT_ARIAL));
+			
+		WidgetDescriptor descriptor = WidgetsService.getInstance().getWidgetDescriptor(getTypeID());
+		String name;
+		name = descriptor == null? getTypeID().substring(getTypeID().lastIndexOf(".")+1) :
+			descriptor.getName();
 		addProperty(new StringProperty(PROP_NAME, "Name",
-				WidgetPropertyCategory.Display, true, getTypeID().substring(
-						getTypeID().lastIndexOf(".")+1)));
-		addProperty(new FontProperty(PROP_FONT, "Font", 
-				WidgetPropertyCategory.Display, true, CustomMediaFactory.FONT_TAHOMA));
+				WidgetPropertyCategory.Basic, true, name)); 	
+		addProperty(new UnchangableStringProperty(PROP_TYPE, "Widget Type",
+				WidgetPropertyCategory.Basic, true,name));
 		
 	}
 	
@@ -251,8 +263,21 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 		return (String)getCastedPropertyValue(PROP_NAME);
 	}
 	
+	public void setName(String name){
+		setPropertyValue(PROP_NAME, name);
+	}
+	
+	public String getWidgetType(){
+		return (String)getCastedPropertyValue(PROP_TYPE);
+	}
+	
+	
 	public Boolean isEnabled(){
 		return (Boolean)getCastedPropertyValue(PROP_ENABLED);
+	}
+	
+	public Boolean isVisible(){
+		return (Boolean)getCastedPropertyValue(PROP_VISIBLE);
 	}
 	
 	public Dimension getSize(){
@@ -276,6 +301,12 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	public RGB getBorderColor(){
 		return (RGB)getCastedPropertyValue(PROP_BORDER_COLOR);
 	}
+	
+	
+	public FontData getFont(){
+		return (FontData)getCastedPropertyValue(PROP_FONT);
+	}
+	
 	
 	public int getBorderWidth(){
 		return (Integer)getCastedPropertyValue(PROP_BORDER_WIDTH);

@@ -18,12 +18,15 @@ import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
 
-public class LabelEditPart extends AbstractPVWidgetEditPart {
+public class LabelEditPart extends AbstractWidgetEditPart {
 
 	
 	@Override
-	protected IFigure createFigure() {
-		return new LabelFigure(false);
+	protected IFigure doCreateFigure() {
+		LabelFigure labelFigure = new LabelFigure(false);
+		labelFigure.setText(getCastedModel().getText());
+		labelFigure.setFill(!getCastedModel().isTransparent());
+		return labelFigure;
 	}
 
 	@Override
@@ -40,8 +43,7 @@ public class LabelEditPart extends AbstractPVWidgetEditPart {
 			public boolean handleChange(Object oldValue, Object newValue,
 					final IFigure figure) {
 				((LabelFigure)figure).setText((String)newValue);
-				Display.getCurrent().timerExec(100, new Runnable() {
-					
+				Display.getCurrent().timerExec(10, new Runnable() {					
 					public void run() {
 						if(getCastedModel().isAutoSize())
 							getCastedModel().setSize(((LabelFigure)figure).getAutoSizeDimension());
@@ -57,8 +59,7 @@ public class LabelEditPart extends AbstractPVWidgetEditPart {
 		handler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
 					final IFigure figure) {
-				Display.getCurrent().timerExec(100, new Runnable() {
-					
+				Display.getCurrent().timerExec(10, new Runnable() {					
 					public void run() {
 						if(getCastedModel().isAutoSize())
 							getCastedModel().setSize(((LabelFigure)figure).getAutoSizeDimension());
@@ -68,7 +69,9 @@ public class LabelEditPart extends AbstractPVWidgetEditPart {
 				return true;
 			}
 		};
-		setPropertyChangeHandler(LabelModel.PROP_FONT, handler);
+		setPropertyChangeHandler(AbstractWidgetModel.PROP_FONT, handler);		
+		setPropertyChangeHandler(AbstractWidgetModel.PROP_BORDER_STYLE, handler);
+		setPropertyChangeHandler(AbstractWidgetModel.PROP_BORDER_WIDTH, handler);
 		
 		handler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
@@ -81,8 +84,7 @@ public class LabelEditPart extends AbstractPVWidgetEditPart {
 		
 		handler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
-					IFigure figure) {
-				
+					IFigure figure) {				
 				if((Boolean)newValue)
 					getCastedModel().setSize(((LabelFigure)figure).getAutoSizeDimension());
 				return true;
@@ -112,42 +114,5 @@ public class LabelEditPart extends AbstractPVWidgetEditPart {
 		return (LabelModel)getModel();
 	}
 
-	class LabelCellEditorLocator
-		implements CellEditorLocator
-	{
-
-		private LabelFigure stickyNote;
 	
-		public LabelCellEditorLocator(LabelFigure stickyNote) {
-			setLabel(stickyNote);
-		}
-	
-		public void relocate(CellEditor celleditor) {
-			Text text = (Text)celleditor.getControl();
-			Rectangle rect = stickyNote.getClientArea();
-			stickyNote.translateToAbsolute(rect);
-			org.eclipse.swt.graphics.Rectangle trim = text.computeTrim(0, 0, 0, 0);
-			rect.translate(trim.x, trim.y);
-			rect.width += trim.width;
-			rect.height += trim.height;
-			text.setBounds(rect.x, rect.y, rect.width, rect.height);
-		}
-	
-		/**
-		 * Returns the stickyNote figure.
-		 */
-		protected LabelFigure getLabel() {
-			return stickyNote;
-		}
-	
-		/**
-		 * Sets the Sticky note figure.
-		 * @param stickyNote The stickyNote to set
-		 */
-		protected void setLabel(LabelFigure stickyNote) {
-			this.stickyNote = stickyNote;
-		}
-
-
-	}
 }
