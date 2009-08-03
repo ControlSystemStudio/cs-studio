@@ -57,6 +57,7 @@ import org.epics.css.dal.impl.StringPropertyImpl;
 import org.epics.css.dal.impl.StringSeqPropertyImpl;
 import org.epics.css.dal.proxy.PropertyProxy;
 
+import org.epics.css.dal.spi.AbstractFactory;
 import org.epics.css.dal.spi.Plugs;
 
 import java.lang.reflect.Array;
@@ -536,6 +537,7 @@ public final class PlugUtilities
 		p.put(Plugs.PLUGS_DEFAULT, EPICSPlug.PLUG_TYPE);
 		p.put(Plugs.PLUG_PROPERTY_FACTORY_CLASS + EPICSPlug.PLUG_TYPE,
 		    PropertyFactoryImpl.class.getName());
+		p.put(AbstractFactory.SYNCHRONIZE_FAMILY,"true");
 	}
 
 	/**

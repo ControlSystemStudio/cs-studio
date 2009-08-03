@@ -9,8 +9,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.platform;bundle-version="1.0.0"
 Eclipse-LazyStart: true
 Bundle-ClassPath: .,
- lib/caj-1.1.5b.jar,
- lib/jca-2.3.2.jar
+ lib/caj-1.1.5c.jar,
+ lib/jca-2.3.3.jar
 Export-Package: 
  com.cosylab.epics.caj,
  com.cosylab.epics.caj.cas,

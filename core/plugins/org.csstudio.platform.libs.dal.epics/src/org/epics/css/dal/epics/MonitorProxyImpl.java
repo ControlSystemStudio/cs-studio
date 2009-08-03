@@ -44,6 +44,8 @@ import org.epics.css.dal.impl.RequestImpl;
 import org.epics.css.dal.impl.ResponseImpl;
 import org.epics.css.dal.proxy.MonitorProxy;
 
+import com.cosylab.epics.caj.CAJMonitor;
+
 /**
  * Simulation implementation of MonitorProxy.
  * 
@@ -270,6 +272,7 @@ public class MonitorProxyImpl<T> extends RequestImpl<T> implements MonitorProxy,
 			} catch (CAException e) {
 				// noop
 			}
+			monitor.removeMonitorListener(this);
 		}
 		
 		destroyed = true;
