@@ -38,6 +38,8 @@
       <plugin id="org.csstudio.nams.service.regelwerkbuilder.impl.confstore"/>
       <plugin id="org.csstudio.platform"/>
       <plugin id="org.csstudio.platform.libs.dal"/>
+      <plugin id="org.csstudio.platform.libs.dal.epics"/>
+      <plugin id="org.csstudio.platform.libs.epics"/>
       <plugin id="org.csstudio.platform.libs.jdbc"/>
       <plugin id="org.csstudio.platform.libs.jmock"/>
       <plugin id="org.csstudio.platform.libs.jms"/>
@@ -108,6 +110,7 @@
       <plugin id="org.eclipse.update.core.linux" fragment="true"/>
       <plugin id="org.eclipse.update.core.win32" fragment="true"/>
       <plugin id="org.jivesoftware.smack"/>
+      <plugin id="org.junit"/>
       <plugin id="org.junit4"/>
       <plugin id="org.remotercp.common"/>
       <plugin id="org.remotercp.ecf"/>
