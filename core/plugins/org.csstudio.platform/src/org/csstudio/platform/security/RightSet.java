@@ -116,20 +116,21 @@ public class RightSet implements Iterable<IRight> {
 
 	/**
 	 * @see java.lang.Object#toString()
-	 * @return a string representation of this rightset.
+	 * @return a string representation of this <code>RightSet</code>
 	 */
-	@Override
+	@SuppressWarnings("nls")
+    @Override
 	public final String toString() {
-		String text = _name + " "; //$NON-NLS-1$
-		for (int i = 0; i < _rights.size(); i++) {
-			text = text + _rights.get(i).toString() + " "; //$NON-NLS-1$
-		}
-		return text;
+	    final StringBuilder text = new StringBuilder(_name);
+	    if (_rights.size() <= 0)
+	        text.append(" <empty>");
+	    else
+	        for (int i = 0; i < _rights.size(); i++)
+	            text.append(" ").append(_rights.get(i).toString());
+	    return text.toString();
 	}
 
 	public Iterator<IRight> iterator() {
 		return _rights.iterator();
 	}
-
-
 }
