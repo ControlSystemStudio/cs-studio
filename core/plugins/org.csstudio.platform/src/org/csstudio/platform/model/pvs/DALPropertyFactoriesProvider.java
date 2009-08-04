@@ -25,9 +25,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.csstudio.dal.CssApplicationContext;
-import org.csstudio.platform.CSSPlatformPlugin;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.epics.css.dal.context.AbstractApplicationContext;
 import org.epics.css.dal.spi.DefaultPropertyFactoryService;
 import org.epics.css.dal.spi.LinkPolicy;
@@ -85,7 +82,7 @@ public final class DALPropertyFactoriesProvider {
 	 * 
 	 * @return a DAL property factory
 	 */
-	public PropertyFactory getPropertyFactory(ControlSystemEnum controlSystem) {
+	public synchronized PropertyFactory getPropertyFactory(ControlSystemEnum controlSystem) {
 		if (!controlSystem.isSupportedByDAL()) {
 			throw new IllegalArgumentException(
 					"Control System "
