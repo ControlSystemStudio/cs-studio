@@ -31,5 +31,22 @@ public class SynchronizedDeviceFamilyImpl<T extends AbstractDevice>
 		devices = Collections.synchronizedMap(devices);
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see org.epics.css.dal.device.DeviceCollectionMap#remove(org.epics.css.dal.device.AbstractDevice)
+	 */
+	@Override
+	protected synchronized void remove(T device) {
+		super.remove(device);
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.epics.css.dal.impl.DeviceFamilyImpl#add(org.epics.css.dal.device.AbstractDevice)
+	 */
+	@Override
+	public synchronized void add(T object) {
+		super.add(object);
+	}
 
 }

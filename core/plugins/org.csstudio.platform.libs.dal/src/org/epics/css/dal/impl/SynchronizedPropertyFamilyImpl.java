@@ -2,6 +2,7 @@ package org.epics.css.dal.impl;
 
 import java.util.Collections;
 
+import org.epics.css.dal.DynamicValueProperty;
 import org.epics.css.dal.context.PropertyFamily;
 import org.epics.css.dal.spi.PropertyFactory;
 
@@ -29,5 +30,22 @@ public class SynchronizedPropertyFamilyImpl extends PropertyFamilyImpl
 		properties = Collections.synchronizedMap(properties);
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see org.epics.css.dal.group.PropertyCollectionMap#remove(org.epics.css.dal.DynamicValueProperty)
+	 */
+	@Override
+	protected synchronized void remove(DynamicValueProperty<?> property) {
+		super.remove(property);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.epics.css.dal.impl.PropertyFamilyImpl#add(org.epics.css.dal.DynamicValueProperty)
+	 */
+	@Override
+	public synchronized void add(DynamicValueProperty<?> property) {
+		super.add(property);
+	}
 
 }
