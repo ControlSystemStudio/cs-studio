@@ -192,11 +192,12 @@ public final class RightsManagementService {
 	 * Reads the rights of the given user.
 	 * @param user the user.
 	 */
-	public void readRightsForUser(final User user) {
+	@SuppressWarnings("nls")
+    public void readRightsForUser(final User user) {
 		IAuthorizationProvider provider = getAuthorizationProvider();
 		if (provider != null) {
 			RightSet userRights = provider.getRights(user);
-			CentralLogger.getInstance().debug(this, "Rights for user: " + userRights);
+			CentralLogger.getInstance().debug(this, "Rights for " + user + ": " + userRights);
 			_rights.put(user, userRights);
 		} else {
 			if (_rights.containsKey(user)) {
