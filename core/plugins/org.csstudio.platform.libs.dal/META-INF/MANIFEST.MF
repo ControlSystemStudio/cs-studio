@@ -10,7 +10,7 @@ Require-Bundle: org.eclipse.core.runtime,
 Eclipse-LazyStart: true
 Eclipse-BuddyPolicy: registered
 Bundle-ClassPath: .,
- lib/java-common-4.0-SNAPSHOT.jar
+ lib/java-common-4.0.1-SNAPSHOT.jar
 Export-Package: com.cosylab.application.state,
  com.cosylab.application.state.impl,
  com.cosylab.events,
