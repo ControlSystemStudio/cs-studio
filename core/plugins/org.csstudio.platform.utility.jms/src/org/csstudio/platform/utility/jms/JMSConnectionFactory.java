@@ -13,6 +13,10 @@ import org.apache.activemq.transport.TransportListener;
  *  Shields from the underling ActiveMQ API,
  *  only providing a <code>javax.jms.Connection</code>.
  *  <p>
+ *  Attempts to support a link up/down listener that's notified
+ *  about the actual JMS server (in case of 'failover' URLs, that can
+ *  be any one from a list of possible servers).
+ *  <p>
  *  <b>Logging:</b>
  *  ActiveMQ uses org.apache.commons.logging, defaulting to its Jdk14Logger.
  *  The rest of CSS uses Log4J, but since Log4J potentially gets configured
@@ -68,12 +72,26 @@ public class JMSConnectionFactory
     }
     
     /** Add a listener that is notified about JMS connection issues
-     *  to a connection.
+     *  to an existing connection.
+     *  Connection should not be 'start'ed, yet.
      *  <p>
      *  The implementation depends on the underlying API.
      *  What works for ActiveMQ might not be available for
      *  other implementations, in which case the listener
      *  might never get called.
+     *  <p>
+     *  For ActiveMQ it's not clear how to track the connection
+     *  state dependably. 
+     *  For "failover:..." URLs, the initial connection.start() call will
+     *  hang until there is a connection established.
+     *  On the other hand, it seems as if it will already try to connect
+     *  before 'start()' is called, so even when calling addListener() before
+     *  start(), the connection might already be up.
+     *  We call the JMSConnectionListener for that case, but another
+     *  'linkUp' might result from race conditions.
+     *  <p>
+     *  So in summary this is meant to help track the connection state
+     *  and JMS server name, but only for info/debugging; it is not dependable.
      *  
      *  @param connection Connection to monitor
      *  @param listener JMSConnectionListener to notify
@@ -107,5 +125,8 @@ public class JMSConnectionFactory
                 listener.linkUp(amq_connection.getTransport().getRemoteAddress());
             }
         });
+        // Is already connected?
+        if (amq_connection.getTransport().isConnected())
+            listener.linkUp(amq_connection.getTransport().getRemoteAddress());
     }
 }
