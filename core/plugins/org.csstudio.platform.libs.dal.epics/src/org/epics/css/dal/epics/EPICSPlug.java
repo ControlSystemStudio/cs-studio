@@ -609,8 +609,10 @@ public class EPICSPlug extends AbstractPlug
 				if (!useCommonExecutor) throw new IllegalStateException("EPICSPlug is configured not to use a common executor.");
 				if (maxThreads == 0) throw new IllegalStateException("Maximum number of threads must be greater than 0.");
 				if (executor==null) {
-					executor= new ThreadPoolExecutor(coreThreads,maxThreads,Long.MAX_VALUE, TimeUnit.NANOSECONDS,
-			                new ArrayBlockingQueue<Runnable>(maxThreads));
+//					executor= new ThreadPoolExecutor(coreThreads,maxThreads,Long.MAX_VALUE, TimeUnit.NANOSECONDS,
+//			                new ArrayBlockingQueue<Runnable>(maxThreads));
+				    executor= new ThreadPoolExecutor(coreThreads,maxThreads,Long.MAX_VALUE, TimeUnit.NANOSECONDS, 
+				    		new ArrayBlockingQueue<Runnable>(4*maxThreads));
 					executor.prestartAllCoreThreads();
 				}				
 			}
