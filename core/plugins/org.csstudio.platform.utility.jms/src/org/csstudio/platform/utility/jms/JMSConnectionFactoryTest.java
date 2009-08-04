@@ -16,13 +16,27 @@ import org.junit.Test;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class JMSConnectionFactoryTest
+public class JMSConnectionFactoryTest implements JMSConnectionListener
 {
     /** JMS server URL. <B>Adjust for your site!</B> */
     final private static String URL = "tcp://ics-srv02.sns.ornl.gov:61616";
     
     /** JMS topic that should be available at CSS sites. */
     final private static String TOPIC = "LOG";
+    
+    private boolean connected = false;
+
+    public void linkDown()
+    {
+        connected = false;
+        System.out.println("JMS link down");
+    }
+
+    public void linkUp(final String server)
+    {
+        connected = true;
+        System.out.println("JMS link up to " + server);
+    }
 
     @Test
     public void testJMSConnection() throws Exception
@@ -32,6 +46,7 @@ public class JMSConnectionFactoryTest
         System.out.println("Server     : " + URL);
         System.out.println("Topic      : " + TOPIC);
         final Connection connection = JMSConnectionFactory.connect(URL);
+        JMSConnectionFactory.addListener(connection, this);
         connection.start();
         
         System.out.println("Connected  : " + connection.getClientID());
@@ -46,6 +61,9 @@ public class JMSConnectionFactoryTest
         final MessageConsumer consumer = session.createConsumer(topic);
         
         // Unclear what to check other than "no exception"
+        // Don't want to read/write in here, it's only a connection test
+        // that should otherwise have no side effect.
+        assertTrue(connected);
         System.out.println("Destination: " + producer.getDestination());
         assertTrue("LOG used in destination",
                 producer.getDestination().toString().indexOf("LOG") >= 0);
