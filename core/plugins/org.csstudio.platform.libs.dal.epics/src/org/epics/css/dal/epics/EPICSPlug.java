@@ -612,7 +612,7 @@ public class EPICSPlug extends AbstractPlug
 //					executor= new ThreadPoolExecutor(coreThreads,maxThreads,Long.MAX_VALUE, TimeUnit.NANOSECONDS,
 //			                new ArrayBlockingQueue<Runnable>(maxThreads));
 				    executor= new ThreadPoolExecutor(coreThreads,maxThreads,Long.MAX_VALUE, TimeUnit.NANOSECONDS, 
-				    		new ArrayBlockingQueue<Runnable>(4*maxThreads));
+				    		new ArrayBlockingQueue<Runnable>(100000));
 					executor.prestartAllCoreThreads();
 				}				
 			}
