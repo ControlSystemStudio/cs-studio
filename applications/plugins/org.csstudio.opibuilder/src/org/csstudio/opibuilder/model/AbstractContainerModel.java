@@ -7,6 +7,7 @@ import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
+import org.jdom.Element;
 
 public abstract class AbstractContainerModel extends AbstractWidgetModel {
 	
@@ -31,6 +32,16 @@ public abstract class AbstractContainerModel extends AbstractWidgetModel {
 
 			@Override
 			protected PropertyDescriptor createPropertyDescriptor() {
+				return null;
+			}
+
+			@Override
+			public void writeToXML(Element propElement) {				
+			}
+
+			@Override
+			public Object readValueFromXML(Element propElement) {
+				// TODO Auto-generated method stub
 				return null;
 			}
 			

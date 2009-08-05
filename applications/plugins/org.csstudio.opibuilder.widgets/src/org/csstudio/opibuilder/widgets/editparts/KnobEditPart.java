@@ -4,6 +4,8 @@ import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.widgets.model.AbstractScaledWidgetModel;
 import org.csstudio.opibuilder.widgets.model.KnobModel;
+import org.csstudio.platform.data.IValue;
+import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.sds.components.ui.internal.figures.KnobFigure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.graphics.RGB;
@@ -48,6 +50,15 @@ public final class KnobEditPart extends AbstractMarkedWidgetEditPart {
 		
 		return knob;
 
+	}
+	
+	@Override
+	public void activate() {
+		// TODO Auto-generated method stub
+		super.activate();
+		IValue value = getPVValue(KnobModel.PROP_CONTROL_PV);
+		if(value != null)
+			((KnobFigure)getFigure()).setValue(ValueUtil.getDouble(value));
 	}
 
 	/**

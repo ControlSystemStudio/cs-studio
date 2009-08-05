@@ -3,6 +3,7 @@ package org.csstudio.opibuilder.properties;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
+import org.jdom.Element;
 
 /**
  * @author Xihui Chen
@@ -53,6 +54,16 @@ public class ComboProperty extends AbstractWidgetProperty {
 	protected PropertyDescriptor createPropertyDescriptor() {
 		return new ComboBoxPropertyDescriptor(
 				prop_id, description, labelsArray);
+	}
+
+	@Override
+	public void writeToXML(Element propElement) {
+		propElement.setText(getPropertyValue().toString());
+	}
+	
+	@Override
+	public Object readValueFromXML(Element propElement) {
+		return Integer.parseInt(propElement.getValue());
 	}
 
 }

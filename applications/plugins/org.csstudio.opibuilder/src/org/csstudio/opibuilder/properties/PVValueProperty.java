@@ -3,6 +3,7 @@ package org.csstudio.opibuilder.properties;
 import org.csstudio.platform.data.IValue;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
+import org.jdom.Element;
 
 /**
  * The property which contains a {@link IValue}. This property won't be shown in 
@@ -31,5 +32,15 @@ public class PVValueProperty extends AbstractWidgetProperty {
 	protected PropertyDescriptor createPropertyDescriptor() {
 		return null;
 	}
+
+	@Override
+	public void writeToXML(Element propElement) {		
+	}
+	
+	@Override
+	public Object readValueFromXML(Element propElement) {
+		return null;
+	}
+	
 
 }

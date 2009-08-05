@@ -3,6 +3,7 @@ package org.csstudio.opibuilder.properties;
 import org.csstudio.opibuilder.visualparts.BooleanPropertyDescriptor;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
+import org.jdom.Element;
 
 
 
@@ -45,6 +46,17 @@ public final class BooleanProperty extends AbstractWidgetProperty {
 	@Override
 	protected PropertyDescriptor createPropertyDescriptor() {
 		return new BooleanPropertyDescriptor(prop_id, description);
+	}
+
+
+	@Override
+	public void writeToXML(Element propElement) {
+		propElement.setText(getPropertyValue().toString());
+	}
+	
+	@Override
+	public Object readValueFromXML(Element propElement) {
+		return Boolean.parseBoolean(propElement.getValue());
 	}
 	
 

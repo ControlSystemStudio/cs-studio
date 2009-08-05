@@ -2,6 +2,7 @@ package org.csstudio.opibuilder.properties;
 
 import org.csstudio.opibuilder.visualparts.IntegerPropertyDescriptor;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
+import org.jdom.Element;
 
 public class IntegerProperty extends AbstractWidgetProperty {
 
@@ -72,7 +73,15 @@ public class IntegerProperty extends AbstractWidgetProperty {
 		return new IntegerPropertyDescriptor(prop_id, description);
 	}
 
-	
+	@Override
+	public void writeToXML(Element propElement) {
+		propElement.setText(getPropertyValue().toString());
+	}
+
+	@Override
+	public Object readValueFromXML(Element propElement) {
+		return Integer.parseInt(propElement.getValue());
+	}
 
 
 

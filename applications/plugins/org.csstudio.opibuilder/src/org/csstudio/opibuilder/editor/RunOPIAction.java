@@ -25,6 +25,11 @@ import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.internal.WorkbenchWindow;
 import org.eclipse.ui.part.FileEditorInput;
 
+/**
+ * The Action to Run an OPI.
+ * @author Xihui Chen
+ *
+ */
 public class RunOPIAction extends Action{
 
   public RunOPIAction() {

@@ -310,6 +310,14 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 		}
 	}
 	
+	protected IValue getPVValue(String pvPropId){
+		final PV pv = pvMap.get(pvPropId);
+		if(pv != null){
+			return pv.getValue();
+		}
+		return null;
+	}
+	
 	protected void markAsControlPV(String pvPropId){
 		controlPVPropId  = pvPropId;
 	}

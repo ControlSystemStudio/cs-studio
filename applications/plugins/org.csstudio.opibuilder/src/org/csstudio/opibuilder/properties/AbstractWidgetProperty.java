@@ -5,6 +5,7 @@ import java.beans.PropertyChangeSupport;
 
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
+import org.jdom.Element;
 
 /**The base widget property class for all kinds of widget property.
  * @author Xihui Chen
@@ -153,5 +154,20 @@ public abstract class AbstractWidgetProperty {
 	 * Create the {@link IPropertyDescriptor}
 	 */
 	protected abstract PropertyDescriptor createPropertyDescriptor();
+
+	/**
+	 * Write the property value into a XML element.
+	 * @param propElement
+	 */
+	public abstract void writeToXML(Element propElement);
+
+	
+	/**Read the property value from a XML element.
+	 * @param propElement
+	 * @return
+	 */
+	public abstract Object readValueFromXML(Element propElement);
+	
+	
 	
 }

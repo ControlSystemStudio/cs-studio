@@ -8,6 +8,7 @@ import java.util.List;
 import org.csstudio.opibuilder.editpolicies.WidgetXYLayoutEditPolicy;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
+import org.csstudio.opibuilder.util.UIBundlingThread;
 import org.eclipse.gef.CompoundSnapToHelper;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.SnapToGeometry;
@@ -35,7 +36,13 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
 				new PropertyChangeListener() {
 					
 					public void propertyChange(PropertyChangeEvent evt) {
-						refreshChildren();
+						UIBundlingThread.getInstance().addRunnable(new Runnable() {
+							
+							public void run() {
+								refreshChildren();
+							}
+						});
+						
 					}
 				});
 	}

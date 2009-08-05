@@ -3,6 +3,7 @@ package org.csstudio.opibuilder.properties;
 import org.csstudio.opibuilder.visualparts.DoublePropertyDescriptor;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
+import org.jdom.Element;
 
 
 /**
@@ -80,5 +81,15 @@ public final class DoubleProperty extends AbstractWidgetProperty {
 	@Override
 	protected PropertyDescriptor createPropertyDescriptor() {
 		return new DoublePropertyDescriptor(prop_id, description);
+	}
+
+	@Override
+	public void writeToXML(Element propElement) {
+		propElement.setText(getPropertyValue().toString());
+	}
+	
+	@Override
+	public Object readValueFromXML(Element propElement) {
+		return Double.parseDouble(propElement.getValue());
 	}
 }

@@ -1,44 +1,46 @@
 package org.csstudio.opibuilder.editor;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.List;
 
-import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.actions.ChangeOrderAction;
 import org.csstudio.opibuilder.actions.ChangeOrderAction.OrderType;
 import org.csstudio.opibuilder.commands.SetWidgetPropertyCommand;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.editparts.WidgetEditPartFactory;
-import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.model.RulerModel;
 import org.csstudio.opibuilder.palette.OPIEditorPaletteFactory;
 import org.csstudio.opibuilder.palette.WidgetCreationFactory;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
-import org.eclipse.core.runtime.IAdaptable;
+import org.csstudio.opibuilder.persistence.XMLUtil;
+import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.ui.dialogs.SaveAsDialog;
+import org.eclipse.core.filesystem.URIUtil;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.draw2d.FigureCanvas;
-import org.eclipse.draw2d.LightweightSystem;
-import org.eclipse.draw2d.MarginBorder;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.draw2d.PositionConstants;
-import org.eclipse.draw2d.Viewport;
-import org.eclipse.draw2d.geometry.Dimension;
-import org.eclipse.draw2d.parts.ScrollableThumbnail;
-import org.eclipse.draw2d.parts.Thumbnail;
 import org.eclipse.gef.AutoexposeHelper;
 import org.eclipse.gef.ContextMenuProvider;
 import org.eclipse.gef.DefaultEditDomain;
-import org.eclipse.gef.EditPartViewer;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.KeyHandler;
 import org.eclipse.gef.KeyStroke;
-import org.eclipse.gef.LayerConstants;
 import org.eclipse.gef.MouseWheelHandler;
 import org.eclipse.gef.MouseWheelZoomHandler;
 import org.eclipse.gef.RootEditPart;
-import org.eclipse.gef.SnapToGrid;
 import org.eclipse.gef.dnd.TemplateTransferDragSourceListener;
 import org.eclipse.gef.dnd.TemplateTransferDropTargetListener;
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
@@ -46,7 +48,6 @@ import org.eclipse.gef.editparts.ViewportAutoexposeHelper;
 import org.eclipse.gef.editparts.ZoomManager;
 import org.eclipse.gef.palette.PaletteRoot;
 import org.eclipse.gef.requests.CreationFactory;
-import org.eclipse.gef.requests.SimpleFactory;
 import org.eclipse.gef.rulers.RulerProvider;
 import org.eclipse.gef.ui.actions.ActionRegistry;
 import org.eclipse.gef.ui.actions.AlignmentAction;
@@ -62,42 +63,37 @@ import org.eclipse.gef.ui.actions.ZoomInAction;
 import org.eclipse.gef.ui.actions.ZoomOutAction;
 import org.eclipse.gef.ui.palette.PaletteViewer;
 import org.eclipse.gef.ui.palette.PaletteViewerProvider;
-import org.eclipse.gef.ui.parts.ContentOutlinePage;
 import org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette;
 import org.eclipse.gef.ui.parts.GraphicalViewerKeyHandler;
 import org.eclipse.gef.ui.parts.ScrollingGraphicalViewer;
-import org.eclipse.gef.ui.parts.TreeViewer;
 import org.eclipse.gef.ui.properties.UndoablePropertySheetEntry;
 import org.eclipse.gef.ui.rulers.RulerComposite;
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.util.TransferDropTargetListener;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IKeyBindingService;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
-import org.eclipse.ui.part.IPageSite;
-import org.eclipse.ui.part.Page;
-import org.eclipse.ui.part.PageBook;
+import org.eclipse.ui.ide.FileStoreEditorInput;
+import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.PropertySheetPage;
 
 
 public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
+	
+	/**
+	 * The file extension for OPI files.
+	 */
+	public static final String OPI_FILE_EXTENSION = "opi"; //$NON-NLS-1$
 
 	private PaletteRoot paletteRoot;
 	
@@ -255,7 +251,15 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 	 * 
 	 */
 	private void initDisplayModel() {
+		
 		displayModel = new DisplayModel();
+		try {
+			XMLUtil.fillDisplayModelFromInputStream(getInputStream(), displayModel);
+		} catch (Exception e) {
+			MessageDialog.openError(getSite().getShell(), "File Open Error",
+					"The file is not a correct OPI file! \n" + e);
+			CentralLogger.getInstance().error(this, e);
+		}		
 	}
 	
 	public DisplayModel getDisplayModel(){
@@ -304,13 +308,122 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 			paletteRoot = OPIEditorPaletteFactory.createPalette();
 		return paletteRoot;
 	}
+	
+	/**
+	 * Returns a stream which can be used to read this editors input data.
+	 * 
+	 * @return a stream which can be used to read this editors input data
+	 */
+	private InputStream getInputStream() {
+		InputStream result = null;
+
+		IEditorInput editorInput = getEditorInput();
+		if (editorInput instanceof FileEditorInput) {
+			try {
+				result = ((FileEditorInput) editorInput).getFile()
+						.getContents();
+			} catch (CoreException e) {
+				e.printStackTrace();
+			}
+		} else if (editorInput instanceof FileStoreEditorInput) {
+			IPath path = URIUtil.toPath(((FileStoreEditorInput) editorInput)
+					.getURI());
+			try {
+				result = new FileInputStream(path.toFile());
+			} catch (FileNotFoundException e) {
+				result = null;
+			}
+		}
+
+		return result;
+	}
+	
 
 	@Override
 	public void doSave(IProgressMonitor monitor) {
-		// TODO Auto-generated method stub
-
+		if (getEditorInput() instanceof FileEditorInput
+				|| getEditorInput() instanceof FileStoreEditorInput) {
+			performSave();
+		} else {
+			doSaveAs();
+		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void doSaveAs() {
+		SaveAsDialog saveAsDialog = new SaveAsDialog(getEditorSite().getShell());
+		if(getEditorInput() instanceof FileEditorInput)
+			saveAsDialog.setOriginalFile(((FileEditorInput)getEditorInput()).getFile());
+		else if(getEditorInput() instanceof FileStoreEditorInput)
+			saveAsDialog.setOriginalName(((FileStoreEditorInput)getEditorInput()).getName());
+		
+		int ret = saveAsDialog.open();
+
+		try {
+			if (ret == Window.OK) {
+				IPath targetPath = saveAsDialog.getResult();
+				IFile targetFile = ResourcesPlugin.getWorkspace().getRoot()
+						.getFile(targetPath);
+
+				if (!targetFile.exists()) {
+					targetFile.create(null, true, null);
+				}
+
+				FileEditorInput editorInput = new FileEditorInput(targetFile);
+
+				setInput(editorInput);
+
+				setPartName(targetFile.getName());
+
+				performSave();
+			}
+		} catch (CoreException e) {
+			MessageDialog.openError(getSite().getShell(), "IO Error", e
+					.getMessage());
+			CentralLogger.getInstance().error(this, e);
+		}
+	}
+	
+	@Override
+	public boolean isSaveAsAllowed() {
+		return true;
+	}
+	
+	private void performSave() {
+		
+		try {			
+			if (getEditorInput() instanceof FileEditorInput) {
+				InputStream is = new ByteArrayInputStream(XMLUtil.WidgetToXMLString(displayModel).getBytes());
+				((FileEditorInput) getEditorInput()).getFile().setContents(
+						is, false, false, null);
+			} else if (getEditorInput() instanceof FileStoreEditorInput) {
+				File file = URIUtil.toPath(
+						((FileStoreEditorInput) getEditorInput()).getURI())
+						.toFile();
+				String content = XMLUtil.WidgetToXMLString(displayModel);
+				
+					FileWriter fileWriter = new FileWriter(file, false);
+					BufferedWriter writer = new BufferedWriter(fileWriter);
+					writer.write(content);
+					writer.flush();
+					writer.close();
+			}	
+		} catch (Exception e) {
+				MessageDialog.openError(getSite().getShell(),
+						"IO Error", e.getMessage());
+				CentralLogger.getInstance().error(this, e);
+		}		
+
+		getCommandStack().markSaveLocation();
+
+		firePropertyChange(IEditorPart.PROP_DIRTY);
+	
+	}
+		
+
 	/**
 	* Returns the undoable <code>PropertySheetPage</code> for
 	* this editor.

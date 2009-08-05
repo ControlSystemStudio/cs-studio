@@ -3,6 +3,7 @@ package org.csstudio.opibuilder.properties;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
+import org.jdom.Element;
 
 public class StringProperty extends AbstractWidgetProperty {
 	
@@ -35,4 +36,13 @@ public class StringProperty extends AbstractWidgetProperty {
 		return new TextPropertyDescriptor(prop_id, description);
 	}
 
+	@Override
+	public void writeToXML(Element propElement) {
+		propElement.setText(getPropertyValue().toString());
+	}
+
+	@Override
+	public Object readValueFromXML(Element propElement) {
+		return propElement.getValue();
+	}
 }

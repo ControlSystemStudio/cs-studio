@@ -5,6 +5,7 @@ import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
+import org.jdom.Element;
 
 /**Just used to display something in the property view, which cannot be edited.
  * @author Xihui Chen
@@ -33,6 +34,17 @@ public class UnchangableStringProperty extends AbstractWidgetProperty {
 				return null;
 			}
 		};
+	}
+	
+	@Override
+	public void writeToXML(Element propElement) {
+		propElement.setText(getPropertyValue().toString());
+		
+	}
+	
+	@Override
+	public Object readValueFromXML(Element propElement) {
+		return propElement.getValue();
 	}
 
 }
