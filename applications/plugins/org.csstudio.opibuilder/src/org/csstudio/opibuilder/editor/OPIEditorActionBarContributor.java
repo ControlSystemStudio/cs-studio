@@ -43,7 +43,7 @@ public class OPIEditorActionBarContributor extends ActionBarContributor {
 		addRetargetAction(new AlignmentRetargetAction(PositionConstants.LEFT));
 		addRetargetAction(new AlignmentRetargetAction(PositionConstants.CENTER));
 		addRetargetAction(new AlignmentRetargetAction(PositionConstants.RIGHT));
-
+		
 		RetargetAction a = new RetargetAction(
 				GEFActionConstants.TOGGLE_GRID_VISIBILITY,
 				"Toggle Grid Visibility", IAction.AS_CHECK_BOX);

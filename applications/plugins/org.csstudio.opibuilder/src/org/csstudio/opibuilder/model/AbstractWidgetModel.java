@@ -263,6 +263,9 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 		return (String)getCastedPropertyValue(PROP_NAME);
 	}
 	
+	public String getType(){
+		return (String)getCastedPropertyValue(PROP_TYPE);
+	}
 	public void setName(String name){
 		setPropertyValue(PROP_NAME, name);
 	}

@@ -11,6 +11,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.HelpListener;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.IEditorInput;
@@ -32,9 +33,13 @@ import org.eclipse.ui.part.FileEditorInput;
  */
 public class RunOPIAction extends Action{
 
+	public static String ID = "org.csstudio.opibuilder.editor.run"; //$NON-NLS-1$
+	
   public RunOPIAction() {
 	 super("Run OPI", CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
-			 OPIBuilderPlugin.PLUGIN_ID, "icons/run.gif"));
+			 OPIBuilderPlugin.PLUGIN_ID, "icons/run.gif"));	 //$NON-NLS-1$
+	 setId(ID);
+	 setAccelerator(SWT.CTRL | 'r');
   }
 
   @Override
@@ -51,5 +56,4 @@ public class RunOPIAction extends Action{
 		}
 			
 	}
-	
 }

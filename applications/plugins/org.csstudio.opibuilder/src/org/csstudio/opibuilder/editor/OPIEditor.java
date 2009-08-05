@@ -13,6 +13,7 @@ import java.util.List;
 import org.csstudio.opibuilder.actions.ChangeOrderAction;
 import org.csstudio.opibuilder.actions.ChangeOrderAction.OrderType;
 import org.csstudio.opibuilder.commands.SetWidgetPropertyCommand;
+import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.editparts.WidgetEditPartFactory;
 import org.csstudio.opibuilder.model.DisplayModel;
@@ -49,6 +50,7 @@ import org.eclipse.gef.editparts.ZoomManager;
 import org.eclipse.gef.palette.PaletteRoot;
 import org.eclipse.gef.requests.CreationFactory;
 import org.eclipse.gef.rulers.RulerProvider;
+import org.eclipse.gef.ui.actions.ActionBarContributor;
 import org.eclipse.gef.ui.actions.ActionRegistry;
 import org.eclipse.gef.ui.actions.AlignmentAction;
 import org.eclipse.gef.ui.actions.CopyTemplateAction;
@@ -69,10 +71,15 @@ import org.eclipse.gef.ui.parts.ScrollingGraphicalViewer;
 import org.eclipse.gef.ui.properties.UndoablePropertySheetEntry;
 import org.eclipse.gef.ui.rulers.RulerComposite;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.util.TransferDropTargetListener;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IEditorInput;
@@ -231,7 +238,27 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 		getGraphicalViewer().setProperty(
 				MouseWheelHandler.KeyGenerator.getKey(SWT.MOD1),
 				MouseWheelZoomHandler.SINGLETON);
-
+		
+		// status line listener
+		getGraphicalViewer().addSelectionChangedListener(new ISelectionChangedListener() {
+			private IStatusLineManager statusLine =
+					((ActionBarContributor)getEditorSite().getActionBarContributor()).
+					getActionBars().getStatusLineManager();
+			public void selectionChanged(SelectionChangedEvent event) {				
+				List<AbstractBaseEditPart> selectedWidgets = new ArrayList<AbstractBaseEditPart>();
+				for(Object editpart : getGraphicalViewer().getSelectedEditParts()){
+					if(editpart instanceof AbstractBaseEditPart)
+						selectedWidgets.add((AbstractBaseEditPart) editpart);
+				}
+				if(selectedWidgets.size() == 1)
+					statusLine.setMessage(selectedWidgets.get(0).getCastedModel().getName() + "(" //$NON-NLS-1$
+							+ selectedWidgets.get(0).getCastedModel().getType() + ")"); //$NON-NLS-1$
+				else if (selectedWidgets.size() >=1)
+					statusLine.setMessage(selectedWidgets.size() + " widgets were selected");
+				else
+					statusLine.setMessage("No widget was selected");
+			}
+		});
 	}
 	
 	@Override
@@ -257,7 +284,7 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 			XMLUtil.fillDisplayModelFromInputStream(getInputStream(), displayModel);
 		} catch (Exception e) {
 			MessageDialog.openError(getSite().getShell(), "File Open Error",
-					"The file is not a correct OPI file! \n" + e);
+					"The file is not a correct OPI file! An empty OPI will be created instead.\n" + e);
 			CentralLogger.getInstance().error(this, e);
 		}		
 	}
