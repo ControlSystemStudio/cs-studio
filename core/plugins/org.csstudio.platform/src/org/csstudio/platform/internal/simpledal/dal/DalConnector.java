@@ -498,7 +498,6 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
 	protected void doGetCharacteristicAsynchronously(final String characteristicId, final ValueType valueType,
 			final IProcessVariableValueListener listener) {
 
-		waitTillConnected(3000);
 
 		try {
 			if (_dalProperty != null && _dalProperty.isConnected()) {
