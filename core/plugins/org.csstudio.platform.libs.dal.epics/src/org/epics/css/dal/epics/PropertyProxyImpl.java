@@ -50,7 +50,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -1037,7 +1037,7 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 				if (getPlug().isUseCommonExecutor()) executor = getPlug().getExecutor();
 				else {
 					executor= new ThreadPoolExecutor(getPlug().getCoreThreads(),getPlug().getMaxThreads(),Long.MAX_VALUE, TimeUnit.NANOSECONDS,
-			                new ArrayBlockingQueue<Runnable>(getPlug().getMaxThreads()));
+			                new LinkedBlockingQueue<Runnable>());
 					executor.prestartAllCoreThreads();
 				}				
 			}

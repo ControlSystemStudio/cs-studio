@@ -43,7 +43,7 @@ import java.util.Iterator;
 import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -612,7 +612,7 @@ public class EPICSPlug extends AbstractPlug
 //					executor= new ThreadPoolExecutor(coreThreads,maxThreads,Long.MAX_VALUE, TimeUnit.NANOSECONDS,
 //			                new ArrayBlockingQueue<Runnable>(maxThreads));
 				    executor= new ThreadPoolExecutor(coreThreads,maxThreads,Long.MAX_VALUE, TimeUnit.NANOSECONDS, 
-				    		new ArrayBlockingQueue<Runnable>(100000));
+				    		new LinkedBlockingQueue<Runnable>());
 					executor.prestartAllCoreThreads();
 				}				
 			}
