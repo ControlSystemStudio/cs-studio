@@ -74,9 +74,21 @@ public class ProcessVariableConnectionService implements IProcessVariableConnect
 	 */
 	public List<IConnector> getConnectors() {
 		List<IConnector> result = new ArrayList<IConnector>();
+
 		result.addAll(_connectors.values());
 		return result;
 
+	}
+
+	public int getNumberOfActiveConnectors() {
+		int result = 0;
+		synchronized (_connectors) {
+			for (IConnector c : _connectors.values()) {
+				result += c != null ? 1 : 0;
+			}
+		}
+
+		return result;
 	}
 
 	/**
@@ -117,21 +129,23 @@ public class ProcessVariableConnectionService implements IProcessVariableConnect
 		}
 	}
 
-	public boolean writeValueSynchronously(IProcessVariableAddress processVariableAddress, Object value, ValueType valueType) throws ConnectionException {
+	public boolean writeValueSynchronously(IProcessVariableAddress processVariableAddress, Object value, ValueType valueType)
+			throws ConnectionException {
 		AbstractConnector connector = getConnector(processVariableAddress, valueType);
 		boolean result = false;
-		
+
 		try {
 			result = connector.setValueSynchronously(value);
 		} catch (Exception e) {
 			CentralLogger.getInstance().debug(null, e);
 			throw new ConnectionException(e);
 		}
-		
+
 		return result;
 	}
 
-	public void writeValueAsynchronously(IProcessVariableAddress processVariableAddress, Object value, ValueType valueType, IProcessVariableWriteListener listener) {
+	public void writeValueAsynchronously(IProcessVariableAddress processVariableAddress, Object value, ValueType valueType,
+			IProcessVariableWriteListener listener) {
 		AbstractConnector connector = getConnector(processVariableAddress, valueType);
 		connector.setValueAsynchronously(value, listener);
 	}
@@ -174,8 +188,10 @@ public class ProcessVariableConnectionService implements IProcessVariableConnect
 	 * connector exists already it is returned, otherwise a new connector will
 	 * be created.
 	 * 
-	 * @param pv the process variable
-	 * @param valueType the value type
+	 * @param pv
+	 *            the process variable
+	 * @param valueType
+	 *            the value type
 	 * @return the connector (it is ensured, that this is not null)
 	 */
 	private AbstractConnector getConnector(IProcessVariableAddress pv, ValueType valueType) {
@@ -200,11 +216,10 @@ public class ProcessVariableConnectionService implements IProcessVariableConnect
 
 			connector.block();
 		}
-		
-		assert connector != null;
-		
-		connector.init(); 
 
+		assert connector != null;
+
+		connector.init();
 
 		return connector;
 	}
@@ -276,7 +291,7 @@ public class ProcessVariableConnectionService implements IProcessVariableConnect
 		 */
 		private void doCleanup() {
 			List<AbstractConnector> deletedConnectors = new ArrayList<AbstractConnector>();
-			
+
 			synchronized (_connectors) {
 				List<ConnectorIdentification> deleteCandidates = new ArrayList<ConnectorIdentification>();
 				Iterator<ConnectorIdentification> it = _connectors.keySet().iterator();
@@ -295,11 +310,13 @@ public class ProcessVariableConnectionService implements IProcessVariableConnect
 					deletedConnectors.add(connector);
 				}
 			}
-			
+
 			// important: dispose the connectors outside the synchronized block
 			for (AbstractConnector connector : deletedConnectors) {
 				connector.dispose();
 			}
+
+			CentralLogger.getInstance().info(null, "Cleanup-Thread: " + deletedConnectors.size() + " connectors disposed!");
 		}
 	}
 

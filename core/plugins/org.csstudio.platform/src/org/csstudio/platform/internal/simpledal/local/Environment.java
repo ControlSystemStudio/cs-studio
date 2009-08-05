@@ -52,7 +52,7 @@ public class Environment {
 	}
 
 	public static Integer getNumberOfActiveConnectors() {
-		return ProcessVariableConnectionServiceFactory.getDefault().getProcessVariableConnectionService().getConnectors().size();
+		return ProcessVariableConnectionServiceFactory.getDefault().getProcessVariableConnectionService().getNumberOfActiveConnectors();
 	}
 
 	public static Long getMaxMemory() {

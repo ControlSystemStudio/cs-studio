@@ -158,4 +158,6 @@ public interface IProcessVariableConnectionService {
 	 * @return all living connectors
 	 */
 	List<IConnector> getConnectors();
+	
+	int getNumberOfActiveConnectors();
 }
