@@ -25,6 +25,10 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.progress.UIJob;
 
+/**The editpart for  {@link AbstractWidgetModel}
+ * @author Xihui Chen
+ *
+ */
 public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 
 	protected Map<String, WidgetPropertyChangeListener> propertyListenerMap;

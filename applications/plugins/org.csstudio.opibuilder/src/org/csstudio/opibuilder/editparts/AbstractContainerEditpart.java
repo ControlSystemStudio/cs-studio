@@ -3,14 +3,11 @@ package org.csstudio.opibuilder.editparts;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.csstudio.opibuilder.commands.WidgetCreateCommand;
 import org.csstudio.opibuilder.editpolicies.WidgetXYLayoutEditPolicy;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
-import org.csstudio.opibuilder.model.AbstractWidgetModel;
-import org.csstudio.opibuilder.util.UIBundlingThread;
 import org.eclipse.gef.CompoundSnapToHelper;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
@@ -18,11 +15,15 @@ import org.eclipse.gef.SnapToGeometry;
 import org.eclipse.gef.SnapToGrid;
 import org.eclipse.gef.SnapToGuides;
 import org.eclipse.gef.SnapToHelper;
+import org.eclipse.gef.commands.Command;
+import org.eclipse.gef.commands.CompoundCommand;
 import org.eclipse.gef.editpolicies.SnapFeedbackPolicy;
 import org.eclipse.gef.rulers.RulerProvider;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.StructuredSelection;
 
+/**The editpart for {@link AbstractContainerModel}
+ * @author Xihui Chen
+ *
+ */
 public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {	
 
 	@Override
@@ -38,23 +39,24 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
 	public void activate() {
 		super.activate();
 		((AbstractContainerModel)getModel()).getChildrenProperty().addPropertyChangeListener(
-				new PropertyChangeListener() {
-					
+				new PropertyChangeListener() {					
 					public void propertyChange(PropertyChangeEvent evt) {
-						UIBundlingThread.getInstance().addRunnable(new Runnable() {
-							
-							public void run() {
-								refreshChildren();
-								//select the new created widget
-								if(getViewer().getEditDomain().getCommandStack().getUndoCommand()
-										instanceof WidgetCreateCommand){
-									getViewer().deselectAll();
-									getViewer().appendSelection(
-											(EditPart) getChildren().get(getChildren().size()-1));
-								}
+						int oldSize = getChildren().size();
+						refreshChildren();
+						int newSize = getChildren().size();
+						if(newSize > oldSize){
+							//select the new created widget
+							Command lastCommand = 
+								getViewer().getEditDomain().getCommandStack().getUndoCommand();
+							if(lastCommand instanceof WidgetCreateCommand){
+								getViewer().deselectAll();							
+								getViewer().appendSelection(
+										(EditPart) getChildren().get(getChildren().size()-1));
+							}else if (lastCommand instanceof CompoundCommand){									
+								getViewer().appendSelection(
+										(EditPart) getChildren().get(getChildren().size()-1));
 							}
-						});
-						
+						}
 					}
 				});
 	}

@@ -2,6 +2,7 @@ package org.csstudio.opibuilder.actions;
 
 
 import java.util.List;
+import java.util.Random;
 
 import org.csstudio.opibuilder.commands.WidgetCreateCommand;
 import org.csstudio.opibuilder.editor.OPIEditor;
@@ -12,7 +13,7 @@ import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CompoundCommand;
-import org.eclipse.gef.ui.actions.SelectionAction;
+import org.eclipse.gef.ui.actions.WorkbenchPartAction;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.actions.ActionFactory;
@@ -24,12 +25,8 @@ import org.eclipse.ui.actions.ActionFactory;
  * @author Xihui Chen
  * 
  */
-public final class PasteWidgetsAction extends SelectionAction {
+public final class PasteWidgetsAction extends WorkbenchPartAction {
 
-	/**
-	 * Action ID of this action.
-	 */
-	public static final String ID = "org.csstudio.opibuilder.actions.PasteWidgetsAction";
 
 	/**
 	 * Stores the mouse pointer location.
@@ -43,10 +40,9 @@ public final class PasteWidgetsAction extends SelectionAction {
 	 *            a workbench part
 	 */
 	public PasteWidgetsAction(OPIEditor workbenchPart) {
-		super(workbenchPart);
-		setId(ID);
+		super(workbenchPart);		
 		setText("Paste");
-		setActionDefinitionId(ActionFactory.PASTE.getId());
+		setActionDefinitionId("org.eclipse.ui.edit.paste"); //$NON-NLS-1$
 		setId(ActionFactory.PASTE.getId());
 
 	}
@@ -56,7 +52,7 @@ public final class PasteWidgetsAction extends SelectionAction {
 	 */
 	@Override
 	protected boolean calculateEnabled() {
-		return true;
+		return getWidgetsFromClipboard() != null;
 	}
 
 	/**
@@ -75,6 +71,7 @@ public final class PasteWidgetsAction extends SelectionAction {
 					this.fetchCurrentCursorLocation();
 				}
 				Control cursorControl = Display.getCurrent().getCursorControl();
+				
 				Dimension diff = calculatePositionDifference(cursorControl,
 						widgets);
 
@@ -126,10 +123,14 @@ public final class PasteWidgetsAction extends SelectionAction {
 	 * @return a list with widget models or an empty list
 	 */
 	@SuppressWarnings("unchecked")
-	private List<AbstractWidgetModel> getWidgetsFromClipboard() {		
-		List<AbstractWidgetModel> result = (List<AbstractWidgetModel>) getOPIEditor().getClipboard()
+	private List<AbstractWidgetModel> getWidgetsFromClipboard() {	
+		Object result = getOPIEditor().getClipboard()
 				.getContents(OPIWidgetsTransfer.getInstance());
-		return result;
+		if(result != null && result instanceof List<?>){
+			List<AbstractWidgetModel> widgets = (List<AbstractWidgetModel>)result;
+			return widgets;
+		}
+		return null;
 	}
 
 	/**
@@ -179,10 +180,17 @@ public final class PasteWidgetsAction extends SelectionAction {
 						.toControl(_cursorLocation);
 				Point tmp = new Point(cursorLocation.x, cursorLocation.y);
 				diff = tmp.getDifference(point);
+				//move the cursor location so that the user could know he has pasted how many widgets.
+				Display.getCurrent().setCursorLocation(Display.getCurrent().getCursorLocation().x + 10, 
+						Display.getCurrent().getCursorLocation().y + 10);
 			} else {
+				Random rand = new Random();
+				
 				// calculate the shifting difference for center positioning
+				//add a random number so that the user could know he has pasted how many widgets.
 				Point tmp = getOPIEditor().getDisplayCenterPosition()
-						.getTranslated(-bounds.width / 2, -bounds.height / 2);
+						.getTranslated(-bounds.width / 2 + rand.nextInt(20),
+								-bounds.height / 2 + rand.nextInt(20));
 
 				diff = tmp.getDifference(point);
 			}
@@ -218,6 +226,6 @@ public final class PasteWidgetsAction extends SelectionAction {
 	 */
 	@Override
 	public void run() {
-		execute(createPasteCommand());
+		execute(createPasteCommand());		
 	}
 }

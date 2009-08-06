@@ -4,10 +4,12 @@ import org.csstudio.opibuilder.actions.RunOPIAction;
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.gef.ui.actions.ActionBarContributor;
 import org.eclipse.gef.ui.actions.AlignmentRetargetAction;
+import org.eclipse.gef.ui.actions.CopyRetargetAction;
 import org.eclipse.gef.ui.actions.DeleteRetargetAction;
 import org.eclipse.gef.ui.actions.GEFActionConstants;
 import org.eclipse.gef.ui.actions.MatchHeightRetargetAction;
 import org.eclipse.gef.ui.actions.MatchWidthRetargetAction;
+import org.eclipse.gef.ui.actions.PasteRetargetAction;
 import org.eclipse.gef.ui.actions.RedoRetargetAction;
 import org.eclipse.gef.ui.actions.UndoRetargetAction;
 import org.eclipse.gef.ui.actions.ZoomComboContributionItem;
@@ -106,6 +108,7 @@ public class OPIEditorActionBarContributor extends ActionBarContributor {
 		addGlobalActionKey(ActionFactory.SELECT_ALL.getId());
 		addGlobalActionKey(ActionFactory.PASTE.getId());
 		addGlobalActionKey(ActionFactory.DELETE.getId());
+		addGlobalActionKey(ActionFactory.COPY.getId());
 		addGlobalActionKey(ActionFactory.UNDO.getId());
 		addGlobalActionKey(ActionFactory.REDO.getId());
 	}

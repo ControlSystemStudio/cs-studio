@@ -135,37 +135,11 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 	
 
 	@Override
-	protected void createGraphicalViewer(Composite parent) {
-		initDisplayModel();
-		
-		rulerComposite = new RulerComposite(parent, SWT.NONE);
-
-		GraphicalViewer viewer = new PatchedScrollingGraphicalViewer();
-		viewer.createControl(rulerComposite);
-		setGraphicalViewer(viewer);
-		configureGraphicalViewer();
-		hookGraphicalViewer();
-		initializeGraphicalViewer();
-
-		rulerComposite
-				.setGraphicalViewer((ScrollingGraphicalViewer) getGraphicalViewer());
-			
+	public void commandStackChanged(EventObject event) {
+		firePropertyChange(IEditorPart.PROP_DIRTY);
+		super.commandStackChanged(event);
 	}
 	
-	
-	@Override
-	protected Control getGraphicalControl() {
-		return rulerComposite;
-	}
-	
-	/**
-	 * Returns the main composite of the editor.
-	 * 
-	 * @return the main composite of the editor
-	 */
-	public Composite getParentComposite() {
-		return rulerComposite;
-	}
 	
 	@Override
 	protected void configureGraphicalViewer() {
@@ -195,13 +169,13 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 		// Grid Action
 		IAction action = new ToggleGridAction(getGraphicalViewer()){
 			@Override
+			public boolean isChecked() {
+				return getDisplayModel().isShowGrid();
+			}
+			@Override
 			public void run() {
 				getCommandStack().execute(new SetWidgetPropertyCommand(displayModel,
 						DisplayModel.PROP_SHOW_GRID, !isChecked()));				
-			}
-			@Override
-			public boolean isChecked() {
-				return getDisplayModel().isShowGrid();
 			}
 		};		
 		
@@ -211,14 +185,14 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 		configureRuler();
 		action = new ToggleRulerVisibilityAction(getGraphicalViewer()){
 			@Override
-			public void run() {
-				getCommandStack().execute(new SetWidgetPropertyCommand(displayModel,
-						DisplayModel.PROP_SHOW_RULER, !isChecked()));	
+			public boolean isChecked() {
+				return getDisplayModel().isShowRuler();
 			}
 			
 			@Override
-			public boolean isChecked() {
-				return getDisplayModel().isShowRuler();
+			public void run() {
+				getCommandStack().execute(new SetWidgetPropertyCommand(displayModel,
+						DisplayModel.PROP_SHOW_RULER, !isChecked()));	
 			}
 			
 		};		
@@ -227,13 +201,13 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 		// Snap to Geometry Action
 		IAction geometryAction = new ToggleSnapToGeometryAction(getGraphicalViewer()){
 			@Override
+			public boolean isChecked() {
+				return getDisplayModel().isSnapToGeometry();
+			}
+			@Override
 			public void run() {
 				getCommandStack().execute(new SetWidgetPropertyCommand(displayModel,
 						DisplayModel.PROP_SNAP_GEOMETRY, !isChecked()));	
-			}
-			@Override
-			public boolean isChecked() {
-				return getDisplayModel().isSnapToGeometry();
 			}
 			
 		};		
@@ -284,275 +258,18 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 		});
 	}
 	
-	@Override
-	protected void initializeGraphicalViewer() {
-		super.initializeGraphicalViewer();
-		GraphicalViewer viewer = getGraphicalViewer();
-		
-		
-		viewer.setContents(displayModel);
-		
-		viewer.addDropTargetListener(createTransferDropTargetListener());
-		setPartName(getEditorInput().getName());
-
-	}
-
 	/**
-	 * 
+	 * Configure the properties for the rulers.
 	 */
-	private void initDisplayModel() {
-		
-		displayModel = new DisplayModel();
-		try {
-			XMLUtil.fillDisplayModelFromInputStream(getInputStream(), displayModel);
-		} catch (Exception e) {
-			MessageDialog.openError(getSite().getShell(), "File Open Error",
-					"The file is not a correct OPI file! An empty OPI will be created instead.\n" + e);
-			CentralLogger.getInstance().error(this, e);
-		}		
+	private void configureRuler() {
+		// Ruler properties
+		RulerProvider hprovider = new OPIEditorRulerProvider(new RulerModel(true));
+		RulerProvider vprovider = new OPIEditorRulerProvider(new RulerModel(false));
+		getGraphicalViewer().setProperty(
+				RulerProvider.PROPERTY_HORIZONTAL_RULER, hprovider);
+		getGraphicalViewer().setProperty(
+				RulerProvider.PROPERTY_VERTICAL_RULER, vprovider);		
 	}
-	
-	public DisplayModel getDisplayModel(){
-		return displayModel;
-	}
-	
-	@Override
-	public void commandStackChanged(EventObject event) {
-		firePropertyChange(IEditorPart.PROP_DIRTY);
-		super.commandStackChanged(event);
-	}
-	
-	
-	@Override
-	protected PaletteViewerProvider createPaletteViewerProvider() {
-		return new PaletteViewerProvider(getEditDomain()) {
-			protected void configurePaletteViewer(PaletteViewer viewer) {
-				super.configurePaletteViewer(viewer);
-				// create a drag source listener for this palette viewer
-				// together with an appropriate transfer drop target listener, this will enable
-				// model element creation by dragging a CombinatedTemplateCreationEntries 
-				// from the palette into the editor
-				// @see ShapesEditor#createTransferDropTargetListener()
-				viewer.addDragSourceListener(new TemplateTransferDragSourceListener(viewer));
-			}
-		};
-	}
-	
-	/**
-	 * Create a transfer drop target listener. When using a CombinedTemplateCreationEntry
-	 * tool in the palette, this will enable model element creation by dragging from the palette.
-	 * @see #createPaletteViewerProvider()
-	 */
-	private TransferDropTargetListener createTransferDropTargetListener() {
-		return new TemplateTransferDropTargetListener(getGraphicalViewer()) {
-			@SuppressWarnings("unchecked")
-			protected CreationFactory getFactory(Object template) {
-				return (WidgetCreationFactory)template;
-			}
-		};
-	}
-	
-	@Override
-	protected PaletteRoot getPaletteRoot() {
-		if(paletteRoot == null)
-			paletteRoot = OPIEditorPaletteFactory.createPalette();
-		return paletteRoot;
-	}
-	
-	/**
-	 * Returns a stream which can be used to read this editors input data.
-	 * 
-	 * @return a stream which can be used to read this editors input data
-	 */
-	private InputStream getInputStream() {
-		InputStream result = null;
-
-		IEditorInput editorInput = getEditorInput();
-		if (editorInput instanceof FileEditorInput) {
-			try {
-				result = ((FileEditorInput) editorInput).getFile()
-						.getContents();
-			} catch (CoreException e) {
-				e.printStackTrace();
-			}
-		} else if (editorInput instanceof FileStoreEditorInput) {
-			IPath path = URIUtil.toPath(((FileStoreEditorInput) editorInput)
-					.getURI());
-			try {
-				result = new FileInputStream(path.toFile());
-			} catch (FileNotFoundException e) {
-				result = null;
-			}
-		}
-
-		return result;
-	}
-	
-
-	@Override
-	public void doSave(IProgressMonitor monitor) {
-		if (getEditorInput() instanceof FileEditorInput
-				|| getEditorInput() instanceof FileStoreEditorInput) {
-			performSave();
-		} else {
-			doSaveAs();
-		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void doSaveAs() {
-		SaveAsDialog saveAsDialog = new SaveAsDialog(getEditorSite().getShell());
-		if(getEditorInput() instanceof FileEditorInput)
-			saveAsDialog.setOriginalFile(((FileEditorInput)getEditorInput()).getFile());
-		else if(getEditorInput() instanceof FileStoreEditorInput)
-			saveAsDialog.setOriginalName(((FileStoreEditorInput)getEditorInput()).getName());
-		
-		int ret = saveAsDialog.open();
-
-		try {
-			if (ret == Window.OK) {
-				IPath targetPath = saveAsDialog.getResult();
-				IFile targetFile = ResourcesPlugin.getWorkspace().getRoot()
-						.getFile(targetPath);
-
-				if (!targetFile.exists()) {
-					targetFile.create(null, true, null);
-				}
-
-				FileEditorInput editorInput = new FileEditorInput(targetFile);
-
-				setInput(editorInput);
-
-				setPartName(targetFile.getName());
-
-				performSave();
-			}
-		} catch (CoreException e) {
-			MessageDialog.openError(getSite().getShell(), "IO Error", e
-					.getMessage());
-			CentralLogger.getInstance().error(this, e);
-		}
-	}
-	
-	@Override
-	public boolean isSaveAsAllowed() {
-		return true;
-	}
-	
-	private void performSave() {
-		
-		try {			
-			if (getEditorInput() instanceof FileEditorInput) {
-				final PipedInputStream in = new PipedInputStream();		
-				final PipedOutputStream out = new PipedOutputStream(in);
-				new Thread(
-						 new Runnable(){
-						     public void run(){
-						     	try {
-						     		
-									XMLUtil.WidgetToOutputStream(displayModel, out, true);
-						     		out.close();
-								} catch (IOException e) {
-									MessageDialog.openError(getSite().getShell(),
-											"Save Error", e.getMessage());
-									CentralLogger.getInstance().error(this, e);
-								}
-						      }
-						    }
-				).start();
-				
-				((FileEditorInput) getEditorInput()).getFile().setContents(
-						in, false, false, null);
-				in.close();
-				
-			} else if (getEditorInput() instanceof FileStoreEditorInput) {
-				File file = URIUtil.toPath(
-						((FileStoreEditorInput) getEditorInput()).getURI())
-						.toFile();
-				String content = XMLUtil.WidgetToXMLString(displayModel, true);
-				
-					FileWriter fileWriter = new FileWriter(file, false);
-					BufferedWriter writer = new BufferedWriter(fileWriter);
-					writer.write(content);
-					writer.flush();
-					writer.close();
-			}	
-		} catch (Exception e) {
-				MessageDialog.openError(getSite().getShell(),
-						"IO Error", e.getMessage());
-				CentralLogger.getInstance().error(this, e);
-		}		
-
-		getCommandStack().markSaveLocation();
-
-		firePropertyChange(IEditorPart.PROP_DIRTY);
-	
-	}
-		
-
-	/**
-	* Returns the undoable <code>PropertySheetPage</code> for
-	* this editor.
-	*
-	* @return the undoable <code>PropertySheetPage</code>
-	*/
-	protected PropertySheetPage getPropertySheetPage(){
-		if(undoablePropertySheetPage == null){
-			undoablePropertySheetPage = new PropertySheetPage();
-			undoablePropertySheetPage.setRootEntry(
-					new UndoablePropertySheetEntry(getCommandStack()));
-		}
-		return undoablePropertySheetPage;
-	}
-	
-	
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	public Object getAdapter(Class type) {
-		if(type == IPropertySheetPage.class)
-			return getPropertySheetPage();
-		else if (type == ZoomManager.class)
-			return ((ScalableFreeformRootEditPart) getGraphicalViewer()
-				.getRootEditPart()).getZoomManager();
-		else if (type == IContentOutlinePage.class) 
-			return getOverviewOutlinePage();
-			
-		return super.getAdapter(type);
-	}
-	
-	public Clipboard getClipboard() {
-		if(clipboard == null)
-			clipboard = new Clipboard(getSite().getShell().getDisplay());
-		return clipboard;
-	}
-	
-	/**
-	 * Returns the Point, which is the center of the Display.
-	 * 
-	 * @return Point The Point, which is the center of the Display
-	 */
-	public Point getDisplayCenterPosition() {
-		ScalableFreeformRootEditPart root = (ScalableFreeformRootEditPart) getGraphicalViewer()
-				.getRootEditPart();
-
-		ZoomManager m = root.getZoomManager();
-
-		Point center = m.getViewport().getBounds().getCenter();
-
-		Rectangle x = new Rectangle(center.x, center.y, 10, 10);
-
-		x.translate(m.getViewport().getViewLocation());
-		m.getScalableFigure().translateFromParent(x);
-
-		Point result = x.getLocation();
-
-		return result;
-	}
-	
 	
 	@SuppressWarnings({ "unchecked", "deprecation" })
 	@Override
@@ -583,26 +300,27 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 		action.setActionDefinitionId("org.eclipse.ui.edit.delete"); //$NON-NLS-1$
 		keyBindingService.registerAction(action);
 		
-		action = new CopyWidgetsAction(this);
-		registry.registerAction(action);
-		getSelectionActions().add(action.getId());
-		keyBindingService.registerAction(action);
-		
-		action = new CutWidgetsAction(this,
-				(DeleteAction) registry.getAction(ActionFactory.DELETE.getId()));
-		registry.registerAction(action);
-		getSelectionActions().add(action.getId());
-		keyBindingService.registerAction(action);
-		
 		action = new PasteWidgetsAction(this);
 		registry.registerAction(action);
 		getSelectionActions().add(action.getId());
 		keyBindingService.registerAction(action);
 		
-		action = new CopyWidgetsAction(this);
+		action = new CopyWidgetsAction(this, 
+				(PasteWidgetsAction) registry.getAction(ActionFactory.PASTE.getId()));
 		registry.registerAction(action);
 		getSelectionActions().add(action.getId());
 		keyBindingService.registerAction(action);
+		
+		action = new CutWidgetsAction(this,
+				(DeleteAction) registry.getAction(ActionFactory.DELETE.getId()),
+				(PasteWidgetsAction) registry.getAction(ActionFactory.PASTE.getId()));
+		registry.registerAction(action);
+		getSelectionActions().add(action.getId());
+		keyBindingService.registerAction(action);
+		
+		
+		
+		
 	
 		id = ActionFactory.SELECT_ALL.getId();
 		action = getActionRegistry().getAction(id);
@@ -667,17 +385,51 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 		
 	}
 	
+	@Override
+	protected void createGraphicalViewer(Composite parent) {
+		initDisplayModel();
+		
+		rulerComposite = new RulerComposite(parent, SWT.NONE);
+
+		GraphicalViewer viewer = new PatchedScrollingGraphicalViewer();
+		viewer.createControl(rulerComposite);
+		setGraphicalViewer(viewer);
+		configureGraphicalViewer();
+		hookGraphicalViewer();
+		initializeGraphicalViewer();
+
+		rulerComposite
+				.setGraphicalViewer((ScrollingGraphicalViewer) getGraphicalViewer());
+			
+	}
+
+	@Override
+	protected PaletteViewerProvider createPaletteViewerProvider() {
+		return new PaletteViewerProvider(getEditDomain()) {
+			protected void configurePaletteViewer(PaletteViewer viewer) {
+				super.configurePaletteViewer(viewer);
+				// create a drag source listener for this palette viewer
+				// together with an appropriate transfer drop target listener, this will enable
+				// model element creation by dragging a CombinatedTemplateCreationEntries 
+				// from the palette into the editor
+				// @see ShapesEditor#createTransferDropTargetListener()
+				viewer.addDragSourceListener(new TemplateTransferDragSourceListener(viewer));
+			}
+		};
+	}
+	
 	/**
-	 * Configure the properties for the rulers.
+	 * Create a transfer drop target listener. When using a CombinedTemplateCreationEntry
+	 * tool in the palette, this will enable model element creation by dragging from the palette.
+	 * @see #createPaletteViewerProvider()
 	 */
-	private void configureRuler() {
-		// Ruler properties
-		RulerProvider hprovider = new OPIEditorRulerProvider(new RulerModel(true));
-		RulerProvider vprovider = new OPIEditorRulerProvider(new RulerModel(false));
-		getGraphicalViewer().setProperty(
-				RulerProvider.PROPERTY_HORIZONTAL_RULER, hprovider);
-		getGraphicalViewer().setProperty(
-				RulerProvider.PROPERTY_VERTICAL_RULER, vprovider);		
+	private TransferDropTargetListener createTransferDropTargetListener() {
+		return new TemplateTransferDropTargetListener(getGraphicalViewer()) {
+			@SuppressWarnings("unchecked")
+			protected CreationFactory getFactory(Object template) {
+				return (WidgetCreationFactory)template;
+			}
+		};
 	}
 	
 	/**
@@ -712,6 +464,76 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 		return result;
 	}
 	
+	
+	@Override
+	public void doSave(IProgressMonitor monitor) {
+		if (getEditorInput() instanceof FileEditorInput
+				|| getEditorInput() instanceof FileStoreEditorInput) {
+			performSave();
+		} else {
+			doSaveAs();
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void doSaveAs() {
+		SaveAsDialog saveAsDialog = new SaveAsDialog(getEditorSite().getShell());
+		if(getEditorInput() instanceof FileEditorInput)
+			saveAsDialog.setOriginalFile(((FileEditorInput)getEditorInput()).getFile());
+		else if(getEditorInput() instanceof FileStoreEditorInput)
+			saveAsDialog.setOriginalName(((FileStoreEditorInput)getEditorInput()).getName());
+		
+		int ret = saveAsDialog.open();
+
+		try {
+			if (ret == Window.OK) {
+				IPath targetPath = saveAsDialog.getResult();
+				IFile targetFile = ResourcesPlugin.getWorkspace().getRoot()
+						.getFile(targetPath);
+
+				if (!targetFile.exists()) {
+					targetFile.create(null, true, null);
+				}
+
+				FileEditorInput editorInput = new FileEditorInput(targetFile);
+
+				setInput(editorInput);
+
+				setPartName(targetFile.getName());
+
+				performSave();
+			}
+		} catch (CoreException e) {
+			MessageDialog.openError(getSite().getShell(), "IO Error", e
+					.getMessage());
+			CentralLogger.getInstance().error(this, e);
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public Object getAdapter(Class type) {
+		if(type == IPropertySheetPage.class)
+			return getPropertySheetPage();
+		else if (type == ZoomManager.class)
+			return ((ScalableFreeformRootEditPart) getGraphicalViewer()
+				.getRootEditPart()).getZoomManager();
+		else if (type == IContentOutlinePage.class) 
+			return getOverviewOutlinePage();
+			
+		return super.getAdapter(type);
+	}
+	
+	public Clipboard getClipboard() {
+		if(clipboard == null)
+			clipboard = new Clipboard(getSite().getShell().getDisplay());
+		return clipboard;
+	}
+	
+
 	/**
 	 * Returns the KeyHandler with common bindings for both the Outline and Graphical Views.
 	 * For example, delete is a common action.
@@ -725,6 +547,71 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 		}
 		return sharedKeyHandler;
 	}
+	
+	/**
+	 * Returns the Point, which is the center of the Display.
+	 * 
+	 * @return Point The Point, which is the center of the Display
+	 */
+	public Point getDisplayCenterPosition() {
+		ScalableFreeformRootEditPart root = (ScalableFreeformRootEditPart) getGraphicalViewer()
+				.getRootEditPart();
+
+		ZoomManager m = root.getZoomManager();
+
+		Point center = m.getViewport().getBounds().getCenter();
+
+		Rectangle x = new Rectangle(center.x, center.y, 10, 10);
+
+		x.translate(m.getViewport().getViewLocation());
+		m.getScalableFigure().translateFromParent(x);
+
+		Point result = x.getLocation();
+
+		return result;
+	}
+	
+	public DisplayModel getDisplayModel(){
+		return displayModel;
+	}
+	
+	@Override
+	protected Control getGraphicalControl() {
+		return rulerComposite;
+	}
+		
+
+	/**
+	 * Returns a stream which can be used to read this editors input data.
+	 * 
+	 * @return a stream which can be used to read this editors input data
+	 */
+	private InputStream getInputStream() {
+		InputStream result = null;
+
+		IEditorInput editorInput = getEditorInput();
+		if (editorInput instanceof FileEditorInput) {
+			try {
+				result = ((FileEditorInput) editorInput).getFile()
+						.getContents();
+			} catch (CoreException e) {
+				e.printStackTrace();
+			}
+		} else if (editorInput instanceof FileStoreEditorInput) {
+			IPath path = URIUtil.toPath(((FileStoreEditorInput) editorInput)
+					.getURI());
+			try {
+				result = new FileInputStream(path.toFile());
+			} catch (FileNotFoundException e) {
+				result = null;
+			}
+		}
+
+		return result;
+	}
+	
+	
+	
 	/**
 	* Returns the overview for the outline view.
 	*
@@ -743,6 +630,120 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 			}
 		}
 		return overviewOutlinePage;
+	}
+	
+	@Override
+	protected PaletteRoot getPaletteRoot() {
+		if(paletteRoot == null)
+			paletteRoot = OPIEditorPaletteFactory.createPalette();
+		return paletteRoot;
+	}
+	
+	/**
+	 * Returns the main composite of the editor.
+	 * 
+	 * @return the main composite of the editor
+	 */
+	public Composite getParentComposite() {
+		return rulerComposite;
+	}
+	
+	
+	/**
+	* Returns the undoable <code>PropertySheetPage</code> for
+	* this editor.
+	*
+	* @return the undoable <code>PropertySheetPage</code>
+	*/
+	protected PropertySheetPage getPropertySheetPage(){
+		if(undoablePropertySheetPage == null){
+			undoablePropertySheetPage = new PropertySheetPage();
+			undoablePropertySheetPage.setRootEntry(
+					new UndoablePropertySheetEntry(getCommandStack()));
+		}
+		return undoablePropertySheetPage;
+	}
+	
+	/**
+	 * 
+	 */
+	private void initDisplayModel() {
+		
+		displayModel = new DisplayModel();
+		try {
+			XMLUtil.fillDisplayModelFromInputStream(getInputStream(), displayModel);
+		} catch (Exception e) {
+			MessageDialog.openError(getSite().getShell(), "File Open Error",
+					"The file is not a correct OPI file! An empty OPI will be created instead.\n" + e);
+			CentralLogger.getInstance().error(this, e);
+		}		
+	}
+	
+	@Override
+	protected void initializeGraphicalViewer() {
+		super.initializeGraphicalViewer();
+		GraphicalViewer viewer = getGraphicalViewer();
+		
+		
+		viewer.setContents(displayModel);
+		
+		viewer.addDropTargetListener(createTransferDropTargetListener());
+		setPartName(getEditorInput().getName());
+
+	}
+	
+	@Override
+	public boolean isSaveAsAllowed() {
+		return true;
+	}
+	private void performSave() {
+		
+		try {			
+			if (getEditorInput() instanceof FileEditorInput) {
+				final PipedInputStream in = new PipedInputStream();		
+				final PipedOutputStream out = new PipedOutputStream(in);
+				new Thread(
+						 new Runnable(){
+						     public void run(){
+						     	try {
+						     		
+									XMLUtil.WidgetToOutputStream(displayModel, out, true);
+						     		out.close();
+								} catch (IOException e) {
+									MessageDialog.openError(getSite().getShell(),
+											"Save Error", e.getMessage());
+									CentralLogger.getInstance().error(this, e);
+								}
+						      }
+						    }
+				).start();
+				
+				((FileEditorInput) getEditorInput()).getFile().setContents(
+						in, false, false, null);
+				in.close();
+				
+			} else if (getEditorInput() instanceof FileStoreEditorInput) {
+				File file = URIUtil.toPath(
+						((FileStoreEditorInput) getEditorInput()).getURI())
+						.toFile();
+				String content = XMLUtil.WidgetToXMLString(displayModel, true);
+				
+					FileWriter fileWriter = new FileWriter(file, false);
+					BufferedWriter writer = new BufferedWriter(fileWriter);
+					writer.write(content);
+					writer.flush();
+					writer.close();
+			}	
+		} catch (Exception e) {
+				MessageDialog.openError(getSite().getShell(),
+						"IO Error", e.getMessage());
+				CentralLogger.getInstance().error(this, e);
+		}		
+
+		getCommandStack().markSaveLocation();
+
+		firePropertyChange(IEditorPart.PROP_DIRTY);
+	
 	}
 
 	

@@ -53,7 +53,7 @@ public class WidgetCreateCommand extends Command {
 			else
 				typeIDMap.put(child.getTypeID(), 0);
 		}
-		newWidget.setName(newWidget.getName() + " " 	//$NON-NLS-1$
+		newWidget.setName(newWidget.getType() + "_" 	//$NON-NLS-1$
 				+ (typeIDMap.get(newWidget.getTypeID())==null?
 						0 : typeIDMap.get(newWidget.getTypeID()) + 1)); 
 		container.addChild(newWidget);

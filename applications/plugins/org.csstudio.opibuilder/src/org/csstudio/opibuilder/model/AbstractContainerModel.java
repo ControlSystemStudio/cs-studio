@@ -9,6 +9,10 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.jdom.Element;
 
+/**The model which could contain children.
+ * @author Xihui Chen
+ *
+ */
 public abstract class AbstractContainerModel extends AbstractWidgetModel {
 	
 	public static final String PROP_CHILDREN = "children";
@@ -54,18 +58,18 @@ public abstract class AbstractContainerModel extends AbstractWidgetModel {
 	public void addChild(AbstractWidgetModel child){
 		Assert.isNotNull(child);
 		childrenList.add(child);
-		childrenProperty.firePropertyChange(null, childrenList);
+		childrenProperty.firePropertyChange(null, child);
 	}
 	
 	public void addChild(int index, AbstractWidgetModel child){
 		Assert.isNotNull(child);
 		childrenList.add(index, child);
-		childrenProperty.firePropertyChange(null, childrenList);
+		childrenProperty.firePropertyChange(null, child);
 	}
 	
 	public void removeChild(AbstractWidgetModel child){
 		if(child != null && childrenList.remove(child)) {
-			childrenProperty.firePropertyChange(null, childrenList);
+			childrenProperty.firePropertyChange(null, child);
 		}
 	}
 	

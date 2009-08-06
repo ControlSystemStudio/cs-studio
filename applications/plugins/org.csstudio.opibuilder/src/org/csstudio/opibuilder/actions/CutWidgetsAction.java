@@ -6,15 +6,13 @@ import org.eclipse.ui.actions.ActionFactory;
 
 public class CutWidgetsAction extends CopyWidgetsAction {
 
-	private static final String ID = "org.csstudio.opibuilder.actions.PasteWidgetsAction";
 	private DeleteAction deleteAction;
 	
-	public CutWidgetsAction(OPIEditor part, DeleteAction deleteAction ) {
-		super(part);
+	public CutWidgetsAction(OPIEditor part, DeleteAction deleteAction, PasteWidgetsAction pasteWidgetsAction ) {
+		super(part, pasteWidgetsAction);
 		this.deleteAction = deleteAction;
-		setId(ID);
 		setText("Cut");
-		setActionDefinitionId(ActionFactory.CUT.getId());
+		setActionDefinitionId("org.eclipse.ui.edit.cut"); //$NON-NLS-1$
 		setId(ActionFactory.CUT.getId());
 	}
 	

@@ -18,11 +18,20 @@ import org.eclipse.ui.actions.ActionFactory;
 public class CopyWidgetsAction extends SelectionAction {
 
 
-	public CopyWidgetsAction(OPIEditor part) {
+	private PasteWidgetsAction pasteWidgetsAction;
+	
+	/**
+	 * @param part the OPI Editor
+	 * @param pasteWidgetsAction pass the paste action will 
+	 * help to update the enable state of the paste action
+	 * after copy action invoked.
+	 */
+	public CopyWidgetsAction(OPIEditor part, PasteWidgetsAction pasteWidgetsAction) {
 		super(part);
 		setText("Copy");
-		setActionDefinitionId(ActionFactory.COPY.getId());
+		setActionDefinitionId("org.eclipse.ui.edit.copy"); //$NON-NLS-1$
 		setId(ActionFactory.COPY.getId());
+		this.pasteWidgetsAction = pasteWidgetsAction;
 	}
 
 	@Override
@@ -41,6 +50,7 @@ public class CopyWidgetsAction extends SelectionAction {
 		((OPIEditor)getWorkbenchPart()).getClipboard()
 			.setContents(new Object[]{getSelectedWidgetModels()}, 
 				new Transfer[]{OPIWidgetsTransfer.getInstance()});
+		pasteWidgetsAction.update();
 	}
 	
 	/**

@@ -1,16 +1,19 @@
 package org.csstudio.opibuilder.editpolicies;
 
 import org.csstudio.opibuilder.commands.ChangeGuideCommand;
+import org.csstudio.opibuilder.commands.CloneCommand;
 import org.csstudio.opibuilder.commands.WidgetCreateCommand;
 import org.csstudio.opibuilder.commands.WidgetSetConstraintCommand;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
+import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.model.GuideModel;
 import org.csstudio.opibuilder.util.GuideUtil;
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPart;
+import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.SnapToGuides;
 import org.eclipse.gef.commands.Command;
@@ -202,5 +205,36 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
 		return (GuideModel) provider.getGuideAt(pos);
 	}
 
+	
+	
+	@Override
+	protected Command getCloneCommand(ChangeBoundsRequest request) {
+		CloneCommand clone = new CloneCommand((DisplayModel)getHost().getModel());
+		
+		GraphicalEditPart currPart = null;
+		for (Object part : request.getEditParts()) {
+			currPart = (GraphicalEditPart)part;
+			clone.addPart((AbstractWidgetModel)currPart.getModel(), (Rectangle)getConstraintForClone(currPart, request));
+		}
+		
+		// Attach to horizontal guide, if one is given
+		Integer guidePos = (Integer)request.getExtendedData()
+				.get(SnapToGuides.KEY_HORIZONTAL_GUIDE);
+		if (guidePos != null) {
+			int hAlignment = ((Integer)request.getExtendedData()
+					.get(SnapToGuides.KEY_HORIZONTAL_ANCHOR)).intValue();
+			clone.setGuide(findGuideAt(guidePos.intValue(), true), hAlignment, true);
+		}
+		
+		// Attach to vertical guide, if one is given
+		guidePos = (Integer)request.getExtendedData()
+				.get(SnapToGuides.KEY_VERTICAL_GUIDE);
+		if (guidePos != null) {
+			int vAlignment = ((Integer)request.getExtendedData()
+					.get(SnapToGuides.KEY_VERTICAL_ANCHOR)).intValue();
+			clone.setGuide(findGuideAt(guidePos.intValue(), false), vAlignment, false);
+		}
+		return clone;
+	}
 
 }
