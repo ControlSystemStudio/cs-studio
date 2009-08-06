@@ -59,7 +59,18 @@ public final class OPIEditorContextMenuProvider extends ContextMenuProvider {
 				getAction(ActionFactory.REDO.getId()));
 		menu.appendToGroup(
 				GEFActionConstants.GROUP_EDIT,
+				getAction(ActionFactory.COPY.getId()));
+		menu.appendToGroup(
+				GEFActionConstants.GROUP_EDIT,
+				getAction(ActionFactory.CUT.getId()));
+		menu.appendToGroup(
+				GEFActionConstants.GROUP_EDIT,
+				getAction(ActionFactory.PASTE.getId()));
+		
+		menu.appendToGroup(
+				GEFActionConstants.GROUP_EDIT,
 				getAction(ActionFactory.DELETE.getId()));
+		
 		
 		String orderGroup = "Order";
 		MenuManager orderMenu = new MenuManager(orderGroup, 

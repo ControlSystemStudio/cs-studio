@@ -40,6 +40,8 @@ import org.eclipse.ui.views.properties.IPropertySource;
 public abstract class AbstractWidgetModel implements IAdaptable,
 		IPropertySource {
 	
+	public static final String VERSION = "1.0";
+	
 	public static final String PROP_NAME = "name";//$NON-NLS-1$
 	
 	public static final String PROP_SCRIPT = "script";//$NON-NLS-1$
@@ -349,6 +351,10 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 		getProperty(prop_id).setDescription(description);
 		if(propertyDescriptors.containsKey(prop_id))
 			propertyDescriptors.put(prop_id, getProperty(prop_id).getPropertyDescriptor());
+	}
+
+	public String getVersion() {
+		return VERSION;
 	}
 	
 	

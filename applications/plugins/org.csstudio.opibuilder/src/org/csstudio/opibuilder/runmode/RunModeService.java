@@ -64,6 +64,7 @@ public class RunModeService {
 				CentralLogger.getInstance().error(this, "Failed to open new window", e);
 			}
 		try {
+			runWorkbenchWindow.getShell().moveAbove(null);
 			runWorkbenchWindow.getActivePage().openEditor(
 					new RunnerInput(file, displayModel), "org.csstudio.opibuilder.OPIRunner"); //$NON-NLS-1$
 		} catch (PartInitException e) {

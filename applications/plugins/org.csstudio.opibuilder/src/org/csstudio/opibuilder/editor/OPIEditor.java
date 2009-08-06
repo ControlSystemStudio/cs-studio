@@ -5,12 +5,18 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
 import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.List;
 
 import org.csstudio.opibuilder.actions.ChangeOrderAction;
+import org.csstudio.opibuilder.actions.CopyWidgetsAction;
+import org.csstudio.opibuilder.actions.CutWidgetsAction;
+import org.csstudio.opibuilder.actions.PasteWidgetsAction;
 import org.csstudio.opibuilder.actions.ChangeOrderAction.OrderType;
 import org.csstudio.opibuilder.commands.SetWidgetPropertyCommand;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
@@ -33,6 +39,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.draw2d.PositionConstants;
+import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.AutoexposeHelper;
 import org.eclipse.gef.ContextMenuProvider;
 import org.eclipse.gef.DefaultEditDomain;
@@ -54,6 +62,7 @@ import org.eclipse.gef.ui.actions.ActionBarContributor;
 import org.eclipse.gef.ui.actions.ActionRegistry;
 import org.eclipse.gef.ui.actions.AlignmentAction;
 import org.eclipse.gef.ui.actions.CopyTemplateAction;
+import org.eclipse.gef.ui.actions.DeleteAction;
 import org.eclipse.gef.ui.actions.DirectEditAction;
 import org.eclipse.gef.ui.actions.GEFActionConstants;
 import org.eclipse.gef.ui.actions.MatchHeightAction;
@@ -78,6 +87,7 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Composite;
@@ -115,10 +125,14 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 
 	private OverviewOutlinePage overviewOutlinePage;
 	
+	private Clipboard clipboard;
+
+	
 	public OPIEditor() {
 		setEditDomain(new DefaultEditDomain(this));
 		
 	}
+	
 
 	@Override
 	protected void createGraphicalViewer(Composite parent) {
@@ -141,6 +155,15 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 	
 	@Override
 	protected Control getGraphicalControl() {
+		return rulerComposite;
+	}
+	
+	/**
+	 * Returns the main composite of the editor.
+	 * 
+	 * @return the main composite of the editor
+	 */
+	public Composite getParentComposite() {
 		return rulerComposite;
 	}
 	
@@ -423,14 +446,33 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 		
 		try {			
 			if (getEditorInput() instanceof FileEditorInput) {
-				InputStream is = new ByteArrayInputStream(XMLUtil.WidgetToXMLString(displayModel).getBytes());
+				final PipedInputStream in = new PipedInputStream();		
+				final PipedOutputStream out = new PipedOutputStream(in);
+				new Thread(
+						 new Runnable(){
+						     public void run(){
+						     	try {
+						     		
+									XMLUtil.WidgetToOutputStream(displayModel, out, true);
+						     		out.close();
+								} catch (IOException e) {
+									MessageDialog.openError(getSite().getShell(),
+											"Save Error", e.getMessage());
+									CentralLogger.getInstance().error(this, e);
+								}
+						      }
+						    }
+				).start();
+				
 				((FileEditorInput) getEditorInput()).getFile().setContents(
-						is, false, false, null);
+						in, false, false, null);
+				in.close();
+				
 			} else if (getEditorInput() instanceof FileStoreEditorInput) {
 				File file = URIUtil.toPath(
 						((FileStoreEditorInput) getEditorInput()).getURI())
 						.toFile();
-				String content = XMLUtil.WidgetToXMLString(displayModel);
+				String content = XMLUtil.WidgetToXMLString(displayModel, true);
 				
 					FileWriter fileWriter = new FileWriter(file, false);
 					BufferedWriter writer = new BufferedWriter(fileWriter);
@@ -482,6 +524,36 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 		return super.getAdapter(type);
 	}
 	
+	public Clipboard getClipboard() {
+		if(clipboard == null)
+			clipboard = new Clipboard(getSite().getShell().getDisplay());
+		return clipboard;
+	}
+	
+	/**
+	 * Returns the Point, which is the center of the Display.
+	 * 
+	 * @return Point The Point, which is the center of the Display
+	 */
+	public Point getDisplayCenterPosition() {
+		ScalableFreeformRootEditPart root = (ScalableFreeformRootEditPart) getGraphicalViewer()
+				.getRootEditPart();
+
+		ZoomManager m = root.getZoomManager();
+
+		Point center = m.getViewport().getBounds().getCenter();
+
+		Rectangle x = new Rectangle(center.x, center.y, 10, 10);
+
+		x.translate(m.getViewport().getViewLocation());
+		m.getScalableFigure().translateFromParent(x);
+
+		Point result = x.getLocation();
+
+		return result;
+	}
+	
+	
 	@SuppressWarnings({ "unchecked", "deprecation" })
 	@Override
 	protected void createActions() {
@@ -509,6 +581,27 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 		String id = ActionFactory.DELETE.getId();
 		action = getActionRegistry().getAction(id);
 		action.setActionDefinitionId("org.eclipse.ui.edit.delete"); //$NON-NLS-1$
+		keyBindingService.registerAction(action);
+		
+		action = new CopyWidgetsAction(this);
+		registry.registerAction(action);
+		getSelectionActions().add(action.getId());
+		keyBindingService.registerAction(action);
+		
+		action = new CutWidgetsAction(this,
+				(DeleteAction) registry.getAction(ActionFactory.DELETE.getId()));
+		registry.registerAction(action);
+		getSelectionActions().add(action.getId());
+		keyBindingService.registerAction(action);
+		
+		action = new PasteWidgetsAction(this);
+		registry.registerAction(action);
+		getSelectionActions().add(action.getId());
+		keyBindingService.registerAction(action);
+		
+		action = new CopyWidgetsAction(this);
+		registry.registerAction(action);
+		getSelectionActions().add(action.getId());
 		keyBindingService.registerAction(action);
 	
 		id = ActionFactory.SELECT_ALL.getId();

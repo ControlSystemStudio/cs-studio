@@ -1,6 +1,7 @@
-package org.csstudio.opibuilder.editor;
+package org.csstudio.opibuilder.actions;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
+import org.csstudio.opibuilder.editor.OPIEditor;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.runmode.RunModeService;
 import org.csstudio.opibuilder.runmode.RunnerInput;

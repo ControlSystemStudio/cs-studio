@@ -22,7 +22,7 @@ public class XMLUtilTest extends TestCase {
 	@Test
 	public void testWidgetToXMLElement(){
 		Element element = XMLUtil.WidgetToXMLElement(testModel);
-		System.out.println(XMLUtil.ElementToString(element));
+		System.out.println(XMLUtil.WidgetToXMLString(testModel, true));
 	}
 
 	
