@@ -1,6 +1,6 @@
 
 /* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+ * Copyright (c) 2009 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
@@ -21,56 +21,34 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
-package org.csstudio.tine2jms.actions;
+package org.csstudio.tine2jms.management;
 
-import java.util.Map;
-import org.csstudio.platform.libs.dcf.actions.IAction;
+import org.csstudio.platform.management.CommandParameters;
+import org.csstudio.platform.management.CommandResult;
+import org.csstudio.platform.management.IManagementCommand;
 import org.csstudio.tine2jms.Stoppable;
-import org.csstudio.tine2jms.TineToJmsActivator;
 
 /**
  * @author Markus Moeller
  *
  */
-public class TineToJmsStopAction implements IAction
+public class Restart implements IManagementCommand
 {
-    private static Stoppable objectToBeStopped = null;
-    
-    /**
-     * @see org.csstudio.platform.libs.dcf.actions.IAction#run(java.lang.Object)
+    private static Stoppable objectToBeRestarted = null;
+
+    /* (non-Javadoc)
+     * @see org.csstudio.platform.management.IManagementCommand#execute(org.csstudio.platform.management.CommandParameters)
      */
-    public Object run(Object param)
+    @Override
+    public CommandResult execute(CommandParameters parameters)
     {
-        String password = null;
+        objectToBeRestarted.setRestart();
         
-        if(!(param instanceof Map))
-        {
-            return "Parameter not available.";
-        }
-        
-        Map<?, ?> map = (Map<?, ?>)param;
-
-        try
-        {
-            password = (String)map.get("Password");
-        
-            if(password.compareTo(TineToJmsActivator.getDefault().getConfiguration().getString("xmpp.shutdown")) != 0)
-            {
-                return "Invalid password";
-            }
-        }
-        catch(Exception e)
-        {
-            return e.getMessage();
-        }
-
-        objectToBeStopped.stopWorking();
-        
-        return "Stopping application...";
+        return CommandResult.createMessageResult("Tine2Jms is restarting.");
     }
-    
+
     public static void staticInject(Stoppable obj)
     {
-        objectToBeStopped = obj;
+        objectToBeRestarted = obj;
     }
 }

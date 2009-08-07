@@ -1,6 +1,6 @@
 
 /* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+ * Copyright (c) 2009 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
@@ -21,36 +21,34 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
-package org.csstudio.tine2jms.xmpp;
+package org.csstudio.tine2jms.management;
 
-import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.security.Credentials;
-import org.csstudio.platform.security.ILoginCallbackHandler;
-import org.csstudio.tine2jms.TineToJmsActivator;
+import org.csstudio.platform.management.CommandParameters;
+import org.csstudio.platform.management.CommandResult;
+import org.csstudio.platform.management.IManagementCommand;
+import org.csstudio.tine2jms.Stoppable;
 
 /**
  * @author Markus Moeller
  *
  */
-public class TineToJmsXmppLoginHandler implements ILoginCallbackHandler
+public class Stop implements IManagementCommand
 {
+    private static Stoppable objectToBeStopped = null;
 
     /* (non-Javadoc)
-     * @see org.csstudio.platform.security.ILoginCallbackHandler#getCredentials()
+     * @see org.csstudio.platform.management.IManagementCommand#execute(org.csstudio.platform.management.CommandParameters)
      */
-    public Credentials getCredentials()
+    @Override
+    public CommandResult execute(CommandParameters parameters)
     {
-        String xmppUserName = TineToJmsActivator.getDefault().getConfiguration().getString("xmpp.user", "tine2jms");
-        String xmppPassword = TineToJmsActivator.getDefault().getConfiguration().getString("xmpp.password", "tine2jms");
-
-        return new Credentials(xmppUserName, xmppPassword);
+        objectToBeStopped.stopWorking();
+        
+        return CommandResult.createMessageResult("Tine2Jms is stopping.");
     }
 
-    /* (non-Javadoc)
-     * @see org.csstudio.platform.security.ILoginCallbackHandler#signalFailedLoginAttempt()
-     */
-    public void signalFailedLoginAttempt()
+    public static void staticInject(Stoppable obj)
     {
-        CentralLogger.getInstance().error(this, "XMPP login failed");
+        objectToBeStopped = obj;
     }
 }

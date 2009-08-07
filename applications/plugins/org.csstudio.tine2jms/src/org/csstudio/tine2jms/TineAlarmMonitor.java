@@ -29,6 +29,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 import org.apache.log4j.Logger;
+import org.csstudio.platform.logging.CentralLogger;
 
 import de.desy.tine.alarmUtils.AlarmMonitor;
 import de.desy.tine.alarmUtils.AlarmMonitorHandler;
@@ -51,7 +52,7 @@ public class TineAlarmMonitor extends Observable implements AlarmMonitorHandler
     public TineAlarmMonitor(Observer observer, String context)
     {
         this.context = context;
-        logger = Logger.getLogger(TineAlarmMonitor.class);
+        logger = CentralLogger.getInstance().getLogger(TineAlarmMonitor.class);
         this.addObserver(observer);
         dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
         

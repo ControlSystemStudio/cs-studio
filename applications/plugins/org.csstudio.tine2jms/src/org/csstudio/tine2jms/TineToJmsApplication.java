@@ -29,14 +29,16 @@ import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.Logger;
-import org.csstudio.platform.startupservice.IStartupServiceListener;
-import org.csstudio.platform.startupservice.StartupServiceEnumerator;
-import org.csstudio.tine2jms.actions.TineToJmsRestartAction;
-import org.csstudio.tine2jms.actions.TineToJmsStopAction;
+import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.tine2jms.management.Restart;
+import org.csstudio.tine2jms.management.Stop;
 import org.csstudio.tine2jms.util.JmsProducer;
 import org.csstudio.tine2jms.util.JmsProducerException;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
+import org.remotercp.common.servicelauncher.ServiceLauncher;
+import org.remotercp.ecf.ECFConstants;
+import org.remotercp.login.connection.HeadlessConnection;
 
 /**
  * @author Markus Moeller
@@ -67,7 +69,7 @@ public class TineToJmsApplication implements IApplication, Stoppable, Observer
 
     public TineToJmsApplication()
     {
-        logger = Logger.getLogger(TineToJmsApplication.class);
+        logger = CentralLogger.getInstance().getLogger(TineToJmsApplication.class);
 
         configuration = TineToJmsActivator.getDefault().getConfiguration();
         logger.debug("provider.url: " + configuration.getString("provider.url"));
@@ -101,13 +103,10 @@ public class TineToJmsApplication implements IApplication, Stoppable, Observer
         logger.info("Starting...");
         
         // Prepare the stop and restart action objects
-        TineToJmsStopAction.staticInject(this);
-        TineToJmsRestartAction.staticInject(this);
+        Stop.staticInject(this);
+        Restart.staticInject(this);
         
-        for(IStartupServiceListener s : StartupServiceEnumerator.getServices())
-        {
-            s.run();
-        }
+        connectToXMPPServer();
         
         // Wait until some time for XMPP login
         synchronized(this)
@@ -159,6 +158,23 @@ public class TineToJmsApplication implements IApplication, Stoppable, Observer
         }
         
         return result;
+    }
+
+    public void connectToXMPPServer()
+    {
+        String xmppUserName = TineToJmsActivator.getDefault().getConfiguration().getString("xmpp.user", "tine2jms");
+        String xmppPassword = TineToJmsActivator.getDefault().getConfiguration().getString("xmpp.password", "tine2jms");
+        String xmppServer = TineToJmsActivator.getDefault().getConfiguration().getString("xmpp.server", "krykxmpp.desy.de");
+
+        try
+        {
+            HeadlessConnection.connect(xmppUserName, xmppPassword, xmppServer, ECFConstants.XMPP);
+            ServiceLauncher.startRemoteServices();     
+        }
+        catch(Exception e)
+        {
+            CentralLogger.getInstance().warn(this, "Could not connect to XMPP server: " + e.getMessage());
+        }
     }
 
     public synchronized void update(Observable messageCreator, Object obj)

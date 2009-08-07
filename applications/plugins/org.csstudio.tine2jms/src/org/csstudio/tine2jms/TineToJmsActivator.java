@@ -26,7 +26,7 @@ package org.csstudio.tine2jms;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
+import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
 
@@ -61,8 +61,7 @@ public class TineToJmsActivator extends Plugin
 		super.start(context);
 		plugin = this;
 		
-        PropertyConfigurator.configure("log4j-tine2jms.properties");
-        logger = Logger.getLogger(TineToJmsActivator.class);
+        logger = CentralLogger.getInstance().getLogger(TineToJmsActivator.class);
         
         // Read the configuration file
         // TODO: Use Preference Store
@@ -78,11 +77,6 @@ public class TineToJmsActivator extends Plugin
         {
             logger.error("Configuration not loadable...");
         }
-
-//        for(IStartupServiceListener s : StartupServiceEnumerator.getServices())
-//        {
-//            s.run();
-//        }
         
         logger.info("Tine2Jms started...");
 	}
