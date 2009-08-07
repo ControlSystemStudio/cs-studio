@@ -71,6 +71,7 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
       <plugin id="org.csstudio.platform.ldapauthorization.ui"/>
       <plugin id="org.csstudio.platform.libs.dal"/>
       <plugin id="org.csstudio.platform.libs.dal.epics"/>
+      <plugin id="org.csstudio.platform.libs.dal.tine"/>
       <plugin id="org.csstudio.platform.libs.dcf"/>
       <plugin id="org.csstudio.platform.libs.dcf.ui"/>
       <plugin id="org.csstudio.platform.libs.epics"/>
@@ -79,6 +80,7 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
       <plugin id="org.csstudio.platform.libs.jmock"/>
       <plugin id="org.csstudio.platform.libs.jms"/>
       <plugin id="org.csstudio.platform.libs.jms.ui"/>
+      <plugin id="org.csstudio.platform.libs.tine"/>
       <plugin id="org.csstudio.platform.libs.xmpp"/>
       <plugin id="org.csstudio.platform.libs.xmpp.ui"/>
       <plugin id="org.csstudio.platform.ui"/>
