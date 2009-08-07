@@ -1,5 +1,6 @@
-package org.csstudio.opibuilder.visualparts;
+package org.csstudio.opibuilder.properties.support;
 
+import org.csstudio.opibuilder.visualparts.DoubleCellEditor;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;

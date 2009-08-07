@@ -1,7 +1,7 @@
 
 package org.csstudio.opibuilder.properties;
 
-import org.csstudio.opibuilder.visualparts.RGBColorPropertyDescriptor;
+import org.csstudio.opibuilder.properties.support.RGBColorPropertyDescriptor;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.jdom.Element;

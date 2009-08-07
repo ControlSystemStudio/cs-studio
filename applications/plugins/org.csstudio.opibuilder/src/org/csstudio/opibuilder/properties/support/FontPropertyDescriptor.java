@@ -1,17 +1,18 @@
-package org.csstudio.opibuilder.visualparts;
+package org.csstudio.opibuilder.properties.support;
 
+import org.csstudio.opibuilder.visualparts.FontCellEditor;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 
 /**
- * Descriptor for a property that has a value which should be edited with a
- * integer cell editor.
+ * Descriptor for a property that has a value which should be edited with a font
+ * cell editor.
  * 
  * @author Xihui Chen
  * 
  */
-public final class IntegerPropertyDescriptor extends TextPropertyDescriptor {
+public final class FontPropertyDescriptor extends TextPropertyDescriptor {
 	/**
 	 * Standard constructor.
 	 * 
@@ -19,10 +20,8 @@ public final class IntegerPropertyDescriptor extends TextPropertyDescriptor {
 	 *            the id of the property
 	 * @param displayName
 	 *            the name to display for the property
-	 * @param category
-	 *            the category
 	 */
-	public IntegerPropertyDescriptor(final Object id, final String displayName) {
+	public FontPropertyDescriptor(final Object id, final String displayName) {
 		super(id, displayName);
 	}
 
@@ -31,7 +30,7 @@ public final class IntegerPropertyDescriptor extends TextPropertyDescriptor {
 	 */
 	@Override
 	public CellEditor createPropertyEditor(final Composite parent) {
-		CellEditor editor = new IntegerCellEditor(parent);
+		CellEditor editor = new FontCellEditor(parent);
 		if (getValidator() != null) {
 			editor.setValidator(getValidator());
 		}

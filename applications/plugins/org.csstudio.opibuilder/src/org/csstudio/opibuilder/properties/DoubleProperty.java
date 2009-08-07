@@ -1,6 +1,6 @@
 package org.csstudio.opibuilder.properties;
 
-import org.csstudio.opibuilder.visualparts.DoublePropertyDescriptor;
+import org.csstudio.opibuilder.properties.support.DoublePropertyDescriptor;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.jdom.Element;

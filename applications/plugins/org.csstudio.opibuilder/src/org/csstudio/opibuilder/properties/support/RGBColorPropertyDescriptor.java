@@ -1,5 +1,6 @@
-package org.csstudio.opibuilder.visualparts;
+package org.csstudio.opibuilder.properties.support;
 
+import org.csstudio.opibuilder.visualparts.RGBCellEditor;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.CellEditor;

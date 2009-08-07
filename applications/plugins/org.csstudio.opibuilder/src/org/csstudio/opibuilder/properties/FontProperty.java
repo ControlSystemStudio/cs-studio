@@ -1,8 +1,8 @@
 
 package org.csstudio.opibuilder.properties;
 
-import org.csstudio.opibuilder.visualparts.FontPropertyDescriptor;
-import org.csstudio.opibuilder.visualparts.RGBColorPropertyDescriptor;
+import org.csstudio.opibuilder.properties.support.FontPropertyDescriptor;
+import org.csstudio.opibuilder.properties.support.RGBColorPropertyDescriptor;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;

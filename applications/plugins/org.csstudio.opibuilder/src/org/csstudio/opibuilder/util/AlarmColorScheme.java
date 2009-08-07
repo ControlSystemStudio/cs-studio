@@ -1,4 +1,4 @@
-package org.csstudio.opibuilder.visualparts;
+package org.csstudio.opibuilder.util;
 
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.swt.graphics.RGB;

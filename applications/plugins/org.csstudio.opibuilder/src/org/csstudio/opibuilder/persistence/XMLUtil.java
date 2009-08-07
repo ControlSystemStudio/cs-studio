@@ -107,7 +107,8 @@ public class XMLUtil {
 		else if(element.getName().equals(XMLTAG_WIDGET)){
 			rootWidgetModel = WidgetsService.getInstance().getWidgetDescriptor(
 					element.getAttributeValue(XMLATTR_TYPEID)).getWidgetModel();
-		}else
+		}
+		if(rootWidgetModel == null)
 			throw new Exception("The element is not a widget");
 		
 		

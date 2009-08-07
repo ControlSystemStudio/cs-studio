@@ -1,4 +1,4 @@
-package org.csstudio.opibuilder.visualparts;
+package org.csstudio.opibuilder.properties.support;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
