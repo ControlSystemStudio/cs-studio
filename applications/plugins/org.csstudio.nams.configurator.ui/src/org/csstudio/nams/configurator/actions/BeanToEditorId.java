@@ -18,12 +18,11 @@ import org.csstudio.nams.configurator.editor.FilterbedingungEditor;
  * Note: Mapped Bean-Typen auf Eclipse-editor-extension-point-ids.
  */
 public enum BeanToEditorId {
-	Alarmbearbeiter(AlarmbearbeiterBean.class, AlarmbearbeiterEditor.getId()), Alarmbearbeitergruppe(
-			AlarmbearbeiterGruppenBean.class, AlarmbearbeitergruppenEditor
-					.getId()), AlarmTopic(AlarmtopicBean.class,
-			AlarmtopicEditor.getId()), Filter(FilterBean.class, FilterEditor
-			.getId()), Filterbedingung(FilterbedingungBean.class,
-			FilterbedingungEditor.getId());
+	Alarmbearbeiter(AlarmbearbeiterBean.class, AlarmbearbeiterEditor.getId()), 
+	Alarmbearbeitergruppe(AlarmbearbeiterGruppenBean.class, AlarmbearbeitergruppenEditor.getId()),
+	AlarmTopic(AlarmtopicBean.class, AlarmtopicEditor.getId()),
+	Filter(FilterBean.class, FilterEditor.getId()),
+	Filterbedingung(FilterbedingungBean.class, FilterbedingungEditor.getId());
 
 	public static BeanToEditorId getEnumForClass(
 			final Class<? extends IConfigurationBean> clazz) {

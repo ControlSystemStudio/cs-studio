@@ -71,4 +71,9 @@ class ConnectionServiceMock implements IProcessVariableConnectionService {
 		return false;
 	}
 
+	public int getNumberOfActiveConnectors() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }

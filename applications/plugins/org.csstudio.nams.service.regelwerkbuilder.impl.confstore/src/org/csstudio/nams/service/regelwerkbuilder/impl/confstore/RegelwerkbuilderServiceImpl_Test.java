@@ -95,6 +95,11 @@ public class RegelwerkbuilderServiceImpl_Test extends TestCase {
 						return false;
 					}
 
+					public int getNumberOfActiveConnectors() {
+						// TODO Auto-generated method stub
+						return 0;
+					}
+
 				
 				});
 		RegelwerkBuilderServiceImpl

@@ -12,8 +12,8 @@ public class MessageKeyEnum_Test extends
 		// 27 ELEMENTS ARE BEING MAPPED
 		Assert
 				.assertEquals(
-						"27 Elements are being mapped(IF AMOUNT OF ELEMENTS CHANGES MessageKeyConverter must be updated)",
-						27, MessageKeyEnum.values().length);
+						"34 Elements are being mapped(IF AMOUNT OF ELEMENTS CHANGES MessageKeyConverter must be updated)",
+						34, MessageKeyEnum.values().length);
 
 		// AMS-REINSERTED
 		Assert.assertEquals(MessageKeyEnum.AMS_REINSERTED, MessageKeyEnum
