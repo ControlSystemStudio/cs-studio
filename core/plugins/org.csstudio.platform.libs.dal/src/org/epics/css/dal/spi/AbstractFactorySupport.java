@@ -133,7 +133,7 @@ public abstract class AbstractFactorySupport implements AbstractFactory
 	 * Returns instance of plug, which must be used by this factory. Plug is created if necessary.
 	 * @return instance of plug dedicated to this factory.
 	 */
-	protected AbstractPlug getPlugInstance()
+	protected synchronized AbstractPlug getPlugInstance()
 	{
 		if (plug == null) {
 			if (plugShared !=null && !plugShared)
