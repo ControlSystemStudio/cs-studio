@@ -444,7 +444,7 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
     {
         String xmppUser = "ams-department-decision";
         String xmppPassword = "ams";
-        String xmppServer = "krykxmpp.desy.de";
+        String xmppServer = "krynfs.desy.de";
 
         try
         {

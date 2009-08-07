@@ -215,7 +215,7 @@ public class JMSConnectorStart implements IApplication
     {
         String xmppUser = "ams-jms-connector";
         String xmppPassword = "ams";
-        String xmppServer = "krykxmpp.desy.de";
+        String xmppServer = "krynfs.desy.de";
 
         try
         {

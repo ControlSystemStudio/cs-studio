@@ -238,7 +238,7 @@ public class VoicemailConnectorStart implements IApplication
     {
         String xmppUser = "ams-voicemail-connector";
         String xmppPassword = "ams";
-        String xmppServer = "krykxmpp.desy.de";
+        String xmppServer = "krynfs.desy.de";
 
         try
         {

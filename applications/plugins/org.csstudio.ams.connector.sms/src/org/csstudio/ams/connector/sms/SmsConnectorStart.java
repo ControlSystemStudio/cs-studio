@@ -248,7 +248,7 @@ public class SmsConnectorStart implements IApplication
     {
         String xmppUser = "ams-sms-connector";
         String xmppPassword = "ams";
-        String xmppServer = "krykxmpp.desy.de";
+        String xmppServer = "krynfs.desy.de";
 
         try
         {

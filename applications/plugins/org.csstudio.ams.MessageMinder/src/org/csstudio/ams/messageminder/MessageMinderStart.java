@@ -77,7 +77,7 @@ public final class MessageMinderStart implements IApplication {
     {
         String xmppUser = "ams-message-minder";
         String xmppPassword = "ams";
-        String xmppServer = "krykxmpp.desy.de";
+        String xmppServer = "krynfs.desy.de";
 
         try
         {

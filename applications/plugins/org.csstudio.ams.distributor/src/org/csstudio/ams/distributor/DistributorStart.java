@@ -241,7 +241,7 @@ public class DistributorStart implements IApplication
     {
         String xmppUser = "ams-distributor";
         String xmppPassword = "ams";
-        String xmppServer = "krykxmpp.desy.de";
+        String xmppServer = "krynfs.desy.de";
 
         try
         {

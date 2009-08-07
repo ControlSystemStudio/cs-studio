@@ -268,7 +268,7 @@ public class AmsRemoteTool implements IApplication
     {
         String xmppUser = "ams-remotetool";
         String xmppPassword = "ams";
-        String xmppServer = "krykxmpp.desy.de";
+        String xmppServer = "krynfs.desy.de";
 
         try
         {
