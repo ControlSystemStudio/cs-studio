@@ -88,8 +88,6 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
 		Object value = evt.getNewValue();
 		String characteristicId = evt.getPropertyName();
 		doForwardCharacteristic(value, new Timestamp(), characteristicId);
-
-		printDebugInfo(characteristicId + " " + (value instanceof String[] ? Arrays.toString((String[]) value) : value.toString()));
 	}
 
 	/**
