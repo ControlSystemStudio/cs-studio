@@ -30,6 +30,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
+import org.eclipse.swt.graphics.Image;
 import org.osgi.framework.Bundle;
 
 /**
@@ -125,6 +126,22 @@ public final class ImageUtil {
 		}
 
 		return descriptor;
+	}
+
+	public Image getImage(final String pluginId,
+			final String path) {
+		String id = pluginId + "/" + path; //$NON-NLS-1$
+		ImageDescriptor descriptor = _imageRegistry.getDescriptor(id);
+
+		if (descriptor == null) {
+			descriptor = imageDescriptorFromPlugin(pluginId, path);
+
+			if (descriptor != null) {
+				_imageRegistry.put(id, descriptor);
+			}
+		}
+
+		return _imageRegistry.get(id);
 	}
 
 	/**

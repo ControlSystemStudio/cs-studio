@@ -304,26 +304,6 @@ public final class CustomMediaFactory {
 		return _imageRegistry.getDescriptor(key);
 	}
 
-	/**
-	 * Create an <code>Image</code> from the given <code>ImageDescriptor</code>.
-	 * 
-	 * @param key
-	 *            a globally unique id for the image (same images should always
-	 *            have the same id to prevent GDI leaks)
-	 * @param imageDescriptor
-	 *            The <code>ImageDescriptor</code>
-	 * @return The <code>Image</code> that was created from the given
-	 *         <code>ImageDescriptor</code>
-	 */
-	public Image getImageFromImageDescriptorCache(String key, final ImageDescriptor imageDescriptor) {
-		assert imageDescriptor != null : "imageDescriptor!=null"; //$NON-NLS-1$
-
-		if (!_imageCache.containsKey(key)) {
-			_imageCache.put(key, imageDescriptor.createImage());
-		}
-		return _imageCache.get(imageDescriptor);
-	}
-
 	/** the color for light blue */
 	final static public RGB COLOR_LIGHT_BLUE = new RGB(153, 186, 243);
 

@@ -218,10 +218,8 @@ final class LabelProvider extends ColumnLabelProvider {
 			
 			icon+=".png";
 			
-			ImageDescriptor imgD = ImageUtil.getInstance().getImageDescriptor(
-			CSSPlatformUiPlugin.ID, icon);
-			
-			result = imgD!=null ? imgD.createImage() : null;
+			result = ImageUtil.getInstance().getImage(
+					CSSPlatformUiPlugin.ID, icon);
 			break;
 		default:
 			break;
