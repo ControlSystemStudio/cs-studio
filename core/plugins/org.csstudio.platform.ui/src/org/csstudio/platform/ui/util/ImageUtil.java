@@ -128,6 +128,16 @@ public final class ImageUtil {
 		return descriptor;
 	}
 
+	/**
+	 * Gets an Image for an image resource which is supposed to reside
+	 * in the plugin with the specified pluginId under the specified path.
+	 * 
+	 * @param pluginId
+	 *            the ID of the plugin that contains the image resource
+	 * @param path
+	 *            the path
+	 * @return an Image or null
+	 */
 	public Image getImage(final String pluginId,
 			final String path) {
 		String id = pluginId + "/" + path; //$NON-NLS-1$
