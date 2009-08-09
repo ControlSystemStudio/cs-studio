@@ -300,6 +300,10 @@ public class ProcessVariableConnectionService implements IProcessVariableConnect
 					ConnectorIdentification key = it.next();
 					AbstractConnector connector = _connectors.get(key);
 
+					// perform cleanup
+					connector.cleanupWeakReferences();
+					
+					// dispose if possible 
 					if (connector.isDisposable()) {
 						deleteCandidates.add(key);
 					}

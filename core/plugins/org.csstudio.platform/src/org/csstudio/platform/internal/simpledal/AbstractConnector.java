@@ -276,7 +276,7 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
 	 */
 	public final synchronized boolean isDisposable() {
 		// perform a cleanup first
-		cleanupWeakReferences();
+//		cleanupWeakReferences();
 
 		// this connector can be disposed it there are not weak references left
 		return _weakListenerReferences.isEmpty() && !isBlocked();
@@ -726,7 +726,7 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
 	 * Removes weak references for value listeners that have been garbage
 	 * collected.
 	 */
-	private void cleanupWeakReferences() {
+	void cleanupWeakReferences() {
 		synchronized (_weakListenerReferences) {
 			List<ListenerReference> deletionCandidates = new ArrayList<ListenerReference>();
 			Iterator<ListenerReference> it = _weakListenerReferences.iterator();
