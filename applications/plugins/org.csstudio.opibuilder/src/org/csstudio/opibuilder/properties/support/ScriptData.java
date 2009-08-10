@@ -2,14 +2,17 @@ package org.csstudio.opibuilder.properties.support;
 
 import java.util.List;
 
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.ui.model.IWorkbenchAdapter;
 
 
 /**The description data for a script.
  * @author Xihui Chen
  *
  */
-public class ScriptData {
+public class ScriptData implements IAdaptable {
 	
 	public static String SCRIPT_EXTENSION = "js"; //$NON-NLS-1$
 	
@@ -66,5 +69,30 @@ public class ScriptData {
 			copy.addPV(pv);
 		}
 		return copy;
+	}
+
+
+	public Object getAdapter(Class adapter) {
+		if(adapter == IWorkbenchAdapter.class)
+			return new IWorkbenchAdapter() {
+				
+				public Object getParent(Object o) {
+					return null;
+				}
+				
+				public String getLabel(Object o) {
+					return path.toString();
+				}
+				
+				public ImageDescriptor getImageDescriptor(Object object) {
+					return null;
+				}
+				
+				public Object[] getChildren(Object o) {
+					return new Object[0];
+				}
+			};
+		
+		return null;
 	}
 }
