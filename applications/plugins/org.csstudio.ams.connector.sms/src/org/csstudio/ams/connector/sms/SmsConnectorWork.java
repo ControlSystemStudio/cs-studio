@@ -700,7 +700,8 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                 Log.log(this, Log.DEBUG, "getFirstSms(): SMS: " + sms.toString());
 
                 // Check if we have a 'start modem test' message.
-                if(sms.getMessage().startsWith("MODEM_CHECK"))
+                //if(sms.getMessage().startsWith("MODEM_CHECK"))
+                if(sms.isModemTest())
                 {
                     Pattern pattern = null;
                     String r = null;

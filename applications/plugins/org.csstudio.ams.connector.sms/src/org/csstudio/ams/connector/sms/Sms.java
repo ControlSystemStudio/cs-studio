@@ -75,6 +75,11 @@ public class Sms implements Serializable
     /** Type of the SMS */
     private Sms.Type type;
 
+    /** Indicate if the SMS is a kind of command SMS, that initiates a test of all modems. */
+    private boolean modemTest;
+    
+    // private static final String SMS_TEST_TEXT = "MODEM_CHECK{$EVENTTIME$}";
+
     /** First constructor. Assumes the priority is 2 (NORMAL) */
     public Sms(long id, long timestamp, String number, String text, Sms.Type type)
     {
@@ -82,7 +87,10 @@ public class Sms implements Serializable
         this.smsTimestamp = timestamp;
         this.priority = 2;
         this.phoneNumber = number;
+        
         this.message = text;
+        this.modemTest = (text.startsWith("MODEM_CHECK{") ? true : false);
+        
         this.type = type;
         this.state = Sms.State.NEW;
     }
@@ -94,7 +102,10 @@ public class Sms implements Serializable
         this.smsTimestamp = timestamp;
         this.priority = priority;
         this.phoneNumber = number;
+        
         this.message = text;
+        this.modemTest = (text.startsWith("MODEM_CHECK{") ? true : false);
+        
         this.type = type;
         this.state = Sms.State.NEW;
     }
@@ -114,6 +125,7 @@ public class Sms implements Serializable
         result.append(this.phoneNumber + ",");
         result.append(this.message + ",");
         result.append(this.state + ",");
+        result.append("Modemtest=" + this.modemTest + ",");
         result.append(this.type + "}");
         
         return result.toString();
@@ -197,5 +209,10 @@ public class Sms implements Serializable
     public void setType(Sms.Type type)
     {
         this.type = type;
+    }
+    
+    public boolean isModemTest()
+    {
+        return modemTest;
     }
 }
