@@ -1,5 +1,8 @@
 package org.csstudio.opibuilder.editparts;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -7,23 +10,31 @@ import java.util.Set;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.properties.WidgetPropertyChangeListener;
+import org.csstudio.opibuilder.properties.support.ScriptData;
+import org.csstudio.opibuilder.properties.support.ScriptsInput;
+import org.csstudio.opibuilder.util.ScriptService;
 import org.csstudio.opibuilder.visualparts.BorderFactory;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.draw2d.AbstractBorder;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.LabeledBorder;
-import org.eclipse.draw2d.geometry.Dimension;
-import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.progress.UIJob;
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.ImporterTopLevel;
+import org.mozilla.javascript.Script;
+import org.mozilla.javascript.Scriptable;
+import org.mozilla.javascript.ScriptableObject;
 
 /**The editpart for  {@link AbstractWidgetModel}
  * @author Xihui Chen
@@ -95,6 +106,44 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 			}
 			registerBasePropertyChangeHandlers();
 			registerPropertyChangeHandlers();
+			
+			if(executionMode == ExecutionMode.RUN_MODE){				
+				ScriptsInput scriptsInput = getCastedModel().getScriptsInput();
+				Context scriptContext = ScriptService.getInstance().getScriptContext();
+				final Scriptable scriptScope = new ImporterTopLevel(scriptContext);					
+				
+				for(ScriptData scriptData : scriptsInput.getScriptList()){					
+					IFile[] files = 
+						ResourcesPlugin.getWorkspace().getRoot().findFilesForLocation(
+								ResourcesPlugin.getWorkspace().getRoot().getLocation().append(scriptData.getPath()));
+					
+					if(files.length != 1)
+						continue;
+					
+					
+					try {
+						BufferedReader reader = new BufferedReader(
+								new InputStreamReader(files[0].getContents()));	
+					
+						//compile and executes
+						Object widgetController = Context.javaToJS(this, scriptScope);
+						ScriptableObject.putProperty(scriptScope, "widgetController", widgetController);	
+						Script script = scriptContext.compileReader(reader, "script", 1, null);
+						scriptContext.evaluateReader(scriptScope, reader, "script file", 1, null);	
+						reader.close();
+						script.exec(scriptContext, scriptScope);
+					} catch (CoreException e) {
+						e.printStackTrace();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}					
+				}
+				
+				
+			}
+			
+			
+			
 		}		
 	}
 
@@ -107,6 +156,8 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 				getCastedModel().getProperty(id).removeAllPropertyChangeListeners();
 				propertyListenerMap.clear();
 			}
+			//if(executionMode == ExecutionMode.RUN_MODE)
+			//	Context.exit();
 		}
 		
 	}

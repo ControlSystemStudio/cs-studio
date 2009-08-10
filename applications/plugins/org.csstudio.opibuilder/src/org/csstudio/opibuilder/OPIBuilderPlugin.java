@@ -2,6 +2,7 @@ package org.csstudio.opibuilder;
 
 import org.apache.log4j.Logger;
 import org.csstudio.opibuilder.runmode.RunModeService;
+import org.csstudio.opibuilder.util.ScriptService;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.AbstractCssUiPlugin;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -44,11 +45,16 @@ public class OPIBuilderPlugin extends AbstractUIPlugin {
 		return plugin;
 	}
 
-
+	@Override
+	public void start(BundleContext context) throws Exception {
+		super.start(context);
+		ScriptService.getInstance();
+	}
 
 	@Override
 	public void stop(BundleContext context) throws Exception {
 		plugin = null;
+		ScriptService.getInstance().exit();
 		
 	}
 

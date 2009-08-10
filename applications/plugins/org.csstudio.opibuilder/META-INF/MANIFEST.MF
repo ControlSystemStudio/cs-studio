@@ -25,3 +25,6 @@ Export-Package: org.csstudio.opibuilder.editparts,
  org.csstudio.opibuilder.properties,
  org.csstudio.opibuilder.util,
  org.csstudio.opibuilder.visualparts
+Bundle-ClassPath: .,
+ lib/rhino/js.jar,
+ lib/jdom/jdom.jar

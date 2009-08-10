@@ -1,9 +1,13 @@
 package org.csstudio.opibuilder.properties.support;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.csstudio.opibuilder.OPIBuilderPlugin;
+import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 
@@ -25,6 +29,17 @@ public class ScriptData implements IAdaptable {
 	 * The input PVs of the script. Which can be accessed in the script and trigger the script execution.
 	 */
 	private List<String> pvList;
+	
+	
+	public ScriptData() {
+		path = new Path("");
+		pvList = new ArrayList<String>();
+	}
+	
+	public ScriptData(IPath path) {
+		this.path = path;
+		pvList = new ArrayList<String>();
+	}
 	
 	/**Set the script path.
 	 * @param path the file path of the script.
@@ -72,6 +87,7 @@ public class ScriptData implements IAdaptable {
 	}
 
 
+	@SuppressWarnings("unchecked")
 	public Object getAdapter(Class adapter) {
 		if(adapter == IWorkbenchAdapter.class)
 			return new IWorkbenchAdapter() {
@@ -85,7 +101,8 @@ public class ScriptData implements IAdaptable {
 				}
 				
 				public ImageDescriptor getImageDescriptor(Object object) {
-					return null;
+					return CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
+							OPIBuilderPlugin.PLUGIN_ID, "icons/js.gif");
 				}
 				
 				public Object[] getChildren(Object o) {

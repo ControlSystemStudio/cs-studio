@@ -15,9 +15,11 @@ import org.csstudio.opibuilder.properties.ComboProperty;
 import org.csstudio.opibuilder.properties.FontProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.PVValueProperty;
+import org.csstudio.opibuilder.properties.ScriptProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.UnchangableStringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.csstudio.opibuilder.properties.support.ScriptsInput;
 import org.csstudio.opibuilder.util.WidgetDescriptor;
 import org.csstudio.opibuilder.util.WidgetsService;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
@@ -44,7 +46,7 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	
 	public static final String PROP_NAME = "name";//$NON-NLS-1$
 	
-	public static final String PROP_SCRIPT = "script";//$NON-NLS-1$
+	public static final String PROP_SCRIPTS = "script";//$NON-NLS-1$
 	
 	public static final String PROP_XPOS = "x";//$NON-NLS-1$
 	
@@ -113,8 +115,11 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 				WidgetPropertyCategory.Behavior, true, true));
 		addProperty(new BooleanProperty(PROP_VISIBLE, "Visible", 
 				WidgetPropertyCategory.Behavior, true, true));
-			addProperty(new FontProperty(PROP_FONT, "Font", 
+		addProperty(new FontProperty(PROP_FONT, "Font", 
 				WidgetPropertyCategory.Display, true, CustomMediaFactory.FONT_ARIAL));
+		addProperty(new ScriptProperty(PROP_SCRIPTS, "Scripts", 
+				WidgetPropertyCategory.Basic, true));	
+			
 			
 		WidgetDescriptor descriptor = WidgetsService.getInstance().getWidgetDescriptor(getTypeID());
 		String name;
@@ -323,6 +328,11 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	
 	public RGB getForegroundColor(){
 		return (RGB)getCastedPropertyValue(PROP_COLOR_FOREGROUND);
+	}
+	
+	
+	public ScriptsInput getScriptsInput(){
+		return (ScriptsInput)getCastedPropertyValue(PROP_SCRIPTS);
 	}
 	
 	public void setSize(int width, int height){

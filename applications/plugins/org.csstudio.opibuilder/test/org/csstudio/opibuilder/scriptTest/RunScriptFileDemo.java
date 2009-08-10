@@ -4,11 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-import javax.script.Bindings;
-import javax.script.ScriptContext;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.SimpleScriptContext;
+
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.mozilla.javascript.Context;
@@ -22,7 +18,7 @@ public class RunScriptFileDemo {
 	  
 	  
 	  String testFile = "test/org/csstudio/opibuilder/scriptTest/ComplexSWTDialogs.js";
-	 
+	/* 
 	// use Java 1.6 script engine 
 	  ScriptEngineManager manager = new ScriptEngineManager();
 	    ScriptEngine engine = manager.getEngineByName("js");
@@ -53,7 +49,7 @@ public class RunScriptFileDemo {
 	      e.printStackTrace();
 	    }
 	  
-    
+    */
     
     //use Rhino script engine
   //Refer to sds.ui.scripting.RunnableScript.java
@@ -76,12 +72,12 @@ public class RunScriptFileDemo {
 	Object hello2 = Context.javaToJS(new Hello("hello Rhino 2"), scriptScope2);
 	ScriptableObject.putProperty(scriptScope2, "x", hello2);	
 	Script script = scriptContext2.compileReader(reader2, "script", 1, null);
+	reader2.close();
 	script.exec(scriptContext2, scriptScope2);
 	Object hello3 = Context.javaToJS(new Hello("hello Rhino 3"), scriptScope2);
 	ScriptableObject.putProperty(scriptScope2, "x", hello3);
 	script.exec(scriptContext2, scriptScope2);
 	//.evaluateReader(scriptScope2, reader2, "script file", 1, null);	
-	reader2.close();	
 	Context.exit();
     
     

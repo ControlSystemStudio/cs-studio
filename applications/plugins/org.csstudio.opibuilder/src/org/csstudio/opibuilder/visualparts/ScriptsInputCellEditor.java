@@ -1,6 +1,7 @@
 package org.csstudio.opibuilder.visualparts;
 
 import org.csstudio.opibuilder.properties.support.ScriptsInput;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 
@@ -14,7 +15,11 @@ public class ScriptsInputCellEditor extends AbstractDialogCellEditor {
 
 	@Override
 	protected void openDialog(Shell parentShell, String dialogTitle) {
-		// TODO Auto-generated method stub
+		ScriptsInputDialog dialog = 
+			new ScriptsInputDialog(parentShell, scriptsInput,dialogTitle);
+		if(dialog.open() == Window.OK){
+			scriptsInput = new ScriptsInput(dialog.getScriptDataList());
+		}
 
 	}
 

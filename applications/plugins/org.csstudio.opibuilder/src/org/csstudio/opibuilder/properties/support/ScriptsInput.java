@@ -12,8 +12,16 @@ import org.csstudio.opibuilder.properties.ScriptProperty;
  */
 public class ScriptsInput {
 
-	private List<ScriptData> scriptList = new ArrayList<ScriptData>();
+	private List<ScriptData> scriptList;
 	
+	public ScriptsInput(List<ScriptData> scriptDataList) {
+		scriptList = scriptDataList;
+	}
+	
+	public ScriptsInput() {
+		scriptList = new ArrayList<ScriptData>();
+	}
+
 	/**
 	 * @return the scriptList
 	 */
