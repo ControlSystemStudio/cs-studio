@@ -12,10 +12,16 @@ import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.properties.WidgetPropertyChangeListener;
 import org.csstudio.opibuilder.properties.support.ScriptData;
 import org.csstudio.opibuilder.properties.support.ScriptsInput;
-import org.csstudio.opibuilder.util.ScriptService;
+import org.csstudio.opibuilder.util.RhinoScriptService;
+import org.csstudio.opibuilder.util.UIBundlingThread;
 import org.csstudio.opibuilder.visualparts.BorderFactory;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
+import org.csstudio.platform.data.ValueUtil;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.utility.pv.PV;
+import org.csstudio.utility.pv.PVFactory;
+import org.csstudio.utility.pv.PVListener;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -29,6 +35,7 @@ import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.ui.internal.handlers.WizardHandler.New;
 import org.eclipse.ui.progress.UIJob;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ImporterTopLevel;
@@ -91,7 +98,9 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 	
 	protected abstract IFigure doCreateFigure();
 
-
+	private Map<String, PV> pvMap = new HashMap<String, PV>();
+	
+	@SuppressWarnings("deprecation")
 	@Override
 	public void activate() {
 		if(!isActive()){
@@ -107,9 +116,12 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 			registerBasePropertyChangeHandlers();
 			registerPropertyChangeHandlers();
 			
-			if(executionMode == ExecutionMode.RUN_MODE){				
+	
+			//script execution
+			if(executionMode == ExecutionMode.RUN_MODE){
+				pvMap.clear();
 				ScriptsInput scriptsInput = getCastedModel().getScriptsInput();
-				Context scriptContext = ScriptService.getInstance().getScriptContext();
+				final Context scriptContext = RhinoScriptService.getInstance().getScriptContext();
 				final Scriptable scriptScope = new ImporterTopLevel(scriptContext);					
 				
 				for(ScriptData scriptData : scriptsInput.getScriptList()){					
@@ -124,13 +136,53 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 					try {
 						BufferedReader reader = new BufferedReader(
 								new InputStreamReader(files[0].getContents()));	
-					
+						
 						//compile and executes
+						final Script script = scriptContext.compileReader(reader, "script", 1, null);
+						reader.close();
+						
 						Object widgetController = Context.javaToJS(this, scriptScope);
 						ScriptableObject.putProperty(scriptScope, "widgetController", widgetController);	
-						Script script = scriptContext.compileReader(reader, "script", 1, null);
-						scriptContext.evaluateReader(scriptScope, reader, "script file", 1, null);	
-						reader.close();
+						PV[] pvArray = new PV[scriptData.getPVList().size()];
+						int i = 0;
+						for(String pvName : scriptData.getPVList()){
+							if(pvMap.containsKey(pvName)){
+								pvArray[i] = pvMap.get(pvMap);
+							}else{
+								try {
+									pvArray[i] = PVFactory.createPV(pvName);
+									pvMap.put(pvName, pvArray[i]);
+									pvArray[i].addListener(new PVListener() {
+										
+										public void pvValueUpdate(PV pv) {
+											UIBundlingThread.getInstance().addRunnable(new Runnable() {
+												
+												public void run() {
+												//	script.exec(scriptContext, scriptScope);
+												}
+											});
+										}
+										
+										public void pvDisconnected(PV pv) {
+											
+										}
+									});
+								} catch (Exception e) {
+									CentralLogger.getInstance().error(this, "Unable to connect to PV:" +
+											pvName);
+								}
+							}
+							i++;							
+						}
+						
+						ScriptableObject.putProperty(scriptScope, "pvArray", pvArray);						
+						for(PV pv : pvArray)
+							try {
+								pv.start();
+							} catch (Exception e) {
+								CentralLogger.getInstance().error(this, "Unable to connect to PV:" +
+										pv.getName());
+							}
 						script.exec(scriptContext, scriptScope);
 					} catch (CoreException e) {
 						e.printStackTrace();
@@ -158,6 +210,9 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 			}
 			//if(executionMode == ExecutionMode.RUN_MODE)
 			//	Context.exit();
+			
+			for(PV pv : pvMap.values())
+				pv.stop();
 		}
 		
 	}
