@@ -6,7 +6,6 @@ import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.platform.data.ValueFactory;
 import org.csstudio.platform.data.IValue.Quality;
-import org.csstudio.platform.internal.data.DoubleValue;
 
 /** Local PV.
  *  <p>
