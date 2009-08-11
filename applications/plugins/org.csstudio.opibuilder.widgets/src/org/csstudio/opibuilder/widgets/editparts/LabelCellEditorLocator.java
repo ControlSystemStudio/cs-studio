@@ -1,6 +1,6 @@
 package org.csstudio.opibuilder.widgets.editparts;
 
-import org.csstudio.sds.components.ui.internal.figures.LabelFigure;
+import org.csstudio.opibuilder.widgets.figures.LabelFigure;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.tools.CellEditorLocator;
 import org.eclipse.jface.viewers.CellEditor;

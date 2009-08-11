@@ -34,7 +34,7 @@ public final class WidgetsService {
 	/**
 	 * @return the instance
 	 */
-	public static final WidgetsService getInstance() {
+	public synchronized static final WidgetsService getInstance() {
 		if(instance == null)
 			instance = new WidgetsService();
 		return instance;

@@ -36,8 +36,53 @@
             editpart_class="org.csstudio.opibuilder.widgets.editparts.TextIndicatorEditPart"
             icon="icons/TextIndicator.png"
             model_class="org.csstudio.opibuilder.widgets.model.TextIndicatorModel"
-            name="Text Indicator"
-            typeId="org.csstudio.opibuilder.widgets.TextIndicator">
+            name="Text Update"
+            typeId="org.csstudio.opibuilder.widgets.TextUpdate">
+      </widget>
+      <widget
+            category="Graphics"
+            description="Create a ellipse widget"
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.EllipseEditpart"
+            icon="icons/ellipse.gif"
+            model_class="org.csstudio.opibuilder.widgets.model.EllipseModel"
+            name="Ellipse"
+            typeId="org.csstudio.opibuilder.widgets.Ellipse">
+      </widget>
+      <widget
+            category="Monitors"
+            description="A thermeter which could display numeric value."
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.ThermometerEditPart"
+            icon="icons/Thermo.gif"
+            model_class="org.csstudio.opibuilder.widgets.model.ThermometerModel"
+            name="Thermometer"
+            typeId="org.csstudio.opibuilder.widgets.thermometer">
+      </widget>
+      <widget
+            category="Monitors"
+            description="A gauge which could display numeric value."
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.GaugeEditPart"
+            icon="icons/gauge.gif"
+            model_class="org.csstudio.opibuilder.widgets.model.GaugeModel"
+            name="Gauge"
+            typeId="org.csstudio.opibuilder.widgets.gauge">
+      </widget>
+      <widget
+            category="Monitors"
+            description="A tank which could display numeric value."
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.TankEditPart"
+            icon="icons/Tank.gif"
+            model_class="org.csstudio.opibuilder.widgets.model.TankModel"
+            name="Tank"
+            typeId="org.csstudio.opibuilder.widgets.tank">
+      </widget>
+      <widget
+            category="Monitors"
+            description="A meterwhich could display numeric value."
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.XMeterEditPart"
+            icon="icons/XMeter.png"
+            model_class="org.csstudio.opibuilder.widgets.model.XMeterModel"
+            name="Meter"
+            typeId="org.csstudio.opibuilder.widgets.meter">
       </widget>     
    </extension>
 

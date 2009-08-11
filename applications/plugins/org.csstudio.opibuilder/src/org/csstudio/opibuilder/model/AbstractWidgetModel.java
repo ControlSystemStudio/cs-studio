@@ -1,6 +1,7 @@
 package org.csstudio.opibuilder.model;
 
 import java.beans.PropertyChangeSupport;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -19,7 +20,7 @@ import org.csstudio.opibuilder.properties.ScriptProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.UnchangableStringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
-import org.csstudio.opibuilder.properties.support.ScriptsInput;
+import org.csstudio.opibuilder.script.ScriptsInput;
 import org.csstudio.opibuilder.util.WidgetDescriptor;
 import org.csstudio.opibuilder.util.WidgetsService;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
@@ -355,6 +356,24 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	
 	public void setBackgroundColor(RGB color){
 		setPropertyValue(PROP_COLOR_BACKGROUND, color);
+	}
+	
+	public void setBorderStyle(BorderStyle borderStyle){
+		int i=0;
+		for(BorderStyle bs : BorderStyle.values()){
+			if(borderStyle == bs){
+				break;
+			}
+			i++;
+		}
+		setPropertyValue(PROP_BORDER_STYLE, i);
+	}
+	
+	public void setBorderWidth(int width){
+		setPropertyValue(PROP_BORDER_WIDTH, width);
+	}
+	public void setBorderColor(RGB color){
+		setPropertyValue(PROP_BORDER_COLOR, color);
 	}
 	
 	public void setPropertyDescription(String prop_id, String description){

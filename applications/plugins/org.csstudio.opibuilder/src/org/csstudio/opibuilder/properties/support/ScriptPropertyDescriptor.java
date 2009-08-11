@@ -1,6 +1,7 @@
 package org.csstudio.opibuilder.properties.support;
 
 
+import org.csstudio.opibuilder.script.ScriptsInput;
 import org.csstudio.opibuilder.visualparts.ScriptsInputCellEditor;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.viewers.CellEditor;

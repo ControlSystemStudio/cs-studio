@@ -1,6 +1,6 @@
 package org.csstudio.opibuilder.visualparts;
 
-import org.csstudio.opibuilder.properties.support.ScriptsInput;
+import org.csstudio.opibuilder.script.ScriptsInput;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;

@@ -1,8 +1,15 @@
 package org.csstudio.opibuilder.widgets.editparts;
 
+import org.csstudio.opibuilder.editparts.ExecutionMode;
+import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
+import org.csstudio.opibuilder.widgets.figures.AbstractMarkedWidgetFigure;
 import org.csstudio.opibuilder.widgets.model.AbstractMarkedWidgetModel;
-import org.csstudio.sds.components.ui.internal.figures.AbstractMarkedWidgetFigure;
+import org.csstudio.platform.data.INumericMetaData;
+import org.csstudio.platform.data.IValue;
+import org.csstudio.platform.data.ValueUtil;
+import org.csstudio.utility.pv.PV;
+import org.csstudio.utility.pv.PVListener;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.graphics.RGB;
 
@@ -14,6 +21,8 @@ import org.eclipse.swt.graphics.RGB;
  */
 public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetEditPart{
 
+	private INumericMetaData meta = null;
+	
 	/**
 	 * Sets those properties on the figure that are defined in the
 	 * {@link AbstractMarkedWidgetFigure} base class. This method is provided for the
@@ -48,6 +57,38 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
 		
 		
 	}	
+	
+	@Override
+	protected void doActivate() {
+		super.doActivate();
+		if(getExecutionMode() == ExecutionMode.RUN_MODE){
+			final AbstractMarkedWidgetModel model = (AbstractMarkedWidgetModel)getModel();
+			if(model.isLimitsFromDB()){
+				PV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
+				if(pv != null){	
+					pv.addListener(new PVListener() {				
+						public void pvValueUpdate(PV pv) {
+							IValue value = pv.getValue();
+							if (value != null && value.getMetaData() instanceof INumericMetaData){
+								INumericMetaData new_meta = (INumericMetaData)value.getMetaData();
+								if(meta == null || !meta.equals(new_meta)){
+									meta = new_meta;
+									System.out.println("setted!");
+									model.setPropertyValue(AbstractMarkedWidgetModel.PROP_MAX,	meta.getDisplayHigh());
+									model.setPropertyValue(AbstractMarkedWidgetModel.PROP_MIN,	meta.getDisplayLow());					
+									model.setPropertyValue(AbstractMarkedWidgetModel.PROP_HI_LEVEL,	meta.getWarnHigh());
+									model.setPropertyValue(AbstractMarkedWidgetModel.PROP_HIHI_LEVEL, meta.getAlarmHigh());
+									model.setPropertyValue(AbstractMarkedWidgetModel.PROP_LO_LEVEL,	meta.getWarnLow());
+									model.setPropertyValue(AbstractMarkedWidgetModel.PROP_LOLO_LEVEL,	meta.getAlarmLow());
+								}
+							}
+						}					
+						public void pvDisconnected(PV pv) {}
+					});				
+				}
+			}
+		}
+	}
 	
 	/**
 	 * Registers property change handlers for the properties defined in

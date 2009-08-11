@@ -3,10 +3,10 @@ import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.editparts.AbstractWidgetEditPart;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
+import org.csstudio.opibuilder.widgets.figures.AbstractScaledWidgetFigure;
 import org.csstudio.opibuilder.widgets.model.AbstractScaledWidgetModel;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueUtil;
-import org.csstudio.sds.components.ui.internal.figures.AbstractScaledWidgetFigure;
 import org.csstudio.utility.pv.PV;
 import org.eclipse.draw2d.IFigure;
 

@@ -95,7 +95,7 @@ public class KnobModel extends AbstractMarkedWidgetModel{
 				WidgetPropertyCategory.Behavior, true, 1.0));
 		
 		setPropertyDescription(PROP_SHOW_MARKERS, "Show Ramp");
-		setPropertyDescription(PROP_PVNAME, "Readback PV Name");
+		setPropertyDescription(PROP_PVNAME, "Readback PV");
 	}	
 
 	@Override

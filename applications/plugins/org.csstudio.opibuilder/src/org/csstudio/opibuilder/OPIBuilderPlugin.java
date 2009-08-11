@@ -2,7 +2,7 @@ package org.csstudio.opibuilder;
 
 import org.apache.log4j.Logger;
 import org.csstudio.opibuilder.runmode.RunModeService;
-import org.csstudio.opibuilder.util.RhinoScriptService;
+import org.csstudio.opibuilder.script.ScriptService;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.AbstractCssUiPlugin;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -48,13 +48,13 @@ public class OPIBuilderPlugin extends AbstractUIPlugin {
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
-		RhinoScriptService.getInstance();
+		ScriptService.getInstance();
 	}
 
 	@Override
 	public void stop(BundleContext context) throws Exception {
 		plugin = null;
-		RhinoScriptService.getInstance().exit();
+		ScriptService.getInstance().exit();
 		
 	}
 

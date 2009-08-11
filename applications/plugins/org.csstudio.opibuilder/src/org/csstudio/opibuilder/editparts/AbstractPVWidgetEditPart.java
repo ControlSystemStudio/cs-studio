@@ -144,9 +144,10 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 	public void activate() {
 		if(!isActive()){
 			super.activate();
-			pvMap.clear();	
-			pvConnectedStatusMap.clear();			
-			if(getExecutionMode() == ExecutionMode.RUN_MODE){	
+						
+			if(getExecutionMode() == ExecutionMode.RUN_MODE){
+				pvMap.clear();	
+				pvConnectedStatusMap.clear();
 				saveFigureOKStatus(getFigure());
 				final Map<StringProperty, PVValueProperty> pvValueMap = getCastedModel().getPVMap();
 				if(!pvValueMap.isEmpty())
@@ -184,8 +185,7 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 								pvValueMap.get(sp).setPropertyValue(pv.getValue());		
 								
 							}							
-						});
-						pv.start();
+						});						
 						pvMap.put(sp.getPropertyID(), pv);
 					} catch (Exception e) {
 						pvConnectedStatusMap.put((String) sp.getPropertyValue(), false);
@@ -194,8 +194,28 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 								(String)sp.getPropertyValue());
 					}					
 				}
+				
+				doActivate();
+				
+				//the pv should be started at the last minute
+				for(PV pv : pvMap.values()){
+					try {
+						pv.start();
+					} catch (Exception e) {
+						pvConnectedStatusMap.put(pv.getName(), false);
+						markWidgetAsDisconnected(pv.getName());
+						CentralLogger.getInstance().error(this, "Unable to connect to PV:" +
+								pv.getName());
+					}
+				}
 			}
 		}
+	}
+	
+	/**
+	 * Subclass should do the activate things in this method.
+	 */
+	protected void doActivate() {		
 	}
 	
 	@Override
@@ -308,6 +328,14 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 				
 			}
 		}
+	}
+	
+	/**Get the pv.
+	 * @param pvPropId
+	 * @return the corresponding pv for the pvPropId. null if the pv desn't exist.
+	 */
+	protected PV getPV(String pvPropId){
+		return pvMap.get(pvPropId);
 	}
 	
 	protected IValue getPVValue(String pvPropId){

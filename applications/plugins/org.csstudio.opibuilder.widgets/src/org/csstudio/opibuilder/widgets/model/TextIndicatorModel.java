@@ -30,7 +30,7 @@ public class TextIndicatorModel extends AbstractPVWidgetModel {
 	
 	@Override
 	public String getTypeID() {
-		return "org.csstudio.opibuilder.widgets.TextIndicator"; //$NON-NLS-1$;
+		return "org.csstudio.opibuilder.widgets.TextUpdate"; //$NON-NLS-1$;
 	}
 	
 	

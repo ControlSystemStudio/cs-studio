@@ -2,7 +2,6 @@ package org.csstudio.opibuilder.widgets.model;
 
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
-import org.eclipse.swt.graphics.RGB;
 
 public class RectangleModel extends AbstractWidgetModel {
 	

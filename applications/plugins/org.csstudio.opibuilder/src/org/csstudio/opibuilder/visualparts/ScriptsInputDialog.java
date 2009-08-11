@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
-import org.csstudio.opibuilder.properties.support.ScriptData;
-import org.csstudio.opibuilder.properties.support.ScriptsInput;
+import org.csstudio.opibuilder.script.ScriptData;
+import org.csstudio.opibuilder.script.ScriptsInput;
 import org.csstudio.platform.ui.dialogs.ResourceSelectionDialog;
 import org.csstudio.platform.ui.swt.stringtable.StringTableEditor;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
@@ -35,6 +35,7 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
 public class ScriptsInputDialog extends Dialog {
 	
 	private Action addAction;
+	private Action editAction;
 	private Action removeAction;
 	private Action moveUpAction;
 	private Action moveDownAction;
@@ -123,9 +124,11 @@ public class ScriptsInputDialog extends Dialog {
 		toolBar.setLayoutData(grid);
 		createActions();
 		toolbarManager.add(addAction);
+		toolbarManager.add(editAction);
 		toolbarManager.add(removeAction);
 		toolbarManager.add(moveUpAction);
 		toolbarManager.add(moveDownAction);
+		
 		toolbarManager.update(true);
 		
 		scriptsViewer = createScriptsTableViewer(toolBarComposite);
@@ -159,6 +162,7 @@ public class ScriptsInputDialog extends Dialog {
 			removeAction.setEnabled(true);
 			moveUpAction.setEnabled(true);
 			moveDownAction.setEnabled(true);
+			editAction.setEnabled(true);
 			pvsEditor.updateInput(((ScriptData) selection
 					.getFirstElement()).getPVList());
 			pvsEditor.setEnabled(true);
@@ -167,6 +171,7 @@ public class ScriptsInputDialog extends Dialog {
 			moveUpAction.setEnabled(false);
 			moveDownAction.setEnabled(false);
 			pvsEditor.setEnabled(false);
+			editAction.setEnabled(false);
 		}
 	}
 	
@@ -236,6 +241,32 @@ public class ScriptsInputDialog extends Dialog {
 				.getImageDescriptorFromPlugin(OPIBuilderPlugin.PLUGIN_ID,
 						"icons/add.gif"));
 		
+		editAction = new Action("Edit") {
+			@Override
+			public void run() {
+				IPath path;		
+				IStructuredSelection selection = (IStructuredSelection) scriptsViewer.getSelection();
+				if (!selection.isEmpty()
+						&& selection.getFirstElement() instanceof ScriptData) {
+					ResourceSelectionDialog rsd = new ResourceSelectionDialog(
+					Display.getCurrent().getActiveShell(), "Select a java script file", new String[]{"js"});
+					if (rsd.open() == Window.OK) {
+						if (rsd.getSelectedResource() != null) {
+							path = rsd.getSelectedResource();
+							scriptDataList.get(scriptDataList.indexOf(
+									(ScriptData)selection.getFirstElement())).setPath(path);
+							refreshScriptsViewer((ScriptData)selection.getFirstElement());
+						}
+					}					
+				}
+				
+			}
+		};
+		editAction.setToolTipText("Change the script path");
+		editAction.setImageDescriptor(CustomMediaFactory.getInstance()
+				.getImageDescriptorFromPlugin(OPIBuilderPlugin.PLUGIN_ID,
+						"icons/folder.gif"));
+		editAction.setEnabled(false);
 		removeAction = new Action() {
 			@Override
 			public void run() {

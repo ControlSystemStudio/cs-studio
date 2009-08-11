@@ -10,9 +10,9 @@ import java.util.Set;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.properties.WidgetPropertyChangeListener;
-import org.csstudio.opibuilder.properties.support.ScriptData;
-import org.csstudio.opibuilder.properties.support.ScriptsInput;
-import org.csstudio.opibuilder.util.RhinoScriptService;
+import org.csstudio.opibuilder.script.ScriptService;
+import org.csstudio.opibuilder.script.ScriptData;
+import org.csstudio.opibuilder.script.ScriptsInput;
 import org.csstudio.opibuilder.util.UIBundlingThread;
 import org.csstudio.opibuilder.visualparts.BorderFactory;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
@@ -33,6 +33,7 @@ import org.eclipse.draw2d.LabeledBorder;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.internal.handlers.WizardHandler.New;
@@ -121,61 +122,28 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 			if(executionMode == ExecutionMode.RUN_MODE){
 				pvMap.clear();
 				ScriptsInput scriptsInput = getCastedModel().getScriptsInput();
-				final Context scriptContext = RhinoScriptService.getInstance().getScriptContext();
-				final Scriptable scriptScope = new ImporterTopLevel(scriptContext);					
 				
-				for(ScriptData scriptData : scriptsInput.getScriptList()){					
-					IFile[] files = 
-						ResourcesPlugin.getWorkspace().getRoot().findFilesForLocation(
-								ResourcesPlugin.getWorkspace().getRoot().getLocation().append(scriptData.getPath()));
-					
-					if(files.length != 1)
-						continue;
-					
-					
+				for(ScriptData scriptData : scriptsInput.getScriptList()){				
 					try {
-						BufferedReader reader = new BufferedReader(
-								new InputStreamReader(files[0].getContents()));	
-						
-						//compile and executes
-						final Script script = scriptContext.compileReader(reader, "script", 1, null);
-						reader.close();
-						
-						Object widgetController = Context.javaToJS(this, scriptScope);
-						ScriptableObject.putProperty(scriptScope, "widgetController", widgetController);	
 						PV[] pvArray = new PV[scriptData.getPVList().size()];
 						int i = 0;
 						for(String pvName : scriptData.getPVList()){
 							if(pvMap.containsKey(pvName)){
-								pvArray[i] = pvMap.get(pvMap);
+								pvArray[i] = pvMap.get(pvName);
 							}else{
 								try {
-									pvArray[i] = PVFactory.createPV(pvName);
-									pvMap.put(pvName, pvArray[i]);
-									pvArray[i].addListener(new PVListener() {
-										
-										public void pvValueUpdate(PV pv) {
-											UIBundlingThread.getInstance().addRunnable(new Runnable() {
-												
-												public void run() {
-												//	script.exec(scriptContext, scriptScope);
-												}
-											});
-										}
-										
-										public void pvDisconnected(PV pv) {
-											
-										}
-									});
+									PV pv = PVFactory.createPV(pvName);
+									pvMap.put(pvName, pv);	
+									pvArray[i] = pv;
 								} catch (Exception e) {
 									CentralLogger.getInstance().error(this, "Unable to connect to PV:" +
 											pvName);
 								}
 							}
 							i++;							
-						}
+						}	
 						
-						ScriptableObject.putProperty(scriptScope, "pvArray", pvArray);						
+						ScriptService.getInstance().registerScript(scriptData, this, pvArray);
 						for(PV pv : pvArray)
 							try {
 								pv.start();
@@ -183,21 +151,19 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 								CentralLogger.getInstance().error(this, "Unable to connect to PV:" +
 										pv.getName());
 							}
-						script.exec(scriptContext, scriptScope);
-					} catch (CoreException e) {
-						e.printStackTrace();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}					
+						
+					} catch (Exception e) {
+						String errorInfo = "Failed to register script: " +
+								scriptData.getPath().toString() + ". ";
+						MessageDialog.openError(null, "script error", errorInfo + e.getMessage());
+						CentralLogger.getInstance().error(this, errorInfo, e);
+					} 				
 				}
-				
-				
 			}
-			
-			
-			
 		}		
 	}
+	
+
 
 	@Override
 	public void deactivate() {
@@ -208,11 +174,16 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 				getCastedModel().getProperty(id).removeAllPropertyChangeListeners();
 				propertyListenerMap.clear();
 			}
-			//if(executionMode == ExecutionMode.RUN_MODE)
-			//	Context.exit();
-			
-			for(PV pv : pvMap.values())
-				pv.stop();
+			if(executionMode == ExecutionMode.RUN_MODE){
+				ScriptsInput scriptsInput = getCastedModel().getScriptsInput();
+				
+				for(final ScriptData scriptData : scriptsInput.getScriptList()){
+					ScriptService.getInstance().unregisterScript(scriptData);
+				}
+				
+				for(PV pv : pvMap.values())
+					pv.stop();
+			}
 		}
 		
 	}

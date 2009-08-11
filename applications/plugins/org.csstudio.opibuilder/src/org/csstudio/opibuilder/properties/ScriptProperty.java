@@ -3,9 +3,9 @@ package org.csstudio.opibuilder.properties;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import org.csstudio.opibuilder.properties.support.ScriptData;
 import org.csstudio.opibuilder.properties.support.ScriptPropertyDescriptor;
-import org.csstudio.opibuilder.properties.support.ScriptsInput;
+import org.csstudio.opibuilder.script.ScriptData;
+import org.csstudio.opibuilder.script.ScriptsInput;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
