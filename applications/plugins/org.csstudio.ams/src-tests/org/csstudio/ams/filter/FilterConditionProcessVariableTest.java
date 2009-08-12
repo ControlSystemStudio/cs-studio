@@ -185,6 +185,12 @@ public class FilterConditionProcessVariableTest {
 			// TODO Auto-generated method stub
 			return false;
 		}
+
+        public int getNumberOfActiveConnectors()
+        {
+            // TODO Auto-generated method stub
+            return 0;
+        }
 		
 	}
 
