@@ -43,8 +43,8 @@ public class RhinoScriptStore {
 	public RhinoScriptStore(IPath path, AbstractBaseEditPart editpart, PV[] pvArray) throws Exception {	
 		this.scriptPath = path;
 		errorInScript = false;
-		
 		scriptContext = ScriptService.getInstance().getScriptContext();
+	
 		scriptScope = new ImporterTopLevel(scriptContext);	
 		
 		//read file

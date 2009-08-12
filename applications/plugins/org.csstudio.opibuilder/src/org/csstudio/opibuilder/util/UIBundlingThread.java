@@ -82,10 +82,15 @@ public final class UIBundlingThread implements Runnable {
 				}
 			});
 		} else {
-			Runnable r;
-			while ((r = tasksQueue.poll()) != null) {
-				r.run();
-			}
+			display.asyncExec(new Runnable(){
+				public void run() {
+					Runnable r;
+					while ((r = tasksQueue.poll()) != null) {
+						r.run();
+					}
+				}
+			});
+			
 		}
 	}
 

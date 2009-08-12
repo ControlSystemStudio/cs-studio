@@ -25,10 +25,10 @@ public class GaugeModel extends AbstractMarkedWidgetModel{
 	private static final RGB DEFAULT_NEEDLE_COLOR = new RGB(255,0,0);
 	
 	/** The default value of the height property. */	
-	private static final int DEFAULT_HEIGHT = 200;
+	private static final int DEFAULT_HEIGHT = 150;
 	
 	/** The default value of the width property. */
-	private static final int DEFAULT_WIDTH = 200;
+	private static final int DEFAULT_WIDTH = 150;
 	
 
 	/**
@@ -49,10 +49,10 @@ public class GaugeModel extends AbstractMarkedWidgetModel{
 				WidgetPropertyCategory.Display, true, DEFAULT_NEEDLE_COLOR));	
 		
 		addProperty(new BooleanProperty(PROP_EFFECT3D, "3D Effect", 
-				WidgetPropertyCategory.Display, true, true));	
+				WidgetPropertyCategory.Display, true, false));	
 		
 		addProperty(new BooleanProperty(PROP_RAMP_GRADIENT, "Ramp Gradient", 
-				WidgetPropertyCategory.Display, true, true));	
+				WidgetPropertyCategory.Display, true, false));	
 		
 		setPropertyDescription(PROP_SHOW_MARKERS, "Show Ramp");
 	}	

@@ -6,8 +6,10 @@ import java.util.Map;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.util.UIBundlingThread;
 import org.csstudio.platform.data.ISeverity;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.utility.pv.PV;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.mozilla.javascript.Context;
 
 /**The center service for script execution.
@@ -55,11 +57,22 @@ public class ScriptService {
 	 * @param pvArray
 	 * @throws Exception
 	 */
-	public void registerScript(ScriptData scriptData, AbstractBaseEditPart editpart, PV[] pvArray) throws Exception{
-		//if(scriptMap.containsKey(scriptData))
-		//	throw new Exception("The script has been registered before.");
-		RhinoScriptStore scriptStore = new RhinoScriptStore(scriptData.getPath(), editpart, pvArray);
-		scriptMap.put(scriptData, scriptStore);
+	public void registerScript(final ScriptData scriptData, final AbstractBaseEditPart editpart, final PV[] pvArray){		
+		UIBundlingThread.getInstance().addRunnable(new Runnable(){
+			public void run() {
+				RhinoScriptStore scriptStore = null;
+				try {
+					scriptStore = new RhinoScriptStore(scriptData.getPath(), editpart, pvArray);
+					scriptMap.put(scriptData, scriptStore);
+				}catch (Exception e) {
+					String errorInfo = "Failed to register script: " +
+					scriptData.getPath().toString() + ". ";
+					MessageDialog.openError(null, "script error", errorInfo + e.getMessage());
+					CentralLogger.getInstance().error(this, errorInfo, e);
+				} 				
+			}
+		});
+		
 	}
 	
 	public void unregisterScript(ScriptData scriptData){
@@ -68,7 +81,12 @@ public class ScriptService {
 	
 	
 	public void exit(){
-		Context.exit();
+		UIBundlingThread.getInstance().addRunnable(new Runnable(){
+			public void run() {
+				Context.exit();
+			}			
+		});
+		
 		instance =  null;
 	}
 	

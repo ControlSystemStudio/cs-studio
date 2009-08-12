@@ -28,7 +28,7 @@ public abstract class AbstractPVWidgetModel extends AbstractWidgetModel {
 				true, ""), new PVValueProperty(PROP_PVVALUE, null));
 		
 		addProperty(new BooleanProperty(PROP_BORDER_ALARMSENSITIVE, 
-				"Alarm Sensitive", WidgetPropertyCategory.Border, true, false));
+				"Alarm Sensitive", WidgetPropertyCategory.Border, true, true));
 		addProperty(new BooleanProperty(PROP_FORECOLOR_ALARMSENSITIVE, 
 				"ForeColor Alarm Sensitive", WidgetPropertyCategory.Display, true, false));
 		addProperty(new BooleanProperty(PROP_BACKCOLOR_ALARMSENSITIVE, 

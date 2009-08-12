@@ -2,6 +2,7 @@ package org.csstudio.opibuilder.widgets.editparts;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -321,7 +322,10 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 				//add trace
 				if((Integer)newValue > currentTracesAmount){
 					for(int i=0; i<(Integer)newValue - currentTracesAmount; i++){	
-						for(TraceProperty traceProperty : TraceProperty.values()){				
+						for(TraceProperty traceProperty : TraceProperty.values()){	
+							if(traceProperty == TraceProperty.XPV_VALUE ||
+									traceProperty == TraceProperty.YPV_VALUE)
+								continue;
 							String propID = XYGraphModel.makeTracePropID(
 								traceProperty.propIDPre, i + currentTracesAmount);
 							model.setPropertyVisible(propID, true); 	
@@ -432,10 +436,16 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 			if(newValue == null || !(newValue instanceof IValue))
 				break;
 			IValue y_value = (IValue)newValue;
-			if(ValueUtil.getSize(y_value) > 1){
-				dataProvider.setCurrentYDataArray(ValueUtil.getDoubleArray(y_value));
-			}else
-				dataProvider.setCurrentYData(ValueUtil.getDouble(y_value));			
+			if(ValueUtil.getSize(y_value) == 1 && trace.getXAxis().isDateEnabled() && dataProvider.isChronological()){
+				long time = y_value.getTime().seconds() * 1000 + y_value.getTime().nanoseconds()/1000000;				
+				dataProvider.setCurrentYData(ValueUtil.getDouble(y_value), time);				
+			}else{				
+				if(ValueUtil.getSize(y_value) > 1){
+					dataProvider.setCurrentYDataArray(ValueUtil.getDoubleArray(y_value));
+				}else
+					dataProvider.setCurrentYData(ValueUtil.getDouble(y_value));	
+			}
+					
 			break;	
 		default:
 			break;

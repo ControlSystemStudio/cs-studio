@@ -50,7 +50,7 @@ public class XMeterModel extends AbstractMarkedWidgetModel{
 		
 		
 		addProperty(new BooleanProperty(PROP_RAMP_GRADIENT, "Ramp Gradient", 
-				WidgetPropertyCategory.Display, true, true));	
+				WidgetPropertyCategory.Display, true, false));	
 		
 		setPropertyDescription(PROP_SHOW_MARKERS, "Show Ramp");		
 		setPropertyValue(PROP_TRANSPARENT, false);

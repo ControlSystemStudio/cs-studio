@@ -1,8 +1,5 @@
 package org.csstudio.opibuilder.editparts;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -10,21 +7,16 @@ import java.util.Set;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.properties.WidgetPropertyChangeListener;
-import org.csstudio.opibuilder.script.ScriptService;
 import org.csstudio.opibuilder.script.ScriptData;
+import org.csstudio.opibuilder.script.ScriptService;
 import org.csstudio.opibuilder.script.ScriptsInput;
 import org.csstudio.opibuilder.util.UIBundlingThread;
 import org.csstudio.opibuilder.visualparts.BorderFactory;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
-import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
-import org.csstudio.utility.pv.PVListener;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -33,16 +25,9 @@ import org.eclipse.draw2d.LabeledBorder;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.ui.internal.handlers.WizardHandler.New;
 import org.eclipse.ui.progress.UIJob;
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.ImporterTopLevel;
-import org.mozilla.javascript.Script;
-import org.mozilla.javascript.Scriptable;
-import org.mozilla.javascript.ScriptableObject;
 
 /**The editpart for  {@link AbstractWidgetModel}
  * @author Xihui Chen
@@ -124,8 +109,8 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 				ScriptsInput scriptsInput = getCastedModel().getScriptsInput();
 				
 				for(ScriptData scriptData : scriptsInput.getScriptList()){				
-					try {
-						PV[] pvArray = new PV[scriptData.getPVList().size()];
+					
+						final PV[] pvArray = new PV[scriptData.getPVList().size()];
 						int i = 0;
 						for(String pvName : scriptData.getPVList()){
 							if(pvMap.containsKey(pvName)){
@@ -144,20 +129,20 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 						}	
 						
 						ScriptService.getInstance().registerScript(scriptData, this, pvArray);
-						for(PV pv : pvArray)
-							try {
-								pv.start();
-							} catch (Exception e) {
-								CentralLogger.getInstance().error(this, "Unable to connect to PV:" +
-										pv.getName());
+						UIBundlingThread.getInstance().addRunnable(new Runnable(){
+							public void run() {
+							for(PV pv : pvArray)
+								try {
+									pv.start();
+								} catch (Exception e) {
+									CentralLogger.getInstance().error(this, "Unable to connect to PV:" +
+											pv.getName());
+								}
+							
 							}
+						});
 						
-					} catch (Exception e) {
-						String errorInfo = "Failed to register script: " +
-								scriptData.getPath().toString() + ". ";
-						MessageDialog.openError(null, "script error", errorInfo + e.getMessage());
-						CentralLogger.getInstance().error(this, errorInfo, e);
-					} 				
+								
 				}
 			}
 		}		

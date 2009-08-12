@@ -55,7 +55,7 @@ public class TankModel extends AbstractMarkedWidgetModel{
 				WidgetPropertyCategory.Display, true, DEFAULT_FILL_COLOR));	
 		
 		addProperty(new BooleanProperty(PROP_EFFECT3D, "3D Effect", 
-				WidgetPropertyCategory.Display, true, true));	
+				WidgetPropertyCategory.Display, true, false));	
 
 		
 		addProperty(new ColorProperty(PROP_FILLBACKGROUND_COLOR, "Color Fillbackground",

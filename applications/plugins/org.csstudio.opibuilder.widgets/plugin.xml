@@ -88,7 +88,7 @@
             category="Monitors"
             description="A xy graph."
             editpart_class="org.csstudio.opibuilder.widgets.editparts.XYGraphEditPart"
-            icon="icons/image.gif"
+            icon="icons/XYGraph.gif"
             model_class="org.csstudio.opibuilder.widgets.model.XYGraphModel"
             name="XY Graph"
             typeId="org.csstudio.opibuilder.widgets.xyGraph">

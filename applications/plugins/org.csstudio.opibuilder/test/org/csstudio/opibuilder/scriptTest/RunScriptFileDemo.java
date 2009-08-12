@@ -1,12 +1,14 @@
 package org.csstudio.opibuilder.scriptTest;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
-
-
-import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Dialog;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ImporterTopLevel;
 import org.mozilla.javascript.Script;
@@ -17,7 +19,7 @@ public class RunScriptFileDemo {
   public static void main(String[] args) throws IOException {
 	  
 	  
-	  String testFile = "test/org/csstudio/opibuilder/scriptTest/ComplexSWTDialogs.js";
+	  final String testFile = "test/org/csstudio/opibuilder/scriptTest/ComplexSWTDialogs.js";
 	/* 
 	// use Java 1.6 script engine 
 	  ScriptEngineManager manager = new ScriptEngineManager();
@@ -63,22 +65,47 @@ public class RunScriptFileDemo {
 	scriptContext.evaluateReader(scriptScope, reader, "script file", 1, null);	
 	reader.close();	
 	Context.exit();
+	Display display = Display.getCurrent();
+	final Shell shell = new Shell();
+	shell.setSize(800, 500);
+    shell.open();
+    shell.setText("XY Graph Test");
+    
+    
+    
+	display.asyncExec(new Runnable() {
 	
-	Context scriptContext2 = Context.enter();
-	final Scriptable scriptScope2 = new ImporterTopLevel(scriptContext);
+		public void run() {
+			try {
+				Context scriptContext2 = Context.enter();
+				final Scriptable scriptScope2 = new ImporterTopLevel(scriptContext2);
+				
+				BufferedReader reader2 = new BufferedReader(new FileReader(testFile));		
+				//compile and executes
+				Object hello2 = Context.javaToJS(new Hello("hello Rhino 2"), scriptScope2);
+				ScriptableObject.putProperty(scriptScope2, "x", hello2);	
+				Script script = scriptContext2.compileReader(reader2, "script", 1, null);
+				reader2.close();
+				script.exec(scriptContext2, scriptScope2);
+				Object hello3 = Context.javaToJS(new Hello("hello Rhino 3"), scriptScope2);
+				ScriptableObject.putProperty(scriptScope2, "x", hello3);
+				script.exec(scriptContext2, scriptScope2);
+				//.evaluateReader(scriptScope2, reader2, "script file", 1, null);	
+				Context.exit();
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	});
 	
-	BufferedReader reader2 = new BufferedReader(new FileReader(testFile));		
-	//compile and executes
-	Object hello2 = Context.javaToJS(new Hello("hello Rhino 2"), scriptScope2);
-	ScriptableObject.putProperty(scriptScope2, "x", hello2);	
-	Script script = scriptContext2.compileReader(reader2, "script", 1, null);
-	reader2.close();
-	script.exec(scriptContext2, scriptScope2);
-	Object hello3 = Context.javaToJS(new Hello("hello Rhino 3"), scriptScope2);
-	ScriptableObject.putProperty(scriptScope2, "x", hello3);
-	script.exec(scriptContext2, scriptScope2);
-	//.evaluateReader(scriptScope2, reader2, "script file", 1, null);	
-	Context.exit();
+	while (!shell.isDisposed()) {
+      if (!display.readAndDispatch())
+        display.sleep();
+    }
     
     
   }

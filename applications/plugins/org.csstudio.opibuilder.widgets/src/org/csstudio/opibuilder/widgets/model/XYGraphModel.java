@@ -78,8 +78,10 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 		UPDATE_DELAY("UpdateDelay", "Update Delay"),
 		TRIGGER_VALUE("TriggerValue", "Trigger Value"),
 		CLEAR_TRACE("ClearTrace", "Clear Plot History"),
-		XPV_VALUE("XPVValue", "X PV"),
-		YPV_VALUE("YPVValue", "Y PV"),
+		XPV("XPV", "X PV"),
+		YPV("YPV", "Y PV"),
+		XPV_VALUE("XPVValue", "X PV Value"),
+		YPV_VALUE("YPVValue", "Y PV Value"),
 		CHRONOLOGICAL("Chronological", "Chronological"),		
 		TRACE_COLOR("TraceColor","Trace Color"),
 		XAXIS_INDEX("XAxisIndex", "X Axis Index"),
@@ -177,6 +179,16 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 	 * The ID of this widget model.
 	 */
 	public static final String ID = "org.csstudio.opibuilder.widgets.xyGraph"; //$NON-NLS-1$	
+	
+	/** The default value of the height property. */	
+	private static final int DEFAULT_HEIGHT = 250;
+	
+	/** The default value of the width property. */
+	private static final int DEFAULT_WIDTH = 400;
+	
+	public XYGraphModel() {
+		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+	}
 
 	@Override
 	protected void configureProperties() {
@@ -337,10 +349,13 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 		case XAXIS_INDEX:
 			addProperty(new ComboProperty(propID, traceProperty.toString(), category, true, AXES_ARRAY, 0));
 			break;
-		case XPV_VALUE:
-		case YPV_VALUE:
-			addPVProperty(new StringProperty(propID+".pv", traceProperty.toString(), category, true, ""), 
-					new PVValueProperty(propID, null));			
+		case XPV:
+			addPVProperty(new StringProperty(propID, traceProperty.toString(), category, true, ""), 
+					new PVValueProperty(makeTracePropID(TraceProperty.XPV_VALUE.propIDPre, traceIndex), null));			
+			break;
+		case YPV:
+			addPVProperty(new StringProperty(propID, traceProperty.toString(), category, true, ""), 
+					new PVValueProperty(makeTracePropID(TraceProperty.YPV_VALUE.propIDPre, traceIndex), null));			
 			break;
 		case YAXIS_INDEX:
 			addProperty(new ComboProperty(propID, traceProperty.toString(), category, true, AXES_ARRAY, 1));

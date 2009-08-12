@@ -73,7 +73,6 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
 								INumericMetaData new_meta = (INumericMetaData)value.getMetaData();
 								if(meta == null || !meta.equals(new_meta)){
 									meta = new_meta;
-									System.out.println("setted!");
 									model.setPropertyValue(AbstractMarkedWidgetModel.PROP_MAX,	meta.getDisplayHigh());
 									model.setPropertyValue(AbstractMarkedWidgetModel.PROP_MIN,	meta.getDisplayLow());					
 									model.setPropertyValue(AbstractMarkedWidgetModel.PROP_HI_LEVEL,	meta.getWarnHigh());

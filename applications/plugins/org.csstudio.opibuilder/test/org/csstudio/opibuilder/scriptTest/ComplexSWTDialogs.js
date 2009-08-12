@@ -6,7 +6,7 @@ importPackage(Packages.org.eclipse.jface.dialogs);
 importPackage(Packages.java.lang);
 
 
-		var display = new Display();
+		//var display = new Display();
 		var shell = new Shell();
 		shell.setSize(465, 200);
 		shell.setText("MessageDialog");
@@ -91,12 +91,12 @@ importPackage(Packages.java.lang);
 	*/
 		shell.open();
 		shell.layout();
-		while (!shell.isDisposed()) {
+	/*	while (!shell.isDisposed()) {
 			if (!display.readAndDispatch())
 				display.sleep();
 		}
-		
-		display.dispose();
+		*/
+		//display.dispose();
 
 
   
