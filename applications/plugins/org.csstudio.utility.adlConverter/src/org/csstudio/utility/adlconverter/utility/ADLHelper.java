@@ -24,23 +24,24 @@
  */
 package org.csstudio.utility.adlconverter.utility;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.simpledal.ConnectionState;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DisplayModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
 import org.csstudio.utility.adlconverter.Activator;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.ui.preferences.ADLConverterPreferenceConstants;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.draw2d.ColorConstants;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.graphics.TextLayout;
 
 /**
  * @author hrickens
@@ -52,6 +53,7 @@ public final class ADLHelper {
     /** Contain all colors of an ADL Colormap as a RGBColor. */
     private static RGBColor[] _rgbColor;
     private static String PATH_REMOVE_PART = Activator.getDefault().getPreferenceStore().getString(ADLConverterPreferenceConstants.P_STRING_Path_Remove_Absolut_Part);
+    private static String targetpath;
     /**
      * The default Constructor.
      */
@@ -252,7 +254,7 @@ public final class ADLHelper {
         if (fontSize <= 0) {
             fontSize = 10;
         }
-
+        /*
         if (text != null && text.length() > 0) {
             TextLayout tl = new TextLayout(null);
             tl.setText(text);
@@ -264,7 +266,7 @@ public final class ADLHelper {
                 tl.setFont(f);
             }
             tl.dispose();
-        }
+        }*/
         return fontSize;
     }
 
@@ -275,18 +277,25 @@ public final class ADLHelper {
      * @return the Channel field.
      */
     public static String setChan(final AbstractWidgetModel widgetModel, final String[] chan) {
+    	return setChan(widgetModel, chan, "");
+    }
+    
+    
+    public static String setChan(final AbstractWidgetModel widgetModel, final String[] chan, final String which) {
         String postfix = ""; //$NON-NLS-1$
         if (chan[0].length() == 0) {
             return ""; //$NON-NLS-1$
-        } else if (chan.length > 2 && chan[1].startsWith("$")) { //$NON-NLS-1$
-            CentralLogger.getInstance().debug(ADLHelper.class, Arrays.toString(chan));
-            widgetModel.setAliasValue("channel", chan[0]); //$NON-NLS-1$
-            widgetModel.setPrimarPv("$channel$");
+        } 
+        if (chan.length > 2 && chan[1].startsWith("$")) { //$NON-NLS-1$
+        	CentralLogger.getInstance().debug(ADLHelper.class, Arrays.toString(chan));
+            widgetModel.setAliasValue("channel".concat(which), chan[0]); //$NON-NLS-1$            
         } else {
             CentralLogger.getInstance().debug(ADLHelper.class, Arrays.toString(chan));
-            widgetModel.setAliasValue("channel", chan[1]); //$NON-NLS-1$
-            widgetModel.setPrimarPv("$channel$");
+            widgetModel.setAliasValue("channel".concat(which), chan[1]); //$NON-NLS-1$            
         }
+        
+        if(which.equals(""))
+        	widgetModel.setPrimarPv("$channel$");
         // if(chan.length>2&&chan[chan.length-1].startsWith(".")){ //$NON-NLS-1$
         // postfix = chan[chan.length-1];
         // }
@@ -325,11 +334,118 @@ public final class ADLHelper {
      */
     public static String cleanFilePath(String path) {
         String source = Activator.getDefault().getPreferenceStore().getString(ADLConverterPreferenceConstants.P_STRING_Path_Remove_Absolut_Part);
+    	if(source == null || source.equals(""))
+    		return path;
+    	
         do {
             path = path.replace(source, "");
             source = source.substring(source.indexOf('/', 1));
         } while(source.lastIndexOf('/')>0);
         return path;
+    }
+    
+    
+    public static void setTargetPath(String path){
+    	targetpath = path;
+    	//targetpath = ResourcesPlugin.getWorkspace().getRoot().getRawLocation().append(path).toString();    	
+    }
+    
+    public static String getTargetPath(){
+    	return targetpath;
+    }
+
+    
+    /**
+     * Helper method for findWidgetPath
+     */
+    private static String checkDisplayPath(String path, String name){
+    	path = path.trim();
+    	if(path.endsWith("/"))
+    		path = path.substring(0, path.length()-1);
+    	
+    	// Both file formats are checked, to ensure that if multiple displays are being
+    	// converted out of order, this method doesn't break by failing to find
+    	// the yet to be converted <filename>.adl display.
+    	File file1 = new File(path + "/" + name + ".adl");
+    	File file2 = new File(path + "/" + name + ".css-sds");
+    	Path path1 = new Path(path + "/" + name + ".adl");
+    	Path path2 = new Path(path + "/" + name + ".css-sds");
+    	
+    	IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+    	if(file1.exists() || file2.exists())
+    		return path.replaceAll(root.getRawLocation().toString(), "");
+    	if(root.exists(path1) || root.exists(path2))
+    		return root.getFullPath().append(path).toString();
+    	 
+    	return null;
+    }
+
+    /**
+     * Helper method for findWidgetPath
+     */
+    private static String checkImagePath(String path, String name){
+    	path = path.trim();
+    	if(path.endsWith("/"))
+    		path = path.substring(0, path.length()-1);
+    	
+    	File file = new File(path + "/" + name);
+    	Path path1 = new Path(path + "/" + name);
+    	
+    	IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+    	if(file.exists())
+    		return path.replaceAll(root.getRawLocation().toString(), "");
+    	if(root.exists(path1))
+    		return root.getFullPath().append(path).toString();
+    	 
+    	return null;
+    }
+
+    
+    /**
+     * First checks the parent path of the calling display, then the workspace path, then
+     * each of the display paths provided in the preferences for the source file
+     * of this widget.  Returns the FIRST directory where the display/image exists. 
+     */
+    public static String findWidgetPath(String name) {
+    	String parent = getTargetPath();
+    	String path = null;
+    	String allpaths = Activator.getDefault().getPreferenceStore().getString(ADLConverterPreferenceConstants.P_STRING_Display_Paths);
+    	String[] displaypaths = allpaths.split(",");
+    	if(name.startsWith("/"))
+    		name = name.substring(1,name.length());
+
+    	if(name.endsWith(".css-sds")){
+    		name = name.replaceAll(".css-sds", "");
+    		
+    		path = checkDisplayPath(parent, name);
+    		if(path != null)
+    			return path;
+    		path = checkDisplayPath("", name);
+    		if(path != null)
+    			return path;
+    		
+    		for(String dpath : displaypaths){
+    			path = checkDisplayPath(dpath, name);
+    			if(path != null)
+    				return path;
+    		}
+    	}
+    	if(name.endsWith(".gif")){
+    		path = checkImagePath(parent, name);
+    		if(path != null)
+    			return path;
+    		path = checkImagePath("", name);
+    		if(path != null)
+    			return path;
+    		
+    		for(String dpath : displaypaths){
+    			path = checkImagePath(dpath, name);
+    			if(path != null)
+    				return path;
+    		}
+    	}
+    	// Return the default if nothing else is found
+    	return Activator.getDefault().getPreferenceStore().getString(ADLConverterPreferenceConstants.P_STRING_Path_Target);
     }
 
 }
