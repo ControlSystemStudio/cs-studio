@@ -12,6 +12,8 @@ import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
+import java.io.File;
+
 public class ADLPreferencePage extends FieldEditorPreferencePage implements
         IWorkbenchPreferencePage {
 
@@ -21,24 +23,44 @@ public class ADLPreferencePage extends FieldEditorPreferencePage implements
         setPreferenceStore(Activator.getDefault().getPreferenceStore());
     }
     
-    @Override
-    protected void createFieldEditors() {
+    /**
+     * Checks for the existence of the requested preference both relative
+     * to the workspace and to the root system directory.
+     *  
+     * @param constant: ADLConverterPreferenceConstants
+     */
+    private void checkPreference(String constant){
+    	String defPref = getPreferenceStore().getDefaultString(constant);
+        String pref = getPreferenceStore().getString(constant);
         
-        DirectoryFieldEditor source = new DirectoryFieldEditor(ADLConverterPreferenceConstants.P_STRING_Path_Source,"Source Path:",getFieldEditorParent());
-        addField(source);
-        String defPref = getPreferenceStore().getDefaultString(ADLConverterPreferenceConstants.P_STRING_Path_Target);
-        String pref = getPreferenceStore().getString(ADLConverterPreferenceConstants.P_STRING_Path_Target);
         if(defPref.equals(pref)){
             IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-            IFolder file = root.getFolder(new Path(pref));
-            if(!file.exists()){
-                getPreferenceStore().setValue(ADLConverterPreferenceConstants.P_STRING_Path_Target, "/NoPath");
-            }
-        }
+            File file1 = new File(pref);
+            IFolder file2 = null;
+            try{
+            	file2 = root.getFolder(new Path(pref));
+            }catch (Exception e) {}
+            
+            if((file1 == null || !file1.exists()) && (file2 == null || !file2.exists()))
+                getPreferenceStore().setValue(constant, "/NoPath");
+        }        
+    }
+    
+    
+    @Override
+    protected void createFieldEditors() {
+        //checkPref(ADLConverterPreferenceConstants.P_STRING_Path_Source);
+    	//checkPref(ADLConverterPreferenceConstants.P_STRING_Path_Relativ_Target);
+        checkPreference(ADLConverterPreferenceConstants.P_STRING_Path_Target);
+        
+        DirectoryFieldEditor source = new DirectoryFieldEditor(ADLConverterPreferenceConstants.P_STRING_Path_Source,"Source Path:",getFieldEditorParent());
+    	addField(source);
+        
         FieldEditor targetFieldEditor = new ContainerFieldEditor(ADLConverterPreferenceConstants.P_STRING_Path_Target,"Target Path:",getFieldEditorParent());
         addField(targetFieldEditor);
         addField(new DirectoryFieldEditor(ADLConverterPreferenceConstants.P_STRING_Path_Relativ_Target,"Relativ Target Path:",getFieldEditorParent()));
         addField(new StringFieldEditor(ADLConverterPreferenceConstants.P_STRING_Path_Remove_Absolut_Part,"Remove absolute path part:", getFieldEditorParent()));
+        addField(new StringFieldEditor(ADLConverterPreferenceConstants.P_STRING_Display_Paths,"Display paths separated by commas:", getFieldEditorParent()));
     }
 
     /**
