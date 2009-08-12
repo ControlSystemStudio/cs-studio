@@ -83,6 +83,15 @@
             model_class="org.csstudio.opibuilder.widgets.model.XMeterModel"
             name="Meter"
             typeId="org.csstudio.opibuilder.widgets.meter">
+      </widget>
+      <widget
+            category="Monitors"
+            description="A xy graph."
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.XYGraphEditPart"
+            icon="icons/image.gif"
+            model_class="org.csstudio.opibuilder.widgets.model.XYGraphModel"
+            name="XY Graph"
+            typeId="org.csstudio.opibuilder.widgets.xyGraph">
       </widget>     
    </extension>
 

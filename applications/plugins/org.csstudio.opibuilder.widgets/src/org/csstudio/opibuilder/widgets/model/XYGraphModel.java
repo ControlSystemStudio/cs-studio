@@ -1,6 +1,7 @@
 package org.csstudio.opibuilder.widgets.model;
 
 
+import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.ColorProperty;
@@ -8,6 +9,7 @@ import org.csstudio.opibuilder.properties.ComboProperty;
 import org.csstudio.opibuilder.properties.DoubleProperty;
 import org.csstudio.opibuilder.properties.FontProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
+import org.csstudio.opibuilder.properties.PVValueProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.swt.xygraph.dataprovider.CircularBufferDataProvider.PlotMode;
@@ -23,7 +25,7 @@ import org.eclipse.swt.graphics.RGB;
  * The model for XYGraph
  * @author Xihui Chen
  */
-public class XYGraphModel extends AbstractWidgetModel {
+public class XYGraphModel extends AbstractPVWidgetModel {
 	
 	public class XYGraphCategory implements WidgetPropertyCategory{
 		private String name;
@@ -37,9 +39,6 @@ public class XYGraphModel extends AbstractWidgetModel {
 			return name;
 		}
 		
-		public String name() {
-			return name;
-		}
 	}
 	
 	public enum AxisProperty{
@@ -79,10 +78,9 @@ public class XYGraphModel extends AbstractWidgetModel {
 		UPDATE_DELAY("UpdateDelay", "Update Delay"),
 		TRIGGER_VALUE("TriggerValue", "Trigger Value"),
 		CLEAR_TRACE("ClearTrace", "Clear Plot History"),
-		XDATA("XData", "X Data"),
-		YDATA("YData", "Y Data"),
-		CHRONOLOGICAL("Chronological", "Chronological"),
-		YTIMESTAMP("YTimeStamp", "Y Data Timestamp"),
+		XPV_VALUE("XPVValue", "X PV"),
+		YPV_VALUE("YPVValue", "Y PV"),
+		CHRONOLOGICAL("Chronological", "Chronological"),		
 		TRACE_COLOR("TraceColor","Trace Color"),
 		XAXIS_INDEX("XAxisIndex", "X Axis Index"),
 		YAXIS_INDEX("YAxisIndex", "Y Axis Index"),
@@ -178,7 +176,7 @@ public class XYGraphModel extends AbstractWidgetModel {
 	/**
 	 * The ID of this widget model.
 	 */
-	public static final String ID = "org.csstudio.sns.widgets.XYGraph"; //$NON-NLS-1$	
+	public static final String ID = "org.csstudio.opibuilder.widgets.xyGraph"; //$NON-NLS-1$	
 
 	@Override
 	protected void configureProperties() {
@@ -339,15 +337,13 @@ public class XYGraphModel extends AbstractWidgetModel {
 		case XAXIS_INDEX:
 			addProperty(new ComboProperty(propID, traceProperty.toString(), category, true, AXES_ARRAY, 0));
 			break;
-		case XDATA:
-		case YDATA:
-			addProperty(new DoubleArrayProperty(propID, traceProperty.toString(), category, true, new double[0]));
+		case XPV_VALUE:
+		case YPV_VALUE:
+			addPVProperty(new StringProperty(propID+".pv", traceProperty.toString(), category, true, ""), 
+					new PVValueProperty(propID, null));			
 			break;
 		case YAXIS_INDEX:
 			addProperty(new ComboProperty(propID, traceProperty.toString(), category, true, AXES_ARRAY, 1));
-			break;
-		case YTIMESTAMP:
-			addProperty(new StringProperty(propID, traceProperty.toString(), category, true, ""));
 			break;
 		default:
 			break;

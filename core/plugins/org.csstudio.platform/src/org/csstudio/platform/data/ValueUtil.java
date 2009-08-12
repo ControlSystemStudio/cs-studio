@@ -92,6 +92,47 @@ public class ValueUtil
         return Double.NEGATIVE_INFINITY;
     }
 
+    /** Try to get a double-typed array from the Value.
+     *  @param value The value to decode.
+     *  @see #getSize(Value)
+     *  @see #getDouble(Value)
+     *  @return A double array, or an empty double array in case the value type
+     *          does not decode into a number, or if the value's severity
+     *          indicates that there happens to be no useful value.
+     */
+    public static double[] getDoubleArray(IValue value){
+    	if (value.getSeverity().hasValue())
+        {
+            if (value instanceof IDoubleValue)
+                return ((IDoubleValue) value).getValues();
+            else if (value instanceof ILongValue) {
+            	double[] result = new double[((ILongValue) value).getValues().length];
+            	int i =0;
+            	for(long l :((ILongValue) value).getValues()){
+            		result[i] = l;
+            		i++;
+            	}
+            	 return result;
+            }
+               
+            else if (value instanceof IEnumeratedValue){
+            	double[] result = new double[((IEnumeratedValue) value).getValues().length];
+            	int i =0;
+            	for(int l :((IEnumeratedValue) value).getValues()){
+            		result[i] = l;
+            		i++;
+            	}
+            	 return result;
+            }
+              
+            // else:
+            // Cannot decode that sample type as a number.
+            return new double[0];
+        }
+        // else: Sample carries no value other than stat/sevr
+        return new double[0];
+    }
+    
     /** Try to get an info string from the Value.
      *  <p>
      *  For numeric values, which is probably the vast majority of

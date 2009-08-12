@@ -5,12 +5,15 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.editparts.AbstractWidgetEditPart;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.widgets.model.XYGraphModel;
 import org.csstudio.opibuilder.widgets.model.XYGraphModel.AxisProperty;
 import org.csstudio.opibuilder.widgets.model.XYGraphModel.TraceProperty;
+import org.csstudio.platform.data.IValue;
+import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.swt.xygraph.dataprovider.CircularBufferDataProvider;
 import org.csstudio.swt.xygraph.dataprovider.CircularBufferDataProvider.PlotMode;
@@ -30,7 +33,7 @@ import org.eclipse.swt.graphics.RGB;
  * @author Xihui Chen
  *
  */
-public class XYGraphEditPart extends AbstractWidgetEditPart {
+public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 
 	private List<Axis> axisList;
 	private List<Trace> traceList;
@@ -203,8 +206,7 @@ public class XYGraphEditPart extends AbstractWidgetEditPart {
 						for(AxisProperty axisProperty : AxisProperty.values()){				
 							String propID = XYGraphModel.makeAxisPropID(
 								axisProperty.propIDPre, i + currentAxisAmount);
-							model.addProperty(propID, 
-								model.getTempRemovedProperty(propID));	
+							model.setPropertyVisible(propID, true); 
 						}							
 						xyGraph.addAxis(axisList.get(i+currentAxisAmount));
 					}						
@@ -213,7 +215,7 @@ public class XYGraphEditPart extends AbstractWidgetEditPart {
 						for(AxisProperty axisProperty : AxisProperty.values()){				
 							String propID = XYGraphModel.makeAxisPropID(
 								axisProperty.propIDPre, i+(Integer)newValue);
-							model.tempRemoveProperty(propID);
+							model.setPropertyVisible(propID, false); 
 						}						
 						xyGraph.removeAxis(axisList.get(i+(Integer)newValue));
 					}					
@@ -247,7 +249,7 @@ public class XYGraphEditPart extends AbstractWidgetEditPart {
 			for(AxisProperty axisProperty : AxisProperty.values()){		
 				String propID = XYGraphModel.makeAxisPropID(
 					axisProperty.propIDPre, i);
-				model.tempRemoveProperty(propID);
+				model.setPropertyVisible(propID, false);
 			}
 		}
 	}	
@@ -322,8 +324,7 @@ public class XYGraphEditPart extends AbstractWidgetEditPart {
 						for(TraceProperty traceProperty : TraceProperty.values()){				
 							String propID = XYGraphModel.makeTracePropID(
 								traceProperty.propIDPre, i + currentTracesAmount);
-							model.addProperty(propID, 
-								model.getTempRemovedProperty(propID));	
+							model.setPropertyVisible(propID, true); 	
 						}							
 						xyGraph.addTrace(traceList.get(i+currentTracesAmount));
 					}						
@@ -332,7 +333,7 @@ public class XYGraphEditPart extends AbstractWidgetEditPart {
 						for(TraceProperty traceProperty : TraceProperty.values()){				
 							String propID = XYGraphModel.makeTracePropID(
 								traceProperty.propIDPre, i+(Integer)newValue);
-							model.tempRemoveProperty(propID);
+							model.setPropertyVisible(propID, false); 
 						}						
 						xyGraph.removeTrace(traceList.get(i+(Integer)newValue));
 					}					
@@ -359,7 +360,7 @@ public class XYGraphEditPart extends AbstractWidgetEditPart {
 			for(TraceProperty traceProperty : TraceProperty.values()){		
 				String propID = XYGraphModel.makeTracePropID(
 					traceProperty.propIDPre, i);
-				model.tempRemoveProperty(propID);
+				model.setPropertyVisible(propID, false);
 			}
 		}
 	}	
@@ -418,34 +419,24 @@ public class XYGraphEditPart extends AbstractWidgetEditPart {
 			if(axisList.get((Integer)newValue).isYAxis())
 				trace.setYAxis(axisList.get((Integer)newValue));
 			break;
-		case XDATA:
-			if(newValue instanceof double[])
-				dataProvider.setCurrentXDataArray((double[])newValue);
-			else
-				dataProvider.setCurrentXData((Double)newValue);
-			break;
-		case YDATA:				
-			if(newValue instanceof double[]){
-				if(((double[])newValue).length == 1)
-					dataProvider.setCurrentYData(((double[])newValue)[0]);
-				else
-					dataProvider.setCurrentYDataArray((double[])newValue);
-			}				
-			else 
-				dataProvider.setCurrentYData((Double)newValue);
-			break;
-		case YTIMESTAMP:
-			String original = (String)newValue;
-			if(original == null || original.length() < 23)
+		case XPV_VALUE:		
+			if(newValue == null || !(newValue instanceof IValue))
 				break;
-			original = original.replace('T', ' ');
-			original = original.substring(0, 23);
-			try {
-					Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").parse(original);
-					dataProvider.setCurrentYDataTimestamp(date.getTime());
-			} catch (Exception e) {					
-			}		
+			IValue value = (IValue)newValue;
+			if(ValueUtil.getSize(value) > 1){
+				dataProvider.setCurrentXDataArray(ValueUtil.getDoubleArray(value));
+			}else
+				dataProvider.setCurrentXData(ValueUtil.getDouble(value));			
 			break;
+		case YPV_VALUE:	
+			if(newValue == null || !(newValue instanceof IValue))
+				break;
+			IValue y_value = (IValue)newValue;
+			if(ValueUtil.getSize(y_value) > 1){
+				dataProvider.setCurrentYDataArray(ValueUtil.getDoubleArray(y_value));
+			}else
+				dataProvider.setCurrentYData(ValueUtil.getDouble(y_value));			
+			break;	
 		default:
 			break;
 		}
