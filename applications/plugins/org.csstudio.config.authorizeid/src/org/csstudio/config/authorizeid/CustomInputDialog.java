@@ -235,7 +235,6 @@ public class CustomInputDialog extends Dialog {
 
             public void selectionChanged(SelectionChangedEvent event) {
                 String firstElement = (String) ((StructuredSelection)_eaigCombo.getSelection()).getFirstElement();
-                System.out.println(firstElement);
                 LDAPSyncReader lSR = new LDAPSyncReader(firstElement, eagnFilter);
                 ArrayList<String> answerString = lSR.getAnswerString();
                 ArrayList<String> cleanString = new ArrayList<String>();

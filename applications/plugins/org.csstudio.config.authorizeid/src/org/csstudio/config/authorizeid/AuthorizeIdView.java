@@ -93,13 +93,10 @@ public class AuthorizeIdView extends ViewPart {
 		combo.addSelectionListener(new SelectionListener() {
 
 			public void widgetDefaultSelected(SelectionEvent e) {
-			    System.out.println("test aid");
 			}
 
 			public void widgetSelected(SelectionEvent e) {
-			    System.out.println("test aid 222");
 				refreshTable1();
-
 				table2.removeAll();
 				table2.clearAll();
 
@@ -317,8 +314,6 @@ public class AuthorizeIdView extends ViewPart {
 
 					refreshTable1();
 					refreshTable2();
-					System.out.println("Deleted."); //$NON-NLS-1$
-
 				}
 			}
 		});
