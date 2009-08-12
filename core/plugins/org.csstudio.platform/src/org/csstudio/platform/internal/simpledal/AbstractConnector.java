@@ -63,7 +63,7 @@ import org.epics.css.dal.Timestamp;
 @SuppressWarnings("unchecked")
 public abstract class AbstractConnector implements IConnector, IProcessVariableAdressProvider, IProcessVariable {
 
-	public static final int BLOCKING_TIMEOUT = 3000;
+	public static final int BLOCKING_TIMEOUT = 5000;
 
 	/**
 	 * True, if the connector has been initialized.
