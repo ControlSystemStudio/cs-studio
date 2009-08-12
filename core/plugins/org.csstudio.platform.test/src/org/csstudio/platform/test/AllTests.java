@@ -58,5 +58,8 @@ import org.junit.runners.Suite.SuiteClasses;
 		CommandParameterEnumValueTest.class, CommandParametersTest.class,
 		CommandResultTest.class, CommandContributionTest.class })
 public class AllTests {
-	// This is just a declarative suite definition without any code definitions.
+        
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(AllTests.class);
+    }
 }
