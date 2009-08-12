@@ -26,7 +26,6 @@ package org.csstudio.desy.config;
 
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
-import org.eclipse.ui.console.IConsoleConstants;
 
 /**
  * @author hrickens
