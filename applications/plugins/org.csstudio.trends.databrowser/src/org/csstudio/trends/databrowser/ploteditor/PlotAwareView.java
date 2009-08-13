@@ -1,6 +1,5 @@
 package org.csstudio.trends.databrowser.ploteditor;
 
-import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.model.Model;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -76,9 +75,7 @@ public abstract class PlotAwareView extends ViewPart
                     final IWorkbenchPart part = ref.getPart(false);
                     if (part instanceof PlotEditor)
                         updateEditor((PlotEditor) part);
-                    else
-                        Plugin.getLogger().error("PlotAwareView: expected PlotEditor, " +
-                                        "got " + part.getClass().getName());
+                    // else: Some other editor of no concern
                 }
             }
             // ... until another one gets activated, or the current one closes.
