@@ -213,5 +213,23 @@
             name="DCT Preferences">
       </page>
    </extension>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            description="Open DCT Perspective"
+            id="org.csstudio.dct.ui.actionSet"
+            label="CSS Action Set"
+            visible="true">
+         <action
+               class="org.csstudio.dct.ui.ShowDCTPerspective"
+               icon="icons/dctfile.png"
+               id="org.csstudio.dct.ui.Openaction"
+               label="DCT"
+               menubarPath="css/configuration/"
+               style="push"
+               tooltip="Database Configuration Tool">
+         </action>
+      </actionSet>
+   </extension>
 
 </plugin>
