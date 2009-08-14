@@ -679,8 +679,10 @@ public class Model
         if (i < 0)
             return;
         final AbstractModelItem item = items.remove(i);
-        item.dispose();
+        // This call might trigger something that still uses the item..
         fireEntryRemoved(item);
+        // .. so only dispose it afterwards
+        item.dispose();
     }
     
     /** @return Returns index of entry with given PV name or <code>-1</code>. */

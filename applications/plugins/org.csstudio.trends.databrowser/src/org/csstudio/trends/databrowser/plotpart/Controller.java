@@ -521,21 +521,45 @@ public class Controller implements ArchiveFetchJobListener
             }
     }
     
-    /** Remove axes with indices beyond the highest uses axis.
-     *  <p>
-     *  After changing the axis assignments,
-     *  some axes might end up with no traces.
-     *  When e.g. axis 2 has no traces, but axis 3 does,
-     *  we can't remove #2, because that messes everything else up.
-     *  But we can remove all axes beyond the last one that's used.
-     */
+    /** Remove unused axes */
     private void removeUnusedAxes()
     {
+        // Fix empty axes in the 'middle'
+        controller_changes_model = true;
+        boolean anything_changed = false;
+        for (int y=0; y<chart.getNumYAxes();  ++y)
+        {
+            // Any model items on this axis?
+            boolean anything_on_axis = false;
+            for (int i=0; i<model.getNumItems(); ++i)
+                if (model.getItem(i).getAxisIndex() == y)
+                {
+                    anything_on_axis = true;
+                    break;
+                }
+            if (anything_on_axis)
+                continue;
+            // Found empty axis. Move model items from 'next' axis here
+            for (int i=0; i<model.getNumItems(); ++i)
+            {
+                final IModelItem item = model.getItem(i);
+                if (item.getAxisIndex() == y+1)
+                {
+                    item.setAxisIndex(y);
+                    anything_changed = true;
+                }
+            }
+        }
+        controller_changes_model = false;
+        if (anything_changed)
+            handleChangedModelEntries();
+
+        // Remove empty axes at end of list
         for (int y = chart.getNumYAxes()-1; y > 0; --y)
             if (chart.getYAxis(y).getNumTraces() < 1)
                 chart.removeYAxis(y); // Drop empty axis
             else
-                return; // Done, found used axis
+                break; // Done, found used axis
     }
     
     /** Get data from archive for given model item,
