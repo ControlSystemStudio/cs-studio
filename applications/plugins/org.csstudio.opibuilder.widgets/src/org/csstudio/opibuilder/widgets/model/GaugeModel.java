@@ -46,13 +46,13 @@ public class GaugeModel extends AbstractMarkedWidgetModel{
 	protected void configureProperties() {
 		super.configureProperties();		
 		addProperty(new ColorProperty(PROP_NEEDLE_COLOR, "Needle Color",
-				WidgetPropertyCategory.Display, true, DEFAULT_NEEDLE_COLOR));	
+				WidgetPropertyCategory.Display, DEFAULT_NEEDLE_COLOR));	
 		
 		addProperty(new BooleanProperty(PROP_EFFECT3D, "3D Effect", 
-				WidgetPropertyCategory.Display, true, false));	
+				WidgetPropertyCategory.Display, false));	
 		
 		addProperty(new BooleanProperty(PROP_RAMP_GRADIENT, "Ramp Gradient", 
-				WidgetPropertyCategory.Display, true, false));	
+				WidgetPropertyCategory.Display, false));	
 		
 		setPropertyDescription(PROP_SHOW_MARKERS, "Show Ramp");
 	}	

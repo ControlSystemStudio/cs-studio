@@ -31,12 +31,11 @@ public abstract class AbstractWidgetProperty {
 	
 	
 	public AbstractWidgetProperty(String prop_id, String description,
-			WidgetPropertyCategory category, boolean visibleInPropSheet,
-			Object defaultValue) {
+			WidgetPropertyCategory category, Object defaultValue) {
 		this.prop_id = prop_id;
 		this.description = description;
 		this.category = category;
-		this.visibleInPropSheet = visibleInPropSheet;
+		this.visibleInPropSheet = true;
 		this.defaultValue = defaultValue;
 		this.propertyValue = defaultValue;
 		pcsDelegate = new PropertyChangeSupport(this);	

@@ -26,17 +26,16 @@ public final class DoubleProperty extends AbstractWidgetProperty {
 	private double max;
 	
 	public DoubleProperty(String propId, String description,
-			WidgetPropertyCategory category, boolean visibleInPropSheet,
-			double defaultValue) {
-		super(propId, description, category, visibleInPropSheet, Double.valueOf(defaultValue));
+			WidgetPropertyCategory category, double defaultValue) {
+		super(propId, description, category, Double.valueOf(defaultValue));
 		min = -Double.MAX_VALUE;
 		max = Double.MAX_VALUE;
 	}
 	
 	public DoubleProperty(String propId, String description,
-			WidgetPropertyCategory category, boolean visibleInPropSheet,
-			double defaultValue, double min, double max) {
-		super(propId, description, category, visibleInPropSheet, Double.valueOf(defaultValue));
+			WidgetPropertyCategory category, double defaultValue,
+			double min, double max) {
+		super(propId, description, category, Double.valueOf(defaultValue));
 		this.min = min;
 		this.max = max;
 	}

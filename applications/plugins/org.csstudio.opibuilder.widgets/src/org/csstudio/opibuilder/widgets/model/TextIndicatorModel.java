@@ -37,11 +37,11 @@ public class TextIndicatorModel extends AbstractPVWidgetModel {
 	@Override
 	protected void configureProperties() {
 		addProperty(new BooleanProperty(PROP_TRANSPARENT, "Transparent Background",
-				WidgetPropertyCategory.Display, true, false));
+				WidgetPropertyCategory.Display, false));
 		addProperty(new BooleanProperty(PROP_AUTOSIZE, "Auto Size", 
-				WidgetPropertyCategory.Display, true, false));
+				WidgetPropertyCategory.Display, false));
 		addProperty(new StringProperty(PROP_TEXT, "Text", 
-				WidgetPropertyCategory.Display, false, "######"));
+				WidgetPropertyCategory.Display, "######"));
 		setPropertyVisible(PROP_BACKCOLOR_ALARMSENSITIVE, true);
 		setPropertyVisible(PROP_BORDER_ALARMSENSITIVE, true);
 		setPropertyVisible(PROP_FORECOLOR_ALARMSENSITIVE, true);		

@@ -18,9 +18,8 @@ public final class BooleanProperty extends AbstractWidgetProperty {
 
 
 	public BooleanProperty(String propId, String description,
-			WidgetPropertyCategory category, boolean visibleInPropSheet,
-			boolean defaultValue) {
-		super(propId, description, category, visibleInPropSheet, Boolean.valueOf(defaultValue));
+			WidgetPropertyCategory category, boolean defaultValue) {
+		super(propId, description, category, Boolean.valueOf(defaultValue));
 	}
 
 

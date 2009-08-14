@@ -17,17 +17,16 @@ public class IntegerProperty extends AbstractWidgetProperty {
 	private int max;
 	
 	public IntegerProperty(final String prop_id, final String description,
-			final WidgetPropertyCategory category, final boolean visibleInPropSheet,
-			final int defaultValue) {
-		super(prop_id, description, category, visibleInPropSheet, Integer.valueOf(defaultValue));
+			final WidgetPropertyCategory category, final int defaultValue) {
+		super(prop_id, description, category, Integer.valueOf(defaultValue));
 		min = Integer.MIN_VALUE;
 		max = Integer.MAX_VALUE;
 	}
 	
 	public IntegerProperty(final String prop_id, final String description,
-			final WidgetPropertyCategory category, final boolean visibleInPropSheet,
-			final int defaultValue, final int minValue, final int maxValue) {
-		super(prop_id, description, category, visibleInPropSheet, Integer.valueOf(defaultValue));
+			final WidgetPropertyCategory category, final int defaultValue,
+			final int minValue, final int maxValue) {
+		super(prop_id, description, category, Integer.valueOf(defaultValue));
 		assert minValue < maxValue;
 		min = minValue;
 		max = maxValue;

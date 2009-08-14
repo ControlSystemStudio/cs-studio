@@ -14,9 +14,9 @@ public class ComboProperty extends AbstractWidgetProperty {
 	private String[] labelsArray;
 
 	public ComboProperty(String prop_id, String description,
-			WidgetPropertyCategory category, boolean visibleInPropSheet,
-			String[] labelsArray, int defaultValue) {		
-		super(prop_id, description, category, visibleInPropSheet, Integer.valueOf(defaultValue));
+			WidgetPropertyCategory category, String[] labelsArray,
+			int defaultValue) {		
+		super(prop_id, description, category, Integer.valueOf(defaultValue));
 		this.labelsArray = labelsArray;
 		
 	}

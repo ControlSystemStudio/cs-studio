@@ -21,9 +21,9 @@ public class FilePathProperty extends AbstractWidgetProperty {
 	private String[] fileExtensions;
 	
 	public FilePathProperty(String prop_id, String description,
-			WidgetPropertyCategory category, boolean visibleInPropSheet,
-			IPath defaultValue, String[] fileExtensions) {
-		super(prop_id, description, category, visibleInPropSheet, defaultValue);
+			WidgetPropertyCategory category, IPath defaultValue,
+			String[] fileExtensions) {
+		super(prop_id, description, category, defaultValue);
 		this.fileExtensions = fileExtensions;
 	}
 

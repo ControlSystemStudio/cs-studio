@@ -46,11 +46,11 @@ public class XMeterModel extends AbstractMarkedWidgetModel{
 	protected void configureProperties() {
 		super.configureProperties();		
 		addProperty(new ColorProperty(PROP_NEEDLE_COLOR, "Needle Color",
-				WidgetPropertyCategory.Display, true, DEFAULT_NEEDLE_COLOR));	
+				WidgetPropertyCategory.Display, DEFAULT_NEEDLE_COLOR));	
 		
 		
 		addProperty(new BooleanProperty(PROP_RAMP_GRADIENT, "Ramp Gradient", 
-				WidgetPropertyCategory.Display, true, false));	
+				WidgetPropertyCategory.Display, false));	
 		
 		setPropertyDescription(PROP_SHOW_MARKERS, "Show Ramp");		
 		setPropertyValue(PROP_TRANSPARENT, false);
@@ -65,7 +65,7 @@ public class XMeterModel extends AbstractMarkedWidgetModel{
 	 * @return the needle color
 	 */
 	public RGB getNeedleColor() {
-		return (RGB) getProperty(PROP_NEEDLE_COLOR).getPropertyValue();
+		return getRGBFromColorProperty(PROP_NEEDLE_COLOR);
 	}	
 	
 	/**

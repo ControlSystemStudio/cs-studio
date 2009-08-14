@@ -2,7 +2,7 @@
 package org.csstudio.opibuilder.properties;
 
 import org.csstudio.opibuilder.properties.support.FontPropertyDescriptor;
-import org.csstudio.opibuilder.properties.support.RGBColorPropertyDescriptor;
+import org.csstudio.opibuilder.properties.support.OPIColorPropertyDescriptor;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
@@ -36,9 +36,8 @@ public class FontProperty extends AbstractWidgetProperty {
 	public static final String XML_ATTRIBUTE_FONT_STYLE = "style"; //$NON-NLS-1$
 	
 	public FontProperty(String prop_id, String description,
-			WidgetPropertyCategory category, boolean visibleInPropSheet,
-			FontData defaultValue) {
-		super(prop_id, description, category, visibleInPropSheet, defaultValue);
+			WidgetPropertyCategory category, FontData defaultValue) {
+		super(prop_id, description, category, defaultValue);
 	}
 
 	/* (non-Javadoc)

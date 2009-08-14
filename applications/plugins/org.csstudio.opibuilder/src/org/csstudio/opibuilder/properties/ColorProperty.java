@@ -1,7 +1,9 @@
 
 package org.csstudio.opibuilder.properties;
 
-import org.csstudio.opibuilder.properties.support.RGBColorPropertyDescriptor;
+import org.csstudio.opibuilder.properties.support.OPIColorPropertyDescriptor;
+import org.csstudio.opibuilder.util.ColorService;
+import org.csstudio.opibuilder.util.OPIColor;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.jdom.Element;
@@ -34,10 +36,16 @@ public class ColorProperty extends AbstractWidgetProperty {
 	
 
 	public ColorProperty(String prop_id, String description,
-			WidgetPropertyCategory category, boolean visibleInPropSheet,
-			RGB defaultValue) {
-		super(prop_id, description, category, visibleInPropSheet, defaultValue);
+			WidgetPropertyCategory category, RGB defaultValue) {
+		super(prop_id, description, category, new OPIColor(defaultValue));
 	}
+	
+	public ColorProperty(String prop_id, String description,
+			WidgetPropertyCategory category, String defaultValue) {
+		super(prop_id, description, category, 
+				ColorService.getInstance().getOPIColor(defaultValue));
+	}
+	
 
 	/* (non-Javadoc)
 	 * @see org.csstudio.opibuilder.properties.AbstractWidgetProperty#checkValue(java.lang.Object)
@@ -49,9 +57,13 @@ public class ColorProperty extends AbstractWidgetProperty {
 		
 		Object acceptedValue = value;
 
-		if (!(value instanceof RGB)) {
+		
+		if (value instanceof OPIColor) {
+			if(((OPIColor)value).getRGBValue() == null)
+				acceptedValue = null;
+		}else
 			acceptedValue = null;
-		}
+			
 		
 		return acceptedValue;
 	}
@@ -61,14 +73,13 @@ public class ColorProperty extends AbstractWidgetProperty {
 	 */
 	@Override
 	protected PropertyDescriptor createPropertyDescriptor() {
-		return new RGBColorPropertyDescriptor(prop_id, description);		
+		return new OPIColorPropertyDescriptor(prop_id, description);		
 	}
 
 	@Override
 	public void writeToXML(Element propElement) {
 		Element colorElement = new Element(XML_ELEMENT_COLOR);
-
-		RGB color = (RGB) propertyValue;
+		RGB color = ((OPIColor) getPropertyValue()).getRGBValue();
 		colorElement.setAttribute(XML_ATTRIBUTE_RED, "" + color.red); //$NON-NLS-1$
 		colorElement.setAttribute(XML_ATTRIBUTE_GREEN, "" + color.green); //$NON-NLS-1$
 		colorElement.setAttribute(XML_ATTRIBUTE_BLUE, "" + color.blue); //$NON-NLS-1$
@@ -83,8 +94,17 @@ public class ColorProperty extends AbstractWidgetProperty {
 		RGB result = new RGB(Integer.parseInt(colorElement.getAttributeValue(XML_ATTRIBUTE_RED)),
 				Integer.parseInt(colorElement.getAttributeValue(XML_ATTRIBUTE_GREEN)),
 				Integer.parseInt(colorElement.getAttributeValue(XML_ATTRIBUTE_BLUE)));
-		return result;
+		return new OPIColor(result);
 		
+	}
+	
+	public void setPropertyValue(String name) {		
+		setPropertyValue(new OPIColor(name));
+	}
+	
+	
+	public void setPropertyValue(RGB value) {		
+		setPropertyValue(new OPIColor(value));
 	}
 
 }

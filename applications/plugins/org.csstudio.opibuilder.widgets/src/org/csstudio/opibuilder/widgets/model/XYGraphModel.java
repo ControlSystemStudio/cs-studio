@@ -193,23 +193,23 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 	@Override
 	protected void configureProperties() {
 		addProperty(new StringProperty(PROP_TITLE, "Title",
-				WidgetPropertyCategory.Display, true, ""));	
+				WidgetPropertyCategory.Display, ""));	
 		addProperty(new FontProperty(PROP_TITLE_FONT, "Title Font",
-				WidgetPropertyCategory.Display,true,  new FontData("Arial", 12, SWT.BOLD))); //$NON-NLS-1$
+				WidgetPropertyCategory.Display,new FontData("Arial", 12, SWT.BOLD))); //$NON-NLS-1$
 		addProperty(new BooleanProperty(PROP_SHOW_LEGEND, "Show Legend",
-				WidgetPropertyCategory.Display,true,  true));		
+				WidgetPropertyCategory.Display,true));		
 		addProperty(new BooleanProperty(PROP_SHOW_PLOTAREA_BORDER, "Show Plot Area Border",
-				WidgetPropertyCategory.Display,true, false));	
+				WidgetPropertyCategory.Display,false));	
 		addProperty(new BooleanProperty(PROP_SHOW_TOOLBAR, "Show Graph Toolbar",
-				WidgetPropertyCategory.Display,true, true));
+				WidgetPropertyCategory.Display,true));
 		addProperty(new ColorProperty(PROP_PLOTAREA_BACKCOLOR, "Plot Area Background Color",
-				WidgetPropertyCategory.Display,true,  DEFAULT_PLOTAREA_BACKCOLOR));
+				WidgetPropertyCategory.Display,DEFAULT_PLOTAREA_BACKCOLOR));
 		addProperty(new BooleanProperty(PROP_TRANSPARENT, "Transparent",
-				WidgetPropertyCategory.Display,true, false));
+				WidgetPropertyCategory.Display,false));
 		addProperty(new IntegerProperty(PROP_AXES_AMOUNT, "Axes Amount",
-				WidgetPropertyCategory.Behavior,true,  2, 2, MAX_AXES_AMOUNT));
+				WidgetPropertyCategory.Behavior,2,  2, MAX_AXES_AMOUNT));
 		addProperty(new IntegerProperty(PROP_TRACES_AMOUNT, "Traces Amount",
-				WidgetPropertyCategory.Behavior, true, 0, 0, MAX_TRACES_AMOUNT));	
+				WidgetPropertyCategory.Behavior, 0, 0, MAX_TRACES_AMOUNT));	
 		addAxisProperties();
 		addTraceProperties();
 		
@@ -238,46 +238,45 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 		case Y_AXIS:
 			if(axisIndex < 2)
 				break;
-			addProperty(new BooleanProperty(propID, axisProperty.toString(), category, true, true));
+			addProperty(new BooleanProperty(propID, axisProperty.toString(), category, true));
 			break;
 		case PRIMARY:
 			if(axisIndex < 2)
 				break;
-			addProperty(new BooleanProperty(propID, axisProperty.toString(), category, true, true));
+			addProperty(new BooleanProperty(propID, axisProperty.toString(), category, true));
 			break;			
 		case TITLE:
-			addProperty(new StringProperty(propID, axisProperty.toString(), category, true, category.toString()));
+			addProperty(new StringProperty(propID, axisProperty.toString(), category, category.toString()));
 			break;
 		case TITLE_FONT:
-			addProperty(new FontProperty(propID, axisProperty.toString(), category, true, 
-					new FontData("Arial", 9, SWT.NONE)));
+			addProperty(new FontProperty(propID, axisProperty.toString(), category, new FontData("Arial", 9, SWT.NONE)));
 			break;
 		case AXIS_COLOR:
-			addProperty(new ColorProperty(propID, axisProperty.toString(), category, true, DEFAULT_AXIS_COLOR));
+			addProperty(new ColorProperty(propID, axisProperty.toString(), category, DEFAULT_AXIS_COLOR));
 			break;
 		case AUTO_SCALE_THRESHOLD:
-			addProperty(new DoubleProperty(propID, axisProperty.toString(), category,true,  0, 0, 1));
+			addProperty(new DoubleProperty(propID, axisProperty.toString(), category,0,  0, 1));
 			break;
 		case LOG:
-			addProperty(new BooleanProperty(propID, axisProperty.toString(), category,true,  false));
+			addProperty(new BooleanProperty(propID, axisProperty.toString(), category,false));
 			break;
 		case AUTO_SCALE:
 		case SHOW_GRID:
 		case DASH_GRID:
-			addProperty(new BooleanProperty(propID, axisProperty.toString(), category, true, true));
+			addProperty(new BooleanProperty(propID, axisProperty.toString(), category, true));
 			break;	
 		case MAX:
-			addProperty(new DoubleProperty(propID, axisProperty.toString(), category, true, DEFAULT_MAX));
+			addProperty(new DoubleProperty(propID, axisProperty.toString(), category, DEFAULT_MAX));
 			break;
 		case MIN:
-			addProperty(new DoubleProperty(propID, axisProperty.toString(), category,true,  DEFAULT_MIN));
+			addProperty(new DoubleProperty(propID, axisProperty.toString(), category,DEFAULT_MIN));
 			break;	
 		case TIME_FORMAT:
 			addProperty(new ComboProperty(propID, 
-					axisProperty.toString(), category, true, TIME_FORMAT_ARRAY, 0));
+					axisProperty.toString(), category, TIME_FORMAT_ARRAY, 0));
 			break;	
 		case GRID_COLOR:
-			addProperty(new ColorProperty(propID, axisProperty.toString(), category,true, DEFAULT_GRID_COLOR));
+			addProperty(new ColorProperty(propID, axisProperty.toString(), category,DEFAULT_GRID_COLOR));
 			break;		
 		default:
 			break;
@@ -300,65 +299,64 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 		WidgetPropertyCategory category = new XYGraphCategory("Trace " + traceIndex);
 		switch (traceProperty) {
 		case NAME:
-			addProperty(new StringProperty(propID, traceProperty.toString(), category, true, category.toString()));
+			addProperty(new StringProperty(propID, traceProperty.toString(), category, category.toString()));
 			break;
 		case ANTI_ALIASING:
 		case CHRONOLOGICAL:
-			addProperty(new BooleanProperty(propID, traceProperty.toString(), category, true, true));
+			addProperty(new BooleanProperty(propID, traceProperty.toString(), category, true));
 			break;
 		case BUFFER_SIZE:
 			addProperty(new IntegerProperty(propID, 
-					traceProperty.toString(), category, true, DEFAULT_BUFFER_SIZE, 0, MAX_BUFFER_SIZE));
+					traceProperty.toString(), category, DEFAULT_BUFFER_SIZE, 0, MAX_BUFFER_SIZE));
 			break;
 		case CLEAR_TRACE:
-			addProperty(new BooleanProperty(propID, traceProperty.toString(), category, true, false));
+			addProperty(new BooleanProperty(propID, traceProperty.toString(), category, false));
 			break;
 		case LINE_WIDTH:
-			addProperty(new IntegerProperty(propID, traceProperty.toString(), category, true, 1, 1, 100));
+			addProperty(new IntegerProperty(propID, traceProperty.toString(), category, 1, 1, 100));
 			break;
 		case PLOTMODE:
-			addProperty(new ComboProperty(propID, traceProperty.toString(), category, true, 
-					PlotMode.stringValues(), 0));
+			addProperty(new ComboProperty(propID, traceProperty.toString(), category, PlotMode.stringValues(), 
+					0));
 			break;
 		case POINT_SIZE:
-			addProperty(new IntegerProperty(propID, traceProperty.toString(), category,  true, 4, 1, 200));
+			addProperty(new IntegerProperty(propID, traceProperty.toString(), category,  4, 1, 200));
 			break;
 		case POINT_STYLE:
-			addProperty(new ComboProperty(propID, traceProperty.toString(), category,  true,
-					PointStyle.stringValues(), 0));
+			addProperty(new ComboProperty(propID, traceProperty.toString(), category,  PointStyle.stringValues(),
+					0));
 			break;
 		case TRACE_COLOR:
-			addProperty(new ColorProperty(propID, traceProperty.toString(), category, true, 
-					traceIndex < XYGraph.DEFAULT_TRACES_COLOR.length?
-							XYGraph.DEFAULT_TRACES_COLOR[traceIndex].getRGB() : DEFAULT_TRACE_COLOR));
+			addProperty(new ColorProperty(propID, traceProperty.toString(), category, traceIndex < XYGraph.DEFAULT_TRACES_COLOR.length?
+					XYGraph.DEFAULT_TRACES_COLOR[traceIndex].getRGB() : DEFAULT_TRACE_COLOR));
 			break;	
 		case TRACE_TYPE:
-			addProperty(new ComboProperty(propID, traceProperty.toString(), category, true, 
-					TraceType.stringValues(), 0));
+			addProperty(new ComboProperty(propID, traceProperty.toString(), category, TraceType.stringValues(), 
+					0));
 			break;
 		case TRIGGER_VALUE:
-			addProperty(new DoubleProperty(propID, traceProperty.toString(), category, true, 0));
+			addProperty(new DoubleProperty(propID, traceProperty.toString(), category, 0));
 			break;
 		case UPDATE_DELAY:
-			addProperty(new IntegerProperty(propID, traceProperty.toString(), category, true, 0, 0, 655350));
+			addProperty(new IntegerProperty(propID, traceProperty.toString(), category, 0, 0, 655350));
 			break;
 		case UPDATE_MODE:
-			addProperty(new ComboProperty(propID, traceProperty.toString(), category, true, 
-					UpdateMode.stringValues(), 0));
+			addProperty(new ComboProperty(propID, traceProperty.toString(), category, UpdateMode.stringValues(), 
+					0));
 			break;
 		case XAXIS_INDEX:
-			addProperty(new ComboProperty(propID, traceProperty.toString(), category, true, AXES_ARRAY, 0));
+			addProperty(new ComboProperty(propID, traceProperty.toString(), category, AXES_ARRAY, 0));
 			break;
 		case XPV:
-			addPVProperty(new StringProperty(propID, traceProperty.toString(), category, true, ""), 
+			addPVProperty(new StringProperty(propID, traceProperty.toString(), category, ""), 
 					new PVValueProperty(makeTracePropID(TraceProperty.XPV_VALUE.propIDPre, traceIndex), null));			
 			break;
 		case YPV:
-			addPVProperty(new StringProperty(propID, traceProperty.toString(), category, true, ""), 
+			addPVProperty(new StringProperty(propID, traceProperty.toString(), category, ""), 
 					new PVValueProperty(makeTracePropID(TraceProperty.YPV_VALUE.propIDPre, traceIndex), null));			
 			break;
 		case YAXIS_INDEX:
-			addProperty(new ComboProperty(propID, traceProperty.toString(), category, true, AXES_ARRAY, 1));
+			addProperty(new ComboProperty(propID, traceProperty.toString(), category, AXES_ARRAY, 1));
 			break;
 		default:
 			break;
@@ -400,7 +398,7 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 	 * @return the plot area background color
 	 */
 	public RGB getPlotAreaBackColor() {
-		return (RGB) getProperty(PROP_PLOTAREA_BACKCOLOR).getPropertyValue();
+		return getRGBFromColorProperty(PROP_PLOTAREA_BACKCOLOR);
 	}	
 	
 	/**

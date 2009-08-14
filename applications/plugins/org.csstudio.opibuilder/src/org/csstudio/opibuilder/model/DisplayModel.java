@@ -31,15 +31,15 @@ public class DisplayModel extends AbstractContainerModel {
 	@Override
 	protected void configureProperties() {
 		addProperty(new IntegerProperty(PROP_GRID_SPACE, "Grid Space",
-				WidgetPropertyCategory.Display, true, 6, 1, 1000));
+				WidgetPropertyCategory.Display, 6, 1, 1000));
 		addProperty(new BooleanProperty(PROP_SHOW_GRID, "Show Grid",
-				WidgetPropertyCategory.Display, true, true));
+				WidgetPropertyCategory.Display, true));
 		addProperty(new BooleanProperty(PROP_SHOW_RULER, "Show Ruler",
-				WidgetPropertyCategory.Display, true, true));
+				WidgetPropertyCategory.Display, true));
 		addProperty(new BooleanProperty(PROP_SNAP_GEOMETRY, "Snap to Geometry",
-				WidgetPropertyCategory.Display, true, true));
+				WidgetPropertyCategory.Display, true));
 		addProperty(new BooleanProperty(PROP_SHOW_EDIT_RANGE, "Show Edit Range",
-				WidgetPropertyCategory.Display, true, true));
+				WidgetPropertyCategory.Display, true));
 		
 		removeProperty(PROP_BORDER_COLOR);
 		removeProperty(PROP_BORDER_STYLE);

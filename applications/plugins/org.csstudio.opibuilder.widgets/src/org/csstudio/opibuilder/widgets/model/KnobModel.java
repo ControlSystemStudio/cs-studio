@@ -74,25 +74,25 @@ public class KnobModel extends AbstractMarkedWidgetModel{
 		super.configureProperties();	
 		
 		addPVProperty(new StringProperty(PROP_CONTROL_PV, "Control PV", WidgetPropertyCategory.Basic,
-				true, ""), new PVValueProperty(PROP_CONTROL_PV_VALUE, null));
+				""), new PVValueProperty(PROP_CONTROL_PV_VALUE, null));
 		
 		addProperty(new ColorProperty(PROP_KNOB_COLOR, "Knob Color",
-				WidgetPropertyCategory.Display, true, DEFAULT_KNOB_COLOR));	
+				WidgetPropertyCategory.Display, DEFAULT_KNOB_COLOR));	
 		
 		addProperty(new BooleanProperty(PROP_EFFECT3D, "3D Effect", 
-				WidgetPropertyCategory.Display, true, false));
+				WidgetPropertyCategory.Display, false));
 		
 		addProperty(new BooleanProperty(PROP_SHOW_VALUE_LABEL, "Show Value Label", 
-				WidgetPropertyCategory.Display, true, true));		
+				WidgetPropertyCategory.Display, true));		
 		
 		addProperty(new ColorProperty(PROP_THUMB_COLOR, "Thumb Color",
-				WidgetPropertyCategory.Display, true, DEFAULT_THUMB_COLOR));
+				WidgetPropertyCategory.Display, DEFAULT_THUMB_COLOR));
 		
 		addProperty(new BooleanProperty(PROP_RAMP_GRADIENT, "Ramp Gradient", 
-				WidgetPropertyCategory.Display, true, false));	
+				WidgetPropertyCategory.Display, false));	
 		
 		addProperty(new DoubleProperty(PROP_INCREMENT, "Increment",
-				WidgetPropertyCategory.Behavior, true, 1.0));
+				WidgetPropertyCategory.Behavior, 1.0));
 		
 		setPropertyDescription(PROP_SHOW_MARKERS, "Show Ramp");
 		setPropertyDescription(PROP_PVNAME, "Readback PV");

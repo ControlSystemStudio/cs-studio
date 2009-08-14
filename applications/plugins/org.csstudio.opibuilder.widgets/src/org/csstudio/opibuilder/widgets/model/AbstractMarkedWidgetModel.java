@@ -76,36 +76,36 @@ public abstract class AbstractMarkedWidgetModel extends AbstractScaledWidgetMode
 		
 		super.configureProperties();
 		addProperty(new BooleanProperty(PROP_SHOW_MARKERS, "Show Markers", 
-				WidgetPropertyCategory.Display, true, true));			
+				WidgetPropertyCategory.Display, true));			
 		
 		addProperty(new DoubleProperty(PROP_LOLO_LEVEL, "Level LOLO", 
-				WidgetPropertyCategory.Behavior, true, DEFAULT_LEVELS[0]));
+				WidgetPropertyCategory.Behavior, DEFAULT_LEVELS[0]));
 		addProperty(new DoubleProperty(PROP_LO_LEVEL, "Level LO", 
-				WidgetPropertyCategory.Behavior, true, DEFAULT_LEVELS[1]));
+				WidgetPropertyCategory.Behavior, DEFAULT_LEVELS[1]));
 		addProperty(new DoubleProperty(PROP_HI_LEVEL, "Level HI", 
-				WidgetPropertyCategory.Behavior, true, DEFAULT_LEVELS[2]));
+				WidgetPropertyCategory.Behavior, DEFAULT_LEVELS[2]));
 		addProperty(new DoubleProperty(PROP_HIHI_LEVEL, "Level HIHI", 
-				WidgetPropertyCategory.Behavior, true, DEFAULT_LEVELS[3]));
+				WidgetPropertyCategory.Behavior, DEFAULT_LEVELS[3]));
 		
 		addProperty(new BooleanProperty(PROP_SHOW_LOLO, "Show LOLO", 
-				WidgetPropertyCategory.Display, true, true));		
+				WidgetPropertyCategory.Display, true));		
 		addProperty(new BooleanProperty(PROP_SHOW_LO, "Show LO", 
-				WidgetPropertyCategory.Display, true, true));	
+				WidgetPropertyCategory.Display, true));	
 		addProperty(new BooleanProperty(PROP_SHOW_HI, "Show HI", 
-				WidgetPropertyCategory.Display, true, true));	
+				WidgetPropertyCategory.Display, true));	
 		addProperty(new BooleanProperty(PROP_SHOW_HIHI, "Show HIHI", 
-				WidgetPropertyCategory.Display, true, true));
+				WidgetPropertyCategory.Display, true));
 		
 		addProperty(new ColorProperty(PROP_LOLO_COLOR, "Color LOLO ",
-				WidgetPropertyCategory.Display, true, DEFAULT_LOLO_COLOR));
+				WidgetPropertyCategory.Display, DEFAULT_LOLO_COLOR));
 		addProperty(new ColorProperty(PROP_LO_COLOR, "Color LO",
-				WidgetPropertyCategory.Display, true, DEFAULT_LO_COLOR));
+				WidgetPropertyCategory.Display, DEFAULT_LO_COLOR));
 		addProperty(new ColorProperty(PROP_HI_COLOR, "Color HI",
-				WidgetPropertyCategory.Display, true, DEFAULT_HI_COLOR));
+				WidgetPropertyCategory.Display, DEFAULT_HI_COLOR));
 		addProperty(new ColorProperty(PROP_HIHI_COLOR, "Color HIHI",
-				WidgetPropertyCategory.Display, true, DEFAULT_HIHI_COLOR));		
+				WidgetPropertyCategory.Display, DEFAULT_HIHI_COLOR));		
 		addProperty(new BooleanProperty(PROP_LIMITS_FROMDB, "Limits From DB",
-				WidgetPropertyCategory.Behavior, true, true));
+				WidgetPropertyCategory.Behavior, true));
 		
 		
 	}
@@ -151,26 +151,26 @@ public abstract class AbstractMarkedWidgetModel extends AbstractScaledWidgetMode
 	 * @return the lolo color
 	 */
 	public RGB getLoloColor() {
-		return (RGB) getProperty(PROP_LOLO_COLOR).getPropertyValue();
+		return getRGBFromColorProperty(PROP_LOLO_COLOR);
 	}	
 	
 	/**
 	 * @return the lo color
 	 */
 	public RGB getLoColor() {
-		return (RGB) getProperty(PROP_LO_COLOR).getPropertyValue();
+		return getRGBFromColorProperty(PROP_LO_COLOR);
 	}	
 	/**
 	 * @return the hi color
 	 */
 	public RGB getHiColor() {
-		return (RGB) getProperty(PROP_HI_COLOR).getPropertyValue();
+		return getRGBFromColorProperty(PROP_HI_COLOR);
 	}	
 	/**
 	 * @return the hihi color
 	 */
 	public RGB getHihiColor() {
-		return (RGB) getProperty(PROP_HIHI_COLOR).getPropertyValue();
+		return getRGBFromColorProperty(PROP_HIHI_COLOR);
 	}	
 
 	

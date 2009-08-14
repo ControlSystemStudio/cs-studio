@@ -52,14 +52,14 @@ public class TankModel extends AbstractMarkedWidgetModel{
 	protected void configureProperties() {
 		super.configureProperties();		
 		addProperty(new ColorProperty(PROP_FILL_COLOR, "Fill Color",
-				WidgetPropertyCategory.Display, true, DEFAULT_FILL_COLOR));	
+				WidgetPropertyCategory.Display, DEFAULT_FILL_COLOR));	
 		
 		addProperty(new BooleanProperty(PROP_EFFECT3D, "3D Effect", 
-				WidgetPropertyCategory.Display, true, false));	
+				WidgetPropertyCategory.Display, false));	
 
 		
 		addProperty(new ColorProperty(PROP_FILLBACKGROUND_COLOR, "Color Fillbackground",
-				WidgetPropertyCategory.Display, true, DEFAULT_FILLBACKGROUND_COLOR));
+				WidgetPropertyCategory.Display, DEFAULT_FILLBACKGROUND_COLOR));
 		
 		setPropertyValue(PROP_LO_COLOR, new RGB(255, 128, 0));
 		setPropertyValue(PROP_HI_COLOR, new RGB(255, 128, 0));		
@@ -76,7 +76,7 @@ public class TankModel extends AbstractMarkedWidgetModel{
 	 * @return the fill color
 	 */
 	public RGB getFillColor() {
-		return (RGB) getProperty(PROP_FILL_COLOR).getPropertyValue();
+		return getRGBFromColorProperty(PROP_FILL_COLOR);
 	}	
 	
 	/**
@@ -92,7 +92,7 @@ public class TankModel extends AbstractMarkedWidgetModel{
 	 * @return The fillbackground color
 	 */
 	public RGB getFillbackgroundColor() {
-		return (RGB) getProperty(PROP_FILLBACKGROUND_COLOR).getPropertyValue();
+		return getRGBFromColorProperty(PROP_FILLBACKGROUND_COLOR);
 	}
 	
 }

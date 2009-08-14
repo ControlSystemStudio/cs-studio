@@ -3,6 +3,7 @@ package org.csstudio.opibuilder.widgets.editparts;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
+import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.widgets.figures.AbstractMarkedWidgetFigure;
 import org.csstudio.opibuilder.widgets.model.AbstractMarkedWidgetModel;
 import org.csstudio.platform.data.INumericMetaData;
@@ -213,7 +214,7 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				AbstractMarkedWidgetFigure figure = (AbstractMarkedWidgetFigure) refreshableFigure;
-				figure.setLoloColor((RGB) newValue);
+				figure.setLoloColor(((OPIColor)newValue).getRGBValue());
 				return true;
 			}
 		};
@@ -225,7 +226,7 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				AbstractMarkedWidgetFigure figure = (AbstractMarkedWidgetFigure) refreshableFigure;
-				figure.setLoColor((RGB) newValue);
+				figure.setLoColor(((OPIColor)newValue).getRGBValue());
 				return true;
 			}
 		};
@@ -237,7 +238,7 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				AbstractMarkedWidgetFigure figure = (AbstractMarkedWidgetFigure) refreshableFigure;
-				figure.setHiColor((RGB) newValue);
+				figure.setHiColor(((OPIColor)newValue).getRGBValue());
 				return true;
 			}
 		};
@@ -249,7 +250,7 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				AbstractMarkedWidgetFigure figure = (AbstractMarkedWidgetFigure) refreshableFigure;
-				figure.setHihiColor((RGB) newValue);
+				figure.setHihiColor(((OPIColor)newValue).getRGBValue());
 				return true;
 			}
 		};

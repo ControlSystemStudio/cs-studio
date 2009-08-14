@@ -99,7 +99,7 @@ public class ScriptsInputDialog extends Dialog {
 		final Composite leftComposite = new Composite(mainComposite, SWT.None);
 		leftComposite.setLayout(new GridLayout(1, false));
 		GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
-		gd.widthHint = 200;
+		gd.widthHint = 350;
 		leftComposite.setLayoutData(gd);
 		createLabel(leftComposite, "The Scripts:");
 		
@@ -113,7 +113,6 @@ public class ScriptsInputDialog extends Dialog {
 		gridLayout.marginWidth = 0;
 		toolBarComposite.setLayout(gridLayout);
 		gd = new GridData(SWT.FILL, SWT.FILL, true, true);
-		gd.widthHint = 200;
 		toolBarComposite.setLayoutData(gd);
 		
 		ToolBarManager toolbarManager = new ToolBarManager(SWT.FLAT);
@@ -137,7 +136,7 @@ public class ScriptsInputDialog extends Dialog {
 		Composite rightComposite = new Composite(mainComposite, SWT.NONE);
 		rightComposite.setLayout(new GridLayout(1, false));
 		gd = new GridData(SWT.FILL, SWT.FILL, true, true);
-		gd.widthHint = 300;
+		gd.widthHint = 250;
 		rightComposite.setLayoutData(gd);
 		this.createLabel(rightComposite, "The PVs for the selected script, \n " +
 				"which will trigger the execution of the script.");
@@ -282,7 +281,7 @@ public class ScriptsInputDialog extends Dialog {
 		};
 		removeAction.setText("Remove Script");
 		removeAction
-				.setToolTipText("Removes the selected Action from the list");
+				.setToolTipText("Remove the selected script from the list");
 		removeAction.setImageDescriptor(CustomMediaFactory.getInstance()
 				.getImageDescriptorFromPlugin(OPIBuilderPlugin.PLUGIN_ID,
 						"icons/delete.gif"));
@@ -306,8 +305,8 @@ public class ScriptsInputDialog extends Dialog {
 				}
 			}
 		};
-		moveUpAction.setText("Move Up Action");
-		moveUpAction.setToolTipText("Move up the selected Action");
+		moveUpAction.setText("Move Up Script");
+		moveUpAction.setToolTipText("Move up the selected Script");
 		moveUpAction.setImageDescriptor(CustomMediaFactory.getInstance()
 				.getImageDescriptorFromPlugin(OPIBuilderPlugin.PLUGIN_ID,
 						"icons/search_prev.gif"));
@@ -331,8 +330,8 @@ public class ScriptsInputDialog extends Dialog {
 				}
 			}
 		};
-		moveDownAction.setText("Move Down Action");
-		moveDownAction.setToolTipText("Move down the selected Action");
+		moveDownAction.setText("Move Down Script");
+		moveDownAction.setToolTipText("Move down the selected Script");
 		moveDownAction.setImageDescriptor(CustomMediaFactory.getInstance()
 				.getImageDescriptorFromPlugin(OPIBuilderPlugin.PLUGIN_ID,
 						"icons/search_next.gif"));

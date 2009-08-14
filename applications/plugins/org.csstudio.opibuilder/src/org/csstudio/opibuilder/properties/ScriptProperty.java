@@ -29,9 +29,8 @@ public class ScriptProperty extends AbstractWidgetProperty {
 	public static final String XML_ELEMENT_PV = "pv"; //$NON-NLS-1$
 
 	public ScriptProperty(String prop_id, String description,
-			WidgetPropertyCategory category, boolean visibleInPropSheet) {
-		super(prop_id, description, category, visibleInPropSheet, 
-				new ScriptsInput());
+			WidgetPropertyCategory category) {
+		super(prop_id, description, category, new ScriptsInput());
 		
 	}
 

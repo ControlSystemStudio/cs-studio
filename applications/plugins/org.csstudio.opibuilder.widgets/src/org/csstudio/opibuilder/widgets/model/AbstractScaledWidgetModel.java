@@ -52,26 +52,26 @@ public abstract class AbstractScaledWidgetModel extends AbstractPVWidgetModel {
 	protected void configureProperties() {
 		
 		addProperty(new BooleanProperty(PROP_TRANSPARENT, "Transparent Background",
-				WidgetPropertyCategory.Display, true, true));
+				WidgetPropertyCategory.Display, true));
 		
 		
 		addProperty(new DoubleProperty(PROP_MIN, "Minimum", 
-				WidgetPropertyCategory.Behavior, true, DEFAULT_MIN));
+				WidgetPropertyCategory.Behavior, DEFAULT_MIN));
 		
 		addProperty(new DoubleProperty(PROP_MAX, "Maximum", 
-				WidgetPropertyCategory.Behavior, true, DEFAULT_MAX));			
+				WidgetPropertyCategory.Behavior, DEFAULT_MAX));			
 		
 		addProperty(new DoubleProperty(PROP_MAJOR_TICK_STEP_HINT, "Major Tick Step Hint", 
-				WidgetPropertyCategory.Display, true, DEFAULT_MAJOR_TICK_STEP_HINT, 1, 1000));			
+				WidgetPropertyCategory.Display, DEFAULT_MAJOR_TICK_STEP_HINT, 1, 1000));			
 		
 		addProperty(new BooleanProperty(PROP_SHOW_MINOR_TICKS, "Show Minor Ticks", 
-				WidgetPropertyCategory.Display, true, true));		
+				WidgetPropertyCategory.Display, true));		
 		
 		addProperty(new BooleanProperty(PROP_SHOW_SCALE, "Show Scale", 
-				WidgetPropertyCategory.Display, true, true));		
+				WidgetPropertyCategory.Display, true));		
 		
 		addProperty(new BooleanProperty(PROP_LOG_SCALE, "Log Scale", 
-				WidgetPropertyCategory.Display, true,false));
+				WidgetPropertyCategory.Display, false));
 		
 	}
 	

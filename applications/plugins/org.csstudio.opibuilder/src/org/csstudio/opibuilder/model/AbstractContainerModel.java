@@ -25,7 +25,7 @@ public abstract class AbstractContainerModel extends AbstractWidgetModel {
 		super();
 		childrenList = new LinkedList<AbstractWidgetModel>();
 		childrenProperty = new AbstractWidgetProperty(
-				PROP_CHILDREN, "children", WidgetPropertyCategory.Behavior, false, childrenList){
+				PROP_CHILDREN, "children", WidgetPropertyCategory.Behavior, childrenList){
 
 			@Override
 			public Object checkValue(Object value) {

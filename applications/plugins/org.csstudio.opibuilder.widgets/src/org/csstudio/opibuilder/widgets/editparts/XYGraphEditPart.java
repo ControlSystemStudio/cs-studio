@@ -1,5 +1,7 @@
 package org.csstudio.opibuilder.widgets.editparts;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,6 +12,7 @@ import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.editparts.AbstractWidgetEditPart;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
+import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.widgets.model.XYGraphModel;
 import org.csstudio.opibuilder.widgets.model.XYGraphModel.AxisProperty;
 import org.csstudio.opibuilder.widgets.model.XYGraphModel.TraceProperty;
@@ -194,7 +197,7 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 	}
 
 	private void registerAxesAmountChangeHandler(){
-		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler(){
+		final IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler(){
 
 			public boolean handleChange(Object oldValue, Object newValue,
 					IFigure refreshableFigure) {				
@@ -224,7 +227,13 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 				return true;
 			}			
 		};
-		setPropertyChangeHandler(XYGraphModel.PROP_AXES_AMOUNT, handler);
+		getCastedModel().getProperty(XYGraphModel.PROP_AXES_AMOUNT).
+		addPropertyChangeListener(new PropertyChangeListener(){
+		public void propertyChange(PropertyChangeEvent evt) {
+			handler.handleChange(evt.getOldValue(), evt.getNewValue(), getFigure());
+		}
+	});
+		//setPropertyChangeHandler(XYGraphModel.PROP_AXES_AMOUNT, handler);
 	}
 	
 	
@@ -267,13 +276,13 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 				axis.setAutoScaleThreshold((Double)newValue);
 				break;
 			case AXIS_COLOR:
-				axis.setForegroundColor(CustomMediaFactory.getInstance().getColor((RGB)newValue));
+				axis.setForegroundColor(CustomMediaFactory.getInstance().getColor(((OPIColor)newValue).getRGBValue()));
 				break;
 			case DASH_GRID:
 				axis.setDashGridLine((Boolean)newValue);
 				break;
 			case GRID_COLOR:
-				axis.setMajorGridColor(CustomMediaFactory.getInstance().getColor((RGB)newValue));
+				axis.setMajorGridColor(CustomMediaFactory.getInstance().getColor(((OPIColor)newValue).getRGBValue()));
 				break;
 			case LOG:
 				axis.setLogScale((Boolean)newValue);
@@ -312,7 +321,7 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 	}
 	
 	private void registerTraceAmountChangeHandler(){
-		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler(){
+		final IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler(){
 
 			public boolean handleChange(Object oldValue, Object newValue,
 					IFigure refreshableFigure) {				
@@ -345,7 +354,14 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 				return true;
 			}			
 		};
-		setPropertyChangeHandler(XYGraphModel.PROP_TRACES_AMOUNT, handler);
+		getCastedModel().getProperty(XYGraphModel.PROP_TRACES_AMOUNT).
+			addPropertyChangeListener(new PropertyChangeListener(){
+			public void propertyChange(PropertyChangeEvent evt) {
+				handler.handleChange(evt.getOldValue(), evt.getNewValue(), getFigure());
+			}
+		});
+		
+		//setPropertyChangeHandler(XYGraphModel.PROP_TRACES_AMOUNT, handler);
 	}
 	
 	
@@ -401,7 +417,7 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 			trace.setPointStyle(PointStyle.values()[(Integer)newValue]);
 			break;
 		case TRACE_COLOR:
-			trace.setTraceColor(CustomMediaFactory.getInstance().getColor((RGB)newValue));
+			trace.setTraceColor(CustomMediaFactory.getInstance().getColor(((OPIColor)newValue).getRGBValue()));
 			break;
 		case TRACE_TYPE:
 			trace.setTraceType(TraceType.values()[(Integer)newValue]);

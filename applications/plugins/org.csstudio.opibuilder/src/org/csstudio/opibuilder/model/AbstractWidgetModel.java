@@ -1,7 +1,5 @@
 package org.csstudio.opibuilder.model;
 
-import java.beans.PropertyChangeSupport;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -21,11 +19,10 @@ import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.UnchangableStringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.script.ScriptsInput;
+import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.util.WidgetDescriptor;
 import org.csstudio.opibuilder.util.WidgetsService;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
-import org.csstudio.platform.model.pvs.IProcessVariableAddress;
-import org.csstudio.platform.model.pvs.IProcessVariableAdressProvider;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IAdaptable;
@@ -93,51 +90,6 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 		configureProperties();	
 	}
 	
-	protected void configureBaseProperties() {
-		addProperty(new IntegerProperty(PROP_WIDTH, "Width", 
-				WidgetPropertyCategory.Position, true, 100, 1, 10000));
-		addProperty(new IntegerProperty(PROP_HEIGHT, "Height", 
-				WidgetPropertyCategory.Position, true, 100, 1, 10000));		
-		addProperty(new IntegerProperty(PROP_XPOS, "X", 
-				WidgetPropertyCategory.Position, true, 100));
-		addProperty(new IntegerProperty(PROP_YPOS, "Y", 
-				WidgetPropertyCategory.Position, true, 100));	
-		addProperty(new ColorProperty(PROP_COLOR_BACKGROUND, "Background Color",
-				WidgetPropertyCategory.Display, true, new RGB(240, 240, 240)));
-		addProperty(new ColorProperty(PROP_COLOR_FOREGROUND, "Foreground Color",
-				WidgetPropertyCategory.Display, true, new RGB(192, 192, 192)));
-		addProperty(new ComboProperty(PROP_BORDER_STYLE,"Border Style", 
-				WidgetPropertyCategory.Border, true, BorderStyle.stringValues(), 0));
-		addProperty(new ColorProperty(PROP_BORDER_COLOR, "Border Color",
-				WidgetPropertyCategory.Border, true, new RGB(0, 128, 255)));
-		addProperty(new IntegerProperty(PROP_BORDER_WIDTH, "Border Width", 
-				WidgetPropertyCategory.Border, true, 1, 0, 1000));
-		addProperty(new BooleanProperty(PROP_ENABLED, "Enabled", 
-				WidgetPropertyCategory.Behavior, true, true));
-		addProperty(new BooleanProperty(PROP_VISIBLE, "Visible", 
-				WidgetPropertyCategory.Behavior, true, true));
-		addProperty(new FontProperty(PROP_FONT, "Font", 
-				WidgetPropertyCategory.Display, true, CustomMediaFactory.FONT_ARIAL));
-		addProperty(new ScriptProperty(PROP_SCRIPTS, "Scripts", 
-				WidgetPropertyCategory.Basic, true));	
-			
-			
-		WidgetDescriptor descriptor = WidgetsService.getInstance().getWidgetDescriptor(getTypeID());
-		String name;
-		name = descriptor == null? getTypeID().substring(getTypeID().lastIndexOf(".")+1) :
-			descriptor.getName();
-		addProperty(new StringProperty(PROP_NAME, "Name",
-				WidgetPropertyCategory.Basic, true, name)); 	
-		addProperty(new UnchangableStringProperty(PROP_TYPE, "Widget Type",
-				WidgetPropertyCategory.Basic, true,name));
-		
-	}
-	
-	/**
-	 * @return the unique typeID of the model.
-	 */
-	public abstract String getTypeID();
-	
 	/**Add a property to the widget.
 	 * @param property the property to be added.
 	 */
@@ -159,100 +111,80 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 		pvMap.put(pvNameProperty, pvValueProperty);
 	}
 	
-	/**Remove a PV p
-	 * @param pvNamePropId
-	 * @param pvValuePropId
-	 */
-	public void removePVProperty(final String pvNamePropId, final String pvValuePropId){
-		removeProperty(pvNamePropId);
-		removeProperty(pvValuePropId);
-		pvMap.remove(getProperty(pvNamePropId));
-	}
-	
-	
-	
-	/**Remove a property from the model.
-	 * @param prop_id
-	 */
-	public void removeProperty(final String prop_id){
-		assert propertyMap.containsKey(prop_id);
-		AbstractWidgetProperty property = propertyMap.get(prop_id);
-		property.removeAllPropertyChangeListeners();
-		if(property.isVisibleInPropSheet())
-			propertyDescriptors.remove(prop_id);
-		propertyMap.remove(prop_id);
-	}
-	
-	public void setPropertyVisible(final String prop_id, final boolean visible){
-		Assert.isTrue(propertyMap.containsKey(prop_id));
-		AbstractWidgetProperty property = propertyMap.get(prop_id);
-		if(property.setVisibleInPropSheet(visible)){
-			if(visible)
-				propertyDescriptors.put(prop_id, property.getPropertyDescriptor());
-			else
-				propertyDescriptors.remove(prop_id);
-		}			
+	protected void configureBaseProperties() {
+		addProperty(new IntegerProperty(PROP_WIDTH, "Width", 
+				WidgetPropertyCategory.Position, 100, 1, 10000));
+		addProperty(new IntegerProperty(PROP_HEIGHT, "Height", 
+				WidgetPropertyCategory.Position, 100, 1, 10000));		
+		addProperty(new IntegerProperty(PROP_XPOS, "X", 
+				WidgetPropertyCategory.Position, 100));
+		addProperty(new IntegerProperty(PROP_YPOS, "Y", 
+				WidgetPropertyCategory.Position, 100));	
+		addProperty(new ColorProperty(PROP_COLOR_BACKGROUND, "Background Color",
+				WidgetPropertyCategory.Display, new RGB(240, 240, 240)));
+		addProperty(new ColorProperty(PROP_COLOR_FOREGROUND, "Foreground Color",
+				WidgetPropertyCategory.Display, new RGB(192, 192, 192)));
+		addProperty(new ComboProperty(PROP_BORDER_STYLE,"Border Style", 
+				WidgetPropertyCategory.Border, BorderStyle.stringValues(), 0));
+		addProperty(new ColorProperty(PROP_BORDER_COLOR, "Border Color",
+				WidgetPropertyCategory.Border, new RGB(0, 128, 255)));
+		addProperty(new IntegerProperty(PROP_BORDER_WIDTH, "Border Width", 
+				WidgetPropertyCategory.Border, 1, 0, 1000));
+		addProperty(new BooleanProperty(PROP_ENABLED, "Enabled", 
+				WidgetPropertyCategory.Behavior, true));
+		addProperty(new BooleanProperty(PROP_VISIBLE, "Visible", 
+				WidgetPropertyCategory.Behavior, true));
+		addProperty(new FontProperty(PROP_FONT, "Font", 
+				WidgetPropertyCategory.Display, CustomMediaFactory.FONT_ARIAL));
+		addProperty(new ScriptProperty(PROP_SCRIPTS, "Scripts", 
+				WidgetPropertyCategory.Basic));	
+			
+			
+		WidgetDescriptor descriptor = WidgetsService.getInstance().getWidgetDescriptor(getTypeID());
+		String name;
+		name = descriptor == null? getTypeID().substring(getTypeID().lastIndexOf(".")+1) :
+			descriptor.getName();
+		addProperty(new StringProperty(PROP_NAME, "Name",
+				WidgetPropertyCategory.Basic, name)); 	
+		addProperty(new UnchangableStringProperty(PROP_TYPE, "Widget Type",
+				WidgetPropertyCategory.Basic, name));
+		
 	}
 	
 	protected abstract void configureProperties();
 	
-	public Object getEditableValue() {
-		return this;
-	}
-
-	public IPropertyDescriptor[] getPropertyDescriptors() {
-		IPropertyDescriptor[] propArray = new IPropertyDescriptor[propertyDescriptors.size()];
-		int i=0;
-		for(IPropertyDescriptor p : propertyDescriptors.values())
-			propArray[i++] = p;		
-			
-		return propArray;
-	}
-
-	public Object getPropertyValue(Object id) {
-		Assert.isTrue(propertyMap.containsKey(id));
-		return propertyMap.get(id).getPropertyValue();
-	}
-	
-	public boolean isPropertySet(Object id) {
-		return false;
-	}
-
-	public void resetPropertyValue(Object id) {
-	}
-
-	public void setPropertyValue(Object id, Object value) {
-		Assert.isTrue(propertyMap.containsKey(id));
-		propertyMap.get(id).setPropertyValue(value);
-	}
-	
 	@SuppressWarnings("unchecked")
 	public Object getAdapter(Class adapter) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 	
-	/**This should be override by container model.
-	 * @return the children of the widget.
-	 */
-	public List<AbstractWidgetModel> getChildren(){
-		return null;
-	}
+	
 	
 	public Set<String> getAllPropertyIDs(){
 		return new HashSet<String>(propertyMap.keySet());
 	}
 	
-	public AbstractWidgetProperty getProperty(String prop_id){
-		Assert.isTrue(prop_id != null);
-		Assert.isTrue(propertyMap.containsKey(prop_id));
-		return propertyMap.get(prop_id);
+	public RGB getBackgroundColor(){
+		return getRGBFromColorProperty(PROP_COLOR_BACKGROUND);
 	}
 	
-	public LinkedHashMap<StringProperty, PVValueProperty> getPVMap(){
-		return pvMap;
+	public RGB getBorderColor(){
+		return getRGBFromColorProperty(PROP_BORDER_COLOR);
 	}
 	
+	public BorderStyle getBorderStyle(){
+		Integer i = (Integer)getCastedPropertyValue(PROP_BORDER_STYLE);
+		return BorderStyle.values()[i];
+	}
+
+	public int getBorderWidth(){
+		return (Integer)getCastedPropertyValue(PROP_BORDER_WIDTH);
+	}
+	
+	public RGB getRGBFromColorProperty(String propID){
+		return ((OPIColor)getCastedPropertyValue(propID)).getRGBValue();
+	}
+
 	/**
 	 * Return the casted value of a property of this widget model.
 	 * 
@@ -267,35 +199,24 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 		return (TYPE) getProperty(propertyName).getPropertyValue();
 	}
 	
-	public String getName(){
-		return (String)getCastedPropertyValue(PROP_NAME);
+	/**This should be override by container model.
+	 * @return the children of the widget.
+	 */
+	public List<AbstractWidgetModel> getChildren(){
+		return null;
+	}
+
+	public Object getEditableValue() {
+		return this;
+	}
+
+	public FontData getFont(){
+		return (FontData)getCastedPropertyValue(PROP_FONT);
 	}
 	
-	public String getType(){
-		return (String)getCastedPropertyValue(PROP_TYPE);
+	public RGB getForegroundColor(){
+		return getRGBFromColorProperty(PROP_COLOR_FOREGROUND);
 	}
-	public void setName(String name){
-		setPropertyValue(PROP_NAME, name);
-	}
-	
-	public String getWidgetType(){
-		return (String)getCastedPropertyValue(PROP_TYPE);
-	}
-	
-	
-	public Boolean isEnabled(){
-		return (Boolean)getCastedPropertyValue(PROP_ENABLED);
-	}
-	
-	public Boolean isVisible(){
-		return (Boolean)getCastedPropertyValue(PROP_VISIBLE);
-	}
-	
-	public Dimension getSize(){
-		return new Dimension(
-				((Integer)getCastedPropertyValue(PROP_WIDTH)).intValue(),
-				((Integer)getCastedPropertyValue(PROP_HEIGHT)).intValue());
-	}	
 	
 	public Point getLocation(){
 		return new Point(
@@ -303,59 +224,108 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 				((Integer)getCastedPropertyValue(PROP_YPOS)).intValue());
 	}
 	
-	public BorderStyle getBorderStyle(){
-		Integer i = (Integer)getCastedPropertyValue(PROP_BORDER_STYLE);
-		return BorderStyle.values()[i];
+	public String getName(){
+		return (String)getCastedPropertyValue(PROP_NAME);
 	}
 	
-	
-	public RGB getBorderColor(){
-		return (RGB)getCastedPropertyValue(PROP_BORDER_COLOR);
+	public AbstractWidgetProperty getProperty(String prop_id){
+		Assert.isTrue(prop_id != null);
+		Assert.isTrue(propertyMap.containsKey(prop_id));
+		return propertyMap.get(prop_id);
 	}
 	
-	
-	public FontData getFont(){
-		return (FontData)getCastedPropertyValue(PROP_FONT);
+	public IPropertyDescriptor[] getPropertyDescriptors() {
+		IPropertyDescriptor[] propArray = new IPropertyDescriptor[propertyDescriptors.size()];
+		int i=0;
+		for(IPropertyDescriptor p : propertyDescriptors.values())
+			propArray[i++] = p;		
+			
+		return propArray;
 	}
 	
-	
-	public int getBorderWidth(){
-		return (Integer)getCastedPropertyValue(PROP_BORDER_WIDTH);
+	public Object getPropertyValue(Object id) {
+		Assert.isTrue(propertyMap.containsKey(id));
+		return propertyMap.get(id).getPropertyValue();
 	}
 	
-	public RGB getBackgroundColor(){
-		return (RGB)getCastedPropertyValue(PROP_COLOR_BACKGROUND);
+	public LinkedHashMap<StringProperty, PVValueProperty> getPVMap(){
+		return pvMap;
 	}
-	
-	public RGB getForegroundColor(){
-		return (RGB)getCastedPropertyValue(PROP_COLOR_FOREGROUND);
-	}
-	
 	
 	public ScriptsInput getScriptsInput(){
 		return (ScriptsInput)getCastedPropertyValue(PROP_SCRIPTS);
 	}
-	
-	public void setSize(int width, int height){
-		setPropertyValue(PROP_WIDTH, width);
-		setPropertyValue(PROP_HEIGHT, height);
+	public Dimension getSize(){
+		return new Dimension(
+				((Integer)getCastedPropertyValue(PROP_WIDTH)).intValue(),
+				((Integer)getCastedPropertyValue(PROP_HEIGHT)).intValue());
 	}
 	
-	public void setSize(Dimension dimension){
-		setSize(dimension.width, dimension.height);
+	public String getType(){
+		return (String)getCastedPropertyValue(PROP_TYPE);
 	}
 	
-	public void setLocation(int x, int y){
-		setPropertyValue(PROP_XPOS, x);
-		setPropertyValue(PROP_YPOS, y);
+	
+	/**
+	 * @return the unique typeID of the model.
+	 */
+	public abstract String getTypeID();
+	
+	public String getVersion() {
+		return VERSION;
 	}
 	
-	public void setForegroundColor(RGB color){
-		setPropertyValue(PROP_COLOR_FOREGROUND, color);
+	public String getWidgetType(){
+		return (String)getCastedPropertyValue(PROP_TYPE);
+	}	
+	
+	public Boolean isEnabled(){
+		return (Boolean)getCastedPropertyValue(PROP_ENABLED);
+	}
+	
+	public boolean isPropertySet(Object id) {
+		return false;
+	}
+	
+	
+	public Boolean isVisible(){
+		return (Boolean)getCastedPropertyValue(PROP_VISIBLE);
+	}
+	
+	
+	/**Remove a property from the model.
+	 * @param prop_id
+	 */
+	public void removeProperty(final String prop_id){
+		assert propertyMap.containsKey(prop_id);
+		AbstractWidgetProperty property = propertyMap.get(prop_id);
+		property.removeAllPropertyChangeListeners();
+		if(property.isVisibleInPropSheet())
+			propertyDescriptors.remove(prop_id);
+		propertyMap.remove(prop_id);
+	}
+	
+	
+	/**Remove a PV p
+	 * @param pvNamePropId
+	 * @param pvValuePropId
+	 */
+	public void removePVProperty(final String pvNamePropId, final String pvValuePropId){
+		removeProperty(pvNamePropId);
+		removeProperty(pvValuePropId);
+		pvMap.remove(getProperty(pvNamePropId));
+	}
+	
+	public void resetPropertyValue(Object id) {
 	}
 	
 	public void setBackgroundColor(RGB color){
 		setPropertyValue(PROP_COLOR_BACKGROUND, color);
+	}
+	
+	
+	public void setBorderColor(RGB color){
+		setPropertyValue(PROP_BORDER_COLOR, color);
 	}
 	
 	public void setBorderStyle(BorderStyle borderStyle){
@@ -372,8 +342,18 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	public void setBorderWidth(int width){
 		setPropertyValue(PROP_BORDER_WIDTH, width);
 	}
-	public void setBorderColor(RGB color){
-		setPropertyValue(PROP_BORDER_COLOR, color);
+	
+	public void setForegroundColor(RGB color){
+		setPropertyValue(PROP_COLOR_FOREGROUND, color);
+	}
+	
+	public void setLocation(int x, int y){
+		setPropertyValue(PROP_XPOS, x);
+		setPropertyValue(PROP_YPOS, y);
+	}
+	
+	public void setName(String name){
+		setPropertyValue(PROP_NAME, name);
 	}
 	
 	public void setPropertyDescription(String prop_id, String description){
@@ -381,9 +361,29 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 		if(propertyDescriptors.containsKey(prop_id))
 			propertyDescriptors.put(prop_id, getProperty(prop_id).getPropertyDescriptor());
 	}
+	
+	public void setPropertyValue(Object id, Object value) {
+		Assert.isTrue(propertyMap.containsKey(id));
+		propertyMap.get(id).setPropertyValue(value);
+	}
+	public void setPropertyVisible(final String prop_id, final boolean visible){
+		Assert.isTrue(propertyMap.containsKey(prop_id));
+		AbstractWidgetProperty property = propertyMap.get(prop_id);
+		if(property.setVisibleInPropSheet(visible)){
+			if(visible)
+				propertyDescriptors.put(prop_id, property.getPropertyDescriptor());
+			else
+				propertyDescriptors.remove(prop_id);
+		}			
+	}
+	
+	public void setSize(Dimension dimension){
+		setSize(dimension.width, dimension.height);
+	}
 
-	public String getVersion() {
-		return VERSION;
+	public void setSize(int width, int height){
+		setPropertyValue(PROP_WIDTH, width);
+		setPropertyValue(PROP_HEIGHT, height);
 	}
 	
 	

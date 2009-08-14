@@ -10,9 +10,8 @@ public class StringProperty extends AbstractWidgetProperty {
 	
 
 	public StringProperty(String prop_id, String description,
-			WidgetPropertyCategory category, boolean visibleInPropSheet,
-			String defaultValue) {
-		super(prop_id, description, category, visibleInPropSheet, defaultValue);		
+			WidgetPropertyCategory category, String defaultValue) {
+		super(prop_id, description, category, defaultValue);		
 	}
 
 	@Override

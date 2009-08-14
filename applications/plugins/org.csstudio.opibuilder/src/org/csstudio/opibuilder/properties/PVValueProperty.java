@@ -15,7 +15,8 @@ import org.jdom.Element;
 public class PVValueProperty extends AbstractWidgetProperty {
 
 	public PVValueProperty(String prop_id, IValue defaultValue) {
-		super(prop_id, "", null, false, defaultValue);
+		super(prop_id, "", null, defaultValue);
+		setVisibleInPropSheet(false);
 	}
 
 	@Override

@@ -16,9 +16,8 @@ public class UnchangableStringProperty extends AbstractWidgetProperty {
 	
 
 	public UnchangableStringProperty(String prop_id, String description,
-			WidgetPropertyCategory category, boolean visibleInPropSheet,
-			String defaultValue) {
-		super(prop_id, description, category, visibleInPropSheet, defaultValue);		
+			WidgetPropertyCategory category, String defaultValue) {
+		super(prop_id, description, category, defaultValue);		
 	}
 
 	@Override

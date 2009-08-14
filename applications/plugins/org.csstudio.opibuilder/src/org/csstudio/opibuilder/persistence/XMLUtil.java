@@ -42,9 +42,11 @@ public class XMLUtil {
 		result.setAttribute(XMLATTR_TYPEID, widgetModel.getTypeID());
 		result.setAttribute(XMLATTR_VERSION, widgetModel.getVersion());
 		for(String propId : widgetModel.getAllPropertyIDs()){
-			Element propElement = new Element(propId);
-			widgetModel.getProperty(propId).writeToXML(propElement);
-			result.addContent(propElement);
+			if(widgetModel.getProperty(propId).isVisibleInPropSheet()){
+				Element propElement = new Element(propId);
+				widgetModel.getProperty(propId).writeToXML(propElement);
+				result.addContent(propElement);
+			}
 		}
 		
 		if(widgetModel instanceof AbstractContainerModel){

@@ -25,14 +25,14 @@ public abstract class AbstractPVWidgetModel extends AbstractWidgetModel {
 	protected void configureBaseProperties() {
 		super.configureBaseProperties();		
 		addPVProperty(new StringProperty(PROP_PVNAME, "PV Name", WidgetPropertyCategory.Basic,
-				true, ""), new PVValueProperty(PROP_PVVALUE, null));
+				""), new PVValueProperty(PROP_PVVALUE, null));
 		
 		addProperty(new BooleanProperty(PROP_BORDER_ALARMSENSITIVE, 
-				"Alarm Sensitive", WidgetPropertyCategory.Border, true, true));
+				"Alarm Sensitive", WidgetPropertyCategory.Border, true));
 		addProperty(new BooleanProperty(PROP_FORECOLOR_ALARMSENSITIVE, 
-				"ForeColor Alarm Sensitive", WidgetPropertyCategory.Display, true, false));
+				"ForeColor Alarm Sensitive", WidgetPropertyCategory.Display, false));
 		addProperty(new BooleanProperty(PROP_BACKCOLOR_ALARMSENSITIVE, 
-				"BackColor Alarm Sensitive", WidgetPropertyCategory.Display, true, false));
+				"BackColor Alarm Sensitive", WidgetPropertyCategory.Display, false));
 	}
 
 	public boolean isBorderAlarmSensitve(){

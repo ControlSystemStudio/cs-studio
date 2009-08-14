@@ -10,6 +10,7 @@ import org.csstudio.opibuilder.properties.WidgetPropertyChangeListener;
 import org.csstudio.opibuilder.script.ScriptData;
 import org.csstudio.opibuilder.script.ScriptService;
 import org.csstudio.opibuilder.script.ScriptsInput;
+import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.util.UIBundlingThread;
 import org.csstudio.opibuilder.visualparts.BorderFactory;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
@@ -205,7 +206,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 		IWidgetPropertyChangeHandler backColorHandler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {
-				figure.setBackgroundColor(CustomMediaFactory.getInstance().getColor((RGB)newValue));				
+				figure.setBackgroundColor(CustomMediaFactory.getInstance().getColor(((OPIColor)newValue).getRGBValue()));				
 				return true;
 			}
 		};		
@@ -214,7 +215,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 		IWidgetPropertyChangeHandler foreColorHandler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {
-				figure.setForegroundColor(CustomMediaFactory.getInstance().getColor((RGB)newValue));				
+				figure.setForegroundColor(CustomMediaFactory.getInstance().getColor(((OPIColor)newValue).getRGBValue()));				
 				return true;
 			}
 		};		
@@ -239,7 +240,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 					IFigure figure) {
 				figure.setBorder(
 					BorderFactory.createBorder(getCastedModel().getBorderStyle(),
-					getCastedModel().getBorderWidth(), (RGB)newValue,
+					getCastedModel().getBorderWidth(), ((OPIColor)newValue).getRGBValue(),
 					getCastedModel().getName()));
 				return true;
 			}

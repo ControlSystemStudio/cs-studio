@@ -3,6 +3,7 @@ package org.csstudio.opibuilder.editparts;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
+import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
@@ -54,7 +55,7 @@ public class DisplayEditpart extends AbstractContainerEditpart {
 			public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {
 				getViewer().getControl().setBackground(
-						CustomMediaFactory.getInstance().getColor((RGB)newValue));
+						CustomMediaFactory.getInstance().getColor(((OPIColor)newValue).getRGBValue()));
 				return false;
 			}
 		};		
@@ -67,7 +68,7 @@ public class DisplayEditpart extends AbstractContainerEditpart {
 						IFigure figure) {
 					((ScalableFreeformRootEditPart)getViewer().getRootEditPart())
 					.getLayer(LayerConstants.GRID_LAYER).setForegroundColor(CustomMediaFactory.getInstance()
-							.getColor((RGB)newValue));
+							.getColor(((OPIColor)newValue).getRGBValue()));
 					return false;
 				}
 			};		
