@@ -1,6 +1,7 @@
 package org.csstudio.opibuilder.widgets.editparts;
 
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
+import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.widgets.figures.RefreshableXMeterFigure;
 import org.csstudio.opibuilder.widgets.model.XMeterModel;
 import org.eclipse.draw2d.IFigure;
@@ -50,7 +51,7 @@ public final class XMeterEditPart extends AbstractMarkedWidgetEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				RefreshableXMeterFigure xMeter = (RefreshableXMeterFigure) refreshableFigure;
-				xMeter.setNeedleColor((RGB) newValue);
+				xMeter.setNeedleColor(((OPIColor) newValue).getRGBValue());
 				return true;
 			}
 		};

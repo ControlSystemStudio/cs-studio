@@ -119,7 +119,7 @@ public abstract class AbstractWidgetProperty {
 		this.defaultValue = defaultValue;
 	}
 
-	public final void setPropertyValue(Object value) {
+	public void setPropertyValue(Object value) {
 		//do conversion and legally check
 		Object newValue = checkValue(value);
 		if(newValue == null || newValue.equals(propertyValue))

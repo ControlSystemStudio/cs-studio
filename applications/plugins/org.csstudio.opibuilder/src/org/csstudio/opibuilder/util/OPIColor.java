@@ -1,6 +1,5 @@
 package org.csstudio.opibuilder.util;
 
-import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -8,6 +7,7 @@ import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
@@ -19,6 +19,9 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
  *
  */
 public class OPIColor implements IAdaptable {
+
+	private static final RGB TRANSPARENT_COLOR = new RGB(253,
+					254, 252);
 
 	private String colorName;
 	
@@ -36,9 +39,7 @@ public class OPIColor implements IAdaptable {
 	}
 	
 	public OPIColor(RGB rgb){
-		this.colorName = "(" + rgb.red + "," + rgb.green + "," + rgb.blue + ")";
-		this.colorValue = rgb;
-		preDefined = false;
+		setColorValue(rgb);
 	}
 	
 	public OPIColor(int red, int green, int blue){
@@ -47,7 +48,7 @@ public class OPIColor implements IAdaptable {
 	
 	public OPIColor(String name, RGB rgb) {
 		this.colorName = name;
-		setColorValue(rgb);
+		this.colorValue = rgb;
 		preDefined = true;
 	}
 
@@ -81,6 +82,7 @@ public class OPIColor implements IAdaptable {
 		preDefined = false;
 	}
 
+	@SuppressWarnings("unchecked")
 	public Object getAdapter(Class adapter) {
 		if(adapter == IWorkbenchAdapter.class)
 			return new IWorkbenchAdapter() {
@@ -97,7 +99,7 @@ public class OPIColor implements IAdaptable {
 					Image image = imageRegistry.get(getID());
 					if(image == null){
 						image = createIcon(getRGBValue());
-						imageRegistry.put(getColorName(), image);
+						imageRegistry.put(getID(), image);
 					}
 						
 					return ImageDescriptor.createFromImage(image);
@@ -118,15 +120,15 @@ public class OPIColor implements IAdaptable {
 		Image image = imageRegistry.get(getID());
 		if(image == null){
 			image = createIcon(getRGBValue());
-			imageRegistry.put(getColorName(), image);
+			imageRegistry.put(getID(), image);
 		}
 		return image;		
 	}
 	
 	
 	private String getID(){
-		return "OPIBUILDER.COLORPROPERTY.ICON_"
-			+colorValue.red+"_"+colorValue.green+"_"+colorValue.blue;
+		return "OPIBUILDER.COLORPROPERTY.ICON_"  //$NON-NLS-1$
+			+colorValue.red+"_"+colorValue.green+"_"+colorValue.blue;  //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	/**
 	 * Creates a small icon using the specified color.
@@ -146,7 +148,7 @@ public class OPIColor implements IAdaptable {
 		GC gc = new GC(image);
 
 		// draw transparent background
-		Color bg = CustomMediaFactory.getInstance().getColor(255, 255, 255);
+		Color bg = CustomMediaFactory.getInstance().getColor(TRANSPARENT_COLOR);
 		gc.setBackground(bg);
 		gc.fillRectangle(0, 0, 16, 16);
 		// draw icon
@@ -157,9 +159,12 @@ public class OPIColor implements IAdaptable {
 						0, 0));
 		gc.drawRectangle(r);
 		gc.dispose();
-
-
-		return image;
+		
+		
+		ImageData imageData = image.getImageData();
+		imageData.transparentPixel = imageData.palette.getPixel(TRANSPARENT_COLOR);
+		image.dispose();
+		return new Image(Display.getCurrent(), imageData);
 	}
 	
 	@Override

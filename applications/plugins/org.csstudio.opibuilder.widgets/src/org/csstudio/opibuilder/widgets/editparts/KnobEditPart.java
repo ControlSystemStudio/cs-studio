@@ -2,6 +2,7 @@ package org.csstudio.opibuilder.widgets.editparts;
 
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
+import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.widgets.figures.KnobFigure;
 import org.csstudio.opibuilder.widgets.model.AbstractScaledWidgetModel;
 import org.csstudio.opibuilder.widgets.model.KnobModel;
@@ -74,7 +75,7 @@ public final class KnobEditPart extends AbstractMarkedWidgetEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				KnobFigure knob = (KnobFigure) refreshableFigure;
-				knob.setBulbColor((RGB)newValue);
+				knob.setBulbColor(((OPIColor) newValue).getRGBValue());
 				return true;
 			}
 		};

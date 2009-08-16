@@ -148,7 +148,7 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 					final IFigure refreshableFigure) {
 				ToolbarArmedXYGraph graph = (ToolbarArmedXYGraph) refreshableFigure;
 				graph.getXYGraph().getPlotArea().setBackgroundColor(
-						CustomMediaFactory.getInstance().getColor((RGB) newValue));
+						CustomMediaFactory.getInstance().getColor(((OPIColor) newValue).getRGBValue()));
 				return true;
 			}
 		};

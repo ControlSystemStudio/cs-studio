@@ -107,7 +107,7 @@ public class KnobModel extends AbstractMarkedWidgetModel{
 	 * @return the knob color
 	 */
 	public RGB getKnobColor() {
-		return (RGB) getProperty(PROP_KNOB_COLOR).getPropertyValue();
+		return getRGBFromColorProperty(PROP_KNOB_COLOR);
 	}	
 	
 	/**
@@ -129,7 +129,7 @@ public class KnobModel extends AbstractMarkedWidgetModel{
 	 * @return The thumb color
 	 */
 	public RGB getThumbColor() {
-		return (RGB) getProperty(PROP_THUMB_COLOR).getPropertyValue();
+		return getRGBFromColorProperty(PROP_THUMB_COLOR);
 	}
 	
 	/**

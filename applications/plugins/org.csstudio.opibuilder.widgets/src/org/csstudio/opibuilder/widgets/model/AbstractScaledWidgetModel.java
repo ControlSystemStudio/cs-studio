@@ -3,8 +3,6 @@ package org.csstudio.opibuilder.widgets.model;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.DoubleProperty;
-import org.csstudio.opibuilder.properties.PVValueProperty;
-import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 
 /**
@@ -36,8 +34,6 @@ public abstract class AbstractScaledWidgetModel extends AbstractPVWidgetModel {
 	/** The ID of the log scale property. */
 	public static final String PROP_LOG_SCALE = "logScale"; //$NON-NLS-1$	
 	
-	/** The default value of the value property. */
-	private static final double DEFAULT_VALUE = 50;	
 	
 	/** The default value of the minimum property. */
 	private static final double DEFAULT_MIN = 0;

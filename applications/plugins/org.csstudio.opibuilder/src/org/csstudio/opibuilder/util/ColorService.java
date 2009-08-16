@@ -72,9 +72,9 @@ public final class ColorService {
 			while((line = reader.readLine()) != null){
 				int i;
 				if((i = line.indexOf('=')) != -1){
-					String name = line.substring(0, i);
+					String name = line.substring(0, i).trim();
 					try{
-						RGB color = StringConverter.asRGB(line.substring(i+1));
+						RGB color = StringConverter.asRGB(line.substring(i+1).trim());
 						
 						colorMap.put(name, new OPIColor(name, color));
 					}catch (DataFormatException e) {
@@ -99,7 +99,7 @@ public final class ColorService {
 	public OPIColor getOPIColor(String name){
 		OPIColor result =colorMap.get(name);		
 		if(result == null)
-			return new OPIColor("unknown", DEFAULT_UNKNOWN_COLOR);
+			return new OPIColor(name + "(N/A)", DEFAULT_UNKNOWN_COLOR);
 		return result;
 	}
 	

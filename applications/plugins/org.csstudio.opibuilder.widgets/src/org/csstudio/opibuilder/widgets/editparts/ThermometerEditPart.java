@@ -2,6 +2,7 @@ package org.csstudio.opibuilder.widgets.editparts;
 
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
+import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.widgets.figures.RefreshableThermoFigure;
 import org.csstudio.opibuilder.widgets.model.ThermometerModel;
 import org.eclipse.draw2d.IFigure;
@@ -53,7 +54,7 @@ public final class ThermometerEditPart extends AbstractMarkedWidgetEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				RefreshableThermoFigure thermometer = (RefreshableThermoFigure) refreshableFigure;
-				thermometer.setFillColor((RGB) newValue);
+				thermometer.setFillColor(((OPIColor) newValue).getRGBValue());
 				return true;
 			}
 		};
@@ -65,7 +66,7 @@ public final class ThermometerEditPart extends AbstractMarkedWidgetEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				RefreshableThermoFigure thermometer = (RefreshableThermoFigure) refreshableFigure;
-				thermometer.setFillBackgroundColor((RGB) newValue);
+				thermometer.setFillBackgroundColor(((OPIColor) newValue).getRGBValue());
 				return true;
 			}
 		};

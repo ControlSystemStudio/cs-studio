@@ -2,6 +2,7 @@ package org.csstudio.opibuilder.widgets.editparts;
 
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
+import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.widgets.figures.RefreshableGaugeFigure;
 import org.csstudio.opibuilder.widgets.model.GaugeModel;
 import org.eclipse.draw2d.IFigure;
@@ -52,7 +53,7 @@ public final class GaugeEditPart extends AbstractMarkedWidgetEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				RefreshableGaugeFigure gauge = (RefreshableGaugeFigure) refreshableFigure;
-				gauge.setNeedleColor((RGB) newValue);
+				gauge.setNeedleColor(((OPIColor) newValue).getRGBValue());
 				return true;
 			}
 		};

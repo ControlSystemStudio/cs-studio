@@ -20,6 +20,12 @@ public class ColorProperty extends AbstractWidgetProperty {
 	public static final String XML_ELEMENT_COLOR = "color"; //$NON-NLS-1$
 
 	/**
+	 * XML attribute name <code>color</code>.
+	 */
+	public static final String XML_ELEMENT_COLORNAME = "color.name"; //$NON-NLS-1$
+
+	
+	/**
 	 * XML attribute name <code>red</code>.
 	 */
 	public static final String XML_ATTRIBUTE_RED = "red"; //$NON-NLS-1$
@@ -61,6 +67,10 @@ public class ColorProperty extends AbstractWidgetProperty {
 		if (value instanceof OPIColor) {
 			if(((OPIColor)value).getRGBValue() == null)
 				acceptedValue = null;
+		}else if(value instanceof RGB){
+			acceptedValue = new OPIColor((RGB)value);
+		}else if(value instanceof String){
+			acceptedValue = ColorService.getInstance().getOPIColor((String)value);
 		}else
 			acceptedValue = null;
 			
@@ -78,12 +88,20 @@ public class ColorProperty extends AbstractWidgetProperty {
 
 	@Override
 	public void writeToXML(Element propElement) {
-		Element colorElement = new Element(XML_ELEMENT_COLOR);
-		RGB color = ((OPIColor) getPropertyValue()).getRGBValue();
-		colorElement.setAttribute(XML_ATTRIBUTE_RED, "" + color.red); //$NON-NLS-1$
-		colorElement.setAttribute(XML_ATTRIBUTE_GREEN, "" + color.green); //$NON-NLS-1$
-		colorElement.setAttribute(XML_ATTRIBUTE_BLUE, "" + color.blue); //$NON-NLS-1$
+		OPIColor opiColor = ((OPIColor) getPropertyValue());
+		Element colorElement;
+		if(!opiColor.isPreDefined()){
+			colorElement= new Element(XML_ELEMENT_COLOR);
+			RGB color =  opiColor.getRGBValue();
+			colorElement.setAttribute(XML_ATTRIBUTE_RED, "" + color.red); //$NON-NLS-1$
+			colorElement.setAttribute(XML_ATTRIBUTE_GREEN, "" + color.green); //$NON-NLS-1$
+			colorElement.setAttribute(XML_ATTRIBUTE_BLUE, "" + color.blue); //$NON-NLS-1$
 
+		}else{
+			colorElement= new Element(XML_ELEMENT_COLORNAME);
+			colorElement.setText(opiColor.getColorName());
+		}
+		
 		propElement.addContent(colorElement);
 	}
 	
@@ -91,20 +109,17 @@ public class ColorProperty extends AbstractWidgetProperty {
 	@Override
 	public Object readValueFromXML(Element propElement) {
 		Element colorElement = propElement.getChild(XML_ELEMENT_COLOR);
-		RGB result = new RGB(Integer.parseInt(colorElement.getAttributeValue(XML_ATTRIBUTE_RED)),
+		if(colorElement != null) {
+				RGB result = new RGB(Integer.parseInt(colorElement.getAttributeValue(XML_ATTRIBUTE_RED)),
 				Integer.parseInt(colorElement.getAttributeValue(XML_ATTRIBUTE_GREEN)),
 				Integer.parseInt(colorElement.getAttributeValue(XML_ATTRIBUTE_BLUE)));
-		return new OPIColor(result);
-		
-	}
+				return new OPIColor(result);		
+		}else{
+			colorElement = propElement.getChild(XML_ELEMENT_COLORNAME);
+			System.out.println(colorElement.getText());
+			return ColorService.getInstance().getOPIColor(colorElement.getText());
+		}
 	
-	public void setPropertyValue(String name) {		
-		setPropertyValue(new OPIColor(name));
-	}
-	
-	
-	public void setPropertyValue(RGB value) {		
-		setPropertyValue(new OPIColor(value));
 	}
 
 }

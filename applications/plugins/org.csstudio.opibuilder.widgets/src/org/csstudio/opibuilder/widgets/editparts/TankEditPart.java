@@ -2,6 +2,7 @@ package org.csstudio.opibuilder.widgets.editparts;
 
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
+import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.widgets.figures.RefreshableTankFigure;
 import org.csstudio.opibuilder.widgets.model.TankModel;
 import org.eclipse.draw2d.IFigure;
@@ -51,7 +52,7 @@ public final class TankEditPart extends AbstractMarkedWidgetEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				RefreshableTankFigure tank = (RefreshableTankFigure) refreshableFigure;
-				tank.setFillColor((RGB) newValue);
+				tank.setFillColor(((OPIColor) newValue).getRGBValue());
 				return true;
 			}
 		};
@@ -63,7 +64,7 @@ public final class TankEditPart extends AbstractMarkedWidgetEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				RefreshableTankFigure tank = (RefreshableTankFigure) refreshableFigure;
-				tank.setFillBackgroundColor((RGB) newValue);
+				tank.setFillBackgroundColor(((OPIColor) newValue).getRGBValue());
 				return true;
 			}
 		};

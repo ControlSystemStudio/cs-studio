@@ -66,7 +66,7 @@ public class GaugeModel extends AbstractMarkedWidgetModel{
 	 * @return the needle color
 	 */
 	public RGB getNeedleColor() {
-		return (RGB) getProperty(PROP_NEEDLE_COLOR).getPropertyValue();
+		return getRGBFromColorProperty(PROP_NEEDLE_COLOR);
 	}	
 	
 	/**

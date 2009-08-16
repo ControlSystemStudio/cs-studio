@@ -1,18 +1,18 @@
 package org.csstudio.opibuilder.widgets.editparts;
 
+import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.widgets.figures.AbstractMarkedWidgetFigure;
 import org.csstudio.opibuilder.widgets.model.AbstractMarkedWidgetModel;
+import org.csstudio.opibuilder.widgets.model.AbstractScaledWidgetModel;
 import org.csstudio.platform.data.INumericMetaData;
 import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.swt.graphics.RGB;
 
 /**
  * Base editPart controller for a widget based on {@link AbstractMarkedWidgetModel}.
