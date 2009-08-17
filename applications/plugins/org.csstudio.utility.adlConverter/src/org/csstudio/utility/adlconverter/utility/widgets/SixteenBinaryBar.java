@@ -67,7 +67,10 @@ public class SixteenBinaryBar extends Widget {
                 }else if(row[1].equals("\"right\"")){
                     _widget.setPropertyValue(SixteenBinaryBarModel.PROP_HORIZONTAL, true);
                 }
-                
+            }else if(row[0].equals("sbit")){
+                _widget.setPropertyValue(SixteenBinaryBarModel.PROP_BITS_FROM, row[1]);
+            }else if(row[0].equals("ebit")){
+                _widget.setPropertyValue(SixteenBinaryBarModel.PROP_BITS_TO, row[1]);
             }
         }
     }
