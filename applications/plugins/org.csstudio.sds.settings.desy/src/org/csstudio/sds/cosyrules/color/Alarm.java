@@ -65,18 +65,22 @@ public final class Alarm implements IRule {
 
 			if ((Math.abs(d - 0.0) < 0.00001)
 					|| (s.equals(DynamicValueState.NORMAL.toString()))) {
+			    // Green
 				return new RGB(0, 216, 0);
 			}
 			if ((Math.abs(d - 1.0) < 0.00001)
 					|| (s.equals(DynamicValueState.WARNING.toString()))) {
+			    // Yellow
 				return new RGB(251, 243, 74);
 			}
 			if ((Math.abs(d - 2.0) < 0.00001)
 					|| (s.equals(DynamicValueState.ALARM.toString()))) {
+			    // RED
 				return new RGB(253, 0, 0);
 			}
 			if ((d >= 3.0 && d <= 255.0)
 					|| (s.equals(DynamicValueState.ERROR.toString()))) {
+			    // white
 				return new RGB(255, 255, 255);
 			}
 		}
