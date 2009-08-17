@@ -67,7 +67,11 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure
 	 * Creates the layout and the boxes for this figure.
 	 */
 	private void createLayoutAndBoxes() {
-		layout = new GridLayout(numberOfBits(), false);
+	    int column = 1;
+	    if(_orientationHorizontal) {
+	        column = numberOfBits();
+	    }
+		layout = new GridLayout(column, false);
 		layout.horizontalSpacing = 0;
 		layout.verticalSpacing = 0;
 		layout.marginHeight = 0;
@@ -261,7 +265,7 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure
 	 * @return the number of bits displayed in this figure.
 	 */
 	private int numberOfBits() {
-		return bitRangeTo - bitRangeFrom + 1;
+        return bitRangeTo - bitRangeFrom + 1;
 	}
 
 	/**
