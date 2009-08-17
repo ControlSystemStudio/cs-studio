@@ -320,7 +320,7 @@ public class ProcessVariableConnectionService implements IProcessVariableConnect
 				connector.dispose();
 			}
 
-			CentralLogger.getInstance().info(null, "Cleanup-Thread: " + deletedConnectors.size() + " connectors disposed!");
+			CentralLogger.getInstance().debug(null, "Cleanup-Thread: " + deletedConnectors.size() + " connectors disposed!");
 		}
 	}
 
