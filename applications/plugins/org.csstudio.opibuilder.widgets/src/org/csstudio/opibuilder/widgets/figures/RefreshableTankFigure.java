@@ -107,7 +107,23 @@ public class RefreshableTankFigure extends AbstractLinearMarkedFigure {
 			corner.width = fill_corner;
 			graphics.setAntialias(SWT.ON);			
 			int valuePosition = ((LinearScale) scale).getValuePosition(value, false);
-			if(effect3D) {				
+			boolean support3D = true;
+			Pattern pattern = null;
+			//just test if pattern is supported on the platform.
+			try {
+				graphics.pushState();
+				pattern = new Pattern(Display.getCurrent(),
+								0, 0, 0, 0,	fillBackgroundColor,WHITE_COLOR);
+				graphics.setBackgroundPattern(pattern);
+			} catch (Exception e) {
+				support3D= false;
+				if(pattern != null)
+					pattern.dispose();	
+			}finally{
+				graphics.popState();
+			}
+			
+			if(effect3D && support3D) {				
 				graphics.setBackgroundColor(WHITE_COLOR);
 				super.fillShape(graphics);
 				//fill background

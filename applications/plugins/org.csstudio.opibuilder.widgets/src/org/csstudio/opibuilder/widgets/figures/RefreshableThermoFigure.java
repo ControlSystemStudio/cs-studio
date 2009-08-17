@@ -2,6 +2,7 @@ package org.csstudio.opibuilder.widgets.figures;
 
 import java.text.NumberFormat;
 
+import org.csstudio.opibuilder.widgets.util.GraphicsUtil;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.swt.xygraph.linearscale.LinearScale;
 import org.csstudio.swt.xygraph.linearscale.LinearScaledMarker;
@@ -156,7 +157,12 @@ public class RefreshableThermoFigure extends AbstractLinearMarkedFigure {
 			graphics.setBackgroundColor(fillBackgroundColor);
 			
 			int valuePosition = ((LinearScale) scale).getValuePosition(value, false);
-			if(effect3D){
+			
+			boolean support3D = false;
+			if(effect3D)
+				 support3D = GraphicsUtil.testPatternSupported(graphics);
+			
+			if(effect3D && support3D){
 				graphics.setForegroundColor(EFFECT3D_PIPE_COLOR);
 				//fill back
 				super.fillShape(graphics);
@@ -222,18 +228,24 @@ public class RefreshableThermoFigure extends AbstractLinearMarkedFigure {
 		@Override
 		protected void fillShape(Graphics graphics) {
 			graphics.setAntialias(SWT.ON);
-			if(effect3D){
+			boolean support3D = false;
+			if(effect3D)
+				 support3D = GraphicsUtil.testPatternSupported(graphics);
+			
+			if(effect3D && support3D){
 				graphics.setBackgroundColor(fillColor);
 				super.fillShape(graphics);
 				int l = (int) ((bounds.width - lineWidth)*0.293/2);
-
-				Pattern backPattern = new Pattern(Display.getCurrent(), 
+				Pattern backPattern = null;
+				
+				 backPattern = new Pattern(Display.getCurrent(), 
 					bounds.x + lineWidth, bounds.y + lineWidth, 
 					bounds.x+bounds.width - l, bounds.y+bounds.height- l,
 					WHITE_COLOR,255, fillColor, 0);			
 				graphics.setBackgroundPattern(backPattern);
 				super.fillShape(graphics);
 				backPattern.dispose();
+				
 			}else{
 				graphics.setBackgroundColor(fillColor);				
 				super.fillShape(graphics);
@@ -254,13 +266,19 @@ public class RefreshableThermoFigure extends AbstractLinearMarkedFigure {
 		
 		@Override
 		protected void outlineShape(Graphics graphics) {
+			boolean support3D = false;
 			if(effect3D)
+				 support3D = GraphicsUtil.testPatternSupported(graphics);
+			
+			if(effect3D && support3D)
 				graphics.setForegroundColor(EFFECT3D_BULB_COLOR);
 			else
 				graphics.setForegroundColor(outlineColor);
 			super.outlineShape(graphics);			
 			//draw a small rectangle to hide the joint  
-			if(effect3D) {
+			
+			
+			if(effect3D && support3D) {
 				graphics.setBackgroundColor(fillColor);
 				graphics.fillRectangle(new Rectangle(pipe.getBounds().x + pipe.getLineWidth(),
 					((LinearScale) scale).getValuePosition(scale.getRange().getLower(), false),

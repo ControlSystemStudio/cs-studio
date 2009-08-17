@@ -51,14 +51,18 @@ public class Bulb extends Figure{
 			// Fills the circle with solid bulb color
 	        graphics.setBackgroundColor(bulbColor);
 	        graphics.fillOval(bounds);
-			
-	        //diagonal linear gradient
-	        Pattern p = new Pattern(Display.getCurrent(), bounds.x,	bounds.y,
-	        		bounds.x + getWidth(), bounds.y + getHeight(),
-	        		COLOR_WHITE, 255, bulbColor, 0);
-	        graphics.setBackgroundPattern(p);
-	       	graphics.fillOval(bounds);		
-	       	p.dispose();
+	        
+			//diagonal linear gradient
+				Pattern p = new Pattern(Display.getCurrent(), bounds.x,	bounds.y,
+						bounds.x + getWidth(), bounds.y + getHeight(),
+						COLOR_WHITE, 255, bulbColor, 0);
+	        try {				
+				graphics.setBackgroundPattern(p);
+				graphics.fillOval(bounds);		
+				p.dispose();
+			} catch (Exception e) {
+				p.dispose();				
+			}
 			
 		} else {			
 			graphics.setBackgroundColor(bulbColor);

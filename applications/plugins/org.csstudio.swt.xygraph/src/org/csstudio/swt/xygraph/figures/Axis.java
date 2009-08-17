@@ -27,6 +27,7 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.graphics.Transform;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -149,7 +150,9 @@ public class Axis extends LinearScale implements IDataProviderListener{
 						bounds.x + bounds.width/2 - titleSize.width/2,
 						bounds.y);
 		}else{	
-			Image image = new Image(Display.getCurrent(), titleSize.width+1, titleSize.height);			
+			int w = titleSize.height;
+			int h = titleSize.width +1;
+			Image image = new Image(Display.getCurrent(),w, h);			
 				GC gc = new GC(image);	
 				Color titleColor = graphics.getForegroundColor();
 				RGB transparentRGB = new RGB(240, 240, 240);
@@ -161,23 +164,30 @@ public class Axis extends LinearScale implements IDataProviderListener{
 				gc.fillRectangle(image.getBounds());
 				gc.setForeground(titleColor);
 				gc.setFont(titleFont);
+				Transform tr = new Transform(Display.getCurrent());
+				if(getTickLablesSide() == LabelSide.Primary){
+					tr.translate(0, h);
+					tr.rotate(-90);
+					gc.setTransform(tr);
+				}else{
+					tr.translate(w, 0);
+					tr.rotate(90);
+					gc.setTransform(tr);
+				}
 				gc.drawText(title, 0, 0);
+				tr.dispose();
 				gc.dispose();
 				ImageData imageData = image.getImageData();				
 				image.dispose();
 				imageData.transparentPixel = imageData.palette.getPixel(transparentRGB);
-				image = new Image(Display.getCurrent(), imageData);
+				image = new Image(Display.getCurrent(), imageData);				
 			if(getTickLablesSide() == LabelSide.Primary){					
-				graphics.translate(bounds.x, bounds.y);
-				graphics.translate(0, bounds.height/2 + titleSize.width/2);
-				graphics.rotate(270);
-				graphics.drawImage(image, 0, 0);
+				graphics.translate(bounds.x, bounds.y);			
+				graphics.drawImage(image, 0, bounds.height/2 - h/2);
 			} else {				
 				//draw vertical title text image				
-				graphics.translate(bounds.x, bounds.y);
-				graphics.translate(bounds.width - titleSize.height, bounds.height/2 + titleSize.width/2);
-				graphics.rotate(90);
-				graphics.drawImage(image, -titleSize.width, -titleSize.height);
+				graphics.translate(bounds.x, bounds.y);			
+				graphics.drawImage(image, bounds.width - w, bounds.height/2 - h/2);
 			}
 			image.dispose();				
 

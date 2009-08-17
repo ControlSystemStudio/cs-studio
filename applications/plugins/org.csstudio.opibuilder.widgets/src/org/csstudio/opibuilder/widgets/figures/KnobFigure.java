@@ -307,16 +307,22 @@ public class KnobFigure extends AbstractRoundRampedFigure {
 			graphics.setAntialias(SWT.ON);
 			Pattern pattern = null;
 			graphics.setBackgroundColor(thumbColor);
+			boolean support3D = true;
 			if(effect3D){
-				graphics.setBackgroundColor(thumbColor);
-				super.fillShape(graphics);
-				pattern = new Pattern(Display.getCurrent(), bounds.x, bounds.y,
-						bounds.x + bounds.width, bounds.y + bounds.height, 
-						WHITE_COLOR, 0, WHITE_COLOR, 255);
-				graphics.setBackgroundPattern(pattern);				
+				try {
+					graphics.setBackgroundColor(thumbColor);
+					super.fillShape(graphics);
+					pattern = new Pattern(Display.getCurrent(), bounds.x, bounds.y,
+							bounds.x + bounds.width, bounds.y + bounds.height, 
+							WHITE_COLOR, 0, WHITE_COLOR, 255);
+					graphics.setBackgroundPattern(pattern);
+				} catch (Exception e) {
+					support3D = false;
+					pattern.dispose();
+				}				
 			}			
 			super.fillShape(graphics);
-			if(effect3D)
+			if(effect3D && support3D)
 				pattern.dispose();
 			graphics.setForegroundColor(thumbColor);
 		}		

@@ -105,15 +105,21 @@ public class RefreshableGaugeFigure extends AbstractRoundRampedFigure {
 		Pattern pattern = null;
 		graphics.pushState();
 		graphics.setBackgroundColor(GRAY_COLOR);
+		boolean support3D = true;
 		if(effect3D) {			
-			pattern = new Pattern(Display.getCurrent(), area.x, area.y, 
-					area.x+area.width, area.y + area.height, BORDER_COLOR, WHITE_COLOR);
-			graphics.setBackgroundPattern(pattern);			
+			try {
+				pattern = new Pattern(Display.getCurrent(), area.x, area.y, 
+						area.x+area.width, area.y + area.height, BORDER_COLOR, WHITE_COLOR);
+				graphics.setBackgroundPattern(pattern);
+			} catch (Exception e) {
+				support3D = false;
+				pattern.dispose();
+			}			
 		}	
 		graphics.fillOval(area);
 		graphics.popState();
 		
-		if(effect3D){			
+		if(effect3D && support3D){			
 			pattern.dispose();
 			area.shrink(BORDER_WIDTH, BORDER_WIDTH);
 		}else
@@ -125,7 +131,7 @@ public class RefreshableGaugeFigure extends AbstractRoundRampedFigure {
 		super.paintClientArea(graphics);
 		
 			//glossy effect
-		if(effect3D) {
+		if(effect3D && support3D) {
 			graphics.pushState();
 			graphics.setAntialias(SWT.ON);
 			final double R = area.width/2;
@@ -196,13 +202,19 @@ public class RefreshableGaugeFigure extends AbstractRoundRampedFigure {
 			graphics.setAntialias(SWT.ON);
 			Pattern pattern = null;
 			graphics.setBackgroundColor(GRAY_COLOR);
+			boolean support3D = true;
 			if(effect3D){
-				pattern = new Pattern(Display.getCurrent(), bounds.x, bounds.y,
-						bounds.x + bounds.width, bounds.y + bounds.height, WHITE_COLOR, BORDER_COLOR);
-				graphics.setBackgroundPattern(pattern);				
+				try {
+					pattern = new Pattern(Display.getCurrent(), bounds.x, bounds.y,
+							bounds.x + bounds.width, bounds.y + bounds.height, WHITE_COLOR, BORDER_COLOR);
+					graphics.setBackgroundPattern(pattern);
+				} catch (Exception e) {
+					support3D = false;
+					pattern.dispose();
+				}				
 			}			
 			super.fillShape(graphics);
-			if(effect3D)
+			if(effect3D && support3D)
 				pattern.dispose();			
 		}		
 	}

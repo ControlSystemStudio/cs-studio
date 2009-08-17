@@ -80,7 +80,7 @@ public class KnobModel extends AbstractMarkedWidgetModel{
 				WidgetPropertyCategory.Display, DEFAULT_KNOB_COLOR));	
 		
 		addProperty(new BooleanProperty(PROP_EFFECT3D, "3D Effect", 
-				WidgetPropertyCategory.Display, false));
+				WidgetPropertyCategory.Display, true));
 		
 		addProperty(new BooleanProperty(PROP_SHOW_VALUE_LABEL, "Show Value Label", 
 				WidgetPropertyCategory.Display, true));		
@@ -89,7 +89,7 @@ public class KnobModel extends AbstractMarkedWidgetModel{
 				WidgetPropertyCategory.Display, DEFAULT_THUMB_COLOR));
 		
 		addProperty(new BooleanProperty(PROP_RAMP_GRADIENT, "Ramp Gradient", 
-				WidgetPropertyCategory.Display, false));	
+				WidgetPropertyCategory.Display, true));	
 		
 		addProperty(new DoubleProperty(PROP_INCREMENT, "Increment",
 				WidgetPropertyCategory.Behavior, 1.0));
