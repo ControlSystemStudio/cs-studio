@@ -55,19 +55,21 @@ public class Application implements IApplication
         final BooleanOption help = new BooleanOption(parser,
                 "-h", "Help");
   
+        final String app_info = context.getBrandingName() + " " + context.getBrandingBundle().getVersion().toString();
         try
         {
             parser.parse(args);
         }
         catch (Exception ex)
         {
-            System.err.println("Error: " + ex.getMessage());
+            System.out.println(app_info + " error: " + ex.getMessage());
             System.err.println(parser.getHelp());
             return IApplication.EXIT_OK;
         }
         
         if (help.get())
         {
+            System.out.println(app_info);
             System.out.println(parser.getHelp());
             return IApplication.EXIT_OK;
         }
@@ -79,6 +81,7 @@ public class Application implements IApplication
         // Show basic info unless in 'EDM' mode
         if (! this.edm_mode)
         {
+            System.out.println(app_info);
             System.out.println("URL        : " + url.get());
             System.out.println("Topic      : " + topic.get());
             System.out.println("Type       : " + type.get());

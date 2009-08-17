@@ -21,8 +21,11 @@ Use for EDM 'write' logging
 -------------------------
 EDM can log PV writes to a 'write' log, see EDM manual for details:
   http://ics-web.sns.ornl.gov/edm/edmUserManual/index.html#pv-put-logging
- 
-To test, first try to run
+Fundamentally, the edmPvobjects file must list "LOG" as the first, i.e.
+default PV type.
+  
+First try to run the JMSSender manually to test if messages as EDM would
+generate them are correctly logged. Run this command (with the appropriate URL):
  
  JMSSender -url tcp://ics-srv02.sns.ornl.gov:61616 -topic WRITE -type write -edm_mode
 
@@ -36,6 +39,11 @@ into a shell script 'edm_write_logger.sh' and use that as the EDM put logger:
  export EDMPUTLOGGER=edm_write_logger.sh
  
  
+ Version History
+ ---------------
+ 
+ 1.1.0, 2009-08 - EDM 'write' logging, Eclipse 3.5
+ 1.0.0,         - Initial
  
 
 
