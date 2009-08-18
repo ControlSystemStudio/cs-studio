@@ -55,9 +55,9 @@ public final class Console {
 	private MessageConsoleStream _stream = null;
 
 	/**
-	 * The cached system output stream.
+	 * The original system output stream.
 	 */
-	private PrintStream _cachedStream = null;
+	private PrintStream _originalSystemOut = null;
 
 	/**
 	 * Constructor is private due to singleton pattern.
@@ -92,8 +92,13 @@ public final class Console {
 	 * Reset the system output stream to its cached state.
 	 */
 	public void resetSystemOutputStream() {
-		if (_cachedStream != null) {
-			System.setOut(_cachedStream);
+		if (_originalSystemOut != null) {
+			System.setOut(_originalSystemOut);
+			
+			// WARNING: It is not possible to reconfigure the logger here! This
+			// method is called in the UI thread, so reconfiguring the logger
+			// here would mean that the UI thread waits for the logger, which
+			// could cause a deadlock.
 		}
 	}
 
@@ -118,7 +123,7 @@ public final class Console {
 		consolePlugin.getConsoleManager().addConsoles(
 				new IConsole[] { _console });
 
-		_cachedStream = System.out;
+		_originalSystemOut = System.out;
 		System.setOut(new PrintStream(_stream));
 
 		// the logging mechanism needs to be informed that the standard system
