@@ -201,6 +201,15 @@ public class RawSampleIterator implements SampleIterator
 	public IValue next() throws Exception
 	{	// Remember value to return...
 		final IValue result = value;
+		
+		// This should not happen...
+		if (result_set == null)
+		{
+            CentralLogger.getInstance().getLogger(this).error(
+                "RawSampleIterator.next(" + channel.getName() + ") called after end");
+		    return null;
+		}
+		
 		// ... and prepare next value
 		try
 		{
@@ -211,7 +220,8 @@ public class RawSampleIterator implements SampleIterator
 		}
 		catch (Exception ex)
 		{
-            if (ex.getMessage().startsWith("ORA-01013"))
+            final String message = ex.getMessage();
+            if (message != null  &&  message.startsWith("ORA-01013"))
             {
                 // Not a real error; return empty iterator
                 CentralLogger.getInstance().getLogger(this).debug(
