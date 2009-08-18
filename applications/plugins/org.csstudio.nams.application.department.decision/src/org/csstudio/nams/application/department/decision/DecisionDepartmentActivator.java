@@ -925,7 +925,7 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 						"Exception during recieve of message.", e);
 			} catch (final InterruptedException ie) {
 				DecisionDepartmentActivator.logger.logInfoMessage(this,
-						"Recieving of message has benn interrupted", ie);
+						"Recieving of message has been interrupted", ie);
 			}
 		}
 
