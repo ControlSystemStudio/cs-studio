@@ -557,9 +557,6 @@ public class AlarmTreeView extends ViewPart {
 		directoryReader.addJobChangeListener(new JobChangeAdapter() {
 			@Override
 			public void done(final IJobChangeEvent event) {
-				// Apply updates to the new tree
-				_jmsConnector.setUpdateTarget(rootNode);
-				
 				// Display the new tree.
 				asyncSetViewerInput(rootNode);
 				
@@ -567,6 +564,9 @@ public class AlarmTreeView extends ViewPart {
 				directoryUpdater.addJobChangeListener(new JobChangeAdapter() {
 					@Override
 					public void done(final IJobChangeEvent event) {
+						// Apply updates to the new tree
+						_jmsConnector.setUpdateTarget(rootNode);
+						
 						getSite().getShell().getDisplay().asyncExec(new Runnable() {
 							public void run() {
 								_viewer.refresh();
