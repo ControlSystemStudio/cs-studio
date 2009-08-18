@@ -22,21 +22,16 @@
 package org.csstudio.platform.ui.workbench;
 
 import org.csstudio.platform.internal.usermanagement.IUserManagementListener;
-import org.csstudio.platform.internal.usermanagement.UserManagementEvent;
 import org.csstudio.platform.security.SecurityFacade;
-import org.csstudio.platform.security.User;
 import org.csstudio.platform.ui.internal.console.Console;
 import org.csstudio.platform.ui.internal.localization.Messages;
 import org.csstudio.platform.ui.internal.perspectives.CssDefaultPerspective;
-import org.eclipse.jface.action.IStatusLineManager;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.application.IWorkbenchConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchAdvisor;
-// import org.eclipse.ui.internal.util.StatusLineContributionItem;
 
 /**
  * The workbench advisor for the control system studio. <br>
@@ -118,54 +113,7 @@ public class CssWorkbenchAdvisor extends WorkbenchAdvisor {
 	 */
 	@Override
 	public void postWindowOpen(final IWorkbenchWindowConfigurer configurer) {
-		addUserNameToStatusLine();
 	}
-
-	/**
-	 * Adds a contribution item to the status line which shows the currently
-	 * logged in user.
-	 */
-	// Note: this implementation currently uses StatusLineContributionItem,
-	// which is a non-API class (i.e. in an "internal" package). When we switch
-	// to Eclipse 3.3, we should rewrite this to use Eclipse 3.3's new extension
-	// point for status line items and only use official APIs.
-	@SuppressWarnings("restriction") //$NON-NLS-1$
-	private void addUserNameToStatusLine() {
-		IStatusLineManager statusLine =
-			_workbenchWindowconfigurer.getActionBarConfigurer()
-			.getStatusLineManager();
-		final SecurityFacade sf = SecurityFacade.getInstance();
-
-		// TODO port to Eclipse 3_4
-		//		final StatusLineContributionItem ci =
-		//			new StatusLineContributionItem("User name"); //$NON-NLS-1$
-//		
-//		_userListener = new IUserManagementListener() {
-//			public void handleUserManagementEvent(final UserManagementEvent event) {
-//				updateUserNameInStatusLine(ci);
-//			}
-//		};
-//		sf.addUserManagementListener(_userListener);
-//		
-//		updateUserNameInStatusLine(ci);
-//		statusLine.add(ci);
-	}
-	
-	/**
-	 * Updates the user name displayed in the status line.
-	 * @param ci the status line item.
-	 */
-// TODO Port to Eclipse 3_4
-	//	@SuppressWarnings("restriction") //$NON-NLS-1$
-//	private void updateUserNameInStatusLine(final StatusLineContributionItem ci) {
-//		User user = SecurityFacade.getInstance().getCurrentUser();
-//		if (user != null) {
-//			ci.setText(NLS.bind(Messages.CssWorkbenchAdvisor_LoggedInAs,
-//					user.getUsername()));
-//		} else {
-//			ci.setText(Messages.CssWorkbenchAdvisor_NotLoggedIn);
-//		}
-//	}
 	
 	/**
 	 * {@inheritDoc}
