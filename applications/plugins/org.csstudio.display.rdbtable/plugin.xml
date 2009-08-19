@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="org.csstudio.display.rdbtable.ui.Editor"
+            default="false"
+            extensions="rdb"
+            filenames="rdb"
+            icon="html/icon.gif"
+            id="org.csstudio.display.rdbtable.ui.editor"
+            name="%RDBTableEditor">
+      </editor>
+   </extension>
+   <extension
+           point="org.eclipse.help.toc">
+      <toc
+            file="toc.xml"
+            primary="true">
+      </toc>
+    </extension>
+</plugin>

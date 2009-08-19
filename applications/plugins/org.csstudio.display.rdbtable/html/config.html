@@ -1,0 +1,71 @@
+<html>
+<head>
+    <title>RDB Table Editor Configuration</title>
+</head>
+
+<body>
+<h1>RDB Table Editor Configuration</h1>
+Configuration files can be created within the Navigator.
+Either copy/paste an existing file,
+or create a new one (New, Other, General, File) with a name
+that ends in <code>.rdb</code>.
+To edit the file, open it via <code>Open with, Text Editor</code>.
+Finally, open it once via <code>Open with, RDB Table Editor</code> to restore
+the default file type association that will open the file in
+the RDB Table Editor.
+<p>
+Configuration files must have the following format:
+<hr>
+
+<pre>
+&lt;!-- Example configuration file for the CSS RDB Table Editor --&gt;
+&lt;rdbtable&gt;
+    &lt;!-- Title that will appear in editor window --&gt;
+    &lt;title&gt;Example Configuration&lt;/title&gt;
+    
+    &lt;!-- RDB connection info.
+         If user/password are missing, application will prompt for them.
+         Otherwise they can be put here.
+      --&gt;
+    &lt;url&gt;jdbc:mysql://my.host.org/DATABASE&lt;/url&gt;
+    &lt;user&gt;user&lt;/user&gt;
+    &lt;password&gt;secret&lt;/password&gt;
+    
+    &lt;!-- Table column info.
+         The first column must be a "key" that's used to
+         update or delete table rows.
+         When creating a new table row, users can enter
+         a new "key" value.
+         On existing rows, the "key" column values cannot be changed.
+         
+         An optional 'width' attribute in percent is used to auto-size
+         the table column. The default is "100%", meaning each column
+         gets 100% of its share when the table widths is equally distributed
+         amongst columns.
+      --&gt;
+    &lt;columns&gt;
+      &lt;column width="50%"&gt;ID&lt;/column&gt;
+      &lt;column&gt;Name&lt;/column&gt;
+    &lt;/columns&gt;
+    
+    &lt;sql&gt;
+      &lt;!-- Read initial table content: Must return one string per column --&gt;
+      &lt;select&gt;SELECT STATUS_ID, NAME FROM STATUS&lt;/select&gt;
+
+      &lt;!-- Add new rows: Will receive one string per column --&gt;
+      &lt;insert&gt;INSERT INTO STATUS(STATUS_ID,NAME) VALUES (?, ?)&lt;/insert&gt;
+
+      &lt;!-- Update changed rows: Will receive all non-key column values
+           followed by the "key" column value
+       --&gt;
+      &lt;update&gt;UPDATE STATUS SET NAME=? WHERE STATUS_ID=?&lt;/update&gt;
+
+      &lt;!-- Delete rows: Will "key" column value --&gt;
+      &lt;delete&gt;DELETE FROM STATUS WHERE STATUS_ID=?&lt;/delete&gt;
+    &lt;/sql&gt; 
+&lt;/rdbtable&gt;
+</pre>
+<hr>
+
+</body>
+</html>

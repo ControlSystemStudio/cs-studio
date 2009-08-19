@@ -1,0 +1,69 @@
+<html>
+<head>
+    <title>RDB Table Editor Usage</title>
+</head>
+
+<body>
+<h1>RDB Table Editor Usage</h1>
+The following assumes that
+<a href="config.html">configuration files</a>
+have been prepared.
+
+<h2>Open RDB Table Editor</h2>
+The RDB Table Editor is launched by opening
+an existing configuration file in the <i>Navigator</i>.
+Either double-click on a file ending in ".rdb",
+or right-click and select <code>Open With; RDB Table Editor</code>.
+
+<h2>RDB Login</h2>
+While some configuration files might contain a user and password
+necessary to connect to the RDB, other configuration files might
+not contain that information and instead require each user to log
+on individually.
+<p>
+In the latter case, a dialog will appear that prompts for the
+user and password:
+<p>
+<div align="center"><img src="login.png" alt="Login Dialog" width="599" height="258"/></div>
+
+<h2>Editing</h2>
+This is an example screenshot of the RDB Table editor:
+<div align="center"><img src="rdbtable.png" alt="RDB Table" width="625" height="281"/></div>
+
+Note that all editing is local until you "save" the changes, i.e. write them to the RDB.
+
+<h3>Modifying Cells</h3>
+In the table editor, modify selected cells by clicking the cell and entering
+a new value.
+Rows with modified cells will be highlighted in yellow, and a tool-tip will
+also indicate that the row was changed
+<p>
+Note that the first, leftmost column contains a "key" that's used to
+identify the row in the RDB.
+In the screenshot it's the "ID" column.
+You can only change that "key" for newly added rows (see below),
+not for existing rows.
+
+<h3>Adding Rows</h3>
+Add new rows by opening the context menu (right-click in table)
+and selecting <img src="add.gif" width="16" height="16"/>"Add".
+The new row will look like the bottom row in the screenshot,
+where you can now enter the individual cell values, including the
+"key" which must usually be unique, i.e. different from other rows.
+
+<h3>Deleting Rows</h3>
+Select the rows, then mark them for deletion via the 
+context menu (right-click in table)
+and selecting <img src="delete.gif" width="16" height="16"/>"Delete".
+Rows marked for deletion will have a grey background like the one with ID 386
+in the screenshot, and a tool-tip will also indicate that the row was marked
+for deletion.
+
+<h3>Saving Changes to the RDB</h3>
+To write new rows, cell modifications or row deletions to the RDB,
+"save" the changes via the <img src="save.gif" width="16" height="16"/> File/Save menu.
+When simply closing the editor window you will also be prompted to
+save pending changes.
+
+</body>
+</html>
