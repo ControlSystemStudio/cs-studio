@@ -31,6 +31,7 @@ import java.util.Map;
 
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.simpledal.ConnectionState;
+import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DisplayModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
@@ -41,7 +42,9 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.draw2d.ColorConstants;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.graphics.TextLayout;
 
 /**
  * @author hrickens
@@ -53,7 +56,9 @@ public final class ADLHelper {
     /** Contain all colors of an ADL Colormap as a RGBColor. */
     private static RGBColor[] _rgbColor;
     private static String PATH_REMOVE_PART = Activator.getDefault().getPreferenceStore().getString(ADLConverterPreferenceConstants.P_STRING_Path_Remove_Absolut_Part);
+    private static String STRIP_TOOL_PATH_REMOVE_PART = Activator.getDefault().getPreferenceStore().getString(ADLConverterPreferenceConstants.P_STRING_Path_Remove_Absolut_Part_Strip_Tool);
     private static String targetpath;
+    private static String _fullpath;
     /**
      * The default Constructor.
      */
@@ -174,6 +179,11 @@ public final class ADLHelper {
                 cleanString[0] = cleanString[0].replaceAll(PATH_REMOVE_PART, ""); //$NON-NLS-1$ //$NON-NLS-2$
             }
             cleanString[0] = cleanString[0].replaceAll("\\.adl", ".css-sds"); //$NON-NLS-1$ //$NON-NLS-2$
+        }else if (cleanString[0].endsWith(".stc")) { //$NON-NLS-1$
+            if(cleanString[0].startsWith(STRIP_TOOL_PATH_REMOVE_PART)) {
+                cleanString[0] = cleanString[0].replaceAll(STRIP_TOOL_PATH_REMOVE_PART, ""); //$NON-NLS-1$ //$NON-NLS-2$
+            }
+            cleanString[0] = cleanString[0].concat(".css-sds"); //$NON-NLS-1$ //$NON-NLS-2$
         }else if (cleanString[0].endsWith(".HOPR")) { //$NON-NLS-1$
             cleanString[0] = cleanString[0].replaceAll("\\.HOPR", "[graphMax]");
         }else if (cleanString[0].endsWith(".LOPR")) { //$NON-NLS-1$
@@ -254,7 +264,7 @@ public final class ADLHelper {
         if (fontSize <= 0) {
             fontSize = 10;
         }
-        /*
+
         if (text != null && text.length() > 0) {
             TextLayout tl = new TextLayout(null);
             tl.setText(text);
@@ -266,7 +276,7 @@ public final class ADLHelper {
                 tl.setFont(f);
             }
             tl.dispose();
-        }*/
+        }
         return fontSize;
     }
 
@@ -324,7 +334,7 @@ public final class ADLHelper {
         }
 
     }
-    
+
     /**
      * Some paths in adl files starts with /applic/graphic that is an error
      * in SDS.
@@ -334,17 +344,40 @@ public final class ADLHelper {
      */
     public static String cleanFilePath(String path) {
         String source = Activator.getDefault().getPreferenceStore().getString(ADLConverterPreferenceConstants.P_STRING_Path_Remove_Absolut_Part);
-    	if(source == null || source.equals(""))
-    		return path;
-    	
+        if(source == null || source.equals(""))
+            return path;
+        
         do {
             path = path.replace(source, "");
             source = source.substring(source.indexOf('/', 1));
         } while(source.lastIndexOf('/')>0);
         return path;
     }
+
     
+    public static void setPath(ADLWidget wid){
+        for(FileLine line : wid.getBody()){
+            String[] row = line.getLine().trim().split("=");
+            if(row[0].equals("name")){
+                _fullpath = row[1].replaceAll("\"", "");
+                return;
+            }           
+        }       
+    }
     
+    public static String getPath(){
+        return _fullpath;
+    }
+
+    public static String getFolderPath(){ 
+        String[] tmp = _fullpath.split("/");
+        String folder = "";
+        for(int i = 0; i < tmp.length -1 ; i++)
+            folder = folder.concat(tmp[i]).concat("/");
+        
+        return folder;
+    }
+
     public static void setTargetPath(String path){
     	targetpath = path;
     	//targetpath = ResourcesPlugin.getWorkspace().getRoot().getRawLocation().append(path).toString();    	

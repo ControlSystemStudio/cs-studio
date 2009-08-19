@@ -59,7 +59,8 @@ public class ADLPreferencePage extends FieldEditorPreferencePage implements
         FieldEditor targetFieldEditor = new ContainerFieldEditor(ADLConverterPreferenceConstants.P_STRING_Path_Target,"Target Path:",getFieldEditorParent());
         addField(targetFieldEditor);
         addField(new DirectoryFieldEditor(ADLConverterPreferenceConstants.P_STRING_Path_Relativ_Target,"Relativ Target Path:",getFieldEditorParent()));
-        addField(new StringFieldEditor(ADLConverterPreferenceConstants.P_STRING_Path_Remove_Absolut_Part,"Remove absolute path part:", getFieldEditorParent()));
+        addField(new StringFieldEditor(ADLConverterPreferenceConstants.P_STRING_Path_Remove_Absolut_Part,"Remove absolute path part for Display:", getFieldEditorParent()));
+        addField(new StringFieldEditor(ADLConverterPreferenceConstants.P_STRING_Path_Remove_Absolut_Part_Strip_Tool,"Remove absolute path part for Strip Tool:", getFieldEditorParent()));
         addField(new StringFieldEditor(ADLConverterPreferenceConstants.P_STRING_Display_Paths,"Display paths separated by commas:", getFieldEditorParent()));
     }
 

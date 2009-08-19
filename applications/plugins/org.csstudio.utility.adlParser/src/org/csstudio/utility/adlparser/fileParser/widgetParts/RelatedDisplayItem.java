@@ -26,6 +26,7 @@ package org.csstudio.utility.adlconverter.utility.widgetparts;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.io.File;
 
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.components.model.WaveformModel;
@@ -41,6 +42,8 @@ import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.FileLine;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 
@@ -90,7 +93,66 @@ public class RelatedDisplayItem extends WidgetPart {
      */
     @Override
     final void init() {
-        _path = Activator.getDefault().getPreferenceStore().getString(ADLConverterPreferenceConstants.P_STRING_Path_Target);
+    	//_path = Activator.getDefault().getPreferenceStore().getString(ADLConverterPreferenceConstants.P_STRING_Path_Target);
+    }
+    
+    
+    final String checkPath(String path, String name){
+    	path = path.trim();
+    	if(path.endsWith("/"))
+    		path = path.substring(0, path.length()-1);
+    	
+    	IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+    	
+    	// Both file formats are checked, to ensure that if multiple displays are being
+    	// converted out of order, this method doesn't break by failing to find
+    	// the yet to be converted <filename>.adl display.
+    	File file1 = new File(path + "/" + name + ".adl");
+    	File file2 = new File(path + "/" + name + ".css-sds");
+    	Path path1 = new Path(path + "/" + name + ".adl");
+    	Path path2 = new Path(path + "/" + name + ".css-sds");
+    	
+    	if(file1.exists() || file2.exists())
+    		return path.replaceAll(root.getRawLocation().toString(), "");
+    	
+    	if(root.exists(path1) || root.exists(path2))
+    		return root.getFullPath().toString();
+    	 
+    	return null;
+    }
+    
+    
+    /**
+     * First checks the parent path of the calling display, then the workspace path, then
+     * each of the display paths provided in the preferences for the source file
+     * of this display.  Returns the FIRST directory where the display exists. 
+     */
+    final String findPath() {
+    	// At this point, _name = <filename>.css-sds.
+    	String name = _name.replaceAll(".css-sds", "");
+    	String parent = ADLHelper.getFolderPath();
+    	String path = null;
+    	String allpaths = Activator.getDefault().getPreferenceStore().getString(ADLConverterPreferenceConstants.P_STRING_Display_Paths);
+    	String[] displaypaths = allpaths.split(",");    	
+    	if(name.startsWith("/"))
+    		name = name.substring(1,name.length());
+
+    	path = checkPath(parent, name);
+    	if(path != null)
+    		return path;
+    	
+    	path = checkPath("", name);
+    	if(path != null)
+    		return path;
+    	
+    	for(String dpath : displaypaths){
+    		path = checkPath(dpath, name);
+    		if(path != null)
+    			return path;
+    	}
+    	
+    	// Return the default if nothing else is found
+    	return Activator.getDefault().getPreferenceStore().getString(ADLConverterPreferenceConstants.P_STRING_Path_Target);
     }
 
     /**
@@ -174,10 +236,13 @@ public class RelatedDisplayItem extends WidgetPart {
         // Set the Resource
         if (_name != null) {
             _name = ADLHelper.cleanFilePath(_name);
-            IPath path = new Path(_path);
             if (!_name.toLowerCase().endsWith(".css-sds")) {
                 _name = _name.concat(".css-sds");
             }
+            ////////////////////////////
+            _path = findPath();
+            ////////////////////////////
+            IPath path = new Path(_path);
             path = path.append(_name);
             WidgetProperty prop = action.getProperty(OpenDisplayActionModel.PROP_RESOURCE);
             prop.setPropertyValue(path);

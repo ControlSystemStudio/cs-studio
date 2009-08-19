@@ -110,11 +110,14 @@ public class ADLDisplayImporter extends AbstractDisplayImporter {
 				new Layer(Messages.ADLDisplayImporter_ADLBackgroundLayerName,
 						Messages.ADLDisplayImporter_ADLBackgroundLayerDes), 0);
 		displayModel.getLayerSupport().addLayer(
+		        new Layer(Messages.ADLDisplayImporter_ADLDynamicLayerName,
+		                Messages.ADLDisplayImporter_ADLDynamicLayerDes), 2);
+		displayModel.getLayerSupport().addLayer(
 				new Layer(Messages.ADLDisplayImporter_ADLBargraphLayerName,
-						Messages.ADLDisplayImporter_ADLBargraphLayerDes), 2);
+						Messages.ADLDisplayImporter_ADLBargraphLayerDes), 3);
 		displayModel.getLayerSupport().addLayer(
 				new Layer(Messages.ADLDisplayImporter_ADLActionLayerName,
-						Messages.ADLDisplayImporter_ADLActionLayerDes), 2);
+						Messages.ADLDisplayImporter_ADLActionLayerDes), 4);
 
 		// search and set the color map
 		for (ADLWidget adlWidget : root.getObjects()) {
@@ -168,6 +171,7 @@ public class ADLDisplayImporter extends AbstractDisplayImporter {
 							.getElement());
 				} else if (adlWidget.getType().equals("file")) { //$NON-NLS-1$
 					// TODO: FILE --> Name and Version
+                    ADLHelper.setPath(adlWidget);
 				} else if (adlWidget.getType().equals("image")) { //$NON-NLS-1$
 					displayModel.addWidget(new Image(adlWidget, displayModel,
 							storedBasicAttribute, storedDynamicAttribute,
