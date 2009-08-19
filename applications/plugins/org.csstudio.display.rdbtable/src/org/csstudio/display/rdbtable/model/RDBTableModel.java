@@ -69,8 +69,8 @@ public class RDBTableModel
     }
 
     /** Read configuration
-     * @param stream Stream for XML file
-     * @throws Exception on error in XML file
+     *  @param stream Stream for XML file
+     *  @throws Exception on error in XML file
      */
     private void readConfiguration(final InputStream stream)
             throws Exception
@@ -153,18 +153,24 @@ public class RDBTableModel
         return user;
     }
 
-    /** Read table data from RDB with user, password from configuration file
-     *  @throws Exception on error
-     */
-    public void read() throws Exception
-    {
-        read(user, password);
-    }
-    
-    /** Read table data from RDB
+    /** Read table data from RDB with user/password, replacing what
+     *  was found in the configuration file
+     *  @param user RDB user to use
+     *  @param password RDB password to use
      *  @throws Exception on error
      */
     public void read(final String user, final String password) throws Exception
+    {
+        this.user = user;
+        this.password = password;
+        read();
+    }
+    
+    /** Read table data from RDB with user, password from configuration file
+     *  or last read(user, password) call.
+     *  @throws Exception on error
+     */
+    public void read() throws Exception
     {
         rows.clear();
         rdb = RDBUtil.connect(url, user, password, true);
