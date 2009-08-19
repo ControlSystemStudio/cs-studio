@@ -40,7 +40,7 @@
        -->
       <update>UPDATE STATUS SET NAME=? WHERE STATUS_ID=?</update>
 
-      <!-- Delete rows: Will "key" column value -->
+      <!-- Delete rows: Will receive "key" column value -->
       <delete>DELETE FROM STATUS WHERE STATUS_ID=?</delete>
     </sql> 
 </rdbtable>

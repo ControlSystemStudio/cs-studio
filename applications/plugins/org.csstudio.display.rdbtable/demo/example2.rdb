@@ -36,7 +36,7 @@
        -->
       <update>UPDATE DISPLAY SET TITLE=?, DISPLAY_ORDER=?, DETAIL=? WHERE COMPONENT_ID=?</update>
 
-      <!-- Delete rows: Will "key" column value -->
+      <!-- Delete rows: Will receive "key" column value -->
       <delete>DELETE FROM DISPLAY WHERE COMPONENT_ID=?</delete>
     </sql> 
 </rdbtable>
