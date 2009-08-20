@@ -39,6 +39,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 
 import com.cosylab.vdct.*;
+import com.cosylab.vdct.Console;
 import com.cosylab.vdct.vdb.*;
 import com.cosylab.vdct.undo.*;
 import com.cosylab.vdct.graphics.objects.*;

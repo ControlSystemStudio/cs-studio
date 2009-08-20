@@ -43,6 +43,7 @@ import javax.swing.JSeparator;
 import javax.swing.event.*;
 
 import com.cosylab.vdct.*;
+import com.cosylab.vdct.Console;
 import com.cosylab.vdct.db.*;
 import com.cosylab.vdct.dbd.*;
 import com.cosylab.vdct.vdb.*;
