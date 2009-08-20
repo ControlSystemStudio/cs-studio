@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.opibuilder.widgets.figureparts.AlphaLabel;
+import org.csstudio.opibuilder.widgets.util.GraphicsUtil;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.swt.xygraph.linearscale.LinearScale;
 import org.csstudio.swt.xygraph.linearscale.LinearScaledMarker;
@@ -105,7 +106,7 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 		add(track, XSliderLayout.TRACK);
 		add(thumb, XSliderLayout.THUMB);  
 		add(label, "label");
-		
+		setValue(20);
 		
 		addFigureListener(new FigureListener() {			
 			public void figureMoved(IFigure source) {
@@ -313,7 +314,8 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 			
 			graphics.setAntialias(SWT.ON);			
 			int valuePosition = ((LinearScale) scale).getValuePosition(value, false);
-			if(effect3D) {		
+			boolean support3D = GraphicsUtil.testPatternSupported(graphics);
+			if(effect3D && support3D) {		
 				setOutline(false);
 				//fill background
 				graphics.setBackgroundColor(fillBackgroundColor);
@@ -526,7 +528,8 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 			else
 				rightPoint = getPoints().getPoint(1);//.translate(0, -BREADTH/2);
 			Pattern thumbPattern = null;
-			if(effect3D) {
+			boolean support3D = GraphicsUtil.testPatternSupported(g);
+			if(effect3D && support3D) {
 				thumbPattern = new Pattern(Display.getCurrent(),
 					leftPoint.x, leftPoint.y, rightPoint.x, rightPoint.y, WHITE_COLOR, 0, 
 					thumbColor, 255);
@@ -536,7 +539,7 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 				
 			g.fillPolygon(getPoints());
 			
-			if(effect3D)
+			if(effect3D && support3D)
 				thumbPattern.dispose();
 					
 		}

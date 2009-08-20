@@ -92,6 +92,15 @@
             model_class="org.csstudio.opibuilder.widgets.model.XYGraphModel"
             name="XY Graph"
             typeId="org.csstudio.opibuilder.widgets.xyGraph">
+      </widget>
+      <widget
+            category="Controls"
+            description="A scaled slider widget which could be used to read/write a PV"
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.ScaledSliderEditPart"
+            icon="icons/scaled_slider.gif"
+            model_class="org.csstudio.opibuilder.widgets.model.ScaledSliderModel"
+            name="Scaled Slider"
+            typeId="org.csstudio.opibuilder.widgets.scaledslider">
       </widget>     
    </extension>
 
