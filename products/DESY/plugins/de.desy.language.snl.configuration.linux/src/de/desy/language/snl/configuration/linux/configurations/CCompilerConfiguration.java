@@ -39,6 +39,7 @@ public class CCompilerConfiguration extends AbstractCompilerConfiguration {
 		result.add("-fPIC");
 		result.add("-I" + getCompilerOptionService().getSeqFolder() + "/include");
 		result.add("-I" + getCompilerOptionService().getEpicsFolder() + "/include/os/Linux");
+		result.add("-I/scratch/EpicsR3.14.10/DesyBase/include");
 		result.add("-I" + getCompilerOptionService().getEpicsFolder() + "/include");
 		result.add(sourceFile);
 		return result;

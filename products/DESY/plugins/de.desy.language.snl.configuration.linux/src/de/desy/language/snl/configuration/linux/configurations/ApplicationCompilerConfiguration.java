@@ -31,13 +31,16 @@ public class ApplicationCompilerConfiguration extends
 		result.add("-o");
 		result.add(targetFile);
 		result.add("-L"+getCompilerOptionService().getSeqFolder() + "/lib/linux-x86");
+		result.add("-L/scratch/EpicsR3.14.10/DesyBase/lib/linux-x86");
 		result.add("-L"+getCompilerOptionService().getEpicsFolder() + "/lib/linux-x86");
 		result.add("-WL,-rpath,"+getCompilerOptionService().getSeqFolder() + "/lib/linux-x86");
+		result.add("-WL,-rpath,/scratch/EpicsR3.14.10/DesyBase/lib/linux-x86");
 		result.add("-WL,-rpath,"+getCompilerOptionService().getEpicsFolder() + "/lib/linux-x86");
 		result.add("-m32");
 		result.add(sourceFile);
 		result.add("-lseq");
 		result.add("-lpv");
+		result.add("-liocLogClient");
 		result.add("-lcas");
 		result.add("-lgdd");
 		result.add("-lasHost");
