@@ -67,11 +67,11 @@ DROP TABLE IF EXISTS retent;
 CREATE TABLE IF NOT EXISTS retent
 (
    retent_id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
-   descr VARCHAR(100) NOT NULL
+   descr VARCHAR(255) NOT NULL
 );
+INSERT INTO retent VALUES (30, 'Months');
 INSERT INTO retent VALUES (9999, 'Forever');
 SELECT * FROM retent;
-
 
 # ----------------------
 # Channel Group
@@ -82,10 +82,9 @@ CREATE TABLE IF NOT EXISTS chan_grp
    name VARCHAR(100) NOT NULL,
    eng_id INT UNSIGNED NOT NULL,
    descr VARCHAR(100) NULL,
-   enabling_chan_id INT UNSIGNED NULL,
-   retent_id INT UNSIGNED NOT NULL
+   enabling_chan_id INT UNSIGNED NULL
 );
-INSERT INTO chan_grp VALUES (1, 'Demo', 1, NULL, NULL, 9999);
+INSERT INTO chan_grp VALUES (1, 'Demo', 1, 'Demo Group', NULL);
 SELECT * FROM chan_grp;
 
 # ----------------------
@@ -111,9 +110,12 @@ CREATE TABLE IF NOT EXISTS channel
    descr VARCHAR(100) NULL,
    grp_id INT UNSIGNED NULL,
    smpl_mode_id INT UNSIGNED NULL,
-   smpl_per DOUBLE NULL
+   smpl_per DOUBLE NULL,
+   retent_id INT UNSIGNED NULL,
+   retent_val DOUBLE NULL
 );
 INSERT INTO channel(channel_id, name) VALUES (1, 'fred'), (2, 'freddy'), (3, 'jane');
+UPDATE channel SET retent_id=9999 WHERE channel_id < 4;
 SELECT * FROM channel;
 
 # ----------------------
