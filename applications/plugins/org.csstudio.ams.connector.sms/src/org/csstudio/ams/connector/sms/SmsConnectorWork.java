@@ -77,7 +77,6 @@ public class SmsConnectorWork extends Thread implements AmsConstants
     private JmsRedundantReceiver amsReceiver = null;    
 
     private Service modemService = null;
-    // private CSoftwareService srv = null;
     
     /** Container for SMS */
     private SmsContainer smsContainer;
@@ -734,6 +733,30 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                             {
                                 smsContainer.removeSms(sms);
                                 smsContainer.addBadSms(sms);
+                                Log.log(this, Log.WARN, "A SMS could not be sent. Set it to the state BAD and removed it from th list.");
+                                Log.log(this, Log.WARN, sms.toString());
+                                
+                                IPreferenceStore store = Activator.getDefault().getPreferenceStore();
+
+                                JmsSender sender = new JmsSender("SmsConnectorAlarmSender", store.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_SENDER_PROVIDER_URL), "ALARM");
+                                if(sender.isConnected())
+                                {
+                                    if(sender.sendMessage("alarm", "SmsConnectorWork: SMS set to state BAD: " + sms.toString(), "MINOR") == false)
+                                    {
+                                        Log.log(this, Log.ERROR, "Cannot send alarm message.");
+                                    }
+                                    else
+                                    {
+                                        Log.log(this, Log.INFO, "Alarm message sent.");
+                                    }
+                                }
+                                else
+                                {
+                                    Log.log(this, Log.WARN, "Alarm message sender is NOT connected.");
+                                }
+                                
+                                sender.closeAll();
+                                sender = null;
                             }
                         }
                     }
