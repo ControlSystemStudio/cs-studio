@@ -298,7 +298,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
         }
         
         // Store the remaining messages
-        if(smsContainer.hasContent())
+        if(smsContainer.hasContent() || smsContainer.hasBadMessages())
         {
             if(smsContainer.storeContent("./"))
             {
@@ -726,10 +726,16 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                         {
                             smsContainer.removeSms(sms);
                         }
-                     // else
-                     // {
-                     //     iErr = SmsConnectorStart.STAT_ERR_MODEM_SEND;
-                     // }
+                        else
+                        {
+                            // iErr = SmsConnectorStart.STAT_ERR_MODEM_SEND;
+                            
+                            if(sms.getState() == Sms.State.BAD)
+                            {
+                                smsContainer.removeSms(sms);
+                                smsContainer.addBadSms(sms);
+                            }
+                        }
                     }
                 }
             }

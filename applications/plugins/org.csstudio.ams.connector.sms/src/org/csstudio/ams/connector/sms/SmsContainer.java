@@ -32,6 +32,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Iterator;
 import java.util.TreeSet;
+import java.util.Vector;
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
@@ -47,9 +48,11 @@ public class SmsContainer implements AmsConstants
     /** Content of this container */
     private TreeSet<Sms> content;
     
+    /** Content of this container */
+    private Vector<Sms> badMessages;
+
     /** Id's for the Sms objects */
     private long smsId;
-    
     
     /**
      * Standard constructor. Just creates a TreeSet object that holds the Sms objects.
@@ -57,11 +60,17 @@ public class SmsContainer implements AmsConstants
     public SmsContainer()
     {
         content = null;
+        
         this.loadContent("./");
         if(content == null)
         {
             content = new TreeSet<Sms>(new SmsComperator());
             smsId = 1;
+        }
+        
+        if(badMessages == null)
+        {
+            badMessages = new Vector<Sms>();
         }
     }
     
@@ -230,6 +239,11 @@ public class SmsContainer implements AmsConstants
         }
     }
 
+    public void addBadSms(Sms sms)
+    {
+        badMessages.add(sms);
+    }
+    
     /**
      * Stores the content(the Sms objects) of this container. The method adds the folder name 'var' to
      * the given path.
@@ -281,11 +295,17 @@ public class SmsContainer implements AmsConstants
                 oos = new ObjectOutputStream(fos);
                 
                 idObj = new Long(smsId);
-                
                 oos.writeObject(idObj);
-                
                 idObj = null;
                 
+                if(oos!=null){try{oos.close();}catch(Exception e){}oos=null;}
+                if(fos!=null){try{fos.close();}catch(Exception e){}fos=null;}
+
+                fos = new FileOutputStream(path + "/bad-sms.ser");
+                oos = new ObjectOutputStream(fos);
+                
+                oos.writeObject(badMessages);
+
                 success = true;
             }
             catch(FileNotFoundException fnfe)
@@ -329,6 +349,7 @@ public class SmsContainer implements AmsConstants
         File folder = null;
         File smsFile = null;
         File idFile = null;
+        File badSmsFile = null;
         String var = "var";
         Long idObj = null;
         boolean success = false;
@@ -346,8 +367,9 @@ public class SmsContainer implements AmsConstants
         {
             smsFile = new File(path + "/sms-container.ser");
             idFile = new File(path + "/sms-id.ser");
+            badSmsFile = new File(path + "/bad-sms.ser");
             
-            if(smsFile.exists() && idFile.exists())
+            if(smsFile.exists() && idFile.exists() && badSmsFile.exists())
             {
                 try
                 {
@@ -363,11 +385,17 @@ public class SmsContainer implements AmsConstants
                     ois = new ObjectInputStream(fis);
                     
                     idObj = (Long)ois.readObject();
-                    
                     this.smsId = idObj.longValue();
-                    
                     idObj = null;
+
+                    if(ois!=null){try{ois.close();}catch(Exception e){}ois=null;}
+                    if(fis!=null){try{fis.close();}catch(Exception e){}fis=null;}
+
+                    fis = new FileInputStream(badSmsFile);
+                    ois = new ObjectInputStream(fis);
                     
+                    badMessages = (Vector<Sms>)ois.readObject();
+
                     success = true;
                 }
                 catch(FileNotFoundException fnfe)
@@ -444,6 +472,16 @@ public class SmsContainer implements AmsConstants
     public boolean hasContent()
     {
         return !(content.isEmpty());
+    }
+    
+    /**
+     * Returns true if there are some bad Sms objects in this container.
+     * 
+     * @return True if the container holds bad Sms objects, false otherwise.
+     */
+    public boolean hasBadMessages()
+    {
+        return !(badMessages.isEmpty());
     }
     
     /**
