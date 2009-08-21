@@ -37,7 +37,7 @@ public class Sms implements Serializable
      */
     enum State
     {
-        NEW, SENT, FAILED
+        NEW, SENT, FAILED, BAD
     }
     
     /**

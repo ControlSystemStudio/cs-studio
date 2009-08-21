@@ -91,7 +91,6 @@ public class SmsConnectorWork extends Thread implements AmsConstants
     /** Status information of the current modem test */
     private ModemTestStatus testStatus;
     
-    private short sTest = 0; // 0 - normal behavior, other - for test
     private boolean bStop = false;
     private boolean bStoppedClean = false;
     
@@ -356,12 +355,6 @@ public class SmsConnectorWork extends Thread implements AmsConstants
 
         try
         {
-            if (sTest != 0)
-            {
-                Log.log(this, Log.FATAL, " --- RUNNING IN TEST MODE " + sTest + " --- ");
-                return true;
-            }
-    
             ////////////////////////////////////////////////////////////////////////
             // strComPort   - COM-Port: "COM1", "COM2", "COM3", ... , "/dev/ttyS1", ...
             // iBaudRate        - Modem Baud-Rate: 9600, 57600, ... 
@@ -1180,45 +1173,38 @@ public class SmsConnectorWork extends Thread implements AmsConstants
         // If we have many messages to send, we could also construct a
         // LinkedList with many COutgoingMessage objects and pass it to
         // modemService.sendMessage().
-        if (sTest == 0)
+        Log.log(this, Log.INFO, "call modem.sendMessage");
+        int totalOutBefore = modemService.getOutboundMessageCount();// total number of outbound messages since restart
+        
+        // TODO: Eventuell die Liste aller Modems und ihre Zustände ausgeben
+        // Log.log(this, Log.INFO, "Modem connected: " + modemService.getConnected());
+        try
         {
-            Log.log(this, Log.INFO, "call modem.sendMessage");
-            int totalOutBefore = modemService.getOutboundMessageCount();// total number of outbound messages since restart
+            modemService.sendMessage(msg);
+        }
+        catch(Exception e)
+        {
+            Log.log(this, Log.ERROR, "could not sendMessage", e);
             
-            // TODO: Eventuell die Liste aller Modems und ihre Zustände ausgeben
-            // Log.log(this, Log.INFO, "Modem connected: " + modemService.getConnected());
-            try
-            {
-                modemService.sendMessage(msg);
-            }
-            catch(Exception e)
-            {
-                Log.log(this, Log.ERROR, "could not sendMessage", e);
-                
-                return false; //only with exceptions at this line => modem error
-            }
-            
-            int totalOutAfter = modemService.getOutboundMessageCount();// total number of outbound messages since restart
-            if(totalOutBefore < totalOutAfter)
-            {
-                Log.log(this, Log.INFO, "sms sent to: '" + recNo + "' with text: '" + text + "'");
-                bRet = true;
-            }
-            else
-            {
-                // If no modems are defined, return true anyhow
-                if(modemInfo.getModemCount() == 0)
-                {
-                    bRet = true;
-                }
-            }
-            
-            Log.log(this, Log.INFO, "totalOut sms = " + totalOutAfter);
+            return false; //only with exceptions at this line => modem error
+        }
+        
+        int totalOutAfter = modemService.getOutboundMessageCount();// total number of outbound messages since restart
+        if(totalOutBefore < totalOutAfter)
+        {
+            Log.log(this, Log.INFO, "sms sent to: '" + recNo + "' with text: '" + text + "'");
+            bRet = true;
         }
         else
         {
-            return true; // in Test Mode - true
+            // If no modems are defined, return true anyhow
+            if(modemInfo.getModemCount() == 0)
+            {
+                bRet = true;
+            }
         }
+        
+        Log.log(this, Log.INFO, "totalOut sms = " + totalOutAfter);
         
         return bRet;
     }
@@ -1242,8 +1228,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
     {
         try
         {
-            if (sTest == 0)
-                modemService.deleteMessage(msg);
+            modemService.deleteMessage(msg);
             return true;
         }
         catch(Exception e)
@@ -1252,6 +1237,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
         }
         return false;
     }
+    
     /**
      * Reads SMS-Messages from the modem.
      * 
@@ -1268,19 +1254,16 @@ public class SmsConnectorWork extends Thread implements AmsConstants
         
         try
         {
-            if(sTest == 0)
+            // Read up to number of messages, read other SMS at the next run.
+            // Read out all messages in linked list
+            try
             {
-                // Read up to number of messages, read other SMS at the next run.
-                // Read out all messages in linked list
-                try
-                {
-                    modemService.readMessages(msgList, MessageClasses.ALL /*, limit*/);
-                }
-                catch(NumberFormatException nfe)
-                {
-                    // Sometimes we get this exception, if the PDU contains invalid characters
-                    Log.log(this, Log.FATAL, "[*** NumberFormatException ***]: " + nfe.getMessage());
-                }
+                modemService.readMessages(msgList, MessageClasses.ALL /*, limit*/);
+            }
+            catch(NumberFormatException nfe)
+            {
+                // Sometimes we get this exception, if the PDU contains invalid characters
+                Log.log(this, Log.FATAL, "[*** NumberFormatException ***]: " + nfe.getMessage());
             }
         }
         catch(Exception e)
@@ -1290,13 +1273,12 @@ public class SmsConnectorWork extends Thread implements AmsConstants
         }
 
         if (!msgList.isEmpty())
+        {
             Log.log(this, Log.INFO, "readModem done, message count = " + msgList.size());
+        }
         else
         {
             Log.log(this, Log.DEBUG, "readModem done, modem is empty");
-
-            if (sTest != 0) // TODO FOR TEST ONLY
-                generateTestMsg();
                 
             return SmsConnectorStart.STAT_OK;
         }
@@ -1734,7 +1716,8 @@ public class SmsConnectorWork extends Thread implements AmsConstants
         
         return ret;
     }
-    
+
+    /*
     private void generateTestMsg()
     {
         try
@@ -1860,4 +1843,5 @@ public class SmsConnectorWork extends Thread implements AmsConstants
             Log.log(this, Log.FATAL, e);
         }
     }
+    */
 }
