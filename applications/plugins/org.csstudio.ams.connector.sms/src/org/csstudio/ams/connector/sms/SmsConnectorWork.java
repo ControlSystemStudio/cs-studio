@@ -720,16 +720,16 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                 }
                 else // A normal SMS to send
                 {
-                    if((sms.getType() == Sms.Type.OUT) && (sms.getState() != Sms.State.SENT))
+                    if((sms.getType() == Sms.Type.OUT) && (sms.getState() != Sms.State.SENT) && (sms.getState() != Sms.State.BAD))
                     {
                         if(sendSms(sms))
                         {
                             smsContainer.removeSms(sms);
                         }
-                        else
-                        {
-                            iErr = SmsConnectorStart.STAT_ERR_MODEM_SEND;
-                        }
+                     // else
+                     // {
+                     //     iErr = SmsConnectorStart.STAT_ERR_MODEM_SEND;
+                     // }
                     }
                 }
             }

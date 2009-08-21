@@ -31,26 +31,8 @@ import java.io.Serializable;
  */
 public class Sms implements Serializable
 {
-    /**
-     * @author Markus
-     *
-     */
-    enum State
-    {
-        NEW, SENT, FAILED, BAD
-    }
-    
-    /**
-     * @author Markus
-     *
-     */
-    enum Type
-    {
-        OUT, IN
-    }
-    
     /** Generated serial version id */
-    private static final long serialVersionUID = -8520701491907741075L;
+    private static final long serialVersionUID = -7841165772377023458L;
 
     /** The id of the SMS */
     private long id;
@@ -75,7 +57,10 @@ public class Sms implements Serializable
     /** Type of the SMS */
     private Sms.Type type;
 
-    /** Indicate if the SMS is a kind of command SMS, that initiates a test of all modems. */
+    /** Number of tries to send this SMS. */
+    private int failCount;
+    
+    /** Indicates if the SMS is a kind of command SMS, that initiates a test of all modems. */
     private boolean modemTest;
     
     // private static final String SMS_TEST_TEXT = "MODEM_CHECK{$EVENTTIME$}";
@@ -93,6 +78,8 @@ public class Sms implements Serializable
         
         this.type = type;
         this.state = Sms.State.NEW;
+        
+        this.failCount = 0;
     }
     
     /** Second constructor. Contains also the priority field. */
@@ -108,6 +95,8 @@ public class Sms implements Serializable
         
         this.type = type;
         this.state = Sms.State.NEW;
+        
+        this.failCount = 0;
     }
 
     /**
@@ -125,6 +114,7 @@ public class Sms implements Serializable
         result.append(this.phoneNumber + ",");
         result.append(this.message + ",");
         result.append(this.state + ",");
+        result.append("Failed=" + this.failCount + ",");
         result.append("Modemtest=" + this.modemTest + ",");
         result.append(this.type + "}");
         
@@ -198,6 +188,14 @@ public class Sms implements Serializable
 
     public void setState(Sms.State state)
     {
+        if(state == Sms.State.FAILED)
+        {
+            if(++this.failCount >= 3)
+            {
+                state = Sms.State.BAD;
+            }
+        }
+        
         this.state = state;
     }
 
@@ -214,5 +212,23 @@ public class Sms implements Serializable
     public boolean isModemTest()
     {
         return modemTest;
+    }
+
+    /**
+     * @author Markus
+     *
+     */
+    enum State
+    {
+        NEW, SENT, FAILED, BAD
+    }
+    
+    /**
+     * @author Markus
+     *
+     */
+    enum Type
+    {
+        OUT, IN
     }
 }
