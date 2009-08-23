@@ -284,7 +284,7 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	}
 	
 	public boolean isPropertySet(Object id) {
-		return false;
+		return !getProperty((String) id).isDefaultValue();
 	}
 	
 	
@@ -317,6 +317,7 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	}
 	
 	public void resetPropertyValue(Object id) {
+		setPropertyValue(id, getProperty((String) id).getDefaultValue());
 	}
 	
 	public void setBackgroundColor(RGB color){

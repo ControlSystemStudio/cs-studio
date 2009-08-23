@@ -68,6 +68,10 @@ public abstract class AbstractWidgetProperty {
 		return defaultValue;
 	}
 	
+	public boolean isDefaultValue(){
+		return defaultValue.equals(propertyValue);
+	}
+	
 	public final String getDescription() {
 		return description;
 	}
