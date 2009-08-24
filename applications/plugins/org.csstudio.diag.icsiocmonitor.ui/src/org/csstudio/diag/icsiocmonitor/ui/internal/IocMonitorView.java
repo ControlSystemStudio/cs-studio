@@ -153,6 +153,10 @@ public class IocMonitorView extends ViewPart implements IReportListener {
 					return "connected, selected";
 				case DISCONNECTED:
 					return "disconnected";
+				case SCHEDULED_DOWNTIME:
+					return "scheduled downtime";
+				case DISABLED:
+					return "disabled";
 				default:
 					return "ERROR: unknown state";
 				}
@@ -163,9 +167,13 @@ public class IocMonitorView extends ViewPart implements IReportListener {
 		@Override
 		public Color getForeground(Object element) {
 			if (element instanceof MonitorItem) {
-				if (((MonitorItem) element).getIcsConnectionState(_server)
-						== IocConnectionState.DISCONNECTED) {
+				IocConnectionState state =
+					((MonitorItem) element).getIcsConnectionState(_server);
+				if (state == IocConnectionState.DISCONNECTED) {
 					return Display.getCurrent().getSystemColor(SWT.COLOR_RED);
+				} else if (state == IocConnectionState.SCHEDULED_DOWNTIME
+						|| state == IocConnectionState.DISABLED) {
+					return Display.getCurrent().getSystemColor(SWT.COLOR_DARK_YELLOW);
 				}
 			}
 			return null;
