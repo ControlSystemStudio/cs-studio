@@ -1,14 +1,11 @@
 package org.csstudio.opibuilder.properties;
 
 import org.csstudio.opibuilder.properties.support.BooleanPropertyDescriptor;
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.jdom.Element;
 
-
-
 /**
- * A property, which is able to handle boolean values.
+ * A widget property, which is able to handle boolean values.
  * 
  * @author Xihui Chen
  * 

@@ -31,9 +31,14 @@ public class RunModeService {
 		return runWorkbenchWindow;
 	}
 	
+	
+	public void runOPI(IFile file){
+		runOPI(file, null);
+	}
+	
 	/**Run an OPI file.
-	 * @param file
-	 * @param displayModel
+	 * @param file the file to be ran. If displayModel is not null, this will be ignored.
+	 * @param displayModel the display model to be ran. null for file input only.
 	 */
 	public void runOPI(IFile file, DisplayModel displayModel){
 		
@@ -43,7 +48,9 @@ public class RunModeService {
 					PlatformUI.getWorkbench().openWorkbenchWindow("org.csstudio.opibuilder.OPIRunner", null); //$NON-NLS-1$
 				ActionFactory.IWorkbenchAction toggleToolbar = ActionFactory.TOGGLE_COOLBAR.create(runWorkbenchWindow); 
 				toggleToolbar.run(); 
-				runWorkbenchWindow.getShell().setSize(displayModel.getSize().width+36, displayModel.getSize().height + 125);
+				if(displayModel != null)
+					runWorkbenchWindow.getShell().setSize(
+							displayModel.getSize().width+36, displayModel.getSize().height + 125);
 				runWorkbenchWindow.addPageListener(new IPageListener(){
 
 					public void pageActivated(IWorkbenchPage page) {

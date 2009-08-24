@@ -39,7 +39,7 @@ public class GaugeModel extends AbstractMarkedWidgetModel{
 	public GaugeModel() {
 		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 		setForegroundColor(new RGB(255,255,255));
-		setBackgroundColor(new RGB(0,91,136));
+		setBackgroundColor(new RGB(0,64,128));
 	}	
 
 	@Override

@@ -50,6 +50,7 @@ public class RunOPIAction extends Action{
 		if(activeEditor instanceof OPIEditor){
 			DisplayModel displayModel = ((OPIEditor)activeEditor).getDisplayModel();
 			IEditorInput input = activeEditor.getEditorInput();
+			//TODO: add run option: sync with editor.
 			IFile file = null;
 			if(input instanceof FileEditorInput)
 				file = ((FileEditorInput)input).getFile();

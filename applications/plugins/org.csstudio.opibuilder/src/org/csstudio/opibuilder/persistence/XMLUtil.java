@@ -11,12 +11,9 @@ import java.util.Set;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.DisplayModel;
-import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
 import org.csstudio.opibuilder.util.WidgetsService;
-import org.csstudio.platform.logging.CentralLogger;
 import org.jdom.Document;
 import org.jdom.Element;
-import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
@@ -31,8 +28,6 @@ public class XMLUtil {
 	
 	public static String XMLATTR_PROPID = "id"; //$NON-NLS-1$
 	public static String XMLATTR_VERSION = "version"; //$NON-NLS-1$
-	
-	private static XMLOutputter xmlOutputter = new XMLOutputter(Format.getPrettyFormat());
 	
 
 	public static Element WidgetToXMLElement(AbstractWidgetModel widgetModel){

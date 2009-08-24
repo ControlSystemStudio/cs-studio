@@ -8,7 +8,7 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.jdom.Element;
 
-/**
+/**The widget property for color.
  * @author Xihui Chen
  *
  */

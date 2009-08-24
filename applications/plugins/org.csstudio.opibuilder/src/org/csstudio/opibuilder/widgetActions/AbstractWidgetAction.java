@@ -2,13 +2,12 @@ package org.csstudio.opibuilder.widgetActions;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
 import org.csstudio.opibuilder.widgetActions.WidgetActionFactory.ActionType;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.ui.views.properties.IPropertyDescriptor;
-import org.eclipse.ui.views.properties.IPropertySource;
 
 /**
  * The abstract widget action, which can be executed from the widget by click or context menu. 
@@ -20,11 +19,12 @@ public abstract class AbstractWidgetAction implements IAdaptable {
 	
 	private Map<String, AbstractWidgetProperty> propertyMap;
 	
-	private Map<String, IPropertyDescriptor> propertyDescriptors;
 	
 	
 	public AbstractWidgetAction() {
 		propertyMap = new LinkedHashMap<String, AbstractWidgetProperty>();
+		
+		configureProperties();
 	}
 	
 	/**Add a property to the widget.
@@ -32,12 +32,14 @@ public abstract class AbstractWidgetAction implements IAdaptable {
 	 */
 	public void addProperty(final AbstractWidgetProperty property){
 		Assert.isNotNull(property);
-		propertyMap.put(property.getPropertyID(), property);
-		if(property.isVisibleInPropSheet())
-			propertyDescriptors.put(property.getPropertyID(), property.getPropertyDescriptor());		
+		propertyMap.put(property.getPropertyID(), property);				
 	}
 	
 	protected abstract void configureProperties();
+	
+	public String getDescription(){
+		return getActionType().getDescription();
+	}
 	
 	public abstract void run();
 	
@@ -52,14 +54,7 @@ public abstract class AbstractWidgetAction implements IAdaptable {
 		return propArray;
 	}
 	
-	public IPropertyDescriptor[] getPropertyDescriptors() {
-		IPropertyDescriptor[] propArray = new IPropertyDescriptor[propertyDescriptors.size()];
-		int i=0;
-		for(IPropertyDescriptor p : propertyDescriptors.values())
-			propArray[i++] = p;		
-			
-		return propArray;
-	}
+	
 	public Object getPropertyValue(Object id) {
 		Assert.isTrue(propertyMap.containsKey(id));
 		return propertyMap.get(id).getPropertyValue();
@@ -83,6 +78,14 @@ public abstract class AbstractWidgetAction implements IAdaptable {
 			action.setPropertyValue(id, getPropertyValue(id));
 		}
 		return action;
+	}
+
+	public Set<String> getAllPropertyIDs() {
+		return propertyMap.keySet();
+	}
+
+	public AbstractWidgetProperty getProperty(String propId) {
+		return propertyMap.get(propId);
 	}
 
 }

@@ -23,11 +23,15 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.LabeledBorder;
+import org.eclipse.draw2d.MouseEvent;
+import org.eclipse.draw2d.MouseListener;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.progress.UIJob;
 
 /**The editpart for  {@link AbstractWidgetModel}
@@ -35,6 +39,8 @@ import org.eclipse.ui.progress.UIJob;
  *
  */
 public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
+
+	private static final Cursor HAND_CURSOR = new Cursor(Display.getCurrent(), SWT.CURSOR_HAND);
 
 	protected Map<String, WidgetPropertyChangeListener> propertyListenerMap;
 	
@@ -80,6 +86,9 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 		if(allPropIds.contains(AbstractWidgetModel.PROP_FONT))
 			figure.setFont(CustomMediaFactory.getInstance().getFont(getCastedModel().getFont()));
 		
+			
+		
+		
 		return figure;
 	}
 	
@@ -87,7 +96,6 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 
 	private Map<String, PV> pvMap = new HashMap<String, PV>();
 	
-	@SuppressWarnings("deprecation")
 	@Override
 	public void activate() {
 		if(!isActive()){
@@ -104,13 +112,31 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 			registerPropertyChangeHandlers();
 			
 	
-			//script execution
+			
 			if(executionMode == ExecutionMode.RUN_MODE){
-				pvMap.clear();
-				ScriptsInput scriptsInput = getCastedModel().getScriptsInput();
+				//hook action
+				Set<String> allPropIds = getCastedModel().getAllPropertyIDs();
+				if(allPropIds.contains(AbstractWidgetModel.PROP_ACTIONS) && 
+						allPropIds.contains(AbstractWidgetModel.PROP_ENABLED)){
+					if(getCastedModel().isEnabled() && 
+							getCastedModel().getActionsInput().getActionsList().size() > 0 && 
+							getCastedModel().getActionsInput().isHookedUpToWidget()){
+						figure.setCursor(HAND_CURSOR);
+						figure.addMouseListener(new MouseListener.Stub(){
+							
+							@Override
+							public void mousePressed(MouseEvent me) {
+								if(me.button == 1)
+									getCastedModel().getActionsInput().getActionsList().get(0).run();	
+							}
+						});
+					}
+				}
 				
-				for(ScriptData scriptData : scriptsInput.getScriptList()){				
-					
+				//script execution
+				pvMap.clear();				
+				ScriptsInput scriptsInput = getCastedModel().getScriptsInput();				
+				for(ScriptData scriptData : scriptsInput.getScriptList()){						
 						final PV[] pvArray = new PV[scriptData.getPVList().size()];
 						int i = 0;
 						for(String pvName : scriptData.getPVList()){
@@ -141,9 +167,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 								}
 							
 							}
-						});
-						
-								
+						});	
 				}
 			}
 		}		

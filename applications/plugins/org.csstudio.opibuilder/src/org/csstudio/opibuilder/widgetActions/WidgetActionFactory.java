@@ -2,6 +2,7 @@ package org.csstudio.opibuilder.widgetActions;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.resource.ImageDescriptor;
 
 public class WidgetActionFactory {
@@ -20,8 +21,19 @@ public class WidgetActionFactory {
 			this.iconImage = iconImage;
 		}
 		
-		
-	
+		/**Parse a string to an ActionType. The string should be equal to the results
+		 * of element.toString().
+		 * @param actionString.
+		 * @return the ActionType. null if parse failed.
+		 */
+		public static ActionType parseAction(String actionString){
+			for(ActionType type : values()){
+				if(actionString.equals(type.toString()))
+					return type;
+			}
+			return null;		
+		}
+
 		/**
 		 * @return the iconImageData
 		 */
@@ -42,15 +54,11 @@ public class WidgetActionFactory {
 					OPIBuilderPlugin.PLUGIN_ID, path);				
 			return image;
 		}
-
 		
-		@Override
-		public String toString() {
-			return description;
-		}
 	}
 	
 	public static AbstractWidgetAction createWidgetAction(ActionType actionType){
+		Assert.isNotNull(actionType);
 		switch (actionType) {
 		case OPEN_DISPLAY:
 			return new OpenDislayAction();

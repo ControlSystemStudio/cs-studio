@@ -2,11 +2,11 @@ package org.csstudio.opibuilder.runmode;
 
 
 import org.csstudio.opibuilder.model.DisplayModel;
+import org.csstudio.opibuilder.persistence.XMLUtil;
+import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.ui.IFileEditorInput;
-import org.eclipse.ui.IPersistableElement;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.part.FileEditorInput;
 
 public class RunnerInput extends FileEditorInput {
@@ -18,9 +18,20 @@ public class RunnerInput extends FileEditorInput {
 	 *
 	 * @param file the file resource
 	 */
-	public RunnerInput(IFile file, DisplayModel displayModel) {
+	public RunnerInput(IFile file, DisplayModel model) {
 		super(file);	
-		this.displayModel = displayModel;
+		if(model != null)
+			displayModel = model;
+		else {
+			displayModel = new DisplayModel();
+			try {
+				XMLUtil.fillDisplayModelFromInputStream(file.getContents(), displayModel);
+			} catch (Exception e) {
+				CentralLogger.getInstance().error(this, "Failed to run file: " + file, e);
+				MessageDialog.openError(Display.getDefault().getActiveShell(), "File Open Error",
+						"The file is not a correct OPI file! An empty OPI will be created instead.\n" + e);
+			}
+		}
 	}
 
 	public DisplayModel getDisplayModel(){

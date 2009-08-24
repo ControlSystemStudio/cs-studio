@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
+import org.csstudio.opibuilder.properties.ActionsProperty;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.ColorProperty;
 import org.csstudio.opibuilder.properties.ComboProperty;
@@ -23,6 +24,7 @@ import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.util.WidgetDescriptor;
 import org.csstudio.opibuilder.util.WidgetsService;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
+import org.csstudio.opibuilder.widgetActions.ActionsInput;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IAdaptable;
@@ -62,7 +64,7 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	
 	public static final String PROP_ENABLED = "enabled";//$NON-NLS-1$
 	
-	public static final String PROP_ACTIONDATA = "actionData";//$NON-NLS-1$
+	public static final String PROP_ACTIONS = "actions";//$NON-NLS-1$
 	
 	public static final String PROP_TOOLTIP = "tooltip"; //$NON-NLS-1$
 	
@@ -137,7 +139,9 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 		addProperty(new FontProperty(PROP_FONT, "Font", 
 				WidgetPropertyCategory.Display, CustomMediaFactory.FONT_ARIAL));
 		addProperty(new ScriptProperty(PROP_SCRIPTS, "Scripts", 
-				WidgetPropertyCategory.Basic));	
+				WidgetPropertyCategory.Basic));
+		addProperty(new ActionsProperty(PROP_ACTIONS, "Actions", 
+				WidgetPropertyCategory.Behavior));
 			
 			
 		WidgetDescriptor descriptor = WidgetsService.getInstance().getWidgetDescriptor(getTypeID());
@@ -212,6 +216,10 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 
 	public FontData getFont(){
 		return (FontData)getCastedPropertyValue(PROP_FONT);
+	}
+	
+	public ActionsInput getActionsInput(){
+		return (ActionsInput)getCastedPropertyValue(PROP_ACTIONS);
 	}
 	
 	public RGB getForegroundColor(){

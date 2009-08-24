@@ -23,8 +23,12 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -51,20 +55,22 @@ public class ActionsInputDialog extends Dialog {
 	private TableViewer propertiesViewer;
 		
 	private List<AbstractWidgetAction> actionsList;
+	private boolean hookedUpToWidget;
+	
 	private String title;	
 
-	public ActionsInputDialog(Shell parentShell, ActionsInput scriptsInput, String dialogTitle) {
+	public ActionsInputDialog(Shell parentShell, ActionsInput actionsInput, String dialogTitle) {
 		super(parentShell);
 		setShellStyle(getShellStyle() | SWT.RESIZE);
-		this.actionsList = scriptsInput.getCopy().getActionsList();
+		this.actionsList = actionsInput.getCopy().getActionsList();
+		hookedUpToWidget = actionsInput.isHookedUpToWidget();
 		title = dialogTitle;
 	}
 	
-	/**
-	 * @return the scriptDataList
-	 */
-	public final List<AbstractWidgetAction> getActionsList() {
-		return actionsList;
+	public ActionsInput getOutput() {
+		ActionsInput actionsInput = new ActionsInput(actionsList);
+		actionsInput.setHookUpToWidget(hookedUpToWidget);
+		return actionsInput;
 	}
 
 	/**
@@ -105,9 +111,9 @@ public class ActionsInputDialog extends Dialog {
 		final Composite leftComposite = new Composite(mainComposite, SWT.None);
 		leftComposite.setLayout(new GridLayout(1, false));
 		GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
-		gd.widthHint = 350;
+		gd.widthHint = 250;
 		leftComposite.setLayoutData(gd);
-		createLabel(leftComposite, "The Scripts:");
+		createLabel(leftComposite, "Actions:");
 		
 		Composite toolBarComposite = new Composite(leftComposite, SWT.BORDER);
 		GridLayout gridLayout = new GridLayout(1, false);
@@ -142,11 +148,29 @@ public class ActionsInputDialog extends Dialog {
 		Composite rightComposite = new Composite(mainComposite, SWT.NONE);
 		rightComposite.setLayout(new GridLayout(1, false));
 		gd = new GridData(SWT.FILL, SWT.FILL, true, true);
-		gd.widthHint = 250;
+		gd.widthHint = 350;
 		rightComposite.setLayoutData(gd);
-		this.createLabel(rightComposite, "Configure properties:");
+		this.createLabel(rightComposite, "Properties:");
 		
 		propertiesViewer = createPropertiesViewer(rightComposite);
+		
+		Composite bottomComposite = new Composite(mainComposite, SWT.NONE);
+		bottomComposite.setLayout(new GridLayout(1, false));
+		bottomComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
+		
+		final Button checkBox = new Button(bottomComposite, SWT.CHECK);
+		checkBox.setSelection(hookedUpToWidget);
+		checkBox.setText("Hook the first action to the mouse click event on widget.");
+		checkBox.addSelectionListener(new SelectionAdapter(){
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				hookedUpToWidget = checkBox.getSelection();
+			}
+		});
+		
+		if(actionsList.size() > 0){
+			refreshActionsViewer(actionsList.get(0));
+		}
 		
 		return parent_Composite;
 		
@@ -175,6 +199,7 @@ public class ActionsInputDialog extends Dialog {
 		viewer.setLabelProvider(new PropertiesLabelProvider());		
 		viewer.getTable().setLayoutData(
 				new GridData(SWT.FILL, SWT.FILL, true, true));
+		viewer.getTable().setEnabled(false);
 		return viewer;
 	}
 
@@ -225,6 +250,7 @@ public class ActionsInputDialog extends Dialog {
 		TableViewer viewer = new TableViewer(parent, SWT.V_SCROLL
 				| SWT.H_SCROLL | SWT.BORDER | SWT.SINGLE);
 		viewer.setContentProvider(new BaseWorkbenchContentProvider() {
+			@SuppressWarnings("unchecked")
 			@Override
 			public Object[] getElements(final Object element) {
 				return (((List<AbstractWidgetAction>)element).toArray());
@@ -321,8 +347,7 @@ public class ActionsInputDialog extends Dialog {
 						((AbstractWidgetAction)selection.getFirstElement()).getCopy();
 					actionsList.add(newAction);
 					actionsViewer.setSelection(new StructuredSelection(newAction));
-					refreshActionsViewer(newAction);
-					this.setEnabled(false);
+					refreshActionsViewer(newAction);					
 				}
 			}
 		};
@@ -375,7 +400,7 @@ public class ActionsInputDialog extends Dialog {
 			}
 		};
 		moveUpAction.setText("Move Up Action");
-		moveUpAction.setToolTipText("Move up the selected Action");
+		moveUpAction.setToolTipText("Move up the selected action");
 		moveUpAction.setImageDescriptor(CustomMediaFactory.getInstance()
 				.getImageDescriptorFromPlugin(OPIBuilderPlugin.PLUGIN_ID,
 						"icons/search_prev.gif"));
@@ -400,7 +425,7 @@ public class ActionsInputDialog extends Dialog {
 			}
 		};
 		moveDownAction.setText("Move Down Action");
-		moveDownAction.setToolTipText("Move down the selected Action");
+		moveDownAction.setToolTipText("Move down the selected action");
 		moveDownAction.setImageDescriptor(CustomMediaFactory.getInstance()
 				.getImageDescriptorFromPlugin(OPIBuilderPlugin.PLUGIN_ID,
 						"icons/search_next.gif"));
@@ -439,10 +464,15 @@ public class ActionsInputDialog extends Dialog {
 		@Override
 		public void run() {
 			AbstractWidgetAction widgetAction = WidgetActionFactory.createWidgetAction(type);
-			actionsList.add(widgetAction);
-			refreshActionsViewer(widgetAction);
+			if(widgetAction != null){
+				actionsList.add(widgetAction);
+				refreshActionsViewer(widgetAction);
+			}
+			
 		}
 	}
+
+	
 
 	
 
