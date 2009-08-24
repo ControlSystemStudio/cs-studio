@@ -46,4 +46,14 @@ public enum IocConnectionState {
 	 * the IOC.
 	 */
 	DISCONNECTED,
+	
+	/**
+	 * In this state, the IOC is disconnected during a scheduled downtime.
+	 */
+	SCHEDULED_DOWNTIME,
+	
+	/**
+	 * In this state, the interconnection server ignores messages from the IOC.
+	 */
+	DISABLED,
 }
