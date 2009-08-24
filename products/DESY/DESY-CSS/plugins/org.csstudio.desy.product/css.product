@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?pde version="3.4"?>
+<?pde version="3.5"?>
 
-<product name="CSS" id="org.csstudio.desy.product.product" application="org.csstudio.desy.product.application" version="1.2.0" useFeatures="true">
+<product name="CSS" id="org.csstudio.desy.product.product" application="org.csstudio.desy.product.application" version="1.2.0" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/org.csstudio.desy.product/resources/css64x64.gif"/>
@@ -166,8 +166,9 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
    </plugins>
 
    <features>
-      <feature id="org.csstudio.platform.feature" version="1.2.0"/>
-      <feature id="org.csstudio.platform.feature.product" version="1.1.0"/>
+      <feature id="org.csstudio.platform.feature" version="1.2.1"/>
+      <feature id="org.csstudio.platform.feature.product.beta" version="1.2.7"/>
    </features>
+
 
 </product>
