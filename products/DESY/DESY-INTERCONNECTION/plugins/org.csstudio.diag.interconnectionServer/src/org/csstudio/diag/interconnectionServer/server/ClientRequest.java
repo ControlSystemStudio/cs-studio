@@ -834,6 +834,8 @@ public class ClientRequest implements Runnable
 						IocMessage duplicate) {
 					CentralLogger.getInstance().warn(ClientRequest.class,
 							"DUPLICATED Message from [" + ioc + "] OLD: " + first + " NEW: " + duplicate);
+					// increase counter in statistic
+					InterconnectionServer.getInstance().getNumberOfDuplicateMessagesCollector().incrementValue();
 				}
 			});
 			_duplicateMessageDetectors.put(ioc, result);
