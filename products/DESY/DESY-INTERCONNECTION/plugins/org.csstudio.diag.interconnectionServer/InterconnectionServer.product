@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?pde version="3.4"?>
+<?pde version="3.5"?>
 
-<product name="Interconnection Server" id="org.csstudio.diag.interconnectionServer.product" application="org.csstudio.diag.interconnectionServer.application" version="1.2.0.M4" useFeatures="true">
-
+<product name="Interconnection Server" id="org.csstudio.diag.interconnectionServer.product" application="org.csstudio.diag.interconnectionServer.application" version="1.3.0" useFeatures="true" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -14,7 +13,6 @@
 
    <windowImages/>
 
-
    <launcher name="icserver">
       <solaris/>
       <win useIco="false">
@@ -22,13 +20,12 @@
       </win>
    </launcher>
 
-
    <vm>
    </vm>
 
    <plugins>
       <plugin id="org.csstudio.diag.interconnectionServer"/>
-      <plugin id="org.csstudio.management.remotecommands"/>
+      <plugin id="org.csstudio.management.remotecommands" fragment=""/>
       <plugin id="org.csstudio.platform"/>
       <plugin id="org.csstudio.platform.libs.dal"/>
       <plugin id="org.csstudio.platform.libs.jmock"/>
@@ -83,7 +80,8 @@
    </plugins>
 
    <features>
-      <feature id="org.csstudio.diag.interconnectionServer.feature" version="1.0.0"/>
+      <feature id="org.csstudio.diag.interconnectionServer.feature" version="1.3.0"/>
    </features>
+
 
 </product>
