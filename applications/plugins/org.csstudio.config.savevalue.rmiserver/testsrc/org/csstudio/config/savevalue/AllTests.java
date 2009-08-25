@@ -27,11 +27,6 @@ import org.csstudio.config.savevalue.internal.changelog.ChangelogEntrySerializer
 import org.csstudio.config.savevalue.internal.changelog.ChangelogEntrySerializerTest_Escape;
 import org.csstudio.config.savevalue.internal.changelog.ChangelogEntrySerializerTest_SplitAndUnescape;
 import org.csstudio.config.savevalue.internal.changelog.ChangelogReaderTest;
-import org.csstudio.config.savevalue.internal.dbfile.FieldTest;
-import org.csstudio.config.savevalue.internal.dbfile.RecordInstanceDatabaseLexerTest;
-import org.csstudio.config.savevalue.internal.dbfile.RecordInstanceDatabaseParserTest;
-import org.csstudio.config.savevalue.internal.dbfile.RecordInstanceTest;
-import org.csstudio.config.savevalue.internal.dbfile.TokenTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -42,11 +37,6 @@ import org.junit.runners.Suite.SuiteClasses;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-	RecordInstanceTest.class,
-	FieldTest.class,
-	RecordInstanceDatabaseParserTest.class,
-	RecordInstanceDatabaseLexerTest.class,
-	TokenTest.class,
 	ChangelogAppenderTest.class,
 	ChangelogEntrySerializerTest.class,
 	ChangelogEntrySerializerTest_Escape.class,
