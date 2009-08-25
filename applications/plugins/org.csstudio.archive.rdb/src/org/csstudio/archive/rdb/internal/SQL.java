@@ -111,7 +111,7 @@ public class SQL
         chan_grp_set_enable_channel = "UPDATE " + prefix + "chan_grp SET enabling_chan_id=? WHERE grp_id=?";
         
         // 'retent' table
-        retention_table = "retent";
+        retention_table = prefix + "retent";
         retention_id_column = "retent_id";
         retention_name_column = "descr";
         
@@ -133,7 +133,7 @@ public class SQL
 			channel_sel_by_pattern = "SELECT channel_id, name, grp_id, smpl_mode_id, smpl_per FROM " + prefix + "channel WHERE name REGEXP ? ORDER BY name";
 		channel_sel_last_time_by_id = "SELECT MAX(smpl_time) FROM " + prefix + sample + " WHERE channel_id=?";
 		channel_sel_by_group_id = "SELECT channel_id, name, smpl_mode_id, smpl_per FROM " + prefix + "channel WHERE grp_id=?";
-		channel_set_grp_by_id = "UPDATE channel SET grp_id=? WHERE channel_id=?";        
+		channel_set_grp_by_id = "UPDATE " + prefix + "channel SET grp_id=? WHERE channel_id=?";        
         channel_clear_grp_for_engine =
             "UPDATE " + prefix + "channel SET grp_id=null WHERE grp_id IN " +
                 "(SELECT grp_id FROM " + prefix + "chan_grp WHERE eng_id=?)";
