@@ -44,68 +44,78 @@ import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
 public class ActionButton extends Widget {
 
     /**
-     * @param actionButton The ADLWidget that describe the ActionButton.
-     * @param storedDynamicAttribute 
-     * @param storedBasicAttribute 
-     * @throws WrongADLFormatException WrongADLFormatException Wrong ADL format or untreated parameter found.
+     * @param actionButton
+     *            The ADLWidget that describe the ActionButton.
+     * @param storedDynamicAttribute
+     * @param storedBasicAttribute
+     * @throws WrongADLFormatException
+     *             WrongADLFormatException Wrong ADL format or untreated parameter found.
      */
-    public ActionButton(final ADLWidget actionButton, ADLWidget storedBasicAttribute, ADLWidget storedDynamicAttribute) throws WrongADLFormatException {
+    public ActionButton(final ADLWidget actionButton, ADLWidget storedBasicAttribute,
+            ADLWidget storedDynamicAttribute) throws WrongADLFormatException {
         super(actionButton, storedBasicAttribute, storedDynamicAttribute);
-        Integer actionIndex=0;
-        Integer pressIndex=-1;
-        Integer releasIndex=-1;
+        Integer actionIndex = 0;
+        Integer pressIndex = -1;
+        Integer releasIndex = -1;
         ActionData result = new ActionData();
-//            label="Quittung"
-//            press_msg="1"
-//            release_msg="0"
-//            clrmod="discrete"
+        // label="Quittung"
+        // press_msg="1"
+        // release_msg="0"
+        // clrmod="discrete"
         for (FileLine fileLine : actionButton.getBody()) {
             String obj = fileLine.getLine();
             String[] row = obj.trim().split("="); //$NON-NLS-1$
-            if(row.length!=2){
-                throw new WrongADLFormatException(Messages.ActionButton_WrongADLFormatException+fileLine);
+            if (row.length != 2) {
+                throw new WrongADLFormatException(Messages.ActionButton_WrongADLFormatException
+                        + fileLine);
             }
-            if(row[0].equals("type")){ //$NON-NLS-1$
-                if(row[1].contains("toggle")){ //$NON-NLS-1$
+            if (row[0].equals("type")) { //$NON-NLS-1$
+                if (row[1].contains("toggle")) { //$NON-NLS-1$
                     _widget.setPropertyValue(ActionButtonModel.PROP_TOGGLE_BUTTON, true);
-                }else{
+                } else {
                     _widget.setPropertyValue(ActionButtonModel.PROP_TOGGLE_BUTTON, false);
                 }
-            }else if(row[0].equals("label")){ //$NON-NLS-1$
+            } else if (row[0].equals("label")) { //$NON-NLS-1$
                 // <property type="sds.string" id="label" value="AButton" />
                 _widget.setPropertyValue(ActionButtonModel.PROP_LABEL, row[1].replaceAll("\"", "")); //$NON-NLS-1$ //$NON-NLS-2$
-            }else if(row[0].equals("press_msg")){ //$NON-NLS-1$
-                // <property type="sds.double" id="click_value" value="0.0" /> 
+            } else if (row[0].equals("press_msg")) { //$NON-NLS-1$
+                // <property type="sds.double" id="click_value" value="0.0" />
                 _widget.setPropertyValue("click_value", row[1].replaceAll("\"", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 CommitValueActionModelFactory fac = new CommitValueActionModelFactory();
                 CommitValueActionModel action = (CommitValueActionModel) fac.createWidgetAction();
                 action.setEnabled(true);
-                action.getProperty(CommitValueActionModel.PROP_VALUE).setPropertyValue(row[1].replaceAll("\"", "")); //$NON-NLS-1$ //$NON-NLS-2$
+                action.getProperty(CommitValueActionModel.PROP_VALUE).setPropertyValue(
+                        row[1].replaceAll("\"", "")); //$NON-NLS-1$ //$NON-NLS-2$
                 result.addAction(action);
                 pressIndex = actionIndex++;
-            }else if(row[0].equals("release_msg")){ //$NON-NLS-1$
+            } else if (row[0].equals("release_msg")) { //$NON-NLS-1$
                 _widget.setPropertyValue("click_value", row[1].replaceAll("\"", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 CommitValueActionModelFactory fac = new CommitValueActionModelFactory();
                 CommitValueActionModel action = (CommitValueActionModel) fac.createWidgetAction();
-                action.getProperty(CommitValueActionModel.PROP_VALUE).setPropertyValue(row[1].replaceAll("\"", "")); //$NON-NLS-1$ //$NON-NLS-2$
+                action.getProperty(CommitValueActionModel.PROP_VALUE).setPropertyValue(
+                        row[1].replaceAll("\"", "")); //$NON-NLS-1$ //$NON-NLS-2$
                 result.addAction(action);
                 releasIndex = actionIndex++;
-            }else if(row[0].equals("clrmod")){ //$NON-NLS-1$
+            } else if (row[0].equals("clrmod")) { //$NON-NLS-1$
                 // TODO: ActionButton-->clrmod
-            }else if(row[0].equals("pressed_label")){ //$NON-NLS-1$
+            } else if (row[0].equals("pressed_label")) { //$NON-NLS-1$
                 // TODO: ActionButton-->pressed_label (Not Supported from SDS)
-                CentralLogger.getInstance().info(this, "Unsupported" +fileLine);
-            }else if(row[0].equals("inactive_label")){
+                CentralLogger.getInstance().info(this, "Unsupported" + fileLine);
+            } else if (row[0].equals("inactive_label")) {
                 // TODO: ActionButton-->inactive_label (medm: Not Supported from SDS)
-                CentralLogger.getInstance().info(this, "Unsupported" +fileLine);
-            }else if(row[0].equals("zero_label")){
-             // TODO: ActionButton-->zero_label (medm: Not Supported from SDS)
-                CentralLogger.getInstance().info(this, "Unsupported" +fileLine);
-            } else if(row[0].equals("one_label")){
+                CentralLogger.getInstance().info(this, "Unsupported" + fileLine);
+            } else if (row[0].equals("zero_label")) {
+                // TODO: ActionButton-->zero_label (medm: Not Supported from SDS)
+                CentralLogger.getInstance().info(this, "Unsupported" + fileLine);
+            } else if (row[0].equals("one_label")) {
                 // TODO: ActionButton-->one_label (medm: Not Supported from SDS)
-                CentralLogger.getInstance().info(this, "Unsupported" +fileLine);
-            }else{
-                throw new WrongADLFormatException(Messages.ActionButton_WrongADLFormatException+fileLine);
+                CentralLogger.getInstance().info(this, "Unsupported" + fileLine);
+            } else if (row[0].equals("pressed_bclr")) {
+                // TODO: ActionButton-->pressed_bclr (Not Supported from SDS)
+                CentralLogger.getInstance().info(this, "Unsupported" + fileLine);
+            } else {
+                throw new WrongADLFormatException(Messages.ActionButton_WrongADLFormatException
+                        + fileLine);
             }
         }
         _widget.setPropertyValue(ActionButtonModel.PROP_ACTION_PRESSED_INDEX, pressIndex);
@@ -119,8 +129,7 @@ public class ActionButton extends Widget {
      */
     @Override
     final void setWidgetType() {
-       _widget = createWidgetModel(ActionButtonModel.ID);
+        _widget = createWidgetModel(ActionButtonModel.ID);
     }
-
 
 }

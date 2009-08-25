@@ -108,8 +108,7 @@ public class ADLConverterMainView extends ViewPart {
      * The Viewer with the list of the files to Convert.
      */
     private ListViewer _avaibleFiles;
-    
-    
+
     private LinkedList<File> _avaibleFilesList = new LinkedList<File>();
 
     /**
@@ -197,8 +196,10 @@ public class ADLConverterMainView extends ViewPart {
                         Messages.ADLConverterMainView_BothFileSourceDialogFileDes,
                         Messages.ADLConverterMainView_ADLFileSourceDialogFileDes,
                         Messages.ADLConverterMainView_MDPFileSourceDialogFileDes,
+                        Messages.ADLConverterMainView_STCFileSourceDialogFileDes,
                         Messages.ADLConverterMainView_AllFileSourceDialogFileDes });
-                dialog.setFilterExtensions(new String[] { "*.adl;*.mfp", "*.adl", "*.mfp", "*.*" }); // Windows
+                dialog.setFilterExtensions(new String[] { "*.adl;*.mfp;*.stc", "*.adl", "*.mfp",
+                        "*.stc", "*.*" }); // Windows
                 // wild cards //$NON-NLS-1$ //$NON-NLS-2$
                 String path = _preferences
                         .getString(ADLConverterPreferenceConstants.P_STRING_Path_Source);
@@ -254,6 +255,7 @@ public class ADLConverterMainView extends ViewPart {
                         adl |= dir.isDirectory();
                         adl |= name.endsWith(".adl");
                         adl |= name.endsWith(".mfp");
+                        adl |= name.endsWith(".stc");
                         return adl;
                     }
 
@@ -261,7 +263,7 @@ public class ADLConverterMainView extends ViewPart {
                 for (String name : list) {
                     File element = new File(file, name);
                     if (element.isFile()) {
-                    	_avaibleFilesList.add(element);
+                        _avaibleFilesList.add(element);
                     } else {
                         fillFiles(element);
                     }
@@ -279,7 +281,7 @@ public class ADLConverterMainView extends ViewPart {
                 StructuredSelection structuredSelection = (StructuredSelection) _avaibleFiles
                         .getSelection();
                 if (structuredSelection.size() < 1) {
-                    
+
                     Iterator<File> iterator = _avaibleFilesList.iterator();
                     while (iterator.hasNext()) {
                         File file = (File) iterator.next();
@@ -289,8 +291,8 @@ public class ADLConverterMainView extends ViewPart {
                                 iterator.remove();
                             }
                         }
-                        _avaibleFiles.setInput(_avaibleFilesList);
                     }
+                    _avaibleFiles.setInput(_avaibleFilesList);
                 } else {
                     _avaibleFilesList.removeAll(structuredSelection.toList());
                     _avaibleFiles.setInput(_avaibleFilesList);
@@ -308,44 +310,62 @@ public class ADLConverterMainView extends ViewPart {
             @SuppressWarnings("unchecked")//$NON-NLS-1$
             public void widgetSelected(final SelectionEvent e) {
                 StructuredSelection sel = (StructuredSelection) _avaibleFiles.getSelection();
-                ArrayList<Object> list = new ArrayList<Object>(sel.toList());
-                while (list.size() > 0) {
-                    ADLDisplayImporter di = new ADLDisplayImporter();
-                    File file = (File) list.remove(0);
-                    IPath targetProject;
-                    if (_isRelativePath.getSelection()) {
-                        targetProject = getRelativPath(file);
-                        // remove File Name
-                        targetProject = targetProject.removeLastSegments(1);
-                    } else {
-                        targetProject = initial.getProjectRelativePath().append(_targetPath);
-                    }
-                    try {
-                        if (file.getName().endsWith(".adl")) {//$NON-NLS-1$ 
-                            if (!di.importDisplay(file.getAbsolutePath(), targetProject, file
-                                    .getName().replace(".adl", ".css-sds"))) { //$NON-NLS-1$ //$NON-NLS-2$
-                                if (di.getStatus() == 2) {
-                                    // Job is canceled.
-                                    break;
-                                }
-                            }
-                        } else if (file.getName().endsWith(".mfp")) {//$NON-NLS-1$ 
-                            if (!di.importFaceplate(file.getAbsolutePath(), targetProject, file
-                                    .getName().replace(".mfp", ".mfp.css-sds"))) { //$NON-NLS-1$ //$NON-NLS-2$
-                                if (di.getStatus() == 2) {
-                                    // Job is canceled.
-                                    break;
-                                }
-                            }
-                        }
-                    } catch (Exception e1) {
-                        CentralLogger.getInstance().error(this, e1);
-                    }
-                    file = null;
+                final ArrayList<Object> list = new ArrayList<Object>(sel.toList());
+                ADLDisplayImporter.reset();
+                Display.getCurrent().asyncExec(new Runnable() {
 
-                    _avaibleFiles.setSelection(new StructuredSelection(list), true);
-                    _avaibleFiles.getList().getParent().layout();
-                }
+                    @Override
+                    public void run() {
+                        while (list.size() > 0) {
+                            ADLDisplayImporter di = new ADLDisplayImporter();
+                            File file = (File) list.remove(0);
+                            IPath targetProject;
+                            if (_isRelativePath.getSelection()) {
+                                targetProject = getRelativPath(file);
+                                // remove File Name
+                                targetProject = targetProject.removeLastSegments(1);
+                            } else {
+                                targetProject = initial.getProjectRelativePath()
+                                        .append(_targetPath);
+                            }
+                            try {
+                                if (file.getName().endsWith(".adl")) {//$NON-NLS-1$ 
+                                    if (!di.importDisplay(file.getAbsolutePath(), targetProject,
+                                            file.getName().replace(".adl", ".css-sds"))) { //$NON-NLS-1$ //$NON-NLS-2$
+                                        if (di.getStatus() == 5) {
+                                            // Job is canceled.
+                                            break;
+                                        }
+                                    }
+                                } else if (file.getName().endsWith(".mfp")) {//$NON-NLS-1$ 
+                                    if (!di.importFaceplate(file.getAbsolutePath(), targetProject,
+                                            file.getName().concat(".css-sds"))) { //$NON-NLS-1$ //$NON-NLS-2$
+                                        if (di.getStatus() == 5) {
+                                            // Job is canceled.
+                                            break;
+                                        }
+                                    }
+                                } else if (file.getName().endsWith(".stc")) {//$NON-NLS-1$
+                                    // parse Strip Tool Files
+                                    if (!di.importStripTool(file.getAbsolutePath(), targetProject,
+                                            file.getName().concat(".css-sds"))) { //$NON-NLS-1$ //$NON-NLS-2$
+                                        if (di.getStatus() == 5) {
+                                            // Job is canceled.
+                                            break;
+                                        }
+                                    }
+                                }
+                            } catch (Exception e1) {
+                                CentralLogger.getInstance().error(this, e1);
+                            }
+                            file = null;
+
+                            _avaibleFiles.setSelection(new StructuredSelection(list), true);
+                            _avaibleFiles.getList().getParent().layout();
+                        }
+                    }
+                });
+
             }
         });
     }
@@ -463,7 +483,7 @@ public class ADLConverterMainView extends ViewPart {
                             }
                         }
                     } else if (e.keyCode == SWT.ARROW_RIGHT) {
-                    	File file = _avaibleFilesList.getFirst();
+                        File file = _avaibleFilesList.getFirst();
                         if (file != null) {
                             pathPart = file.getAbsolutePath().split(Pattern.quote(File.separator));
                             if (_pathPos < pathPart.length - 1) {

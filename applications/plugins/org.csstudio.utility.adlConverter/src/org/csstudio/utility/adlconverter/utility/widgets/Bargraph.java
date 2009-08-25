@@ -25,7 +25,6 @@
 package org.csstudio.utility.adlconverter.utility.widgets;
 
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.sds.components.epics.BargraphInitializer;
 import org.csstudio.sds.components.model.BargraphModel;
 import org.csstudio.sds.cosyrules.color.DefaultEpicsAlarmForeground;
 import org.csstudio.sds.model.DynamicsDescriptor;
@@ -52,7 +51,6 @@ public class Bargraph extends Widget {
      */
     public Bargraph(final ADLWidget bargraph, ADLWidget storedBasicAttribute, ADLWidget storedDynamicAttribute) throws WrongADLFormatException {
         super(bargraph, storedBasicAttribute, storedDynamicAttribute);
-        BargraphInitializer bargraphInitializer = new BargraphInitializer();
         boolean barOnly = false;
         String bool;
         int marksShowStatus = 0;

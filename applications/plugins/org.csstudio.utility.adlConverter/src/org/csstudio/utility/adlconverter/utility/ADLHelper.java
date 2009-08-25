@@ -53,6 +53,10 @@ import org.eclipse.swt.graphics.TextLayout;
  * @since 05.09.2007
  */
 public final class ADLHelper {
+    /**
+     * The minimum font size that can calculated.
+     */
+    private static final int MIN_FONT_SIZE = 6;
     /** Contain all colors of an ADL Colormap as a RGBColor. */
     private static RGBColor[] _rgbColor;
     private static String PATH_REMOVE_PART = Activator.getDefault().getPreferenceStore().getString(ADLConverterPreferenceConstants.P_STRING_Path_Remove_Absolut_Part);
@@ -261,7 +265,7 @@ public final class ADLHelper {
     public static int getFontSize(final String font, final String text, final int maxHigh,
             final int maxWidth, final String style) {
         int fontSize = (int) Math.ceil(maxHigh * 0.6);
-        if (fontSize <= 0) {
+        if (fontSize < MIN_FONT_SIZE) {
             fontSize = 10;
         }
 
@@ -270,7 +274,7 @@ public final class ADLHelper {
             tl.setText(text);
             Font f = CustomMediaFactory.getInstance().getFont(font, fontSize, 0);
             tl.setFont(f);
-            while (maxWidth < tl.getBounds().width && fontSize > 1) {
+            while (maxWidth < tl.getBounds().width && fontSize > MIN_FONT_SIZE) {
                 fontSize--;
                 f = CustomMediaFactory.getInstance().getFont(font, fontSize, 0);
                 tl.setFont(f);
@@ -303,7 +307,7 @@ public final class ADLHelper {
             CentralLogger.getInstance().debug(ADLHelper.class, Arrays.toString(chan));
             widgetModel.setAliasValue("channel".concat(which), chan[1]); //$NON-NLS-1$            
         }
-        
+        widgetModel.setLayer(Messages.ADLDisplayImporter_ADLDynamicLayerName);
         if(which.equals(""))
         	widgetModel.setPrimarPv("$channel$");
         // if(chan.length>2&&chan[chan.length-1].startsWith(".")){ //$NON-NLS-1$

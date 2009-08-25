@@ -133,6 +133,7 @@ public class ADLMenuItem extends WidgetPart {
      */
     @Override
     final void generateElements() {
+        _widgetModel.setLayer(Messages.ADLDisplayImporter_ADLDynamicLayerName);
         if (_type.equals("\"New Display\"")) { //$NON-NLS-1$
             ActionData actionData = _widgetModel.getActionData();
             if (actionData == null) {

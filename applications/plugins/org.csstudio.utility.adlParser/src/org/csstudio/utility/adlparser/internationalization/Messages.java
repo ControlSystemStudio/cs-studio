@@ -61,6 +61,7 @@ public class Messages extends NLS {
     public static String ADLConverterMainView_DialogText;
     public static String ADLConverterMainView_MDPFileSourceDialogFileDes;
     public static String ADLConverterMainView_SourceGroup;
+    public static String ADLConverterMainView_STCFileSourceDialogFileDes;
     public static String ADLConverterMainView_TargetFolderSelectionMessage;
     public static String ADLConverterMainView_TargetOpernButton;
     public static String ADLDisplayImporter_ADLActionLayerDes;
@@ -72,8 +73,10 @@ public class Messages extends NLS {
     public static String ADLDisplayImporter_ADLDynamicLayerName;
     public static String ADLDisplayImporter_ADLDynamicLayerDes;    
     public static String ADLDisplayImporter_Dialog_Header_Directory_not_exist;
-    public static String ADLDisplayImporter_Dialog_No_Button;
     public static String ADLDisplayImporter_Dialog_Yes_Button;
+    public static String ADLDisplayImporter_Dialog_Yes2All_Button;
+    public static String ADLDisplayImporter_Dialog_No_Button;
+    public static String ADLDisplayImporter_Dialog_No2All_Button;
     public static String ADLDisplayImporter_WARN_UNHANDLED_TYPE;
     public static String ADLDynamicAttribute_AssertError_Begin;
     public static String ADLDynamicAttribute_AssertError_End;

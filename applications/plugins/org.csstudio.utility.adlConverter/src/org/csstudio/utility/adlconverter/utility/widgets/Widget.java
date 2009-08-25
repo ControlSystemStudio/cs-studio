@@ -91,10 +91,14 @@ public abstract class Widget extends AbstractDisplayImporter {
         }
 
         if (_basicAttribute != null && _dynamicAttribute != null) {
-            Map<ConnectionState, Object> connectionStateDependentPropertyValues = _dynamicAttribute
-                    .getColorAdlDynamicAttributes().getConnectionStateDependentPropertyValues();
-            connectionStateDependentPropertyValues.put(ConnectionState.CONNECTED, _basicAttribute
-                    .getClr());
+            DynamicsDescriptor colorAdlDynamicAttributes = _dynamicAttribute
+                    .getColorAdlDynamicAttributes();
+            if (colorAdlDynamicAttributes != null) {
+                Map<ConnectionState, Object> connectionStateDependentPropertyValues = colorAdlDynamicAttributes
+                        .getConnectionStateDependentPropertyValues();
+                connectionStateDependentPropertyValues.put(ConnectionState.CONNECTED,
+                        _basicAttribute.getClr());
+            }
         }
         if (_basicAttribute != null) {
             _basicAttribute.setParentWidgetModel(_widget);
@@ -163,14 +167,14 @@ public abstract class Widget extends AbstractDisplayImporter {
                         _dynamicAttribute.getBooleanAdlDynamicAttributes());
             }
             // Wird vom Initializer erledigt.
-             if (_dynamicAttribute.isColor()) {
-             _widget.setDynamicsDescriptor(AbstractWidgetModel.PROP_COLOR_FOREGROUND,
-             _dynamicAttribute.getColorAdlDynamicAttributes());
-            // if (getControl() == null && getMonitor() == null) {
-            // // ???
-            // }
-             }else {
-             }
+            if (_dynamicAttribute.isColor()) {
+                _widget.setDynamicsDescriptor(AbstractWidgetModel.PROP_COLOR_FOREGROUND,
+                        _dynamicAttribute.getColorAdlDynamicAttributes());
+                // if (getControl() == null && getMonitor() == null) {
+                // // ???
+                // }
+            } else {
+            }
         }
         makeConnectionState();
     }
@@ -179,18 +183,21 @@ public abstract class Widget extends AbstractDisplayImporter {
      * Generate the default Desy Connenction State XML-Element.
      */
     protected void makeConnectionState() {
-//        if (_dynamicAttribute != null) {
-//            DynamicsDescriptor colorAdlDynamicAttributes = _dynamicAttribute
-//                    .getColorAdlDynamicAttributes();
-//            _widget.setDynamicsDescriptor(AbstractWidgetModel.PROP_COLOR_BACKGROUND,
-//                    colorAdlDynamicAttributes);
-//        } else 
-            if (_monitor != null) {
-            DynamicsDescriptor dynamicsDescriptor = _widget.getDynamicsDescriptor(AbstractWidgetModel.PROP_COLOR_BACKGROUND);
-            if(dynamicsDescriptor!=null) {
-                Map<ConnectionState, Object> connectionStateDependentPropertyValues = dynamicsDescriptor.getConnectionStateDependentPropertyValues();
-                if(connectionStateDependentPropertyValues!=null) {
-                    connectionStateDependentPropertyValues.put(ConnectionState.CONNECTED,ADLHelper.getRGB(_monitor.getBclr()));
+        // if (_dynamicAttribute != null) {
+        // DynamicsDescriptor colorAdlDynamicAttributes = _dynamicAttribute
+        // .getColorAdlDynamicAttributes();
+        // _widget.setDynamicsDescriptor(AbstractWidgetModel.PROP_COLOR_BACKGROUND,
+        // colorAdlDynamicAttributes);
+        // } else
+        if (_monitor != null) {
+            DynamicsDescriptor dynamicsDescriptor = _widget
+                    .getDynamicsDescriptor(AbstractWidgetModel.PROP_COLOR_BACKGROUND);
+            if (dynamicsDescriptor != null) {
+                Map<ConnectionState, Object> connectionStateDependentPropertyValues = dynamicsDescriptor
+                        .getConnectionStateDependentPropertyValues();
+                if (connectionStateDependentPropertyValues != null) {
+                    connectionStateDependentPropertyValues.put(ConnectionState.CONNECTED, ADLHelper
+                            .getRGB(_monitor.getBclr()));
                 }
             }
         }
