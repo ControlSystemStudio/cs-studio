@@ -24,7 +24,6 @@ package org.csstudio.diag.interconnectionServer.server;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
@@ -127,10 +126,9 @@ public class IocConnectionManager {
 				+ this.totalNumberOfOutgoingMessages;
 		result += "\n";
 
-		Enumeration connections = this.connectionList.elements();
+		Enumeration<IocConnection> connections = this.connectionList.elements();
 		while (connections.hasMoreElements()) {
-			IocConnection thisContent = (IocConnection) connections
-					.nextElement();
+			IocConnection thisContent = connections.nextElement();
 			result += "\n---------- statistische Auswertung ---------------\n";
 			StringBuilder buf = new StringBuilder();
 			thisContent.appendStatisticInformationTo(buf);
@@ -143,10 +141,9 @@ public class IocConnectionManager {
 		String nodeNames = null;
 		boolean first = true;
 
-		Enumeration connections = this.connectionList.elements();
+		Enumeration<IocConnection> connections = this.connectionList.elements();
 		while (connections.hasMoreElements()) {
-			IocConnection thisContent = (IocConnection) connections
-					.nextElement();
+			IocConnection thisContent = connections.nextElement();
 			if (first) {
 				nodeNames = thisContent.getHost() + ",";
 			} else {
@@ -162,10 +159,9 @@ public class IocConnectionManager {
 	public String[] getNodeNameArray() {
 		List<String> nodeNames = new ArrayList<String>();
 
-		Enumeration connections = this.connectionList.elements();
+		Enumeration<IocConnection> connections = this.connectionList.elements();
 		while (connections.hasMoreElements()) {
-			IocConnection thisContent = (IocConnection) connections
-					.nextElement();
+			IocConnection thisContent = connections.nextElement();
 			nodeNames.add(thisContent.getHost());
 		}
 		return nodeNames.toArray(new String[0]);
@@ -175,9 +171,9 @@ public class IocConnectionManager {
 	public InetAddress[] getListOfIocInetAdresses() {
 		List<InetAddress> nodeNames = new ArrayList<InetAddress>();
 
-		Enumeration connections = this.connectionList.elements();
+		Enumeration<IocConnection> connections = this.connectionList.elements();
 		while (connections.hasMoreElements()) {
-			IocConnection thisContent = (IocConnection) connections.nextElement();
+			IocConnection thisContent = connections.nextElement();
 			nodeNames.add(thisContent.getIocInetAddress());
 		}
 		return nodeNames.toArray(new InetAddress[0]);
@@ -188,9 +184,9 @@ public class IocConnectionManager {
 		
 		if (iocName == null) return null;
 
-		Enumeration connections = this.connectionList.elements();
+		Enumeration<IocConnection> connections = this.connectionList.elements();
 		while (connections.hasMoreElements()) {
-			IocConnection thisContent = (IocConnection) connections.nextElement();
+			IocConnection thisContent = connections.nextElement();
 			if ( thisContent.getHost().equals(iocName)) {
 				return thisContent.getIocInetAddress();
 			}
@@ -200,9 +196,9 @@ public class IocConnectionManager {
 	
 	public void resetIocNameDefinition( String iocName) {
 
-		Enumeration connections = this.connectionList.elements();
+		Enumeration<IocConnection> connections = this.connectionList.elements();
 		while (connections.hasMoreElements()) {
-			IocConnection thisContent = (IocConnection) connections.nextElement();
+			IocConnection thisContent = connections.nextElement();
 			if ( thisContent.getHost().equals(iocName)) {
 				/*
 				 * in case that the IOC name was not properly stored in LDAP we need a way to reset the name
@@ -224,10 +220,9 @@ public class IocConnectionManager {
 		List<String> nodeNames = new ArrayList<String>();
 
 		// just in case no enum is possible
-		Enumeration connections = this.connectionList.elements();
+		Enumeration<IocConnection> connections = this.connectionList.elements();
 		while (connections.hasMoreElements()) {
-			IocConnection thisContent = (IocConnection) connections
-					.nextElement();
+			IocConnection thisContent = connections.nextElement();
 			nodeNames.add(thisContent.getHost() + "|"
 					+ thisContent.getLogicalIocName());
 		}
@@ -237,13 +232,11 @@ public class IocConnectionManager {
 
 	public String[] getNodeNameStatusArray() {
 		List<String> nodeNames = new ArrayList<String>();
-		boolean first = true;
 
 		// just in case no enum is possible
-		Enumeration connections = this.connectionList.elements();
+		Enumeration<IocConnection> connections = this.connectionList.elements();
 		while (connections.hasMoreElements()) {
-			IocConnection thisContent = (IocConnection) connections
-					.nextElement();
+			IocConnection thisContent = connections.nextElement();
 			nodeNames.add(thisContent.getHost() + " | "
 					+ thisContent.getLogicalIocName() + "  "
 					+ thisContent.getCurrentConnectState() + "  "

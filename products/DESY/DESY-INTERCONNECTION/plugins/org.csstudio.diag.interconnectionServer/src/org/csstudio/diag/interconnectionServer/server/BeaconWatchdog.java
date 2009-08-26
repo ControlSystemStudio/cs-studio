@@ -68,9 +68,9 @@ public class BeaconWatchdog extends Thread{
 	 */
 	private void checkBeaconTimeout () {
 		
-		Enumeration connections = IocConnectionManager.getInstance().connectionList.elements();
+		Enumeration<IocConnection> connections = IocConnectionManager.getInstance().connectionList.elements();
 		 while (connections.hasMoreElements()) {
-			IocConnection connection = (IocConnection)connections.nextElement();
+			IocConnection connection = connections.nextElement();
 			if (connection.isTimeoutError()) {
 				 
 				 /*

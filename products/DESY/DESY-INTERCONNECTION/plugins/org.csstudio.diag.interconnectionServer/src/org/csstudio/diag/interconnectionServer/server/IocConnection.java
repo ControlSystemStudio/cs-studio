@@ -23,7 +23,6 @@
 package org.csstudio.diag.interconnectionServer.server;
 
 import java.net.InetAddress;
-import java.util.GregorianCalendar;
 import java.util.concurrent.TimeUnit;
 
 import org.csstudio.diag.interconnectionServer.internal.IIocDirectory;
@@ -41,7 +40,6 @@ public class IocConnection {
 	
 	private final String host;
 	private final int port;
-	private String _hostName = null;
 	private InetAddress _iocInetAddress = null;
 	private IocNameDefinitions iocNameDefinitions = null;
 	
