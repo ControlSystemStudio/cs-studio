@@ -2,6 +2,10 @@ package org.csstudio.config.ioconfig.config.view.helper;
 
 import java.util.GregorianCalendar;
 
+import org.csstudio.config.ioconfig.model.Activator;
+import org.csstudio.config.ioconfig.model.preference.PreferenceConstants;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -33,6 +37,8 @@ public class AddDocDialog extends Dialog {
      */
     @Override
     protected Control createDialogArea(final Composite parent) {
+        InstanceScope instanceScope = new InstanceScope();
+        IEclipsePreferences node = instanceScope.getNode(Activator.PLUGIN_ID);
         GregorianCalendar createDate = new GregorianCalendar();
         GridData gridData = (GridData) parent.getLayoutData();
         gridData.minimumWidth = 400;
@@ -40,7 +46,7 @@ public class AddDocDialog extends Dialog {
         Composite dialogArea = (Composite) super.createDialogArea(parent);
         GridLayout gridLayout = new GridLayout(4, false);
         dialogArea.setLayout(gridLayout);
-        String[] logbooks = new String[] { "MKS-2-DOC", "MKS-2" };
+        String[] logbooks = node.get(PreferenceConstants.DDB_LOGBOOK, "MKS-2-DOC").split(",");
         ComboViewer logbooksViewer = new ComboViewer(dialogArea);
         logbooksViewer.setContentProvider(new ArrayContentProvider());
         logbooksViewer.setInput(logbooks);
@@ -72,7 +78,7 @@ public class AddDocDialog extends Dialog {
         Label label = new Label(dialogArea, SWT.NONE);
         label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
         label.setText("Bedeutung: ");
-        String[] meaning = new String[] {"DOCU","NONE"};
+        String[] meaning = node.get(PreferenceConstants.DDB_LOGBOOK_MEANING, "DOCU").split(",");
         Combo meaningCombo = new Combo(dialogArea, SWT.DROP_DOWN);
         meaningCombo.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, true, false,3,1));
         meaningCombo.setItems(meaning);
