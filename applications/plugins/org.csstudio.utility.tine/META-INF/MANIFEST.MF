@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Tine Plug-in
+Bundle-SymbolicName: org.csstudio.utility.tine;singleton:=true
+Bundle-Version: 1.0.10
+Bundle-Activator: org.csstudio.utility.tine.Activator
+Bundle-Localization: plugin
+Require-Bundle: org.csstudio.platform,
+ org.csstudio.platform.libs.tine,
+ org.csstudio.utility.namespace.utility
+Eclipse-LazyStart: true
+Export-Package: org.csstudio.utility.tine,
+ org.csstudio.utility.tine.preference,
+ org.csstudio.utility.tine.reader

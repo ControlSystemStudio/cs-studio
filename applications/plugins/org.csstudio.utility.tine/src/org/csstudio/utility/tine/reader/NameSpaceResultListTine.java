@@ -1,0 +1,104 @@
+/*
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchrotron,
+ * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
+ *
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
+ * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
+ * OR MODIFICATIONS.
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
+ * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
+ */
+/*
+ * $Id$
+ */
+package org.csstudio.utility.tine.reader;
+
+import java.util.ArrayList;
+
+import org.csstudio.utility.namespace.utility.ControlSystemItem;
+import org.csstudio.utility.namespace.utility.NameSpaceResultList;
+
+/**
+ * @author hrickens
+ * @author $Author$
+ * @version $Revision$
+ * @since 15.05.2007
+ */
+public class NameSpaceResultListTine extends NameSpaceResultList {
+    
+	/** The list whit Result from Tine namespace server.*/
+    private ArrayList<ControlSystemItem> _ergbnis = new ArrayList<ControlSystemItem>();
+    
+    /** {@inheritDoc} */
+    @Override
+	public final NameSpaceResultList copy() {
+        NameSpaceResultListTine nsrlt = new NameSpaceResultListTine();
+        nsrlt.setCSIResultList(_ergbnis);
+        return nsrlt;    }
+
+    /** {@inheritDoc}*/
+    @Override
+	public final NameSpaceResultList getNew() {
+        return new NameSpaceResultListTine();
+    }
+
+    /** {@inheritDoc}*/
+    @Override
+	public final ArrayList<ControlSystemItem> getResultList() {
+        return _ergbnis;
+    }
+
+    /** {@inheritDoc}*/
+    @Override
+	public final void notifyView() {
+        setChanged();
+        notifyObservers();
+    }
+
+    /** resultList a filled only String or only {@link ControlSystemItem}. 
+     * {@inheritDoc}*/
+    @Override
+	public final void setResultList(final ArrayList resultList) {
+    	if (resultList.get(0) instanceof String) {
+    		for (String name : (ArrayList<String>)resultList) {
+				_ergbnis.add(new ControlSystemItem(name,name));
+			}
+		}else if (resultList.get(0) instanceof ControlSystemItem) {
+	    	_ergbnis.addAll((ArrayList<ControlSystemItem>)resultList);			
+		}
+        setChanged();
+        notifyObservers();
+    }
+
+    /** alternate from to fill the result list.
+     * @see NameSpaceResultList#setResultList(ArrayList)
+     * @param resultList A list whit results.
+     *  */
+    public final void setCSIResultList(final ArrayList<ControlSystemItem> resultList) {
+        this._ergbnis.addAll(resultList);
+        setChanged();
+        notifyObservers();
+    }
+
+//    /** alternate from to fill the result list.
+//     * @see NameSpaceResultList#setResultList(ArrayList) 
+//     * @param resultList A list whit results.
+//     * @param is used to      */
+//    public final void setResultList(final ArrayList<ControlSystemItem> resultList,final boolean div) {
+//
+//        setChanged();
+//        notifyObservers();
+//    }
+
+}

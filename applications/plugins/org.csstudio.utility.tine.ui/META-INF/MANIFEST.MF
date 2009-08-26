@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Tine Ui Plug-in
+Bundle-SymbolicName: org.csstudio.utility.tine.ui;singleton:=true
+Bundle-Version: 1.0.10
+Bundle-Activator: org.csstudio.utility.tine.ui.Activator
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.csstudio.platform.ui,
+ org.eclipse.help,
+ org.csstudio.utility.tine
+Eclipse-LazyStart: true
