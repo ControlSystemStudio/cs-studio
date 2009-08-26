@@ -137,15 +137,7 @@ public final class AliasResolutionUtil {
 		while (!containerStack.isEmpty()) {
 			IContainer top = containerStack.pop();
 			Map<String, String> finalAliases = getFinalAliases(top);
-			
-			for(String k : finalAliases.keySet()) {
-				String v  = finalAliases.get(k);
-				
-				if(v!=null && v.length()>0) {
-					result.put(k, v);
-				}
-			}
-//			result.putAll(finalAliases);
+			result.putAll(finalAliases);
 		}
 
 		return result;

@@ -95,7 +95,7 @@ public final class ProblemVisitor implements IVisitor {
 					}
 
 				} catch (Exception e) {
-					assert false : "Should not happen";
+					errors.add(new MarkableError(record.getId(), e.getMessage()));
 				}
 			}
 		}
