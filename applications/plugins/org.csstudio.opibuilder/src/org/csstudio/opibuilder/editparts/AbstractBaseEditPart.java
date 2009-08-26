@@ -14,6 +14,8 @@ import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.util.UIBundlingThread;
 import org.csstudio.opibuilder.visualparts.BorderFactory;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
+import org.csstudio.opibuilder.widgetActions.AbstractWidgetAction;
+import org.csstudio.opibuilder.widgetActions.OpenDislayAction;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.utility.pv.PV;
@@ -22,6 +24,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.InputEvent;
 import org.eclipse.draw2d.LabeledBorder;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
@@ -122,12 +125,25 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 							getCastedModel().getActionsInput().getActionsList().size() > 0 && 
 							getCastedModel().getActionsInput().isHookedUpToWidget()){
 						figure.setCursor(HAND_CURSOR);
+						final AbstractWidgetAction action = 
+							getCastedModel().getActionsInput().getActionsList().get(0);
 						figure.addMouseListener(new MouseListener.Stub(){
 							
 							@Override
 							public void mousePressed(MouseEvent me) {
+								
+								if(action instanceof OpenDislayAction){
+									((OpenDislayAction)action).setCtrlPressed(false);
+									((OpenDislayAction)action).setShiftPressed(false);
+									if(me.getState() == InputEvent.CONTROL){
+										((OpenDislayAction)action).setCtrlPressed(true);
+									}else if (me.getState() == InputEvent.SHIFT){
+										((OpenDislayAction)action).setShiftPressed(true);
+									}
+								}
+								
 								if(me.button == 1)
-									getCastedModel().getActionsInput().getActionsList().get(0).run();	
+									action.run();	
 							}
 						});
 					}
@@ -210,6 +226,16 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 		WidgetPropertyChangeListener listener = propertyListenerMap.get(propertyId);
 		if (listener != null) {
 			listener.addHandler(handler);
+		}
+	}
+	
+	/**Remove all the property change handlers on the specified property.
+	 * @param propID the property id
+	 */
+	protected final void removeAllPropertyChangeHandlers(final String propID){
+		WidgetPropertyChangeListener listener = propertyListenerMap.get(propID);
+		if (listener != null) {
+			listener.removeAllHandlers();
 		}
 	}
 	

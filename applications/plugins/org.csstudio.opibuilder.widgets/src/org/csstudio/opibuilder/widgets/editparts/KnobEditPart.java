@@ -88,7 +88,7 @@ public final class KnobEditPart extends AbstractMarkedWidgetEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				KnobFigure knob = (KnobFigure) refreshableFigure;
-				knob.setThumbColor((RGB) newValue);
+				knob.setThumbColor(((OPIColor) newValue).getRGBValue());
 				return true;
 			}
 		};

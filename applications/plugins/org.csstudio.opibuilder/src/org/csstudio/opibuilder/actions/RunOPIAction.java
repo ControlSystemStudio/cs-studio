@@ -1,19 +1,28 @@
 package org.csstudio.opibuilder.actions;
 
+import java.io.FileNotFoundException;
+
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.editor.OPIEditor;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.runmode.RunModeService;
 import org.csstudio.opibuilder.runmode.RunnerInput;
+import org.csstudio.opibuilder.runmode.RunModeService.TargetWindow;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuCreator;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.HelpListener;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -24,6 +33,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
+import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.ui.internal.WorkbenchWindow;
 import org.eclipse.ui.part.FileEditorInput;
 
@@ -54,7 +64,26 @@ public class RunOPIAction extends Action{
 			IFile file = null;
 			if(input instanceof FileEditorInput)
 				file = ((FileEditorInput)input).getFile();
-			RunModeService.getInstance().runOPI(file, displayModel);
+			else if (input instanceof FileStoreEditorInput) {
+				IPath path = URIUtil.toPath(((FileStoreEditorInput) input)
+						.getURI());
+				//read file
+				IFile[] files = 
+					ResourcesPlugin.getWorkspace().getRoot().findFilesForLocation(
+							ResourcesPlugin.getWorkspace().getRoot().getLocation().append(path));
+				
+				if(files.length < 1)
+					try {
+						throw new FileNotFoundException("The file " + path.toString() + "does not exist!");
+					} catch (FileNotFoundException e) {
+						CentralLogger.getInstance().error(this, e);
+						MessageDialog.openError(Display.getDefault().getActiveShell(), "File Open Error",
+								e.getMessage());					
+					}
+				
+				file = files[0];
+			}
+			RunModeService.getInstance().runOPI(file, displayModel, TargetWindow.RUN_WINDOW);
 		}
 			
 	}

@@ -25,7 +25,7 @@ public class PropertiesLabelProvider extends LabelProvider implements
 					if (property != null) {
 						if (property.getPropertyDescriptor().getLabelProvider() != null) 
 							return property.getPropertyDescriptor().getLabelProvider().
-								getImage(property);
+								getImage(property.getPropertyValue());
 					}
 				}
 				return null;
@@ -50,7 +50,7 @@ public class PropertiesLabelProvider extends LabelProvider implements
 				if (element != null) {
 					return element.toString();
 				}
-				return "Fehler";
+				return "error";
 			}
 		
 

@@ -367,7 +367,7 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	
 	public void setPropertyDescription(String prop_id, String description){
 		getProperty(prop_id).setDescription(description);
-		if(propertyDescriptors.containsKey(prop_id))
+		if(propertyDescriptors.containsKey(prop_id))			
 			propertyDescriptors.put(prop_id, getProperty(prop_id).getPropertyDescriptor());
 	}
 	

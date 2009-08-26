@@ -116,7 +116,6 @@ public class ColorProperty extends AbstractWidgetProperty {
 				return new OPIColor(result);		
 		}else{
 			colorElement = propElement.getChild(XML_ELEMENT_COLORNAME);
-			System.out.println(colorElement.getText());
 			return ColorService.getInstance().getOPIColor(colorElement.getText());
 		}
 	

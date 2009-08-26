@@ -101,6 +101,15 @@
             model_class="org.csstudio.opibuilder.widgets.model.ScaledSliderModel"
             name="Scaled Slider"
             typeId="org.csstudio.opibuilder.widgets.scaledslider">
+      </widget>
+      <widget
+            category="Controls"
+            description="A button which can execute an action."
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.ActionButtonEditPart"
+            icon="icons/actionbutton.gif"
+            model_class="org.csstudio.opibuilder.widgets.model.ActionButtonModel"
+            name="Action Button"
+            typeId="org.csstudio.opibuilder.widgets.ActionButton">
       </widget>     
    </extension>
 
