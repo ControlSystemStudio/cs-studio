@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.sns.feature.applications"
       label="CSS Applications"
-      version="1.0.11"
+      version="1.0.21"
       provider-name="Kay Kasemir">
 
    <description>
@@ -167,6 +167,13 @@ IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY AT HTTP://WWW.DESY.DE/LEGAL/L
 
    <plugin
          id="org.csstudio.sns.msghist"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.display.rdbtable"
          download-size="0"
          install-size="0"
          version="0.0.0"
