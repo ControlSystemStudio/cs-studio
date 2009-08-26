@@ -168,6 +168,7 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
    <features>
       <feature id="org.csstudio.platform.feature" version="1.2.1"/>
       <feature id="org.csstudio.platform.feature.product" version="1.2.0"/>
+      <feature id="org.csstudio.beta.feature" version="1.2.13"/>
    </features>
 
 
