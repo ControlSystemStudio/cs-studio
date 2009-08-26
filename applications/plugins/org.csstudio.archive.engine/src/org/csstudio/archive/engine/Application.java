@@ -183,7 +183,8 @@ public class Application implements IApplication
         }
         catch (Exception ex)
         {
-            logger.fatal(ex);
+            logger.fatal("Unhandled Main Loop Error", ex);
+            ex.printStackTrace();
         }
         
         return EXIT_OK;
