@@ -34,7 +34,6 @@ import org.csstudio.config.ioconfig.model.FacilityLight;
 import org.csstudio.config.ioconfig.model.Ioc;
 import org.csstudio.config.ioconfig.model.Node;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFile;
-import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnet;
 import org.csstudio.config.ioconfig.view.Activator;
 import org.csstudio.config.ioconfig.view.ProfiBusTreeView;
 import org.eclipse.core.commands.operations.OperationStatus;
