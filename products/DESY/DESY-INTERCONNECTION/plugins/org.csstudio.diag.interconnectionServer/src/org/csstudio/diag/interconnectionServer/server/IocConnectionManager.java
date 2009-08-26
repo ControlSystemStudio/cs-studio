@@ -29,6 +29,8 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
 
+import org.csstudio.diag.interconnectionServer.internal.IIocDirectory;
+import org.csstudio.diag.interconnectionServer.internal.LdapIocDirectory;
 import org.csstudio.diag.interconnectionServer.internal.time.TimeUtil;
 
 /**
@@ -48,17 +50,40 @@ public class IocConnectionManager {
 	public Hashtable<String, IocConnection> connectionList = null; // accessed by BeaconWatchdog, InterconnectionServer, ScheduleDowntime
 	int totalNumberOfIncomingMessages = 0; // accessed by IocConnection
 	int totalNumberOfOutgoingMessages = 0; // accessed by IocConnection
+	
+	private final IIocDirectory iocDirectory;
 
-	private IocConnectionManager() {
+	private IocConnectionManager(IIocDirectory iocDirectory) {
 		connectionList = new Hashtable<String, IocConnection>();
+		this.iocDirectory = iocDirectory;
 	}
 
+	/**
+	 * Returns the singleton IocConnectionManager.
+	 * 
+	 * @param iocDirectory
+	 *            the IOC directory that will be used by the manager.
+	 */
 	// TODO: should this really be a singleton?
-	public static synchronized IocConnectionManager getInstance() {
+	// XXX: This getInstance method is intended for testing only. But this is
+	// a really bad design and its only purpose is to work around all the other
+	// even worse design.
+	static synchronized IocConnectionManager getInstance(IIocDirectory iocDirectory) {
 		if (statisticInstance == null) {
-			statisticInstance = new IocConnectionManager();
+			statisticInstance = new IocConnectionManager(iocDirectory);
 		}
 		return statisticInstance;
+	}
+	
+	/**
+	 * Returns the singleton IocConnectionManager.
+	 */
+	public static synchronized IocConnectionManager getInstance() {
+		// XXX: It's obviously useless to create a new instance of
+		// LdapIocDirectory here every single time, but that's currently the
+		// only way to have this parameterized for tests. This class really
+		// really should be redesigned!
+		return getInstance(new LdapIocDirectory());
 	}
 
 	/**
@@ -79,7 +104,7 @@ public class IocConnectionManager {
 		if (connectionList.containsKey(internalId)) {
 			return connectionList.get(internalId);
 		} else {
-			IocConnection connection = new IocConnection(iocInetAddress, port, TimeUtil.systemClock());
+			IocConnection connection = new IocConnection(iocInetAddress, port, TimeUtil.systemClock(), iocDirectory);
 			connectionList.put(internalId, connection);
 			return connection;
 		}

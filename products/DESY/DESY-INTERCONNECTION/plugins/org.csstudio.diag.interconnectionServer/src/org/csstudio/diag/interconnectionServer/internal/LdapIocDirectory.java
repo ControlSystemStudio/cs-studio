@@ -20,42 +20,22 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
-package org.csstudio.diag.interconnectionServer.server;
+package org.csstudio.diag.interconnectionServer.internal;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-
-import java.net.InetAddress;
-
-import org.csstudio.diag.interconnectionServer.internal.IIocDirectory;
-import org.junit.Test;
-import org.mockito.Mockito;
-
+import org.csstudio.diag.interconnectionServer.server.LdapSupport;
 
 /**
+ * LDAP-based implementation of an IOC directory.
+ * 
  * @author Joerg Rathlev
  */
-public class IocConnectionManagerTest {
-	
-	@Test
-	public void testGetIocConnection() throws Exception {
-		IIocDirectory directory = Mockito.mock(IIocDirectory.class);
-		Mockito.when(directory.getLogicalIocName("127.0.0.1", "localhost"))
-			.thenReturn(new String[] {"logicalName", "ldapName"});
-		
-		IocConnectionManager cm = IocConnectionManager.getInstance(directory);
-		InetAddress ipAddress = InetAddress.getByName("127.0.0.1");
-		String hostname = ipAddress.getHostName();
-		IocConnection conn = cm.getIocConnection(ipAddress, 123);
-		assertNotNull(conn);
-		assertEquals(hostname, conn.getHost());
-		assertEquals(123, conn.getPort());
-		assertEquals("logicalName", conn.getLogicalIocName());
-		assertEquals("ldapName", conn.getLdapIocName());
-		
-		// Multiple requests must return the same IocConnection instance
-		assertSame(conn, cm.getIocConnection(ipAddress, 123));
+public class LdapIocDirectory implements IIocDirectory {
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String[] getLogicalIocName(String ipAddress, String hostname) {
+		return LdapSupport.getInstance().getLogicalIocName(ipAddress, hostname);
 	}
 
 }

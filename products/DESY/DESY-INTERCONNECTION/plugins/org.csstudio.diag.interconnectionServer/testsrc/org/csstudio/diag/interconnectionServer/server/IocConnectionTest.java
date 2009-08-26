@@ -24,11 +24,14 @@ package org.csstudio.diag.interconnectionServer.server;
 
 import static org.junit.Assert.*;
 
+import java.net.InetAddress;
 import java.util.concurrent.TimeUnit;
 
+import org.csstudio.diag.interconnectionServer.internal.IIocDirectory;
 import org.csstudio.diag.interconnectionServer.internal.time.StubTimeSource;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 
 /**
@@ -40,14 +43,18 @@ public class IocConnectionTest {
 	private StubTimeSource _timeSource;
 	
 	@Before
-	public void setUp() {
+	public void setUp() throws Exception {
 		_timeSource = new StubTimeSource(10);
-		_conn = new IocConnection(IocConnectionManager.getInstance().getIocInetAdressByName("host"), 1234, _timeSource);
+		InetAddress ipAddress = InetAddress.getByName("127.0.0.1");
+		IIocDirectory directory = Mockito.mock(IIocDirectory.class);
+		Mockito.when(directory.getLogicalIocName("127.0.0.1", "localhost"))
+			.thenReturn(new String[] {"logicalName", "ldapName"});
+		_conn = new IocConnection(ipAddress, 1234, _timeSource, directory);
 	}
 
 	@Test
 	public void testInitialState() throws Exception {
-		assertEquals("host", _conn.getHost());
+		assertEquals("localhost", _conn.getHost());
 		assertEquals(1234, _conn.getPort());
 		assertFalse(_conn.getConnectState());
 		assertFalse(_conn.isSelectState());

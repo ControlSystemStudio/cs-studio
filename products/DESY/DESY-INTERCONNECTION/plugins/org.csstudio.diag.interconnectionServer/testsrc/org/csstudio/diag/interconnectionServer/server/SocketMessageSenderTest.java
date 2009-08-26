@@ -26,6 +26,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
+import org.csstudio.diag.interconnectionServer.internal.IIocDirectory;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -41,7 +42,14 @@ public class SocketMessageSenderTest {
 
 	@Test
 	public void testSend() throws Exception {
-		final InetAddress address = InetAddress.getByName("192.168.1.1");
+		IIocDirectory directory = Mockito.mock(IIocDirectory.class);
+		Mockito.when(directory.getLogicalIocName("127.0.0.1", "localhost"))
+			.thenReturn(new String[] {"logicalName", "ldapName"});
+		// This is only required to initialize the singleton connection manager
+		// instance with the mocked directory implementation.
+		IocConnectionManager.getInstance(directory);
+
+		final InetAddress address = InetAddress.getByName("127.0.0.1");
 		DatagramSocket socket = Mockito.mock(DatagramSocket.class);
 		
 		IIocMessageSender sender = new SocketMessageSender(address, 1234, socket);

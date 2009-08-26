@@ -20,42 +20,27 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
-package org.csstudio.diag.interconnectionServer.server;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-
-import java.net.InetAddress;
-
-import org.csstudio.diag.interconnectionServer.internal.IIocDirectory;
-import org.junit.Test;
-import org.mockito.Mockito;
-
+package org.csstudio.diag.interconnectionServer.internal;
 
 /**
+ * Provides information about IOC names.
+ * 
  * @author Joerg Rathlev
  */
-public class IocConnectionManagerTest {
-	
-	@Test
-	public void testGetIocConnection() throws Exception {
-		IIocDirectory directory = Mockito.mock(IIocDirectory.class);
-		Mockito.when(directory.getLogicalIocName("127.0.0.1", "localhost"))
-			.thenReturn(new String[] {"logicalName", "ldapName"});
-		
-		IocConnectionManager cm = IocConnectionManager.getInstance(directory);
-		InetAddress ipAddress = InetAddress.getByName("127.0.0.1");
-		String hostname = ipAddress.getHostName();
-		IocConnection conn = cm.getIocConnection(ipAddress, 123);
-		assertNotNull(conn);
-		assertEquals(hostname, conn.getHost());
-		assertEquals(123, conn.getPort());
-		assertEquals("logicalName", conn.getLogicalIocName());
-		assertEquals("ldapName", conn.getLdapIocName());
-		
-		// Multiple requests must return the same IocConnection instance
-		assertSame(conn, cm.getIocConnection(ipAddress, 123));
-	}
+public interface IIocDirectory {
+
+	/**
+	 * Returns the logical name and the LDAP path of an IOC.
+	 * 
+	 * @param ipAddress
+	 *            the IOC's IP address.
+	 * @param hostname
+	 *            the IOC's host name.
+	 * @return an array containing two strings, where the first string is the
+	 *         IOC's logical name and the second string is the LDAP path.
+	 */
+	// TODO: the parameters and return value of this method should be refactored
+	// to something that does not lead to spaghetti code.
+	String[] getLogicalIocName(String ipAddress, String hostname);
 
 }

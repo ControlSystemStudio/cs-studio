@@ -26,6 +26,7 @@ import java.net.InetAddress;
 import java.util.GregorianCalendar;
 import java.util.concurrent.TimeUnit;
 
+import org.csstudio.diag.interconnectionServer.internal.IIocDirectory;
 import org.csstudio.diag.interconnectionServer.internal.time.TimeSource;
 import org.csstudio.diag.interconnectionServer.internal.time.TimeUtil;
 import org.csstudio.platform.logging.CentralLogger;
@@ -77,8 +78,12 @@ public class IocConnection {
 	 * @param timeSource
 	 *            the time source that will be used by this IOC connection for
 	 *            timeout calculations, statistical information etc.
+	 * @param iocDirectory
+	 *            the IOC directory that will be used to query the logical IOC
+	 *            name.
 	 */
-	public IocConnection(InetAddress iocInetAddress, int port, TimeSource timeSource) {
+	public IocConnection(InetAddress iocInetAddress, int port,
+			TimeSource timeSource, IIocDirectory iocDirectory) {
 
 		this.port = port;
 		_timeSource = timeSource;
@@ -102,7 +107,8 @@ public class IocConnection {
 		this.host = hostName;
 		this._iocInetAddress = iocInetAddress;
 		
-		this.iocNameDefinitions = new IocNameDefinitions( iocInetAddress, hostName);
+		this.iocNameDefinitions = new IocNameDefinitions(iocInetAddress,
+				hostName, iocDirectory);
 		
 		//
 		// init time
@@ -232,7 +238,7 @@ public class IocConnection {
 	}
 
 	public String getLdapIocName() {
-		return iocNameDefinitions.get_logicalIocName();
+		return iocNameDefinitions.get_ldapIocName();
 	}
 
 	// TODO: This is currently called by the ClientRequest#run method, which
@@ -380,11 +386,12 @@ public class IocConnection {
 		private String _logicalIocName = null;
 		private String _ldapIocName = null;
 		
-		public IocNameDefinitions ( InetAddress iocInetAddress, String iocName) {
+		public IocNameDefinitions ( InetAddress iocInetAddress, String iocName,
+				IIocDirectory iocDirectory) {
 			/*
 	    	 * new IOC - ask LDAP for logical name
 	    	 */
-	    	String[] iocNames = LdapSupport.getInstance().getLogicalIocName ( iocInetAddress.getHostAddress(), iocName);
+	    	String[] iocNames = iocDirectory.getLogicalIocName(iocInetAddress.getHostAddress(), iocName);
 	    	_logicalIocName = iocNames[0];
 	    	/*
 	    	 * save ldapIocName 
