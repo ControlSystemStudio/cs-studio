@@ -40,7 +40,7 @@ public class XMLExport
     private void dumpGroup(final ChannelGroupConfig group) throws Exception
     {
         System.out.println("  <group>");
-        System.out.println("  <name>" + group.getName() + "</group>");
+        System.out.println("  <name>" + group.getName() + "</name>");
         final ChannelConfig[] channels = group.getChannels();
         for (ChannelConfig channel : channels)
             dumpChannel(channel);
