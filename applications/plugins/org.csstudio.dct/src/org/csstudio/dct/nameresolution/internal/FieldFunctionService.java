@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.xpath.operations.Quo;
 import org.csstudio.dct.DctActivator;
 import org.csstudio.dct.DummyIoNameService;
 import org.csstudio.dct.IoNameService;
@@ -18,6 +19,7 @@ import org.csstudio.dct.nameresolution.FieldFunctionExtension;
 import org.csstudio.dct.nameresolution.IFieldFunction;
 import org.csstudio.dct.nameresolution.IFieldFunctionService;
 import org.csstudio.dct.util.AliasResolutionException;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.util.StringUtil;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -160,13 +162,33 @@ public final class FieldFunctionService implements IFieldFunctionService {
 
 				// .. replace all occurences of the alias in the initial string
 				Matcher matcher2 = createSearchPattern(alias).matcher(result);
-				result = matcher2.replaceAll(resolvedAlias);
+
+				// .. the resolved aliases may contain dollar signs ($) which
+				// need to be quoted before they can be used as replacement
+				// construct for java regular expressions
+				result = matcher2.replaceAll(quoteDollarSigns(resolvedAlias));
 
 				matcher = FIND_VARIABLES_PATTERN.matcher(result);
 			}
 		}
 
 		return result != null ? result : "";
+	}
+
+	private static String quoteDollarSigns(String unquoted) {
+		StringBuffer sb = new StringBuffer();
+
+		for (int i = 0; i < unquoted.length(); i++) {
+			String t = unquoted.substring(i, i + 1);
+
+			if ("$".equals(t)) {
+				sb.append("\\");
+			}
+
+			sb.append(t);
+		}
+
+		return sb.toString();
 	}
 
 	/**
