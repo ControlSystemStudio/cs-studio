@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: View Plug-in
+Bundle-SymbolicName: org.csstudio.config.ioconfig.view; singleton:=true
+Bundle-Version: 1.2.1
+Bundle-Activator: org.csstudio.config.ioconfig.view.Activator
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.csstudio.platform,
+ org.csstudio.platform.ui,
+ org.csstudio.config.ioconfig.model,
+ org.eclipse.ui.console
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: bin/,
+ .

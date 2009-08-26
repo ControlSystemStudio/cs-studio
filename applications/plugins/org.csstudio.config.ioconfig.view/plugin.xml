@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            category="org.csstudio"
+            class="org.csstudio.config.ioconfig.view.View1"
+            icon="icons/css.gif"
+            id="org.csstudio.config.ioconfig.view.View1"
+            name="View1">
+      </view>
+      <view
+            category="org.csstudio"
+            class="org.csstudio.config.ioconfig.view.TreeView"
+            id="org.csstudio.config.ioconfig.view.TreeView"
+            name="TreeView1"/>
+      <category
+            id="org.csstudio"
+            name="CSS"/>
+      <view
+            category="org.csstudio"
+            class="org.csstudio.config.ioconfig.view.MainView"
+            icon="icons/IOConfic.png"
+            id="org.csstudio.config.ioconfig.view.MainView"
+            name="IOConfig"/>
+      <view
+            category="org.csstudio"
+            class="org.csstudio.config.ioconfig.view.NodeConfigView"
+            icon="icons/IOConfic.png"
+            id="org.csstudio.config.ioconfig.view.NodeConfigView"
+            name="NodeConfig"
+            restorable="true">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            description="Global CSS menu actions"
+            id="org.csstudio.config.ioconfig.view.actionSet"
+            label="CSS Action Set"
+            visible="true">
+         <action
+               class="org.csstudio.config.ioconfig.view.ShowIOConfig"
+               icon="icons/IOConfic.png"
+               id="org.csstudio.config.ioconfig.view.ShowIOConfig"
+               label="IO Config"
+               menubarPath="css/configuration/"
+               style="push"/>
+      </actionSet>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.csstudio.config.ioconfig.view.PerspectiveFactory"
+            icon="icons/IOConfic.png"
+            id="org.csstudio.config.ioconfig.view.perspective"
+            name="IO Configurator">
+      </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.csstudio.platform.ui.internal.perspectives.CssDefaultPerspective">
+         <perspectiveShortcut
+               id="org.csstudio.config.ioconfig.view.perspective">
+         </perspectiveShortcut>
+      </perspectiveExtension>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.csstudio.platform.ui.css.applications.configuration"
+            class="org.csstudio.config.ioconfig.view.preferences.HibernatePreferencePage"
+            id="org.csstudio.config.ioconfig.view.preferences.HibernatePreferencePage"
+            name="Device Database">
+      </page>
+   </extension>
+
+</plugin>
