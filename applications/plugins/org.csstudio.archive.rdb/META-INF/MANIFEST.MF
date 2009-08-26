@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: RDB Plug-in
+Bundle-Name: RDB Archive library
 Bundle-SymbolicName: org.csstudio.archive.rdb;singleton:=true
-Bundle-Version: 1.0.9
+Bundle-Version: 1.0.10
 Bundle-Vendor: Kay Kasemir
 Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.platform,
