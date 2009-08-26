@@ -32,6 +32,8 @@ package org.csstudio.config.ioconfig.model.preference;
  */
 public class PreferenceConstants {
 
+    public static String DDB_LOGBOOK = "ddbLogbook";
+    public static String DDB_LOGBOOK_MEANING = "ddbLogbookMeaning";
     public static String DDB_USER_NAME = "ddbUserName";
     public static String DDB_PASSWORD = "ddbPassword";
     public static String HIBERNATE_CONNECTION_DRIVER_CLASS = "hibernateConnectionDriverClass";
