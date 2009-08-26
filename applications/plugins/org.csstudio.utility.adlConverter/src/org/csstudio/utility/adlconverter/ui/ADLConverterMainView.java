@@ -314,7 +314,6 @@ public class ADLConverterMainView extends ViewPart {
                 ADLDisplayImporter.reset();
                 Display.getCurrent().asyncExec(new Runnable() {
 
-                    @Override
                     public void run() {
                         while (list.size() > 0) {
                             ADLDisplayImporter di = new ADLDisplayImporter();
