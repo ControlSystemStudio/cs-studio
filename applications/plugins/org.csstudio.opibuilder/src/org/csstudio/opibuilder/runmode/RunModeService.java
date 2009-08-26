@@ -1,6 +1,7 @@
 package org.csstudio.opibuilder.runmode;
 
 import org.csstudio.opibuilder.model.DisplayModel;
+import org.csstudio.opibuilder.util.UIBundlingThread;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.ui.IPageListener;
@@ -44,51 +45,54 @@ public class RunModeService {
 	 * @param file the file to be ran. If displayModel is not null, this will be ignored.
 	 * @param displayModel the display model to be ran. null for file input only.
 	 */
-	public void runOPI(IFile file, DisplayModel displayModel, TargetWindow target){
-		IWorkbenchWindow targetWindow = null;
-		switch (target) {
-		case NEW_WINDOW:
-			targetWindow = createNewWindow(displayModel);
-			break;
-		case RUN_WINDOW:
-			if(runWorkbenchWindow == null){
-				runWorkbenchWindow = createNewWindow(displayModel);
-				runWorkbenchWindow.addPageListener(new IPageListener(){
-					public void pageClosed(IWorkbenchPage page) {
-						runWorkbenchWindow = null;
+	public void runOPI(final IFile file, final DisplayModel displayModel, final TargetWindow target){
+		UIBundlingThread.getInstance().addRunnable(new Runnable(){
+			 public void run() {
+		
+				IWorkbenchWindow targetWindow = null;
+				switch (target) {
+				case NEW_WINDOW:
+					targetWindow = createNewWindow(displayModel);
+					break;
+				case RUN_WINDOW:
+					if(runWorkbenchWindow == null){
+						runWorkbenchWindow = createNewWindow(displayModel);
+						runWorkbenchWindow.addPageListener(new IPageListener(){
+							public void pageClosed(IWorkbenchPage page) {
+								runWorkbenchWindow = null;
+							}
+		
+							public void pageActivated(IWorkbenchPage page) {
+								
+							}
+		
+							public void pageOpened(IWorkbenchPage page) {
+								
+							}
+						});
 					}
-
-					public void pageActivated(IWorkbenchPage page) {
-						
+					targetWindow = runWorkbenchWindow;
+					break;
+				case SAME_WINDOW:
+				default:
+					targetWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+					break;
+				}
+				
+				
+				
+				if(targetWindow != null){
+					try {
+						targetWindow.getActivePage().openEditor(
+								new RunnerInput(file, displayModel), "org.csstudio.opibuilder.OPIRunner"); //$NON-NLS-1$
+						targetWindow.getShell().moveAbove(null);
+					} catch (PartInitException e) {
+						CentralLogger.getInstance().error(this, "Failed to run OPI " + file.getName(), e);
 					}
-
-					public void pageOpened(IWorkbenchPage page) {
-						
-					}
-				});
-			}
-			targetWindow = runWorkbenchWindow;
-			break;
-		case SAME_WINDOW:
-		default:
-			targetWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-			break;
-		}
-		
-		
-		
-		if(targetWindow != null){
-			try {
-				targetWindow.getShell().moveAbove(null);
-				targetWindow.getActivePage().openEditor(
-						new RunnerInput(file, displayModel), "org.csstudio.opibuilder.OPIRunner"); //$NON-NLS-1$
-			} catch (PartInitException e) {
-				CentralLogger.getInstance().error(this, "Failed to run OPI " + file.getName(), e);
-			}
-		}
-		
-		
-		
+				}
+				
+				}
+			});
 	}
 
 
