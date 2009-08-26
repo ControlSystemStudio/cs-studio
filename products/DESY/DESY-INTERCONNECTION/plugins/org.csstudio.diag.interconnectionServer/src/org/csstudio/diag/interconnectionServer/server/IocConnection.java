@@ -51,6 +51,7 @@ public class IocConnection {
 	private long _scheduledDowntimeUntil = 0;
 	private boolean connectState = false;
 	private boolean selectState = false;
+	private boolean _disabled = false;
 	private boolean getAllAlarmsOnSelectChange = true;
 	private boolean didWeSetAllChannelToDisconnect = false;
 
@@ -119,6 +120,29 @@ public class IocConnection {
 		this.time2ndToLastBeaconReceived = 0;
 		this.time3rdToLastBeaconReceived = 0;
 		this._statTimeLastErrorOccured = 0;
+	}
+
+	/**
+	 * Enables or disables handling of messages from the IOC. When this IOC
+	 * connection is disabled, all messages received from this IOC will be
+	 * ignored by the Interconnection Server.
+	 * 
+	 * @param disabled
+	 *            <code>true</code> to ignore messages from the IOC,
+	 *            <code>false</code> to enable message handling.
+	 */
+	public void setDisabled(boolean disabled) {
+		_disabled = disabled;
+	}
+
+	/**
+	 * Returns whether this connection is disabled.
+	 * 
+	 * @return <code>true</code> if the connection is disabled,
+	 *         <code>false</code> otherwise.
+	 */
+	public boolean isDisabled() {
+		return _disabled;
 	}
 	
 	public boolean isGetAllAlarmsOnSelectChange() {

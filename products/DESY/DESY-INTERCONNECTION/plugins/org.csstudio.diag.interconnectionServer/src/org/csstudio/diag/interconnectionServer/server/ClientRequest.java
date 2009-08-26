@@ -132,6 +132,13 @@ public class ClientRequest implements Runnable
         //
         statisticContent = statistic.getIocConnection( _address, _port);
         statisticContent.setTime( true);
+
+        if (statisticContent.isDisabled()) {
+        	// If the IOC connection is disabled, all messages from the IOC are
+        	// ignored.
+        	return;
+        }
+        
         statisticContent.setLastMessageSize( _length);
         hostName = statisticContent.getHost();
         hostAndPort = hostName + ":" + _port;

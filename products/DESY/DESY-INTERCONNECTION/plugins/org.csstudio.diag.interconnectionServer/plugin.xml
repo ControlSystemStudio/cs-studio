@@ -113,6 +113,28 @@
             id="org.csstudio.diag.interconnectionServer.management.GetStatisticInformation"
             label="Get IOC Statistics">
       </command>
+      <command
+            class="org.csstudio.diag.interconnectionServer.internal.management.EnableDisableIoc"
+            id="org.csstudio.diag.interconnectionServer.management.DisableIoc"
+            label="Enable/Disable IOC">
+         <dynamicEnumerationParameter
+               class="org.csstudio.diag.interconnectionServer.internal.management.IocEnumeration"
+               id="ioc"
+               label="IOC">
+         </dynamicEnumerationParameter>
+         <enumerationParameter
+               id="action"
+               label="Action">
+            <enumerationValue
+                  label="Enable"
+                  value="enable">
+            </enumerationValue>
+            <enumerationValue
+                  label="Disable (all messages from the IOC will be ignored)"
+                  value="disable">
+            </enumerationValue>
+         </enumerationParameter>
+      </command>
    </extension>
 
 </plugin>
