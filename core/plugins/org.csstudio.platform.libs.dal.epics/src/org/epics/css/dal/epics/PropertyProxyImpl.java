@@ -766,10 +766,12 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
         		ConnectionListenerImpl conn= new ConnectionListenerImpl();
         		synchronized (conn) {
     				ch = (CAJChannel)plug.getContext().createChannel(name+"."+characteristicName,conn);
-    				try {
-    					conn.wait((long) (plug.getTimeout() * 1000));
-    				} catch (InterruptedException e) {
-    					// noop
+    				if (ch.getConnectionState() != Channel.CONNECTED) {
+	    				try {
+	    					conn.wait((long) (plug.getTimeout() * 1000));
+	    				} catch (InterruptedException e) {
+	    					// noop
+	    				}
     				}
 				}
 				ch.get(1, listener);
