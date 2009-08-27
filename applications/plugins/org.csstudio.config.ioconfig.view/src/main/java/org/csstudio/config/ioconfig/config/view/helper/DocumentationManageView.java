@@ -426,7 +426,29 @@ public class DocumentationManageView extends Composite {
 
                 };
                 if (addDocDialog.open() == 0) {
-
+                    Document document = addDocDialog.getDocument();
+                    System.out.println("Doc is :"+document);
+                    System.out.println("Doc getAccountname :"+document.getAccountname());
+                    System.out.println("Doc getDesclong :"+document.getDesclong());
+                    System.out.println("Doc getErroridentifyer :"+document.getErroridentifyer());
+                    System.out.println("Doc getId :"+document.getId());
+                    System.out.println("Doc getKeywords :"+document.getKeywords());
+                    System.out.println("Doc getLinkForward :"+document.getLinkForward());
+                    System.out.println("Doc getLinkId :"+document.getLinkId());
+                    System.out.println("Doc getLocation :"+document.getLocation());
+                    System.out.println("Doc getLogseverity :"+document.getLogseverity());
+                    System.out.println("Doc getMimeType :"+document.getMimeType());
+                    System.out.println("Doc getSubject :"+document.getSubject());
+                    System.out.println("Doc getCreatedDate :"+document.getCreatedDate());
+                    System.out.println("Doc getDeleteDate :"+document.getDeleteDate());
+                    System.out.println("Doc getEntrydate :"+document.getEntrydate());
+                    try {
+                        System.out.println("Doc is :"+document.getImage().length());
+                    } catch (SQLException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                    Repository.save(document);
                 }
             }
 

@@ -24,6 +24,7 @@
  */
 package org.csstudio.config.ioconfig.model;
 
+import java.io.InputStream;
 import java.sql.Blob;
 import java.util.Date;
 import java.util.Set;
@@ -35,6 +36,8 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
+import org.hibernate.Hibernate;
 
 /**
  * @author hrickens
@@ -139,7 +142,6 @@ public class Document implements Comparable<Document> {
      * @return the Document Id key.
      */
     @Id
-    @GeneratedValue
     @Column(length = 100)
     public String getId() {
         return _id;
@@ -188,6 +190,13 @@ public class Document implements Comparable<Document> {
     public void setImage(final Blob image) {
         _image = image;
     }
+
+    @Transient
+    public void setImage(byte[] imageAsByteArray) {
+        _image = Hibernate.createBlob(imageAsByteArray);
+    }
+    
+    
 
     /**
      * 
