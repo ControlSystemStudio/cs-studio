@@ -4,7 +4,6 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.opibuilder.runmode.RunModeService.TargetWindow;
 import org.csstudio.opibuilder.util.SizeLimitedStack;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.filesystem.URIUtil;
@@ -14,6 +13,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
@@ -26,15 +26,15 @@ public class DisplayOpenManager {
 	private SizeLimitedStack<IFile> backStack;
 	private SizeLimitedStack<IFile> forwardStack;
 	private List<IDisplayOpenManagerListener> listeners;
-	private static int STACK_SIZE = 30;
+	private static int STACK_SIZE = 10;
 	public DisplayOpenManager() {
 		backStack =  new SizeLimitedStack<IFile>(STACK_SIZE);
 		forwardStack = new SizeLimitedStack<IFile>(STACK_SIZE);
 		listeners = new ArrayList<IDisplayOpenManagerListener>();
 	}
 	
-	public void openNewDisplay(IFile file){
-		backStack.push(file);
+	public void openNewDisplay(){
+		backStack.push(getCurrentFileInEditor());
 		forwardStack.clear();
 		fireOperationsHistoryChanged();
 	}
@@ -42,39 +42,73 @@ public class DisplayOpenManager {
 	public void goBack(){
 		if(backStack.size() ==0)
 			return;
-		IFile file = getCurrentFile();
+		IFile file = getCurrentFileInEditor();
 		
 		forwardStack.push(file);
 		
-		PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-		.getActivePage().closeEditor(
-				PlatformUI.getWorkbench().getActiveWorkbenchWindow().
-				getActivePage().getActiveEditor(), false);
+		openOPI(backStack.pop());
 		
-		RunModeService.getInstance().runOPI(backStack.pop(), TargetWindow.SAME_WINDOW);
+	}
+
+	/**
+	 * @param file 
+	 * 
+	 */
+	private void openOPI(IFile file) {
+		try {
+			RunModeService.getInstance().replaceActiveEditorContent(file);
+		} catch (PartInitException e) {
+			CentralLogger.getInstance().error(this, "Failed to go back", e);
+			MessageDialog.openError(Display.getDefault().getActiveShell(), "Open file error", 
+					"Failed to go back");
+		}
 		
+		fireOperationsHistoryChanged();
 	}
 	
 	public void goForward(){
 		if(forwardStack.size() ==0)
 			return;
-		IFile file = getCurrentFile();
+		IFile file = getCurrentFileInEditor();
 		
 		backStack.push(file);
 		
-		PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-		.getActivePage().closeEditor(
-				PlatformUI.getWorkbench().getActiveWorkbenchWindow().
-				getActivePage().getActiveEditor(), false);
+		openOPI(forwardStack.pop());
 		
-		RunModeService.getInstance().runOPI(forwardStack.pop(), TargetWindow.SAME_WINDOW);
-		
+	}
+	
+	public void goBack(IFile file){
+		if(backStack.contains(file)){
+			
+			IFile currentFile = getCurrentFileInEditor();
+			forwardStack.push(currentFile);
+			
+			while(!backStack.peek().equals(file) && backStack.size() >0){
+				forwardStack.push(backStack.pop());
+			}
+					
+			openOPI(backStack.pop());
+		}
+	}
+	
+	public void goForward(IFile file){
+		if(forwardStack.contains(file)){
+			
+			IFile currentFile = getCurrentFileInEditor();
+			backStack.push(currentFile);
+			
+			while(!forwardStack.peek().equals(file) && forwardStack.size() >0){
+				backStack.push(forwardStack.pop());
+			}
+						
+			openOPI(forwardStack.pop());
+		}
 	}
 
 	/**
 	 * @return
 	 */
-	private IFile getCurrentFile() {
+	private IFile getCurrentFileInEditor() {
 		IFile file = null;
 		IEditorInput input;
 		input = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().
@@ -104,7 +138,8 @@ public class DisplayOpenManager {
 	}
 	
 	public void addListener(IDisplayOpenManagerListener listener){
-		listeners.add(listener);
+		if(!listeners.contains(listener))
+			listeners.add(listener);
 	}
 	
 	public boolean removeListener(IDisplayOpenManagerListener listener){
@@ -115,4 +150,12 @@ public class DisplayOpenManager {
 			listener.displayOpenHistoryChanged(this);
 	}
 	
+	
+	public boolean canBackward(){
+		return backStack.size() > 0;
+	}
+	
+	public boolean canForward(){
+		return forwardStack.size() > 0;
+	}
 }

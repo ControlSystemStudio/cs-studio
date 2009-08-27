@@ -15,7 +15,7 @@
       </editor>
       <editor
             class="org.csstudio.opibuilder.runmode.OPIRunner"
-            contributorClass="org.csstudio.opibuilder.runmode.OPIRunnerContributor"
+            contributorClass="org.csstudio.opibuilder.runmode.OPIRunnerToolBarContributor"
             default="false"
             extensions="opi"
             icon="icons/OPIBuilder.png"
@@ -37,6 +37,28 @@
             id="org.csstudio.opibuilder.OPIRunner"
             name="%OPIRunner">
       </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            description="Run the OPI file currently in the editor"
+            id="org.csstudio.opibuilder.runopi"
+            name="Run OPI">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="org.csstudio.opibuilder.runopi"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+G">
+      </key>
+      <scheme
+            description="OPIBuilder Key Binding Scheme"
+            id="org.csstudio.opibuilder.keybinding.scheme"
+            name="OPIBuilderKeyBindingScheme">
+      </scheme>
    </extension>
 
 </plugin>

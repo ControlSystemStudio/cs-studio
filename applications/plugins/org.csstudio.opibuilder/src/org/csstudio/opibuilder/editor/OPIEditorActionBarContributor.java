@@ -4,12 +4,10 @@ import org.csstudio.opibuilder.actions.RunOPIAction;
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.gef.ui.actions.ActionBarContributor;
 import org.eclipse.gef.ui.actions.AlignmentRetargetAction;
-import org.eclipse.gef.ui.actions.CopyRetargetAction;
 import org.eclipse.gef.ui.actions.DeleteRetargetAction;
 import org.eclipse.gef.ui.actions.GEFActionConstants;
 import org.eclipse.gef.ui.actions.MatchHeightRetargetAction;
 import org.eclipse.gef.ui.actions.MatchWidthRetargetAction;
-import org.eclipse.gef.ui.actions.PasteRetargetAction;
 import org.eclipse.gef.ui.actions.RedoRetargetAction;
 import org.eclipse.gef.ui.actions.UndoRetargetAction;
 import org.eclipse.gef.ui.actions.ZoomComboContributionItem;
@@ -65,6 +63,15 @@ public class OPIEditorActionBarContributor extends ActionBarContributor {
 		a.setImageDescriptor(AbstractUIPlugin.imageDescriptorFromPlugin(
 				OPIBuilderPlugin.PLUGIN_ID, "icons/ruler.png"));
 		addRetargetAction(a);
+		
+		//This is only for action displaying in toolbar
+		a = new RetargetAction(RunOPIAction.ID, "Run OPI");
+		a.setImageDescriptor(AbstractUIPlugin.imageDescriptorFromPlugin(
+				OPIBuilderPlugin.PLUGIN_ID, "icons/run.gif"));
+		//same defid can help to display the accelerator key.
+		a.setActionDefinitionId(RunOPIAction.ACITON_DEFINITION_ID);		
+		addRetargetAction(a);
+		
 	}
 
 	@Override
@@ -97,8 +104,7 @@ public class OPIEditorActionBarContributor extends ActionBarContributor {
 		tbm.add(new ZoomComboContributionItem(getPage()));
 		
 		tbm.add(new Separator());
-		tbm.add(new RunOPIAction());
-		
+		tbm.add(getAction(RunOPIAction.ID));
 		
 	}
 	
@@ -109,8 +115,7 @@ public class OPIEditorActionBarContributor extends ActionBarContributor {
 		addGlobalActionKey(ActionFactory.PASTE.getId());
 		addGlobalActionKey(ActionFactory.DELETE.getId());
 		addGlobalActionKey(ActionFactory.COPY.getId());
-		addGlobalActionKey(ActionFactory.UNDO.getId());
-		addGlobalActionKey(ActionFactory.REDO.getId());
+		addGlobalActionKey(ActionFactory.CUT.getId());
 	}
 
 }

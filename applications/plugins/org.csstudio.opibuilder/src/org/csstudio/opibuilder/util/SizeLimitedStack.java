@@ -76,4 +76,17 @@ public class SizeLimitedStack<T> {
 	public int size(){
 		return list.size();
 	}
+	
+	/**
+     * Returns <tt>true</tt> if this stack contains the specified element.
+     * More formally, returns <tt>true</tt> if and only if this stack contains
+     * at least one element <tt>e</tt> such that
+     * <tt>(o==null&nbsp;?&nbsp;e==null&nbsp;:&nbsp;o.equals(e))</tt>.
+     *
+     * @param o element whose presence in this stack is to be tested
+     * @return <tt>true</tt> if this list contains the specified element
+     */
+	public boolean contains(T o){
+		return list.contains(o);
+	}
 }

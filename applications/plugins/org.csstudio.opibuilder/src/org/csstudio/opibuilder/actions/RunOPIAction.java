@@ -6,7 +6,6 @@ import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.editor.OPIEditor;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.runmode.RunModeService;
-import org.csstudio.opibuilder.runmode.RunnerInput;
 import org.csstudio.opibuilder.runmode.RunModeService.TargetWindow;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
@@ -15,26 +14,13 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.HelpListener;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.WorkbenchException;
-import org.eclipse.ui.actions.ActionFactory;
-import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.ide.FileStoreEditorInput;
-import org.eclipse.ui.internal.WorkbenchWindow;
 import org.eclipse.ui.part.FileEditorInput;
 
 /**
@@ -45,12 +31,13 @@ import org.eclipse.ui.part.FileEditorInput;
 public class RunOPIAction extends Action{
 
 	public static String ID = "org.csstudio.opibuilder.editor.run"; //$NON-NLS-1$
+	public static String ACITON_DEFINITION_ID = "org.csstudio.opibuilder.runopi"; //$NON-NLS-1$
 	
   public RunOPIAction() {
 	 super("Run OPI", CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
 			 OPIBuilderPlugin.PLUGIN_ID, "icons/run.gif"));	 //$NON-NLS-1$
 	 setId(ID);
-	 setAccelerator(SWT.CTRL | 'r');
+	 setActionDefinitionId(ACITON_DEFINITION_ID);
   }
 
   @Override
@@ -83,7 +70,7 @@ public class RunOPIAction extends Action{
 				
 				file = files[0];
 			}
-			RunModeService.getInstance().runOPI(file, displayModel, TargetWindow.RUN_WINDOW);
+			RunModeService.getInstance().runOPI(file, displayModel, TargetWindow.RUN_WINDOW, null);
 		}
 			
 	}

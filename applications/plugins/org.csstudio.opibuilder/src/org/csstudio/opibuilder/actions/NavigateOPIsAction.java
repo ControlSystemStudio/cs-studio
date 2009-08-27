@@ -1,0 +1,147 @@
+package org.csstudio.opibuilder.actions;
+
+import org.csstudio.opibuilder.runmode.DisplayOpenManager;
+import org.csstudio.opibuilder.runmode.IDisplayOpenManagerListener;
+import org.csstudio.opibuilder.runmode.OPIRunner;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuCreator;
+import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MenuAdapter;
+import org.eclipse.swt.events.MenuEvent;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
+import org.eclipse.ui.internal.NavigationHistory;
+import org.eclipse.ui.internal.NavigationHistoryEntry;
+import org.eclipse.ui.internal.WorkbenchMessages;
+
+/**Go back/forward to one of the OPIs opened before in the OPI Runner.
+ * @author Xihui Chen
+ *
+ */
+public class NavigateOPIsAction extends Action implements IDisplayOpenManagerListener {
+	
+	private DisplayOpenManager manager;
+	private boolean recreateMenu;	
+	private boolean forward;
+    
+
+    private class MenuCreator implements IMenuCreator {
+    	private Menu historyMenu;
+        
+
+        public Menu getMenu(Menu parent) {
+        	setMenu(new Menu(parent));
+        	fillMenu(historyMenu);
+            initMenu();
+            return historyMenu;
+        }
+
+        public Menu getMenu(Control parent) {
+        	setMenu(new Menu(parent));
+        	fillMenu(historyMenu);
+            initMenu();
+            return historyMenu;
+        }
+        
+	    private void setMenu(Menu menu) {
+	    	dispose();
+	    	historyMenu = menu;
+	    }
+	    
+	    private void initMenu() {
+	    	historyMenu.addMenuListener(new MenuAdapter() {
+	    		public void menuShown(MenuEvent e) {
+	    			if (recreateMenu) {
+						Menu m = (Menu) e.widget;
+						MenuItem[] items = m.getItems();
+						for (int i = 0; i < items.length; i++) {
+							items[i].dispose();
+						}
+						fillMenu(m);
+					}
+				}
+	    	});
+	    }
+	    
+	    private void fillMenu(Menu menu) {    	
+	    	
+	    	recreateMenu = false;
+	    }
+	   
+	    public void dispose() {	    	
+	    	if (historyMenu != null) {
+	    		for (int i = 0; i < historyMenu.getItemCount(); i++) {
+	    			MenuItem menuItem = historyMenu.getItem(i);
+	    			menuItem.dispose();
+	    		}
+	    		historyMenu.dispose();
+	    		historyMenu = null;
+	    	}
+	    }
+    }
+
+    
+    
+	public NavigateOPIsAction(boolean forward) {
+		this.forward = forward;
+		ISharedImages sharedImages = PlatformUI.getWorkbench().getSharedImages();
+        if (forward) {
+            setText("&Forward");
+            setToolTipText("Forward");
+            setId(ActionFactory.FORWARD_HISTORY.getId());
+            setImageDescriptor(sharedImages
+                    .getImageDescriptor(ISharedImages.IMG_TOOL_FORWARD));
+            setDisabledImageDescriptor(sharedImages
+                    .getImageDescriptor(ISharedImages.IMG_TOOL_FORWARD_DISABLED));
+            setActionDefinitionId("org.eclipse.ui.navigate.forwardHistory"); //$NON-NLS-1$
+        } else {
+            setText("&Back"); 
+            setToolTipText("Back");        
+            setId(ActionFactory.BACKWARD_HISTORY.getId());
+            setImageDescriptor(sharedImages
+                    .getImageDescriptor(ISharedImages.IMG_TOOL_BACK));
+            setDisabledImageDescriptor(sharedImages
+                    .getImageDescriptor(ISharedImages.IMG_TOOL_BACK_DISABLED));
+            setActionDefinitionId("org.eclipse.ui.navigate.backwardHistory"); //$NON-NLS-1$
+        }
+	}
+	
+	@Override
+	public void run() {		
+		if(manager == null)
+			return;
+		if(forward)
+			manager.goForward();
+		else
+			manager.goBack();
+	}
+	
+	@Override
+	public boolean isEnabled() {
+		return forward?manager.canForward() : manager.canBackward();
+	}
+	
+	public void setDisplayOpenManager(DisplayOpenManager manager) {
+		this.manager = manager;
+		manager.addListener(this);
+		update();
+	}
+
+	public void displayOpenHistoryChanged(DisplayOpenManager manager) {
+		update();
+	}
+	
+	public void update(){
+		setEnabled(isEnabled());
+	}
+	
+}

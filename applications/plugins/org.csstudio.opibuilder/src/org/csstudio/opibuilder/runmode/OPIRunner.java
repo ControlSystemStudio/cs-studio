@@ -1,20 +1,15 @@
 package org.csstudio.opibuilder.runmode;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
-import org.csstudio.opibuilder.editor.OPIEditorContextMenuProvider;
 import org.csstudio.opibuilder.editor.PatchedScrollingGraphicalViewer;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.editparts.WidgetEditPartFactory;
-import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.persistence.XMLUtil;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -23,13 +18,10 @@ import org.eclipse.gef.ContextMenuProvider;
 import org.eclipse.gef.DefaultEditDomain;
 import org.eclipse.gef.EditDomain;
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
-import org.eclipse.gef.tools.SelectionTool;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
-import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.ui.part.EditorPart;
@@ -38,6 +30,10 @@ import org.eclipse.ui.part.FileEditorInput;
 public class OPIRunner extends EditorPart {
 	
 	private DisplayModel displayModel;
+	
+	private DisplayOpenManager displayOpenManager;
+
+	private PatchedScrollingGraphicalViewer viewer;
 
 	public OPIRunner() {
 	}
@@ -56,8 +52,10 @@ public class OPIRunner extends EditorPart {
 			throws PartInitException {
 		setSite(site);
 		setInput(input);
-		if(input instanceof RunnerInput)
+		if(input instanceof RunnerInput){
 			displayModel = ((RunnerInput)input).getDisplayModel();
+			displayOpenManager = ((RunnerInput)input).getDisplayOpenManager();
+		}
 		else {
 			displayModel = new DisplayModel();
 			try {
@@ -70,7 +68,12 @@ public class OPIRunner extends EditorPart {
 		}
 			
 		setPartName(displayModel.getName());
+		
+		if(viewer != null)
+			viewer.setContents(displayModel);
 	}
+	
+	
 	
 
 	/**
@@ -115,8 +118,7 @@ public class OPIRunner extends EditorPart {
 
 	@Override
 	public void createPartControl(Composite parent) {
-		final PatchedScrollingGraphicalViewer viewer = 
-			new PatchedScrollingGraphicalViewer();
+		viewer = new PatchedScrollingGraphicalViewer();
 		
 		
 		viewer.createControl(parent);
@@ -135,10 +137,22 @@ public class OPIRunner extends EditorPart {
 		getSite().registerContextMenu(cmProvider, viewer);
 	}
 
+	
 	@Override
 	public void setFocus() {
-
+		
 	}
 	
-
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public Object getAdapter(Class adapter) {
+		if(adapter == DisplayOpenManager.class){
+			if(displayOpenManager == null)
+				displayOpenManager = new DisplayOpenManager();
+			return displayOpenManager;
+		}
+			
+		return super.getAdapter(adapter);
+	}
 }

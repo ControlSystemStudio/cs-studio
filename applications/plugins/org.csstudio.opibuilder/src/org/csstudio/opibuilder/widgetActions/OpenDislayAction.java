@@ -6,6 +6,8 @@ import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.FilePathProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.csstudio.opibuilder.runmode.DisplayOpenManager;
+import org.csstudio.opibuilder.runmode.OPIRunner;
 import org.csstudio.opibuilder.runmode.RunModeService;
 import org.csstudio.opibuilder.runmode.RunModeService.TargetWindow;
 import org.csstudio.opibuilder.widgetActions.WidgetActionFactory.ActionType;
@@ -17,6 +19,8 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 
@@ -55,20 +59,31 @@ public class OpenDislayAction extends AbstractWidgetAction {
 			
 			}
 		else {
+						
 			if(!ctrlPressed && !shiftPressed && isReplace()){
-				PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-					.getActivePage().closeEditor(
-							PlatformUI.getWorkbench().getActiveWorkbenchWindow().
-							getActivePage().getActiveEditor(), false);
+				IEditorPart activeEditor = 
+					PlatformUI.getWorkbench().getActiveWorkbenchWindow().
+					getActivePage().getActiveEditor();
+				if(activeEditor instanceof OPIRunner){
+					((DisplayOpenManager)(activeEditor.getAdapter(DisplayOpenManager.class)))
+						.openNewDisplay();
+					try {
+						RunModeService.getInstance().replaceActiveEditorContent(files[0]);
+					} catch (PartInitException e) {
+						CentralLogger.getInstance().error(this, "Failed to open " + files[0], e);
+						MessageDialog.openError(Display.getDefault().getActiveShell(), "Open file error", 
+								"Failed to open " + files[0]);
+					}
+				}
+			}else{
+				TargetWindow target;
+				if (shiftPressed && !ctrlPressed)
+					target = TargetWindow.NEW_WINDOW;
+				else
+					target = TargetWindow.SAME_WINDOW;
+			
+				RunModeService.getInstance().runOPI(files[0], target);
 			}
-			TargetWindow target;
-			if (shiftPressed && !ctrlPressed)
-				target = TargetWindow.NEW_WINDOW;
-			else
-				target = TargetWindow.SAME_WINDOW;
-			
-			RunModeService.getInstance().runOPI(files[0], target);
-			
 		}
 	}
 	

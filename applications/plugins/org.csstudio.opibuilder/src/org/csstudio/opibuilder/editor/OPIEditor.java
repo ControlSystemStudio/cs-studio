@@ -16,6 +16,7 @@ import org.csstudio.opibuilder.actions.ChangeOrderAction;
 import org.csstudio.opibuilder.actions.CopyWidgetsAction;
 import org.csstudio.opibuilder.actions.CutWidgetsAction;
 import org.csstudio.opibuilder.actions.PasteWidgetsAction;
+import org.csstudio.opibuilder.actions.RunOPIAction;
 import org.csstudio.opibuilder.actions.ChangeOrderAction.OrderType;
 import org.csstudio.opibuilder.commands.SetWidgetPropertyCommand;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
@@ -88,7 +89,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IKeyBindingService;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.ide.FileStoreEditorInput;
@@ -264,11 +264,10 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 				RulerProvider.PROPERTY_VERTICAL_RULER, vprovider);		
 	}
 	
-	@SuppressWarnings({ "unchecked", "deprecation" })
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void createActions() {
 		super.createActions();
-		IKeyBindingService keyBindingService = getSite().getKeyBindingService();
 
 		ActionRegistry registry = getActionRegistry();
 		IAction action;
@@ -291,44 +290,34 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 		String id = ActionFactory.DELETE.getId();
 		action = getActionRegistry().getAction(id);
 		action.setActionDefinitionId("org.eclipse.ui.edit.delete"); //$NON-NLS-1$
-		keyBindingService.registerAction(action);
 		
 		action = new PasteWidgetsAction(this);
 		registry.registerAction(action);
 		getSelectionActions().add(action.getId());
-		keyBindingService.registerAction(action);
 		
 		action = new CopyWidgetsAction(this, 
 				(PasteWidgetsAction) registry.getAction(ActionFactory.PASTE.getId()));
 		registry.registerAction(action);
 		getSelectionActions().add(action.getId());
-		keyBindingService.registerAction(action);
 		
 		action = new CutWidgetsAction(this,
 				(DeleteAction) registry.getAction(ActionFactory.DELETE.getId()),
 				(PasteWidgetsAction) registry.getAction(ActionFactory.PASTE.getId()));
 		registry.registerAction(action);
 		getSelectionActions().add(action.getId());
-		keyBindingService.registerAction(action);
-		
-		
-		
 		
 	
 		id = ActionFactory.SELECT_ALL.getId();
 		action = getActionRegistry().getAction(id);
 		action.setActionDefinitionId("org.eclipse.ui.edit.selectAll");
-		keyBindingService.registerAction(action);
 
 		id = ActionFactory.UNDO.getId();
 		action = getActionRegistry().getAction(id);
 		action.setActionDefinitionId("org.eclipse.ui.edit.undo");
-		keyBindingService.registerAction(action);
 
 		id = ActionFactory.REDO.getId();
 		action = getActionRegistry().getAction(id);
 		action.setActionDefinitionId("org.eclipse.ui.edit.redo");
-		keyBindingService.registerAction(action);
 
 		action = new AlignmentAction((IWorkbenchPart) this,
 				PositionConstants.LEFT);
@@ -376,6 +365,9 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 		registry.registerAction(action);
 		getSelectionActions().add(action.getId());
 		
+		action = new RunOPIAction();
+		registry.registerAction(action);
+		
 	}
 	
 	@Override
@@ -418,7 +410,6 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 	 */
 	private TransferDropTargetListener createTransferDropTargetListener() {
 		return new TemplateTransferDropTargetListener(getGraphicalViewer()) {
-			@SuppressWarnings("unchecked")
 			protected CreationFactory getFactory(Object template) {
 				return (WidgetCreationFactory)template;
 			}

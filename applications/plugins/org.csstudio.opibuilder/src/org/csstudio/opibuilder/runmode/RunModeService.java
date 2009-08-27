@@ -4,6 +4,9 @@ import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.util.UIBundlingThread;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPageListener;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -37,15 +40,29 @@ public class RunModeService {
 	}
 	
 	
+	public void replaceActiveEditorContent(IFile file) throws PartInitException{
+		IEditorPart activeEditor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().
+		getActivePage().getActiveEditor();		
+		activeEditor.init(activeEditor.getEditorSite(), 
+					new RunnerInput(file, null, 
+							(DisplayOpenManager) activeEditor.getAdapter(DisplayOpenManager.class)));
+		
+	}
+	
+	public void runOPI(IFile file, TargetWindow targetWindow, DisplayOpenManager displayOpenManager ){
+		runOPI(file, null, targetWindow, displayOpenManager);
+	}
+	
 	public void runOPI(IFile file, TargetWindow targetWindow ){
-		runOPI(file, null, targetWindow);
+		runOPI(file, null, targetWindow, null);
 	}
 	
 	/**Run an OPI file.
 	 * @param file the file to be ran. If displayModel is not null, this will be ignored.
 	 * @param displayModel the display model to be ran. null for file input only.
 	 */
-	public void runOPI(final IFile file, final DisplayModel displayModel, final TargetWindow target){
+	public void runOPI(final IFile file, final DisplayModel displayModel, final TargetWindow target,
+			final DisplayOpenManager displayOpenManager){
 		UIBundlingThread.getInstance().addRunnable(new Runnable(){
 			 public void run() {
 		
@@ -84,7 +101,7 @@ public class RunModeService {
 				if(targetWindow != null){
 					try {
 						targetWindow.getActivePage().openEditor(
-								new RunnerInput(file, displayModel), "org.csstudio.opibuilder.OPIRunner"); //$NON-NLS-1$
+								new RunnerInput(file, displayModel, displayOpenManager), "org.csstudio.opibuilder.OPIRunner"); //$NON-NLS-1$
 						targetWindow.getShell().moveAbove(null);
 					} catch (PartInitException e) {
 						CentralLogger.getInstance().error(this, "Failed to run OPI " + file.getName(), e);
