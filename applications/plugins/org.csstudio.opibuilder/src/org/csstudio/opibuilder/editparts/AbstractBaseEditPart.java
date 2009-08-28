@@ -131,6 +131,8 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 							
 							@Override
 							public void mousePressed(MouseEvent me) {
+								if(me.button != 1)
+									return;
 								
 								if(action instanceof OpenDislayAction){
 									((OpenDislayAction)action).setCtrlPressed(false);
@@ -141,9 +143,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 										((OpenDislayAction)action).setShiftPressed(true);
 									}
 								}
-								
-								if(me.button == 1)
-									action.run();	
+								action.run();	
 							}
 						});
 					}

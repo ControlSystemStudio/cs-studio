@@ -2,10 +2,9 @@ package org.csstudio.opibuilder.actions;
 
 import org.csstudio.opibuilder.runmode.DisplayOpenManager;
 import org.csstudio.opibuilder.runmode.IDisplayOpenManagerListener;
-import org.csstudio.opibuilder.runmode.OPIRunner;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuCreator;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MenuAdapter;
 import org.eclipse.swt.events.MenuEvent;
@@ -15,13 +14,8 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.ui.ISharedImages;
-import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
-import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
-import org.eclipse.ui.internal.NavigationHistory;
-import org.eclipse.ui.internal.NavigationHistoryEntry;
-import org.eclipse.ui.internal.WorkbenchMessages;
 
 /**Go back/forward to one of the OPIs opened before in the OPI Runner.
  * @author Xihui Chen
@@ -29,6 +23,8 @@ import org.eclipse.ui.internal.WorkbenchMessages;
  */
 public class NavigateOPIsAction extends Action implements IDisplayOpenManagerListener {
 	
+	private static final String BACK = "Back";
+	private static final String FORWARD = "Forward";
 	private DisplayOpenManager manager;
 	private boolean recreateMenu;	
 	private boolean forward;
@@ -72,7 +68,29 @@ public class NavigateOPIsAction extends Action implements IDisplayOpenManagerLis
 	    	});
 	    }
 	    
-	    private void fillMenu(Menu menu) {    	
+	    private void fillMenu(final Menu menu) {
+	    	Object[] entries = forward ? 
+	    			manager.getForwardStackEntries() : manager.getBackStackEntries();	    	
+	    	IFile[] files = new IFile[entries.length];
+	    	int i=entries.length-1;
+	    	for(final Object o : entries){
+	    		files[i--] = (IFile)o;
+	    	}
+	    	
+	    	for(final IFile file : files){	    		
+	    		final MenuItem menuItem = new MenuItem(menu, SWT.None);
+	    		menuItem.setText(file.getName());
+	    		menuItem.addSelectionListener(new SelectionAdapter(){
+	    			@Override
+	    			public void widgetSelected(SelectionEvent e) {
+	    				if(forward){
+	    					manager.goForward(menu.indexOf(menuItem));
+	    				}
+	    				else
+	    					manager.goBack(menu.indexOf(menuItem));
+	    			}
+	    		});
+	    	}
 	    	
 	    	recreateMenu = false;
 	    }
@@ -96,7 +114,7 @@ public class NavigateOPIsAction extends Action implements IDisplayOpenManagerLis
 		ISharedImages sharedImages = PlatformUI.getWorkbench().getSharedImages();
         if (forward) {
             setText("&Forward");
-            setToolTipText("Forward");
+            setToolTipText(FORWARD);
             setId(ActionFactory.FORWARD_HISTORY.getId());
             setImageDescriptor(sharedImages
                     .getImageDescriptor(ISharedImages.IMG_TOOL_FORWARD));
@@ -105,7 +123,7 @@ public class NavigateOPIsAction extends Action implements IDisplayOpenManagerLis
             setActionDefinitionId("org.eclipse.ui.navigate.forwardHistory"); //$NON-NLS-1$
         } else {
             setText("&Back"); 
-            setToolTipText("Back");        
+            setToolTipText(BACK);        
             setId(ActionFactory.BACKWARD_HISTORY.getId());
             setImageDescriptor(sharedImages
                     .getImageDescriptor(ISharedImages.IMG_TOOL_BACK));
@@ -113,6 +131,7 @@ public class NavigateOPIsAction extends Action implements IDisplayOpenManagerLis
                     .getImageDescriptor(ISharedImages.IMG_TOOL_BACK_DISABLED));
             setActionDefinitionId("org.eclipse.ui.navigate.backwardHistory"); //$NON-NLS-1$
         }
+        setMenuCreator(new MenuCreator());
 	}
 	
 	@Override
@@ -142,6 +161,18 @@ public class NavigateOPIsAction extends Action implements IDisplayOpenManagerLis
 	
 	public void update(){
 		setEnabled(isEnabled());
+		recreateMenu = true;
+		if(forward){
+			if(manager.canForward())
+				setToolTipText(FORWARD + " to " + ((IFile)(manager.getForwardStackEntries()[0])).getName());
+			else
+				setToolTipText(FORWARD);
+		}else{
+			if(manager.canBackward())
+				setToolTipText(BACK + " to " + ((IFile)(manager.getBackStackEntries()[0])).getName());
+			else
+				setToolTipText(BACK);
+		}
 	}
 	
 }

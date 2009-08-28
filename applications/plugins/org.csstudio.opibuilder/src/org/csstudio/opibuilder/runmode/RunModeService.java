@@ -125,7 +125,7 @@ public class RunModeService {
 			//toggleToolbar.run(); 
 			if(displayModel != null)
 				newWindow.getShell().setSize(
-						displayModel.getSize().width+36, displayModel.getSize().height + 125);			
+						displayModel.getSize().width+40, displayModel.getSize().height + 160);			
 		
 		} catch (WorkbenchException e) {
 			CentralLogger.getInstance().error(this, "Failed to open new window", e);

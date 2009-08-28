@@ -77,13 +77,13 @@ public class DisplayOpenManager {
 		
 	}
 	
-	public void goBack(IFile file){
-		if(backStack.contains(file)){
+	public void goBack(int index){
+		if(backStack.size() > index){
 			
 			IFile currentFile = getCurrentFileInEditor();
 			forwardStack.push(currentFile);
 			
-			while(!backStack.peek().equals(file) && backStack.size() >0){
+			for(int i=0; i<index; i++){
 				forwardStack.push(backStack.pop());
 			}
 					
@@ -91,13 +91,13 @@ public class DisplayOpenManager {
 		}
 	}
 	
-	public void goForward(IFile file){
-		if(forwardStack.contains(file)){
+	public void goForward(int index){
+		if(forwardStack.size() > index){
 			
 			IFile currentFile = getCurrentFileInEditor();
 			backStack.push(currentFile);
 			
-			while(!forwardStack.peek().equals(file) && forwardStack.size() >0){
+			for(int i=0; i<index; i++){
 				backStack.push(forwardStack.pop());
 			}
 						
@@ -157,5 +157,21 @@ public class DisplayOpenManager {
 	
 	public boolean canForward(){
 		return forwardStack.size() > 0;
+	}
+	
+	/**Return an array of all elements in the backward stack. 
+	 * The oldest element is the first element of the returned array.
+	 * @return the array contained all elements in the stack.
+	 */
+	public Object[] getBackStackEntries(){
+		return  backStack.toArray();
+	}
+	
+	/**Return an array of all elements in the forward stack. 
+	 * The oldest element is the first element of the returned array.
+	 * @return the array contained all elements in the stack.
+	 */
+	public Object[] getForwardStackEntries(){
+		return  forwardStack.toArray();
 	}
 }
