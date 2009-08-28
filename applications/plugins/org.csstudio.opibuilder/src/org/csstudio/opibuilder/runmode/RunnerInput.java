@@ -7,7 +7,6 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
 
 public class RunnerInput extends FileEditorInput {
@@ -16,7 +15,7 @@ public class RunnerInput extends FileEditorInput {
 	private DisplayOpenManager displayOpenManager;
 	
 	public RunnerInput(IFile file, DisplayModel model, DisplayOpenManager displayOpenManager){
-		this(file, null);
+		this(file, model);
 		this.setDisplayOpenManager(displayOpenManager);
 	}
 	

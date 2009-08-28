@@ -52,8 +52,8 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 					}else
 						actionIndex = getCastedModel().getActionIndex();
 					
-					if(getCastedModel().getActionsInput().getActionsList().size() > 
-						getCastedModel().getActionIndex())
+					if(actionIndex >= 0 && getCastedModel().getActionsInput().getActionsList().size() > 
+						actionIndex)
 						getCastedModel().getActionsInput().getActionsList().get(
 							actionIndex).run();				
 				}

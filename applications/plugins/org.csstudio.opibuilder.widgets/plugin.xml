@@ -86,7 +86,7 @@
       </widget>
       <widget
             category="Monitors"
-            description="A xy graph."
+            description="An XY graph which can display the trends of multiple PVs."
             editpart_class="org.csstudio.opibuilder.widgets.editparts.XYGraphEditPart"
             icon="icons/XYGraph.gif"
             model_class="org.csstudio.opibuilder.widgets.model.XYGraphModel"
@@ -95,7 +95,7 @@
       </widget>
       <widget
             category="Controls"
-            description="A scaled slider widget which could be used to read/write a PV"
+            description="A scaled slider widget which can read/write a PV"
             editpart_class="org.csstudio.opibuilder.widgets.editparts.ScaledSliderEditPart"
             icon="icons/scaled_slider.gif"
             model_class="org.csstudio.opibuilder.widgets.model.ScaledSliderModel"
@@ -104,12 +104,39 @@
       </widget>
       <widget
             category="Controls"
-            description="A button which can execute an action."
+            description="A button which can execute an action when clicked."
             editpart_class="org.csstudio.opibuilder.widgets.editparts.ActionButtonEditPart"
             icon="icons/actionbutton.gif"
             model_class="org.csstudio.opibuilder.widgets.model.ActionButtonModel"
             name="Action Button"
             typeId="org.csstudio.opibuilder.widgets.ActionButton">
+      </widget>
+      <widget
+            category="Monitors"
+            description="A LED which can display one bit of  a value or if the value is non-zero or not when bit property is -1."
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.LEDEditPart"
+            icon="icons/LED.png"
+            model_class="org.csstudio.opibuilder.widgets.model.LEDModel"
+            name="LED"
+            typeId="org.csstudio.opibuilder.widgets.LED">
+      </widget>
+      <widget
+            category="Controls"
+            description="A boolean switch which can write a single bit of a PV or write 0/1 to a PV when bit property is -1."
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.BoolSwitchEditPart"
+            icon="icons/BoolSwitch.gif"
+            model_class="org.csstudio.opibuilder.widgets.model.BoolSwitchModel"
+            name="Boolean Switch"
+            typeId="org.csstudio.opibuilder.widgets.BoolSwitch">
+      </widget>
+      <widget
+            category="Controls"
+            description="A boolean button which can write a single bit of a PV or write 0/1 to a PV when bit property is -1."
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.BoolButtonEditPart"
+            icon="icons/BoolButton.gif"
+            model_class="org.csstudio.opibuilder.widgets.model.BoolButtonModel"
+            name="Boolean Button"
+            typeId="org.csstudio.opibuilder.widgets.BoolButton">
       </widget>     
    </extension>
 

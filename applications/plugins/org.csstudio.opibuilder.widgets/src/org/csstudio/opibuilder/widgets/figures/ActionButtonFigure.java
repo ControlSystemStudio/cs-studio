@@ -83,6 +83,12 @@ public final class ActionButtonFigure extends Button implements
 		}
 	}
 	
+	@Override
+	public void setFont(Font f) {
+		super.setFont(f);
+		label.revalidate();
+	}
+	
 	/**
 	 * Set the style of the Button.
 	 * @param style false = Push, true=Toggle.

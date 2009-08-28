@@ -95,10 +95,10 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 		addProperty(new FontProperty(PROP_FONT, "Font",
 				WidgetPropertyCategory.Display, CustomMediaFactory.FONT_ARIAL)); //$NON-NLS-1$
 		addProperty(new IntegerProperty(PROP_ACTION_INDEX, "Click Action Index",
-				WidgetPropertyCategory.Behavior, 0, 0, Integer.MAX_VALUE));
+				WidgetPropertyCategory.Behavior, 0, -1, Integer.MAX_VALUE));
 		
 		addProperty(new IntegerProperty(PROP_RELEASED_ACTION_INDEX, "Released Action Index",
-				WidgetPropertyCategory.Behavior, 0, 0, Integer.MAX_VALUE));
+				WidgetPropertyCategory.Behavior, 0, -1, Integer.MAX_VALUE));
 		
 		addProperty(new BooleanProperty(PROP_TOGGLE_BUTTON, "Toggle Button",
 		        WidgetPropertyCategory.Behavior,DEFAULT_TOGGLE_BUTTON));
