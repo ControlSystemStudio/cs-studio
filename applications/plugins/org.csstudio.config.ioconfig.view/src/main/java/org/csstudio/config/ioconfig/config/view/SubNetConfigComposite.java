@@ -31,13 +31,18 @@ import java.util.Set;
 import org.csstudio.config.ioconfig.config.view.helper.Baudrates;
 import org.csstudio.config.ioconfig.config.view.helper.ConfigHelper;
 import org.csstudio.config.ioconfig.config.view.helper.ProfibusHelper;
+import org.csstudio.config.ioconfig.model.Activator;
 import org.csstudio.config.ioconfig.model.Document;
 import org.csstudio.config.ioconfig.model.Ioc;
 import org.csstudio.config.ioconfig.model.Node;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFile;
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnet;
 import org.csstudio.config.ioconfig.model.pbmodel.Ranges;
+import org.csstudio.config.ioconfig.model.preference.PreferenceConstants;
 import org.csstudio.config.ioconfig.view.ProfiBusTreeView;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -307,19 +312,30 @@ public class SubNetConfigComposite extends NodeConfig {
      *            is TabHead Text
      */
     private void general(final String head) {
+        InstanceScope instanceScope = new InstanceScope();
+        IEclipsePreferences prefNode = instanceScope.getNode(Activator.PLUGIN_ID);
+        
         Composite comp = ConfigHelper.getNewTabItem(head, getTabFolder(), 5);
         comp.setLayout(new GridLayout(4, false));
 
         Group gName = new Group(comp,SWT.NONE);
         gName.setText("Name");
         gName.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 5,1));
-        gName.setLayout(new GridLayout(3,false));
+        gName.setLayout(new GridLayout(4,false));
 
         Text nameText = new Text(gName, SWT.BORDER | SWT.SINGLE);
         setText(nameText, _subnet.getName(),255);
         nameText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
         setNameWidget(nameText);
+
+        ComboViewer facilityViewer = new ComboViewer(gName);
+        facilityViewer.setContentProvider(new ArrayContentProvider());
+        String[] facilities = prefNode.get(PreferenceConstants.DDB_FACILITIES, "NONE").split(",");
+        facilityViewer.setInput(facilities);
+        facilityViewer.getCombo().select(0);
+        
         setIndexSpinner(ConfigHelper.getIndexSpinner(gName, _subnet, getMLSB(),"Index",getProfiBusTreeView()));
+        
         
         Group gDesc = new Group(comp,SWT.NONE);
         gDesc.setText("Description: ");

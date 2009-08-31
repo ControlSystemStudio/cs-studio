@@ -12,10 +12,10 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         IEclipsePreferences prefs = new DefaultScope()
                 .getNode(Activator.getDefault().getPluginId());
 
-        prefs
-                .put(PreferenceConstants.DDB_LOGBOOK,
-                        "MKS-2-DOC,MKS-DOC,FLASH-DOC,XFEL-DOC,KRYO-DOC,AMTF-DOC,CMTB-DOC," +
-                        "MKS-2,MKS,KRYO,CTA,CMTB,MKK");
+        prefs.put(PreferenceConstants.DDB_FACILITIES, "Geb. 54,Geb. 55,XMTS,FLASH");
+        prefs.put(PreferenceConstants.DDB_LOGBOOK,
+                "MKS-2-DOC,MKS-DOC,FLASH-DOC,XFEL-DOC,KRYO-DOC,AMTF-DOC,CMTB-DOC,"
+                        + "MKS-2,MKS,KRYO,CTA,CMTB,MKK");
         prefs.put(PreferenceConstants.DDB_LOGBOOK_MEANING,
                 "DOCU,NONE,FATAL,ERROR,WARN,INFO,IDEA,TODO,DONE,FIXED");
         prefs.put(PreferenceConstants.DDB_USER_NAME, "KRYKMAN");

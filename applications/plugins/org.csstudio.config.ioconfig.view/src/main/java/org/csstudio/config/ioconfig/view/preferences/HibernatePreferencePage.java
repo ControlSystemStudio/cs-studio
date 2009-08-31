@@ -1,5 +1,6 @@
 package org.csstudio.config.ioconfig.view.preferences;
 
+import static org.csstudio.config.ioconfig.model.preference.PreferenceConstants.DDB_FACILITIES;
 import static org.csstudio.config.ioconfig.model.preference.PreferenceConstants.DDB_LOGBOOK;
 import static org.csstudio.config.ioconfig.model.preference.PreferenceConstants.DDB_LOGBOOK_MEANING;
 import static org.csstudio.config.ioconfig.model.preference.PreferenceConstants.DDB_PASSWORD;
@@ -93,9 +94,30 @@ public class HibernatePreferencePage extends FieldEditorPreferencePage implement
         TabFolder tabs = new TabFolder(getFieldEditorParent(), SWT.NONE);
         tabs.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
         
+        makeFcilityTab(tabs);
         makeLogbookTab(tabs);
         makeHibernateDBTab(tabs);
     }
+    
+    private void makeFcilityTab(TabFolder tabs) {
+        TabItem tabDb = new TabItem(tabs, SWT.NONE);
+        tabDb.setText("Facilty Settings");
+        Composite facComposite = new Composite(tabs, SWT.NONE);
+        facComposite.setLayout(new GridLayout(1, true));
+        facComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+        tabDb.setControl(facComposite);
+        
+        new Label(facComposite, SWT.NONE);
+        new Label(facComposite, SWT.NONE);
+        Label descLabel = new Label(facComposite, SWT.NONE);
+        descLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+        descLabel.setText("Settings for the choosen Facility.");
+        new Label(facComposite, SWT.NONE);
+        addField(new ListEditorExtension(DDB_FACILITIES, "Facilities:", facComposite,"Add Facility", "Add a new Facility:"));
+
+        
+    }
+
     private void makeHibernateDBTab(TabFolder tabs) {
         // database settings
         TabItem tabDb = new TabItem(tabs, SWT.NONE);

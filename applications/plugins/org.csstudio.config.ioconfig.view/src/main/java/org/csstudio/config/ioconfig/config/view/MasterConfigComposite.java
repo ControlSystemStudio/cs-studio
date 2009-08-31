@@ -166,7 +166,7 @@ public class MasterConfigComposite extends NodeConfig {
 //        _tabFolder.pack ();
     }
 
-    private void fmbSet(Composite parent) {
+    private void makeFmbSetGroup(Composite parent) {
         final int limit = 13000;
         ModifyListener listener = new ModifyListener() {
 
@@ -293,46 +293,82 @@ public class MasterConfigComposite extends NodeConfig {
         
         Composite comp = ConfigHelper.getNewTabItem(head,getTabFolder(),5);
 
-        Group gName = new Group(comp,SWT.NONE);
-        gName.setText("Name");
-        gName.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 5,1));
-        gName.setLayout(new GridLayout(3,false));
-
-        Text nameText = new Text(gName, SWT.BORDER | SWT.SINGLE);
-        setText(nameText, _master.getName(),255);
-        nameText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
-        setNameWidget(nameText);
+        makeNameGroup(comp);
+        makeRedundencyMasterGroup(comp);
+        makeMemoryAddressingGroup(comp);
+        makeParametersGroup(comp);
+        makeInformationGroup(comp);
+        makeMasterUserData(comp);
+        makeDescGroup(comp);
         
-        setIndexSpinner(ConfigHelper.getIndexSpinner(gName, _master, getMLSB(),"Station Address:",getProfiBusTreeView()));
+        makeFmbSetGroup(comp);
+    }
+    
+    private void makeDescGroup(Composite comp) {
+        Group gDesc = new Group(comp,SWT.NONE);
+        gDesc.setText("Description: ");
+        gDesc.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3,1));
+        gDesc.setLayout(new GridLayout(1,false));
         
-        Group gInformation = new Group(comp,SWT.NONE);
-        gInformation.setText("Information:");
-        gInformation.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 3,1));
-        gInformation.setLayout(new GridLayout(4,false));
-        gInformation.setTabList(new Control[0]);
+        _descText = new Text(gDesc, SWT.BORDER | SWT.MULTI);
+        _descText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+        _descText.setEnabled(false);
+    }
+
+    private void makeMemoryAddressingGroup(Composite comp) {
+        _memAddressType=_master.getProfibusPnoId();
+        _oldMemAddressType=_memAddressType;
         
-        Label vendorLabel = new Label(gInformation,SWT.NONE);
-        vendorLabel.setText("Vendor: ");
-        _vendorText = new Text(gInformation,SWT.NONE);
-        _vendorText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1,1));
-        _vendorText.setEditable(false);
+        SelectionListener selectionListener = new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent e) {
+                _memAddressType = (Integer) ((Button) e.getSource()).getData();
+                setSavebuttonEnabled("MasterMemAddressType", _oldMemAddressType!=_memAddressType);
+            }
+        };
+        
+        Group gMemoryAddressing = new Group(comp,SWT.NONE);
+        gMemoryAddressing.setText("Memory Address Mode:");
+        gMemoryAddressing.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1,1));
+        gMemoryAddressing.setLayout(new GridLayout(2,false));
 
-        Label pbBoardLabel = new Label(gInformation,SWT.NONE);
-        pbBoardLabel.setText("Profibusboard: ");
-        _pbBoardText = new Text(gInformation,SWT.NONE);
-        _pbBoardText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1,1));
-        _pbBoardText.setEditable(false);
+        final Button direct = new Button(gMemoryAddressing, SWT.RADIO);
+        direct.setText("Array");
+        direct.setData(0);
+        direct.addSelectionListener(selectionListener);
+        final Button dyn = new Button(gMemoryAddressing, SWT.RADIO);
+        dyn.setText("Compact");
+        dyn.setData(1);
+        dyn.addSelectionListener(selectionListener);
+        switch(_memAddressType){
+            case 1:
+                dyn.setSelection(true);
+                break;
+            case 0:
+            default :
+                direct.setSelection(true);
+                break;
+        }        
+    }
 
-        Label idNoLabel = new Label(gInformation,SWT.NONE);
-        idNoLabel.setText("Ident. No.: ");
-        _idNoText = new Text(gInformation,SWT.NONE);
-        _idNoText.setEditable(false);
+    private void makeMasterUserData(Composite comp) {
+        Group masterUserData = new Group(comp,SWT.NONE);
+        masterUserData.setText("Master User Data:");
+        masterUserData.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 3,1));
+        masterUserData.setLayout(new GridLayout(1,false));
+        masterUserData.setTabList(new Control[0]);
+        _masterUserDataText = new Text(masterUserData,SWT.NONE);
+        _masterUserDataText.setEditable(false);
+        _masterUserDataText.setLayoutData(new GridData(SWT.FILL,SWT.CENTER,true,true,1,1));
 
-        Label stationTypLabel = new Label(gInformation,SWT.NONE);
-        stationTypLabel.setText("Station Typ: ");
-        _stationTypText = new Text(gInformation,SWT.NONE);
-        _stationTypText.setEditable(false);
+        // is a Default Value. Is not a part of the Master GSD File.
+        if(_master!=null&&_master.getMasterUserData()!=null&&_master.getMasterUserData().length()>0){
+            _masterUserDataText.setText(_master.getMasterUserData());
+        }else{
+            _masterUserDataText.setText("0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0");
+        }
+    }
 
+    private void makeParametersGroup(Composite comp) {
         Group gParameters = new Group(comp,SWT.NONE);
         gParameters.setText("Parameters:");
         gParameters.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2,3));
@@ -371,68 +407,62 @@ public class MasterConfigComposite extends NodeConfig {
             public void widgetSelected(final   SelectionEvent e) {
                 setSavebuttonEnabled("MasterAutoclear", _autoclearButton.getSelection());
             }
-        });
-        
-        Group masterUserData = new Group(comp,SWT.NONE);
-        masterUserData.setText("Master User Data:");
-        masterUserData.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 3,1));
-        masterUserData.setLayout(new GridLayout(1,false));
-        masterUserData.setTabList(new Control[0]);
-        _masterUserDataText = new Text(masterUserData,SWT.NONE);
-        _masterUserDataText.setEditable(false);
-        _masterUserDataText.setLayoutData(new GridData(SWT.FILL,SWT.CENTER,true,true,1,1));
-        // is a Default Value. Is not a part of the Master GSD File.
-        if(_master!=null&&_master.getMasterUserData()!=null&&_master.getMasterUserData().length()>0){
-            _masterUserDataText.setText(_master.getMasterUserData());
-        }else{
-            _masterUserDataText.setText("0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0");
-        }
-
-        Group gMemoryAddressing = new Group(comp,SWT.NONE);
-        gMemoryAddressing.setText("Memory Address Mode:");
-        gMemoryAddressing.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 3,1));
-        gMemoryAddressing.setLayout(new GridLayout(2,false));
-
-        SelectionListener selectionListener = new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent e) {
-                _memAddressType = (Integer) ((Button) e.getSource()).getData();
-                setSavebuttonEnabled("MasterMemAddressType", _oldMemAddressType!=_memAddressType);
-            }
-        };
-        
-        _memAddressType=_master.getProfibusPnoId();
-        _oldMemAddressType=_memAddressType;
-        final Button direct = new Button(gMemoryAddressing, SWT.RADIO);
-        direct.setText("Array");
-        direct.setData(0);
-        direct.addSelectionListener(selectionListener);
-        final Button dyn = new Button(gMemoryAddressing, SWT.RADIO);
-        dyn.setText("Compact");
-        dyn.setData(1);
-        dyn.addSelectionListener(selectionListener);
-        switch(_memAddressType){
-            case 1:
-                dyn.setSelection(true);
-                break;
-            case 0:
-            default :
-                direct.setSelection(true);
-                break;
-
-                    
-        }
-        Group gDesc = new Group(comp,SWT.NONE);
-        gDesc.setText("Description: ");
-        gDesc.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3,1));
-        gDesc.setLayout(new GridLayout(1,false));
-        
-        _descText = new Text(gDesc, SWT.BORDER | SWT.MULTI);
-        _descText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-        _descText.setEnabled(false);
-        
-        fmbSet(comp);
+        });        
     }
+
+    private void makeInformationGroup(Composite comp) {
+        Group gInformation = new Group(comp,SWT.NONE);
+        gInformation.setText("Information:");
+        gInformation.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 3,1));
+        gInformation.setLayout(new GridLayout(4,false));
+        gInformation.setTabList(new Control[0]);
+        
+        Label vendorLabel = new Label(gInformation,SWT.NONE);
+        vendorLabel.setText("Vendor: ");
+        _vendorText = new Text(gInformation,SWT.NONE);
+        _vendorText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1,1));
+        _vendorText.setEditable(false);
+
+        Label pbBoardLabel = new Label(gInformation,SWT.NONE);
+        pbBoardLabel.setText("Profibusboard: ");
+        _pbBoardText = new Text(gInformation,SWT.NONE);
+        _pbBoardText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1,1));
+        _pbBoardText.setEditable(false);
+
+        Label idNoLabel = new Label(gInformation,SWT.NONE);
+        idNoLabel.setText("Ident. No.: ");
+        _idNoText = new Text(gInformation,SWT.NONE);
+        _idNoText.setEditable(false);
+
+        Label stationTypLabel = new Label(gInformation,SWT.NONE);
+        stationTypLabel.setText("Station Typ: ");
+        _stationTypText = new Text(gInformation,SWT.NONE);
+        _stationTypText.setEditable(false);
+        
+    }
+
+    private void makeRedundencyMasterGroup(Composite comp) {
+        Group gRedundencyMaster = new Group(comp,SWT.NONE);
+        gRedundencyMaster.setText("Redundency Master:");
+        gRedundencyMaster.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2,1));
+        gRedundencyMaster.setLayout(new GridLayout(2,false));        
+    }
+
+    private void makeNameGroup(Composite comp) {
+        Group gName = new Group(comp,SWT.NONE);
+        gName.setText("Name");
+        gName.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 5,1));
+        gName.setLayout(new GridLayout(3,false));    
+
+        Text nameText = new Text(gName, SWT.BORDER | SWT.SINGLE);
+        setText(nameText, _master.getName(),255);
+        nameText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
+        setNameWidget(nameText);
+        
+        setIndexSpinner(ConfigHelper.getIndexSpinner(gName, _master, getMLSB(),"Station Address:",getProfiBusTreeView()));
     
+    }
+
     /**
      * Store all Data in {@link Master} DB object.
      */
