@@ -1,7 +1,9 @@
 package org.csstudio.opibuilder.editpolicies;
 
+import org.csstudio.opibuilder.commands.AddWidgetCommand;
 import org.csstudio.opibuilder.commands.ChangeGuideCommand;
 import org.csstudio.opibuilder.commands.CloneCommand;
+import org.csstudio.opibuilder.commands.SetBoundsCommand;
 import org.csstudio.opibuilder.commands.WidgetCreateCommand;
 import org.csstudio.opibuilder.commands.WidgetSetConstraintCommand;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
@@ -17,6 +19,7 @@ import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.SnapToGuides;
 import org.eclipse.gef.commands.Command;
+import org.eclipse.gef.commands.CompoundCommand;
 import org.eclipse.gef.editpolicies.XYLayoutEditPolicy;
 import org.eclipse.gef.requests.ChangeBoundsRequest;
 import org.eclipse.gef.requests.CreateRequest;
@@ -114,6 +117,21 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
 	}
 
 	@Override
+	protected Command createAddCommand(EditPart child, Object constraint) {
+		if(!(child instanceof AbstractBaseEditPart) || !(constraint instanceof Rectangle))
+			return super.createAddCommand(child, constraint);
+		
+		AbstractContainerModel container = (AbstractContainerModel)getHost().getModel();
+		AbstractWidgetModel widget = (AbstractWidgetModel)child.getModel();
+		CompoundCommand result = new CompoundCommand("Adding widgets to container");
+		
+		result.add(new AddWidgetCommand(container, widget));
+		result.add(new SetBoundsCommand(widget, (Rectangle) constraint));
+		return result;		
+	}
+	
+	
+	@Override
 	protected Command getCreateCommand(CreateRequest request) {
 		return new WidgetCreateCommand((AbstractWidgetModel)request.getNewObject(), 
 					(AbstractContainerModel)getHost().getModel(), 
@@ -209,7 +227,7 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
 	
 	@Override
 	protected Command getCloneCommand(ChangeBoundsRequest request) {
-		CloneCommand clone = new CloneCommand((DisplayModel)getHost().getModel());
+		CloneCommand clone = new CloneCommand((AbstractContainerModel)getHost().getModel());
 		
 		GraphicalEditPart currPart = null;
 		for (Object part : request.getEditParts()) {

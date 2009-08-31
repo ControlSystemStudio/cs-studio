@@ -3,6 +3,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.csstudio.opibuilder.actions.OPIWidgetsTransfer;
+import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.model.GuideModel;
@@ -31,7 +32,7 @@ public final class CloneCommand extends Command {
 	/**
 	 * The parent for the AbstractWidgetModels.
 	 */
-	private DisplayModel _parent;
+	private AbstractContainerModel _parent;
 	/**
 	 * The horizontal Guide.
 	 */
@@ -62,7 +63,7 @@ public final class CloneCommand extends Command {
 	 * @param parent
 	 * 			The parent {@link DisplayModel} for the widgets
 	 */
-	public CloneCommand(final DisplayModel parent) {
+	public CloneCommand(final AbstractContainerModel parent) {
 		super("Clone Widgets");
 		_models = new LinkedList<AbstractWidgetModel>();
 		_parent = parent;

@@ -57,16 +57,9 @@ public final class ColorService {
 		colorMap = new LinkedHashMap<String, OPIColor>();
 		
 		try {
-			//read file
-			IFile[] files = 
-				ResourcesPlugin.getWorkspace().getRoot().findFilesForLocation(
-						ResourcesPlugin.getWorkspace().getRoot().getLocation().append(colorFilePath));	
-			
-			if(files.length < 1)
-				throw new FileNotFoundException("The file " + colorFilePath.toString() + "does not exist!");
-			
+			//read file				
 			BufferedReader reader = new BufferedReader(
-						new InputStreamReader(files[0].getContents()));
+						new InputStreamReader(ResourceUtil.pathToInputStream(colorFilePath)));
 			String line;
 			//fill the color map.
 			while((line = reader.readLine()) != null){

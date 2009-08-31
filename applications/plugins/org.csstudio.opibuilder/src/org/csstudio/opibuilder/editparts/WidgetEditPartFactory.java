@@ -35,7 +35,7 @@ public class WidgetEditPartFactory implements EditPartFactory {
 		if(model instanceof DisplayModel)
 			return new DisplayEditpart();
 		if(model instanceof AbstractWidgetModel){
-			AbstractWidgetEditPart editpart = 
+			AbstractBaseEditPart editpart = 
 				WidgetsService.getInstance().getWidgetDescriptor(
 					((AbstractWidgetModel)model).getTypeID()).getWidgetEditpart();
 			return editpart;

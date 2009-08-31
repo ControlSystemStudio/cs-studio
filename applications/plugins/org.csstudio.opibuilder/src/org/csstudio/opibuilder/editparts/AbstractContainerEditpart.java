@@ -5,9 +5,11 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.csstudio.opibuilder.commands.OrphanChildCommand;
 import org.csstudio.opibuilder.commands.WidgetCreateCommand;
 import org.csstudio.opibuilder.editpolicies.WidgetXYLayoutEditPolicy;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
+import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.eclipse.gef.CompoundSnapToHelper;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
@@ -17,7 +19,10 @@ import org.eclipse.gef.SnapToGuides;
 import org.eclipse.gef.SnapToHelper;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CompoundCommand;
+import org.eclipse.gef.editpolicies.ContainerEditPolicy;
 import org.eclipse.gef.editpolicies.SnapFeedbackPolicy;
+import org.eclipse.gef.requests.CreateRequest;
+import org.eclipse.gef.requests.GroupRequest;
 import org.eclipse.gef.rulers.RulerProvider;
 
 /**The editpart for {@link AbstractContainerModel}
@@ -28,9 +33,34 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
 
 	@Override
 	protected void createEditPolicies() {
+		super.createEditPolicies();
+		
+		installEditPolicy(EditPolicy.CONTAINER_ROLE, new ContainerEditPolicy(){
+
+			@Override
+			protected Command getCreateCommand(CreateRequest request) {
+				return null;
+			}
+			
+			@SuppressWarnings("unchecked")
+			@Override
+			protected Command getOrphanChildrenCommand(GroupRequest request) {
+				List parts = request.getEditParts();
+				CompoundCommand result = new CompoundCommand("Orphan Children");
+				for(int i=0; i<parts.size(); i++){					
+					OrphanChildCommand orphan = new OrphanChildCommand((AbstractContainerModel)(getModel()),
+							(AbstractWidgetModel)((EditPart)parts.get(i)).getModel());
+					orphan.setLabel("Reparenting widget");
+					result.add(orphan);
+				}
+				
+				return result.unwrap();
+			}
+			
+		});
 		installEditPolicy(EditPolicy.LAYOUT_ROLE, 
 				getExecutionMode() == ExecutionMode.EDIT_MODE ? new WidgetXYLayoutEditPolicy() : null);
-	
+		
 		//the snap feedback effect
 		installEditPolicy("Snap Feedback", new SnapFeedbackPolicy()); //$NON-NLS-1$
 	}

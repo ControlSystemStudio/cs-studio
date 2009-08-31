@@ -1,8 +1,6 @@
 package org.csstudio.opibuilder.commands;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.csstudio.opibuilder.model.AbstractContainerModel;
@@ -23,6 +21,11 @@ public class WidgetCreateCommand extends Command {
 	private Rectangle bounds;
 	
 
+	/**
+	 * @param newWidget The new Widget to be added.
+	 * @param container the parent.
+	 * @param bounds the bounds for the new widget
+	 */
 	public WidgetCreateCommand(AbstractWidgetModel newWidget, AbstractContainerModel
 			container, Rectangle bounds) {
 		this.newWidget = newWidget;
@@ -30,7 +33,7 @@ public class WidgetCreateCommand extends Command {
 		this.bounds = bounds;
 		setLabel("create widget");
 	}
-	
+		
 	@Override
 	public boolean canExecute() {
 		return newWidget != null && container != null && bounds != null;
@@ -46,16 +49,24 @@ public class WidgetCreateCommand extends Command {
 	
 	@Override
 	public void redo() {
-		Map<String, Integer> typeIDMap = new HashMap<String, Integer>();
-		for(AbstractWidgetModel child : container.getChildren()){
-			if(typeIDMap.containsKey(child.getTypeID()))
-				typeIDMap.put(child.getTypeID(), typeIDMap.get(child.getTypeID())+1);
-			else
-				typeIDMap.put(child.getTypeID(), 0);
+		boolean autoName = false; 
+		for(AbstractWidgetModel child :container.getChildren()){
+			if(child.getName().equals(newWidget.getName()))
+				autoName = true;
 		}
-		newWidget.setName(newWidget.getType() + "_" 	//$NON-NLS-1$
-				+ (typeIDMap.get(newWidget.getTypeID())==null?
-						0 : typeIDMap.get(newWidget.getTypeID()) + 1)); 
+		if(autoName){
+			Map<String, Integer> typeIDMap = new HashMap<String, Integer>();
+			for(AbstractWidgetModel child : container.getChildren()){
+				if(typeIDMap.containsKey(child.getTypeID()))
+					typeIDMap.put(child.getTypeID(), typeIDMap.get(child.getTypeID())+1);
+				else
+					typeIDMap.put(child.getTypeID(), 0);
+			}
+			
+			newWidget.setName(newWidget.getType() + "_" 	//$NON-NLS-1$
+					+ (typeIDMap.get(newWidget.getTypeID())==null?
+							0 : typeIDMap.get(newWidget.getTypeID()) + 1)); 
+		}
 		container.addChild(newWidget);
 	}
 	

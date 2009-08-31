@@ -332,6 +332,9 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 		setPropertyValue(PROP_COLOR_BACKGROUND, color);
 	}
 	
+	public void setEnabled(boolean enable){
+		setPropertyValue(PROP_ENABLED, enable);
+	}
 	
 	public void setBorderColor(RGB color){
 		setPropertyValue(PROP_BORDER_COLOR, color);

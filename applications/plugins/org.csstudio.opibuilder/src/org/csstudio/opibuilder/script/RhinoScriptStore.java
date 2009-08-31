@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
+import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.util.UIBundlingThread;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
@@ -47,16 +48,9 @@ public class RhinoScriptStore {
 	
 		scriptScope = new ImporterTopLevel(scriptContext);	
 		
-		//read file
-		IFile[] files = 
-			ResourcesPlugin.getWorkspace().getRoot().findFilesForLocation(
-					ResourcesPlugin.getWorkspace().getRoot().getLocation().append(path));
-		
-		if(files.length < 1)
-			throw new FileNotFoundException("The file " + path.toString() + "does not exist!");
-		
+		//read file			
 		BufferedReader reader = new BufferedReader(
-				new InputStreamReader(files[0].getContents()));	
+				new InputStreamReader(ResourceUtil.pathToInputStream(path)));	
 		
 		//compile
 		script = scriptContext.compileReader(reader, "script", 1, null); //$NON-NLS-1$

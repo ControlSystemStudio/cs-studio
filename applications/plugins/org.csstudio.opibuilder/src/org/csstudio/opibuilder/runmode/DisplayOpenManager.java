@@ -4,19 +4,15 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.util.SizeLimitedStack;
 import org.csstudio.platform.logging.CentralLogger;
-import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.ide.FileStoreEditorInput;
-import org.eclipse.ui.part.FileEditorInput;
 
 /**A manager help to manage the display open history and provide go back and forward functions.
  * @author Xihui Chen
@@ -48,6 +44,21 @@ public class DisplayOpenManager {
 		
 		openOPI(backStack.pop());
 		
+	}
+
+	private IFile getCurrentFileInEditor() {
+		IFile file = null;
+		IEditorInput input = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().
+		getActiveEditor().getEditorInput();
+		try {
+			file = ResourceUtil.getFileInEditor(input);
+		} catch (FileNotFoundException e) {
+			CentralLogger.getInstance().error(this, e);
+			MessageDialog.openError(Display.getDefault().getActiveShell(), "File Open Error",
+					e.getMessage());	
+		}
+		
+		return file;
 	}
 
 	/**
@@ -105,37 +116,7 @@ public class DisplayOpenManager {
 		}
 	}
 
-	/**
-	 * @return
-	 */
-	private IFile getCurrentFileInEditor() {
-		IFile file = null;
-		IEditorInput input;
-		input = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().
-				getActiveEditor().getEditorInput();
-		if(input instanceof FileEditorInput)
-			file = ((FileEditorInput)input).getFile();
-		else if (input instanceof FileStoreEditorInput) {
-			IPath path = URIUtil.toPath(((FileStoreEditorInput) input)
-					.getURI());
-			//read file
-			IFile[] files = 
-				ResourcesPlugin.getWorkspace().getRoot().findFilesForLocation(
-						ResourcesPlugin.getWorkspace().getRoot().getLocation().append(path));
-			
-			if(files.length < 1)
-				try {
-					throw new FileNotFoundException("The file " + path.toString() + "does not exist!");
-				} catch (FileNotFoundException e) {
-					CentralLogger.getInstance().error(this, e);
-					MessageDialog.openError(Display.getDefault().getActiveShell(), "File Open Error",
-							e.getMessage());					
-				}
-			
-			file = files[0];
-		}
-		return file;
-	}
+	
 	
 	public void addListener(IDisplayOpenManagerListener listener){
 		if(!listeners.contains(listener))

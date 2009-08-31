@@ -21,6 +21,9 @@ public class OPIBuilderPlugin extends AbstractUIPlugin {
 	 * The ID of the widget extension point.
 	 */
 	public static final String EXTPOINT_WIDGET = PLUGIN_ID + ".widget"; //$NON-NLS-1$
+	
+	
+	public static final String OPI_FILE_EXTENSION = "opi";
 
 	// The shared instance
 	private static OPIBuilderPlugin plugin;

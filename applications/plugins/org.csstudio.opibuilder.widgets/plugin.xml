@@ -137,6 +137,24 @@
             model_class="org.csstudio.opibuilder.widgets.model.BoolButtonModel"
             name="Boolean Button"
             typeId="org.csstudio.opibuilder.widgets.BoolButton">
+      </widget>
+      <widget
+            category="Others"
+            description="A container widget which can group other widgets."
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.GroupingContainerEditPart"
+            icon="icons/groupcontainer.gif"
+            model_class="org.csstudio.opibuilder.widgets.model.GroupingContainerModel"
+            name="Grouping Container"
+            typeId="org.csstudio.opibuilder.widgets.groupingContainer">
+      </widget>
+      <widget
+            category="Others"
+            description="A container widget which can load another OPI file."
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.LinkingContainerEditpart"
+            icon="icons/linkingcontainer.gif"
+            model_class="org.csstudio.opibuilder.widgets.model.LinkingContainerModel"
+            name="Linking Container"
+            typeId="org.csstudio.opibuilder.widgets.linkingContainer">
       </widget>     
    </extension>
 
