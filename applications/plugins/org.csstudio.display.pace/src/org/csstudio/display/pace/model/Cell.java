@@ -38,6 +38,12 @@ public class Cell implements PVListener, IProcessVariable
 
     final private Column column;
     
+    /** Name of the cell's PV.
+     *  Matches pv.getName() except for possible 'decoration'
+     *  like "ca://" that the PV adds.
+     */
+    final private String pv_name;
+    
     /** Control system PV for 'live' value */
     final private PV pv;
     
@@ -65,7 +71,7 @@ public class Cell implements PVListener, IProcessVariable
     {
         this.instance = instance;
         this.column = column;
-        String pv_name = Macro.apply(instance.getMacros(), column.getPvWithMacros());
+        pv_name = Macro.apply(instance.getMacros(), column.getPvWithMacros());
 
         //  Create the main PV and add listener
         this.pv = PVFactory.createPV(pv_name);
@@ -73,23 +79,23 @@ public class Cell implements PVListener, IProcessVariable
 
         // Create the optional comment pvs.
         // No listener. Their value is fetched on demand.
-        pv_name=Macro.apply(instance.getMacros(), column.getNamePvWithMacros());
-        if (pv_name.length() <= 0)
+        String name=Macro.apply(instance.getMacros(), column.getNamePvWithMacros());
+        if (name.length() <= 0)
             last_name_pv = null;
         else
-            last_name_pv = PVFactory.createPV(pv_name);
+            last_name_pv = PVFactory.createPV(name);
         
-        pv_name = Macro.apply(instance.getMacros(), column.getDatePvWithMacros());
-        if (pv_name.length() <= 0)
+        name = Macro.apply(instance.getMacros(), column.getDatePvWithMacros());
+        if (name.length() <= 0)
             last_date_pv = null;
         else
-            last_date_pv = PVFactory.createPV(pv_name);
+            last_date_pv = PVFactory.createPV(name);
         
-        pv_name = Macro.apply(instance.getMacros(), column.getCommentPvWithMacros());
-        if (pv_name.length() <= 0)
+        name = Macro.apply(instance.getMacros(), column.getCommentPvWithMacros());
+        if (name.length() <= 0)
             last_comment_pv = null;
         else
-            last_comment_pv = PVFactory.createPV(pv_name);
+            last_comment_pv = PVFactory.createPV(name);
     }
 
     /** @return Instance (row) that contains this cell */
@@ -288,7 +294,7 @@ public class Cell implements PVListener, IProcessVariable
      */
     public String getName()
     {
-        return pv.getName();
+        return pv_name;
     }
 
     /** @return Name of comment PV or "" */
