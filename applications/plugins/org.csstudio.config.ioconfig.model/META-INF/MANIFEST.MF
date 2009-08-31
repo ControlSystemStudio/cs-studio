@@ -13,6 +13,7 @@ Export-Package: org.csstudio.config.ioconfig.model,
  org.csstudio.config.ioconfig.model.pbmodel.gsdParser,
  org.csstudio.config.ioconfig.model.preference,
  org.csstudio.config.ioconfig.model.service,
+ org.csstudio.config.ioconfig.model.tools,
  org.csstudio.config.ioconfig.model.xml
 Bundle-ClassPath: bin/,
  .,

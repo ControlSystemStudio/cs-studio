@@ -26,9 +26,7 @@ package org.csstudio.config.ioconfig.config.view.helper;
 
 import java.awt.Desktop;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -37,8 +35,10 @@ import java.util.Set;
 
 import org.csstudio.config.ioconfig.config.view.NodeConfig;
 import org.csstudio.config.ioconfig.model.Document;
+import org.csstudio.config.ioconfig.model.IDocument;
 import org.csstudio.config.ioconfig.model.Node;
 import org.csstudio.config.ioconfig.model.Repository;
+import org.csstudio.config.ioconfig.model.tools.Helper;
 import org.csstudio.config.ioconfig.view.Activator;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -89,9 +89,9 @@ public class DocumentationManageView extends Composite {
 
         @Override
         public boolean select(Viewer viewer, Object parentElement, Object element) {
-            if (element instanceof Document) {
+            if (element instanceof IDocument) {
                 boolean status = false;
-                Document doc = (Document) element;
+                IDocument doc = (IDocument) element;
 
                 if (doc.getSubject() != null) {
                     status |= doc.getSubject().contains(_filterString);
@@ -133,7 +133,7 @@ public class DocumentationManageView extends Composite {
                 return list.toArray(new Document[list.size()]);
             } else if (arg0 instanceof Set) {
                 Set docSet = (Set) arg0;
-                return docSet.toArray(new Document[docSet.size()]);
+                return docSet.toArray(new IDocument[docSet.size()]);
 
             }
 
@@ -210,17 +210,17 @@ public class DocumentationManageView extends Composite {
          */
         @Override
         public final int compare(final Viewer viewer, final Object o1, final Object o2) {
-            if (o1 instanceof Document && o2 instanceof Document) {
-                Document doc1 = (Document) o1;
-                Document doc2 = (Document) o2;
+            if (o1 instanceof IDocument && o2 instanceof IDocument) {
+                IDocument doc1 = (IDocument) o1;
+                IDocument doc2 = (IDocument) o2;
                 int multi = -1;
                 int erg = 0;
                 if (_backward) {
                     multi = 1;
                 }
-                
+
                 erg = compareColumn(_column, doc1, doc2, multi);
-                
+
                 if (erg == 0) {
                     multi = -1;
                     if (_lastSortBackward) {
@@ -234,39 +234,39 @@ public class DocumentationManageView extends Composite {
             }
         }
 
-        private int compareColumn(int column, Document doc1, Document doc2, int multi) {
+        private int compareColumn(int column, IDocument doc1, IDocument doc2, int multi) {
             int resulte;
             switch (column) {
                 default:
                 case 0:
-                    if(doc1.getSubject()==null&&doc2.getSubject()==null) {
+                    if (doc1.getSubject() == null && doc2.getSubject() == null) {
                         resulte = 0;
-                    } else if(doc1.getSubject()==null) {
+                    } else if (doc1.getSubject() == null) {
                         resulte = multi;
-                    } else if(doc2.getSubject()==null) {
-                        resulte = -1*multi;
+                    } else if (doc2.getSubject() == null) {
+                        resulte = -1 * multi;
                     } else {
                         resulte = multi * doc1.getSubject().compareTo(doc2.getSubject());
                     }
                     break;
                 case 1:
-                    if(doc1.getDesclong()==null&&doc2.getDesclong()==null) {
+                    if (doc1.getDesclong() == null && doc2.getDesclong() == null) {
                         resulte = 0;
-                    } else if(doc1.getDesclong()==null) {
+                    } else if (doc1.getDesclong() == null) {
                         resulte = multi;
-                    } else if(doc2.getDesclong()==null) {
-                        resulte = -1*multi;
+                    } else if (doc2.getDesclong() == null) {
+                        resulte = -1 * multi;
                     } else {
                         resulte = multi * doc1.getDesclong().compareTo(doc2.getDesclong());
                     }
                     break;
                 case 2:
-                    if(doc1.getKeywords()==null&&doc2.getKeywords()==null) {
+                    if (doc1.getKeywords() == null && doc2.getKeywords() == null) {
                         resulte = 0;
-                    } else if(doc1.getKeywords()==null) {
+                    } else if (doc1.getKeywords() == null) {
                         resulte = multi;
-                    } else if(doc2.getKeywords()==null) {
-                        resulte = -1*multi;
+                    } else if (doc2.getKeywords() == null) {
+                        resulte = -1 * multi;
                     } else {
                         resulte = multi * doc1.getKeywords().compareTo(doc2.getKeywords());
                     }
@@ -427,23 +427,23 @@ public class DocumentationManageView extends Composite {
                 };
                 if (addDocDialog.open() == 0) {
                     Document document = addDocDialog.getDocument();
-                    System.out.println("Doc is :"+document);
-                    System.out.println("Doc getAccountname :"+document.getAccountname());
-                    System.out.println("Doc getDesclong :"+document.getDesclong());
-                    System.out.println("Doc getErroridentifyer :"+document.getErroridentifyer());
-                    System.out.println("Doc getId :"+document.getId());
-                    System.out.println("Doc getKeywords :"+document.getKeywords());
-                    System.out.println("Doc getLinkForward :"+document.getLinkForward());
-                    System.out.println("Doc getLinkId :"+document.getLinkId());
-                    System.out.println("Doc getLocation :"+document.getLocation());
-                    System.out.println("Doc getLogseverity :"+document.getLogseverity());
-                    System.out.println("Doc getMimeType :"+document.getMimeType());
-                    System.out.println("Doc getSubject :"+document.getSubject());
-                    System.out.println("Doc getCreatedDate :"+document.getCreatedDate());
-                    System.out.println("Doc getDeleteDate :"+document.getDeleteDate());
-                    System.out.println("Doc getEntrydate :"+document.getEntrydate());
+                    System.out.println("Doc is :" + document);
+                    System.out.println("Doc getAccountname :" + document.getAccountname());
+                    System.out.println("Doc getDesclong :" + document.getDesclong());
+                    System.out.println("Doc getErroridentifyer :" + document.getErroridentifyer());
+                    System.out.println("Doc getId :" + document.getId());
+                    System.out.println("Doc getKeywords :" + document.getKeywords());
+                    System.out.println("Doc getLinkForward :" + document.getLinkForward());
+                    System.out.println("Doc getLinkId :" + document.getLinkId());
+                    System.out.println("Doc getLocation :" + document.getLocation());
+                    System.out.println("Doc getLogseverity :" + document.getLogseverity());
+                    System.out.println("Doc getMimeType :" + document.getMimeType());
+                    System.out.println("Doc getSubject :" + document.getSubject());
+                    System.out.println("Doc getCreatedDate :" + document.getCreatedDate());
+                    System.out.println("Doc getDeleteDate :" + document.getDeleteDate());
+                    System.out.println("Doc getEntrydate :" + document.getEntrydate());
                     try {
-                        System.out.println("Doc is :"+document.getImage().length());
+                        System.out.println("Doc is :" + document.getImage().length());
                     } catch (SQLException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
@@ -586,15 +586,19 @@ public class DocumentationManageView extends Composite {
                 String open = fileDialog.open();
                 if (open != null) {
                     File outFile = new File(open);
-                    writeDocumentFile(outFile, firstElement);
+                    try {
+                        Helper.writeDocumentFile(outFile, firstElement);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 
         });
 
         // Show
-        // label = new Label(chosserComposite, SWT.NONE);
-        // label.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true));
         Button showButton = new Button(chosserComposite, SWT.PUSH);
         showButton.setText("Show");
         showButton.setToolTipText("Show the selected Documents");
@@ -617,26 +621,29 @@ public class DocumentationManageView extends Composite {
                 File createTempFile = null;
                 try {
                     String filename = firstElement.getSubject();
-                    if(filename==null||filename.length()<1) {
+                    if (filename == null || filename.length() < 1) {
                         filename = "showTmp";
                     }
-                    createTempFile = File.createTempFile(filename, "."
-                            + firstElement.getMimeType());
-                    writeDocumentFile(createTempFile, firstElement);
-                    if(createTempFile!=null&&createTempFile.isFile()) {
-                        if(Desktop.isDesktopSupported()) {
-                            //TODO: The VM crashed when open or Brows a File.
-                            if(Desktop.getDesktop().isSupported(Desktop.Action.OPEN)) {
-                                CentralLogger.getInstance().debug(this,"Desktop unterstützt Open!");
+                    createTempFile = File
+                            .createTempFile(filename, "." + firstElement.getMimeType());
+                    Helper.writeDocumentFile(createTempFile, firstElement);
+                    if (createTempFile != null && createTempFile.isFile()) {
+                        if (Desktop.isDesktopSupported()) {
+                            if (Desktop.getDesktop().isSupported(Desktop.Action.OPEN)) {
+                                CentralLogger.getInstance()
+                                        .debug(this, "Desktop unterstützt Open!");
                                 Desktop.getDesktop().open(createTempFile);
                             }
-                            if(Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
-                                CentralLogger.getInstance().debug(this,"Desktop unterstützt Browse!");
+                            if (Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+                                CentralLogger.getInstance().debug(this,
+                                        "Desktop unterstützt Browse!");
                                 Desktop.getDesktop().browse(createTempFile.toURI());
                             }
                         }
                     }
                 } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (SQLException e) {
                     e.printStackTrace();
                 }
             }
@@ -683,7 +690,7 @@ public class DocumentationManageView extends Composite {
         column.getColumn().setText("Subject");
         column.setLabelProvider(new CellLabelProvider() {
             public void update(ViewerCell cell) {
-                cell.setText(((Document) cell.getElement()).getSubject());
+                cell.setText(((IDocument) cell.getElement()).getSubject());
             }
         });
         tableColumnLayout.setColumnData(column.getColumn(), new ColumnWeightData(2, 100, true));
@@ -693,7 +700,7 @@ public class DocumentationManageView extends Composite {
         column.getColumn().setText("MimeType");
         column.setLabelProvider(new CellLabelProvider() {
             public void update(ViewerCell cell) {
-                cell.setText(((Document) cell.getElement()).getMimeType());
+                cell.setText(((IDocument) cell.getElement()).getMimeType());
             }
         });
         tableColumnLayout.setColumnData(column.getColumn(), new ColumnPixelData(30, true));
@@ -708,15 +715,15 @@ public class DocumentationManageView extends Composite {
                 public void update(ViewerCell cell) {
                     switch (cloumnNo) {
                         case 0:
-                            cell.setText(((Document) cell.getElement()).getDesclong());
+                            cell.setText(((IDocument) cell.getElement()).getDesclong());
                             break;
                         case 1:
                             cell
-                                    .setText(((Document) cell.getElement()).getCreatedDate()
+                                    .setText(((IDocument) cell.getElement()).getCreatedDate()
                                             .toString());
                             break;
                         case 2:
-                            cell.setText(((Document) cell.getElement()).getKeywords());
+                            cell.setText(((IDocument) cell.getElement()).getKeywords());
                             break;
                         default:
                             break;
@@ -787,28 +794,6 @@ public class DocumentationManageView extends Composite {
             Node node = _parentNodeConfig.getNode();
             setDocs(node.getDocuments());
             _isActicate = true;
-        }
-    }
-
-    private static void writeDocumentFile(File outFile, Document document) {
-        try {
-            InputStream inputStream;
-            inputStream = document.getImage().getBinaryStream();
-            byte[] buffer = new byte[8192];
-            int bytesRead = 0;
-            try {
-                FileOutputStream fileOutputStream = new FileOutputStream(outFile);
-                while ((bytesRead = inputStream.read(buffer)) > 0) {
-                    fileOutputStream.write(buffer, 0, bytesRead);
-                }
-                fileOutputStream.flush();
-                inputStream.close();
-                fileOutputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
 

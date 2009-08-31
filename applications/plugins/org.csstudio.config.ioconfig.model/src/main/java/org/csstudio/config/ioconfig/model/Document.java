@@ -26,6 +26,7 @@ package org.csstudio.config.ioconfig.model;
 
 import java.io.InputStream;
 import java.sql.Blob;
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.Set;
 
@@ -48,7 +49,7 @@ import org.hibernate.Hibernate;
 @Entity
 @Table(name = "MIME_FILES_LINK")
 //@Table(name = "MIME_FILES_LINK_TEST")
-public class Document implements Comparable<Document> {
+public class Document implements Comparable<Document>, IDocument {
 
     /**
      * MIME_FILES DB Key.
@@ -137,9 +138,8 @@ public class Document implements Comparable<Document> {
         setKeywords(keywords);
     }
 
-    /**
-     * 
-     * @return the Document Id key.
+    /* (non-Javadoc)
+     * @see org.csstudio.config.ioconfig.model.IDocument#getId()
      */
     @Id
     @Column(length = 100)
@@ -155,9 +155,8 @@ public class Document implements Comparable<Document> {
         _id = id;
     }
 
-    /**
-     * 
-     * @return the MIME type of this Document.
+    /* (non-Javadoc)
+     * @see org.csstudio.config.ioconfig.model.IDocument#getMimeType()
      */
     @Column(name = "MIME_TYPE", length = 10)
     public String getMimeType() {
@@ -183,6 +182,12 @@ public class Document implements Comparable<Document> {
         return _image;
     }
 
+    @Transient
+    public InputStream getImageData() throws SQLException {
+        return _image.getBinaryStream();
+    }
+    
+    
     /**
      * The Documentation File. The Name is historic conditional on Data Base.
      * @param image Set the Documentation File.
@@ -198,9 +203,8 @@ public class Document implements Comparable<Document> {
     
     
 
-    /**
-     * 
-     * @return the created date of the Document.
+    /* (non-Javadoc)
+     * @see org.csstudio.config.ioconfig.model.IDocument#getCreatedDate()
      */
     @Column(name = "CREATED_DATE")
     public Date getCreatedDate() {
@@ -215,6 +219,9 @@ public class Document implements Comparable<Document> {
         _createdDate = createdDate;
     }
 
+    /* (non-Javadoc)
+     * @see org.csstudio.config.ioconfig.model.IDocument#getAccountname()
+     */
     @Column(length = 30)
     public String getAccountname() {
         return _accountname;
@@ -224,6 +231,9 @@ public class Document implements Comparable<Document> {
         _accountname = accountname;
     }
 
+    /* (non-Javadoc)
+     * @see org.csstudio.config.ioconfig.model.IDocument#getEntrydate()
+     */
     public Date getEntrydate() {
         return _entrydate;
     }
@@ -232,6 +242,9 @@ public class Document implements Comparable<Document> {
         _entrydate = entrydate;
     }
 
+    /* (non-Javadoc)
+     * @see org.csstudio.config.ioconfig.model.IDocument#getLogseverity()
+     */
     @Column(length = 16)
     public String getLogseverity() {
         return _logseverity;
@@ -241,6 +254,9 @@ public class Document implements Comparable<Document> {
         _logseverity = logseverity;
     }
 
+    /* (non-Javadoc)
+     * @see org.csstudio.config.ioconfig.model.IDocument#getLinkId()
+     */
     @Column(name = "LINK_ID", length = 100)
     public String getLinkId() {
         return _linkId;
@@ -250,6 +266,9 @@ public class Document implements Comparable<Document> {
         _linkId = linkId;
     }
 
+    /* (non-Javadoc)
+     * @see org.csstudio.config.ioconfig.model.IDocument#getSubject()
+     */
     @Column(length = 200)
     public String getSubject() {
         return _subject;
@@ -259,6 +278,9 @@ public class Document implements Comparable<Document> {
         _subject = subject;
     }
 
+    /* (non-Javadoc)
+     * @see org.csstudio.config.ioconfig.model.IDocument#getDesclong()
+     */
     @Column(length = 4000)
     public String getDesclong() {
         return _desclong;
@@ -268,6 +290,9 @@ public class Document implements Comparable<Document> {
         _desclong = desclong;
     }
 
+    /* (non-Javadoc)
+     * @see org.csstudio.config.ioconfig.model.IDocument#getLinkForward()
+     */
     @Column(name = "Link_Forward", length = 200)
     public String getLinkForward() {
         return _linkForward;
@@ -277,6 +302,9 @@ public class Document implements Comparable<Document> {
         _linkForward = linkForward;
     }
 
+    /* (non-Javadoc)
+     * @see org.csstudio.config.ioconfig.model.IDocument#getErroridentifyer()
+     */
     @Column(length = 30)
     public String getErroridentifyer() {
         return _erroridentifyer;
@@ -286,6 +314,9 @@ public class Document implements Comparable<Document> {
         _erroridentifyer = erroridentifyer;
     }
 
+    /* (non-Javadoc)
+     * @see org.csstudio.config.ioconfig.model.IDocument#getDeleteDate()
+     */
     @Column(name = "DELETE_DATE")
     public Date getDeleteDate() {
         return _deleteDate;
@@ -295,6 +326,9 @@ public class Document implements Comparable<Document> {
         _deleteDate = deleteDate;
     }
 
+    /* (non-Javadoc)
+     * @see org.csstudio.config.ioconfig.model.IDocument#getUpdateDate()
+     */
     @Column(name = "UPDATE_DATE")
     public Date getUpdateDate() {
         return _updateDate;
@@ -304,6 +338,9 @@ public class Document implements Comparable<Document> {
         _updateDate = updateDate;
     }
 
+    /* (non-Javadoc)
+     * @see org.csstudio.config.ioconfig.model.IDocument#getLocation()
+     */
     @Column(length = 30)
     public String getLocation() {
         return _location;
@@ -313,6 +350,9 @@ public class Document implements Comparable<Document> {
         _location = location;
     }
 
+    /* (non-Javadoc)
+     * @see org.csstudio.config.ioconfig.model.IDocument#getKeywords()
+     */
     @Column(length = 200)
     public String getKeywords() {
         return _keywords;

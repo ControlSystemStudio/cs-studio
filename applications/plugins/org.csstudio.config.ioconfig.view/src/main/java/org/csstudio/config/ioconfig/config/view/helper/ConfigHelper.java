@@ -112,7 +112,7 @@ public final class ConfigHelper {
             if (e.keyCode == SWT.CR || e.keyCode == SWT.KEYPAD_CR) {
                 _modifyListener.doIt();
                 spinner.setSelection(spinner.getSelection());
-                _modifyListener.modifyText(new ModifyEvent(new Event()));
+//                _modifyListener.modifyText(new ModifyEvent(new Event()));
             } else if (e.keyCode == SWT.ESC) {
                 spinner.setSelection(_modifyListener.getLastvalue());
                 _modifyListener.doIt();
@@ -538,72 +538,71 @@ public final class ConfigHelper {
         return indexSpinner;
     }
 
-    
-    
     public static Image getImageFromNode(Node node) {
         return getImageFromNode(node, -1, -1);
     }
-    
-    public static Image getImageFromNode(Node node, int width, int height) {
-        NodeImage icon = node.getIcon();
-        if (icon != null) {
-            ByteArrayInputStream bais = new ByteArrayInputStream(icon.getImageBytes());
-            Image image = new Image(null, bais);
-            return image;
-        }
-        // Get Default Image
-        if (node instanceof Facility) {
-            return getImageMaxSize("icons/css.gif", width, height);
-        } else if (node instanceof Facility) {
-            return getImageMaxSize("icons/3055555W.bmp", width, height);
-        } else if (node instanceof Ioc) {
-            return getImageMaxSize("icons/Buskopan.bmp", width, height);
-        } else if (node instanceof ProfibusSubnet) {
-            return getImageMaxSize("icons/Profibus2020.bmp", width, height);
-        } else if (node instanceof Master) {
-            return getImageMaxSize("icons/ProfibusMaster2020.bmp",width,height);
-        } else if (node instanceof Slave) {
-            return getImageMaxSize("icons/sie80a6n.bmp",width,height);
-        } else if (node instanceof Module) {
-            return getImageMaxSize("icons/3055555W.bmp",width,height);
-        } else if (node instanceof Channel) {
-            Channel channel = (Channel)node;
-            return getChannelImage(channel.isInput(),channel.isDigital(),width,height);
-        }
 
+    public static Image getImageFromNode(Node node, int width, int height) {
+        if (node != null) {
+            NodeImage icon = node.getIcon();
+            if (icon != null) {
+                ByteArrayInputStream bais = new ByteArrayInputStream(icon.getImageBytes());
+                Image image = new Image(null, bais);
+                return image;
+            }
+            // Get Default Image
+            if (node instanceof Facility) {
+                return getImageMaxSize("icons/css.gif", width, height);
+            } else if (node instanceof Facility) {
+                return getImageMaxSize("icons/3055555W.bmp", width, height);
+            } else if (node instanceof Ioc) {
+                return getImageMaxSize("icons/Buskopan.bmp", width, height);
+            } else if (node instanceof ProfibusSubnet) {
+                return getImageMaxSize("icons/Profibus2020.bmp", width, height);
+            } else if (node instanceof Master) {
+                return getImageMaxSize("icons/ProfibusMaster2020.bmp", width, height);
+            } else if (node instanceof Slave) {
+                return getImageMaxSize("icons/sie80a6n.bmp", width, height);
+            } else if (node instanceof Module) {
+                return getImageMaxSize("icons/3055555W.bmp", width, height);
+            } else if (node instanceof Channel) {
+                Channel channel = (Channel) node;
+                return getChannelImage(channel.isInput(), channel.isDigital(), width, height);
+            }
+        }
         return null;
     }
 
     public static Image getImageMaxSize(String imagePath, int width, int height) {
         ImageData imageData = CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
                 Activator.PLUGIN_ID, imagePath).getImageData();
-        if(width>0&&height>0) {
+        if (width > 0 && height > 0) {
             int width2 = imageData.width;
             int height2 = imageData.height;
-            
-            if(width2>width&&height2>height) {
+
+            if (width2 > width && height2 > height) {
                 width2 = width;
                 height2 = height;
             }
-            
+
             return new Image(null, imageData.scaledTo(width2, height2));
         }
         return new Image(null, imageData);
     }
-    
+
     private static Image getChannelImage(boolean isInput, boolean isDigital, int width, int height) {
         // DI
         if (isInput && !isDigital) {
-            return getImageMaxSize("icons/Input_red16.png",width,height);
+            return getImageMaxSize("icons/Input_red16.png", width, height);
             // DO
         } else if (isInput && isDigital) {
-            return getImageMaxSize("icons/Input_green16.png",width,height);
+            return getImageMaxSize("icons/Input_green16.png", width, height);
             // AI
         } else if (!isInput && !isDigital) {
-            return getImageMaxSize("icons/Output_red16.png",width,height);
+            return getImageMaxSize("icons/Output_red16.png", width, height);
             // AO
         } else if (!isInput && isDigital) {
-            return getImageMaxSize("icons/Output_green16.png",width,height);
+            return getImageMaxSize("icons/Output_green16.png", width, height);
         }
 
         return null;

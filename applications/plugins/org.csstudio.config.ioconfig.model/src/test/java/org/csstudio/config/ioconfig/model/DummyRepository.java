@@ -42,10 +42,6 @@ public class DummyRepository implements IReposetory {
         return null;
     }
 
-    public Document save(Document document) {
-        return null;
-    }
-
     public <T extends DBClass> T saveOrUpdate(T dbClass) throws PersistenceException {
         dbClass.setId(id++);
         return null;
@@ -84,6 +80,12 @@ public class DummyRepository implements IReposetory {
     }
 
     public List<Integer> getRootPath(int id) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Document save(Document document) {
         // TODO Auto-generated method stub
         return null;
     }

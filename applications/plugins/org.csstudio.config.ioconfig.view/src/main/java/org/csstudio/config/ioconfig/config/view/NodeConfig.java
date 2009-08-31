@@ -733,7 +733,10 @@ public abstract class NodeConfig extends Composite {
      * @return only true when the node has on or more changes.
      */
     public final boolean isDirty() {
-        return _saveButton.getEnabled();
+        if(_saveButton!=null) {
+            return _saveButton.getEnabled();
+        }
+        return false;
     }
 
     public void cancel() {
