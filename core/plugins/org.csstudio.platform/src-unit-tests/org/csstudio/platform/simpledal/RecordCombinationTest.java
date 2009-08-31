@@ -22,19 +22,16 @@ import org.junit.Test;
 public class RecordCombinationTest {
 
     private final class ObjectValueListener implements IProcessVariableValueListener<Object> {
-        @Override
         public void connectionStateChanged(ConnectionState connectionState) {
             // TODO Auto-generated method stub
             
         }
         
-        @Override
         public void errorOccured(String error) {
             System.out.println("Error: " + error);
             
         }
         
-        @Override
         public void valueChanged(Object value, Timestamp timestamp) {
             System.out.println("Object Value change: " + value + " on " + timestamp);
             assertNotNull(value);
