@@ -2,9 +2,9 @@
 <?NLS TYPE="org.eclipse.help.toc"?>
 
 <toc link_to="../org.csstudio.platform.ui/tocApps.xml#alarm" label="Alarm Tree">
-	<topic label="Alarm Tree" href="html/en/index.html">
-		<topic label="User's Guide" href="html/en/users_guide.html"/>
-		<topic label="Developer's Guide" href="html/en/developers_guide.html"> 
+	<topic label="Alarm Tree" href="html/index.html">
+		<topic label="User's Guide" href="html/users_guide.html"/>
+		<topic label="Developer's Guide" href="html/developers_guide.html"> 
 		</topic>
 	</topic>
 </toc>
