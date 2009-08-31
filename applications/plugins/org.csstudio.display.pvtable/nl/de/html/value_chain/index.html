@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<title>Value Chain</title>
+</head>
+
+<body>
+<h1>Value handling, Threads</h1>
+When receiving a new value from EPICS Channel Access
+or whatever network protocol is used, one <u>cannot</u>
+immediately update the screen with that value:
+<ol>
+<li>The network library probably uses multiple threads,
+    yet Eclipse UI updates must only happen inside the UI thread.
+<li>When many new values arrive, tbat can be too much
+    for the GUI.
+</ol>
+
+Currently, each new value is handled as follows:
+
+<center>
+<img src=value_chain.png>
+</center>
+<ol>
+<li>ChannelAccess client library has unknown threads, further wrapped by
+    the PVTable's 'PV' interface (EPICS_V3_PV implementation).
+<li>PVListModel receives PV value updates, and marks the associated entry
+    as "changed".
+<li>Periodic PVListModelValueUpdateThread checks if any model entries
+    have changed, and notifies listeners.
+    This layer throttles the updates. Even if multiple value updates arrive for an
+    entry between checks, only one entry update is sent.<p>
+    <i>Up to here, it's all independent of Eclipse APIs</i>
+<li>The PVTableViewerHelper which interfaces the model with the SWT table
+    in the editor or viewer receives the updates.
+    It uses 'Display.syncExec' to run the table update in the UI thread.<br>
+    Used 'syncExec' instead of 'asyn..' because the update thread should
+    wait for the updates to finish, not start new updates in case the current
+    screen redraw is too slow.    
+</ol>
+
+Advantage: Separation of network lib, model, UI.
+<p>
+Disadvantage: Too many layers, overall too slow?
+
+<ul>
+<li>Original Performace: "Editor" table with 99 PVs at 10Hz used 70..75% CPU,
+    and didn't really update at 10Hz.
+<li>Added hash map to resolve arriving PV monitors to the table entry:
+    No change.
+<li>Separated PV model listeners to 'value' from the model 'structure' listeners,
+    so that table editor can only listen to 'structure' changes in order to
+    update the 'dirty' status, but ignore the value updates which are alread handled
+    by the PVTableViewerHelper: 60..70% CPU load, but still not 10Hz display updates.
+<li>Enabled 'setUseHashlookup(true)' for the JFace table viewer
+    (which uses SWT.VIRTUAL with ILazyContentProvider): No visible change,
+    though mapping from model entry to associated SWT widget looks 'faster'
+    in the debugger.
+</ul>
+
+One fundamental issue is the Eclipse Table and TableViewer.
+In principle, it seems reasonable to only redraw the table cells
+that actually change dynamically (time, PV, Readback).
+But any attempts to redraw only those cells, or maybe only the changed
+table rows turned out to be much slower than a full table refresh.
+
+</body>
+</html>

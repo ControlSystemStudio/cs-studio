@@ -1,0 +1,41 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<title>CSS-System-Monitor</title>
+</head>
+
+<body> 
+<h1>CSS-System-Monitor</h1>
+Ein einfacher System-Monitor zum Überwachen der Speicherbenutzung.
+<p>
+Die angezeigten "max", "total" und "free" Speicherwerte werden von der Java-
+<b>Runtime</b>-API übernommen. Ihre Bedeutung ist nicht unmittelbar einleuchtend:
+
+<ul>
+<li>"Max" Memory:<br>
+Der maximale Betrag an Speicher, den die Java Virtual Machine (JVM) je zu 
+benutzen versuchen wird. Dies ist eine Obergrenze, die sicherstellt, 
+dass JVM nicht den gesamten Speicher belegt.
+<li>"Total":<br>
+Der Betrag an Speicher, den die JVM aktuell für "objects in-use" in Benutzung hat
+und für neue Objekte bereits reserviert hat. Viele Leute nennen diesen Speicher
+"Available" Memory.
+<li>"Free":<br>
+Speicher, den die JVM als "frei" betrachtet.
+</ul>
+Wenn man einfach "available" and "used" Memory betrachtet, könnte man
+annehmen, dass "max - total + free" gleich dem verfügbaren Speicher ist,
+aber das Verhalten der JVM Garbage-Collection ist sehr unvorhersagbar:
+Manchmal wird Speicher festgehalten, der eigentlich schon frei sein sollte
+und manchmal wird er sofort freigegeben.
+<h2>Manuelle Garbage-Collection</h2>
+Die Betätigung des "GC"-Knopfs triggert eine Garbage Collection.
+Das kann für Tests sinnvoll sein, aber im Allgemeinen ist es am Besten, 
+die Garbage-Collection der JVM zu überlassen; d.h., es ist nicht nötig, dass
+Benutzer periodisch die Garbage-Collection triggern.
+<h2>Setup</h2>
+Alle Einstellungen können über die System-Monitor-Preference-Page verändert werden.
+</body>
+</html>

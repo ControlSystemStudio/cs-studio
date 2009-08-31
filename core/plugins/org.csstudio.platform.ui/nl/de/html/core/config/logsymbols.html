@@ -1,0 +1,186 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><!-- InstanceBegin template="/Templates/CSS Help.dwt" codeOutsideHTMLIsLocked="false" -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link rel="stylesheet" type="text/css" href="../../css/css_style.css"/>
+<!-- InstanceBeginEditable name="doctitle" -->
+<title>Log Pattern Symbols</title>
+<!-- InstanceEndEditable -->
+<!-- InstanceBeginEditable name="head" --><!-- InstanceEndEditable -->
+</head>
+<body>
+	<table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="100%">
+      <tr>
+        <td width="82%">
+          	<h1 align="left">
+		  	<!-- InstanceBeginEditable name="chapterTitle" -->
+		  	Log	Pattern Symbols*<!-- InstanceEndEditable -->		  </h1>
+		</td>
+        <td width="18%">
+			<img src="../../images/css128x128.gif" width="128" height="128" border="0" align="right" />
+		</td>
+      </tr>
+    </table>
+    <p><hr noshade="0" /></p>
+	
+	<!-- The editable region stars here! -->
+	<!-- InstanceBeginEditable name="body" -->
+	<table border="0" CELLPADDING="8">
+	<tr>
+	<td valign="top"><div align="left"><strong>Symbol</strong></div></td>
+	<td valign="top"><div align="left"><strong>Effect</strong></div></td>
+	</tr>
+
+<tr>
+<td align=center valign="top"><b>c</b></td>
+
+<td valign="top">Used to output the category of the logging event. The
+category conversion specifier can be optionally followed by
+<em>precision specifier</em>, that is a decimal constant in
+brackets.
+
+<p>If a precision specifier is given, then only the corresponding
+number of right most components of the category name will be
+printed. By default the category name is printed in full.
+<p>For example, for the category name "a.b.c" the pattern
+<b>%c{2}</b> will output "b.c".</td>
+</tr>
+
+<tr>
+<td align=center valign="top"><b>C</b></td>
+
+<td valign="top">Used to output the fully qualified class name of the caller
+issuing the logging request. This conversion specifier
+can be optionally followed by <em>precision specifier</em>, that
+is a decimal constant in brackets.
+
+
+<p>If a precision specifier is given, then only the corresponding
+number of right most components of the class name will be
+printed. By default the class name is output in fully qualified form.
+<p>For example, for the class name "org.apache.xyz.SomeClass", the
+pattern <b>%C{1}</b> will output "SomeClass".
+<p><b>WARNING</b> Generating the caller class information is
+slow. Thus, it's use should be avoided unless execution speed is
+not an issue.</td>
+</tr>
+
+<tr> <td align=center valign="top"><b>d</b></td> 
+<td valign="top">Used to output the date of
+the logging event. The date conversion specifier may be
+followed by a <em>date format specifier</em> enclosed between
+braces. For example, <b>%d{HH:mm:ss,SSS}</b> or
+
+<b>%d{dd&nbsp;MMM&nbsp;yyyy&nbsp;HH:mm:ss,SSS}</b>.  If no
+date format specifier is given then ISO8601 format is
+assumed.</td>
+</tr>
+
+<tr>
+<td align=center valign="top"><b>F</b></td>
+
+<td valign="top">Used to output the file name where the logging request was
+issued.
+
+<p><b>WARNING</b> Generating caller location information is
+extremely slow. It's use should be avoided unless execution speed
+is not an issue.</tr>
+
+<tr>
+<td align=center valign="top"><b>l</b></td>
+
+<td valign="top">Used to output location information of the caller which generated
+the logging event.
+
+<p>The location information depends on the JVM implementation but
+usually consists of the fully qualified name of the calling
+method followed by the callers source the file name and line
+number between parentheses.
+<p>The location information can be very useful. However, it's
+generation is <em>extremely</em> slow. It's use should be avoided
+unless execution speed is not an issue.</td>
+</tr>
+
+<tr>
+<td align=center valign="top"><b>L</b></td>
+
+<td valign="top">Used to output the line number from where the logging request
+was issued.
+
+<p><b>WARNING</b> Generating caller location information is
+extremely slow. It's use should be avoided unless execution speed
+is not an issue.</tr>
+
+
+<tr>
+<td align=center valign="top"><b>m</b></td>
+<td valign="top">Used to output the application supplied message associated with
+the logging event.</td>
+</tr>
+
+<tr>
+<td align=center valign="top"><b>M</b></td>
+
+<td valign="top">Used to output the method name where the logging request was
+issued.
+
+<p><b>WARNING</b> Generating caller location information is
+extremely slow. It's use should be avoided unless execution speed
+is not an issue.</tr>
+
+<tr>
+<td align=center valign="top"><b>n</b></td>
+
+<td valign="top">Outputs the platform dependent line separator character or
+characters.
+
+<p>This conversion character offers practically the same
+performance as using non-portable line separator strings such as
+"\n", or "\r\n". Thus, it is the preferred way of specifying a
+line separator.</tr>
+
+<tr>
+<td align=center valign="top"><b>p</b></td>
+
+<td valign="top">Used to output the priority of the logging event.</td>
+</tr>
+
+<tr>
+
+<td align=center valign="top"><b>r</b></td>
+
+<td valign="top">Used to output the number of milliseconds elapsed from the construction 
+of the layout until the creation of the logging event.</td>
+</tr>
+
+
+<tr>
+<td align=center valign="top"><b>t</b></td>
+
+<td valign="top">Used to output the name of the thread that generated the
+logging event.</td>
+</tr>
+
+<tr>
+
+<td align=center valign="top"><b>x</b></td>
+
+<td valign="top">Used to output the NDC (nested diagnostic context) associated
+with the thread that generated the logging event.</td>
+</tr>
+
+
+<tr>
+
+<td align=center valign="top"><b>%</b></td>
+
+<td valign="top">The sequence %% outputs a single percent sign.</td>
+</tr>
+</table>
+
+<hr/>
+<p>
+* This description is taken from http://logging.apache.org/log4j/docs/api/org/apache/log4j/PatternLayout.html</p>
+	<!-- InstanceEndEditable -->	
+</body>
+<!-- InstanceEnd --></html>

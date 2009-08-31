@@ -1,0 +1,107 @@
+<HTML>
+<HEAD>
+<TITLE>Post Analyzer</TITLE>
+<BODY>
+
+<H1>Post Analyzer</H1>
+Dies Tool kann Zeitreihen-Daten, z.B. Daten aus dem Data-Browser, auf verschiedene Arten analysieren.
+<a name="add"><h2>Add Data</h2></a>
+Holen von Daten in den Data-Browser-Plot, dann
+öffnen des Data-Browser-Config-View
+und benutzen des Kontextmenus des ausgewählten
+Data-Browser-PVs oder Formel-Items, um die
+Daten zum Postanalyser zu schicken.
+
+<h2>Algorithms</h2>
+Im Folgenden werden die verfügbaren Algorithmen beschrieben.
+
+<a name="orig"><h3>Original Data</h3></a>
+Dieser Algrrithmus stellt einfach die Originaldaten des ausgewählten Kanals dar.
+
+<center>
+<img src="images/valve.png" width=785 height=495>
+</center>
+
+<h4>Crop</h4>
+Der "crop"-Befehl löscht alle Messdaten, die vor oder hinter dem
+sichtbaren Bereich der Zeitachse des Plot-Fensters liegen.
+Dies kann benutzt werden, um den Algorithmus auf Teilmengen der 
+Original-Daten zu beschränken.
+
+<h4>Baseline Removal</h4>
+Der "Baseline"-Befehl verschiebt das untere Ende der (vertikalen) Y-Achse 
+in den Daten-Nullpunkt, d.h. er zieht den Wert des unteren Y-Achsenabschnitts
+von allen Messwerten ab.
+
+<a name="line"><h3>Line Fit</h3></a>
+Ausführen eines Line-Fits auf die Daten. Die Steigung der Linie widerspiegelt
+die Änderung des Signals innerhalb einer Sekunde.
+
+<a name="exp"><h3>Exponential Fit</h3></a>
+Versucht, die Daten an einen exponentiellen Anstieg oder Abfall zu fitten.
+
+<center>
+<img src="images/exp.png" width=714 height=369>
+</center>
+Man beachte, dass dies nur funktioniert, wenn das Signal
+sich wirklich wie eine exponentielle Funktion 
+<code>ampl * exp(-x/decay)</code> verhält.
+Wenn das Signal einen konstanten Offset 
+<code>baseline + ampl * exp(-x/decay)</code> enthält, 
+geht der Fit schief.
+Manchmal kann man diesen Baseline-Offset beseitigen, indem
+man so zoomt, dass das untere Ende der Y-Achse unter
+dieser Baseline ist und dann den "Baseline" removal button
+benutzt.
+
+<a name="gauss"><h3>Gaussian Fit</h3></a>
+Versucht, die Daten an eine Gauss-Verteilung zu fitten.
+
+<a name="corr"><h3>Correlation</h3></a>
+Korreliert <u>zwei</u> verschiedene Kanäle, benutzt den einen für
+die X-Achse und den anderen für die Y-Achse.
+Wenn beide Kanäle gleich oder sehr ähnlich sind, ist das Ergebnis eine
+diagonale Linie.
+
+<a name="fft"><h3>FFT</h3></a>
+Berechnet die Fourier-Transformation, d.h. das Frequenzspektrum des Signals.
+Die Daten im ursprünglichen "Original Data"-Beispiel repräsentierten eine Röhre,
+die sich alle 4 Minuten einmal dreht, d.h. alle 240 Sekunden bzw. 1/240=0.004 Hz.
+Die FFT zeigt diese 0.004 Hz-Komponente zusätzlich zu der normalen großen DC-Komponente
+bei 0 Hz und einigen anderen Komponenten.
+<center>
+<img src="images/valve_fft.png" width=785 height=495>
+</center>
+
+<h4>Aliasing, Nyquist Limit</h4>
+Das obere FFT-Spektrum-Limit liegt bei der sog. Nyquist-Frequenz.
+Wenn Daten-Punkte alle T Sekunden gegeben sind, ist die Nyquist-Frequenz 1/(2T) Hz.
+Wenn man jede 0.1 Sekunden sampelt, d.h mit 10 Hz., dann beinhaltet die FFT Komponenten
+bis zu 5 Hz. ...
+<center>
+<img src="images/1hz.png" width=811 height=393>
+</center>
+
+... wie man in der FFT-Ansicht sieht:
+<center>
+<img src="images/1hz_fft.png" width=811 height=393>
+</center>
+
+A 6 Hz signal, however, cannot be properly detected in such an undersampled
+setup. The FFT will show an <i>alias</i> 4 Hz component instead of the true
+6 Hz frequency.
+<center>
+<img src="images/6hz_fft.png" width=811 height=393>
+</center>
+
+<h4>Window Filters</h4>
+Die Sample-Frequenz bestimmt as obere Limit des FFT-Spektrums und die
+Gesamtanzahl von Samples bestimmt die Granularität der FFT.
+Häufig liegen die interessierenden Frequenzen zwischen
+Spektrum-Punkten, für die die FFT berechnet wird.
+Durch Benutzung eines Fenster-Filters für die Original-Daten können 
+solche Probleme vermindert werden.
+See <a href="fft0.html">detailed FFT description.</a>
+
+</BODY>
+</HTML>

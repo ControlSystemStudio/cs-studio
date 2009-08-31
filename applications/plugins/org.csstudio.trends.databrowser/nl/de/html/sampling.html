@@ -21,14 +21,9 @@ timestamp zugeordnet. Der letzte Grund gilt speziel für 'setpoint-type' PVs.
 Alle Versuche, den Original 'live' timestamp zu verwenden, wenn ein
 'scrolling stripchart' Display verwendet wird, sind fehlgeschlagen.
 
-	
-	
-The author has so far failed in all attempts of using that original 'live'
-time stamps when it comes to a scrolling, strip-chart type display.
-
-Offenbar möchten wir die aktuelle Zeit an der Rechten Kante des Displays anzeigen.
+Offenbar möchten wir die aktuelle Zeit an der rechten Kante des Displays anzeigen.
 Angenommen, wir scrollen, d.h. aktualisieren die rechts angezeigte Zeit sekündlich.
-Auch angenommen, dass wir einen Datensatz mit einem timestamp empfange, der eine
+Auch angenommen, dass wir einen Datensatz mit einem timestamp empfangen, der eine
 Sekunde alt ist. Dann könnten wir den Datensatz eine Sekunde links von der rechten
 Plot-Kante darstellen. Wenn eine Sekunde später kein weiterer Datensatz ankommt,
 könnten wir entweder eine zwei Sekunden lange Lücke ausgeben oder annehmen, dass der
@@ -42,7 +37,7 @@ Andererseits, wenn wir einfach den letzten Messwert, beispielsweise 42, der eine
 timestamp aus ferner Vergangenheit hat,  bis 'now' erweitern, indem wir eine
 Gerade bei y=42 ziehen, und dann kommt vielleicht ein neuer Messwert, z.B. 43,
 beispielsweise mit eine eine Sekunde alten timestamp, wird der Plot den Benutzer 
-verwirren, weil der Wert auf der rechten Seite des Plots plötzlich für die leitzen 
+verwirren, weil der Wert auf der rechten Seite des Plots plötzlich für die letzen 
 paar Sekunden von 42 nach 43 springt.
 
 <p>
