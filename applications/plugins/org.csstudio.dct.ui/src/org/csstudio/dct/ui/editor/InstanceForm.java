@@ -80,7 +80,7 @@ public final class InstanceForm extends AbstractPropertyContainerForm<IInstance>
 	 *{@inheritDoc}
 	 */
 	@Override
-	protected String doGetFormLabel() {
+	protected String doGetFormLabel(IInstance input) {
 		return "Instance";
 	}
 
@@ -97,8 +97,8 @@ public final class InstanceForm extends AbstractPropertyContainerForm<IInstance>
 	 *{@inheritDoc}
 	 */
 	@Override
-	protected String doGetLinkText(IInstance instance) {
-		String text = "jump to defining <a href=\"" + instance.getPrototype().getId() + "\">prototype</a> or <a href=\""
+	protected String doGetAdditionalBreadcrumbLinks(IInstance instance) {
+		String text = "jump to <a href=\"" + instance.getPrototype().getId() + "\">prototype</a> or <a href=\""
 				+ instance.getParent().getId() + "\">parent instance</a>";
 		return text;
 	}

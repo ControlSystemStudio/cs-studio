@@ -2,16 +2,26 @@ package org.csstudio.dct.ui.editor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
+import org.csstudio.dct.DctActivator;
 import org.csstudio.dct.metamodel.IRecordDefinition;
 import org.csstudio.dct.metamodel.PromptGroup;
+import org.csstudio.dct.model.IContainer;
+import org.csstudio.dct.model.IElement;
+import org.csstudio.dct.model.IInstance;
 import org.csstudio.dct.model.IRecord;
+import org.csstudio.dct.model.internal.AbstractContainer;
+import org.csstudio.dct.model.internal.Folder;
 import org.csstudio.dct.ui.Activator;
 import org.csstudio.dct.ui.editor.tables.ConvenienceTableWrapper;
 import org.csstudio.dct.ui.editor.tables.ITableRow;
+import org.csstudio.dct.util.AliasResolutionException;
 import org.csstudio.dct.util.AliasResolutionUtil;
 import org.csstudio.dct.util.CompareUtil;
+import org.csstudio.dct.util.ResolutionUtil;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.platform.ui.util.ImageUtil;
 import org.csstudio.platform.ui.util.LayoutUtil;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -28,11 +38,14 @@ import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ExpandBar;
 import org.eclipse.swt.widgets.ExpandItem;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Link;
+import org.eclipse.ui.themes.ColorUtil;
 
 /**
  * Editing component for {@link IRecord}.
@@ -140,8 +153,23 @@ public final class RecordForm extends AbstractPropertyContainerForm<IRecord> {
 	 *{@inheritDoc}
 	 */
 	@Override
-	protected String doGetFormLabel() {
-		return "Record";
+	protected String doGetFormLabel(IRecord record) {
+		StringBuffer sb = new StringBuffer();
+		sb.append(record.getType());
+		sb.append("-Record");
+		
+		if(!record.isAbstract()) {
+			try {
+				String	resolvedName = ResolutionUtil.resolve(AliasResolutionUtil.getEpicsNameFromHierarchy(record), record);
+				sb.append(" (");
+				sb.append(resolvedName);
+				sb.append(")");
+			} catch (AliasResolutionException e) {
+				// ignore
+			}
+		}
+
+		return sb.toString();
 	}
 
 	/**
@@ -159,16 +187,12 @@ public final class RecordForm extends AbstractPropertyContainerForm<IRecord> {
 	 *{@inheritDoc}
 	 */
 	@Override
-	protected String doGetLinkText(IRecord record) {
-		String text = "";
-
+	protected String doGetAdditionalBreadcrumbLinks(IRecord record) {
 		if (record.isInherited()) {
-			text += "jump to <a href=\"" + record.getParentRecord().getId() + "\">parent record</a>";
+			return "jump to <a href=\"" + record.getParentRecord().getId() + "\">parent record</a>";
 		} else {
-			text += "Record has no parent.";
+			return null;
 		}
-
-		return text;
 	}
 
 	/**
@@ -217,8 +241,7 @@ public final class RecordForm extends AbstractPropertyContainerForm<IRecord> {
 
 				if (recordDefinition != null) {
 					return recordDefinition.getFieldDefinitions(field).getPromptGroup() == promptGroup;
-				}
-				else {
+				} else {
 					return false;
 				}
 			} else {

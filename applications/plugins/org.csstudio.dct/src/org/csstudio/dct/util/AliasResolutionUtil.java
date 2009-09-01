@@ -123,15 +123,7 @@ public final class AliasResolutionUtil {
 			result.putAll(top.getParameterValues());
 		}
 
-		// 2. step: derive properties from parent
-		parentStack = getParentStack(container);
-
-		while (!parentStack.isEmpty()) {
-			IContainer top = parentStack.pop();
-			result.putAll(top.getProperties());
-		}
-
-		// 3. step: derive from containers
+		// 2. step: derive from containers
 		Stack<IContainer> containerStack = getContainerStack(container);
 
 		while (!containerStack.isEmpty()) {

@@ -32,6 +32,7 @@ public final class FolderForm extends AbstractForm<IFolder> {
 	protected void doCreateControl(ExpandBar bar, CommandStack commandStack) {
 
 	}
+
 	/**
 	 *{@inheritDoc}
 	 */
@@ -44,10 +45,10 @@ public final class FolderForm extends AbstractForm<IFolder> {
 	 *{@inheritDoc}
 	 */
 	@Override
-	protected String doGetFormLabel() {
+	protected String doGetFormLabel(IFolder input) {
 		return "Folder";
 	}
-	
+
 	/**
 	 *{@inheritDoc}
 	 */
@@ -60,13 +61,8 @@ public final class FolderForm extends AbstractForm<IFolder> {
 	 *{@inheritDoc}
 	 */
 	@Override
-	protected String doGetLinkText(IFolder folder) {
-		String text = "";
-
-		if (folder.getParentFolder() != null) {
-			text = "jump to <a href=\"" + folder.getParentFolder().getId() + "\">parent folder</a>";
-		}
-		return text;
+	protected String doGetAdditionalBreadcrumbLinks(IFolder folder) {
+		return null;
 	}
 
 }

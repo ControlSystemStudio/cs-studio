@@ -78,6 +78,7 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
  * 
  */
 public final class DctEditor extends MultiPageEditorPart implements CommandStackListener {
+	public static final String FILE_EXTENSION = "css-dct";
 	private Project project;
 	private CommandStack commandStack;
 	private ISelectionChangedListener outlineSelectionListener;

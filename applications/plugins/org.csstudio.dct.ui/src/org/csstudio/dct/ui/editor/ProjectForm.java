@@ -52,7 +52,7 @@ public final class ProjectForm extends AbstractForm<IProject> {
 	 *{@inheritDoc}
 	 */
 	@Override
-	protected String doGetFormLabel() {
+	protected String doGetFormLabel(IProject input) {
 		return "Project";
 	}
 
@@ -129,8 +129,7 @@ public final class ProjectForm extends AbstractForm<IProject> {
 	 *{@inheritDoc}
 	 */
 	@Override
-	protected String doGetLinkText(IProject project) {
-		String text = "";
-		return text;
+	protected String doGetAdditionalBreadcrumbLinks(IProject project) {
+		return null;
 	}
 }

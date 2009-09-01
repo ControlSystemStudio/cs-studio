@@ -3,11 +3,15 @@ package org.csstudio.dct.ui.editor;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.csstudio.dct.model.IContainer;
+import org.csstudio.dct.model.IInstance;
 import org.csstudio.dct.model.IPrototype;
 import org.csstudio.dct.model.commands.AddParameterCommand;
 import org.csstudio.dct.model.commands.RemoveParameterCommand;
 import org.csstudio.dct.model.internal.Parameter;
+import org.csstudio.dct.model.visitors.SearchInstancesVisitor;
 import org.csstudio.dct.ui.Activator;
+import org.csstudio.dct.ui.editor.outline.internal.PrototypeSelectionDialog;
 import org.csstudio.dct.ui.editor.tables.ConvenienceTableWrapper;
 import org.csstudio.dct.ui.editor.tables.ITableRow;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
@@ -21,6 +25,7 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
@@ -39,7 +44,7 @@ import org.eclipse.ui.PlatformUI;
  * 
  */
 public final class PrototypeForm extends AbstractPropertyContainerForm<IPrototype> {
-
+	private IPrototype input;
 	private ConvenienceTableWrapper parameterTable;
 	private ParameterAddAction parameterAddAction;
 	private ParameterRemoveAction parameterRemoveAction;
@@ -65,6 +70,17 @@ public final class PrototypeForm extends AbstractPropertyContainerForm<IPrototyp
 		Composite composite = new Composite(bar, SWT.NONE);
 		composite.setLayout(LayoutUtil.createGridLayout(1, 5, 8, 8));
 
+		Button b = new Button(composite, SWT.NONE);
+		b.setText("Instances");
+		b.addMouseListener(new MouseAdapter(){
+			@Override
+			public void mouseUp(MouseEvent e) {
+				InstanceSelectionDialog rsd = new InstanceSelectionDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+						"Available Instances:", getProject(), input, getEditor());
+				rsd.open();
+			}
+		});
+		
 		parameterTable = WidgetUtil.create3ColumnTable(composite, commandStack);
 		parameterTable.getViewer().getControl().setLayoutData(LayoutUtil.createGridDataForHorizontalFillingCell(200));
 
@@ -122,6 +138,9 @@ public final class PrototypeForm extends AbstractPropertyContainerForm<IPrototyp
 	protected void doSetInput(IPrototype prototype) {
 		super.doSetInput(prototype);
 
+		// memorize current input 
+		this.input = prototype;
+		
 		// prepare input for parameter table
 		List<ITableRow> rowsForParameters = new ArrayList<ITableRow>();
 		for (Parameter p : prototype.getParameters()) {
@@ -162,7 +181,7 @@ public final class PrototypeForm extends AbstractPropertyContainerForm<IPrototyp
 	 *{@inheritDoc}
 	 */
 	@Override
-	protected String doGetFormLabel() {
+	protected String doGetFormLabel(IPrototype input) {
 		return "Prototype";
 	}
 
@@ -179,10 +198,8 @@ public final class PrototypeForm extends AbstractPropertyContainerForm<IPrototyp
 	 *{@inheritDoc}
 	 */
 	@Override
-	protected String doGetLinkText(IPrototype prototype) {
-		String text = "";
-
-		return text;
+	protected String doGetAdditionalBreadcrumbLinks(IPrototype prototype) {
+		return null;
 	}
 
 	/**
