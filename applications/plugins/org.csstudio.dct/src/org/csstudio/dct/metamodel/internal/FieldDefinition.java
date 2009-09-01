@@ -1,5 +1,7 @@
 package org.csstudio.dct.metamodel.internal;
 
+import java.io.Serializable;
+
 import org.csstudio.dct.metamodel.IFieldDefinition;
 import org.csstudio.dct.metamodel.IMenuDefinition;
 import org.csstudio.dct.metamodel.PromptGroup;
@@ -10,7 +12,7 @@ import org.csstudio.dct.metamodel.PromptGroup;
  * @author Sven Wende
  * 
  */
-public final class FieldDefinition implements IFieldDefinition {
+public final class FieldDefinition implements IFieldDefinition, Serializable {
 	private String extra;
 	private String initial;
 	private String interest;
@@ -112,6 +114,10 @@ public final class FieldDefinition implements IFieldDefinition {
 		return name;
 	}
 
+	public void setName(String name) {
+		this.name = name;
+	}
+	
 	/**
 	 *{@inheritDoc}
 	 */
@@ -185,6 +191,10 @@ public final class FieldDefinition implements IFieldDefinition {
 	 */
 	public String getType() {
 		return type;
+	}
+	
+	public void setType(String type) {
+		this.type = type;
 	}
 
 }

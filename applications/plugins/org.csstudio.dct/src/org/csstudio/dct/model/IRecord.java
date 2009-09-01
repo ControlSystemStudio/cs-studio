@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.csstudio.dct.metamodel.IRecordDefinition;
+import org.csstudio.dct.util.AliasResolutionUtil;
 
 /**
  * Represents a record.
@@ -16,7 +17,7 @@ public interface IRecord extends IPropertyContainer, IElement {
 	/**
 	 * Returns the EPICs name from the record hierarchy.
 	 * 
-	 * @deprecated Use Util instead.
+	 * @deprecated Use {@link AliasResolutionUtil#getEpicsNameFromHierarchy(IRecord)} instead.
 	 * @return the EPICs name from the record hierarchy
 	 */
 	String getEpicsNameFromHierarchy();

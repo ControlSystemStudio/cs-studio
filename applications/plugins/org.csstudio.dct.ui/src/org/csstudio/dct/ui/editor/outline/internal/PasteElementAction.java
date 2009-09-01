@@ -13,6 +13,7 @@ import org.csstudio.dct.model.commands.ChangeFieldValueCommand;
 import org.csstudio.dct.model.internal.RecordFactory;
 import org.csstudio.dct.ui.editor.copyandpaste.AbstractElementTransfer;
 import org.csstudio.dct.ui.editor.copyandpaste.ICopyAndPasteStrategy;
+import org.csstudio.dct.ui.editor.copyandpaste.InstanceTransfer;
 import org.csstudio.dct.ui.editor.copyandpaste.PrototypeTransfer;
 import org.csstudio.dct.ui.editor.copyandpaste.RecordTransfer;
 import org.eclipse.gef.commands.Command;
@@ -24,7 +25,8 @@ import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.widgets.Display;
 
 public class PasteElementAction extends AbstractOutlineAction {
-	private AbstractElementTransfer[] transferTypes = new AbstractElementTransfer[] { RecordTransfer.getInstance(), PrototypeTransfer.getInstance() };
+	private AbstractElementTransfer[] transferTypes = new AbstractElementTransfer[] { RecordTransfer.getInstance(),
+			PrototypeTransfer.getInstance(), InstanceTransfer.getInstance() };
 
 	public PasteElementAction() {
 		// TODO Auto-generated constructor stub
@@ -39,7 +41,7 @@ public class PasteElementAction extends AbstractOutlineAction {
 				if (transfer.isSupportedType(td)) {
 					Command result = transfer.getCopyAndPasteStrategy().createPasteCommand((List<IElement>) clipboard.getContents(transfer),
 							getProject(), selection);
-					
+
 					return result;
 				}
 			}

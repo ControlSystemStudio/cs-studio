@@ -1,5 +1,7 @@
 package org.csstudio.dct.metamodel.internal;
 
+import java.io.Serializable;
+
 import org.csstudio.dct.metamodel.IChoice;
 
 
@@ -9,7 +11,7 @@ import org.csstudio.dct.metamodel.IChoice;
  * @author Sven Wende
  * 
  */
-public final class Choice implements IChoice {
+public final class Choice implements IChoice, Serializable {
 	private String description;
 	private String id;
 
@@ -31,12 +33,20 @@ public final class Choice implements IChoice {
 	public String getDescription() {
 		return description;
 	}
+	
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public String getId() {
 		return id;
+	}
+	
+	public void setId(String id) {
+		this.id = id;
 	}
 
 }

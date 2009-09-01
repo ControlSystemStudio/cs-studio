@@ -1,5 +1,6 @@
 package org.csstudio.dct.metamodel.internal;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -15,7 +16,7 @@ import org.csstudio.dct.metamodel.IRecordDefinition;
  * @author Sven Wende
  * 
  */
-public final class RecordDefinition implements IRecordDefinition {
+public final class RecordDefinition implements IRecordDefinition, Serializable {
 	private String type;
 	private Map<String, IFieldDefinition> fieldDefinitions;
 
@@ -44,6 +45,10 @@ public final class RecordDefinition implements IRecordDefinition {
 	public Collection<IFieldDefinition> getFieldDefinitions() {
 		return fieldDefinitions.values();
 	}
+	
+	public void setFieldDefinitions(Map<String, IFieldDefinition> fieldDefinitions) {
+		this.fieldDefinitions = fieldDefinitions;
+	}
 
 
 	/**
@@ -70,5 +75,8 @@ public final class RecordDefinition implements IRecordDefinition {
 		return type;
 	}
 
+	public void setType(String type) {
+		this.type = type;
+	}
 
 }

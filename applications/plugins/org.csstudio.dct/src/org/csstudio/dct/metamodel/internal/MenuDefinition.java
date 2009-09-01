@@ -1,5 +1,6 @@
 package org.csstudio.dct.metamodel.internal;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +14,7 @@ import org.csstudio.dct.metamodel.IMenuDefinition;
  * @author Sven Wende
  * 
  */
-public final class MenuDefinition implements IMenuDefinition {
+public final class MenuDefinition implements IMenuDefinition, Serializable {
 
 	private String name;
 	private List<IChoice> choices;
@@ -36,6 +37,10 @@ public final class MenuDefinition implements IMenuDefinition {
 		return choices;
 	}
 	
+	public void setChoices(List<IChoice> choices) {
+		this.choices = choices;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -55,6 +60,10 @@ public final class MenuDefinition implements IMenuDefinition {
 	 */
 	public String getName() {
 		return name;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
 	}
 
 }

@@ -6,6 +6,7 @@ import org.csstudio.dct.model.IElement;
 import org.csstudio.dct.model.IPrototype;
 import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.ui.editor.copyandpaste.AbstractElementTransfer;
+import org.csstudio.dct.ui.editor.copyandpaste.InstanceTransfer;
 import org.csstudio.dct.ui.editor.copyandpaste.PrototypeTransfer;
 import org.csstudio.dct.ui.editor.copyandpaste.RecordTransfer;
 import org.eclipse.gef.commands.Command;
@@ -17,7 +18,7 @@ import org.eclipse.ui.PlatformUI;
 public class CopyElementAction extends AbstractOutlineAction {
 
 	private AbstractElementTransfer[] transferTypes = new AbstractElementTransfer[] { RecordTransfer.getInstance(),
-			PrototypeTransfer.getInstance() };
+			PrototypeTransfer.getInstance(), InstanceTransfer.getInstance() };
 
 	@Override
 	protected Command createCommand(List<IElement> selection) {

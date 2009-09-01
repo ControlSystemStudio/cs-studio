@@ -38,7 +38,7 @@ import org.eclipse.gef.commands.CompoundCommand;
  * @author Sven Wende
  * 
  */
-public final class PrototypeCopyAndPasteStrategy implements ICopyAndPasteStrategy {
+public final class InstanceCopyAndPasteStrategy implements ICopyAndPasteStrategy {
 
 	/**
 	 *{@inheritDoc}
@@ -53,14 +53,11 @@ public final class PrototypeCopyAndPasteStrategy implements ICopyAndPasteStrateg
 		CompoundCommand cmd = new CompoundCommand();
 
 		for (IElement c : selectedElements) {
-			assert c instanceof IFolder;
-
 			for (IElement p : copiedElements) {
-				if (p instanceof IPrototype) {
-					chainPrototype((IPrototype) p, cmd, tmpPrototypes, project, (IFolder) c);
-				} else {
-					chainInstance((IInstance) p, cmd, tmpPrototypes, project, (IFolder) c, null);
-				}
+				assert p instanceof IInstance;
+
+				chainInstance((IInstance) p, cmd, tmpPrototypes, project, (c instanceof IFolder ? (IFolder) c : null),
+						(c instanceof IContainer ? (IContainer) c : null));
 			}
 		}
 
@@ -91,7 +88,7 @@ public final class PrototypeCopyAndPasteStrategy implements ICopyAndPasteStrateg
 		if (!selectedElements.isEmpty()) {
 			result = true;
 			for (IElement e : selectedElements) {
-				result &= e instanceof IPrototype;
+				result &= e instanceof IInstance;
 			}
 		}
 
@@ -107,7 +104,7 @@ public final class PrototypeCopyAndPasteStrategy implements ICopyAndPasteStrateg
 		if (!selectedElements.isEmpty()) {
 			result = true;
 			for (IElement e : selectedElements) {
-				result &= (e instanceof IFolder);
+				result &= (e instanceof IFolder | e instanceof IContainer);
 			}
 		}
 

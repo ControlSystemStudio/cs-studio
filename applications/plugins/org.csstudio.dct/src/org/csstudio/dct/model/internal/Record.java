@@ -25,7 +25,7 @@ public final class Record extends AbstractPropertyContainer implements IRecord {
 	private String type;
 	private String epicsName;
 	private Map<String, String> fields = new HashMap<String, String>();
-	private transient IRecord parentRecord;
+	private IRecord parentRecord;
 	private transient IContainer container;
 	private transient List<IRecord> inheritingRecords = new ArrayList<IRecord>();
 	private Boolean disabled;
@@ -69,6 +69,10 @@ public final class Record extends AbstractPropertyContainer implements IRecord {
 		return type != null ? type : parentRecord.getType();
 	}
 
+	public void setType(String type) {
+		this.type = type;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -260,7 +264,8 @@ public final class Record extends AbstractPropertyContainer implements IRecord {
 	 * {@inheritDoc}
 	 */
 	public boolean isInherited() {
-		boolean result = !(getParentRecord() instanceof BaseRecord);
+		IRecord p = getParentRecord();
+		boolean result = p!=null && !(p instanceof BaseRecord);
 		return result;
 	}
 
