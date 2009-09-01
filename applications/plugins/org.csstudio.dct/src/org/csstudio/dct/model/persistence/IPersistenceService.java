@@ -1,5 +1,7 @@
 package org.csstudio.dct.model.persistence;
 
+import java.io.InputStream;
+
 import org.csstudio.dct.metamodel.IDatabaseDefinition;
 import org.csstudio.dct.model.internal.Project;
 import org.eclipse.core.resources.IFile;
@@ -24,6 +26,14 @@ public interface IPersistenceService {
 	 */
 	void saveProject(IFile file, Project project) throws Exception;
 
+	/**
+	 * Returns the specified project as input stream of xml data.
+	 * @param project the project
+	 * @return an xml input stream
+	 * @throws Exception
+	 */
+	InputStream getAsStream(Project project) throws Exception; 
+	
 	/**
 	 * Loads a project from the specified file.
 	 * 

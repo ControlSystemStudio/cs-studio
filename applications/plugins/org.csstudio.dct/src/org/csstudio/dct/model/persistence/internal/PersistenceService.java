@@ -3,6 +3,7 @@ package org.csstudio.dct.model.persistence.internal;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.Iterator;
 
@@ -46,9 +47,17 @@ public final class PersistenceService implements IPersistenceService {
 	 *{@inheritDoc}
 	 */
 	public void saveProject(IFile file, Project project) throws Exception {
+		file.setContents(getAsStream(project), true, false, new NullProgressMonitor());
+	}
+
+	/**
+	 *{@inheritDoc}
+	 */
+
+	public InputStream getAsStream(Project project) throws Exception {
 		Format format = Format.getPrettyFormat();
 //		format.setEncoding("ISO-8859-1");
-		
+
 		XMLOutputter outp = new XMLOutputter();
 		outp.setFormat(format);
 		ProjectToXml projectToXml = new ProjectToXml(project);
@@ -57,7 +66,9 @@ public final class PersistenceService implements IPersistenceService {
 
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		outp.output(doc, bos);
-		file.setContents(new ByteArrayInputStream(bos.toByteArray()), true, false, new NullProgressMonitor());
+		
+		return new ByteArrayInputStream(bos.toByteArray());
+		
 	}
 
 	/**

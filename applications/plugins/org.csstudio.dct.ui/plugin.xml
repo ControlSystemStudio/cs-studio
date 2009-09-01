@@ -231,5 +231,31 @@
          </action>
       </actionSet>
    </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <wizard
+            category="org.csstudio.dct.ui.newWizards"
+            class="org.csstudio.dct.ui.NewDctFileWizard"
+            finalPerspective="org.csstudio.dct.ui.DctPerspective"
+            icon="icons/dctfile.png"
+            id="org.csstudio.dct.ui.NewDctFileWizard"
+            name="Database Configuration">
+      </wizard>
+      <category
+            id="org.csstudio.dct.ui.newWizards"
+            name="Database Configuration Tool">
+      </category>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            category="css.dct"
+            class="org.csstudio.dct.ui.HierarchyView"
+            icon="icons/dctfile.png"
+            id="org.csstudio.dct.ui.HierarchyView"
+            name="DCT Hierarchy Browser"
+            restorable="true">
+      </view>
+   </extension>
 
 </plugin>
