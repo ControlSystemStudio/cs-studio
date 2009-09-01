@@ -70,17 +70,6 @@ public final class PrototypeForm extends AbstractPropertyContainerForm<IPrototyp
 		Composite composite = new Composite(bar, SWT.NONE);
 		composite.setLayout(LayoutUtil.createGridLayout(1, 5, 8, 8));
 
-		Button b = new Button(composite, SWT.NONE);
-		b.setText("Instances");
-		b.addMouseListener(new MouseAdapter(){
-			@Override
-			public void mouseUp(MouseEvent e) {
-				InstanceSelectionDialog rsd = new InstanceSelectionDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-						"Available Instances:", getProject(), input, getEditor());
-				rsd.open();
-			}
-		});
-		
 		parameterTable = WidgetUtil.create3ColumnTable(composite, commandStack);
 		parameterTable.getViewer().getControl().setLayoutData(LayoutUtil.createGridDataForHorizontalFillingCell(200));
 
