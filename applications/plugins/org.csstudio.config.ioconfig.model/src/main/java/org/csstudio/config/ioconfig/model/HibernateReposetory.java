@@ -211,7 +211,7 @@ public class HibernateReposetory implements IReposetory {
         HibernateManager.doInDevDBHibernate(new HibernateCallback() {
 
             public Document execute(final Session session) {
-                session.save(document);
+                session.saveOrUpdate(document);
                 session.flush();
                 return document;
             }

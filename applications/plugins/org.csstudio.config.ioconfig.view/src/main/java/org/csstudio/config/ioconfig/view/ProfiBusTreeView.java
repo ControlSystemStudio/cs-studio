@@ -47,6 +47,7 @@ import org.csstudio.config.ioconfig.config.view.SubNetConfigComposite;
 import org.csstudio.config.ioconfig.config.view.helper.ConfigHelper;
 import org.csstudio.config.ioconfig.config.view.helper.InfoConfigComposte;
 import org.csstudio.config.ioconfig.config.view.helper.ProfibusHelper;
+import org.csstudio.config.ioconfig.model.Document;
 import org.csstudio.config.ioconfig.model.Facility;
 import org.csstudio.config.ioconfig.model.FacilityLight;
 import org.csstudio.config.ioconfig.model.Ioc;
@@ -99,6 +100,7 @@ import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
@@ -174,8 +176,7 @@ public class ProfiBusTreeView extends Composite {
      */
     private IAction _editNodeAction;
     /**
-     * This action open a new level one empty Node. The type of this node is
-     * {@link Facility}.
+     * This action open a new level one empty Node. The type of this node is {@link Facility}.
      */
     private IAction _newFacilityAction;
     /**
@@ -270,7 +271,7 @@ public class ProfiBusTreeView extends Composite {
             if (obj instanceof Node) {
                 Node node = (Node) obj;
                 return ConfigHelper.getImageFromNode(node);
-            }else if(obj instanceof FacilityLight) {
+            } else if (obj instanceof FacilityLight) {
                 return ConfigHelper.getImageMaxSize("icons/css.gif", -1, -1);
             }
             return null;
@@ -279,11 +280,26 @@ public class ProfiBusTreeView extends Composite {
         public void updateLabel(ViewerLabel label, Object element) {
             label.setImage(getImage(element));
             label.setText(element.toString());
+            label.setBackground(getBackground(element));
             label.setTooltipText("§$%");
             label.setTooltipForegroundColor(CustomMediaFactory.getInstance()
                     .getColor(255, 255, 255));
             label.setTooltipBackgroundColor(CustomMediaFactory.getInstance().getColor(0, 0, 0));
             label.setTooltipShift(_tooltipShift);
+        }
+
+        private Color getBackground(Object element) {
+            if (element instanceof Slave) {
+                Slave node = (Slave) element;
+                Set<Document> documents = node.getDocuments();
+                while (documents.iterator().hasNext()) {
+                    Document doc = (Document) documents.iterator().next();
+                    if(doc.getSubject()!=null&&doc.getSubject().startsWith("Projekt:")) {
+                        return CustomMediaFactory.getInstance().getColor(255,140,0);
+                    }
+                }
+            }
+            return null;
         }
 
         public void addListener(ILabelProviderListener listener) {
@@ -670,9 +686,8 @@ public class ProfiBusTreeView extends Composite {
                 });
 
                 /*
-                 * If they hit Enter, set the text into the tree and end the
-                 * editing session. If they hit Escape, ignore the text and end
-                 * the editing session.
+                 * If they hit Enter, set the text into the tree and end the editing session. If
+                 * they hit Escape, ignore the text and end the editing session.
                  */
                 text.addKeyListener(new KeyAdapter() {
                     public void keyPressed(KeyEvent event) {
@@ -726,18 +741,18 @@ public class ProfiBusTreeView extends Composite {
                 Object selectedNode = _selectedNode.getFirstElement();
                 if (selectedNode instanceof ProfibusSubnet) {
                     ProfibusSubnet subnet = (ProfibusSubnet) selectedNode;
-                    CentralLogger.getInstance().info(this, "Create XML for Subnet: "+subnet );
+                    CentralLogger.getInstance().info(this, "Create XML for Subnet: " + subnet);
                     makeXMLFile(path, subnet);
 
                 } else if (selectedNode instanceof Ioc) {
                     Ioc ioc = (Ioc) selectedNode;
-                    CentralLogger.getInstance().info(this, "Create XML for Ioc: "+ioc);
+                    CentralLogger.getInstance().info(this, "Create XML for Ioc: " + ioc);
                     for (ProfibusSubnet subnet : ioc.getProfibusSubnets()) {
                         makeXMLFile(path, subnet);
                     }
                 } else if (selectedNode instanceof Facility) {
                     Facility facility = (Facility) selectedNode;
-                    CentralLogger.getInstance().info(this, "Create XML for Facility: "+facility);
+                    CentralLogger.getInstance().info(this, "Create XML for Facility: " + facility);
                     for (Ioc ioc : facility.getIoc()) {
                         for (ProfibusSubnet subnet : ioc.getProfibusSubnets()) {
                             makeXMLFile(path, subnet);
@@ -745,7 +760,7 @@ public class ProfiBusTreeView extends Composite {
                     }
                 } else if (selectedNode instanceof FacilityLight) {
                     FacilityLight fL = (FacilityLight) selectedNode;
-                    CentralLogger.getInstance().info(this, "Create XML for Facility: "+fL);
+                    CentralLogger.getInstance().info(this, "Create XML for Facility: " + fL);
                     try {
                         Facility facility = fL.getFacility();
                         for (Ioc ioc : facility.getIoc()) {

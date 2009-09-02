@@ -445,7 +445,54 @@ public class MasterConfigComposite extends NodeConfig {
         Group gRedundencyMaster = new Group(comp,SWT.NONE);
         gRedundencyMaster.setText("Redundency Master:");
         gRedundencyMaster.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2,1));
-        gRedundencyMaster.setLayout(new GridLayout(2,false));        
+        gRedundencyMaster.setLayout(new GridLayout(3,false));
+        
+        final Button redundent = new Button(gRedundencyMaster, SWT.CHECK);
+        redundent.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+        redundent.setText("Redunden IOC");
+        
+        final Button master = new Button(gRedundencyMaster, SWT.RADIO);
+        master.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+        master.setText("Master");
+        
+        final Button slave = new Button(gRedundencyMaster, SWT.RADIO);
+        slave.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+        slave.setText("Slave");
+        
+        redundent.addSelectionListener(new SelectionListener() {
+            
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                select();
+            }
+            
+            @Override
+            public void widgetDefaultSelected(SelectionEvent e) {
+                select();
+            }
+
+            private void select() {
+                if(redundent.getSelection()) {
+                    master.setEnabled(true);
+                    slave.setEnabled(true);
+                } else {
+                    master.setEnabled(false);
+                    slave.setEnabled(false);
+                }
+            }
+        });
+        
+        boolean isRedundet = false;
+        redundent.setSelection(isRedundet);
+        if(isRedundet) {
+            Boolean isMaster = true;
+            if(isMaster) {
+                master.setSelection(true);
+            }else {
+                slave.setSelection(true);
+            }
+        }
+        
     }
 
     private void makeNameGroup(Composite comp) {

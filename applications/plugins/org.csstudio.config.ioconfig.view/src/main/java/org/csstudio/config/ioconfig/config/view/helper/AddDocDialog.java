@@ -40,9 +40,13 @@ public class AddDocDialog extends Dialog {
     private Document _document;
     private GregorianCalendar _createDate;
 
-    protected AddDocDialog(Shell parentShell) {
+    protected AddDocDialog(Shell parentShell, Document document) {
         super(parentShell);
-        _document = new Document();
+        if(document==null) {
+            _document = new Document();
+        }else {
+            _document = document;
+        }
     }
 
     /*
@@ -71,8 +75,7 @@ public class AddDocDialog extends Dialog {
         eLogbookIdLabel.setEditable(false);
         String generateId = generateId(logbooksViewer);
         eLogbookIdLabel.setText(generateId);
-        _document.setId(generateId);
-        
+
         // IMAGE
         Label file = new Label(dialogArea, SWT.NONE);
         file.setText("File: ");
@@ -99,8 +102,7 @@ public class AddDocDialog extends Dialog {
         meaningCombo.setItems(meaning);
         meaningCombo.select(0);
         String item = meaningCombo.getItem(meaningCombo.getSelectionIndex());
-        System.out.println("Debug select: "+item);
-        _document.setLogseverity(item);
+        System.out.println("Debug select: " + item);
 
         // SUBJECT
         Label shortDesc = new Label(dialogArea, SWT.NONE);
@@ -134,7 +136,6 @@ public class AddDocDialog extends Dialog {
         createrValue.setEditable(false);
         String userName = ConfigHelper.getUserName();
         createrValue.setText(userName);
-        _document.setAccountname(userName);
         // ENTRYDATE
         Label createdOn = new Label(dialogArea, SWT.NONE);
         createdOn.setText("Eintrag: ");
@@ -143,25 +144,31 @@ public class AddDocDialog extends Dialog {
         createdOnValue.setEditable(false);
         String format = String.format("%1$tF %1$tT", _createDate);
         createdOnValue.setText(format);
-        _document.setCreatedDate(_createDate.getTime());
-        _document.setEntrydate(_createDate.getTime());
-        
+
         // LOGSEVERITY
         // ERRORIDENTIFYER
         // CREATED_DATE
         // DELETE_DATE
         // UPDATE_DATE
-        
+
+        if (_document.getId() == null || _document.getId().isEmpty()) {
+            _document.setId(generateId);
+            _document.setLogseverity(item);
+            _document.setAccountname(userName);
+            _document.setCreatedDate(_createDate.getTime());
+        }
+        _document.setEntrydate(_createDate.getTime());
+
         meaningCombo.addSelectionListener(new SelectionListener() {
-            
+
             @Override
             public void widgetSelected(SelectionEvent e) {
                 select();
             }
-            
+
             private void select() {
                 String item = meaningCombo.getItem(meaningCombo.getSelectionIndex());
-                System.out.println("Debug select: "+item);
+                System.out.println("Debug select: " + item);
                 _document.setLogseverity(item);
             }
 
@@ -209,39 +216,40 @@ public class AddDocDialog extends Dialog {
                         fileInputStream.close();
                         _document.setImage(data);
                     } catch (IOException e) {
-                        MessageDialog.openError(getParentShell(), "File open Error", "Can't read file!");
+                        MessageDialog.openError(getParentShell(), "File open Error",
+                                "Can't read file!");
                         CentralLogger.getInstance().error(this, e);
                     }
                 }
             }
         });
-        
+
         shortDescText.addModifyListener(new ModifyListener() {
-            
+
             @Override
             public void modifyText(ModifyEvent e) {
                 _document.setSubject(shortDescText.getText());
             }
         });
-        
+
         longDescText.addModifyListener(new ModifyListener() {
-            
+
             @Override
             public void modifyText(ModifyEvent e) {
                 _document.setDesclong(longDescText.getText());
             }
         });
-        
+
         locationText.addModifyListener(new ModifyListener() {
-            
+
             @Override
             public void modifyText(ModifyEvent e) {
                 _document.setLocation(locationText.getText());
             }
         });
-        
+
         keywordsText.addModifyListener(new ModifyListener() {
-            
+
             @Override
             public void modifyText(ModifyEvent e) {
                 _document.setKeywords(keywordsText.getText());
@@ -255,10 +263,9 @@ public class AddDocDialog extends Dialog {
                 .getFirstElement();
         return String.format("%1$s:%2$ty%2$tm%2$td-%2$tT", eLogbookId, _createDate);
     }
-    
+
     public Document getDocument() {
         return _document;
     }
-    
-    
+
 }

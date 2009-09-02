@@ -45,12 +45,15 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ColumnPixelData;
+import org.eclipse.jface.viewers.ColumnViewerEditor;
+import org.eclipse.jface.viewers.ColumnViewerEditorActivationStrategy;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.jface.viewers.TableViewerEditor;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.jface.viewers.ViewerFilter;
@@ -67,8 +70,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * @author hrickens
@@ -77,6 +84,133 @@ import org.eclipse.swt.widgets.Text;
  * @since 20.02.2008
  */
 public class DocumentationManageView extends Composite {
+
+    private final class SaveFileSelectionListener implements SelectionListener {
+        private final TableViewer _parentViewer;
+
+        public SaveFileSelectionListener(TableViewer parentViewer) {
+            _parentViewer = parentViewer;
+        }
+
+        public void widgetSelected(SelectionEvent e) {
+            saveFileWithDialog();
+        }
+
+        public void widgetDefaultSelected(SelectionEvent e) {
+            saveFileWithDialog();
+        }
+
+        private void saveFileWithDialog() {
+            FileDialog fileDialog = new FileDialog(getShell(), SWT.SAVE);
+            StructuredSelection selection = (StructuredSelection) _parentViewer.getSelection();
+            Document firstElement = (Document) selection.getFirstElement();
+            fileDialog.setFileName(firstElement.getSubject() + "." + firstElement.getMimeType());
+            String open = fileDialog.open();
+            if (open != null) {
+                File outFile = new File(open);
+                try {
+                    Helper.writeDocumentFile(outFile, firstElement);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private final class AddFile2DBSelectionListener implements SelectionListener {
+        private final TableViewer _viewer;
+
+        public AddFile2DBSelectionListener(TableViewer viewer) {
+            _viewer = viewer;
+        }
+
+        public void widgetDefaultSelected(SelectionEvent e) {
+            addDocDialog();
+        }
+
+        public void widgetSelected(SelectionEvent e) {
+            addDocDialog();
+        }
+
+        private void addDocDialog() {
+            StructuredSelection selection = (StructuredSelection) _viewer.getSelection();
+            AddDocDialog addDocDialog = new AddDocDialog(new Shell(), (Document) selection.getFirstElement());
+            if (addDocDialog.open() == 0) {
+                Document document = addDocDialog.getDocument();
+                // System.out.println("Doc is :" + document);
+                // System.out.println("Doc getAccountname :" + document.getAccountname());
+                // System.out.println("Doc getDesclong :" + document.getDesclong());
+                // System.out.println("Doc getErroridentifyer :" + document.getErroridentifyer());
+                // System.out.println("Doc getId :" + document.getId());
+                // System.out.println("Doc getKeywords :" + document.getKeywords());
+                // System.out.println("Doc getLinkForward :" + document.getLinkForward());
+                // System.out.println("Doc getLinkId :" + document.getLinkId());
+                // System.out.println("Doc getLocation :" + document.getLocation());
+                // System.out.println("Doc getLogseverity :" + document.getLogseverity());
+                // System.out.println("Doc getMimeType :" + document.getMimeType());
+                // System.out.println("Doc getSubject :" + document.getSubject());
+                // System.out.println("Doc getCreatedDate :" + document.getCreatedDate());
+                // System.out.println("Doc getDeleteDate :" + document.getDeleteDate());
+                // System.out.println("Doc getEntrydate :" + document.getEntrydate());
+                try {
+                    System.out.println("Doc is :" + document.getImage().length());
+                } catch (SQLException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                Repository.save(document);
+            }
+        }
+    }
+
+    private final class ShowFileSelectionListener implements SelectionListener {
+        private final TableViewer _parentViewer;
+
+        public ShowFileSelectionListener(TableViewer parentViewer) {
+            _parentViewer = parentViewer;
+        }
+
+        public void widgetSelected(SelectionEvent e) {
+            openFileInBrowser();
+        }
+
+        public void widgetDefaultSelected(SelectionEvent e) {
+            openFileInBrowser();
+        }
+
+        private void openFileInBrowser() {
+            StructuredSelection selection = (StructuredSelection) _parentViewer.getSelection();
+            Document firstElement = (Document) selection.getFirstElement();
+            File createTempFile = null;
+            try {
+                String filename = firstElement.getSubject();
+                if (filename == null || filename.length() < 1) {
+                    filename = "showTmp";
+                }
+                createTempFile = File.createTempFile(filename, "." + firstElement.getMimeType());
+                Helper.writeDocumentFile(createTempFile, firstElement);
+                if (createTempFile != null && createTempFile.isFile()) {
+                    if (Desktop.isDesktopSupported()) {
+                        if (Desktop.getDesktop().isSupported(Desktop.Action.OPEN)) {
+                            CentralLogger.getInstance().debug(this, "Desktop unterstützt Open!");
+                            Desktop.getDesktop().open(createTempFile);
+                        }
+                        // if (Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+                        // CentralLogger.getInstance().debug(this,
+                        // "Desktop unterstützt Browse!");
+                        // Desktop.getDesktop().browse(createTempFile.toURI());
+                        // }
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     /**
      * @author hrickens
@@ -363,7 +497,32 @@ public class DocumentationManageView extends Composite {
         _documentResorce = Repository.loadDocument(false);
         _docResorceTableViewer.addFilter(filter);
         _docResorceTableViewer.setFilters(new ViewerFilter[] { filter });
+        TableViewerEditor.create(_docResorceTableViewer, new ColumnViewerEditorActivationStrategy(
+                _docResorceTableViewer), ColumnViewerEditor.DEFAULT);
 
+        // makeMenus(_docAvailableTableViewer);
+        makeMenus(_docResorceTableViewer);
+    }
+
+    private void makeMenus(TableViewer viewer) {
+        Menu menu = new Menu(viewer.getControl());
+        MenuItem showItem = new MenuItem(menu, SWT.PUSH);
+        showItem.addSelectionListener(new ShowFileSelectionListener(viewer));
+        showItem.setText("&Open");
+        showItem.setImage(PlatformUI.getWorkbench().getSharedImages()
+                .getImage(ISharedImages.IMG_OBJ_FOLDER));
+        
+        MenuItem saveItem = new MenuItem(menu, SWT.PUSH);
+        saveItem.addSelectionListener(new SaveFileSelectionListener(viewer));
+        saveItem.setText("&Save");
+        saveItem.setImage(PlatformUI.getWorkbench().getSharedImages()
+                .getImage(ISharedImages.IMG_ETOOL_SAVEAS_EDIT));
+        
+        MenuItem renameItem = new MenuItem(menu, SWT.PUSH);
+        renameItem.addSelectionListener(new AddFile2DBSelectionListener(viewer));
+        renameItem.setText("&Update");
+        
+        viewer.getTable().setMenu(menu);
     }
 
     private Composite makeGroup(String groupHead) {
@@ -411,48 +570,7 @@ public class DocumentationManageView extends Composite {
         addNewDocButton.setToolTipText("Add a new Document from the File-System");
         addNewDocButton.setToolTipText("Add a new Document to the Database");
         addNewDocButton.setEnabled(true);
-        addNewDocButton.addSelectionListener(new SelectionListener() {
-
-            public void widgetDefaultSelected(SelectionEvent e) {
-                addDocDialog();
-            }
-
-            public void widgetSelected(SelectionEvent e) {
-                addDocDialog();
-            }
-
-            private void addDocDialog() {
-                AddDocDialog addDocDialog = new AddDocDialog(new Shell()) {
-
-                };
-                if (addDocDialog.open() == 0) {
-                    Document document = addDocDialog.getDocument();
-//                    System.out.println("Doc is :" + document);
-//                    System.out.println("Doc getAccountname :" + document.getAccountname());
-//                    System.out.println("Doc getDesclong :" + document.getDesclong());
-//                    System.out.println("Doc getErroridentifyer :" + document.getErroridentifyer());
-//                    System.out.println("Doc getId :" + document.getId());
-//                    System.out.println("Doc getKeywords :" + document.getKeywords());
-//                    System.out.println("Doc getLinkForward :" + document.getLinkForward());
-//                    System.out.println("Doc getLinkId :" + document.getLinkId());
-//                    System.out.println("Doc getLocation :" + document.getLocation());
-//                    System.out.println("Doc getLogseverity :" + document.getLogseverity());
-//                    System.out.println("Doc getMimeType :" + document.getMimeType());
-//                    System.out.println("Doc getSubject :" + document.getSubject());
-//                    System.out.println("Doc getCreatedDate :" + document.getCreatedDate());
-//                    System.out.println("Doc getDeleteDate :" + document.getDeleteDate());
-//                    System.out.println("Doc getEntrydate :" + document.getEntrydate());
-                    try {
-                        System.out.println("Doc is :" + document.getImage().length());
-                    } catch (SQLException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-                    Repository.save(document);
-                }
-            }
-
-        });
+        addNewDocButton.addSelectionListener(new AddFile2DBSelectionListener(null));
 
         // Add
         Button addAllButton = new Button(chosserComposite, SWT.PUSH);
@@ -558,96 +676,23 @@ public class DocumentationManageView extends Composite {
 
         });
 
-        // Save
         label = new Label(chosserComposite, SWT.NONE);
         label.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true));
-        Button saveButton = new Button(chosserComposite, SWT.PUSH);
-        saveButton.setText("Save");
-        saveButton.setToolTipText("Show the selected Documents");
-        saveButton.setEnabled(true);
-        saveButton.setLayoutData(new GridData(SWT.FILL, SWT.BOTTOM, false, false));
-        saveButton.addSelectionListener(new SelectionListener() {
-
-            public void widgetSelected(SelectionEvent e) {
-                saveFileWithDialog();
-            }
-
-            public void widgetDefaultSelected(SelectionEvent e) {
-                saveFileWithDialog();
-            }
-
-            private void saveFileWithDialog() {
-                FileDialog fileDialog = new FileDialog(getShell(), SWT.SAVE);
-                StructuredSelection selection = (StructuredSelection) _docAvailableTableViewer
-                        .getSelection();
-                Document firstElement = (Document) selection.getFirstElement();
-                fileDialog
-                        .setFileName(firstElement.getSubject() + "." + firstElement.getMimeType());
-                String open = fileDialog.open();
-                if (open != null) {
-                    File outFile = new File(open);
-                    try {
-                        Helper.writeDocumentFile(outFile, firstElement);
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-
-        });
-
-        // Show
-        Button showButton = new Button(chosserComposite, SWT.PUSH);
-        showButton.setText("Show");
-        showButton.setToolTipText("Show the selected Documents");
-        showButton.setEnabled(true);
-        showButton.setLayoutData(new GridData(SWT.FILL, SWT.BOTTOM, false, false));
-        showButton.addSelectionListener(new SelectionListener() {
-
-            public void widgetSelected(SelectionEvent e) {
-                openFileInBrowser();
-            }
-
-            public void widgetDefaultSelected(SelectionEvent e) {
-                openFileInBrowser();
-            }
-
-            private void openFileInBrowser() {
-                StructuredSelection selection = (StructuredSelection) _docAvailableTableViewer
-                        .getSelection();
-                Document firstElement = (Document) selection.getFirstElement();
-                File createTempFile = null;
-                try {
-                    String filename = firstElement.getSubject();
-                    if (filename == null || filename.length() < 1) {
-                        filename = "showTmp";
-                    }
-                    createTempFile = File
-                            .createTempFile(filename, "." + firstElement.getMimeType());
-                    Helper.writeDocumentFile(createTempFile, firstElement);
-                    if (createTempFile != null && createTempFile.isFile()) {
-                        if (Desktop.isDesktopSupported()) {
-                            if (Desktop.getDesktop().isSupported(Desktop.Action.OPEN)) {
-                                CentralLogger.getInstance()
-                                        .debug(this, "Desktop unterstützt Open!");
-                                Desktop.getDesktop().open(createTempFile);
-                            }
-                            if (Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
-                                CentralLogger.getInstance().debug(this,
-                                        "Desktop unterstützt Browse!");
-                                Desktop.getDesktop().browse(createTempFile.toURI());
-                            }
-                        }
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+//        // Save
+//        Button saveButton = new Button(chosserComposite, SWT.PUSH);
+//        saveButton.setText("Save");
+//        saveButton.setToolTipText("Show the selected Documents");
+//        saveButton.setEnabled(true);
+//        saveButton.setLayoutData(new GridData(SWT.FILL, SWT.BOTTOM, false, false));
+//        saveButton.addSelectionListener(new SaveFileSelectionListener(_docAvailableTableViewer));
+//
+//        // Show
+//        Button showButton = new Button(chosserComposite, SWT.PUSH);
+//        showButton.setText("Show");
+//        showButton.setToolTipText("Show the selected Documents");
+//        showButton.setEnabled(true);
+//        showButton.setLayoutData(new GridData(SWT.FILL, SWT.BOTTOM, false, false));
+//        showButton.addSelectionListener(new ShowFileSelectionListener(_docResorceTableViewer));
 
     }
 
@@ -667,6 +712,8 @@ public class DocumentationManageView extends Composite {
 
         _docAvailableTableViewer.setContentProvider(new TableContentProvider());
         _docAvailableTableViewer.setSorter(sorter);
+
+        makeMenus(_docAvailableTableViewer);
     }
 
     private TableViewer makeTable(Composite group) {
@@ -718,9 +765,8 @@ public class DocumentationManageView extends Composite {
                             cell.setText(((IDocument) cell.getElement()).getDesclong());
                             break;
                         case 1:
-                            cell
-                                    .setText(((IDocument) cell.getElement()).getCreatedDate()
-                                            .toString());
+                            cell.setText(((IDocument) cell.getElement()).getCreatedDate()
+                                    .toString());
                             break;
                         case 2:
                             cell.setText(((IDocument) cell.getElement()).getKeywords());
