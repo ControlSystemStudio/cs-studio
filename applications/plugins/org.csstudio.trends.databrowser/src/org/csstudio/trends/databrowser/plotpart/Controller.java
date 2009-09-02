@@ -78,31 +78,34 @@ public class Controller implements ArchiveFetchJobListener
                     double high = model.getEndTime().toDouble();
                     setScrollStart(high - low);
                 }
-                // Only update when really changed...
-                if (model.getEndSpecification().equals(RelativeTime.NOW)
-                   && model.getStartSpecification().equals(scroll_start_specification))
-                {
-                    model.updateStartEndTime();
-            		gui.setTimeRange(model.getStartTime(), model.getEndTime());
-                }
                 else
                 {
-                    if (debug_scroll)
-                        System.out.println("Scroll: Update start "
-                                           + scroll_start_specification);
-                    controller_changes_model_times = true;
-                    try
+                    // Only update when really changed...
+                    if (model.getEndSpecification().equals(RelativeTime.NOW)
+                       && model.getStartSpecification().equals(scroll_start_specification))
                     {
-                    	model.setTimeSpecifications(scroll_start_specification,
-                    			RelativeTime.NOW, true);
+                        model.updateStartEndTime();
+                		gui.setTimeRange(model.getStartTime(), model.getEndTime());
                     }
-                    finally
+                    else
                     {
-                    	controller_changes_model_times = false;
+                        if (debug_scroll)
+                            System.out.println("Scroll: Update start "
+                                               + scroll_start_specification);
+                        controller_changes_model_times = true;
+                        try
+                        {
+                        	model.setTimeSpecifications(scroll_start_specification,
+                        			RelativeTime.NOW, true);
+                        }
+                        finally
+                        {
+                        	controller_changes_model_times = false;
+                        }
+                        // Looks like scrolling was just turned on, and we might jump
+                        // from some old time range to 'now', so we better get new data.
+                        getArchivedData(null);
                     }
-                    // Looks like scrolling was just turned on, and we might jump
-                    // from some old time range to 'now', so we better get new data.
-                    getArchivedData(null);
                 }
             }
             catch (Exception ex)
@@ -371,6 +374,13 @@ public class Controller implements ArchiveFetchJobListener
         chart.removeListener(chart_listener);
         model.removeListener(model_listener);
         model.stop();
+        // Stop all pending jobs
+        synchronized (jobs)
+        {
+            for (ArchiveFetchJob job : jobs)
+                job.cancel();
+            jobs.clear();
+        }
     }
     
     /** Set the scroll_start_specification string for the given seconds */
@@ -584,10 +594,7 @@ public class Controller implements ArchiveFetchJobListener
             synchronized (jobs)
             {
                 for (ArchiveFetchJob job : jobs)
-                {
-                    System.out.println("Cancelling " + job.toString());
                     job.cancel();
-                }
                 jobs.clear();
             }
             for (int i=0; i<model.getNumItems(); ++i)
@@ -609,13 +616,11 @@ public class Controller implements ArchiveFetchJobListener
         // Anything to fetch at all?
         if (item.getArchiveDataSources().length < 1)
             return;
-        // TODO Analyze this. Zoom/pan results in too many calls.
-        // Cache saves us, but the code should still be smarter.
+        // Start background job to get data from archive
     	final ArchiveFetchJob job =
     	    new ArchiveFetchJob(chart.getShell(), item, start, end, this);
     	synchronized (jobs)
         {
-            System.out.println("Starting " + job.toString());
             jobs.add(job);
         }
         job.schedule();
