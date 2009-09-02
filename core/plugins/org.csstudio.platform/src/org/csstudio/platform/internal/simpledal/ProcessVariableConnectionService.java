@@ -197,11 +197,8 @@ public class ProcessVariableConnectionService implements IProcessVariableConnect
 	private AbstractConnector getConnector(IProcessVariableAddress pv, ValueType valueType) {
 		AbstractConnector connector = null;
 
-		// all characteristics are requested using a DAL ObjectProperty
-		ValueType propertyType = pv.isCharacteristic() ? ValueType.OBJECT : valueType;
-
 		// there is one connector for each pv-type-combination
-		ConnectorIdentification key = new ConnectorIdentification(pv, propertyType);
+		ConnectorIdentification key = new ConnectorIdentification(pv, valueType);
 
 		// get a connector
 		synchronized (_connectors) {
