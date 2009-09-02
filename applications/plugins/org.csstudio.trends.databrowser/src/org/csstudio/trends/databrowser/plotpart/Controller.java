@@ -146,7 +146,8 @@ public class Controller implements ArchiveFetchJobListener
         
         public void timeRangeChanged()
         {
-        	if (controller_changes_xaxis)
+            if (controller_changes_model_times ||
+                controller_changes_xaxis)
         		return;
         	// Adjust the x axis to the "current" model time range
         	controller_changes_xaxis = true;
@@ -228,6 +229,7 @@ public class Controller implements ArchiveFetchJobListener
             final boolean close_to_now = Math.abs(x1 - now) < 0.1*range;
             try
             {
+                controller_changes_model_times = true;
                 if (close_to_now)
                 {   // Set relative start/end times
                     setScrollStart(range);
@@ -245,6 +247,10 @@ public class Controller implements ArchiveFetchJobListener
             catch (Exception ex)
             {
                 Plugin.getLogger().error("Cannot update model time range", ex); //$NON-NLS-1$
+            }
+            finally
+            {
+                controller_changes_model_times = false;
             }
             // Trigger archive retrieval for new time range
             getArchivedData(null);
@@ -572,6 +578,18 @@ public class Controller implements ArchiveFetchJobListener
         final ITimestamp end = model.getEndTime();
         if (item == null)
         {
+            // Request new data for all items because the overall time
+            // range changed. First stop ongoing requests which are likely
+            // for a previous, now-wrong time range
+            synchronized (jobs)
+            {
+                for (ArchiveFetchJob job : jobs)
+                {
+                    System.out.println("Cancelling " + job.toString());
+                    job.cancel();
+                }
+                jobs.clear();
+            }
             for (int i=0; i<model.getNumItems(); ++i)
             { 
                 final IModelItem model_item = model.getItem(i);
@@ -597,6 +615,7 @@ public class Controller implements ArchiveFetchJobListener
     	    new ArchiveFetchJob(chart.getShell(), item, start, end, this);
     	synchronized (jobs)
         {
+            System.out.println("Starting " + job.toString());
             jobs.add(job);
         }
         job.schedule();
