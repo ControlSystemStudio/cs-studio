@@ -119,76 +119,87 @@ public class PVTableCellModifier implements ICellModifier
             final IModelItem entry = (IModelItem) element;
             final PVTableHelper.Column col = PVTableHelper.findColumn(property);
             
-            switch (col)
-            {
-            case VISIBLE:
-                final boolean visible = ((Boolean)value).booleanValue();
-                entry.setVisible(visible);
-                return;
-            case NAME:
-                entry.changeName(value.toString());
-                return;
-            case AXIS:
-                final int new_axis = Integer.valueOf(value.toString());
-                entry.setAxisIndex(new_axis);
-                return;
-            case AXIS_VISIBLE:
-                final boolean axis_visible = ((Boolean)value).booleanValue();
-                entry.setAxisVisible(axis_visible);
-                return;
-            case MIN:
-                final double new_min = Double.valueOf(value.toString());
-                entry.setAxisLow(new_min);
-                return;
-            case MAX:
-                final double new_max = Double.valueOf(value.toString());
-                entry.setAxisHigh(new_max);
-                return;
-            case AUTO_SCALE:
-                final boolean auto_scale = ((Boolean)value).booleanValue();
-                entry.setAutoScale(auto_scale);
-                return;
-            case COLOR:
-                final RGB rgb = (RGB) value;
-                entry.setColor(new Color(null, rgb));
-                return;
-            case LINE_WIDTH:
-                final int new_width = Integer.valueOf(value.toString());
-                entry.setLineWidth(new_width);
-                return;
-            case LOG_SCALE:
-                final boolean use_log = ((Boolean)value).booleanValue();
-                entry.setLogScale(use_log);
-                return;
-            case REQUEST_TYPE:
-                if (entry instanceof IPVModelItem)
-                {
-                    final IPVModelItem pv = (IPVModelItem) entry;
-                    final int ordinal = ((Integer) value).intValue();
-                    final RequestType request_type = IPVModelItem.RequestType.fromOrdinal(ordinal);
-                    if (first_request_type_change &&
-                        request_type == RequestType.RAW)
-                    {
-                        if (!MessageDialog.openConfirm(view.getSite().getShell(),
-                                Messages.RawRequestTitle,
-                                Messages.RawRequestMessage))
-                            return;
-                        first_request_type_change = false;
-                    }
-                    pv.setRequestType(request_type);
-                }
-                return;
-            case TRACE_TYPE:
-                {
-                    final int ordinal = ((Integer) value).intValue();
-                    entry.setTraceType(TraceType.fromOrdinal(ordinal));
-                    return;
-                }
-            }
+            updateModelItem(entry, col, value);
         }
         catch (Exception e)
         {
             Plugin.getLogger().error("Error", e); //$NON-NLS-1$
+        }
+    }
+
+	/** Update model item to new value
+	 *  @param entry Entry to update
+	 *  @param col   Column in table editor that selects what to update
+	 *  @param value New value
+	 */
+    private void updateModelItem(final IModelItem entry,
+            final PVTableHelper.Column col, final Object value)
+    {
+        switch (col)
+        {
+        case VISIBLE:
+            final boolean visible = ((Boolean)value).booleanValue();
+            entry.setVisible(visible);
+            return;
+        case NAME:
+            entry.changeName(value.toString());
+            return;
+        case AXIS:
+            final int new_axis = Integer.valueOf(value.toString());
+            entry.setAxisIndex(new_axis);
+            return;
+        case AXIS_VISIBLE:
+            final boolean axis_visible = ((Boolean)value).booleanValue();
+            entry.setAxisVisible(axis_visible);
+            return;
+        case MIN:
+            final double new_min = Double.valueOf(value.toString());
+            entry.setAxisLow(new_min);
+            return;
+        case MAX:
+            final double new_max = Double.valueOf(value.toString());
+            entry.setAxisHigh(new_max);
+            return;
+        case AUTO_SCALE:
+            final boolean auto_scale = ((Boolean)value).booleanValue();
+            entry.setAutoScale(auto_scale);
+            return;
+        case COLOR:
+            final RGB rgb = (RGB) value;
+            entry.setColor(new Color(null, rgb));
+            return;
+        case LINE_WIDTH:
+            final int new_width = Integer.valueOf(value.toString());
+            entry.setLineWidth(new_width);
+            return;
+        case LOG_SCALE:
+            final boolean use_log = ((Boolean)value).booleanValue();
+            entry.setLogScale(use_log);
+            return;
+        case REQUEST_TYPE:
+            if (entry instanceof IPVModelItem)
+            {
+                final IPVModelItem pv = (IPVModelItem) entry;
+                final int ordinal = ((Integer) value).intValue();
+                final RequestType request_type = IPVModelItem.RequestType.fromOrdinal(ordinal);
+                if (first_request_type_change &&
+                    request_type == RequestType.RAW)
+                {
+                    if (!MessageDialog.openConfirm(view.getSite().getShell(),
+                            Messages.RawRequestTitle,
+                            Messages.RawRequestMessage))
+                        return;
+                    first_request_type_change = false;
+                }
+                pv.setRequestType(request_type);
+            }
+            return;
+        case TRACE_TYPE:
+            {
+                final int ordinal = ((Integer) value).intValue();
+                entry.setTraceType(TraceType.fromOrdinal(ordinal));
+                return;
+            }
         }
     }
 }
