@@ -13,7 +13,7 @@ public class OPIColorPropertyDescriptor extends ColorPropertyDescriptor {
 
 	public OPIColorPropertyDescriptor(Object id, String displayName) {
 		super(id, displayName);
-		setLabelProvider(new WorkbenchLabelProvider());
+		setLabelProvider(new OPIColorLabelProvider());
 	}
 
 	@Override
@@ -24,5 +24,18 @@ public class OPIColorPropertyDescriptor extends ColorPropertyDescriptor {
 		}
 		return editor;
 	}
+	
+	
+	private final class OPIColorLabelProvider extends LabelProvider{
+		
+		@Override
+		public Image getImage(Object element) {
+			if(element !=null && element instanceof OPIColor){
+				return ((OPIColor)element).getImage();
+			}
+			return null;
+		}		
+	}
+	
 	
 }
