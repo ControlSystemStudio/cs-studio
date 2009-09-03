@@ -64,7 +64,8 @@ public class LocalPV extends BasicPV<Value>
         running = true;
         value.addListener(this);
         //give an initial value
-        setValue(0);
+        if(getValue() == null)
+        	setValue(0);
         
     }
 
