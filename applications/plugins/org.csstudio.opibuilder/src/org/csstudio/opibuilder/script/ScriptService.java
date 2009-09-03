@@ -5,9 +5,7 @@ import java.util.Map;
 
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.util.UIBundlingThread;
-import org.csstudio.platform.data.ISeverity;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.utility.pv.PV;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.mozilla.javascript.Context;
@@ -75,8 +73,14 @@ public class ScriptService {
 		
 	}
 	
-	public void unregisterScript(ScriptData scriptData){
-		scriptMap.remove(scriptData);		
+	public void unregisterScript(final ScriptData scriptData){
+		UIBundlingThread.getInstance().addRunnable(new Runnable(){
+			public void run() {
+				scriptMap.get(scriptData).dispose();
+				scriptMap.remove(scriptData);						
+			}
+		});
+		
 	}
 	
 	
