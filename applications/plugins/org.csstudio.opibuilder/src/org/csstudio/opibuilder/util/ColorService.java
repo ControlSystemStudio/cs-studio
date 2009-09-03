@@ -2,6 +2,7 @@ package org.csstudio.opibuilder.util;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -58,8 +59,10 @@ public final class ColorService {
 		
 		try {
 			//read file				
+			InputStream inputStream = ResourceUtil.pathToInputStream(colorFilePath);
+			
 			BufferedReader reader = new BufferedReader(
-						new InputStreamReader(ResourceUtil.pathToInputStream(colorFilePath)));
+						new InputStreamReader(inputStream));
 			String line;
 			//fill the color map.
 			while((line = reader.readLine()) != null){
@@ -75,6 +78,7 @@ public final class ColorService {
 					}
 				}				
 			}
+			inputStream.close();
 			reader.close();
 		} catch (Exception e) {
 			CentralLogger.getInstance().error(this, e);

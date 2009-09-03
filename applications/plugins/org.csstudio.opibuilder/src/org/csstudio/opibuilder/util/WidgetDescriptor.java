@@ -3,6 +3,7 @@ package org.csstudio.opibuilder.util;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.AbstractWidgetEditPart;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
+import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 
@@ -76,8 +77,7 @@ public class WidgetDescriptor {
 		try {
 			return (AbstractWidgetModel) element.createExecutableExtension("model_class");
 		} catch (CoreException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			CentralLogger.getInstance().error(this, e);
 		}
 		return null;
 	}
@@ -89,8 +89,7 @@ public class WidgetDescriptor {
 		try {
 			return (AbstractBaseEditPart) element.createExecutableExtension("editpart_class");
 		} catch (CoreException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			CentralLogger.getInstance().error(this, e);
 		}
 		return null;
 	}

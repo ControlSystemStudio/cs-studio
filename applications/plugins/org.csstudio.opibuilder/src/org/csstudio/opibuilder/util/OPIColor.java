@@ -96,10 +96,12 @@ public class OPIColor implements IAdaptable {
 				}
 				
 				public ImageDescriptor getImageDescriptor(Object object) {
+					
 					Image image = imageRegistry.get(getID());
 					if(image == null){
 						image = createIcon(getRGBValue());
 						imageRegistry.put(getID(), image);
+						System.out.println("OPIColor put image: " + image);
 					}
 						
 					return ImageDescriptor.createFromImage(image);
@@ -116,11 +118,13 @@ public class OPIColor implements IAdaptable {
 	/**Get the color image for this color. 
 	 * @return
 	 */
-	public Image getImage(){		
+	public Image getImage(){	
 		Image image = imageRegistry.get(getID());
 		if(image == null){
 			image = createIcon(getRGBValue());
 			imageRegistry.put(getID(), image);
+			System.out.println("OPIColor put image2: " + image);
+
 		}
 		return image;		
 	}
@@ -138,6 +142,7 @@ public class OPIColor implements IAdaptable {
 	 * @return an icon
 	 */
 	private Image createIcon(RGB rgb) {
+		//System.out.println("OPIColor: create icon" + rgb);
 		if(rgb == null)
 			 rgb = CustomMediaFactory.COLOR_BLACK;
 
