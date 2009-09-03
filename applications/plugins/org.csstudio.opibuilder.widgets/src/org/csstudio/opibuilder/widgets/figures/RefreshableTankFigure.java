@@ -46,7 +46,6 @@ public class RefreshableTankFigure extends AbstractLinearMarkedFigure {
 		add(scale, TankLayout.SCALE);
 		add(marker, TankLayout.MARKERS);
 		add(tank, TankLayout.TANK);
-		setValue(20);
 	  
 	}
 	

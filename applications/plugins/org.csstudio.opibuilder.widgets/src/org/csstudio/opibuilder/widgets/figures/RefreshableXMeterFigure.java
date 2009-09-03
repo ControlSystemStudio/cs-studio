@@ -55,7 +55,6 @@ public class RefreshableXMeterFigure extends AbstractRoundRampedFigure {
 		
 		valueLabel = new Label();		
 		valueLabel.setFont(DEFAULT_LABEL_FONT);
-		setValue(20);
 		needle = new Needle();
 		needle.setFill(true);
 		needle.setOutline(false);

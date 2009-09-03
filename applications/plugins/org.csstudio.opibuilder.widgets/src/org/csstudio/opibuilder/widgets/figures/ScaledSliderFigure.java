@@ -5,6 +5,7 @@ package org.csstudio.opibuilder.widgets.figures;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.widgets.figureparts.AlphaLabel;
 import org.csstudio.opibuilder.widgets.util.GraphicsUtil;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
@@ -106,8 +107,7 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 		add(track, XSliderLayout.TRACK);
 		add(thumb, XSliderLayout.THUMB);  
 		add(label, "label");
-		setValue(20);
-		
+	
 		addFigureListener(new FigureListener() {			
 			public void figureMoved(IFigure source) {
 				revalidate();				
@@ -167,6 +167,12 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 		}
 	}
 	
+	
+	@Override
+	public void repaint() {
+		// TODO Auto-generated method stub
+		super.repaint();
+	}
 	@Override
 	public void setForegroundColor(Color fg) {
 		super.setForegroundColor(fg);
@@ -201,6 +207,7 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 	 */
 	public void setEffect3D(boolean effect3D) {
 		this.effect3D = effect3D;
+		track.setOutline(!effect3D);
 	}
 
 	@Override
@@ -280,8 +287,7 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 			super();
 			setOutline(false);
 			setForegroundColor(GRAY_COLOR);
-			Cursor handCursor = new Cursor(Display.getCurrent(), SWT.CURSOR_HAND);
-			setCursor(handCursor);
+			setCursor(ResourceUtil.CURSOR_HAND);
 			addMouseListener(new MouseListener.Stub(){
 				@Override
 				public void mousePressed(MouseEvent me) {
@@ -302,8 +308,8 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 							setValue(value + valueChange);
 						
 						fireManualValueChange(value);
-						ScaledSliderFigure.this.revalidate();
-						ScaledSliderFigure.this.repaint();
+						//ScaledSliderFigure.this.revalidate();
+						//ScaledSliderFigure.this.repaint();
 					}
 				}				
 			});
@@ -316,7 +322,6 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 			int valuePosition = ((LinearScale) scale).getValuePosition(value, false);
 			boolean support3D = GraphicsUtil.testPatternSupported(graphics);
 			if(effect3D && support3D) {		
-				setOutline(false);
 				//fill background
 				graphics.setBackgroundColor(fillBackgroundColor);
 				super.fillShape(graphics);
@@ -389,7 +394,6 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 				
 				
 			}else {
-				setOutline(true);
 				graphics.setBackgroundColor(fillBackgroundColor);
 				super.fillShape(graphics);				
 				graphics.setBackgroundColor(fillColor);
@@ -470,8 +474,8 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 									horizontal? valuePosition: 0, 
 									horizontal ? 0 : valuePosition);						
 						fireManualValueChange(value);						
-						ScaledSliderFigure.this.layout();
-						ScaledSliderFigure.this.repaint();
+						//ScaledSliderFigure.this.layout();
+						//ScaledSliderFigure.this.repaint();
 						setLabel();		
 					}
 					me.consume();
@@ -507,7 +511,7 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 			super();
 			setOutline(true);
 			setFill(true);
-			setCursor(new Cursor(Display.getCurrent(), SWT.CURSOR_HAND));
+			setCursor(ResourceUtil.CURSOR_HAND);
 			setForegroundColor(GRAY_COLOR);
 			setLineWidth(1);
 			ThumbDragger thumbDragger = new ThumbDragger();

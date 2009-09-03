@@ -23,6 +23,7 @@ import org.eclipse.draw2d.IFigure;
 public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetEditPart{
 
 	private INumericMetaData meta = null;
+	private PVListener pvLoadLimitsListener;
 	
 	/**
 	 * Sets those properties on the figure that are defined in the
@@ -67,7 +68,7 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
 			if(model.isLimitsFromDB()){
 				PV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
 				if(pv != null){	
-					pv.addListener(new PVListener() {				
+					pvLoadLimitsListener = new PVListener() {				
 						public void pvValueUpdate(PV pv) {
 							IValue value = pv.getValue();
 							if (value != null && value.getMetaData() instanceof INumericMetaData){
@@ -84,12 +85,28 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
 							}
 						}					
 						public void pvDisconnected(PV pv) {}
-					});				
+					};
+					pv.addListener(pvLoadLimitsListener);				
 				}
 			}
 		}
 	}
 	
+	@Override
+	public AbstractMarkedWidgetModel getCastedModel() {
+		return (AbstractMarkedWidgetModel) getModel();
+	}
+	@Override
+	protected void doDeActivate() {
+		super.doDeActivate();
+		if(getCastedModel().isLimitsFromDB()){
+			PV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
+			if(pv != null){	
+				pv.removeListener(pvLoadLimitsListener);
+			}
+		}
+		
+	}
 	/**
 	 * Registers property change handlers for the properties defined in
 	 * {@link AbstractScaledWidgetModel}. This method is provided for the convenience

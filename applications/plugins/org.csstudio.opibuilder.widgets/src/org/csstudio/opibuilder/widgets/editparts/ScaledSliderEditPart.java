@@ -41,7 +41,7 @@ public final class ScaledSliderEditPart extends AbstractMarkedWidgetEditPart {
 					setPVValue(ScaledSliderModel.PROP_CONTROL_PV, newValue);				
 				
 			}
-		});		
+		});	
 		
 		return slider;
 

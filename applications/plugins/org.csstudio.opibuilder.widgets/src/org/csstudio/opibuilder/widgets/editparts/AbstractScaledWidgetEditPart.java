@@ -33,11 +33,13 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractPVWidgetEditP
 			final AbstractScaledWidgetFigure figure, final AbstractScaledWidgetModel model) {
 		
 		figure.setRange(model.getMinimum(), model.getMaximum());
+		figure.setValue((model.getMinimum() + model.getMaximum())/2);
 		figure.setMajorTickMarkStepHint(model.getMajorTickStepHint());
 		figure.setLogScale(model.isLogScaleEnabled());
 		figure.setShowScale(model.isShowScale());
 		figure.setShowMinorTicks(model.isShowMinorTicks());	
 		figure.setTransparent(model.isTransparent());
+		
 		
 		
 	}	

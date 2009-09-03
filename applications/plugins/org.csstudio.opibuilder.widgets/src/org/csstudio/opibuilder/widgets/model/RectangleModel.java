@@ -16,6 +16,7 @@ public class RectangleModel extends AbstractWidgetModel {
 		setSize(100, 50);
 		setBackgroundColor(CustomMediaFactory.COLOR_BLUE);
 		setForegroundColor(CustomMediaFactory.COLOR_BLACK);
+	
 		
 	}
 

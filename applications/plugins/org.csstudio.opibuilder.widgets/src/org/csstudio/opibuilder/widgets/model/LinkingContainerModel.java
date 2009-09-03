@@ -67,6 +67,10 @@ public class LinkingContainerModel extends AbstractContainerModel {
 	public IPath getOPIFilePath() {
 		return (IPath) getProperty(PROP_OPI_FILE).getPropertyValue();
 	}
+	
+	public void setOPIFilePath(String path){
+		setPropertyValue(PROP_OPI_FILE, new Path(path));
+	}
 
 	/**
 	 * Returns the auto zoom state.

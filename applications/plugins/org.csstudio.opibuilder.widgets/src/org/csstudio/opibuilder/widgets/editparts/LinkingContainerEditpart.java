@@ -1,6 +1,8 @@
 package org.csstudio.opibuilder.widgets.editparts;
 
+import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.AbstractContainerEditpart;
+import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.persistence.XMLUtil;
@@ -10,11 +12,23 @@ import org.csstudio.opibuilder.util.UIBundlingThread;
 import org.csstudio.opibuilder.widgets.figures.LinkingContainerFigure;
 import org.csstudio.opibuilder.widgets.model.LabelModel;
 import org.csstudio.opibuilder.widgets.model.LinkingContainerModel;
+import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.PlatformUI;
 
+/**The Editpart Controller for a linking Container
+ * @author Xihui Chen
+ *
+ */
 public class LinkingContainerEditpart extends AbstractContainerEditpart{
+
+	private DisplayModel tempDisplayModel = new DisplayModel();
 
 	@Override
 	protected IFigure doCreateFigure() {
@@ -34,7 +48,8 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 	
 	@Override
 	public void activate() {
-		super.activate();		
+		super.activate();	
+		loadWidgets(getCastedModel().getOPIFilePath(), false);
 	}
 	
 	@Override
@@ -50,7 +65,7 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 					IFigure figure) {
 				if(newValue != null && newValue instanceof IPath){						
 					IPath path = (IPath)newValue;					
-					loadWidgets(path);			
+					loadWidgets(path, true);			
 				}
 				return true;
 			}
@@ -61,7 +76,6 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 		
 		//load
 		
-		loadWidgets(getCastedModel().getOPIFilePath());
 		
 		handler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
@@ -81,29 +95,59 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 	/**
 	 * @param path the path of the OPI file
 	 */
-	private void loadWidgets(IPath path) {
-		Object[] children = getCastedModel().getChildren().toArray();
-		for(Object child : children)
-			getCastedModel().removeChild((AbstractWidgetModel) child);
+	private void loadWidgets(IPath path, boolean checkSelf) {	
+		getCastedModel().removeAllChildren();
+		if(path ==null || path.isEmpty())
+			return;
 		
-		DisplayModel displayModel = new DisplayModel();
 		try {
+			if(checkSelf && getExecutionMode() == ExecutionMode.EDIT_MODE){
+				IEditorPart activeEditor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().
+					getActivePage().getActiveEditor();
+				if(activeEditor != null){
+					IEditorInput input = activeEditor.getEditorInput();			
+					if(path.equals(ResourceUtil.getFileInEditor(input).getFullPath()))
+						throw new Exception("It is not allowed to link to the OPI file itself.");
+				}
+			}
 			XMLUtil.fillDisplayModelFromInputStream(
-					ResourceUtil.pathToInputStream(path), displayModel);
-			//for(AbstractWidgetModel child : displayModel.getChildren())	
-				getCastedModel().addChild(displayModel);
+					ResourceUtil.pathToInputStream(path), tempDisplayModel);
+			for(AbstractWidgetModel child : tempDisplayModel.getChildren())	
+				getCastedModel().addChild(child);
+			getCastedModel().setBackgroundColor(tempDisplayModel.getBackgroundColor());
+			tempDisplayModel.removeAllChildren();
 		} catch (Exception e) {
 			LabelModel loadingErrorLabel = new LabelModel();
 			loadingErrorLabel.setLocation(0, 0);
-			loadingErrorLabel.setSize(getCastedModel().getSize().getCopy().shrink(5, 5));
-			loadingErrorLabel.setText(e.getMessage());
-			getCastedModel().addChild(loadingErrorLabel);						
+			loadingErrorLabel.setSize(getCastedModel().getSize().getCopy().shrink(3, 3));
+			loadingErrorLabel.setForegroundColor(CustomMediaFactory.COLOR_RED);
+			loadingErrorLabel.setText("Failed to load: " + path.toString() + "\n"+ e);
+			loadingErrorLabel.setName("Label");
+			getCastedModel().addChild(loadingErrorLabel);		
+			CentralLogger.getInstance().error(this, e);
 		}
 		UIBundlingThread.getInstance().addRunnable(new Runnable(){
 			public void run() {
 				((LinkingContainerFigure)getFigure()).updateZoom();				
 			}
 		});
+	}
+	
+	
+	/**
+	 * {@inheritDoc} Overidden, to set the selection behaviour of child
+	 * EditParts.
+	 */
+	@Override
+	protected final EditPart createChild(final Object model) {
+		EditPart result = super.createChild(model);
+
+		// setup selection behavior for the new child
+		if (result instanceof AbstractBaseEditPart) {
+			((AbstractBaseEditPart) result).setSelectable(false);
+		}
+
+		return result;
 	}
 	
 	@Override

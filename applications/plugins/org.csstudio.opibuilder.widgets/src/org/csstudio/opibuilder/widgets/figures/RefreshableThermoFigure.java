@@ -71,7 +71,6 @@ public class RefreshableThermoFigure extends AbstractLinearMarkedFigure {
 		add(pipe, ThermoLayout.PIPE);
 		add(unit, ThermoLayout.UNIT);
 		add(bulb, ThermoLayout.BULB);
-		setValue(20);
 	  
 	}
 	
