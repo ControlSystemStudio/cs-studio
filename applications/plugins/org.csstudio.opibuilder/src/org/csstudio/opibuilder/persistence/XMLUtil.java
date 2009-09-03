@@ -79,6 +79,11 @@ public class XMLUtil {
 		return XMLElementToWidget(element, null);
 	}
 
+	/**fill the DisplayModel from an OPI file inputstream
+	 * @param inputStream the inputstream will be closed in this method before return.
+	 * @param displayModel
+	 * @throws Exception
+	 */
 	public static void fillDisplayModelFromInputStream(
 			InputStream inputStream, DisplayModel displayModel) throws Exception{
 		SAXBuilder saxBuilder = new SAXBuilder();
@@ -86,7 +91,7 @@ public class XMLUtil {
 		Element root = doc.getRootElement();
 		if(root != null)
 			 XMLElementToWidget(root, displayModel);
-		
+		inputStream.close();
 	}
 	
 	

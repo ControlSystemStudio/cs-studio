@@ -135,7 +135,7 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
 	protected Command getCreateCommand(CreateRequest request) {
 		return new WidgetCreateCommand((AbstractWidgetModel)request.getNewObject(), 
 					(AbstractContainerModel)getHost().getModel(), 
-					(Rectangle)getConstraintFor(request));
+					(Rectangle)getConstraintFor(request), false);
 	}
 	
 	/**

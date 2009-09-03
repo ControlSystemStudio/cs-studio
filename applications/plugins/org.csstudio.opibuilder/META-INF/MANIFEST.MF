@@ -21,6 +21,8 @@ Require-Bundle: org.eclipse.ui,
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.opibuilder,
+ org.csstudio.opibuilder.commands,
+ org.csstudio.opibuilder.editor,
  org.csstudio.opibuilder.editparts,
  org.csstudio.opibuilder.model,
  org.csstudio.opibuilder.persistence,

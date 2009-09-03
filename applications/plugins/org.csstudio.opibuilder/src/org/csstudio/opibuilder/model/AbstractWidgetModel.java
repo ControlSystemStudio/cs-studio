@@ -82,7 +82,10 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	
 	private Map<String, IPropertyDescriptor> propertyDescriptors;
 	
+	private AbstractContainerModel parent;
+	
 	private LinkedHashMap<StringProperty, PVValueProperty> pvMap;
+	
 
 	public AbstractWidgetModel() {
 		propertyMap = new HashMap<String, AbstractWidgetProperty>();
@@ -96,7 +99,7 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	 * @param property the property to be added.
 	 */
 	public void addProperty(final AbstractWidgetProperty property){
-		assert property != null;
+		Assert.isNotNull(property);
 		propertyMap.put(property.getPropertyID(), property);
 		if(property.isVisibleInPropSheet())
 			propertyDescriptors.put(property.getPropertyID(), property.getPropertyDescriptor());		
@@ -121,15 +124,15 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 		addProperty(new IntegerProperty(PROP_XPOS, "X", 
 				WidgetPropertyCategory.Position, 100));
 		addProperty(new IntegerProperty(PROP_YPOS, "Y", 
-				WidgetPropertyCategory.Position, 100));	
+				WidgetPropertyCategory.Position, 100));			
 		addProperty(new ColorProperty(PROP_COLOR_BACKGROUND, "Background Color",
 				WidgetPropertyCategory.Display, new RGB(240, 240, 240)));
 		addProperty(new ColorProperty(PROP_COLOR_FOREGROUND, "Foreground Color",
 				WidgetPropertyCategory.Display, new RGB(192, 192, 192)));
-		addProperty(new ComboProperty(PROP_BORDER_STYLE,"Border Style", 
-				WidgetPropertyCategory.Border, BorderStyle.stringValues(), 0));
 		addProperty(new ColorProperty(PROP_BORDER_COLOR, "Border Color",
 				WidgetPropertyCategory.Border, new RGB(0, 128, 255)));
+		addProperty(new ComboProperty(PROP_BORDER_STYLE,"Border Style", 
+				WidgetPropertyCategory.Border, BorderStyle.stringValues(), 0));
 		addProperty(new IntegerProperty(PROP_BORDER_WIDTH, "Border Width", 
 				WidgetPropertyCategory.Border, 1, 0, 1000));
 		addProperty(new BooleanProperty(PROP_ENABLED, "Enabled", 
@@ -214,6 +217,7 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 		return this;
 	}
 
+	
 	public FontData getFont(){
 		return (FontData)getCastedPropertyValue(PROP_FONT);
 	}
@@ -237,9 +241,9 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	}
 	
 	public AbstractWidgetProperty getProperty(String prop_id){
-		Assert.isTrue(prop_id != null);
-		Assert.isTrue(propertyMap.containsKey(prop_id));
-		return propertyMap.get(prop_id);
+		if((prop_id != null && propertyMap.containsKey(prop_id)))
+			return propertyMap.get(prop_id);
+		return null;
 	}
 	
 	public IPropertyDescriptor[] getPropertyDescriptors() {
@@ -300,12 +304,12 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 		return (Boolean)getCastedPropertyValue(PROP_VISIBLE);
 	}
 	
-	
 	/**Remove a property from the model.
 	 * @param prop_id
 	 */
-	public void removeProperty(final String prop_id){
-		assert propertyMap.containsKey(prop_id);
+	public synchronized void removeProperty(final String prop_id){
+		if(!propertyMap.containsKey(prop_id))
+			return;
 		AbstractWidgetProperty property = propertyMap.get(prop_id);
 		property.removeAllPropertyChangeListeners();
 		if(property.isVisibleInPropSheet())
@@ -359,6 +363,10 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 		setPropertyValue(PROP_COLOR_FOREGROUND, color);
 	}
 	
+	public void setFont(FontData fontData){
+		setPropertyValue(PROP_FONT, fontData);
+	}
+	
 	public void setLocation(int x, int y){
 		setPropertyValue(PROP_XPOS, x);
 		setPropertyValue(PROP_YPOS, y);
@@ -369,14 +377,16 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	}
 	
 	public void setPropertyDescription(String prop_id, String description){
+		if(getProperty(prop_id) == null)
+			return;
 		getProperty(prop_id).setDescription(description);
 		if(propertyDescriptors.containsKey(prop_id))			
 			propertyDescriptors.put(prop_id, getProperty(prop_id).getPropertyDescriptor());
 	}
 	
 	public void setPropertyValue(Object id, Object value) {
-		Assert.isTrue(propertyMap.containsKey(id));
-		propertyMap.get(id).setPropertyValue(value);
+		if(propertyMap.containsKey(id))
+			propertyMap.get(id).setPropertyValue(value);
 	}
 	public void setPropertyVisible(final String prop_id, final boolean visible){
 		Assert.isTrue(propertyMap.containsKey(prop_id));
@@ -396,6 +406,20 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	public void setSize(int width, int height){
 		setPropertyValue(PROP_WIDTH, width);
 		setPropertyValue(PROP_HEIGHT, height);
+	}
+
+	/**
+	 * @param parent the parent to set
+	 */
+	public void setParent(AbstractContainerModel parent) {
+		this.parent = parent;
+	}
+
+	/**
+	 * @return the parent
+	 */
+	public AbstractContainerModel getParent() {
+		return parent;
 	}
 	
 	
