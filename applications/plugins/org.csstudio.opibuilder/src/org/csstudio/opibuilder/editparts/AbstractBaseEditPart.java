@@ -13,6 +13,7 @@ import org.csstudio.opibuilder.script.ScriptData;
 import org.csstudio.opibuilder.script.ScriptService;
 import org.csstudio.opibuilder.script.ScriptsInput;
 import org.csstudio.opibuilder.util.OPIColor;
+import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.util.UIBundlingThread;
 import org.csstudio.opibuilder.visualparts.BorderFactory;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
@@ -31,6 +32,7 @@ import org.eclipse.draw2d.LabeledBorder;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.commands.Command;
@@ -41,6 +43,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IActionFilter;
 import org.eclipse.ui.progress.UIJob;
 
 /**The editpart for  {@link AbstractWidgetModel}
@@ -49,8 +52,9 @@ import org.eclipse.ui.progress.UIJob;
  */
 public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 
-	private static final Cursor HAND_CURSOR = new Cursor(Display.getCurrent(), SWT.CURSOR_HAND);
-
+	private boolean isSelectable = true;
+	
+	
 	protected Map<String, WidgetPropertyChangeListener> propertyListenerMap;
 	
 	private ExecutionMode executionMode;
@@ -58,7 +62,22 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 	public AbstractBaseEditPart() {
 		propertyListenerMap = new HashMap<String, WidgetPropertyChangeListener>();	
 	}
-	
+	@SuppressWarnings("unchecked")
+	@Override
+	public Object getAdapter(Class key) {
+		if(key == IActionFilter.class)
+			return new IActionFilter(){
+
+				public boolean testAttribute(Object target, String name,
+						String value) {
+					if(getExecutionMode() == ExecutionMode.EDIT_MODE)
+						return true;
+					return false;
+				}
+			
+		};
+		return super.getAdapter(key);
+	}
 	@Override
 	protected void createEditPolicies() {
 		installEditPolicy(EditPolicy.COMPONENT_ROLE, new ComponentEditPolicy(){
@@ -149,7 +168,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 					if(getCastedModel().isEnabled() && 
 							getCastedModel().getActionsInput().getActionsList().size() > 0 && 
 							getCastedModel().getActionsInput().isHookedUpToWidget()){
-						figure.setCursor(HAND_CURSOR);
+						figure.setCursor(ResourceUtil.CURSOR_HAND);
 						final AbstractWidgetAction action = 
 							getCastedModel().getActionsInput().getActionsList().get(0);
 						figure.addMouseListener(new MouseListener.Stub(){
@@ -222,8 +241,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 			super.deactivate();
 			//remove listener from all properties.
 			for(String id : getCastedModel().getAllPropertyIDs()){
-				getCastedModel().getProperty(id).removeAllPropertyChangeListeners();
-				propertyListenerMap.clear();
+				getCastedModel().getProperty(id).removeAllPropertyChangeListeners();//removePropertyChangeListener(propertyListenerMap.get(id));				
 			}
 			if(executionMode == ExecutionMode.RUN_MODE){
 				ScriptsInput scriptsInput = getCastedModel().getScriptsInput();
@@ -234,7 +252,9 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 				
 				for(PV pv : pvMap.values())
 					pv.stop();
-			}
+			}			
+			propertyListenerMap.clear();
+			propertyListenerMap = null;			
 		}
 		
 	}
@@ -417,6 +437,16 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 	protected final void refreshVisuals() {
 		doRefreshVisuals(getFigure());
 	}
+	
+	@Override
+	public boolean isSelectable() {
+		return isSelectable;
+	}
+	
+	public void setSelectable(boolean isSelectable) {
+		this.isSelectable = isSelectable;
+	}
+	
 
 	/**
 	 * Resizes the figure. Use {@link AbstractBaseEditPart} to implement more

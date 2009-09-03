@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.opibuilder.commands.OrphanChildCommand;
-import org.csstudio.opibuilder.commands.WidgetCreateCommand;
 import org.csstudio.opibuilder.editpolicies.WidgetXYLayoutEditPolicy;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
@@ -30,6 +29,9 @@ import org.eclipse.gef.rulers.RulerProvider;
  *
  */
 public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {	
+
+	private PropertyChangeListener childrenPropertyChangeListener;
+	private PropertyChangeListener selectionPropertyChangeListener;
 
 	@Override
 	protected void createEditPolicies() {
@@ -68,33 +70,59 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
 	@Override
 	public void activate() {
 		super.activate();
-		((AbstractContainerModel)getModel()).getChildrenProperty().addPropertyChangeListener(
-				new PropertyChangeListener() {					
+		childrenPropertyChangeListener = new PropertyChangeListener() {					
 					public void propertyChange(PropertyChangeEvent evt) {
-						int oldSize = getChildren().size();
-						refreshChildren();
-						int newSize = getChildren().size();
-						if(newSize > oldSize){
-							//select the new created widget
-							Command lastCommand = 
-								getViewer().getEditDomain().getCommandStack().getUndoCommand();
-							if(lastCommand instanceof WidgetCreateCommand){
-								getViewer().deselectAll();							
-								getViewer().appendSelection(
-										(EditPart) getChildren().get(getChildren().size()-1));
-							}else if (lastCommand instanceof CompoundCommand){									
-								getViewer().appendSelection(
-										(EditPart) getChildren().get(getChildren().size()-1));
-							}
-						}
+						
+						if(evt.getOldValue() instanceof Integer){
+							addChild(createChild(evt.getNewValue()), ((Integer)evt
+									.getOldValue()).intValue());
+						}else if (evt.getOldValue() instanceof AbstractWidgetModel){
+							EditPart child = (EditPart)getViewer().getEditPartRegistry().get(
+									evt.getOldValue());						
+							if(child != null)
+								removeChild(child);
+						}else							
+							refreshChildren();						
 					}
-				});
+				};
+		getCastedModel().getChildrenProperty().
+			addPropertyChangeListener(childrenPropertyChangeListener);
+		
+		if(getExecutionMode() == ExecutionMode.EDIT_MODE){
+			selectionPropertyChangeListener = new PropertyChangeListener(){
+				@SuppressWarnings("unchecked")
+				public void propertyChange(PropertyChangeEvent evt) {
+					List<AbstractWidgetModel> widgets = (List<AbstractWidgetModel>) evt.getNewValue();
+					List<EditPart> widgetEditparts = new ArrayList<EditPart>();
+					for(AbstractWidgetModel w : widgets){
+						EditPart e = (EditPart)getViewer().getEditPartRegistry().get(w);
+						if(e != null)
+							widgetEditparts.add(e);
+					}
+					
+					if(!(Boolean)evt.getOldValue()){ //append
+						getViewer().deselectAll();
+					}
+					for(EditPart editpart : widgetEditparts)
+						getViewer().appendSelection(editpart);
+				}
+			};
+			
+			getCastedModel().getSelectionProperty().addPropertyChangeListener(
+					selectionPropertyChangeListener);
+		}
+		
+		
 	}
 	
 	@Override
 	public void deactivate() {
 		super.deactivate();
-		((AbstractContainerModel)getModel()).getChildrenProperty().removeAllPropertyChangeListeners();
+		getCastedModel().getChildrenProperty().
+			removeAllPropertyChangeListeners();
+		childrenPropertyChangeListener = null;
+		getCastedModel().getSelectionProperty().removeAllPropertyChangeListeners();
+		selectionPropertyChangeListener = null;
 	}
 	
 	@SuppressWarnings("unchecked")

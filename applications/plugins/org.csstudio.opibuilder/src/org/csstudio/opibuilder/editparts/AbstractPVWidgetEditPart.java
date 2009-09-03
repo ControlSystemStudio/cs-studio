@@ -39,6 +39,7 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 	private static RGB DISCONNECTED_COLOR = new RGB(255, 0, 255);
 	
 	private Map<String, PV> pvMap = new HashMap<String, PV>(); 
+	private Map<String, PVListener> pvListenerMap = new HashMap<String, PVListener>();
 	private Map<String, Boolean> pvConnectedStatusMap = new HashMap<String, Boolean>();
 	
 	private boolean connected = true;
@@ -171,7 +172,8 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 								}
 							});							
 						}
-						pv.addListener(new PVListener(){
+						
+						PVListener pvListener = new PVListener(){
 							public void pvDisconnected(PV pv) {
 								pvConnectedStatusMap.put(pv.getName(), false);
 								markWidgetAsDisconnected(pv.getName());
@@ -185,8 +187,11 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 								pvValueMap.get(sp).setPropertyValue(pv.getValue());		
 								
 							}							
-						});						
+						};
+						
+						pv.addListener(pvListener);						
 						pvMap.put(sp.getPropertyID(), pv);
+						pvListenerMap.put(sp.getPropertyID(), pvListener);
 					} catch (Exception e) {
 						pvConnectedStatusMap.put((String) sp.getPropertyValue(), false);
 						markWidgetAsDisconnected((String) sp.getPropertyValue());
@@ -288,13 +293,25 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 		saveBackColor = figure.getBackgroundColor();
 	}
 	
+	/**
+	 * Subclass should do the deActivate things in this method.
+	 */
+	protected void doDeActivate() {		
+	}
+	
 	@Override
 	public void deactivate() {
-		if(isActive()){
-			super.deactivate();
+		if(isActive()){	
+			doDeActivate();
+			for(String pvPropID : pvListenerMap.keySet()){
+				pvMap.get(pvPropID).removeListener(pvListenerMap.get(pvPropID));
+			}
 			for(PV pv : pvMap.values())				
 				pv.stop();
 			pvMap.clear();
+			pvListenerMap.clear();
+			pvConnectedStatusMap.clear();
+			super.deactivate();
 		}
 	}
 	
