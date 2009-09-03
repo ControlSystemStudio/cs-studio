@@ -165,7 +165,7 @@ public class PlotArea extends Figure {
 			if(trace != null && trace.isVisible())
 				//Shrink will make the trace has no intersection with axes,
 				//which will make it only repaints the trace area.
-				trace.setBounds(clientArea.getCopy().shrink(1, 1));				
+				trace.setBounds(clientArea);//.getCopy().shrink(1, 1));				
 		}		
 		for(Grid grid : gridList){
 			if(grid != null && grid.isVisible())
@@ -174,7 +174,7 @@ public class PlotArea extends Figure {
 		
 		for(Annotation annotation : annotationList){
 			if(annotation != null && annotation.isVisible())
-				annotation.setBounds(clientArea.getCopy().shrink(1, 1));
+				annotation.setBounds(clientArea);//.getCopy().shrink(1, 1));
 		}
 		super.layout();
 	}
