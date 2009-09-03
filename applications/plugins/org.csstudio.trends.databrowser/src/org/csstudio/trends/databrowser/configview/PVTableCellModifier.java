@@ -169,11 +169,13 @@ public class PVTableCellModifier implements ICellModifier
             return;
         case MIN:
             final double new_min = Double.valueOf(value.toString());
-            entry.setAxisLow(new_min);
+            if (new_min < entry.getAxisHigh())
+                entry.setAxisLow(new_min);
             return;
         case MAX:
             final double new_max = Double.valueOf(value.toString());
-            entry.setAxisHigh(new_max);
+            if (new_max > entry.getAxisLow())
+                entry.setAxisHigh(new_max);
             return;
         case AUTO_SCALE:
             final boolean auto_scale = ((Boolean)value).booleanValue();
@@ -185,7 +187,8 @@ public class PVTableCellModifier implements ICellModifier
             return;
         case LINE_WIDTH:
             final int new_width = Integer.valueOf(value.toString());
-            entry.setLineWidth(new_width);
+            if (new_width >= 0)
+                entry.setLineWidth(new_width);
             return;
         case LOG_SCALE:
             final boolean use_log = ((Boolean)value).booleanValue();
