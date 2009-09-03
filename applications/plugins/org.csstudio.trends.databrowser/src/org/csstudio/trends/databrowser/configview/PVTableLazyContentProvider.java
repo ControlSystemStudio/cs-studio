@@ -22,6 +22,9 @@ public class PVTableLazyContentProvider implements ILazyContentProvider
     /** Called by 'lazy' table, needs to 'replace' entry of given row. */
 	public void updateElement(int row)
 	{
+	    // See comments in PVTableCellModifier.modify about
+	    // 'reentrant' call errors that resulted from 'replace()'
+	    
         // Rows beyond model are used to allow entry of new PV names!
         if (row >= model.getNumItems())
             table_viewer.replace(PVTableHelper.empty_row, row);

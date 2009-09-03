@@ -104,11 +104,26 @@ public class PVTableCellModifier implements ICellModifier
     {
         if (value == null)
             return;
+        // Note that it is possible for an SWT Item to be passed
+        // instead of the model element.
+        if (element instanceof Item)
+            element = ((Item) element).getData();
         try
-        {   // Note that it is possible for an SWT Item to be passed
-            // instead of the model element.
-            if (element instanceof Item)
-                element = ((Item) element).getData();
+        {
+            // Used to get errors "Ignored reentrant call while viewer is busy"
+            // with a stack trace that didn't make too much sense:
+            //
+            // The model update triggered the TableViewer refresh.
+            // That calls PVTableLazyContentProvider.updateElement().
+            // OK so far.
+            // But the PVTableLazyContentProvider.updateElement() descending
+            // into JFace ended up calling updateElement again further down
+            // the call trace, and that's then considered reentrant.
+            //
+            // Since the first call to PVTableLazyContentProvider.updateElement
+            // looked like a "PreservingSelection" related call,
+            // de-selecting everything seems to help:
+            view.getPVTableViewer().getTable().deselectAll();
             // Was this the magic last row?
             if (element == PVTableHelper.empty_row)
             {
@@ -126,7 +141,7 @@ public class PVTableCellModifier implements ICellModifier
             Plugin.getLogger().error("Error", e); //$NON-NLS-1$
         }
     }
-
+	
 	/** Update model item to new value
 	 *  @param entry Entry to update
 	 *  @param col   Column in table editor that selects what to update
