@@ -84,7 +84,7 @@ public final class PasteWidgetsAction extends WorkbenchPartAction {
 					// create command
 					cmd.add(new WidgetCreateCommand(widgetModel, targetModel,
 							new Rectangle(widgetModel.getLocation().getTranslated(diff), 
-									widgetModel.getSize())));
+									widgetModel.getSize()), true));
 				
 				}
 
