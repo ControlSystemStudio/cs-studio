@@ -149,7 +149,7 @@ public final class CloneCommand extends Command {
 						(widgetModel.getLocation().y+10));
 			}
 			_compoundCommand.add(new WidgetCreateCommand(widgetModel, _parent, 
-					new Rectangle(widgetModel.getLocation(), widgetModel.getSize())));
+					new Rectangle(widgetModel.getLocation(), widgetModel.getSize()), true));
 			
 			if (_hGuide != null) {
 				ChangeGuideCommand hGuideCommand = new ChangeGuideCommand(widgetModel, true);

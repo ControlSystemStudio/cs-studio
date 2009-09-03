@@ -20,6 +20,8 @@ public class WidgetCreateCommand extends Command {
 	
 	private Rectangle bounds;
 	
+	private boolean append;
+	
 
 	/**
 	 * @param newWidget The new Widget to be added.
@@ -27,10 +29,11 @@ public class WidgetCreateCommand extends Command {
 	 * @param bounds the bounds for the new widget
 	 */
 	public WidgetCreateCommand(AbstractWidgetModel newWidget, AbstractContainerModel
-			container, Rectangle bounds) {
+			container, Rectangle bounds, boolean append) {
 		this.newWidget = newWidget;
 		this.container  = container;
 		this.bounds = bounds;
+		this.append = append;
 		setLabel("create widget");
 	}
 		
@@ -68,6 +71,7 @@ public class WidgetCreateCommand extends Command {
 							0 : typeIDMap.get(newWidget.getTypeID()) + 1)); 
 		}
 		container.addChild(newWidget);
+		container.selectWidget(newWidget, append);
 	}
 	
 	@Override
