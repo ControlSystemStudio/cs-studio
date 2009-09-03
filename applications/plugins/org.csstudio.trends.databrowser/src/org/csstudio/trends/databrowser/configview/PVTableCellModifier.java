@@ -136,7 +136,7 @@ public class PVTableCellModifier implements ICellModifier
             
             updateModelItem(entry, col, value);
         }
-        catch (Exception e)
+        catch (Throwable e)
         {
             Plugin.getLogger().error("Error", e); //$NON-NLS-1$
         }
