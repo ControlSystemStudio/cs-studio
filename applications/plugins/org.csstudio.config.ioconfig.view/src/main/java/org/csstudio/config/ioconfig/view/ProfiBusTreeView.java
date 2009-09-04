@@ -78,11 +78,11 @@ import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewerEditorActivationStrategy;
+import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
-import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IViewerLabelProvider;
@@ -101,8 +101,8 @@ import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -128,7 +128,6 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.internal.Workbench;
 import org.eclipse.ui.part.DrillDownAdapter;
 
 /**
@@ -211,8 +210,8 @@ public class ProfiBusTreeView extends Composite {
     private ImageDescriptor _pasteDis;
     private Composite _editComposite;
     private List<FacilityLight> _load;
-    private static final Image ICON_WARNING = Workbench.getInstance().getDisplay().getSystemImage(
-            SWT.ICON_WARNING);
+    private static final Image ICON_WARNING = PlatformUI.getWorkbench().getDisplay()
+            .getSystemImage(SWT.ICON_WARNING);
 
     /**
      * 
@@ -263,9 +262,8 @@ public class ProfiBusTreeView extends Composite {
      * @version $Revision$
      * @since 20.06.2007
      */
-    class ViewLabelProvider implements IViewerLabelProvider, ILabelProvider {
-
-        private final Point _tooltipShift = new Point(0, 0);;
+    // class ViewLabelProvider implements IViewerLabelProvider, ILabelProvider {
+    class ViewLabelProvider extends ColumnLabelProvider {
 
         public Image getImage(final Object obj) {
             if (obj instanceof Node) {
@@ -277,54 +275,87 @@ public class ProfiBusTreeView extends Composite {
             return null;
         }
 
-        public void updateLabel(ViewerLabel label, Object element) {
-            label.setImage(getImage(element));
-            label.setText(element.toString());
-            label.setBackground(getBackground(element));
-            label.setTooltipText("§$%");
-            label.setTooltipForegroundColor(CustomMediaFactory.getInstance()
-                    .getColor(255, 255, 255));
-            label.setTooltipBackgroundColor(CustomMediaFactory.getInstance().getColor(0, 0, 0));
-            label.setTooltipShift(_tooltipShift);
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.eclipse.jface.viewers.ColumnLabelProvider#getBackground(java.lang.Object)
+         */
+        @Override
+        public Color getBackground(Object element) {
+            // label.setImage(getImage(element));
+            if (haveProgrammableModule(element)) {
+                return CustomMediaFactory.getInstance().getColor(255, 140, 0);
+            }
+            return null;
         }
 
-        private Color getBackground(Object element) {
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.eclipse.jface.viewers.ColumnLabelProvider#getFont(java.lang.Object)
+         */
+        @Override
+        public Font getFont(Object element) {
+            if (haveProgrammableModule(element)) {
+                return CustomMediaFactory.getInstance().getFont("Tahoma", 8, SWT.ITALIC);
+            }
+            return null;
+        }
+
+//        public void updateLabel(ViewerLabel label, Object element) {
+//            label.setImage(getImage(element));
+//            if (haveProgrammableModule(element)) {
+//                label.setText(element.toString() + " [prog]");
+//                Font font = CustomMediaFactory.getInstance().getFont("Tahoma", 8, SWT.ITALIC);
+//                label.setFont(font);
+//                label.setTooltipText("Test");
+//                label.setBackground(CustomMediaFactory.getInstance().getColor(255, 140, 0));
+//            } else {
+//                label.setText(element.toString());
+//                label.setBackground(null);
+//            }
+//        }
+
+        private boolean haveProgrammableModule(Object element) {
             if (element instanceof Slave) {
                 Slave node = (Slave) element;
                 Set<Document> documents = node.getDocuments();
                 while (documents.iterator().hasNext()) {
                     Document doc = (Document) documents.iterator().next();
-                    if(doc.getSubject()!=null&&doc.getSubject().startsWith("Projekt:")) {
-                        return CustomMediaFactory.getInstance().getColor(255,140,0);
+                    if (doc.getSubject() != null && doc.getSubject().startsWith("Projekt:")) {
+                        return true;
                     }
                 }
+            }
+            return false;
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.eclipse.jface.viewers.CellLabelProvider#getToolTipText(java.lang.Object)
+         */
+        @Override
+        public String getToolTipText(Object element) {
+            if (haveProgrammableModule(element)) {
+                return "Is a programmable Module!";
             }
             return null;
         }
 
-        public void addListener(ILabelProviderListener listener) {
-            // TODO Auto-generated method stub
-
-        }
-
-        public void dispose() {
-            // TODO Auto-generated method stub
-
-        }
-
-        public boolean isLabelProperty(Object element, String property) {
-            // TODO Auto-generated method stub
-            return false;
-        }
-
-        public void removeListener(ILabelProviderListener listener) {
-            // TODO Auto-generated method stub
-
-        }
-
+        /* (non-Javadoc)
+         * @see org.eclipse.jface.viewers.ColumnLabelProvider#getText(java.lang.Object)
+         */
+        @Override
         public String getText(Object element) {
-            return element.toString();
+            String text = super.getText(element);
+            if (haveProgrammableModule(element)) {
+                return text + " [prog]";
+            }
+            return text;
         }
+        
+        
     }
 
     /**
@@ -413,6 +444,9 @@ public class ProfiBusTreeView extends Composite {
         _viewer.setSorter(new NameSorter());
         _viewer.getTree().setHeaderVisible(false);
         _viewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+
+        ColumnViewerToolTipSupport.enableFor(_viewer);
+
         CentralLogger.getInstance().debug(this, "ID: " + _site.getId());
         CentralLogger.getInstance().debug(this, "PlugIn ID: " + _site.getPluginId());
         CentralLogger.getInstance().debug(this, "Name: " + _site.getRegisteredName());

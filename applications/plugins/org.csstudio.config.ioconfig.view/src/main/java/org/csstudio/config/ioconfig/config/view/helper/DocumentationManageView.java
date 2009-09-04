@@ -42,6 +42,7 @@ import org.csstudio.config.ioconfig.model.tools.Helper;
 import org.csstudio.config.ioconfig.view.Activator;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ColumnPixelData;
@@ -67,6 +68,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.opengl.GLData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
@@ -137,32 +139,14 @@ public class DocumentationManageView extends Composite {
         }
 
         private void addDocDialog() {
-            StructuredSelection selection = (StructuredSelection) _viewer.getSelection();
-            Document firstElement = (Document) selection.getFirstElement();
+            Document firstElement = null;
+            if(_viewer!=null) {
+                StructuredSelection selection = (StructuredSelection) _viewer.getSelection();
+                firstElement = (Document) selection.getFirstElement();
+            }
             AddDocDialog addDocDialog = new AddDocDialog(new Shell(), firstElement);
             if (addDocDialog.open() == 0) {
                 Document document = addDocDialog.getDocument();
-                // System.out.println("Doc is :" + document);
-                // System.out.println("Doc getAccountname :" + document.getAccountname());
-                // System.out.println("Doc getDesclong :" + document.getDesclong());
-                // System.out.println("Doc getErroridentifyer :" + document.getErroridentifyer());
-                // System.out.println("Doc getId :" + document.getId());
-                // System.out.println("Doc getKeywords :" + document.getKeywords());
-                // System.out.println("Doc getLinkForward :" + document.getLinkForward());
-                // System.out.println("Doc getLinkId :" + document.getLinkId());
-                // System.out.println("Doc getLocation :" + document.getLocation());
-                // System.out.println("Doc getLogseverity :" + document.getLogseverity());
-                // System.out.println("Doc getMimeType :" + document.getMimeType());
-                // System.out.println("Doc getSubject :" + document.getSubject());
-                // System.out.println("Doc getCreatedDate :" + document.getCreatedDate());
-                // System.out.println("Doc getDeleteDate :" + document.getDeleteDate());
-                // System.out.println("Doc getEntrydate :" + document.getEntrydate());
-                try {
-                    System.out.println("Doc is :" + document.getImage().length());
-                } catch (SQLException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
                 Repository.save(document);
             }
         }
@@ -197,14 +181,8 @@ public class DocumentationManageView extends Composite {
                 if (createTempFile != null && createTempFile.isFile()) {
                     if (Desktop.isDesktopSupported()) {
                         if (Desktop.getDesktop().isSupported(Desktop.Action.OPEN)) {
-                            CentralLogger.getInstance().debug(this, "Desktop unterstützt Open!");
                             Desktop.getDesktop().open(createTempFile);
                         }
-                        // if (Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
-                        // CentralLogger.getInstance().debug(this,
-                        // "Desktop unterstützt Browse!");
-                        // Desktop.getDesktop().browse(createTempFile.toURI());
-                        // }
                     }
                 }
             } catch (IOException e) {
@@ -542,11 +520,15 @@ public class DocumentationManageView extends Composite {
      */
     private void makeChooser() {
         Composite chosserComposite = new Composite(this, SWT.NONE);
-        chosserComposite.setLayoutData(new GridData(SWT.CENTER, SWT.FILL, false, false, 1, 1));
-        chosserComposite.setLayout(new GridLayout(1, false));
+        GridData layoutData = new GridData(SWT.CENTER, SWT.FILL, false, false, 1, 1);
+        chosserComposite.setLayoutData(layoutData);
+        GridLayoutFactory fillDefaults = GridLayoutFactory.fillDefaults();
+        GridLayout create = fillDefaults.create();
+        create.marginTop=15;
+        chosserComposite.setLayout(create);
 
         Button refreshButton = new Button(chosserComposite, SWT.FLAT);
-        refreshButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
+        refreshButton.setLayoutData(new GridData(SWT.CENTER, SWT.BEGINNING, false, false));
         refreshButton.setImage(Activator.getImageDescriptor("icons/refresh.gif").createImage());
         refreshButton.setToolTipText("Refresh List of Documents");
         refreshButton.addSelectionListener(new SelectionListener() {
@@ -575,6 +557,7 @@ public class DocumentationManageView extends Composite {
         addNewDocButton.setEnabled(true);
         addNewDocButton.addSelectionListener(new AddFile2DBSelectionListener(null));
 
+        new Label(chosserComposite, SWT.NONE);
         // Add
         Button addAllButton = new Button(chosserComposite, SWT.PUSH);
         addAllButton.setText(">>");
@@ -725,9 +708,9 @@ public class DocumentationManageView extends Composite {
         GridDataFactory.fillDefaults().grab(true, true).applyTo(tableComposite);
         tableComposite.setLayout(tableColumnLayout);
 
-        String[] columnHeads = new String[] { "Desc", "Create Date", "Key Words" };
-        int[] columnWeigth = new int[] { 3, 1, 1 };
-        int[] columnWidths = new int[] { 150, 75, 75 };
+        String[] columnHeads = new String[] { "Desc", "Key Words" };
+        int[] columnWeigth = new int[] { 6, 2 };
+        int[] columnWidths = new int[] { 140, 75 };
 
         final TableViewer tableViewer = new TableViewer(tableComposite, SWT.H_SCROLL | SWT.V_SCROLL
                 | SWT.MULTI | SWT.FULL_SELECTION);
@@ -777,6 +760,26 @@ public class DocumentationManageView extends Composite {
         
         tableColumnLayout.setColumnData(column.getColumn(), new ColumnPixelData(30, true));
 
+        // Column Create Date
+        column = new TableViewerColumn(tableViewer, SWT.NONE);
+        column.getColumn().setText("Create Date");
+        column.setLabelProvider(new CellLabelProvider() {
+            public void update(ViewerCell cell) {
+                cell.setText(((IDocument) cell.getElement()).getCreatedDate().toString());
+            }
+        });
+        
+        ColumnViewerSorter columnViewerSorter = new ColumnViewerSorter(tableViewer, column) {
+            
+            @Override
+            protected int doCompare(Viewer viewer, Object e1, Object e2) {
+                Document doc1 = (Document) e1;  
+                Document doc2 = (Document) e2;  
+                return compareStrings(doc1.getCreatedDate().toString(), doc2.getCreatedDate().toString());
+            }
+        };
+        
+        tableColumnLayout.setColumnData(column.getColumn(), new ColumnWeightData(3, 80, true));
         //
         for (int i = 0; i < columnWidths.length; i++) {
             final TableViewerColumn column2 = new TableViewerColumn(tableViewer, SWT.NONE);
@@ -791,10 +794,6 @@ public class DocumentationManageView extends Composite {
                             cell.setText(document.getDesclong());
                             break;
                         case 1:
-                            cell.setText(document.getCreatedDate()
-                                    .toString());
-                            break;
-                        case 2:
                             cell.setText(document.getKeywords());
                             break;
                         default:
@@ -812,8 +811,6 @@ public class DocumentationManageView extends Composite {
                         case 0:
                             return compareStrings(doc1.getDesclong(), doc2.getDesclong());
                         case 1:
-                            return compareStrings(doc1.getCreatedDate().toString(), doc2.getCreatedDate().toString());
-                        case 2:
                             return compareStrings(doc1.getKeywords(), doc2.getKeywords());
                     }
                     return 0;
@@ -823,7 +820,7 @@ public class DocumentationManageView extends Composite {
             tableColumnLayout.setColumnData(column2.getColumn(), new ColumnWeightData(
                     columnWeigth[i], columnWidths[i], true));
         }
-//        columnViewerSorter.setSorter(columnViewerSorter, ColumnViewerSorter.ASC);
+        columnViewerSorter.setSorter(columnViewerSorter, ColumnViewerSorter.DESC);
         return tableViewer;
     }
 
