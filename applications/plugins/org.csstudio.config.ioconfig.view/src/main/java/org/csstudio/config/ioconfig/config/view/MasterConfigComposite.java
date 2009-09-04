@@ -534,6 +534,7 @@ public class MasterConfigComposite extends NodeConfig {
         _master.setVendorName(_vendorText.getText());
         _master.setProfibusdpmasterBez(_pbBoardText.getText());
         _master.setDescription(_descText.getText());
+        _descText.setData(_descText.getText());
         // Parameters
         _master.setMinSlaveInt(Integer.valueOf(_minSlaveIntervalText.getText()));
         _master.setPollTime(Integer.valueOf(_pollTimeOutText.getText()));
@@ -639,6 +640,7 @@ public class MasterConfigComposite extends NodeConfig {
             _pollTimeOutText.setText(_master.getPollTime()+"");
             _dataControlTimeText.setText(_master.getDataControlTime()+"");
             _autoclearButton.setSelection(_master.isAutoclear());
+            _descText.setText(_master.getDescription());
         }else{
             _gsdFile = null;
             fill(_gsdFile);
