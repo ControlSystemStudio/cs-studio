@@ -23,7 +23,7 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 public class EngineModel
 {
     /** Version code */
-    final public static String VERSION = "1.0.5"; //$NON-NLS-1$
+    final public static String VERSION = "1.0.6"; //$NON-NLS-1$
 
     /** Name of this model */
     private String name = "Archive Engine";  //$NON-NLS-1$

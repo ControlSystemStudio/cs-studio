@@ -387,9 +387,7 @@ abstract public class ArchiveChannel
                 // and now we got an update from the IOC which still
                 // carries the old, original time stamp of the PV,
                 // and that's back in time...
-                final Logger log = CentralLogger.getInstance().getLogger(this);
-                if (log.isInfoEnabled())
-                    log.info(getName() + " skips back-in-time:\n" +
+                trouble_sample_log.log(getName() + " skips back-in-time:\n" +
                         "last: " + last_archived_value.toString() + "\n" +
                         "new : " + value.toString());
                 return false;
