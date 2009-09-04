@@ -311,8 +311,13 @@ public class MasterConfigComposite extends NodeConfig {
         gDesc.setLayout(new GridLayout(1,false));
         
         _descText = new Text(gDesc, SWT.BORDER | SWT.MULTI);
+//        _descText = ProfibusHelper.getTextField(gDesc, _master.getDescription());
         _descText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-        _descText.setEnabled(false);
+        _descText.setText(_master.getDescription());
+        _descText.setData(_master.getDescription());
+        _descText.setEditable(true);
+        _descText.addModifyListener(getMLSB());
+        
     }
 
     private void makeMemoryAddressingGroup(Composite comp) {
@@ -528,6 +533,7 @@ public class MasterConfigComposite extends NodeConfig {
         // Information
         _master.setVendorName(_vendorText.getText());
         _master.setProfibusdpmasterBez(_pbBoardText.getText());
+        _master.setDescription(_descText.getText());
         // Parameters
         _master.setMinSlaveInt(Integer.valueOf(_minSlaveIntervalText.getText()));
         _master.setPollTime(Integer.valueOf(_pollTimeOutText.getText()));
