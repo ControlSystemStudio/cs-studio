@@ -506,28 +506,29 @@ create table AMS_UserGroup_Syn
 
 -- Init Oracle AMS --
 
-delete from AMS_User;
-delete from AMS_UserGroup;
-delete from AMS_UserGroup_User;
-
-delete from AMS_FilterConditionType;
-delete from AMS_FilterCondition;
-delete from AMS_FilterCondition_String;
-delete from AMS_FilterCondition_PV;
-delete from AMS_FilterCond_ArrStr;
-delete from AMS_FilterCond_ArrStrVal;
-delete from AMS_FilterCond_TimeBased;
-delete from AMS_Filter;
-delete from AMS_Filter_FilterCondition;
-
-delete from AMS_Topic;
-delete from AMS_FilterActionType;
-delete from AMS_FilterAction;
-delete from AMS_Filter_FilterAction;
-
-delete from AMS_Groups;
-delete from AMS_DefMessageText;
-delete from AMS_Flag;
+DELETE FROM AMS_User;
+DELETE FROM AMS_UserGroup;
+DELETE FROM AMS_UserGroup_User;
+DELETE FROM AMS_FilterConditionType;
+DELETE FROM AMS_FilterCondition;
+DELETE FROM AMS_FilterCondition_String;
+DELETE FROM AMS_FilterCondition_PV;
+DELETE FROM AMS_FilterCond_ArrStr;
+DELETE FROM AMS_FilterCond_ArrStrVal;
+DELETE FROM AMS_FilterCond_Conj_Common;
+DELETE FROM AMS_FilterCond_FilterCond;
+DELETE FROM AMS_FilterCond_Junction;
+DELETE FROM AMS_FilterCond_Negation;
+DELETE FROM AMS_FilterCond_TimeBased;
+DELETE FROM AMS_Filter;
+DELETE FROM AMS_Filter_FilterCondition;
+DELETE FROM AMS_Topic;
+DELETE FROM AMS_FilterActionType;
+DELETE FROM AMS_FilterAction;
+DELETE FROM AMS_Filter_FilterAction;
+DELETE FROM AMS_Groups;
+DELETE FROM AMS_DefMessageText;
+DELETE FROM AMS_Flag;
 
 
 insert into AMS_FilterConditionType (iFilterConditionTypeID,cName,cClass,cClassUI) values (1,'Stringbasiert','org.csstudio.ams.filter.FilterConditionString','org.csstudio.ams.filter.ui.FilterConditionStringUI');
