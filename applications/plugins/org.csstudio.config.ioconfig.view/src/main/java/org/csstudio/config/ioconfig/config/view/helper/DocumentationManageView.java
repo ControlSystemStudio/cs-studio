@@ -45,6 +45,7 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ColumnPixelData;
+import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.ColumnViewerEditor;
 import org.eclipse.jface.viewers.ColumnViewerEditorActivationStrategy;
 import org.eclipse.jface.viewers.ColumnWeightData;
@@ -56,11 +57,12 @@ import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.TableViewerEditor;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.viewers.ViewerFilter;
-import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
@@ -136,7 +138,8 @@ public class DocumentationManageView extends Composite {
 
         private void addDocDialog() {
             StructuredSelection selection = (StructuredSelection) _viewer.getSelection();
-            AddDocDialog addDocDialog = new AddDocDialog(new Shell(), (Document) selection.getFirstElement());
+            Document firstElement = (Document) selection.getFirstElement();
+            AddDocDialog addDocDialog = new AddDocDialog(new Shell(), firstElement);
             if (addDocDialog.open() == 0) {
                 Document document = addDocDialog.getDocument();
                 // System.out.println("Doc is :" + document);
@@ -228,19 +231,19 @@ public class DocumentationManageView extends Composite {
                 IDocument doc = (IDocument) element;
 
                 if (doc.getSubject() != null) {
-                    status |= doc.getSubject().contains(_filterString);
+                    status |= doc.getSubject().toLowerCase().contains(_filterString.toLowerCase());
                 }
                 if (doc.getMimeType() != null) {
-                    status |= doc.getMimeType().contains(_filterString);
+                    status |= doc.getMimeType().toLowerCase().contains(_filterString.toLowerCase());
                 }
                 if (doc.getDesclong() != null) {
-                    status |= doc.getDesclong().contains(_filterString);
+                    status |= doc.getDesclong().toLowerCase().contains(_filterString.toLowerCase());
                 }
                 if (doc.getCreatedDate() != null) {
                     status |= doc.getCreatedDate().toString().contains(_filterString);
                 }
                 if (doc.getKeywords() != null) {
-                    status |= doc.getKeywords().contains(_filterString);
+                    status |= doc.getKeywords().toLowerCase().contains(_filterString.toLowerCase());
                 }
                 return status;
             }
@@ -295,138 +298,138 @@ public class DocumentationManageView extends Composite {
         }
     }
 
-    /**
-     * 
-     * @author hrickens
-     * @author $Author$
-     * @version $Revision$
-     * @since 18.03.2008
-     */
-    public class TableSorter extends ViewerSorter {
-        /**
-         * The Sort column.
-         */
-        private int _column;
-        /**
-         * Direction of sort for _column.
-         */
-        private boolean _backward;
-        /**
-         * Last sort column.
-         */
-        private int _lastColumn;
-        /**
-         * Direction of sort for _lastSortBackward.
-         */
-        private boolean _lastSortBackward;
-
-        /**
-         * 
-         * @param column
-         *            the column to sort used.
-         * @param backward
-         *            the sort direction.
-         * @param lastColumn
-         *            the last column to sort used.
-         * @param lastSortBackward
-         *            the sort direction for the last column.
-         */
-        public TableSorter(final int column, final boolean backward, final int lastColumn,
-                final boolean lastSortBackward) {
-            _column = column;
-            _backward = backward;
-            _lastColumn = lastColumn;
-            _lastSortBackward = lastSortBackward;
-        }
-
-        /**
-         * Sort a table at the last two selected table header. {@inheritDoc}
-         */
-        @Override
-        public final int compare(final Viewer viewer, final Object o1, final Object o2) {
-            if (o1 instanceof IDocument && o2 instanceof IDocument) {
-                IDocument doc1 = (IDocument) o1;
-                IDocument doc2 = (IDocument) o2;
-                int multi = -1;
-                int erg = 0;
-                if (_backward) {
-                    multi = 1;
-                }
-
-                erg = compareColumn(_column, doc1, doc2, multi);
-
-                if (erg == 0) {
-                    multi = -1;
-                    if (_lastSortBackward) {
-                        multi = 1;
-                    }
-                    erg = compareColumn(_lastColumn, doc1, doc2, multi);
-                }
-                return erg;
-            } else {
-                return 0;
-            }
-        }
-
-        private int compareColumn(int column, IDocument doc1, IDocument doc2, int multi) {
-            int resulte;
-            switch (column) {
-                default:
-                case 0:
-                    if (doc1.getSubject() == null && doc2.getSubject() == null) {
-                        resulte = 0;
-                    } else if (doc1.getSubject() == null) {
-                        resulte = multi;
-                    } else if (doc2.getSubject() == null) {
-                        resulte = -1 * multi;
-                    } else {
-                        resulte = multi * doc1.getSubject().compareTo(doc2.getSubject());
-                    }
-                    break;
-                case 1:
-                    if (doc1.getDesclong() == null && doc2.getDesclong() == null) {
-                        resulte = 0;
-                    } else if (doc1.getDesclong() == null) {
-                        resulte = multi;
-                    } else if (doc2.getDesclong() == null) {
-                        resulte = -1 * multi;
-                    } else {
-                        resulte = multi * doc1.getDesclong().compareTo(doc2.getDesclong());
-                    }
-                    break;
-                case 2:
-                    if (doc1.getKeywords() == null && doc2.getKeywords() == null) {
-                        resulte = 0;
-                    } else if (doc1.getKeywords() == null) {
-                        resulte = multi;
-                    } else if (doc2.getKeywords() == null) {
-                        resulte = -1 * multi;
-                    } else {
-                        resulte = multi * doc1.getKeywords().compareTo(doc2.getKeywords());
-                    }
-                    break;
-            }
-            return resulte;
-        }
-
-        /**
-         * Set the a new column to use for sorting.
-         * 
-         * @param column
-         *            the column that are used.
-         */
-        public final void setColumn(final int column) {
-            if (_column == column) {
-                _backward = !_backward;
-            } else {
-                _lastColumn = column;
-                _lastSortBackward = _backward;
-                _column = column;
-                _backward = false;
-            }
-        }
-
-    }
+//    /**
+//     * 
+//     * @author hrickens
+//     * @author $Author$
+//     * @version $Revision$
+//     * @since 18.03.2008
+//     */
+//    public class TableSorter extends ViewerSorter {
+//        /**
+//         * The Sort column.
+//         */
+//        private int _column;
+//        /**
+//         * Direction of sort for _column.
+//         */
+//        private boolean _backward;
+//        /**
+//         * Last sort column.
+//         */
+//        private int _lastColumn;
+//        /**
+//         * Direction of sort for _lastSortBackward.
+//         */
+//        private boolean _lastSortBackward;
+//
+//        /**
+//         * 
+//         * @param column
+//         *            the column to sort used.
+//         * @param backward
+//         *            the sort direction.
+//         * @param lastColumn
+//         *            the last column to sort used.
+//         * @param lastSortBackward
+//         *            the sort direction for the last column.
+//         */
+//        public TableSorter(final int column, final boolean backward, final int lastColumn,
+//                final boolean lastSortBackward) {
+//            _column = column;
+//            _backward = backward;
+//            _lastColumn = lastColumn;
+//            _lastSortBackward = lastSortBackward;
+//        }
+//
+//        /**
+//         * Sort a table at the last two selected table header. {@inheritDoc}
+//         */
+//        @Override
+//        public final int compare(final Viewer viewer, final Object o1, final Object o2) {
+//            if (o1 instanceof IDocument && o2 instanceof IDocument) {
+//                IDocument doc1 = (IDocument) o1;
+//                IDocument doc2 = (IDocument) o2;
+//                int multi = -1;
+//                int erg = 0;
+//                if (_backward) {
+//                    multi = 1;
+//                }
+//
+//                erg = compareColumn(_column, doc1, doc2, multi);
+//
+//                if (erg == 0) {
+//                    multi = -1;
+//                    if (_lastSortBackward) {
+//                        multi = 1;
+//                    }
+//                    erg = compareColumn(_lastColumn, doc1, doc2, multi);
+//                }
+//                return erg;
+//            } else {
+//                return 0;
+//            }
+//        }
+//
+//        private int compareColumn(int column, IDocument doc1, IDocument doc2, int multi) {
+//            int resulte;
+//            switch (column) {
+//                default:
+//                case 0:
+//                    if (doc1.getSubject() == null && doc2.getSubject() == null) {
+//                        resulte = 0;
+//                    } else if (doc1.getSubject() == null) {
+//                        resulte = multi;
+//                    } else if (doc2.getSubject() == null) {
+//                        resulte = -1 * multi;
+//                    } else {
+//                        resulte = multi * doc1.getSubject().compareTo(doc2.getSubject());
+//                    }
+//                    break;
+//                case 1:
+//                    if (doc1.getDesclong() == null && doc2.getDesclong() == null) {
+//                        resulte = 0;
+//                    } else if (doc1.getDesclong() == null) {
+//                        resulte = multi;
+//                    } else if (doc2.getDesclong() == null) {
+//                        resulte = -1 * multi;
+//                    } else {
+//                        resulte = multi * doc1.getDesclong().compareTo(doc2.getDesclong());
+//                    }
+//                    break;
+//                case 2:
+//                    if (doc1.getKeywords() == null && doc2.getKeywords() == null) {
+//                        resulte = 0;
+//                    } else if (doc1.getKeywords() == null) {
+//                        resulte = multi;
+//                    } else if (doc2.getKeywords() == null) {
+//                        resulte = -1 * multi;
+//                    } else {
+//                        resulte = multi * doc1.getKeywords().compareTo(doc2.getKeywords());
+//                    }
+//                    break;
+//            }
+//            return resulte;
+//        }
+//
+//        /**
+//         * Set the a new column to use for sorting.
+//         * 
+//         * @param column
+//         *            the column that are used.
+//         */
+//        public final void setColumn(final int column) {
+//            if (_column == column) {
+//                _backward = !_backward;
+//            } else {
+//                _lastColumn = column;
+//                _lastSortBackward = _backward;
+//                _column = column;
+//                _backward = false;
+//            }
+//        }
+//
+//    }
 
     // private Composite _mainComposite;
     /**
@@ -700,7 +703,7 @@ public class DocumentationManageView extends Composite {
      * 
      */
     private void makeAvailableDocTable() {
-        /* final */TableSorter sorter = new TableSorter(0, false, 1, false);
+//        /* final */TableSorter sorter = new TableSorter(0, false, 1, false);
         // ViewerSorter sorter = new ViewerSorter();
         Composite availableGroup = makeGroup("Available");
 
@@ -711,7 +714,7 @@ public class DocumentationManageView extends Composite {
         _docAvailableTableViewer = makeTable(availableGroup);
 
         _docAvailableTableViewer.setContentProvider(new TableContentProvider());
-        _docAvailableTableViewer.setSorter(sorter);
+//        _docAvailableTableViewer.setSorter(sorter);
 
         makeMenus(_docAvailableTableViewer);
     }
@@ -726,7 +729,7 @@ public class DocumentationManageView extends Composite {
         int[] columnWeigth = new int[] { 3, 1, 1 };
         int[] columnWidths = new int[] { 150, 75, 75 };
 
-        TableViewer tableViewer = new TableViewer(tableComposite, SWT.H_SCROLL | SWT.V_SCROLL
+        final TableViewer tableViewer = new TableViewer(tableComposite, SWT.H_SCROLL | SWT.V_SCROLL
                 | SWT.MULTI | SWT.FULL_SELECTION);
         tableViewer.getTable().setHeaderVisible(true);
         tableViewer.getTable().setLinesVisible(true);
@@ -740,6 +743,17 @@ public class DocumentationManageView extends Composite {
                 cell.setText(((IDocument) cell.getElement()).getSubject());
             }
         });
+        new ColumnViewerSorter(tableViewer, column) {
+            
+            @Override
+            protected int doCompare(Viewer viewer, Object e1, Object e2) {
+                Document doc1 = (Document) e1;  
+                Document doc2 = (Document) e2;  
+                return compareStrings(doc1.getSubject(), doc2.getSubject());
+            }
+
+        };
+        
         tableColumnLayout.setColumnData(column.getColumn(), new ColumnWeightData(2, 100, true));
 
         // Column Mime Type
@@ -750,35 +764,66 @@ public class DocumentationManageView extends Composite {
                 cell.setText(((IDocument) cell.getElement()).getMimeType());
             }
         });
+        
+        new ColumnViewerSorter(tableViewer, column) {
+            
+            @Override
+            protected int doCompare(Viewer viewer, Object e1, Object e2) {
+                Document doc1 = (Document) e1;  
+                Document doc2 = (Document) e2;  
+                return compareStrings(doc1.getMimeType(), doc2.getMimeType());
+            }
+        };
+        
         tableColumnLayout.setColumnData(column.getColumn(), new ColumnPixelData(30, true));
 
         //
         for (int i = 0; i < columnWidths.length; i++) {
-            column = new TableViewerColumn(tableViewer, SWT.NONE);
-            column.getColumn().setText(columnHeads[i]);
+            final TableViewerColumn column2 = new TableViewerColumn(tableViewer, SWT.NONE);
+            column2.getColumn().setText(columnHeads[i]);
             final int cloumnNo = i;
-            column.setLabelProvider(new CellLabelProvider() {
+            column2.setLabelProvider(new CellLabelProvider() {
                 @Override
                 public void update(ViewerCell cell) {
+                    IDocument document = (IDocument) cell.getElement();
                     switch (cloumnNo) {
                         case 0:
-                            cell.setText(((IDocument) cell.getElement()).getDesclong());
+                            cell.setText(document.getDesclong());
                             break;
                         case 1:
-                            cell.setText(((IDocument) cell.getElement()).getCreatedDate()
+                            cell.setText(document.getCreatedDate()
                                     .toString());
                             break;
                         case 2:
-                            cell.setText(((IDocument) cell.getElement()).getKeywords());
+                            cell.setText(document.getKeywords());
                             break;
                         default:
                             break;
                     }
                 }
             });
-            tableColumnLayout.setColumnData(column.getColumn(), new ColumnWeightData(
+            new ColumnViewerSorter(tableViewer, column2) {
+                
+                @Override
+                protected int doCompare(Viewer viewer, Object e1, Object e2) {
+                    Document doc1 = (Document) e1;  
+                    Document doc2 = (Document) e2;
+                    switch (cloumnNo) {
+                        case 0:
+                            return compareStrings(doc1.getDesclong(), doc2.getDesclong());
+                        case 1:
+                            return compareStrings(doc1.getCreatedDate().toString(), doc2.getCreatedDate().toString());
+                        case 2:
+                            return compareStrings(doc1.getKeywords(), doc2.getKeywords());
+                    }
+                    return 0;
+                }
+            };
+
+            tableColumnLayout.setColumnData(column2.getColumn(), new ColumnWeightData(
                     columnWeigth[i], columnWidths[i], true));
         }
+//        columnViewerSorter.setSorter(columnViewerSorter, ColumnViewerSorter.ASC);
         return tableViewer;
     }
 
@@ -841,6 +886,86 @@ public class DocumentationManageView extends Composite {
             setDocs(node.getDocuments());
             _isActicate = true;
         }
+    }
+
+    private static abstract class ColumnViewerSorter extends ViewerComparator {
+        public static final int ASC = 1;
+        
+        public static final int NONE = 0;
+        
+        public static final int DESC = -1;
+        
+        private int direction = 0;
+        
+        private TableViewerColumn column;
+        
+        private ColumnViewer viewer;
+        
+        public ColumnViewerSorter(ColumnViewer viewer, TableViewerColumn column) {
+            this.column = column;
+            this.viewer = viewer;
+            this.column.getColumn().addSelectionListener(new SelectionAdapter() {
+
+                public void widgetSelected(SelectionEvent e) {
+                    if( ColumnViewerSorter.this.viewer.getComparator() != null ) {
+                        if( ColumnViewerSorter.this.viewer.getComparator() == ColumnViewerSorter.this ) {
+                            int tdirection = ColumnViewerSorter.this.direction;
+                            
+                            if( tdirection == ASC ) {
+                                setSorter(ColumnViewerSorter.this, DESC);
+                            } else if( tdirection == DESC ) {
+                                setSorter(ColumnViewerSorter.this, NONE);
+                            }
+                        } else {
+                            setSorter(ColumnViewerSorter.this, ASC);
+                        }
+                    } else {
+                        setSorter(ColumnViewerSorter.this, ASC);
+                    }
+                }
+            });
+        }
+        
+        public void setSorter(ColumnViewerSorter sorter, int direction) {
+            if( direction == NONE ) {
+                column.getColumn().getParent().setSortColumn(null);
+                column.getColumn().getParent().setSortDirection(SWT.NONE);
+                viewer.setComparator(null);
+            } else {
+                column.getColumn().getParent().setSortColumn(column.getColumn());
+                sorter.direction = direction;
+                
+                if( direction == ASC ) {
+                    column.getColumn().getParent().setSortDirection(SWT.DOWN);
+                } else {
+                    column.getColumn().getParent().setSortDirection(SWT.UP);
+                }
+                
+                if( viewer.getComparator() == sorter ) {
+                    viewer.refresh();
+                } else {
+                    viewer.setComparator(sorter);
+                }
+                
+            }
+        }
+
+        public int compare(Viewer viewer, Object e1, Object e2) {
+            return direction * doCompare(viewer, e1, e2);
+        }
+        
+        protected abstract int doCompare(Viewer viewer, Object e1, Object e2);
+    }
+
+    private int compareStrings(String string1, String string2) {
+        if(string1==null&&string2==null) {
+            return 0;
+        } else if(string1==null) {
+            return 1;
+        } else if(string2==null) {
+            return -1;
+        }
+        return string1.compareToIgnoreCase(string2);
     }
 
 }

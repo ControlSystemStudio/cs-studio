@@ -38,7 +38,7 @@ import org.eclipse.swt.widgets.Text;
 public class AddDocDialog extends Dialog {
 
     private Document _document;
-    private GregorianCalendar _createDate;
+    private GregorianCalendar _date;
 
     protected AddDocDialog(Shell parentShell, Document document) {
         super(parentShell);
@@ -58,7 +58,7 @@ public class AddDocDialog extends Dialog {
     protected Control createDialogArea(final Composite parent) {
         InstanceScope instanceScope = new InstanceScope();
         IEclipsePreferences node = instanceScope.getNode(Activator.PLUGIN_ID);
-        _createDate = new GregorianCalendar();
+        _date = new GregorianCalendar();
         GridData gridData = (GridData) parent.getLayoutData();
         gridData.minimumWidth = 400;
         getShell().setText("Add new Document");
@@ -66,10 +66,18 @@ public class AddDocDialog extends Dialog {
         GridLayout gridLayout = new GridLayout(4, false);
         dialogArea.setLayout(gridLayout);
         String[] logbooks = node.get(PreferenceConstants.DDB_LOGBOOK, "MKS-2-DOC").split(",");
+        
         final ComboViewer logbooksViewer = new ComboViewer(dialogArea);
         logbooksViewer.setContentProvider(new ArrayContentProvider());
         logbooksViewer.setInput(logbooks);
-        logbooksViewer.getCombo().select(0);
+        if(_document!=null&&_document.getId()!=null&&!_document.getId().isEmpty()) {
+            String element = _document.getId().split(":")[0];
+            System.out.println("select: "+element);
+            logbooksViewer.setSelection(new StructuredSelection(element));
+            logbooksViewer.getCombo().setEnabled(false);
+        }else {
+            logbooksViewer.getCombo().select(0);
+        }
         final Text eLogbookIdLabel = new Text(dialogArea, SWT.BORDER);
         eLogbookIdLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
         eLogbookIdLabel.setEditable(false);
@@ -89,7 +97,12 @@ public class AddDocDialog extends Dialog {
         final Text mimeTypeValue = new Text(composite, SWT.NONE | SWT.BORDER);
         mimeTypeValue.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         mimeTypeValue.setEditable(false);
-        mimeTypeValue.setText("");
+        if(_document!=null&&_document.getMimeType()!=null&&!_document.getMimeType().isEmpty()) {
+            mimeTypeValue.setText(_document.getMimeType());
+        }else {
+            mimeTypeValue.setText("");
+        }
+
         Button fileButton = new Button(composite, SWT.PUSH);
         fileButton.setText("File");
         // Bedeutung
@@ -100,7 +113,11 @@ public class AddDocDialog extends Dialog {
         final Combo meaningCombo = new Combo(dialogArea, SWT.DROP_DOWN);
         meaningCombo.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, true, false, 3, 1));
         meaningCombo.setItems(meaning);
-        meaningCombo.select(0);
+        if(_document!=null&&_document.getLogseverity()!=null&&!_document.getLogseverity().isEmpty()) {
+            meaningCombo.select(meaningCombo.indexOf(_document.getLogseverity()));
+        }else {
+            meaningCombo.select(0);
+        }
         String item = meaningCombo.getItem(meaningCombo.getSelectionIndex());
         System.out.println("Debug select: " + item);
 
@@ -109,11 +126,22 @@ public class AddDocDialog extends Dialog {
         shortDesc.setText("Titel: ");
         final Text shortDescText = new Text(dialogArea, SWT.SINGLE | SWT.BORDER);
         shortDescText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
+        if(_document!=null&&_document.getSubject()!=null&&!_document.getSubject().isEmpty()) {
+            shortDescText.setText(_document.getSubject());
+        }else {
+            shortDescText.setText("");
+        }
+
         // DESCLONG
         Label longDesc = new Label(dialogArea, SWT.NONE);
         longDesc.setText("Description: ");
         final Text longDescText = new Text(dialogArea, SWT.MULTI | SWT.BORDER);
         longDescText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 3, 4));
+        if(_document!=null&&_document.getDesclong()!=null&&!_document.getDesclong().isEmpty()) {
+            longDescText.setText(_document.getDesclong());
+        }else {
+            longDescText.setText("");
+        }
         new Label(dialogArea, SWT.NONE);
         new Label(dialogArea, SWT.NONE);
         new Label(dialogArea, SWT.NONE);
@@ -122,11 +150,21 @@ public class AddDocDialog extends Dialog {
         location.setText("Location: ");
         final Text locationText = new Text(dialogArea, SWT.SINGLE | SWT.BORDER);
         locationText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
+        if(_document!=null&&_document.getLocation()!=null&&!_document.getLocation().isEmpty()) {
+            locationText.setText(_document.getLocation());
+        }else {
+            locationText.setText("");
+        }
         // KEYWORDS
         Label keywords = new Label(dialogArea, SWT.NONE);
         keywords.setText("Keywords: ");
         final Text keywordsText = new Text(dialogArea, SWT.SINGLE | SWT.BORDER);
         keywordsText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
+        if(_document!=null&&_document.getKeywords()!=null&&!_document.getKeywords().isEmpty()) {
+            keywordsText.setText(_document.getKeywords());
+        }else {
+            keywordsText.setText("");
+        }
         // ACCOUNTNAME
         Label creater = new Label(dialogArea, SWT.NONE);
         creater.setText("Author: ");
@@ -134,7 +172,12 @@ public class AddDocDialog extends Dialog {
         Text createrValue = new Text(dialogArea, SWT.BORDER);
         createrValue.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         createrValue.setEditable(false);
-        String userName = ConfigHelper.getUserName();
+        String userName;
+        if(_document!=null&&_document.getKeywords()!=null&&!_document.getKeywords().isEmpty()) {
+            userName= _document.getAccountname();
+        }else {
+            userName = ConfigHelper.getUserName();
+        }
         createrValue.setText(userName);
         // ENTRYDATE
         Label createdOn = new Label(dialogArea, SWT.NONE);
@@ -142,7 +185,7 @@ public class AddDocDialog extends Dialog {
         Text createdOnValue = new Text(dialogArea, SWT.BORDER);
         createdOnValue.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         createdOnValue.setEditable(false);
-        String format = String.format("%1$tF %1$tT", _createDate);
+        String format = String.format("%1$tF %1$tT", _date);
         createdOnValue.setText(format);
 
         // LOGSEVERITY
@@ -155,9 +198,11 @@ public class AddDocDialog extends Dialog {
             _document.setId(generateId);
             _document.setLogseverity(item);
             _document.setAccountname(userName);
-            _document.setCreatedDate(_createDate.getTime());
+            if(_document.getCreatedDate()==null) {
+                _document.setCreatedDate(_date.getTime());
+            }
         }
-        _document.setEntrydate(_createDate.getTime());
+        _document.setEntrydate(_date.getTime());
 
         meaningCombo.addSelectionListener(new SelectionListener() {
 
@@ -261,7 +306,7 @@ public class AddDocDialog extends Dialog {
     private String generateId(Viewer logbooksViewer) {
         String eLogbookId = (String) ((StructuredSelection) logbooksViewer.getSelection())
                 .getFirstElement();
-        return String.format("%1$s:%2$ty%2$tm%2$td-%2$tT", eLogbookId, _createDate);
+        return String.format("%1$s:%2$ty%2$tm%2$td-%2$tT", eLogbookId, _date);
     }
 
     public Document getDocument() {
