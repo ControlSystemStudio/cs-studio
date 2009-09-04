@@ -36,8 +36,8 @@ import org.csstudio.config.ioconfig.model.IDocument;
 import org.csstudio.config.ioconfig.model.Node;
 import org.csstudio.config.ioconfig.model.Repository;
 import org.csstudio.config.ioconfig.model.tools.Helper;
-import org.csstudio.dct.DocumentService;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.utility.documentservice.service.DocumentService;
 
 /**
  * @author hrickens

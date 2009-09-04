@@ -6,7 +6,8 @@ Bundle-Version: 1.2.1
 Bundle-Activator: org.csstudio.config.ioconfig.model.Activator
 Bundle-Localization: plugin
 Require-Bundle: org.csstudio.platform;bundle-version="1.1.0",
- org.csstudio.dct;resolution:=optional
+ org.csstudio.dct;bundle-version="1.0.0",
+ org.csstudio.utility.documentService;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.config.ioconfig.model,
  org.csstudio.config.ioconfig.model.pbmodel,
