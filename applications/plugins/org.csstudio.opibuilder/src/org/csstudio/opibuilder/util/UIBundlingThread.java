@@ -102,7 +102,6 @@ public final class UIBundlingThread implements Runnable {
 	 */
 	public void addRunnable(final Runnable runnable) {
 		tasksQueue.add(runnable);
-
 	}
 
 }

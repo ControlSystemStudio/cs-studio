@@ -1,5 +1,6 @@
 package org.csstudio.swt.xygraph.toolbar;
 
+import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
 import org.eclipse.draw2d.Button;
 import org.eclipse.draw2d.ImageFigure;
 import org.eclipse.swt.SWT;
@@ -13,11 +14,16 @@ public class GrayableButton extends Button {
 	
 	Image image;
 	Image grayImage;
+	private static final String GRAY_IMAGE = "GrayableButton.GrayImage";
 	
 	public GrayableButton(Image image) {
 		super(image);
 		this.image = image;
-		grayImage = new Image(null, image, SWT.IMAGE_GRAY);
+		grayImage = XYGraphMediaFactory.getInstance().getRegisteredImage(GRAY_IMAGE);
+		if( grayImage == null){
+			grayImage = new Image(null, image, SWT.IMAGE_GRAY);
+			XYGraphMediaFactory.getInstance().registerImage(GRAY_IMAGE, grayImage);
+		}
 	}
 	
 	@Override

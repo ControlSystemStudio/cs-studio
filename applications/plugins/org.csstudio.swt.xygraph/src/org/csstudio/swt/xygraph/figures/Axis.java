@@ -90,9 +90,7 @@ public class Axis extends LinearScale implements IDataProviderListener{
 		AxisPanner panner = new AxisPanner();
 		addMouseListener(panner);
 		addMouseMotionListener(panner);
-		Image image = XYGraphMediaFactory.getInstance().getImageFromPlugin(
-				Activator.getDefault(), Activator.PLUGIN_ID, "icons/Grabbing.png");
-		grabbing = new Cursor(Display.getDefault(), image.getImageData(), 8, 8);	
+		grabbing = XYGraphMediaFactory.CURSOR_GRABBING;	
 	}
 
 	public void addListener(final IAxisListener listener){
@@ -153,44 +151,46 @@ public class Axis extends LinearScale implements IDataProviderListener{
 			int w = titleSize.height;
 			int h = titleSize.width +1;
 			Image image = new Image(Display.getCurrent(),w, h);			
-				GC gc = new GC(image);	
-				Color titleColor = graphics.getForegroundColor();
-				RGB transparentRGB = new RGB(240, 240, 240);
-				if(xyGraph !=null)
-					if(!xyGraph.isTransparent())
-						transparentRGB = xyGraph.getBackgroundColor().getRGB();	
-								
-				gc.setBackground(XYGraphMediaFactory.getInstance().getColor(transparentRGB));
-				gc.fillRectangle(image.getBounds());
-				gc.setForeground(titleColor);
-				gc.setFont(titleFont);
-				Transform tr = new Transform(Display.getCurrent());
-				if(getTickLablesSide() == LabelSide.Primary){
-					tr.translate(0, h);
-					tr.rotate(-90);
-					gc.setTransform(tr);
-				}else{
-					tr.translate(w, 0);
-					tr.rotate(90);
-					gc.setTransform(tr);
+				try {
+					GC gc = new GC(image);	
+					Color titleColor = graphics.getForegroundColor();
+					RGB transparentRGB = new RGB(240, 240, 240);
+					if(xyGraph !=null)
+						if(!xyGraph.isTransparent())
+							transparentRGB = xyGraph.getBackgroundColor().getRGB();	
+									
+					gc.setBackground(XYGraphMediaFactory.getInstance().getColor(transparentRGB));
+					gc.fillRectangle(image.getBounds());
+					gc.setForeground(titleColor);
+					gc.setFont(titleFont);
+					Transform tr = new Transform(Display.getCurrent());
+					if(getTickLablesSide() == LabelSide.Primary){
+						tr.translate(0, h);
+						tr.rotate(-90);
+						gc.setTransform(tr);
+					}else{
+						tr.translate(w, 0);
+						tr.rotate(90);
+						gc.setTransform(tr);
+					}
+					gc.drawText(title, 0, 0);
+					tr.dispose();
+					gc.dispose();
+					ImageData imageData = image.getImageData();				
+					image.dispose();
+					imageData.transparentPixel = imageData.palette.getPixel(transparentRGB);
+					image = new Image(Display.getCurrent(), imageData);				
+					if(getTickLablesSide() == LabelSide.Primary){					
+						graphics.translate(bounds.x, bounds.y);			
+						graphics.drawImage(image, 0, bounds.height/2 - h/2);
+					} else {				
+						//draw vertical title text image				
+						graphics.translate(bounds.x, bounds.y);			
+						graphics.drawImage(image, bounds.width - w, bounds.height/2 - h/2);
+					}
+				} finally{
+					image.dispose();		
 				}
-				gc.drawText(title, 0, 0);
-				tr.dispose();
-				gc.dispose();
-				ImageData imageData = image.getImageData();				
-				image.dispose();
-				imageData.transparentPixel = imageData.palette.getPixel(transparentRGB);
-				image = new Image(Display.getCurrent(), imageData);				
-			if(getTickLablesSide() == LabelSide.Primary){					
-				graphics.translate(bounds.x, bounds.y);			
-				graphics.drawImage(image, 0, bounds.height/2 - h/2);
-			} else {				
-				//draw vertical title text image				
-				graphics.translate(bounds.x, bounds.y);			
-				graphics.drawImage(image, bounds.width - w, bounds.height/2 - h/2);
-			}
-			image.dispose();				
-
 		}
 		graphics.popState();		
 	}	

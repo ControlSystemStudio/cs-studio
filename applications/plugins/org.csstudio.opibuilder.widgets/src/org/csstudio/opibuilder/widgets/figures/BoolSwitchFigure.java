@@ -1,6 +1,7 @@
 package org.csstudio.opibuilder.widgets.figures;
 
 
+import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.widgets.util.GraphicsUtil;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.AbstractLayout;
@@ -59,7 +60,7 @@ public class BoolSwitchFigure extends AbstractBoolControlFigure {
 		add(shadow, BoolSwitchLayout.SHADOW);
 		add(bar, BoolSwitchLayout.BAR);	
 		bar.add(boolLabel);
-		cursor = new Cursor(Display.getCurrent(), SWT.CURSOR_HAND);		
+		cursor = ResourceUtil.CURSOR_HAND;		
 	}
 	
 	@Override
@@ -99,10 +100,8 @@ public class BoolSwitchFigure extends AbstractBoolControlFigure {
 		if(runMode){
 			if(value){
 				if(cursor == null || cursor.isDisposed())
-					cursor = new Cursor(Display.getCurrent(), SWT.CURSOR_HAND);		
-			}else {
-				if(cursor != null && !cursor.isDisposed())
-					cursor.dispose();
+					cursor = ResourceUtil.CURSOR_HAND;		
+			}else {				
 				cursor = null;
 			}	
 		}

@@ -6,6 +6,7 @@ import org.csstudio.swt.xygraph.dataprovider.ISample;
 import org.csstudio.swt.xygraph.linearscale.Range;
 import org.csstudio.swt.xygraph.undo.MovingAnnotationCommand;
 import org.csstudio.swt.xygraph.undo.MovingAnnotationLabelCommand;
+import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.Label;
@@ -130,7 +131,7 @@ public class Annotation extends Figure implements IAxisListener, IDataProviderLi
 		trace = null;			
 		infoLabel = new Label();
 		infoLabel.setOpaque(false);
-		infoLabel.setCursor(new Cursor(Display.getCurrent(), SWT.CURSOR_SIZEALL));		
+		infoLabel.setCursor(XYGraphMediaFactory.CURSOR_SIZEALL);		
 		add(infoLabel);
 		InfoLabelDragger infoLabelDragger = new InfoLabelDragger();
 		infoLabel.addMouseMotionListener(infoLabelDragger);
@@ -698,7 +699,7 @@ class Pointer extends Figure{
 	}
 	
 	public Pointer() {
-		setCursor(new Cursor(Display.getCurrent(), SWT.CURSOR_CROSS));
+		setCursor(XYGraphMediaFactory.CURSOR_CROSS);
 		PointerDragger dragger = new PointerDragger();
 		addMouseMotionListener(dragger);
 		addMouseListener(dragger);

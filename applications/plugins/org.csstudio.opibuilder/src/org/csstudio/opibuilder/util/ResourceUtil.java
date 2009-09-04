@@ -25,10 +25,11 @@ public class ResourceUtil {
 
 	
 	public static final Cursor CURSOR_HAND = new Cursor(Display.getDefault(), SWT.CURSOR_HAND);
-	
+	public static final Cursor CURSOR_NO = new Cursor(Display.getDefault(), SWT.CURSOR_NO);
 	
 	public static void disposeResources(){
 		CURSOR_HAND.dispose();
+		CURSOR_NO.dispose();
 	}
 	
 	/**

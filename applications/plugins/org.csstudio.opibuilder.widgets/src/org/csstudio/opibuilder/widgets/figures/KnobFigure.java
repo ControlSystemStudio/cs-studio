@@ -3,6 +3,7 @@ package org.csstudio.opibuilder.widgets.figures;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.widgets.figureparts.Bulb;
 import org.csstudio.opibuilder.widgets.figureparts.PolarPoint;
 import org.csstudio.opibuilder.widgets.figureparts.RoundScale;
@@ -294,7 +295,7 @@ public class KnobFigure extends AbstractRoundRampedFigure {
 		}
 		
 		public Thumb() {
-			setCursor(new Cursor(Display.getCurrent(), SWT.CURSOR_HAND));
+			setCursor(ResourceUtil.CURSOR_HAND);
 			
 			ThumbDragger thumbDragger = new ThumbDragger();
 			addMouseMotionListener(thumbDragger);	

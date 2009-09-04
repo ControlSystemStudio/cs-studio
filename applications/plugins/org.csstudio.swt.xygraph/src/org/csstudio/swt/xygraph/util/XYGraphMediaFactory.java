@@ -23,6 +23,7 @@
 
 import java.util.HashMap;
 
+import org.csstudio.swt.xygraph.Activator;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.jface.resource.ColorRegistry;
 import org.eclipse.jface.resource.FontRegistry;
@@ -30,6 +31,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
@@ -75,6 +77,22 @@ public final class XYGraphMediaFactory {
 	 * Map that holds the provided image descriptors.
 	 */
 	private HashMap<ImageDescriptor, Image> _imageCache;
+	
+	public static final Cursor CURSOR_HAND = new Cursor(Display.getDefault(), SWT.CURSOR_HAND);
+	public static final Cursor CURSOR_CROSS = new Cursor(Display.getDefault(), SWT.CURSOR_CROSS);
+	public static final Cursor CURSOR_SIZEALL = new Cursor(Display.getDefault(), SWT.CURSOR_SIZEALL);
+	public static final Cursor CURSOR_ARROW = new Cursor(Display.getDefault(), SWT.CURSOR_ARROW);
+	public static final Cursor CURSOR_GRABBING = new Cursor(Display.getDefault(), XYGraphMediaFactory.getInstance().getImageFromPlugin(
+			Activator.getDefault(), Activator.PLUGIN_ID, "icons/Grabbing.png").getImageData(), 8, 8);	
+	
+	
+	public static void disposeResources(){
+		CURSOR_HAND.dispose();
+		CURSOR_CROSS.dispose();
+		CURSOR_SIZEALL.dispose();
+		CURSOR_ARROW.dispose();
+		CURSOR_GRABBING.dispose();
+	}
 
 	/**
 	 * Private constructor to avoid instantiation.
@@ -251,6 +269,18 @@ public final class XYGraphMediaFactory {
 		return _imageRegistry.get(key);
 	}
 	
+	/**Register the image to imageRegistry so it can be disposed when Display disposed.
+	 * @param key
+	 * @param img
+	 */
+	public void registerImage(final String key, final Image img){		
+			_imageRegistry.put(key, img);		
+	}
+	
+	public Image getRegisteredImage(final String key){
+		return _imageRegistry.get(key);
+	}
+	
 	/**
 	 * Load the <code>Image</code> from the given path in the given plugin.
 	 * Usually, this is the image found via the the given plug-in
@@ -279,7 +309,7 @@ public final class XYGraphMediaFactory {
 			}else{
 				final Display display = Display.getCurrent();
 	            final Image img = new Image(display, relativePath);        
-	            _imageRegistry.put(key, ImageDescriptor.createFromImage(img));
+	            _imageRegistry.put(key, img);	            
 			}
 		}
 

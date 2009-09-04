@@ -8,6 +8,7 @@ import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.properties.PVValueProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.util.AlarmColorScheme;
+import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.util.UIBundlingThread;
 import org.csstudio.opibuilder.visualparts.BorderFactory;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
@@ -166,7 +167,7 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 								&& !pv.isWriteAllowed()){
 							UIBundlingThread.getInstance().addRunnable(new Runnable(){
 								public void run() {
-									figure.setCursor(new Cursor(null, SWT.CURSOR_NO));
+									figure.setCursor(ResourceUtil.CURSOR_NO);
 									figure.setEnabled(false);
 									preEnableState = false;									
 								}

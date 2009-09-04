@@ -8,7 +8,6 @@ import java.util.List;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.util.UIBundlingThread;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * The listener on widget property change.

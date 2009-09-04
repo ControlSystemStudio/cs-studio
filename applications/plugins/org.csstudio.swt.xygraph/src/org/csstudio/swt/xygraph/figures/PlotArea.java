@@ -70,9 +70,7 @@ public class PlotArea extends Figure {
 		PlotAreaZoomer zoomer = new PlotAreaZoomer();
 		addMouseListener(zoomer);
 		addMouseMotionListener(zoomer);
-		Image image = XYGraphMediaFactory.getInstance().getImageFromPlugin(
-				Activator.getDefault(), Activator.PLUGIN_ID, "icons/Grabbing.png");
-		grabbing = new Cursor(Display.getDefault(), image.getImageData(), 8, 8);		
+		grabbing = XYGraphMediaFactory.CURSOR_GRABBING;
 		zoomType = ZoomType.NONE;
 	}
 	
