@@ -206,12 +206,7 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 		return (TYPE) getProperty(propertyName).getPropertyValue();
 	}
 	
-	/**This should be override by container model.
-	 * @return the children of the widget.
-	 */
-	public List<AbstractWidgetModel> getChildren(){
-		return null;
-	}
+	
 
 	public Object getEditableValue() {
 		return this;
@@ -372,6 +367,10 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 		setPropertyValue(PROP_YPOS, y);
 	}
 	
+	public void setLocation(Point point){
+		setLocation(point.x, point.y);
+	}
+	
 	public void setName(String name){
 		setPropertyValue(PROP_NAME, name);
 	}
@@ -420,6 +419,22 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	 */
 	public AbstractContainerModel getParent() {
 		return parent;
+	}
+	
+	/**
+	 * @return the nested depth of the widget in the model tree.
+	 */
+	public int getNestedDepth(){
+		//display model
+		if(getParent() == null)
+			return 0;
+		int i=1;
+		AbstractContainerModel parent = getParent();
+		while(!(parent instanceof DisplayModel)){
+			i++;
+			parent = parent.getParent();
+		}
+		return i;
 	}
 	
 	

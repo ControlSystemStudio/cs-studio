@@ -29,12 +29,12 @@ public class LinkingContainerModel extends AbstractContainerModel {
 	/**
 	 * The default value of the height property.
 	 */
-	private static final int DEFAULT_HEIGHT = 100;
+	private static final int DEFAULT_HEIGHT = 200;
 
 	/**
 	 * The default value of the width property.
 	 */
-	private static final int DEFAULT_WIDTH = 100;
+	private static final int DEFAULT_WIDTH = 200;
 
 
 	

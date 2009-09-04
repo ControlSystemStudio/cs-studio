@@ -85,14 +85,20 @@ public abstract class AbstractContainerModel extends AbstractWidgetModel {
 	
 	/**add child to the end of the children list.
 	 * @param child the widget to be added
+	 * @param changeParent true if the widget's parent should be changed.
 	 */
-	public synchronized void addChild(AbstractWidgetModel child){
+	public synchronized void addChild(AbstractWidgetModel child, boolean changeParent){
 		if(child != null && !childrenList.contains(child)){
 			childrenList.add(child);
-			child.setParent(this);
+			if(changeParent)
+				child.setParent(this);
 			childrenProperty.firePropertyChange(-1, child);
 		}
 		
+	}
+	
+	public void addChild(AbstractWidgetModel child){
+		addChild(child, true);
 	}
 	
 	public synchronized void addChild(int index, AbstractWidgetModel child){
@@ -120,7 +126,6 @@ public abstract class AbstractContainerModel extends AbstractWidgetModel {
 		super.configureBaseProperties();		
 	}
 
-	@Override
 	public List<AbstractWidgetModel> getChildren() {
 		return childrenList;
 	}

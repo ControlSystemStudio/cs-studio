@@ -11,7 +11,7 @@ import junit.framework.TestResult;
 
 public class XMLUtilTest extends TestCase {
 
-	AbstractWidgetModel testModel;
+	AbstractWidgetModel testModel = new DisplayModel();
 	
 	
 	@Override

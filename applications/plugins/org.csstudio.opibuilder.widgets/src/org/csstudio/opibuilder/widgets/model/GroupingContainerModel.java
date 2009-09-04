@@ -14,9 +14,12 @@ public class GroupingContainerModel extends AbstractContainerModel {
 	
 	/** The ID of the <i>transparent</i> property. */
 	public static final String PROP_TRANSPARENT = "transparency";	
-
 	
+	/** The ID of the <i>lockChildren</i> property. */
+	public static final String PROP_LOCK_CHILDREN = "lockChildren";
+
 	public GroupingContainerModel() {
+		setSize(200, 200);
 		setBorderStyle(BorderStyle.GROUP_BOX);
 	}
 	
@@ -24,6 +27,9 @@ public class GroupingContainerModel extends AbstractContainerModel {
 	protected void configureProperties() {
 		addProperty(new BooleanProperty(PROP_TRANSPARENT, "Transparent Background",
 				WidgetPropertyCategory.Display, false));
+		addProperty(new BooleanProperty(PROP_LOCK_CHILDREN, "Lock Children",
+				WidgetPropertyCategory.Behavior, false));
+
 	}
 
 	@Override
@@ -40,4 +46,13 @@ public class GroupingContainerModel extends AbstractContainerModel {
 	public boolean isTransparent() {
 		return (Boolean) getProperty(PROP_TRANSPARENT).getPropertyValue();
 	}
+	
+	/**
+	* @return boolean
+	* 				True, if the children should be locked, false otherwise
+	*/
+	public boolean isLocked() {
+		return (Boolean) getProperty(PROP_LOCK_CHILDREN).getPropertyValue();
+	}
+	
 }

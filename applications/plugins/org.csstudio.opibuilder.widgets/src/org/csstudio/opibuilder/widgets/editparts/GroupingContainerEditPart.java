@@ -1,5 +1,6 @@
 package org.csstudio.opibuilder.widgets.editparts;
 
+import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.AbstractContainerEditpart;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
@@ -7,6 +8,7 @@ import org.csstudio.opibuilder.widgets.figures.GroupingContainerFigure;
 import org.csstudio.opibuilder.widgets.model.GroupingContainerModel;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
 
 /**The Editpart Controller for a Grouping Container
@@ -19,8 +21,6 @@ public class GroupingContainerEditPart extends AbstractContainerEditpart {
 	protected IFigure doCreateFigure() {
 		Figure f = new GroupingContainerFigure();
 		f.setOpaque(!getCastedModel().isTransparent());
-		
-		
 		return f;
 	}
 	
@@ -65,8 +65,43 @@ public class GroupingContainerEditPart extends AbstractContainerEditpart {
 		
 		setPropertyChangeHandler(AbstractWidgetModel.PROP_ENABLED, handler);
 		
+		handler = new IWidgetPropertyChangeHandler(){
+			public boolean handleChange(Object oldValue, Object newValue,
+					IFigure figure) {
+				lockChildren((Boolean) newValue);					
+				return true;
+			}
+		};
+		
+		setPropertyChangeHandler(GroupingContainerModel.PROP_LOCK_CHILDREN, handler);
+		
+		lockChildren(getCastedModel().isLocked());
 		
 	}
+	/**
+	* @param lock true if the children should be locked.
+	 */
+	private void lockChildren(boolean lock) {
+		for(Object o: getChildren()){
+			if(o instanceof AbstractBaseEditPart){
+				((AbstractBaseEditPart)o).setSelectable(!lock);
+			}
+		}
+	}
+	
+	@Override
+	protected EditPart createChild(Object model) {
+		EditPart result = super.createChild(model);
+
+		// setup selection behavior for the new child
+		if (result instanceof AbstractBaseEditPart) {
+			((AbstractBaseEditPart) result).setSelectable(!getCastedModel().isLocked());
+		}
+
+		return result;
+	}
+	
+	
 	
 
 }

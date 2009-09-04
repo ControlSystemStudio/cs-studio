@@ -142,7 +142,7 @@
             category="Others"
             description="A container widget which can group other widgets."
             editpart_class="org.csstudio.opibuilder.widgets.editparts.GroupingContainerEditPart"
-            icon="icons/groupcontainer.gif"
+            icon="icons/groupContainer.png"
             model_class="org.csstudio.opibuilder.widgets.model.GroupingContainerModel"
             name="Grouping Container"
             typeId="org.csstudio.opibuilder.widgets.groupingContainer">
@@ -151,7 +151,7 @@
             category="Others"
             description="A container widget which can load another OPI file."
             editpart_class="org.csstudio.opibuilder.widgets.editparts.LinkingContainerEditpart"
-            icon="icons/linkingcontainer.gif"
+            icon="icons/linkingcontainer.png"
             model_class="org.csstudio.opibuilder.widgets.model.LinkingContainerModel"
             name="Linking Container"
             typeId="org.csstudio.opibuilder.widgets.linkingContainer">
@@ -161,16 +161,45 @@
          point="org.eclipse.ui.popupMenus">
       <objectContribution
             adaptable="false"
-            id="org.csstudio.opibuilder.widgets.popupMenu"
+            id="org.csstudio.opibuilder.widgets.createGroup"
             objectClass="org.csstudio.opibuilder.editparts.AbstractBaseEditPart">
          <action
                class="org.csstudio.opibuilder.widgets.editparts.CreateGroupAction"
-               enablesFor="+"
-               icon="icons/groupcontainer.gif"
-               id="org.csstudio.opibuilder.widgets.group"
+               enablesFor="2+"
+               icon="icons/addGroup.png"
+               id="org.csstudio.opibuilder.widgets.creategroupAction"
                label="Create Group"
                menubarPath="group"
                tooltip="Create a group container which contains all the selected widgets.">
+         </action>
+         <visibility>
+            <objectState
+                  name="executionMode"
+                  value="EDIT_MODE">
+            </objectState>
+         </visibility>
+      </objectContribution>
+      <objectContribution
+            adaptable="false"
+            id="org.csstudio.opibuilder.widgets.removeGroup"
+            objectClass="org.csstudio.opibuilder.widgets.editparts.GroupingContainerEditPart">
+         <action
+               class="org.csstudio.opibuilder.widgets.editparts.RemoveGroupAction"
+               enablesFor="1"
+               icon="icons/removeGroup.png"
+               id="org.csstudio.opibuilder.widgets.removeGroupAction"
+               label="Remove Group"
+               menubarPath="group"
+               tooltip="Remove the group container.">
+         </action>
+         <action
+               class="org.csstudio.opibuilder.widgets.editparts.PerformAutoSizeOnGroupAction"
+               enablesFor="1"
+               icon="icons/autoSizeGroup.png"
+               id="org.csstudio.opibuilder.widgets.performAutoSize"
+               label="Perform AutoSize"
+               menubarPath="group"
+               tooltip="Perform AutoSize on the selected Group Container.">
          </action>
          <visibility>
             <objectState

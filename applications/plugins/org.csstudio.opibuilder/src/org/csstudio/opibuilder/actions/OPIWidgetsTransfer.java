@@ -48,7 +48,7 @@ public class OPIWidgetsTransfer extends ByteArrayTransfer {
 		DisplayModel tempModel = new DisplayModel();
 		
 		for(AbstractWidgetModel widget : widgets){
-			tempModel.addChild(widget);
+			tempModel.addChild(widget, false);
 		}
 		
 		String xml = XMLUtil.WidgetToXMLString(tempModel, false);
