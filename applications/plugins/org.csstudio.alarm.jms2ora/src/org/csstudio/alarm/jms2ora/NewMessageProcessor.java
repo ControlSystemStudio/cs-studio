@@ -24,18 +24,16 @@
 
 package org.csstudio.alarm.jms2ora;
 
+import java.util.Vector;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.jms.MapMessage;
-import javax.jms.Message;
-import javax.jms.MessageListener;
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.jms2ora.database.DatabaseLayer;
 import org.csstudio.alarm.jms2ora.preferences.PreferenceConstants;
 import org.csstudio.alarm.jms2ora.util.ApplicState;
-import org.csstudio.alarm.jms2ora.util.Hostname;
+import org.csstudio.alarm.jms2ora.util.MessageAcceptor;
 import org.csstudio.alarm.jms2ora.util.MessageContent;
 import org.csstudio.alarm.jms2ora.util.MessageContentCreator;
-import org.csstudio.alarm.jms2ora.util.JmsMessageReceiver;
 import org.csstudio.alarm.jms2ora.util.MessageFileHandler;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.statistic.Collector;
@@ -73,10 +71,12 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  *          - Die Properties der Datenbanktabellen
  */
 
-public class MessageProcessor extends Thread implements MessageListener
+public class NewMessageProcessor extends Thread
 {
     /** The object instance of this class */
-    private static MessageProcessor instance = null;
+    private static NewMessageProcessor instance = null;
+    
+    private MessageAcceptor messageAceptor;
     
     /** Queue for received messages */
     private ConcurrentLinkedQueue<MessageContent> messages = null;
@@ -88,7 +88,7 @@ public class MessageProcessor extends Thread implements MessageListener
     private MessageContentCreator contentCreator = null;
     
     /** Array of message receivers */
-    private JmsMessageReceiver[] receivers = null;
+//    private JmsMessageReceiver[] receivers = null;
             
     /** Class that collects statistic informations. Query it via XMPP. */
     private Collector receivedMessages = null;
@@ -123,8 +123,11 @@ public class MessageProcessor extends Thread implements MessageListener
     private Jms2OraApplication parent = null;
     
     /** Time to sleep in ms */
-    private static long SLEEPING_TIME = 15000 ;
+    private final long SLEEPING_TIME = 15000;
 
+    /** Number of messages that has been collected until the storage will start */
+    private final int MIN_NUMBER_OF_MESSAGES = 50;
+    
     public final long RET_ERROR = -1;
     public static final int CONSOLE = 1;
     
@@ -135,8 +138,8 @@ public class MessageProcessor extends Thread implements MessageListener
     public final int PM_ERROR_JMS = 4;
     public final int PM_ERROR_GENERAL = 5;
     
-    public final String[] infoText = { "Message has been written into the database.",
-                                       "Message has been discarded.",
+    public final String[] infoText = { "Message have been written into the database.",
+                                       "Message have been discarded.",
                                        "Message is empty.",
                                        "Database error",
                                        "JMS error",
@@ -146,12 +149,10 @@ public class MessageProcessor extends Thread implements MessageListener
      * A nice private constructor...
      *
      */    
-    private MessageProcessor()
+    private NewMessageProcessor()
     {
         // Create the logger
         logger = CentralLogger.getInstance().getLogger(this);
-        
-        this.setName("MessageProcessor-Thread");
         
         messages = new ConcurrentLinkedQueue<MessageContent>();
         
@@ -159,7 +160,7 @@ public class MessageProcessor extends Thread implements MessageListener
         String url = prefs.getString(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.DATABASE_URL, "", null);
         String user = prefs.getString(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.DATABASE_USER, "", null);
         String password = prefs.getString(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.DATABASE_PASSWORD, "", null);
-
+        
         dbLayer = new DatabaseLayer(url, user, password);
 
         // Instantiate MessageContentCreator that uses its own database layer
@@ -189,10 +190,10 @@ public class MessageProcessor extends Thread implements MessageListener
         storedMessages.setDescriptor("Stored messages");
         storedMessages.setContinuousPrint(false);
         storedMessages.setContinuousPrintCount(1000.0);
-        
+
         String urls = prefs.getString(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.JMS_PROVIDER_URLS, "", null);
         String topics = prefs.getString(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.JMS_TOPIC_NAMES, "", null);
-        
+
         if((urls.length() > 0) && (topics.length() > 0))
         {
             urlList = urls.split(",");
@@ -208,28 +209,31 @@ public class MessageProcessor extends Thread implements MessageListener
                 logger.info("[" + topicList[i] + "]");
             }
             
-            receivers = new JmsMessageReceiver[urlList.length];
+            messageAceptor = new MessageAcceptor(urlList, topicList);
+            initialized = messageAceptor.isInitialized();
             
-            String hostName = Hostname.getInstance().getHostname();
-            
-            for(int i = 0;i < urlList.length;i++)
-            {
-                try
-                {
-                    receivers[i] = new JmsMessageReceiver("org.apache.activemq.jndi.ActiveMQInitialContextFactory", urlList[i], topicList);
-                    receivers[i].startListener(this, VersionInfo.NAME + "@" + hostName + "_" + this.hashCode());
-                    
-                    initialized = true;
-                }
-                catch(Exception e)
-                {
-                    logger.error("*** Exception *** : " + e.getMessage());
-                    
-                    initialized = false;
-                }
-            }
-            
-            initialized = (initialized == true) ? true : false;
+//            receivers = new JmsMessageReceiver[urlList.length];
+//            
+//            String hostName = Hostname.getInstance().getHostname();
+//            
+//            for(int i = 0;i < urlList.length;i++)
+//            {
+//                try
+//                {
+//                    receivers[i] = new JmsMessageReceiver("org.apache.activemq.jndi.ActiveMQInitialContextFactory", urlList[i], topicList);
+//                    receivers[i].startListener(this, VersionInfo.NAME + "@" + hostName + "_" + this.hashCode());
+//                    
+//                    initialized = true;
+//                }
+//                catch(Exception e)
+//                {
+//                    logger.error("*** Exception *** : " + e.getMessage());
+//                    
+//                    initialized = false;
+//                }
+//            }
+//            
+//            initialized = (initialized == true) ? true : false;
         }
         else
         {
@@ -237,11 +241,11 @@ public class MessageProcessor extends Thread implements MessageListener
         }
     }
 
-    public static synchronized MessageProcessor getInstance()
+    public static synchronized NewMessageProcessor getInstance()
     {
         if(instance == null)
         {
-            instance = new MessageProcessor();
+            instance = new NewMessageProcessor();
         }
         
         return instance;
@@ -264,6 +268,15 @@ public class MessageProcessor extends Thread implements MessageListener
         {
             parent.setStatus(ApplicState.WORKING);
 
+            lookForMessages();
+            
+            if((messages.isEmpty() == false) && (messages.size() >= MIN_NUMBER_OF_MESSAGES) && running)
+            {
+                // TODO: Alle Nachrichten in einem Rutsch abspeichern und NICHT jede Nachricht einzeln.
+                
+                // processMessages(ALLE);
+            }
+            
             while(!messages.isEmpty() && running)
             {
                 content = messages.poll();
@@ -296,7 +309,6 @@ public class MessageProcessor extends Thread implements MessageListener
                     }
                 }
                 
-                // logger.debug(statistic.toString());
                 logger.debug(createStatisticString());
                 
                 // IMPORTANT: Refresh the current state, otherwise Jms2Ora will restart if many messages
@@ -304,7 +316,7 @@ public class MessageProcessor extends Thread implements MessageListener
                 // the messages.
                 parent.setStatus(ApplicState.WORKING);
             }
-
+                        
             if(running)
             {
                 parent.setStatus(ApplicState.SLEEPING);
@@ -329,7 +341,9 @@ public class MessageProcessor extends Thread implements MessageListener
         
         parent.setStatus(ApplicState.LEAVING);
         
-        closeAllReceivers();
+//        closeAllReceivers();
+        
+        messageAceptor.closeAllReceivers();
         
         // Process the remaining messages
         logger.info("Remaining messages: " + messages.size() + " -> Processing...");
@@ -371,29 +385,50 @@ public class MessageProcessor extends Thread implements MessageListener
     {
         return stoppedClean;
     }
-    
-    public void onMessage(Message message)
+
+    public void lookForMessages()
     {
+        Vector<MapMessage> vmm;
         MessageContent content = null;
         
-        logger.debug("onMessage(): " + message.toString());
+        logger.debug("Looking for messages");
         
-        if(message instanceof MapMessage)
+        vmm = messageAceptor.getCurrentMessages();
+        if(vmm != null)
         {
-            content = contentCreator.convertMapMessage((MapMessage)message);
-            messages.add(content);
-            receivedMessages.incrementValue();
-
-            synchronized(this)
+            logger.debug("Found " + vmm.size() + " messages");
+            
+            for(MapMessage m : vmm)
             {
-                notify();
+                content = contentCreator.convertMapMessage(m);
+                messages.add(content);
+                receivedMessages.incrementValue();
             }
         }
-        else
-        {
-            logger.info("Received a non MapMessage object. Discarded...");
-        }        
     }
+
+//    public void onMessage(Message message)
+//    {
+//        MessageContent content = null;
+//        
+//        logger.debug("onMessage(): " + message.toString());
+//        
+//        if(message instanceof MapMessage)
+//        {
+//            content = contentCreator.convertMapMessage((MapMessage)message);
+//            messages.add(content);
+//            receivedMessages.incrementValue();
+//
+//            synchronized(this)
+//            {
+//                notify();
+//            }
+//        }
+//        else
+//        {
+//            logger.info("Received a non MapMessage object. Discarded...");
+//        }        
+//    }
 
     public int processMessage(MessageContent content)
     {
@@ -473,18 +508,18 @@ public class MessageProcessor extends Thread implements MessageListener
         }
     }
     
-    public void closeAllReceivers()
-    {
-        logger.info("closeAllReceivers(): Closing all receivers.");
-        
-        if(receivers != null)
-        {
-            for(int i = 0;i < receivers.length;i++)
-            {
-                receivers[i].stopListening();
-            }
-        }
-    }
+//    public void closeAllReceivers()
+//    {
+//        logger.info("closeAllReceivers(): Closing all receivers.");
+//        
+//        if(receivers != null)
+//        {
+//            for(int i = 0;i < receivers.length;i++)
+//            {
+//                receivers[i].stopListening();
+//            }
+//        }
+//    }
     
     public void setParent(Jms2OraApplication parent)
     {
@@ -507,7 +542,7 @@ public class MessageProcessor extends Thread implements MessageListener
         result.append("Received Messages:  " + receivedMessages.getActualValue().getValue() + "\n");
         result.append("Stored Messages:    " + storedMessages.getActualValue().getValue() + "\n");
         result.append("Discarded Messages: " + discardedMessages.getActualValue().getValue() + "\n");
-        result.append("Filtered Messages:     " + emptyMessages.getActualValue().getValue() + "\n");
+        result.append("Filtered Messages:  " + emptyMessages.getActualValue().getValue() + "\n");
         
         return result.toString();
     }

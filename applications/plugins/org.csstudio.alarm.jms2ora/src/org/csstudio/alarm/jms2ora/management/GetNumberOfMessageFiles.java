@@ -1,6 +1,6 @@
 
 /* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+ * Copyright (c) 2009 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
@@ -19,54 +19,30 @@
  * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
- *
  */
 
-package org.csstudio.alarm.jms2ora.actions;
+package org.csstudio.alarm.jms2ora.management;
 
-import java.util.Map;
-import org.csstudio.alarm.jms2ora.Jms2OraPlugin;
-import org.csstudio.alarm.jms2ora.Jms2OraApplication;
-import org.csstudio.platform.libs.dcf.actions.IAction;
+import org.csstudio.alarm.jms2ora.util.MessageFileHandler;
+import org.csstudio.platform.management.CommandParameters;
+import org.csstudio.platform.management.CommandResult;
+import org.csstudio.platform.management.IManagementCommand;
 
-public class StopJms2OraAction implements IAction
+/**
+ * @author Markus Moeller
+ *
+ */
+public class GetNumberOfMessageFiles implements IManagementCommand
 {
-    public Object run(Object param)
+    /* (non-Javadoc)
+     * @see org.csstudio.platform.management.IManagementCommand#execute(org.csstudio.platform.management.CommandParameters)
+     */
+    public CommandResult execute(CommandParameters parameters)
     {
-        String password = null;
+        String result = null;
         
-        if(!(param instanceof Map))
-        {
-            return "Parameter not available.";
-        }
-        
-        Map<?, ?> map = (Map<?, ?>)param;
-        
-        try
-        {
-            password = (String)map.get("Password");
-        
-            if(password.compareTo(Jms2OraPlugin.getDefault().getConfiguration().getString("xmpp.shutdown")) != 0)
-            {
-                return "Invalid password";
-            }
-        }
-        catch(Exception e)
-        {
-            return e.getMessage();
-        }
+        result = Integer.toString(MessageFileHandler.getInstance().getMessageFilesNumber());
 
-        Jms2OraApplication.getInstance().setShutdown();
-        
-        synchronized(this)
-        {
-            try
-            {
-                this.wait(5000);
-            }
-            catch(InterruptedException ie) { }
-        }
-        
-        return "Stopping application...";
+        return CommandResult.createMessageResult(result);
     }
 }

@@ -38,14 +38,23 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer
     @Override
     public void initializeDefaultPreferences()
     {
-        IEclipsePreferences prefs = new DefaultScope().getNode(
-                Jms2OraPlugin.getDefault().getPluginId());
+        IEclipsePreferences prefs = new DefaultScope().getNode(Jms2OraPlugin.getDefault().getPluginId());
 
-        prefs.put(PreferenceConstants.XMPP_USER_NAME, "jms2oracle");
-        prefs.put(PreferenceConstants.XMPP_PASSWORD, "jms2oracle");
-        prefs.put(PreferenceConstants.PRIMARY_JMS_URL, "failover:(tcp://krykjmsb.desy.de:64616)?maxReconnectDelay=5000");
-        prefs.put(PreferenceConstants.SECONDARY_JMS_URL , "failover:(tcp://krykjmsa.desy.de:62616)?maxReconnectDelay=5000");
-        prefs.put(PreferenceConstants.ALARM_TOPIC, "ALARM");
-        prefs.put(PreferenceConstants.LOG_TOPIC , "LOG");
+        prefs.put(PreferenceConstants.XMPP_USER_NAME, "anonymous");
+        prefs.put(PreferenceConstants.XMPP_PASSWORD, "anonymous");
+        prefs.put(PreferenceConstants.XMPP_SERVER, "xmppserver.where.ever");
+        prefs.put(PreferenceConstants.XMPP_SHUTDOWN_PASSWORD , "");
+        prefs.put(PreferenceConstants.JMS_PROVIDER_URLS, "");
+        prefs.put(PreferenceConstants.JMS_TOPIC_NAMES , "");
+        prefs.put(PreferenceConstants.DATABASE_URL, "");
+        prefs.put(PreferenceConstants.DATABASE_USER , "");
+        prefs.put(PreferenceConstants.DATABASE_PASSWORD, "");
+        prefs.put(PreferenceConstants.DISCARD_TYPES , "");
+        prefs.put(PreferenceConstants.DISCARD_NAMES, "");
+        prefs.put(PreferenceConstants.DEFAULT_VALUE_PRECISION , "");
+        prefs.put(PreferenceConstants.WATCHDOG_WAIT, "");
+        prefs.put(PreferenceConstants.WATCHDOG_PERIOD , "");
+        prefs.put(PreferenceConstants.FILTER_SEND_BOUND, "");
+        prefs.put(PreferenceConstants.FILTER_MAX_SENT_MESSAGES , "");
     }
 }

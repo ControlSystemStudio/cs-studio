@@ -19,18 +19,16 @@
  * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
- *
  */
 
-package org.csstudio.alarm.jms2ora.actions;
+package org.csstudio.alarm.jms2ora;
 
-import org.csstudio.alarm.jms2ora.util.MessageFileHandler;
-import org.csstudio.platform.libs.dcf.actions.IAction;
-
-public class GetNameOfMessageFilesAction implements IAction
+/**
+ * @author Markus Moeller
+ *
+ */
+public interface Stoppable
 {
-    public Object run(Object param)
-    {
-        return MessageFileHandler.getInstance().getMessageFileNames();
-    }
+    public void stopWorking();
+    public void setRestart();
 }

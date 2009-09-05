@@ -40,6 +40,7 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.jms2ora.util.MessageContent;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 
@@ -78,7 +79,7 @@ public class DatabaseLayer
 
     public DatabaseLayer(String url, String user, String password)
     {
-        logger = Logger.getLogger(DatabaseLayer.class);
+        logger = CentralLogger.getInstance().getLogger(this);
         
         this.url = url;
         this.password = password;
@@ -242,7 +243,7 @@ public class DatabaseLayer
     {        
         try
         {
-            dbService = RDBUtil.connect(url, user, password, true);
+            dbService = RDBUtil.connect(url, user, password, false);
         }
         catch(Exception e)
         {

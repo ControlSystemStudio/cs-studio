@@ -36,6 +36,10 @@ import javax.jms.MapMessage;
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.jms2ora.Jms2OraPlugin;
 import org.csstudio.alarm.jms2ora.database.DatabaseLayer;
+import org.csstudio.alarm.jms2ora.preferences.PreferenceConstants;
+import org.csstudio.platform.logging.CentralLogger;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 /**
  *  @author Markus Moeller
@@ -44,8 +48,11 @@ import org.csstudio.alarm.jms2ora.database.DatabaseLayer;
 public class MessageContentCreator
 {
     /** Vector object contains names of message types that should be discarded */
-    private Vector<String> discard = null;
+    private Vector<String> discardTypes = null;
     
+    /** Vector object contains names of message types that should be discarded */
+    private Vector<String> discardNames = null;
+
     /** Hashtable with message properties. Key -> name, value -> database table id  */
     private Hashtable<String, Long> msgProperty = null;
     
@@ -67,31 +74,36 @@ public class MessageContentCreator
 
     public MessageContentCreator(String dbUrl, String dbUser, String dbPassword)
     {
+        IPreferencesService prefs = Platform.getPreferencesService();
+
         dbLayer = new DatabaseLayer(dbUrl, dbUser, dbPassword);
         
-        logger = Logger.getLogger(MessageContentCreator.class);
+        logger = CentralLogger.getInstance().getLogger(this);
         
         readMessageProperties();
-        
+
         valueLength = dbLayer.getMaxNumberofValueBytes();
         if(valueLength == 0)
         {
-            valueLength = Jms2OraPlugin.getDefault().getConfiguration().getInt("default.value.precision", 300);
+            valueLength = prefs.getInt(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.DEFAULT_VALUE_PRECISION, 300, null);
             logger.warn("Cannot read the precision of the table column 'value'. Assume " + valueLength + " bytes");
         }
         
         initDiscardTypes();
+        initDiscardNames();
         
         messageFilter = MessageFilter.getInstance();
     }
     
     private void initDiscardTypes()
     {
+        IPreferencesService prefs = Platform.getPreferencesService();
+
         String temp = null;
         
-        discard = new Vector<String>();
+        discardTypes = new Vector<String>();
         
-        String list[] = Jms2OraPlugin.getDefault().getConfiguration().getStringArray("discard.types");
+        String list[] = prefs.getString(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.DISCARD_TYPES, "", null).split(",");
         
         if(list != null)
         {
@@ -101,7 +113,31 @@ public class MessageContentCreator
                 
                 if(temp.length() > 0)
                 {
-                    discard.add(temp);
+                    discardTypes.add(temp);
+                }
+            }
+        }
+    }
+
+    private void initDiscardNames()
+    {
+        IPreferencesService prefs = Platform.getPreferencesService();
+
+        String temp = null;
+        
+        discardNames = new Vector<String>();
+        
+        String list[] = prefs.getString(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.DISCARD_NAMES, "", null).split(",");
+        
+        if(list != null)
+        {
+            for(String s : list)
+            {
+                temp = s.trim();
+                
+                if(temp.length() > 0)
+                {
+                    discardNames.add(temp);
                 }
             }
         }
@@ -128,9 +164,11 @@ public class MessageContentCreator
         Enumeration<?> lst = null;
         String name = null;
         String type = null;
+        String propName = null;
         String et = null;
         String temp = null;
         boolean reload = false;
+        boolean wrongFormat = false;
 
         // Create a new MessageContent object for the content of the message
         msgContent = new MessageContent();
@@ -166,9 +204,9 @@ public class MessageContentCreator
         logger.debug("Message type: " + type);
         
         // Discard messages with the type 'simulator'
-        if(!discard.isEmpty())
+        if(!discardTypes.isEmpty())
         {
-            if(discard.contains(type))
+            if(discardTypes.contains(type))
             {
                 msgContent.setDiscard(true);
                 
@@ -178,6 +216,41 @@ public class MessageContentCreator
             }
         }
         
+        // Get the property 'NAME'
+        try
+        {
+            // Does the message contain the key TYPE?
+            if(mmsg.itemExists("NAME"))
+            {
+                // Get the value of the item TYPE
+                propName = mmsg.getString("NAME");                
+            }
+            else
+            {
+                // The message does not contain the item NAME.
+                propName = "";                
+            }
+        }
+        catch(JMSException jmse)
+        {
+            propName = "";
+        }
+
+        logger.debug("Property NAME: " + propName);
+
+        // Discard messages that contains the names of the defined list
+        if(!discardNames.isEmpty())
+        {
+            if(discardNames.contains(propName))
+            {
+                msgContent.setDiscard(true);
+                
+                // Return an object without content
+                // Call hasContent() to check whether or not content is available
+                return msgContent;
+            }
+        }
+
         // Now get the event time
         try
         {
@@ -193,6 +266,7 @@ public class MessageContentCreator
                 if(temp == null)
                 {
                     logger.info("Property EVENTTIME contains invalid format: " + et);
+                    wrongFormat = true;
                     
                     // ... create a new date string
                     et = getDateAndTimeString("yyyy-MM-dd HH:mm:ss.SSS");
@@ -218,6 +292,7 @@ public class MessageContentCreator
         // Copy the type id and the event time
         msgContent.put(msgProperty.get("TYPE"), "TYPE", type);        
         msgContent.put(msgProperty.get("EVENTTIME"), "EVENTTIME", et);
+        msgContent.put(msgProperty.get("NAME"), "NAME", propName);
         
         try
         {
@@ -253,8 +328,8 @@ public class MessageContentCreator
                     temp = temp.substring(0, valueLength - 3) + "{*}";
                 }
 
-                // Do not copy the TYPE and EVENTTIME properties
-                if((name.compareTo("TYPE") != 0) && (name.compareTo("EVENTTIME") != 0))
+                // Do not copy the TYPE, EVENTTIME and NAME properties
+                if((name.compareTo("TYPE") != 0) && (name.compareTo("EVENTTIME") != 0) && (name.compareTo("NAME") != 0))
                 {
                     // If we know the property
                     if(msgProperty.containsKey(name))
@@ -294,6 +369,12 @@ public class MessageContentCreator
                         }
                     }                    
                 }
+            }
+            
+            if(wrongFormat)
+            {
+                logger.info(msgContent.toPrintableString());
+                wrongFormat = false;
             }
         }
         

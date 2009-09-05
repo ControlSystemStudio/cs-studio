@@ -26,10 +26,19 @@ package org.csstudio.alarm.jms2ora;
 
 import java.io.File;
 import org.apache.log4j.Logger;
+import org.csstudio.alarm.jms2ora.management.Restart;
+import org.csstudio.alarm.jms2ora.management.Stop;
+import org.csstudio.alarm.jms2ora.preferences.PreferenceConstants;
 import org.csstudio.alarm.jms2ora.util.ApplicState;
 import org.csstudio.alarm.jms2ora.util.SynchObject;
+import org.csstudio.platform.logging.CentralLogger;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
+import org.remotercp.common.servicelauncher.ServiceLauncher;
+import org.remotercp.ecf.ECFConstants;
+import org.remotercp.login.connection.HeadlessConnection;
 
 /**
  * The starting class.
@@ -38,7 +47,7 @@ import org.eclipse.equinox.app.IApplicationContext;
  *
  */
 
-public class Jms2OraApplication implements IApplication
+public class Jms2OraApplication implements IApplication, Stoppable
 {
     private static Jms2OraApplication instance = null;
     
@@ -72,7 +81,7 @@ public class Jms2OraApplication implements IApplication
     public Jms2OraApplication()
     {
         instance = this;
-        logger = Logger.getLogger(Jms2OraApplication.class);
+        logger = CentralLogger.getInstance().getLogger(this);
         createObjectFolder();
     
         sync = new SynchObject(ApplicState.INIT, System.currentTimeMillis());
@@ -83,11 +92,12 @@ public class Jms2OraApplication implements IApplication
         return instance;
     }
     
-
     public Object start(IApplicationContext context) throws Exception
     {
         String stateText = null;
         int currentState = 0;
+
+        connectToXMPPServer();
         
         // Create an object from this class
         messageProcessor = MessageProcessor.getInstance();
@@ -202,6 +212,30 @@ public class Jms2OraApplication implements IApplication
         }
     }
     
+    public void connectToXMPPServer()
+    {
+        IPreferencesService prefs = Platform.getPreferencesService();
+        String xmppUser = prefs.getString(Jms2OraPlugin.PLUGIN_ID,
+                PreferenceConstants.XMPP_USER_NAME, "anonymous", null);
+        String xmppPassword = prefs.getString(Jms2OraPlugin.PLUGIN_ID,
+                PreferenceConstants.XMPP_PASSWORD, "anonymous", null);
+        String xmppServer = prefs.getString(Jms2OraPlugin.PLUGIN_ID,
+                PreferenceConstants.XMPP_SERVER, "krynfs.desy.de", null);
+
+        Stop.staticInject(this);
+        Restart.staticInject(this);
+
+        try
+        {
+            HeadlessConnection.connect(xmppUser, xmppPassword, xmppServer, ECFConstants.XMPP);
+            ServiceLauncher.startRemoteServices();     
+        }
+        catch(Exception e)
+        {
+            CentralLogger.getInstance().warn(this, "Could not connect to XMPP server: " + e.getMessage());
+        }
+    }
+    
     public int getState()
     {
         return sync.getSynchStatus();
@@ -212,7 +246,7 @@ public class Jms2OraApplication implements IApplication
         sync.setSynchStatus(status);
     }
 
-    public void setShutdown()
+    public void stopWorking()
     {
         running = false;
         shutdown = true;

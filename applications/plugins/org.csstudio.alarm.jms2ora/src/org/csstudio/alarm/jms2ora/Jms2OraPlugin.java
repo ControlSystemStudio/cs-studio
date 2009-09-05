@@ -24,13 +24,9 @@
 
 package org.csstudio.alarm.jms2ora;
 
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
 import org.csstudio.platform.AbstractCssPlugin;
-import org.csstudio.platform.startupservice.IStartupServiceListener;
-import org.csstudio.platform.startupservice.StartupServiceEnumerator;
+import org.csstudio.platform.logging.CentralLogger;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -44,9 +40,6 @@ public class Jms2OraPlugin extends AbstractCssPlugin
 	/** The shared instance */
 	private static Jms2OraPlugin plugin;
 	
-	/** The configuration */
-    private PropertiesConfiguration config = null;
-
     private Logger logger = null;
     
     /**
@@ -55,47 +48,19 @@ public class Jms2OraPlugin extends AbstractCssPlugin
 	public Jms2OraPlugin()
 	{
 	    plugin = this;
-	    createLogger();
+	    
+	    logger = CentralLogger.getInstance().getLogger(this);
 	}
 
     @Override
     protected void doStart(BundleContext context) throws Exception
-    {
-        PropertiesConfiguration config = new PropertiesConfiguration();
-        
-        try
-        {
-            config.load("./jms2ora-config.properties");
-            
-            this.config = config;
-        }
-        catch(ConfigurationException e)
-        {
-            logger.error("Configuration not loadable...");
-        }
-
-        for(IStartupServiceListener s : StartupServiceEnumerator.getServices())
-        {
-            s.run();
-        }
-        
+    {        
         logger.info("Jms2Ora started...");
     }
 
     @Override
     protected void doStop(BundleContext context) throws Exception
     {
-    }
-
-    private boolean createLogger()
-    {
-        boolean result = false;
-        
-        PropertyConfigurator.configure("log4j-jms2ora.properties");
-        
-        logger = Logger.getLogger(Jms2OraApplication.class);
-        
-        return result;
     }
 
 	/**
@@ -112,15 +77,5 @@ public class Jms2OraPlugin extends AbstractCssPlugin
     public String getPluginId()
     {
         return PLUGIN_ID;
-    }
-
-    public PropertiesConfiguration getConfiguration()
-    {
-        return config;
-    }
-    
-    public void setConfiguration(PropertiesConfiguration c)
-    {
-        config = c;
     }
 }

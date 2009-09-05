@@ -35,6 +35,7 @@ import java.io.ObjectOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 import org.apache.log4j.Logger;
+import org.csstudio.platform.logging.CentralLogger;
 
 /**
  * 
@@ -61,7 +62,7 @@ public class MessageFileHandler implements FilenameFilter
     
     private MessageFileHandler()
     {
-        logger = Logger.getLogger(MessageFileHandler.class);
+        logger = CentralLogger.getInstance().getLogger(this);
         
         createObjectFolder();
     }
@@ -105,6 +106,19 @@ public class MessageFileHandler implements FilenameFilter
         return result;
     }
     
+    public String getMessageFileNamesAsString()
+    {
+        StringBuffer result = new StringBuffer();
+        String[] list = getMessageFileNames();
+        
+        for(String s : list)
+        {
+            result.append(s + "\n");
+        }
+        
+        return result.toString();
+    }
+    
     /**
      * The method returns an array of String with the file names of all serialized MapMessage objects.
      * Uses the {@link MessageFileHandler} class.
@@ -143,6 +157,19 @@ public class MessageFileHandler implements FilenameFilter
         name = null;
 
         return result;
+    }
+    
+    public String getMessageFileContentAsString()
+    {
+        StringBuffer result = new StringBuffer();
+        String[] list = getMessageFileContent();
+        
+        for(String s : list)
+        {
+            result.append(s + "\n");
+        }
+        
+        return result.toString();
     }
     
     /**

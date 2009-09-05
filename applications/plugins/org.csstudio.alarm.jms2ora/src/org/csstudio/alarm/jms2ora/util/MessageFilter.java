@@ -23,9 +23,12 @@
 
 package org.csstudio.alarm.jms2ora.util;
 
-import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.jms2ora.Jms2OraPlugin;
+import org.csstudio.alarm.jms2ora.preferences.PreferenceConstants;
+import org.csstudio.platform.logging.CentralLogger;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 /**
  * @author Markus Moeller
@@ -48,11 +51,15 @@ public class MessageFilter
     
     private MessageFilter()
     {
-        PropertiesConfiguration conf = Jms2OraPlugin.getDefault().getConfiguration();
-        timePeriod = conf.getLong("watchdog.period", 120000);
-        watchdogWaitTime = conf.getLong("watchdog.wait", 60000);
+        IPreferencesService prefs = Platform.getPreferencesService();
+
+        timePeriod = prefs.getLong(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.WATCHDOG_PERIOD, 120000, null);
+        watchdogWaitTime = prefs.getLong(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.WATCHDOG_WAIT, 60000, null); 
         
-        messages = new MessageFilterContainer(conf.getInt("filter.sendBound", 100), conf.getInt("filter.maxSentMessages", 6));
+        int sendBound = prefs.getInt(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.FILTER_SEND_BOUND, 100, null);
+        int maxSentMessages = prefs.getInt(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.FILTER_MAX_SENT_MESSAGES, 6, null);
+        messages = new MessageFilterContainer(sendBound, maxSentMessages);
+        
         watchdog = new WatchDog();
         watchdog.start();
     }
@@ -87,7 +94,7 @@ public class MessageFilter
 
         public WatchDog()
         {
-            logger = Logger.getLogger(WatchDog.class);
+            logger = CentralLogger.getInstance().getLogger(this);
             logger.info("WatchDog initialized");
         }
         

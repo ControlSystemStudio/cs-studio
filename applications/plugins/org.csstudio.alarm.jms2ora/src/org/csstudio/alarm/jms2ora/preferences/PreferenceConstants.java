@@ -25,15 +25,25 @@
 package org.csstudio.alarm.jms2ora.preferences;
 
 /**
- * @author Markus Möller
+ * @author Markus Moeller
  *
  */
 public class PreferenceConstants
 {
     public static final String XMPP_USER_NAME = "xmppUserName";
     public static final String XMPP_PASSWORD = "xmppPassword";
-    public static final String PRIMARY_JMS_URL = "primaryJmsUrl";
-    public static final String SECONDARY_JMS_URL = "secondaryJmsUrl";
-    public static final String ALARM_TOPIC = "alarmTopic";
-    public static final String LOG_TOPIC = "logTopic";
+    public static final String XMPP_SERVER = "xmppServer";
+    public static final String XMPP_SHUTDOWN_PASSWORD = "xmppShutdownPassword";
+    public static final String JMS_PROVIDER_URLS = "jmsProviderUrls";
+    public static final String JMS_TOPIC_NAMES = "jmsTopicNames";
+    public static final String DATABASE_URL = "databaseUrl";
+    public static final String DATABASE_USER = "databaseUser";
+    public static final String DATABASE_PASSWORD = "databasePassword";
+    public static final String DISCARD_TYPES = "discardTypes";
+    public static final String DISCARD_NAMES = "discardNames";
+    public static final String DEFAULT_VALUE_PRECISION = "defaultValuePrecision";
+    public static final String WATCHDOG_WAIT = "watchdogWait";
+    public static final String WATCHDOG_PERIOD = "watchdogPeriod";
+    public static final String FILTER_SEND_BOUND = "filterSendBound";
+    public static final String FILTER_MAX_SENT_MESSAGES = "filterMaxSentMessages";
 }

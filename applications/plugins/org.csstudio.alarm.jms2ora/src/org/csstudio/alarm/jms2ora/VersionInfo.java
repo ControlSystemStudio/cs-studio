@@ -1,6 +1,6 @@
 
 /* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+ * Copyright (c) 2009 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
@@ -19,29 +19,22 @@
  * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
- *
  */
 
-package org.csstudio.alarm.jms2ora.xmpp;
+package org.csstudio.alarm.jms2ora;
 
-import org.csstudio.alarm.jms2ora.Jms2OraPlugin;
-import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.security.Credentials;
-import org.csstudio.platform.security.ILoginCallbackHandler;
-
-public class LoginCallbackHandler implements ILoginCallbackHandler
+/**
+ * @author Markus Moeller
+ *
+ */
+public class VersionInfo
 {
-    public Credentials getCredentials()
-    {        
-        
-        String xmppUserName = Jms2OraPlugin.getDefault().getConfiguration().getString("xmpp.user", "jms2oracle");
-        String xmppPassword = Jms2OraPlugin.getDefault().getConfiguration().getString("xmpp.password", "jms2oracle");
-        
-        return new Credentials(xmppUserName, xmppPassword);
-    }
-
-    public void signalFailedLoginAttempt()
+    public static final String NAME = "Jms2Ora";
+    public static final String VERSION = " 2.3.0";
+    public static final String BUILD = " - BUILD 2009-07-22 15:18";
+    
+    public static String getAll()
     {
-        CentralLogger.getInstance().error(this, "XMPP login failed");
+        return NAME + VERSION + BUILD;
     }
 }

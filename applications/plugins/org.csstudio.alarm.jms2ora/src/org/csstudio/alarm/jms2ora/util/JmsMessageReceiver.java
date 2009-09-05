@@ -40,7 +40,7 @@ import javax.jms.Topic;
  * Class used to establish connection with jms server
  */
 
-public class MessageReceiver
+public class JmsMessageReceiver
 {
     private Hashtable<String, String> properties  = null;
     private Context context = null;
@@ -65,7 +65,7 @@ public class MessageReceiver
     }
     */
     
-    public MessageReceiver(String initialContextFactory, String providerURL, String[] topicArray)throws NamingException
+    public JmsMessageReceiver(String initialContextFactory, String providerURL, String[] topicArray)throws NamingException
     {
         properties = new Hashtable<String, String>();
         properties.put(Context.INITIAL_CONTEXT_FACTORY,initialContextFactory);
