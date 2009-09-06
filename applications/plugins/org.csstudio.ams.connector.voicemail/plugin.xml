@@ -21,18 +21,6 @@
             name="Connector Voice Mail"/>
    </extension>
    <extension
-         id="VoicemailConnectorProduct"
-         point="org.eclipse.core.runtime.products">
-      <product
-            application="org.csstudio.ams.connector.voicemail.VoicemailConnector"
-            name="VoicemailConnector">
-         <property
-               name="appName"
-               value="VoicemailConnector">
-         </property>
-      </product>
-   </extension>
-   <extension
          point="org.csstudio.platform.managementCommands">
       <command
             class="org.csstudio.ams.connector.voicemail.management.Stop"
@@ -52,6 +40,18 @@
                label="Password">
          </stringParameter>
       </command>
+   </extension>
+   <extension
+         id="AmsVoicemailConnectorProduct"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.csstudio.ams.connector.voicemail.VoicemailConnector"
+            name="AmsVoicemailConnector">
+         <property
+               name="appName"
+               value="AmsVoicemailConnector">
+         </property>
+      </product>
    </extension>
 
 </plugin>

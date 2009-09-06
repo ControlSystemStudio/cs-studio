@@ -41,7 +41,7 @@ import javax.naming.NamingException;
 import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.Log;
-import org.csstudio.ams.connector.voicemail.internal.SampleService;
+import org.csstudio.ams.connector.voicemail.internal.VoicemailConnectorPreferenceKey;
 import org.csstudio.ams.connector.voicemail.isdn.CallCenter;
 import org.csstudio.ams.connector.voicemail.isdn.CallCenterException;
 import org.csstudio.platform.utility.jms.JmsRedundantReceiver;
@@ -106,8 +106,9 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
         boolean bInitedVmService = false;
         boolean bInitedJms = false;
         int iErr = VoicemailConnectorStart.STAT_OK;
-        Log.log(this, Log.INFO, "start voicemail connector work");
         int sleeptime = 100;
+
+        Log.log(this, Log.INFO, "Starting voicemail connector work");
 
         bStop = false;
         
@@ -302,8 +303,8 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
             telegramCnt = 0;
 
             IPreferenceStore store = VoicemailConnectorPlugin.getDefault().getPreferenceStore();
-            String strAdress = store.getString(SampleService.P_VM_SERVICE);
-            String strPort = store.getString(SampleService.P_VM_PORT);
+            String strAdress = store.getString(VoicemailConnectorPreferenceKey.P_VM_SERVICE);
+            String strPort = store.getString(VoicemailConnectorPreferenceKey.P_VM_PORT);
             
             for (int i = 1 ; i <= 3 ; i++)
             {

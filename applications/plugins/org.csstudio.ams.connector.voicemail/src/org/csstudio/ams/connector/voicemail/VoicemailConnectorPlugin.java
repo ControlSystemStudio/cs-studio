@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,9 +20,9 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
+
 package org.csstudio.ams.connector.voicemail;
 
-import org.csstudio.ams.connector.voicemail.internal.SampleService;
 import org.csstudio.platform.ui.AbstractCssUiPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -40,22 +41,23 @@ public class VoicemailConnectorPlugin extends AbstractCssUiPlugin
 	/**
 	 * The constructor
 	 */
-	public VoicemailConnectorPlugin() {
+	public VoicemailConnectorPlugin()
+	{
 		_plugin = this;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public final void doStart(final BundleContext context) throws Exception {
-		SampleService.getInstance().showPreferences();
+	public final void doStart(final BundleContext context) throws Exception
+	{
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public final void doStop(final BundleContext context) throws Exception {
-		// do nothing particular
+	public final void doStop(final BundleContext context) throws Exception
+	{
 	}
 
 	/**
@@ -63,7 +65,8 @@ public class VoicemailConnectorPlugin extends AbstractCssUiPlugin
 	 * 
 	 * @return the shared instance
 	 */
-	public static VoicemailConnectorPlugin getDefault() {
+	public static VoicemailConnectorPlugin getDefault()
+	{
 		return _plugin;
 	}
 
@@ -71,7 +74,8 @@ public class VoicemailConnectorPlugin extends AbstractCssUiPlugin
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String getPluginId() {
+	public String getPluginId()
+	{
 		return PLUGIN_ID;
 	}
 }

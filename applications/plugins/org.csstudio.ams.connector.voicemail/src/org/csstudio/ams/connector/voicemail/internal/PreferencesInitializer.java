@@ -45,12 +45,13 @@ public final class PreferencesInitializer extends AbstractPreferenceInitializer 
 	{
 		IEclipsePreferences node = new DefaultScope().getNode(VoicemailConnectorPlugin.PLUGIN_ID);
 
-		node.put(SampleService.P_VM_SERVICE, "localhost");
-		node.put(SampleService.P_VM_PORT, "1001");
-		
-	    node.put(SampleService.P_MARY_HOST, "krykpcsms.desy.de");
-	    node.put(SampleService.P_MARY_PORT, "59125");
-	    
-	    node.put(SampleService.P_MARY_DEFAULT_LANGUAGE, "TEXT_DE");
+		node.put(VoicemailConnectorPreferenceKey.P_VM_SERVICE, "localhost");
+		node.put(VoicemailConnectorPreferenceKey.P_VM_PORT, "1001");
+	    node.put(VoicemailConnectorPreferenceKey.P_MARY_HOST, "krykpcsms.desy.de");
+	    node.put(VoicemailConnectorPreferenceKey.P_MARY_PORT, "59125");
+	    node.put(VoicemailConnectorPreferenceKey.P_MARY_DEFAULT_LANGUAGE, "TEXT_DE");
+	    node.put(VoicemailConnectorPreferenceKey.P_XMPP_SERVER, "server.where.ever");
+	    node.put(VoicemailConnectorPreferenceKey.P_XMPP_USER, "anonymous");
+	    node.put(VoicemailConnectorPreferenceKey.P_XMPP_PASSWORD, "anonymous");
 	}
 }

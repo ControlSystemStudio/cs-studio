@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -30,7 +31,6 @@ import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
-// import javax.jms.Topic;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -39,7 +39,10 @@ import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.Log;
 import org.csstudio.ams.SynchObject;
 import org.csstudio.ams.Utils;
+import org.csstudio.ams.connector.voicemail.internal.VoicemailConnectorPreferenceKey;
 import org.csstudio.platform.logging.CentralLogger;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -107,13 +110,15 @@ public class VoicemailConnectorStart implements IApplication
     @SuppressWarnings("static-access")
     public Object start(IApplicationContext context) throws Exception
     {
-        Log.log(this, Log.INFO, "start");
         VoicemailConnectorWork scw = null;
         boolean bInitedJms = false;
         lastStatus = getStatus();                                               // use synchronized method
-
         int iTimeouts = 0;
 
+        Log.log(this, Log.INFO, "start");
+
+        VoicemailConnectorPreferenceKey.showPreferences();
+        
         bStop = false;
         restart = false;
 
@@ -236,9 +241,10 @@ public class VoicemailConnectorStart implements IApplication
 
     public void connectToXMPPServer()
     {
-        String xmppUser = "ams-voicemail-connector";
-        String xmppPassword = "ams";
-        String xmppServer = "krynfs.desy.de";
+    	IPreferencesService pref = Platform.getPreferencesService();
+    	String xmppServer = pref.getString(VoicemailConnectorPlugin.PLUGIN_ID, VoicemailConnectorPreferenceKey.P_XMPP_SERVER, "krynfs.desy.de", null);
+        String xmppUser = pref.getString(VoicemailConnectorPlugin.PLUGIN_ID, VoicemailConnectorPreferenceKey.P_XMPP_USER, "anonymous", null);
+        String xmppPassword = pref.getString(VoicemailConnectorPlugin.PLUGIN_ID, VoicemailConnectorPreferenceKey.P_XMPP_PASSWORD, "anonymous", null);
 
         try
         {
@@ -255,9 +261,11 @@ public class VoicemailConnectorStart implements IApplication
     {
         return sObj.getSynchStatus();
     }
+    
     public void setStatus(int status)
     {
-        sObj.setSynchStatus(status);                                            // set always, to update time
+    	// set always, to update time
+        sObj.setSynchStatus(status);
     }
     
     private boolean initJms()

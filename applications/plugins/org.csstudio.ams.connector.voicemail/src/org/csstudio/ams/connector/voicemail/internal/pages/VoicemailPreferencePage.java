@@ -32,7 +32,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.csstudio.ams.connector.voicemail.Messages;
 import org.csstudio.ams.connector.voicemail.VoicemailConnectorPlugin;
-import org.csstudio.ams.connector.voicemail.internal.SampleService;
+import org.csstudio.ams.connector.voicemail.internal.VoicemailConnectorPreferenceKey;
 
 /**
  * A preference page that contains the following types of preferences:<br>
@@ -60,23 +60,23 @@ public class VoicemailPreferencePage extends FieldEditorPreferencePage implement
 	@Override
 	protected final void createFieldEditors()
 	{
-		addField(new StringFieldEditor(SampleService.P_VM_SERVICE,
+		addField(new StringFieldEditor(VoicemailConnectorPreferenceKey.P_VM_SERVICE,
 				Messages.P_VM_SERVICE, getFieldEditorParent()));
-		addField(new StringFieldEditor(SampleService.P_VM_PORT,
+		addField(new StringFieldEditor(VoicemailConnectorPreferenceKey.P_VM_PORT,
 				Messages.P_VM_PORT, getFieldEditorParent()));
 
 		new Label(this.getFieldEditorParent(), SWT.NONE);
 		new Label(this.getFieldEditorParent(), SWT.NONE);
 		
-        addField(new StringFieldEditor(SampleService.P_MARY_HOST,
+        addField(new StringFieldEditor(VoicemailConnectorPreferenceKey.P_MARY_HOST,
                 Messages.P_MARY_HOST, getFieldEditorParent()));
-        addField(new StringFieldEditor(SampleService.P_MARY_PORT,
+        addField(new StringFieldEditor(VoicemailConnectorPreferenceKey.P_MARY_PORT,
                 Messages.P_MARY_PORT, getFieldEditorParent()));
 
         new Label(this.getFieldEditorParent(), SWT.NONE);
         new Label(this.getFieldEditorParent(), SWT.NONE);
 
-        addField(new StringFieldEditor(SampleService.P_MARY_DEFAULT_LANGUAGE,
+        addField(new StringFieldEditor(VoicemailConnectorPreferenceKey.P_MARY_DEFAULT_LANGUAGE,
                 Messages.P_MARY_DEFAULT_LANGUAGE, getFieldEditorParent()));
 
         adjustGridLayout();

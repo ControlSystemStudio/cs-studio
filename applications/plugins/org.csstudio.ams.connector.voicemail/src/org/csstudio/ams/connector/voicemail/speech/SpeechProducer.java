@@ -35,7 +35,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.csstudio.ams.Log;
 import org.csstudio.ams.connector.voicemail.VoicemailConnectorPlugin;
-import org.csstudio.ams.connector.voicemail.internal.SampleService;
+import org.csstudio.ams.connector.voicemail.internal.VoicemailConnectorPreferenceKey;
 import org.eclipse.jface.preference.IPreferenceStore;
 
 import de.dfki.lt.mary.client.MaryClient;
@@ -76,13 +76,13 @@ public class SpeechProducer
     private SpeechProducer()
     {
         IPreferenceStore store = VoicemailConnectorPlugin.getDefault().getPreferenceStore();
-        String address = store.getString(SampleService.P_MARY_HOST);
-        String inputType = store.getString(SampleService.P_MARY_DEFAULT_LANGUAGE);
+        String address = store.getString(VoicemailConnectorPreferenceKey.P_MARY_HOST);
+        String inputType = store.getString(VoicemailConnectorPreferenceKey.P_MARY_DEFAULT_LANGUAGE);
         int port = 0;
         
         try
         {
-            port = Integer.parseInt(store.getString(SampleService.P_MARY_PORT));
+            port = Integer.parseInt(store.getString(VoicemailConnectorPreferenceKey.P_MARY_PORT));
         }
         catch(NumberFormatException nfe)
         {
