@@ -22,7 +22,7 @@
 package org.csstudio.ams.internal;
 
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.csstudio.ams.Activator;
+import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.Log;
 
 /**
@@ -137,7 +137,7 @@ public class SampleService
 	 */
 	public final void showPreferences() 
 	{
-		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
+		IPreferenceStore store = AmsActivator.getDefault().getPreferenceStore();
 		
 		// database settings
 		Log.log(Log.INFO, P_CONFIG_DATABASE_CONNECTION + ": " + store.getString(P_CONFIG_DATABASE_CONNECTION));

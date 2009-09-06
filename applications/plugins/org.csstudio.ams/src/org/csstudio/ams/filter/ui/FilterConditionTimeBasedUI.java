@@ -30,7 +30,7 @@ import java.util.Locale;
 import java.util.Vector;
 
 import org.csstudio.ams.AMSException;
-import org.csstudio.ams.Activator;
+import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.Log;
 import org.csstudio.ams.Messages;
 import org.csstudio.ams.Utils;
@@ -361,7 +361,7 @@ public class FilterConditionTimeBasedUI extends FilterConditionUI implements Sel
 	
 	public void initControls()
 	{
-		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
+		IPreferenceStore store = AmsActivator.getDefault().getPreferenceStore();
 		String[] columnNames = store.getString(SampleService.P_FILTER_KEYFIELDS).split(";");
 		
 		initComboBoxUI(display, cboKeyValue[0], new ArrayList<String>(Arrays.asList(columnNames)));

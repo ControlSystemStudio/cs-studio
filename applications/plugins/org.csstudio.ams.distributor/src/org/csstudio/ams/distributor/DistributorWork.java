@@ -43,7 +43,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import org.csstudio.ams.AMSException;
-import org.csstudio.ams.Activator;
+import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.ExitException;
 import org.csstudio.ams.Log;
@@ -388,7 +388,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 	}
 
 	private boolean initJmsInternal() {
-		IPreferenceStore storeAct = Activator.getDefault().getPreferenceStore();
+		IPreferenceStore storeAct = AmsActivator.getDefault().getPreferenceStore();
 		Hashtable<String, String> properties = null;
 		String topicName = null;
 		boolean full = false;
@@ -660,7 +660,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 	{
 		try
 		{
-			IPreferenceStore storeAct = Activator.getDefault()
+			IPreferenceStore storeAct = AmsActivator.getDefault()
 					.getPreferenceStore();
 						
 			Hashtable<String, String> properties = new Hashtable<String, String>();
@@ -1704,7 +1704,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 		}
 
 		try {
-			IPreferenceStore store = Activator.getDefault()
+			IPreferenceStore store = AmsActivator.getDefault()
 					.getPreferenceStore();
 
 			Hashtable<String, String> properties = new Hashtable<String, String>();

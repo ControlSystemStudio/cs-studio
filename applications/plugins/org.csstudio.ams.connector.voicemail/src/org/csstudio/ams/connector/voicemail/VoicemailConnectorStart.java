@@ -34,7 +34,7 @@ import javax.jms.Session;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import org.csstudio.ams.Activator;
+import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.Log;
 import org.csstudio.ams.SynchObject;
@@ -264,7 +264,7 @@ public class VoicemailConnectorStart implements IApplication
     {
         try
         {
-            IPreferenceStore storeAct = Activator.getDefault().getPreferenceStore();
+            IPreferenceStore storeAct = AmsActivator.getDefault().getPreferenceStore();
             Hashtable<String, String> properties = new Hashtable<String, String>();
             properties.put(Context.INITIAL_CONTEXT_FACTORY, 
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_EXTERN_CONNECTION_FACTORY_CLASS));

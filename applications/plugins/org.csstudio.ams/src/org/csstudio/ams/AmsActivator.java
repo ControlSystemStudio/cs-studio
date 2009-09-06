@@ -29,18 +29,18 @@ import org.csstudio.ams.internal.SampleService;
 /**
  * The activator class controls the plug-in life cycle
  */
-public class Activator extends AbstractCssUiPlugin {
+public class AmsActivator extends AbstractCssUiPlugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.csstudio.ams"; //$NON-NLS-1$
 
 	// The shared instance
-	private static Activator _plugin;
+	private static AmsActivator _plugin;
 
 	/**
 	 * The constructor
 	 */
-	public Activator() {
+	public AmsActivator() {
 		_plugin = this;
 	}
 
@@ -63,7 +63,7 @@ public class Activator extends AbstractCssUiPlugin {
 	 * 
 	 * @return the shared instance
 	 */
-	public static Activator getDefault() {
+	public static AmsActivator getDefault() {
 		return _plugin;
 	}
 

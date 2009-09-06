@@ -24,7 +24,7 @@
 import java.io.InputStream;
 
 
-import org.csstudio.ams.Activator;
+import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.Log;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -99,7 +99,7 @@ public class CommandButton extends Button
 
       try
       {
-        InputStream sourceStream = Activator.class.getResourceAsStream(res);
+        InputStream sourceStream = AmsActivator.class.getResourceAsStream(res);
         ImageData source = new ImageData(sourceStream);
         source.transparentPixel = 0;
         ImageData mask = source.getTransparencyMask();

@@ -27,7 +27,7 @@ import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
-import org.csstudio.ams.Activator;
+import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.internal.SampleService;
 
@@ -46,7 +46,7 @@ public final class PreferencesInitializer extends AbstractPreferenceInitializer 
     @Override
     public final void initializeDefaultPreferences() 
     {
-        IEclipsePreferences node = new DefaultScope().getNode(Activator.PLUGIN_ID);
+        IEclipsePreferences node = new DefaultScope().getNode(AmsActivator.PLUGIN_ID);
 
         // database settings
         node.put(SampleService.P_CONFIG_DATABASE_CONNECTION, "jdbc:oracle:thin:@(DESCRIPTION =" +

@@ -33,7 +33,7 @@ import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
 
-import org.csstudio.ams.Activator;
+import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.Log;
 import org.csstudio.ams.internal.SampleService;
 import org.csstudio.ams.messageminder.preference.PreferenceConstants;
@@ -142,7 +142,7 @@ public class MessageGuardCommander extends Job {
      */
     private void connect() {
         // IEclipsePreferences storeAct = new DefaultScope().getNode(Activator.PLUGIN_ID);
-        IPreferenceStore storeAct = Activator.getDefault().getPreferenceStore();
+        IPreferenceStore storeAct = AmsActivator.getDefault().getPreferenceStore();
 
         boolean durable = Boolean.parseBoolean(storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_CREATE_DURABLE));
 

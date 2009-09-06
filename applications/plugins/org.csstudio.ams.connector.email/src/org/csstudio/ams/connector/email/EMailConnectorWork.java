@@ -34,7 +34,7 @@ import javax.mail.PasswordAuthentication;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import org.csstudio.ams.Activator;
+import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.Log;
 import org.csstudio.platform.utility.jms.JmsRedundantReceiver;
@@ -248,7 +248,7 @@ public class EMailConnectorWork extends Thread implements AmsConstants
 
         try
         {
-            IPreferenceStore storeAct = Activator.getDefault().getPreferenceStore();
+            IPreferenceStore storeAct = AmsActivator.getDefault().getPreferenceStore();
             
             boolean durable = Boolean.parseBoolean(storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_CREATE_DURABLE));
 

@@ -27,7 +27,7 @@ import java.sql.SQLException;
 
 import oracle.jdbc.driver.OracleDriver;
 import org.apache.derby.jdbc.ClientDriver;
-import org.csstudio.ams.Activator;
+import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.Log;
 import org.csstudio.ams.Utils;
 import org.csstudio.ams.internal.SampleService;
@@ -40,7 +40,7 @@ public class AmsConnectionFactory
 		//DriverManager.setLogWriter(new java.io.PrintWriter(System.out));		
 		DriverManager.registerDriver(new OracleDriver());
 		
-		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
+		IPreferenceStore store = AmsActivator.getDefault().getPreferenceStore();
 
 		String dbCon = store.getString(SampleService.P_CONFIG_DATABASE_CONNECTION);
 		String user = store.getString(SampleService.P_CONFIG_DATABASE_USER); 
@@ -57,7 +57,7 @@ public class AmsConnectionFactory
 		//DriverManager.setLogWriter(new java.io.PrintWriter(System.out));
 		DriverManager.registerDriver(new ClientDriver());
 		
-		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
+		IPreferenceStore store = AmsActivator.getDefault().getPreferenceStore();
 
 		String user = store.getString(SampleService.P_APP_DATABASE_USER); 
 		if (Utils.isEmpty(user))

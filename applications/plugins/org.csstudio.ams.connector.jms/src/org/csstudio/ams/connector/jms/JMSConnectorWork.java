@@ -30,7 +30,7 @@ import java.util.Iterator;
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
-import org.csstudio.ams.Activator;
+import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.Log;
 import org.csstudio.platform.utility.jms.JmsRedundantProducer;
@@ -105,7 +105,7 @@ public class JMSConnectorWork extends Thread implements AmsConstants {
 		boolean result = false;
 
 		try {
-			IPreferenceStore storeAct = Activator.getDefault().getPreferenceStore();
+			IPreferenceStore storeAct = AmsActivator.getDefault().getPreferenceStore();
 
 			boolean durable = Boolean.parseBoolean(storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_CREATE_DURABLE));
 

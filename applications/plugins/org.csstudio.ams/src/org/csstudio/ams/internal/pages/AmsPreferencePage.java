@@ -38,7 +38,7 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.csstudio.ams.Activator;
+import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.Messages;
 import org.csstudio.ams.PasswordEditor;
 import org.csstudio.ams.internal.SampleService;
@@ -312,6 +312,6 @@ public class AmsPreferencePage extends FieldEditorPreferencePage implements
 	 */
 	@Override
 	protected final IPreferenceStore doGetPreferenceStore() {
-		return Activator.getDefault().getPreferenceStore();
+		return AmsActivator.getDefault().getPreferenceStore();
 	}
 }
