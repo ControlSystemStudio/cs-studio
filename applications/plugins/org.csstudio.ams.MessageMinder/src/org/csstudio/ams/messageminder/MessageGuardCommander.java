@@ -36,7 +36,7 @@ import javax.jms.Message;
 import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.Log;
 import org.csstudio.ams.internal.AmsPreferenceKey;
-import org.csstudio.ams.messageminder.preference.PreferenceConstants;
+import org.csstudio.ams.messageminder.preference.MessageMinderPreferenceKey;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.platform.utility.jms.JmsRedundantProducer;
@@ -116,9 +116,9 @@ public class MessageGuardCommander extends Job {
         IEclipsePreferences storeAct = new DefaultScope().getNode(MessageMinderActivator.PLUGIN_ID);
         
         connect();
-        _time2Clean = storeAct.getLong(PreferenceConstants.P_LONG_TIME2CLEAN,20); // sec
-        _toOldTime = storeAct.getLong(PreferenceConstants.P_LONG_TO_OLD_TIME,60);
-        _keyWords = storeAct.get(PreferenceConstants.P_STRING_KEY_WORDS,"HOST,FACILITY,AMS-FILTERID").split(",");
+        _time2Clean = storeAct.getLong(MessageMinderPreferenceKey.P_LONG_TIME2CLEAN,20); // sec
+        _toOldTime = storeAct.getLong(MessageMinderPreferenceKey.P_LONG_TO_OLD_TIME,60);
+        _keyWords = storeAct.get(MessageMinderPreferenceKey.P_STRING_KEY_WORDS,"HOST,FACILITY,AMS-FILTERID").split(",");
         _lastClean = TimestampFactory.now();
         _massageMap = new HashMap<MessageKey, MessageTimeList>();
         

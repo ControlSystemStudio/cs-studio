@@ -26,8 +26,11 @@
 
 package org.csstudio.ams.messageminder;
 
+import org.csstudio.ams.messageminder.preference.MessageMinderPreferenceKey;
 import org.csstudio.platform.logging.CentralLogger;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.remotercp.common.servicelauncher.ServiceLauncher;
@@ -43,7 +46,7 @@ import org.remotercp.login.connection.HeadlessConnection;
 public final class MessageMinderStart implements IApplication {
 
     private boolean _restart = false;
-    private boolean _run = true;
+    // private boolean _run = true;
     private MessageGuardCommander _commander;
     private static MessageMinderStart _instance;
     public final static boolean CREATE_DURABLE = true;
@@ -53,6 +56,8 @@ public final class MessageMinderStart implements IApplication {
      */
     public Object start(IApplicationContext context) throws Exception {
         _instance = this;
+        
+        MessageMinderPreferenceKey.showPreferences();
         
         connectToXMPPServer();
 
@@ -75,9 +80,10 @@ public final class MessageMinderStart implements IApplication {
 
     public void connectToXMPPServer()
     {
-        String xmppUser = "ams-message-minder";
-        String xmppPassword = "ams";
-        String xmppServer = "krynfs.desy.de";
+    	IPreferencesService pref = Platform.getPreferencesService();
+    	String xmppServer = pref.getString(MessageMinderActivator.PLUGIN_ID, MessageMinderPreferenceKey.P_STRING_XMPP_SERVER, "krynfs.desy.de", null);
+        String xmppUser = pref.getString(MessageMinderActivator.PLUGIN_ID, MessageMinderPreferenceKey.P_STRING_XMPP_USER_NAME, "anonymous", null);
+        String xmppPassword = pref.getString(MessageMinderActivator.PLUGIN_ID, MessageMinderPreferenceKey.P_STRING_XMPP_PASSWORD, "anonymous", null);
 
         try
         {

@@ -1,3 +1,4 @@
+
 /*
  * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,6 +20,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
+
 package org.csstudio.ams.messageminder.preference;
 
 import org.csstudio.ams.messageminder.MessageMinderActivator;
@@ -29,22 +31,25 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 /**
  * Class used to initialize default preference values.
  */
-public class PreferenceInitializer extends AbstractPreferenceInitializer {
-
+public class PreferenceInitializer extends AbstractPreferenceInitializer
+{
     /*
      * (non-Javadoc)
      *
      * @see org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#initializeDefaultPreferences()
      */
-    public void initializeDefaultPreferences() {
-        IEclipsePreferences prefs = new DefaultScope().getNode(MessageMinderActivator.PLUGIN_ID);
-        prefs.putInt(PreferenceConstants.P_INT_MAX_YOUNG_MASSAGES,4); //$NON-NLS-1$
-        prefs.putLong(PreferenceConstants.P_LONG_PERIOD,20); //$NON-NLS-1$
-        prefs.putLong(PreferenceConstants.P_LONG_TIME2CLEAN,60); //$NON-NLS-1$
-        prefs.putLong(PreferenceConstants.P_LONG_TO_OLD_TIME,26); //$NON-NLS-1$
-        prefs.put(PreferenceConstants.P_STRING_KEY_WORDS,"HOST,FACILITY,AMS-FILTERID"); //$NON-NLS-1$
-        prefs.put(PreferenceConstants.P_STRING_XMPP_USER_NAME, "ams-message-minder");
-        prefs.put(PreferenceConstants.P_STRING_XMPP_PASSWORD, "ams");
+    public void initializeDefaultPreferences()
+    {
+    	IEclipsePreferences prefs = new DefaultScope().getNode(MessageMinderActivator.PLUGIN_ID);
+
+    	prefs.putInt(MessageMinderPreferenceKey.P_INT_MAX_YOUNG_MASSAGES, 4); //$NON-NLS-1$
+        prefs.putLong(MessageMinderPreferenceKey.P_LONG_PERIOD, 20); //$NON-NLS-1$
+        prefs.putLong(MessageMinderPreferenceKey.P_LONG_TIME2CLEAN, 60); //$NON-NLS-1$
+        prefs.putLong(MessageMinderPreferenceKey.P_LONG_TO_OLD_TIME, 26); //$NON-NLS-1$
+        prefs.put(MessageMinderPreferenceKey.P_STRING_KEY_WORDS, "HOST,FACILITY,AMS-FILTERID"); //$NON-NLS-1$
+        prefs.put(MessageMinderPreferenceKey.P_STRING_XMPP_SERVER, "krynfs.desy.de");
+        prefs.put(MessageMinderPreferenceKey.P_STRING_XMPP_USER_NAME, "ams-message-minder");
+        prefs.put(MessageMinderPreferenceKey.P_STRING_XMPP_PASSWORD, "ams");
 
     }
 

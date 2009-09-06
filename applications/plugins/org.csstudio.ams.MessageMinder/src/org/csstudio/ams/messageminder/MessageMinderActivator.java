@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,16 +20,17 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.ams.messageminder;
 
-import org.csstudio.platform.AbstractCssPlugin;
+package org.csstudio.ams.messageminder;
+
+import org.csstudio.platform.ui.AbstractCssUiPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle.
  */
-public class MessageMinderActivator extends AbstractCssPlugin {
-
+public class MessageMinderActivator extends AbstractCssUiPlugin
+{
 	/**
 	 *  The plug-in ID.
 	 */
@@ -42,29 +44,24 @@ public class MessageMinderActivator extends AbstractCssPlugin {
 	/**
 	 * The constructor.
 	 */
-	public MessageMinderActivator() {
-	    System.out.println("Message Minder Activator.Activator()");
+	public MessageMinderActivator()
+	{
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void doStart(BundleContext context) throws Exception {
-		_plugin = this;
-        
-		/*
-		for (IStartupServiceListener s : StartupServiceEnumerator.getServices()) {
-             s.run();
-        }
-        CentralLogger.getInstance().info(this, "MessageMinder started...");
-        */
+	public void doStart(BundleContext context) throws Exception
+	{
+		_plugin = this;        
 	}
 
     /**
      * {@inheritDoc}
      */
-	public void doStop(BundleContext context) throws Exception {
+	public void doStop(BundleContext context) throws Exception
+	{
 		_plugin = null;
 	}
 
@@ -73,7 +70,8 @@ public class MessageMinderActivator extends AbstractCssPlugin {
 	 *
 	 * @return the shared instance
 	 */
-	public static MessageMinderActivator getDefault() {
+	public static MessageMinderActivator getDefault()
+	{
 		return _plugin;
 	}
 
@@ -81,9 +79,8 @@ public class MessageMinderActivator extends AbstractCssPlugin {
      * {@inheritDoc}
      */
     @Override
-    public String getPluginId() {
-        // TODO Auto-generated method stub
+    public String getPluginId()
+    {
         return PLUGIN_ID;
     }
-
 }
