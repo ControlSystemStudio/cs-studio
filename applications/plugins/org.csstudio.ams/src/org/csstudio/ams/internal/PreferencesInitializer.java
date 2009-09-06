@@ -29,7 +29,7 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
 import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.AmsConstants;
-import org.csstudio.ams.internal.SampleService;
+import org.csstudio.ams.internal.AmsPreferenceKey;
 
 /**
  * Preference initializer implemenation. This class initializes the preferences
@@ -49,7 +49,7 @@ public final class PreferencesInitializer extends AbstractPreferenceInitializer 
         IEclipsePreferences node = new DefaultScope().getNode(AmsActivator.PLUGIN_ID);
 
         // database settings
-        node.put(SampleService.P_CONFIG_DATABASE_CONNECTION, "jdbc:oracle:thin:@(DESCRIPTION =" +
+        node.put(AmsPreferenceKey.P_CONFIG_DATABASE_CONNECTION, "jdbc:oracle:thin:@(DESCRIPTION =" +
         "(ADDRESS = (PROTOCOL = TCP)(HOST = dbsrv01.desy.de)(PORT = 1521))" +
         "(ADDRESS = (PROTOCOL = TCP)(HOST = dbsrv02.desy.de)(PORT = 1521))" +
         "(ADDRESS = (PROTOCOL = TCP)(HOST = dbsrv03.desy.de)(PORT = 1521))" +
@@ -65,14 +65,14 @@ public final class PreferencesInitializer extends AbstractPreferenceInitializer 
           ")" +
         ")" +
         ")");
-        node.put(SampleService.P_CONFIG_DATABASE_USER, "krykams");
-        node.put(SampleService.P_CONFIG_DATABASE_PASSWORD, "krykams");
-        node.put(SampleService.P_APP_DATABASE_CONNECTION, "jdbc:derby://krykderby.desy.de/amsdb;create=true");
-        node.put(SampleService.P_APP_DATABASE_USER, "");
-        node.put(SampleService.P_APP_DATABASE_PASSWORD, "");
+        node.put(AmsPreferenceKey.P_CONFIG_DATABASE_USER, "krykams");
+        node.put(AmsPreferenceKey.P_CONFIG_DATABASE_PASSWORD, "krykams");
+        node.put(AmsPreferenceKey.P_APP_DATABASE_CONNECTION, "jdbc:derby://krykderby.desy.de/amsdb;create=true");
+        node.put(AmsPreferenceKey.P_APP_DATABASE_USER, "");
+        node.put(AmsPreferenceKey.P_APP_DATABASE_PASSWORD, "");
 
         // filter key field of message
-        node.put(SampleService.P_FILTER_KEYFIELDS,
+        node.put(AmsPreferenceKey.P_FILTER_KEYFIELDS,
                 "TYPE" + ";" + 
                 "EVENTTIME" + ";" +
                 "TEXT" + ";" +
@@ -108,62 +108,62 @@ public final class PreferencesInitializer extends AbstractPreferenceInitializer 
         
         /* ActiveMQ */
         // jms communication - external
-        node.put(SampleService.P_JMS_EXTERN_CONNECTION_FACTORY_CLASS, "org.apache.activemq.jndi.ActiveMQInitialContextFactory");
-        node.put(SampleService.P_JMS_EXTERN_PROVIDER_URL_1, "failover:(tcp://krykjmsb.desy.de:64616)?maxReconnectDelay=5000");
+        node.put(AmsPreferenceKey.P_JMS_EXTERN_CONNECTION_FACTORY_CLASS, "org.apache.activemq.jndi.ActiveMQInitialContextFactory");
+        node.put(AmsPreferenceKey.P_JMS_EXTERN_PROVIDER_URL_1, "failover:(tcp://krykjmsb.desy.de:64616)?maxReconnectDelay=5000");
         // ADDED BY: Markus Moeller, 02.08.2007
-        node.put(SampleService.P_JMS_EXTERN_PROVIDER_URL_2, "failover:(tcp://krykjmsa.desy.de:62616)?maxReconnectDelay=5000");
+        node.put(AmsPreferenceKey.P_JMS_EXTERN_PROVIDER_URL_2, "failover:(tcp://krykjmsa.desy.de:62616)?maxReconnectDelay=5000");
         // ADDED BY: Markus Moeller, 13.08.2007
-        node.put(SampleService.P_JMS_EXTERN_SENDER_PROVIDER_URL, "failover:(tcp://krykjmsb.desy.de:64616,tcp://krykjmsa.desy.de:62616)?maxReconnectDelay=5000");
-        node.put(SampleService.P_JMS_EXTERN_CONNECTION_FACTORY, "ConnectionFactory");
-        node.put(SampleService.P_JMS_EXTERN_CREATE_DURABLE, "false");
+        node.put(AmsPreferenceKey.P_JMS_EXTERN_SENDER_PROVIDER_URL, "failover:(tcp://krykjmsb.desy.de:64616,tcp://krykjmsa.desy.de:62616)?maxReconnectDelay=5000");
+        node.put(AmsPreferenceKey.P_JMS_EXTERN_CONNECTION_FACTORY, "ConnectionFactory");
+        node.put(AmsPreferenceKey.P_JMS_EXTERN_CREATE_DURABLE, "false");
         
         // jms communication - ams internal
-        node.put(SampleService.P_JMS_AMS_CONNECTION_FACTORY_CLASS, "org.apache.activemq.jndi.ActiveMQInitialContextFactory");
-        node.put(SampleService.P_JMS_AMS_PROVIDER_URL_1, "failover:(tcp://krykjmsb.desy.de:64616)?maxReconnectDelay=5000");
+        node.put(AmsPreferenceKey.P_JMS_AMS_CONNECTION_FACTORY_CLASS, "org.apache.activemq.jndi.ActiveMQInitialContextFactory");
+        node.put(AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_1, "failover:(tcp://krykjmsb.desy.de:64616)?maxReconnectDelay=5000");
         // ADDED BY: Markus Moeller, 02.08.2007
-        node.put(SampleService.P_JMS_AMS_PROVIDER_URL_2, "failover:(tcp://krykjmsa.desy.de:62616)?maxReconnectDelay=5000");
+        node.put(AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_2, "failover:(tcp://krykjmsa.desy.de:62616)?maxReconnectDelay=5000");
         // ADDED BY: Markus Moeller, 13.08.2007
-        node.put(SampleService.P_JMS_AMS_SENDER_PROVIDER_URL, "failover:(tcp://krykjmsb.desy.de:64616,tcp://krykjmsa.desy.de:62616)?maxReconnectDelay=5000");
-        node.put(SampleService.P_JMS_AMS_CONNECTION_FACTORY, "ConnectionFactory");
-        node.put(SampleService.P_JMS_AMS_CREATE_DURABLE, "false");
+        node.put(AmsPreferenceKey.P_JMS_AMS_SENDER_PROVIDER_URL, "failover:(tcp://krykjmsb.desy.de:64616,tcp://krykjmsa.desy.de:62616)?maxReconnectDelay=5000");
+        node.put(AmsPreferenceKey.P_JMS_AMS_CONNECTION_FACTORY, "ConnectionFactory");
+        node.put(AmsPreferenceKey.P_JMS_AMS_CREATE_DURABLE, "false");
         
         // jms communication - free topics
-        node.put(SampleService.P_JMS_FREE_TOPIC_CONNECTION_FACTORY_CLASS, "org.apache.activemq.jndi.ActiveMQInitialContextFactory");
-        node.put(SampleService.P_JMS_FREE_TOPIC_CONNECTION_FACTORY, "ConnectionFactory");
+        node.put(AmsPreferenceKey.P_JMS_FREE_TOPIC_CONNECTION_FACTORY_CLASS, "org.apache.activemq.jndi.ActiveMQInitialContextFactory");
+        node.put(AmsPreferenceKey.P_JMS_FREE_TOPIC_CONNECTION_FACTORY, "ConnectionFactory");
 
         // external topics
-        node.put(SampleService.P_JMS_EXT_TOPIC_ALARM, "ALARM");
-        node.put(SampleService.P_JMS_EXT_TSUB_ALARM_FMR, "SUB_AMS_FILTERMANAGER");
-        node.put(SampleService.P_JMS_EXT_TOPIC_COMMAND, "COMMAND");
-        node.put(SampleService.P_JMS_EXT_TSUB_CMD_FMR_START_RELOAD, "SUB_AMS_CMD_FMR_START_RELOAD");
-        node.put(SampleService.P_JMS_EXT_TOPIC_STATUSCHANGE, "T_AMS_STATUS_CHANGE");
+        node.put(AmsPreferenceKey.P_JMS_EXT_TOPIC_ALARM, "ALARM");
+        node.put(AmsPreferenceKey.P_JMS_EXT_TSUB_ALARM_FMR, "SUB_AMS_FILTERMANAGER");
+        node.put(AmsPreferenceKey.P_JMS_EXT_TOPIC_COMMAND, "COMMAND");
+        node.put(AmsPreferenceKey.P_JMS_EXT_TSUB_CMD_FMR_START_RELOAD, "SUB_AMS_CMD_FMR_START_RELOAD");
+        node.put(AmsPreferenceKey.P_JMS_EXT_TOPIC_STATUSCHANGE, "T_AMS_STATUS_CHANGE");
         
         // ams internal topics
-        node.put(SampleService.P_JMS_AMS_TOPIC_DISTRIBUTOR, "T_AMS_DISTRIBUTE");
-        node.put(SampleService.P_JMS_AMS_TSUB_DISTRIBUTOR, "SUB_AMS_DISTRIBUTOR");
-        node.put(SampleService.P_JMS_AMS_TOPIC_REPLY, "T_AMS_CON_REPLY");
-        node.put(SampleService.P_JMS_AMS_TSUB_REPLY, "SUB_AMS_DISTRIBUTOR_REPLY");
-        node.put(SampleService.P_JMS_AMS_TOPIC_MESSAGEMINDER, "T_AMS_MESSAGEMINDER");
-        node.put(SampleService.P_JMS_AMS_TSUB_MESSAGEMINDER, "SUB_AMS_MESSAGEMINDER");
+        node.put(AmsPreferenceKey.P_JMS_AMS_TOPIC_DISTRIBUTOR, "T_AMS_DISTRIBUTE");
+        node.put(AmsPreferenceKey.P_JMS_AMS_TSUB_DISTRIBUTOR, "SUB_AMS_DISTRIBUTOR");
+        node.put(AmsPreferenceKey.P_JMS_AMS_TOPIC_REPLY, "T_AMS_CON_REPLY");
+        node.put(AmsPreferenceKey.P_JMS_AMS_TSUB_REPLY, "SUB_AMS_DISTRIBUTOR_REPLY");
+        node.put(AmsPreferenceKey.P_JMS_AMS_TOPIC_MESSAGEMINDER, "T_AMS_MESSAGEMINDER");
+        node.put(AmsPreferenceKey.P_JMS_AMS_TSUB_MESSAGEMINDER, "SUB_AMS_MESSAGEMINDER");
 
-        node.put(SampleService.P_JMS_AMS_TOPIC_SMS_CONNECTOR, "T_AMS_CON_SMS");
-        node.put(SampleService.P_JMS_AMS_TOPIC_SMS_CONNECTOR_FORWARD, "false");
-        node.put(SampleService.P_JMS_AMS_TOPIC_SMS_CONNECTOR_MODEMTEST, "T_AMS_CON_SMS_MODEMTEST");
-        node.put(SampleService.P_JMS_AMS_TSUB_SMS_CONNECTOR, "SUB_AMS_CON_SMS");
-        node.put(SampleService.P_JMS_AMS_TSUB_SMS_CONNECTOR_MODEMTEST, "SUB_AMS_CON_SMS_MODEMTEST");
-        node.put(SampleService.P_JMS_AMS_TOPIC_EMAIL_CONNECTOR, "T_AMS_CON_MAIL");
-        node.put(SampleService.P_JMS_AMS_TOPIC_EMAIL_CONNECTOR_FORWARD, "false");
-        node.put(SampleService.P_JMS_AMS_TSUB_EMAIL_CONNECTOR, "SUB_AMS_CON_MAIL");
-        node.put(SampleService.P_JMS_AMS_TOPIC_VOICEMAIL_CONNECTOR, "T_AMS_CON_VOICEMAIL");
-        node.put(SampleService.P_JMS_AMS_TOPIC_VOICEMAIL_CONNECTOR_FORWARD, "false");
-        node.put(SampleService.P_JMS_AMS_TSUB_VOICEMAIL_CONNECTOR, "SUB_AMS_CON_VOICEMAIL");
-        node.put(SampleService.P_JMS_AMS_TOPIC_JMS_CONNECTOR, "T_AMS_CON_JMS");
-        node.put(SampleService.P_JMS_AMS_TOPIC_JMS_CONNECTOR_FORWARD, "true");
-        node.put(SampleService.P_JMS_AMS_TSUB_JMS_CONNECTOR, "SUB_AMS_CON_JMS");
+        node.put(AmsPreferenceKey.P_JMS_AMS_TOPIC_SMS_CONNECTOR, "T_AMS_CON_SMS");
+        node.put(AmsPreferenceKey.P_JMS_AMS_TOPIC_SMS_CONNECTOR_FORWARD, "false");
+        node.put(AmsPreferenceKey.P_JMS_AMS_TOPIC_SMS_CONNECTOR_MODEMTEST, "T_AMS_CON_SMS_MODEMTEST");
+        node.put(AmsPreferenceKey.P_JMS_AMS_TSUB_SMS_CONNECTOR, "SUB_AMS_CON_SMS");
+        node.put(AmsPreferenceKey.P_JMS_AMS_TSUB_SMS_CONNECTOR_MODEMTEST, "SUB_AMS_CON_SMS_MODEMTEST");
+        node.put(AmsPreferenceKey.P_JMS_AMS_TOPIC_EMAIL_CONNECTOR, "T_AMS_CON_MAIL");
+        node.put(AmsPreferenceKey.P_JMS_AMS_TOPIC_EMAIL_CONNECTOR_FORWARD, "false");
+        node.put(AmsPreferenceKey.P_JMS_AMS_TSUB_EMAIL_CONNECTOR, "SUB_AMS_CON_MAIL");
+        node.put(AmsPreferenceKey.P_JMS_AMS_TOPIC_VOICEMAIL_CONNECTOR, "T_AMS_CON_VOICEMAIL");
+        node.put(AmsPreferenceKey.P_JMS_AMS_TOPIC_VOICEMAIL_CONNECTOR_FORWARD, "false");
+        node.put(AmsPreferenceKey.P_JMS_AMS_TSUB_VOICEMAIL_CONNECTOR, "SUB_AMS_CON_VOICEMAIL");
+        node.put(AmsPreferenceKey.P_JMS_AMS_TOPIC_JMS_CONNECTOR, "T_AMS_CON_JMS");
+        node.put(AmsPreferenceKey.P_JMS_AMS_TOPIC_JMS_CONNECTOR_FORWARD, "true");
+        node.put(AmsPreferenceKey.P_JMS_AMS_TSUB_JMS_CONNECTOR, "SUB_AMS_CON_JMS");
 
-        node.put(SampleService.P_JMS_AMS_TOPIC_COMMAND, "COMMAND");
-        node.put(SampleService.P_JMS_AMS_TSUB_CMD_FMR_RELOAD_END, "SUB_AMS_CMD_FMR_RELOAD_END");
+        node.put(AmsPreferenceKey.P_JMS_AMS_TOPIC_COMMAND, "COMMAND");
+        node.put(AmsPreferenceKey.P_JMS_AMS_TSUB_CMD_FMR_RELOAD_END, "SUB_AMS_CMD_FMR_RELOAD_END");
         
-        node.put(SampleService.P_JMS_AMS_TOPIC_MONITOR, "T_AMS_SYSTEM_MONITOR");
+        node.put(AmsPreferenceKey.P_JMS_AMS_TOPIC_MONITOR, "T_AMS_SYSTEM_MONITOR");
     }
 }

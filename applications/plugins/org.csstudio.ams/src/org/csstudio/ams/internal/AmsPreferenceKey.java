@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,6 +20,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
+
 package org.csstudio.ams.internal;
 
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -37,105 +39,80 @@ import org.csstudio.ams.Log;
  * @author Alexander Will
  * 
  */
-public class SampleService
+public class AmsPreferenceKey
 {
 	// database settings
-	public static final String P_CONFIG_DATABASE_CONNECTION = "org.csstudio.ams.preferences.configDatabaseConnection";
-	public static final String P_CONFIG_DATABASE_USER = "org.csstudio.ams.preferences.configDatabaseUser";
-	public static final String P_CONFIG_DATABASE_PASSWORD = "org.csstudio.ams.preferences.configDatabasePassword";
-	public static final String P_APP_DATABASE_CONNECTION = "org.csstudio.ams.preferences.appDatabaseConnection";
-	public static final String P_APP_DATABASE_USER = "org.csstudio.ams.preferences.appDatabaseUser";
-	public static final String P_APP_DATABASE_PASSWORD = "org.csstudio.ams.preferences.appDatabasePassword";
+	public static final String P_CONFIG_DATABASE_CONNECTION = "configDatabaseConnection";
+	public static final String P_CONFIG_DATABASE_USER = "configDatabaseUser";
+	public static final String P_CONFIG_DATABASE_PASSWORD = "configDatabasePassword";
+	public static final String P_APP_DATABASE_CONNECTION = "appDatabaseConnection";
+	public static final String P_APP_DATABASE_USER = "appDatabaseUser";
+	public static final String P_APP_DATABASE_PASSWORD = "appDatabasePassword";
 
 	// filter key field of message
-	public static final String P_FILTER_KEYFIELDS = "org.csstudio.ams.preferences.filterKeyFields";
+	public static final String P_FILTER_KEYFIELDS = "filterKeyFields";
 
 	// jms communication - external
-	public static final String P_JMS_EXTERN_CONNECTION_FACTORY_CLASS = "org.csstudio.ams.preferences.jmsExternConnectionFactoryClass";
-	public static final String P_JMS_EXTERN_PROVIDER_URL_1 = "org.csstudio.ams.preferences.jmsExternProviderUrl1";
-    public static final String P_JMS_EXTERN_PROVIDER_URL_2 = "org.csstudio.ams.preferences.jmsExternProviderUrl2";
-    public static final String P_JMS_EXTERN_SENDER_PROVIDER_URL = "org.csstudio.ams.preferences.jmsExternSenderProviderUrl";
-	public static final String P_JMS_EXTERN_CONNECTION_FACTORY = "org.csstudio.ams.preferences.jmsExternConnectionFactory";
-	public static final String P_JMS_EXTERN_CREATE_DURABLE = "org.csstudio.ams.preferences.jmsExternCreateDurable";
+	public static final String P_JMS_EXTERN_CONNECTION_FACTORY_CLASS = "jmsExternConnectionFactoryClass";
+	public static final String P_JMS_EXTERN_PROVIDER_URL_1 = "jmsExternProviderUrl1";
+    public static final String P_JMS_EXTERN_PROVIDER_URL_2 = "jmsExternProviderUrl2";
+    public static final String P_JMS_EXTERN_SENDER_PROVIDER_URL = "jmsExternSenderProviderUrl";
+	public static final String P_JMS_EXTERN_CONNECTION_FACTORY = "jmsExternConnectionFactory";
+	public static final String P_JMS_EXTERN_CREATE_DURABLE = "jmsExternCreateDurable";
 	
 	// jms communication - ams internal
-	public static final String P_JMS_AMS_CONNECTION_FACTORY_CLASS = "org.csstudio.ams.preferences.jmsAmsConnectionFactoryClass";
-	public static final String P_JMS_AMS_PROVIDER_URL_1 = "org.csstudio.ams.preferences.jmsAmsProviderUrl1";
-    public static final String P_JMS_AMS_PROVIDER_URL_2 = "org.csstudio.ams.preferences.jmsAmsProviderUrl2";
-    public static final String P_JMS_AMS_SENDER_PROVIDER_URL = "org.csstudio.ams.preferences.jmsAmsSenderProviderUrl";
-	public static final String P_JMS_AMS_CONNECTION_FACTORY = "org.csstudio.ams.preferences.jmsAmsConnectionFactory";
-    public static final String P_JMS_AMS_CREATE_DURABLE = "org.csstudio.ams.preferences.jmsAmsCreateDurable";
+	public static final String P_JMS_AMS_CONNECTION_FACTORY_CLASS = "jmsAmsConnectionFactoryClass";
+	public static final String P_JMS_AMS_PROVIDER_URL_1 = "jmsAmsProviderUrl1";
+    public static final String P_JMS_AMS_PROVIDER_URL_2 = "jmsAmsProviderUrl2";
+    public static final String P_JMS_AMS_SENDER_PROVIDER_URL = "jmsAmsSenderProviderUrl";
+	public static final String P_JMS_AMS_CONNECTION_FACTORY = "jmsAmsConnectionFactory";
+    public static final String P_JMS_AMS_CREATE_DURABLE = "jmsAmsCreateDurable";
 	
 	// jms communication - free topics
-	public static final String P_JMS_FREE_TOPIC_CONNECTION_FACTORY_CLASS = "org.csstudio.ams.preferences.jmsFreeTopicConnectionFactoryClass";
-	public static final String P_JMS_FREE_TOPIC_CONNECTION_FACTORY = "org.csstudio.ams.preferences.jmsFreeTopicConnectionFactory";
+	public static final String P_JMS_FREE_TOPIC_CONNECTION_FACTORY_CLASS = "jmsFreeTopicConnectionFactoryClass";
+	public static final String P_JMS_FREE_TOPIC_CONNECTION_FACTORY = "jmsFreeTopicConnectionFactory";
 
 	// external topics
-	public static final String P_JMS_EXT_TOPIC_ALARM = "org.csstudio.ams.preferences.jmsExternTopicAlarm";
-	public static final String P_JMS_EXT_TSUB_ALARM_FMR = "org.csstudio.ams.preferences.jmsExternTSubAlarmFmr";
-	public static final String P_JMS_EXT_TOPIC_COMMAND = "org.csstudio.ams.preferences.jmsExternTopicCommand";
-	public static final String P_JMS_EXT_TSUB_CMD_FMR_START_RELOAD = "org.csstudio.ams.preferences.jmsExternTSubCmdFmrStartReload";
-	public static final String P_JMS_EXT_TOPIC_STATUSCHANGE = "org.csstudio.ams.preferences.jmsExternTopicStatusChange";
+	public static final String P_JMS_EXT_TOPIC_ALARM = "jmsExternTopicAlarm";
+	public static final String P_JMS_EXT_TSUB_ALARM_FMR = "jmsExternTSubAlarmFmr";
+	public static final String P_JMS_EXT_TOPIC_COMMAND = "jmsExternTopicCommand";
+	public static final String P_JMS_EXT_TSUB_CMD_FMR_START_RELOAD = "jmsExternTSubCmdFmrStartReload";
+	public static final String P_JMS_EXT_TOPIC_STATUSCHANGE = "jmsExternTopicStatusChange";
 
 	// ams internal topics
-	public static final String P_JMS_AMS_TOPIC_DISTRIBUTOR = "org.csstudio.ams.preferences.jmsAmsTopicDistributor";
-	public static final String P_JMS_AMS_TSUB_DISTRIBUTOR = "org.csstudio.ams.preferences.jmsAmsTSubDistributor";
-    public static final String P_JMS_AMS_TOPIC_MESSAGEMINDER = "org.csstudio.ams.preferences.jmsAmsTopicMessageMinder";
-    public static final String P_JMS_AMS_TSUB_MESSAGEMINDER = "org.csstudio.ams.preferences.jmsAmsTSubMessageMinder";
-	public static final String P_JMS_AMS_TOPIC_REPLY = "org.csstudio.ams.preferences.jmsAmsTopicReply";
-	public static final String P_JMS_AMS_TSUB_REPLY = "org.csstudio.ams.preferences.jmsAmsTSubReply";
+	public static final String P_JMS_AMS_TOPIC_DISTRIBUTOR = "jmsAmsTopicDistributor";
+	public static final String P_JMS_AMS_TSUB_DISTRIBUTOR = "jmsAmsTSubDistributor";
+    public static final String P_JMS_AMS_TOPIC_MESSAGEMINDER = "jmsAmsTopicMessageMinder";
+    public static final String P_JMS_AMS_TSUB_MESSAGEMINDER = "jmsAmsTSubMessageMinder";
+	public static final String P_JMS_AMS_TOPIC_REPLY = "jmsAmsTopicReply";
+	public static final String P_JMS_AMS_TSUB_REPLY = "jmsAmsTSubReply";
 
-	public static final String P_JMS_AMS_TOPIC_SMS_CONNECTOR = "org.csstudio.ams.preferences.jmsAmsTopicSmsConnector";
-    public static final String P_JMS_AMS_TOPIC_SMS_CONNECTOR_MODEMTEST = "org.csstudio.ams.preferences.jmsAmsTopicSmsConnectorModemtest";
-    public static final String P_JMS_AMS_TOPIC_SMS_CONNECTOR_FORWARD = "org.csstudio.ams.preferences.jmsAmsTopicSmsConnectorForward";
-	public static final String P_JMS_AMS_TSUB_SMS_CONNECTOR = "org.csstudio.ams.preferences.jmsAmsTSubSmsConnector";
-	public static final String P_JMS_AMS_TSUB_SMS_CONNECTOR_MODEMTEST = "org.csstudio.ams.preferences.jmsAmsTSubSmsConnectorModemtest";
-    public static final String P_JMS_AMS_TOPIC_EMAIL_CONNECTOR = "org.csstudio.ams.preferences.jmsAmsTopicEMailConnector";
-    public static final String P_JMS_AMS_TOPIC_EMAIL_CONNECTOR_FORWARD = "org.csstudio.ams.preferences.jmsAmsTopicEMailConnectorForward";
-	public static final String P_JMS_AMS_TSUB_EMAIL_CONNECTOR = "org.csstudio.ams.preferences.jmsAmsTSubEMailConnector";
-	public static final String P_JMS_AMS_TOPIC_VOICEMAIL_CONNECTOR = "org.csstudio.ams.preferences.jmsAmsTopicVoiceMailConnector";
-    public static final String P_JMS_AMS_TOPIC_VOICEMAIL_CONNECTOR_FORWARD = "org.csstudio.ams.preferences.jmsAmsTopicVoiceMailConnectorForward";
-	public static final String P_JMS_AMS_TSUB_VOICEMAIL_CONNECTOR = "org.csstudio.ams.preferences.jmsAmsTSubVoiceMailConnector";
-	public static final String P_JMS_AMS_TOPIC_JMS_CONNECTOR = "org.csstudio.ams.preferences.jmsAmsTopicJMSConnector";
-    public static final String P_JMS_AMS_TOPIC_JMS_CONNECTOR_FORWARD = "org.csstudio.ams.preferences.jmsAmsTopicJMSConnectorForward";
-	public static final String P_JMS_AMS_TSUB_JMS_CONNECTOR = "org.csstudio.ams.preferences.jmsAmsTSubJMSConnector";
+	public static final String P_JMS_AMS_TOPIC_SMS_CONNECTOR = "jmsAmsTopicSmsConnector";
+    public static final String P_JMS_AMS_TOPIC_SMS_CONNECTOR_MODEMTEST = "jmsAmsTopicSmsConnectorModemtest";
+    public static final String P_JMS_AMS_TOPIC_SMS_CONNECTOR_FORWARD = "jmsAmsTopicSmsConnectorForward";
+	public static final String P_JMS_AMS_TSUB_SMS_CONNECTOR = "jmsAmsTSubSmsConnector";
+	public static final String P_JMS_AMS_TSUB_SMS_CONNECTOR_MODEMTEST = "jmsAmsTSubSmsConnectorModemtest";
+    public static final String P_JMS_AMS_TOPIC_EMAIL_CONNECTOR = "jmsAmsTopicEMailConnector";
+    public static final String P_JMS_AMS_TOPIC_EMAIL_CONNECTOR_FORWARD = "jmsAmsTopicEMailConnectorForward";
+	public static final String P_JMS_AMS_TSUB_EMAIL_CONNECTOR = "jmsAmsTSubEMailConnector";
+	public static final String P_JMS_AMS_TOPIC_VOICEMAIL_CONNECTOR = "jmsAmsTopicVoiceMailConnector";
+    public static final String P_JMS_AMS_TOPIC_VOICEMAIL_CONNECTOR_FORWARD = "jmsAmsTopicVoiceMailConnectorForward";
+	public static final String P_JMS_AMS_TSUB_VOICEMAIL_CONNECTOR = "jmsAmsTSubVoiceMailConnector";
+	public static final String P_JMS_AMS_TOPIC_JMS_CONNECTOR = "jmsAmsTopicJMSConnector";
+    public static final String P_JMS_AMS_TOPIC_JMS_CONNECTOR_FORWARD = "jmsAmsTopicJMSConnectorForward";
+	public static final String P_JMS_AMS_TSUB_JMS_CONNECTOR = "jmsAmsTSubJMSConnector";
 
-	public static final String P_JMS_AMS_TOPIC_COMMAND = "org.csstudio.ams.preferences.jmsAmsTopicCommand";
-	public static final String P_JMS_AMS_TSUB_CMD_FMR_RELOAD_END = "org.csstudio.ams.preferences.jmsAmsTSubCmdFmrReloadEnd";	
+	public static final String P_JMS_AMS_TOPIC_COMMAND = "jmsAmsTopicCommand";
+	public static final String P_JMS_AMS_TSUB_CMD_FMR_RELOAD_END = "jmsAmsTSubCmdFmrReloadEnd";	
 
-	public static final String P_JMS_AMS_TOPIC_MONITOR = "org.csstudio.ams.preferences.jmsAmsTopicMonitor";
-
-	/**
-	 * The only one instance of this service.
-	 */
-	private static SampleService _instance;
-
-	/**
-	 * Private constructor due to the singleton pattern.
-	 */
-	private SampleService() {
-		// do nothing particular.
-	}
-
-	/**
-	 * Return the only one instance of this service.
-	 * 
-	 * @return The only one instance of this service.
-	 */
-	public static SampleService getInstance() {
-		if (_instance == null) {
-			_instance = new SampleService();
-		}
-
-		return _instance;
-	}
+	public static final String P_JMS_AMS_TOPIC_MONITOR = "jmsAmsTopicMonitor";
 
 	/**
 	 * Read out the preference from the plugin's preference store and display
 	 * them on the console.
 	 * 
 	 */
-	public final void showPreferences() 
+	public static final void showPreferences() 
 	{
 		IPreferenceStore store = AmsActivator.getDefault().getPreferenceStore();
 		

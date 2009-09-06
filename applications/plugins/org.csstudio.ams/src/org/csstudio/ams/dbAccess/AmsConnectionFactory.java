@@ -30,7 +30,7 @@ import org.apache.derby.jdbc.ClientDriver;
 import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.Log;
 import org.csstudio.ams.Utils;
-import org.csstudio.ams.internal.SampleService;
+import org.csstudio.ams.internal.AmsPreferenceKey;
 import org.eclipse.jface.preference.IPreferenceStore;
 
 public class AmsConnectionFactory 
@@ -42,9 +42,9 @@ public class AmsConnectionFactory
 		
 		IPreferenceStore store = AmsActivator.getDefault().getPreferenceStore();
 
-		String dbCon = store.getString(SampleService.P_CONFIG_DATABASE_CONNECTION);
-		String user = store.getString(SampleService.P_CONFIG_DATABASE_USER); 
-		String pwd = store.getString(SampleService.P_CONFIG_DATABASE_PASSWORD);
+		String dbCon = store.getString(AmsPreferenceKey.P_CONFIG_DATABASE_CONNECTION);
+		String user = store.getString(AmsPreferenceKey.P_CONFIG_DATABASE_USER); 
+		String pwd = store.getString(AmsPreferenceKey.P_CONFIG_DATABASE_PASSWORD);
 
 		Log.log(Log.INFO, "try getConfigurationDB to " + dbCon);
 		Log.log(Log.INFO, "try getConfigurationDB user " + user);
@@ -59,15 +59,15 @@ public class AmsConnectionFactory
 		
 		IPreferenceStore store = AmsActivator.getDefault().getPreferenceStore();
 
-		String user = store.getString(SampleService.P_APP_DATABASE_USER); 
+		String user = store.getString(AmsPreferenceKey.P_APP_DATABASE_USER); 
 		if (Utils.isEmpty(user))
 			user = null;
 		
-		String pwd = store.getString(SampleService.P_APP_DATABASE_PASSWORD); 
+		String pwd = store.getString(AmsPreferenceKey.P_APP_DATABASE_PASSWORD); 
 		if (Utils.isEmpty(pwd))
 			pwd = null;
 		
-		return DriverManager.getConnection(store.getString(SampleService.P_APP_DATABASE_CONNECTION), 
+		return DriverManager.getConnection(store.getString(AmsPreferenceKey.P_APP_DATABASE_CONNECTION), 
 				user, 
 				pwd);
 	}

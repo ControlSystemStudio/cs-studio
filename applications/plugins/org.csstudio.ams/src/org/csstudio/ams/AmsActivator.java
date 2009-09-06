@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,18 +20,17 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
+
 package org.csstudio.ams;
 
 import org.csstudio.platform.ui.AbstractCssUiPlugin;
 import org.osgi.framework.BundleContext;
 
-import org.csstudio.ams.internal.SampleService;
-
 /**
  * The activator class controls the plug-in life cycle
  */
-public class AmsActivator extends AbstractCssUiPlugin {
-
+public class AmsActivator extends AbstractCssUiPlugin
+{
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.csstudio.ams"; //$NON-NLS-1$
 
@@ -40,22 +40,24 @@ public class AmsActivator extends AbstractCssUiPlugin {
 	/**
 	 * The constructor
 	 */
-	public AmsActivator() {
+	public AmsActivator()
+	{
 		_plugin = this;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public final void doStart(final BundleContext context) throws Exception {
-		SampleService.getInstance().showPreferences();
+	public final void doStart(final BundleContext context) throws Exception
+	{
+		// SampleService.showPreferences();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public final void doStop(final BundleContext context) throws Exception {
-		// do nothing particular
+	public final void doStop(final BundleContext context) throws Exception
+	{
 	}
 
 	/**
@@ -63,7 +65,8 @@ public class AmsActivator extends AbstractCssUiPlugin {
 	 * 
 	 * @return the shared instance
 	 */
-	public static AmsActivator getDefault() {
+	public static AmsActivator getDefault()
+	{
 		return _plugin;
 	}
 
@@ -71,8 +74,8 @@ public class AmsActivator extends AbstractCssUiPlugin {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String getPluginId() {
+	public String getPluginId()
+	{
 		return PLUGIN_ID;
 	}
-
 }

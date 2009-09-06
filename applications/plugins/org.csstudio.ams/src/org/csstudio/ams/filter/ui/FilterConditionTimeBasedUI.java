@@ -38,7 +38,7 @@ import org.csstudio.ams.dbAccess.ItemInterface;
 import org.csstudio.ams.dbAccess.configdb.FilterConditionTimeBasedDAO;
 import org.csstudio.ams.dbAccess.configdb.FilterConditionTimeBasedTObject;
 import org.csstudio.ams.filter.FilterConditionString;
-import org.csstudio.ams.internal.SampleService;
+import org.csstudio.ams.internal.AmsPreferenceKey;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDropTarget;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -362,7 +362,7 @@ public class FilterConditionTimeBasedUI extends FilterConditionUI implements Sel
 	public void initControls()
 	{
 		IPreferenceStore store = AmsActivator.getDefault().getPreferenceStore();
-		String[] columnNames = store.getString(SampleService.P_FILTER_KEYFIELDS).split(";");
+		String[] columnNames = store.getString(AmsPreferenceKey.P_FILTER_KEYFIELDS).split(";");
 		
 		initComboBoxUI(display, cboKeyValue[0], new ArrayList<String>(Arrays.asList(columnNames)));
 		initComboBoxUI(display, cboKeyValue[1], new ArrayList<String>(Arrays.asList(columnNames)));

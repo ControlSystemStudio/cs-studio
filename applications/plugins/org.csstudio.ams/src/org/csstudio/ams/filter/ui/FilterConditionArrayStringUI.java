@@ -42,7 +42,7 @@ import org.csstudio.ams.dbAccess.configdb.AggrFilterConditionArrayStringTObject;
 import org.csstudio.ams.dbAccess.configdb.FilterConditionArrayStringTObject;
 import org.csstudio.ams.dbAccess.configdb.FilterConditionArrayStringValuesTObject;
 import org.csstudio.ams.filter.FilterConditionArrayString;
-import org.csstudio.ams.internal.SampleService;
+import org.csstudio.ams.internal.AmsPreferenceKey;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDropTarget;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -320,7 +320,7 @@ public class FilterConditionArrayStringUI extends FilterConditionUI
 	public void initControls()
 	{
 		IPreferenceStore store = AmsActivator.getDefault().getPreferenceStore();
-		String[] columnNames = store.getString(SampleService.P_FILTER_KEYFIELDS).split(";");
+		String[] columnNames = store.getString(AmsPreferenceKey.P_FILTER_KEYFIELDS).split(";");
 		
 		initComboBoxUI(display, cboKeyValue, new ArrayList<String>(Arrays.asList(columnNames)));
 

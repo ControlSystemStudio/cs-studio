@@ -41,7 +41,7 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.Messages;
 import org.csstudio.ams.PasswordEditor;
-import org.csstudio.ams.internal.SampleService;
+import org.csstudio.ams.internal.AmsPreferenceKey;
 
 /**
  * A preference page that contains the following types of preferences:<br>
@@ -81,20 +81,20 @@ public class AmsPreferencePage extends FieldEditorPreferencePage implements
 
 		new Label(c0, SWT.NONE);new Label(c0, SWT.NONE);
 		
-		addField(new StringFieldEditor(SampleService.P_CONFIG_DATABASE_CONNECTION,
+		addField(new StringFieldEditor(AmsPreferenceKey.P_CONFIG_DATABASE_CONNECTION,
                 Messages.Pref_ConfigDBCon, 120, c0));		
-		addField(new StringFieldEditor(SampleService.P_CONFIG_DATABASE_USER,
+		addField(new StringFieldEditor(AmsPreferenceKey.P_CONFIG_DATABASE_USER,
 				Messages.Pref_ConfigDBUser, c0));
-		addField(new PasswordEditor(SampleService.P_CONFIG_DATABASE_PASSWORD,
+		addField(new PasswordEditor(AmsPreferenceKey.P_CONFIG_DATABASE_PASSWORD,
 				Messages.Pref_ConfigDBPassword, c0));
 
 		new Label(c0, SWT.NONE);new Label(c0, SWT.NONE);
 
-		addField(new StringFieldEditor(SampleService.P_APP_DATABASE_CONNECTION,
+		addField(new StringFieldEditor(AmsPreferenceKey.P_APP_DATABASE_CONNECTION,
 				Messages.Pref_AppDBCon, c0));
-		addField(new StringFieldEditor(SampleService.P_APP_DATABASE_USER,
+		addField(new StringFieldEditor(AmsPreferenceKey.P_APP_DATABASE_USER,
 				Messages.Pref_AppDBUser, c0));
-		addField(new PasswordEditor(SampleService.P_APP_DATABASE_PASSWORD,
+		addField(new PasswordEditor(AmsPreferenceKey.P_APP_DATABASE_PASSWORD,
 				Messages.Pref_AppDBPassword, c0));
 
 		// filter key field of message
@@ -106,7 +106,7 @@ public class AmsPreferencePage extends FieldEditorPreferencePage implements
 		tabFilterKeyFields.setControl(c0);		
 
 		addField(new ListEditor(
-				SampleService.P_FILTER_KEYFIELDS, ""/*Messages.Pref_FilterKeyFields*/, c0)
+				AmsPreferenceKey.P_FILTER_KEYFIELDS, ""/*Messages.Pref_FilterKeyFields*/, c0)
 		{
 			public String[] parseString(String stringList)
 			{
@@ -146,50 +146,50 @@ public class AmsPreferencePage extends FieldEditorPreferencePage implements
 
 		new Label(c0, SWT.NONE);new Label(c0, SWT.NONE);
 
-		addField(new StringFieldEditor(SampleService.P_JMS_EXTERN_CONNECTION_FACTORY_CLASS,
+		addField(new StringFieldEditor(AmsPreferenceKey.P_JMS_EXTERN_CONNECTION_FACTORY_CLASS,
 				Messages.P_JMS_EXTERN_CONNECTION_FACTORY_CLASS, c0));
-		addField(new StringFieldEditor(SampleService.P_JMS_EXTERN_PROVIDER_URL_1,
+		addField(new StringFieldEditor(AmsPreferenceKey.P_JMS_EXTERN_PROVIDER_URL_1,
 				Messages.P_JMS_EXTERN_PROVIDER_URL_1, c0));
         // ADDED BY: Markus Moeller, 02.08.2007
-        addField(new StringFieldEditor(SampleService.P_JMS_EXTERN_PROVIDER_URL_2,
+        addField(new StringFieldEditor(AmsPreferenceKey.P_JMS_EXTERN_PROVIDER_URL_2,
                 Messages.P_JMS_EXTERN_PROVIDER_URL_2, c0));
         // ADDED BY: Markus Moeller, 13.08.2007
-        addField(new StringFieldEditor(SampleService.P_JMS_EXTERN_SENDER_PROVIDER_URL,
+        addField(new StringFieldEditor(AmsPreferenceKey.P_JMS_EXTERN_SENDER_PROVIDER_URL,
                 Messages.P_JMS_EXTERN_SENDER_PROVIDER_URL, c0));
-		addField(new StringFieldEditor(SampleService.P_JMS_EXTERN_CONNECTION_FACTORY,
+		addField(new StringFieldEditor(AmsPreferenceKey.P_JMS_EXTERN_CONNECTION_FACTORY,
 				Messages.P_JMS_EXTERN_CONNECTION_FACTORY, c0));
 		new Label(c0, SWT.NONE);
-		addField(new BooleanFieldEditor(SampleService.P_JMS_EXTERN_CREATE_DURABLE,
+		addField(new BooleanFieldEditor(AmsPreferenceKey.P_JMS_EXTERN_CREATE_DURABLE,
                 Messages.P_JMS_EXTERN_CREATE_DURABLE, c0));
 
 		new Label(c0, SWT.NONE);new Label(c0, SWT.NONE);
-		addField(new StringFieldEditor(SampleService.P_JMS_AMS_CONNECTION_FACTORY_CLASS,
+		addField(new StringFieldEditor(AmsPreferenceKey.P_JMS_AMS_CONNECTION_FACTORY_CLASS,
 				Messages.P_JMS_AMS_CONNECTION_FACTORY_CLASS, c0));
-		addField(new StringFieldEditor(SampleService.P_JMS_AMS_PROVIDER_URL_1,
+		addField(new StringFieldEditor(AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_1,
 				Messages.P_JMS_AMS_PROVIDER_URL_1, c0));
 		
 		// ADDED BY: Markus Moeller, 02.08.2007        
-        StringFieldEditor editor = new StringFieldEditor(SampleService.P_JMS_AMS_PROVIDER_URL_2,
+        StringFieldEditor editor = new StringFieldEditor(AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_2,
                 Messages.P_JMS_AMS_PROVIDER_URL_2, c0);
         // editor.setEnabled(false, c0);
         addField(editor);
         // ADDED BY: Markus Moeller, 13.08.2007
-        editor = new StringFieldEditor(SampleService.P_JMS_AMS_SENDER_PROVIDER_URL,
+        editor = new StringFieldEditor(AmsPreferenceKey.P_JMS_AMS_SENDER_PROVIDER_URL,
                 Messages.P_JMS_AMS_SENDER_PROVIDER_URL, c0);
         // editor.setEnabled(false, c0);
         addField(editor);        
         
-        addField(new StringFieldEditor(SampleService.P_JMS_AMS_CONNECTION_FACTORY,
+        addField(new StringFieldEditor(AmsPreferenceKey.P_JMS_AMS_CONNECTION_FACTORY,
 				Messages.P_JMS_AMS_CONNECTION_FACTORY, c0));
         new Label(c0, SWT.NONE);
-        addField(new BooleanFieldEditor(SampleService.P_JMS_AMS_CREATE_DURABLE,
+        addField(new BooleanFieldEditor(AmsPreferenceKey.P_JMS_AMS_CREATE_DURABLE,
                 Messages.P_JMS_AMS_CREATE_DURABLE, c0));
 
 		new Label(c0, SWT.NONE);new Label(c0, SWT.NONE);
 
-		addField(new StringFieldEditor(SampleService.P_JMS_FREE_TOPIC_CONNECTION_FACTORY_CLASS,
+		addField(new StringFieldEditor(AmsPreferenceKey.P_JMS_FREE_TOPIC_CONNECTION_FACTORY_CLASS,
 				Messages.P_JMS_FREE_TOPIC_CONNECTION_FACTORY_CLASS, c0));
-		addField(new StringFieldEditor(SampleService.P_JMS_FREE_TOPIC_CONNECTION_FACTORY,
+		addField(new StringFieldEditor(AmsPreferenceKey.P_JMS_FREE_TOPIC_CONNECTION_FACTORY,
 				Messages.P_JMS_FREE_TOPIC_CONNECTION_FACTORY, c0));
 
 		// external topics
@@ -202,21 +202,21 @@ public class AmsPreferencePage extends FieldEditorPreferencePage implements
 
 		new Label(c0, SWT.NONE);new Label(c0, SWT.NONE);
 		
-		addField(new StringFieldEditor(SampleService.P_JMS_EXT_TOPIC_ALARM,
+		addField(new StringFieldEditor(AmsPreferenceKey.P_JMS_EXT_TOPIC_ALARM,
 				Messages.P_JMS_EXT_TOPIC_ALARM, c0));
-		addField(new StringFieldEditor(SampleService.P_JMS_EXT_TSUB_ALARM_FMR,
+		addField(new StringFieldEditor(AmsPreferenceKey.P_JMS_EXT_TSUB_ALARM_FMR,
 				Messages.P_JMS_EXT_TSUB_ALARM_FMR, c0));
 
 		new Label(c0, SWT.NONE);new Label(c0, SWT.NONE);
 
-		addField(new StringFieldEditor(SampleService.P_JMS_EXT_TOPIC_COMMAND,
+		addField(new StringFieldEditor(AmsPreferenceKey.P_JMS_EXT_TOPIC_COMMAND,
 				Messages.P_JMS_EXT_TOPIC_COMMAND, c0));
-		addField(new StringFieldEditor(SampleService.P_JMS_EXT_TSUB_CMD_FMR_START_RELOAD,
+		addField(new StringFieldEditor(AmsPreferenceKey.P_JMS_EXT_TSUB_CMD_FMR_START_RELOAD,
 				Messages.P_JMS_EXT_TSUB_CMD_FMR_START_RELOAD, c0));
 
 		new Label(c0, SWT.NONE);new Label(c0, SWT.NONE);
 
-		addField(new StringFieldEditor(SampleService.P_JMS_EXT_TOPIC_STATUSCHANGE,
+		addField(new StringFieldEditor(AmsPreferenceKey.P_JMS_EXT_TOPIC_STATUSCHANGE,
 				Messages.P_JMS_EXT_TOPIC_STATUSCHANGE, c0));
 
 		// ams internal topics
@@ -230,66 +230,66 @@ public class AmsPreferencePage extends FieldEditorPreferencePage implements
 
 		new Label(c0, SWT.NONE);new Label(c0, SWT.NONE);
 
-		addField(new StringFieldEditor(SampleService.P_JMS_AMS_TOPIC_DISTRIBUTOR,
+		addField(new StringFieldEditor(AmsPreferenceKey.P_JMS_AMS_TOPIC_DISTRIBUTOR,
 				Messages.P_JMS_AMS_TOPIC_DISTRIBUTOR, c0));
-		addField(new StringFieldEditor(SampleService.P_JMS_AMS_TSUB_DISTRIBUTOR,
+		addField(new StringFieldEditor(AmsPreferenceKey.P_JMS_AMS_TSUB_DISTRIBUTOR,
 				Messages.P_JMS_AMS_TSUB_DISTRIBUTOR, c0));
-		addField(new StringFieldEditor(SampleService.P_JMS_AMS_TOPIC_REPLY,
+		addField(new StringFieldEditor(AmsPreferenceKey.P_JMS_AMS_TOPIC_REPLY,
 				Messages.P_JMS_AMS_TOPIC_REPLY, c0));
-		addField(new StringFieldEditor(SampleService.P_JMS_AMS_TSUB_REPLY,
+		addField(new StringFieldEditor(AmsPreferenceKey.P_JMS_AMS_TSUB_REPLY,
 				Messages.P_JMS_AMS_TSUB_REPLY, c0));
-        addField(new StringFieldEditor(SampleService.P_JMS_AMS_TOPIC_MESSAGEMINDER,
+        addField(new StringFieldEditor(AmsPreferenceKey.P_JMS_AMS_TOPIC_MESSAGEMINDER,
                 Messages.P_JMS_AMS_TOPIC_MESSAGEMINDER, c0));
-        addField(new StringFieldEditor(SampleService.P_JMS_AMS_TSUB_MESSAGEMINDER,
+        addField(new StringFieldEditor(AmsPreferenceKey.P_JMS_AMS_TSUB_MESSAGEMINDER,
                 Messages.P_JMS_AMS_TSUB_MESSAGEMINDER, c0));
 
 		new Label(c0, SWT.NONE);new Label(c0, SWT.NONE);
 
-		addField(new StringFieldEditor(SampleService.P_JMS_AMS_TOPIC_SMS_CONNECTOR,
+		addField(new StringFieldEditor(AmsPreferenceKey.P_JMS_AMS_TOPIC_SMS_CONNECTOR,
 				Messages.P_JMS_AMS_TOPIC_SMS_CONNECTOR, c0));        
-		bfe = new BooleanFieldEditor(SampleService.P_JMS_AMS_TOPIC_SMS_CONNECTOR_FORWARD,
+		bfe = new BooleanFieldEditor(AmsPreferenceKey.P_JMS_AMS_TOPIC_SMS_CONNECTOR_FORWARD,
                 Messages.P_JMS_AMS_TOPIC_FORWARD, c0);
 		bfe.setEnabled(false, c0);
 		addField(bfe);
-		addField(new StringFieldEditor(SampleService.P_JMS_AMS_TSUB_SMS_CONNECTOR,
+		addField(new StringFieldEditor(AmsPreferenceKey.P_JMS_AMS_TSUB_SMS_CONNECTOR,
 				Messages.P_JMS_AMS_TSUB_SMS_CONNECTOR, c0));
 		
-		addField(new StringFieldEditor(SampleService.P_JMS_AMS_TOPIC_EMAIL_CONNECTOR,
+		addField(new StringFieldEditor(AmsPreferenceKey.P_JMS_AMS_TOPIC_EMAIL_CONNECTOR,
 				Messages.P_JMS_AMS_TOPIC_EMAIL_CONNECTOR, c0));
-		bfe = new BooleanFieldEditor(SampleService.P_JMS_AMS_TOPIC_EMAIL_CONNECTOR_FORWARD,
+		bfe = new BooleanFieldEditor(AmsPreferenceKey.P_JMS_AMS_TOPIC_EMAIL_CONNECTOR_FORWARD,
                 Messages.P_JMS_AMS_TOPIC_FORWARD, c0);
 		bfe.setEnabled(false, c0);
         addField(bfe);
-		addField(new StringFieldEditor(SampleService.P_JMS_AMS_TSUB_EMAIL_CONNECTOR,
+		addField(new StringFieldEditor(AmsPreferenceKey.P_JMS_AMS_TSUB_EMAIL_CONNECTOR,
 				Messages.P_JMS_AMS_TSUB_EMAIL_CONNECTOR, c0));
 		
-		addField(new StringFieldEditor(SampleService.P_JMS_AMS_TOPIC_VOICEMAIL_CONNECTOR,
+		addField(new StringFieldEditor(AmsPreferenceKey.P_JMS_AMS_TOPIC_VOICEMAIL_CONNECTOR,
 				Messages.P_JMS_AMS_TOPIC_VOICEMAIL_CONNECTOR, c0));
-		bfe = new BooleanFieldEditor(SampleService.P_JMS_AMS_TOPIC_VOICEMAIL_CONNECTOR_FORWARD,
+		bfe = new BooleanFieldEditor(AmsPreferenceKey.P_JMS_AMS_TOPIC_VOICEMAIL_CONNECTOR_FORWARD,
                 Messages.P_JMS_AMS_TOPIC_FORWARD, c0);
 		bfe.setEnabled(false, c0);
         addField(bfe);
-		addField(new StringFieldEditor(SampleService.P_JMS_AMS_TSUB_VOICEMAIL_CONNECTOR,
+		addField(new StringFieldEditor(AmsPreferenceKey.P_JMS_AMS_TSUB_VOICEMAIL_CONNECTOR,
 				Messages.P_JMS_AMS_TSUB_VOICEMAIL_CONNECTOR, c0));
 		
-		addField(new StringFieldEditor(SampleService.P_JMS_AMS_TOPIC_JMS_CONNECTOR,
+		addField(new StringFieldEditor(AmsPreferenceKey.P_JMS_AMS_TOPIC_JMS_CONNECTOR,
 				Messages.P_JMS_AMS_TOPIC_JMS_CONNECTOR, c0));
-		bfe = new BooleanFieldEditor(SampleService.P_JMS_AMS_TOPIC_JMS_CONNECTOR_FORWARD,
+		bfe = new BooleanFieldEditor(AmsPreferenceKey.P_JMS_AMS_TOPIC_JMS_CONNECTOR_FORWARD,
                 Messages.P_JMS_AMS_TOPIC_FORWARD, c0);
         addField(bfe);
-		addField(new StringFieldEditor(SampleService.P_JMS_AMS_TSUB_JMS_CONNECTOR,
+		addField(new StringFieldEditor(AmsPreferenceKey.P_JMS_AMS_TSUB_JMS_CONNECTOR,
 				Messages.P_JMS_AMS_TSUB_JMS_CONNECTOR, c0));
 
 		new Label(c0, SWT.NONE);new Label(c0, SWT.NONE);
 
-		addField(new StringFieldEditor(SampleService.P_JMS_AMS_TOPIC_COMMAND,
+		addField(new StringFieldEditor(AmsPreferenceKey.P_JMS_AMS_TOPIC_COMMAND,
 				Messages.P_JMS_AMS_TOPIC_COMMAND, c0));
-		addField(new StringFieldEditor(SampleService.P_JMS_AMS_TSUB_CMD_FMR_RELOAD_END,
+		addField(new StringFieldEditor(AmsPreferenceKey.P_JMS_AMS_TSUB_CMD_FMR_RELOAD_END,
 				Messages.P_JMS_AMS_TSUB_CMD_FMR_RELOAD_END, c0));
 		
 		new Label(c0, SWT.NONE);new Label(c0, SWT.NONE);
 
-	    addField(new StringFieldEditor(SampleService.P_JMS_AMS_TOPIC_MONITOR,
+	    addField(new StringFieldEditor(AmsPreferenceKey.P_JMS_AMS_TOPIC_MONITOR,
 	            Messages.P_JMS_AMS_TOPIC_MONITOR, c0));
 
 	    new Label(c0, SWT.NONE);new Label(c0, SWT.NONE);
