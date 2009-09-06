@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -38,7 +39,10 @@ import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.Log;
 import org.csstudio.ams.SynchObject;
 import org.csstudio.ams.Utils;
+import org.csstudio.ams.distributor.preferences.DistributorPreferenceKey;
 import org.csstudio.platform.logging.CentralLogger;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -113,11 +117,13 @@ public class DistributorStart implements IApplication
 
     public Object start(IApplicationContext context) throws Exception
     {
-        Log.log(this, Log.INFO, "start");
         DistributorWork dw = null;
         boolean bInitedJms = false;
         lastStatus = getStatus();                                               // use synchronized method
 
+        Log.log(this, Log.INFO, "Starting");
+        DistributorPreferenceKey.showPreferences();
+        
         bStop = false;
         restart = false;
         
@@ -239,9 +245,10 @@ public class DistributorStart implements IApplication
 
     public void connectToXMPPServer()
     {
-        String xmppUser = "ams-distributor";
-        String xmppPassword = "ams";
-        String xmppServer = "krynfs.desy.de";
+    	IPreferencesService pref = Platform.getPreferencesService();
+    	String xmppServer = pref.getString(DistributorPlugin.PLUGIN_ID, DistributorPreferenceKey.P_XMPP_SERVER, "krynfs.desy.de", null);
+        String xmppUser = pref.getString(DistributorPlugin.PLUGIN_ID, DistributorPreferenceKey.P_XMPP_USER, "anonymous", null);
+        String xmppPassword = pref.getString(DistributorPlugin.PLUGIN_ID, DistributorPreferenceKey.P_XMPP_PASSWORD, "anonymous", null);
 
         try
         {
