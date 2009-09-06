@@ -173,7 +173,10 @@ public abstract class AbstractContainer extends AbstractPropertyContainer implem
 	 */
 	public final void removeInstance(IInstance instance) {
 		assert instance.getParent() != null;
-		assert instance.getContainer() == this : "The physical container must equal this.";
+		
+		if(instance.getContainer()!=this) {
+			assert instance.getContainer() == this : "The physical container must equal this.";
+		}
 		instances.remove(instance);
 	}
 

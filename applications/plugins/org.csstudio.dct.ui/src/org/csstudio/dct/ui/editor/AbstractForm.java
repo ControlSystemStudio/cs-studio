@@ -177,21 +177,25 @@ public abstract class AbstractForm<E extends IElement> implements CommandStackLi
 	public final void setInput(Object in) {
 		this.input = (E) in;
 
-		// .. refresh headline label
-		headlineLabel.setText(doGetFormLabel(input));
+		if (input != null) {
+			// .. refresh headline label
+			headlineLabel.setText(doGetFormLabel(input));
 
-		// .. refresh the breadcrumb
-		String additionalLinks = doGetAdditionalBreadcrumbLinks(input);
-		breadcrumbLink.setText(doCreateBreadcrumbLink(input) + (additionalLinks != null ? "     [" + additionalLinks + "]" : ""));
+			// .. refresh the breadcrumb
+			String additionalLinks = doGetAdditionalBreadcrumbLinks(input);
+			breadcrumbLink.setText(doCreateBreadcrumbLink(input) + (additionalLinks != null ? "     [" + additionalLinks + "]" : ""));
 
-		// prepare input for overview table
-		List<ITableRow> rows = new ArrayList<ITableRow>();
-		rows.add(new BeanPropertyTableRowAdapter("Identifier", input, "id", true));
-		rows.add(new NameTableRowAdapter(input));
-		doAddCommonRows(rows, input);
-		commonTable.setInput(rows);
+			// prepare input for overview table
+			List<ITableRow> rows = new ArrayList<ITableRow>();
+			rows.add(new BeanPropertyTableRowAdapter("Identifier", input, "id", true));
+			rows.add(new NameTableRowAdapter(input));
+			doAddCommonRows(rows, input);
+			commonTable.setInput(rows);
+			
+			// call subclasses
+			doSetInput(input);
+		}
 
-		doSetInput(input);
 	}
 
 	/**
@@ -209,6 +213,7 @@ public abstract class AbstractForm<E extends IElement> implements CommandStackLi
 	public final void refresh() {
 		if (input != null) {
 			setInput(input);
+			CentralLogger.getInstance().info(null, "refresh +" + input.getId());
 		}
 	}
 
@@ -221,7 +226,9 @@ public abstract class AbstractForm<E extends IElement> implements CommandStackLi
 
 	/**
 	 * Template method. Subclasses return a label text for the form title here.
-	 * @param input TODO
+	 * 
+	 * @param input
+	 *            TODO
 	 * 
 	 * @return a label text for the form title
 	 */
@@ -277,14 +284,14 @@ public abstract class AbstractForm<E extends IElement> implements CommandStackLi
 
 	private IElement getParentElement(IElement e) {
 		IElement result = null;
-		
+
 		if (e instanceof IRecord) {
 			result = ((IRecord) e).getContainer();
 		} else {
-			if(e instanceof IFolderMember) {
+			if (e instanceof IFolderMember) {
 				result = ((IFolderMember) e).getParentFolder();
 			}
-			
+
 			if (result == null && e instanceof IContainer) {
 				result = ((IContainer) e).getContainer();
 			}

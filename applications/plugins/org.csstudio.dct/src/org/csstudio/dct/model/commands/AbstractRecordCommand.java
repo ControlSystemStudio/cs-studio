@@ -24,9 +24,12 @@ abstract class AbstractRecordCommand extends Command {
 	 *            the container
 	 * @param record
 	 *            the record
+	 * @param the
+	 *            index position
 	 */
-	protected void addRecord(IContainer container, IRecord record) {
-		container.addRecord(record);
+	protected void addRecord(IContainer container, IRecord record, int index) {
+		assert index >=0;
+		container.addRecord(Math.min(index, container.getRecords().size()), record);
 
 		// ... link physical container
 		record.setContainer(container);
@@ -37,7 +40,7 @@ abstract class AbstractRecordCommand extends Command {
 		// ... add-push to model elements that inherit from here
 		for (IRecordContainer c : container.getDependentRecordContainers()) {
 			IRecord pushedRecord = new Record(record, UUID.randomUUID());
-			addRecord((IContainer) c, pushedRecord);
+			addRecord((IContainer) c, pushedRecord, Math.min(index, container.getRecords().size()));
 		}
 	}
 
@@ -48,8 +51,11 @@ abstract class AbstractRecordCommand extends Command {
 	 *            the container
 	 * @param record
 	 *            the record
+	 * @return the former list index of the record
 	 */
-	protected void removeRecord(IRecordContainer container, IRecord record) {
+	protected int removeRecord(IRecordContainer container, IRecord record) {
+		int result = container.getRecords().indexOf(record);
+
 		container.removeRecord(record);
 
 		// ... unlink container
@@ -66,5 +72,7 @@ abstract class AbstractRecordCommand extends Command {
 		}
 
 		assert record.getDependentRecords().isEmpty();
+
+		return result;
 	}
 }

@@ -29,7 +29,7 @@ public final class AddRecordCommand extends AbstractRecordCommand {
 	 */
 	@Override
 	public void execute() {
-		addRecord(container, record);
+		addRecord(container, record, container.getRecords().size());
 	}
 
 	/**

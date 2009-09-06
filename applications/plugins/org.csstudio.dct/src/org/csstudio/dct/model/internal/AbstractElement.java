@@ -86,7 +86,7 @@ public abstract class AbstractElement implements IElement, IAdaptable, Serializa
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		boolean result = true;
+		boolean result = false;
 
 		if (obj instanceof AbstractElement) {
 			AbstractElement element = (AbstractElement) obj;

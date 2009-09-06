@@ -1,5 +1,8 @@
 package org.csstudio.dct.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.csstudio.dct.model.IElement;
 
 /**
@@ -11,6 +14,7 @@ import org.csstudio.dct.model.IElement;
 public final class CompareUtil {
 	private CompareUtil() {
 	}
+
 	/**
 	 * Compares two Objects.
 	 * 
@@ -59,6 +63,37 @@ public final class CompareUtil {
 			}
 		}
 
+		return result;
+	}
+
+	/**
+	 * Returns true, if the specified list contains only objects that are
+	 * compatible to the specified class type.
+	 * 
+	 * @param type
+	 *            the class type
+	 * @param elements
+	 *            the list of objects
+	 * 
+	 * @return true of the list contains only objects of a certain type
+	 */
+	public static boolean containsOnly(Class type, List elements) {
+		boolean result = true;
+
+		for (Object e : elements) {
+			result &= type.isAssignableFrom(e.getClass());
+		}
+
+		return result;
+	}
+
+	public static <E> List<E> convert(List elements) {
+		List<E> result = new ArrayList<E>();
+
+		for (Object o : elements) {
+			result.add((E) o);
+		}
+		
 		return result;
 	}
 }

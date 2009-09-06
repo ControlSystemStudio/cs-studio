@@ -147,4 +147,8 @@ public abstract class AbstractOutlineAction implements IViewActionDelegate {
 
 		return result;
 	}
+	
+	public ContentOutline getOutlineView() {
+		return outlineView;
+	}
 }

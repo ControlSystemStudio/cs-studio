@@ -13,6 +13,7 @@ public final class RemoveRecordCommand extends AbstractRecordCommand {
 
 	private IContainer container;
 	private IRecord record;
+	private int index;
 
 	/**
 	 * Constructor.
@@ -31,7 +32,7 @@ public final class RemoveRecordCommand extends AbstractRecordCommand {
 	 */
 	@Override
 	public void execute() {
-		removeRecord(container, record);
+		index = removeRecord(container, record);
 	}
 
 	/**
@@ -39,6 +40,6 @@ public final class RemoveRecordCommand extends AbstractRecordCommand {
 	 */
 	@Override
 	public void undo() {
-		addRecord(container, record);
+		addRecord(container, record, index);
 	}
 }

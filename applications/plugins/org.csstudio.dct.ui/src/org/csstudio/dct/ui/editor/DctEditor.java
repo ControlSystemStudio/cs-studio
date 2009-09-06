@@ -12,8 +12,6 @@ import java.util.UUID;
 import org.csstudio.dct.DctActivator;
 import org.csstudio.dct.export.ExporterDescriptor;
 import org.csstudio.dct.export.Extensions;
-import org.csstudio.dct.export.IExporter;
-import org.csstudio.dct.export.internal.AdvancedDbFileExporter;
 import org.csstudio.dct.model.IContainer;
 import org.csstudio.dct.model.IElement;
 import org.csstudio.dct.model.IFolder;
@@ -37,7 +35,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.commands.CommandStackListener;
-import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -54,7 +51,6 @@ import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -82,11 +78,11 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 	private Project project;
 	private CommandStack commandStack;
 	private ISelectionChangedListener outlineSelectionListener;
-	private ProjectForm projectEditingComponent;
-	private FolderForm folderEditingComponent;
-	private PrototypeForm prototypeEditingComponent;
-	private InstanceForm instanceEditingComponent;
-	private RecordForm recordEditingComponent;
+	private ProjectForm projectForm;
+	private FolderForm folderForm;
+	private PrototypeForm prototypeForm;
+	private InstanceForm instanceForm;
+	private RecordForm recordForm;
 	private StackLayout stackLayout;
 	private Composite contentPanel;
 	private StyledText dbFilePreviewText;
@@ -108,23 +104,24 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 				if (sel != null && sel.getFirstElement() != null) {
 					Object o = sel.getFirstElement();
 
-					// FIXME: Editing Components in Enumeration abspeichern und
-					// Code verschlanken!
+					// .. set form inputs
+					projectForm.setInput(o instanceof IProject ? o : null);
+					folderForm.setInput(o instanceof IFolder ? o : null);
+					prototypeForm.setInput(o instanceof IPrototype ? o : null);
+					instanceForm.setInput(o instanceof IInstance ? o : null);
+					recordForm.setInput(o instanceof IRecord ? o : null);
+
+					// .. bring current form to top
 					if (o instanceof IProject) {
-						stackLayout.topControl = projectEditingComponent.getMainComposite();
-						projectEditingComponent.setInput(o);
+						stackLayout.topControl = projectForm.getMainComposite();
 					} else if (o instanceof IFolder) {
-						stackLayout.topControl = folderEditingComponent.getMainComposite();
-						folderEditingComponent.setInput(o);
+						stackLayout.topControl = folderForm.getMainComposite();
 					} else if (o instanceof IPrototype) {
-						stackLayout.topControl = prototypeEditingComponent.getMainComposite();
-						prototypeEditingComponent.setInput(o);
+						stackLayout.topControl = prototypeForm.getMainComposite();
 					} else if (o instanceof IInstance) {
-						stackLayout.topControl = instanceEditingComponent.getMainComposite();
-						instanceEditingComponent.setInput(o);
+						stackLayout.topControl = instanceForm.getMainComposite();
 					} else if (o instanceof IRecord) {
-						stackLayout.topControl = recordEditingComponent.getMainComposite();
-						recordEditingComponent.setInput(o);
+						stackLayout.topControl = recordForm.getMainComposite();
 					}
 
 					contentPanel.layout();
@@ -147,24 +144,24 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 		stackLayout = new StackLayout();
 		contentPanel.setLayout(stackLayout);
 
-		projectEditingComponent = new ProjectForm(this);
-		projectEditingComponent.createControl(contentPanel);
+		projectForm = new ProjectForm(this);
+		projectForm.createControl(contentPanel);
 
-		folderEditingComponent = new FolderForm(this);
-		folderEditingComponent.createControl(contentPanel);
+		folderForm = new FolderForm(this);
+		folderForm.createControl(contentPanel);
 
-		prototypeEditingComponent = new PrototypeForm(this);
-		prototypeEditingComponent.createControl(contentPanel);
+		prototypeForm = new PrototypeForm(this);
+		prototypeForm.createControl(contentPanel);
 
-		instanceEditingComponent = new InstanceForm(this);
-		instanceEditingComponent.createControl(contentPanel);
+		instanceForm = new InstanceForm(this);
+		instanceForm.createControl(contentPanel);
 
-		recordEditingComponent = new RecordForm(this);
-		recordEditingComponent.createControl(contentPanel);
+		recordForm = new RecordForm(this);
+		recordForm.createControl(contentPanel);
 
 		// .. initially, the project itself is selected
-		projectEditingComponent.setInput(getProject());
-		stackLayout.topControl = projectEditingComponent.getMainComposite();
+		projectForm.setInput(getProject());
+		stackLayout.topControl = projectForm.getMainComposite();
 
 		int index = addPage(contentPanel);
 		setPageText(index, "Edit");
@@ -227,10 +224,9 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 				}
 			}
 		});
-		
-//		saveToFileButton.setLayoutData(LayoutUtil.createGridData());
+
+		// saveToFileButton.setLayoutData(LayoutUtil.createGridData());
 		saveToFileButton.setText("Save To File");
-		
 
 		dbFilePreviewText = new StyledText(composite, SWT.H_SCROLL | SWT.V_SCROLL);
 		dbFilePreviewText.setLayoutData(LayoutUtil.createGridDataForFillingCell());

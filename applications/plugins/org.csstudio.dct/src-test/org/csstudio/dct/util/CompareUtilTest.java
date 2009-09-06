@@ -6,9 +6,13 @@ package org.csstudio.dct.util;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
+import org.csstudio.dct.dbexport.Record;
 import org.csstudio.dct.model.IElement;
+import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.model.IVisitor;
 import org.csstudio.dct.model.internal.AbstractElement;
 import org.junit.Before;
@@ -81,4 +85,26 @@ public class CompareUtilTest {
 		assertFalse(CompareUtil.idsEqual(element1, element2));
 	}
 
+	public final void testContainsOnly() {
+		List list = new ArrayList();
+		list.add("a");
+		list.add("b");
+		
+		assertTrue(CompareUtil.containsOnly(String.class, list));
+		assertTrue(CompareUtil.containsOnly(Object.class, list));
+		assertFalse(CompareUtil.containsOnly(IRecord.class, list));
+		
+		list.add(new Record());
+
+		assertFalse(CompareUtil.containsOnly(String.class, list));
+		assertTrue(CompareUtil.containsOnly(Object.class, list));
+		assertFalse(CompareUtil.containsOnly(IRecord.class, list));
+		
+		list.remove(0);
+		list.remove(0);
+		
+		assertFalse(CompareUtil.containsOnly(String.class, list));
+		assertTrue(CompareUtil.containsOnly(Object.class, list));
+		assertTrue(CompareUtil.containsOnly(IRecord.class, list));
+	}
 }

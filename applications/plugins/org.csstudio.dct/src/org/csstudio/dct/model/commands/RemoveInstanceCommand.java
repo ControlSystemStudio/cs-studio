@@ -14,10 +14,11 @@ import org.eclipse.gef.commands.CompoundCommand;
  * 
  */
 public final class RemoveInstanceCommand extends Command {
-	private CompoundCommand internalCommand;
 	private IContainer container;
 	private IFolder folder;
 	private IInstance instance;
+	private IContainer parent;
+	private int index;
 
 	/**
 	 * Constructor.
@@ -37,26 +38,22 @@ public final class RemoveInstanceCommand extends Command {
 	 */
 	@Override
 	public void execute() {
-		internalCommand = new CompoundCommand();
-
-//		internalCommand.add(new InitInstanceCommand(instance));
-
 		if (folder != null) {
+			index = folder.getMembers().indexOf(instance);
 			folder.removeMember(instance);
 			instance.setParentFolder(null);
 		} else {
+			index = container.getInstances().indexOf(instance);
 			container.removeInstance(instance);
 			instance.setContainer(null);
-
-			for (IContainer c : instance.getDependentContainers()) {
-				internalCommand.add(new RemoveInstanceCommand((IInstance) c));
-			}
 		}
 
-		// ... link to super
-		instance.getParent().removeDependentContainer(instance);
-
-		internalCommand.execute();
+		// ... unlink from super
+		parent = instance.getParent();
+		
+		if(parent!=null) {
+			parent.removeDependentContainer(instance);
+		}
 	}
 
 	/**
@@ -65,13 +62,17 @@ public final class RemoveInstanceCommand extends Command {
 	@Override
 	public void undo() {
 		if (folder != null) {
-			folder.addMember(instance);
+			folder.addMember(Math.min(index, folder.getMembers().size()), instance);
 			instance.setParentFolder(folder);
 		} else {
-			container.addInstance(instance);
+			container.addInstance(Math.min(index, container.getInstances().size()), instance);
 			instance.setContainer(container);
 		}
-		internalCommand.undo();
+		
+		// ... link to super
+		if(parent!=null) {
+			parent.addDependentContainer(instance);
+		}
 	}
 
 }

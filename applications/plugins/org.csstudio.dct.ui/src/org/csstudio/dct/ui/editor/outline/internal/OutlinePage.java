@@ -240,6 +240,7 @@ public final class OutlinePage extends ContentOutlinePage implements CommandStac
 	@Override
 	public void setSelection(ISelection selection) {
 		if (getTreeViewer() != null) {
+			getTreeViewer().refresh();
 			getTreeViewer().setSelection(selection, true);
 		}
 	}

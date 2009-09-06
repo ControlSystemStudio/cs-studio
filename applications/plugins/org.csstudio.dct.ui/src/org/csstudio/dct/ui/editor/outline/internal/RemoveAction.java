@@ -1,6 +1,9 @@
 package org.csstudio.dct.ui.editor.outline.internal;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.csstudio.dct.model.IElement;
 import org.csstudio.dct.model.IFolder;
@@ -12,7 +15,11 @@ import org.csstudio.dct.model.commands.RemoveFolderCommand;
 import org.csstudio.dct.model.commands.RemoveInstanceCommand;
 import org.csstudio.dct.model.commands.RemovePrototypeCommand;
 import org.csstudio.dct.model.commands.RemoveRecordCommand;
+import org.csstudio.dct.model.visitors.SearchInstancesVisitor;
+import org.csstudio.dct.util.CompareUtil;
 import org.eclipse.gef.commands.Command;
+import org.eclipse.gef.commands.CompoundCommand;
+import org.eclipse.jface.action.IAction;
 
 /**
  * Popup menu action for the outline view that removes elements from the model.
@@ -28,23 +35,74 @@ public final class RemoveAction extends AbstractOutlineAction {
 	@Override
 	protected Command createCommand(List<IElement> selection) {
 		assert selection != null;
-		assert selection.size() == 1;
 
-		IElement element = selection.get(0);
-		
-		Command command = null;
+		CompoundCommand command = new CompoundCommand();
 
-		if (element instanceof IFolder) {
-			command = new RemoveFolderCommand((IFolder) element);
-		} else if (element instanceof IPrototype) {
-			command = new RemovePrototypeCommand((IPrototype) element);
-		} else if (element instanceof IInstance) {
-			command = new RemoveInstanceCommand((IInstance) element);
-		} else if (element instanceof IRecord) {
-			command = new RemoveRecordCommand((IRecord) element);
+		command.add(new SelectInOutlineCommand(getOutlineView(), getProject()));
+
+		if (CompareUtil.containsOnly(IFolder.class, selection)) {
+		} else if (CompareUtil.containsOnly(IPrototype.class, selection)) {
+			List<IPrototype> prototypes = CompareUtil.convert(selection);
+			chainDeletePrototypes(command, prototypes);
+		} else if (CompareUtil.containsOnly(IInstance.class, selection)) {
+			List<IInstance> instances = CompareUtil.convert(selection);
+			chainDeleteInstances(command, instances);
+		} else if (CompareUtil.containsOnly(IRecord.class, selection)) {
+			List<IRecord> records = CompareUtil.convert(selection);
+			chainDeleteRecords(command, records);
 		}
 
 		return command;
 	}
 
+	private void chainDeletePrototypes(CompoundCommand cmd, List<IPrototype> prototypes) {
+		Set<IInstance> instances = new HashSet<IInstance>();
+
+		for (IPrototype p : prototypes) {
+			// .. search and delete instances
+			List<IInstance> tmp = new SearchInstancesVisitor().search(getProject(), p.getId());
+			instances.addAll(tmp);
+		}
+
+		chainDeleteInstances(cmd, new ArrayList<IInstance>(instances));
+
+		for (IPrototype p : prototypes) {
+			// .. delete prototype
+			cmd.add(new RemovePrototypeCommand(p));
+		}
+	}
+
+	private void chainDeleteInstances(CompoundCommand cmd, List<IInstance> instances) {
+		for (IInstance i : instances) {
+			cmd.add(new RemoveInstanceCommand(i));
+		}
+	}
+
+	private void chainDeleteRecords(CompoundCommand cmd, List<IRecord> records) {
+		for (IRecord r : records) {
+			cmd.add(new RemoveRecordCommand(r));
+		}
+	}
+
+	@Override
+	protected void afterSelectionChanged(List<IElement> selection, IAction action) {
+		super.afterSelectionChanged(selection, action);
+
+		// .. only elements of the same type can be deleted in a single step
+		boolean onlyRecords = CompareUtil.containsOnly(IRecord.class, selection);
+
+		boolean enabled = CompareUtil.containsOnly(IPrototype.class, selection) || CompareUtil.containsOnly(IInstance.class, selection)
+				|| CompareUtil.containsOnly(IFolder.class, selection) || onlyRecords;
+
+		// .. only records that are not inherited can be deleted
+		if (onlyRecords) {
+			for (IElement e : selection) {
+				IRecord r = (IRecord) e;
+				enabled &= !r.isInherited();
+			}
+		}
+
+		action.setEnabled(enabled);
+
+	}
 }
