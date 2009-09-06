@@ -31,7 +31,7 @@ import org.csstudio.ams.PasswordEditor;
 import org.csstudio.ams.StringAreaEditor;
 import org.csstudio.ams.connector.email.Messages;
 import org.csstudio.ams.connector.email.EMailConnectorPlugin;
-import org.csstudio.ams.connector.email.internal.SampleService;
+import org.csstudio.ams.connector.email.internal.EMailConnectorPreferenceKey;
 
 /**
  * A preference page that contains the following types of preferences:<br>
@@ -58,19 +58,19 @@ public class Page1 extends FieldEditorPreferencePage implements
 	@Override
 	protected final void createFieldEditors() 
 	{
-		addField(new StringFieldEditor(SampleService.P_MAILSENDERADRESS,
+		addField(new StringFieldEditor(EMailConnectorPreferenceKey.P_MAILSENDERADRESS,
 				Messages.P_MAILSENDERADRESS, getFieldEditorParent()));
-		addField(new StringFieldEditor(SampleService.P_MAILAUTHUSER,
+		addField(new StringFieldEditor(EMailConnectorPreferenceKey.P_MAILAUTHUSER,
 				Messages.P_MAILAUTHUSER, getFieldEditorParent()));
-		addField(new PasswordEditor(SampleService.P_MAILAUTHPASSWORD,
+		addField(new PasswordEditor(EMailConnectorPreferenceKey.P_MAILAUTHPASSWORD,
 				Messages.P_MAILAUTHPASSWORD, getFieldEditorParent()));
-		addField(new StringFieldEditor(SampleService.P_MAILSUBJECT,
+		addField(new StringFieldEditor(EMailConnectorPreferenceKey.P_MAILSUBJECT,
 				Messages.P_MAILSUBJECT, getFieldEditorParent()));
 		
-		addField(new StringAreaEditor(SampleService.P_MAILCONTENT,
+		addField(new StringAreaEditor(EMailConnectorPreferenceKey.P_MAILCONTENT,
 				Messages.P_MAILCONTENT, getFieldEditorParent()));
 
-		addField(new StringAreaEditor(SampleService.P_MAILSERVERCONFIG,
+		addField(new StringAreaEditor(EMailConnectorPreferenceKey.P_MAILSERVERCONFIG,
 				Messages.P_MAILSERVERCONFIG, getFieldEditorParent()));
 		
 		adjustGridLayout();

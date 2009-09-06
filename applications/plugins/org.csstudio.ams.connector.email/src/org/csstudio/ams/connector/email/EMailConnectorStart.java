@@ -39,7 +39,10 @@ import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.Log;
 import org.csstudio.ams.SynchObject;
 import org.csstudio.ams.Utils;
+import org.csstudio.ams.connector.email.internal.EMailConnectorPreferenceKey;
 import org.csstudio.platform.logging.CentralLogger;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -106,9 +109,12 @@ public class EMailConnectorStart implements IApplication
     public Object start(IApplicationContext context) throws Exception
     {
         Log.log(this, Log.INFO, "start");
+        
+        EMailConnectorPreferenceKey.showPreferences();
+        
         EMailConnectorWork ecw = null;
         boolean bInitedJms = false;
-        lastStatus = getStatus();                                               // use synchronized method
+        lastStatus = getStatus(); // use synchronized method
 
         bStop = false;
         restart = false;
@@ -215,9 +221,10 @@ public class EMailConnectorStart implements IApplication
 
     public void connectToXMPPServer()
     {
-        String xmppUser = "ams-mail-connector";
-        String xmppPassword = "ams";
-        String xmppServer = "krynfs.desy.de";
+    	IPreferencesService pref = Platform.getPreferencesService();
+        String xmppUser = pref.getString(EMailConnectorPlugin.PLUGIN_ID, EMailConnectorPreferenceKey.P_XMPP_USER, "anonymous", null);
+        String xmppPassword = pref.getString(EMailConnectorPlugin.PLUGIN_ID, EMailConnectorPreferenceKey.P_XMPP_PASSWORD, "anonymous", null);
+        String xmppServer = pref.getString(EMailConnectorPlugin.PLUGIN_ID, EMailConnectorPreferenceKey.P_XMPP_SERVER, "krynfs.desy.de", null);
 
         try
         {
@@ -237,7 +244,7 @@ public class EMailConnectorStart implements IApplication
     
     public void setStatus(int status)
     {
-        sObj.setSynchStatus(status);                                            // set always, to update time
+        sObj.setSynchStatus(status); // set always, to update time
     }
     
     private boolean initJms()

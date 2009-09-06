@@ -44,12 +44,15 @@ public final class PreferencesInitializer extends AbstractPreferenceInitializer 
 		IEclipsePreferences node = new DefaultScope()
 				.getNode(EMailConnectorPlugin.PLUGIN_ID);
 
-		node.put(SampleService.P_MAILSENDERADRESS, "@desy.de");
-		node.put(SampleService.P_MAILAUTHUSER, "");
-		node.put(SampleService.P_MAILAUTHPASSWORD, "");
-		node.put(SampleService.P_MAILSUBJECT, "Desy Ams Alarm Message");
-		node.put(SampleService.P_MAILCONTENT, "Dear %N,\nDesy Ams sends you the following Alarm:\n\n%AMSG\n\n");
-		node.put(SampleService.P_MAILSERVERCONFIG, 
+		node.put(EMailConnectorPreferenceKey.P_XMPP_SERVER, "server.where.ever");
+		node.put(EMailConnectorPreferenceKey.P_XMPP_USER, "anonymous");
+		node.put(EMailConnectorPreferenceKey.P_XMPP_PASSWORD, "anonymous");
+		node.put(EMailConnectorPreferenceKey.P_MAILSENDERADRESS, "@desy.de");
+		node.put(EMailConnectorPreferenceKey.P_MAILAUTHUSER, "");
+		node.put(EMailConnectorPreferenceKey.P_MAILAUTHPASSWORD, "");
+		node.put(EMailConnectorPreferenceKey.P_MAILSUBJECT, "Desy Ams Alarm Message");
+		node.put(EMailConnectorPreferenceKey.P_MAILCONTENT, "Dear %N,\nDesy Ams sends you the following Alarm:\n\n%AMSG\n\n");
+		node.put(EMailConnectorPreferenceKey.P_MAILSERVERCONFIG, 
 				"# Configuration file for javax.mail\n"
 				+"# If a value for an item is not provided, then system defaults will be used.\n"
 				+"\n"

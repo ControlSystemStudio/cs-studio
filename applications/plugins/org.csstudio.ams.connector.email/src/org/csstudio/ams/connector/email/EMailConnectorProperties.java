@@ -21,7 +21,7 @@
  */
  package org.csstudio.ams.connector.email;
 
-import org.csstudio.ams.connector.email.internal.SampleService;
+import org.csstudio.ams.connector.email.internal.EMailConnectorPreferenceKey;
 import org.eclipse.jface.preference.IPreferenceStore;
 
 public class EMailConnectorProperties
@@ -36,12 +36,12 @@ public class EMailConnectorProperties
 	public EMailConnectorProperties()
 	{
 		IPreferenceStore store = EMailConnectorPlugin.getDefault().getPreferenceStore();
-		mailSenderAdress = store.getString(SampleService.P_MAILSENDERADRESS);
-		mailAuthUser = store.getString(SampleService.P_MAILAUTHUSER);
-		mailAuthPassword = store.getString(SampleService.P_MAILAUTHPASSWORD);
-		mailSubject = store.getString(SampleService.P_MAILSUBJECT);
-		mailContent = store.getString(SampleService.P_MAILCONTENT);
-		mailServerConfig = store.getString(SampleService.P_MAILSERVERCONFIG);
+		mailSenderAdress = store.getString(EMailConnectorPreferenceKey.P_MAILSENDERADRESS);
+		mailAuthUser = store.getString(EMailConnectorPreferenceKey.P_MAILAUTHUSER);
+		mailAuthPassword = store.getString(EMailConnectorPreferenceKey.P_MAILAUTHPASSWORD);
+		mailSubject = store.getString(EMailConnectorPreferenceKey.P_MAILSUBJECT);
+		mailContent = store.getString(EMailConnectorPreferenceKey.P_MAILCONTENT);
+		mailServerConfig = store.getString(EMailConnectorPreferenceKey.P_MAILSERVERCONFIG);
 	}
 
 	public String getMailAuthPassword() {
