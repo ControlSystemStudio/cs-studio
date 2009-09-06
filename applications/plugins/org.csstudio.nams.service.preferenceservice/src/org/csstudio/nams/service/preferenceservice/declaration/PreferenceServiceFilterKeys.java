@@ -1,7 +1,7 @@
 package org.csstudio.nams.service.preferenceservice.declaration;
 
 public enum PreferenceServiceFilterKeys implements HoldsAPreferenceId {
-	P_FILTER_KEYFIELDS("org.csstudio.ams.preferences.filterKeyFields");
+	P_FILTER_KEYFIELDS("filterKeyFields");
 
 	private String _key;
 	private String _description;
