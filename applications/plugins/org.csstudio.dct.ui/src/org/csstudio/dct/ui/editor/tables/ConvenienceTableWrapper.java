@@ -23,6 +23,7 @@ import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.jface.window.ToolTip;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
@@ -130,8 +131,8 @@ public final class ConvenienceTableWrapper {
 		}
 
 		viewer.setColumnProperties(columnNames);
-		
-		ColumnViewerToolTipSupport.enableFor(viewer,ToolTip.NO_RECREATE);
+
+		ColumnViewerToolTipSupport.enableFor(viewer, ToolTip.NO_RECREATE);
 
 		// configure keyboard support
 		TableViewerFocusCellManager focusCellManager = new TableViewerFocusCellManager(viewer, new FocusCellOwnerDrawHighlighter(viewer));
@@ -300,10 +301,10 @@ public final class ConvenienceTableWrapper {
 			}
 
 			// font
-			FontData font = row.getFont(index);
-
+			Font font = row.getFont(index);
+			
 			if (font != null) {
-				cell.setFont(CustomMediaFactory.getInstance().getFont(font));
+				cell.setFont(font);
 			}
 		}
 

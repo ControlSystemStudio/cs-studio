@@ -2,6 +2,7 @@ package org.csstudio.dct.ui.editor.tables;
 
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
@@ -97,7 +98,7 @@ public interface ITableRow extends Comparable<ITableRow> {
 	 *            the column index
 	 * @return the font for the specified column
 	 */
-	FontData getFont(int column);
+	Font getFont(int column);
 
 	/**
 	 * Returns the image for the specified column.

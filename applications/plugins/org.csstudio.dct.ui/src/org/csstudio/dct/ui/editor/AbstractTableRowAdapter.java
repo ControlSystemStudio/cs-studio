@@ -1,12 +1,14 @@
 package org.csstudio.dct.ui.editor;
 
 import org.csstudio.dct.ui.editor.tables.ITableRow;
+import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.platform.util.StringUtil;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
@@ -29,7 +31,7 @@ import org.eclipse.swt.widgets.Composite;
  */
 public abstract class AbstractTableRowAdapter<E> implements ITableRow {
 	public static final String DEFAULT_FONT = "Arial";
-	public static final int DEFAULT_FONT_SIZE = 11;
+	public static final int DEFAULT_FONT_SIZE = 9;
 
 	private E delegate;
 	private String error;
@@ -193,9 +195,9 @@ public abstract class AbstractTableRowAdapter<E> implements ITableRow {
 	/**
 	 *{@inheritDoc}
 	 */
-	public final FontData getFont(int column) {
-		FontData result = null;
-		if (!hasError()) {
+	public final Font getFont(int column) {
+		Font result = null;
+		if (hasError()) {
 			result = doGetFontForError(delegate);
 		} else {
 			switch (column) {
@@ -250,7 +252,13 @@ public abstract class AbstractTableRowAdapter<E> implements ITableRow {
 	 *{@inheritDoc}
 	 */
 	public final CellEditor getCellEditor(int column, Composite parent) {
-		return column == 1 ? doGetValueCellEditor(delegate, parent) : null;
+		CellEditor editor = column == 1 ? doGetValueCellEditor(delegate, parent) : null;
+		
+		if(editor!=null) {
+			editor.getControl().setFont(getFont(column));
+		}
+		
+		return editor;
 	}
 
 	/**
@@ -318,8 +326,8 @@ public abstract class AbstractTableRowAdapter<E> implements ITableRow {
 	 *            the domain object
 	 * @return the font for the key column
 	 */
-	protected FontData doGetFontForKey(E delegate) {
-		return new FontData(DEFAULT_FONT, DEFAULT_FONT_SIZE, SWT.NORMAL);
+	protected Font doGetFontForKey(E delegate) {
+		return CustomMediaFactory.getInstance().getFont(DEFAULT_FONT, DEFAULT_FONT_SIZE, SWT.NORMAL);
 	}
 
 	/**
@@ -330,8 +338,8 @@ public abstract class AbstractTableRowAdapter<E> implements ITableRow {
 	 *            the domain object
 	 * @return the font for the value column
 	 */
-	protected FontData doGetFontForValue(E delegate) {
-		return new FontData(DEFAULT_FONT, DEFAULT_FONT_SIZE, SWT.NORMAL);
+	protected Font doGetFontForValue(E delegate) {
+		return CustomMediaFactory.getInstance().getFont(DEFAULT_FONT, DEFAULT_FONT_SIZE, SWT.NORMAL);
 	}
 
 	/**
@@ -342,8 +350,8 @@ public abstract class AbstractTableRowAdapter<E> implements ITableRow {
 	 *            the domain object
 	 * @return the font for the error column
 	 */
-	protected FontData doGetFontForError(E delegate) {
-		return new FontData(DEFAULT_FONT, DEFAULT_FONT_SIZE, SWT.NORMAL);
+	protected Font doGetFontForError(E delegate) {
+		return CustomMediaFactory.getInstance().getFont(DEFAULT_FONT, DEFAULT_FONT_SIZE, SWT.NORMAL);
 	}
 
 	/**
