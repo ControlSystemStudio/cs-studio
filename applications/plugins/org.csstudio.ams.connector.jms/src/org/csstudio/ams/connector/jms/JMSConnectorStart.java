@@ -40,7 +40,10 @@ import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.Log;
 import org.csstudio.ams.SynchObject;
 import org.csstudio.ams.Utils;
+import org.csstudio.ams.connector.jms.preferences.JmsConnectorPreferenceKey;
 import org.csstudio.platform.logging.CentralLogger;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -106,6 +109,9 @@ public class JMSConnectorStart implements IApplication
     public Object start(IApplicationContext context) throws Exception
     {
         Log.log(this, Log.INFO, "start");
+        
+        JmsConnectorPreferenceKey.showPreferences();
+        
         JMSConnectorWork ecw = null;
         boolean bInitedJms = false;
         lastStatus = getStatus(); // use synchronized method
@@ -213,9 +219,10 @@ public class JMSConnectorStart implements IApplication
     
     public void connectToXMPPServer()
     {
-        String xmppUser = "ams-jms-connector";
-        String xmppPassword = "ams";
-        String xmppServer = "krynfs.desy.de";
+    	IPreferencesService pref = Platform.getPreferencesService();
+    	String xmppServer = pref.getString(JMSConnectorPlugin.PLUGIN_ID, JmsConnectorPreferenceKey.P_XMPP_SERVER, "krynfs.desy.de", null);
+        String xmppUser = pref.getString(JMSConnectorPlugin.PLUGIN_ID, JmsConnectorPreferenceKey.P_XMPP_USER, "anonymous", null);
+        String xmppPassword = pref.getString(JMSConnectorPlugin.PLUGIN_ID, JmsConnectorPreferenceKey.P_XMPP_PASSWORD, "anonymous", null);
 
         try
         {
