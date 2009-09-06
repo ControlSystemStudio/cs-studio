@@ -74,7 +74,7 @@ import org.csstudio.ams.dbAccess.configdb.UserGroupTObject;
 import org.csstudio.ams.dbAccess.configdb.UserGroupUserDAO;
 import org.csstudio.ams.dbAccess.configdb.UserGroupUserTObject;
 import org.csstudio.ams.dbAccess.configdb.UserTObject;
-import org.csstudio.ams.internal.SampleService;
+import org.csstudio.ams.internal.AmsPreferenceKey;
 import org.csstudio.platform.utility.jms.JmsRedundantReceiver;
 import org.eclipse.jface.preference.IPreferenceStore;
 
@@ -395,7 +395,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 		boolean durable = false;
 		boolean result = false;
 		
-		durable = Boolean.parseBoolean(storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_CREATE_DURABLE));
+		durable = Boolean.parseBoolean(storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_CREATE_DURABLE));
 		
 		try {
 			properties = new Hashtable<String, String>();
@@ -403,17 +403,17 @@ public class DistributorWork extends Thread implements AmsConstants {
 					.put(
 							Context.INITIAL_CONTEXT_FACTORY,
 							storeAct
-									.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_CONNECTION_FACTORY_CLASS));
+									.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_CONNECTION_FACTORY_CLASS));
 			properties
 					.put(
 							Context.PROVIDER_URL,
 							storeAct
-									.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_SENDER_PROVIDER_URL));
+									.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_SENDER_PROVIDER_URL));
 			amsSenderContext = new InitialContext(properties);
 
 			amsSenderFactory = (ConnectionFactory) amsSenderContext
 					.lookup(storeAct
-							.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_CONNECTION_FACTORY));
+							.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_CONNECTION_FACTORY));
 			amsSenderConnection = amsSenderFactory.createConnection();
 
 			// ADDED BY: Markus Möller, 25.05.2007
@@ -432,7 +432,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 			amsPublisherCommand = amsSenderSession
 					.createProducer(amsSenderSession
 							.createTopic(storeAct
-									.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_COMMAND)));
+									.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_TOPIC_COMMAND)));
 			if (amsPublisherCommand == null) {
 				Log
 						.log(this, Log.FATAL,
@@ -447,9 +447,9 @@ public class DistributorWork extends Thread implements AmsConstants {
 			 * storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_SMS_CONNECTOR)));
 			 */
 
-			topicName = storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_SMS_CONNECTOR);
+			topicName = storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_TOPIC_SMS_CONNECTOR);
 			
-			full = storeAct.getBoolean(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_SMS_CONNECTOR_FORWARD);
+			full = storeAct.getBoolean(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_TOPIC_SMS_CONNECTOR_FORWARD);
 			
 			amsPublisherSms = amsSenderSession
 					.createProducer(amsSenderSession.createTopic(topicName));
@@ -462,9 +462,9 @@ public class DistributorWork extends Thread implements AmsConstants {
 			topicContainer.addConnectorTopic(new ConnectorTopic(topicName, "SmsConnector", full));
 			
 			// ADDED BY: Kai Meyer, Matthias Zeimer, 17.10.2007
-			topicName = storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_JMS_CONNECTOR);
+			topicName = storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_TOPIC_JMS_CONNECTOR);
 
-            full = storeAct.getBoolean(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_JMS_CONNECTOR_FORWARD);
+            full = storeAct.getBoolean(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_TOPIC_JMS_CONNECTOR_FORWARD);
             
             Log.log(Log.INFO,
 					"DistributorWork.initJmsInternal(): jmsTargetTopicName="
@@ -485,9 +485,9 @@ public class DistributorWork extends Thread implements AmsConstants {
 			 * storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_EMAIL_CONNECTOR)));
 			 */
 
-            topicName = storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_EMAIL_CONNECTOR);
+            topicName = storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_TOPIC_EMAIL_CONNECTOR);
 
-            full = storeAct.getBoolean(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_EMAIL_CONNECTOR_FORWARD);
+            full = storeAct.getBoolean(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_TOPIC_EMAIL_CONNECTOR_FORWARD);
 			
             amsPublisherMail = amsSenderSession
 					.createProducer(amsSenderSession.createTopic(topicName));
@@ -505,9 +505,9 @@ public class DistributorWork extends Thread implements AmsConstants {
 			 * storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_VOICEMAIL_CONNECTOR)));
 			 */
 
-            topicName = storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_VOICEMAIL_CONNECTOR);
+            topicName = storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_TOPIC_VOICEMAIL_CONNECTOR);
 
-            full = storeAct.getBoolean(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_VOICEMAIL_CONNECTOR_FORWARD);
+            full = storeAct.getBoolean(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_TOPIC_VOICEMAIL_CONNECTOR_FORWARD);
 
             amsPublisherVoiceMail = amsSenderSession
 					.createProducer(amsSenderSession.createTopic(topicName));
@@ -524,17 +524,17 @@ public class DistributorWork extends Thread implements AmsConstants {
 			amsReceiver = new JmsRedundantReceiver(
 					"DistributorWorkReceiverInternal",
 					storeAct
-							.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_PROVIDER_URL_1),
+							.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_1),
 					storeAct
-							.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_PROVIDER_URL_2));
+							.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_2));
 
             // CHANGED BY Markus Möller, 2007-10-30
             // Changed to the topic for the message minder
 			result = amsReceiver.
 			         createRedundantSubscriber(
 			                 "amsSubscriberDist",
-			                 storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_DISTRIBUTOR),
-			                 storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TSUB_DISTRIBUTOR),
+			                 storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_TOPIC_DISTRIBUTOR),
+			                 storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_TSUB_DISTRIBUTOR),
 			                 durable);            
 			
 			if (result == false)
@@ -546,8 +546,8 @@ public class DistributorWork extends Thread implements AmsConstants {
 			result = amsReceiver
 					.createRedundantSubscriber(
 							"amsSubscriberReply",
-							storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_REPLY),
-							storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TSUB_REPLY),
+							storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_TOPIC_REPLY),
+							storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_TSUB_REPLY),
 							durable);
 			
 			if (result == false) {
@@ -668,17 +668,17 @@ public class DistributorWork extends Thread implements AmsConstants {
 					.put(
 							Context.INITIAL_CONTEXT_FACTORY,
 							storeAct
-									.getString(org.csstudio.ams.internal.SampleService.P_JMS_EXTERN_CONNECTION_FACTORY_CLASS));
+									.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_EXTERN_CONNECTION_FACTORY_CLASS));
 			properties
 					.put(
 							Context.PROVIDER_URL,
 							storeAct
-									.getString(org.csstudio.ams.internal.SampleService.P_JMS_EXTERN_SENDER_PROVIDER_URL));
+									.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_EXTERN_SENDER_PROVIDER_URL));
 			extContext = new InitialContext(properties);
 
 			extFactory = (ConnectionFactory) extContext
 					.lookup(storeAct
-							.getString(org.csstudio.ams.internal.SampleService.P_JMS_EXTERN_CONNECTION_FACTORY));
+							.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_EXTERN_CONNECTION_FACTORY));
 			extConnection = extFactory.createConnection();
 
 			// ADDED BY: Markus Möller, 25.05.2007
@@ -697,7 +697,7 @@ public class DistributorWork extends Thread implements AmsConstants {
 			extPublisherAlarm = extSession
 					.createProducer(extSession
 							.createTopic(storeAct
-									.getString(org.csstudio.ams.internal.SampleService.P_JMS_EXT_TOPIC_ALARM)));
+									.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_EXT_TOPIC_ALARM)));
 			if (extPublisherAlarm == null) {
 				Log.log(this, Log.FATAL, "could not create extPublisherAlarm");
 				return false;
@@ -1712,19 +1712,19 @@ public class DistributorWork extends Thread implements AmsConstants {
 					.put(
 							Context.INITIAL_CONTEXT_FACTORY,
 							store
-									.getString(SampleService.P_JMS_FREE_TOPIC_CONNECTION_FACTORY_CLASS));
+									.getString(AmsPreferenceKey.P_JMS_FREE_TOPIC_CONNECTION_FACTORY_CLASS));
 
 //			String path = topicObj.getProtocol() + "://" + topicObj.getUrl()
 //					+ ":" + topicObj.getPort() + "/";
 			// properties.put(Context.PROVIDER_URL, "rmi://localhost:1099/");
 //			properties.put(Context.PROVIDER_URL, path);
 			properties.put(Context.PROVIDER_URL, 
-                    store.getString(org.csstudio.ams.internal.SampleService.P_JMS_EXTERN_SENDER_PROVIDER_URL));
+                    store.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_EXTERN_SENDER_PROVIDER_URL));
 			freeTopicContext = new InitialContext(properties);
 
 			ConnectionFactory freeTopicFactory = (ConnectionFactory) freeTopicContext
 					.lookup(store
-							.getString(SampleService.P_JMS_FREE_TOPIC_CONNECTION_FACTORY));
+							.getString(AmsPreferenceKey.P_JMS_FREE_TOPIC_CONNECTION_FACTORY));
 			freeTopicConn = freeTopicFactory.createConnection();
 
 			// ADDED BY: Markus Möller, 25.05.2007

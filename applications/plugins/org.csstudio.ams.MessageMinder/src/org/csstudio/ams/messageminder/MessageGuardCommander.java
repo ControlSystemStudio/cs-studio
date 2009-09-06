@@ -35,7 +35,7 @@ import javax.jms.Message;
 
 import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.Log;
-import org.csstudio.ams.internal.SampleService;
+import org.csstudio.ams.internal.AmsPreferenceKey;
 import org.csstudio.ams.messageminder.preference.PreferenceConstants;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.TimestampFactory;
@@ -144,7 +144,7 @@ public class MessageGuardCommander extends Job {
         // IEclipsePreferences storeAct = new DefaultScope().getNode(Activator.PLUGIN_ID);
         IPreferenceStore storeAct = AmsActivator.getDefault().getPreferenceStore();
 
-        boolean durable = Boolean.parseBoolean(storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_CREATE_DURABLE));
+        boolean durable = Boolean.parseBoolean(storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_CREATE_DURABLE));
 
         
         /**
@@ -168,16 +168,16 @@ public class MessageGuardCommander extends Job {
         // --- JMS Receiver Connect---
 //        _amsReceiver = new JmsRedundantReceiver("AmsMassageMinderWorkReceiverInternal", storeAct.get(org.csstudio.ams.internal.SampleService.P_JMS_AMS_PROVIDER_URL_1,""),
 //                storeAct.get(SampleService.P_JMS_AMS_PROVIDER_URL_2,""));
-        _amsReceiver = new JmsRedundantReceiver("AmsMassageMinderWorkReceiverInternal", storeAct.getString(SampleService.P_JMS_AMS_PROVIDER_URL_1),
-                storeAct.getString(SampleService.P_JMS_AMS_PROVIDER_URL_2));
+        _amsReceiver = new JmsRedundantReceiver("AmsMassageMinderWorkReceiverInternal", storeAct.getString(AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_1),
+                storeAct.getString(AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_2));
         if(!_amsReceiver.isConnected()) {
             Log.log(this, Log.FATAL, "could not create amsReceiver");
         }
         
         boolean result = _amsReceiver.createRedundantSubscriber(
                 "amsSubscriberMessageMinder",
-                storeAct.getString(SampleService.P_JMS_AMS_TOPIC_MESSAGEMINDER),
-                storeAct.getString(SampleService.P_JMS_AMS_TSUB_MESSAGEMINDER),
+                storeAct.getString(AmsPreferenceKey.P_JMS_AMS_TOPIC_MESSAGEMINDER),
+                storeAct.getString(AmsPreferenceKey.P_JMS_AMS_TSUB_MESSAGEMINDER),
                 durable);
 
         if(!result){
@@ -185,10 +185,10 @@ public class MessageGuardCommander extends Job {
         }
         
         // --- JMS Producer Connect ---
-        String[] urls = new String[] {storeAct.getString(SampleService.P_JMS_AMS_SENDER_PROVIDER_URL)};
+        String[] urls = new String[] {storeAct.getString(AmsPreferenceKey.P_JMS_AMS_SENDER_PROVIDER_URL)};
         _amsProducer = new JmsRedundantProducer("AmsMassageMinderWorkProducerInternal",urls);
         //TODO: remove debug settings
-        _producerID = _amsProducer.createProducer(storeAct.getString(SampleService.P_JMS_AMS_TOPIC_DISTRIBUTOR));
+        _producerID = _amsProducer.createProducer(storeAct.getString(AmsPreferenceKey.P_JMS_AMS_TOPIC_DISTRIBUTOR));
         // _producerID = _amsProducer.createProducer("T_HELGE_TEST_OUT");
         
         //--- Derby DB Connect ---

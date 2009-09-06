@@ -34,7 +34,7 @@ import javax.jms.Session;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import org.csstudio.ams.Activator;
+import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.Log;
 import org.csstudio.ams.SynchObject;
@@ -304,16 +304,16 @@ public class SmsConnectorStart implements IApplication
     {
         try
         {
-            IPreferenceStore storeAct = Activator.getDefault().getPreferenceStore();
+            IPreferenceStore storeAct = AmsActivator.getDefault().getPreferenceStore();
             Hashtable<String, String> properties = new Hashtable<String, String>();
             properties.put(Context.INITIAL_CONTEXT_FACTORY, 
-                    storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_EXTERN_CONNECTION_FACTORY_CLASS));
+                    storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_EXTERN_CONNECTION_FACTORY_CLASS));
             properties.put(Context.PROVIDER_URL, 
-                    storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_EXTERN_SENDER_PROVIDER_URL));
+                    storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_EXTERN_SENDER_PROVIDER_URL));
             extContext = new InitialContext(properties);
             
             extFactory = (ConnectionFactory) extContext.lookup(
-                    storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_EXTERN_CONNECTION_FACTORY));
+                    storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_EXTERN_CONNECTION_FACTORY));
             extConnection = extFactory.createConnection();
             
             // ADDED BY: Markus M�ller, 25.05.2007
@@ -328,7 +328,7 @@ public class SmsConnectorStart implements IApplication
             */
             
             extPublisherStatusChange = extSession.createProducer(extSession.createTopic(
-                    storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_EXT_TOPIC_STATUSCHANGE)));
+                    storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_EXT_TOPIC_STATUSCHANGE)));
             if (extPublisherStatusChange == null)
             {
                 Log.log(this, Log.FATAL, "could not create extPublisherStatusChange");

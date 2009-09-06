@@ -107,13 +107,13 @@ public class JMSConnectorWork extends Thread implements AmsConstants {
 		try {
 			IPreferenceStore storeAct = AmsActivator.getDefault().getPreferenceStore();
 
-			boolean durable = Boolean.parseBoolean(storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_CREATE_DURABLE));
+			boolean durable = Boolean.parseBoolean(storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_CREATE_DURABLE));
 
 			
 //			String url1 = "failover:(tcp://localhost:50000)";
 //			String url2 = "failover:(tcp://localhost:60000)";
-			String url1 = storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_PROVIDER_URL_1);
-			String url2 = storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_PROVIDER_URL_2);
+			String url1 = storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_1);
+			String url2 = storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_2);
 			messageReceiver = new JmsRedundantReceiver(
 					"JMSConnectorWorkReceiverInternal",
 					url1,
@@ -127,8 +127,8 @@ public class JMSConnectorWork extends Thread implements AmsConstants {
 			result = messageReceiver
 					.createRedundantSubscriber(
 							AMS_SUBSCRIBER_JMS_ID,
-							storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_JMS_CONNECTOR),
-							storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TSUB_JMS_CONNECTOR),
+							storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_TOPIC_JMS_CONNECTOR),
+							storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_TSUB_JMS_CONNECTOR),
 							durable);
 			if (result == false) {
 				Log.log(this, Log.FATAL, "could not create "

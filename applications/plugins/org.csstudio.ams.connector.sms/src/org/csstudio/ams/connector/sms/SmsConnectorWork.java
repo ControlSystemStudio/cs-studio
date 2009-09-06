@@ -41,7 +41,7 @@ import javax.jms.Topic;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import org.csstudio.ams.Activator;
+import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.Log;
 import org.csstudio.ams.connector.sms.internal.SampleService;
@@ -469,7 +469,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
         {
             Log.log(this, Log.FATAL, "could not init modem", e);
             
-            JmsSender sender = new JmsSender("SmsConnectorAlarmSender", store.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_SENDER_PROVIDER_URL), "ALARM");
+            JmsSender sender = new JmsSender("SmsConnectorAlarmSender", store.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_SENDER_PROVIDER_URL), "ALARM");
             if(sender.isConnected())
             {
                 if(sender.sendMessage("alarm", "SmsConnectorWork: Cannot init modem [" + e.getMessage() + "]", "MAJOR") == false)
@@ -526,23 +526,23 @@ public class SmsConnectorWork extends Thread implements AmsConstants
     
     private boolean initJms()
     {
-        IPreferenceStore storeAct = Activator.getDefault().getPreferenceStore();
+        IPreferenceStore storeAct = AmsActivator.getDefault().getPreferenceStore();
         Hashtable<String, String> properties = null;
         boolean result = false;
         
-        boolean durable = Boolean.parseBoolean(storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_CREATE_DURABLE));
+        boolean durable = Boolean.parseBoolean(storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_CREATE_DURABLE));
        
         try
         {
             properties = new Hashtable<String, String>();
             properties.put(Context.INITIAL_CONTEXT_FACTORY, 
-                    storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_CONNECTION_FACTORY_CLASS));
+                    storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_CONNECTION_FACTORY_CLASS));
             properties.put(Context.PROVIDER_URL, 
-                    storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_SENDER_PROVIDER_URL));
+                    storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_SENDER_PROVIDER_URL));
             amsSenderContext = new InitialContext(properties);
             
             amsSenderFactory = (ConnectionFactory) amsSenderContext.lookup(
-                    storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_CONNECTION_FACTORY));
+                    storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_CONNECTION_FACTORY));
             amsSenderConnection = amsSenderFactory.createConnection();
             
             amsSenderConnection.setClientID("SmsConnectorWorkSenderInternal");
@@ -556,7 +556,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
             */
             
             amsPublisherReply = amsSenderSession.createProducer(amsSenderSession.createTopic(
-                    storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_REPLY)));
+                    storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_TOPIC_REPLY)));
             if (amsPublisherReply == null)
             {
                 Log.log(this, Log.FATAL, "could not create amsPublisherReply");
@@ -566,13 +566,13 @@ public class SmsConnectorWork extends Thread implements AmsConstants
             amsSenderConnection.start();
 
             // Create the redundant receiver
-            amsReceiver = new JmsRedundantReceiver("SmsConnectorWorkReceiverInternal", storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_PROVIDER_URL_1), storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_PROVIDER_URL_2));
+            amsReceiver = new JmsRedundantReceiver("SmsConnectorWorkReceiverInternal", storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_1), storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_2));
            
             // Create first subscriber (default topic for the connector) 
             result = amsReceiver.createRedundantSubscriber(
                     "amsSubscriberSms",
-                    storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_SMS_CONNECTOR),
-                    storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TSUB_SMS_CONNECTOR),
+                    storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_TOPIC_SMS_CONNECTOR),
+                    storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_TSUB_SMS_CONNECTOR),
                     durable);
             if(result == false)
             {
@@ -583,8 +583,8 @@ public class SmsConnectorWork extends Thread implements AmsConstants
             // Create second subscriber (topic for the modem test) 
             result = amsReceiver.createRedundantSubscriber(
                     "amsSubscriberSmsModemtest",
-                    storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_SMS_CONNECTOR_MODEMTEST),
-                    storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TSUB_SMS_CONNECTOR_MODEMTEST),
+                    storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_TOPIC_SMS_CONNECTOR_MODEMTEST),
+                    storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_TSUB_SMS_CONNECTOR_MODEMTEST),
                     durable);
             if(result == false)
             {
@@ -611,7 +611,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
         {
             Log.log(this, Log.FATAL, "could not init internal Jms", e);
             
-            JmsSender sender = new JmsSender("SmsConnectorAlarmSender", storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_SENDER_PROVIDER_URL), "ALARM");
+            JmsSender sender = new JmsSender("SmsConnectorAlarmSender", storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_SENDER_PROVIDER_URL), "ALARM");
             if(sender.isConnected())
             {
                 if(sender.sendMessage("alarm", "SmsConnectorWork: Cannot init internal Jms [" + e.getMessage() + "]", "MAJOR") == false)
@@ -736,9 +736,9 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                                 Log.log(this, Log.WARN, "A SMS could not be sent. Set it to the state BAD and removed it from th list.");
                                 Log.log(this, Log.WARN, sms.toString());
                                 
-                                IPreferenceStore store = Activator.getDefault().getPreferenceStore();
+                                IPreferenceStore store = AmsActivator.getDefault().getPreferenceStore();
 
-                                JmsSender sender = new JmsSender("SmsConnectorAlarmSender", store.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_SENDER_PROVIDER_URL), "ALARM");
+                                JmsSender sender = new JmsSender("SmsConnectorAlarmSender", store.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_SENDER_PROVIDER_URL), "ALARM");
                                 if(sender.isConnected())
                                 {
                                     if(sender.sendMessage("alarm", "SmsConnectorWork: SMS set to state BAD: " + sms.toString(), "MINOR") == false)
@@ -836,8 +836,8 @@ public class SmsConnectorWork extends Thread implements AmsConstants
         MapMessage mapMessage = null;
         String topicName = null;
 
-        IPreferenceStore storeAct = org.csstudio.ams.Activator.getDefault().getPreferenceStore();
-        topicName = storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_MONITOR);
+        IPreferenceStore storeAct = org.csstudio.ams.AmsActivator.getDefault().getPreferenceStore();
+        topicName = storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_TOPIC_MONITOR);
 
         try
         {
@@ -981,8 +981,8 @@ public class SmsConnectorWork extends Thread implements AmsConstants
         Log.log(this, Log.INFO, "Number of modems:         " + modemInfo.getModemCount());
         success = (checkedModems == modemInfo.getModemCount());
 
-        IPreferenceStore storeAct = org.csstudio.ams.Activator.getDefault().getPreferenceStore();
-        topicName = storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_MONITOR);
+        IPreferenceStore storeAct = org.csstudio.ams.AmsActivator.getDefault().getPreferenceStore();
+        topicName = storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_TOPIC_MONITOR);
         
         if(checkedModems == modemInfo.getModemCount())
         {

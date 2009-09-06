@@ -40,32 +40,32 @@ import org.eclipse.jface.preference.IPreferenceStore;
  */
 public class SampleService
 {
-    public static final String P_PREFERENCE_STRING = "org.csstudio.ams.connector.sms.preferences.modem";
+    public static final String P_PREFERENCE_STRING = "modem";
 
-    public static final String P_MODEM_COUNT = "org.csstudio.ams.connector.sms.preferences.modemCount";
+    public static final String P_MODEM_COUNT = "modemCount";
 
-	public static final String P_MODEM1_COMPORT = "org.csstudio.ams.connector.sms.preferences.modem1ComPort";
-	public static final String P_MODEM1_COMBAUDRATE = "org.csstudio.ams.connector.sms.preferences.modem1ComBaudrate";
-	public static final String P_MODEM1_MANUFACTURE = "org.csstudio.ams.connector.sms.preferences.modem1Manufacture";
-	public static final String P_MODEM1_MODEL = "org.csstudio.ams.connector.sms.preferences.modem1Model";
-	public static final String P_MODEM1_SIMPIM = "org.csstudio.ams.connector.sms.preferences.modem1SimPin";
-    public static final String P_MODEM1_NUMBER = "org.csstudio.ams.connector.sms.preferences.modem1Number";
+	public static final String P_MODEM1_COMPORT = "modem1ComPort";
+	public static final String P_MODEM1_COMBAUDRATE = "modem1ComBaudrate";
+	public static final String P_MODEM1_MANUFACTURE = "modem1Manufacture";
+	public static final String P_MODEM1_MODEL = "modem1Model";
+	public static final String P_MODEM1_SIMPIM = "modem1SimPin";
+    public static final String P_MODEM1_NUMBER = "modem1Number";
 
-    public static final String P_MODEM2_COMPORT = "org.csstudio.ams.connector.sms.preferences.modem2ComPort";
-    public static final String P_MODEM2_COMBAUDRATE = "org.csstudio.ams.connector.sms.preferences.modem2ComBaudrate";
-    public static final String P_MODEM2_MANUFACTURE = "org.csstudio.ams.connector.sms.preferences.modem2Manufacture";
-    public static final String P_MODEM2_MODEL = "org.csstudio.ams.connector.sms.preferences.modem2Model";
-    public static final String P_MODEM2_SIMPIM = "org.csstudio.ams.connector.sms.preferences.modem2SimPin";
-    public static final String P_MODEM2_NUMBER = "org.csstudio.ams.connector.sms.preferences.modem2Number";
+    public static final String P_MODEM2_COMPORT = "modem2ComPort";
+    public static final String P_MODEM2_COMBAUDRATE = "modem2ComBaudrate";
+    public static final String P_MODEM2_MANUFACTURE = "modem2Manufacture";
+    public static final String P_MODEM2_MODEL = "modem2Model";
+    public static final String P_MODEM2_SIMPIM = "modem2SimPin";
+    public static final String P_MODEM2_NUMBER = "modem2Number";
 
-    public static final String P_MODEM3_COMPORT = "org.csstudio.ams.connector.sms.preferences.modem3ComPort";
-    public static final String P_MODEM3_COMBAUDRATE = "org.csstudio.ams.connector.sms.preferences.modem3ComBaudrate";
-    public static final String P_MODEM3_MANUFACTURE = "org.csstudio.ams.connector.sms.preferences.modem3Manufacture";
-    public static final String P_MODEM3_MODEL = "org.csstudio.ams.connector.sms.preferences.modem3Model";
-    public static final String P_MODEM3_SIMPIM = "org.csstudio.ams.connector.sms.preferences.modem3SimPin";
-    public static final String P_MODEM3_NUMBER = "org.csstudio.ams.connector.sms.preferences.modem3Number";
+    public static final String P_MODEM3_COMPORT = "modem3ComPort";
+    public static final String P_MODEM3_COMBAUDRATE = "modem3ComBaudrate";
+    public static final String P_MODEM3_MANUFACTURE = "modem3Manufacture";
+    public static final String P_MODEM3_MODEL = "modem3Model";
+    public static final String P_MODEM3_SIMPIM = "modem3SimPin";
+    public static final String P_MODEM3_NUMBER = "modem3Number";
 
-    public static final String P_MODEM_READ_WAITING_PERIOD = "org.csstudio.ams.connector.sms.preferences.modemReadWaitingPeriod";
+    public static final String P_MODEM_READ_WAITING_PERIOD = "modemReadWaitingPeriod";
 
     /**
 	 * The only one instance of this service.

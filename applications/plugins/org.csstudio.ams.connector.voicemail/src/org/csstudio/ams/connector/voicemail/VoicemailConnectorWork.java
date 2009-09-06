@@ -384,7 +384,7 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
         Hashtable<String, String> properties = null;
         boolean result = false;
         
-        boolean durable = Boolean.parseBoolean(storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_CREATE_DURABLE));
+        boolean durable = Boolean.parseBoolean(storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_CREATE_DURABLE));
 
         
         try
@@ -392,13 +392,13 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
             storeAct = AmsActivator.getDefault().getPreferenceStore();
             properties = new Hashtable<String, String>();
             properties.put(Context.INITIAL_CONTEXT_FACTORY, 
-                    storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_CONNECTION_FACTORY_CLASS));
+                    storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_CONNECTION_FACTORY_CLASS));
             properties.put(Context.PROVIDER_URL, 
-                    storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_PROVIDER_URL_1));
+                    storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_1));
             amsSenderContext = new InitialContext(properties);
             
             amsSenderFactory = (ConnectionFactory) amsSenderContext.lookup(
-                    storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_CONNECTION_FACTORY));
+                    storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_CONNECTION_FACTORY));
             amsSenderConnection = amsSenderFactory.createConnection();
             
             // ADDED BY: Markus Möller, 25.05.2007
@@ -413,7 +413,7 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
             */
             
             amsPublisherReply = amsSenderSession.createProducer(amsSenderSession.createTopic(
-                    storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_REPLY)));
+                    storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_TOPIC_REPLY)));
             if (amsPublisherReply == null)
             {
                 Log.log(this, Log.FATAL, "could not create amsPublisherReply");
@@ -445,11 +445,11 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants
                 return false;
             }
             */
-            amsReceiver = new JmsRedundantReceiver("VoicemailConnectorWorkReceiverInternal", storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_PROVIDER_URL_1), storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_PROVIDER_URL_2));
+            amsReceiver = new JmsRedundantReceiver("VoicemailConnectorWorkReceiverInternal", storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_1), storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_2));
             result = amsReceiver.createRedundantSubscriber(
                     "amsSubscriberVm",
-                    storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_VOICEMAIL_CONNECTOR),
-                    storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TSUB_VOICEMAIL_CONNECTOR),
+                    storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_TOPIC_VOICEMAIL_CONNECTOR),
+                    storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_TSUB_VOICEMAIL_CONNECTOR),
                     durable);
             if(result == false)
             {

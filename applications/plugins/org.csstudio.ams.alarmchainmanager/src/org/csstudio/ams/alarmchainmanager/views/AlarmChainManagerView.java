@@ -437,13 +437,13 @@ public class AlarmChainManagerView extends ViewPart implements AmsConstants, Sel
         {
             properties = new Hashtable<String, String>();
             properties.put(Context.INITIAL_CONTEXT_FACTORY, 
-                    storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_CONNECTION_FACTORY_CLASS));
+                    storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_CONNECTION_FACTORY_CLASS));
             properties.put(Context.PROVIDER_URL, 
-                    storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_SENDER_PROVIDER_URL));
+                    storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_SENDER_PROVIDER_URL));
             amsSenderContext = new InitialContext(properties);
             
             amsSenderFactory = (ConnectionFactory) amsSenderContext.lookup(
-                    storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_CONNECTION_FACTORY));
+                    storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_CONNECTION_FACTORY));
             amsSenderConnection = amsSenderFactory.createConnection();
             
             amsSenderConnection.setClientID("MessageManagerSenderInternal");
@@ -457,7 +457,7 @@ public class AlarmChainManagerView extends ViewPart implements AmsConstants, Sel
             */
             
             amsPublisherReply = amsSenderSession.createProducer(amsSenderSession.createTopic(
-                    storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_REPLY)));
+                    storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_TOPIC_REPLY)));
             if (amsPublisherReply == null)
             {
                 Log.log(this, Log.FATAL, "could not create amsPublisherReply");

@@ -21,18 +21,6 @@
             name="Connector SMS"/>
    </extension>
    <extension
-         id="AmsSmsConnectorProduct"
-         point="org.eclipse.core.runtime.products">
-      <product
-            application="org.csstudio.ams.connector.sms.SmsConnector"
-            name="AmsSmsConnector">
-         <property
-               name="appName"
-               value="AmsSmsConnector">
-         </property>
-      </product>
-   </extension>
-   <extension
          point="org.csstudio.platform.managementCommands">
       <command
             class="org.csstudio.ams.connector.sms.management.GetState"
@@ -57,6 +45,18 @@
                label="Password">
          </stringParameter>
       </command>
+   </extension>
+   <extension
+         id="AmsSmsConnector"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.csstudio.ams.connector.sms.SmsConnector"
+            name="AmsSmsConnectorProduct">
+         <property
+               name="appName"
+               value="AmsSmsConnectorProduct">
+         </property>
+      </product>
    </extension>
 
 </plugin>

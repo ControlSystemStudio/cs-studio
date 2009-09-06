@@ -250,7 +250,7 @@ public class EMailConnectorWork extends Thread implements AmsConstants
         {
             IPreferenceStore storeAct = AmsActivator.getDefault().getPreferenceStore();
             
-            boolean durable = Boolean.parseBoolean(storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_CREATE_DURABLE));
+            boolean durable = Boolean.parseBoolean(storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_CREATE_DURABLE));
 
             /*
             Hashtable<String, String> properties = new Hashtable<String, String>();
@@ -292,8 +292,8 @@ public class EMailConnectorWork extends Thread implements AmsConstants
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_EMAIL_CONNECTOR)));
             */
             
-            String url1 = storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_PROVIDER_URL_1);
-			String url2 = storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_PROVIDER_URL_2);
+            String url1 = storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_1);
+			String url2 = storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_2);
 			Log.log(this, Log.INFO, "Connecting for urls: "+url1+" and "+url2);
 			amsReceiver = new JmsRedundantReceiver("EMailConnectorWorkReceiverInternal", url1,
                     url2);
@@ -306,8 +306,8 @@ public class EMailConnectorWork extends Thread implements AmsConstants
 
             result = amsReceiver.createRedundantSubscriber(
                     "amsSubscriberEmail",
-                    storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_EMAIL_CONNECTOR),
-                    storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TSUB_EMAIL_CONNECTOR),
+                    storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_TOPIC_EMAIL_CONNECTOR),
+                    storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_TSUB_EMAIL_CONNECTOR),
                     durable);
             if(result == false)
             {
