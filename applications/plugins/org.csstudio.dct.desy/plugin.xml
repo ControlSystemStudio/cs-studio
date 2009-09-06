@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.csstudio.dct.recordfunctions">
+      <recordfunction
+            class="org.csstudio.dct.dbexport.ExportToDeviceDatabaseFunction"
+            id="org.csstudio.dct.dbexport.ExportToDeviceDatabaseFunction"
+            name="Export To Device Database">
+         <attribute
+               description="org.csstudio.dct.desy.attribute1"
+               id="org.csstudio.dct.desy.attribute1">
+         </attribute>
+      </recordfunction>
+   </extension>
+
+</plugin>

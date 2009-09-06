@@ -1,11 +1,15 @@
-package org.csstudio.dct;
+package org.csstudio.dct.dbexport;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.csstudio.dct.IRecordFunction;
 import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.util.AliasResolutionUtil;
 import org.csstudio.platform.logging.CentralLogger;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 /**
  * Record function for archiving records.
@@ -15,7 +19,7 @@ import org.csstudio.platform.logging.CentralLogger;
  * @author Sven Wende
  * 
  */
-public final class ArchiveRecordsFunction implements IRecordFunction {
+public final class ExportToDeviceDatabaseFunction implements IRecordFunction {
 	private static final String ATTR_ARCHIVE = "archive";
 
 	/**
@@ -25,6 +29,26 @@ public final class ArchiveRecordsFunction implements IRecordFunction {
 		if (Boolean.parseBoolean(attributes.get(ATTR_ARCHIVE))) {
 			CentralLogger.getInstance().info(null, "Archiving Record [" + AliasResolutionUtil.getEpicsNameFromHierarchy(record) + "]");
 		}
+
+		Record dbRecord = new Record();
+		dbRecord.setName(AliasResolutionUtil.getEpicsNameFromHierarchy(record));
+
+		Transaction tx = null;
+		Session session = SessionFactoryUtil.getInstance().getCurrentSession();
+		try {
+			tx = session.beginTransaction();
+			session.save(dbRecord);
+			tx.commit();
+		} catch (RuntimeException e) {
+			if (tx != null && tx.isActive()) {
+				try {
+					tx.rollback();
+				} catch (HibernateException e1) {
+					CentralLogger.getInstance().error(this, "Error during transaction rollback.", e1);
+				}
+				CentralLogger.getInstance().error(this, e);
+			}
+		}
 	}
 
 	/**
@@ -33,7 +57,6 @@ public final class ArchiveRecordsFunction implements IRecordFunction {
 	public Map<String, String> getAttributes() {
 		Map<String, String> result = new LinkedHashMap<String, String>();
 		result.put(ATTR_ARCHIVE, "true");
-		result.put("FUKC", "true");
 		return result;
 	}
 

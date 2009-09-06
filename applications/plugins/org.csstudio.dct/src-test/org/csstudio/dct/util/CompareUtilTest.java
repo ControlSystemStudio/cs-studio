@@ -10,11 +10,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.csstudio.dct.dbexport.Record;
 import org.csstudio.dct.model.IElement;
 import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.model.IVisitor;
 import org.csstudio.dct.model.internal.AbstractElement;
+import org.csstudio.dct.model.internal.Record;
 import org.junit.Before;
 import org.junit.Test;
 
