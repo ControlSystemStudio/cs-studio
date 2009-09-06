@@ -32,7 +32,7 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.csstudio.ams.PasswordEditor;
 import org.csstudio.ams.connector.sms.Messages;
 import org.csstudio.ams.connector.sms.SmsConnectorPlugin;
-import org.csstudio.ams.connector.sms.internal.SampleService;
+import org.csstudio.ams.connector.sms.internal.SmsConnectorPreferenceKey;
 
 /**
  * A preference page that contains the following types of preferences:<br>
@@ -63,57 +63,57 @@ public class SmsPreferencePage extends FieldEditorPreferencePage implements
 	@Override
 	protected final void createFieldEditors() {
 
-        addField(new StringFieldEditor(SampleService.P_MODEM_READ_WAITING_PERIOD,
+        addField(new StringFieldEditor(SmsConnectorPreferenceKey.P_MODEM_READ_WAITING_PERIOD,
                 Messages.P_MODEM_READ_WAITING_PERIOD, getFieldEditorParent()));
 
         new Label(getFieldEditorParent(), SWT.NONE);new Label(getFieldEditorParent(), SWT.NONE);
 
-	    addField(new StringFieldEditor(SampleService.P_MODEM_COUNT,
+	    addField(new StringFieldEditor(SmsConnectorPreferenceKey.P_MODEM_COUNT,
 	            Messages.P_MODEM_COUNT, getFieldEditorParent()));
 
         new Label(getFieldEditorParent(), SWT.NONE);new Label(getFieldEditorParent(), SWT.NONE);
 
-        addField(new StringFieldEditor(SampleService.P_MODEM1_COMPORT,
+        addField(new StringFieldEditor(SmsConnectorPreferenceKey.P_MODEM1_COMPORT,
 				Messages.P_MODEM1_COMPORT, getFieldEditorParent()));
-		addField(new StringFieldEditor(SampleService.P_MODEM1_COMBAUDRATE,
+		addField(new StringFieldEditor(SmsConnectorPreferenceKey.P_MODEM1_COMBAUDRATE,
 				Messages.P_MODEM1_COMBAUDRATE, getFieldEditorParent()));
-		addField(new StringFieldEditor(SampleService.P_MODEM1_MANUFACTURE,
+		addField(new StringFieldEditor(SmsConnectorPreferenceKey.P_MODEM1_MANUFACTURE,
 				Messages.P_MODEM1_MANUFACTURE, getFieldEditorParent()));
-		addField(new StringFieldEditor(SampleService.P_MODEM1_MODEL,
+		addField(new StringFieldEditor(SmsConnectorPreferenceKey.P_MODEM1_MODEL,
 				Messages.P_MODEM1_MODEL, getFieldEditorParent()));
-        addField(new StringFieldEditor(SampleService.P_MODEM1_NUMBER,
+        addField(new StringFieldEditor(SmsConnectorPreferenceKey.P_MODEM1_NUMBER,
                 Messages.P_MODEM1_NUMBER, getFieldEditorParent()));
-		addField(new PasswordEditor(SampleService.P_MODEM1_SIMPIM,
+		addField(new PasswordEditor(SmsConnectorPreferenceKey.P_MODEM1_SIMPIM,
 				Messages.P_MODEM1_SIMPIM, getFieldEditorParent()));
 
 		new Label(getFieldEditorParent(), SWT.NONE);new Label(getFieldEditorParent(), SWT.NONE);
 		
-        addField(new StringFieldEditor(SampleService.P_MODEM2_COMPORT,
+        addField(new StringFieldEditor(SmsConnectorPreferenceKey.P_MODEM2_COMPORT,
                 Messages.P_MODEM2_COMPORT, getFieldEditorParent()));
-        addField(new StringFieldEditor(SampleService.P_MODEM2_COMBAUDRATE,
+        addField(new StringFieldEditor(SmsConnectorPreferenceKey.P_MODEM2_COMBAUDRATE,
                 Messages.P_MODEM2_COMBAUDRATE, getFieldEditorParent()));
-        addField(new StringFieldEditor(SampleService.P_MODEM2_MANUFACTURE,
+        addField(new StringFieldEditor(SmsConnectorPreferenceKey.P_MODEM2_MANUFACTURE,
                 Messages.P_MODEM2_MANUFACTURE, getFieldEditorParent()));
-        addField(new StringFieldEditor(SampleService.P_MODEM2_MODEL,
+        addField(new StringFieldEditor(SmsConnectorPreferenceKey.P_MODEM2_MODEL,
                 Messages.P_MODEM2_MODEL, getFieldEditorParent()));
-        addField(new StringFieldEditor(SampleService.P_MODEM2_NUMBER,
+        addField(new StringFieldEditor(SmsConnectorPreferenceKey.P_MODEM2_NUMBER,
                 Messages.P_MODEM2_NUMBER, getFieldEditorParent()));
-        addField(new PasswordEditor(SampleService.P_MODEM2_SIMPIM,
+        addField(new PasswordEditor(SmsConnectorPreferenceKey.P_MODEM2_SIMPIM,
                 Messages.P_MODEM2_SIMPIM, getFieldEditorParent()));
 
         new Label(getFieldEditorParent(), SWT.NONE);new Label(getFieldEditorParent(), SWT.NONE);
 
-        addField(new StringFieldEditor(SampleService.P_MODEM3_COMPORT,
+        addField(new StringFieldEditor(SmsConnectorPreferenceKey.P_MODEM3_COMPORT,
                 Messages.P_MODEM3_COMPORT, getFieldEditorParent()));
-        addField(new StringFieldEditor(SampleService.P_MODEM3_COMBAUDRATE,
+        addField(new StringFieldEditor(SmsConnectorPreferenceKey.P_MODEM3_COMBAUDRATE,
                 Messages.P_MODEM3_COMBAUDRATE, getFieldEditorParent()));
-        addField(new StringFieldEditor(SampleService.P_MODEM3_MANUFACTURE,
+        addField(new StringFieldEditor(SmsConnectorPreferenceKey.P_MODEM3_MANUFACTURE,
                 Messages.P_MODEM3_MANUFACTURE, getFieldEditorParent()));
-        addField(new StringFieldEditor(SampleService.P_MODEM3_MODEL,
+        addField(new StringFieldEditor(SmsConnectorPreferenceKey.P_MODEM3_MODEL,
                 Messages.P_MODEM3_MODEL, getFieldEditorParent()));
-        addField(new StringFieldEditor(SampleService.P_MODEM3_NUMBER,
+        addField(new StringFieldEditor(SmsConnectorPreferenceKey.P_MODEM3_NUMBER,
                 Messages.P_MODEM3_NUMBER, getFieldEditorParent()));
-        addField(new PasswordEditor(SampleService.P_MODEM3_SIMPIM,
+        addField(new PasswordEditor(SmsConnectorPreferenceKey.P_MODEM3_SIMPIM,
                 Messages.P_MODEM3_SIMPIM, getFieldEditorParent()));
 
         adjustGridLayout();

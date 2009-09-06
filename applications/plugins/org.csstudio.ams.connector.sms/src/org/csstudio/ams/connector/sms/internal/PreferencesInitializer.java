@@ -43,29 +43,29 @@ public final class PreferencesInitializer extends AbstractPreferenceInitializer 
 		IEclipsePreferences node = new DefaultScope()
 				.getNode(SmsConnectorPlugin.PLUGIN_ID);
 
-		node.put(SampleService.P_MODEM_COUNT, "0");
+		node.put(SmsConnectorPreferenceKey.P_MODEM_COUNT, "0");
 
-		node.put(SampleService.P_MODEM1_COMPORT, "");
-		node.put(SampleService.P_MODEM1_COMBAUDRATE, "");
-		node.put(SampleService.P_MODEM1_MANUFACTURE, "");
-		node.put(SampleService.P_MODEM1_MODEL, "");
-		node.put(SampleService.P_MODEM1_SIMPIM, "");
-        node.put(SampleService.P_MODEM1_NUMBER, "");
+		node.put(SmsConnectorPreferenceKey.P_MODEM1_COMPORT, "");
+		node.put(SmsConnectorPreferenceKey.P_MODEM1_COMBAUDRATE, "");
+		node.put(SmsConnectorPreferenceKey.P_MODEM1_MANUFACTURE, "");
+		node.put(SmsConnectorPreferenceKey.P_MODEM1_MODEL, "");
+		node.put(SmsConnectorPreferenceKey.P_MODEM1_SIMPIM, "");
+        node.put(SmsConnectorPreferenceKey.P_MODEM1_NUMBER, "");
 		
-	    node.put(SampleService.P_MODEM2_COMPORT, "");
-	    node.put(SampleService.P_MODEM2_COMBAUDRATE, "");
-	    node.put(SampleService.P_MODEM2_MANUFACTURE, "");
-	    node.put(SampleService.P_MODEM2_MODEL, "");
-	    node.put(SampleService.P_MODEM2_SIMPIM, "");
-        node.put(SampleService.P_MODEM2_NUMBER, "");
+	    node.put(SmsConnectorPreferenceKey.P_MODEM2_COMPORT, "");
+	    node.put(SmsConnectorPreferenceKey.P_MODEM2_COMBAUDRATE, "");
+	    node.put(SmsConnectorPreferenceKey.P_MODEM2_MANUFACTURE, "");
+	    node.put(SmsConnectorPreferenceKey.P_MODEM2_MODEL, "");
+	    node.put(SmsConnectorPreferenceKey.P_MODEM2_SIMPIM, "");
+        node.put(SmsConnectorPreferenceKey.P_MODEM2_NUMBER, "");
 	    
-	    node.put(SampleService.P_MODEM3_COMPORT, "");
-	    node.put(SampleService.P_MODEM3_COMBAUDRATE, "");
-	    node.put(SampleService.P_MODEM3_MANUFACTURE, "");
-	    node.put(SampleService.P_MODEM3_MODEL, "");
-	    node.put(SampleService.P_MODEM3_SIMPIM, "");
-        node.put(SampleService.P_MODEM3_NUMBER, "");
+	    node.put(SmsConnectorPreferenceKey.P_MODEM3_COMPORT, "");
+	    node.put(SmsConnectorPreferenceKey.P_MODEM3_COMBAUDRATE, "");
+	    node.put(SmsConnectorPreferenceKey.P_MODEM3_MANUFACTURE, "");
+	    node.put(SmsConnectorPreferenceKey.P_MODEM3_MODEL, "");
+	    node.put(SmsConnectorPreferenceKey.P_MODEM3_SIMPIM, "");
+        node.put(SmsConnectorPreferenceKey.P_MODEM3_NUMBER, "");
 	    
-	    node.put(SampleService.P_MODEM_READ_WAITING_PERIOD, "5000");
+	    node.put(SmsConnectorPreferenceKey.P_MODEM_READ_WAITING_PERIOD, "5000");
 	}
 }

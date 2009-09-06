@@ -44,7 +44,7 @@ import javax.naming.NamingException;
 import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.Log;
-import org.csstudio.ams.connector.sms.internal.SampleService;
+import org.csstudio.ams.connector.sms.internal.SmsConnectorPreferenceKey;
 import org.csstudio.ams.connector.sms.service.Environment;
 import org.csstudio.ams.connector.sms.service.JmsSender;
 import org.csstudio.platform.utility.jms.JmsRedundantReceiver;
@@ -363,7 +363,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
             ////////////////////////////////////////////////////////////////////////
             try
             {
-                readWaitingPeriod = Long.parseLong(store.getString(SampleService.P_MODEM_READ_WAITING_PERIOD));
+                readWaitingPeriod = Long.parseLong(store.getString(SmsConnectorPreferenceKey.P_MODEM_READ_WAITING_PERIOD));
                 
                 Log.log(this, Log.INFO, "Waiting period for reading: " + readWaitingPeriod);
             }
@@ -375,7 +375,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
 
             try
             {
-                modemCount = Integer.parseInt(store.getString(SampleService.P_MODEM_COUNT));
+                modemCount = Integer.parseInt(store.getString(SmsConnectorPreferenceKey.P_MODEM_COUNT));
                 
                 modemCount = (modemCount < 0) ? 0 : modemCount;
                 modemCount = (modemCount > 3) ? 3 : modemCount;
@@ -398,12 +398,12 @@ public class SmsConnectorWork extends Thread implements AmsConstants
             // TODO: Better error handling and value checks
             for(int i = 0;i < modemCount;i++)
             {
-                strComPort[i] = store.getString(SampleService.P_PREFERENCE_STRING + (i + 1) + "ComPort");
+                strComPort[i] = store.getString(SmsConnectorPreferenceKey.P_PREFERENCE_STRING + (i + 1) + "ComPort");
                 strComPort[i] = (strComPort[i] == null) ? "" : strComPort[i];
                 
                 try
                 {
-                    iBaudRate[i] = Integer.parseInt(store.getString(SampleService.P_PREFERENCE_STRING + (i + 1) + "ComBaudrate"));
+                    iBaudRate[i] = Integer.parseInt(store.getString(SmsConnectorPreferenceKey.P_PREFERENCE_STRING + (i + 1) + "ComBaudrate"));
                 }
                 catch (NumberFormatException e)
                 {
@@ -411,16 +411,16 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                     Log.log(this, Log.WARN, "Value for Baudrate is not a number, take default: " + iBaudRate[i]);
                 }
                 
-                strManufac[i] = store.getString(SampleService.P_PREFERENCE_STRING + (i + 1) + "Manufacture");
+                strManufac[i] = store.getString(SmsConnectorPreferenceKey.P_PREFERENCE_STRING + (i + 1) + "Manufacture");
                 strManufac[i] = (strManufac[i] == null) ? "" : strManufac[i];
                 
-                strModel[i] = store.getString(SampleService.P_PREFERENCE_STRING + (i + 1) + "Model");
+                strModel[i] = store.getString(SmsConnectorPreferenceKey.P_PREFERENCE_STRING + (i + 1) + "Model");
                 strModel[i] = (strModel[i] == null) ? "" : strModel[i];
 
-                strSimPin[i] = store.getString(SampleService.P_PREFERENCE_STRING + (i + 1) + "SimPin");
+                strSimPin[i] = store.getString(SmsConnectorPreferenceKey.P_PREFERENCE_STRING + (i + 1) + "SimPin");
                 strSimPin[i] = (strSimPin[i] == null) ? "" : strSimPin[i];
 
-                strPhoneNumber[i] = store.getString(SampleService.P_PREFERENCE_STRING + (i + 1) + "Number");
+                strPhoneNumber[i] = store.getString(SmsConnectorPreferenceKey.P_PREFERENCE_STRING + (i + 1) + "Number");
                 strPhoneNumber[i] = (strPhoneNumber[i] == null) ? "" : strPhoneNumber[i];
             }
             

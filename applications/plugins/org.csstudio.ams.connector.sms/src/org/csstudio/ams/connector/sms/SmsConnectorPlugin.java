@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,9 +20,9 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
+
 package org.csstudio.ams.connector.sms;
 
-import org.csstudio.ams.connector.sms.internal.SampleService;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.AbstractCssUiPlugin;
 import org.osgi.framework.BundleContext;
@@ -52,8 +53,6 @@ public class SmsConnectorPlugin extends AbstractCssUiPlugin
 	 */
 	public final void doStart(final BundleContext context) throws Exception
 	{
-		SampleService.getInstance().showPreferences();
-
 		CentralLogger.getInstance().info(this, "SmsConnector started...");
 	}
 
@@ -70,7 +69,8 @@ public class SmsConnectorPlugin extends AbstractCssUiPlugin
 	 * 
 	 * @return the shared instance
 	 */
-	public static SmsConnectorPlugin getDefault() {
+	public static SmsConnectorPlugin getDefault()
+	{
 		return _plugin;
 	}
 
@@ -78,7 +78,8 @@ public class SmsConnectorPlugin extends AbstractCssUiPlugin
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String getPluginId() {
+	public String getPluginId()
+	{
 		return PLUGIN_ID;
 	}
 	

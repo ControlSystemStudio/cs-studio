@@ -23,22 +23,16 @@
 
 package org.csstudio.ams.connector.sms.internal;
 
+import org.csstudio.ams.Log;
 import org.csstudio.ams.connector.sms.SmsConnectorPlugin;
 import org.eclipse.jface.preference.IPreferenceStore;
 
 /**
- * This example service demonstrates that the preference IDs that are used on
- * preference pages should be defined by the services that use them.<br>
- * </p>
- * Beside the definition of the preference IDs, this services provides the
- * method <code>showPreferences</code> that reads out the preference values
- * from the plugin's preference store and displays them. This demonstrates how
- * the preferences are accessed.
  * 
- * @author Alexander Will
+ * @author Markus Moeller
  * 
  */
-public class SampleService
+public class SmsConnectorPreferenceKey
 {
     public static final String P_PREFERENCE_STRING = "modem";
 
@@ -67,56 +61,39 @@ public class SampleService
 
     public static final String P_MODEM_READ_WAITING_PERIOD = "modemReadWaitingPeriod";
 
-    /**
-	 * The only one instance of this service.
-	 */
-	private static SampleService _instance;
-
-	/**
-	 * Private constructor due to the singleton pattern.
-	 */
-	private SampleService() {
-		// do nothing particular.
-	}
-
-	/**
-	 * Return the only one instance of this service.
-	 * 
-	 * @return The only one instance of this service.
-	 */
-	public static SampleService getInstance() {
-		if (_instance == null) {
-			_instance = new SampleService();
-		}
-
-		return _instance;
-	}
+    public static final String P_XMPP_SERVER = "xmppServer";
+    public static final String P_XMPP_USER = "xmppUser";
+    public static final String P_XMPP_PASSWORD = "xmppPassword";
 
 	/**
 	 * Read out the preference from the plugin's preference store and display
 	 * them on the console.
 	 * 
 	 */
-	public final void showPreferences()
+	public static final void showPreferences()
 	{
 		IPreferenceStore store = SmsConnectorPlugin.getDefault().getPreferenceStore();
 
-		System.out.println(P_MODEM1_COMPORT + ": " + store.getString(P_MODEM1_COMPORT));
-		System.out.println(P_MODEM1_COMBAUDRATE + ": " + store.getString(P_MODEM1_COMBAUDRATE));
-		System.out.println(P_MODEM1_MANUFACTURE + ": " + store.getString(P_MODEM1_MANUFACTURE));
-		System.out.println(P_MODEM1_MODEL + ": " + store.getString(P_MODEM1_MODEL));
-		System.out.println(P_MODEM1_SIMPIM + ": " + store.getString(P_MODEM1_SIMPIM));
+		Log.log(Log.INFO, P_MODEM1_COMPORT + ": " + store.getString(P_MODEM1_COMPORT));
+		Log.log(Log.INFO, P_MODEM1_COMBAUDRATE + ": " + store.getString(P_MODEM1_COMBAUDRATE));
+		Log.log(Log.INFO, P_MODEM1_MANUFACTURE + ": " + store.getString(P_MODEM1_MANUFACTURE));
+		Log.log(Log.INFO, P_MODEM1_MODEL + ": " + store.getString(P_MODEM1_MODEL));
+		Log.log(Log.INFO, P_MODEM1_SIMPIM + ": " + store.getString(P_MODEM1_SIMPIM));
 		
-	    System.out.println(P_MODEM2_COMPORT + ": " + store.getString(P_MODEM2_COMPORT));
-	    System.out.println(P_MODEM2_COMBAUDRATE + ": " + store.getString(P_MODEM2_COMBAUDRATE));
-        System.out.println(P_MODEM2_MANUFACTURE + ": " + store.getString(P_MODEM2_MANUFACTURE));
-        System.out.println(P_MODEM2_MODEL + ": " + store.getString(P_MODEM2_MODEL));
-        System.out.println(P_MODEM2_SIMPIM + ": " + store.getString(P_MODEM2_SIMPIM));
+	    Log.log(Log.INFO, P_MODEM2_COMPORT + ": " + store.getString(P_MODEM2_COMPORT));
+	    Log.log(Log.INFO, P_MODEM2_COMBAUDRATE + ": " + store.getString(P_MODEM2_COMBAUDRATE));
+        Log.log(Log.INFO, P_MODEM2_MANUFACTURE + ": " + store.getString(P_MODEM2_MANUFACTURE));
+        Log.log(Log.INFO, P_MODEM2_MODEL + ": " + store.getString(P_MODEM2_MODEL));
+        Log.log(Log.INFO, P_MODEM2_SIMPIM + ": " + store.getString(P_MODEM2_SIMPIM));
         
-        System.out.println(P_MODEM3_COMPORT + ": " + store.getString(P_MODEM3_COMPORT));
-        System.out.println(P_MODEM3_COMBAUDRATE + ": " + store.getString(P_MODEM3_COMBAUDRATE));
-        System.out.println(P_MODEM3_MANUFACTURE + ": " + store.getString(P_MODEM3_MANUFACTURE));
-        System.out.println(P_MODEM3_MODEL + ": " + store.getString(P_MODEM3_MODEL));
-        System.out.println(P_MODEM3_SIMPIM + ": " + store.getString(P_MODEM3_SIMPIM));
-	}
+        Log.log(Log.INFO, P_MODEM3_COMPORT + ": " + store.getString(P_MODEM3_COMPORT));
+        Log.log(Log.INFO, P_MODEM3_COMBAUDRATE + ": " + store.getString(P_MODEM3_COMBAUDRATE));
+        Log.log(Log.INFO, P_MODEM3_MANUFACTURE + ": " + store.getString(P_MODEM3_MANUFACTURE));
+        Log.log(Log.INFO, P_MODEM3_MODEL + ": " + store.getString(P_MODEM3_MODEL));
+        Log.log(Log.INFO, P_MODEM3_SIMPIM + ": " + store.getString(P_MODEM3_SIMPIM));
+
+        Log.log(Log.INFO, P_XMPP_SERVER + ": " + store.getString(P_XMPP_SERVER));
+        Log.log(Log.INFO, P_XMPP_USER + ": " + store.getString(P_XMPP_USER));
+        Log.log(Log.INFO, P_XMPP_PASSWORD + ": " + store.getString(P_XMPP_PASSWORD));
+}
 }

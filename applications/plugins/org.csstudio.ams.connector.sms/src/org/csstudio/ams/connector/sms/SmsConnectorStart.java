@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -30,7 +31,6 @@ import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
-// import javax.jms.Topic;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -39,7 +39,10 @@ import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.Log;
 import org.csstudio.ams.SynchObject;
 import org.csstudio.ams.Utils;
+import org.csstudio.ams.connector.sms.internal.SmsConnectorPreferenceKey;
 import org.csstudio.platform.logging.CentralLogger;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -89,9 +92,12 @@ public class SmsConnectorStart implements IApplication
 
     public Object start(IApplicationContext context) throws Exception
     {
-        Log.log(this, Log.INFO, "start");
         SmsConnectorWork scw = null;
         boolean bInitedJms = false;
+
+        Log.log(this, Log.INFO, "start");
+        
+        SmsConnectorPreferenceKey.showPreferences();
         
         // use synchronized method
         lastStatus = getStatus();
@@ -246,9 +252,10 @@ public class SmsConnectorStart implements IApplication
 
     public void connectToXMPPServer()
     {
-        String xmppUser = "ams-sms-connector";
-        String xmppPassword = "ams";
-        String xmppServer = "krynfs.desy.de";
+    	IPreferencesService pref = Platform.getPreferencesService();
+    	String xmppServer = pref.getString(SmsConnectorPlugin.PLUGIN_ID, SmsConnectorPreferenceKey.P_XMPP_SERVER, "krynfs.desy.de", null);
+        String xmppUser = pref.getString(SmsConnectorPlugin.PLUGIN_ID, SmsConnectorPreferenceKey.P_XMPP_USER, "anonymous", null);
+        String xmppPassword = pref.getString(SmsConnectorPlugin.PLUGIN_ID, SmsConnectorPreferenceKey.P_XMPP_PASSWORD, "anonymous", null);
 
         try
         {
