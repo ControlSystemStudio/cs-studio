@@ -66,7 +66,8 @@ public final class ProjectToXml {
 	private Element createElement(Project project) {
 		Element element = createElement((IFolder) project);
 		element.setAttribute("dbd", StringUtil.trimNull(project.getDbdPath()));
-
+		element.setAttribute("ioc", StringUtil.trimNull(project.getIoc()));
+		
 		return element;
 	}
 

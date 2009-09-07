@@ -76,7 +76,7 @@ public final class XmlToProject {
 		// .. create the project
 		UUID id = getIdFromXml(root);
 		project = new Project(root.getAttributeValue("name"), id);
-		
+		project.setIoc(root.getAttributeValue("ioc", ""));
 		String dbdPath = root.getAttributeValue("dbd");
 		new ChangeDbdFileCommand(project, dbdPath).execute();
 		
