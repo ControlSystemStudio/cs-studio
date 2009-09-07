@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import org.csstudio.dct.model.IContainer;
 import org.csstudio.dct.model.IElement;
 import org.csstudio.dct.model.IFolder;
 import org.csstudio.dct.model.IInstance;
@@ -31,6 +32,13 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.views.contentoutline.ContentOutline;
 
+/**
+ * View that displays all instances for the prototype that is selected in the
+ * outline view.
+ * 
+ * @author Sven Wende
+ * 
+ */
 public class HierarchyView extends ViewPart implements IPartListener, ISelectionListener {
 	private DctEditor editor;
 	private TreeViewer treeViewer;
@@ -38,6 +46,10 @@ public class HierarchyView extends ViewPart implements IPartListener, ISelection
 
 	public HierarchyView() {
 		visibleIds = new HashSet<UUID>();
+	}
+
+	public TreeViewer getTreeViewer() {
+		return treeViewer;
 	}
 
 	@Override
@@ -53,9 +65,7 @@ public class HierarchyView extends ViewPart implements IPartListener, ISelection
 			public boolean select(Viewer viewer, Object parentElement, Object element) {
 				boolean result = false;
 
-				if (element instanceof IFolder) {
-					result = true;
-				} else if (element instanceof IElement) {
+				if (element instanceof IElement) {
 					result = visibleIds.contains(((IElement) element).getId());
 				}
 
@@ -141,17 +151,38 @@ public class HierarchyView extends ViewPart implements IPartListener, ISelection
 
 				List<IInstance> instances = new SearchInstancesVisitor().search(editor.getProject(), currentPrototype.getId());
 
-				visibleIds = new HashSet<UUID>();
-				for (IInstance instance : instances) {
-					visibleIds.add(instance.getId());
-					if (instance.getContainer() != null) {
-						visibleIds.add(instance.getContainer().getId());
-					}
-				}
+				visibleIds = determineVisibleIds(instances);
 
 				treeViewer.refresh();
 				treeViewer.expandAll();
 			}
+		}
+	}
+
+	private Set<UUID> determineVisibleIds(List<IInstance> instances) {
+		Set<UUID> ids = new HashSet<UUID>();
+		for (IInstance instance : instances) {
+			addPathElements(instance, ids);
+		}
+
+		return ids;
+	}
+
+	private void addPathElements(IContainer container, Set<UUID> visibleIds) {
+		visibleIds.add(container.getId());
+
+		if (container.getContainer() != null) {
+			addPathElements(container.getContainer(), visibleIds);
+		} else if (container.getParentFolder() != null) {
+			addPathElements(container.getParentFolder(), visibleIds);
+		}
+	}
+
+	private void addPathElements(IFolder folder, Set<UUID> visibleIds) {
+		visibleIds.add(folder.getId());
+
+		if (folder.getParentFolder() != null) {
+			addPathElements(folder.getParentFolder(), visibleIds);
 		}
 	}
 }
