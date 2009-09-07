@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+<title>SDS Initializer</title></head><body>
+<h2>SDS Initializer</h2>
+Ein Widget-Initializer setzt einige globale Eigenschaften für ein neues Widget. Der initializer kann in den Voreinstellungen gesetzt werden:
+Menu 'CSS' -> 'Preferences' -> 'CSS Applications' -> 'Display' -> 'Default schema'.
+
+<h3>All widgets</h3>
+<strong>Alias</strong> Der Alias-Name des Widgets wird auf '$channel$' gesetzt.<br><br>
+
+<strong>Connection state</strong> Die Verbindungszustände werden durch die Hintegrundfarbe angezeigt:<br>
+<code style="background-color: #FFA8DE">initialize</code><br>
+<code style="background-color: #E6E6E6">connected</code><br>
+<code style="background-color: #FF09A3">connection lost</code><br><br>
+
+<strong>Alarm status</strong> Der Alarmzustand einer Prozess-Variablen wird im Widget-Rahmen dargestellt:<br>
+<code style>No Alarm</code> - no border<br>
+<code style="background-color: #FA0000">Alarm</code><br>
+<code style="background-color: #FAF44A">Warning</code><br><br>
+
+<img src="./../icons/actionbutton.gif"/><strong> Action Button: </strong><br>
+<em>Action Data (Dynamic)</em>: Input- und Output-Channel werden auf das Alias $channel$ gesetzt.<br>
+<em>Label text (Dynamic)</em>: Input-Channel wird auf das Alias $channel$ gesetzt und die Strings
+ für Verbindungszustände 'initialize' und 'connection lost' werden gesetzt.<br>
+ (Weil der Action-Button keine Border hat, ist der Alarmzustand mit den Voreinstellungen nicht sichtbar!)<br><br>
+<img src="./../icons/advancedslider.gif"/><strong> Advanced Slider: </strong><br>
+<em>Slider Value (Dynamic)</em>: Input- und Output-Channel werden auf das Alias $channel$ gesetzt.<br>
+<em>Max (Dynamic)</em>: Input-Channel wird auf die Alias-Characteristic $channel$[graphMax] gesetzt.<br>
+<em>Min (Dynamic)</em>: Input-Channel wird auf das Alias-Characteristic $channel$[graphMin] gesetzt.<br><br>
+<img src="./../icons/arc.gif"/><strong> Arc: </strong><br>
+(Weil die Hintergrundfarbe von Arc disabled ist, sind die Verbindungszustände nicht sichtbar.)<br><br>
+
+<img src="./../icons/bargraph.gif"/><strong> Bargraph: </strong><br>
+<em>Level HI (Dynamic)</em>: Input-Channel wird auf die Alias-Characteristic $channel$[warningMax] gesetzt.<br>
+<em>Level HIHI (Dynamic)</em>: Input-Channel wird auf die Alias-Characteristic $channel$[alarmMax] gesetzt.<br>
+<em>Level LO (Dynamic)</em>: Input-Channel wird auf die Alias-Characteristic $channel$[warningMin] gesetzt.<br>
+<em>Level LOLO (Dynamic)</em>: Input-Channel wird auf die Alias-Characteristic $channel$[alarmMin] gesetzt.<br>
+<em>Maximum (Dynamic)</em>: Input-Channel wird auf die Alias-Characteristic $channel$[graphMax] gesetzt.<br>
+<em>Minimum (Dynamic)</em>: Input-Channel wird auf die Alias-Characteristic $channel$[graphMin] gesetzt.<br>
+<em>Value (Dynamic)</em>: Input-Channel wird auf das Alias $channel$ gesetzt.<br>
+<em>Color Fillbackground (Dynamic)</em>: Input-Channel wird auf das Alias $channel$ gesetzt und Verbindungszustände 
+auf die voreingestellten Statusfarben.<br>
+<em>Transparent background (Dynamic)</em>: Input-Channel wird auf das Alias $channel$ gesetzt und der Verbindungszustand auf 'true' oder 'false'.<br>
+<em>Fill color (Dynamic)</em>: Input-Channel wird auf die Alias-Characteristic $channel$[severity] gesetzt,
+entsprechend den Regeln für voreingestellte Alarmfarben.<br>
+<em>Foreground color (Dynamic)</em>: Input-Channel wird auf die Alias-Characteristic $channel$ gesetzt und 
+Verbindungszustände auf die voreingestellten Statusfarben.<br><br>
+
+<img src="./../icons/ellipse.gif"/><strong> Ellipse: </strong><br>
+<em>Value (Dynamic)</em>: Input-Channel wird auf das Alias $channel$ gesetzt und Werte
+ für die Verbindungszustände 'initialize' und 'connection lost' werden auf 0 gesetzt.<br><br>
+
+<img src="./../icons/label.gif"/><strong> Label: </strong><br>
+<em>Transparent (Static)</em>: Wird auf 'false' gesetzt.<br>
+<em>Label text (Static)</em>: Der String wird auf 'Label' gesetzt.<br>
+<em>Label text (Dynamic)</em>: Input-Channel wird auf das Alias $channel$ gesetzt und Strings
+ für Verbindungszustände 'initialize' und 'connection lost' werden gesetzt.<br><br>
+
+<img src="./../icons/menubutton.gif"/><em> Menu Button: </em><br>
+<em>Action Data (Dynamic)</em>: Input- und Output-Channel werden auf das Alias $channel$[enumDescriptions] und $channel$ gesetzt.<br>
+<em>Label text (Dynamic)</em>: Input-Channel wird auf das Alias $channel$ gesetzt und Strings
+ für Verbindungszustände 'initialize' und 'connection lost' werden gesetzt.<br><br>
+
+<img src="./../icons/meter.gif"/><strong> Meter: </strong><br>
+<em>Boundary HI (Dynamic)</em>: Input-Channel wird auf die Alias-Characteristic $channel$[warningMax] gesetzt.<br>
+<em>Boundary HIHI (Dynamic)</em>: Input-Channel wird auf die Alias-Characteristic $channel$[alarmMax] gesetzt.<br>
+<em>Boundary LO (Dynamic)</em>: Input-Channel wird auf die Alias-Characteristic $channel$[warningMin] gesetzt.<br>
+<em>Boundary LOLO (Dynamic)</em>: Input-Channel wird auf die Alias-Characteristic $channel$[alarmMin] gesetzt.<br>
+<em>Maximum Value (Dynamic)</em>: Input-Channel wird auf die Alias-Characteristic $channel$[graphMax] gesetzt.<br>
+<em>Minimum Value (Dynamic)</em>: Input-Channel wird auf die Alias-Characteristic $channel$[graphMin] gesetzt.<br>
+<em>Value (Dynamic)</em>: Input-Channel wird auf das Alias $channel$ gesetzt.<br><br>
+
+<img src="./../icons/polygon.gif"/><strong> Polygon: </strong><br>
+(Weil die Hintergrundfarbe eines Polygon disabled ist,sind die voreingestellten Verbindungszustände nicht sichtbar.)<br><br>
+
+<img src="./../icons/polyline.gif"/><strong> Polyline: </strong><br>
+(Weil die Hintergrundfarbe einer Polyline disabled ist, sind die voreingestellten Verbindungszustände nicht sichtbar.)<br><br>
+
+<img src="./../icons/rectangle.gif"/><strong> Rectangle: </strong><br>
+<em>Value (Dynamic)</em>: Input-Channel wird auf das Alias $channel$ gesetzt und Werte
+ für die Verbindungszustände 'initialize' und 'connection lost' werden auf 0 gesetzt.<br><br>
+
+<img src="./../icons/slider.gif"/><strong> Simple Slider: </strong><br>
+<em>Max (Dynamic)</em>: Input-Channel wird auf die Alias-Characteristic $channel$[graphMax] gesetzt.<br>
+<em>Min (Dynamic)</em>: Input-Channel wird auf die Alias-Characteristic $channel$[graphMin] gesetzt.<br>
+<em>Slider Value (Dynamic)</em>: Input- und Output-Channel werden auf das Alias $channel$ gesetzt.<br><br>
+
+<img src="./../icons/sixteenbar.gif"/><strong> Sixteen Binary Bar: </strong><br>
+<em>Value (Dynamic)</em>: Input-Channel wird auf das Alias $channel$ gesetzt.<br>
+<em>Internal Frame Color (Dynamic)</em>: Input-Channel wird auf das Alias $channel$ gesetzt und Verbindungszustände 
+auf die voreingestellten Statusfarben.<br><br>
+
+<img src="./../icons/waveform.gif"/><strong> Strip Chart: </strong><br>
+<em>Value #1 (Dynamic)</em>: Input-Channel wird auf das Alias $channel$ gesetzt.<br>
+<em>Maximum (Dynamic)</em>: Input-Channel wird auf die Alias-Characteristic $channel$[graphMax] gesetzt.<br>          
+<em>Minimum (Dynamic)</em>: Input-Channel wird auf die Alias-Characteristic $channel$[graphMin] gesetzt.<br>          
+<br>
+
+<img src="./../icons/switch.gif"/><strong> Switch: </strong><br>
+<em>Switch State (Dynamic)</em>: Input-Channel wird auf das Alias $channel$ gesetzt.<br>    
+(Der Alarmzustand für den Switch wird nicht gesetzt.)<br><br>
+
+<img src="./../icons/text.gif"/><strong> Text Input: </strong><br>
+<em>Input Text (Static)</em>: Der String wird auf 'Enter Text' gesetzt.<br>
+<em>Input Text (Dynamic)</em>: Input- und Output-Channel werden auf das Alias $channel$ gesetzt.<br>
+<em>Transparent (Static)</em>: Wird auf 'false' gesetzt.<br><br>
+
+<img src="./../icons/thumbwheel.gif"/><strong> Thumb Wheel: </strong><br>
+<em>Internal frame thickness (Static)</em>: Die Rahmendicke wird auf 1 gesetzt.<br>
+<em>Value (Dynamic)</em>: Input- und Output-Channel werden auf das Alias $channel$ gesetzt.<br>
+<em>Internal Frame Color (Dynamic)</em>: Input-Channel wird auf das Alias $channel$ gesetzt und Verbindungszustände 
+auf die voreingestellten Statusfarben.<br><br><br>
+
+<img src="./../icons/waveform.gif"/><strong> Waveform: </strong><br>
+<em>Data #1 (Dynamic)</em>: Input-Channel wird auf das Alias $channel$ gesetzt.<br>    
+<em>Automatic scaling (Static)</em>: Wird auf 'false' gesetzt.<br>
+<em>Maximum (Dynamic)</em>: Input-Channel wird auf die Alias-Characteristic $channel$[graphMax] gesetzt.<br>          
+<em>Minimum (Dynamic)</em>: Input-Channel wird auf die Alias-Characteristic $channel$[graphMin] gesetzt.<br>          
+(Der Alarmzustand wird für die Waveform nicht gesetzt.)<br><br>
+
+</body></html>

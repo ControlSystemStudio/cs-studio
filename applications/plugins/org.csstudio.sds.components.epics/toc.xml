@@ -2,10 +2,6 @@
 <?NLS TYPE="org.eclipse.help.toc"?>
 
 <toc link_to="../org.csstudio.platform.ui/tocApps.xml#display" label="Synoptic Display Studio Initializer">
-	<topic label="Synoptic Display Studio Initializer">
-		<topic label="English" href="html/sds_initializer.html">
-		</topic>
-		<topic label="German" href="html/sds_initializer_de.html">
-		</topic>
+	<topic label="Synoptic Display Studio Initializer" href="html/sds_initializer.html">
 	</topic>
 </toc>
