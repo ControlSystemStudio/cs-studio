@@ -16,7 +16,7 @@ import org.eclipse.gef.commands.CompoundCommand;
  * @author Sven Wende
  * 
  */
-public final class AddInstanceCommand extends Command implements ISelectAfterExecution {
+public final class AddInstanceCommand extends Command {
 	private CompoundCommand internalCommand;
 	private IContainer container;
 	private IFolder folder;
@@ -92,13 +92,6 @@ public final class AddInstanceCommand extends Command implements ISelectAfterExe
 			instance.setContainer(null);
 		}
 		instance.getParent().removeDependentContainer(instance);
-	}
-
-	/**
-	 *{@inheritDoc}
-	 */
-	public IElement getElementToSelect() {
-		return instance;
 	}
 
 }

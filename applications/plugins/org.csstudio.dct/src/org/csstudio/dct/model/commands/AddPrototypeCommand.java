@@ -1,6 +1,5 @@
 package org.csstudio.dct.model.commands;
 
-import org.csstudio.dct.model.IElement;
 import org.csstudio.dct.model.IFolder;
 import org.csstudio.dct.model.IPrototype;
 import org.eclipse.gef.commands.Command;
@@ -11,7 +10,7 @@ import org.eclipse.gef.commands.Command;
  * @author Sven Wende
  * 
  */
-public final class AddPrototypeCommand extends Command implements ISelectAfterExecution {
+public final class AddPrototypeCommand extends Command {
 	private IFolder folder;
 	private IPrototype prototype;
 
@@ -45,13 +44,6 @@ public final class AddPrototypeCommand extends Command implements ISelectAfterEx
 	public void undo() {
 		folder.removeMember(prototype);
 		prototype.setParentFolder(null);
-	}
-
-	/**
-	 *{@inheritDoc}
-	 */
-	public IElement getElementToSelect() {
-		return prototype;
 	}
 
 }

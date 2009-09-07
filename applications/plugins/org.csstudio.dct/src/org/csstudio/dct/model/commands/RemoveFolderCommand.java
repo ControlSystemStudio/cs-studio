@@ -1,6 +1,5 @@
 package org.csstudio.dct.model.commands;
 
-import org.csstudio.dct.model.IElement;
 import org.csstudio.dct.model.IFolder;
 import org.eclipse.gef.commands.Command;
 
@@ -10,9 +9,11 @@ import org.eclipse.gef.commands.Command;
  * @author Sven Wende
  * 
  */
-public final class RemoveFolderCommand extends Command implements ISelectAfterExecution {
+public final class RemoveFolderCommand extends Command {
 	private IFolder folder;
 	private IFolder container;
+	private int index;
+	
 
 	/**
 	 * Constructor.
@@ -24,6 +25,7 @@ public final class RemoveFolderCommand extends Command implements ISelectAfterEx
 		assert folder != null;
 		this.folder = folder;
 		this.container = folder.getParentFolder();
+		this.index = container.getMembers().indexOf(folder);
 	}
 
 	/**
@@ -32,6 +34,7 @@ public final class RemoveFolderCommand extends Command implements ISelectAfterEx
 	@Override
 	public void execute() {
 		container.removeMember(folder);
+		folder.setParentFolder(null);
 	}
 
 	/**
@@ -39,14 +42,7 @@ public final class RemoveFolderCommand extends Command implements ISelectAfterEx
 	 */
 	@Override
 	public void undo() {
-		container.addMember(folder);
+		container.addMember(Math.min(index, container.getMembers().size()), folder);
+		folder.setParentFolder(container);
 	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public IElement getElementToSelect() {
-		return folder;
-	}
-
 }

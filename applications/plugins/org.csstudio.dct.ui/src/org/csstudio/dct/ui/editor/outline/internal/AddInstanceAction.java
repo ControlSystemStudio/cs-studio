@@ -36,12 +36,14 @@ public final class AddInstanceAction extends AbstractOutlineAction {
 
 		IElement container = selection.get(0);
 
-		CompoundCommand result = new CompoundCommand("Add Instance");
+		CompoundCommand result = null;
 
 		InstanceDialog rsd = new InstanceDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), getProject(),
 				container instanceof IContainer ? (IContainer) container : null);
 
 		if (rsd.open() == Window.OK) {
+			result = new CompoundCommand("Add Instance");
+
 			IPrototype prototype = (IPrototype) rsd.getSelection();
 
 			IInstance instance = new Instance(prototype, UUID.randomUUID());
@@ -56,13 +58,11 @@ public final class AddInstanceAction extends AbstractOutlineAction {
 					result.add(new AddInstanceCommand((IContainer) container, instance));
 				}
 			}
-			
-			
+
+			result.add(new SelectInOutlineCommand(getOutlineView(), instance));
+
 		}
-		
-		
 
 		return result;
 	}
-
 }

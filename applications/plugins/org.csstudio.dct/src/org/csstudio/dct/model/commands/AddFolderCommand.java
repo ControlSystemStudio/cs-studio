@@ -11,7 +11,7 @@ import org.eclipse.gef.commands.Command;
  * @author Sven Wende
  * 
  */
-public final class AddFolderCommand extends Command implements ISelectAfterExecution {
+public final class AddFolderCommand extends Command {
 	private IFolder folder;
 	private IFolder parentFolder;
 
@@ -23,11 +23,11 @@ public final class AddFolderCommand extends Command implements ISelectAfterExecu
 	 * @param name
 	 *            then name of the new folder
 	 */
-	public AddFolderCommand(IFolder parentFolder, String name) {
+	public AddFolderCommand(IFolder parentFolder, IFolder folder) {
 		assert parentFolder != null;
-		assert name != null;
+		assert folder!=null;
 		this.parentFolder = parentFolder;
-		this.folder = new Folder(name);
+		this.folder = folder;
 	}
 
 	/**
@@ -47,12 +47,4 @@ public final class AddFolderCommand extends Command implements ISelectAfterExecu
 		parentFolder.removeMember(folder);
 		folder.setParentFolder(null);
 	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public IElement getElementToSelect() {
-		return folder;
-	}
-
 }

@@ -6,13 +6,11 @@ import java.util.List;
 
 import org.csstudio.dct.model.IElement;
 import org.csstudio.dct.model.IProject;
-import org.csstudio.dct.model.commands.ISelectAfterExecution;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.IViewActionDelegate;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.part.IPage;
@@ -41,15 +39,6 @@ public abstract class AbstractOutlineAction implements IViewActionDelegate {
 	public final void run(IAction action) {
 		Command command = createCommand(selectedElements);
 		execute(command);
-
-		// select new elements if necessary
-		if (command instanceof ISelectAfterExecution) {
-			IElement element = ((ISelectAfterExecution) command).getElementToSelect();
-
-			if (element != null) {
-				outlineView.setSelection(new StructuredSelection(element));
-			}
-		}
 	}
 
 	/**

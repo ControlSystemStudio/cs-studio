@@ -16,19 +16,13 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
-import org.eclipse.swt.dnd.DragSource;
 import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.DragSourceListener;
-import org.eclipse.swt.dnd.DropTarget;
-import org.eclipse.swt.dnd.DropTargetAdapter;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.DropTargetListener;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.model.WorkbenchAdapter;
@@ -83,7 +77,7 @@ public final class OutlinePage extends ContentOutlinePage implements CommandStac
 		super.createControl(parent);
 		viewer = getTreeViewer();
 		viewer.setLabelProvider(WorkbenchLabelProvider.getDecoratingWorkbenchLabelProvider());
-		viewer.setUseHashlookup(true);
+		viewer.setUseHashlookup(false);
 
 		viewer.setContentProvider(new WorkbenchContentProvider());
 		viewer.setAutoExpandLevel(TreeViewer.ALL_LEVELS);
@@ -257,7 +251,6 @@ public final class OutlinePage extends ContentOutlinePage implements CommandStac
 		if (sel != null && sel.getFirstElement() != null) {
 			viewer.setExpandedState(sel.getFirstElement(), true);
 			viewer.refresh(sel.getFirstElement(), false);
-			System.out.println("XXXXXXXX" + sel.getFirstElement());
 		}
 	}
 

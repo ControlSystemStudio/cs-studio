@@ -5,9 +5,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.DailyRollingFileAppender;
+import org.csstudio.dct.model.IContainer;
 import org.csstudio.dct.model.IElement;
 import org.csstudio.dct.model.IFolder;
+import org.csstudio.dct.model.IFolderMember;
 import org.csstudio.dct.model.IInstance;
+import org.csstudio.dct.model.IProject;
 import org.csstudio.dct.model.IPrototype;
 import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.model.IRecordContainer;
@@ -20,6 +24,9 @@ import org.csstudio.dct.util.CompareUtil;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CompoundCommand;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * Popup menu action for the outline view that removes elements from the model.
@@ -36,23 +43,98 @@ public final class RemoveAction extends AbstractOutlineAction {
 	protected Command createCommand(List<IElement> selection) {
 		assert selection != null;
 
-		CompoundCommand command = new CompoundCommand();
+		boolean delete = false;
 
-		command.add(new SelectInOutlineCommand(getOutlineView(), getProject()));
-
+		// .. delete confirmation
 		if (CompareUtil.containsOnly(IFolder.class, selection)) {
+			if (confirm("All subfolders and their content will be deleted. Continue?")) {
+				delete = true;
+			}
 		} else if (CompareUtil.containsOnly(IPrototype.class, selection)) {
-			List<IPrototype> prototypes = CompareUtil.convert(selection);
-			chainDeletePrototypes(command, prototypes);
-		} else if (CompareUtil.containsOnly(IInstance.class, selection)) {
-			List<IInstance> instances = CompareUtil.convert(selection);
-			chainDeleteInstances(command, instances);
-		} else if (CompareUtil.containsOnly(IRecord.class, selection)) {
-			List<IRecord> records = CompareUtil.convert(selection);
-			chainDeleteRecords(command, records);
+			if (confirm("All prototypes and derived instances will be deleted. Continue?")) {
+				delete = true;
+			}
+		} else {
+			delete = true;
+		}
+
+		// .. chain necessary commands for deletion
+		CompoundCommand command = null;
+		if (delete) {
+			command = new CompoundCommand();
+			command.add(new SelectInOutlineCommand(getOutlineView(), getProject()));
+
+			if (CompareUtil.containsOnly(IFolder.class, selection)) {
+				List<IFolder> folders = CompareUtil.convert(selection);
+				chainDeleteFolders(command, folders);
+			} else if (CompareUtil.containsOnly(IPrototype.class, selection)) {
+				List<IPrototype> prototypes = CompareUtil.convert(selection);
+				chainDeletePrototypes(command, prototypes);
+			} else if (CompareUtil.containsOnly(IInstance.class, selection)) {
+				List<IInstance> instances = CompareUtil.convert(selection);
+				chainDeleteInstances(command, instances);
+			} else if (CompareUtil.containsOnly(IRecord.class, selection)) {
+				List<IRecord> records = CompareUtil.convert(selection);
+				chainDeleteRecords(command, records);
+			}
 		}
 
 		return command;
+	}
+
+	private boolean confirm(String message) {
+		MessageDialog d = new MessageDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Confirmation", null, message,
+				MessageDialog.WARNING, new String[] { "Ok", "Cancel" }, 0);
+
+		return d.open() == 0;
+	}
+
+	private void chainDeleteFolders(CompoundCommand cmd, List<IFolder> folders) {
+		List<IFolder> folders2delete = new ArrayList<IFolder>();
+		Set<IInstance> instances2delete = new HashSet<IInstance>();
+		Set<IPrototype> prototypes2delete = new HashSet<IPrototype>();
+
+		// .. recursively collect all elements that have to be removed
+		for (IFolder f : folders) {
+			collectElementsToDelete(f, folders2delete, prototypes2delete, instances2delete);
+		}
+
+		// .. chain instance deletion commands
+		chainDeleteInstances(cmd, new ArrayList<IInstance>(instances2delete));
+
+		// .. chain prototype deletion commands
+		for (IPrototype p : prototypes2delete) {
+			cmd.add(new RemovePrototypeCommand(p));
+		}
+
+		// .. chain folder deletion commands
+		for (IFolder f : folders2delete) {
+			cmd.add(new RemoveFolderCommand(f));
+		}
+	}
+
+	private void collectElementsToDelete(IFolder folder, List<IFolder> folders, Set<IPrototype> prototypes, Set<IInstance> instances) {
+		for (IFolderMember m : folder.getMembers()) {
+			if (m instanceof IFolder) {
+				collectElementsToDelete((IFolder) m, folders, prototypes, instances);
+			} else if (m instanceof IPrototype) {
+				IPrototype prototype = (IPrototype) m;
+				prototypes.add(prototype);
+
+				// .. find dependent instances
+				for (IContainer c : prototype.getDependentContainers()) {
+					if (c instanceof IInstance) {
+						instances.add((IInstance) c);
+					}
+				}
+			} else if (m instanceof IInstance) {
+				instances.add((IInstance) m);
+			}
+		}
+
+		// .. add the folder itself as last, to ensure the right deletion order
+		folders.add(folder);
+
 	}
 
 	private void chainDeletePrototypes(CompoundCommand cmd, List<IPrototype> prototypes) {
