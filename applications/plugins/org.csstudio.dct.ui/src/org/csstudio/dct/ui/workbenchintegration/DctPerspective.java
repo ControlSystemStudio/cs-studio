@@ -1,4 +1,4 @@
-package org.csstudio.dct.ui;
+package org.csstudio.dct.ui.workbenchintegration;
 
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;

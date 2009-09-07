@@ -1,4 +1,4 @@
-package org.csstudio.dct.ui.internal;
+package org.csstudio.dct.ui.workbenchintegration;
 
 import java.util.HashSet;
 import java.util.Set;

@@ -1,4 +1,4 @@
-package org.csstudio.dct.ui.internal;
+package org.csstudio.dct.ui.workbenchintegration;
 
 import java.util.ArrayList;
 import java.util.List;

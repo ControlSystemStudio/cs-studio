@@ -16,7 +16,7 @@
          point="org.eclipse.core.runtime.adapters">
       <factory
             adaptableType="org.csstudio.dct.model.IElement"
-            class="org.csstudio.dct.ui.internal.ModelAdapterFactory">
+            class="org.csstudio.dct.ui.workbenchintegration.ModelAdapterFactory">
          <adapter
                type="org.eclipse.ui.model.IWorkbenchAdapter">
          </adapter>
@@ -29,7 +29,7 @@
       </factory>
       <factory
             adaptableType="org.csstudio.dct.metamodel.IRecordDefinition"
-            class="org.csstudio.dct.ui.internal.ModelAdapterFactory">
+            class="org.csstudio.dct.ui.workbenchintegration.ModelAdapterFactory">
          <adapter
                type="org.eclipse.ui.model.IWorkbenchAdapter">
          </adapter>
@@ -156,7 +156,7 @@
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective
-            class="org.csstudio.dct.ui.DctPerspective"
+            class="org.csstudio.dct.ui.workbenchintegration.DctPerspective"
             fixed="true"
             icon="icons/dctfile.png"
             id="org.csstudio.dct.ui.DctPerspective"
@@ -208,7 +208,7 @@
          point="org.eclipse.ui.preferencePages">
       <page
             category="org.csstudio.platform.ui.css.applications.editors"
-            class="org.csstudio.dct.ui.PreferencePage"
+            class="org.csstudio.dct.ui.workbenchintegration.PreferencePage"
             id="org.csstudio.dct.ui.PreferencePage"
             name="DCT Preferences">
       </page>
@@ -221,7 +221,7 @@
             label="CSS Action Set"
             visible="true">
          <action
-               class="org.csstudio.dct.ui.ShowDCTPerspective"
+               class="org.csstudio.dct.ui.workbenchintegration.ShowDCTPerspective"
                icon="icons/dctfile.png"
                id="org.csstudio.dct.ui.Openaction"
                label="DCT"
@@ -235,7 +235,7 @@
          point="org.eclipse.ui.newWizards">
       <wizard
             category="org.csstudio.dct.ui.newWizards"
-            class="org.csstudio.dct.ui.NewDctFileWizard"
+            class="org.csstudio.dct.ui.workbenchintegration.NewDctFileWizard"
             finalPerspective="org.csstudio.dct.ui.DctPerspective"
             icon="icons/dctfile.png"
             id="org.csstudio.dct.ui.NewDctFileWizard"
@@ -250,7 +250,7 @@
          point="org.eclipse.ui.views">
       <view
             category="css.dct"
-            class="org.csstudio.dct.ui.HierarchyView"
+            class="org.csstudio.dct.ui.hierarchy.HierarchyView"
             icon="icons/dctfile.png"
             id="org.csstudio.dct.ui.HierarchyView"
             name="DCT Instances View"

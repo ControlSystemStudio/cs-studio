@@ -1,7 +1,5 @@
 package org.csstudio.dct.ui.editor;
 
-import java.lang.reflect.InvocationTargetException;
-
 import org.apache.commons.beanutils.PropertyUtilsBean;
 import org.csstudio.dct.model.IElement;
 import org.csstudio.dct.model.commands.ChangeBeanPropertyCommand;

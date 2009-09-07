@@ -1,4 +1,4 @@
-package org.csstudio.dct.ui;
+package org.csstudio.dct.ui.workbenchintegration;
 
 import static org.csstudio.dct.PreferenceSettings.DATALINK_FUNCTION_PARAMETER_3_PROPOSAL;
 import static org.csstudio.dct.PreferenceSettings.DATALINK_FUNCTION_PARAMETER_4_PROPOSAL;
@@ -17,6 +17,7 @@ import org.csstudio.dct.ExtensionPointUtil;
 import org.csstudio.dct.ISensorIdService;
 import org.csstudio.dct.IoNameService;
 import org.csstudio.dct.ServiceExtension;
+import org.csstudio.dct.ui.Activator;
 import org.csstudio.platform.util.StringUtil;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;

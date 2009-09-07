@@ -1,4 +1,4 @@
-package org.csstudio.dct.ui.internal;
+package org.csstudio.dct.ui.workbenchintegration;
 
 import org.csstudio.dct.metamodel.IRecordDefinition;
 import org.csstudio.dct.model.IFolder;

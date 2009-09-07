@@ -27,11 +27,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.dct.model.IElement;
-import org.csstudio.dct.model.IPrototype;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.swt.dnd.ByteArrayTransfer;
 import org.eclipse.swt.dnd.DND;
@@ -156,7 +154,6 @@ public abstract class AbstractElementTransfer extends ByteArrayTransfer {
 	protected int[] getTypeIds() {
 		return new int[] { TYPEID };
 	}
-
 
 	public ICopyAndPasteStrategy getCopyAndPasteStrategy() {
 		return copyAndPasteStrategy;

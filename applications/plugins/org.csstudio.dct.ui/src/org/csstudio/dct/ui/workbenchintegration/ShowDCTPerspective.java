@@ -22,7 +22,7 @@
 /*
  * $Id$
  */
-package org.csstudio.dct.ui;
+package org.csstudio.dct.ui.workbenchintegration;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;

@@ -7,9 +7,9 @@ package org.csstudio.dct;
  * 
  */
 public enum PreferenceSettings {
-	FIELD_DESCRIPTION_SHOW_DESCRIPTION("show field description"),
+	FIELD_DESCRIPTION_SHOW_DESCRIPTION("show description for record fields"),
 
-	FIELD_DESCRIPTION_SHOW_INITIAL_VALUE("show initial value"),
+	FIELD_DESCRIPTION_SHOW_INITIAL_VALUE("show initial value for record fields"),
 
 	DATALINK_FUNCTION_PARAMETER_3_PROPOSAL("datalink() function, auto completion proposal for parameter 3"),
 

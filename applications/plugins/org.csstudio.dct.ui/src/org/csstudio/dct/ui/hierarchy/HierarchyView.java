@@ -1,4 +1,4 @@
-package org.csstudio.dct.ui;
+package org.csstudio.dct.ui.hierarchy;
 
 import java.util.HashSet;
 import java.util.List;

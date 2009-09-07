@@ -10,7 +10,6 @@ import org.csstudio.dct.IRecordFunction;
 import org.csstudio.dct.ServiceExtension;
 import org.csstudio.dct.model.IProject;
 import org.csstudio.dct.model.IRecord;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;

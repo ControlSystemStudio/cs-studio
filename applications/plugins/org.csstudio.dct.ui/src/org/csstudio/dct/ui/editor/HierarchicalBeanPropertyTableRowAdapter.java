@@ -1,10 +1,7 @@
 package org.csstudio.dct.ui.editor;
 
-import java.lang.reflect.InvocationTargetException;
-
 import org.apache.commons.beanutils.PropertyUtilsBean;
 import org.csstudio.dct.model.IElement;
-import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.model.commands.ChangeBeanPropertyCommand;
 import org.csstudio.dct.util.AliasResolutionUtil;
 import org.csstudio.platform.util.StringUtil;

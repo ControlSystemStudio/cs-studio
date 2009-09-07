@@ -1,7 +1,6 @@
 package org.csstudio.dct.ui.editor;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -11,14 +10,12 @@ import org.csstudio.dct.DctActivator;
 import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.nameresolution.FieldFunctionContentProposal;
 import org.csstudio.dct.nameresolution.FieldFunctionExtension;
-import org.csstudio.dct.ui.DctPerspective;
 import org.csstudio.dct.util.AliasResolutionUtil;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.bindings.keys.KeyStroke;
 import org.eclipse.jface.bindings.keys.ParseException;
 import org.eclipse.jface.fieldassist.ContentProposalAdapter;
 import org.eclipse.jface.fieldassist.IContentProposal;
-import org.eclipse.jface.fieldassist.IContentProposalListener;
 import org.eclipse.jface.fieldassist.IContentProposalListener2;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.eclipse.jface.fieldassist.TextContentAdapter;

@@ -1,4 +1,4 @@
-package org.csstudio.dct.ui.internal;
+package org.csstudio.dct.ui.workbenchintegration;
 
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.jface.resource.ImageDescriptor;
