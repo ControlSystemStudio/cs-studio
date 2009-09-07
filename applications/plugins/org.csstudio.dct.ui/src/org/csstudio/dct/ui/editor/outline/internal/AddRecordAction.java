@@ -35,7 +35,7 @@ public final class AddRecordAction extends AbstractOutlineAction {
 
 		Command command = null;
 
-		RecordTypeSelectionDialog rsd = new RecordTypeSelectionDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+		RecordDialog rsd = new RecordDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
 				"Please select the record type:", getProject().getDatabaseDefinition().getRecordDefinitions());
 
 		if (rsd.open() == Window.OK) {

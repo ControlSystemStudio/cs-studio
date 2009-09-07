@@ -30,6 +30,7 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -47,7 +48,7 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
  * @author Sven Wende
  * 
  */
-public final class RecordTypeSelectionDialog extends Dialog {
+public final class RecordDialog extends Dialog {
 
 	private String message;
 	private TreeViewer viewer;
@@ -69,7 +70,7 @@ public final class RecordTypeSelectionDialog extends Dialog {
 	 * @param recordDefinitions
 	 *            the record definitions
 	 */
-	public RecordTypeSelectionDialog(final Shell parentShell, final String dialogMessage, final List<IRecordDefinition> recordDefinitions) {
+	public RecordDialog(final Shell parentShell, final String dialogMessage, final List<IRecordDefinition> recordDefinitions) {
 		super(parentShell);
 		this.setShellStyle(SWT.MODELESS | SWT.CLOSE | SWT.MAX | SWT.TITLE | SWT.BORDER | SWT.RESIZE);
 		message = dialogMessage;
@@ -110,6 +111,7 @@ public final class RecordTypeSelectionDialog extends Dialog {
 				return (Object[]) element;
 			}
 		});
+		viewer.setSorter(new ViewerSorter());
 		viewer.setInput(recordDefinitions.toArray());
 		return composite;
 	}
