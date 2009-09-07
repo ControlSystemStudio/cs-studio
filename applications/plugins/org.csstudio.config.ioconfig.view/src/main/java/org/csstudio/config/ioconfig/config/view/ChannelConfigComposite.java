@@ -76,10 +76,6 @@ public class ChannelConfigComposite extends NodeConfig {
      */
     private Text _addressText;
     /**
-     * The text field for the description of the Channel.
-     */
-    private Text _descText;
-    /**
      * The GSD File of the parent Module.
      */
     private GSDFile _gsdFile;
@@ -121,7 +117,7 @@ public class ChannelConfigComposite extends NodeConfig {
      *            is TabHead Text
      */
     private void general(final String head) {
-        final Composite comp = ConfigHelper.getNewTabItem(head, getTabFolder(), 5);
+        final Composite comp = ConfigHelper.getNewTabItem(head, getTabFolder(), 5,300,290);
         comp.setLayout(new GridLayout(4, false));
 
         // Name \ Index Group
@@ -254,15 +250,7 @@ public class ChannelConfigComposite extends NodeConfig {
         sizeText.setEditable(false);
 
         // Description Group
-        Group descGroup = new Group(comp, SWT.NONE);
-        descGroup.setText("Description: ");
-        GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true, 4, 1);
-        gd.minimumHeight = 200;
-        descGroup.setLayoutData(gd);
-        descGroup.setLayout(new GridLayout(1, false));
-        _descText = new Text(descGroup, SWT.BORDER | SWT.MULTI);
-        _descText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
-        setText(_descText, _channel.getDescription(), 255);
+        makeDescGroup(comp);
     }
 
     /**
@@ -290,8 +278,6 @@ public class ChannelConfigComposite extends NodeConfig {
         _channel.setIoName(_ioNameText.getText());
         _channel.setName(getNameWidget().getText());
         _ioNameText.setData(_ioNameText.getText());
-        _channel.setDescription(_descText.getText());
-        _descText.setData(_descText.getText());
         if(_sensorsViewer!=null) {
             Sensors firstElement = (Sensors) ((StructuredSelection)_sensorsViewer.getSelection()).getFirstElement();
             _channel.setCurrentValue(Integer.toString(firstElement.getId()));
@@ -331,7 +317,6 @@ public class ChannelConfigComposite extends NodeConfig {
     @Override
     public final void cancel() {
         super.cancel();
-        _descText.setText((String) _descText.getData());
         getIndexSpinner().setSelection((Short) getIndexSpinner().getData());
         setName((String) getNameWidget().getData());
         if (_channel != null) {

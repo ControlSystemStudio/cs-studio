@@ -52,7 +52,7 @@ public class NodeConfigView extends ViewPart {
     	_scroll = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL |SWT.NONE);
     	_scroll.setExpandHorizontal(true);
     	_scroll.setExpandVertical(true);
-    	setMinSize(550, 600);;
+    	setMinSize(200,350);
 
         _configComposite = new Composite(_scroll, SWT.NONE);
         _configComposite.setLayout(new FillLayout());
@@ -60,8 +60,8 @@ public class NodeConfigView extends ViewPart {
         _scroll.setContent(_configComposite);
     }
 
-    public void setMinSize(int i, int j) {
-    	_scroll.setMinSize(550, 600);
+    public void setMinSize(int w, int h) {
+    	_scroll.setMinSize(w, h);
 	}
 
 	/**

@@ -75,11 +75,6 @@ public class SubNetConfigComposite extends NodeConfig {
     private ProfibusSubnet _subnet;
 
     /** 
-     * The text field for the description of the Subnet.
-     */
-    private Text _descText;
-    
-    /** 
      * A Combo field with the Highest Profibus address.
      */
     private Combo _adress;
@@ -202,9 +197,6 @@ public class SubNetConfigComposite extends NodeConfig {
         getIndexSpinner().setData(_subnet.getSortIndex());
         _subnet.setUpdatedOn(new Date());
         
-        _subnet.setDescription(_descText.getText());
-        _descText.setData(_descText.getText());
-        
         _subnet.setUpdatedBy(ConfigHelper.getUserName());
 
         _subnet.setUpdatedOn(now);
@@ -273,8 +265,6 @@ public class SubNetConfigComposite extends NodeConfig {
         
         getIndexSpinner().setSelection((Integer)getIndexSpinner().getData());
         
-        _descText.setText((String)_descText.getData());
-        
         // Net Setting
         _subnet.setHsa(Short.valueOf(_adress.getItem(_adress.getSelectionIndex())));
         _adress.setText(((Integer)_adress.getData()).toString());
@@ -315,7 +305,7 @@ public class SubNetConfigComposite extends NodeConfig {
         InstanceScope instanceScope = new InstanceScope();
         IEclipsePreferences prefNode = instanceScope.getNode(Activator.PLUGIN_ID);
         
-        Composite comp = ConfigHelper.getNewTabItem(head, getTabFolder(), 5);
+        Composite comp = ConfigHelper.getNewTabItem(head, getTabFolder(), 5,470,260);
         comp.setLayout(new GridLayout(4, false));
 
         Group gName = new Group(comp,SWT.NONE);
@@ -336,14 +326,7 @@ public class SubNetConfigComposite extends NodeConfig {
         
         setIndexSpinner(ConfigHelper.getIndexSpinner(gName, _subnet, getMLSB(),"Index",getProfiBusTreeView()));
         
-        
-        Group gDesc = new Group(comp,SWT.NONE);
-        gDesc.setText("Description: ");
-        gDesc.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 5,1));
-        gDesc.setLayout(new GridLayout(1,false));
-        _descText = new Text(gDesc, SWT.BORDER | SWT.MULTI);
-        _descText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
-        setText(_descText, _subnet.getDescription(),255);
+        makeDescGroup(comp);
     }
 
     /**
@@ -351,8 +334,7 @@ public class SubNetConfigComposite extends NodeConfig {
      *            is TabHead Text
      */
     private void netSetting(final String headline) {
-        final Composite comp = ConfigHelper.getNewTabItem(headline, getTabFolder(), 5);
-        comp.setLayout(new GridLayout(2, false));
+        final Composite comp = ConfigHelper.getNewTabItem(headline, getTabFolder(), 2,470,350);
 
         Group topGroup = new Group(comp,SWT.NONE);
         topGroup.setLayout(new GridLayout(2, false));
@@ -541,10 +523,6 @@ public class SubNetConfigComposite extends NodeConfig {
             if (children instanceof Label) {
                 children.setLayoutData(new GridData(SWT.FILL,SWT.FILL,false,false,1,1));
             }
-//            if (children instanceof Text) {
-//                children.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,false,1,1));
-//                children.addKeyListener(_switchFocusAtEnter);
-//            }
         }
         rigth.setTabList(control);
     }
@@ -668,11 +646,6 @@ public class SubNetConfigComposite extends NodeConfig {
             if (children instanceof Label) {
                 children.setLayoutData(new GridData(SWT.FILL,SWT.FILL,false,false,1,1));
             }
-//            if (children instanceof Text) {
-//                children.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,false,1,1));
-//                children.addKeyListener(_switchFocusAtEnter);
-//            }
-            
         }
 
     }

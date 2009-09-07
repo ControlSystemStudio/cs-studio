@@ -40,7 +40,6 @@ import org.csstudio.config.ioconfig.model.Node;
 import org.csstudio.config.ioconfig.model.Repository;
 import org.csstudio.config.ioconfig.model.tools.Helper;
 import org.csstudio.config.ioconfig.view.Activator;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.layout.TableColumnLayout;
@@ -61,6 +60,7 @@ import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -68,7 +68,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.opengl.GLData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
@@ -276,140 +275,6 @@ public class DocumentationManageView extends Composite {
         }
     }
 
-//    /**
-//     * 
-//     * @author hrickens
-//     * @author $Author$
-//     * @version $Revision$
-//     * @since 18.03.2008
-//     */
-//    public class TableSorter extends ViewerSorter {
-//        /**
-//         * The Sort column.
-//         */
-//        private int _column;
-//        /**
-//         * Direction of sort for _column.
-//         */
-//        private boolean _backward;
-//        /**
-//         * Last sort column.
-//         */
-//        private int _lastColumn;
-//        /**
-//         * Direction of sort for _lastSortBackward.
-//         */
-//        private boolean _lastSortBackward;
-//
-//        /**
-//         * 
-//         * @param column
-//         *            the column to sort used.
-//         * @param backward
-//         *            the sort direction.
-//         * @param lastColumn
-//         *            the last column to sort used.
-//         * @param lastSortBackward
-//         *            the sort direction for the last column.
-//         */
-//        public TableSorter(final int column, final boolean backward, final int lastColumn,
-//                final boolean lastSortBackward) {
-//            _column = column;
-//            _backward = backward;
-//            _lastColumn = lastColumn;
-//            _lastSortBackward = lastSortBackward;
-//        }
-//
-//        /**
-//         * Sort a table at the last two selected table header. {@inheritDoc}
-//         */
-//        @Override
-//        public final int compare(final Viewer viewer, final Object o1, final Object o2) {
-//            if (o1 instanceof IDocument && o2 instanceof IDocument) {
-//                IDocument doc1 = (IDocument) o1;
-//                IDocument doc2 = (IDocument) o2;
-//                int multi = -1;
-//                int erg = 0;
-//                if (_backward) {
-//                    multi = 1;
-//                }
-//
-//                erg = compareColumn(_column, doc1, doc2, multi);
-//
-//                if (erg == 0) {
-//                    multi = -1;
-//                    if (_lastSortBackward) {
-//                        multi = 1;
-//                    }
-//                    erg = compareColumn(_lastColumn, doc1, doc2, multi);
-//                }
-//                return erg;
-//            } else {
-//                return 0;
-//            }
-//        }
-//
-//        private int compareColumn(int column, IDocument doc1, IDocument doc2, int multi) {
-//            int resulte;
-//            switch (column) {
-//                default:
-//                case 0:
-//                    if (doc1.getSubject() == null && doc2.getSubject() == null) {
-//                        resulte = 0;
-//                    } else if (doc1.getSubject() == null) {
-//                        resulte = multi;
-//                    } else if (doc2.getSubject() == null) {
-//                        resulte = -1 * multi;
-//                    } else {
-//                        resulte = multi * doc1.getSubject().compareTo(doc2.getSubject());
-//                    }
-//                    break;
-//                case 1:
-//                    if (doc1.getDesclong() == null && doc2.getDesclong() == null) {
-//                        resulte = 0;
-//                    } else if (doc1.getDesclong() == null) {
-//                        resulte = multi;
-//                    } else if (doc2.getDesclong() == null) {
-//                        resulte = -1 * multi;
-//                    } else {
-//                        resulte = multi * doc1.getDesclong().compareTo(doc2.getDesclong());
-//                    }
-//                    break;
-//                case 2:
-//                    if (doc1.getKeywords() == null && doc2.getKeywords() == null) {
-//                        resulte = 0;
-//                    } else if (doc1.getKeywords() == null) {
-//                        resulte = multi;
-//                    } else if (doc2.getKeywords() == null) {
-//                        resulte = -1 * multi;
-//                    } else {
-//                        resulte = multi * doc1.getKeywords().compareTo(doc2.getKeywords());
-//                    }
-//                    break;
-//            }
-//            return resulte;
-//        }
-//
-//        /**
-//         * Set the a new column to use for sorting.
-//         * 
-//         * @param column
-//         *            the column that are used.
-//         */
-//        public final void setColumn(final int column) {
-//            if (_column == column) {
-//                _backward = !_backward;
-//            } else {
-//                _lastColumn = column;
-//                _lastSortBackward = _backward;
-//                _column = column;
-//                _backward = false;
-//            }
-//        }
-//
-//    }
-
-    // private Composite _mainComposite;
     /**
      * The table with a list of all not assigned documents.
      */
@@ -429,6 +294,7 @@ public class DocumentationManageView extends Composite {
      */
     private List<Document> _documentAvailable = new ArrayList<Document>();
     private boolean _isActicate = false;
+    private Composite _mainComposite;
 
     /**
      * @param parent
@@ -441,11 +307,29 @@ public class DocumentationManageView extends Composite {
     public DocumentationManageView(final Composite parent, final int style,
             final NodeConfig parentNodeConfig) {
         super(parent, style);
-        _parentNodeConfig = parentNodeConfig;
-        GridLayout layout = new GridLayout(3, false);
-        this.setLayout(layout);
+        this.setLayout(new GridLayout(1,false));
         GridData layoutData = new GridData(SWT.LEFT, SWT.TOP, false, false, 1, 1);
         this.setLayoutData(layoutData);
+        _parentNodeConfig = parentNodeConfig;
+        
+        // -Body
+        GridLayoutFactory fillDefaults = GridLayoutFactory.fillDefaults();
+        ScrolledComposite scrolledComposite = new ScrolledComposite(this,
+                SWT.H_SCROLL | SWT.V_SCROLL);
+        scrolledComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true,1,1));
+        scrolledComposite.setExpandVertical(true);
+        scrolledComposite.setExpandHorizontal(true);
+        fillDefaults.numColumns(3);
+        scrolledComposite.setLayout(fillDefaults.create());
+
+        _mainComposite = new Composite(scrolledComposite, SWT.NONE);
+        _mainComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        fillDefaults.numColumns(3);
+        _mainComposite.setLayout(fillDefaults.create());
+        
+        scrolledComposite.setContent(_mainComposite);
+        scrolledComposite.setMinSize(700,250);
+       
         makeSearchDocTable();
         makeChooser();
         makeAvailableDocTable();
@@ -507,7 +391,7 @@ public class DocumentationManageView extends Composite {
     }
 
     private Composite makeGroup(String groupHead) {
-        Group searchGroup = new Group(this, SWT.NO_SCROLL);
+        Group searchGroup = new Group(_mainComposite, SWT.NO_SCROLL);
         GridLayout layout = new GridLayout(1, true);
         searchGroup.setLayout(layout);
         searchGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
@@ -519,7 +403,7 @@ public class DocumentationManageView extends Composite {
      * 
      */
     private void makeChooser() {
-        Composite chosserComposite = new Composite(this, SWT.NONE);
+        Composite chosserComposite = new Composite(_mainComposite, SWT.NONE);
         GridData layoutData = new GridData(SWT.CENTER, SWT.FILL, false, false, 1, 1);
         chosserComposite.setLayoutData(layoutData);
         GridLayoutFactory fillDefaults = GridLayoutFactory.fillDefaults();

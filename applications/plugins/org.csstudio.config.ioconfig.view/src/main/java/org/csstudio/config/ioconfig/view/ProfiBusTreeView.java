@@ -85,13 +85,11 @@ import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IViewerLabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.TreeViewerEditor;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerLabel;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
@@ -1306,7 +1304,7 @@ public class ProfiBusTreeView extends Composite {
                 _editComposite = new Composite(((NodeConfigView) showView).getComposite(), SWT.None);
                 // _editComposite.setSize(_editComposite.computeSize(SWT.DEFAULT,
                 // SWT.DEFAULT));
-                _editComposite.setSize(600, 600);
+//                _editComposite.setSize(600, 600);
                 FillLayout layout = new FillLayout();
                 _editComposite.setLayout(layout);
             }

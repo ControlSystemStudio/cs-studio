@@ -53,6 +53,7 @@ import org.csstudio.platform.security.User;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -62,6 +63,7 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.ModifyEvent;
@@ -201,17 +203,33 @@ public final class ConfigHelper {
      * @return Tab Item Composite.
      */
     public static Composite getNewTabItem(final String head, final TabFolder tabFolder,
-            final int size) {
-        return getNewTabItem(head, tabFolder, size, null);
+            final int size, int minWidthSize, int minHeight) {
+        return getNewTabItem(head, tabFolder, size, null, minWidthSize, minHeight);
     }
 
     public static Composite getNewTabItem(final String head, final TabFolder tabFolder,
-            final int size, Composite viewer) {
+            final int size, Composite viewer, int minWidthSize, int minHeight) {
         final TabItem item = new TabItem(tabFolder, SWT.NONE);
         item.setText(head);
-        Composite comp = new Composite(tabFolder, SWT.NONE);
+        
+        GridLayoutFactory fillDefaults = GridLayoutFactory.fillDefaults();
+        ScrolledComposite scrolledComposite = new ScrolledComposite(tabFolder,
+                SWT.H_SCROLL | SWT.V_SCROLL);
+        scrolledComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true,1,1));
+        scrolledComposite.setExpandVertical(true);
+        scrolledComposite.setExpandHorizontal(true);
+        fillDefaults.numColumns(1);
+        scrolledComposite.setLayout(fillDefaults.create());
+
+        Composite comp = new Composite(scrolledComposite, SWT.NONE);
+        comp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+//        _mainComposite.setLayout(fillDefaults.create());
+        
+        scrolledComposite.setContent(comp);
+        scrolledComposite.setMinSize(minWidthSize,minHeight);
+        
         comp.setLayout(new GridLayout(size, true));
-        item.setControl(comp);
+        item.setControl(scrolledComposite);
 
         comp.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
         if (viewer instanceof DocumentationManageView) {
@@ -254,7 +272,7 @@ public final class ConfigHelper {
     public static Composite makeGSDFileChooser(final TabFolder tabFolder, final String head,
             final NodeConfig node, final Enum<GSDFileTyp> fileTyp) {
         int columnNum = 7;
-        final Composite comp = ConfigHelper.getNewTabItem(head, tabFolder, columnNum);
+        final Composite comp = ConfigHelper.getNewTabItem(head, tabFolder, columnNum,520,200);
 
         Group gSelected, gAvailable;
         final Text tSelected;

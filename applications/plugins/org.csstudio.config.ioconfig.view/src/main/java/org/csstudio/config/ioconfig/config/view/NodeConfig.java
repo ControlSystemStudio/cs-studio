@@ -260,6 +260,8 @@ public abstract class NodeConfig extends Composite {
      */
     private ProfiBusTreeView _profiBusTreeView;
 
+    private Text _descText;
+
     private static Font _font;
 
     private static Font _fontBold;
@@ -328,6 +330,9 @@ public abstract class NodeConfig extends Composite {
 
         getNode().setUpdatedBy(ConfigHelper.getUserName());
         getNode().setUpdatedOn(now);
+        
+        getNode().setDescription(getDesc());
+        getDescWidget().setData(getDesc());
 
         // update Header
         ((Text) this.getData("modifiedOn")).setText(df.format(now));
@@ -450,7 +455,7 @@ public abstract class NodeConfig extends Composite {
         this.setData("version", versionText); // -- Modifierd by
 
         final Label iconButton = new Label(header, SWT.BORDER);
-        iconButton.setLayoutData(GridDataFactory.fillDefaults().span(1, 2).minSize(40, 40).create());
+        iconButton.setLayoutData(GridDataFactory.swtDefaults().span(1, 3).minSize(40, 40).create());
         iconButton.setImage(ConfigHelper.getImageFromNode(node,30,60));
         iconButton.addMouseListener(new MouseAdapter() {
             
@@ -512,9 +517,9 @@ public abstract class NodeConfig extends Composite {
             final Text version = getNewText(header, temp);
             this.setData("gsdVersion", version);
         }
-        // -Body
-        setTabFolder(new TabFolder(this, SWT.NO_SCROLL));
-        getTabFolder().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, columnNum, 1));
+
+        setTabFolder(new TabFolder(this, SWT.H_SCROLL|SWT.V_SCROLL));
+        getTabFolder().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 5, 1));
         getTabFolder().setBackgroundMode(SWT.INHERIT_DEFAULT);
 
         // -Footer
@@ -551,7 +556,7 @@ public abstract class NodeConfig extends Composite {
     }
 
     private Group makeBackgroundGroup(int columnNum) {
-        Group header = new Group(this, SWT.NONE);
+        Group header = new Group(this, SWT.H_SCROLL);
         header.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, columnNum, 1));
         header.setLayout(new GridLayout(7, false));
         header.setText("General Information");
@@ -740,6 +745,7 @@ public abstract class NodeConfig extends Composite {
     }
 
     public void cancel() {
+        setDesc((String) getDescWidget().getData());
         getNode().setDirty(false);
     }
 
@@ -804,7 +810,54 @@ public abstract class NodeConfig extends Composite {
     protected final void setNameWidget(Text nameText) {
         _nameText = nameText;
     }
+    
+    public void setDesc(String desc) {
+        _descText.setText(desc);
+    }
+    
+    public String getDesc() {
+        if(_descText==null||_descText.getText()==null) {
+            return "";
+        }
+        return _descText.getText();
+    }
+    
+    /**
+     * 
+     * @return the Node Name description field.
+     */
+    protected final Text getDescWidget() {
+        return _descText;
+    }
 
+    /**
+     * 
+     * @param descText
+     *            set the Node Name description field.
+     */
+    protected final void setDescWidget(Text descText) {
+        _descText = descText;
+    }
+
+    protected void makeDescGroup(Composite comp) {
+        makeDescGroup(comp, 3);
+    }
+    
+    protected void makeDescGroup(Composite comp, int hSize) {
+        Group gDesc = new Group(comp,SWT.NONE);
+        gDesc.setText("Description: ");
+        GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, true, hSize,1);
+        layoutData.minimumHeight = 200;
+        layoutData.minimumWidth = 200;
+        gDesc.setLayoutData(layoutData);
+        gDesc.setLayout(new GridLayout(1,false));
+        
+        _descText = new Text(gDesc, SWT.BORDER | SWT.MULTI);
+        _descText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+        _descText.setEditable(true);
+        setText(_descText, getNode().getDescription(), 255);
+    }
+    
     /**
      * 
      * {@inheritDoc}
@@ -884,5 +937,4 @@ public abstract class NodeConfig extends Composite {
     protected final ProfiBusTreeView getProfiBusTreeView() {
         return _profiBusTreeView;
     }
-
 }

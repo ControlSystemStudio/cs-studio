@@ -316,14 +316,14 @@ public class ModuleConfigComposite extends NodeConfig {
      */
     private void moduels(final String head) {
         final Composite comp = getNewTabItem(head, 2);
-        comp.setLayout(new GridLayout(1, false));
+        comp.setLayout(new GridLayout(2, false));
 
         /*
          * Name
          */
         Group gName = new Group(comp, SWT.NONE);
         gName.setText("Name");
-        gName.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 5, 1));
+        gName.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
         gName.setLayout(new GridLayout(3, false));
 
         setNameWidget(new Text(gName, SWT.BORDER | SWT.SINGLE));
@@ -337,9 +337,14 @@ public class ModuleConfigComposite extends NodeConfig {
          * Top Composite.
          */
         final Group topGroup = new Group(comp, SWT.NONE);
-        topGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+        topGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true, 1, 1));
         topGroup.setLayout(new GridLayout(4, false));
+        
+        makeDescGroup(comp,1);
+        
         new Label(topGroup, SWT.NONE).setText("Filter: ");
+        
+        
         Composite filterComposite = new Composite(topGroup, SWT.NONE);
         filterComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 2, 1));
         GridLayout layout = new GridLayout(2, false);
@@ -488,6 +493,7 @@ public class ModuleConfigComposite extends NodeConfig {
         }
         _moduleTypList.getTable().showSelection();
 //        getIndexSpinner().setSelection(getNode().getSortIndex());
+        
     }
 
     /**

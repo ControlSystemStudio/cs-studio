@@ -116,10 +116,6 @@ public class MasterConfigComposite extends NodeConfig {
      *  The description field for the Master User Data.  
      */
     private Text _masterUserDataText;
-    /** 
-     * The text field for the description of the Master.
-     */
-    private Text _descText;
     
     /**
      * Selection of the Memory Address Type.
@@ -291,7 +287,7 @@ public class MasterConfigComposite extends NodeConfig {
      */
     private void master(final String head) {
         
-        Composite comp = ConfigHelper.getNewTabItem(head,getTabFolder(),5);
+        Composite comp = ConfigHelper.getNewTabItem(head,getTabFolder(),5,650,440);
 
         makeNameGroup(comp);
         makeRedundencyMasterGroup(comp);
@@ -304,22 +300,6 @@ public class MasterConfigComposite extends NodeConfig {
         makeFmbSetGroup(comp);
     }
     
-    private void makeDescGroup(Composite comp) {
-        Group gDesc = new Group(comp,SWT.NONE);
-        gDesc.setText("Description: ");
-        gDesc.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3,1));
-        gDesc.setLayout(new GridLayout(1,false));
-        
-        _descText = new Text(gDesc, SWT.BORDER | SWT.MULTI);
-//        _descText = ProfibusHelper.getTextField(gDesc, _master.getDescription());
-        _descText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-        _descText.setText(_master.getDescription());
-        _descText.setData(_master.getDescription());
-        _descText.setEditable(true);
-        _descText.addModifyListener(getMLSB());
-        
-    }
-
     private void makeMemoryAddressingGroup(Composite comp) {
         _memAddressType=_master.getProfibusPnoId();
         _oldMemAddressType=_memAddressType;
@@ -533,8 +513,6 @@ public class MasterConfigComposite extends NodeConfig {
         // Information
         _master.setVendorName(_vendorText.getText());
         _master.setProfibusdpmasterBez(_pbBoardText.getText());
-        _master.setDescription(_descText.getText());
-        _descText.setData(_descText.getText());
         // Parameters
         _master.setMinSlaveInt(Integer.valueOf(_minSlaveIntervalText.getText()));
         _master.setPollTime(Integer.valueOf(_pollTimeOutText.getText()));
@@ -640,7 +618,6 @@ public class MasterConfigComposite extends NodeConfig {
             _pollTimeOutText.setText(_master.getPollTime()+"");
             _dataControlTimeText.setText(_master.getDataControlTime()+"");
             _autoclearButton.setSelection(_master.isAutoclear());
-            _descText.setText(_master.getDescription());
         }else{
             _gsdFile = null;
             fill(_gsdFile);

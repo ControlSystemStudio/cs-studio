@@ -60,11 +60,6 @@ public class IocConfigComposite extends NodeConfig {
     private Ioc _ioc;
 
     /**
-     * The text field for the description of the IOC.
-     */
-    private Text _descText;
-
-    /**
      * @param parent
      *            The Parent Composite.
      * @param profiBusTreeView
@@ -94,7 +89,7 @@ public class IocConfigComposite extends NodeConfig {
      *            The headline of the tab.
      */
     private void main(final String head) {
-        Composite comp = ConfigHelper.getNewTabItem(head, getTabFolder(), 5);
+        Composite comp = ConfigHelper.getNewTabItem(head, getTabFolder(), 5,300,260);
         comp.setLayout(new GridLayout(4, false));
 
         Group gName = new Group(comp, SWT.NONE);
@@ -111,14 +106,7 @@ public class IocConfigComposite extends NodeConfig {
                 getProfiBusTreeView()));
         getIndexSpinner().setMaximum(_ioc.getParent().getChildren().size() - 1);
 
-        Group gDesc = new Group(comp, SWT.NONE);
-        gDesc.setText("Description: ");
-        gDesc.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 5, 1));
-        gDesc.setLayout(new GridLayout(1, false));
-
-        _descText = new Text(gDesc, SWT.BORDER | SWT.MULTI);
-        _descText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
-        setText(_descText, _ioc.getDescription(), 255);
+        makeDescGroup(comp);
     }
 
     /*
@@ -183,9 +171,6 @@ public class IocConfigComposite extends NodeConfig {
         _ioc.setName(getNameWidget().getText());
         getNameWidget().setData(getNameWidget().getText());
 
-        _ioc.setDescription(_descText.getText());
-        _descText.setData(_descText.getText());
-
         getIndexSpinner().setData(_ioc.getSortIndex());
 
         // Document
@@ -206,7 +191,6 @@ public class IocConfigComposite extends NodeConfig {
                     text.setText("");
                 }
             }
-            _descText.setText((String) _descText.getData());
             getIndexSpinner().setSelection((Short) getIndexSpinner().getData());
             getNameWidget().setText((String) getNameWidget().getData());
         }

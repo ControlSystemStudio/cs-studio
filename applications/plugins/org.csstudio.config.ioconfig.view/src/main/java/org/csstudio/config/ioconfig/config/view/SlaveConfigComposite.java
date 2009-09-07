@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Formatter;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Set;
 
 import org.csstudio.config.ioconfig.config.view.helper.ConfigHelper;
@@ -121,7 +122,7 @@ public class SlaveConfigComposite extends NodeConfig {
     /**
      * Die Bedeutung dieses Feldes ist noch unbekannt.
      */
-    private Text _unbekannt;
+//    private Text _unbekannt;
     /**
      * The minimum Station Delay Time.
      */
@@ -269,11 +270,14 @@ public class SlaveConfigComposite extends NodeConfig {
     private void overview(String headline) {
         Composite comp = getNewTabItem(headline, 1);
         comp.setLayout(new GridLayout(1, false));
+        
         TableViewer overViewer = new TableViewer(comp,SWT.H_SCROLL|SWT.V_SCROLL|SWT.BORDER|SWT.FULL_SELECTION);
         overViewer.setContentProvider(new ArrayContentProvider());
         overViewer.setLabelProvider(new OverviewLabelProvider());
         overViewer.getTable().setHeaderVisible(true);
         overViewer.getTable().setLinesVisible(true);
+        overViewer.getTable().setLayoutData(
+                new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
         TableColumn c0 = new TableColumn(overViewer.getTable(), SWT.RIGHT);
         c0.setText("Adr");
         TableColumn c0b = new TableColumn(overViewer.getTable(), SWT.RIGHT);
@@ -357,17 +361,17 @@ public class SlaveConfigComposite extends NodeConfig {
          */
         Group slaveInfoGroup = new Group(comp, SWT.NONE);
         slaveInfoGroup.setText("Slave Information");
-        slaveInfoGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
-        slaveInfoGroup.setLayout(new GridLayout(3, false));
+        slaveInfoGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 2));
+        slaveInfoGroup.setLayout(new GridLayout(4, false));
         slaveInfoGroup.setTabList(new Control[0]);
 
         _vendorText = new Text(slaveInfoGroup, SWT.SINGLE | SWT.BORDER);
         _vendorText.setEditable(false);
-        _vendorText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 3, 1));
+        _vendorText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 4, 1));
 
         _iDNo = new Text(slaveInfoGroup, SWT.SINGLE);
         _iDNo.setEditable(false);
-        _iDNo.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
+        _iDNo.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
 
         Label revisionsLable = new Label(slaveInfoGroup, SWT.NONE);
         revisionsLable.setText("Revision:");
@@ -376,7 +380,8 @@ public class SlaveConfigComposite extends NodeConfig {
         _revisionsText.setEditable(false);
         _revisionsText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
 
-        _maxSlots = new Text(slaveInfoGroup, SWT.NONE);
+        new Label(slaveInfoGroup, SWT.None).setText("Max. available slots:");
+        _maxSlots = new Text(slaveInfoGroup, SWT.BORDER);
         _maxSlots.setEditable(false);
 
         /*
@@ -384,7 +389,7 @@ public class SlaveConfigComposite extends NodeConfig {
          */
         Group dpFdlAccessGroup = new Group(comp, SWT.NONE);
         dpFdlAccessGroup.setText("DP / FDL Access");
-        dpFdlAccessGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 2));
+        dpFdlAccessGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
         dpFdlAccessGroup.setLayout(new GridLayout(2, false));
 
         Label stationAdrLabel = new Label(dpFdlAccessGroup, SWT.None);
@@ -411,7 +416,6 @@ public class SlaveConfigComposite extends NodeConfig {
                 setSavebuttonEnabled("Button:"+_stationAddressActiveCButton.hashCode(), (Boolean)_stationAddressActiveCButton.getData()!=_stationAddressActiveCButton.getSelection());
             }
 
-            
         });
 
         /*
@@ -419,21 +423,39 @@ public class SlaveConfigComposite extends NodeConfig {
          */
         Group ioGroup = new Group(comp, SWT.NONE);
         ioGroup.setText("Inputs / Outputs");
-        ioGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
+        ioGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
         ioGroup.setLayout(new GridLayout(3, false));
         ioGroup.setTabList(new Control[0]);
-        _unbekannt = new Text(ioGroup, SWT.SINGLE);
-        _unbekannt.setEditable(false);
-        _unbekannt.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
 
-        new Label(ioGroup, SWT.RIGHT).setText("Inputs: ");
+        int input = 0;
+        int output = 0;
+        
+        if(_slave.hasChildren()) {
+            Iterator<Module> iterator = _slave.getModules().iterator();
+            while (iterator.hasNext()) {
+                Module module = (Module) iterator.next();
+                input += module.getInputSize();
+                output += module.getOutputSize();
+            }
+        }
+        Label inputLabel = new Label(ioGroup, SWT.RIGHT);
+        inputLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 2, 1));
+        inputLabel.setText("Inputs: ");
         _inputsText = new Text(ioGroup, SWT.SINGLE);
         _inputsText.setEditable(false);
+        _inputsText.setText(Integer.toString(input));
+        
         Label outputsLabel = (Label) new Label(ioGroup, SWT.RIGHT);
-        outputsLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 2, 1));
+        outputsLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 2, 1));
         outputsLabel.setText("Outputs: ");
         _outputsText = new Text(ioGroup, SWT.SINGLE);
         _outputsText.setEditable(false);
+        _outputsText.setText(Integer.toString(output));
+        
+        /*
+         * Description Group
+         */
+        makeDescGroup(comp);
     }
 
     /**
@@ -441,12 +463,12 @@ public class SlaveConfigComposite extends NodeConfig {
      */
     private void setSlots() {
         Formatter slotFormarter = new Formatter();
-        slotFormarter.format("Max. available slots: %2d / %2d", _slave.getChildren().size(),
+        slotFormarter.format(" %2d / %2d", _slave.getChildren().size(),
                 _maxSize);
         _maxSlots.setText(slotFormarter.toString());
         if (_maxSize < _slave.getChildren().size()) {
             if (_defaultBackgroundColor == null) {
-                _defaultBackgroundColor = _maxSlots.getBackground();
+                _defaultBackgroundColor = getDisplay().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND);
             }
             _maxSlots.setBackground(WARN_BACKGROUND_COLOR);
         } else {
