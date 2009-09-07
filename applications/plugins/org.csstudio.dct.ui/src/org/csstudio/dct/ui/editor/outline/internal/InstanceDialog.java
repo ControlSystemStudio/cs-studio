@@ -30,7 +30,9 @@ import org.csstudio.dct.util.ModelValidationUtil;
 import org.csstudio.platform.ui.util.LayoutUtil;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.viewers.IOpenListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.OpenEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
@@ -50,9 +52,7 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
  * @author Sven Wende
  * 
  */
-public final class PrototypeSelectionDialog extends Dialog {
-	private String message;
-
+public final class InstanceDialog extends Dialog {
 	private IPrototype selection;
 
 	private IProject project;
@@ -78,10 +78,9 @@ public final class PrototypeSelectionDialog extends Dialog {
 	 * @param selectedContainer
 	 *            the current selected container
 	 */
-	public PrototypeSelectionDialog(final Shell parentShell, final String dialogMessage, final IProject project, IContainer selectedContainer) {
+	public InstanceDialog(final Shell parentShell, final IProject project, IContainer selectedContainer) {
 		super(parentShell);
 		this.setShellStyle(SWT.MODELESS | SWT.CLOSE | SWT.MAX | SWT.TITLE | SWT.BORDER | SWT.RESIZE);
-		message = dialogMessage;
 		this.project = project;
 		this.selectedContainer = selectedContainer;
 	}
@@ -102,14 +101,13 @@ public final class PrototypeSelectionDialog extends Dialog {
 	protected Control createDialogArea(final Composite parent) {
 		Composite composite = (Composite) super.createDialogArea(parent);
 		composite.setLayout(new GridLayout(1, false));
-		if (message != null) {
-			Label label = new Label(composite, SWT.WRAP);
-			label.setText(message);
-			GridData data = new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_CENTER);
-			data.horizontalSpan = 2;
-			data.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
-			label.setLayoutData(data);
-		}
+		
+		Label label = new Label(composite, SWT.WRAP);
+		label.setText("Available Prototypes:");
+		GridData data = new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_CENTER);
+		data.horizontalSpan = 2;
+		data.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
+		label.setLayoutData(data);
 
 		treeViewer = new TreeViewer(composite);
 		treeViewer.getTree().setLayoutData(LayoutUtil.createGridDataForFillingCell(200, 400));
@@ -136,6 +134,13 @@ public final class PrototypeSelectionDialog extends Dialog {
 			}
 		});
 		treeViewer.setInput(project);
+		
+		treeViewer.addOpenListener(new IOpenListener(){
+			public void open(OpenEvent event) {
+				okPressed();
+			}
+		});
+		
 		return composite;
 	}
 

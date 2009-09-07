@@ -11,7 +11,7 @@ import org.csstudio.dct.model.commands.RemoveParameterCommand;
 import org.csstudio.dct.model.internal.Parameter;
 import org.csstudio.dct.model.visitors.SearchInstancesVisitor;
 import org.csstudio.dct.ui.Activator;
-import org.csstudio.dct.ui.editor.outline.internal.PrototypeSelectionDialog;
+import org.csstudio.dct.ui.editor.outline.internal.InstanceDialog;
 import org.csstudio.dct.ui.editor.tables.ConvenienceTableWrapper;
 import org.csstudio.dct.ui.editor.tables.ITableRow;
 import org.csstudio.platform.ui.util.CustomMediaFactory;

@@ -28,7 +28,9 @@ import org.csstudio.dct.metamodel.IRecordDefinition;
 import org.csstudio.platform.ui.util.LayoutUtil;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.viewers.IOpenListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.OpenEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
@@ -50,7 +52,6 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
  */
 public final class RecordDialog extends Dialog {
 
-	private String message;
 	private TreeViewer viewer;
 	private IRecordDefinition selection;
 	private List<IRecordDefinition> recordDefinitions;
@@ -70,10 +71,9 @@ public final class RecordDialog extends Dialog {
 	 * @param recordDefinitions
 	 *            the record definitions
 	 */
-	public RecordDialog(final Shell parentShell, final String dialogMessage, final List<IRecordDefinition> recordDefinitions) {
+	public RecordDialog(final Shell parentShell, final List<IRecordDefinition> recordDefinitions) {
 		super(parentShell);
 		this.setShellStyle(SWT.MODELESS | SWT.CLOSE | SWT.MAX | SWT.TITLE | SWT.BORDER | SWT.RESIZE);
-		message = dialogMessage;
 		this.recordDefinitions = recordDefinitions;
 	}
 
@@ -92,15 +92,14 @@ public final class RecordDialog extends Dialog {
 	@Override
 	protected Control createDialogArea(final Composite parent) {
 		Composite composite = (Composite) super.createDialogArea(parent);
+		
 		composite.setLayout(new GridLayout(1, false));
-		if (message != null) {
-			Label label = new Label(composite, SWT.WRAP);
-			label.setText(message);
-			GridData data = new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_CENTER);
-			data.horizontalSpan = 2;
-			data.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
-			label.setLayoutData(data);
-		}
+		Label label = new Label(composite, SWT.WRAP);
+		label.setText("Please select the record type:");
+		GridData data = new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_CENTER);
+		data.horizontalSpan = 2;
+		data.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
+		label.setLayoutData(data);
 
 		viewer = new TreeViewer(composite);
 		viewer.getControl().setLayoutData(LayoutUtil.createGridDataForFillingCell(200, 400));
@@ -113,6 +112,12 @@ public final class RecordDialog extends Dialog {
 		});
 		viewer.setSorter(new ViewerSorter());
 		viewer.setInput(recordDefinitions.toArray());
+
+		viewer.addOpenListener(new IOpenListener() {
+			public void open(OpenEvent event) {
+				okPressed();
+			}
+		});
 		return composite;
 	}
 

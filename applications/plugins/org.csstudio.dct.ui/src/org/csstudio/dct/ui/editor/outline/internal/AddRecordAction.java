@@ -35,25 +35,25 @@ public final class AddRecordAction extends AbstractOutlineAction {
 
 		Command command = null;
 
-		RecordDialog rsd = new RecordDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-				"Please select the record type:", getProject().getDatabaseDefinition().getRecordDefinitions());
+		RecordDialog rsd = new RecordDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), getProject()
+				.getDatabaseDefinition().getRecordDefinitions());
 
 		if (rsd.open() == Window.OK) {
 			IRecordDefinition rd = rsd.getSelection();
 
 			if (rd != null) {
-				command = new AddRecordCommand((IContainer) selection.get(0), RecordFactory.createRecord(getProject(), rd.getType(), "new record", UUID
-						.randomUUID()));
+				command = new AddRecordCommand((IContainer) selection.get(0), RecordFactory.createRecord(getProject(), rd.getType(),
+						"new record", UUID.randomUUID()));
 			}
 		}
-		
+
 		return command;
 	}
-	
+
 	@Override
 	protected void afterSelectionChanged(List<IElement> selection, IAction action) {
 		IProject project = getProject();
-		action.setEnabled(project!=null && project.getDatabaseDefinition()!=null);
+		action.setEnabled(project != null && project.getDatabaseDefinition() != null);
 	}
 
 }
