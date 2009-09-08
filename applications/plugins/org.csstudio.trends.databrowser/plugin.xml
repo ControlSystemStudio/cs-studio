@@ -210,4 +210,10 @@
                name="Plot Archived Data">
          </cheatsheet>
       </extension>
+      <extension
+            point="org.csstudio.platform.ui.striptool">
+         <striptool
+               class="org.csstudio.trends.databrowser.service.StripToolService">
+         </striptool>
+      </extension>
 </plugin>

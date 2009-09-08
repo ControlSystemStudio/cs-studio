@@ -31,6 +31,7 @@ Export-Package: org.csstudio.platform.ui,
  org.csstudio.platform.ui.security,
  org.csstudio.platform.ui.swt,
  org.csstudio.platform.ui.swt.stringtable,
+ org.csstudio.platform.ui.trends,
  org.csstudio.platform.ui.util,
  org.csstudio.platform.ui.wizards,
  org.csstudio.platform.ui.workbench
