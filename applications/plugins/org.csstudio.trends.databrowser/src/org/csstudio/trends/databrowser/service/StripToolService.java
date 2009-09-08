@@ -44,7 +44,6 @@ public class StripToolService implements IStripTool {
     /* (non-Javadoc)
      * @see org.csstudio.platform.ui.trends.IStripTool#openEditor(org.eclipse.core.resources.IFile)
      */
-    @Override
     public EditorPart openEditor(IFile file) {
         IEditorInput input = new FileEditorInput(file);
         return PlotEditor.createInstance(input);
@@ -53,7 +52,6 @@ public class StripToolService implements IStripTool {
     /* (non-Javadoc)
      * @see org.csstudio.platform.ui.trends.IStripTool#openView(org.eclipse.core.resources.IFile)
      */
-    @Override
     public ViewPart openView(IFile file) {
         return PlotView.createInstance(file);
     }
