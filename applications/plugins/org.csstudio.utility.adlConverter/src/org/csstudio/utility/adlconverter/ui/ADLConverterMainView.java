@@ -40,8 +40,10 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Preferences;
+import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -53,6 +55,8 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowData;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DirectoryDialog;
@@ -60,8 +64,11 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
@@ -114,7 +121,7 @@ public class ADLConverterMainView extends ViewPart {
     /**
      * The ADL Converter Preferences. Contain the different default path.
      */
-    private Preferences _preferences;
+    private IPreferenceStore _preferences;
 
     /**
      * A Label to show a path example.
@@ -127,19 +134,23 @@ public class ADLConverterMainView extends ViewPart {
     @Override
     public final void createPartControl(final Composite parent) {
         _shell = parent.getShell();
-        _preferences = Activator.getDefault().getPluginPreferences();
+        _preferences = Activator.getDefault().getPreferenceStore();
         PlatformUI.getWorkbench().getHelpSystem().setHelp(parent,
-                Activator.PLUGIN_ID + ".adl_converter");
+                Activator.PLUGIN_ID + ".adl_converter"); //$NON-NLS-1$
         parent.setLayout(new GridLayout(1, true));
 
         // Source and Destination Groups
         Group sourceGroup = new Group(parent, SWT.NONE);
-        sourceGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+        GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+        layoutData.minimumHeight = 100;
+        sourceGroup.setLayoutData(layoutData);
         sourceGroup.setLayout(new GridLayout(4, true));
         sourceGroup.setText(Messages.ADLConverterMainView_SourceGroup);
 
         Group destinationGroup = new Group(parent, SWT.NONE);
-        destinationGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
+        layoutData = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
+        layoutData.minimumHeight = 40;
+        destinationGroup.setLayoutData(layoutData);
         destinationGroup.setLayout(new GridLayout(2, false));
         destinationGroup.setText(Messages.ADLConverterMainView_DestinationGroup);
 
@@ -155,36 +166,44 @@ public class ADLConverterMainView extends ViewPart {
      *            The Workspace resource.
      */
     private void generateSourceBlock(final Group sourceGroup, final IResource initial) {
+
         GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true, 4, 1);
         gridData.minimumWidth = 40;
+        gridData.minimumHeight = 40;
 
         _avaibleFiles = new ListViewer(sourceGroup);
         _avaibleFiles.getList().setLayoutData(gridData);
         _avaibleFiles.setContentProvider(new ArrayContentProvider());
         _avaibleFiles.setLabelProvider(new LabelProvider());
 
-        Button openSourceButton = new Button(sourceGroup, SWT.PUSH);
-        openSourceButton.setLayoutData(new GridData(80, 25));
+        makeMenu();
+        gridData = new GridData(SWT.FILL, SWT.FILL, true, false, 4, 1);
+        gridData.minimumWidth = 40;
+        gridData.minimumHeight = 40;
+        Composite buttonComposite = new Composite(sourceGroup, SWT.NONE);
+        buttonComposite.setLayoutData(gridData);
+        // buttonComposite.setLayoutData(GridDataFactory.fillDefaults().span(4, 1).create());
+        buttonComposite.setLayout(new RowLayout());
+
+        Button openSourceButton = new Button(buttonComposite, SWT.PUSH);
+        openSourceButton.setLayoutData(new RowData(80, 25));
         openSourceButton.setText(Messages.ADLConverterMainView_ADLSourceFileDialogButton);
 
-        Button subFolderButton = new Button(sourceGroup, SWT.PUSH);
-        subFolderButton.setLayoutData(new GridData(80, 25));
+        Button subFolderButton = new Button(buttonComposite, SWT.PUSH);
+        subFolderButton.setLayoutData(new RowData(80, 25));
         subFolderButton.setText(Messages.ADLConverterMainView_ADLSourceFolderDialogButton);
 
-        Button clearSourceButton = new Button(sourceGroup, SWT.PUSH);
+        Button clearSourceButton = new Button(buttonComposite, SWT.PUSH);
         clearSourceButton.setText(Messages.ADLConverterMainView_ClearButtonText);
-        gridData = new GridData(80, 25);
-        gridData.horizontalAlignment = SWT.CENTER;
-        clearSourceButton.setLayoutData(gridData);
+        RowData rowData = new RowData(80, 25);
+        clearSourceButton.setLayoutData(rowData);
 
-        Button convertButton = new Button(sourceGroup, SWT.PUSH);
+        Button convertButton = new Button(buttonComposite, SWT.PUSH);
         convertButton.setText(Messages.ADLConverterMainView_ConvcertButtonText);
-        gridData = new GridData(80, 25);
-        gridData.horizontalAlignment = SWT.RIGHT;
-        convertButton.setLayoutData(gridData);
+        rowData = new RowData(80, 25);
+        convertButton.setLayoutData(rowData);
 
         // Listener
-
         openSourceButton.addSelectionListener(new SelectionListener() {
 
             public void widgetDefaultSelected(final SelectionEvent e) {
@@ -198,9 +217,8 @@ public class ADLConverterMainView extends ViewPart {
                         Messages.ADLConverterMainView_MDPFileSourceDialogFileDes,
                         Messages.ADLConverterMainView_STCFileSourceDialogFileDes,
                         Messages.ADLConverterMainView_AllFileSourceDialogFileDes });
-                dialog.setFilterExtensions(new String[] { "*.adl;*.mfp;*.stc", "*.adl", "*.mfp",
-                        "*.stc", "*.*" }); // Windows
-                // wild cards //$NON-NLS-1$ //$NON-NLS-2$
+                String[] ext = new String[] { "*.adl;*.mfp;*.stc", "*.adl", "*.mfp", "*.stc", "*.*" }; // Windows wild cards //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5 
+                dialog.setFilterExtensions(ext);
                 String path = _preferences
                         .getString(ADLConverterPreferenceConstants.P_STRING_Path_Source);
                 dialog.setFilterPath(path);
@@ -230,7 +248,7 @@ public class ADLConverterMainView extends ViewPart {
                 String path = _preferences
                         .getString(ADLConverterPreferenceConstants.P_STRING_Path_Source);
                 // path = initial.getProjectRelativePath().toOSString();
-                System.out.println("Path_: " + path);
+                System.out.println("Path_: " + path); //$NON-NLS-1$
                 dialog.setFilterPath(path);
                 String open = dialog.open();
                 if (open == null) {
@@ -253,9 +271,9 @@ public class ADLConverterMainView extends ViewPart {
 
                         boolean adl = false;
                         adl |= dir.isDirectory();
-                        adl |= name.endsWith(".adl");
-                        adl |= name.endsWith(".mfp");
-                        adl |= name.endsWith(".stc");
+                        adl |= name.endsWith(".adl"); //$NON-NLS-1$
+                        adl |= name.endsWith(".mfp"); //$NON-NLS-1$
+                        adl |= name.endsWith(".stc"); //$NON-NLS-1$
                         return adl;
                     }
 
@@ -278,25 +296,8 @@ public class ADLConverterMainView extends ViewPart {
             }
 
             public void widgetSelected(final SelectionEvent e) {
-                StructuredSelection structuredSelection = (StructuredSelection) _avaibleFiles
-                        .getSelection();
-                if (structuredSelection.size() < 1) {
-
-                    Iterator<File> iterator = _avaibleFilesList.iterator();
-                    while (iterator.hasNext()) {
-                        File file = (File) iterator.next();
-                        if (file != null) {
-                            String lowerCase = file.getName().toLowerCase();
-                            if (lowerCase.contains("_bak") || lowerCase.contains(".bak")) {
-                                iterator.remove();
-                            }
-                        }
-                    }
-                    _avaibleFiles.setInput(_avaibleFilesList);
-                } else {
-                    _avaibleFilesList.removeAll(structuredSelection.toList());
-                    _avaibleFiles.setInput(_avaibleFilesList);
-                }
+                _avaibleFilesList.clear();
+                _avaibleFiles.setInput(_avaibleFilesList);
                 _pathPos = 0;
             }
 
@@ -347,7 +348,7 @@ public class ADLConverterMainView extends ViewPart {
                                 } else if (file.getName().endsWith(".stc")) {//$NON-NLS-1$
                                     // parse Strip Tool Files
                                     if (!di.importStripTool(file.getAbsolutePath(), targetProject,
-                                            file.getName().concat(".css-sds"))) { //$NON-NLS-1$ //$NON-NLS-2$
+                                            file.getName().replace(".stc",".css-plt"))) { //$NON-NLS-1$ //$NON-NLS-2$
                                         if (di.getStatus() == 5) {
                                             // Job is canceled.
                                             break;
@@ -369,6 +370,62 @@ public class ADLConverterMainView extends ViewPart {
         });
     }
 
+    private void makeMenu() {
+        Menu menu = new Menu(_avaibleFiles.getControl());
+        MenuItem showItem = new MenuItem(menu, SWT.PUSH);
+        showItem.addSelectionListener(new SelectionListener() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                removeBak();
+            }
+
+            @Override
+            public void widgetDefaultSelected(SelectionEvent e) {
+                removeBak();
+            }
+
+            private void removeBak() {
+                Iterator<File> iterator = _avaibleFilesList.iterator();
+                while (iterator.hasNext()) {
+                    File file = (File) iterator.next();
+                    if (file != null) {
+                        String lowerCase = file.getName().toLowerCase();
+                        if (lowerCase.contains("_bak") || lowerCase.contains(".bak")) { //$NON-NLS-1$ //$NON-NLS-2$
+                            iterator.remove();
+                        }
+                    }
+                }
+                _avaibleFiles.setInput(_avaibleFilesList);
+            }
+        });
+        showItem.setText(Messages.ADLConverterMainView_RemoveBakFiles);
+        showItem.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(
+                ISharedImages.IMG_ELCL_REMOVEALL));
+
+        showItem = new MenuItem(menu, SWT.PUSH);
+        showItem.addSelectionListener(new SelectionListener() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                StructuredSelection selection = (StructuredSelection) _avaibleFiles.getSelection();
+                _avaibleFiles.remove(selection.toArray());
+            }
+
+            @Override
+            public void widgetDefaultSelected(SelectionEvent e) {
+                StructuredSelection selection = (StructuredSelection) _avaibleFiles.getSelection();
+                _avaibleFiles.remove(selection.toArray());
+            }
+
+        });
+        showItem.setText(Messages.ADLConverterMainView_RemoveSelectedFiels);
+        showItem.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(
+                ISharedImages.IMG_ELCL_REMOVE));
+
+        _avaibleFiles.getList().setMenu(menu);
+    }
+
     /**
      * @param destinationGroup
      *            the Parent composite.
@@ -376,10 +433,12 @@ public class ADLConverterMainView extends ViewPart {
      */
     private void generateDestinationBlock(final Group destinationGroup) {
         // Destination ui elements.
+
         // first row
         Button openTargetButton = new Button(destinationGroup, SWT.PUSH);
-        openTargetButton.setText(Messages.ADLConverterMainView_TargetOpernButton);
+        openTargetButton.setText(Messages.ADLConverterMainView_TargetOpenButton);
         openTargetButton.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, false, false, 1, 1));
+
         final Text pathText = new Text(destinationGroup, SWT.BORDER);
         pathText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
         _targetPath = new Path(_preferences
@@ -388,25 +447,24 @@ public class ADLConverterMainView extends ViewPart {
 
         // second row
         Composite relativPathComp = new Composite(destinationGroup, SWT.NONE);
+        relativPathComp.setLayoutData(GridDataFactory.fillDefaults().span(2, 1).create());
         relativPathComp.setLayout(new GridLayout(2, false));
-        relativPathComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 2, 1));
 
-        org.eclipse.swt.widgets.Label label = new org.eclipse.swt.widgets.Label(relativPathComp,
-                SWT.NONE);
-        label.setText("Choose the absolute source path that are removed (<-- & -->)");
-        label.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 2, 1));
+        Label label = new Label(relativPathComp, SWT.WRAP | SWT.READ_ONLY);
+        label.setText(Messages.ADLConverterMainView_PathPrefix);
+        label.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 2));
 
         // third row
         _isRelativePath = new Button(relativPathComp, SWT.CHECK);
-        _isRelativePath.setText("");
+        _isRelativePath.setText(""); //$NON-NLS-1$
 
         GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
-        gridData.minimumWidth = 40;
+        gridData.minimumWidth = 20;
 
         _relativePathText = new Text(relativPathComp, SWT.SINGLE | SWT.BORDER | SWT.READ_ONLY
                 | SWT.SEARCH);
         _relativePathText.setLayoutData(gridData);
-        _relativePathText.setToolTipText("Press <-- or --> to select the path");
+        _relativePathText.setToolTipText(Messages.ADLConverterMainView_PathPrefixToolTip);
         _relativePathText.setText(_preferences
                 .getString(ADLConverterPreferenceConstants.P_STRING_Path_Relativ_Target));
 
@@ -473,10 +531,10 @@ public class ADLConverterMainView extends ViewPart {
                             if (pathPart.length > _pathPos) {
                                 if (_pathPos == 0) {
                                     _relativePathText.setText(_relativePathText.getText().replace(
-                                            pathPart[_pathPos], ""));
+                                            pathPart[_pathPos], "")); //$NON-NLS-1$
                                 } else {
                                     _relativePathText.setText(_relativePathText.getText().replace(
-                                            File.separator + pathPart[_pathPos], ""));
+                                            File.separator + pathPart[_pathPos], "")); //$NON-NLS-1$
                                 }
                                 refreshexamplePathLabel();
                             }
@@ -512,7 +570,7 @@ public class ADLConverterMainView extends ViewPart {
     private IPath getRelativPath(final File file) {
         String apsolutPath = Pattern.quote(_relativePathText.getText());
         IPath relativePath = _targetPath.append(file.getAbsolutePath()
-                .replaceFirst(apsolutPath, ""));
+                .replaceFirst(apsolutPath, "")); //$NON-NLS-1$
         return relativePath;
     }
 
@@ -527,7 +585,7 @@ public class ADLConverterMainView extends ViewPart {
     private void checkRelativPath() {
         File path = _avaibleFilesList.getFirst();
         if (!path.getAbsolutePath().contains(_relativePathText.getText())) {
-            _relativePathText.setText("");
+            _relativePathText.setText(""); //$NON-NLS-1$
         }
     }
 

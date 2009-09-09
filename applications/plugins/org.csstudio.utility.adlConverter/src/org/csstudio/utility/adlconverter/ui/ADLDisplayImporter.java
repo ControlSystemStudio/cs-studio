@@ -25,6 +25,8 @@
 package org.csstudio.utility.adlconverter.ui;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Formatter;
 
 import org.csstudio.platform.logging.CentralLogger;
@@ -39,6 +41,7 @@ import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.ParserADL;
 import org.csstudio.utility.adlconverter.utility.faceplate.FaceplateParser;
+import org.csstudio.utility.adlconverter.utility.striptool.StripTool;
 import org.csstudio.utility.adlconverter.utility.striptool.StripToolParser;
 import org.csstudio.utility.adlconverter.utility.widgets.ADLDisplay;
 import org.csstudio.utility.adlconverter.utility.widgets.ActionButton;
@@ -69,6 +72,8 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
+
+import sun.misc.FpUtils;
 
 /**
  * @author hrickens
@@ -245,18 +250,47 @@ public class ADLDisplayImporter extends AbstractDisplayImporter {
     }
 
     public boolean importStripTool(final String sourceFile, final IPath targetProject,
-            final String targetFileName) throws CoreException {
+            final String targetFileName) throws CoreException, IOException {
         // ADLWidget root = ParserS.getNextElement(new File(sourceFile));
-        DisplayModel displayModel = new DisplayModel();
-        StripToolParser.parse(sourceFile, displayModel);
-        return createFile(targetProject, targetFileName, displayModel);
+        StripTool stripTool = new StripTool();
+        StripToolParser.parse(sourceFile, stripTool);
+        return createFile(targetProject, targetFileName, stripTool);
     }
 
+    
     private boolean createFile(IPath targetProject, String targetFileName, DisplayModel displayModel)
             throws CoreException {
         DisplayModelInputStream.setXMLHeader("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n"); //$NON-NLS-1$
         DisplayModelInputStream modelInputStream = (DisplayModelInputStream) PersistenceUtil
                 .createStream(displayModel);
+        IFile fileOut = handelPathAndFile(targetProject, targetFileName);
+        if(fileOut==null) {
+            return false;
+        } else if (fileOut.exists()) {
+            fileOut.setContents(modelInputStream, true, false, null);
+        } else {
+            fileOut.create(modelInputStream, true, null);
+        }
+        return true;
+    }
+    
+    private boolean createFile(IPath targetProject, String targetFileName, StripTool stripTool)
+    throws CoreException, IOException {
+    IFile fileOut = handelPathAndFile(targetProject, targetFileName);
+    if(fileOut==null) {
+        return false;
+    } else if (fileOut.exists()) {
+        InputStream xmlFileInputStream = stripTool.getXmlFileInputStream();
+        fileOut.setContents(xmlFileInputStream, true, false, null);
+    } else {
+        InputStream xmlFileInputStream = stripTool.getXmlFileInputStream();
+        fileOut.create(xmlFileInputStream, true, null);
+    }
+    return true;
+}
+
+        
+    private IFile handelPathAndFile(IPath targetProject, String targetFileName) throws CoreException {
         IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
         IPath filePath = targetProject.append(targetFileName.trim());
         if (!workspaceRoot.exists(targetProject)) {
@@ -264,7 +298,7 @@ public class ADLDisplayImporter extends AbstractDisplayImporter {
                 IFolder folder = workspaceRoot.getFolder(targetProject);
                 createFolder(folder);
             } else if (_createFolderNever) {
-                return false;
+                return null;
             } else {
                 String[] dialogButtonsText = new String[] {
                         Messages.ADLDisplayImporter_Dialog_Yes_Button,
@@ -289,21 +323,14 @@ public class ADLDisplayImporter extends AbstractDisplayImporter {
                         _createFolderNever = true;
                     case 2:
                         _status = 2;
-                        return false;
+                        return null;
                     default:
                         _status = 5;
-                        return false;
+                        return null;
                 }
             }
         }
-        IFile fileOut = workspaceRoot.getFile(filePath);
-
-        if (fileOut.exists()) {
-            fileOut.setContents(modelInputStream, true, false, null);
-        } else {
-            fileOut.create(modelInputStream, true, null);
-        }
-        return true;
+        return workspaceRoot.getFile(filePath);
     }
 
     /**

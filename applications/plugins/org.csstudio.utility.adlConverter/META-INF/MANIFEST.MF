@@ -20,5 +20,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.sds.ui
 Eclipse-LazyStart: true
 Bundle-ClassPath: bin/,
- .
+ .,
+ lib/jdom.jar
 Bundle-Localization: plugin

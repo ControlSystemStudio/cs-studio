@@ -29,14 +29,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import org.csstudio.sds.components.model.StripChartModel;
-import org.csstudio.sds.model.DisplayModel;
-import org.csstudio.sds.model.DynamicsDescriptor;
-import org.csstudio.sds.model.IWidgetModelFactory;
-import org.csstudio.sds.model.WidgetModelFactoryService;
-import org.csstudio.sds.model.logic.ParameterDescriptor;
 import org.eclipse.swt.graphics.RGB;
 
 /**
@@ -47,13 +41,13 @@ import org.eclipse.swt.graphics.RGB;
  */
 public class StripToolParser {
 
-    private static final double faktor = 1d/256d;
+    private static final double faktor = 1d / 256d;
     private static RGB _backgrund;
     private static RGB _foregrund;
     private static RGB _grid;
     private static boolean _gridXon;
     private static boolean _gridYon;
-    private static boolean _numSamples;
+    private static int _numSamples;
     private static int _axisYcolorStat;
     private static int _graphLineWidth;
     private static double _timespan;
@@ -64,11 +58,14 @@ public class StripToolParser {
     private static ArrayList<String> _name;
     private static ArrayList<String> _units;
     private static ArrayList<Integer> _precision;
+    private static ArrayList<Double> _maxs;
+    private static ArrayList<Double> _mins;
+
     private static double _min;
     private static double _max;
     private static ArrayList<RGB> _colors;
 
-    public static void parse(String sourceFile, DisplayModel displayModel) {
+    public static void parse(String sourceFile, StripTool stripTool) {
         _backgrund = null;
         _foregrund = null;
         _grid = null;
@@ -85,67 +82,41 @@ public class StripToolParser {
         _units = new ArrayList<String>();
         _precision = new ArrayList<Integer>();
         _min = Double.MAX_VALUE;
+        _mins = new ArrayList<Double>();
+        _maxs = new ArrayList<Double>();
         _max = Double.MIN_VALUE;
         _colors = new ArrayList<RGB>();
 
         parseFile(sourceFile);
-        setAttriebutes(displayModel);
+        setAttriebutes(stripTool);
 
     }
 
-    private static void setAttriebutes(DisplayModel displayModel) {
-        displayModel.setSize(800, 600);
-        StripChartModel model = null;
+    private static void setAttriebutes(StripTool model) {
 
-        IWidgetModelFactory factory = WidgetModelFactoryService.getInstance()
-                .getWidgetModelFactory(StripChartModel.ID);
-
-        if (factory != null) {
-            model = (StripChartModel) factory.createWidgetModel();
-            model.setX(0);
-            model.setY(0);
-            model.setSize(800, 600);
-            model.setPropertyValue(StripChartModel.PROP_X_AXIS_TIMESPAN, _timespan);
-            model.setPropertyValue(StripChartModel.PROP_UPDATE_INTERVAL, _refreshInterval);
-            model.setPropertyValue(StripChartModel.PROP_PLOT_LINE_WIDTH, _graphLineWidth);
-            model.setPropertyValue(StripChartModel.PROP_MIN, _min);
-            model.setPropertyValue(StripChartModel.PROP_MAX, _max);
-            if (_backgrund != null) {
-                model.setPropertyValue(StripChartModel.PROP_COLOR_BACKGROUND, _backgrund);
-            }
-            if (_foregrund != null) {
-                model.setPropertyValue(StripChartModel.PROP_COLOR_FOREGROUND, _foregrund);
-            }
-            if (_grid!= null) {
-                model.setPropertyValue(StripChartModel.PROP_GRID_LINE_COLOR, _grid);
-            }
-            if (_units != null && _units.size() > 0) {
-                model.setPropertyValue(StripChartModel.PROP_Y_AXIS_LABEL, Arrays.toString(_units.toArray()).replaceAll(",", "\r\n"));
-            }
-            if (_name != null && _name.size() > 0) {
-                for (int i = 0; i < _name.size()&&i<StripChartModel.NUMBER_OF_CHANNELS; i++) {
-                    ParameterDescriptor parameterDescriptor = new ParameterDescriptor(_name.get(i),
-                            Double.class);
-                    DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor();
-                    dynamicsDescriptor.addInputChannel(parameterDescriptor);
-                    model.setDynamicsDescriptor(StripChartModel.valuePropertyId(i),
-                            dynamicsDescriptor);
-                    model.setPropertyValue(StripChartModel.enablePlotPropertyId(i), true);
-                    if(_colors.size()>i) {
-                        model.setPropertyValue(StripChartModel.plotColorPropertyId(i), _colors.get(i));
-                    }
-                }
-            }
-            if(_gridXon&&_gridYon) {
-                model.setPropertyValue(StripChartModel.PROP_SHOW_GRID_LINES, "Both" );
-            } else if(_gridXon) {
-                model.setPropertyValue(StripChartModel.PROP_SHOW_GRID_LINES, "X-Axis" );
-            } else if(_gridYon) {
-                model.setPropertyValue(StripChartModel.PROP_SHOW_GRID_LINES, "Y-Axis" );
-            }
-//            model.setParent(displayModel);
-            displayModel.addWidget(model);
+        model.setTimespan(_timespan);
+        model.setRefreshInterval(_refreshInterval);
+        model.setSampleInterval(_sampleInterval);
+        model.setNumSamples(_numSamples);
+        if (_backgrund != null) {
+            model.setBackground(_backgrund);
         }
+        if (_foregrund != null) {
+            model.setForeground(_foregrund);
+        }
+        if (_grid != null) {
+            model.setGridColor(_grid);
+        }
+        if (_name != null && _name.size() > 0) {
+            for (int i = 0; i < _name.size() && i < StripChartModel.NUMBER_OF_CHANNELS; i++) {
+                model.addPV(_name.get(i), i, _graphLineWidth, _mins.get(i), _maxs.get(i), _gridXon
+                        && _gridYon, _colors.get(i));
+            }
+        }
+        // if (_units != null && _units.size() > 0) {
+        // model.setPropertyValue(StripChartModel.PROP_Y_AXIS_LABEL,
+        // Arrays.toString(_units.toArray()).replaceAll(",", "\r\n"));
+        // }
     }
 
     private static void parseFile(String sourceFile) {
@@ -192,13 +163,15 @@ public class StripToolParser {
                 _precision.add(Integer.parseInt(splitLine[1]));
             } else if (key4.equals("Min")) {
                 double parseDouble = Double.parseDouble(splitLine[1]);
-                if(parseDouble<_min) {
-                    _min=parseDouble;
+                _mins.add(parseDouble);
+                if (parseDouble < _min) {
+                    _min = parseDouble;
                 }
             } else if (key4.equals("Max")) {
                 double parseDouble = Double.parseDouble(splitLine[1]);
-                if(parseDouble>_max) {
-                    _max=parseDouble;
+                _maxs.add(parseDouble);
+                if (parseDouble > _max) {
+                    _max = parseDouble;
                 }
             } else if (key4.equals("Scale")) {
                 _scale.add(Integer.parseInt(splitLine[1]) == 1);
@@ -225,25 +198,25 @@ public class StripToolParser {
     private static void color(String key3, String[] splitLine) {
         if (splitLine.length == 4) {
             if (key3.equals("Background")) {
-                int r = (int)(faktor * Integer.parseInt(splitLine[1]));
-                int g = (int)(faktor * Integer.parseInt(splitLine[2]));
-                int b = (int)(faktor * Integer.parseInt(splitLine[3]));
-                _backgrund = new RGB(r,g,b);
+                int r = (int) (faktor * Integer.parseInt(splitLine[1]));
+                int g = (int) (faktor * Integer.parseInt(splitLine[2]));
+                int b = (int) (faktor * Integer.parseInt(splitLine[3]));
+                _backgrund = new RGB(r, g, b);
             } else if (key3.equals("Foreground")) {
-                int r = (int)(faktor * Integer.parseInt(splitLine[1]));
-                int g = (int)(faktor * Integer.parseInt(splitLine[2]));
-                int b = (int)(faktor * Integer.parseInt(splitLine[3]));
-                _foregrund = new RGB(r,g,b);
+                int r = (int) (faktor * Integer.parseInt(splitLine[1]));
+                int g = (int) (faktor * Integer.parseInt(splitLine[2]));
+                int b = (int) (faktor * Integer.parseInt(splitLine[3]));
+                _foregrund = new RGB(r, g, b);
             } else if (key3.equals("Grid")) {
-                int r = (int)(faktor * Integer.parseInt(splitLine[1]));
-                int g = (int)(faktor * Integer.parseInt(splitLine[2]));
-                int b = (int)(faktor * Integer.parseInt(splitLine[3]));
-                _grid = new RGB(r,g,b);
+                int r = (int) (faktor * Integer.parseInt(splitLine[1]));
+                int g = (int) (faktor * Integer.parseInt(splitLine[2]));
+                int b = (int) (faktor * Integer.parseInt(splitLine[3]));
+                _grid = new RGB(r, g, b);
             } else if (key3.startsWith("Color")) {
-                int r = (int)(faktor * Integer.parseInt(splitLine[1]));
-                int g = (int)(faktor * Integer.parseInt(splitLine[2]));
-                int b = (int)(faktor * Integer.parseInt(splitLine[3]));
-                _colors.add(new RGB(r,g,b));
+                int r = (int) (faktor * Integer.parseInt(splitLine[1]));
+                int g = (int) (faktor * Integer.parseInt(splitLine[2]));
+                int b = (int) (faktor * Integer.parseInt(splitLine[3]));
+                _colors.add(new RGB(r, g, b));
             }
         }
     }
@@ -253,7 +226,7 @@ public class StripToolParser {
             if (key3.equals("Timespan")) {
                 _timespan = Double.parseDouble(splitLine[1]);
             } else if (key3.equals("NumSamples")) {
-                _numSamples = Integer.parseInt(splitLine[1]) == 1;
+                _numSamples = Integer.parseInt(splitLine[1]);
             } else if (key3.equals("SampleInterval")) {
                 _sampleInterval = Double.parseDouble(splitLine[1]);
             } else if (key3.equals("RefreshInterval")) {
