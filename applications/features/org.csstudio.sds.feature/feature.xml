@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.sds.feature"
       label="Synoptic Display Studio Feature"
-      version="1.0.4">
+      version="1.1.0">
 
    <description url="http://css.desy.de/sds">
       The Synoptic Display Studio (SDS) is a GEF based application which allows for modelling and displaying synoptic displays.
@@ -45,63 +45,98 @@ THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, U
          id="org.csstudio.sds"
          download-size="0"
          install-size="0"
-         version="1.0.4"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.csstudio.sds.ui"
          download-size="0"
          install-size="0"
-         version="1.0.4"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.csstudio.sds.components"
          download-size="0"
          install-size="0"
-         version="1.0.4"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.csstudio.sds.components.ui"
          download-size="0"
          install-size="0"
-         version="1.0.4"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.csstudio.sds.components.epics"
          download-size="0"
          install-size="0"
-         version="1.0.4"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.csstudio.sds.samples"
          download-size="0"
          install-size="0"
-         version="1.0.4"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.csstudio.sds.importer"
          download-size="0"
          install-size="0"
-         version="1.0.4"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.csstudio.sds.importer.ui"
          download-size="0"
          install-size="0"
-         version="1.0.4"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.csstudio.sds.settings.desy"
          download-size="0"
          install-size="0"
-         version="1.0.4"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="de.desy.language.editor.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="de.desy.language.editor.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="de.desy.language.libraries"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.adlConverter"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.quickstart"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
          unpack="false"/>
 
 </feature>
