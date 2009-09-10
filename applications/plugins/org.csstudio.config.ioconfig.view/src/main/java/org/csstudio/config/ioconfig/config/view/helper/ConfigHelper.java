@@ -365,6 +365,7 @@ public final class ConfigHelper {
             }
 
             private void doFileAdd() {
+                _gsdFile = (GSDFile) ((StructuredSelection)tableViewer.getSelection()).getFirstElement();
                 if (node.fill(_gsdFile)) {
                     tSelected.setText(_gsdFile.getName());
                     node.setSavebuttonEnabled("GSDFile", true);

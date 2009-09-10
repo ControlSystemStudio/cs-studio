@@ -26,8 +26,6 @@ package org.csstudio.config.ioconfig.model.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
-
 import org.csstudio.config.ioconfig.model.Repository;
 import org.csstudio.config.ioconfig.model.Sensors;
 import org.csstudio.dct.ISensorIdService;

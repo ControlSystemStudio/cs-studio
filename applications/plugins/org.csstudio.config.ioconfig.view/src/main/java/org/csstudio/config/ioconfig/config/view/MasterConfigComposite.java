@@ -41,6 +41,7 @@ import org.csstudio.config.ioconfig.model.pbmodel.Ranges;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdFactory;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdMasterModel;
 import org.csstudio.config.ioconfig.view.ProfiBusTreeView;
+import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -552,6 +553,10 @@ public class MasterConfigComposite extends NodeConfig {
     /** {@inheritDoc} */
     @Override
     public final boolean fill(final GSDFile gsdFile) {
+        if(gsdFile==null) {
+            CentralLogger.getInstance().error(this, "GSD File not available!");
+            return false;
+        }
         GsdMasterModel masterModel = GsdFactory.makeGsdMaster(gsdFile.getGSDFile());
         
         //setGSDData

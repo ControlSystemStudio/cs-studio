@@ -97,8 +97,7 @@ class ProfibusTreeContentProvider implements IStructuredContentProvider, ITreeCo
                 CentralLogger.getInstance().error(this, e);
             }
             return null;
-        }
-        if (parent instanceof Module) {
+        }else if (parent instanceof Module) {
             Module module = (Module) parent;
             Collection<ChannelStructure> values = module.getChannelStructsAsMap().values();
             List<Node> list = new ArrayList<Node>(values.size());

@@ -37,7 +37,6 @@ import javax.persistence.Transient;
 import org.csstudio.config.ioconfig.model.NamedDBClass;
 import org.csstudio.config.ioconfig.model.Node;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdModuleModel;
-import org.csstudio.platform.logging.CentralLogger;
 
 /**
  * @author gerke
@@ -67,8 +66,6 @@ public class Module extends Node {
 
     @Transient
     private String _extModulePrmDataLen;
-
-    private boolean _debug = false;
 
     /**
      * This Constructor is only used by Hibernate. To create an new {@link Module}

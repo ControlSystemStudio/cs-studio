@@ -41,9 +41,10 @@ import org.csstudio.config.ioconfig.model.pbmodel.Slave;
 import org.csstudio.config.ioconfig.model.preference.PreferenceConstants;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Preferences.IPropertyChangeListener;
-import org.eclipse.core.runtime.Preferences.PropertyChangeEvent;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -99,15 +100,15 @@ public final class HibernateManager {
     }
 
     private static void buildConifg() {
-        Activator.getDefault().getPluginPreferences().addPropertyChangeListener(
-                new IPropertyChangeListener() {
-
-                    public void propertyChange(PropertyChangeEvent event) {
-                        setProperty(event.getProperty(), event.getNewValue());
-                        HibernateManager.setSessionFactory(_cfg.buildSessionFactory());
-                    }
-
-                });
+        new InstanceScope().getNode(Activator.getDefault().getPluginId()).addPreferenceChangeListener(new IPreferenceChangeListener() {
+            
+            @Override
+            public void preferenceChange(PreferenceChangeEvent event) {
+                setProperty(event.getKey(), event.getNewValue());
+                HibernateManager.setSessionFactory(_cfg.buildSessionFactory());
+            }
+        });
+        
 
         IPreferencesService prefs = Platform.getPreferencesService();
         String pluginId = Activator.getDefault().getPluginId();

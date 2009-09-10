@@ -27,7 +27,6 @@ package org.csstudio.config.ioconfig.view;
 import java.util.Date;
 import java.util.List;
 
-import org.csstudio.config.ioconfig.model.Node;
 import org.csstudio.config.ioconfig.model.Repository;
 import org.csstudio.config.ioconfig.model.SearchNode;
 import org.eclipse.jface.dialogs.Dialog;
@@ -268,11 +267,9 @@ public class SearchDialog extends Dialog {
     }
 
     private List<SearchNode> _load;
-    private final ProfiBusTreeView _profiBusTreeView;
 
     protected SearchDialog(Shell parentShell, ProfiBusTreeView profiBusTreeView) {
         super(parentShell);
-        _profiBusTreeView = profiBusTreeView;
         _load = Repository.load(SearchNode.class);
     }
 
@@ -523,20 +520,6 @@ public class SearchDialog extends Dialog {
     public SearchNode getSelectedNode() {
         return _searchNode;
         // return getNode(_searchNode);
-    }
-
-    @SuppressWarnings("unchecked")
-    private Node getNode(SearchNode searchNode) {
-        // Class[] cl = new Class[] {Channel.class, Module.class, Slave.class,
-        // Master.class, Subnet.class, Facility.class};
-        // for (int i = 0; i < cl.length; i++) {
-        // boolean haveNode = Repository.search(cl[i], searchNode.getId());
-        // if(haveNode) {
-        // Node load = (Node) Repository.load(cl[i], searchNode.getId());
-        // return load;
-        // }
-        // }
-        return null;
     }
 
 }

@@ -333,7 +333,6 @@ public class HibernateReposetory implements IReposetory {
 
     public List<Integer> getRootPath(final int id) {
         HibernateCallback hibernateCallback = new HibernateCallback() {
-            @SuppressWarnings("unchecked")
             public List<Integer> execute(final Session session) {
                 int level = 0;
                 int searchId = id;

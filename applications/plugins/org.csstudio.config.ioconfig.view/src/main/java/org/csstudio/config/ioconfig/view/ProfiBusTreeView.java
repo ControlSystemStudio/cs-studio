@@ -47,7 +47,7 @@ import org.csstudio.config.ioconfig.config.view.SubNetConfigComposite;
 import org.csstudio.config.ioconfig.config.view.helper.ConfigHelper;
 import org.csstudio.config.ioconfig.config.view.helper.InfoConfigComposte;
 import org.csstudio.config.ioconfig.config.view.helper.ProfibusHelper;
-import org.csstudio.config.ioconfig.model.Document;
+import org.csstudio.config.ioconfig.model.Activator;
 import org.csstudio.config.ioconfig.model.Facility;
 import org.csstudio.config.ioconfig.model.FacilityLight;
 import org.csstudio.config.ioconfig.model.Ioc;
@@ -63,10 +63,11 @@ import org.csstudio.config.ioconfig.model.pbmodel.Slave;
 import org.csstudio.config.ioconfig.model.xml.ProfibusConfigXMLGenerator;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
-import org.eclipse.core.runtime.Preferences.IPropertyChangeListener;
-import org.eclipse.core.runtime.Preferences.PropertyChangeEvent;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuListener;
@@ -300,31 +301,18 @@ public class ProfiBusTreeView extends Composite {
             return null;
         }
 
-//        public void updateLabel(ViewerLabel label, Object element) {
-//            label.setImage(getImage(element));
-//            if (haveProgrammableModule(element)) {
-//                label.setText(element.toString() + " [prog]");
-//                Font font = CustomMediaFactory.getInstance().getFont("Tahoma", 8, SWT.ITALIC);
-//                label.setFont(font);
-//                label.setTooltipText("Test");
-//                label.setBackground(CustomMediaFactory.getInstance().getColor(255, 140, 0));
-//            } else {
-//                label.setText(element.toString());
-//                label.setBackground(null);
-//            }
-//        }
-
         private boolean haveProgrammableModule(Object element) {
-            if (element instanceof Slave) {
-                Slave node = (Slave) element;
-                Set<Document> documents = node.getDocuments();
-                while (documents.iterator().hasNext()) {
-                    Document doc = (Document) documents.iterator().next();
-                    if (doc.getSubject() != null && doc.getSubject().startsWith("Projekt:")) {
-                        return true;
-                    }
-                }
-            }
+            //TODO: Das finden von Projekt Document Datein führt teilweise dazu das sich CSS Aufhängt! 
+//            if (element instanceof Slave) {
+//                Slave node = (Slave) element;
+//                Set<Document> documents = node.getDocuments();
+//                while (documents.iterator().hasNext()) {
+//                    Document doc = (Document) documents.iterator().next();
+//                    if (doc.getSubject() != null && doc.getSubject().startsWith("Projekt:")) {
+//                        return true;
+//                    }
+//                }
+//            }
             return false;
         }
 
@@ -399,23 +387,22 @@ public class ProfiBusTreeView extends Composite {
      */
     public ProfiBusTreeView(final Composite parent, final int style, final IViewSite site) {
         super(parent, style);
-        org.csstudio.config.ioconfig.model.Activator.getDefault().getPluginPreferences()
-                .addPropertyChangeListener(new IPropertyChangeListener() {
-
-                    public void propertyChange(PropertyChangeEvent event) {
-                        String property = event.getProperty();
-                        if (property.equals(DDB_PASSWORD) || property.equals(DDB_USER_NAME)
-                                || property.equals(DIALECT)
-                                || property.equals(HIBERNATE_CONNECTION_DRIVER_CLASS)
-                                || property.equals(HIBERNATE_CONNECTION_URL)) {
-                            _load = Repository.load(FacilityLight.class);
-                            _viewer.getTree().removeAll();
-                            _viewer.setInput(_load);
-                            _viewer.refresh(false);
-                        }
-                    }
-
-                });
+        new InstanceScope().getNode(Activator.getDefault().getPluginId()).addPreferenceChangeListener(new IPreferenceChangeListener() {
+            
+            @Override
+            public void preferenceChange(PreferenceChangeEvent event) {
+                String property = event.getKey();
+                if (property.equals(DDB_PASSWORD) || property.equals(DDB_USER_NAME)
+                        || property.equals(DIALECT)
+                        || property.equals(HIBERNATE_CONNECTION_DRIVER_CLASS)
+                        || property.equals(HIBERNATE_CONNECTION_URL)) {
+                    _load = Repository.load(FacilityLight.class);
+                    _viewer.getTree().removeAll();
+                    _viewer.setInput(_load);
+                    _viewer.refresh(false);
+                }
+            }
+        });
         _parent = parent;
         _site = site;
         _paste = PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(
