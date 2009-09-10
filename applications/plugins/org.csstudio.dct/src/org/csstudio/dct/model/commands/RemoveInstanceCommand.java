@@ -29,8 +29,6 @@ public final class RemoveInstanceCommand extends Command {
 		assert instance.getParentFolder() != null || instance.getContainer() != null;
 
 		this.instance = instance;
-		this.folder = instance.getParentFolder();
-		this.container = (IContainer) instance.getContainer();
 	}
 
 	/**
@@ -38,11 +36,15 @@ public final class RemoveInstanceCommand extends Command {
 	 */
 	@Override
 	public void execute() {
+		this.folder = instance.getParentFolder();
+		this.container = (IContainer) instance.getContainer();
+
+		
 		if (folder != null) {
 			index = folder.getMembers().indexOf(instance);
 			folder.removeMember(instance);
 			instance.setParentFolder(null);
-		} else {
+		} else if(container!=null) {
 			index = container.getInstances().indexOf(instance);
 			container.removeInstance(instance);
 			instance.setContainer(null);
@@ -64,7 +66,7 @@ public final class RemoveInstanceCommand extends Command {
 		if (folder != null) {
 			folder.addMember(Math.min(index, folder.getMembers().size()), instance);
 			instance.setParentFolder(folder);
-		} else {
+		} else if (container !=null){
 			container.addInstance(Math.min(index, container.getInstances().size()), instance);
 			instance.setContainer(container);
 		}

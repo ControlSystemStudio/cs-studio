@@ -72,7 +72,7 @@ public final class RemoveAction extends AbstractOutlineAction {
 				chainDeletePrototypes(command, prototypes);
 			} else if (CompareUtil.containsOnly(IInstance.class, selection)) {
 				List<IInstance> instances = CompareUtil.convert(selection);
-				chainDeleteInstances(command, instances);
+				chainDeleteInstances(command, new HashSet<IInstance>(instances));
 			} else if (CompareUtil.containsOnly(IRecord.class, selection)) {
 				List<IRecord> records = CompareUtil.convert(selection);
 				chainDeleteRecords(command, records);
@@ -100,7 +100,7 @@ public final class RemoveAction extends AbstractOutlineAction {
 		}
 
 		// .. chain instance deletion commands
-		chainDeleteInstances(cmd, new ArrayList<IInstance>(instances2delete));
+		chainDeleteInstances(cmd, instances2delete);
 
 		// .. chain prototype deletion commands
 		for (IPrototype p : prototypes2delete) {
@@ -146,7 +146,7 @@ public final class RemoveAction extends AbstractOutlineAction {
 			instances.addAll(tmp);
 		}
 
-		chainDeleteInstances(cmd, new ArrayList<IInstance>(instances));
+		chainDeleteInstances(cmd, instances);
 
 		for (IPrototype p : prototypes) {
 			// .. delete prototype
@@ -154,10 +154,45 @@ public final class RemoveAction extends AbstractOutlineAction {
 		}
 	}
 
-	private void chainDeleteInstances(CompoundCommand cmd, List<IInstance> instances) {
+	private void chainDeleteInstances(CompoundCommand cmd, Set<IInstance> instances) {
+		List<IInstance> dependent = new ArrayList<IInstance>();
+
+		for (IInstance i : instances) {
+			dependent.addAll(recursivelyGetDependentInstances(i));
+		}
+
+		instances.removeAll(dependent);
+
+		for (IInstance i : dependent) {
+			cmd.add(new RemoveInstanceCommand(i));
+		}
+
 		for (IInstance i : instances) {
 			cmd.add(new RemoveInstanceCommand(i));
 		}
+
+	}
+
+	private List<IInstance> recursivelyGetDependentInstances(IInstance instance) {
+		List<IInstance> result = new ArrayList<IInstance>();
+
+		for (IContainer c : instance.getDependentContainers()) {
+			assert c instanceof IInstance;
+			IInstance di = (IInstance) c;
+			List<IInstance> dependent = recursivelyGetDependentInstances(di);
+			
+			for(IInstance i : dependent) {
+				if(result.contains(i)) {
+					System.out.println("grande kack");
+				}
+			}
+			
+			result.addAll(dependent);
+			result.add(di);
+		}
+
+		return result;
+
 	}
 
 	private void chainDeleteRecords(CompoundCommand cmd, List<IRecord> records) {
