@@ -1,28 +1,18 @@
 package org.csstudio.opibuilder.widgets.model;
 
-import org.csstudio.opibuilder.model.AbstractWidgetModel;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 
-public class RectangleModel extends AbstractWidgetModel {
+public class RectangleModel extends AbstractShapeModel {
 	
 	
 	public final String ID = "org.csstudio.opibuilder.widgets.Rectangle";
 
-	
-	
-	@Override
-	protected void configureProperties() {
-		
-		setSize(100, 50);
-		setBackgroundColor(CustomMediaFactory.COLOR_BLUE);
-		setForegroundColor(CustomMediaFactory.COLOR_BLACK);
-	
-		
-	}
+
 
 	@Override
 	public String getTypeID() {
 		return ID;
 	}
+	
+
 
 }

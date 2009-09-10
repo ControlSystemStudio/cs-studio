@@ -3,15 +3,12 @@ package org.csstudio.opibuilder.palette;
 import java.util.List;
 import java.util.Map;
 
-import org.csstudio.opibuilder.commands.WidgetCreateCommand;
+import org.csstudio.opibuilder.feedback.IGraphicalFeedbackFactory;
 import org.csstudio.opibuilder.util.WidgetDescriptor;
 import org.csstudio.opibuilder.util.WidgetsService;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.gef.palette.CombinedTemplateCreationEntry;
-import org.eclipse.gef.palette.CreationToolEntry;
-import org.eclipse.gef.palette.PaletteContainer;
 import org.eclipse.gef.palette.PaletteDrawer;
-import org.eclipse.gef.palette.PaletteEntry;
 import org.eclipse.gef.palette.PaletteRoot;
 import org.eclipse.jface.resource.ImageDescriptor;
 
@@ -38,10 +35,17 @@ public class OPIEditorPaletteFactory {
 				ImageDescriptor icon = CustomMediaFactory.getInstance().
 					getImageDescriptorFromPlugin(
 							widgetDescriptor.getPluginId(), widgetDescriptor.getIconPath());
-				PaletteEntry widgetEntry = new CombinedTemplateCreationEntry(
+				CombinedTemplateCreationEntry widgetEntry = new CombinedTemplateCreationEntry(
 					widgetDescriptor.getName(), 
 					widgetDescriptor.getDescription(),
 					new WidgetCreationFactory(widgetDescriptor), icon, icon);
+				
+				IGraphicalFeedbackFactory feedbackFactory = 
+					WidgetsService.getInstance().getWidgetFeedbackFactory(
+							widgetDescriptor.getTypeID());
+				if( feedbackFactory != null){
+					widgetEntry.setToolClass(feedbackFactory.getCreationTool());
+				}				
 				categoryDrawer.add(widgetEntry);
 			}
 			palette.add(categoryDrawer);			

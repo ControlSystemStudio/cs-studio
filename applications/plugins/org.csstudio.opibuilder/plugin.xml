@@ -2,6 +2,7 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension-point id="widget" name="Widget" schema="schema/widget.exsd"/>
+   <extension-point id="graphicalFeedbackFactory" name="graphicalFeedbackFactory" schema="schema/graphicalFeedbackFactory.exsd"/>
    <extension
          point="org.eclipse.ui.editors">
       <editor

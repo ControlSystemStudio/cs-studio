@@ -19,47 +19,24 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.opibuilder.widgets.figures;
+package org.csstudio.opibuilder.widgets.feedback;
 
-import org.eclipse.draw2d.ColorConstants;
-import org.eclipse.draw2d.Graphics;
-import org.eclipse.draw2d.Panel;
-import org.eclipse.draw2d.geometry.Insets;
-import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.draw2d.Polygon;
+import org.eclipse.draw2d.Polyline;
 
 /**
- * A timer figure.
+ * Graphical feedback factory for polygon widgets.
  * 
- * @author Kai Meyer & Sven Wende
- * 
+ * @author Sven Wende
  */
-public final class RefreshableTimerFigure extends Panel {
-	
-	private double percentage;
-	
+public final class PolygonFeedbackFactory extends AbstractPolyFeedbackFactory {
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void paintFigure(final Graphics graphics) {
-		Rectangle rectangle = this.getBounds().getCopy().crop(new Insets(2));
-		graphics.setBackgroundColor(ColorConstants.white);
-		graphics.fillOval(rectangle);
-		graphics.setForegroundColor(ColorConstants.black);
-		graphics.drawOval(rectangle);
-		int x = rectangle.x + rectangle.width/2;
-		int y = rectangle.y + rectangle.height/2;
-		graphics.setBackgroundColor(ColorConstants.red);
-		Double d = (double) percentage*360;
-		graphics.fillArc(rectangle.x, rectangle.y, rectangle.width, rectangle.height, 30, d.intValue());
-		graphics.drawLine(x, rectangle.y, x, rectangle.y+rectangle.height/6);
-		graphics.drawLine(x, rectangle.y+rectangle.height, x, rectangle.y+rectangle.height-rectangle.height/6);
-		graphics.drawLine(rectangle.x, y, rectangle.x+rectangle.width/6, y);
-		graphics.drawLine(rectangle.x+rectangle.width, y, rectangle.x+rectangle.width-rectangle.width/6, y);
+	protected Polyline createFeedbackFigure() {
+		return new Polygon();
 	}
-	
-	public void setPercentage(double percentage) {
-		this.percentage = percentage;
-		repaint();
-	}
+
 }

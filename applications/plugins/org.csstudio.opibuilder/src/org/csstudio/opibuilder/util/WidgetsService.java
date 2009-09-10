@@ -8,7 +8,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
+import org.csstudio.opibuilder.feedback.IGraphicalFeedbackFactory;
+import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.palette.MajorCategories;
+import org.csstudio.platform.logging.CentralLogger;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
@@ -31,6 +35,8 @@ public final class WidgetsService {
 	
 	private Map<String, List<String>> allCategoriesMap;
 	
+	private Map<String, IGraphicalFeedbackFactory> feedbackFactoriesMap;
+	
 	/**
 	 * @return the instance
 	 */
@@ -41,11 +47,13 @@ public final class WidgetsService {
 	}	
 
 	public WidgetsService() {
+		feedbackFactoriesMap = new HashMap<String, IGraphicalFeedbackFactory>();
 		allWidgetDescriptorsMap = new HashMap<String, WidgetDescriptor>();
 		allCategoriesMap = new LinkedHashMap<String, List<String>>();
 		for(MajorCategories mc : MajorCategories.values())
 			allCategoriesMap.put(mc.toString(), new ArrayList<String>());
 		loadAllWidgets();
+		loadAllFeedbackFactories();
 	}
 	
 	/**
@@ -87,6 +95,23 @@ public final class WidgetsService {
 			Collections.sort(list);		
 	}
 	
+	private void loadAllFeedbackFactories(){
+		IExtensionRegistry extReg = Platform.getExtensionRegistry();
+		IConfigurationElement[] confElements = 
+			extReg.getConfigurationElementsFor(OPIBuilderPlugin.EXTPOINT_FEEDBACK_FACTORY);
+		for(IConfigurationElement element : confElements){
+			String typeId = element.getAttribute("typeId");
+			if(typeId != null){
+				try {
+					feedbackFactoriesMap.put(typeId, 
+							(IGraphicalFeedbackFactory)element.createExecutableExtension("class"));
+				} catch (CoreException e) {
+					CentralLogger.getInstance().error(this, e);
+				}
+			}
+		}
+	}
+	
 	
 	/**
 	 * @return the allCategoriesMap the map which contains all the name of the 
@@ -105,6 +130,10 @@ public final class WidgetsService {
 		return allWidgetDescriptorsMap.get(typeId);
 	}
 	
+	
+	public final IGraphicalFeedbackFactory getWidgetFeedbackFactory(String typeId){
+		return feedbackFactoriesMap.get(typeId);
+	}
 	
 	
 	

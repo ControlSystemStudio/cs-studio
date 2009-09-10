@@ -21,8 +21,11 @@
  */
  package org.csstudio.opibuilder.widgets.util;
 
+import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.PrecisionPoint;
+import org.eclipse.draw2d.geometry.Rectangle;
 
 /**
  * This class can be used to rotate a point.
@@ -75,6 +78,34 @@ public final class RotationUtil {
 		double x = temp;
 		
 		return new PrecisionPoint(x+rotationPoint.x,y+rotationPoint.y);
+	}
+	
+	/**
+	 * Rotates all points.
+	 * 
+	 * @param points The PoinList, which points should be rotated
+	 * @param angle
+	 *            The angle to rotate
+	 * @return The rotated PointList
+	 */
+	public static final PointList rotatePoints(final PointList points, final double angle) {		
+		Rectangle pointBounds = points.getBounds();
+		Point rotationPoint = pointBounds.getCenter();
+		PointList newPoints = new PointList();
+
+		for (int i = 0; i < points.size(); i++) {
+			newPoints.addPoint(RotationUtil.rotate(points.getPoint(i), angle,
+					rotationPoint));
+		}
+
+		Rectangle newPointBounds = newPoints.getBounds();
+		if (!rotationPoint.equals(newPointBounds.getCenter())) {
+			Dimension difference = rotationPoint.getCopy().getDifference(
+					newPointBounds.getCenter());
+			newPoints.translate(difference.width, difference.height);
+		}
+
+		return newPoints;
 	}
 
 }

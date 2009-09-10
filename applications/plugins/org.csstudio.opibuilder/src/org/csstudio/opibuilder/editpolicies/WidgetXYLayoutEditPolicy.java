@@ -7,14 +7,19 @@ import org.csstudio.opibuilder.commands.SetBoundsCommand;
 import org.csstudio.opibuilder.commands.WidgetCreateCommand;
 import org.csstudio.opibuilder.commands.WidgetSetConstraintCommand;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
+import org.csstudio.opibuilder.feedback.IGraphicalFeedbackFactory;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
-import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.model.GuideModel;
 import org.csstudio.opibuilder.util.GuideUtil;
+import org.csstudio.opibuilder.util.WidgetsService;
+import org.csstudio.platform.logging.CentralLogger;
+import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.PositionConstants;
+import org.eclipse.draw2d.Shape;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPart;
+import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.SnapToGuides;
@@ -35,13 +40,33 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
 
 	
 	@Override
+	protected EditPolicy createChildEditPolicy(EditPart child) {
+		IGraphicalFeedbackFactory feedbackFactory = 
+			WidgetsService.getInstance().getWidgetFeedbackFactory(
+					((AbstractWidgetModel)child.getModel()).getTypeID());
+		if(feedbackFactory != null && child instanceof AbstractBaseEditPart){
+			return new GraphicalFeedbackChildEditPolicy(
+					(AbstractBaseEditPart) child, feedbackFactory);
+		}else
+			return super.createChildEditPolicy(child);
+	}
+	
+	@Override
 	protected Command createChangeConstraintCommand(
 			ChangeBoundsRequest request, EditPart child, Object constraint) {
 		if(!(child instanceof AbstractBaseEditPart) || !(constraint instanceof Rectangle))
 			return super.createChangeConstraintCommand(request, child, constraint);
 		AbstractBaseEditPart part = (AbstractBaseEditPart) child;
 		AbstractWidgetModel widgetModel = part.getCastedModel();
-		Command cmd = new WidgetSetConstraintCommand(
+
+		IGraphicalFeedbackFactory feedbackFactory = 
+			WidgetsService.getInstance().getWidgetFeedbackFactory(widgetModel.getTypeID());
+		Command cmd;
+		if(feedbackFactory != null){
+			cmd = feedbackFactory.createChangeBoundsCommand(
+					widgetModel, request, (Rectangle)constraint);
+		}else		
+			cmd = new WidgetSetConstraintCommand(
 					widgetModel, request, (Rectangle)constraint);
 		
 		// for guide support
@@ -133,9 +158,93 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
 	
 	@Override
 	protected Command getCreateCommand(CreateRequest request) {
-		return new WidgetCreateCommand((AbstractWidgetModel)request.getNewObject(), 
+		String typeId = determineTypeIdFromRequest(request);
+
+		IGraphicalFeedbackFactory feedbackFactory = 
+			WidgetsService.getInstance().getWidgetFeedbackFactory(typeId);
+		
+		WidgetCreateCommand widgetCreateCommand = new WidgetCreateCommand((AbstractWidgetModel)request.getNewObject(), 
 					(AbstractContainerModel)getHost().getModel(), 
 					(Rectangle)getConstraintFor(request), false);
+		if(feedbackFactory != null){
+			CompoundCommand compoundCommand = new CompoundCommand();
+			compoundCommand.add(widgetCreateCommand);
+			compoundCommand.add(feedbackFactory.createInitialBoundsCommand(
+					(AbstractWidgetModel)request.getNewObject(), request, (Rectangle)getConstraintFor(request)));
+			return compoundCommand;
+		}else
+			return widgetCreateCommand;
+	}
+	
+	
+	/**
+	 * Override to provide custom feedback figure for the given create request.
+	 * 
+	 * @param request
+	 *            the create request
+	 * @return custom feedback figure
+	 */
+	@Override
+	protected IFigure createSizeOnDropFeedback(final CreateRequest request) {
+		String typeId = determineTypeIdFromRequest(request);
+
+		IGraphicalFeedbackFactory feedbackFactory = 
+			WidgetsService.getInstance().getWidgetFeedbackFactory(typeId);
+
+		if(feedbackFactory != null){
+			Shape feedbackFigure = feedbackFactory
+				.createSizeOnDropFeedback(request);
+			addFeedback(feedbackFigure);
+			return feedbackFigure;
+		}else{
+			return super.createSizeOnDropFeedback(request);
+		}	
+	}
+	
+	@Override
+	protected void showSizeOnDropFeedback(CreateRequest request) {
+		String typeId = determineTypeIdFromRequest(request);
+
+		IGraphicalFeedbackFactory feedbackFactory =
+			WidgetsService.getInstance().getWidgetFeedbackFactory(typeId);
+
+		if(feedbackFactory != null){
+			IFigure feedbackFigure = getSizeOnDropFeedback(request);
+
+			feedbackFactory.showSizeOnDropFeedback(request, feedbackFigure,
+				getCreationFeedbackOffset(request));
+
+			feedbackFigure.repaint();
+		}else{
+			super.showSizeOnDropFeedback(request);
+		}
+
+		
+	}
+	
+	/**
+	 * Creates a prototype object to determine the type identification of the
+	 * widget model, that is about to be created.
+	 * 
+	 * @param request
+	 *            the create request
+	 * @return the type identification
+	 */
+	@SuppressWarnings("unchecked")
+	private String determineTypeIdFromRequest(final CreateRequest request) {
+		Class newObject = (Class) request.getNewObjectType();
+		AbstractWidgetModel instance;
+		String typeId = ""; //$NON-NLS-1$
+		try {
+			instance = (AbstractWidgetModel) newObject.newInstance();
+			typeId = instance.getTypeID();
+		} catch (InstantiationException e) {
+			CentralLogger.getInstance().error(this, e);
+		} catch (IllegalAccessException e) {
+			CentralLogger.getInstance().error(this, e);
+		}
+
+		return typeId;
 	}
 	
 	/**

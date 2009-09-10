@@ -1,5 +1,5 @@
 /* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
@@ -19,13 +19,62 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.opibuilder.widgets.figures;
+package org.csstudio.opibuilder.widgets.feedback;
 
-public class PaintCounter {
-	private static int cnt=0;
-	
-	public synchronized static void increment(){
-		cnt+=1;
-		System.out.println("PAINT OPS: "+cnt);
+import org.csstudio.opibuilder.widgets.model.AbstractPolyModel;
+import org.eclipse.draw2d.geometry.PointList;
+import org.eclipse.gef.commands.Command;
+
+/**
+ * A command, that changes the point list of a poly widget.
+ * @author Sven Wende
+ *
+ */
+public final class ChangePolyPointsCommand extends Command {
+	/**
+	 * The model, whose points should be changed.
+	 */
+	private AbstractPolyModel _polyModel;
+
+	/**
+	 * The old point list.
+	 */
+	private PointList _oldPoints;
+
+	/**
+	 * The new point list.
+	 */
+	private PointList _newPoints;
+
+	/**
+	 * Constructor.
+	 * @param polyModel the polyline element, whose points should be changed
+	 * @param newPoints the new point list
+	 */
+	public ChangePolyPointsCommand(final AbstractPolyModel polyModel,
+			final PointList newPoints) {
+		assert polyModel != null;
+		assert newPoints != null;
+		_polyModel = polyModel;
+		_newPoints = newPoints;
 	}
+
+	/**
+	* {@inheritDoc}
+	 */
+	
+	@Override
+	public void execute() {
+		_oldPoints = _polyModel.getPoints();
+		_polyModel.setPoints(_newPoints, true);
+	}
+
+	/**
+	* {@inheritDoc}
+	 */
+	@Override
+	public void undo() {
+		_polyModel.setPoints(_oldPoints, true);
+	}
+
 }

@@ -24,7 +24,6 @@ import org.eclipse.draw2d.Border;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.PlatformUI;
@@ -152,8 +151,7 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 				pvConnectedStatusMap.clear();
 				saveFigureOKStatus(getFigure());
 				final Map<StringProperty, PVValueProperty> pvValueMap = getCastedModel().getPVMap();
-				if(!pvValueMap.isEmpty())
-					markWidgetAsDisconnected("");
+				
 				for(final StringProperty sp : pvValueMap.keySet()){
 					
 					if(sp.getPropertyValue() == null || 
@@ -200,7 +198,8 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 								(String)sp.getPropertyValue());
 					}					
 				}
-				
+				if(!pvMap.isEmpty())
+					markWidgetAsDisconnected("");
 				doActivate();
 				
 				//the pv should be started at the last minute

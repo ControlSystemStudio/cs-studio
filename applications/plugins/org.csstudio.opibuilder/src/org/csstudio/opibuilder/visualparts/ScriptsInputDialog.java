@@ -13,7 +13,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -196,6 +195,7 @@ public class ScriptsInputDialog extends Dialog {
 		TableViewer viewer = new TableViewer(parent, SWT.V_SCROLL
 				| SWT.H_SCROLL | SWT.BORDER | SWT.SINGLE);
 		viewer.setContentProvider(new BaseWorkbenchContentProvider() {
+			@SuppressWarnings("unchecked")
 			@Override
 			public Object[] getElements(final Object element) {
 				return (((List<ScriptData>)element).toArray());

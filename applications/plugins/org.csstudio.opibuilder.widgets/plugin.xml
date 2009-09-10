@@ -5,6 +5,33 @@
          point="org.csstudio.opibuilder.widget">
       <widget
             category="Graphics"
+            description="Create an arc widget"
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.ArcEditpart"
+            icon="icons/arc.gif"
+            model_class="org.csstudio.opibuilder.widgets.model.ArcModel"
+            name="Arc"
+            typeId="org.csstudio.opibuilder.widgets.arc">
+      </widget>
+      <widget
+            category="Graphics"
+            description="Create a polyline widget"
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.PolylineEditPart"
+            icon="icons/polyline.gif"
+            model_class="org.csstudio.opibuilder.widgets.model.PolyLineModel"
+            name="Polyline"
+            typeId="org.csstudio.opibuilder.widgets.polyline">
+      </widget>
+      <widget
+            category="Graphics"
+            description="Create a polygon widget"
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.PolygonEditPart"
+            icon="icons/polygon.gif"
+            model_class="org.csstudio.opibuilder.widgets.model.PolygonModel"
+            name="Polygon"
+            typeId="org.csstudio.opibuilder.widgets.polygon">
+      </widget>
+      <widget
+            category="Graphics"
             description="Create a rectangle widget"
             editpart_class="org.csstudio.opibuilder.widgets.editparts.RectangleEditpart"
             icon="icons/rectangle.gif"
@@ -155,7 +182,7 @@
             model_class="org.csstudio.opibuilder.widgets.model.LinkingContainerModel"
             name="Linking Container"
             typeId="org.csstudio.opibuilder.widgets.linkingContainer">
-      </widget>     
+      </widget>
    </extension>
    <extension
          point="org.eclipse.ui.popupMenus">
@@ -208,6 +235,17 @@
             </objectState>
          </visibility>
       </objectContribution>
+   </extension>
+   <extension
+         point="org.csstudio.opibuilder.graphicalFeedbackFactory">
+      <graphicalFeedbackFactory
+            class="org.csstudio.opibuilder.widgets.feedback.PolyLineFeedbackFactory"
+            typeId="org.csstudio.opibuilder.widgets.polyline">
+      </graphicalFeedbackFactory>
+      <graphicalFeedbackFactory
+            class="org.csstudio.opibuilder.widgets.feedback.PolygonFeedbackFactory"
+            typeId="org.csstudio.opibuilder.widgets.polygon">
+      </graphicalFeedbackFactory>
    </extension>
 
 </plugin>

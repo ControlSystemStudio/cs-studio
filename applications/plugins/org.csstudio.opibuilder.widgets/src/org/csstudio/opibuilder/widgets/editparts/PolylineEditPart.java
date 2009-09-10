@@ -1,0 +1,100 @@
+package org.csstudio.opibuilder.widgets.editparts;
+
+import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
+import org.csstudio.opibuilder.widgets.figures.EllipseFigure;
+import org.csstudio.opibuilder.widgets.figures.PolylineFigure;
+import org.csstudio.opibuilder.widgets.model.AbstractPolyModel;
+import org.csstudio.opibuilder.widgets.model.AbstractShapeModel;
+import org.csstudio.opibuilder.widgets.model.PolyLineModel;
+import org.eclipse.draw2d.IFigure;
+
+/**
+ * EditPart controller for the Polyline widget. The controller mediates between
+ * {@link PolylineModel} and {@link PolylineFigure}.
+ * 
+ * @author Xihui Chen
+ * 
+ */
+public final class PolylineEditPart extends AbstractPolyEditPart {
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected IFigure doCreateFigure() {
+		PolylineFigure polyline = new PolylineFigure();
+		PolyLineModel model = getCastedModel();
+		polyline.setPoints(model.getPoints());
+		polyline.setFill(model.getFillLevel());
+		polyline.setAntiAlias(model.isAntiAlias());
+		polyline.setOrientation(model.isHorizontalFill());
+		polyline.setTransparent(model.isTransparent());
+		return polyline;
+	}
+
+	
+	@Override
+	public PolyLineModel getCastedModel() {
+		return (PolyLineModel)getModel();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void registerPropertyChangeHandlers() {
+		
+		super.registerPropertyChangeHandlers();
+		
+		// fill
+		IWidgetPropertyChangeHandler fillHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				PolylineFigure polyline = (PolylineFigure) refreshableFigure;
+				polyline.setFill((Double) newValue);				
+				return true;
+			}
+		};
+		setPropertyChangeHandler(AbstractPolyModel.PROP_FILL_LEVEL, fillHandler);
+		
+		// anti alias
+		IWidgetPropertyChangeHandler antiAliasHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				PolylineFigure polygon = (PolylineFigure) refreshableFigure;
+				polygon.setAntiAlias((Boolean) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(AbstractPolyModel.PROP_ANTIALIAS, antiAliasHandler);
+		
+		// fill orientaion
+		IWidgetPropertyChangeHandler fillOrientHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				PolylineFigure figure = (PolylineFigure) refreshableFigure;
+				figure.setOrientation((Boolean) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(AbstractShapeModel.PROP_HORIZONTAL_FILL, fillOrientHandler);	
+
+		// transparent
+		IWidgetPropertyChangeHandler transparentHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				PolylineFigure figure = (PolylineFigure) refreshableFigure;
+				figure.setTransparent((Boolean) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(AbstractShapeModel.PROP_TRANSPARENT, transparentHandler);	
+		
+	}
+	
+	
+}

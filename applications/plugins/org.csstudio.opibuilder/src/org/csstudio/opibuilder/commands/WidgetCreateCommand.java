@@ -19,7 +19,7 @@ public class WidgetCreateCommand extends Command {
 	private final AbstractContainerModel container;
 	
 	private Rectangle bounds;
-	
+
 	private boolean append;
 	
 

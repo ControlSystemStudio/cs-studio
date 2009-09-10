@@ -19,6 +19,12 @@ public class OPIBuilderPlugin extends AbstractUIPlugin {
 	public static final String EXTPOINT_WIDGET = PLUGIN_ID + ".widget"; //$NON-NLS-1$
 	
 	
+	/**
+	 * The ID of the widget extension point.
+	 */
+	public static final String EXTPOINT_FEEDBACK_FACTORY = PLUGIN_ID + ".graphicalFeedbackFactory"; //$NON-NLS-1$
+	
+	
 	public static final String OPI_FILE_EXTENSION = "opi";
 
 	// The shared instance
