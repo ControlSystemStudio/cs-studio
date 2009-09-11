@@ -6,6 +6,7 @@ import org.csstudio.opibuilder.widgets.figures.PolylineFigure;
 import org.csstudio.opibuilder.widgets.model.AbstractPolyModel;
 import org.csstudio.opibuilder.widgets.model.AbstractShapeModel;
 import org.csstudio.opibuilder.widgets.model.PolyLineModel;
+import org.csstudio.opibuilder.widgets.model.PolyLineModel.ArrowType;
 import org.eclipse.draw2d.IFigure;
 
 /**
@@ -29,6 +30,9 @@ public final class PolylineEditPart extends AbstractPolyEditPart {
 		polyline.setAntiAlias(model.isAntiAlias());
 		polyline.setOrientation(model.isHorizontalFill());
 		polyline.setTransparent(model.isTransparent());
+		polyline.setArrowLineLength(model.getArrowLength());
+		polyline.setArrowType(ArrowType.values()[model.getArrowType()]);
+		polyline.setFillArrow(model.isFillArrow());
 		return polyline;
 	}
 
@@ -63,8 +67,8 @@ public final class PolylineEditPart extends AbstractPolyEditPart {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IFigure refreshableFigure) {
-				PolylineFigure polygon = (PolylineFigure) refreshableFigure;
-				polygon.setAntiAlias((Boolean) newValue);
+				PolylineFigure figure = (PolylineFigure) refreshableFigure;
+				figure.setAntiAlias((Boolean) newValue);
 				return true;
 			}
 		};
@@ -93,6 +97,46 @@ public final class PolylineEditPart extends AbstractPolyEditPart {
 			}
 		};
 		setPropertyChangeHandler(AbstractShapeModel.PROP_TRANSPARENT, transparentHandler);	
+		
+		// arrow Type
+		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				PolylineFigure figure = (PolylineFigure) refreshableFigure;
+				figure.setArrowType(ArrowType.values()[(Integer)newValue]);
+				getCastedModel().updateBounds();
+				return true;
+			}
+		};
+		setPropertyChangeHandler(PolyLineModel.PROP_ARROW, handler);
+		
+		
+		// arrow length
+		handler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				PolylineFigure figure = (PolylineFigure) refreshableFigure;
+				figure.setArrowLineLength((Integer)newValue);
+				getCastedModel().updateBounds();
+				return true;
+			}
+		};
+		setPropertyChangeHandler(PolyLineModel.PROP_ARROW_LENGTH, handler);
+		
+		// Fill Arrow
+		handler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				PolylineFigure figure = (PolylineFigure) refreshableFigure;
+				figure.setFillArrow((Boolean)newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(PolyLineModel.PROP_FILL_ARROW, handler);
+		
 		
 	}
 	

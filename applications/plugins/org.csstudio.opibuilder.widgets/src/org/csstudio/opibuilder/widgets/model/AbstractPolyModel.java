@@ -59,7 +59,7 @@ public abstract class AbstractPolyModel extends AbstractShapeModel {
 	 *            the polygon points
 	 * @param rememberPoints true if the zero relative points should be remembered, false otherwise.
 	 */
-	public final void setPoints(final PointList points,
+	public void setPoints(final PointList points,
 			final boolean rememberPoints) {
 		if (points.size() > 0) {
 			PointList copy = points.getCopy();
@@ -80,7 +80,7 @@ public abstract class AbstractPolyModel extends AbstractShapeModel {
 	 * 
 	 * @return the polygon _points
 	 */
-	public final PointList getPoints() {
+	public PointList getPoints() {
 		return (PointList) getProperty(PROP_POINTS).getPropertyValue();
 	}
 
@@ -89,7 +89,7 @@ public abstract class AbstractPolyModel extends AbstractShapeModel {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void setSize(final int width, final int height) {
+	public void setSize(final int width, final int height) {
 		int targetW = Math.max(1, width);
 		int targetH = Math.max(1, height);
 		PointList pointList = getPoints();
@@ -126,16 +126,13 @@ public abstract class AbstractPolyModel extends AbstractShapeModel {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void setLocation(final int x, final int y) {
+	public void setLocation(final int x, final int y) {
 		PointList points = getPoints();
-		int oldX = points.getBounds().x;
-		int oldY = points.getBounds().y;
+		int oldX = getLocation().x;
+		int oldY = getLocation().y;
 		points.translate(x - oldX, y - oldY);
 
 		setPoints(points, true);
-		int newX = points.getBounds().x;
-		int newY = points.getBounds().y;
-		super.setLocation(newX, newY);
 	}
 
 	/**
@@ -146,7 +143,7 @@ public abstract class AbstractPolyModel extends AbstractShapeModel {
 	 *            The angle to rotate
 	 * @return The rotated PointList
 	 */
-	public final PointList rotatePoints(final PointList points, final double angle) {		
+	public PointList rotatePoints(final PointList points, final double angle) {		
 		Rectangle pointBounds = points.getBounds();
 		Point rotationPoint = pointBounds.getCenter();
 		PointList newPoints = new PointList();
@@ -170,7 +167,7 @@ public abstract class AbstractPolyModel extends AbstractShapeModel {
 	 * Rotates the given points to 0 degrees and sets them as <code>_originalPoints</code>.
 	 * @param points The current {@link PointList}
 	 */
-	private void rememberZeroDegreePoints(final PointList points) {
+	protected void rememberZeroDegreePoints(final PointList points) {
 		if (this.getRotationAngle()==0) {
 			originalPoints = points.getCopy();
 		} else {

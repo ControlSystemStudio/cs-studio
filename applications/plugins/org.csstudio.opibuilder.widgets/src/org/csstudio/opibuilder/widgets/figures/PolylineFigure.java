@@ -1,15 +1,11 @@
 package org.csstudio.opibuilder.widgets.figures;
 
-import org.csstudio.opibuilder.widgets.figures.ScaledSliderFigure.Thumb;
 import org.csstudio.opibuilder.widgets.model.PolyLineModel.ArrowType;
-import org.csstudio.opibuilder.widgets.util.RotationUtil;
-import org.eclipse.draw2d.AbstractLayout;
+import org.csstudio.opibuilder.widgets.util.GraphicsUtil;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.Polygon;
 import org.eclipse.draw2d.Polyline;
-import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -24,6 +20,7 @@ import org.eclipse.swt.SWT;
  */
 public final class PolylineFigure extends Polyline implements HandleBounds {
 
+	public static final double ARROW_ANGLE = Math.PI/10;
 	/**
 	 * The fill grade (0 - 100%).
 	 */
@@ -32,13 +29,13 @@ public final class PolylineFigure extends Polyline implements HandleBounds {
 	private boolean horizontalFill;
 	private boolean _transparent;
 
-	private boolean fillArrow;
+	private boolean fillArrow = true;
 	
 	private ArrowType arrowType;
 
 	private int arrowLineLength = 30;
 	
-	private Arrow startArrow, endArrow;
+
 
 	/**
 	 * Constructor.
@@ -46,11 +43,6 @@ public final class PolylineFigure extends Polyline implements HandleBounds {
 	public PolylineFigure() {
 		setFill(true);
 		setBackgroundColor(ColorConstants.darkGreen);
-		/*startArrow = new Arrow();
-		endArrow = new Arrow();
-		setLayoutManager(new PolyLineLayout());
-		add(startArrow, PolyLineLayout.START_ARROW);
-		add(endArrow, PolyLineLayout.END_ARROW);*/
 	}
 	
 	public void setAntiAlias(boolean antiAlias) {
@@ -62,20 +54,18 @@ public final class PolylineFigure extends Polyline implements HandleBounds {
 	 */
 	@Override
 	protected void outlineShape(final Graphics graphics) {
-		PointList points = getPoints();
+
+		graphics.setAntialias(antiAlias ? SWT.ON : SWT.OFF);	
 		
-		//if(points.size() >= 2){
-		//	drawArrow(graphics, points.getPoint(points.size()-2),
-		//			points.getLastPoint(), arrowLineLength, fillArrow);
-		//}
-		graphics.setAntialias(antiAlias ? SWT.ON : SWT.OFF);
-		graphics.pushState();
 		Rectangle figureBounds = getBounds();
+
+		
 		if(!_transparent){
 			graphics.setForegroundColor(getBackgroundColor());
-			graphics.drawPolyline(points);	
+			drawPolyLineWithArrow(graphics);
 		}
-				
+		
+		//set clip by fill level
 		if(horizontalFill){
 			
 			int newW = (int) Math.round(figureBounds.width * (getFill() / 100));
@@ -88,44 +78,61 @@ public final class PolylineFigure extends Polyline implements HandleBounds {
 				.clipRect(new Rectangle(figureBounds.x, figureBounds.y + figureBounds.height - newH, 
 						figureBounds.width, newH));
 		}
-		graphics.setForegroundColor(getForegroundColor());		
+
+		graphics.setForegroundColor(getForegroundColor());
+		drawPolyLineWithArrow(graphics);
+				
+	}
+
+	private void drawPolyLineWithArrow(Graphics graphics){
+		PointList points = getPoints().getCopy();
+
+		graphics.pushState();
+		
+		if(points.size() >= 2){
+			Point endPoint = points.getLastPoint(); 
+			Point firstPoint = points.getFirstPoint();
+			if(arrowType == ArrowType.To || arrowType == ArrowType.Both){
+				//draw end arrow
+				PointList arrowPoints = GraphicsUtil.calcArrowPoints(points.getPoint(points.size()-2),
+							endPoint, arrowLineLength, ARROW_ANGLE);	
+				if(fillArrow)
+					points.setPoint(arrowPoints.getLastPoint(), points.size()-1);
+				arrowPoints.setPoint(endPoint, 2);
+				if(fillArrow){			
+					graphics.setBackgroundColor(graphics.getForegroundColor());
+					graphics.fillPolygon(arrowPoints);
+						
+				}else{
+					graphics.drawLine(endPoint, arrowPoints.getFirstPoint());
+					graphics.drawLine(endPoint, arrowPoints.getMidpoint());
+				}
+			}
+			if(arrowType == ArrowType.From || arrowType == ArrowType.Both){
+				//draw start arrow			
+				PointList arrowPoints = GraphicsUtil.calcArrowPoints(points.getPoint(1),
+						firstPoint, arrowLineLength, ARROW_ANGLE);
+				if(fillArrow)
+					points.setPoint(arrowPoints.getLastPoint(), 0);
+				arrowPoints.setPoint(firstPoint, 2);
+				if(fillArrow){			
+					graphics.setBackgroundColor(graphics.getForegroundColor());
+					graphics.fillPolygon(arrowPoints);
+				}else{
+					graphics.drawLine(firstPoint, arrowPoints.getFirstPoint());
+					graphics.drawLine(firstPoint, arrowPoints.getMidpoint());
+				}
+			}
+		}		
 		graphics.drawPolyline(points);
-		graphics.popState();
-		
-		
-					
+		graphics.popState();	
 	}
 	
-	private void drawArrow(Graphics graphics, Point startPoint, Point endPoint, int arrow_line_length, boolean fillArrow){
-		int dy = startPoint.y - endPoint.y;
-		int dx = startPoint.x - endPoint.x;		
-		if(dx ==0 || dy == 0)
-			return;
-		//draw Arrow
-		int x1 = (int) (arrow_line_length*Math.cos(Math.atan(-dy/dx)-Math.PI/9));
-		int y1 = (int) (arrow_line_length*Math.sin(Math.atan(-dy/dx)-Math.PI/9));
-		if(dx <0){
-			x1 = -x1;
-			y1 = -y1;
-		}			
-		graphics.drawPolyline(new int[]{endPoint.x + x1, endPoint.y - y1, endPoint.x, endPoint.y});
-		x1 = (int) (arrow_line_length*Math.cos(Math.atan(-dy/dx)+Math.PI/9));
-		y1 = (int) (arrow_line_length*Math.sin(Math.atan(-dy/dx)+Math.PI/9));
-		if(dx <0){
-			x1 = -x1;
-			y1 = -y1;
-		}	
-		graphics.drawPolyline(new int[]{endPoint.x + x1, endPoint.y - y1, endPoint.x, endPoint.y});
-
-	}
-	
-	
-
 	/**
 	 * Overridden, to ensure that the bounds rectangle gets repainted each time,
 	 * the points of the polygon change. {@inheritDoc}
 	 */
-	@Override
+	/*@Override
 	public void setBounds(final Rectangle rect) {
 		invalidate();
 		fireFigureMoved();
@@ -147,13 +154,50 @@ public final class PolylineFigure extends Polyline implements HandleBounds {
 	public void setLocation(Point p) {
 		super.setLocation(p);
 	}
+*/
 
 
+	@Override
+	public Rectangle getBounds() {
+		if (bounds == null) {
+			bounds = GraphicsUtil.getPointsBoundsWithArrows(
+					getPoints(), arrowType, arrowLineLength, ARROW_ANGLE)
+				.getExpanded(lineWidth / 2, lineWidth / 2);
+		}
+		return bounds;
+	}
+	
+	
+	/**
+	 * Translates this Figure's bounds, without firing a move.
+	 * @param dx The amount to translate horizontally
+	 * @param dy The amount to translate vertically
+	 * @see #translate(int, int)
+	 * @since 2.0
+	 */
+	public void primTranslate(int dx, int dy) {
+		bounds.x += dx;
+		bounds.y += dy;
+		if (useLocalCoordinates()) {
+			fireCoordinateSystemChanged();
+			return;
+		}
+		for (int i = 0; i < getChildren().size(); i++)
+			((IFigure)getChildren().get(i)).translate(dx, dy);
+	}
+	
+	
+	@Override
+	public void setBounds(Rectangle rect) {
+		super.setBounds(rect);
+		bounds = bounds.getExpanded(lineWidth / 2, lineWidth / 2);
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
 	public Rectangle getHandleBounds() {
-		return getPoints().getBounds();
+		return getBounds();
 	}
 
 	/**
@@ -226,65 +270,4 @@ public final class PolylineFigure extends Polyline implements HandleBounds {
 	public void setArrowLineLength(int arrowLineLength) {
 		this.arrowLineLength = arrowLineLength;
 	}
-	
-	class Arrow extends Polygon {
-		public static final  int LENGTH = 20;
-		public static final  int BREADTH = 20;
-		public final PointList  arrowPointList = new PointList(new int[] {
-				0,0,  LENGTH, BREADTH/2,  0, BREADTH}) ;
-		
-		public Arrow() {
-			setFill(true);
-		}
-		
-	}
-	
-	
-	class PolyLineLayout extends AbstractLayout{
-		
-		
-		/** Used as a constraint for the start arrow */
-		public static final String START_ARROW = "startArrow";      //$NON-NLS-1$
-
-		/** Used as a constraint for the end arrow */
-		public static final String END_ARROW = "endArrow";      //$NON-NLS-1$
-		
-		
-		private Arrow startArrow;
-		private Arrow endArrow;
-		
-		@Override
-		public void setConstraint(IFigure child, Object constraint) {
-			if(constraint.equals(START_ARROW))
-				startArrow = (Arrow)child;
-			else if (constraint.equals(END_ARROW))
-				endArrow = (Arrow)child;
-		}
-		
-		@Override
-		protected Dimension calculatePreferredSize(IFigure container, int hint,
-				int hint2) {
-			return new Dimension(hint, hint2);
-		}
-
-		public void layout(IFigure container) {
-			Rectangle area = container.getClientArea().getCopy();
-			
-			Point startPoint = getPoints().getFirstPoint();
-			Point endPoint = getPoints().getLastPoint();
-			
-			if(startArrow != null && startArrow.isVisible()){
-				Point nextPoint = getPoints().getPoint(1);
-				int dy = nextPoint.y - startPoint.y;
-				int dx = nextPoint.x - startPoint.x;
-				PointList pl = startArrow.arrowPointList.getCopy();
-				pl.translate(getPoints().getFirstPoint());
-				RotationUtil.rotatePoints(pl, 90 - Math.atan(-dy/dx));
-				startArrow.setPoints(pl);
-			}
-			
-		}
-		
-	}
-	
 }

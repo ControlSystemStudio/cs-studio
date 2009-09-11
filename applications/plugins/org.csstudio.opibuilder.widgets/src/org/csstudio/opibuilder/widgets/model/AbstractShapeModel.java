@@ -95,7 +95,6 @@ public abstract class AbstractShapeModel extends AbstractPVWidgetModel {
 
 	
 	public AbstractShapeModel() {
-		setSize(100, 50);
 		setBackgroundColor(CustomMediaFactory.COLOR_DARK_GRAY);
 		setForegroundColor(CustomMediaFactory.COLOR_BLUE);
 	}
