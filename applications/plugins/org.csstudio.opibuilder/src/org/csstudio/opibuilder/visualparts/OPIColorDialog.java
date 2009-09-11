@@ -89,6 +89,7 @@ public class OPIColorDialog extends Dialog {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				ColorDialog dialog = new ColorDialog(Display.getCurrent().getActiveShell());
+				dialog.setRGB(opiColor.getRGBValue());
 				RGB rgb = dialog.open();
 				if(rgb != null){
 					opiColor = new OPIColor(rgb);

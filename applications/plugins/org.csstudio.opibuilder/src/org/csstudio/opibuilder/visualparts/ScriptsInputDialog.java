@@ -143,6 +143,9 @@ public class ScriptsInputDialog extends Dialog {
 		pvsEditor = new StringTableEditor(rightComposite, new ArrayList<String>());
 		pvsEditor.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		pvsEditor.setEnabled(false);
+		
+		if(scriptDataList.size() > 0)
+			setScriptsViewerSelection(scriptDataList.get(0));
 		return parent_Composite;
 		
 		
@@ -174,7 +177,7 @@ public class ScriptsInputDialog extends Dialog {
 	}
 	
 	
-	private void refreshScriptsViewer(ScriptData scriptData){
+	private void setScriptsViewerSelection(ScriptData scriptData){
 		scriptsViewer.refresh();
 		if(scriptData == null)
 			scriptsViewer.setSelection(StructuredSelection.EMPTY);
@@ -230,7 +233,7 @@ public class ScriptsInputDialog extends Dialog {
 						path = rsd.getSelectedResource();
 						ScriptData scriptData = new ScriptData(path);
 						scriptDataList.add(scriptData);
-						refreshScriptsViewer(scriptData);
+						setScriptsViewerSelection(scriptData);
 					}
 				}
 			}
@@ -254,7 +257,7 @@ public class ScriptsInputDialog extends Dialog {
 							path = rsd.getSelectedResource();
 							scriptDataList.get(scriptDataList.indexOf(
 									(ScriptData)selection.getFirstElement())).setPath(path);
-							refreshScriptsViewer((ScriptData)selection.getFirstElement());
+							setScriptsViewerSelection((ScriptData)selection.getFirstElement());
 						}
 					}					
 				}
@@ -274,7 +277,7 @@ public class ScriptsInputDialog extends Dialog {
 				if (!selection.isEmpty()
 						&& selection.getFirstElement() instanceof ScriptData) {
 					scriptDataList.remove((ScriptData)selection.getFirstElement());
-					refreshScriptsViewer(null);
+					setScriptsViewerSelection(null);
 					this.setEnabled(false);
 				}
 			}
@@ -300,7 +303,7 @@ public class ScriptsInputDialog extends Dialog {
 					if(i>0){
 						scriptDataList.remove(scriptData);
 						scriptDataList.add(i-1, scriptData);
-						refreshScriptsViewer(scriptData);
+						setScriptsViewerSelection(scriptData);
 					}	
 				}
 			}
@@ -325,7 +328,7 @@ public class ScriptsInputDialog extends Dialog {
 					if(i<scriptDataList.size()-1){
 						scriptDataList.remove(scriptData);
 						scriptDataList.add(i+1, scriptData);
-						refreshScriptsViewer(scriptData);
+						setScriptsViewerSelection(scriptData);
 					}			
 				}
 			}
