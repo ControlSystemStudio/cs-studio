@@ -40,7 +40,7 @@ public class SmsComperator implements Comparator<Sms>, Serializable
      * 
      * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
      */
-    public int compare(Sms sms0, Sms sms1)
+    public int oldCompare(Sms sms0, Sms sms1)
     {
         int resultTimestamp;
         int resultPriority;
@@ -62,6 +62,31 @@ public class SmsComperator implements Comparator<Sms>, Serializable
         else
         {
             result = resultTimestamp;
+        }
+        
+        return result;
+    }
+    
+    public int compare(Sms sms0, Sms sms1)
+    {
+        int resultTimestamp;
+        int resultPriority;
+        int result;
+        
+        resultTimestamp = Long.signum(sms0.getSmsTimestamp() - sms1.getSmsTimestamp());
+        resultPriority = Integer.signum(sms0.getPriority() - sms1.getPriority());
+        
+        if(sms0.getPriority() < sms1.getPriority())
+        {
+            result = resultPriority;
+        }
+        else if(sms0.getPriority() == sms1.getPriority())
+        {
+            result = resultTimestamp;
+        }
+        else
+        {
+            result = resultPriority;
         }
         
         return result;

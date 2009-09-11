@@ -557,10 +557,11 @@ public class SmsContainer implements AmsConstants
         
         Iterator<Sms> iter = content.descendingIterator();
         
-        result.append("Inhalt des TreeSets:\n");
+        result.append("Inhalt des TreeSets:\n\n");
         while(iter.hasNext())
         {
             result.append(iter.next().toString() + "\n");
+            result.append("\n--------------------------------------------------------\n");
         }
         
         result.append("\n");
