@@ -43,7 +43,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -211,12 +210,13 @@ public class ADLConverterMainView extends ViewPart {
 
             public void widgetSelected(final SelectionEvent e) {
                 FileDialog dialog = new FileDialog(_shell, SWT.MULTI);
-                dialog.setFilterNames(new String[] {
+                String[] names = new String[] {
                         Messages.ADLConverterMainView_BothFileSourceDialogFileDes,
                         Messages.ADLConverterMainView_ADLFileSourceDialogFileDes,
                         Messages.ADLConverterMainView_MDPFileSourceDialogFileDes,
                         Messages.ADLConverterMainView_STCFileSourceDialogFileDes,
-                        Messages.ADLConverterMainView_AllFileSourceDialogFileDes });
+                        Messages.ADLConverterMainView_AllFileSourceDialogFileDes };
+                dialog.setFilterNames(names);
                 String[] ext = new String[] { "*.adl;*.mfp;*.stc", "*.adl", "*.mfp", "*.stc", "*.*" }; // Windows wild cards //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5 
                 dialog.setFilterExtensions(ext);
                 String path = _preferences

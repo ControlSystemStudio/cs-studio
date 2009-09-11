@@ -32,6 +32,8 @@ import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.properties.ActionData;
 import org.csstudio.sds.model.properties.actions.CommitValueActionModel;
 import org.csstudio.sds.model.properties.actions.CommitValueActionModelFactory;
+import org.csstudio.sds.model.properties.actions.OpenDataBrowserActionModel;
+import org.csstudio.sds.model.properties.actions.OpenDataBrowserActionModelFactory;
 import org.csstudio.sds.model.properties.actions.OpenDisplayActionModel;
 import org.csstudio.sds.model.properties.actions.OpenDisplayActionModelFactory;
 import org.csstudio.utility.adlconverter.Activator;
@@ -72,6 +74,10 @@ public class ADLMenuItem extends WidgetPart {
      * The root path for Widget.
      */
     private String _path;
+    /**
+     * The root path for Trends.
+     */
+    private String _trendPath;
 
     /**
      * The default constructor.
@@ -94,6 +100,8 @@ public class ADLMenuItem extends WidgetPart {
     final void init() {
         _path = Activator.getDefault().getPreferenceStore().getString(
                 ADLConverterPreferenceConstants.P_STRING_Path_Target);
+        _trendPath = Activator.getDefault().getPreferenceStore().getString(
+                ADLConverterPreferenceConstants.P_STRING_Path_Target_Strip_Tool);
     }
 
     /**
@@ -186,12 +194,13 @@ public class ADLMenuItem extends WidgetPart {
                 actionData = new ActionData();
             }
             if (_command.contains("StripHistoryToolAAPI")) {
-                OpenDisplayActionModelFactory factory = new OpenDisplayActionModelFactory(); 
-                OpenDisplayActionModel action = (OpenDisplayActionModel) factory.createWidgetAction();
-                action.getProperty(OpenDisplayActionModel.PROP_DESCRIPTION).setPropertyValue(_label);
+//                OpenDisplayActionModelFactory factory = new OpenDisplayActionModelFactory(); 
+                OpenDataBrowserActionModelFactory factory = new OpenDataBrowserActionModelFactory();
+                OpenDataBrowserActionModel action = (OpenDataBrowserActionModel) factory.createWidgetAction();
+                action.getProperty(OpenDataBrowserActionModel.PROP_DESCRIPTION).setPropertyValue(_label.replace('"', ' ').trim());
                 String[] cleanString = ADLHelper.cleanString(_args);
-                IPath path = new Path(_path.concat(cleanString[0]));
-                action.getProperty(OpenDisplayActionModel.PROP_RESOURCE).setPropertyValue(path);
+                IPath path = new Path(_trendPath.concat(cleanString[0]));
+                action.getProperty(OpenDataBrowserActionModel.PROP_RESOURCE).setPropertyValue(path);
                 actionData.addAction(action);
             } else {
                 CommitValueActionModelFactory factory = new CommitValueActionModelFactory();

@@ -187,7 +187,7 @@ public final class ADLHelper {
             if(cleanString[0].startsWith(STRIP_TOOL_PATH_REMOVE_PART)) {
                 cleanString[0] = cleanString[0].replaceAll(STRIP_TOOL_PATH_REMOVE_PART, ""); //$NON-NLS-1$ //$NON-NLS-2$
             }
-            cleanString[0] = cleanString[0].concat(".css-sds"); //$NON-NLS-1$ //$NON-NLS-2$
+            cleanString[0] = cleanString[0].replace(".stc",".css-plt"); //$NON-NLS-1$ //$NON-NLS-2$
         }else if (cleanString[0].endsWith(".HOPR")) { //$NON-NLS-1$
             cleanString[0] = cleanString[0].replaceAll("\\.HOPR", "[graphMax]");
         }else if (cleanString[0].endsWith(".LOPR")) { //$NON-NLS-1$

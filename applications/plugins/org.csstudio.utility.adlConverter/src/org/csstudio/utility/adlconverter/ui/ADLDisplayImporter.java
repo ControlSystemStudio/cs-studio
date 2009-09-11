@@ -73,8 +73,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 
-import sun.misc.FpUtils;
-
 /**
  * @author hrickens
  * @author $Author$

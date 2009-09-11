@@ -52,6 +52,7 @@ public class ADLPreferencePage extends FieldEditorPreferencePage implements
         //checkPref(ADLConverterPreferenceConstants.P_STRING_Path_Source);
     	//checkPref(ADLConverterPreferenceConstants.P_STRING_Path_Relativ_Target);
         checkPreference(ADLConverterPreferenceConstants.P_STRING_Path_Target);
+        checkPreference(ADLConverterPreferenceConstants.P_STRING_Path_Target_Strip_Tool);
         
         DirectoryFieldEditor source = new DirectoryFieldEditor(ADLConverterPreferenceConstants.P_STRING_Path_Source,"Source Path:",getFieldEditorParent());
     	addField(source);
@@ -61,6 +62,8 @@ public class ADLPreferencePage extends FieldEditorPreferencePage implements
         addField(new DirectoryFieldEditor(ADLConverterPreferenceConstants.P_STRING_Path_Relativ_Target,"Relativ Target Path:",getFieldEditorParent()));
         addField(new StringFieldEditor(ADLConverterPreferenceConstants.P_STRING_Path_Remove_Absolut_Part,"Remove absolute path part for Display:", getFieldEditorParent()));
         addField(new StringFieldEditor(ADLConverterPreferenceConstants.P_STRING_Path_Remove_Absolut_Part_Strip_Tool,"Remove absolute path part for Strip Tool:", getFieldEditorParent()));
+        FieldEditor targetFieldStripToolEditor = new ContainerFieldEditor(ADLConverterPreferenceConstants.P_STRING_Path_Target_Strip_Tool,"Target Path for Strip Tool:",getFieldEditorParent());
+        addField(targetFieldStripToolEditor);
         addField(new StringFieldEditor(ADLConverterPreferenceConstants.P_STRING_Display_Paths,"Display paths separated by commas:", getFieldEditorParent()));
     }
 

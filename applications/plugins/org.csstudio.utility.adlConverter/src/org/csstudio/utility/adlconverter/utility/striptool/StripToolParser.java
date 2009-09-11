@@ -125,7 +125,6 @@ public class StripToolParser {
             buffRead = new BufferedReader(new FileReader(sourceFile));
             String line;
             int lineNumber = 0;
-            int lastDirtyLine = 0;
             while ((line = buffRead.readLine()) != null) {
                 line = line.trim();
                 line = line.replaceAll("  +", " ");
