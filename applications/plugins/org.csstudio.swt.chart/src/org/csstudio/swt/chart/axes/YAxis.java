@@ -511,7 +511,8 @@ public class YAxis extends Axis
         final Color old_bg = gc.getBackground();
         
         // Axis and Tick marks
-        if (selected)
+/*
+          if (selected)
         {	// Fill yaxis background with grid color.
         	gc.setBackground(grid_color);
         	gc.fillRectangle(region.x + 1, region.y, region.width - 2, region.height);
@@ -522,7 +523,9 @@ public class YAxis extends Axis
                 1,
                 region.height-1);
         }
-        else // Simple line for the axis
+        else
+ */
+         // Simple line for the axis
             gc.drawLine(
                 region.x + region.width-1,
                 region.y, 
