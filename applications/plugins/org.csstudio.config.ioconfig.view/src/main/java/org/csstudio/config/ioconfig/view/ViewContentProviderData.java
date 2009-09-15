@@ -93,7 +93,7 @@ class ProfibusTreeContentProvider implements IStructuredContentProvider, ITreeCo
             try {
                 return l.getFacility().getChildren().toArray();
             } catch (Exception e) {
-                ErrorDialog.openError(_site.getShell(), "Data Base Error 1", null, new OperationStatus(OperationStatus.ERROR, Activator.PLUGIN_ID, 3, String.format("Device Data Base (DDB) Error\nCan't load the Facility '%1s' (ID: %2s)",l.getName(), l.getId()),e));
+                ErrorDialog.openError(_site.getShell(), "Data Base Error 1", null, new OperationStatus(OperationStatus.ERROR, ActivatorUI.PLUGIN_ID, 3, String.format("Device Data Base (DDB) Error\nCan't load the Facility '%1s' (ID: %2s)",l.getName(), l.getId()),e));
                 CentralLogger.getInstance().error(this, e);
             }
             return null;

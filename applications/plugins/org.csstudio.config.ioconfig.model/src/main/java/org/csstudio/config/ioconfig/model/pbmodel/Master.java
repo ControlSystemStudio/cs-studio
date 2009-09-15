@@ -24,7 +24,11 @@
  */
 package org.csstudio.config.ioconfig.model.pbmodel;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
@@ -34,6 +38,8 @@ import javax.persistence.Transient;
 import org.csstudio.config.ioconfig.model.NamedDBClass;
 import org.csstudio.config.ioconfig.model.Node;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdMasterModel;
+
+import com.sun.org.apache.bcel.internal.generic.GETSTATIC;
 
 /*******************************************************************************
  * Data model for Profibus-DP Master<br>
@@ -45,7 +51,6 @@ import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdMasterModel;
  ******************************************************************************/
 
 @Entity
-//@Table(name = "ddb_ProfibusMaster")
 @Table(name = "ddb_Profibus_Master")
 public class Master extends Node {
 
@@ -295,6 +300,24 @@ public class Master extends Node {
     @Transient
     public void setGSDMasterData(final GsdMasterModel masterModel) {
         _gsdMasterModel = masterModel;
+    }
+    
+    @Transient
+    public SortedSet<Short> getFreeStationAddress(){
+//        ArrayList<Short> freeAddressList = new ArrayList<Short>();
+        TreeSet<Short> freeAddressList = new TreeSet<Short>();
+        for (short i = 0; i < DEFAULT_MAX_STATION_ADDRESS; i++) {
+            freeAddressList.add(i);
+        }
+        freeAddressList.remove(getSortIndex());
+        Set<Short> keySet = getChildrenAsMap().keySet();
+        freeAddressList.removeAll(keySet);
+        return freeAddressList;
+    }
+    
+    @Transient
+    public short getfirstFreeStationAddress(int maxStationAddress) {
+        return getFreeStationAddress().first();
     }
 
     /**

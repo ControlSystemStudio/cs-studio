@@ -7,7 +7,7 @@ import org.osgi.framework.BundleContext;
 /**
  * The activator class controls the plug-in life cycle.
  */
-public class Activator extends AbstractCssUiPlugin{
+public class ActivatorUI extends AbstractCssUiPlugin{
 
 	/**
      * The plug-in ID.
@@ -17,12 +17,12 @@ public class Activator extends AbstractCssUiPlugin{
 	/** 
      *  The shared instance.
 	 */
-	private static Activator _plugin;
+	private static ActivatorUI _plugin;
 	
 	/**
 	 * The constructor.
 	 */
-	public Activator() {
+	public ActivatorUI() {
 		_plugin = this;
 	}
 
@@ -56,7 +56,7 @@ public class Activator extends AbstractCssUiPlugin{
 	 *
 	 * @return the shared instance
 	 */
-	public static Activator getDefault() {
+	public static ActivatorUI getDefault() {
 		return _plugin;
 	}
 

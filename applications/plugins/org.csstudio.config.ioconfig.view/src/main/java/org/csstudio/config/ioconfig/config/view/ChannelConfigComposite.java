@@ -39,7 +39,7 @@ import org.csstudio.config.ioconfig.model.pbmodel.GSDFile;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDModule;
 import org.csstudio.config.ioconfig.model.pbmodel.Module;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleChannelPrototype;
-import org.csstudio.config.ioconfig.view.Activator;
+import org.csstudio.config.ioconfig.view.ActivatorUI;
 import org.csstudio.config.ioconfig.view.ProfiBusTreeView;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -189,7 +189,7 @@ public class ChannelConfigComposite extends NodeConfig {
         });
         Button assembleButton = new Button(epicsAddressGroup, SWT.FLAT);
         assembleButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
-        assembleButton.setImage(Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID,
+        assembleButton.setImage(ActivatorUI.imageDescriptorFromPlugin(ActivatorUI.PLUGIN_ID,
                 "icons/refresh.gif").createImage());
         assembleButton.setToolTipText("Refresh the EPICS Address String\n and save it into the DB");
         assembleButton.addSelectionListener(new SelectionListener() {

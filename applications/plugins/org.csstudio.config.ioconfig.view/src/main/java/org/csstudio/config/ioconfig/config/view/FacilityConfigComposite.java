@@ -53,6 +53,14 @@ public class FacilityConfigComposite extends NodeConfig {
      */
     private Facility _facility;
 
+    public FacilityConfigComposite(Composite parent, final ProfiBusTreeView profiBusTreeView, short sortIndex) {
+        super(parent, profiBusTreeView, "Facility Configuration", null, true);
+        getProfiBusTreeView().getTreeViewer().setSelection(null);
+        newNode();
+        getNode().moveSortIndex(sortIndex);
+        buildGui();
+    }
+    
     /**
      * @param parent
      *            The Parent Composite.
@@ -65,16 +73,15 @@ public class FacilityConfigComposite extends NodeConfig {
             Facility facility) {
         super(parent, profiBusTreeView, "Facility Configuration", facility, facility == null);
         _facility = facility;
+        buildGui();
+    }
 
-        if (_facility == null) {
-            getProfiBusTreeView().getTreeViewer().setSelection(null);
-            newNode();
-        }
+    private void buildGui() {
         setSavebuttonEnabled(null, getNode().isPersistent());
         main("Facility");
         documents();
+        getProfiBusTreeView().refresh(getNode());
         // _tabFolder.pack();
-
     }
 
     /**

@@ -56,7 +56,7 @@ public class ShowIOConfig implements IWorkbenchWindowActionDelegate {
     /** {@inheritDoc} */
     public final void run(final IAction action) {
         try {
-            Activator.getDefault().getWorkbench().showPerspective("org.csstudio.config.ioconfig.view.perspective", _window);
+            ActivatorUI.getDefault().getWorkbench().showPerspective("org.csstudio.config.ioconfig.view.perspective", _window);
         } catch (WorkbenchException e) {
             e.printStackTrace();
         }

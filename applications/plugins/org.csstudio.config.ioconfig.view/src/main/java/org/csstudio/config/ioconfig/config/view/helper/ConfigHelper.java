@@ -46,7 +46,7 @@ import org.csstudio.config.ioconfig.model.pbmodel.Master;
 import org.csstudio.config.ioconfig.model.pbmodel.Module;
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnet;
 import org.csstudio.config.ioconfig.model.pbmodel.Slave;
-import org.csstudio.config.ioconfig.view.Activator;
+import org.csstudio.config.ioconfig.view.ActivatorUI;
 import org.csstudio.config.ioconfig.view.ProfiBusTreeView;
 import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.platform.security.User;
@@ -535,12 +535,6 @@ public final class ConfigHelper {
         // Spinner
         final Spinner indexSpinner = new Spinner(parent, SWT.WRAP);
         indexSpinner.setLayoutData(new GridData(SWT.RIGHT, SWT.RIGHT, false, false, 1, 1));
-        if (node.getParent() instanceof Slave) {
-            Slave slave = (Slave) node.getParent();
-            max = slave.getMaxSize() - 1;
-        } else if (node.getParent() instanceof Master) {
-            max = ProfibusSubnet.MAX_STATION_ADDRESS;
-        }
         indexSpinner.setMinimum(min);
         indexSpinner.setMaximum(max);
         indexSpinner.setSelection(node.getSortIndex());
@@ -591,7 +585,7 @@ public final class ConfigHelper {
 
     public static Image getImageMaxSize(String imagePath, int width, int height) {
         ImageData imageData = CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
-                Activator.PLUGIN_ID, imagePath).getImageData();
+                ActivatorUI.PLUGIN_ID, imagePath).getImageData();
         if (width > 0 && height > 0) {
             int width2 = imageData.width;
             int height2 = imageData.height;

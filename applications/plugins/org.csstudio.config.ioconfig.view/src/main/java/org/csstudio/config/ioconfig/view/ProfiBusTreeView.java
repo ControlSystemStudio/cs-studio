@@ -168,7 +168,7 @@ public class ProfiBusTreeView extends Composite {
     /**
      * This action open an Empty Node. Type of new node dependent on Parent.
      */
-    private IAction _newNodeAction;
+    private IAction _newChildrenNodeAction;
     /**
      * This action open an selected Node. Type of new node dependent on Parent.
      */
@@ -209,6 +209,7 @@ public class ProfiBusTreeView extends Composite {
     private ImageDescriptor _pasteDis;
     private Composite _editComposite;
     private List<FacilityLight> _load;
+    private Action _newNodeAction;
     private static final Image ICON_WARNING = PlatformUI.getWorkbench().getDisplay()
             .getSystemImage(SWT.ICON_WARNING);
 
@@ -281,7 +282,6 @@ public class ProfiBusTreeView extends Composite {
          */
         @Override
         public Color getBackground(Object element) {
-            // label.setImage(getImage(element));
             if (haveProgrammableModule(element)) {
                 return CustomMediaFactory.getInstance().getColor(255, 140, 0);
             }
@@ -409,7 +409,7 @@ public class ProfiBusTreeView extends Composite {
                 ISharedImages.IMG_TOOL_PASTE);
         _pasteDis = PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(
                 ISharedImages.IMG_TOOL_PASTE_DISABLED);
-        // search Bug
+
         GridLayout layout = new GridLayout(1, true);
         layout.marginHeight = 0;
         layout.marginWidth = 0;
@@ -498,17 +498,18 @@ public class ProfiBusTreeView extends Composite {
         _viewer.getControl().setMenu(menu);
         _site.registerContextMenu(popupMenuMgr, _viewer);
         ImageDescriptor iDesc = CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
-                Activator.PLUGIN_ID, "icons/expand_all.gif");
+                ActivatorUI.PLUGIN_ID, "icons/expand_all.gif");
         Action expandAllAction = new Action() {
             public void run() {
                 expandAll();
             }
         };
         expandAllAction.setText("Expand All");
+        expandAllAction.setToolTipText("Expand All");
         expandAllAction.setImageDescriptor(iDesc);
         _site.getActionBars().getToolBarManager().add(expandAllAction);
 
-        iDesc = CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(Activator.PLUGIN_ID,
+        iDesc = CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(ActivatorUI.PLUGIN_ID,
                 "icons/collapse_all.gif");
         Action collapseAllAction = new Action() {
             public void run() {
@@ -516,14 +517,13 @@ public class ProfiBusTreeView extends Composite {
             }
         };
         collapseAllAction.setText("Collapse All");
+        collapseAllAction.setToolTipText("Collapse All");
         collapseAllAction.setImageDescriptor(iDesc);
         _site.getActionBars().getToolBarManager().add(collapseAllAction);
         ToolBar tB = new ToolBar(_viewer.getTree(), SWT.NONE);
-        // tB.
         ToolBarManager tBM = new ToolBarManager(tB);
         tBM.add(collapseAllAction);
         tBM.createControl(_viewer.getTree());
-        // tBM.
     }
 
     private void contributeToActionBars() {
@@ -533,7 +533,7 @@ public class ProfiBusTreeView extends Composite {
     }
 
     private void fillLocalPullDown(final IMenuManager manager) {
-        manager.add(_newNodeAction);
+        manager.add(_newChildrenNodeAction);
         manager.add(new Separator());
         manager.add(_editNodeAction);
         manager.add(_copyNodeAction);
@@ -556,8 +556,12 @@ public class ProfiBusTreeView extends Composite {
         } else if (selectedNode instanceof Master) {
             setContriebutionActions("New Slave", Master.class, Slave.class, manager);
         } else if (selectedNode instanceof Slave) {
+            _newNodeAction.setText("Add new "+Slave.class.getSimpleName());
+            manager.add(_newNodeAction);
             setContriebutionActions("New Module", Slave.class, Module.class, manager);
         } else if (selectedNode instanceof Module) {
+            _newNodeAction.setText("Add new "+Module.class.getSimpleName());
+            manager.add(_newNodeAction);
             manager.add(_copyNodeAction);
             if (_copiedNodesReferenceList != null && _copiedNodesReferenceList.size() > 0
                     && (Module.class.isInstance(_copiedNodesReferenceList.get(0)))) {
@@ -597,7 +601,7 @@ public class ProfiBusTreeView extends Composite {
     @SuppressWarnings("unchecked")
     private void setContriebutionActions(final String text, final Class clazz,
             final Class childClazz, final IMenuManager manager) {
-        _newNodeAction.setText(text);
+        _newChildrenNodeAction.setText(text);
         if ((_copiedNodesReferenceList != null)
                 && (_copiedNodesReferenceList.size() > 0)
                 && (clazz.isInstance(_copiedNodesReferenceList.get(0))
@@ -610,7 +614,7 @@ public class ProfiBusTreeView extends Composite {
             _pasteNodeAction.setEnabled(false);
             _pasteNodeAction.setImageDescriptor(_pasteDis);
         }
-        manager.add(_newNodeAction);
+        manager.add(_newChildrenNodeAction);
         manager.add(_copyNodeAction);
         manager.add(_pasteNodeAction);
         manager.add(_deletNodeAction);
@@ -627,8 +631,10 @@ public class ProfiBusTreeView extends Composite {
 
     private void makeActions() {
 
+        makeNewChildrenNodeAction();
+        
         makeNewNodeAction();
-
+        
         makeEditNodeAction();
 
         makeNewFacilityAction();
@@ -665,8 +671,9 @@ public class ProfiBusTreeView extends Composite {
         _refreshAction.setText("Refresh");
         _refreshAction.setToolTipText("Refresh the Tree");
         _refreshAction.setImageDescriptor(CustomMediaFactory.getInstance()
-                .getImageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/refresh.gif"));
+                .getImageDescriptorFromPlugin(ActivatorUI.PLUGIN_ID, "icons/refresh.gif"));
     }
+
 
     private void makeTreeNodeRenameAction() {
 
@@ -1021,7 +1028,7 @@ public class ProfiBusTreeView extends Composite {
         _assembleEpicsAddressStringAction
                 .setToolTipText("Refesh from all childen the EPICS Address Strings");
         _assembleEpicsAddressStringAction.setImageDescriptor(CustomMediaFactory.getInstance()
-                .getImageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/refresh.gif"));
+                .getImageDescriptorFromPlugin(ActivatorUI.PLUGIN_ID, "icons/refresh.gif"));
 
     }
 
@@ -1073,10 +1080,8 @@ public class ProfiBusTreeView extends Composite {
         };
         _searchAction.setText("Search");
         _searchAction.setToolTipText("Search a Node");
-        // _searchAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
-        // .getImageDescriptor(ISharedImages.IMG_LCL_LINKTO_HELP));
         _searchAction.setImageDescriptor(CustomMediaFactory.getInstance()
-                .getImageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/search.png"));
+                .getImageDescriptorFromPlugin(ActivatorUI.PLUGIN_ID, "icons/search.png"));
     }
 
     private void makeEditNodeAction() {
@@ -1105,24 +1110,35 @@ public class ProfiBusTreeView extends Composite {
         };
         _editNodeAction.setText("Edit");
         _editNodeAction.setToolTipText("Edit Node");
-
         _editNodeAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
                 .getImageDescriptor(ISharedImages.IMG_TOOL_NEW_WIZARD));
 
     }
 
+    private void makeNewChildrenNodeAction() {
+        _newChildrenNodeAction = new Action() {
+            public void run() {
+                openNewEmptyChildrenNode();
+            }
+        };
+        _newChildrenNodeAction.setText("New");
+        _newChildrenNodeAction.setToolTipText("Action 1 tooltip");
+        _newChildrenNodeAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
+                .getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
+    }
+
     private void makeNewNodeAction() {
         _newNodeAction = new Action() {
             public void run() {
-                editEmtyNode();
+                openNewEmptyNode();
             }
         };
         _newNodeAction.setText("New");
         _newNodeAction.setToolTipText("Action 1 tooltip");
         _newNodeAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
-                .getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
+                .getImageDescriptor(ISharedImages.IMG_ETOOL_HOME_NAV));
     }
-
+    
     private void hookDoubleClickAction() {
         _viewer.addDoubleClickListener(new IDoubleClickListener() {
             public void doubleClick(final DoubleClickEvent event) {
@@ -1131,7 +1147,7 @@ public class ProfiBusTreeView extends Composite {
         });
     }
 
-    private void editEmtyNode() {
+    private void openNewEmptyChildrenNode() {
         // clearEditComposite();
         setEditComposite();
         Object selectedNode = _selectedNode.getFirstElement();
@@ -1154,6 +1170,30 @@ public class ProfiBusTreeView extends Composite {
         _editComposite.getParent().layout(true);
     }
 
+    private void openNewEmptyNode() {
+        setEditComposite();
+        Object selectedNode = _selectedNode.getFirstElement();
+        if (selectedNode instanceof Facility) {
+            Node node = (Node) selectedNode; 
+            _nodeConfigComposite = new FacilityConfigComposite(_editComposite, this, (short) (node.getSortIndex()+1));
+        } else if(selectedNode instanceof FacilityLight) {
+            FacilityLight node = (FacilityLight) selectedNode; 
+            _nodeConfigComposite = new FacilityConfigComposite(_editComposite, this,(short) (node.getSortIndex()+1));
+        } else if (selectedNode instanceof Ioc) {
+            _nodeConfigComposite = new IocConfigComposite(_editComposite, this, null);
+        } else if (selectedNode instanceof ProfibusSubnet) {
+            _nodeConfigComposite = new SubNetConfigComposite(_editComposite, this, null);
+        } else if (selectedNode instanceof Master) {
+            _nodeConfigComposite = new MasterConfigComposite(_editComposite, this, null);
+        } else if (selectedNode instanceof Slave) {
+            _nodeConfigComposite = new SlaveConfigComposite(_editComposite, this, null);
+        } else if (selectedNode instanceof Module) {
+            _nodeConfigComposite = new ModuleConfigComposite(_editComposite, this, null);
+        } 
+        _editComposite.getParent().layout(true);
+    }
+
+    
     /**
      * Open a ConfigComposite for the tree selection Node.
      */
@@ -1289,9 +1329,6 @@ public class ProfiBusTreeView extends Composite {
             showView = page.showView(NodeConfigView.ID);
             if (showView instanceof NodeConfigView) {
                 _editComposite = new Composite(((NodeConfigView) showView).getComposite(), SWT.None);
-                // _editComposite.setSize(_editComposite.computeSize(SWT.DEFAULT,
-                // SWT.DEFAULT));
-//                _editComposite.setSize(600, 600);
                 FillLayout layout = new FillLayout();
                 _editComposite.setLayout(layout);
             }
@@ -1325,7 +1362,6 @@ public class ProfiBusTreeView extends Composite {
                 _viewer.expandToLevel(object, TreeViewer.ALL_LEVELS);
             }
         }
-        // _viewer.expandAll();
         Control[] childs = _parent.getChildren();
         for (Control control : childs) {
             if (control instanceof NodeConfig) {

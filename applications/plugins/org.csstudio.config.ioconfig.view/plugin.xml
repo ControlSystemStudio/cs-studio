@@ -24,13 +24,13 @@
             class="org.csstudio.config.ioconfig.view.MainView"
             icon="icons/IOConfic.png"
             id="org.csstudio.config.ioconfig.view.MainView"
-            name="IOConfig"/>
+            name="%view.name.tree"/>
       <view
             category="org.csstudio"
             class="org.csstudio.config.ioconfig.view.NodeConfigView"
             icon="icons/IOConfic.png"
             id="org.csstudio.config.ioconfig.view.NodeConfigView"
-            name="NodeConfig"
+            name="%view.name.node"
             restorable="true">
       </view>
    </extension>

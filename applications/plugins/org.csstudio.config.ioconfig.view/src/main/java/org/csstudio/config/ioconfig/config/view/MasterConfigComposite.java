@@ -25,6 +25,7 @@
 package org.csstudio.config.ioconfig.config.view;
 
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Set;
 import java.util.TreeMap;
@@ -42,6 +43,11 @@ import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdFactory;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdMasterModel;
 import org.csstudio.config.ioconfig.view.ProfiBusTreeView;
 import org.csstudio.platform.logging.CentralLogger;
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -67,57 +73,57 @@ import org.eclipse.swt.widgets.Text;
 public class MasterConfigComposite extends NodeConfig {
 
     /*
-     *  Data.
+     * Data.
      */
-    /** 
-     * The ProfibusDPMaster.                   
+    /**
+     * The ProfibusDPMaster.
      */
     private Master _master;
-    /** 
-     * The Selected GSD FFile for the Master.  
+    /**
+     * The Selected GSD FFile for the Master.
      */
     private GSDFile _gsdFile;
 
     /*
-     *  GUI Elements.
+     * GUI Elements.
      */
     /**
-     *  Check button to set auto clear on/off.             
+     * Check button to set auto clear on/off.
      */
     private Button _autoclearButton;
     /**
-     *  The description field for the Vendor Information.
+     * The description field for the Vendor Information.
      */
     private Text _vendorText;
     /**
-     *  The description field for the Board Information. 
+     * The description field for the Board Information.
      */
     private Text _pbBoardText;
-    /** 
-     * The description field for the ID.                
+    /**
+     * The description field for the ID.
      */
     private Text _idNoText;
-    /** 
-     * The description field for the Station Type.       
+    /**
+     * The description field for the Station Type.
      */
     private Text _stationTypText;
-    /** 
+    /**
      * The description field for the min Slave interval.
      */
     private Text _minSlaveIntervalText;
-    /** 
-     * The description field for the poll.              
+    /**
+     * The description field for the poll.
      */
     private Text _pollTimeOutText;
-    /** 
-     * The description field for the Data Control Time. 
+    /**
+     * The description field for the Data Control Time.
      */
     private Text _dataControlTimeText;
     /**
-     *  The description field for the Master User Data.  
+     * The description field for the Master User Data.
      */
     private Text _masterUserDataText;
-    
+
     /**
      * Selection of the Memory Address Type.
      */
@@ -134,33 +140,38 @@ public class MasterConfigComposite extends NodeConfig {
     private Text _maxSlaveParaLenText;
     private Text _maxSlaveDiagLenText;
     private Text _maxCalcText;
+    private ComboViewer _indexCombo;
 
     /**
-     * @param parent Parent Composite.
-     * @param profiBusTreeView The IO Config TreeView.
-     * @param master the Profibus Master to Configer.
+     * @param parent
+     *            Parent Composite.
+     * @param profiBusTreeView
+     *            The IO Config TreeView.
+     * @param master
+     *            the Profibus Master to Configer.
      */
-    public MasterConfigComposite(final Composite parent,final ProfiBusTreeView profiBusTreeView, final Master master) {
-        super(parent, profiBusTreeView, "Profibus Master Configuration",master, master==null);
+    public MasterConfigComposite(final Composite parent, final ProfiBusTreeView profiBusTreeView,
+            final Master master) {
+        super(parent, profiBusTreeView, "Profibus Master Configuration", master, master == null);
         _master = master;
-        if(_master==null){
+        if (_master == null) {
             newNode();
             _master.setMinSlaveInt(6);
             _master.setPollTime(1000);
             _master.setDataControlTime(100);
-        }else{
+        } else {
             _gsdFile = _master.getGSDFile();
         }
         setSavebuttonEnabled(null, getNode().isPersistent());
-        String[] heads = {"Master", "GSD File LIst"};
+        String[] heads = { "Master", "GSD File LIst" };
         master(heads[0]);
         documents();
-        ConfigHelper.makeGSDFileChooser(getTabFolder(),heads[1],this, Keywords.GSDFileTyp.Master);
-        if(_gsdFile!=null){
+        ConfigHelper.makeGSDFileChooser(getTabFolder(), heads[1], this, Keywords.GSDFileTyp.Master);
+        if (_gsdFile != null) {
             fill(_gsdFile);
         }
 
-//        _tabFolder.pack ();
+        // _tabFolder.pack ();
     }
 
     private void makeFmbSetGroup(Composite parent) {
@@ -168,127 +179,142 @@ public class MasterConfigComposite extends NodeConfig {
         ModifyListener listener = new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
-                int value = (Integer.parseInt(_maxSlaveInputLenText.getText())+Integer.parseInt(_maxSlaveOutputLenText.getText()))*Integer.parseInt(_maxNrSlaveText.getText());
-                _maxCalcText.setText(String.format("%1$d < %2$d = %3$b", value,limit,value<limit));
-                
+                int value = (Integer.parseInt(_maxSlaveInputLenText.getText()) + Integer
+                        .parseInt(_maxSlaveOutputLenText.getText()))
+                        * Integer.parseInt(_maxNrSlaveText.getText());
+                _maxCalcText.setText(String.format("%1$d < %2$d = %3$b", value, limit,
+                        value < limit));
+
             }
-            
+
         };
 
-        Group gName = new Group(parent,SWT.NONE);
+        Group gName = new Group(parent, SWT.NONE);
         gName.setText("FMB Set");
-        gName.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2,1));
-        gName.setLayout(new GridLayout(2,false));
-        
+        gName.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
+        gName.setLayout(new GridLayout(2, false));
+
         Label maxNrSlaveLabel = new Label(gName, SWT.NONE);
         maxNrSlaveLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
         maxNrSlaveLabel.setText("Max Number Slaves:");
-        
+
         int min = 0;
-        
-        TreeMap<Short, ? extends Node> map = (TreeMap<Short, ? extends Node>) _master.getChildrenAsMap();
-        if(map.size()>0) {
+
+        TreeMap<Short, ? extends Node> map = (TreeMap<Short, ? extends Node>) _master
+                .getChildrenAsMap();
+        if (map.size() > 0) {
             min = map.lastKey();
         }
         int maxNrSlave;
-        if(min<=0&&_master.getMaxNrSlave()<=0) {
-            //default
+        if (min <= 0 && _master.getMaxNrSlave() <= 0) {
+            // default
             maxNrSlave = 60;
-        } else if(min>_master.getMaxNrSlave()) {
+        } else if (min > _master.getMaxNrSlave()) {
             maxNrSlave = min;
         } else {
             maxNrSlave = _master.getMaxNrSlave();
         }
-        _maxNrSlaveText = ProfibusHelper.getTextField(gName, true, Integer.toString(maxNrSlave), Ranges.getRangeValue(min,9999, 60), ProfibusHelper.VL_TYP_U16); 
+        _maxNrSlaveText = ProfibusHelper.getTextField(gName, true, Integer.toString(maxNrSlave),
+                Ranges.getRangeValue(min, 9999, 60), ProfibusHelper.VL_TYP_U16);
         _maxNrSlaveText.addModifyListener(getMLSB());
         _maxNrSlaveText.addModifyListener(listener);
-        
+
         Label maxSlaveOutputLenLabel = new Label(gName, SWT.NONE);
         maxSlaveOutputLenLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
         maxSlaveOutputLenLabel.setText("Max Slave Output Len:");
 
         int slaveOutputLen = 160;
-        if(_master.getMaxSlaveOutputLen()>=0) {
+        if (_master.getMaxSlaveOutputLen() >= 0) {
             slaveOutputLen = _master.getMaxSlaveOutputLen();
         }
-        _maxSlaveOutputLenText = ProfibusHelper.getTextField(gName, true, Integer.toString(slaveOutputLen), Ranges.getRangeValue(0,9999, 100), ProfibusHelper.VL_TYP_U16);
+        _maxSlaveOutputLenText = ProfibusHelper.getTextField(gName, true, Integer
+                .toString(slaveOutputLen), Ranges.getRangeValue(0, 9999, 100),
+                ProfibusHelper.VL_TYP_U16);
         _maxSlaveOutputLenText.addModifyListener(getMLSB());
         _maxSlaveOutputLenText.addModifyListener(listener);
-        
+
         Label maxSlaveInputLenLabel = new Label(gName, SWT.NONE);
         maxSlaveInputLenLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
         maxSlaveInputLenLabel.setText("Max Slave Input Len:");
 
         int slaveInputLen = 160;
-        if(_master.getMaxSlaveInputLen()>=0) {
+        if (_master.getMaxSlaveInputLen() >= 0) {
             slaveInputLen = _master.getMaxSlaveInputLen();
         }
-        _maxSlaveInputLenText = ProfibusHelper.getTextField(gName, true, Integer.toString(slaveInputLen), Ranges.getRangeValue(0,9999, 100), ProfibusHelper.VL_TYP_U16);
+        _maxSlaveInputLenText = ProfibusHelper.getTextField(gName, true, Integer
+                .toString(slaveInputLen), Ranges.getRangeValue(0, 9999, 100),
+                ProfibusHelper.VL_TYP_U16);
         _maxSlaveInputLenText.addModifyListener(getMLSB());
         _maxSlaveInputLenText.addModifyListener(listener);
-        
+
         Label maxCalc = new Label(gName, SWT.NONE);
-        maxCalc.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false,2,1));
+        maxCalc.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 2, 1));
         maxCalc.setText("(Output Len + Input Len) * Max Nr Slaves < 13000");
-        int value = (slaveInputLen+slaveOutputLen)*maxNrSlave;
-        
+        int value = (slaveInputLen + slaveOutputLen) * maxNrSlave;
+
         new Label(gName, SWT.NONE);
-        _maxCalcText = ProfibusHelper.getTextField(gName, String.format("%1$d < %2$d = %3$b", value,limit,value<limit)); 
-        
-        
+        _maxCalcText = ProfibusHelper.getTextField(gName, String.format("%1$d < %2$d = %3$b",
+                value, limit, value < limit));
+
         Label maxSlaveDiagEntriesLabel = new Label(gName, SWT.NONE);
-        maxSlaveDiagEntriesLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+        maxSlaveDiagEntriesLabel
+                .setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
         maxSlaveDiagEntriesLabel.setText("Max Slave Diag Entries:");
-        
+
         value = 126;
-        if(_master.getMaxSlaveDiagEntries()>=0) {
+        if (_master.getMaxSlaveDiagEntries() >= 0) {
             value = _master.getMaxSlaveDiagEntries();
         }
-        _maxSlaveDiagEntriesText = ProfibusHelper.getTextField(gName, true, Integer.toString(value), Ranges.getRangeValue(0,9999, 126), ProfibusHelper.VL_TYP_U16);
+        _maxSlaveDiagEntriesText = ProfibusHelper.getTextField(gName, true,
+                Integer.toString(value), Ranges.getRangeValue(0, 9999, 126),
+                ProfibusHelper.VL_TYP_U16);
         _maxSlaveDiagEntriesText.addModifyListener(getMLSB());
-        
+
         Label maxSlaveDiagLenLabel = new Label(gName, SWT.NONE);
         maxSlaveDiagLenLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
         maxSlaveDiagLenLabel.setText("Max Slave Diag Len:");
-        
+
         value = 32;
-        if(_master.getMaxSlaveDiagLen()>=0) {
+        if (_master.getMaxSlaveDiagLen() >= 0) {
             value = _master.getMaxSlaveDiagLen();
         }
-        _maxSlaveDiagLenText = ProfibusHelper.getTextField(gName, true, Integer.toString(value), Ranges.getRangeValue(0,9999, 32), ProfibusHelper.VL_TYP_U16);
+        _maxSlaveDiagLenText = ProfibusHelper.getTextField(gName, true, Integer.toString(value),
+                Ranges.getRangeValue(0, 9999, 32), ProfibusHelper.VL_TYP_U16);
         _maxSlaveDiagLenText.addModifyListener(getMLSB());
-        
+
         Label maxBusParaLenLabel = new Label(gName, SWT.NONE);
         maxBusParaLenLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
         maxBusParaLenLabel.setText("Max Bus Para Len:");
-        
+
         value = 128;
-        if(_master.getMaxBusParaLen()>=0) {
+        if (_master.getMaxBusParaLen() >= 0) {
             value = _master.getMaxBusParaLen();
         }
-        _maxBusParaLenText = ProfibusHelper.getTextField(gName, true, Integer.toString(value), Ranges.getRangeValue(0,9999, 128), ProfibusHelper.VL_TYP_U16);
+        _maxBusParaLenText = ProfibusHelper.getTextField(gName, true, Integer.toString(value),
+                Ranges.getRangeValue(0, 9999, 128), ProfibusHelper.VL_TYP_U16);
         _maxBusParaLenText.addModifyListener(getMLSB());
-        
+
         Label maxSlaveParaLenLabel = new Label(gName, SWT.NONE);
         maxSlaveParaLenLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
         maxSlaveParaLenLabel.setText("Max Slave Para Len:");
-        
+
         value = 244;
-        if(_master.getMaxSlaveParaLen()>=0) {
+        if (_master.getMaxSlaveParaLen() >= 0) {
             value = _master.getMaxSlaveParaLen();
         }
-        _maxSlaveParaLenText = ProfibusHelper.getTextField(gName, true, Integer.toString(value), Ranges.getRangeValue(0,9999, 244), ProfibusHelper.VL_TYP_U16);
-        _maxSlaveParaLenText.addModifyListener(getMLSB());        
-        
+        _maxSlaveParaLenText = ProfibusHelper.getTextField(gName, true, Integer.toString(value),
+                Ranges.getRangeValue(0, 9999, 244), ProfibusHelper.VL_TYP_U16);
+        _maxSlaveParaLenText.addModifyListener(getMLSB());
 
     }
 
     /**
-     * @param head is TabHead Text
+     * @param head
+     *            is TabHead Text
      */
     private void master(final String head) {
-        
-        Composite comp = ConfigHelper.getNewTabItem(head,getTabFolder(),5,650,440);
+
+        Composite comp = ConfigHelper.getNewTabItem(head, getTabFolder(), 5, 650, 440);
 
         makeNameGroup(comp);
         makeRedundencyMasterGroup(comp);
@@ -297,25 +323,25 @@ public class MasterConfigComposite extends NodeConfig {
         makeInformationGroup(comp);
         makeMasterUserData(comp);
         makeDescGroup(comp);
-        
+
         makeFmbSetGroup(comp);
     }
-    
+
     private void makeMemoryAddressingGroup(Composite comp) {
-        _memAddressType=_master.getProfibusPnoId();
-        _oldMemAddressType=_memAddressType;
-        
+        _memAddressType = _master.getProfibusPnoId();
+        _oldMemAddressType = _memAddressType;
+
         SelectionListener selectionListener = new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
                 _memAddressType = (Integer) ((Button) e.getSource()).getData();
-                setSavebuttonEnabled("MasterMemAddressType", _oldMemAddressType!=_memAddressType);
+                setSavebuttonEnabled("MasterMemAddressType", _oldMemAddressType != _memAddressType);
             }
         };
-        
-        Group gMemoryAddressing = new Group(comp,SWT.NONE);
+
+        Group gMemoryAddressing = new Group(comp, SWT.NONE);
         gMemoryAddressing.setText("Memory Address Mode:");
-        gMemoryAddressing.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1,1));
-        gMemoryAddressing.setLayout(new GridLayout(2,false));
+        gMemoryAddressing.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
+        gMemoryAddressing.setLayout(new GridLayout(2, false));
 
         final Button direct = new Button(gMemoryAddressing, SWT.RADIO);
         direct.setText("Array");
@@ -325,140 +351,148 @@ public class MasterConfigComposite extends NodeConfig {
         dyn.setText("Compact");
         dyn.setData(1);
         dyn.addSelectionListener(selectionListener);
-        switch(_memAddressType){
+        switch (_memAddressType) {
             case 1:
                 dyn.setSelection(true);
                 break;
             case 0:
-            default :
+            default:
                 direct.setSelection(true);
                 break;
-        }        
+        }
     }
 
     private void makeMasterUserData(Composite comp) {
-        Group masterUserData = new Group(comp,SWT.NONE);
+        Group masterUserData = new Group(comp, SWT.NONE);
         masterUserData.setText("Master User Data:");
-        masterUserData.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 3,1));
-        masterUserData.setLayout(new GridLayout(1,false));
+        masterUserData.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 3, 1));
+        masterUserData.setLayout(new GridLayout(1, false));
         masterUserData.setTabList(new Control[0]);
-        _masterUserDataText = new Text(masterUserData,SWT.NONE);
+        _masterUserDataText = new Text(masterUserData, SWT.NONE);
         _masterUserDataText.setEditable(false);
-        _masterUserDataText.setLayoutData(new GridData(SWT.FILL,SWT.CENTER,true,true,1,1));
+        _masterUserDataText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true, 1, 1));
 
         // is a Default Value. Is not a part of the Master GSD File.
-        if(_master!=null&&_master.getMasterUserData()!=null&&_master.getMasterUserData().length()>0){
+        if (_master != null && _master.getMasterUserData() != null
+                && _master.getMasterUserData().length() > 0) {
             _masterUserDataText.setText(_master.getMasterUserData());
-        }else{
-            _masterUserDataText.setText("0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0");
+        } else {
+            _masterUserDataText
+                    .setText("0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0");
         }
     }
 
     private void makeParametersGroup(Composite comp) {
-        Group gParameters = new Group(comp,SWT.NONE);
+        Group gParameters = new Group(comp, SWT.NONE);
         gParameters.setText("Parameters:");
-        gParameters.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2,3));
-        gParameters.setLayout(new GridLayout(3,false));
-        
-        new Label(gParameters,SWT.NONE);//.setText("[micros]");
-        
-        Label minSlaveIntervalLabel = new Label(gParameters,SWT.NONE);
+        gParameters.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 3));
+        gParameters.setLayout(new GridLayout(3, false));
+
+        new Label(gParameters, SWT.NONE);// .setText("[micros]");
+
+        Label minSlaveIntervalLabel = new Label(gParameters, SWT.NONE);
         minSlaveIntervalLabel.setText("min. Slave Interval: ");
-        _minSlaveIntervalText = ProfibusHelper.getTextField(gParameters, true, Integer.toString(_master.getMinSlaveInt()), Ranges.getRangeValue(0,10000, 6), ProfibusHelper.VL_TYP_U16);
+        _minSlaveIntervalText = ProfibusHelper.getTextField(gParameters, true, Integer
+                .toString(_master.getMinSlaveInt()), Ranges.getRangeValue(0, 10000, 6),
+                ProfibusHelper.VL_TYP_U16);
 
-        new Label(gParameters,SWT.NONE).setText("[tBit]");
-        
-        Label pollTimeOutLabel = new Label(gParameters,SWT.NONE);
+        new Label(gParameters, SWT.NONE).setText("[tBit]");
+
+        Label pollTimeOutLabel = new Label(gParameters, SWT.NONE);
         pollTimeOutLabel.setText("Poll Timeout: ");
-        _pollTimeOutText = ProfibusHelper.getTextField(gParameters, true, Integer.toString(_master.getPollTime()), Ranges.getRangeValue(0,100000, 1000), ProfibusHelper.VL_TYP_U16);
+        _pollTimeOutText = ProfibusHelper.getTextField(gParameters, true, Integer.toString(_master
+                .getPollTime()), Ranges.getRangeValue(0, 100000, 1000), ProfibusHelper.VL_TYP_U16);
 
-        new Label(gParameters,SWT.NONE).setText("[tBit]");
-        
-        Label dataControlTimeLabel = new Label(gParameters,SWT.NONE);
+        new Label(gParameters, SWT.NONE).setText("[tBit]");
+
+        Label dataControlTimeLabel = new Label(gParameters, SWT.NONE);
         dataControlTimeLabel.setText("Data Control Time: ");
-        _dataControlTimeText = ProfibusHelper.getTextField(gParameters, true, Integer.toString(_master.getDataControlTime()), Ranges.getRangeValue(0,10000, 100), ProfibusHelper.VL_TYP_U16);
-        
-        new Label(gParameters,SWT.NONE).setText("[tBit]");
-        
-        new Label(gParameters,SWT.NONE).setText("Autoclear: ");
-        _autoclearButton = new Button(gParameters,SWT.CHECK|SWT.LEFT);
+        _dataControlTimeText = ProfibusHelper.getTextField(gParameters, true, Integer
+                .toString(_master.getDataControlTime()), Ranges.getRangeValue(0, 10000, 100),
+                ProfibusHelper.VL_TYP_U16);
+
+        new Label(gParameters, SWT.NONE).setText("[tBit]");
+
+        new Label(gParameters, SWT.NONE).setText("Autoclear: ");
+        _autoclearButton = new Button(gParameters, SWT.CHECK | SWT.LEFT);
         _autoclearButton.setText("");
-        if(_master!=null){
+        if (_master != null) {
             _autoclearButton.setSelection(_master.isAutoclear());
         }
-        _autoclearButton.addSelectionListener(new SelectionListener(){
+        _autoclearButton.addSelectionListener(new SelectionListener() {
 
-            public void widgetDefaultSelected(final   SelectionEvent e) {}
+            public void widgetDefaultSelected(final SelectionEvent e) {
+            }
 
-            public void widgetSelected(final   SelectionEvent e) {
+            public void widgetSelected(final SelectionEvent e) {
                 setSavebuttonEnabled("MasterAutoclear", _autoclearButton.getSelection());
             }
-        });        
+        });
     }
 
     private void makeInformationGroup(Composite comp) {
-        Group gInformation = new Group(comp,SWT.NONE);
+        Group gInformation = new Group(comp, SWT.NONE);
         gInformation.setText("Information:");
-        gInformation.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 3,1));
-        gInformation.setLayout(new GridLayout(4,false));
+        gInformation.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 3, 1));
+        gInformation.setLayout(new GridLayout(4, false));
         gInformation.setTabList(new Control[0]);
-        
-        Label vendorLabel = new Label(gInformation,SWT.NONE);
+
+        Label vendorLabel = new Label(gInformation, SWT.NONE);
         vendorLabel.setText("Vendor: ");
-        _vendorText = new Text(gInformation,SWT.NONE);
-        _vendorText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1,1));
+        _vendorText = new Text(gInformation, SWT.NONE);
+        _vendorText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
         _vendorText.setEditable(false);
 
-        Label pbBoardLabel = new Label(gInformation,SWT.NONE);
+        Label pbBoardLabel = new Label(gInformation, SWT.NONE);
         pbBoardLabel.setText("Profibusboard: ");
-        _pbBoardText = new Text(gInformation,SWT.NONE);
-        _pbBoardText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1,1));
+        _pbBoardText = new Text(gInformation, SWT.NONE);
+        _pbBoardText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
         _pbBoardText.setEditable(false);
 
-        Label idNoLabel = new Label(gInformation,SWT.NONE);
+        Label idNoLabel = new Label(gInformation, SWT.NONE);
         idNoLabel.setText("Ident. No.: ");
-        _idNoText = new Text(gInformation,SWT.NONE);
+        _idNoText = new Text(gInformation, SWT.NONE);
         _idNoText.setEditable(false);
 
-        Label stationTypLabel = new Label(gInformation,SWT.NONE);
+        Label stationTypLabel = new Label(gInformation, SWT.NONE);
         stationTypLabel.setText("Station Typ: ");
-        _stationTypText = new Text(gInformation,SWT.NONE);
+        _stationTypText = new Text(gInformation, SWT.NONE);
         _stationTypText.setEditable(false);
-        
+
     }
 
     private void makeRedundencyMasterGroup(Composite comp) {
-        Group gRedundencyMaster = new Group(comp,SWT.NONE);
+        Group gRedundencyMaster = new Group(comp, SWT.NONE);
         gRedundencyMaster.setText("Redundency Master:");
-        gRedundencyMaster.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2,1));
-        gRedundencyMaster.setLayout(new GridLayout(3,false));
-        
+        gRedundencyMaster.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
+        gRedundencyMaster.setLayout(new GridLayout(3, false));
+
         final Button redundent = new Button(gRedundencyMaster, SWT.CHECK);
         redundent.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
         redundent.setText("Redunden IOC");
-        
+
         final Button master = new Button(gRedundencyMaster, SWT.RADIO);
         master.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
         master.setText("Master");
-        
+
         final Button slave = new Button(gRedundencyMaster, SWT.RADIO);
         slave.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
         slave.setText("Slave");
-        
+
         redundent.addSelectionListener(new SelectionListener() {
-            
+
             @Override
             public void widgetSelected(SelectionEvent e) {
                 select();
             }
-            
+
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 select();
             }
 
             private void select() {
-                if(redundent.getSelection()) {
+                if (redundent.getSelection()) {
                     master.setEnabled(true);
                     slave.setEnabled(true);
                 } else {
@@ -467,33 +501,74 @@ public class MasterConfigComposite extends NodeConfig {
                 }
             }
         });
-        
+
         boolean isRedundet = false;
         redundent.setSelection(isRedundet);
-        if(isRedundet) {
+        if (isRedundet) {
             Boolean isMaster = true;
-            if(isMaster) {
+            if (isMaster) {
                 master.setSelection(true);
-            }else {
+            } else {
                 slave.setSelection(true);
             }
         }
-        
+
     }
 
     private void makeNameGroup(Composite comp) {
-        Group gName = new Group(comp,SWT.NONE);
+        Group gName = new Group(comp, SWT.NONE);
         gName.setText("Name");
-        gName.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 5,1));
-        gName.setLayout(new GridLayout(3,false));    
+        gName.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 5, 1));
+        gName.setLayout(new GridLayout(3, false));
 
         Text nameText = new Text(gName, SWT.BORDER | SWT.SINGLE);
-        setText(nameText, _master.getName(),255);
+        setText(nameText, _master.getName(), 255);
         nameText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
         setNameWidget(nameText);
-        
-        setIndexSpinner(ConfigHelper.getIndexSpinner(gName, _master, getMLSB(),"Station Address:",getProfiBusTreeView()));
-    
+
+        // Label
+        Label slotIndexLabel = new Label(gName, SWT.NONE);
+        slotIndexLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+        slotIndexLabel.setText("Station Adress:");
+
+        // Sort Index Combo
+        _indexCombo = new ComboViewer(gName, SWT.DROP_DOWN | SWT.READ_ONLY);
+        _indexCombo.getCombo().setLayoutData(new GridData(SWT.RIGHT, SWT.RIGHT, false, false));
+        _indexCombo.setContentProvider(new ArrayContentProvider());
+        _indexCombo.setLabelProvider(new LabelProvider());
+        Collection<Short> freeStationAddress = _master.getFreeStationAddress();
+        Short sortIndex = _master.getSortIndex();
+        if (sortIndex >= 0) {
+            if (!freeStationAddress.contains(sortIndex)) {
+                freeStationAddress.add(sortIndex);
+            }
+            _indexCombo.setInput(freeStationAddress);
+            _indexCombo.setSelection(new StructuredSelection(sortIndex));
+        } else {
+            _indexCombo.setInput(freeStationAddress);
+            _indexCombo.getCombo().select(0);
+            _master.setSortIndexNonHibernate((Short) ((StructuredSelection) _indexCombo
+                    .getSelection()).getFirstElement());
+        }
+        _indexCombo.getCombo().setData(_indexCombo.getCombo().getSelectionIndex());
+        _indexCombo.getCombo().addModifyListener(getMLSB());
+        _indexCombo.addSelectionChangedListener(new ISelectionChangedListener() {
+
+            @Override
+            public void selectionChanged(SelectionChangedEvent event) {
+                short index = (Short) ((StructuredSelection) _indexCombo.getSelection())
+                        .getFirstElement();
+                getNode().moveSortIndex(index);
+                if (getNode().getParent() != null) {
+                    getProfiBusTreeView().refresh(getNode().getParent());
+                } else {
+                    getProfiBusTreeView().refresh();
+                }
+            }
+        });
+
+        // getIndexSpinner()
+
     }
 
     /**
@@ -503,14 +578,16 @@ public class MasterConfigComposite extends NodeConfig {
         super.store();
         Date now = new Date();
 
-        //Name
+        // Name
         _master.setName(getNameWidget().getText());
         getNameWidget().setData(getNameWidget().getText());
 
-//        _master.moveSortIndex((short)getIndexSpinner().getSelection());
-        _master.setFdlAddress((short)getIndexSpinner().getSelection());
-        getIndexSpinner().setData(getIndexSpinner().getSelection());
-        
+        Short stationAddress = (Short) ((StructuredSelection) _indexCombo.getSelection())
+                .getFirstElement();
+        _master.setSortIndexNonHibernate(stationAddress);
+        _master.setFdlAddress(stationAddress);
+        _indexCombo.getCombo().setData(_indexCombo.getCombo().getSelectionIndex());
+
         // Information
         _master.setVendorName(_vendorText.getText());
         _master.setProfibusdpmasterBez(_pbBoardText.getText());
@@ -523,7 +600,7 @@ public class MasterConfigComposite extends NodeConfig {
         _master.setMasterUserData(_masterUserDataText.getText());
         // Mem Adress Type
         _master.setProfibusPnoId(_memAddressType);
-        _oldMemAddressType=_memAddressType;
+        _oldMemAddressType = _memAddressType;
         // Document
         Set<Document> docs = getDocumentationManageView().getDocuments();
         _master.setDocuments(docs);
@@ -532,45 +609,45 @@ public class MasterConfigComposite extends NodeConfig {
         ((Text) this.getData("modifiedBy")).setText(ConfigHelper.getUserName());
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
         ((Text) this.getData("modifiedOn")).setText(df.format(now));
-        
+
         // GSD File
         _master.setGSDFile(_gsdFile);
-        
+
         // FMB Set
-        //-----------------------------
-        _master.setMaxNrSlave(Integer.parseInt(_maxNrSlaveText.getText())); 
-        _master.setMaxSlaveOutputLen(Integer.parseInt(_maxSlaveOutputLenText.getText())); 
-        _master.setMaxSlaveInputLen(Integer.parseInt(_maxSlaveInputLenText.getText())); 
+        // -----------------------------
+        _master.setMaxNrSlave(Integer.parseInt(_maxNrSlaveText.getText()));
+        _master.setMaxSlaveOutputLen(Integer.parseInt(_maxSlaveOutputLenText.getText()));
+        _master.setMaxSlaveInputLen(Integer.parseInt(_maxSlaveInputLenText.getText()));
         _master.setMaxSlaveDiagEntries(Integer.parseInt(_maxSlaveDiagEntriesText.getText()));
         _master.setMaxSlaveDiagLen(Integer.parseInt(_maxSlaveDiagLenText.getText()));
         _master.setMaxBusParaLen(Integer.parseInt(_maxBusParaLenText.getText()));
         _master.setMaxSlaveParaLen(Integer.parseInt(_maxSlaveParaLenText.getText()));
-        //-----------------------------
-        
+        // -----------------------------
+
         save();
     }
 
     /** {@inheritDoc} */
     @Override
     public final boolean fill(final GSDFile gsdFile) {
-        if(gsdFile==null) {
+        if (gsdFile == null) {
             CentralLogger.getInstance().error(this, "GSD File not available!");
             return false;
         }
         GsdMasterModel masterModel = GsdFactory.makeGsdMaster(gsdFile.getGSDFile());
-        
-        //setGSDData
+
+        // setGSDData
         _master.setGSDMasterData(masterModel);
-        
-        ((Text)this.getData("version")).setText(masterModel.getRevisionNumber()+"");
+
+        ((Text) this.getData("version")).setText(masterModel.getRevisionNumber() + "");
         _vendorText.setText(masterModel.getVendorName());
         _pbBoardText.setText(masterModel.getModelName());
         String hex = Integer.toHexString(masterModel.getIdentNumber()).toUpperCase();
-        if(hex.length()>4){
-            hex=hex.substring(hex.length()-4,hex.length());
+        if (hex.length() > 4) {
+            hex = hex.substring(hex.length() - 4, hex.length());
         }
-        _idNoText.setText("0x"+hex);
-        _stationTypText.setText(masterModel.getStationType()+"");
+        _idNoText.setText("0x" + hex);
+        _stationTypText.setText(masterModel.getStationType() + "");
         _gsdFile = gsdFile;
         this.layout();
         return true;
@@ -587,49 +664,52 @@ public class MasterConfigComposite extends NodeConfig {
      */
     @Override
     public final Node getNode() {
-        if(_master==null){
-            StructuredSelection selection = (StructuredSelection) getProfiBusTreeView().getTreeViewer().getSelection();
+        if (_master == null) {
+            StructuredSelection selection = (StructuredSelection) getProfiBusTreeView()
+                    .getTreeViewer().getSelection();
             if (selection.getFirstElement() instanceof ProfibusSubnet) {
                 ProfibusSubnet profibusSubnet = (ProfibusSubnet) selection.getFirstElement();
-                _master = new Master(profibusSubnet);    
+                _master = new Master(profibusSubnet);
             }
         }
         return _master;
     }
 
-    
     /**
      * 
-    * {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public void cancel() {
         super.cancel();
-        getNameWidget().setText((String)getNameWidget().getData());
-        getIndexSpinner().setSelection((Short)getIndexSpinner().getData());
-        if(_master!=null){
-            _gsdFile =null;
-            if(_master.getGSDFile()!=null){
-                _gsdFile = _master.getGSDFile();
+        if (_indexCombo != null) {
+            _indexCombo.getCombo().select((Integer) _indexCombo.getCombo().getData());
+            getNameWidget().setText((String) getNameWidget().getData());
+            getIndexSpinner().setSelection((Short) getIndexSpinner().getData());
+            if (_master != null) {
+                _gsdFile = null;
+                if (_master.getGSDFile() != null) {
+                    _gsdFile = _master.getGSDFile();
+                    fill(_gsdFile);
+                } else {
+                    ((Text) MasterConfigComposite.this.getData("version")).setText("");
+                    _vendorText.setText("");
+                    _pbBoardText.setText("");
+                    _idNoText.setText("");
+                    _stationTypText.setText("");
+                }
+                _minSlaveIntervalText.setText(_master.getMinSlaveInt() + "");
+                _pollTimeOutText.setText(_master.getPollTime() + "");
+                _dataControlTimeText.setText(_master.getDataControlTime() + "");
+                _autoclearButton.setSelection(_master.isAutoclear());
+            } else {
+                _gsdFile = null;
                 fill(_gsdFile);
-            }else{
-                ((Text)MasterConfigComposite.this.getData("version")).setText("");
-                _vendorText.setText("");
-                _pbBoardText.setText("");
-                _idNoText.setText("");
-                _stationTypText.setText("");
+                _minSlaveIntervalText.setText("");
+                _pollTimeOutText.setText("");
+                _dataControlTimeText.setText("");
+                _autoclearButton.setSelection(false);
             }
-            _minSlaveIntervalText.setText(_master.getMinSlaveInt()+"");
-            _pollTimeOutText.setText(_master.getPollTime()+"");
-            _dataControlTimeText.setText(_master.getDataControlTime()+"");
-            _autoclearButton.setSelection(_master.isAutoclear());
-        }else{
-            _gsdFile = null;
-            fill(_gsdFile);
-            _minSlaveIntervalText.setText("");
-            _pollTimeOutText.setText("");
-            _dataControlTimeText.setText("");
-            _autoclearButton.setSelection(false);
         }
     }
 }

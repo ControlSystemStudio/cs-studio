@@ -34,7 +34,7 @@ import org.csstudio.config.ioconfig.model.FacilityLight;
 import org.csstudio.config.ioconfig.model.Ioc;
 import org.csstudio.config.ioconfig.model.Node;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFile;
-import org.csstudio.config.ioconfig.view.Activator;
+import org.csstudio.config.ioconfig.view.ActivatorUI;
 import org.csstudio.config.ioconfig.view.ProfiBusTreeView;
 import org.eclipse.core.commands.operations.OperationStatus;
 import org.eclipse.jface.dialogs.ErrorDialog;
@@ -153,7 +153,7 @@ public class IocConfigComposite extends NodeConfig {
                     String errorMessage = String.format("Device Data Base (DDB) Error\n"
                             + "Can't load the Facility '%1s' (ID: %2s)", fL.getName(), fL.getId());
                     OperationStatus status = new OperationStatus(OperationStatus.ERROR,
-                            Activator.PLUGIN_ID, 3, errorMessage, e);
+                            ActivatorUI.PLUGIN_ID, 3, errorMessage, e);
                     ErrorDialog
                             .openError(getShell(), "Data Base Error: Get Facility", null, status);
                 }

@@ -50,9 +50,11 @@ import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdModuleModel;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdSlaveModel;
 import org.csstudio.config.ioconfig.view.ProfiBusTreeView;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
@@ -122,7 +124,7 @@ public class SlaveConfigComposite extends NodeConfig {
     /**
      * Die Bedeutung dieses Feldes ist noch unbekannt.
      */
-//    private Text _unbekannt;
+    // private Text _unbekannt;
     /**
      * The minimum Station Delay Time.
      */
@@ -136,7 +138,7 @@ public class SlaveConfigComposite extends NodeConfig {
      */
     private Color _defaultBackgroundColor;
     /**
-     * Check Button to de.-/activate Station Address.  
+     * Check Button to de.-/activate Station Address.
      */
     private Button _stationAddressActiveCButton;
     private Button _freezeButton;
@@ -146,6 +148,7 @@ public class SlaveConfigComposite extends NodeConfig {
     private short _groupIdent;
     private short _groupIdentStored;
     private Group _groupsRadioButtons;
+    private ComboViewer _indexCombo;
 
     /**
      * 
@@ -195,17 +198,18 @@ public class SlaveConfigComposite extends NodeConfig {
                     case 1:
                         return slave.getName();
                     case 2:
-                        StringBuffer  sb = new StringBuffer();
-                        for (ExtUserPrmDataConst eupdc : slave.getGSDSlaveData().getExtUserPrmDataConst().values()) {
+                        StringBuffer sb = new StringBuffer();
+                        for (ExtUserPrmDataConst eupdc : slave.getGSDSlaveData()
+                                .getExtUserPrmDataConst().values()) {
                             sb.append(eupdc.getValue());
                         }
                         return sb.toString();
-                        
+
                     default:
                         break;
                 }
 
-            }else if (element instanceof Module) {
+            } else if (element instanceof Module) {
                 Module module = (Module) element;
                 switch (columnIndex) {
                     case 0:
@@ -214,7 +218,7 @@ public class SlaveConfigComposite extends NodeConfig {
                         return module.getName();
                     case 2:
                         return module.getGsdModuleModel().getModiExtUserPrmDataConst().trim();
-                        
+
                     default:
                         break;
                 }
@@ -231,7 +235,8 @@ public class SlaveConfigComposite extends NodeConfig {
      * @param slave
      *            the Profibus Slave to Configer.
      */
-    public SlaveConfigComposite(final Composite parent, final ProfiBusTreeView profiBusTreeView, final Slave slave) {
+    public SlaveConfigComposite(final Composite parent, final ProfiBusTreeView profiBusTreeView,
+            final Slave slave) {
         super(parent, profiBusTreeView, "Profibus Slave Configuration", slave, slave == null);
         makeSlaveKonfiguration(parent, slave);
     }
@@ -247,12 +252,17 @@ public class SlaveConfigComposite extends NodeConfig {
     private void makeSlaveKonfiguration(final Composite parent, final Slave slave) {
         _slave = slave;
         if (_slave == null) {
-            newNode();
-            _slave.setMinTsdr((short)11);
-            _slave.setWdFact1((short)100);
+            if(!newNode()) {
+//                this.dispose();
+                setSaveButtonSaved();
+                getProfiBusTreeView().getTreeViewer().setSelection(getProfiBusTreeView().getTreeViewer().getSelection());
+                return;
+            }
+            _slave.setMinTsdr((short) 11);
+            _slave.setWdFact1((short) 100);
         }
         setSavebuttonEnabled(null, getNode().isPersistent());
-        String[] heads = { "Basics", "Settings", "Overview"};
+        String[] heads = { "Basics", "Settings", "Overview" };
         basics(heads[0]);
         settings(heads[1]);
         overview(heads[2]);
@@ -270,14 +280,14 @@ public class SlaveConfigComposite extends NodeConfig {
     private void overview(String headline) {
         Composite comp = getNewTabItem(headline, 1);
         comp.setLayout(new GridLayout(1, false));
-        
-        TableViewer overViewer = new TableViewer(comp,SWT.H_SCROLL|SWT.V_SCROLL|SWT.BORDER|SWT.FULL_SELECTION);
+
+        TableViewer overViewer = new TableViewer(comp, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER
+                | SWT.FULL_SELECTION);
         overViewer.setContentProvider(new ArrayContentProvider());
         overViewer.setLabelProvider(new OverviewLabelProvider());
         overViewer.getTable().setHeaderVisible(true);
         overViewer.getTable().setLinesVisible(true);
-        overViewer.getTable().setLayoutData(
-                new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+        overViewer.getTable().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
         TableColumn c0 = new TableColumn(overViewer.getTable(), SWT.RIGHT);
         c0.setText("Adr");
         TableColumn c0b = new TableColumn(overViewer.getTable(), SWT.RIGHT);
@@ -285,40 +295,38 @@ public class SlaveConfigComposite extends NodeConfig {
         TableColumn c1 = new TableColumn(overViewer.getTable(), SWT.LEFT);
         c1.setText("Name");
         TableColumn c2 = new TableColumn(overViewer.getTable(), SWT.LEFT);
-//        c2.setWidth(200);
+        // c2.setWidth(200);
         c2.setText("IO Name");
         TableColumn c3 = new TableColumn(overViewer.getTable(), SWT.LEFT);
-//        c3.setWidth(200);
+        // c3.setWidth(200);
         c3.setText("IO Epics Address");
         TableColumn c4 = new TableColumn(overViewer.getTable(), SWT.LEFT);
-//        c4.setWidth(200);
+        // c4.setWidth(200);
         c4.setText("Desc");
         TableColumn c5 = new TableColumn(overViewer.getTable(), SWT.LEFT);
-//        c5.setWidth(60);
+        // c5.setWidth(60);
         c5.setText("Type");
         overViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
             public void selectionChanged(SelectionChangedEvent event) {
-//                IStructuredSelection sel = (IStructuredSelection) event.getSelection();
-                getProfiBusTreeView().getTreeViewer().setSelection(event.getSelection(),true);
+                // IStructuredSelection sel = (IStructuredSelection) event.getSelection();
+                getProfiBusTreeView().getTreeViewer().setSelection(event.getSelection(), true);
             }
-            
+
         });
-        
-        
-        
-        
+
         ArrayList<Node> children = new ArrayList<Node>();
         Collection<Module> modules = (Collection<Module>) _slave.getChildrenAsMap().values();
         for (Module module : modules) {
             children.add(module);
-            Collection<ChannelStructure> channelStructures = module.getChannelStructsAsMap().values();
+            Collection<ChannelStructure> channelStructures = module.getChannelStructsAsMap()
+                    .values();
             for (ChannelStructure channelStructure : channelStructures) {
                 Collection<Channel> channels = channelStructure.getChannelsAsMap().values();
                 for (Channel channel : channels) {
                     children.add(channel);
                 }
-                
+
             }
         }
         overViewer.setInput(children);
@@ -348,13 +356,53 @@ public class SlaveConfigComposite extends NodeConfig {
         gName.setLayout(new GridLayout(3, false));
 
         Text nameText = new Text(gName, SWT.BORDER | SWT.SINGLE);
-        setText(nameText, _slave.getName(),255);
+        setText(nameText, _slave.getName(), 255);
         nameText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
         setNameWidget(nameText);
-        
-        setIndexSpinner(ConfigHelper.getIndexSpinner(gName, _slave, getMLSB(),
-                "Station Adress:",getProfiBusTreeView()));
-        _defaultBackgroundColor = getIndexSpinner().getBackground();
+
+        // Label
+        Label slotIndexLabel = new Label(gName, SWT.NONE);
+        slotIndexLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+        slotIndexLabel.setText("Station Adress:");
+
+        _indexCombo = new ComboViewer(gName, SWT.DROP_DOWN | SWT.READ_ONLY);
+        _indexCombo.getCombo().setLayoutData(new GridData(SWT.RIGHT, SWT.RIGHT, false, false));
+        _indexCombo.setContentProvider(new ArrayContentProvider());
+        _indexCombo.setLabelProvider(new LabelProvider());
+        Collection<Short> freeStationAddress = _slave.getProfibusDPMaster().getFreeStationAddress();
+        Short sortIndex = _slave.getSortIndex();
+        if (sortIndex >= 0) {
+            if (!freeStationAddress.contains(sortIndex)) {
+                freeStationAddress.add(sortIndex);
+            }
+            _indexCombo.setInput(freeStationAddress);
+            _indexCombo.setSelection(new StructuredSelection(sortIndex));
+        } else {
+            _indexCombo.setInput(freeStationAddress);
+            _indexCombo.getCombo().select(0);
+            _slave.setSortIndexNonHibernate((Short) ((StructuredSelection) _indexCombo
+                    .getSelection()).getFirstElement());
+        }
+        _indexCombo.getCombo().setData(_indexCombo.getCombo().getSelectionIndex());
+        _indexCombo.getCombo().addModifyListener(getMLSB());
+        _indexCombo.addSelectionChangedListener(new ISelectionChangedListener() {
+
+            @Override
+            public void selectionChanged(SelectionChangedEvent event) {
+                short index = (Short) ((StructuredSelection) _indexCombo.getSelection())
+                        .getFirstElement();
+                getNode().moveSortIndex(index);
+                if (getNode().getParent() != null) {
+                    getProfiBusTreeView().refresh(getNode().getParent());
+                } else {
+                    getProfiBusTreeView().refresh();
+                }
+            }
+        });
+
+        // setIndexSpinner(ConfigHelper.getIndexSpinner(gName, _slave, getMLSB(),
+        // "Station Adress:",getProfiBusTreeView()));
+        // _defaultBackgroundColor = getIndexSpinner().getBackground();
 
         /*
          * Slave Information
@@ -402,7 +450,7 @@ public class SlaveConfigComposite extends NodeConfig {
         _stationAddressActiveCButton.setText("Active");
         _stationAddressActiveCButton.setSelection(false);
         _stationAddressActiveCButton.setData(false);
-        _stationAddressActiveCButton.addSelectionListener(new SelectionListener(){
+        _stationAddressActiveCButton.addSelectionListener(new SelectionListener() {
 
             public void widgetDefaultSelected(final SelectionEvent e) {
                 change();
@@ -410,10 +458,14 @@ public class SlaveConfigComposite extends NodeConfig {
 
             public void widgetSelected(final SelectionEvent e) {
                 change();
-                
+
             }
+
             private void change() {
-                setSavebuttonEnabled("Button:"+_stationAddressActiveCButton.hashCode(), (Boolean)_stationAddressActiveCButton.getData()!=_stationAddressActiveCButton.getSelection());
+                setSavebuttonEnabled(
+                        "Button:" + _stationAddressActiveCButton.hashCode(),
+                        (Boolean) _stationAddressActiveCButton.getData() != _stationAddressActiveCButton
+                                .getSelection());
             }
 
         });
@@ -429,8 +481,8 @@ public class SlaveConfigComposite extends NodeConfig {
 
         int input = 0;
         int output = 0;
-        
-        if(_slave.hasChildren()) {
+
+        if (_slave.hasChildren()) {
             Iterator<Module> iterator = _slave.getModules().iterator();
             while (iterator.hasNext()) {
                 Module module = (Module) iterator.next();
@@ -444,14 +496,14 @@ public class SlaveConfigComposite extends NodeConfig {
         _inputsText = new Text(ioGroup, SWT.SINGLE);
         _inputsText.setEditable(false);
         _inputsText.setText(Integer.toString(input));
-        
+
         Label outputsLabel = (Label) new Label(ioGroup, SWT.RIGHT);
         outputsLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 2, 1));
         outputsLabel.setText("Outputs: ");
         _outputsText = new Text(ioGroup, SWT.SINGLE);
         _outputsText.setEditable(false);
         _outputsText.setText(Integer.toString(output));
-        
+
         /*
          * Description Group
          */
@@ -463,8 +515,7 @@ public class SlaveConfigComposite extends NodeConfig {
      */
     private void setSlots() {
         Formatter slotFormarter = new Formatter();
-        slotFormarter.format(" %2d / %2d", _slave.getChildren().size(),
-                _maxSize);
+        slotFormarter.format(" %2d / %2d", _slave.getChildren().size(), _maxSize);
         _maxSlots.setText(slotFormarter.toString());
         if (_maxSize < _slave.getChildren().size()) {
             if (_defaultBackgroundColor == null) {
@@ -487,23 +538,25 @@ public class SlaveConfigComposite extends NodeConfig {
         // Operation Mode
         Group operationModeGroup = new Group(comp, SWT.NONE);
         GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
-        layoutData.minimumWidth=170;
+        layoutData.minimumWidth = 170;
         operationModeGroup.setLayoutData(layoutData);
         operationModeGroup.setText("Operation Mode");
         operationModeGroup.setLayout(new GridLayout(3, false));
         Label delayLabel = new Label(operationModeGroup, SWT.NONE);
         delayLabel.setText("Min. Station Delay");
-        _minStationDelayText = ProfibusHelper.getTextField(operationModeGroup, true, _slave.getMinTsdr()+"", Ranges.WATCHDOG, ProfibusHelper.VL_TYP_U16);
+        _minStationDelayText = ProfibusHelper.getTextField(operationModeGroup, true, _slave
+                .getMinTsdr()
+                + "", Ranges.WATCHDOG, ProfibusHelper.VL_TYP_U16);
         Label bitLabel = new Label(operationModeGroup, SWT.NONE);
         bitLabel.setText("Bit");
 
         _syncButton = new Button(operationModeGroup, SWT.CHECK);
-        _syncButton.setLayoutData(new GridData(SWT.FILL,SWT.FILL,false,false,3,1));
+        _syncButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 3, 1));
         _syncButton.addTraverseListener(ProfibusHelper.getNETL());
         _syncButton.setText("Sync Request");
         _syncButton.setData(false);
-        _syncButton.addSelectionListener(new SelectionListener(){
-            
+        _syncButton.addSelectionListener(new SelectionListener() {
+
             public void widgetDefaultSelected(final SelectionEvent e) {
                 change(_syncButton);
             }
@@ -513,13 +566,13 @@ public class SlaveConfigComposite extends NodeConfig {
             }
         });
         _freezeButton = new Button(operationModeGroup, SWT.CHECK);
-        _freezeButton.setLayoutData(new GridData(SWT.FILL,SWT.FILL,false,false,3,1));
+        _freezeButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 3, 1));
         _freezeButton.addTraverseListener(ProfibusHelper.getNETL());
         _freezeButton.setText("Freeze Request");
         _freezeButton.setSelection(false);
         _freezeButton.setData(false);
-        _freezeButton.addSelectionListener(new SelectionListener(){
-            
+        _freezeButton.addSelectionListener(new SelectionListener() {
+
             public void widgetDefaultSelected(final SelectionEvent e) {
                 change(_freezeButton);
             }
@@ -529,28 +582,30 @@ public class SlaveConfigComposite extends NodeConfig {
             }
         });
         _failButton = new Button(operationModeGroup, SWT.CHECK);
-        _failButton.setLayoutData(new GridData(SWT.FILL,SWT.FILL,false,false,3,1));
+        _failButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 3, 1));
         _failButton.addTraverseListener(ProfibusHelper.getNETL());
         _failButton.setText("Fail Save");
         _failButton.setEnabled(false);
         _failButton.setData(false);
-        _failButton.addSelectionListener(new SelectionListener(){
-            
-                public void widgetDefaultSelected(final SelectionEvent e) {
-                    change(_failButton);
-                }
+        _failButton.addSelectionListener(new SelectionListener() {
 
-                public void widgetSelected(final SelectionEvent e) {
-                    change(_failButton);
-                }
+            public void widgetDefaultSelected(final SelectionEvent e) {
+                change(_failButton);
+            }
+
+            public void widgetSelected(final SelectionEvent e) {
+                change(_failButton);
+            }
         });
         _watchDogButton = new Button(operationModeGroup, SWT.CHECK);
-        _watchDogButton.setLayoutData(new GridData(SWT.FILL,SWT.FILL,false,false,1,1));
+        _watchDogButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
         _watchDogButton.addTraverseListener(ProfibusHelper.getNETL());
         _watchDogButton.setText("Watchdog Time");
         _watchDogButton.setSelection(true);
         _watchDogButton.setData(true);
-        _watchDogText = ProfibusHelper.getTextField(operationModeGroup, _watchDogButton.getSelection(), Short.toString(_slave.getWdFact1()), Ranges.TTR, ProfibusHelper.VL_TYP_U32);
+        _watchDogText = ProfibusHelper.getTextField(operationModeGroup, _watchDogButton
+                .getSelection(), Short.toString(_slave.getWdFact1()), Ranges.TTR,
+                ProfibusHelper.VL_TYP_U32);
         _watchDogText.addModifyListener(getMLSB());
         Label timeLabel = new Label(operationModeGroup, SWT.NONE);
         timeLabel.setText("ms");
@@ -562,7 +617,7 @@ public class SlaveConfigComposite extends NodeConfig {
 
             public void widgetSelected(final SelectionEvent e) {
             }
-            
+
             private void change() {
                 SlaveConfigComposite.this.change(_watchDogButton);
                 _watchDogText.setEnabled(_watchDogButton.getSelection());
@@ -575,26 +630,25 @@ public class SlaveConfigComposite extends NodeConfig {
         userPrmData.setLayout(new GridLayout(2, false));
         userPrmData.setTabList(new Control[0]);
         userPrmData.setText("User PRM Mode");
-//        _userPrmDataList = new ListViewer(userPrmData, SWT.BORDER|SWT.V_SCROLL);
-        _userPrmDataList = new TableViewer(userPrmData, SWT.BORDER|SWT.V_SCROLL);
-        
+        // _userPrmDataList = new ListViewer(userPrmData, SWT.BORDER|SWT.V_SCROLL);
+        _userPrmDataList = new TableViewer(userPrmData, SWT.BORDER | SWT.V_SCROLL);
+
         _userPrmDataList.getTable().setLayoutData(
                 new GridData(SWT.FILL, SWT.FILL, true, true, 1, 15));
         _userPrmDataList.getTable().setHeaderVisible(true);
         _userPrmDataList.getTable().setLinesVisible(true);
         _userPrmDataList.setContentProvider(new ArrayContentProvider());
         _userPrmDataList.setLabelProvider(new RowNumLabelProvider());
-        
-        TableColumn tc = new TableColumn(_userPrmDataList.getTable(),SWT.RIGHT);
+
+        TableColumn tc = new TableColumn(_userPrmDataList.getTable(), SWT.RIGHT);
         tc.setText("");
         tc.setWidth(20);
-        tc = new TableColumn(_userPrmDataList.getTable(),SWT.LEFT);
+        tc = new TableColumn(_userPrmDataList.getTable(), SWT.LEFT);
         tc.setText("Name");
         tc.setWidth(130);
-        tc = new TableColumn(_userPrmDataList.getTable(),SWT.LEFT);
+        tc = new TableColumn(_userPrmDataList.getTable(), SWT.LEFT);
         tc.setText("Ext User Prm Data Const");
         tc.setWidth(450);
-
 
         // Groups
         _groupsRadioButtons = new Group(comp, SWT.NONE);
@@ -602,20 +656,20 @@ public class SlaveConfigComposite extends NodeConfig {
         _groupsRadioButtons.setLayout(new GridLayout(4, true));
         _groupsRadioButtons.setText("Groups");
         _groupIdentStored = _slave.getGroupIdent();
-        if(_groupIdentStored<0||_groupIdentStored>7){
-            _groupIdentStored=0;
+        if (_groupIdentStored < 0 || _groupIdentStored > 7) {
+            _groupIdentStored = 0;
         }
         _groupIdent = _groupIdentStored;
         for (int i = 0; i <= 7; i++) {
             final Button b = new Button(_groupsRadioButtons, SWT.RADIO);
-            b.setText(Integer.toString(i+1));
-            if(i==_groupIdent){
-               b.setSelection(true); 
+            b.setText(Integer.toString(i + 1));
+            if (i == _groupIdent) {
+                b.setSelection(true);
             }
-            b.addSelectionListener(new SelectionListener(){
+            b.addSelectionListener(new SelectionListener() {
 
                 public void widgetDefaultSelected(final SelectionEvent e) {
-                    check();                    
+                    check();
                 }
 
                 public void widgetSelected(final SelectionEvent e) {
@@ -625,9 +679,10 @@ public class SlaveConfigComposite extends NodeConfig {
                 private void check() {
                     _groupIdent = Short.parseShort(b.getText());
                     _groupIdent--;
-                    setSavebuttonEnabled("groupButton"+_groupsRadioButtons.hashCode(), _groupIdent!=_groupIdentStored);
+                    setSavebuttonEnabled("groupButton" + _groupsRadioButtons.hashCode(),
+                            _groupIdent != _groupIdentStored);
                 }
-                
+
             });
         }
 
@@ -649,10 +704,10 @@ public class SlaveConfigComposite extends NodeConfig {
         GsdSlaveModel slaveModel = GsdFactory.makeGsdSlave(_gsdFile);
 
         // setGSDData
-        HashMap<Integer, GsdModuleModel> moduleList = GSD2Module.parse(_gsdFile.getGSDFile(), slaveModel);
+        HashMap<Integer, GsdModuleModel> moduleList = GSD2Module.parse(_gsdFile.getGSDFile(),
+                slaveModel);
         slaveModel.setGsdModuleList(moduleList);
         _slave.setGSDSlaveData(slaveModel);
-        
 
         /*
          * Head
@@ -705,9 +760,11 @@ public class SlaveConfigComposite extends NodeConfig {
         _userPrmDataList.setInput(nodes);
         TableColumn[] columns = _userPrmDataList.getTable().getColumns();
         for (TableColumn tableColumn : columns) {
-            tableColumn.pack();
+            if (tableColumn != null) {
+                tableColumn.pack();
+            }
         }
-        
+
         layout();
         return true;
     }
@@ -728,26 +785,31 @@ public class SlaveConfigComposite extends NodeConfig {
         _slave.setName(getNameWidget().getText());
         getNameWidget().setData(getNameWidget().getText());
 
-//        _slave.moveSortIndex((short) getIndexSpinner().getSelection());
-        _slave.setFdlAddress((short) getIndexSpinner().getSelection());
-        getIndexSpinner().setData((short) getIndexSpinner().getSelection());
+        // _slave.moveSortIndex((short) getIndexSpinner().getSelection());
+        Short stationAddress = (Short) ((StructuredSelection) _indexCombo.getSelection())
+                .getFirstElement();
+        _slave.setSortIndexNonHibernate(stationAddress);
+        _slave.setFdlAddress(stationAddress);
+        _indexCombo.getCombo().setData(_indexCombo.getCombo().getSelectionIndex());
+        // getIndexSpinner().setData((short) getIndexSpinner().getSelection());
         short minTsdr = 0;
-        try{
+        try {
             minTsdr = Short.parseShort(_minStationDelayText.getText());
-        }catch (NumberFormatException e) {}
+        } catch (NumberFormatException e) {
+        }
         _slave.setMinTsdr(minTsdr);
-        
+
         _slave.setGroupIdent(_groupIdent);
-        _groupIdentStored=_groupIdent;
-        
+        _groupIdentStored = _groupIdent;
+
         _slave.setSlaveFlag((short) 192);
         short wdFact = Short.parseShort(_watchDogText.getText());
         _watchDogText.setData(_watchDogText.getText());
         _slave.setWdFact1(wdFact);
-        _slave.setWdFact2((short)(wdFact/10));
-        
-        //Static Station status 136
-        _slave.setStationStatus((short)136);
+        _slave.setWdFact2((short) (wdFact / 10));
+
+        // Static Station status 136
+        _slave.setStationStatus((short) 136);
         // GSD File
         _slave.setGSDFile(_gsdFile);
         fill(_gsdFile);
@@ -764,11 +826,17 @@ public class SlaveConfigComposite extends NodeConfig {
      */
     @Override
     public final Node getNode() {
-        if(_slave==null){
-            StructuredSelection selection = (StructuredSelection) getProfiBusTreeView().getTreeViewer().getSelection();
+        if (_slave == null) {
+            StructuredSelection selection = (StructuredSelection) getProfiBusTreeView()
+                    .getTreeViewer().getSelection();
             if (selection.getFirstElement() instanceof Master) {
                 Master master = (Master) selection.getFirstElement();
-                _slave = new Slave(master);    
+                _slave = new Slave(master);
+                _slave.moveSortIndex((short) 0);
+            } else if (selection.getFirstElement() instanceof Slave) {
+                Slave slave = (Slave) selection.getFirstElement();
+                _slave = new Slave(slave.getProfibusDPMaster());
+                _slave.moveSortIndex((short) (slave.getSortIndex() + 1));
             }
         }
         return _slave;
@@ -782,41 +850,47 @@ public class SlaveConfigComposite extends NodeConfig {
     @Override
     public void cancel() {
         super.cancel();
-        getIndexSpinner().setSelection((Short) getIndexSpinner().getData());
-        getNameWidget().setText((String) getNameWidget().getData());
-        _stationAddressActiveCButton.setSelection((Boolean) _stationAddressActiveCButton.getData());
-        _minStationDelayText.setText((String) _minStationDelayText.getData());
-        _syncButton.setSelection((Boolean) _syncButton.getData());
-        _failButton.setSelection((Boolean) _failButton.getData());
-        _freezeButton.setSelection((Boolean) _freezeButton.getData());
-        _watchDogButton.setSelection((Boolean) _watchDogButton.getData());
-        _watchDogText.setEnabled(_watchDogButton.getSelection());
-        _watchDogText.setText((String) _watchDogText.getData());
-        _groupIdent=_groupIdentStored;
-        for (Control control : _groupsRadioButtons.getChildren()) {
-            if (control instanceof Button) {
-                Button button = (Button) control;
-                button.setSelection(Short.parseShort(button.getText())==_groupIdentStored+1);
+        // getIndexSpinner().setSelection((Short) getIndexSpinner().getData());
+        if (_indexCombo != null) {
+            _indexCombo.getCombo().select((Integer) _indexCombo.getCombo().getData());
+            getNameWidget().setText((String) getNameWidget().getData());
+            _stationAddressActiveCButton.setSelection((Boolean) _stationAddressActiveCButton
+                    .getData());
+            _minStationDelayText.setText((String) _minStationDelayText.getData());
+            _syncButton.setSelection((Boolean) _syncButton.getData());
+            _failButton.setSelection((Boolean) _failButton.getData());
+            _freezeButton.setSelection((Boolean) _freezeButton.getData());
+            _watchDogButton.setSelection((Boolean) _watchDogButton.getData());
+            _watchDogText.setEnabled(_watchDogButton.getSelection());
+            _watchDogText.setText((String) _watchDogText.getData());
+            _groupIdent = _groupIdentStored;
+            for (Control control : _groupsRadioButtons.getChildren()) {
+                if (control instanceof Button) {
+                    Button button = (Button) control;
+                    button
+                            .setSelection(Short.parseShort(button.getText()) == _groupIdentStored + 1);
+                }
             }
-        }
-        
-        if (_slave != null) {
-            if (_slave.getGSDFile() != null) {
-                fill(_slave.getGSDFile());
+
+            if (_slave != null) {
+                if (_slave.getGSDFile() != null) {
+                    fill(_slave.getGSDFile());
+                } else {
+                    ((Text) SlaveConfigComposite.this.getData("version")).setText("");
+                    _vendorText.setText("");
+                    getNameWidget().setText("");
+                    _revisionsText.setText("");
+                }
             } else {
-                ((Text) SlaveConfigComposite.this.getData("version")).setText("");
-                _vendorText.setText("");
-                getNameWidget().setText("");
-                _revisionsText.setText("");
+                _gsdFile = null;
+                fill(_gsdFile);
             }
-        } else {
-            _gsdFile = null;
-            fill(_gsdFile);
         }
     }
 
     private void change(final Button button) {
-        setSavebuttonEnabled("Button:"+button.hashCode(), (Boolean)button.getData()!=button.getSelection());
+        setSavebuttonEnabled("Button:" + button.hashCode(), (Boolean) button.getData() != button
+                .getSelection());
     }
 
 }

@@ -88,14 +88,17 @@ public abstract class NodeConfig extends Composite {
 
     private final class IconChooserDialog extends Dialog {
         private final Node _node;
-        /* (non-Javadoc)
+        /*
+         * (non-Javadoc)
+         * 
          * @see org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets.Composite)
          */
         private IconManageView _iconManageView;
 
         private IconChooserDialog(Shell parentShell, Node node) {
             super(parentShell);
-            this.setShellStyle(SWT.RESIZE|SWT.BORDER|SWT.CLOSE| SWT.MIN| SWT.MAX| SWT.TITLE| SWT.ON_TOP|// SWT.TOOL| SWT.SHEET| 
+            this.setShellStyle(SWT.RESIZE | SWT.BORDER | SWT.CLOSE | SWT.MIN | SWT.MAX | SWT.TITLE
+                    | SWT.ON_TOP | // SWT.TOOL| SWT.SHEET|
                     SWT.PRIMARY_MODAL);
             _node = node;
         }
@@ -160,7 +163,8 @@ public abstract class NodeConfig extends Composite {
                 boolean openQuestion = MessageDialog.openQuestion(getShell(), "Cancel",
                         "You dispose this " + getNode().getClass().getSimpleName() + "?");
                 if (openQuestion) {
-                    // TODO: close
+                    setSaveButtonSaved();
+                    getProfiBusTreeView().getTreeViewer().setSelection(getProfiBusTreeView().getTreeViewer().getSelection());
                 } else {
                     // TODO: do nothing or cancel?
                 }
@@ -169,8 +173,8 @@ public abstract class NodeConfig extends Composite {
     }
 
     /**
-     * A ModifyListener that set the save button enable to store the changes.
-     * Works with {@link Text}, {@link Combo} and {@link Spinner}.
+     * A ModifyListener that set the save button enable to store the changes. Works with
+     * {@link Text}, {@link Combo} and {@link Spinner}.
      * 
      * @author hrickens
      * @author $Author$
@@ -181,8 +185,8 @@ public abstract class NodeConfig extends Composite {
         public void modifyText(final ModifyEvent e) {
             if (e.widget instanceof Text) {
                 Text text = (Text) e.widget;
-                setSavebuttonEnabled("ModifyListenerText:"
-                        + text.hashCode(), !text.getText().equals(text.getData()));
+                setSavebuttonEnabled("ModifyListenerText:" + text.hashCode(), !text.getText()
+                        .equals(text.getData()));
             } else if (e.widget instanceof Combo) {
                 Combo combo = (Combo) e.widget;
                 if (combo.getData() instanceof Integer) {
@@ -217,15 +221,14 @@ public abstract class NodeConfig extends Composite {
     private boolean _new = false;
 
     /**
-     * A ModifyListener that set the save button enable to store the changes.
-     * Works wiht {@link Text}, {@link Combo} and {@link Spinner}.
+     * A ModifyListener that set the save button enable to store the changes. Works wiht
+     * {@link Text}, {@link Combo} and {@link Spinner}.
      */
     private final ModifyListener _mLSB = new NodeConfigModifyListener();
 
     /**
-     * Contain all different events that have change a Value and the status of
-     * the change. The status means is the new Value a differnt from the origin
-     * Value.
+     * Contain all different events that have change a Value and the status of the change. The
+     * status means is the new Value a differnt from the origin Value.
      */
     private HashMap<String, Boolean> _saveButtonEvents = new HashMap<String, Boolean>();
 
@@ -279,8 +282,7 @@ public abstract class NodeConfig extends Composite {
      *            The Headline of this Config View.
      * @param node
      * @param nevv
-     *            It is true generate a new Node otherwise configured a
-     *            available Node.
+     *            It is true generate a new Node otherwise configured a available Node.
      * 
      */
     public NodeConfig(final Composite parent, final ProfiBusTreeView profiBusTreeView,
@@ -330,7 +332,7 @@ public abstract class NodeConfig extends Composite {
 
         getNode().setUpdatedBy(ConfigHelper.getUserName());
         getNode().setUpdatedOn(now);
-        
+
         getNode().setDescription(getDesc());
         getDescWidget().setData(getDesc());
 
@@ -344,11 +346,13 @@ public abstract class NodeConfig extends Composite {
 
     /**
      * Give a change event and his save status.<br>
-     * Have one or more events the status unsaved then the Save Button was set
-     * to enable otherwise to disable.
+     * Have one or more events the status unsaved then the Save Button was set to enable otherwise
+     * to disable.
      * 
-     * @param event the Save Event Id. 
-     * @param enabled the Save Enable status for the event.  
+     * @param event
+     *            the Save Event Id.
+     * @param enabled
+     *            the Save Enable status for the event.
      */
     public final void setSavebuttonEnabled(final String event, final boolean enabled) {
         if (event != null) {
@@ -361,8 +365,7 @@ public abstract class NodeConfig extends Composite {
     }
 
     /**
-     * Clear the dirty bit, delete all saveButton events and set the Button
-     * disable.
+     * Clear the dirty bit, delete all saveButton events and set the Button disable.
      */
     public final void setSaveButtonSaved() {
         _saveButtonEvents.clear();
@@ -382,10 +385,10 @@ public abstract class NodeConfig extends Composite {
 
     /**
      * 
-     * This method generate the Background of an NodeConfig this a 3 Parts. 1.
-     * The Header with description line the 3 information field for: 1.1.
-     * Modified by 1.2. Modified on 1.3. GSD-Version 2. The Body as an empty
-     * TabFolder. 3. The Footer with the Save and Cancel Buttons.
+     * This method generate the Background of an NodeConfig this a 3 Parts. 1. The Header with
+     * description line the 3 information field for: 1.1. Modified by 1.2. Modified on 1.3.
+     * GSD-Version 2. The Body as an empty TabFolder. 3. The Footer with the Save and Cancel
+     * Buttons.
      * 
      * @param headline
      *            The description line of the Header
@@ -440,7 +443,7 @@ public abstract class NodeConfig extends Composite {
             now = node.getCreatedOn();
             temp = now.toString();
         }
-        
+
         final Text creatOnText = getNewText(header, temp);
         this.setData("date", now);
         this.setData("creatOn", creatOnText);
@@ -456,26 +459,27 @@ public abstract class NodeConfig extends Composite {
 
         final Label iconButton = new Label(header, SWT.BORDER);
         iconButton.setLayoutData(GridDataFactory.swtDefaults().span(1, 3).minSize(40, 40).create());
-        iconButton.setImage(ConfigHelper.getImageFromNode(node,30,60));
+        iconButton.setImage(ConfigHelper.getImageFromNode(node, 30, 60));
         iconButton.addMouseListener(new MouseAdapter() {
-            
+
             @Override
             public void mouseUp(MouseEvent e) {
-//                Shell shell = new Shell(NodeConfig.this.getDisplay().getActiveShell(), SWT.RESIZE);
-//                IconChooserDialog chooseIconDialog = new IconChooserDialog(shell, node);
-                IconChooserDialog chooseIconDialog = new IconChooserDialog(NodeConfig.this.getDisplay().getActiveShell(), node);
-                
+                // Shell shell = new Shell(NodeConfig.this.getDisplay().getActiveShell(),
+                // SWT.RESIZE);
+                // IconChooserDialog chooseIconDialog = new IconChooserDialog(shell, node);
+                IconChooserDialog chooseIconDialog = new IconChooserDialog(NodeConfig.this
+                        .getDisplay().getActiveShell(), node);
+
                 chooseIconDialog.setBlockOnOpen(true);
-                if(chooseIconDialog.open()==0) {
+                if (chooseIconDialog.open() == 0) {
                     node.setIcon(chooseIconDialog.getImage());
-                    
+
                 }
-                
+
             }
-            
+
         });
 
-        
         getNewLabel(header, "Modified by:");
         /** The description field with the name of the User that make changes. */
         temp = "";
@@ -503,8 +507,8 @@ public abstract class NodeConfig extends Composite {
         getNewText(header, temp);
 
         /**
-         * GSD Version. The description field with the Version from GSD File.
-         * Only Master and Slave have a GSD File
+         * GSD Version. The description field with the Version from GSD File. Only Master and Slave
+         * have a GSD File
          */
 
         if (node instanceof Master || node instanceof Slave) {
@@ -518,7 +522,7 @@ public abstract class NodeConfig extends Composite {
             this.setData("gsdVersion", version);
         }
 
-        setTabFolder(new TabFolder(this, SWT.H_SCROLL|SWT.V_SCROLL));
+        setTabFolder(new TabFolder(this, SWT.H_SCROLL | SWT.V_SCROLL));
         getTabFolder().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 5, 1));
         getTabFolder().setBackgroundMode(SWT.INHERIT_DEFAULT);
 
@@ -565,8 +569,7 @@ public abstract class NodeConfig extends Composite {
     }
 
     /**
-     * Set a int as text to a {@link Text} and store the text into Data as
-     * origin value.
+     * Set a int as text to a {@link Text} and store the text into Data as origin value.
      * 
      * @param textField
      *            The Text field to set the text
@@ -578,16 +581,14 @@ public abstract class NodeConfig extends Composite {
     }
 
     /**
-     * Set a text to a {@link Text} and store the text into Data as origin
-     * value.
+     * Set a text to a {@link Text} and store the text into Data as origin value.
      * 
      * @param textField
      *            The Text-field to set the text
      * @param text
      *            The text was set.
      * @param limit
-     *            The maximum text length for the Text-field. (Text.LIMIT for
-     *            maximum)
+     *            The maximum text length for the Text-field. (Text.LIMIT for maximum)
      */
     final void setText(final Text textField, final String text, final int limit) {
         String tmp = text;
@@ -604,8 +605,7 @@ public abstract class NodeConfig extends Composite {
     }
 
     /**
-     * Select a text to a {@link Combo} and store the index into Data as origin
-     * value.
+     * Select a text to a {@link Combo} and store the index into Data as origin value.
      * 
      * @param comboField
      *            The Combo field to set the index
@@ -638,11 +638,15 @@ public abstract class NodeConfig extends Composite {
         }
 
         setSaveButtonSaved();
-        _new = false;
         _saveButton.setText("Save");
 
-        // refresh the View
-        getProfiBusTreeView().refresh(getNode());
+        if (_new) {
+            getProfiBusTreeView().refresh(getNode().getParent());
+        } else {
+            // refresh the View
+            getProfiBusTreeView().refresh(getNode());
+        }
+        _new = false;
     }
 
     /**
@@ -724,8 +728,8 @@ public abstract class NodeConfig extends Composite {
     }
 
     /**
-     * A ModifyListener that set the save button enable to store the changes.
-     * Works wiht {@link Text}, {@link Combo} and {@link Spinner}.
+     * A ModifyListener that set the save button enable to store the changes. Works wiht
+     * {@link Text}, {@link Combo} and {@link Spinner}.
      * 
      * @return the ModifyListener.
      */
@@ -738,15 +742,19 @@ public abstract class NodeConfig extends Composite {
      * @return only true when the node has on or more changes.
      */
     public final boolean isDirty() {
-        if(_saveButton!=null) {
+        if (_saveButton != null) {
             return _saveButton.getEnabled();
         }
         return false;
     }
 
     public void cancel() {
-        setDesc((String) getDescWidget().getData());
-        getNode().setDirty(false);
+        if (getDescWidget() != null) {
+            setDesc((String) getDescWidget().getData());
+        }
+        if(getNode()!=null) {
+            getNode().setDirty(false);
+        }
     }
 
     public final void setName(String name) {
@@ -756,9 +764,9 @@ public abstract class NodeConfig extends Composite {
     }
 
     /**
-     * Generate a new Node on his parent with a Name, creator and creation date. 
+     * Generate a new Node on his parent with a Name, creator and creation date.
      */
-    protected void newNode() {
+    protected boolean newNode() {
 
         String nodeType = getNode().getClass().getSimpleName();
 
@@ -785,13 +793,17 @@ public abstract class NodeConfig extends Composite {
                 getProfiBusTreeView().getTreeViewer().setInput(getNode());
                 // TODO neue facility erstellen und speichern..
             } else if (obj instanceof Node) {
-                Node nodeParent = (Node) obj;
+                if (getNode().getParent() == null) {
+                    Node nodeParent = (Node) obj;
 
-                getNode().moveSortIndex(
-                        nodeParent.getfirstFreeStationAddress(Node.MAX_STATION_ADDRESS));
-                nodeParent.addChild(getNode());
+                    getNode().moveSortIndex(
+                            nodeParent.getfirstFreeStationAddress(Node.MAX_STATION_ADDRESS));
+                    nodeParent.addChild(getNode());
+                }
             }
+            return true;
         }
+        return false;
     }
 
     /**
@@ -810,18 +822,18 @@ public abstract class NodeConfig extends Composite {
     protected final void setNameWidget(Text nameText) {
         _nameText = nameText;
     }
-    
+
     public void setDesc(String desc) {
         _descText.setText(desc);
     }
-    
+
     public String getDesc() {
-        if(_descText==null||_descText.getText()==null) {
+        if (_descText == null || _descText.getText() == null) {
             return "";
         }
         return _descText.getText();
     }
-    
+
     /**
      * 
      * @return the Node Name description field.
@@ -842,22 +854,22 @@ public abstract class NodeConfig extends Composite {
     protected void makeDescGroup(Composite comp) {
         makeDescGroup(comp, 3);
     }
-    
+
     protected void makeDescGroup(Composite comp, int hSize) {
-        Group gDesc = new Group(comp,SWT.NONE);
+        Group gDesc = new Group(comp, SWT.NONE);
         gDesc.setText("Description: ");
-        GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, true, hSize,1);
+        GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, true, hSize, 1);
         layoutData.minimumHeight = 200;
         layoutData.minimumWidth = 200;
         gDesc.setLayoutData(layoutData);
-        gDesc.setLayout(new GridLayout(1,false));
-        
+        gDesc.setLayout(new GridLayout(1, false));
+
         _descText = new Text(gDesc, SWT.BORDER | SWT.MULTI);
         _descText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
         _descText.setEditable(true);
         setText(_descText, getNode().getDescription(), 255);
     }
-    
+
     /**
      * 
      * {@inheritDoc}

@@ -27,7 +27,7 @@ package org.csstudio.config.ioconfig.config.view.helper;
 import org.csstudio.config.ioconfig.model.DBClass;
 import org.csstudio.config.ioconfig.model.NamedDBClass;
 import org.csstudio.config.ioconfig.model.pbmodel.Ranges.Value;
-import org.csstudio.config.ioconfig.view.Activator;
+import org.csstudio.config.ioconfig.view.ActivatorUI;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.commands.operations.OperationStatus;
 import org.eclipse.jface.dialogs.ErrorDialog;
@@ -298,7 +298,7 @@ public final class ProfibusHelper {
 					"N/A", node.getId());
 		}
 		OperationStatus status = new OperationStatus(OperationStatus.ERROR,
-				Activator.PLUGIN_ID, 3, format, e);
+		        ActivatorUI.PLUGIN_ID, 3, format, e);
 		ErrorDialog.openError(shell, title, null, status);
 	}
 

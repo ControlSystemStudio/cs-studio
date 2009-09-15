@@ -39,6 +39,7 @@ import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GSD2Module;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdFactory;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdModuleModel;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdSlaveModel;
+import org.csstudio.platform.logging.CentralLogger;
 
 /**
  * @author gerke
@@ -48,7 +49,7 @@ import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdSlaveModel;
  */
 
 @Entity
- @Table(name = "ddb_Profibus_Slave")
+@Table(name = "ddb_Profibus_Slave")
 public class Slave extends Node {
     /**
      * Vendor name of slave.
@@ -142,12 +143,13 @@ public class Slave extends Node {
     }
 
     public Slave(Master master) {
-        this(master, DEFAULT_MAX_STATION_ADDRESS);
+        this(master, (short) -1);
     }
 
-    public Slave(Master master, int maxStationAddress) {
+    public Slave(Master master, short stationAddress) {
         setParent(master);
         master.addChild(this);
+        moveSortIndex(stationAddress);
     }
 
     @ManyToOne
@@ -186,7 +188,7 @@ public class Slave extends Node {
 
     /**
      * 
-     * @return  The Vendor name of this slave.
+     * @return The Vendor name of this slave.
      */
     public String getVendorName() {
         return _vendorName;
@@ -194,7 +196,8 @@ public class Slave extends Node {
 
     /**
      * 
-     * @param vendorName Set the Vendor name of this slave.
+     * @param vendorName
+     *            Set the Vendor name of this slave.
      */
     public void setVendorName(final String vendorName) {
         _vendorName = vendorName;
@@ -296,7 +299,7 @@ public class Slave extends Node {
      */
     public void setMinTsdr(short minTsdr) {
         short subNetMinTsdr = -1;
-        if (getProfibusDPMaster() != null&&getProfibusDPMaster().getProfibusSubnet()!=null) {
+        if (getProfibusDPMaster() != null && getProfibusDPMaster().getProfibusSubnet() != null) {
             subNetMinTsdr = (short) getProfibusDPMaster().getProfibusSubnet().getMinTsdr();
         }
         if (getGSDSlaveData() == null) {
@@ -335,7 +338,7 @@ public class Slave extends Node {
         if (getGSDFile() == null) {
             return false;
         }
-        
+
         GsdSlaveModel slaveModel = GsdFactory.makeGsdSlave(getGSDFile());
         /*
          * Head
@@ -459,7 +462,7 @@ public class Slave extends Node {
             copy.setVendorName(getVendorName());
             copy.setWdFact1(getWdFact1());
             copy.setWdFact2(getWdFact2());
-            for (Node n: getChildren()) {
+            for (Node n : getChildren()) {
                 n.copyThisTo(copy);
             }
             return copy;
@@ -467,20 +470,50 @@ public class Slave extends Node {
         return null;
     }
 
-//    @Override
-//    public Node addChild(Node child) {
-//        if (child instanceof Module) {
-//            Module module = (Module) child;
-//
-//            short sortIndex = module.getSortIndex();
-//            if (sortIndex < 0) {
-//                sortIndex = getfirstFreeStationAddress(DEFAULT_MAX_STATION_ADDRESS);
-//            }
-//            if (sortIndex > 0) {
-//                module.localUpdate();
-//            }
-//            module.moveSortIndex(sortIndex);
-//        } 
-//        return super.addChild(child);
-//    }
+    /**
+     * Swap the SortIndex of two nodes. Is the given SortIndex in use the other node became the old
+     * SortIndex of this node.
+     * 
+     * @param toIndex
+     *            the new sortIndex for this node.
+     */
+    @Override
+    public void moveSortIndex(short toIndex) {
+        if (toIndex == getSortIndex()) {
+            // no new Address don't move
+            return;
+        }
+        if (getParent() == null) {
+            // Have no Parent
+            setSortIndexNonHibernate(toIndex);
+            CentralLogger.getInstance().warn(this, "Slave has no Parent!");
+            return;
+        }
+        if (toIndex < 0) {
+            throw new ArrayIndexOutOfBoundsException(toIndex);
+        }
+        // Move a exist Node
+        Node moveNode = getParent().getChildrenAsMap().get(toIndex);
+        if (moveNode != null) {
+            moveNode.moveSortIndex((short) (toIndex + 1));
+        }
+        setSortIndexNonHibernate(toIndex);
+    }
+
+    // @Override
+    // public Node addChild(Node child) {
+    // if (child instanceof Module) {
+    // Module module = (Module) child;
+    //
+    // short sortIndex = module.getSortIndex();
+    // if (sortIndex < 0) {
+    // sortIndex = getfirstFreeStationAddress(DEFAULT_MAX_STATION_ADDRESS);
+    // }
+    // if (sortIndex > 0) {
+    // module.localUpdate();
+    // }
+    // module.moveSortIndex(sortIndex);
+    // }
+    // return super.addChild(child);
+    // }
 }

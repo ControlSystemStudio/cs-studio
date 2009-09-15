@@ -919,7 +919,7 @@ public class ModuleConfigComposite extends NodeConfig {
      * Have no Name Dialog. {@inheritDoc}
      */
     @Override
-    protected void newNode() {
+    protected boolean newNode() {
         User user = SecurityFacade.getInstance().getCurrentUser();
         String name = "Unknown";
         if (user != null) {
@@ -950,5 +950,6 @@ public class ModuleConfigComposite extends NodeConfig {
                     .moveSortIndex(nodeParent.getfirstFreeStationAddress(Node.MAX_STATION_ADDRESS));
             nodeParent.addChild(getNode());
         }
+        return true;
     }
 }
