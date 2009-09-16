@@ -87,21 +87,30 @@ public class AlarmViewPreferencePage extends FieldEditorPreferencePage
 		});
 
 	addField(new FontFieldEditor(AlarmViewPreferenceConstants.LOG_ALARM_FONT, "Table Font", "Major", getFieldEditorParent()));
-		Group soundFile = new Group(getFieldEditorParent(), SWT.NONE);
-		soundFile.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false,
+		Group soundFileMajor = new Group(getFieldEditorParent(), SWT.NONE);
+		soundFileMajor.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false,
 				4, 1));
+		soundFileMajor.setText("Sound File Major");
+		Group soundFileMainor = new Group(getFieldEditorParent(), SWT.NONE);
+		soundFileMainor.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false,
+		        4, 1));
+		soundFileMainor.setText("Sound File Mainor");
 		addField(new FileFieldEditor(
 				AlarmViewPreferenceConstants.LOG_ALARM_SOUND_FILE_MAJOR,
-				"Sound File Major", soundFile));
+				"", soundFileMainor));
 		addField(new FileFieldEditor(
 		        AlarmViewPreferenceConstants.LOG_ALARM_SOUND_FILE_MINOR,
-		        "Sound File Mainor", soundFile));
-		addField(new FileFieldEditor(
+		        "Sound File Mainor", false, soundFileMajor));
+		FileFieldEditor invalidEditor = new FileFieldEditor(
 		        AlarmViewPreferenceConstants.LOG_ALARM_SOUND_FILE_INVALID,
-		        "Sound File Invaled", soundFile));
-		addField(new PreferenceTableEditor(
+		        "Sound File Invalid", soundFileMajor);
+		invalidEditor.setEmptyStringAllowed(true);
+		invalidEditor.setFileExtensions(new String[] {"*.mp3"});
+        addField(invalidEditor);
+		PreferenceTableEditor editor = new PreferenceTableEditor(
 				AlarmViewPreferenceConstants.TOPIC_SET, "&Topic Sets: ",
-				getFieldEditorParent()));
+				getFieldEditorParent());
+        addField(editor);
 	}
 
 	public void init(IWorkbench workbench) {
