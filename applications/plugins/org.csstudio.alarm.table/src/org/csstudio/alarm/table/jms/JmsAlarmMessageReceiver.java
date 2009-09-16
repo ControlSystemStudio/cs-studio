@@ -74,7 +74,7 @@ public class JmsAlarmMessageReceiver extends JmsMessageReceiver {
 					.getDefault()
 					.getPluginPreferences()
 					.getString(
-							AlarmViewPreferenceConstants.LOG_ALARM_SOUND_FILE);
+							AlarmViewPreferenceConstants.LOG_ALARM_SOUND_FILE_MAJOR);
 			if ((mp3Path != null) && (!mp3Path.equals(""))) {
 				Functions.playMp3(mp3Path);
 			}

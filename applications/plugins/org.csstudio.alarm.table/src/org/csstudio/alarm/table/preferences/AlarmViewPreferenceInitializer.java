@@ -60,7 +60,7 @@ public class AlarmViewPreferenceInitializer extends
 						"VALUE" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
 						"DESTINATION" //$NON-NLS-1$
 		);
-		store.setDefault(AlarmViewPreferenceConstants.LOG_ALARM_SOUND_FILE,
+		store.setDefault(AlarmViewPreferenceConstants.LOG_ALARM_SOUND_FILE_MAJOR,
 				"..\\beep.mp3"); //$NON-NLS-1$	
 		store
 		.setDefault(AlarmViewPreferenceConstants.TOPIC_SET,

@@ -91,8 +91,14 @@ public class AlarmViewPreferencePage extends FieldEditorPreferencePage
 		soundFile.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false,
 				4, 1));
 		addField(new FileFieldEditor(
-				AlarmViewPreferenceConstants.LOG_ALARM_SOUND_FILE,
-				"Sound File", soundFile));
+				AlarmViewPreferenceConstants.LOG_ALARM_SOUND_FILE_MAJOR,
+				"Sound File Major", soundFile));
+		addField(new FileFieldEditor(
+		        AlarmViewPreferenceConstants.LOG_ALARM_SOUND_FILE_MINOR,
+		        "Sound File Mainor", soundFile));
+		addField(new FileFieldEditor(
+		        AlarmViewPreferenceConstants.LOG_ALARM_SOUND_FILE_INVALID,
+		        "Sound File Invaled", soundFile));
 		addField(new PreferenceTableEditor(
 				AlarmViewPreferenceConstants.TOPIC_SET, "&Topic Sets: ",
 				getFieldEditorParent()));
