@@ -26,6 +26,7 @@ import org.csstudio.alarm.table.internal.localization.Messages;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.FileFieldEditor;
+import org.eclipse.jface.preference.FontFieldEditor;
 import org.eclipse.jface.preference.ListEditor;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
@@ -85,6 +86,7 @@ public class AlarmViewPreferencePage extends FieldEditorPreferencePage
 			}
 		});
 
+	addField(new FontFieldEditor(AlarmViewPreferenceConstants.LOG_ALARM_FONT, "Table Font", "Major", getFieldEditorParent()));
 		Group soundFile = new Group(getFieldEditorParent(), SWT.NONE);
 		soundFile.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false,
 				2, 1));

@@ -3,28 +3,35 @@ package org.csstudio.alarm.table.ui.messagetable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.SendAcknowledge;
 import org.csstudio.alarm.table.dataModel.AlarmMessage;
 import org.csstudio.alarm.table.dataModel.BasicMessage;
 import org.csstudio.alarm.table.dataModel.MessageList;
+import org.csstudio.alarm.table.preferences.AlarmViewPreferenceConstants;
 import org.csstudio.platform.security.SecurityFacade;
+import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 /**
- * Difference to {@link MessageTable} for log messages is the listener for
- * acknowledges by the user and the {@link AlarmMessageTableMessageSorter}
- * sorter for the table.
+ * Difference to {@link MessageTable} for log messages is the listener for acknowledges by the user
+ * and the {@link AlarmMessageTableMessageSorter} sorter for the table.
  * 
  * @author jhatje
  * 
@@ -33,22 +40,38 @@ public class AlarmMessageTable extends MessageTable {
 
     private static final String SECURITY_ID = "operating";
 
-    public AlarmMessageTable(TableViewer viewer, String[] colNames,
-            MessageList j) {
+    public AlarmMessageTable(TableViewer viewer, String[] colNames, MessageList j) {
         super(viewer, colNames, j);
     }
 
     @Override
     void initializeMessageTable(String[] pureColumnNames) {
 
-        _tableViewer.setLabelProvider(new AlarmMessageTableLabelProvider(
-                pureColumnNames));
+        ScopedPreferenceStore prefStore = new ScopedPreferenceStore(new InstanceScope(),
+                JmsLogsPlugin.getDefault().getBundle().getSymbolicName());
 
-        _tableViewer.setComparator(new AlarmMessageTableMessageSorter(
-                _tableViewer));
+        _tableViewer.setLabelProvider(new AlarmMessageTableLabelProvider(pureColumnNames));
 
-        final boolean canExecute = SecurityFacade.getInstance().canExecute(
-                SECURITY_ID, true);
+        _tableViewer.setComparator(new AlarmMessageTableMessageSorter(_tableViewer));
+
+        prefStore.addPropertyChangeListener(new IPropertyChangeListener() {
+
+            @Override
+            public void propertyChange(PropertyChangeEvent event) {
+                if (event.getProperty().equals(AlarmViewPreferenceConstants.LOG_ALARM_FONT)) {
+                    Font font = CustomMediaFactory.getInstance().getFont(
+                            new FontData(event.getNewValue().toString()));
+                    _tableViewer.getTable().setFont(font);
+                    _tableViewer.getTable().layout(true);
+                }
+
+            }
+        });
+        Font font = CustomMediaFactory.getInstance().getFont(
+                new FontData(prefStore.getString(AlarmViewPreferenceConstants.LOG_ALARM_FONT)));
+        _tableViewer.getTable().setFont(font);
+
+        final boolean canExecute = SecurityFacade.getInstance().canExecute(SECURITY_ID, true);
 
         TableColumn[] columns = _table.getColumns();
         for (final TableColumn tableColumn : columns) {
@@ -58,10 +81,10 @@ public class AlarmMessageTable extends MessageTable {
                     public void widgetSelected(SelectionEvent e) {
                         _table.setSortColumn(tableColumn);
                         _tableViewer
-                                .setComparator(new AlarmMessageTableMessageSorter(
-                                        _tableViewer));
+                                .setComparator(new AlarmMessageTableMessageSorter(_tableViewer));
                         _table.setSortDirection(SWT.DOWN);
-                        //sorting sets the checked status of table items to false. So we have to reset it the previous checked status.
+                        // sorting sets the checked status of table items to false. So we have to
+                        // reset it the previous checked status.
                         resetCheckedStatus();
                         return;
                     }
@@ -72,15 +95,14 @@ public class AlarmMessageTable extends MessageTable {
 
         _table.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event event) {
-                if (event.item instanceof TableItem && event.button == 0
-                        && event.detail == 32) {
+                if (event.item instanceof TableItem && event.button == 0 && event.detail == 32) {
                     TableItem ti = (TableItem) event.item;
                     if (canExecute) {
                         if (ti.getChecked()) {
                             if (ti.getData() instanceof BasicMessage) {
                                 List<AlarmMessage> msgList = new ArrayList<AlarmMessage>();
-                                msgList.add(((AlarmMessage) event.item
-                                        .getData()).copy(new AlarmMessage()));
+                                msgList.add(((AlarmMessage) event.item.getData())
+                                        .copy(new AlarmMessage()));
                                 SendAcknowledge sendAck = SendAcknowledge
                                         .newFromJMSMessage(msgList);
                                 sendAck.schedule();
@@ -92,12 +114,10 @@ public class AlarmMessageTable extends MessageTable {
                         }
                     } else {
                         ti.setChecked(false);
-                        Shell activeShell = Display.getCurrent()
-                                .getActiveShell();
-                        MessageDialog md = new MessageDialog(activeShell,
-                                "Authorization", null,
-                                "Not Acknowledged!\n\rPermission denied.",
-                                MessageDialog.WARNING, new String[] { "Ok" }, 0);
+                        Shell activeShell = Display.getCurrent().getActiveShell();
+                        MessageDialog md = new MessageDialog(activeShell, "Authorization", null,
+                                "Not Acknowledged!\n\rPermission denied.", MessageDialog.WARNING,
+                                new String[] { "Ok" }, 0);
                         md.open();
                     }
                     // Click on other columns but ack should not check or
@@ -112,7 +132,7 @@ public class AlarmMessageTable extends MessageTable {
             }
         });
     }
-    
+
     protected void resetCheckedStatus() {
         TableItem[] tableItems = _table.getItems();
         for (TableItem tableItem : tableItems) {

@@ -31,4 +31,5 @@ public class AlarmViewPreferenceConstants {
 	//Sets of JMS topics to be monitored. List separated with
 	//';'. The optional name for the menu is separated with '?'.
 	public static final String TOPIC_SET = "Alarm.topic_set";
+    public static final String LOG_ALARM_FONT = "Alarm.font";
 }
