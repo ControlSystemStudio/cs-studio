@@ -62,6 +62,9 @@ public class SeverityMapping {
         IPreferenceStore preferenceStore = JmsLogsPlugin.getDefault()
                 .getPreferenceStore();
         
+        if(severityKey == null) {
+        	return -1;
+        }
 
         if (severityKey.equals(preferenceStore.getString("key 0"))) { //$NON-NLS-1$
             return 0;

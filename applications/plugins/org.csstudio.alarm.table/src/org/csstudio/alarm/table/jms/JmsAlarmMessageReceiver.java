@@ -30,6 +30,7 @@ import org.csstudio.alarm.table.dataModel.MessageList;
 import org.csstudio.alarm.table.preferences.AlarmViewPreferenceConstants;
 import org.csstudio.alarm.table.utility.Functions;
 import org.csstudio.platform.logging.CentralLogger;
+import org.eclipse.jface.preference.IPreferenceStore;
 
 /**
  * Add to base class the option to play an alarm sound.
@@ -69,15 +70,20 @@ public class JmsAlarmMessageReceiver extends JmsMessageReceiver {
 	 * @param newMessage
 	 */
 	private void playAlarmSound(MapMessage newMessage) throws JMSException {
+		IPreferenceStore preferenceStore = JmsLogsPlugin.getDefault()
+		.getPreferenceStore();
+		String mp3Path = null;
 		if (newMessage.getString("SEVERITY").equalsIgnoreCase("MAJOR")) {
-			String mp3Path = JmsLogsPlugin
-					.getDefault()
-					.getPluginPreferences()
-					.getString(
-							AlarmViewPreferenceConstants.LOG_ALARM_SOUND_FILE_MAJOR);
-			if ((mp3Path != null) && (!mp3Path.equals(""))) {
-				Functions.playMp3(mp3Path);
-			}
+			mp3Path = preferenceStore.getString("Alarm.log_alarm_sound_file");
+		}
+		if (newMessage.getString("SEVERITY").equalsIgnoreCase("MINOR")) {
+			mp3Path = preferenceStore.getString("Alarm.log_alarm_sound_file_minor");
+		}
+		if (newMessage.getString("SEVERITY").equalsIgnoreCase("INVALID")) {
+			mp3Path = preferenceStore.getString("Alarm.log_alarm_sound_file_invalid");
+		}
+		if ((mp3Path != null) && (!mp3Path.equals(""))) {
+			Functions.playMp3(mp3Path);
 		}
 	}
 
