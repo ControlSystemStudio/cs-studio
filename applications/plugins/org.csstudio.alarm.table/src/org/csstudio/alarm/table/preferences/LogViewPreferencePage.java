@@ -24,11 +24,14 @@ package org.csstudio.alarm.table.preferences;
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.internal.localization.Messages;
 import org.eclipse.jface.dialogs.InputDialog;
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.FontFieldEditor;
 import org.eclipse.jface.preference.ListEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.IWorkbench;
@@ -76,8 +79,10 @@ public class LogViewPreferencePage extends FieldEditorPreferencePage
 				return temp;
 			}
 		});
+		addField(new FontFieldEditor(AlarmViewPreferenceConstants.LOG_TABLE_FONT, "Table Font", "Major", getFieldEditorParent()));
 		Group g1 = new Group(getFieldEditorParent(), SWT.NONE);
-		g1.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
+		g1.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 4, 1));
+		
 		addField(new StringFieldEditor(LogViewPreferenceConstants.MAX,
 				LogViewPreferenceConstants.MAX + ": ", g1)); //$NON-NLS-1$
 		addField(new PreferenceTableEditor(

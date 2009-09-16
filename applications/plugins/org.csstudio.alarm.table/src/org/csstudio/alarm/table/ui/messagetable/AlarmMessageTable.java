@@ -47,13 +47,12 @@ public class AlarmMessageTable extends MessageTable {
     @Override
     void initializeMessageTable(String[] pureColumnNames) {
 
-        ScopedPreferenceStore prefStore = new ScopedPreferenceStore(new InstanceScope(),
-                JmsLogsPlugin.getDefault().getBundle().getSymbolicName());
-
         _tableViewer.setLabelProvider(new AlarmMessageTableLabelProvider(pureColumnNames));
 
         _tableViewer.setComparator(new AlarmMessageTableMessageSorter(_tableViewer));
 
+        ScopedPreferenceStore prefStore = new ScopedPreferenceStore(new InstanceScope(),
+                JmsLogsPlugin.getDefault().getBundle().getSymbolicName());
         prefStore.addPropertyChangeListener(new IPropertyChangeListener() {
 
             @Override

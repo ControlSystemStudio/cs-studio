@@ -32,4 +32,5 @@ public class AlarmViewPreferenceConstants {
 	//';'. The optional name for the menu is separated with '?'.
 	public static final String TOPIC_SET = "Alarm.topic_set";
     public static final String LOG_ALARM_FONT = "Alarm.font";
+    public static final String LOG_TABLE_FONT = "Log.font";
 }

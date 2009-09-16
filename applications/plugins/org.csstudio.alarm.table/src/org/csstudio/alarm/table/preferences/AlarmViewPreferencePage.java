@@ -89,8 +89,7 @@ public class AlarmViewPreferencePage extends FieldEditorPreferencePage
 	addField(new FontFieldEditor(AlarmViewPreferenceConstants.LOG_ALARM_FONT, "Table Font", "Major", getFieldEditorParent()));
 		Group soundFile = new Group(getFieldEditorParent(), SWT.NONE);
 		soundFile.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false,
-				2, 1));
-		soundFile.setLayout(new GridLayout(2, false));
+				4, 1));
 		addField(new FileFieldEditor(
 				AlarmViewPreferenceConstants.LOG_ALARM_SOUND_FILE,
 				"Sound File", soundFile));

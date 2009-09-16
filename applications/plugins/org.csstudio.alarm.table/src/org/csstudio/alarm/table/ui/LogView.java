@@ -32,15 +32,22 @@ import org.csstudio.alarm.table.dataModel.LogMessageList;
 import org.csstudio.alarm.table.dataModel.MessageList;
 import org.csstudio.alarm.table.internal.localization.Messages;
 import org.csstudio.alarm.table.jms.JmsMessageReceiver;
+import org.csstudio.alarm.table.preferences.AlarmViewPreferenceConstants;
 import org.csstudio.alarm.table.preferences.LogViewPreferenceConstants;
 import org.csstudio.alarm.table.ui.messagetable.MessageTable;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
@@ -53,6 +60,7 @@ import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.eclipse.ui.views.IViewDescriptor;
 import org.eclipse.ui.views.IViewRegistry;
 
@@ -90,8 +98,8 @@ public class LogView extends ViewPart {
     private HashMap<String, String> _topicListAndName;
 
     /**
-     * Default topic set. Try to read state 1. From previous viewPart data 2.
-     * From default marker in preferences 3. Take first set from preferences
+     * Default topic set. Try to read state 1. From previous viewPart data 2. From default marker in
+     * preferences 3. Take first set from preferences
      */
     String _defaultTopicSet;
 
@@ -110,9 +118,8 @@ public class LogView extends ViewPart {
      */
     TableViewer _tableViewer;
 
-    
     String _preferenceColumnString;
-    
+
     /**
      * {@inheritDoc}
      */
@@ -120,26 +127,21 @@ public class LogView extends ViewPart {
 
         // Read column names and JMS topic settings from preferences
         _preferenceColumnString = LogViewPreferenceConstants.P_STRING;
-        String[] _columnNames = JmsLogsPlugin.getDefault()
-                .getPluginPreferences().getString(
-                        _preferenceColumnString).split(";"); //$NON-NLS-1$
-        readPreferenceTopics(JmsLogsPlugin.getDefault().getPluginPreferences()
-                .getString(LogViewPreferenceConstants.TOPIC_SET));
+        ScopedPreferenceStore prefStore = new ScopedPreferenceStore(new InstanceScope(),
+                JmsLogsPlugin.getDefault().getBundle().getSymbolicName());
+
+        String[] _columnNames = prefStore.getString(_preferenceColumnString).split(";"); //$NON-NLS-1$
+        readPreferenceTopics(prefStore.getString(LogViewPreferenceConstants.TOPIC_SET));
 
         // Initialize JMS message list
-        String maximumNumberOfMessagesPref = JmsLogsPlugin.getDefault()
-                .getPluginPreferences().getString(
-                        LogViewPreferenceConstants.MAX);
+        String maximumNumberOfMessagesPref = prefStore.getString(LogViewPreferenceConstants.MAX);
         Integer maximumNumberOfMessages;
         try {
             maximumNumberOfMessages = Integer.parseInt(maximumNumberOfMessagesPref);
         } catch (NumberFormatException e) {
-            CentralLogger
-                    .getInstance()
-                    .warn(this,
-                            "Invalid value format for maximum number" +
-                            " of messages in preferences");
-            maximumNumberOfMessages = 200; 
+            CentralLogger.getInstance().warn(this,
+                    "Invalid value format for maximum number" + " of messages in preferences");
+            maximumNumberOfMessages = 200;
         }
         _messageList = new LogMessageList(maximumNumberOfMessages);
 
@@ -160,13 +162,31 @@ public class LogView extends ViewPart {
         // setup message table with context menu etc.
         _tableViewer = new TableViewer(parent, SWT.MULTI | SWT.FULL_SELECTION);
 
-        _messageTable = new MessageTable(_tableViewer, _columnNames,
-                _messageList);
+        _messageTable = new MessageTable(_tableViewer, _columnNames, _messageList);
         _messageTable.makeContextMenu(getSite());
 
         _columnMapping = new ColumnWidthPreferenceMapping(_tableViewer);
 
         getSite().setSelectionProvider(_tableViewer);
+
+        prefStore.addPropertyChangeListener(new IPropertyChangeListener() {
+
+            @Override
+            public void propertyChange(PropertyChangeEvent event) {
+                if (event.getProperty().equals(AlarmViewPreferenceConstants.LOG_TABLE_FONT)) {
+                    Font font = CustomMediaFactory.getInstance().getFont(
+                            new FontData(event.getNewValue().toString()));
+                    _tableViewer.getTable().setFont(font);
+                    _tableViewer.getTable().layout(true);
+                }
+
+            }
+        });
+        String fontDesc = prefStore.getString(AlarmViewPreferenceConstants.LOG_TABLE_FONT);
+        if (fontDesc != null && !fontDesc.isEmpty()) {
+            Font font = CustomMediaFactory.getInstance().getFont(new FontData(fontDesc));
+            _tableViewer.getTable().setFont(font);
+        }
 
         makeActions();
 
@@ -183,13 +203,12 @@ public class LogView extends ViewPart {
     }
 
     /**
-     * Parse string from properties with jms topics settings and store items in
-     * a HashMap for combo box. Each set of topic items is separated with ';'. A
-     * topic item consists of three parts separated by '?';
-     * 'default?jmsTopic1,jmsTopic2?nameOfThisTopicSet' If the topic item is not
-     * default the first part is empty: '?jmsTopic1jms...'. If there is no
-     * default the first item is taken. The default tag from the preferences is
-     * overwritten if there is a topic set from a previous session.
+     * Parse string from properties with jms topics settings and store items in a HashMap for combo
+     * box. Each set of topic items is separated with ';'. A topic item consists of three parts
+     * separated by '?'; 'default?jmsTopic1,jmsTopic2?nameOfThisTopicSet' If the topic item is not
+     * default the first part is empty: '?jmsTopic1jms...'. If there is no default the first item is
+     * taken. The default tag from the preferences is overwritten if there is a topic set from a
+     * previous session.
      * 
      * @param topics
      *            raw topic string from preferences
@@ -221,16 +240,14 @@ public class LogView extends ViewPart {
      * @param logTableManagementComposite
      */
     void addRunningSinceGroup(Composite logTableManagementComposite) {
-        Group runningSinceGroup = new Group(logTableManagementComposite,
-                SWT.NONE);
+        Group runningSinceGroup = new Group(logTableManagementComposite, SWT.NONE);
 
         runningSinceGroup.setText(Messages.LogView_runningSince);
 
         RowLayout layout = new RowLayout();
         runningSinceGroup.setLayout(layout);
 
-        GregorianCalendar currentTime = new GregorianCalendar(TimeZone
-                .getTimeZone("ECT")); //$NON-NLS-1$
+        GregorianCalendar currentTime = new GregorianCalendar(TimeZone.getTimeZone("ECT")); //$NON-NLS-1$
         SimpleDateFormat formater = new SimpleDateFormat();
         Label runningSinceLabel = new Label(runningSinceGroup, SWT.CENTER);
         runningSinceLabel.setLayoutData(new RowData(90, 21));
@@ -238,14 +255,13 @@ public class LogView extends ViewPart {
     }
 
     /**
-     * Add combo box to select set of topics to be monitored. The items in the
-     * combo box are names that are mapped in the preferences to sets of topics.
+     * Add combo box to select set of topics to be monitored. The items in the combo box are names
+     * that are mapped in the preferences to sets of topics.
      * 
      * @param logTableManagementComposite
      */
     void addJmsTopicItems(Composite logTableManagementComposite) {
-        Group jmsTopicItemsGroup = new Group(logTableManagementComposite,
-                SWT.NONE);
+        Group jmsTopicItemsGroup = new Group(logTableManagementComposite, SWT.NONE);
 
         jmsTopicItemsGroup.setText(Messages.LogView_monitoredJmsTopics);
 
@@ -268,8 +284,8 @@ public class LogView extends ViewPart {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 super.widgetSelected(e);
-                _defaultTopicSet = _topicListAndName.get(topicSetsCombo
-                        .getItem(topicSetsCombo.getSelectionIndex()));
+                _defaultTopicSet = _topicListAndName.get(topicSetsCombo.getItem(topicSetsCombo
+                        .getSelectionIndex()));
                 _jmsMessageReceiver.initializeJMSConnection(_defaultTopicSet);
             }
         });
@@ -291,14 +307,12 @@ public class LogView extends ViewPart {
             }
         };
         showPropertyViewAction.setText(Messages.LogView_properties);
-        showPropertyViewAction
-                .setToolTipText(Messages.LogView_propertiesToolTip);
+        showPropertyViewAction.setToolTipText(Messages.LogView_propertiesToolTip);
 
-        IViewRegistry viewRegistry = getSite().getWorkbenchWindow()
-                .getWorkbench().getViewRegistry();
+        IViewRegistry viewRegistry = getSite().getWorkbenchWindow().getWorkbench()
+                .getViewRegistry();
         IViewDescriptor viewDesc = viewRegistry.find(PROPERTY_VIEW_ID);
-        showPropertyViewAction.setImageDescriptor(viewDesc
-                .getImageDescriptor());
+        showPropertyViewAction.setImageDescriptor(viewDesc.getImageDescriptor());
         IActionBars bars = getViewSite().getActionBars();
         bars.getToolBarManager().add(showPropertyViewAction);
     }
@@ -321,8 +335,7 @@ public class LogView extends ViewPart {
         }
         _defaultTopicSet = memento.getString("previousTopicSet"); //$NON-NLS-1$
         if (_defaultTopicSet == null) {
-            CentralLogger.getInstance().debug(this,
-                    "No topic set from previous session"); //$NON-NLS-1$
+            CentralLogger.getInstance().debug(this, "No topic set from previous session"); //$NON-NLS-1$
         } else {
             CentralLogger.getInstance().debug(this,
                     "Get topic set from previous session: " + _defaultTopicSet); //$NON-NLS-1$
