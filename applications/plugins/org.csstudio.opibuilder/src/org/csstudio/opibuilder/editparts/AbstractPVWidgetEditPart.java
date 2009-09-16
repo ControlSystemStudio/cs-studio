@@ -179,7 +179,10 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 							}
 
 							public void pvValueUpdate(PV pv) {
-								if(!pvConnectedStatusMap.get(pv.getName())){
+								if(pv == null)
+									return;
+								if(pvConnectedStatusMap.containsKey(pv.getName()) && 
+										!pvConnectedStatusMap.get(pv.getName())){
 									pvConnectedStatusMap.put(pv.getName(), true);
 									widgetConnectionRecovered(pv.getName());
 								}

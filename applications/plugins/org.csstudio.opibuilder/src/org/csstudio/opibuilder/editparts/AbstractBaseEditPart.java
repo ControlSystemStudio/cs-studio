@@ -7,6 +7,7 @@ import java.util.Set;
 import org.csstudio.opibuilder.commands.WidgetDeleteCommand;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
+import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.properties.WidgetPropertyChangeListener;
 import org.csstudio.opibuilder.script.ScriptData;
@@ -32,17 +33,13 @@ import org.eclipse.draw2d.LabeledBorder;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
 import org.eclipse.draw2d.geometry.Rectangle;
-import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.gef.editpolicies.ComponentEditPolicy;
 import org.eclipse.gef.requests.GroupRequest;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IActionFilter;
 import org.eclipse.ui.progress.UIJob;
 
@@ -147,13 +144,21 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 	public void activate() {
 		if(!isActive()){
 			super.activate();
+			
+			
 			//add listener to all properties.
 			for(String id : getCastedModel().getAllPropertyIDs()){
 				WidgetPropertyChangeListener listener = 
 					new WidgetPropertyChangeListener(this);
-				getCastedModel().getProperty(id).addPropertyChangeListener(
+				AbstractWidgetProperty property = getCastedModel().getProperty(id); 
+				property.addPropertyChangeListener(
 					listener);
-				propertyListenerMap.put(id, listener);
+				propertyListenerMap.put(id, listener);				
+				if(property != null){
+					property.setExecutionMode(executionMode);
+					property.setWidgetModel(getCastedModel());
+				}
+				
 			}
 			registerBasePropertyChangeHandlers();
 			registerPropertyChangeHandlers();
@@ -469,7 +474,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 	 * @param executionMode the executionMode to set
 	 */
 	public void setExecutionMode(ExecutionMode executionMode) {
-		this.executionMode = executionMode;
+		this.executionMode = executionMode;		
 	}
 
 	/**

@@ -61,5 +61,14 @@
             name="OPIBuilderKeyBindingScheme">
       </scheme>
    </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.csstudio.platform.ui.css.applications"
+            class="org.csstudio.opibuilder.preferences.OPIBuilderPreferencePage"
+            id="org.csstudio.opibuilder.preferences"
+            name="OPI Builder">
+      </page>
+   </extension>
 
 </plugin>

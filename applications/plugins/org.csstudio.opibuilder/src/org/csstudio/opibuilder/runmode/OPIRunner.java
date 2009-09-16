@@ -7,8 +7,11 @@ import java.io.InputStream;
 import org.csstudio.opibuilder.editor.PatchedScrollingGraphicalViewer;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.editparts.WidgetEditPartFactory;
+import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.persistence.XMLUtil;
+import org.csstudio.opibuilder.preferences.PreferencesHelper;
+import org.csstudio.opibuilder.util.MacrosInput;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.runtime.CoreException;
@@ -20,6 +23,7 @@ import org.eclipse.gef.EditDomain;
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
@@ -52,25 +56,34 @@ public class OPIRunner extends EditorPart {
 			throws PartInitException {
 		setSite(site);
 		setInput(input);
-		if(input instanceof RunnerInput){
-			displayModel = ((RunnerInput)input).getDisplayModel();
-			displayOpenManager = ((RunnerInput)input).getDisplayOpenManager();
-		}
-		else {
+		InputStream inputStream;
+		try {
+			if(input instanceof RunnerInput){
+				inputStream = ((RunnerInput)input).getFile().getContents();
+				displayOpenManager = ((RunnerInput)input).getDisplayOpenManager();					
+			}else
+				inputStream = getInputStream();
+			
 			displayModel = new DisplayModel();
-			try {
-				XMLUtil.fillDisplayModelFromInputStream(getInputStream(), displayModel);
-			} catch (Exception e) {
-				MessageDialog.openError(getSite().getShell(), "File Open Error",
-						"The file is not a correct OPI file! \n" + e);
-				CentralLogger.getInstance().error(this, e);
-			}		
+				
+			XMLUtil.fillDisplayModelFromInputStream(inputStream, displayModel);
+		}catch(Exception e) {
+			CentralLogger.getInstance().error(
+					this, "Failed to run file: " + ((RunnerInput)input).getFile(), e);
+			MessageDialog.openError(Display.getDefault().getActiveShell(), "File Open Error",
+					"The file is not a correct OPI file! An empty OPI will be created instead.\n" + e);
 		}
 			
-		setPartName(displayModel.getName());
-		
-		if(viewer != null)
+		if(input instanceof RunnerInput){
+			MacrosInput macrosInput = ((RunnerInput)input).getMacrosInput();
+				if(macrosInput != null)
+					displayModel.setPropertyValue(AbstractContainerModel.PROP_MACROS, macrosInput);
+		}
+		if(viewer != null){
 			viewer.setContents(displayModel);
+			setPartName(displayModel.getName());
+		}
+		
 	}
 	
 	
@@ -135,6 +148,7 @@ public class OPIRunner extends EditorPart {
 			new OPIRunnerContextMenuProvider(viewer);
 		viewer.setContextMenu(cmProvider);
 		getSite().registerContextMenu(cmProvider, viewer);
+		setPartName(displayModel.getName());
 	}
 
 	
@@ -143,6 +157,9 @@ public class OPIRunner extends EditorPart {
 		
 	}
 	
+	public DisplayModel getDisplayModel() {
+		return displayModel;
+	}
 	
 	@SuppressWarnings("unchecked")
 	@Override

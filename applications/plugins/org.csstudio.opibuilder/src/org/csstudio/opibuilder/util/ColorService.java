@@ -13,6 +13,7 @@ import java.util.Map;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.palette.MajorCategories;
+import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -54,9 +55,13 @@ public final class ColorService {
 	}	
 
 	public ColorService() {
-		colorFilePath = new Path("/OPIBuilder/color.def");
+		colorFilePath = PreferencesHelper.getColorFilePath();
 		colorMap = new LinkedHashMap<String, OPIColor>();
-		
+		if(colorFilePath == null){
+			CentralLogger.getInstance().warn(this, "No color definition file was found.");
+			return;
+		}
+			
 		try {
 			//read file				
 			InputStream inputStream = ResourceUtil.pathToInputStream(colorFilePath);
@@ -90,14 +95,15 @@ public final class ColorService {
 	 * @return the RGB color, or null if the name doesn't exist in the color file.
 	 */
 	public RGB getColor(String name){
-		return colorMap.get(name).getRGBValue();
+		if(colorMap.containsKey(name))
+			return colorMap.get(name).getRGBValue();
+		return DEFAULT_UNKNOWN_COLOR;
 	}
 	
 	public OPIColor getOPIColor(String name){
-		OPIColor result =colorMap.get(name);		
-		if(result == null)
-			return new OPIColor(name + "(N/A)", DEFAULT_UNKNOWN_COLOR);
-		return result;
+		if(colorMap.containsKey(name))
+			return colorMap.get(name);		
+		return new OPIColor(name, DEFAULT_UNKNOWN_COLOR);
 	}
 	
 	public OPIColor[] getAllPredefinedColors(){

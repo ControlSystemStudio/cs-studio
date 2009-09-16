@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.editor.OPIEditor;
+import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.runmode.RunModeService;
 import org.csstudio.opibuilder.runmode.RunModeService.TargetWindow;
 import org.csstudio.opibuilder.util.ResourceUtil;
@@ -41,12 +42,12 @@ public class RunOPIAction extends Action{
 		IEditorPart activeEditor = page.getActiveEditor();
 		if(activeEditor instanceof OPIEditor){
 			//It seems that the synch with editor is not necessary
-			//DisplayModel displayModel = ((OPIEditor)activeEditor).getDisplayModel();
+			DisplayModel displayModel = ((OPIEditor)activeEditor).getDisplayModel();
 			IEditorInput input = activeEditor.getEditorInput();				
 			IFile file = null;
 			try {
 				file = ResourceUtil.getFileInEditor(input);
-				RunModeService.getInstance().runOPI(file, null, TargetWindow.RUN_WINDOW, null);
+				RunModeService.getInstance().runOPI(file, TargetWindow.RUN_WINDOW, displayModel.getSize());
 			} catch (FileNotFoundException e) {
 				CentralLogger.getInstance().error(this, e);
 				MessageDialog.openError(Display.getDefault().getActiveShell(), "File Open Error",

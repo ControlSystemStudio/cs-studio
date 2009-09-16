@@ -11,6 +11,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
@@ -19,18 +20,20 @@ import org.eclipse.ui.PlatformUI;
  *
  */
 public class DisplayOpenManager {
-	private SizeLimitedStack<IFile> backStack;
-	private SizeLimitedStack<IFile> forwardStack;
+	private SizeLimitedStack<RunnerInput> backStack;
+	private SizeLimitedStack<RunnerInput> forwardStack;
 	private List<IDisplayOpenManagerListener> listeners;
 	private static int STACK_SIZE = 10;
 	public DisplayOpenManager() {
-		backStack =  new SizeLimitedStack<IFile>(STACK_SIZE);
-		forwardStack = new SizeLimitedStack<IFile>(STACK_SIZE);
+		backStack =  new SizeLimitedStack<RunnerInput>(STACK_SIZE);
+		forwardStack = new SizeLimitedStack<RunnerInput>(STACK_SIZE);
 		listeners = new ArrayList<IDisplayOpenManagerListener>();
 	}
 	
 	public void openNewDisplay(){
-		backStack.push(getCurrentFileInEditor());
+		RunnerInput input = getCurrentRunnerInputInEditor();
+		if(input !=null)
+			backStack.push(input);
 		forwardStack.clear();
 		fireOperationsHistoryChanged();
 	}
@@ -38,11 +41,32 @@ public class DisplayOpenManager {
 	public void goBack(){
 		if(backStack.size() ==0)
 			return;
-		IFile file = getCurrentFileInEditor();
 		
-		forwardStack.push(file);
+		RunnerInput input = getCurrentRunnerInputInEditor();
+		if(input !=null)
+			forwardStack.push(input);
 		
 		openOPI(backStack.pop());
+		
+	}
+
+	private RunnerInput getCurrentRunnerInputInEditor() {
+
+		IEditorPart activeEditor = PlatformUI.getWorkbench().
+			getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+		IEditorInput input = activeEditor.getEditorInput();
+		
+		if(input instanceof RunnerInput){
+			if(((RunnerInput)input).getDisplayOpenManager() == null)
+				((RunnerInput)input).setDisplayOpenManager(
+					(DisplayOpenManager)activeEditor.getAdapter(DisplayOpenManager.class));
+			return (RunnerInput)input;	
+		}
+			
+		else
+			return new RunnerInput(getCurrentFileInEditor(),
+					(DisplayOpenManager)activeEditor.getAdapter(DisplayOpenManager.class));
+
 		
 	}
 
@@ -60,14 +84,14 @@ public class DisplayOpenManager {
 		
 		return file;
 	}
-
+	
 	/**
 	 * @param file 
 	 * 
 	 */
-	private void openOPI(IFile file) {
+	private void openOPI(RunnerInput input) {
 		try {
-			RunModeService.getInstance().replaceActiveEditorContent(file);
+			RunModeService.getInstance().replaceActiveEditorContent(input);
 		} catch (PartInitException e) {
 			CentralLogger.getInstance().error(this, "Failed to go back", e);
 			MessageDialog.openError(Display.getDefault().getActiveShell(), "Open file error", 
@@ -80,9 +104,9 @@ public class DisplayOpenManager {
 	public void goForward(){
 		if(forwardStack.size() ==0)
 			return;
-		IFile file = getCurrentFileInEditor();
-		
-		backStack.push(file);
+		RunnerInput input = getCurrentRunnerInputInEditor();
+		if(input !=null)
+			backStack.push(input);
 		
 		openOPI(forwardStack.pop());
 		
@@ -91,8 +115,9 @@ public class DisplayOpenManager {
 	public void goBack(int index){
 		if(backStack.size() > index){
 			
-			IFile currentFile = getCurrentFileInEditor();
-			forwardStack.push(currentFile);
+			RunnerInput input = getCurrentRunnerInputInEditor();
+			if(input !=null)
+				forwardStack.push(input);
 			
 			for(int i=0; i<index; i++){
 				forwardStack.push(backStack.pop());
@@ -105,8 +130,9 @@ public class DisplayOpenManager {
 	public void goForward(int index){
 		if(forwardStack.size() > index){
 			
-			IFile currentFile = getCurrentFileInEditor();
-			backStack.push(currentFile);
+			RunnerInput input = getCurrentRunnerInputInEditor();
+			if(input !=null)
+				backStack.push(input);
 			
 			for(int i=0; i<index; i++){
 				backStack.push(forwardStack.pop());

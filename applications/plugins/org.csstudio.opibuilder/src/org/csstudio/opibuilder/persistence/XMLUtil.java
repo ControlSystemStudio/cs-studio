@@ -12,6 +12,8 @@ import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.util.WidgetsService;
+import org.csstudio.platform.logging.CentralLogger;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
@@ -122,13 +124,25 @@ public class XMLUtil {
 			//handle property
 			if(propIdSet.contains(subElement.getName())){
 				String propId = subElement.getName();
-				rootWidgetModel.setPropertyValue(propId, 
-						rootWidgetModel.getProperty(propId).readValueFromXML(subElement));
+				try {
+					rootWidgetModel.setPropertyValue(propId, 
+							rootWidgetModel.getProperty(propId).readValueFromXML(subElement));
+				} catch (Exception e) {
+					String errorMessage = "Failed to read the " + propId + " property for " + rootWidgetModel.getName() +". " +
+							"The default property value will be setted instead.";
+					MessageDialog.openError(null, "OPI File format error", errorMessage + "\n" + e.getMessage());
+					CentralLogger.getInstance().error(errorMessage, e);
+				}
 			}else if(subElement.getName().equals(XMLTAG_WIDGET)){
 				if(rootWidgetModel instanceof AbstractContainerModel){
 					((AbstractContainerModel) rootWidgetModel).addChild(
 						XMLElementToWidget(subElement));
 				}
+			}else {
+				//String warningMessage = subElement.getName() + " cannot be recogonized as a property or widget by the OPI file parser. " +
+				//		"It will be ignored as a consequence.";
+				//MessageDialog.openWarning(null, "OPI File format warning", warningMessage);
+				//CentralLogger.getInstance().warn(null, warningMessage);
 			}
 		}		
 		return rootWidgetModel;

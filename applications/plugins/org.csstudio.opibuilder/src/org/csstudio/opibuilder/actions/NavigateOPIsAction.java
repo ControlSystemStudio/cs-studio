@@ -2,6 +2,7 @@ package org.csstudio.opibuilder.actions;
 
 import org.csstudio.opibuilder.runmode.DisplayOpenManager;
 import org.csstudio.opibuilder.runmode.IDisplayOpenManagerListener;
+import org.csstudio.opibuilder.runmode.RunnerInput;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuCreator;
@@ -71,15 +72,15 @@ public class NavigateOPIsAction extends Action implements IDisplayOpenManagerLis
 	    private void fillMenu(final Menu menu) {
 	    	Object[] entries = forward ? 
 	    			manager.getForwardStackEntries() : manager.getBackStackEntries();	    	
-	    	IFile[] files = new IFile[entries.length];
+	    	RunnerInput[] runnerInputArray = new RunnerInput[entries.length];
 	    	int i=entries.length-1;
 	    	for(final Object o : entries){
-	    		files[i--] = (IFile)o;
+	    		runnerInputArray[i--] = (RunnerInput)o;
 	    	}
 	    	
-	    	for(final IFile file : files){	    		
+	    	for(final RunnerInput input : runnerInputArray){	    		
 	    		final MenuItem menuItem = new MenuItem(menu, SWT.None);
-	    		menuItem.setText(file.getName());
+	    		menuItem.setText(input.getName());
 	    		menuItem.addSelectionListener(new SelectionAdapter(){
 	    			@Override
 	    			public void widgetSelected(SelectionEvent e) {
@@ -164,12 +165,12 @@ public class NavigateOPIsAction extends Action implements IDisplayOpenManagerLis
 		recreateMenu = true;
 		if(forward){
 			if(manager.canForward())
-				setToolTipText(FORWARD + " to " + ((IFile)(manager.getForwardStackEntries()[0])).getName());
+				setToolTipText(FORWARD + " to " + ((RunnerInput)(manager.getForwardStackEntries()[0])).getName());
 			else
 				setToolTipText(FORWARD);
 		}else{
 			if(manager.canBackward())
-				setToolTipText(BACK + " to " + ((IFile)(manager.getBackStackEntries()[0])).getName());
+				setToolTipText(BACK + " to " + ((RunnerInput)(manager.getBackStackEntries()[0])).getName());
 			else
 				setToolTipText(BACK);
 		}

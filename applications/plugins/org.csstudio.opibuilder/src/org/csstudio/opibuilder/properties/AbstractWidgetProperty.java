@@ -3,6 +3,8 @@ package org.csstudio.opibuilder.properties;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
+import org.csstudio.opibuilder.editparts.ExecutionMode;
+import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.jdom.Element;
@@ -29,6 +31,9 @@ public abstract class AbstractWidgetProperty {
 	
 	protected boolean visibleInPropSheet;
 	
+	protected ExecutionMode executionMode = ExecutionMode.EDIT_MODE;
+	
+	protected AbstractWidgetModel widgetModel;
 	
 	public AbstractWidgetProperty(String prop_id, String description,
 			WidgetPropertyCategory category, Object defaultValue) {
@@ -177,6 +182,17 @@ public abstract class AbstractWidgetProperty {
 	 */
 	public abstract Object readValueFromXML(Element propElement);
 	
+	public void setWidgetModel(AbstractWidgetModel widgetModel) {
+		this.widgetModel = widgetModel;
+	}
 	
+	public void setExecutionMode(ExecutionMode executionMode) {
+		this.executionMode = executionMode;
+	}
+	
+	
+	public ExecutionMode getExecutionMode() {
+		return executionMode;
+	}
 	
 }

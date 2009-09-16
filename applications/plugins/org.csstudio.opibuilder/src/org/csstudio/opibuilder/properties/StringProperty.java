@@ -1,16 +1,27 @@
 package org.csstudio.opibuilder.properties;
 
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.csstudio.opibuilder.editparts.ExecutionMode;
+import org.csstudio.opibuilder.model.AbstractWidgetModel;
+import org.csstudio.opibuilder.util.MacrosUtil;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 import org.jdom.Element;
 
+/**The widget property for string. It also accept macro string $(macro).
+ * @author Xihui Chen
+ *
+ */
 public class StringProperty extends AbstractWidgetProperty {
 	
 	
 
 	public StringProperty(String prop_id, String description,
 			WidgetPropertyCategory category, String defaultValue) {
-		super(prop_id, description, category, defaultValue);		
+		super(prop_id, description, category, defaultValue);
 	}
 
 	@Override
@@ -43,4 +54,20 @@ public class StringProperty extends AbstractWidgetProperty {
 	public Object readValueFromXML(Element propElement) {
 		return propElement.getValue();
 	}
+	
+	@Override
+	public Object getPropertyValue() {
+		if(executionMode == ExecutionMode.RUN_MODE && widgetModel !=null)
+			return MacrosUtil.replaceMacros(
+					widgetModel, (String) super.getPropertyValue());
+		else
+			return super.getPropertyValue();
+	}
+	
+	
+	
+	
+	
+	
+
 }

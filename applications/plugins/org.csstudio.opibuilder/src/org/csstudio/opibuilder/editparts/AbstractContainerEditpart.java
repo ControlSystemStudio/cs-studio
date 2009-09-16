@@ -3,12 +3,17 @@ package org.csstudio.opibuilder.editparts;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.csstudio.opibuilder.commands.OrphanChildCommand;
 import org.csstudio.opibuilder.editpolicies.WidgetXYLayoutEditPolicy;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
+import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
+import org.csstudio.opibuilder.util.MacrosInput;
+import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.CompoundSnapToHelper;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
@@ -69,7 +74,18 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
 	
 	@Override
 	public void activate() {
+		//set macro map
+		Map<String, String> macrosMap = new HashMap<String, String>();
+		macrosMap.putAll(getCastedModel().getMacrosInput().getMacrosMap());
+		if(getCastedModel().getMacrosInput().isInclude_parent_macros()){
+			macrosMap.putAll(getCastedModel().getParentMacroMap());
+		}
+		getCastedModel().setMacroMap(macrosMap);
+		
 		super.activate();
+		
+		
+		
 		childrenPropertyChangeListener = new PropertyChangeListener() {					
 					public void propertyChange(PropertyChangeEvent evt) {
 						
@@ -114,6 +130,29 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
 		
 		
 	}
+	
+	
+	
+	@Override
+	protected void registerBasePropertyChangeHandlers() {
+		super.registerBasePropertyChangeHandlers();
+		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler(){
+			public boolean handleChange(Object oldValue, Object newValue,
+					IFigure figure) {
+				MacrosInput macrosInput = (MacrosInput)newValue;
+				Map<String, String> macrosMap = new HashMap<String, String>();
+				macrosMap.putAll(macrosInput.getMacrosMap());
+				if(macrosInput.isInclude_parent_macros()){	
+					macrosMap.putAll(getCastedModel().getParentMacroMap());					
+				}
+				getCastedModel().setMacroMap(macrosMap);
+				return false;
+			}
+		};
+		setPropertyChangeHandler(AbstractContainerModel.PROP_MACROS, handler);		
+		
+	}
+	
 	
 	@Override
 	public void deactivate() {

@@ -3,11 +3,17 @@ package org.csstudio.opibuilder.model;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
+import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
+import org.csstudio.opibuilder.properties.BooleanProperty;
+import org.csstudio.opibuilder.properties.MacrosProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.csstudio.opibuilder.util.MacrosInput;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.jdom.Element;
@@ -21,6 +27,8 @@ public abstract class AbstractContainerModel extends AbstractWidgetModel {
 	public static final String PROP_CHILDREN = "children";
 	
 	public static final String PROP_SELECTION = "selection";
+
+	public static final String PROP_MACROS = "macros";
 	
 	private AbstractWidgetProperty childrenProperty;
 	
@@ -28,10 +36,13 @@ public abstract class AbstractContainerModel extends AbstractWidgetModel {
 	
 	private List<AbstractWidgetModel> childrenList;
 	
+	private Map<String, String> macroMap;
+	
 	
 	public AbstractContainerModel() {
 		super();
 		childrenList = new LinkedList<AbstractWidgetModel>();
+		macroMap = new HashMap<String, String>();
 		childrenProperty = new AbstractWidgetProperty(
 				PROP_CHILDREN, "children", WidgetPropertyCategory.Behavior, childrenList){
 
@@ -123,7 +134,10 @@ public abstract class AbstractContainerModel extends AbstractWidgetModel {
 	
 	@Override
 	protected void configureBaseProperties() {
-		super.configureBaseProperties();		
+		super.configureBaseProperties();	
+		addProperty(new MacrosProperty(
+				PROP_MACROS, "Macros", WidgetPropertyCategory.Basic, 
+				new MacrosInput(new HashMap<String, String>(), true)));
 	}
 
 	public List<AbstractWidgetModel> getChildren() {
@@ -178,6 +192,26 @@ public abstract class AbstractContainerModel extends AbstractWidgetModel {
 	}
 	
 	
+	public void setMacroMap(Map<String, String> macroMap) {
+		this.macroMap = macroMap;
+	}
 	
+	public Map<String, String> getMacroMap() {
+		return macroMap;
+	}	
+
+	public MacrosInput getMacrosInput(){
+		return (MacrosInput)getCastedPropertyValue(PROP_MACROS);
+	}
 	
+
+	/**
+	 * @return the macros of its parent.
+	 */
+	public Map<String, String> getParentMacroMap(){
+		if(getParent() != null)
+			return getParent().getMacroMap();
+		else
+			return PreferencesHelper.getMacros();
+	}
 }

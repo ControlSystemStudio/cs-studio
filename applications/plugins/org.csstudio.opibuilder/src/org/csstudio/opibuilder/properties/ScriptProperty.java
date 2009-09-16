@@ -1,8 +1,10 @@
 package org.csstudio.opibuilder.properties;
 
+import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.properties.support.ScriptPropertyDescriptor;
 import org.csstudio.opibuilder.script.ScriptData;
 import org.csstudio.opibuilder.script.ScriptsInput;
+import org.csstudio.opibuilder.util.MacrosUtil;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.jdom.Element;
@@ -46,6 +48,26 @@ public class ScriptProperty extends AbstractWidgetProperty {
 		return acceptableValue;
 	}
 
+	
+	@Override
+	public Object getPropertyValue() {
+		if(executionMode == ExecutionMode.RUN_MODE && widgetModel !=null){
+			ScriptsInput value = (ScriptsInput) super.getPropertyValue();
+			for(ScriptData sd : value.getScriptList()){
+				for(String pv : sd.getPVList()){
+					String newPV = MacrosUtil.replaceMacros(widgetModel, pv);
+					if(!newPV.equals(pv)){
+						sd.getPVList().remove(pv);
+						sd.addPV(newPV);
+					}
+				}
+			}
+			return value;
+		}else
+			return super.getPropertyValue();
+	}
+	
+	
 	@Override
 	protected PropertyDescriptor createPropertyDescriptor() {
 		return new ScriptPropertyDescriptor(prop_id, description);

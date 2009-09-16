@@ -31,6 +31,10 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.model.BaseWorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 
+/**The dialog for scripts input editing.
+ * @author Xihui Chen
+ *
+ */
 public class ScriptsInputDialog extends Dialog {
 	
 	private Action addAction;

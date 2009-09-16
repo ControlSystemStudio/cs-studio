@@ -8,6 +8,7 @@ import org.csstudio.opibuilder.util.WidgetsService;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartFactory;
+import org.eclipse.jface.viewers.deferred.SetModel;
 
 /**The central factory to create editpart for all widgets.
  * @author Xihui Chen
