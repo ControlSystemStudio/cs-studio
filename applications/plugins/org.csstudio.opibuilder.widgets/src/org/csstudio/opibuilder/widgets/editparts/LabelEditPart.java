@@ -1,31 +1,34 @@
 package org.csstudio.opibuilder.widgets.editparts;
 
-import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.editparts.AbstractWidgetEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
-import org.csstudio.opibuilder.util.UIBundlingThread;
 import org.csstudio.opibuilder.widgets.figures.LabelFigure;
 import org.csstudio.opibuilder.widgets.model.LabelModel;
+import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
-import org.eclipse.gef.tools.CellEditorLocator;
-import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Text;
 
 public class LabelEditPart extends AbstractWidgetEditPart {
 
 	
 	@Override
 	protected IFigure doCreateFigure() {
-		LabelFigure labelFigure = new LabelFigure(false);
-		labelFigure.setText(getWidgetModel().getText());
-		labelFigure.setFill(!getWidgetModel().isTransparent());
+		LabelFigure labelFigure = new LabelFigure();
+		labelFigure.setFont(CustomMediaFactory.getInstance().getFont(
+				getWidgetModel().getFont()));
+		labelFigure.setText(getWidgetModel().getText());		
+		labelFigure.setOpaque(!getWidgetModel().isTransparent());
+		labelFigure.getLabel().setTextAlignment(
+				(int) (8 * Math.pow(2, getWidgetModel().getVerticalAlignment())));
+		labelFigure.getLabel().setLabelAlignment(
+				(int) (1 * Math.pow(2, getWidgetModel().getHorizontalAlignment())));
+		labelFigure.getLabel().setTextPlacement(PositionConstants.WEST);
 		return labelFigure;
 	}
 
@@ -46,7 +49,7 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 				Display.getCurrent().timerExec(10, new Runnable() {					
 					public void run() {
 						if(getWidgetModel().isAutoSize())
-							getWidgetModel().setSize(((LabelFigure)figure).getAutoSizeDimension());
+							getWidgetModel().setSize(((LabelFigure)figure).getLabel().getPreferredSize());
 					}
 				});
 				
@@ -62,7 +65,7 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 				Display.getCurrent().timerExec(10, new Runnable() {					
 					public void run() {
 						if(getWidgetModel().isAutoSize())
-							getWidgetModel().setSize(((LabelFigure)figure).getAutoSizeDimension());
+							getWidgetModel().setSize(((LabelFigure)figure).getLabel().getPreferredSize());
 					}
 				});
 				
@@ -76,7 +79,7 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 		handler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {
-				((LabelFigure)figure).setFill(!(Boolean)newValue);
+				((LabelFigure)figure).setOpaque(!(Boolean)newValue);
 				return true;
 			}
 		};
@@ -86,13 +89,31 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 			public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {				
 				if((Boolean)newValue)
-					getWidgetModel().setSize(((LabelFigure)figure).getAutoSizeDimension());
+					getWidgetModel().setSize(((LabelFigure)figure).getLabel().getPreferredSize());
 				return true;
 			}
 		};
 		setPropertyChangeHandler(LabelModel.PROP_AUTOSIZE, handler);
 		
+		handler = new IWidgetPropertyChangeHandler(){
+			public boolean handleChange(Object oldValue, Object newValue,
+					IFigure figure) {
+				((LabelFigure)figure).getLabel().setLabelAlignment(
+						(int) (1 * Math.pow(2, (Integer)newValue)));
+				return true;
+			}
+		};
+		setPropertyChangeHandler(LabelModel.PROP_ALIGN_H, handler);
 		
+		handler = new IWidgetPropertyChangeHandler(){
+			public boolean handleChange(Object oldValue, Object newValue,
+					IFigure figure) {
+				((LabelFigure)figure).getLabel().setTextAlignment(
+						(int) (8 * Math.pow(2, (Integer)newValue)));
+				return true;
+			}
+		};
+		setPropertyChangeHandler(LabelModel.PROP_ALIGN_V, handler);
 		
 	}
 

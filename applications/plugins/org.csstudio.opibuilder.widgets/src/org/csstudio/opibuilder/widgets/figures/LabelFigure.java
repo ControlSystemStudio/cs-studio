@@ -3,9 +3,11 @@ package org.csstudio.opibuilder.widgets.figures;
 import org.csstudio.opibuilder.visualparts.BorderFactory;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
 import org.eclipse.draw2d.Figure;
+import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.MarginBorder;
 import org.eclipse.draw2d.RectangleFigure;
+import org.eclipse.draw2d.ScrollPane;
 import org.eclipse.draw2d.StackLayout;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.text.FlowPage;
@@ -17,35 +19,33 @@ import org.eclipse.swt.graphics.Font;
  * A Figure with a bent corner and an embedded TextFlow within a FlowPage that contains
  * text.
  */
-public class LabelFigure extends RectangleFigure
-{
+public class LabelFigure extends Figure{
 
-/** The inner TextFlow **/
-private TextFlow textFlow;
-private FlowPage flowPage;
-private boolean isFill;
+	private Label label;
+	private ScrollPane scrollPane;
+	private boolean opaque;
 
-
-/** 
- * Creates a new StickyNoteFigure with a MarginBorder that is the given size and a
- * FlowPage containing a TextFlow with the style WORD_WRAP_SOFT.
- * 
- * @param borderSize the size of the MarginBorder
- */
-public LabelFigure(boolean withEditorBorder) {
-	if(withEditorBorder)
-		setBorder(BorderFactory.createBorder(BorderStyle.BUTTON_PRESSED, 1, null, ""));
-	
-	setOutline(false);
-	flowPage = new FlowPage();
-	isFill = true;
-	textFlow = new TextFlow();
-	textFlow.setLayoutManager(new ParagraphTextLayout(textFlow,
-				ParagraphTextLayout.WORD_WRAP_HARD));
-	flowPage.add(textFlow);
-	setLayoutManager(new StackLayout());
-	add(flowPage);
-}
+	/** 
+	 * Creates a new StickyNoteFigure with a MarginBorder that is the given size and a
+	 * FlowPage containing a TextFlow with the style WORD_WRAP_SOFT.
+	 * 
+	 * @param borderSize the size of the MarginBorder
+	 */
+	public LabelFigure() {
+		scrollPane = new ScrollPane(){
+			@Override
+			public boolean isOpaque() {
+				return opaque;
+			}
+		};
+		scrollPane.setOpaque(false);
+		
+		setLayoutManager(new StackLayout());
+		add(scrollPane);
+		label = new Label();
+		label.setOpaque(false);
+		scrollPane.setContents(label);		
+	}
 
 	/**
 	 * Returns the text inside the TextFlow.
@@ -53,7 +53,7 @@ public LabelFigure(boolean withEditorBorder) {
 	 * @return the text flow inside the text.
 	 */
 	public String getText() {
-		return textFlow.getText();
+		return label.getText();
 	}
 
 	/**
@@ -61,31 +61,30 @@ public LabelFigure(boolean withEditorBorder) {
 	 * 
 	 * @param newText the new text value.
 	 */
-	public void setText(String newText) {
-		
-		textFlow.setText(newText);
+	public void setText(String newText) {		
+		label.setText(newText);
+		label.setSize(label.getPreferredSize());
 	}
 
-	public Dimension getAutoSizeDimension(){
-		return textFlow.getPreferredSize().getCopy().expand(
-				getInsets().getWidth(), getInsets().getHeight());
+	public Label getLabel() {
+		return label;
 	}
+	
+
+	@Override
+	public void setOpaque(boolean opaque) {		
+		this.opaque = opaque;
+		label.setOpaque(opaque);
+		super.setOpaque(opaque);
+	}
+	
 	
 	@Override
 	public void setFont(Font f) {
-		textFlow.setFont(f);
-		flowPage.setFont(f);
+		label.setFont(f);
 		super.setFont(f);
 		revalidate();			
 	}
-	@Override
-	public void setFill(boolean b) {
-		isFill = b;
-		super.setFill(b);
-			
-	}
-	public boolean isFill(){
-		return isFill;
-	}
+	
 
 }

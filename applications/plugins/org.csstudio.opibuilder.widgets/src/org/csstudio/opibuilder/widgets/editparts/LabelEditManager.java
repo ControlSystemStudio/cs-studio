@@ -85,7 +85,7 @@ protected void initCellEditor() {
 	LabelFigure label = (LabelFigure)getEditPart().getFigure();
 	AbstractWidgetModel labelModel = (AbstractWidgetModel) getEditPart().getModel();
 	getCellEditor().setValue(label.getText());
-	if(label.isFill()){
+	if(label.isOpaque()){
 		getCellEditor().getControl().setBackground(
 			CustomMediaFactory.getInstance().getColor(
 					labelModel.getBackgroundColor()));	

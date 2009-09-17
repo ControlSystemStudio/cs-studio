@@ -6,7 +6,6 @@ import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.widgets.figures.LabelFigure;
-import org.csstudio.opibuilder.widgets.model.LabelModel;
 import org.csstudio.opibuilder.widgets.model.TextIndicatorModel;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueUtil;
@@ -20,9 +19,9 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 
 	@Override
 	protected IFigure doCreateFigure() {
-		LabelFigure labelFigure = new LabelFigure(false);
+		LabelFigure labelFigure = new LabelFigure();
 		labelFigure.setText(getWidgetModel().getText());	
-		labelFigure.setFill(!getWidgetModel().isTransparent());		
+		labelFigure.setOpaque(!getWidgetModel().isTransparent());		
 		return labelFigure;
 	}
 	
@@ -43,7 +42,7 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 				Display.getCurrent().timerExec(10, new Runnable() {					
 					public void run() {
 						if(getWidgetModel().isAutoSize())
-							getWidgetModel().setSize(((LabelFigure)figure).getAutoSizeDimension());
+							getWidgetModel().setSize(((LabelFigure)figure).getLabel().getPreferredSize());
 					}
 				});
 				
@@ -59,7 +58,7 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 					return false;				
 				((LabelFigure)figure).setText(ValueUtil.getString((IValue)newValue));		
 				if(getWidgetModel().isAutoSize())
-					getWidgetModel().setSize(((LabelFigure)figure).getAutoSizeDimension());				
+					getWidgetModel().setSize(((LabelFigure)figure).getLabel().getPreferredSize());				
 				return true;
 			}
 		};
@@ -69,7 +68,7 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 		handler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {
-				((LabelFigure)figure).setFill(!(Boolean)newValue);
+				((LabelFigure)figure).setOpaque(!(Boolean)newValue);
 				return true;
 			}
 		};
@@ -79,7 +78,7 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 			public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {				
 				if((Boolean)newValue)
-					getWidgetModel().setSize(((LabelFigure)figure).getAutoSizeDimension());
+					getWidgetModel().setSize(((LabelFigure)figure).getLabel().getPreferredSize());
 				return true;
 			}
 		};
@@ -91,7 +90,7 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 				if(getWidgetModel().isAutoSize()){
 					Display.getCurrent().timerExec(10, new Runnable() {					
 						public void run() {							
-							getWidgetModel().setSize(((LabelFigure)figure).getAutoSizeDimension());
+							getWidgetModel().setSize(((LabelFigure)figure).getLabel().getPreferredSize());
 						}
 					});					
 				}				
