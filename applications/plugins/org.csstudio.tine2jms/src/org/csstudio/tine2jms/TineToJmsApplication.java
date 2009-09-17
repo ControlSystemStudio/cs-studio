@@ -80,8 +80,6 @@ public class TineToJmsApplication implements IApplication, Stoppable, Observer
         jmsClientId = preference.getString(TineToJmsActivator.PLUGIN_ID, PreferenceKeys.JMS_CLIENT_ID, "", null);
         jmsTopics = preference.getString(TineToJmsActivator.PLUGIN_ID, PreferenceKeys.JMS_TOPICS_ALARM, "", null);
 
-        PreferenceKeys.showPreferences();
-
         working = true;
         restart = false;
         
@@ -106,8 +104,8 @@ public class TineToJmsApplication implements IApplication, Stoppable, Observer
 
         int result = IApplication.EXIT_OK;
         
-        logger.info("Starting...");
-        
+        PreferenceKeys.showPreferences();
+
         // Prepare the stop and restart action objects
         Stop.staticInject(this);
         Restart.staticInject(this);
@@ -228,5 +226,5 @@ public class TineToJmsApplication implements IApplication, Stoppable, Observer
     public void stop()
     {
         logger.info("Method stop() was called...");
-    }
+    }    
 }
