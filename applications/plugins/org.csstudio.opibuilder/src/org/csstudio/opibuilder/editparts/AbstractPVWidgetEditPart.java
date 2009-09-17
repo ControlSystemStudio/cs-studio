@@ -306,11 +306,13 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 	public void deactivate() {
 		if(isActive()){	
 			doDeActivate();
+			for(PV pv : pvMap.values())				
+				pv.stop();
+			
 			for(String pvPropID : pvListenerMap.keySet()){
 				pvMap.get(pvPropID).removeListener(pvListenerMap.get(pvPropID));
 			}
-			for(PV pv : pvMap.values())				
-				pv.stop();
+			
 			pvMap.clear();
 			pvListenerMap.clear();
 			pvConnectedStatusMap.clear();

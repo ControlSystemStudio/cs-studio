@@ -19,6 +19,7 @@ public class PreferencesHelper {
 	public static final String OPI_COLOR_FILE = "opi_color_file"; //$NON-NLS-1$
 	public static final String OPI_FONT_FILE = "opi_font_file"; //$NON-NLS-1$
 	public static final String OPI_RUN_MACROS= "opi_run_macros"; //$NON-NLS-1$
+	public static final String OPI_AUTOSAVE= "opi_autosave"; //$NON-NLS-1$
 
 	
 	 /** @param preferenceName Preference identifier
@@ -41,6 +42,11 @@ public class PreferencesHelper {
     }
 	
     
+    public static boolean isAutoSaveBeforeRunning(){
+    	final IPreferencesService service = Platform.getPreferencesService();
+    	return service.getBoolean(OPIBuilderPlugin.PLUGIN_ID, OPI_AUTOSAVE, false, null);
+    }
+    
     /**Get the macros map from preference store.
      * @return the macros map. null if failed to get macros from preference store.
      */
@@ -57,10 +63,10 @@ public class PreferencesHelper {
 				
 			} catch (Exception e) {
 				CentralLogger.getInstance().error("OPIBuilder.Preference Helper", e); //$NON-NLS-1$
-				return null;
+				return new HashMap<String, String>();
 			}    		
     	}
-    	return null;
+    	return new HashMap<String, String>();
     	
     }
 	

@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.editor.OPIEditor;
 import org.csstudio.opibuilder.model.DisplayModel;
+import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.opibuilder.runmode.RunModeService;
 import org.csstudio.opibuilder.runmode.RunModeService.TargetWindow;
 import org.csstudio.opibuilder.util.ResourceUtil;
@@ -41,9 +42,15 @@ public class RunOPIAction extends Action{
 		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 		IEditorPart activeEditor = page.getActiveEditor();
 		if(activeEditor instanceof OPIEditor){
+			if(PreferencesHelper.isAutoSaveBeforeRunning())
+				activeEditor.doSave(null);
+			
 			//It seems that the synch with editor is not necessary
 			DisplayModel displayModel = ((OPIEditor)activeEditor).getDisplayModel();
-			IEditorInput input = activeEditor.getEditorInput();				
+			
+			IEditorInput input = activeEditor.getEditorInput();	
+			
+			
 			IFile file = null;
 			try {
 				file = ResourceUtil.getFileInEditor(input);

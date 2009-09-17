@@ -2,6 +2,7 @@ package org.csstudio.opibuilder.preferences;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
@@ -45,6 +46,12 @@ public class OPIBuilderPreferencePage extends FieldEditorPreferencePage
 				"font file: ", new String[]{"def"}, parent);//$NON-NLS-2$
 		fontEditor.setTooltip(RESTART_MESSAGE);
 		addField(fontEditor);
+		
+		BooleanFieldEditor autoSaveEditor = 
+			new BooleanFieldEditor(PreferencesHelper.OPI_AUTOSAVE, 
+					"Automatically save file before running.", parent);
+		addField(autoSaveEditor);
+		
 	}
 
 	public void init(IWorkbench workbench) {
