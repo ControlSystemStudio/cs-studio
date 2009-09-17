@@ -22,7 +22,7 @@ public final class ThermometerEditPart extends AbstractMarkedWidgetEditPart {
 	 */
 	@Override
 	protected IFigure doCreateFigure() {
-		ThermometerModel model = getCastedModel();
+		ThermometerModel model = getWidgetModel();
 
 		RefreshableThermoFigure thermometer = new RefreshableThermoFigure();
 		
@@ -37,7 +37,7 @@ public final class ThermometerEditPart extends AbstractMarkedWidgetEditPart {
 	}
 
 	@Override
-	public ThermometerModel getCastedModel() {
+	public ThermometerModel getWidgetModel() {
 		return (ThermometerModel)getModel();
 	}
 	

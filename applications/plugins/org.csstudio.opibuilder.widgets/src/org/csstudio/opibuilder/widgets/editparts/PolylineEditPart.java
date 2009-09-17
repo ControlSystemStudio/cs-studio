@@ -24,7 +24,7 @@ public final class PolylineEditPart extends AbstractPolyEditPart {
 	@Override
 	protected IFigure doCreateFigure() {
 		PolylineFigure polyline = new PolylineFigure();
-		PolyLineModel model = getCastedModel();
+		PolyLineModel model = getWidgetModel();
 		polyline.setPoints(model.getPoints());
 		polyline.setFill(model.getFillLevel());
 		polyline.setAntiAlias(model.isAntiAlias());
@@ -38,7 +38,7 @@ public final class PolylineEditPart extends AbstractPolyEditPart {
 
 	
 	@Override
-	public PolyLineModel getCastedModel() {
+	public PolyLineModel getWidgetModel() {
 		return (PolyLineModel)getModel();
 	}
 	
@@ -105,7 +105,7 @@ public final class PolylineEditPart extends AbstractPolyEditPart {
 					final IFigure refreshableFigure) {
 				PolylineFigure figure = (PolylineFigure) refreshableFigure;
 				figure.setArrowType(ArrowType.values()[(Integer)newValue]);
-				getCastedModel().updateBounds();
+				getWidgetModel().updateBounds();
 				return true;
 			}
 		};
@@ -119,7 +119,7 @@ public final class PolylineEditPart extends AbstractPolyEditPart {
 					final IFigure refreshableFigure) {
 				PolylineFigure figure = (PolylineFigure) refreshableFigure;
 				figure.setArrowLineLength((Integer)newValue);
-				getCastedModel().updateBounds();
+				getWidgetModel().updateBounds();
 				return true;
 			}
 		};

@@ -24,7 +24,7 @@ public final class ScaledSliderEditPart extends AbstractMarkedWidgetEditPart {
 	 */
 	@Override
 	protected IFigure doCreateFigure() {
-		final ScaledSliderModel model = getCastedModel();
+		final ScaledSliderModel model = getWidgetModel();
 
 		ScaledSliderFigure slider = new ScaledSliderFigure();
 		
@@ -48,7 +48,7 @@ public final class ScaledSliderEditPart extends AbstractMarkedWidgetEditPart {
 	}
 
 	@Override
-	public ScaledSliderModel getCastedModel() {
+	public ScaledSliderModel getWidgetModel() {
 		return (ScaledSliderModel)getModel();
 	}
 	

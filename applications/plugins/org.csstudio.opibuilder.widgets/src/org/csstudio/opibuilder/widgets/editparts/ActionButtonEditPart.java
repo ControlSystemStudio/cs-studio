@@ -30,7 +30,7 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 	 */
 	@Override
 	protected IFigure doCreateFigure() {
-		ActionButtonModel model = getCastedModel();
+		ActionButtonModel model = getWidgetModel();
 
 		final ActionButtonFigure buttonFigure = new ActionButtonFigure(getExecutionMode());
 		buttonFigure.setText(model.getText());
@@ -44,17 +44,17 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 					
 					int actionIndex;
 					
-					if(getCastedModel().isToggleButton()){
+					if(getWidgetModel().isToggleButton()){
 						if(buttonFigure.isSelected()){
-							actionIndex = getCastedModel().getActionIndex();
+							actionIndex = getWidgetModel().getActionIndex();
 						}else
-							actionIndex = getCastedModel().getReleasedActionIndex();
+							actionIndex = getWidgetModel().getReleasedActionIndex();
 					}else
-						actionIndex = getCastedModel().getActionIndex();
+						actionIndex = getWidgetModel().getActionIndex();
 					
-					if(actionIndex >= 0 && getCastedModel().getActionsInput().getActionsList().size() > 
+					if(actionIndex >= 0 && getWidgetModel().getActionsInput().getActionsList().size() > 
 						actionIndex)
-						getCastedModel().getActionsInput().getActionsList().get(
+						getWidgetModel().getActionsInput().getActionsList().get(
 							actionIndex).run();				
 				}
 			});
@@ -64,7 +64,7 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 	}
 
 	@Override
-	public ActionButtonModel getCastedModel() {
+	public ActionButtonModel getWidgetModel() {
 		return (ActionButtonModel)getModel();
 	}
 	
@@ -143,7 +143,7 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 
 			
 		};
-		getCastedModel().getProperty(ActionButtonModel.PROP_TOGGLE_BUTTON).
+		getWidgetModel().getProperty(ActionButtonModel.PROP_TOGGLE_BUTTON).
 			addPropertyChangeListener(new PropertyChangeListener(){
 				public void propertyChange(PropertyChangeEvent evt) {
 					buttonStyleHandler.handleChange(evt.getOldValue(), evt.getNewValue(), getFigure());
@@ -157,9 +157,9 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 		* @param newValue
 		*/
 	private void updatePropSheet(final boolean newValue) {
-		getCastedModel().setPropertyVisible(
+		getWidgetModel().setPropertyVisible(
 					ActionButtonModel.PROP_RELEASED_ACTION_INDEX, newValue);
-		getCastedModel().setPropertyDescription(ActionButtonModel.PROP_ACTION_INDEX, 
+		getWidgetModel().setPropertyDescription(ActionButtonModel.PROP_ACTION_INDEX, 
 					newValue ? "Push Action Index" : "Click Action Index" );
 	}
 }

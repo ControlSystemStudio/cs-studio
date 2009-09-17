@@ -74,7 +74,7 @@ public abstract class AbstractBoolControlEditPart extends AbstractBoolEditPart {
 				return true;
 			}
 		};
-		getCastedModel().getProperty(AbstractBoolControlModel.PROP_TOGGLE_BUTTON).
+		getWidgetModel().getProperty(AbstractBoolControlModel.PROP_TOGGLE_BUTTON).
 		addPropertyChangeListener(new PropertyChangeListener(){
 			public void propertyChange(PropertyChangeEvent evt) {
 				toggleHandler.handleChange(evt.getOldValue(), evt.getNewValue(), getFigure());
@@ -136,7 +136,7 @@ public abstract class AbstractBoolControlEditPart extends AbstractBoolEditPart {
 	}
 	
 	@Override
-	public AbstractBoolControlModel getCastedModel() {
+	public AbstractBoolControlModel getWidgetModel() {
 		return (AbstractBoolControlModel)getModel();
 	}
 	
@@ -156,17 +156,17 @@ public abstract class AbstractBoolControlEditPart extends AbstractBoolEditPart {
 				
 				int actionIndex;
 				
-				if(getCastedModel().isToggleButton()){
+				if(getWidgetModel().isToggleButton()){
 					if(figure.getBoolValue()){
-						actionIndex = getCastedModel().getActionIndex();
+						actionIndex = getWidgetModel().getActionIndex();
 					}else
-						actionIndex = getCastedModel().getReleasedActionIndex();
+						actionIndex = getWidgetModel().getReleasedActionIndex();
 				}else
-					actionIndex = getCastedModel().getActionIndex();
+					actionIndex = getWidgetModel().getActionIndex();
 				
-				if(actionIndex >= 0 && getCastedModel().getActionsInput().getActionsList().size() > 
+				if(actionIndex >= 0 && getWidgetModel().getActionsInput().getActionsList().size() > 
 					actionIndex)
-					getCastedModel().getActionsInput().getActionsList().get(
+					getWidgetModel().getActionsInput().getActionsList().get(
 						actionIndex).run();				
 			}
 			
@@ -178,9 +178,9 @@ public abstract class AbstractBoolControlEditPart extends AbstractBoolEditPart {
 	* @param newValue
 	*/
 	private void updatePropSheet(final boolean newValue) {
-		getCastedModel().setPropertyVisible(
+		getWidgetModel().setPropertyVisible(
 				AbstractBoolControlModel.PROP_RELEASED_ACTION_INDEX, newValue);
-		getCastedModel().setPropertyDescription(AbstractBoolControlModel.PROP_ACTION_INDEX, 
+		getWidgetModel().setPropertyDescription(AbstractBoolControlModel.PROP_ACTION_INDEX, 
 				newValue ? "Push Action Index" : "Click Action Index" );
 	}
 

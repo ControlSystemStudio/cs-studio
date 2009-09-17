@@ -67,7 +67,7 @@ public class CopyWidgetsAction extends SelectionAction {
 		for (Object o : selection) {
 			if (o instanceof AbstractBaseEditPart) {
 				selectedWidgetModels.add(((AbstractBaseEditPart) o)
-						.getCastedModel());
+						.getWidgetModel());
 			}
 		}
 		return selectedWidgetModels;

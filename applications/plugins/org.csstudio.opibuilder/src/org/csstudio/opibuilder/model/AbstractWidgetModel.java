@@ -141,9 +141,10 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 		addProperty(new FontProperty(PROP_FONT, "Font", 
 				WidgetPropertyCategory.Display, CustomMediaFactory.FONT_ARIAL));
 		addProperty(new ScriptProperty(PROP_SCRIPTS, "Scripts", 
-				WidgetPropertyCategory.Basic));
+				WidgetPropertyCategory.Behavior));
 		addProperty(new ActionsProperty(PROP_ACTIONS, "Actions", 
 				WidgetPropertyCategory.Behavior));
+		addProperty(new StringProperty(PROP_TOOLTIP, "Tooltip", WidgetPropertyCategory.Display, "", true));
 			
 			
 		WidgetDescriptor descriptor = WidgetsService.getInstance().getWidgetDescriptor(getTypeID());
@@ -265,6 +266,10 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 		return new Dimension(
 				((Integer)getCastedPropertyValue(PROP_WIDTH)).intValue(),
 				((Integer)getCastedPropertyValue(PROP_HEIGHT)).intValue());
+	}
+	
+	public String getTooltip(){
+		return (String)getCastedPropertyValue(PROP_TOOLTIP);
 	}
 	
 	public String getType(){

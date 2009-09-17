@@ -57,5 +57,16 @@ public class ActionsInput {
 		return hookUpToWidget;
 	}
 	
+	@Override
+	public String toString() {
+		if(actionsList.size() ==0){
+			return "no action";
+		}
+		if(actionsList.size() == 1){
+			return actionsList.get(0).getDescription();
+		}
+		return actionsList.size() + " actions";
+	}
+	
 	
 }

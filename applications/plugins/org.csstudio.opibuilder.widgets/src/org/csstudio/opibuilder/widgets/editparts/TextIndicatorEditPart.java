@@ -21,8 +21,8 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 	@Override
 	protected IFigure doCreateFigure() {
 		LabelFigure labelFigure = new LabelFigure(false);
-		labelFigure.setText(getCastedModel().getText());	
-		labelFigure.setFill(!getCastedModel().isTransparent());		
+		labelFigure.setText(getWidgetModel().getText());	
+		labelFigure.setFill(!getWidgetModel().isTransparent());		
 		return labelFigure;
 	}
 	
@@ -42,8 +42,8 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 				((LabelFigure)figure).setText((String)newValue);
 				Display.getCurrent().timerExec(10, new Runnable() {					
 					public void run() {
-						if(getCastedModel().isAutoSize())
-							getCastedModel().setSize(((LabelFigure)figure).getAutoSizeDimension());
+						if(getWidgetModel().isAutoSize())
+							getWidgetModel().setSize(((LabelFigure)figure).getAutoSizeDimension());
 					}
 				});
 				
@@ -58,8 +58,8 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 				if(newValue == null)
 					return false;				
 				((LabelFigure)figure).setText(ValueUtil.getString((IValue)newValue));		
-				if(getCastedModel().isAutoSize())
-					getCastedModel().setSize(((LabelFigure)figure).getAutoSizeDimension());				
+				if(getWidgetModel().isAutoSize())
+					getWidgetModel().setSize(((LabelFigure)figure).getAutoSizeDimension());				
 				return true;
 			}
 		};
@@ -79,7 +79,7 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 			public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {				
 				if((Boolean)newValue)
-					getCastedModel().setSize(((LabelFigure)figure).getAutoSizeDimension());
+					getWidgetModel().setSize(((LabelFigure)figure).getAutoSizeDimension());
 				return true;
 			}
 		};
@@ -88,10 +88,10 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 		handler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
 					final IFigure figure) {
-				if(getCastedModel().isAutoSize()){
+				if(getWidgetModel().isAutoSize()){
 					Display.getCurrent().timerExec(10, new Runnable() {					
 						public void run() {							
-							getCastedModel().setSize(((LabelFigure)figure).getAutoSizeDimension());
+							getWidgetModel().setSize(((LabelFigure)figure).getAutoSizeDimension());
 						}
 					});					
 				}				
@@ -104,7 +104,7 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 	}
 	
 	@Override
-	public TextIndicatorModel getCastedModel() {
+	public TextIndicatorModel getWidgetModel() {
 		return (TextIndicatorModel)getModel();
 	}
 	

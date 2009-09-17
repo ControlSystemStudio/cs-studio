@@ -14,7 +14,7 @@ public class LEDEditPart extends AbstractBoolEditPart{
 
 	@Override
 	protected IFigure doCreateFigure() {
-		final LEDModel model = getCastedModel();
+		final LEDModel model = getWidgetModel();
 
 		LEDFigure led = new LEDFigure();
 		
@@ -27,7 +27,7 @@ public class LEDEditPart extends AbstractBoolEditPart{
 	}
 
 	@Override
-	public LEDModel getCastedModel() {
+	public LEDModel getWidgetModel() {
 		return (LEDModel)getModel();
 	}
 	

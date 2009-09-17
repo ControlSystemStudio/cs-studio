@@ -22,7 +22,7 @@ public final class GaugeEditPart extends AbstractMarkedWidgetEditPart {
 	 */
 	@Override
 	protected IFigure doCreateFigure() {
-		final GaugeModel model = getCastedModel();
+		final GaugeModel model = getWidgetModel();
 
 		RefreshableGaugeFigure gauge = new RefreshableGaugeFigure();
 		
@@ -36,7 +36,7 @@ public final class GaugeEditPart extends AbstractMarkedWidgetEditPart {
 	}
 	
 	@Override
-	public GaugeModel getCastedModel() {
+	public GaugeModel getWidgetModel() {
 		return (GaugeModel)getModel();
 	}
 

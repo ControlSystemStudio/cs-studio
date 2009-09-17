@@ -33,7 +33,7 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 	@Override
 	protected IFigure doCreateFigure() {
 		LinkingContainerFigure f = new LinkingContainerFigure();		
-		f.setZoomToFitAll(getCastedModel().isAutoFit());
+		f.setZoomToFitAll(getWidgetModel().isAutoFit());
 		return f;
 	}
 	
@@ -49,11 +49,11 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 	@Override
 	public void activate() {
 		super.activate();	
-		loadWidgets(getCastedModel().getOPIFilePath(), false);
+		loadWidgets(getWidgetModel().getOPIFilePath(), false);
 	}
 	
 	@Override
-	public LinkingContainerModel getCastedModel() {
+	public LinkingContainerModel getWidgetModel() {
 		return (LinkingContainerModel)getModel();
 	}
 	
@@ -96,7 +96,7 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 	 * @param path the path of the OPI file
 	 */
 	private void loadWidgets(IPath path, boolean checkSelf) {	
-		getCastedModel().removeAllChildren();
+		getWidgetModel().removeAllChildren();
 		if(path ==null || path.isEmpty())
 			return;
 		
@@ -113,17 +113,17 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 			XMLUtil.fillDisplayModelFromInputStream(
 					ResourceUtil.pathToInputStream(path), tempDisplayModel);
 			for(AbstractWidgetModel child : tempDisplayModel.getChildren())	
-				getCastedModel().addChild(child);
-			getCastedModel().setBackgroundColor(tempDisplayModel.getBackgroundColor());
+				getWidgetModel().addChild(child);
+			getWidgetModel().setBackgroundColor(tempDisplayModel.getBackgroundColor());
 			tempDisplayModel.removeAllChildren();
 		} catch (Exception e) {
 			LabelModel loadingErrorLabel = new LabelModel();
 			loadingErrorLabel.setLocation(0, 0);
-			loadingErrorLabel.setSize(getCastedModel().getSize().getCopy().shrink(3, 3));
+			loadingErrorLabel.setSize(getWidgetModel().getSize().getCopy().shrink(3, 3));
 			loadingErrorLabel.setForegroundColor(CustomMediaFactory.COLOR_RED);
 			loadingErrorLabel.setText("Failed to load: " + path.toString() + "\n"+ e);
 			loadingErrorLabel.setName("Label");
-			getCastedModel().addChild(loadingErrorLabel);		
+			getWidgetModel().addChild(loadingErrorLabel);		
 			CentralLogger.getInstance().error(this, e);
 		}
 		UIBundlingThread.getInstance().addRunnable(new Runnable(){

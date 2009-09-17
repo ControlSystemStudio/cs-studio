@@ -76,11 +76,11 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
 	public void activate() {
 		//set macro map
 		Map<String, String> macrosMap = new HashMap<String, String>();
-		macrosMap.putAll(getCastedModel().getMacrosInput().getMacrosMap());
-		if(getCastedModel().getMacrosInput().isInclude_parent_macros()){
-			macrosMap.putAll(getCastedModel().getParentMacroMap());
+		macrosMap.putAll(getWidgetModel().getMacrosInput().getMacrosMap());
+		if(getWidgetModel().getMacrosInput().isInclude_parent_macros()){
+			macrosMap.putAll(getWidgetModel().getParentMacroMap());
 		}
-		getCastedModel().setMacroMap(macrosMap);
+		getWidgetModel().setMacroMap(macrosMap);
 		
 		super.activate();
 		
@@ -101,7 +101,7 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
 							refreshChildren();						
 					}
 				};
-		getCastedModel().getChildrenProperty().
+		getWidgetModel().getChildrenProperty().
 			addPropertyChangeListener(childrenPropertyChangeListener);
 		
 		if(getExecutionMode() == ExecutionMode.EDIT_MODE){
@@ -124,7 +124,7 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
 				}
 			};
 			
-			getCastedModel().getSelectionProperty().addPropertyChangeListener(
+			getWidgetModel().getSelectionProperty().addPropertyChangeListener(
 					selectionPropertyChangeListener);
 		}
 		
@@ -143,9 +143,9 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
 				Map<String, String> macrosMap = new HashMap<String, String>();
 				macrosMap.putAll(macrosInput.getMacrosMap());
 				if(macrosInput.isInclude_parent_macros()){	
-					macrosMap.putAll(getCastedModel().getParentMacroMap());					
+					macrosMap.putAll(getWidgetModel().getParentMacroMap());					
 				}
-				getCastedModel().setMacroMap(macrosMap);
+				getWidgetModel().setMacroMap(macrosMap);
 				return false;
 			}
 		};
@@ -157,10 +157,10 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
 	@Override
 	public void deactivate() {
 		super.deactivate();
-		getCastedModel().getChildrenProperty().
+		getWidgetModel().getChildrenProperty().
 			removeAllPropertyChangeListeners();
 		childrenPropertyChangeListener = null;
-		getCastedModel().getSelectionProperty().removeAllPropertyChangeListeners();
+		getWidgetModel().getSelectionProperty().removeAllPropertyChangeListeners();
 		selectionPropertyChangeListener = null;
 	}
 	
@@ -171,7 +171,7 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
 	}
 
 	@Override
-	public AbstractContainerModel getCastedModel() {
+	public AbstractContainerModel getWidgetModel() {
 		return (AbstractContainerModel)getModel();
 	}
 

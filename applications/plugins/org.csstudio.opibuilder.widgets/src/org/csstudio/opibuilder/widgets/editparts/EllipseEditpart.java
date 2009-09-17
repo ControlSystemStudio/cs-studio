@@ -16,7 +16,7 @@ public class EllipseEditpart extends AbstractShapeEditPart {
 	@Override
 	protected IFigure doCreateFigure() {
 		EllipseFigure figure = new EllipseFigure();
-		EllipseModel model = getCastedModel();
+		EllipseModel model = getWidgetModel();
 		figure.setFill(model.getFillLevel());
 		figure.setOrientation(model.isHorizontalFill());
 		figure.setTransparent(model.isTransparent());
@@ -25,7 +25,7 @@ public class EllipseEditpart extends AbstractShapeEditPart {
 	}	
 	
 	@Override
-	public EllipseModel getCastedModel() {
+	public EllipseModel getWidgetModel() {
 		return (EllipseModel)getModel();
 	}
 	

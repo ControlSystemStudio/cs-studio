@@ -22,7 +22,7 @@ public final class TankEditPart extends AbstractMarkedWidgetEditPart {
 	 */
 	@Override
 	protected IFigure doCreateFigure() {
-		TankModel model = getCastedModel();
+		TankModel model = getWidgetModel();
 
 		RefreshableTankFigure tank = new RefreshableTankFigure();
 		
@@ -35,7 +35,7 @@ public final class TankEditPart extends AbstractMarkedWidgetEditPart {
 	}
 
 	@Override
-	public TankModel getCastedModel() {
+	public TankModel getWidgetModel() {
 		return (TankModel)getModel();
 	}
 	

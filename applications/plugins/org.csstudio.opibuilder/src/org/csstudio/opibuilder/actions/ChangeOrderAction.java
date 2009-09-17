@@ -198,10 +198,10 @@ public class ChangeOrderAction extends SelectionAction {
 		for(Object selection : getSelectedObjects()){
 			if(selection instanceof AbstractBaseEditPart){
 				AbstractBaseEditPart widgetEditpart = (AbstractBaseEditPart)selection;
-				AbstractWidgetModel widgetModel = widgetEditpart.getCastedModel();
+				AbstractWidgetModel widgetModel = widgetEditpart.getWidgetModel();
 				if(widgetEditpart.getParent() instanceof AbstractContainerEditpart){
 					AbstractContainerModel containerModel = 
-						((AbstractContainerEditpart)widgetEditpart.getParent()).getCastedModel();
+						((AbstractContainerEditpart)widgetEditpart.getParent()).getWidgetModel();
 					
 					if(!widgetMap.containsKey(containerModel)){
 						widgetMap.put(containerModel, new LinkedList<IndexedWidget>());

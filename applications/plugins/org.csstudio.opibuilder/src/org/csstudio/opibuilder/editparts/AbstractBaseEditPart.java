@@ -29,6 +29,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.InputEvent;
+import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.LabeledBorder;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
@@ -56,8 +57,11 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 	
 	private ExecutionMode executionMode;
 	
+	private Label tooltipLabel;
+	
 	public AbstractBaseEditPart() {
-		propertyListenerMap = new HashMap<String, WidgetPropertyChangeListener>();	
+		propertyListenerMap = new HashMap<String, WidgetPropertyChangeListener>();
+		tooltipLabel = new Label();
 	}
 	@SuppressWarnings("unchecked")
 	@Override
@@ -98,42 +102,52 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 	@Override
 	protected IFigure createFigure() {
 		IFigure figure = doCreateFigure();
+		return figure;
+	}
+	
+	
+	/** initialize the figure
+	 * @param figure
+	 */
+	protected void initFigure(IFigure figure) {
 		if(figure == null)
 			throw new IllegalArgumentException("Editpart does not provide a figure!"); //$NON-NLS-1$
-		Set<String> allPropIds = getCastedModel().getAllPropertyIDs();
+		Set<String> allPropIds = getWidgetModel().getAllPropertyIDs();
 		if(allPropIds.contains(AbstractWidgetModel.PROP_COLOR_BACKGROUND))
 			figure.setBackgroundColor(CustomMediaFactory.getInstance().getColor(
-				getCastedModel().getBackgroundColor()));
+				getWidgetModel().getBackgroundColor()));
 
 		if(allPropIds.contains(AbstractWidgetModel.PROP_COLOR_FOREGROUND))
 			figure.setForegroundColor(CustomMediaFactory.getInstance().getColor(
-				getCastedModel().getForegroundColor()));
+				getWidgetModel().getForegroundColor()));
 		
 		if(allPropIds.contains(AbstractWidgetModel.PROP_VISIBLE))
 			figure.setVisible(getExecutionMode() == ExecutionMode.RUN_MODE ? 
-				getCastedModel().isVisible() : true);
+				getWidgetModel().isVisible() : true);
 		
 		if(allPropIds.contains(AbstractWidgetModel.PROP_ENABLED))
-			figure.setEnabled(getCastedModel().isEnabled());
+			figure.setEnabled(getWidgetModel().isEnabled());
 		
 		if(allPropIds.contains(AbstractWidgetModel.PROP_WIDTH) && 
 				allPropIds.contains(AbstractWidgetModel.PROP_HEIGHT))
-			figure.setSize(getCastedModel().getSize());
+			figure.setSize(getWidgetModel().getSize());
 		
 		if(allPropIds.contains(AbstractWidgetModel.PROP_BORDER_COLOR) &&
 				allPropIds.contains(AbstractWidgetModel.PROP_BORDER_STYLE) &&
 				allPropIds.contains(AbstractWidgetModel.PROP_BORDER_WIDTH))
 			figure.setBorder(BorderFactory.createBorder(
-				getCastedModel().getBorderStyle(), getCastedModel().getBorderWidth(), 
-				getCastedModel().getBorderColor(), getCastedModel().getName()));
+				getWidgetModel().getBorderStyle(), getWidgetModel().getBorderWidth(), 
+				getWidgetModel().getBorderColor(), getWidgetModel().getName()));
 		
 		if(allPropIds.contains(AbstractWidgetModel.PROP_FONT))
-			figure.setFont(CustomMediaFactory.getInstance().getFont(getCastedModel().getFont()));
+			figure.setFont(CustomMediaFactory.getInstance().getFont(getWidgetModel().getFont()));
 		
-			
-		
-		
-		return figure;
+		if(allPropIds.contains(AbstractWidgetModel.PROP_TOOLTIP)){
+			if(!getWidgetModel().getTooltip().equals("")){ //$NON-NLS-1$
+				tooltipLabel.setText(getWidgetModel().getTooltip());
+				figure.setToolTip(tooltipLabel);
+			}			
+		}
 	}
 	
 	protected abstract IFigure doCreateFigure();
@@ -145,18 +159,19 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 		if(!isActive()){
 			super.activate();
 			
+			initFigure(getFigure());
 			
 			//add listener to all properties.
-			for(String id : getCastedModel().getAllPropertyIDs()){
+			for(String id : getWidgetModel().getAllPropertyIDs()){
 				WidgetPropertyChangeListener listener = 
 					new WidgetPropertyChangeListener(this);
-				AbstractWidgetProperty property = getCastedModel().getProperty(id); 
+				AbstractWidgetProperty property = getWidgetModel().getProperty(id); 
 				property.addPropertyChangeListener(
 					listener);
 				propertyListenerMap.put(id, listener);				
 				if(property != null){
 					property.setExecutionMode(executionMode);
-					property.setWidgetModel(getCastedModel());
+					property.setWidgetModel(getWidgetModel());
 				}
 				
 			}
@@ -167,15 +182,15 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 			
 			if(executionMode == ExecutionMode.RUN_MODE){
 				//hook action
-				Set<String> allPropIds = getCastedModel().getAllPropertyIDs();
+				Set<String> allPropIds = getWidgetModel().getAllPropertyIDs();
 				if(allPropIds.contains(AbstractWidgetModel.PROP_ACTIONS) && 
 						allPropIds.contains(AbstractWidgetModel.PROP_ENABLED)){
-					if(getCastedModel().isEnabled() && 
-							getCastedModel().getActionsInput().getActionsList().size() > 0 && 
-							getCastedModel().getActionsInput().isHookedUpToWidget()){
+					if(getWidgetModel().isEnabled() && 
+							getWidgetModel().getActionsInput().getActionsList().size() > 0 && 
+							getWidgetModel().getActionsInput().isHookedUpToWidget()){
 						figure.setCursor(ResourceUtil.CURSOR_HAND);
 						final AbstractWidgetAction action = 
-							getCastedModel().getActionsInput().getActionsList().get(0);
+							getWidgetModel().getActionsInput().getActionsList().get(0);
 						figure.addMouseListener(new MouseListener.Stub(){
 							
 							@Override
@@ -200,7 +215,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 				
 				//script execution
 				pvMap.clear();				
-				ScriptsInput scriptsInput = getCastedModel().getScriptsInput();				
+				ScriptsInput scriptsInput = getWidgetModel().getScriptsInput();				
 				for(ScriptData scriptData : scriptsInput.getScriptList()){						
 						final PV[] pvArray = new PV[scriptData.getPVList().size()];
 						int i = 0;
@@ -245,11 +260,11 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 		if(isActive()){
 			super.deactivate();
 			//remove listener from all properties.
-			for(String id : getCastedModel().getAllPropertyIDs()){
-				getCastedModel().getProperty(id).removeAllPropertyChangeListeners();//removePropertyChangeListener(propertyListenerMap.get(id));				
+			for(String id : getWidgetModel().getAllPropertyIDs()){
+				getWidgetModel().getProperty(id).removeAllPropertyChangeListeners();//removePropertyChangeListener(propertyListenerMap.get(id));				
 			}
 			if(executionMode == ExecutionMode.RUN_MODE){
-				ScriptsInput scriptsInput = getCastedModel().getScriptsInput();
+				ScriptsInput scriptsInput = getWidgetModel().getScriptsInput();
 				
 				for(final ScriptData scriptData : scriptsInput.getScriptList()){
 					ScriptService.getInstance().unregisterScript(scriptData);
@@ -326,8 +341,8 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 					IFigure figure) {
 				figure.setBorder(
 					BorderFactory.createBorder(BorderStyle.values()[(Integer)newValue],
-					getCastedModel().getBorderWidth(), getCastedModel().getBorderColor(),
-					getCastedModel().getName()));
+					getWidgetModel().getBorderWidth(), getWidgetModel().getBorderColor(),
+					getWidgetModel().getName()));
 				return true;
 			}
 		};
@@ -339,9 +354,9 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 			public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {
 				figure.setBorder(
-					BorderFactory.createBorder(getCastedModel().getBorderStyle(),
-					getCastedModel().getBorderWidth(), ((OPIColor)newValue).getRGBValue(),
-					getCastedModel().getName()));
+					BorderFactory.createBorder(getWidgetModel().getBorderStyle(),
+					getWidgetModel().getBorderWidth(), ((OPIColor)newValue).getRGBValue(),
+					getWidgetModel().getName()));
 				return true;
 			}
 		};
@@ -352,9 +367,9 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 			public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {
 				figure.setBorder(
-					BorderFactory.createBorder(getCastedModel().getBorderStyle(),
-					(Integer)newValue, getCastedModel().getBorderColor(),
-					getCastedModel().getName()));
+					BorderFactory.createBorder(getWidgetModel().getBorderStyle(),
+					(Integer)newValue, getWidgetModel().getBorderColor(),
+					getWidgetModel().getName()));
 				return true;
 			}
 		};
@@ -366,8 +381,8 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 					IFigure figure) {
 				if(figure.getBorder() instanceof LabeledBorder)
 					figure.setBorder(
-							BorderFactory.createBorder(getCastedModel().getBorderStyle(),
-									getCastedModel().getBorderWidth(), getCastedModel().getBorderColor(),
+							BorderFactory.createBorder(getWidgetModel().getBorderStyle(),
+									getWidgetModel().getBorderWidth(), getWidgetModel().getBorderColor(),
 									(String)newValue));
 				return true;
 			}
@@ -392,6 +407,20 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 			}
 		};		
 		setPropertyChangeHandler(AbstractWidgetModel.PROP_FONT, fontHandler);
+		
+		IWidgetPropertyChangeHandler tooltipHandler = new IWidgetPropertyChangeHandler(){
+			public boolean handleChange(Object oldValue, Object newValue,
+					IFigure figure) {
+				if(newValue.toString().equals("")) //$NON-NLS-1$
+					figure.setToolTip(null);
+				else{
+					tooltipLabel.setText(newValue.toString());
+					figure.setToolTip(tooltipLabel);		
+				}
+				return true;
+			}
+		};		
+		setPropertyChangeHandler(AbstractWidgetModel.PROP_TOOLTIP, tooltipHandler);
 		
 		IWidgetPropertyChangeHandler visibilityHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue, final Object newValue, final IFigure refreshableFigure) {
@@ -429,7 +458,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 	
 	
 	
-	public AbstractWidgetModel getCastedModel(){
+	public AbstractWidgetModel getWidgetModel(){
 		return (AbstractWidgetModel)getModel();
 	}
 	
@@ -462,7 +491,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 	 */
 	protected synchronized void doRefreshVisuals(final IFigure refreshableFigure) {
 		super.refreshVisuals();
-		AbstractWidgetModel model = getCastedModel();
+		AbstractWidgetModel model = getWidgetModel();
 		GraphicalEditPart parent = (GraphicalEditPart) getParent();
 		if(parent != null){
 			parent.setLayoutConstraint(this, refreshableFigure, new Rectangle(
@@ -475,6 +504,14 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 	 */
 	public void setExecutionMode(ExecutionMode executionMode) {
 		this.executionMode = executionMode;		
+		for(String id : getWidgetModel().getAllPropertyIDs()){			
+			AbstractWidgetProperty property = getWidgetModel().getProperty(id); 					
+			if(property != null){
+				property.setExecutionMode(executionMode);
+				property.setWidgetModel(getWidgetModel());
+			}
+			
+		}
 	}
 
 	/**

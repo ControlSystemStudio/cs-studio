@@ -162,7 +162,7 @@ public class CreateGroupAction implements IObjectActionDelegate {
 		for (Object o : selection.toList()) {
 			if (o instanceof AbstractBaseEditPart) {
 				selectedWidgetModels.add(((AbstractBaseEditPart) o)
-						.getCastedModel());
+						.getWidgetModel());
 			}
 		}
 		return selectedWidgetModels;

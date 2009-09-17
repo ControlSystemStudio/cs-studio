@@ -43,12 +43,12 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 	private List<Trace> traceList;
 	
 	@Override
-	public XYGraphModel getCastedModel() {
+	public XYGraphModel getWidgetModel() {
 		return (XYGraphModel)getModel();
 	}
 	@Override
 	protected IFigure doCreateFigure() {
-		final XYGraphModel model = getCastedModel();
+		final XYGraphModel model = getWidgetModel();
 		ToolbarArmedXYGraph xyGraphFigure = new ToolbarArmedXYGraph();
 		XYGraph xyGraph = xyGraphFigure.getXYGraph();
 		xyGraph.setTitle(model.getTitle());
@@ -227,7 +227,7 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 				return true;
 			}			
 		};
-		getCastedModel().getProperty(XYGraphModel.PROP_AXES_AMOUNT).
+		getWidgetModel().getProperty(XYGraphModel.PROP_AXES_AMOUNT).
 		addPropertyChangeListener(new PropertyChangeListener(){
 		public void propertyChange(PropertyChangeEvent evt) {
 			handler.handleChange(evt.getOldValue(), evt.getNewValue(), getFigure());
@@ -354,7 +354,7 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 				return true;
 			}			
 		};
-		getCastedModel().getProperty(XYGraphModel.PROP_TRACES_AMOUNT).
+		getWidgetModel().getProperty(XYGraphModel.PROP_TRACES_AMOUNT).
 			addPropertyChangeListener(new PropertyChangeListener(){
 			public void propertyChange(PropertyChangeEvent evt) {
 				handler.handleChange(evt.getOldValue(), evt.getNewValue(), getFigure());

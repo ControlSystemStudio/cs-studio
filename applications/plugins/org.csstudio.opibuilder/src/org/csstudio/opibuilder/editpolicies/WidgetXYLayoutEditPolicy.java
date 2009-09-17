@@ -57,7 +57,7 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
 		if(!(child instanceof AbstractBaseEditPart) || !(constraint instanceof Rectangle))
 			return super.createChangeConstraintCommand(request, child, constraint);
 		AbstractBaseEditPart part = (AbstractBaseEditPart) child;
-		AbstractWidgetModel widgetModel = part.getCastedModel();
+		AbstractWidgetModel widgetModel = part.getWidgetModel();
 
 		IGraphicalFeedbackFactory feedbackFactory = 
 			WidgetsService.getInstance().getWidgetFeedbackFactory(widgetModel.getTypeID());
@@ -275,7 +275,7 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
 					horizontal ? SnapToGuides.KEY_HORIZONTAL_ANCHOR
 							: SnapToGuides.KEY_VERTICAL_ANCHOR)).intValue();
 			ChangeGuideCommand cgm = new ChangeGuideCommand(
-					part.getCastedModel(), horizontal);
+					part.getWidgetModel(), horizontal);
 			cgm.setNewGuide(findGuideAt(guidePos.intValue(), horizontal),
 					alignment);
 			result = result.chain(cgm);
@@ -308,7 +308,7 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
 				horizontal ? SnapToGuides.KEY_HORIZONTAL_GUIDE
 						: SnapToGuides.KEY_VERTICAL_GUIDE);
 		if (guidePos == null) {
-			result = result.chain(new ChangeGuideCommand(part.getCastedModel(),
+			result = result.chain(new ChangeGuideCommand(part.getWidgetModel(),
 					horizontal));
 		}
 

@@ -14,7 +14,7 @@ public class BoolButtonEditPart extends AbstractBoolControlEditPart{
 
 	@Override
 	protected IFigure doCreateFigure() {
-		final BoolButtonModel model = getCastedModel();
+		final BoolButtonModel model = getWidgetModel();
 
 		BoolButtonFigure btn = new BoolButtonFigure();
 		
@@ -29,7 +29,7 @@ public class BoolButtonEditPart extends AbstractBoolControlEditPart{
 	
 	
 	@Override
-	public BoolButtonModel getCastedModel() {
+	public BoolButtonModel getWidgetModel() {
 		return (BoolButtonModel)getModel();
 	}
 

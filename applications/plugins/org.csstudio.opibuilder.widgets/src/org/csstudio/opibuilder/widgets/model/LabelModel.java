@@ -27,7 +27,7 @@ public class LabelModel extends AbstractWidgetModel {
 	@Override
 	protected void configureProperties() {
 		addProperty(new StringProperty(PROP_TEXT, "Text", 
-				WidgetPropertyCategory.Display, "Input Text"));
+				WidgetPropertyCategory.Display, "Input Text", true));
 		addProperty(new BooleanProperty(PROP_TRANSPARENT, "Transparent Background",
 				WidgetPropertyCategory.Display, false));
 		addProperty(new BooleanProperty(PROP_AUTOSIZE, "Auto Size", 

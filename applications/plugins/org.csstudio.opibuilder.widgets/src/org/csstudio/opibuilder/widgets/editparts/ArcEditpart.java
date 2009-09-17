@@ -18,7 +18,7 @@ public class ArcEditpart extends AbstractShapeEditPart {
 	@Override
 	protected IFigure doCreateFigure() {
 		ArcFigure figure = new ArcFigure();
-		ArcModel model = getCastedModel();
+		ArcModel model = getWidgetModel();
 		figure.setFill(model.isFill());		
 		figure.setAntiAlias(model.isAntiAlias());
 		figure.setStartAngle(model.getStartAngle());
@@ -27,7 +27,7 @@ public class ArcEditpart extends AbstractShapeEditPart {
 	}	
 	
 	@Override
-	public ArcModel getCastedModel() {
+	public ArcModel getWidgetModel() {
 		return (ArcModel)getModel();
 	}
 	

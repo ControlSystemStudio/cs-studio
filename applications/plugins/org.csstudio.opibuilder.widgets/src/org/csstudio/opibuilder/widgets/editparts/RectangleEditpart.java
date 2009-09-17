@@ -13,7 +13,7 @@ public class RectangleEditpart extends AbstractShapeEditPart {
 	@Override
 	protected IFigure doCreateFigure() {
 		RefreshableRectangleFigure figure = new RefreshableRectangleFigure();
-		RectangleModel model = getCastedModel();
+		RectangleModel model = getWidgetModel();
 		figure.setFill(model.getFillLevel());
 		figure.setOrientation(model.isHorizontalFill());
 		figure.setTransparent(model.isTransparent());
@@ -22,7 +22,7 @@ public class RectangleEditpart extends AbstractShapeEditPart {
 	}	
 	
 	@Override
-	public RectangleModel getCastedModel() {
+	public RectangleModel getWidgetModel() {
 		return (RectangleModel)getModel();
 	}
 	

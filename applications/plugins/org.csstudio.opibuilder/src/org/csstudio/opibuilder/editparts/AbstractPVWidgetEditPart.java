@@ -150,7 +150,7 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 				pvMap.clear();	
 				pvConnectedStatusMap.clear();
 				saveFigureOKStatus(getFigure());
-				final Map<StringProperty, PVValueProperty> pvValueMap = getCastedModel().getPVMap();
+				final Map<StringProperty, PVValueProperty> pvValueMap = getWidgetModel().getPVMap();
 				
 				for(final StringProperty sp : pvValueMap.keySet()){
 					
@@ -178,7 +178,7 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 								markWidgetAsDisconnected(pv.getName());
 							}
 
-							public void pvValueUpdate(PV pv) {
+							public synchronized void pvValueUpdate(PV pv) {
 								if(pv == null)
 									return;
 								if(pvConnectedStatusMap.containsKey(pv.getName()) && 
@@ -234,7 +234,7 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IFigure figure) {
-				AbstractPVWidgetModel model = getCastedModel();
+				AbstractPVWidgetModel model = getWidgetModel();
 				if(!model.isBorderAlarmSensitve() && !model.isBackColorAlarmSensitve() &&
 						!model.isForeColorAlarmSensitve())
 					return false;			
@@ -319,9 +319,9 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 	}
 	
 	public String getName() {		
-		 if(getCastedModel().getPVMap().isEmpty())
+		 if(getWidgetModel().getPVMap().isEmpty())
 			 return "";
-		return (String)((StringProperty)getCastedModel().getPVMap().keySet().toArray()[0])
+		return (String)((StringProperty)getWidgetModel().getPVMap().keySet().toArray()[0])
 			.getPropertyValue();
 	}
 	
@@ -371,7 +371,7 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 	}
 	
 	@Override
-	public AbstractPVWidgetModel getCastedModel() {
+	public AbstractPVWidgetModel getWidgetModel() {
 		return (AbstractPVWidgetModel)getModel();
 	}
 

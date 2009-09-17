@@ -40,5 +40,16 @@ public class ScriptsInput {
 		return copy;
 	}
 	
+	@Override
+	public String toString() {
+		if(scriptList.size() ==0){
+			return "no script attached";
+		}
+		if(scriptList.size() == 1){
+			return scriptList.get(0).getPath().toString();
+		}
+		return scriptList.size() + " scripts attached";
+	}
+	
 	
 }

@@ -18,14 +18,14 @@ public abstract class AbstractShapeEditPart extends AbstractPVWidgetEditPart {
 	
 	
 	@Override
-	public AbstractShapeModel getCastedModel() {
+	public AbstractShapeModel getWidgetModel() {
 		return (AbstractShapeModel)getModel();
 	}
 	
 	@Override
 	protected IFigure createFigure() {
 		Shape shape = (Shape) super.createFigure();
-		AbstractShapeModel model = getCastedModel();
+		AbstractShapeModel model = getWidgetModel();
 		shape.setOutline(model.getLineWidth() != 0);	
 		shape.setLineWidth(model.getLineWidth());
 		shape.setLineStyle(model.getLineStyle());

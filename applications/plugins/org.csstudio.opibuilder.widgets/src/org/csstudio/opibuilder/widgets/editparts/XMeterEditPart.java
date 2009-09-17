@@ -21,7 +21,7 @@ public final class XMeterEditPart extends AbstractMarkedWidgetEditPart {
 	 */
 	@Override
 	protected IFigure doCreateFigure() {
-		final XMeterModel model = getCastedModel();
+		final XMeterModel model = getWidgetModel();
 
 		RefreshableXMeterFigure xMeter = new RefreshableXMeterFigure();
 		
@@ -34,7 +34,7 @@ public final class XMeterEditPart extends AbstractMarkedWidgetEditPart {
 	}
 	
 	@Override
-	public XMeterModel getCastedModel() {
+	public XMeterModel getWidgetModel() {
 		return (XMeterModel)getModel();
 	}
 

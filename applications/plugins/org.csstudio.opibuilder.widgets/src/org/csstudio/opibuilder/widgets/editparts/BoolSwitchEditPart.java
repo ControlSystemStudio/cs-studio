@@ -14,7 +14,7 @@ public class BoolSwitchEditPart extends AbstractBoolControlEditPart{
 
 	@Override
 	protected IFigure doCreateFigure() {
-		final BoolSwitchModel model = getCastedModel();
+		final BoolSwitchModel model = getWidgetModel();
 
 		BoolSwitchFigure boolSwitch = new BoolSwitchFigure();
 		
@@ -26,7 +26,7 @@ public class BoolSwitchEditPart extends AbstractBoolControlEditPart{
 	}
 	
 	@Override
-	public BoolSwitchModel getCastedModel() {
+	public BoolSwitchModel getWidgetModel() {
 		return (BoolSwitchModel)getModel();
 	}
 

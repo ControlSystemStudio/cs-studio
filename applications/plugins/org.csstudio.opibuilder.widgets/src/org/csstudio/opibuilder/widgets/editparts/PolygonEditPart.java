@@ -22,7 +22,7 @@ public final class PolygonEditPart extends AbstractPolyEditPart {
 	@Override
 	protected IFigure doCreateFigure() {
 		PolygonFigure polygon = new PolygonFigure();
-		PolygonModel model = getCastedModel();
+		PolygonModel model = getWidgetModel();
 		polygon.setPoints(model.getPoints());
 		polygon.setFill(model.getFillLevel());
 		polygon.setAntiAlias(model.isAntiAlias());
@@ -32,7 +32,7 @@ public final class PolygonEditPart extends AbstractPolyEditPart {
 	}
 
 	@Override
-	public PolygonModel getCastedModel() {
+	public PolygonModel getWidgetModel() {
 		return (PolygonModel)getModel();
 	}
 	

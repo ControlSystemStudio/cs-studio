@@ -114,7 +114,7 @@ public class PerformAutoSizeOnGroupAction implements IObjectActionDelegate {
 	 * @return a list with all widget models that are currently selected
 	 */
 	protected final GroupingContainerModel getContainerModel() {
-		return ((GroupingContainerEditPart)selection.getFirstElement()).getCastedModel();
+		return ((GroupingContainerEditPart)selection.getFirstElement()).getWidgetModel();
 	}
 
 	/**

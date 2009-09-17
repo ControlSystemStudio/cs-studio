@@ -241,8 +241,8 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 						selectedWidgets.add((AbstractBaseEditPart) editpart);
 				}
 				if(selectedWidgets.size() == 1)
-					statusLine.setMessage(selectedWidgets.get(0).getCastedModel().getName() + "(" //$NON-NLS-1$
-							+ selectedWidgets.get(0).getCastedModel().getType() + ")"); //$NON-NLS-1$
+					statusLine.setMessage(selectedWidgets.get(0).getWidgetModel().getName() + "(" //$NON-NLS-1$
+							+ selectedWidgets.get(0).getWidgetModel().getType() + ")"); //$NON-NLS-1$
 				else if (selectedWidgets.size() >=1)
 					statusLine.setMessage(selectedWidgets.size() + " widgets were selected");
 				else

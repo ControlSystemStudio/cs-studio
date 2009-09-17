@@ -1,6 +1,7 @@
 package org.csstudio.opibuilder.properties;
 
 import org.csstudio.opibuilder.editparts.ExecutionMode;
+import org.csstudio.opibuilder.properties.support.MultiLineTextPropertyDescriptor;
 import org.csstudio.opibuilder.util.MacrosUtil;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
@@ -12,12 +13,19 @@ import org.jdom.Element;
  */
 public class StringProperty extends AbstractWidgetProperty {
 	
-	
+	private boolean multiLine;
 
 	public StringProperty(String prop_id, String description,
 			WidgetPropertyCategory category, String defaultValue) {
-		super(prop_id, description, category, defaultValue);
+		this(prop_id, description, category, defaultValue, false);
 	}
+	
+	public StringProperty(String prop_id, String description,
+			WidgetPropertyCategory category, String defaultValue, boolean multiLine) {
+		super(prop_id, description, category, defaultValue);
+		this.multiLine = multiLine;
+	}
+	
 
 	@Override
 	public Object checkValue(Object value) {
@@ -37,7 +45,10 @@ public class StringProperty extends AbstractWidgetProperty {
 
 	@Override
 	protected PropertyDescriptor createPropertyDescriptor() {
-		return new TextPropertyDescriptor(prop_id, description);
+		if(multiLine)
+			return new MultiLineTextPropertyDescriptor(prop_id, description);
+		else
+			return new TextPropertyDescriptor(prop_id, description);
 	}
 
 	@Override

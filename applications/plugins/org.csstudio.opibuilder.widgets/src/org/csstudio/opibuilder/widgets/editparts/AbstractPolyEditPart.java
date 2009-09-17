@@ -18,7 +18,7 @@ public abstract class AbstractPolyEditPart extends AbstractShapeEditPart {
 	
 	
 	@Override
-	public AbstractPolyModel getCastedModel() {
+	public AbstractPolyModel getWidgetModel() {
 		return (AbstractPolyModel)getModel();
 	}
 	
@@ -58,8 +58,8 @@ public abstract class AbstractPolyEditPart extends AbstractShapeEditPart {
 		IWidgetPropertyChangeHandler rotationHandler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {
-				getCastedModel().setPoints(
-						RotationUtil.rotatePoints(getCastedModel().getOriginalPoints().getCopy(), 
+				getWidgetModel().setPoints(
+						RotationUtil.rotatePoints(getWidgetModel().getOriginalPoints().getCopy(), 
 								(Double)newValue), false);
 				return false;
 			}

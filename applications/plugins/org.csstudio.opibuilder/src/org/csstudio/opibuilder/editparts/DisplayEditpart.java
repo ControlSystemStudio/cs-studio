@@ -42,9 +42,9 @@ public class DisplayEditpart extends AbstractContainerEditpart {
 	}
 	
 	private void initProperties() {
-		for(String prop_id : getCastedModel().getAllPropertyIDs()){
-			getCastedModel().getProperty(prop_id).firePropertyChange(null, 
-					getCastedModel().getPropertyValue(prop_id));
+		for(String prop_id : getWidgetModel().getAllPropertyIDs()){
+			getWidgetModel().getProperty(prop_id).firePropertyChange(null, 
+					getWidgetModel().getPropertyValue(prop_id));
 		}		
 	}
 	
@@ -135,7 +135,7 @@ public class DisplayEditpart extends AbstractContainerEditpart {
 					graphics.setLineStyle(SWT.LINE_DASH);
 					graphics.setForegroundColor(ColorConstants.black);
 					graphics.drawRectangle(
-							new Rectangle(new Point(0, 0), getCastedModel().getSize()));
+							new Rectangle(new Point(0, 0), getWidgetModel().getSize()));
 					graphics.popState();
 				}
 			}

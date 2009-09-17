@@ -27,7 +27,7 @@ public class MacrosUtil {
 		 */
 		public static String replaceMacros(AbstractWidgetModel widgetModel, String input){
 			String result = input;
-			if(!input.contains("$")) //$NON-NLS-1$
+			if(!input.contains(DOLLARCHAR)) //$NON-NLS-1$
 				return result;
 			//replace with predefined constant macros
 			Map<String, String> macroMap;

@@ -24,8 +24,8 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 	@Override
 	protected IFigure doCreateFigure() {
 		LabelFigure labelFigure = new LabelFigure(false);
-		labelFigure.setText(getCastedModel().getText());
-		labelFigure.setFill(!getCastedModel().isTransparent());
+		labelFigure.setText(getWidgetModel().getText());
+		labelFigure.setFill(!getWidgetModel().isTransparent());
 		return labelFigure;
 	}
 
@@ -45,8 +45,8 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 				((LabelFigure)figure).setText((String)newValue);
 				Display.getCurrent().timerExec(10, new Runnable() {					
 					public void run() {
-						if(getCastedModel().isAutoSize())
-							getCastedModel().setSize(((LabelFigure)figure).getAutoSizeDimension());
+						if(getWidgetModel().isAutoSize())
+							getWidgetModel().setSize(((LabelFigure)figure).getAutoSizeDimension());
 					}
 				});
 				
@@ -61,8 +61,8 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 					final IFigure figure) {
 				Display.getCurrent().timerExec(10, new Runnable() {					
 					public void run() {
-						if(getCastedModel().isAutoSize())
-							getCastedModel().setSize(((LabelFigure)figure).getAutoSizeDimension());
+						if(getWidgetModel().isAutoSize())
+							getWidgetModel().setSize(((LabelFigure)figure).getAutoSizeDimension());
 					}
 				});
 				
@@ -86,7 +86,7 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 			public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {				
 				if((Boolean)newValue)
-					getCastedModel().setSize(((LabelFigure)figure).getAutoSizeDimension());
+					getWidgetModel().setSize(((LabelFigure)figure).getAutoSizeDimension());
 				return true;
 			}
 		};
@@ -110,7 +110,7 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 	
 	
 	@Override
-	public LabelModel getCastedModel() {
+	public LabelModel getWidgetModel() {
 		return (LabelModel)getModel();
 	}
 

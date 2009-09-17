@@ -20,12 +20,12 @@ public class GroupingContainerEditPart extends AbstractContainerEditpart {
 	@Override
 	protected IFigure doCreateFigure() {
 		Figure f = new GroupingContainerFigure();
-		f.setOpaque(!getCastedModel().isTransparent());
+		f.setOpaque(!getWidgetModel().isTransparent());
 		return f;
 	}
 	
 	@Override
-	public GroupingContainerModel getCastedModel() {
+	public GroupingContainerModel getWidgetModel() {
 		return (GroupingContainerModel)getModel();
 	}
 
@@ -56,7 +56,7 @@ public class GroupingContainerEditPart extends AbstractContainerEditpart {
 		handler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {
-				for(AbstractWidgetModel child : getCastedModel().getChildren()){
+				for(AbstractWidgetModel child : getWidgetModel().getChildren()){
 					child.setEnabled((Boolean)newValue);
 				}
 				return true;
@@ -75,7 +75,7 @@ public class GroupingContainerEditPart extends AbstractContainerEditpart {
 		
 		setPropertyChangeHandler(GroupingContainerModel.PROP_LOCK_CHILDREN, handler);
 		
-		lockChildren(getCastedModel().isLocked());
+		lockChildren(getWidgetModel().isLocked());
 		
 	}
 	/**
@@ -95,7 +95,7 @@ public class GroupingContainerEditPart extends AbstractContainerEditpart {
 
 		// setup selection behavior for the new child
 		if (result instanceof AbstractBaseEditPart) {
-			((AbstractBaseEditPart) result).setSelectable(!getCastedModel().isLocked());
+			((AbstractBaseEditPart) result).setSelectable(!getWidgetModel().isLocked());
 		}
 
 		return result;

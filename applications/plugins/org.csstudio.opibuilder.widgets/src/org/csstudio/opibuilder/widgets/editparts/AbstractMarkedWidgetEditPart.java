@@ -93,13 +93,13 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
 	}
 	
 	@Override
-	public AbstractMarkedWidgetModel getCastedModel() {
+	public AbstractMarkedWidgetModel getWidgetModel() {
 		return (AbstractMarkedWidgetModel) getModel();
 	}
 	@Override
 	protected void doDeActivate() {
 		super.doDeActivate();
-		if(getCastedModel().isLimitsFromDB()){
+		if(getWidgetModel().isLimitsFromDB()){
 			PV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
 			if(pv != null){	
 				pv.removeListener(pvLoadLimitsListener);

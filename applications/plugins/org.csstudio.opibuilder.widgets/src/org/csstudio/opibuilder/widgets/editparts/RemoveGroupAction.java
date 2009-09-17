@@ -94,7 +94,7 @@ public class RemoveGroupAction implements IObjectActionDelegate {
 	 * @return a list with all widget models that are currently selected
 	 */
 	protected final GroupingContainerModel getSelectedContainer() {
-		return ((GroupingContainerEditPart)selection.getFirstElement()).getCastedModel();
+		return ((GroupingContainerEditPart)selection.getFirstElement()).getWidgetModel();
 	}
 
 }

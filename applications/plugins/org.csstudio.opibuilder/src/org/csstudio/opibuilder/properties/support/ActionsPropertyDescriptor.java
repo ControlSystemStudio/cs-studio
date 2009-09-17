@@ -2,9 +2,7 @@ package org.csstudio.opibuilder.properties.support;
 
 
 import org.csstudio.opibuilder.visualparts.ActionsCellEditor;
-import org.csstudio.opibuilder.widgetActions.ActionsInput;
 import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 
@@ -26,7 +24,6 @@ public class ActionsPropertyDescriptor extends TextPropertyDescriptor {
 	 */
 	public ActionsPropertyDescriptor(final Object id, final String displayName) {
 		super(id, displayName);
-		this.setLabelProvider(new ActionsLabelProvider());
 	}
 
 	/**
@@ -41,30 +38,4 @@ public class ActionsPropertyDescriptor extends TextPropertyDescriptor {
 		return editor;
 	}
 	
-	/**
-	 * A label provider for a {@link ActionsInput}.
-	 * 
-	 * @author Xihui Chen
-	 */
-	private final class ActionsLabelProvider extends LabelProvider {
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public String getText(final Object element) {
-			if (element instanceof ActionsInput) {
-				ActionsInput input = (ActionsInput)element;
-				if(input.getActionsList().size() ==0){
-					return "no action";
-				}
-				if(input.getActionsList().size() == 1){
-					return input.getActionsList().get(0).getDescription();
-				}
-				return input.getActionsList().size() + " actions";
-			} else {
-				return element.toString();
-			}
-		}
-
-	}
 }
