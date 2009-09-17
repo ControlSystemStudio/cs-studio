@@ -6,7 +6,6 @@ import org.eclipse.draw2d.LabeledBorder;
 import org.eclipse.draw2d.SchemeBorder;
 import org.eclipse.draw2d.TitleBarBorder;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 
 /**

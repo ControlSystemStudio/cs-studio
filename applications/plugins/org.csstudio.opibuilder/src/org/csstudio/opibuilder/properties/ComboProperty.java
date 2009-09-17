@@ -1,6 +1,5 @@
 package org.csstudio.opibuilder.properties;
 
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.jdom.Element;

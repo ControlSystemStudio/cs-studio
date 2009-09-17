@@ -1,16 +1,11 @@
 package org.csstudio.opibuilder.XMLTest;
 
-import org.csstudio.opibuilder.model.AbstractWidgetModel;
-import org.csstudio.opibuilder.model.DisplayModel;
-import org.csstudio.opibuilder.persistence.XMLUtil;
+import junit.framework.TestCase;
+
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;
-import org.jdom.Element;
 import org.junit.Test;
-
-import junit.framework.TestCase;
-import junit.framework.TestResult;
 
 public class UtilityPVPerformanceTest extends TestCase {
 

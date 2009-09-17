@@ -70,7 +70,6 @@ public class FilePathPropertyDescriptor extends TextPropertyDescriptor {
 		/**
 		 * {@inheritDoc}
 		 */
-		@SuppressWarnings("unchecked")
 		@Override
 		public String getText(final Object element) {
 			if (element instanceof IPath) {

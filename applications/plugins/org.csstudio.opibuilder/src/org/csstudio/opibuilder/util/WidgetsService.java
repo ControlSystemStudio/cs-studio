@@ -9,7 +9,6 @@ import java.util.Map;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.feedback.IGraphicalFeedbackFactory;
-import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.palette.MajorCategories;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.CoreException;

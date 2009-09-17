@@ -10,7 +10,6 @@ import org.csstudio.opibuilder.editparts.WidgetEditPartFactory;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.persistence.XMLUtil;
-import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.opibuilder.util.MacrosInput;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.filesystem.URIUtil;

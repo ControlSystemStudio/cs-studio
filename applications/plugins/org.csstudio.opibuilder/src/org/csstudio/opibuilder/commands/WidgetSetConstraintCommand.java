@@ -2,7 +2,6 @@ package org.csstudio.opibuilder.commands;
 
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.eclipse.draw2d.geometry.Rectangle;
-import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.requests.ChangeBoundsRequest;
 
@@ -17,7 +16,7 @@ public class WidgetSetConstraintCommand extends Command {
 	/** Stores the old size and location. */
 	private Rectangle oldBounds;
 	/** A request to move/resize an edit part. */
-	private final ChangeBoundsRequest request;
+	//private final ChangeBoundsRequest request;
 	
 	private final AbstractWidgetModel widget;
 
@@ -27,7 +26,7 @@ public class WidgetSetConstraintCommand extends Command {
 			throw new IllegalArgumentException();
 		this.widget = widgetModel;
 		this.newBounds = newBounds;
-		this.request = req;
+		//this.request = req;
 		setLabel("move/reize");
 	}
 	/*

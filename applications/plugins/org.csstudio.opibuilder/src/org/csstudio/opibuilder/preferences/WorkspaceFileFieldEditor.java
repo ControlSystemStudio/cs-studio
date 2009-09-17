@@ -1,6 +1,5 @@
 package org.csstudio.opibuilder.preferences;
 
-import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.platform.ui.dialogs.ResourceSelectionDialog;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;

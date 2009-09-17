@@ -1,18 +1,8 @@
 package org.csstudio.opibuilder.XMLTest;
 
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.util.Calendar;
-
-import org.csstudio.opibuilder.model.DisplayModel;
-import org.csstudio.opibuilder.persistence.XMLUtil;
-import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 

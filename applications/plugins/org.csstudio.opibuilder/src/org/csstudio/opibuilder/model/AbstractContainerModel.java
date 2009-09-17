@@ -1,8 +1,6 @@
 package org.csstudio.opibuilder.model;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -10,11 +8,9 @@ import java.util.Map;
 
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
-import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.MacrosProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.MacrosInput;
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.jdom.Element;
 

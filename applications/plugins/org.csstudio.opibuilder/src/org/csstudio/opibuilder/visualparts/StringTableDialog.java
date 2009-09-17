@@ -1,9 +1,7 @@
 package org.csstudio.opibuilder.visualparts;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import org.csstudio.platform.ui.swt.stringtable.RowEditDialog;
 import org.csstudio.platform.ui.swt.stringtable.StringTableEditor;

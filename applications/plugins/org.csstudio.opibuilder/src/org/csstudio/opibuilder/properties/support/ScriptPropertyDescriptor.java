@@ -3,7 +3,6 @@ package org.csstudio.opibuilder.properties.support;
 
 import org.csstudio.opibuilder.script.ScriptsInput;
 import org.csstudio.opibuilder.visualparts.ScriptsInputCellEditor;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.widgets.Composite;
@@ -47,7 +46,6 @@ public class ScriptPropertyDescriptor extends TextPropertyDescriptor {
 		/**
 		 * {@inheritDoc}
 		 */
-		@SuppressWarnings("unchecked")
 		@Override
 		public String getText(final Object element) {
 			if (element instanceof ScriptsInput) {

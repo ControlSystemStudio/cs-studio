@@ -3,7 +3,6 @@ package org.csstudio.opibuilder.commands;
 
 import java.util.Iterator;
 
-
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.GuideModel;
 import org.eclipse.draw2d.geometry.Point;

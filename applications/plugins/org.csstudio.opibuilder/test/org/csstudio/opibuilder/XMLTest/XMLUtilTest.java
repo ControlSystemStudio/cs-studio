@@ -1,13 +1,11 @@
 package org.csstudio.opibuilder.XMLTest;
 
+import junit.framework.TestCase;
+
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.persistence.XMLUtil;
-import org.jdom.Element;
 import org.junit.Test;
-
-import junit.framework.TestCase;
-import junit.framework.TestResult;
 
 public class XMLUtilTest extends TestCase {
 
@@ -21,7 +19,7 @@ public class XMLUtilTest extends TestCase {
 	
 	@Test
 	public void testWidgetToXMLElement(){
-		Element element = XMLUtil.WidgetToXMLElement(testModel);
+	//	Element element = XMLUtil.WidgetToXMLElement(testModel);
 		System.out.println(XMLUtil.WidgetToXMLString(testModel, true));
 	}
 

@@ -3,7 +3,6 @@ package org.csstudio.opibuilder.visualparts;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.AbstractBorder;
 import org.eclipse.draw2d.AbstractLabeledBorder;
-import org.eclipse.draw2d.FrameBorder;
 import org.eclipse.draw2d.GroupBoxBorder;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.SchemeBorder;

@@ -2,10 +2,7 @@
 package org.csstudio.opibuilder.properties;
 
 import org.csstudio.opibuilder.properties.support.FontPropertyDescriptor;
-import org.csstudio.opibuilder.properties.support.OPIColorPropertyDescriptor;
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.jdom.Element;
 

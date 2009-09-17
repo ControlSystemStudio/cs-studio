@@ -4,8 +4,6 @@ package org.csstudio.opibuilder.visualparts;
 import org.csstudio.platform.ui.dialogs.ResourceSelectionDialog;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -43,10 +41,7 @@ public final class FilePathCellEditor extends AbstractDialogCellEditor {
 	 */
 	private boolean _onlyWorkSpace = true;
 
-	/**
-	 * The {@link IPropertyChangeListener} for the workspace settings.
-	 */
-	private IPropertyChangeListener _useWorkspaceListener;
+	
 
 	/**
 	 * Creates a new string cell editor parented under the given control. The
@@ -96,7 +91,6 @@ public final class FilePathCellEditor extends AbstractDialogCellEditor {
 	/**
 	 * {@inheritDoc}
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	protected void doSetValue(final Object value) {
 //		Assert.isTrue(value instanceof IPath);

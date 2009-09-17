@@ -1,16 +1,11 @@
 package org.csstudio.opibuilder.editor;
 
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.csstudio.opibuilder.OPIBuilderPlugin;
-import org.csstudio.opibuilder.actions.CutWidgetsAction;
 import org.csstudio.opibuilder.actions.ChangeOrderAction.OrderType;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.gef.ContextMenuProvider;
 import org.eclipse.gef.EditPartViewer;
-import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.ui.actions.ActionRegistry;
 import org.eclipse.gef.ui.actions.GEFActionConstants;
 import org.eclipse.gef.ui.actions.WorkbenchPartAction;

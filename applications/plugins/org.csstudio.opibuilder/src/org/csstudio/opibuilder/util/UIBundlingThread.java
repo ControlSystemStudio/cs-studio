@@ -3,6 +3,7 @@ package org.csstudio.opibuilder.util;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
+
 import org.csstudio.platform.ExecutionService;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;

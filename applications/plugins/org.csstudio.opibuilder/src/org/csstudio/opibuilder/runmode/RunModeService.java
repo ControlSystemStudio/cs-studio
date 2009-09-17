@@ -1,13 +1,10 @@
 package org.csstudio.opibuilder.runmode;
 
-import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.util.MacrosInput;
 import org.csstudio.opibuilder.util.UIBundlingThread;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.draw2d.geometry.Dimension;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPageListener;
 import org.eclipse.ui.IWorkbenchPage;
@@ -15,7 +12,6 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.WorkbenchException;
-import org.eclipse.ui.actions.ActionFactory;
 
 public class RunModeService {
 	

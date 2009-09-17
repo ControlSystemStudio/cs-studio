@@ -1,16 +1,11 @@
 package org.csstudio.opibuilder.visualparts;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.ui.views.properties.IPropertyDescriptor;
-import org.eclipse.ui.views.properties.PropertySheet;
 
 /**
 	 * The {@link EditingSupport} for the value columns of the property table.

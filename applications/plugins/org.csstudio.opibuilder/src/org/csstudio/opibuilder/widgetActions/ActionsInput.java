@@ -3,7 +3,7 @@ package org.csstudio.opibuilder.widgetActions;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.opibuilder.properties.ScriptProperty;
+import org.csstudio.opibuilder.properties.ActionsProperty;
 
 /**The value type definition for {@link ActionsProperty}, which describes the input
  * for an actions Property.

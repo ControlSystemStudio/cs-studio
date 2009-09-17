@@ -6,7 +6,6 @@ import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.views.properties.ColorPropertyDescriptor;
 
 public class OPIColorPropertyDescriptor extends ColorPropertyDescriptor {

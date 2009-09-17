@@ -3,7 +3,6 @@ package org.csstudio.opibuilder.actions;
 import org.csstudio.opibuilder.runmode.DisplayOpenManager;
 import org.csstudio.opibuilder.runmode.IDisplayOpenManagerListener;
 import org.csstudio.opibuilder.runmode.RunnerInput;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.swt.SWT;

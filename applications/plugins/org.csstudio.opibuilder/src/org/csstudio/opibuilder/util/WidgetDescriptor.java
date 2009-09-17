@@ -1,7 +1,6 @@
 package org.csstudio.opibuilder.util;
 
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
-import org.csstudio.opibuilder.editparts.AbstractWidgetEditPart;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.CoreException;

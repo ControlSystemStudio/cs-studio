@@ -1,10 +1,6 @@
 package org.csstudio.opibuilder.properties;
 
 import org.csstudio.opibuilder.properties.support.PointlistPropertyDescriptor;
-import org.csstudio.opibuilder.properties.support.ScriptPropertyDescriptor;
-import org.csstudio.opibuilder.script.ScriptData;
-import org.csstudio.opibuilder.script.ScriptsInput;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.ui.views.properties.PropertyDescriptor;

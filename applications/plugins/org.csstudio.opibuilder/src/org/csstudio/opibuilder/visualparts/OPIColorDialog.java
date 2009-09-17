@@ -1,8 +1,5 @@
 package org.csstudio.opibuilder.visualparts;
 
-import java.util.List;
-
-import org.csstudio.opibuilder.script.ScriptData;
 import org.csstudio.opibuilder.util.ColorService;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.eclipse.jface.dialogs.Dialog;
