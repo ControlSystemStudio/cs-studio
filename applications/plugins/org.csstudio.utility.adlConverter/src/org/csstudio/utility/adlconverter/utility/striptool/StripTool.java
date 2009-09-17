@@ -185,12 +185,15 @@ public class StripTool {
         
         // Axis visible
         Element axisVisibleElement = new Element("axis_visible");
-        axisVisibleElement.setText(Boolean.toString(axisVisible));
+        System.out.println("axis_visible: "+Boolean.toString(axisVisible));
+        // TODO: ist das der richtige Wert hierfür?
+//        axisVisibleElement.setText(Boolean.toString(axisVisible));
+        axisVisibleElement.setText("true");
         pv.addContent(axisVisibleElement);
         
         // Autoscale   
         Element autoscale = new Element("autoscale");
-        autoscale.setText("true");
+        autoscale.setText("false");
         pv.addContent(autoscale);
 
         // Color

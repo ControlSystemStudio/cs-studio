@@ -25,7 +25,6 @@
 package org.csstudio.utility.adlconverter.ui.preferences;
 
 import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Path;
@@ -97,9 +96,18 @@ public class ContainerFieldEditor extends StringButtonFieldEditor {
         if (fileName.length() == 0 && isEmptyStringAllowed()) {
             return true;
         }
-        IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-        IFolder file3 = root.getFolder(new Path(fileName));
-        return file3.exists();
+        //TODO: Check for valid Project or Path
+//        IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+//        Path path = new Path(fileName);
+//
+//        try {
+//            IProject project = root.getProject(fileName);
+//        }catch (IllegalArgumentException e) {
+//            IFolder file3 = root.getFolder(path);
+//            return file3.exists();
+//            // TODO: handle exception
+//        }
+        return true;
     }
 
     /**

@@ -35,7 +35,7 @@ public class ADLConverterPreferenceConstants {
     public static final String P_STRING_Path_Source = "P_STRING_Path_Source";
     public static final String P_STRING_Path_Target = "P_STRING_Path_Target";
     public static final String P_STRING_Path_Target_Strip_Tool = "P_STRING_Path_Target_Strip_Tool";
-    public static final String P_STRING_Path_Relativ_Target = "STRING_Path_Relativ_Target";
+//    public static final String P_STRING_Path_Relativ_Target = "STRING_Path_Relativ_Target";
     public static final String P_STRING_Path_Remove_Absolut_Part = "STRING_Path_Relativ_Target";
     public static final String P_STRING_Path_Remove_Absolut_Part_Strip_Tool = "STRING_Path_Remove_Absolut_Part_Strip_Tool";
     public static final String P_STRING_Class_Paths = "P_STRING_Class_Paths";

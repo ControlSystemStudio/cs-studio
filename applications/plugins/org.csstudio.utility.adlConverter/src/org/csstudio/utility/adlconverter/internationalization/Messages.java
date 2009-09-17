@@ -34,8 +34,6 @@ import org.eclipse.osgi.util.NLS;
  */
 public class Messages extends NLS {
     private static final String BUNDLE_NAME = "org.csstudio.utility.adlconverter.internationalization.messages"; //$NON-NLS-1$
-    public static String ADLConverterMainView_PathPrefixToolTip;
-    public static String ADLConverterMainView_PathPrefix;
     public static String ADLBasicAttribute_AssertError_Begin;
     public static String ADLBasicAttribute_AssertError_End;
     public static String ADLBasicAttribute_WrongADLFormatException_Begin;
@@ -62,10 +60,15 @@ public class Messages extends NLS {
     public static String ADLConverterMainView_DestinationGroup;
     public static String ADLConverterMainView_DialogText;
     public static String ADLConverterMainView_MDPFileSourceDialogFileDes;
+    public static String ADLConverterMainView_PathPrefix;
+    public static String ADLConverterMainView_PathPrefixToolTip;
+    public static String ADLConverterMainView_RemoveADLFiles;
     public static String ADLConverterMainView_RemoveBakFiles;
+    public static String ADLConverterMainView_RemoveMFPFiles;
+    public static String ADLConverterMainView_RemoveSTCFiles;
     public static String ADLConverterMainView_RemoveSelectedFiels;
-    public static String ADLConverterMainView_SourceGroup;
     public static String ADLConverterMainView_STCFileSourceDialogFileDes;
+    public static String ADLConverterMainView_SourceGroup;
     public static String ADLConverterMainView_TargetFolderSelectionMessage;
     public static String ADLConverterMainView_TargetOpenButton;
     public static String ADLDisplayImporter_ADLActionLayerDes;
@@ -74,13 +77,13 @@ public class Messages extends NLS {
     public static String ADLDisplayImporter_ADLBackgroundLayerName;
     public static String ADLDisplayImporter_ADLBargraphLayerDes;
     public static String ADLDisplayImporter_ADLBargraphLayerName;
-    public static String ADLDisplayImporter_ADLDynamicLayerName;
     public static String ADLDisplayImporter_ADLDynamicLayerDes;    
+    public static String ADLDisplayImporter_ADLDynamicLayerName;
     public static String ADLDisplayImporter_Dialog_Header_Directory_not_exist;
-    public static String ADLDisplayImporter_Dialog_Yes_Button;
-    public static String ADLDisplayImporter_Dialog_Yes2All_Button;
-    public static String ADLDisplayImporter_Dialog_No_Button;
     public static String ADLDisplayImporter_Dialog_No2All_Button;
+    public static String ADLDisplayImporter_Dialog_No_Button;
+    public static String ADLDisplayImporter_Dialog_Yes2All_Button;
+    public static String ADLDisplayImporter_Dialog_Yes_Button;
     public static String ADLDisplayImporter_WARN_UNHANDLED_TYPE;
     public static String ADLDynamicAttribute_AssertError_Begin;
     public static String ADLDynamicAttribute_AssertError_End;

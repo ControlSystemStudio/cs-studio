@@ -51,7 +51,7 @@ public class ADLPreferenceInitializer extends AbstractPreferenceInitializer {
         store.setDefault(ADLConverterPreferenceConstants.P_STRING_Path_Source,".");
         store.setDefault(ADLConverterPreferenceConstants.P_STRING_Path_Target,"/CSS/SDS");
         store.setDefault(ADLConverterPreferenceConstants.P_STRING_Path_Target_Strip_Tool,"/CSS/DataBrowser");
-        store.setDefault(ADLConverterPreferenceConstants.P_STRING_Path_Relativ_Target,"");
+//        store.setDefault(ADLConverterPreferenceConstants.P_STRING_Path_Relativ_Target,"");
         store.setDefault(ADLConverterPreferenceConstants.P_STRING_Path_Remove_Absolut_Part,"/applic/graphic");
         store.setDefault(ADLConverterPreferenceConstants.P_STRING_Path_Remove_Absolut_Part_Strip_Tool,"/applic/stripTool");
         store.setDefault(ADLConverterPreferenceConstants.P_STRING_Class_Paths,"");

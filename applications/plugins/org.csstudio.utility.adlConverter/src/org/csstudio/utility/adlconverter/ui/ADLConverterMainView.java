@@ -348,7 +348,7 @@ public class ADLConverterMainView extends ViewPart {
                                 } else if (file.getName().endsWith(".stc")) {//$NON-NLS-1$
                                     // parse Strip Tool Files
                                     if (!di.importStripTool(file.getAbsolutePath(), targetProject,
-                                            file.getName().replace(".stc",".css-plt"))) { //$NON-NLS-1$ //$NON-NLS-2$
+                                            file.getName().replace(".stc", ".css-plt"))) { //$NON-NLS-1$ //$NON-NLS-2$
                                         if (di.getStatus() == 5) {
                                             // Job is canceled.
                                             break;
@@ -372,6 +372,116 @@ public class ADLConverterMainView extends ViewPart {
 
     private void makeMenu() {
         Menu menu = new Menu(_avaibleFiles.getControl());
+        makeRemoveSelection(menu);
+        makeRomoveBak(menu);
+        makeRomoveADL(menu);
+        makeRomoveMFP(menu);
+        makeRomoveSTC(menu);
+
+        _avaibleFiles.getList().setMenu(menu);
+    }
+
+    private void makeRomoveSTC(Menu menu) {
+        MenuItem showItem = new MenuItem(menu, SWT.PUSH);
+        showItem.addSelectionListener(new SelectionListener() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                removeSTC();
+            }
+
+            @Override
+            public void widgetDefaultSelected(SelectionEvent e) {
+                removeSTC();
+            }
+
+            private void removeSTC() {
+                Iterator<File> iterator = _avaibleFilesList.iterator();
+                while (iterator.hasNext()) {
+                    File file = (File) iterator.next();
+                    if (file != null) {
+                        String lowerCase = file.getName().toLowerCase();
+                        if (lowerCase.endsWith(".stc")) { //$NON-NLS-1$ //$NON-NLS-2$
+                            iterator.remove();
+                        }
+                    }
+                }
+                _avaibleFiles.setInput(_avaibleFilesList);
+            }
+        });
+        showItem.setText(Messages.ADLConverterMainView_RemoveSTCFiles);
+        showItem.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(
+                ISharedImages.IMG_ELCL_REMOVEALL));
+
+    }
+
+    private void makeRomoveMFP(Menu menu) {
+        MenuItem showItem = new MenuItem(menu, SWT.PUSH);
+        showItem.addSelectionListener(new SelectionListener() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                removeMFP();
+            }
+
+            @Override
+            public void widgetDefaultSelected(SelectionEvent e) {
+                removeMFP();
+            }
+
+            private void removeMFP() {
+                Iterator<File> iterator = _avaibleFilesList.iterator();
+                while (iterator.hasNext()) {
+                    File file = (File) iterator.next();
+                    if (file != null) {
+                        String lowerCase = file.getName().toLowerCase();
+                        if (lowerCase.endsWith(".mfp")) { //$NON-NLS-1$ //$NON-NLS-2$
+                            iterator.remove();
+                        }
+                    }
+                }
+                _avaibleFiles.setInput(_avaibleFilesList);
+            }
+        });
+        showItem.setText(Messages.ADLConverterMainView_RemoveMFPFiles);
+        showItem.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(
+                ISharedImages.IMG_ELCL_REMOVEALL));
+    }
+
+    private void makeRomoveADL(Menu menu) {
+        MenuItem showItem = new MenuItem(menu, SWT.PUSH);
+        showItem.addSelectionListener(new SelectionListener() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                removeADL();
+            }
+
+            @Override
+            public void widgetDefaultSelected(SelectionEvent e) {
+                removeADL();
+            }
+
+            private void removeADL() {
+                Iterator<File> iterator = _avaibleFilesList.iterator();
+                while (iterator.hasNext()) {
+                    File file = (File) iterator.next();
+                    if (file != null) {
+                        String lowerCase = file.getName().toLowerCase();
+                        if (lowerCase.endsWith(".adl")) { //$NON-NLS-1$ //$NON-NLS-2$
+                            iterator.remove();
+                        }
+                    }
+                }
+                _avaibleFiles.setInput(_avaibleFilesList);
+            }
+        });
+        showItem.setText(Messages.ADLConverterMainView_RemoveADLFiles);
+        showItem.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(
+                ISharedImages.IMG_ELCL_REMOVEALL));
+    }
+
+    private void makeRomoveBak(Menu menu) {
         MenuItem showItem = new MenuItem(menu, SWT.PUSH);
         showItem.addSelectionListener(new SelectionListener() {
 
@@ -402,8 +512,11 @@ public class ADLConverterMainView extends ViewPart {
         showItem.setText(Messages.ADLConverterMainView_RemoveBakFiles);
         showItem.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(
                 ISharedImages.IMG_ELCL_REMOVEALL));
+    }
 
-        showItem = new MenuItem(menu, SWT.PUSH);
+    private void makeRemoveSelection(Menu menu) {
+
+        MenuItem showItem = new MenuItem(menu, SWT.PUSH);
         showItem.addSelectionListener(new SelectionListener() {
 
             @Override
@@ -423,7 +536,6 @@ public class ADLConverterMainView extends ViewPart {
         showItem.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(
                 ISharedImages.IMG_ELCL_REMOVE));
 
-        _avaibleFiles.getList().setMenu(menu);
     }
 
     /**
@@ -465,8 +577,8 @@ public class ADLConverterMainView extends ViewPart {
                 | SWT.SEARCH);
         _relativePathText.setLayoutData(gridData);
         _relativePathText.setToolTipText(Messages.ADLConverterMainView_PathPrefixToolTip);
-        _relativePathText.setText(_preferences
-                .getString(ADLConverterPreferenceConstants.P_STRING_Path_Relativ_Target));
+        // _relativePathText.setText(_preferences
+        // .getString(ADLConverterPreferenceConstants.P_STRING_Path_Relativ_Target));
 
         _examplePathLabel = new Label(relativPathComp, SWT.NONE);
         _examplePathLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
