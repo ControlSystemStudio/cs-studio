@@ -38,5 +38,11 @@
          </property>
       </product>
    </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="org.csstudio.tine2jms.preferences.PreferenceInitializer">
+      </initializer>
+   </extension>
 
 </plugin>

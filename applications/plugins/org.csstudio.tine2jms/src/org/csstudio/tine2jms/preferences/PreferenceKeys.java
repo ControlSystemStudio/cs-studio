@@ -1,6 +1,6 @@
 
 /* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+ * Copyright (c) 2009 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
@@ -19,64 +19,39 @@
  * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
+ *
  */
 
-package org.csstudio.tine2jms;
+package org.csstudio.tine2jms.preferences;
 
-import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
-import org.eclipse.core.runtime.Plugin;
-import org.osgi.framework.BundleContext;
 
 /**
- * The activator class controls the plug-in life cycle
+ * @author Markus Moeller
+ *
  */
-public class TineToJmsActivator extends Plugin
+public class PreferenceKeys
 {
-	/** The plug-in ID */
-	public static final String PLUGIN_ID = "org.csstudio.tine2jms";
-
-	/** The shared instance */
-	private static TineToJmsActivator plugin;
-
-    /** Logger */
-    private Logger logger = null;
+    public final static String XMPP_SERVER = "xmppServer";
+    public final static String XMPP_USER = "xmppUser";
+    public final static String XMPP_PASSWORD = "xmppPassword";
+    public final static String XMPP_SHUTDOWN = "xmppShutdown";
+    public final static String JMS_PROVIDER_URL = "jmsProviderUrl";
+    public final static String JMS_CLIENT_ID = "jmsClientId";
+    public final static String JMS_TOPICS_ALARM = "jmsTopicsAlarm";
+    public final static String TINE_FACILITY_NAMES = "tineFacilityNames";
     
-	/**
-	 * The constructor
-	 */
-	public TineToJmsActivator() {}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.core.runtime.Plugins#start(org.osgi.framework.BundleContext)
-	 */
-	public void start(BundleContext context) throws Exception
-	{
-		super.start(context);
-		plugin = this;
-		
-        logger = CentralLogger.getInstance().getLogger(TineToJmsActivator.class);
-        logger.info("Tine2Jms started...");
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.core.runtime.Plugin#stop(org.osgi.framework.BundleContext)
-	 */
-	public void stop(BundleContext context) throws Exception
-	{
-		plugin = null;
-		super.stop(context);
-	}
-
-	/**
-	 * Returns the shared instance
-	 *
-	 * @return the shared instance
-	 */
-	public static TineToJmsActivator getDefault()
-	{
-		return plugin;
-	}
+    public static void showPreferences()
+    {
+        CentralLogger logger = CentralLogger.getInstance();
+        
+        logger.info(PreferenceKeys.class, XMPP_SERVER + ": ");
+        logger.info(PreferenceKeys.class, XMPP_USER + ": ");
+        logger.info(PreferenceKeys.class, XMPP_PASSWORD + ": ");
+        logger.info(PreferenceKeys.class, XMPP_SHUTDOWN + ": ");
+        logger.info(PreferenceKeys.class, JMS_PROVIDER_URL + ": ");
+        logger.info(PreferenceKeys.class, JMS_CLIENT_ID + ": ");
+        logger.info(PreferenceKeys.class, JMS_TOPICS_ALARM + ": ");
+        logger.info(PreferenceKeys.class, TINE_FACILITY_NAMES + ": ");
+    }
 }

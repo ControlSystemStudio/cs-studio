@@ -27,13 +27,15 @@ import java.util.Observable;
 import java.util.Observer;
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
-import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.tine2jms.management.Restart;
 import org.csstudio.tine2jms.management.Stop;
+import org.csstudio.tine2jms.preferences.PreferenceKeys;
 import org.csstudio.tine2jms.util.JmsProducer;
 import org.csstudio.tine2jms.util.JmsProducerException;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.remotercp.common.servicelauncher.ServiceLauncher;
@@ -46,9 +48,6 @@ import org.remotercp.login.connection.HeadlessConnection;
  */
 public class TineToJmsApplication implements IApplication, Stoppable, Observer
 {
-    /** Configuration for the application */
-    private PropertiesConfiguration configuration = null;
-    
     /** Common logger of CSS */
     private Logger logger = null;
     
@@ -69,21 +68,26 @@ public class TineToJmsApplication implements IApplication, Stoppable, Observer
 
     public TineToJmsApplication()
     {
-        logger = CentralLogger.getInstance().getLogger(TineToJmsApplication.class);
+        String jmsUrl = null;
+        String jmsClientId = null;
+        String jmsTopics = null;
+        
+        IPreferencesService preference = Platform.getPreferencesService();
+        
+        logger = CentralLogger.getInstance().getLogger(this);
 
-        configuration = TineToJmsActivator.getDefault().getConfiguration();
-        logger.debug("provider.url: " + configuration.getString("provider.url"));
-        logger.debug("client.id: " + configuration.getString("client.id"));
-        logger.debug("topic.alarm: " + configuration.getString("topic.alarm"));
-        logger.debug("facility.name: " + configuration.getString("facility.name"));
-        logger.debug("xmpp.user: " + configuration.getString("xmpp.user"));
+        jmsUrl = preference.getString(TineToJmsActivator.PLUGIN_ID, PreferenceKeys.JMS_PROVIDER_URL, "", null);
+        jmsClientId = preference.getString(TineToJmsActivator.PLUGIN_ID, PreferenceKeys.JMS_CLIENT_ID, "", null);
+        jmsTopics = preference.getString(TineToJmsActivator.PLUGIN_ID, PreferenceKeys.JMS_TOPICS_ALARM, "", null);
+
+        PreferenceKeys.showPreferences();
 
         working = true;
         restart = false;
         
         try
         {
-            producer = new JmsProducer(configuration.getString("client.id"), configuration.getString("provider.url"), configuration.getString("topic.alarm"));
+            producer = new JmsProducer(jmsClientId, jmsUrl, jmsTopics);
         }
         catch(JmsProducerException jpe)
         {
@@ -98,6 +102,8 @@ public class TineToJmsApplication implements IApplication, Stoppable, Observer
      */
     public Object start(IApplicationContext context) throws Exception
     {
+        IPreferencesService preference = Platform.getPreferencesService();
+
         int result = IApplication.EXIT_OK;
         
         logger.info("Starting...");
@@ -118,7 +124,7 @@ public class TineToJmsApplication implements IApplication, Stoppable, Observer
             catch(InterruptedException ie) {}
         }
         
-        facilities = configuration.getStringArray("facility.name");
+        facilities = preference.getString(TineToJmsActivator.PLUGIN_ID, PreferenceKeys.TINE_FACILITY_NAMES, "", null).split(",");
         if(facilities == null)
         {
             logger.error("No alarm system / facility is defined.");
@@ -162,13 +168,15 @@ public class TineToJmsApplication implements IApplication, Stoppable, Observer
 
     public void connectToXMPPServer()
     {
-        String xmppUserName = TineToJmsActivator.getDefault().getConfiguration().getString("xmpp.user", "tine2jms");
-        String xmppPassword = TineToJmsActivator.getDefault().getConfiguration().getString("xmpp.password", "tine2jms");
-        String xmppServer = TineToJmsActivator.getDefault().getConfiguration().getString("xmpp.server", "krykxmpp.desy.de");
+        IPreferencesService preference = Platform.getPreferencesService();
+
+        String xmppUser = preference.getString(TineToJmsActivator.PLUGIN_ID, PreferenceKeys.XMPP_USER, "", null);
+        String xmppPassword = preference.getString(TineToJmsActivator.PLUGIN_ID, PreferenceKeys.XMPP_PASSWORD, "", null);
+        String xmppServer = preference.getString(TineToJmsActivator.PLUGIN_ID, PreferenceKeys.XMPP_SERVER, "", null);
 
         try
         {
-            HeadlessConnection.connect(xmppUserName, xmppPassword, xmppServer, ECFConstants.XMPP);
+            HeadlessConnection.connect(xmppUser, xmppPassword, xmppServer, ECFConstants.XMPP);
             ServiceLauncher.startRemoteServices();     
         }
         catch(Exception e)
@@ -208,7 +216,7 @@ public class TineToJmsApplication implements IApplication, Stoppable, Observer
 
     public synchronized void setRestart()
     {
-        logger.info("Tine2Jms gets a stop request.");
+        logger.info("Tine2Jms gets a restart request.");
         working = false;
         restart = true;
         this.notify();
