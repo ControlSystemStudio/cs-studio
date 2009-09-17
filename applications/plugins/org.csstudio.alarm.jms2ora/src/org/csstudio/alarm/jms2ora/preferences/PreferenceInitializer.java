@@ -30,7 +30,7 @@ import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
 /**
- * @author Markus M�ller
+ * @author Markus Moeller
  *
  */
 public class PreferenceInitializer extends AbstractPreferenceInitializer
