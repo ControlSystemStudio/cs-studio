@@ -237,7 +237,7 @@ public class AlarmView extends LogView {
 		RowLayout layout = new RowLayout();
 		soundButtonGroup.setLayout(layout);
 
-		soundEnableButton = new Button(soundButtonGroup, SWT.PUSH);
+		soundEnableButton = new Button(soundButtonGroup, SWT.TOGGLE);
 		soundEnableButton.setLayoutData(new RowData(60, 21));
 		if (Functions.is_sound()) {
 			soundEnableButton.setText(Messages.AlarmView_soundButtonDisable);

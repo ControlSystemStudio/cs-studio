@@ -1,11 +1,14 @@
 package org.csstudio.alarm.table.utility;
 
+import java.applet.Applet;
+import java.applet.AudioClip;
 import java.awt.Toolkit;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 
 import javazoom.jl.player.Player;
 
@@ -60,11 +63,19 @@ public class Functions {
 		    	f = workspaceRoot.getLocation().append(path).toFile();
 		    }
             try {
-                FileInputStream fis = new FileInputStream(path);
-                playMp3(fis);
+                if(path.toLowerCase().endsWith(".mp3")) {
+                    FileInputStream fis = new FileInputStream(path);
+                    playMp3(fis);
+                } else if(path.toLowerCase().endsWith(".wav")) {
+                    File soundFile = new File( path ); 
+                    AudioClip sound = Applet.newAudioClip(soundFile.toURI().toURL()); 
+                    sound.play(); 
+                }
             } catch (FileNotFoundException e) {
                 CentralLogger.getInstance().warn(Functions.class, "Invalid Path for alarm mp3 file");
                 CentralLogger.getInstance().debug(Functions.class, e);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
             }
 	}
 

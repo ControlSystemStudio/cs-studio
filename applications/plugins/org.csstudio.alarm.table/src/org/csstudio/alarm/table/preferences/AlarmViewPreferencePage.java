@@ -23,6 +23,8 @@ package org.csstudio.alarm.table.preferences;
 
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.internal.localization.Messages;
+import org.csstudio.alarm.table.utility.Functions;
+import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.FileFieldEditor;
@@ -30,89 +32,142 @@ import org.eclipse.jface.preference.FontFieldEditor;
 import org.eclipse.jface.preference.ListEditor;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.eclipse.ui.PlatformUI;
 
 /**
- * This class represents a preference page that is contributed to the
- * Preferences dialog. By subclassing <samp>FieldEditorPreferencePage</samp>, we
- * can use the field support built into JFace that allows us to create a page
- * that is small and knows how to save, restore and apply itself.
+ * This class represents a preference page that is contributed to the Preferences dialog. By
+ * subclassing <samp>FieldEditorPreferencePage</samp>, we can use the field support built into JFace
+ * that allows us to create a page that is small and knows how to save, restore and apply itself.
  * <p>
- * This page is used to modify preferences only. They are stored in the
- * preference store that belongs to the main plug-in class. That way,
- * preferences can be accessed directly via the preference store.
+ * This page is used to modify preferences only. They are stored in the preference store that
+ * belongs to the main plug-in class. That way, preferences can be accessed directly via the
+ * preference store.
  */
 
-public class AlarmViewPreferencePage extends FieldEditorPreferencePage
-		implements IWorkbenchPreferencePage {
+public class AlarmViewPreferencePage extends FieldEditorPreferencePage implements
+        IWorkbenchPreferencePage {
 
-	public AlarmViewPreferencePage() {
-		super(GRID);
-		setPreferenceStore(JmsLogsPlugin.getDefault().getPreferenceStore());
-		setDescription(Messages.AlarmViewerPreferencePage_columnNamesMessageKeys);
-	}
+    public AlarmViewPreferencePage() {
+        super(GRID);
+        setPreferenceStore(JmsLogsPlugin.getDefault().getPreferenceStore());
+        setDescription(Messages.AlarmViewerPreferencePage_columnNamesMessageKeys);
+    }
 
-	public void createFieldEditors() {
-		getFieldEditorParent().setSize(300, 400);
-		addField(new ListEditor(
-				AlarmViewPreferenceConstants.P_STRINGAlarm,
-				AlarmViewPreferenceConstants.P_STRINGAlarm + ": ", getFieldEditorParent()) { //$NON-NLS-1$
-			public String[] parseString(String stringList) {
-				return stringList.split(";"); //$NON-NLS-1$
-			}
+    public void createFieldEditors() {
+        CustomMediaFactory customMediaFactory = CustomMediaFactory.getInstance();
+        getFieldEditorParent().setSize(300, 400);
+        addField(new ListEditor(AlarmViewPreferenceConstants.P_STRINGAlarm,
+                AlarmViewPreferenceConstants.P_STRINGAlarm + ": ", getFieldEditorParent()) { //$NON-NLS-1$
+            public String[] parseString(String stringList) {
+                return stringList.split(";"); //$NON-NLS-1$
+            }
 
-			public String getNewInputObject() {
-				InputDialog inputDialog = new InputDialog(
-						getFieldEditorParent().getShell(),
-						Messages.AlarmViewerPreferencePage_enterColumnName,
-						Messages.AlarmViewerPreferencePage_column, "", null); //$NON-NLS-1$
-				if (inputDialog.open() == Window.OK) {
-					return inputDialog.getValue();
-				}
-				return null;
-			}
+            public String getNewInputObject() {
+                InputDialog inputDialog = new InputDialog(getFieldEditorParent().getShell(),
+                        Messages.AlarmViewerPreferencePage_enterColumnName,
+                        Messages.AlarmViewerPreferencePage_column, "", null); //$NON-NLS-1$
+                if (inputDialog.open() == Window.OK) {
+                    return inputDialog.getValue();
+                }
+                return null;
+            }
 
-			public String createList(String[] items) {
-				String temp = ""; //$NON-NLS-1$
-				
-				for (int i = 0; i < items.length; i++) {
-					temp = temp + items[i] + ";"; //$NON-NLS-1$
-				}
-				return temp;
-			}
-		});
+            public String createList(String[] items) {
+                String temp = ""; //$NON-NLS-1$
 
-	addField(new FontFieldEditor(AlarmViewPreferenceConstants.LOG_ALARM_FONT, "Table Font", "Major", getFieldEditorParent()));
-		Group soundFileMajor = new Group(getFieldEditorParent(), SWT.NONE);
-		soundFileMajor.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false,
-				4, 1));
-		soundFileMajor.setText("Sound File Major");
-		Group soundFileMainor = new Group(getFieldEditorParent(), SWT.NONE);
-		soundFileMainor.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false,
-		        4, 1));
-		soundFileMainor.setText("Sound File Mainor");
-		addField(new FileFieldEditor(
-				AlarmViewPreferenceConstants.LOG_ALARM_SOUND_FILE_MAJOR,
-				"", soundFileMainor));
-		addField(new FileFieldEditor(
-		        AlarmViewPreferenceConstants.LOG_ALARM_SOUND_FILE_MINOR,
-		        "Sound File Mainor", false, soundFileMajor));
-		FileFieldEditor invalidEditor = new FileFieldEditor(
-		        AlarmViewPreferenceConstants.LOG_ALARM_SOUND_FILE_INVALID,
-		        "Sound File Invalid", soundFileMajor);
-		invalidEditor.setEmptyStringAllowed(true);
-		invalidEditor.setFileExtensions(new String[] {"*.mp3"});
+                for (int i = 0; i < items.length; i++) {
+                    temp = temp + items[i] + ";"; //$NON-NLS-1$
+                }
+                return temp;
+            }
+        });
+
+        addField(new FontFieldEditor(AlarmViewPreferenceConstants.LOG_ALARM_FONT, "Table Font",
+                "Major", getFieldEditorParent()));
+
+        Label label = new Label(getFieldEditorParent(), SWT.NONE);
+        label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false,4,1));
+        label.setText("Sound Files for:");
+        
+        label = new Label(getFieldEditorParent(), SWT.SEPARATOR | SWT.HORIZONTAL);
+        label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false,4,1));
+        
+        Group majorGroup = new Group(getFieldEditorParent(), SWT.NONE);
+        majorGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false,4,1));
+        majorGroup.setText("Major");
+        Group minorGroup = new Group(getFieldEditorParent(), SWT.NONE);
+        minorGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false,4,1));
+        minorGroup.setText("Minor");
+        Group invalidGroup = new Group(getFieldEditorParent(), SWT.NONE);
+        invalidGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false,4,1));
+        invalidGroup.setText("Invalid");
+        
+        final FileFieldEditor majorEditor = new FileFieldEditor(
+                AlarmViewPreferenceConstants.LOG_ALARM_SOUND_FILE_MAJOR, "Sound File:", majorGroup);
+        majorEditor.setEmptyStringAllowed(true);
+        majorEditor.setFileExtensions(new String[] { "*.mp3;*.wav","*.mp3","*.wav" });
+        addField(majorEditor);
+        Button button = new Button(majorGroup, SWT.PUSH);
+        button.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+        button.setImage(customMediaFactory.getImageFromPlugin(JmsLogsPlugin.PLUGIN_ID, "icons/run_tool.gif"));
+        button.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                Functions.playMp3(majorEditor.getStringValue());
+            }
+        });
+            
+        majorGroup.setLayout(new GridLayout(5, false));
+
+        final FileFieldEditor minorEditor = new FileFieldEditor(AlarmViewPreferenceConstants.LOG_ALARM_SOUND_FILE_MINOR,
+                "Minor Alarm", false, minorGroup);
+        minorEditor.setEmptyStringAllowed(true);
+        minorEditor.setFileExtensions(new String[] { "*.mp3;*.wav","*.mp3","*.wav" });
+        addField(minorEditor);
+        button = new Button(minorGroup, SWT.PUSH);
+        button.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+        button.setImage(customMediaFactory.getImageFromPlugin(JmsLogsPlugin.PLUGIN_ID, "icons/run_tool.gif"));
+        button.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                Functions.playMp3(minorEditor.getStringValue());
+            }
+        });
+        minorGroup.setLayout(new GridLayout(5, false));
+
+        final FileFieldEditor invalidEditor = new FileFieldEditor(
+                AlarmViewPreferenceConstants.LOG_ALARM_SOUND_FILE_INVALID, "Invalid Alarm",
+                invalidGroup);
+        invalidEditor.setEmptyStringAllowed(true);
+        invalidEditor.setFileExtensions(new String[] { "*.mp3;*.wav","*.mp3","*.wav" });
         addField(invalidEditor);
-		PreferenceTableEditor editor = new PreferenceTableEditor(
-				AlarmViewPreferenceConstants.TOPIC_SET, "&Topic Sets: ",
-				getFieldEditorParent());
-        addField(editor);
-	}
 
-	public void init(IWorkbench workbench) {
-	}
+        button = new Button(invalidGroup, SWT.PUSH);
+        button.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+        button.setImage(customMediaFactory.getImageFromPlugin(JmsLogsPlugin.PLUGIN_ID, "icons/run_tool.gif"));
+        button.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                Functions.playMp3(invalidEditor.getStringValue());
+            }
+        });
+        invalidGroup.setLayout(new GridLayout(5, false));
+
+        PreferenceTableEditor editor = new PreferenceTableEditor(
+                AlarmViewPreferenceConstants.TOPIC_SET, "&Topic Sets: ", getFieldEditorParent());
+        addField(editor);
+    }
+
+    public void init(IWorkbench workbench) {
+    }
 }
