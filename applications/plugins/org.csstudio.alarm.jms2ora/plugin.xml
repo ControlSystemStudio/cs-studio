@@ -8,18 +8,6 @@
       </initializer>
    </extension>
    <extension
-         id="Jms2OraProduct"
-         point="org.eclipse.core.runtime.products">
-      <product
-            application="org.csstudio.alarm.jms2ora.Jms2OraApplicationId"
-            name="Jms2Ora">
-         <property
-               name="appName"
-               value="Jms2Ora">
-         </property>
-      </product>
-   </extension>
-   <extension
          id="Jms2OraApplicationId"
          point="org.eclipse.core.runtime.applications">
       <application
@@ -76,6 +64,18 @@
             id="org.csstudio.alarm.jms2ora.GetQueuedMessages"
             label="Get Queued Messages">
       </command>
+   </extension>
+   <extension
+         id="Jms2OraProduct"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.csstudio.alarm.jms2ora.Jms2OraApplicationId"
+            name="Jms2Ora">
+         <property
+               name="appName"
+               value="Jms2Ora">
+         </property>
+      </product>
    </extension>
 
 </plugin>
