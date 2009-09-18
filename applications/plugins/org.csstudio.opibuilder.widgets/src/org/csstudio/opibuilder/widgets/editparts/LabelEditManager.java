@@ -35,11 +35,16 @@ private CellEditorActionHandler actionHandler;
 private IAction copy, cut, paste, undo, redo, find, selectAll, delete;
 private double cachedZoom = -1.0;
 private Font scaledFont;
+private boolean multiLine = true;
 private ZoomListener zoomListener = new ZoomListener() {
 	public void zoomChanged(double newZoom) {
 		updateScaledFont(newZoom);
 	}
 };
+public LabelEditManager(GraphicalEditPart source, CellEditorLocator locator, boolean multiline) {
+	super(source, null, locator);
+	this.multiLine = multiline;
+}
 
 public LabelEditManager(GraphicalEditPart source, CellEditorLocator locator) {
 	super(source, null, locator);
@@ -70,7 +75,7 @@ protected void bringDown() {
 }
 
 protected CellEditor createCellEditorOn(Composite composite) {
-	return new TextCellEditor(composite, SWT.MULTI | SWT.WRAP);
+	return new TextCellEditor(composite, multiLine ? SWT.MULTI : SWT.SINGLE | SWT.WRAP);
 }
 
 private void disposeScaledFont() {

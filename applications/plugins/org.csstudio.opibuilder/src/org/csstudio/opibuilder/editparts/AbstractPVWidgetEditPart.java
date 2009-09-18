@@ -181,8 +181,8 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 							public synchronized void pvValueUpdate(PV pv) {
 								if(pv == null)
 									return;
-								if(pvConnectedStatusMap.containsKey(pv.getName()) && 
-										!pvConnectedStatusMap.get(pv.getName())){
+								Boolean connected = pvConnectedStatusMap.get(pv.getName());
+								if(connected != null && !connected){
 									pvConnectedStatusMap.put(pv.getName(), true);
 									widgetConnectionRecovered(pv.getName());
 								}
@@ -331,17 +331,21 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 		return TYPE_ID;
 	}
 	
+	/**Set PV to given value. Should accept Double, Double[], Integer, String, maybe more.
+	 * @param pvPropId
+	 * @param value
+	 */
 	protected void setPVValue(String pvPropId, Object value){
 		final PV pv = pvMap.get(pvPropId);
 		if(pv != null){
 			try {
 				pv.setValue(value);
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				UIBundlingThread.getInstance().addRunnable(new Runnable(){
 					public void run() {
 						MessageBox mb = new MessageBox(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
 								SWT.ICON_ERROR | SWT.OK);
-						mb.setMessage("Failed to write PV:" + pv.getName());
+						mb.setMessage("Failed to write PV:" + pv.getName() + "\n" + e.getMessage());
 						mb.setText("PV write error");
 						mb.open();
 					}

@@ -30,10 +30,10 @@ public class TextIndicatorDirectEditPolicy
 	 * @see DirectEditPolicy#showCurrentEditValue(DirectEditRequest)
 	 */
 	protected void showCurrentEditValue(DirectEditRequest request) {
-		String value = (String)request.getCellEditor().getValue();
-		((LabelFigure)getHostFigure()).setText(value);
+		//String value = (String)request.getCellEditor().getValue();
+		//((LabelFigure)getHostFigure()).setText(value);
 		//hack to prevent async layout from placing the cell editor twice.
-		getHostFigure().getUpdateManager().performUpdate();
+		//getHostFigure().getUpdateManager().performUpdate();
 		
 	
 	}

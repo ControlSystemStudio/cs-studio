@@ -1,25 +1,47 @@
 package org.csstudio.opibuilder.widgets.model;
 
-import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.BooleanProperty;
-import org.csstudio.opibuilder.properties.StringProperty;
+import org.csstudio.opibuilder.properties.ComboProperty;
+import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 
-public class TextIndicatorModel extends AbstractPVWidgetModel {
-
+/**The model for text indicator.
+ * @author Xihui Chen
+ *
+ */
+public class TextIndicatorModel extends LabelModel {
 	
+	public enum FormatEnum {
+		DEFAULT("Default"),
+		DECIAML("Decimal"),
+		EXP("Exponential"),
+		HEX("Hex");
+		
+		private String description;
+		private FormatEnum(String description) {
+			this.description = description;
+		}
+		
+		@Override
+		public String toString() {
+			return description;
+		}
+		
+		public static String[] stringValues(){
+			String[] result = new String[values().length];
+			int i =0 ;
+			for(FormatEnum f : values()){
+				result[i++] = f.toString();
+			}
+			return result;
+		}
+	}
 	
-	/** The ID of the <i>transparent</i> property. */
-	public static final String PROP_TRANSPARENT = "transparency";	//$NON-NLS-1$
-	
-	/** The ID of the <i>Auto Size</i> property. */
-	public static final String PROP_AUTOSIZE = "auto_size";	//$NON-NLS-1$
-	
-	/**
-	 * The ID of the text property.
-	 */
-	public static final String PROP_TEXT= "text"; //$NON-NLS-1$
+	public static final String PROP_FORMAT_TYPE = "format_type";	//$NON-NLS-1$
+	public static final String PROP_PRECISION = "precision";	//$NON-NLS-1$
+	public static final String PROP_PRECISION_FROM_DB = "precision_from_db";	//$NON-NLS-1$
+	public static final String PROP_SHOW_UNITS = "show_units";	
 	
 	
 	public TextIndicatorModel() {
@@ -36,31 +58,38 @@ public class TextIndicatorModel extends AbstractPVWidgetModel {
 	
 	@Override
 	protected void configureProperties() {
-		addProperty(new BooleanProperty(PROP_TRANSPARENT, "Transparent Background",
-				WidgetPropertyCategory.Display, false));
-		addProperty(new BooleanProperty(PROP_AUTOSIZE, "Auto Size", 
-				WidgetPropertyCategory.Display, false));
-		addProperty(new StringProperty(PROP_TEXT, "Text", 
-				WidgetPropertyCategory.Display, "######"));
-		setPropertyVisible(PROP_BACKCOLOR_ALARMSENSITIVE, true);
-		setPropertyVisible(PROP_BORDER_ALARMSENSITIVE, true);
-		setPropertyVisible(PROP_FORECOLOR_ALARMSENSITIVE, true);		
-	}
-
-
-	public boolean isTransparent(){
-		return (Boolean)getCastedPropertyValue(PROP_TRANSPARENT);
-	}
-	
-	public boolean isAutoSize(){
-		return (Boolean)getCastedPropertyValue(PROP_AUTOSIZE);
-	}
-	
-	public String getText(){
-		return (String)getCastedPropertyValue(PROP_TEXT);
+		pvModel = true;
+		super.configureProperties();	
+		WidgetPropertyCategory category = new WidgetPropertyCategory(){
+			@Override
+			public String toString() {
+				return "Format";
+			}
+		};
+		addProperty(new ComboProperty(PROP_FORMAT_TYPE, "Format Type", category, FormatEnum.stringValues(), 0));
+		addProperty(new IntegerProperty(PROP_PRECISION, "Precision", category, 0, 0, 100));
+		addProperty(new BooleanProperty(PROP_PRECISION_FROM_DB, "Precision from DB", category, true));
+		addProperty(new BooleanProperty(PROP_SHOW_UNITS, "Show Units", category, true));
+		
+		setPropertyValue(PROP_TEXT, "######");
+		setPropertyValue(PROP_SHOW_SCROLLBAR, false);
+		setPropertyValue(PROP_ALIGN_H, 1);
+		setPropertyValue(PROP_ALIGN_V, 1);
 	}
 	
-	public void setText(String text){
-		setPropertyValue(PROP_TEXT, text);
+	public FormatEnum getFormat(){
+		return FormatEnum.values()[(Integer)getCastedPropertyValue(PROP_FORMAT_TYPE)];
+	}
+	
+	public int getPrecision(){
+		return (Integer)getCastedPropertyValue(PROP_PRECISION);
+	}
+	
+	public boolean isPrecisionFromDB(){
+		return (Boolean)getCastedPropertyValue(PROP_PRECISION_FROM_DB);
+	}
+	
+	public boolean isShowUnits(){
+		return (Boolean)getCastedPropertyValue(PROP_SHOW_UNITS);
 	}
 }

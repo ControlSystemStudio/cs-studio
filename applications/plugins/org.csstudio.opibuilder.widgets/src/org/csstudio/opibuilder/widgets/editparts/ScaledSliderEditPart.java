@@ -43,6 +43,7 @@ public final class ScaledSliderEditPart extends AbstractMarkedWidgetEditPart {
 			}
 		});	
 		
+		markAsControlPV(ScaledSliderModel.PROP_CONTROL_PV);
 		return slider;
 
 	}

@@ -67,6 +67,15 @@
             typeId="org.csstudio.opibuilder.widgets.TextUpdate">
       </widget>
       <widget
+            category="Controls"
+            description="Write value to a pv by inputing text in this widget."
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.TextInputEditpart"
+            icon="icons/text.gif"
+            model_class="org.csstudio.opibuilder.widgets.model.TextInputModel"
+            name="Text Input"
+            typeId="org.csstudio.opibuilder.widgets.TextInput">
+      </widget>
+      <widget
             category="Graphics"
             description="Create a ellipse widget"
             editpart_class="org.csstudio.opibuilder.widgets.editparts.EllipseEditpart"

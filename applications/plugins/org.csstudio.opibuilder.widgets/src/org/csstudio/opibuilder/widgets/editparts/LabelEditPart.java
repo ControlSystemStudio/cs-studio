@@ -14,6 +14,10 @@ import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
 import org.eclipse.swt.widgets.Display;
 
+/**The editpart for Label widget.
+ * @author Xihui Chen
+ *
+ */
 public class LabelEditPart extends AbstractWidgetEditPart {
 
 	
@@ -29,6 +33,7 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 		labelFigure.getLabel().setLabelAlignment(
 				(int) (1 * Math.pow(2, getWidgetModel().getHorizontalAlignment())));
 		labelFigure.getLabel().setTextPlacement(PositionConstants.WEST);
+		labelFigure.setScrollbarVisible(getWidgetModel().isShowScrollbar());
 		return labelFigure;
 	}
 
@@ -114,6 +119,16 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(LabelModel.PROP_ALIGN_V, handler);
+		
+		
+		handler = new IWidgetPropertyChangeHandler(){
+			public boolean handleChange(Object oldValue, Object newValue,
+					IFigure figure) {
+				((LabelFigure)figure).setScrollbarVisible((Boolean)newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(LabelModel.PROP_SHOW_SCROLLBAR, handler);
 		
 	}
 

@@ -64,6 +64,7 @@ public class LabelFigure extends Figure{
 	public void setText(String newText) {		
 		label.setText(newText);
 		label.setSize(label.getPreferredSize());
+		label.revalidate();
 	}
 
 	public Label getLabel() {
@@ -84,6 +85,10 @@ public class LabelFigure extends Figure{
 		label.setFont(f);
 		super.setFont(f);
 		revalidate();			
+	}
+	
+	public void setScrollbarVisible(boolean visible){
+		scrollPane.setScrollBarVisibility(visible ? ScrollPane.AUTOMATIC : ScrollPane.NEVER);
 	}
 	
 
