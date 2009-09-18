@@ -30,7 +30,7 @@ import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.ISeverity;
 
 /** Implementation of {@link IDoubleValue}.
- *  @author Kay Kasemir
+ *  @author Kay Kasemir, Xihui Chen
  */
 public class DoubleValue extends Value implements IDoubleValue
 {
@@ -55,7 +55,8 @@ public class DoubleValue extends Value implements IDoubleValue
 	final public double getValue()
 	{	return values[0];	}
 	
-    /** {@inheritDoc} */
+    /** {@inheritDoc} 
+     * <br> If precision is less than zero, the precision from meta data will be used. */
 	@Override
     public String format(Format how, int precision)
 	{
@@ -81,6 +82,11 @@ public class DoubleValue extends Value implements IDoubleValue
                     // Should have numeric meta data, but in case of errors
                     // that might be null.
                     if (num_meta != null)
+                        precision = num_meta.getPrecision();
+                }
+                if(precision < 0){
+                	final INumericMetaData num_meta = (INumericMetaData)getMetaData();
+                	 if (num_meta != null)
                         precision = num_meta.getPrecision();
                 }
                 fmt.setMinimumFractionDigits(precision);

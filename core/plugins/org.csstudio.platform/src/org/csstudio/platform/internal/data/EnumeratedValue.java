@@ -21,6 +21,9 @@
  */
  package org.csstudio.platform.internal.data;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+
 import org.csstudio.platform.data.IEnumeratedMetaData;
 import org.csstudio.platform.data.IEnumeratedValue;
 import org.csstudio.platform.data.ISeverity;
@@ -28,7 +31,7 @@ import org.csstudio.platform.data.ITimestamp;
 
 /** Implementation of {@link IEnumeratedValue}.
  *  @see IEnumeratedValue
- *  @author Kay Kasemir
+ *  @author Kay Kasemir, Xihui Chen
  */
 public class EnumeratedValue extends Value implements IEnumeratedValue
 {
@@ -59,12 +62,37 @@ public class EnumeratedValue extends Value implements IEnumeratedValue
 	    final StringBuffer buf = new StringBuffer();
 		if (getSeverity().hasValue())
 		{
-			buf.append(enum_meta.getState(values[0]));
-			for (int i = 1; i < values.length; i++)
-			{
-				buf.append(Messages.ArrayElementSeparator);
-	            buf.append(enum_meta.getState(values[i]));
+			if(how == Format.Default){
+				buf.append(enum_meta.getState(values[0]));
+				for (int i = 1; i < values.length; i++)
+				{
+					buf.append(Messages.ArrayElementSeparator);
+		            buf.append(enum_meta.getState(values[i]));
+				}
+			}else if (how == Format.Decimal){
+				buf.append(values[0]);
+				for (int i = 1; i < values.length; i++)
+				{
+					buf.append(Messages.ArrayElementSeparator);
+		            buf.append(values[i]);
+				}
+			}else if (how == Format.Exponential){
+				// Is there a better way to get this silly format?
+			 	NumberFormat fmt;
+                StringBuffer pattern = new StringBuffer(10);
+                pattern.append("0."); //$NON-NLS-1$
+                for (int i=0; i<precision; ++i)
+                    pattern.append('0');
+                pattern.append("E0"); //$NON-NLS-1$
+                fmt = new DecimalFormat(pattern.toString());
+                buf.append(fmt.format(values[0]));
+                for (int i = 1; i < values.length; i++)
+	        	 {
+	        		 buf.append(Messages.ArrayElementSeparator);
+	        		 buf.append(buf.append(fmt.format(values[i])));
+	        	 }
 			}
+			
 		}
 		else
 			buf.append(Messages.NoValue);
