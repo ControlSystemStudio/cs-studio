@@ -34,7 +34,7 @@ public class OPIColor implements IAdaptable {
 	
 	public OPIColor(String colorName) {
 		this.colorName = colorName;
-		this.colorValue = ColorService.getInstance().getColor(colorName);
+		this.colorValue = MediaService.getInstance().getColor(colorName);
 		preDefined = true;
 	}
 	
@@ -72,7 +72,7 @@ public class OPIColor implements IAdaptable {
 	
 	public void setColorName(String colorName) {
 		this.colorName = colorName;
-		this.colorValue = ColorService.getInstance().getColor(colorName);
+		this.colorValue = MediaService.getInstance().getColor(colorName);
 		preDefined = true;
 	}
 	

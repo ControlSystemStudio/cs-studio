@@ -137,11 +137,8 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 				allPropIds.contains(AbstractWidgetModel.PROP_BORDER_WIDTH))
 			figure.setBorder(BorderFactory.createBorder(
 				getWidgetModel().getBorderStyle(), getWidgetModel().getBorderWidth(), 
-				getWidgetModel().getBorderColor(), getWidgetModel().getName()));
-		
-		if(allPropIds.contains(AbstractWidgetModel.PROP_FONT))
-			figure.setFont(CustomMediaFactory.getInstance().getFont(getWidgetModel().getFont()));
-		
+				getWidgetModel().getBorderColor(), getWidgetModel().getName()));		
+			
 		if(allPropIds.contains(AbstractWidgetModel.PROP_TOOLTIP)){
 			if(!getWidgetModel().getTooltip().equals("")){ //$NON-NLS-1$
 				tooltipLabel.setText(getWidgetModel().getTooltip());
@@ -399,15 +396,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 		};		
 		setPropertyChangeHandler(AbstractWidgetModel.PROP_ENABLED, enableHandler);
 		
-		IWidgetPropertyChangeHandler fontHandler = new IWidgetPropertyChangeHandler(){
-			public boolean handleChange(Object oldValue, Object newValue,
-					IFigure figure) {
-				figure.setFont(CustomMediaFactory.getInstance().getFont((FontData)newValue));
-				return true;
-			}
-		};		
-		setPropertyChangeHandler(AbstractWidgetModel.PROP_FONT, fontHandler);
-		
+			
 		IWidgetPropertyChangeHandler tooltipHandler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {

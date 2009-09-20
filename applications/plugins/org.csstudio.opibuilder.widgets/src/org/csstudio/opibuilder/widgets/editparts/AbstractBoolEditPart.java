@@ -1,19 +1,18 @@
 package org.csstudio.opibuilder.widgets.editparts;
 
+import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
-import org.csstudio.opibuilder.editparts.AbstractWidgetEditPart;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
+import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.widgets.figures.AbstractBoolFigure;
-import org.csstudio.opibuilder.widgets.figures.AbstractScaledWidgetFigure;
 import org.csstudio.opibuilder.widgets.model.AbstractBoolWidgetModel;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.graphics.RGB;
 
 /**
  * Base editPart controller for a widget based on {@link AbstractBoolWidgetModel}.
@@ -44,7 +43,7 @@ public abstract class AbstractBoolEditPart extends AbstractPVWidgetEditPart {
 		figure.setOnColor(model.getOnColor());
 		figure.setOffColor(model.getOffColor());
 		figure.setFont(CustomMediaFactory.getInstance().getFont(
-				model.getFont()));
+				model.getFont().getFontData()));
 		
 	}	
 	
@@ -147,10 +146,8 @@ public abstract class AbstractBoolEditPart extends AbstractPVWidgetEditPart {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
 				AbstractBoolFigure figure = (AbstractBoolFigure) refreshableFigure;
-				FontData fontData = (FontData) newValue;
-				figure.setFont(CustomMediaFactory.getInstance().getFont(
-						fontData.getName(), fontData.getHeight(),
-						fontData.getStyle()));
+				FontData fontData = ((OPIFont) newValue).getFontData();
+				figure.setFont(CustomMediaFactory.getInstance().getFont(fontData));
 				return true;
 			}
 		};

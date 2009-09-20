@@ -7,9 +7,9 @@ import org.csstudio.opibuilder.editparts.AbstractWidgetEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
+import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.widgets.figures.ActionButtonFigure;
 import org.csstudio.opibuilder.widgets.model.ActionButtonModel;
-import org.csstudio.opibuilder.widgets.model.XYGraphModel;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.ActionEvent;
 import org.eclipse.draw2d.ActionListener;
@@ -35,7 +35,7 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 		final ActionButtonFigure buttonFigure = new ActionButtonFigure(getExecutionMode());
 		buttonFigure.setText(model.getText());
 		buttonFigure.setFont(CustomMediaFactory.getInstance().getFont(
-				model.getFont()));
+				model.getFont().getFontData()));
 		buttonFigure.setStyle(model.isToggleButton());
 		updatePropSheet(model.isToggleButton());
 		if(getExecutionMode() == ExecutionMode.RUN_MODE){
@@ -109,10 +109,8 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
 				ActionButtonFigure figure = (ActionButtonFigure) refreshableFigure;
-				FontData fontData = (FontData) newValue;
-				figure.setFont(CustomMediaFactory.getInstance().getFont(
-						fontData.getName(), fontData.getHeight(),
-						fontData.getStyle()));
+				FontData fontData = ((OPIFont) newValue).getFontData();
+				figure.setFont(CustomMediaFactory.getInstance().getFont(fontData));
 				return true;
 			}
 		};

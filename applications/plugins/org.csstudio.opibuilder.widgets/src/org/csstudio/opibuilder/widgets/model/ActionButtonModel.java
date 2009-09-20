@@ -6,8 +6,8 @@ import org.csstudio.opibuilder.properties.FontProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
-import org.eclipse.swt.graphics.FontData;
 
 /**
  * An action button widget model.
@@ -146,8 +146,8 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	 * 
 	 * @return The label font.
 	 */
-	public FontData getFont() {
-		return (FontData) getProperty(PROP_FONT).getPropertyValue();
+	public OPIFont getFont() {
+		return (OPIFont) getProperty(PROP_FONT).getPropertyValue();
 	}
 	
 	/**

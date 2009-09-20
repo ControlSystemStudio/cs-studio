@@ -11,7 +11,6 @@ import org.csstudio.opibuilder.properties.ActionsProperty;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.ColorProperty;
 import org.csstudio.opibuilder.properties.ComboProperty;
-import org.csstudio.opibuilder.properties.FontProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.PVValueProperty;
 import org.csstudio.opibuilder.properties.ScriptProperty;
@@ -24,12 +23,10 @@ import org.csstudio.opibuilder.util.WidgetDescriptor;
 import org.csstudio.opibuilder.util.WidgetsService;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
 import org.csstudio.opibuilder.widgetActions.ActionsInput;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
-import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
@@ -73,8 +70,6 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 
 	public static final String PROP_BORDER_STYLE = "border.style"; //$NON-NLS-1$
 	
-	public static final String PROP_FONT= "font"; //$NON-NLS-1$
-
 	public static final String PROP_TYPE= "type"; //$NON-NLS-1$
 	
 	private Map<String, AbstractWidgetProperty> propertyMap;
@@ -138,8 +133,6 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 				WidgetPropertyCategory.Behavior, true));
 		addProperty(new BooleanProperty(PROP_VISIBLE, "Visible", 
 				WidgetPropertyCategory.Behavior, true));
-		addProperty(new FontProperty(PROP_FONT, "Font", 
-				WidgetPropertyCategory.Display, CustomMediaFactory.FONT_ARIAL));
 		addProperty(new ScriptProperty(PROP_SCRIPTS, "Scripts", 
 				WidgetPropertyCategory.Behavior));
 		addProperty(new ActionsProperty(PROP_ACTIONS, "Actions", 
@@ -213,9 +206,7 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	}
 
 	
-	public FontData getFont(){
-		return (FontData)getCastedPropertyValue(PROP_FONT);
-	}
+	
 	
 	public ActionsInput getActionsInput(){
 		return (ActionsInput)getCastedPropertyValue(PROP_ACTIONS);
@@ -362,9 +353,7 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 		setPropertyValue(PROP_COLOR_FOREGROUND, color);
 	}
 	
-	public void setFont(FontData fontData){
-		setPropertyValue(PROP_FONT, fontData);
-	}
+
 	
 	public void setLocation(int x, int y){
 		setPropertyValue(PROP_XPOS, x);

@@ -2,17 +2,13 @@ package org.csstudio.opibuilder.widgets.editparts;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
-import org.csstudio.opibuilder.editparts.AbstractWidgetEditPart;
-import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
+import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.widgets.model.XYGraphModel;
 import org.csstudio.opibuilder.widgets.model.XYGraphModel.AxisProperty;
 import org.csstudio.opibuilder.widgets.model.XYGraphModel.TraceProperty;
@@ -28,10 +24,7 @@ import org.csstudio.swt.xygraph.figures.Trace;
 import org.csstudio.swt.xygraph.figures.XYGraph;
 import org.csstudio.swt.xygraph.figures.Trace.PointStyle;
 import org.csstudio.swt.xygraph.figures.Trace.TraceType;
-
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.graphics.RGB;
 
 /**The XYGraph editpart
  * @author Xihui Chen
@@ -52,7 +45,8 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 		ToolbarArmedXYGraph xyGraphFigure = new ToolbarArmedXYGraph();
 		XYGraph xyGraph = xyGraphFigure.getXYGraph();
 		xyGraph.setTitle(model.getTitle());
-		xyGraph.setTitleFont(CustomMediaFactory.getInstance().getFont(model.getTitleFont()));
+		xyGraph.setTitleFont(CustomMediaFactory.getInstance().getFont(
+				model.getTitleFont().getFontData()));
 		xyGraph.getPlotArea().setShowBorder(model.isShowPlotAreaBorder());
 		xyGraph.getPlotArea().setBackgroundColor(
 				CustomMediaFactory.getInstance().getColor(model.getPlotAreaBackColor()));
@@ -123,7 +117,8 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				ToolbarArmedXYGraph graph = (ToolbarArmedXYGraph) refreshableFigure;
-				graph.getXYGraph().setTitleFont(CustomMediaFactory.getInstance().getFont((FontData)newValue));
+				graph.getXYGraph().setTitleFont(
+						CustomMediaFactory.getInstance().getFont(((OPIFont)newValue).getFontData()));
 				return true;
 			}
 		};
@@ -310,7 +305,8 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 				axis.setFormatPattern(format);				
 				break;
 			case TITLE_FONT:
-				axis.setTitleFont(CustomMediaFactory.getInstance().getFont((FontData)newValue));
+				axis.setTitleFont(CustomMediaFactory.getInstance().getFont(
+						((OPIFont)newValue).getFontData()));
 				break;
 			case Y_AXIS:
 				axis.setYAxis((Boolean)newValue);

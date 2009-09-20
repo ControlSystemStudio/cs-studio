@@ -11,6 +11,7 @@ import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.PVValueProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.swt.xygraph.dataprovider.CircularBufferDataProvider.PlotMode;
 import org.csstudio.swt.xygraph.dataprovider.CircularBufferDataProvider.UpdateMode;
 import org.csstudio.swt.xygraph.figures.XYGraph;
@@ -381,8 +382,8 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 	 * 
 	 * @return The title font.
 	 */
-	public FontData getTitleFont() {
-		return (FontData) getProperty(PROP_TITLE_FONT).getPropertyValue();
+	public OPIFont getTitleFont() {
+		return (OPIFont) getProperty(PROP_TITLE_FONT).getPropertyValue();
 	}
 	
 	/**

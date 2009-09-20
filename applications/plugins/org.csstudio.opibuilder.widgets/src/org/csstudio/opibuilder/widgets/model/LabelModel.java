@@ -4,9 +4,12 @@ import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.ComboProperty;
+import org.csstudio.opibuilder.properties.FontProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.eclipse.swt.graphics.FontData;
 
 public class LabelModel extends AbstractPVWidgetModel {
 	
@@ -25,6 +28,9 @@ public class LabelModel extends AbstractPVWidgetModel {
 	
 	public static final String PROP_SHOW_SCROLLBAR = "show_scrollbar";	//$NON-NLS-1$
 	
+	public static final String PROP_FONT= "font"; //$NON-NLS-1$
+
+	
 	public static final String[] H_ALIGN = new String[]{"LEFT", "CENTER", "RIGHT"};
 	public static final String[] V_ALIGN = new String[]{"TOP", "MIDDLE", "BOTTOM"};
 	
@@ -38,6 +44,8 @@ public class LabelModel extends AbstractPVWidgetModel {
 
 	@Override
 	protected void configureProperties() {
+		addProperty(new FontProperty(PROP_FONT, "Font", 
+				WidgetPropertyCategory.Display, CustomMediaFactory.FONT_ARIAL));
 		addProperty(new StringProperty(PROP_TEXT, "Text", 
 				WidgetPropertyCategory.Display, "double click to enter text", true));
 		addProperty(new BooleanProperty(PROP_TRANSPARENT, "Transparent",
@@ -93,5 +101,13 @@ public class LabelModel extends AbstractPVWidgetModel {
 		return (Boolean)getCastedPropertyValue(PROP_SHOW_SCROLLBAR);
 	}
 	
+	
+	public OPIFont getFont(){
+		return (OPIFont)getCastedPropertyValue(PROP_FONT);
+	}
+	
+	public void setFont(OPIFont font){
+		setPropertyValue(PROP_FONT, font);
+	}
 
 }

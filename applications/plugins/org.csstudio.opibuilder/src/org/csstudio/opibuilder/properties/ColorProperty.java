@@ -2,7 +2,7 @@
 package org.csstudio.opibuilder.properties;
 
 import org.csstudio.opibuilder.properties.support.OPIColorPropertyDescriptor;
-import org.csstudio.opibuilder.util.ColorService;
+import org.csstudio.opibuilder.util.MediaService;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
@@ -49,7 +49,7 @@ public class ColorProperty extends AbstractWidgetProperty {
 	public ColorProperty(String prop_id, String description,
 			WidgetPropertyCategory category, String defaultValue) {
 		super(prop_id, description, category, 
-				ColorService.getInstance().getOPIColor(defaultValue));
+				MediaService.getInstance().getOPIColor(defaultValue));
 	}
 	
 
@@ -70,7 +70,7 @@ public class ColorProperty extends AbstractWidgetProperty {
 		}else if(value instanceof RGB){
 			acceptedValue = new OPIColor((RGB)value);
 		}else if(value instanceof String){
-			acceptedValue = ColorService.getInstance().getOPIColor((String)value);
+			acceptedValue = MediaService.getInstance().getOPIColor((String)value);
 		}else
 			acceptedValue = null;
 			
@@ -88,7 +88,7 @@ public class ColorProperty extends AbstractWidgetProperty {
 
 	@Override
 	public void writeToXML(Element propElement) {
-		OPIColor opiColor = ((OPIColor) getPropertyValue());
+		OPIColor opiColor = (OPIColor) getPropertyValue();
 		Element colorElement;
 		if(!opiColor.isPreDefined()){
 			colorElement= new Element(XML_ELEMENT_COLOR);
@@ -116,7 +116,7 @@ public class ColorProperty extends AbstractWidgetProperty {
 				return new OPIColor(result);		
 		}else{
 			colorElement = propElement.getChild(XML_ELEMENT_COLORNAME);
-			return ColorService.getInstance().getOPIColor(colorElement.getText());
+			return MediaService.getInstance().getOPIColor(colorElement.getText());
 		}
 	
 	}

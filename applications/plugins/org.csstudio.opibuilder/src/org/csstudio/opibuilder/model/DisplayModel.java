@@ -47,7 +47,6 @@ public class DisplayModel extends AbstractContainerModel {
 		removeProperty(PROP_VISIBLE);
 		removeProperty(PROP_ENABLED);
 		removeProperty(PROP_ACTIONS);
-		removeProperty(PROP_FONT);
 		setPropertyDescription(PROP_COLOR_FOREGROUND, "Grid Color");
 		
 	}

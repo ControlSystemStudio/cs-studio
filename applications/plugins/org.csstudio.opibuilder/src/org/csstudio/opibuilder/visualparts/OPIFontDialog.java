@@ -1,44 +1,49 @@
 package org.csstudio.opibuilder.visualparts;
 
 import org.csstudio.opibuilder.util.MediaService;
-import org.csstudio.opibuilder.util.OPIColor;
+import org.csstudio.opibuilder.util.OPIFont;
+import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.ColorDialog;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.FontDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.model.BaseWorkbenchContentProvider;
-import org.eclipse.ui.model.WorkbenchLabelProvider;
 
-public class OPIColorDialog extends Dialog {
+/**The dialog for editing OPI Font.
+ * @author chenxh
+ *
+ */
+public class OPIFontDialog extends Dialog {
 	
-	private OPIColor opiColor;
+	private OPIFont opiFont;
 	private TableViewer preDefinedColorsViewer;
-	private Label outputImageLabel, outputTextLabel;
+	private Label outputTextLabel;
 	private String title;
 
-	protected OPIColorDialog(Shell parentShell, OPIColor color, String dialogTitle) {
+	protected OPIFontDialog(Shell parentShell, OPIFont font, String dialogTitle) {
 		super(parentShell);
 		setShellStyle(getShellStyle() | SWT.RESIZE);
 		this.title = dialogTitle;
-		if(color.isPreDefined())
-			this.opiColor = new OPIColor(color.getColorName());
+		if(font.isPreDefined())
+			this.opiFont = new OPIFont(font.getFontName());
 		else
-			this.opiColor = new OPIColor(color.getRGBValue());
+			this.opiFont = new OPIFont(font.getFontData());
 	}
 	
 	/**
@@ -58,18 +63,18 @@ public class OPIColorDialog extends Dialog {
 		final Composite mainComposite = new Composite(parent_Composite, SWT.None);			
 		mainComposite.setLayout(new GridLayout(2, false));
 		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-		gridData.heightHint = 300;
+		//gridData.heightHint = 300;
 		mainComposite.setLayoutData(gridData);
 		final Composite leftComposite = new Composite(mainComposite, SWT.None);
 		leftComposite.setLayout(new GridLayout(1, false));
 		GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
-		gd.widthHint = 220;
+		gd.widthHint = 300;
 		leftComposite.setLayoutData(gd);	
-		createLabel(leftComposite, "Choose from Predefined Colors:");
+		createLabel(leftComposite, "Choose from Predefined Fonts:");
 		
 		preDefinedColorsViewer = createPredefinedColorsTableViewer(leftComposite);
 		preDefinedColorsViewer.setInput(
-				MediaService.getInstance().getAllPredefinedColors());
+				MediaService.getInstance().getAllPredefinedFonts());
 		
 		Composite rightComposite = new Composite(mainComposite, SWT.None);
 		rightComposite.setLayout(new GridLayout(1, false));
@@ -81,34 +86,34 @@ public class OPIColorDialog extends Dialog {
 		
 		Button colorDialogButton = new Button(rightComposite, SWT.PUSH);
 		colorDialogButton.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
-		colorDialogButton.setText("Choose from Color Dialog");
+		colorDialogButton.setText("Choose from Font Dialog");
 		colorDialogButton.addSelectionListener(new SelectionAdapter(){
+			@SuppressWarnings("deprecation")
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				ColorDialog dialog = new ColorDialog(Display.getCurrent().getActiveShell());
-				dialog.setRGB(opiColor.getRGBValue());
-				RGB rgb = dialog.open();
-				if(rgb != null){
-					opiColor = new OPIColor(rgb);
+				FontDialog dialog = new FontDialog(Display.getCurrent().getActiveShell());
+				dialog.setFontData(opiFont.getFontData());
+				FontData fontdata = dialog.open();
+				if(fontdata != null){
+					opiFont = new OPIFont(fontdata);
 					preDefinedColorsViewer.setSelection(null);
-					outputImageLabel.setImage(opiColor.getImage());
-					outputTextLabel.setText(opiColor.getColorName());
+					outputTextLabel.setText(opiFont.getFontName());
+					outputTextLabel.setFont(CustomMediaFactory.getInstance().getFont(fontdata));
+					getShell().layout(true, true);
 				}
 			}
 		});
 		
 		
-		Group group = new Group(rightComposite, SWT.None);
-		group.setLayoutData(new GridData(SWT.FILL, SWT.END, true, true));
-		group.setLayout(new GridLayout(2, false));
+		Group group = new Group(mainComposite, SWT.None);
+		group.setLayoutData(new GridData(SWT.FILL, SWT.END, true, true, 2, 1));
+		
+		group.setLayout(new GridLayout(1, false));
 		group.setText("Output");
-	
-		outputImageLabel = new Label(group, SWT.None);
-		outputImageLabel.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
-		outputImageLabel.setImage(opiColor.getImage());
+
 		outputTextLabel = new Label(group, SWT.None);
 		outputTextLabel.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
-		outputTextLabel.setText(opiColor.getColorName());
+		outputTextLabel.setText(opiFont.getFontName());
 		
 		
 		return parent_Composite;
@@ -130,7 +135,7 @@ public class OPIColorDialog extends Dialog {
 				return (Object[]) element;
 			}
 		});
-		viewer.setLabelProvider(new WorkbenchLabelProvider());
+		viewer.setLabelProvider(new LabelProvider());
 		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(final SelectionChangedEvent event) {
 				refreshGUIOnSelection();
@@ -148,10 +153,11 @@ public class OPIColorDialog extends Dialog {
 		IStructuredSelection selection = (IStructuredSelection) preDefinedColorsViewer
 				.getSelection();
 		if(!selection.isEmpty() 
-				&& selection.getFirstElement() instanceof OPIColor){
-			opiColor = (OPIColor)selection.getFirstElement();
-			outputImageLabel.setImage(opiColor.getImage());
-			outputTextLabel.setText(opiColor.getColorName());
+				&& selection.getFirstElement() instanceof OPIFont){
+			opiFont = (OPIFont)selection.getFirstElement();
+			outputTextLabel.setText(opiFont.getFontName());
+			outputTextLabel.setFont(CustomMediaFactory.getInstance().getFont(opiFont.getFontData()));
+			getShell().layout(true, true);
 		}
 	}
 	
@@ -170,8 +176,8 @@ public class OPIColorDialog extends Dialog {
 				false, 1, 1));
 	}
 
-	public OPIColor getOutput() {
-		return opiColor;
+	public OPIFont getOutput() {
+		return opiFont;
 	}
 	
 

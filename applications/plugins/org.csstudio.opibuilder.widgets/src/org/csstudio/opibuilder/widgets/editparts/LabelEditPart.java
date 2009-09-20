@@ -4,6 +4,7 @@ import org.csstudio.opibuilder.editparts.AbstractWidgetEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
+import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.widgets.figures.LabelFigure;
 import org.csstudio.opibuilder.widgets.model.LabelModel;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
@@ -12,6 +13,7 @@ import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.widgets.Display;
 
 /**The editpart for Label widget.
@@ -25,7 +27,7 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 	protected IFigure doCreateFigure() {
 		LabelFigure labelFigure = new LabelFigure();
 		labelFigure.setFont(CustomMediaFactory.getInstance().getFont(
-				getWidgetModel().getFont()));
+				getWidgetModel().getFont().getFontData()));
 		labelFigure.setText(getWidgetModel().getText());		
 		labelFigure.setOpaque(!getWidgetModel().isTransparent());
 		labelFigure.getLabel().setTextAlignment(
@@ -64,6 +66,18 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 		setPropertyChangeHandler(LabelModel.PROP_TEXT, handler);
 		
 		
+		IWidgetPropertyChangeHandler fontHandler = new IWidgetPropertyChangeHandler(){
+			public boolean handleChange(Object oldValue, Object newValue,
+					IFigure figure) {
+				figure.setFont(CustomMediaFactory.getInstance().getFont(
+						((OPIFont)newValue).getFontData()));
+				return true;
+			}
+		};		
+		setPropertyChangeHandler(LabelModel.PROP_FONT, fontHandler);
+	
+		
+		
 		handler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
 					final IFigure figure) {
@@ -77,7 +91,7 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 				return true;
 			}
 		};
-		setPropertyChangeHandler(AbstractWidgetModel.PROP_FONT, handler);		
+		setPropertyChangeHandler(LabelModel.PROP_FONT, handler);		
 		setPropertyChangeHandler(AbstractWidgetModel.PROP_BORDER_STYLE, handler);
 		setPropertyChangeHandler(AbstractWidgetModel.PROP_BORDER_WIDTH, handler);
 		

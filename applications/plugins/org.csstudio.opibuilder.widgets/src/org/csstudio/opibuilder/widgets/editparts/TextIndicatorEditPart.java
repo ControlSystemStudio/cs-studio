@@ -5,6 +5,7 @@ import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
+import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.widgets.figures.LabelFigure;
 import org.csstudio.opibuilder.widgets.model.LabelModel;
 import org.csstudio.opibuilder.widgets.model.TextIndicatorModel;
@@ -22,6 +23,7 @@ import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.widgets.Display;
 
 /**The editor for text indicator widget.
@@ -35,7 +37,8 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 	@Override
 	protected IFigure doCreateFigure() {
 		LabelFigure labelFigure = new LabelFigure();
-		labelFigure.setFont(CustomMediaFactory.getInstance().getFont(getWidgetModel().getFont()));
+		labelFigure.setFont(CustomMediaFactory.getInstance().getFont(
+				getWidgetModel().getFont().getFontData()));
 		labelFigure.setText(getWidgetModel().getText());	
 		labelFigure.setOpaque(!getWidgetModel().isTransparent());		
 		labelFigure.getLabel().setTextAlignment(
@@ -144,6 +147,16 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 		};
 		setPropertyChangeHandler(TextIndicatorModel.PROP_AUTOSIZE, handler);
 		
+		IWidgetPropertyChangeHandler fontHandler = new IWidgetPropertyChangeHandler(){
+			public boolean handleChange(Object oldValue, Object newValue,
+					IFigure figure) {
+				figure.setFont(CustomMediaFactory.getInstance().getFont(((OPIFont)newValue).getFontData()));
+				return true;
+			}
+		};		
+		setPropertyChangeHandler(LabelModel.PROP_FONT, fontHandler);
+			
+		
 		handler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
 					final IFigure figure) {
@@ -157,7 +170,7 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 				return true;
 			}
 		};
-		setPropertyChangeHandler(AbstractWidgetModel.PROP_FONT, handler);
+		setPropertyChangeHandler(LabelModel.PROP_FONT, handler);
 		setPropertyChangeHandler(AbstractWidgetModel.PROP_BORDER_STYLE, handler);
 		setPropertyChangeHandler(AbstractWidgetModel.PROP_BORDER_WIDTH, handler);
 		

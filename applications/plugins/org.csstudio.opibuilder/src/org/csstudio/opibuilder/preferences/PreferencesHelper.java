@@ -32,7 +32,7 @@ public class PreferencesHelper {
     }
     
     
-    /**Get the color file path from preference stroe.
+    /**Get the color file path from preference store.
      * @return the color file path. null if not specified.
      */
     public static IPath getColorFilePath(){
@@ -41,6 +41,15 @@ public class PreferencesHelper {
     	return null;
     }
 	
+    
+    /**Get the font file path from preference store.
+     * @return the color file path. null if not specified.
+     */
+    public static IPath getFontFilePath(){
+    	if(getString(OPI_FONT_FILE) != null)
+    		return new Path(getString(OPI_FONT_FILE));
+    	return null;
+    }
     
     public static boolean isAutoSaveBeforeRunning(){
     	final IPreferencesService service = Platform.getPreferencesService();

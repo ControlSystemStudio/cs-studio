@@ -1,14 +1,13 @@
 package org.csstudio.opibuilder.widgets.model;
 
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
-import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.ColorProperty;
-import org.csstudio.opibuilder.properties.DoubleProperty;
 import org.csstudio.opibuilder.properties.FontProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.csstudio.opibuilder.util.OPIFont;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
@@ -124,7 +123,7 @@ public abstract class AbstractBoolWidgetModel extends AbstractPVWidgetModel {
 	 * 
 	 * @return The label font.
 	 */
-	public FontData getFont() {
-		return (FontData) getProperty(PROP_FONT).getPropertyValue();
+	public OPIFont getFont() {
+		return (OPIFont) getProperty(PROP_FONT).getPropertyValue();
 	}
 }
