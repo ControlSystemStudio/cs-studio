@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2007 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -26,6 +25,9 @@
 
 package org.csstudio.ams.messageminder;
 
+import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -35,6 +37,9 @@ import javax.jms.Message;
 
 import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.Log;
+import org.csstudio.ams.dbAccess.AmsConnectionFactory;
+import org.csstudio.ams.dbAccess.configdb.FilterActionDAO;
+import org.csstudio.ams.dbAccess.configdb.FilterActionTObject;
 import org.csstudio.ams.internal.AmsPreferenceKey;
 import org.csstudio.ams.messageminder.preference.MessageMinderPreferenceKey;
 import org.csstudio.platform.data.ITimestamp;
@@ -50,6 +55,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.jface.preference.IPreferenceStore;
+
 //import org.osgi.service.prefs.BackingStoreException;
 
 /**
@@ -60,298 +66,367 @@ import org.eclipse.jface.preference.IPreferenceStore;
  */
 public class MessageGuardCommander extends Job {
 
-    /**
+	/**
      * 
      */
-    private static final String AMS_COMMAND_KEY_NAME = "COMMAND";
+	private static final String AMS_COMMAND_KEY_NAME = "COMMAND";
 
-    private final static String MSGVALUE_TCMD_RELOAD = "AMS_RELOAD_CFG";
+	private final static String MSGVALUE_TCMD_RELOAD = "AMS_RELOAD_CFG";
 
-    private final static String MSGVALUE_TCMD_RELOAD_CFG_START = MessageGuardCommander.MSGVALUE_TCMD_RELOAD
-            + "_START";
-    private final static String MSGVALUE_TCMD_RELOAD_CFG_END = MessageGuardCommander.MSGVALUE_TCMD_RELOAD
-            + "_END";
+	private final static String MSGVALUE_TCMD_RELOAD_CFG_START = MessageGuardCommander.MSGVALUE_TCMD_RELOAD
+			+ "_START";
+	private final static String MSGVALUE_TCMD_RELOAD_CFG_END = MessageGuardCommander.MSGVALUE_TCMD_RELOAD
+			+ "_END";
 
-    /**
-     * The (AMS) JMS Redundant Receiver.
-     */
-    private JmsRedundantReceiver _amsReceiver;
-    /**
-     * The (AMS) JMS Redundant Producer.
-     */
-    private JmsRedundantProducer _amsProducer;
-    /**
-     * A Map with the the Messages time stamp that no older then _toOldTime.
-     */
-    private HashMap<MessageKey, MessageTimeList> _massageMap;
-    /**
-     * The id of the Producer.
-     */
-    private ProducerId _producerID;
-    /**
-     * The time stamp white the time who the massage map was last clean up. 
-     */
-    private ITimestamp _lastClean;
-    /**
-     *  The time in second that wait to next clean.
-     */
-    private long _time2Clean;
-    /**
-     * The time in second there are old the message to old an new message was can send.
-     */
-    private long _toOldTime;
-    /**
-     * A list whit the fields they are use as key.
-     */
-    private String[] _keyWords;
-    private Collector _messageControlTimeCollector;
-    private Collector _messageDeleteTimeCollector;
-    private boolean _run = true; 
-    
-    /**
-     * @param name The name of this Job.
-     */
-    public MessageGuardCommander(final String name) {
-        super(name);
-        IEclipsePreferences storeAct = new DefaultScope().getNode(MessageMinderActivator.PLUGIN_ID);
-        
-        connect();
-        _time2Clean = storeAct.getLong(MessageMinderPreferenceKey.P_LONG_TIME2CLEAN,20); // sec
-        _toOldTime = storeAct.getLong(MessageMinderPreferenceKey.P_LONG_TO_OLD_TIME,60);
-        _keyWords = storeAct.get(MessageMinderPreferenceKey.P_STRING_KEY_WORDS,"HOST,FACILITY,AMS-FILTERID").split(",");
-        _lastClean = TimestampFactory.now();
-        _massageMap = new HashMap<MessageKey, MessageTimeList>();
-        
-        /*
-         * initialize statistic
-         */
-        // delete
-        _messageDeleteTimeCollector = new Collector();
-        _messageDeleteTimeCollector.setApplication(name);
-        _messageDeleteTimeCollector.setDescriptor("Time for a clean up run [ns]");
-        _messageDeleteTimeCollector.setContinuousPrint(true);
+	/**
+	 * The (AMS) JMS Redundant Receiver.
+	 */
+	private JmsRedundantReceiver _amsReceiver;
+	/**
+	 * The (AMS) JMS Redundant Producer.
+	 */
+	private JmsRedundantProducer _amsProducer;
+	/**
+	 * A Map with the the Messages time stamp that no older then _toOldTime.
+	 */
+	private HashMap<MessageKey, MessageTimeList> _massageMap;
+	/**
+	 * The id of the Producer.
+	 */
+	private ProducerId _producerID;
+	/**
+	 * The time stamp white the time who the massage map was last clean up.
+	 */
+	private ITimestamp _lastClean;
+	/**
+	 * The time in second that wait to next clean.
+	 */
+	private long _time2Clean;
+	/**
+	 * The time in second there are old the message to old an new message was
+	 * can send.
+	 */
+	private long _toOldTime;
+	/**
+	 * A list whit the fields they are use as key.
+	 */
+	private String[] _keyWords;
+	private Collector _messageControlTimeCollector;
+	private Collector _messageDeleteTimeCollector;
+	private boolean _run = true;
 
-        _messageControlTimeCollector = new Collector();
-        _messageControlTimeCollector.setApplication(name);
-        _messageControlTimeCollector.setDescriptor("Time to Control a Message [ns]");
-        _messageControlTimeCollector.setContinuousPrint(true);         
-    }
+	/**
+	 * @param name
+	 *            The name of this Job.
+	 */
+	public MessageGuardCommander(final String name) {
+		super(name);
+		IEclipsePreferences storeAct = new DefaultScope()
+				.getNode(MessageMinderActivator.PLUGIN_ID);
 
-    /**
+		connect();
+		_time2Clean = storeAct.getLong(
+				MessageMinderPreferenceKey.P_LONG_TIME2CLEAN, 20); // sec
+		_toOldTime = storeAct.getLong(
+				MessageMinderPreferenceKey.P_LONG_TO_OLD_TIME, 60);
+		_keyWords = storeAct.get(MessageMinderPreferenceKey.P_STRING_KEY_WORDS,
+				"HOST,FACILITY,AMS-FILTERID").split(",");
+		_lastClean = TimestampFactory.now();
+		_massageMap = new HashMap<MessageKey, MessageTimeList>();
+
+		/*
+		 * initialize statistic
+		 */
+		// delete
+		_messageDeleteTimeCollector = new Collector();
+		_messageDeleteTimeCollector.setApplication(name);
+		_messageDeleteTimeCollector
+				.setDescriptor("Time for a clean up run [ns]");
+		_messageDeleteTimeCollector.setContinuousPrint(true);
+
+		_messageControlTimeCollector = new Collector();
+		_messageControlTimeCollector.setApplication(name);
+		_messageControlTimeCollector
+				.setDescriptor("Time to Control a Message [ns]");
+		_messageControlTimeCollector.setContinuousPrint(true);
+
+	}
+
+	/**
      * 
      */
-    private void connect() {
-        // IEclipsePreferences storeAct = new DefaultScope().getNode(Activator.PLUGIN_ID);
-        IPreferenceStore storeAct = AmsActivator.getDefault().getPreferenceStore();
+	private void connect() {
+		// IEclipsePreferences storeAct = new
+		// DefaultScope().getNode(Activator.PLUGIN_ID);
+		IPreferenceStore storeAct = AmsActivator.getDefault()
+				.getPreferenceStore();
 
-        boolean durable = Boolean.parseBoolean(storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_CREATE_DURABLE));
+		boolean durable = Boolean
+				.parseBoolean(storeAct
+						.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_CREATE_DURABLE));
 
-        
-        /**
-         * Nur fÃ¼r debug zwecke wird die P_JMS_AMS_PROVIDER_URL_2 geï¿½ndert.
-         * Der Code kann spï¿½ter wieder entfernt werden.
-         * TODO: delete debug code.
+		/**
+		 * Nur fÃ¼r debug zwecke wird die P_JMS_AMS_PROVIDER_URL_2
+		 * geï¿½ndert. Der Code kann spï¿½ter wieder entfernt werden.
+		 * TODO: delete debug code.
+		 * 
+		 * storeAct.put(org.csstudio.ams.internal.SampleService.
+		 * P_JMS_AMS_PROVIDER_URL_1,
+		 * "failover:(tcp://kryksrvjmsa.desy.de:50000)");
+		 * storeAct.put(org.csstudio
+		 * .ams.internal.SampleService.P_JMS_AMS_PROVIDER_URL_2,
+		 * "failover:(tcp://kryksrvjmsa.desy.de:50001)");
+		 * storeAct.put(org.csstudio
+		 * .ams.internal.SampleService.P_JMS_AMS_SENDER_PROVIDER_URL,
+		 * "failover:(tcp://kryksrvjmsa.desy.de:50000,tcp://kryksrvjmsa.desy.de:50001)"
+		 * );
+		 * 
+		 * try { storeAct.flush(); } catch (BackingStoreException e) { // TODO
+		 * Auto-generated catch block e.printStackTrace(); }
+		 * 
+		 * /** bis hier
+		 */
 
-        storeAct.put(org.csstudio.ams.internal.SampleService.P_JMS_AMS_PROVIDER_URL_1, "failover:(tcp://kryksrvjmsa.desy.de:50000)");
-        storeAct.put(org.csstudio.ams.internal.SampleService.P_JMS_AMS_PROVIDER_URL_2, "failover:(tcp://kryksrvjmsa.desy.de:50001)");
-        storeAct.put(org.csstudio.ams.internal.SampleService.P_JMS_AMS_SENDER_PROVIDER_URL,"failover:(tcp://kryksrvjmsa.desy.de:50000,tcp://kryksrvjmsa.desy.de:50001)");
-        
-        try {
-            storeAct.flush();
-        } catch (BackingStoreException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+		// --- JMS Receiver Connect---
+		// _amsReceiver = new
+		// JmsRedundantReceiver("AmsMassageMinderWorkReceiverInternal",
+		// storeAct.get(org.csstudio.ams.internal.SampleService.P_JMS_AMS_PROVIDER_URL_1,""),
+		// storeAct.get(SampleService.P_JMS_AMS_PROVIDER_URL_2,""));
+		_amsReceiver = new JmsRedundantReceiver(
+				"AmsMassageMinderWorkReceiverInternal", storeAct
+						.getString(AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_1),
+				storeAct.getString(AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_2));
+		if (!_amsReceiver.isConnected()) {
+			Log.log(this, Log.FATAL, "could not create amsReceiver");
+		}
 
-        /** bis hier */
-        
-        // --- JMS Receiver Connect---
-//        _amsReceiver = new JmsRedundantReceiver("AmsMassageMinderWorkReceiverInternal", storeAct.get(org.csstudio.ams.internal.SampleService.P_JMS_AMS_PROVIDER_URL_1,""),
-//                storeAct.get(SampleService.P_JMS_AMS_PROVIDER_URL_2,""));
-        _amsReceiver = new JmsRedundantReceiver("AmsMassageMinderWorkReceiverInternal", storeAct.getString(AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_1),
-                storeAct.getString(AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_2));
-        if(!_amsReceiver.isConnected()) {
-            Log.log(this, Log.FATAL, "could not create amsReceiver");
-        }
-        
-        boolean result = _amsReceiver.createRedundantSubscriber(
-                "amsSubscriberMessageMinder",
-                storeAct.getString(AmsPreferenceKey.P_JMS_AMS_TOPIC_MESSAGEMINDER),
-                storeAct.getString(AmsPreferenceKey.P_JMS_AMS_TSUB_MESSAGEMINDER),
-                durable);
+		boolean result = _amsReceiver
+				.createRedundantSubscriber(
+						"amsSubscriberMessageMinder",
+						storeAct
+								.getString(AmsPreferenceKey.P_JMS_AMS_TOPIC_MESSAGEMINDER),
+						storeAct
+								.getString(AmsPreferenceKey.P_JMS_AMS_TSUB_MESSAGEMINDER),
+						durable);
 
-        if(!result){
-            Log.log(this, Log.FATAL, "could not create amsSubscriberMessageMinder");
-        }
-        
-        // --- JMS Producer Connect ---
-        String[] urls = new String[] {storeAct.getString(AmsPreferenceKey.P_JMS_AMS_SENDER_PROVIDER_URL)};
-        _amsProducer = new JmsRedundantProducer("AmsMassageMinderWorkProducerInternal",urls);
-        //TODO: remove debug settings
-        _producerID = _amsProducer.createProducer(storeAct.getString(AmsPreferenceKey.P_JMS_AMS_TOPIC_DISTRIBUTOR));
-        // _producerID = _amsProducer.createProducer("T_HELGE_TEST_OUT");
-        
-        //--- Derby DB Connect ---
-//      initApplicationDb();
-    }
+		if (!result) {
+			Log.log(this, Log.FATAL,
+					"could not create amsSubscriberMessageMinder");
+		}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected IStatus run(final IProgressMonitor monitor) {
-        patrol();
-        return Status.CANCEL_STATUS;
-    }
+		// --- JMS Producer Connect ---
+		String[] urls = new String[] { storeAct
+				.getString(AmsPreferenceKey.P_JMS_AMS_SENDER_PROVIDER_URL) };
+		_amsProducer = new JmsRedundantProducer(
+				"AmsMassageMinderWorkProducerInternalTEST", urls);
+		// TODO: remove debug settings
+		_producerID = _amsProducer.createProducer("MESSAGE_MINDER_TEST");
+		// _producerID = _amsProducer.createProducer("T_HELGE_TEST_OUT");
 
-    /**
-     * The main method, it run permanent.
-     * First step check for new message.
-     * Second step check if time to clean.
-     * Third step sleep.
-     */
-    private void patrol() {
-        Message message = null;
-        ITimestamp now;
-        System.out.println("StartTime: "+TimestampFactory.now());
-        // int counter =0;
-        while(_run ){
-            now = TimestampFactory.now();
-            
-            while(null != (message = _amsReceiver.receive("amsSubscriberMessageMinder"))){// receiveNoWait has a bug with acknowledging in openjms 3
-                // ADDED BY Markus MÃ¶ller, 2008-08-14
-                this.acknowledge(message);
-                ITimestamp before = TimestampFactory.now();  
-                checkMsg(message,now);
-                ITimestamp after = TimestampFactory.now();
-                double nsec = after.nanoseconds()-before.nanoseconds();
-                _messageControlTimeCollector.setInfo("MessageMinder in Nanosecond");
-                _messageControlTimeCollector.setValue((double)nsec);
-            }
-            if(now.seconds()-_lastClean.seconds()>_time2Clean){
-                ITimestamp before = TimestampFactory.now();
-                cleanUp(now);
-                ITimestamp after = TimestampFactory.now();
-                double nsec = after.nanoseconds()-before.nanoseconds();
-                _messageDeleteTimeCollector.setInfo("Clean Up in Nanosecond");
-                _messageDeleteTimeCollector.setValue(nsec);
-            }
-            try {
-                Thread.sleep(200);
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+		// --- Derby DB Connect ---
+		// initApplicationDb();
+	}
 
-        }
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected IStatus run(final IProgressMonitor monitor) {
+		patrol();
+		return Status.CANCEL_STATUS;
+	}
 
-    /**
-     * @param message was check if is in nearly time sent and how many times.  
-     * @param now a time stamp with the actual time. 
-     */
-    private void checkMsg(final Message message, final ITimestamp now) {
-        if (message instanceof MapMessage) {
-            MapMessage mapMessage = (MapMessage) message;
-            try {
-                String command = mapMessage.getString(AMS_COMMAND_KEY_NAME);
-                if(command != null && (command.equals(MSGVALUE_TCMD_RELOAD_CFG_START)||command.equals(MSGVALUE_TCMD_RELOAD_CFG_END))){
-                    send(message);
-                    return;
-                }
-                String[] keys = new String[_keyWords.length];
-                for (int i = 0; i < keys.length; i++) {
-                    keys[i] = mapMessage.getString(_keyWords[i]);
-                    if(keys[i]==null){
-                        keys[i]="";
-                    }
-                }
-                MessageKey key = new MessageKey(keys);
-                MessageTimeList value = _massageMap.get(key);
-                if(value==null){
-                    value=new MessageTimeList();
-                    _massageMap.put(key, value);
-                }
-                if(value.add(now)){
-                    send(message);
-                    return;
-                }
-            } catch (JMSException e) {
-                e.printStackTrace();
-            }
-        }
-    }
+	/**
+	 * The main method, it run permanent. First step check for new message.
+	 * Second step check if time to clean. Third step sleep.
+	 */
+	private void patrol() {
+		Message message = null;
+		ITimestamp now;
+		System.out.println("StartTime: " + TimestampFactory.now());
+		// int counter =0;
+		while (_run) {
+			now = TimestampFactory.now();
 
-    /**
-     * Delete all time stamp that older as the _toOldTime.
-     * Are all time stamp from one list older delete the list from the map.
-     * 
-     * @param now the actual time  
-     */
-    private void cleanUp(final ITimestamp now) {
-        for(Iterator<MessageKey> ite = _massageMap.keySet().iterator();ite.hasNext();){
-            MessageKey key = ite.next();
-            MessageTimeList value = _massageMap.get(key); 
-            if(now.seconds()-value.getLastDate().seconds()>_toOldTime){
-                sendCleanUpMessage(key,value.getLastDate(),value.getUnsentsgCount());    
-                value.resetUnsentMsgCount();
-                value.clear();
-                ite.remove();
-            }else{
-                for (int i = 0; i < value.size(); i++) {
-                    ITimestamp timestamp = value.get(i);
-                    if(now.seconds()-timestamp.seconds()>_toOldTime){
-                        value.remove(i);
-                    }
-                }
-            }
-        }
-        _lastClean=now;
-    }
+			while (null != (message = _amsReceiver
+					.receive("amsSubscriberMessageMinder"))) {// receiveNoWait
+				// has a bug
+				// with
+				// acknowledging
+				// in openjms 3
+				// ADDED BY Markus MÃ¶ller, 2008-08-14
+				this.acknowledge(message);
+				ITimestamp before = TimestampFactory.now();
+				checkMsg(message, now);
+				ITimestamp after = TimestampFactory.now();
+				double nsec = after.nanoseconds() - before.nanoseconds();
+				_messageControlTimeCollector
+						.setInfo("MessageMinder in Nanosecond");
+				_messageControlTimeCollector.setValue((double) nsec);
+			}
+			if (now.seconds() - _lastClean.seconds() > _time2Clean) {
+				ITimestamp before = TimestampFactory.now();
+				cleanUp(now);
+				ITimestamp after = TimestampFactory.now();
+				double nsec = after.nanoseconds() - before.nanoseconds();
+				_messageDeleteTimeCollector.setInfo("Clean Up in Nanosecond");
+				_messageDeleteTimeCollector.setValue(nsec);
+			}
+			try {
+				Thread.sleep(200);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
-    /**
-     * @param key of the massage.
-     * @param lastDate the last Date when the massage are <b>not</b> send.  
-     * @param number the number oft don't send massages. 
-     */
-    private void sendCleanUpMessage(final MessageKey key, final ITimestamp lastDate, final int number) {
-        System.out.println(key.toString()+"\tlast unsend msg: "+lastDate.toString()+"\t and "+number+" unsent msg.");
-        // TODO write the sendCleanUpMessage.
-        // Soll eine Nachricht versenden die enthï¿½lt welche und wieviele nachrchten zurï¿½ck gehalten wurden.
-    }
+		}
+	}
 
-    /**
-     * @param sendMessage Message to send.
-     */
-    private void send(final Message sendMessage) {
-        if(!_amsProducer.isClosed()){
-            _amsProducer.send(_producerID, sendMessage);
-        }
-    }
-    
-    /**
-     * Acknowledges the current message.
-     * 
-     *  @param msg Message object that should be acknowledged
-     *  
-     *  @return
-     */
-    private boolean acknowledge(Message msg)
-    {
-        try
-        {
-            msg.acknowledge();
-            return true;
-        }
-        catch(Exception e)
-        {
-            Log.log(this, Log.FATAL, "could not acknowledge", e);
-        }
-        
-        return false;
-    }
+	/**
+	 * @param message
+	 *            was check if is in nearly time sent and how many times.
+	 * @param now
+	 *            a time stamp with the actual time.
+	 */
+	private void checkMsg(final Message message, final ITimestamp now) {
+		if (message instanceof MapMessage) {
+			MapMessage mapMessage = (MapMessage) message;
+			try {
+				System.out.println("name: " + mapMessage.getString("NAME"));
+				String command = mapMessage.getString(AMS_COMMAND_KEY_NAME);
+				if (command != null
+						&& (command.equals(MSGVALUE_TCMD_RELOAD_CFG_START) || command
+								.equals(MSGVALUE_TCMD_RELOAD_CFG_END))) {
+					send(message);
+					return;
+				}
+				// is Action id related to topic.
+				String filterID = mapMessage.getString("AMS-FILTERID");
+				if (isTopicAction(filterID)) {
+					send(message);
+					return;
+				}
+				String[] keys = new String[_keyWords.length];
+				for (int i = 0; i < keys.length; i++) {
+					keys[i] = mapMessage.getString(_keyWords[i]);
+					if (keys[i] == null) {
+						keys[i] = "";
+					}
+				}
+				MessageKey key = new MessageKey(keys);
+				MessageTimeList value = _massageMap.get(key);
+				if (value == null) {
+					value = new MessageTimeList();
+					_massageMap.put(key, value);
+				}
+				if (value.add(now)) {
+					send(message);
+					return;
+				}
+			} catch (JMSException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 
-    public synchronized void setRun(boolean run) {
-        _run = run;
-    }
+	private boolean isTopicAction(String filterID) {
+		if (filterID != null && filterID.trim().length() > 0) {
+			Connection conDb;
+			try {
+				conDb = AmsConnectionFactory.getApplicationDB();
+				if (conDb == null) {
+					Log.log(this, Log.FATAL,
+							"could not init application database");
+					return false;
+				}
+				FilterActionTObject actionTObject = FilterActionDAO.select(conDb, Integer.parseInt(filterID));
+				System.out.println("Action ID: " + actionTObject.getFilterActionID() + " TREF id: " + actionTObject.getFilterActionTypeRef());
+				return false;
+			} catch (Exception e) {
+				Log.log(this, Log.FATAL, "could not init application database");
+			}
+
+		}
+		return false;
+	}
+
+	/**
+	 * Delete all time stamp that older as the _toOldTime. Are all time stamp
+	 * from one list older delete the list from the map.
+	 * 
+	 * @param now
+	 *            the actual time
+	 */
+	private void cleanUp(final ITimestamp now) {
+		for (Iterator<MessageKey> ite = _massageMap.keySet().iterator(); ite
+				.hasNext();) {
+			MessageKey key = ite.next();
+			MessageTimeList value = _massageMap.get(key);
+			if (now.seconds() - value.getLastDate().seconds() > _toOldTime) {
+				sendCleanUpMessage(key, value.getLastDate(), value
+						.getUnsentsgCount());
+				value.resetUnsentMsgCount();
+				value.clear();
+				ite.remove();
+			} else {
+				for (int i = 0; i < value.size(); i++) {
+					ITimestamp timestamp = value.get(i);
+					if (now.seconds() - timestamp.seconds() > _toOldTime) {
+						value.remove(i);
+					}
+				}
+			}
+		}
+		_lastClean = now;
+	}
+
+	/**
+	 * @param key
+	 *            of the massage.
+	 * @param lastDate
+	 *            the last Date when the massage are <b>not</b> send.
+	 * @param number
+	 *            the number oft don't send massages.
+	 */
+	private void sendCleanUpMessage(final MessageKey key,
+			final ITimestamp lastDate, final int number) {
+		System.out.println(key.toString() + "\tlast unsend msg: "
+				+ lastDate.toString() + "\t and " + number + " unsent msg.");
+		// TODO write the sendCleanUpMessage.
+		// Soll eine Nachricht versenden die enthï¿½lt welche und wieviele
+		// nachrchten zurï¿½ck gehalten wurden.
+	}
+
+	/**
+	 * @param sendMessage
+	 *            Message to send.
+	 */
+	private void send(final Message sendMessage) {
+		if (!_amsProducer.isClosed()) {
+			_amsProducer.send(_producerID, sendMessage);
+		}
+	}
+
+	/**
+	 * Acknowledges the current message.
+	 * 
+	 * @param msg
+	 *            Message object that should be acknowledged
+	 * 
+	 * @return
+	 */
+	private boolean acknowledge(Message msg) {
+		try {
+			msg.acknowledge();
+			return true;
+		} catch (Exception e) {
+			Log.log(this, Log.FATAL, "could not acknowledge", e);
+		}
+
+		return false;
+	}
+
+	public synchronized void setRun(boolean run) {
+		_run = run;
+	}
 }
