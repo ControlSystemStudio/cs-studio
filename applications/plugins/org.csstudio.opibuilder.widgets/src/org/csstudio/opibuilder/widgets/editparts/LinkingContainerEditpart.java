@@ -7,6 +7,7 @@ import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.persistence.XMLUtil;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
+import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.util.UIBundlingThread;
 import org.csstudio.opibuilder.widgets.figures.LinkingContainerFigure;
@@ -121,10 +122,12 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 			loadingErrorLabel.setLocation(0, 0);
 			loadingErrorLabel.setSize(getWidgetModel().getSize().getCopy().shrink(3, 3));
 			loadingErrorLabel.setForegroundColor(CustomMediaFactory.COLOR_RED);
-			loadingErrorLabel.setText("Failed to load: " + path.toString() + "\n"+ e);
+			String message = "Failed to load: " + path.toString() + "\n"+ e;
+			loadingErrorLabel.setText(message);
 			loadingErrorLabel.setName("Label");
 			getWidgetModel().addChild(loadingErrorLabel);		
 			CentralLogger.getInstance().error(this, e);
+			ConsoleService.getInstance().writeError(message);
 		}
 		UIBundlingThread.getInstance().addRunnable(new Runnable(){
 			public void run() {

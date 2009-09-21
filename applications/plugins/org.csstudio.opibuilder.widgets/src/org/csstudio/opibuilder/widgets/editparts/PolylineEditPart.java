@@ -24,7 +24,7 @@ public final class PolylineEditPart extends AbstractPolyEditPart {
 	@Override
 	protected IFigure doCreateFigure() {
 		PolylineFigure polyline = new PolylineFigure();
-		PolyLineModel model = getWidgetModel();
+		PolyLineModel model = getWidgetModel();		
 		polyline.setPoints(model.getPoints());
 		polyline.setFill(model.getFillLevel());
 		polyline.setAntiAlias(model.isAntiAlias());
@@ -33,6 +33,7 @@ public final class PolylineEditPart extends AbstractPolyEditPart {
 		polyline.setArrowLineLength(model.getArrowLength());
 		polyline.setArrowType(ArrowType.values()[model.getArrowType()]);
 		polyline.setFillArrow(model.isFillArrow());
+		
 		return polyline;
 	}
 

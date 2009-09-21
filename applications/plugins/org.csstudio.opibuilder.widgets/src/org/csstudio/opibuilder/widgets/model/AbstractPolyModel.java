@@ -90,6 +90,8 @@ public abstract class AbstractPolyModel extends AbstractShapeModel {
 	 */
 	@Override
 	public void setSize(final int width, final int height) {
+		if(getSize().width == width && getSize().height == height)
+			return;
 		int targetW = Math.max(1, width);
 		int targetH = Math.max(1, height);
 		PointList pointList = getPoints();

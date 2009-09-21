@@ -161,8 +161,11 @@ public final class PolylineFigure extends Polyline implements HandleBounds {
 	public Rectangle getBounds() {
 		if (bounds == null) {
 			bounds = GraphicsUtil.getPointsBoundsWithArrows(
-					getPoints(), arrowType, arrowLineLength, ARROW_ANGLE)
-				.getExpanded(lineWidth / 2, lineWidth / 2);
+					getPoints(), arrowType, arrowLineLength, ARROW_ANGLE);
+			if(lineWidth <= 1){
+				bounds = bounds.getExpanded(1,1); //expand 1 for container scrollbar bug
+			}else
+				bounds = bounds.getExpanded(lineWidth / 2, lineWidth / 2);
 		}
 		return bounds;
 	}
