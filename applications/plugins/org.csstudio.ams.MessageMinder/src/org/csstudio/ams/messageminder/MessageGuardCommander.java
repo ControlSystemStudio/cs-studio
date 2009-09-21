@@ -69,17 +69,17 @@ import org.eclipse.jface.preference.IPreferenceStore;
  */
 public class MessageGuardCommander extends Job {
 
-    private final class ThreadUpdateTopicMessageMap extends Thread {
+    private final class ThreadUpdateTopicMessageMap extends Job {
         private ThreadUpdateTopicMessageMap(String name) {
             super(name);
         }
 
-        @Override
-        public void run() {
+		@Override
+		protected IStatus run(IProgressMonitor monitor) {
             while (_runUpdateTopicMessageMap) {
                 try {
                     // update ones per hour
-                    sleep(3600000);
+                    Thread.sleep(3600000);
                 } catch (InterruptedException e) {
                     CentralLogger.getInstance().warn(this, e);
                 }
@@ -116,7 +116,9 @@ public class MessageGuardCommander extends Job {
                     }
                 }
             }
+            return Status.CANCEL_STATUS;
         }
+
     }
 
     /**
@@ -178,8 +180,6 @@ public class MessageGuardCommander extends Job {
     public MessageGuardCommander(final String name) {
         super(name);
         _topicMessageMap = new ConcurrentHashMap<String, Boolean>();
-        Thread updateTopicMessageMap = new ThreadUpdateTopicMessageMap("UpdateTopicMessageMap");
-        updateTopicMessageMap.run();
         IEclipsePreferences storeAct = new DefaultScope().getNode(MessageMinderActivator.PLUGIN_ID);
 
         connect();
@@ -257,9 +257,10 @@ public class MessageGuardCommander extends Job {
         // --- JMS Producer Connect ---
         String[] urls = new String[] { storeAct
                 .getString(AmsPreferenceKey.P_JMS_AMS_SENDER_PROVIDER_URL) };
-        _amsProducer = new JmsRedundantProducer("AmsMassageMinderWorkProducerInternalTEST", urls);
+        _amsProducer = new JmsRedundantProducer("AmsMassageMinderWorkProducerInternal", urls);
         // TODO: remove debug settings
-        _producerID = _amsProducer.createProducer("MESSAGE_MINDER_TEST");
+        _producerID = _amsProducer.createProducer(storeAct.getString(AmsPreferenceKey.P_JMS_AMS_TOPIC_DISTRIBUTOR));
+//        _producerID = _amsProducer.createProducer("MESSAGE_MINDER_TEST");
         // _producerID = _amsProducer.createProducer("T_HELGE_TEST_OUT");
 
         // --- Derby DB Connect ---
@@ -271,7 +272,10 @@ public class MessageGuardCommander extends Job {
      */
     @Override
     protected IStatus run(final IProgressMonitor monitor) {
-        patrol();
+        ThreadUpdateTopicMessageMap updateTopicMessageMap = new ThreadUpdateTopicMessageMap("UpdateTopicMessageMap");
+        updateTopicMessageMap.schedule();
+//        updateTopicMessageMap.run(monitor);
+		patrol();
         return Status.CANCEL_STATUS;
     }
 
