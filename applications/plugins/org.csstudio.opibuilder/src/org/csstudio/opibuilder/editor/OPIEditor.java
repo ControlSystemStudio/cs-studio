@@ -27,6 +27,7 @@ import org.csstudio.opibuilder.model.RulerModel;
 import org.csstudio.opibuilder.palette.OPIEditorPaletteFactory;
 import org.csstudio.opibuilder.palette.WidgetCreationFactory;
 import org.csstudio.opibuilder.persistence.XMLUtil;
+import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.dialogs.SaveAsDialog;
 import org.eclipse.core.filesystem.URIUtil;
@@ -657,9 +658,12 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 		try {
 			XMLUtil.fillDisplayModelFromInputStream(getInputStream(), displayModel);
 		} catch (Exception e) {
+			String message = "The file is not a correct OPI file! An empty OPI will be created instead.\n" + e;
 			MessageDialog.openError(getSite().getShell(), "File Open Error",
-					"The file is not a correct OPI file! An empty OPI will be created instead.\n" + e);
+					message);
 			CentralLogger.getInstance().error(this, e);
+			ConsoleService.getInstance().writeError(message);
+			
 		}		
 	}
 	

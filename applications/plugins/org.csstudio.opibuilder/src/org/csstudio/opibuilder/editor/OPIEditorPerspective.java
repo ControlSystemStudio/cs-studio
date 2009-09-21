@@ -9,7 +9,13 @@ import org.eclipse.ui.IPerspectiveFactory;
  */
 public class OPIEditorPerspective implements IPerspectiveFactory
 {
-    /** ID of navigator view.
+    private static final String ID_BOTTOM_RIGHT = "bottomRight";  //$NON-NLS-1$
+	private static final String ID_BOTTOM_LEFT = "bottomLeft";//$NON-NLS-1$
+	private static final String ID_RIGHT = "right";//$NON-NLS-1$
+	private static final String ID_LEFT = "left";//$NON-NLS-1$
+	private static final String ID_CONSOLE_VIEW =
+		"org.eclipse.ui.console.ConsoleView";//$NON-NLS-1$
+	/** ID of navigator view.
      *  This one is deprecated, but don't know what else to use.
      */
     final String ID_NAVIGATOR = IPageLayout.ID_RES_NAV;
@@ -22,12 +28,14 @@ public class OPIEditorPerspective implements IPerspectiveFactory
     {
         final String editor = layout.getEditorArea();
         
-        final IFolderLayout left = layout.createFolder("left",
+        final IFolderLayout left = layout.createFolder(ID_LEFT,
                 IPageLayout.LEFT, 0.2f, editor);
-        final IFolderLayout right = layout.createFolder("right",
+        final IFolderLayout right = layout.createFolder(ID_RIGHT,
                 IPageLayout.RIGHT, 0.75f, editor);
-        final IFolderLayout bottom = layout.createFolder("bottom",
+        final IFolderLayout bottomLeft = layout.createFolder(ID_BOTTOM_LEFT,
                 IPageLayout.BOTTOM, 0.75f, editor);
+        final IFolderLayout bottomRight = layout.createFolder(ID_BOTTOM_RIGHT,
+        		IPageLayout.RIGHT, 0.7f, ID_BOTTOM_LEFT);
 
         // Stuff for 'left'
         left.addView(ID_NAVIGATOR);
@@ -38,12 +46,15 @@ public class OPIEditorPerspective implements IPerspectiveFactory
              
         
         //Stuff for 'bottom'
-        bottom.addView(IPageLayout.ID_OUTLINE);
-        bottom.addPlaceholder(IPageLayout.ID_PROGRESS_VIEW);
+        bottomLeft.addView(ID_CONSOLE_VIEW);
+        bottomRight.addView(IPageLayout.ID_OUTLINE);       
+        bottomRight.addPlaceholder(IPageLayout.ID_PROGRESS_VIEW);
         
         // Populate the "Window/Views..." menu with suggested views
         layout.addShowViewShortcut(ID_NAVIGATOR);
         layout.addShowViewShortcut(IPageLayout.ID_PROP_SHEET);
         layout.addShowViewShortcut(IPageLayout.ID_OUTLINE);
+        layout.addShowViewShortcut(ID_CONSOLE_VIEW);
+        layout.addNewWizardShortcut("org.csstudio.opibuilder.wizards.newOPIWizard"); //$NON-NLS-1$
     }
 }

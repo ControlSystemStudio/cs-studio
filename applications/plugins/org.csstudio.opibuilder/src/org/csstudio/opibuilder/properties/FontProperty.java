@@ -116,7 +116,10 @@ public class FontProperty extends AbstractWidgetProperty {
 				Integer.parseInt(fontElement.getAttributeValue(XML_ATTRIBUTE_FONT_STYLE))));
 		}else{
 			fontElement = propElement.getChild(XML_ELEMENT_FONTNAME);
-			return MediaService.getInstance().getOPIFont(fontElement.getText());
+			if(fontElement != null)
+				return MediaService.getInstance().getOPIFont(fontElement.getText());
+			else
+				return null;
 		}
 	}
 

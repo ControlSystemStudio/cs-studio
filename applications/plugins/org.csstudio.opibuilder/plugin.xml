@@ -8,7 +8,7 @@
       <editor
             class="org.csstudio.opibuilder.editor.OPIEditor"
             contributorClass="org.csstudio.opibuilder.editor.OPIEditorActionBarContributor"
-            default="false"
+            default="true"
             extensions="opi"
             icon="icons/OPIBuilder.png"
             id="org.csstudio.opibuilder.OPIEditor"
@@ -22,6 +22,14 @@
             icon="icons/OPIBuilder.png"
             id="org.csstudio.opibuilder.OPIRunner"
             name="OPI Runner">
+      </editor>
+      <editor
+            class="org.eclipse.ui.editors.text.TextEditor"
+            default="true"
+            extensions="js"
+            icon="icons/js.gif"
+            id="org.csstudio.opibuilder.jseditor"
+            name="JavaScript Editor">
       </editor>
    </extension>
    <extension
@@ -69,6 +77,31 @@
             id="org.csstudio.opibuilder.preferences"
             name="OPI Builder">
       </page>
+   </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            id="org.csstudio.opibuilder.wizards"
+            name="OPI Builder">
+      </category>
+      <wizard
+            canFinishEarly="false"
+            category="org.csstudio.opibuilder.wizards"
+            class="org.csstudio.opibuilder.wizards.NewOPIFileWizard"
+            hasPages="true"
+            icon="icons/OPIBuilder.png"
+            id="org.csstudio.opibuilder.wizards.newOPIWizard"
+            name="OPI File">
+      </wizard>
+      <wizard
+            canFinishEarly="false"
+            category="org.csstudio.opibuilder.wizards"
+            class="org.csstudio.opibuilder.wizards.NewJavaScriptWizard"
+            hasPages="true"
+            icon="icons/js.gif"
+            id="org.csstudio.opibuilder.wizards.newJSWizard"
+            name="JavaScript">
+      </wizard>
    </extension>
 
 </plugin>

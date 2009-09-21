@@ -8,6 +8,7 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -32,7 +33,7 @@ import org.eclipse.ui.model.BaseWorkbenchContentProvider;
 public class OPIFontDialog extends Dialog {
 	
 	private OPIFont opiFont;
-	private TableViewer preDefinedColorsViewer;
+	private TableViewer preDefinedFontsViewer;
 	private Label outputTextLabel;
 	private String title;
 
@@ -41,7 +42,7 @@ public class OPIFontDialog extends Dialog {
 		setShellStyle(getShellStyle() | SWT.RESIZE);
 		this.title = dialogTitle;
 		if(font.isPreDefined())
-			this.opiFont = new OPIFont(font.getFontName());
+			this.opiFont = MediaService.getInstance().getOPIFont(font.getFontName());
 		else
 			this.opiFont = new OPIFont(font.getFontData());
 	}
@@ -63,7 +64,7 @@ public class OPIFontDialog extends Dialog {
 		final Composite mainComposite = new Composite(parent_Composite, SWT.None);			
 		mainComposite.setLayout(new GridLayout(2, false));
 		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-		//gridData.heightHint = 300;
+		gridData.heightHint = 300;
 		mainComposite.setLayoutData(gridData);
 		final Composite leftComposite = new Composite(mainComposite, SWT.None);
 		leftComposite.setLayout(new GridLayout(1, false));
@@ -72,8 +73,8 @@ public class OPIFontDialog extends Dialog {
 		leftComposite.setLayoutData(gd);	
 		createLabel(leftComposite, "Choose from Predefined Fonts:");
 		
-		preDefinedColorsViewer = createPredefinedColorsTableViewer(leftComposite);
-		preDefinedColorsViewer.setInput(
+		preDefinedFontsViewer = createPredefinedFontsTableViewer(leftComposite);
+		preDefinedFontsViewer.setInput(
 				MediaService.getInstance().getAllPredefinedFonts());
 		
 		Composite rightComposite = new Composite(mainComposite, SWT.None);
@@ -96,7 +97,7 @@ public class OPIFontDialog extends Dialog {
 				FontData fontdata = dialog.open();
 				if(fontdata != null){
 					opiFont = new OPIFont(fontdata);
-					preDefinedColorsViewer.setSelection(null);
+					preDefinedFontsViewer.setSelection(null);
 					outputTextLabel.setText(opiFont.getFontName());
 					outputTextLabel.setFont(CustomMediaFactory.getInstance().getFont(fontdata));
 					getShell().layout(true, true);
@@ -106,7 +107,9 @@ public class OPIFontDialog extends Dialog {
 		
 		
 		Group group = new Group(mainComposite, SWT.None);
-		group.setLayoutData(new GridData(SWT.FILL, SWT.END, true, true, 2, 1));
+		gd = new GridData(SWT.FILL, SWT.END, true, true, 2, 1);
+		gd.heightHint = 100;
+		group.setLayoutData(gd);
 		
 		group.setLayout(new GridLayout(1, false));
 		group.setText("Output");
@@ -114,8 +117,11 @@ public class OPIFontDialog extends Dialog {
 		outputTextLabel = new Label(group, SWT.None);
 		outputTextLabel.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
 		outputTextLabel.setText(opiFont.getFontName());
+		outputTextLabel.setFont(
+				CustomMediaFactory.getInstance().getFont(opiFont.getFontData()));
 		
-		
+		if(opiFont.isPreDefined())
+			preDefinedFontsViewer.setSelection(new StructuredSelection(opiFont));
 		return parent_Composite;
 	}
 	
@@ -126,7 +132,7 @@ public class OPIFontDialog extends Dialog {
 	 *            The parent for the table
 	 * @return The {@link TableViewer}
 	 */
-	private TableViewer createPredefinedColorsTableViewer(final Composite parent) {
+	private TableViewer createPredefinedFontsTableViewer(final Composite parent) {
 		TableViewer viewer = new TableViewer(parent, SWT.V_SCROLL
 				| SWT.H_SCROLL | SWT.BORDER | SWT.SINGLE);
 		viewer.setContentProvider(new BaseWorkbenchContentProvider() {
@@ -150,7 +156,7 @@ public class OPIFontDialog extends Dialog {
 	 * Refreshes the enabled-state of the actions.
 	 */
 	private void refreshGUIOnSelection() {
-		IStructuredSelection selection = (IStructuredSelection) preDefinedColorsViewer
+		IStructuredSelection selection = (IStructuredSelection) preDefinedFontsViewer
 				.getSelection();
 		if(!selection.isEmpty() 
 				&& selection.getFirstElement() instanceof OPIFont){

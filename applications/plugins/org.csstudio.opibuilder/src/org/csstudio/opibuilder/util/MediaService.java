@@ -77,7 +77,7 @@ public final class MediaService {
 						
 						colorMap.put(name, new OPIColor(name, color));
 					}catch (DataFormatException e) {
-						CentralLogger.getInstance().error(this, e);
+						CentralLogger.getInstance().error(this,"Failed to read color difinition file.", e);
 					}
 				}				
 			}
@@ -112,7 +112,7 @@ public final class MediaService {
 						
 						fontMap.put(name, new OPIFont(name, fontdata));
 					}catch (DataFormatException e) {
-						CentralLogger.getInstance().error(this, e);
+						CentralLogger.getInstance().error(this, "Failed to read font difinition file.",e);
 					}
 				}				
 			}

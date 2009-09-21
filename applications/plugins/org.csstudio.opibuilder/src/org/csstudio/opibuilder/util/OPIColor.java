@@ -31,6 +31,9 @@ public class OPIColor implements IAdaptable {
 	
 	
 	static ImageRegistry imageRegistry = new ImageRegistry();
+	private static int imageCount = 0; 
+	
+	private static final int MAX_IMG_COUNT = 30;
 	
 	public OPIColor(String colorName) {
 		this.colorName = colorName;
@@ -100,7 +103,13 @@ public class OPIColor implements IAdaptable {
 					Image image = imageRegistry.get(getID());
 					if(image == null){
 						image = createIcon(getRGBValue());
+						if(imageCount >= MAX_IMG_COUNT){
+							imageRegistry.dispose();
+							imageCount =0;
+							System.out.println("OPIColor Clean images");
+						}
 						imageRegistry.put(getID(), image);
+						imageCount++;
 						System.out.println("OPIColor put image: " + image);
 					}
 						
@@ -122,7 +131,13 @@ public class OPIColor implements IAdaptable {
 		Image image = imageRegistry.get(getID());
 		if(image == null){
 			image = createIcon(getRGBValue());
+			if(imageCount >= MAX_IMG_COUNT){
+				imageRegistry.dispose();
+				imageCount =0;
+				System.out.println("OPIColor Clean images");
+			}
 			imageRegistry.put(getID(), image);
+			imageCount++;
 			System.out.println("OPIColor put image2: " + image);
 
 		}
@@ -175,6 +190,17 @@ public class OPIColor implements IAdaptable {
 	@Override
 	public String toString() {
 		return getColorName();
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof OPIColor){
+			OPIColor input = (OPIColor)obj;
+			return colorName.equals(input.getColorName()) && 
+				colorValue.equals(input.getRGBValue());
+		}
+		return false;
+		
 	}
 	
 }

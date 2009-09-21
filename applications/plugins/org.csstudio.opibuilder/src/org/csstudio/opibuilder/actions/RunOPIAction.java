@@ -8,6 +8,7 @@ import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.opibuilder.runmode.RunModeService;
 import org.csstudio.opibuilder.runmode.RunModeService.TargetWindow;
+import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
@@ -56,9 +57,11 @@ public class RunOPIAction extends Action{
 				file = ResourceUtil.getFileInEditor(input);
 				RunModeService.getInstance().runOPI(file, TargetWindow.RUN_WINDOW, displayModel.getSize());
 			} catch (FileNotFoundException e) {
-				CentralLogger.getInstance().error(this, e);
+				String message = "Failed to open OPI file: " + file;  
+				CentralLogger.getInstance().error(this, message, e);				
 				MessageDialog.openError(Display.getDefault().getActiveShell(), "File Open Error",
 						e.getMessage());
+				ConsoleService.getInstance().writeError(message + "\n" + e);
 			}			
 		}
 			

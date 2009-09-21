@@ -10,6 +10,7 @@ import org.csstudio.opibuilder.editparts.WidgetEditPartFactory;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.persistence.XMLUtil;
+import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.MacrosInput;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.filesystem.URIUtil;
@@ -68,9 +69,11 @@ public class OPIRunner extends EditorPart {
 			XMLUtil.fillDisplayModelFromInputStream(inputStream, displayModel);
 		}catch(Exception e) {
 			CentralLogger.getInstance().error(
-					this, "Failed to run file: " + ((RunnerInput)input).getFile(), e);
+					this, "Failed to run file: " + input, e);
+			String message = input + "is not a correct OPI file! An empty OPI will be created instead.\n" + e;
 			MessageDialog.openError(Display.getDefault().getActiveShell(), "File Open Error",
-					"The file is not a correct OPI file! An empty OPI will be created instead.\n" + e);
+					message);
+			ConsoleService.getInstance().writeError(message);
 		}
 			
 		if(input instanceof RunnerInput){

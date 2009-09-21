@@ -6,6 +6,7 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -36,7 +37,7 @@ public class OPIColorDialog extends Dialog {
 		setShellStyle(getShellStyle() | SWT.RESIZE);
 		this.title = dialogTitle;
 		if(color.isPreDefined())
-			this.opiColor = new OPIColor(color.getColorName());
+			this.opiColor = MediaService.getInstance().getOPIColor(color.getColorName());
 		else
 			this.opiColor = new OPIColor(color.getRGBValue());
 	}
@@ -70,6 +71,7 @@ public class OPIColorDialog extends Dialog {
 		preDefinedColorsViewer = createPredefinedColorsTableViewer(leftComposite);
 		preDefinedColorsViewer.setInput(
 				MediaService.getInstance().getAllPredefinedColors());
+		
 		
 		Composite rightComposite = new Composite(mainComposite, SWT.None);
 		rightComposite.setLayout(new GridLayout(1, false));
@@ -110,6 +112,8 @@ public class OPIColorDialog extends Dialog {
 		outputTextLabel.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
 		outputTextLabel.setText(opiColor.getColorName());
 		
+		if(opiColor.isPreDefined())
+			preDefinedColorsViewer.setSelection(new StructuredSelection(opiColor));
 		
 		return parent_Composite;
 	}
