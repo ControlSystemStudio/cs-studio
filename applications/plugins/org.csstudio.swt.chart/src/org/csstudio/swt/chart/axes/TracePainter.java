@@ -2,13 +2,11 @@ package org.csstudio.swt.chart.axes;
 
 import java.util.ArrayList;
 
-import org.csstudio.swt.chart.Activator;
 import org.csstudio.swt.chart.Chart;
 import org.csstudio.swt.chart.ChartSample;
 import org.csstudio.swt.chart.ChartSampleSequence;
+import org.csstudio.swt.chart.Preferences;
 import org.csstudio.swt.chart.Trace;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.RGB;
@@ -27,25 +25,18 @@ public class TracePainter
     /** Use transparency as supported by 'advanced graphics' ? */
     final private boolean use_alpha =  true;
 
-    private int marker_type=0;
+    final private int marker_type;
 
-    private int marker_size=10;
+    final private int marker_size;
     
-    private float saturation=0.4f;
+    final private float saturation;
 
     /** Initialize from preferences */
-    @SuppressWarnings("nls")
     public TracePainter()
     {
-        final IPreferencesService service = Platform.getPreferencesService();
-        if (service == null)
-            return;
-        marker_type =
-            service.getInt(Activator.ID, "marker_type", marker_type, null);
-        marker_size =
-            service.getInt(Activator.ID, "marker_size", marker_size, null);
-        saturation =
-            service.getFloat(Activator.ID, "area_color_saturation", saturation, null);
+        marker_type = Preferences.getMarkerType();
+        marker_size = Preferences.getMarkerSize();
+        saturation = Preferences.getAreaSaturation();
     }
     
     /** Paint a trace over given X axis. */
