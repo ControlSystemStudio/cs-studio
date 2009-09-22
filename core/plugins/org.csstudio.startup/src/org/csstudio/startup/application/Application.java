@@ -80,9 +80,15 @@ public class Application implements IApplication {
 	                      new HashMap<Class<? extends CSSStartupExtensionPoint>, CSSStartupExtensionPoint[]>(8);
 	
 	/** {@inheritDoc} */
-	public Object start(IApplicationContext context) throws Exception
+	@SuppressWarnings("nls")
+    public Object start(IApplicationContext context) throws Exception
 	{
-		//create the display 
+		// Create the display .. with debugging enabled?
+ 	    if (Boolean.getBoolean("SWTDEBUG"))
+	    {
+	        Display.DEBUG = true;
+            System.out.println("Enabling SWT debugging");
+	    }
 		final Display display = PlatformUI.createDisplay();
 		if (display == null) {
 			System.err.println("No display"); //$NON-NLS-1$
