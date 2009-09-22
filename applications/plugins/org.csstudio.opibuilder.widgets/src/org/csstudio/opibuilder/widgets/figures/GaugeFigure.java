@@ -32,7 +32,7 @@ import org.eclipse.swt.widgets.Display;
  * @author Xihui Chen
  *
  */
-public class RefreshableGaugeFigure extends AbstractRoundRampedFigure {
+public class GaugeFigure extends AbstractRoundRampedFigure {
 
 	private final static Color WHITE_COLOR = CustomMediaFactory.getInstance().getColor(
 			CustomMediaFactory.COLOR_WHITE); 
@@ -52,7 +52,7 @@ public class RefreshableGaugeFigure extends AbstractRoundRampedFigure {
 	
 	private Label valueLabel;
 	
-	public RefreshableGaugeFigure() {
+	public GaugeFigure() {
 		super();
 		transparent = true;
 		scale.setScaleLineVisible(false);

@@ -23,7 +23,7 @@ import org.eclipse.swt.widgets.Display;
  * @author Xihui Chen
  *
  */
-public class RefreshableTankFigure extends AbstractLinearMarkedFigure {	
+public class TankFigure extends AbstractLinearMarkedFigure {	
 
 	private Color fillColor;
 	private Color fillBackgroundColor;
@@ -34,7 +34,7 @@ public class RefreshableTankFigure extends AbstractLinearMarkedFigure {
 	
 	private Tank tank;
 	
-	public RefreshableTankFigure() {		
+	public TankFigure() {		
 		super();		
 		((LinearScale) scale).setOrientation(Orientation.VERTICAL);
 		scale.setScaleLineVisible(false);

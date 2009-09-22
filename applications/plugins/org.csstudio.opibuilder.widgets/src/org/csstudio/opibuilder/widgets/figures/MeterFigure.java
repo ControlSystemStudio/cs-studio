@@ -28,7 +28,7 @@ import org.eclipse.swt.graphics.RGB;
  * @author Xihui Chen
  *
  */
-public class RefreshableXMeterFigure extends AbstractRoundRampedFigure {
+public class MeterFigure extends AbstractRoundRampedFigure {
 
 	private final static Font DEFAULT_LABEL_FONT = CustomMediaFactory.getInstance().getFont(
 			new FontData("Arial", 12, SWT.BOLD));	
@@ -42,7 +42,7 @@ public class RefreshableXMeterFigure extends AbstractRoundRampedFigure {
 	
 	public static final int NEEDLE_WIDTH = 16;
 	
-	public RefreshableXMeterFigure() {
+	public MeterFigure() {
 		super();
 		transparent = true;
 		scale.setScaleLineVisible(false);

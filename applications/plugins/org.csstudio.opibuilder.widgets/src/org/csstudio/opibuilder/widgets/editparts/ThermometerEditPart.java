@@ -3,14 +3,14 @@ package org.csstudio.opibuilder.widgets.editparts;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
-import org.csstudio.opibuilder.widgets.figures.RefreshableThermoFigure;
+import org.csstudio.opibuilder.widgets.figures.ThermometerFigure;
 import org.csstudio.opibuilder.widgets.model.ThermometerModel;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.graphics.RGB;
 
 /**
  * EditPart controller for the Thermometer widget. The controller mediates between
- * {@link ThermometerModel} and {@link RefreshableThermoFigure}.
+ * {@link ThermometerModel} and {@link ThermometerFigure}.
  * 
  * @author Xihui Chen
  * 
@@ -24,7 +24,7 @@ public final class ThermometerEditPart extends AbstractMarkedWidgetEditPart {
 	protected IFigure doCreateFigure() {
 		ThermometerModel model = getWidgetModel();
 
-		RefreshableThermoFigure thermometer = new RefreshableThermoFigure();
+		ThermometerFigure thermometer = new ThermometerFigure();
 		
 		initializeCommonFigureProperties(thermometer, model);		
 		thermometer.setFillColor(model.getFillColor());
@@ -53,7 +53,7 @@ public final class ThermometerEditPart extends AbstractMarkedWidgetEditPart {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IFigure refreshableFigure) {
-				RefreshableThermoFigure thermometer = (RefreshableThermoFigure) refreshableFigure;
+				ThermometerFigure thermometer = (ThermometerFigure) refreshableFigure;
 				thermometer.setFillColor(((OPIColor) newValue).getRGBValue());
 				return true;
 			}
@@ -65,7 +65,7 @@ public final class ThermometerEditPart extends AbstractMarkedWidgetEditPart {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IFigure refreshableFigure) {
-				RefreshableThermoFigure thermometer = (RefreshableThermoFigure) refreshableFigure;
+				ThermometerFigure thermometer = (ThermometerFigure) refreshableFigure;
 				thermometer.setFillBackgroundColor(((OPIColor) newValue).getRGBValue());
 				return true;
 			}
@@ -77,7 +77,7 @@ public final class ThermometerEditPart extends AbstractMarkedWidgetEditPart {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IFigure refreshableFigure) {
-				RefreshableThermoFigure thermometer = (RefreshableThermoFigure) refreshableFigure;
+				ThermometerFigure thermometer = (ThermometerFigure) refreshableFigure;
 				thermometer.setShowBulb((Boolean) newValue);
 				return true;
 			}
@@ -89,7 +89,7 @@ public final class ThermometerEditPart extends AbstractMarkedWidgetEditPart {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IFigure refreshableFigure) {
-				RefreshableThermoFigure thermometer = (RefreshableThermoFigure) refreshableFigure;
+				ThermometerFigure thermometer = (ThermometerFigure) refreshableFigure;
 				thermometer.setFahrenheit((Boolean) newValue);
 				return true;
 			}
@@ -101,7 +101,7 @@ public final class ThermometerEditPart extends AbstractMarkedWidgetEditPart {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IFigure refreshableFigure) {
-				RefreshableThermoFigure thermo = (RefreshableThermoFigure) refreshableFigure;
+				ThermometerFigure thermo = (ThermometerFigure) refreshableFigure;
 				thermo.setEffect3D((Boolean) newValue);
 				return true;
 			}

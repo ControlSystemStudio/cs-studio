@@ -3,14 +3,14 @@ package org.csstudio.opibuilder.widgets.editparts;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
-import org.csstudio.opibuilder.widgets.figures.RefreshableGaugeFigure;
+import org.csstudio.opibuilder.widgets.figures.GaugeFigure;
 import org.csstudio.opibuilder.widgets.model.GaugeModel;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.graphics.RGB;
 
 /**
  * EditPart controller for the Gauge widget. The controller mediates between
- * {@link GaugeModel} and {@link RefreshableGaugeFigure}.
+ * {@link GaugeModel} and {@link GaugeFigure}.
  * 
  * @author Xihui Chen
  * 
@@ -24,7 +24,7 @@ public final class GaugeEditPart extends AbstractMarkedWidgetEditPart {
 	protected IFigure doCreateFigure() {
 		final GaugeModel model = getWidgetModel();
 
-		RefreshableGaugeFigure gauge = new RefreshableGaugeFigure();
+		GaugeFigure gauge = new GaugeFigure();
 		
 		initializeCommonFigureProperties(gauge, model);		
 		gauge.setNeedleColor((model.getNeedleColor()));
@@ -52,7 +52,7 @@ public final class GaugeEditPart extends AbstractMarkedWidgetEditPart {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IFigure refreshableFigure) {
-				RefreshableGaugeFigure gauge = (RefreshableGaugeFigure) refreshableFigure;
+				GaugeFigure gauge = (GaugeFigure) refreshableFigure;
 				gauge.setNeedleColor(((OPIColor) newValue).getRGBValue());
 				return true;
 			}
@@ -65,7 +65,7 @@ public final class GaugeEditPart extends AbstractMarkedWidgetEditPart {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IFigure refreshableFigure) {
-				RefreshableGaugeFigure gauge = (RefreshableGaugeFigure) refreshableFigure;
+				GaugeFigure gauge = (GaugeFigure) refreshableFigure;
 				gauge.setEffect3D((Boolean) newValue);
 				return true;
 			}
@@ -77,7 +77,7 @@ public final class GaugeEditPart extends AbstractMarkedWidgetEditPart {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IFigure refreshableFigure) {
-				RefreshableGaugeFigure gauge = (RefreshableGaugeFigure) refreshableFigure;
+				GaugeFigure gauge = (GaugeFigure) refreshableFigure;
 				gauge.setGradient((Boolean) newValue);
 				return true;
 			}

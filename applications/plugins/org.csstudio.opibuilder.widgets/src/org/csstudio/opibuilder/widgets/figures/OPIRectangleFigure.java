@@ -32,7 +32,7 @@ import org.eclipse.swt.SWT;
  * @author Sven Wende
  * 
  */
-public final class RefreshableRectangleFigure extends RectangleFigure {
+public final class OPIRectangleFigure extends RectangleFigure {
 	/**
 	 * The fill grade (0 - 100%).
 	 */

@@ -40,6 +40,15 @@
             typeId="org.csstudio.opibuilder.widgets.Rectangle">
       </widget>
       <widget
+            category="Graphics"
+            description="A image widget which can load picture from image file, including gif, png, jpg, jpeg and bmp."
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.ImageEditPart"
+            icon="icons/image.gif"
+            model_class="org.csstudio.opibuilder.widgets.model.ImageModel"
+            name="Image"
+            typeId="org.csstudio.opibuilder.widgets.Image">
+      </widget>
+      <widget
             category="Controls"
             description="A knob widget which could be used to read/write a PV"
             editpart_class="org.csstudio.opibuilder.widgets.editparts.KnobEditPart"

@@ -29,7 +29,7 @@ import org.eclipse.swt.widgets.Display;
  * @author Xihui Chen
  *
  */
-public class RefreshableThermoFigure extends AbstractLinearMarkedFigure {	
+public class ThermometerFigure extends AbstractLinearMarkedFigure {	
 
 	private Color fillColor;
 	private Color fillBackgroundColor;
@@ -52,7 +52,7 @@ public class RefreshableThermoFigure extends AbstractLinearMarkedFigure {
 	
 	
 
-	public RefreshableThermoFigure() {
+	public ThermometerFigure() {
 		
 		super();
 		((LinearScale) scale).setOrientation(Orientation.VERTICAL);

@@ -2,14 +2,14 @@ package org.csstudio.opibuilder.widgets.editparts;
 
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
-import org.csstudio.opibuilder.widgets.figures.RefreshableXMeterFigure;
+import org.csstudio.opibuilder.widgets.figures.MeterFigure;
 import org.csstudio.opibuilder.widgets.model.XMeterModel;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.graphics.RGB;
 
 /**
  * EditPart controller for the Gauge widget. The controller mediates between
- * {@link XMeterModel} and {@link RefreshableXMeterFigure}.
+ * {@link XMeterModel} and {@link MeterFigure}.
  * 
  * @author Xihui Chen
  * 
@@ -23,7 +23,7 @@ public final class XMeterEditPart extends AbstractMarkedWidgetEditPart {
 	protected IFigure doCreateFigure() {
 		final XMeterModel model = getWidgetModel();
 
-		RefreshableXMeterFigure xMeter = new RefreshableXMeterFigure();
+		MeterFigure xMeter = new MeterFigure();
 		
 		initializeCommonFigureProperties(xMeter, model);		
 		xMeter.setNeedleColor((model.getNeedleColor()));
@@ -50,7 +50,7 @@ public final class XMeterEditPart extends AbstractMarkedWidgetEditPart {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IFigure refreshableFigure) {
-				RefreshableXMeterFigure xMeter = (RefreshableXMeterFigure) refreshableFigure;
+				MeterFigure xMeter = (MeterFigure) refreshableFigure;
 				xMeter.setNeedleColor(((OPIColor) newValue).getRGBValue());
 				return true;
 			}
@@ -64,7 +64,7 @@ public final class XMeterEditPart extends AbstractMarkedWidgetEditPart {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IFigure refreshableFigure) {
-				RefreshableXMeterFigure xMeter = (RefreshableXMeterFigure) refreshableFigure;
+				MeterFigure xMeter = (MeterFigure) refreshableFigure;
 				xMeter.setGradient((Boolean) newValue);
 				return true;
 			}

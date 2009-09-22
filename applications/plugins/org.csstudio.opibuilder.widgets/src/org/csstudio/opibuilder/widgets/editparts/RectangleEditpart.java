@@ -1,7 +1,7 @@
 package org.csstudio.opibuilder.widgets.editparts;
 
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
-import org.csstudio.opibuilder.widgets.figures.RefreshableRectangleFigure;
+import org.csstudio.opibuilder.widgets.figures.OPIRectangleFigure;
 import org.csstudio.opibuilder.widgets.model.AbstractShapeModel;
 import org.csstudio.opibuilder.widgets.model.RectangleModel;
 import org.eclipse.draw2d.IFigure;
@@ -12,7 +12,7 @@ public class RectangleEditpart extends AbstractShapeEditPart {
 
 	@Override
 	protected IFigure doCreateFigure() {
-		RefreshableRectangleFigure figure = new RefreshableRectangleFigure();
+		OPIRectangleFigure figure = new OPIRectangleFigure();
 		RectangleModel model = getWidgetModel();
 		figure.setFill(model.getFillLevel());
 		figure.setOrientation(model.isHorizontalFill());
@@ -35,7 +35,7 @@ public class RectangleEditpart extends AbstractShapeEditPart {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IFigure refreshableFigure) {
-				RefreshableRectangleFigure figure = (RefreshableRectangleFigure) refreshableFigure;
+				OPIRectangleFigure figure = (OPIRectangleFigure) refreshableFigure;
 				figure.setFill((Double) newValue);
 				return true;
 			}
@@ -47,7 +47,7 @@ public class RectangleEditpart extends AbstractShapeEditPart {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IFigure refreshableFigure) {
-				RefreshableRectangleFigure figure = (RefreshableRectangleFigure) refreshableFigure;
+				OPIRectangleFigure figure = (OPIRectangleFigure) refreshableFigure;
 				figure.setOrientation((Boolean) newValue);
 				return true;
 			}
@@ -59,7 +59,7 @@ public class RectangleEditpart extends AbstractShapeEditPart {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IFigure refreshableFigure) {
-				RefreshableRectangleFigure figure = (RefreshableRectangleFigure) refreshableFigure;
+				OPIRectangleFigure figure = (OPIRectangleFigure) refreshableFigure;
 				figure.setTransparent((Boolean) newValue);
 				return true;
 			}
@@ -71,7 +71,7 @@ public class RectangleEditpart extends AbstractShapeEditPart {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IFigure refreshableFigure) {
-				RefreshableRectangleFigure figure = (RefreshableRectangleFigure) refreshableFigure;
+				OPIRectangleFigure figure = (OPIRectangleFigure) refreshableFigure;
 				figure.setAntiAlias((Boolean) newValue);
 				return true;
 			}

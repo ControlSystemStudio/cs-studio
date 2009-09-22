@@ -11,7 +11,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.draw2d.Figure;
@@ -34,7 +33,7 @@ import org.eclipse.swt.widgets.Display;
  * 
  */
 
-public final class RefreshableImageFigure extends Figure {
+public final class ImageFigure extends Figure {
 	
 	
 	/**
@@ -113,7 +112,7 @@ public final class RefreshableImageFigure extends Figure {
 	
 	
 	private int repeatCount;
-	private int animationIndex;
+	private int animationIndex = 0;
 	private long lastUpdateTime;
 	private long interval_ms;
 	private ScheduledFuture<?> scheduledFuture;
@@ -213,7 +212,7 @@ public final class RefreshableImageFigure extends Figure {
 		int cropedHeight = (_imgHeight-_topCrop-_bottomCrop) > 0 ?
 				(_imgHeight-_topCrop-_bottomCrop) : _imgHeight;
 			
-		if(animated && refreshing) {   //draw refreshing image
+		if(animated) {   //draw refreshing image
 			ImageData imageData = imageDataArray[showIndex];
 			Image refresh_image = new Image(Display.getDefault(), imageData);
 			switch (imageData.disposalMethod) {
@@ -294,6 +293,10 @@ public final class RefreshableImageFigure extends Figure {
 	 * @param newval The path to the image
 	 */
 	public void setFilePath(final IPath newval) {
+		if(animated){
+			stopAnimation();		
+			animationIndex = 0;
+		}
 		loadingError = false;
 		_path=newval;
 		if (staticImage!=null  && !staticImage.isDisposed()) {
@@ -301,7 +304,8 @@ public final class RefreshableImageFigure extends Figure {
 		}
 		staticImage=null;
 		try {
-			if (staticImage==null && !_path.isEmpty()) {		    
+			if (staticImage==null && !_path.isEmpty()) {	
+				
 //			    _path
 				String currentPath = _path.toOSString();
 				IPath fullPath = ResourcesPlugin.getWorkspace().getRoot().getLocation();
@@ -340,7 +344,6 @@ public final class RefreshableImageFigure extends Figure {
 			CentralLogger.getInstance().error(this, "ERROR in loading image\n"+_path, e);
 		}
 		if(animated){
-			stopAnimation();
 			startAnimation();
 		}
 	}
@@ -517,7 +520,7 @@ public final class RefreshableImageFigure extends Figure {
 					new CheckedUiRunnable(){
 						@Override
 						protected void doRunInUi() {
-							if(loader.repeatCount ==0 || repeatCount >0) {
+							if(refreshing && (loader.repeatCount ==0 || repeatCount >0)) {
 								long currentTime = System.currentTimeMillis();
 								//use Math.abs() to ensure that the system time adjust won't cause problem
 								if(Math.abs(currentTime - lastUpdateTime) >= interval_ms) {
