@@ -19,6 +19,8 @@ public abstract class AbstractWidgetAction implements IAdaptable {
 	
 	private Map<String, AbstractWidgetProperty> propertyMap;
 	
+	private boolean enabled = true;
+	
 	
 	
 	public AbstractWidgetAction() {
@@ -86,6 +88,20 @@ public abstract class AbstractWidgetAction implements IAdaptable {
 
 	public AbstractWidgetProperty getProperty(String propId) {
 		return propertyMap.get(propId);
+	}
+
+	/**
+	 * @param enabled the enabled to set
+	 */
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+
+	/**
+	 * @return the enabled
+	 */
+	public boolean isEnabled() {
+		return enabled;
 	}
 
 }

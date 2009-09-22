@@ -161,4 +161,9 @@ public class OpenDislayAction extends AbstractWidgetAction {
 	}
 
 
+	@Override
+	public String getDescription() {
+		return getActionType().getDescription() + " " + getPath();
+	}
+	
 }

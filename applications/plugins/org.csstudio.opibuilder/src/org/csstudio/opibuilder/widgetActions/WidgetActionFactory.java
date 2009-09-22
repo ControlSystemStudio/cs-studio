@@ -61,9 +61,10 @@ public class WidgetActionFactory {
 		Assert.isNotNull(actionType);
 		switch (actionType) {
 		case OPEN_DISPLAY:
-			return new OpenDislayAction();
+			return new OpenDislayAction();			
+		case WRITE_PV:
+			return new WritePVAction();
 			
-
 		default:
 			break;
 		}

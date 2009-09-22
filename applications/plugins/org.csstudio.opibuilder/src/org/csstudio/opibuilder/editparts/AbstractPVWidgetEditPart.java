@@ -8,6 +8,7 @@ import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.properties.PVValueProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.util.AlarmColorScheme;
+import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.util.UIBundlingThread;
 import org.csstudio.opibuilder.visualparts.BorderFactory;
@@ -22,6 +23,7 @@ import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;
 import org.eclipse.draw2d.Border;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
@@ -343,11 +345,10 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 			} catch (final Exception e) {
 				UIBundlingThread.getInstance().addRunnable(new Runnable(){
 					public void run() {
-						MessageBox mb = new MessageBox(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-								SWT.ICON_ERROR | SWT.OK);
-						mb.setMessage("Failed to write PV:" + pv.getName() + "\n" + e.getMessage());
-						mb.setText("PV write error");
-						mb.open();
+						String message = 
+							"Failed to write PV:" + pv.getName() + "\n" + e;
+						MessageDialog.openError(null, "PV write error", message);
+						ConsoleService.getInstance().writeError(message);
 					}
 				});
 				
