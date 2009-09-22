@@ -157,6 +157,15 @@
             typeId="org.csstudio.opibuilder.widgets.ActionButton">
       </widget>
       <widget
+            category="Controls"
+            description="A button which pops up the actions menu when clicked."
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.MenuButtonEditPart"
+            icon="icons/menubutton.gif"
+            model_class="org.csstudio.opibuilder.widgets.model.MenuButtonModel"
+            name="Menu Button"
+            typeId="org.csstudio.opibuilder.widgets.MenuButton">
+      </widget>
+      <widget
             category="Monitors"
             description="A LED which can display one bit of  a value or if the value is non-zero or not when bit property is -1."
             editpart_class="org.csstudio.opibuilder.widgets.editparts.LEDEditPart"
