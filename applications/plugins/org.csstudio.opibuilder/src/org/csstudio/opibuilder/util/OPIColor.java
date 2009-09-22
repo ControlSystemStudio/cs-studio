@@ -106,11 +106,9 @@ public class OPIColor implements IAdaptable {
 						if(imageCount >= MAX_IMG_COUNT){
 							imageRegistry.dispose();
 							imageCount =0;
-							System.out.println("OPIColor Clean images");
 						}
 						imageRegistry.put(getID(), image);
 						imageCount++;
-						System.out.println("OPIColor put image: " + image);
 					}
 						
 					return ImageDescriptor.createFromImage(image);
@@ -134,12 +132,9 @@ public class OPIColor implements IAdaptable {
 			if(imageCount >= MAX_IMG_COUNT){
 				imageRegistry.dispose();
 				imageCount =0;
-				System.out.println("OPIColor Clean images");
 			}
 			imageRegistry.put(getID(), image);
 			imageCount++;
-			System.out.println("OPIColor put image2: " + image);
-
 		}
 		return image;		
 	}

@@ -1,6 +1,7 @@
 package org.csstudio.opibuilder;
 
 import org.csstudio.opibuilder.script.ScriptService;
+import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -53,6 +54,7 @@ public class OPIBuilderPlugin extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		ScriptService.getInstance();
+		ConsoleService.getInstance().writeInfo("Welcome to OPI Builder!");
 	}
 
 	@Override

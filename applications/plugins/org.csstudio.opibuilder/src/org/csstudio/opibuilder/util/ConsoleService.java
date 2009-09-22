@@ -6,7 +6,6 @@ import java.util.Calendar;
 
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.MessageConsole;
@@ -67,6 +66,9 @@ public class ConsoleService {
 
 	}
 	
+	/**Write error information to the OPI console.
+	 * @param output the output string.
+	 */
 	public void writeError(String output){
 		output = getTimeString() + " ERROR: " + output + ENTER;
 		if(errorStream == null){
@@ -78,6 +80,9 @@ public class ConsoleService {
 		
 	}
 	
+	/**Write warning information to the OPI console.
+	 * @param output the output string.
+	 */
 	public void writeWarning(String output){
 		output = getTimeString() + " WARNNING: " + output+ ENTER;
 		if(warningStream == null){
@@ -88,6 +93,9 @@ public class ConsoleService {
 		writeToConsole(warningStream, output);
 	}
 	
+	/**Write information to the OPI console.
+	 * @param output the output string.
+	 */
 	public void writeInfo(String output){
 		output = getTimeString() + " INFO: " + output+ ENTER;
 		if(infoStream == null){

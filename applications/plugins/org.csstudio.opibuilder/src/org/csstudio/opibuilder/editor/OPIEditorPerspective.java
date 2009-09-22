@@ -9,7 +9,7 @@ import org.eclipse.ui.IPerspectiveFactory;
  */
 public class OPIEditorPerspective implements IPerspectiveFactory
 {
-    private static final String ID_BOTTOM_RIGHT = "bottomRight";  //$NON-NLS-1$
+    private static final String ID_LEFT_BOTTOM = "bottomRight";  //$NON-NLS-1$
 	private static final String ID_BOTTOM_LEFT = "bottomLeft";//$NON-NLS-1$
 	private static final String ID_RIGHT = "right";//$NON-NLS-1$
 	private static final String ID_LEFT = "left";//$NON-NLS-1$
@@ -32,23 +32,23 @@ public class OPIEditorPerspective implements IPerspectiveFactory
                 IPageLayout.LEFT, 0.2f, editor);
         final IFolderLayout right = layout.createFolder(ID_RIGHT,
                 IPageLayout.RIGHT, 0.75f, editor);
-        final IFolderLayout bottomLeft = layout.createFolder(ID_BOTTOM_LEFT,
+        final IFolderLayout bottom = layout.createFolder(ID_BOTTOM_LEFT,
                 IPageLayout.BOTTOM, 0.75f, editor);
-        final IFolderLayout bottomRight = layout.createFolder(ID_BOTTOM_RIGHT,
-        		IPageLayout.RIGHT, 0.7f, ID_BOTTOM_LEFT);
+        final IFolderLayout leftBottom = layout.createFolder(ID_LEFT_BOTTOM,
+        		IPageLayout.BOTTOM, 0.7f, ID_LEFT);
 
         // Stuff for 'left'
         left.addView(ID_NAVIGATOR);
         left.addPlaceholder(IPageLayout.ID_RES_NAV);
+        leftBottom.addView(IPageLayout.ID_OUTLINE);
         
         // Stuff for 'right'
         right.addView(IPageLayout.ID_PROP_SHEET);
              
         
         //Stuff for 'bottom'
-        bottomLeft.addView(ID_CONSOLE_VIEW);
-        bottomRight.addView(IPageLayout.ID_OUTLINE);       
-        bottomRight.addPlaceholder(IPageLayout.ID_PROGRESS_VIEW);
+        bottom.addView(ID_CONSOLE_VIEW);               
+        bottom.addPlaceholder(IPageLayout.ID_PROGRESS_VIEW);
         
         // Populate the "Window/Views..." menu with suggested views
         layout.addShowViewShortcut(ID_NAVIGATOR);

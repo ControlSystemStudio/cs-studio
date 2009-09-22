@@ -22,7 +22,7 @@ public class ColorProperty extends AbstractWidgetProperty {
 	/**
 	 * XML attribute name <code>color</code>.
 	 */
-	public static final String XML_ELEMENT_COLORNAME = "color.name"; //$NON-NLS-1$
+	public static final String XML_ATTRIBUTE_NAME = "name"; //$NON-NLS-1$
 
 	
 	/**
@@ -90,16 +90,15 @@ public class ColorProperty extends AbstractWidgetProperty {
 	public void writeToXML(Element propElement) {
 		OPIColor opiColor = (OPIColor) getPropertyValue();
 		Element colorElement;
-		if(!opiColor.isPreDefined()){
-			colorElement= new Element(XML_ELEMENT_COLOR);
+		colorElement= new Element(XML_ELEMENT_COLOR);
+		if(!opiColor.isPreDefined()){			
 			RGB color =  opiColor.getRGBValue();
 			colorElement.setAttribute(XML_ATTRIBUTE_RED, "" + color.red); //$NON-NLS-1$
 			colorElement.setAttribute(XML_ATTRIBUTE_GREEN, "" + color.green); //$NON-NLS-1$
 			colorElement.setAttribute(XML_ATTRIBUTE_BLUE, "" + color.blue); //$NON-NLS-1$
 
-		}else{
-			colorElement= new Element(XML_ELEMENT_COLORNAME);
-			colorElement.setText(opiColor.getColorName());
+		}else{			
+			colorElement.setAttribute(XML_ATTRIBUTE_NAME, opiColor.getColorName());
 		}
 		
 		propElement.addContent(colorElement);
@@ -109,14 +108,14 @@ public class ColorProperty extends AbstractWidgetProperty {
 	@Override
 	public Object readValueFromXML(Element propElement) {
 		Element colorElement = propElement.getChild(XML_ELEMENT_COLOR);
-		if(colorElement != null) {
+		String name = colorElement.getAttributeValue(XML_ATTRIBUTE_NAME);
+		if(name == null) {
 				RGB result = new RGB(Integer.parseInt(colorElement.getAttributeValue(XML_ATTRIBUTE_RED)),
 				Integer.parseInt(colorElement.getAttributeValue(XML_ATTRIBUTE_GREEN)),
 				Integer.parseInt(colorElement.getAttributeValue(XML_ATTRIBUTE_BLUE)));
 				return new OPIColor(result);		
 		}else{
-			colorElement = propElement.getChild(XML_ELEMENT_COLORNAME);
-			return MediaService.getInstance().getOPIColor(colorElement.getText());
+			return MediaService.getInstance().getOPIColor(name);
 		}
 	
 	}
