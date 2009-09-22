@@ -161,12 +161,18 @@ public class ProfibusConfigXMLGenerator {
         if (master.isAutoclear()) {
             autoClear = "1";
         }
+        short fdl;
+        if(master.getRedundant()<0) {
+            fdl = master.getSortIndex();
+        }else {
+            fdl = master.getRedundant();
+        }
         String[] masterValues = new String[] {
                 /* bus_para_len */"66"/*
                                        * TODO:busParaLen is Default=66? und muss das geändert werden
                                        * können?
                                        */,
-                /* fdl_add */Short.toString(master.getFdlAddress()),
+                /* fdl_add */Short.toString(fdl),
                 /*
                  * We have some problems with work of the XML configuration.
                  * 1st. The parameter baud_rate in the <MASTER> section must be write in decimal notation.

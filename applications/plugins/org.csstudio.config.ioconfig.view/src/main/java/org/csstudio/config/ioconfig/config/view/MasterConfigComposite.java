@@ -72,6 +72,22 @@ import org.eclipse.swt.widgets.Text;
  */
 public class MasterConfigComposite extends NodeConfig {
 
+    private final class SelectedRedundentSelectionListener implements SelectionListener {
+        @Override
+        public void widgetSelected(SelectionEvent e) {
+            select();
+        }
+
+        @Override
+        public void widgetDefaultSelected(SelectionEvent e) {
+            select();
+        }
+
+        private void select() {
+            setSavebuttonEnabled("MasterRedundentSelection", _masterButton.getSelection()!=(Boolean)_masterButton.getData());
+        }
+    }
+
     /*
      * Data.
      */
@@ -141,6 +157,9 @@ public class MasterConfigComposite extends NodeConfig {
     private Text _maxSlaveDiagLenText;
     private Text _maxCalcText;
     private ComboViewer _indexCombo;
+    private Button _redundentButton;
+    private Button _masterButton;
+    private Button _slaveButton;
 
     /**
      * @param parent
@@ -467,19 +486,36 @@ public class MasterConfigComposite extends NodeConfig {
         gRedundencyMaster.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
         gRedundencyMaster.setLayout(new GridLayout(3, false));
 
-        final Button redundent = new Button(gRedundencyMaster, SWT.CHECK);
-        redundent.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
-        redundent.setText("Redunden IOC");
+        _redundentButton = new Button(gRedundencyMaster, SWT.CHECK);
+        _redundentButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+        _redundentButton.setText("Redunden IOC: ");
 
-        final Button master = new Button(gRedundencyMaster, SWT.RADIO);
-        master.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
-        master.setText("Master");
+        _masterButton = new Button(gRedundencyMaster, SWT.RADIO);
+        _masterButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+        _masterButton.setText("Master");
 
-        final Button slave = new Button(gRedundencyMaster, SWT.RADIO);
-        slave.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
-        slave.setText("Slave");
-
-        redundent.addSelectionListener(new SelectionListener() {
+        _slaveButton = new Button(gRedundencyMaster, SWT.RADIO);
+        _slaveButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+        _slaveButton.setText("Slave");
+        
+        
+        if(_master.getRedundant()<0&&!_master.getFreeStationAddress().contains((short)(_master.getSortIndex()+1))){
+            _redundentButton.setEnabled(false);
+//            _redundentButton.setToolTipText("The Station address for the redundency Master is occupied");
+            gRedundencyMaster.setToolTipText("The Station address for the redundency Master is occupied");
+        }
+        _redundentButton.setSelection(_master.getRedundant()>=0);
+        _redundentButton.setData(_master.getRedundant()>=0);
+        
+        _masterButton.setEnabled(_redundentButton.getSelection());
+        _slaveButton.setEnabled(_redundentButton.getSelection());
+        
+        _masterButton.setSelection(_master.getRedundant()==_master.getSortIndex());
+        _slaveButton.setSelection(_master.getRedundant()>_master.getSortIndex());
+        
+        _masterButton.setData(_masterButton.getSelection());
+        
+        _redundentButton.addSelectionListener(new SelectionListener() {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
@@ -492,26 +528,19 @@ public class MasterConfigComposite extends NodeConfig {
             }
 
             private void select() {
-                if (redundent.getSelection()) {
-                    master.setEnabled(true);
-                    slave.setEnabled(true);
+                setSavebuttonEnabled("MasterRedundent", _redundentButton.getSelection()!=(Boolean)_redundentButton.getData());
+                if (_redundentButton.getSelection()) {
+                    _masterButton.setEnabled(true);
+                    _slaveButton.setEnabled(true);
                 } else {
-                    master.setEnabled(false);
-                    slave.setEnabled(false);
+                    _masterButton.setEnabled(false);
+                    _slaveButton.setEnabled(false);
                 }
             }
         });
-
-        boolean isRedundet = false;
-        redundent.setSelection(isRedundet);
-        if (isRedundet) {
-            Boolean isMaster = true;
-            if (isMaster) {
-                master.setSelection(true);
-            } else {
-                slave.setSelection(true);
-            }
-        }
+        
+        _masterButton.addSelectionListener(new SelectedRedundentSelectionListener());
+        _slaveButton.addSelectionListener(new SelectedRedundentSelectionListener());
 
     }
 
@@ -585,7 +614,19 @@ public class MasterConfigComposite extends NodeConfig {
         Short stationAddress = (Short) ((StructuredSelection) _indexCombo.getSelection())
                 .getFirstElement();
         _master.setSortIndexNonHibernate(stationAddress);
-        _master.setFdlAddress(stationAddress);
+        if(_redundentButton.getSelection()) {
+            if(_masterButton.getSelection()) {
+                _master.setRedundant(stationAddress);
+                _masterButton.setData(true);
+            } else if(_slaveButton.getSelection()) {
+                _master.setRedundant((short)(stationAddress+1));
+                _masterButton.setData(false);
+            }
+            _redundentButton.setData(true);
+        } else {
+            _redundentButton.setData(false);
+            _master.setRedundant((short) -1);
+        }
         _indexCombo.getCombo().setData(_indexCombo.getCombo().getSelectionIndex());
 
         // Information
@@ -685,7 +726,12 @@ public class MasterConfigComposite extends NodeConfig {
         if (_indexCombo != null) {
             _indexCombo.getCombo().select((Integer) _indexCombo.getCombo().getData());
             getNameWidget().setText((String) getNameWidget().getData());
-            getIndexSpinner().setSelection((Short) getIndexSpinner().getData());
+            Boolean selected = (Boolean) _redundentButton.getData();
+            _redundentButton.setSelection(selected);
+            _masterButton.setEnabled(selected);
+            _slaveButton.setEnabled(selected);
+            _masterButton.setSelection((Boolean) _masterButton.getData());
+            _slaveButton.setSelection(!(Boolean) _masterButton.getData());
             if (_master != null) {
                 _gsdFile = null;
                 if (_master.getGSDFile() != null) {

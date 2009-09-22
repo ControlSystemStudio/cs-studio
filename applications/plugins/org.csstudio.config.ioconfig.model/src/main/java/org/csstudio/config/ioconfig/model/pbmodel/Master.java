@@ -30,6 +30,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -173,11 +174,18 @@ public class Master extends Node {
         this._dataControlTime = dataControlTime;
     }
 
-    public short getFdlAddress() {
+    @Column(name = "FDLADDRESS")
+    public short getRedundant() {
         return _fdlAddress;
     }
 
-    public void setFdlAddress(final short fdlAddress) {
+    /**
+     * 0 is not redundant.
+     * 1 is redundant and Master is selected. 
+     * 2 is redundant and Salve is selected. 
+     * @param fdlAddress
+     */
+    public void setRedundant(final short fdlAddress) {
         this._fdlAddress = fdlAddress;
     }
 
@@ -310,6 +318,10 @@ public class Master extends Node {
             freeAddressList.add(i);
         }
         freeAddressList.remove(getSortIndex());
+//        if(getRedundant()>=0) {
+            freeAddressList.remove(getRedundant());
+//        }
+//        freeAddressList.remove(getSortIndex());
         Set<Short> keySet = getChildrenAsMap().keySet();
         freeAddressList.removeAll(keySet);
         return freeAddressList;
@@ -332,7 +344,7 @@ public class Master extends Node {
             copy.setDocuments(getDocuments());
             copy.setAutoclear(isAutoclear());
             copy.setDataControlTime(getDataControlTime());
-            copy.setFdlAddress(getFdlAddress());
+            copy.setRedundant(getRedundant());
             copy.setGSDFile(getGSDFile());
             copy.setMasterUserData(getMasterUserData());
             copy.setMinSlaveInt(getMinSlaveInt());

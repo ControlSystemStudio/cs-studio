@@ -219,7 +219,7 @@ public class Channel_Test {
     @Test
     public void testOutputChannels() throws PersistenceException, InterruptedException {
         // create Master
-        _master.setFdlAddress((short) 4711);
+        _master.setRedundant((short) 4711);
         _master.localSave();
         assertEquals("@Subnet", _master.getEpicsAdressString());
 
@@ -379,7 +379,7 @@ public class Channel_Test {
     @Test
     public void testInputChannels() throws PersistenceException, InterruptedException {
         // create Master
-        _master.setFdlAddress((short) 4711);
+        _master.setRedundant((short) 4711);
         _master.localSave();
         assertEquals("@Subnet", _master.getEpicsAdressString());
 
@@ -538,7 +538,7 @@ public class Channel_Test {
     @Test
     public void testInputAndOutputChannels() throws PersistenceException {
         // create Master
-        _master.setFdlAddress((short) 4711);
+        _master.setRedundant((short) 4711);
         _master.localSave();
         assertEquals("@Subnet", _master.getEpicsAdressString());
 
@@ -786,7 +786,7 @@ public class Channel_Test {
     @Test
     public void testTestOutputStructChannels() throws PersistenceException {
         // create Master
-        _master.setFdlAddress((short) 4711);
+        _master.setRedundant((short) 4711);
         _master.localSave();
         assertEquals("@Subnet", _master.getEpicsAdressString());
 
