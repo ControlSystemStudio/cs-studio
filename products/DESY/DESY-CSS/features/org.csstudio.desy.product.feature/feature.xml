@@ -24,6 +24,26 @@
          id="org.csstudio.platform.feature.product"
          version="0.0.0"/>
 
+   <includes
+         id="org.csstudio.alarm.desy.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.csstudio.configuration.epics.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.csstudio.diag.controlsystemtools.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.csstudio.sds.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.csstudio.utility.desyutilities.feature"
+         version="0.0.0"/>
+
    <plugin
          id="org.csstudio.testsuite"
          download-size="0"
