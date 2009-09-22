@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: CSS JUnit4 Plugin Testsuite
+Bundle-SymbolicName: org.csstudio.testsuite
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.csstudio.testsuite.Activator
+Bundle-Vendor: Desy
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.junit4;bundle-version="4.5.0"
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-ActivationPolicy: lazy
