@@ -25,10 +25,6 @@
          version="0.0.0"/>
 
    <includes
-         id="org.csstudio.alarm.desy.feature"
-         version="0.0.0"/>
-
-   <includes
          id="org.csstudio.configuration.epics.feature"
          version="0.0.0"/>
 
