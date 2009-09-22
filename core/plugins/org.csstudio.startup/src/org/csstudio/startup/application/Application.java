@@ -84,6 +84,10 @@ public class Application implements IApplication {
     public Object start(IApplicationContext context) throws Exception
 	{
 		// Create the display .. with debugging enabled?
+	    // The debug flag can be set on the command-line
+	    // ( ... -vmargs -DSWTDEBUG=true )
+	    // or it can be added to the 'css.ini' file
+	    // (the file with the same name as the application launcher + ".ini")
  	    if (Boolean.getBoolean("SWTDEBUG"))
 	    {
 	        Display.DEBUG = true;
