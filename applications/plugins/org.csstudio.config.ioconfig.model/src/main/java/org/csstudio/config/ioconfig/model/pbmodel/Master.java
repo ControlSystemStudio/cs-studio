@@ -24,8 +24,6 @@
  */
 package org.csstudio.config.ioconfig.model.pbmodel;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -39,8 +37,6 @@ import javax.persistence.Transient;
 import org.csstudio.config.ioconfig.model.NamedDBClass;
 import org.csstudio.config.ioconfig.model.Node;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdMasterModel;
-
-import com.sun.org.apache.bcel.internal.generic.GETSTATIC;
 
 /*******************************************************************************
  * Data model for Profibus-DP Master<br>

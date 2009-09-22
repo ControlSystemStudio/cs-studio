@@ -499,21 +499,4 @@ public class Slave extends Node {
         }
         setSortIndexNonHibernate(toIndex);
     }
-
-    // @Override
-    // public Node addChild(Node child) {
-    // if (child instanceof Module) {
-    // Module module = (Module) child;
-    //
-    // short sortIndex = module.getSortIndex();
-    // if (sortIndex < 0) {
-    // sortIndex = getfirstFreeStationAddress(DEFAULT_MAX_STATION_ADDRESS);
-    // }
-    // if (sortIndex > 0) {
-    // module.localUpdate();
-    // }
-    // module.moveSortIndex(sortIndex);
-    // }
-    // return super.addChild(child);
-    // }
 }
