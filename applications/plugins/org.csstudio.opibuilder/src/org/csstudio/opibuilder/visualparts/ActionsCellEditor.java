@@ -8,16 +8,17 @@ import org.eclipse.swt.widgets.Shell;
 public class ActionsCellEditor extends AbstractDialogCellEditor {
 
 	private ActionsInput actionsInput;
+	private boolean showHookOption;
 	
-	
-	public ActionsCellEditor(Composite parent, String title) {
+	public ActionsCellEditor(Composite parent, String title, boolean showHookOption) {
 		super(parent, title);
+		this.showHookOption = showHookOption;
 	}
 
 	@Override
 	protected void openDialog(Shell parentShell, String dialogTitle) {
 		ActionsInputDialog dialog = 
-			new ActionsInputDialog(parentShell, actionsInput, dialogTitle);
+			new ActionsInputDialog(parentShell, actionsInput, dialogTitle, showHookOption);
 		if(dialog.open() == Window.OK)
 			actionsInput = dialog.getOutput();
 	}

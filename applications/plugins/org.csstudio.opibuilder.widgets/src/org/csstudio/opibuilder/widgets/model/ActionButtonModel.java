@@ -1,6 +1,7 @@
 package org.csstudio.opibuilder.widgets.model;
 
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
+import org.csstudio.opibuilder.properties.ActionsProperty;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.FontProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
@@ -102,6 +103,11 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 		
 		addProperty(new BooleanProperty(PROP_TOGGLE_BUTTON, "Toggle Button",
 		        WidgetPropertyCategory.Behavior,DEFAULT_TOGGLE_BUTTON));
+		
+		removeProperty(PROP_ACTIONS);		
+		addProperty(new ActionsProperty(PROP_ACTIONS, "Actions", 
+				WidgetPropertyCategory.Behavior, false));
+		
 		
 		removeProperty(PROP_BORDER_COLOR);
 		removeProperty(PROP_BORDER_STYLE);

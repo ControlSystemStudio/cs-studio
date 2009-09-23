@@ -33,12 +33,21 @@ public class ActionsProperty extends AbstractWidgetProperty {
 	 */
 	public static final String XML_ATTRIBUTE_HOOK = "hook"; //$NON-NLS-1$
 	
+	private boolean showHookOption;
+	
 	public ActionsProperty(String prop_id, String description,
 			WidgetPropertyCategory category) {
 		super(prop_id, description, category, new ActionsInput());
-		
+		showHookOption = true;
 	}
 
+	
+	public ActionsProperty(String prop_id, String description,
+			WidgetPropertyCategory category, boolean showHookOption) {
+		super(prop_id, description, category, new ActionsInput());
+		this.showHookOption = showHookOption;
+	}
+	
 	@Override
 	public Object checkValue(Object value) {
 		if(value == null)
@@ -53,7 +62,7 @@ public class ActionsProperty extends AbstractWidgetProperty {
 
 	@Override
 	protected PropertyDescriptor createPropertyDescriptor() {
-		return new ActionsPropertyDescriptor(prop_id, description);
+		return new ActionsPropertyDescriptor(prop_id, description, showHookOption);
 	}
 
 	@SuppressWarnings("unchecked")

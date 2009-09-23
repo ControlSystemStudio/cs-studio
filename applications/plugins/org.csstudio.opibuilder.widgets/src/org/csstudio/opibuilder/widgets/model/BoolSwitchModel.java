@@ -1,5 +1,6 @@
 package org.csstudio.opibuilder.widgets.model;
 
+import org.csstudio.opibuilder.properties.ActionsProperty;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
@@ -39,6 +40,9 @@ public class BoolSwitchModel extends AbstractBoolControlModel {
 		
 		addProperty(new BooleanProperty(PROP_EFFECT3D, "3D Effect", 
 				WidgetPropertyCategory.Display, true));
+		removeProperty(PROP_ACTIONS);		
+		addProperty(new ActionsProperty(PROP_ACTIONS, "Actions", 
+				WidgetPropertyCategory.Behavior, false));
 		//setPropertyDescription(PROP_PVNAME, "Readback PV");
 
 	}

@@ -1,6 +1,7 @@
 package org.csstudio.opibuilder.widgets.model;
 
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
+import org.csstudio.opibuilder.properties.ActionsProperty;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.FontProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
@@ -69,6 +70,9 @@ public final class MenuButtonModel extends AbstractPVWidgetModel {
 						"Arial", 8, SWT.NONE))); //$NON-NLS-1$
 		addProperty(new BooleanProperty(PROP_ACTIONS_FROM_PV, "Actions From PV", 
 				WidgetPropertyCategory.Behavior, DEFAULT_ACTIONS_FROM_PV));
+		removeProperty(PROP_ACTIONS);		
+		addProperty(new ActionsProperty(PROP_ACTIONS, "Actions", 
+				WidgetPropertyCategory.Behavior, false));
 		//addProperty(new ComboProperty(PROP_TEXT_ALIGNMENT, "Text Alignment", 
 		//		WidgetPropertyCategory.Display, TextAlignmentEnum.getDisplayNames() ,TextAlignmentEnum.CENTER.getIndex()));
 		

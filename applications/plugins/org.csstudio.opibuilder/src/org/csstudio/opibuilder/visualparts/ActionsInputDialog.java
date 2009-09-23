@@ -55,15 +55,18 @@ public class ActionsInputDialog extends Dialog {
 		
 	private List<AbstractWidgetAction> actionsList;
 	private boolean hookedUpToWidget;
+	private boolean showHookOption = true;
 	
 	private String title;	
 
-	public ActionsInputDialog(Shell parentShell, ActionsInput actionsInput, String dialogTitle) {
+	public ActionsInputDialog(Shell parentShell, 
+			ActionsInput actionsInput, String dialogTitle, boolean showHookOption) {
 		super(parentShell);
 		setShellStyle(getShellStyle() | SWT.RESIZE);
 		this.actionsList = actionsInput.getCopy().getActionsList();
 		hookedUpToWidget = actionsInput.isHookedUpToWidget();
 		title = dialogTitle;
+		this.showHookOption = showHookOption;
 	}
 	
 	public ActionsInput getOutput() {
@@ -152,21 +155,21 @@ public class ActionsInputDialog extends Dialog {
 		this.createLabel(rightComposite, "Properties:");
 		
 		propertiesViewer = createPropertiesViewer(rightComposite);
-		
-		Composite bottomComposite = new Composite(mainComposite, SWT.NONE);
-		bottomComposite.setLayout(new GridLayout(1, false));
-		bottomComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
-		
-		final Button checkBox = new Button(bottomComposite, SWT.CHECK);
-		checkBox.setSelection(hookedUpToWidget);
-		checkBox.setText("Hook the first action to the mouse click event on widget.");
-		checkBox.addSelectionListener(new SelectionAdapter(){
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				hookedUpToWidget = checkBox.getSelection();
-			}
-		});
-		
+		if(showHookOption){
+			Composite bottomComposite = new Composite(mainComposite, SWT.NONE);
+			bottomComposite.setLayout(new GridLayout(1, false));
+			bottomComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
+			
+			final Button checkBox = new Button(bottomComposite, SWT.CHECK);
+			checkBox.setSelection(hookedUpToWidget);
+			checkBox.setText("Hook the first action to the mouse click event on widget.");
+			checkBox.addSelectionListener(new SelectionAdapter(){
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					hookedUpToWidget = checkBox.getSelection();
+				}
+			});
+		}
 		if(actionsList.size() > 0){
 			refreshActionsViewer(actionsList.get(0));
 		}
