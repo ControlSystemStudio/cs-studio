@@ -50,13 +50,16 @@ public class MacrosUtil {
 			for(String propId : widgetModel.getAllPropertyIDs()){
 				Pattern pattern = Pattern.compile(MACRO_LEFT_PART + propId + MACRO_RIGHT_PART);
 				Matcher m = pattern.matcher(result);
-				if(m.find()){					
-					String propertyValue = widgetModel.getProperty(propId).getPropertyValue().toString();
-					if(!propertyValue.contains(DOLLARCHAR))
-						result = m.replaceAll(propertyValue);
-					else
-						CentralLogger.getInstance().warn(null, "The macros in " + propertyValue +
-								" cannot be replaced for the property: " + widgetModel.getName() + "." + propId);					
+				if(m.find()){		
+					Object propertyValue = widgetModel.getProperty(propId).getPropertyValue();
+					if(propertyValue != null){
+						String ps = propertyValue.toString();
+						if(!ps.contains(DOLLARCHAR))
+							result = m.replaceAll(ps);
+						else
+							CentralLogger.getInstance().warn(null, "The macros in " + propertyValue +
+									" cannot be replaced for the property: " + widgetModel.getName() + "." + propId);					
+					}
 				}
 			}
 			

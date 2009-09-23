@@ -52,8 +52,9 @@ public final class MenuButtonEditPart extends AbstractWidgetEditPart {
 							&& getExecutionMode().equals(ExecutionMode.RUN_MODE)) {
 						final org.eclipse.swt.graphics.Point cursorLocation = Display
 								.getCurrent().getCursorLocation();
-						performDirectEdit(me.getLocation(), cursorLocation.x,
+						showMenu(me.getLocation(), cursorLocation.x,
 								cursorLocation.y);
+						me.consume();
 					}
 				}
 	
@@ -71,7 +72,7 @@ public final class MenuButtonEditPart extends AbstractWidgetEditPart {
 	}
 	
 	/**
-	 * Open the cell editor for direct editing.
+	 *Show Menu
 	 * 
 	 * @param point
 	 *            the location of the mouse-event
@@ -80,7 +81,7 @@ public final class MenuButtonEditPart extends AbstractWidgetEditPart {
 	 * @param absolutY
 	 *            The y coordinate of the mouse in the display
 	 */
-	private void performDirectEdit(final Point point, final int absolutX,
+	private void showMenu(final Point point, final int absolutX,
 			final int absolutY) {
 		if (getExecutionMode().equals(ExecutionMode.RUN_MODE)) {
 			final Shell shell = PlatformUI.getWorkbench()

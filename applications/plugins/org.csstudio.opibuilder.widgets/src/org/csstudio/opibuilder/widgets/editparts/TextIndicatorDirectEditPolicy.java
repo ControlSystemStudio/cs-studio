@@ -1,7 +1,5 @@
 package org.csstudio.opibuilder.widgets.editparts;
 
-import org.csstudio.opibuilder.widgets.figures.LabelFigure;
-import org.csstudio.opibuilder.widgets.model.LabelModel;
 import org.csstudio.opibuilder.widgets.model.TextIndicatorModel;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editpolicies.DirectEditPolicy;

@@ -34,7 +34,7 @@ public abstract class AbstractPVWidgetModel extends AbstractWidgetModel {
 		addProperty(new BooleanProperty(PROP_BACKCOLOR_ALARMSENSITIVE, 
 				"BackColor Alarm Sensitive", WidgetPropertyCategory.Display, false));
 		
-		setPropertyValue(PROP_TOOLTIP, "$(" + PROP_PVNAME + ")");
+		setPropertyValue(PROP_TOOLTIP, "$(" + PROP_PVNAME + ")\n" + "$(" + PROP_PVVALUE + ")");
 	}
 
 	public boolean isBorderAlarmSensitve(){

@@ -33,6 +33,7 @@ import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.LabeledBorder;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
+import org.eclipse.draw2d.MouseMotionListener;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.GraphicalEditPart;
@@ -40,7 +41,6 @@ import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.gef.editpolicies.ComponentEditPolicy;
 import org.eclipse.gef.requests.GroupRequest;
-import org.eclipse.swt.graphics.FontData;
 import org.eclipse.ui.IActionFilter;
 import org.eclipse.ui.progress.UIJob;
 
@@ -144,6 +144,14 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 				tooltipLabel.setText(getWidgetModel().getTooltip());
 				figure.setToolTip(tooltipLabel);
 			}			
+			figure.addMouseMotionListener(new MouseMotionListener.Stub(){
+				@Override
+				public void mouseEntered(MouseEvent me) {
+					//update tooltip text
+					//notice: if the figure is disabled, this code won't be executed.
+					tooltipLabel.setText(getWidgetModel().getTooltip());
+				}
+			});
 		}
 	}
 	

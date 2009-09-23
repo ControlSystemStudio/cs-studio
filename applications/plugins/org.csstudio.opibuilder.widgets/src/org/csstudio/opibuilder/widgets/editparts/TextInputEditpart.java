@@ -50,7 +50,7 @@ public class TextInputEditpart extends TextIndicatorEditPart {
 				public boolean handleChange(Object oldValue, Object newValue,
 						IFigure figure) {
 					String text = (String)newValue;
-					IValue value = getPVValue(AbstractPVWidgetModel.PROP_PVNAME);
+					/*IValue value = getPVValue(AbstractPVWidgetModel.PROP_PVNAME);
 					if(value instanceof IDoubleValue){
 						try {
 							Double d = Double.parseDouble(text);
@@ -65,8 +65,8 @@ public class TextInputEditpart extends TextIndicatorEditPart {
 						} catch (NumberFormatException e) {							
 						}
 					}else if(value instanceof IStringValue){
-						setPVValue(AbstractPVWidgetModel.PROP_PVNAME, text);
-					}
+					*/	setPVValue(AbstractPVWidgetModel.PROP_PVNAME, text);
+					//}
 					return false;
 				}
 			};			

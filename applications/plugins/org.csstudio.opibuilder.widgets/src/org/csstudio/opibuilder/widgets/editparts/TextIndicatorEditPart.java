@@ -23,7 +23,6 @@ import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
-import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.widgets.Display;
 
 /**The editor for text indicator widget.
@@ -273,6 +272,9 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 		if(showUnit && value.getMetaData() instanceof INumericMetaData)
 			text = text + " " + ((INumericMetaData)value.getMetaData()).getUnits(); //$NON-NLS-1$ //$NON-NLS-2$	
 		
+		//synchronize the property value without fire listeners.
+		getWidgetModel().getProperty(
+				TextIndicatorModel.PROP_TEXT).setPropertyValue(text, false);
 		((LabelFigure)figure).setText(text);		
 		
 		if(getWidgetModel().isAutoSize())

@@ -24,11 +24,8 @@ import org.csstudio.utility.pv.PVListener;
 import org.eclipse.draw2d.Border;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.ui.PlatformUI;
 
 /**The abstract edit part for all PV armed widgets. 
  * Widgets inheritate this class will have the CSS context menu on it.
@@ -46,6 +43,8 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 	
 	private boolean connected = true;
 	private boolean preEnableState;
+	private boolean writeAccessMarked = false;
+	
 	private Border preBorder;
 	private String currentDisconnectPVName = "";
 
@@ -152,9 +151,9 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 				pvMap.clear();	
 				pvConnectedStatusMap.clear();
 				saveFigureOKStatus(getFigure());
-				final Map<StringProperty, PVValueProperty> pvValueMap = getWidgetModel().getPVMap();
+				final Map<StringProperty, PVValueProperty> pvPropertyMap = getWidgetModel().getPVMap();
 				
-				for(final StringProperty sp : pvValueMap.keySet()){
+				for(final StringProperty sp : pvPropertyMap.keySet()){
 					
 					if(sp.getPropertyValue() == null || 
 							sp.getPropertyValue().equals("")) 
@@ -162,17 +161,7 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 					
 					try {
 						PV pv = PVFactory.createPV((String) sp.getPropertyValue());
-						pvConnectedStatusMap.put(pv.getName(), false);
-						if(controlPVPropId != null && controlPVPropId.equals((String)sp.getPropertyID())
-								&& !pv.isWriteAllowed()){
-							UIBundlingThread.getInstance().addRunnable(new Runnable(){
-								public void run() {
-									figure.setCursor(ResourceUtil.CURSOR_NO);
-									figure.setEnabled(false);
-									preEnableState = false;									
-								}
-							});							
-						}
+						pvConnectedStatusMap.put(pv.getName(), false);						
 						
 						PVListener pvListener = new PVListener(){
 							public void pvDisconnected(PV pv) {
@@ -184,11 +173,30 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 								if(pv == null)
 									return;
 								Boolean connected = pvConnectedStatusMap.get(pv.getName());
+								
+								//connection status
 								if(connected != null && !connected){
 									pvConnectedStatusMap.put(pv.getName(), true);
 									widgetConnectionRecovered(pv.getName());
 								}
-								pvValueMap.get(sp).setPropertyValue(pv.getValue());		
+								
+								//write access
+								if(controlPVPropId != null && 
+										controlPVPropId.equals((String)sp.getPropertyID()) && 
+										!writeAccessMarked && !pv.isWriteAllowed()){
+									UIBundlingThread.getInstance().addRunnable(new Runnable(){
+										public void run() {
+											if(!writeAccessMarked){
+												figure.setCursor(ResourceUtil.CURSOR_NO);
+												figure.setEnabled(false);
+												preEnableState = false;		
+												writeAccessMarked = true;
+											}
+										}
+									});							
+								}
+								
+								pvPropertyMap.get(sp).setPropertyValue(pv.getValue());		
 								
 							}							
 						};

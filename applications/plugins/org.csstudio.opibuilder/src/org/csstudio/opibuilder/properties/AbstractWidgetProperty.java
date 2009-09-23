@@ -134,6 +134,9 @@ public abstract class AbstractWidgetProperty {
 		this.defaultValue = defaultValue;
 	}
 
+	/**Set property value and fire the listeners on the property.
+	 * @param value
+	 */
 	public void setPropertyValue(Object value) {
 		//do conversion and legally check
 		Object newValue = checkValue(value);
@@ -141,6 +144,21 @@ public abstract class AbstractWidgetProperty {
 			return;
 		firePropertyChange(propertyValue, newValue);
 		propertyValue = newValue;		
+	}
+	
+	/**Set the property value.
+	 * @param value the value to be set.
+	 * @param fire true if listeners should be fired. otherwise false.
+	 */
+	public void setPropertyValue(Object value, boolean fire){
+		if(fire){
+			setPropertyValue(value);
+		}else{
+			Object newValue = checkValue(value);
+			if(newValue == null || newValue.equals(propertyValue))
+				return;
+			propertyValue = newValue;
+		}
 	}
 	
 	/**

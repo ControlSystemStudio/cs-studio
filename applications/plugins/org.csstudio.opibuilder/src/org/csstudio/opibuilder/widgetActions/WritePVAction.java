@@ -1,5 +1,6 @@
 package org.csstudio.opibuilder.widgetActions;
 
+import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
 import org.csstudio.opibuilder.properties.StringProperty;
@@ -7,23 +8,22 @@ import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.UIBundlingThread;
 import org.csstudio.opibuilder.widgetActions.WidgetActionFactory.ActionType;
-import org.csstudio.platform.data.IDoubleValue;
-import org.csstudio.platform.data.IEnumeratedValue;
-import org.csstudio.platform.data.ILongValue;
-import org.csstudio.platform.data.IStringValue;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
-import org.csstudio.utility.pv.PVListener;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 
 public class WritePVAction extends AbstractWidgetAction {
 
+	private static final int TIMEOUT = 10000;
 	public static final String PROP_PVNAME = "pv_name";//$NON-NLS-1$
 	public static final String PROP_VALUE = "value";//$NON-NLS-1$
-	private IValue pvValue;
 	
 	@Override
 	protected void configureProperties() {
@@ -48,34 +48,49 @@ public class WritePVAction extends AbstractWidgetAction {
 	
 	@Override
 	public void run() {
-		PV pv;
-		try {
-			pv = PVFactory.createPV(getPVName());
-		} catch (Exception e1) {
-			popErrorDialog(new Exception("Failed to connect to the PV."));
-			return;
-		}
-		//if(!pv.isWriteAllowed()){
-		//	popErrorDialog(new Exception("The PV is not allowed to write"));
-		//	return;
-		//}
-		String text = getValue();
-		pvValue = pv.getValue();
-		pv.addListener(new PVListener(){
-			public void pvDisconnected(PV pv) {
-				// TODO Auto-generated method stub
-				
+		
+		Job job = new Job(getDescription()){
+			@Override
+			protected IStatus run(IProgressMonitor monitor) {
+				String text = getValue().trim();
+				PV pv = null;	
+				try {
+					pv = PVFactory.createPV(getPVName());
+					pv.start();
+					long startTime = Calendar.getInstance().getTimeInMillis();
+					
+					while((Calendar.getInstance().getTimeInMillis() - startTime) < TIMEOUT && 
+							!pv.isConnected() && !monitor.isCanceled()){
+						TimeUnit.MILLISECONDS.sleep(100);
+					}
+					if(monitor.isCanceled()){
+						ConsoleService.getInstance().writeInfo("\"" + getDescription() + "\" " //$NON-NLS-1$ //$NON-NLS-2$
+								+"has been canceled");
+						return Status.CANCEL_STATUS;
+					}
+						
+					if(!pv.isConnected()){
+						throw new Exception(
+								"Connection Timeout! Failed to connect to the PV.");
+					}
+					if(!pv.isWriteAllowed())
+					 throw new Exception("The PV is not allowed to write");
+					setPVValue(pv, text);
+				} catch (Exception e1) {
+					popErrorDialog(new Exception(e1));
+					return Status.OK_STATUS;
+				}finally{
+					if(pv !=null)
+						pv.stop();
+				}
+				return Status.OK_STATUS;
 			}
-			public void pvValueUpdate(PV pv) {
-				pvValue = pv.getValue();
-			}
-		});
-		try {
-			pv.start();
-			TimeUnit.MILLISECONDS.sleep(100);
-		} catch (Exception e1) {
-			popErrorDialog(new Exception("Failed to connect to the PV."));
-		}		
+			
+		};
+		
+		job.schedule();
+		
+	/*
 		if(pvValue == null){			
 			popErrorDialog(new Exception("Unknown PV"));
 		}
@@ -95,8 +110,7 @@ public class WritePVAction extends AbstractWidgetAction {
 			}
 		}else if(pvValue instanceof IStringValue){
 			setPVValue(pv, text);
-		}
-		pv.stop();
+		}*/
 	}
 	
 	/**Set PV to given value. Should accept Double, Double[], Integer, String, maybe more.
