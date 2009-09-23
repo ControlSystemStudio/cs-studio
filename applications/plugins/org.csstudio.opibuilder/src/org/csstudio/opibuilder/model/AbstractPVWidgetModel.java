@@ -48,4 +48,8 @@ public abstract class AbstractPVWidgetModel extends AbstractWidgetModel {
 	public boolean isBackColorAlarmSensitve(){
 		return (Boolean)getCastedPropertyValue(PROP_BACKCOLOR_ALARMSENSITIVE);
 	}
+	
+	public String getPVName(){
+		return (String)getCastedPropertyValue(PROP_PVNAME);
+	}
 }

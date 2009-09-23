@@ -1,7 +1,7 @@
 package org.csstudio.opibuilder.widgets.model;
 
-import org.csstudio.opibuilder.model.AbstractWidgetModel;
-import org.csstudio.opibuilder.properties.ComboProperty;
+import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
+import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.FontProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
@@ -16,7 +16,8 @@ import org.eclipse.swt.graphics.FontData;
  * @author Helge Rickens, Kai Meyer, Xihui Chen
  *
  */
-public final class MenuButtonModel extends AbstractWidgetModel {
+public final class MenuButtonModel extends AbstractPVWidgetModel {
+	private static final boolean DEFAULT_ACTIONS_FROM_PV = false;
 	/**
 	 * The ID of the label property.
 	 */
@@ -25,6 +26,8 @@ public final class MenuButtonModel extends AbstractWidgetModel {
 	 * The ID of the font property.
 	 */
 	public static final String PROP_FONT = "font"; //$NON-NLS-1$
+
+	public static final String PROP_ACTIONS_FROM_PV = "actions_from_pv"; //$NON-NLS-1$
 	
 	/**
 	 * The ID of the text alignment property.
@@ -51,6 +54,7 @@ public final class MenuButtonModel extends AbstractWidgetModel {
 		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 		setBorderStyle(BorderStyle.BUTTON_RAISED);
 		setForegroundColor(CustomMediaFactory.COLOR_BLACK);
+		setPropertyValue(PROP_BORDER_ALARMSENSITIVE, false);
 	}
 
 	/**
@@ -63,9 +67,14 @@ public final class MenuButtonModel extends AbstractWidgetModel {
 		addProperty(new FontProperty(PROP_FONT, "Font",
 				WidgetPropertyCategory.Display, new FontData(
 						"Arial", 8, SWT.NONE))); //$NON-NLS-1$
+		addProperty(new BooleanProperty(PROP_ACTIONS_FROM_PV, "Actions From PV", 
+				WidgetPropertyCategory.Behavior, DEFAULT_ACTIONS_FROM_PV));
 		//addProperty(new ComboProperty(PROP_TEXT_ALIGNMENT, "Text Alignment", 
 		//		WidgetPropertyCategory.Display, TextAlignmentEnum.getDisplayNames() ,TextAlignmentEnum.CENTER.getIndex()));
-
+		
+		setPropertyVisible(PROP_ACTIONS, !DEFAULT_ACTIONS_FROM_PV);
+		setPropertyVisible(PROP_PVNAME, DEFAULT_ACTIONS_FROM_PV);
+		
 	}
 	
 
@@ -104,4 +113,8 @@ public final class MenuButtonModel extends AbstractWidgetModel {
 		return (Integer) getProperty(PROP_TEXT_ALIGNMENT).getPropertyValue();
 	}
 
+	public boolean isActionsFromPV(){
+		return (Boolean)getCastedPropertyValue(PROP_ACTIONS_FROM_PV);
+	}
+	
 }

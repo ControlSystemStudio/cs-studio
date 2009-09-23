@@ -1,12 +1,25 @@
 package org.csstudio.opibuilder.widgets.editparts;
 
-import org.csstudio.opibuilder.editparts.AbstractWidgetEditPart;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
+import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
+import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
+import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.widgetActions.AbstractWidgetAction;
+import org.csstudio.opibuilder.widgetActions.ActionsInput;
+import org.csstudio.opibuilder.widgetActions.WritePVAction;
+import org.csstudio.opibuilder.widgets.model.AbstractMarkedWidgetModel;
 import org.csstudio.opibuilder.widgets.model.MenuButtonModel;
+import org.csstudio.platform.data.IEnumeratedMetaData;
+import org.csstudio.platform.data.INumericMetaData;
+import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.utility.pv.PV;
+import org.csstudio.utility.pv.PVListener;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.MouseEvent;
@@ -26,7 +39,11 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
  * @author Helge Rickens, Kai Meyer, Xihui Chen
  * 
  */
-public final class MenuButtonEditPart extends AbstractWidgetEditPart {
+public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
+
+	private PVListener loadActionsFromPVListener;
+
+	private IEnumeratedMetaData meta = null;
 
 	/**
 	 * {@inheritDoc}
@@ -117,6 +134,53 @@ public final class MenuButtonEditPart extends AbstractWidgetEditPart {
 	}
 
 
+	
+	@Override
+	protected void doActivate() {
+		super.doActivate();
+		if(getExecutionMode() == ExecutionMode.RUN_MODE){
+			if(getWidgetModel().isActionsFromPV()){
+				PV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
+				if(pv != null){	
+					loadActionsFromPVListener = new PVListener() {					
+						public void pvValueUpdate(PV pv) {
+							IValue value = pv.getValue();
+							if (value != null && value.getMetaData() instanceof IEnumeratedMetaData){
+								IEnumeratedMetaData new_meta = (IEnumeratedMetaData)value.getMetaData();
+								if(meta  == null || !meta.equals(new_meta)){
+									meta = new_meta;
+									ActionsInput actionsInput = new ActionsInput();
+									for(String writeValue : meta.getStates()){
+										WritePVAction action = new WritePVAction();
+										action.setPropertyValue(WritePVAction.PROP_PVNAME, getWidgetModel().getPVName());
+										action.setPropertyValue(WritePVAction.PROP_VALUE, writeValue);
+										actionsInput.getActionsList().add(action);
+									}
+									getWidgetModel().setPropertyValue(
+											AbstractWidgetModel.PROP_ACTIONS, actionsInput);
+									
+								}
+							}
+						}					
+						public void pvDisconnected(PV pv) {}
+					};
+					pv.addListener(loadActionsFromPVListener);				
+				}
+			}
+		}
+	}
+	
+	@Override
+	protected void doDeActivate() {
+		super.doDeActivate();
+		if(getWidgetModel().isActionsFromPV()){
+			PV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
+			if(pv != null){	
+				pv.removeListener(loadActionsFromPVListener);
+			}
+		}
+		
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -144,6 +208,23 @@ public final class MenuButtonEditPart extends AbstractWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(MenuButtonModel.PROP_FONT, fontHandler);
+		
+		final IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue, final IFigure refreshableFigure) {				
+				updatePropSheet((Boolean) newValue);
+				return false;
+			}			
+		};
+		getWidgetModel().getProperty(MenuButtonModel.PROP_ACTIONS_FROM_PV).
+			addPropertyChangeListener(new PropertyChangeListener(){
+				public void propertyChange(PropertyChangeEvent evt) {
+					handler.handleChange(evt.getOldValue(), evt.getNewValue(), getFigure());
+				}
+		});
+		
+		
+		
 /*
 		// text alignment
 		IWidgetPropertyChangeHandler alignmentHandler = new IWidgetPropertyChangeHandler() {
@@ -156,6 +237,17 @@ public final class MenuButtonEditPart extends AbstractWidgetEditPart {
 		setPropertyChangeHandler(MenuButtonModel.PROP_TEXT_ALIGNMENT,
 			alignmentHandler);
 */	
+	}
+	
+		/**
+		* @param actionsFromPV
+		*/
+	private void updatePropSheet(final boolean actionsFromPV) {
+		getWidgetModel().setPropertyVisible(
+					MenuButtonModel.PROP_ACTIONS, !actionsFromPV);
+		getWidgetModel().setPropertyVisible(
+					MenuButtonModel.PROP_PVNAME, actionsFromPV);
+	
 	}
 
 	/**

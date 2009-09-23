@@ -70,7 +70,7 @@ public class OPIRunner extends EditorPart {
 		}catch(Exception e) {
 			CentralLogger.getInstance().error(
 					this, "Failed to run file: " + input, e);
-			String message = input + "is not a correct OPI file! An empty OPI will be created instead.\n" + e;
+			String message = input + "is not a correct OPI file! An empty OPI will be created instead.\n" + e.getMessage();
 			MessageDialog.openError(Display.getDefault().getActiveShell(), "File Open Error",
 					message);
 			ConsoleService.getInstance().writeError(message);

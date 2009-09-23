@@ -147,6 +147,7 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 					buttonStyleHandler.handleChange(evt.getOldValue(), evt.getNewValue(), getFigure());
 				}
 			});
+		//cannot use handler because it will delay the propsheet update.
 		//setPropertyChangeHandler(ActionButtonModel.PROP_TOGGLE_BUTTON,
 		//		buttonStyleHandler);
 	}

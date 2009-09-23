@@ -354,7 +354,7 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 				UIBundlingThread.getInstance().addRunnable(new Runnable(){
 					public void run() {
 						String message = 
-							"Failed to write PV:" + pv.getName() + "\n" + e;
+							"Failed to write PV:" + pv.getName() + "\n" + e.getMessage();
 						MessageDialog.openError(null, "PV write error", message);
 						ConsoleService.getInstance().writeError(message);
 					}

@@ -122,7 +122,7 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 			loadingErrorLabel.setLocation(0, 0);
 			loadingErrorLabel.setSize(getWidgetModel().getSize().getCopy().shrink(3, 3));
 			loadingErrorLabel.setForegroundColor(CustomMediaFactory.COLOR_RED);
-			String message = "Failed to load: " + path.toString() + "\n"+ e;
+			String message = "Failed to load: " + path.toString() + "\n"+ e.getMessage();
 			loadingErrorLabel.setText(message);
 			loadingErrorLabel.setName("Label");
 			getWidgetModel().addChild(loadingErrorLabel);		

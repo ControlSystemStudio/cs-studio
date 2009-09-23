@@ -658,7 +658,8 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 		try {
 			XMLUtil.fillDisplayModelFromInputStream(getInputStream(), displayModel);
 		} catch (Exception e) {
-			String message = "The file is not a correct OPI file! An empty OPI will be created instead.\n" + e;
+			String message = "The file is not a correct OPI file! An empty OPI will be created instead.\n"
+				+ e.getMessage();
 			MessageDialog.openError(getSite().getShell(), "File Open Error",
 					message);
 			CentralLogger.getInstance().error(this, e);

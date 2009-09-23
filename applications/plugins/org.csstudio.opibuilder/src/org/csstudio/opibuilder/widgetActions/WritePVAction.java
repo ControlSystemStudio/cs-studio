@@ -135,7 +135,7 @@ public class WritePVAction extends AbstractWidgetAction {
 		UIBundlingThread.getInstance().addRunnable(new Runnable(){
 			public void run() {
 				String message = 
-					"Failed to write PV:" + getPVName() + "\n" + e;
+					"Failed to write PV:" + getPVName() + "\n" + e.getMessage();
 				MessageDialog.openError(null, "PV write error", message);
 				ConsoleService.getInstance().writeError(message);
 			}
