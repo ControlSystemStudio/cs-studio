@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 import org.eclipse.core.filesystem.URIUtil;
+import org.eclipse.core.internal.resources.File;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -57,6 +58,20 @@ public class ResourceUtil {
 		}
 
 		return result;
+	}
+	
+	/**Get the IFile from IPath.
+	 * @param path
+	 * @return the IFile. null if no IFile on the path. 
+	 */
+	public static IFile getIFileFromIPath(final IPath path){
+		IResource r = ResourcesPlugin.getWorkspace().getRoot().findMember(
+				path, false);
+		if (r!= null && r instanceof IFile) {			
+				return (IFile)r;
+		}else
+			return null;
+
 	}
 	
 	

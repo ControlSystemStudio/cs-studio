@@ -8,6 +8,8 @@ import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
 import org.csstudio.opibuilder.widgetActions.WidgetActionFactory.ActionType;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.ui.model.IWorkbenchAdapter;
 
 /**
  * The abstract widget action, which can be executed from the widget by click or context menu. 
@@ -71,6 +73,26 @@ public abstract class AbstractWidgetAction implements IAdaptable {
 	
 	@SuppressWarnings("unchecked")
 	public Object getAdapter(Class adapter) {
+		if(adapter == IWorkbenchAdapter.class)
+			return new IWorkbenchAdapter() {
+				
+				public Object getParent(Object o) {
+					return null;
+				}
+				
+				public String getLabel(Object o) {
+					return getActionType().getDescription();
+				}
+				
+				public ImageDescriptor getImageDescriptor(Object object) {
+					return getActionType().getIconImage();
+				}
+				
+				public Object[] getChildren(Object o) {
+					return new Object[0];
+				}
+			};
+		
 		return null;
 	}
 

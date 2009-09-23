@@ -8,7 +8,6 @@ import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.UIBundlingThread;
 import org.csstudio.opibuilder.widgetActions.WidgetActionFactory.ActionType;
-import org.csstudio.platform.data.IValue;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -140,31 +139,6 @@ public class WritePVAction extends AbstractWidgetAction {
 				ConsoleService.getInstance().writeError(message);
 			}
 		});
-	}
-	
-	@SuppressWarnings("unchecked")
-	public Object getAdapter(Class adapter) {
-		if(adapter == IWorkbenchAdapter.class)
-			return new IWorkbenchAdapter() {
-				
-				public Object getParent(Object o) {
-					return null;
-				}
-				
-				public String getLabel(Object o) {
-					return getActionType().getDescription();
-				}
-				
-				public ImageDescriptor getImageDescriptor(Object object) {
-					return getActionType().getIconImage();
-				}
-				
-				public Object[] getChildren(Object o) {
-					return new Object[0];
-				}
-			};
-		
-		return null;
 	}
 
 	

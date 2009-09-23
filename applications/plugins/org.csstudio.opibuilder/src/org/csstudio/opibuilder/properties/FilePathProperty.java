@@ -40,6 +40,8 @@ public class FilePathProperty extends AbstractWidgetProperty {
 					if (extension.equalsIgnoreCase(path.getFileExtension())) {
 						acceptedValue = value; 
 					}
+					if(extension.equals("*"))
+						acceptedValue = value; 
 				}
 			} else {
 				acceptedValue = value;

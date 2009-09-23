@@ -9,7 +9,7 @@ public class WidgetActionFactory {
 	public enum ActionType{
 		OPEN_DISPLAY("Open Display", createImage("icons/OPIBuilder.png")),
 		WRITE_PV("Write PV", createImage("icons/OPIBuilder.png")),
-		EXECUTE_CMD("Execute Command", createImage("icons/OPIBuilder.png")),
+		EXECUTE_CMD("Execute Command", createImage("icons/command.gif")),
 		EXECUTE_JAVASCRIPT("Execute Javascript", createImage("icons/OPIBuilder.png")),
 		OPEN_FILE("Open File", createImage("icons/OPIBuilder.png"));
 		
@@ -64,7 +64,8 @@ public class WidgetActionFactory {
 			return new OpenDislayAction();			
 		case WRITE_PV:
 			return new WritePVAction();
-			
+		case OPEN_FILE:
+			return new OpenFileAction();
 		default:
 			break;
 		}

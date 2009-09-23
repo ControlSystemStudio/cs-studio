@@ -51,7 +51,7 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
 	@Override
 	protected IFigure doCreateFigure() {
 		final MenuButtonModel model = (MenuButtonModel) getWidgetModel();
-
+		updatePropSheet(model.isActionsFromPV());
 		Label label = new Label();
 
 		label.setText(model.getLabel());
@@ -71,7 +71,7 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
 								.getCurrent().getCursorLocation();
 						showMenu(me.getLocation(), cursorLocation.x,
 								cursorLocation.y);
-						me.consume();
+						//me.consume();
 					}
 				}
 	
@@ -108,7 +108,7 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
 				getWidgetModel().getActionsInput().getActionsList()){
 				menuManager.add(new MenuAction(action));
 			}
-			Menu menu = menuManager.createContextMenu(shell);
+			Menu menu = menuManager.createContextMenu(shell);		
 
 			int x = absolutX;
 			int y = absolutY;
