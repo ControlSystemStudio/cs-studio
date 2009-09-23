@@ -59,13 +59,9 @@ public class ReadFileHash {
             }
         }
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-//			e.printStackTrace();	
 			CentralLogger.getInstance().error (this, "Error : File not Found(r) : " + LdapUpdaterPreferenceConstants.LDAP_HIST_PATH + histfile );
 			_model.setSerror(_model.getSerror()+1);			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-//			e.printStackTrace();
 			_model.setSerror(_model.getSerror()+2);			
 			CentralLogger.getInstance().error (this, "I/O-Exception while handling " + LdapUpdaterPreferenceConstants.LDAP_HIST_PATH + histfile );
 		}

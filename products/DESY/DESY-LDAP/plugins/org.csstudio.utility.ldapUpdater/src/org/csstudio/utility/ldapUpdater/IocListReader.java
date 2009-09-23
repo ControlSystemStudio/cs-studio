@@ -97,15 +97,9 @@ public class IocListReader {
 				}
 			}
 		} catch (FileNotFoundException e) {
-//			System.err.println("Error: " + e.getMessage());
-//			System.out.println("Error: " + e.getMessage());
 			_model.setSerror(_model.getSerror()+1);			
 			CentralLogger.getInstance().error(this, "File not Found : " + e.getMessage() ); 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//			System.err.println("Error: " + e.getMessage());
-//			System.out.println("Error: " + e.getMessage());
 			_model.setSerror(_model.getSerror()+2);			
 			CentralLogger.getInstance().error(this, "IOExeption : " + e.getMessage() ); 
 				} finally {

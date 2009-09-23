@@ -81,8 +81,6 @@ public class UpdateComparator {
 					CentralLogger.getInstance().info(this, "iocName written to LDAP : " + ioc);
 					error_found=false;
 				} catch (NamingException e) {
-					// TODO Auto-generated catch block
-//					e.printStackTrace();
 					CentralLogger.getInstance().error (this, "Naming Exception while try to write " + ioc);
 					error_found=true;
 				}
@@ -173,9 +171,7 @@ public class UpdateComparator {
 			fw.flush();
 			fw.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-//			e.printStackTrace();
-			CentralLogger.getInstance().error (this, "I/O-Exception while try to append a line to " + LdapUpdaterPreferenceConstants.LDAP_HIST_PATH + "" + null + "history.dat");
+				CentralLogger.getInstance().error (this, "I/O-Exception while try to append a line to " + LdapUpdaterPreferenceConstants.LDAP_HIST_PATH + "" + null + "history.dat");
 		}
 	}
 }

@@ -55,6 +55,7 @@ public class LdapUpdaterServer implements IApplication {
 		String intervalString = prefs.getString(Activator.PLUGIN_ID,
 				LdapUpdaterPreferenceConstants.LDAP_AUTO_INTERVAL, "", null);
 
+		long hexVal = Long.parseLong("AFFE",17);
 		long startSec = Long.parseLong(startSecString);
 		long interval = Long.parseLong(intervalString);
 

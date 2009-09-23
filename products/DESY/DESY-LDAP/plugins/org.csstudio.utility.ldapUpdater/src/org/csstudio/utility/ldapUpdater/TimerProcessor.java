@@ -31,8 +31,6 @@ public class TimerProcessor {
  				ldapUpdater.start();
  				}
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
-//				e.printStackTrace();
 				CentralLogger.getInstance().info  (this, "LdapUpdater is busy" );
 				CentralLogger.getInstance().error (this, "LdapUpdater is busy" );
 			}
