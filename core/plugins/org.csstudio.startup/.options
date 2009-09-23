@@ -1,0 +1,11 @@
+# Debug options
+#
+# Kay Kasemir
+
+# When enabling SWT debugging
+# (org.eclipse.ui/debug=true,
+#  org.eclipse.ui/debug/swtdebug=true),
+# XSynchronous is by default set to (true),
+# which can be very slow.
+# This reverts to asynchronous X as with no debugging
+org.csstudio.startup/debug/async_x=true

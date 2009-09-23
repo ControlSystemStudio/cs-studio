@@ -22,10 +22,12 @@
 package org.csstudio.startup.application;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.csstudio.startup.Plugin;
 import org.csstudio.startup.module.CSSStartupExtensionPoint;
 import org.csstudio.startup.module.LocaleSettingsExtPoint;
 import org.csstudio.startup.module.LoginExtPoint;
@@ -79,25 +81,16 @@ public class Application implements IApplication {
 	                  CSSStartupExtensionPoint[]> configurationElements =
 	                      new HashMap<Class<? extends CSSStartupExtensionPoint>, CSSStartupExtensionPoint[]>(8);
 	
-	/** {@inheritDoc} */
-	@SuppressWarnings("nls")
+    /** {@inheritDoc} */
     public Object start(IApplicationContext context) throws Exception
 	{
-		// Create the display .. with debugging enabled?
-	    // The debug flag can be set on the command-line
-	    // ( ... -vmargs -DSWTDEBUG=true )
-	    // or it can be added to the 'css.ini' file
-	    // (the file with the same name as the application launcher + ".ini")
- 	    if (Boolean.getBoolean("SWTDEBUG"))
-	    {
-	        Display.DEBUG = true;
-            System.out.println("Enabling SWT debugging");
-	    }
-		final Display display = PlatformUI.createDisplay();
+		// Create the display
+	    final Display display = PlatformUI.createDisplay();
 		if (display == null) {
 			System.err.println("No display"); //$NON-NLS-1$
 			return EXIT_OK;
 		}
+		handleDisplayDebugging(display);
 		
 		try 
 		{
@@ -122,7 +115,65 @@ public class Application implements IApplication {
 		}
 	}
 	
-	/**
+	/** Show and tweak SWT debug options.
+     *  See eclipse docs and org.csstudio.sns.product/debug_options.txt
+     *  for fundamental SWT debugging.
+     *  This code then tweaks some X11/GTK settings.
+     *  @param display SWT Display
+     */
+    @SuppressWarnings({ "nls" })
+    private void handleDisplayDebugging(final Display display)
+    {
+        if (display.getDeviceData().debug)
+        {
+            System.out.println("Enabled SWT debugging");
+            // Workbench.createDisplay turned this off. Re-enable!
+            display.setWarnings(true);
+            System.out.println("Re-enabled display warnings");
+            
+            // For GTK/X11, Eclipse sets XSynchronize(true) when debugging,
+            // which gives better error location detail but is also
+            // about 30 times slower.
+            if ("true".equalsIgnoreCase(Platform.getDebugOption(Plugin.ID + "/debug/async_x")))
+                enableXASynchronous();
+        }
+        if (display.getDeviceData().tracking)
+            System.out.println("Enabled SWT resource tracking");
+    }
+
+    /** Disable XSynchronize which Eclipse enabled by default for debugging.
+     *  Code works only on SWT/GTK, and uses reflection to avoid compile
+     *  errors on other OS.
+     */
+    @SuppressWarnings({ "nls", "unchecked" })
+    private void enableXASynchronous()
+    {
+        try
+        {   
+            final Class os = Class.forName("org.eclipse.swt.internal.gtk.OS");
+            
+            // int xdisplay = OS.GDK_DISPLAY ();
+            final Method gdk_display = os.getDeclaredMethod("GDK_DISPLAY");
+            final Integer xdisplay = (Integer) gdk_display.invoke(os);
+    
+            // OS.XSynchronize(xdisplay, false);
+            final Method xsynchronize = os.getDeclaredMethod("XSynchronize",
+                            new Class[] { Integer.TYPE, Boolean.TYPE });
+            xsynchronize.invoke(os, new Object[] { xdisplay, Boolean.FALSE });
+            
+            System.out.println("XSynchronize(false), back to async. X11");
+        }
+        catch (ClassNotFoundException ex)
+        {   // Not on Linux/GTK, so just ignore
+            return;
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+    }
+
+    /**
 	 * Initializes the application. Method consequently executes all other 'segments'
 	 * of this class. The sequence is the following:
 	 * <ul>
