@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: NameSpaceBrowser Tine Plug-in
-Bundle-SymbolicName: org.csstudio.utility.namespacebrowser.tine;singleton:=true
+Bundle-SymbolicName: org.csstudio.utility.nameSpaceBrowser.tine;singleton:=true
 Bundle-Version: 1.0.11
 Bundle-Activator: org.csstudio.utility.namespacebrowser.tine.Activator
 Bundle-Localization: plugin

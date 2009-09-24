@@ -9,7 +9,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.csstudio.platform,
  org.csstudio.platform.ui,
- org.csstudio.utility.IOC_Socket_Communication,
+ org.csstudio.utility.IOC-Socket-Communication,
  org.eclipse.help
 Eclipse-LazyStart: true
 Bundle-ClassPath: lib/jdom.jar,
