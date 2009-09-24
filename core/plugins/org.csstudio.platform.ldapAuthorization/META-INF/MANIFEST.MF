@@ -9,4 +9,4 @@ Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.platform
 Eclipse-LazyStart: true
-Export-Package: org.csstudio.platform.internal.ldapauthorization;x-friends:="org.csstudio.platform.ldapauthorization.ui"
+Export-Package: org.csstudio.platform.internal.ldapauthorization;x-friends:="org.csstudio.platform.ldapAuthorization.ui"
