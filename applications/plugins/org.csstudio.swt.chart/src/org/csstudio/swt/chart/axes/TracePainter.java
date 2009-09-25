@@ -23,24 +23,18 @@ import org.eclipse.swt.graphics.RGB;
 public class TracePainter
 {
     /** Use transparency as supported by 'advanced graphics' ? */
-    final private boolean use_alpha =  true;
+    final private boolean use_advanced_graphics =  Preferences.getUseAdvancedGraphics();
 
-    final private int marker_type;
+    final private int marker_type = Preferences.getMarkerType();
 
-    final private int marker_size;
+    final private int marker_size = Preferences.getMarkerSize();
     
-    final private float saturation;
+    final private float saturation = Preferences.getAreaSaturation();
 
-    /** Initialize from preferences */
-    public TracePainter()
-    {
-        marker_type = Preferences.getMarkerType();
-        marker_size = Preferences.getMarkerSize();
-        saturation = Preferences.getAreaSaturation();
-    }
-    
-    /** Paint a trace over given X axis. */
-    public void paint(GC gc, Trace trace, XAxis xaxis)
+    /** Paint a trace over given X axis. 
+     *  @return <code>true</code> if it enabled advanced graphics
+     */
+    public boolean paint(final GC gc, final Trace trace, final XAxis xaxis)
     {
         final AxisRangeLimiter limiter = new AxisRangeLimiter(xaxis);
         gc.setForeground(trace.getColor());
@@ -51,6 +45,7 @@ public class TracePainter
         // ** Lock the samples, so they don't change on us! **
         if (Chart.debug)
             System.out.println("Tracepainter ..."); //$NON-NLS-1$
+        boolean used_advanced_graphics = false;
         synchronized (samples)
         {
             // Instead of painting the whole trace, find the
@@ -61,10 +56,10 @@ public class TracePainter
             switch (trace.getType())
             {
             case Area:
-                drawArea(gc, xaxis, yaxis, samples, i0, i1, true);
+                used_advanced_graphics |= drawArea(gc, xaxis, yaxis, samples, i0, i1, true);
                 break;
             case Lines:
-                drawArea(gc, xaxis, yaxis, samples, i0, i1, false);
+                used_advanced_graphics |= drawArea(gc, xaxis, yaxis, samples, i0, i1, false);
                 break;
             case SingleLine:
                 drawLine(gc, xaxis, yaxis, samples, i0, i1);
@@ -82,6 +77,7 @@ public class TracePainter
         }
         if (Chart.debug)
             System.out.println("Tracepainter done."); //$NON-NLS-1$
+        return used_advanced_graphics;
     }
     
     /** Show the average data with staircase lines.
@@ -93,16 +89,19 @@ public class TracePainter
      *  @param samples Samples
      *  @param i0 First sample to use
      *  @param i1 Last sample to use
-     *  @param area Use area of lines for min/max envelope?
+     *  @param area Use area or lines for min/max envelope?
+     *  @return <code>true</code> if we ended up using advanced graphics
      */
-    private void drawArea(final GC gc,
-                                 final XAxis xaxis,
-                                 final YAxis yaxis,
-                                 final ChartSampleSequence samples,
-                                 final int i0,
-                                 final int i1,
-                                 final boolean area)
+    private boolean drawArea(final GC gc,
+                             final XAxis xaxis,
+                             final YAxis yaxis,
+                             final ChartSampleSequence samples,
+                             final int i0,
+                             final int i1,
+                             final boolean area)
     {
+        // Did we use advanced graphics?
+        boolean used_advanced_graphics = false;
         // Change to lighter version of background:
         // Reduce saturation, use brightness of 1
         final Color old_back = gc.getBackground();
@@ -152,11 +151,12 @@ public class TracePainter
                 y0 = xaxis.getRegion().y;
                 if (area)
                 {
-                    if (use_alpha)
+                    if (use_advanced_graphics)
                     {
                         gc.setAlpha((int) (255*saturation));
                         fillArea(gc, pos, min, max);
                         gc.setAlpha(255);
+                        used_advanced_graphics = true;
                     }                        
                     else
                     {
@@ -184,11 +184,12 @@ public class TracePainter
         // Draw what might have accumulated when reaching last sample
         if (area)
         {
-            if (use_alpha)
+            if (use_advanced_graphics)
             {
                 gc.setAlpha((int) (255*saturation));
                 fillArea(gc, pos, min, max);
                 gc.setAlpha(255);
+                used_advanced_graphics = true;
             }                        
             else
             {
@@ -207,6 +208,8 @@ public class TracePainter
         drawStaircaseLine(gc, pos, avg);
         
         lighter.dispose();
+        
+        return used_advanced_graphics;
     }
 
     /** Show the average data with staircase lines. No min/max display

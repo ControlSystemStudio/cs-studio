@@ -812,15 +812,22 @@ public class Chart extends Canvas
             gc.setClipping(plot_region);
             // Grid, Traces, Markers
             paintGrid(gc);
+            boolean used_advanced_graphics = false;
             for (Trace t : traces)
-                painter.paint(gc, t, xaxis);
+                used_advanced_graphics |= painter.paint(gc, t, xaxis);
             // Restore what the TracePainter might have changed
             gc.setLineWidth(0);
             gc.setForeground(foreground);
+            
             // On Linux, painting a transparent area enables 'Cairo',
             // and then multi-line drawText no longer handles line breaks.
-            // So turn advanced features off before painting markers
-            gc.setAdvanced(false);
+            // So turn advanced features off before painting markers.
+            // Note that even turning advanced graphics off will actually
+            // load the GTK 'Cairo' support on Linux!
+            // To avoid that, only turn it 'off' when it was actually turned 'on'!
+            if (used_advanced_graphics)
+                gc.setAdvanced(false);
+            
             for (YAxis yaxis : yaxes)
                 yaxis.paintMarkers(gc, xaxis);
             // Done

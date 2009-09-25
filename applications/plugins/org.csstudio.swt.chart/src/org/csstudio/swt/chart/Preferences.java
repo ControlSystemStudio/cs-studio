@@ -47,4 +47,13 @@ public class Preferences
             return true;
         return service.getBoolean(Activator.ID, "show_value_tool_tips", true, null);
     }
+
+    /** @return  Use advanced graphics for 'transparent' area? */
+    public static boolean getUseAdvancedGraphics()
+    {
+        final IPreferencesService service = Platform.getPreferencesService();
+        if (service == null)
+            return true;
+        return service.getBoolean(Activator.ID, "use_advanced_graphics", true, null);
+    }
 }
