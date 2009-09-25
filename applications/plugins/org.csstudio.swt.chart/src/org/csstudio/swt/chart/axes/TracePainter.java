@@ -280,14 +280,15 @@ public class TracePainter
             return;
         // Turn pos/min/max into array required by fillPolygon:
         // pos[0], min[0], pos[1], min[1], ..., pos[N-1], max[N-1], pos[N], max[N]
-        final int points[] = new int[N * 4];
+        final int N4 = N * 4;
+        final int points[] = new int[N4];
+        int head = 0, tail = N4;
         for (int i=0; i<N; ++i)
         {
-            final int i_x = 2*i;
-            points[i_x] = pos.get(i);
-            points[i_x+1] = min.get(i);
-            points[4*N-2-i_x] = pos.get(i);
-            points[4*N-1-i_x] = max.get(i);
+            points[head++] = pos.get(i);
+            points[head++] = min.get(i);
+            points[--tail] = max.get(i);
+            points[--tail] = pos.get(i);
         }
         gc.fillPolygon(points);
     }
