@@ -8,7 +8,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 public class WidgetActionFactory {
 	public enum ActionType{
 		OPEN_DISPLAY("Open OPI", createImage("icons/OPIRunner.png")),
-		WRITE_PV("Write PV", createImage("icons/writePV.gif")),
+		WRITE_PV("Write PV", createImage("icons/writePV.png")),
 		EXECUTE_CMD("Execute Command", createImage("icons/command.gif")),
 		EXECUTE_JAVASCRIPT("Execute Javascript", createImage("icons/exeJS.png")),
 		OPEN_FILE("Open File", createImage("icons/openFile.png"));
