@@ -16,7 +16,7 @@ public class GaugeModel extends AbstractMarkedWidgetModel{
 	public static final String PROP_NEEDLE_COLOR = "needle_color"; //$NON-NLS-1$	
 	
 	/** The ID of the effect 3D property. */
-	public static final String PROP_EFFECT3D = "effect3D"; //$NON-NLS-1$
+	public static final String PROP_EFFECT3D = "effect_3d"; //$NON-NLS-1$
 
 	/** The ID of the Ramp Gradient. */
 	public static final String PROP_RAMP_GRADIENT = "ramp_gradient"; //$NON-NLS-1$

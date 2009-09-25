@@ -42,7 +42,7 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	
 	public static final String PROP_NAME = "name";//$NON-NLS-1$
 	
-	public static final String PROP_SCRIPTS = "script";//$NON-NLS-1$
+	public static final String PROP_SCRIPTS = "scripts";//$NON-NLS-1$
 	
 	public static final String PROP_XPOS = "x";//$NON-NLS-1$
 	
@@ -52,9 +52,9 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	
 	public static final String PROP_HEIGHT = "height";//$NON-NLS-1$
 	
-	public static final String PROP_COLOR_BACKGROUND = "color.background";//$NON-NLS-1$
+	public static final String PROP_COLOR_BACKGROUND = "background_color";//$NON-NLS-1$
 	
-	public static final String PROP_COLOR_FOREGROUND = "color.foreground";//$NON-NLS-1$
+	public static final String PROP_COLOR_FOREGROUND = "foreground_color";//$NON-NLS-1$
 	
 	public static final String PROP_VISIBLE = "visible";//$NON-NLS-1$
 	
@@ -64,13 +64,13 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	
 	public static final String PROP_TOOLTIP = "tooltip"; //$NON-NLS-1$
 	
-	public static final String PROP_BORDER_COLOR = "border.color"; //$NON-NLS-1$
+	public static final String PROP_BORDER_COLOR = "border_color"; //$NON-NLS-1$
 
-	public static final String PROP_BORDER_WIDTH = "border.width"; //$NON-NLS-1$
+	public static final String PROP_BORDER_WIDTH = "border_width"; //$NON-NLS-1$
 
-	public static final String PROP_BORDER_STYLE = "border.style"; //$NON-NLS-1$
+	public static final String PROP_BORDER_STYLE = "border_style"; //$NON-NLS-1$
 	
-	public static final String PROP_TYPE= "type"; //$NON-NLS-1$
+	public static final String PROP_WIDGET_TYPE= "widget_type"; //$NON-NLS-1$
 	
 	private Map<String, AbstractWidgetProperty> propertyMap;
 	
@@ -146,7 +146,7 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 			descriptor.getName();
 		addProperty(new StringProperty(PROP_NAME, "Name",
 				WidgetPropertyCategory.Basic, name)); 	
-		addProperty(new UnchangableStringProperty(PROP_TYPE, "Widget Type",
+		addProperty(new UnchangableStringProperty(PROP_WIDGET_TYPE, "Widget Type",
 				WidgetPropertyCategory.Basic, name));
 		
 	}
@@ -264,7 +264,7 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	}
 	
 	public String getType(){
-		return (String)getCastedPropertyValue(PROP_TYPE);
+		return (String)getCastedPropertyValue(PROP_WIDGET_TYPE);
 	}
 	
 	
@@ -278,7 +278,7 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	}
 	
 	public String getWidgetType(){
-		return (String)getCastedPropertyValue(PROP_TYPE);
+		return (String)getCastedPropertyValue(PROP_WIDGET_TYPE);
 	}	
 	
 	public Boolean isEnabled(){

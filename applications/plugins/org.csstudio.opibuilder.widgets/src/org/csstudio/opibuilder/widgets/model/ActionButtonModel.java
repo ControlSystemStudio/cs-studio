@@ -36,19 +36,19 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	/**
 	 * The ID of the ActionData property.
 	 */
-	public static final String PROP_ACTION_INDEX = "action_index"; //$NON-NLS-1$
+	public static final String PROP_ACTION_INDEX = "push_action_index"; //$NON-NLS-1$
 	
 	
 	/**
 	 * The ID of the ActionData property.
 	 */
-	public static final String PROP_RELEASED_ACTION_INDEX = "pop_action_index"; //$NON-NLS-1$
+	public static final String PROP_RELEASED_ACTION_INDEX = "release_action_index"; //$NON-NLS-1$
 	
 	
 	/**
 	 * The ID of the ToggelButton property.
 	 */
-	public static final String PROP_TOGGLE_BUTTON= "toggleButton"; //$NON-NLS-1$
+	public static final String PROP_TOGGLE_BUTTON= "toggle_button"; //$NON-NLS-1$
 	
 	/**
 	 * The ID of this widget model.
@@ -98,7 +98,7 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 		addProperty(new IntegerProperty(PROP_ACTION_INDEX, "Click Action Index",
 				WidgetPropertyCategory.Behavior, 0, -1, Integer.MAX_VALUE));
 		
-		addProperty(new IntegerProperty(PROP_RELEASED_ACTION_INDEX, "Released Action Index",
+		addProperty(new IntegerProperty(PROP_RELEASED_ACTION_INDEX, "Release Action Index",
 				WidgetPropertyCategory.Behavior, 0, -1, Integer.MAX_VALUE));
 		
 		addProperty(new BooleanProperty(PROP_TOGGLE_BUTTON, "Toggle Button",

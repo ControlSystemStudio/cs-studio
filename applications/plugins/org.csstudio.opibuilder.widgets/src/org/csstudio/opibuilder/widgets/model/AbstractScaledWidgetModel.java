@@ -14,7 +14,7 @@ public abstract class AbstractScaledWidgetModel extends AbstractPVWidgetModel {
 	
 	
 	/** The ID of the <i>transparent</i> property. */
-	public static final String PROP_TRANSPARENT = "transparency";	
+	public static final String PROP_TRANSPARENT = "transparent_background";	
 	
 	/** The ID of the minimum property. */
 	public static final String PROP_MIN = "minimum"; //$NON-NLS-1$		
@@ -23,16 +23,16 @@ public abstract class AbstractScaledWidgetModel extends AbstractPVWidgetModel {
 	public static final String PROP_MAX = "maximum"; //$NON-NLS-1$		
 	
 	/** The ID of the major tick step hint property. */
-	public static final String PROP_MAJOR_TICK_STEP_HINT = "majorTickStepHint"; //$NON-NLS-1$		
+	public static final String PROP_MAJOR_TICK_STEP_HINT = "major_tick_step_hint"; //$NON-NLS-1$		
 	
 	/** The ID of the show minor ticks property. */
-	public static final String PROP_SHOW_MINOR_TICKS = "showMinorTicks"; //$NON-NLS-1$
+	public static final String PROP_SHOW_MINOR_TICKS = "show_minor_ticks"; //$NON-NLS-1$
 	
 	/** The ID of the show minor ticks property. */
-	public static final String PROP_SHOW_SCALE = "showScale"; //$NON-NLS-1$
+	public static final String PROP_SHOW_SCALE = "show_scale"; //$NON-NLS-1$
 	
 	/** The ID of the log scale property. */
-	public static final String PROP_LOG_SCALE = "logScale"; //$NON-NLS-1$	
+	public static final String PROP_LOG_SCALE = "log_scale"; //$NON-NLS-1$	
 	
 	
 	/** The default value of the minimum property. */

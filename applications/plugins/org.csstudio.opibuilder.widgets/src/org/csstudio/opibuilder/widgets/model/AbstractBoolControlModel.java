@@ -17,40 +17,30 @@ public class AbstractBoolControlModel extends AbstractBoolWidgetModel {
 	/**
 	 * The ID of the ToggelButton property.
 	 */
-	public static final String PROP_TOGGLE_BUTTON= "toggleButton"; //$NON-NLS-1$
+	public static final String PROP_TOGGLE_BUTTON= "toggle_button"; //$NON-NLS-1$
 	
 	/** The ID of the show confirm dialog property. */
-	public static final String PROP_CONFIRM_DIALOG = "confirmDialog"; //$NON-NLS-1$
+	public static final String PROP_CONFIRM_DIALOG = "show_confirm_dialog"; //$NON-NLS-1$
 	
 	/** The ID of the password property. */
 	public static final String PROP_PASSWORD = "password"; //$NON-NLS-1$
 	
 	/** The ID of the confirm tip property. */
-	public static final String PROP_CONFIRM_TIP = "confirmTip"; //$NON-NLS-1$	
+	public static final String PROP_CONFIRM_TIP = "confirm_message"; //$NON-NLS-1$	
 
 	
-	public static final String DEFAULT_CONFIRM_TIP = "Are your sure you want to do this?";
-	
-	/**
-	 * The ID of the pv name property.
-	 */
-	public static final String PROP_CONTROL_PV= "control_pv"; //$NON-NLS-1$
-	
-	/**
-	 * The ID of the pv value property.
-	 */
-	public static final String PROP_CONTROL_PV_VALUE= "control_pv_value"; //$NON-NLS-1$
+	public static final String DEFAULT_CONFIRM_TIP = "Are your sure you want to do this?";	
 	
 	/**
 	 * The ID of the ActionData property.
 	 */
-	public static final String PROP_ACTION_INDEX = "action_index"; //$NON-NLS-1$
+	public static final String PROP_ACTION_INDEX = "push_action_index"; //$NON-NLS-1$
 	
 	
 	/**
 	 * The ID of the ActionData property.
 	 */
-	public static final String PROP_RELEASED_ACTION_INDEX = "pop_action_index"; //$NON-NLS-1$
+	public static final String PROP_RELEASED_ACTION_INDEX = "released__action_index"; //$NON-NLS-1$
 
 	private static final boolean DEFAULT_TOGGLE_BUTTON = true;
 	
@@ -72,7 +62,7 @@ public class AbstractBoolControlModel extends AbstractBoolWidgetModel {
 		addProperty(new IntegerProperty(PROP_ACTION_INDEX, "Click Action Index",
 				WidgetPropertyCategory.Behavior, 0, 0, Integer.MAX_VALUE));
 		
-		addProperty(new IntegerProperty(PROP_RELEASED_ACTION_INDEX, "Released Action Index",
+		addProperty(new IntegerProperty(PROP_RELEASED_ACTION_INDEX, "Release Action Index",
 				WidgetPropertyCategory.Behavior, 0, 0, Integer.MAX_VALUE));
 		
 		setPropertyVisible(PROP_RELEASED_ACTION_INDEX, DEFAULT_TOGGLE_BUTTON );

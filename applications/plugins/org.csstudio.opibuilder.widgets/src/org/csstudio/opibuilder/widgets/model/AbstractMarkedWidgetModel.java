@@ -16,47 +16,47 @@ import org.eclipse.swt.graphics.RGB;
 public abstract class AbstractMarkedWidgetModel extends AbstractScaledWidgetModel {
 	
 	/** The ID of the show minor ticks property. */
-	public static final String PROP_SHOW_MARKERS = "showMarkers"; //$NON-NLS-1$	
+	public static final String PROP_SHOW_MARKERS = "show_markers"; //$NON-NLS-1$	
 
 	/** The ID of the lolo level property.*/
-	public static final String PROP_LOLO_LEVEL = "loloLevel"; //$NON-NLS-1$
+	public static final String PROP_LOLO_LEVEL = "level_lolo"; //$NON-NLS-1$
 	
 	/** The ID of the lo level property. */
-	public static final String PROP_LO_LEVEL = "loLevel"; //$NON-NLS-1$
+	public static final String PROP_LO_LEVEL = "level_lo"; //$NON-NLS-1$
 	
 	/** The ID of the hi level property. */
-	public static final String PROP_HI_LEVEL = "hiLevel"; //$NON-NLS-1$
+	public static final String PROP_HI_LEVEL = "level_hi"; //$NON-NLS-1$
 	
 	/** The ID of the hihi level property. */
-	public static final String PROP_HIHI_LEVEL = "hihiLevel"; //$NON-NLS-1$		
+	public static final String PROP_HIHI_LEVEL = "level_hihi"; //$NON-NLS-1$		
 	
 	
 	/** The ID of the show lolo property.*/
-	public static final String PROP_SHOW_LOLO = "showLOLO"; //$NON-NLS-1$
+	public static final String PROP_SHOW_LOLO = "show_lolo"; //$NON-NLS-1$
 	
 	/** The ID of the show lo property. */
-	public static final String PROP_SHOW_LO = "showLO"; //$NON-NLS-1$
+	public static final String PROP_SHOW_LO = "show_lo"; //$NON-NLS-1$
 	
 	/** The ID of the show hi property. */
-	public static final String PROP_SHOW_HI = "showHI"; //$NON-NLS-1$
+	public static final String PROP_SHOW_HI = "show_hi"; //$NON-NLS-1$
 	
 	/** The ID of the show hihi property. */
-	public static final String PROP_SHOW_HIHI = "showHIHI"; //$NON-NLS-1$		
+	public static final String PROP_SHOW_HIHI = "show_hihi"; //$NON-NLS-1$		
 	
 	/** The ID of the lolo color property.*/
-	public static final String PROP_LOLO_COLOR = "loloColor"; //$NON-NLS-1$
+	public static final String PROP_LOLO_COLOR = "color_lolo"; //$NON-NLS-1$
 	
 	/** The ID of the lo color property. */
-	public static final String PROP_LO_COLOR = "loColor"; //$NON-NLS-1$
+	public static final String PROP_LO_COLOR = "color_lo"; //$NON-NLS-1$
 	
 	/** The ID of the hi color property. */
-	public static final String PROP_HI_COLOR = "hiColor"; //$NON-NLS-1$
+	public static final String PROP_HI_COLOR = "color_hi"; //$NON-NLS-1$
 	
 	/** The ID of the hihi color property. */
-	public static final String PROP_HIHI_COLOR = "hihiColor"; //$NON-NLS-1$		
+	public static final String PROP_HIHI_COLOR = "color_hihi"; //$NON-NLS-1$		
 
 	/** The ID of the hihi color property. */
-	public static final String PROP_LIMITS_FROMDB = "limitFromDB"; //$NON-NLS-1$		
+	public static final String PROP_LIMITS_FROMDB = "limits_from_db"; //$NON-NLS-1$		
 	
 	/** The default value of the levels property. */
 	private static final double[] DEFAULT_LEVELS = new double[]{10, 20, 80, 90};	

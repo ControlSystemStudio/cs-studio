@@ -21,16 +21,16 @@ public class ScaledSliderModel extends AbstractMarkedWidgetModel{
 	public static final String PROP_FILL_COLOR = "fill_color"; //$NON-NLS-1$	
 	
 	/** The ID of the effect 3D property. */
-	public static final String PROP_EFFECT3D = "effect3D"; //$NON-NLS-1$
+	public static final String PROP_EFFECT3D = "effect_3d"; //$NON-NLS-1$
 	
 	/** The ID of the horizontal property. */
 	public static final String PROP_HORIZONTAL = "horizontal"; //$NON-NLS-1$
 	
 	/** The ID of the fillbackground-Color property. */
-	public static final String PROP_FILLBACKGROUND_COLOR = "fillbackgroundColor"; //$NON-NLS-1$
+	public static final String PROP_FILLBACKGROUND_COLOR = "color_fillbackground"; //$NON-NLS-1$
 	
 	/** The ID of the thumb Color property. */
-	public static final String PROP_THUMB_COLOR = "thumbColor"; //$NON-NLS-1$
+	public static final String PROP_THUMB_COLOR = "thumb_color"; //$NON-NLS-1$
 	
 	/**
 	 * The ID of the increment property.

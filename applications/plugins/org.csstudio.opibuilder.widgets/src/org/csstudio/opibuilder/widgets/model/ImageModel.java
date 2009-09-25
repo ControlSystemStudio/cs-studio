@@ -73,7 +73,7 @@ public final class ImageModel extends AbstractWidgetModel {
 	@Override
 	protected void configureProperties() {
 		addProperty( new FilePathProperty(PROP_IMAGE_FILE,"Image File", 
-				WidgetPropertyCategory.Image, new Path(""), FILE_EXTENSIONS));
+				WidgetPropertyCategory.Basic, new Path(""), FILE_EXTENSIONS));
 		addProperty(new IntegerProperty(PROP_TOPCROP, "Crop Top",
 				WidgetPropertyCategory.Image,0));
 		addProperty(new IntegerProperty(PROP_BOTTOMCROP, "Crop Bottom",

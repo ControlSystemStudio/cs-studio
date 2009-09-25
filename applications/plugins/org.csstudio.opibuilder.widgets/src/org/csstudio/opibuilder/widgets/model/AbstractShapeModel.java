@@ -67,29 +67,29 @@ public abstract class AbstractShapeModel extends AbstractPVWidgetModel {
 	/**
 	 * The ID of the width of the line.
 	 */
-	public static final String PROP_LINE_WIDTH = "linewidth";//$NON-NLS-1$
+	public static final String PROP_LINE_WIDTH = "line_width";//$NON-NLS-1$
 	
 	/**
 	 * The ID of the width of the line.
 	 */
-	public static final String PROP_LINE_STYLE = "linestyle";//$NON-NLS-1$
+	public static final String PROP_LINE_STYLE = "line_style";//$NON-NLS-1$
 	
 	/**
 	 * The ID of the fill level property.
 	 */
-	public static final String PROP_FILL_LEVEL = "filllevel"; //$NON-NLS-1$
+	public static final String PROP_FILL_LEVEL = "fill_level"; //$NON-NLS-1$
 	
 	/**
 	 * The ID of the fill orientation property.
 	 */
-	public static final String PROP_HORIZONTAL_FILL = "horizontalfill"; //$NON-NLS-1$
+	public static final String PROP_HORIZONTAL_FILL = "horizontal_fill"; //$NON-NLS-1$
 	/**
 	 * The ID of the antialias property.
 	 */
-	public static final String PROP_ANTIALIAS = "antialias"; //$NON-NLS-1$
+	public static final String PROP_ANTIALIAS = "anti_alias"; //$NON-NLS-1$
 	
 	/** The ID of the <i>transparent</i> property. */
-	public static final String PROP_TRANSPARENT = "transparency";	
+	public static final String PROP_TRANSPARENT = "transparent";	
 
 	
 

@@ -16,17 +16,17 @@ import org.eclipse.swt.graphics.RGB;
 public class KnobModel extends AbstractMarkedWidgetModel{	
 	
 	/** The ID of the knob color property. */
-	public static final String PROP_KNOB_COLOR = "bulb_color"; //$NON-NLS-1$	
+	public static final String PROP_KNOB_COLOR = "knob_color"; //$NON-NLS-1$	
 	
 	/** The ID of the effect 3D property. */
-	public static final String PROP_EFFECT3D = "effect3D"; //$NON-NLS-1$
+	public static final String PROP_EFFECT3D = "effect_3d"; //$NON-NLS-1$
 	
 	
 	/** The ID of the effect show value label property. */
 	public static final String PROP_SHOW_VALUE_LABEL = "show_value_label"; //$NON-NLS-1$
 	
 	/** The ID of the thumb Color property. */
-	public static final String PROP_THUMB_COLOR = "thumbColor"; //$NON-NLS-1$
+	public static final String PROP_THUMB_COLOR = "thumb_color"; //$NON-NLS-1$
 	
 	/** The ID of the Ramp Gradient. */
 	public static final String PROP_RAMP_GRADIENT = "ramp_gradient"; //$NON-NLS-1$

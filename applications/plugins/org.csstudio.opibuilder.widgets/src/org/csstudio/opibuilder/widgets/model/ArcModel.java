@@ -16,10 +16,10 @@ public class ArcModel extends AbstractShapeModel {
 	
 	public static final String PROP_FILL = "fill";//$NON-NLS-1$
 
-	public static final String PROP_START_ANGLE = "angle.start";//$NON-NLS-1$
+	public static final String PROP_START_ANGLE = "start_angle";//$NON-NLS-1$
 	
 	
-	public static final String PROP_TOTAL_ANGLE = "angle.total";//$NON-NLS-1$
+	public static final String PROP_TOTAL_ANGLE = "total_angle";//$NON-NLS-1$
 	
 	
 	public ArcModel() {

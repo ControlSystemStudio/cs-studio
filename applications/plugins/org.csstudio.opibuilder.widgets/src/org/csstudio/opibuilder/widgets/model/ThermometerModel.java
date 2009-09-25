@@ -17,18 +17,18 @@ public class ThermometerModel extends AbstractMarkedWidgetModel{
 	public static final String PROP_FILL_COLOR = "fill_color"; //$NON-NLS-1$	
 	
 	/** The ID of the show minor ticks property. */
-	public static final String PROP_SHOW_BULB = "showBulb"; //$NON-NLS-1$
+	public static final String PROP_SHOW_BULB = "show_bulb"; //$NON-NLS-1$
 	
 	/** The ID of the fahrenheit property. */	
 	public static final String PROP_FAHRENHEIT = "fahrenheit"; //$NON-NLS-1$
 	
 	/** The ID of the effect 3D property. */
-	public static final String PROP_EFFECT3D = "effect3D"; //$NON-NLS-1$
+	public static final String PROP_EFFECT3D = "effect_3d"; //$NON-NLS-1$
 	
 	/**
 	 * The ID of the fillbackground-Color property.
 	 */
-	public static final String PROP_FILLBACKGROUND_COLOR = "fillbackgroundColor";
+	public static final String PROP_FILLBACKGROUND_COLOR = "color_fillbackground";
 	
 	
 	/** The default value of the default fill color property. */

@@ -14,12 +14,12 @@ public abstract class AbstractPVWidgetModel extends AbstractWidgetModel {
 	/**
 	 * The ID of the pv value property.
 	 */
-	public static final String PROP_PVVALUE= "pv.value"; //$NON-NLS-1$
+	public static final String PROP_PVVALUE= "pv_value"; //$NON-NLS-1$
 	
 	/**
 	 * The ID of the pv name property.
 	 */
-	public static final String PROP_PVNAME= "pv.name"; //$NON-NLS-1$
+	public static final String PROP_PVNAME= "pv_name"; //$NON-NLS-1$
 	
 	@Override
 	protected void configureBaseProperties() {

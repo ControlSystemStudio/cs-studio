@@ -42,20 +42,20 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 	}
 	
 	public enum AxisProperty{
-		Y_AXIS("YAxis", "Y Axis"),
-		PRIMARY("Primary", "Left/Bottom Side"),
-		TITLE("Title", "Axis Title"),
-		TITLE_FONT("TitleFont", "Title Font"),
-		AXIS_COLOR("AxisColor", "Axis Color"),
-		AUTO_SCALE("AutoScale", "Auto Scale"),
-		AUTO_SCALE_THRESHOLD("AutoScaleThreshold", "Auto Scale Threshold"),
-		LOG("Log", "Log Scale"),
-		MAX("Maximum", "Maximum"),
-		MIN("Minimum", "Minimum"),
-		TIME_FORMAT("TimeFormat", "Time Format"),
-		SHOW_GRID("ShowGrid", "Show Grid"),
-		GRID_COLOR("GridColor", "Grid Color"),
-		DASH_GRID("DashGrid", "Dash Grid Line");		
+		Y_AXIS("y_axis", "Y Axis"),
+		PRIMARY("left_bottom_side", "Left/Bottom Side"),
+		TITLE("axis_title", "Axis Title"),
+		TITLE_FONT("title_font", "Title Font"),
+		AXIS_COLOR("axis_color", "Axis Color"),
+		AUTO_SCALE("auto_scale", "Auto Scale"),
+		AUTO_SCALE_THRESHOLD("auto_scale_threshold", "Auto Scale Threshold"),
+		LOG("log_scale", "Log Scale"),
+		MAX("maximum", "Maximum"),
+		MIN("minimum", "Minimum"),
+		TIME_FORMAT("time_format", "Time Format"),
+		SHOW_GRID("show_grid", "Show Grid"),
+		GRID_COLOR("grid_color", "Grid Color"),
+		DASH_GRID("dash_grid_line", "Dash Grid Line");		
 		
 		public String propIDPre;
 		public String description;
@@ -72,26 +72,26 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 	}	
 	
 	public enum TraceProperty{
-		NAME("Name", "Name"),
-		PLOTMODE("PlotMode", "Plot Mode"),
-		BUFFER_SIZE("BufferSize", "Buffer Size"),
-		UPDATE_DELAY("UpdateDelay", "Update Delay"),
-		TRIGGER_VALUE("TriggerValue", "Trigger Value"),
-		CLEAR_TRACE("ClearTrace", "Clear Plot History"),
-		XPV("XPV", "X PV"),
-		YPV("YPV", "Y PV"),
-		XPV_VALUE("XPVValue", "X PV Value"),
-		YPV_VALUE("YPVValue", "Y PV Value"),
-		CHRONOLOGICAL("Chronological", "Chronological"),		
-		TRACE_COLOR("TraceColor","Trace Color"),
-		XAXIS_INDEX("XAxisIndex", "X Axis Index"),
-		YAXIS_INDEX("YAxisIndex", "Y Axis Index"),
-		TRACE_TYPE("TraceType", "Trace Type"),
-		LINE_WIDTH("LineWidth", "Line Width"),
-		POINT_STYLE("PointStyle", "Point Style"),
-		POINT_SIZE("PointSize", "Point Size"),
-		ANTI_ALIASING("AntiAliasing", "Anti-Aliasing"),
-		UPDATE_MODE("UpdateMode", "UpdateMode");
+		NAME("name", "Name"),
+		PLOTMODE("plot_mode", "Plot Mode"),
+		BUFFER_SIZE("buffer_size", "Buffer Size"),
+		UPDATE_DELAY("update_delay", "Update Delay"),
+		TRIGGER_VALUE("trigger_value", "Trigger Value"),
+		CLEAR_TRACE("clear_trace", "Clear Plot History"),
+		XPV("x_pv", "X PV"),
+		YPV("y_pv", "Y PV"),
+		XPV_VALUE("x_pv_value", "X PV Value"),
+		YPV_VALUE("y_pv_value", "Y PV Value"),
+		CHRONOLOGICAL("chronological", "Chronological"),		
+		TRACE_COLOR("trace_color","Trace Color"),
+		XAXIS_INDEX("x_axis_index", "X Axis Index"),
+		YAXIS_INDEX("y_axis_index", "Y Axis Index"),
+		TRACE_TYPE("trace_type", "Trace Type"),
+		LINE_WIDTH("line_width", "Line Width"),
+		POINT_STYLE("point_style", "Point Style"),
+		POINT_SIZE("point_size", "Point Size"),
+		ANTI_ALIASING("anti_aliasing", "Anti Aliasing"),
+		UPDATE_MODE("update_mode", "UpdateMode");
 		
 		public String propIDPre;
 		public String description;
@@ -113,31 +113,31 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 	
 	
 	/** The ID of the title property. */
-	public static final String PROP_TITLE = "Title"; //$NON-NLS-1$
+	public static final String PROP_TITLE = "title"; //$NON-NLS-1$
 	
 	/** The ID of the title font property. */
-	public static final String PROP_TITLE_FONT = "TitleFont"; //$NON-NLS-1$
+	public static final String PROP_TITLE_FONT = "title_font"; //$NON-NLS-1$
 	
 	/** The ID of the show legend property. */
-	public static final String PROP_SHOW_LEGEND = "ShowLegend"; //$NON-NLS-1$
+	public static final String PROP_SHOW_LEGEND = "show_legend"; //$NON-NLS-1$
 	
 	/** The ID of the show plot area border property. */
-	public static final String PROP_SHOW_PLOTAREA_BORDER = "ShowPlotAreaBorder"; //$NON-NLS-1$		
+	public static final String PROP_SHOW_PLOTAREA_BORDER = "show_plot_area_border"; //$NON-NLS-1$		
 	
 	/** The ID of the plot area background color property.*/
-	public static final String PROP_PLOTAREA_BACKCOLOR = "PlotAreaBackColor"; //$NON-NLS-1$
+	public static final String PROP_PLOTAREA_BACKCOLOR = "plot_area_background_color"; //$NON-NLS-1$
 	
 	/** The ID of the transparent property. */
-	public static final String PROP_TRANSPARENT = "Transparent"; //$NON-NLS-1$
+	public static final String PROP_TRANSPARENT = "transparent"; //$NON-NLS-1$
 	
 	/** The ID of the number of axes property. */
-	public static final String PROP_AXES_AMOUNT = "AxesAmount"; //$NON-NLS-1$
+	public static final String PROP_AXES_AMOUNT = "axes_amount"; //$NON-NLS-1$
 	
 	/** The ID of the number of axes property. */
-	public static final String PROP_TRACES_AMOUNT = "TracesAmount"; //$NON-NLS-1$
+	public static final String PROP_TRACES_AMOUNT = "traces_amount"; //$NON-NLS-1$
 	
 	/** The ID of the show toolbar property. */
-	public static final String PROP_SHOW_TOOLBAR = "showToolBar"; //$NON-NLS-1$
+	public static final String PROP_SHOW_TOOLBAR = "show_toolbar"; //$NON-NLS-1$
 		
 	/** The default color of the plot area background color property. */
 	private static final RGB DEFAULT_PLOTAREA_BACKCOLOR = new RGB(255,255,255);
@@ -200,7 +200,7 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 				WidgetPropertyCategory.Display,true));		
 		addProperty(new BooleanProperty(PROP_SHOW_PLOTAREA_BORDER, "Show Plot Area Border",
 				WidgetPropertyCategory.Display,false));	
-		addProperty(new BooleanProperty(PROP_SHOW_TOOLBAR, "Show Graph Toolbar",
+		addProperty(new BooleanProperty(PROP_SHOW_TOOLBAR, "Show Toolbar",
 				WidgetPropertyCategory.Display,true));
 		addProperty(new ColorProperty(PROP_PLOTAREA_BACKCOLOR, "Plot Area Background Color",
 				WidgetPropertyCategory.Display,DEFAULT_PLOTAREA_BACKCOLOR));
@@ -284,7 +284,7 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 	}
 	
 	public static String makeAxisPropID(String propIDPre, int index){
-		return propIDPre + "Axis"+ index;
+		return "axis_" + index + "_" + propIDPre; //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	
 	private void addTraceProperties(){
@@ -367,7 +367,7 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 	
 	
 	public static String makeTracePropID(String propIDPre, int index){
-		return propIDPre + "Trace" + index;
+		return "trace_" +index + "_" + propIDPre; //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	
 	/**

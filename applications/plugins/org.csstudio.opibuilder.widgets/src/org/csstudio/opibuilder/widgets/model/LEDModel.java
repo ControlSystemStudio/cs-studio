@@ -14,10 +14,10 @@ public class LEDModel extends AbstractBoolWidgetModel {
 	
 	
 	/** The ID of the effect 3D property. */
-	public static final String PROP_EFFECT3D = "effect3D"; //$NON-NLS-1$
+	public static final String PROP_EFFECT3D = "effect_3d"; //$NON-NLS-1$
 	
 	/** The ID of the square LED property. */
-	public static final String PROP_SQUARE_LED = "squareLED"; //$NON-NLS-1$
+	public static final String PROP_SQUARE_LED = "square_led"; //$NON-NLS-1$
 	
 	
 	/** The default value of the height property. */	

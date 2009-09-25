@@ -17,7 +17,7 @@ public class BoolSwitchModel extends AbstractBoolControlModel {
 	
 	
 	/** The ID of the effect 3D property. */
-	public static final String PROP_EFFECT3D = "effect3D"; //$NON-NLS-1$	
+	public static final String PROP_EFFECT3D = "effect_3d"; //$NON-NLS-1$	
 	
 	
 	/** The default value of the height property. */	

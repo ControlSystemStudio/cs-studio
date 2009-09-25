@@ -24,19 +24,19 @@ public abstract class AbstractBoolWidgetModel extends AbstractPVWidgetModel {
 	public static final String PROP_BIT = "bit"; //$NON-NLS-1$		
 	
 	/** The ID of the on label property. */
-	public static final String PROP_ON_LABEL = "onLabel"; //$NON-NLS-1$
+	public static final String PROP_ON_LABEL = "on_label"; //$NON-NLS-1$
 	
 	/** The ID of the off label property. */
-	public static final String PROP_OFF_LABEL = "offLabel"; //$NON-NLS-1$
+	public static final String PROP_OFF_LABEL = "off_label"; //$NON-NLS-1$
 	
 	/** The ID of the on color property.*/
-	public static final String PROP_ON_COLOR = "onColor"; //$NON-NLS-1$
+	public static final String PROP_ON_COLOR = "on_color"; //$NON-NLS-1$
 	
 	/** The ID of the off color property. */
-	public static final String PROP_OFF_COLOR = "offColor"; //$NON-NLS-1$
+	public static final String PROP_OFF_COLOR = "off_color"; //$NON-NLS-1$
 	
 	/** The ID of the off color property. */
-	public static final String PROP_SHOW_BOOL_LABEL = "showBoolLabel"; //$NON-NLS-1$
+	public static final String PROP_SHOW_BOOL_LABEL = "show_boolean_label"; //$NON-NLS-1$
 	
 	/**
 	 * The ID of the font property.

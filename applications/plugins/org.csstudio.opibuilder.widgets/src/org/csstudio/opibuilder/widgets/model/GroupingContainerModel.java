@@ -13,10 +13,10 @@ public class GroupingContainerModel extends AbstractContainerModel {
 	public static final String ID = "org.csstudio.opibuilder.widgets.groupingContainer"; //$NON-NLS-1$	
 	
 	/** The ID of the <i>transparent</i> property. */
-	public static final String PROP_TRANSPARENT = "transparency";	
+	public static final String PROP_TRANSPARENT = "transparent";	
 	
 	/** The ID of the <i>lockChildren</i> property. */
-	public static final String PROP_LOCK_CHILDREN = "lockChildren";
+	public static final String PROP_LOCK_CHILDREN = "lock_children";
 
 	public GroupingContainerModel() {
 		setSize(200, 200);

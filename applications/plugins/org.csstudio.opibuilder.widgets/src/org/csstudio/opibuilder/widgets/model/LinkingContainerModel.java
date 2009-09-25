@@ -19,12 +19,12 @@ public class LinkingContainerModel extends AbstractContainerModel {
 	/**
 	 * The ID of the resource property.
 	 */
-	public static final String PROP_OPI_FILE = "OPIFile"; //$NON-NLS-1$
+	public static final String PROP_OPI_FILE = "opi_file"; //$NON-NLS-1$
 
 	/**
 	 * The ID of the auto zoom property.
 	 */
-	public static final String PROP_ZOOMTOFITALL = "autozoom"; //$NON-NLS-1$
+	public static final String PROP_ZOOMTOFITALL = "zoom_to_fit"; //$NON-NLS-1$
 	
 	/**
 	 * The default value of the height property.

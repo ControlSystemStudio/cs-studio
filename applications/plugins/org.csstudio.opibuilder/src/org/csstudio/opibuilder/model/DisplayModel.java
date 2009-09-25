@@ -17,11 +17,11 @@ public class DisplayModel extends AbstractContainerModel {
 	 */
 	public static final String ID = "org.csstudio.opibuilder.Display"; //$NON-NLS-1$
 	
-	public static final String PROP_GRID_SPACE = "grid.space"; //$NON-NLS-1$
-	public static final String PROP_SHOW_GRID = "grid.show"; //$NON-NLS-1$
-	public static final String PROP_SHOW_RULER = "showRuler"; //$NON-NLS-1$
-	public static final String PROP_SNAP_GEOMETRY = "snapGeometry"; //$NON-NLS-1$
-	public static final String PROP_SHOW_EDIT_RANGE = "showEditRangeBorder"; //$NON-NLS-1$
+	public static final String PROP_GRID_SPACE = "grid_space"; //$NON-NLS-1$
+	public static final String PROP_SHOW_GRID = "show_grid"; //$NON-NLS-1$
+	public static final String PROP_SHOW_RULER = "show_ruler"; //$NON-NLS-1$
+	public static final String PROP_SNAP_GEOMETRY = "snap_to_geometry"; //$NON-NLS-1$
+	public static final String PROP_SHOW_EDIT_RANGE = "show_edit_range"; //$NON-NLS-1$
 	
 	public DisplayModel() {
 		super();
