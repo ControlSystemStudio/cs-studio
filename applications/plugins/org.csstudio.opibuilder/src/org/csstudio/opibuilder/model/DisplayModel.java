@@ -1,5 +1,6 @@
 package org.csstudio.opibuilder.model;
 
+import org.csstudio.opibuilder.properties.ActionsProperty;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
@@ -47,9 +48,11 @@ public class DisplayModel extends AbstractContainerModel {
 		removeProperty(PROP_VISIBLE);
 		removeProperty(PROP_ENABLED);
 		removeProperty(PROP_TOOLTIP);
+		removeProperty(PROP_ACTIONS);
+		addProperty(new ActionsProperty(PROP_ACTIONS, "Actions", 
+				WidgetPropertyCategory.Behavior, false));
 		setPropertyDescription(PROP_COLOR_FOREGROUND, "Grid Color");
-		
-		
+				
 	}
 
 	public boolean isShowGrid(){

@@ -106,6 +106,15 @@ public class ConsoleService {
 		writeToConsole(infoStream, output);
 	}
 	
+	public void writeString(String s){
+		if(infoStream == null){
+			infoStream = console.newMessageStream();
+			infoStream.setColor(CustomMediaFactory.getInstance().getColor(
+					CustomMediaFactory.COLOR_BLACK));
+		}
+		writeToConsole(infoStream, s);
+	}
+	
 
 	
 	/**Write string to the console.

@@ -3,6 +3,7 @@ package org.csstudio.opibuilder.widgets.editparts;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import org.csstudio.opibuilder.actions.WidgetActionMenuAction;
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
@@ -12,10 +13,8 @@ import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.widgetActions.AbstractWidgetAction;
 import org.csstudio.opibuilder.widgetActions.ActionsInput;
 import org.csstudio.opibuilder.widgetActions.WritePVAction;
-import org.csstudio.opibuilder.widgets.model.AbstractMarkedWidgetModel;
 import org.csstudio.opibuilder.widgets.model.MenuButtonModel;
 import org.csstudio.platform.data.IEnumeratedMetaData;
-import org.csstudio.platform.data.INumericMetaData;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.utility.pv.PV;
@@ -25,14 +24,12 @@ import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
 import org.eclipse.draw2d.geometry.Point;
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.model.IWorkbenchAdapter;
 
 /**
  * 
@@ -53,7 +50,7 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
 		final MenuButtonModel model = (MenuButtonModel) getWidgetModel();
 		updatePropSheet(model.isActionsFromPV());
 		Label label = new Label();
-
+		label.setOpaque(true);
 		label.setText(model.getLabel());
 		label.setFont(CustomMediaFactory.getInstance().getFont(
 						model.getFont().getFontData()));
@@ -106,7 +103,7 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
 			MenuManager menuManager = new MenuManager();
 			for (AbstractWidgetAction action : 
 				getWidgetModel().getActionsInput().getActionsList()){
-				menuManager.add(new MenuAction(action));
+				menuManager.add(new WidgetActionMenuAction(action));
 			}
 			Menu menu = menuManager.createContextMenu(shell);		
 
@@ -250,47 +247,7 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
 	
 	}
 
-	/**
-	 * An Action, which encapsulates a {@link AbstractWidgetActionModel}.
-	 * 
-	 * @author Kai Meyer
-	 * 
-	 */
-	private final class MenuAction extends Action {
-		/**
-		 * The {@link AbstractWidgetActionModel}.
-		 */
-		private AbstractWidgetAction _widgetAction;
-
-		/**
-		 * Constructor.
-		 * 
-		 * @param widgetAction
-		 *            The encapsulated {@link AbstractWidgetActionModel}
-		 */
-		public MenuAction(final AbstractWidgetAction widgetAction) {
-			_widgetAction = widgetAction;
-			this.setText(_widgetAction.getDescription());
-			Object adapter = widgetAction.getAdapter(IWorkbenchAdapter.class);
-			if (adapter != null && adapter instanceof IWorkbenchAdapter) {
-				this.setImageDescriptor(((IWorkbenchAdapter)adapter)
-						.getImageDescriptor(widgetAction));
-			}
-			setEnabled(widgetAction.isEnabled());
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public void run() {
-			Display.getCurrent().asyncExec(new Runnable() {
-				public void run() {
-					_widgetAction.run();
-				}
-			});
-		}
-	}
+	
 
 	
 

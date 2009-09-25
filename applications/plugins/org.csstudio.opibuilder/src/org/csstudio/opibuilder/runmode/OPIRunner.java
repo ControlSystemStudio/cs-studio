@@ -86,6 +86,7 @@ public class OPIRunner extends EditorPart {
 			setPartName(displayModel.getName());
 		}
 		
+		
 	}
 	
 	

@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.platform.util.StringUtil;
 
 /** Helper for executing a (system) command.
@@ -26,7 +27,7 @@ import org.csstudio.platform.util.StringUtil;
  *  @author Xihui Chen
  */
 @SuppressWarnings("nls")
-abstract public class CommandExecutor
+public class CommandExecutor
 {
     final private String dir_name;
     final private String command;
@@ -59,7 +60,10 @@ abstract public class CommandExecutor
      *  @param exit_code Exit code of program
      *  @param stderr Standard error output of program
      */
-    abstract public void error(final int exit_code, final String stderr);
+     public void error(final int exit_code, final String stderr){
+    	 ConsoleService.getInstance().writeError(stderr);
+    	 	
+    }
 
     private void runAndCheckCommand()
     {
@@ -73,30 +77,48 @@ abstract public class CommandExecutor
         }
         catch (Throwable ex)
         {
-            error(-1, ex.getMessage());
+        	error(-1, ex.getMessage());
+        	ConsoleService.getInstance().writeInfo("Command executing finished with exit code: FAILED");
+            
             return;
         }
-
+        
+        //write output to console
+        try {
+			int c = 0;
+			while(c != -1){
+				c = process.getInputStream().read();				
+				ConsoleService.getInstance().writeString(""+(char)c);
+			}
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+        
+        
         // Poll exit code during 'wait' time
         Integer exit_code = null;
         for (int w=0; w<wait; ++w)
         {
-            try
-            {
-                Thread.sleep(1000);
-            }
-            catch (InterruptedException e)
-            {   // Ignore
-            }
+            
             try
             {
                 exit_code = process.exitValue();
                 break;
             }
             catch (IllegalThreadStateException ex)
-            {   // Process still runs, maybe try again
+            {  //still running...
+            	try
+                {
+                    Thread.sleep(1000);
+                }
+                catch (InterruptedException e)
+                {   // Ignore
+                }
             }
         }
+        
+        ConsoleService.getInstance().writeInfo("Command executing finished with exit code: " 
+        		+ (exit_code ==0 ? "OK" : "FAILED") );
         // Process runs so long that we no longer care
         if (exit_code == null)
             return;
@@ -104,6 +126,7 @@ abstract public class CommandExecutor
         // Process ended
         if (exit_code == 0)
             return;
+        
         // .. with error; check error output
         final StringBuilder stderr = new StringBuilder();
         try

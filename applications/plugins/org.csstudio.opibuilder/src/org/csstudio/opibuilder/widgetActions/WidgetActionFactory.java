@@ -7,11 +7,11 @@ import org.eclipse.jface.resource.ImageDescriptor;
 
 public class WidgetActionFactory {
 	public enum ActionType{
-		OPEN_DISPLAY("Open Display", createImage("icons/OPIBuilder.png")),
-		WRITE_PV("Write PV", createImage("icons/OPIBuilder.png")),
+		OPEN_DISPLAY("Open OPI", createImage("icons/OPIBuilder.png")),
+		WRITE_PV("Write PV", createImage("icons/edit.gif")),
 		EXECUTE_CMD("Execute Command", createImage("icons/command.gif")),
-		EXECUTE_JAVASCRIPT("Execute Javascript", createImage("icons/OPIBuilder.png")),
-		OPEN_FILE("Open File", createImage("icons/OPIBuilder.png"));
+		EXECUTE_JAVASCRIPT("Execute Javascript", createImage("icons/js.gif")),
+		OPEN_FILE("Open File", createImage("icons/openFile.png"));
 		
 		private ImageDescriptor iconImage;
 		private String description;
@@ -66,6 +66,10 @@ public class WidgetActionFactory {
 			return new WritePVAction();
 		case OPEN_FILE:
 			return new OpenFileAction();
+		case EXECUTE_CMD:
+			return new ExecuteCommandAction();
+		case EXECUTE_JAVASCRIPT:
+			return new ExecuteJavaScriptAction();
 		default:
 			break;
 		}
