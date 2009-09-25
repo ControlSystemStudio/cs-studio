@@ -16,6 +16,7 @@ import org.csstudio.opibuilder.widgetActions.WritePVAction;
 import org.csstudio.opibuilder.widgets.model.MenuButtonModel;
 import org.csstudio.platform.data.IEnumeratedMetaData;
 import org.csstudio.platform.data.IValue;
+import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
@@ -184,6 +185,19 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
 	 */
 	@Override
 	protected void registerPropertyChangeHandlers() {
+		
+		// PV_Value
+		IWidgetPropertyChangeHandler pvhandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue, final IFigure refreshableFigure) {
+				if(getWidgetModel().isActionsFromPV() && 
+						newValue != null && newValue instanceof IValue)
+					((Label)refreshableFigure).setText(ValueUtil.getString((IValue)newValue));
+				return true;
+			}
+		};
+		setPropertyChangeHandler(MenuButtonModel.PROP_PVVALUE, pvhandler);
+		
 		// label
 		IWidgetPropertyChangeHandler labelHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,

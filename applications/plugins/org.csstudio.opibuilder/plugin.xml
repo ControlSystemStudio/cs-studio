@@ -19,7 +19,7 @@
             contributorClass="org.csstudio.opibuilder.runmode.OPIRunnerToolBarContributor"
             default="false"
             extensions="opi"
-            icon="icons/OPIBuilder.png"
+            icon="icons/OPIRunner.png"
             id="org.csstudio.opibuilder.OPIRunner"
             name="OPI Runner">
       </editor>

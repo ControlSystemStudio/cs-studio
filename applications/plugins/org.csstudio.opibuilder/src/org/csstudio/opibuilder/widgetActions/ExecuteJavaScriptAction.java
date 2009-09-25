@@ -78,8 +78,12 @@ public class ExecuteJavaScriptAction extends AbstractWidgetAction {
 						try {								
 							script.exec(scriptContext, scriptScope);
 						} catch (Exception e) {
-							MessageDialog.openError(null, "script error", 
-									"Error exists in script " + getPath());
+							String message =  "Error exists in script " + 
+								getPath() + "\n" + e; //$NON-NLS-1$
+							MessageDialog.openError(null, "script error", message);
+							CentralLogger.getInstance().error(this, message, e);
+							ConsoleService.getInstance().writeError(message);
+							
 						}
 					
 				}
