@@ -381,7 +381,7 @@ public class MessageGuardCommander extends Job {
                         Log.log(this, Log.FATAL, "could not init application database");
                         return false;
                     }
-                    FilterActionTObject actionTObject = FilterActionDAO.select(conDb, Integer
+                    FilterActionTObject actionTObject = FilterActionDAO.selectByFilter(conDb, Integer
                             .parseInt(filterID));
                     topicMsg = actionTObject != null
                             && actionTObject.getFilterActionTypeRef() == AmsConstants.FILTERACTIONTYPE_TO_JMS;
