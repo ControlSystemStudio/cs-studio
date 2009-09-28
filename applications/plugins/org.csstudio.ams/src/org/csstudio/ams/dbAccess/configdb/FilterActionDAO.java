@@ -245,4 +245,37 @@ public abstract class FilterActionDAO extends DAO
 			close(st,rs);
 		}
 	}
+	
+    public static FilterActionTObject selectByFilter(Connection con, int filterID) throws SQLException
+    {
+        final String query = "SELECT fa.iFilterActionID, fa.iFilterActionTypeRef, fa.iReceiverRef, fa.cMessage"
+        + " FROM AMS_FilterAction fa, AMS_Filter_FilterAction ffa"
+        + " WHERE fa.iFilterActionID = ffa.iFilterActionRef"
+        + " AND ffa.iFilterRef = ?";
+
+        ResultSet rs = null;
+        PreparedStatement st = null;
+        FilterActionTObject fAction = null;
+
+        try
+        {
+            st = con.prepareStatement(query);
+            st.setInt(1, filterID);
+            rs = st.executeQuery();
+            
+            if(rs.next())
+                fAction = new FilterActionTObject(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getString(4));
+            
+            return fAction;
+        }
+        catch(SQLException ex)
+        {
+            Log.log(Log.FATAL, "Sql-Query failed: " + query, ex);
+                throw ex;
+            }
+            finally
+            {
+                close(st,rs);
+            }
+        }
 }
