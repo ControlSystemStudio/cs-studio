@@ -3,12 +3,15 @@ package org.csstudio.opibuilder.widgets.model;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.ActionsProperty;
 import org.csstudio.opibuilder.properties.BooleanProperty;
+import org.csstudio.opibuilder.properties.FilePathProperty;
 import org.csstudio.opibuilder.properties.FontProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 
 /**
  * An action button widget model.
@@ -69,6 +72,9 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	 * The default value of the Button style.  
 	 */
     private static final boolean DEFAULT_TOGGLE_BUTTON = false;
+    
+	private static final String[] FILE_EXTENSIONS = new String[] {"jpg", "jpeg", "gif", "bmp", "png"};
+
 
 	/**
 	 * Standard constructor.
@@ -103,6 +109,9 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 		
 		addProperty(new BooleanProperty(PROP_TOGGLE_BUTTON, "Toggle Button",
 		        WidgetPropertyCategory.Behavior,DEFAULT_TOGGLE_BUTTON));
+		
+		addProperty(new FilePathProperty(PROP_IMAGE, "Icon File",
+				WidgetPropertyCategory.Display, new Path(""), FILE_EXTENSIONS)); //$NON-NLS-1$
 		
 		removeProperty(PROP_ACTIONS);		
 		addProperty(new ActionsProperty(PROP_ACTIONS, "Actions", 
@@ -154,6 +163,10 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	 */
 	public OPIFont getFont() {
 		return (OPIFont) getProperty(PROP_FONT).getPropertyValue();
+	}
+	
+	public IPath getImagePath(){
+		return (IPath)getCastedPropertyValue(PROP_IMAGE);
 	}
 	
 	/**

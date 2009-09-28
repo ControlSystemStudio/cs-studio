@@ -6,14 +6,14 @@ import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.widgets.figures.LabelFigure;
+import org.csstudio.opibuilder.widgets.figures.LabelFigure.H_ALIGN;
+import org.csstudio.opibuilder.widgets.figures.LabelFigure.V_ALIGN;
 import org.csstudio.opibuilder.widgets.model.LabelModel;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
-import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.widgets.Display;
 
 /**The editpart for Label widget.
@@ -30,12 +30,8 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 				getWidgetModel().getFont().getFontData()));
 		labelFigure.setText(getWidgetModel().getText());		
 		labelFigure.setOpaque(!getWidgetModel().isTransparent());
-		labelFigure.getLabel().setTextAlignment(
-				(int) (8 * Math.pow(2, getWidgetModel().getVerticalAlignment())));
-		labelFigure.getLabel().setLabelAlignment(
-				(int) (1 * Math.pow(2, getWidgetModel().getHorizontalAlignment())));
-		labelFigure.getLabel().setTextPlacement(PositionConstants.WEST);
-		labelFigure.setScrollbarVisible(getWidgetModel().isShowScrollbar());
+		labelFigure.setH_alignment(getWidgetModel().getHorizontalAlignment());
+		labelFigure.setV_alignment(getWidgetModel().getVerticalAlignment());
 		return labelFigure;
 	}
 
@@ -56,7 +52,7 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 				Display.getCurrent().timerExec(10, new Runnable() {					
 					public void run() {
 						if(getWidgetModel().isAutoSize())
-							getWidgetModel().setSize(((LabelFigure)figure).getLabel().getPreferredSize());
+							getWidgetModel().setSize(((LabelFigure)figure).getAutoSizeDimension());
 					}
 				});
 				
@@ -83,8 +79,10 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 					final IFigure figure) {
 				Display.getCurrent().timerExec(10, new Runnable() {					
 					public void run() {
-						if(getWidgetModel().isAutoSize())
-							getWidgetModel().setSize(((LabelFigure)figure).getLabel().getPreferredSize());
+						if(getWidgetModel().isAutoSize()){
+							getWidgetModel().setSize(((LabelFigure)figure).getAutoSizeDimension());
+							figure.revalidate();
+						}
 					}
 				});
 				
@@ -107,8 +105,10 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 		handler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {				
-				if((Boolean)newValue)
-					getWidgetModel().setSize(((LabelFigure)figure).getLabel().getPreferredSize());
+				if((Boolean)newValue){
+					getWidgetModel().setSize(((LabelFigure)figure).getAutoSizeDimension());
+					figure.revalidate();
+				}
 				return true;
 			}
 		};
@@ -117,8 +117,7 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 		handler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {
-				((LabelFigure)figure).getLabel().setLabelAlignment(
-						(int) (1 * Math.pow(2, (Integer)newValue)));
+				((LabelFigure)figure).setH_alignment(H_ALIGN.values()[(Integer)newValue]);
 				return true;
 			}
 		};
@@ -127,22 +126,14 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 		handler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {
-				((LabelFigure)figure).getLabel().setTextAlignment(
-						(int) (8 * Math.pow(2, (Integer)newValue)));
+				((LabelFigure)figure).setV_alignment(V_ALIGN.values()[(Integer)newValue]);
 				return true;
 			}
 		};
 		setPropertyChangeHandler(LabelModel.PROP_ALIGN_V, handler);
 		
 		
-		handler = new IWidgetPropertyChangeHandler(){
-			public boolean handleChange(Object oldValue, Object newValue,
-					IFigure figure) {
-				((LabelFigure)figure).setScrollbarVisible((Boolean)newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(LabelModel.PROP_SHOW_SCROLLBAR, handler);
+
 		
 	}
 

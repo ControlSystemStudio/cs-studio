@@ -1,17 +1,19 @@
 package org.csstudio.opibuilder.widgets.model;
 
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
-import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.ComboProperty;
 import org.csstudio.opibuilder.properties.FontProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.OPIFont;
+import org.csstudio.opibuilder.widgets.figures.LabelFigure.H_ALIGN;
+import org.csstudio.opibuilder.widgets.figures.LabelFigure.V_ALIGN;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
-import org.eclipse.swt.graphics.FontData;
 
 public class LabelModel extends AbstractPVWidgetModel {
+	
+
 	
 	/**
 	 * The ID of the text property.
@@ -31,15 +33,14 @@ public class LabelModel extends AbstractPVWidgetModel {
 	public static final String PROP_FONT= "font"; //$NON-NLS-1$
 
 	
-	public static final String[] H_ALIGN = new String[]{"LEFT", "CENTER", "RIGHT"};
-	public static final String[] V_ALIGN = new String[]{"TOP", "MIDDLE", "BOTTOM"};
-	
 	protected boolean pvModel = false;
 	
 	public LabelModel() {
 		setBackgroundColor(CustomMediaFactory.COLOR_WHITE);
 		setForegroundColor(CustomMediaFactory.COLOR_BLACK);
 		setSize(150, 20);
+		setTooltip("");
+	
 	}
 
 	@Override
@@ -53,9 +54,9 @@ public class LabelModel extends AbstractPVWidgetModel {
 		addProperty(new BooleanProperty(PROP_AUTOSIZE, "Auto Size", 
 				WidgetPropertyCategory.Display, false));
 		addProperty(new ComboProperty(PROP_ALIGN_H, "Horizontal Alignment", 
-				WidgetPropertyCategory.Display, H_ALIGN, 0));
+				WidgetPropertyCategory.Display, H_ALIGN.stringValues(), 1));
 		addProperty(new ComboProperty(PROP_ALIGN_V, "Vertical Alignment", 
-				WidgetPropertyCategory.Display, V_ALIGN, 0));
+				WidgetPropertyCategory.Display, V_ALIGN.stringValues(), 1));
 		addProperty(new BooleanProperty(PROP_SHOW_SCROLLBAR, "Show Scrollbar", 
 				WidgetPropertyCategory.Display, true));
 		if(!pvModel){
@@ -67,14 +68,15 @@ public class LabelModel extends AbstractPVWidgetModel {
 		}		
 	}
 
-	public int getHorizontalAlignment(){
-		return (Integer)getCastedPropertyValue(PROP_ALIGN_H);
+	public H_ALIGN getHorizontalAlignment(){
+		return H_ALIGN.values()[
+		              (Integer)getCastedPropertyValue(PROP_ALIGN_H)];
 	}
 	
 	
-	public int getVerticalAlignment(){
-		return (Integer)getCastedPropertyValue(PROP_ALIGN_V);
-	}
+	public V_ALIGN getVerticalAlignment(){
+		return V_ALIGN.values()[
+				      (Integer)getCastedPropertyValue(PROP_ALIGN_V)];	}
 	
 	@Override
 	public String getTypeID() {

@@ -7,6 +7,8 @@ import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.widgets.figures.LabelFigure;
+import org.csstudio.opibuilder.widgets.figures.LabelFigure.H_ALIGN;
+import org.csstudio.opibuilder.widgets.figures.LabelFigure.V_ALIGN;
 import org.csstudio.opibuilder.widgets.model.LabelModel;
 import org.csstudio.opibuilder.widgets.model.TextIndicatorModel;
 import org.csstudio.opibuilder.widgets.model.TextIndicatorModel.FormatEnum;
@@ -18,8 +20,6 @@ import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.IValue.Format;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.PositionConstants;
-import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
@@ -38,14 +38,10 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 		LabelFigure labelFigure = new LabelFigure();
 		labelFigure.setFont(CustomMediaFactory.getInstance().getFont(
 				getWidgetModel().getFont().getFontData()));
-		labelFigure.setText(getWidgetModel().getText());	
-		labelFigure.setOpaque(!getWidgetModel().isTransparent());		
-		labelFigure.getLabel().setTextAlignment(
-				(int) (8 * Math.pow(2, getWidgetModel().getVerticalAlignment())));
-		labelFigure.getLabel().setLabelAlignment(
-				(int) (1 * Math.pow(2, getWidgetModel().getHorizontalAlignment())));
-		labelFigure.getLabel().setTextPlacement(PositionConstants.WEST);
-		labelFigure.setScrollbarVisible(getWidgetModel().isShowScrollbar());
+		labelFigure.setText(getWidgetModel().getText());		
+		labelFigure.setOpaque(!getWidgetModel().isTransparent());
+		labelFigure.setH_alignment(getWidgetModel().getHorizontalAlignment());
+		labelFigure.setV_alignment(getWidgetModel().getVerticalAlignment());
 		return labelFigure;
 	}
 	
@@ -74,6 +70,78 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(TextIndicatorModel.PROP_TEXT, handler);
+		
+		
+		
+		IWidgetPropertyChangeHandler fontHandler = new IWidgetPropertyChangeHandler(){
+			public boolean handleChange(Object oldValue, Object newValue,
+					IFigure figure) {
+				figure.setFont(CustomMediaFactory.getInstance().getFont(
+						((OPIFont)newValue).getFontData()));
+				return true;
+			}
+		};		
+		setPropertyChangeHandler(LabelModel.PROP_FONT, fontHandler);
+	
+		
+		
+		handler = new IWidgetPropertyChangeHandler(){
+			public boolean handleChange(Object oldValue, Object newValue,
+					final IFigure figure) {
+				Display.getCurrent().timerExec(10, new Runnable() {					
+					public void run() {
+						if(getWidgetModel().isAutoSize()){
+							performAutoSize(figure);
+							figure.revalidate();
+						}
+					}
+				});
+				
+				return true;
+			}
+		};
+		setPropertyChangeHandler(LabelModel.PROP_FONT, handler);		
+		setPropertyChangeHandler(AbstractWidgetModel.PROP_BORDER_STYLE, handler);
+		setPropertyChangeHandler(AbstractWidgetModel.PROP_BORDER_WIDTH, handler);
+		
+		handler = new IWidgetPropertyChangeHandler(){
+			public boolean handleChange(Object oldValue, Object newValue,
+					IFigure figure) {
+				((LabelFigure)figure).setOpaque(!(Boolean)newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(LabelModel.PROP_TRANSPARENT, handler);
+		
+		handler = new IWidgetPropertyChangeHandler(){
+			public boolean handleChange(Object oldValue, Object newValue,
+					IFigure figure) {				
+				if((Boolean)newValue){
+					performAutoSize(figure);
+					figure.revalidate();
+				}
+				return true;
+			}
+		};
+		setPropertyChangeHandler(LabelModel.PROP_AUTOSIZE, handler);
+		
+		handler = new IWidgetPropertyChangeHandler(){
+			public boolean handleChange(Object oldValue, Object newValue,
+					IFigure figure) {
+				((LabelFigure)figure).setH_alignment(H_ALIGN.values()[(Integer)newValue]);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(LabelModel.PROP_ALIGN_H, handler);
+		
+		handler = new IWidgetPropertyChangeHandler(){
+			public boolean handleChange(Object oldValue, Object newValue,
+					IFigure figure) {
+				((LabelFigure)figure).setV_alignment(V_ALIGN.values()[(Integer)newValue]);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(LabelModel.PROP_ALIGN_V, handler);
 		
 		handler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
@@ -122,77 +190,6 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 		};
 		setPropertyChangeHandler(TextIndicatorModel.PROP_SHOW_UNITS, handler);	
 		
-		
-		
-		
-		handler = new IWidgetPropertyChangeHandler(){
-			public boolean handleChange(Object oldValue, Object newValue,
-					IFigure figure) {
-				((LabelFigure)figure).setOpaque(!(Boolean)newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(TextIndicatorModel.PROP_TRANSPARENT, handler);
-		
-		handler = new IWidgetPropertyChangeHandler(){
-			public boolean handleChange(Object oldValue, Object newValue,
-					IFigure figure) {				
-				if((Boolean)newValue){
-					performAutoSize(figure);
-				}
-				return true;
-			}
-			
-		};
-		setPropertyChangeHandler(TextIndicatorModel.PROP_AUTOSIZE, handler);
-		
-		IWidgetPropertyChangeHandler fontHandler = new IWidgetPropertyChangeHandler(){
-			public boolean handleChange(Object oldValue, Object newValue,
-					IFigure figure) {
-				figure.setFont(CustomMediaFactory.getInstance().getFont(((OPIFont)newValue).getFontData()));
-				return true;
-			}
-		};		
-		setPropertyChangeHandler(LabelModel.PROP_FONT, fontHandler);
-			
-		
-		handler = new IWidgetPropertyChangeHandler(){
-			public boolean handleChange(Object oldValue, Object newValue,
-					final IFigure figure) {
-				if(getWidgetModel().isAutoSize()){
-					Display.getCurrent().timerExec(10, new Runnable() {					
-						public void run() {							
-							performAutoSize(figure);
-						}
-					});					
-				}				
-				return true;
-			}
-		};
-		setPropertyChangeHandler(LabelModel.PROP_FONT, handler);
-		setPropertyChangeHandler(AbstractWidgetModel.PROP_BORDER_STYLE, handler);
-		setPropertyChangeHandler(AbstractWidgetModel.PROP_BORDER_WIDTH, handler);
-		
-		handler = new IWidgetPropertyChangeHandler(){
-			public boolean handleChange(Object oldValue, Object newValue,
-					IFigure figure) {
-				((LabelFigure)figure).getLabel().setLabelAlignment(
-						(int) (1 * Math.pow(2, (Integer)newValue)));
-				return true;
-			}
-		};
-		setPropertyChangeHandler(LabelModel.PROP_ALIGN_H, handler);
-		
-		handler = new IWidgetPropertyChangeHandler(){
-			public boolean handleChange(Object oldValue, Object newValue,
-					IFigure figure) {
-				((LabelFigure)figure).getLabel().setTextAlignment(
-						(int) (8 * Math.pow(2, (Integer)newValue)));
-				return true;
-			}
-		};
-		setPropertyChangeHandler(LabelModel.PROP_ALIGN_V, handler);
-		
 	}
 	
 	@Override
@@ -217,9 +214,7 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 	 * @param figure
 	 */
 	private void performAutoSize(IFigure figure) {
-		Insets insets = figure.getInsets();
-		getWidgetModel().setSize(((LabelFigure)figure).getLabel().
-				getPreferredSize().expand(insets.left + insets.bottom, insets.top + insets.bottom));
+		getWidgetModel().setSize(((LabelFigure)figure).getAutoSizeDimension());
 	}
 	
 	/**

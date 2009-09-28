@@ -21,7 +21,7 @@
             extensions="opi"
             icon="icons/OPIRunner.png"
             id="org.csstudio.opibuilder.OPIRunner"
-            name="OPI Runner">
+            name="OPI RunEngine">
       </editor>
       <editor
             class="org.eclipse.ui.editors.text.TextEditor"
@@ -82,7 +82,7 @@
          point="org.eclipse.ui.newWizards">
       <category
             id="org.csstudio.opibuilder.wizards"
-            name="OPI Builder">
+            name="BOY">
       </category>
       <wizard
             canFinishEarly="false"

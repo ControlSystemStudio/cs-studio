@@ -399,6 +399,10 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 		setPropertyValue(PROP_WIDTH, width);
 		setPropertyValue(PROP_HEIGHT, height);
 	}
+	
+	public void setTooltip(String tooltip){
+		setPropertyValue(PROP_TOOLTIP, tooltip);
+	}
 
 	/**
 	 * @param parent the parent to set

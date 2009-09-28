@@ -9,8 +9,12 @@ import org.eclipse.ui.IPerspectiveFactory;
  */
 public class OPIRunnerPerspective implements IPerspectiveFactory {
 
+	private static final String ID_CONSOLE_VIEW =
+		"org.eclipse.ui.console.ConsoleView";//$NON-NLS-1$
 	public void createInitialLayout(IPageLayout layout) {
 
+		layout.addShowViewShortcut(ID_CONSOLE_VIEW);
+		layout.addFastView(ID_CONSOLE_VIEW);
 	}
 
 }

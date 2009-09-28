@@ -47,6 +47,7 @@ public class TextIndicatorModel extends LabelModel {
 	public TextIndicatorModel() {
 		setSize(100, 20);
 		setForegroundColor(CustomMediaFactory.COLOR_BLACK);
+		setTooltip("$(" + PROP_PVNAME + ")\n" + "$(" + PROP_PVVALUE + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 	}
 	
 	

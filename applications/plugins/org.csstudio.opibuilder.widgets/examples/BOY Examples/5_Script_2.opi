@@ -1,0 +1,575 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<display typeId="org.csstudio.opibuilder.Display" version="1.0">
+  <width>800</width>
+  <scripts />
+  <actions hook="false" />
+  <macros>
+    <include_parent_macros>true</include_parent_macros>
+  </macros>
+  <snap_to_geometry>true</snap_to_geometry>
+  <show_grid>false</show_grid>
+  <show_edit_range>true</show_edit_range>
+  <grid_space>4</grid_space>
+  <height>600</height>
+  <widget_type>Display</widget_type>
+  <background_color>
+    <color red="240" green="240" blue="240" />
+  </background_color>
+  <foreground_color>
+    <color red="192" green="192" blue="192" />
+  </foreground_color>
+  <y>0</y>
+  <show_ruler>false</show_ruler>
+  <name>Display</name>
+  <x>0</x>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <auto_size>false</auto_size>
+    <width>323</width>
+    <show_scrollbar>true</show_scrollbar>
+    <scripts />
+    <border_width>1</border_width>
+    <border_style>1</border_style>
+    <tooltip />
+    <actions hook="false" />
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <vertical_alignment>1</vertical_alignment>
+    <transparent>false</transparent>
+    <font>
+      <fontdata fontName="Arial" height="12" style="0" />
+    </font>
+    <text>Adjust the knobs to see who will win.</text>
+    <widget_type>Label</widget_type>
+    <height>66</height>
+    <background_color>
+      <color red="241" green="255" blue="129" />
+    </background_color>
+    <enabled>true</enabled>
+    <y>166</y>
+    <visible>true</visible>
+    <foreground_color>
+      <color red="0" green="0" blue="203" />
+    </foreground_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <name>Label</name>
+    <x>47</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <width>91</width>
+    <scripts />
+    <tooltip />
+    <actions hook="true">
+      <action type="OPEN_DISPLAY">
+        <path>/BOY Examples/main.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+        </macros>
+        <replace>false</replace>
+      </action>
+    </actions>
+    <toggle_button>false</toggle_button>
+    <font>
+      <fontdata fontName="Arial" height="12" style="1" />
+    </font>
+    <push_action_index>0</push_action_index>
+    <text>Go Home</text>
+    <height>31</height>
+    <widget_type>Action Button</widget_type>
+    <enabled>true</enabled>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <visible>true</visible>
+    <foreground_color>
+      <color red="0" green="0" blue="128" />
+    </foreground_color>
+    <y>558</y>
+    <image>/BOY Examples/pictures/home-16x16.png</image>
+    <name>Action Button</name>
+    <x>17</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <auto_size>false</auto_size>
+    <width>252</width>
+    <show_scrollbar>true</show_scrollbar>
+    <scripts />
+    <border_width>1</border_width>
+    <border_style>0</border_style>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <actions hook="false" />
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <vertical_alignment>1</vertical_alignment>
+    <transparent>false</transparent>
+    <font>
+      <fontdata fontName="Arial" height="12" style="1" />
+    </font>
+    <text>Example1: Compare value with JavaScript</text>
+    <widget_type>Label</widget_type>
+    <height>20</height>
+    <background_color>
+      <color red="0" green="255" blue="128" />
+    </background_color>
+    <enabled>true</enabled>
+    <y>158</y>
+    <visible>true</visible>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <name>Label_2</name>
+    <x>83</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+    <width>451</width>
+    <scripts />
+    <border_width>1</border_width>
+    <border_style>0</border_style>
+    <tooltip />
+    <actions hook="false" />
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <transparent>false</transparent>
+    <macros>
+      <include_parent_macros>true</include_parent_macros>
+    </macros>
+    <height>86</height>
+    <widget_type>Grouping Container</widget_type>
+    <enabled>true</enabled>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <lock_children>true</lock_children>
+    <visible>true</visible>
+    <foreground_color>
+      <color red="192" green="192" blue="192" />
+    </foreground_color>
+    <y>6</y>
+    <name>Grouping Container</name>
+    <x>311</x>
+    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+      <auto_size>false</auto_size>
+      <width>451</width>
+      <show_scrollbar>true</show_scrollbar>
+      <scripts />
+      <border_width>1</border_width>
+      <border_style>0</border_style>
+      <tooltip />
+      <actions hook="false" />
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <vertical_alignment>1</vertical_alignment>
+      <transparent>false</transparent>
+      <font>
+        <fontdata fontName="Arial" height="18" style="1" />
+      </font>
+      <text>Examples</text>
+      <widget_type>Label</widget_type>
+      <height>43</height>
+      <background_color>
+        <color red="135" green="181" blue="255" />
+      </background_color>
+      <enabled>true</enabled>
+      <y>43</y>
+      <visible>true</visible>
+      <foreground_color>
+        <color red="29" green="40" blue="184" />
+      </foreground_color>
+      <horizontal_alignment>1</horizontal_alignment>
+      <name>Label_6</name>
+      <x>0</x>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+      <auto_size>false</auto_size>
+      <width>451</width>
+      <show_scrollbar>true</show_scrollbar>
+      <scripts />
+      <border_width>1</border_width>
+      <border_style>0</border_style>
+      <tooltip />
+      <actions hook="false" />
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <vertical_alignment>1</vertical_alignment>
+      <transparent>false</transparent>
+      <font>
+        <fontdata fontName="Arial" height="18" style="1" />
+      </font>
+      <text>Best Ever OPI Tools Yet (BOY)</text>
+      <widget_type>Label</widget_type>
+      <height>43</height>
+      <background_color>
+        <color red="135" green="181" blue="255" />
+      </background_color>
+      <enabled>true</enabled>
+      <y>0</y>
+      <visible>true</visible>
+      <foreground_color>
+        <color red="29" green="40" blue="184" />
+      </foreground_color>
+      <horizontal_alignment>1</horizontal_alignment>
+      <name>Label_5</name>
+      <x>0</x>
+    </widget>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <auto_size>false</auto_size>
+    <width>295</width>
+    <show_scrollbar>true</show_scrollbar>
+    <scripts />
+    <border_width>1</border_width>
+    <border_style>0</border_style>
+    <tooltip />
+    <actions hook="false" />
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <vertical_alignment>1</vertical_alignment>
+    <transparent>false</transparent>
+    <font>
+      <fontdata fontName="Arial" height="18" style="1" />
+    </font>
+    <text>Script</text>
+    <widget_type>Label</widget_type>
+    <height>86</height>
+    <background_color>
+      <color red="135" green="181" blue="255" />
+    </background_color>
+    <enabled>true</enabled>
+    <y>6</y>
+    <visible>true</visible>
+    <foreground_color>
+      <color red="128" green="0" blue="64" />
+    </foreground_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <name>Label_8</name>
+    <x>17</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <width>91</width>
+    <scripts />
+    <tooltip />
+    <actions hook="true">
+      <action type="OPEN_DISPLAY">
+        <path>/BOY Examples/5_Script_1.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+        </macros>
+        <replace>true</replace>
+      </action>
+    </actions>
+    <toggle_button>false</toggle_button>
+    <font>
+      <fontdata fontName="Arial" height="12" style="1" />
+    </font>
+    <push_action_index>0</push_action_index>
+    <text>Back</text>
+    <height>31</height>
+    <widget_type>Action Button</widget_type>
+    <enabled>true</enabled>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <visible>true</visible>
+    <foreground_color>
+      <color red="0" green="0" blue="128" />
+    </foreground_color>
+    <y>558</y>
+    <image />
+    <name>Action Button_2</name>
+    <x>671</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <auto_size>false</auto_size>
+    <width>186</width>
+    <show_scrollbar>true</show_scrollbar>
+    <scripts />
+    <border_width>1</border_width>
+    <border_style>0</border_style>
+    <tooltip />
+    <actions hook="false" />
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <vertical_alignment>1</vertical_alignment>
+    <transparent>true</transparent>
+    <font>
+      <fontdata fontName="Arial" height="14" style="0" />
+    </font>
+    <text>Everything could be dynamic!</text>
+    <widget_type>Label</widget_type>
+    <height>16</height>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <enabled>true</enabled>
+    <y>55</y>
+    <visible>true</visible>
+    <foreground_color>
+      <color red="0" green="0" blue="255" />
+    </foreground_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <name>Label_9</name>
+    <x>88</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.knob" version="1.0">
+    <foregroundcolor.alarmsensitive>false</foregroundcolor.alarmsensitive>
+    <show_markers>true</show_markers>
+    <color_lo>
+      <color red="255" green="255" blue="0" />
+    </color_lo>
+    <show_hihi>true</show_hihi>
+    <width>157</width>
+    <scripts />
+    <border_style>0</border_style>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <backgroundcolor.alarmsensitive>false</backgroundcolor.alarmsensitive>
+    <color_hi>
+      <color red="255" green="255" blue="0" />
+    </color_hi>
+    <effect_3d>true</effect_3d>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <show_lo>true</show_lo>
+    <increment>1.0</increment>
+    <border_width>1</border_width>
+    <level_lo>20.0</level_lo>
+    <actions hook="false" />
+    <level_lolo>10.0</level_lolo>
+    <color_hihi>
+      <color red="255" green="0" blue="0" />
+    </color_hihi>
+    <widget_type>Knob</widget_type>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <y>147</y>
+    <show_hi>true</show_hi>
+    <color_lolo>
+      <color red="255" green="0" blue="0" />
+    </color_lolo>
+    <x>597</x>
+    <level_hi>80.0</level_hi>
+    <show_minor_ticks>true</show_minor_ticks>
+    <tooltip>$(pv.name)</tooltip>
+    <pv_name>loc://knob1</pv_name>
+    <height>159</height>
+    <control_pv>loc://knob1</control_pv>
+    <limits_from_db>false</limits_from_db>
+    <thumb_color>
+      <color red="127" green="127" blue="127" />
+    </thumb_color>
+    <name>Knob_2</name>
+    <level_hihi>90.0</level_hihi>
+    <minimum>0.0</minimum>
+    <major_tick_step_hint>50.0</major_tick_step_hint>
+    <knob_color>
+      <color red="150" green="150" blue="150" />
+    </knob_color>
+    <border.alarmsensitive>false</border.alarmsensitive>
+    <show_lolo>true</show_lolo>
+    <show_value_label>true</show_value_label>
+    <maximum>100.0</maximum>
+    <ramp_gradient>true</ramp_gradient>
+    <enabled>true</enabled>
+    <transparent_background>true</transparent_background>
+    <visible>true</visible>
+    <show_scale>true</show_scale>
+    <log_scale>false</log_scale>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.knob" version="1.0">
+    <foregroundcolor.alarmsensitive>false</foregroundcolor.alarmsensitive>
+    <show_markers>true</show_markers>
+    <color_lo>
+      <color red="255" green="255" blue="0" />
+    </color_lo>
+    <show_hihi>true</show_hihi>
+    <width>155</width>
+    <scripts>
+      <path pathString="/BOY Examples/scripts/temperatureWarningDialog.js">
+        <pv>loc://knob0</pv>
+      </path>
+    </scripts>
+    <border_style>0</border_style>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <backgroundcolor.alarmsensitive>false</backgroundcolor.alarmsensitive>
+    <color_hi>
+      <color red="255" green="255" blue="0" />
+    </color_hi>
+    <effect_3d>true</effect_3d>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <show_lo>true</show_lo>
+    <increment>1.0</increment>
+    <border_width>1</border_width>
+    <level_lo>20.0</level_lo>
+    <actions hook="false" />
+    <level_lolo>10.0</level_lolo>
+    <color_hihi>
+      <color red="255" green="0" blue="0" />
+    </color_hihi>
+    <widget_type>Knob</widget_type>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <y>147</y>
+    <show_hi>true</show_hi>
+    <color_lolo>
+      <color red="255" green="0" blue="0" />
+    </color_lolo>
+    <x>443</x>
+    <level_hi>80.0</level_hi>
+    <show_minor_ticks>true</show_minor_ticks>
+    <tooltip>$(pv.name)</tooltip>
+    <pv_name>loc://knob0</pv_name>
+    <height>159</height>
+    <control_pv>loc://knob0</control_pv>
+    <limits_from_db>false</limits_from_db>
+    <thumb_color>
+      <color red="127" green="127" blue="127" />
+    </thumb_color>
+    <name>Knob_0</name>
+    <level_hihi>90.0</level_hihi>
+    <minimum>0.0</minimum>
+    <major_tick_step_hint>50.0</major_tick_step_hint>
+    <knob_color>
+      <color red="150" green="150" blue="150" />
+    </knob_color>
+    <border.alarmsensitive>false</border.alarmsensitive>
+    <show_lolo>true</show_lolo>
+    <show_value_label>true</show_value_label>
+    <maximum>100.0</maximum>
+    <ramp_gradient>true</ramp_gradient>
+    <enabled>true</enabled>
+    <transparent_background>true</transparent_background>
+    <visible>true</visible>
+    <show_scale>true</show_scale>
+    <log_scale>false</log_scale>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <auto_size>false</auto_size>
+    <width>150</width>
+    <show_scrollbar>true</show_scrollbar>
+    <scripts>
+      <path pathString="/BOY Examples/scripts/Compare.js">
+        <pv>loc://knob0</pv>
+        <pv>loc://knob1</pv>
+      </path>
+    </scripts>
+    <border_width>1</border_width>
+    <border_style>0</border_style>
+    <tooltip />
+    <actions hook="false" />
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <vertical_alignment>1</vertical_alignment>
+    <transparent>true</transparent>
+    <font>
+      <fontdata fontName="Arial" height="12" style="0" />
+    </font>
+    <text>result</text>
+    <widget_type>Label</widget_type>
+    <height>20</height>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <enabled>true</enabled>
+    <y>104</y>
+    <visible>true</visible>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <name>Label_8</name>
+    <x>513</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <auto_size>false</auto_size>
+    <width>607</width>
+    <show_scrollbar>true</show_scrollbar>
+    <scripts />
+    <border_width>1</border_width>
+    <border_style>0</border_style>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <actions hook="false" />
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <vertical_alignment>1</vertical_alignment>
+    <transparent>false</transparent>
+    <font>
+      <fontdata fontName="Arial" height="12" style="1" />
+    </font>
+    <text>Example2: Change size, foreground color and location with multiple scripts</text>
+    <widget_type>Label</widget_type>
+    <height>28</height>
+    <background_color>
+      <color red="0" green="255" blue="128" />
+    </background_color>
+    <enabled>true</enabled>
+    <y>331</y>
+    <visible>true</visible>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <name>Label_8</name>
+    <x>65</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Ellipse" version="1.0">
+    <foregroundcolor.alarmsensitive>false</foregroundcolor.alarmsensitive>
+    <width>100</width>
+    <scripts>
+      <path pathString="/BOY Examples/scripts/ChangePositionAndSize.js">
+        <pv>sim://sine(0,20,100,0.1)</pv>
+      </path>
+      <path pathString="/BOY Examples/scripts/AlarmColor.js">
+        <pv>sim://noise</pv>
+      </path>
+    </scripts>
+    <border_style>0</border_style>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <transparent>false</transparent>
+    <backgroundcolor.alarmsensitive>false</backgroundcolor.alarmsensitive>
+    <pv_name />
+    <anti_alias>true</anti_alias>
+    <height>100</height>
+    <foreground_color>
+      <color red="0" green="0" blue="255" />
+    </foreground_color>
+    <line_width>0</line_width>
+    <name>Ellipse</name>
+    <border_width>1</border_width>
+    <actions hook="false" />
+    <border.alarmsensitive>true</border.alarmsensitive>
+    <fill_level>100.0</fill_level>
+    <line_style>0</line_style>
+    <horizontal_fill>true</horizontal_fill>
+    <widget_type>Ellipse</widget_type>
+    <background_color>
+      <color red="150" green="150" blue="150" />
+    </background_color>
+    <enabled>true</enabled>
+    <y>417</y>
+    <visible>true</visible>
+    <x>319</x>
+  </widget>
+</display>

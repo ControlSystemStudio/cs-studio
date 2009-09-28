@@ -10,7 +10,6 @@ import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.LightweightSystem;
-import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
@@ -137,9 +136,7 @@ class LabelFigureTest extends Figure {
 
 		label = new LabelFigure();	
 		label.setBackgroundColor(CustomMediaFactory.getInstance().getColor(0,255,0));
-		label.getLabel().setTextPlacement(PositionConstants.CENTER);
-		label.getLabel().setTextAlignment(PositionConstants.LEFT);
-		label.getLabel().setLabelAlignment(PositionConstants.BOTTOM);
+
 		label.setOpaque(false);
 		label.setText("hslfsfsfdsdfs;ksjdf;\nlsdfkj\n\n\n\n\n\n\n\n\nsdfsfdsdfsdfsdfsdfss;dlfksjfsld;fsjf;lksdjf;lskfj;lskdfjs;ldkfjsd;lfk");
 		//boolSwitch.setEffect3D(false);

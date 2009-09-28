@@ -1,0 +1,450 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<display typeId="org.csstudio.opibuilder.Display" version="1.0">
+  <macros>
+    <include_parent_macros>true</include_parent_macros>
+  </macros>
+  <showRuler>true</showRuler>
+  <showEditRangeBorder>true</showEditRangeBorder>
+  <width>800</width>
+  <grid.space>6</grid.space>
+  <grid.show>true</grid.show>
+  <color.foreground>
+    <color red="192" green="192" blue="192" />
+  </color.foreground>
+  <script />
+  <type>Display</type>
+  <snapGeometry>true</snapGeometry>
+  <height>600</height>
+  <color.background>
+    <color red="240" green="240" blue="240" />
+  </color.background>
+  <name>ScriptDemo</name>
+  <y>0</y>
+  <x>0</x>
+  <tooltip />
+  <widget typeId="org.csstudio.opibuilder.widgets.knob" version="1.0">
+    <loLevel>32.0</loLevel>
+    <loloLevel>20.0</loloLevel>
+    <visible>true</visible>
+    <border.width>1</border.width>
+    <type>Knob</type>
+    <transparency>true</transparency>
+    <height>173</height>
+    <color.background>
+      <color red="240" green="240" blue="240" />
+    </color.background>
+    <hihiLevel>90.0</hihiLevel>
+    <limitFromDB>false</limitFromDB>
+    <enabled>true</enabled>
+    <increment>1.0</increment>
+    <font>
+      <font fontName="Arial" height="9" style="0" />
+    </font>
+    <width>173</width>
+    <backgroundcolor.alarmsensitive>false</backgroundcolor.alarmsensitive>
+    <border.color>
+      <color red="0" green="128" blue="255" />
+    </border.color>
+    <pv.name>loc://test</pv.name>
+    <showHI>true</showHI>
+    <loColor>
+      <color red="255" green="255" blue="0" />
+    </loColor>
+    <color.foreground>
+      <color red="0" green="0" blue="0" />
+    </color.foreground>
+    <script>
+      <path pathString="/OPIBuilder/scripts/SWTMessageDialog.js">
+        <pv>loc://test</pv>
+      </path>
+    </script>
+    <hihiColor>
+      <color red="255" green="0" blue="0" />
+    </hihiColor>
+    <showLOLO>true</showLOLO>
+    <border.style>0</border.style>
+    <effect3D>true</effect3D>
+    <maximum>100.0</maximum>
+    <hiLevel>70.0</hiLevel>
+    <showHIHI>true</showHIHI>
+    <showMinorTicks>true</showMinorTicks>
+    <majorTickStepHint>50.0</majorTickStepHint>
+    <minimum>0.0</minimum>
+    <showLO>true</showLO>
+    <logScale>false</logScale>
+    <showScale>true</showScale>
+    <foregroundcolor.alarmsensitive>false</foregroundcolor.alarmsensitive>
+    <name>Knob_0</name>
+    <control_pv>loc://test</control_pv>
+    <bulb_color>
+      <color red="192" green="192" blue="192" />
+    </bulb_color>
+    <showMarkers>true</showMarkers>
+    <ramp_gradient>true</ramp_gradient>
+    <border.alarmsensitive>false</border.alarmsensitive>
+    <thumbColor>
+      <color red="0" green="128" blue="0" />
+    </thumbColor>
+    <show_value_label>true</show_value_label>
+    <loloColor>
+      <color red="255" green="0" blue="0" />
+    </loloColor>
+    <hiColor>
+      <color red="255" green="255" blue="0" />
+    </hiColor>
+    <y>120</y>
+    <actions hook="false" />
+    <x>167</x>
+    <tooltip>$(pv.name)</tooltip>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.knob" version="1.0">
+    <loLevel>32.0</loLevel>
+    <loloLevel>20.0</loloLevel>
+    <visible>true</visible>
+    <border.width>1</border.width>
+    <type>Knob</type>
+    <transparency>true</transparency>
+    <height>173</height>
+    <color.background>
+      <color red="240" green="240" blue="240" />
+    </color.background>
+    <hihiLevel>90.0</hihiLevel>
+    <limitFromDB>false</limitFromDB>
+    <enabled>true</enabled>
+    <increment>1.0</increment>
+    <font>
+      <font fontName="Arial" height="9" style="0" />
+    </font>
+    <width>175</width>
+    <backgroundcolor.alarmsensitive>false</backgroundcolor.alarmsensitive>
+    <border.color>
+      <color red="0" green="128" blue="255" />
+    </border.color>
+    <pv.name>loc://test2</pv.name>
+    <showHI>true</showHI>
+    <loColor>
+      <color red="255" green="255" blue="0" />
+    </loColor>
+    <color.foreground>
+      <color red="0" green="0" blue="0" />
+    </color.foreground>
+    <script />
+    <hihiColor>
+      <color red="255" green="0" blue="0" />
+    </hihiColor>
+    <showLOLO>true</showLOLO>
+    <border.style>0</border.style>
+    <effect3D>true</effect3D>
+    <maximum>100.0</maximum>
+    <hiLevel>70.0</hiLevel>
+    <showHIHI>true</showHIHI>
+    <showMinorTicks>true</showMinorTicks>
+    <majorTickStepHint>50.0</majorTickStepHint>
+    <minimum>0.0</minimum>
+    <showLO>true</showLO>
+    <logScale>false</logScale>
+    <showScale>true</showScale>
+    <foregroundcolor.alarmsensitive>false</foregroundcolor.alarmsensitive>
+    <name>Knob_2</name>
+    <control_pv>loc://test2</control_pv>
+    <bulb_color>
+      <color red="188" green="188" blue="188" />
+    </bulb_color>
+    <showMarkers>true</showMarkers>
+    <ramp_gradient>true</ramp_gradient>
+    <border.alarmsensitive>false</border.alarmsensitive>
+    <thumbColor>
+      <color red="0" green="128" blue="255" />
+    </thumbColor>
+    <show_value_label>true</show_value_label>
+    <loloColor>
+      <color red="255" green="0" blue="0" />
+    </loloColor>
+    <hiColor>
+      <color red="255" green="255" blue="0" />
+    </hiColor>
+    <y>120</y>
+    <actions hook="false" />
+    <x>396</x>
+    <tooltip>$(pv.name)</tooltip>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <enabled>true</enabled>
+    <text>Draw!</text>
+    <visible>true</visible>
+    <font>
+      <font fontName="Arial" height="12" style="1" />
+    </font>
+    <vertical_alignment>0</vertical_alignment>
+    <width>91</width>
+    <border.color>
+      <color red="0" green="128" blue="255" />
+    </border.color>
+    <border.width>1</border.width>
+    <color.foreground>
+      <color red="0" green="255" blue="0" />
+    </color.foreground>
+    <script>
+      <path pathString="/OPIBuilder/scripts/Compare.js">
+        <pv>loc://test</pv>
+        <pv>loc://test2</pv>
+      </path>
+    </script>
+    <type>Label</type>
+    <auto_size>false</auto_size>
+    <border.style>0</border.style>
+    <transparency>true</transparency>
+    <height>25</height>
+    <color.background>
+      <color red="255" green="255" blue="255" />
+    </color.background>
+    <name>Rectangle_0</name>
+    <horizontal_alignment>0</horizontal_alignment>
+    <y>96</y>
+    <actions hook="false" />
+    <x>324</x>
+    <tooltip />
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+    <enabled>true</enabled>
+    <macros>
+      <include_parent_macros>true</include_parent_macros>
+    </macros>
+    <visible>true</visible>
+    <font>
+      <font fontName="Arial" height="9" style="0" />
+    </font>
+    <width>229</width>
+    <border.color>
+      <color red="0" green="128" blue="255" />
+    </border.color>
+    <border.width>1</border.width>
+    <color.foreground>
+      <color red="192" green="192" blue="192" />
+    </color.foreground>
+    <script />
+    <type>Grouping Container</type>
+    <border.style>13</border.style>
+    <transparency>true</transparency>
+    <height>121</height>
+    <color.background>
+      <color red="240" green="240" blue="240" />
+    </color.background>
+    <lockChildren>false</lockChildren>
+    <name>Grouping Container</name>
+    <y>480</y>
+    <actions hook="false" />
+    <x>552</x>
+    <tooltip />
+    <widget typeId="org.csstudio.opibuilder.widgets.Ellipse" version="1.0">
+      <visible>true</visible>
+      <border.width>1</border.width>
+      <type>Ellipse</type>
+      <transparency>false</transparency>
+      <foregroundcolor.alarmsensitive>false</foregroundcolor.alarmsensitive>
+      <height>43</height>
+      <color.background>
+        <color red="255" green="255" blue="0" />
+      </color.background>
+      <name>Ellipse_1</name>
+      <filllevel>100.0</filllevel>
+      <enabled>true</enabled>
+      <antialias>true</antialias>
+      <font>
+        <font fontName="Arial" height="9" style="0" />
+      </font>
+      <backgroundcolor.alarmsensitive>false</backgroundcolor.alarmsensitive>
+      <width>43</width>
+      <border.color>
+        <color red="0" green="128" blue="255" />
+      </border.color>
+      <pv.name />
+      <color.foreground>
+        <color red="0" green="255" blue="0" />
+      </color.foreground>
+      <script>
+        <path pathString="/OPIBuilder/scripts/BlinkingColor.js">
+          <pv>sim://ramp(0, 1, 1, 0.5)</pv>
+          <pv>sdfsdf</pv>
+        </path>
+      </script>
+      <border.style>0</border.style>
+      <linewidth>0</linewidth>
+      <border.alarmsensitive>true</border.alarmsensitive>
+      <horizontalfill>true</horizontalfill>
+      <actions hook="true">
+        <action type="OPEN_DISPLAY">
+          <path>/OPIBuilder/Downloads/test2.opi</path>
+          <macros>
+            <include_parent_macros>true</include_parent_macros>
+          </macros>
+          <replace>true</replace>
+        </action>
+      </actions>
+      <y>48</y>
+      <linestyle>0</linestyle>
+      <tooltip>$(pv.name)</tooltip>
+      <x>120</x>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.Ellipse" version="1.0">
+      <visible>true</visible>
+      <border.width>1</border.width>
+      <type>Ellipse</type>
+      <transparency>false</transparency>
+      <foregroundcolor.alarmsensitive>false</foregroundcolor.alarmsensitive>
+      <height>43</height>
+      <color.background>
+        <color red="255" green="255" blue="0" />
+      </color.background>
+      <name>Ellipse_1</name>
+      <filllevel>100.0</filllevel>
+      <enabled>true</enabled>
+      <antialias>true</antialias>
+      <font>
+        <font fontName="Arial" height="9" style="0" />
+      </font>
+      <backgroundcolor.alarmsensitive>false</backgroundcolor.alarmsensitive>
+      <width>43</width>
+      <border.color>
+        <color red="0" green="128" blue="255" />
+      </border.color>
+      <pv.name />
+      <color.foreground>
+        <color.name>LO_COLOR</color.name>
+      </color.foreground>
+      <script>
+        <path pathString="/OPIBuilder/scripts/BlinkingColor.js">
+          <pv>sim://ramp(0, 1, 1, 0.5)</pv>
+          <pv>sdfsdf</pv>
+        </path>
+      </script>
+      <border.style>0</border.style>
+      <linewidth>0</linewidth>
+      <border.alarmsensitive>true</border.alarmsensitive>
+      <horizontalfill>true</horizontalfill>
+      <actions hook="true">
+        <action type="OPEN_DISPLAY">
+          <path>/OPIBuilder/Downloads/test2.opi</path>
+          <macros>
+            <include_parent_macros>true</include_parent_macros>
+          </macros>
+          <replace>true</replace>
+        </action>
+      </actions>
+      <y>48</y>
+      <linestyle>0</linestyle>
+      <tooltip>$(pv.name)</tooltip>
+      <x>48</x>
+    </widget>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Ellipse" version="1.0">
+    <visible>true</visible>
+    <border.width>1</border.width>
+    <type>Ellipse</type>
+    <transparency>false</transparency>
+    <foregroundcolor.alarmsensitive>false</foregroundcolor.alarmsensitive>
+    <height>46</height>
+    <color.background>
+      <color red="255" green="0" blue="0" />
+    </color.background>
+    <name>Ellipse_0</name>
+    <filllevel>0.0</filllevel>
+    <enabled>true</enabled>
+    <antialias>true</antialias>
+    <font>
+      <font fontName="Arial" height="9" style="0" />
+    </font>
+    <backgroundcolor.alarmsensitive>false</backgroundcolor.alarmsensitive>
+    <width>46</width>
+    <border.color>
+      <color red="0" green="128" blue="255" />
+    </border.color>
+    <pv.name>sim://sine(0,20,100, 0.01)</pv.name>
+    <color.foreground>
+      <color.name>LOLO_COLOR</color.name>
+    </color.foreground>
+    <scripts>
+      <path pathString="/OPIBuilder/scripts/ChangePositionAndSize.js">
+        <pv>$(pv.name)</pv>
+      </path>
+      <path pathString="/OPIBuilder/scripts/AlarmColor.js">
+        <pv>sim://ramp(0, 20, 1, 0.1)</pv>
+      </path>
+    </scripts>
+    <border.style>0</border.style>
+    <linewidth>0</linewidth>
+    <border.alarmsensitive>false</border.alarmsensitive>
+    <horizontalfill>true</horizontalfill>
+    <actions hook="false" />
+    <y>526</y>
+    <linestyle>0</linestyle>
+    <tooltip>$(pv.name)</tooltip>
+    <x>187</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <enabled>true</enabled>
+    <text>Input Text</text>
+    <visible>true</visible>
+    <font>
+      <font fontName="Arial" height="9" style="0" />
+    </font>
+    <vertical_alignment>0</vertical_alignment>
+    <width>140</width>
+    <border.color>
+      <color red="0" green="128" blue="255" />
+    </border.color>
+    <border.width>1</border.width>
+    <color.foreground>
+      <color red="0" green="0" blue="0" />
+    </color.foreground>
+    <script />
+    <type>Label</type>
+    <auto_size>false</auto_size>
+    <border.style>0</border.style>
+    <transparency>false</transparency>
+    <height>97</height>
+    <color.background>
+      <color red="255" green="255" blue="255" />
+    </color.background>
+    <name>Label</name>
+    <horizontal_alignment>0</horizontal_alignment>
+    <y>36</y>
+    <actions hook="false" />
+    <x>28</x>
+    <tooltip />
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
+    <visible>true</visible>
+    <border.width>1</border.width>
+    <type>Text Update</type>
+    <auto_size>false</auto_size>
+    <transparency>false</transparency>
+    <foregroundcolor.alarmsensitive>false</foregroundcolor.alarmsensitive>
+    <height>37</height>
+    <color.background>
+      <color.name>LOLO_COLOR</color.name>
+    </color.background>
+    <name>Text Update</name>
+    <enabled>true</enabled>
+    <text>######sdfsdf</text>
+    <font>
+      <font fontName="Arial" height="14" style="0" />
+    </font>
+    <backgroundcolor.alarmsensitive>false</backgroundcolor.alarmsensitive>
+    <width>120</width>
+    <border.color>
+      <color red="0" green="128" blue="255" />
+    </border.color>
+    <pv.name>sim://noise</pv.name>
+    <color.foreground>
+      <color red="0" green="0" blue="0" />
+    </color.foreground>
+    <script />
+    <border.style>0</border.style>
+    <border.alarmsensitive>true</border.alarmsensitive>
+    <actions hook="false" />
+    <y>42</y>
+    <tooltip>$(pv.name)</tooltip>
+    <x>438</x>
+  </widget>
+</display>

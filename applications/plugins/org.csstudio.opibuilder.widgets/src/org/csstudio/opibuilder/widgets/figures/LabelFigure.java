@@ -1,15 +1,8 @@
 package org.csstudio.opibuilder.widgets.figures;
 
-import org.csstudio.opibuilder.visualparts.BorderFactory;
-import org.csstudio.opibuilder.visualparts.BorderStyle;
 import org.eclipse.draw2d.Figure;
-import org.eclipse.draw2d.Label;
-import org.eclipse.draw2d.LineBorder;
-import org.eclipse.draw2d.MarginBorder;
-import org.eclipse.draw2d.RectangleFigure;
-import org.eclipse.draw2d.ScrollPane;
-import org.eclipse.draw2d.StackLayout;
 import org.eclipse.draw2d.geometry.Dimension;
+import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.draw2d.text.FlowPage;
 import org.eclipse.draw2d.text.ParagraphTextLayout;
 import org.eclipse.draw2d.text.TextFlow;
@@ -20,10 +13,60 @@ import org.eclipse.swt.graphics.Font;
  * text.
  */
 public class LabelFigure extends Figure{
+	
+	public enum H_ALIGN{
+		LEFT("Left"),
+		CENTER("Center"),
+		RIGHT("Right");
+		String descripion;
+		H_ALIGN(String description){
+			this.descripion = description;
+		}
+		public static String[] stringValues(){
+			String[] result = new String[values().length];
+			int i=0;
+			for(H_ALIGN h : values()){
+				result[i++] = h.toString();
+			}
+			return result;
+		}
+		
+		@Override
+		public String toString() {
+			return descripion;
+		}
+	}
+	
+	public enum V_ALIGN{
+		TOP("Top"),
+		MIDDLE("Middle"),
+		BOTTOM("Bottom");
+		String descripion;
+		V_ALIGN(String description){
+			this.descripion = description;
+		}
+		public static String[] stringValues(){
+			String[] result = new String[values().length];
+			int i=0;
+			for(V_ALIGN h : values()){
+				result[i++] = h.toString();
+			}
+			return result;
+		}
+		
+		@Override
+		public String toString() {
+			return descripion;
+		}
+	}
 
-	private Label label;
-	private ScrollPane scrollPane;
-	private boolean opaque;
+	
+	/** The inner TextFlow **/
+	private TextFlow textFlow;
+	private FlowPage flowPage;
+	
+	private V_ALIGN v_alignment = V_ALIGN.TOP;
+	private H_ALIGN h_alignment = H_ALIGN.LEFT;
 
 	/** 
 	 * Creates a new StickyNoteFigure with a MarginBorder that is the given size and a
@@ -32,19 +75,22 @@ public class LabelFigure extends Figure{
 	 * @param borderSize the size of the MarginBorder
 	 */
 	public LabelFigure() {
-		scrollPane = new ScrollPane(){
+		
+		//setLayoutManager(new StackLayout());
+		//add(scrollPane);
+		flowPage = new FlowPage();
+		textFlow = new TextFlow(){
 			@Override
-			public boolean isOpaque() {
-				return opaque;
+			public void setFont(Font f) {
+				super.setFont(f);
+				revalidateBidi(this);
+				repaint();
 			}
 		};
-		scrollPane.setOpaque(false);
-		
-		setLayoutManager(new StackLayout());
-		add(scrollPane);
-		label = new Label();
-		label.setOpaque(false);
-		scrollPane.setContents(label);		
+		textFlow.setLayoutManager(new ParagraphTextLayout(textFlow,
+				ParagraphTextLayout.WORD_WRAP_SOFT));
+		flowPage.add(textFlow);
+		add(flowPage);
 	}
 
 	/**
@@ -53,7 +99,7 @@ public class LabelFigure extends Figure{
 	 * @return the text flow inside the text.
 	 */
 	public String getText() {
-		return label.getText();
+		return textFlow.getText();
 	}
 
 	/**
@@ -62,34 +108,90 @@ public class LabelFigure extends Figure{
 	 * @param newText the new text value.
 	 */
 	public void setText(String newText) {		
-		label.setText(newText);
-		label.setSize(label.getPreferredSize());
-		label.revalidate();
+		textFlow.setText(newText);
+		revalidate();
+
 	}
 
-	public Label getLabel() {
-		return label;
-	}
 	
 
 	@Override
 	public void setOpaque(boolean opaque) {		
-		this.opaque = opaque;
-		label.setOpaque(opaque);
+		textFlow.setOpaque(opaque);
 		super.setOpaque(opaque);
 	}
 	
 	
 	@Override
 	public void setFont(Font f) {
-		label.setFont(f);
+		flowPage.setFont(f);
+		textFlow.setFont(f);
 		super.setFont(f);
 		revalidate();			
 	}
 	
-	public void setScrollbarVisible(boolean visible){
-		scrollPane.setScrollBarVisibility(visible ? ScrollPane.AUTOMATIC : ScrollPane.NEVER);
+
+	
+
+	
+	public void setV_alignment(V_ALIGN vAlignment) {
+		v_alignment = vAlignment;
+		revalidate();
 	}
 	
+	public void setH_alignment(H_ALIGN hAlignment) {
+		h_alignment = hAlignment;
+		revalidate();
+	}
+	
+	
+	
+	@Override
+	protected void layout() {
+		Rectangle clientArea = getClientArea();
+		Dimension preferedSize = flowPage.getPreferredSize();
+			int x=clientArea.x;
+			if(clientArea.width > preferedSize.width){
+				
+				switch (h_alignment) {
+				case CENTER:
+					x = clientArea.x + (clientArea.width - preferedSize.width)/2;
+					break;
+				case RIGHT:
+					x = clientArea.x + clientArea.width - preferedSize.width;
+					break;
+				case LEFT:
+				default:
+					x=clientArea.x;
+					break;
+				}
+			}else{
+				preferedSize = flowPage.getPreferredSize(clientArea.width, -1);
+			}
+			int y=clientArea.y;
+			if(clientArea.height > preferedSize.height){
+				switch (v_alignment) {
+				case MIDDLE:
+					y = clientArea.y + (clientArea.height - preferedSize.height)/2;
+					break;
+				case BOTTOM:
+					y = clientArea.y + clientArea.height - preferedSize.height;
+					break;
+				case TOP:
+				default:
+					y=clientArea.y;
+					break;
+				}
+			}
+			
+			flowPage.setBounds(new Rectangle(x, y, 
+					clientArea.width - (x - clientArea.x), clientArea.height - (y - clientArea.y)));
+	}
+	
+	
+	public Dimension getAutoSizeDimension(){
+		return flowPage.getPreferredSize().getCopy().expand(
+				getInsets().getWidth(), getInsets().getHeight());
+	}
 
 }
