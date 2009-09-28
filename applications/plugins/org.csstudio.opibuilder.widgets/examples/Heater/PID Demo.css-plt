@@ -79,12 +79,6 @@
     </pvlist>
     <markers>
         <axis y="0">
-            <marker><position>1.254149727472E9</position><value>29.9999999870946</value><text>test:tank [C]
-2009/09/28 10:55:27.471999883
-30.00
-Sevr/Stat: OK, OK
-Source: Live Sample
-Quality: original</text></marker>
         </axis>
         <axis y="1">
         </axis>
