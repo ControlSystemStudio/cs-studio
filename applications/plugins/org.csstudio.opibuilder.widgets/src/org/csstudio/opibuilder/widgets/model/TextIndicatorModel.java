@@ -73,7 +73,6 @@ public class TextIndicatorModel extends LabelModel {
 		addProperty(new BooleanProperty(PROP_SHOW_UNITS, "Show Units", category, true));
 		
 		setPropertyValue(PROP_TEXT, "######");
-		setPropertyValue(PROP_SHOW_SCROLLBAR, false);
 		setPropertyValue(PROP_ALIGN_H, 1);
 		setPropertyValue(PROP_ALIGN_V, 1);
 	}

@@ -28,7 +28,6 @@ public class LabelModel extends AbstractPVWidgetModel {
 	public static final String PROP_ALIGN_H = "horizontal_alignment";	//$NON-NLS-1$
 	public static final String PROP_ALIGN_V = "vertical_alignment";	//$NON-NLS-1$
 	
-	public static final String PROP_SHOW_SCROLLBAR = "show_scrollbar";	//$NON-NLS-1$
 	
 	public static final String PROP_FONT= "font"; //$NON-NLS-1$
 
@@ -57,8 +56,7 @@ public class LabelModel extends AbstractPVWidgetModel {
 				WidgetPropertyCategory.Display, H_ALIGN.stringValues(), 1));
 		addProperty(new ComboProperty(PROP_ALIGN_V, "Vertical Alignment", 
 				WidgetPropertyCategory.Display, V_ALIGN.stringValues(), 1));
-		addProperty(new BooleanProperty(PROP_SHOW_SCROLLBAR, "Show Scrollbar", 
-				WidgetPropertyCategory.Display, true));
+
 		if(!pvModel){
 			removeProperty(PROP_PVNAME);
 			removeProperty(PROP_PVVALUE);
@@ -97,10 +95,6 @@ public class LabelModel extends AbstractPVWidgetModel {
 	
 	public boolean isAutoSize(){
 		return (Boolean)getCastedPropertyValue(PROP_AUTOSIZE);
-	}
-	
-	public boolean isShowScrollbar(){
-		return (Boolean)getCastedPropertyValue(PROP_SHOW_SCROLLBAR);
 	}
 	
 	
