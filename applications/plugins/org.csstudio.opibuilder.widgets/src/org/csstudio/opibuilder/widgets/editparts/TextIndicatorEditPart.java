@@ -38,7 +38,6 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 		LabelFigure labelFigure = new LabelFigure();
 		labelFigure.setFont(CustomMediaFactory.getInstance().getFont(
 				getWidgetModel().getFont().getFontData()));
-		labelFigure.setText(getWidgetModel().getText());		
 		labelFigure.setOpaque(!getWidgetModel().isTransparent());
 		labelFigure.setH_alignment(getWidgetModel().getHorizontalAlignment());
 		labelFigure.setV_alignment(getWidgetModel().getVerticalAlignment());
@@ -50,6 +49,12 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 		super.createEditPolicies();
 		if(getExecutionMode() == ExecutionMode.EDIT_MODE)
 			installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new TextIndicatorDirectEditPolicy());		
+	}
+	
+	@Override
+	public void activate() {
+		super.activate();
+		((LabelFigure)getFigure()).setText(getWidgetModel().getText());		
 	}
 	
 	@Override

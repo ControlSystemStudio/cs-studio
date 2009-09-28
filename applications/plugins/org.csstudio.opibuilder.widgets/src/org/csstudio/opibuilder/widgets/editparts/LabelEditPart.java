@@ -28,13 +28,18 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 		LabelFigure labelFigure = new LabelFigure();
 		labelFigure.setFont(CustomMediaFactory.getInstance().getFont(
 				getWidgetModel().getFont().getFontData()));
-		labelFigure.setText(getWidgetModel().getText());		
 		labelFigure.setOpaque(!getWidgetModel().isTransparent());
 		labelFigure.setH_alignment(getWidgetModel().getHorizontalAlignment());
 		labelFigure.setV_alignment(getWidgetModel().getVerticalAlignment());
 		return labelFigure;
 	}
-
+	
+	@Override
+	public void activate() {
+		super.activate();
+		((LabelFigure)getFigure()).setText(getWidgetModel().getText());		
+	}
+	
 	@Override
 	protected void createEditPolicies() {
 		super.createEditPolicies();

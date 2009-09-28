@@ -3,6 +3,7 @@ package org.csstudio.opibuilder.widgets.figures;
 import org.csstudio.opibuilder.widgets.figureparts.RoundScale;
 import org.csstudio.opibuilder.widgets.figureparts.RoundScaleTickMarks;
 import org.csstudio.opibuilder.widgets.figureparts.RoundScaledRamp;
+import org.csstudio.opibuilder.widgets.util.GraphicsUtil;
 import org.csstudio.opibuilder.widgets.util.RotationUtil;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.swt.xygraph.linearscale.AbstractScale.LabelSide;
@@ -104,16 +105,11 @@ public class GaugeFigure extends AbstractRoundRampedFigure {
 		Pattern pattern = null;
 		graphics.pushState();
 		graphics.setBackgroundColor(GRAY_COLOR);
-		boolean support3D = true;
-		if(effect3D) {			
-			try {
-				pattern = new Pattern(Display.getCurrent(), area.x, area.y, 
-						area.x+area.width, area.y + area.height, BORDER_COLOR, WHITE_COLOR);
-				graphics.setBackgroundPattern(pattern);
-			} catch (Exception e) {
-				support3D = false;
-				pattern.dispose();
-			}			
+		boolean support3D = GraphicsUtil.testPatternSupported(graphics);
+		if(effect3D && support3D) {					
+			pattern = new Pattern(Display.getCurrent(), area.x, area.y, 
+				area.x+area.width, area.y + area.height, BORDER_COLOR, WHITE_COLOR);
+			graphics.setBackgroundPattern(pattern);					
 		}	
 		graphics.fillOval(area);
 		graphics.popState();
@@ -201,16 +197,11 @@ public class GaugeFigure extends AbstractRoundRampedFigure {
 			graphics.setAntialias(SWT.ON);
 			Pattern pattern = null;
 			graphics.setBackgroundColor(GRAY_COLOR);
-			boolean support3D = true;
-			if(effect3D){
-				try {
+			boolean support3D = GraphicsUtil.testPatternSupported(graphics);
+			if(effect3D && support3D){				
 					pattern = new Pattern(Display.getCurrent(), bounds.x, bounds.y,
 							bounds.x + bounds.width, bounds.y + bounds.height, WHITE_COLOR, BORDER_COLOR);
-					graphics.setBackgroundPattern(pattern);
-				} catch (Exception e) {
-					support3D = false;
-					pattern.dispose();
-				}				
+					graphics.setBackgroundPattern(pattern);							
 			}			
 			super.fillShape(graphics);
 			if(effect3D && support3D)
