@@ -156,7 +156,7 @@ $(pv_value)</tooltip>
     <color_lolo>
       <color red="255" green="0" blue="0" />
     </color_lolo>
-    <x>130</x>
+    <x>180</x>
     <level_hi>80.0</level_hi>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
@@ -432,7 +432,7 @@ $(pv_value)</tooltip>
     <show_units>true</show_units>
     <widget_type>Text Update</widget_type>
     <background_color>
-      <color red="228" green="228" blue="228" />
+      <color red="220" green="220" blue="220" />
     </background_color>
     <enabled>true</enabled>
     <y>240</y>
@@ -474,7 +474,7 @@ $(pv_value)</tooltip>
     <show_units>true</show_units>
     <widget_type>Text Update</widget_type>
     <background_color>
-      <color red="228" green="228" blue="228" />
+      <color red="220" green="220" blue="220" />
     </background_color>
     <enabled>true</enabled>
     <y>210</y>
@@ -516,7 +516,7 @@ $(pv_value)</tooltip>
     <show_units>true</show_units>
     <widget_type>Text Update</widget_type>
     <background_color>
-      <color red="228" green="228" blue="228" />
+      <color red="220" green="220" blue="220" />
     </background_color>
     <enabled>true</enabled>
     <y>250</y>
@@ -558,7 +558,7 @@ $(pv_value)</tooltip>
     <show_units>true</show_units>
     <widget_type>Text Input</widget_type>
     <background_color>
-      <color red="228" green="228" blue="228" />
+      <color red="220" green="220" blue="220" />
     </background_color>
     <enabled>true</enabled>
     <y>240</y>
@@ -600,7 +600,7 @@ $(pv_value)</tooltip>
     <show_units>false</show_units>
     <widget_type>Text Input</widget_type>
     <background_color>
-      <color red="228" green="228" blue="228" />
+      <color red="220" green="220" blue="220" />
     </background_color>
     <enabled>true</enabled>
     <y>280</y>
@@ -642,7 +642,7 @@ $(pv_value)</tooltip>
     <show_units>false</show_units>
     <widget_type>Text Input</widget_type>
     <background_color>
-      <color red="228" green="228" blue="228" />
+      <color red="220" green="220" blue="220" />
     </background_color>
     <enabled>true</enabled>
     <y>324</y>
@@ -960,7 +960,7 @@ $(pv_value)</tooltip>
     </foreground_color>
     <horizontal_alignment>0</horizontal_alignment>
     <name>Label_16</name>
-    <x>440</x>
+    <x>439</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <auto_size>true</auto_size>
@@ -1163,7 +1163,7 @@ $(pv_value)</tooltip>
     <show_units>true</show_units>
     <widget_type>Text Input</widget_type>
     <background_color>
-      <color red="228" green="228" blue="228" />
+      <color red="220" green="220" blue="220" />
     </background_color>
     <enabled>true</enabled>
     <y>310</y>
@@ -1179,6 +1179,7 @@ $(pv_value)</tooltip>
     <scripts>
       <path pathString="/CSS/examples/Heater/scripts/Analyze.js">
         <pv>$(P):PID</pv>
+        <pv>sim://sine(-10,10,10,0.1)</pv>
       </path>
     </scripts>
     <border_width>1</border_width>
@@ -1314,7 +1315,7 @@ $(pv_value)</tooltip>
     <show_units>true</show_units>
     <widget_type>Text Update</widget_type>
     <background_color>
-      <color red="228" green="228" blue="228" />
+      <color red="220" green="220" blue="220" />
     </background_color>
     <enabled>true</enabled>
     <y>360</y>
@@ -1424,7 +1425,7 @@ $(pv_value)</tooltip>
     <show_units>true</show_units>
     <widget_type>Text Update</widget_type>
     <background_color>
-      <color red="228" green="228" blue="228" />
+      <color red="220" green="220" blue="220" />
     </background_color>
     <enabled>true</enabled>
     <y>360</y>
@@ -1466,7 +1467,7 @@ $(pv_value)</tooltip>
     <show_units>true</show_units>
     <widget_type>Text Input</widget_type>
     <background_color>
-      <color red="228" green="228" blue="228" />
+      <color red="220" green="220" blue="220" />
     </background_color>
     <enabled>true</enabled>
     <y>360</y>
@@ -1508,7 +1509,7 @@ $(pv_value)</tooltip>
     <show_units>true</show_units>
     <widget_type>Text Input</widget_type>
     <background_color>
-      <color red="228" green="228" blue="228" />
+      <color red="220" green="220" blue="220" />
     </background_color>
     <enabled>true</enabled>
     <y>310</y>

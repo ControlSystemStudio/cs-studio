@@ -14,7 +14,7 @@
         <green>0</green>
         <blue>0</blue>
     </grid_color>
-    <start>-1 minutes -33.635 seconds</start>
+    <start>-1 minutes -33.634 seconds</start>
     <end>now</end>
     <scroll>true</scroll>
     <archive_rescale>STAGGER</archive_rescale>

@@ -6,9 +6,9 @@ importPackage(Packages.org.csstudio.platform.data);
 var sine = ValueUtil.getDouble(pvArray[0].getValue());
 
 var x = 440 + sine;
-var y = 390 + sine;
+var y = 390 + 0.2*sine;
 widgetController.getWidgetModel().setPropertyValue("x", x);
-// widgetController.getWidgetModel().setPropertyValue("y", y);
+widgetController.getWidgetModel().setPropertyValue("y", y);
 
 if (sine > 0.0)
 	widgetController.getWidgetModel().setPropertyValue("foreground_color", CustomMediaFactory.COLOR_RED);
