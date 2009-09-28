@@ -123,7 +123,13 @@ public class PVTableCellModifier implements ICellModifier
             // Since the first call to PVTableLazyContentProvider.updateElement
             // looked like a "PreservingSelection" related call,
             // de-selecting everything seems to help:
-            view.getPVTableViewer().getTable().deselectAll();
+            //    view.getPVTableViewer().getTable().deselectAll();
+            // .. but the "reentrant" error still occured, and deselecting
+            // the entries means nothing is selected when trying to adjust
+            // the archives used for the selected entries.
+            // So forget about deselectAll
+            
+            
             // Was this the magic last row?
             if (element == PVTableHelper.empty_row)
             {
