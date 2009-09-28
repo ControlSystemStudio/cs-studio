@@ -1,5 +1,7 @@
 package org.csstudio.opibuilder.runmode;
 
+import java.util.HashMap;
+
 import org.csstudio.opibuilder.util.MacrosInput;
 import org.csstudio.opibuilder.util.UIBundlingThread;
 import org.csstudio.platform.logging.CentralLogger;

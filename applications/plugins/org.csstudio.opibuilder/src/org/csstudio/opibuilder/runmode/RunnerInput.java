@@ -37,7 +37,7 @@ public class RunnerInput extends FileEditorInput {
 		return displayOpenManager;
 	}
 	
-	@Override
+/*	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
 			return true;
@@ -46,11 +46,16 @@ public class RunnerInput extends FileEditorInput {
 			return false;
 		}
 		RunnerInput other = (RunnerInput) obj;
-		return getFile().equals(other.getFile()) && 
-			displayOpenManager == other.getDisplayOpenManager()  && 
-			macrosInput == other.getMacrosInput();
+		boolean macroSame = false;
+		if(macrosInput != null && other.getMacrosInput() !=null){
+			macroSame = macrosInput.equals(other.getMacrosInput());
+		}else if(macrosInput == null && other.getMacrosInput() == null)
+			macroSame = true;
+		return getFile().equals(other.getFile()) && macroSame;
+	//		displayOpenManager == other.getDisplayOpenManager()  && 
+			
 	}
-
+*/
 
 	/**
 	 * @return the macrosInput

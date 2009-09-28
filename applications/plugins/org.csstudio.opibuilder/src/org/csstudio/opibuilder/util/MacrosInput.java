@@ -62,5 +62,19 @@ public class MacrosInput {
 				"} " : "") + macrosMap.toString();		
 	}
 	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj != null && obj instanceof MacrosInput){
+			MacrosInput input = (MacrosInput)obj;
+			if(input.isInclude_parent_macros() == include_parent_macros &&
+					macrosMap.equals(input.getMacrosMap()))
+				return true;
+			else 
+				return false;
+		}else
+			return false;
+		
+	}
+	
 	
 }
