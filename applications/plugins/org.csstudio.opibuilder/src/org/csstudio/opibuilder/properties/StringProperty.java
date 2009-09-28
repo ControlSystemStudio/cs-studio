@@ -52,9 +52,13 @@ public class StringProperty extends AbstractWidgetProperty {
 	}
 
 	@Override
-	public void writeToXML(Element propElement) {
-		propElement.setText(getPropertyValue().toString());
+	public void writeToXML(Element propElement) {		
+		String reShapedString = 
+			getPropertyValue().toString().replaceAll("\\x0D\\x0A?", new String(new byte[]{13,10}));
+		propElement.setText(reShapedString);
 	}
+	
+
 
 	@Override
 	public Object readValueFromXML(Element propElement) {
