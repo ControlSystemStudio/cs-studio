@@ -77,9 +77,11 @@ public class OPIRunner extends EditorPart {
 		}
 			
 		if(input instanceof RunnerInput){
-			MacrosInput macrosInput = ((RunnerInput)input).getMacrosInput();
-				if(macrosInput != null)
-					displayModel.setPropertyValue(AbstractContainerModel.PROP_MACROS, macrosInput);
+			MacrosInput macrosInput = ((RunnerInput)input).getMacrosInput();			
+			if(macrosInput != null){
+				macrosInput.getMacrosMap().putAll(displayModel.getMacrosInput().getMacrosMap());
+				displayModel.setPropertyValue(AbstractContainerModel.PROP_MACROS, macrosInput);
+			}
 		}
 		if(viewer != null){
 			viewer.setContents(displayModel);

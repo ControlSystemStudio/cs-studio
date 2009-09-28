@@ -76,10 +76,10 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
 	public void activate() {
 		//set macro map
 		Map<String, String> macrosMap = new HashMap<String, String>();
-		macrosMap.putAll(getWidgetModel().getMacrosInput().getMacrosMap());
 		if(getWidgetModel().getMacrosInput().isInclude_parent_macros()){
 			macrosMap.putAll(getWidgetModel().getParentMacroMap());
 		}
+		macrosMap.putAll(getWidgetModel().getMacrosInput().getMacrosMap());		
 		getWidgetModel().setMacroMap(macrosMap);
 		
 		super.activate();
