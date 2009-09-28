@@ -54,8 +54,8 @@ public class ScriptProperty extends AbstractWidgetProperty {
 		if(executionMode == ExecutionMode.RUN_MODE && widgetModel !=null){
 			ScriptsInput value = (ScriptsInput) super.getPropertyValue();
 			for(ScriptData sd : value.getScriptList()){
-				for(String pv : sd.getPVList()){
-					String newPV = MacrosUtil.replaceMacros(widgetModel, pv);
+				for(Object pv : sd.getPVList().toArray()){
+					String newPV = MacrosUtil.replaceMacros(widgetModel, (String)pv);
 					if(!newPV.equals(pv)){
 						sd.getPVList().remove(pv);
 						sd.addPV(newPV);
