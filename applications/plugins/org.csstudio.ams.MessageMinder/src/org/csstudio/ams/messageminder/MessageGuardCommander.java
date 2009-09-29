@@ -144,7 +144,7 @@ public class MessageGuardCommander extends Job {
     /**
      * A Map with the the Messages time stamp that no older then _toOldTime.
      */
-    private HashMap<MessageKey, MessageTimeList> _massageMap;
+    private HashMap<MessageKey, MessageTimeList> _messageMap;
     /**
      * The id of the Producer.
      */
@@ -188,7 +188,7 @@ public class MessageGuardCommander extends Job {
         _keyWords = storeAct.get(MessageMinderPreferenceKey.P_STRING_KEY_WORDS,
                 "HOST,FACILITY,AMS-FILTERID").split(",");
         _lastClean = TimestampFactory.now();
-        _massageMap = new HashMap<MessageKey, MessageTimeList>();
+        _messageMap = new HashMap<MessageKey, MessageTimeList>();
 
         /*
          * initialize statistic
@@ -342,7 +342,7 @@ public class MessageGuardCommander extends Job {
                     return;
                 }
                 // is Action id related to topic.
-                String filterID = mapMessage.getString("AMS-FILTERID");
+                String filterID = mapMessage.getString(AmsConstants.MSGPROP_FILTERID);
                 if (isTopicAction(filterID)) {
                     send(message);
                     return;
@@ -355,10 +355,10 @@ public class MessageGuardCommander extends Job {
                     }
                 }
                 MessageKey key = new MessageKey(keys);
-                MessageTimeList value = _massageMap.get(key);
+                MessageTimeList value = _messageMap.get(key);
                 if (value == null) {
                     value = new MessageTimeList();
-                    _massageMap.put(key, value);
+                    _messageMap.put(key, value);
                 }
                 if (value.add(now)) {
                     send(message);
@@ -412,9 +412,9 @@ public class MessageGuardCommander extends Job {
      *            the actual time
      */
     private void cleanUp(final ITimestamp now) {
-        for (Iterator<MessageKey> ite = _massageMap.keySet().iterator(); ite.hasNext();) {
+        for (Iterator<MessageKey> ite = _messageMap.keySet().iterator(); ite.hasNext();) {
             MessageKey key = ite.next();
-            MessageTimeList value = _massageMap.get(key);
+            MessageTimeList value = _messageMap.get(key);
             if (now.seconds() - value.getLastDate().seconds() > _toOldTime) {
                 sendCleanUpMessage(key, value.getLastDate(), value.getUnsentsgCount());
                 value.resetUnsentMsgCount();
