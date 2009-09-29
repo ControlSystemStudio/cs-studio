@@ -40,12 +40,9 @@
     <font>
       <fontdata fontName="Arial" height="10" style="0" />
     </font>
-    <text>The outlooking, behavior, location and size of  widgets are called properties. The properties could be set in property sheet in editing mode, and also can be changed in the attached scripts during running. The value of the any property can be accessed with Property Macro by property_id. In most cases, the prop_id is following the convention to the name:&#xD;
-1. lower case of all characters&#xD;
-2. replace space to underscore&#xD;
-For Example: foreground_color, background_color, enabled</text>
+    <text>For the widget which has the property of "PV Name(pv_name)", "Readback PV(pv_name)" or "Control PV(control_pv)", we call it PV Widget. During runtime, right click a PV widget and then you will see the "CSS" context menu which allows it connecting with other CSS Applications. The PV name is the bridge of the connection.</text>
     <widget_type>Label</widget_type>
-    <height>89</height>
+    <height>55</height>
     <background_color>
       <color red="255" green="255" blue="223" />
     </background_color>
@@ -75,39 +72,20 @@ For Example: foreground_color, background_color, enabled</text>
     <font>
       <fontdata fontName="Arial" height="10" style="0" />
     </font>
-    <text>The common properties (PropertyName(Property_id)) for most of the widgets:&#xD;
-Basic:&#xD;
-1. Name(name). The name of the widget.  &#xD;
-2. Widget Type(widget_type).  The type of the widget. This is the only property that is uneditable. The name and type of the selected widget will also be displayed on the status bar.&#xD;
+    <text>The common properties for most of the PV widgets:&#xD;
+
+1. PV Name(pv_name). The name of the main PV associated with the widget.&#xD;
+2. Readback PV(pv_name). Same as PV Name.&#xD;
+3. Control PV(control_pv). The name of the PV to be controlled.
 &#xD;
-Behavior:&#xD;
-3. Actions(actions). The actions assocaited with the widget.&#xD;
-4. Enabled(enabled). A disabled control widget is not controllable.&#xD;
-5. Scripts(scripts). The scripts attached to the widget.&#xD;
-6. Visible(visible). Visibility of the widget.&#xD;
-&#xD;
-Border:&#xD;
-7. Border Color(border_color). The color of the border.&#xD;
-8. Border Style(border_style). The style of the border.&#xD;
-9. Border width(border_width). The width of the border. Only meaningful for line or dot line styles.&#xD;
-&#xD;
-Display:&#xD;
-10. Background Color(background_color).&#xD;
-11. Foreground Color(foreground_color).&#xD;
-12. Tooltip(tooltip). Tooltip of the widget. Macros are allowed and can be updated. The property macro $(pv_value) could be used to show the PV value which has timestamp, value, severity and status.&#xD;
-&#xD;
-Position:&#xD;
-13. Height(height). The height of the widget in pixels.&#xD;
-14. Width(width). The width of the widget in pixels.&#xD;
-15. X(x). X location coordinate in pixels. The zero point of the coordinate system is on the left-top cornor. Negative coordinate is allowed, but is not recommended.&#xD;
-16. Y(y).  Y location coordinate in pixels</text>
+4. Limits From DB(limits_from_db). Load the Maximum, Minimum, HIHI, HI, LOLO, LO limits from PV.</text>
     <widget_type>Label</widget_type>
-    <height>359</height>
+    <height>364</height>
     <background_color>
       <color red="255" green="255" blue="223" />
     </background_color>
     <enabled>true</enabled>
-    <y>205</y>
+    <y>172</y>
     <visible>true</visible>
     <foreground_color>
       <color red="0" green="0" blue="203" />
@@ -132,7 +110,7 @@ Position:&#xD;
     <font>
       <fontdata fontName="Arial" height="18" style="1" />
     </font>
-    <text>Widget Properties</text>
+    <text>PV Widget Properties</text>
     <widget_type>Label</widget_type>
     <height>86</height>
     <background_color>
@@ -241,7 +219,7 @@ Position:&#xD;
     <foreground_color>
       <color red="0" green="0" blue="128" />
     </foreground_color>
-    <y>563</y>
+    <y>552</y>
     <image>/BOY Examples/pictures/home-16x16.png</image>
     <name>Action Button</name>
     <x>25</x>
@@ -270,7 +248,7 @@ $(pv_value)</tooltip>
       <color red="0" green="255" blue="128" />
     </background_color>
     <enabled>true</enabled>
-    <y>192</y>
+    <y>166</y>
     <visible>true</visible>
     <foreground_color>
       <color red="0" green="0" blue="0" />
