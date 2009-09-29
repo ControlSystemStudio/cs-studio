@@ -8,9 +8,9 @@ import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 public abstract class AbstractPVWidgetModel extends AbstractWidgetModel {
 
 
-	public static final String PROP_BORDER_ALARMSENSITIVE= "border.alarmsensitive"; //$NON-NLS-1$
-	public static final String PROP_FORECOLOR_ALARMSENSITIVE= "foregroundcolor.alarmsensitive"; //$NON-NLS-1$
-	public static final String PROP_BACKCOLOR_ALARMSENSITIVE= "backgroundcolor.alarmsensitive"; //$NON-NLS-1$
+	public static final String PROP_BORDER_ALARMSENSITIVE= "border_alarm_sensitive"; //$NON-NLS-1$
+	public static final String PROP_FORECOLOR_ALARMSENSITIVE= "forecolor_alarm_sensitive"; //$NON-NLS-1$
+	public static final String PROP_BACKCOLOR_ALARMSENSITIVE= "backcolor_alarm_sensitive"; //$NON-NLS-1$
 	/**
 	 * The ID of the pv value property.
 	 */
