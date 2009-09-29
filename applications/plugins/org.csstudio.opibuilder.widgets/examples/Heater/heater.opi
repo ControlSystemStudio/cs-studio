@@ -5,6 +5,7 @@
   <actions hook="false" />
   <macros>
     <include_parent_macros>true</include_parent_macros>
+    <tooltip>Hello!</tooltip>
     <P>test</P>
   </macros>
   <snap_to_geometry>false</snap_to_geometry>
@@ -166,8 +167,7 @@ $(pv_value)</tooltip>
     <scripts />
     <border_width>1</border_width>
     <border_style>0</border_style>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
+    <tooltip />
     <actions hook="false" />
     <border_color>
       <color red="0" green="128" blue="255" />
@@ -271,8 +271,7 @@ $(pv_value)</tooltip>
     <scripts />
     <border_width>1</border_width>
     <border_style>0</border_style>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
+    <tooltip />
     <actions hook="false" />
     <border_color>
       <color red="0" green="128" blue="255" />
@@ -305,8 +304,7 @@ $(pv_value)</tooltip>
     <scripts />
     <border_width>1</border_width>
     <border_style>0</border_style>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
+    <tooltip />
     <actions hook="false" />
     <border_color>
       <color red="0" green="128" blue="255" />
@@ -339,8 +337,7 @@ $(pv_value)</tooltip>
     <scripts />
     <border_width>1</border_width>
     <border_style>0</border_style>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
+    <tooltip />
     <actions hook="false" />
     <border_color>
       <color red="0" green="128" blue="255" />
@@ -658,8 +655,7 @@ $(pv_value)</tooltip>
     <scripts />
     <border_width>1</border_width>
     <border_style>0</border_style>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
+    <tooltip />
     <actions hook="false" />
     <border_color>
       <color red="0" green="128" blue="255" />
@@ -765,8 +761,7 @@ $(pv_value)</tooltip>
     <scripts />
     <border_width>1</border_width>
     <border_style>0</border_style>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
+    <tooltip />
     <actions hook="false" />
     <border_color>
       <color red="0" green="128" blue="255" />
@@ -784,7 +779,7 @@ $(pv_value)</tooltip>
     </background_color>
     <enabled>true</enabled>
     <y>30</y>
-    <visible>true</visible>
+    <visible>false</visible>
     <foreground_color>
       <color red="0" green="0" blue="0" />
     </foreground_color>
@@ -833,8 +828,7 @@ $(pv_value)</tooltip>
     <scripts />
     <border_width>1</border_width>
     <border_style>0</border_style>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
+    <tooltip />
     <actions hook="false" />
     <border_color>
       <color red="0" green="128" blue="255" />
@@ -867,8 +861,7 @@ $(pv_value)</tooltip>
     <scripts />
     <border_width>1</border_width>
     <border_style>0</border_style>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
+    <tooltip />
     <actions hook="false" />
     <border_color>
       <color red="0" green="128" blue="255" />
@@ -901,8 +894,7 @@ $(pv_value)</tooltip>
     <scripts />
     <border_width>1</border_width>
     <border_style>0</border_style>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
+    <tooltip />
     <actions hook="false" />
     <border_color>
       <color red="0" green="128" blue="255" />
@@ -935,8 +927,7 @@ $(pv_value)</tooltip>
     <scripts />
     <border_width>1</border_width>
     <border_style>0</border_style>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
+    <tooltip />
     <actions hook="false" />
     <border_color>
       <color red="0" green="128" blue="255" />
@@ -969,8 +960,7 @@ $(pv_value)</tooltip>
     <scripts />
     <border_width>1</border_width>
     <border_style>0</border_style>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
+    <tooltip />
     <actions hook="false" />
     <border_color>
       <color red="0" green="128" blue="255" />
@@ -1020,7 +1010,7 @@ $(pv_value)</tooltip>
     <crop_right>0</crop_right>
     <enabled>true</enabled>
     <background_color>
-      <color red="240" green="240" blue="240" />
+      <color red="240" green="17" blue="43" />
     </background_color>
     <visible>true</visible>
     <y>180</y>
@@ -1035,8 +1025,7 @@ $(pv_value)</tooltip>
     <scripts />
     <border_width>1</border_width>
     <border_style>0</border_style>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
+    <tooltip />
     <actions hook="false" />
     <border_color>
       <color red="0" green="128" blue="255" />
@@ -1069,8 +1058,7 @@ $(pv_value)</tooltip>
     <scripts />
     <border_width>1</border_width>
     <border_style>0</border_style>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
+    <tooltip />
     <actions hook="false" />
     <border_color>
       <color red="0" green="128" blue="255" />
@@ -1103,8 +1091,7 @@ $(pv_value)</tooltip>
     <scripts />
     <border_width>1</border_width>
     <border_style>0</border_style>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
+    <tooltip />
     <actions hook="false" />
     <border_color>
       <color red="0" green="128" blue="255" />
@@ -1221,8 +1208,7 @@ $(pv_value)</tooltip>
     </scripts>
     <border_width>1</border_width>
     <border_style>0</border_style>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
+    <tooltip />
     <actions hook="false" />
     <border_color>
       <color red="0" green="128" blue="255" />
@@ -1255,8 +1241,7 @@ $(pv_value)</tooltip>
     <scripts />
     <border_width>1</border_width>
     <border_style>0</border_style>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
+    <tooltip />
     <actions hook="false" />
     <border_color>
       <color red="0" green="128" blue="255" />
@@ -1331,8 +1316,7 @@ $(pv_value)</tooltip>
     <scripts />
     <border_width>1</border_width>
     <border_style>0</border_style>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
+    <tooltip />
     <actions hook="false" />
     <border_color>
       <color red="0" green="128" blue="255" />
@@ -1365,8 +1349,7 @@ $(pv_value)</tooltip>
     <scripts />
     <border_width>1</border_width>
     <border_style>0</border_style>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
+    <tooltip />
     <actions hook="false" />
     <border_color>
       <color red="0" green="128" blue="255" />
@@ -1588,8 +1571,7 @@ $(pv_value)</tooltip>
     <scripts />
     <border_width>1</border_width>
     <border_style>0</border_style>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
+    <tooltip />
     <actions hook="false" />
     <border_color>
       <color red="0" green="128" blue="255" />
@@ -1614,5 +1596,73 @@ $(pv_value)</tooltip>
     <horizontal_alignment>0</horizontal_alignment>
     <name>Label_10</name>
     <x>510</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <width>81</width>
+    <scripts />
+    <tooltip />
+    <actions hook="false">
+      <action type="OPEN_DISPLAY">
+        <path>/CSS/examples/Heater/tank.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+        </macros>
+        <replace>true</replace>
+      </action>
+    </actions>
+    <toggle_button>false</toggle_button>
+    <font>
+      <fontdata fontName="Arial" height="9" style="0" />
+    </font>
+    <push_action_index>0</push_action_index>
+    <text>Tank Detail</text>
+    <height>21</height>
+    <widget_type>Action Button</widget_type>
+    <enabled>true</enabled>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <visible>true</visible>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <y>400</y>
+    <image />
+    <name>Action Button</name>
+    <x>10</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <width>81</width>
+    <scripts />
+    <tooltip />
+    <actions hook="false">
+      <action type="OPEN_DISPLAY">
+        <path>/CSS/examples/Heater/pid.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+        </macros>
+        <replace>true</replace>
+      </action>
+    </actions>
+    <toggle_button>false</toggle_button>
+    <font>
+      <fontdata fontName="Arial" height="9" style="0" />
+    </font>
+    <push_action_index>0</push_action_index>
+    <text>PID Detail</text>
+    <height>21</height>
+    <widget_type>Action Button</widget_type>
+    <enabled>true</enabled>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <visible>true</visible>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <y>400</y>
+    <image />
+    <name>Action Button_1</name>
+    <x>100</x>
   </widget>
 </display>
