@@ -3,7 +3,6 @@ package org.csstudio.opibuilder.visualparts;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
@@ -19,27 +18,26 @@ public class MultilineTextEditDialog extends Dialog {
 	private String contents;
 	private Text text;
 
-	
-	
-
 	protected MultilineTextEditDialog(Shell parentShell, String stringValue, String dialogTitle) {
 		super(parentShell);
 		this.title = dialogTitle;
 		this.contents = stringValue;
+        // Allow resize
+        setShellStyle(getShellStyle() | SWT.RESIZE);
 	}
 
 	@Override
 	protected Control createDialogArea(Composite parent) {
-		final Composite parent_Composite = (Composite) super.createDialogArea(parent);
-		final Composite mainComposite = new Composite(parent_Composite, SWT.None);			
-		mainComposite.setLayout(new GridLayout(1, false));
-		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-		gridData.widthHint = 400;
-		gridData.heightHint = 200;
-		text = new Text(mainComposite, SWT.MULTI | SWT.BORDER | SWT.H_SCROLL |SWT.V_SCROLL);
+		final Composite container = (Composite) super.createDialogArea(parent);
+		// Single Text area within container.
+		// Resize doesn't fully work, at least on OS X:
+		// Making the Dialog bigger is fine, vertical scrollbars also work.
+		// But when making the Dialog smaller, no horiz. scrollbars appear.
+		final GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+		text = new Text(container, SWT.MULTI | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
 		text.setLayoutData(gridData);
 		text.setText(contents);
-		return parent_Composite;
+		return container;
 	}
 	
 	@Override
@@ -63,7 +61,4 @@ public class MultilineTextEditDialog extends Dialog {
 			
 		return contents;
 	}
-	
-	
-	
 }
