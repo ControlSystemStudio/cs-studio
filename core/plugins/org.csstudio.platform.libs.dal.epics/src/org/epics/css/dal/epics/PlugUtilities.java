@@ -29,6 +29,7 @@ import gov.aps.jca.dbr.DBRType;
 import gov.aps.jca.dbr.TimeStamp;
 import gov.aps.jca.event.PutListener;
 
+import org.epics.css.dal.CommonDataTypes;
 import org.epics.css.dal.DoubleProperty;
 import org.epics.css.dal.DoubleSeqProperty;
 import org.epics.css.dal.DoubleSeqSimpleProperty;
@@ -672,6 +673,26 @@ public final class PlugUtilities
 			else throw new CAException("Class " + value.getClass().getName() + " is not supported by CA.");
 		}
 
+	}
+	
+	/**
+	 * Checks the given type and constructs the data type name,
+	 * that the given type is associated with.
+	 * 
+	 * @param type the epics record type
+	 * @return the datatype
+	 */
+	public static String getDataType(DBRType type) {
+		if (type != null) {
+    		if (type.isBYTE()) return CommonDataTypes.BYTE;
+    		if (type.isDOUBLE()) return CommonDataTypes.DOUBLE;
+    		if (type.isFLOAT()) return CommonDataTypes.FLOAT;
+    		if (type.isINT()) return CommonDataTypes.INT;
+    		if (type.isSHORT()) return CommonDataTypes.SHORT;
+    		if (type.isSTRING()) return CommonDataTypes.STRING;
+    		if (type.isENUM()) return CommonDataTypes.ENUM;
+		}
+		return CommonDataTypes.UNKNOWN;
 	}
 	
 }

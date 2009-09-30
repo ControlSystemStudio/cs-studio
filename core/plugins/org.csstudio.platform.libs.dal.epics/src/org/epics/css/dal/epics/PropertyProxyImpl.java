@@ -54,6 +54,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import org.epics.css.dal.AccessType;
 import org.epics.css.dal.DataExchangeException;
 import org.epics.css.dal.DynamicValueCondition;
 import org.epics.css.dal.DynamicValueState;
@@ -91,17 +92,6 @@ import com.cosylab.util.BitCondition;
 public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 		PropertyProxy<T>, SyncPropertyProxy<T>, DirectoryProxy,
 		ConnectionListener, GetListener {
-
-	public static final String EPICS_WARNING_MAX = "HI";
-	public static final String EPICS_WARNING_MIN = "LO";
-	public static final String EPICS_ALARM_MAX = "HIHI";
-	public static final String EPICS_ALARM_MIN = "LOLO";
-	public static final String EPICS_MAX = "DRVH";
-	public static final String EPICS_MIN = "DRVL";
-	public static final String EPICS_OPR_MAX = "HOPR";
-	public static final String EPICS_OPR_MIN = "LOPR";
-	public static final String EPICS_UNITS = "EGU";
-	
 	
 	/** C_CONDITION_WHEN_CLEARED characteristic for pattern channel */
 	public static BitCondition[] patternWhenCleared = new BitCondition[] {
@@ -547,7 +537,11 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 			} else {
 				characteristics.put(NumericPropertyCharacteristics.C_RESOLUTION, 0xFFFF);
 			}
-
+			
+			characteristics.put(PropertyCharacteristics.C_ACCESS_TYPE,channel != null ? AccessType.getAccess(channel.getReadAccess(),channel.getWriteAccess()) : AccessType.NONE);
+			characteristics.put(PropertyCharacteristics.C_HOSTNAME,channel != null ? channel.getHostName() : "unknown");
+			characteristics.put(EpicsPropertyCharacteristics.EPICS_NUMBER_OF_ELEMENTS, channel != null ? channel.getElementCount() : 1);
+			characteristics.put(PropertyCharacteristics.C_DATATYPE,PlugUtilities.getDataType(null));
 
 			//characteristics.put(NumericPropertyCharacteristics.C_SCALE_TYPE, );
 
@@ -576,7 +570,7 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 			{
 				CTRL gr = (CTRL)dbr;
 				characteristics.put(NumericPropertyCharacteristics.C_UNITS, gr.getUnits());
-				characteristics.put(EPICS_UNITS, gr.getUnits());
+				characteristics.put(EpicsPropertyCharacteristics.EPICS_UNITS, gr.getUnits());
 				
 				// Integer -> Long needed here
 				if (dbr.isINT())
@@ -609,17 +603,17 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 					characteristics.put(NumericPropertyCharacteristics.C_ALARM_MIN, gr.getLowerAlarmLimit());
 				}
 				
-				characteristics.put(EPICS_MIN, characteristics.get(NumericPropertyCharacteristics.C_MINIMUM));
-				characteristics.put(EPICS_MAX, characteristics.get(NumericPropertyCharacteristics.C_MAXIMUM));
+				characteristics.put(EpicsPropertyCharacteristics.EPICS_MIN, characteristics.get(NumericPropertyCharacteristics.C_MINIMUM));
+				characteristics.put(EpicsPropertyCharacteristics.EPICS_MAX, characteristics.get(NumericPropertyCharacteristics.C_MAXIMUM));
 				
-				characteristics.put(EPICS_OPR_MIN, characteristics.get(NumericPropertyCharacteristics.C_GRAPH_MIN));
-				characteristics.put(EPICS_OPR_MAX, characteristics.get(NumericPropertyCharacteristics.C_GRAPH_MAX));
+				characteristics.put(EpicsPropertyCharacteristics.EPICS_OPR_MIN, characteristics.get(NumericPropertyCharacteristics.C_GRAPH_MIN));
+				characteristics.put(EpicsPropertyCharacteristics.EPICS_OPR_MAX, characteristics.get(NumericPropertyCharacteristics.C_GRAPH_MAX));
 				
-				characteristics.put(EPICS_WARNING_MAX, characteristics.get(NumericPropertyCharacteristics.C_WARNING_MAX));
-				characteristics.put(EPICS_WARNING_MIN, characteristics.get(NumericPropertyCharacteristics.C_WARNING_MIN));
+				characteristics.put(EpicsPropertyCharacteristics.EPICS_WARNING_MAX, characteristics.get(NumericPropertyCharacteristics.C_WARNING_MAX));
+				characteristics.put(EpicsPropertyCharacteristics.EPICS_WARNING_MIN, characteristics.get(NumericPropertyCharacteristics.C_WARNING_MIN));
 				
-				characteristics.put(EPICS_ALARM_MAX, characteristics.get(NumericPropertyCharacteristics.C_ALARM_MAX));
-				characteristics.put(EPICS_ALARM_MIN, characteristics.get(NumericPropertyCharacteristics.C_ALARM_MIN));
+				characteristics.put(EpicsPropertyCharacteristics.EPICS_ALARM_MAX, characteristics.get(NumericPropertyCharacteristics.C_ALARM_MAX));
+				characteristics.put(EpicsPropertyCharacteristics.EPICS_ALARM_MIN, characteristics.get(NumericPropertyCharacteristics.C_ALARM_MIN));
 				
 			} else {
 				characteristics.put(NumericPropertyCharacteristics.C_UNITS, "N/A");
@@ -650,6 +644,11 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 				characteristics.put(EnumPropertyCharacteristics.C_ENUM_VALUES, values);
 
 			}
+			
+			characteristics.put(PropertyCharacteristics.C_ACCESS_TYPE,channel != null ? AccessType.getAccess(channel.getReadAccess(),channel.getWriteAccess()) : AccessType.NONE);
+			characteristics.put(PropertyCharacteristics.C_HOSTNAME,channel != null ? channel.getHostName() : "unknown");
+			characteristics.put(EpicsPropertyCharacteristics.EPICS_NUMBER_OF_ELEMENTS, channel != null ? channel.getElementCount() : 1);
+			characteristics.put(PropertyCharacteristics.C_DATATYPE,PlugUtilities.getDataType(dbr.getType()));
 			
 			createSpecificCharacteristics(dbr);
 
