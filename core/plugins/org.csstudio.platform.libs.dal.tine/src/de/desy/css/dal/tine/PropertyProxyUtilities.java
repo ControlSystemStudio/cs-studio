@@ -25,6 +25,7 @@ package de.desy.css.dal.tine;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.epics.css.dal.AccessType;
 import org.epics.css.dal.CharacteristicInfo;
 import org.epics.css.dal.DoubleProperty;
 import org.epics.css.dal.DoubleSeqProperty;
@@ -41,6 +42,7 @@ import org.epics.css.dal.impl.LongSeqPropertyImpl;
 import org.epics.css.dal.impl.StringPropertyImpl;
 import org.epics.css.dal.proxy.PropertyProxy;
 
+import de.desy.tine.addrUtils.TSrvEntry;
 import de.desy.tine.dataUtils.TDataType;
 import de.desy.tine.definitions.TAccess;
 import de.desy.tine.definitions.TArrayType;
@@ -349,7 +351,18 @@ public class PropertyProxyUtilities {
         characteristics.put(NumericPropertyCharacteristics.C_WARNING_MIN,min);
         characteristics.put(NumericPropertyCharacteristics.C_ALARM_MIN,min);
 
-        characteristics.put("dataFormat", TFormat.valueOf(info[0].prpFormat));
+        try {
+            TSrvEntry entry = new TSrvEntry(dissector.getDeviceGroup(), dissector.getDeviceContext());
+            characteristics.put(PropertyCharacteristics.C_HOSTNAME,entry.getFecAddr().fecHost.getHostName());
+        } catch (Exception e) {
+        	characteristics.put(PropertyCharacteristics.C_HOSTNAME,"unknown");
+        }
+        
+        TAccess access = TAccess.valueOf(info[0].prpAccess);
+        characteristics.put(PropertyCharacteristics.C_ACCESS_TYPE,AccessType.getAccess(access.isRead(),access.isWrite()));
+        TFormat format = TFormat.valueOf(info[0].prpFormat);
+        characteristics.put(PropertyCharacteristics.C_DATATYPE,format.toString());
+        characteristics.put("dataFormat", format);
         characteristics.put(NumericPropertyCharacteristics.C_UNITS, info[0].prpUnits);
         characteristics.put("sequenceLength",info[0].prpSize);
         characteristics.put("redirection",info[0].prpRedirection);
@@ -357,7 +370,7 @@ public class PropertyProxyUtilities {
         characteristics.put("rows",(int)info[0].numRows);
         characteristics.put("rowSize",(int)info[0].rowSize);
         characteristics.put("access",TAccess.valueOf(info[0].prpAccess));
-        characteristics.put("editable",TAccess.valueOf(info[0].prpAccess).isWrite());
+        characteristics.put("editable",access.isWrite());
         TArrayType arrayType = TArrayType.valueOf(info[0].prpArrayType);
        	if (arrayType.isChannel()) {
        		String[] names = TQuery.getDeviceNames(dissector.getDeviceContext(), dissector.getDeviceGroup(), dissector.getDeviceProperty());
@@ -404,7 +417,7 @@ public class PropertyProxyUtilities {
        	
         return characteristics;
 	}
-	
+		
 	static long toUTC(double stamp) {
     	return (long)(stamp*1E3);
     }	
