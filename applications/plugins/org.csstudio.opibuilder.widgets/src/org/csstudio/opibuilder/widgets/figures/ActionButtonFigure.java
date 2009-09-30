@@ -84,6 +84,11 @@ public final class ActionButtonFigure extends Button implements
 	}
 	
 	@Override
+	public boolean isOpaque() {
+		return true;
+	}
+	
+	@Override
 	public void setFont(Font f) {
 		super.setFont(f);
 		label.revalidate();

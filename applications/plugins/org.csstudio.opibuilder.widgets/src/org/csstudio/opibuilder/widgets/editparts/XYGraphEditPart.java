@@ -384,7 +384,7 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 	private void setTraceProperty(Trace trace, TraceProperty traceProperty, Object newValue){
 		CircularBufferDataProvider dataProvider = (CircularBufferDataProvider)trace.getDataProvider();
 		switch (traceProperty) {
-		case ANTI_ALIASING:
+		case ANTI_ALIAS:
 			trace.setAntiAliasing((Boolean)newValue);
 			break;
 		case BUFFER_SIZE:
@@ -393,10 +393,10 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 		case CHRONOLOGICAL:
 			dataProvider.setChronological((Boolean)newValue);
 			break;
-		case CLEAR_TRACE:
-			if((Boolean)newValue)
-				dataProvider.clearTrace();
-			break;
+		//case CLEAR_TRACE:
+		//	if((Boolean)newValue)
+		//		dataProvider.clearTrace();
+		//	break;
 		case LINE_WIDTH:
 			trace.setLineWidth((Integer)newValue);
 			break;
@@ -418,9 +418,9 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 		case TRACE_TYPE:
 			trace.setTraceType(TraceType.values()[(Integer)newValue]);
 			break;
-		case TRIGGER_VALUE:
-			dataProvider.triggerUpdate();
-			break;
+	//	case TRIGGER_VALUE:
+			//dataProvider.triggerUpdate();
+	//		break;
 		case UPDATE_DELAY:
 			dataProvider.setUpdateDelay((Integer)newValue);
 			break;

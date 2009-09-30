@@ -12,6 +12,7 @@ import org.csstudio.opibuilder.properties.PVValueProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.OPIFont;
+import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.swt.xygraph.dataprovider.CircularBufferDataProvider.PlotMode;
 import org.csstudio.swt.xygraph.dataprovider.CircularBufferDataProvider.UpdateMode;
 import org.csstudio.swt.xygraph.figures.XYGraph;
@@ -76,8 +77,8 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 		PLOTMODE("plot_mode", "Plot Mode"),
 		BUFFER_SIZE("buffer_size", "Buffer Size"),
 		UPDATE_DELAY("update_delay", "Update Delay"),
-		TRIGGER_VALUE("trigger_value", "Trigger Value"),
-		CLEAR_TRACE("clear_trace", "Clear Plot History"),
+		//TRIGGER_VALUE("trigger_value", "Trigger Value"),
+		//CLEAR_TRACE("clear_trace", "Clear Plot History"),
 		XPV("x_pv", "X PV"),
 		YPV("y_pv", "Y PV"),
 		XPV_VALUE("x_pv_value", "X PV Value"),
@@ -90,7 +91,7 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 		LINE_WIDTH("line_width", "Line Width"),
 		POINT_STYLE("point_style", "Point Style"),
 		POINT_SIZE("point_size", "Point Size"),
-		ANTI_ALIASING("anti_aliasing", "Anti Aliasing"),
+		ANTI_ALIAS("anti_alias", "Anti Alias"),
 		UPDATE_MODE("update_mode", "UpdateMode");
 		
 		public String propIDPre;
@@ -188,6 +189,8 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 	
 	public XYGraphModel() {
 		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+		setForegroundColor(CustomMediaFactory.COLOR_BLUE);
+		setTooltip(""); //$NON-NLS-1$
 	}
 
 	@Override
@@ -301,7 +304,7 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 		case NAME:
 			addProperty(new StringProperty(propID, traceProperty.toString(), category, category.toString()));
 			break;
-		case ANTI_ALIASING:
+		case ANTI_ALIAS:
 		case CHRONOLOGICAL:
 			addProperty(new BooleanProperty(propID, traceProperty.toString(), category, true));
 			break;
@@ -309,9 +312,9 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 			addProperty(new IntegerProperty(propID, 
 					traceProperty.toString(), category, DEFAULT_BUFFER_SIZE, 0, MAX_BUFFER_SIZE));
 			break;
-		case CLEAR_TRACE:
-			addProperty(new BooleanProperty(propID, traceProperty.toString(), category, false));
-			break;
+		//case CLEAR_TRACE:
+		//	addProperty(new BooleanProperty(propID, traceProperty.toString(), category, false));
+		//	break;
 		case LINE_WIDTH:
 			addProperty(new IntegerProperty(propID, traceProperty.toString(), category, 1, 1, 100));
 			break;
@@ -334,9 +337,9 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 			addProperty(new ComboProperty(propID, traceProperty.toString(), category, TraceType.stringValues(), 
 					0));
 			break;
-		case TRIGGER_VALUE:
-			addProperty(new DoubleProperty(propID, traceProperty.toString(), category, 0));
-			break;
+	//	case TRIGGER_VALUE:
+	//		addProperty(new DoubleProperty(propID, traceProperty.toString(), category, 0));
+	//		break;
 		case UPDATE_DELAY:
 			addProperty(new IntegerProperty(propID, traceProperty.toString(), category, 0, 0, 655350));
 			break;
