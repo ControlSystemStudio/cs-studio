@@ -9,7 +9,7 @@
   <show_ruler>false</show_ruler>
   <height>600</height>
   <show_edit_range>true</show_edit_range>
-  <name>Display</name>
+  <name>Actions</name>
   <grid_space>4</grid_space>
   <snap_to_geometry>true</snap_to_geometry>
   <show_grid>false</show_grid>
@@ -44,7 +44,6 @@ Add an "Execute JavaScript" action. Set the file path of the java script.</text>
     </border_color>
     <horizontal_alignment>0</horizontal_alignment>
     <transparent>false</transparent>
-    <show_scrollbar>true</show_scrollbar>
     <y>384</y>
     <actions hook="false" />
     <tooltip />
@@ -80,7 +79,6 @@ The output of the execution of the command will be displayed in the Console View
     </border_color>
     <horizontal_alignment>0</horizontal_alignment>
     <transparent>false</transparent>
-    <show_scrollbar>true</show_scrollbar>
     <y>281</y>
     <actions hook="false" />
     <tooltip />
@@ -119,7 +117,6 @@ Step4. Run OPI to see the result.</text>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <transparent>false</transparent>
-    <show_scrollbar>true</show_scrollbar>
     <y>115</y>
     <actions hook="false" />
     <tooltip />
@@ -152,7 +149,6 @@ Step4. Run OPI to see the result.</text>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <transparent>false</transparent>
-    <show_scrollbar>true</show_scrollbar>
     <y>204</y>
     <actions hook="true">
       <action type="WRITE_PV">
@@ -190,7 +186,6 @@ Step4. Run OPI to see the result.</text>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <transparent>false</transparent>
-    <show_scrollbar>true</show_scrollbar>
     <y>106</y>
     <actions hook="false" />
     <tooltip>$(pv_name)
@@ -226,7 +221,6 @@ Execute Script, Open File</text>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <transparent>false</transparent>
-    <show_scrollbar>true</show_scrollbar>
     <y>6</y>
     <actions hook="false" />
     <tooltip />
@@ -273,19 +267,19 @@ Execute Script, Open File</text>
     <tooltip />
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
+    <border_alarm_sensitive>true</border_alarm_sensitive>
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
     <show_units>true</show_units>
     <precision_from_db>true</precision_from_db>
     <auto_size>false</auto_size>
     <scripts />
-    <foregroundcolor.alarmsensitive>false</foregroundcolor.alarmsensitive>
     <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Text Update</name>
     <format_type>0</format_type>
     <transparent>false</transparent>
     <pv_name>loc://test</pv_name>
-    <show_scrollbar>false</show_scrollbar>
     <background_color>
       <color red="255" green="255" blue="255" />
     </background_color>
@@ -295,14 +289,13 @@ Execute Script, Open File</text>
     <widget_type>Text Update</widget_type>
     <enabled>true</enabled>
     <text>######</text>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <precision>0</precision>
     <font>
       <fontdata fontName="Arial" height="9" style="0" />
     </font>
-    <backgroundcolor.alarmsensitive>false</backgroundcolor.alarmsensitive>
     <width>100</width>
     <border_style>0</border_style>
-    <border.alarmsensitive>true</border.alarmsensitive>
     <border_width>1</border_width>
     <border_color>
       <color red="0" green="128" blue="255" />
@@ -335,7 +328,6 @@ $(pv_value)</tooltip>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <transparent>false</transparent>
-    <show_scrollbar>true</show_scrollbar>
     <y>170</y>
     <actions hook="true">
       <action type="WRITE_PV">
@@ -373,7 +365,6 @@ $(pv_value)</tooltip>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <transparent>false</transparent>
-    <show_scrollbar>true</show_scrollbar>
     <y>308</y>
     <actions hook="true">
       <action type="EXECUTE_CMD">
@@ -412,7 +403,6 @@ $(pv_value)</tooltip>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <transparent>false</transparent>
-    <show_scrollbar>true</show_scrollbar>
     <y>272</y>
     <actions hook="false" />
     <tooltip>$(pv_name)
@@ -446,7 +436,6 @@ $(pv_value)</tooltip>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <transparent>false</transparent>
-    <show_scrollbar>true</show_scrollbar>
     <y>375</y>
     <actions hook="false" />
     <tooltip>$(pv_name)
@@ -480,7 +469,6 @@ $(pv_value)</tooltip>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <transparent>false</transparent>
-    <show_scrollbar>true</show_scrollbar>
     <y>394</y>
     <actions hook="true">
       <action type="EXECUTE_JAVASCRIPT">
@@ -517,7 +505,6 @@ $(pv_value)</tooltip>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <transparent>false</transparent>
-    <show_scrollbar>true</show_scrollbar>
     <y>478</y>
     <actions hook="true">
       <action type="OPEN_FILE">
@@ -555,7 +542,6 @@ Add an "Open File" action. Set the file path.</text>
     </border_color>
     <horizontal_alignment>0</horizontal_alignment>
     <transparent>false</transparent>
-    <show_scrollbar>true</show_scrollbar>
     <y>462</y>
     <actions hook="false" />
     <tooltip />
@@ -588,7 +574,6 @@ Add an "Open File" action. Set the file path.</text>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <transparent>false</transparent>
-    <show_scrollbar>true</show_scrollbar>
     <y>453</y>
     <actions hook="false" />
     <tooltip>$(pv_name)
@@ -622,7 +607,6 @@ $(pv_value)</tooltip>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <transparent>false</transparent>
-    <show_scrollbar>true</show_scrollbar>
     <y>49</y>
     <actions hook="false" />
     <tooltip />
@@ -655,7 +639,6 @@ $(pv_value)</tooltip>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <transparent>false</transparent>
-    <show_scrollbar>true</show_scrollbar>
     <y>6</y>
     <actions hook="false" />
     <tooltip />

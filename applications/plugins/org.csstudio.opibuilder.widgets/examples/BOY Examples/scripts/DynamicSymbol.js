@@ -13,10 +13,10 @@ var value = ValueUtil.getDouble(pvArray[0].getValue());
 
 
 if(value==0)
-	widgetController.getWidgetModel().setOPIFilePath("/OPIBuilder/DynamicSymbol/1.opi");
+	widgetController.getWidgetModel().setOPIFilePath("/BOY Examples/widgets/DynamicSymbols/1.opi");
 else if(value==1)
-	widgetController.getWidgetModel().setOPIFilePath("/OPIBuilder/DynamicSymbol/2.opi");
+	widgetController.getWidgetModel().setOPIFilePath("/BOY Examples/widgets/DynamicSymbols/2.opi");
 else if(value==2)
-	widgetController.getWidgetModel().setOPIFilePath("/OPIBuilder/DynamicSymbol/3.opi");	
+	widgetController.getWidgetModel().setOPIFilePath("/BOY Examples/widgets/DynamicSymbols/3.opi");	
 else if(value==3)
-	widgetController.getWidgetModel().setOPIFilePath("/OPIBuilder/DynamicSymbol/4.opi");	
+	widgetController.getWidgetModel().setOPIFilePath("/BOY Examples/widgets/DynamicSymbols/4.opi");	

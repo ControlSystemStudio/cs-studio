@@ -9,7 +9,7 @@
   <show_ruler>true</show_ruler>
   <height>600</height>
   <show_edit_range>true</show_edit_range>
-  <name>Display</name>
+  <name>Start Up</name>
   <grid_space>6</grid_space>
   <snap_to_geometry>true</snap_to_geometry>
   <show_grid>false</show_grid>
@@ -49,7 +49,6 @@ Step4. Run OPI and then you can set the PV value by dragging the thumb on the kn
     </border_color>
     <horizontal_alignment>0</horizontal_alignment>
     <transparent>false</transparent>
-    <show_scrollbar>true</show_scrollbar>
     <y>396</y>
     <actions hook="false" />
     <tooltip />
@@ -62,19 +61,19 @@ Step4. Run OPI and then you can set the PV value by dragging the thumb on the kn
     </foreground_color>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
+    <border_alarm_sensitive>true</border_alarm_sensitive>
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
     <show_units>true</show_units>
     <precision_from_db>true</precision_from_db>
     <auto_size>false</auto_size>
     <scripts />
-    <foregroundcolor.alarmsensitive>false</foregroundcolor.alarmsensitive>
     <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Text Update</name>
     <format_type>0</format_type>
     <transparent>false</transparent>
     <pv_name>sim://noise</pv_name>
-    <show_scrollbar>false</show_scrollbar>
     <background_color>
       <color red="255" green="255" blue="255" />
     </background_color>
@@ -84,14 +83,13 @@ Step4. Run OPI and then you can set the PV value by dragging the thumb on the kn
     <widget_type>Text Update</widget_type>
     <enabled>true</enabled>
     <text>######</text>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <precision>0</precision>
     <font>
       <fontdata fontName="Arial" height="9" style="0" />
     </font>
-    <backgroundcolor.alarmsensitive>false</backgroundcolor.alarmsensitive>
     <width>100</width>
     <border_style>0</border_style>
-    <border.alarmsensitive>true</border.alarmsensitive>
     <border_width>1</border_width>
     <border_color>
       <color red="0" green="128" blue="255" />
@@ -136,7 +134,6 @@ You can also show PV value from other widgets (e.g. Gauge, Meter, Thermometer...
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <transparent>false</transparent>
-    <show_scrollbar>true</show_scrollbar>
     <y>104</y>
     <actions hook="false" />
     <tooltip />
@@ -169,7 +166,6 @@ You can also show PV value from other widgets (e.g. Gauge, Meter, Thermometer...
     </border_color>
     <horizontal_alignment>0</horizontal_alignment>
     <transparent>false</transparent>
-    <show_scrollbar>true</show_scrollbar>
     <y>97</y>
     <actions hook="false" />
     <tooltip>$(pv_name)&#xD;
@@ -203,7 +199,6 @@ $(pv_value)</tooltip>
     </border_color>
     <horizontal_alignment>0</horizontal_alignment>
     <transparent>false</transparent>
-    <show_scrollbar>true</show_scrollbar>
     <y>388</y>
     <actions hook="false" />
     <tooltip>$(pv_name)&#xD;
@@ -217,6 +212,7 @@ $(pv_value)</tooltip>
     </foreground_color>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.gauge" version="1.0">
+    <border_alarm_sensitive>true</border_alarm_sensitive>
     <level_lo>22.0</level_lo>
     <visible>true</visible>
     <minimum>0.0</minimum>
@@ -225,7 +221,6 @@ $(pv_value)</tooltip>
     </color_hihi>
     <show_lo>true</show_lo>
     <scripts />
-    <foregroundcolor.alarmsensitive>false</foregroundcolor.alarmsensitive>
     <height>136</height>
     <show_scale>true</show_scale>
     <show_hihi>true</show_hihi>
@@ -233,6 +228,7 @@ $(pv_value)</tooltip>
       <color red="255" green="255" blue="0" />
     </color_lo>
     <major_tick_step_hint>50.0</major_tick_step_hint>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Gauge</name>
     <pv_name>sim://noise</pv_name>
     <color_hi>
@@ -246,9 +242,9 @@ $(pv_value)</tooltip>
     </foreground_color>
     <widget_type>Gauge</widget_type>
     <enabled>true</enabled>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <level_hi>80.0</level_hi>
     <show_minor_ticks>true</show_minor_ticks>
-    <backgroundcolor.alarmsensitive>false</backgroundcolor.alarmsensitive>
     <width>138</width>
     <level_hihi>90.0</level_hihi>
     <border_style>0</border_style>
@@ -259,7 +255,6 @@ $(pv_value)</tooltip>
       <color red="255" green="0" blue="0" />
     </color_lolo>
     <transparent_background>true</transparent_background>
-    <border.alarmsensitive>true</border.alarmsensitive>
     <show_markers>true</show_markers>
     <show_hi>true</show_hi>
     <needle_color>
@@ -281,6 +276,7 @@ $(pv_value)</tooltip>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.knob" version="1.0">
     <level_lo>20.0</level_lo>
+    <border_alarm_sensitive>true</border_alarm_sensitive>
     <visible>true</visible>
     <color_hihi>
       <color red="255" green="0" blue="0" />
@@ -294,6 +290,7 @@ $(pv_value)</tooltip>
       <color red="150" green="150" blue="150" />
     </knob_color>
     <height>156</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <major_tick_step_hint>50.0</major_tick_step_hint>
     <background_color>
       <color red="240" green="240" blue="240" />
@@ -303,7 +300,6 @@ $(pv_value)</tooltip>
     <increment>1.0</increment>
     <show_minor_ticks>true</show_minor_ticks>
     <width>163</width>
-    <backgroundcolor.alarmsensitive>false</backgroundcolor.alarmsensitive>
     <show_lolo>true</show_lolo>
     <border_style>0</border_style>
     <effect_3d>true</effect_3d>
@@ -313,7 +309,6 @@ $(pv_value)</tooltip>
     <maximum>100.0</maximum>
     <log_scale>false</log_scale>
     <minimum>0.0</minimum>
-    <foregroundcolor.alarmsensitive>false</foregroundcolor.alarmsensitive>
     <show_hihi>true</show_hihi>
     <show_scale>true</show_scale>
     <color_lo>
@@ -328,13 +323,13 @@ $(pv_value)</tooltip>
     <foreground_color>
       <color red="0" green="0" blue="0" />
     </foreground_color>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <level_hi>80.0</level_hi>
     <level_hihi>90.0</level_hihi>
     <ramp_gradient>true</ramp_gradient>
     <color_lolo>
       <color red="255" green="0" blue="0" />
     </color_lolo>
-    <border.alarmsensitive>true</border.alarmsensitive>
     <transparent_background>true</transparent_background>
     <show_value_label>true</show_value_label>
     <limits_from_db>false</limits_from_db>
@@ -349,19 +344,19 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
+    <border_alarm_sensitive>true</border_alarm_sensitive>
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
     <show_units>true</show_units>
     <precision_from_db>true</precision_from_db>
     <auto_size>false</auto_size>
     <scripts />
-    <foregroundcolor.alarmsensitive>false</foregroundcolor.alarmsensitive>
     <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Text Update_1</name>
     <format_type>0</format_type>
     <transparent>false</transparent>
     <pv_name>loc://test</pv_name>
-    <show_scrollbar>false</show_scrollbar>
     <background_color>
       <color red="255" green="255" blue="255" />
     </background_color>
@@ -371,14 +366,13 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <enabled>true</enabled>
     <text>######</text>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <precision>0</precision>
     <font>
       <fontdata fontName="Arial" height="9" style="0" />
     </font>
-    <backgroundcolor.alarmsensitive>false</backgroundcolor.alarmsensitive>
     <width>107</width>
     <border_style>0</border_style>
-    <border.alarmsensitive>true</border.alarmsensitive>
     <border_width>1</border_width>
     <border_color>
       <color red="0" green="128" blue="255" />
@@ -411,7 +405,6 @@ $(pv_value)</tooltip>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <transparent>false</transparent>
-    <show_scrollbar>true</show_scrollbar>
     <y>4</y>
     <actions hook="false" />
     <tooltip />
@@ -478,7 +471,6 @@ $(pv_value)</tooltip>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <transparent>false</transparent>
-    <show_scrollbar>true</show_scrollbar>
     <y>47</y>
     <actions hook="false" />
     <tooltip />
@@ -511,7 +503,6 @@ $(pv_value)</tooltip>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <transparent>false</transparent>
-    <show_scrollbar>true</show_scrollbar>
     <y>4</y>
     <actions hook="false" />
     <tooltip />
@@ -544,7 +535,6 @@ $(pv_value)</tooltip>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <transparent>true</transparent>
-    <show_scrollbar>true</show_scrollbar>
     <y>60</y>
     <actions hook="false" />
     <tooltip />

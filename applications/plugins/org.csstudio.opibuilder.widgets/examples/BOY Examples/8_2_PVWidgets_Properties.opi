@@ -1,141 +1,128 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <display typeId="org.csstudio.opibuilder.Display" version="1.0">
-  <width>800</width>
-  <scripts />
-  <actions hook="false" />
+  <widget_type>Display</widget_type>
   <macros>
     <include_parent_macros>true</include_parent_macros>
-    <my_name>Best OPI Yet</my_name>
     <noisePV>sim://noise</noisePV>
+    <my_name>Best OPI Yet</my_name>
   </macros>
+  <width>800</width>
+  <scripts />
+  <show_ruler>false</show_ruler>
+  <height>600</height>
+  <show_edit_range>true</show_edit_range>
+  <name>Widget Property</name>
+  <grid_space>4</grid_space>
   <snap_to_geometry>true</snap_to_geometry>
   <show_grid>false</show_grid>
-  <show_edit_range>true</show_edit_range>
-  <grid_space>4</grid_space>
-  <height>600</height>
-  <widget_type>Display</widget_type>
-  <background_color>
-    <color red="240" green="240" blue="240" />
-  </background_color>
+  <y>0</y>
+  <actions hook="false" />
   <foreground_color>
     <color red="192" green="192" blue="192" />
   </foreground_color>
-  <y>0</y>
-  <show_ruler>false</show_ruler>
-  <name>Display</name>
+  <background_color>
+    <color red="240" green="240" blue="240" />
+  </background_color>
   <x>0</x>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
-    <auto_size>false</auto_size>
-    <width>285</width>
-    <scripts />
-    <border_width>1</border_width>
-    <border_style>1</border_style>
-    <tooltip />
-    <actions hook="false" />
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <vertical_alignment>1</vertical_alignment>
-    <transparent>false</transparent>
-    <font>
-      <fontdata fontName="Arial" height="10" style="0" />
-    </font>
+    <widget_type>Label</widget_type>
+    <enabled>true</enabled>
     <text>If the PV is not  allowed to write, the control widgets will be disabled.</text>
-    <widget_type>Label</widget_type>
-    <height>61</height>
-    <background_color>
-      <color red="255" green="255" blue="223" />
-    </background_color>
-    <enabled>true</enabled>
-    <y>349</y>
     <visible>true</visible>
-    <foreground_color>
-      <color red="0" green="0" blue="203" />
-    </foreground_color>
-    <horizontal_alignment>0</horizontal_alignment>
-    <name>Label_10</name>
-    <x>368</x>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
-    <auto_size>false</auto_size>
+    <font>
+      <fontdata fontName="Arial" height="10" style="0" />
+    </font>
+    <vertical_alignment>1</vertical_alignment>
     <width>285</width>
-    <scripts />
-    <border_width>1</border_width>
     <border_style>1</border_style>
-    <tooltip />
-    <actions hook="false" />
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <vertical_alignment>1</vertical_alignment>
-    <transparent>false</transparent>
-    <font>
-      <fontdata fontName="Arial" height="10" style="0" />
-    </font>
-    <text>There is a common look for all the diconnected PV widgets:</text>
-    <widget_type>Label</widget_type>
+    <auto_size>false</auto_size>
+    <scripts />
     <height>61</height>
-    <background_color>
-      <color red="255" green="255" blue="223" />
-    </background_color>
-    <enabled>true</enabled>
+    <border_width>1</border_width>
+    <name>Label_10</name>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <transparent>false</transparent>
     <y>349</y>
-    <visible>true</visible>
-    <foreground_color>
-      <color red="0" green="0" blue="203" />
-    </foreground_color>
-    <horizontal_alignment>0</horizontal_alignment>
-    <name>Label_8</name>
-    <x>25</x>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
-    <auto_size>false</auto_size>
-    <width>745</width>
-    <scripts />
-    <border_width>1</border_width>
-    <border_style>1</border_style>
-    <tooltip />
     <actions hook="false" />
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <vertical_alignment>1</vertical_alignment>
-    <transparent>false</transparent>
-    <font>
-      <fontdata fontName="Arial" height="10" style="0" />
-    </font>
-    <text>For the widget which has the property of "PV Name(pv_name)", "Readback PV(pv_name)" or "Control PV(control_pv)", we call it PV Widget. During runtime, right click a PV widget and then you will see the "CSS" context menu which allows it connecting with other CSS Applications. The PV name is the bridge of the connection.</text>
-    <widget_type>Label</widget_type>
-    <height>55</height>
+    <tooltip />
+    <x>368</x>
     <background_color>
       <color red="255" green="255" blue="223" />
     </background_color>
-    <enabled>true</enabled>
-    <y>104</y>
-    <visible>true</visible>
     <foreground_color>
       <color red="0" green="0" blue="203" />
     </foreground_color>
-    <horizontal_alignment>0</horizontal_alignment>
-    <name>Label_6</name>
-    <x>25</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
-    <auto_size>false</auto_size>
-    <width>745</width>
-    <scripts />
-    <border_width>1</border_width>
-    <border_style>1</border_style>
-    <tooltip />
-    <actions hook="false" />
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <vertical_alignment>1</vertical_alignment>
-    <transparent>false</transparent>
+    <widget_type>Label</widget_type>
+    <enabled>true</enabled>
+    <text>There is a common look for all the diconnected PV widgets:</text>
+    <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="10" style="0" />
     </font>
+    <vertical_alignment>1</vertical_alignment>
+    <width>285</width>
+    <border_style>1</border_style>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>61</height>
+    <border_width>1</border_width>
+    <name>Label_8</name>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <transparent>false</transparent>
+    <y>349</y>
+    <actions hook="false" />
+    <tooltip />
+    <x>25</x>
+    <background_color>
+      <color red="255" green="255" blue="223" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="203" />
+    </foreground_color>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <widget_type>Label</widget_type>
+    <enabled>true</enabled>
+    <text>For the widget which has the property of "PV Name(pv_name)", "Readback PV(pv_name)" or "Control PV(control_pv)", we call it PV Widget. During runtime, right click a PV widget and then you will see the "CSS" context menu which allows it connecting with other CSS Applications. The PV name is the bridge of the connection.</text>
+    <visible>true</visible>
+    <font>
+      <fontdata fontName="Arial" height="10" style="0" />
+    </font>
+    <vertical_alignment>1</vertical_alignment>
+    <width>745</width>
+    <border_style>1</border_style>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>55</height>
+    <border_width>1</border_width>
+    <name>Label_6</name>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <transparent>false</transparent>
+    <y>104</y>
+    <actions hook="false" />
+    <tooltip />
+    <x>25</x>
+    <background_color>
+      <color red="255" green="255" blue="223" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="203" />
+    </foreground_color>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <widget_type>Label</widget_type>
+    <enabled>true</enabled>
     <text>The common properties for most of the PV widgets:&#xD;
 
 1. PV Name(pv_name). The name of the main PV associated with the widget.&#xD;
@@ -148,121 +135,146 @@
 7. BackColor Alarm Sensitive(backcolor_alarm_sensitive).&#xD;
 &#xD;
 There is also an invisible property: pv_value, which is the value of the PV.</text>
-    <widget_type>Label</widget_type>
+    <visible>true</visible>
+    <font>
+      <fontdata fontName="Arial" height="10" style="0" />
+    </font>
+    <vertical_alignment>1</vertical_alignment>
+    <width>745</width>
+    <border_style>1</border_style>
+    <auto_size>false</auto_size>
+    <scripts />
     <height>166</height>
+    <border_width>1</border_width>
+    <name>Label_4</name>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <transparent>false</transparent>
+    <y>171</y>
+    <actions hook="false" />
+    <tooltip />
+    <x>25</x>
     <background_color>
       <color red="255" green="255" blue="223" />
     </background_color>
-    <enabled>true</enabled>
-    <y>171</y>
-    <visible>true</visible>
     <foreground_color>
       <color red="0" green="0" blue="203" />
     </foreground_color>
-    <horizontal_alignment>0</horizontal_alignment>
-    <name>Label_4</name>
-    <x>25</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
-    <auto_size>false</auto_size>
-    <width>295</width>
-    <scripts />
-    <border_width>1</border_width>
-    <border_style>0</border_style>
-    <tooltip />
-    <actions hook="false" />
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <vertical_alignment>1</vertical_alignment>
-    <transparent>false</transparent>
+    <widget_type>Label</widget_type>
+    <enabled>true</enabled>
+    <text>PV Widget Properties</text>
+    <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="18" style="1" />
     </font>
-    <text>PV Widget Properties</text>
-    <widget_type>Label</widget_type>
+    <vertical_alignment>1</vertical_alignment>
+    <width>295</width>
+    <border_style>0</border_style>
+    <auto_size>false</auto_size>
+    <scripts />
     <height>86</height>
+    <border_width>1</border_width>
+    <name>Label_8</name>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <transparent>false</transparent>
+    <y>5</y>
+    <actions hook="false" />
+    <tooltip />
+    <x>25</x>
     <background_color>
       <color red="135" green="181" blue="255" />
     </background_color>
-    <enabled>true</enabled>
-    <y>5</y>
-    <visible>true</visible>
     <foreground_color>
       <color red="128" green="0" blue="64" />
     </foreground_color>
-    <horizontal_alignment>1</horizontal_alignment>
-    <name>Label_8</name>
-    <x>25</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
-    <auto_size>false</auto_size>
-    <width>451</width>
-    <scripts />
-    <border_width>1</border_width>
-    <border_style>0</border_style>
-    <tooltip />
-    <actions hook="false" />
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <vertical_alignment>1</vertical_alignment>
-    <transparent>false</transparent>
-    <font>
-      <fontdata fontName="Arial" height="18" style="1" />
-    </font>
+    <widget_type>Label</widget_type>
+    <enabled>true</enabled>
     <text>Examples</text>
-    <widget_type>Label</widget_type>
-    <height>43</height>
-    <background_color>
-      <color red="135" green="181" blue="255" />
-    </background_color>
-    <enabled>true</enabled>
-    <y>48</y>
     <visible>true</visible>
-    <foreground_color>
-      <color red="29" green="40" blue="184" />
-    </foreground_color>
-    <horizontal_alignment>1</horizontal_alignment>
-    <name>Label_6</name>
-    <x>319</x>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
-    <auto_size>false</auto_size>
-    <width>451</width>
-    <scripts />
-    <border_width>1</border_width>
-    <border_style>0</border_style>
-    <tooltip />
-    <actions hook="false" />
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <vertical_alignment>1</vertical_alignment>
-    <transparent>false</transparent>
     <font>
       <fontdata fontName="Arial" height="18" style="1" />
     </font>
-    <text>Best OPI Yet (BOY)</text>
-    <widget_type>Label</widget_type>
-    <height>44</height>
+    <vertical_alignment>1</vertical_alignment>
+    <width>451</width>
+    <border_style>0</border_style>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>43</height>
+    <border_width>1</border_width>
+    <name>Label_6</name>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <transparent>false</transparent>
+    <y>48</y>
+    <actions hook="false" />
+    <tooltip />
+    <x>319</x>
     <background_color>
       <color red="135" green="181" blue="255" />
     </background_color>
-    <enabled>true</enabled>
-    <y>5</y>
-    <visible>true</visible>
     <foreground_color>
       <color red="29" green="40" blue="184" />
     </foreground_color>
-    <horizontal_alignment>1</horizontal_alignment>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <widget_type>Label</widget_type>
+    <enabled>true</enabled>
+    <text>Best OPI Yet (BOY)</text>
+    <visible>true</visible>
+    <font>
+      <fontdata fontName="Arial" height="18" style="1" />
+    </font>
+    <vertical_alignment>1</vertical_alignment>
+    <width>451</width>
+    <border_style>0</border_style>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>44</height>
+    <border_width>1</border_width>
     <name>Label_9</name>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <transparent>false</transparent>
+    <y>5</y>
+    <actions hook="false" />
+    <tooltip />
     <x>319</x>
+    <background_color>
+      <color red="135" green="181" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="29" green="40" blue="184" />
+    </foreground_color>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <enabled>true</enabled>
+    <widget_type>Action Button</widget_type>
+    <text>Go Home</text>
+    <visible>true</visible>
+    <font>
+      <fontdata fontName="Arial" height="9" style="1" />
+    </font>
     <width>79</width>
+    <push_action_index>0</push_action_index>
+    <image>/BOY Examples/pictures/home-16x16.png</image>
     <scripts />
-    <tooltip />
+    <height>28</height>
+    <toggle_button>false</toggle_button>
+    <name>Action Button</name>
+    <y>552</y>
     <actions hook="true">
       <action type="OPEN_DISPLAY">
         <path>/BOY Examples/main.opi</path>
@@ -272,221 +284,209 @@ There is also an invisible property: pv_value, which is the value of the PV.</te
         <replace>false</replace>
       </action>
     </actions>
-    <toggle_button>false</toggle_button>
-    <font>
-      <fontdata fontName="Arial" height="9" style="1" />
-    </font>
-    <push_action_index>0</push_action_index>
-    <text>Go Home</text>
-    <height>28</height>
-    <widget_type>Action Button</widget_type>
-    <enabled>true</enabled>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
-    <visible>true</visible>
     <foreground_color>
       <color red="0" green="0" blue="128" />
     </foreground_color>
-    <y>552</y>
-    <image>/BOY Examples/pictures/home-16x16.png</image>
-    <name>Action Button</name>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
     <x>25</x>
+    <tooltip />
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
-    <auto_size>true</auto_size>
-    <width>114</width>
-    <scripts />
-    <border_width>1</border_width>
-    <border_style>0</border_style>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <actions hook="false" />
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <vertical_alignment>1</vertical_alignment>
-    <transparent>false</transparent>
-    <font>
-      <fontdata fontName="Arial" height="12" style="1" />
-    </font>
+    <widget_type>Label</widget_type>
+    <enabled>true</enabled>
     <text>Common Properties</text>
-    <widget_type>Label</widget_type>
-    <height>14</height>
-    <background_color>
-      <color red="0" green="255" blue="128" />
-    </background_color>
-    <enabled>true</enabled>
+    <visible>true</visible>
+    <font>
+      <fontdata fontName="Arial" height="12" style="1" />
+    </font>
+    <vertical_alignment>1</vertical_alignment>
+    <width>153</width>
+    <border_style>0</border_style>
+    <auto_size>true</auto_size>
+    <scripts />
+    <height>19</height>
+    <border_width>1</border_width>
+    <name>Label_5</name>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <transparent>false</transparent>
     <y>165</y>
-    <visible>true</visible>
-    <foreground_color>
-      <color red="0" green="0" blue="0" />
-    </foreground_color>
-    <horizontal_alignment>1</horizontal_alignment>
-    <name>Label_5</name>
+    <actions hook="false" />
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
     <x>341</x>
+    <background_color>
+      <color red="0" green="255" blue="128" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
-    <auto_size>false</auto_size>
-    <width>68</width>
-    <scripts />
-    <border_width>1</border_width>
-    <border_style>0</border_style>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <actions hook="false" />
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <vertical_alignment>1</vertical_alignment>
-    <transparent>false</transparent>
-    <font>
-      <fontdata fontName="Arial" height="12" style="1" />
-    </font>
+    <widget_type>Label</widget_type>
+    <enabled>true</enabled>
     <text>Introduction</text>
-    <widget_type>Label</widget_type>
-    <height>14</height>
-    <background_color>
-      <color red="0" green="255" blue="128" />
-    </background_color>
-    <enabled>true</enabled>
-    <y>97</y>
     <visible>true</visible>
-    <foreground_color>
-      <color red="0" green="0" blue="0" />
-    </foreground_color>
-    <horizontal_alignment>1</horizontal_alignment>
+    <font>
+      <fontdata fontName="Arial" height="12" style="1" />
+    </font>
+    <vertical_alignment>1</vertical_alignment>
+    <width>68</width>
+    <border_style>0</border_style>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>14</height>
+    <border_width>1</border_width>
     <name>Label_5</name>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <transparent>false</transparent>
+    <y>97</y>
+    <actions hook="false" />
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
     <x>354</x>
+    <background_color>
+      <color red="0" green="255" blue="128" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
-    <auto_size>true</auto_size>
-    <width>118</width>
-    <scripts />
-    <border_width>1</border_width>
-    <border_style>0</border_style>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <actions hook="false" />
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <vertical_alignment>1</vertical_alignment>
-    <transparent>false</transparent>
-    <font>
-      <fontdata fontName="Arial" height="12" style="1" />
-    </font>
+    <widget_type>Label</widget_type>
+    <enabled>true</enabled>
     <text>Disconnected Status</text>
-    <widget_type>Label</widget_type>
-    <height>14</height>
-    <background_color>
-      <color red="0" green="255" blue="128" />
-    </background_color>
-    <enabled>true</enabled>
-    <y>342</y>
     <visible>true</visible>
-    <foreground_color>
-      <color red="0" green="0" blue="0" />
-    </foreground_color>
-    <horizontal_alignment>1</horizontal_alignment>
-    <name>Label_7</name>
-    <x>91</x>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Image" version="1.0">
-    <width>296</width>
-    <scripts />
-    <border_style>0</border_style>
-    <crop_top>0</crop_top>
-    <tooltip />
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <height>116</height>
-    <crop_left>0</crop_left>
-    <stretch_to_fit>false</stretch_to_fit>
-    <foreground_color>
-      <color red="192" green="192" blue="192" />
-    </foreground_color>
-    <name>Image</name>
-    <auto_size>true</auto_size>
-    <border_width>1</border_width>
-    <actions hook="false" />
-    <image_file>/BOY Examples/pictures/Disconnected.png</image_file>
-    <widget_type>Image</widget_type>
-    <crop_right>0</crop_right>
-    <enabled>true</enabled>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
-    <visible>true</visible>
-    <y>418</y>
-    <no_animation>false</no_animation>
-    <crop_bottom>0</crop_bottom>
-    <x>24</x>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
-    <auto_size>true</auto_size>
-    <width>66</width>
-    <scripts />
-    <border_width>1</border_width>
-    <border_style>0</border_style>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <actions hook="false" />
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <vertical_alignment>1</vertical_alignment>
-    <transparent>false</transparent>
     <font>
       <fontdata fontName="Arial" height="12" style="1" />
     </font>
-    <text>PV Security</text>
-    <widget_type>Label</widget_type>
-    <height>14</height>
-    <background_color>
-      <color red="0" green="255" blue="128" />
-    </background_color>
-    <enabled>true</enabled>
-    <y>342</y>
-    <visible>true</visible>
-    <foreground_color>
-      <color red="0" green="0" blue="0" />
-    </foreground_color>
-    <horizontal_alignment>1</horizontal_alignment>
-    <name>Label_9</name>
-    <x>468</x>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Image" version="1.0">
-    <width>300</width>
-    <scripts />
+    <vertical_alignment>1</vertical_alignment>
+    <width>159</width>
     <border_style>0</border_style>
-    <crop_top>0</crop_top>
-    <tooltip />
+    <auto_size>true</auto_size>
+    <scripts />
+    <height>19</height>
+    <border_width>1</border_width>
+    <name>Label_7</name>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <height>160</height>
+    <horizontal_alignment>1</horizontal_alignment>
+    <transparent>false</transparent>
+    <y>342</y>
+    <actions hook="false" />
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>91</x>
+    <background_color>
+      <color red="0" green="255" blue="128" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Image" version="1.0">
+    <crop_right>0</crop_right>
     <crop_left>0</crop_left>
+    <visible>true</visible>
+    <auto_size>true</auto_size>
+    <scripts />
+    <height>116</height>
+    <name>Image</name>
     <stretch_to_fit>false</stretch_to_fit>
     <foreground_color>
       <color red="192" green="192" blue="192" />
     </foreground_color>
-    <name>Image_1</name>
-    <auto_size>true</auto_size>
-    <border_width>1</border_width>
-    <actions hook="false" />
-    <image_file>/BOY Examples/pictures/Write_forbidden.png</image_file>
-    <widget_type>Image</widget_type>
-    <crop_right>0</crop_right>
-    <enabled>true</enabled>
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
-    <visible>true</visible>
-    <y>418</y>
+    <enabled>true</enabled>
+    <widget_type>Image</widget_type>
+    <width>296</width>
     <no_animation>false</no_animation>
+    <border_style>0</border_style>
+    <crop_top>0</crop_top>
     <crop_bottom>0</crop_bottom>
+    <border_width>1</border_width>
+    <image_file>/BOY Examples/pictures/Disconnected.png</image_file>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <actions hook="false" />
+    <y>418</y>
+    <x>24</x>
+    <tooltip />
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <widget_type>Label</widget_type>
+    <enabled>true</enabled>
+    <text>PV Security</text>
+    <visible>true</visible>
+    <font>
+      <fontdata fontName="Arial" height="12" style="1" />
+    </font>
+    <vertical_alignment>1</vertical_alignment>
+    <width>89</width>
+    <border_style>0</border_style>
+    <auto_size>true</auto_size>
+    <scripts />
+    <height>19</height>
+    <border_width>1</border_width>
+    <name>Label_9</name>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <transparent>false</transparent>
+    <y>342</y>
+    <actions hook="false" />
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>468</x>
+    <background_color>
+      <color red="0" green="255" blue="128" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Image" version="1.0">
+    <crop_right>0</crop_right>
+    <crop_left>0</crop_left>
+    <visible>true</visible>
+    <auto_size>true</auto_size>
+    <scripts />
+    <height>160</height>
+    <name>Image_1</name>
+    <stretch_to_fit>false</stretch_to_fit>
+    <foreground_color>
+      <color red="192" green="192" blue="192" />
+    </foreground_color>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <enabled>true</enabled>
+    <widget_type>Image</widget_type>
+    <width>300</width>
+    <no_animation>false</no_animation>
+    <border_style>0</border_style>
+    <crop_top>0</crop_top>
+    <crop_bottom>0</crop_bottom>
+    <border_width>1</border_width>
+    <image_file>/BOY Examples/pictures/Write_forbidden.png</image_file>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <actions hook="false" />
+    <y>418</y>
     <x>361</x>
+    <tooltip />
   </widget>
 </display>

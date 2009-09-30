@@ -9,7 +9,7 @@
   <show_ruler>true</show_ruler>
   <height>600</height>
   <show_edit_range>true</show_edit_range>
-  <name>Display</name>
+  <name>Editor</name>
   <grid_space>6</grid_space>
   <snap_to_geometry>true</snap_to_geometry>
   <show_grid>false</show_grid>
@@ -45,7 +45,6 @@ All these functions can be easily access from toolbar or context menu.</text>
     </border_color>
     <horizontal_alignment>0</horizontal_alignment>
     <transparent>true</transparent>
-    <show_scrollbar>true</show_scrollbar>
     <y>117</y>
     <actions hook="false" />
     <tooltip />
@@ -78,7 +77,6 @@ All these functions can be easily access from toolbar or context menu.</text>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <transparent>false</transparent>
-    <show_scrollbar>true</show_scrollbar>
     <y>101</y>
     <actions hook="false" />
     <tooltip>$(pv_name)
@@ -92,12 +90,13 @@ $(pv_value)</tooltip>
     </foreground_color>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
+    <border_alarm_sensitive>true</border_alarm_sensitive>
     <visible>true</visible>
     <fill_level>100.0</fill_level>
     <scripts />
-    <foregroundcolor.alarmsensitive>false</foregroundcolor.alarmsensitive>
     <height>52</height>
     <anti_alias>true</anti_alias>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Rectangle</name>
     <transparent>false</transparent>
     <pv_name />
@@ -109,11 +108,10 @@ $(pv_value)</tooltip>
     </foreground_color>
     <widget_type>Rectangle</widget_type>
     <enabled>true</enabled>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <line_style>0</line_style>
-    <backgroundcolor.alarmsensitive>false</backgroundcolor.alarmsensitive>
     <width>49</width>
     <border_style>1</border_style>
-    <border.alarmsensitive>true</border.alarmsensitive>
     <border_width>2</border_width>
     <horizontal_fill>true</horizontal_fill>
     <line_width>0</line_width>
@@ -127,12 +125,13 @@ $(pv_value)</tooltip>
     <x>47</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
+    <border_alarm_sensitive>true</border_alarm_sensitive>
     <visible>true</visible>
     <fill_level>100.0</fill_level>
     <scripts />
-    <foregroundcolor.alarmsensitive>false</foregroundcolor.alarmsensitive>
     <height>52</height>
     <anti_alias>true</anti_alias>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Rectangle_1</name>
     <transparent>false</transparent>
     <pv_name />
@@ -144,11 +143,10 @@ $(pv_value)</tooltip>
     </foreground_color>
     <widget_type>Rectangle</widget_type>
     <enabled>true</enabled>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <line_style>0</line_style>
-    <backgroundcolor.alarmsensitive>false</backgroundcolor.alarmsensitive>
     <width>49</width>
     <border_style>1</border_style>
-    <border.alarmsensitive>true</border.alarmsensitive>
     <border_width>2</border_width>
     <horizontal_fill>true</horizontal_fill>
     <line_width>0</line_width>
@@ -162,12 +160,13 @@ $(pv_value)</tooltip>
     <x>142</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
+    <border_alarm_sensitive>true</border_alarm_sensitive>
     <visible>true</visible>
     <fill_level>100.0</fill_level>
     <scripts />
-    <foregroundcolor.alarmsensitive>false</foregroundcolor.alarmsensitive>
     <height>52</height>
     <anti_alias>true</anti_alias>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Rectangle_2</name>
     <transparent>false</transparent>
     <pv_name />
@@ -179,11 +178,10 @@ $(pv_value)</tooltip>
     </foreground_color>
     <widget_type>Rectangle</widget_type>
     <enabled>true</enabled>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <line_style>0</line_style>
-    <backgroundcolor.alarmsensitive>false</backgroundcolor.alarmsensitive>
     <width>49</width>
     <border_style>1</border_style>
-    <border.alarmsensitive>true</border.alarmsensitive>
     <border_width>2</border_width>
     <horizontal_fill>true</horizontal_fill>
     <line_width>0</line_width>
@@ -197,12 +195,13 @@ $(pv_value)</tooltip>
     <x>227</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
+    <border_alarm_sensitive>true</border_alarm_sensitive>
     <visible>true</visible>
     <fill_level>100.0</fill_level>
     <scripts />
-    <foregroundcolor.alarmsensitive>false</foregroundcolor.alarmsensitive>
     <height>50</height>
     <anti_alias>true</anti_alias>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Rectangle_3</name>
     <transparent>false</transparent>
     <pv_name />
@@ -214,11 +213,10 @@ $(pv_value)</tooltip>
     </foreground_color>
     <widget_type>Rectangle</widget_type>
     <enabled>true</enabled>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <line_style>0</line_style>
-    <backgroundcolor.alarmsensitive>false</backgroundcolor.alarmsensitive>
     <width>152</width>
     <border_style>1</border_style>
-    <border.alarmsensitive>true</border.alarmsensitive>
     <border_width>2</border_width>
     <horizontal_fill>true</horizontal_fill>
     <line_width>0</line_width>
@@ -232,12 +230,13 @@ $(pv_value)</tooltip>
     <x>202</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
+    <border_alarm_sensitive>true</border_alarm_sensitive>
     <visible>true</visible>
     <fill_level>100.0</fill_level>
     <scripts />
-    <foregroundcolor.alarmsensitive>false</foregroundcolor.alarmsensitive>
     <height>50</height>
     <anti_alias>true</anti_alias>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Rectangle_4</name>
     <transparent>false</transparent>
     <pv_name />
@@ -249,11 +248,10 @@ $(pv_value)</tooltip>
     </foreground_color>
     <widget_type>Rectangle</widget_type>
     <enabled>true</enabled>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <line_style>0</line_style>
-    <backgroundcolor.alarmsensitive>false</backgroundcolor.alarmsensitive>
     <width>60</width>
     <border_style>1</border_style>
-    <border.alarmsensitive>true</border.alarmsensitive>
     <border_width>2</border_width>
     <horizontal_fill>true</horizontal_fill>
     <line_width>0</line_width>
@@ -267,12 +265,13 @@ $(pv_value)</tooltip>
     <x>370</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
+    <border_alarm_sensitive>true</border_alarm_sensitive>
     <visible>true</visible>
     <fill_level>100.0</fill_level>
     <scripts />
-    <foregroundcolor.alarmsensitive>false</foregroundcolor.alarmsensitive>
     <height>50</height>
     <anti_alias>true</anti_alias>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Rectangle_5</name>
     <transparent>false</transparent>
     <pv_name />
@@ -284,11 +283,10 @@ $(pv_value)</tooltip>
     </foreground_color>
     <widget_type>Rectangle</widget_type>
     <enabled>true</enabled>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <line_style>0</line_style>
-    <backgroundcolor.alarmsensitive>false</backgroundcolor.alarmsensitive>
     <width>60</width>
     <border_style>1</border_style>
-    <border.alarmsensitive>true</border.alarmsensitive>
     <border_width>2</border_width>
     <horizontal_fill>true</horizontal_fill>
     <line_width>0</line_width>
@@ -386,7 +384,6 @@ $(pv_value)</tooltip>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <transparent>false</transparent>
-    <show_scrollbar>true</show_scrollbar>
     <y>12</y>
     <actions hook="false" />
     <tooltip />
@@ -419,7 +416,6 @@ $(pv_value)</tooltip>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <transparent>true</transparent>
-    <show_scrollbar>true</show_scrollbar>
     <y>428</y>
     <actions hook="false" />
     <tooltip />
@@ -452,7 +448,6 @@ $(pv_value)</tooltip>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <transparent>false</transparent>
-    <show_scrollbar>true</show_scrollbar>
     <y>55</y>
     <actions hook="false" />
     <tooltip />
@@ -485,7 +480,6 @@ $(pv_value)</tooltip>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <transparent>false</transparent>
-    <show_scrollbar>true</show_scrollbar>
     <y>12</y>
     <actions hook="false" />
     <tooltip />
@@ -552,7 +546,6 @@ $(pv_value)</tooltip>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <transparent>true</transparent>
-    <show_scrollbar>true</show_scrollbar>
     <y>68</y>
     <actions hook="false" />
     <tooltip />

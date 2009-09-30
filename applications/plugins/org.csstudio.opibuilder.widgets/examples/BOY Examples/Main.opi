@@ -9,7 +9,7 @@
   <show_ruler>false</show_ruler>
   <height>600</height>
   <show_edit_range>true</show_edit_range>
-  <name>Display</name>
+  <name>Home Page</name>
   <grid_space>6</grid_space>
   <snap_to_geometry>true</snap_to_geometry>
   <show_grid>false</show_grid>
@@ -22,6 +22,75 @@
     <color red="240" green="240" blue="240" />
   </background_color>
   <x>0</x>
+  <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <visible>true</visible>
+    <fill_level>100.0</fill_level>
+    <scripts />
+    <height>364</height>
+    <anti_alias>true</anti_alias>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Rectangle</name>
+    <transparent>false</transparent>
+    <pv_name />
+    <background_color>
+      <color red="187" green="221" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="114" green="184" blue="184" />
+    </foreground_color>
+    <widget_type>Rectangle</widget_type>
+    <enabled>true</enabled>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <line_style>0</line_style>
+    <width>757</width>
+    <border_style>0</border_style>
+    <border_width>1</border_width>
+    <horizontal_fill>true</horizontal_fill>
+    <line_width>0</line_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <y>112</y>
+    <actions hook="false" />
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>24</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <enabled>true</enabled>
+    <widget_type>Action Button</widget_type>
+    <text>Widget Property</text>
+    <visible>true</visible>
+    <font>
+      <fontdata fontName="Arial" height="12" style="1" />
+    </font>
+    <width>301</width>
+    <push_action_index>0</push_action_index>
+    <image />
+    <scripts />
+    <height>31</height>
+    <toggle_button>false</toggle_button>
+    <name>Action Button_7</name>
+    <y>272</y>
+    <actions hook="false">
+      <action type="OPEN_DISPLAY">
+        <path>/BOY Examples/8_Widget_Properties.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+        </macros>
+        <replace>false</replace>
+      </action>
+    </actions>
+    <foreground_color>
+      <color red="51" green="51" blue="204" />
+    </foreground_color>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <x>441</x>
+    <tooltip />
+  </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <enabled>true</enabled>
     <widget_type>Action Button</widget_type>
@@ -37,7 +106,7 @@
     <height>31</height>
     <toggle_button>false</toggle_button>
     <name>Action Button_6</name>
-    <y>410</y>
+    <y>225</y>
     <actions hook="false">
       <action type="OPEN_DISPLAY">
         <path>/BOY Examples/7_Color_Font_Macro.opi</path>
@@ -53,7 +122,7 @@
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
-    <x>246</x>
+    <x>441</x>
     <tooltip />
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
@@ -71,7 +140,7 @@
     <height>31</height>
     <toggle_button>false</toggle_button>
     <name>Action Button_5</name>
-    <y>364</y>
+    <y>179</y>
     <actions hook="false">
       <action type="OPEN_DISPLAY">
         <path>/BOY Examples/6_Macro.opi</path>
@@ -87,7 +156,7 @@
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
-    <x>246</x>
+    <x>441</x>
     <tooltip />
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
@@ -105,7 +174,7 @@
     <height>31</height>
     <toggle_button>false</toggle_button>
     <name>Action Button_4</name>
-    <y>314</y>
+    <y>367</y>
     <actions hook="false">
       <action type="OPEN_DISPLAY">
         <path>/BOY Examples/5_Script_1.opi</path>
@@ -121,7 +190,7 @@
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
-    <x>246</x>
+    <x>63</x>
     <tooltip />
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
@@ -139,7 +208,7 @@
     <height>31</height>
     <toggle_button>false</toggle_button>
     <name>Action Button_2</name>
-    <y>218</y>
+    <y>271</y>
     <actions hook="false">
       <action type="OPEN_DISPLAY">
         <path>/BOY Examples/3_Use_OPI_Editor.opi</path>
@@ -155,7 +224,7 @@
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
-    <x>246</x>
+    <x>63</x>
     <tooltip />
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
@@ -173,7 +242,7 @@
     <height>31</height>
     <toggle_button>false</toggle_button>
     <name>Action Button</name>
-    <y>126</y>
+    <y>179</y>
     <actions hook="false">
       <action type="OPEN_DISPLAY">
         <path>/BOY Examples/1_Start_Up.opi</path>
@@ -189,7 +258,7 @@
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
-    <x>246</x>
+    <x>63</x>
     <tooltip />
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
@@ -213,11 +282,10 @@
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <transparent>true</transparent>
-    <show_scrollbar>true</show_scrollbar>
-    <y>132</y>
+    <y>185</y>
     <actions hook="false" />
     <tooltip />
-    <x>252</x>
+    <x>69</x>
     <background_color>
       <color red="255" green="255" blue="255" />
     </background_color>
@@ -240,7 +308,7 @@
     <height>31</height>
     <toggle_button>false</toggle_button>
     <name>Action Button_1</name>
-    <y>176</y>
+    <y>229</y>
     <actions hook="false">
       <action type="OPEN_DISPLAY">
         <path>/BOY Examples/2_OPI_Editor_Perspective.opi</path>
@@ -256,7 +324,7 @@
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
-    <x>246</x>
+    <x>63</x>
     <tooltip />
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
@@ -280,11 +348,10 @@
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <transparent>true</transparent>
-    <show_scrollbar>true</show_scrollbar>
-    <y>182</y>
+    <y>235</y>
     <actions hook="false" />
     <tooltip />
-    <x>252</x>
+    <x>69</x>
     <background_color>
       <color red="255" green="255" blue="255" />
     </background_color>
@@ -305,7 +372,7 @@
     <border_style>0</border_style>
     <auto_size>false</auto_size>
     <scripts />
-    <height>31</height>
+    <height>87</height>
     <border_width>1</border_width>
     <name>Label_5</name>
     <border_color>
@@ -313,7 +380,6 @@
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <transparent>false</transparent>
-    <show_scrollbar>true</show_scrollbar>
     <y>18</y>
     <actions hook="false" />
     <tooltip />
@@ -328,9 +394,7 @@
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <widget_type>Label</widget_type>
     <enabled>true</enabled>
-    <text>Xihui Chen&#xD;
-SNS/ORNL&#xD;
-chenx1@ornl.gov</text>
+    <text>Xihui Chen     SNS/ORNL     chenx1@ornl.gov</text>
     <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="12" style="1" />
@@ -340,7 +404,7 @@ chenx1@ornl.gov</text>
     <border_style>0</border_style>
     <auto_size>false</auto_size>
     <scripts />
-    <height>56</height>
+    <height>92</height>
     <border_width>1</border_width>
     <name>Label_6</name>
     <border_color>
@@ -348,8 +412,7 @@ chenx1@ornl.gov</text>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <transparent>false</transparent>
-    <show_scrollbar>true</show_scrollbar>
-    <y>48</y>
+    <y>485</y>
     <actions hook="false" />
     <tooltip />
     <x>24</x>
@@ -381,11 +444,10 @@ chenx1@ornl.gov</text>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <transparent>true</transparent>
-    <show_scrollbar>true</show_scrollbar>
-    <y>224</y>
+    <y>277</y>
     <actions hook="false" />
     <tooltip />
-    <x>252</x>
+    <x>69</x>
     <background_color>
       <color red="255" green="255" blue="255" />
     </background_color>
@@ -408,7 +470,7 @@ chenx1@ornl.gov</text>
     <height>31</height>
     <toggle_button>false</toggle_button>
     <name>Action Button_3</name>
-    <y>268</y>
+    <y>321</y>
     <actions hook="false">
       <action type="OPEN_DISPLAY">
         <path>/BOY Examples/4_Actions_1_Open_OPI.opi</path>
@@ -424,7 +486,7 @@ chenx1@ornl.gov</text>
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
-    <x>246</x>
+    <x>63</x>
     <tooltip />
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
@@ -448,11 +510,10 @@ chenx1@ornl.gov</text>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <transparent>true</transparent>
-    <show_scrollbar>true</show_scrollbar>
-    <y>274</y>
+    <y>327</y>
     <actions hook="false" />
     <tooltip />
-    <x>252</x>
+    <x>69</x>
     <background_color>
       <color red="255" green="255" blue="255" />
     </background_color>
@@ -481,11 +542,10 @@ chenx1@ornl.gov</text>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <transparent>true</transparent>
-    <show_scrollbar>true</show_scrollbar>
-    <y>320</y>
+    <y>373</y>
     <actions hook="false" />
     <tooltip />
-    <x>252</x>
+    <x>69</x>
     <background_color>
       <color red="255" green="255" blue="255" />
     </background_color>
@@ -514,11 +574,10 @@ chenx1@ornl.gov</text>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <transparent>true</transparent>
-    <show_scrollbar>true</show_scrollbar>
-    <y>370</y>
+    <y>185</y>
     <actions hook="false" />
     <tooltip />
-    <x>252</x>
+    <x>447</x>
     <background_color>
       <color red="255" green="255" blue="255" />
     </background_color>
@@ -547,11 +606,174 @@ chenx1@ornl.gov</text>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <transparent>true</transparent>
-    <show_scrollbar>true</show_scrollbar>
-    <y>416</y>
+    <y>231</y>
     <actions hook="false" />
     <tooltip />
-    <x>252</x>
+    <x>447</x>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="51" green="51" blue="204" />
+    </foreground_color>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <widget_type>Label</widget_type>
+    <enabled>true</enabled>
+    <text>8.</text>
+    <visible>true</visible>
+    <font>
+      <fontdata fontName="Arial" height="12" style="1" />
+    </font>
+    <vertical_alignment>1</vertical_alignment>
+    <width>13</width>
+    <border_style>0</border_style>
+    <auto_size>true</auto_size>
+    <scripts />
+    <height>19</height>
+    <border_width>1</border_width>
+    <name>Label_9</name>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <transparent>true</transparent>
+    <y>278</y>
+    <actions hook="false" />
+    <tooltip />
+    <x>447</x>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="51" green="51" blue="204" />
+    </foreground_color>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <enabled>true</enabled>
+    <widget_type>Action Button</widget_type>
+    <text>Display</text>
+    <visible>true</visible>
+    <font>
+      <fontdata fontName="Arial" height="12" style="1" />
+    </font>
+    <width>301</width>
+    <push_action_index>0</push_action_index>
+    <image />
+    <scripts />
+    <height>31</height>
+    <toggle_button>false</toggle_button>
+    <name>Action Button_8</name>
+    <y>317</y>
+    <actions hook="false">
+      <action type="OPEN_DISPLAY">
+        <path>/BOY Examples/9_Display.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+        </macros>
+        <replace>false</replace>
+      </action>
+    </actions>
+    <foreground_color>
+      <color red="51" green="51" blue="204" />
+    </foreground_color>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <x>441</x>
+    <tooltip />
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <widget_type>Label</widget_type>
+    <enabled>true</enabled>
+    <text>9.</text>
+    <visible>true</visible>
+    <font>
+      <fontdata fontName="Arial" height="12" style="1" />
+    </font>
+    <vertical_alignment>1</vertical_alignment>
+    <width>13</width>
+    <border_style>0</border_style>
+    <auto_size>true</auto_size>
+    <scripts />
+    <height>19</height>
+    <border_width>1</border_width>
+    <name>Label_10</name>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <transparent>true</transparent>
+    <y>323</y>
+    <actions hook="false" />
+    <tooltip />
+    <x>447</x>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="51" green="51" blue="204" />
+    </foreground_color>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <enabled>true</enabled>
+    <widget_type>Action Button</widget_type>
+    <text>Widgets</text>
+    <visible>true</visible>
+    <font>
+      <fontdata fontName="Arial" height="12" style="1" />
+    </font>
+    <width>301</width>
+    <push_action_index>0</push_action_index>
+    <image />
+    <scripts />
+    <height>31</height>
+    <toggle_button>false</toggle_button>
+    <name>Action Button_9</name>
+    <y>361</y>
+    <actions hook="false">
+      <action type="OPEN_DISPLAY">
+        <path>/BOY Examples/10_widgets.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+        </macros>
+        <replace>false</replace>
+      </action>
+    </actions>
+    <foreground_color>
+      <color red="51" green="51" blue="204" />
+    </foreground_color>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <x>441</x>
+    <tooltip />
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <widget_type>Label</widget_type>
+    <enabled>true</enabled>
+    <text>10</text>
+    <visible>true</visible>
+    <font>
+      <fontdata fontName="Arial" height="12" style="1" />
+    </font>
+    <vertical_alignment>1</vertical_alignment>
+    <width>18</width>
+    <border_style>0</border_style>
+    <auto_size>true</auto_size>
+    <scripts />
+    <height>19</height>
+    <border_width>1</border_width>
+    <name>Label_11</name>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <transparent>true</transparent>
+    <y>367</y>
+    <actions hook="false" />
+    <tooltip />
+    <x>447</x>
     <background_color>
       <color red="255" green="255" blue="255" />
     </background_color>

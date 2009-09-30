@@ -27,12 +27,8 @@
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <widget_type>Label</widget_type>
     <enabled>true</enabled>
-    <text>-Anti Alias(anti_alias) On the platform that doesn't support advanced graphics, this option should be turned off.&#xD;
--Fill(fill). Fill the arc with background color&#xD;
--Line Style(line_style) The style of the arc line. The line color is foreground color.&#xD;
--Line Width(line_with)&#xD;
--Start Angle(start_angle) The start angle of the arc. &#xD;
--Total Angle(total_angle) The total angle of the arc from the start angle in counterclock wise.</text>
+    <text>-Axies Amount(axis_amount). Up to 4 Axes can be added to the graph. The property sheet will be refilled based on the number of axies amount, so that you can set the properties of every axies instantly.&#xD;
+-Traces Amount(traces_amount). Up to 20 traces can be added to the graph. The property sheet will be refilled based on the number of traces amount, so that you can set the properties of every trace instantly.</text>
     <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="10" style="0" />
@@ -42,7 +38,7 @@
     <border_style>1</border_style>
     <auto_size>false</auto_size>
     <scripts />
-    <height>134</height>
+    <height>100</height>
     <border_width>1</border_width>
     <name>Label_4</name>
     <border_color>
@@ -50,7 +46,7 @@
     </border_color>
     <horizontal_alignment>0</horizontal_alignment>
     <transparent>false</transparent>
-    <y>110</y>
+    <y>124</y>
     <actions hook="false" />
     <tooltip />
     <x>17</x>
@@ -64,13 +60,13 @@
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <widget_type>Label</widget_type>
     <enabled>true</enabled>
-    <text>Special Properties</text>
+    <text>Important Speicial Properties</text>
     <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="10" style="1" />
     </font>
     <vertical_alignment>1</vertical_alignment>
-    <width>117</width>
+    <width>186</width>
     <border_style>0</border_style>
     <auto_size>true</auto_size>
     <scripts />
@@ -82,11 +78,11 @@
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <transparent>false</transparent>
-    <y>100</y>
+    <y>116</y>
     <actions hook="false" />
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <x>344</x>
+    <x>297</x>
     <background_color>
       <color red="0" green="255" blue="128" />
     </background_color>
@@ -97,7 +93,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <widget_type>Label</widget_type>
     <enabled>true</enabled>
-    <text>Arc</text>
+    <text>XY_Graph</text>
     <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="18" style="1" />
@@ -190,154 +186,6 @@ $(pv_value)</tooltip>
       <color red="29" green="40" blue="184" />
     </foreground_color>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.arc" version="1.0">
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <visible>true</visible>
-    <total_angle>135</total_angle>
-    <start_angle>15</start_angle>
-    <scripts />
-    <height>100</height>
-    <anti_alias>true</anti_alias>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <name>Arc</name>
-    <pv_name />
-    <background_color>
-      <color red="255" green="153" blue="51" />
-    </background_color>
-    <foreground_color>
-      <color red="0" green="0" blue="255" />
-    </foreground_color>
-    <widget_type>Arc</widget_type>
-    <enabled>true</enabled>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <line_style>0</line_style>
-    <width>100</width>
-    <fill>false</fill>
-    <border_style>0</border_style>
-    <border_width>1</border_width>
-    <line_width>1</line_width>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <y>289</y>
-    <actions hook="false" />
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <x>57</x>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.arc" version="1.0">
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <visible>true</visible>
-    <total_angle>135</total_angle>
-    <start_angle>15</start_angle>
-    <scripts>
-      <path pathString="/BOY Examples/scripts/ArcTotalAngle.js">
-        <pv>sim://ramp(0,360, 10, 0.1)</pv>
-      </path>
-    </scripts>
-    <height>100</height>
-    <anti_alias>true</anti_alias>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <name>Arc_1</name>
-    <pv_name />
-    <background_color>
-      <color red="51" green="51" blue="204" />
-    </background_color>
-    <foreground_color>
-      <color red="0" green="0" blue="255" />
-    </foreground_color>
-    <widget_type>Arc</widget_type>
-    <enabled>true</enabled>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <line_style>0</line_style>
-    <width>100</width>
-    <fill>true</fill>
-    <border_style>0</border_style>
-    <border_width>1</border_width>
-    <line_width>1</line_width>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <y>271</y>
-    <actions hook="false" />
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <x>396</x>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.arc" version="1.0">
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <visible>true</visible>
-    <total_angle>135</total_angle>
-    <start_angle>15</start_angle>
-    <scripts>
-      <path pathString="/BOY Examples/scripts/ArcStartAngle.js">
-        <pv>sim://ramp(0,360, 10, 0.1)</pv>
-      </path>
-    </scripts>
-    <height>100</height>
-    <anti_alias>true</anti_alias>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <name>Arc_2</name>
-    <pv_name />
-    <background_color>
-      <color red="153" green="0" blue="255" />
-    </background_color>
-    <foreground_color>
-      <color red="255" green="255" blue="51" />
-    </foreground_color>
-    <widget_type>Arc</widget_type>
-    <enabled>true</enabled>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <line_style>0</line_style>
-    <width>100</width>
-    <fill>true</fill>
-    <border_style>0</border_style>
-    <border_width>1</border_width>
-    <line_width>2</line_width>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <y>263</y>
-    <actions hook="false" />
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <x>573</x>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.arc" version="1.0">
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-    <visible>true</visible>
-    <total_angle>120</total_angle>
-    <start_angle>30</start_angle>
-    <scripts />
-    <height>118</height>
-    <anti_alias>true</anti_alias>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <name>Arc_3</name>
-    <pv_name>sim://ramp</pv_name>
-    <background_color>
-      <color red="51" green="255" blue="0" />
-    </background_color>
-    <foreground_color>
-      <color red="0" green="0" blue="255" />
-    </foreground_color>
-    <widget_type>Arc</widget_type>
-    <enabled>true</enabled>
-    <backcolor_alarm_sensitive>true</backcolor_alarm_sensitive>
-    <line_style>2</line_style>
-    <width>113</width>
-    <fill>true</fill>
-    <border_style>0</border_style>
-    <border_width>1</border_width>
-    <line_width>2</line_width>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <y>271</y>
-    <actions hook="false" />
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <x>218</x>
-  </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <enabled>true</enabled>
     <widget_type>Action Button</widget_type>
@@ -353,7 +201,7 @@ $(pv_value)</tooltip>
     <height>28</height>
     <toggle_button>false</toggle_button>
     <name>Action Button</name>
-    <y>562</y>
+    <y>560</y>
     <actions hook="true">
       <action type="OPEN_DISPLAY">
         <path>/BOY Examples/10_widgets.opi</path>
@@ -370,6 +218,145 @@ $(pv_value)</tooltip>
       <color red="240" green="240" blue="240" />
     </background_color>
     <x>17</x>
+    <tooltip />
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <enabled>true</enabled>
+    <widget_type>Action Button</widget_type>
+    <text>Next</text>
+    <visible>true</visible>
+    <font>
+      <fontdata fontName="Arial" height="9" style="1" />
+    </font>
+    <width>79</width>
+    <push_action_index>0</push_action_index>
+    <image />
+    <scripts />
+    <height>28</height>
+    <toggle_button>false</toggle_button>
+    <name>Action Button_2</name>
+    <y>560</y>
+    <actions hook="true">
+      <action type="OPEN_DISPLAY">
+        <path>/BOY Examples/widgets/2_5_3_XY_Graph.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+        </macros>
+        <replace>true</replace>
+      </action>
+    </actions>
+    <foreground_color>
+      <color red="0" green="0" blue="128" />
+    </foreground_color>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <x>710</x>
+    <tooltip />
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <widget_type>Label</widget_type>
+    <enabled>true</enabled>
+    <text>-Title(title). The title of the graph.&#xD;
+-Title Font(title_font).&#xD;
+-Show Toolbar(show_toolbar). Show toolbar of the graph&#xD;
+-Show Legend(show_legend)&#xD;
+-Show Plot Area Border(show_plot_area_border). Show border arround with the plot area.&#xD;
+-Plot Area Background Color(plot_area_background_color).&#xD;
+-Transparent</text>
+    <visible>true</visible>
+    <font>
+      <fontdata fontName="Arial" height="10" style="0" />
+    </font>
+    <vertical_alignment>1</vertical_alignment>
+    <width>745</width>
+    <border_style>1</border_style>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>140</height>
+    <border_width>1</border_width>
+    <name>Label_5</name>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <transparent>false</transparent>
+    <y>256</y>
+    <actions hook="false" />
+    <tooltip />
+    <x>17</x>
+    <background_color>
+      <color red="255" green="255" blue="223" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="203" />
+    </foreground_color>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <widget_type>Label</widget_type>
+    <enabled>true</enabled>
+    <text>General Special Properties</text>
+    <visible>true</visible>
+    <font>
+      <fontdata fontName="Arial" height="10" style="1" />
+    </font>
+    <vertical_alignment>1</vertical_alignment>
+    <width>172</width>
+    <border_style>0</border_style>
+    <auto_size>true</auto_size>
+    <scripts />
+    <height>16</height>
+    <border_width>1</border_width>
+    <name>Label_6</name>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <transparent>false</transparent>
+    <y>248</y>
+    <actions hook="false" />
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>304</x>
+    <background_color>
+      <color red="0" green="255" blue="128" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <enabled>true</enabled>
+    <widget_type>Action Button</widget_type>
+    <text>Back</text>
+    <visible>true</visible>
+    <font>
+      <fontdata fontName="Arial" height="9" style="1" />
+    </font>
+    <width>79</width>
+    <push_action_index>0</push_action_index>
+    <image />
+    <scripts />
+    <height>28</height>
+    <toggle_button>false</toggle_button>
+    <name>Action Button_2</name>
+    <y>560</y>
+    <actions hook="true">
+      <action type="OPEN_DISPLAY">
+        <path>/BOY Examples/widgets/2_5_1_XY_Graph.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+        </macros>
+        <replace>true</replace>
+      </action>
+    </actions>
+    <foreground_color>
+      <color red="0" green="0" blue="128" />
+    </foreground_color>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <x>618</x>
     <tooltip />
   </widget>
 </display>
