@@ -26,7 +26,10 @@ public class ScriptService {
 	
 	private Context scriptContext;
 	
-	public ScriptService() {
+	/** Private constructor to prevent instantiation
+	 *  @see #getInstance()
+	 */
+	private ScriptService() {
 		
 		UIBundlingThread.getInstance().addRunnable(new Runnable() {
 			
