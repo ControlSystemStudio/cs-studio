@@ -13,7 +13,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -30,8 +29,6 @@ public class MacrosInputDialog extends Dialog {
 	private boolean includeParentMacros;
 	
 	private StringTableEditor tableEditor;
-	
-	
 
 	protected MacrosInputDialog(Shell parentShell, MacrosInput macrosInput, String dialogTitle) {
 		super(parentShell);
@@ -41,32 +38,34 @@ public class MacrosInputDialog extends Dialog {
 			this.contents.add(new String[]{key, macrosInput.getMacrosMap().get(key)});
 		}
 		this.includeParentMacros = macrosInput.isInclude_parent_macros();
+		
+		// Allow resize
+        setShellStyle(getShellStyle() | SWT.RESIZE);
 	}
 
 	@Override
 	protected Control createDialogArea(Composite parent) {
-		final Composite parent_Composite = (Composite) super.createDialogArea(parent);
-		final Composite mainComposite = new Composite(parent_Composite, SWT.None);			
-		mainComposite.setLayout(new GridLayout(1, false));
-		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-	
+		final Composite container = (Composite) super.createDialogArea(parent);
+		// Table editor should stretch to fill the dialog space, but
+		// at least on OS X, it has some minimum size below which it
+		// doesn't properly shrink.
 		tableEditor = new StringTableEditor(
-				mainComposite, new String[]{"Name", "Value"}, new boolean[]{true, true},
+				container, new String[]{"Name", "Value"}, new boolean[]{true, true},
 				contents, new MacroEditDialog(getShell()), new int[]{150, 150});
-		tableEditor.setLayoutData(gridData);	
+		tableEditor.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));	
 		
-		final Button checkBox = new Button(mainComposite, SWT.CHECK);
+		final Button checkBox = new Button(container, SWT.CHECK);
 		checkBox.setSelection(includeParentMacros);
 		checkBox.setText("Include macros from parent.");
+		checkBox.setLayoutData(new GridData(SWT.FILL, 0, true, false));
 		checkBox.addSelectionListener(new SelectionAdapter(){
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				includeParentMacros = checkBox.getSelection();
 			}
 		});
-		return parent_Composite;
+		return container;
 	}
-	
 	
 	/**
 	 * {@inheritDoc}
@@ -86,7 +85,4 @@ public class MacrosInputDialog extends Dialog {
 		}		
 		return new MacrosInput(macrosMap, includeParentMacros);
 	}
-	
-	
-	
 }
