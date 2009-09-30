@@ -57,7 +57,7 @@ public class MacrosInputDialog extends Dialog {
 		
 		final Button checkBox = new Button(mainComposite, SWT.CHECK);
 		checkBox.setSelection(includeParentMacros);
-		checkBox.setText("Include the macros from parent.");
+		checkBox.setText("Include macros from parent.");
 		checkBox.addSelectionListener(new SelectionAdapter(){
 			@Override
 			public void widgetSelected(SelectionEvent e) {
