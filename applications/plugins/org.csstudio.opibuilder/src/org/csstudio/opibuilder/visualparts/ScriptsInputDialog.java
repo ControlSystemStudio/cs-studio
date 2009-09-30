@@ -76,7 +76,7 @@ public class ScriptsInputDialog extends Dialog {
 	}
 	
 	/**
-	 * Creates a label with the given text.
+	 * Creates 'wrapping' label with the given text.
 	 * 
 	 * @param parent
 	 *            The parent for the label
@@ -86,25 +86,28 @@ public class ScriptsInputDialog extends Dialog {
 	private void createLabel(final Composite parent, final String text) {
 		Label label = new Label(parent, SWT.WRAP);
 		label.setText(text);
-		label.setLayoutData(new GridData(SWT.FILL, SWT.BOTTOM, false,
-				false, 2, 1));
+		label.setLayoutData(new GridData(SWT.FILL, 0, false, false));
 	}
 	
 	@Override
 	protected Control createDialogArea(Composite parent) {
 		final Composite parent_Composite = (Composite) super.createDialogArea(parent);
 		
+		// Parent composite has GridLayout with 1 columns.
+		// Create embedded composite w/ 2 columns
 		final Composite mainComposite = new Composite(parent_Composite, SWT.None);			
 		mainComposite.setLayout(new GridLayout(2, false));
 		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
 		gridData.heightHint = 200;
 		mainComposite.setLayoutData(gridData);
-		final Composite leftComposite = new Composite(mainComposite, SWT.None);
+		
+		// Left Panel: List of scripts
+		final Composite leftComposite = new Composite(mainComposite, SWT.NONE);
 		leftComposite.setLayout(new GridLayout(1, false));
 		GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
 		gd.widthHint = 350;
 		leftComposite.setLayoutData(gd);
-		createLabel(leftComposite, "The Scripts:");
+		createLabel(leftComposite, "Scripts to execute");
 		
 		Composite toolBarComposite = new Composite(leftComposite, SWT.BORDER);
 		GridLayout gridLayout = new GridLayout(1, false);
@@ -136,13 +139,14 @@ public class ScriptsInputDialog extends Dialog {
 		scriptsViewer = createScriptsTableViewer(toolBarComposite);
 		scriptsViewer.setInput(scriptDataList);
 		
-		Composite rightComposite = new Composite(mainComposite, SWT.NONE);
-		rightComposite.setLayout(new GridLayout(1, false));
+		// Right panel: Input PVs for selected script
+		final Composite rightComposite = new Composite(mainComposite, SWT.NONE);
+		gridLayout = new GridLayout(1, false);
+		rightComposite.setLayout(gridLayout);
 		gd = new GridData(SWT.FILL, SWT.FILL, true, true);
-		gd.widthHint = 250;
+		gd.minimumWidth = 250; // Account for the StringTableEditor's minimum size
 		rightComposite.setLayoutData(gd);
-		this.createLabel(rightComposite, "The PVs for the selected script, \n " +
-				"which will trigger the execution of the script.");
+		this.createLabel(rightComposite, "PVs that trigger execution\nof the selected script");
 		
 		pvsEditor = new StringTableEditor(rightComposite, new ArrayList<String>());
 		pvsEditor.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -151,8 +155,6 @@ public class ScriptsInputDialog extends Dialog {
 		if(scriptDataList.size() > 0)
 			setScriptsViewerSelection(scriptDataList.get(0));
 		return parent_Composite;
-		
-		
 	}
 	
 	/**
@@ -245,7 +247,7 @@ public class ScriptsInputDialog extends Dialog {
 		addAction.setToolTipText("Add a script");
 		addAction.setImageDescriptor(CustomMediaFactory.getInstance()
 				.getImageDescriptorFromPlugin(OPIBuilderPlugin.PLUGIN_ID,
-						"icons/add.gif"));
+						"icons/add.gif")); //$NON-NLS-1$
 		
 		editAction = new Action("Edit") {
 			@Override
@@ -271,7 +273,7 @@ public class ScriptsInputDialog extends Dialog {
 		editAction.setToolTipText("Change the script path");
 		editAction.setImageDescriptor(CustomMediaFactory.getInstance()
 				.getImageDescriptorFromPlugin(OPIBuilderPlugin.PLUGIN_ID,
-						"icons/folder.gif"));
+						"icons/folder.gif")); //$NON-NLS-1$
 		editAction.setEnabled(false);
 		removeAction = new Action() {
 			@Override
@@ -291,7 +293,7 @@ public class ScriptsInputDialog extends Dialog {
 				.setToolTipText("Remove the selected script from the list");
 		removeAction.setImageDescriptor(CustomMediaFactory.getInstance()
 				.getImageDescriptorFromPlugin(OPIBuilderPlugin.PLUGIN_ID,
-						"icons/delete.gif"));
+						"icons/delete.gif")); //$NON-NLS-1$
 		removeAction.setEnabled(false);
 
 		moveUpAction = new Action() {
@@ -312,11 +314,11 @@ public class ScriptsInputDialog extends Dialog {
 				}
 			}
 		};
-		moveUpAction.setText("Move Up Script");
-		moveUpAction.setToolTipText("Move up the selected Script");
+		moveUpAction.setText("Move Script Up");
+		moveUpAction.setToolTipText("Move selected script up");
 		moveUpAction.setImageDescriptor(CustomMediaFactory.getInstance()
 				.getImageDescriptorFromPlugin(OPIBuilderPlugin.PLUGIN_ID,
-						"icons/search_prev.gif"));
+						"icons/search_prev.gif")); //$NON-NLS-1$
 		moveUpAction.setEnabled(false);
 
 		moveDownAction = new Action() {
@@ -337,16 +339,11 @@ public class ScriptsInputDialog extends Dialog {
 				}
 			}
 		};
-		moveDownAction.setText("Move Down Script");
-		moveDownAction.setToolTipText("Move down the selected Script");
+		moveDownAction.setText("Move Script Down");
+		moveDownAction.setToolTipText("Move selected script down");
 		moveDownAction.setImageDescriptor(CustomMediaFactory.getInstance()
 				.getImageDescriptorFromPlugin(OPIBuilderPlugin.PLUGIN_ID,
-						"icons/search_next.gif"));
+						"icons/search_next.gif")); //$NON-NLS-1$
 		moveDownAction.setEnabled(false);
 	}
-	
-	
-
-	
-
 }
