@@ -21,14 +21,13 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.model.IWorkbenchAdapter;
 
-public class OpenDislayAction extends AbstractWidgetAction {
+public class OpenDisplayAction extends AbstractWidgetAction {
 	
 	
 	
@@ -56,7 +55,7 @@ public class OpenDislayAction extends AbstractWidgetAction {
 		
 		if(files.length < 1)
 			try {
-				throw new FileNotFoundException("The file " + getPath().toString() + "does not exist!");
+				throw new FileNotFoundException(NLS.bind("The file {0} does not exist", getPath().toString()));
 			} catch (FileNotFoundException e) {
 				CentralLogger.getInstance().error(this, e);
 				MessageDialog.openError(Display.getDefault().getActiveShell(), "File Open Error",
@@ -79,7 +78,7 @@ public class OpenDislayAction extends AbstractWidgetAction {
 					} catch (PartInitException e) {
 						CentralLogger.getInstance().error(this, "Failed to open " + files[0], e);
 						MessageDialog.openError(Display.getDefault().getActiveShell(), "Open file error", 
-								"Failed to open " + files[0]);
+								NLS.bind("Failed to open {0}", files[0]));
 					}
 				}
 			}else{
