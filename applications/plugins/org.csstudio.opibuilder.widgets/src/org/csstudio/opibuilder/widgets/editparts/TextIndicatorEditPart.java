@@ -54,7 +54,11 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 	@Override
 	public void activate() {
 		super.activate();
-		((LabelFigure)getFigure()).setText(getWidgetModel().getText());		
+		((LabelFigure)getFigure()).setText(getWidgetModel().getText());
+		if(getWidgetModel().isAutoSize()){
+			getWidgetModel().setSize(((LabelFigure)figure).getAutoSizeDimension());
+			figure.revalidate();
+		}
 	}
 	
 	@Override

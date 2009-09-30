@@ -20,14 +20,17 @@ public class ArcFigure extends Shape {
 	@Override
 	protected void fillShape(Graphics graphics) {
 		graphics.setAntialias(antiAlias ? SWT.ON : SWT.OFF);
-		graphics.fillArc(getClientArea(), startAngle, totalAngle);		
+		graphics.fillArc(getClientArea().getCopy().shrink(
+				(int)(getLineWidth()*1.5), (int)(getLineWidth()*1.5)), startAngle, totalAngle);
 		
 	}
 
 	@Override
 	protected void outlineShape(Graphics graphics) {
 		graphics.setAntialias(antiAlias ? SWT.ON : SWT.OFF);
-		graphics.drawArc(getClientArea(), startAngle, totalAngle);
+		graphics.drawArc(getClientArea().getCopy().shrink(		
+				getLineWidth(), getLineWidth()), startAngle, totalAngle);		
+
 	}
 	
 	public void setAntiAlias(boolean antiAlias) {

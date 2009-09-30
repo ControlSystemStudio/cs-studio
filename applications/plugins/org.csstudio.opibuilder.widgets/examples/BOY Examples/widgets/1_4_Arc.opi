@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<display typeId="org.csstudio.opibuilder.Display" version="1.0">
+  <width>800</width>
+  <scripts />
+  <actions hook="false" />
+  <macros>
+    <include_parent_macros>true</include_parent_macros>
+    <my_name>Best OPI Yet</my_name>
+    <noisePV>sim://noise</noisePV>
+  </macros>
+  <snap_to_geometry>true</snap_to_geometry>
+  <show_grid>false</show_grid>
+  <show_edit_range>true</show_edit_range>
+  <grid_space>4</grid_space>
+  <height>600</height>
+  <widget_type>Display</widget_type>
+  <background_color>
+    <color red="240" green="240" blue="240" />
+  </background_color>
+  <foreground_color>
+    <color red="192" green="192" blue="192" />
+  </foreground_color>
+  <y>0</y>
+  <show_ruler>false</show_ruler>
+  <name>Display</name>
+  <x>0</x>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <auto_size>false</auto_size>
+    <width>745</width>
+    <scripts />
+    <border_width>1</border_width>
+    <border_style>1</border_style>
+    <tooltip />
+    <actions hook="false" />
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <vertical_alignment>1</vertical_alignment>
+    <transparent>false</transparent>
+    <font>
+      <fontdata fontName="Arial" height="10" style="0" />
+    </font>
+    <text>-Anti Alias(anti_alias) On the platform that doesn't support advanced graphics, this option should be turned off.&#xD;
+-Fill(fill). Fill the arc with background color&#xD;
+-Line Style(line_style) The style of the arc line. The line color is foreground color.&#xD;
+-Line Width(line_with)&#xD;
+-Start Angle(start_angle) The start angle of the arc. &#xD;
+-Total Angle(total_angle) The total angle of the arc from the start angle in counterclock wise.</text>
+    <widget_type>Label</widget_type>
+    <height>134</height>
+    <background_color>
+      <color red="255" green="255" blue="223" />
+    </background_color>
+    <enabled>true</enabled>
+    <y>110</y>
+    <visible>true</visible>
+    <foreground_color>
+      <color red="0" green="0" blue="203" />
+    </foreground_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <name>Label_4</name>
+    <x>17</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <auto_size>true</auto_size>
+    <width>91</width>
+    <scripts />
+    <border_width>1</border_width>
+    <border_style>0</border_style>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <actions hook="false" />
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <vertical_alignment>1</vertical_alignment>
+    <transparent>false</transparent>
+    <font>
+      <fontdata fontName="Arial" height="10" style="1" />
+    </font>
+    <text>Special Properties</text>
+    <widget_type>Label</widget_type>
+    <height>11</height>
+    <background_color>
+      <color red="0" green="255" blue="128" />
+    </background_color>
+    <enabled>true</enabled>
+    <y>100</y>
+    <visible>true</visible>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <name>Label_5</name>
+    <x>344</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <auto_size>false</auto_size>
+    <width>295</width>
+    <scripts />
+    <border_width>1</border_width>
+    <border_style>0</border_style>
+    <tooltip />
+    <actions hook="false" />
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <vertical_alignment>1</vertical_alignment>
+    <transparent>false</transparent>
+    <font>
+      <fontdata fontName="Arial" height="18" style="1" />
+    </font>
+    <text>Arc</text>
+    <widget_type>Label</widget_type>
+    <height>86</height>
+    <background_color>
+      <color red="135" green="181" blue="255" />
+    </background_color>
+    <enabled>true</enabled>
+    <y>6</y>
+    <visible>true</visible>
+    <foreground_color>
+      <color red="128" green="0" blue="64" />
+    </foreground_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <name>Label_8</name>
+    <x>17</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <auto_size>false</auto_size>
+    <width>451</width>
+    <scripts />
+    <border_width>1</border_width>
+    <border_style>0</border_style>
+    <tooltip />
+    <actions hook="false" />
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <vertical_alignment>1</vertical_alignment>
+    <transparent>false</transparent>
+    <font>
+      <fontdata fontName="Arial" height="18" style="1" />
+    </font>
+    <text>Examples</text>
+    <widget_type>Label</widget_type>
+    <height>43</height>
+    <background_color>
+      <color red="135" green="181" blue="255" />
+    </background_color>
+    <enabled>true</enabled>
+    <y>49</y>
+    <visible>true</visible>
+    <foreground_color>
+      <color red="29" green="40" blue="184" />
+    </foreground_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <name>Label_6</name>
+    <x>311</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <auto_size>false</auto_size>
+    <width>451</width>
+    <scripts />
+    <border_width>1</border_width>
+    <border_style>0</border_style>
+    <tooltip />
+    <actions hook="false" />
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <vertical_alignment>1</vertical_alignment>
+    <transparent>false</transparent>
+    <font>
+      <fontdata fontName="Arial" height="18" style="1" />
+    </font>
+    <text>Best OPI Yet (BOY)</text>
+    <widget_type>Label</widget_type>
+    <height>44</height>
+    <background_color>
+      <color red="135" green="181" blue="255" />
+    </background_color>
+    <enabled>true</enabled>
+    <y>6</y>
+    <visible>true</visible>
+    <foreground_color>
+      <color red="29" green="40" blue="184" />
+    </foreground_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <name>Label_9</name>
+    <x>311</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <width>79</width>
+    <scripts />
+    <tooltip />
+    <actions hook="true">
+      <action type="OPEN_DISPLAY">
+        <path>/BOY Examples/main.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+        </macros>
+        <replace>false</replace>
+      </action>
+    </actions>
+    <toggle_button>false</toggle_button>
+    <font>
+      <fontdata fontName="Arial" height="9" style="1" />
+    </font>
+    <push_action_index>0</push_action_index>
+    <text>Go Home</text>
+    <height>28</height>
+    <widget_type>Action Button</widget_type>
+    <enabled>true</enabled>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <visible>true</visible>
+    <foreground_color>
+      <color red="0" green="0" blue="128" />
+    </foreground_color>
+    <y>570</y>
+    <image>/BOY Examples/pictures/home-16x16.png</image>
+    <name>Action Button</name>
+    <x>17</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.arc" version="1.0">
+    <width>100</width>
+    <scripts />
+    <border_style>0</border_style>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <fill>false</fill>
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <pv_name />
+    <anti_alias>true</anti_alias>
+    <total_angle>135</total_angle>
+    <height>100</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color red="0" green="0" blue="255" />
+    </foreground_color>
+    <line_width>1</line_width>
+    <name>Arc</name>
+    <border_width>1</border_width>
+    <actions hook="false" />
+    <start_angle>15</start_angle>
+    <line_style>0</line_style>
+    <widget_type>Arc</widget_type>
+    <background_color>
+      <color red="255" green="153" blue="51" />
+    </background_color>
+    <enabled>true</enabled>
+    <y>289</y>
+    <visible>true</visible>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <x>57</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.arc" version="1.0">
+    <width>100</width>
+    <scripts>
+      <path pathString="/BOY Examples/scripts/ArcTotalAngle.js">
+        <pv>sim://ramp(0,360, 10, 0.1)</pv>
+      </path>
+    </scripts>
+    <border_style>0</border_style>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <fill>true</fill>
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <pv_name />
+    <anti_alias>true</anti_alias>
+    <total_angle>135</total_angle>
+    <height>100</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color red="0" green="0" blue="255" />
+    </foreground_color>
+    <line_width>1</line_width>
+    <name>Arc_1</name>
+    <border_width>1</border_width>
+    <actions hook="false" />
+    <start_angle>15</start_angle>
+    <line_style>0</line_style>
+    <widget_type>Arc</widget_type>
+    <background_color>
+      <color red="51" green="51" blue="204" />
+    </background_color>
+    <enabled>true</enabled>
+    <y>271</y>
+    <visible>true</visible>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <x>396</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.arc" version="1.0">
+    <width>100</width>
+    <scripts>
+      <path pathString="/BOY Examples/scripts/ArcStartAngle.js">
+        <pv>sim://ramp(0,360, 10, 0.1)</pv>
+      </path>
+    </scripts>
+    <border_style>0</border_style>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <fill>true</fill>
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <pv_name />
+    <anti_alias>true</anti_alias>
+    <total_angle>135</total_angle>
+    <height>100</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color red="255" green="255" blue="51" />
+    </foreground_color>
+    <line_width>2</line_width>
+    <name>Arc_2</name>
+    <border_width>1</border_width>
+    <actions hook="false" />
+    <start_angle>15</start_angle>
+    <line_style>0</line_style>
+    <widget_type>Arc</widget_type>
+    <background_color>
+      <color red="153" green="0" blue="255" />
+    </background_color>
+    <enabled>true</enabled>
+    <y>263</y>
+    <visible>true</visible>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <x>573</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.arc" version="1.0">
+    <width>113</width>
+    <scripts />
+    <border_style>0</border_style>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <fill>true</fill>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <pv_name>sim://ramp</pv_name>
+    <anti_alias>true</anti_alias>
+    <total_angle>120</total_angle>
+    <height>118</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color red="0" green="0" blue="255" />
+    </foreground_color>
+    <line_width>2</line_width>
+    <name>Arc_3</name>
+    <border_width>1</border_width>
+    <actions hook="false" />
+    <start_angle>30</start_angle>
+    <line_style>2</line_style>
+    <widget_type>Arc</widget_type>
+    <background_color>
+      <color red="51" green="255" blue="0" />
+    </background_color>
+    <enabled>true</enabled>
+    <y>271</y>
+    <visible>true</visible>
+    <backcolor_alarm_sensitive>true</backcolor_alarm_sensitive>
+    <x>218</x>
+  </widget>
+</display>

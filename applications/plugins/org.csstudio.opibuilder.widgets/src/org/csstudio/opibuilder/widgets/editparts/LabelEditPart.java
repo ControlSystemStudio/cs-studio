@@ -38,6 +38,10 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 	public void activate() {
 		super.activate();
 		((LabelFigure)getFigure()).setText(getWidgetModel().getText());		
+		if(getWidgetModel().isAutoSize()){
+			getWidgetModel().setSize(((LabelFigure)figure).getAutoSizeDimension());
+			figure.revalidate();
+		}
 	}
 	
 	@Override

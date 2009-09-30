@@ -1,0 +1,756 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<display typeId="org.csstudio.opibuilder.Display" version="1.0">
+  <width>800</width>
+  <scripts />
+  <actions hook="false" />
+  <macros>
+    <include_parent_macros>true</include_parent_macros>
+    <my_name>Best OPI Yet</my_name>
+    <noisePV>sim://noise</noisePV>
+  </macros>
+  <snap_to_geometry>true</snap_to_geometry>
+  <show_grid>false</show_grid>
+  <show_edit_range>true</show_edit_range>
+  <grid_space>4</grid_space>
+  <height>600</height>
+  <widget_type>Display</widget_type>
+  <background_color>
+    <color red="240" green="240" blue="240" />
+  </background_color>
+  <foreground_color>
+    <color red="192" green="192" blue="192" />
+  </foreground_color>
+  <y>0</y>
+  <show_ruler>false</show_ruler>
+  <name>Display</name>
+  <x>0</x>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <auto_size>false</auto_size>
+    <width>745</width>
+    <scripts />
+    <border_width>1</border_width>
+    <border_style>1</border_style>
+    <tooltip />
+    <actions hook="false" />
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <vertical_alignment>1</vertical_alignment>
+    <transparent>false</transparent>
+    <font>
+      <fontdata fontName="Arial" height="10" style="0" />
+    </font>
+    <text>-3D Effect(effect_3d). 3D effect on outlooking. On the platform that doesn't support advanced graphics, this option should be turned off.&#xD;
+-On Color(on_color). &#xD;
+-Off Color(off_color).&#xD;
+-On Label(on_label).&#xD;
+-Off Label(off_label).&#xD;
+-Show Boolean Label(show_boolean_label).&#xD;
+-Square LED(square_led)</text>
+    <widget_type>Label</widget_type>
+    <height>134</height>
+    <background_color>
+      <color red="255" green="255" blue="223" />
+    </background_color>
+    <enabled>true</enabled>
+    <y>110</y>
+    <visible>true</visible>
+    <foreground_color>
+      <color red="0" green="0" blue="203" />
+    </foreground_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <name>Label_4</name>
+    <x>17</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <auto_size>true</auto_size>
+    <width>91</width>
+    <scripts />
+    <border_width>1</border_width>
+    <border_style>0</border_style>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <actions hook="false" />
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <vertical_alignment>1</vertical_alignment>
+    <transparent>false</transparent>
+    <font>
+      <fontdata fontName="Arial" height="10" style="1" />
+    </font>
+    <text>Special Properties</text>
+    <widget_type>Label</widget_type>
+    <height>11</height>
+    <background_color>
+      <color red="0" green="255" blue="128" />
+    </background_color>
+    <enabled>true</enabled>
+    <y>100</y>
+    <visible>true</visible>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <name>Label_5</name>
+    <x>344</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <auto_size>false</auto_size>
+    <width>295</width>
+    <scripts />
+    <border_width>1</border_width>
+    <border_style>0</border_style>
+    <tooltip />
+    <actions hook="false" />
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <vertical_alignment>1</vertical_alignment>
+    <transparent>false</transparent>
+    <font>
+      <fontdata fontName="Arial" height="18" style="1" />
+    </font>
+    <text>LED</text>
+    <widget_type>Label</widget_type>
+    <height>86</height>
+    <background_color>
+      <color red="135" green="181" blue="255" />
+    </background_color>
+    <enabled>true</enabled>
+    <y>6</y>
+    <visible>true</visible>
+    <foreground_color>
+      <color red="128" green="0" blue="64" />
+    </foreground_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <name>Label_8</name>
+    <x>17</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <auto_size>false</auto_size>
+    <width>451</width>
+    <scripts />
+    <border_width>1</border_width>
+    <border_style>0</border_style>
+    <tooltip />
+    <actions hook="false" />
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <vertical_alignment>1</vertical_alignment>
+    <transparent>false</transparent>
+    <font>
+      <fontdata fontName="Arial" height="18" style="1" />
+    </font>
+    <text>Examples</text>
+    <widget_type>Label</widget_type>
+    <height>43</height>
+    <background_color>
+      <color red="135" green="181" blue="255" />
+    </background_color>
+    <enabled>true</enabled>
+    <y>49</y>
+    <visible>true</visible>
+    <foreground_color>
+      <color red="29" green="40" blue="184" />
+    </foreground_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <name>Label_6</name>
+    <x>311</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <auto_size>false</auto_size>
+    <width>451</width>
+    <scripts />
+    <border_width>1</border_width>
+    <border_style>0</border_style>
+    <tooltip />
+    <actions hook="false" />
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <vertical_alignment>1</vertical_alignment>
+    <transparent>false</transparent>
+    <font>
+      <fontdata fontName="Arial" height="18" style="1" />
+    </font>
+    <text>Best OPI Yet (BOY)</text>
+    <widget_type>Label</widget_type>
+    <height>44</height>
+    <background_color>
+      <color red="135" green="181" blue="255" />
+    </background_color>
+    <enabled>true</enabled>
+    <y>6</y>
+    <visible>true</visible>
+    <foreground_color>
+      <color red="29" green="40" blue="184" />
+    </foreground_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <name>Label_9</name>
+    <x>311</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <width>79</width>
+    <scripts />
+    <tooltip />
+    <actions hook="true">
+      <action type="OPEN_DISPLAY">
+        <path>/BOY Examples/main.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+        </macros>
+        <replace>false</replace>
+      </action>
+    </actions>
+    <toggle_button>false</toggle_button>
+    <font>
+      <fontdata fontName="Arial" height="9" style="1" />
+    </font>
+    <push_action_index>0</push_action_index>
+    <text>Go Home</text>
+    <height>28</height>
+    <widget_type>Action Button</widget_type>
+    <enabled>true</enabled>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <visible>true</visible>
+    <foreground_color>
+      <color red="0" green="0" blue="128" />
+    </foreground_color>
+    <y>550</y>
+    <image>/BOY Examples/pictures/home-16x16.png</image>
+    <name>Action Button</name>
+    <x>23</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0">
+    <off_label>OFF</off_label>
+    <width>20</width>
+    <scripts />
+    <border_style>0</border_style>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <pv_name>sim://ramp(0,255,1,0.1)</pv_name>
+    <font>
+      <fontdata fontName="Arial" height="9" style="0" />
+    </font>
+    <height>20</height>
+    <effect_3d>true</effect_3d>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color red="192" green="192" blue="192" />
+    </foreground_color>
+    <square_led>false</square_led>
+    <bit>6</bit>
+    <name>LED</name>
+    <border_width>1</border_width>
+    <on_label>ON</on_label>
+    <off_color>
+      <color red="0" green="100" blue="0" />
+    </off_color>
+    <actions hook="false" />
+    <widget_type>LED</widget_type>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <enabled>true</enabled>
+    <show_boolean_label>false</show_boolean_label>
+    <y>303</y>
+    <visible>true</visible>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <on_color>
+      <color red="0" green="255" blue="0" />
+    </on_color>
+    <x>492</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0">
+    <off_label>OFF</off_label>
+    <width>20</width>
+    <scripts />
+    <border_style>0</border_style>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <pv_name>sim://ramp(0,255,1,0.1)</pv_name>
+    <font>
+      <fontdata fontName="Arial" height="9" style="0" />
+    </font>
+    <height>20</height>
+    <effect_3d>true</effect_3d>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color red="192" green="192" blue="192" />
+    </foreground_color>
+    <square_led>false</square_led>
+    <bit>7</bit>
+    <name>LED_1</name>
+    <border_width>1</border_width>
+    <on_label>ON</on_label>
+    <off_color>
+      <color red="0" green="100" blue="0" />
+    </off_color>
+    <actions hook="false" />
+    <widget_type>LED</widget_type>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <enabled>true</enabled>
+    <show_boolean_label>false</show_boolean_label>
+    <y>278</y>
+    <visible>true</visible>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <on_color>
+      <color red="0" green="255" blue="0" />
+    </on_color>
+    <x>492</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0">
+    <off_label>OFF</off_label>
+    <width>20</width>
+    <scripts />
+    <border_style>0</border_style>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <pv_name>sim://ramp(0,255,1,0.1)</pv_name>
+    <font>
+      <fontdata fontName="Arial" height="9" style="0" />
+    </font>
+    <height>20</height>
+    <effect_3d>true</effect_3d>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color red="192" green="192" blue="192" />
+    </foreground_color>
+    <square_led>false</square_led>
+    <bit>5</bit>
+    <name>LED_2</name>
+    <border_width>1</border_width>
+    <on_label>ON</on_label>
+    <off_color>
+      <color red="0" green="100" blue="0" />
+    </off_color>
+    <actions hook="false" />
+    <widget_type>LED</widget_type>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <enabled>true</enabled>
+    <show_boolean_label>false</show_boolean_label>
+    <y>326</y>
+    <visible>true</visible>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <on_color>
+      <color red="0" green="255" blue="0" />
+    </on_color>
+    <x>492</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0">
+    <off_label>OFF</off_label>
+    <width>20</width>
+    <scripts />
+    <border_style>0</border_style>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <pv_name>sim://ramp(0,255,1,0.1)</pv_name>
+    <font>
+      <fontdata fontName="Arial" height="9" style="0" />
+    </font>
+    <height>20</height>
+    <effect_3d>true</effect_3d>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color red="192" green="192" blue="192" />
+    </foreground_color>
+    <square_led>false</square_led>
+    <bit>4</bit>
+    <name>LED_3</name>
+    <border_width>1</border_width>
+    <on_label>ON</on_label>
+    <off_color>
+      <color red="0" green="100" blue="0" />
+    </off_color>
+    <actions hook="false" />
+    <widget_type>LED</widget_type>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <enabled>true</enabled>
+    <show_boolean_label>false</show_boolean_label>
+    <y>351</y>
+    <visible>true</visible>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <on_color>
+      <color red="0" green="255" blue="0" />
+    </on_color>
+    <x>492</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0">
+    <off_label>OFF</off_label>
+    <width>20</width>
+    <scripts />
+    <border_style>0</border_style>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <pv_name>sim://ramp(0,255,1,0.1)</pv_name>
+    <font>
+      <fontdata fontName="Arial" height="9" style="0" />
+    </font>
+    <height>20</height>
+    <effect_3d>true</effect_3d>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color red="192" green="192" blue="192" />
+    </foreground_color>
+    <square_led>false</square_led>
+    <bit>3</bit>
+    <name>LED_4</name>
+    <border_width>1</border_width>
+    <on_label>ON</on_label>
+    <off_color>
+      <color red="0" green="100" blue="0" />
+    </off_color>
+    <actions hook="false" />
+    <widget_type>LED</widget_type>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <enabled>true</enabled>
+    <show_boolean_label>false</show_boolean_label>
+    <y>376</y>
+    <visible>true</visible>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <on_color>
+      <color red="0" green="255" blue="0" />
+    </on_color>
+    <x>492</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0">
+    <off_label>OFF</off_label>
+    <width>20</width>
+    <scripts />
+    <border_style>0</border_style>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <pv_name>sim://ramp(0,255,1,0.1)</pv_name>
+    <font>
+      <fontdata fontName="Arial" height="9" style="0" />
+    </font>
+    <height>20</height>
+    <effect_3d>true</effect_3d>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color red="192" green="192" blue="192" />
+    </foreground_color>
+    <square_led>false</square_led>
+    <bit>2</bit>
+    <name>LED_5</name>
+    <border_width>1</border_width>
+    <on_label>ON</on_label>
+    <off_color>
+      <color red="0" green="100" blue="0" />
+    </off_color>
+    <actions hook="false" />
+    <widget_type>LED</widget_type>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <enabled>true</enabled>
+    <show_boolean_label>false</show_boolean_label>
+    <y>401</y>
+    <visible>true</visible>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <on_color>
+      <color red="0" green="255" blue="0" />
+    </on_color>
+    <x>492</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0">
+    <off_label>OFF</off_label>
+    <width>20</width>
+    <scripts />
+    <border_style>0</border_style>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <pv_name>sim://ramp(0,255,1,0.1)</pv_name>
+    <font>
+      <fontdata fontName="Arial" height="9" style="0" />
+    </font>
+    <height>20</height>
+    <effect_3d>true</effect_3d>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color red="192" green="192" blue="192" />
+    </foreground_color>
+    <square_led>false</square_led>
+    <bit>1</bit>
+    <name>LED_6</name>
+    <border_width>1</border_width>
+    <on_label>ON</on_label>
+    <off_color>
+      <color red="0" green="100" blue="0" />
+    </off_color>
+    <actions hook="false" />
+    <widget_type>LED</widget_type>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <enabled>true</enabled>
+    <show_boolean_label>false</show_boolean_label>
+    <y>424</y>
+    <visible>true</visible>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <on_color>
+      <color red="0" green="255" blue="0" />
+    </on_color>
+    <x>492</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0">
+    <off_label>OFF</off_label>
+    <width>20</width>
+    <scripts />
+    <border_style>0</border_style>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <pv_name>sim://ramp(0,255,1,0.1)</pv_name>
+    <font>
+      <fontdata fontName="Arial" height="9" style="0" />
+    </font>
+    <height>20</height>
+    <effect_3d>true</effect_3d>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color red="192" green="192" blue="192" />
+    </foreground_color>
+    <square_led>false</square_led>
+    <bit>0</bit>
+    <name>LED_7</name>
+    <border_width>1</border_width>
+    <on_label>ON</on_label>
+    <off_color>
+      <color red="0" green="100" blue="0" />
+    </off_color>
+    <actions hook="false" />
+    <widget_type>LED</widget_type>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <enabled>true</enabled>
+    <show_boolean_label>false</show_boolean_label>
+    <y>449</y>
+    <visible>true</visible>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <on_color>
+      <color red="0" green="255" blue="0" />
+    </on_color>
+    <x>492</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0">
+    <off_label>OFF</off_label>
+    <width>40</width>
+    <scripts />
+    <border_style>0</border_style>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <pv_name>sim://ramp(0,255,1,0.1)</pv_name>
+    <font>
+      <fontdata fontName="Arial" height="9" style="0" />
+    </font>
+    <height>40</height>
+    <effect_3d>false</effect_3d>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color red="192" green="192" blue="192" />
+    </foreground_color>
+    <square_led>false</square_led>
+    <bit>2</bit>
+    <name>LED_8</name>
+    <border_width>1</border_width>
+    <on_label>ON</on_label>
+    <off_color>
+      <color red="0" green="100" blue="0" />
+    </off_color>
+    <actions hook="false" />
+    <widget_type>LED</widget_type>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <enabled>true</enabled>
+    <show_boolean_label>false</show_boolean_label>
+    <y>304</y>
+    <visible>true</visible>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <on_color>
+      <color red="0" green="255" blue="0" />
+    </on_color>
+    <x>107</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0">
+    <off_label>OFF</off_label>
+    <width>51</width>
+    <scripts />
+    <border_style>0</border_style>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <pv_name>sim://ramp(0,255,1,0.1)</pv_name>
+    <font>
+      <fontdata fontName="Arial" height="9" style="0" />
+    </font>
+    <height>30</height>
+    <effect_3d>false</effect_3d>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color red="192" green="192" blue="192" />
+    </foreground_color>
+    <square_led>true</square_led>
+    <bit>2</bit>
+    <name>LED_9</name>
+    <border_width>1</border_width>
+    <on_label>ON</on_label>
+    <off_color>
+      <color red="102" green="0" blue="0" />
+    </off_color>
+    <actions hook="false" />
+    <widget_type>LED</widget_type>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <enabled>true</enabled>
+    <show_boolean_label>false</show_boolean_label>
+    <y>371</y>
+    <visible>true</visible>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <on_color>
+      <color red="255" green="0" blue="0" />
+    </on_color>
+    <x>101</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0">
+    <off_label>OFF</off_label>
+    <width>40</width>
+    <scripts />
+    <border_style>0</border_style>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <pv_name>sim://noise</pv_name>
+    <font>
+      <fontdata fontName="Arial" height="9" style="0" />
+    </font>
+    <height>40</height>
+    <effect_3d>true</effect_3d>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color red="255" green="102" blue="0" />
+    </foreground_color>
+    <square_led>false</square_led>
+    <bit>0</bit>
+    <name>LED_10</name>
+    <border_width>1</border_width>
+    <on_label>ON</on_label>
+    <off_color>
+      <color red="0" green="100" blue="0" />
+    </off_color>
+    <actions hook="false" />
+    <widget_type>LED</widget_type>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <enabled>true</enabled>
+    <show_boolean_label>true</show_boolean_label>
+    <y>304</y>
+    <visible>true</visible>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <on_color>
+      <color red="0" green="255" blue="0" />
+    </on_color>
+    <x>244</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0">
+    <off_label>OFF</off_label>
+    <width>72</width>
+    <scripts />
+    <border_style>0</border_style>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <pv_name>sim://noise</pv_name>
+    <font>
+      <fontdata fontName="Arial" height="10" style="1" />
+    </font>
+    <height>40</height>
+    <effect_3d>true</effect_3d>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <square_led>true</square_led>
+    <bit>0</bit>
+    <name>LED_11</name>
+    <border_width>1</border_width>
+    <on_label>ON</on_label>
+    <off_color>
+      <color red="0" green="100" blue="0" />
+    </off_color>
+    <actions hook="false" />
+    <widget_type>LED</widget_type>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <enabled>true</enabled>
+    <show_boolean_label>true</show_boolean_label>
+    <y>362</y>
+    <visible>true</visible>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <on_color>
+      <color red="0" green="255" blue="0" />
+    </on_color>
+    <x>228</x>
+  </widget>
+</display>
