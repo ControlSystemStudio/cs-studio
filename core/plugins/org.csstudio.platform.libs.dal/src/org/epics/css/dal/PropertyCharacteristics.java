@@ -66,6 +66,25 @@ public interface PropertyCharacteristics
 	 * this property.
 	 */
 	public static String C_DESCRIPTION = CharacteristicInfo.C_DESCRIPTION.getName();
+	
+	/**
+	 * Data type of the property data. A property can be of type double, float,
+	 * string etc. This characteristic should be a string description of the
+	 * data type. 
+	 */
+	public static final String C_DATATYPE = "dataType";
+	
+	/**
+	 * Returns the access type of the property. The property can be either
+	 * a read or write property, can be both or none. The characteristic
+	 * should be one of the {@link AccessType} values.
+	 */
+	public static final String C_ACCESS_TYPE = "accessType";
+	
+	/**
+	 * Returns the host name on which the remote property is running.
+	 */
+	public static final String C_HOSTNAME = "hostName";
 }
 
 /* __oOo__ */

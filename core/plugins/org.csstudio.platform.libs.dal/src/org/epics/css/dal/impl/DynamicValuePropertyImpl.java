@@ -432,8 +432,8 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 	 */
 	public void refresh() throws RemoteException
 	{
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+		directoryProxy.refresh();
+		if ((proxy != directoryProxy) && (proxy instanceof DirectoryProxy)) ((DirectoryProxy)proxy).refresh();
 	}
 
 	/* (non-Javadoc)

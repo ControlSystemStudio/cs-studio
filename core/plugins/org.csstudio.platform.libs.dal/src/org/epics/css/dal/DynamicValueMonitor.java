@@ -56,7 +56,7 @@ package org.epics.css.dal;
  * @see org.epics.css.dal.SimpleMonitor
  */
 public interface DynamicValueMonitor extends CharacteristicContext,
-	DynamicValueMonitorCharacteristics, SimpleMonitor
+	DynamicValueMonitorCharacteristics, SimpleMonitor, Suspendable
 {
 }
 

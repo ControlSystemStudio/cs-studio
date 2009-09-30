@@ -22,7 +22,9 @@
 
 package org.epics.css.dal.impl;
 
-import com.cosylab.util.ListenerList;
+import java.beans.PropertyChangeListener;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.epics.css.dal.DataExchangeException;
 import org.epics.css.dal.DynamicValueCondition;
@@ -33,12 +35,10 @@ import org.epics.css.dal.Response;
 import org.epics.css.dal.ResponseEvent;
 import org.epics.css.dal.ResponseListener;
 import org.epics.css.dal.SimpleProperty;
+import org.epics.css.dal.Suspendable;
 import org.epics.css.dal.proxy.MonitorProxy;
 
-import java.beans.PropertyChangeListener;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.cosylab.util.ListenerList;
 
 
 // TODO type safety
@@ -47,7 +47,7 @@ import java.util.Map;
  *
  */
 public class MonitorProxyWrapper<T, P extends SimpleProperty<T>> implements ResponseListener<T>,
-	DynamicValueMonitor
+	DynamicValueMonitor, Suspendable
 {
 	private DynamicValueListener<T, P> dvl;
 	private ListenerList dvls;
@@ -56,6 +56,7 @@ public class MonitorProxyWrapper<T, P extends SimpleProperty<T>> implements Resp
 	private P property;
 	private Object lastValue = null;
 	private DynamicValueCondition lastCondition;
+	private int suspendCount;
 
 	/**
 	 * Creates a new MonitorProxyWrapper object.
@@ -334,6 +335,24 @@ public class MonitorProxyWrapper<T, P extends SimpleProperty<T>> implements Resp
 	{
 		return proxy.isDestroyed();
 	}
+
+	public void suspend() {
+		if (!(proxy instanceof Suspendable)) throw new UnsupportedOperationException("Monitor proxy doesn't support suspend/resume operations!");
+		if (suspendCount == 0) ((Suspendable)proxy).suspend();
+		suspendCount++;
+	}
+
+	public void resume() {
+		if (!(proxy instanceof Suspendable)) throw new UnsupportedOperationException("Monitor proxy doesn't support suspend/resume operations!");
+		if (suspendCount == 1) ((Suspendable)proxy).resume();
+		if (suspendCount > 0) suspendCount--;;
+	}
+
+	public boolean isSuspended() {
+		if (!(proxy instanceof Suspendable)) throw new UnsupportedOperationException("Monitor proxy doesn't support suspend/resume operations!");
+		return suspendCount > 0;
+	}
+
 }
 
 /* __oOo__ */
