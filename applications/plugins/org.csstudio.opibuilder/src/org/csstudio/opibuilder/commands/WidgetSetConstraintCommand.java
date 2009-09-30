@@ -27,7 +27,7 @@ public class WidgetSetConstraintCommand extends Command {
 		this.widget = widgetModel;
 		this.newBounds = newBounds;
 		//this.request = req;
-		setLabel("move/reize");
+		setLabel("move/resize");
 	}
 	/*
 	@Override
