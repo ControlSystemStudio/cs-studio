@@ -299,7 +299,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
         // Store the remaining messages
         if(smsContainer.hasContent() || smsContainer.hasBadMessages())
         {
-            if(smsContainer.storeContent("./"))
+            if(smsContainer.storeContent())
             {
                 Log.log(this, Log.INFO, "SMS objects have been stored.");
                 
@@ -325,7 +325,10 @@ public class SmsConnectorWork extends Thread implements AmsConstants
         
         if(smsContainer != null)
         {
-            success = smsContainer.storeContent("./");
+            if(smsContainer.hasContent() || smsContainer.hasBadMessages())
+            {
+                success = smsContainer.storeContent();
+            }
         }
         
         return success;
@@ -681,6 +684,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
     {
         Sms sms = null;
         int iErr = SmsConnectorStart.STAT_OK;
+        boolean success = false;
         
         if(smsContainer.hasContent())
         {
@@ -721,7 +725,17 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                 {
                     if((sms.getType() == Sms.Type.OUT) && (sms.getState() != Sms.State.SENT) && (sms.getState() != Sms.State.BAD))
                     {
-                        if(sendSms(sms))
+                        success = sendSms(sms);
+                        
+                        // JUST A TEST
+                        if(success == false)
+                        {
+                            sms.setState(Sms.State.FAILED);
+                        }
+                        // JUST A TEST
+                        
+                        //if(sendSms(sms))
+                        if(success)
                         {
                             smsContainer.removeSms(sms);
                         }

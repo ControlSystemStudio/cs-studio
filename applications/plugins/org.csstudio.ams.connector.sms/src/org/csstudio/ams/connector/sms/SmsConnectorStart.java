@@ -96,9 +96,10 @@ public class SmsConnectorStart implements IApplication
         boolean bInitedJms = false;
 
         Log.log(this, Log.INFO, "start");
+        Log.log(this, Log.INFO, "Location: " + Platform.getInstanceLocation().toString());
         
         SmsConnectorPreferenceKey.showPreferences();
-        
+
         // use synchronized method
         lastStatus = getStatus();
 

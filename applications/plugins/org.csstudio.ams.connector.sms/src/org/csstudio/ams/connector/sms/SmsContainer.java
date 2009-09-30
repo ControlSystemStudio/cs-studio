@@ -30,6 +30,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.TreeSet;
 import java.util.Vector;
@@ -51,9 +53,15 @@ public class SmsContainer implements AmsConstants
     /** Content of this container */
     private Vector<Sms> badMessages;
 
-    /** Id's for the Sms objects */
-    private long smsId;
+    /** */
+    private final String VAR_DIR = "var";
     
+    /** */
+    private final String SMS_DIR = "sms";
+
+    /** */
+    private final String BAD_DIR = "bad";
+
     /**
      * Standard constructor. Just creates a TreeSet object that holds the Sms objects.
      */
@@ -61,11 +69,10 @@ public class SmsContainer implements AmsConstants
     {
         content = null;
         
-        this.loadContent("./");
+        this.loadContent();
         if(content == null)
         {
             content = new TreeSet<Sms>(new SmsComperator());
-            smsId = 1;
         }
         
         if(badMessages == null)
@@ -128,7 +135,7 @@ public class SmsContainer implements AmsConstants
                         try
                         {
                             parsedRecNo = parsePhoneNumber(recNo);
-                            sms = new Sms(smsId++, timestamp, parsedRecNo, text, Sms.Type.OUT);
+                            sms = new Sms(timestamp, parsedRecNo, text, Sms.Type.OUT);
                             content.add(sms);
                             
                             result = SmsConnectorStart.STAT_OK;
@@ -200,7 +207,7 @@ public class SmsContainer implements AmsConstants
                 }
                 else
                 {            
-                    sms = new Sms(smsId++, timestamp, 1, "NONE", "MODEM_CHECK{" + eventTime + "}", Sms.Type.OUT);
+                    sms = new Sms(timestamp, 1, "NONE", "MODEM_CHECK{" + eventTime + "}", Sms.Type.OUT);
                     content.add(sms);
                     
                     result = SmsConnectorStart.STAT_OK;
@@ -253,80 +260,88 @@ public class SmsContainer implements AmsConstants
      * @param filename The path
      * @return True if the Sms objects were stored, false otherwise.
      */
-    public boolean storeContent(String path)
+    public boolean storeContent()
     {
+        SimpleDateFormat dateFormat = null;
         FileOutputStream fos = null;
         ObjectOutputStream oos = null;
-        File folder = null;
-        String var = "var";
-        Long idObj = null;
-        boolean success = true;
+        String fileExt = null;
+        boolean success = false;
         
-        path = path.trim();
-        if((!path.endsWith("/")) && (!path.endsWith("\\")))
-        {
-            var = "/" + var;
-        }
-        
-        path = path + var;
-        
-        folder = new File(path);
-        if(!folder.exists())
-        {
-            success = folder.mkdir();
-        }
-        
-        folder = null;
+        success = createFolder(VAR_DIR);
         
         // success is true if the folder yet exists OR the folder was just created
         if(success)
         {
-            try
+            // First try to store the 'good' SMS objects
+            if(content.isEmpty() == false)
             {
-                fos = new FileOutputStream(path + "/sms-container.ser");
-                oos = new ObjectOutputStream(fos);
-                
-                oos.writeObject(content);
-                
-                if(oos!=null){try{oos.close();}catch(Exception e){}oos=null;}
-                if(fos!=null){try{fos.close();}catch(Exception e){}fos=null;}
-
-                fos = new FileOutputStream(path + "/sms-id.ser");
-                oos = new ObjectOutputStream(fos);
-                
-                idObj = new Long(smsId);
-                oos.writeObject(idObj);
-                idObj = null;
-                
-                if(oos!=null){try{oos.close();}catch(Exception e){}oos=null;}
-                if(fos!=null){try{fos.close();}catch(Exception e){}fos=null;}
-
-                fos = new FileOutputStream(path + "/bad-sms.ser");
-                oos = new ObjectOutputStream(fos);
-                
-                oos.writeObject(badMessages);
-
-                success = true;
+                if(createFolder(VAR_DIR + "/" + SMS_DIR))
+                {
+                    try
+                    {
+                        fos = new FileOutputStream(VAR_DIR + "/" + SMS_DIR + "/good-sms.ser");
+                        oos = new ObjectOutputStream(fos);
+                        
+                        oos.writeObject(content);
+                        
+                        success = true;
+                    }
+                    catch(FileNotFoundException fnfe)
+                    {
+                        Log.log(this, Log.ERROR, "*** FileNotFoundException *** : " + fnfe.getMessage());
+                        success = false;
+                    }
+                    catch(IOException ioe)
+                    {
+                        Log.log(this, Log.ERROR, "*** IOException *** : " + ioe.getMessage());
+                        success = false;
+                    }
+                    finally
+                    {
+                        if(oos!=null){try{oos.close();}catch(Exception e){}oos=null;}
+                        if(fos!=null){try{fos.close();}catch(Exception e){}fos=null;}
+                    }
+                }
             }
-            catch(FileNotFoundException fnfe)
+            
+            if((badMessages.isEmpty() == false) && success)
             {
-                Log.log(this, Log.ERROR, "*** FileNotFoundException *** : " + fnfe.getMessage());
-                success = false;
-            }
-            catch(IOException ioe)
-            {
-                Log.log(this, Log.ERROR, "*** IOException *** : " + ioe.getMessage());
-                success = false;
-            }
-            finally
-            {
-                if(oos!=null){try{oos.close();}catch(Exception e){}oos=null;}
-                if(fos!=null){try{fos.close();}catch(Exception e){}fos=null;}
+                if(createFolder(VAR_DIR + "/" + BAD_DIR))
+                {
+                    try
+                    {
+                        dateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+                        fileExt = dateFormat.format(Calendar.getInstance().getTime());
+                        
+                        fos = new FileOutputStream(VAR_DIR + "/" + BAD_DIR + "/bad-sms-" + fileExt + ".ser");
+                        oos = new ObjectOutputStream(fos);
+                        
+                        oos.writeObject(badMessages);
+        
+                        success = true;
+                    }
+                    catch(FileNotFoundException fnfe)
+                    {
+                        Log.log(this, Log.ERROR, "*** FileNotFoundException *** : " + fnfe.getMessage());
+                        success = false;
+                    }
+                    catch(IOException ioe)
+                    {
+                        Log.log(this, Log.ERROR, "*** IOException *** : " + ioe.getMessage());
+                        success = false;
+                    }
+                    finally
+                    {
+                        if(oos!=null){try{oos.close();}catch(Exception e){}oos=null;}
+                        if(fos!=null){try{fos.close();}catch(Exception e){}fos=null;}
+                    }
+                }
             }
         }
         else
         {
-            Log.log(this, Log.ERROR, "Cannot create folder to store Sms objects.");
+            Log.log(this, Log.ERROR, "Cannot create folder '" + VAR_DIR + "' to store Sms objects.");
         }
         
         return success;
@@ -342,34 +357,20 @@ public class SmsContainer implements AmsConstants
      * @return True if the stored objects were loaded, false if no objects were found OR an error occured.
      */
     @SuppressWarnings("unchecked")
-    public boolean loadContent(String path)
+    public boolean loadContent()
     {
         FileInputStream fis = null;
         ObjectInputStream ois = null;
         File folder = null;
         File smsFile = null;
-        File idFile = null;
-        File badSmsFile = null;
-        String var = "var";
-        Long idObj = null;
         boolean success = false;
         
-        path = path.trim();
-        if((!path.endsWith("/")) && (!path.endsWith("\\")))
-        {
-            var = "/" + var;
-        }
-        
-        path = path + var;
-        
-        folder = new File(path);
+        folder = new File(VAR_DIR);
         if(folder.exists())
         {
-            smsFile = new File(path + "/sms-container.ser");
-            idFile = new File(path + "/sms-id.ser");
-            badSmsFile = new File(path + "/bad-sms.ser");
+            smsFile = new File(VAR_DIR + "/" + SMS_DIR + "/good-sms.ser");
             
-            if(smsFile.exists() && idFile.exists() && badSmsFile.exists())
+            if(smsFile.exists())
             {
                 try
                 {
@@ -378,24 +379,6 @@ public class SmsContainer implements AmsConstants
                     
                     content = (TreeSet<Sms>)ois.readObject();
                     
-                    if(ois!=null){try{ois.close();}catch(Exception e){}ois=null;}
-                    if(fis!=null){try{fis.close();}catch(Exception e){}fis=null;}
-
-                    fis = new FileInputStream(idFile);
-                    ois = new ObjectInputStream(fis);
-                    
-                    idObj = (Long)ois.readObject();
-                    this.smsId = idObj.longValue();
-                    idObj = null;
-
-                    if(ois!=null){try{ois.close();}catch(Exception e){}ois=null;}
-                    if(fis!=null){try{fis.close();}catch(Exception e){}fis=null;}
-
-                    fis = new FileInputStream(badSmsFile);
-                    ois = new ObjectInputStream(fis);
-                    
-                    badMessages = (Vector<Sms>)ois.readObject();
-
                     success = true;
                 }
                 catch(FileNotFoundException fnfe)
@@ -421,26 +404,11 @@ public class SmsContainer implements AmsConstants
             }
             else
             {
-                Log.log(this, Log.WARN, "The folder 'var' was found, but it does not contain two valid files.");
+                Log.log(this, Log.WARN, "The folder 'var' was found, but it does not contain a valid file.");
             }
-            
-            if(idFile.exists())
-            {
-                idFile.delete();
-                idFile = null;
-            }
-            
-            if(smsFile.exists())
-            {
-                smsFile.delete();
-                smsFile = null;
-            }
-            
-            if(folder.exists())
-            {
-                folder.delete();
-                folder = null;
-            }
+                        
+            removeFolder(VAR_DIR + "/" + SMS_DIR);
+            removeFolder(VAR_DIR);
         }
 
         return success;
@@ -567,5 +535,77 @@ public class SmsContainer implements AmsConstants
         result.append("\n");
         
         return result.toString();
+    }
+    
+    /**
+     * Creates a folder if it does not exist.
+     * 
+     * @param path
+     * @return
+     */
+    private boolean createFolder(String path)
+    {
+        File folder = new File(path);
+        boolean success = false;
+        
+        if(!folder.exists())
+        {
+            success = folder.mkdir();
+        }
+        else
+        {
+            success = true;
+        }
+        
+        folder = null;
+        
+        return success;
+    }
+    
+    /**
+     * Removes the folder and all files the folder contains but it does NOT remove the folder if it
+     * contains a sub-folder.
+     * 
+     * @param path
+     */
+    private void removeFolder(String path)
+    {
+        File folder = null;
+        File[] content = null;
+        boolean success = false;
+        
+        folder = new File(path);
+        if(folder.exists())
+        {
+            content = folder.listFiles();
+        }
+        
+        if(content != null)
+        {
+            if(content.length == 0)
+            {
+                success = true;
+            }
+            
+            for(File f : content)
+            {
+                // Do not delete a folder
+                if(f.isDirectory() == false)
+                {
+                    success = f.delete();
+                    if(!success) break;
+                }
+                else
+                {
+                    success = false;
+                    break;
+                }
+            }
+        }
+        
+        if(success)
+        {
+            folder.delete();
+        }
     }
 }

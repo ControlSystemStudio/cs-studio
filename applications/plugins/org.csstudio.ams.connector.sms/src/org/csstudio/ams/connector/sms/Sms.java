@@ -32,11 +32,8 @@ import java.io.Serializable;
 public class Sms implements Serializable
 {
     /** Generated serial version id */
-    private static final long serialVersionUID = -7841165772377023458L;
+    private static final long serialVersionUID = -8708570044433736618L;
 
-    /** The id of the SMS */
-    private long id;
-    
     /** Timestamp of the JMS message */
     private long smsTimestamp;
     
@@ -66,9 +63,8 @@ public class Sms implements Serializable
     // private static final String SMS_TEST_TEXT = "MODEM_CHECK{$EVENTTIME$}";
 
     /** First constructor. Assumes the priority is 2 (NORMAL) */
-    public Sms(long id, long timestamp, String number, String text, Sms.Type type)
+    public Sms(long timestamp, String number, String text, Sms.Type type)
     {
-        this.id = id;
         this.smsTimestamp = timestamp;
         this.priority = 2;
         this.phoneNumber = number;
@@ -83,9 +79,8 @@ public class Sms implements Serializable
     }
     
     /** Second constructor. Contains also the priority field. */
-    public Sms(long id, long timestamp, int priority, String number, String text, Sms.Type type)
+    public Sms(long timestamp, int priority, String number, String text, Sms.Type type)
     {
-        this.id = id;
         this.smsTimestamp = timestamp;
         this.priority = priority;
         this.phoneNumber = number;
@@ -108,7 +103,6 @@ public class Sms implements Serializable
         StringBuffer result = new StringBuffer();
         
         result.append("SMS{");
-        result.append(this.id + ",");
         result.append(this.smsTimestamp + ",");
         result.append(this.priority + ",");
         result.append(this.phoneNumber + ",");
@@ -169,16 +163,6 @@ public class Sms implements Serializable
     public void setMessage(String message)
     {
         this.message = message;
-    }
-
-    public long getId()
-    {
-        return id;
-    }
-
-    public void setId(long id)
-    {
-        this.id = id;
     }
 
     public Sms.State getState()

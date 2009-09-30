@@ -34,39 +34,7 @@ public class SmsComperator implements Comparator<Sms>, Serializable
 {
     /** Generated serial version id */
     private static final long serialVersionUID = 2782893510854286259L;
-    
-    /**
-     * Compares the timestamp and the priority of the SMS.
-     * 
-     * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
-     */
-    public int oldCompare(Sms sms0, Sms sms1)
-    {
-        int resultTimestamp;
-        int resultPriority;
-        int resultId;
-        int result;
-        
-        resultTimestamp = Long.signum(sms0.getSmsTimestamp() - sms1.getSmsTimestamp());
-        resultPriority = Integer.signum(sms0.getPriority() - sms1.getPriority());
-        resultId = Long.signum(sms0.getId() - sms1.getId());
-        
-        if(resultPriority == 1)
-        {
-            result = resultPriority;
-        }
-        else if(resultTimestamp == 0)
-        {
-            result = resultId;
-        }
-        else
-        {
-            result = resultTimestamp;
-        }
-        
-        return result;
-    }
-    
+
     public int compare(Sms sms0, Sms sms1)
     {
         int resultTimestamp;
