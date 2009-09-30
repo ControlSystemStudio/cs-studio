@@ -14,10 +14,26 @@ if (out_val != null  &&  sine_val != null)
 	
 	var text;
 	var color;
-	if (pid_out > 100)
+	
+	if (pid_out > 600)
 	{
-	    text = "Heating up ...";
+	    text = "Giving it all ...";
+	    color = CustomMediaFactory.COLOR_PINK;
+	}
+    else if (pid_out > 400)
+	{
+	    text = "Heating a lot ...";
+	    color = CustomMediaFactory.COLOR_PURPLE;
+	}
+    else if (pid_out > 200)
+	{
+	    text = "Heating some ...";
 	    color = CustomMediaFactory.COLOR_RED;
+	}
+	else if (pid_out > 100)
+	{
+	    text = "Warming up ...";
+	    color = CustomMediaFactory.COLOR_ORANGE;
 	}
 	else if (pid_out > 0)
 	{
@@ -34,7 +50,6 @@ if (out_val != null  &&  sine_val != null)
 	    text = "Temperature is just right";
 	    color = CustomMediaFactory.COLOR_GREEN;
 	}
-	
 	widgetController.getWidgetModel().setPropertyValue("text", text);
 	widgetController.getWidgetModel().setPropertyValue("background_color", color);
 	widgetController.getWidgetModel().setPropertyValue("x", 440 + sine);

@@ -6,7 +6,11 @@ importPackage(Packages.org.eclipse.jface.dialogs);
 importPackage(Packages.java.lang);
 importPackage(Packages.org.csstudio.platform.data);
 
-if (ValueUtil.getDouble(pvArray[0].getValue()) == 100)
+// PV 0: Temperature setpoint
+if (ValueUtil.getDouble(pvArray[0].getValue()) >= 100)
 {
-	MessageDialog.openWarning(null, "Warning", "The temperature you set is too high!");
+	MessageDialog.openWarning(null, "Warning",
+	                          "The temperature you set is too high!");
+	pvArray[0].setValue(90);
 }
+
