@@ -14,6 +14,7 @@ import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osgi.util.NLS;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ImporterTopLevel;
 import org.mozilla.javascript.Script;
@@ -83,9 +84,9 @@ public class RhinoScriptStore {
 									script.exec(scriptContext, scriptScope);
 								} catch (Exception e) {
 									errorInScript = true;
-									String message = "Error exists in script " +
-										scriptPath.toString() + ". The script will not execute in subsequence. \n" + e;
-									MessageDialog.openError(null, "script error", 
+									final String message = NLS.bind("Error in script {0}.\nAs a consequence, the script will not be executed.\n{1}",
+										scriptPath.toString() , e.getMessage());
+									MessageDialog.openError(null, "Script Error", 
 											message);
 									ConsoleService.getInstance().writeError(message);
 								}
