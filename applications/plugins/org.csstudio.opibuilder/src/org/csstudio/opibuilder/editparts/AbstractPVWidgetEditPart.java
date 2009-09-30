@@ -345,7 +345,7 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 	 * @param pvPropId
 	 * @param value
 	 */
-	protected void setPVValue(String pvPropId, Object value){
+	public void setPVValue(String pvPropId, Object value){
 		final PV pv = pvMap.get(pvPropId);
 		if(pv != null){
 			try {

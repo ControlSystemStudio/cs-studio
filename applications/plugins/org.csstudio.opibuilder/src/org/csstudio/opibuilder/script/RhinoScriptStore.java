@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
+import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.util.UIBundlingThread;
 import org.csstudio.utility.pv.PV;
@@ -82,9 +83,11 @@ public class RhinoScriptStore {
 									script.exec(scriptContext, scriptScope);
 								} catch (Exception e) {
 									errorInScript = true;
+									String message = "Error exists in script " +
+										scriptPath.toString() + ". The script will not execute in subsequence. \n" + e;
 									MessageDialog.openError(null, "script error", 
-											"Error exists in script " +
-											scriptPath.toString() + ". The script will not execute in subsequence. \n" + e.getMessage());
+											message);
+									ConsoleService.getInstance().writeError(message);
 								}
 							}
 						}
