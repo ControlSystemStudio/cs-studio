@@ -18,6 +18,11 @@
             name="System PV"
             prefix="sys">
       </PVFactory>
+      <PVFactory
+            class="org.csstudio.utility.pv.simu.ConstantPVFactory"
+            name="Constant PV"
+            prefix="const">
+      </PVFactory>
    </extension>
 
 </plugin>

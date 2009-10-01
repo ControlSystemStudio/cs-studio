@@ -5,6 +5,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.utility.pv.PV;
+import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;
 import org.eclipse.core.runtime.PlatformObject;
 
@@ -43,7 +44,7 @@ abstract public class BasicPV<T extends Value> extends PlatformObject implements
     /** {@inheritDoc} */
     public String getName()
     {
-        return prefix + "://" + value.getName(); //$NON-NLS-1$
+        return prefix + PVFactory.SEPARATOR + value.getName();
     }
 
     /** {@inheritDoc} */
