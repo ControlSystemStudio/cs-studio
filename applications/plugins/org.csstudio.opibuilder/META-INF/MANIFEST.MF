@@ -21,7 +21,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.editors,
  org.eclipse.jface.text;bundle-version="3.4.1",
  org.eclipse.ui.console;bundle-version="3.3.0"
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.opibuilder,
  org.csstudio.opibuilder.actions,
@@ -44,15 +43,17 @@ Export-Package: org.csstudio.opibuilder,
  org.mozilla.javascript.jdk13,
  org.mozilla.javascript.optimizer,
  org.mozilla.javascript.regexp,
+ org.mozilla.javascript.resources,
  org.mozilla.javascript.serialize,
  org.mozilla.javascript.tools,
  org.mozilla.javascript.tools.debugger,
  org.mozilla.javascript.tools.debugger.downloaded,
  org.mozilla.javascript.tools.idswitch,
  org.mozilla.javascript.tools.jsc,
+ org.mozilla.javascript.tools.resources,
  org.mozilla.javascript.tools.shell,
  org.mozilla.javascript.xml,
  org.mozilla.javascript.xmlimpl
-Bundle-ClassPath: .,
+Bundle-ClassPath: lib/jdom/jdom.jar,
  lib/rhino/js.jar,
- lib/jdom/jdom.jar
+ .
