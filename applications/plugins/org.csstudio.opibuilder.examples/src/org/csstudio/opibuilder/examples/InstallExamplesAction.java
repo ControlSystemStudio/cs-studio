@@ -131,14 +131,15 @@ public class InstallExamplesAction extends Action implements IWorkbenchWindowAct
 		try {
 			for (File file : files) {
 				monitor.subTask("Copying " + file.getName());
-				if (file.isDirectory()) {
-					IFolder folder = container.getFolder(new Path(file
-							.getName()));
-
-					if (!folder.exists()) {
-						folder.create(true, true, null);
-						copy(file.listFiles(), folder, monitor);
-					}
+				if (file.isDirectory()) { 
+					if(!file.getName().equals("CVS")){//$NON-NLS-1$
+						IFolder folder = container.getFolder(new Path(file
+								.getName()));	
+						if (!folder.exists()) {
+							folder.create(true, true, null);
+							copy(file.listFiles(), folder, monitor);
+						}
+					}					
 				} else {
 					IFile pFile = container.getFile(new Path(file.getName()));
 					if (!pFile.exists()) {
