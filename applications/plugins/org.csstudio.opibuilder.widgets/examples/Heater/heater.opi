@@ -130,7 +130,7 @@ $(pv_value)</tooltip>
     <level_lo>20.0</level_lo>
     <actions hook="false">
       <action type="OPEN_FILE">
-        <path>/CSS/examples/Heater/PID Demo.css-plt</path>
+        <path>/Heater/PID Demo.css-plt</path>
       </action>
     </actions>
     <level_lolo>10.0</level_lolo>
@@ -678,7 +678,7 @@ $(pv_value)</tooltip>
     <show_hihi>true</show_hihi>
     <width>151</width>
     <scripts>
-      <path pathString="/CSS/examples/Heater/scripts/TempWarningDialog.js">
+      <path pathString="/Heater/scripts/TempWarningDialog.js">
         <pv>$(P):setpoint</pv>
       </path>
     </scripts>
@@ -987,7 +987,7 @@ $(pv_value)</tooltip>
     <auto_size>true</auto_size>
     <border_width>1</border_width>
     <actions hook="false" />
-    <image_file>/CSS/examples/Heater/fish.gif</image_file>
+    <image_file>/Heater/fish.gif</image_file>
     <widget_type>Image</widget_type>
     <crop_right>0</crop_right>
     <enabled>true</enabled>
@@ -1141,7 +1141,7 @@ $(pv_value)</tooltip>
     <auto_size>false</auto_size>
     <width>201</width>
     <scripts>
-      <path pathString="/CSS/examples/Heater/scripts/Analyze.js">
+      <path pathString="/Heater/scripts/Analyze.js">
         <pv>$(P):PID</pv>
         <pv>sim://sine(-10,10,10,0.1)</pv>
       </path>
@@ -1178,7 +1178,7 @@ $(pv_value)</tooltip>
     <auto_size>true</auto_size>
     <width>32</width>
     <scripts>
-      <path pathString="/CSS/examples/Heater/scripts/Move.js">
+      <path pathString="/Heater/scripts/Move.js">
         <pv>sim://sine(-10,10,10,0.1)</pv>
       </path>
     </scripts>
@@ -1571,7 +1571,7 @@ $(pv_value)</tooltip>
     <tooltip />
     <actions hook="false">
       <action type="OPEN_DISPLAY">
-        <path>/CSS/examples/Heater/tank.opi</path>
+        <path>/Heater/tank.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
         </macros>
@@ -1605,7 +1605,7 @@ $(pv_value)</tooltip>
     <tooltip />
     <actions hook="false">
       <action type="OPEN_DISPLAY">
-        <path>/CSS/examples/Heater/pid.opi</path>
+        <path>/Heater/pid.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
         </macros>
@@ -1637,8 +1637,9 @@ $(pv_value)</tooltip>
     <auto_size>true</auto_size>
     <width>38</width>
     <scripts>
-      <path pathString="/CSS/examples/Heater/scripts/VisibleIfNotZero.js">
+      <path pathString="/Heater/scripts/VisibleIfAbove.js">
         <pv>$(P):heat_V</pv>
+        <pv>const://threshold(50)</pv>
       </path>
     </scripts>
     <border_width>1</border_width>
@@ -1674,7 +1675,7 @@ on</text>
   <widget typeId="org.csstudio.opibuilder.widgets.polygon" version="1.0">
     <width>61</width>
     <scripts>
-      <path pathString="/CSS/examples/Heater/scripts/MoveFish.js">
+      <path pathString="/Heater/scripts/MoveFish.js">
         <pv>sim://sine(-10,10,10,0.05)</pv>
       </path>
     </scripts>

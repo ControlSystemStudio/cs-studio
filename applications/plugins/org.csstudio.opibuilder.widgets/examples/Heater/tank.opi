@@ -23,7 +23,6 @@
   <name>Tank</name>
   <x>0</x>
   <widget typeId="org.csstudio.opibuilder.widgets.thermometer" version="1.0">
-    <foregroundcolor.alarmsensitive>false</foregroundcolor.alarmsensitive>
     <show_markers>false</show_markers>
     <show_minor_ticks>true</show_minor_ticks>
     <width>97</width>
@@ -41,14 +40,15 @@ $(pv_value)</tooltip>
     <fill_color>
       <color red="255" green="0" blue="0" />
     </fill_color>
+    <border_alarm_sensitive>true</border_alarm_sensitive>
     <show_bulb>true</show_bulb>
-    <backgroundcolor.alarmsensitive>false</backgroundcolor.alarmsensitive>
     <pv_name>test:room</pv_name>
     <color_hi>
       <color red="255" green="128" blue="0" />
     </color_hi>
     <height>157</height>
     <effect_3d>true</effect_3d>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <limits_from_db>false</limits_from_db>
     <foreground_color>
       <color red="0" green="0" blue="0" />
@@ -61,7 +61,6 @@ $(pv_value)</tooltip>
     <border_width>1</border_width>
     <level_lo>20.0</level_lo>
     <actions hook="false" />
-    <border.alarmsensitive>true</border.alarmsensitive>
     <level_lolo>10.0</level_lolo>
     <show_lolo>true</show_lolo>
     <maximum>100.0</maximum>
@@ -81,6 +80,7 @@ $(pv_value)</tooltip>
     <y>39</y>
     <visible>true</visible>
     <show_scale>true</show_scale>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <log_scale>false</log_scale>
     <show_hi>true</show_hi>
     <color_lolo>
@@ -92,7 +92,6 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <auto_size>false</auto_size>
     <width>123</width>
-    <show_scrollbar>true</show_scrollbar>
     <scripts />
     <border_width>1</border_width>
     <border_style>0</border_style>
@@ -124,7 +123,6 @@ $(pv_value)</tooltip>
     <x>12</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.tank" version="1.0">
-    <foregroundcolor.alarmsensitive>false</foregroundcolor.alarmsensitive>
     <show_markers>true</show_markers>
     <show_minor_ticks>true</show_minor_ticks>
     <width>186</width>
@@ -142,13 +140,14 @@ $(pv_value)</tooltip>
     <fill_color>
       <color red="0" green="0" blue="255" />
     </fill_color>
-    <backgroundcolor.alarmsensitive>false</backgroundcolor.alarmsensitive>
+    <border_alarm_sensitive>true</border_alarm_sensitive>
     <pv_name>test:tank</pv_name>
     <color_hi>
       <color red="255" green="128" blue="0" />
     </color_hi>
     <height>205</height>
     <effect_3d>true</effect_3d>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <limits_from_db>true</limits_from_db>
     <foreground_color>
       <color red="0" green="0" blue="0" />
@@ -161,7 +160,6 @@ $(pv_value)</tooltip>
     <border_width>1</border_width>
     <level_lo>20.0</level_lo>
     <actions hook="false" />
-    <border.alarmsensitive>true</border.alarmsensitive>
     <level_lolo>10.0</level_lolo>
     <show_lolo>true</show_lolo>
     <maximum>100.0</maximum>
@@ -180,6 +178,7 @@ $(pv_value)</tooltip>
     <y>60</y>
     <visible>true</visible>
     <show_scale>true</show_scale>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <log_scale>false</log_scale>
     <show_hi>true</show_hi>
     <color_lolo>
@@ -191,7 +190,6 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <auto_size>false</auto_size>
     <width>150</width>
-    <show_scrollbar>true</show_scrollbar>
     <scripts />
     <border_width>1</border_width>
     <border_style>0</border_style>
@@ -223,7 +221,6 @@ $(pv_value)</tooltip>
     <x>228</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.scaledslider" version="1.0">
-    <foregroundcolor.alarmsensitive>false</foregroundcolor.alarmsensitive>
     <show_markers>false</show_markers>
     <color_lo>
       <color red="255" green="128" blue="0" />
@@ -238,11 +235,11 @@ $(pv_value)</tooltip>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <backgroundcolor.alarmsensitive>false</backgroundcolor.alarmsensitive>
     <color_hi>
       <color red="255" green="128" blue="0" />
     </color_hi>
     <effect_3d>true</effect_3d>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
       <color red="0" green="0" blue="0" />
     </foreground_color>
@@ -269,6 +266,7 @@ $(pv_value)</tooltip>
     <show_minor_ticks>true</show_minor_ticks>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
+    <border_alarm_sensitive>true</border_alarm_sensitive>
     <pv_name>test:heat_V</pv_name>
     <height>200</height>
     <control_pv>test:heat_V</control_pv>
@@ -281,7 +279,6 @@ $(pv_value)</tooltip>
     <level_hihi>90.0</level_hihi>
     <minimum>0.0</minimum>
     <major_tick_step_hint>50.0</major_tick_step_hint>
-    <border.alarmsensitive>true</border.alarmsensitive>
     <show_lolo>true</show_lolo>
     <maximum>110.0</maximum>
     <color_fillbackground>
@@ -292,11 +289,11 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <show_scale>true</show_scale>
     <log_scale>false</log_scale>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <auto_size>false</auto_size>
     <width>73</width>
-    <show_scrollbar>true</show_scrollbar>
     <scripts />
     <border_width>1</border_width>
     <border_style>0</border_style>
@@ -329,8 +326,7 @@ $(pv_value)</tooltip>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <auto_size>true</auto_size>
-    <width>93</width>
-    <show_scrollbar>true</show_scrollbar>
+    <width>76</width>
     <scripts />
     <border_width>1</border_width>
     <border_style>0</border_style>
@@ -347,7 +343,7 @@ $(pv_value)</tooltip>
     </font>
     <text>Isolation Factor:</text>
     <widget_type>Label</widget_type>
-    <height>16</height>
+    <height>11</height>
     <background_color>
       <color red="255" green="255" blue="255" />
     </background_color>
@@ -363,8 +359,7 @@ $(pv_value)</tooltip>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <auto_size>true</auto_size>
-    <width>86</width>
-    <show_scrollbar>true</show_scrollbar>
+    <width>70</width>
     <scripts />
     <border_width>1</border_width>
     <border_style>0</border_style>
@@ -381,7 +376,7 @@ $(pv_value)</tooltip>
     </font>
     <text>Heat Capacity:</text>
     <widget_type>Label</widget_type>
-    <height>16</height>
+    <height>11</height>
     <background_color>
       <color red="255" green="255" blue="255" />
     </background_color>
@@ -397,8 +392,7 @@ $(pv_value)</tooltip>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <auto_size>true</auto_size>
-    <width>45</width>
-    <show_scrollbar>true</show_scrollbar>
+    <width>35</width>
     <scripts />
     <border_width>1</border_width>
     <border_style>0</border_style>
@@ -415,7 +409,7 @@ $(pv_value)</tooltip>
     </font>
     <text>Sensor:</text>
     <widget_type>Label</widget_type>
-    <height>16</height>
+    <height>11</height>
     <background_color>
       <color red="255" green="255" blue="255" />
     </background_color>
@@ -430,7 +424,6 @@ $(pv_value)</tooltip>
     <x>37</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0">
-    <foregroundcolor.alarmsensitive>false</foregroundcolor.alarmsensitive>
     <width>80</width>
     <scripts />
     <border_style>6</border_style>
@@ -439,19 +432,19 @@ $(pv_value)</tooltip>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <backgroundcolor.alarmsensitive>false</backgroundcolor.alarmsensitive>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
     <pv_name>test:sensor</pv_name>
     <font>
       <fontdata fontName="Arial" height="8" style="0" />
     </font>
     <height>24</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <name>Menu Button</name>
     <actions_from_pv>true</actions_from_pv>
     <border_width>1</border_width>
-    <border.alarmsensitive>false</border.alarmsensitive>
     <widget_type>Menu Button</widget_type>
     <enabled>true</enabled>
     <background_color>
@@ -460,12 +453,11 @@ $(pv_value)</tooltip>
     <label />
     <visible>true</visible>
     <y>305</y>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <x>37</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
-    <foregroundcolor.alarmsensitive>false</foregroundcolor.alarmsensitive>
     <width>100</width>
-    <show_scrollbar>false</show_scrollbar>
     <scripts />
     <border_style>0</border_style>
     <tooltip>$(pv_name)
@@ -475,13 +467,14 @@ $(pv_value)</tooltip>
     </border_color>
     <vertical_alignment>1</vertical_alignment>
     <transparent>false</transparent>
-    <backgroundcolor.alarmsensitive>true</backgroundcolor.alarmsensitive>
+    <border_alarm_sensitive>true</border_alarm_sensitive>
     <font>
       <fontdata fontName="Arial" height="9" style="0" />
     </font>
     <pv_name>test:tank</pv_name>
     <precision_from_db>true</precision_from_db>
     <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
       <color red="0" green="0" blue="0" />
     </foreground_color>
@@ -490,7 +483,6 @@ $(pv_value)</tooltip>
     <auto_size>false</auto_size>
     <border_width>1</border_width>
     <actions hook="false" />
-    <border.alarmsensitive>true</border.alarmsensitive>
     <text>######</text>
     <show_units>true</show_units>
     <widget_type>Text Update</widget_type>
@@ -500,14 +492,13 @@ $(pv_value)</tooltip>
     <enabled>true</enabled>
     <y>271</y>
     <visible>true</visible>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <precision>0</precision>
     <horizontal_alignment>1</horizontal_alignment>
     <x>271</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
-    <foregroundcolor.alarmsensitive>false</foregroundcolor.alarmsensitive>
     <width>100</width>
-    <show_scrollbar>false</show_scrollbar>
     <scripts />
     <border_style>0</border_style>
     <tooltip>$(pv_name)
@@ -517,13 +508,14 @@ $(pv_value)</tooltip>
     </border_color>
     <vertical_alignment>1</vertical_alignment>
     <transparent>false</transparent>
-    <backgroundcolor.alarmsensitive>true</backgroundcolor.alarmsensitive>
+    <border_alarm_sensitive>true</border_alarm_sensitive>
     <font>
       <fontdata fontName="Arial" height="9" style="0" />
     </font>
     <pv_name>test:heat_V</pv_name>
     <precision_from_db>true</precision_from_db>
     <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
       <color red="0" green="0" blue="0" />
     </foreground_color>
@@ -532,7 +524,6 @@ $(pv_value)</tooltip>
     <auto_size>false</auto_size>
     <border_width>1</border_width>
     <actions hook="false" />
-    <border.alarmsensitive>true</border.alarmsensitive>
     <text>######</text>
     <show_units>true</show_units>
     <widget_type>Text Update</widget_type>
@@ -542,14 +533,13 @@ $(pv_value)</tooltip>
     <enabled>true</enabled>
     <y>262</y>
     <visible>true</visible>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <precision>0</precision>
     <horizontal_alignment>1</horizontal_alignment>
     <x>430</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
-    <foregroundcolor.alarmsensitive>false</foregroundcolor.alarmsensitive>
     <width>100</width>
-    <show_scrollbar>false</show_scrollbar>
     <scripts />
     <border_style>0</border_style>
     <tooltip>$(pv_name)
@@ -559,13 +549,14 @@ $(pv_value)</tooltip>
     </border_color>
     <vertical_alignment>1</vertical_alignment>
     <transparent>false</transparent>
-    <backgroundcolor.alarmsensitive>true</backgroundcolor.alarmsensitive>
+    <border_alarm_sensitive>true</border_alarm_sensitive>
     <font>
       <fontdata fontName="Arial" height="9" style="0" />
     </font>
     <pv_name>test:heat_Pwr</pv_name>
     <precision_from_db>true</precision_from_db>
     <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
       <color red="0" green="0" blue="0" />
     </foreground_color>
@@ -574,7 +565,6 @@ $(pv_value)</tooltip>
     <auto_size>false</auto_size>
     <border_width>1</border_width>
     <actions hook="false" />
-    <border.alarmsensitive>true</border.alarmsensitive>
     <text>######</text>
     <show_units>true</show_units>
     <widget_type>Text Update</widget_type>
@@ -584,14 +574,13 @@ $(pv_value)</tooltip>
     <enabled>true</enabled>
     <y>290</y>
     <visible>true</visible>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <precision>0</precision>
     <horizontal_alignment>1</horizontal_alignment>
     <x>430</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
-    <foregroundcolor.alarmsensitive>false</foregroundcolor.alarmsensitive>
     <width>84</width>
-    <show_scrollbar>false</show_scrollbar>
     <scripts />
     <border_style>3</border_style>
     <tooltip>$(pv_name)
@@ -601,13 +590,14 @@ $(pv_value)</tooltip>
     </border_color>
     <vertical_alignment>1</vertical_alignment>
     <transparent>false</transparent>
-    <backgroundcolor.alarmsensitive>false</backgroundcolor.alarmsensitive>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
     <font>
       <fontdata fontName="Arial" height="9" style="0" />
     </font>
     <pv_name>test:room</pv_name>
     <precision_from_db>true</precision_from_db>
     <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
       <color red="0" green="0" blue="0" />
     </foreground_color>
@@ -616,7 +606,6 @@ $(pv_value)</tooltip>
     <auto_size>false</auto_size>
     <border_width>1</border_width>
     <actions hook="false" />
-    <border.alarmsensitive>false</border.alarmsensitive>
     <text />
     <show_units>true</show_units>
     <widget_type>Text Input</widget_type>
@@ -626,14 +615,13 @@ $(pv_value)</tooltip>
     <enabled>true</enabled>
     <y>18</y>
     <visible>true</visible>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <precision>0</precision>
     <horizontal_alignment>1</horizontal_alignment>
     <x>134</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
-    <foregroundcolor.alarmsensitive>false</foregroundcolor.alarmsensitive>
     <width>100</width>
-    <show_scrollbar>false</show_scrollbar>
     <scripts />
     <border_style>3</border_style>
     <tooltip>$(pv_name)
@@ -643,13 +631,14 @@ $(pv_value)</tooltip>
     </border_color>
     <vertical_alignment>1</vertical_alignment>
     <transparent>false</transparent>
-    <backgroundcolor.alarmsensitive>false</backgroundcolor.alarmsensitive>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
     <font>
       <fontdata fontName="Arial" height="9" style="0" />
     </font>
     <pv_name>test:tank_clc.D</pv_name>
     <precision_from_db>true</precision_from_db>
     <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
       <color red="0" green="0" blue="0" />
     </foreground_color>
@@ -658,7 +647,6 @@ $(pv_value)</tooltip>
     <auto_size>false</auto_size>
     <border_width>1</border_width>
     <actions hook="false" />
-    <border.alarmsensitive>false</border.alarmsensitive>
     <text />
     <show_units>true</show_units>
     <widget_type>Text Input</widget_type>
@@ -668,14 +656,13 @@ $(pv_value)</tooltip>
     <enabled>true</enabled>
     <y>219</y>
     <visible>true</visible>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <precision>0</precision>
     <horizontal_alignment>1</horizontal_alignment>
     <x>37</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
-    <foregroundcolor.alarmsensitive>false</foregroundcolor.alarmsensitive>
     <width>100</width>
-    <show_scrollbar>false</show_scrollbar>
     <scripts />
     <border_style>3</border_style>
     <tooltip>$(pv_name)
@@ -685,13 +672,14 @@ $(pv_value)</tooltip>
     </border_color>
     <vertical_alignment>1</vertical_alignment>
     <transparent>false</transparent>
-    <backgroundcolor.alarmsensitive>false</backgroundcolor.alarmsensitive>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
     <font>
       <fontdata fontName="Arial" height="9" style="0" />
     </font>
     <pv_name>test:tank_clc.E</pv_name>
     <precision_from_db>true</precision_from_db>
     <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
       <color red="0" green="0" blue="0" />
     </foreground_color>
@@ -700,7 +688,6 @@ $(pv_value)</tooltip>
     <auto_size>false</auto_size>
     <border_width>1</border_width>
     <actions hook="false" />
-    <border.alarmsensitive>false</border.alarmsensitive>
     <text />
     <show_units>true</show_units>
     <widget_type>Text Input</widget_type>
@@ -710,6 +697,7 @@ $(pv_value)</tooltip>
     <enabled>true</enabled>
     <y>262</y>
     <visible>true</visible>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <precision>0</precision>
     <horizontal_alignment>1</horizontal_alignment>
     <x>37</x>
@@ -720,7 +708,7 @@ $(pv_value)</tooltip>
     <tooltip />
     <actions hook="false">
       <action type="OPEN_DISPLAY">
-        <path>/CSS/examples/Heater/pid.opi</path>
+        <path>/Heater/pid.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
         </macros>
