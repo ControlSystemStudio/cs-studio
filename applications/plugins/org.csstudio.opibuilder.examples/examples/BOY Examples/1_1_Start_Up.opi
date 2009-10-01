@@ -546,4 +546,38 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="255" />
     </foreground_color>
   </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <enabled>true</enabled>
+    <widget_type>Action Button</widget_type>
+    <text>See All Widgets</text>
+    <visible>true</visible>
+    <font>
+      <fontdata fontName="Arial" height="9" style="1" />
+    </font>
+    <width>119</width>
+    <push_action_index>0</push_action_index>
+    <image />
+    <scripts />
+    <height>28</height>
+    <toggle_button>false</toggle_button>
+    <name>Action Button_2</name>
+    <y>557</y>
+    <actions hook="true">
+      <action type="OPEN_DISPLAY">
+        <path>/BOY Examples/1_2_WidgetExamples.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+        </macros>
+        <replace>true</replace>
+      </action>
+    </actions>
+    <foreground_color>
+      <color red="0" green="0" blue="128" />
+    </foreground_color>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <x>622</x>
+    <tooltip />
+  </widget>
 </display>
