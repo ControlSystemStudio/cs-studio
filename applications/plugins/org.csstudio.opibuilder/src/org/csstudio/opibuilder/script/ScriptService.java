@@ -22,7 +22,7 @@ public class ScriptService {
 
 	private static ScriptService instance;
 	
-	private Map<ScriptData, RhinoScriptStore> scriptMap;
+	private Map<ScriptData, RhinoScriptStore> scriptMap = new HashMap<ScriptData, RhinoScriptStore>();
 	
 	private Context scriptContext;
 	
@@ -37,8 +37,6 @@ public class ScriptService {
 				scriptContext = Context.enter();
 			}
 		});
-				
-		scriptMap = new HashMap<ScriptData, RhinoScriptStore>();
 	}
 	
 	public synchronized static ScriptService getInstance() {
