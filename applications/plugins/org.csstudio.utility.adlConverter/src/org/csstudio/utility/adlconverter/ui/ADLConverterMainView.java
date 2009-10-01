@@ -501,7 +501,11 @@ public class ADLConverterMainView extends ViewPart {
                     File file = (File) iterator.next();
                     if (file != null) {
                         String lowerCase = file.getName().toLowerCase();
-                        if (lowerCase.contains("_bak") || lowerCase.contains(".bak")) { //$NON-NLS-1$ //$NON-NLS-2$
+                        if (   lowerCase.contains("_bak") || lowerCase.contains("-bak") || lowerCase.contains(".bak") //$NON-NLS-1$ //$NON-NLS-2$
+                            || lowerCase.contains("_neu") || lowerCase.contains("-neu") || lowerCase.contains(".neu") //$NON-NLS-1$ //$NON-NLS-2$
+                            || lowerCase.contains("_new") || lowerCase.contains("-new") || lowerCase.contains(".new") //$NON-NLS-1$ //$NON-NLS-2$
+                            || lowerCase.contains("_alt") || lowerCase.contains("-alt") || lowerCase.contains(".alt") //$NON-NLS-1$ //$NON-NLS-2$
+                            || lowerCase.contains("_old") || lowerCase.contains("-old") || lowerCase.contains(".old")) { //$NON-NLS-1$ //$NON-NLS-2$
                             iterator.remove();
                         }
                     }
