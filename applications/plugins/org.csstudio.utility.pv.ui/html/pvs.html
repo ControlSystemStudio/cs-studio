@@ -96,5 +96,16 @@ generates a ramp (saw-tooth) valued 0 to 10, stepping 0.1 every 0.5 seconds.
 </pre>
 generates a negative ramp, i.e. count-down, from 100 to 0, stepping 1 every 2 seconds.
 
+<h3>const://</h3>
+'Constant' PVs are mostly useful as input to PV-driven code like OPI scripts
+that need a constant value but at the same time require a PV.
+<pre>
+  const://pi(3.14)
+  const://threshold(42)
+  const://name(Fred)
+</pre>
+<p>
+Constant PVs are read-only, and only send one initial value update.
+
 </body>
 </html>
