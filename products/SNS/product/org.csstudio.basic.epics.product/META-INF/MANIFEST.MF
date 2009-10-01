@@ -19,6 +19,7 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.4.0",
  org.csstudio.utility.pv.epics;bundle-version="1.0.8",
  org.csstudio.opibuilder;bundle-version="1.0.0",
  org.csstudio.opibuilder.widgets;bundle-version="1.0.0",
+ org.csstudio.opibuilder.examples;bundle-version="1.0.0",
  org.csstudio.diag.postanalyser;bundle-version="1.0.7",
  org.csstudio.diag.probe;bundle-version="1.0.11",
  org.eclipse.ui.views.log;bundle-version="1.0.100"
