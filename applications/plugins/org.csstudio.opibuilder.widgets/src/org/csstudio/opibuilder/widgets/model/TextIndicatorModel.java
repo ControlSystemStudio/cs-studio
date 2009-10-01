@@ -40,7 +40,7 @@ public class TextIndicatorModel extends LabelModel {
 	
 	public static final String PROP_FORMAT_TYPE = "format_type";	//$NON-NLS-1$
 	public static final String PROP_PRECISION = "precision";	//$NON-NLS-1$
-	public static final String PROP_PRECISION_FROM_DB = "precision_from_db";	//$NON-NLS-1$
+	public static final String PROP_PRECISION_FROM_DB = "precision_from_pv";	//$NON-NLS-1$
 	public static final String PROP_SHOW_UNITS = "show_units";	
 	
 	
@@ -69,7 +69,7 @@ public class TextIndicatorModel extends LabelModel {
 		};
 		addProperty(new ComboProperty(PROP_FORMAT_TYPE, "Format Type", category, FormatEnum.stringValues(), 0));
 		addProperty(new IntegerProperty(PROP_PRECISION, "Precision", category, 0, 0, 100));
-		addProperty(new BooleanProperty(PROP_PRECISION_FROM_DB, "Precision from DB", category, true));
+		addProperty(new BooleanProperty(PROP_PRECISION_FROM_DB, "Precision from PV", category, true));
 		addProperty(new BooleanProperty(PROP_SHOW_UNITS, "Show Units", category, true));
 		
 		setPropertyValue(PROP_TEXT, "######");

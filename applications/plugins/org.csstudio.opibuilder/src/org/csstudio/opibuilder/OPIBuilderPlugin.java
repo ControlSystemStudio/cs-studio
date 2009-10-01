@@ -54,7 +54,7 @@ public class OPIBuilderPlugin extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		ScriptService.getInstance();
-		ConsoleService.getInstance().writeInfo("Welcome to OPI Builder!");
+		ConsoleService.getInstance().writeInfo("Welcome to Best OPI, Yet (BOY)!");
 	}
 
 	@Override

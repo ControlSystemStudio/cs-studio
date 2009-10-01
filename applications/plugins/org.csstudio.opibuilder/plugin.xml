@@ -21,7 +21,7 @@
             extensions="opi"
             icon="icons/OPIRunner.png"
             id="org.csstudio.opibuilder.OPIRunner"
-            name="OPI RunEngine">
+            name="OPI Runtime">
       </editor>
       <editor
             class="org.eclipse.ui.editors.text.TextEditor"
@@ -72,10 +72,10 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            category="org.csstudio.platform.ui.css.applications"
+            category="org.csstudio.platform.ui.css.applications.display"
             class="org.csstudio.opibuilder.preferences.OPIBuilderPreferencePage"
             id="org.csstudio.opibuilder.preferences"
-            name="OPI Builder">
+            name="BOY">
       </page>
    </extension>
    <extension
@@ -102,6 +102,22 @@
             id="org.csstudio.opibuilder.wizards.newJSWizard"
             name="JavaScript">
       </wizard>
+   </extension>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            id="org.csstudio.opibuilder.actionSet"
+            label="BOY Actions"
+            visible="true">
+         <action
+               class="org.csstudio.opibuilder.actions.OpenOPIPerspectiveAction"
+               icon="icons/OPIBuilder.png"
+               id="org.csstudio.opibuilder.OpenOPIEditorPerspectiveAction"
+               label="OPI Editor Perspective"
+               menubarPath="css/display/"
+               style="push">
+         </action>
+      </actionSet>
    </extension>
 
 </plugin>
