@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<display typeId="org.csstudio.opibuilder.Display" version="1.0">
+  <widget_type>Display</widget_type>
+  <macros>
+    <include_parent_macros>true</include_parent_macros>
+    <noisePV>sim://noise</noisePV>
+    <my_name>Best OPI Yet</my_name>
+  </macros>
+  <width>800</width>
+  <scripts />
+  <show_ruler>false</show_ruler>
+  <height>600</height>
+  <show_edit_range>true</show_edit_range>
+  <name>XY_Graph</name>
+  <grid_space>4</grid_space>
+  <snap_to_geometry>true</snap_to_geometry>
+  <show_grid>false</show_grid>
+  <y>0</y>
+  <actions hook="false" />
+  <foreground_color>
+    <color red="192" green="192" blue="192" />
+  </foreground_color>
+  <background_color>
+    <color red="240" green="240" blue="240" />
+  </background_color>
+  <x>0</x>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <widget_type>Label</widget_type>
+    <enabled>true</enabled>
+    <text>XY_Graph is the most powerful widget in BOY, which basically have all the necessary functionalities for an xy graph, plot or chart in the field of science and engineering:</text>
+    <visible>true</visible>
+    <font>
+      <fontdata fontName="Arial" height="10" style="0" />
+    </font>
+    <vertical_alignment>0</vertical_alignment>
+    <width>745</width>
+    <border_style>1</border_style>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>429</height>
+    <border_width>1</border_width>
+    <name>Label_4</name>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <transparent>false</transparent>
+    <y>114</y>
+    <actions hook="false" />
+    <tooltip />
+    <x>17</x>
+    <background_color>
+      <color red="255" green="255" blue="223" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="203" />
+    </foreground_color>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <widget_type>Label</widget_type>
+    <enabled>true</enabled>
+    <text>Introduction</text>
+    <visible>true</visible>
+    <font>
+      <fontdata fontName="Arial" height="10" style="1" />
+    </font>
+    <vertical_alignment>1</vertical_alignment>
+    <width>76</width>
+    <border_style>0</border_style>
+    <auto_size>true</auto_size>
+    <scripts />
+    <height>16</height>
+    <border_width>1</border_width>
+    <name>Label_5</name>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <transparent>false</transparent>
+    <y>99</y>
+    <actions hook="false" />
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>341</x>
+    <background_color>
+      <color red="0" green="255" blue="128" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <widget_type>Label</widget_type>
+    <enabled>true</enabled>
+    <text>XY_Graph</text>
+    <visible>true</visible>
+    <font>
+      <fontdata fontName="Arial" height="18" style="1" />
+    </font>
+    <vertical_alignment>1</vertical_alignment>
+    <width>295</width>
+    <border_style>0</border_style>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>86</height>
+    <border_width>1</border_width>
+    <name>Label_8</name>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <transparent>false</transparent>
+    <y>6</y>
+    <actions hook="false" />
+    <tooltip />
+    <x>17</x>
+    <background_color>
+      <color red="135" green="181" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="128" green="0" blue="64" />
+    </foreground_color>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <widget_type>Label</widget_type>
+    <enabled>true</enabled>
+    <text>Examples</text>
+    <visible>true</visible>
+    <font>
+      <fontdata fontName="Arial" height="18" style="1" />
+    </font>
+    <vertical_alignment>1</vertical_alignment>
+    <width>451</width>
+    <border_style>0</border_style>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>43</height>
+    <border_width>1</border_width>
+    <name>Label_6</name>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <transparent>false</transparent>
+    <y>49</y>
+    <actions hook="false" />
+    <tooltip />
+    <x>311</x>
+    <background_color>
+      <color red="135" green="181" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="29" green="40" blue="184" />
+    </foreground_color>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <widget_type>Label</widget_type>
+    <enabled>true</enabled>
+    <text>Best OPI Yet (BOY)</text>
+    <visible>true</visible>
+    <font>
+      <fontdata fontName="Arial" height="18" style="1" />
+    </font>
+    <vertical_alignment>1</vertical_alignment>
+    <width>451</width>
+    <border_style>0</border_style>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>44</height>
+    <border_width>1</border_width>
+    <name>Label_9</name>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <transparent>false</transparent>
+    <y>6</y>
+    <actions hook="false" />
+    <tooltip />
+    <x>311</x>
+    <background_color>
+      <color red="135" green="181" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="29" green="40" blue="184" />
+    </foreground_color>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <enabled>true</enabled>
+    <widget_type>Action Button</widget_type>
+    <text>Go Home</text>
+    <visible>true</visible>
+    <font>
+      <fontdata fontName="Arial" height="9" style="1" />
+    </font>
+    <width>79</width>
+    <push_action_index>0</push_action_index>
+    <image>/BOY Examples/pictures/home-16x16.png</image>
+    <scripts />
+    <height>28</height>
+    <toggle_button>false</toggle_button>
+    <name>Action Button</name>
+    <y>560</y>
+    <actions hook="true">
+      <action type="OPEN_DISPLAY">
+        <path>/BOY Examples/10_widgets.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+        </macros>
+        <replace>true</replace>
+      </action>
+    </actions>
+    <foreground_color>
+      <color red="0" green="0" blue="128" />
+    </foreground_color>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <x>24</x>
+    <tooltip />
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <enabled>true</enabled>
+    <widget_type>Action Button</widget_type>
+    <text>Next</text>
+    <visible>true</visible>
+    <font>
+      <fontdata fontName="Arial" height="9" style="1" />
+    </font>
+    <width>79</width>
+    <push_action_index>0</push_action_index>
+    <image />
+    <scripts />
+    <height>28</height>
+    <toggle_button>false</toggle_button>
+    <name>Action Button_2</name>
+    <y>560</y>
+    <actions hook="true">
+      <action type="OPEN_DISPLAY">
+        <path>/BOY Examples/widgets/2_5_2_XY_Graph.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+        </macros>
+        <replace>true</replace>
+      </action>
+    </actions>
+    <foreground_color>
+      <color red="0" green="0" blue="128" />
+    </foreground_color>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <x>710</x>
+    <tooltip />
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <widget_type>Label</widget_type>
+    <enabled>true</enabled>
+    <text>-line chart, scatter chart, bar chart, step chart, area chart... &#xD;
+&#xD;
+-Abundant interactive operations: Five Zoom Types, Panning, Auto Scale, Add/Remove Annotations, Undo/Redo, Snapshot. &#xD;
+&#xD;
+-Configure properties during running, such as trace color, line width and axis color etc,. &#xD;
+&#xD;
+-multiple axes &#xD;
+&#xD;
+-log scale, date time format &#xD;
+&#xD;
+-group legends by axes &#xD;
+&#xD;
+-annotations could be free or snapped to a trace &#xD;
+&#xD;
+-The possiblity to implements your own data provider based on a simple interface. &#xD;
+...</text>
+    <visible>true</visible>
+    <font>
+      <fontdata fontName="Arial" height="10" style="1" />
+    </font>
+    <vertical_alignment>1</vertical_alignment>
+    <width>708</width>
+    <border_style>1</border_style>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>333</height>
+    <border_width>1</border_width>
+    <name>Label</name>
+    <border_color>
+      <color red="0" green="0" blue="0" />
+    </border_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <transparent>false</transparent>
+    <y>155</y>
+    <actions hook="false" />
+    <tooltip />
+    <x>36</x>
+    <background_color>
+      <color red="203" green="254" blue="253" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <widget_type>Label</widget_type>
+    <enabled>true</enabled>
+    <text>*The code of XY_Graph can be reused in any SWT based Eclipse Applications. &#xD;
+Please contact chenx1@ornl.gov</text>
+    <visible>true</visible>
+    <font>
+      <fontdata fontName="Arial" height="10" style="0" />
+    </font>
+    <vertical_alignment>1</vertical_alignment>
+    <width>461</width>
+    <border_style>0</border_style>
+    <auto_size>true</auto_size>
+    <scripts />
+    <height>32</height>
+    <border_width>1</border_width>
+    <name>Label_6</name>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <transparent>true</transparent>
+    <y>501</y>
+    <actions hook="false" />
+    <tooltip />
+    <x>36</x>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="203" />
+    </foreground_color>
+  </widget>
+</display>

@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: BOY Examples
+Bundle-SymbolicName: org.csstudio.opibuilder.examples;singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Activator: org.csstudio.opibuilder.examples.Activator
+Bundle-Vendor: Xihui Chen
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.core.resources;bundle-version="3.4.1"
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-ActivationPolicy: lazy
