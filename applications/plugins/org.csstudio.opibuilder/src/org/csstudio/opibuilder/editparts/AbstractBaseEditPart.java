@@ -19,7 +19,7 @@ import org.csstudio.opibuilder.util.UIBundlingThread;
 import org.csstudio.opibuilder.visualparts.BorderFactory;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
 import org.csstudio.opibuilder.widgetActions.AbstractWidgetAction;
-import org.csstudio.opibuilder.widgetActions.OpenDislayAction;
+import org.csstudio.opibuilder.widgetActions.OpenDisplayAction;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.utility.pv.PV;
@@ -203,13 +203,13 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 								if(me.button != 1)
 									return;
 								
-								if(action instanceof OpenDislayAction){
-									((OpenDislayAction)action).setCtrlPressed(false);
-									((OpenDislayAction)action).setShiftPressed(false);
+								if(action instanceof OpenDisplayAction){
+									((OpenDisplayAction)action).setCtrlPressed(false);
+									((OpenDisplayAction)action).setShiftPressed(false);
 									if(me.getState() == InputEvent.CONTROL){
-										((OpenDislayAction)action).setCtrlPressed(true);
+										((OpenDisplayAction)action).setCtrlPressed(true);
 									}else if (me.getState() == InputEvent.SHIFT){
-										((OpenDislayAction)action).setShiftPressed(true);
+										((OpenDisplayAction)action).setShiftPressed(true);
 									}
 								}
 								action.run();	
