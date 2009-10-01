@@ -61,6 +61,17 @@ based on Eclipse Java technology.
 This selection of CSS Tools comes with a generic configuration that
 you might have to adjust for your site-specific needs.
 
+
+<h3>Project Folder</h3>
+You should create at least one "Project" folder where you can save
+Data Browser configurations or OPI files:
+<ol>
+<li>Open Navigator (Menu File/Open Workspace Navigator)
+<li>In Navigator, right-click, select "New", "Project ..."
+<li>Select "General", "Project", click "Next"
+<li>Enter project name, for example "CSS", click "Finish"
+</ol>
+
 <h3>Preference Settings</h3>
 <ol>
 <li>Click on the menu bar item "CSS", select "Preferences..."
@@ -80,7 +91,11 @@ Some basic follow-along ideas to try as a first-time user:
     "Probe" to open the CSS Probe tool.
 <li>Enter a PV Name from your control system,
     press 'Enter' when done typing the name.
-    You should see the value of that PV.
+    You should see the value of that PV.<br>
+    If you don't have any control system,
+    try simulated PVs like "sim://sine".
+    More on PV names is in the online help under
+    "CSS-Applications/Configuration/Process Variables".
 <li>Close Probe via the 'X' in its title bar.
 <li>Re-open Probe via the "CSS" menu as before.
     Note that the PV Name entry field has a drop-down box attached to it,
@@ -90,6 +105,7 @@ Some basic follow-along ideas to try as a first-time user:
 In case of connection problems or error messages, the network preferences
 under the menu "CSS/Preferences...", subsection "CSS Core/EPICS", might
 need adjustments.
+
 
 <h3>Data Browser</h3>
 <ol>
@@ -122,6 +138,14 @@ need adjustments.
     now be able to open the "CSS" folder (click the triangle next to it)
     and find the saved Data Browser configuration file in there.
     Double-click it to open.
+</ol>
+
+<h3>OPI</h3>
+To try the OPI tool:
+<ol>
+<li>Use "CSS" menu entry "Display/Install OPI Examples"
+<li>In the Navigator, right-click on "BOY Examples/Main.opi"
+    and select "Open With../OPI Runtime"
 </ol>
     
 <h2>Workbench</h2>
