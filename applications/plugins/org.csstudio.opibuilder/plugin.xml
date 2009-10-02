@@ -119,5 +119,11 @@
          </action>
       </actionSet>
    </extension>
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="toc.xml">
+      </toc>
+   </extension>
 
 </plugin>

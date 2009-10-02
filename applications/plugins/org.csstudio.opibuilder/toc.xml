@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<toc label="Best OPI Yet" link_to="../org.csstudio.platform.ui/tocApps.xml#display">
+<topic label="Best OPI Yet"  href="html/BOY_Introduction.html"> 
+  <topic label="Install Examples" href="html/Install Examples.html"/>
+  <topic label="OPI Editor Perspective" href="html/OPI Editor Perspective.html" />
+  <topic label="OPI Editor" href="html/OPI Editor.html"/>
+  <topic label="Widgets Overview" href="html/Widgets_Overview.html"/>
+  <topic label="Widget Properties" href="html/Widget Properties.html"/>
+  <topic label="PV Connectivity" href="html/PV Connectivity.html"/>
+  <topic label="Action" href="html/Actions.html"/>
+  <topic label="Script" href="html/Script.html"/>
+  <topic label="Macro" href="html/Macro.html"/>
+    <topic label="Color and Font Macro" href="html/Color_Font_Macro.html"/>
+</topic>
+</toc>
