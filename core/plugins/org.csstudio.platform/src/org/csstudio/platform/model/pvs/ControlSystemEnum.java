@@ -59,7 +59,7 @@ public enum ControlSystemEnum implements IAdaptable {
 
 	EPICS("epics", "EPICS", true, "icons/controlsystem-epics"),
 
-	TANGO("tango", null, false, "icons/controlsystem-epics"),
+	TANGO("tango", "Tango", true, "icons/controlsystem-epics"),
 
 	LOCAL("local", null, false, "icons/controlsystem-local"),
 	
