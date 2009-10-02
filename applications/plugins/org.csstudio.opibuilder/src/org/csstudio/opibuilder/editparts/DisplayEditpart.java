@@ -23,6 +23,7 @@ import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
 import org.eclipse.gef.editpolicies.RootComponentEditPolicy;
 import org.eclipse.gef.rulers.RulerProvider;
 import org.eclipse.swt.SWT;
+import org.eclipse.ui.IActionFilter;
 
 public class DisplayEditpart extends AbstractContainerEditpart {
 
@@ -152,5 +153,23 @@ public class DisplayEditpart extends AbstractContainerEditpart {
 		figure.repaint();
 	}
 	
+	@SuppressWarnings("unchecked")
+	@Override
+	public Object getAdapter(Class key) {
+		if(key == IActionFilter.class)
+			return new IActionFilter(){
 
+				public boolean testAttribute(Object target, String name,
+						String value) {
+					return false;
+				}
+			
+		};
+		return super.getAdapter(key);
+	}
+
+	
+	
+	
+	
 }
