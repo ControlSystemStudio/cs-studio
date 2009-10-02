@@ -33,6 +33,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.contentassist.ContentAssistant;
+import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
+import org.eclipse.jface.text.contentassist.IContentAssistant;
 import org.eclipse.jface.text.presentation.IPresentationDamager;
 import org.eclipse.jface.text.presentation.IPresentationReconciler;
 import org.eclipse.jface.text.presentation.IPresentationRepairer;
@@ -207,10 +210,25 @@ public abstract class LanguageEditor extends TextEditor {
 
 				return result;
 			}
+
+			@Override
+			public IContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
+			    ContentAssistant assistant = new ContentAssistant();
+//			    assistant.setContentAssistProcessor(new KeywordContentAssistProcessor(),
+//			            IDocument.DEFAULT_CONTENT_TYPE);
+			    assistant.setContentAssistProcessor(getContentAssistProcessor(),
+			            IDocument.DEFAULT_CONTENT_TYPE);
+			    assistant.setInformationControlCreator(getInformationControlCreator(sourceViewer));
+			    assistant.enableAutoActivation(true);
+			    assistant.setAutoActivationDelay(500);
+			    return assistant;
+			}
+			
 		});
+		
 	}
 
-	/**
+    /**
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -657,4 +675,6 @@ public abstract class LanguageEditor extends TextEditor {
 	protected void handlePreferenceStoreChanged(PropertyChangeEvent event) {
 		super.handlePreferenceStoreChanged(event);
 	}
+
+	protected abstract IContentAssistProcessor getContentAssistProcessor();
 }
