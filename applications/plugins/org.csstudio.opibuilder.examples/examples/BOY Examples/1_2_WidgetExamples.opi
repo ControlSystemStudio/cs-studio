@@ -144,7 +144,7 @@ $(pv_value)</tooltip>
       <crop_top>0</crop_top>
       <crop_bottom>0</crop_bottom>
       <border_width>1</border_width>
-      <image_file>/Heater/fish.gif</image_file>
+      <image_file>/BOY Examples/pictures/fish.gif</image_file>
       <border_color>
         <color red="0" green="128" blue="255" />
       </border_color>
