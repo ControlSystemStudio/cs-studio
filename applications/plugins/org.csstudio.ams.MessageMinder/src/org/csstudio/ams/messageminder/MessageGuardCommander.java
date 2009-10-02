@@ -69,56 +69,93 @@ import org.eclipse.jface.preference.IPreferenceStore;
  */
 public class MessageGuardCommander extends Job {
 
-    private final class ThreadUpdateTopicMessageMap extends Job {
-        private ThreadUpdateTopicMessageMap(String name) {
+    private final class ThreadUpdateTopicMessageMap extends Job
+    {
+        private ThreadUpdateTopicMessageMap(String name)
+        {
             super(name);
         }
 
 		@Override
-		protected IStatus run(IProgressMonitor monitor) {
-            while (_runUpdateTopicMessageMap) {
-                try {
+		protected IStatus run(IProgressMonitor monitor)
+		{
+            while (_runUpdateTopicMessageMap)
+            {
+                try
+                {
                     // update ones per hour
-                    Thread.sleep(3600000);
-                } catch (InterruptedException e) {
+                    // Thread.sleep(3600000);
+                    Thread.sleep(60000);
+                }
+                catch(InterruptedException e)
+                {
                     CentralLogger.getInstance().warn(this, e);
                 }
+                
                 Connection conDb = null;
-                try {
+                
+                try
+                {
                     conDb = AmsConnectionFactory.getApplicationDB();
-                    if (conDb == null) {
-                        CentralLogger.getInstance().warn(this,
-                                "could not init application database");
-                    } else {
+                    if (conDb == null)
+                    {
+                        CentralLogger.getInstance().warn(this, "Could not init application database");
+                    }
+                    else
+                    {
                         Set<String> keySet = _topicMessageMap.keySet();
-                        for (String filterID : keySet) {
-                            FilterActionTObject actionTObject = FilterActionDAO.select(conDb,
+                        Boolean newValue = null;
+                        
+                        for(String filterID : keySet)
+                        {
+                            FilterActionTObject[] actionTObject = FilterActionDAO.selectByFilter(conDb,
                                     Integer.parseInt(filterID));
-                            Boolean newValue = actionTObject != null
-                                    && actionTObject.getFilterActionTypeRef() == AmsConstants.FILTERACTIONTYPE_TO_JMS;
+                            
+                            for(FilterActionTObject o : actionTObject)
+                            {
+                                if(o.getFilterActionTypeRef() == AmsConstants.FILTERACTIONTYPE_TO_JMS)
+                                {
+                                    newValue = true;
+                                    break;
+                                }
+                            }
+                            
+                            newValue = (newValue == null) ? false : newValue;
                             Boolean oldValue = _topicMessageMap.get(filterID);
-                            if(newValue!=oldValue) {
+                            
+                            if(newValue != oldValue)
+                            {
                                 _topicMessageMap.replace(filterID, newValue);
                             }
                         }
                     }
-                } catch (ClassNotFoundException e) {
+                }
+                catch(ClassNotFoundException e)
+                {
                     CentralLogger.getInstance().warn(this,e);
-                } catch (SQLException e) {
+                }
+                catch(SQLException e)
+                {
                     CentralLogger.getInstance().warn(this,e);
-                } finally {
-                    if(conDb!=null) {
-                        try {
+                }
+                finally
+                {
+                    if(conDb!=null)
+                    {
+                        try
+                        {
                             conDb.close();
-                        } catch (SQLException e) {
+                        }
+                        catch(SQLException e)
+                        {
                             CentralLogger.getInstance().warn(this,e);
                         }
                     }
                 }
             }
+            
             return Status.CANCEL_STATUS;
         }
-
     }
 
     /**
