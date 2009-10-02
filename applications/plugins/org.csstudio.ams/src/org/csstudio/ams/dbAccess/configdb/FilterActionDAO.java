@@ -29,6 +29,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Vector;
+
 import org.csstudio.ams.Log;
 import org.csstudio.ams.dbAccess.DAO;
 import org.csstudio.ams.dbAccess.PreparedStatementHolder;
@@ -246,7 +248,15 @@ public abstract class FilterActionDAO extends DAO
 		}
 	}
 	
-    public static FilterActionTObject selectByFilter(Connection con, int filterID) throws SQLException
+	/**
+	 * Returns an array with all filter actions that are related to the filter.
+	 * @param con
+	 * @param filterID
+	 * @return Array containing FilterActionTObject. It never returns <code>null</code>. If the
+	 *         result set was empty, the method returns an empty array.
+	 * @throws SQLException
+	 */
+    public static FilterActionTObject[] selectByFilter(Connection con, int filterID) throws SQLException
     {
         final String query = "SELECT fa.iFilterActionID, fa.iFilterActionTypeRef, fa.iReceiverRef, fa.cMessage"
         + " FROM AMS_FilterAction fa, AMS_Filter_FilterAction ffa"
@@ -256,26 +266,43 @@ public abstract class FilterActionDAO extends DAO
         ResultSet rs = null;
         PreparedStatement st = null;
         FilterActionTObject fAction = null;
-
+        FilterActionTObject[] result = null;
+        Vector<FilterActionTObject> queryResult;
+        
+        queryResult = new Vector<FilterActionTObject>();
+        
         try
         {
             st = con.prepareStatement(query);
             st.setInt(1, filterID);
             rs = st.executeQuery();
             
-            if(rs.next())
+            while(rs.next())
+            {
                 fAction = new FilterActionTObject(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getString(4));
-            
-            return fAction;
+                queryResult.add(fAction);
+            }            
         }
         catch(SQLException ex)
         {
             Log.log(Log.FATAL, "Sql-Query failed: " + query, ex);
-                throw ex;
-            }
-            finally
-            {
-                close(st,rs);
-            }
+            throw ex;
         }
+        finally
+        {
+            close(st,rs);
+        }
+        
+        if(queryResult.isEmpty() == false)
+        {
+            result = new FilterActionTObject[queryResult.size()];
+            result = queryResult.toArray(result);
+        }
+        else
+        {
+            result = new FilterActionTObject[0];
+        }
+        
+        return result;
+    }
 }

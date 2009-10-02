@@ -370,37 +370,63 @@ public class MessageGuardCommander extends Job {
         }
     }
 
-    private boolean isTopicAction(String filterID) {
-        if (filterID != null && filterID.trim().length() > 0) {
+    private boolean isTopicAction(String filterID)
+    {
+        if (filterID != null && filterID.trim().length() > 0)
+        {
             Connection conDb = null;
-            try {
+            try
+            {
                 Boolean topicMsg = _topicMessageMap.get(filterID);
-                if (topicMsg == null) {
+                if (topicMsg == null)
+                {
                     conDb = AmsConnectionFactory.getApplicationDB();
-                    if (conDb == null) {
+                    if (conDb == null)
+                    {
                         Log.log(this, Log.FATAL, "could not init application database");
                         return false;
                     }
-                    FilterActionTObject actionTObject = FilterActionDAO.selectByFilter(conDb, Integer
+                    
+                    FilterActionTObject[] actionTObject = FilterActionDAO.selectByFilter(conDb, Integer
                             .parseInt(filterID));
-                    topicMsg = actionTObject != null
-                            && actionTObject.getFilterActionTypeRef() == AmsConstants.FILTERACTIONTYPE_TO_JMS;
+                    
+                    // Check all filter actions
+                    for(FilterActionTObject o : actionTObject)
+                    {
+                        if(o.getFilterActionTypeRef() == AmsConstants.FILTERACTIONTYPE_TO_JMS)
+                        {
+                            topicMsg = true;
+                            break;
+                        }
+                    }
+                    
+                    topicMsg = (topicMsg == null) ? false : topicMsg;
+                    
                     _topicMessageMap.putIfAbsent(filterID, topicMsg);
                 }
+                
                 return topicMsg.booleanValue();
-            } catch (Exception e) {
+            }
+            catch(Exception e)
+            {
                 Log.log(this, Log.FATAL, "could not init application database");
-            } finally {
-                if (conDb != null) {
-                    try {
+            }
+            finally
+            {
+                if (conDb != null)
+                {
+                    try
+                    {
                         conDb.close();
-                    } catch (SQLException e) {
+                    }
+                    catch(SQLException e)
+                    {
                         CentralLogger.getInstance().warn(this, e);
                     }
                 }
             }
-
         }
+        
         return false;
     }
 
