@@ -219,7 +219,7 @@
             objectClass="org.csstudio.opibuilder.editparts.AbstractBaseEditPart">
          <action
                class="org.csstudio.opibuilder.widgets.editparts.CreateGroupAction"
-               enablesFor="2+"
+               enablesFor="+"
                icon="icons/addGroup.png"
                id="org.csstudio.opibuilder.widgets.creategroupAction"
                label="Create Group"
