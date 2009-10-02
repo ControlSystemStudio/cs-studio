@@ -13,7 +13,9 @@ import org.csstudio.opibuilder.runmode.OPIRunner;
 import org.csstudio.opibuilder.runmode.RunModeService;
 import org.csstudio.opibuilder.runmode.RunnerInput;
 import org.csstudio.opibuilder.runmode.RunModeService.TargetWindow;
+import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.MacrosInput;
+import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.widgetActions.WidgetActionFactory.ActionType;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.resources.IFile;
@@ -49,18 +51,17 @@ public class OpenDisplayAction extends AbstractWidgetAction {
 	@Override
 	public void run() {
 		//read file
-		IFile[] files = 
-			ResourcesPlugin.getWorkspace().getRoot().findFilesForLocation(
-					ResourcesPlugin.getWorkspace().getRoot().getLocation().append(getPath()));
+		IFile file = 
+			ResourceUtil.getIFileFromIPath(getPath());
 		
-		if(files.length < 1)
+		if(file == null)
 			try {
 				throw new FileNotFoundException(NLS.bind("The file {0} does not exist", getPath().toString()));
-			} catch (FileNotFoundException e) {
-				CentralLogger.getInstance().error(this, e);
+			} catch (FileNotFoundException e) {				
 				MessageDialog.openError(Display.getDefault().getActiveShell(), "File Open Error",
 						e.getMessage());
-			
+				ConsoleService.getInstance().writeError(e.toString());
+				return;
 			}
 		else {
 						
@@ -74,11 +75,11 @@ public class OpenDisplayAction extends AbstractWidgetAction {
 					manager.openNewDisplay();
 					try {
 						RunModeService.getInstance().replaceActiveEditorContent(new RunnerInput(
-								files[0], manager, getMacrosInput()));
+								file, manager, getMacrosInput()));
 					} catch (PartInitException e) {
-						CentralLogger.getInstance().error(this, "Failed to open " + files[0], e);
+						CentralLogger.getInstance().error(this, "Failed to open " + file, e);
 						MessageDialog.openError(Display.getDefault().getActiveShell(), "Open file error", 
-								NLS.bind("Failed to open {0}", files[0]));
+								NLS.bind("Failed to open {0}", file));
 					}
 				}
 			}else{
@@ -88,7 +89,7 @@ public class OpenDisplayAction extends AbstractWidgetAction {
 				else
 					target = TargetWindow.SAME_WINDOW;
 			
-				RunModeService.getInstance().runOPI(files[0], target, null, getMacrosInput(), null);
+				RunModeService.getInstance().runOPI(file, target, null, getMacrosInput(), null);
 			}
 		}
 	}
