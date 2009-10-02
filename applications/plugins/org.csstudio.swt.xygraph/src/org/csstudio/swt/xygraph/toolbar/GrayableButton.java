@@ -19,10 +19,10 @@ public class GrayableButton extends Button {
 	public GrayableButton(Image image) {
 		super(image);
 		this.image = image;
-		grayImage = XYGraphMediaFactory.getInstance().getRegisteredImage(GRAY_IMAGE);
+		grayImage = XYGraphMediaFactory.getInstance().getRegisteredImage(GRAY_IMAGE + image.toString());
 		if( grayImage == null){
 			grayImage = new Image(null, image, SWT.IMAGE_GRAY);
-			XYGraphMediaFactory.getInstance().registerImage(GRAY_IMAGE, grayImage);
+			XYGraphMediaFactory.getInstance().registerImage(GRAY_IMAGE + image.toString(), grayImage);
 		}
 	}
 	
