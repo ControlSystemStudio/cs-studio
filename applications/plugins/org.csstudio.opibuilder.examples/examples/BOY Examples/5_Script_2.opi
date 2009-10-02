@@ -307,8 +307,8 @@ $(pv_value)</tooltip>
     <auto_size>false</auto_size>
     <scripts>
       <path pathString="/BOY Examples/scripts/Compare.js">
-        <pv>loc://knob1</pv>
         <pv>loc://knob0</pv>
+        <pv>loc://knob1</pv>
       </path>
     </scripts>
     <height>20</height>
