@@ -156,7 +156,7 @@ Replace = true</text>
     <y>305</y>
     <actions hook="true">
       <action type="OPEN_DISPLAY">
-        <path>/BOY Examples/1_Start_Up.opi</path>
+        <path>/BOY Examples/1_1_Start_Up.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
         </macros>
