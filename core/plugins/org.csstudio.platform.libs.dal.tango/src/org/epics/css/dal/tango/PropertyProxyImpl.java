@@ -2,6 +2,7 @@ package org.epics.css.dal.tango;
 
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -51,7 +52,7 @@ public abstract class PropertyProxyImpl<T> extends AbstractProxyImpl implements 
 	private DynamicValueCondition condition = new DynamicValueCondition(EnumSet.of(DynamicValueState.NORMAL),new Timestamp(System.currentTimeMillis(),0),null);
 	private Map<String, Object> characteristics;
 	
-	private MonitorProxyImpl<T> monitor;
+	private Set<MonitorProxyImpl<T>> monitors= new HashSet<MonitorProxyImpl<T>>(3);
 	
 	private DeviceProxy tangoProxy;
 	private Class<?> type;
@@ -95,18 +96,28 @@ public abstract class PropertyProxyImpl<T> extends AbstractProxyImpl implements 
 	 * @see org.epics.css.dal.proxy.PropertyProxy#createMonitor(org.epics.css.dal.ResponseListener)
 	 */
 	public MonitorProxy createMonitor(ResponseListener<T> callback) throws RemoteException {
-		//TODO tango allows only one monitor on one property!!!!????
-		if (this.monitor == null) {
-			monitor = new MonitorProxyImpl<T>(this,callback);
-			monitor.initialize();
+		synchronized (monitors) {
+			MonitorProxyImpl<T> m = new MonitorProxyImpl<T>(this,callback);
+			this.monitors.add(m);
+			m.initialize();
+			return m;
 		}
-		return monitor;
-//		MonitorProxyImpl<T> m = new MonitorProxyImpl<T>(this,callback);
-//		this.monitors.add(m);
-//		m.initialize();
-//		return m;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.epics.css.dal.proxy.AbstractProxyImpl#destroy()
+	 */
+	@Override
+	public void destroy() {
+		synchronized (monitors) {
+			for (MonitorProxyImpl<T> m : monitors) {
+				m.destroy();
+			}
+		}
+		super.destroy();
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * @see org.epics.css.dal.proxy.PropertyProxy#getCondition()

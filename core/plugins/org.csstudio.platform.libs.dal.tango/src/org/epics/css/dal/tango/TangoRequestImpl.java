@@ -55,7 +55,7 @@ public class TangoRequestImpl<T> extends RequestImpl<T> {
 	 */
 	TangoRequestCallback<T> getCallback() {
 		if (callback == null) {
-			callback = new TangoRequestCallback<T>(this,source,false,value);
+			callback = new TangoRequestCallback<T>(this,source,value);
 		}
 		return callback;
 	}

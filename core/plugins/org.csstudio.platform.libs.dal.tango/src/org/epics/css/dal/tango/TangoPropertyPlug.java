@@ -1,6 +1,7 @@
 package org.epics.css.dal.tango;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -34,6 +35,23 @@ import fr.esrf.TangoApi.Database;
  */
 public class TangoPropertyPlug extends AbstractPlug {
 
+
+	private static class CallbackHolder {
+		private String name;
+		int count = 0;
+		
+		public CallbackHolder(String name) {
+			this.name = name;
+		}
+		public boolean equals(Object obj) {
+			if (!(obj instanceof CallbackHolder)) return false;
+			return ((CallbackHolder)obj).name.equals(this.name);
+		}
+		public int hashCode() {
+			return name.hashCode();
+		}
+	}
+	
 	/** Plug type string */
 	public static final String PLUG_TYPE = "TANGOProperty";
 	
@@ -45,6 +63,7 @@ public class TangoPropertyPlug extends AbstractPlug {
 	
 	private Database database;
 	private HashMap<String,fr.esrf.TangoApi.DeviceProxy> deviceProxies;
+	private HashMap<CallbackHolder, TangoMonitorRequestCallback> callbacks = new HashMap<CallbackHolder, TangoMonitorRequestCallback>();
 	
 	/**
 	 * Returns the instance of this class with null properties. This
@@ -75,18 +94,17 @@ public class TangoPropertyPlug extends AbstractPlug {
 	}
 	
 	/**
-	 * Returns the instance of this plug with specified configuration. This
-	 * method returns a new TangoPlug instance, which is associated with the
-	 * given context.
+	 * Returns the instance. Multiple plugs are not supported.
 	 * 
-	 * @param conf configuration properties
+	 * @param ctx the application context
+	 * @see AbstractPlug#getInstance(Properties)
 	 * @see AbstractPlug#getInstance(AbstractApplicationContext)
 	 * 
 	 * @return the tango plug instance
 	 */
-	public static final synchronized TangoPropertyPlug getInstance(AbstractApplicationContext ctx)
+	public static final synchronized TangoPropertyPlug getInstance(AbstractApplicationContext ctx) 
 	{
-		return new TangoPropertyPlug(ctx);
+		return TangoPropertyPlug.getInstance(ctx.getConfiguration()); 
 	}
 	
 	/**
@@ -307,5 +325,57 @@ public class TangoPropertyPlug extends AbstractPlug {
 			deviceProxies.put(devName,proxy);
 		}
 		return proxy;
+	}
+	
+	/**
+	 * Takes the callback from the cache. If none is present, it creates a new callback.
+	 * If there is already one present, this monitor is added as a listener and 
+	 * the counter for the callback is increased.
+	 * 
+	 * @return the callback
+	 */
+	TangoMonitorRequestCallback getCallbackFromCache(MonitorProxyImpl<?> monitor) {
+		CallbackHolder holder = new CallbackHolder(monitor.getSourceProxy().getUniqueName());
+		TangoMonitorRequestCallback cb = callbacks.get(holder);
+		holder.count++;
+		if (cb == null) {
+			cb = new TangoMonitorRequestCallback(monitor.getSourceProxy());
+		}
+		
+		cb.addCallbackListener(monitor);
+		callbacks.put(holder, cb);
+		return cb;
+	}
+	
+	/**
+	 * Releases the callback from cache. The counter is decremented and if it reached
+	 * 0, the callback is destroyed.
+	 * 
+	 * @param monitor the monitor for which the callback is released
+	 */
+	void releaseCallbackFromCache(MonitorProxyImpl<?> monitor) {
+		CallbackHolder holder = new CallbackHolder(monitor.getSourceProxy().getUniqueName());
+		Iterator<CallbackHolder> iterator = callbacks.keySet().iterator();
+		CallbackHolder cbh = null;
+		CallbackHolder resultHolder = null;
+		while(iterator.hasNext()) {
+			cbh = iterator.next();
+			if (cbh.equals(holder)) {
+				resultHolder = cbh;
+				break;
+			}
+		}
+		
+		if (resultHolder != null) {
+			resultHolder.count--;
+			TangoMonitorRequestCallback cb = callbacks.get(resultHolder);
+			cb.removeCallbackListener(monitor);
+			if (resultHolder.count <= 0) {
+				cb = callbacks.remove(resultHolder);
+				cb.destroy();
+			} else {
+				callbacks.put(resultHolder, cb);
+			}
+		}
 	}
 }

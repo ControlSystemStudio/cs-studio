@@ -35,25 +35,20 @@ class TangoRequestCallback<T> extends CallBack {
 	
 	private RequestImpl<T> request;
 	private PropertyProxyImpl<T> source;
-	private boolean monitor;
 	private T value;
-	
+		
 	/**
 	 * Constructs a new TangoRequestCallback.
 	 * 
 	 * @param request the request that will receive updates
 	 * @param source the source proxy
-	 * @param monitor true if this callback is associated with monitor or false 
-	 * 			otherwise. If associated with a monitor the responses will
-	 * 			not be final/last, otherwise they will be.
 	 * @param the vale which was set if the callback listens to write response
 	 * 			(@see {@link TangoRequestImpl#TangoRequestImpl(PropertyProxyImpl, org.epics.css.dal.ResponseListener, Object)}).
 	 */
-	TangoRequestCallback(RequestImpl<T> request, PropertyProxyImpl<T> source, boolean monitor, T value) {
+	TangoRequestCallback(RequestImpl<T> request, PropertyProxyImpl<T> source, T value) {
 		super();
 		this.request = request;
 		this.source = source;
-		this.monitor = monitor;
 		this.value = value;
 	}
 	
@@ -97,13 +92,20 @@ class TangoRequestCallback<T> extends CallBack {
 		processEvent(new DeviceAttribute[]{evt.attr_value},evt.err,evt.errors);
 	}
 	
+	/**
+	 * Processes the data obtained from an event.
+	 * 
+	 * @param attr the attribute read from the event
+	 * @param error true if an error occured
+	 * @param errors the array of all errors
+	 */
 	private void processEvent(DeviceAttribute[] attr, boolean error, DevError[] errors) {
     	if (error) {
     		DynamicValueCondition condition = new DynamicValueCondition(EnumSet.of(DynamicValueState.ERROR),new Timestamp(System.currentTimeMillis(),0),"Error initializing proxy");
     		source.setCondition(condition);
     		Response<T> r = new ResponseImpl<T>(source,request,value,
     				source.getUniqueName(),false,new DataExchangeException(this,errors[0].desc),source.getCondition(),
-    				new Timestamp(System.currentTimeMillis(),0),!monitor);
+    				new Timestamp(System.currentTimeMillis(),0),true);
     		request.addResponse(r);
     	} else if (attr == null) {
     		//write event
@@ -111,7 +113,7 @@ class TangoRequestCallback<T> extends CallBack {
 			source.setCondition(condition);
 			Response<T> r = new ResponseImpl<T>(source,request,value,
 					source.getUniqueName(),true,null,source.getCondition(),
-					new Timestamp(System.currentTimeMillis(),0),!monitor);
+					new Timestamp(System.currentTimeMillis(),0),true);
 			request.addResponse(r);
     	} else {
     		try {
@@ -122,7 +124,7 @@ class TangoRequestCallback<T> extends CallBack {
         				source.setCondition(condition);
         				Response<T> r = new ResponseImpl<T>(source,request,value,
         						source.getUniqueName(),true,null,source.getCondition(),
-        						new Timestamp(System.currentTimeMillis(),0),!monitor);
+        						new Timestamp(System.currentTimeMillis(),0),true);
         				request.addResponse(r);
         				return;
         			}
@@ -131,8 +133,8 @@ class TangoRequestCallback<T> extends CallBack {
     			DynamicValueCondition condition = new DynamicValueCondition(EnumSet.of(DynamicValueState.ERROR),new Timestamp(System.currentTimeMillis(),0),"Error initializing proxy");
     			source.setCondition(condition);
     			Response<T> r = new ResponseImpl<T>(source,request,value,
-    					source.getUniqueName(),true,e,source.getCondition(),
-    					new Timestamp(System.currentTimeMillis(),0),!monitor);
+    					source.getUniqueName(),false,e,source.getCondition(),
+    					new Timestamp(System.currentTimeMillis(),0),true);
     			request.addResponse(r);
     		}
     	}

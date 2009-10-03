@@ -101,17 +101,21 @@ public class ProxyUtilities {
 		
 	static <T extends Object> T cast(String value, Class<T> type) {
 		Object retVal = null;
-		if (type == String.class) retVal = value;
-		else if (type == double.class || type == Double.class) retVal =  Double.parseDouble(value);
-		else if (type == float.class || type == Float.class) retVal =  Float.parseFloat(value);
-		else if (type == long.class || type == Long.class) retVal =  Long.parseLong(value);
-		else if (type == int.class || type == Integer.class) retVal =  Integer.parseInt(value);
-		else if (type == short.class || type == Short.class) retVal =  Short.parseShort(value);
-		else if (type == byte.class || type == Byte.class) retVal =  Byte.parseByte(value);
-		else if (type == char.class || type == Character.class) retVal =  value.charAt(0);
-		else if (type == boolean.class || type == Boolean.class) retVal =  Boolean.parseBoolean(value);
-		else retVal =  value;
-		return type.cast(retVal);
+		try {
+			if (type == String.class) retVal = value;
+			else if (type == double.class || type == Double.class) retVal =  Double.parseDouble(value);
+			else if (type == float.class || type == Float.class) retVal =  Float.parseFloat(value);
+			else if (type == long.class || type == Long.class) retVal =  Long.parseLong(value);
+			else if (type == int.class || type == Integer.class) retVal =  Integer.parseInt(value);
+			else if (type == short.class || type == Short.class) retVal =  Short.parseShort(value);
+			else if (type == byte.class || type == Byte.class) retVal =  Byte.parseByte(value);
+			else if (type == char.class || type == Character.class) retVal =  value.charAt(0);
+			else if (type == boolean.class || type == Boolean.class) retVal =  Boolean.parseBoolean(value);
+			else retVal =  value;
+			return type.cast(retVal);
+		} catch (NumberFormatException e) {
+			return null;
+		}
 	}
 	
 }
