@@ -84,8 +84,7 @@ public class MessageGuardCommander extends Job {
                 try
                 {
                     // update ones per hour
-                    // Thread.sleep(3600000);
-                    Thread.sleep(60000);
+                    Thread.sleep(3600000);
                 }
                 catch(InterruptedException e)
                 {
@@ -104,10 +103,12 @@ public class MessageGuardCommander extends Job {
                     else
                     {
                         Set<String> keySet = _topicMessageMap.keySet();
-                        Boolean newValue = null;
+                        Boolean newValue;
                         
                         for(String filterID : keySet)
                         {
+                            newValue = null;
+                            
                             FilterActionTObject[] actionTObject = FilterActionDAO.selectByFilter(conDb,
                                     Integer.parseInt(filterID));
                             
