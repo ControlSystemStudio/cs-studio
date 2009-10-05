@@ -1,0 +1,65 @@
+package org.csstudio.opibuilder.widgetActions;
+
+import java.net.URL;
+
+import org.csstudio.opibuilder.properties.StringProperty;
+import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.csstudio.opibuilder.util.ConsoleService;
+import org.csstudio.opibuilder.widgetActions.WidgetActionFactory.ActionType;
+import org.csstudio.platform.logging.CentralLogger;
+import org.eclipse.osgi.util.NLS;
+import org.eclipse.ui.PlatformUI;
+
+/**The action that opens webpage in default system web browser.
+ * @author Xihui Chen
+ *
+ */
+public class OpenWebpageAction extends AbstractWidgetAction {
+
+	public static final String PROP_HYPERLINK = "hyperlink";//$NON-NLS-1$
+	
+	@Override
+	protected void configureProperties() {
+		addProperty(new StringProperty(PROP_HYPERLINK, "Web Address", WidgetPropertyCategory.Basic, "http://"));
+	
+	}
+
+	@Override
+	public ActionType getActionType() {
+		return ActionType.OPEN_WEBPAGE;
+	}
+
+	@Override
+	public void run() {
+		if (getHyperLink().startsWith("http:") || //$NON-NLS-1$
+	            getHyperLink().startsWith("https:") || //$NON-NLS-1$
+	            		getHyperLink().startsWith("file:")) //$NON-NLS-1$
+		{
+			try {
+				PlatformUI.getWorkbench().getBrowserSupport().createBrowser(null).openURL(
+						new URL(getHyperLink()));
+			} catch (Exception e) {
+				String message = NLS.bind("Failed to open the hyperlink: {0}\n{1}", getHyperLink(), e); 
+				CentralLogger.getInstance().error(this, message, e);
+				ConsoleService.getInstance().writeError(message);
+			} 
+		}else{
+			String message = NLS.bind("Failed to open the hyperlink: {0}\n{1}", getHyperLink(),
+					"The hyperlink must start with http://, https:// or file://"); 				
+			ConsoleService.getInstance().writeError(message);
+		}
+		
+	}
+	
+	private String getHyperLink(){
+		return (String)getPropertyValue(PROP_HYPERLINK);
+	}
+	
+	
+	
+	@Override
+	public String getDescription() {
+		return super.getDescription() + " " + getHyperLink(); //$NON-NLS-1$
+	}
+
+}
