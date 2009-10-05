@@ -370,7 +370,7 @@ public class MessageGuardCommander extends Job {
         if (message instanceof MapMessage) {
             MapMessage mapMessage = (MapMessage) message;
             try {
-                System.out.println("name: " + mapMessage.getString("NAME"));
+                CentralLogger.getInstance().info(this, "name: " + mapMessage.getString("NAME"));
                 String command = mapMessage.getString(AMS_COMMAND_KEY_NAME);
                 if (command != null
                         && (command.equals(MSGVALUE_TCMD_RELOAD_CFG_START) || command
