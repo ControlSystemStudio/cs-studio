@@ -67,7 +67,7 @@ public final class MessageMinderStart implements IApplication {
         _commander.schedule();
         
         while(_commander.getState()!=Job.NONE){
-            System.out.println(_commander.getState());
+            CentralLogger.getInstance().info(this, "Commander state = " + String.valueOf(_commander.getState()));
             Thread.sleep(10000);
         }
         _commander.cancel();

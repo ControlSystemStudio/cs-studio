@@ -323,7 +323,7 @@ public class MessageGuardCommander extends Job {
     private void patrol() {
         Message message = null;
         ITimestamp now;
-        System.out.println("StartTime: " + TimestampFactory.now());
+        CentralLogger.getInstance().info(this, "StartTime: " + TimestampFactory.now());
         // int counter =0;
         while (_run) {
             now = TimestampFactory.now();
@@ -505,7 +505,7 @@ public class MessageGuardCommander extends Job {
      */
     private void sendCleanUpMessage(final MessageKey key, final ITimestamp lastDate,
             final int number) {
-        System.out.println(key.toString() + "\tlast unsend msg: " + lastDate.toString() + "\t and "
+        CentralLogger.getInstance().info(this, key.toString() + "\tlast unsend msg: " + lastDate.toString() + "\t and "
                 + number + " unsent msg.");
         // TODO write the sendCleanUpMessage.
         // Soll eine Nachricht versenden die enthï¿½lt welche und wieviele
