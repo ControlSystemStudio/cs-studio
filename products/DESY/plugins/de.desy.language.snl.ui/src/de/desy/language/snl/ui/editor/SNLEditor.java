@@ -33,21 +33,11 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.ITextViewer;
-import org.eclipse.jface.text.contentassist.CompletionProposal;
-import org.eclipse.jface.text.contentassist.ICompletionProposal;
-import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
-import org.eclipse.jface.text.contentassist.IContextInformation;
-import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 import org.eclipse.jface.text.presentation.IPresentationDamager;
 import org.eclipse.jface.text.presentation.IPresentationRepairer;
 import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
 import org.eclipse.jface.text.rules.ITokenScanner;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.part.FileEditorInput;
@@ -64,8 +54,6 @@ import de.desy.language.snl.configurationservice.ConfigurationService;
 import de.desy.language.snl.configurationservice.ICompilerOptionsService;
 import de.desy.language.snl.configurationservice.PreferenceConstants;
 import de.desy.language.snl.parser.SNLParser;
-import de.desy.language.snl.parser.nodes.StateNode;
-import de.desy.language.snl.parser.parser.StateParser;
 import de.desy.language.snl.ui.RuleProvider;
 import de.desy.language.snl.ui.SNLUiActivator;
 
@@ -78,506 +66,267 @@ import de.desy.language.snl.ui.SNLUiActivator;
  */
 public class SNLEditor extends LanguageEditor {
 
-    // Vorgeschlagene Schlüsselwörter
-    private final static String[] KEYWORDS = new String[] { "#define", "%#include", "%%#include",
-            "when(", "state", "assign" };
+	private ErrorManager _errorManager;
+	private IPreferenceStore _preferenceStore;
+	private ICompilerOptionsService _compilerOptionService;
 
-    private ErrorManager _errorManager;
-    private IPreferenceStore _preferenceStore;
-    private ICompilerOptionsService _compilerOptionService;
-    private Image stateImage = SNLUiActivator.getImageDescriptor("/icons/nodes/state.gif")
-            .createImage();
+	public SNLEditor() {
+		_errorManager = new ErrorManager();
+		_preferenceStore = SNLUiActivator.getDefault().getPreferenceStore();
+		_compilerOptionService = new CompilerOptionsService(_preferenceStore);
+	}
 
-    /**
-     * Code Based on example from Berthold Daum 
-     * Title: Java-Entwicklung mit Eclipse 3.3
-     * Publisher: dpunkt verlag
-     * ISBN: 978-3-89864-504-1
-     * 
-     * @author hrickens
-     * @author $Author$
-     * @version $Revision$
-     * @since 02.10.2009
-     */
-    public class KeywordContentAssistProcessor implements IContentAssistProcessor {
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected IPresentationDamager doGetPresentationDamager(
+			final ITokenScanner codeScannerUsedForHighligthing) {
+		return new SNLPresentationDamager();
+	}
 
-        /**
-         * Stellt ein CompletionProposal-Array zusammen
-         * 
-         * @param viewer
-         *            - der Viewer, von dem diese Methode aufgerufen wird
-         * @param documentOffset
-         *            - aktuelle Position im Dokument
-         */
-        public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer,
-                int documentOffset) {
-            // bDaum
-            IDocument docu = viewer.getDocument();
-            // Textselektion holen
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected IPresentationRepairer doGetPresentationRepairer(
+			final ITokenScanner codeScannerUsedForHighligthing) {
+		DefaultDamagerRepairer damagerRepairer = new DefaultDamagerRepairer(
+				codeScannerUsedForHighligthing);
+		return damagerRepairer;
+	}
 
-            Point selectedRange = viewer.getSelectedRange();
-            List<CompletionProposal> propList;
-            propList = computeStateProposals(selectedRange.x, docu);
-            if (propList.isEmpty()) {
-                propList.addAll(computeKeywordProposals(getQualifier(docu, documentOffset),
-                        documentOffset));
-            }
-            // In Array umwandeln und zurückgeben
-            return (CompletionProposal[]) propList.toArray(new CompletionProposal[propList.size()]);
-        }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected AbstractRuleProvider doGetRuleProviderForHighlighting() {
+		return new RuleProvider();
+	}
 
-        /**
-         * Standardimplementierung für Kontextanzeige
-         * 
-         * @return null
-         */
-        public IContextInformation[] computeContextInformation(ITextViewer viewer,
-                int documentOffset) {
-            return null;
-        }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected String doGetPartitioningId() {
+		return null;// DocumentSetupParticipant.LANGUAGE_PARTITIONING;
+	}
 
-        /**
-         * Nach einem '#','%' Zeichen sollen automatisch Vorschläge erfolgen
-         */
-        public char[] getCompletionProposalAutoActivationCharacters() {
-            // Automatisch Vorschläge machen nach Eingabe
-            // folgender Zeichen
-            return new char[] { '#', '%' };
-        }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected AbstractLanguageParser doGetLanguageParser() {
+		return new SNLParser();
+	}
 
-        /**
-         * Stellt Vorschläge für HTML-Markup bereit
-         * 
-         * @param documentOffset
-         *            - die aktuelle Cursorposition im Text
-         * @param selectedText
-         *            - der z.Zt. selektierte Text
-         * @param docu
-         * @return - Vorschlagsliste
-         */
-        private List<CompletionProposal> computeStateProposals(int documentOffset, IDocument docu) {
-            List<CompletionProposal> propList = new ArrayList<CompletionProposal>();
-            final StateParser parser = new StateParser();
-            int offset = 0;
-            String selectedText = getStateSelection(docu, documentOffset);
-            if (selectedText.length() > 0) {
-                parser.findNext(docu.get());
-                while (parser.hasFoundElement()) {
-                    StateNode lastFoundAsNode = parser.getLastFoundAsNode();
-                    String lastFoundStatement = lastFoundAsNode.getSourceIdentifier();
-                    if (lastFoundStatement.startsWith(selectedText)) {
-                        int cursor = lastFoundStatement.length();
-                        CompletionProposal proposal = new CompletionProposal(lastFoundStatement,
-                                documentOffset - selectedText.length(), selectedText.length(),
-                                cursor, stateImage, lastFoundStatement, null, null);
-                        propList.add(proposal);
-                    }
-                    offset = parser.getEndOffsetLastFound();
-                    parser.findNext(docu.get(), offset);
-                }
-            }
-            return propList;
-        }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void doHandleSourceModifiedAndSaved(
+			final IProgressMonitor progressMonitor) {
+		if (_compilerOptionService.getSaveAndCompile()) {
+			compileFile(progressMonitor);
+		}
+	}
 
-        /**
-         * Ermittelt bisher eingegebene signifikante Zeichen
-         * 
-         * @param docu
-         *            - das Dokument, mit dem wir arbeiten
-         * @param documentOffset
-         *            - aktuelle Position im Dokument
-         * @return - bereits eingegebener Anfang eines Schlüsselwortes
-         */
-        private String getStateSelection(IDocument docu, int documentOffset) {
-            // Zunächst lesen wir das Dokument rückwärts bis zum
-            // Anfang
-            // einer Zeile oder bis wir ein Schlüsselwort erkannt
-            // haben
-            StringBuffer buf = new StringBuffer();
-            int whiteSpaceCount = 0;
-            while (true) {
-                try {
-                    // Zeichen vor dem Cursor holen
-                    char c = docu.getChar(--documentOffset);
-                    if (Character.getType(c) == Character.LINE_SEPARATOR) {
-                        // Zeilenanfang oder Wortanfang erreicht,
-                        // kein Schlüsselwort gefunden
-                        break;
-                    }
-                    if (Character.isWhitespace(c)) {
-                        if (whiteSpaceCount < 1) {
-                            whiteSpaceCount++;
-                        } else {
-                            // Schlüsselwort gefunden
-                            // Die erhaltene Zeichenkette bringen wir in die
-                            // richtige Reihenfolge
-                            String string = buf.reverse().toString();
-                            if (string.startsWith("state")) {
-                                return string.substring(6, string.length());
-                            }
-                            return "";
-                        }
-                    }
-                    buf.append(c);
-                } catch (BadLocationException e) {
-                    // Dokumentanfang erreicht, kein Schlüsselwort
-                    // gefunden
-                    break;
-                }
-            }
-            return "";
-        }
+	public void compileFile(final IProgressMonitor progressMonitor) {
+		if (!_errorManager.isShellSet()) {
+			_errorManager.setShell(this.getEditorSite().getShell());
+		}
+		
+		String targetPlatform = _preferenceStore
+				.getString(SNLUiActivator.PLUGIN_ID
+						+ PreferenceConstants.TARGET_PLATFORM);
+		IFile sourceRessource = ((FileEditorInput) getEditorInput()).getFile();
+		IProject baseDirectory = sourceRessource.getProject();
+		
+		ErrorUnit errorUnit = checkEnvironmentConfiguration(baseDirectory,
+				progressMonitor, targetPlatform);
 
-        /**
-         * Ermittelt bisher eingegebene signifikante Zeichen
-         * 
-         * @param docu
-         *            - das Dokument, mit dem wir arbeiten
-         * @param documentOffset
-         *            - aktuelle Position im Dokument
-         * @return - bereits eingegebener Anfang eines Schlüsselwortes
-         */
-        private String getQualifier(IDocument docu, int documentOffset) {
-            // Zunächst lesen wir das Dokument rückwärts bis zum
-            // Anfang
-            // einer Zeile oder bis wir ein Schlüsselwort erkannt
-            // haben
-            StringBuffer buf = new StringBuffer();
-            while (true) {
-                try {
-                    // Zeichen vor dem Cursor holen
-                    char c = docu.getChar(--documentOffset);
-                    if (Character.isWhitespace(c)) {
-                        // Zeilenanfang oder Wortanfang erreicht,
-                        // kein Schlüsselwort gefunden
-                        break;
-                    }
-                    buf.append(c);
-                    if (c == '%') {
-                        // Schlüsselwort gefunden
-                        c = docu.getChar(documentOffset - 1);
-                        if (c == '%') {
-                            buf.append(c);
-                            return buf.reverse().toString();
-                        }
-                        // Die erhaltene Zeichenkette bringen wir in die
-                        // richtige Reihenfolge
-                        return buf.reverse().toString();
-                    } else if (c == '#') {
-                        c = docu.getChar(documentOffset - 1);
-                        if (c == '%') {
-                            buf.append(c);
-                            return buf.reverse().toString();
-                        }
-                        // Die erhaltene Zeichenkette bringen wir in die
-                        // richtige Reihenfolge
-                        return buf.reverse().toString();
-                    }
-                } catch (BadLocationException e) {
-                    // Dokumentanfang erreicht, kein Schlüsselwort
-                    // gefunden
-                    break;
-                }
-            }
-            return "";
-        }
+		if (errorUnit == null) {
+			if (targetPlatform.equals("none")) {
+				MessageBox box = new MessageBox(this.getSite().getShell(),
+						SWT.ICON_INFORMATION);
+				box.setText("No compiler configuration selected");
+				box.setMessage("No files generated.\nChoose a compiler configuration in the preferences.");
+				box.open();
+			} else {
+				// We want the base directory (the project of the *.st file)
+				String basePath = baseDirectory.getLocation().toFile()
+						.getAbsolutePath();
 
-        /**
-         * 
-         * Stellt Schlüsselwort-Vorschläge zusammen
-         * 
-         * @param qualifier
-         *            - Anfang eines Schlüsselwortes zur Eingrenzung der Vorschläge
-         * @param documentOffset
-         *            - die aktuelle Cursorposition im Text
-         * @return - Liste der vorgeschlagenen Strings
-         */
-        private List<CompletionProposal> computeKeywordProposals(String qualifier,
-                int documentOffset) {
-            List<CompletionProposal> propList = new ArrayList<CompletionProposal>();
-            for (int i = 0; i < KEYWORDS.length; i++) {
-                String insert = KEYWORDS[i] + " ";
-                if (insert.startsWith(qualifier)) {
-                    // Wir lassen nur die Vorschläge zu,
-                    // die dem angefangenen Schlüsselwort entsprechen
-                    int cursor = insert.length();
-                    CompletionProposal proposal = new CompletionProposal(insert, documentOffset
-                            - qualifier.length(), qualifier.length(), cursor);
-                    propList.add(proposal);
-                }
-            }
-            return propList;
-        }
+				String sourceFileName = extractFileName(sourceRessource);
 
-        /**
-         * Standardimplementierung für Kontextaktivierung
-         * 
-         * @return null
-         */
-        public char[] getContextInformationAutoActivationCharacters() {
-            return null;
-        }
+				GenericCompilationHelper compiler = new GenericCompilationHelper();
 
-        /**
-         * Standardimplementierung für die Kontextvalidierung
-         * 
-         * @return null
-         */
-        public IContextInformationValidator getContextInformationValidator() {
-            return null;
-        }
+				invokeCompilers(targetPlatform, sourceRessource, basePath,
+						sourceFileName, compiler);
+				if (!_compilerOptionService.getKeepGeneratedFiles()) {
+					deleteFilesInGeneratedFolder(baseDirectory, progressMonitor);
+				}
+			}
+		} else {
+			_errorManager.createErrorFeedback("Compilation aborted!", errorUnit
+					.getMessage(), errorUnit.getDetails());
+		}
+	}
 
-        /**
-         * Standardimplementierung für Fehlermeldungen
-         * 
-         * @return null
-         */
-        public String getErrorMessage() {
-            return null;
-        }
-    }
+	private ErrorUnit checkEnvironmentConfiguration(IProject baseDirectory,
+			IProgressMonitor progressMonitor, String targetPlatform) {
+		ErrorUnit error = null;
+		List<String> errorMessages = new ArrayList<String>();
+		if (targetPlatform == null || targetPlatform.trim().length() < 1) {
+			String errorDetail = "Target Platform not valid";
+			errorMessages.add(errorDetail);
+		}
+		if ( ! targetPlatform.equals("none")) {
+			errorMessages
+			.addAll(checkPreferenceConfiguration(_compilerOptionService));
+			errorMessages.addAll(checkDirectories(baseDirectory, progressMonitor));
+			if (!errorMessages.isEmpty()) {
+				error = new ErrorUnit("Compilation could not be initialized",
+						errorMessages);
+			}
+		}
 
-    public SNLEditor() {
-        _errorManager = new ErrorManager();
-        _preferenceStore = SNLUiActivator.getDefault().getPreferenceStore();
-        _compilerOptionService = new CompilerOptionsService(_preferenceStore);
-    }
+		return error;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected IPresentationDamager doGetPresentationDamager(
-            final ITokenScanner codeScannerUsedForHighligthing) {
-        return new SNLPresentationDamager();
-    }
+	private String extractFileName(IFile sourceRessource) {
+		String sourceFileName = sourceRessource.getName();
+		int lastIndexOfDot = sourceFileName.lastIndexOf('.');
+		int lastIndexOfSlash = sourceFileName.lastIndexOf(File.separator);
+		sourceFileName = sourceFileName.substring(lastIndexOfSlash + 1,
+				lastIndexOfDot);
+		return sourceFileName;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected IPresentationRepairer doGetPresentationRepairer(
-            final ITokenScanner codeScannerUsedForHighligthing) {
-        DefaultDamagerRepairer damagerRepairer = new DefaultDamagerRepairer(
-                codeScannerUsedForHighligthing);
-        return damagerRepairer;
-    }
+	private void invokeCompilers(String targetPlatform, IFile sourceRessource,
+			String basePath, String sourceFileName,
+			GenericCompilationHelper compiler) {
+		AbstractTargetConfigurationProvider provider = ConfigurationService
+				.getInstance().getProvider(targetPlatform);
+		List<AbstractCompilerConfiguration> configurations = provider
+				.getConfigurations(_compilerOptionService);
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected AbstractRuleProvider doGetRuleProviderForHighlighting() {
-        return new RuleProvider();
-    }
+		ErrorUnit errorUnit;
+		for (AbstractCompilerConfiguration configuration : configurations) {
+			String sourceFile = createFullFileName(basePath, configuration
+					.getSourceFolder(), sourceFileName, configuration
+					.getSourceFileExtension());
+			String targetFile = createFullFileName(basePath, configuration
+					.getTargetFolder(), sourceFileName, configuration
+					.getTargetFileExtension());
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected String doGetPartitioningId() {
-        return null;// DocumentSetupParticipant.LANGUAGE_PARTITIONING;
-    }
+			errorUnit = compiler.compile(configuration.getCompilerParameters(
+					sourceFile, targetFile), configuration.getErrorPattern());
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected AbstractLanguageParser doGetLanguageParser() {
-        return new SNLParser();
-    }
+			if (errorUnit != null) {
+				if (errorUnit.hasLineNumber()) {
+					_errorManager.markError(sourceRessource, errorUnit
+							.getLineNumber(), errorUnit.getMessage());
+				} else {
+					_errorManager.createErrorFeedback("Compilation fails!",
+							errorUnit.getMessage(), errorUnit.getDetails());
+				}
+				break;
+			}
+		}
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void doHandleSourceModifiedAndSaved(final IProgressMonitor progressMonitor) {
-        if (_compilerOptionService.getSaveAndCompile()) {
-            compileFile(progressMonitor);
-        }
-    }
+	private void deleteFilesInGeneratedFolder(IProject project,
+			IProgressMonitor progressMonitor) {
+		IFolder folder = project.getFolder(SNLConstants.GENERATED_FOLDER
+				.getValue());
+		if (folder.exists()) {
+			try {
+				folder.delete(true, progressMonitor);
+			} catch (CoreException e) {
+				e.printStackTrace();
+				ArrayList<String> details = new ArrayList<String>();
+				details.add(e.getMessage());
+				_errorManager.createErrorFeedback("Deletion failed",
+						"Could not delete generated files folder", details);
+			}
+		}
+	}
 
-    public void compileFile(final IProgressMonitor progressMonitor) {
-        if (!_errorManager.isShellSet()) {
-            _errorManager.setShell(this.getEditorSite().getShell());
-        }
+	private List<String> checkDirectories(IProject baseDirectory,
+			IProgressMonitor monitor) {
+		List<String> result = new ArrayList<String>();
+		IFolder folder = baseDirectory.getFolder(SNLConstants.GENERATED_FOLDER
+				.getValue());
+		if (!folder.exists()) {
+			try {
+				folder.create(true, true, monitor);
+			} catch (CoreException e) {
+				result.add("Not able to create "
+						+ SNLConstants.GENERATED_FOLDER.getValue() + " folder");
+			}
+		}
 
-        String targetPlatform = _preferenceStore.getString(SNLUiActivator.PLUGIN_ID
-                + PreferenceConstants.TARGET_PLATFORM);
-        IFile sourceRessource = ((FileEditorInput) getEditorInput()).getFile();
-        IProject baseDirectory = sourceRessource.getProject();
+		folder = baseDirectory.getFolder(SNLConstants.BIN_FOLDER.getValue());
+		if (!folder.exists()) {
+			try {
+				folder.create(true, true, monitor);
+			} catch (CoreException e) {
+				result.add("Not able to create "
+						+ SNLConstants.BIN_FOLDER.getValue() + " folder");
+			}
+		}
+		return result;
+	}
 
-        ErrorUnit errorUnit = checkEnvironmentConfiguration(baseDirectory, progressMonitor,
-                targetPlatform);
+	private String createFullFileName(String basePath, String folder,
+			String fileName, String fileExtension) {
+		String fullQualifiedSourceName = basePath + File.separator + folder
+				+ File.separator + fileName + fileExtension;
+		return fullQualifiedSourceName;
+	}
 
-        if (errorUnit == null) {
-            if (targetPlatform.equals("none")) {
-                MessageBox box = new MessageBox(this.getSite().getShell(), SWT.ICON_INFORMATION);
-                box.setText("No compiler configuration selected");
-                box
-                        .setMessage("No files generated.\nChoose a compiler configuration in the preferences.");
-                box.open();
-            } else {
-                // We want the base directory (the project of the *.st file)
-                String basePath = baseDirectory.getLocation().toFile().getAbsolutePath();
+	private List<String> checkPreferenceConfiguration(
+			ICompilerOptionsService compilerOptionsService) {
+		List<String> errorMessages = new ArrayList<String>();
 
-                String sourceFileName = extractFileName(sourceRessource);
+		String snCompilerPath = compilerOptionsService.getSNCompilerPath();
+		if (snCompilerPath == null || snCompilerPath.trim().length() < 1) {
+			errorMessages
+					.add("The location of the SN-Compiler is not specified.");
+		}
 
-                GenericCompilationHelper compiler = new GenericCompilationHelper();
+		String cCompilerPath = compilerOptionsService.getCCompilerPath();
+		if (cCompilerPath == null || cCompilerPath.trim().length() < 1) {
+			errorMessages
+					.add("The location of the C-Compiler is not specified.");
+		}
 
-                invokeCompilers(targetPlatform, sourceRessource, basePath, sourceFileName, compiler);
-                if (!_compilerOptionService.getKeepGeneratedFiles()) {
-                    deleteFilesInGeneratedFolder(baseDirectory, progressMonitor);
-                }
-            }
-        } else {
-            _errorManager.createErrorFeedback("Compilation aborted!", errorUnit.getMessage(),
-                    errorUnit.getDetails());
-        }
-    }
+		String preCompilerPath = compilerOptionsService.getPreCompilerPath();
+		if (preCompilerPath == null || preCompilerPath.trim().length() < 1) {
+			errorMessages
+					.add("The location of the precompiler is not specified.");
+		}
+		
+		String applicationCompilerPath = compilerOptionsService.getApplicationCompilerPath();
+		if (applicationCompilerPath == null || applicationCompilerPath.trim().length() < 1) {
+			errorMessages
+					.add("The location of the application compiler is not specified.");
+		}
 
-    private ErrorUnit checkEnvironmentConfiguration(IProject baseDirectory,
-            IProgressMonitor progressMonitor, String targetPlatform) {
-        ErrorUnit error = null;
-        List<String> errorMessages = new ArrayList<String>();
-        if (targetPlatform == null || targetPlatform.trim().length() < 1) {
-            String errorDetail = "Target Platform not valid";
-            errorMessages.add(errorDetail);
-        }
-        if (!targetPlatform.equals("none")) {
-            errorMessages.addAll(checkPreferenceConfiguration(_compilerOptionService));
-            errorMessages.addAll(checkDirectories(baseDirectory, progressMonitor));
-            if (!errorMessages.isEmpty()) {
-                error = new ErrorUnit("Compilation could not be initialized", errorMessages);
-            }
-        }
+		String epicsPath = compilerOptionsService.getEpicsFolder();
+		if (epicsPath == null || epicsPath.trim().length() < 1) {
+			errorMessages
+					.add("The location of the EPICS environment is not specified.");
+		}
 
-        return error;
-    }
+		String seqPath = compilerOptionsService.getSeqFolder();
+		if (seqPath == null || seqPath.trim().length() < 1) {
+			errorMessages
+					.add("The location of the \"Seq\" folder is not specified.");
+		}
 
-    private String extractFileName(IFile sourceRessource) {
-        String sourceFileName = sourceRessource.getName();
-        int lastIndexOfDot = sourceFileName.lastIndexOf('.');
-        int lastIndexOfSlash = sourceFileName.lastIndexOf(File.separator);
-        sourceFileName = sourceFileName.substring(lastIndexOfSlash + 1, lastIndexOfDot);
-        return sourceFileName;
-    }
-
-    private void invokeCompilers(String targetPlatform, IFile sourceRessource, String basePath,
-            String sourceFileName, GenericCompilationHelper compiler) {
-        AbstractTargetConfigurationProvider provider = ConfigurationService.getInstance()
-                .getProvider(targetPlatform);
-        List<AbstractCompilerConfiguration> configurations = provider
-                .getConfigurations(_compilerOptionService);
-
-        ErrorUnit errorUnit;
-        for (AbstractCompilerConfiguration configuration : configurations) {
-            String sourceFile = createFullFileName(basePath, configuration.getSourceFolder(),
-                    sourceFileName, configuration.getSourceFileExtension());
-            String targetFile = createFullFileName(basePath, configuration.getTargetFolder(),
-                    sourceFileName, configuration.getTargetFileExtension());
-
-            errorUnit = compiler
-                    .compile(configuration.getCompilerParameters(sourceFile, targetFile),
-                            configuration.getErrorPattern());
-
-            if (errorUnit != null) {
-                if (errorUnit.hasLineNumber()) {
-                    _errorManager.markError(sourceRessource, errorUnit.getLineNumber(), errorUnit
-                            .getMessage());
-                } else {
-                    _errorManager.createErrorFeedback("Compilation fails!", errorUnit.getMessage(),
-                            errorUnit.getDetails());
-                }
-                break;
-            }
-        }
-    }
-
-    private void deleteFilesInGeneratedFolder(IProject project, IProgressMonitor progressMonitor) {
-        IFolder folder = project.getFolder(SNLConstants.GENERATED_FOLDER.getValue());
-        if (folder.exists()) {
-            try {
-                folder.delete(true, progressMonitor);
-            } catch (CoreException e) {
-                e.printStackTrace();
-                ArrayList<String> details = new ArrayList<String>();
-                details.add(e.getMessage());
-                _errorManager.createErrorFeedback("Deletion failed",
-                        "Could not delete generated files folder", details);
-            }
-        }
-    }
-
-    private List<String> checkDirectories(IProject baseDirectory, IProgressMonitor monitor) {
-        List<String> result = new ArrayList<String>();
-        IFolder folder = baseDirectory.getFolder(SNLConstants.GENERATED_FOLDER.getValue());
-        if (!folder.exists()) {
-            try {
-                folder.create(true, true, monitor);
-            } catch (CoreException e) {
-                result.add("Not able to create " + SNLConstants.GENERATED_FOLDER.getValue()
-                        + " folder");
-            }
-        }
-
-        folder = baseDirectory.getFolder(SNLConstants.BIN_FOLDER.getValue());
-        if (!folder.exists()) {
-            try {
-                folder.create(true, true, monitor);
-            } catch (CoreException e) {
-                result.add("Not able to create " + SNLConstants.BIN_FOLDER.getValue() + " folder");
-            }
-        }
-        return result;
-    }
-
-    private String createFullFileName(String basePath, String folder, String fileName,
-            String fileExtension) {
-        String fullQualifiedSourceName = basePath + File.separator + folder + File.separator
-                + fileName + fileExtension;
-        return fullQualifiedSourceName;
-    }
-
-    private List<String> checkPreferenceConfiguration(ICompilerOptionsService compilerOptionsService) {
-        List<String> errorMessages = new ArrayList<String>();
-
-        String snCompilerPath = compilerOptionsService.getSNCompilerPath();
-        if (snCompilerPath == null || snCompilerPath.trim().length() < 1) {
-            errorMessages.add("The location of the SN-Compiler is not specified.");
-        }
-
-        String cCompilerPath = compilerOptionsService.getCCompilerPath();
-        if (cCompilerPath == null || cCompilerPath.trim().length() < 1) {
-            errorMessages.add("The location of the C-Compiler is not specified.");
-        }
-
-        String preCompilerPath = compilerOptionsService.getPreCompilerPath();
-        if (preCompilerPath == null || preCompilerPath.trim().length() < 1) {
-            errorMessages.add("The location of the precompiler is not specified.");
-        }
-
-        String applicationCompilerPath = compilerOptionsService.getApplicationCompilerPath();
-        if (applicationCompilerPath == null || applicationCompilerPath.trim().length() < 1) {
-            errorMessages.add("The location of the application compiler is not specified.");
-        }
-
-        String epicsPath = compilerOptionsService.getEpicsFolder();
-        if (epicsPath == null || epicsPath.trim().length() < 1) {
-            errorMessages.add("The location of the EPICS environment is not specified.");
-        }
-
-        String seqPath = compilerOptionsService.getSeqFolder();
-        if (seqPath == null || seqPath.trim().length() < 1) {
-            errorMessages.add("The location of the \"Seq\" folder is not specified.");
-        }
-
-        return errorMessages;
-    }
-
-    @Override
-    protected IContentAssistProcessor getContentAssistProcessor() {
-        return new KeywordContentAssistProcessor();
-    }
+		return errorMessages;
+	}
 
 }
