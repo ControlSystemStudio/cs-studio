@@ -70,6 +70,7 @@ import org.eclipse.gef.ui.actions.ToggleRulerVisibilityAction;
 import org.eclipse.gef.ui.actions.ToggleSnapToGeometryAction;
 import org.eclipse.gef.ui.actions.ZoomInAction;
 import org.eclipse.gef.ui.actions.ZoomOutAction;
+import org.eclipse.gef.ui.palette.FlyoutPaletteComposite;
 import org.eclipse.gef.ui.palette.PaletteViewer;
 import org.eclipse.gef.ui.palette.PaletteViewerProvider;
 import org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette;
@@ -123,6 +124,8 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 
 	
 	public OPIEditor() {
+		if(getPalettePreferences().getPaletteState() <= 0)
+			getPalettePreferences().setPaletteState(FlyoutPaletteComposite.STATE_PINNED_OPEN);
 		setEditDomain(new DefaultEditDomain(this));
 		
 	}
@@ -672,8 +675,7 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 	protected void initializeGraphicalViewer() {
 		super.initializeGraphicalViewer();
 		GraphicalViewer viewer = getGraphicalViewer();
-		
-		
+	
 		viewer.setContents(displayModel);
 		
 		viewer.addDropTargetListener(createTransferDropTargetListener());
