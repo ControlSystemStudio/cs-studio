@@ -13,8 +13,10 @@ import java.util.EventObject;
 import java.util.List;
 
 import org.csstudio.opibuilder.actions.ChangeOrderAction;
+import org.csstudio.opibuilder.actions.CopyPropertiesAction;
 import org.csstudio.opibuilder.actions.CopyWidgetsAction;
 import org.csstudio.opibuilder.actions.CutWidgetsAction;
+import org.csstudio.opibuilder.actions.PastePropertiesAction;
 import org.csstudio.opibuilder.actions.PasteWidgetsAction;
 import org.csstudio.opibuilder.actions.RunOPIAction;
 import org.csstudio.opibuilder.actions.ChangeOrderAction.OrderType;
@@ -126,8 +128,7 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 	public OPIEditor() {
 		if(getPalettePreferences().getPaletteState() <= 0)
 			getPalettePreferences().setPaletteState(FlyoutPaletteComposite.STATE_PINNED_OPEN);
-		setEditDomain(new DefaultEditDomain(this));
-		
+		setEditDomain(new DefaultEditDomain(this));		
 	}
 	
 
@@ -371,6 +372,14 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 		
 		action = new RunOPIAction();
 		registry.registerAction(action);
+		
+		PastePropertiesAction pastePropAction = new PastePropertiesAction(this);
+		registry.registerAction(pastePropAction);
+		getSelectionActions().add(pastePropAction.getId());
+		
+		action = new CopyPropertiesAction(this, pastePropAction);
+		registry.registerAction(action);
+		getSelectionActions().add(action.getId());
 		
 	}
 	
