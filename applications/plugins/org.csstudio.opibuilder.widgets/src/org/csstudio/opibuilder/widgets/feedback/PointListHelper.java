@@ -32,10 +32,11 @@ public final class PointListHelper {
 	 */
 	public static PointList scaleToSize(final PointList points, final int width,
 			final int height) {
-		assert points != null;
+		//assert points != null;
 		if (width <= 0 || height <= 0) {
-			throw new IllegalArgumentException(
-					"Illegal dimensions. Width and height must be > 0."); //$NON-NLS-1$
+			return points;
+			//	throw new IllegalArgumentException(
+		//			"Illegal dimensions. Width and height must be > 0."); //$NON-NLS-1$
 		}
 		
 		double oldW = points.getBounds().width;
