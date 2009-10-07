@@ -36,10 +36,10 @@ public class Activator extends AbstractUIPlugin {
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
 	 */
 	public void stop(BundleContext context) throws Exception {
-		plugin = null;
-		XYGraphMediaFactory.disposeResources();
+		XYGraphMediaFactory.disposeResources();			
 		for(ZoomType z : ZoomType.values())
 			z.getCursor().dispose();
+		plugin = null;	
 		super.stop(context);
 	}
 
