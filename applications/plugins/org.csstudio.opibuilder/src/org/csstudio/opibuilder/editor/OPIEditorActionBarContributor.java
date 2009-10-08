@@ -1,6 +1,7 @@
 package org.csstudio.opibuilder.editor;
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.actions.RunOPIAction;
+import org.csstudio.opibuilder.actions.DistributeWidgetsAction.DistributeType;
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.gef.ui.actions.ActionBarContributor;
 import org.eclipse.gef.ui.actions.AlignmentRetargetAction;
@@ -14,8 +15,12 @@ import org.eclipse.gef.ui.actions.ZoomComboContributionItem;
 import org.eclipse.gef.ui.actions.ZoomInRetargetAction;
 import org.eclipse.gef.ui.actions.ZoomOutRetargetAction;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.RetargetAction;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -72,6 +77,45 @@ public class OPIEditorActionBarContributor extends ActionBarContributor {
 		a.setActionDefinitionId(RunOPIAction.ACITON_DEFINITION_ID);		
 		addRetargetAction(a);
 		
+		
+		for(DistributeType dt : DistributeType.values()){
+			if(dt != DistributeType.HORIZONTAL_GAP){
+				a = new RetargetAction(dt.getActionID(), dt.getLabel());
+				a.setImageDescriptor(dt.getImageDescriptor());
+				addRetargetAction(a);
+			}
+		}
+		//This is only for action displaying in toolbar
+		a = new RetargetAction(DistributeType.HORIZONTAL_GAP.getActionID(), 
+				DistributeType.HORIZONTAL_GAP.getLabel(), IAction.AS_DROP_DOWN_MENU);
+		a.setImageDescriptor(DistributeType.HORIZONTAL_GAP.getImageDescriptor());
+		a.setMenuCreator(new IMenuCreator() {
+			Menu menu;
+			public Menu getMenu(Menu parent) {				
+				return null;
+			}
+		
+			public Menu getMenu(Control parent) {
+				if(menu !=null)
+					return menu;
+				MenuManager manager = new MenuManager();
+				for(DistributeType dt : DistributeType.values()){					
+					if(dt != DistributeType.HORIZONTAL_GAP)
+						manager.add(getAction(dt.getActionID()));
+				}
+				
+				return manager.createContextMenu(parent);
+			}
+		
+			public void dispose() {
+				if(menu != null){
+					menu.dispose();
+					menu = null;
+				}
+			}
+		});
+		addRetargetAction(a);
+		
 	}
 
 	@Override
@@ -97,7 +141,10 @@ public class OPIEditorActionBarContributor extends ActionBarContributor {
 		tbm.add(new Separator());
 		tbm.add(getAction(GEFActionConstants.MATCH_WIDTH));
 		tbm.add(getAction(GEFActionConstants.MATCH_HEIGHT));
-
+		
+		tbm.add(new Separator());
+		tbm.add(getAction(DistributeType.HORIZONTAL_GAP.getActionID()));
+		
 		tbm.add(new Separator());
 		tbm.add(getAction(GEFActionConstants.ZOOM_IN));
 		tbm.add(getAction(GEFActionConstants.ZOOM_OUT));

@@ -222,6 +222,13 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 				((Integer)getCastedPropertyValue(PROP_YPOS)).intValue());
 	}
 	
+	public int getX(){
+		return ((Integer)getCastedPropertyValue(PROP_XPOS)).intValue();
+	}
+	public int getY(){
+		return ((Integer)getCastedPropertyValue(PROP_YPOS)).intValue();
+	}
+	
 	public String getName(){
 		return (String)getCastedPropertyValue(PROP_NAME);
 	}
@@ -257,6 +264,14 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 		return new Dimension(
 				((Integer)getCastedPropertyValue(PROP_WIDTH)).intValue(),
 				((Integer)getCastedPropertyValue(PROP_HEIGHT)).intValue());
+	}
+	
+	public int getWidth(){
+		return ((Integer)getCastedPropertyValue(PROP_WIDTH)).intValue();
+	}
+	
+	public int getHeight(){
+		return ((Integer)getCastedPropertyValue(PROP_HEIGHT)).intValue();
 	}
 	
 	public String getTooltip(){
@@ -398,6 +413,22 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	public void setSize(int width, int height){
 		setPropertyValue(PROP_WIDTH, width);
 		setPropertyValue(PROP_HEIGHT, height);
+	}
+	
+	public void setWidth(int width){
+		setPropertyValue(PROP_WIDTH, width);
+	}
+	
+	public void setHeight(int height){
+		setPropertyValue(PROP_HEIGHT, height);
+	}
+	
+	public void setX(int x){
+		setPropertyValue(PROP_XPOS, x);
+	}
+	
+	public void setY(int y){
+		setPropertyValue(PROP_YPOS, y);
 	}
 	
 	public void setTooltip(String tooltip){
