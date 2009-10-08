@@ -47,12 +47,7 @@ public class IocConnectionReporter implements IIocConnectionReporter {
 		List<IocConnectionReportItem> items = new ArrayList<IocConnectionReportItem>();
 		Collection<IocConnection> iocConnections = IocConnectionManager.getInstance().getIocConnections();
 		for (IocConnection ioc : iocConnections) {
-			IocConnectionState state =
-				ioc.getConnectState()
-					? (ioc.isSelectState()
-							? IocConnectionState.CONNECTED_SELECTED
-							: IocConnectionState.CONNECTED)
-					: IocConnectionState.DISCONNECTED;
+			IocConnectionState state = ioc.getIocConnectionState();
 			IocConnectionReportItem item = new IocConnectionReportItem(
 					ioc.getHost(), ioc.getLogicalIocName(), state);
 			items.add(item);

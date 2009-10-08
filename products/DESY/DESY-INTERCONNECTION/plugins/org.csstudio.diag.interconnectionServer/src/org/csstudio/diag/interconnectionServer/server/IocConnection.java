@@ -25,6 +25,7 @@ package org.csstudio.diag.interconnectionServer.server;
 import java.net.InetAddress;
 import java.util.concurrent.TimeUnit;
 
+import org.csstudio.diag.icsiocmonitor.service.IocConnectionState;
 import org.csstudio.diag.interconnectionServer.internal.IIocDirectory;
 import org.csstudio.diag.interconnectionServer.internal.time.TimeSource;
 import org.csstudio.diag.interconnectionServer.internal.time.TimeUtil;
@@ -213,6 +214,22 @@ public class IocConnection {
 	
 	public void setConnectState(boolean state) {
 		this.connectState = state;
+	}
+	
+	/**
+	 * Returns the IOC connection state as required for the ICS/IOC monitor
+	 * service.
+	 */
+	public IocConnectionState getIocConnectionState() {
+		if (isDisabled()) {
+			return IocConnectionState.DISABLED;
+		} else if (getConnectState()) {
+			return isSelectState() ? IocConnectionState.CONNECTED_SELECTED
+					: IocConnectionState.CONNECTED;
+		} else {
+			return isScheduledDowntime() ? IocConnectionState.SCHEDULED_DOWNTIME
+					: IocConnectionState.DISCONNECTED;
+		}
 	}
 
 	public boolean getConnectState() {
