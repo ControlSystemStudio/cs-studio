@@ -222,7 +222,7 @@ public class ClientRequest implements Runnable
         		catch(JMSException jmse)
                 {
         			status = false;
-        			icServer.checkSendMessageErrorCount();
+        			icServer.countJmsSendMessageErrorAndReconnectIfTooManyErrors();
                     System.out.println("ClientRequest : send ALARM message : *** EXCEPTION *** : " + jmse.getMessage());
                 } finally {
                 	if (session != null) {
@@ -284,7 +284,7 @@ public class ClientRequest implements Runnable
         		catch(JMSException jmse)
                 {
         			status = false;
-        			icServer.checkSendMessageErrorCount();
+        			icServer.countJmsSendMessageErrorAndReconnectIfTooManyErrors();
                     System.out.println("ClientRequest : send ALARM message : *** EXCEPTION *** : " + jmse.getMessage());
                 } finally {
                 	if (session != null) {
@@ -358,7 +358,7 @@ public class ClientRequest implements Runnable
         		catch(JMSException jmse)
                 {
         			status = false;
-        			icServer.checkSendMessageErrorCount();
+        			icServer.countJmsSendMessageErrorAndReconnectIfTooManyErrors();
                 } finally {
                 	if (session != null) {
                 		try {
@@ -501,7 +501,7 @@ public class ClientRequest implements Runnable
             		catch(JMSException jmse)
                     {
             			status = false;
-            			icServer.checkSendMessageErrorCount();
+            			icServer.countJmsSendMessageErrorAndReconnectIfTooManyErrors();
                     } finally {
                     	if (session != null) {
                     		try {
@@ -625,7 +625,7 @@ public class ClientRequest implements Runnable
             		catch(JMSException jmse)
                     {
             			status = false;
-            			icServer.checkSendMessageErrorCount();
+            			icServer.countJmsSendMessageErrorAndReconnectIfTooManyErrors();
                     } finally {
                     	if (session != null) {
                     		try {
@@ -665,7 +665,7 @@ public class ClientRequest implements Runnable
         		catch(JMSException jmse)
                 {
         			status = false;
-        			icServer.checkSendMessageErrorCount();
+        			icServer.countJmsSendMessageErrorAndReconnectIfTooManyErrors();
                     System.out.println("ClientRequest : send ALARM message : *** EXCEPTION *** : " + jmse.getMessage());
                 } finally {
         			if (session != null) {
@@ -706,7 +706,7 @@ public class ClientRequest implements Runnable
         		catch(JMSException jmse)
                 {
         			status = false;
-        			icServer.checkSendMessageErrorCount();
+        			icServer.countJmsSendMessageErrorAndReconnectIfTooManyErrors();
                     System.out.println("ClientRequest : send ALARM message : *** EXCEPTION *** : " + jmse.getMessage());
                 } finally {
         			if (session != null) {

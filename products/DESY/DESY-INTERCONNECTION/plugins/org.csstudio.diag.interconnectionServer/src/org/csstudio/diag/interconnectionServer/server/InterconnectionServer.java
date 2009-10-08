@@ -451,8 +451,9 @@ public class InterconnectionServer
         messageReplyTimeCollector.setHardLimit( 2* PreferenceProperties.IOC_MESSAGE_TIMEOUT);
 	}
     
-    // TODO: not only checks but also reconnects! Should be renamed.
-    public void checkSendMessageErrorCount () {
+	// XXX: This seems like a bad design. Also, I don't know if its safe to
+	// close the connections here, they might be in use by some other thread.
+    public void countJmsSendMessageErrorAndReconnectIfTooManyErrors () {
     	this.sendMessageErrorCount++;
 		// wait for ERROR_COUNT_BEFORE_SWITCH_JMS_SERVER
 		// increase waiting time proportional to the number of failovers (getNumberOfJmsServerFailover())

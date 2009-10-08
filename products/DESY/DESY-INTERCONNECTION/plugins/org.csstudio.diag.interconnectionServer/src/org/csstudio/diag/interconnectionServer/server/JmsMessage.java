@@ -144,7 +144,7 @@ public class JmsMessage {
 
 		catch(JMSException jmse)
         {
-			InterconnectionServer.getInstance().checkSendMessageErrorCount();
+			InterconnectionServer.getInstance().countJmsSendMessageErrorAndReconnectIfTooManyErrors();
 			CentralLogger.getInstance().debug(this,"IocChangeState : send ALARM message : *** EXCEPTION *** : " + jmse.getMessage());
         } finally {
         	if (session != null) {
