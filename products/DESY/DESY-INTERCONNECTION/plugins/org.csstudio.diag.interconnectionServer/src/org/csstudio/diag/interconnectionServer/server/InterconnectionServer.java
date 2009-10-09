@@ -40,9 +40,11 @@ import javax.jms.MessageProducer;
 import javax.jms.Session;
 
 import org.csstudio.diag.interconnectionServer.Activator;
+import org.csstudio.diag.interconnectionServer.internal.IocControlMessageListener;
 import org.csstudio.diag.interconnectionServer.preferences.PreferenceConstants;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.statistic.Collector;
+import org.csstudio.platform.utility.jms.sharedconnection.IMessageListenerSession;
 import org.csstudio.platform.utility.jms.sharedconnection.ISharedConnectionHandle;
 import org.csstudio.platform.utility.jms.sharedconnection.SharedJmsConnections;
 import org.csstudio.utility.ldap.engine.Engine;
@@ -58,7 +60,8 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  */
 public class InterconnectionServer
 {
-    private static InterconnectionServer		thisServer = null;
+    private static final String IOC_CONTROL_TOPIC = "IOC_CONTROL";
+	private static InterconnectionServer		thisServer = null;
     private DatagramSocket              serverSocket    = null; 
 	private int							sendMessageErrorCount	= 0;
 	private	volatile boolean         	quit        = false;
@@ -90,6 +93,9 @@ public class InterconnectionServer
      * This allows another thread to await the termination of the server.
      */
     private final CountDownLatch exitSignal = new CountDownLatch(1);
+    
+	private IocControlMessageListener _iocControlMessageListener;
+	private IMessageListenerSession _iocControlListenerSession;
 	
 	/**
 	 * Creates the JMS connections.
@@ -104,6 +110,11 @@ public class InterconnectionServer
 		numberOfJmsServerFailover++;
 		
 		_sharedSenderConnection = SharedJmsConnections.sharedSenderConnection();
+		
+		_iocControlMessageListener = new IocControlMessageListener();
+		_iocControlListenerSession = SharedJmsConnections.startMessageListener(
+				_iocControlMessageListener, new String[] { IOC_CONTROL_TOPIC },
+				Session.AUTO_ACKNOWLEDGE);
 	}
     
 	/**
@@ -111,6 +122,7 @@ public class InterconnectionServer
 	 */
 	private void closeJmsConnections () {
 		_sharedSenderConnection.release();
+		_iocControlListenerSession.close();
 	}
     
     private void disconnectFromIocs() {
