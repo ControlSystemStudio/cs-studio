@@ -9,6 +9,7 @@ import org.csstudio.opibuilder.editparts.DisplayEditpart;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.actions.ActionFactory;
 
 /**The action to copy selected widgets to clipboard.
@@ -31,6 +32,10 @@ public class CopyWidgetsAction extends SelectionAction {
 		setText("Copy");
 		setActionDefinitionId("org.eclipse.ui.edit.copy"); //$NON-NLS-1$
 		setId(ActionFactory.COPY.getId());
+		ISharedImages sharedImages = 
+			part.getSite().getWorkbenchWindow().getWorkbench().getSharedImages();
+		setImageDescriptor(sharedImages
+        .getImageDescriptor(ISharedImages.IMG_TOOL_COPY));
 		this.pasteWidgetsAction = pasteWidgetsAction;
 	}
 

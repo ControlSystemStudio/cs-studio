@@ -4,6 +4,7 @@ package org.csstudio.opibuilder.editor;
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.actions.CopyPropertiesAction;
 import org.csstudio.opibuilder.actions.PastePropertiesAction;
+import org.csstudio.opibuilder.actions.PrintDisplayAction;
 import org.csstudio.opibuilder.actions.ChangeOrderAction.OrderType;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.gef.ContextMenuProvider;
@@ -15,6 +16,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
 
 /**
@@ -57,27 +59,30 @@ public final class OPIEditorContextMenuProvider extends ContextMenuProvider {
 				GEFActionConstants.GROUP_UNDO, 
 				getAction(ActionFactory.REDO.getId()));
 		menu.appendToGroup(
-				GEFActionConstants.GROUP_EDIT,
+				GEFActionConstants.GROUP_COPY,
 				getAction(ActionFactory.COPY.getId()));		
 		menu.appendToGroup(
-				GEFActionConstants.GROUP_EDIT,
+				GEFActionConstants.GROUP_COPY,
 				getAction(ActionFactory.CUT.getId()));
 		((WorkbenchPartAction)getAction(ActionFactory.PASTE.getId())).update();
 		menu.appendToGroup(
-				GEFActionConstants.GROUP_EDIT,
+				GEFActionConstants.GROUP_COPY,
 				getAction(ActionFactory.PASTE.getId()));
 		
 		menu.appendToGroup(
-				GEFActionConstants.GROUP_EDIT,
+				GEFActionConstants.GROUP_COPY,
 				getAction(CopyPropertiesAction.ID));
 		menu.appendToGroup(
-				GEFActionConstants.GROUP_EDIT,
+				GEFActionConstants.GROUP_COPY,
 				getAction(PastePropertiesAction.ID));
 		
 		menu.appendToGroup(
 				GEFActionConstants.GROUP_EDIT,
 				getAction(ActionFactory.DELETE.getId()));
 		
+		menu.appendToGroup(
+				GEFActionConstants.GROUP_EDIT,
+				getAction(ActionFactory.PRINT.getId()));
 		
 		String orderGroup = "Order";
 		MenuManager orderMenu = new MenuManager(orderGroup, 
@@ -88,7 +93,7 @@ public final class OPIEditorContextMenuProvider extends ContextMenuProvider {
 		orderMenu.appendToGroup(orderGroup, getAction(OrderType.STEP_FRONT.getActionID()));
 		orderMenu.appendToGroup(orderGroup, getAction(OrderType.STEP_BACK.getActionID()));
 		orderMenu.appendToGroup(orderGroup, getAction(OrderType.TO_BACK.getActionID()));
-		menu.appendToGroup(GEFActionConstants.GROUP_EDIT, orderMenu);
+		menu.appendToGroup(GEFActionConstants.GROUP_COPY, orderMenu);
 		
 		menu.add(new Separator("group")); //$NON-NLS-1$
 		

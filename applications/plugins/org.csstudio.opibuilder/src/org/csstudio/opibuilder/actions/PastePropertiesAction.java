@@ -36,7 +36,7 @@ public class PastePropertiesAction extends SelectionAction {
 
 	@Override
 	protected boolean calculateEnabled() {
-		if(getSelectedWidgetModel() !=null && getWidgetFromClipboard() != null)
+		if(getSelectedWidgetModels().size() >0 && getWidgetFromClipboard() != null)
 			return true;
 		return false;
 	}
@@ -44,16 +44,20 @@ public class PastePropertiesAction extends SelectionAction {
 	
 	public Command createPasteCommand(){
 		AbstractWidgetModel sourceWidget = getWidgetFromClipboard();
-		AbstractWidgetModel targetWidget = getSelectedWidgetModel();
 		CompoundCommand cmd = new CompoundCommand("Paste Properties");
-		for(String prop_id : sourceWidget.getAllPropertyIDs()){
-			if(UNCOPIABLEPROPS.contains(prop_id))
-				continue;
-			if(targetWidget.getAllPropertyIDs().contains(prop_id)){
-				cmd.add(new SetWidgetPropertyCommand(
-						targetWidget, prop_id, sourceWidget.getPropertyValue(prop_id)));
+		
+		for(AbstractWidgetModel targetWidget : getSelectedWidgetModels()){				
+			for(String prop_id : sourceWidget.getAllPropertyIDs()){
+				if(UNCOPIABLEPROPS.contains(prop_id))
+					continue;
+				if(targetWidget.getAllPropertyIDs().contains(prop_id)){
+					cmd.add(new SetWidgetPropertyCommand(
+							targetWidget, prop_id, sourceWidget.getPropertyValue(prop_id)));
+				}
 			}
 		}
+
+		
 		return cmd;
 		
 	}
@@ -93,13 +97,14 @@ public class PastePropertiesAction extends SelectionAction {
 			return (OPIEditor) getWorkbenchPart();
 
 	}
+	
 	/**
 	 * Gets the widget models of all currently selected EditParts.
 	 * 
 	 * @return a list with all widget models that are currently selected
 	 */
 	@SuppressWarnings("unchecked")
-	protected final AbstractWidgetModel getSelectedWidgetModel() {
+	protected final List<AbstractWidgetModel> getSelectedWidgetModels() {
 		List selection = getSelectedObjects();
 	
 		List<AbstractWidgetModel> selectedWidgetModels = new ArrayList<AbstractWidgetModel>();
@@ -110,12 +115,6 @@ public class PastePropertiesAction extends SelectionAction {
 						.getWidgetModel());
 			}
 		}
-		if(selectedWidgetModels.size() == 1)
-			return selectedWidgetModels.get(0);
-		else 
-			return null;
+		return selectedWidgetModels;
 	}
-
-	
-
 }

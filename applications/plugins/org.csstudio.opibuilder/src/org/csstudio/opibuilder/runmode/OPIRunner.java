@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
+import org.csstudio.opibuilder.actions.PrintDisplayAction;
 import org.csstudio.opibuilder.editor.PatchedScrollingGraphicalViewer;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.editparts.WidgetEditPartFactory;
@@ -20,13 +21,16 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.gef.ContextMenuProvider;
 import org.eclipse.gef.DefaultEditDomain;
 import org.eclipse.gef.EditDomain;
+import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
+import org.eclipse.gef.ui.actions.ActionRegistry;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
@@ -38,6 +42,8 @@ public class OPIRunner extends EditorPart {
 	private DisplayOpenManager displayOpenManager;
 
 	private PatchedScrollingGraphicalViewer viewer;
+
+	private ActionRegistry actionRegistry;
 
 	public OPIRunner() {
 	}
@@ -88,7 +94,7 @@ public class OPIRunner extends EditorPart {
 			setPartName(displayModel.getName());
 		}
 		
-		
+		getActionRegistry().registerAction(new PrintDisplayAction(this));
 	}
 	
 	
@@ -157,6 +163,16 @@ public class OPIRunner extends EditorPart {
 	}
 
 	
+	/**
+	 * Lazily creates and returns the action registry.
+	 * @return the action registry
+	 */
+	protected ActionRegistry getActionRegistry() {
+		if (actionRegistry == null)
+			actionRegistry = new ActionRegistry();
+		return actionRegistry;
+	}
+	
 	@Override
 	public void setFocus() {
 		
@@ -174,6 +190,10 @@ public class OPIRunner extends EditorPart {
 				displayOpenManager = new DisplayOpenManager();
 			return displayOpenManager;
 		}
+		if (adapter == GraphicalViewer.class)
+			return viewer;
+		if(adapter == ActionRegistry.class)
+			return getActionRegistry();
 			
 		return super.getAdapter(adapter);
 	}

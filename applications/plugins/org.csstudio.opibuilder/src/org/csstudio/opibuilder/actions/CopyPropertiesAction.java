@@ -6,6 +6,7 @@ import java.util.List;
 import org.csstudio.opibuilder.editor.OPIEditor;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
+import org.csstudio.opibuilder.model.DisplayModel;
 import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.swt.dnd.Transfer;
 
@@ -34,7 +35,8 @@ public class CopyPropertiesAction extends SelectionAction {
 
 	@Override
 	protected boolean calculateEnabled() {
-		if(getSelectedObjects().size() == 1)
+		if(getSelectedWidgetModels().size() == 1 &&
+				!(getSelectedWidgetModels().get(0) instanceof DisplayModel))
 			return true;
 		return false;
 	}

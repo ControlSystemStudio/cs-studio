@@ -16,6 +16,7 @@ import org.eclipse.gef.commands.CompoundCommand;
 import org.eclipse.gef.ui.actions.WorkbenchPartAction;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.actions.ActionFactory;
 
 /**
@@ -44,7 +45,10 @@ public final class PasteWidgetsAction extends WorkbenchPartAction {
 		setText("Paste");
 		setActionDefinitionId("org.eclipse.ui.edit.paste"); //$NON-NLS-1$
 		setId(ActionFactory.PASTE.getId());
-
+		ISharedImages sharedImages = 
+			workbenchPart.getSite().getWorkbenchWindow().getWorkbench().getSharedImages();
+		setImageDescriptor(sharedImages
+        .getImageDescriptor(ISharedImages.IMG_TOOL_PASTE));
 	}
 
 	/**

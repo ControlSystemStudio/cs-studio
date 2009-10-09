@@ -3,6 +3,7 @@ package org.csstudio.opibuilder.runmode;
 
 import java.util.List;
 
+import org.csstudio.opibuilder.actions.PrintDisplayAction;
 import org.csstudio.opibuilder.actions.WidgetActionMenuAction;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
@@ -10,11 +11,14 @@ import org.csstudio.opibuilder.widgetActions.AbstractWidgetAction;
 import org.csstudio.opibuilder.widgetActions.ActionsInput;
 import org.eclipse.gef.ContextMenuProvider;
 import org.eclipse.gef.EditPartViewer;
+import org.eclipse.gef.ui.actions.ActionRegistry;
 import org.eclipse.gef.ui.actions.GEFActionConstants;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.actions.ActionFactory;
 
 /**
  * ContextMenuProvider implementation for the OPI Runner.
@@ -43,6 +47,11 @@ public final class OPIRunnerContextMenuProvider extends ContextMenuProvider {
 	public void buildContextMenu(final IMenuManager menu) {				
 		addWidgetActionToMenu(menu);
 		GEFActionConstants.addStandardActionGroups(menu);
+		ActionRegistry actionRegistry =
+			(ActionRegistry) PlatformUI.getWorkbench().getActiveWorkbenchWindow().
+			getActivePage().getActiveEditor().getAdapter(ActionRegistry.class);
+	
+		menu.appendToGroup(GEFActionConstants.GROUP_EDIT, actionRegistry.getAction(ActionFactory.PRINT.getId()));
 		MenuManager cssMenu = new MenuManager("CSS", "css");
 		cssMenu.add(new Separator("additions")); //$NON-NLS-1$
 		menu.add(cssMenu);		
