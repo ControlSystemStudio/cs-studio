@@ -223,12 +223,16 @@ public class IocConnection {
 	public IocConnectionState getIocConnectionState() {
 		if (isDisabled()) {
 			return IocConnectionState.DISABLED;
+		} else if (isScheduledDowntime()) {
+			// Note: Scheduled downtime cannot be reported only when the IOC is
+			// actually disconnected, because during a scheduled downtime, the
+			// state is never set to disconnected.
+			return IocConnectionState.SCHEDULED_DOWNTIME;
 		} else if (getConnectState()) {
 			return isSelectState() ? IocConnectionState.CONNECTED_SELECTED
 					: IocConnectionState.CONNECTED;
 		} else {
-			return isScheduledDowntime() ? IocConnectionState.SCHEDULED_DOWNTIME
-					: IocConnectionState.DISCONNECTED;
+			return IocConnectionState.DISCONNECTED;
 		}
 	}
 
