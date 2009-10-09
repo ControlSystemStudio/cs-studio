@@ -36,6 +36,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
@@ -47,7 +49,10 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.actions.BaseSelectionListenerAction;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
@@ -281,6 +286,23 @@ public class IocMonitorView extends ViewPart implements IReportListener {
 		initializeIocMonitor();
 
 		getViewSite().getActionBars().getToolBarManager().add(new RefreshAction());
+		createContextMenu();
+	}
+
+	/**
+	 * Creates the context menu for the IOC monitor view. 
+	 */
+	private void createContextMenu() {
+		MenuManager menuManager = new MenuManager("#PopupMenu");
+		
+		BaseSelectionListenerAction disableMessages = new DisableMessagesAction();
+		_tableViewer.addSelectionChangedListener(disableMessages);
+		menuManager.add(disableMessages);
+		menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+		
+		Menu contextMenu = menuManager.createContextMenu(_tableViewer.getControl());
+		_tableViewer.getControl().setMenu(contextMenu);
+		getSite().registerContextMenu(menuManager, _tableViewer);
 	}
 
 	/**
