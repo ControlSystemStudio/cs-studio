@@ -239,7 +239,7 @@ public class ThermometerFigure extends AbstractLinearMarkedFigure {
 				
 				 backPattern = new Pattern(Display.getCurrent(), 
 					bounds.x + lineWidth, bounds.y + lineWidth, 
-					bounds.x+bounds.width - l, bounds.y+bounds.height- l,
+					bounds.x+bounds.width-lineWidth, bounds.y+bounds.height-lineWidth,
 					WHITE_COLOR,255, fillColor, 0);			
 				graphics.setBackgroundPattern(backPattern);
 				super.fillShape(graphics);

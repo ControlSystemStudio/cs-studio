@@ -106,7 +106,9 @@ public class GaugeFigure extends AbstractRoundRampedFigure {
 		graphics.pushState();
 		graphics.setBackgroundColor(GRAY_COLOR);
 		boolean support3D = GraphicsUtil.testPatternSupported(graphics);
-		if(effect3D && support3D) {					
+		if(effect3D && support3D) {		
+			//add this to eliminate the repaint bug on Mac
+			graphics.fillOval(new Rectangle());
 			pattern = new Pattern(Display.getCurrent(), area.x, area.y, 
 				area.x+area.width, area.y + area.height, BORDER_COLOR, WHITE_COLOR);
 			graphics.setBackgroundPattern(pattern);					
@@ -135,7 +137,10 @@ public class GaugeFigure extends AbstractRoundRampedFigure {
 			final double LR_FILL_PART = 8.5d/10d;
 			final double UP_ANGLE = 0d * Math.PI/180d;
 			final double DOWN_ANGLE = 35d * Math.PI/180d;
-			
+			//add this to eliminate the repaint bug on Mac
+
+			graphics.fillOval(new Rectangle());
+
 			Pattern glossyPattern = new Pattern(Display.getCurrent(), 
 					area.x + area.width/2, (float)(area.y + area.height/2 - R * UD_FILL_PART),
 					area.x + area.width/2, (float) (area.y + area.height/2 + R * UP_DOWN_RATIO),
@@ -198,7 +203,10 @@ public class GaugeFigure extends AbstractRoundRampedFigure {
 			Pattern pattern = null;
 			graphics.setBackgroundColor(GRAY_COLOR);
 			boolean support3D = GraphicsUtil.testPatternSupported(graphics);
-			if(effect3D && support3D){				
+			if(effect3D && support3D){		
+				//add this to eliminate the repaint bug on Mac
+				graphics.fillOval(new Rectangle());
+
 					pattern = new Pattern(Display.getCurrent(), bounds.x, bounds.y,
 							bounds.x + bounds.width, bounds.y + bounds.height, WHITE_COLOR, BORDER_COLOR);
 					graphics.setBackgroundPattern(pattern);							
