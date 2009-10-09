@@ -55,7 +55,6 @@ public class AlarmMessageTable extends MessageTable {
                 JmsLogsPlugin.getDefault().getBundle().getSymbolicName());
         prefStore.addPropertyChangeListener(new IPropertyChangeListener() {
 
-            @Override
             public void propertyChange(PropertyChangeEvent event) {
                 if (event.getProperty().equals(AlarmViewPreferenceConstants.LOG_ALARM_FONT)) {
                     Font font = CustomMediaFactory.getInstance().getFont(

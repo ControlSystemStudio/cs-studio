@@ -171,7 +171,6 @@ public class LogView extends ViewPart {
 
         prefStore.addPropertyChangeListener(new IPropertyChangeListener() {
 
-            @Override
             public void propertyChange(PropertyChangeEvent event) {
                 if (event.getProperty().equals(AlarmViewPreferenceConstants.LOG_TABLE_FONT)) {
                     Font font = CustomMediaFactory.getInstance().getFont(
@@ -183,7 +182,7 @@ public class LogView extends ViewPart {
             }
         });
         String fontDesc = prefStore.getString(AlarmViewPreferenceConstants.LOG_TABLE_FONT);
-        if (fontDesc != null && !fontDesc.isEmpty()) {
+        if (fontDesc != null && !(fontDesc.length() == 0)) {
             Font font = CustomMediaFactory.getInstance().getFont(new FontData(fontDesc));
             _tableViewer.getTable().setFont(font);
         }
