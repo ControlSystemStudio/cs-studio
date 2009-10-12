@@ -296,7 +296,10 @@ public class IocMonitorView extends ViewPart implements IReportListener {
 		MenuManager menuManager = new MenuManager("#PopupMenu");
 		
 		BaseSelectionListenerAction disableMessages = new DisableMessagesAction();
+		BaseSelectionListenerAction enableMessages = new EnableMessagesAction();
 		_tableViewer.addSelectionChangedListener(disableMessages);
+		_tableViewer.addSelectionChangedListener(enableMessages);
+		menuManager.add(enableMessages);
 		menuManager.add(disableMessages);
 		menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 		

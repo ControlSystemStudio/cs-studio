@@ -26,17 +26,17 @@ import javax.jms.JMSException;
 import javax.jms.MapMessage;
 
 /**
- * Action which disables all messages from an IOC.
+ * Action which enables all messages from an IOC.
  * 
  * @author Joerg Rathlev
  */
-class DisableMessagesAction extends SendJmsMessageAction {
+public class EnableMessagesAction extends SendJmsMessageAction {
 
 	/**
 	 * Creates the action.
 	 */
-	protected DisableMessagesAction() {
-		super("Disable Messages");
+	protected EnableMessagesAction() {
+		super("Enable Messages");
 	}
 
 	/**
@@ -45,7 +45,7 @@ class DisableMessagesAction extends SendJmsMessageAction {
 	@Override
 	protected void setMessageFields(MapMessage message, String iocName)
 			throws JMSException {
-		message.setString("NAME", "disableIoc");
+		message.setString("NAME", "enableIoc");
 		message.setString("TEXT", iocName);
 	}
 }
