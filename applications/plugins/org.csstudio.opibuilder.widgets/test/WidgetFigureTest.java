@@ -6,6 +6,7 @@ import org.csstudio.opibuilder.widgets.figures.BoolButtonFigure;
 import org.csstudio.opibuilder.widgets.figures.BoolSwitchFigure;
 import org.csstudio.opibuilder.widgets.figures.LEDFigure;
 import org.csstudio.opibuilder.widgets.figures.LabelFigure;
+import org.csstudio.opibuilder.widgets.figures.TabFigure;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
@@ -31,7 +32,7 @@ public class WidgetFigureTest {
 	    shell.open();
 	    
 		final LightweightSystem lws = new LightweightSystem(shell);
-		LabelFigureTest testFigure = new LabelFigureTest();
+		TabFigureTest testFigure = new TabFigureTest();
 		lws.setContents(testFigure);
 		
 	    shell.setText("Widget Figure Test");
@@ -158,6 +159,34 @@ class LabelFigureTest extends Figure {
 	}
 }
 
+
+class TabFigureTest extends Figure {
+	
+	private TabFigure tab;
+
+	public TabFigureTest() {
+
+		tab = new TabFigure();	
+		tab.setBackgroundColor(CustomMediaFactory.getInstance().getColor(CustomMediaFactory.COLOR_WHITE));
+		tab.setFont(CustomMediaFactory.getInstance().getFont(CustomMediaFactory.FONT_ARIAL));
+		tab.addTab("tab1");
+		tab.addTab("tab2");
+		tab.addTab("tab1");
+		tab.addTab("tab2sdfsdf");
+		//tab.setTabColor(2, CustomMediaFactory.getInstance().getColor(new RGB(128, 0, 128)));
+		//tab.setTabColor(3, CustomMediaFactory.getInstance().getColor(CustomMediaFactory.COLOR_PINK));
+
+		tab.setActiveTabIndex(0);
+		add(tab);		
+	}
+	@Override
+	protected void layout() {
+		tab.setBounds(bounds.getCopy().shrink(20, 20));
+		super.layout();
+	}
+	
+	
+}
 
 	
 	
