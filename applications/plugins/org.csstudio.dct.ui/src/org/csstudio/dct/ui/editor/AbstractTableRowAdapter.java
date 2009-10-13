@@ -253,7 +253,7 @@ public abstract class AbstractTableRowAdapter<E> implements ITableRow {
 	public final CellEditor getCellEditor(int column, Composite parent) {
 		CellEditor editor = column == 1 ? doGetValueCellEditor(delegate, parent) : null;
 		
-		if(editor!=null) {
+		if(editor!=null && editor.getControl()!=null) {
 			editor.getControl().setFont(getFont(column));
 		}
 		
