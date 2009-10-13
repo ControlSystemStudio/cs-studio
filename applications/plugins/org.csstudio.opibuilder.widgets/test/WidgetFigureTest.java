@@ -169,14 +169,14 @@ class TabFigureTest extends Figure {
 		tab = new TabFigure();	
 		tab.setBackgroundColor(CustomMediaFactory.getInstance().getColor(CustomMediaFactory.COLOR_WHITE));
 		tab.setFont(CustomMediaFactory.getInstance().getFont(CustomMediaFactory.FONT_ARIAL));
-		tab.addTab("tab1");
+		tab.addTab("1");
 		tab.addTab("tab2");
 		tab.addTab("tab1");
 		tab.addTab("tab2sdfsdf");
-		//tab.setTabColor(2, CustomMediaFactory.getInstance().getColor(new RGB(128, 0, 128)));
+		tab.setTabColor(2, CustomMediaFactory.getInstance().getColor(new RGB(128, 0, 128)));
 		//tab.setTabColor(3, CustomMediaFactory.getInstance().getColor(CustomMediaFactory.COLOR_PINK));
 
-		tab.setActiveTabIndex(0);
+		//tab.setActiveTabIndex(0);
 		add(tab);		
 	}
 	@Override

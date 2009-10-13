@@ -210,6 +210,15 @@
             name="Linking Container"
             typeId="org.csstudio.opibuilder.widgets.linkingContainer">
       </widget>
+      <widget
+            category="Others"
+            description="A container widget which can contain several tabs of widgets."
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.TabEditPart"
+            icon="icons/tab.png"
+            model_class="org.csstudio.opibuilder.widgets.model.TabModel"
+            name="Tab"
+            typeId="org.csstudio.opibuilder.widgets.tab">
+      </widget>
    </extension>
    <extension
          point="org.eclipse.ui.popupMenus">

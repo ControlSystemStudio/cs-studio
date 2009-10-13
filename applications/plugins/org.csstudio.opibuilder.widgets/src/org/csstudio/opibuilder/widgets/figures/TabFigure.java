@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.platform.ui.util.CustomMediaFactory;
-import org.eclipse.draw2d.AbstractLayout;
+import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.Figure;
+import org.eclipse.draw2d.FreeformLayer;
+import org.eclipse.draw2d.FreeformLayout;
+import org.eclipse.draw2d.FreeformViewport;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
@@ -14,13 +17,14 @@ import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.RectangleFigure;
+import org.eclipse.draw2d.ScrollPane;
+import org.eclipse.draw2d.StackLayout;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.graphics.Image;
 
 /**The tab figure.
  * @author Xihui Chen
@@ -43,19 +47,43 @@ public class TabFigure extends Figure {
 	private final static int MINIMUM_TAB_HEIGHT = 10;
 	private final static int MINIMUM_TAB_WIDTH = 20;
 	
-	private RectangleFigure tabArea;
-	
+	private IFigure pane;
+	private ScrollPane tabArea;
+
+	/**
+	 * Listeners that react on tab index events.
+	 */
+	private List<ITabListener> tabListeners = 
+		new ArrayList<ITabListener>();
 	
 	public TabFigure() {
 		tabLabelList = new ArrayList<Label>();
 		tabColorList = new ArrayList<Color>();
 		activeTabIndex = -1;
-		tabArea = new RectangleFigure();
+		tabArea = new ScrollPane();		
+		tabArea.setScrollBarVisibility(ScrollPane.NEVER);
+		pane = new FreeformLayer();
 		tabArea.setForegroundColor(BORDER_COLOR);
-		tabArea.setOutline(true);
+		pane.setLayoutManager(new FreeformLayout());	
 		add(tabArea);
+		tabArea.setViewport(new FreeformViewport());
+		tabArea.setContents(pane);	
+		
+		
 	}
 	
+	public void addTabListener(ITabListener listener){
+		tabListeners.add(listener);
+	}
+	
+	private void fireActiveTabIndexChanged(int oldIndex, int newIndex){
+		for(ITabListener listener : tabListeners)
+			listener.activeTabIndexChanged(oldIndex, newIndex);
+	}
+	
+	public IFigure getContentPane(){
+		return pane;
+	}
 	
 	@Override
 	protected void layout() {
@@ -63,36 +91,42 @@ public class TabFigure extends Figure {
 		Rectangle clientArea = getClientArea();
 		int left = clientArea.x;
 		int top = clientArea.y;
-		int height = getMaxLabelHeight()+MARGIN;
+		int height = getTabLabelHeight();
 		for(Label label : tabLabelList){
 			Dimension labelSize = label.getPreferredSize();
 			label.setBounds(new Rectangle(left, top, labelSize.width + MARGIN, height));
 			left += (labelSize.width + MARGIN -1);
 		}	
-		tabArea.setBounds(new Rectangle(clientArea.x, clientArea.y + height -1, 
-				clientArea.width, clientArea.height - height));
+		tabArea.setBounds(new Rectangle(clientArea.x, clientArea.y + height-1, 
+				clientArea.width-1, clientArea.height - height));		
 	}
 	
-	private int getMaxLabelHeight(){
+	public int getTabLabelHeight(){
 		int h = MINIMUM_TAB_HEIGHT;
 		for(Label label : tabLabelList){
 			if(label.getPreferredSize().height > h){
 				h = label.getPreferredSize().height;
 			}
 		}
-		return h;
+		return h + MARGIN;
 	}
 	
 	
 	@Override
 	protected void paintClientArea(Graphics graphics) {
 		super.paintClientArea(graphics);
+		//paint tabArea bounds
+		graphics.setForegroundColor(BORDER_COLOR);
+		graphics.drawRectangle(tabArea.getBounds());
 		//paint hidding rect
 		if(activeTabIndex >= 0 && activeTabIndex < tabLabelList.size()){
 			graphics.setBackgroundColor(tabLabelList.get(activeTabIndex).getBackgroundColor());
 			Rectangle tabLabelBounds = tabLabelList.get(activeTabIndex).getBounds();
-			graphics.fillRectangle(tabLabelBounds.x+1, tabLabelBounds.y +tabLabelBounds.height-2,
-				tabLabelBounds.width -2, 4);
+		//	graphics.fillRectangle(tabLabelBounds.x+1, tabLabelBounds.y +tabLabelBounds.height-2,
+		//		tabLabelBounds.width -2, 4);
+			graphics.setForegroundColor(tabLabelList.get(activeTabIndex).getBackgroundColor());
+			graphics.drawLine(tabLabelBounds.x +1, tabLabelBounds.y + tabLabelBounds.height-1,
+					tabLabelBounds.x + tabLabelBounds.width -2, tabLabelBounds.y + tabLabelBounds.height-1);
 		}
 	}
 	
@@ -110,9 +144,10 @@ public class TabFigure extends Figure {
 				getDarkColor(tabColorList.get(this.activeTabIndex)));
 		}
 		
-		this.activeTabIndex = activeTabIndex;
 		getTabLabel(activeTabIndex).setBackgroundColor(tabColorList.get(activeTabIndex));
 		tabArea.setBackgroundColor(tabColorList.get(activeTabIndex));
+		fireActiveTabIndexChanged(this.activeTabIndex, activeTabIndex);
+		this.activeTabIndex = activeTabIndex;
 		repaint();
 		
 	}
@@ -121,6 +156,9 @@ public class TabFigure extends Figure {
 		tabColorList.set(index, color);
 		getTabLabel(index).setBackgroundColor(
 			index == activeTabIndex ? color : getDarkColor(color));
+		if(index == activeTabIndex)
+			tabArea.setBackgroundColor(color);
+		repaint();
 	}
 	
 	public Label getTabLabel(int index){
@@ -132,6 +170,8 @@ public class TabFigure extends Figure {
 		tabLabelList.add(tabLabel);
 		tabColorList.add(DEFAULT_TABCOLOR);
 		add(tabLabel);
+		if(activeTabIndex <0)
+			setActiveTabIndex(0);
 		revalidate();
 	}
 
@@ -142,9 +182,10 @@ public class TabFigure extends Figure {
 		tabLabel.setOpaque(true);
 		tabLabel.setBorder(new LineBorder(BORDER_COLOR));		
 		tabLabel.setBackgroundColor(getDarkColor(DEFAULT_TABCOLOR));
+	//	tabLabel.setCursor(Cursors.HAND);
 		tabLabel.addMouseListener(new MouseListener.Stub(){
 			@Override
-			public void mouseReleased(MouseEvent me) {
+			public void mousePressed(MouseEvent me) {
 				setActiveTabIndex(index);
 			}
 		});
@@ -173,6 +214,18 @@ public class TabFigure extends Figure {
 		revalidate();
 	}
 	
+	public Rectangle getTabAreaBounds(){
+		Rectangle tabAreaBounds = tabArea.getBounds();
+		Rectangle result = new Rectangle(1, 1, 
+				tabAreaBounds.width-2, tabAreaBounds.height-2);
+		return result;
+	}
+	
+	
+	public int getTabAmount(){
+		return tabLabelList.size();
+	}
+	
 	private Color getDarkColor(Color color){
 		int d = 30;
 		int r = color.getRed();
@@ -184,5 +237,15 @@ public class TabFigure extends Figure {
 		return CustomMediaFactory.getInstance().getColor(r,g,b);
 	}
 	
+	/**
+	 * Definition of listeners that react on active tab index changed.
+	 * 
+	 * @author Xihui Chen
+	 * 
+	 */
+	public interface ITabListener {
+		
+		void activeTabIndexChanged(int oldIndex, int newIndex);
+	}
 	
 }
