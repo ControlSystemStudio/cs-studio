@@ -190,7 +190,6 @@ public final class XmlToProject {
 		assert modelElements.get(xmlFolderElement.getAttributeValue("parent")) == null;
 		assert xmlFolderElement.getParentElement() != null;
 		assert xmlFolderElement.getParentElement().getAttributeValue("id") != null;
-		System.out.println(">>>>>>>>>"+xmlFolderElement.getParentElement().getAttributeValue("id"));
 		assert modelElements.get(UUID.fromString(xmlFolderElement.getParentElement().getAttributeValue("id"))) != null;
 
 		// DETERMINE IDENTIFIERS
