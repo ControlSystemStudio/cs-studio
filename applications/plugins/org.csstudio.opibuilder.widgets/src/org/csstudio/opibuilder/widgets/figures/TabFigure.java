@@ -177,7 +177,7 @@ public class TabFigure extends Figure {
 
 
 	private Label createTabLabel(String title, final int index) {
-		Label tabLabel = new Label(title);
+		final Label tabLabel = new Label(title);
 		tabLabel.setLabelAlignment(PositionConstants.CENTER);
 		tabLabel.setOpaque(true);
 		tabLabel.setBorder(new LineBorder(BORDER_COLOR));		
@@ -186,7 +186,7 @@ public class TabFigure extends Figure {
 		tabLabel.addMouseListener(new MouseListener.Stub(){
 			@Override
 			public void mousePressed(MouseEvent me) {
-				setActiveTabIndex(index);
+				setActiveTabIndex(tabLabelList.indexOf(tabLabel));
 			}
 		});
 		return tabLabel;
@@ -196,7 +196,9 @@ public class TabFigure extends Figure {
 		Label tabLabel = createTabLabel(title, index);
 		tabLabelList.add(index, tabLabel);
 		tabColorList.add(index, DEFAULT_TABCOLOR);
-		add(tabLabel, index);
+		add(tabLabel);
+		if(activeTabIndex <0)
+			setActiveTabIndex(0);
 		revalidate();
 	}
 	
@@ -214,12 +216,7 @@ public class TabFigure extends Figure {
 		revalidate();
 	}
 	
-	public Rectangle getTabAreaBounds(){
-		Rectangle tabAreaBounds = tabArea.getBounds();
-		Rectangle result = new Rectangle(1, 1, 
-				tabAreaBounds.width-2, tabAreaBounds.height-2);
-		return result;
-	}
+
 	
 	
 	public int getTabAmount(){

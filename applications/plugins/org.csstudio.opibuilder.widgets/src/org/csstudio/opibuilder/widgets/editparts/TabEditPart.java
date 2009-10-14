@@ -2,7 +2,6 @@ package org.csstudio.opibuilder.widgets.editparts;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.List;
 
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.AbstractContainerEditpart;
@@ -21,10 +20,8 @@ import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.geometry.Dimension;
-import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
-import org.eclipse.swt.graphics.FontData;
 
 /**The editpart of tab widget.
  * @author Xihui Chen
@@ -59,24 +56,25 @@ public class TabEditPart extends AbstractContainerEditpart {
 		
 	}
 	
-	private void addTab(int index){
-		GroupingContainerModel groupingContainerModel =  new GroupingContainerModel();
-		Rectangle tabArea = getTabFigure().getTabAreaBounds();
-		groupingContainerModel.setLocation(tabArea.getLocation());
-		groupingContainerModel.setSize(tabArea.getSize());
-		groupingContainerModel.setPropertyValue(AbstractWidgetModel.PROP_VISIBLE, false);
-		getWidgetModel().addChild(index,groupingContainerModel);
+	public void addTab(int index){
+		GroupingContainerModel groupingContainerModel = createGroupingContainer();
+		getWidgetModel().addChild(index, groupingContainerModel);
+		
 		getTabFigure().addTab((String) getWidgetModel().getPropertyValue(
-								TabModel.makeTabPropID(TabProperty.TITLE.propIDPre, index)), index);
+						TabModel.makeTabPropID(
+						TabProperty.TITLE.propIDPre, index)), index);	
+		//init label
+		initTabLabel(index);	
+		
+		updateTabAreaSize();
+		if(getActiveTabIndex() > index){
+			setActiveTabIndex(getActiveTabIndex() + 1);
+		}
+		//setActiveTabIndex(index);
 	}
 	
-	private void addTab(){
-		GroupingContainerModel groupingContainerModel =  new GroupingContainerModel();
-		groupingContainerModel.setLocation(1,1);
-		//groupingContainerModel.setSize(getTabAreaSize());
-		groupingContainerModel.setBorderStyle(BorderStyle.NONE);
-		groupingContainerModel.setPropertyValue(GroupingContainerModel.PROP_TRANSPARENT, true);
-		groupingContainerModel.setPropertyValue(AbstractWidgetModel.PROP_VISIBLE, false);
+	public void addTab(){
+		GroupingContainerModel groupingContainerModel = createGroupingContainer();
 		getWidgetModel().addChild(groupingContainerModel);
 		
 		int tabIndex = getWidgetModel().getChildren().size()-1;
@@ -84,6 +82,14 @@ public class TabEditPart extends AbstractContainerEditpart {
 						TabModel.makeTabPropID(
 						TabProperty.TITLE.propIDPre, tabIndex)));	
 		//init label
+		initTabLabel(tabIndex);	
+		updateTabAreaSize();
+	}
+
+	/**
+	 * @param tabIndex
+	 */
+	private void initTabLabel(int tabIndex) {
 		Label label = getTabFigure().getTabLabel(tabIndex);
 		label.setFont(CustomMediaFactory.getInstance().getFont(
 				((OPIFont) getWidgetModel().getPropertyValue(TabModel.makeTabPropID(
@@ -93,17 +99,44 @@ public class TabEditPart extends AbstractContainerEditpart {
 						TabProperty.FORECOLOR.propIDPre, tabIndex))).getRGBValue()));
 		getTabFigure().setTabColor(tabIndex, CustomMediaFactory.getInstance().getColor(
 				((OPIColor) getWidgetModel().getPropertyValue(TabModel.makeTabPropID(
-						TabProperty.BACKCOLOR.propIDPre, tabIndex))).getRGBValue()));	
-		updateTabAreaSize();
+						TabProperty.BACKCOLOR.propIDPre, tabIndex))).getRGBValue()));
+	}
+
+	/**
+	 * @return
+	 */
+	private GroupingContainerModel createGroupingContainer() {
+		GroupingContainerModel groupingContainerModel =  new GroupingContainerModel();
+		groupingContainerModel.setLocation(1,1);
+		groupingContainerModel.setBorderStyle(BorderStyle.NONE);
+		groupingContainerModel.setPropertyValue(GroupingContainerModel.PROP_TRANSPARENT, true);
+		groupingContainerModel.setPropertyValue(AbstractWidgetModel.PROP_VISIBLE, false);
+		return groupingContainerModel;
 	}
 	
-	private void removeTab(){
+	public void removeTab(){
 		getWidgetModel().removeChild(
 				getWidgetModel().getChildren().get(getWidgetModel().getChildren().size()-1));
 		getTabFigure().removeTab();
 		updateTabAreaSize();
 	}
-
+	
+	public void removeTab(int index){
+		getWidgetModel().removeChild(
+				getWidgetModel().getChildren().get(index));
+		getTabFigure().removeTab(index);
+		updateTabAreaSize();
+	}
+	
+	public void setActiveTabIndex(int index){
+		getTabFigure().setActiveTabIndex(index);
+	}
+	
+	public int getActiveTabIndex(){
+		return getTabFigure().getActiveTabIndex(); 
+	}
+	
+	
 	@Override
 	public TabModel getWidgetModel() {
 		return (TabModel)getModel();
