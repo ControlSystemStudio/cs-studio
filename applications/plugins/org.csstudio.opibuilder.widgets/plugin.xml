@@ -278,20 +278,26 @@
          <action
                class="org.csstudio.opibuilder.widgets.actions.AddTabBeforeAction"
                enablesFor="1"
-               icon="icons/removeGroup.png"
-               id="org.csstudio.opibuilder.widgets.insertTabAction"
+               id="org.csstudio.opibuilder.widgets.addTabBefore"
                label="Add Tab Before"
-               menubarPath="group"
-               tooltip="Remove the group container.">
+               menubarPath="tab"
+               tooltip="add tab before this tab">
          </action>
          <action
-               class="org.csstudio.opibuilder.widgets.actions.PerformAutoSizeOnGroupAction"
+               class="org.csstudio.opibuilder.widgets.actions.AddTabAfterAction"
                enablesFor="1"
-               icon="icons/autoSizeGroup.png"
-               id="org.csstudio.opibuilder.widgets.performAutoSize"
-               label="Perform AutoSize"
-               menubarPath="group"
-               tooltip="Perform AutoSize on the selected Group Container.">
+               id="org.csstudio.opibuilder.widgets.addTabAfter"
+               label="Add Tab After"
+               menubarPath="tab"
+               tooltip="add tab after this tab.">
+         </action>
+         <action
+               class="org.csstudio.opibuilder.widgets.actions.RemoveTabAction"
+               enablesFor="1"
+               id="org.csstudio.opibuilder.widgets.removeTab"
+               label="Remove Tab"
+               menubarPath="tab"
+               tooltip="Remove this tab">
          </action>
          <visibility>
             <objectState

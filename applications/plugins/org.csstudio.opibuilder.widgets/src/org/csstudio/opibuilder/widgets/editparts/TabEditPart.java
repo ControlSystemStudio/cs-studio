@@ -36,9 +36,8 @@ public class TabEditPart extends AbstractContainerEditpart {
 		TabFigure tabFigure = new TabFigure();
 		tabFigure.addTabListener(new ITabListener(){
 			public void activeTabIndexChanged(int oldIndex, int newIndex) {
-				if(oldIndex >=0)
-					getWidgetModel().getChildren().get(oldIndex).
-						setPropertyValue(AbstractWidgetModel.PROP_VISIBLE, false);				
+				for(AbstractWidgetModel child : getWidgetModel().getChildren())
+					child.setPropertyValue(AbstractWidgetModel.PROP_VISIBLE, false);				
 				getWidgetModel().getChildren().get(newIndex).
 					setPropertyValue(AbstractWidgetModel.PROP_VISIBLE, true);
 			}
@@ -56,8 +55,9 @@ public class TabEditPart extends AbstractContainerEditpart {
 		
 	}
 	
-	public void addTab(int index){
-		GroupingContainerModel groupingContainerModel = createGroupingContainer();
+	public void addTab(int index, GroupingContainerModel groupingContainerModel, Label label){
+		if(groupingContainerModel == null)
+			groupingContainerModel = createGroupingContainer();
 		getWidgetModel().addChild(index, groupingContainerModel);
 		
 		getTabFigure().addTab((String) getWidgetModel().getPropertyValue(
@@ -66,11 +66,66 @@ public class TabEditPart extends AbstractContainerEditpart {
 		//init label
 		initTabLabel(index);	
 		
-		updateTabAreaSize();
-		if(getActiveTabIndex() > index){
-			setActiveTabIndex(getActiveTabIndex() + 1);
+	
+		//right shift tab's properties
+		for(int j = getWidgetModel().getChildren().size()-1; j > index; j--){
+			for(TabProperty tabProperty : TabProperty.values()){				
+				String propID1 = TabModel.makeTabPropID(
+						tabProperty.propIDPre, j-1);
+				String propID2 = TabModel.makeTabPropID(
+						tabProperty.propIDPre, j);
+				getWidgetModel().setPropertyValue(propID2, getWidgetModel().getPropertyValue(propID1));
+			}	
 		}
-		//setActiveTabIndex(index);
+
+			//apply default tab properties to the new tab		
+			for(TabProperty tabProperty : TabProperty.values()){				
+				String propID = TabModel.makeTabPropID(
+						tabProperty.propIDPre, index);
+				getWidgetModel().setPropertyValue(propID, label == null ? 
+						getWidgetModel().getProperty(propID).getDefaultValue() : 
+							getLabelProperty(tabProperty, label)); 
+			}
+
+		
+		
+		//set the name of new tab as "new tab"
+		String prop = TabModel.makeTabPropID(TabProperty.TITLE.propIDPre, index);
+		getWidgetModel().setPropertyValue(prop, "new tab"); 
+		
+		
+		//update property sheet		
+		getWidgetModel().setPropertyValue(TabModel.PROP_TABS_AMOUNT, getWidgetModel().getChildren().size());
+		
+		for(TabProperty tabProperty : TabProperty.values()){				
+				String propID = TabModel.makeTabPropID(
+						tabProperty.propIDPre, getWidgetModel().getChildren().size()-1);
+				getWidgetModel().setPropertyVisible(propID, true); 
+		}			
+		
+		
+	
+		//update active tab index to the new added tab
+		updateTabAreaSize();
+		//if(getActiveTabIndex() >= index){
+		//	setActiveTabIndex(getActiveTabIndex() + 1);
+		//}
+		setActiveTabIndex(index);
+	}
+	
+	private Object getLabelProperty(TabProperty tabProperty, Label label){
+		switch (tabProperty) {
+		case TITLE:
+			return label.getText();
+		case FONT:
+			return label.getFont().getFontData();
+		case BACKCOLOR:
+			return label.getBackgroundColor().getRGB();
+		case FORECOLOR:
+			return label.getForegroundColor().getRGB();			
+		default:
+			return null;
+		}
 	}
 	
 	public void addTab(){
@@ -122,10 +177,38 @@ public class TabEditPart extends AbstractContainerEditpart {
 	}
 	
 	public void removeTab(int index){
+	//	setActiveTabIndex(index > 0 ? index-1 : getWidgetModel().getChildren().size()-1);
 		getWidgetModel().removeChild(
 				getWidgetModel().getChildren().get(index));
 		getTabFigure().removeTab(index);
+		
+		
+		//left shift tab's properties
+		for(int j = index; j < getWidgetModel().getChildren().size(); j++){
+			for(TabProperty tabProperty : TabProperty.values()){				
+				String propID1 = TabModel.makeTabPropID(
+						tabProperty.propIDPre, j);
+				String propID2 = TabModel.makeTabPropID(
+						tabProperty.propIDPre, j+1);
+				getWidgetModel().setPropertyValue(propID1, getWidgetModel().getPropertyValue(propID2));
+			}	
+		}
+		
+		//update property sheet		
+		getWidgetModel().setPropertyValue(TabModel.PROP_TABS_AMOUNT, getWidgetModel().getChildren().size());
+		
+		for(TabProperty tabProperty : TabProperty.values()){				
+				String propID = TabModel.makeTabPropID(
+						tabProperty.propIDPre, getWidgetModel().getChildren().size());
+				getWidgetModel().setPropertyVisible(propID, false); 
+		}			
+		
+		
+	
+		//update active tab index to the new added tab		
 		updateTabAreaSize();
+		
+		setActiveTabIndex(index >= getWidgetModel().getChildren().size() ? index -1 : index);
 	}
 	
 	public void setActiveTabIndex(int index){
@@ -136,6 +219,13 @@ public class TabEditPart extends AbstractContainerEditpart {
 		return getTabFigure().getActiveTabIndex(); 
 	}
 	
+	public Label getTabLabel(int index){
+		return getTabFigure().getTabLabel(index);
+	}
+	
+	public GroupingContainerModel getGroupingContainer(int index){
+		return (GroupingContainerModel) getWidgetModel().getChildren().get(index);
+	}
 	
 	@Override
 	public TabModel getWidgetModel() {
@@ -253,14 +343,15 @@ public class TabEditPart extends AbstractContainerEditpart {
 						addTab();
 					}						
 				}else if((Integer)newValue < currentTabAmount){ //remove tabs
-					for(int i=0; i<currentTabAmount - (Integer)newValue; i++){
+					for(int i=currentTabAmount-1; i>=(Integer)newValue; i--){
 						for(TabProperty tabProperty : TabProperty.values()){				
 							String propID = TabModel.makeTabPropID(
-								tabProperty.propIDPre, i + currentTabAmount);
+								tabProperty.propIDPre, i);
 							model.setPropertyVisible(propID, false); 
 						}							
 						removeTab();
-					}					
+					}				
+					setActiveTabIndex(0);
 				}
 				return true;
 			}			

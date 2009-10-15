@@ -14,14 +14,15 @@ public class AddTabCommand extends Command {
 	public AddTabCommand(TabEditPart tabEditPart, boolean before) {
 		this.tabEditPart = tabEditPart;
 		if(before)
-			this.tabIndex = Math.max(0, tabEditPart.getActiveTabIndex()-1);
+			this.tabIndex = tabEditPart.getActiveTabIndex();
 		else
 			this.tabIndex = tabEditPart.getActiveTabIndex()+1;
+		setLabel("Add Tab");
 	}
 	
 	@Override
 	public void execute() {
-		tabEditPart.addTab(tabIndex);
+		tabEditPart.addTab(tabIndex, null, null);
 	}
 	
 	@Override

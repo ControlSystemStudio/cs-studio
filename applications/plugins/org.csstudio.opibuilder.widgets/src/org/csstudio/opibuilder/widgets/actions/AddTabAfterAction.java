@@ -7,16 +7,16 @@ import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.action.IAction;
 
 
-/**Add a tab before the current tab.
+/**Add a tab after the current tab.
  * @author Xihui Chen
  *
  */
-public class AddTabBeforeAction extends AbstractWidgetTargetAction {
+public class AddTabAfterAction extends AbstractWidgetTargetAction {
 
 	
 
 	public void run(IAction action) {
-		Command command = new AddTabCommand(getSelectedTabWidget(), true);
+		Command command = new AddTabCommand(getSelectedTabWidget(), false);
 		if(targetPart instanceof OPIEditor){
 			execute(command);
 		}

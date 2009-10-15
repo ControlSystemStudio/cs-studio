@@ -136,12 +136,12 @@ public class TabFigure extends Figure {
 	}
 	
 	public void setActiveTabIndex(int activeTabIndex) {
-		if(this.activeTabIndex == activeTabIndex)
-			return;
-		
-		if(this.activeTabIndex >=0){
-			getTabLabel(this.activeTabIndex).setBackgroundColor(
-				getDarkColor(tabColorList.get(this.activeTabIndex)));
+		//if(this.activeTabIndex == activeTabIndex)
+		//	return;
+		int i=0;
+		for(Label l : tabLabelList){
+			l.setBackgroundColor(
+				getDarkColor(tabColorList.get(i++)));
 		}
 		
 		getTabLabel(activeTabIndex).setBackgroundColor(tabColorList.get(activeTabIndex));
