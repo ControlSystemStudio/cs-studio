@@ -15,17 +15,20 @@ import junit.framework.TestSuite;
 public class AllTestsSuite {
 	
 	//Comma separated list, if list is empty, every root will be chosen
-	//private static final String bundleRoot = "org.,de.desy.";
-	private static final String bundleRoot = "org.csstudio";
+	//private static final String bundleRoot = "org.csstudio";
+	private static final String bundleRoot = "org.,de.desy.";
+	
 	
 	//Comma separated list, must contain one entry!
-	//private static final String packageRoot = "org.csstudio,org.epics,org.remotercp,de.desy";
-	private static final String packageRoot = "org.csstudio";
+	//private static final String packageRoot = "org.csstudio";
+	private static final String packageRoot = "org.csstudio,org.epics,org.remotercp,de.desy";
+	
 	
 	//Only tests in fragments will be used
 	private static boolean onlyfragments = false;
 	
-	private static final String testClassFilter = "*AllTests";
+	//private static final String testClassFilter = "*AllTests";
+	private static final String testClassFilter = "*Test";
 	private static final String testsuitename = "CSSTestsSuite";
 	
 	public static Test suite() {
