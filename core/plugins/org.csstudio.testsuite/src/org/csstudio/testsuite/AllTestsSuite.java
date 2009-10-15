@@ -27,8 +27,8 @@ public class AllTestsSuite {
 	//Only tests in fragments will be used
 	private static boolean onlyfragments = false;
 	
-	//private static final String testClassFilter = "*AllTests";
-	private static final String testClassFilter = "*Test";
+	private static final String testClassFilter = "*AllTests";
+	//private static final String testClassFilter = "*Test";
 	private static final String testsuitename = "CSSTestsSuite";
 	
 	public static Test suite() {
@@ -96,12 +96,15 @@ public class AllTestsSuite {
 						.length()
 						- ".class".length());
 
+				if(bundle.getSymbolicName().equals("org.csstudio.nams.service.logging")) {
+					System.out.println(testClassName);
+				}
 				/* Attempt to load the class using the bundle classloader. */
 				Class testClass = null;
 				if (!isFragment(bundle)) {
 					try {
 						testClass = bundle.loadClass(testClassName);
-					} catch (ClassNotFoundException e) {
+					} catch (Exception e) {
 						/*
 						throw new RuntimeException("Could not load class: " 
 								+ testClassName, e);
@@ -111,7 +114,7 @@ public class AllTestsSuite {
 					Bundle hostbundle = getHostBundle(bundle);
 					try {
 						testClass = hostbundle.loadClass(testClassName);
-					} catch (ClassNotFoundException e) {
+					} catch (Exception e) {
 						/*
 						throw new RuntimeException("Could not load class: " 
 								+ testClassName, e);
@@ -120,10 +123,12 @@ public class AllTestsSuite {
 				}
 
 				/*
-				 * If the class is not abstract, add it to list
+				 * If the class is not null and not abstract, add it to list
 				 */
-				if (!Modifier.isAbstract(testClass.getModifiers())) {
-					testClassesInBundle.add(testClass);
+				if(testClass!=null) {
+					if (!Modifier.isAbstract(testClass.getModifiers())) {						
+						testClassesInBundle.add(testClass);
+					}
 				}
 			}
 		}
