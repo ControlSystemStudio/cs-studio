@@ -1,8 +1,6 @@
 package org.csstudio.opibuilder.widgets.actions;
 import org.csstudio.opibuilder.editor.OPIEditor;
-import org.csstudio.opibuilder.widgets.editparts.GroupingContainerEditPart;
 import org.csstudio.opibuilder.widgets.editparts.TabEditPart;
-import org.csstudio.opibuilder.widgets.model.GroupingContainerModel;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.action.IAction;
 

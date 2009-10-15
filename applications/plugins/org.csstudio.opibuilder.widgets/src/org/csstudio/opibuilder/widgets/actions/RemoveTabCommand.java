@@ -2,9 +2,9 @@ package org.csstudio.opibuilder.widgets.actions;
 
 import org.csstudio.opibuilder.widgets.editparts.TabEditPart;
 import org.csstudio.opibuilder.widgets.model.GroupingContainerModel;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.Label;
 import org.eclipse.gef.commands.Command;
+import org.eclipse.jface.dialogs.MessageDialog;
 
 /**The command which add a tab to the tab widget.
  * @author Xihui Chen
@@ -15,6 +15,7 @@ public class RemoveTabCommand extends Command {
 	private TabEditPart tabEditPart;
 	private GroupingContainerModel groupingContainer;
 	private Label label;
+	private boolean executed = false;
 	
 	public RemoveTabCommand(TabEditPart tabEditPart) {
 		this.tabEditPart = tabEditPart;
@@ -28,15 +29,24 @@ public class RemoveTabCommand extends Command {
 		label.setFont(oldLabel.getFont());
 		setLabel("Remove Tab");
 	}
-	
+
 	@Override
 	public void execute() {
-		tabEditPart.removeTab(tabIndex);
+		if(tabEditPart.getWidgetModel().getChildren().size()>1){
+			tabEditPart.removeTab(tabIndex);
+			executed = true;
+		}			
+		else
+			MessageDialog.openInformation(null, "Failed to Remove Tab", 
+					"There must be at least one tab in the tab folder.");
+			
 	}
 	
 	@Override
 	public void undo() {
-		tabEditPart.addTab(tabIndex, groupingContainer, label);
+		if(executed)
+			tabEditPart.addTab(tabIndex, groupingContainer, label);
+		executed = false;
 	}
 	
 	

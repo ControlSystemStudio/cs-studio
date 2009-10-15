@@ -1,7 +1,7 @@
 package org.csstudio.opibuilder.widgets.figures;
 
+import org.csstudio.opibuilder.widgets.model.AbstractBoolWidgetModel;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
-import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.swt.graphics.Color;

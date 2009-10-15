@@ -10,7 +10,6 @@ import org.csstudio.opibuilder.widgets.figureparts.RoundScale;
 import org.csstudio.opibuilder.widgets.figureparts.RoundScaledRamp;
 import org.csstudio.opibuilder.widgets.util.RotationUtil;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
-
 import org.eclipse.draw2d.AbstractLayout;
 import org.eclipse.draw2d.Ellipse;
 import org.eclipse.draw2d.FigureListener;
@@ -26,7 +25,6 @@ import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Pattern;

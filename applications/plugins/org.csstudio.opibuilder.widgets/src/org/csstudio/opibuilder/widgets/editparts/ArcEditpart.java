@@ -2,10 +2,8 @@ package org.csstudio.opibuilder.widgets.editparts;
 
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.widgets.figures.ArcFigure;
-import org.csstudio.opibuilder.widgets.figures.EllipseFigure;
 import org.csstudio.opibuilder.widgets.model.AbstractShapeModel;
 import org.csstudio.opibuilder.widgets.model.ArcModel;
-import org.csstudio.opibuilder.widgets.model.EllipseModel;
 import org.eclipse.draw2d.IFigure;
 
 /**The controller for arc widget.

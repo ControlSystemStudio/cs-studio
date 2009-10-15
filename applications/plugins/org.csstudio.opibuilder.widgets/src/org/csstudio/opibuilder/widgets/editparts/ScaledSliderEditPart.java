@@ -2,13 +2,11 @@ package org.csstudio.opibuilder.widgets.editparts;
 
 
 import org.csstudio.opibuilder.editparts.ExecutionMode;
-import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.widgets.figures.ScaledSliderFigure;
 import org.csstudio.opibuilder.widgets.model.ScaledSliderModel;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.swt.graphics.RGB;
 
 /**
  * EditPart controller for the scaled slider widget. The controller mediates between

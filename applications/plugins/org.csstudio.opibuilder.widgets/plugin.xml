@@ -131,6 +131,15 @@
       </widget>
       <widget
             category="Monitors"
+            description="A progress bar widget."
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.ProgressBarEditPart"
+            icon="icons/ProgressBar.gif"
+            model_class="org.csstudio.opibuilder.widgets.model.ProgressBarModel"
+            name="Progress Bar"
+            typeId="org.csstudio.opibuilder.widgets.progressbar">
+      </widget>
+      <widget
+            category="Monitors"
             description="An XY graph which can display the trends of multiple PVs."
             editpart_class="org.csstudio.opibuilder.widgets.editparts.XYGraphEditPart"
             icon="icons/XYGraph.gif"
@@ -290,6 +299,14 @@
                label="Add Tab After"
                menubarPath="tab"
                tooltip="add tab after this tab.">
+         </action>
+         <action
+               class="org.csstudio.opibuilder.widgets.actions.DuplicateTabAction"
+               enablesFor="1"
+               id="org.csstudio.opibuilder.widgets.duplicateTab"
+               label="Duplicate Tab"
+               menubarPath="tab"
+               tooltip="Duplicate  this tab">
          </action>
          <action
                class="org.csstudio.opibuilder.widgets.actions.RemoveTabAction"

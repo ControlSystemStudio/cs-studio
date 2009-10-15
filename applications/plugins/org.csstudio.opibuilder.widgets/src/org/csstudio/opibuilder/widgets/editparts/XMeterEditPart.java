@@ -5,7 +5,6 @@ import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.widgets.figures.MeterFigure;
 import org.csstudio.opibuilder.widgets.model.XMeterModel;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.swt.graphics.RGB;
 
 /**
  * EditPart controller for the Gauge widget. The controller mediates between

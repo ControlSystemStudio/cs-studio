@@ -1,12 +1,10 @@
 package org.csstudio.opibuilder.widgets.editparts;
 
-import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.widgets.figures.TankFigure;
 import org.csstudio.opibuilder.widgets.model.TankModel;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.swt.graphics.RGB;
 
 /**
  * EditPart controller for the tank widget. The controller mediates between

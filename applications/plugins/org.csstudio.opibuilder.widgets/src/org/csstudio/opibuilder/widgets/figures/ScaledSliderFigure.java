@@ -31,7 +31,6 @@ import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Pattern;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;

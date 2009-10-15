@@ -1,9 +1,9 @@
 package org.csstudio.opibuilder.widgets.figures;
 
 
+import org.csstudio.opibuilder.widgets.model.AbstractScaledWidgetModel;
 import org.csstudio.swt.xygraph.linearscale.AbstractScale;
 import org.csstudio.swt.xygraph.linearscale.Range;
-import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.geometry.Rectangle;

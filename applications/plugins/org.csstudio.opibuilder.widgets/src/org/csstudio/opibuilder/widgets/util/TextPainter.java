@@ -23,8 +23,8 @@
 
 import org.eclipse.draw2d.FigureUtilities;
 import org.eclipse.draw2d.Graphics;
-import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Dimension;
+import org.eclipse.draw2d.geometry.Point;
 
 /**
  * Utility class for drawing text at different angles and alignments.

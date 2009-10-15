@@ -1,5 +1,6 @@
 package org.csstudio.opibuilder.widgets.figures;
 
+import org.csstudio.opibuilder.widgets.model.AbstractMarkedWidgetModel;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;

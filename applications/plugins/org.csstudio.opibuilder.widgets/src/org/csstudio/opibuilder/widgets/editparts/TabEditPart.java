@@ -88,10 +88,12 @@ public class TabEditPart extends AbstractContainerEditpart {
 			}
 
 		
+		if(label == null){
+			//set the name of new tab as "new tab"
+			String prop = TabModel.makeTabPropID(TabProperty.TITLE.propIDPre, index);
+			getWidgetModel().setPropertyValue(prop, "new tab"); 
+		}
 		
-		//set the name of new tab as "new tab"
-		String prop = TabModel.makeTabPropID(TabProperty.TITLE.propIDPre, index);
-		getWidgetModel().setPropertyValue(prop, "new tab"); 
 		
 		
 		//update property sheet		

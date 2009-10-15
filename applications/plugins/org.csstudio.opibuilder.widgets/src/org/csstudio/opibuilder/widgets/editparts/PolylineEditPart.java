@@ -1,7 +1,6 @@
 package org.csstudio.opibuilder.widgets.editparts;
 
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
-import org.csstudio.opibuilder.widgets.figures.EllipseFigure;
 import org.csstudio.opibuilder.widgets.figures.PolylineFigure;
 import org.csstudio.opibuilder.widgets.model.AbstractPolyModel;
 import org.csstudio.opibuilder.widgets.model.AbstractShapeModel;
