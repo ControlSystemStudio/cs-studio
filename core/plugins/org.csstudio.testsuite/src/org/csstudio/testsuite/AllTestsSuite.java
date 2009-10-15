@@ -23,7 +23,7 @@ public class AllTestsSuite {
 	private static final String packageRoot = "org.csstudio";
 	
 	//Only tests in fragments will be used
-	private static boolean onlyfragments = true;
+	private static boolean onlyfragments = false;
 	
 	private static final String testClassFilter = "*AllTests";
 	private static final String testsuitename = "CSSTestsSuite";
@@ -99,16 +99,20 @@ public class AllTestsSuite {
 					try {
 						testClass = bundle.loadClass(testClassName);
 					} catch (ClassNotFoundException e) {
+						/*
 						throw new RuntimeException("Could not load class: " 
 								+ testClassName, e);
+						*/
 					}
 				} else {
 					Bundle hostbundle = getHostBundle(bundle);
 					try {
 						testClass = hostbundle.loadClass(testClassName);
 					} catch (ClassNotFoundException e) {
+						/*
 						throw new RuntimeException("Could not load class: " 
 								+ testClassName, e);
+						*/
 					}
 				}
 
