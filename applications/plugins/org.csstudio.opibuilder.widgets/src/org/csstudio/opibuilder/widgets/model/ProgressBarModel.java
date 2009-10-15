@@ -1,0 +1,114 @@
+package org.csstudio.opibuilder.widgets.model;
+
+
+import org.csstudio.opibuilder.properties.BooleanProperty;
+import org.csstudio.opibuilder.properties.ColorProperty;
+import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.csstudio.opibuilder.util.OPIColor;
+import org.eclipse.swt.graphics.RGB;
+
+
+/**
+ * This class defines a scaled slider widget model.
+ * @author Xihui Chen
+ */
+public class ProgressBarModel extends AbstractMarkedWidgetModel{	
+	
+	/** The ID of the fill color property. */
+	public static final String PROP_FILL_COLOR = "fill_color"; //$NON-NLS-1$	
+	
+	/** The ID of the effect 3D property. */
+	public static final String PROP_EFFECT3D = "effect_3d"; //$NON-NLS-1$
+	
+	/** The ID of the horizontal property. */
+	public static final String PROP_HORIZONTAL = "horizontal"; //$NON-NLS-1$
+	
+	/** The ID of the fillbackground-Color property. */
+	public static final String PROP_FILLBACKGROUND_COLOR = "color_fillbackground"; //$NON-NLS-1$
+	
+	public static final String PROP_SHOW_LABEL = "show_label"; //$NON-NLS-1$
+	
+	/** The default value of the default fill color property. */
+	private static final RGB DEFAULT_FILL_COLOR = new RGB(0,0,255);
+	
+	/** The default value of the height property. */	
+	private static final int DEFAULT_HEIGHT = 80;
+	
+	/** The default value of the width property. */
+	private static final int DEFAULT_WIDTH = 200;
+	
+	/** The default value of the fillbackground color property. */
+	private static final RGB DEFAULT_FILLBACKGROUND_COLOR = new RGB(200, 200, 200);
+	
+	/**
+	 * The ID of this widget model.
+	 */
+	public static final String ID = "org.csstudio.opibuilder.widgets.progressbar"; //$NON-NLS-1$	
+	
+	public ProgressBarModel() {
+		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+		setForegroundColor(new RGB(0,0,0));
+	}	
+
+	@Override
+	protected void configureProperties() {
+		super.configureProperties();		
+	
+		addProperty(new ColorProperty(PROP_FILL_COLOR, "Fill Color",
+				WidgetPropertyCategory.Display,DEFAULT_FILL_COLOR));	
+		
+		addProperty(new BooleanProperty(PROP_EFFECT3D, "3D Effect", 
+				WidgetPropertyCategory.Display, true));	
+		
+		addProperty(new BooleanProperty(PROP_SHOW_LABEL, "Show Label", 
+				WidgetPropertyCategory.Display, true));	
+		
+		addProperty(new BooleanProperty(PROP_HORIZONTAL, "Horizontal", 
+				WidgetPropertyCategory.Display, true));	
+		
+		addProperty(new ColorProperty(PROP_FILLBACKGROUND_COLOR, "Color Fillbackground",
+				WidgetPropertyCategory.Display,DEFAULT_FILLBACKGROUND_COLOR));
+	
+		setPropertyValue(PROP_LO_COLOR, new OPIColor(255, 128, 0));
+		setPropertyValue(PROP_HI_COLOR, new OPIColor(255, 128, 0));
+		
+	}	
+
+	@Override
+	public String getTypeID() {
+		return ID;
+	}		
+
+	/**
+	 * @return the fill color
+	 */
+	public RGB getFillColor() {
+		return getRGBFromColorProperty(PROP_FILL_COLOR);
+	}	
+	
+	/**
+	 * @return true if the widget would be painted with 3D effect, false otherwise
+	 */
+	public boolean isEffect3D() {
+		return (Boolean) getProperty(PROP_EFFECT3D).getPropertyValue();
+	}
+	
+	public boolean isShowLabel() {
+		return (Boolean) getProperty(PROP_SHOW_LABEL).getPropertyValue();
+	}
+	/**
+	 * @return true if the widget is in horizontal orientation, false otherwise
+	 */
+	public boolean isHorizontal() {
+		return (Boolean) getProperty(PROP_HORIZONTAL).getPropertyValue();
+	}
+	
+	/**
+	 * Gets the RGB for fillbackground.
+	 * @return The fillbackground color
+	 */
+	public RGB getFillbackgroundColor() {
+		return getRGBFromColorProperty(PROP_FILLBACKGROUND_COLOR);
+	}
+	
+}
