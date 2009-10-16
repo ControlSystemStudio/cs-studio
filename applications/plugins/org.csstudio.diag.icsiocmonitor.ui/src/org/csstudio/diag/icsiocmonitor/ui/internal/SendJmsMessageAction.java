@@ -91,8 +91,9 @@ abstract class SendJmsMessageAction extends BaseSelectionListenerAction {
 			message.setString("TYPE", "command");
 			message.setString("EVENTTIME", getEventTime());
 			message.setString("DESTINATION", "interconnectionServer");
-			setMessageFields(message, iocName);
-			producer.send(message);
+			if (setMessageFields(message, iocName)) {
+				producer.send(message);
+			}
 			session.close();
 			jmsConnection.release();
 		} catch (JMSException e) {
@@ -109,11 +110,13 @@ abstract class SendJmsMessageAction extends BaseSelectionListenerAction {
 	 *            the message.
 	 * @param iocName
 	 *            the name of the IOC.
+	 * @return <code>true</code> if the message should be sent,
+	 *         <code>false</code> to cancel the action.
 	 * @throws JMSException
 	 *             if an error occurs.
 	 */
-	protected abstract void setMessageFields(MapMessage message, String iocName)
-		throws JMSException;
+	protected abstract boolean setMessageFields(MapMessage message,
+			String iocName) throws JMSException;
 
 	/**
 	 * Returns the current time in the format required for JMS messages.

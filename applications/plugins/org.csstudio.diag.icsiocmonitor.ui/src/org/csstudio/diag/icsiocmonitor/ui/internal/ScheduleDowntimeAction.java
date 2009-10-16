@@ -25,18 +25,20 @@ package org.csstudio.diag.icsiocmonitor.ui.internal;
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 
+import org.eclipse.jface.window.Window;
+
 /**
- * Action which enables all messages from an IOC.
+ * Action which schedules a downtime for an IOC.
  * 
  * @author Joerg Rathlev
  */
-class EnableMessagesAction extends SendJmsMessageAction {
+class ScheduleDowntimeAction extends SendJmsMessageAction {
 
 	/**
 	 * Creates the action.
 	 */
-	protected EnableMessagesAction() {
-		super("Enable Messages");
+	protected ScheduleDowntimeAction() {
+		super("Schedule Donwtime...");
 	}
 
 	/**
@@ -45,8 +47,15 @@ class EnableMessagesAction extends SendJmsMessageAction {
 	@Override
 	protected boolean setMessageFields(MapMessage message, String iocName)
 			throws JMSException {
-		message.setString("NAME", "enableIoc");
-		message.setString("TEXT", iocName);
-		return true;
+		ScheduleDowntimeDialog dialog = new ScheduleDowntimeDialog(null, iocName);
+		if (Window.OK == dialog.open()) {
+			int duration = dialog.getDuration();
+			message.setString("NAME", "scheduleDowntime");
+			message.setString("TEXT", duration + "," + iocName);
+			return true;
+		} else {
+			return false; // cancel
+		}
 	}
+
 }

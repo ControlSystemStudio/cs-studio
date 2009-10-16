@@ -297,10 +297,13 @@ public class IocMonitorView extends ViewPart implements IReportListener {
 		
 		BaseSelectionListenerAction disableMessages = new DisableMessagesAction();
 		BaseSelectionListenerAction enableMessages = new EnableMessagesAction();
+		BaseSelectionListenerAction scheduleDowntime = new ScheduleDowntimeAction();
 		_tableViewer.addSelectionChangedListener(disableMessages);
 		_tableViewer.addSelectionChangedListener(enableMessages);
+		_tableViewer.addSelectionChangedListener(scheduleDowntime);
 		menuManager.add(enableMessages);
 		menuManager.add(disableMessages);
+		menuManager.add(scheduleDowntime);
 		menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 		
 		Menu contextMenu = menuManager.createContextMenu(_tableViewer.getControl());

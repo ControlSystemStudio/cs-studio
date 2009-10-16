@@ -43,9 +43,10 @@ class DisableMessagesAction extends SendJmsMessageAction {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void setMessageFields(MapMessage message, String iocName)
+	protected boolean setMessageFields(MapMessage message, String iocName)
 			throws JMSException {
 		message.setString("NAME", "disableIoc");
 		message.setString("TEXT", iocName);
+		return true;
 	}
 }
