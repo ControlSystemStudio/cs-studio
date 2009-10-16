@@ -71,17 +71,17 @@ abstract class SendJmsMessageAction extends BaseSelectionListenerAction {
 	public void run() {
 		if (isIocSelected()) {
 			String iocName = selectedIocHostName();
-			sendDisableCommandToInterconnectionServers(iocName);
+			sendCommandToInterconnectionServers(iocName);
 		}
 	}
 
 	/**
-	 * Sends the Disable command to the interconnection servers via JMS.
+	 * Sends the command to the interconnection servers via JMS.
 	 * 
 	 * @param iocName
 	 *            the name of the IOC.
 	 */
-	private void sendDisableCommandToInterconnectionServers(String iocName) {
+	private void sendCommandToInterconnectionServers(String iocName) {
 		try {
 			ISharedConnectionHandle jmsConnection = SharedJmsConnections.sharedSenderConnection();
 			Session session = jmsConnection.createSession(false, Session.AUTO_ACKNOWLEDGE);
