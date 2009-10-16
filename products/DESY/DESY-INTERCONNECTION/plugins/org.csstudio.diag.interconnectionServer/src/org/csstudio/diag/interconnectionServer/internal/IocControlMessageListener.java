@@ -23,6 +23,7 @@
 package org.csstudio.diag.interconnectionServer.internal;
 
 import java.net.InetAddress;
+import java.util.concurrent.TimeUnit;
 
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
@@ -95,9 +96,25 @@ public class IocControlMessageListener implements MessageListener {
 			setIocEnabled(args, false);
 		} else if ("enableIoc".equals(command)) {
 			setIocEnabled(args, true);
+		} else if ("scheduleDowntime".equals(command)) {
+			scheduleDowntime(args);
 		} else {
 			_log.warn(this, "Received unknown IOC control command: " + command);
 		}
+	}
+
+	/**
+	 * Schedules a downtime for an IOC.
+	 * 
+	 * @param args
+	 *            the arguments of the command.
+	 */
+	private void scheduleDowntime(String args) {
+		String[] splittedArgs = args.split(",");
+		int duration = Integer.parseInt(splittedArgs[0]);
+		String hostname = splittedArgs[1];
+		IocConnection ioc = getIocFromHostname(hostname);
+		ioc.scheduleDowntime(duration, TimeUnit.SECONDS);
 	}
 
 	/**
@@ -109,11 +126,27 @@ public class IocControlMessageListener implements MessageListener {
 	 *            enable or disable.
 	 */
 	private void setIocEnabled(String args, boolean enabled) {
-		int dataPort = Integer.parseInt(Platform.getPreferencesService().getString(Activator.getDefault().getPluginId(),
-				PreferenceConstants.DATA_PORT_NUMBER, "", null));
-		InetAddress iocInetAddress = IocConnectionManager.getInstance().getIocInetAdressByName(args);
-		IocConnection ioc = IocConnectionManager.getInstance().getIocConnection(iocInetAddress, dataPort);
+		IocConnection ioc = getIocFromHostname(args);
 		ioc.setDisabled(!enabled);
+	}
+
+	/**
+	 * Returns the IOC connection object for the IOC with the given hostname.
+	 * 
+	 * @param hostname
+	 *            the hostname of the IOC.
+	 * @return the IocConnection.
+	 */
+	private IocConnection getIocFromHostname(String hostname) {
+		int dataPort = Integer.parseInt(
+				Platform.getPreferencesService().getString(
+						Activator.getDefault().getPluginId(),
+						PreferenceConstants.DATA_PORT_NUMBER, "", null));
+		InetAddress iocInetAddress =
+			IocConnectionManager.getInstance().getIocInetAdressByName(hostname);
+		IocConnection ioc = IocConnectionManager.getInstance().getIocConnection(
+				iocInetAddress, dataPort);
+		return ioc;
 	}
 
 	@Override
