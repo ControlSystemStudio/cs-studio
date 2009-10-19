@@ -72,6 +72,17 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
 		installEditPolicy("Snap Feedback", new SnapFeedbackPolicy()); //$NON-NLS-1$
 	}
 	
+	public AbstractBaseEditPart getWidget(String name){
+		List children = getChildren();
+		for(Object o : children){
+			if(o instanceof AbstractBaseEditPart){
+				if(((AbstractBaseEditPart)o).getWidgetModel().getName().equals(name))
+					return (AbstractBaseEditPart)o;
+			}
+		}
+		return null;
+	}
+	
 	@Override
 	public void activate() {
 		//set macro map
