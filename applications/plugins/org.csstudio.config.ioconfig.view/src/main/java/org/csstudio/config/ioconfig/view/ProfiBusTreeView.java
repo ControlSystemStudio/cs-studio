@@ -335,6 +335,10 @@ public class ProfiBusTreeView extends Composite {
         @Override
         public String getText(Object element) {
             String text = super.getText(element);
+            String[] split = text.split("(\r(\n)?)");
+            if(split.length>1) {
+                text = split[0];
+            }
             if (haveProgrammableModule(element)) {
                 return text + " [prog]";
             }

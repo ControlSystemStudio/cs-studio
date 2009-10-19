@@ -24,6 +24,7 @@
  */
 package org.csstudio.config.ioconfig.model.pbmodel;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 import java.util.Set;
@@ -36,6 +37,7 @@ import javax.persistence.Transient;
 
 import org.csstudio.config.ioconfig.model.NamedDBClass;
 import org.csstudio.config.ioconfig.model.Node;
+import org.csstudio.config.ioconfig.model.PersistenceException;
 
 /**
  * @author hrickens
@@ -296,4 +298,23 @@ public class ChannelStructure extends Node implements IStructured {
         return null;
     }
 
+    @Override
+    protected void localUpdate() {
+        Collection<Channel> values = getChannelsAsMap().values();
+        for (Channel channel : values) {
+            channel.localUpdate();
+        }
+    }
+    
+    @Override
+    public void assembleEpicsAddressString() throws PersistenceException {
+        for (Channel node : getChannelsAsMap().values()) {
+            if (node != null) {
+                node.localUpdate();
+                if (node.isDirty()) {
+                    node.save();
+                }
+            }
+        }
+    }
 }

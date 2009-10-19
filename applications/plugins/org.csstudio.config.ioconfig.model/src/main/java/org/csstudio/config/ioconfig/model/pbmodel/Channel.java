@@ -364,13 +364,14 @@ public class Channel extends Node {
         short moduleSortIndex = getModule().getSortIndex();
 
         if (!(channelSortIndex <= 0 && structSortIndex <= 0 && moduleSortIndex <= 0)) {
+            // if it a simple Channel (AI/AO)
             if (getChannelStructure().isSimple()) {
                 if (structSortIndex > 0) {
                     ChannelStructure channelStructure = null;
                     short counter = structSortIndex;
                     while (channelStructure == null && counter > 0) {
                         channelStructure = getModule().getChannelStructsAsMap().get(--counter);
-                        if (channelStructure != null && channelStructure.getLastChannel() != null 
+                        if (channelStructure != null && channelStructure.getLastChannel() != null
                                 && channelStructure.getLastChannel().isInput() == isInput()) {
                             if (channelStructure.isSimple()) {
                                 Channel next = channelStructure.getLastChannel();
@@ -387,6 +388,7 @@ public class Channel extends Node {
                     }
                 }
             } else {
+                // Structe Channel (8 bit (DI/DO)))
                 boolean isSet = false;
 
                 if (channelSortIndex > 0) {
@@ -417,7 +419,9 @@ public class Channel extends Node {
                                         .getChannelType().getByteSize();
                                 break;
                             } else if (!channelStructure.isSimple()) {
-                                channelNumber = channelStructure.getStructureType().getByteSize();
+                                channelNumber = channelStructure.getLastChannel()
+                                        .getChannelNumber()
+                                        + channelStructure.getStructureType().getByteSize();
                                 break;
                             }
 
@@ -441,7 +445,7 @@ public class Channel extends Node {
         String oldAdr = getEpicsAddressString();
         try {
             StringBuilder sb = new StringBuilder();
-            
+
             sb.append(getModule().getEpicsAddressString());
             sb.append("/");
             sb.append(getFullChannelNumber());
@@ -474,7 +478,7 @@ public class Channel extends Node {
                     }
                 }
             }
-//            sb.append(getChannelType().getDefaultHigh());
+            // sb.append(getChannelType().getDefaultHigh());
             sb.append("'");
             setEpicsAddressString(sb.toString());
         } catch (NullPointerException e) {

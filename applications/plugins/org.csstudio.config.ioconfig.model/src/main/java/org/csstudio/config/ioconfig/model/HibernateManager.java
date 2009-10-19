@@ -227,6 +227,10 @@ public final class HibernateManager {
                 if (_sess != null) {// && openTransactions<1) {
                     _sess.close();
                     _sess=null;
+                    // Die Factory kann auch geschlossen werden. 
+                    // Anschliessend kann man dann aber keine neue Session mehr generiert werden.
+                    // Ist die Factory für das offen halten der Oracle Session verantwortlich?
+                    //sessionFactoryDevDB.close();
                 }
             } catch (Exception exCl) {
                 exCl.printStackTrace();
