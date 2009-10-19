@@ -68,7 +68,7 @@ public class ScreenshotView extends ViewPart implements FlavorListener
         IConfigurationElement[] confElements = extReg
                         .getConfigurationElementsFor("org.csstudio.utility.screenshot.ImageWorker");
 
-        CentralLogger.getInstance().info(this, "Implementationen: " + confElements.length);
+        CentralLogger.getInstance().debug(this, "Implementationen: " + confElements.length);
         
         if(confElements.length > 0)
         {
