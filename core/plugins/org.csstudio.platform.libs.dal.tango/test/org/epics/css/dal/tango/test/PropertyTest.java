@@ -207,7 +207,7 @@ public class PropertyTest {
 	@Test
 	public void testDoubleAsyncSet() throws DataExchangeException, InterruptedException {
 		
-		double value = 3.2;
+		Double value = 3.2;
 		doubleResponseListener.reset(true,true,true);
 		Request<Double> request = doubleProperty.setAsynchronous(value,doubleResponseListener);
 		synchronized (doubleResponseListener) {
@@ -233,7 +233,7 @@ public class PropertyTest {
 		doubleProperty.addDynamicValueListener(doubleResponseListener);
 		doubleResponseListener.reset(true,true,false);
 		Thread.sleep(3000);
-		double value3 = 3.;
+		Double value3 = 3.;
 		doubleProperty.setValue(value3);
 		synchronized (doubleResponseListener) {
 			doubleResponseListener.wait(2000);
@@ -271,11 +271,11 @@ public class PropertyTest {
 		//wait for tango to register
 		Thread.sleep(3000);
 		doubleResponseListener.reset(true,true,false);
-		double value1 = 1.;
+		Double value1 = 1.;
 		doubleProperty.setValue(value1);
 		//monitor is periodic and not on change. wait for change to happen
 		Thread.sleep(2000);
-		double value2 = 2.;
+		Double value2 = 2.;
 		doubleProperty.setValue(value2);
 		synchronized (doubleResponseListener) {
 			doubleResponseListener.wait(3000);
