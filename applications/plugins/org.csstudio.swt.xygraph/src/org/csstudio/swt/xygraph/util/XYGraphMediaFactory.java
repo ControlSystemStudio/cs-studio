@@ -25,6 +25,7 @@ import java.util.HashMap;
 
 import org.csstudio.swt.xygraph.Activator;
 import org.eclipse.core.runtime.Plugin;
+import org.eclipse.draw2d.Cursors;
 import org.eclipse.jface.resource.ColorRegistry;
 import org.eclipse.jface.resource.FontRegistry;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -78,22 +79,32 @@ public final class XYGraphMediaFactory {
 	 */
 	private HashMap<ImageDescriptor, Image> _imageCache;
 	
-	public static final Cursor CURSOR_HAND = new Cursor(Display.getDefault(), SWT.CURSOR_HAND);
-	public static final Cursor CURSOR_CROSS = new Cursor(Display.getDefault(), SWT.CURSOR_CROSS);
-	public static final Cursor CURSOR_SIZEALL = new Cursor(Display.getDefault(), SWT.CURSOR_SIZEALL);
-	public static final Cursor CURSOR_ARROW = new Cursor(Display.getDefault(), SWT.CURSOR_ARROW);
-	public static final Cursor CURSOR_GRABBING = new Cursor(Display.getDefault(), XYGraphMediaFactory.getInstance().getImageFromPlugin(
-			Activator.getDefault(), Activator.PLUGIN_ID, "icons/Grabbing.png").getImageData(), 8, 8);	
+	public enum CURSOR_TYPE {
+		GRABBING;
+	}
+	
+	private static Cursor CURSOR_GRABBING;	
 	
 	
 	public static void disposeResources(){
-		CURSOR_HAND.dispose();
-		CURSOR_CROSS.dispose();
-		CURSOR_SIZEALL.dispose();
-		CURSOR_ARROW.dispose();
-		CURSOR_GRABBING.dispose();
+		if(CURSOR_GRABBING!=null && !CURSOR_GRABBING.isDisposed())
+			CURSOR_GRABBING.dispose();
 	}
 
+	public static Cursor getCursor(CURSOR_TYPE cursorType){
+		switch (cursorType) {
+		case GRABBING:
+			if(CURSOR_GRABBING == null)
+				CURSOR_GRABBING = new Cursor(Display.getDefault(), XYGraphMediaFactory.getInstance().getImageFromPlugin(
+						Activator.getDefault(), Activator.PLUGIN_ID, "icons/Grabbing.png").getImageData(), 8, 8);
+			return CURSOR_GRABBING;
+
+		default:
+			return Cursors.HAND;
+			
+		}
+	}
+	
 	/**
 	 * Private constructor to avoid instantiation.
 	 */

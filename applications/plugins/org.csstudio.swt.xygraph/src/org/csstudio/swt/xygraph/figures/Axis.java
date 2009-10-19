@@ -11,6 +11,7 @@ import org.csstudio.swt.xygraph.linearscale.Range;
 import org.csstudio.swt.xygraph.undo.AxisPanningCommand;
 import org.csstudio.swt.xygraph.undo.ZoomType;
 import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
+import org.csstudio.swt.xygraph.util.XYGraphMediaFactory.CURSOR_TYPE;
 import org.eclipse.draw2d.FigureUtilities;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.MouseEvent;
@@ -90,7 +91,7 @@ public class Axis extends LinearScale implements IDataProviderListener{
 		AxisPanner panner = new AxisPanner();
 		addMouseListener(panner);
 		addMouseMotionListener(panner);
-		grabbing = XYGraphMediaFactory.CURSOR_GRABBING;	
+		grabbing = XYGraphMediaFactory.getCursor(CURSOR_TYPE.GRABBING);	
 	}
 
 	public void addListener(final IAxisListener listener){

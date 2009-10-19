@@ -8,6 +8,7 @@ import org.csstudio.swt.xygraph.linearscale.Range;
 import org.csstudio.swt.xygraph.undo.ZoomCommand;
 import org.csstudio.swt.xygraph.undo.ZoomType;
 import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
+import org.csstudio.swt.xygraph.util.XYGraphMediaFactory.CURSOR_TYPE;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.MouseEvent;
@@ -70,7 +71,7 @@ public class PlotArea extends Figure {
 		PlotAreaZoomer zoomer = new PlotAreaZoomer();
 		addMouseListener(zoomer);
 		addMouseMotionListener(zoomer);
-		grabbing = XYGraphMediaFactory.CURSOR_GRABBING;
+		grabbing = XYGraphMediaFactory.getCursor(CURSOR_TYPE.GRABBING);
 		zoomType = ZoomType.NONE;
 	}
 	
