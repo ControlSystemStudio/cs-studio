@@ -22,6 +22,7 @@ import org.eclipse.gef.ContextMenuProvider;
 import org.eclipse.gef.DefaultEditDomain;
 import org.eclipse.gef.EditDomain;
 import org.eclipse.gef.GraphicalViewer;
+import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
 import org.eclipse.gef.ui.actions.ActionRegistry;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -194,7 +195,8 @@ public class OPIRunner extends EditorPart {
 			return viewer;
 		if(adapter == ActionRegistry.class)
 			return getActionRegistry();
-			
+		if (adapter == CommandStack.class)
+			return viewer.getEditDomain().getCommandStack();
 		return super.getAdapter(adapter);
 	}
 }

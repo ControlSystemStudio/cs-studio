@@ -323,6 +323,19 @@
             </objectState>
          </visibility>
       </objectContribution>
+      <objectContribution
+            adaptable="false"
+            id="org.csstudio.opibuilder.widgets.xygraph"
+            objectClass="org.csstudio.opibuilder.widgets.editparts.XYGraphEditPart">
+         <action
+               class="org.csstudio.opibuilder.widgets.actions.ShowXYGraphToolbarAction"
+               enablesFor="1"
+               id="org.csstudio.opibuilder.widgets.showToolbarAction"
+               label="Show/Hide Graph Toolbar"
+               menubarPath="xygraph"
+               tooltip="Show/Hide XY-Graph Toolbar">
+         </action>
+      </objectContribution>
    </extension>
    <extension
          point="org.csstudio.opibuilder.graphicalFeedbackFactory">
