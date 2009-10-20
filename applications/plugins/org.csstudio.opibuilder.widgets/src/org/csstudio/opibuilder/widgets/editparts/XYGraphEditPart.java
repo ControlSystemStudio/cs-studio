@@ -457,7 +457,12 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 				}else
 					dataProvider.setCurrentYData(ValueUtil.getDouble(y_value));	
 			}
-					
+		case YPV:
+			if(isActive()){
+				deactivate();
+				activate();
+			}
+			
 			break;	
 		default:
 			break;

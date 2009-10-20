@@ -3,6 +3,7 @@ package org.csstudio.opibuilder.widgetActions;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.ActionsProperty;
 
 /**The value type definition for {@link ActionsProperty}, which describes the input
@@ -15,6 +16,8 @@ public class ActionsInput {
 	private List<AbstractWidgetAction> actionsList;
 	
 	private boolean hookUpToWidget = false;
+	
+	private AbstractWidgetModel widgetModel;
 	
 	public ActionsInput(List<AbstractWidgetAction> actionsList) {
 		this.actionsList = actionsList;
@@ -66,6 +69,22 @@ public class ActionsInput {
 			return actionsList.get(0).getDescription();
 		}
 		return actionsList.size() + " actions";
+	}
+
+	/**
+	 * @param widgetModel the widgetModel to set
+	 */
+	public void setWidgetModel(AbstractWidgetModel widgetModel) {
+		this.widgetModel = widgetModel;
+		for(AbstractWidgetAction action : actionsList)
+			action.setWidgetModel(widgetModel);
+	}
+
+	/**
+	 * @return the widgetModel
+	 */
+	public AbstractWidgetModel getWidgetModel() {
+		return widgetModel;
 	}
 	
 	

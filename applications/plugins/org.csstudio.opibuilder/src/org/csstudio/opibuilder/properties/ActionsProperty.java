@@ -54,6 +54,7 @@ public class ActionsProperty extends AbstractWidgetProperty {
 			return null;
 		ActionsInput acceptableValue = null;
 		if(value instanceof ActionsInput){
+			((ActionsInput) value).setWidgetModel(widgetModel);
 			acceptableValue = (ActionsInput)value;			
 		}
 		

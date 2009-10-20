@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
 import org.csstudio.opibuilder.widgetActions.WidgetActionFactory.ActionType;
 import org.eclipse.core.runtime.Assert;
@@ -23,7 +24,7 @@ public abstract class AbstractWidgetAction implements IAdaptable {
 	
 	private boolean enabled = true;
 	
-	
+	private AbstractWidgetModel widgetModel;
 	
 	public AbstractWidgetAction() {
 		propertyMap = new LinkedHashMap<String, AbstractWidgetProperty>();
@@ -36,6 +37,7 @@ public abstract class AbstractWidgetAction implements IAdaptable {
 	 */
 	public void addProperty(final AbstractWidgetProperty property){
 		Assert.isNotNull(property);
+		property.setWidgetModel(getWidgetModel());
 		propertyMap.put(property.getPropertyID(), property);				
 	}
 	
@@ -124,6 +126,22 @@ public abstract class AbstractWidgetAction implements IAdaptable {
 	 */
 	public boolean isEnabled() {
 		return enabled;
+	}
+
+	/**
+	 * @param widgetModel the widgetModel to set
+	 */
+	public void setWidgetModel(AbstractWidgetModel widgetModel) {
+		this.widgetModel = widgetModel;
+		for(AbstractWidgetProperty property : getAllProperties())
+			property.setWidgetModel(widgetModel);
+	}
+
+	/**
+	 * @return the widgetModel
+	 */
+	public AbstractWidgetModel getWidgetModel() {
+		return widgetModel;
 	}
 
 }

@@ -5,6 +5,7 @@ import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.actions.CopyPropertiesAction;
 import org.csstudio.opibuilder.actions.PastePropertiesAction;
 import org.csstudio.opibuilder.actions.PrintDisplayAction;
+import org.csstudio.opibuilder.actions.ShowMacrosAction;
 import org.csstudio.opibuilder.actions.ChangeOrderAction.OrderType;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.gef.ContextMenuProvider;
@@ -75,7 +76,9 @@ public final class OPIEditorContextMenuProvider extends ContextMenuProvider {
 		menu.appendToGroup(
 				GEFActionConstants.GROUP_COPY,
 				getAction(PastePropertiesAction.ID));
-		
+		menu.appendToGroup(
+				GEFActionConstants.GROUP_COPY,
+				getAction(ShowMacrosAction.ID));
 		menu.appendToGroup(
 				GEFActionConstants.GROUP_EDIT,
 				getAction(ActionFactory.DELETE.getId()));

@@ -279,7 +279,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 					pv.stop();
 			}			
 			propertyListenerMap.clear();
-			propertyListenerMap = null;			
+			//propertyListenerMap = null;			
 		}
 		
 	}
@@ -501,6 +501,8 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 	 */
 	public void setExecutionMode(ExecutionMode executionMode) {
 		this.executionMode = executionMode;		
+		getWidgetModel().setExecutionMode(executionMode);
+		/*
 		for(String id : getWidgetModel().getAllPropertyIDs()){			
 			AbstractWidgetProperty property = getWidgetModel().getProperty(id); 					
 			if(property != null){
@@ -508,7 +510,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 				property.setWidgetModel(getWidgetModel());
 			}
 			
-		}
+		}*/
 	}
 
 	/**

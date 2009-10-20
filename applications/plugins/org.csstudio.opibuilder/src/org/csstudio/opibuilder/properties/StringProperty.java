@@ -67,7 +67,7 @@ public class StringProperty extends AbstractWidgetProperty {
 	
 	@Override
 	public Object getPropertyValue() {
-		if(executionMode == ExecutionMode.RUN_MODE && widgetModel !=null)
+		if(widgetModel !=null && widgetModel.getExecutionMode() == ExecutionMode.RUN_MODE)
 			return MacrosUtil.replaceMacros(
 					widgetModel, (String) super.getPropertyValue());
 		else

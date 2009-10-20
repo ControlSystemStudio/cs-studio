@@ -21,6 +21,7 @@ import org.csstudio.opibuilder.actions.PastePropertiesAction;
 import org.csstudio.opibuilder.actions.PasteWidgetsAction;
 import org.csstudio.opibuilder.actions.PrintDisplayAction;
 import org.csstudio.opibuilder.actions.RunOPIAction;
+import org.csstudio.opibuilder.actions.ShowMacrosAction;
 import org.csstudio.opibuilder.actions.ChangeOrderAction.OrderType;
 import org.csstudio.opibuilder.actions.DistributeWidgetsAction.DistributeType;
 import org.csstudio.opibuilder.commands.SetWidgetPropertyCommand;
@@ -318,6 +319,10 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 		registry.registerAction(action);
 		getSelectionActions().add(action.getId());
 	
+		action = new ShowMacrosAction(this);
+		registry.registerAction(action);
+		getSelectionActions().add(action.getId());
+		
 		id = ActionFactory.SELECT_ALL.getId();
 		action = getActionRegistry().getAction(id);
 		action.setActionDefinitionId("org.eclipse.ui.edit.selectAll");//$NON-NLS-1$

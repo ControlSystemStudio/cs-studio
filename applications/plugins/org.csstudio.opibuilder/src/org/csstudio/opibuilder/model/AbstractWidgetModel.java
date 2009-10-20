@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
 import org.csstudio.opibuilder.properties.ActionsProperty;
 import org.csstudio.opibuilder.properties.BooleanProperty;
@@ -80,6 +81,8 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	
 	private LinkedHashMap<StringProperty, PVValueProperty> pvMap;
 	
+	private ExecutionMode executionMode;
+	
 
 	public AbstractWidgetModel() {
 		propertyMap = new HashMap<String, AbstractWidgetProperty>();
@@ -94,6 +97,7 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	 */
 	public void addProperty(final AbstractWidgetProperty property){
 		Assert.isNotNull(property);
+		property.setWidgetModel(this);
 		propertyMap.put(property.getPropertyID(), property);
 		if(property.isVisibleInPropSheet())
 			propertyDescriptors.put(property.getPropertyID(), property.getPropertyDescriptor());		
@@ -463,6 +467,20 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 			parent = parent.getParent();
 		}
 		return i;
+	}
+
+	/**
+	 * @param executionMode the executionMode to set
+	 */
+	public void setExecutionMode(ExecutionMode executionMode) {
+		this.executionMode = executionMode;
+	}
+
+	/**
+	 * @return the executionMode
+	 */
+	public ExecutionMode getExecutionMode() {
+		return executionMode;
 	}
 	
 	

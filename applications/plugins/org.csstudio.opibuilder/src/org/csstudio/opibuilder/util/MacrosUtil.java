@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.platform.logging.CentralLogger;
@@ -31,10 +32,9 @@ public class MacrosUtil {
 				return result;
 			//replace with predefined constant macros
 			Map<String, String> macroMap;
-			if(widgetModel.getParent() != null)
-				macroMap = widgetModel.getParent().getMacroMap();
-			else
-				macroMap = PreferencesHelper.getMacros();
+			
+			macroMap = getWidgetMacroMap(widgetModel);
+			
 			for(String macroName : macroMap.keySet()){
 				// Create pattern to match either "${name}" or "$(name)".
 				// Will actually also match a mixed case like "${name)".
@@ -64,6 +64,25 @@ public class MacrosUtil {
 			}
 			
 			return result;
+		}
+
+		/**
+		 * @param widgetModel
+		 * @return the predefined macro map of the widget.
+		 * This is the intrinsic map from the widget. Be careful to change the map contents.
+		 */
+		public static Map<String, String> getWidgetMacroMap(
+				AbstractWidgetModel widgetModel) {
+			Map<String, String> macroMap;
+			if(widgetModel instanceof AbstractContainerModel)
+				macroMap = ((AbstractContainerModel)widgetModel).getMacroMap();
+			else {
+				if(widgetModel.getParent() != null)
+					macroMap = widgetModel.getParent().getMacroMap();
+				else
+					macroMap = PreferencesHelper.getMacros();
+			}
+			return macroMap;
 		}
 		
 	
