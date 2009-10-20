@@ -281,5 +281,11 @@
             name="Database Configuration Tool">
       </category>
    </extension>
-
+      <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="toc.xml"
+            primary="true">
+      </toc>
+   </extension>
 </plugin>
