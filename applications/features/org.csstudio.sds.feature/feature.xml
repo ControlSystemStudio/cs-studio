@@ -33,10 +33,6 @@ THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, U
       <update url="http://eclipse.desy.de/update/"/>
    </url>
 
-   <includes
-         id="org.eclipse.gef"
-         version="0.0.0"/>
-
    <requires>
       <import feature="org.csstudio.platform.feature.product" version="0.9.6" match="greaterOrEqual"/>
    </requires>
@@ -71,13 +67,6 @@ THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, U
 
    <plugin
          id="org.csstudio.sds.components.epics"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.sds.samples"
          download-size="0"
          install-size="0"
          version="0.0.0"
