@@ -88,6 +88,14 @@ public class GroupingContainerEditPart extends AbstractContainerEditpart {
 		};
 		setPropertyChangeHandler(AbstractWidgetModel.PROP_VISIBLE, visibilityHandler);
 		
+		IWidgetPropertyChangeHandler showBarHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue, final Object newValue, final IFigure refreshableFigure) {
+				((GroupingContainerFigure)refreshableFigure).setShowScrollBar((Boolean)newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(GroupingContainerModel.PROP_SHOW_SCROLLBAR, showBarHandler);
+		
 	}
 	/**
 	* @param lock true if the children should be locked.

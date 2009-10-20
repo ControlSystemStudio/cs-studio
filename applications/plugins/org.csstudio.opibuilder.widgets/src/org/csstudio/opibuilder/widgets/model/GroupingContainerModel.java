@@ -17,7 +17,9 @@ public class GroupingContainerModel extends AbstractContainerModel {
 	
 	/** The ID of the <i>lockChildren</i> property. */
 	public static final String PROP_LOCK_CHILDREN = "lock_children";
+	public static final String PROP_SHOW_SCROLLBAR = "show_scrollbar";
 
+	
 	public GroupingContainerModel() {
 		setSize(200, 200);
 		setBorderStyle(BorderStyle.GROUP_BOX);
@@ -29,7 +31,8 @@ public class GroupingContainerModel extends AbstractContainerModel {
 				WidgetPropertyCategory.Display, false));
 		addProperty(new BooleanProperty(PROP_LOCK_CHILDREN, "Lock Children",
 				WidgetPropertyCategory.Behavior, false));
-
+		addProperty(new BooleanProperty(PROP_SHOW_SCROLLBAR, "Show Scrollbar",
+				WidgetPropertyCategory.Behavior, true));
 	}
 
 	@Override

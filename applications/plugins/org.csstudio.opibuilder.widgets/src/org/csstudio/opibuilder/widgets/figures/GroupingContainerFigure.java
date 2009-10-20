@@ -17,9 +17,11 @@ public class GroupingContainerFigure extends Figure {
 	private IFigure pane;
 	
 	private boolean transparent;
+
+	private ScrollPane scrollPane;
 	
 	public GroupingContainerFigure() {
-		ScrollPane scrollPane = new ScrollPane(){
+		scrollPane = new ScrollPane(){
 			@Override
 			public boolean isOpaque() {
 				return !transparent;
@@ -30,9 +32,12 @@ public class GroupingContainerFigure extends Figure {
 		setLayoutManager(new StackLayout());
 		add(scrollPane);
 		scrollPane.setViewport(new FreeformViewport());
-		scrollPane.setContents(pane);	
+		scrollPane.setContents(pane);			
 	}
 	
+	public void setShowScrollBar(boolean show){
+		scrollPane.setScrollBarVisibility(show ? ScrollPane.AUTOMATIC : ScrollPane.NEVER);
+	}
 	
 	@Override
 	public void setOpaque(boolean opaque) {		

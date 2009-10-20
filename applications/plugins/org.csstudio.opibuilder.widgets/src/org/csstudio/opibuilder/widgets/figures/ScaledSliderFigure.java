@@ -461,18 +461,20 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 						return;
 					Dimension difference = me.getLocation().getDifference(start);
 					double valueChange = calcValueChange(difference, value);
+					double oldValue = value;
 					if(increment <= 0 || Math.abs(valueChange) > increment/2.0) {
 						if(increment > 0)
 							setValue(value + increment * Math.round(valueChange/increment));		
 						else 
 							setValue(value + valueChange);
-						
+						double newValue = value;
 						double valuePosition = 
 								((LinearScale)scale).getValuePosition(value, false);
 						start = new Point(
 									horizontal? valuePosition: 0, 
-									horizontal ? 0 : valuePosition);						
-						fireManualValueChange(value);						
+									horizontal ? 0 : valuePosition);
+						if(newValue != oldValue)
+							fireManualValueChange(value);						
 						//ScaledSliderFigure.this.layout();
 						//ScaledSliderFigure.this.repaint();
 						setLabel();		
