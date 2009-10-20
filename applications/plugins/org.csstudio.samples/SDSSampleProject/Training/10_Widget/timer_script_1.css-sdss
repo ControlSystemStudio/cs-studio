@@ -1,0 +1,8 @@
+importPackage(Packages.org.csstudio.sds.ui.scripting);
+
+function execute() {
+	/* Emit a siren. */
+	Functions.siren();
+}
+
+

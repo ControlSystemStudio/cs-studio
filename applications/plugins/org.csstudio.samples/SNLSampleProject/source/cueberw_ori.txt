@@ -1,0 +1,610 @@
+;==============================================================================;
+; Filename: APPLIC:[PCM2.SEQ]CUEBERW2.SEQ                      W H QI15-APR-87 ;
+;    Datum: 15-APR-1987                                                        ;
+; LUPD  =     LAST UPDATE ON : 13-SEP-1995 17:49 BY : HERZOG	=
+;                                                                              ;
+; Verwendungszweck:	    COLDBOX - UEBERWACHUNG                             ;
+;                                                                              ;
+;	Beschreibung:	Ueberwacht :					       ;
+;				- Kompressor Ausfall			       ;
+;				- Steuerluft Ausfall			       ;
+;				- N2 - Analyse der Adsorber 100/110 u. 200/210 ;
+;				- Stop Befehl vom Operateur		       ;
+;                                                                              ;
+;			In diesem Programm ist die Coldbox Abschaltseqenz      ;
+;			enthalten.					       ;
+;                                                                              ;
+;    Gestartet von:  1.	Skid Taste 33					       ;
+;		     2. Durch einen Steuerluft oder Kompressor Ausfall	       ;
+;                                                                              ;
+;                                                                              ;
+;                                                                              ;
+; Referenz Dokumentation:   Teil H , Abschnitt 850 , Register 3		       ;
+;                                                                              ;
+;==============================================================================;
+;       Rev: 1	   AD300 Absperrung bei CBX Ausfall		       ;
+;==============================================================================;
+;       Rev: 2	   Ueberwachung der Analyse AD100/110 AD200/210	       ;
+;==============================================================================;
+;	Rev: 3	Start der Turbinen-abschaltprogramme ueber interaktive
+;		Abfrage.
+;		Keine absperrung des Ad 300 , dafuer Aufruf des Adsorber
+;		Betriebsprogramms
+;==============================================================================;
+;       Rev: 4	Auf MANUAL setzen und oeffnen des PDC230 		       ;
+;==============================================================================;
+;       Rev: 5	Abfangen D3-Kommunikations-Ausfall -> kein Grund fuer 
+;							Coldbox-Stop
+;==============================================================================;
+;
+; 			VERWENDETE VARIABLEN VON UNIT COLD42
+;                       ************************************
+;
+; RPF's : 	ADIOCM 	---->	ADI fuer OCM
+;		ADIPNT	---->	ADI fuer Drucker
+;		
+;
+; UPF's :	SOSTOP	---->	Soft-Stop Flag fuer CBX
+;		COFG5	---->	Flag CBX-Schild in Betrieb
+;
+;		CUNIT	---->	Integer Unit Nr. auf der das Programm laeuft
+;		ANTW1	---->	Integer Antwort auf Query
+;		AD1BTR	---->	Integer Betriebs Status AD100
+;		AD2BTR	---->	Integer Betriebs Status AD110
+;		AD3BTR	---->	Integer Betriebs Status AD200
+;		AD4BTR	---->	Integer Betriebs Status AD210
+;		KK	---->	Hilfsvariable Kompressor-Trip
+;		RES1	---->	Kompressor-Status vor Kommukations-Ausfall
+;
+;		PTR1	---->	Pointer 1 (fuer Kompressortrip)
+;		PTR2	---->	Pointer 2 (fuer CBX Trip)
+;
+; EPN's : 	42CV106EN --->	Eintrittsventil T-Kreis 1 Endschalter
+;		42CV206EN --->	Eintrittsventil T-Kreis 2 Endschalter
+;		42CV306EN --->	Eintrittsventil T-Kreis 3 Endschalter
+;		42CV406EN --->	Eintrittsventil T-Kreis 4 Endschalter
+;		42CV104EN --->	Verbindung HD - Bypass Endschalter
+;		42CV150EN --->	Bypass Ventil 150 Endschalter
+;		42CV250EN --->	Bypass Ventil 150 Endschalter
+;		42CV350EN --->	Bypass Ventil 150 Endschalter
+;		42CV500EN --->	LN2 Vorlauf Vorkuehler
+;
+;		32UZV120  --->	Austritt MD CBX
+;		32UZV121  --->	Austritt ND CBX
+;		32UZV122  --->	Eintritt HD CBX
+;
+;		42HC408   --->	HD JT Verbindung am kalten Ende
+;		42CV400   --->	Bypass Turbine 7
+;
+;		42UZV618  --->	Lagergas Turbine 1
+;		42UZV628  --->	Lagergas Turbine 2
+;		42UZV638  --->	Lagergas Turbine 3
+;		42UZV648  --->	Lagergas Turbine 4
+;		42UZV658  --->	Lagergas Turbine 5
+;		42UZV668  --->	Lagergas Turbine 6
+;		42UZV678  --->	Lagergas Turbine 7
+;		
+;		42PI012   --->  HD Druck CBX Eintritt
+;		42PI072   --->	JT Druck CBX Austritt
+;
+;		42QI108	  --->	N2 Analyse AD100
+;		42QI109	  --->	N2 Analyse AD110
+;		42QI208	  --->	N2 Analyse AD200
+;		42QI209	  --->	N2 Analyse AD210
+;
+;		42PAS700  --->	Steuerluft Druckschalter
+;
+;		42HS345   --->	Schaltbefehl Schildsimulationsheizung
+;
+;		42HC340	  --->  Schildvorlauf CBX
+;
+;		42TC528	  --->	N2 Vorkuehler GN2 Austritt Temperaturregler
+;		42TC026   --->  N2 Vorkuehler He Austritt Fuehrungsregler
+;		
+;		42PDC230  --->  Differenzdruckregler Schildbetrieb
+;
+;----------------------------------------------------------------------------;
+;
+; 			VARIABLEN VON UNIT INTERF
+;                       *************************
+;
+; RPF's : 	Keine.
+;
+; UPF's :	TRIP42	---->	Trip Signal "Kompressorstop Kstr2"
+;		CTRP42	---->	Trip Signal "Coldboxstop CBX42"
+;
+;
+; EPN's : 	Keine.
+;
+;----------------------------------------------------------------------------;
+;
+; 			VARIABLEN VON UNIT HEADER
+;                       *************************
+;
+; RPF's : 	Keine.
+;
+; UPF's :	CBX42	---->	Integer Zuordnung CBX42 zu Kstr x (Wert des Int)
+;
+;
+; EPN's : 	Keine.
+;
+;===============================================================================
+;
+;
+	UNIT COLD42
+	COMMON INTERF,HEADER
+;
+;	Compiler equates
+;
+	TV1 == '42CV106EN':DIN_VAL
+	TV2 == '42CV206EN':DIN_VAL
+	TV3 == '42CV306EN':DIN_VAL
+	TV4 == '42CV406EN':DIN_VAL
+;
+	PAS == '42PAS700':DIN_VAL
+;
+	CV1 == '42CV104EN':DEV_STAT
+	CV2 == '42CV150EN':DIN_VAL
+	CV3 == '42CV250EN':DIN_VAL
+	CV4 == '42CV350EN':DIN_VAL
+	CV5 == '42CV500EN':DIN_VAL
+;
+	EV1 == '32UZV122':DEV_STAT
+	EV2 == '32UZV121':DEV_STAT
+	EV3 == '32UZV120':DEV_STAT
+;
+	LV1 == '42UZV618':DEV_STAT
+	LV2 == '42UZV628':DEV_STAT
+	LV3 == '42UZV638':DEV_STAT
+	LV4 == '42UZV648':DEV_STAT
+	LV5 == '42UZV658':DEV_STAT
+	LV6 == '42UZV668':DEV_STAT
+        LV7 == '42UZV678':DEV_STAT
+;
+	HC8 == '42HC408':CB_OTVL:2
+	HC0 == '42CV400':CB_OTVL:2
+;
+	PI72 == '42PI072':AI_CURAL
+	PI12 == '42PI012':AI_INVL
+;
+	LAST_TRIP == RES1
+	TEMP_TRIP == KK
+	COMMUNIKATION_BROKEN == 187	;ERROR CODE
+;
+;---------------------------------------------------------------------------
+;
+INI:
+;
+	LET TEMP_TRIP = 1	 		;AT STARTUP ASSUME KOMPRESSOR TRIP
+;
+	GETUNIT CUNIT
+;
+	IF (CUNIT=2) THEN 
+		BEGIN
+		ASSIGN PTR1 = TRIP42
+		ASSIGN PTR2 = CTRP42
+		GOTO TOP
+		END
+;
+	EXIT
+;
+;
+TOP:
+	ON ERROR GOSUB ERR
+;
+;	Ist die BOX noch verlangt?
+;
+	WAITUNTIL (CBX42!=0)
+;
+;	Liegt ein Abschaltgrund vor ?
+;
+	LET LAST_TRIP = TEMP_TRIP
+	LET TEMP_TRIP = PTR1 	; hier Fehler, falls D3 Kommunikation nicht ok
+				; d.h. ON ERROR GOSUB ERR wird wirksam
+;
+	IF (TEMP_TRIP!=1 & PAS=1 & SOSTOP!=1)THEN GOTO ADS1
+;
+;	Abschaltbedingung erfuellt. Kompressorausfall ?
+;
+	IF (TEMP_TRIP=1) THEN
+;
+;	CBX Trip Flag setzen, Meldung
+;
+		BEGIN
+		   QUERYNR ADIOCM,"CBX-STOP DURCH KOMPRESSORAUSFALL"
+		   PRINT   ADIPNT,"CBX-STOP DURCH KOMPRESSORAUSFALL"
+		   GOTO    TRP
+		END
+;
+;	Steuerluftausfall ?
+;
+	IF (PAS!=1) THEN
+;
+;       CBX Trip Flag setzen, Meldung
+;
+		BEGIN	
+		   QUERYNR ADIOCM,"CBX-STOP DURCH STEUERLUFTAUSFALL"
+		   PRINT   ADIPNT,"CBX-STOP DURCH STEUERLUFTAUSFALL"
+		   GOTO    TRP
+		END
+;
+;	Softstop ?
+;
+	IF (SOSTOP!=1) THEN GOTO TOP
+;
+		   QUERYNR ADIOCM,"CBX-STOP DURCH OPERATEUR"
+		   PRINT   ADIPNT,"CBX-STOP DURCH OPERATEUR"
+;
+TOP1:
+;
+;	Kontrollieren ob alle Turbinen - Eintrittsventile geschlossen sind.
+;
+	IF (AND(TV1,1)=1 & AND(TV2,1)=1 & AND(TV3,1)=1 & AND(TV4,1)=1) THEN
+		   GOTO TRP
+;
+;	Turbinen - Eintrittsventile sind nicht geschlossen. Meldung 
+;	SOSTOP zuruecksetzen
+;
+		QUERYNR ADIOCM,"CBX-STOP VERBOTEN: TURBINEN LAUFEN"
+		PRINT   ADIPNT,"CBX-STOP VERBOTEN: TURBINEN LAUFEN"    
+;
+;	Sollen die Turbinen gestoppt werden?
+;
+	QUERY ADIOCM,"ALLE TURBINEN STOPPEN? (j=1)",ANTW1
+		IF ANTW1=1 THEN
+;	Stoppen aller T-Kreise
+		BEGIN
+		PRINT ADIPNT,"STOPP ALLER T-KREISE DURCH OPPERATEUR"
+;
+;	Erst abortieren aller Startprogramme!
+;
+		IF (PGMSTAT("CTUSTART2") != -1) THEN
+			ABORT "CTUSTART2"
+		IF (PGMSTAT("CTSTAT12") != -1) THEN
+			ABORT "CTSTAT12"
+		IF (PGMSTAT("CTSTAT22") != -1) THEN
+			ABORT "CTSTAT22"
+		IF (PGMSTAT("CTSTAT32") != -1) THEN
+			ABORT "CTSTAT32"
+		IF (PGMSTAT("CTSTAT42") != -1) THEN
+			ABORT "CTSTAT42"
+;
+;	Skid Lampen fuer Start CBX und Turbinen auf EIN (Programm nicht aktiv)
+;
+		LAMP ADIOCM,CUNIT+3,1
+		LAMP ADIOCM,CUNIT+7,1
+;
+;	Skid Lampe fuer Stop Turbinen auf AUS (Programm aktiv)
+;
+		LAMP ADIOCM,CUNIT+35,0
+;
+		IF (PGMSTAT("TSTOP12") = -1) THEN
+			RUN "TSTOP12"
+		IF (PGMSTAT("TSTOP22") = -1) THEN
+			RUN "TSTOP22"
+		IF (PGMSTAT("TSTOP32") = -1) THEN
+			RUN "TSTOP32"
+		IF (PGMSTAT("TSTOP42") = -1) THEN
+			RUN "TSTOP42"
+;
+;	Abfahren des Schildkreises
+;
+		IF (PGMSTAT("Cschvbx2") != -1) THEN
+			ABORT "Cschvbx2"
+;
+;	Abwarten bis die stopprogramme sicher angelaufen sind
+;
+	WAIT 30
+;
+;	Abwarten bis die stopprogramme abgelaufen sind
+;
+		WAITUNTIL (PGMSTAT("TSTOP12") =-1)
+		WAITUNTIL (PGMSTAT("TSTOP22") =-1)
+		WAITUNTIL (PGMSTAT("TSTOP32") =-1)
+		WAITUNTIL (PGMSTAT("TSTOP42") =-1)
+;
+;	Skid Lampe fuer Stop Turbinen auf EIN (Programm nicht aktiv)
+;
+		LAMP ADIOCM,CUNIT+35,1
+		GOTO TOP1
+		END
+;
+;	Der Operateur will keine Abschaltung ausfuehren
+;
+      LET SOSTOP=0
+;		LED ON == FINISHED
+		LAMP ADIOCM,(CUNIT+31),1	
+;
+	PRINT ADIPNT,"SOFTSTOP CBX4%i ABGEBROCHEN", CUNIT
+;
+		GOTO TOP
+;
+;-------------------------------------------------------------------------
+;
+;		ABSCHALT SEQUENZ
+;
+;-------------------------------------------------------------------------
+;
+TRP:
+;						LED OUT == ACTIVE
+  	LAMP ADIOCM,(CUNIT+31),0
+;
+;
+;	Erst abortieren aller Startprogramme!
+;
+		IF (PGMSTAT("CTUSTART2") != -1) THEN
+			ABORT "CTUSTART2"
+		IF (PGMSTAT("CTSTAT12") != -1) THEN
+			ABORT "CTSTAT12"
+		IF (PGMSTAT("CTSTAT22") != -1) THEN
+			ABORT "CTSTAT22"
+		IF (PGMSTAT("CTSTAT32") != -1) THEN
+			ABORT "CTSTAT32"
+		IF (PGMSTAT("CTSTAT42") != -1) THEN
+			ABORT "CTSTAT42"
+;
+;	Skid Lampen fuer Start CBX und Turbinen auf EIN (Programm nicht aktiv)
+;
+		LAMP ADIOCM,CUNIT+3,1
+		LAMP ADIOCM,CUNIT+7,1
+;
+;	Trip Flag fuer VBX Dewar setzen
+;
+	LET PTR2 = 1
+;
+;
+;	Adsorber 300 entlasten
+;
+	IF (PGMSTAT("ADSTART32") != -1) THEN
+		ABORT "ADSTART32"
+;
+	LAMP ADIOCM,CUNIT+11,1
+;
+	IF (PGMSTAT("ADSTOP32") =-1) THEN
+		RUN "ADSTOP32"
+;
+;	Schildsimulationsheizung ausschalten. Ventile zwischen HD und
+;	ND Ast schliessen, Stickstoff Zufuhr schliessen.
+;
+	CLOSE '42HS345'
+;
+	CLOSE '32UZV122'
+;
+	PUTMANL '42HC340'
+	PUTOUT  '42HC340',0
+;
+	PUTMANL '42CV400'
+	PUTOUT  '42CV400',0
+	PUTMANL '42HC104'
+	PUTOUT  '42HC104',0
+;
+	OPENCASC '42TC528'
+	PUTMANL '42TC528'
+	PUTOUT  '42TC528',0.0
+	PUTMANL '42TC026'
+	PUTOUT  '42TC026',0.0
+;
+	IF (TEMP_TRIP=1 | PAS !=1) THEN GOTO GOON	; BEI KOMPRESSOR-AUSFALL
+;							  KEIN ABSAUGEN MOEGLICH
+	WAITUNTIL (AND(EV1,1)=1)COUNT 60,FEME1
+;
+;	Absaugen CBX (und VBX)
+;
+	QUERYNR ADIOCM,"DIE COLDBOX WIRD ABGESAUGT !"
+	PRINT ADIPNT,"DIE COLDBOX 4%i WIRD ABGESAUGT !",CUNIT
+;
+	LET '42PI072':AI_POLL=4
+	LET '42HC408':AI_POLL=4
+	LET '42HC408':CB_OTRT:1 = 0.5
+;
+LBL1:
+	PUTMANL '42HC408'
+	PUTOUT  '42HC408',30.0
+;
+	WAITUNTIL (AND(PI72,1)=1 | HC8 = 30.0)COUNT 110,LBL1
+;
+	PUTOUT '42HC408',HC8
+	IF (HC8 > 31.0) THEN
+		BEGIN
+		WAITUNTIL (AND(PI72,1) !=1 | PTR1=1 | PAS !=1)COUNT 600,LBL2
+		IF (PTR1=1 | PAS !=1) THEN GOTO GOON
+		GOTO LBL1
+		END
+;
+LBL2:
+	LET '42CV400':AI_POLL=4
+	LET '42CV400':CB_OTRT:1 = 0.5
+;
+	PUTMANL '42CV400'
+	PUTOUT  '42CV400',50.0
+;
+	WAITUNTIL (AND(PI72,1)=1 | HC0 = 50.0)COUNT 90,LBL2
+;
+	PUTOUT '42CV400',HC0
+	IF (HC0 < 49.0) THEN
+		BEGIN
+		WAITUNTIL (AND(PI72,1) !=1 | PTR1=1 | PAS !=1)COUNT 600,LBL3
+		IF (PTR1=1 | PAS !=1) THEN GOTO GOON
+		GOTO LBL2
+		END
+;
+LBL3:
+	WAITUNTIL (PI12 < 6.0 | PTR1 =1 | PAS !=1)COUNT 900,LBL4
+LBL4:
+;	QUERYNR ADIOCM,"DIE COLDBOX WURDE ABGESAUGT"
+	PRINT ADIPNT,"DIE COLDBOX WURDE ABGESAUGT"
+;
+GOON:
+	LET '42HC408':AI_POLL=20
+	LET '42HC408':CB_OTRT:1 = 1.0
+;	
+	LET '42PI072':AI_POLL=20
+	LET '42CV400':AI_POLL=12
+	LET '42CV400':CB_OTRT:1 = 1.0
+;
+	PUTMANL '42CV400'
+	PUTOUT  '42CV400',0.0
+	PUTMANL '42CV150'
+	PUTOUT  '42CV150',100.0
+	PUTMANL '42CV250'
+	PUTOUT  '42CV250',0.0
+	PUTMANL '42CV350'
+	PUTOUT  '42CV350',0.0
+	PUTMANL '42TC241'
+	PUTOUT  '42TC241',0.0
+	PUTMANL '42PDC230'
+	PUTOUT  '42PDC230',0.0
+;
+	OPENCASC '42TC528'
+	PUTMANL '42TC528'
+	PUTOUT  '42TC528',0.0
+;
+;	Ventilkontrolle
+;
+	WAITUNTIL (TV1=1 & TV2=1) COUNT 120,FEME2
+	WAITUNTIL (TV3=1 & TV4=1) COUNT 120,FEME2
+	WAITUNTIL (AND(CV1,1)=1 & CV3=1) COUNT 120,FEME2
+	WAITUNTIL (CV4=1 & CV5=1) COUNT 120,FEME2
+; 
+;
+;	Ruecksetzen des Flag COFG5 (Schildbetrieb)
+;
+	LET COFG5 = 0
+;
+; Warten bis die Lagergaseinspeisungen geschlossen sind
+;
+LBL5:
+;
+	WAITUNTIL (AND(LV1,1)=1 & AND(LV2,1)=1 & AND(LV3,1)=1) COUNT 900,FEME3
+	WAITUNTIL (AND(LV4,1)=1 & AND(LV5,1)=1 ) COUNT 900,FEME3
+	WAITUNTIL (AND(LV6,1)=1 & AND(LV7,1)=1 ) COUNT 900,FEME3
+;
+; Coldbox Ein/Austrittsventile schliessen
+;
+	CLOSE '32UZV122'
+	CLOSE '32UZV121'
+	CLOSE '32UZV120'
+;
+;
+; Meldung an den Operateur
+;
+	QUERYNR ADIOCM,"CBX ABGESCHALTET"
+	PRINT   ADIPNT,"CBX ABGESCHALTET"
+;
+; Warten bis kein Abschaltgrund mehr vorliegt
+;
+	WAITUNTIL (PTR1=0 & PAS=1)
+;
+; Leuchttaste auf Dauerlicht == FINISHED
+;
+	LAMP ADIOCM,(CUNIT+31),1
+;
+; Softstop und Tripflag zurueucksetzen
+;
+	LET SOSTOP=0
+	LET PTR2=0
+;
+	GOTO TOP
+;
+FEME1:
+	QUERYNR ADIOCM,"HD EINTRITT SCHLIESST NICHT!"
+	PRINT ADIPNT,"HD EINTRITT SCHLIESST NICHT!"
+	GOTO TRP
+;
+FEME2:
+	QUERYNR ADIOCM,"CBX42:ABSCHALTUNG NICHT ERFOLGREICH"
+	PRINT   ADIPNT,"CBX42:ABSCHALTUNG NICHT ERFOLGREICH"     
+        GOTO GOON
+;
+FEME3:
+	QUERYNR ADIOCM,"TURBINENABSCHALTUNG NICHT ERFOLGREICH"
+	PRINT ADIPNT,"TURBINENABSCHALTUNG IN CBX4%i NICHT ERFOLGREICH",CUNIT
+	GOTO LBL5
+;
+;
+;
+;	UEBERWACHUNG DER ADSORBER
+;	*************************
+;
+ADS1:
+;
+; Ueberwachung Analyse AD100
+; --------------------------
+;
+	IF('42QI108':AI_INVL > 20. )THEN
+		BEGIN
+		IF(AD1BTR=0)THEN
+			BEGIN
+			QUERYNR ADIOCM," * * *  ANALYSE AD100 > 20 PPM  * * * "
+			PRINT ADIPNT,"Analyse AD100 in CBX 4%i > 20 ppm",CUNIT
+	LET 		AD1BTR=1
+			END
+;
+		IF(PGMSTAT("ADS12") = -1)THEN RUN "ADS12"
+		END
+;
+; Ueberwachung Analyse AD110
+; --------------------------
+;
+	IF('42QI109':AI_INVL > 20. )THEN
+		BEGIN
+;
+		IF(AD2BTR =0)THEN
+			BEGIN
+			QUERYNR ADIOCM," * * *  ANALYSE AD110 > 20 PPM  * * * "
+			PRINT ADIPNT,"Analyse AD110 in CBX 4%i > 20 ppm",CUNIT
+	LET 		AD2BTR=1
+			END
+		IF(PGMSTAT("ADS12") = -1)THEN RUN "ADS12"
+		END
+;
+; Ueberwachung Analyse AD200
+; --------------------------
+;
+	IF('42QI208':AI_INVL > 20. )THEN 
+		BEGIN
+;
+		IF(AD3BTR =0)THEN 
+			BEGIN
+			QUERYNR ADIOCM," * * *  ANALYSE AD200 > 20 PPM  * * * "
+			PRINT ADIPNT,"Analyse AD200 in CBX 4%i > 20 ppm",CUNIT
+	LET 		AD3BTR=1
+			END
+		IF(PGMSTAT("ADS12") = -1)THEN RUN "ADS12"
+		END
+;
+; Ueberwachung Analyse AD210
+; --------------------------
+;
+	IF('42QI209':AI_INVL > 20. )THEN
+		BEGIN
+		IF(AD4BTR =0)THEN 
+			BEGIN
+			QUERYNR ADIOCM," * * *  ANALYSE AD210 > 20 PPM  * * * "
+			PRINT ADIPNT,"Analyse AD210 in CBX 4%i > 20 ppm",CUNIT
+	LET 		AD4BTR=1
+			END
+		IF(PGMSTAT("ADS12") = -1)THEN RUN "ADS12"
+		END
+;
+	GOTO TOP
+;
+ERR:
+	LET I = ERRNUM()
+	LET J = ERRLIN()
+	PRINT 27,"ERROR %i IN LINE %i",I,J
+	WAIT 10		;VERHINDERE DAUERPRINT FALLS ANDERER RECHNER OFF
+;
+	IF (I = COMMUNIKATION_BROKEN) THEN
+		BEGIN
+	LET 	TEMP_TRIP = LAST_TRIP	; Kompressor wird wohl noch so sein, wie
+					; vor dem Kommunikationsausfall
+		PRINT ADIPNT, "CBX 42: Keine Verbindung zu Kompressor-PCM"
+		ERSRET
+		END
+	ELSE
+		BEGIN
+		ERSCLR
+		GOTO TOP
+		END
+	END

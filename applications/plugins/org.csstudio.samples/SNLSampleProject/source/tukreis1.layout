@@ -1,0 +1,200 @@
+<diagram name="SNL-Diagram">
+  <stateData>
+    <stateSet name="tukreis1" location_x="-516" location_y="-1093" width="2600" height="1329" />
+    <state name="tukreis1.gestoppt" location_x="157" location_y="-1060" width="100" height="50" />
+    <state name="tukreis1.bereit" location_x="263" location_y="-927" width="100" height="50" />
+    <state name="tukreis1.startBereit" location_x="585" location_y="-926" width="100" height="50" />
+    <state name="tukreis1.run" location_x="418" location_y="-584" width="100" height="50" />
+    <state name="tukreis1.autoBetrieb" location_x="252" location_y="-397" width="100" height="50" />
+    <state name="tukreis1.manDrosselBetrieb" location_x="532" location_y="-127" width="100" height="50" />
+    <state name="tukreis1.manOeffneBetrieb" location_x="784" location_y="-408" width="100" height="50" />
+    <state name="tukreis1.softStop" location_x="388" location_y="59" width="100" height="50" />
+    <state name="tukreis1.stopit" location_x="723" location_y="57" width="100" height="50" />
+    <stateSet name="tk1ueberw" location_x="43" location_y="246" width="500" height="321" />
+    <state name="tk1ueberw.not_ok" location_x="93" location_y="429" width="100" height="50" />
+    <state name="tk1ueberw.ok" location_x="393" location_y="429" width="100" height="50" />
+    <stateSet name="tuDrehzahlen" location_x="41" location_y="594" width="1100" height="569" />
+    <state name="tuDrehzahlen.gross" location_x="106" location_y="969" width="100" height="50" />
+    <state name="tuDrehzahlen.mittel" location_x="386" location_y="705" width="100" height="50" />
+    <state name="tuDrehzahlen.klein" location_x="681" location_y="988" width="100" height="50" />
+    <state name="tuDrehzahlen.bereit" location_x="977" location_y="1107" width="100" height="50" />
+  </stateData>
+  <connectionData>
+    <connection name="tukreis1.gestoppt.(efTest( tk1Freigabe))" />
+    <connection name="tukreis1.bereit.(!efTest( tk1Freigabe))">
+      <point location_x="223" location_y="-901" />
+      <point location_x="182" location_y="-902" />
+    </connection>
+    <connection name="tukreis1.bereit.(startFreigabe)" />
+    <connection name="tukreis1.startBereit.(!efTest( tk1Freigabe))">
+      <point location_x="604" location_y="-979" />
+    </connection>
+    <connection name="tukreis1.startBereit.(!startFreigabe)">
+      <point location_x="535" location_y="-860" />
+      <point location_x="398" location_y="-859" />
+    </connection>
+    <connection name="tukreis1.startBereit.(!CV106zu || CV106&gt;0.01)">
+      <point location_x="547" location_y="-818" />
+      <point location_x="437" location_y="-819" />
+      <point location_x="393" location_y="-819" />
+    </connection>
+    <connection name="tukreis1.startBereit.(!UZV618offen || !UZV628offen || !UZV638offen)">
+      <point location_x="555" location_y="-771" />
+      <point location_x="390" location_y="-770" />
+    </connection>
+    <connection name="tukreis1.startBereit.(PDA619!=OK || PDA629!=OK || PDA639!=OK)">
+      <point location_x="548" location_y="-726" />
+      <point location_x="385" location_y="-725" />
+    </connection>
+    <connection name="tukreis1.startBereit.(FA613!=OK)">
+      <point location_x="548" location_y="-680" />
+      <point location_x="385" location_y="-680" />
+    </connection>
+    <connection name="tukreis1.startBereit.(StartTK1)">
+      <point location_x="635" location_y="-677" />
+    </connection>
+    <connection name="tukreis1.run.(!efTest( tk1Freigabe))" />
+    <connection name="tukreis1.run.(TI126 &lt; TI126LOW)" />
+    <connection name="tukreis1.run.(TC126ERR &lt; -2.0)">
+      <point location_x="1117" location_y="119" />
+      <point location_x="1583" location_y="119" />
+    </connection>
+    <connection name="tukreis1.run.(SC610OUT &lt; 2.0 || SC620OUT &lt; 2.0 || SC630OUT &lt; 2.0)">
+      <point location_x="1130" location_y="93" />
+      <point location_x="1570" location_y="93" />
+    </connection>
+    <connection name="tukreis1.run.(abs(TC126ERR) &lt; 2.0)" />
+    <connection name="tukreis1.run.(TC126ERR &gt; 2.0&#xD;&#xA;&#x9;&#x9;&#x9;&amp;&amp; ( SC610OUT &gt; 5.0 &amp;&amp; SC620OUT &gt; 5.0 &amp;&amp; SC630OUT &gt; 5.0)&#xD;&#xA;&#x9;&#x9;&#x9;&amp;&amp; PI105 &gt; (PI012-0.3)&#xD;&#xA;&#x9;&#x9;&#x9;&amp;&amp; TC126OUT &lt; 90.0)" />
+    <connection name="tukreis1.run.(!StartTK1)" />
+    <connection name="tukreis1.autoBetrieb.(!efTest( tk1Freigabe))" />
+    <connection name="tukreis1.autoBetrieb.(TI126 &lt; TI126LOW)" />
+    <connection name="tukreis1.autoBetrieb.(TC126ERR &lt; -2.0)">
+      <point location_x="1417" location_y="119" />
+      <point location_x="1583" location_y="119" />
+    </connection>
+    <connection name="tukreis1.autoBetrieb.(SC610OUT &lt; 2.0 || SC620OUT &lt; 2.0 || SC630OUT &lt; 2.0)">
+      <point location_x="1430" location_y="93" />
+      <point location_x="1570" location_y="93" />
+    </connection>
+    <connection name="tukreis1.autoBetrieb.(TC126ERR &gt; 2.0&#xD;&#xA;&#x9;&#x9;&#x9;&amp;&amp; ( SC610OUT &gt; 5.0 &amp;&amp; SC620OUT &gt; 5.0 &amp;&amp; SC630OUT &gt; 5.0)&#xD;&#xA;&#x9;&#x9;&#x9;&amp;&amp; PI105 &gt; (PI012-0.3)&#xD;&#xA;&#x9;&#x9;&#x9;&amp;&amp; TC126OUT &lt; 90.0)">
+      <point location_x="1417" location_y="119" />
+      <point location_x="1883" location_y="119" />
+    </connection>
+    <connection name="tukreis1.autoBetrieb.(!StartTK1)" />
+    <connection name="tukreis1.manDrosselBetrieb.(!efTest( tk1Freigabe))" />
+    <connection name="tukreis1.manDrosselBetrieb.(TI126 &gt; TI126LOW&#xD;&#xA;&#x9;&#x9;&#x9;&amp;&amp; SC610OUT &gt; 2.0 &amp;&amp; SC620OUT &gt; 2.0 &amp;&amp; SC630OUT &gt; 2.0&#xD;&#xA;&#x9;&#x9;&#x9;&amp;&amp; abs(TC126ERR) &lt; 2.0)">
+      <point location_x="582" location_y="-213" />
+      <point location_x="281" location_y="-215" />
+    </connection>
+    <connection name="tukreis1.manDrosselBetrieb.(TC126ERR &gt; 2.0&#xD;&#xA;&#x9;&#x9;&#x9;&amp;&amp; ( SC610OUT &gt; 5.0 &amp;&amp; SC620OUT &gt; 5.0 &amp;&amp; SC630OUT &gt; 5.0)&#xD;&#xA;&#x9;&#x9;&#x9;&amp;&amp; PI105 &gt; (PI012-0.3)&#xD;&#xA;&#x9;&#x9;&#x9;&amp;&amp; TC126OUT &lt; 90.0)">
+      <point location_x="1717" location_y="119" />
+      <point location_x="1883" location_y="119" />
+    </connection>
+    <connection name="tukreis1.manDrosselBetrieb.(!StartTK1)" />
+    <connection name="tukreis1.manOeffneBetrieb.(!efTest( tk1Freigabe))" />
+    <connection name="tukreis1.manOeffneBetrieb.(TI126 &lt; TI126LOW)" />
+    <connection name="tukreis1.manOeffneBetrieb.(TC126ERR &lt; -2.0)">
+      <point location_x="1883" location_y="161" />
+      <point location_x="1717" location_y="161" />
+    </connection>
+    <connection name="tukreis1.manOeffneBetrieb.(SC610OUT &lt; 2.0 || SC620OUT &lt; 2.0 || SC630OUT &lt; 2.0)">
+      <point location_x="1870" location_y="187" />
+      <point location_x="1730" location_y="187" />
+    </connection>
+    <connection name="tukreis1.manOeffneBetrieb.(abs(TC126ERR) &lt; 2.0)" />
+    <connection name="tukreis1.manOeffneBetrieb.(!StartTK1)" />
+    <connection name="tukreis1.softStop.(CV106OVAL == 0.0 || delay(210.0))">
+      <point location_x="337" location_y="86" />
+      <point location_x="171" location_y="80" />
+      <point location_x="110" location_y="17" />
+      <point location_x="110" location_y="-192" />
+      <point location_x="111" location_y="-752" />
+      <point location_x="109" location_y="-997" />
+    </connection>
+    <connection name="tukreis1.stopit.(TRUE)">
+      <point location_x="645" location_y="82" />
+      <point location_x="640" location_y="164" />
+      <point location_x="416" location_y="167" />
+      <point location_x="80" location_y="166" />
+      <point location_x="80" location_y="-364" />
+      <point location_x="76" location_y="-1015" />
+    </connection>
+    <connection name="tk1ueberw.not_ok.(UZV120offen &amp;&amp; UZV121offen &amp;&amp; UZV122offen&#xD;&#xA;&#x9;&#x9;&#x9;&amp;&amp; !adsorberZu&#xD;&#xA;&#x9;&#x9;&#x9;&amp;&amp; freigabe&#xD;&#xA;&#x9;&#x9;&#x9;&amp;&amp; CV127offen&#xD;&#xA;&#x9;&#x9;&#x9;&amp;&amp; summenAlarm==OK&#xD;&#xA;&#x9;&#x9;&#x9;&amp;&amp; !PI012roc &amp;&amp; !PI127roc&#xD;&#xA;&#x9;&#x9;&#x9;&amp;&amp; kstrOK &amp;&amp; cboxOK)">
+      <point location_x="217" location_y="346" />
+      <point location_x="382" location_y="346" />
+    </connection>
+    <connection name="tk1ueberw.ok.(!UZV120offen || !UZV121offen || !UZV122offen)" />
+    <connection name="tk1ueberw.ok.(adsorberZu)">
+      <point location_x="383" location_y="361" />
+      <point location_x="217" location_y="361" />
+    </connection>
+    <connection name="tk1ueberw.ok.(!freigabe)">
+      <point location_x="370" location_y="387" />
+      <point location_x="230" location_y="387" />
+    </connection>
+    <connection name="tk1ueberw.ok.(!CV127offen)">
+      <point location_x="362" location_y="415" />
+      <point location_x="238" location_y="415" />
+    </connection>
+    <connection name="tk1ueberw.ok.(summenAlarm==NOT_OK)">
+      <point location_x="360" location_y="445" />
+      <point location_x="240" location_y="445" />
+    </connection>
+    <connection name="tk1ueberw.ok.(PI012roc || PI127roc)">
+      <point location_x="364" location_y="476" />
+      <point location_x="236" location_y="476" />
+    </connection>
+    <connection name="tk1ueberw.ok.(!kstrOK)">
+      <point location_x="374" location_y="507" />
+      <point location_x="226" location_y="507" />
+    </connection>
+    <connection name="tk1ueberw.ok.(!cboxOK)">
+      <point location_x="390" location_y="537" />
+      <point location_x="210" location_y="537" />
+    </connection>
+    <connection name="tuDrehzahlen.gross.((SI1&lt;400.0 || SI2&lt;400.0 || SI3&lt;400.0)&#xD;&#xA;&#x9;&#x9;&#x9;&amp;&amp; (SI1&gt;100.0 || SI2&gt;100.0 || SI3&gt;100.0))">
+      <point location_x="425" location_y="887" />
+    </connection>
+    <connection name="tuDrehzahlen.gross.(SI1&lt;100.0 &amp;&amp; SI2&lt;100.0 &amp;&amp; SI3&lt;100.0)" />
+    <connection name="tuDrehzahlen.mittel.(SI1&gt;400.0 &amp;&amp; SI2&gt;400.0 &amp;&amp; SI3&gt;400.0)">
+      <point location_x="157" location_y="722" />
+      <point location_x="131" location_y="837" />
+    </connection>
+    <connection name="tuDrehzahlen.mittel.(SI1&lt;100.0 &amp;&amp; SI2&lt;100.0 &amp;&amp; SI3&lt;100.0)">
+      <point location_x="495" location_y="849" />
+    </connection>
+    <connection name="tuDrehzahlen.klein.(SI1&gt;400.0 &amp;&amp; SI2&gt;400.0 &amp;&amp; SI3&gt;400.0)">
+      <point location_x="627" location_y="956" />
+      <point location_x="354" location_y="957" />
+    </connection>
+    <connection name="tuDrehzahlen.klein.((SI1&lt;400.0 || SI2&lt;400.0 || SI3&lt;400.0)&#xD;&#xA;&#x9;&#x9;&#x9;&amp;&amp; (SI1&gt;100.0 || SI2&gt;100.0 || SI3&gt;100.0))">
+      <point location_x="796" location_y="753" />
+      <point location_x="560" location_y="745" />
+    </connection>
+    <connection name="tuDrehzahlen.klein.(CV106zu &amp;&amp; CV106&lt;0.01&#xD;&#xA;&#x9;&#x9;&#x9;&amp;&amp; UZV618offen &amp;&amp; UZV628offen &amp;&amp; UZV638offen&#xD;&#xA;&#x9;&#x9;&#x9;&amp;&amp; PDA619==OK &amp;&amp; PDA629==OK &amp;&amp; PDA639==OK&#xD;&#xA;&#x9;&#x9;&#x9;&amp;&amp; FA613==OK)">
+      <point location_x="788" location_y="882" />
+      <point location_x="958" location_y="882" />
+    </connection>
+    <connection name="tuDrehzahlen.bereit.(SI1&gt;400.0 &amp;&amp; SI2&gt;400.0 &amp;&amp; SI3&gt;400.0)" />
+    <connection name="tuDrehzahlen.bereit.((SI1&lt;400.0 || SI2&lt;400.0 || SI3&lt;400.0)&#xD;&#xA;&#x9;&#x9;&#x9;&amp;&amp; (SI1&gt;100.0 || SI2&gt;100.0 || SI3&gt;100.0))">
+      <point location_x="1119" location_y="726" />
+      <point location_x="958" location_y="726" />
+    </connection>
+    <connection name="tuDrehzahlen.bereit.(!CV106zu || CV106&gt;0.01)">
+      <point location_x="950" location_y="1008" />
+      <point location_x="845" location_y="1005" />
+    </connection>
+    <connection name="tuDrehzahlen.bereit.(!UZV618offen || !UZV628offen || !UZV638offen)">
+      <point location_x="958" location_y="912" />
+      <point location_x="797" location_y="911" />
+    </connection>
+    <connection name="tuDrehzahlen.bereit.(PDA619!=OK || PDA629!=OK || PDA639!=OK)">
+      <point location_x="958" location_y="951" />
+      <point location_x="785" location_y="955" />
+    </connection>
+    <connection name="tuDrehzahlen.bereit.(FA613!=OK)">
+      <point location_x="954" location_y="974" />
+      <point location_x="803" location_y="973" />
+    </connection>
+  </connectionData>
+</diagram>

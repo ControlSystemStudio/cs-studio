@@ -1,0 +1,2974 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<display modelVersion="1.0">
+  <property type="sds.choiceoption" id="cursor">
+    <option id="cursor.default" />
+  </property>
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.boolean" id="connected" value="false" />
+  <property type="sds.boolean" id="geometry_on" value="false" />
+  <property type="sds.integer" id="border.width" value="0" />
+  <property type="sds.map" id="aliases">
+    <map />
+  </property>
+  <property type="sds.boolean" id="ruler_on" value="false" />
+  <property type="sds.boolean" id="PROP_ACCESS_GRANTED" value="true" />
+  <property type="sds.integer" id="height" value="600" />
+  <property type="sds.color" id="color.background">
+    <color red="240" green="240" blue="240" />
+  </property>
+  <property type="sds.boolean" id="grid_on" value="false" />
+  <property type="sds.double" id="rotation" value="0.0" />
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.string" id="name" value="DisplayModel" />
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.integer" id="position.y" value="10" />
+  <property type="sds.integer" id="position.x" value="10" />
+  <property type="sds.string" id="primary_pv" value="" />
+  <property type="sds.integer" id="width" value="800" />
+  <property type="sds.string" id="layer" value="" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+  </property>
+  <property type="sds.color" id="color.foreground">
+    <color red="200" green="100" blue="100" />
+  </property>
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+  </property>
+  <property type="sds.boolean" id="PROP_WRITE_ACCESS_GRANTED" value="true" />
+  <property type="sds.boolean" id="display_border_visibility" value="true" />
+  <property type="sds.paramstring" id="tooltip" value="" />
+  <layer layer_name="DEFAULT" layer_index="0" layer_visibility="true" />
+<widget type="org.csstudio.sds.components.Label">
+  <aliasDescriptors>
+    <aliasDescriptor name="channel" value="12TI459_ai" />
+  </aliasDescriptors>
+  <property type="sds.option" id="value_type">
+    <option id="0" />
+  </property>
+  <property type="sds.choiceoption" id="cursor">
+    <option id="cursor.default" />
+  </property>
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.boolean" id="connected" value="false">
+    <dynamicsDescriptor ruleId="rule.null" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+      <connectionState state="DISCONNECTED" value="false" />
+      <connectionState state="CONNECTED" value="true" />
+      <connectionState state="CONNECTION_FAILED" value="false" />
+      <connectionState state="CONNECTION_LOST" value="false" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.integer" id="border.width" value="0">
+    <dynamicsDescriptor ruleId="cosyrules.color.alarmBorderWidth" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.double" id="text_rotation" value="90.0" />
+  <property type="sds.map" id="aliases">
+    <map>
+      <mapEntry name="channel" value="12TI459_ai" />
+    </map>
+  </property>
+  <property type="sds.boolean" id="PROP_ACCESS_GRANTED" value="true" />
+  <property type="sds.integer" id="height" value="15" />
+  <property type="sds.color" id="color.background">
+    <color red="230" green="230" blue="230" />
+    <dynamicsDescriptor ruleId="rule.null" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+      <connectionState state="CONNECTED">
+        <color red="230" green="230" blue="230" />
+      </connectionState>
+      <connectionState state="INITIAL">
+        <color red="255" green="168" blue="222" />
+      </connectionState>
+      <connectionState state="CONNECTION_LOST">
+        <color red="255" green="9" blue="163" />
+      </connectionState>
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.string" id="value.text" value="Label">
+    <dynamicsDescriptor ruleId="directConnection" useConnectionStates="false">
+      <inputChannel name="$channel$, string" type="java.lang.Number" />
+      <connectionState state="INITIAL" value="Initialisation" />
+      <connectionState state="CONNECTION_LOST" value="Connection lost" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.string" id="name" value="LabelModel" />
+  <property type="sds.integer" id="offset.y" value="0" />
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.integer" id="position.y" value="79" />
+  <property type="sds.integer" id="offset.x" value="0" />
+  <property type="sds.integer" id="precision" value="2" />
+  <property type="sds.integer" id="position.x" value="59" />
+  <property type="sds.font" id="font">
+    <font fontName="Arial" height="8" style="0" />
+  </property>
+  <property type="sds.string" id="primary_pv" value="$channel$" />
+  <property type="sds.integer" id="width" value="51" />
+  <property type="sds.string" id="layer" value="DEFAULT" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+    <dynamicsDescriptor ruleId="cosyrules.color.alarm" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.color" id="color.foreground">
+    <color red="0" green="0" blue="192" />
+  </property>
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+    <dynamicsDescriptor ruleId="cosyrules.color.alarmBorder" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.boolean" id="transparent_background" value="false" />
+  <property type="sds.option" id="textAlignment">
+    <option id="0" />
+  </property>
+  <property type="sds.boolean" id="PROP_WRITE_ACCESS_GRANTED" value="true" />
+  <property type="sds.paramstring" id="tooltip" value="${aliases}&#xA;Value:&#x9;${value.text}" />
+</widget>
+<widget type="org.csstudio.sds.components.Label">
+  <aliasDescriptors>
+    <aliasDescriptor name="channel" value="22TI560_ai" />
+  </aliasDescriptors>
+  <property type="sds.option" id="value_type">
+    <option id="0" />
+  </property>
+  <property type="sds.choiceoption" id="cursor">
+    <option id="cursor.default" />
+  </property>
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.boolean" id="connected" value="false">
+    <dynamicsDescriptor ruleId="rule.null" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+      <connectionState state="DISCONNECTED" value="false" />
+      <connectionState state="CONNECTED" value="true" />
+      <connectionState state="CONNECTION_FAILED" value="false" />
+      <connectionState state="CONNECTION_LOST" value="false" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.integer" id="border.width" value="0">
+    <dynamicsDescriptor ruleId="cosyrules.color.alarmBorderWidth" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.double" id="text_rotation" value="90.0" />
+  <property type="sds.map" id="aliases">
+    <map>
+      <mapEntry name="channel" value="22TI560_ai" />
+    </map>
+  </property>
+  <property type="sds.boolean" id="PROP_ACCESS_GRANTED" value="true" />
+  <property type="sds.integer" id="height" value="15" />
+  <property type="sds.color" id="color.background">
+    <color red="230" green="230" blue="230" />
+    <dynamicsDescriptor ruleId="rule.null" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+      <connectionState state="CONNECTED">
+        <color red="230" green="230" blue="230" />
+      </connectionState>
+      <connectionState state="INITIAL">
+        <color red="255" green="168" blue="222" />
+      </connectionState>
+      <connectionState state="CONNECTION_LOST">
+        <color red="255" green="9" blue="163" />
+      </connectionState>
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.string" id="value.text" value="Label">
+    <dynamicsDescriptor ruleId="directConnection" useConnectionStates="false">
+      <inputChannel name="$channel$, string" type="java.lang.Number" />
+      <connectionState state="INITIAL" value="Initialisation" />
+      <connectionState state="CONNECTION_LOST" value="Connection lost" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.string" id="name" value="LabelModel" />
+  <property type="sds.integer" id="offset.y" value="0" />
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.integer" id="position.y" value="94" />
+  <property type="sds.integer" id="offset.x" value="0" />
+  <property type="sds.integer" id="precision" value="2" />
+  <property type="sds.integer" id="position.x" value="59" />
+  <property type="sds.font" id="font">
+    <font fontName="Arial" height="8" style="0" />
+  </property>
+  <property type="sds.string" id="primary_pv" value="$channel$" />
+  <property type="sds.integer" id="width" value="51" />
+  <property type="sds.string" id="layer" value="DEFAULT" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+    <dynamicsDescriptor ruleId="cosyrules.color.alarm" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.color" id="color.foreground">
+    <color red="0" green="0" blue="192" />
+  </property>
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+    <dynamicsDescriptor ruleId="cosyrules.color.alarmBorder" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.boolean" id="transparent_background" value="false" />
+  <property type="sds.option" id="textAlignment">
+    <option id="0" />
+  </property>
+  <property type="sds.boolean" id="PROP_WRITE_ACCESS_GRANTED" value="true" />
+  <property type="sds.paramstring" id="tooltip" value="${aliases}&#xA;Value:&#x9;${value.text}" />
+</widget>
+<widget type="org.csstudio.sds.components.Label">
+  <property type="sds.option" id="value_type">
+    <option id="1" />
+  </property>
+  <property type="sds.choiceoption" id="cursor">
+    <option id="cursor.default" />
+  </property>
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.boolean" id="connected" value="false">
+    <dynamicsDescriptor ruleId="rule.null" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+      <connectionState state="DISCONNECTED" value="false" />
+      <connectionState state="CONNECTED" value="true" />
+      <connectionState state="CONNECTION_FAILED" value="false" />
+      <connectionState state="CONNECTION_LOST" value="false" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.integer" id="border.width" value="0" />
+  <property type="sds.double" id="text_rotation" value="90.0" />
+  <property type="sds.map" id="aliases">
+    <map />
+  </property>
+  <property type="sds.boolean" id="PROP_ACCESS_GRANTED" value="true" />
+  <property type="sds.integer" id="height" value="15" />
+  <property type="sds.color" id="color.background">
+    <color red="230" green="230" blue="230" />
+  </property>
+  <property type="sds.string" id="value.text" value="TLIMIT: " />
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.string" id="name" value="LabelModel" />
+  <property type="sds.integer" id="offset.y" value="0" />
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.integer" id="position.y" value="111" />
+  <property type="sds.integer" id="offset.x" value="0" />
+  <property type="sds.integer" id="precision" value="2" />
+  <property type="sds.integer" id="position.x" value="10" />
+  <property type="sds.font" id="font">
+    <font fontName="Arial" height="8" style="0" />
+  </property>
+  <property type="sds.string" id="primary_pv" value="$channel$" />
+  <property type="sds.integer" id="width" value="49" />
+  <property type="sds.string" id="layer" value="DEFAULT" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+  </property>
+  <property type="sds.color" id="color.foreground">
+    <color red="0" green="0" blue="192" />
+  </property>
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+  </property>
+  <property type="sds.boolean" id="transparent_background" value="false" />
+  <property type="sds.option" id="textAlignment">
+    <option id="3" />
+  </property>
+  <property type="sds.boolean" id="PROP_WRITE_ACCESS_GRANTED" value="true" />
+  <property type="sds.paramstring" id="tooltip" value="${aliases}&#xA;Value:&#x9;${value.text}" />
+</widget>
+<widget type="org.csstudio.sds.components.Label">
+  <property type="sds.option" id="value_type">
+    <option id="1" />
+  </property>
+  <property type="sds.choiceoption" id="cursor">
+    <option id="cursor.default" />
+  </property>
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.boolean" id="connected" value="false">
+    <dynamicsDescriptor ruleId="rule.null" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+      <connectionState state="DISCONNECTED" value="false" />
+      <connectionState state="CONNECTED" value="true" />
+      <connectionState state="CONNECTION_FAILED" value="false" />
+      <connectionState state="CONNECTION_LOST" value="false" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.integer" id="border.width" value="0" />
+  <property type="sds.double" id="text_rotation" value="90.0" />
+  <property type="sds.map" id="aliases">
+    <map />
+  </property>
+  <property type="sds.boolean" id="PROP_ACCESS_GRANTED" value="true" />
+  <property type="sds.integer" id="height" value="15" />
+  <property type="sds.color" id="color.background">
+    <color red="230" green="230" blue="230" />
+  </property>
+  <property type="sds.string" id="value.text" value="ND ?l T= " />
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.string" id="name" value="LabelModel" />
+  <property type="sds.integer" id="offset.y" value="0" />
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.integer" id="position.y" value="79" />
+  <property type="sds.integer" id="offset.x" value="0" />
+  <property type="sds.integer" id="precision" value="2" />
+  <property type="sds.integer" id="position.x" value="10" />
+  <property type="sds.font" id="font">
+    <font fontName="Arial" height="8" style="0" />
+  </property>
+  <property type="sds.string" id="primary_pv" value="$channel$" />
+  <property type="sds.integer" id="width" value="49" />
+  <property type="sds.string" id="layer" value="DEFAULT" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+  </property>
+  <property type="sds.color" id="color.foreground">
+    <color red="0" green="0" blue="192" />
+  </property>
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+  </property>
+  <property type="sds.boolean" id="transparent_background" value="false" />
+  <property type="sds.option" id="textAlignment">
+    <option id="3" />
+  </property>
+  <property type="sds.boolean" id="PROP_WRITE_ACCESS_GRANTED" value="true" />
+  <property type="sds.paramstring" id="tooltip" value="${aliases}&#xA;Value:&#x9;${value.text}" />
+</widget>
+<widget type="org.csstudio.sds.components.Label">
+  <property type="sds.option" id="value_type">
+    <option id="1" />
+  </property>
+  <property type="sds.choiceoption" id="cursor">
+    <option id="cursor.default" />
+  </property>
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.boolean" id="connected" value="false">
+    <dynamicsDescriptor ruleId="rule.null" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+      <connectionState state="DISCONNECTED" value="false" />
+      <connectionState state="CONNECTED" value="true" />
+      <connectionState state="CONNECTION_FAILED" value="false" />
+      <connectionState state="CONNECTION_LOST" value="false" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.integer" id="border.width" value="0" />
+  <property type="sds.double" id="text_rotation" value="90.0" />
+  <property type="sds.map" id="aliases">
+    <map />
+  </property>
+  <property type="sds.boolean" id="PROP_ACCESS_GRANTED" value="true" />
+  <property type="sds.integer" id="height" value="15" />
+  <property type="sds.color" id="color.background">
+    <color red="230" green="230" blue="230" />
+  </property>
+  <property type="sds.string" id="value.text" value=" C" />
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.string" id="name" value="LabelModel" />
+  <property type="sds.integer" id="offset.y" value="0" />
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.integer" id="position.y" value="79" />
+  <property type="sds.integer" id="offset.x" value="0" />
+  <property type="sds.integer" id="precision" value="2" />
+  <property type="sds.integer" id="position.x" value="110" />
+  <property type="sds.font" id="font">
+    <font fontName="Arial" height="8" style="0" />
+  </property>
+  <property type="sds.string" id="primary_pv" value="$channel$" />
+  <property type="sds.integer" id="width" value="21" />
+  <property type="sds.string" id="layer" value="DEFAULT" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+  </property>
+  <property type="sds.color" id="color.foreground">
+    <color red="0" green="0" blue="192" />
+  </property>
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+  </property>
+  <property type="sds.boolean" id="transparent_background" value="false" />
+  <property type="sds.option" id="textAlignment">
+    <option id="3" />
+  </property>
+  <property type="sds.boolean" id="PROP_WRITE_ACCESS_GRANTED" value="true" />
+  <property type="sds.paramstring" id="tooltip" value="${aliases}&#xA;Value:&#x9;${value.text}" />
+</widget>
+<widget type="org.csstudio.sds.components.Label">
+  <property type="sds.option" id="value_type">
+    <option id="1" />
+  </property>
+  <property type="sds.choiceoption" id="cursor">
+    <option id="cursor.default" />
+  </property>
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.boolean" id="connected" value="false">
+    <dynamicsDescriptor ruleId="rule.null" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+      <connectionState state="DISCONNECTED" value="false" />
+      <connectionState state="CONNECTED" value="true" />
+      <connectionState state="CONNECTION_FAILED" value="false" />
+      <connectionState state="CONNECTION_LOST" value="false" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.integer" id="border.width" value="0" />
+  <property type="sds.double" id="text_rotation" value="90.0" />
+  <property type="sds.map" id="aliases">
+    <map />
+  </property>
+  <property type="sds.boolean" id="PROP_ACCESS_GRANTED" value="true" />
+  <property type="sds.integer" id="height" value="15" />
+  <property type="sds.color" id="color.background">
+    <color red="230" green="230" blue="230" />
+  </property>
+  <property type="sds.string" id="value.text" value="HD ?l T=" />
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.string" id="name" value="LabelModel" />
+  <property type="sds.integer" id="offset.y" value="0" />
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.integer" id="position.y" value="94" />
+  <property type="sds.integer" id="offset.x" value="0" />
+  <property type="sds.integer" id="precision" value="2" />
+  <property type="sds.integer" id="position.x" value="10" />
+  <property type="sds.font" id="font">
+    <font fontName="Arial" height="8" style="0" />
+  </property>
+  <property type="sds.string" id="primary_pv" value="$channel$" />
+  <property type="sds.integer" id="width" value="49" />
+  <property type="sds.string" id="layer" value="DEFAULT" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+  </property>
+  <property type="sds.color" id="color.foreground">
+    <color red="0" green="0" blue="192" />
+  </property>
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+  </property>
+  <property type="sds.boolean" id="transparent_background" value="false" />
+  <property type="sds.option" id="textAlignment">
+    <option id="3" />
+  </property>
+  <property type="sds.boolean" id="PROP_WRITE_ACCESS_GRANTED" value="true" />
+  <property type="sds.paramstring" id="tooltip" value="${aliases}&#xA;Value:&#x9;${value.text}" />
+</widget>
+<widget type="org.csstudio.sds.components.Textinput">
+  <aliasDescriptors>
+    <aliasDescriptor name="channel" value="KS2:SNL:KUE:TLIMIT_ai" />
+  </aliasDescriptors>
+  <property type="sds.option" id="value_type">
+    <option id="0" />
+  </property>
+  <property type="sds.choiceoption" id="cursor">
+    <option id="cursor.default" />
+  </property>
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.boolean" id="connected" value="false">
+    <dynamicsDescriptor ruleId="rule.null" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+      <connectionState state="DISCONNECTED" value="false" />
+      <connectionState state="CONNECTED" value="true" />
+      <connectionState state="CONNECTION_FAILED" value="false" />
+      <connectionState state="CONNECTION_LOST" value="false" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.integer" id="border.width" value="0">
+    <dynamicsDescriptor ruleId="cosyrules.color.alarmBorderWidth" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.map" id="aliases">
+    <map>
+      <mapEntry name="channel" value="KS2:SNL:KUE:TLIMIT_ai" />
+    </map>
+  </property>
+  <property type="sds.boolean" id="PROP_ACCESS_GRANTED" value="true" />
+  <property type="sds.integer" id="height" value="15" />
+  <property type="sds.color" id="color.background">
+    <color red="230" green="230" blue="230" />
+    <dynamicsDescriptor ruleId="rule.null" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+      <connectionState state="CONNECTED">
+        <color red="230" green="230" blue="230" />
+      </connectionState>
+      <connectionState state="INITIAL">
+        <color red="255" green="168" blue="222" />
+      </connectionState>
+      <connectionState state="CONNECTION_LOST">
+        <color red="255" green="9" blue="163" />
+      </connectionState>
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.string" id="name" value="TextInputModel" />
+  <property type="sds.boolean" id="transparent" value="false" />
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.integer" id="position.y" value="111" />
+  <property type="sds.integer" id="precision" value="0" />
+  <property type="sds.integer" id="position.x" value="59" />
+  <property type="sds.font" id="font">
+    <font fontName="Arial" height="8" style="0" />
+  </property>
+  <property type="sds.string" id="primary_pv" value="$channel$" />
+  <property type="sds.integer" id="width" value="51" />
+  <property type="sds.string" id="layer" value="DEFAULT" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+    <dynamicsDescriptor ruleId="cosyrules.color.alarm" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.color" id="color.foreground">
+    <color red="0" green="0" blue="192" />
+  </property>
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+    <dynamicsDescriptor ruleId="cosyrules.color.alarmBorder" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.string" id="inputText" value="Enter Text!">
+    <dynamicsDescriptor ruleId="directConnection" useConnectionStates="false">
+      <inputChannel name="$channel$, string" type="java.lang.Number" />
+      <outputChannel name="$channel$, string" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.option" id="textAlignment">
+    <option id="0" />
+  </property>
+  <property type="sds.boolean" id="PROP_WRITE_ACCESS_GRANTED" value="true" />
+  <property type="sds.paramstring" id="tooltip" value="${aliases}&#xA;Text:&#x9;${inputText}" />
+</widget>
+<widget type="org.csstudio.sds.components.SixteenBinaryBar">
+  <aliasDescriptors>
+    <aliasDescriptor name="channel" value="KS2:SNL:KUE:KUEBERW_mbbiD" />
+  </aliasDescriptors>
+  <property type="sds.boolean" id="showLabels" value="false" />
+  <property type="sds.choiceoption" id="cursor">
+    <option id="cursor.default" />
+  </property>
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.color" id="labelColor">
+    <color red="0" green="0" blue="0" />
+  </property>
+  <property type="sds.boolean" id="connected" value="false">
+    <dynamicsDescriptor ruleId="rule.null" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+      <connectionState state="DISCONNECTED" value="false" />
+      <connectionState state="CONNECTED" value="true" />
+      <connectionState state="CONNECTION_FAILED" value="false" />
+      <connectionState state="CONNECTION_LOST" value="false" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.integer" id="border.width" value="0">
+    <dynamicsDescriptor ruleId="cosyrules.color.alarmBorderWidth" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.map" id="aliases">
+    <map>
+      <mapEntry name="channel" value="KS2:SNL:KUE:KUEBERW_mbbiD" />
+    </map>
+  </property>
+  <property type="sds.boolean" id="PROP_ACCESS_GRANTED" value="true" />
+  <property type="sds.integer" id="height" value="30" />
+  <property type="sds.color" id="color.background">
+    <color red="230" green="230" blue="230" />
+  </property>
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.string" id="name" value="SixteenBinaryBarModel" />
+  <property type="sds.integer" id="value" value="0">
+    <dynamicsDescriptor ruleId="directConnection" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.color" id="internalFrameColor">
+    <color red="0" green="0" blue="0" />
+    <dynamicsDescriptor ruleId="rule.null" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+      <connectionState state="CONNECTED">
+        <color red="0" green="0" blue="0" />
+      </connectionState>
+      <connectionState state="INITIAL">
+        <color red="255" green="168" blue="222" />
+      </connectionState>
+      <connectionState state="CONNECTION_LOST">
+        <color red="255" green="9" blue="163" />
+      </connectionState>
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.color" id="onColor">
+    <color red="0" green="255" blue="0" />
+  </property>
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.integer" id="position.y" value="569" />
+  <property type="sds.integer" id="position.x" value="140" />
+  <property type="sds.color" id="offColor">
+    <color red="192" green="192" blue="192" />
+  </property>
+  <property type="sds.string" id="primary_pv" value="$channel$" />
+  <property type="sds.integer" id="width" value="239" />
+  <property type="sds.string" id="layer" value="DEFAULT" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+    <dynamicsDescriptor ruleId="cosyrules.color.alarm" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.integer" id="internalFrameSize" value="1" />
+  <property type="sds.color" id="color.foreground">
+    <color red="0" green="0" blue="192" />
+  </property>
+  <property type="sds.integer" id="bitRangeTo" value="15" />
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+    <dynamicsDescriptor ruleId="cosyrules.color.alarmBorder" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.integer" id="bitRangeFrom" value="0" />
+  <property type="sds.boolean" id="horizontal" value="true" />
+  <property type="sds.boolean" id="PROP_WRITE_ACCESS_GRANTED" value="true" />
+  <property type="sds.font" id="labelFont">
+    <font fontName="Arial" height="9" style="0" />
+  </property>
+  <property type="sds.paramstring" id="tooltip" value="${aliases}&#xA;Value:&#x9;${value}" />
+</widget>
+<widget type="org.csstudio.sds.components.Label">
+  <property type="sds.option" id="value_type">
+    <option id="1" />
+  </property>
+  <property type="sds.choiceoption" id="cursor">
+    <option id="cursor.default" />
+  </property>
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.boolean" id="connected" value="false">
+    <dynamicsDescriptor ruleId="rule.null" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+      <connectionState state="DISCONNECTED" value="false" />
+      <connectionState state="CONNECTED" value="true" />
+      <connectionState state="CONNECTION_FAILED" value="false" />
+      <connectionState state="CONNECTION_LOST" value="false" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.integer" id="border.width" value="0" />
+  <property type="sds.double" id="text_rotation" value="90.0" />
+  <property type="sds.map" id="aliases">
+    <map />
+  </property>
+  <property type="sds.boolean" id="PROP_ACCESS_GRANTED" value="true" />
+  <property type="sds.integer" id="height" value="15" />
+  <property type="sds.color" id="color.background">
+    <color red="230" green="230" blue="230" />
+  </property>
+  <property type="sds.string" id="value.text" value=" C" />
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.string" id="name" value="LabelModel" />
+  <property type="sds.integer" id="offset.y" value="0" />
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.integer" id="position.y" value="94" />
+  <property type="sds.integer" id="offset.x" value="0" />
+  <property type="sds.integer" id="precision" value="2" />
+  <property type="sds.integer" id="position.x" value="110" />
+  <property type="sds.font" id="font">
+    <font fontName="Arial" height="8" style="0" />
+  </property>
+  <property type="sds.string" id="primary_pv" value="$channel$" />
+  <property type="sds.integer" id="width" value="21" />
+  <property type="sds.string" id="layer" value="DEFAULT" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+  </property>
+  <property type="sds.color" id="color.foreground">
+    <color red="0" green="0" blue="192" />
+  </property>
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+  </property>
+  <property type="sds.boolean" id="transparent_background" value="false" />
+  <property type="sds.option" id="textAlignment">
+    <option id="3" />
+  </property>
+  <property type="sds.boolean" id="PROP_WRITE_ACCESS_GRANTED" value="true" />
+  <property type="sds.paramstring" id="tooltip" value="${aliases}&#xA;Value:&#x9;${value.text}" />
+</widget>
+<widget type="org.csstudio.sds.components.ThumbWheel">
+  <aliasDescriptors>
+    <aliasDescriptor name="channel" value="" />
+  </aliasDescriptors>
+  <property type="sds.choiceoption" id="cursor">
+    <option id="cursor.default" />
+  </property>
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.boolean" id="connected" value="false">
+    <dynamicsDescriptor ruleId="rule.null" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+      <connectionState state="DISCONNECTED" value="false" />
+      <connectionState state="CONNECTED" value="true" />
+      <connectionState state="CONNECTION_FAILED" value="false" />
+      <connectionState state="CONNECTION_LOST" value="false" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.integer" id="border.width" value="0">
+    <dynamicsDescriptor ruleId="cosyrules.color.alarmBorderWidth" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.integer" id="wholeDigits" value="5" />
+  <property type="sds.map" id="aliases">
+    <map>
+      <mapEntry name="channel" value="" />
+    </map>
+  </property>
+  <property type="sds.boolean" id="PROP_ACCESS_GRANTED" value="true" />
+  <property type="sds.integer" id="height" value="1" />
+  <property type="sds.color" id="color.background">
+    <color red="230" green="230" blue="230" />
+  </property>
+  <property type="sds.integer" id="decimalDigits" value="5" />
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.string" id="name" value="ThumbWheelModel" />
+  <property type="sds.double" id="value" value="0.0">
+    <dynamicsDescriptor ruleId="directConnection" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+      <outputChannel name="$channel$" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.color" id="internalFrameColor">
+    <color red="0" green="0" blue="0" />
+    <dynamicsDescriptor ruleId="rule.null" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+      <connectionState state="CONNECTED">
+        <color red="0" green="0" blue="0" />
+      </connectionState>
+      <connectionState state="INITIAL">
+        <color red="255" green="168" blue="222" />
+      </connectionState>
+      <connectionState state="CONNECTION_LOST">
+        <color red="255" green="9" blue="163" />
+      </connectionState>
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.double" id="min" value="NaN" />
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.integer" id="position.y" value="503" />
+  <property type="sds.double" id="max" value="NaN" />
+  <property type="sds.integer" id="position.x" value="550" />
+  <property type="sds.font" id="font">
+    <font fontName="Arial" height="9" style="0" />
+  </property>
+  <property type="sds.string" id="primary_pv" value="$channel$" />
+  <property type="sds.integer" id="width" value="1" />
+  <property type="sds.string" id="layer" value="DEFAULT" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+    <dynamicsDescriptor ruleId="cosyrules.color.alarm" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.integer" id="internalFrameSize" value="1" />
+  <property type="sds.color" id="color.foreground">
+    <color red="0" green="0" blue="192" />
+  </property>
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+    <dynamicsDescriptor ruleId="cosyrules.color.alarmBorder" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.boolean" id="PROP_WRITE_ACCESS_GRANTED" value="true" />
+  <property type="sds.paramstring" id="tooltip" value="${aliases}&#xA;Value:&#x9;${value}" />
+</widget>
+<widget type="org.csstudio.sds.components.ActionButton">
+  <aliasDescriptors>
+    <aliasDescriptor name="channel" value="KS2:SNL:KUE:SOFTSTOP_bi" />
+  </aliasDescriptors>
+  <property type="sds.choiceoption" id="cursor">
+    <option id="cursor.default" />
+  </property>
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.boolean" id="connected" value="false">
+    <dynamicsDescriptor ruleId="rule.null" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+      <connectionState state="DISCONNECTED" value="false" />
+      <connectionState state="CONNECTED" value="true" />
+      <connectionState state="CONNECTION_FAILED" value="false" />
+      <connectionState state="CONNECTION_LOST" value="false" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.integer" id="border.width" value="0" />
+  <property type="sds.map" id="aliases">
+    <map>
+      <mapEntry name="channel" value="KS2:SNL:KUE:SOFTSTOP_bi" />
+    </map>
+  </property>
+  <property type="sds.boolean" id="PROP_ACCESS_GRANTED" value="true" />
+  <property type="sds.integer" id="action_released_index" value="0" />
+  <property type="sds.integer" id="height" value="39" />
+  <property type="sds.color" id="color.background">
+    <color red="230" green="230" blue="230" />
+    <dynamicsDescriptor ruleId="cosyrules.color.bin_0gn_1rt" useConnectionStates="false">
+      <inputChannel name="epics://KS2:SNL:KUE:KUEBERW_mbbiD.BF" type="org.eclipse.swt.graphics.RGB" />
+      <connectionState state="CONNECTED">
+        <color red="230" green="230" blue="230" />
+      </connectionState>
+      <connectionState state="INITIAL">
+        <color red="255" green="168" blue="222" />
+      </connectionState>
+      <connectionState state="CONNECTION_LOST">
+        <color red="255" green="9" blue="163" />
+      </connectionState>
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.action" id="actionData">
+    <actionData>
+      <action_attribut type="COMMIT_VALUE">
+        <property_attribut type="sds.string" id="description" value="" />
+        <property_attribut type="sds.string" id="value" value="1" />
+      </action_attribut>
+    </actionData>
+    <dynamicsDescriptor ruleId="directConnection" useConnectionStates="false">
+      <inputChannel name="$channel$, double" type="java.lang.Number" />
+      <outputChannel name="$channel$, double" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.string" id="name" value="ActionButtonModel" />
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.integer" id="position.y" value="77" />
+  <property type="sds.integer" id="position.x" value="173" />
+  <property type="sds.font" id="font">
+    <font fontName="Arial" height="12" style="0" />
+  </property>
+  <property type="sds.string" id="primary_pv" value="$channel$" />
+  <property type="sds.integer" id="width" value="147" />
+  <property type="sds.string" id="layer" value="DEFAULT" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+  </property>
+  <property type="sds.string" id="label" value="">
+    <dynamicsDescriptor ruleId="directConnection" useConnectionStates="false">
+      <inputChannel name="epics://KS2:SNL:KUE:SOFTSTOP_si, string" type="java.lang.Number" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.color" id="color.foreground">
+    <color red="0" green="0" blue="192" />
+  </property>
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+  </property>
+  <property type="sds.boolean" id="toggleButton" value="false" />
+  <property type="sds.option" id="textAlignment">
+    <option id="0" />
+  </property>
+  <property type="sds.boolean" id="PROP_WRITE_ACCESS_GRANTED" value="true" />
+  <property type="sds.integer" id="action_pressed_index" value="-1" />
+  <property type="sds.paramstring" id="tooltip" value="${aliases}&#xA;${actionData}&#xA;Performed Action: ${action_pressed_index}${action_released_index}" />
+</widget>
+<widget type="org.csstudio.sds.components.Label">
+  <property type="sds.option" id="value_type">
+    <option id="1" />
+  </property>
+  <property type="sds.choiceoption" id="cursor">
+    <option id="cursor.default" />
+  </property>
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.boolean" id="connected" value="false">
+    <dynamicsDescriptor ruleId="rule.null" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+      <connectionState state="DISCONNECTED" value="false" />
+      <connectionState state="CONNECTED" value="true" />
+      <connectionState state="CONNECTION_FAILED" value="false" />
+      <connectionState state="CONNECTION_LOST" value="false" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.integer" id="border.width" value="0" />
+  <property type="sds.double" id="text_rotation" value="90.0" />
+  <property type="sds.map" id="aliases">
+    <map />
+  </property>
+  <property type="sds.boolean" id="PROP_ACCESS_GRANTED" value="true" />
+  <property type="sds.integer" id="height" value="15" />
+  <property type="sds.color" id="color.background">
+    <color red="230" green="230" blue="230" />
+  </property>
+  <property type="sds.string" id="value.text" value="TLIMIT: " />
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.string" id="name" value="LabelModel" />
+  <property type="sds.integer" id="offset.y" value="0" />
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.integer" id="position.y" value="148" />
+  <property type="sds.integer" id="offset.x" value="0" />
+  <property type="sds.integer" id="precision" value="2" />
+  <property type="sds.integer" id="position.x" value="10" />
+  <property type="sds.font" id="font">
+    <font fontName="Arial" height="8" style="0" />
+  </property>
+  <property type="sds.string" id="primary_pv" value="$channel$" />
+  <property type="sds.integer" id="width" value="49" />
+  <property type="sds.string" id="layer" value="DEFAULT" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+  </property>
+  <property type="sds.color" id="color.foreground">
+    <color red="0" green="0" blue="192" />
+  </property>
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+  </property>
+  <property type="sds.boolean" id="transparent_background" value="false" />
+  <property type="sds.option" id="textAlignment">
+    <option id="3" />
+  </property>
+  <property type="sds.boolean" id="PROP_WRITE_ACCESS_GRANTED" value="true" />
+  <property type="sds.paramstring" id="tooltip" value="${aliases}&#xA;Value:&#x9;${value.text}" />
+</widget>
+<widget type="org.csstudio.sds.components.Textinput">
+  <aliasDescriptors>
+    <aliasDescriptor name="channel" value="12TI402_ai.HIHI" />
+  </aliasDescriptors>
+  <property type="sds.option" id="value_type">
+    <option id="0" />
+  </property>
+  <property type="sds.choiceoption" id="cursor">
+    <option id="cursor.default" />
+  </property>
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.boolean" id="connected" value="false">
+    <dynamicsDescriptor ruleId="rule.null" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+      <connectionState state="DISCONNECTED" value="false" />
+      <connectionState state="CONNECTED" value="true" />
+      <connectionState state="CONNECTION_FAILED" value="false" />
+      <connectionState state="CONNECTION_LOST" value="false" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.integer" id="border.width" value="0">
+    <dynamicsDescriptor ruleId="cosyrules.color.alarmBorderWidth" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.map" id="aliases">
+    <map>
+      <mapEntry name="channel" value="12TI402_ai.HIHI" />
+    </map>
+  </property>
+  <property type="sds.boolean" id="PROP_ACCESS_GRANTED" value="true" />
+  <property type="sds.integer" id="height" value="15" />
+  <property type="sds.color" id="color.background">
+    <color red="230" green="230" blue="230" />
+    <dynamicsDescriptor ruleId="rule.null" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+      <connectionState state="CONNECTED">
+        <color red="230" green="230" blue="230" />
+      </connectionState>
+      <connectionState state="INITIAL">
+        <color red="255" green="168" blue="222" />
+      </connectionState>
+      <connectionState state="CONNECTION_LOST">
+        <color red="255" green="9" blue="163" />
+      </connectionState>
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.string" id="name" value="TextInputModel" />
+  <property type="sds.boolean" id="transparent" value="false" />
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.integer" id="position.y" value="148" />
+  <property type="sds.integer" id="precision" value="0" />
+  <property type="sds.integer" id="position.x" value="59" />
+  <property type="sds.font" id="font">
+    <font fontName="Arial" height="8" style="0" />
+  </property>
+  <property type="sds.string" id="primary_pv" value="$channel$" />
+  <property type="sds.integer" id="width" value="51" />
+  <property type="sds.string" id="layer" value="DEFAULT" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+    <dynamicsDescriptor ruleId="cosyrules.color.alarm" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.color" id="color.foreground">
+    <color red="0" green="0" blue="192" />
+  </property>
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+    <dynamicsDescriptor ruleId="cosyrules.color.alarmBorder" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.string" id="inputText" value="Enter Text!">
+    <dynamicsDescriptor ruleId="directConnection" useConnectionStates="false">
+      <inputChannel name="$channel$, string" type="java.lang.Number" />
+      <outputChannel name="$channel$, string" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.option" id="textAlignment">
+    <option id="0" />
+  </property>
+  <property type="sds.boolean" id="PROP_WRITE_ACCESS_GRANTED" value="true" />
+  <property type="sds.paramstring" id="tooltip" value="${aliases}&#xA;Text:&#x9;${inputText}" />
+</widget>
+<widget type="org.csstudio.sds.components.Label">
+  <property type="sds.option" id="value_type">
+    <option id="1" />
+  </property>
+  <property type="sds.choiceoption" id="cursor">
+    <option id="cursor.default" />
+  </property>
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.boolean" id="connected" value="false">
+    <dynamicsDescriptor ruleId="rule.null" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+      <connectionState state="DISCONNECTED" value="false" />
+      <connectionState state="CONNECTED" value="true" />
+      <connectionState state="CONNECTION_FAILED" value="false" />
+      <connectionState state="CONNECTION_LOST" value="false" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.integer" id="border.width" value="0" />
+  <property type="sds.double" id="text_rotation" value="90.0" />
+  <property type="sds.map" id="aliases">
+    <map />
+  </property>
+  <property type="sds.boolean" id="PROP_ACCESS_GRANTED" value="true" />
+  <property type="sds.integer" id="height" value="15" />
+  <property type="sds.color" id="color.background">
+    <color red="230" green="230" blue="230" />
+  </property>
+  <property type="sds.string" id="value.text" value=" K" />
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.string" id="name" value="LabelModel" />
+  <property type="sds.integer" id="offset.y" value="0" />
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.integer" id="position.y" value="131" />
+  <property type="sds.integer" id="offset.x" value="0" />
+  <property type="sds.integer" id="precision" value="2" />
+  <property type="sds.integer" id="position.x" value="110" />
+  <property type="sds.font" id="font">
+    <font fontName="Arial" height="8" style="0" />
+  </property>
+  <property type="sds.string" id="primary_pv" value="$channel$" />
+  <property type="sds.integer" id="width" value="21" />
+  <property type="sds.string" id="layer" value="DEFAULT" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+  </property>
+  <property type="sds.color" id="color.foreground">
+    <color red="0" green="0" blue="192" />
+  </property>
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+  </property>
+  <property type="sds.boolean" id="transparent_background" value="false" />
+  <property type="sds.option" id="textAlignment">
+    <option id="3" />
+  </property>
+  <property type="sds.boolean" id="PROP_WRITE_ACCESS_GRANTED" value="true" />
+  <property type="sds.paramstring" id="tooltip" value="${aliases}&#xA;Value:&#x9;${value.text}" />
+</widget>
+<widget type="org.csstudio.sds.components.Label">
+  <aliasDescriptors>
+    <aliasDescriptor name="channel" value="12TI402_ai" />
+  </aliasDescriptors>
+  <property type="sds.option" id="value_type">
+    <option id="0" />
+  </property>
+  <property type="sds.choiceoption" id="cursor">
+    <option id="cursor.default" />
+  </property>
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.boolean" id="connected" value="false">
+    <dynamicsDescriptor ruleId="rule.null" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+      <connectionState state="DISCONNECTED" value="false" />
+      <connectionState state="CONNECTED" value="true" />
+      <connectionState state="CONNECTION_FAILED" value="false" />
+      <connectionState state="CONNECTION_LOST" value="false" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.integer" id="border.width" value="0">
+    <dynamicsDescriptor ruleId="cosyrules.color.alarmBorderWidth" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.double" id="text_rotation" value="90.0" />
+  <property type="sds.map" id="aliases">
+    <map>
+      <mapEntry name="channel" value="12TI402_ai" />
+    </map>
+  </property>
+  <property type="sds.boolean" id="PROP_ACCESS_GRANTED" value="true" />
+  <property type="sds.integer" id="height" value="15" />
+  <property type="sds.color" id="color.background">
+    <color red="230" green="230" blue="230" />
+    <dynamicsDescriptor ruleId="rule.null" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+      <connectionState state="CONNECTED">
+        <color red="230" green="230" blue="230" />
+      </connectionState>
+      <connectionState state="INITIAL">
+        <color red="255" green="168" blue="222" />
+      </connectionState>
+      <connectionState state="CONNECTION_LOST">
+        <color red="255" green="9" blue="163" />
+      </connectionState>
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.string" id="value.text" value="Label">
+    <dynamicsDescriptor ruleId="directConnection" useConnectionStates="false">
+      <inputChannel name="$channel$, string" type="java.lang.Number" />
+      <connectionState state="INITIAL" value="Initialisation" />
+      <connectionState state="CONNECTION_LOST" value="Connection lost" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.string" id="name" value="LabelModel" />
+  <property type="sds.integer" id="offset.y" value="0" />
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.integer" id="position.y" value="131" />
+  <property type="sds.integer" id="offset.x" value="0" />
+  <property type="sds.integer" id="precision" value="2" />
+  <property type="sds.integer" id="position.x" value="59" />
+  <property type="sds.font" id="font">
+    <font fontName="Arial" height="8" style="0" />
+  </property>
+  <property type="sds.string" id="primary_pv" value="$channel$" />
+  <property type="sds.integer" id="width" value="51" />
+  <property type="sds.string" id="layer" value="DEFAULT" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+    <dynamicsDescriptor ruleId="cosyrules.color.alarm" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.color" id="color.foreground">
+    <color red="0" green="0" blue="192" />
+  </property>
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+    <dynamicsDescriptor ruleId="cosyrules.color.alarmBorder" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.boolean" id="transparent_background" value="false" />
+  <property type="sds.option" id="textAlignment">
+    <option id="0" />
+  </property>
+  <property type="sds.boolean" id="PROP_WRITE_ACCESS_GRANTED" value="true" />
+  <property type="sds.paramstring" id="tooltip" value="${aliases}&#xA;Value:&#x9;${value.text}" />
+</widget>
+<widget type="org.csstudio.sds.components.Label">
+  <property type="sds.option" id="value_type">
+    <option id="1" />
+  </property>
+  <property type="sds.choiceoption" id="cursor">
+    <option id="cursor.default" />
+  </property>
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.boolean" id="connected" value="false">
+    <dynamicsDescriptor ruleId="rule.null" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+      <connectionState state="DISCONNECTED" value="false" />
+      <connectionState state="CONNECTED" value="true" />
+      <connectionState state="CONNECTION_FAILED" value="false" />
+      <connectionState state="CONNECTION_LOST" value="false" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.integer" id="border.width" value="0" />
+  <property type="sds.double" id="text_rotation" value="90.0" />
+  <property type="sds.map" id="aliases">
+    <map />
+  </property>
+  <property type="sds.boolean" id="PROP_ACCESS_GRANTED" value="true" />
+  <property type="sds.integer" id="height" value="15" />
+  <property type="sds.color" id="color.background">
+    <color red="230" green="230" blue="230" />
+  </property>
+  <property type="sds.string" id="value.text" value="He T=" />
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.string" id="name" value="LabelModel" />
+  <property type="sds.integer" id="offset.y" value="0" />
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.integer" id="position.y" value="131" />
+  <property type="sds.integer" id="offset.x" value="0" />
+  <property type="sds.integer" id="precision" value="2" />
+  <property type="sds.integer" id="position.x" value="10" />
+  <property type="sds.font" id="font">
+    <font fontName="Arial" height="8" style="0" />
+  </property>
+  <property type="sds.string" id="primary_pv" value="$channel$" />
+  <property type="sds.integer" id="width" value="49" />
+  <property type="sds.string" id="layer" value="DEFAULT" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+  </property>
+  <property type="sds.color" id="color.foreground">
+    <color red="0" green="0" blue="192" />
+  </property>
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+  </property>
+  <property type="sds.boolean" id="transparent_background" value="false" />
+  <property type="sds.option" id="textAlignment">
+    <option id="3" />
+  </property>
+  <property type="sds.boolean" id="PROP_WRITE_ACCESS_GRANTED" value="true" />
+  <property type="sds.paramstring" id="tooltip" value="${aliases}&#xA;Value:&#x9;${value.text}" />
+</widget>
+<widget type="org.csstudio.sds.components.Ellipse">
+  <aliasDescriptors>
+    <aliasDescriptor name="channel" value="KS2:SNL:KUE:KUEBERW_mbbiD.B4" />
+  </aliasDescriptors>
+  <property type="sds.choiceoption" id="cursor">
+    <option id="cursor.default" />
+  </property>
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.boolean" id="connected" value="false">
+    <dynamicsDescriptor ruleId="rule.null" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+      <connectionState state="DISCONNECTED" value="false" />
+      <connectionState state="CONNECTED" value="true" />
+      <connectionState state="CONNECTION_FAILED" value="false" />
+      <connectionState state="CONNECTION_LOST" value="false" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.integer" id="border.width" value="0">
+    <dynamicsDescriptor ruleId="cosyrules.color.alarmBorderWidth" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.map" id="aliases">
+    <map>
+      <mapEntry name="channel" value="KS2:SNL:KUE:KUEBERW_mbbiD.B4" />
+    </map>
+  </property>
+  <property type="sds.boolean" id="transparency" value="false" />
+  <property type="sds.boolean" id="PROP_ACCESS_GRANTED" value="true" />
+  <property type="sds.integer" id="height" value="16" />
+  <property type="sds.color" id="color.background">
+    <color red="230" green="230" blue="230" />
+    <dynamicsDescriptor ruleId="cosyrules.color.bin_0rt_1gn" useConnectionStates="false">
+      <inputChannel name="$channel$" type="org.eclipse.swt.graphics.RGB" />
+      <connectionState state="CONNECTED">
+        <color red="230" green="230" blue="230" />
+      </connectionState>
+      <connectionState state="INITIAL">
+        <color red="255" green="168" blue="222" />
+      </connectionState>
+      <connectionState state="CONNECTION_LOST">
+        <color red="255" green="9" blue="163" />
+      </connectionState>
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.string" id="name" value="EllipseModel" />
+  <property type="sds.boolean" id="orientation" value="true" />
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.integer" id="position.y" value="376" />
+  <property type="sds.integer" id="position.x" value="137" />
+  <property type="sds.double" id="fill" value="100.0">
+    <dynamicsDescriptor ruleId="directConnection" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+      <connectionState state="INITIAL" value="0.0" />
+      <connectionState state="CONNECTION_LOST" value="0.0" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.string" id="primary_pv" value="$channel$" />
+  <property type="sds.integer" id="width" value="16" />
+  <property type="sds.string" id="layer" value="DEFAULT" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+    <dynamicsDescriptor ruleId="cosyrules.color.alarm" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.color" id="color.foreground">
+    <color red="0" green="0" blue="192" />
+  </property>
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+    <dynamicsDescriptor ruleId="cosyrules.color.alarmBorder" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.boolean" id="PROP_WRITE_ACCESS_GRANTED" value="true" />
+  <property type="sds.paramstring" id="tooltip" value="${aliases}&#xA;Value:&#x9;${fill}" />
+</widget>
+<widget type="org.csstudio.sds.components.Ellipse">
+  <aliasDescriptors>
+    <aliasDescriptor name="channel" value="KS2:SNL:KUE:KUEBERW_mbbiD.B3" />
+  </aliasDescriptors>
+  <property type="sds.choiceoption" id="cursor">
+    <option id="cursor.default" />
+  </property>
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.boolean" id="connected" value="false">
+    <dynamicsDescriptor ruleId="rule.null" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+      <connectionState state="DISCONNECTED" value="false" />
+      <connectionState state="CONNECTED" value="true" />
+      <connectionState state="CONNECTION_FAILED" value="false" />
+      <connectionState state="CONNECTION_LOST" value="false" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.integer" id="border.width" value="0">
+    <dynamicsDescriptor ruleId="cosyrules.color.alarmBorderWidth" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.map" id="aliases">
+    <map>
+      <mapEntry name="channel" value="KS2:SNL:KUE:KUEBERW_mbbiD.B3" />
+    </map>
+  </property>
+  <property type="sds.boolean" id="transparency" value="false" />
+  <property type="sds.boolean" id="PROP_ACCESS_GRANTED" value="true" />
+  <property type="sds.integer" id="height" value="16" />
+  <property type="sds.color" id="color.background">
+    <color red="230" green="230" blue="230" />
+    <dynamicsDescriptor ruleId="cosyrules.color.bin_0rt_1gn" useConnectionStates="false">
+      <inputChannel name="$channel$" type="org.eclipse.swt.graphics.RGB" />
+      <connectionState state="CONNECTED">
+        <color red="230" green="230" blue="230" />
+      </connectionState>
+      <connectionState state="INITIAL">
+        <color red="255" green="168" blue="222" />
+      </connectionState>
+      <connectionState state="CONNECTION_LOST">
+        <color red="255" green="9" blue="163" />
+      </connectionState>
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.string" id="name" value="EllipseModel" />
+  <property type="sds.boolean" id="orientation" value="true" />
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.integer" id="position.y" value="396" />
+  <property type="sds.integer" id="position.x" value="87" />
+  <property type="sds.double" id="fill" value="100.0">
+    <dynamicsDescriptor ruleId="directConnection" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+      <connectionState state="INITIAL" value="0.0" />
+      <connectionState state="CONNECTION_LOST" value="0.0" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.string" id="primary_pv" value="$channel$" />
+  <property type="sds.integer" id="width" value="16" />
+  <property type="sds.string" id="layer" value="DEFAULT" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+    <dynamicsDescriptor ruleId="cosyrules.color.alarm" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.color" id="color.foreground">
+    <color red="0" green="0" blue="192" />
+  </property>
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+    <dynamicsDescriptor ruleId="cosyrules.color.alarmBorder" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.boolean" id="PROP_WRITE_ACCESS_GRANTED" value="true" />
+  <property type="sds.paramstring" id="tooltip" value="${aliases}&#xA;Value:&#x9;${fill}" />
+</widget>
+<widget type="org.csstudio.sds.components.Ellipse">
+  <aliasDescriptors>
+    <aliasDescriptor name="channel" value="KS2:SNL:KUE:KUEBERW_mbbiD.B2" />
+  </aliasDescriptors>
+  <property type="sds.choiceoption" id="cursor">
+    <option id="cursor.default" />
+  </property>
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.boolean" id="connected" value="false">
+    <dynamicsDescriptor ruleId="rule.null" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+      <connectionState state="DISCONNECTED" value="false" />
+      <connectionState state="CONNECTED" value="true" />
+      <connectionState state="CONNECTION_FAILED" value="false" />
+      <connectionState state="CONNECTION_LOST" value="false" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.integer" id="border.width" value="0">
+    <dynamicsDescriptor ruleId="cosyrules.color.alarmBorderWidth" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.map" id="aliases">
+    <map>
+      <mapEntry name="channel" value="KS2:SNL:KUE:KUEBERW_mbbiD.B2" />
+    </map>
+  </property>
+  <property type="sds.boolean" id="transparency" value="false" />
+  <property type="sds.boolean" id="PROP_ACCESS_GRANTED" value="true" />
+  <property type="sds.integer" id="height" value="16" />
+  <property type="sds.color" id="color.background">
+    <color red="230" green="230" blue="230" />
+    <dynamicsDescriptor ruleId="cosyrules.color.bin_0rt_1gn" useConnectionStates="false">
+      <inputChannel name="$channel$" type="org.eclipse.swt.graphics.RGB" />
+      <connectionState state="CONNECTED">
+        <color red="230" green="230" blue="230" />
+      </connectionState>
+      <connectionState state="INITIAL">
+        <color red="255" green="168" blue="222" />
+      </connectionState>
+      <connectionState state="CONNECTION_LOST">
+        <color red="255" green="9" blue="163" />
+      </connectionState>
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.string" id="name" value="EllipseModel" />
+  <property type="sds.boolean" id="orientation" value="true" />
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.integer" id="position.y" value="396" />
+  <property type="sds.integer" id="position.x" value="67" />
+  <property type="sds.double" id="fill" value="100.0">
+    <dynamicsDescriptor ruleId="directConnection" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+      <connectionState state="INITIAL" value="0.0" />
+      <connectionState state="CONNECTION_LOST" value="0.0" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.string" id="primary_pv" value="$channel$" />
+  <property type="sds.integer" id="width" value="16" />
+  <property type="sds.string" id="layer" value="DEFAULT" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+    <dynamicsDescriptor ruleId="cosyrules.color.alarm" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.color" id="color.foreground">
+    <color red="0" green="0" blue="192" />
+  </property>
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+    <dynamicsDescriptor ruleId="cosyrules.color.alarmBorder" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.boolean" id="PROP_WRITE_ACCESS_GRANTED" value="true" />
+  <property type="sds.paramstring" id="tooltip" value="${aliases}&#xA;Value:&#x9;${fill}" />
+</widget>
+<widget type="org.csstudio.sds.components.Ellipse">
+  <aliasDescriptors>
+    <aliasDescriptor name="channel" value="KS2:SNL:KUE:KUEBERW_mbbiD.B1" />
+  </aliasDescriptors>
+  <property type="sds.choiceoption" id="cursor">
+    <option id="cursor.default" />
+  </property>
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.boolean" id="connected" value="false">
+    <dynamicsDescriptor ruleId="rule.null" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+      <connectionState state="DISCONNECTED" value="false" />
+      <connectionState state="CONNECTED" value="true" />
+      <connectionState state="CONNECTION_FAILED" value="false" />
+      <connectionState state="CONNECTION_LOST" value="false" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.integer" id="border.width" value="0">
+    <dynamicsDescriptor ruleId="cosyrules.color.alarmBorderWidth" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.map" id="aliases">
+    <map>
+      <mapEntry name="channel" value="KS2:SNL:KUE:KUEBERW_mbbiD.B1" />
+    </map>
+  </property>
+  <property type="sds.boolean" id="transparency" value="false" />
+  <property type="sds.boolean" id="PROP_ACCESS_GRANTED" value="true" />
+  <property type="sds.integer" id="height" value="16" />
+  <property type="sds.color" id="color.background">
+    <color red="230" green="230" blue="230" />
+    <dynamicsDescriptor ruleId="cosyrules.color.bin_0rt_1gn" useConnectionStates="false">
+      <inputChannel name="$channel$" type="org.eclipse.swt.graphics.RGB" />
+      <connectionState state="CONNECTED">
+        <color red="230" green="230" blue="230" />
+      </connectionState>
+      <connectionState state="INITIAL">
+        <color red="255" green="168" blue="222" />
+      </connectionState>
+      <connectionState state="CONNECTION_LOST">
+        <color red="255" green="9" blue="163" />
+      </connectionState>
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.string" id="name" value="EllipseModel" />
+  <property type="sds.boolean" id="orientation" value="true" />
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.integer" id="position.y" value="396" />
+  <property type="sds.integer" id="position.x" value="47" />
+  <property type="sds.double" id="fill" value="100.0">
+    <dynamicsDescriptor ruleId="directConnection" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+      <connectionState state="INITIAL" value="0.0" />
+      <connectionState state="CONNECTION_LOST" value="0.0" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.string" id="primary_pv" value="$channel$" />
+  <property type="sds.integer" id="width" value="16" />
+  <property type="sds.string" id="layer" value="DEFAULT" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+    <dynamicsDescriptor ruleId="cosyrules.color.alarm" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.color" id="color.foreground">
+    <color red="0" green="0" blue="192" />
+  </property>
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+    <dynamicsDescriptor ruleId="cosyrules.color.alarmBorder" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.boolean" id="PROP_WRITE_ACCESS_GRANTED" value="true" />
+  <property type="sds.paramstring" id="tooltip" value="${aliases}&#xA;Value:&#x9;${fill}" />
+</widget>
+<widget type="org.csstudio.sds.components.Ellipse">
+  <aliasDescriptors>
+    <aliasDescriptor name="channel" value="KS2:SNL:KUE:KUEBERW_mbbiD.B0" />
+  </aliasDescriptors>
+  <property type="sds.choiceoption" id="cursor">
+    <option id="cursor.default" />
+  </property>
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.boolean" id="connected" value="false">
+    <dynamicsDescriptor ruleId="rule.null" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+      <connectionState state="DISCONNECTED" value="false" />
+      <connectionState state="CONNECTED" value="true" />
+      <connectionState state="CONNECTION_FAILED" value="false" />
+      <connectionState state="CONNECTION_LOST" value="false" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.integer" id="border.width" value="0">
+    <dynamicsDescriptor ruleId="cosyrules.color.alarmBorderWidth" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.map" id="aliases">
+    <map>
+      <mapEntry name="channel" value="KS2:SNL:KUE:KUEBERW_mbbiD.B0" />
+    </map>
+  </property>
+  <property type="sds.boolean" id="transparency" value="false" />
+  <property type="sds.boolean" id="PROP_ACCESS_GRANTED" value="true" />
+  <property type="sds.integer" id="height" value="16" />
+  <property type="sds.color" id="color.background">
+    <color red="230" green="230" blue="230" />
+    <dynamicsDescriptor ruleId="cosyrules.color.bin_0rt_1gn" useConnectionStates="false">
+      <inputChannel name="$channel$" type="org.eclipse.swt.graphics.RGB" />
+      <connectionState state="CONNECTED">
+        <color red="230" green="230" blue="230" />
+      </connectionState>
+      <connectionState state="INITIAL">
+        <color red="255" green="168" blue="222" />
+      </connectionState>
+      <connectionState state="CONNECTION_LOST">
+        <color red="255" green="9" blue="163" />
+      </connectionState>
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.string" id="name" value="EllipseModel" />
+  <property type="sds.boolean" id="orientation" value="true" />
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.integer" id="position.y" value="396" />
+  <property type="sds.integer" id="position.x" value="137" />
+  <property type="sds.double" id="fill" value="100.0">
+    <dynamicsDescriptor ruleId="directConnection" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+      <connectionState state="INITIAL" value="0.0" />
+      <connectionState state="CONNECTION_LOST" value="0.0" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.string" id="primary_pv" value="$channel$" />
+  <property type="sds.integer" id="width" value="16" />
+  <property type="sds.string" id="layer" value="DEFAULT" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+    <dynamicsDescriptor ruleId="cosyrules.color.alarm" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.color" id="color.foreground">
+    <color red="0" green="0" blue="192" />
+  </property>
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+    <dynamicsDescriptor ruleId="cosyrules.color.alarmBorder" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.boolean" id="PROP_WRITE_ACCESS_GRANTED" value="true" />
+  <property type="sds.paramstring" id="tooltip" value="${aliases}&#xA;Value:&#x9;${fill}" />
+</widget>
+<widget type="org.csstudio.sds.components.Ellipse">
+  <aliasDescriptors>
+    <aliasDescriptor name="channel" value="KS2:SNL:KUE:KUEBERW_mbbiD.B5" />
+  </aliasDescriptors>
+  <property type="sds.choiceoption" id="cursor">
+    <option id="cursor.default" />
+  </property>
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.boolean" id="connected" value="false">
+    <dynamicsDescriptor ruleId="rule.null" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+      <connectionState state="DISCONNECTED" value="false" />
+      <connectionState state="CONNECTED" value="true" />
+      <connectionState state="CONNECTION_FAILED" value="false" />
+      <connectionState state="CONNECTION_LOST" value="false" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.integer" id="border.width" value="0">
+    <dynamicsDescriptor ruleId="cosyrules.color.alarmBorderWidth" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.map" id="aliases">
+    <map>
+      <mapEntry name="channel" value="KS2:SNL:KUE:KUEBERW_mbbiD.B5" />
+    </map>
+  </property>
+  <property type="sds.boolean" id="transparency" value="false" />
+  <property type="sds.boolean" id="PROP_ACCESS_GRANTED" value="true" />
+  <property type="sds.integer" id="height" value="16" />
+  <property type="sds.color" id="color.background">
+    <color red="230" green="230" blue="230" />
+    <dynamicsDescriptor ruleId="cosyrules.color.bin_0rt_1gn" useConnectionStates="false">
+      <inputChannel name="$channel$" type="org.eclipse.swt.graphics.RGB" />
+      <connectionState state="CONNECTED">
+        <color red="230" green="230" blue="230" />
+      </connectionState>
+      <connectionState state="INITIAL">
+        <color red="255" green="168" blue="222" />
+      </connectionState>
+      <connectionState state="CONNECTION_LOST">
+        <color red="255" green="9" blue="163" />
+      </connectionState>
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.string" id="name" value="EllipseModel" />
+  <property type="sds.boolean" id="orientation" value="true" />
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.integer" id="position.y" value="376" />
+  <property type="sds.integer" id="position.x" value="67" />
+  <property type="sds.double" id="fill" value="100.0">
+    <dynamicsDescriptor ruleId="directConnection" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+      <connectionState state="INITIAL" value="0.0" />
+      <connectionState state="CONNECTION_LOST" value="0.0" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.string" id="primary_pv" value="$channel$" />
+  <property type="sds.integer" id="width" value="16" />
+  <property type="sds.string" id="layer" value="DEFAULT" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+    <dynamicsDescriptor ruleId="cosyrules.color.alarm" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.color" id="color.foreground">
+    <color red="0" green="0" blue="192" />
+  </property>
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+    <dynamicsDescriptor ruleId="cosyrules.color.alarmBorder" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.boolean" id="PROP_WRITE_ACCESS_GRANTED" value="true" />
+  <property type="sds.paramstring" id="tooltip" value="${aliases}&#xA;Value:&#x9;${fill}" />
+</widget>
+<widget type="org.csstudio.sds.components.Label">
+  <aliasDescriptors>
+    <aliasDescriptor name="channel" value="" />
+  </aliasDescriptors>
+  <property type="sds.option" id="value_type">
+    <option id="1" />
+  </property>
+  <property type="sds.choiceoption" id="cursor">
+    <option id="cursor.default" />
+  </property>
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.boolean" id="connected" value="false">
+    <dynamicsDescriptor ruleId="rule.null" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+      <connectionState state="DISCONNECTED" value="false" />
+      <connectionState state="CONNECTED" value="true" />
+      <connectionState state="CONNECTION_FAILED" value="false" />
+      <connectionState state="CONNECTION_LOST" value="false" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.integer" id="border.width" value="0">
+    <dynamicsDescriptor ruleId="cosyrules.color.alarmBorderWidth" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.double" id="text_rotation" value="90.0" />
+  <property type="sds.map" id="aliases">
+    <map>
+      <mapEntry name="channel" value="" />
+    </map>
+  </property>
+  <property type="sds.boolean" id="PROP_ACCESS_GRANTED" value="true" />
+  <property type="sds.integer" id="height" value="16" />
+  <property type="sds.color" id="color.background">
+    <color red="230" green="230" blue="230" />
+    <dynamicsDescriptor ruleId="rule.null" useConnectionStates="false">
+      <connectionState state="CONNECTED">
+        <color red="230" green="230" blue="230" />
+      </connectionState>
+      <connectionState state="INITIAL">
+        <color red="255" green="168" blue="222" />
+      </connectionState>
+      <connectionState state="CONNECTION_LOST">
+        <color red="255" green="9" blue="163" />
+      </connectionState>
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.string" id="value.text" value="HD" />
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.string" id="name" value="LabelModel" />
+  <property type="sds.integer" id="offset.y" value="0" />
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.integer" id="position.y" value="376" />
+  <property type="sds.integer" id="offset.x" value="0" />
+  <property type="sds.integer" id="precision" value="2" />
+  <property type="sds.integer" id="position.x" value="7" />
+  <property type="sds.font" id="font">
+    <font fontName="Arial" height="8" style="0" />
+  </property>
+  <property type="sds.string" id="primary_pv" value="$channel$" />
+  <property type="sds.integer" id="width" value="32" />
+  <property type="sds.string" id="layer" value="DEFAULT" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+    <dynamicsDescriptor ruleId="cosyrules.color.alarm" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.color" id="color.foreground">
+    <color red="0" green="0" blue="192" />
+  </property>
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+    <dynamicsDescriptor ruleId="cosyrules.color.alarmBorder" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.boolean" id="transparent_background" value="false" />
+  <property type="sds.option" id="textAlignment">
+    <option id="0" />
+  </property>
+  <property type="sds.boolean" id="PROP_WRITE_ACCESS_GRANTED" value="true" />
+  <property type="sds.paramstring" id="tooltip" value="${aliases}&#xA;Value:&#x9;${value.text}" />
+</widget>
+<widget type="org.csstudio.sds.components.Label">
+  <property type="sds.option" id="value_type">
+    <option id="1" />
+  </property>
+  <property type="sds.choiceoption" id="cursor">
+    <option id="cursor.default" />
+  </property>
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.boolean" id="connected" value="false">
+    <dynamicsDescriptor ruleId="rule.null" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+      <connectionState state="DISCONNECTED" value="false" />
+      <connectionState state="CONNECTED" value="true" />
+      <connectionState state="CONNECTION_FAILED" value="false" />
+      <connectionState state="CONNECTION_LOST" value="false" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.integer" id="border.width" value="0" />
+  <property type="sds.double" id="text_rotation" value="90.0" />
+  <property type="sds.map" id="aliases">
+    <map />
+  </property>
+  <property type="sds.boolean" id="PROP_ACCESS_GRANTED" value="true" />
+  <property type="sds.integer" id="height" value="15" />
+  <property type="sds.color" id="color.background">
+    <color red="230" green="230" blue="230" />
+  </property>
+  <property type="sds.string" id="value.text" value="Red" />
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.string" id="name" value="LabelModel" />
+  <property type="sds.integer" id="offset.y" value="0" />
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.integer" id="position.y" value="359" />
+  <property type="sds.integer" id="offset.x" value="0" />
+  <property type="sds.integer" id="precision" value="2" />
+  <property type="sds.integer" id="position.x" value="129" />
+  <property type="sds.font" id="font">
+    <font fontName="Arial" height="8" style="0" />
+  </property>
+  <property type="sds.string" id="primary_pv" value="$channel$" />
+  <property type="sds.integer" id="width" value="32" />
+  <property type="sds.string" id="layer" value="DEFAULT" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+  </property>
+  <property type="sds.color" id="color.foreground">
+    <color red="0" green="0" blue="192" />
+  </property>
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+  </property>
+  <property type="sds.boolean" id="transparent_background" value="false" />
+  <property type="sds.option" id="textAlignment">
+    <option id="0" />
+  </property>
+  <property type="sds.boolean" id="PROP_WRITE_ACCESS_GRANTED" value="true" />
+  <property type="sds.paramstring" id="tooltip" value="${aliases}&#xA;Value:&#x9;${value.text}" />
+</widget>
+<widget type="org.csstudio.sds.components.Label">
+  <aliasDescriptors>
+    <aliasDescriptor name="channel" value="" />
+  </aliasDescriptors>
+  <property type="sds.option" id="value_type">
+    <option id="1" />
+  </property>
+  <property type="sds.choiceoption" id="cursor">
+    <option id="cursor.default" />
+  </property>
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.boolean" id="connected" value="false">
+    <dynamicsDescriptor ruleId="rule.null" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+      <connectionState state="DISCONNECTED" value="false" />
+      <connectionState state="CONNECTED" value="true" />
+      <connectionState state="CONNECTION_FAILED" value="false" />
+      <connectionState state="CONNECTION_LOST" value="false" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.integer" id="border.width" value="0">
+    <dynamicsDescriptor ruleId="cosyrules.color.alarmBorderWidth" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.double" id="text_rotation" value="90.0" />
+  <property type="sds.map" id="aliases">
+    <map>
+      <mapEntry name="channel" value="" />
+    </map>
+  </property>
+  <property type="sds.boolean" id="PROP_ACCESS_GRANTED" value="true" />
+  <property type="sds.integer" id="height" value="16" />
+  <property type="sds.color" id="color.background">
+    <color red="230" green="230" blue="230" />
+  </property>
+  <property type="sds.string" id="value.text" value="ND" />
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.string" id="name" value="LabelModel" />
+  <property type="sds.integer" id="offset.y" value="0" />
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.integer" id="position.y" value="396" />
+  <property type="sds.integer" id="offset.x" value="0" />
+  <property type="sds.integer" id="precision" value="2" />
+  <property type="sds.integer" id="position.x" value="7" />
+  <property type="sds.font" id="font">
+    <font fontName="Arial" height="8" style="0" />
+  </property>
+  <property type="sds.string" id="primary_pv" value="$channel$" />
+  <property type="sds.integer" id="width" value="32" />
+  <property type="sds.string" id="layer" value="DEFAULT" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+    <dynamicsDescriptor ruleId="cosyrules.color.alarm" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.color" id="color.foreground">
+    <color red="0" green="0" blue="192" />
+  </property>
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+    <dynamicsDescriptor ruleId="cosyrules.color.alarmBorder" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.boolean" id="transparent_background" value="false" />
+  <property type="sds.option" id="textAlignment">
+    <option id="0" />
+  </property>
+  <property type="sds.boolean" id="PROP_WRITE_ACCESS_GRANTED" value="true" />
+  <property type="sds.paramstring" id="tooltip" value="${aliases}&#xA;Value:&#x9;${value.text}" />
+</widget>
+<widget type="org.csstudio.sds.components.Ellipse">
+  <aliasDescriptors>
+    <aliasDescriptor name="channel" value="KS2:SNL:KUE:KSTROK_bi" />
+  </aliasDescriptors>
+  <property type="sds.choiceoption" id="cursor">
+    <option id="cursor.default" />
+  </property>
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.boolean" id="connected" value="false">
+    <dynamicsDescriptor ruleId="rule.null" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+      <connectionState state="DISCONNECTED" value="false" />
+      <connectionState state="CONNECTED" value="true" />
+      <connectionState state="CONNECTION_FAILED" value="false" />
+      <connectionState state="CONNECTION_LOST" value="false" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.integer" id="border.width" value="0">
+    <dynamicsDescriptor ruleId="cosyrules.color.alarmBorderWidth" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.map" id="aliases">
+    <map>
+      <mapEntry name="channel" value="KS2:SNL:KUE:KSTROK_bi" />
+    </map>
+  </property>
+  <property type="sds.boolean" id="transparency" value="false" />
+  <property type="sds.boolean" id="PROP_ACCESS_GRANTED" value="true" />
+  <property type="sds.integer" id="height" value="32" />
+  <property type="sds.color" id="color.background">
+    <color red="230" green="230" blue="230" />
+    <dynamicsDescriptor ruleId="cosyrules.color.bin_0rt_1gn" useConnectionStates="false">
+      <inputChannel name="$channel$" type="org.eclipse.swt.graphics.RGB" />
+      <connectionState state="CONNECTED">
+        <color red="230" green="230" blue="230" />
+      </connectionState>
+      <connectionState state="INITIAL">
+        <color red="255" green="168" blue="222" />
+      </connectionState>
+      <connectionState state="CONNECTION_LOST">
+        <color red="255" green="9" blue="163" />
+      </connectionState>
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.string" id="name" value="EllipseModel" />
+  <property type="sds.boolean" id="orientation" value="true" />
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.integer" id="position.y" value="8" />
+  <property type="sds.integer" id="position.x" value="10" />
+  <property type="sds.double" id="fill" value="100.0">
+    <dynamicsDescriptor ruleId="directConnection" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+      <connectionState state="INITIAL" value="0.0" />
+      <connectionState state="CONNECTION_LOST" value="0.0" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.string" id="primary_pv" value="$channel$" />
+  <property type="sds.integer" id="width" value="32" />
+  <property type="sds.string" id="layer" value="DEFAULT" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+    <dynamicsDescriptor ruleId="cosyrules.color.alarm" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.color" id="color.foreground">
+    <color red="0" green="0" blue="192" />
+  </property>
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+    <dynamicsDescriptor ruleId="cosyrules.color.alarmBorder" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.boolean" id="PROP_WRITE_ACCESS_GRANTED" value="true" />
+  <property type="sds.paramstring" id="tooltip" value="${aliases}&#xA;Value:&#x9;${fill}" />
+</widget>
+<widget type="org.csstudio.sds.components.Label">
+  <aliasDescriptors>
+    <aliasDescriptor name="channel" value="" />
+  </aliasDescriptors>
+  <property type="sds.option" id="value_type">
+    <option id="1" />
+  </property>
+  <property type="sds.choiceoption" id="cursor">
+    <option id="cursor.default" />
+  </property>
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.boolean" id="connected" value="false">
+    <dynamicsDescriptor ruleId="rule.null" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+      <connectionState state="DISCONNECTED" value="false" />
+      <connectionState state="CONNECTED" value="true" />
+      <connectionState state="CONNECTION_FAILED" value="false" />
+      <connectionState state="CONNECTION_LOST" value="false" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.integer" id="border.width" value="0">
+    <dynamicsDescriptor ruleId="cosyrules.color.alarmBorderWidth" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.double" id="text_rotation" value="90.0" />
+  <property type="sds.map" id="aliases">
+    <map>
+      <mapEntry name="channel" value="" />
+    </map>
+  </property>
+  <property type="sds.boolean" id="PROP_ACCESS_GRANTED" value="true" />
+  <property type="sds.integer" id="height" value="48" />
+  <property type="sds.color" id="color.background">
+    <color red="230" green="230" blue="230" />
+    <dynamicsDescriptor ruleId="rule.null" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+      <connectionState state="CONNECTED">
+        <color red="230" green="230" blue="230" />
+      </connectionState>
+      <connectionState state="INITIAL">
+        <color red="255" green="168" blue="222" />
+      </connectionState>
+      <connectionState state="CONNECTION_LOST">
+        <color red="255" green="9" blue="163" />
+      </connectionState>
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.string" id="value.text" value="Kompressor Strasse 2" />
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.string" id="name" value="LabelModel" />
+  <property type="sds.integer" id="offset.y" value="0" />
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.integer" id="position.y" value="0" />
+  <property type="sds.integer" id="offset.x" value="0" />
+  <property type="sds.integer" id="precision" value="2" />
+  <property type="sds.integer" id="position.x" value="50" />
+  <property type="sds.font" id="font">
+    <font fontName="Arial" height="20" style="1" />
+  </property>
+  <property type="sds.string" id="primary_pv" value="$channel$" />
+  <property type="sds.integer" id="width" value="307" />
+  <property type="sds.string" id="layer" value="DEFAULT" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+    <dynamicsDescriptor ruleId="cosyrules.color.alarm" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.color" id="color.foreground">
+    <color red="0" green="0" blue="192" />
+  </property>
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+    <dynamicsDescriptor ruleId="cosyrules.color.alarmBorder" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.boolean" id="transparent_background" value="false" />
+  <property type="sds.option" id="textAlignment">
+    <option id="0" />
+  </property>
+  <property type="sds.boolean" id="PROP_WRITE_ACCESS_GRANTED" value="true" />
+  <property type="sds.paramstring" id="tooltip" value="${aliases}&#xA;Value:&#x9;${value.text}" />
+</widget>
+<widget type="org.csstudio.sds.components.Label">
+  <aliasDescriptors>
+    <aliasDescriptor name="channel" value="" />
+  </aliasDescriptors>
+  <property type="sds.option" id="value_type">
+    <option id="1" />
+  </property>
+  <property type="sds.choiceoption" id="cursor">
+    <option id="cursor.default" />
+  </property>
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.boolean" id="connected" value="false">
+    <dynamicsDescriptor ruleId="rule.null" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+      <connectionState state="DISCONNECTED" value="false" />
+      <connectionState state="CONNECTED" value="true" />
+      <connectionState state="CONNECTION_FAILED" value="false" />
+      <connectionState state="CONNECTION_LOST" value="false" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.integer" id="border.width" value="0">
+    <dynamicsDescriptor ruleId="cosyrules.color.alarmBorderWidth" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.double" id="text_rotation" value="90.0" />
+  <property type="sds.map" id="aliases">
+    <map>
+      <mapEntry name="channel" value="" />
+    </map>
+  </property>
+  <property type="sds.boolean" id="PROP_ACCESS_GRANTED" value="true" />
+  <property type="sds.integer" id="height" value="48" />
+  <property type="sds.color" id="color.background">
+    <color red="230" green="230" blue="230" />
+    <dynamicsDescriptor ruleId="rule.null" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+      <connectionState state="CONNECTED">
+        <color red="230" green="230" blue="230" />
+      </connectionState>
+      <connectionState state="INITIAL">
+        <color red="255" green="168" blue="222" />
+      </connectionState>
+      <connectionState state="CONNECTION_LOST">
+        <color red="255" green="9" blue="163" />
+      </connectionState>
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.string" id="value.text" value="Coldbox 42" />
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.string" id="name" value="LabelModel" />
+  <property type="sds.integer" id="offset.y" value="0" />
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.integer" id="position.y" value="0" />
+  <property type="sds.integer" id="offset.x" value="0" />
+  <property type="sds.integer" id="precision" value="2" />
+  <property type="sds.integer" id="position.x" value="490" />
+  <property type="sds.font" id="font">
+    <font fontName="Arial" height="20" style="1" />
+  </property>
+  <property type="sds.string" id="primary_pv" value="$channel$" />
+  <property type="sds.integer" id="width" value="155" />
+  <property type="sds.string" id="layer" value="DEFAULT" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+    <dynamicsDescriptor ruleId="cosyrules.color.alarm" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.color" id="color.foreground">
+    <color red="0" green="0" blue="192" />
+  </property>
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+    <dynamicsDescriptor ruleId="cosyrules.color.alarmBorder" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.boolean" id="transparent_background" value="false" />
+  <property type="sds.option" id="textAlignment">
+    <option id="0" />
+  </property>
+  <property type="sds.boolean" id="PROP_WRITE_ACCESS_GRANTED" value="true" />
+  <property type="sds.paramstring" id="tooltip" value="${aliases}&#xA;Value:&#x9;${value.text}" />
+</widget>
+<widget type="org.csstudio.sds.components.Ellipse">
+  <aliasDescriptors>
+    <aliasDescriptor name="channel" value="KS2:SNL:CUE:CBOXOK_bi" />
+  </aliasDescriptors>
+  <property type="sds.choiceoption" id="cursor">
+    <option id="cursor.default" />
+  </property>
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.boolean" id="connected" value="false">
+    <dynamicsDescriptor ruleId="rule.null" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+      <connectionState state="DISCONNECTED" value="false" />
+      <connectionState state="CONNECTED" value="true" />
+      <connectionState state="CONNECTION_FAILED" value="false" />
+      <connectionState state="CONNECTION_LOST" value="false" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.integer" id="border.width" value="0">
+    <dynamicsDescriptor ruleId="cosyrules.color.alarmBorderWidth" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.map" id="aliases">
+    <map>
+      <mapEntry name="channel" value="KS2:SNL:CUE:CBOXOK_bi" />
+    </map>
+  </property>
+  <property type="sds.boolean" id="transparency" value="false" />
+  <property type="sds.boolean" id="PROP_ACCESS_GRANTED" value="true" />
+  <property type="sds.integer" id="height" value="32" />
+  <property type="sds.color" id="color.background">
+    <color red="230" green="230" blue="230" />
+    <dynamicsDescriptor ruleId="cosyrules.color.bin_0rt_1gn" useConnectionStates="false">
+      <inputChannel name="$channel$" type="org.eclipse.swt.graphics.RGB" />
+      <connectionState state="CONNECTED">
+        <color red="230" green="230" blue="230" />
+      </connectionState>
+      <connectionState state="INITIAL">
+        <color red="255" green="168" blue="222" />
+      </connectionState>
+      <connectionState state="CONNECTION_LOST">
+        <color red="255" green="9" blue="163" />
+      </connectionState>
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.string" id="name" value="EllipseModel" />
+  <property type="sds.boolean" id="orientation" value="true" />
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.integer" id="position.y" value="8" />
+  <property type="sds.integer" id="position.x" value="450" />
+  <property type="sds.double" id="fill" value="100.0">
+    <dynamicsDescriptor ruleId="directConnection" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Number" />
+      <connectionState state="INITIAL" value="0.0" />
+      <connectionState state="CONNECTION_LOST" value="0.0" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.string" id="primary_pv" value="$channel$" />
+  <property type="sds.integer" id="width" value="32" />
+  <property type="sds.string" id="layer" value="DEFAULT" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+    <dynamicsDescriptor ruleId="cosyrules.color.alarm" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.color" id="color.foreground">
+    <color red="0" green="0" blue="192" />
+  </property>
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+    <dynamicsDescriptor ruleId="cosyrules.color.alarmBorder" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.boolean" id="PROP_WRITE_ACCESS_GRANTED" value="true" />
+  <property type="sds.paramstring" id="tooltip" value="${aliases}&#xA;Value:&#x9;${fill}" />
+</widget>
+<widget type="org.csstudio.sds.components.ActionButton">
+  <aliasDescriptors>
+    <aliasDescriptor name="channel" value="KS2:SNL:CUE:SOFTSTOP_bi" />
+  </aliasDescriptors>
+  <property type="sds.choiceoption" id="cursor">
+    <option id="cursor.default" />
+  </property>
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.boolean" id="connected" value="false">
+    <dynamicsDescriptor ruleId="rule.null" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+      <connectionState state="DISCONNECTED" value="false" />
+      <connectionState state="CONNECTED" value="true" />
+      <connectionState state="CONNECTION_FAILED" value="false" />
+      <connectionState state="CONNECTION_LOST" value="false" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.integer" id="border.width" value="0" />
+  <property type="sds.map" id="aliases">
+    <map>
+      <mapEntry name="channel" value="KS2:SNL:CUE:SOFTSTOP_bi" />
+    </map>
+  </property>
+  <property type="sds.boolean" id="PROP_ACCESS_GRANTED" value="true" />
+  <property type="sds.integer" id="action_released_index" value="0" />
+  <property type="sds.integer" id="height" value="39" />
+  <property type="sds.color" id="color.background">
+    <color red="230" green="230" blue="230" />
+    <dynamicsDescriptor ruleId="cosyrules.color.bin_0gn_1rt" useConnectionStates="false">
+      <inputChannel name="epics://KS2:SNL:CUEBERW_mbbiD.BF" type="org.eclipse.swt.graphics.RGB" />
+      <connectionState state="CONNECTED">
+        <color red="230" green="230" blue="230" />
+      </connectionState>
+      <connectionState state="INITIAL">
+        <color red="255" green="168" blue="222" />
+      </connectionState>
+      <connectionState state="CONNECTION_LOST">
+        <color red="255" green="9" blue="163" />
+      </connectionState>
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.action" id="actionData">
+    <actionData>
+      <action_attribut type="COMMIT_VALUE">
+        <property_attribut type="sds.string" id="description" value="" />
+        <property_attribut type="sds.string" id="value" value="1" />
+      </action_attribut>
+    </actionData>
+    <dynamicsDescriptor ruleId="directConnection" useConnectionStates="false">
+      <inputChannel name="$channel$, double" type="java.lang.Number" />
+      <outputChannel name="$channel$, double" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.string" id="name" value="ActionButtonModel" />
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.integer" id="position.y" value="77" />
+  <property type="sds.integer" id="position.x" value="563" />
+  <property type="sds.font" id="font">
+    <font fontName="Arial" height="12" style="0" />
+  </property>
+  <property type="sds.string" id="primary_pv" value="$channel$" />
+  <property type="sds.integer" id="width" value="147" />
+  <property type="sds.string" id="layer" value="DEFAULT" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+  </property>
+  <property type="sds.string" id="label" value="">
+    <dynamicsDescriptor ruleId="directConnection" useConnectionStates="false">
+      <inputChannel name="epics://KS2:SNL:CUE:SOFTSTOP_si, string" type="java.lang.Number" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.color" id="color.foreground">
+    <color red="0" green="0" blue="192" />
+  </property>
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+  </property>
+  <property type="sds.boolean" id="toggleButton" value="false" />
+  <property type="sds.option" id="textAlignment">
+    <option id="0" />
+  </property>
+  <property type="sds.boolean" id="PROP_WRITE_ACCESS_GRANTED" value="true" />
+  <property type="sds.integer" id="action_pressed_index" value="-1" />
+  <property type="sds.paramstring" id="tooltip" value="${aliases}&#xA;${actionData}&#xA;Performed Action: ${action_pressed_index}${action_released_index}" />
+</widget>
+<widget type="org.csstudio.sds.components.Label">
+  <aliasDescriptors>
+    <aliasDescriptor name="channel" value="" />
+  </aliasDescriptors>
+  <property type="sds.option" id="value_type">
+    <option id="1" />
+  </property>
+  <property type="sds.choiceoption" id="cursor">
+    <option id="cursor.default" />
+  </property>
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.boolean" id="connected" value="false">
+    <dynamicsDescriptor ruleId="rule.null" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+      <connectionState state="DISCONNECTED" value="false" />
+      <connectionState state="CONNECTED" value="true" />
+      <connectionState state="CONNECTION_FAILED" value="false" />
+      <connectionState state="CONNECTION_LOST" value="false" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.integer" id="border.width" value="0">
+    <dynamicsDescriptor ruleId="cosyrules.color.alarmBorderWidth" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.double" id="text_rotation" value="90.0" />
+  <property type="sds.map" id="aliases">
+    <map>
+      <mapEntry name="channel" value="" />
+    </map>
+  </property>
+  <property type="sds.boolean" id="PROP_ACCESS_GRANTED" value="true" />
+  <property type="sds.integer" id="height" value="34" />
+  <property type="sds.color" id="color.background">
+    <color red="230" green="230" blue="230" />
+    <dynamicsDescriptor ruleId="rule.null" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+      <connectionState state="CONNECTED">
+        <color red="230" green="230" blue="230" />
+      </connectionState>
+      <connectionState state="INITIAL">
+        <color red="255" green="168" blue="222" />
+      </connectionState>
+      <connectionState state="CONNECTION_LOST">
+        <color red="255" green="9" blue="163" />
+      </connectionState>
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.string" id="value.text" value="Selektierte Kompressoren" />
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.string" id="name" value="LabelModel" />
+  <property type="sds.integer" id="offset.y" value="0" />
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.integer" id="position.y" value="323" />
+  <property type="sds.integer" id="offset.x" value="0" />
+  <property type="sds.integer" id="precision" value="2" />
+  <property type="sds.integer" id="position.x" value="7" />
+  <property type="sds.font" id="font">
+    <font fontName="Arial" height="10" style="0" />
+  </property>
+  <property type="sds.string" id="primary_pv" value="$channel$" />
+  <property type="sds.integer" id="width" value="163" />
+  <property type="sds.string" id="layer" value="DEFAULT" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+    <dynamicsDescriptor ruleId="cosyrules.color.alarm" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.color" id="color.foreground">
+    <color red="0" green="0" blue="192" />
+  </property>
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+    <dynamicsDescriptor ruleId="cosyrules.color.alarmBorder" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.boolean" id="transparent_background" value="false" />
+  <property type="sds.option" id="textAlignment">
+    <option id="0" />
+  </property>
+  <property type="sds.boolean" id="PROP_WRITE_ACCESS_GRANTED" value="true" />
+  <property type="sds.paramstring" id="tooltip" value="${aliases}&#xA;Value:&#x9;${value.text}" />
+</widget>
+<widget type="org.csstudio.sds.components.SixteenBinaryBar">
+  <aliasDescriptors>
+    <aliasDescriptor name="channel" value="KS2:SNL:CUE:CUEBERW_mbbi" />
+  </aliasDescriptors>
+  <property type="sds.boolean" id="showLabels" value="false" />
+  <property type="sds.choiceoption" id="cursor">
+    <option id="cursor.default" />
+  </property>
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.color" id="labelColor">
+    <color red="0" green="0" blue="0" />
+  </property>
+  <property type="sds.boolean" id="connected" value="false">
+    <dynamicsDescriptor ruleId="rule.null" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+      <connectionState state="DISCONNECTED" value="false" />
+      <connectionState state="CONNECTED" value="true" />
+      <connectionState state="CONNECTION_FAILED" value="false" />
+      <connectionState state="CONNECTION_LOST" value="false" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.integer" id="border.width" value="0">
+    <dynamicsDescriptor ruleId="cosyrules.color.alarmBorderWidth" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.map" id="aliases">
+    <map>
+      <mapEntry name="channel" value="KS2:SNL:CUE:CUEBERW_mbbi" />
+    </map>
+  </property>
+  <property type="sds.boolean" id="PROP_ACCESS_GRANTED" value="true" />
+  <property type="sds.integer" id="height" value="30" />
+  <property type="sds.color" id="color.background">
+    <color red="230" green="230" blue="230" />
+  </property>
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.string" id="name" value="SixteenBinaryBarModel" />
+  <property type="sds.integer" id="value" value="0">
+    <dynamicsDescriptor ruleId="directConnection" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.color" id="internalFrameColor">
+    <color red="0" green="0" blue="0" />
+    <dynamicsDescriptor ruleId="rule.null" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+      <connectionState state="CONNECTED">
+        <color red="0" green="0" blue="0" />
+      </connectionState>
+      <connectionState state="INITIAL">
+        <color red="255" green="168" blue="222" />
+      </connectionState>
+      <connectionState state="CONNECTION_LOST">
+        <color red="255" green="9" blue="163" />
+      </connectionState>
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.color" id="onColor">
+    <color red="0" green="255" blue="0" />
+  </property>
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.integer" id="position.y" value="570" />
+  <property type="sds.integer" id="position.x" value="475" />
+  <property type="sds.color" id="offColor">
+    <color red="192" green="192" blue="192" />
+  </property>
+  <property type="sds.string" id="primary_pv" value="$channel$" />
+  <property type="sds.integer" id="width" value="239" />
+  <property type="sds.string" id="layer" value="DEFAULT" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+    <dynamicsDescriptor ruleId="cosyrules.color.alarm" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.integer" id="internalFrameSize" value="1" />
+  <property type="sds.color" id="color.foreground">
+    <color red="0" green="0" blue="192" />
+  </property>
+  <property type="sds.integer" id="bitRangeTo" value="15" />
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+    <dynamicsDescriptor ruleId="cosyrules.color.alarmBorder" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.integer" id="bitRangeFrom" value="0" />
+  <property type="sds.boolean" id="horizontal" value="true" />
+  <property type="sds.boolean" id="PROP_WRITE_ACCESS_GRANTED" value="true" />
+  <property type="sds.font" id="labelFont">
+    <font fontName="Arial" height="9" style="0" />
+  </property>
+  <property type="sds.paramstring" id="tooltip" value="${aliases}&#xA;Value:&#x9;${value}" />
+</widget>
+<widget type="org.csstudio.sds.components.ActionButton">
+  <aliasDescriptors>
+    <aliasDescriptor name="channel" value="KS2:SNL:TK1:RUN_bi" />
+  </aliasDescriptors>
+  <property type="sds.choiceoption" id="cursor">
+    <option id="cursor.default" />
+  </property>
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.boolean" id="connected" value="false">
+    <dynamicsDescriptor ruleId="rule.null" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+      <connectionState state="DISCONNECTED" value="false" />
+      <connectionState state="CONNECTED" value="true" />
+      <connectionState state="CONNECTION_FAILED" value="false" />
+      <connectionState state="CONNECTION_LOST" value="false" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.integer" id="border.width" value="0" />
+  <property type="sds.map" id="aliases">
+    <map>
+      <mapEntry name="channel" value="KS2:SNL:TK1:RUN_bi" />
+    </map>
+  </property>
+  <property type="sds.boolean" id="PROP_ACCESS_GRANTED" value="true" />
+  <property type="sds.integer" id="action_released_index" value="0" />
+  <property type="sds.integer" id="height" value="46" />
+  <property type="sds.color" id="color.background">
+    <color red="230" green="230" blue="230" />
+    <dynamicsDescriptor ruleId="cosyrules.color.bin_0rt_1gn" useConnectionStates="false">
+      <inputChannel name="$channel$, double" type="org.eclipse.swt.graphics.RGB" />
+      <connectionState state="CONNECTED">
+        <color red="230" green="230" blue="230" />
+      </connectionState>
+      <connectionState state="INITIAL">
+        <color red="255" green="168" blue="222" />
+      </connectionState>
+      <connectionState state="CONNECTION_LOST">
+        <color red="255" green="9" blue="163" />
+      </connectionState>
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.action" id="actionData">
+    <actionData>
+      <action_attribut type="COMMIT_VALUE">
+        <property_attribut type="sds.string" id="description" value="Stop" />
+        <property_attribut type="sds.string" id="value" value="0" />
+      </action_attribut>
+      <action_attribut type="COMMIT_VALUE">
+        <property_attribut type="sds.string" id="description" value="Start" />
+        <property_attribut type="sds.string" id="value" value="1" />
+      </action_attribut>
+    </actionData>
+    <dynamicsDescriptor ruleId="directConnection" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Number" />
+      <outputChannel name="$channel$.SVAL" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.string" id="name" value="ActionButtonModel" />
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.integer" id="position.y" value="135" />
+  <property type="sds.integer" id="position.x" value="474" />
+  <property type="sds.font" id="font">
+    <font fontName="Arial" height="8" style="0" />
+  </property>
+  <property type="sds.string" id="primary_pv" value="$channel$" />
+  <property type="sds.integer" id="width" value="66" />
+  <property type="sds.string" id="layer" value="DEFAULT" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+  </property>
+  <property type="sds.string" id="label" value="">
+    <dynamicsDescriptor ruleId="directConnection" useConnectionStates="false">
+      <inputChannel name="epics://KS2:SNL:TK1:RUN_si, string" type="java.lang.Number" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.color" id="color.foreground">
+    <color red="0" green="0" blue="192" />
+  </property>
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+  </property>
+  <property type="sds.boolean" id="toggleButton" value="true" />
+  <property type="sds.option" id="textAlignment">
+    <option id="0" />
+  </property>
+  <property type="sds.boolean" id="PROP_WRITE_ACCESS_GRANTED" value="true" />
+  <property type="sds.integer" id="action_pressed_index" value="1" />
+  <property type="sds.paramstring" id="tooltip" value="${aliases}&#xA;${actionData}&#xA;Performed Action: ${action_pressed_index}${action_released_index}" />
+</widget>
+<widget type="org.csstudio.sds.components.SixteenBinaryBar">
+  <aliasDescriptors>
+    <aliasDescriptor name="channel" value="KS2:SNL:TK1:STATE_mbbi" />
+  </aliasDescriptors>
+  <property type="sds.boolean" id="showLabels" value="false" />
+  <property type="sds.choiceoption" id="cursor">
+    <option id="cursor.default" />
+  </property>
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.color" id="labelColor">
+    <color red="0" green="0" blue="0" />
+  </property>
+  <property type="sds.boolean" id="connected" value="false">
+    <dynamicsDescriptor ruleId="rule.null" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+      <connectionState state="DISCONNECTED" value="false" />
+      <connectionState state="CONNECTED" value="true" />
+      <connectionState state="CONNECTION_FAILED" value="false" />
+      <connectionState state="CONNECTION_LOST" value="false" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.integer" id="border.width" value="0">
+    <dynamicsDescriptor ruleId="cosyrules.color.alarmBorderWidth" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.map" id="aliases">
+    <map>
+      <mapEntry name="channel" value="KS2:SNL:TK1:STATE_mbbi" />
+    </map>
+  </property>
+  <property type="sds.boolean" id="PROP_ACCESS_GRANTED" value="true" />
+  <property type="sds.integer" id="height" value="28" />
+  <property type="sds.color" id="color.background">
+    <color red="230" green="230" blue="230" />
+  </property>
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.string" id="name" value="SixteenBinaryBarModel" />
+  <property type="sds.integer" id="value" value="0">
+    <dynamicsDescriptor ruleId="directConnection" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.color" id="internalFrameColor">
+    <color red="0" green="0" blue="0" />
+    <dynamicsDescriptor ruleId="rule.null" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+      <connectionState state="CONNECTED">
+        <color red="0" green="0" blue="0" />
+      </connectionState>
+      <connectionState state="INITIAL">
+        <color red="255" green="168" blue="222" />
+      </connectionState>
+      <connectionState state="CONNECTION_LOST">
+        <color red="255" green="9" blue="163" />
+      </connectionState>
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.color" id="onColor">
+    <color red="0" green="255" blue="0" />
+  </property>
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.integer" id="position.y" value="170" />
+  <property type="sds.integer" id="position.x" value="563" />
+  <property type="sds.color" id="offColor">
+    <color red="192" green="192" blue="192" />
+  </property>
+  <property type="sds.string" id="primary_pv" value="$channel$" />
+  <property type="sds.integer" id="width" value="147" />
+  <property type="sds.string" id="layer" value="DEFAULT" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+    <dynamicsDescriptor ruleId="cosyrules.color.alarm" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.integer" id="internalFrameSize" value="1" />
+  <property type="sds.color" id="color.foreground">
+    <color red="0" green="0" blue="192" />
+  </property>
+  <property type="sds.integer" id="bitRangeTo" value="15" />
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+    <dynamicsDescriptor ruleId="cosyrules.color.alarmBorder" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.integer" id="bitRangeFrom" value="0" />
+  <property type="sds.boolean" id="horizontal" value="true" />
+  <property type="sds.boolean" id="PROP_WRITE_ACCESS_GRANTED" value="true" />
+  <property type="sds.font" id="labelFont">
+    <font fontName="Arial" height="9" style="0" />
+  </property>
+  <property type="sds.paramstring" id="tooltip" value="${aliases}&#xA;Value:&#x9;${value}" />
+</widget>
+<widget type="org.csstudio.sds.components.Label">
+  <aliasDescriptors>
+    <aliasDescriptor name="channel" value="KS2:SNL:TK1:STATE_mbbi" />
+  </aliasDescriptors>
+  <property type="sds.option" id="value_type">
+    <option id="1" />
+  </property>
+  <property type="sds.choiceoption" id="cursor">
+    <option id="cursor.default" />
+  </property>
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.boolean" id="connected" value="false">
+    <dynamicsDescriptor ruleId="rule.null" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+      <connectionState state="DISCONNECTED" value="false" />
+      <connectionState state="CONNECTED" value="true" />
+      <connectionState state="CONNECTION_FAILED" value="false" />
+      <connectionState state="CONNECTION_LOST" value="false" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.integer" id="border.width" value="0">
+    <dynamicsDescriptor ruleId="cosyrules.color.alarmBorderWidth" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.double" id="text_rotation" value="90.0" />
+  <property type="sds.map" id="aliases">
+    <map>
+      <mapEntry name="channel" value="KS2:SNL:TK1:STATE_mbbi" />
+    </map>
+  </property>
+  <property type="sds.boolean" id="PROP_ACCESS_GRANTED" value="true" />
+  <property type="sds.integer" id="height" value="28" />
+  <property type="sds.color" id="color.background">
+    <color red="230" green="230" blue="230" />
+    <dynamicsDescriptor ruleId="rule.null" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+      <connectionState state="CONNECTED">
+        <color red="230" green="230" blue="230" />
+      </connectionState>
+      <connectionState state="INITIAL">
+        <color red="255" green="168" blue="222" />
+      </connectionState>
+      <connectionState state="CONNECTION_LOST">
+        <color red="255" green="9" blue="163" />
+      </connectionState>
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.string" id="value.text" value="Label">
+    <dynamicsDescriptor ruleId="directConnection" useConnectionStates="false">
+      <inputChannel name="$channel$, string" type="java.lang.Number" />
+      <connectionState state="INITIAL" value="Initialisation" />
+      <connectionState state="CONNECTION_LOST" value="Connection lost" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.string" id="name" value="LabelModel" />
+  <property type="sds.integer" id="offset.y" value="0" />
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.integer" id="position.y" value="137" />
+  <property type="sds.integer" id="offset.x" value="0" />
+  <property type="sds.integer" id="precision" value="2" />
+  <property type="sds.integer" id="position.x" value="563" />
+  <property type="sds.font" id="font">
+    <font fontName="Arial" height="8" style="0" />
+  </property>
+  <property type="sds.string" id="primary_pv" value="$channel$" />
+  <property type="sds.integer" id="width" value="150" />
+  <property type="sds.string" id="layer" value="DEFAULT" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+    <dynamicsDescriptor ruleId="cosyrules.color.alarm" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.color" id="color.foreground">
+    <color red="0" green="0" blue="192" />
+  </property>
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+    <dynamicsDescriptor ruleId="cosyrules.color.alarmBorder" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.boolean" id="transparent_background" value="false" />
+  <property type="sds.option" id="textAlignment">
+    <option id="3" />
+  </property>
+  <property type="sds.boolean" id="PROP_WRITE_ACCESS_GRANTED" value="true" />
+  <property type="sds.paramstring" id="tooltip" value="${aliases}&#xA;Value:&#x9;${value.text}" />
+</widget>
+<widget type="org.csstudio.sds.components.Label">
+  <aliasDescriptors>
+    <aliasDescriptor name="channel" value="KS2:SNL:CUE:CUEBERW_mbbi" />
+  </aliasDescriptors>
+  <property type="sds.option" id="value_type">
+    <option id="1" />
+  </property>
+  <property type="sds.choiceoption" id="cursor">
+    <option id="cursor.default" />
+  </property>
+  <property type="sds.string" id="permission_id" value="" />
+  <property type="sds.boolean" id="visibility" value="true" />
+  <property type="sds.boolean" id="connected" value="false">
+    <dynamicsDescriptor ruleId="rule.null" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+      <connectionState state="DISCONNECTED" value="false" />
+      <connectionState state="CONNECTED" value="true" />
+      <connectionState state="CONNECTION_FAILED" value="false" />
+      <connectionState state="CONNECTION_LOST" value="false" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.integer" id="border.width" value="0">
+    <dynamicsDescriptor ruleId="cosyrules.color.alarmBorderWidth" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.double" id="text_rotation" value="90.0" />
+  <property type="sds.map" id="aliases">
+    <map>
+      <mapEntry name="channel" value="KS2:SNL:CUE:CUEBERW_mbbi" />
+    </map>
+  </property>
+  <property type="sds.boolean" id="PROP_ACCESS_GRANTED" value="true" />
+  <property type="sds.integer" id="height" value="48" />
+  <property type="sds.color" id="color.background">
+    <color red="230" green="230" blue="230" />
+    <dynamicsDescriptor ruleId="rule.null" useConnectionStates="false">
+      <inputChannel name="$channel$" type="java.lang.Object" />
+      <connectionState state="CONNECTED">
+        <color red="230" green="230" blue="230" />
+      </connectionState>
+      <connectionState state="INITIAL">
+        <color red="255" green="168" blue="222" />
+      </connectionState>
+      <connectionState state="CONNECTION_LOST">
+        <color red="255" green="9" blue="163" />
+      </connectionState>
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.string" id="value.text" value="Label">
+    <dynamicsDescriptor ruleId="directConnection" useConnectionStates="false">
+      <inputChannel name="$channel$, string" type="java.lang.Number" />
+      <connectionState state="INITIAL" value="Initialisation" />
+      <connectionState state="CONNECTION_LOST" value="Connection lost" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.action" id="actionData">
+    <actionData />
+  </property>
+  <property type="sds.string" id="name" value="LabelModel" />
+  <property type="sds.integer" id="offset.y" value="0" />
+  <property type="sds.boolean" id="enabled" value="true" />
+  <property type="sds.integer" id="position.y" value="0" />
+  <property type="sds.integer" id="offset.x" value="0" />
+  <property type="sds.integer" id="precision" value="2" />
+  <property type="sds.integer" id="position.x" value="645" />
+  <property type="sds.font" id="font">
+    <font fontName="Arial" height="8" style="0" />
+  </property>
+  <property type="sds.string" id="primary_pv" value="$channel$" />
+  <property type="sds.integer" id="width" value="150" />
+  <property type="sds.string" id="layer" value="DEFAULT" />
+  <property type="sds.color" id="border.color">
+    <color red="100" green="0" blue="0" />
+    <dynamicsDescriptor ruleId="cosyrules.color.alarm" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.color" id="color.foreground">
+    <color red="0" green="0" blue="192" />
+  </property>
+  <property type="sds.option" id="border.style">
+    <option id="1" />
+    <dynamicsDescriptor ruleId="cosyrules.color.alarmBorder" useConnectionStates="false">
+      <inputChannel name="$channel$[severity]" type="java.lang.Object" />
+    </dynamicsDescriptor>
+  </property>
+  <property type="sds.boolean" id="transparent_background" value="false" />
+  <property type="sds.option" id="textAlignment">
+    <option id="3" />
+  </property>
+  <property type="sds.boolean" id="PROP_WRITE_ACCESS_GRANTED" value="true" />
+  <property type="sds.paramstring" id="tooltip" value="${aliases}&#xA;Value:&#x9;${value.text}" />
+</widget>
+
+</display>

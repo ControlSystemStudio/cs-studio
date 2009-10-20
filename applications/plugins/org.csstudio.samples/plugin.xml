@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+  <extension
+        point="org.eclipse.ui.actionSets">
+     <actionSet
+           id="org.csstudio.samples.action"
+           label="org.csstudio.samples.action"
+           visible="true">
+        <action
+              class="org.csstudio.samples.internal.InstallExamplesAction"
+              icon="icons/sds.gif"
+              id="org.csstudio.samples.internal.InstallExamplesAction"
+              label="Install Sample Projects"
+              menubarPath="css/utility/"
+              style="push"/>
+     </actionSet>
+  </extension>
+
+
+</plugin>
