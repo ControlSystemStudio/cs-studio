@@ -25,6 +25,7 @@
 package org.csstudio.config.ioconfig.model.pbmodel;
 
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -245,13 +246,16 @@ public class Channel extends Node {
     }
 
     public void setChannelTypeNonHibernate(DataType type) {
-        setChannelType(type);
-        if (getModule() != null) {
-            // Don't work with only one update!
-            getModule().update();
-            getModule().update();
-        } else {
-            localUpdate();
+        if (getChannelType() != type) {
+            setChannelType(type);
+            setDirty(true);
+            if (getModule() != null) {
+                // Don't work with only one update!
+                getModule().update();
+                getModule().update();
+            } else {
+                localUpdate();
+            }
         }
     }
 
@@ -363,6 +367,8 @@ public class Channel extends Node {
         short structSortIndex = getParent().getSortIndex();
         short moduleSortIndex = getModule().getSortIndex();
 
+        // refreshChannelType();
+
         if (!(channelSortIndex <= 0 && structSortIndex <= 0 && moduleSortIndex <= 0)) {
             // if it a simple Channel (AI/AO)
             if (getChannelStructure().isSimple()) {
@@ -436,6 +442,18 @@ public class Channel extends Node {
         assembleEpicsAddressString();
     }
 
+    // private void refreshChannelType() {
+    // TreeSet<ModuleChannelPrototype> moduleChannelPrototypes =
+    // getModule().getGSDModule().getModuleChannelPrototypeNH();
+    // for (ModuleChannelPrototype moduleChannelPrototype : moduleChannelPrototypes) {
+    // if(moduleChannelPrototype.isInput() == isInput() && moduleChannelPrototype.getOffset() ==
+    // getChannelNumber()) {
+    // setChannelType(moduleChannelPrototype.getType());
+    // moduleChannelPrototype.get
+    // }
+    // }
+    // }
+
     /**
      * Assemble the Epics Address String.
      */
@@ -454,17 +472,25 @@ public class Channel extends Node {
                 sb.append(getStatusAddress());
             }
             sb.append(" 'T=");
-            if (getChannelType() == DataType.BIT && !getChannelStructure().isSimple()) {
-                sb.append(getChannelStructure().getStructureType().getType());
-                sb.append(getBitPostion());
-            } else {
-                sb.append(getChannelType().getType());
-            }
+            // if (getChannelType() == DataType.BIT && !getChannelStructure().isSimple()) {
+            // sb.append(getChannelStructure().getStructureType().getType());
+            // sb.append(getBitPostion());
+            // } else {
+            // sb.append(getChannelType().getType());
+            // }
             Set<ModuleChannelPrototype> moduleChannelPrototypes = getModule().getGSDModule()
                     .getModuleChannelPrototypeNH();
             for (ModuleChannelPrototype moduleChannelPrototype : moduleChannelPrototypes) {
                 if (moduleChannelPrototype.isInput() == isInput()
                         && getChannelNumber() == moduleChannelPrototype.getOffset()) {
+                    setChannelTypeNonHibernate(moduleChannelPrototype.getType());
+                    if (moduleChannelPrototype.getType() == DataType.BIT
+                            && !getChannelStructure().isSimple()) {
+                        sb.append(getChannelStructure().getStructureType().getType());
+                        sb.append(getBitPostion());
+                    } else {
+                        sb.append(moduleChannelPrototype.getType().getType());
+                    }
                     setStatusAddressOffset(moduleChannelPrototype.getShift());
                     if (moduleChannelPrototype.getMinimum() != null) {
                         sb.append(",L=" + moduleChannelPrototype.getMinimum());
@@ -484,7 +510,7 @@ public class Channel extends Node {
         } catch (NullPointerException e) {
             setEpicsAddressString(null);
         }
-        setDirty((oldAdr == null || !oldAdr.equals(getEpicsAddressString())));
+        setDirty((isDirty() || oldAdr == null || !oldAdr.equals(getEpicsAddressString())));
     }
 
     @Transient
