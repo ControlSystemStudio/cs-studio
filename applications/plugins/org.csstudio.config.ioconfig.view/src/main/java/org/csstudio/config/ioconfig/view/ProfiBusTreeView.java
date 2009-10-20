@@ -1040,7 +1040,7 @@ public class ProfiBusTreeView extends Composite {
         _searchAction = new Action() {
 
             public void run() {
-                SearchDialog searchDialog = new SearchDialog(new Shell(SWT.RESIZE),
+                SearchDialog searchDialog = new SearchDialog(new Shell(SWT.RESIZE|SWT.MAX),
                         ProfiBusTreeView.this);
                 int open = searchDialog.open();
                 if (open == 0) {
