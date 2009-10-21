@@ -31,6 +31,7 @@ import java.util.List;
 import org.csstudio.diag.interconnectionServer.internal.IIocDirectory;
 import org.csstudio.diag.interconnectionServer.internal.LdapIocDirectory;
 import org.csstudio.diag.interconnectionServer.internal.time.TimeUtil;
+import org.csstudio.platform.logging.CentralLogger;
 
 /**
  * Keeps track of the connections to the IOCs. Also provides statistical
@@ -46,7 +47,7 @@ public class IocConnectionManager {
 	 */
 
 	private static IocConnectionManager statisticInstance = null;
-	public Hashtable<String, IocConnection> connectionList = null; // accessed by BeaconWatchdog, InterconnectionServer, ScheduleDowntime
+	public Hashtable<String, IocConnection> connectionList = null; // accessed by BeaconWatchdog, InterconnectionServer
 	int totalNumberOfIncomingMessages = 0; // accessed by IocConnection
 	int totalNumberOfOutgoingMessages = 0; // accessed by IocConnection
 	
@@ -193,25 +194,34 @@ public class IocConnectionManager {
 		}
 		return null;
 	}
-	
-	public void resetIocNameDefinition( String iocName) {
 
+	/**
+	 * Refreshes the logical name of an IOC from the directory server.
+	 * 
+	 * @param iocHostname
+	 *            the hostname of the IOC.
+	 */
+	public void refreshIocNameDefinition(String iocHostname) {
+
+		// XXX: Why does this method have its own logic for finding the
+		// IocConnection object?
 		Enumeration<IocConnection> connections = this.connectionList.elements();
 		while (connections.hasMoreElements()) {
 			IocConnection thisContent = connections.nextElement();
-			if ( thisContent.getHost().equals(iocName)) {
+			if ( thisContent.getHost().equals(iocHostname)) {
 				/*
 				 * in case that the IOC name was not properly stored in LDAP we need a way to reset the name
 				 */
-				// find IP address
-				String[] iocNames = LdapSupport.getInstance().getLogicalIocName ( 
-						thisContent.getIocInetAddress().getHostAddress(), 
-						iocName);
+				String[] iocNames = iocDirectory.getLogicalIocName(
+						thisContent.getIocInetAddress().getHostAddress(),
+						iocHostname);
 				/*
 				 * these methods are synchronized in the subclass IocNameDefinitions
 				 */
 				thisContent.setLogicalIocName(iocNames[0]);
 				thisContent.setLdapIocName(iocNames[1]);
+				CentralLogger.getInstance().info(this, "Logical name of IOC " +
+						iocHostname + " refreshed, new name is: " + iocNames[0]);
 			}
 		}
 	}

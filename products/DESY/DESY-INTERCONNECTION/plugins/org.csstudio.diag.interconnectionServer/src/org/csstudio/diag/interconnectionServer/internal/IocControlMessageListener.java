@@ -98,9 +98,21 @@ public class IocControlMessageListener implements MessageListener {
 			setIocEnabled(args, true);
 		} else if ("scheduleDowntime".equals(command)) {
 			scheduleDowntime(args);
+		} else if ("refreshLogicalIocName".equals(command)) {
+			refreshLogicalIocName(args);
 		} else {
 			_log.warn(this, "Received unknown IOC control command: " + command);
 		}
+	}
+
+	/**
+	 * Refreshes the logical name of an IOC.
+	 * 
+	 * @param args
+	 *            the name of the IOC.
+	 */
+	private void refreshLogicalIocName(String args) {
+		IocConnectionManager.getInstance().refreshIocNameDefinition(args);
 	}
 
 	/**
