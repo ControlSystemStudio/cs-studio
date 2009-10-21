@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.sns.feature.optional"
       label="Optional Features"
-      version="1.0.21">
+      version="1.0.22">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -53,6 +53,14 @@
 
    <plugin
          id="org.csstudio.debugging.rdbshell"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.mps.sns"
+         os="linux,win32"
          download-size="0"
          install-size="0"
          version="0.0.0"
