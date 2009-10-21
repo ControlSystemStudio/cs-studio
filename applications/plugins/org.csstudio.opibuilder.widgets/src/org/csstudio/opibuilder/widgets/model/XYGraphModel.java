@@ -132,10 +132,10 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 	public static final String PROP_TRANSPARENT = "transparent"; //$NON-NLS-1$
 	
 	/** The ID of the number of axes property. */
-	public static final String PROP_AXES_AMOUNT = "axes_amount"; //$NON-NLS-1$
+	public static final String PROP_AXIS_COUNT = "axis_count"; //$NON-NLS-1$
 	
 	/** The ID of the number of axes property. */
-	public static final String PROP_TRACES_AMOUNT = "traces_amount"; //$NON-NLS-1$
+	public static final String PROP_TRACE_COUNT = "trace_count"; //$NON-NLS-1$
 	
 	/** The ID of the show toolbar property. */
 	public static final String PROP_SHOW_TOOLBAR = "show_toolbar"; //$NON-NLS-1$
@@ -209,9 +209,9 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 				WidgetPropertyCategory.Display,DEFAULT_PLOTAREA_BACKCOLOR));
 		addProperty(new BooleanProperty(PROP_TRANSPARENT, "Transparent",
 				WidgetPropertyCategory.Display,false));
-		addProperty(new IntegerProperty(PROP_AXES_AMOUNT, "Axes Amount",
+		addProperty(new IntegerProperty(PROP_AXIS_COUNT, "Axis Count",
 				WidgetPropertyCategory.Behavior,2,  2, MAX_AXES_AMOUNT));
-		addProperty(new IntegerProperty(PROP_TRACES_AMOUNT, "Traces Amount",
+		addProperty(new IntegerProperty(PROP_TRACE_COUNT, "Trace Count",
 				WidgetPropertyCategory.Behavior, 0, 0, MAX_TRACES_AMOUNT));	
 		addAxisProperties();
 		addTraceProperties();
@@ -429,14 +429,14 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 	 * @return The number of axes.
 	 */
 	public int getAxesAmount() {
-		return (Integer) getProperty(PROP_AXES_AMOUNT).getPropertyValue();
+		return (Integer) getProperty(PROP_AXIS_COUNT).getPropertyValue();
 	}
 	
 	/**
 	 * @return The number of traces.
 	 */
 	public int getTracesAmount() {
-		return (Integer) getProperty(PROP_TRACES_AMOUNT).getPropertyValue();
+		return (Integer) getProperty(PROP_TRACE_COUNT).getPropertyValue();
 	}
 
 	@Override

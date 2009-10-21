@@ -225,7 +225,7 @@
             editpart_class="org.csstudio.opibuilder.widgets.editparts.TabEditPart"
             icon="icons/tab.png"
             model_class="org.csstudio.opibuilder.widgets.model.TabModel"
-            name="Tab"
+            name="Tabbed Container"
             typeId="org.csstudio.opibuilder.widgets.tab">
       </widget>
    </extension>

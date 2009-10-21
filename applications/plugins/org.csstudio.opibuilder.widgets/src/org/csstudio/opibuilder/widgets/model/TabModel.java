@@ -34,7 +34,7 @@ public class TabModel extends AbstractContainerModel {
 		}
 	}	
 
-	public static final String PROP_TABS_AMOUNT = "tabs_amount"; //$NON-NLS-1$
+	public static final String PROP_TAB_COUNT = "tab_count"; //$NON-NLS-1$
 	
 	private static final RGB DEFAULT_TAB_FORECOLOR = new RGB(0,0,0);
 	
@@ -56,7 +56,7 @@ public class TabModel extends AbstractContainerModel {
 	
 	@Override
 	protected void configureProperties() {
-		addProperty(new IntegerProperty(PROP_TABS_AMOUNT, "Tabs Amount",
+		addProperty(new IntegerProperty(PROP_TAB_COUNT, "Tab Count",
 				WidgetPropertyCategory.Behavior, 1, 1, MAX_TABS_AMOUNT));	
 		addTabsProperties();		
 	}
@@ -113,6 +113,6 @@ public class TabModel extends AbstractContainerModel {
 	 * @return The number of tabs.
 	 */
 	public int getTabsAmount() {
-		return (Integer) getProperty(PROP_TABS_AMOUNT).getPropertyValue();
+		return (Integer) getProperty(PROP_TAB_COUNT).getPropertyValue();
 	}
 }

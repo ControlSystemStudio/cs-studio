@@ -222,7 +222,7 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 				return true;
 			}			
 		};
-		getWidgetModel().getProperty(XYGraphModel.PROP_AXES_AMOUNT).
+		getWidgetModel().getProperty(XYGraphModel.PROP_AXIS_COUNT).
 		addPropertyChangeListener(new PropertyChangeListener(){
 		public void propertyChange(PropertyChangeEvent evt) {
 			handler.handleChange(evt.getOldValue(), evt.getNewValue(), getFigure());
@@ -350,7 +350,7 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 				return true;
 			}			
 		};
-		getWidgetModel().getProperty(XYGraphModel.PROP_TRACES_AMOUNT).
+		getWidgetModel().getProperty(XYGraphModel.PROP_TRACE_COUNT).
 			addPropertyChangeListener(new PropertyChangeListener(){
 			public void propertyChange(PropertyChangeEvent evt) {
 				handler.handleChange(evt.getOldValue(), evt.getNewValue(), getFigure());

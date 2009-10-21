@@ -97,7 +97,7 @@ public class TabEditPart extends AbstractContainerEditpart {
 		
 		
 		//update property sheet		
-		getWidgetModel().setPropertyValue(TabModel.PROP_TABS_AMOUNT, getWidgetModel().getChildren().size());
+		getWidgetModel().setPropertyValue(TabModel.PROP_TAB_COUNT, getWidgetModel().getChildren().size());
 		
 		for(TabProperty tabProperty : TabProperty.values()){				
 				String propID = TabModel.makeTabPropID(
@@ -197,7 +197,7 @@ public class TabEditPart extends AbstractContainerEditpart {
 		}
 		
 		//update property sheet		
-		getWidgetModel().setPropertyValue(TabModel.PROP_TABS_AMOUNT, getWidgetModel().getChildren().size());
+		getWidgetModel().setPropertyValue(TabModel.PROP_TAB_COUNT, getWidgetModel().getChildren().size());
 		
 		for(TabProperty tabProperty : TabProperty.values()){				
 				String propID = TabModel.makeTabPropID(
@@ -358,7 +358,7 @@ public class TabEditPart extends AbstractContainerEditpart {
 				return true;
 			}			
 		};
-		getWidgetModel().getProperty(TabModel.PROP_TABS_AMOUNT).
+		getWidgetModel().getProperty(TabModel.PROP_TAB_COUNT).
 			addPropertyChangeListener(new PropertyChangeListener(){
 				public void propertyChange(PropertyChangeEvent evt) {
 					handler.handleChange(evt.getOldValue(), evt.getNewValue(), getFigure());
