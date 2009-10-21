@@ -125,8 +125,13 @@ public class PVModelItem
     
     /** @see IModelItem#changeName(String) */
     @Override
-    public void changeName(final String new_name)
+    public void changeName(String new_name)
     {
+        if (new_name == null)
+            return;
+        new_name = new_name.trim();
+        if (new_name.length() <= 0)
+            return;
         // Avoid duplicates, do not allow if new name already in model.
         if (model.findItem(new_name) != null)
             return;
@@ -208,6 +213,8 @@ public class PVModelItem
     {
         // Common PV stuff
         final String name = DOMHelper.getSubelementString(pv, TAG_NAME);
+        if (name.length() <= 0)
+            return null;
         final int axis_index = DOMHelper.getSubelementInt(pv, TAG_AXIS, 0);
         final int line_width = DOMHelper.getSubelementInt(pv, TAG_LINEWIDTH, 0);
         final double min = DOMHelper.getSubelementDouble(pv, TAG_MIN, 0.0);

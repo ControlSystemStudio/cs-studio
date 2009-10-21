@@ -201,6 +201,8 @@ public class FormulaModelItem extends AbstractModelItem
     {
         // Common PV stuff
         final String name = DOMHelper.getSubelementString(pv, TAG_NAME);
+        if (name.length() <= 0)
+            return null;
         final int axis_index = DOMHelper.getSubelementInt(pv, TAG_AXIS, 0);
         final int line_width = DOMHelper.getSubelementInt(pv, TAG_LINEWIDTH, 0);
         final double min = DOMHelper.getSubelementDouble(pv, TAG_MIN, 0.0);

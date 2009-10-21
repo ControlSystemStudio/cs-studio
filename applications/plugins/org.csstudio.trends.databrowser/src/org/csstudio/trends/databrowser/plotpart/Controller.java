@@ -358,7 +358,10 @@ public class Controller implements ArchiveFetchJobListener
                 /** {@inheritDoc} */
                 @Override
                 public void handleDrop(IProcessVariable name, IArchiveDataSource archive, DropTargetEvent event)
-                {   // Add item with source
+                { 
+                    if (name.getName().length() <= 0)
+                        return;
+                    // Add item with source
                     YAxis yaxis = chart.getYAxisAtScreenPoint(event.x, event.y);
                     IModelItem item = nameDropped(name.getName(), yaxis);
                     if (item instanceof IPVModelItem)

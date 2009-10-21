@@ -204,8 +204,14 @@ public abstract class AbstractModelItem
      *  Derived classes might also need to change PV names etc.
      *  @see IModelItem#changeName(String)
      */
-    public void changeName(final String new_name)
+    public void changeName(String new_name)
     {
+        // Ignore null or empty names
+        if (new_name == null)
+            return;
+        new_name = new_name.trim();
+        if (new_name.length() <= 0)
+            return;
         // Avoid duplicates, do not allow if new name already in model.
         if (model.findItem(new_name) != null)
             return;

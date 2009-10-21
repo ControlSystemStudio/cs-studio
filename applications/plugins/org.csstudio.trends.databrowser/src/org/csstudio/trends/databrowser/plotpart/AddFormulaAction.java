@@ -24,6 +24,8 @@ public class AddFormulaAction extends AbstractAddModelItemAction
     @Override
     protected void addPV(String name)
     {
+        if (name.length() <= 0)
+            return;
         try
         {
             final FormulaModelItem item = (FormulaModelItem)

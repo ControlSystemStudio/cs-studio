@@ -29,6 +29,8 @@ public class AddPVAction extends AbstractAddModelItemAction
 	@Override
     protected void addPV(final String pv_name)
     {
+	    if (pv_name.length() <= 0)
+	        return;
 	    try
 	    {
 	        final IPVModelItem pv_item = model.addPV(pv_name);

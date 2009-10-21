@@ -667,6 +667,8 @@ public class Model
      */
     private void silentAdd(final AbstractModelItem item)
     {
+        if (item == null)
+            return;
         items.add(item);
         if (is_running  &&  item instanceof PVModelItem)
             ((PVModelItem)item).start();
