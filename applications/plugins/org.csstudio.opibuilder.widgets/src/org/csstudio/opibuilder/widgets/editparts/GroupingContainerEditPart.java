@@ -6,7 +6,6 @@ import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.widgets.figures.GroupingContainerFigure;
 import org.csstudio.opibuilder.widgets.model.GroupingContainerModel;
-import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
@@ -19,8 +18,9 @@ public class GroupingContainerEditPart extends AbstractContainerEditpart {
 
 	@Override
 	protected IFigure doCreateFigure() {
-		Figure f = new GroupingContainerFigure();
+		GroupingContainerFigure f = new GroupingContainerFigure();
 		f.setOpaque(!getWidgetModel().isTransparent());
+		f.setShowScrollBar(getWidgetModel().isShowScrollbar());
 		return f;
 	}
 	

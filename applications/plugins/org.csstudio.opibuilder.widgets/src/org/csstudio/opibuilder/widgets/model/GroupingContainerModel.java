@@ -58,4 +58,12 @@ public class GroupingContainerModel extends AbstractContainerModel {
 		return (Boolean) getProperty(PROP_LOCK_CHILDREN).getPropertyValue();
 	}
 	
+	/**
+	* @return boolean
+	* 				True, if scrollbar should be shown when necessary, false otherwise.
+	*/
+	public boolean isShowScrollbar() {
+		return (Boolean) getProperty(PROP_SHOW_SCROLLBAR).getPropertyValue();
+	}
+	
 }
