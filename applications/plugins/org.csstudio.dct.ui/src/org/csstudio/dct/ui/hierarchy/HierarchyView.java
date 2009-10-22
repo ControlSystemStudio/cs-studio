@@ -14,7 +14,6 @@ import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.model.visitors.SearchInstancesVisitor;
 import org.csstudio.dct.ui.editor.DctEditor;
 import org.csstudio.platform.ui.util.LayoutUtil;
-import org.eclipse.gef.ui.parts.ContentOutlinePage;
 import org.eclipse.jface.viewers.IOpenListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -30,7 +29,6 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.part.ViewPart;
-import org.eclipse.ui.views.contentoutline.ContentOutline;
 
 /**
  * View that displays all instances for the prototype that is selected in the
@@ -40,12 +38,14 @@ import org.eclipse.ui.views.contentoutline.ContentOutline;
  * 
  */
 public class HierarchyView extends ViewPart implements IPartListener, ISelectionListener {
+	private IPrototype currentPrototype;
 	private DctEditor editor;
 	private TreeViewer treeViewer;
 	private Set<UUID> visibleIds;
 
 	public HierarchyView() {
 		visibleIds = new HashSet<UUID>();
+		currentPrototype = null;
 	}
 
 	public TreeViewer getTreeViewer() {
@@ -85,6 +85,8 @@ public class HierarchyView extends ViewPart implements IPartListener, ISelection
 			}
 		});
 
+		partActivated(getSite().getPage().getActivePart());
+		
 		getSite().getPage().addPartListener(this);
 
 		getSite().getPage().addSelectionListener("org.eclipse.ui.views.ContentOutline", this);
@@ -98,7 +100,9 @@ public class HierarchyView extends ViewPart implements IPartListener, ISelection
 	public void partActivated(IWorkbenchPart part) {
 		if (part instanceof DctEditor) {
 			editor = (DctEditor) part;
+			
 			treeViewer.setInput(editor.getProject());
+			
 			selectionChanged(null, null);
 		}
 	}
@@ -119,7 +123,6 @@ public class HierarchyView extends ViewPart implements IPartListener, ISelection
 
 	}
 
-	private IPrototype currentPrototype;
 
 	public void selectionChanged(IWorkbenchPart part, ISelection s2) {
 		ISelection selection = getSite().getPage().getSelection("org.eclipse.ui.views.ContentOutline");
@@ -184,5 +187,13 @@ public class HierarchyView extends ViewPart implements IPartListener, ISelection
 		if (folder.getParentFolder() != null) {
 			addPathElements(folder.getParentFolder(), visibleIds);
 		}
+	}
+	
+	@Override
+	public void dispose() {
+		super.dispose();
+		getSite().getPage().removePartListener(this);
+		getSite().getPage().removeSelectionListener("org.eclipse.ui.views.ContentOutline", this);
+
 	}
 }
