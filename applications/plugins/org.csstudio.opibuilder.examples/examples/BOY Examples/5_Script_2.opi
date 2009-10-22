@@ -25,7 +25,8 @@
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <widget_type>Label</widget_type>
     <enabled>true</enabled>
-    <text>Adjust the knobs to see who will win.</text>
+    <text>1. Adjust the knobs to see who will win.&#xD;
+2. Adjust the left knob to see a warning dialog when value exceeds 80.</text>
     <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="9" style="0" />
@@ -67,7 +68,7 @@
     <border_style>0</border_style>
     <auto_size>false</auto_size>
     <scripts />
-    <height>20</height>
+    <height>16</height>
     <border_width>1</border_width>
     <name>Label_2</name>
     <border_color>

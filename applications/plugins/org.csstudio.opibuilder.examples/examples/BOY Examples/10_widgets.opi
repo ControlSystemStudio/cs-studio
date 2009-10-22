@@ -27,7 +27,7 @@
     <visible>true</visible>
     <fill_level>100.0</fill_level>
     <scripts />
-    <height>132</height>
+    <height>161</height>
     <anti_alias>true</anti_alias>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Rectangle_3</name>
@@ -266,10 +266,10 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <enabled>true</enabled>
     <widget_type>Action Button</widget_type>
-    <text>Tank/Thermometer</text>
+    <text>Tank/Thermo/ProgressBar</text>
     <visible>true</visible>
     <font>
-      <fontdata fontName="Arial" height="12" style="1" />
+      <fontdata fontName="Arial" height="9" style="1" />
     </font>
     <width>193</width>
     <push_action_index>0</push_action_index>
@@ -1521,7 +1521,7 @@ $(pv_value)</tooltip>
     <height>31</height>
     <toggle_button>false</toggle_button>
     <name>Action Button_15</name>
-    <y>475</y>
+    <y>467</y>
     <actions hook="false">
       <action type="OPEN_DISPLAY">
         <path>/BOY Examples/widgets/4_2_LinkingContainer.opi</path>
@@ -1593,7 +1593,7 @@ $(pv_value)</tooltip>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <transparent>true</transparent>
-    <y>481</y>
+    <y>473</y>
     <actions hook="false">
       <action type="OPEN_DISPLAY">
         <path>/BOY Examples/widgets/1_1_Rectangle_Ellipse.opi</path>
@@ -1667,7 +1667,7 @@ $(pv_value)</tooltip>
     <height>28</height>
     <toggle_button>false</toggle_button>
     <name>Action Button_17</name>
-    <y>553</y>
+    <y>562</y>
     <actions hook="true">
       <action type="OPEN_DISPLAY">
         <path>/BOY Examples/main.opi</path>
@@ -1683,7 +1683,81 @@ $(pv_value)</tooltip>
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
-    <x>17</x>
+    <x>24</x>
     <tooltip />
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <enabled>true</enabled>
+    <widget_type>Action Button</widget_type>
+    <text>Tabbed Container</text>
+    <visible>true</visible>
+    <font>
+      <fontdata fontName="Arial" height="12" style="1" />
+    </font>
+    <width>193</width>
+    <push_action_index>0</push_action_index>
+    <image />
+    <scripts />
+    <height>31</height>
+    <toggle_button>false</toggle_button>
+    <name>Action Button_18</name>
+    <y>510</y>
+    <actions hook="false">
+      <action type="OPEN_DISPLAY">
+        <path>/BOY Examples/widgets/4_3_TabbedContainer.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+        </macros>
+        <replace>true</replace>
+      </action>
+    </actions>
+    <foreground_color>
+      <color red="51" green="51" blue="204" />
+    </foreground_color>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <x>35</x>
+    <tooltip />
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <widget_type>Label</widget_type>
+    <enabled>true</enabled>
+    <text>3.</text>
+    <visible>true</visible>
+    <font>
+      <fontdata fontName="Arial" height="12" style="1" />
+    </font>
+    <vertical_alignment>1</vertical_alignment>
+    <width>13</width>
+    <border_style>0</border_style>
+    <auto_size>true</auto_size>
+    <scripts />
+    <height>19</height>
+    <border_width>1</border_width>
+    <name>Label_24</name>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <transparent>true</transparent>
+    <y>516</y>
+    <actions hook="false">
+      <action type="OPEN_DISPLAY">
+        <path>/BOY Examples/widgets/1_1_Rectangle_Ellipse.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+        </macros>
+        <replace>false</replace>
+      </action>
+    </actions>
+    <tooltip />
+    <x>41</x>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="51" green="51" blue="204" />
+    </foreground_color>
   </widget>
 </display>
