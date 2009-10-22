@@ -15,7 +15,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.sds.components.epics,
  org.csstudio.sds.components.ui,
  org.csstudio.sds.importer.ui,
- org.csstudio.sds.samples,
  org.csstudio.sds.settings.desy,
  org.csstudio.sds.ui
 Eclipse-LazyStart: true
