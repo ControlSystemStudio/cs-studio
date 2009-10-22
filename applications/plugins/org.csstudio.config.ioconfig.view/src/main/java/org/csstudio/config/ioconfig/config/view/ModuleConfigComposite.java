@@ -546,12 +546,20 @@ public class ModuleConfigComposite extends NodeConfig {
                     || values.length % 2 != 0) {
                 String[] cfgDatas = cfgData.split(",");
                 String[] extUserPrmDataConsts = gsdModuleModel.getExtUserPrmDataConst().split(",");
-                if(cfgDatas.length<extUserPrmDataConsts.length) {
+                if (cfgDatas.length < extUserPrmDataConsts.length) {
                     _module.setConfigurationData(gsdModuleModel.getExtUserPrmDataConst());
                     _module.setDirty(true);
                 }
+                String[] configurationDatas = _module.getConfigurationData().split(",");
                 for (ExtUserPrmData extUserPrmData : gsdModuleModel.getAllExtUserPrmDataRef()) {
-                    makecurrentUserParamData(currentUserParamDataComposite, extUserPrmData, null);
+                    Integer value = null;
+                    String extUserPrmDataRef = _module.getGsdModuleModel().getExtUserPrmDataRef(
+                            extUserPrmData.getIndex());
+                    int index = Integer.parseInt(extUserPrmDataRef);
+                    if (configurationDatas.length > index) {
+                        value = getValue2BitMask(extUserPrmData, configurationDatas[index]);
+                    }
+                    makecurrentUserParamData(currentUserParamDataComposite, extUserPrmData, value);
                 }
             } else {
                 for (int i = 0; i < values.length; i++) {
@@ -586,8 +594,6 @@ public class ModuleConfigComposite extends NodeConfig {
 
             String[] extUserPrmDataConst = _module.getGsdModuleModel().getExtUserPrmDataConst()
                     .split(",");
-            String debug = Arrays.toString(extUserPrmDataConst).replaceAll("[\\[\\]]", "");
-            System.out.println(debug);
             for (Object prmTextObject : _prmTextCV) {
                 if (prmTextObject instanceof ComboViewer) {
                     ComboViewer prmTextCV = (ComboViewer) prmTextObject;
@@ -598,21 +604,10 @@ public class ModuleConfigComposite extends NodeConfig {
                         String extUserPrmDataRef = _module.getGsdModuleModel()
                                 .getExtUserPrmDataRef(input.getIndex());
 
-                        Integer value = ((PrmText) selection.getFirstElement()).getValue();
+                        Integer bitValue = ((PrmText) selection.getFirstElement()).getValue();
                         int index = ProfibusConfigXMLGenerator.getInt(extUserPrmDataRef);
-                        int val = ProfibusConfigXMLGenerator.getInt(extUserPrmDataConst[index]);
-                        int minBit = input.getMinBit();
-                        int maxBit = input.getMaxBit();
-                        if (maxBit < minBit) {
-                            minBit = input.getMaxBit();
-                            maxBit = input.getMinBit();
-                        }
-                        int max = (int) (Math.pow(2, maxBit + 1) - Math.pow(2, minBit));
-                        value = value << minBit;
-                        int mask = ~max;
-                        val = val & mask;
-                        val = val | value;
-                        extUserPrmDataConst[index] = String.format("%1$#04x", val);
+                        extUserPrmDataConst[index] = setValue2BitMask(input, bitValue,
+                                extUserPrmDataConst[index]);;
                         Integer indexOf = prmTextCV.getCombo().indexOf(
                                 selection.getFirstElement().toString());
                         prmTextCV.getCombo().setData(indexOf);
@@ -628,11 +623,60 @@ public class ModuleConfigComposite extends NodeConfig {
                     }
                 }
             }
-            _module.setConfigurationData(Arrays.toString(extUserPrmDataConst).replaceAll("[\\[\\]]", ""));
+            _module.setConfigurationData(Arrays.toString(extUserPrmDataConst).replaceAll(
+                    "[\\[\\]]", ""));
         }
         // Document
         _module.setDocuments(getDocumentationManageView().getDocuments());
         save();
+    }
+
+    /**
+     * Change the a value on the Bit places, that is given from the input, to the bitValue.
+     * 
+     * @param ranges
+     *            give the start and end Bit position.
+     * @param bitValue
+     *            the new Value for the given Bit position.
+     * @param value
+     *            the value was changed.
+     * @return the changed value as Hex String.
+     */
+    private String setValue2BitMask(ExtUserPrmData ranges, Integer bitValue, String value) {
+        int val = ProfibusConfigXMLGenerator.getInt(value);
+        int minBit = ranges.getMinBit();
+        int maxBit = ranges.getMaxBit();
+        if (maxBit < minBit) {
+            minBit = ranges.getMaxBit();
+            maxBit = ranges.getMinBit();
+        }
+        int mask = ~((int) (Math.pow(2, maxBit + 1) - Math.pow(2, minBit)));
+        bitValue = bitValue << minBit;
+        val = val & mask;
+        val = val | bitValue;
+        return String.format("%1$#04x", val);
+    }
+
+    private int getValue2BitMask(ExtUserPrmData ranges, String value) {
+        System.out.println("----------------------------------------------");
+        System.out.println("Value: " + value);
+        int val = ProfibusConfigXMLGenerator.getInt(value);
+        System.out.println("Val  : " + val);
+        int minBit = ranges.getMinBit();
+        int maxBit = ranges.getMaxBit();
+        if (maxBit < minBit) {
+            minBit = ranges.getMaxBit();
+            maxBit = ranges.getMinBit();
+        }
+        System.out.println("Min : " + minBit);
+        System.out.println("Max : " + maxBit);
+        int mask = (int) (Math.pow(2, maxBit + 1) - Math.pow(2, minBit));
+        System.out.println("Mask : " + mask);
+        System.out.println("Mask : " + Integer.toBinaryString(mask));
+        val = val & mask;
+        val = val >> minBit;
+        System.out.println("Val  : " + val);
+        return val;
     }
 
     /**

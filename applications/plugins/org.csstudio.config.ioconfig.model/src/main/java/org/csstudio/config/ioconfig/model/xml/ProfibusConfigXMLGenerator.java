@@ -257,7 +257,7 @@ public class ProfibusConfigXMLGenerator {
      * @return The value as int.
      */
     public static int getInt(String value) {
-        String tmp = value.toUpperCase();
+        String tmp = value.toUpperCase().trim();
         int radix = 10;
         try {
             if(tmp.startsWith("0X")) {
