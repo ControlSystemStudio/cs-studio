@@ -41,6 +41,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.csstudio.config.ioconfig.model.tools.NodeMap;
 import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.platform.security.User;
 import org.hibernate.annotations.Cascade;
@@ -117,6 +118,18 @@ public abstract class Node extends NamedDBClass implements Comparable<Node> {
         return _parent;
     }
 
+    
+    /**
+     * 
+     * @param id
+     *            set the Node key ID.
+     */
+    @Override
+    public void setId(final int id) {
+        super.setId(id);
+        NodeMap.put(id, this);
+    }
+    
     /**
      * 
      * @return the Children of this node.

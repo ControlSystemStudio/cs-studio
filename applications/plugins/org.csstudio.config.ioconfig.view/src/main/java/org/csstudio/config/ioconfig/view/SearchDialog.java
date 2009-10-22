@@ -27,8 +27,11 @@ package org.csstudio.config.ioconfig.view;
 import java.util.Date;
 import java.util.List;
 
+import org.csstudio.config.ioconfig.model.DBClass;
+import org.csstudio.config.ioconfig.model.Node;
 import org.csstudio.config.ioconfig.model.Repository;
 import org.csstudio.config.ioconfig.model.SearchNode;
+import org.csstudio.config.ioconfig.model.tools.NodeMap;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
@@ -52,7 +55,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
@@ -67,6 +69,7 @@ import org.eclipse.swt.widgets.Text;
 public class SearchDialog extends Dialog {
 
     private SearchNode _searchNode;
+    private Node _selectedNode;
 
     private final class SortSelectionListener implements SelectionListener {
         private final ViewerSorterExtension _sorter;
@@ -100,23 +103,26 @@ public class SearchDialog extends Dialog {
                 SearchNode node1 = (SearchNode) e1;
                 SearchNode node2 = (SearchNode) e2;
                 int asc = 1;
-                if(_asc) {
+                if (_asc) {
                     asc = -1;
                 }
-                switch(_state) {
+                switch (_state) {
                     case 0:
-                        if(node1.getName()!=null&&node2.getName()!=null) {
+                        if (node1.getName() != null && node2.getName() != null) {
                             return asc * node1.getName().compareTo(node2.getName());
                         }
                         break;
                     case 1:
-                        if(node1.getIoName()!=null&&node2.getIoName()!=null) {
+                        if (node1.getIoName() != null && node2.getIoName() != null) {
                             return asc * node1.getIoName().compareTo(node2.getIoName());
                         }
                         break;
                     case 2:
-                        if(node1.getEpicsAddressString()!=null&&node2.getEpicsAddressString()!=null) {
-                            return asc * node1.getEpicsAddressString().compareTo(node2.getEpicsAddressString());
+                        if (node1.getEpicsAddressString() != null
+                                && node2.getEpicsAddressString() != null) {
+                            return asc
+                                    * node1.getEpicsAddressString().compareTo(
+                                            node2.getEpicsAddressString());
                         }
                         break;
                     case 3:
@@ -128,7 +134,7 @@ public class SearchDialog extends Dialog {
                     case 6:
                         return asc * node1.getUpdatedOn().compareTo(node2.getUpdatedOn());
                     case 7:
-                        return asc * node1.getId()-node2.getId();
+                        return asc * node1.getId() - node2.getId();
                     case 8:
                         return asc * node1.getParentId().compareTo(node2.getParentId());
                 }
@@ -138,10 +144,10 @@ public class SearchDialog extends Dialog {
         }
 
         public void setState(int state) {
-            if(_state == state) {
-                _asc=!_asc;
-            }else {
-                _asc=!false;
+            if (_state == state) {
+                _asc = !_asc;
+            } else {
+                _asc = !false;
                 _state = state;
             }
         }
@@ -268,13 +274,14 @@ public class SearchDialog extends Dialog {
     }
 
     private List<SearchNode> _load;
+    private final ProfiBusTreeView _profiBusTreeView;
 
     protected SearchDialog(Shell parentShell, ProfiBusTreeView profiBusTreeView) {
         super(parentShell);
-        setShellStyle(SWT.RESIZE|parentShell.getStyle());
+        _profiBusTreeView = profiBusTreeView;
+        setShellStyle(SWT.RESIZE | parentShell.getStyle() | SWT.PRIMARY_MODAL);
         _load = Repository.load(SearchNode.class);
     }
-
     /**
      * {@inheritDoc}
      */
@@ -307,7 +314,7 @@ public class SearchDialog extends Dialog {
         gdfText.applyTo(searchTextAddressString);
         searchTextAddressString.setMessage("Epics Address Filter");
 
-        Composite tableComposite = new Composite(dialogArea, SWT.BORDER | SWT.FULL_SELECTION);
+        Composite tableComposite = new Composite(dialogArea, SWT.FULL_SELECTION);
         GridDataFactory.fillDefaults().grab(true, true).span(3, 1).hint(800, 300).applyTo(
                 tableComposite);
         tableComposite.setLayout(tableColumnLayout);
@@ -317,7 +324,6 @@ public class SearchDialog extends Dialog {
         resultTableView.getTable().setLinesVisible(true);
         final ViewerSorterExtension sorter = new ViewerSorterExtension();
         resultTableView.setSorter(sorter);
-        
 
         // Column Subject
         int state = 0;
@@ -348,7 +354,8 @@ public class SearchDialog extends Dialog {
                 .setColumnData(columnIOName.getColumn(), new ColumnWeightData(2, 40, true));
 
         TableViewerColumn columnEpicsAddress = new TableViewerColumn(resultTableView, SWT.NONE);
-        columnEpicsAddress.getColumn().addSelectionListener(new SortSelectionListener(sorter, state++));
+        columnEpicsAddress.getColumn().addSelectionListener(
+                new SortSelectionListener(sorter, state++));
         columnEpicsAddress.getColumn().setText("Epics Address");
         columnEpicsAddress.setLabelProvider(new CellLabelProvider() {
             public void update(ViewerCell cell) {
@@ -399,7 +406,8 @@ public class SearchDialog extends Dialog {
                 true));
 
         TableViewerColumn columnUpdatedBy = new TableViewerColumn(resultTableView, SWT.NONE);
-        columnUpdatedBy.getColumn().addSelectionListener(new SortSelectionListener(sorter, state++));
+        columnUpdatedBy.getColumn()
+                .addSelectionListener(new SortSelectionListener(sorter, state++));
         columnUpdatedBy.getColumn().setText("Updated By");
         columnUpdatedBy.setLabelProvider(new CellLabelProvider() {
             public void update(ViewerCell cell) {
@@ -419,7 +427,8 @@ public class SearchDialog extends Dialog {
                 true));
 
         TableViewerColumn columnUpdatedOn = new TableViewerColumn(resultTableView, SWT.NONE);
-        columnUpdatedOn.getColumn().addSelectionListener(new SortSelectionListener(sorter, state++));
+        columnUpdatedOn.getColumn()
+                .addSelectionListener(new SortSelectionListener(sorter, state++));
         columnUpdatedOn.getColumn().setText("Updated On");
         columnUpdatedOn.setLabelProvider(new CellLabelProvider() {
             public void update(ViewerCell cell) {
@@ -500,9 +509,13 @@ public class SearchDialog extends Dialog {
         });
 
         resultTableView.addSelectionChangedListener(new ISelectionChangedListener() {
+
             public void selectionChanged(SelectionChangedEvent event) {
                 StructuredSelection selection = (StructuredSelection) event.getSelection();
                 _searchNode = (SearchNode) selection.getFirstElement();
+                if (_searchNode != null && _searchNode.getId() > 0) {
+                    _selectedNode = NodeMap.get(_searchNode.getId());
+                }
             }
         });
 
@@ -521,7 +534,11 @@ public class SearchDialog extends Dialog {
 
     public SearchNode getSelectedNode() {
         return _searchNode;
-        // return getNode(_searchNode);
     }
 
+    @Override
+    protected void okPressed() {
+        _profiBusTreeView.getTreeViewer().setSelection(new StructuredSelection(_selectedNode));
+        super.okPressed();
+    }
 }

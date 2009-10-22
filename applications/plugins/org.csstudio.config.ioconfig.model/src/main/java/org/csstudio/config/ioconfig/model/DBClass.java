@@ -31,6 +31,8 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
+import org.csstudio.config.ioconfig.model.tools.NodeMap;
+
 /**
  * @author hrickens
  * @author $Author$

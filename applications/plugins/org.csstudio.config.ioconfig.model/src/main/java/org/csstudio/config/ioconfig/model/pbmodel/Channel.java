@@ -25,7 +25,6 @@
 package org.csstudio.config.ioconfig.model.pbmodel;
 
 import java.util.Set;
-import java.util.TreeSet;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
