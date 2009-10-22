@@ -63,6 +63,9 @@ import org.csstudio.config.ioconfig.model.pbmodel.Slave;
 import org.csstudio.config.ioconfig.model.xml.ProfibusConfigXMLGenerator;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -220,11 +223,19 @@ public class ProfiBusTreeView extends Composite {
      * @version $Revision$
      * @since 27.05.2009
      */
-    private final class ThreadExtension extends Thread {
-        private final ProgressBar _bar;
+    private final class ThreadExtension extends Job {
+        public ThreadExtension(String name) {
+            super(name);
+        }
+
+        private ProgressBar _bar;
         private boolean _run = true;
 
-        private ThreadExtension(ProgressBar bar, int maximum) {
+//        private ThreadExtension(ProgressBar bar, int maximum) {
+//            _bar = bar;
+//        }
+        
+        public void setBar(ProgressBar bar) {
             _bar = bar;
         }
 
@@ -232,26 +243,52 @@ public class ProfiBusTreeView extends Composite {
             _run = false;
         }
 
-        public void run() {
+//        public void run() {
+//            while (_run) {
+//                try {
+//                    Thread.sleep(100);
+//                    // Thread.yield();
+//                } catch (Throwable th) {
+//                }
+//                if (getDisplay().isDisposed()) {
+//                    return;
+//                }
+//                getDisplay().syncExec(new Runnable() {
+//                    public void run() {
+//                        if (_bar.isDisposed()) {
+//                            return;
+//                        }
+//                        _bar.setSelection(_bar.getSelection() + 1);
+//                        _bar.redraw();
+//                    }
+//                });
+//            }
+//        }
+
+        @Override
+        protected IStatus run(IProgressMonitor monitor) {
             while (_run) {
                 try {
                     Thread.sleep(100);
                     // Thread.yield();
                 } catch (Throwable th) {
                 }
-                if (getDisplay().isDisposed()) {
-                    return;
-                }
-                getDisplay().syncExec(new Runnable() {
-                    public void run() {
-                        if (_bar.isDisposed()) {
-                            return;
-                        }
-                        _bar.setSelection(_bar.getSelection() + 1);
-                        _bar.redraw();
-                    }
-                });
+//                if (getDisplay().isDisposed()) {
+//                    return Job.ASYNC_FINISH;
+//                }
+//                getDisplay().syncExec(new Runnable() {
+//                    public void run() {
+//                        if (_bar.isDisposed()) {
+//                            return Job.ASYNC_FINISH;
+//                        }
+//                        _bar.setSelection(_bar.getSelection() + 1);
+//                        _bar.redraw();
+//                    }
+//                });
             }
+            monitor.done();
+//            _bar.dispose();
+            return Job.ASYNC_FINISH;
         }
     }
 
@@ -1221,8 +1258,11 @@ public class ProfiBusTreeView extends Composite {
                 shell.open();
                 final int maximum = bar.getMaximum();
 
-                thread = new ThreadExtension(bar, maximum);
-                thread.start();
+//                thread = new ThreadExtension(bar, maximum);
+//                thread.start();
+                thread = new ThreadExtension("Bar");
+                thread.setBar(bar);
+                thread.schedule();
                 // das wird beim erstenmal eine zeitlang dauern...
                 Facility facility = f.getFacility();
                 _nodeConfigComposite = new FacilityConfigComposite(_editComposite, this, facility); // XXX
@@ -1232,11 +1272,11 @@ public class ProfiBusTreeView extends Composite {
                         e);
                 return;
             } finally {
-                if (shell != null && !shell.isDisposed()) {
-                    shell.close();
-                }
                 if (thread != null) {
                     thread.stopThread();
+                }
+                if (shell != null && !shell.isDisposed()) {
+                    shell.close();
                 }
             }
             // bar.dispose();

@@ -109,6 +109,9 @@ public class ChannelConfigComposite extends NodeConfig {
         if (_gsdFile != null) {
             fill(_gsdFile);
         }
+        if(_channel.isDirty()) {
+            store();
+        }
         getTabFolder().pack();
     }
 
@@ -158,6 +161,10 @@ public class ChannelConfigComposite extends NodeConfig {
             int id = 0;
             if(_channel.getCurrentValue()!=null&&_channel.getCurrentValue().length()>0) {
                 id = Integer.parseInt(_channel.getCurrentValue());
+            } else {
+                id = loadSensors.get(0).getId();
+                _channel.setCurrentValue(Integer.toString(id));
+                _channel.setDirty(true);
             }
             _sensorsViewer.getCombo().select(0);
             for (Sensors sensors : loadSensors) {

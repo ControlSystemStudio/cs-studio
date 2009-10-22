@@ -307,7 +307,6 @@ public class Module extends Node {
         return null;
     }
 
-
     @Override
     public void localUpdate() {
         // make Offset
@@ -351,6 +350,14 @@ public class Module extends Node {
             }
         }
         return result;
+    }
+
+    @Transient
+    public String getExtUserPrmDataConst() {
+        if(getConfigurationData()==null) {
+            return getGsdModuleModel().getModiExtUserPrmDataConst().trim();
+        } 
+        return getConfigurationData();
     }
 
 }

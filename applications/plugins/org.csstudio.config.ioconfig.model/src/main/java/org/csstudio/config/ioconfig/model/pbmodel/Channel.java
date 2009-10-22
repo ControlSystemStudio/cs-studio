@@ -309,7 +309,7 @@ public class Channel extends Node {
      */
     @Transient
     public String getEpicsAddressStringNH() {
-        assembleEpicsAddressString();
+//        assembleEpicsAddressString();
         return _epicsAdress;
     }
 
@@ -379,6 +379,7 @@ public class Channel extends Node {
                         channelStructure = getModule().getChannelStructsAsMap().get(--counter);
                         if (channelStructure != null && channelStructure.getLastChannel() != null
                                 && channelStructure.getLastChannel().isInput() == isInput()) {
+                            // Previous Channel is:
                             if (channelStructure.isSimple()) {
                                 Channel next = channelStructure.getLastChannel();
                                 channelNumber = next.getChannelNumber();
@@ -442,18 +443,6 @@ public class Channel extends Node {
         assembleEpicsAddressString();
     }
 
-    // private void refreshChannelType() {
-    // TreeSet<ModuleChannelPrototype> moduleChannelPrototypes =
-    // getModule().getGSDModule().getModuleChannelPrototypeNH();
-    // for (ModuleChannelPrototype moduleChannelPrototype : moduleChannelPrototypes) {
-    // if(moduleChannelPrototype.isInput() == isInput() && moduleChannelPrototype.getOffset() ==
-    // getChannelNumber()) {
-    // setChannelType(moduleChannelPrototype.getType());
-    // moduleChannelPrototype.get
-    // }
-    // }
-    // }
-
     /**
      * Assemble the Epics Address String.
      */
@@ -472,19 +461,21 @@ public class Channel extends Node {
                 sb.append(getStatusAddress());
             }
             sb.append(" 'T=");
-            // if (getChannelType() == DataType.BIT && !getChannelStructure().isSimple()) {
-            // sb.append(getChannelStructure().getStructureType().getType());
-            // sb.append(getBitPostion());
-            // } else {
-            // sb.append(getChannelType().getType());
-            // }
             Set<ModuleChannelPrototype> moduleChannelPrototypes = getModule().getGSDModule()
                     .getModuleChannelPrototypeNH();
             for (ModuleChannelPrototype moduleChannelPrototype : moduleChannelPrototypes) {
+                if(!getChannelStructure().isSimple()) {
+                    System.out.println("TEst");
+                }
+                
                 if (moduleChannelPrototype.isInput() == isInput()
                         && getChannelNumber() == moduleChannelPrototype.getOffset()) {
-                    setChannelTypeNonHibernate(moduleChannelPrototype.getType());
-                    if (moduleChannelPrototype.getType() == DataType.BIT
+                        if(getChannelStructure().isSimple()) {
+                            setChannelTypeNonHibernate(moduleChannelPrototype.getType());
+                        }else {
+                            setChannelTypeNonHibernate(moduleChannelPrototype.getType().getStructure()[0]);
+                        }
+                    if (getChannelType() == DataType.BIT
                             && !getChannelStructure().isSimple()) {
                         sb.append(getChannelStructure().getStructureType().getType());
                         sb.append(getBitPostion());
@@ -502,9 +493,16 @@ public class Channel extends Node {
                             && moduleChannelPrototype.getByteOrdering() > 0) {
                         sb.append(",O=" + moduleChannelPrototype.getByteOrdering());
                     }
+                } else {
+//                    if (getChannelType() == DataType.BIT && !getChannelStructure().isSimple()) {
+//                        sb.append(getChannelStructure().getStructureType().getType());
+//                        sb.append(getBitPostion());
+//                    } else {
+////                        sb.append(getChannelType().getType());
+//                    }
+
                 }
             }
-            // sb.append(getChannelType().getDefaultHigh());
             sb.append("'");
             setEpicsAddressString(sb.toString());
         } catch (NullPointerException e) {

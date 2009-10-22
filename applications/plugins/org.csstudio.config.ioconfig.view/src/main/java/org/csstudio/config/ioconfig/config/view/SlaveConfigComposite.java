@@ -217,7 +217,7 @@ public class SlaveConfigComposite extends NodeConfig {
                     case 1:
                         return module.getName();
                     case 2:
-                        return module.getGsdModuleModel().getModiExtUserPrmDataConst().trim();
+                        return module.getExtUserPrmDataConst();
 
                     default:
                         break;
@@ -307,6 +307,11 @@ public class SlaveConfigComposite extends NodeConfig {
         TableColumn c5 = new TableColumn(overViewer.getTable(), SWT.LEFT);
         // c5.setWidth(60);
         c5.setText("Type");
+        TableColumn c6 = new TableColumn(overViewer.getTable(), SWT.LEFT);
+        // c5.setWidth(60);
+        c6.setText("DB Id");
+        
+        
         overViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
             public void selectionChanged(SelectionChangedEvent event) {
@@ -338,6 +343,7 @@ public class SlaveConfigComposite extends NodeConfig {
         c3.pack();
         c4.pack();
         c5.pack();
+        c6.pack();
     }
 
     /**

@@ -25,6 +25,7 @@
 package org.csstudio.config.ioconfig.config.view;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Formatter;
 import java.util.HashMap;
@@ -92,9 +93,8 @@ public class ModuleConfigComposite extends NodeConfig {
 
     /**
      * 
-     * If the selection changes the old Channels will be deleted and the new
-     * Channel created for the new Module. Have the Module no Prototype the
-     * Dialog to generate Prototype is opened.
+     * If the selection changes the old Channels will be deleted and the new Channel created for the
+     * new Module. Have the Module no Prototype the Dialog to generate Prototype is opened.
      * 
      * @author hrickens
      * @author $Author$
@@ -230,7 +230,6 @@ public class ModuleConfigComposite extends NodeConfig {
         }
     }
 
-
     /**
      * This class provides the content for the table.
      */
@@ -339,12 +338,11 @@ public class ModuleConfigComposite extends NodeConfig {
         final Group topGroup = new Group(comp, SWT.NONE);
         topGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true, 1, 1));
         topGroup.setLayout(new GridLayout(4, false));
-        
-        makeDescGroup(comp,1);
-        
+
+        makeDescGroup(comp, 1);
+
         new Label(topGroup, SWT.NONE).setText("Filter: ");
-        
-        
+
         Composite filterComposite = new Composite(topGroup, SWT.NONE);
         filterComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 2, 1));
         GridLayout layout = new GridLayout(2, false);
@@ -410,7 +408,8 @@ public class ModuleConfigComposite extends NodeConfig {
         _moduleTypList.getTable().setLayoutData(
                 new GridData(SWT.CENTER, SWT.FILL, false, true, 2, 3));
         _moduleTypList.setContentProvider(new ComboContentProvider());
-        _moduleTypList.setLabelProvider(new ModuleListLabelProvider(_moduleTypList.getTable(),getGSDFile()));
+        _moduleTypList.setLabelProvider(new ModuleListLabelProvider(_moduleTypList.getTable(),
+                getGSDFile()));
         _moduleTypList.addFilter(new ViewerFilter() {
 
             @Override
@@ -492,8 +491,8 @@ public class ModuleConfigComposite extends NodeConfig {
             _moduleTypList.getTable().select(0);
         }
         _moduleTypList.getTable().showSelection();
-//        getIndexSpinner().setSelection(getNode().getSortIndex());
-        
+        // getIndexSpinner().setSelection(getNode().getSortIndex());
+
     }
 
     /**
@@ -541,9 +540,16 @@ public class ModuleConfigComposite extends NodeConfig {
         if (_module.getGsdModuleModel().getValue() != null) {
             values = _module.getGsdModuleModel().getValue().split(",");
         }
+        String cfgData = _module.getConfigurationData();
         if (gsdModuleModel != null) {
             if (gsdModuleModel.getAllExtUserPrmDataRef().size() * 2 != values.length
                     || values.length % 2 != 0) {
+                String[] cfgDatas = cfgData.split(",");
+                String[] extUserPrmDataConsts = gsdModuleModel.getExtUserPrmDataConst().split(",");
+                if(cfgDatas.length<extUserPrmDataConsts.length) {
+                    _module.setConfigurationData(gsdModuleModel.getExtUserPrmDataConst());
+                    _module.setDirty(true);
+                }
                 for (ExtUserPrmData extUserPrmData : gsdModuleModel.getAllExtUserPrmDataRef()) {
                     makecurrentUserParamData(currentUserParamDataComposite, extUserPrmData, null);
                 }
@@ -568,64 +574,64 @@ public class ModuleConfigComposite extends NodeConfig {
         _module.setName(getNameWidget().getText());
         getNameWidget().setData(getNameWidget().getText());
 
-        // _module.moveSortIndex((short) _indexSpinner.getSelection());
         getIndexSpinner().setData((short) getIndexSpinner().getSelection());
 
         updateChannels();
-        
+
         GsdModuleModel mod = (GsdModuleModel) ((StructuredSelection) _moduleTypList.getSelection())
                 .getFirstElement();
         if (mod != null) {
             _module.setModuleNumber(mod.getModuleNumber());
             _moduleTypList.getTable().setData(mod.getModuleNumber());
-            _module.setConfigurationData(mod.getValue());
-        }
 
-        // Document
-        _module.setDocuments(getDocumentationManageView().getDocuments());
+            String[] extUserPrmDataConst = _module.getGsdModuleModel().getExtUserPrmDataConst()
+                    .split(",");
+            String debug = Arrays.toString(extUserPrmDataConst).replaceAll("[\\[\\]]", "");
+            System.out.println(debug);
+            for (Object prmTextObject : _prmTextCV) {
+                if (prmTextObject instanceof ComboViewer) {
+                    ComboViewer prmTextCV = (ComboViewer) prmTextObject;
+                    if (!prmTextCV.getCombo().isDisposed()) {
+                        ExtUserPrmData input = (ExtUserPrmData) prmTextCV.getInput();
+                        StructuredSelection selection = (StructuredSelection) prmTextCV
+                                .getSelection();
+                        String extUserPrmDataRef = _module.getGsdModuleModel()
+                                .getExtUserPrmDataRef(input.getIndex());
 
-        for (Object prmTextObject : _prmTextCV) {
-            if (prmTextObject instanceof ComboViewer) {
-                ComboViewer prmTextCV = (ComboViewer) prmTextObject;
-                if (!prmTextCV.getCombo().isDisposed()) {
-                    ExtUserPrmData input = (ExtUserPrmData) prmTextCV.getInput();
-                    StructuredSelection selection = (StructuredSelection) prmTextCV.getSelection();
-                    String[] extUserPrmDataConst = _module.getGsdModuleModel()
-                            .getExtUserPrmDataConst().split(",");
-                    String extUserPrmDataRef = _module.getGsdModuleModel().getExtUserPrmDataRef(
-                            input.getIndex());
-
-                    Integer value = ((PrmText) selection.getFirstElement()).getValue();
-                    if (value < extUserPrmDataConst.length) {
+                        Integer value = ((PrmText) selection.getFirstElement()).getValue();
                         int index = ProfibusConfigXMLGenerator.getInt(extUserPrmDataRef);
                         int val = ProfibusConfigXMLGenerator.getInt(extUserPrmDataConst[index]);
-                        int max = (2 ^ (input.getMaxBit() - input.getMaxBit()) + 1) << input
-                                .getMaxBit();
-                        value = value << input.getMaxBit();
+                        int minBit = input.getMinBit();
+                        int maxBit = input.getMaxBit();
+                        if (maxBit < minBit) {
+                            minBit = input.getMaxBit();
+                            maxBit = input.getMinBit();
+                        }
+                        int max = (int) (Math.pow(2, maxBit + 1) - Math.pow(2, minBit));
+                        value = value << minBit;
                         int mask = ~max;
                         val = val & mask;
                         val = val | value;
                         extUserPrmDataConst[index] = String.format("%1$#04x", val);
-                        // TODO: Set the extUserPrmDataConst
-                        // TODO: Store the Combo selection.
-                        // userPrmDataIndex1,selectionIndex1;userPrmDataIndex2,selectionIndex2#0x21,0x23,0x00
-                        // _module.set
+                        Integer indexOf = prmTextCV.getCombo().indexOf(
+                                selection.getFirstElement().toString());
+                        prmTextCV.getCombo().setData(indexOf);
                     }
-
-                    Integer indexOf = prmTextCV.getCombo().indexOf(
-                            selection.getFirstElement().toString());
-                    prmTextCV.getCombo().setData(indexOf);
-                }
-            } else if (prmTextObject instanceof Text) {
-                Text prmText = (Text) prmTextObject;
-                if (!prmText.isDisposed()) {
-                    String value = (String) prmText.getData();
-                    if (value != null) {
-                        prmText.setText(value);
+                } else if (prmTextObject instanceof Text) {
+                    Text prmText = (Text) prmTextObject;
+                    if (!prmText.isDisposed()) {
+                        String value = (String) prmText.getData();
+                        if (value != null) {
+                            prmText.setText(value);
+                            extUserPrmDataConst = new String[] { String.format("%1$#04x", value) };
+                        }
                     }
                 }
             }
+            _module.setConfigurationData(Arrays.toString(extUserPrmDataConst).replaceAll("[\\[\\]]", ""));
         }
+        // Document
+        _module.setDocuments(getDocumentationManageView().getDocuments());
         save();
     }
 
@@ -702,8 +708,8 @@ public class ModuleConfigComposite extends NodeConfig {
     @Override
     public final Node getNode() {
         if (_module == null) {
-            StructuredSelection selection = (StructuredSelection) getProfiBusTreeView().getTreeViewer()
-                    .getSelection();
+            StructuredSelection selection = (StructuredSelection) getProfiBusTreeView()
+                    .getTreeViewer().getSelection();
             if (selection.getFirstElement() instanceof Slave) {
                 Slave slave = (Slave) selection.getFirstElement();
                 _module = new Module(slave);

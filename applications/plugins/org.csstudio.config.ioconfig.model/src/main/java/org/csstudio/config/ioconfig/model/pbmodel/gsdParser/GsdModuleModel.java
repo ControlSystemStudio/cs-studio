@@ -171,6 +171,9 @@ public class GsdModuleModel {
      * @return the ExtUserPrmDataConst exclusive the modification.
      */
     public final String getExtUserPrmDataConst() {
+        if(_extUserPrmDataConst==null) {
+            return "";
+        }
         return _extUserPrmDataConst;
     }
 

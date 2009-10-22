@@ -77,35 +77,39 @@ public final class HibernateManager {
 
         @Override
         protected IStatus run(IProgressMonitor monitor) {
-            System.out.println("Starte WatchDog!");
             boolean watch = true;
             Date date = new Date();
+            System.out.println(date+": Starte WatchDog!");
             while (watch) {
                 if (_sessionFactory == null || _sessionFactory.isClosed()) {
                     break;
                 }
                 if (_sessionUseCounter == 0) {
-                    if (new Date().getTime() - date.getTime() > getTimeToCloseSession()) {
+                    Date now = new Date();
+                    if (now.getTime() - date.getTime() > getTimeToCloseSession()) {
                         _sessionFactory.close();
                         _sessionFactory = null;
-                        System.out.println("Session wurde geschlossen!!!");
+                        System.out.println(now+": Session wurde geschlossen!!!");
                         break;
                     }
 
                 } else {
-                    _sessionUseCounter = 0;
                     date = new Date();
+                    System.out.println(date+": SessionUseCounter :"+_sessionUseCounter+" to 0");
+                    _sessionUseCounter = 0;
                 }
                 try {
                     this.getThread();
                     // Sleep 5 min.
-                    System.out.println("IOConfig: go Sleeping");
+                    Date now = new Date();
+                    System.out.println(now+": IOConfig: go Sleeping");
                     Thread.sleep(300000);
                 } catch (InterruptedException e) {
                 }
             }
             monitor.done();
-            System.out.println("WatchDog gestoppt!");
+            Date now = new Date();
+            System.out.println(now+": WatchDog gestoppt!");
             return Job.ASYNC_FINISH;
         }
 
@@ -164,7 +168,7 @@ public final class HibernateManager {
     }
 
     private static void initSessionFactoryDevDB() {
-        if (_sessionFactoryDevDB != null) {
+        if (_sessionFactoryDevDB != null && !_sessionFactoryDevDB.isClosed()) {
             return;
         }
 

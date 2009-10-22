@@ -35,6 +35,8 @@ public class OverviewLabelProvider implements ITableLabelProvider, IColorProvide
                     return channel.getDescription();
                 case 6:
                     return channel.getChannelType().name();
+                case 7:
+                    return Integer.toString(channel.getId());
                 default:
                     break;
             }

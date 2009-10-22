@@ -133,9 +133,6 @@ public class ChannelStructure extends Node implements IStructured {
             // channel.setCreatedBy(createdBy);
             // channel.setUpdatedBy(createdBy);
         }
-        // this.localUpdate();
-        // update();
-        // getModule().localUpdate();
         getModule().update();
         getModule().update();
     }

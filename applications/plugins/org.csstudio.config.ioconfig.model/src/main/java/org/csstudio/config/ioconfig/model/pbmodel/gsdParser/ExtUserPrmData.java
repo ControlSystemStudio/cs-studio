@@ -90,7 +90,7 @@ public class ExtUserPrmData {
     public ExtUserPrmData(final GsdSlaveModel gsdSlaveModel, final String index, final String text) {
         _gsdSlaveModel = gsdSlaveModel;
         _index = index;
-        _text = text;
+        setText(text);
     }
 
     /**
@@ -124,7 +124,7 @@ public class ExtUserPrmData {
      *            Set the Name/Desc of this ext user prm data.
      */
     public final void setText(final String text) {
-        _text = text;
+        _text = text.split(";")[0].trim();
     }
 
     /**
@@ -299,7 +299,7 @@ public class ExtUserPrmData {
      */
     @Override
     public final String toString() {
-        return getIndex() + " : " + getText();
+        return getIndex() + " : " + getText()+"("+getDataType()+")";
     }
 
     public void setValues(String[] values) {
