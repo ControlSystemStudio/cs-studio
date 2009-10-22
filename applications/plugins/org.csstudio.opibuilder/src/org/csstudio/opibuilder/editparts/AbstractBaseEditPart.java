@@ -59,10 +59,14 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 	
 	private Label tooltipLabel;
 	
+	private Map<String, Object> externalObjectsMap;
 	public AbstractBaseEditPart() {
 		propertyListenerMap = new HashMap<String, WidgetPropertyChangeListener>();
-		tooltipLabel = new Label();
+		tooltipLabel = new Label();	
 	}
+	
+	
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public Object getAdapter(Class key) {
@@ -518,5 +522,29 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 	 */
 	public ExecutionMode getExecutionMode() {
 		return executionMode;
+	}
+
+
+
+	
+	/**Set the external object
+	 * @param name the name of the object.
+	 * @param var the object.
+	 */
+	public void setExternalObject(String name, Object var) {
+		if(externalObjectsMap == null)
+			externalObjectsMap = new HashMap<String, Object>();
+		externalObjectsMap.put(name, var);
+	}
+
+
+
+	/**
+	 * @return the external object. null if no such object setted before.
+	 */
+	public Object getExternalObject(String name) {
+		if(externalObjectsMap != null)
+			return externalObjectsMap.get(name);
+		return null;
 	}
 }
