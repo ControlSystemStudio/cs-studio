@@ -202,6 +202,15 @@
             typeId="org.csstudio.opibuilder.widgets.BoolButton">
       </widget>
       <widget
+            category="Controls"
+            description="A checkbox which can write a single bit of a PV or write 0/1 to a PV when bit property is -1."
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.CheckBoxEditPart"
+            icon="icons/checkboxenabledon.gif"
+            model_class="org.csstudio.opibuilder.widgets.model.CheckBoxModel"
+            name="Check Box"
+            typeId="org.csstudio.opibuilder.widgets.checkbox">
+      </widget>
+      <widget
             category="Others"
             description="A container widget which can group other widgets."
             editpart_class="org.csstudio.opibuilder.widgets.editparts.GroupingContainerEditPart"
