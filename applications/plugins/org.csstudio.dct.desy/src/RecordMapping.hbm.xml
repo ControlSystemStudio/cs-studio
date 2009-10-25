@@ -3,10 +3,15 @@
 	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-	<class name="org.csstudio.dct.dbexport.Record" table="record">
+	<class name="org.csstudio.dct.dbexport.Record" table="records">
 		<id name="id" column="id">
-			<generator class="increment" />
+			<generator class="native" />
 		</id>
-		<property name="name" column="name" />
+		<property name="ioName" column="io_name" />
+		<property name="epicsName" column="epics_name" />
+		<property name="recordType" column="record_type" />
+		<property name="dctId" column="dct_id" />
+		<property name="dctProjectId" column="dct_project_id" />
+		
 	</class>
 </hibernate-mapping>
