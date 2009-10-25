@@ -1,5 +1,6 @@
 package org.csstudio.dct.ui.editor;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -10,12 +11,19 @@ import org.csstudio.dct.IRecordFunction;
 import org.csstudio.dct.ServiceExtension;
 import org.csstudio.dct.model.IProject;
 import org.csstudio.dct.model.IRecord;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchActionConstants;
@@ -142,11 +150,22 @@ public final class DctEditorContributor extends MultiPageEditorActionBarContribu
 		@Override
 		public void run() {
 			if (project != null) {
-				IRecordFunction function = extension.getService();
+				final IRecordFunction function = extension.getService();
 
-				for (IRecord record : project.getFinalRecords()) {
-					function.run(record, record.getFinalProperties());
+				ProgressMonitorDialog dialog = new ProgressMonitorDialog(Display.getCurrent().getActiveShell());
+				
+				try {
+					dialog.run(false, true, new IRunnableWithProgress(){
+						public void run(IProgressMonitor monitor) {
+							function.run(project, monitor);
+						}
+					});
+				} catch (InvocationTargetException e) {
+					e.printStackTrace();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
 				}
+				
 			}
 		}
 	}

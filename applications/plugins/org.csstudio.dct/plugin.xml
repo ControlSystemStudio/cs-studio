@@ -66,13 +66,5 @@
             class="org.csstudio.dct.PreferenceInitializer">
       </initializer>
    </extension>
-   <extension
-         point="org.csstudio.dct.recordfunctions">
-      <recordfunction
-            class="org.csstudio.dct.dbexport.ArchiveRecordsFunction"
-            id="archiveRecordsFunction"
-            name="Archive Records">
-      </recordfunction>
-   </extension>
    
 </plugin>

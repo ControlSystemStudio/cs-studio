@@ -13,6 +13,7 @@ import org.csstudio.dct.model.IContainer;
 import org.csstudio.dct.model.IFolder;
 import org.csstudio.dct.model.IFolderMember;
 import org.csstudio.dct.model.IInstance;
+import org.csstudio.dct.model.IProject;
 import org.csstudio.dct.model.IPrototype;
 import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.model.IRecordContainer;
@@ -27,7 +28,7 @@ import org.csstudio.dct.util.CompareUtil;
 public abstract class AbstractContainer extends AbstractPropertyContainer implements IContainer, IFolderMember {
 
 	private IContainer container;
-	
+
 	/**
 	 * The parent in the inheritance hierarchy.
 	 */
@@ -59,13 +60,16 @@ public abstract class AbstractContainer extends AbstractPropertyContainer implem
 		instances = new ArrayList<IInstance>();
 		records = new ArrayList<IRecord>();
 	}
-	
+
 	/**
 	 * Constructor.
 	 * 
-	 * @param name the name
-	 * @param parent the parent container
-	 * @param id the id
+	 * @param name
+	 *            the name
+	 * @param parent
+	 *            the parent container
+	 * @param id
+	 *            the id
 	 */
 	public AbstractContainer(String name, IContainer parent, UUID id) {
 		super(name, id);
@@ -151,13 +155,13 @@ public abstract class AbstractContainer extends AbstractPropertyContainer implem
 		assert instance.getContainer() == null : "Instance must not be in a container yet.";
 
 		// .. fill with nulls
-		while(index>=instances.size()) {
+		while (index >= instances.size()) {
 			instances.add(null);
 		}
-		
+
 		instances.set(index, instance);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -173,8 +177,8 @@ public abstract class AbstractContainer extends AbstractPropertyContainer implem
 	 */
 	public final void removeInstance(IInstance instance) {
 		assert instance.getParent() != null;
-		
-		if(instance.getContainer()!=null && instance.getContainer()!=this) {
+
+		if (instance.getContainer() != null && instance.getContainer() != this) {
 			assert instance.getContainer() == this : "The physical container must equal this.";
 		}
 		instances.remove(instance);
@@ -195,18 +199,18 @@ public abstract class AbstractContainer extends AbstractPropertyContainer implem
 
 		records.add(record);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public final void setRecord(int index, IRecord record) {
 		assert record.getContainer() == null : "Record must not be part of another container.";
-		
+
 		// .. fill with nulls
-		while(index>=records.size()) {
+		while (index >= records.size()) {
 			records.add(null);
 		}
-		
+
 		records.set(index, record);
 	}
 
@@ -232,6 +236,27 @@ public abstract class AbstractContainer extends AbstractPropertyContainer implem
 	 */
 	public final IFolder getParentFolder() {
 		return folder;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public final IProject getProject() {
+		IFolder f;
+
+		if (folder != null) {
+			f = folder;
+
+			while (f != null && f.getParentFolder() != null) {
+				f = f.getParentFolder();
+			}
+			assert f != null;
+			assert f instanceof IProject;
+			return (IProject) f;
+		} else {
+			return parent.getProject();
+		}
+
 	}
 
 	/**
@@ -297,7 +322,7 @@ public abstract class AbstractContainer extends AbstractPropertyContainer implem
 	public final List<IRecordContainer> getDependentRecordContainers() {
 		return new ArrayList<IRecordContainer>(dependentContainers);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -314,7 +339,8 @@ public abstract class AbstractContainer extends AbstractPropertyContainer implem
 				if (getInstances().equals(c.getInstances())) {
 					// .. records
 					if (getRecords().equals(c.getRecords())) {
-						// .. parent (we check the id only, to prevent stack overflows)
+						// .. parent (we check the id only, to prevent stack
+						// overflows)
 						if (CompareUtil.idsEqual(getParent(), c.getParent())) {
 							result = true;
 						}

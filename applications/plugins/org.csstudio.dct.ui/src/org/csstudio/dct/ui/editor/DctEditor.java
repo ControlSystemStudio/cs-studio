@@ -301,11 +301,12 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 		// .. set editor title
 		setPartName(file.getName());
 
+		
 		try {
 			// .. load the file contents
 			project = DctActivator.getDefault().getPersistenceService().loadProject(file);
 		} catch (Exception e) {
-			e.printStackTrace();
+			CentralLogger.getInstance().error(this, e);
 			project = null;
 		}
 

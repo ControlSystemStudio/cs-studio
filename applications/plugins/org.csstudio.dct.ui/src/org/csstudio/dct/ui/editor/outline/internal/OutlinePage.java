@@ -7,6 +7,7 @@ import org.csstudio.dct.model.IElement;
 import org.csstudio.dct.model.IProject;
 import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.model.commands.AddRecordCommand;
+import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.commands.CommandStackListener;
 import org.eclipse.jface.action.Action;

@@ -128,6 +128,24 @@
                label="Paste"
                menubarPath="add.ext">
          </action>
+         <action
+               class="org.csstudio.dct.ui.editor.outline.internal.OpenGraphicsAction"
+               enablesFor="1"
+               icon="icons/prototype.png"
+               id="OpenGraphicsAction"
+               label="Open Graphical Representation"
+               menubarPath="add.ext">
+            <enablement>
+               <or>
+                  <objectClass
+                        name="org.csstudio.dct.model.IPrototype">
+                  </objectClass>
+                  <objectClass
+                        name="org.csstudio.dct.model.IInstance">
+                  </objectClass>
+               </or>
+            </enablement>
+         </action>
       </viewerContribution>
    </extension>
    <extension
@@ -280,6 +298,15 @@
             id="css.dct"
             name="Database Configuration Tool">
       </category>
+      <view
+            allowMultiple="true"
+            category="css.dct"
+            class="org.csstudio.dct.ui.graphicalviewer.GraphicalDctView"
+            icon="icons/dctfile.png"
+            id="org.csstudio.dct.ui.graphicalviewer.GraphicalDctView"
+            name="Graphical DCT View"
+            restorable="true">
+      </view>
    </extension>
       <extension
          point="org.eclipse.help.toc">

@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import org.csstudio.dct.model.IFolder;
 import org.csstudio.dct.model.IFolderMember;
+import org.csstudio.dct.model.IProject;
 import org.csstudio.dct.model.IVisitor;
 
 /**
@@ -159,6 +160,17 @@ public class Folder extends AbstractElement implements IFolderMember, IFolder {
 
 		for (IFolderMember member : getMembers()) {
 			member.accept(visitor);
+		}
+	}
+
+	/**
+	 *{@inheritDoc}
+	 */
+	public IProject getProject() {
+		if(this instanceof IProject) {
+			return (IProject) this;
+		} else {
+			return parentFolder.getProject();
 		}
 	}
 

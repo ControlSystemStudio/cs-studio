@@ -183,7 +183,7 @@ public final class RemoveAction extends AbstractOutlineAction {
 			
 			for(IInstance i : dependent) {
 				if(result.contains(i)) {
-					System.out.println("grande kack");
+					throw new IllegalArgumentException("TODO");
 				}
 			}
 			

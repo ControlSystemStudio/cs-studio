@@ -38,7 +38,22 @@ public abstract class AbstractOutlineAction implements IViewActionDelegate {
 	 */
 	public final void run(IAction action) {
 		Command command = createCommand(selectedElements);
-		execute(command);
+		if (command != null) {
+			execute(command);
+		}
+		doRun(selectedElements);
+	}
+
+	/**
+	 * Empty default implementation. Can be overridden by subclasses to
+	 * implement actions which are not undoable and should be independent of the
+	 * command stack.
+	 * 
+	 * @param selection
+	 *            the selected elements
+	 */
+	protected void doRun(List<IElement> selection) {
+
 	}
 
 	/**
@@ -136,7 +151,7 @@ public abstract class AbstractOutlineAction implements IViewActionDelegate {
 
 		return result;
 	}
-	
+
 	public ContentOutline getOutlineView() {
 		return outlineView;
 	}
