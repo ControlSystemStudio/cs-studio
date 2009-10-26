@@ -5,15 +5,11 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 import org.eclipse.core.filesystem.URIUtil;
-import org.eclipse.core.internal.resources.File;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Cursor;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
@@ -25,12 +21,8 @@ import org.eclipse.ui.part.FileEditorInput;
 public class ResourceUtil {
 
 	
-	public static final Cursor CURSOR_HAND = new Cursor(Display.getDefault(), SWT.CURSOR_HAND);
-	public static final Cursor CURSOR_NO = new Cursor(Display.getDefault(), SWT.CURSOR_NO);
-	
 	public static void disposeResources(){
-		CURSOR_HAND.dispose();
-		CURSOR_NO.dispose();
+	
 	}
 	
 	/**

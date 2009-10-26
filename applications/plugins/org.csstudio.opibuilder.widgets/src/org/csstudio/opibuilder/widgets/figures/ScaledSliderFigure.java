@@ -5,7 +5,6 @@ package org.csstudio.opibuilder.widgets.figures;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.widgets.figureparts.AlphaLabel;
 import org.csstudio.opibuilder.widgets.util.GraphicsUtil;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
@@ -14,6 +13,7 @@ import org.csstudio.swt.xygraph.linearscale.LinearScaledMarker;
 import org.csstudio.swt.xygraph.linearscale.AbstractScale.LabelSide;
 import org.csstudio.swt.xygraph.linearscale.LinearScale.Orientation;
 import org.eclipse.draw2d.AbstractLayout;
+import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.FigureListener;
 import org.eclipse.draw2d.FigureUtilities;
 import org.eclipse.draw2d.Graphics;
@@ -286,7 +286,7 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 			super();
 			setOutline(false);
 			setForegroundColor(GRAY_COLOR);
-			setCursor(ResourceUtil.CURSOR_HAND);
+			setCursor(Cursors.HAND);
 			addMouseListener(new MouseListener.Stub(){
 				@Override
 				public void mousePressed(MouseEvent me) {
@@ -512,7 +512,7 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 			super();
 			setOutline(true);
 			setFill(true);
-			setCursor(ResourceUtil.CURSOR_HAND);
+			setCursor(Cursors.HAND);
 			setForegroundColor(GRAY_COLOR);
 			setLineWidth(1);
 			ThumbDragger thumbDragger = new ThumbDragger();

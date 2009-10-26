@@ -14,7 +14,6 @@ import org.csstudio.opibuilder.script.ScriptData;
 import org.csstudio.opibuilder.script.ScriptService;
 import org.csstudio.opibuilder.script.ScriptsInput;
 import org.csstudio.opibuilder.util.OPIColor;
-import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.util.UIBundlingThread;
 import org.csstudio.opibuilder.visualparts.BorderFactory;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
@@ -27,6 +26,7 @@ import org.csstudio.utility.pv.PVFactory;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.InputEvent;
 import org.eclipse.draw2d.Label;
@@ -197,7 +197,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 					if(getWidgetModel().isEnabled() && 
 							getWidgetModel().getActionsInput().getActionsList().size() > 0 && 
 							getWidgetModel().getActionsInput().isHookedUpToWidget()){
-						figure.setCursor(ResourceUtil.CURSOR_HAND);
+						figure.setCursor(Cursors.HAND);
 						final AbstractWidgetAction action = 
 							getWidgetModel().getActionsInput().getActionsList().get(0);
 						figure.addMouseListener(new MouseListener.Stub(){

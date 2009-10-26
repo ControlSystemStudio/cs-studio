@@ -9,7 +9,6 @@ import org.csstudio.opibuilder.properties.PVValueProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.util.AlarmColorScheme;
 import org.csstudio.opibuilder.util.ConsoleService;
-import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.util.UIBundlingThread;
 import org.csstudio.opibuilder.visualparts.BorderFactory;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
@@ -22,6 +21,7 @@ import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;
 import org.eclipse.draw2d.Border;
+import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.graphics.Color;
@@ -187,7 +187,7 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 									UIBundlingThread.getInstance().addRunnable(new Runnable(){
 										public void run() {
 											if(!writeAccessMarked){
-												figure.setCursor(ResourceUtil.CURSOR_NO);
+												figure.setCursor(Cursors.NO);
 												figure.setEnabled(false);
 												preEnableState = false;		
 												writeAccessMarked = true;

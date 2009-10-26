@@ -1,8 +1,8 @@
 package org.csstudio.opibuilder.widgets.figures;
 
-import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.widgets.util.GraphicsUtil;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.XYLayout;
@@ -52,7 +52,7 @@ public class BoolButtonFigure extends AbstractBoolControlFigure {
 		setLayoutManager(new XYLayout());		
 		add(squareButtonFigure);
 		squareButtonFigure.add(boolLabel);
-		cursor = ResourceUtil.CURSOR_HAND;		
+		cursor = Cursors.HAND;		
 	}
 	
 	@Override
@@ -141,7 +141,7 @@ public class BoolButtonFigure extends AbstractBoolControlFigure {
 		if(runMode){
 			if(value){
 				if(cursor == null || cursor.isDisposed())
-					cursor = ResourceUtil.CURSOR_HAND;		
+					cursor = Cursors.HAND;		
 			}else {				
 				cursor = null;
 			}	

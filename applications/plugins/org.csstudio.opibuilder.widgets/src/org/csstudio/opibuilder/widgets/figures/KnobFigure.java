@@ -3,7 +3,6 @@ package org.csstudio.opibuilder.widgets.figures;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.widgets.figureparts.Bulb;
 import org.csstudio.opibuilder.widgets.figureparts.PolarPoint;
 import org.csstudio.opibuilder.widgets.figureparts.RoundScale;
@@ -11,6 +10,7 @@ import org.csstudio.opibuilder.widgets.figureparts.RoundScaledRamp;
 import org.csstudio.opibuilder.widgets.util.RotationUtil;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.AbstractLayout;
+import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.Ellipse;
 import org.eclipse.draw2d.FigureListener;
 import org.eclipse.draw2d.Graphics;
@@ -293,7 +293,7 @@ public class KnobFigure extends AbstractRoundRampedFigure {
 		}
 		
 		public Thumb() {
-			setCursor(ResourceUtil.CURSOR_HAND);
+			setCursor(Cursors.HAND);
 			
 			ThumbDragger thumbDragger = new ThumbDragger();
 			addMouseMotionListener(thumbDragger);	
