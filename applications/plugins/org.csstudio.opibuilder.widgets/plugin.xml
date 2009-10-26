@@ -203,6 +203,15 @@
       </widget>
       <widget
             category="Controls"
+            description="A boolean button which can load different image based on the boolean value."
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.ImageBoolButtonEditPart"
+            icon="icons/imageButton.gif"
+            model_class="org.csstudio.opibuilder.widgets.model.ImageBoolButtonModel"
+            name="Image Boolean Button"
+            typeId="org.csstudio.opibuilder.widgets.ImageBoolButton">
+      </widget>
+      <widget
+            category="Controls"
             description="A checkbox which can write a single bit of a PV or write 0/1 to a PV when bit property is -1."
             editpart_class="org.csstudio.opibuilder.widgets.editparts.CheckBoxEditPart"
             icon="icons/checkboxenabledon.gif"
