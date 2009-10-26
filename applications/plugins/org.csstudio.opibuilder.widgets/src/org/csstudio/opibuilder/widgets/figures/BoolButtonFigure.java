@@ -150,6 +150,10 @@ public class BoolButtonFigure extends AbstractBoolControlFigure {
 			squareButtonFigure.setEnabled(value);
 		else
 			ellipseButton.setEnabled(value);
+		if(ellipseButton.isVisible())
+			ellipseButton.setCursor(runMode ? cursor : null);
+		else if (squareButtonFigure.isVisible())
+			squareButtonFigure.setCursor(runMode ? cursor : null);	
 	}
 	
 	class EllipseButton extends Figure {

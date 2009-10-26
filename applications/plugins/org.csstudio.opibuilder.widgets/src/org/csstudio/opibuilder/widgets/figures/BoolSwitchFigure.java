@@ -105,6 +105,10 @@ public class BoolSwitchFigure extends AbstractBoolControlFigure {
 				cursor = null;
 			}	
 		}
+		if(bar.isVisible())
+			bar.setCursor(runMode ? cursor : null);
+		else if (shadow.isVisible())
+			shadow.setCursor(runMode ? cursor : null);	
 	}
 	
 	@Override
