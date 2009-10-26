@@ -549,8 +549,8 @@ public class SearchDialog extends Dialog {
     @Override
     protected void okPressed() {
         if (_selectedNode == null && _selectedId != null && _selectedId > 0) {
-            boolean openQuestion = MessageDialog.openQuestion(this.getParentShell(), "Not found",
-                    "Ihre Auswahl wurde nicht gefunden. Möchten sie in der Gesamten DB suchen?");
+            boolean openQuestion = MessageDialog.openQuestion(this.getParentShell(), "Nicht geladen",
+                    "Ihre Auswahl wurde noch nicht geladen. Soll sie jetzt geladen werden?");
             if (openQuestion) {
                 _selectedNode = Repository.load(Node.class, _selectedId);
                 if (_selectedNode != null) {
@@ -568,17 +568,17 @@ public class SearchDialog extends Dialog {
                             break;
                         }
                     }
-//                    if(facility.getId()==_selectedNode.getId()) {
-//                        _profiBusTreeView.getTreeViewer().setSelection(new StructuredSelection(facility.getFacilityLigth()));
-//                        super.okPressed();
-//                        return;
-//                    } else {
+                    if(facility.getId()==_selectedNode.getId()) {
+                        _profiBusTreeView.getTreeViewer().setSelection(new StructuredSelection(facility.getFacilityLigth()));
+                        super.okPressed();
+                        return;
+                    } else {
                         _profiBusTreeView.getTreeViewer().expandToLevel(facility.getFacilityLigth(),1);
-//                    }
+                    }
                 }
+                _profiBusTreeView.getTreeViewer().setSelection(new StructuredSelection(_selectedNode));
             }
         }
-        _profiBusTreeView.getTreeViewer().setSelection(new StructuredSelection(_selectedNode));
         super.okPressed();
     }
 }
