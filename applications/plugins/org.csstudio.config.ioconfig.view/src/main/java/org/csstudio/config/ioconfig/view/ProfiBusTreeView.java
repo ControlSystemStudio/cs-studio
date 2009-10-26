@@ -1143,8 +1143,9 @@ public class ProfiBusTreeView extends Composite {
         };
         _newChildrenNodeAction.setText("New");
         _newChildrenNodeAction.setToolTipText("Action 1 tooltip");
+        _newChildrenNodeAction.setAccelerator('n');
         _newChildrenNodeAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
-                .getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
+                .getImageDescriptor(ISharedImages.IMG_OBJ_ADD));
     }
 
     private void makeNewNodeAction() {
