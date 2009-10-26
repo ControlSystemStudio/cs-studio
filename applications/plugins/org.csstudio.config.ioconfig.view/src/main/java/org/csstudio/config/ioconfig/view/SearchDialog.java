@@ -27,12 +27,14 @@ package org.csstudio.config.ioconfig.view;
 import java.util.Date;
 import java.util.List;
 
-import org.csstudio.config.ioconfig.model.DBClass;
+import org.csstudio.config.ioconfig.model.Facility;
+import org.csstudio.config.ioconfig.model.FacilityLight;
 import org.csstudio.config.ioconfig.model.Node;
 import org.csstudio.config.ioconfig.model.Repository;
 import org.csstudio.config.ioconfig.model.SearchNode;
 import org.csstudio.config.ioconfig.model.tools.NodeMap;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.layout.TableColumnLayout;
@@ -70,6 +72,7 @@ public class SearchDialog extends Dialog {
 
     private SearchNode _searchNode;
     private Node _selectedNode;
+    private Integer _selectedId;
 
     private final class SortSelectionListener implements SelectionListener {
         private final ViewerSorterExtension _sorter;
@@ -279,9 +282,11 @@ public class SearchDialog extends Dialog {
     protected SearchDialog(Shell parentShell, ProfiBusTreeView profiBusTreeView) {
         super(parentShell);
         _profiBusTreeView = profiBusTreeView;
-        setShellStyle(SWT.RESIZE | parentShell.getStyle() | SWT.PRIMARY_MODAL);
+//        setShellStyle(SWT.RESIZE | parentShell.getStyle() | SWT.PRIMARY_MODAL);
+        setShellStyle(SWT.CLOSE | SWT.TITLE | SWT.MAX | SWT.RESIZE | SWT.PRIMARY_MODAL);
         _load = Repository.load(SearchNode.class);
     }
+
     /**
      * {@inheritDoc}
      */
@@ -509,12 +514,16 @@ public class SearchDialog extends Dialog {
         });
 
         resultTableView.addSelectionChangedListener(new ISelectionChangedListener() {
-
             public void selectionChanged(SelectionChangedEvent event) {
                 StructuredSelection selection = (StructuredSelection) event.getSelection();
                 _searchNode = (SearchNode) selection.getFirstElement();
-                if (_searchNode != null && _searchNode.getId() > 0) {
-                    _selectedNode = NodeMap.get(_searchNode.getId());
+                if (_searchNode != null) {
+                    _selectedId = _searchNode.getId();
+                    if (_selectedId > 0) {
+                        _selectedNode = NodeMap.get(_selectedId);
+                    }
+                } else {
+                    _selectedId = null;
                 }
             }
         });
@@ -536,8 +545,39 @@ public class SearchDialog extends Dialog {
         return _searchNode;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     protected void okPressed() {
+        if (_selectedNode == null && _selectedId != null && _selectedId > 0) {
+            boolean openQuestion = MessageDialog.openQuestion(this.getParentShell(), "Not found",
+                    "Ihre Auswahl wurde nicht gefunden. Möchten sie in der Gesamten DB suchen?");
+            if (openQuestion) {
+                _selectedNode = Repository.load(Node.class, _selectedId);
+                if (_selectedNode != null) {
+                    Node parentNode = _selectedNode;
+                    while (!parentNode.isRootNode()) {
+                        parentNode = parentNode.getParent();
+                    }
+                    List<FacilityLight> input = (List<FacilityLight>)_profiBusTreeView.getTreeViewer().getInput();
+                    Facility facility = (Facility) parentNode;
+                    for (FacilityLight facilityLight : input) {
+                        if(facilityLight.getId()==parentNode.getId()) {
+                            facilityLight.setFacility(facility);
+                            facility.setFacilityLigth(facilityLight);
+                            facilityLight.getFacility();
+                            break;
+                        }
+                    }
+//                    if(facility.getId()==_selectedNode.getId()) {
+//                        _profiBusTreeView.getTreeViewer().setSelection(new StructuredSelection(facility.getFacilityLigth()));
+//                        super.okPressed();
+//                        return;
+//                    } else {
+                        _profiBusTreeView.getTreeViewer().expandToLevel(facility.getFacilityLigth(),1);
+//                    }
+                }
+            }
+        }
         _profiBusTreeView.getTreeViewer().setSelection(new StructuredSelection(_selectedNode));
         super.okPressed();
     }

@@ -231,10 +231,10 @@ public class ProfiBusTreeView extends Composite {
         private ProgressBar _bar;
         private boolean _run = true;
 
-//        private ThreadExtension(ProgressBar bar, int maximum) {
-//            _bar = bar;
-//        }
-        
+        // private ThreadExtension(ProgressBar bar, int maximum) {
+        // _bar = bar;
+        // }
+
         public void setBar(ProgressBar bar) {
             _bar = bar;
         }
@@ -243,27 +243,27 @@ public class ProfiBusTreeView extends Composite {
             _run = false;
         }
 
-//        public void run() {
-//            while (_run) {
-//                try {
-//                    Thread.sleep(100);
-//                    // Thread.yield();
-//                } catch (Throwable th) {
-//                }
-//                if (getDisplay().isDisposed()) {
-//                    return;
-//                }
-//                getDisplay().syncExec(new Runnable() {
-//                    public void run() {
-//                        if (_bar.isDisposed()) {
-//                            return;
-//                        }
-//                        _bar.setSelection(_bar.getSelection() + 1);
-//                        _bar.redraw();
-//                    }
-//                });
-//            }
-//        }
+        // public void run() {
+        // while (_run) {
+        // try {
+        // Thread.sleep(100);
+        // // Thread.yield();
+        // } catch (Throwable th) {
+        // }
+        // if (getDisplay().isDisposed()) {
+        // return;
+        // }
+        // getDisplay().syncExec(new Runnable() {
+        // public void run() {
+        // if (_bar.isDisposed()) {
+        // return;
+        // }
+        // _bar.setSelection(_bar.getSelection() + 1);
+        // _bar.redraw();
+        // }
+        // });
+        // }
+        // }
 
         @Override
         protected IStatus run(IProgressMonitor monitor) {
@@ -273,21 +273,21 @@ public class ProfiBusTreeView extends Composite {
                     // Thread.yield();
                 } catch (Throwable th) {
                 }
-//                if (getDisplay().isDisposed()) {
-//                    return Job.ASYNC_FINISH;
-//                }
-//                getDisplay().syncExec(new Runnable() {
-//                    public void run() {
-//                        if (_bar.isDisposed()) {
-//                            return Job.ASYNC_FINISH;
-//                        }
-//                        _bar.setSelection(_bar.getSelection() + 1);
-//                        _bar.redraw();
-//                    }
-//                });
+                // if (getDisplay().isDisposed()) {
+                // return Job.ASYNC_FINISH;
+                // }
+                // getDisplay().syncExec(new Runnable() {
+                // public void run() {
+                // if (_bar.isDisposed()) {
+                // return Job.ASYNC_FINISH;
+                // }
+                // _bar.setSelection(_bar.getSelection() + 1);
+                // _bar.redraw();
+                // }
+                // });
             }
             monitor.done();
-//            _bar.dispose();
+            // _bar.dispose();
             return Job.ASYNC_FINISH;
         }
     }
@@ -339,17 +339,18 @@ public class ProfiBusTreeView extends Composite {
         }
 
         private boolean haveProgrammableModule(Object element) {
-            //TODO: Das finden von Projekt Document Datein führt teilweise dazu das sich CSS Aufhängt! 
-//            if (element instanceof Slave) {
-//                Slave node = (Slave) element;
-//                Set<Document> documents = node.getDocuments();
-//                while (documents.iterator().hasNext()) {
-//                    Document doc = (Document) documents.iterator().next();
-//                    if (doc.getSubject() != null && doc.getSubject().startsWith("Projekt:")) {
-//                        return true;
-//                    }
-//                }
-//            }
+            // TODO: Das finden von Projekt Document Datein führt teilweise dazu das sich CSS
+            // Aufhängt!
+            // if (element instanceof Slave) {
+            // Slave node = (Slave) element;
+            // Set<Document> documents = node.getDocuments();
+            // while (documents.iterator().hasNext()) {
+            // Document doc = (Document) documents.iterator().next();
+            // if (doc.getSubject() != null && doc.getSubject().startsWith("Projekt:")) {
+            // return true;
+            // }
+            // }
+            // }
             return false;
         }
 
@@ -366,14 +367,16 @@ public class ProfiBusTreeView extends Composite {
             return null;
         }
 
-        /* (non-Javadoc)
+        /*
+         * (non-Javadoc)
+         * 
          * @see org.eclipse.jface.viewers.ColumnLabelProvider#getText(java.lang.Object)
          */
         @Override
         public String getText(Object element) {
             String text = super.getText(element);
             String[] split = text.split("(\r(\n)?)");
-            if(split.length>1) {
+            if (split.length > 1) {
                 text = split[0];
             }
             if (haveProgrammableModule(element)) {
@@ -381,8 +384,7 @@ public class ProfiBusTreeView extends Composite {
             }
             return text;
         }
-        
-        
+
     }
 
     /**
@@ -428,22 +430,23 @@ public class ProfiBusTreeView extends Composite {
      */
     public ProfiBusTreeView(final Composite parent, final int style, final IViewSite site) {
         super(parent, style);
-        new InstanceScope().getNode(Activator.getDefault().getPluginId()).addPreferenceChangeListener(new IPreferenceChangeListener() {
-            
-            @Override
-            public void preferenceChange(PreferenceChangeEvent event) {
-                String property = event.getKey();
-                if (property.equals(DDB_PASSWORD) || property.equals(DDB_USER_NAME)
-                        || property.equals(DIALECT)
-                        || property.equals(HIBERNATE_CONNECTION_DRIVER_CLASS)
-                        || property.equals(HIBERNATE_CONNECTION_URL)) {
-                    _load = Repository.load(FacilityLight.class);
-                    _viewer.getTree().removeAll();
-                    _viewer.setInput(_load);
-                    _viewer.refresh(false);
-                }
-            }
-        });
+        new InstanceScope().getNode(Activator.getDefault().getPluginId())
+                .addPreferenceChangeListener(new IPreferenceChangeListener() {
+
+                    @Override
+                    public void preferenceChange(PreferenceChangeEvent event) {
+                        String property = event.getKey();
+                        if (property.equals(DDB_PASSWORD) || property.equals(DDB_USER_NAME)
+                                || property.equals(DIALECT)
+                                || property.equals(HIBERNATE_CONNECTION_DRIVER_CLASS)
+                                || property.equals(HIBERNATE_CONNECTION_URL)) {
+                            _load = Repository.load(FacilityLight.class);
+                            _viewer.getTree().removeAll();
+                            _viewer.setInput(_load);
+                            _viewer.refresh(false);
+                        }
+                    }
+                });
         _parent = parent;
         _site = site;
         _paste = PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(
@@ -550,8 +553,8 @@ public class ProfiBusTreeView extends Composite {
         expandAllAction.setImageDescriptor(iDesc);
         _site.getActionBars().getToolBarManager().add(expandAllAction);
 
-        iDesc = CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(ActivatorUI.PLUGIN_ID,
-                "icons/collapse_all.gif");
+        iDesc = CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
+                ActivatorUI.PLUGIN_ID, "icons/collapse_all.gif");
         Action collapseAllAction = new Action() {
             public void run() {
                 _viewer.collapseAll();
@@ -597,11 +600,11 @@ public class ProfiBusTreeView extends Composite {
         } else if (selectedNode instanceof Master) {
             setContriebutionActions("New Slave", Master.class, Slave.class, manager);
         } else if (selectedNode instanceof Slave) {
-            _newNodeAction.setText("Add new "+Slave.class.getSimpleName());
+            _newNodeAction.setText("Add new " + Slave.class.getSimpleName());
             manager.add(_newNodeAction);
             setContriebutionActions("New Module", Slave.class, Module.class, manager);
         } else if (selectedNode instanceof Module) {
-            _newNodeAction.setText("Add new "+Module.class.getSimpleName());
+            _newNodeAction.setText("Add new " + Module.class.getSimpleName());
             manager.add(_newNodeAction);
             manager.add(_copyNodeAction);
             if (_copiedNodesReferenceList != null && _copiedNodesReferenceList.size() > 0
@@ -673,9 +676,9 @@ public class ProfiBusTreeView extends Composite {
     private void makeActions() {
 
         makeNewChildrenNodeAction();
-        
+
         makeNewNodeAction();
-        
+
         makeEditNodeAction();
 
         makeNewFacilityAction();
@@ -714,7 +717,6 @@ public class ProfiBusTreeView extends Composite {
         _refreshAction.setImageDescriptor(CustomMediaFactory.getInstance()
                 .getImageDescriptorFromPlugin(ActivatorUI.PLUGIN_ID, "icons/refresh.gif"));
     }
-
 
     private void makeTreeNodeRenameAction() {
 
@@ -1077,31 +1079,8 @@ public class ProfiBusTreeView extends Composite {
         _searchAction = new Action() {
 
             public void run() {
-                SearchDialog searchDialog = new SearchDialog(new Shell(SWT.RESIZE|SWT.MAX),
-                        ProfiBusTreeView.this);
-                int open = searchDialog.open();
-                if (open == 0) {
-                    NamedDBClass selectedNode = null;
-                    List<Integer> rootPath = Repository.getRootPath(searchDialog.getSelectedNode()
-                            .getId());
-                    if (rootPath.size() > 0) {
-                        for (FacilityLight fl : _load) {
-                            if (rootPath.get(rootPath.size() - 1) == fl.getId()) {
-                                selectedNode = fl;
-                                Facility facility = fl.getFacility();
-                                if (rootPath.size() > 1) {
-                                    selectedNode = goPath(facility, rootPath, 1);
-                                }
-                                break;
-                            }
-                        }
-                    }
-                    StructuredSelection ss = new StructuredSelection(selectedNode);
-                    _viewer.setSelection(ss, true);
-                    _viewer.refresh();
-
-                }
-
+                SearchDialog searchDialog = new SearchDialog(getShell(), ProfiBusTreeView.this);
+                searchDialog.open();
             }
 
             private NamedDBClass goPath(Node node, List<Integer> rootPath, int i) {
@@ -1179,7 +1158,7 @@ public class ProfiBusTreeView extends Composite {
         _newNodeAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
                 .getImageDescriptor(ISharedImages.IMG_ETOOL_HOME_NAV));
     }
-    
+
     private void hookDoubleClickAction() {
         _viewer.addDoubleClickListener(new IDoubleClickListener() {
             public void doubleClick(final DoubleClickEvent event) {
@@ -1215,11 +1194,13 @@ public class ProfiBusTreeView extends Composite {
         setEditComposite();
         Object selectedNode = _selectedNode.getFirstElement();
         if (selectedNode instanceof Facility) {
-            Node node = (Node) selectedNode; 
-            _nodeConfigComposite = new FacilityConfigComposite(_editComposite, this, (short) (node.getSortIndex()+1));
-        } else if(selectedNode instanceof FacilityLight) {
-            FacilityLight node = (FacilityLight) selectedNode; 
-            _nodeConfigComposite = new FacilityConfigComposite(_editComposite, this,(short) (node.getSortIndex()+1));
+            Node node = (Node) selectedNode;
+            _nodeConfigComposite = new FacilityConfigComposite(_editComposite, this, (short) (node
+                    .getSortIndex() + 1));
+        } else if (selectedNode instanceof FacilityLight) {
+            FacilityLight node = (FacilityLight) selectedNode;
+            _nodeConfigComposite = new FacilityConfigComposite(_editComposite, this, (short) (node
+                    .getSortIndex() + 1));
         } else if (selectedNode instanceof Ioc) {
             _nodeConfigComposite = new IocConfigComposite(_editComposite, this, null);
         } else if (selectedNode instanceof ProfibusSubnet) {
@@ -1230,11 +1211,10 @@ public class ProfiBusTreeView extends Composite {
             _nodeConfigComposite = new SlaveConfigComposite(_editComposite, this, null);
         } else if (selectedNode instanceof Module) {
             _nodeConfigComposite = new ModuleConfigComposite(_editComposite, this, null);
-        } 
+        }
         _editComposite.getParent().layout(true);
     }
 
-    
     /**
      * Open a ConfigComposite for the tree selection Node.
      */
@@ -1258,8 +1238,8 @@ public class ProfiBusTreeView extends Composite {
                 shell.open();
                 final int maximum = bar.getMaximum();
 
-//                thread = new ThreadExtension(bar, maximum);
-//                thread.start();
+                // thread = new ThreadExtension(bar, maximum);
+                // thread.start();
                 thread = new ThreadExtension("Bar");
                 thread.setBar(bar);
                 thread.schedule();

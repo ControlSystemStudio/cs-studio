@@ -93,6 +93,11 @@ public class FacilityLight extends NamedDBClass {
         return _facility;
     }
 
+    @Transient
+    public void setFacility(Facility facility) {
+        _facility = facility;
+    }
+    
     /**
      * Set the number of Children.
      * 
