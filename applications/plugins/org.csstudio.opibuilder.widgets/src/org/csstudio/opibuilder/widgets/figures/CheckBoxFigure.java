@@ -48,6 +48,17 @@ public class CheckBoxFigure extends Label {
 		addMouseListener(new MouseListener.Stub(){
 			@Override
 			public void mousePressed(MouseEvent me) {
+				if(!runMode)
+					return;
+				if (me.button != 1)
+					return;
+				me.consume();
+			}
+			
+			@Override
+			public void mouseReleased(MouseEvent me) {
+				if (me.button != 1)
+					return;
 				if(runMode){
 					fireManualValueChange(!boolValue);
 					requestFocus();
