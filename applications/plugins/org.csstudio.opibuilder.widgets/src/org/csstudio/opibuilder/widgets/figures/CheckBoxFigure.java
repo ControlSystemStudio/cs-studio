@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.swing.text.Position;
-
 import org.csstudio.opibuilder.widgets.Activator;
 import org.csstudio.opibuilder.widgets.figures.AbstractBoolControlFigure.IBoolControlListener;
 import org.csstudio.opibuilder.widgets.model.AbstractBoolWidgetModel;
@@ -41,6 +39,8 @@ public class CheckBoxFigure extends Label {
 	 */
 	private List<IBoolControlListener> boolControlListeners = 
 		new ArrayList<IBoolControlListener>();
+
+	private boolean runMode;
 	
 	public CheckBoxFigure() {
 		setIcon(unChecked);
@@ -48,10 +48,20 @@ public class CheckBoxFigure extends Label {
 		addMouseListener(new MouseListener.Stub(){
 			@Override
 			public void mousePressed(MouseEvent me) {
-				fireManualValueChange(!boolValue);
-				requestFocus();
+				if(runMode){
+					fireManualValueChange(!boolValue);
+					requestFocus();
+				}
+				
 			}
 		});
+	}
+	
+	/**
+	 * @param runMode the runMode to set
+	 */
+	public void setRunMode(boolean runMode) {
+		this.runMode = runMode;		
 	}
 
 	

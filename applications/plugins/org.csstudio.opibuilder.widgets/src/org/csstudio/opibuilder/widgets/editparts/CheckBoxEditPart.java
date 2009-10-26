@@ -3,17 +3,18 @@ package org.csstudio.opibuilder.widgets.editparts;
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
+import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.widgets.figures.CheckBoxFigure;
 import org.csstudio.opibuilder.widgets.figures.AbstractBoolControlFigure.IBoolControlListener;
-import org.csstudio.opibuilder.widgets.model.AbstractBoolControlModel;
 import org.csstudio.opibuilder.widgets.model.CheckBoxModel;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.widgets.Display;
 
 public class CheckBoxEditPart extends AbstractPVWidgetEditPart {
 
@@ -31,6 +32,9 @@ public class CheckBoxEditPart extends AbstractPVWidgetEditPart {
 			}
 		});		
 		markAsControlPV(AbstractPVWidgetModel.PROP_PVNAME);
+		figure.setRunMode(getExecutionMode().equals(
+				ExecutionMode.RUN_MODE));
+		
 		return figure;
 	}
 	
@@ -75,6 +79,12 @@ public class CheckBoxEditPart extends AbstractPVWidgetEditPart {
 					final IFigure refreshableFigure) {
 				CheckBoxFigure figure = (CheckBoxFigure) refreshableFigure;
 				figure.setText((String) newValue);
+				Display.getCurrent().timerExec(10, new Runnable() {					
+					public void run() {
+						if(getWidgetModel().isAutoSize())
+							performAutoSize(refreshableFigure);
+					}
+				});
 				return true;
 			}
 		};
@@ -91,6 +101,44 @@ public class CheckBoxEditPart extends AbstractPVWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(CheckBoxModel.PROP_FONT, fontHandler);
+		
+		handler = new IWidgetPropertyChangeHandler(){
+			public boolean handleChange(Object oldValue, Object newValue,
+					IFigure figure) {				
+				if((Boolean)newValue){
+					performAutoSize(figure);
+					figure.revalidate();
+				}
+				return true;
+			}
+		};
+		setPropertyChangeHandler(CheckBoxModel.PROP_AUTOSIZE, handler);
+		
+		handler = new IWidgetPropertyChangeHandler(){
+			public boolean handleChange(Object oldValue, Object newValue,
+					final IFigure figure) {
+				Display.getCurrent().timerExec(10, new Runnable() {					
+					public void run() {
+						if(getWidgetModel().isAutoSize()){
+							performAutoSize(figure);
+							figure.revalidate();
+						}
+					}
+				});
+				
+				return true;
+			}
+		};
+		setPropertyChangeHandler(CheckBoxModel.PROP_FONT, handler);		
+		setPropertyChangeHandler(AbstractWidgetModel.PROP_BORDER_STYLE, handler);
+		setPropertyChangeHandler(AbstractWidgetModel.PROP_BORDER_WIDTH, handler);
+	}
+	
+	/**
+	 * @param figure
+	 */
+	private void performAutoSize(IFigure figure) {
+		getWidgetModel().setSize(((CheckBoxFigure)figure).getPreferredSize());
 	}
 
 }

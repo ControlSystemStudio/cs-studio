@@ -92,8 +92,6 @@ public abstract class AbstractShapeModel extends AbstractPVWidgetModel {
 	public static final String PROP_TRANSPARENT = "transparent";	
 
 	
-
-	
 	public AbstractShapeModel() {
 		setBackgroundColor(CustomMediaFactory.COLOR_BLUE);
 		setForegroundColor(CustomMediaFactory.COLOR_RED);
@@ -109,7 +107,7 @@ public abstract class AbstractShapeModel extends AbstractPVWidgetModel {
 		addProperty(new ComboProperty(PROP_LINE_STYLE, "Line Style",
 				WidgetPropertyCategory.Display, LineStyle.stringValues(), 0));
 		addProperty(new DoubleProperty(PROP_FILL_LEVEL, "Fill Level",
-				WidgetPropertyCategory.Display, 100, 0.0, 0.0));
+				WidgetPropertyCategory.Display, 0.0, 0.0, 100.0));
 		addProperty(new BooleanProperty(PROP_HORIZONTAL_FILL, "Horizontal Fill", 
 				WidgetPropertyCategory.Display, true));
 		addProperty(new BooleanProperty(PROP_ANTIALIAS, "Anti Alias", 

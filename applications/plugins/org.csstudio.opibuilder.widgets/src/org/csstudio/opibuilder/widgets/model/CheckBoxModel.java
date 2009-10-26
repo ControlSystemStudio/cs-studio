@@ -1,6 +1,7 @@
 package org.csstudio.opibuilder.widgets.model;
 
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
+import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.FontProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
@@ -8,6 +9,7 @@ import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.OPIFont;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.RGB;
 
 /**
  * The model for checkbox widget 
@@ -28,10 +30,17 @@ public class CheckBoxModel extends AbstractPVWidgetModel {
 	 */
 	public static final String PROP_FONT = "font"; //$NON-NLS-1$
 
+	/** The ID of the <i>Auto Size</i> property. */
+	public static final String PROP_AUTOSIZE = "auto_size";	//$NON-NLS-1$
+	
 	/**
 	 * Unique identifier.
 	 */
 	public static final String ID = "org.csstudio.opibuilder.widgets.checkbox";
+	
+	public CheckBoxModel() {
+		setForegroundColor(new RGB(0,0,0));
+	}
 	
 	@Override
 	protected void configureProperties() {				
@@ -42,6 +51,8 @@ public class CheckBoxModel extends AbstractPVWidgetModel {
 		addProperty(new FontProperty(PROP_FONT, "Font",
 				WidgetPropertyCategory.Display, new FontData(
 						"Arial", 9, SWT.NONE))); //$NON-NLS-1$
+		addProperty(new BooleanProperty(PROP_AUTOSIZE, "Auto Size", 
+				WidgetPropertyCategory.Display, false));
 	}
 	
 	/**
@@ -76,5 +87,9 @@ public class CheckBoxModel extends AbstractPVWidgetModel {
 	 */
 	public OPIFont getFont() {
 		return (OPIFont) getProperty(PROP_FONT).getPropertyValue();
+	}
+	
+	public boolean isAutoSize(){
+		return (Boolean)getCastedPropertyValue(PROP_AUTOSIZE);
 	}
 }
