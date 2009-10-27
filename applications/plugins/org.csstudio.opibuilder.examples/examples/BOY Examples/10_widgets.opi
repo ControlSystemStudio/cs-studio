@@ -1264,7 +1264,7 @@ $(pv_value)</tooltip>
     <y>191</y>
     <actions hook="false">
       <action type="OPEN_DISPLAY">
-        <path>/BOY Examples/widgets/3_2_BoolButton_Switch.opi</path>
+        <path>/BOY Examples/widgets/3_2_1_BoolButton_Switch.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
         </macros>
