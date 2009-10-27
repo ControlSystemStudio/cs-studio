@@ -172,7 +172,10 @@ public class Controller implements ArchiveFetchJobListener
         }
 
         public void entriesChanged()
-        {   handleChangedModelEntries(); }
+        { 
+            handleChangedModelEntries();
+            getArchivedData(null);
+        }
 
         public void entryAdded(IModelItem new_item)
         { 
@@ -182,12 +185,14 @@ public class Controller implements ArchiveFetchJobListener
 
         public void entryConfigChanged(final IModelItem item)
         {   // Avoid infinite loops if we are changing the model ourselves
+            //
             if (controller_changes_model)
                 return;
             removeFromDisplay(item);
-            removeUnusedAxes();
-            addToDisplay(item);
-            // getArchivedData(item);
+            if (removeUnusedAxes())
+                handleChangedModelEntries();
+            else
+                addToDisplay(item);
         }
 
         public void entryMetaDataChanged(IModelItem item)
@@ -202,7 +207,8 @@ public class Controller implements ArchiveFetchJobListener
         public void entryRemoved(IModelItem removed_item)
         {   
             removeFromDisplay(removed_item);
-            removeUnusedAxes();
+            if (removeUnusedAxes())
+                handleChangedModelEntries();
         }
     };
 
@@ -417,6 +423,7 @@ public class Controller implements ArchiveFetchJobListener
         // Model should now invoke entryAdded(), where we add it to the chart..
     }
 
+    /** Re-populate all chart items because of overall model changes */
     private void handleChangedModelEntries()
     {
         // Avoid infinite loops if we are changing the model ourselves
@@ -452,8 +459,6 @@ public class Controller implements ArchiveFetchJobListener
                 axis.addMarker(marker.toMarker());
         }
         controller_changes_yaxes = false;
-        
-        getArchivedData(null);
     }
     
     /** Connect a model item to the display by adding it to the chart. */
@@ -540,38 +545,28 @@ public class Controller implements ArchiveFetchJobListener
             }
     }
     
-    /** Remove unused axes */
-    private void removeUnusedAxes()
+    /** Remove unused axes
+     *  @return <code>true</code> if this rearranged entries
+     */
+    private boolean removeUnusedAxes()
     {
-        // Fix empty axes in the 'middle'
-        controller_changes_model = true;
         boolean anything_changed = false;
-        for (int y=0; y<chart.getNumYAxes();  ++y)
+        if (model.getNumItems() > 0)
         {
-            // Any model items on this axis?
-            boolean anything_on_axis = false;
-            for (int i=0; i<model.getNumItems(); ++i)
-                if (model.getItem(i).getAxisIndex() == y)
-                {
-                    anything_on_axis = true;
-                    break;
-                }
-            if (anything_on_axis)
-                continue;
-            // Found empty axis. Move model items from 'next' axis here
-            for (int i=0; i<model.getNumItems(); ++i)
+            // Fill empty axis by moving items 'down'
+            controller_changes_model = true;
+            
+            // Highest requested axis index
+            int max_axis = getMaxAxisIndex();
+            for (int y=0; y<max_axis;  ++y)
             {
-                final IModelItem item = model.getItem(i);
-                if (item.getAxisIndex() == y+1)
-                {
-                    item.setAxisIndex(y);
-                    anything_changed = true;
-                }
+                while (isAxisEmpty(y))
+                    for (int y2=y+1; y2<=max_axis;  ++y2)
+                        anything_changed |= moveItems(y2, y2-1);
+                max_axis = getMaxAxisIndex();
             }
+            controller_changes_model = false;
         }
-        controller_changes_model = false;
-        if (anything_changed)
-            handleChangedModelEntries();
 
         // Remove empty axes at end of list
         for (int y = chart.getNumYAxes()-1; y > 0; --y)
@@ -579,8 +574,50 @@ public class Controller implements ArchiveFetchJobListener
                 chart.removeYAxis(y); // Drop empty axis
             else
                 break; // Done, found used axis
+        return anything_changed;
     }
     
+    /** @return Highest uses axis index */
+    private int getMaxAxisIndex()
+    {
+        int max_axis = 0;
+        for (int i=0; i<model.getNumItems(); ++i)
+            max_axis = Math.max(max_axis, model.getItem(i).getAxisIndex());
+        return max_axis;
+    }
+
+    /** Any model items on this axis?
+     *  @param y Axis index
+     *  @return true if no model items use that axis
+     */
+    private boolean isAxisEmpty(final int y)
+    {
+        for (int i=0; i<model.getNumItems(); ++i)
+            if (model.getItem(i).getAxisIndex() == y)
+                return false;
+        return true;
+    }
+
+    /** Move items from one axis to another
+     *  @param old_y Original axis index
+     *  @param new_y New axis index
+     *  @return <code>true</code> if this rearranged other entries
+     */
+    private boolean moveItems(final int old_y, final int new_y)
+    {
+        boolean anything_changed = false;
+        for (int i=0; i<model.getNumItems(); ++i)
+        {
+            final IModelItem item = model.getItem(i);
+            if (item.getAxisIndex() == old_y)
+            {
+                item.setAxisIndex(new_y);
+                anything_changed = true;
+            }
+        }
+        return anything_changed;
+    }
+
     /** Get data from archive for given model item,
      *  if it's an <code>IPVModelItem</code>,
      *  or all if <code>item==null</code>.
