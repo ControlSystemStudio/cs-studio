@@ -1,5 +1,10 @@
 package org.csstudio.opibuilder.editpolicies;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+
 import org.csstudio.opibuilder.commands.AddWidgetCommand;
 import org.csstudio.opibuilder.commands.ChangeGuideCommand;
 import org.csstudio.opibuilder.commands.CloneCommand;
@@ -7,6 +12,7 @@ import org.csstudio.opibuilder.commands.SetBoundsCommand;
 import org.csstudio.opibuilder.commands.WidgetCreateCommand;
 import org.csstudio.opibuilder.commands.WidgetSetConstraintCommand;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
+import org.csstudio.opibuilder.editparts.DisplayEditpart;
 import org.csstudio.opibuilder.feedback.IGraphicalFeedbackFactory;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
@@ -20,7 +26,6 @@ import org.eclipse.draw2d.Shape;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
-import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.SnapToGuides;
 import org.eclipse.gef.commands.Command;
@@ -338,10 +343,8 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
 	protected Command getCloneCommand(ChangeBoundsRequest request) {
 		CloneCommand clone = new CloneCommand((AbstractContainerModel)getHost().getModel());
 		
-		GraphicalEditPart currPart = null;
-		for (Object part : request.getEditParts()) {
-			currPart = (GraphicalEditPart)part;
-			clone.addPart((AbstractWidgetModel)currPart.getModel(), (Rectangle)getConstraintForClone(currPart, request));
+		for (AbstractBaseEditPart part : sortSelectedWidgets(request.getEditParts())) {	
+			clone.addPart((AbstractWidgetModel)part.getModel(), (Rectangle)getConstraintForClone(part, request));
 		}
 		
 		// Attach to horizontal guide, if one is given
@@ -362,6 +365,57 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
 			clone.setGuide(findGuideAt(guidePos.intValue(), false), vAlignment, false);
 		}
 		return clone;
+	}
+
+	
+	/**
+	 * Sort the selected widget as they were in their parents
+	 * 
+	 * @return a list with all widget editpart that are currently selected
+	 */
+	@SuppressWarnings("unchecked")
+	private final List<AbstractBaseEditPart> sortSelectedWidgets(List selection) {	
+		List<AbstractBaseEditPart> sameParentWidgets = new ArrayList<AbstractBaseEditPart>();
+		List<AbstractBaseEditPart> differentParentWidgets = new ArrayList<AbstractBaseEditPart>();
+		List<AbstractBaseEditPart> result = new ArrayList<AbstractBaseEditPart>();
+		AbstractContainerModel parent = null;
+		for (Object o : selection) {
+			if (o instanceof AbstractBaseEditPart && !(o instanceof DisplayEditpart)) {
+				AbstractWidgetModel widgetModel = 
+					((AbstractBaseEditPart) o).getWidgetModel();
+				if(parent == null)
+					parent = widgetModel.getParent();
+				if(widgetModel.getParent() == parent)
+					sameParentWidgets.add((AbstractBaseEditPart) o);
+				else 
+					differentParentWidgets.add((AbstractBaseEditPart) o);
+			}
+		}
+		//sort widgets to its original order
+		if(sameParentWidgets.size() > 1){
+			AbstractBaseEditPart[] modelArray = sameParentWidgets.toArray(new AbstractBaseEditPart[0]);
+		
+			Arrays.sort(modelArray, new Comparator<AbstractBaseEditPart>(){
+
+				public int compare(AbstractBaseEditPart o1,
+						AbstractBaseEditPart o2) {
+					if(o1.getWidgetModel().getParent().getChildren().indexOf(o1.getWidgetModel()) > 
+						o2.getWidgetModel().getParent().getChildren().indexOf(o2.getWidgetModel()))
+						return 1;
+					else
+						return -1;					
+				}
+				
+			});
+			result.addAll(Arrays.asList(modelArray));
+			if(differentParentWidgets.size() > 0)
+				result.addAll(differentParentWidgets);
+			return result;
+		}
+		if(differentParentWidgets.size() > 0)
+			sameParentWidgets.addAll(differentParentWidgets);
+		
+		return sameParentWidgets;
 	}
 
 }
