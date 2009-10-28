@@ -69,6 +69,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.actions.BaseSelectionListenerAction;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
 
@@ -244,6 +245,10 @@ public class ChangelogViewPart extends ViewPart {
 	 */
 	private void createContextMenu() {
 		MenuManager menuManager = new MenuManager("#PopupMenu");
+		
+		BaseSelectionListenerAction delete = new DeleteChangelogEntryAction();
+		_table.addSelectionChangedListener(delete);
+		menuManager.add(delete);
 		
 		menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 		
