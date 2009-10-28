@@ -99,9 +99,11 @@ public class SearchDialog extends Dialog {
     private final class ViewerSorterExtension extends ViewerSorter {
         private int _state = 0;
         private boolean _asc;
+        private Viewer _viewer;
 
         @Override
         public int compare(Viewer viewer, Object e1, Object e2) {
+            _viewer = viewer;
             if (e1 instanceof SearchNode && e2 instanceof SearchNode) {
                 SearchNode node1 = (SearchNode) e1;
                 SearchNode node2 = (SearchNode) e2;
@@ -111,48 +113,72 @@ public class SearchDialog extends Dialog {
                 }
                 switch (_state) {
                     case 0:
-                        if (node1.getName() != null && node2.getName() != null) {
-                            return asc * node1.getName().compareTo(node2.getName());
-                        }
-                        break;
+                        return compareString(node1.getName(), node2.getName(), asc);
                     case 1:
-                        if (node1.getIoName() != null && node2.getIoName() != null) {
-                            return asc * node1.getIoName().compareTo(node2.getIoName());
-                        }
-                        break;
+                        return compareString(node1.getIoName(), node2.getIoName(), asc);
                     case 2:
-                        if (node1.getEpicsAddressString() != null
-                                && node2.getEpicsAddressString() != null) {
-                            return asc
-                                    * node1.getEpicsAddressString().compareTo(
-                                            node2.getEpicsAddressString());
-                        }
-                        break;
+                        return compareString(node1.getEpicsAddressString(), node2.getEpicsAddressString(), asc);
                     case 3:
-                        return asc * node1.getCreatedBy().compareTo(node2.getCreatedBy());
+                        return compareString(node1.getCreatedBy(), node2.getCreatedBy(), asc);
                     case 4:
-                        return asc * node1.getCreatedOn().compareTo(node2.getCreatedOn());
+                        return compareDate(node1.getCreatedOn(), node2.getCreatedOn(), asc);
                     case 5:
-                        return asc * node1.getUpdatedBy().compareTo(node2.getUpdatedBy());
+                        return compareString(node1.getUpdatedBy(), node2.getUpdatedBy(), asc);
                     case 6:
-                        return asc * node1.getUpdatedOn().compareTo(node2.getUpdatedOn());
+                        return compareDate(node1.getUpdatedOn(), node2.getUpdatedOn(), asc);
                     case 7:
-                        return asc * node1.getId() - node2.getId();
+                        return asc * (node1.getId() - node2.getId());
                     case 8:
-                        return asc * node1.getParentId().compareTo(node2.getParentId());
+                        return asc * (node1.getParentId().compareTo(node2.getParentId()));
                 }
                 return asc;
             }
             return super.compare(viewer, e1, e2);
         }
 
+        private int compareDate(Date date1, Date date2, int asc) {
+            if ( date1 == null &&  date2 == null) {
+                return 0;
+            }
+            if(date1 == null) {
+                return -asc;
+            }
+            if(date2 == null) {
+                return asc;
+            }
+
+            if(date1.before(date2)) {
+                return asc;
+            }
+            return -asc;
+        }
+
+        private int compareString(String string1, String string2, int asc) {
+            
+            if ( string1 == null &&  string2 == null) {
+                return 0;
+            }
+            if(string1 == null) {
+                return asc;
+            }
+            if(string2 == null) {
+                return -asc;
+            }
+            return asc * string1.compareTo(string2);
+        }
+
         public void setState(int state) {
+            System.out.println("State: "+state);
             if (_state == state) {
                 _asc = !_asc;
             } else {
                 _asc = !false;
                 _state = state;
             }
+            if(_viewer!=null) {
+                _viewer.refresh();
+            }
+            System.out.println("Asc: "+_asc);
         }
     }
 

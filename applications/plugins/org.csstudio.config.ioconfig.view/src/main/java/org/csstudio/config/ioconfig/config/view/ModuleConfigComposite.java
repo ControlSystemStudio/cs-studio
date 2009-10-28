@@ -544,22 +544,28 @@ public class ModuleConfigComposite extends NodeConfig {
         if (gsdModuleModel != null) {
             if (gsdModuleModel.getAllExtUserPrmDataRef().size() * 2 != values.length
                     || values.length % 2 != 0) {
-                String[] cfgDatas = cfgData.split(",");
-                String[] extUserPrmDataConsts = gsdModuleModel.getExtUserPrmDataConst().split(",");
-                if (cfgDatas.length < extUserPrmDataConsts.length) {
-                    _module.setConfigurationData(gsdModuleModel.getExtUserPrmDataConst());
-                    _module.setDirty(true);
-                }
-                String[] configurationDatas = _module.getConfigurationData().split(",");
-                for (ExtUserPrmData extUserPrmData : gsdModuleModel.getAllExtUserPrmDataRef()) {
-                    Integer value = null;
-                    String extUserPrmDataRef = _module.getGsdModuleModel().getExtUserPrmDataRef(
-                            extUserPrmData.getIndex());
-                    int index = Integer.parseInt(extUserPrmDataRef);
-                    if (configurationDatas.length > index) {
-                        value = getValue2BitMask(extUserPrmData, configurationDatas[index]);
+                if (cfgData != null && gsdModuleModel.getExtUserPrmDataConst() != null) {
+                    String[] cfgDatas = cfgData.split(",");
+                    String[] extUserPrmDataConsts = gsdModuleModel.getExtUserPrmDataConst().split(
+                            ",");
+                    if (cfgDatas.length < extUserPrmDataConsts.length) {
+                        _module.setConfigurationData(gsdModuleModel.getExtUserPrmDataConst());
+                        _module.setDirty(true);
                     }
-                    makecurrentUserParamData(currentUserParamDataComposite, extUserPrmData, value);
+                }
+                if (_module.getConfigurationData() != null) {
+                    String[] configurationDatas = _module.getConfigurationData().split(",");
+                    for (ExtUserPrmData extUserPrmData : gsdModuleModel.getAllExtUserPrmDataRef()) {
+                        Integer value = null;
+                        String extUserPrmDataRef = _module.getGsdModuleModel()
+                                .getExtUserPrmDataRef(extUserPrmData.getIndex());
+                        int index = Integer.parseInt(extUserPrmDataRef);
+                        if (configurationDatas.length > index) {
+                            value = getValue2BitMask(extUserPrmData, configurationDatas[index]);
+                        }
+                        makecurrentUserParamData(currentUserParamDataComposite, extUserPrmData,
+                                value);
+                    }
                 }
             } else {
                 for (int i = 0; i < values.length; i++) {
@@ -757,6 +763,9 @@ public class ModuleConfigComposite extends NodeConfig {
             if (selection.getFirstElement() instanceof Slave) {
                 Slave slave = (Slave) selection.getFirstElement();
                 _module = new Module(slave);
+            } else  if(selection.getFirstElement() instanceof Module) {
+                Module module = (Module) selection.getFirstElement();
+                _module = new Module(module.getSlave());
             }
         }
         return _module;
@@ -975,9 +984,6 @@ public class ModuleConfigComposite extends NodeConfig {
         if (user != null) {
             name = user.getUsername();
         }
-        // if (obj == null) {
-        // obj = _profiBusTreeView.getInvisibleRoot();
-        // }
 
         getNode().setCreatedBy(name);
         getNode().setCreatedOn(new Date());
@@ -989,7 +995,8 @@ public class ModuleConfigComposite extends NodeConfig {
         if (getNode() instanceof Facility || obj == null) {
             getProfiBusTreeView().getTreeViewer().setInput(getNode());
             // TODO neue facility erstellen und speichern..
-        } else if (getNode() instanceof Module) {
+//        } else if (getNode() instanceof Module) {
+        } else if (obj instanceof Module) {
             Node nodeParent = (Node) obj;
             getNode()
                     .moveSortIndex(nodeParent.getfirstFreeStationAddress(Node.MAX_STATION_ADDRESS));

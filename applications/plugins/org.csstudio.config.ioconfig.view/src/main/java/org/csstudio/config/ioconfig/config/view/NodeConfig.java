@@ -334,7 +334,9 @@ public abstract class NodeConfig extends Composite {
         getNode().setUpdatedOn(now);
 
         getNode().setDescription(getDesc());
-        getDescWidget().setData(getDesc());
+        if(getDescWidget()!=null) {
+            getDescWidget().setData(getDesc());
+        }
 
         // update Header
         ((Text) this.getData("modifiedOn")).setText(df.format(now));
