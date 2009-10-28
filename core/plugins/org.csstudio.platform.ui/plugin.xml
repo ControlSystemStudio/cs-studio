@@ -306,6 +306,7 @@
         </action>
      </objectContribution>
      <objectContribution
+           adaptable="true"
            id="org.csstudio.platform.ui.copyPvToClipboard"
            objectClass="org.csstudio.platform.model.IProcessVariable">
         <action
