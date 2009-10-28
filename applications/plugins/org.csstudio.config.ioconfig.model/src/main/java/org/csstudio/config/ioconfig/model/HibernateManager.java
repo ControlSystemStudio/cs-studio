@@ -68,8 +68,8 @@ public final class HibernateManager {
     private static final class SessionWatchDog extends Job {
         private SessionFactory _sessionFactory;
         private int _sessionUseCounter;
-//        private long _timeToCloseSession = (36000000 * 5);
-        private long _timeToCloseSession = (3600000);
+        private long _timeToCloseSession = (36000000 * 5);
+//        private long _timeToCloseSession = (3600000);
 
         private SessionWatchDog(String name) {
             super(name);
@@ -80,15 +80,15 @@ public final class HibernateManager {
         protected IStatus run(IProgressMonitor monitor) {
             boolean watch = true;
             Date date = new Date();
-            System.out.println(date+": Starte WatchDog!");
+//            System.out.println(date+": Starte WatchDog!");
             while (watch) {
                 if (_sessionFactory == null || _sessionFactory.isClosed()) {
                     break;
                 }
                 if (_sessionUseCounter == 0) {
                     Date now = new Date();
-                    System.out.println("Test close Session");
-                    System.out.println("now: "+now.getTime()+"\t- date: "+date.getTime()+"\t="+(now.getTime()-date.getTime())+"\t>"+getTimeToCloseSession());
+//                    System.out.println("Test close Session");
+//                    System.out.println("now: "+now.getTime()+"\t- date: "+date.getTime()+"\t="+(now.getTime()-date.getTime())+"\t>"+getTimeToCloseSession());
                     if (now.getTime() - date.getTime() > getTimeToCloseSession()) {
                         _sessionFactory.close();
                         _sessionFactory = null;
