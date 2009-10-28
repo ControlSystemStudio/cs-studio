@@ -76,5 +76,15 @@
          </menu>
       </menuContribution>
    </extension>
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.csstudio.config.savevalue.service.ChangelogEntry"
+            class="org.csstudio.config.savevalue.ui.changelogview.ChangelogEntryProcessVariableAdapterFactory">
+         <adapter
+               type="org.csstudio.platform.model.IProcessVariable">
+         </adapter>
+      </factory>
+   </extension>
 
 </plugin>

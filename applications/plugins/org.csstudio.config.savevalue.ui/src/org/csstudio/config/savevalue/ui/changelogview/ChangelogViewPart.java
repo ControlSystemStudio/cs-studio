@@ -44,6 +44,8 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ICellModifier;
@@ -63,8 +65,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
 
@@ -227,6 +231,22 @@ public class ChangelogViewPart extends ViewPart {
 		
 		// the table viewer is the selection provider for the site
 		getSite().setSelectionProvider(_table);
+		
+		createContextMenu();
+	}
+
+
+	/**
+	 * Creates the context menu for the table.
+	 */
+	private void createContextMenu() {
+		MenuManager menuManager = new MenuManager("#PopupMenu");
+		
+		menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+		
+		Menu contextMenu = menuManager.createContextMenu(_table.getControl());
+		_table.getControl().setMenu(contextMenu);
+		getSite().registerContextMenu(menuManager, _table);
 	}
 
 
