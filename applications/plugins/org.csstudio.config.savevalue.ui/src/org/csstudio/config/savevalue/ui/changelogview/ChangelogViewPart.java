@@ -53,8 +53,8 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowData;
@@ -212,12 +212,8 @@ public class ChangelogViewPart extends ViewPart {
 		
 		Button readChangelog = new Button(iocBar, SWT.PUSH);
 		readChangelog.setText(Messages.ChangelogViewPart_GET_CHANGELOG_BUTTON);
-		readChangelog.addSelectionListener(new SelectionListener() {
-
-			public void widgetDefaultSelected(final SelectionEvent e) {
-				// ignore (not called by buttons)
-			}
-
+		readChangelog.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(final SelectionEvent e) {
 				startChangelogRequest();
 			}
