@@ -88,7 +88,7 @@
    <extension
          point="org.eclipse.ui.popupMenus">
       <objectContribution
-            adaptable="false"
+            adaptable="true"
             id="org.csstudio.trends.databrowser.OpenViewWithPVsPopupAction"
             objectClass="org.csstudio.platform.model.IProcessVariable">
          <menu
@@ -107,7 +107,7 @@
                tooltip="%PopmenuViewTooltip"/>
       </objectContribution>
       <objectContribution
-            adaptable="false"
+            adaptable="true"
             id="org.csstudio.trends.databrowser.OpenEditorWithPVsPopupAction"
             objectClass="org.csstudio.platform.model.IProcessVariable">
          <menu
