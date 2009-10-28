@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?pde version="3.4"?>
+<?pde version="3.5"?>
 
-<product name="Save Value RMI Server" id="org.csstudio.config.savevalue.rmiserver.SaveValueRmiServer" application="org.csstudio.config.savevalue.rmiserver.SaveValueRmiServer" version="1.0.0" useFeatures="false">
+<product name="Save Value RMI Server" id="org.csstudio.config.savevalue.rmiserver.SaveValueRmiServer" application="org.csstudio.config.savevalue.rmiserver.SaveValueRmiServer" version="1.0.1" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -50,7 +50,6 @@
       <plugin id="org.eclipse.core.resources.compatibility" fragment="true"/>
       <plugin id="org.eclipse.core.resources.win32.x86" fragment="true"/>
       <plugin id="org.eclipse.core.runtime"/>
-      <plugin id="org.eclipse.core.runtime.compatibility.auth"/>
       <plugin id="org.eclipse.core.runtime.compatibility.registry" fragment="true"/>
       <plugin id="org.eclipse.ecf"/>
       <plugin id="org.eclipse.ecf.datashare"/>
@@ -67,6 +66,7 @@
       <plugin id="org.eclipse.ecf.ssl" fragment="true"/>
       <plugin id="org.eclipse.equinox.app"/>
       <plugin id="org.eclipse.equinox.common"/>
+      <plugin id="org.eclipse.equinox.concurrent"/>
       <plugin id="org.eclipse.equinox.preferences"/>
       <plugin id="org.eclipse.equinox.registry"/>
       <plugin id="org.eclipse.equinox.security"/>
@@ -78,13 +78,14 @@
       <plugin id="org.eclipse.update.core"/>
       <plugin id="org.eclipse.update.core.linux" fragment="true"/>
       <plugin id="org.eclipse.update.core.win32" fragment="true"/>
+      <plugin id="org.hamcrest.core"/>
       <plugin id="org.jivesoftware.smack"/>
-      <plugin id="org.junit"/>
       <plugin id="org.junit4"/>
       <plugin id="org.remotercp.common"/>
       <plugin id="org.remotercp.ecf"/>
       <plugin id="org.remotercp.libs"/>
       <plugin id="org.remotercp.util"/>
    </plugins>
+
 
 </product>
