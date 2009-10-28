@@ -188,27 +188,7 @@ public class ChangelogViewPart extends ViewPart {
 		
 		_iocText = new Combo(iocBar, SWT.BORDER);
 		_iocText.setLayoutData(new RowData(100, SWT.DEFAULT));
-		
-		IWorkbenchSiteProgressService progressService =
-			(IWorkbenchSiteProgressService) getSite().getAdapter(
-					IWorkbenchSiteProgressService.class);
-		Job job = new Job(Messages.ChangelogViewPart_GET_IOC_JOB) {
-			@Override
-			protected IStatus run(final IProgressMonitor monitor) {
-				monitor.beginTask(Messages.ChangelogViewPart_GET_IOC_JOB,
-						IProgressMonitor.UNKNOWN);
-				final List<String> iocs = IocFinder.getIocList();
-				Collections.sort(iocs);
-				Display.getDefault().asyncExec(new Runnable() {
-					public void run() {
-						_iocText.setItems(iocs.toArray(new String[iocs.size()]));
-					}
-				});
-				monitor.done();
-				return new Status(IStatus.OK, Activator.PLUGIN_ID, "");
-			}
-		};
-		progressService.schedule(job, 0, true);
+		getAvailableIocsInBackground();
 		
 		Button readChangelog = new Button(iocBar, SWT.PUSH);
 		readChangelog.setText(Messages.ChangelogViewPart_GET_CHANGELOG_BUTTON);
@@ -229,6 +209,33 @@ public class ChangelogViewPart extends ViewPart {
 		getSite().setSelectionProvider(_table);
 		
 		createContextMenu();
+	}
+
+	/**
+	 * Runs a background job to get a list of available IOCs and populates the
+	 * IOC entry field with them.
+	 */
+	private void getAvailableIocsInBackground() {
+		IWorkbenchSiteProgressService progressService =
+			(IWorkbenchSiteProgressService) getSite().getAdapter(
+					IWorkbenchSiteProgressService.class);
+		Job job = new Job(Messages.ChangelogViewPart_GET_IOC_JOB) {
+			@Override
+			protected IStatus run(final IProgressMonitor monitor) {
+				monitor.beginTask(Messages.ChangelogViewPart_GET_IOC_JOB,
+						IProgressMonitor.UNKNOWN);
+				final List<String> iocs = IocFinder.getIocList();
+				Collections.sort(iocs);
+				Display.getDefault().asyncExec(new Runnable() {
+					public void run() {
+						_iocText.setItems(iocs.toArray(new String[iocs.size()]));
+					}
+				});
+				monitor.done();
+				return new Status(IStatus.OK, Activator.PLUGIN_ID, "");
+			}
+		};
+		progressService.schedule(job, 0, true);
 	}
 
 
