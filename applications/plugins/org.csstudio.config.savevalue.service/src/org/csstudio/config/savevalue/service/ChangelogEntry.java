@@ -2,12 +2,14 @@ package org.csstudio.config.savevalue.service;
 
 import java.io.Serializable;
 
+import org.eclipse.core.runtime.PlatformObject;
+
 /**
  * Represents an entry in a changelog file.
  * 
  * @author Joerg Rathlev
  */
-public final class ChangelogEntry implements Serializable {
+public final class ChangelogEntry extends PlatformObject implements Serializable {
 
 	/**
 	 * The serial version UID.

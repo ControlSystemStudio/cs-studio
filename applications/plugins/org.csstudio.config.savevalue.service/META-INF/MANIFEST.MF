@@ -2,6 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Save Value Service Interfaces
 Bundle-SymbolicName: org.csstudio.config.savevalue.service
-Bundle-Version: 1.0.0
+Bundle-Version: 1.1.0
 Bundle-Vendor: DESY
 Export-Package: org.csstudio.config.savevalue.service
+Require-Bundle: org.eclipse.core.runtime;bundle-version="3.5.0"
