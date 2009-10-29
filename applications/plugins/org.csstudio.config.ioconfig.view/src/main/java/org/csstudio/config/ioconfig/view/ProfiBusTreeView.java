@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.csstudio.config.ioconfig.config.view.ChannelConfigComposite;
+import org.csstudio.config.ioconfig.config.view.ChannelStructureConfigComposite;
 import org.csstudio.config.ioconfig.config.view.FacilityConfigComposite;
 import org.csstudio.config.ioconfig.config.view.IocConfigComposite;
 import org.csstudio.config.ioconfig.config.view.MasterConfigComposite;
@@ -56,6 +57,7 @@ import org.csstudio.config.ioconfig.model.Node;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.Repository;
 import org.csstudio.config.ioconfig.model.pbmodel.Channel;
+import org.csstudio.config.ioconfig.model.pbmodel.ChannelStructure;
 import org.csstudio.config.ioconfig.model.pbmodel.Master;
 import org.csstudio.config.ioconfig.model.pbmodel.Module;
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnet;
@@ -1279,6 +1281,9 @@ public class ProfiBusTreeView extends Composite {
         } else if (selectedNode instanceof Module) {
             _nodeConfigComposite = new ModuleConfigComposite(_editComposite, this,
                     ((Module) selectedNode));
+        } else if (selectedNode instanceof ChannelStructure) {
+            _nodeConfigComposite = new ChannelStructureConfigComposite(_editComposite, this,
+            ((ChannelStructure) selectedNode));
         } else if (selectedNode instanceof Channel) {
             _nodeConfigComposite = new ChannelConfigComposite(_editComposite, this,
                     ((Channel) selectedNode));

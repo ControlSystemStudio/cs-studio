@@ -55,7 +55,7 @@ public class InfoConfigComposte extends NodeConfig {
      */
     public InfoConfigComposte(Composite parent, ProfiBusTreeView profiBusTreeView, int style,
             Node node, String string) {
-        super(parent,profiBusTreeView, node!=null?node.getClass().getName():"", node, false);
+        super(parent,profiBusTreeView, node!=null?node.getClass().getSimpleName():"", node, false);
         _node = node;
         setSaveButtonSaved();
         Text text = new Text(getNewTabItem("Description", 1), SWT.MULTI | SWT.LEAD | SWT.BORDER|SWT.READ_ONLY);
@@ -63,8 +63,6 @@ public class InfoConfigComposte extends NodeConfig {
         if(string!=null) {
             text.setText(string);
         }
-        
-        
     }
     
     /**

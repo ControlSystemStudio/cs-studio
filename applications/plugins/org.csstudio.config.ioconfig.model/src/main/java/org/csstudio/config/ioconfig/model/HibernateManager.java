@@ -68,8 +68,7 @@ public final class HibernateManager {
     private static final class SessionWatchDog extends Job {
         private SessionFactory _sessionFactory;
         private int _sessionUseCounter;
-        private long _timeToCloseSession = (36000000 * 5);
-//        private long _timeToCloseSession = (3600000);
+        private long _timeToCloseSession = (3600000 * 5);
 
         private SessionWatchDog(String name) {
             super(name);
@@ -80,39 +79,41 @@ public final class HibernateManager {
         protected IStatus run(IProgressMonitor monitor) {
             boolean watch = true;
             Date date = new Date();
-//            System.out.println(date+": Starte WatchDog!");
+            //System.out.println(date+": Starte WatchDog!");
             while (watch) {
                 if (_sessionFactory == null || _sessionFactory.isClosed()) {
                     break;
                 }
                 if (_sessionUseCounter == 0) {
                     Date now = new Date();
-//                    System.out.println("Test close Session");
-//                    System.out.println("now: "+now.getTime()+"\t- date: "+date.getTime()+"\t="+(now.getTime()-date.getTime())+"\t>"+getTimeToCloseSession());
+                    //System.out.println("Test close Session");
+                    //System.out.println("now: "+now.getTime()+"\t- date: "+date.getTime()+"\t="+(now.getTime()-date.getTime())+"\t>"+getTimeToCloseSession());
                     if (now.getTime() - date.getTime() > getTimeToCloseSession()) {
                         _sessionFactory.close();
                         _sessionFactory = null;
-                        System.out.println(now+": Session wurde geschlossen!!!");
+                        //System.out.println(now+": Session wurde geschlossen!!!");
                         break;
                     }
 
                 } else {
                     date = new Date();
-                    System.out.println(date+": SessionUseCounter :"+_sessionUseCounter+" to 0");
+                    //System.out.println(date+": SessionUseCounter :"+_sessionUseCounter+" to 0");
                     _sessionUseCounter = 0;
                 }
                 try {
                     this.getThread();
                     // Sleep 5 min.
                     Date now = new Date();
-                    System.out.println(now+": IOConfig: go Sleeping");
+                    //System.out.println(now+": IOConfig: go Sleeping");
                     Thread.sleep(300000);
                 } catch (InterruptedException e) {
                 }
             }
             monitor.done();
+            monitor=null;
+            
             Date now = new Date();
-            System.out.println(now+": WatchDog gestoppt!");
+            //System.out.println(now+": WatchDog gestoppt!");
             return Job.ASYNC_FINISH;
         }
 
@@ -275,15 +276,16 @@ public final class HibernateManager {
         if (_sessionWatchDog == null) {
             _sessionWatchDog = new SessionWatchDog("Session Watch Dog");
             _sessionWatchDog.setSessionFactory(_sessionFactoryDevDB);
+            _sessionWatchDog.setSystem(true);
+        }
+        if(_sessionWatchDog.getState()==Job.NONE) {
             _sessionWatchDog.schedule(300000);
-
         }
         _sessionWatchDog.useSession();
 
         _trx = null;
+        openTransactions++;
         try {
-
-            openTransactions++;
             // if(openTransactions<2) {
             _sess = _sessionFactoryDevDB.openSession();
             // }
