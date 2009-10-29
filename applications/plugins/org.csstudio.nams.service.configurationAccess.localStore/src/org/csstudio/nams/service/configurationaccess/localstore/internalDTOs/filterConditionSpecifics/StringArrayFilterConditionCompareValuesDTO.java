@@ -26,7 +26,7 @@ public class StringArrayFilterConditionCompareValuesDTO implements
 		NewAMSConfigurationElementDTO {
 
 	@EmbeddedId
-	private StringArrayFilterConditionCompareValuesDTO_PK pk;
+	private StringArrayFilterConditionCompareValuesDTOPK pk;
 
 	@Override
 	public boolean equals(final Object obj) {
@@ -80,7 +80,7 @@ public class StringArrayFilterConditionCompareValuesDTO implements
 		return false;
 	}
 
-	public void setPk(final StringArrayFilterConditionCompareValuesDTO_PK pk) {
+	public void setPk(final StringArrayFilterConditionCompareValuesDTOPK pk) {
 		this.pk = pk;
 	}
 
