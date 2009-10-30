@@ -3,8 +3,7 @@
       id="org.csstudio.sns.feature.eclipse"
       label="Eclipse Core Feature"
       version="1.0.22"
-      provider-name="Kay Kasemir"
-      os="linux,macosx,win32">
+      provider-name="Kay Kasemir">
 
    <description>
       Selection of eclipse core components for CSS
