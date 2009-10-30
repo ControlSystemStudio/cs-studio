@@ -69,7 +69,14 @@ public class RDBWriter
     public RDBWriter(final String url, final String schema) throws Exception
     {
         logger = CentralLogger.getInstance().getLogger(this);
-        rdb_util = RDBUtil.connect(url, false);
+        try
+        {
+            rdb_util = RDBUtil.connect(url, false);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Error connecting to '" + url + "': " + ex.getMessage());
+        }
         
         if (enable_trace)
         {

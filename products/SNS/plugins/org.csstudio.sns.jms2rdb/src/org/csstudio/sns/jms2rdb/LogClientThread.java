@@ -41,7 +41,7 @@ public class LogClientThread extends Thread
     /** On JMS or RDB errors, thread will disconnect, wait, then re-connect
      *  using this delay.
      */
-    private static final int RETRY_DELAY_MS = 5000;
+    private static final int RETRY_DELAY_MS = 20000;
 
     /** JMS Server URL */
     final private String jms_url;
