@@ -63,5 +63,10 @@ public class PatchedScrollingGraphicalViewer extends ScrollingGraphicalViewer {
 			}
 		}
 	}
+	
+	@Override
+	public MenuManager getContextMenu() {
+		return contextMenu;
+	}
 
 }
