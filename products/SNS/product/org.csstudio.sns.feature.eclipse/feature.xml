@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.sns.feature.eclipse"
       label="Eclipse Core Feature"
-      version="1.0.21"
+      version="1.0.22"
       provider-name="Kay Kasemir"
       os="linux,macosx,win32">
 
@@ -621,6 +621,13 @@ IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY AT HTTP://WWW.DESY.DE/LEGAL/L
          install-size="0"
          version="0.0.0"
          fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.ecf.provider.filetransfer"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
          unpack="false"/>
 
 </feature>
