@@ -24,11 +24,11 @@
 
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
+import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.widgets.figures.ImageBoolButtonFigure;
 import org.csstudio.opibuilder.widgets.figures.AbstractBoolControlFigure.IBoolControlListener;
 import org.csstudio.opibuilder.widgets.model.ImageBoolButtonModel;
-import org.csstudio.opibuilder.widgets.model.ImageModel;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueUtil;
 import org.eclipse.core.runtime.IPath;
@@ -81,7 +81,7 @@ public final class ImageBoolButtonEditPart extends AbstractBoolControlEditPart {
 	protected void registerPropertyChangeHandlers() {
 		registerCommonPropertyChangeHandlers();
 		
-		removeAllPropertyChangeHandlers(AbstractPVWidgetModel.PROP_PVVALUE);
+		//removeAllPropertyChangeHandlers(AbstractPVWidgetModel.PROP_PVVALUE);
 		// value
 		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
@@ -90,7 +90,7 @@ public final class ImageBoolButtonEditPart extends AbstractBoolControlEditPart {
 				if(newValue == null)
 					return false;
 				ImageBoolButtonFigure figure = (ImageBoolButtonFigure) refreshableFigure;
-				figure.setValue(ValueUtil.getDouble((IValue)newValue));
+				//figure.setValue(ValueUtil.getDouble((IValue)newValue));
 				autoSizeWidget(figure);
 				return true;
 			}
@@ -162,8 +162,8 @@ public final class ImageBoolButtonEditPart extends AbstractBoolControlEditPart {
 				return true;
 			}
 		};
-		setPropertyChangeHandler(ImageBoolButtonModel.PROP_BORDER_WIDTH, handle);
-		setPropertyChangeHandler(ImageBoolButtonModel.PROP_BORDER_STYLE, handle);
+		setPropertyChangeHandler(AbstractWidgetModel.PROP_BORDER_WIDTH, handle);
+		setPropertyChangeHandler(AbstractWidgetModel.PROP_BORDER_STYLE, handle);
 		
 		//size change handlers - so we can stretch accordingly
 		handle = new IWidgetPropertyChangeHandler() {
@@ -174,8 +174,8 @@ public final class ImageBoolButtonEditPart extends AbstractBoolControlEditPart {
 				return true;
 			}
 		};
-		setPropertyChangeHandler(ImageModel.PROP_HEIGHT, handle);
-		setPropertyChangeHandler(ImageModel.PROP_WIDTH, handle);
+		setPropertyChangeHandler(AbstractWidgetModel.PROP_HEIGHT, handle);
+		setPropertyChangeHandler(AbstractWidgetModel.PROP_WIDTH, handle);
 		
 
 	}

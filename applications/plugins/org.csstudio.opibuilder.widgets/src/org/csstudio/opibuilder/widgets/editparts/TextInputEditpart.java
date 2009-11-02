@@ -60,8 +60,13 @@ public class TextInputEditpart extends TextIndicatorEditPart {
 						} catch (NumberFormatException e) {							
 						}
 					}else if(value instanceof IStringValue){
-					*/	setPVValue(AbstractPVWidgetModel.PROP_PVNAME, text);
+					*/	
 					//}
+					if(getWidgetModel().getPVName().isEmpty())
+						((LabelFigure)figure).setText(text);
+					else
+						setPVValue(AbstractPVWidgetModel.PROP_PVNAME, text);
+					
 					return false;
 				}
 			};			

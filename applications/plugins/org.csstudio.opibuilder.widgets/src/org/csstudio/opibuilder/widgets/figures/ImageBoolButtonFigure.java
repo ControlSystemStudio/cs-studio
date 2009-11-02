@@ -127,11 +127,13 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure {
 	}
 
 	public Dimension getAutoSizedDimension() {		
-		if(boolValue && onImage != null)
-			return new Dimension(onImage.getBounds().width, onImage.getBounds().height);
-		else if(!boolValue && offImage != null)
-			return new Dimension(offImage.getBounds().width, offImage.getBounds().height);
+		Image temp = boolValue ? onImage : offImage;
+		
+		if(temp != null)
+			return new Dimension(temp.getBounds().width + getInsets().left + getInsets().right,
+					temp.getBounds().height + getInsets().bottom + getInsets().top);
 		return null;
+	
 	}
 
 	public void dispose() {

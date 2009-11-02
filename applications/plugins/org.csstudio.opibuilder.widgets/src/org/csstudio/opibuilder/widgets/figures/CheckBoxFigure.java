@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.csstudio.opibuilder.widgets.Activator;
 import org.csstudio.opibuilder.widgets.figures.AbstractBoolControlFigure.IBoolControlListener;
-import org.csstudio.opibuilder.widgets.model.AbstractBoolWidgetModel;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.Label;
@@ -15,7 +14,7 @@ import org.eclipse.draw2d.MouseListener;
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.swt.graphics.Image;
 /**
- * Base figure for a widget based on {@link AbstractBoolWidgetModel}.
+ * Figure for a check box.
  * 
  * @author Xihui Chen
  *

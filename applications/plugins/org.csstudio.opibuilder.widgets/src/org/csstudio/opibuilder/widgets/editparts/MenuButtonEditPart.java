@@ -63,17 +63,19 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
 				}
 	
 				public void mousePressed(final MouseEvent me) {
+					if (me.button == 1) {
+						me.consume();
+					}
+				}
+	
+				public void mouseReleased(final MouseEvent me) {
 					if (me.button == 1
 							&& getExecutionMode().equals(ExecutionMode.RUN_MODE)) {
 						final org.eclipse.swt.graphics.Point cursorLocation = Display
 								.getCurrent().getCursorLocation();
 						showMenu(me.getLocation(), cursorLocation.x,
-								cursorLocation.y);
-						//me.consume();
+								cursorLocation.y);						
 					}
-				}
-	
-				public void mouseReleased(final MouseEvent me) {
 				}
 	
 			});

@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.platform.util.StringUtil;
+import org.eclipse.osgi.util.NLS;
 
 /** Helper for executing a (system) command.
  *  On Unix, that could be anything in the PATH.
@@ -78,7 +79,8 @@ public class CommandExecutor
         catch (Throwable ex)
         {
         	error(-1, ex.getMessage());
-        	ConsoleService.getInstance().writeInfo("Command executing finished with exit code: FAILED");
+        	ConsoleService.getInstance().writeInfo(NLS.bind(
+        			"Command \"{0}\" executing finished with exit code: FAILED", command));
             
             return;
         }

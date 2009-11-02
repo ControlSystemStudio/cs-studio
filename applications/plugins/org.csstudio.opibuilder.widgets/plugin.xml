@@ -220,6 +220,15 @@
             typeId="org.csstudio.opibuilder.widgets.checkbox">
       </widget>
       <widget
+            category="Controls"
+            description="A combo box which can write string or integer to PV based on its items property."
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.ComboEditPart"
+            icon="icons/combo.gif"
+            model_class="org.csstudio.opibuilder.widgets.model.ComboModel"
+            name="Combo Box"
+            typeId="org.csstudio.opibuilder.widgets.combo">
+      </widget>
+      <widget
             category="Others"
             description="A container widget which can group other widgets."
             editpart_class="org.csstudio.opibuilder.widgets.editparts.GroupingContainerEditPart"

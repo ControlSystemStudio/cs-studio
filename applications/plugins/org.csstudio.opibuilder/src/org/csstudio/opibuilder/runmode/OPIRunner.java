@@ -149,7 +149,7 @@ public class OPIRunner extends EditorPart {
 		viewer.createControl(parent);
 		viewer.setRootEditPart(new ScalableFreeformRootEditPart());
 		viewer.setEditPartFactory(new WidgetEditPartFactory(ExecutionMode.RUN_MODE));
-		viewer.setContents(displayModel);
+		
 		
 		//this will make viewer as a selection provider
 		EditDomain editDomain = new DefaultEditDomain(this);
@@ -159,8 +159,10 @@ public class OPIRunner extends EditorPart {
 		ContextMenuProvider cmProvider = 
 			new OPIRunnerContextMenuProvider(viewer);
 		viewer.setContextMenu(cmProvider);
+		
 		getSite().registerContextMenu(cmProvider, viewer);
 		setPartName(displayModel.getName());
+		viewer.setContents(displayModel);
 	}
 
 	
