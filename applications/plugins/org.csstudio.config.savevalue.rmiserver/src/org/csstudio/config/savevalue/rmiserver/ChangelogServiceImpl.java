@@ -25,11 +25,16 @@ package org.csstudio.config.savevalue.rmiserver;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 
+import org.csstudio.config.savevalue.internal.changelog.ChangelogAppender;
 import org.csstudio.config.savevalue.internal.changelog.ChangelogReader;
+import org.csstudio.config.savevalue.service.ChangelogDeletionService;
 import org.csstudio.config.savevalue.service.ChangelogEntry;
 import org.csstudio.config.savevalue.service.ChangelogService;
 import org.csstudio.config.savevalue.service.SaveValueServiceException;
@@ -40,7 +45,7 @@ import org.csstudio.platform.logging.CentralLogger;
  * 
  * @author Joerg Rathlev
  */
-public class ChangelogServiceImpl implements ChangelogService {
+public class ChangelogServiceImpl implements ChangelogService, ChangelogDeletionService {
 
 	/**
 	 * The logger.
@@ -73,7 +78,7 @@ public class ChangelogServiceImpl implements ChangelogService {
 			try {
 
 				reader = new ChangelogReader(new FileReader(changelog));
-				Collection<ChangelogEntry> entries = reader.readEntries();
+				Collection<ChangelogEntry> entries = reader.readLatestEntries();
 				return (ChangelogEntry[]) entries.toArray(
 						new ChangelogEntry[entries.size()]);
 				
@@ -95,6 +100,104 @@ public class ChangelogServiceImpl implements ChangelogService {
 			}
 		} else {
 			return new ChangelogEntry[0];
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void deleteEntries(String iocName, String pvName)
+			throws SaveValueServiceException, RemoteException {
+		_log.debug(this, "deleteEntries called with iocName=" + iocName + ", pvName=" + pvName);
+		IocFiles files = new IocFiles(iocName);
+		File changelogFile = files.getChangelog();
+		deleteEntries(changelogFile, pvName);
+	}
+
+	/**
+	 * Deletes all entries for the given PV from the given changelog file.
+	 * 
+	 * @param changelog
+	 *            the changelog file.
+	 * @param pvName
+	 *            the name of the PV.
+	 */
+	private void deleteEntries(File changelog, String pvName)
+			throws SaveValueServiceException {
+		if (changelog.exists()) {
+			try {
+				Collection<ChangelogEntry> entries = readAllEntries(changelog);
+				filter(entries, pvName);
+				overwriteChangelog(changelog, entries);
+			} catch (IOException e) {
+				_log.error(this, "Error accessing changelog file", e);
+				throw new SaveValueServiceException(
+						"Error accessing changelog file", e);
+			}
+		}
+	}
+
+	/**
+	 * Overwrites the given changelog file with a new file which contains the
+	 * entries from the given collection.
+	 * 
+	 * @param changelog
+	 *            the changelog file.
+	 * @param entries
+	 *            the collection of entries.
+	 * @throws IOException
+	 *             if an error occurs.
+	 */
+	private void overwriteChangelog(File changelog,
+			Collection<ChangelogEntry> entries) throws IOException {
+		ChangelogAppender appender = null;
+		try {
+			appender = new ChangelogAppender(new FileWriter(changelog, false));
+			for (ChangelogEntry entry : entries) {
+				appender.append(entry);
+			}
+		} finally {
+			if (appender != null) {
+				try {
+					appender.close();
+				} catch (IOException e) {
+					_log.warn(this, "Error closing changelog file", e);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Removes the entries with the given PV name from the collection.
+	 * 
+	 * @param entries
+	 *            the collection.
+	 * @param pvName
+	 *            the name.
+	 */
+	private void filter(Collection<ChangelogEntry> entries, String pvName) {
+		for (Iterator<ChangelogEntry> i = entries.iterator(); i.hasNext();) {
+			ChangelogEntry entry = i.next();
+			if (entry.getPvName().equals(pvName)) {
+				i.remove();
+			}
+		}
+	}
+
+	/**
+	 * @param changelog
+	 * @return
+	 */
+	private Collection<ChangelogEntry> readAllEntries(File changelog)
+			throws IOException {
+		ChangelogReader reader = null;
+		try {
+			reader = new ChangelogReader(new FileReader(changelog));
+			return reader.readEntries();
+		} finally {
+			if (reader != null) {
+				reader.close();
+			}
 		}
 	}
 }

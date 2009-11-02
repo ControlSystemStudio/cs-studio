@@ -66,12 +66,34 @@ public class ChangelogReaderTest {
 	}
 	
 	@Test
-	public void testLaterEntryOverwritesPreviousEntries() throws Exception {
+	public void testAllEntriesReturnedWhenUsingReadEntries() throws Exception {
 		StringReader sr = new StringReader(
 				"pv value1 user host 20090101T000000\n" +
 				"pv value2 user host 20090101T000000\n");
 		ChangelogReader reader = new ChangelogReader(sr);
 		Collection<ChangelogEntry> entries = reader.readEntries();
+		assertEquals(2, entries.size());
+		ChangelogEntry entry = (ChangelogEntry) entries.toArray()[0];
+		assertEquals("pv", entry.getPvName());
+		assertEquals("value1", entry.getValue());
+		assertEquals("user", entry.getUsername());
+		assertEquals("host", entry.getHostname());
+		assertEquals("20090101T000000", entry.getLastModified());
+		entry = (ChangelogEntry) entries.toArray()[1];
+		assertEquals("pv", entry.getPvName());
+		assertEquals("value2", entry.getValue());
+		assertEquals("user", entry.getUsername());
+		assertEquals("host", entry.getHostname());
+		assertEquals("20090101T000000", entry.getLastModified());
+	}
+
+	@Test
+	public void testOnlyLatestEntryReturnedWhenUsingReadLatestEntries() throws Exception {
+		StringReader sr = new StringReader(
+				"pv value1 user host 20090101T000000\n" +
+				"pv value2 user host 20090101T000000\n");
+		ChangelogReader reader = new ChangelogReader(sr);
+		Collection<ChangelogEntry> entries = reader.readLatestEntries();
 		assertEquals(1, entries.size());
 		ChangelogEntry entry = (ChangelogEntry) entries.toArray()[0];
 		assertEquals("pv", entry.getPvName());

@@ -25,6 +25,7 @@ package org.csstudio.config.savevalue.internal.changelog;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -54,28 +55,43 @@ public class ChangelogReader {
 	}
 
 	/**
-	 * Reads the changelog entries from this reader's input.
+	 * Reads the changelog entries from this reader's input. This method returns
+	 * all entries that are found in the input.
 	 * 
 	 * @return the entries.
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
 	public Collection<ChangelogEntry> readEntries() throws IOException {
-		// Entries are stored in a map from pv -> entry. The map is
-		// used to see if there already is an entry for a given pv,
-		// and update the entry if a newer one is read later.
-		Map<String, ChangelogEntry> entries =
-			new HashMap<String, ChangelogEntry>();
+		Collection<ChangelogEntry> entries = new ArrayList<ChangelogEntry>();
 		
 		String line;
 		while ((line = _reader.readLine()) != null) {
 			try {
 				ChangelogEntry entry = ChangelogEntrySerializer.deserialize(line);
-				entries.put(entry.getPvName(), entry);
+				entries.add(entry);
 			} catch (IllegalArgumentException e) {
 				throw new IOException("Error reading the following line:\n"
 						+ line + "\n" + e.getMessage());
 			}
+		}
+		return entries;
+	}
+
+	/**
+	 * Reads the changelog entries from this reader's input. Unlike
+	 * {@link #readEntries()}, this method returns only the latest entry for
+	 * each PV.
+	 * 
+	 * @return the latest entry in the changelog file for each PV.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 */
+	public Collection<ChangelogEntry> readLatestEntries() throws IOException {
+		Map<String, ChangelogEntry> entries =
+			new HashMap<String, ChangelogEntry>();
+		for (ChangelogEntry entry : readEntries()) {
+			entries.put(entry.getPvName(), entry);
 		}
 		return entries.values();
 	}
