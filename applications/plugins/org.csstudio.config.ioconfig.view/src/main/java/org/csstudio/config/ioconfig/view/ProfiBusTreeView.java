@@ -67,6 +67,7 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
@@ -116,8 +117,6 @@ import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.ProgressBar;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.Tree;
@@ -217,82 +216,6 @@ public class ProfiBusTreeView extends Composite {
     private Action _newNodeAction;
     private static final Image ICON_WARNING = PlatformUI.getWorkbench().getDisplay()
             .getSystemImage(SWT.ICON_WARNING);
-
-    /**
-     * 
-     * @author hrickens
-     * @author $Author$
-     * @version $Revision$
-     * @since 27.05.2009
-     */
-    private final class ThreadExtension extends Job {
-        public ThreadExtension(String name) {
-            super(name);
-        }
-
-        private ProgressBar _bar;
-        private boolean _run = true;
-
-        // private ThreadExtension(ProgressBar bar, int maximum) {
-        // _bar = bar;
-        // }
-
-        public void setBar(ProgressBar bar) {
-            _bar = bar;
-        }
-
-        public void stopThread() {
-            _run = false;
-        }
-
-        // public void run() {
-        // while (_run) {
-        // try {
-        // Thread.sleep(100);
-        // // Thread.yield();
-        // } catch (Throwable th) {
-        // }
-        // if (getDisplay().isDisposed()) {
-        // return;
-        // }
-        // getDisplay().syncExec(new Runnable() {
-        // public void run() {
-        // if (_bar.isDisposed()) {
-        // return;
-        // }
-        // _bar.setSelection(_bar.getSelection() + 1);
-        // _bar.redraw();
-        // }
-        // });
-        // }
-        // }
-
-        @Override
-        protected IStatus run(IProgressMonitor monitor) {
-            while (_run) {
-                try {
-                    Thread.sleep(100);
-                    // Thread.yield();
-                } catch (Throwable th) {
-                }
-                // if (getDisplay().isDisposed()) {
-                // return Job.ASYNC_FINISH;
-                // }
-                // getDisplay().syncExec(new Runnable() {
-                // public void run() {
-                // if (_bar.isDisposed()) {
-                // return Job.ASYNC_FINISH;
-                // }
-                // _bar.setSelection(_bar.getSelection() + 1);
-                // _bar.redraw();
-                // }
-                // });
-            }
-            monitor.done();
-            // _bar.dispose();
-            return Job.ASYNC_FINISH;
-        }
-    }
 
     /**
      * 
@@ -1227,40 +1150,40 @@ public class ProfiBusTreeView extends Composite {
 
         Object selectedNode = _selectedNode.getFirstElement();
         if (selectedNode instanceof FacilityLight) {
-            FacilityLight f = (FacilityLight) selectedNode;
-            Shell shell = new Shell(getDisplay());
-            final ProgressBar bar;
-            ThreadExtension thread = null;
+            final FacilityLight f = (FacilityLight) selectedNode;
             try {
-                bar = new ProgressBar(shell, SWT.INDETERMINATE);
-                // final ProgressBar bar = new ProgressBar(_editComposite,
-                // SWT.INDETERMINATE);
-                bar.setBounds(10, 10, 200, 24);
-                shell.setBounds(getDisplay().getClientArea().width / 4 - 115, getDisplay()
-                        .getBounds().height / 2 - 44, 230, 88);
-                shell.open();
-                final int maximum = bar.getMaximum();
+                
+                Job loadJob = new Job("DBLoader") {
 
-                // thread = new ThreadExtension(bar, maximum);
-                // thread.start();
-                thread = new ThreadExtension("Bar");
-                thread.setBar(bar);
-                thread.schedule();
-                // das wird beim erstenmal eine zeitlang dauern...
-                Facility facility = f.getFacility();
-                _nodeConfigComposite = new FacilityConfigComposite(_editComposite, this, facility); // XXX
+                    @Override
+                    protected IStatus run(IProgressMonitor monitor) {
+                        monitor.beginTask("DBLoaderMonitor", IProgressMonitor.UNKNOWN);
+                        monitor.setTaskName("Load "+f.getName());
+                        // das wird beim erstenmal eine zeitlang dauern...
+                        f.getFacility();
+                        PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+                            
+                            @Override
+                            public void run() {
+                                _nodeConfigComposite = new FacilityConfigComposite(_editComposite, ProfiBusTreeView.this, f.getFacility()); // XXX
+                                _editNodeAction.setEnabled(true);
+                                _editComposite.getParent().layout(false);
+                            }
+                        });
+                        monitor.done();
+                        return Status.OK_STATUS;
+                    }
+                    
+                };
+                loadJob.setUser(true);
+                loadJob.schedule();
+                
             } catch (RuntimeException e) {
                 ProfibusHelper.openErrorDialog(_site.getShell(), "Data Base Error",
                         "Device Data Base (DDB) Error\n" + "Can't load the %1s '%2s' (ID: %3s)", f,
                         e);
                 return;
             } finally {
-                if (thread != null) {
-                    thread.stopThread();
-                }
-                if (shell != null && !shell.isDisposed()) {
-                    shell.close();
-                }
             }
             // bar.dispose();
         } else if (selectedNode instanceof Facility) {
@@ -1283,7 +1206,7 @@ public class ProfiBusTreeView extends Composite {
                     ((Module) selectedNode));
         } else if (selectedNode instanceof ChannelStructure) {
             _nodeConfigComposite = new ChannelStructureConfigComposite(_editComposite, this,
-            ((ChannelStructure) selectedNode));
+                    ((ChannelStructure) selectedNode));
         } else if (selectedNode instanceof Channel) {
             _nodeConfigComposite = new ChannelConfigComposite(_editComposite, this,
                     ((Channel) selectedNode));
@@ -1296,8 +1219,10 @@ public class ProfiBusTreeView extends Composite {
             _nodeConfigComposite = new InfoConfigComposte(_editComposite, this, SWT.NONE, node,
                     nodeText);
         }
-        _editNodeAction.setEnabled(true);
-        _editComposite.getParent().layout(false);
+        if(!(selectedNode instanceof FacilityLight)) {
+            _editNodeAction.setEnabled(true);
+            _editComposite.getParent().layout(false);
+        }
     }
 
     private void setEditComposite() {
@@ -1330,14 +1255,9 @@ public class ProfiBusTreeView extends Composite {
                                     }
                                 }
                                 nc.cancel();
-                                // _viewer.setSelection(_selectedNode);
                                 _editNodeAction.setEnabled(true);
                                 break;
                             default:
-                                // TreePath[] expandedTreePaths =
-                                // _viewer.getExpandedTreePaths();
-                                // Object[] expandedElements =
-                                // _viewer.getExpandedElements();
                                 _viewer.setSelection(new StructuredSelection(nc), true);
                                 _editNodeAction.setEnabled(true);
 

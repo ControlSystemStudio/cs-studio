@@ -84,7 +84,8 @@ public class FacilityLight extends NamedDBClass {
         if (_facility == null) {
             Date date = new Date();
             System.out.println("Start um "+date);
-            _facility = Repository.load(Facility.class, getId());
+            Facility facility = Repository.load(Facility.class, getId());
+            _facility = facility;
             Date endDate = new Date();
             System.out.println("Start um "+endDate);
             System.out.println("differenc: "+(endDate.getTime()-date.getTime()));

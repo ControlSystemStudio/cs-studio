@@ -4,18 +4,6 @@
 
    <extension
          point="org.eclipse.ui.views">
-      <view
-            category="org.csstudio"
-            class="org.csstudio.config.ioconfig.view.View1"
-            icon="icons/css.gif"
-            id="org.csstudio.config.ioconfig.view.View1"
-            name="View1">
-      </view>
-      <view
-            category="org.csstudio"
-            class="org.csstudio.config.ioconfig.view.TreeView"
-            id="org.csstudio.config.ioconfig.view.TreeView"
-            name="TreeView1"/>
       <category
             id="org.csstudio"
             name="CSS"/>
