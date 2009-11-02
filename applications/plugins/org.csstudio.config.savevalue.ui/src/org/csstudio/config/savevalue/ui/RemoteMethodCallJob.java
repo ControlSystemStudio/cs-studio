@@ -60,18 +60,21 @@ public abstract class RemoteMethodCallJob extends Job {
 	 */
 	@Override
 	protected final IStatus run(IProgressMonitor monitor) {
+		IStatus result;
 		monitor.beginTask(getName(), IProgressMonitor.UNKNOWN);
 		try {
 			Registry reg = locateRmiRegistry();
-			return runWithRmiRegistry(reg);
+			result = runWithRmiRegistry(reg);
 		} catch (final RemoteException e) {
 			_log.error(this, "Could not create reference to RMI registry", e);
 			final String message =
 				Messages.SaveValueDialog_ERRMSG_NO_RMI_REGISTRY +
 				e.getMessage();
 			showErrorDialog(message);
-			return new Status(Status.ERROR, Activator.PLUGIN_ID, message, e);
+			result = new Status(Status.ERROR, Activator.PLUGIN_ID, message, e);
 		}
+		monitor.done();
+		return result;
 	}
 
 	/**

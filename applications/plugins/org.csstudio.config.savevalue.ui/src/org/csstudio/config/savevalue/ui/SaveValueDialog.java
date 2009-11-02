@@ -24,7 +24,6 @@ package org.csstudio.config.savevalue.ui;
 import java.net.SocketTimeoutException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
 import org.csstudio.config.savevalue.service.SaveValueRequest;
@@ -36,7 +35,10 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.platform.security.User;
 import org.csstudio.utility.ldap.reader.IocFinder;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -336,102 +338,78 @@ public class SaveValueDialog extends Dialog {
 		getButton(IDialogConstants.CANCEL_ID).setEnabled(false);
 		_resultsTable.setEnabled(true);
 		
-		Runnable r = new Runnable() {
+		Job job = new RemoteMethodCallJob("Save Value") {
 			private Registry _reg;
 
-			public void run() {
+			@Override
+			public IStatus runWithRmiRegistry(Registry registry) {
+				_reg = registry;
 				final boolean[] success = new boolean[_services.length];
-				try {
-					locateRmiRegistry();
-					for (int i = 0; i < _services.length; i++) {
-						String result;
-						success[i] = false;
-						try {
-							SaveValueResult srr = callService(_services[i], _value);
-							success[i] = true;
-							String replacedValue = srr.getReplacedValue();
-							if (replacedValue != null) {
-								result = NLS.bind(Messages.SaveValueDialog_SUCCESS_REPLACED, replacedValue);
-							} else {
-								result = Messages.SaveValueDialog_SUCCESS_NEW_ENTRY;
-							}
-						} catch (RemoteException e) {
-							Throwable cause = e.getCause();
-							if (cause instanceof SocketTimeoutException) {
-								_log.warn(this, "Remote call to " + _services[i] + " timed out"); //$NON-NLS-1$ //$NON-NLS-2$
-								result = Messages.SaveValueDialog_FAILED_TIMEOUT;
-							} else {
-								_log.error(this, "Remote call to " + _services[i] + " failed with RemoteException", e); //$NON-NLS-1$ //$NON-NLS-2$
-								result = Messages.SaveValueDialog_FAILED_WITH_REMOTE_EXCEPTION + e.getMessage();
-							}
-						} catch (SaveValueServiceException e) {
-							_log.warn(this, "Save Value service " + _services[i] + " reported an error", e); //$NON-NLS-1$ //$NON-NLS-2$
-							result = Messages.SaveValueDialog_FAILED_WITH_SERVICE_ERROR + e.getMessage();
-						} catch (NotBoundException e) {
-							_log.warn(this, "Save value service " + _services[i] + " is not bound in RMI registry"); //$NON-NLS-1$ //$NON-NLS-2$
-							result = Messages.SaveValueDialog_NOT_BOUND;
+				for (int i = 0; i < _services.length; i++) {
+					String result;
+					success[i] = false;
+					try {
+						SaveValueResult srr = callService(_services[i], _value);
+						success[i] = true;
+						String replacedValue = srr.getReplacedValue();
+						if (replacedValue != null) {
+							result = NLS.bind(Messages.SaveValueDialog_SUCCESS_REPLACED, replacedValue);
+						} else {
+							result = Messages.SaveValueDialog_SUCCESS_NEW_ENTRY;
 						}
-						final int index = i;
-						final String resultCopy = result;
-						Display.getDefault().asyncExec(new Runnable() {
-							public void run() {
-								TableItem item = _resultsTable.getItem(index);
-								item.setText(1, resultCopy);
-								int color = success[index] ? SWT.COLOR_DARK_GREEN
-										: (_services[index].isRequired()) ? SWT.COLOR_RED : SWT.COLOR_DARK_GRAY;
-								item.setForeground(Display.getCurrent().getSystemColor(color));
-								_resultsTable.showItem(item);
-							}
-						});
+					} catch (RemoteException e) {
+						Throwable cause = e.getCause();
+						if (cause instanceof SocketTimeoutException) {
+							_log.warn(this, "Remote call to " + _services[i] + " timed out"); //$NON-NLS-1$ //$NON-NLS-2$
+							result = Messages.SaveValueDialog_FAILED_TIMEOUT;
+						} else {
+							_log.error(this, "Remote call to " + _services[i] + " failed with RemoteException", e); //$NON-NLS-1$ //$NON-NLS-2$
+							result = Messages.SaveValueDialog_FAILED_WITH_REMOTE_EXCEPTION + e.getMessage();
+						}
+					} catch (SaveValueServiceException e) {
+						_log.warn(this, "Save Value service " + _services[i] + " reported an error", e); //$NON-NLS-1$ //$NON-NLS-2$
+						result = Messages.SaveValueDialog_FAILED_WITH_SERVICE_ERROR + e.getMessage();
+					} catch (NotBoundException e) {
+						_log.warn(this, "Save value service " + _services[i] + " is not bound in RMI registry"); //$NON-NLS-1$ //$NON-NLS-2$
+						result = Messages.SaveValueDialog_NOT_BOUND;
 					}
-					_log.debug(this, "Finished calling remote Save Value services"); //$NON-NLS-1$
+					final int index = i;
+					final String resultCopy = result;
 					Display.getDefault().asyncExec(new Runnable() {
 						public void run() {
-							boolean overallSuccess = true;
-							for (int i = 0; i < success.length; i++) {
-								if (_services[i].isRequired()) {
-									overallSuccess &= success[i];
-								}
-							}
-							if (overallSuccess) {
-								_resultLabel.setText(Messages.SaveValueDialog_RESULT_SUCCESS);
-								_resultImage.setImage(getInfoImage());
-							} else {
-								_resultLabel.setText(Messages.SaveValueDialog_RESULT_ERROR_VALUE_NOT_SAVED);
-								_resultImage.setImage(getErrorImage());
-							}
-							_resultLabel.setVisible(true);
-							_resultImage.setVisible(true);
-							Button close = getButton(IDialogConstants.CANCEL_ID);
-							close.setEnabled(true);
-							close.setFocus();
-						}
-					});
-				} catch (RemoteException e) {
-					_log.error(this, "Could not connect to RMI registry", e); //$NON-NLS-1$
-					final String message = e.getMessage();
-					Display.getDefault().asyncExec(new Runnable() {
-						public void run() {
-							MessageDialog.openError(null, Messages.SaveValueDialog_DIALOG_TITLE,
-									Messages.SaveValueDialog_ERRMSG_NO_RMI_REGISTRY
-											+ message);
-							SaveValueDialog.this.close();
+							TableItem item = _resultsTable.getItem(index);
+							item.setText(1, resultCopy);
+							int color = success[index] ? SWT.COLOR_DARK_GREEN
+									: (_services[index].isRequired()) ? SWT.COLOR_RED : SWT.COLOR_DARK_GRAY;
+							item.setForeground(Display.getCurrent().getSystemColor(color));
+							_resultsTable.showItem(item);
 						}
 					});
 				}
-			}
-
-			/**
-			 * @throws RemoteException
-			 */
-			private void locateRmiRegistry() throws RemoteException {
-				IPreferencesService prefs = Platform.getPreferencesService();
-				String registryHost = prefs.getString(
-						Activator.PLUGIN_ID,
-						PreferenceConstants.RMI_REGISTRY_SERVER,
-						null, null);
-				_log.debug(this, "Connecting to RMI registry."); //$NON-NLS-1$
-				_reg = LocateRegistry.getRegistry(registryHost);
+				_log.debug(this, "Finished calling remote Save Value services"); //$NON-NLS-1$
+				Display.getDefault().asyncExec(new Runnable() {
+					public void run() {
+						boolean overallSuccess = true;
+						for (int i = 0; i < success.length; i++) {
+							if (_services[i].isRequired()) {
+								overallSuccess &= success[i];
+							}
+						}
+						if (overallSuccess) {
+							_resultLabel.setText(Messages.SaveValueDialog_RESULT_SUCCESS);
+							_resultImage.setImage(getInfoImage());
+						} else {
+							_resultLabel.setText(Messages.SaveValueDialog_RESULT_ERROR_VALUE_NOT_SAVED);
+							_resultImage.setImage(getErrorImage());
+						}
+						_resultLabel.setVisible(true);
+						_resultImage.setVisible(true);
+						Button close = getButton(IDialogConstants.CANCEL_ID);
+						close.setEnabled(true);
+						close.setFocus();
+					}
+				});
+				return Status.OK_STATUS;
 			}
 
 			/**
@@ -462,7 +440,7 @@ public class SaveValueDialog extends Dialog {
 				return srr;
 			}
 		};
-		new Thread(r).start();
+		job.schedule();
 	}
 
 
