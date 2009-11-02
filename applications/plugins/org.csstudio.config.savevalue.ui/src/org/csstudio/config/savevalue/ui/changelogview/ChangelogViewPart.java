@@ -24,7 +24,6 @@ package org.csstudio.config.savevalue.ui.changelogview;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.Collections;
 import java.util.List;
@@ -34,16 +33,14 @@ import org.csstudio.config.savevalue.service.ChangelogService;
 import org.csstudio.config.savevalue.service.SaveValueServiceException;
 import org.csstudio.config.savevalue.ui.Activator;
 import org.csstudio.config.savevalue.ui.Messages;
-import org.csstudio.config.savevalue.ui.PreferenceConstants;
+import org.csstudio.config.savevalue.ui.RemoteMethodCallJob;
 import org.csstudio.config.savevalue.ui.SaveValueDialog;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.reader.IocFinder;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -267,32 +264,12 @@ public class ChangelogViewPart extends ViewPart {
 		if (ioc == null) {
 			return;
 		}
-		// The RMI request is run in its own thread, not in the UI
-		// thread.
-		Job job = new Job("") {
-			private Registry _reg;
-
-			/**
-			 * @throws RemoteException
-			 */
-			private void locateRmiRegistry() throws RemoteException {
-				IPreferencesService prefs = Platform.getPreferencesService();
-				String registryHost = prefs.getString(
-						Activator.PLUGIN_ID,
-						PreferenceConstants.RMI_REGISTRY_SERVER,
-						null, null);
-				_log.debug(this, "Connecting to RMI registry."); //$NON-NLS-1$
-				_reg = LocateRegistry.getRegistry(registryHost);
-			}
-
+		// The RMI request is run in its own thread, not in the UI thread.
+		Job job = new RemoteMethodCallJob("Save Value Changelog Request") {
 			@Override
-			protected IStatus run(IProgressMonitor monitor) {
-				monitor.beginTask("",
-						IProgressMonitor.UNKNOWN);
-
+			protected IStatus runWithRmiRegistry(Registry registry) {
 				try {
-					locateRmiRegistry();
-					ChangelogService cs = (ChangelogService) _reg
+					ChangelogService cs = (ChangelogService) registry
 							.lookup("SaveValue.changelog"); //$NON-NLS-1$
 					final ChangelogEntry[] entries = cs.readChangelog(ioc);
 					Display.getDefault().asyncExec(new Runnable() {
@@ -311,35 +288,19 @@ public class ChangelogViewPart extends ViewPart {
 					});
 				} catch (RemoteException e) {
 					_log.error(this, "Could not connect to RMI registry", e); //$NON-NLS-1$
-					final String message = e.getMessage();
-					Display.getDefault().asyncExec(new Runnable() {
-						public void run() {
-							MessageDialog.openError(null, Messages.ChangelogViewPart_TITLE,
-									Messages.ChangelogViewPart_ERRMSG_RMI_REGISTRY
-											+ message);
-						}
-					});
+					showErrorDialog(
+							Messages.ChangelogViewPart_ERRMSG_RMI_REGISTRY +
+							e.getMessage());
 				} catch (NotBoundException e) {
 					_log.error(this, "Changelog Service not bound in RMI registry", e); //$NON-NLS-1$
-					Display.getDefault().asyncExec(new Runnable() {
-						public void run() {
-							MessageDialog.openError(null, Messages.ChangelogViewPart_TITLE,
-									Messages.ChangelogViewPart_ERRMSG_SERVICE_NOT_AVAILABLE);
-						}
-					});
+					showErrorDialog(
+							Messages.ChangelogViewPart_ERRMSG_SERVICE_NOT_AVAILABLE);
 				} catch (SaveValueServiceException e) {
 					_log.error(this, "Server reported an rrror reading the changelog", e); //$NON-NLS-1$
-					final String message = e.getMessage();
-					Display.getDefault().asyncExec(new Runnable() {
-						public void run() {
-							MessageDialog.openError(null, Messages.ChangelogViewPart_TITLE,
-									Messages.ChangelogViewPart_ERRMSG_READ_ERROR
-											+ message);
-						}
-					});
+					showErrorDialog(
+							Messages.ChangelogViewPart_ERRMSG_SERVICE_NOT_AVAILABLE +
+							e.getMessage());
 				}
-				
-				monitor.done();
 				return new Status(IStatus.OK, Activator.PLUGIN_ID, "");
 			}
 		};
