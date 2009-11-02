@@ -23,11 +23,13 @@
 package org.csstudio.config.savevalue.ui.changelogview;
 
 import java.rmi.NotBoundException;
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
 import java.util.Collections;
 import java.util.List;
 
+import org.csstudio.config.savevalue.service.ChangelogDeletionService;
 import org.csstudio.config.savevalue.service.ChangelogEntry;
 import org.csstudio.config.savevalue.service.ChangelogService;
 import org.csstudio.config.savevalue.service.SaveValueServiceException;
@@ -46,6 +48,7 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ICellModifier;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.window.Window;
@@ -121,6 +124,91 @@ public class ChangelogViewPart extends ViewPart {
 			}
 		}
 	}
+	
+	/**
+	 * Actions which deletes the selected changelog entry.
+	 * 
+	 * @author Joerg Rathlev
+	 */
+	private class DeleteChangelogEntryAction extends BaseSelectionListenerAction {
+		
+		/**
+		 * Creates the action.
+		 */
+		protected DeleteChangelogEntryAction() {
+			super("Delete Changelog Entry");
+			setEnabled(updateSelection(getStructuredSelection()));
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void run() {
+			final String ioc = _iocText.getText();
+			if (ioc == null) {
+				return;
+			}
+			final String pvName = getSelectedPvName();
+
+			Job job = new RemoteMethodCallJob("Delete Changelog Entries") {
+				@Override
+				protected IStatus runWithRmiRegistry(Registry reg) {
+					try {
+						Remote service = reg.lookup("SaveValue.changelog");
+						if (service instanceof ChangelogDeletionService) {
+							ChangelogDeletionService deletionService =
+								(ChangelogDeletionService) service;
+							try {
+								deletionService.deleteEntries(ioc, pvName);
+								
+								Display.getDefault().asyncExec(new Runnable() {
+									public void run() {
+										startChangelogRequest();
+									}
+								});
+							} catch (SaveValueServiceException e) {
+								_log.error(this, "Server reported an error.", e);
+								showErrorDialog("The entries could not be " +
+										"deleted from the changelog.");
+							} catch (RemoteException e) {
+								_log.error(this, "Communication error.", e);
+								showErrorDialog("The call to the remote service failed.");
+							}
+						} else {
+							showErrorDialog("The server does not support the " +
+									"deletion of entries.");
+						}
+					} catch (RemoteException e) {
+						_log.error(this, "Could not connect to RMI registry", e);
+						showErrorDialog(
+								Messages.ChangelogViewPart_ERRMSG_RMI_REGISTRY +
+								e.getMessage());
+					} catch (NotBoundException e) {
+						_log.error(this, "Changelog Service not bound in RMI registry", e);
+						showErrorDialog(
+								Messages.ChangelogViewPart_ERRMSG_SERVICE_NOT_AVAILABLE);
+					}
+					return Status.OK_STATUS;
+				}
+			};
+			job.schedule();
+		}
+		
+		private String getSelectedPvName() {
+			return ((ChangelogEntry) getStructuredSelection().getFirstElement()).getPvName();
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		protected boolean updateSelection(IStructuredSelection selection) {
+			return selection.size() == 1;
+		}
+
+	}
+
 
 	/**
 	 * The logger.
