@@ -70,7 +70,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.fil
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.NegationConditionForFilterTreeDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.ProcessVariableFilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionCompareValuesDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionCompareValuesDTO_PK;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionCompareValuesDTOPK;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringFilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.TimeBasedFilterConditionDTO;
@@ -1321,7 +1321,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 				// oldCompareValues, bean, compValue));
 
 				final StringArrayFilterConditionCompareValuesDTO newCompValue = new StringArrayFilterConditionCompareValuesDTO();
-				final StringArrayFilterConditionCompareValuesDTO_PK pk = new StringArrayFilterConditionCompareValuesDTO_PK();
+				final StringArrayFilterConditionCompareValuesDTOPK pk = new StringArrayFilterConditionCompareValuesDTOPK();
 				pk.setCompValue(compValue);
 				pk.setFilterConditionRef(bean.getFilterbedinungID());
 				newCompValue.setPk(pk);

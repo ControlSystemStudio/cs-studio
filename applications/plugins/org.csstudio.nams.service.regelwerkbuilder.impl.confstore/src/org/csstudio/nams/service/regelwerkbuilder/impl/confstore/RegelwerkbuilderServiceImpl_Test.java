@@ -30,7 +30,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.fil
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionForFilterTreeDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.NegationConditionForFilterTreeDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionCompareValuesDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionCompareValuesDTO_PK;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionCompareValuesDTOPK;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringFilterConditionDTO;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
@@ -181,13 +181,13 @@ public class RegelwerkbuilderServiceImpl_Test extends TestCase {
 		ArrayList<StringArrayFilterConditionCompareValuesDTO> arrayList = new ArrayList<StringArrayFilterConditionCompareValuesDTO>();
 
 		StringArrayFilterConditionCompareValuesDTO compareValuesDTO = new StringArrayFilterConditionCompareValuesDTO();
-		StringArrayFilterConditionCompareValuesDTO_PK valuesDTO_PK = new StringArrayFilterConditionCompareValuesDTO_PK();
+		StringArrayFilterConditionCompareValuesDTOPK valuesDTO_PK = new StringArrayFilterConditionCompareValuesDTOPK();
 		valuesDTO_PK.setCompValue("gnarf");
 		compareValuesDTO.setPk(valuesDTO_PK);
 		arrayList.add(compareValuesDTO);
 
 		compareValuesDTO = new StringArrayFilterConditionCompareValuesDTO();
-		valuesDTO_PK = new StringArrayFilterConditionCompareValuesDTO_PK();
+		valuesDTO_PK = new StringArrayFilterConditionCompareValuesDTOPK();
 		valuesDTO_PK.setCompValue("gnarf2");
 		compareValuesDTO.setPk(valuesDTO_PK);
 		arrayList.add(compareValuesDTO);
