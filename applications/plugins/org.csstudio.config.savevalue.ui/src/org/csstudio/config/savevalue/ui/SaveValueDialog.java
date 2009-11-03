@@ -45,6 +45,7 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -53,6 +54,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -177,7 +179,29 @@ public class SaveValueDialog extends Dialog {
 	 */
 	@Override
 	protected final Control createDialogArea(final Composite parent) {
-		Composite composite = new Composite(parent, SWT.NONE);
+		Composite stackParent = new Composite(parent, SWT.NONE);
+		stackParent.setLayoutData(new GridData(GridData.FILL_BOTH));
+		StackLayout stackLayout = new StackLayout();
+		stackParent.setLayout(stackLayout);
+		
+		Composite waitComposite = new Composite(stackParent, SWT.NONE);
+		GridLayout waitLayout = new GridLayout(1, false);
+		waitLayout.marginHeight = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
+		waitLayout.marginWidth = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
+		waitLayout.verticalSpacing = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
+		waitLayout.horizontalSpacing = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
+		waitComposite.setLayout(waitLayout);
+		waitComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
+		
+		Label waitLabel = new Label(waitComposite, SWT.NONE);
+		waitLabel.setText("Searching IOC directory, please wait.");
+		
+		ProgressBar progressBar = new ProgressBar(waitComposite, SWT.INDETERMINATE);
+		GridData layoutData = new GridData(SWT.BEGINNING, SWT.BEGINNING, false, true);
+		layoutData.widthHint = 200;
+		progressBar.setLayoutData(layoutData);
+		
+		Composite composite = new Composite(stackParent, SWT.NONE);
 		GridLayout layout = new GridLayout(2, false);
 		layout.marginHeight = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
 		layout.marginWidth = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
@@ -186,6 +210,9 @@ public class SaveValueDialog extends Dialog {
 		composite.setLayout(layout);
 		composite.setLayoutData(new GridData(GridData.FILL_BOTH));
 		applyDialogFont(composite);
+		
+		stackLayout.topControl = composite; //waitComposite; // TODO
+		stackParent.layout();
 		
 		// PV Name
 		Label label = new Label(composite, SWT.NONE);
@@ -250,7 +277,9 @@ public class SaveValueDialog extends Dialog {
 	 */
 	@Override
 	protected final void createButtonsForButtonBar(final Composite parent) {
-		createButton(parent, IDialogConstants.OK_ID, Messages.SaveValueDialog_SAVE_BUTTON, true);
+		Button okButton = createButton(parent, IDialogConstants.OK_ID, Messages.SaveValueDialog_SAVE_BUTTON, true);
+		// OK button will be enabled when the IOC for the PV has been found.
+//		okButton.setEnabled(false); // TODO
 		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
 	}
 	
@@ -263,7 +292,7 @@ public class SaveValueDialog extends Dialog {
 			MessageDialog.openError(null, Messages.SaveValueDialog_DIALOG_TITLE, Messages.SaveValueDialog_ERRMSG_NO_REQUIRED_SERVICES);
 			return CANCEL;
 		}
-		if (!findIoc()) {
+		if (!findIoc()) { // TODO
 			MessageDialog.openError(null, Messages.SaveValueDialog_DIALOG_TITLE,
 					NLS.bind(Messages.SaveValueDialog_ERRMSG_IOC_NOT_FOUND, _pv));
 			return CANCEL;
