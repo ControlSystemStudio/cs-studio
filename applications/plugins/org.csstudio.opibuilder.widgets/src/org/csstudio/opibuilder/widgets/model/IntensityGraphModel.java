@@ -30,7 +30,7 @@ public class IntensityGraphModel extends AbstractPVWidgetModel {
 	/**
 	 * The ID of this widget model.
 	 */
-	public static final String ID = "org.csstudio.opibuilder.widgets.IntensityGraph"; //$NON-NLS-1$	
+	public static final String ID = "org.csstudio.opibuilder.widgets.intensityGraph"; //$NON-NLS-1$	
 	
 	@Override
 	protected void configureProperties() {

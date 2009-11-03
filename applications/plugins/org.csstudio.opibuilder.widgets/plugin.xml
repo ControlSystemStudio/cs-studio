@@ -41,21 +41,12 @@
       </widget>
       <widget
             category="Graphics"
-            description="A image widget which can load picture from image file, including gif, png, jpg, jpeg and bmp."
-            editpart_class="org.csstudio.opibuilder.widgets.editparts.ImageEditPart"
-            icon="icons/image.gif"
-            model_class="org.csstudio.opibuilder.widgets.model.ImageModel"
-            name="Image"
-            typeId="org.csstudio.opibuilder.widgets.Image">
-      </widget>
-      <widget
-            category="Controls"
-            description="A knob widget which could be used to read/write a PV"
-            editpart_class="org.csstudio.opibuilder.widgets.editparts.KnobEditPart"
-            icon="icons/knob.gif"
-            model_class="org.csstudio.opibuilder.widgets.model.KnobModel"
-            name="Knob"
-            typeId="org.csstudio.opibuilder.widgets.knob">
+            description="Create a ellipse widget"
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.EllipseEditpart"
+            icon="icons/ellipse.gif"
+            model_class="org.csstudio.opibuilder.widgets.model.EllipseModel"
+            name="Ellipse"
+            typeId="org.csstudio.opibuilder.widgets.Ellipse">
       </widget>
       <widget
             category="Graphics"
@@ -67,6 +58,24 @@
             typeId="org.csstudio.opibuilder.widgets.Label">
       </widget>
       <widget
+            category="Graphics"
+            description="A image widget which can load picture from image file, including gif, png, jpg, jpeg and bmp."
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.ImageEditPart"
+            icon="icons/image.gif"
+            model_class="org.csstudio.opibuilder.widgets.model.ImageModel"
+            name="Image"
+            typeId="org.csstudio.opibuilder.widgets.Image">
+      </widget>
+      <widget
+            category="Monitors"
+            description="A LED which can display one bit of  a value or if the value is non-zero or not when bit property is -1."
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.LEDEditPart"
+            icon="icons/LED.png"
+            model_class="org.csstudio.opibuilder.widgets.model.LEDModel"
+            name="LED"
+            typeId="org.csstudio.opibuilder.widgets.LED">
+      </widget>
+      <widget
             category="Monitors"
             description="A text indicator for displaying PV value."
             editpart_class="org.csstudio.opibuilder.widgets.editparts.TextIndicatorEditPart"
@@ -74,51 +83,6 @@
             model_class="org.csstudio.opibuilder.widgets.model.TextIndicatorModel"
             name="Text Update"
             typeId="org.csstudio.opibuilder.widgets.TextUpdate">
-      </widget>
-      <widget
-            category="Controls"
-            description="Write value to a pv by inputing text in this widget."
-            editpart_class="org.csstudio.opibuilder.widgets.editparts.TextInputEditpart"
-            icon="icons/text.gif"
-            model_class="org.csstudio.opibuilder.widgets.model.TextInputModel"
-            name="Text Input"
-            typeId="org.csstudio.opibuilder.widgets.TextInput">
-      </widget>
-      <widget
-            category="Graphics"
-            description="Create a ellipse widget"
-            editpart_class="org.csstudio.opibuilder.widgets.editparts.EllipseEditpart"
-            icon="icons/ellipse.gif"
-            model_class="org.csstudio.opibuilder.widgets.model.EllipseModel"
-            name="Ellipse"
-            typeId="org.csstudio.opibuilder.widgets.Ellipse">
-      </widget>
-      <widget
-            category="Monitors"
-            description="A thermeter which could display numeric value."
-            editpart_class="org.csstudio.opibuilder.widgets.editparts.ThermometerEditPart"
-            icon="icons/Thermo.gif"
-            model_class="org.csstudio.opibuilder.widgets.model.ThermometerModel"
-            name="Thermometer"
-            typeId="org.csstudio.opibuilder.widgets.thermometer">
-      </widget>
-      <widget
-            category="Monitors"
-            description="A gauge which could display numeric value."
-            editpart_class="org.csstudio.opibuilder.widgets.editparts.GaugeEditPart"
-            icon="icons/gauge.gif"
-            model_class="org.csstudio.opibuilder.widgets.model.GaugeModel"
-            name="Gauge"
-            typeId="org.csstudio.opibuilder.widgets.gauge">
-      </widget>
-      <widget
-            category="Monitors"
-            description="A tank which could display numeric value."
-            editpart_class="org.csstudio.opibuilder.widgets.editparts.TankEditPart"
-            icon="icons/Tank.gif"
-            model_class="org.csstudio.opibuilder.widgets.model.TankModel"
-            name="Tank"
-            typeId="org.csstudio.opibuilder.widgets.tank">
       </widget>
       <widget
             category="Monitors"
@@ -140,6 +104,33 @@
       </widget>
       <widget
             category="Monitors"
+            description="A gauge which could display numeric value."
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.GaugeEditPart"
+            icon="icons/gauge.gif"
+            model_class="org.csstudio.opibuilder.widgets.model.GaugeModel"
+            name="Gauge"
+            typeId="org.csstudio.opibuilder.widgets.gauge">
+      </widget>
+      <widget
+            category="Monitors"
+            description="A thermeter which could display numeric value."
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.ThermometerEditPart"
+            icon="icons/Thermo.gif"
+            model_class="org.csstudio.opibuilder.widgets.model.ThermometerModel"
+            name="Thermometer"
+            typeId="org.csstudio.opibuilder.widgets.thermometer">
+      </widget>
+      <widget
+            category="Monitors"
+            description="A tank which could display numeric value."
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.TankEditPart"
+            icon="icons/Tank.gif"
+            model_class="org.csstudio.opibuilder.widgets.model.TankModel"
+            name="Tank"
+            typeId="org.csstudio.opibuilder.widgets.tank">
+      </widget>
+      <widget
+            category="Monitors"
             description="An XY graph which can display the trends of multiple PVs."
             editpart_class="org.csstudio.opibuilder.widgets.editparts.XYGraphEditPart"
             icon="icons/XYGraph.gif"
@@ -154,16 +145,7 @@
             icon="icons/IntensityGraph.gif"
             model_class="org.csstudio.opibuilder.widgets.model.IntensityGraphModel"
             name="Intensity Graph"
-            typeId="org.csstudio.opibuilder.widgets.IntensityGraph">
-      </widget>
-      <widget
-            category="Controls"
-            description="A scaled slider widget which can read/write a PV"
-            editpart_class="org.csstudio.opibuilder.widgets.editparts.ScaledSliderEditPart"
-            icon="icons/scaled_slider.gif"
-            model_class="org.csstudio.opibuilder.widgets.model.ScaledSliderModel"
-            name="Scaled Slider"
-            typeId="org.csstudio.opibuilder.widgets.scaledslider">
+            typeId="org.csstudio.opibuilder.widgets.intensityGraph">
       </widget>
       <widget
             category="Controls"
@@ -184,13 +166,31 @@
             typeId="org.csstudio.opibuilder.widgets.MenuButton">
       </widget>
       <widget
-            category="Monitors"
-            description="A LED which can display one bit of  a value or if the value is non-zero or not when bit property is -1."
-            editpart_class="org.csstudio.opibuilder.widgets.editparts.LEDEditPart"
-            icon="icons/LED.png"
-            model_class="org.csstudio.opibuilder.widgets.model.LEDModel"
-            name="LED"
-            typeId="org.csstudio.opibuilder.widgets.LED">
+            category="Controls"
+            description="Write value to a pv by inputing text in this widget."
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.TextInputEditpart"
+            icon="icons/text.gif"
+            model_class="org.csstudio.opibuilder.widgets.model.TextInputModel"
+            name="Text Input"
+            typeId="org.csstudio.opibuilder.widgets.TextInput">
+      </widget>
+      <widget
+            category="Controls"
+            description="A scaled slider widget which can read/write a PV"
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.ScaledSliderEditPart"
+            icon="icons/scaled_slider.gif"
+            model_class="org.csstudio.opibuilder.widgets.model.ScaledSliderModel"
+            name="Scaled Slider"
+            typeId="org.csstudio.opibuilder.widgets.scaledslider">
+      </widget>
+      <widget
+            category="Controls"
+            description="A knob widget which could be used to read/write a PV"
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.KnobEditPart"
+            icon="icons/knob.gif"
+            model_class="org.csstudio.opibuilder.widgets.model.KnobModel"
+            name="Knob"
+            typeId="org.csstudio.opibuilder.widgets.knob">
       </widget>
       <widget
             category="Controls"

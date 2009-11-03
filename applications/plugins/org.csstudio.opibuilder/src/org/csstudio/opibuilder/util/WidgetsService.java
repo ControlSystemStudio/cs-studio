@@ -90,8 +90,8 @@ public final class WidgetsService {
 		}
 		
 		// sort the widget in the categories
-		for(List<String> list : allCategoriesMap.values())
-			Collections.sort(list);		
+		//for(List<String> list : allCategoriesMap.values())
+		//	Collections.sort(list);		
 	}
 	
 	private void loadAllFeedbackFactories(){
