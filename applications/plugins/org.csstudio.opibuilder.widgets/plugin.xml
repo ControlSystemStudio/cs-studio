@@ -148,6 +148,15 @@
             typeId="org.csstudio.opibuilder.widgets.xyGraph">
       </widget>
       <widget
+            category="Monitors"
+            description="Display the intensity of a flattened 1D array."
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.IntensityGraphEditPart"
+            icon="icons/IntensityGraph.gif"
+            model_class="org.csstudio.opibuilder.widgets.model.IntensityGraphModel"
+            name="Intensity Graph"
+            typeId="org.csstudio.opibuilder.widgets.IntensityGraph">
+      </widget>
+      <widget
             category="Controls"
             description="A scaled slider widget which can read/write a PV"
             editpart_class="org.csstudio.opibuilder.widgets.editparts.ScaledSliderEditPart"

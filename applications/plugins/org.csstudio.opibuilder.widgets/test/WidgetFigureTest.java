@@ -4,6 +4,7 @@ import java.util.Calendar;
 
 import org.csstudio.opibuilder.widgets.figures.BoolButtonFigure;
 import org.csstudio.opibuilder.widgets.figures.BoolSwitchFigure;
+import org.csstudio.opibuilder.widgets.figures.IntensityGraphFigure;
 import org.csstudio.opibuilder.widgets.figures.LEDFigure;
 import org.csstudio.opibuilder.widgets.figures.LabelFigure;
 import org.csstudio.opibuilder.widgets.figures.TabFigure;
@@ -32,7 +33,7 @@ public class WidgetFigureTest {
 	    shell.open();
 	    
 		final LightweightSystem lws = new LightweightSystem(shell);
-		TabFigureTest testFigure = new TabFigureTest();
+		IntensityGraphFigureTest testFigure = new IntensityGraphFigureTest();
 		lws.setContents(testFigure);
 		
 	    shell.setText("Widget Figure Test");
@@ -190,3 +191,26 @@ class TabFigureTest extends Figure {
 
 	
 	
+class IntensityGraphFigureTest extends Figure {
+	
+	private IntensityGraphFigure intensityGraph;
+
+	public IntensityGraphFigureTest() {
+		intensityGraph = new IntensityGraphFigure();
+		double[] data = new double[256];
+		for(int i=0;i<256;i++)
+			data[i] = i;
+		intensityGraph.setDataArray(data);
+		intensityGraph.setMax(255);
+		intensityGraph.setDataWidth(16);
+		intensityGraph.setDataHeight(16);
+		add(intensityGraph);		
+	}
+	@Override
+	protected void layout() {
+		intensityGraph.setBounds(bounds.getCopy().shrink(20, 20));
+		super.layout();
+	}
+	
+	
+}

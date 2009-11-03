@@ -163,7 +163,7 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 	private static final int DEFAULT_BUFFER_SIZE = 100;	
 	
 	/** The maximum allowed buffer size. */
-	private static final int MAX_BUFFER_SIZE = 10000;	
+	private static final int MAX_BUFFER_SIZE = 100000;	
 	
 	public static final int MAX_AXES_AMOUNT = 4;
 	
@@ -212,7 +212,7 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 		addProperty(new IntegerProperty(PROP_AXIS_COUNT, "Axis Count",
 				WidgetPropertyCategory.Behavior,2,  2, MAX_AXES_AMOUNT));
 		addProperty(new IntegerProperty(PROP_TRACE_COUNT, "Trace Count",
-				WidgetPropertyCategory.Behavior, 0, 0, MAX_TRACES_AMOUNT));	
+				WidgetPropertyCategory.Behavior, 1, 0, MAX_TRACES_AMOUNT));	
 		addAxisProperties();
 		addTraceProperties();
 		
