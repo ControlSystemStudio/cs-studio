@@ -66,7 +66,7 @@ public abstract class RemoteMethodCallJob extends Job {
 			Registry reg = locateRmiRegistry();
 			result = runWithRmiRegistry(reg);
 		} catch (final RemoteException e) {
-			_log.error(this, "Could not create reference to RMI registry", e);
+			_log.error(this, "Could not create reference to RMI registry", e); //$NON-NLS-1$
 			final String message =
 				Messages.SaveValueDialog_ERRMSG_NO_RMI_REGISTRY +
 				e.getMessage();

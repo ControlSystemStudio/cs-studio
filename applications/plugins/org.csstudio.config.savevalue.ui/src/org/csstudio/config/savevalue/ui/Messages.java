@@ -6,7 +6,12 @@ public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.csstudio.config.savevalue.ui.messages"; //$NON-NLS-1$
 	public static String ChangeLogViewPart_NO_ENTRIES;
 	public static String CA_FILE_SERVICE_NAME;
+	public static String ChangelogViewPart_ActionText;
+	public static String ChangelogViewPart_ChangelogRequestJob;
 	public static String ChangelogViewPart_DATE_MODIFIED_COLUMN;
+	public static String ChangelogViewPart_DeletionJob;
+	public static String ChangelogViewPart_DeletionNotSupported;
+	public static String ChangelogViewPart_DeletionServiceError;
 	public static String ChangelogViewPart_ERRMSG_READ_ERROR;
 	public static String ChangelogViewPart_ERRMSG_RMI_REGISTRY;
 	public static String ChangelogViewPart_ERRMSG_SERVICE_NOT_AVAILABLE;
@@ -18,6 +23,7 @@ public class Messages extends NLS {
 	public static String ChangelogViewPart_USER_COLUMN;
 	public static String ChangelogViewPart_VALUE_COLUMN;
 	public static String ChangelogViewPart_GET_IOC_JOB;
+	public static String ChangelogViewPart_RemoteCallFailed;
 	public static String DATABASE_SERVICE_NAME;
 	public static String EPICS_ORA_SERVICE_NAME;
 	public static String SaveValueDialog_DIALOG_TITLE;
@@ -29,12 +35,15 @@ public class Messages extends NLS {
 	public static String SaveValueDialog_FAILED_WITH_REMOTE_EXCEPTION;
 	public static String SaveValueDialog_FAILED_WITH_SERVICE_ERROR;
 	public static String SaveValueDialog_IOC_FIELD_LABEL;
+	public static String SaveValueDialog_IocSearchJob;
+	public static String SaveValueDialog_IocSearchPleaseWait;
 	public static String SaveValueDialog_NOT_BOUND;
 	public static String SaveValueDialog_PV_FIELD_LABEL;
 	public static String SaveValueDialog_RESULT_COLUMN;
 	public static String SaveValueDialog_RESULT_ERROR_VALUE_NOT_SAVED;
 	public static String SaveValueDialog_RESULT_SUCCESS;
 	public static String SaveValueDialog_SAVE_BUTTON;
+	public static String SaveValueDialog_SaveValueServiceJob;
 	public static String SaveValueDialog_STEP_COLUMN;
 	public static String SaveValueDialog_SUCCESS_NEW_ENTRY;
 	public static String SaveValueDialog_SUCCESS_REPLACED;

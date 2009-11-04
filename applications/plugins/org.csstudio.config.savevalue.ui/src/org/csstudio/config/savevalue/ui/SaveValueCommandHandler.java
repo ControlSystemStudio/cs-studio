@@ -46,12 +46,12 @@ public class SaveValueCommandHandler extends AbstractHandler {
 	/**
 	 * The id of the PV parameter.
 	 */
-	private static final String PV_PARAM_ID = "org.csstudio.platform.ui.commands.saveValue.pv";
+	private static final String PV_PARAM_ID = "org.csstudio.platform.ui.commands.saveValue.pv"; //$NON-NLS-1$
 	
 	/**
 	 * The id of the value paramter.
 	 */
-	private static final String VALUE_PARAM_ID = "org.csstudio.platform.ui.commands.saveValue.value";
+	private static final String VALUE_PARAM_ID = "org.csstudio.platform.ui.commands.saveValue.value"; //$NON-NLS-1$
 
 	/**
 	 * {@inheritDoc}
@@ -69,7 +69,7 @@ public class SaveValueCommandHandler extends AbstractHandler {
 			// called with paramters
 			value = event.getParameter(VALUE_PARAM_ID);
 			if (value == null) {
-				throw new ExecutionException("Invalid parameterization: no value parameter provided");
+				throw new ExecutionException("Invalid parameterization: no value parameter provided"); //$NON-NLS-1$
 			}
 		} else {
 			// called on a selection

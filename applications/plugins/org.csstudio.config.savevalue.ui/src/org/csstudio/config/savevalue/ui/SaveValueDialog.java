@@ -199,7 +199,7 @@ public class SaveValueDialog extends Dialog {
 		waitComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
 		
 		Label waitLabel = new Label(waitComposite, SWT.NONE);
-		waitLabel.setText("Searching IOC directory, please wait.");
+		waitLabel.setText(Messages.SaveValueDialog_IocSearchPleaseWait);
 		
 		final ProgressBar progressBar = new ProgressBar(waitComposite, SWT.INDETERMINATE);
 		GridData layoutData = new GridData(SWT.BEGINNING, SWT.BEGINNING, false, true);
@@ -219,10 +219,10 @@ public class SaveValueDialog extends Dialog {
 		stackLayout.topControl = waitComposite;
 		stackParent.layout();
 		
-		_findIocJob = new Job("Searching IOC directory") {
+		_findIocJob = new Job(Messages.SaveValueDialog_IocSearchJob) {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
-				monitor.beginTask("Searching IOC directory", IProgressMonitor.UNKNOWN);
+				monitor.beginTask(Messages.SaveValueDialog_IocSearchJob, IProgressMonitor.UNKNOWN);
 				_log.debug(this, "Trying to find IOC for process variable: " + _pv); //$NON-NLS-1$
 				_iocName = IocFinder.getIoc(_pv);
 				monitor.done();
@@ -258,7 +258,7 @@ public class SaveValueDialog extends Dialog {
 			public void done(final IJobChangeEvent event) {
 				Display.getDefault().asyncExec(new Runnable() {
 					public void run() {
-						_log.debug(this, "Searching IOC directory: job finished");
+						_log.debug(this, "Searching IOC directory: job finished"); //$NON-NLS-1$
 						if (_iocName != null) {
 							_ioc.setText(_iocName);
 							stackLayout.topControl = saveValueComposite;
@@ -429,7 +429,7 @@ public class SaveValueDialog extends Dialog {
 		getButton(IDialogConstants.CANCEL_ID).setEnabled(false);
 		_resultsTable.setEnabled(true);
 		
-		Job job = new RemoteMethodCallJob("Save Value") {
+		Job job = new RemoteMethodCallJob(Messages.SaveValueDialog_SaveValueServiceJob) {
 			private Registry _reg;
 
 			@Override
@@ -524,7 +524,7 @@ public class SaveValueDialog extends Dialog {
 				if (user != null) {
 					req.setUsername(user.getUsername());
 				} else {
-					req.setUsername("");
+					req.setUsername(""); //$NON-NLS-1$
 				}
 				req.setHostname(CSSPlatformInfo.getInstance().getQualifiedHostname());
 				SaveValueResult srr = service.saveValue(req);

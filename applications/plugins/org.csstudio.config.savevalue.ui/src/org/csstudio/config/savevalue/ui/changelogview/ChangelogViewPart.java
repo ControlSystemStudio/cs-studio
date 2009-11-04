@@ -79,6 +79,12 @@ import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
  */
 public class ChangelogViewPart extends ViewPart {
 	
+	private static final String MODIFIED_PROPERTY = "modified"; //$NON-NLS-1$
+	private static final String HOST_PROPERTY = "host"; //$NON-NLS-1$
+	private static final String USER_PROPERTY = "user"; //$NON-NLS-1$
+	private static final String PV_PROPERTY = "pv"; //$NON-NLS-1$
+	private static final String VALUE_PROPERTY = "value"; //$NON-NLS-1$
+	
 	/**
 	 * The cell modifier for the view's table viewer.
 	 */
@@ -89,14 +95,14 @@ public class ChangelogViewPart extends ViewPart {
 		 */
 		public boolean canModify(Object element, String property) {
 			// only the "value" column is modifiable
-			return "value".equals(property);
+			return VALUE_PROPERTY.equals(property);
 		}
 
 		/**
 		 * {@inheritDoc}
 		 */
 		public Object getValue(Object element, String property) {
-			if ("value".equals(property)) {
+			if (VALUE_PROPERTY.equals(property)) {
 				return ((ChangelogEntry) element).getValue();
 			}
 			return null;
@@ -111,7 +117,7 @@ public class ChangelogViewPart extends ViewPart {
 				element = ((Item) element).getData();
 			}
 			
-			if ("value".equals(property)) {
+			if (VALUE_PROPERTY.equals(property)) {
 				ChangelogEntry entry = (ChangelogEntry) element;
 				String val = (String) value;
 				if (!val.equals(entry.getValue())) {
@@ -136,7 +142,7 @@ public class ChangelogViewPart extends ViewPart {
 		 * Creates the action.
 		 */
 		protected DeleteChangelogEntryAction() {
-			super("Delete Changelog Entry");
+			super(Messages.ChangelogViewPart_ActionText);
 			setEnabled(updateSelection(getStructuredSelection()));
 		}
 		
@@ -151,11 +157,11 @@ public class ChangelogViewPart extends ViewPart {
 			}
 			final String pvName = getSelectedPvName();
 
-			Job job = new RemoteMethodCallJob("Delete Changelog Entries") {
+			Job job = new RemoteMethodCallJob(Messages.ChangelogViewPart_DeletionJob) {
 				@Override
 				protected IStatus runWithRmiRegistry(Registry reg) {
 					try {
-						Remote service = reg.lookup("SaveValue.changelog");
+						Remote service = reg.lookup("SaveValue.changelog"); //$NON-NLS-1$
 						if (service instanceof ChangelogDeletionService) {
 							ChangelogDeletionService deletionService =
 								(ChangelogDeletionService) service;
@@ -168,24 +174,22 @@ public class ChangelogViewPart extends ViewPart {
 									}
 								});
 							} catch (SaveValueServiceException e) {
-								_log.error(this, "Server reported an error.", e);
-								showErrorDialog("The entries could not be " +
-										"deleted from the changelog.");
+								_log.error(this, "Server reported an error.", e); //$NON-NLS-1$
+								showErrorDialog(Messages.ChangelogViewPart_DeletionServiceError);
 							} catch (RemoteException e) {
-								_log.error(this, "Communication error.", e);
-								showErrorDialog("The call to the remote service failed.");
+								_log.error(this, "Communication error.", e); //$NON-NLS-1$
+								showErrorDialog(Messages.ChangelogViewPart_RemoteCallFailed);
 							}
 						} else {
-							showErrorDialog("The server does not support the " +
-									"deletion of entries.");
+							showErrorDialog(Messages.ChangelogViewPart_DeletionNotSupported);
 						}
 					} catch (RemoteException e) {
-						_log.error(this, "Could not connect to RMI registry", e);
+						_log.error(this, "Could not connect to RMI registry", e); //$NON-NLS-1$
 						showErrorDialog(
 								Messages.ChangelogViewPart_ERRMSG_RMI_REGISTRY +
 								e.getMessage());
 					} catch (NotBoundException e) {
-						_log.error(this, "Changelog Service not bound in RMI registry", e);
+						_log.error(this, "Changelog Service not bound in RMI registry", e); //$NON-NLS-1$
 						showErrorDialog(
 								Messages.ChangelogViewPart_ERRMSG_SERVICE_NOT_AVAILABLE);
 					}
@@ -250,7 +254,13 @@ public class ChangelogViewPart extends ViewPart {
 	 * modifiers.
 	 */
 	static final String[] COLUMN_PROPERTIES =
-		new String[] { "pv", "value", "user", "host", "modified" };
+		new String[] {
+			PV_PROPERTY,
+			VALUE_PROPERTY,
+			USER_PROPERTY,
+			HOST_PROPERTY,
+			MODIFIED_PROPERTY
+		};
 
 	/**
 	 * The combo with the IOC names.
@@ -318,7 +328,7 @@ public class ChangelogViewPart extends ViewPart {
 					}
 				});
 				monitor.done();
-				return new Status(IStatus.OK, Activator.PLUGIN_ID, "");
+				return new Status(IStatus.OK, Activator.PLUGIN_ID, ""); //$NON-NLS-1$
 			}
 		};
 		progressService.schedule(job, 0, true);
@@ -329,7 +339,7 @@ public class ChangelogViewPart extends ViewPart {
 	 * Creates the context menu for the table.
 	 */
 	private void createContextMenu() {
-		MenuManager menuManager = new MenuManager("#PopupMenu");
+		MenuManager menuManager = new MenuManager("#PopupMenu"); //$NON-NLS-1$
 		
 		BaseSelectionListenerAction delete = new DeleteChangelogEntryAction();
 		_table.addSelectionChangedListener(delete);
@@ -353,7 +363,7 @@ public class ChangelogViewPart extends ViewPart {
 			return;
 		}
 		// The RMI request is run in its own thread, not in the UI thread.
-		Job job = new RemoteMethodCallJob("Save Value Changelog Request") {
+		Job job = new RemoteMethodCallJob(Messages.ChangelogViewPart_ChangelogRequestJob) {
 			@Override
 			protected IStatus runWithRmiRegistry(Registry registry) {
 				try {
@@ -389,7 +399,7 @@ public class ChangelogViewPart extends ViewPart {
 							Messages.ChangelogViewPart_ERRMSG_SERVICE_NOT_AVAILABLE +
 							e.getMessage());
 				}
-				return new Status(IStatus.OK, Activator.PLUGIN_ID, "");
+				return new Status(IStatus.OK, Activator.PLUGIN_ID, ""); //$NON-NLS-1$
 			}
 		};
 		
