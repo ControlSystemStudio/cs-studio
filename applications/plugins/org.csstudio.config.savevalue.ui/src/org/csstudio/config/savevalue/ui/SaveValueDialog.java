@@ -35,10 +35,13 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.platform.security.User;
 import org.csstudio.utility.ldap.reader.IocFinder;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -106,7 +109,7 @@ public class SaveValueDialog extends Dialog {
 	/**
 	 * The name of the IOC.
 	 */
-	private String _iocName;
+	private volatile String _iocName;
 
 	/**
 	 * The label displaying the overall result.
@@ -122,6 +125,8 @@ public class SaveValueDialog extends Dialog {
 	 * The services.
 	 */
 	private SaveValueServiceDescription[] _services;
+
+	private Job _findIocJob;
 	
 	/**
 	 * Creates a new Save Value Dialog.
@@ -179,9 +184,9 @@ public class SaveValueDialog extends Dialog {
 	 */
 	@Override
 	protected final Control createDialogArea(final Composite parent) {
-		Composite stackParent = new Composite(parent, SWT.NONE);
+		final Composite stackParent = new Composite(parent, SWT.NONE);
 		stackParent.setLayoutData(new GridData(GridData.FILL_BOTH));
-		StackLayout stackLayout = new StackLayout();
+		final StackLayout stackLayout = new StackLayout();
 		stackParent.setLayout(stackLayout);
 		
 		Composite waitComposite = new Composite(stackParent, SWT.NONE);
@@ -196,50 +201,117 @@ public class SaveValueDialog extends Dialog {
 		Label waitLabel = new Label(waitComposite, SWT.NONE);
 		waitLabel.setText("Searching IOC directory, please wait.");
 		
-		ProgressBar progressBar = new ProgressBar(waitComposite, SWT.INDETERMINATE);
+		final ProgressBar progressBar = new ProgressBar(waitComposite, SWT.INDETERMINATE);
 		GridData layoutData = new GridData(SWT.BEGINNING, SWT.BEGINNING, false, true);
 		layoutData.widthHint = 200;
 		progressBar.setLayoutData(layoutData);
 		
-		Composite composite = new Composite(stackParent, SWT.NONE);
+		final Composite saveValueComposite = new Composite(stackParent, SWT.NONE);
 		GridLayout layout = new GridLayout(2, false);
 		layout.marginHeight = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
 		layout.marginWidth = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
 		layout.verticalSpacing = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
 		layout.horizontalSpacing = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
-		composite.setLayout(layout);
-		composite.setLayoutData(new GridData(GridData.FILL_BOTH));
-		applyDialogFont(composite);
+		saveValueComposite.setLayout(layout);
+		saveValueComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
+		applyDialogFont(saveValueComposite);
 		
-		stackLayout.topControl = composite; //waitComposite; // TODO
+		stackLayout.topControl = waitComposite;
 		stackParent.layout();
 		
+		_findIocJob = new Job("Searching IOC directory") {
+			@Override
+			protected IStatus run(IProgressMonitor monitor) {
+				monitor.beginTask("Searching IOC directory", IProgressMonitor.UNKNOWN);
+				_log.debug(this, "Trying to find IOC for process variable: " + _pv); //$NON-NLS-1$
+				_iocName = IocFinder.getIoc(_pv);
+				monitor.done();
+				if (_iocName != null) {
+					_log.debug(this, "IOC found: " + _iocName); //$NON-NLS-1$
+					return Status.OK_STATUS;
+				} else {
+					if (monitor.isCanceled()) {
+						_log.debug(this, "Search canceled by the user."); //$NON-NLS-1$
+						return Status.CANCEL_STATUS;
+					} else {
+						_log.error(this, "No IOC was found for PV: " + _pv); //$NON-NLS-1$
+						// Note: we return OK because if an error status is
+						// returned, Eclipse tries to display its own error
+						// dialog which immediately disappears when the Save
+						// Value dialog is closed. By returning OK_STATUS, we
+						// can display our own error dialog.
+						return Status.OK_STATUS;
+					}
+				}
+			}
+			
+			@Override
+			protected void canceling() {
+				Thread runner = getThread();
+				if (runner != null) {
+					runner.interrupt();
+				}
+			}
+		};
+		_findIocJob.addJobChangeListener(new JobChangeAdapter() {
+			@Override
+			public void done(final IJobChangeEvent event) {
+				Display.getDefault().asyncExec(new Runnable() {
+					public void run() {
+						_log.debug(this, "Searching IOC directory: job finished");
+						if (_iocName != null) {
+							_ioc.setText(_iocName);
+							stackLayout.topControl = saveValueComposite;
+							stackParent.layout();
+							getButton(IDialogConstants.OK_ID).setEnabled(true);
+						} else if (event.getResult().isOK()) {
+							// Search completed, but IOC was not found
+							stackParent.setVisible(false);
+							MessageDialog.openError(null, Messages.SaveValueDialog_DIALOG_TITLE,
+									NLS.bind(Messages.SaveValueDialog_ERRMSG_IOC_NOT_FOUND, _pv));
+							SaveValueDialog.this.close();
+						} else {
+							// User clicked Cancel before the IOC was found
+							SaveValueDialog.this.close();
+						}
+						
+						// Set job to null. This changes the functionality of
+						// the Cancel button from canceling the find IOC job to
+						// canceling the dialog. Note: this assignment is in the
+						// UI thread to avoid race conditions.
+						_findIocJob = null;
+					}
+				});
+			};
+		});
+		_findIocJob.setSystem(true);
+		_findIocJob.schedule();
+		
 		// PV Name
-		Label label = new Label(composite, SWT.NONE);
+		Label label = new Label(saveValueComposite, SWT.NONE);
 		label.setText(Messages.SaveValueDialog_PV_FIELD_LABEL);
-		_processVariable = new Text(composite, SWT.BORDER | SWT.READ_ONLY);
+		_processVariable = new Text(saveValueComposite, SWT.BORDER | SWT.READ_ONLY);
 		_processVariable.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 		_processVariable.setText(_pv);
 		
 		// IOC Name
-		label = new Label(composite, SWT.NONE);
+		label = new Label(saveValueComposite, SWT.NONE);
 		label.setText(Messages.SaveValueDialog_IOC_FIELD_LABEL);
-		_ioc = new Text(composite, SWT.BORDER | SWT.READ_ONLY);
+		_ioc = new Text(saveValueComposite, SWT.BORDER | SWT.READ_ONLY);
 		_ioc.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
-		_ioc.setText(_iocName);
 		
 		// value
-		label = new Label(composite, SWT.NONE);
+		label = new Label(saveValueComposite, SWT.NONE);
 		label.setText(Messages.SaveValueDialog_VALUE_FIELD_LABEL);
-		_valueTextField = new Text(composite, SWT.BORDER | SWT.READ_ONLY);
+		_valueTextField = new Text(saveValueComposite, SWT.BORDER | SWT.READ_ONLY);
 		_valueTextField.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 		_valueTextField.setText(_value);
 		
-		Label separator = new Label(composite, SWT.HORIZONTAL | SWT.SEPARATOR);
+		Label separator = new Label(saveValueComposite, SWT.HORIZONTAL | SWT.SEPARATOR);
 		separator.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false, 2, 1));
 		
 		// results table
-		_resultsTable = new Table(composite, SWT.BORDER);
+		_resultsTable = new Table(saveValueComposite, SWT.BORDER);
 		GridData tableLayout = new GridData(SWT.FILL, SWT.BEGINNING, true, false, 2, 1);
 		tableLayout.heightHint = 70;
 		_resultsTable.setLayoutData(tableLayout);
@@ -258,18 +330,18 @@ public class SaveValueDialog extends Dialog {
 		}
 		
 		// overall result
-		_resultImage = new Label(composite, SWT.NONE);
+		_resultImage = new Label(saveValueComposite, SWT.NONE);
 		_resultImage.setLayoutData(new GridData(SWT.RIGHT, SWT.BEGINNING, false, false));
 		// Assign an image here so that the correct size for the label is
 		// computed. The actual image to be displayed is assigned when the
 		// result is displayed.
 		_resultImage.setImage(getErrorImage());
 		_resultImage.setVisible(false);
-		_resultLabel = new Label(composite, SWT.NONE);
+		_resultLabel = new Label(saveValueComposite, SWT.NONE);
 		_resultLabel.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 		_resultLabel.setVisible(false);
 
-		return composite;
+		return saveValueComposite;
 	}
 	
 	/**
@@ -279,7 +351,7 @@ public class SaveValueDialog extends Dialog {
 	protected final void createButtonsForButtonBar(final Composite parent) {
 		Button okButton = createButton(parent, IDialogConstants.OK_ID, Messages.SaveValueDialog_SAVE_BUTTON, true);
 		// OK button will be enabled when the IOC for the PV has been found.
-//		okButton.setEnabled(false); // TODO
+		okButton.setEnabled(false);
 		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
 	}
 	
@@ -292,31 +364,9 @@ public class SaveValueDialog extends Dialog {
 			MessageDialog.openError(null, Messages.SaveValueDialog_DIALOG_TITLE, Messages.SaveValueDialog_ERRMSG_NO_REQUIRED_SERVICES);
 			return CANCEL;
 		}
-		if (!findIoc()) { // TODO
-			MessageDialog.openError(null, Messages.SaveValueDialog_DIALOG_TITLE,
-					NLS.bind(Messages.SaveValueDialog_ERRMSG_IOC_NOT_FOUND, _pv));
-			return CANCEL;
-		}
 		return super.open();
 	}
 
-	/**
-	 * Finds the IOC for the PV.
-	 * 
-	 * @return <code>true</code> if the IOC was found, <code>false</code>
-	 *         otherwise.
-	 */
-	private boolean findIoc() {
-		_log.debug(this, "Trying to find IOC for process variable: " + _pv); //$NON-NLS-1$
-		_iocName = IocFinder.getIoc(_pv);
-		if (_iocName == null) {
-			_log.error(this, "No IOC was found for PV: " + _pv); //$NON-NLS-1$
-			return false;
-		}
-		_log.debug(this, "IOC found: " + _iocName); //$NON-NLS-1$
-		return true;
-	}
-	
 	/**
 	 * Checks that at least one service is selected as required in the
 	 * preferences.
@@ -347,6 +397,18 @@ public class SaveValueDialog extends Dialog {
 			} else {
 				cancelPressed();
 			}
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void cancelPressed() {
+		if (_findIocJob != null) {
+			_findIocJob.cancel();
+		} else {
+			super.cancelPressed();
 		}
 	}
 

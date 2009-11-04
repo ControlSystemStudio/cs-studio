@@ -87,11 +87,21 @@ public class SaveValueCommandHandler extends AbstractHandler {
 				return null;
 			}
 		}
-		
+		saveValue(pv, value);
+		return null;
+	}
+
+	/**
+	 * Performs the save value operation.
+	 * 
+	 * @param pv
+	 *            the process variable.
+	 * @param value
+	 *            the value.
+	 */
+	private void saveValue(String pv, String value) {
 		SaveValueDialog dialog = new SaveValueDialog(null, pv, value);
 		dialog.open();
-		
-		return null;
 	}
 
 	/**
