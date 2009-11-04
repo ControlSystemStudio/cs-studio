@@ -2,11 +2,8 @@ package org.csstudio.config.ioconfig.view;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import org.csstudio.config.ioconfig.config.view.FacilityConfigComposite;
 import org.csstudio.config.ioconfig.model.Facility;
 import org.csstudio.config.ioconfig.model.FacilityLight;
 import org.csstudio.config.ioconfig.model.NamedDBClass;
@@ -15,16 +12,11 @@ import org.csstudio.config.ioconfig.model.pbmodel.ChannelStructure;
 import org.csstudio.config.ioconfig.model.pbmodel.Module;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.commands.operations.OperationStatus;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.ui.IViewSite;
-import org.eclipse.ui.PlatformUI;
 
 /**
  * 
@@ -38,7 +30,6 @@ class ProfibusTreeContentProvider implements IStructuredContentProvider, ITreeCo
     /** The Tree Root Node. */
     private IViewSite _site;
     private List<FacilityLight> _facilities;
-    private boolean _run;
 
     public ProfibusTreeContentProvider(IViewSite site) {
         // _site = site;
@@ -99,9 +90,8 @@ class ProfibusTreeContentProvider implements IStructuredContentProvider, ITreeCo
     public Object[] getChildren(final Object parent) {
         if (parent instanceof FacilityLight) {
             final FacilityLight l = (FacilityLight) parent;
-            _run = true;
             try {
-                final Set<Node> children = new HashSet<Node>();
+//                final Set<Node> children = new HashSet<Node>();
 //                Job loadJob = new Job("DBLoader") {
 //
 //                    @Override

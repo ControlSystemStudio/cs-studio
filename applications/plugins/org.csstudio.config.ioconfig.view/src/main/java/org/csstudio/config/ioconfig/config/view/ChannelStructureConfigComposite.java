@@ -24,9 +24,6 @@
  */
 package org.csstudio.config.ioconfig.config.view;
 
-import java.util.Arrays;
-import java.util.Collection;
-
 import org.csstudio.config.ioconfig.model.Node;
 import org.csstudio.config.ioconfig.model.pbmodel.Channel;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelStructure;

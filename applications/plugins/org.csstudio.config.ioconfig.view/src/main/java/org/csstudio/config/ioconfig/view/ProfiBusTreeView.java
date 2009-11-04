@@ -1374,4 +1374,10 @@ public class ProfiBusTreeView extends Composite {
             }
         }
     }
+    
+    public final void addFacility(Node node) {
+        if (node instanceof Facility) {
+            _viewer.setInput(node);
+        }
+    }
 }

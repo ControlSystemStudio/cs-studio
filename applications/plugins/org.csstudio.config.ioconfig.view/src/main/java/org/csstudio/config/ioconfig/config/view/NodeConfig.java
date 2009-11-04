@@ -642,8 +642,10 @@ public abstract class NodeConfig extends Composite {
         setSaveButtonSaved();
         _saveButton.setText("Save");
 
-        if (_new) {
+        if (_new&&!getNode().isRootNode()) {
             getProfiBusTreeView().refresh(getNode().getParent());
+        } else if (_new&&getNode().isRootNode()) {
+            getProfiBusTreeView().addFacility(getNode());
         } else {
             // refresh the View
             getProfiBusTreeView().refresh(getNode());

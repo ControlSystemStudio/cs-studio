@@ -787,7 +787,6 @@ public class SlaveConfigComposite extends NodeConfig {
      */
     public final void store() {
         super.store();
-        boolean update = false;
         // Name
         _slave.setName(getNameWidget().getText());
         getNameWidget().setData(getNameWidget().getText());
@@ -795,9 +794,6 @@ public class SlaveConfigComposite extends NodeConfig {
         // _slave.moveSortIndex((short) getIndexSpinner().getSelection());
         Short stationAddress = (Short) ((StructuredSelection) _indexCombo.getSelection())
                 .getFirstElement();
-        if (stationAddress != _slave.getSortIndex()) {
-            update = true;
-        }
         _slave.setSortIndexNonHibernate(stationAddress);
         _slave.setFdlAddress(stationAddress);
         _indexCombo.getCombo().setData(_indexCombo.getCombo().getSelectionIndex());
