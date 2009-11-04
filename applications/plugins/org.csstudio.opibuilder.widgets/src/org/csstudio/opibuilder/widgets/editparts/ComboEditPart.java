@@ -94,7 +94,7 @@ public final class ComboEditPart extends AbstractPVWidgetEditPart {
 			}
 			
 			//write value to pv if pv name is not empty
-			if(!getWidgetModel().getPVName().trim().isEmpty()){				
+			if(getWidgetModel().getPVName().trim().length() > 0){				
 				if(comboSelectionListener !=null)				
 					combo.removeSelectionListener(comboSelectionListener);
 				comboSelectionListener = new SelectionAdapter(){

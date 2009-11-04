@@ -62,7 +62,7 @@ public class TextInputEditpart extends TextIndicatorEditPart {
 					}else if(value instanceof IStringValue){
 					*/	
 					//}
-					if(getWidgetModel().getPVName().isEmpty())
+					if(getWidgetModel().getPVName().trim().length() == 0)
 						((LabelFigure)figure).setText(text);
 					else
 						setPVValue(AbstractPVWidgetModel.PROP_PVNAME, text);
