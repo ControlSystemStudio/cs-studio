@@ -589,8 +589,15 @@ public class Probe extends ViewPart implements PVListener
 	{
 		Command saveValueCommand = getSaveValueCommand();
 		IParameter pvParamter = saveValueCommand.getParameter(PV_PARAMETER_ID);
+		String pvname = pv.getName();
+		// The save value command expects a PV name without a prefix. If the PV
+		// name has a prefix, remove it.
+		int prefixPosition = pvname.indexOf("://"); //$NON-NLS-1$
+		if (prefixPosition != -1) {
+			pvname = pvname.substring(prefixPosition + 3);
+		}
 		Parameterization pvParameterization = new Parameterization(
-				pvParamter, pv.getName());
+				pvParamter, pvname);
 		IParameter valueParameter = saveValueCommand.getParameter(VALUE_PARAMETER_ID);
 		Parameterization valueParameterization = new Parameterization(
 				valueParameter, value.getValueString());
