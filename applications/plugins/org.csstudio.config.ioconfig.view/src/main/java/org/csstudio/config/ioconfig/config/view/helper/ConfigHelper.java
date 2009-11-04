@@ -31,6 +31,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.config.ioconfig.config.view.NodeConfig;
@@ -111,7 +112,7 @@ public final class ConfigHelper {
             if (e.keyCode == SWT.CR || e.keyCode == SWT.KEYPAD_CR) {
                 _modifyListener.doIt();
                 spinner.setSelection(spinner.getSelection());
-//                _modifyListener.modifyText(new ModifyEvent(new Event()));
+                // _modifyListener.modifyText(new ModifyEvent(new Event()));
             } else if (e.keyCode == SWT.ESC) {
                 spinner.setSelection(_modifyListener.getLastvalue());
                 _modifyListener.doIt();
@@ -211,11 +212,11 @@ public final class ConfigHelper {
             final int size, Composite viewer, int minWidthSize, int minHeight) {
         final TabItem item = new TabItem(tabFolder, SWT.NONE);
         item.setText(head);
-        
+
         GridLayoutFactory fillDefaults = GridLayoutFactory.fillDefaults();
-        ScrolledComposite scrolledComposite = new ScrolledComposite(tabFolder,
-                SWT.H_SCROLL | SWT.V_SCROLL);
-        scrolledComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true,1,1));
+        ScrolledComposite scrolledComposite = new ScrolledComposite(tabFolder, SWT.H_SCROLL
+                | SWT.V_SCROLL);
+        scrolledComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
         scrolledComposite.setExpandVertical(true);
         scrolledComposite.setExpandHorizontal(true);
         fillDefaults.numColumns(1);
@@ -223,11 +224,11 @@ public final class ConfigHelper {
 
         Composite comp = new Composite(scrolledComposite, SWT.NONE);
         comp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-//        _mainComposite.setLayout(fillDefaults.create());
-        
+        // _mainComposite.setLayout(fillDefaults.create());
+
         scrolledComposite.setContent(comp);
-        scrolledComposite.setMinSize(minWidthSize,minHeight);
-        
+        scrolledComposite.setMinSize(minWidthSize, minHeight);
+
         comp.setLayout(new GridLayout(size, true));
         item.setControl(scrolledComposite);
 
@@ -272,7 +273,7 @@ public final class ConfigHelper {
     public static Composite makeGSDFileChooser(final TabFolder tabFolder, final String head,
             final NodeConfig node, final Enum<GSDFileTyp> fileTyp) {
         int columnNum = 7;
-        final Composite comp = ConfigHelper.getNewTabItem(head, tabFolder, columnNum,520,200);
+        final Composite comp = ConfigHelper.getNewTabItem(head, tabFolder, columnNum, 520, 200);
 
         Group gSelected, gAvailable;
         final Text tSelected;
@@ -348,7 +349,11 @@ public final class ConfigHelper {
         GridDataFactory.fillDefaults().grab(true, true).applyTo(tableViewer.getTable());
 
         _gsdFiles = Repository.load(GSDFile.class);
-        tableViewer.setInput(_gsdFiles.toArray(new GSDFile[_gsdFiles.size()]));
+        if(_gsdFiles == null) {
+            _gsdFiles = new ArrayList<GSDFile>(); 
+        }else if (!_gsdFiles.isEmpty()) {
+            tableViewer.setInput(_gsdFiles.toArray(new GSDFile[_gsdFiles.size()]));
+        }
 
         new Label(comp, SWT.NONE);
         fileSelect = new Button(comp, SWT.PUSH);
@@ -365,7 +370,8 @@ public final class ConfigHelper {
             }
 
             private void doFileAdd() {
-                _gsdFile = (GSDFile) ((StructuredSelection)tableViewer.getSelection()).getFirstElement();
+                _gsdFile = (GSDFile) ((StructuredSelection) tableViewer.getSelection())
+                        .getFirstElement();
                 if (node.fill(_gsdFile)) {
                     tSelected.setText(_gsdFile.getName());
                     node.setSavebuttonEnabled("GSDFile", true);
@@ -390,7 +396,8 @@ public final class ConfigHelper {
 
             private void doFileAdd() {
                 FileDialog fd = new FileDialog(comp.getShell(), SWT.MULTI);
-                fd.setFilterExtensions(new String[] { "*.gsd" });
+                fd.setFilterExtensions(new String[] { "*.gsd;*.gsg","*.gs?" });
+                fd.setFilterNames(new String[] { "GS(GER)","GS(ALL)" });
                 fd.setFilterPath("Z:\\Boeckmann\\GSD_Dateien\\");
                 if (fd.open() != null) {
                     File path = new File(fd.getFilterPath());
@@ -412,10 +419,12 @@ public final class ConfigHelper {
 
             private boolean fileNotContain(String fileName) {
                 boolean add = true;
-                for (GSDFile file : _gsdFiles) {
-                    add = !file.getName().equals(fileName);
-                    if (!add) {
-                        break;
+                if (_gsdFiles != null && !_gsdFiles.isEmpty()) {
+                    for (GSDFile file : _gsdFiles) {
+                        add = !file.getName().equals(fileName);
+                        if (!add) {
+                            break;
+                        }
                     }
                 }
                 return add;

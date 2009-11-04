@@ -34,7 +34,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import org.csstudio.config.ioconfig.config.view.ChannelConfigComposite;
 import org.csstudio.config.ioconfig.config.view.ChannelStructureConfigComposite;
@@ -145,19 +144,22 @@ public class ProfiBusTreeView extends Composite {
      * The ID of the View.
      */
     public static final String ID = ProfiBusTreeView.class.getName();
-    /**
-     * The ProfiBus Tree View.
-     */
-    private TreeViewer _viewer;
-
-    private DrillDownAdapter _drillDownAdapter;
-
     private IViewSite _site;
-
     /**
      * The Parent Composite.
      */
     private Composite _parent;
+    /**
+     * The ProfiBus Tree View.
+     */
+    private TreeViewer _viewer;
+    /**
+     * The parent Composite for the Node Config Composite.
+     */
+    private Composite _parentConfigComposite;
+
+
+    private DrillDownAdapter _drillDownAdapter;
 
     /**
      * the Selected Node.
@@ -168,6 +170,11 @@ public class ProfiBusTreeView extends Composite {
      * A Copy from a Node.
      */
     private List<Node> _copiedNodesReferenceList;
+
+    /**
+     * Select _copiedNodesReferenceList Nodes a Copied or moved
+     */
+    private boolean _move;
 
     /**
      * This action open an Empty Node. Type of new node dependent on Parent.
@@ -181,6 +188,10 @@ public class ProfiBusTreeView extends Composite {
      * This action open a new level one empty Node. The type of this node is {@link Facility}.
      */
     private IAction _newFacilityAction;
+    /**
+     * This Action open a new empty Node. (No Facility!)
+     */
+    private Action _newNodeAction;
     /**
      * This action open an selected Node. Type of new node dependent on Parent.
      */
@@ -198,6 +209,10 @@ public class ProfiBusTreeView extends Composite {
      */
     private IAction _copyNodeAction;
     /**
+     * The action to Cut a Node.
+     */
+    private Action _cutNodeAction;
+    /**
      * The action to paste the copied Node.
      */
     private IAction _pasteNodeAction;
@@ -205,15 +220,30 @@ public class ProfiBusTreeView extends Composite {
      * The Action to refresh the TreeView.
      */
     private IAction _refreshAction;
+    /**
+     * The Action to open the Search-Dialog.
+     */
     private IAction _searchAction;
+    /**
+     * The Action to reassemble the EPICS Address String.
+     */
     private IAction _assembleEpicsAddressStringAction;
-
+    /**
+     * The actual open Node Config Composite.  
+     */
     private NodeConfig _nodeConfigComposite;
+    /**
+     * The Icon for the paste Action; 
+     */
     private ImageDescriptor _paste;
+    /**
+     * The Icon for the disabled paste Action; 
+     */
     private ImageDescriptor _pasteDis;
-    private Composite _editComposite;
+    /**
+     * A List of all loaded {@link Facility}'s
+     */
     private List<FacilityLight> _load;
-    private Action _newNodeAction;
     private static final Image ICON_WARNING = PlatformUI.getWorkbench().getDisplay()
             .getSystemImage(SWT.ICON_WARNING);
 
@@ -224,7 +254,6 @@ public class ProfiBusTreeView extends Composite {
      * @version $Revision$
      * @since 20.06.2007
      */
-    // class ViewLabelProvider implements IViewerLabelProvider, ILabelProvider {
     class ViewLabelProvider extends ColumnLabelProvider {
 
         public Image getImage(final Object obj) {
@@ -237,11 +266,6 @@ public class ProfiBusTreeView extends Composite {
             return null;
         }
 
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.eclipse.jface.viewers.ColumnLabelProvider#getBackground(java.lang.Object)
-         */
         @Override
         public Color getBackground(Object element) {
             if (haveProgrammableModule(element)) {
@@ -250,11 +274,6 @@ public class ProfiBusTreeView extends Composite {
             return null;
         }
 
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.eclipse.jface.viewers.ColumnLabelProvider#getFont(java.lang.Object)
-         */
         @Override
         public Font getFont(Object element) {
             if (haveProgrammableModule(element)) {
@@ -497,16 +516,8 @@ public class ProfiBusTreeView extends Composite {
 
     private void contributeToActionBars() {
         IActionBars bars = _site.getActionBars();
-        fillLocalPullDown(bars.getMenuManager());
+        // fillLocalPullDown(bars.getMenuManager());
         fillLocalToolBar(bars.getToolBarManager());
-    }
-
-    private void fillLocalPullDown(final IMenuManager manager) {
-        manager.add(_newChildrenNodeAction);
-        manager.add(new Separator());
-        manager.add(_editNodeAction);
-        manager.add(_copyNodeAction);
-        manager.add(new Separator());
     }
 
     private void fillContextMenu(final IMenuManager manager) {
@@ -532,6 +543,8 @@ public class ProfiBusTreeView extends Composite {
             _newNodeAction.setText("Add new " + Module.class.getSimpleName());
             manager.add(_newNodeAction);
             manager.add(_copyNodeAction);
+            manager.add(_cutNodeAction);
+
             if (_copiedNodesReferenceList != null && _copiedNodesReferenceList.size() > 0
                     && (Module.class.isInstance(_copiedNodesReferenceList.get(0)))) {
                 _pasteNodeAction.setEnabled(true);
@@ -585,6 +598,7 @@ public class ProfiBusTreeView extends Composite {
         }
         manager.add(_newChildrenNodeAction);
         manager.add(_copyNodeAction);
+        manager.add(_cutNodeAction);
         manager.add(_pasteNodeAction);
         manager.add(_deletNodeAction);
     }
@@ -613,15 +627,31 @@ public class ProfiBusTreeView extends Composite {
         makeAssembleEpicsAddressStringAction();
 
         _copyNodeAction = new Action() {
+
             @SuppressWarnings("unchecked")
             public void run() {
                 _copiedNodesReferenceList = _selectedNode.toList();
+                _move = false;
             }
         };
         _copyNodeAction.setText("&Copy");
         _copyNodeAction.setToolTipText("Copy this Node");
         _copyNodeAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
                 .getImageDescriptor(ISharedImages.IMG_TOOL_COPY));
+
+        _cutNodeAction = new Action() {
+
+            @SuppressWarnings("unchecked")
+            public void run() {
+                _copiedNodesReferenceList = _selectedNode.toList();
+                _move = true;
+            }
+        };
+        _cutNodeAction.setText("Cut");
+        _cutNodeAction.setAccelerator(SWT.CTRL | 'x');
+        _cutNodeAction.setToolTipText("Cut this Node");
+        _cutNodeAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
+                .getImageDescriptor(ISharedImages.IMG_TOOL_CUT));
 
         makePasteNodeAction();
 
@@ -909,18 +939,54 @@ public class ProfiBusTreeView extends Composite {
                         _viewer.setSelection(new StructuredSelection(facilityLight));
 
                     } else if (selectedNode.getClass().isInstance(node2Copy.getParent())) {
-                        // paste to a Parent
-                        Node copy = node2Copy.copyThisTo(selectedNode);
-                        copy.setDirty(true);
-                        copy.setSortIndexNonHibernate(selectedNode
-                                .getfirstFreeStationAddress(copy.MAX_STATION_ADDRESS));
+                        Node copy = null;
+                        if (_move) {
+                            Node oldParent = node2Copy.getParent();
+                            oldParent.removeChild(node2Copy);
+                            Node node = selectedNode.getChildrenAsMap().get(
+                                    node2Copy.getSortIndex());
+                            if (node != null) {
+                                short freeStationAddress = selectedNode
+                                        .getfirstFreeStationAddress(selectedNode.MAX_STATION_ADDRESS);
+                                node2Copy.setSortIndex(freeStationAddress);
+                            }
+                            selectedNode.addChild(node2Copy);
+                            try {
+                                selectedNode.save();
+                            } catch (PersistenceException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                            }
+                        } else {
+                            // paste to a Parent
+                            copy = node2Copy.copyThisTo(selectedNode);
+                            copy.setDirty(true);
+                            copy.setSortIndexNonHibernate(selectedNode
+                                    .getfirstFreeStationAddress(copy.MAX_STATION_ADDRESS));
+                        }
                         _viewer.refresh();
                         _viewer.setSelection(new StructuredSelection(copy));
                     } else if (selectedNode.getClass().isInstance(node2Copy)) {
-                        // paste to a sibling
-                        short targetIndex = (short) (selectedNode.getSortIndex());
-                        Node nodeCopy = node2Copy.copyThisTo(selectedNode.getParent());
-                        nodeCopy.moveSortIndex(targetIndex);
+                        Node nodeCopy = null;
+                        if (_move) {
+                            Node oldParent = node2Copy.getParent();
+                            oldParent.removeChild(node2Copy);
+                            Node parent = selectedNode.getParent();
+                            node2Copy.setSortIndex(selectedNode.getSortIndex());
+                            parent.addChild(node2Copy);
+                            try {
+                                parent.save();
+                            } catch (PersistenceException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                            }
+                            nodeCopy = node2Copy;
+                        } else {
+                            // paste to a sibling
+                            short targetIndex = (short) (selectedNode.getSortIndex());
+                            nodeCopy = node2Copy.copyThisTo(selectedNode.getParent());
+                            nodeCopy.moveSortIndex(targetIndex);
+                        }
                         refresh();
                         // refresh(nodeCopy.getParent());
                         _viewer.setSelection(new StructuredSelection(nodeCopy));
@@ -947,7 +1013,7 @@ public class ProfiBusTreeView extends Composite {
                             childrens[i].dispose();
                         }
                     }
-                    new FacilityConfigComposite(_editComposite, ProfiBusTreeView.this, null);
+                    new FacilityConfigComposite(_parentConfigComposite, ProfiBusTreeView.this, null);
 
                     int[] test = form.getWeights();
                     if (weights.length != test.length) {
@@ -965,9 +1031,9 @@ public class ProfiBusTreeView extends Composite {
                             childrens[i].dispose();
                         }
                     }
-                    new FacilityConfigComposite(_editComposite, ProfiBusTreeView.this, null);
+                    new FacilityConfigComposite(_parentConfigComposite, ProfiBusTreeView.this, null);
                 }
-                _editComposite.getParent().layout(true);
+                _parentConfigComposite.getParent().layout(true);
             }
         };
         _newFacilityAction.setText("new Facility");
@@ -1008,20 +1074,6 @@ public class ProfiBusTreeView extends Composite {
                 searchDialog.open();
             }
 
-            private NamedDBClass goPath(Node node, List<Integer> rootPath, int i) {
-                if (rootPath.size() > i) {
-                    Integer id = rootPath.get(rootPath.size() - (i + 1));
-                    Set<? extends Node> childrens = node.getChildren();
-                    if (!childrens.isEmpty()) {
-                        for (Node childeren : childrens) {
-                            if (childeren.getId() == id) {
-                                return goPath(childeren, rootPath, i + 1);
-                            }
-                        }
-                    }
-                }
-                return node;
-            }
         };
         _searchAction.setText("Search");
         _searchAction.setToolTipText("Search a Node");
@@ -1098,22 +1150,22 @@ public class ProfiBusTreeView extends Composite {
         setEditComposite();
         Object selectedNode = _selectedNode.getFirstElement();
         if (selectedNode instanceof Facility || selectedNode instanceof FacilityLight) {
-            _nodeConfigComposite = new IocConfigComposite(_editComposite, this, null);
+            _nodeConfigComposite = new IocConfigComposite(_parentConfigComposite, this, null);
         } else if (selectedNode instanceof Ioc) {
-            _nodeConfigComposite = new SubNetConfigComposite(_editComposite, this, null);
+            _nodeConfigComposite = new SubNetConfigComposite(_parentConfigComposite, this, null);
         } else if (selectedNode instanceof ProfibusSubnet) {
-            _nodeConfigComposite = new MasterConfigComposite(_editComposite, this, null);
+            _nodeConfigComposite = new MasterConfigComposite(_parentConfigComposite, this, null);
         } else if (selectedNode instanceof Master) {
-            _nodeConfigComposite = new SlaveConfigComposite(_editComposite, this, null);
+            _nodeConfigComposite = new SlaveConfigComposite(_parentConfigComposite, this, null);
         } else if (selectedNode instanceof Slave) {
-            _nodeConfigComposite = new ModuleConfigComposite(_editComposite, this, null);
+            _nodeConfigComposite = new ModuleConfigComposite(_parentConfigComposite, this, null);
         } else if (selectedNode instanceof Module) {
-            _nodeConfigComposite = new ChannelConfigComposite(_editComposite, this, null);
+            _nodeConfigComposite = new ChannelConfigComposite(_parentConfigComposite, this, null);
         } // Do nothing (have no sub-elements)
         // else if (_selectedNode instanceof Channel) {
         //        
         // }
-        _editComposite.getParent().layout(true);
+        _parentConfigComposite.getParent().layout(true);
     }
 
     private void openNewEmptyNode() {
@@ -1121,24 +1173,24 @@ public class ProfiBusTreeView extends Composite {
         Object selectedNode = _selectedNode.getFirstElement();
         if (selectedNode instanceof Facility) {
             Node node = (Node) selectedNode;
-            _nodeConfigComposite = new FacilityConfigComposite(_editComposite, this, (short) (node
+            _nodeConfigComposite = new FacilityConfigComposite(_parentConfigComposite, this, (short) (node
                     .getSortIndex() + 1));
         } else if (selectedNode instanceof FacilityLight) {
             FacilityLight node = (FacilityLight) selectedNode;
-            _nodeConfigComposite = new FacilityConfigComposite(_editComposite, this, (short) (node
+            _nodeConfigComposite = new FacilityConfigComposite(_parentConfigComposite, this, (short) (node
                     .getSortIndex() + 1));
         } else if (selectedNode instanceof Ioc) {
-            _nodeConfigComposite = new IocConfigComposite(_editComposite, this, null);
+            _nodeConfigComposite = new IocConfigComposite(_parentConfigComposite, this, null);
         } else if (selectedNode instanceof ProfibusSubnet) {
-            _nodeConfigComposite = new SubNetConfigComposite(_editComposite, this, null);
+            _nodeConfigComposite = new SubNetConfigComposite(_parentConfigComposite, this, null);
         } else if (selectedNode instanceof Master) {
-            _nodeConfigComposite = new MasterConfigComposite(_editComposite, this, null);
+            _nodeConfigComposite = new MasterConfigComposite(_parentConfigComposite, this, null);
         } else if (selectedNode instanceof Slave) {
-            _nodeConfigComposite = new SlaveConfigComposite(_editComposite, this, null);
+            _nodeConfigComposite = new SlaveConfigComposite(_parentConfigComposite, this, null);
         } else if (selectedNode instanceof Module) {
-            _nodeConfigComposite = new ModuleConfigComposite(_editComposite, this, null);
+            _nodeConfigComposite = new ModuleConfigComposite(_parentConfigComposite, this, null);
         }
-        _editComposite.getParent().layout(true);
+        _parentConfigComposite.getParent().layout(true);
     }
 
     /**
@@ -1152,32 +1204,33 @@ public class ProfiBusTreeView extends Composite {
         if (selectedNode instanceof FacilityLight) {
             final FacilityLight f = (FacilityLight) selectedNode;
             try {
-                
+
                 Job loadJob = new Job("DBLoader") {
 
                     @Override
                     protected IStatus run(IProgressMonitor monitor) {
                         monitor.beginTask("DBLoaderMonitor", IProgressMonitor.UNKNOWN);
-                        monitor.setTaskName("Load "+f.getName());
+                        monitor.setTaskName("Load " + f.getName());
                         // das wird beim erstenmal eine zeitlang dauern...
                         f.getFacility();
                         PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
-                            
+
                             @Override
                             public void run() {
-                                _nodeConfigComposite = new FacilityConfigComposite(_editComposite, ProfiBusTreeView.this, f.getFacility()); // XXX
+                                _nodeConfigComposite = new FacilityConfigComposite(_parentConfigComposite,
+                                        ProfiBusTreeView.this, f.getFacility()); // XXX
                                 _editNodeAction.setEnabled(true);
-                                _editComposite.getParent().layout(false);
+                                _parentConfigComposite.getParent().layout(false);
                             }
                         });
                         monitor.done();
                         return Status.OK_STATUS;
                     }
-                    
+
                 };
                 loadJob.setUser(true);
                 loadJob.schedule();
-                
+
             } catch (RuntimeException e) {
                 ProfibusHelper.openErrorDialog(_site.getShell(), "Data Base Error",
                         "Device Data Base (DDB) Error\n" + "Can't load the %1s '%2s' (ID: %3s)", f,
@@ -1187,28 +1240,28 @@ public class ProfiBusTreeView extends Composite {
             }
             // bar.dispose();
         } else if (selectedNode instanceof Facility) {
-            _nodeConfigComposite = new FacilityConfigComposite(_editComposite, this,
+            _nodeConfigComposite = new FacilityConfigComposite(_parentConfigComposite, this,
                     ((Facility) selectedNode));
         } else if (selectedNode instanceof Ioc) {
-            _nodeConfigComposite = new IocConfigComposite(_editComposite, this,
+            _nodeConfigComposite = new IocConfigComposite(_parentConfigComposite, this,
                     ((Ioc) selectedNode));
         } else if (selectedNode instanceof ProfibusSubnet) {
-            _nodeConfigComposite = new SubNetConfigComposite(_editComposite, this,
+            _nodeConfigComposite = new SubNetConfigComposite(_parentConfigComposite, this,
                     ((ProfibusSubnet) selectedNode));
         } else if (selectedNode instanceof Master) {
-            _nodeConfigComposite = new MasterConfigComposite(_editComposite, this,
+            _nodeConfigComposite = new MasterConfigComposite(_parentConfigComposite, this,
                     ((Master) selectedNode));
         } else if (selectedNode instanceof Slave) {
-            _nodeConfigComposite = new SlaveConfigComposite(_editComposite, this,
+            _nodeConfigComposite = new SlaveConfigComposite(_parentConfigComposite, this,
                     ((Slave) selectedNode));
         } else if (selectedNode instanceof Module) {
-            _nodeConfigComposite = new ModuleConfigComposite(_editComposite, this,
+            _nodeConfigComposite = new ModuleConfigComposite(_parentConfigComposite, this,
                     ((Module) selectedNode));
         } else if (selectedNode instanceof ChannelStructure) {
-            _nodeConfigComposite = new ChannelStructureConfigComposite(_editComposite, this,
+            _nodeConfigComposite = new ChannelStructureConfigComposite(_parentConfigComposite, this,
                     ((ChannelStructure) selectedNode));
         } else if (selectedNode instanceof Channel) {
-            _nodeConfigComposite = new ChannelConfigComposite(_editComposite, this,
+            _nodeConfigComposite = new ChannelConfigComposite(_parentConfigComposite, this,
                     ((Channel) selectedNode));
         } else {
             Node node = (Node) selectedNode;
@@ -1216,18 +1269,18 @@ public class ProfiBusTreeView extends Composite {
             if (node != null) {
                 nodeText = node.toString();
             }
-            _nodeConfigComposite = new InfoConfigComposte(_editComposite, this, SWT.NONE, node,
+            _nodeConfigComposite = new InfoConfigComposte(_parentConfigComposite, this, SWT.NONE, node,
                     nodeText);
         }
-        if(!(selectedNode instanceof FacilityLight)) {
+        if (!(selectedNode instanceof FacilityLight)) {
             _editNodeAction.setEnabled(true);
-            _editComposite.getParent().layout(false);
+            _parentConfigComposite.getParent().layout(false);
         }
     }
 
     private void setEditComposite() {
-        if (_editComposite != null && !_editComposite.isDisposed()) {
-            Control[] childrens = _editComposite.getChildren();
+        if (_parentConfigComposite != null && !_parentConfigComposite.isDisposed()) {
+            Control[] childrens = _parentConfigComposite.getChildren();
             for (int i = 0; i < childrens.length; i++) {
                 if (childrens[i] instanceof NodeConfig && _selectedNode != null) {
                     NodeConfig nc = (NodeConfig) childrens[i];
@@ -1267,10 +1320,10 @@ public class ProfiBusTreeView extends Composite {
                     }
                 }
             }
-            _editComposite.dispose();
+            _parentConfigComposite.dispose();
         }
 
-        _editComposite = null;
+        _parentConfigComposite = null;
         IWorkbench workbench = PlatformUI.getWorkbench();
         IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
         IWorkbenchPage page = window.getActivePage();
@@ -1278,9 +1331,9 @@ public class ProfiBusTreeView extends Composite {
         try {
             showView = page.showView(NodeConfigView.ID);
             if (showView instanceof NodeConfigView) {
-                _editComposite = new Composite(((NodeConfigView) showView).getComposite(), SWT.None);
+                _parentConfigComposite = new Composite(((NodeConfigView) showView).getComposite(), SWT.None);
                 FillLayout layout = new FillLayout();
-                _editComposite.setLayout(layout);
+                _parentConfigComposite.setLayout(layout);
             }
         } catch (PartInitException e) {
             e.printStackTrace();
