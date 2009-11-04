@@ -176,6 +176,7 @@ public class ComboFigure extends Figure {
 	public void dispose(){
 		if(updateFlag && updateManagerListener != null)
 			getUpdateManager().removeUpdateListener(updateManagerListener);
+		combo.setMenu(null);
 		combo.dispose();		
 	}
 	
