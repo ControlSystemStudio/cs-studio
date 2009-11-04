@@ -1,5 +1,6 @@
 package org.csstudio.trends.databrowser.plotpart;
 
+import org.csstudio.apputil.ui.dialog.ErrorDialog;
 import org.csstudio.archive.ArchiveServer;
 import org.csstudio.archive.cache.ArchiveCache;
 import org.csstudio.archive.crawl.BatchIterator;
@@ -14,7 +15,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Shell;
 
@@ -150,10 +150,11 @@ class ArchiveFetchJob extends Job implements ISchedulingRule
                     {
                         public void run()
                         {
-                            MessageDialog.openError(shell, Messages.Error,
-                                NLS.bind(Messages.ErrorFmt, url, msg));
+                            ErrorDialog.open(shell, Messages.Error,
+                                NLS.bind(Messages.ErrorFmt, new String[] { item.getName(), url, msg }));
                         }
                     });
+                    break;
                 }
             }
             if (!cancelled)

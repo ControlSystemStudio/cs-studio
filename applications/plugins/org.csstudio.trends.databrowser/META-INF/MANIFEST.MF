@@ -15,7 +15,7 @@ Require-Bundle: org.junit4,
  org.csstudio.platform.ui,
  org.csstudio.utility.pv,
  org.csstudio.apputil,
- org.csstudio.apputil.ui,
+ org.csstudio.apputil.ui;bundle-version="1.1.2",
  org.csstudio.archive;bundle-version="1.0.4",
  org.csstudio.swt.chart,
  org.csstudio.logbook

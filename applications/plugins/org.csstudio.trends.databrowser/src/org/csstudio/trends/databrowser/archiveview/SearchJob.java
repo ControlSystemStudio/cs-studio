@@ -1,5 +1,6 @@
 package org.csstudio.trends.databrowser.archiveview;
 
+import org.csstudio.apputil.ui.dialog.ErrorDialog;
 import org.csstudio.archive.ArchiveServer;
 import org.csstudio.archive.NameInfo;
 import org.csstudio.trends.databrowser.Plugin;
@@ -7,7 +8,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
 
@@ -90,7 +90,7 @@ class SearchJob extends Job
                 {
                     final String error =
                         NLS.bind(Messages.ErrorFmt, ex.getMessage());
-                    MessageDialog.openError(archives_view.getSite().getShell(),
+                    ErrorDialog.open(archives_view.getSite().getShell(),
                         Messages.SeachJobTaskName, error);
                 }
             });
