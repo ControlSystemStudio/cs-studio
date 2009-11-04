@@ -448,7 +448,6 @@ public class ProfiBusTreeView extends Composite {
 
     private void contributeToActionBars() {
         IActionBars bars = _site.getActionBars();
-        // fillLocalPullDown(bars.getMenuManager());
         fillLocalToolBar(bars.getToolBarManager());
     }
 
@@ -666,62 +665,19 @@ public class ProfiBusTreeView extends Composite {
     }
 
     private void makeActions() {
-
         makeNewChildrenNodeAction();
-
         makeNewNodeAction();
-
         makeEditNodeAction();
-
         makeNewFacilityAction();
-
         makeSearchAction();
-
         makeAssembleEpicsAddressStringAction();
-
-        _copyNodeAction = new Action() {
-
-            @SuppressWarnings("unchecked")
-            public void run() {
-                _copiedNodesReferenceList = _selectedNode.toList();
-                _move = false;
-            }
-        };
-        _copyNodeAction.setText("&Copy");
-        _copyNodeAction.setToolTipText("Copy this Node");
-        _copyNodeAction.setImageDescriptor(getSharedImageDescriptor(ISharedImages.IMG_TOOL_COPY));
-
-        _cutNodeAction = new Action() {
-
-            @SuppressWarnings("unchecked")
-            public void run() {
-                _copiedNodesReferenceList = _selectedNode.toList();
-                _move = true;
-            }
-        };
-        _cutNodeAction.setText("Cut");
-        _cutNodeAction.setAccelerator(SWT.CTRL | 'x');
-        _cutNodeAction.setToolTipText("Cut this Node");
-        _cutNodeAction.setImageDescriptor(getSharedImageDescriptor(ISharedImages.IMG_TOOL_CUT));
-
+        makeCopyNodeAction();
+        makeCutNodeAction();
         makePasteNodeAction();
-
         makeDeletNodeAction();
-
         makeCreateNewXMLConfigFile();
-
         makeTreeNodeRenameAction();
-
-        _refreshAction = new Action() {
-            public void run() {
-                refresh();
-            }
-        };
-
-        _refreshAction.setText("Refresh");
-        _refreshAction.setToolTipText("Refresh the Tree");
-        _refreshAction.setImageDescriptor(CustomMediaFactory.getInstance()
-                .getImageDescriptorFromPlugin(ActivatorUI.PLUGIN_ID, "icons/refresh.gif"));
+        makeRefreshAction();
     }
 
     /**
@@ -1025,6 +981,35 @@ public class ProfiBusTreeView extends Composite {
                 .setImageDescriptor(getSharedImageDescriptor(ISharedImages.IMG_ETOOL_HOME_NAV));
     }
 
+    private void makeCopyNodeAction() {
+        _copyNodeAction = new Action() {
+
+            @SuppressWarnings("unchecked")
+            public void run() {
+                _copiedNodesReferenceList = _selectedNode.toList();
+                _move = false;
+            }
+        };
+        _copyNodeAction.setText("&Copy");
+        _copyNodeAction.setToolTipText("Copy this Node");
+        _copyNodeAction.setImageDescriptor(getSharedImageDescriptor(ISharedImages.IMG_TOOL_COPY));
+    }
+
+    private void makeCutNodeAction() {
+        _cutNodeAction = new Action() {
+
+            @SuppressWarnings("unchecked")
+            public void run() {
+                _copiedNodesReferenceList = _selectedNode.toList();
+                _move = true;
+            }
+        };
+        _cutNodeAction.setText("Cut");
+        _cutNodeAction.setAccelerator(SWT.CTRL | 'x');
+        _cutNodeAction.setToolTipText("Cut this Node");
+        _cutNodeAction.setImageDescriptor(getSharedImageDescriptor(ISharedImages.IMG_TOOL_CUT));
+    }
+    
     private void makePasteNodeAction() {
         _pasteNodeAction = new Action() {
             @SuppressWarnings("static-access")
@@ -1207,6 +1192,20 @@ public class ProfiBusTreeView extends Composite {
         };
 
     }
+    
+    private void makeRefreshAction() {
+        _refreshAction = new Action() {
+            public void run() {
+                refresh();
+            }
+        };
+
+        _refreshAction.setText("Refresh");
+        _refreshAction.setToolTipText("Refresh the Tree");
+        _refreshAction.setImageDescriptor(CustomMediaFactory.getInstance()
+                .getImageDescriptorFromPlugin(ActivatorUI.PLUGIN_ID, "icons/refresh.gif"));
+    }
+
 
     private void openNewEmptyChildrenNode() {
         // clearEditComposite();

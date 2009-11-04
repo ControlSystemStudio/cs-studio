@@ -86,25 +86,19 @@ public final class HibernateManager {
                 }
                 if (_sessionUseCounter == 0) {
                     Date now = new Date();
-                    System.out.println("Test close Session");
-                    System.out.println("now: "+now.getTime()+"\t- date: "+date.getTime()+"\t="+(now.getTime()-date.getTime())+"\t>"+getTimeToCloseSession());
                     if (now.getTime() - date.getTime() > getTimeToCloseSession()) {
                         _sessionFactory.close();
                         _sessionFactory = null;
-                        System.out.println(now+": Session wurde geschlossen!!!");
                         break;
                     }
 
                 } else {
                     date = new Date();
-                    System.out.println(date+": SessionUseCounter :"+_sessionUseCounter+" to 0");
                     _sessionUseCounter = 0;
                 }
                 try {
                     this.getThread();
                     // Sleep 5 min.
-                    Date now = new Date();
-                    System.out.println(now+": IOConfig: go Sleeping");
                     Thread.sleep(300000);
                 } catch (InterruptedException e) {
                 }

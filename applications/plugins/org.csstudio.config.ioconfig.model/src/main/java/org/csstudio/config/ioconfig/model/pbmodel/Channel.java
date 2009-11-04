@@ -463,10 +463,6 @@ public class Channel extends Node {
             Set<ModuleChannelPrototype> moduleChannelPrototypes = getModule().getGSDModule()
                     .getModuleChannelPrototypeNH();
             for (ModuleChannelPrototype moduleChannelPrototype : moduleChannelPrototypes) {
-                if(!getChannelStructure().isSimple()) {
-                    System.out.println("TEst");
-                }
-                
                 if (moduleChannelPrototype.isInput() == isInput()
                         && getChannelNumber() == moduleChannelPrototype.getOffset()) {
                         if(getChannelStructure().isSimple()) {
