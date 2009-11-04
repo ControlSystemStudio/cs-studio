@@ -1,7 +1,5 @@
 package org.csstudio.opibuilder.widgets.figures;
 
-import java.util.Arrays;
-
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -36,9 +34,12 @@ public class IntensityGraphFigure extends Figure {
 		if(dataWidth == 0 || dataHeight == 0)
 			return;
 		ImageData imageData = new ImageData(dataWidth,dataHeight, 24, palette);
+		
+		//padding with zero if the array length is not long enough
 		if(dataArray.length < dataWidth * dataHeight){
 			double[] originalData = dataArray;			
-			dataArray = Arrays.copyOf(originalData, dataWidth*dataHeight);
+			dataArray = new double[dataWidth*dataHeight];
+		    System.arraycopy(originalData, 0, dataArray, 0,originalData.length);
 		}
 			
 		for(int y = 0; y < dataHeight; y++){
