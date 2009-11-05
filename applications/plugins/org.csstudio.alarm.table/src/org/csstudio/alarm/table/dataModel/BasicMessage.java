@@ -25,9 +25,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.preferences.SeverityMapping;
 import org.csstudio.platform.model.IProcessVariable;
 import org.eclipse.core.runtime.PlatformObject;
+import org.eclipse.jface.preference.IPreferenceStore;
 
 /**
  * Message received from the JMS server. The properties of messages are not
@@ -39,113 +41,114 @@ import org.eclipse.core.runtime.PlatformObject;
  */
 public class BasicMessage extends PlatformObject implements IProcessVariable {
 
-    /**
-     * The properties of the message.
-     */
-    private HashMap<String, String> _messageProperties = new HashMap<String, String>();
+	/**
+	 * The properties of the message.
+	 */
+	private HashMap<String, String> _messageProperties = new HashMap<String, String>();
 
+	/**
+	 * Default constructor
+	 */
+	public BasicMessage() {
+		super();
+	}
 
+	/**
+	 * Constructor with initial message properties of the table columns.
+	 */
+	public BasicMessage(String[] propNames) {
+		this();
+		for (int i = 0; i < propNames.length; i++) {
+			_messageProperties.put(propNames[i].split(",")[0], ""); //$NON-NLS-1$ //$NON-NLS-2$
+		}
+	}
 
-    /**
-     * Default constructor
-     */
-    public BasicMessage() {
-        super();
-    }
+	public BasicMessage(Map<String, String> messageProperties) {
+		_messageProperties.putAll(messageProperties);
+	}
 
-    /**
-     * Constructor with initial message properties of the table columns.
-     */
-    public BasicMessage(String[] propNames) {
-        this();
-        for (int i = 0; i < propNames.length; i++) {
-            _messageProperties.put(propNames[i].split(",")[0], ""); //$NON-NLS-1$ //$NON-NLS-2$
-        }
-    }
+	/**
+	 * Set value of a message property
+	 * 
+	 * @param property
+	 * @param value
+	 */
+	public void setProperty(String property, String value) {
+		// if (messageProperties.containsKey(property)) {
+		_messageProperties.put(property, value);
+		// }
+	}
 
-    public BasicMessage(Map<String, String> messageProperties) {
-        _messageProperties.putAll(messageProperties);
-    }
+	/**
+	 * Returns value of the requested property
+	 * 
+	 * @param property
+	 * @return
+	 */
+	public String getProperty(String property) {
 
-    /**
-     * Set value of a message property
-     * 
-     * @param property
-     * @param value
-     */
-    public void setProperty(String property, String value) {
-//        if (messageProperties.containsKey(property)) {
-            _messageProperties.put(property, value);
-//        }
-    }
+		// if the table asks for the severity we return the severity value
+		// set in the preferences
+		if (property.equals("SEVERITY")) { //$NON-NLS-1$
+			if (_messageProperties.get("SEVERITY") != null) { //$NON-NLS-1$
+				return JmsLogsPlugin.getDefault().getSeverityMapping()
+						.findSeverityValue(_messageProperties.get("SEVERITY"));
+				// return SeverityMapping.findSeverityValue(_messageProperties
+				// .get("SEVERITY"));
+			}
+		}
 
-    /**
-     * Returns value of the requested property
-     * 
-     * @param property
-     * @return
-     */
-    public String getProperty(String property) {
+		// to get the severity key (the 'real' severity get from the map
+		// message)
+		// we have to ask for 'SEVERITY_KEY'
+		if (property.equals("SEVERITY_KEY")) { //$NON-NLS-1$
+			if (_messageProperties.get("SEVERITY") != null) { //$NON-NLS-1$
+				return _messageProperties.get("SEVERITY"); //$NON-NLS-1$
+			}
+		}
 
-        // if the table asks for the severity we return the severity value
-        // set in the preferences
-        if (property.equals("SEVERITY")) { //$NON-NLS-1$
-            if (_messageProperties.get("SEVERITY") != null) { //$NON-NLS-1$
-                return SeverityMapping.findSeverityValue(_messageProperties
-                        .get("SEVERITY"));
-            }
-        }
+		// all other properties
+		if (_messageProperties.containsKey(property)) {
+			String s = _messageProperties.get(property);
+			if (s != null) {
+				return s;
+			} else {
+				return ""; //$NON-NLS-1$
+			}
+		} else {
+			return ""; //$NON-NLS-1$
+		}
+	}
 
-        // to get the severity key (the 'real' severity get from the map
-        // message)
-        // we have to ask for 'SEVERITY_KEY'
-        if (property.equals("SEVERITY_KEY")) { //$NON-NLS-1$
-            if (_messageProperties.get("SEVERITY") != null) { //$NON-NLS-1$
-                return _messageProperties.get("SEVERITY"); //$NON-NLS-1$
-            }
-        }
+	public int getSeverityNumber() {
+		return JmsLogsPlugin.getDefault().getSeverityMapping()
+				.getSeverityNumber(_messageProperties.get("SEVERITY"));
+		// return SeverityMapping.getSeverityNumber(_messageProperties
+		// .get("SEVERITY"));
+	}
 
-        // all other properties
-        if (_messageProperties.containsKey(property)) {
-            String s = _messageProperties.get(property);
-            if (s != null) {
-                return s;
-            } else {
-                return ""; //$NON-NLS-1$
-            }
-        } else {
-            return ""; //$NON-NLS-1$
-        }
-    }
+	public String getName() {
+		return this.getProperty("NAME"); //$NON-NLS-1$
+	}
 
-   public int getSeverityNumber() {
-        return SeverityMapping.getSeverityNumber(_messageProperties.get("SEVERITY"));
-    }
+	public String getTypeId() {
+		return TYPE_ID;
+	}
 
-    public String getName() {
-        return this.getProperty("NAME"); //$NON-NLS-1$
-    }
+	public HashMap<String, String> getHashMap() {
+		return _messageProperties;
+	}
 
-    public String getTypeId() {
-        return TYPE_ID;
-    }
-
-
-    public HashMap<String, String> getHashMap() {
-        return _messageProperties;
-    }
-
-
-    /**
-     * @return deep copy of the JMSMessage.
-     */
-    public BasicMessage copy(BasicMessage newMessage) {
-        Set<String> properties = _messageProperties.keySet();
-        for (String entry : properties) {
-            String value = _messageProperties.get(entry);
-            newMessage._messageProperties.put(entry, value);
-        }
-        return newMessage;
-    }
+	/**
+	 * @return deep copy of the JMSMessage.
+	 */
+	public BasicMessage copy(BasicMessage newMessage) {
+		Set<String> properties = _messageProperties.keySet();
+		for (String entry : properties) {
+			String value = _messageProperties.get(entry);
+			newMessage._messageProperties.put(entry, value);
+		}
+		return newMessage;
+	}
 
 }

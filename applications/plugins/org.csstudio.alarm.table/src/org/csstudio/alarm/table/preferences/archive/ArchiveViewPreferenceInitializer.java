@@ -19,28 +19,26 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.alarm.table.preferences;
+ package org.csstudio.alarm.table.preferences.archive;
 
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
 
+
 /**
  * Class used to initialize default preference values.
  */
-public class AmsVerifyViewPreferenceInitializer extends
-		AbstractPreferenceInitializer {
+public class ArchiveViewPreferenceInitializer extends AbstractPreferenceInitializer {
 
 	/*
 	 * (non-Javadoc)
-	 * 
-	 * @seeorg.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#
-	 * initializeDefaultPreferences()
+	 *
+	 * @see org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#initializeDefaultPreferences()
 	 */
 	public void initializeDefaultPreferences() {
-		IPreferenceStore store = JmsLogsPlugin.getDefault()
-				.getPreferenceStore();
-		store.setDefault(AmsVerifyViewPreferenceConstants.P_STRING, 
+		IPreferenceStore store = JmsLogsPlugin.getDefault().getPreferenceStore();
+		store.setDefault(ArchiveViewPreferenceConstants.P_STRINGArch,
 				"TYPE" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
 				"EVENTTIME" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
 				"TEXT" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
@@ -58,10 +56,9 @@ public class AmsVerifyViewPreferenceInitializer extends
 				"VALUE" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
 				"DESTINATION" //$NON-NLS-1$
 		);
-
-		store.setDefault(AmsVerifyViewPreferenceConstants.MAX, 200);
-		store
-				.setDefault(AmsVerifyViewPreferenceConstants.TOPIC_SET,
-						"?LOG,ALARM,PUT_LOG,ACK?MKS-2;?TEST_FOREWARD?test foreward filter;"); //$NON-NLS-1$
+        store.setDefault(ArchiveViewPreferenceConstants.DATE_FORMAT,"yyyy-MM-dd HH:mm:ss.SSS"); //$NON-NLS-1$
+		store.setDefault(ArchiveViewPreferenceConstants.MAX_ANSWER_SIZE,"500"); //$NON-NLS-1$
+		store.setDefault(ArchiveViewPreferenceConstants.MAX_ANSWER_SIZE_EXPORT,"5000"); //$NON-NLS-1$
 	}
+
 }

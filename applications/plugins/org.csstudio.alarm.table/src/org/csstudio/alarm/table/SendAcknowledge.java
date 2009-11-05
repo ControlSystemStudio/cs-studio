@@ -35,6 +35,7 @@ import javax.jms.MapMessage;
 
 import org.csstudio.alarm.table.dataModel.AlarmMessage;
 import org.csstudio.alarm.table.dataModel.BasicMessage;
+import org.csstudio.alarm.table.jms.ISendMapMessage;
 import org.csstudio.alarm.table.jms.SendMapMessage;
 import org.csstudio.platform.CSSPlatformInfo;
 import org.csstudio.platform.security.SecurityFacade;
@@ -111,8 +112,9 @@ public class SendAcknowledge extends Job {
     @Override
     protected IStatus run(IProgressMonitor monitor) {
 
-        SendMapMessage sender = SendMapMessage.getInstance();
-        try {
+        ISendMapMessage sender = JmsLogsPlugin.getDefault().getSendMapMessage();
+
+    	try {
             // sender.startSender(true);
 
             for (BasicMessage message : messagesToSend) {

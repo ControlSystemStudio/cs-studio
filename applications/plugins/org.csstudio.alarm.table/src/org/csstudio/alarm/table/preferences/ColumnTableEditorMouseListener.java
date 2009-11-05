@@ -1,5 +1,6 @@
 package org.csstudio.alarm.table.preferences;
 
+import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.events.ModifyEvent;
@@ -13,14 +14,14 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
-public class TableEditorMouseListener extends MouseAdapter {
+public class ColumnTableEditorMouseListener extends MouseAdapter {
 
 	private TableEditor _editor;
-	private Table _table;
+	private PreferenceColumnTableEditor _preferenceColumnTableEditor;
 
-	public TableEditorMouseListener(TableEditor editor, Table table) {
+	public ColumnTableEditorMouseListener(TableEditor editor, PreferenceColumnTableEditor preferenceColumnTableEditor) {
 		_editor = editor;
-		_table = table;
+		_preferenceColumnTableEditor = preferenceColumnTableEditor;
 	}
 
 	/**
@@ -37,7 +38,7 @@ public class TableEditorMouseListener extends MouseAdapter {
 	}
 
 	/**
-	 * Make the selected cell editable with a double click. (Copied from an
+	 * Make the selected cell editable with a double click. (Copy from an
 	 * internet example)
 	 */
 	public void mouseDoubleClick(MouseEvent event) {
@@ -50,11 +51,11 @@ public class TableEditorMouseListener extends MouseAdapter {
 		Point pt = new Point(event.x, event.y);
 
 		// Determine which row was selected
-		final TableItem item = _table.getItem(pt);
+		final TableItem item = _preferenceColumnTableEditor.getTable().getItem(pt);
 		if (item != null) {
 			// Determine which column was selected
 			int column = -1;
-			for (int i = 0, n = _table.getColumnCount(); i < n; i++) {
+			for (int i = 0, n = _preferenceColumnTableEditor.getTable().getColumnCount(); i < n; i++) {
 				Rectangle rect = item.getBounds(i);
 				if (rect.contains(pt)) {
 					// This is the selected column
@@ -63,12 +64,8 @@ public class TableEditorMouseListener extends MouseAdapter {
 				}
 			}
 
-			//The fist column is not editable (check box)
-			if (column == 0) {
-				return;
-			}
 			// Create the Text object for our editor
-			final Text text = new Text(_table, SWT.NONE);
+			final Text text = new Text(_preferenceColumnTableEditor.getTable(), SWT.NONE);
 			text.setForeground(item.getForeground());
 
 			// Transfer any text from the cell to the Text control,
@@ -90,10 +87,18 @@ public class TableEditorMouseListener extends MouseAdapter {
 			final int col = column;
 			text.addModifyListener(new ModifyListener() {
 				public void modifyText(ModifyEvent event) {
+					_preferenceColumnTableEditor.updateColumnSettings();
 					// Set the text of the editor's control back into the cell
 					item.setText(col, text.getText());
 				}
 			});
 		}
+	}
+
+	public void cleanUp() {
+		Control old = _editor.getEditor();
+		if (old != null)
+			old.dispose();
+
 	}
 }

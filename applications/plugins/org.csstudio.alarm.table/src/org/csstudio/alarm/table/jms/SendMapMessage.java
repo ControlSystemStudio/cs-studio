@@ -34,9 +34,8 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.utility.jms.sharedconnection.ISharedConnectionHandle;
 import org.csstudio.platform.utility.jms.sharedconnection.SharedJmsConnections;
 
-public class SendMapMessage {
+public class SendMapMessage implements ISendMapMessage {
 
-    private static SendMapMessage _instance;
     Hashtable<String, String> properties = null;
     Session session = null;
     MessageProducer sender = null;
@@ -45,17 +44,6 @@ public class SendMapMessage {
     private CloseJMSConnectionTimerTask _timerTask;
     private Timer _timer = new Timer();
     private ISharedConnectionHandle _senderConnection;
-
-    private SendMapMessage() {
-        super();
-    }
-
-    public static SendMapMessage getInstance() {
-        if (_instance == null) {
-            _instance = new SendMapMessage();
-        }
-        return _instance;
-    }
 
     public void startSender(String topic) throws Exception {
         _senderConnection = SharedJmsConnections.sharedSenderConnection();

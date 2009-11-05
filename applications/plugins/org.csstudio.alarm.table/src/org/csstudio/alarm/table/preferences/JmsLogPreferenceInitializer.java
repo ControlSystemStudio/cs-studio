@@ -69,5 +69,15 @@ public class JmsLogPreferenceInitializer extends AbstractPreferenceInitializer {
 		store.setDefault(JmsLogPreferenceConstants.VALUE7,"NOT DEFINED"); //$NON-NLS-1$
 		store.setDefault(JmsLogPreferenceConstants.VALUE8,"NOT DEFINED"); //$NON-NLS-1$
 		store.setDefault(JmsLogPreferenceConstants.VALUE9,"NOT DEFINED"); //$NON-NLS-1$
+		store.setDefault(JmsLogPreferenceConstants.SOUND0,""); //$NON-NLS-1$
+		store.setDefault(JmsLogPreferenceConstants.SOUND1,""); //$NON-NLS-1$
+		store.setDefault(JmsLogPreferenceConstants.SOUND2,""); //$NON-NLS-1$
+		store.setDefault(JmsLogPreferenceConstants.SOUND3,""); //$NON-NLS-1$
+		store.setDefault(JmsLogPreferenceConstants.SOUND4,""); //$NON-NLS-1$
+		store.setDefault(JmsLogPreferenceConstants.SOUND5,""); //$NON-NLS-1$
+		store.setDefault(JmsLogPreferenceConstants.SOUND6,""); //$NON-NLS-1$
+		store.setDefault(JmsLogPreferenceConstants.SOUND7,""); //$NON-NLS-1$
+		store.setDefault(JmsLogPreferenceConstants.SOUND8,""); //$NON-NLS-1$
+		store.setDefault(JmsLogPreferenceConstants.SOUND9,""); //$NON-NLS-1$
 	}
 }

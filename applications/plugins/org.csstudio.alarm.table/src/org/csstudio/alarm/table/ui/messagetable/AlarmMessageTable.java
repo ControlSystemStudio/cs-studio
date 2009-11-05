@@ -8,7 +8,7 @@ import org.csstudio.alarm.table.SendAcknowledge;
 import org.csstudio.alarm.table.dataModel.AlarmMessage;
 import org.csstudio.alarm.table.dataModel.BasicMessage;
 import org.csstudio.alarm.table.dataModel.MessageList;
-import org.csstudio.alarm.table.preferences.AlarmViewPreferenceConstants;
+import org.csstudio.alarm.table.preferences.alarm.AlarmViewPreferenceConstants;
 import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -55,6 +55,7 @@ public class AlarmMessageTable extends MessageTable {
                 JmsLogsPlugin.getDefault().getBundle().getSymbolicName());
         prefStore.addPropertyChangeListener(new IPropertyChangeListener() {
 
+            @Override
             public void propertyChange(PropertyChangeEvent event) {
                 if (event.getProperty().equals(AlarmViewPreferenceConstants.LOG_ALARM_FONT)) {
                     Font font = CustomMediaFactory.getInstance().getFont(

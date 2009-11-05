@@ -19,26 +19,28 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.alarm.table.preferences;
+package org.csstudio.alarm.table.preferences.log;
 
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
 
-
 /**
  * Class used to initialize default preference values.
  */
-public class ArchiveViewPreferenceInitializer extends AbstractPreferenceInitializer {
+public class LogViewPreferenceInitializer extends
+		AbstractPreferenceInitializer {
 
 	/*
 	 * (non-Javadoc)
-	 *
-	 * @see org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#initializeDefaultPreferences()
+	 * 
+	 * @seeorg.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#
+	 * initializeDefaultPreferences()
 	 */
 	public void initializeDefaultPreferences() {
-		IPreferenceStore store = JmsLogsPlugin.getDefault().getPreferenceStore();
-		store.setDefault(ArchiveViewPreferenceConstants.P_STRINGArch,
+		IPreferenceStore store = JmsLogsPlugin.getDefault()
+				.getPreferenceStore();
+		store.setDefault(LogViewPreferenceConstants.P_STRING, "ACK" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
 				"TYPE" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
 				"EVENTTIME" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
 				"TEXT" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
@@ -56,9 +58,10 @@ public class ArchiveViewPreferenceInitializer extends AbstractPreferenceInitiali
 				"VALUE" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
 				"DESTINATION" //$NON-NLS-1$
 		);
-        store.setDefault(ArchiveViewPreferenceConstants.DATE_FORMAT,"yyyy-MM-dd HH:mm:ss.SSS"); //$NON-NLS-1$
-		store.setDefault(ArchiveViewPreferenceConstants.MAX_ANSWER_SIZE,"500"); //$NON-NLS-1$
-		store.setDefault(ArchiveViewPreferenceConstants.MAX_ANSWER_SIZE_EXPORT,"5000"); //$NON-NLS-1$
-	}
 
+		store.setDefault(LogViewPreferenceConstants.MAX, 200);
+		store
+				.setDefault(LogViewPreferenceConstants.TOPIC_SET,
+						"?LOG,ALARM,PUT_LOG,ACK?MKS-2;?TEST_FOREWARD?test foreward filter;"); //$NON-NLS-1$
+	}
 }

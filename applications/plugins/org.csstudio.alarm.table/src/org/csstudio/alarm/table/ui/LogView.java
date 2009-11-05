@@ -32,8 +32,10 @@ import org.csstudio.alarm.table.dataModel.LogMessageList;
 import org.csstudio.alarm.table.dataModel.MessageList;
 import org.csstudio.alarm.table.internal.localization.Messages;
 import org.csstudio.alarm.table.jms.JmsMessageReceiver;
-import org.csstudio.alarm.table.preferences.AlarmViewPreferenceConstants;
-import org.csstudio.alarm.table.preferences.LogViewPreferenceConstants;
+import org.csstudio.alarm.table.preferences.TopicSet;
+import org.csstudio.alarm.table.preferences.TopicSetColumnService;
+import org.csstudio.alarm.table.preferences.alarm.AlarmViewPreferenceConstants;
+import org.csstudio.alarm.table.preferences.log.LogViewPreferenceConstants;
 import org.csstudio.alarm.table.ui.messagetable.MessageTable;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
@@ -42,8 +44,11 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
@@ -55,6 +60,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
@@ -72,298 +78,357 @@ import org.eclipse.ui.views.IViewRegistry;
  */
 public class LogView extends ViewPart {
 
-    /**
-     * The ID of this view.
-     */
-    public static final String ID = LogView.class.getName();
+	/**
+	 * The ID of this view.
+	 */
+	public static final String ID = LogView.class.getName();
 
-    /**
-     * The ID of the property view.
-     */
-    private static final String PROPERTY_VIEW_ID = "org.eclipse.ui.views.PropertySheet"; //$NON-NLS-1$
+	/**
+	 * The ID of the property view.
+	 */
+	private static final String PROPERTY_VIEW_ID = "org.eclipse.ui.views.PropertySheet"; //$NON-NLS-1$
 
-    /**
-     * List of messages displayed by the table on this view.
-     */
-    public MessageList _messageList = null;
+	/**
+	 * List of messages displayed by the table on this view.
+	 */
+	public MessageList _messageList = null;
 
-    /**
-     * {@link MessageTable} holding a {@link TableViewer} for messages.
-     */
-    public MessageTable _messageTable = null;
+	/**
+	 * {@link MessageTable} holding a {@link TableViewer} for messages.
+	 */
+	public MessageTable _messageTable = null;
 
-    /**
-     * List of topic sets and names from preferences. Displayed in combo box.
-     */
-    private HashMap<String, String> _topicListAndName;
+	// /**
+	// * List of topic sets and names from preferences. Displayed in combo box.
+	// */
+	// private HashMap<String, String> _topicListAndName;
 
-    /**
-     * Default topic set. Try to read state 1. From previous viewPart data 2. From default marker in
-     * preferences 3. Take first set from preferences
-     */
-    String _defaultTopicSet;
+	/**
+	 * Default topic set. Try to read state 1. From previous viewPart data 2.
+	 * From default marker in preferences 3. Take first set from preferences
+	 */
+	String _currentTopicSet = null;
 
-    /**
-     * The receiver for JMS messages.
-     */
-    JmsMessageReceiver _jmsMessageReceiver;
+	/**
+	 * The receiver for JMS messages.
+	 */
+	JmsMessageReceiver _jmsMessageReceiver;
 
-    /**
-     * Mapping of column widths from table to preferences.
-     */
-    ColumnWidthPreferenceMapping _columnMapping;
+	/**
+	 * Mapping of column widths from table to preferences.
+	 */
+	ExchangeableColumnWidthPreferenceMapping _columnMapping;
 
-    /**
-     * The JFace {@link TableViewer}
-     */
-    TableViewer _tableViewer;
+	/**
+	 * The JFace {@link TableViewer}
+	 */
+	TableViewer _tableViewer;
 
-    String _preferenceColumnString;
+	Integer _maximumNumberOfMessages;
 
-    /**
-     * {@inheritDoc}
-     */
-    public void createPartControl(Composite parent) {
+	Composite _parent;
 
-        // Read column names and JMS topic settings from preferences
-        _preferenceColumnString = LogViewPreferenceConstants.P_STRING;
-        ScopedPreferenceStore prefStore = new ScopedPreferenceStore(new InstanceScope(),
-                JmsLogsPlugin.getDefault().getBundle().getSymbolicName());
+	Composite _tableComposite;
 
-        String[] _columnNames = prefStore.getString(_preferenceColumnString).split(";"); //$NON-NLS-1$
-        readPreferenceTopics(prefStore.getString(LogViewPreferenceConstants.TOPIC_SET));
+	TopicSetColumnService _topicSetColumnService;
 
-        // Initialize JMS message list
-        String maximumNumberOfMessagesPref = prefStore.getString(LogViewPreferenceConstants.MAX);
-        Integer maximumNumberOfMessages;
-        try {
-            maximumNumberOfMessages = Integer.parseInt(maximumNumberOfMessagesPref);
-        } catch (NumberFormatException e) {
-            CentralLogger.getInstance().warn(this,
-                    "Invalid value format for maximum number" + " of messages in preferences");
-            maximumNumberOfMessages = 200;
-        }
-        _messageList = new LogMessageList(maximumNumberOfMessages);
+	private Label _runningSinceLabel;
 
-        // Create UI
-        GridLayout grid = new GridLayout();
-        grid.numColumns = 1;
-        parent.setLayout(grid);
+	/**
+	 * {@inheritDoc}
+	 */
+	public void createPartControl(Composite parent) {
 
-        Composite logTableManagementComposite = new Composite(parent, SWT.NONE);
-        RowLayout layout = new RowLayout();
-        layout.type = SWT.HORIZONTAL;
-        layout.spacing = 8;
-        logTableManagementComposite.setLayout(layout);
+		_parent = parent;
 
-        addJmsTopicItems(logTableManagementComposite);
-        addRunningSinceGroup(logTableManagementComposite);
+		// Read column names and JMS topic settings from preferences
+		_topicSetColumnService = new TopicSetColumnService(
+				LogViewPreferenceConstants.TOPIC_SET,
+				LogViewPreferenceConstants.P_STRING);
+		// is there already a topicSet from previous session?
+		if (_currentTopicSet == null) {
+			_currentTopicSet = _topicSetColumnService.getDefaultTopicSet();
+		}
+		// Create UI
+		GridLayout grid = new GridLayout();
+		grid.numColumns = 1;
+		parent.setLayout(grid);
 
-        // setup message table with context menu etc.
-        _tableViewer = new TableViewer(parent, SWT.MULTI | SWT.FULL_SELECTION);
+		Composite logTableManagementComposite = new Composite(parent, SWT.NONE);
+		RowLayout layout = new RowLayout();
+		layout.type = SWT.HORIZONTAL;
+		layout.spacing = 8;
+		logTableManagementComposite.setLayout(layout);
 
-        _messageTable = new MessageTable(_tableViewer, _columnNames, _messageList);
-        _messageTable.makeContextMenu(getSite());
+		addJmsTopicItems(logTableManagementComposite);
+		addRunningSinceGroup(logTableManagementComposite);
+		_jmsMessageReceiver = new JmsMessageReceiver();
 
-        _columnMapping = new ColumnWidthPreferenceMapping(_tableViewer);
+		initializeMessageTable();
 
-        getSite().setSelectionProvider(_tableViewer);
+		// prefStore.addPropertyChangeListener(new IPropertyChangeListener() {
+		//
+		// @Override
+		// public void propertyChange(PropertyChangeEvent event) {
+		// if
+		// (event.getProperty().equals(AlarmViewPreferenceConstants.LOG_TABLE_FONT))
+		// {
+		// Font font = CustomMediaFactory.getInstance().getFont(
+		// new FontData(event.getNewValue().toString()));
+		// _tableViewer.getTable().setFont(font);
+		// _tableViewer.getTable().layout(true);
+		// }
+		//
+		// }
+		// });
+		// String fontDesc =
+		// prefStore.getString(AlarmViewPreferenceConstants.LOG_TABLE_FONT);
+		// if (fontDesc != null && !fontDesc.isEmpty()) {
+		// Font font = CustomMediaFactory.getInstance().getFont(new
+		// FontData(fontDesc));
+		// _tableViewer.getTable().setFont(font);
+		// }
 
-        prefStore.addPropertyChangeListener(new IPropertyChangeListener() {
+		makeActions();
 
-            public void propertyChange(PropertyChangeEvent event) {
-                if (event.getProperty().equals(AlarmViewPreferenceConstants.LOG_TABLE_FONT)) {
-                    Font font = CustomMediaFactory.getInstance().getFont(
-                            new FontData(event.getNewValue().toString()));
-                    _tableViewer.getTable().setFont(font);
-                    _tableViewer.getTable().layout(true);
-                }
+		parent.pack();
+		// _propertyChangeListener = new ColumnPropertyChangeListener(
+		// LogViewPreferenceConstants.P_STRING, _messageTable);
 
-            }
-        });
-        String fontDesc = prefStore.getString(AlarmViewPreferenceConstants.LOG_TABLE_FONT);
-        if (fontDesc != null && !(fontDesc.length() == 0)) {
-            Font font = CustomMediaFactory.getInstance().getFont(new FontData(fontDesc));
-            _tableViewer.getTable().setFont(font);
-        }
+		// JmsLogsPlugin.getDefault().getPluginPreferences()
+		// .addPropertyChangeListener(_propertyChangeListener);
 
-        makeActions();
+		// Setup JMS connection
+	}
 
-        parent.pack();
-        // _propertyChangeListener = new ColumnPropertyChangeListener(
-        // LogViewPreferenceConstants.P_STRING, _messageTable);
+	/**
+	 * Initialization of {@link MessageTable} with {@link TableViewer}, column
+	 * names etc for startup of this view. If the user selects another topic set
+	 * this method is also executed and the previous table will be disposed.
+	 * 
+	 * @param parent
+	 * @param _columnNames
+	 */
+	void initializeMessageTable() {
 
-        // JmsLogsPlugin.getDefault().getPluginPreferences()
-        // .addPropertyChangeListener(_propertyChangeListener);
+		// Initialize JMS message list
+		ScopedPreferenceStore prefStore = new ScopedPreferenceStore(
+				new InstanceScope(), JmsLogsPlugin.getDefault().getBundle()
+						.getSymbolicName());
+		String maximumNumberOfMessagesPref = prefStore
+				.getString(LogViewPreferenceConstants.MAX);
+		try {
+			_maximumNumberOfMessages = Integer
+					.parseInt(maximumNumberOfMessagesPref);
+		} catch (NumberFormatException e) {
+			CentralLogger.getInstance().warn(
+					this,
+					"Invalid value format for maximum number"
+							+ " of messages in preferences");
+			_maximumNumberOfMessages = 200;
+		}
+		if (_columnMapping != null) {
+			_columnMapping.saveColumn(LogViewPreferenceConstants.P_STRING,
+					LogViewPreferenceConstants.TOPIC_SET);
+			_columnMapping = null;
+		}
+		_topicSetColumnService = new TopicSetColumnService(
+				LogViewPreferenceConstants.TOPIC_SET,
+				LogViewPreferenceConstants.P_STRING);
+		// is there already a MessageTable delete it and the message list.
+		if (_messageTable != null) {
+			_messageTable.disposeMessageTable();
+			_tableViewer = null;
+			_messageTable = null;
+			_messageList = null;
+		}
+		_messageList = new LogMessageList(_maximumNumberOfMessages);
+		// setup message table with context menu etc.
+		_tableViewer = new TableViewer(_parent, SWT.MULTI | SWT.FULL_SELECTION);
 
-        // Setup JMS connection
-        _jmsMessageReceiver = new JmsMessageReceiver(_messageList);
-        _jmsMessageReceiver.initializeJMSConnection(_defaultTopicSet);
-    }
+		_messageTable = new MessageTable(_tableViewer, _topicSetColumnService
+				.getColumnSet(_currentTopicSet), _messageList);
+		_messageTable.makeContextMenu(getSite());
 
-    /**
-     * Parse string from properties with jms topics settings and store items in a HashMap for combo
-     * box. Each set of topic items is separated with ';'. A topic item consists of three parts
-     * separated by '?'; 'default?jmsTopic1,jmsTopic2?nameOfThisTopicSet' If the topic item is not
-     * default the first part is empty: '?jmsTopic1jms...'. If there is no default the first item is
-     * taken. The default tag from the preferences is overwritten if there is a topic set from a
-     * previous session.
-     * 
-     * @param topics
-     *            raw topic string from preferences
-     * @return set of topics for initialization
-     */
-    void readPreferenceTopics(String topics) {
-        _topicListAndName = new HashMap<String, String>();
-        String[] topicSetsAndNames = topics.split(";"); //$NON-NLS-1$
-        for (String topicSet : topicSetsAndNames) {
-            String[] topicSetItems = topicSet.split("\\?"); //$NON-NLS-1$
-            // preference string for topic set is invalid -> next one
-            if (topicSetItems.length < 3) {
-                continue;
-            }
-            _topicListAndName.put(topicSetItems[2], topicSetItems[1]);
-            if (_defaultTopicSet == null) {
-                _defaultTopicSet = topicSetItems[1];
-            }
-            if (topicSetItems[0].equals("default")) { //$NON-NLS-1$
-                _defaultTopicSet = topicSetItems[1];
-            }
-        }
-        return;
-    }
+		_jmsMessageReceiver.initializeJMSConnection(_topicSetColumnService
+				.getJMSTopics(_currentTopicSet), _messageList);
 
-    /**
-     * Add label with date and time the table is started.
-     * 
-     * @param logTableManagementComposite
-     */
-    void addRunningSinceGroup(Composite logTableManagementComposite) {
-        Group runningSinceGroup = new Group(logTableManagementComposite, SWT.NONE);
+		setCurrentTimeToRunningSince();
 
-        runningSinceGroup.setText(Messages.LogView_runningSince);
+		_columnMapping = new ExchangeableColumnWidthPreferenceMapping(_tableViewer,
+				_currentTopicSet);
+		addControlListenerToColumns(LogViewPreferenceConstants.P_STRING,
+				LogViewPreferenceConstants.TOPIC_SET);
+		getSite().setSelectionProvider(_tableViewer);
+		_parent.layout();
 
-        RowLayout layout = new RowLayout();
-        runningSinceGroup.setLayout(layout);
+	}
 
-        GregorianCalendar currentTime = new GregorianCalendar(TimeZone.getTimeZone("ECT")); //$NON-NLS-1$
-        SimpleDateFormat formater = new SimpleDateFormat();
-        Label runningSinceLabel = new Label(runningSinceGroup, SWT.CENTER);
-        runningSinceLabel.setLayoutData(new RowData(90, 21));
-        runningSinceLabel.setText(formater.format(currentTime.getTime()));
-    }
+	/**
+	 * Write new Column width when a column is resized.
+	 */
+	void addControlListenerToColumns(final String colSetPref,
+			final String topicSetPref) {
+		TableColumn[] columns = _tableViewer.getTable().getColumns();
+		for (TableColumn tableColumn : columns) {
+			tableColumn.addControlListener(new ControlListener() {
+				
+				@Override
+				public void controlResized(ControlEvent e) {
+					_columnMapping.saveColumn(colSetPref, topicSetPref);		
+				}
+				
+				@Override
+				public void controlMoved(ControlEvent e) {
+					//do nothing
+				}
+			});
+		}
+	}
 
-    /**
-     * Add combo box to select set of topics to be monitored. The items in the combo box are names
-     * that are mapped in the preferences to sets of topics.
-     * 
-     * @param logTableManagementComposite
-     */
-    void addJmsTopicItems(Composite logTableManagementComposite) {
-        Group jmsTopicItemsGroup = new Group(logTableManagementComposite, SWT.NONE);
+	/**
+	 * Add label with date and time the table is started.
+	 * 
+	 * @param logTableManagementComposite
+	 */
+	void addRunningSinceGroup(Composite logTableManagementComposite) {
+		Group runningSinceGroup = new Group(logTableManagementComposite,
+				SWT.NONE);
 
-        jmsTopicItemsGroup.setText(Messages.LogView_monitoredJmsTopics);
+		runningSinceGroup.setText(Messages.LogView_runningSince);
 
-        RowLayout layout = new RowLayout();
-        layout.type = SWT.HORIZONTAL;
-        layout.spacing = 5;
-        jmsTopicItemsGroup.setLayout(layout);
+		RowLayout layout = new RowLayout();
+		runningSinceGroup.setLayout(layout);
+		_runningSinceLabel = new Label(runningSinceGroup, SWT.CENTER);
+		_runningSinceLabel.setLayoutData(new RowData(90, 21));
+	}
 
-        final Combo topicSetsCombo = new Combo(jmsTopicItemsGroup, SWT.SINGLE);
-        int i = 0;
+	void setCurrentTimeToRunningSince() {
+		GregorianCalendar currentTime = new GregorianCalendar(TimeZone
+				.getTimeZone("ECT")); //$NON-NLS-1$
+		SimpleDateFormat formater = new SimpleDateFormat();
+		_runningSinceLabel.setText(formater.format(currentTime.getTime()));
+	}
 
-        for (String topicSetName : _topicListAndName.keySet()) {
-            topicSetsCombo.add(topicSetName);
-            if (_defaultTopicSet.equals(_topicListAndName.get(topicSetName))) {
-                topicSetsCombo.select(i);
-            }
-            i++;
-        }
-        topicSetsCombo.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                super.widgetSelected(e);
-                _defaultTopicSet = _topicListAndName.get(topicSetsCombo.getItem(topicSetsCombo
-                        .getSelectionIndex()));
-                _jmsMessageReceiver.initializeJMSConnection(_defaultTopicSet);
-            }
-        });
-    }
+	/**
+	 * Add combo box to select set of topics to be monitored. The items in the
+	 * combo box are names that are mapped in the preferences to sets of topics.
+	 * 
+	 * @param logTableManagementComposite
+	 */
+	void addJmsTopicItems(Composite logTableManagementComposite) {
+		Group jmsTopicItemsGroup = new Group(logTableManagementComposite,
+				SWT.NONE);
 
-    /**
-     * Creates action to call property view.
-     */
-    void makeActions() {
-        Action showPropertyViewAction = new Action() {
-            @Override
-            public void run() {
-                try {
-                    getSite().getPage().showView(PROPERTY_VIEW_ID);
-                } catch (PartInitException e) {
-                    MessageDialog.openError(getSite().getShell(), "Alarm Tree", //$NON-NLS-1$
-                            e.getMessage());
-                }
-            }
-        };
-        showPropertyViewAction.setText(Messages.LogView_properties);
-        showPropertyViewAction.setToolTipText(Messages.LogView_propertiesToolTip);
+		jmsTopicItemsGroup.setText(Messages.LogView_monitoredJmsTopics);
 
-        IViewRegistry viewRegistry = getSite().getWorkbenchWindow().getWorkbench()
-                .getViewRegistry();
-        IViewDescriptor viewDesc = viewRegistry.find(PROPERTY_VIEW_ID);
-        showPropertyViewAction.setImageDescriptor(viewDesc.getImageDescriptor());
-        IActionBars bars = getViewSite().getActionBars();
-        bars.getToolBarManager().add(showPropertyViewAction);
-    }
+		RowLayout layout = new RowLayout();
+		layout.type = SWT.HORIZONTAL;
+		layout.spacing = 5;
+		jmsTopicItemsGroup.setLayout(layout);
 
-    /**
-     * {@inheritDoc}
-     */
-    public void setFocus() {
-        _tableViewer.getTable().setFocus();
-    }
+		final Combo topicSetsCombo = new Combo(jmsTopicItemsGroup, SWT.SINGLE);
+		int i = 0;
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void init(IViewSite site, IMemento memento) throws PartInitException {
-        super.init(site, memento);
-        if (memento == null) {
-            return;
-        }
-        _defaultTopicSet = memento.getString("previousTopicSet"); //$NON-NLS-1$
-        if (_defaultTopicSet == null) {
-            CentralLogger.getInstance().debug(this, "No topic set from previous session"); //$NON-NLS-1$
-        } else {
-            CentralLogger.getInstance().debug(this,
-                    "Get topic set from previous session: " + _defaultTopicSet); //$NON-NLS-1$
-        }
-    }
+		for (TopicSet topicSet : _topicSetColumnService.getTopicSets()) {
+			topicSetsCombo.add(topicSet.getName());
+			if (_currentTopicSet.equals(topicSet.getName())) {
+				topicSetsCombo.select(i);
+			}
+			i++;
+		}
+		topicSetsCombo.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				super.widgetSelected(e);
+				String oldTopicSet = _currentTopicSet;
+				_currentTopicSet = _topicSetColumnService.getTopicSets().get(
+						topicSetsCombo.getSelectionIndex()).getName();
+				if ( ! oldTopicSet.equals(_currentTopicSet)) {
+					initializeMessageTable();
+				}
+			}
+		});
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void saveState(IMemento memento) {
-        super.saveState(memento);
-        if ((memento != null) && (_defaultTopicSet != null)) {
-            CentralLogger.getInstance().debug(this,
-                    "Save latest topic set in IMemento: " + _defaultTopicSet);
-            memento.putString("previousTopicSet", _defaultTopicSet); //$NON-NLS-1$
-        }
-    }
+	/**
+	 * Creates action to call property view.
+	 */
+	void makeActions() {
+		Action showPropertyViewAction = new Action() {
+			@Override
+			public void run() {
+				try {
+					getSite().getPage().showView(PROPERTY_VIEW_ID);
+				} catch (PartInitException e) {
+					MessageDialog.openError(getSite().getShell(), "Alarm Tree", //$NON-NLS-1$
+							e.getMessage());
+				}
+			}
+		};
+		showPropertyViewAction.setText(Messages.LogView_properties);
+		showPropertyViewAction
+				.setToolTipText(Messages.LogView_propertiesToolTip);
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void dispose() {
-        _columnMapping.saveColumn(_preferenceColumnString);
-        _jmsMessageReceiver.stopJMSConnection();
-        _messageTable = null;
-        // JmsLogsPlugin.getDefault().getPluginPreferences()
-        // .removePropertyChangeListener(_propertyChangeListener);
-        super.dispose();
-    }
+		IViewRegistry viewRegistry = getSite().getWorkbenchWindow()
+				.getWorkbench().getViewRegistry();
+		IViewDescriptor viewDesc = viewRegistry.find(PROPERTY_VIEW_ID);
+		showPropertyViewAction
+				.setImageDescriptor(viewDesc.getImageDescriptor());
+		IActionBars bars = getViewSite().getActionBars();
+		bars.getToolBarManager().add(showPropertyViewAction);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setFocus() {
+		_tableViewer.getTable().setFocus();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void init(IViewSite site, IMemento memento) throws PartInitException {
+		super.init(site, memento);
+		if (memento == null) {
+			return;
+		}
+		_currentTopicSet = memento.getString("previousTopicSet"); //$NON-NLS-1$
+		if (_currentTopicSet == null) {
+			CentralLogger.getInstance().debug(this,
+					"No topic set from previous session"); //$NON-NLS-1$
+		} else {
+			CentralLogger.getInstance().debug(this,
+					"Get topic set from previous session: " + _currentTopicSet); //$NON-NLS-1$
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void saveState(IMemento memento) {
+		super.saveState(memento);
+		if ((memento != null) && (_currentTopicSet != null)) {
+			CentralLogger.getInstance().debug(this,
+					"Save latest topic set in IMemento: " + _currentTopicSet);
+			memento.putString("previousTopicSet", _currentTopicSet); //$NON-NLS-1$
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void dispose() {
+//		_columnMapping.saveColumn(LogViewPreferenceConstants.P_STRING,
+//				LogViewPreferenceConstants.TOPIC_SET);
+		_jmsMessageReceiver.stopJMSConnection();
+		_messageTable = null;
+		// JmsLogsPlugin.getDefault().getPluginPreferences()
+		// .removePropertyChangeListener(_propertyChangeListener);
+		super.dispose();
+	}
 }

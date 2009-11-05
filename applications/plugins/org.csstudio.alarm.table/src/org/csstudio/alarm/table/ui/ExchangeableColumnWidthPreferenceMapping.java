@@ -14,21 +14,23 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 
-public class ColumnWidthPreferenceMapping {
+public class ExchangeableColumnWidthPreferenceMapping {
 
 	int[] _columnWidth;
 	TableViewer _tableViewer;
-
+	String _currentTopicSet;
+	
 	/**
 	 * Adding {@link DisposeListener} to each column that the column width can
 	 * be retrieved when the table is disposed.
 	 * 
 	 * @param tableViewer
-	 * @param currentTopicSet
+	 * @param currentTopicSet 
 	 * @param defaultTopicSet
 	 */
-	public ColumnWidthPreferenceMapping(TableViewer tableViewer) {
+	public ExchangeableColumnWidthPreferenceMapping(TableViewer tableViewer, String currentTopicSet) {
 		this._tableViewer = tableViewer;
+		_currentTopicSet = currentTopicSet;
 		TableColumn[] columns = tableViewer.getTable().getColumns();
 		_columnWidth = new int[columns.length];
 		if (columns.length > 0) {
@@ -51,7 +53,8 @@ public class ColumnWidthPreferenceMapping {
 	/**
 	 * Saves the width of each column in preferences.
 	 */
-	public void saveColumn(String columnSetPreferenceKey) {
+	public void saveColumn(String columnSetPreferenceKey,
+			String topicSetPreferenceKey) {
 		IPreferenceStore store = JmsLogsPlugin.getDefault()
 				.getPreferenceStore();
 		// if the view is not disposed but the topic set is changed the column
@@ -60,23 +63,41 @@ public class ColumnWidthPreferenceMapping {
 		if (_tableViewer != null) {
 			readColumnWidthFromTable();
 		}
-		// There is just one column, because this table has no connection with
-		// topic sets. But to prevent errors by '?' in the preference string we
-		// set a default topic set 0.
-		Integer indexOfTopicSet = 0;
+		// get the index of the topic set to identify the corresponding
+		// column set.
+		Integer indexOfTopicSet = getIndexOfTopicSet(topicSetPreferenceKey,
+				store, _currentTopicSet);
 		String newPreferenceColumnString = ""; //$NON-NLS-1$
-		String[] columnSets = store.getString(columnSetPreferenceKey).split(
-				"\\?"); //$NON-NLS-1$
+		String[] columnSets = store.getString(columnSetPreferenceKey)
+				.split("\\?"); //$NON-NLS-1$
 		String[] columns;
+		if ((indexOfTopicSet < 0) && (_currentTopicSet == null)) {
+			// archive view has no topic set, thus indexOfTopicSet is -1
 			columns = columnSets[0].split(";"); //$NON-NLS-1$
+		} else {
+			if (indexOfTopicSet < 0) {
+				// it is not the archive view and there are no previous topic
+				// set! Error in preference handling, do not save column set
+				return;
+			}
 			columns = columnSets[indexOfTopicSet].split(";"); //$NON-NLS-1$
+		}
 		newPreferenceColumnString = setNewColumnWidth(
 				newPreferenceColumnString, columns);
 		newPreferenceColumnString = newPreferenceColumnString.substring(0,
 				newPreferenceColumnString.length() - 1);
+		if ((indexOfTopicSet < 0) && (_currentTopicSet == null)) {
+			// archive view has no topic set, thus indexOfTopicSet is -1
 			columnSets[0] = newPreferenceColumnString;
+		} else {
+			columnSets[indexOfTopicSet] = newPreferenceColumnString;
+		}
 		StringBuffer sb = new StringBuffer();
-		store.setValue(columnSetPreferenceKey, columnSets[0]);
+		for (String columnSet : columnSets) {
+			sb.append(columnSet);
+			sb.append("?");
+		}
+		store.setValue(columnSetPreferenceKey, sb.toString());
 		if (store.needsSaving()) {
 			String qualifier = JmsLogsPlugin.getDefault().PLUGIN_ID;
 			IPreferencesService prefsService = Platform.getPreferencesService();
@@ -100,6 +121,22 @@ public class ColumnWidthPreferenceMapping {
 		return newPreferenceColumnString;
 	}
 
+	Integer getIndexOfTopicSet(String topicSetPreferenceKey,
+			IPreferenceStore store, String currenTopicSet) {
+		String topicSetsString = store.getString(topicSetPreferenceKey);
+		String[] topicSets = topicSetsString.split(";");
+		Integer topicSetIndex = 0;
+		for (String topicSet : topicSets) {
+			String[] topicProperties = topicSet.split("\\?");
+			if (topicProperties[2].equals(currenTopicSet)) {
+				return topicSetIndex;
+			}
+			topicSetIndex++;
+		}
+		return -1;
+	}
+
+	
 	void readColumnWidthFromTable() {
 		TableColumn[] columns = _tableViewer.getTable().getColumns();
 		_columnWidth = new int[columns.length];

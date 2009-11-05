@@ -19,16 +19,17 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.alarm.table.preferences;
+ package org.csstudio.alarm.table.preferences.archive;
 
 /**
  * Constant definitions for plug-in preferences
  */
-public class LogViewPreferenceConstants {
+public class ArchiveViewPreferenceConstants {
 
-	public static final String P_STRING = "Log.column_names";//$NON-NLS-1$
-	public static final String MAX = "Log.max_size"; //$NON-NLS-1$
-	//Sets of JMS topics to be monitored. List separated with
-	//';'. The optional name for the menu is separated with '?'.
-	public static final String TOPIC_SET = "Log.topic_set";
+	public static final String P_STRINGArch = "column names arch";
+	public static final String DATE_FORMAT = "date format";
+	public static final String MAX_ANSWER_SIZE = "maximum answer size";
+	public static final String MAX_ANSWER_SIZE_EXPORT = "maximum answer size export";
+
+
 }

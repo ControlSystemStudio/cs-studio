@@ -21,13 +21,15 @@
  */
 package org.csstudio.alarm.table.jms;
 
+import java.util.HashMap;
+
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
 
 import org.csstudio.alarm.table.JmsLogsPlugin;
-import org.csstudio.alarm.table.dataModel.MessageList;
-import org.csstudio.alarm.table.preferences.AlarmViewPreferenceConstants;
+import org.csstudio.alarm.table.preferences.JmsLogPreferenceConstants;
+import org.csstudio.alarm.table.preferences.JmsLogPreferencePage;
 import org.csstudio.alarm.table.utility.Functions;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -42,14 +44,18 @@ public class JmsAlarmMessageReceiver extends JmsMessageReceiver {
 
 	private boolean _playAlarmSound = true;
 
-	public JmsAlarmMessageReceiver(MessageList messageList) {
-		super(messageList);
+    HashMap<String, String> _severityColorMapping;
+	
+	public JmsAlarmMessageReceiver() {
+		super();
+		mapSeverityToColor();
 	}
 
 	@Override
 	public void onMessage(Message message) {
 		super.onMessage(message);
 		if ((message != null) && (message instanceof MapMessage)) {
+			CentralLogger.getInstance().debug(this, "alarm sound enabled: " + _playAlarmSound);
 			if (_playAlarmSound) {
 				try {
 					playAlarmSound((MapMessage) message);
@@ -73,16 +79,18 @@ public class JmsAlarmMessageReceiver extends JmsMessageReceiver {
 		IPreferenceStore preferenceStore = JmsLogsPlugin.getDefault()
 		.getPreferenceStore();
 		String mp3Path = null;
-		if (newMessage.getString("SEVERITY").equalsIgnoreCase("MAJOR")) {
-			mp3Path = preferenceStore.getString("Alarm.log_alarm_sound_file");
-		}
-		if (newMessage.getString("SEVERITY").equalsIgnoreCase("MINOR")) {
-			mp3Path = preferenceStore.getString("Alarm.log_alarm_sound_file_minor");
-		}
-		if (newMessage.getString("SEVERITY").equalsIgnoreCase("INVALID")) {
-			mp3Path = preferenceStore.getString("Alarm.log_alarm_sound_file_invalid");
-		}
+		mp3Path = _severityColorMapping.get(newMessage.getString("SEVERITY"));
+//		if (newMessage.getString("SEVERITY").equalsIgnoreCase("MAJOR")) {
+//			mp3Path = preferenceStore.getString("sound_0");
+//		}
+//		if (newMessage.getString("SEVERITY").equalsIgnoreCase("MINOR")) {
+//			mp3Path = preferenceStore.getString("sound_1");
+//		}
+//		if (newMessage.getString("SEVERITY").equalsIgnoreCase("INVALID")) {
+//			mp3Path = preferenceStore.getString("sound_2");
+//		}
 		if ((mp3Path != null) && (!mp3Path.equals(""))) {
+			CentralLogger.getInstance().debug(this, "play sound file: " + mp3Path);
 			Functions.playMp3(mp3Path);
 		}
 	}
@@ -90,4 +98,50 @@ public class JmsAlarmMessageReceiver extends JmsMessageReceiver {
 	public void setPlayAlarmSound(boolean playAlarmSound) {
 		this._playAlarmSound = playAlarmSound;
 	}
+	
+    /**
+     * Read mapping of severities to colors from preferences and put mapping in
+     * a local HashMap. (Performance)
+     */
+    private void mapSeverityToColor() {
+        IPreferenceStore store = new JmsLogPreferencePage()
+                .getPreferenceStore();
+        //
+        // if we connect to the ALARM topic - we get alarms
+        // we do not have to check for the type!
+        // if ((jmsm.getProperty("TYPE").equalsIgnoreCase("Alarm"))) {
+        _severityColorMapping = new HashMap<String, String>();
+
+        _severityColorMapping.put(store
+                .getString(JmsLogPreferenceConstants.KEY0),store
+                .getString(JmsLogPreferenceConstants.SOUND0));
+        _severityColorMapping.put(store
+        		.getString(JmsLogPreferenceConstants.KEY1),store
+        		.getString(JmsLogPreferenceConstants.SOUND1));
+        _severityColorMapping.put(store
+        		.getString(JmsLogPreferenceConstants.KEY2),store
+        		.getString(JmsLogPreferenceConstants.SOUND2));
+        _severityColorMapping.put(store
+        		.getString(JmsLogPreferenceConstants.KEY3),store
+        		.getString(JmsLogPreferenceConstants.SOUND3));
+        _severityColorMapping.put(store
+        		.getString(JmsLogPreferenceConstants.KEY4),store
+        		.getString(JmsLogPreferenceConstants.SOUND4));
+        _severityColorMapping.put(store
+        		.getString(JmsLogPreferenceConstants.KEY5),store
+        		.getString(JmsLogPreferenceConstants.SOUND5));
+        _severityColorMapping.put(store
+        		.getString(JmsLogPreferenceConstants.KEY6),store
+        		.getString(JmsLogPreferenceConstants.SOUND6));
+        _severityColorMapping.put(store
+        		.getString(JmsLogPreferenceConstants.KEY7),store
+        		.getString(JmsLogPreferenceConstants.SOUND7));
+        _severityColorMapping.put(store
+        		.getString(JmsLogPreferenceConstants.KEY8),store
+        		.getString(JmsLogPreferenceConstants.SOUND8));
+        _severityColorMapping.put(store
+        		.getString(JmsLogPreferenceConstants.KEY9),store
+        		.getString(JmsLogPreferenceConstants.SOUND9));
+
+    }
 }

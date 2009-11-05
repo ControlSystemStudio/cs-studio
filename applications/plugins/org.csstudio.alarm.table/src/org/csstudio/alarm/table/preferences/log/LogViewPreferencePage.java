@@ -19,10 +19,14 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.alarm.table.preferences;
+package org.csstudio.alarm.table.preferences.log;
 
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.internal.localization.Messages;
+import org.csstudio.alarm.table.preferences.ExchangeablePreferenceColumnTableEditor;
+import org.csstudio.alarm.table.preferences.PreferenceColumnTableEditor;
+import org.csstudio.alarm.table.preferences.PreferenceTopicTableEditor;
+import org.csstudio.alarm.table.preferences.alarm.AlarmViewPreferenceConstants;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
@@ -52,42 +56,21 @@ public class LogViewPreferencePage extends FieldEditorPreferencePage
 	}
 
 	public void createFieldEditors() {
+		PreferenceTopicTableEditor preferenceTopicTableEditor = new PreferenceTopicTableEditor(
+				LogViewPreferenceConstants.TOPIC_SET, "&Topic Sets: ",
+				getFieldEditorParent());
+		addField(preferenceTopicTableEditor);
+		ExchangeablePreferenceColumnTableEditor preferenceColumnTableEditor = new ExchangeablePreferenceColumnTableEditor(
+				LogViewPreferenceConstants.P_STRING, "Column Settings",
+				getFieldEditorParent());
+		preferenceTopicTableEditor.setColumnTableReference(preferenceColumnTableEditor);
+		addField(preferenceColumnTableEditor);
 
-		addField(new ListEditor(
-				LogViewPreferenceConstants.P_STRING,
-				LogViewPreferenceConstants.P_STRING + ": ", getFieldEditorParent()) { //$NON-NLS-1$
-
-			public String[] parseString(String stringList) {
-				return stringList.split(";"); //$NON-NLS-1$
-			}
-
-			public String getNewInputObject() {
-				InputDialog inputDialog = new InputDialog(
-						getFieldEditorParent().getShell(),
-						Messages.newColumnName, Messages.column, "", null); //$NON-NLS-1$
-				if (inputDialog.open() == Window.OK) {
-					return inputDialog.getValue();
-				}
-				return null;
-			}
-
-			public String createList(String[] items) {
-				String temp = ""; //$NON-NLS-1$
-				for (int i = 0; i < items.length; i++) {
-					temp = temp + items[i] + ";"; //$NON-NLS-1$
-				}
-				return temp;
-			}
-		});
-		addField(new FontFieldEditor(AlarmViewPreferenceConstants.LOG_TABLE_FONT, "Table Font", "Major", getFieldEditorParent()));
 		Group g1 = new Group(getFieldEditorParent(), SWT.NONE);
 		g1.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 4, 1));
 		
 		addField(new StringFieldEditor(LogViewPreferenceConstants.MAX,
 				LogViewPreferenceConstants.MAX + ": ", g1)); //$NON-NLS-1$
-		addField(new PreferenceTableEditor(
-				LogViewPreferenceConstants.TOPIC_SET, "&Topic Sets: ",
-				getFieldEditorParent()));
 	}
 
 	public void init(IWorkbench workbench) {

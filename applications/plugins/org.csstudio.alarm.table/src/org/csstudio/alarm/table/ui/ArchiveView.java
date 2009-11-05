@@ -37,8 +37,8 @@ import org.csstudio.alarm.table.dataModel.MessageList;
 import org.csstudio.alarm.table.database.AsynchronousDatabaseAccess;
 import org.csstudio.alarm.table.database.IDatabaseAccessListener;
 import org.csstudio.alarm.table.internal.localization.Messages;
-import org.csstudio.alarm.table.preferences.ArchiveViewPreferenceConstants;
-import org.csstudio.alarm.table.preferences.LogViewPreferenceConstants;
+import org.csstudio.alarm.table.preferences.archive.ArchiveViewPreferenceConstants;
+import org.csstudio.alarm.table.preferences.log.LogViewPreferenceConstants;
 import org.csstudio.alarm.table.ui.messagetable.MessageTable;
 import org.csstudio.apputil.time.StartEndTimeParser;
 import org.csstudio.platform.data.TimestampFactory;
@@ -49,6 +49,8 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -62,6 +64,7 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IMemento;
@@ -178,6 +181,7 @@ public class ArchiveView extends ViewPart {
         // IActionBars bars = getViewSite().getActionBars();
         // fillLocalToolBar(bars.getToolBarManager());
 
+        addControlListenerToColumns(ArchiveViewPreferenceConstants.P_STRINGArch);
         getSite().setSelectionProvider(_tableViewer);
 
         makeActions();
@@ -684,11 +688,32 @@ public class ArchiveView extends ViewPart {
     public void setFocus() {
     }
 
+	/**
+	 * Write new Column width when a column is resized.
+	 */
+	void addControlListenerToColumns(final String colSetPref) {
+		TableColumn[] columns = _tableViewer.getTable().getColumns();
+		for (TableColumn tableColumn : columns) {
+			tableColumn.addControlListener(new ControlListener() {
+				
+				@Override
+				public void controlResized(ControlEvent e) {
+					_columnMapping.saveColumn(colSetPref);		
+				}
+				
+				@Override 
+				public void controlMoved(ControlEvent e) {
+					//do nothing
+				}
+			});
+		}
+	}
+    
     /** {@inheritDoc} */
     @Override
     public final void dispose() {
+    	_columnMapping.saveColumn(ArchiveViewPreferenceConstants.P_STRINGArch);
         super.dispose();
-        _columnMapping.saveColumn(ArchiveViewPreferenceConstants.P_STRINGArch);
         // JmsLogsPlugin.getDefault().getPluginPreferences()
         // .removePropertyChangeListener(_columnPropertyChangeListener);
     }

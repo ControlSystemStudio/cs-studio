@@ -59,10 +59,6 @@ public class JmsMessageReceiver implements MessageListener {
      */
     IMessageListenerSession _listenerSession;
 
-    public JmsMessageReceiver(MessageList messageList) {
-        this._messageList = messageList;
-    }
-
     /**
      * A new message is received. Add it to the model.
      */
@@ -117,13 +113,14 @@ public class JmsMessageReceiver implements MessageListener {
      * @param _deafultTopicSet
      *            JMS topics to be monitored
      */
-    public void initializeJMSConnection(String defaultTopicSet) {
+    public void initializeJMSConnection(List<String> list, MessageList messageList) {
+        _messageList = messageList;
         String[] topicList = null;
-        if ((defaultTopicSet == null) || (defaultTopicSet.length() == 0)) {
+        if ((list == null) || (list.size() == 0)) {
             CentralLogger.getInstance().error(this,
                     "Could not initialize JMS Listener. JMS topics == NULL!");
         } else {
-            topicList = defaultTopicSet.split(",");
+            topicList = list.toArray(new String[0]);
         }
         try {
             if ((_listenerSession != null) && (_listenerSession.isActive())) {
@@ -136,7 +133,7 @@ public class JmsMessageReceiver implements MessageListener {
                     .info(
                             this,
                             "Initialize JMS connection with topics: "
-                                    + defaultTopicSet);
+                                    + list);
         } catch (JMSException e) {
             CentralLogger.getInstance().error(this,
                     "JMS Connection error: " + e.getMessage());

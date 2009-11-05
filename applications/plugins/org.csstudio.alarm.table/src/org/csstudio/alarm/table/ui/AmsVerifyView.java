@@ -30,10 +30,12 @@ import javax.jms.MapMessage;
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.dataModel.LogMessageList;
 import org.csstudio.alarm.table.internal.localization.Messages;
+import org.csstudio.alarm.table.jms.ISendMapMessage;
 import org.csstudio.alarm.table.jms.JmsMessageReceiver;
 import org.csstudio.alarm.table.jms.SendMapMessage;
-import org.csstudio.alarm.table.preferences.AmsVerifyViewPreferenceConstants;
-import org.csstudio.alarm.table.preferences.LogViewPreferenceConstants;
+import org.csstudio.alarm.table.preferences.TopicSetColumnService;
+import org.csstudio.alarm.table.preferences.log.LogViewPreferenceConstants;
+import org.csstudio.alarm.table.preferences.verifier.AmsVerifyViewPreferenceConstants;
 import org.csstudio.alarm.table.ui.messagetable.MessageTable;
 import org.csstudio.platform.CSSPlatformInfo;
 import org.csstudio.platform.logging.CentralLogger;
@@ -74,18 +76,18 @@ public class AmsVerifyView extends LogView {
     @Override
     public void createPartControl(Composite parent) {
 
-        // in alarm table the 'ack' column must be the first one!
-        _preferenceColumnString = AmsVerifyViewPreferenceConstants.P_STRING;
-        String[] _columnNames = JmsLogsPlugin.getDefault()
-                .getPluginPreferences().getString(
-                        _preferenceColumnString).split(";");
-        readPreferenceTopics(JmsLogsPlugin.getDefault().getPluginPreferences()
-                .getString(AmsVerifyViewPreferenceConstants.TOPIC_SET));
-
-        // create the table model
-        _messageList = new LogMessageList(100);
-
-        GridLayout grid = new GridLayout();
+		_parent = parent;
+    	
+		// Read column names and JMS topic settings from preferences
+		_topicSetColumnService = new TopicSetColumnService(
+				LogViewPreferenceConstants.TOPIC_SET,
+				LogViewPreferenceConstants.P_STRING);
+		// is there already a topicSet from previous session?
+		if (_currentTopicSet == null) {
+			_currentTopicSet = _topicSetColumnService.getDefaultTopicSet();
+		}
+		
+		GridLayout grid = new GridLayout();
         grid.numColumns = 1;
         parent.setLayout(grid);
         Composite logTableManagementComposite = new Composite(parent, SWT.NONE);
@@ -99,18 +101,11 @@ public class AmsVerifyView extends LogView {
         addVerifyItems(logTableManagementComposite);
         addRunningSinceGroup(logTableManagementComposite);
 
-        // setup message table with context menu etc.
-        _tableViewer = new TableViewer(parent, SWT.MULTI | SWT.FULL_SELECTION);
-
-        _messageTable = new MessageTable(_tableViewer, _columnNames,
-                _messageList);
-        _messageTable.makeContextMenu(getSite());
-
-        _columnMapping = new ColumnWidthPreferenceMapping(_tableViewer);
-
-        getSite().setSelectionProvider(_tableViewer);
-
+        initializeMessageTable();
+        
         makeActions();
+        
+        parent.pack();
 
 //        
 //        // create jface table viewer with paramter 1 for log table version
@@ -131,11 +126,53 @@ public class AmsVerifyView extends LogView {
 //        JmsLogsPlugin.getDefault().getPluginPreferences()
 //                .addPropertyChangeListener(_propertyChangeListener);
 //
-        _jmsMessageReceiver = new JmsMessageReceiver(_messageList);
+        _jmsMessageReceiver = new JmsMessageReceiver();
 
-        _jmsMessageReceiver.initializeJMSConnection(_defaultTopicSet);
+
     }
 
+	/**
+	 * Initialization of {@link MessageTable} with {@link TableViewer}, column
+	 * names etc for startup of this view. If the user selects another topic set
+	 * this method is also executed and the previous table will be disposed.
+	 * 
+	 * @param parent
+	 * @param _columnNames
+	 */
+	void initializeMessageTable() {
+
+		// Initialize JMS message list
+		if(_columnMapping != null) {
+		_columnMapping.saveColumn(AmsVerifyViewPreferenceConstants.P_STRING,
+				AmsVerifyViewPreferenceConstants.TOPIC_SET);
+		}
+		_topicSetColumnService = new TopicSetColumnService(
+				AmsVerifyViewPreferenceConstants.TOPIC_SET,
+				AmsVerifyViewPreferenceConstants.P_STRING);
+		// is there already a MessageTable delete it and the message list.
+		if (_messageTable != null) {
+			_messageTable.disposeMessageTable();
+			_tableViewer = null;
+			_messageTable = null;
+			_messageList = null;
+		}
+		_messageList = new LogMessageList(100);
+		// setup message table with context menu etc.
+		_tableViewer = new TableViewer(_parent, SWT.MULTI | SWT.FULL_SELECTION);
+
+		_messageTable = new MessageTable(_tableViewer, _topicSetColumnService
+				.getColumnSet(_currentTopicSet), _messageList);
+		_messageTable.makeContextMenu(getSite());
+		_jmsMessageReceiver.initializeJMSConnection(_topicSetColumnService
+				.getJMSTopics(_currentTopicSet), _messageList);
+
+		_columnMapping = new ExchangeableColumnWidthPreferenceMapping(_tableViewer, _currentTopicSet);
+		setCurrentTimeToRunningSince();
+		getSite().setSelectionProvider(_tableViewer);
+		_parent.layout();
+
+	}
+    
     private void addVerifyItems(Composite logTableManagementComposite) {
 
         Group verifyItemGroup = new Group(logTableManagementComposite, SWT.NONE);
@@ -204,7 +241,7 @@ public class AmsVerifyView extends LogView {
 
     private void sendVerifyMessage(String textPropertyValue) {
         try {
-            SendMapMessage sender = SendMapMessage.getInstance();
+            ISendMapMessage sender = JmsLogsPlugin.getDefault().getSendMapMessage();
 
             SimpleDateFormat sdf = new SimpleDateFormat(JMS_DATE_FORMAT);
             java.util.Date currentDate = new java.util.Date();

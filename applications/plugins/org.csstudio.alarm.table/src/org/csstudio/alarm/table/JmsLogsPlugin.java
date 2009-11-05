@@ -24,8 +24,13 @@ package org.csstudio.alarm.table;
 
 
 
+import org.csstudio.alarm.dbaccess.MessageTypes;
 import org.csstudio.alarm.dbaccess.archivedb.ILogMessageArchiveAccess;
 import org.csstudio.alarm.dbaccess.archivedb.IMessageTypes;
+import org.csstudio.alarm.table.jms.ISendMapMessage;
+import org.csstudio.alarm.table.jms.SendMapMessage;
+import org.csstudio.alarm.table.preferences.ISeverityMapping;
+import org.csstudio.alarm.table.preferences.SeverityMapping;
 import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.platform.ui.AbstractCssUiPlugin;
 import org.eclipse.ui.plugin.*;
@@ -34,6 +39,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
+import org.osgi.framework.ServiceRegistration;
 
 
 
@@ -55,6 +61,14 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
     private ServiceReference _serviceReferenceArchiveAccess;
 
     private ILogMessageArchiveAccess _archiveAccess;
+
+	private ServiceReference _serviceReferenceSeverityMapping;
+
+	private ISeverityMapping _severityMapping;
+
+	private ServiceReference _serviceReferenceSendMapMessage;
+
+	private ISendMapMessage _sendMapMessage;
 	
 
     /**
@@ -73,6 +87,26 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
 	 * This method is called upon plug-in activation
 	 */
 	public void doStart(BundleContext context) throws Exception {
+        ISeverityMapping severityMapping = new SeverityMapping();
+		
+		ServiceRegistration severityMappingRegistration = context.registerService(
+                ISeverityMapping.class.getName(), severityMapping, null);
+
+		_serviceReferenceSeverityMapping = context.getServiceReference(ISeverityMapping.class.getName());
+		if (_serviceReferenceSeverityMapping != null) {
+			_severityMapping = (ISeverityMapping) context.getService(_serviceReferenceSeverityMapping);
+		}
+
+		ISendMapMessage sendMapMessage = new SendMapMessage();
+
+		ServiceRegistration sendMapMessageRegistration = context.registerService(
+				ISendMapMessage.class.getName(), sendMapMessage, null);
+		
+		_serviceReferenceSendMapMessage = context.getServiceReference(ISendMapMessage.class.getName());
+		if (_serviceReferenceSendMapMessage != null) {
+			_sendMapMessage = (ISendMapMessage) context.getService(_serviceReferenceSendMapMessage);
+		}
+		
         _serviceReferenceMessageTypes = context.getServiceReference(IMessageTypes.class.getName());
         if (_serviceReferenceMessageTypes != null) {
             _messageTypes = (IMessageTypes) context.getService(_serviceReferenceMessageTypes);
@@ -137,11 +171,19 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
         getLog().log(new Status(type, PLUGIN_ID, IStatus.OK, message, e));
     }
 
+    public ISeverityMapping getSeverityMapping() {
+    	return _severityMapping;
+    }
+    
     public IMessageTypes getMessageTypes() {
         return _messageTypes;
     }
     
     public ILogMessageArchiveAccess getArchiveAccess() {
         return _archiveAccess;
+    }
+
+    public ISendMapMessage getSendMapMessage() {
+    	return _sendMapMessage;
     }
 }

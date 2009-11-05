@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.alarm.table.preferences;
+package org.csstudio.alarm.table.preferences.alarm;
 
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
@@ -62,10 +62,6 @@ public class AlarmViewPreferenceInitializer extends
 		);
 		store.setDefault(AlarmViewPreferenceConstants.LOG_ALARM_SOUND_FILE_MAJOR,
 				"..\\beep.mp3"); //$NON-NLS-1$	
-		store.setDefault(AlarmViewPreferenceConstants.LOG_ALARM_SOUND_FILE_MINOR,
-		"../beep1.mp3"); //$NON-NLS-1$	
-		store.setDefault(AlarmViewPreferenceConstants.LOG_ALARM_SOUND_FILE_INVALID,
-		""); //$NON-NLS-1$	
 		store
 		.setDefault(AlarmViewPreferenceConstants.TOPIC_SET,
 				"?ALARM,ACK?MKS-2;?TEST_FOREWARD?test foreward filter;"); //$NON-NLS-1$

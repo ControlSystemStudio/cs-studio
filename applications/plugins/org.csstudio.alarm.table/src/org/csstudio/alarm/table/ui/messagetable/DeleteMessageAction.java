@@ -67,13 +67,18 @@ public class DeleteMessageAction extends Action {
     @Override
     public void run() {
         TableItem[] selection = _table.getTable().getSelection();
-        for (TableItem tableItem : selection) {
-            if (tableItem.getData() instanceof BasicMessage) {
-                _messageList.removeMessage((BasicMessage) tableItem.getData());
+        BasicMessage[] messageSelection = new BasicMessage[selection.length];
+        for (int i = 0; i < selection.length; i++) {
+//        for (TableItem tableItem : selection) {
+//            if (tableItem.getData() instanceof BasicMessage) {
+            	if (selection[i].getData() instanceof BasicMessage) {
+                messageSelection[i] = (BasicMessage) selection[i].getData();
+//                _messageList.removeMessage((BasicMessage) tableItem.getData());
             } else {
                 CentralLogger.getInstance().warn(this,
                         "Unknown object in selection!");
             }
         }
+        _messageList.removeMessageArray(messageSelection);
     }
 }

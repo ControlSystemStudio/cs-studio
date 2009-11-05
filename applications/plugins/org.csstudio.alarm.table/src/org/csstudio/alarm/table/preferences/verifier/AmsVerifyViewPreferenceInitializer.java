@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.alarm.table.preferences;
+package org.csstudio.alarm.table.preferences.verifier;
 
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
@@ -28,7 +28,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 /**
  * Class used to initialize default preference values.
  */
-public class LogViewPreferenceInitializer extends
+public class AmsVerifyViewPreferenceInitializer extends
 		AbstractPreferenceInitializer {
 
 	/*
@@ -40,7 +40,7 @@ public class LogViewPreferenceInitializer extends
 	public void initializeDefaultPreferences() {
 		IPreferenceStore store = JmsLogsPlugin.getDefault()
 				.getPreferenceStore();
-		store.setDefault(LogViewPreferenceConstants.P_STRING, "ACK" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
+		store.setDefault(AmsVerifyViewPreferenceConstants.P_STRING, 
 				"TYPE" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
 				"EVENTTIME" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
 				"TEXT" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
@@ -59,9 +59,9 @@ public class LogViewPreferenceInitializer extends
 				"DESTINATION" //$NON-NLS-1$
 		);
 
-		store.setDefault(LogViewPreferenceConstants.MAX, 200);
+		store.setDefault(AmsVerifyViewPreferenceConstants.MAX, 200);
 		store
-				.setDefault(LogViewPreferenceConstants.TOPIC_SET,
+				.setDefault(AmsVerifyViewPreferenceConstants.TOPIC_SET,
 						"?LOG,ALARM,PUT_LOG,ACK?MKS-2;?TEST_FOREWARD?test foreward filter;"); //$NON-NLS-1$
 	}
 }

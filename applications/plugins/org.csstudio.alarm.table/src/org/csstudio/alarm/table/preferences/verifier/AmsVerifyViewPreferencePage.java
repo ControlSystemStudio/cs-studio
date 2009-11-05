@@ -19,10 +19,14 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.alarm.table.preferences;
+package org.csstudio.alarm.table.preferences.verifier;
 
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.internal.localization.Messages;
+import org.csstudio.alarm.table.preferences.ExchangeablePreferenceColumnTableEditor;
+import org.csstudio.alarm.table.preferences.PreferenceColumnTableEditor;
+import org.csstudio.alarm.table.preferences.PreferenceTopicTableEditor;
+import org.csstudio.alarm.table.preferences.alarm.AlarmViewPreferenceConstants;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.ListEditor;
@@ -46,35 +50,16 @@ public class AmsVerifyViewPreferencePage extends FieldEditorPreferencePage
 
 	public void createFieldEditors() {
 
-		addField(new ListEditor(
-				AmsVerifyViewPreferenceConstants.P_STRING,
-				AmsVerifyViewPreferenceConstants.P_STRING + ": ", getFieldEditorParent()) { //$NON-NLS-1$
-
-			public String[] parseString(String stringList) {
-				return stringList.split(";"); //$NON-NLS-1$
-			}
-
-			public String getNewInputObject() {
-				InputDialog inputDialog = new InputDialog(
-						getFieldEditorParent().getShell(),
-						Messages.newColumnName, Messages.column, "", null); //$NON-NLS-1$
-				if (inputDialog.open() == Window.OK) {
-					return inputDialog.getValue();
-				}
-				return null;
-			}
-
-			public String createList(String[] items) {
-				String temp = ""; //$NON-NLS-1$
-				for (int i = 0; i < items.length; i++) {
-					temp = temp + items[i] + ";"; //$NON-NLS-1$
-				}
-				return temp;
-			}
-		});
-		addField(new PreferenceTableEditor(
+		PreferenceTopicTableEditor preferenceTopicTableEditor = new PreferenceTopicTableEditor(
 				AmsVerifyViewPreferenceConstants.TOPIC_SET, "&Topic Sets: ",
-				getFieldEditorParent()));
+				getFieldEditorParent());
+		addField(preferenceTopicTableEditor);
+
+		ExchangeablePreferenceColumnTableEditor preferenceColumnTableEditor = new ExchangeablePreferenceColumnTableEditor(
+				AmsVerifyViewPreferenceConstants.P_STRING, "Column Settings",
+				getFieldEditorParent());
+		preferenceTopicTableEditor.setColumnTableReference(preferenceColumnTableEditor);
+		addField(preferenceColumnTableEditor);
 	}
 
 	public void init(IWorkbench workbench) {

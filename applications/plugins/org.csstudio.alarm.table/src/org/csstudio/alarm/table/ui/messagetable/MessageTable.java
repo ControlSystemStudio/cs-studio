@@ -33,6 +33,8 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -101,6 +103,10 @@ public class MessageTable {
         new ProcessVariableDragSource(_tableViewer.getTable(), _tableViewer);
     }
 
+    public void disposeMessageTable() {
+    	_tableViewer.getTable().dispose();
+    }
+
     /**
      * Initialize table with content-, label provider, sorter and input
      * 
@@ -111,9 +117,9 @@ public class MessageTable {
         _tableViewer.setLabelProvider(new MessageTableLabelProvider(
                 pureColumnNames));
         _tableViewer.setComparator(new MessageTableMessageSorter(_tableViewer));
-
     }
 
+    
     private String[] setTableColumns(String[] colNames) {
         columnWidth = new int[colNames.length];
         columnHeader = colNames;

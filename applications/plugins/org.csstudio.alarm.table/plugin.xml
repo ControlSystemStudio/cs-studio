@@ -72,22 +72,22 @@
          point="org.eclipse.ui.preferencePages">
       <page
             category="de.desy.css.jmsLogs.page3"
-            class="org.csstudio.alarm.table.preferences.LogViewPreferencePage"
+            class="org.csstudio.alarm.table.preferences.log.LogViewPreferencePage"
             id="de.desy.css.jmsLogs.preferences.JmsLogsPreferencePage"
             name="Log Table"/>
       <page
             category="de.desy.css.jmsLogs.page3"
-            class="org.csstudio.alarm.table.preferences.AlarmViewPreferencePage"
+            class="org.csstudio.alarm.table.preferences.alarm.AlarmViewPreferencePage"
             id="de.desy.css.jmsLogs.preferences.AlarmViewerPreferencePage"
             name="Alarm Table"/>
       <page
             category="de.desy.css.jmsLogs.page3"
-            class="org.csstudio.alarm.table.preferences.ArchiveViewPreferencePage"
+            class="org.csstudio.alarm.table.preferences.archive.ArchiveViewPreferencePage"
             id="de.desy.css.jmsLogs.preferences.LogArchiveViewerPreferencePage"
             name="Archive Table"/>
       <page
             category="de.desy.css.jmsLogs.page3"
-            class="org.csstudio.alarm.table.preferences.AmsVerifyViewPreferencePage"
+            class="org.csstudio.alarm.table.preferences.verifier.AmsVerifyViewPreferencePage"
             id="de.desy.css.jmsLogs.preferences.AmsVerifyViewerPreferencePage"
             name="AMS Verifier"/>
       <page
@@ -98,11 +98,11 @@
    </extension>
    <extension
          point="org.eclipse.core.runtime.preferences">
-      <initializer class="org.csstudio.alarm.table.preferences.LogViewPreferenceInitializer"/>
-      <initializer class="org.csstudio.alarm.table.preferences.ArchiveViewPreferenceInitializer"/>
+      <initializer class="org.csstudio.alarm.table.preferences.log.LogViewPreferenceInitializer"/>
+      <initializer class="org.csstudio.alarm.table.preferences.archive.ArchiveViewPreferenceInitializer"/>
       <initializer class="org.csstudio.alarm.table.preferences.JmsLogPreferenceInitializer"/>
-      <initializer class="org.csstudio.alarm.table.preferences.AlarmViewPreferenceInitializer"/>
-      <initializer class="org.csstudio.alarm.table.preferences.AmsVerifyViewPreferenceInitializer"/>
+      <initializer class="org.csstudio.alarm.table.preferences.alarm.AlarmViewPreferenceInitializer"/>
+      <initializer class="org.csstudio.alarm.table.preferences.verifier.AmsVerifyViewPreferenceInitializer"/>
    </extension>
    <extension
          point="org.eclipse.ui.actionSets">

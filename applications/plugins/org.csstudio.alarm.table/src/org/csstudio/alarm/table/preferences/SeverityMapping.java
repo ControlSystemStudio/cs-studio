@@ -1,55 +1,56 @@
 package org.csstudio.alarm.table.preferences;
 
+import java.util.HashMap;
+
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.eclipse.jface.preference.IPreferenceStore;
 
-public class SeverityMapping {
+public class SeverityMapping implements ISeverityMapping {
 
+	private HashMap<String, String> _severityKeyValueMapping = new HashMap<String, String>();
+	
+	private HashMap<String, Integer> _severityKeyNumberMapping = new HashMap<String, Integer>();
+
+	public SeverityMapping() {
+		IPreferenceStore preferenceStore = JmsLogsPlugin.getDefault()
+				.getPreferenceStore();
+
+		_severityKeyValueMapping.put(preferenceStore.getString("key 0"), preferenceStore.getString("value 0"));
+		_severityKeyValueMapping.put(preferenceStore.getString("key 1"), preferenceStore.getString("value 1"));
+		_severityKeyValueMapping.put(preferenceStore.getString("key 2"), preferenceStore.getString("value 2"));
+		_severityKeyValueMapping.put(preferenceStore.getString("key 3"), preferenceStore.getString("value 3"));
+		_severityKeyValueMapping.put(preferenceStore.getString("key 4"), preferenceStore.getString("value 4"));
+		_severityKeyValueMapping.put(preferenceStore.getString("key 5"), preferenceStore.getString("value 5"));
+		_severityKeyValueMapping.put(preferenceStore.getString("key 6"), preferenceStore.getString("value 6"));
+		_severityKeyValueMapping.put(preferenceStore.getString("key 7"), preferenceStore.getString("value 7"));
+		_severityKeyValueMapping.put(preferenceStore.getString("key 8"), preferenceStore.getString("value 8"));
+		_severityKeyValueMapping.put(preferenceStore.getString("key 9"), preferenceStore.getString("value 9"));
+
+		_severityKeyNumberMapping.put(preferenceStore.getString("key 0"), 0);
+		_severityKeyNumberMapping.put(preferenceStore.getString("key 1"), 1);
+		_severityKeyNumberMapping.put(preferenceStore.getString("key 2"), 2);
+		_severityKeyNumberMapping.put(preferenceStore.getString("key 3"), 3);
+		_severityKeyNumberMapping.put(preferenceStore.getString("key 4"), 4);
+		_severityKeyNumberMapping.put(preferenceStore.getString("key 5"), 5);
+		_severityKeyNumberMapping.put(preferenceStore.getString("key 6"), 6);
+		_severityKeyNumberMapping.put(preferenceStore.getString("key 7"), 7);
+		_severityKeyNumberMapping.put(preferenceStore.getString("key 8"), 8);
+		_severityKeyNumberMapping.put(preferenceStore.getString("key 9"), 9);
+	}
+
+	
     /**
      * returns the severity value for the severity key of this message.
      * 
      * @return
      */
-    public static String findSeverityValue(String severityKey) {
-
-        if (severityKey.equals("")) {
-            return "";
+    public String findSeverityValue(String severityKey) {
+    	String severityValue = _severityKeyValueMapping.get(severityKey);
+        if (severityValue == null) {
+            return "invalid severity";
+        } else {
+        	return severityValue;
         }
-        IPreferenceStore preferenceStore = JmsLogsPlugin.getDefault()
-                .getPreferenceStore();
-
-        if (severityKey.equals(preferenceStore.getString("key 0"))) { //$NON-NLS-1$
-            return preferenceStore.getString("value 0"); //$NON-NLS-1$
-        }
-        if (severityKey.equals(preferenceStore.getString("key 1"))) { //$NON-NLS-1$
-            return preferenceStore.getString("value 1"); //$NON-NLS-1$
-        }
-        if (severityKey.equals(preferenceStore.getString("key 2"))) { //$NON-NLS-1$
-            return preferenceStore.getString("value 2"); //$NON-NLS-1$
-        }
-        if (severityKey.equals(preferenceStore.getString("key 3"))) { //$NON-NLS-1$
-            return preferenceStore.getString("value 3"); //$NON-NLS-1$
-        }
-        if (severityKey.equals(preferenceStore.getString("key 4"))) { //$NON-NLS-1$
-            return preferenceStore.getString("value 4"); //$NON-NLS-1$
-        }
-        if (severityKey.equals(preferenceStore.getString("key 5"))) { //$NON-NLS-1$
-            return preferenceStore.getString("value 5"); //$NON-NLS-1$
-        }
-        if (severityKey.equals(preferenceStore.getString("key 6"))) { //$NON-NLS-1$
-            return preferenceStore.getString("value 6"); //$NON-NLS-1$
-        }
-        if (severityKey.equals(preferenceStore.getString("key 7"))) { //$NON-NLS-1$
-            return preferenceStore.getString("value 7"); //$NON-NLS-1$
-        }
-        if (severityKey.equals(preferenceStore.getString("key 8"))) { //$NON-NLS-1$
-            return preferenceStore.getString("value 8"); //$NON-NLS-1$
-        }
-        if (severityKey.equals(preferenceStore.getString("key 9"))) { //$NON-NLS-1$
-            return preferenceStore.getString("value 9"); //$NON-NLS-1$
-        }
-
-        return "invalid severity";
     }
 
     /**
@@ -58,47 +59,13 @@ public class SeverityMapping {
      * 
      * @return
      */
-    public static int getSeverityNumber(String severityKey) {
-        IPreferenceStore preferenceStore = JmsLogsPlugin.getDefault()
-                .getPreferenceStore();
-        
-        if(severityKey == null) {
-        	return -1;
-        }
-
-        if (severityKey.equals(preferenceStore.getString("key 0"))) { //$NON-NLS-1$
-            return 0;
-        }
-        if (severityKey.equals(preferenceStore.getString("key 1"))) { //$NON-NLS-1$
-            return 1;
-        }
-        if (severityKey.equals(preferenceStore.getString("key 2"))) { //$NON-NLS-1$
-            return 2;
-        }
-        if (severityKey.equals(preferenceStore.getString("key 3"))) { //$NON-NLS-1$
-            return 3;
-        }
-        if (severityKey.equals(preferenceStore.getString("key 4"))) { //$NON-NLS-1$
-            return 4;
-        }
-        if (severityKey.equals(preferenceStore.getString("key 5"))) { //$NON-NLS-1$
-            return 5;
-        }
-        if (severityKey.equals(preferenceStore.getString("key 6"))) { //$NON-NLS-1$
-            return 6;
-        }
-        if (severityKey.equals(preferenceStore.getString("key 7"))) { //$NON-NLS-1$
-            return 7;
-        }
-        if (severityKey.equals(preferenceStore.getString("key 8"))) { //$NON-NLS-1$
-            return 8;
-        }
-        if (severityKey.equals(preferenceStore.getString("key 9"))) { //$NON-NLS-1$
-            return 9;
-        }
-
-        return -1;
-
+    public int getSeverityNumber(String severityKey) {
+    	Integer severityNumber = _severityKeyNumberMapping.get(severityKey);
+    	//if there is no mapping return 10, that means the lowest severity
+    	if (severityNumber == null) {
+    		return 10;
+    	} else {
+    		return severityNumber;
+    	}
     }
-    
 }

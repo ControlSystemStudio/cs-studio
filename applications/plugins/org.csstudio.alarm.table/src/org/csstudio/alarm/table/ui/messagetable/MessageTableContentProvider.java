@@ -38,121 +38,140 @@ import org.eclipse.swt.widgets.TableItem;
  * 
  */
 public class MessageTableContentProvider implements IMessageViewer,
-        IStructuredContentProvider {
+		IStructuredContentProvider {
 
-    private TableViewer _tableViewer;
+	private TableViewer _tableViewer;
 
-    private MessageList _messageList;
+	private MessageList _messageList;
 
-    public MessageTableContentProvider(TableViewer tv, MessageList jmsml) {
-        _tableViewer = tv;
-        _messageList = jmsml;
-    }
+	public MessageTableContentProvider(TableViewer tv, MessageList jmsml) {
+		_tableViewer = tv;
+		_messageList = jmsml;
+	}
 
-    public void addJMSMessage(final BasicMessage jmsm) {
-        Display.getDefault().asyncExec(new Runnable() {
-            public void run() {
-                try {
-                    _tableViewer.add(jmsm);
-//                    _tableViewer.refresh();
-                    CentralLogger.getInstance().debug(this, "Add Message, Number of Msg in Model: " + _messageList.getSize() + "; Number of Msg in Table: " + _tableViewer.getTable().getItemCount());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    JmsLogsPlugin.logException("", e); //$NON-NLS-1$
-                }
-            }
-        });
+	public void addJMSMessage(final BasicMessage jmsm) {
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				try {
+					if (!_tableViewer.getTable().isDisposed()) {
+						_tableViewer.add(jmsm);
+					}
+					// CentralLogger.getInstance().debug(this,
+					// "Add Message, Number of Msg in Model: " +
+					// _messageList.getSize() + "; Number of Msg in Table: " +
+					// _tableViewer.getTable().getItemCount());
+				} catch (Exception e) {
+					e.printStackTrace();
+					JmsLogsPlugin.logException("", e); //$NON-NLS-1$
+				}
+			}
+		});
 
-    }
+	}
 
-    public void addJMSMessages(final BasicMessage[] jmsm) {
-        Display.getDefault().asyncExec(new Runnable() {
-            public void run() {
-                try {
-                    _tableViewer.add(jmsm);
-//                    _tableViewer.refresh();
-                    CentralLogger.getInstance().debug(this, "Add Messages[], Number of Msg in Model: " + _messageList.getSize() + "; Number of Msg in Table: " + _tableViewer.getTable().getItemCount());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    JmsLogsPlugin.logException("", e); //$NON-NLS-1$
-                }
-            }
-        });
-    }
+	public void addJMSMessages(final BasicMessage[] jmsm) {
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				try {
+					_tableViewer.add(jmsm);
+					// CentralLogger.getInstance().debug(this,
+					// "Add Messages[], Number of Msg in Model: " +
+					// _messageList.getSize() + "; Number of Msg in Table: " +
+					// _tableViewer.getTable().getItemCount());
+				} catch (Exception e) {
+					e.printStackTrace();
+					JmsLogsPlugin.logException("", e); //$NON-NLS-1$
+				}
+			}
+		});
+	}
 
-    public void removeJMSMessage(final BasicMessage jmsm) {
-        Display.getDefault().asyncExec(new Runnable() {
-            public void run() {
-                try {
-                    _tableViewer.remove(jmsm);
-//                    _tableViewer.refresh();
-                    CentralLogger.getInstance().debug(this, "Remove Message, Number of Msg in Model: " + _messageList.getSize() + "; Number of Msg in Table: " + _tableViewer.getTable().getItemCount());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    JmsLogsPlugin.logException("", e); //$NON-NLS-1$
-                }
-            }
-        });
-    }
+	public void removeJMSMessage(final BasicMessage jmsm) {
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				try {
+					if (!_tableViewer.getTable().isDisposed()) {
+						_tableViewer.remove(jmsm);
+					}
+					// CentralLogger.getInstance().debug(this,
+					// "Remove Message, Number of Msg in Model: " +
+					// _messageList.getSize() + "; Number of Msg in Table: " +
+					// _tableViewer.getTable().getItemCount());
+				} catch (Exception e) {
+					e.printStackTrace();
+					JmsLogsPlugin.logException("", e); //$NON-NLS-1$
+				}
+			}
+		});
+	}
 
-    public void removeJMSMessage(final BasicMessage[] jmsm) {
-        Display.getDefault().asyncExec(new Runnable() {
-            public void run() {
-                try {
-                    _tableViewer.remove(jmsm);
-//                    _tableViewer.refresh();
-                    CentralLogger.getInstance().debug(this, "Remove Messages[], Number of Msg in Model: " + _messageList.getSize() + "; Number of Msg in Table: " + _tableViewer.getTable().getItemCount());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    JmsLogsPlugin.logException("", e); //$NON-NLS-1$
-                }
-            }
-        });
-    }
+	public void removeJMSMessage(final BasicMessage[] jmsm) {
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				try {
+					_tableViewer.remove(jmsm);
+					// CentralLogger.getInstance().debug(this,
+					// "Remove Messages[], Number of Msg in Model: " +
+					// _messageList.getSize() + "; Number of Msg in Table: " +
+					// _tableViewer.getTable().getItemCount());
+				} catch (Exception e) {
+					e.printStackTrace();
+					JmsLogsPlugin.logException("", e); //$NON-NLS-1$
+				}
+			}
+		});
+	}
 
-    public void updateJMSMessage(final BasicMessage jmsm) {
-        Display.getDefault().asyncExec(new Runnable() {
-            public void run() {
-                try {
-                    if (jmsm.getProperty("ACK") == null) {
-                        _tableViewer.update(jmsm, null);
-                    }
-                    for (int i = 0; i < _tableViewer.getTable().getItemCount(); i++) {
-                        TableItem directTableItem = _tableViewer.getTable()
-                                .getItem(i);
-                        Object item = directTableItem.getData();
-                        if (item instanceof BasicMessage) {
-                            BasicMessage messageInTable = (BasicMessage) item;
-                            if ((jmsm.getProperty("NAME").equals(messageInTable.getProperty("NAME"))) && 
-                                    (jmsm.getProperty("EVENTTIME").equals(messageInTable.getProperty("EVENTTIME")))) {
-                                directTableItem.setChecked(true);
-//                                _tableViewer.refresh();
-                                _tableViewer.update(item, new String[] {"ACK"});
-                                break;
-                            }
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    JmsLogsPlugin.logException("", e); //$NON-NLS-1$
-                }
-                CentralLogger.getInstance().debug(this, "Update Message, Number of Msg in Model: " + _messageList.getSize() + "; Number of Msg in Table: " + _tableViewer.getTable().getItemCount());
-            }
-        });
-    }
+	public void updateJMSMessage(final BasicMessage jmsm) {
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				try {
+					if (jmsm.getProperty("ACK") == null) {
+						_tableViewer.update(jmsm, null);
+					}
+					for (int i = 0; i < _tableViewer.getTable().getItemCount(); i++) {
+						TableItem directTableItem = _tableViewer.getTable()
+								.getItem(i);
+						Object item = directTableItem.getData();
+						if (item instanceof BasicMessage) {
+							BasicMessage messageInTable = (BasicMessage) item;
+							if ((jmsm.getProperty("NAME").equals(messageInTable
+									.getProperty("NAME")))
+									&& (jmsm.getProperty("EVENTTIME")
+											.equals(messageInTable
+													.getProperty("EVENTTIME")))) {
+								directTableItem.setChecked(true);
+								// _tableViewer.refresh();
+								_tableViewer.update(item,
+										new String[] { "ACK" });
+								break;
+							}
+						}
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+					JmsLogsPlugin.logException("", e); //$NON-NLS-1$
+				}
+				// CentralLogger.getInstance().debug(this,
+				// "Update Message, Number of Msg in Model: " +
+				// _messageList.getSize() + "; Number of Msg in Table: " +
+				// _tableViewer.getTable().getItemCount());
+			}
+		});
+	}
 
-    public void dispose() {
-        _messageList.removeChangeListener(this);
-    }
+	public void dispose() {
+		_messageList.removeChangeListener(this);
+	}
 
-    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-        if (newInput != null)
-            ((MessageList) newInput).addChangeListener(this);
-        if (oldInput != null)
-            ((MessageList) oldInput).removeChangeListener(this);
-    }
+	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+		if (newInput != null)
+			((MessageList) newInput).addChangeListener(this);
+		if (oldInput != null)
+			((MessageList) oldInput).removeChangeListener(this);
+	}
 
-    public Object[] getElements(Object inputElement) {
-        return _messageList.getJMSMessageList().toArray();
-    }
+	public Object[] getElements(Object inputElement) {
+		return _messageList.getJMSMessageList().toArray();
+	}
 }

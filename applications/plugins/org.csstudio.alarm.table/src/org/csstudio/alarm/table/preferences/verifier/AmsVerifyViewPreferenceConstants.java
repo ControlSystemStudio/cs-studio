@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.alarm.table.preferences;
+ package org.csstudio.alarm.table.preferences.verifier;
 
 /**
  * Constant definitions for plug-in preferences

@@ -67,6 +67,7 @@ public class Messages extends NLS {
 
 	public static String JMSPreferencePage_LOG_QUEUE_NAME;
 
+	public static String JmsLogPreferencePage_sound;
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
@@ -243,6 +244,7 @@ public class Messages extends NLS {
 	 */
 	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle
 			.getBundle(BUNDLE_NAME);
+
 
 	private Messages() {
 	}
