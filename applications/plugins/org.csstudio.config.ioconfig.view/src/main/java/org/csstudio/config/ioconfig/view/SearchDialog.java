@@ -168,7 +168,6 @@ public class SearchDialog extends Dialog {
         }
 
         public void setState(int state) {
-            System.out.println("State: "+state);
             if (_state == state) {
                 _asc = !_asc;
             } else {
@@ -178,7 +177,6 @@ public class SearchDialog extends Dialog {
             if(_viewer!=null) {
                 _viewer.refresh();
             }
-            System.out.println("Asc: "+_asc);
         }
     }
 

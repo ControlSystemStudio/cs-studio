@@ -154,8 +154,8 @@ public class Document implements Comparable<Document>, IDocument {
         _id = id;
     }
 
-    /* (non-Javadoc)
-     * @see org.csstudio.config.ioconfig.model.IDocument#getMimeType()
+    /**
+     * @return the File mime type
      */
     @Column(name = "MIME_TYPE", length = 10)
     public String getMimeType() {

@@ -72,7 +72,6 @@ public class AddDocDialog extends Dialog {
         logbooksViewer.setInput(logbooks);
         if(_document!=null&&_document.getId()!=null&&!_document.getId().isEmpty()) {
             String element = _document.getId().split(":")[0];
-            System.out.println("select: "+element);
             logbooksViewer.setSelection(new StructuredSelection(element));
             logbooksViewer.getCombo().setEnabled(false);
         }else {
@@ -119,7 +118,6 @@ public class AddDocDialog extends Dialog {
             meaningCombo.select(0);
         }
         String item = meaningCombo.getItem(meaningCombo.getSelectionIndex());
-        System.out.println("Debug select: " + item);
 
         // SUBJECT
         Label shortDesc = new Label(dialogArea, SWT.NONE);
@@ -213,7 +211,6 @@ public class AddDocDialog extends Dialog {
 
             private void select() {
                 String item = meaningCombo.getItem(meaningCombo.getSelectionIndex());
-                System.out.println("Debug select: " + item);
                 _document.setLogseverity(item);
             }
 

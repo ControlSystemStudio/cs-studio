@@ -45,6 +45,7 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -79,7 +80,6 @@ public final class HibernateManager {
         protected IStatus run(IProgressMonitor monitor) {
             boolean watch = true;
             Date date = new Date();
-            System.out.println(date+": Starte WatchDog!");
             while (watch) {
                 if (_sessionFactory == null || _sessionFactory.isClosed()) {
                     break;
@@ -99,16 +99,14 @@ public final class HibernateManager {
                 try {
                     this.getThread();
                     // Sleep 5 min.
-                    Thread.sleep(300000);
+                    Thread.sleep(30000);
                 } catch (InterruptedException e) {
                 }
             }
             monitor.done();
             monitor=null;
             
-            Date now = new Date();
-            System.out.println(now+": WatchDog gestoppt!");
-            return Job.ASYNC_FINISH;
+            return Status.OK_STATUS;
         }
 
         public void setSessionFactory(SessionFactory sessionFactory) {
@@ -269,23 +267,18 @@ public final class HibernateManager {
         initSessionFactoryDevDB();
         if (_sessionWatchDog == null) {
             _sessionWatchDog = new SessionWatchDog("Session Watch Dog");
-            _sessionWatchDog.setSessionFactory(_sessionFactoryDevDB);
             _sessionWatchDog.setSystem(true);
         }
-        if(_sessionWatchDog.getState()==Job.NONE) {
-            _sessionWatchDog.schedule(300000);
-        }
+        _sessionWatchDog.setSessionFactory(_sessionFactoryDevDB);
+        _sessionWatchDog.schedule(30000);
         _sessionWatchDog.useSession();
 
         _trx = null;
         openTransactions++;
         try {
-            // if(openTransactions<2) {
             _sess = _sessionFactoryDevDB.openSession();
-            // }
             CentralLogger.getInstance().debug(HibernateManager.class.getSimpleName(),
                     "Open a Session: " + openTransactions);
-            // }
             CentralLogger.getInstance().debug(HibernateManager.class.getSimpleName(),
                     "session is " + _sess);
             _trx = _sess.getTransaction();

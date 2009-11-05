@@ -13,7 +13,9 @@ public class Activator extends AbstractCssPlugin{
 	 */
 	public static final String PLUGIN_ID = "org.csstudio.config.ioconfig.model";
 
-	// The shared instance
+	/**
+	 *  The shared instance
+	 */
     private static Activator plugin;
     
     /**

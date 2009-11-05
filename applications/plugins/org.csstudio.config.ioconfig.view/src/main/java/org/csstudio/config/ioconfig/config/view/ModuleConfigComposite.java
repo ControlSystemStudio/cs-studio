@@ -295,7 +295,6 @@ public class ModuleConfigComposite extends NodeConfig {
     public ModuleConfigComposite(final Composite parent, final ProfiBusTreeView profiBusTreeView,
             final Module module) {
         super(parent, profiBusTreeView, "Profibus Module Configuration", module, module == null);
-        System.out.println("------------------------------------------");
         _module = module;
 
         if (_module == null) {
@@ -315,11 +314,6 @@ public class ModuleConfigComposite extends NodeConfig {
      * 
      */
     private void moduels(final String head) {
-        long now = new Date().getTime();
-        long old = now;
-        System.out.println("moduels start\t"+now+"\t\t"+(now-old));
-        old = now;
-
         final Composite comp = getNewTabItem(head, 2);
         comp.setLayout(new GridLayout(2, false));
         
@@ -466,16 +460,10 @@ public class ModuleConfigComposite extends NodeConfig {
 
         });
 
-        now = new Date().getTime();
-        System.out.println("0011\t\t"+now+"\t\t"+(now-old));
-        old = now;
         makeCurrentUserParamData(topGroup);
         _moduleTypList.addSelectionChangedListener(new ISelectionChangedListenerForModuleTypeList(
                 topGroup));
 
-        now = new Date().getTime();
-        System.out.println("0012\t\t"+now+"\t\t"+(now-old));
-        old = now;
         Slave slave = _module.getSlave();
         if (getGSDFile() != null) {
             HashMap<Integer, GsdModuleModel> gsdModuleList = slave.getGSDSlaveData()
@@ -492,10 +480,6 @@ public class ModuleConfigComposite extends NodeConfig {
             _moduleTypList.getTable().select(0);
         }
         _moduleTypList.getTable().showSelection();
-
-        now = new Date().getTime();
-        System.out.println("0013\t\t"+now+"\t\t"+(now-old));
-        old = now;
     }
 
     /**
@@ -504,12 +488,6 @@ public class ModuleConfigComposite extends NodeConfig {
      *            The parent Group for the CurrentUserParamData content.
      */
     private void makeCurrentUserParamData(final Group topGroup) {
-        long now = new Date().getTime();
-        long old = now;
-        System.out.println("CUPD001\t\t"+now+"\t\t"+(now-old));
-        old = now;
-
-        
         if (_currentUserParamDataGroup != null) {
             _currentUserParamDataGroup.dispose();
         }
@@ -564,9 +542,6 @@ public class ModuleConfigComposite extends NodeConfig {
                 }
                 if (_module.getConfigurationData() != null) {
                     String[] configurationDatas = _module.getConfigurationData().split(",");
-                    now = new Date().getTime();
-                    System.out.println("CUPD025\t\t"+now+"\t\t"+(now-old));
-                    old = now;
                     for (ExtUserPrmData extUserPrmData : gsdModuleModel.getAllExtUserPrmDataRef()) {
                         Integer value = null;
                         String extUserPrmDataRef = _module.getGsdModuleModel()
@@ -577,13 +552,7 @@ public class ModuleConfigComposite extends NodeConfig {
                         }
                         makecurrentUserParamData(currentUserParamDataComposite, extUserPrmData,
                                 value);
-                        now = new Date().getTime();
-                        System.out.println("CUPD035\t\t"+now+"\t\t"+(now-old));
-                        old = now;
                     }
-                    now = new Date().getTime();
-                    System.out.println("CUPD045\t\t"+now+"\t\t"+(now-old));
-                    old = now;
                 }
             } else {
                 for (int i = 0; i < values.length; i++) {
@@ -1005,8 +974,6 @@ public class ModuleConfigComposite extends NodeConfig {
 
         if (getNode() instanceof Facility || obj == null) {
             getProfiBusTreeView().getTreeViewer().setInput(getNode());
-            // TODO neue facility erstellen und speichern..
-//        } else if (getNode() instanceof Module) {
         } else if (obj instanceof Module) {
             Node nodeParent = (Node) obj;
             getNode()
