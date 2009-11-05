@@ -61,6 +61,8 @@ public class XYGraph extends Figure{
 	private List<Axis> xAxisList;
 	private List<Axis> yAxisList;
 	private PlotArea plotArea;
+	
+	// TODO Clients can set these to null. Should these be 'final'? Or provider getter?
 	public Axis primaryXAxis;
 	public Axis primaryYAxis;
 	
@@ -420,7 +422,9 @@ public class XYGraph extends Figure{
 	}
 
 
-	/**
+	/** TODO This allows clients to change the traces via getPlotArea().getTraceList() and then add/remove/clear/...,
+	 *       circumventing the designated addTrace()/removeTrace().
+	 *       Can it be non-public?
 	 * @return the plotArea, which contains all the elements drawn inside it.
 	 */
 	public PlotArea getPlotArea() {
