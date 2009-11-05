@@ -61,6 +61,7 @@ import org.csstudio.config.ioconfig.model.pbmodel.Master;
 import org.csstudio.config.ioconfig.model.pbmodel.Module;
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnet;
 import org.csstudio.config.ioconfig.model.pbmodel.Slave;
+import org.csstudio.config.ioconfig.model.tools.NodeMap;
 import org.csstudio.config.ioconfig.model.xml.ProfibusConfigXMLGenerator;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
@@ -83,6 +84,7 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewerEditorActivationStrategy;
@@ -114,6 +116,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Text;
@@ -341,6 +344,7 @@ public class ProfiBusTreeView extends Composite {
      * A List of all loaded {@link Facility}'s
      */
     private List<FacilityLight> _load;
+    private Action _infoDialogAction;
     
 
     /**
@@ -597,6 +601,8 @@ public class ProfiBusTreeView extends Composite {
     }
 
     private void fillLocalToolBar(final IToolBarManager manager) {
+        manager.add(_infoDialogAction);
+        manager.add(new Separator());
         manager.add(_newFacilityAction);
         manager.add(_refreshAction);
         manager.add(new Separator());
@@ -678,6 +684,21 @@ public class ProfiBusTreeView extends Composite {
         makeCreateNewXMLConfigFile();
         makeTreeNodeRenameAction();
         makeRefreshAction();
+        makeInfoDialogAction();
+    }
+
+    private void makeInfoDialogAction() {
+        _infoDialogAction = new Action() {
+            public void run() {
+                openInfoDialog();
+            }
+
+        };
+        _infoDialogAction.setText("Info");
+        _infoDialogAction.setToolTipText("Action 1 tooltip");
+        _infoDialogAction.setAccelerator('i');
+        _infoDialogAction
+                .setImageDescriptor(getSharedImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));        
     }
 
     /**
@@ -1366,6 +1387,35 @@ public class ProfiBusTreeView extends Composite {
         } catch (PartInitException e) {
             e.printStackTrace();
         }
+    }
+
+    private void openInfoDialog() {
+        Dialog infoDialog = new Dialog(getShell()) {
+            @Override
+            protected Control createDialogArea(Composite parent) {
+                Composite createDialogArea = (Composite) super.createDialogArea(parent);
+                createDialogArea.setLayout(GridLayoutFactory.fillDefaults().create());
+                Label label = new Label(createDialogArea, SWT.NONE);
+                label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+                label.setText("Nodes: "+NodeMap.getNumberOfNodes());
+                
+                label = new Label(createDialogArea, SWT.NONE);
+                label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+                label.setText("Assemble: "+NodeMap.getCountAssembleEpicsAddressString());
+
+                label = new Label(createDialogArea, SWT.NONE);
+                label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+                label.setText("LocalUpdate: "+NodeMap.getLocalUpdate());
+                
+                label = new Label(createDialogArea, SWT.NONE);
+                label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+                label.setText("ChannelConfig: "+NodeMap.getChannelConfigComposite());
+                
+                return createDialogArea;
+            }
+        };
+        infoDialog.open();
+        
     }
 
 }

@@ -295,6 +295,7 @@ public class ModuleConfigComposite extends NodeConfig {
     public ModuleConfigComposite(final Composite parent, final ProfiBusTreeView profiBusTreeView,
             final Module module) {
         super(parent, profiBusTreeView, "Profibus Module Configuration", module, module == null);
+        System.out.println("------------------------------------------");
         _module = module;
 
         if (_module == null) {
@@ -314,9 +315,14 @@ public class ModuleConfigComposite extends NodeConfig {
      * 
      */
     private void moduels(final String head) {
+        long now = new Date().getTime();
+        long old = now;
+        System.out.println("moduels start\t"+now+"\t\t"+(now-old));
+        old = now;
+
         final Composite comp = getNewTabItem(head, 2);
         comp.setLayout(new GridLayout(2, false));
-
+        
         /*
          * Name
          */
@@ -324,11 +330,11 @@ public class ModuleConfigComposite extends NodeConfig {
         gName.setText("Name");
         gName.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
         gName.setLayout(new GridLayout(3, false));
-
+        
         setNameWidget(new Text(gName, SWT.BORDER | SWT.SINGLE));
         setText(getNameWidget(), _module.getName(), 255);
         getNameWidget().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
-
+        
         setIndexSpinner(ConfigHelper.getIndexSpinner(gName, _module, getMLSB(), "Sort Index",
                 getProfiBusTreeView()));
 
@@ -439,17 +445,6 @@ public class ModuleConfigComposite extends NodeConfig {
                         int selectedModuleNo = gmm.getModuleNumber();
                         GSDModule module = getGSDFile().getGSDModule(selectedModuleNo);
                         return module != null;
-                        // GsdModuleModel gsdModuleModel = (GsdModuleModel)
-                        // element;
-                        // if (filter.getText() == null ||
-                        // filter.getText().length() < 1) {
-                        // return true;
-                        // }
-                        // String filterString = ".*" +
-                        // filter.getText().replaceAll("\\*", ".*") +
-                        // ".*";
-                        // return
-                        // gsdModuleModel.toString().matches(filterString);
                     }
                 }
                 return true;
@@ -471,10 +466,16 @@ public class ModuleConfigComposite extends NodeConfig {
 
         });
 
+        now = new Date().getTime();
+        System.out.println("0011\t\t"+now+"\t\t"+(now-old));
+        old = now;
         makeCurrentUserParamData(topGroup);
         _moduleTypList.addSelectionChangedListener(new ISelectionChangedListenerForModuleTypeList(
                 topGroup));
 
+        now = new Date().getTime();
+        System.out.println("0012\t\t"+now+"\t\t"+(now-old));
+        old = now;
         Slave slave = _module.getSlave();
         if (getGSDFile() != null) {
             HashMap<Integer, GsdModuleModel> gsdModuleList = slave.getGSDSlaveData()
@@ -491,8 +492,10 @@ public class ModuleConfigComposite extends NodeConfig {
             _moduleTypList.getTable().select(0);
         }
         _moduleTypList.getTable().showSelection();
-        // getIndexSpinner().setSelection(getNode().getSortIndex());
 
+        now = new Date().getTime();
+        System.out.println("0013\t\t"+now+"\t\t"+(now-old));
+        old = now;
     }
 
     /**
@@ -501,6 +504,12 @@ public class ModuleConfigComposite extends NodeConfig {
      *            The parent Group for the CurrentUserParamData content.
      */
     private void makeCurrentUserParamData(final Group topGroup) {
+        long now = new Date().getTime();
+        long old = now;
+        System.out.println("CUPD001\t\t"+now+"\t\t"+(now-old));
+        old = now;
+
+        
         if (_currentUserParamDataGroup != null) {
             _currentUserParamDataGroup.dispose();
         }
@@ -555,6 +564,9 @@ public class ModuleConfigComposite extends NodeConfig {
                 }
                 if (_module.getConfigurationData() != null) {
                     String[] configurationDatas = _module.getConfigurationData().split(",");
+                    now = new Date().getTime();
+                    System.out.println("CUPD025\t\t"+now+"\t\t"+(now-old));
+                    old = now;
                     for (ExtUserPrmData extUserPrmData : gsdModuleModel.getAllExtUserPrmDataRef()) {
                         Integer value = null;
                         String extUserPrmDataRef = _module.getGsdModuleModel()
@@ -565,7 +577,13 @@ public class ModuleConfigComposite extends NodeConfig {
                         }
                         makecurrentUserParamData(currentUserParamDataComposite, extUserPrmData,
                                 value);
+                        now = new Date().getTime();
+                        System.out.println("CUPD035\t\t"+now+"\t\t"+(now-old));
+                        old = now;
                     }
+                    now = new Date().getTime();
+                    System.out.println("CUPD045\t\t"+now+"\t\t"+(now-old));
+                    old = now;
                 }
             } else {
                 for (int i = 0; i < values.length; i++) {
@@ -664,24 +682,17 @@ public class ModuleConfigComposite extends NodeConfig {
     }
 
     private int getValue2BitMask(ExtUserPrmData ranges, String value) {
-        System.out.println("----------------------------------------------");
-        System.out.println("Value: " + value);
         int val = ProfibusConfigXMLGenerator.getInt(value);
-        System.out.println("Val  : " + val);
+
         int minBit = ranges.getMinBit();
         int maxBit = ranges.getMaxBit();
         if (maxBit < minBit) {
             minBit = ranges.getMaxBit();
             maxBit = ranges.getMinBit();
         }
-        System.out.println("Min : " + minBit);
-        System.out.println("Max : " + maxBit);
         int mask = (int) (Math.pow(2, maxBit + 1) - Math.pow(2, minBit));
-        System.out.println("Mask : " + mask);
-        System.out.println("Mask : " + Integer.toBinaryString(mask));
         val = val & mask;
         val = val >> minBit;
-        System.out.println("Val  : " + val);
         return val;
     }
 

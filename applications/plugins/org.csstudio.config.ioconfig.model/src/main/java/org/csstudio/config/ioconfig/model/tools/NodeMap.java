@@ -38,6 +38,9 @@ import org.csstudio.config.ioconfig.model.Node;
 public class NodeMap {
     
     public static Map<Integer, Node> _nodeMap = new HashMap<Integer, Node>();
+    private static int _countAssembleEpicsAddressString;
+    private static int _localUpdate;
+    private static int _channelConfigComposite;
     
     public static void put(Integer key, Node value) {
         _nodeMap.put(key, value);
@@ -45,5 +48,33 @@ public class NodeMap {
     
     public static Node get(Integer key) {
         return _nodeMap.get(key);
+    }
+
+    public static int getNumberOfNodes() {
+        return _nodeMap.size();
+    }
+
+    public static void countAssembleEpicsAddressString() {
+        _countAssembleEpicsAddressString++;
+    }
+
+    public static int getCountAssembleEpicsAddressString() {
+        return _countAssembleEpicsAddressString;
+    }
+
+    public static void countlocalUpdate() {
+        _localUpdate++;
+    }
+
+    public static int getLocalUpdate() {
+        return _localUpdate;
+    }
+
+    public static void countChannelConfigComposite() {
+        _channelConfigComposite++;
+    }
+
+    public static int getChannelConfigComposite() {
+        return _channelConfigComposite;
     }
 }

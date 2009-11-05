@@ -35,6 +35,7 @@ import javax.persistence.Transient;
 import org.csstudio.config.ioconfig.model.NamedDBClass;
 import org.csstudio.config.ioconfig.model.Node;
 import org.csstudio.config.ioconfig.model.PersistenceException;
+import org.csstudio.config.ioconfig.model.tools.NodeMap;
 
 /**
  * 
@@ -361,6 +362,7 @@ public class Channel extends Node {
      * {@inheritDoc}
      */
     protected void localUpdate() {
+        NodeMap.countlocalUpdate();
         int channelNumber = 0;
         short channelSortIndex = getSortIndex();
         short structSortIndex = getParent().getSortIndex();
@@ -448,6 +450,7 @@ public class Channel extends Node {
     @Transient
     @Override
     public void assembleEpicsAddressString() {
+        NodeMap.countAssembleEpicsAddressString();
         String oldAdr = getEpicsAddressString();
         try {
             StringBuilder sb = new StringBuilder();

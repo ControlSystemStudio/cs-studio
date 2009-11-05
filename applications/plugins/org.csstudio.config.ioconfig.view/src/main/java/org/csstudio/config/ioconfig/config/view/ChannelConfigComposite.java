@@ -39,6 +39,7 @@ import org.csstudio.config.ioconfig.model.pbmodel.GSDFile;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDModule;
 import org.csstudio.config.ioconfig.model.pbmodel.Module;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleChannelPrototype;
+import org.csstudio.config.ioconfig.model.tools.NodeMap;
 import org.csstudio.config.ioconfig.view.ActivatorUI;
 import org.csstudio.config.ioconfig.view.ProfiBusTreeView;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -96,6 +97,7 @@ public class ChannelConfigComposite extends NodeConfig {
     public ChannelConfigComposite(final Composite parent, final ProfiBusTreeView profiBusTreeView,
             final Channel channel) {
         super(parent, profiBusTreeView, "Profibus Channel Configuration", channel, channel == null);
+        NodeMap.countChannelConfigComposite();
         _channel = channel;
         if (_channel == null) {
             newNode();
