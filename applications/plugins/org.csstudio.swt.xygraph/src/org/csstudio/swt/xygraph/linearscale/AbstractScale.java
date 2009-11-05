@@ -296,73 +296,68 @@ public abstract class AbstractScale extends Figure{
 		this.minorTicksVisible = minorTicksVisible;
 	}
 
-
-	public void setRange(double min, double max){
-		setRange(new Range(min, max));
-	}
-	
-	/** set the scale range */
-	 public void setRange(Range range) {
-		 
-		 double lower = range.getLower();
-		 double upper = range.getUpper();
-		 
-	        if (range == null) {
-	            SWT.error(SWT.ERROR_NULL_ARGUMENT);
-	            return; // to suppress warnings...
-	        }
-
-	        if (Double.isNaN(lower) || Double.isNaN(upper)
-	                || lower > upper) {
-	            throw new IllegalArgumentException("Illegal range: " + range);
-	        }
-
-	       // if (min == lower && max == upper) {
-	       //     return;
-	       // }
-
-            if (lower == upper) {
-                upper = lower +1;
-            }
-
-            if (logScaleEnabled && lower <= 0) {
-            	lower = DEFAULT_LOG_SCALE_MIN;
-	        }
-
-            min = lower;
-            max = upper;
-            
-            
-            //calculate the default decimal format
-            if(formatPattern ==null || formatPattern == default_decimal_format) {
-            	 if(Math.abs(max-min) > 0.1)
-	            	default_decimal_format = "############.##";
-	             else {
-	            	default_decimal_format = "##.##";
-		            double mantissa = Math.abs(max-min);   
-		            while (mantissa < 1) {
-		                mantissa *= 10.0;
-		                default_decimal_format += "#"; 
-		            }
-	             }
-            	 formatPattern = default_decimal_format;
-            	 autoFormat = true;
-            }
-            
-            if(formatPattern.equals(default_decimal_format) || 
-            		formatPattern.equals(DEFAULT_ENGINEERING_FORMAT)) {
-            	if((max != 0 && Math.abs(Math.log10(Math.abs(max))) >= ENGINEERING_LIMIT)
-            		|| (min !=0 && Math.abs(Math.log10(Math.abs(min))) >= ENGINEERING_LIMIT))
-                    formatPattern = DEFAULT_ENGINEERING_FORMAT;
-            	else
-            		formatPattern = default_decimal_format;
-            	autoFormat = true;
-            } 
-
-            setDirty(true);
-            revalidate();
-            repaint();
+    /** set the scale range */
+	public void setRange(final Range range) {
+	    if (range == null) {
+	        SWT.error(SWT.ERROR_NULL_ARGUMENT);
+	        return; // to suppress warnings...
 	    }
+	    setRange(range.getLower(), range.getUpper());
+	}
+
+    /** set the scale range */
+    public void setRange(double lower, double upper){
+        if (Double.isNaN(lower) || Double.isNaN(upper)
+                || lower > upper) {
+            throw new IllegalArgumentException("Illegal range: lower=" + lower + ", upper=" + upper);
+        }
+
+       // if (min == lower && max == upper) {
+       //     return;
+       // }
+
+        if (lower == upper) {
+            upper = lower +1;
+        }
+
+        if (logScaleEnabled && lower <= 0) {
+        	lower = DEFAULT_LOG_SCALE_MIN;
+        }
+
+        min = lower;
+        max = upper;
+        
+        
+        //calculate the default decimal format
+        if(formatPattern ==null || formatPattern == default_decimal_format) {
+        	 if(Math.abs(max-min) > 0.1)
+            	default_decimal_format = "############.##";
+             else {
+            	default_decimal_format = "##.##";
+	            double mantissa = Math.abs(max-min);   
+	            while (mantissa < 1) {
+	                mantissa *= 10.0;
+	                default_decimal_format += "#"; 
+	            }
+             }
+        	 formatPattern = default_decimal_format;
+        	 autoFormat = true;
+        }
+        
+        if(formatPattern.equals(default_decimal_format) || 
+        		formatPattern.equals(DEFAULT_ENGINEERING_FORMAT)) {
+        	if((max != 0 && Math.abs(Math.log10(Math.abs(max))) >= ENGINEERING_LIMIT)
+        		|| (min !=0 && Math.abs(Math.log10(Math.abs(min))) >= ENGINEERING_LIMIT))
+                formatPattern = DEFAULT_ENGINEERING_FORMAT;
+        	else
+        		formatPattern = default_decimal_format;
+        	autoFormat = true;
+        } 
+
+        setDirty(true);
+        revalidate();
+        repaint();
+    }
 
 
 	/**
