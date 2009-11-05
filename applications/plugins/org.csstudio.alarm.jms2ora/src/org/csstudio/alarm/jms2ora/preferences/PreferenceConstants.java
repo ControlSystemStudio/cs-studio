@@ -33,6 +33,8 @@ public class PreferenceConstants
     public static final String XMPP_USER_NAME = "xmppUserName";
     public static final String XMPP_PASSWORD = "xmppPassword";
     public static final String XMPP_SERVER = "xmppServer";
+    public static final String XMPP_REMOTE_USER_NAME = "xmppRemoteUserName";
+    public static final String XMPP_REMOTE_PASSWORD = "xmppRemotePassword";
     public static final String XMPP_SHUTDOWN_PASSWORD = "xmppShutdownPassword";
     public static final String JMS_PROVIDER_URLS = "jmsProviderUrls";
     public static final String JMS_TOPIC_NAMES = "jmsTopicNames";

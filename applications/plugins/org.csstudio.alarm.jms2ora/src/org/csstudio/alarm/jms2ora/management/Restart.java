@@ -48,7 +48,7 @@ public class Restart implements IManagementCommand
         IPreferencesService prefs = Platform.getPreferencesService();
         String xmppShutdownPassword = prefs.getString(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.XMPP_SHUTDOWN_PASSWORD, "", null);
 
-        String password = (String)parameters.get("org.csstudio.alarm.jms2ora.management.param.Password");
+        String password = (String)parameters.get("Password");
         if(password == null)
         {
             return CommandResult.createFailureResult("\nParameter not available.");

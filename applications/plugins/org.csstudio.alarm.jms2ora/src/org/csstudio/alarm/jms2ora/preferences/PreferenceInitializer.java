@@ -43,6 +43,8 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer
         prefs.put(PreferenceConstants.XMPP_USER_NAME, "anonymous");
         prefs.put(PreferenceConstants.XMPP_PASSWORD, "anonymous");
         prefs.put(PreferenceConstants.XMPP_SERVER, "xmppserver.where.ever");
+        prefs.put(PreferenceConstants.XMPP_REMOTE_USER_NAME, "anonymous");
+        prefs.put(PreferenceConstants.XMPP_REMOTE_PASSWORD, "anonymous");
         prefs.put(PreferenceConstants.XMPP_SHUTDOWN_PASSWORD , "");
         prefs.put(PreferenceConstants.JMS_PROVIDER_URLS, "");
         prefs.put(PreferenceConstants.JMS_TOPIC_NAMES , "");

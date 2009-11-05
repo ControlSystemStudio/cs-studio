@@ -26,10 +26,11 @@ package org.csstudio.alarm.jms2ora;
 
 import java.io.File;
 import org.apache.log4j.Logger;
-import org.csstudio.alarm.jms2ora.management.Restart;
 import org.csstudio.alarm.jms2ora.management.Stop;
 import org.csstudio.alarm.jms2ora.preferences.PreferenceConstants;
 import org.csstudio.alarm.jms2ora.util.ApplicState;
+import org.csstudio.alarm.jms2ora.util.CommandLine;
+import org.csstudio.alarm.jms2ora.util.Hostname;
 import org.csstudio.alarm.jms2ora.util.SynchObject;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.Platform;
@@ -94,11 +95,42 @@ public class Jms2OraApplication implements IApplication, Stoppable
     
     public Object start(IApplicationContext context) throws Exception
     {
+        CommandLine cmd = null;
+        String[] args = null;
         String stateText = null;
+        String host = null;
+        String user = null;
         int currentState = 0;
 
-        connectToXMPPServer();
+        args = (String[])context.getArguments().get(IApplicationContext.APPLICATION_ARGS);
         
+        for(String s : args)
+        {
+            System.out.println(s);
+        }
+        
+        cmd = new CommandLine(args);
+        if(cmd.exists("stop"))
+        {
+            host = cmd.value("host", Hostname.getInstance().getHostname());
+            user = cmd.value("username", "");
+            
+            ApplicationStopper stopper = new ApplicationStopper();
+            boolean success = stopper.stopExternInstance(Jms2OraPlugin.getDefault().getBundleContext(), "jms2oracle", host, user);
+        
+            if(success)
+            {
+                logger.info("jms2ora stopped.");
+            }
+            else
+            {
+                logger.error("jms2ora cannot be stopped.");
+            }
+            
+            return IApplication.EXIT_OK;
+        }
+        
+        connectToXMPPServer();
         context.applicationRunning();
         
         // Create an object from this class
@@ -225,12 +257,12 @@ public class Jms2OraApplication implements IApplication, Stoppable
                 PreferenceConstants.XMPP_SERVER, "krynfs.desy.de", null);
 
         Stop.staticInject(this);
-        Restart.staticInject(this);
+        // Restart.staticInject(this);
 
         try
         {
             HeadlessConnection.connect(xmppUser, xmppPassword, xmppServer, ECFConstants.XMPP);
-            ServiceLauncher.startRemoteServices();     
+            ServiceLauncher.startRemoteServices();
         }
         catch(Exception e)
         {

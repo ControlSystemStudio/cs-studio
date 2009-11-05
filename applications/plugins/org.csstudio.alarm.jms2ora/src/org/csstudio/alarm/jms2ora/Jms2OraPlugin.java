@@ -34,14 +34,18 @@ import org.osgi.framework.BundleContext;
  */
 public class Jms2OraPlugin extends AbstractCssPlugin
 {
-	/** The plug-in ID */
-	public static final String PLUGIN_ID = "org.csstudio.alarm.jms2ora";
+    /** The shared instance */
+    private static Jms2OraPlugin plugin;
 
-	/** The shared instance */
-	private static Jms2OraPlugin plugin;
-	
+    /** The BundleContext instance */
+    private BundleContext bundleContext;
+
+	/** The logger */
     private Logger logger = null;
     
+    /** The plug-in ID */
+    public static final String PLUGIN_ID = "org.csstudio.alarm.jms2ora";
+
     /**
 	 * The constructor
 	 */
@@ -56,6 +60,8 @@ public class Jms2OraPlugin extends AbstractCssPlugin
     protected void doStart(BundleContext context) throws Exception
     {        
         logger.info("Jms2Ora started...");
+        
+        bundleContext = context;
     }
 
     @Override
@@ -63,6 +69,16 @@ public class Jms2OraPlugin extends AbstractCssPlugin
     {
     }
 
+    /**
+     * Returns the BundleContext of this application.
+     * 
+     * @return
+     */
+    public BundleContext getBundleContext()
+    {
+        return bundleContext;
+    }
+    
 	/**
 	 * Returns the shared instance
 	 *

@@ -22,20 +22,11 @@
    <extension
          point="org.csstudio.platform.managementCommands">
       <command
-            class="org.csstudio.alarm.jms2ora.management.Restart"
-            id="org.csstudio.alarm.jms2ora.Restart"
-            label="Restart">
-         <stringParameter
-               id="org.csstudio.alarm.jms2ora.management.param.Password"
-               label="Password">
-         </stringParameter>
-      </command>
-      <command
             class="org.csstudio.alarm.jms2ora.management.Stop"
             id="org.csstudio.alarm.jms2ora.Stop"
             label="Stop">
          <stringParameter
-               id="org.csstudio.alarm.jms2ora.management.param.Password"
+               id="Password"
                label="Password">
          </stringParameter>
       </command>
