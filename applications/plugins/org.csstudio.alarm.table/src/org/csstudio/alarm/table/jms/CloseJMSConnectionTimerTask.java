@@ -42,7 +42,7 @@ public class CloseJMSConnectionTimerTask extends TimerTask {
 	
 	private SendMapMessage _sender;
 	
-	private long _closeThresholdInMillisec = 2 * 1000;
+	private long _closeThresholdInMillisec = 5 * 1000;
 	
 	public CloseJMSConnectionTimerTask(SendMapMessage sender) {
 		_sender = sender;

@@ -34,6 +34,7 @@ import org.csstudio.alarm.table.jms.JmsAlarmMessageReceiver;
 import org.csstudio.alarm.table.preferences.JmsLogPreferenceConstants;
 import org.csstudio.alarm.table.preferences.TopicSetColumnService;
 import org.csstudio.alarm.table.preferences.alarm.AlarmViewPreferenceConstants;
+import org.csstudio.alarm.table.ui.messagetable.AlarmMessageTable;
 import org.csstudio.alarm.table.ui.messagetable.MessageTable;
 import org.csstudio.alarm.table.utility.Functions;
 import org.csstudio.platform.logging.CentralLogger;
@@ -176,10 +177,6 @@ public class AlarmView extends LogView {
 		// get the font for the selected topic set. If there was no font defined
 		// in preferences set no font.
 		Font font = _topicSetColumnService.getFont(_currentTopicSet);
-		Font font2 = _tableViewer.getTable().getFont();
-//		FontData[] fontData = font2.getFontData();
-//		PlatformUI.getWorkbench().get
-//		JFaceResources.getFont(JFaceResources.getDefaultFont());
 		if (font != null) {
 			_tableViewer.getTable().setFont(font);
 		}
@@ -198,7 +195,7 @@ public class AlarmView extends LogView {
 		for (int i = 0; i < columnSet.length; i++) {
 			columnSetWithAck[i + 1] = columnSet[i];
 		}
-		_messageTable = new MessageTable(_tableViewer, columnSetWithAck,
+		_messageTable = new AlarmMessageTable(_tableViewer, columnSetWithAck,
 				_messageList);
 		_jmsMessageReceiver.initializeJMSConnection(_topicSetColumnService
 				.getJMSTopics(_currentTopicSet), _messageList);

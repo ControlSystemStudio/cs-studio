@@ -66,9 +66,6 @@ public class AlarmMessageTable extends MessageTable {
 
             }
         });
-        Font font = CustomMediaFactory.getInstance().getFont(
-                new FontData(prefStore.getString(AlarmViewPreferenceConstants.LOG_ALARM_FONT)));
-        _tableViewer.getTable().setFont(font);
 
         final boolean canExecute = SecurityFacade.getInstance().canExecute(SECURITY_ID, true);
 
