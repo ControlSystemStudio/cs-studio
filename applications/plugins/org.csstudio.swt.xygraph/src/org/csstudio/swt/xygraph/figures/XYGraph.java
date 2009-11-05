@@ -325,13 +325,11 @@ public class XYGraph extends Figure{
 	 * @param trace
 	 */
 	public void addTrace(Trace trace){
-		if(trace.getTraceColor() == null){
-			if(traceNum < DEFAULT_TRACES_COLOR.length)
-				trace.setTraceColor(DEFAULT_TRACES_COLOR[traceNum++]);
-			else
-				trace.setTraceColor(BLACK_COLOR);
+		if (trace.getTraceColor() == null)
+		{   // Cycle through default colors
+		    trace.setTraceColor(DEFAULT_TRACES_COLOR[traceNum % DEFAULT_TRACES_COLOR.length]);
+        	++traceNum;
 		}
-		
 		if(legendMap.containsKey(trace.getYAxis()))
 			legendMap.get(trace.getYAxis()).addTrace(trace);
 		else{
