@@ -9,7 +9,7 @@ package org.csstudio.swt.xygraph.dataprovider;
 public interface ISample {
 	
 	/**
-	 * @return the value on X axis.
+	 * @return the value on X axis. For a 'date' axis, this has to be milliseconds as used by java.util.Date
 	 */
 	public double getXValue();
 	
