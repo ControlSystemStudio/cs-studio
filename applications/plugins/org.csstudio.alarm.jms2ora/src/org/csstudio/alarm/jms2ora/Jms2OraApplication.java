@@ -103,13 +103,20 @@ public class Jms2OraApplication implements IApplication, Stoppable
         int currentState = 0;
 
         args = (String[])context.getArguments().get(IApplicationContext.APPLICATION_ARGS);
-        
-        for(String s : args)
+              
+        cmd = new CommandLine(args);
+        if(cmd.exists("help") || cmd.exists("h") || cmd.exists("?"))
         {
-            System.out.println(s);
+            System.out.println(VersionInfo.getAll());
+            System.out.println("Usage: jms2ora [-stop] [-host <hostname>] [-username <username>] [-help | -h | -?]");
+            System.out.println("       -stop                - Stopps the application using the XMPP command.");
+            System.out.println("       -host <hostname>     - Name of host where the application is running.");
+            System.out.println("       -username <username> - Name of the user that is running the application.");
+            System.out.println("       -help | -h | -?      - This help text.");
+            
+            return IApplication.EXIT_OK;
         }
         
-        cmd = new CommandLine(args);
         if(cmd.exists("stop"))
         {
             host = cmd.value("host", Hostname.getInstance().getHostname());
