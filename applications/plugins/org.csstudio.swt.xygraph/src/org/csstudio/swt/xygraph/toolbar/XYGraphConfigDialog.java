@@ -37,7 +37,6 @@ public class XYGraphConfigDialog extends Dialog {
 	private XYGraphConfigCommand command;
 	private boolean changed = false;
 	
-	
 	protected XYGraphConfigDialog(Shell parentShell, XYGraph xyGraph) {
 		super(parentShell);	
 		this.xyGraph = xyGraph;
@@ -47,7 +46,8 @@ public class XYGraphConfigDialog extends Dialog {
 		traceConfigPageList = new ArrayList<TraceConfigPage>();
 		command = new XYGraphConfigCommand(xyGraph);
 		command.savePreviousStates();
-		
+        // Allow resize
+        setShellStyle(getShellStyle() | SWT.RESIZE);
 	}
 	
 	@Override
@@ -71,7 +71,7 @@ public class XYGraphConfigDialog extends Dialog {
         graphConfigTab.setControl(graphTabComposite);
         
         
-      //Axis Configure Page
+        //Axis Configure Page
         Composite axisTabComposite = new Composite(tabFolder, SWT.NONE);
     	axisTabComposite.setLayout(new GridLayout(1, false));        	
     	TabItem axisConfigTab = new TabItem(tabFolder, SWT.NONE);
@@ -85,6 +85,7 @@ public class XYGraphConfigDialog extends Dialog {
     	axisSelectGroup.setText("Select Axis");
     	axisSelectGroup.setLayout(new GridLayout(1, false));    	        
     	final Combo axisCombo = new Combo(axisSelectGroup, SWT.DROP_DOWN);
+    	axisCombo.setLayoutData(new GridData(SWT.FILL, 0, true, false));
 	    for(Axis axis : xyGraph.getAxisList())
 	        axisCombo.add(axis.getTitle() + (axis.isHorizontal() ? "(X-Axis)" : "(Y-Axis)"));	   
 	    axisCombo.select(0);
@@ -103,9 +104,9 @@ public class XYGraphConfigDialog extends Dialog {
 	        axisConfigPageList.add(axisConfigPage);
 	        axisConfigPage.createPage(axisConfigGroup);   	        
 	    } 	        
-	        axisStackLayout.topControl = axisConfigPageList.get(0).getComposite();
-	        axisCombo.addSelectionListener(new SelectionAdapter(){
-    		@Override
+	    axisStackLayout.topControl = axisConfigPageList.get(0).getComposite();
+	    axisCombo.addSelectionListener(new SelectionAdapter(){
+	        @Override
     		public void widgetSelected(SelectionEvent e) {
     			axisStackLayout.topControl = axisConfigPageList.get(
     					axisCombo.getSelectionIndex()).getComposite();
@@ -127,7 +128,8 @@ public class XYGraphConfigDialog extends Dialog {
 	    			SWT.FILL, SWT.FILL,true, false));
 	    	traceSelectGroup.setText("Select Trace");
 	    	traceSelectGroup.setLayout(new GridLayout(1, false));    	        
-	    	final Combo traceCombo = new Combo(traceSelectGroup, SWT.DROP_DOWN);	    	
+	    	final Combo traceCombo = new Combo(traceSelectGroup, SWT.DROP_DOWN);
+	    	traceCombo.setLayoutData(new GridData(SWT.FILL, 0, true, false));
 		    for(Trace trace : xyGraph.getPlotArea().getTraceList())
 		        traceCombo.add(trace.getName());	   
 		    traceCombo.select(0);
@@ -173,6 +175,7 @@ public class XYGraphConfigDialog extends Dialog {
         	annoSelectGroup.setText("Select Annotation");
         	annoSelectGroup.setLayout(new GridLayout(1, false));    	        
         	final Combo annotationsCombo = new Combo(annoSelectGroup, SWT.DROP_DOWN);
+        	annotationsCombo.setLayoutData(new GridData(SWT.FILL, 0, true, false));
  	        for(Annotation annotation : xyGraph.getPlotArea().getAnnotationList())
  	        	annotationsCombo.add(annotation.getName());
  	        annotationsCombo.select(0);
@@ -202,9 +205,6 @@ public class XYGraphConfigDialog extends Dialog {
         		}
         	}); 	       
         }
-        
-        	 
-        		
         
 		return parent_composite;
 	}
