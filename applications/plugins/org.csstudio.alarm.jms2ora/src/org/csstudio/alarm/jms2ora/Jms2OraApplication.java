@@ -99,6 +99,8 @@ public class Jms2OraApplication implements IApplication, Stoppable
 
         connectToXMPPServer();
         
+        context.applicationRunning();
+        
         // Create an object from this class
         messageProcessor = MessageProcessor.getInstance();
         messageProcessor.setParent(this);
