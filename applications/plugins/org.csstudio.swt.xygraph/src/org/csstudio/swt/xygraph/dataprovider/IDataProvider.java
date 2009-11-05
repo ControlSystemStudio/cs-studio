@@ -40,9 +40,13 @@ public interface IDataProvider {
 	 */
 	public boolean isChronological();
 
+	/** @param listener New listener to notify when data changes */
 	public void addDataProviderListener(
 			final IDataProviderListener listener);
 
+    /** @param listener Listener to no longer notify when data changes
+     *  @return <code>true</code> if listener was known and removed
+     */
 	public boolean removeDataProviderListener(
 			final IDataProviderListener listener);	
 
