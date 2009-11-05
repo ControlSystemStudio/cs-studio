@@ -311,13 +311,17 @@ public final class XYGraphMediaFactory {
 	public Image getImageFromPlugin(final Plugin plugin, final String pluginId,
 			final String relativePath) {
 		String key = pluginId + "." + relativePath; //$NON-NLS-1$	
-		// does image exist		
+		// Is image already cached in imageRegistry?
 		if (_imageRegistry.get(key) == null) {
+		    // Not cached. Get from plugin (this should be the usual case)
 			if(plugin != null){					
 					ImageDescriptor descr = AbstractUIPlugin.imageDescriptorFromPlugin(
 							pluginId, relativePath);
 					_imageRegistry.put(key, descr);				
 			}else{
+			    // Must be running as JUnit test or demo w/o plugin environment.
+			    // The following only works for test code inside this plugin,
+			    // not when called from other plugins' test code.
 				final Display display = Display.getCurrent();
 	            final Image img = new Image(display, relativePath);        
 	            _imageRegistry.put(key, img);	            
