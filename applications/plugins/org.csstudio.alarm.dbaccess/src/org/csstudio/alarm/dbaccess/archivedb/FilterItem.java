@@ -38,11 +38,11 @@ public class FilterItem {
 
 	private String _relation;
 
-	public FilterItem(String _property, String _value, String _relation) {
+	public FilterItem(String property, String value, String relation) {
 		super();
-		this._property = _property;
-		this._value = _value;
-		this._relation = _relation;
+		_property = property;
+		_value = value;
+		_relation = relation;
 	}
 
 	public FilterItem() {

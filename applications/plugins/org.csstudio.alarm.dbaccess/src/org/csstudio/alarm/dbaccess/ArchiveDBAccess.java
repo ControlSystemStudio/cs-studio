@@ -349,7 +349,7 @@ public class ArchiveDBAccess implements ILogMessageArchiveAccess {
                 if (filterSetting.getProperty().equalsIgnoreCase("inMessage")) {
                     parameterIndex++;
                     getMessages.setString(parameterIndex, filterSetting
-                            .getValue());
+                            .getValue().replace("*", "%").replace("?", "_"));
                     CentralLogger.getInstance().debug(
                             this,
                             "DB query, filter Property: "
