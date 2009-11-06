@@ -1,9 +1,14 @@
 package org.csstudio.opibuilder.widgets.model;
 
+import org.csstudio.opibuilder.datadefinition.ColorMap;
+import org.csstudio.opibuilder.datadefinition.ColorMap.PredefinedColorMap;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
+import org.csstudio.opibuilder.properties.BooleanProperty;
+import org.csstudio.opibuilder.properties.ColorMapProperty;
 import org.csstudio.opibuilder.properties.DoubleProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.eclipse.swt.graphics.RGB;
 
 /**The model for intensity graph.
  * @author Xihui Chen
@@ -20,6 +25,9 @@ public class IntensityGraphModel extends AbstractPVWidgetModel {
 	
 	public static final String PROP_DATA_HEIGHT = "data_height"; //$NON-NLS-1$	
 	
+	public static final String PROP_COLOR_MAP = "color_map"; //$NON-NLS-1$		
+	
+	public static final String PROP_SHOW_RAMP = "show_ramp"; //$NON-NLS-1$		
 	
 	/** The default value of the minimum property. */
 	private static final double DEFAULT_MIN = 0;
@@ -31,6 +39,11 @@ public class IntensityGraphModel extends AbstractPVWidgetModel {
 	 * The ID of this widget model.
 	 */
 	public static final String ID = "org.csstudio.opibuilder.widgets.intensityGraph"; //$NON-NLS-1$	
+	
+	public IntensityGraphModel() {
+		setForegroundColor(new RGB(0,0,0));
+		setSize(400, 240);
+	}
 	
 	@Override
 	protected void configureProperties() {
@@ -45,10 +58,13 @@ public class IntensityGraphModel extends AbstractPVWidgetModel {
 		
 		addProperty(new IntegerProperty(PROP_DATA_HEIGHT, "Data Height", 
 				WidgetPropertyCategory.Behavior, 0));
-		removeProperty(PROP_BACKCOLOR_ALARMSENSITIVE);
-		removeProperty(PROP_COLOR_BACKGROUND);
-		removeProperty(PROP_COLOR_FOREGROUND);
-		removeProperty(PROP_FORECOLOR_ALARMSENSITIVE);		
+		
+		addProperty(new ColorMapProperty(PROP_COLOR_MAP, "Color Map", 
+				WidgetPropertyCategory.Display, new ColorMap(PredefinedColorMap.GrayScale, true, true)));
+		
+		addProperty(new BooleanProperty(PROP_SHOW_RAMP, "Show Ramp",
+				WidgetPropertyCategory.Display, true));
+		
 	}
 
 	@Override
@@ -83,5 +99,20 @@ public class IntensityGraphModel extends AbstractPVWidgetModel {
 	 */
 	public Integer getDataHeight() {
 		return (Integer) getCastedPropertyValue(PROP_DATA_HEIGHT);
+	}
+	
+	
+	/**
+	 * @return the color map
+	 */
+	public ColorMap getColorMap(){
+		return (ColorMap) getCastedPropertyValue(PROP_COLOR_MAP);
+	}
+	
+	/**
+	 * @return the color map
+	 */
+	public Boolean isShowRamp(){
+		return (Boolean) getCastedPropertyValue(PROP_SHOW_RAMP);
 	}
 }

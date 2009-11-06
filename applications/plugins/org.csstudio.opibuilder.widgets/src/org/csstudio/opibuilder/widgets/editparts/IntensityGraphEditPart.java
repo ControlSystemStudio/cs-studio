@@ -1,5 +1,6 @@
 package org.csstudio.opibuilder.widgets.editparts;
 
+import org.csstudio.opibuilder.datadefinition.ColorMap;
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
@@ -23,6 +24,8 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 		graph.setMax(model.getMaximum());
 		graph.setDataWidth(model.getDataWidth());
 		graph.setDataHeight(model.getDataHeight());
+		graph.setColorMap(model.getColorMap());
+		graph.setShowRamp(model.isShowRamp());
 		return graph;
 	}
 	
@@ -44,7 +47,7 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 					((IntensityGraphFigure)figure).setDataArray(ValueUtil.getDoubleArray(value));
 				//}else
 				//	((IntensityGraphFigure)figure).setDataArray(ValueUtil.getDouble(value));			
-				return true;
+				return false;
 			}
 		};
 		
@@ -86,6 +89,24 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(IntensityGraphModel.PROP_DATA_HEIGHT, handler);
+		
+		handler = new IWidgetPropertyChangeHandler(){
+			public boolean handleChange(Object oldValue, Object newValue,
+					IFigure figure) {
+				((IntensityGraphFigure)figure).setColorMap((ColorMap)newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(IntensityGraphModel.PROP_COLOR_MAP, handler);
+		
+		handler = new IWidgetPropertyChangeHandler(){
+			public boolean handleChange(Object oldValue, Object newValue,
+					IFigure figure) {
+				((IntensityGraphFigure)figure).setShowRamp((Boolean)newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(IntensityGraphModel.PROP_SHOW_RAMP, handler);
 	}
 
 }

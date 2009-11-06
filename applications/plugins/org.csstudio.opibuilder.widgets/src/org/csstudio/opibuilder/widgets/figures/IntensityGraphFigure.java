@@ -1,7 +1,11 @@
 package org.csstudio.opibuilder.widgets.figures;
 
+import org.csstudio.opibuilder.datadefinition.ColorMap;
+import org.csstudio.opibuilder.datadefinition.ColorMap.PredefinedColorMap;
+import org.csstudio.opibuilder.widgets.figureparts.ColorMapRamp;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
+import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
@@ -18,17 +22,52 @@ public class IntensityGraphFigure extends Figure {
 	private double[] dataArray;
 	private double max, min;
 	
+	private ColorMapRamp colorMapRamp;
+	private GraphArea graphArea;
+	private ColorMap colorMap;
+	
+	private final static int GAP = 3;
+
+
 	public IntensityGraphFigure() {
 		dataArray = new double[0];
 		max = 255;
 		min = 0;
 		dataWidth = 0;
 		dataHeight = 0;
+		colorMap = new ColorMap(PredefinedColorMap.GrayScale, true, true);
+		colorMapRamp = new ColorMapRamp();
+		colorMapRamp.setMax(max);
+		colorMapRamp.setMin(min);
+		colorMapRamp.setColorMap(colorMap);
+		
+		graphArea = new GraphArea();
+		
+		add(colorMapRamp);
+		add(graphArea);
 	}
 	
 	
 	@Override
-	protected void paintClientArea(Graphics graphics) {
+	protected void layout() {		
+		Rectangle clientArea = getClientArea();		
+		
+		if(colorMapRamp.isVisible()){
+			Dimension rampSize = colorMapRamp.getPreferredSize(clientArea.width, clientArea.height);
+			colorMapRamp.setBounds(new Rectangle(clientArea.x + clientArea.width - rampSize.width, clientArea.y,
+					rampSize.width, clientArea.height));
+			graphArea.setBounds(new Rectangle(clientArea.x, clientArea.y, 
+					clientArea.width - rampSize.width - GAP, clientArea.height));
+		}else
+			graphArea.setBounds(clientArea);
+		
+		super.layout();
+	}
+	
+	
+	
+//	@Override
+	protected void paintClientArea2(Graphics graphics) {
 		super.paintClientArea(graphics);		
 		PaletteData palette = new PaletteData(0xff, 0xff00, 0xff0000);
 		if(dataWidth == 0 || dataHeight == 0)
@@ -96,6 +135,7 @@ public class IntensityGraphFigure extends Figure {
 	 */
 	public final void setDataArray(double[] dataArray) {
 		this.dataArray = dataArray;
+		graphArea.repaint();
 	}
 
 
@@ -104,6 +144,7 @@ public class IntensityGraphFigure extends Figure {
 	 */
 	public final void setMax(double max) {
 		this.max = max;
+		colorMapRamp.setMax(max);
 	}
 
 
@@ -112,8 +153,59 @@ public class IntensityGraphFigure extends Figure {
 	 */
 	public final void setMin(double min) {
 		this.min = min;
+		colorMapRamp.setMin(min);
 	}
 	
 	
+	/**
+	 * @param colorMap the colorMap to set
+	 */
+	public final void setColorMap(ColorMap colorMap) {
+		this.colorMap = colorMap;
+		colorMapRamp.setColorMap(colorMap);
+	}
+	
+	public void setShowRamp(boolean show){
+		colorMapRamp.setVisible(show);
+		revalidate();
+	}
+	
+	
+	class GraphArea extends Figure{
+		
+		@Override
+		protected void paintClientArea(Graphics graphics) {
+			super.paintClientArea(graphics);
+			Rectangle clientArea = getClientArea();		
+			
+			if(dataWidth == 0 || dataHeight == 0){
+				graphics.drawRectangle(clientArea.getCopy().shrink(1, 1));
+				return;
+			}
+										
+			double[][] graphData = new double[dataHeight][dataWidth];
+			//padding with zero if the array length is not long enough
+			if(dataArray.length < dataWidth * dataHeight){
+				double[] originalData = dataArray;			
+				dataArray = new double[dataWidth*dataHeight];
+			    System.arraycopy(originalData, 0, dataArray, 0,originalData.length);
+			}
+				
+			for(int y = 0; y < dataHeight; y++){
+				for(int x = 0; x<dataWidth; x++){
+					graphData[y][x] = dataArray[y*dataWidth + x];					
+				}
+			}
+			
+			Image image = new Image(null, 
+					colorMap.drawImage(graphData, dataWidth, dataHeight, max, min));
+			graphics.drawImage(image, new Rectangle(image.getBounds()), clientArea);
+			image.dispose();			
+		}
+		
+		
+		
+		
+	}
 	
 }
