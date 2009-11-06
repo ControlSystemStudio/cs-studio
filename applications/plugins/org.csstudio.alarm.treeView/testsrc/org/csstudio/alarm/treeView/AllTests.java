@@ -17,6 +17,6 @@ import org.junit.runners.Suite.SuiteClasses;
     ProcessVariableNodeTest.class,
     PendingUpdateTest.class,
 })
-public class AllUnitTests {
+public class AllTests {
     // This is a suite which should not contain code.
 }
