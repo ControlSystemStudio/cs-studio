@@ -5,7 +5,6 @@ import org.csstudio.dct.metamodel.internal.DatabaseDefinitionTest;
 import org.csstudio.dct.metamodel.internal.FieldDefinitionTest;
 import org.csstudio.dct.metamodel.internal.MenuDefinitionTest;
 import org.csstudio.dct.metamodel.internal.RecordDefinitionTest;
-import org.csstudio.dct.model.commands.AbstractCommandTest;
 import org.csstudio.dct.model.commands.AddInstanceCommandTest;
 import org.csstudio.dct.model.commands.AddPrototypeCommandTest;
 import org.csstudio.dct.model.commands.AddRecordCommandTest;
@@ -39,7 +38,6 @@ import org.junit.runners.Suite.SuiteClasses;
 	MenuDefinitionTest.class,
 	RecordDefinitionTest.class,
 	
-	AbstractCommandTest.class,
 	AddInstanceCommandTest.class,
 	AddPrototypeCommandTest.class,
 	AddRecordCommandTest.class,
