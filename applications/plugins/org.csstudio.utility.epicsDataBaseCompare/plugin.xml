@@ -54,18 +54,6 @@
       </key>
    </extension>
    <extension
-         point="org.eclipse.ui.commands">
-      <category
-            id="org.csstudio.utility.epicsDataBaseCompare.commands.category"
-            name="Sample Category">
-      </category>
-      <command
-            categoryId="org.csstudio.utility.epicsDataBaseCompare.commands.category"
-            id="org.csstudio.utility.epicsDataBaseCompare.commands.sampleCommand"
-            name="Sample Command">
-      </command>
-   </extension>
-   <extension
          point="org.eclipse.ui.handlers">
       <handler
             class="org.csstudio.utility.epicsDataBaseCompare.handlers.FindHandler"
@@ -74,19 +62,6 @@
    </extension>
    <extension
          point="org.eclipse.ui.menus">
-      <menuContribution
-            locationURI="menu:org.eclipse.ui.main.menu?after=additions">
-         <menu
-               id="org.csstudio.utility.epicsDataBaseCompare.menus.sampleMenu"
-               label="Sample Menu"
-               mnemonic="M">
-            <command
-                  commandId="org.csstudio.utility.epicsDataBaseCompare.commands.sampleCommand"
-                  id="org.csstudio.utility.epicsDataBaseCompare.menus.sampleCommand"
-                  mnemonic="S">
-            </command>
-         </menu>
-      </menuContribution>
       <menuContribution
             locationURI="toolbar:org.eclipse.ui.main.toolbar?after=additions">
          <toolbar
