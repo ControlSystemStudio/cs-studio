@@ -11,20 +11,20 @@ import org.csstudio.nams.configurator.service.synchronize.SynchronizeServiceImpl
 
 public class NAMSNewConfiguratorAllTestsSuite extends TestCase {
 
-	public static Test suite() throws Throwable {
-		final TestSuite suite = new TestSuite(
-				"ConfigurationaccessLocalStoreWithoutDBAllTestsSuite");
-		// $JUnit-BEGIN$
-
-		suite.addTestSuite(NAMSNewConfiguratorAllTestsSuite.class);
-
-		suite.addTestSuite(FilterTreeContentProvider_Test.class);
-		suite.addTestSuite(SynchronizeServiceImpl_Test.class);
-		suite.addTestSuite(ConfigurationBeanServiceImpl_Test.class);
-
-		// $JUnit-END$
-		return suite;
-	}
+//	public static Test suite() throws Throwable {
+//		final TestSuite suite = new TestSuite(
+//				"ConfigurationaccessLocalStoreWithoutDBAllTestsSuite");
+//		// $JUnit-BEGIN$
+//
+//		suite.addTestSuite(NAMSNewConfiguratorAllTestsSuite.class);
+//
+//		suite.addTestSuite(FilterTreeContentProvider_Test.class);
+//		suite.addTestSuite(SynchronizeServiceImpl_Test.class);
+//		suite.addTestSuite(ConfigurationBeanServiceImpl_Test.class);
+//
+//		// $JUnit-END$
+//		return suite;
+//	}
 
 	@org.junit.Test
 	public void testAssertionsAktiviert() {
