@@ -27,6 +27,7 @@ import org.csstudio.alarm.table.preferences.ExchangeablePreferenceColumnTableEdi
 import org.csstudio.alarm.table.preferences.PreferenceColumnTableEditor;
 import org.csstudio.alarm.table.preferences.PreferenceTopicTableEditor;
 import org.csstudio.alarm.table.preferences.alarm.AlarmViewPreferenceConstants;
+import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
@@ -35,9 +36,12 @@ import org.eclipse.jface.preference.ListEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
@@ -56,6 +60,14 @@ public class LogViewPreferencePage extends FieldEditorPreferencePage
 	}
 
 	public void createFieldEditors() {
+		Label l = new Label(getFieldEditorParent(), SWT.NONE);
+		Font font = l.getFont();
+		FontData fontData = font.getFontData()[0];
+		fontData.setStyle(1);
+		Font font2 = CustomMediaFactory.getInstance().getFont(fontData);
+		l.setFont(font2);
+		l.setText("Die Einstellungen in den Spalten Popup Mode und Auto Start werden noch nicht ausgewertet.");
+		
 		PreferenceTopicTableEditor preferenceTopicTableEditor = new PreferenceTopicTableEditor(
 				LogViewPreferenceConstants.TOPIC_SET, "&Topic Sets: ",
 				getFieldEditorParent());
