@@ -24,12 +24,17 @@
  */
 package org.csstudio.config.ioconfig.config.view;
 
+import java.util.ArrayList;
+
 import org.csstudio.config.ioconfig.model.Node;
 import org.csstudio.config.ioconfig.model.pbmodel.Channel;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelStructure;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFile;
 import org.csstudio.config.ioconfig.view.ProfiBusTreeView;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyleRange;
+import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.graphics.TextStyle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
@@ -74,22 +79,39 @@ public class ChannelStructureConfigComposite extends NodeConfig {
         label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
         label.setText("IOName List:");
         
-        Text text = new Text(newTabItem, SWT.MULTI | SWT.LEAD | SWT.BORDER|SWT.READ_ONLY);
+        StyledText text = new StyledText(newTabItem, SWT.MULTI | SWT.LEAD | SWT.BORDER|SWT.READ_ONLY);
         text.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         _ioNameList = new Text(newTabItem, SWT.MULTI | SWT.LEAD | SWT.BORDER);
         _ioNameList.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        ArrayList<StyleRange> styleRanges = new ArrayList<StyleRange>();
         if(_channelStructure.hasChildren()) {
-           StringBuilder sb = new StringBuilder();
+           StringBuilder sbIOName = new StringBuilder();
+           StringBuilder sbDesc = new StringBuilder();
            for (Node node : _channelStructure.getChildrenAsMap().values()) {
                Channel channel = (Channel) node;
+               sbDesc.append(LS);
+               int length = sbDesc.length();
+               sbDesc.append(channel.getName());
+               sbDesc.append(": ");
                if(channel.getIoName()==null) {
-                   sb.append(LS);
+                   sbIOName.append(LS);
                }else {
-                   sb.append(channel.getIoName());
-                   sb.append(LS);
+                   sbIOName.append(channel.getIoName());
+                   sbDesc.append("("+channel.getIoName()+") ");
+                   sbIOName.append(LS);
                }
+               sbDesc.append(LS);
+               if(channel.getDescription()!=null) {
+                   sbDesc.append(channel.getDescription());
+                   sbDesc.append(LS);
+               }
+               styleRanges.add(new StyleRange(length, channel.getName().length()+1,null,null,SWT.BOLD));
+//               StyleRange sr = new StyleRange(length, channel.getName().length(),null,null,SWT.BOLD);
+//               text.setStyleRange(sr);
            }
-           setText(_ioNameList, sb.toString(), Text.LIMIT);
+           setText(_ioNameList, sbIOName.toString(), Text.LIMIT);
+           text.setText(sbDesc.toString());
+           text.setStyleRanges(styleRanges.toArray(new StyleRange[0]));
         }
         _ioNameList.addModifyListener(getMLSB());
     }
