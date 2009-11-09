@@ -77,9 +77,9 @@ public class InstallExamplesAction extends Action implements
 			protected IStatus run(IProgressMonitor monitor) {
 				try {
 					// copy the sample displays
-					IProject sdsProject = root.getProject("SDSSampleProject");
-					IProject dctProject = root.getProject("DCTSampleProject");
-					IProject snlProject = root.getProject("SNLSampleProject");
+					IProject sdsProject = root.getProject("SDS Demo Display");
+					IProject dctProject = root.getProject("DCT Demo Project");
+					IProject snlProject = root.getProject("SNL Demo Project");
 
 					sdsProject.create(new NullProgressMonitor());
 					dctProject.create(new NullProgressMonitor());
@@ -90,13 +90,13 @@ public class InstallExamplesAction extends Action implements
 					snlProject.open(new NullProgressMonitor());
 
 					URL sdsUrl = FileLocator.find(SamplesActivator.getDefault()
-							.getBundle(), new Path("SDSSampleProject"),
+							.getBundle(), new Path("SDS Demo Display"),
 							new HashMap());
 					URL dctUrl = FileLocator.find(SamplesActivator.getDefault()
-							.getBundle(), new Path("DCTSampleProject"),
+							.getBundle(), new Path("DCT Demo Project"),
 							new HashMap());
 					URL snlUrl = FileLocator.find(SamplesActivator.getDefault()
-							.getBundle(), new Path("SNLSampleProject"),
+							.getBundle(), new Path("SNL Demo Project"),
 							new HashMap());
 
 					try {
