@@ -127,7 +127,7 @@ public class LogarithmicAxisTest {
 		System.out.println(ticks);
 		assertEquals(10, ticks.size());
 		for (int i = 0; i < 10; i++) {
-			assertEquals(Math.pow(10, i), ticks.get(i).value());
+			assertEquals(Math.pow(10, i), ticks.get(i).value(), 0.001);
 		}
 	}
 

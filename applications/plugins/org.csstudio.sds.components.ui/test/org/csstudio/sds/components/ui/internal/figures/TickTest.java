@@ -37,6 +37,6 @@ public class TickTest {
 	public void testTick() throws Exception {
 		Tick tick = new Tick(TickType.MAJOR, 1.0);
 		assertEquals(TickType.MAJOR, tick.type());
-		assertEquals(1.0, tick.value());
+		assertEquals(1.0, tick.value(), 0.001);
 	}
 }

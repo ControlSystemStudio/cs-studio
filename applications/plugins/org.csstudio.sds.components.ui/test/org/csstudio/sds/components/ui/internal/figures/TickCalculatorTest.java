@@ -48,7 +48,7 @@ public class TickCalculatorTest {
 		List<Tick> ticks = t.calculateTicks();
 		assertEquals(10, ticks.size());
 		for (int i = 1; i <= 10; i++) {
-			assertEquals(i, ticks.get(i-1).value());
+			assertEquals(i, ticks.get(i-1).value(), 0.001);
 			assertEquals(TickType.MAJOR, ticks.get(i-1).type());
 		}
 	}

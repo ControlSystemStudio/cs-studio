@@ -132,7 +132,7 @@ public class LinearAxisTest {
 		// expected: 10 ticks at 0.0, 1.0, ..., 9.0
 		assertEquals(10, ticks.size());
 		for (int i = 0; i < 10; i++) {
-			assertEquals(i, ticks.get(i).value());
+			assertEquals(i, ticks.get(i).value(), 0.001);
 		}
 	}
 	
@@ -145,7 +145,7 @@ public class LinearAxisTest {
 		// at 0.0, 1.0, 2.0
 		assertEquals(3, ticks.size());
 		for (int i = 0; i < 3; i++) {
-			assertEquals(i, ticks.get(i).value());
+			assertEquals(i, ticks.get(i).value(), 0.001);
 		}
 	}
 
