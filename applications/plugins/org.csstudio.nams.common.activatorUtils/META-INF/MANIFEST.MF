@@ -4,4 +4,5 @@ Bundle-Name: ActivatorUtils Plug-in
 Bundle-SymbolicName: org.csstudio.nams.common.activatorUtils
 Bundle-Version: 1.0.3
 Export-Package: org.csstudio.nams.common.activatorUtils
-Require-Bundle: org.eclipse.core.runtime
+Require-Bundle: org.eclipse.core.runtime,
+ org.junit4;bundle-version="4.5.0"
