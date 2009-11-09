@@ -51,323 +51,6 @@
     </background_color>
     <x>1</x>
     <tooltip />
-    <widget typeId="org.csstudio.opibuilder.widgets.tab" version="1.0">
-      <macros>
-        <include_parent_macros>true</include_parent_macros>
-      </macros>
-      <tab_1_title>Tab 2</tab_1_title>
-      <border_style>0</border_style>
-      <tab_0_background_color>
-        <color red="255" green="255" blue="255" />
-      </tab_0_background_color>
-      <foreground_color>
-        <color red="192" green="192" blue="192" />
-      </foreground_color>
-      <tab_0_foreground_color>
-        <color red="0" green="0" blue="0" />
-      </tab_0_foreground_color>
-      <border_color>
-        <color red="0" green="128" blue="255" />
-      </border_color>
-      <y>3</y>
-      <actions hook="false" />
-      <x>419</x>
-      <visible>true</visible>
-      <scripts />
-      <height>147</height>
-      <tab_1_foreground_color>
-        <color red="0" green="0" blue="0" />
-      </tab_1_foreground_color>
-      <tab_1_font>
-        <fontdata fontName="Arial" height="10" style="0" />
-      </tab_1_font>
-      <tab_0_title>Shapes</tab_0_title>
-      <background_color>
-        <color red="240" green="240" blue="240" />
-      </background_color>
-      <widget_type>Tabbed Container</widget_type>
-      <enabled>true</enabled>
-      <width>325</width>
-      <tab_1_background_color>
-        <color red="255" green="255" blue="255" />
-      </tab_1_background_color>
-      <border_width>1</border_width>
-      <name>Tabbed Container</name>
-      <tab_0_font>
-        <fontdata fontName="Arial" height="10" style="0" />
-      </tab_0_font>
-      <tab_count>2</tab_count>
-      <tooltip />
-      <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
-        <enabled>true</enabled>
-        <widget_type>Grouping Container</widget_type>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-        </macros>
-        <visible>true</visible>
-        <width>323</width>
-        <border_style>0</border_style>
-        <lock_children>false</lock_children>
-        <scripts />
-        <height>117</height>
-        <border_width>1</border_width>
-        <name>Grouping Container</name>
-        <border_color>
-          <color red="0" green="128" blue="255" />
-        </border_color>
-        <transparent>true</transparent>
-        <show_scrollbar>true</show_scrollbar>
-        <actions hook="false" />
-        <y>1</y>
-        <foreground_color>
-          <color red="192" green="192" blue="192" />
-        </foreground_color>
-        <background_color>
-          <color red="240" green="240" blue="240" />
-        </background_color>
-        <x>1</x>
-        <tooltip />
-        <widget typeId="org.csstudio.opibuilder.widgets.polygon" version="1.0">
-          <border_alarm_sensitive>true</border_alarm_sensitive>
-          <visible>true</visible>
-          <fill_level>60.0</fill_level>
-          <rotation_angle>0.0</rotation_angle>
-          <scripts>
-            <path pathString="/BOY Examples/scripts/RotatePolygon.js">
-              <pv>sim://ramp(0,360,10,0.1)</pv>
-            </path>
-          </scripts>
-          <height>85</height>
-          <anti_alias>true</anti_alias>
-          <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-          <name>Polygon</name>
-          <points>
-            <point x="272" y="12" />
-            <point x="234" y="31" />
-            <point x="234" y="73" />
-            <point x="273" y="96" />
-            <point x="310" y="74" />
-            <point x="310" y="33" />
-          </points>
-          <transparent>false</transparent>
-          <pv_name />
-          <background_color>
-            <color name="Blue" />
-          </background_color>
-          <foreground_color>
-            <color name="Red" />
-          </foreground_color>
-          <widget_type>Polygon</widget_type>
-          <enabled>true</enabled>
-          <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-          <line_style>0</line_style>
-          <width>77</width>
-          <border_style>0</border_style>
-          <border_width>1</border_width>
-          <horizontal_fill>true</horizontal_fill>
-          <line_width>0</line_width>
-          <border_color>
-            <color red="0" green="128" blue="255" />
-          </border_color>
-          <y>12</y>
-          <actions hook="false" />
-          <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-          <x>234</x>
-        </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.polyline" version="1.0">
-          <border_alarm_sensitive>false</border_alarm_sensitive>
-          <fill_arrow>true</fill_arrow>
-          <arrow_length>20</arrow_length>
-          <visible>true</visible>
-          <fill_level>100.0</fill_level>
-          <rotation_angle>0.0</rotation_angle>
-          <scripts />
-          <arrows>3</arrows>
-          <height>82</height>
-          <anti_alias>true</anti_alias>
-          <forecolor_alarm_sensitive>true</forecolor_alarm_sensitive>
-          <name>Polyline_2</name>
-          <points>
-            <point x="12" y="26" />
-            <point x="12" y="107" />
-            <point x="110" y="45" />
-          </points>
-          <transparent>false</transparent>
-          <pv_name>sim://noise</pv_name>
-          <background_color>
-            <color red="150" green="150" blue="150" />
-          </background_color>
-          <foreground_color>
-            <color name="Blue" />
-          </foreground_color>
-          <widget_type>Polyline</widget_type>
-          <enabled>true</enabled>
-          <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-          <line_style>0</line_style>
-          <width>105</width>
-          <border_style>0</border_style>
-          <border_width>1</border_width>
-          <horizontal_fill>true</horizontal_fill>
-          <line_width>4</line_width>
-          <border_color>
-            <color red="0" green="128" blue="255" />
-          </border_color>
-          <y>26</y>
-          <actions hook="false" />
-          <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-          <x>6</x>
-        </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.arc" version="1.0">
-          <border_alarm_sensitive>true</border_alarm_sensitive>
-          <visible>true</visible>
-          <total_angle>135</total_angle>
-          <start_angle>15</start_angle>
-          <scripts>
-            <path pathString="/BOY Examples/scripts/ArcStartAngle.js">
-              <pv>sim://ramp(0,360, 10, 0.1)</pv>
-            </path>
-          </scripts>
-          <height>100</height>
-          <anti_alias>true</anti_alias>
-          <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-          <name>Arc_2</name>
-          <pv_name />
-          <background_color>
-            <color red="153" green="0" blue="255" />
-          </background_color>
-          <foreground_color>
-            <color red="255" green="255" blue="51" />
-          </foreground_color>
-          <widget_type>Arc</widget_type>
-          <enabled>true</enabled>
-          <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-          <line_style>0</line_style>
-          <width>100</width>
-          <fill>true</fill>
-          <border_style>0</border_style>
-          <border_width>1</border_width>
-          <line_width>2</line_width>
-          <border_color>
-            <color red="0" green="128" blue="255" />
-          </border_color>
-          <y>5</y>
-          <actions hook="false" />
-          <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-          <x>120</x>
-        </widget>
-      </widget>
-      <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
-        <enabled>true</enabled>
-        <widget_type>Grouping Container</widget_type>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-        </macros>
-        <visible>false</visible>
-        <width>323</width>
-        <border_style>0</border_style>
-        <lock_children>false</lock_children>
-        <scripts />
-        <height>117</height>
-        <border_width>1</border_width>
-        <name>Grouping Container</name>
-        <border_color>
-          <color red="0" green="128" blue="255" />
-        </border_color>
-        <transparent>true</transparent>
-        <show_scrollbar>true</show_scrollbar>
-        <actions hook="false" />
-        <y>1</y>
-        <foreground_color>
-          <color red="192" green="192" blue="192" />
-        </foreground_color>
-        <background_color>
-          <color red="240" green="240" blue="240" />
-        </background_color>
-        <x>1</x>
-        <tooltip />
-        <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
-          <border_alarm_sensitive>true</border_alarm_sensitive>
-          <visible>true</visible>
-          <fill_level>30.0</fill_level>
-          <scripts>
-            <path pathString="/BOY Examples/scripts/FillLevel.js">
-              <pv>sim://ramp(0,100,1,0.1)</pv>
-            </path>
-          </scripts>
-          <height>89</height>
-          <anti_alias>true</anti_alias>
-          <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-          <name>Rectangle_1</name>
-          <transparent>true</transparent>
-          <pv_name>sim://ramp(0,100,1,0.1)</pv_name>
-          <background_color>
-            <color red="204" green="204" blue="204" />
-          </background_color>
-          <foreground_color>
-            <color name="Red" />
-          </foreground_color>
-          <widget_type>Rectangle</widget_type>
-          <enabled>true</enabled>
-          <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-          <line_style>0</line_style>
-          <width>46</width>
-          <border_style>0</border_style>
-          <border_width>1</border_width>
-          <horizontal_fill>false</horizontal_fill>
-          <line_width>1</line_width>
-          <border_color>
-            <color red="0" green="128" blue="255" />
-          </border_color>
-          <y>17</y>
-          <actions hook="false" />
-          <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-          <x>209</x>
-        </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.Ellipse" version="1.0">
-          <border_alarm_sensitive>false</border_alarm_sensitive>
-          <visible>true</visible>
-          <fill_level>40.0</fill_level>
-          <scripts>
-            <path pathString="/BOY Examples/scripts/FillLevel.js">
-              <pv>$(pv_name)</pv>
-            </path>
-          </scripts>
-          <height>43</height>
-          <anti_alias>true</anti_alias>
-          <forecolor_alarm_sensitive>true</forecolor_alarm_sensitive>
-          <name>Ellipse</name>
-          <transparent>false</transparent>
-          <pv_name>sim://ramp(0,100,1,0.1)</pv_name>
-          <background_color>
-            <color red="150" green="150" blue="150" />
-          </background_color>
-          <foreground_color>
-            <color red="0" green="0" blue="255" />
-          </foreground_color>
-          <widget_type>Ellipse</widget_type>
-          <enabled>true</enabled>
-          <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-          <line_style>0</line_style>
-          <width>91</width>
-          <border_style>0</border_style>
-          <border_width>1</border_width>
-          <horizontal_fill>true</horizontal_fill>
-          <line_width>0</line_width>
-          <border_color>
-            <color red="0" green="128" blue="255" />
-          </border_color>
-          <y>40</y>
-          <actions hook="false" />
-          <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-          <x>48</x>
-        </widget>
-      </widget>
-    </widget>
     <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
       <widget_type>Label</widget_type>
       <enabled>true</enabled>
@@ -574,6 +257,137 @@ $(pv_value)</tooltip>
         <color red="0" green="0" blue="0" />
       </foreground_color>
     </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.polyline" version="1.0">
+      <border_alarm_sensitive>false</border_alarm_sensitive>
+      <fill_arrow>true</fill_arrow>
+      <arrow_length>20</arrow_length>
+      <visible>true</visible>
+      <fill_level>100.0</fill_level>
+      <rotation_angle>0.0</rotation_angle>
+      <scripts />
+      <arrows>3</arrows>
+      <height>86</height>
+      <anti_alias>true</anti_alias>
+      <forecolor_alarm_sensitive>true</forecolor_alarm_sensitive>
+      <name>Polyline_2</name>
+      <points>
+        <point x="424" y="36" />
+        <point x="424" y="121" />
+        <point x="542" y="56" />
+      </points>
+      <transparent>false</transparent>
+      <pv_name>sim://noise</pv_name>
+      <background_color>
+        <color red="150" green="150" blue="150" />
+      </background_color>
+      <foreground_color>
+        <color name="Blue" />
+      </foreground_color>
+      <widget_type>Polyline</widget_type>
+      <enabled>true</enabled>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+      <line_style>0</line_style>
+      <width>125</width>
+      <border_style>0</border_style>
+      <border_width>1</border_width>
+      <horizontal_fill>true</horizontal_fill>
+      <line_width>4</line_width>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <y>36</y>
+      <actions hook="false" />
+      <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      <x>418</x>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.arc" version="1.0">
+      <border_alarm_sensitive>true</border_alarm_sensitive>
+      <visible>true</visible>
+      <total_angle>135</total_angle>
+      <start_angle>15</start_angle>
+      <scripts>
+        <path pathString="/BOY Examples/scripts/ArcStartAngle.js">
+          <pv>sim://ramp(0,360, 10, 0.1)</pv>
+        </path>
+      </scripts>
+      <height>100</height>
+      <anti_alias>true</anti_alias>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <name>Arc_2</name>
+      <pv_name />
+      <background_color>
+        <color red="153" green="0" blue="255" />
+      </background_color>
+      <foreground_color>
+        <color red="255" green="255" blue="51" />
+      </foreground_color>
+      <widget_type>Arc</widget_type>
+      <enabled>true</enabled>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+      <line_style>0</line_style>
+      <width>100</width>
+      <fill>true</fill>
+      <border_style>0</border_style>
+      <border_width>1</border_width>
+      <line_width>2</line_width>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <y>17</y>
+      <actions hook="false" />
+      <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      <x>546</x>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.polygon" version="1.0">
+      <border_alarm_sensitive>true</border_alarm_sensitive>
+      <visible>true</visible>
+      <fill_level>60.0</fill_level>
+      <rotation_angle>0.0</rotation_angle>
+      <scripts>
+        <path pathString="/BOY Examples/scripts/RotatePolygon.js">
+          <pv>sim://ramp(0,360,10,0.1)</pv>
+        </path>
+      </scripts>
+      <height>85</height>
+      <anti_alias>true</anti_alias>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <name>Polygon</name>
+      <points>
+        <point x="698" y="24" />
+        <point x="660" y="43" />
+        <point x="660" y="85" />
+        <point x="699" y="108" />
+        <point x="736" y="86" />
+        <point x="736" y="45" />
+      </points>
+      <transparent>false</transparent>
+      <pv_name />
+      <background_color>
+        <color name="Blue" />
+      </background_color>
+      <foreground_color>
+        <color name="Red" />
+      </foreground_color>
+      <widget_type>Polygon</widget_type>
+      <enabled>true</enabled>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+      <line_style>0</line_style>
+      <width>77</width>
+      <border_style>0</border_style>
+      <border_width>1</border_width>
+      <horizontal_fill>true</horizontal_fill>
+      <line_width>0</line_width>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <y>24</y>
+      <actions hook="false" />
+      <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      <x>660</x>
+    </widget>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
     <enabled>true</enabled>
@@ -604,120 +418,6 @@ $(pv_value)</tooltip>
     </background_color>
     <x>1</x>
     <tooltip />
-    <widget typeId="org.csstudio.opibuilder.widgets.xyGraph" version="1.0">
-      <trace_1_trace_type>3</trace_1_trace_type>
-      <trace_0_trace_color>
-        <color red="255" green="0" blue="0" />
-      </trace_0_trace_color>
-      <axis_0_auto_scale>true</axis_0_auto_scale>
-      <axis_1_time_format>0</axis_1_time_format>
-      <trace_1_point_size>4</trace_1_point_size>
-      <trace_0_plot_mode>0</trace_0_plot_mode>
-      <trace_count>2</trace_count>
-      <trace_0_chronological>true</trace_0_chronological>
-      <axis_0_show_grid>true</axis_0_show_grid>
-      <axis_0_log_scale>false</axis_0_log_scale>
-      <trace_1_name>Trace 1</trace_1_name>
-      <trace_0_point_size>4</trace_0_point_size>
-      <show_legend>true</show_legend>
-      <y>-1</y>
-      <x>354</x>
-      <visible>true</visible>
-      <height>272</height>
-      <axis_1_maximum>100.0</axis_1_maximum>
-      <axis_1_title_font>
-        <fontdata fontName="Arial" height="9" style="0" />
-      </axis_1_title_font>
-      <border_width>1</border_width>
-      <axis_0_axis_color>
-        <color red="0" green="0" blue="0" />
-      </axis_0_axis_color>
-      <name>XY Graph</name>
-      <axis_1_auto_scale_threshold>0.0</axis_1_auto_scale_threshold>
-      <trace_0_line_width>1</trace_0_line_width>
-      <show_toolbar>true</show_toolbar>
-      <trace_1_update_delay>0</trace_1_update_delay>
-      <axis_1_show_grid>true</axis_1_show_grid>
-      <axis_0_grid_color>
-        <color red="200" green="200" blue="200" />
-      </axis_0_grid_color>
-      <trace_1_line_width>4</trace_1_line_width>
-      <axis_0_auto_scale_threshold>0.0</axis_0_auto_scale_threshold>
-      <trace_0_name>$(trace_0_y_pv)</trace_0_name>
-      <trace_1_anti_alias>true</trace_1_anti_alias>
-      <trace_0_update_mode>0</trace_0_update_mode>
-      <trace_1_chronological>true</trace_1_chronological>
-      <trace_1_buffer_size>100</trace_1_buffer_size>
-      <axis_0_axis_title>Time</axis_0_axis_title>
-      <axis_1_axis_color>
-        <color red="0" green="0" blue="0" />
-      </axis_1_axis_color>
-      <foreground_color>
-        <color red="0" green="128" blue="0" />
-      </foreground_color>
-      <trace_1_update_mode>0</trace_1_update_mode>
-      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-      <axis_1_axis_title>Amplitude</axis_1_axis_title>
-      <axis_0_maximum>100.0</axis_0_maximum>
-      <axis_0_time_format>1</axis_0_time_format>
-      <trace_1_plot_mode>0</trace_1_plot_mode>
-      <axis_1_log_scale>false</axis_1_log_scale>
-      <trace_1_point_style>0</trace_1_point_style>
-      <title_font>
-        <fontdata fontName="Arial" height="12" style="1" />
-      </title_font>
-      <axis_1_dash_grid_line>true</axis_1_dash_grid_line>
-      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-      <trace_0_x_pv />
-      <trace_0_y_pv>sim://sine(0,100,100,0.1)</trace_0_y_pv>
-      <axis_0_title_font>
-        <fontdata fontName="Arial" height="9" style="0" />
-      </axis_0_title_font>
-      <axis_1_auto_scale>true</axis_1_auto_scale>
-      <actions hook="false" />
-      <trace_1_x_pv />
-      <show_plot_area_border>false</show_plot_area_border>
-      <widget_type>XY Graph</widget_type>
-      <enabled>true</enabled>
-      <width>403</width>
-      <trace_0_buffer_size>100</trace_0_buffer_size>
-      <axis_count>2</axis_count>
-      <transparent>false</transparent>
-      <axis_0_dash_grid_line>true</axis_0_dash_grid_line>
-      <trace_0_x_axis_index>0</trace_0_x_axis_index>
-      <trace_0_point_style>3</trace_0_point_style>
-      <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-      <border_alarm_sensitive>true</border_alarm_sensitive>
-      <trace_1_x_axis_index>0</trace_1_x_axis_index>
-      <trace_0_y_axis_index>1</trace_0_y_axis_index>
-      <border_style>2</border_style>
-      <plot_area_background_color>
-        <color red="255" green="255" blue="255" />
-      </plot_area_background_color>
-      <title>Trends</title>
-      <trace_1_y_pv>sim://noise(0,100,100,0.1)</trace_1_y_pv>
-      <pv_name />
-      <axis_1_minimum>0.0</axis_1_minimum>
-      <axis_0_minimum>0.0</axis_0_minimum>
-      <border_color>
-        <color red="0" green="128" blue="255" />
-      </border_color>
-      <scripts />
-      <trace_0_anti_alias>true</trace_0_anti_alias>
-      <background_color>
-        <color red="240" green="240" blue="240" />
-      </background_color>
-      <trace_1_trace_color>
-        <color red="0" green="0" blue="255" />
-      </trace_1_trace_color>
-      <trace_1_y_axis_index>1</trace_1_y_axis_index>
-      <trace_0_trace_type>0</trace_0_trace_type>
-      <axis_1_grid_color>
-        <color red="200" green="200" blue="200" />
-      </axis_1_grid_color>
-      <trace_0_update_delay>0</trace_0_update_delay>
-    </widget>
     <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
       <border_alarm_sensitive>false</border_alarm_sensitive>
       <visible>true</visible>
@@ -1212,6 +912,273 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
       <x>-7</x>
     </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.tab" version="1.0">
+      <macros>
+        <include_parent_macros>true</include_parent_macros>
+      </macros>
+      <tab_1_title>Intensity Graph</tab_1_title>
+      <border_style>0</border_style>
+      <tab_0_background_color>
+        <color red="255" green="255" blue="255" />
+      </tab_0_background_color>
+      <foreground_color>
+        <color red="192" green="192" blue="192" />
+      </foreground_color>
+      <tab_0_foreground_color>
+        <color red="0" green="0" blue="0" />
+      </tab_0_foreground_color>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <y>6</y>
+      <actions hook="false" />
+      <x>354</x>
+      <visible>true</visible>
+      <scripts />
+      <height>277</height>
+      <tab_1_foreground_color>
+        <color red="0" green="0" blue="0" />
+      </tab_1_foreground_color>
+      <tab_1_font>
+        <fontdata fontName="Arial" height="10" style="0" />
+      </tab_1_font>
+      <tab_0_title>XY Graph</tab_0_title>
+      <background_color>
+        <color red="240" green="240" blue="240" />
+      </background_color>
+      <widget_type>Tabbed Container</widget_type>
+      <enabled>true</enabled>
+      <width>409</width>
+      <tab_1_background_color>
+        <color red="255" green="255" blue="255" />
+      </tab_1_background_color>
+      <border_width>1</border_width>
+      <name>Tabbed Container</name>
+      <tab_0_font>
+        <fontdata fontName="Arial" height="10" style="0" />
+      </tab_0_font>
+      <tab_count>2</tab_count>
+      <tooltip />
+      <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+        <enabled>true</enabled>
+        <widget_type>Grouping Container</widget_type>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+        </macros>
+        <visible>false</visible>
+        <width>407</width>
+        <border_style>0</border_style>
+        <lock_children>false</lock_children>
+        <scripts />
+        <height>247</height>
+        <border_width>1</border_width>
+        <name>Grouping Container</name>
+        <border_color>
+          <color red="0" green="128" blue="255" />
+        </border_color>
+        <transparent>true</transparent>
+        <show_scrollbar>true</show_scrollbar>
+        <actions hook="false" />
+        <y>1</y>
+        <foreground_color>
+          <color red="192" green="192" blue="192" />
+        </foreground_color>
+        <background_color>
+          <color red="240" green="240" blue="240" />
+        </background_color>
+        <x>1</x>
+        <tooltip />
+        <widget typeId="org.csstudio.opibuilder.widgets.xyGraph" version="1.0">
+          <trace_1_trace_type>3</trace_1_trace_type>
+          <trace_0_trace_color>
+            <color red="255" green="0" blue="0" />
+          </trace_0_trace_color>
+          <axis_0_auto_scale>true</axis_0_auto_scale>
+          <axis_1_time_format>0</axis_1_time_format>
+          <trace_1_point_size>4</trace_1_point_size>
+          <trace_0_plot_mode>0</trace_0_plot_mode>
+          <trace_count>2</trace_count>
+          <trace_0_chronological>true</trace_0_chronological>
+          <axis_0_show_grid>true</axis_0_show_grid>
+          <axis_0_log_scale>false</axis_0_log_scale>
+          <trace_1_name>Trace 1</trace_1_name>
+          <trace_0_point_size>4</trace_0_point_size>
+          <show_legend>true</show_legend>
+          <y>6</y>
+          <x>6</x>
+          <visible>true</visible>
+          <height>241</height>
+          <axis_1_maximum>100.0</axis_1_maximum>
+          <axis_1_title_font>
+            <fontdata fontName="Arial" height="9" style="0" />
+          </axis_1_title_font>
+          <border_width>1</border_width>
+          <axis_0_axis_color>
+            <color red="0" green="0" blue="0" />
+          </axis_0_axis_color>
+          <name>XY Graph</name>
+          <axis_1_auto_scale_threshold>0.0</axis_1_auto_scale_threshold>
+          <trace_0_line_width>1</trace_0_line_width>
+          <show_toolbar>true</show_toolbar>
+          <trace_1_update_delay>0</trace_1_update_delay>
+          <axis_1_show_grid>true</axis_1_show_grid>
+          <axis_0_grid_color>
+            <color red="200" green="200" blue="200" />
+          </axis_0_grid_color>
+          <trace_1_line_width>4</trace_1_line_width>
+          <axis_0_auto_scale_threshold>0.0</axis_0_auto_scale_threshold>
+          <trace_0_name>$(trace_0_y_pv)</trace_0_name>
+          <trace_1_anti_alias>true</trace_1_anti_alias>
+          <trace_0_update_mode>0</trace_0_update_mode>
+          <trace_1_chronological>true</trace_1_chronological>
+          <trace_1_buffer_size>100</trace_1_buffer_size>
+          <axis_0_axis_title>Time</axis_0_axis_title>
+          <axis_1_axis_color>
+            <color red="0" green="0" blue="0" />
+          </axis_1_axis_color>
+          <foreground_color>
+            <color red="0" green="128" blue="0" />
+          </foreground_color>
+          <trace_1_update_mode>0</trace_1_update_mode>
+          <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+          <axis_1_axis_title>Amplitude</axis_1_axis_title>
+          <axis_0_maximum>100.0</axis_0_maximum>
+          <axis_0_time_format>1</axis_0_time_format>
+          <trace_1_plot_mode>0</trace_1_plot_mode>
+          <axis_1_log_scale>false</axis_1_log_scale>
+          <trace_1_point_style>0</trace_1_point_style>
+          <title_font>
+            <fontdata fontName="Arial" height="12" style="1" />
+          </title_font>
+          <axis_1_dash_grid_line>true</axis_1_dash_grid_line>
+          <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+          <trace_0_x_pv />
+          <trace_0_y_pv>sim://sine(0,100,100,0.1)</trace_0_y_pv>
+          <axis_0_title_font>
+            <fontdata fontName="Arial" height="9" style="0" />
+          </axis_0_title_font>
+          <axis_1_auto_scale>true</axis_1_auto_scale>
+          <actions hook="false" />
+          <trace_1_x_pv />
+          <show_plot_area_border>false</show_plot_area_border>
+          <widget_type>XY Graph</widget_type>
+          <enabled>true</enabled>
+          <width>397</width>
+          <trace_0_buffer_size>100</trace_0_buffer_size>
+          <axis_count>2</axis_count>
+          <transparent>true</transparent>
+          <axis_0_dash_grid_line>true</axis_0_dash_grid_line>
+          <trace_0_x_axis_index>0</trace_0_x_axis_index>
+          <trace_0_point_style>3</trace_0_point_style>
+          <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+          <border_alarm_sensitive>true</border_alarm_sensitive>
+          <trace_1_x_axis_index>0</trace_1_x_axis_index>
+          <trace_0_y_axis_index>1</trace_0_y_axis_index>
+          <border_style>0</border_style>
+          <plot_area_background_color>
+            <color red="255" green="255" blue="255" />
+          </plot_area_background_color>
+          <title>Trends</title>
+          <trace_1_y_pv>sim://noise(0,100,100,0.1)</trace_1_y_pv>
+          <pv_name />
+          <axis_1_minimum>0.0</axis_1_minimum>
+          <axis_0_minimum>0.0</axis_0_minimum>
+          <border_color>
+            <color red="0" green="128" blue="255" />
+          </border_color>
+          <scripts />
+          <trace_0_anti_alias>true</trace_0_anti_alias>
+          <background_color>
+            <color red="240" green="240" blue="240" />
+          </background_color>
+          <trace_1_trace_color>
+            <color red="0" green="0" blue="255" />
+          </trace_1_trace_color>
+          <trace_1_y_axis_index>1</trace_1_y_axis_index>
+          <trace_0_trace_type>0</trace_0_trace_type>
+          <axis_1_grid_color>
+            <color red="200" green="200" blue="200" />
+          </axis_1_grid_color>
+          <trace_0_update_delay>0</trace_0_update_delay>
+        </widget>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+        <enabled>true</enabled>
+        <widget_type>Grouping Container</widget_type>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+        </macros>
+        <visible>true</visible>
+        <width>407</width>
+        <border_style>0</border_style>
+        <lock_children>false</lock_children>
+        <scripts />
+        <height>247</height>
+        <border_width>1</border_width>
+        <name>Grouping Container</name>
+        <border_color>
+          <color red="0" green="128" blue="255" />
+        </border_color>
+        <transparent>true</transparent>
+        <show_scrollbar>true</show_scrollbar>
+        <actions hook="false" />
+        <y>1</y>
+        <foreground_color>
+          <color red="192" green="192" blue="192" />
+        </foreground_color>
+        <background_color>
+          <color red="240" green="240" blue="240" />
+        </background_color>
+        <x>1</x>
+        <tooltip />
+        <widget typeId="org.csstudio.opibuilder.widgets.intensityGraph" version="1.0">
+          <border_alarm_sensitive>true</border_alarm_sensitive>
+          <graph_area_width>200</graph_area_width>
+          <visible>true</visible>
+          <minimum>-1.0</minimum>
+          <data_height>256</data_height>
+          <scripts>
+            <path pathString="/BOY Examples/scripts/SetCircularIntensityGraphData.js">
+              <pv>const://name(1)</pv>
+            </path>
+          </scripts>
+          <height>200</height>
+          <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+          <name>WaveGraph</name>
+          <data_width>256</data_width>
+          <pv_name />
+          <background_color>
+            <color red="240" green="240" blue="240" />
+          </background_color>
+          <foreground_color>
+            <color red="0" green="0" blue="0" />
+          </foreground_color>
+          <widget_type>Intensity Graph</widget_type>
+          <enabled>true</enabled>
+          <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+          <width>262</width>
+          <border_style>0</border_style>
+          <color_map>
+            <interpolate>true</interpolate>
+            <autoscale>true</autoscale>
+            <map>2</map>
+          </color_map>
+          <graph_area_height>200</graph_area_height>
+          <maximum>1.0</maximum>
+          <border_width>1</border_width>
+          <show_ramp>true</show_ramp>
+          <border_color>
+            <color red="0" green="128" blue="255" />
+          </border_color>
+          <y>24</y>
+          <actions hook="false" />
+          <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+          <x>60</x>
+        </widget>
+      </widget>
+    </widget>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.BoolSwitch" version="1.0">
     <border_alarm_sensitive>true</border_alarm_sensitive>
@@ -1291,57 +1258,6 @@ $(pv_value)</tooltip>
     </background_color>
     <x>1</x>
     <tooltip />
-    <widget typeId="org.csstudio.opibuilder.widgets.BoolButton" version="1.0">
-      <border_alarm_sensitive>true</border_alarm_sensitive>
-      <visible>true</visible>
-      <password />
-      <scripts />
-      <on_color>
-        <color red="0" green="255" blue="0" />
-      </on_color>
-      <height>42</height>
-      <show_led>true</show_led>
-      <show_boolean_label>true</show_boolean_label>
-      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-      <name>Boolean Button</name>
-      <off_color>
-        <color red="0" green="100" blue="0" />
-      </off_color>
-      <pv_name>loc://boolTest</pv_name>
-      <off_label>OFF</off_label>
-      <background_color>
-        <color red="240" green="240" blue="240" />
-      </background_color>
-      <foreground_color>
-        <color red="0" green="0" blue="0" />
-      </foreground_color>
-      <released__action_index>0</released__action_index>
-      <widget_type>Boolean Button</widget_type>
-      <enabled>true</enabled>
-      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-      <font>
-        <fontdata fontName="Arial" height="9" style="0" />
-      </font>
-      <width>80</width>
-      <border_style>0</border_style>
-      <push_action_index>0</push_action_index>
-      <confirm_message>Are your sure you want to do this?</confirm_message>
-      <effect_3d>true</effect_3d>
-      <bit>-1</bit>
-      <toggle_button>true</toggle_button>
-      <show_confirm_dialog>false</show_confirm_dialog>
-      <on_label>ON</on_label>
-      <border_width>1</border_width>
-      <square_button>false</square_button>
-      <border_color>
-        <color red="0" green="128" blue="255" />
-      </border_color>
-      <y>23</y>
-      <actions hook="false" />
-      <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-      <x>84</x>
-    </widget>
     <widget typeId="org.csstudio.opibuilder.widgets.knob" version="1.0">
       <level_lo>20.0</level_lo>
       <border_alarm_sensitive>true</border_alarm_sensitive>
@@ -1406,7 +1322,7 @@ $(pv_value)</tooltip>
       </border_color>
       <level_lolo>10.0</level_lolo>
       <actions hook="false" />
-      <y>0</y>
+      <y>31</y>
       <x>318</x>
       <tooltip>$(pv_name)
 $(pv_value)</tooltip>
@@ -1700,8 +1616,8 @@ $(pv_value)</tooltip>
       </border_color>
       <level_lolo>10.0</level_lolo>
       <actions hook="false" />
-      <y>10</y>
-      <x>589</x>
+      <y>0</y>
+      <x>570</x>
       <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     </widget>
@@ -1907,6 +1823,125 @@ $(pv_value)</tooltip>
       <x>449</x>
       <tooltip>$(pv_name)
 $(pv_value)</tooltip>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.combo" version="1.0">
+      <border_alarm_sensitive>true</border_alarm_sensitive>
+      <visible>true</visible>
+      <scripts />
+      <height>23</height>
+      <name>Combo Box</name>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <pv_name />
+      <foreground_color>
+        <color red="0" green="0" blue="0" />
+      </foreground_color>
+      <background_color>
+        <color red="255" green="255" blue="255" />
+      </background_color>
+      <enabled>true</enabled>
+      <widget_type>Combo Box</widget_type>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+      <font>
+        <fontdata fontName="Arial" height="9" style="0" />
+      </font>
+      <width>142</width>
+      <border_style>0</border_style>
+      <items>
+        <s>Apple</s>
+        <s>Orange</s>
+        <s>Banana</s>
+      </items>
+      <border_width>1</border_width>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <items_from_pv>false</items_from_pv>
+      <actions hook="false" />
+      <y>9</y>
+      <x>332</x>
+      <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.checkbox" version="1.0">
+      <border_alarm_sensitive>true</border_alarm_sensitive>
+      <visible>true</visible>
+      <auto_size>false</auto_size>
+      <scripts />
+      <height>31</height>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <name>Check Box</name>
+      <pv_name />
+      <background_color>
+        <color red="240" green="240" blue="240" />
+      </background_color>
+      <foreground_color>
+        <color red="0" green="0" blue="0" />
+      </foreground_color>
+      <widget_type>Check Box</widget_type>
+      <enabled>true</enabled>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+      <font>
+        <fontdata fontName="Arial" height="9" style="0" />
+      </font>
+      <width>100</width>
+      <border_style>0</border_style>
+      <label>Check Box</label>
+      <bit>0</bit>
+      <border_width>1</border_width>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <y>82</y>
+      <actions hook="false" />
+      <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      <x>96</x>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.ImageBoolButton" version="1.0">
+      <border_alarm_sensitive>true</border_alarm_sensitive>
+      <visible>true</visible>
+      <password />
+      <auto_size>true</auto_size>
+      <scripts />
+      <height>35</height>
+      <show_boolean_label>false</show_boolean_label>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <name>Image Boolean Button_3</name>
+      <stretch_to_fit>false</stretch_to_fit>
+      <pv_name>loc://boolTest</pv_name>
+      <off_label>OFF</off_label>
+      <background_color>
+        <color red="240" green="240" blue="240" />
+      </background_color>
+      <foreground_color>
+        <color red="0" green="0" blue="0" />
+      </foreground_color>
+      <released__action_index>0</released__action_index>
+      <widget_type>Image Boolean Button</widget_type>
+      <enabled>true</enabled>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+      <font>
+        <fontdata fontName="Arial" height="9" style="0" />
+      </font>
+      <width>48</width>
+      <border_style>0</border_style>
+      <push_action_index>0</push_action_index>
+      <confirm_message>Are your sure you want to do this?</confirm_message>
+      <bit>0</bit>
+      <toggle_button>true</toggle_button>
+      <show_confirm_dialog>false</show_confirm_dialog>
+      <on_label>ON</on_label>
+      <border_width>1</border_width>
+      <off_image>/BOY Examples/pictures/switch_off.gif</off_image>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <y>21</y>
+      <on_image>/BOY Examples/pictures/switch_on.gif</on_image>
+      <actions hook="false" />
+      <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      <x>96</x>
     </widget>
   </widget>
 </display>

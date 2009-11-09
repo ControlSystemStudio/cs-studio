@@ -562,11 +562,11 @@ $(pv_value)</tooltip>
       <color red="0" green="128" blue="255" />
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
-    <y>276</y>
+    <y>285</y>
     <actions hook="false" />
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <x>566</x>
+    <x>300</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.BoolSwitch" version="1.0">
     <border_alarm_sensitive>true</border_alarm_sensitive>
@@ -637,14 +637,14 @@ $(pv_value)</tooltip>
     <transparent>false</transparent>
     <show_scrollbar>true</show_scrollbar>
     <actions hook="false" />
-    <y>256</y>
+    <y>260</y>
     <foreground_color>
       <color red="192" green="192" blue="192" />
     </foreground_color>
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
-    <x>264</x>
+    <x>28</x>
     <tooltip />
     <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0">
       <border_alarm_sensitive>false</border_alarm_sensitive>
@@ -1215,5 +1215,175 @@ $(pv_value)</tooltip>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>411</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+    <enabled>true</enabled>
+    <widget_type>Grouping Container</widget_type>
+    <macros>
+      <include_parent_macros>true</include_parent_macros>
+    </macros>
+    <visible>true</visible>
+    <width>114</width>
+    <border_style>13</border_style>
+    <lock_children>false</lock_children>
+    <scripts />
+    <height>123</height>
+    <border_width>1</border_width>
+    <name>Bits Control</name>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <transparent>false</transparent>
+    <show_scrollbar>true</show_scrollbar>
+    <actions hook="false" />
+    <y>247</y>
+    <foreground_color>
+      <color red="192" green="192" blue="192" />
+    </foreground_color>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <x>459</x>
+    <tooltip />
+    <widget typeId="org.csstudio.opibuilder.widgets.checkbox" version="1.0">
+      <border_alarm_sensitive>true</border_alarm_sensitive>
+      <visible>true</visible>
+      <auto_size>true</auto_size>
+      <scripts />
+      <height>15</height>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <name>Check Box_1</name>
+      <pv_name>loc://boolTest</pv_name>
+      <background_color>
+        <color red="240" green="240" blue="240" />
+      </background_color>
+      <foreground_color>
+        <color red="0" green="0" blue="0" />
+      </foreground_color>
+      <widget_type>Check Box</widget_type>
+      <enabled>true</enabled>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+      <font>
+        <fontdata fontName="Arial" height="9" style="0" />
+      </font>
+      <width>40</width>
+      <border_style>0</border_style>
+      <label>Bit 1</label>
+      <bit>1</bit>
+      <border_width>1</border_width>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <y>26</y>
+      <actions hook="false" />
+      <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      <x>0</x>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.checkbox" version="1.0">
+      <border_alarm_sensitive>true</border_alarm_sensitive>
+      <visible>true</visible>
+      <auto_size>true</auto_size>
+      <scripts />
+      <height>15</height>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <name>Check Box</name>
+      <pv_name>loc://boolTest</pv_name>
+      <background_color>
+        <color red="240" green="240" blue="240" />
+      </background_color>
+      <foreground_color>
+        <color red="0" green="0" blue="0" />
+      </foreground_color>
+      <widget_type>Check Box</widget_type>
+      <enabled>true</enabled>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+      <font>
+        <fontdata fontName="Arial" height="9" style="0" />
+      </font>
+      <width>40</width>
+      <border_style>0</border_style>
+      <label>Bit 0</label>
+      <bit>0</bit>
+      <border_width>1</border_width>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <y>0</y>
+      <actions hook="false" />
+      <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      <x>0</x>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.checkbox" version="1.0">
+      <border_alarm_sensitive>true</border_alarm_sensitive>
+      <visible>true</visible>
+      <auto_size>true</auto_size>
+      <scripts />
+      <height>15</height>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <name>Check Box_3</name>
+      <pv_name>loc://boolTest</pv_name>
+      <background_color>
+        <color red="240" green="240" blue="240" />
+      </background_color>
+      <foreground_color>
+        <color red="0" green="0" blue="0" />
+      </foreground_color>
+      <widget_type>Check Box</widget_type>
+      <enabled>true</enabled>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+      <font>
+        <fontdata fontName="Arial" height="9" style="0" />
+      </font>
+      <width>40</width>
+      <border_style>0</border_style>
+      <label>Bit 3</label>
+      <bit>3</bit>
+      <border_width>1</border_width>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <y>78</y>
+      <actions hook="false" />
+      <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      <x>0</x>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.checkbox" version="1.0">
+      <border_alarm_sensitive>true</border_alarm_sensitive>
+      <visible>true</visible>
+      <auto_size>true</auto_size>
+      <scripts />
+      <height>15</height>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <name>Check Box_2</name>
+      <pv_name>loc://boolTest</pv_name>
+      <background_color>
+        <color red="240" green="240" blue="240" />
+      </background_color>
+      <foreground_color>
+        <color red="0" green="0" blue="0" />
+      </foreground_color>
+      <widget_type>Check Box</widget_type>
+      <enabled>true</enabled>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+      <font>
+        <fontdata fontName="Arial" height="9" style="0" />
+      </font>
+      <width>40</width>
+      <border_style>0</border_style>
+      <label>Bit 2</label>
+      <bit>2</bit>
+      <border_width>1</border_width>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <y>52</y>
+      <actions hook="false" />
+      <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      <x>0</x>
+    </widget>
   </widget>
 </display>

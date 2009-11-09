@@ -96,7 +96,7 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <fill_level>100.0</fill_level>
     <scripts />
-    <height>268</height>
+    <height>304</height>
     <anti_alias>true</anti_alias>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Rectangle_2</name>
@@ -141,7 +141,7 @@ $(pv_value)</tooltip>
     <height>31</height>
     <toggle_button>false</toggle_button>
     <name>Action Button_13</name>
-    <y>283</y>
+    <y>279</y>
     <actions hook="false">
       <action type="OPEN_DISPLAY">
         <path>/BOY Examples/widgets/3_4_Text_Input.opi</path>
@@ -175,7 +175,7 @@ $(pv_value)</tooltip>
     <height>31</height>
     <toggle_button>false</toggle_button>
     <name>Action Button_11</name>
-    <y>239</y>
+    <y>233</y>
     <actions hook="false">
       <action type="OPEN_DISPLAY">
         <path>/BOY Examples/widgets/3_3_Menu_Button.opi</path>
@@ -233,7 +233,7 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <fill_level>100.0</fill_level>
     <scripts />
-    <height>268</height>
+    <height>304</height>
     <anti_alias>true</anti_alias>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Rectangle_1</name>
@@ -278,7 +278,7 @@ $(pv_value)</tooltip>
     <height>31</height>
     <toggle_button>false</toggle_button>
     <name>Action Button_9</name>
-    <y>283</y>
+    <y>279</y>
     <actions hook="false">
       <action type="OPEN_DISPLAY">
         <path>/BOY Examples/widgets/2_4_Tank_Thermo.opi</path>
@@ -312,7 +312,7 @@ $(pv_value)</tooltip>
     <height>31</height>
     <toggle_button>false</toggle_button>
     <name>Action Button_8</name>
-    <y>239</y>
+    <y>233</y>
     <actions hook="false">
       <action type="OPEN_DISPLAY">
         <path>/BOY Examples/widgets/2_3_Gauge_Meter.opi</path>
@@ -921,7 +921,7 @@ $(pv_value)</tooltip>
     <height>31</height>
     <toggle_button>false</toggle_button>
     <name>Action Button_6</name>
-    <y>191</y>
+    <y>187</y>
     <actions hook="false">
       <action type="OPEN_DISPLAY">
         <path>/BOY Examples/widgets/2_2_Text_Update.opi</path>
@@ -961,7 +961,7 @@ $(pv_value)</tooltip>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <transparent>true</transparent>
-    <y>245</y>
+    <y>239</y>
     <actions hook="false">
       <action type="OPEN_DISPLAY">
         <path>/BOY Examples/widgets/1_1_Rectangle_Ellipse.opi</path>
@@ -995,7 +995,7 @@ $(pv_value)</tooltip>
     <height>31</height>
     <toggle_button>false</toggle_button>
     <name>Action Button_7</name>
-    <y>329</y>
+    <y>325</y>
     <actions hook="false">
       <action type="OPEN_DISPLAY">
         <path>/BOY Examples/widgets/2_5_1_XY_Graph.opi</path>
@@ -1035,7 +1035,7 @@ $(pv_value)</tooltip>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <transparent>true</transparent>
-    <y>289</y>
+    <y>285</y>
     <actions hook="false">
       <action type="OPEN_DISPLAY">
         <path>/BOY Examples/widgets/1_1_Rectangle_Ellipse.opi</path>
@@ -1075,7 +1075,7 @@ $(pv_value)</tooltip>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <transparent>true</transparent>
-    <y>197</y>
+    <y>193</y>
     <actions hook="false">
       <action type="OPEN_DISPLAY">
         <path>/BOY Examples/widgets/1_1_Rectangle_Ellipse.opi</path>
@@ -1147,7 +1147,7 @@ $(pv_value)</tooltip>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <transparent>true</transparent>
-    <y>335</y>
+    <y>331</y>
     <actions hook="false">
       <action type="OPEN_DISPLAY">
         <path>/BOY Examples/widgets/1_1_Rectangle_Ellipse.opi</path>
@@ -1227,7 +1227,7 @@ $(pv_value)</tooltip>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <transparent>true</transparent>
-    <y>289</y>
+    <y>285</y>
     <actions hook="false">
       <action type="OPEN_DISPLAY">
         <path>/BOY Examples/widgets/1_1_Rectangle_Ellipse.opi</path>
@@ -1249,10 +1249,10 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <enabled>true</enabled>
     <widget_type>Action Button</widget_type>
-    <text>Boolean Button/Switch</text>
+    <text>Boolean Widgets</text>
     <visible>true</visible>
     <font>
-      <fontdata fontName="Arial" height="10" style="1" />
+      <fontdata fontName="Arial" height="12" style="1" />
     </font>
     <width>193</width>
     <push_action_index>0</push_action_index>
@@ -1261,7 +1261,7 @@ $(pv_value)</tooltip>
     <height>31</height>
     <toggle_button>false</toggle_button>
     <name>Action Button_10</name>
-    <y>191</y>
+    <y>187</y>
     <actions hook="false">
       <action type="OPEN_DISPLAY">
         <path>/BOY Examples/widgets/3_2_1_BoolButton_Switch.opi</path>
@@ -1301,7 +1301,7 @@ $(pv_value)</tooltip>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <transparent>true</transparent>
-    <y>245</y>
+    <y>239</y>
     <actions hook="false">
       <action type="OPEN_DISPLAY">
         <path>/BOY Examples/widgets/1_1_Rectangle_Ellipse.opi</path>
@@ -1367,7 +1367,7 @@ $(pv_value)</tooltip>
     <height>31</height>
     <toggle_button>false</toggle_button>
     <name>Action Button_12</name>
-    <y>329</y>
+    <y>325</y>
     <actions hook="false">
       <action type="OPEN_DISPLAY">
         <path>/BOY Examples/widgets/3_5_Knob_Slider.opi</path>
@@ -1407,7 +1407,7 @@ $(pv_value)</tooltip>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <transparent>true</transparent>
-    <y>335</y>
+    <y>331</y>
     <actions hook="false">
       <action type="OPEN_DISPLAY">
         <path>/BOY Examples/widgets/1_1_Rectangle_Ellipse.opi</path>
@@ -1447,7 +1447,7 @@ $(pv_value)</tooltip>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <transparent>true</transparent>
-    <y>197</y>
+    <y>193</y>
     <actions hook="false">
       <action type="OPEN_DISPLAY">
         <path>/BOY Examples/widgets/1_1_Rectangle_Ellipse.opi</path>
@@ -1753,6 +1753,154 @@ $(pv_value)</tooltip>
     </actions>
     <tooltip />
     <x>41</x>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="51" green="51" blue="204" />
+    </foreground_color>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <enabled>true</enabled>
+    <widget_type>Action Button</widget_type>
+    <text>Intensity Graph</text>
+    <visible>true</visible>
+    <font>
+      <fontdata fontName="Arial" height="12" style="1" />
+    </font>
+    <width>193</width>
+    <push_action_index>0</push_action_index>
+    <image />
+    <scripts />
+    <height>31</height>
+    <toggle_button>false</toggle_button>
+    <name>Action Button_19</name>
+    <y>371</y>
+    <actions hook="false">
+      <action type="OPEN_DISPLAY">
+        <path>/BOY Examples/widgets/2_6_1_IntensityGraph.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+        </macros>
+        <replace>true</replace>
+      </action>
+    </actions>
+    <foreground_color>
+      <color red="51" green="51" blue="204" />
+    </foreground_color>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <x>301</x>
+    <tooltip />
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <widget_type>Label</widget_type>
+    <enabled>true</enabled>
+    <text>6.</text>
+    <visible>true</visible>
+    <font>
+      <fontdata fontName="Arial" height="12" style="1" />
+    </font>
+    <vertical_alignment>1</vertical_alignment>
+    <width>13</width>
+    <border_style>0</border_style>
+    <auto_size>true</auto_size>
+    <scripts />
+    <height>19</height>
+    <border_width>1</border_width>
+    <name>Label_25</name>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <transparent>true</transparent>
+    <y>377</y>
+    <actions hook="false">
+      <action type="OPEN_DISPLAY">
+        <path>/BOY Examples/widgets/1_1_Rectangle_Ellipse.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+        </macros>
+        <replace>false</replace>
+      </action>
+    </actions>
+    <tooltip />
+    <x>307</x>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="51" green="51" blue="204" />
+    </foreground_color>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <enabled>true</enabled>
+    <widget_type>Action Button</widget_type>
+    <text>Combo Box</text>
+    <visible>true</visible>
+    <font>
+      <fontdata fontName="Arial" height="12" style="1" />
+    </font>
+    <width>193</width>
+    <push_action_index>0</push_action_index>
+    <image />
+    <scripts />
+    <height>31</height>
+    <toggle_button>false</toggle_button>
+    <name>Action Button_20</name>
+    <y>371</y>
+    <actions hook="false">
+      <action type="OPEN_DISPLAY">
+        <path>/BOY Examples/widgets/3_6_ComboBox.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+        </macros>
+        <replace>true</replace>
+      </action>
+    </actions>
+    <foreground_color>
+      <color red="51" green="51" blue="204" />
+    </foreground_color>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <x>558</x>
+    <tooltip />
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <widget_type>Label</widget_type>
+    <enabled>true</enabled>
+    <text>6.</text>
+    <visible>true</visible>
+    <font>
+      <fontdata fontName="Arial" height="12" style="1" />
+    </font>
+    <vertical_alignment>1</vertical_alignment>
+    <width>13</width>
+    <border_style>0</border_style>
+    <auto_size>true</auto_size>
+    <scripts />
+    <height>19</height>
+    <border_width>1</border_width>
+    <name>Label_26</name>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <transparent>true</transparent>
+    <y>377</y>
+    <actions hook="false">
+      <action type="OPEN_DISPLAY">
+        <path>/BOY Examples/widgets/1_1_Rectangle_Ellipse.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+        </macros>
+        <replace>false</replace>
+      </action>
+    </actions>
+    <tooltip />
+    <x>564</x>
     <background_color>
       <color red="255" green="255" blue="255" />
     </background_color>
