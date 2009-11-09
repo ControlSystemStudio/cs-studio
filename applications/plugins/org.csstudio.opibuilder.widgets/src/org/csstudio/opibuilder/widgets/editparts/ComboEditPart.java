@@ -253,4 +253,17 @@ public final class ComboEditPart extends AbstractPVWidgetEditPart {
 		getWidgetModel().setSize(getWidgetModel().getWidth(), d.height);
 	}
 
+	@Override
+	public String getValue() {
+		return combo.getText();
+	}
+
+	@Override
+	public void setValue(Object value) {
+		if(value instanceof String)
+			combo.setText((String) value);
+		else if (value instanceof Integer)
+			combo.select((Integer)value);
+	}
+
 }

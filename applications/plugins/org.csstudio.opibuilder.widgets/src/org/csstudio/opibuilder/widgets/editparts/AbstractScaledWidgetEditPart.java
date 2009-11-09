@@ -153,4 +153,15 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractPVWidgetEditP
 		
 	}
 
+	@Override
+	public void setValue(Object value) {
+		if(value instanceof Double)
+			((AbstractScaledWidgetFigure)getFigure()).setValue((Double)value);
+	}
+	
+	@Override
+	public Double getValue() {
+		return ((AbstractScaledWidgetFigure)getFigure()).getValue();
+	}
+	
 }

@@ -25,6 +25,10 @@ public class IntensityGraphModel extends AbstractPVWidgetModel {
 	
 	public static final String PROP_DATA_HEIGHT = "data_height"; //$NON-NLS-1$	
 	
+	public static final String PROP_GRAPH_AREA_WIDTH = "graph_area_width"; //$NON-NLS-1$		
+	
+	public static final String PROP_GRAPH_AREA_HEIGHT = "graph_area_height"; //$NON-NLS-1$	
+	
 	public static final String PROP_COLOR_MAP = "color_map"; //$NON-NLS-1$		
 	
 	public static final String PROP_SHOW_RAMP = "show_ramp"; //$NON-NLS-1$		
@@ -65,6 +69,12 @@ public class IntensityGraphModel extends AbstractPVWidgetModel {
 		addProperty(new BooleanProperty(PROP_SHOW_RAMP, "Show Ramp",
 				WidgetPropertyCategory.Display, true));
 		
+		addProperty(new IntegerProperty(PROP_GRAPH_AREA_WIDTH, "Graph Area Width", 
+				WidgetPropertyCategory.Position, 0));
+		
+		addProperty(new IntegerProperty(PROP_GRAPH_AREA_HEIGHT, "Graph Area Height", 
+				WidgetPropertyCategory.Position, 0));
+		
 	}
 
 	@Override
@@ -101,7 +111,19 @@ public class IntensityGraphModel extends AbstractPVWidgetModel {
 		return (Integer) getCastedPropertyValue(PROP_DATA_HEIGHT);
 	}
 	
-	
+	/**
+	 * @return the graph area width
+	 */
+	public int getGraphAreaWidth() {
+		return (Integer) getCastedPropertyValue(PROP_GRAPH_AREA_WIDTH);
+	}
+
+	/**
+	 * @return the graph area height
+	 */
+	public int getGraphAreaHeight() {
+		return (Integer) getCastedPropertyValue(PROP_GRAPH_AREA_HEIGHT);
+	}
 	/**
 	 * @return the color map
 	 */

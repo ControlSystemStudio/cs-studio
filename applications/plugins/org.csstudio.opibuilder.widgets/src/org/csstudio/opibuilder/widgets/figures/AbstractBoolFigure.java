@@ -1,6 +1,9 @@
 package org.csstudio.opibuilder.widgets.figures;
 
+import java.util.Arrays;
+
 import org.csstudio.opibuilder.widgets.model.AbstractBoolWidgetModel;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Label;
@@ -58,9 +61,15 @@ public class AbstractBoolFigure extends Figure {
 	public void setValue(double value) {
 		this.value = (long) value;
 		updateBoolValue();			
+		revalidate();
 	}
 
 	
+	
+	public void setBooleanValue(Boolean value){
+		this.boolValue = value;
+		updateValue();
+	}
 
 	/**
 	 * @param bit the bit to set
@@ -93,6 +102,45 @@ public class AbstractBoolFigure extends Figure {
 			boolLabel.setText(offLabel);		
 	}
 
+	/**
+	 * update the value from boolValue
+	 */
+	protected void updateValue(){
+		//get boolValue
+		if(bit == -1)
+			setValue(boolValue ? 1 : 0);
+		else if(bit >=0) {
+			char[] binArray = Long.toBinaryString(value).toCharArray();
+			if(bit >= 64 || bit <-1)
+				try {
+					throw new Exception("bit is out of range: [-1,63]");
+				} catch (Exception e) {
+					CentralLogger.getInstance().error(this, e);
+				}
+			else {
+				char[] bin64Array = new char[64];
+				Arrays.fill(bin64Array, '0');
+				for(int i=0; i<binArray.length; i++){
+					bin64Array[64-binArray.length + i] = binArray[i];
+				}				
+				bin64Array[63-bit] = boolValue? '1' : '0';	
+				String binString = new String(bin64Array);	
+				
+				if( binString.indexOf('1') <= -1){
+					binArray = new char[]{'0'};
+				}else {
+					binArray = new char[64 - binString.indexOf('1')];
+					for(int i=0; i<binArray.length; i++){
+						binArray[i] = bin64Array[i+64-binArray.length];
+					}
+				}
+								
+				binString = new String(binArray);
+				setValue(Long.parseLong(binString, 2));				
+			}
+		}
+	}
+	
 	/**
 	 * @param showBooleanLabel the showBooleanLabel to set
 	 */

@@ -154,5 +154,22 @@ public abstract class AbstractBoolEditPart extends AbstractPVWidgetEditPart {
 		setPropertyChangeHandler(AbstractBoolWidgetModel.PROP_FONT, fontHandler);
 		
 	}
+	
+	
+	/* (non-Javadoc)
+	 * @see org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart#setValue(java.lang.Object)
+	 */
+	@Override
+	public void setValue(Object value) {
+		if(value instanceof Double)
+			((AbstractBoolFigure)getFigure()).setValue((Double)value);
+		else if (value instanceof Boolean)
+			((AbstractBoolFigure)getFigure()).setBooleanValue((Boolean)value);
+	}
 
+	@Override
+	public Boolean getValue() {
+		return ((AbstractBoolFigure)getFigure()).getBoolValue();
+	}
+	
 }

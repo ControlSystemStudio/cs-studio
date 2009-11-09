@@ -6,6 +6,7 @@ import org.csstudio.opibuilder.widgets.figureparts.ColorMapRamp;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.geometry.Dimension;
+import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
@@ -64,6 +65,17 @@ public class IntensityGraphFigure extends Figure {
 		super.layout();
 	}
 	
+	/**
+	 * @return the insets for graph area
+	 */
+	public Dimension getGraphAreaInsets() {
+		if(colorMapRamp.isVisible())
+			return new Dimension(getInsets().left + getInsets().right + colorMapRamp.getPreferredSize(
+				getClientArea().width, getClientArea().height).width + GAP,
+				getInsets().top + getInsets().bottom);
+		else
+			return new Dimension(getInsets().getWidth(), getInsets().getHeight());
+	}
 	
 	
 //	@Override
@@ -138,6 +150,9 @@ public class IntensityGraphFigure extends Figure {
 		graphArea.repaint();
 	}
 
+	public double[] getDataArray() {
+		return dataArray;
+	}
 
 	/**
 	 * @param max the max to set

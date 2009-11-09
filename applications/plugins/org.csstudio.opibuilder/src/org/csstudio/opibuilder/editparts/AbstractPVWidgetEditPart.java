@@ -373,7 +373,11 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 		return pvMap.get(pvPropId);
 	}
 	
-	protected IValue getPVValue(String pvPropId){
+	/**Get value from one of the attached PVs.
+	 * @param pvPropId the property id of the PV.
+	 * @return the {@link IValue} of the PV.
+	 */
+	public IValue getPVValue(String pvPropId){
 		final PV pv = pvMap.get(pvPropId);
 		if(pv != null){
 			return pv.getValue();
@@ -390,4 +394,19 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 		return (AbstractPVWidgetModel)getModel();
 	}
 
+	/**Set the value of the widget. This only take effect on the visual presentation of the widget and
+	 * will not write the value to the PV attached to this widget which can be reached by calling
+	 * {@link #setPVValue(String, Object)}.
+	 * @param value the value to be set. It must be the compatible type for the widget.
+	 *  For example, a boolean widget only accept boolean or double values.
+	 */
+	public abstract void setValue(Object value);
+	
+	
+	/**Get the value of the widget. 
+	 * @return the value of the widget. It is not the value of the attached PV 
+	 * even though they are equals in most cases. {@link #getPVValue(String)  
+	 */
+	public abstract Object getValue();
+	
 }

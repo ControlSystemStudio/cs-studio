@@ -540,11 +540,29 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 
 
 	/**
-	 * @return the external object. null if no such object setted before.
+	 * @return the external object. null if no such an object was set before.
 	 */
 	public Object getExternalObject(String name) {
 		if(externalObjectsMap != null)
 			return externalObjectsMap.get(name);
 		return null;
 	}
+	
+	/**Set the value for one of the properties of the widget. 
+	 * @param prop_id the property id. 
+	 * @param value the value.
+	 */
+	public void setPropertyValue(String prop_id, Object value){
+		getWidgetModel().setPropertyValue(prop_id, value);
+	}
+	
+	/**Get the value from one the properties of the widget.
+	 * @param prop_id
+	 * @return
+	 */
+	public Object getPropertyValue(String prop_id){
+		return getWidgetModel().getPropertyValue(prop_id);
+	}
+	
+	
 }

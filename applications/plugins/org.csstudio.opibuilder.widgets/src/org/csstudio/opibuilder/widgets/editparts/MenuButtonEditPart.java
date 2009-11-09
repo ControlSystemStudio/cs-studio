@@ -275,6 +275,17 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
 		return 1;
 	}
 
+	@Override
+	public String getValue() {
+		return ((Label)getFigure()).getText();
+	}
+
+	@Override
+	public void setValue(Object value) {
+		if(value instanceof String)
+			((Label)getFigure()).setText((String)value);
+	}
+
 
 
 }

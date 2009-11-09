@@ -114,9 +114,14 @@ public class CheckBoxFigure extends Label {
 	 */
 	public void setValue(double value) {
 		this.value = (long) value;
-		updateBoolValue();			
+		updateBoolValue();
+		repaint();
 	}
 
+	public void setBoolValue(boolean boolValue) {
+		this.boolValue = boolValue;
+		updateValue();
+	}
 	
 
 	/**

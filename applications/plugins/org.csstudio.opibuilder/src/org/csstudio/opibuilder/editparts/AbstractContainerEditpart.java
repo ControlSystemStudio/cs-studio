@@ -72,7 +72,8 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
 		installEditPolicy("Snap Feedback", new SnapFeedbackPolicy()); //$NON-NLS-1$
 	}
 	
-	public AbstractBaseEditPart getWidget(String name){
+	@SuppressWarnings("unchecked")
+	public AbstractBaseEditPart getChild(String name){
 		List children = getChildren();
 		for(Object o : children){
 			if(o instanceof AbstractBaseEditPart){

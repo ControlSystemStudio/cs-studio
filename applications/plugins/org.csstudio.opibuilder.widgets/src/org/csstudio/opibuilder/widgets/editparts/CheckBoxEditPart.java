@@ -141,4 +141,18 @@ public class CheckBoxEditPart extends AbstractPVWidgetEditPart {
 		getWidgetModel().setSize(((CheckBoxFigure)figure).getPreferredSize());
 	}
 
+	
+	@Override
+	public void setValue(Object value) {
+		if(value instanceof Double)
+			((CheckBoxFigure)getFigure()).setValue((Double)value);
+		else if (value instanceof Boolean)
+			((CheckBoxFigure)getFigure()).setBoolValue((Boolean)value);
+	}
+
+	@Override
+	public Boolean getValue() {
+		return ((CheckBoxFigure)getFigure()).getBoolValue();
+	}
+	
 }

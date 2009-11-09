@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
+import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.util.OPIFont;
@@ -492,4 +493,13 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 			return true;
 		}
 	}
+
+	@Override
+	public void setValue(Object value) {		
+	}
+	
+	@Override
+	public Object getValue() {
+		return getPVValue(AbstractPVWidgetModel.PROP_PVNAME);
+	}	
 }

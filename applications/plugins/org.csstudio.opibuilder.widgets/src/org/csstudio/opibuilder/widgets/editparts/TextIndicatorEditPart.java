@@ -285,5 +285,15 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 			performAutoSize(figure);
 		
 	}
+
+	@Override
+	public String getValue() {
+		return ((LabelFigure)getFigure()).getText();
+	}
+
+	@Override
+	public void setValue(Object value) {
+		((LabelFigure)getFigure()).setText(value.toString());
+	}
 	
 }

@@ -335,4 +335,16 @@ public final class ComboEditPart3 extends AbstractPVWidgetEditPart {
 		getWidgetModel().setSize(getWidgetModel().getWidth(), d.height);
 	}
 
+	@Override
+	public Object getValue() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setValue(Object value) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

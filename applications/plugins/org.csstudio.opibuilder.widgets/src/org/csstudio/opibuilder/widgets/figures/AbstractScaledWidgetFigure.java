@@ -60,6 +60,10 @@ public abstract class AbstractScaledWidgetFigure extends Figure {
 			Math.max(scale.getRange().getLower(), Math.min(scale.getRange().getUpper(), value));
 	}
 	
+	public double getValue() {
+		return value;
+	}
+	
 	/**
 	 * set the range of the scale
 	 * @param min
