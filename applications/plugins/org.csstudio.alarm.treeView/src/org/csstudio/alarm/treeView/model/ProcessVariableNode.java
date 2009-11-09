@@ -145,13 +145,8 @@ public class ProcessVariableNode extends AbstractAlarmTreeNode
 	 * @param alarm the alarm.
 	 */
 	public final void setActiveAlarm(final Alarm alarm) {
-		this._activeAlarm = alarm;
-
-		// Increase the highest unacknowledged alarm if the new active alarm
-		// has a higher severity than the current highest unacknowledged
-		// alarm.
-		if (_highestUnacknowledgedAlarm == null
-				|| alarm.compareTo(_highestUnacknowledgedAlarm) > 0) {
+		_activeAlarm = alarm;
+		if (alarm.severityHigherThan(_highestUnacknowledgedAlarm)) {
 			_highestUnacknowledgedAlarm = alarm;
 		}
 		

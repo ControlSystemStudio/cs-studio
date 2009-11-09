@@ -25,21 +25,21 @@ package org.csstudio.alarm.treeView.model;
 /**
  * Represents an alarm.
  * <p>
- * Note: this class has a natural ordering that is inconsistent with equals.
+ * Instances of this class are immutable for easy sharing between threads.
  * 
  * @author Joerg Rathlev
  */
-public class Alarm implements Comparable<Alarm> {
+public final class Alarm {
 
 	/**
 	 * The name of the object to which this alarm applies.
 	 */
-	private String _objectName;
+	private final String _objectName;
 	
 	/**
 	 * The severity of this alarm.
 	 */
-	private Severity _severity;
+	private final Severity _severity;
 
 
 	/**
@@ -61,22 +61,20 @@ public class Alarm implements Comparable<Alarm> {
 		return _severity;
 	}
 
-	
 	/**
-	 * Compares this alarm to another alarm for ordering by severity.
-	 * <p>
-	 * Note that the order imposed by this method is inconsistent with equals;
-	 * two alarms can have the same severity without being equal.
+	 * Returns whether this alarm has a higher severity than some other alarm.
+	 * If the other alarm is <code>null</code>, this method returns
+	 * <code>true</code>.
 	 * 
-	 * @param other the alarm to be compared.
-	 * @return a negative integer, zero or a positive integer as this alarm is
-	 *         less severe than, equally severe as or more severe than the
-	 *         other alarm.
+	 * @param alarm
+	 *            the alarm to compare to.
+	 * @return <code>true</code> if this alarm has a higher severity,
+	 *         <code>false</code> otherwise.
 	 */
-	public final int compareTo(final Alarm other) {
-		return _severity.compareTo(other._severity);
+	public boolean severityHigherThan(Alarm alarm) {
+		return alarm == null || _severity.compareTo(alarm._severity) > 0;
 	}
-	
+
 	
 	/**
 	 * Returns the name of the object on which this alarm occured.

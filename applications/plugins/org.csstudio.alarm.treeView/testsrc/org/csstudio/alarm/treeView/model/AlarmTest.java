@@ -40,13 +40,29 @@ public class AlarmTest {
 	}
 	
 	@Test
-	public void testCompareSeverity() throws Exception {
-		Alarm amajor = new Alarm("foo", Severity.MAJOR);
-		Alarm aminor = new Alarm("foo", Severity.MINOR);
+	public void testMajorIsHigherSeverityThanMinor() throws Exception {
+		Alarm major = new Alarm("foo", Severity.MAJOR);
+		Alarm minor = new Alarm("foo", Severity.MINOR);
 		
-		assertTrue(amajor.compareTo(aminor) > 0);
-		assertTrue(aminor.compareTo(amajor) < 0);
-		assertTrue(amajor.compareTo(amajor) == 0);
+		assertTrue(major.severityHigherThan(minor));
+		assertFalse(minor.severityHigherThan(major));
 	}
+	
+	@Test
+	public void testSeverityComparison() throws Exception {
+		Alarm noalarm = new Alarm("foo", Severity.NO_ALARM);
+		Alarm minor = new Alarm("foo", Severity.MINOR);
+		Alarm major = new Alarm("foo", Severity.MAJOR);
+		Alarm invalid = new Alarm("foo", Severity.INVALID);
+		
+		assertTrue(minor.severityHigherThan(noalarm));
+		assertTrue(major.severityHigherThan(minor));
+		assertTrue(invalid.severityHigherThan(major));
 
+		// All alarms have a higher severity than nothing (null)
+		assertTrue(noalarm.severityHigherThan(null));
+		assertTrue(minor.severityHigherThan(null));
+		assertTrue(major.severityHigherThan(null));
+		assertTrue(invalid.severityHigherThan(null));
+	}
 }
