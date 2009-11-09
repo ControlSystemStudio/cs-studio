@@ -106,8 +106,6 @@ public class ChannelStructureConfigComposite extends NodeConfig {
                    sbDesc.append(LS);
                }
                styleRanges.add(new StyleRange(length, channel.getName().length()+1,null,null,SWT.BOLD));
-//               StyleRange sr = new StyleRange(length, channel.getName().length(),null,null,SWT.BOLD);
-//               text.setStyleRange(sr);
            }
            setText(_ioNameList, sbIOName.toString(), Text.LIMIT);
            text.setText(sbDesc.toString());
