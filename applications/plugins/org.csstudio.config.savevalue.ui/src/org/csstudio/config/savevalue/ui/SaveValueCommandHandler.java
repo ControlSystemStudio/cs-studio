@@ -87,8 +87,24 @@ public class SaveValueCommandHandler extends AbstractHandler {
 				return null;
 			}
 		}
+		pv = withoutPrefix(pv);
 		saveValue(pv, value);
 		return null;
+	}
+
+	/**
+	 * Returns the PV name without a control system prefix.
+	 * 
+	 * @param pv
+	 *            the PV name.
+	 * @return the PV name without prefix.
+	 */
+	private String withoutPrefix(String pv) {
+		int prefixPosition = pv.indexOf("://"); //$NON-NLS-1$
+		if (prefixPosition != -1) {
+			pv = pv.substring(prefixPosition + 3);
+		}
+		return pv;
 	}
 
 	/**
