@@ -53,6 +53,8 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseAdapter;
@@ -164,7 +166,8 @@ public abstract class NodeConfig extends Composite {
                         "You dispose this " + getNode().getClass().getSimpleName() + "?");
                 if (openQuestion) {
                     setSaveButtonSaved();
-                    getProfiBusTreeView().getTreeViewer().setSelection(getProfiBusTreeView().getTreeViewer().getSelection());
+                    getProfiBusTreeView().getTreeViewer().setSelection(
+                            getProfiBusTreeView().getTreeViewer().getSelection());
                 } else {
                     // TODO: do nothing or cancel?
                 }
@@ -334,7 +337,7 @@ public abstract class NodeConfig extends Composite {
         getNode().setUpdatedOn(now);
 
         getNode().setDescription(getDesc());
-        if(getDescWidget()!=null) {
+        if (getDescWidget() != null) {
             getDescWidget().setData(getDesc());
         }
 
@@ -534,16 +537,17 @@ public abstract class NodeConfig extends Composite {
         if (_new) {
             _saveButton.setText("Create");
         } else {
-            _saveButton.setText("Save");
+            _saveButton.setText("&Save");
         }
         _saveButton.setLayoutData(labelGridData.create());
         setSaveButtonSelectionListener(new SaveSelectionListener());
         new Label(this, SWT.NONE);
         setCancelButton(new Button(this, SWT.PUSH));
-        getCancelButton().setText("Cancel");
+        getCancelButton().setText("&Cancel");
         getCancelButton().setLayoutData(labelGridData.create());
         getCancelButton().addSelectionListener(new CancelSelectionListener());
         new Label(this, SWT.NONE);
+        header.setTabList(new Control[0]);
     }
 
     private static Label getNewLabel(Group header, String string) {
@@ -640,11 +644,11 @@ public abstract class NodeConfig extends Composite {
         }
 
         setSaveButtonSaved();
-        _saveButton.setText("Save");
+        _saveButton.setText("&Save");
 
-        if (_new&&!getNode().isRootNode()) {
+        if (_new && !getNode().isRootNode()) {
             getProfiBusTreeView().refresh(getNode().getParent());
-        } else if (_new&&getNode().isRootNode()) {
+        } else if (_new && getNode().isRootNode()) {
             getProfiBusTreeView().addFacility(getNode());
         } else {
             // refresh the View
@@ -756,7 +760,7 @@ public abstract class NodeConfig extends Composite {
         if (getDescWidget() != null) {
             setDesc((String) getDescWidget().getData());
         }
-        if(getNode()!=null) {
+        if (getNode() != null) {
             getNode().setDirty(false);
         }
     }
@@ -825,6 +829,14 @@ public abstract class NodeConfig extends Composite {
      */
     protected final void setNameWidget(Text nameText) {
         _nameText = nameText;
+        _nameText.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (e.keyCode == SWT.CR || e.keyCode == SWT.KEYPAD_CR) {
+                    _descText.setFocus();
+                }
+            }
+        });
     }
 
     public void setDesc(String desc) {
@@ -853,25 +865,32 @@ public abstract class NodeConfig extends Composite {
      */
     protected final void setDescWidget(Text descText) {
         _descText = descText;
-    }
-
-    protected void makeDescGroup(Composite comp) {
-        makeDescGroup(comp, 3);
+        _descText.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.keyCode == SWT.CR || e.keyCode == SWT.KEYPAD_CR) {
+                    if (e.stateMask != SWT.MOD1) {
+                        e.doit = false;
+                        _saveButton.setFocus();
+                    }
+                }
+            }
+        });
     }
 
     protected void makeDescGroup(Composite comp, int hSize) {
         Group gDesc = new Group(comp, SWT.NONE);
         gDesc.setText("Description: ");
-        GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, true, hSize, 1);
-        layoutData.minimumHeight = 200;
-        layoutData.minimumWidth = 200;
-        gDesc.setLayoutData(layoutData);
+        GridDataFactory gdf = GridDataFactory.fillDefaults().grab(true, true).span(hSize, 1)
+                .minSize(200, 200);
+        gDesc.setLayoutData(gdf.create());
         gDesc.setLayout(new GridLayout(1, false));
 
-        _descText = new Text(gDesc, SWT.BORDER | SWT.MULTI);
-        _descText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-        _descText.setEditable(true);
-        setText(_descText, getNode().getDescription(), 255);
+        Text descText = new Text(gDesc, SWT.BORDER | SWT.MULTI);
+        descText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+        descText.setEditable(true);
+        setText(descText, getNode().getDescription(), 255);
+        setDescWidget(descText);
     }
 
     /**

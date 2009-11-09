@@ -42,6 +42,8 @@ import org.csstudio.config.ioconfig.model.pbmodel.ModuleChannelPrototype;
 import org.csstudio.config.ioconfig.model.tools.NodeMap;
 import org.csstudio.config.ioconfig.view.ActivatorUI;
 import org.csstudio.config.ioconfig.view.ProfiBusTreeView;
+import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -57,7 +59,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 /**
@@ -97,6 +98,7 @@ public class ChannelConfigComposite extends NodeConfig {
     public ChannelConfigComposite(final Composite parent, final ProfiBusTreeView profiBusTreeView,
             final Channel channel) {
         super(parent, profiBusTreeView, "Profibus Channel Configuration", channel, channel == null);
+        profiBusTreeView.setConfiguratorName("Channel Configuration");
         NodeMap.countChannelConfigComposite();
         _channel = channel;
         if (_channel == null) {
@@ -111,7 +113,7 @@ public class ChannelConfigComposite extends NodeConfig {
         if (_gsdFile != null) {
             fill(_gsdFile);
         }
-        if(_channel.isDirty()) {
+        if (_channel.isDirty()) {
             store();
         }
         getTabFolder().pack();
@@ -122,7 +124,7 @@ public class ChannelConfigComposite extends NodeConfig {
      *            is TabHead Text
      */
     private void general(final String head) {
-        final Composite comp = ConfigHelper.getNewTabItem(head, getTabFolder(), 5,300,290);
+        final Composite comp = ConfigHelper.getNewTabItem(head, getTabFolder(), 5, 300, 290);
         comp.setLayout(new GridLayout(4, false));
 
         // Name \ Index Group
@@ -134,7 +136,7 @@ public class ChannelConfigComposite extends NodeConfig {
         getNameWidget().setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true, 1, 1));
         setText(getNameWidget(), _channel.getName(), 255);
         getNameWidget().setEditable(false);
-        
+
         setIndexSpinner(ConfigHelper.getIndexSpinner(gName, _channel, getMLSB(), "Index",
                 getProfiBusTreeView()));
         getIndexSpinner().setEnabled(false);
@@ -145,42 +147,44 @@ public class ChannelConfigComposite extends NodeConfig {
         ioNameGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
         ioNameGroup.setText("IO Name: ");
         _ioNameText = new Text(ioNameGroup, SWT.BORDER | SWT.SINGLE);
-        _ioNameText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
+        _ioNameText.setLayoutData(new GridData(SWT.FILL, SWT.BOTTOM, true, false, 1, 1));
         setText(_ioNameText, _channel.getIoName(), 255);
-        
-        List<Sensors> loadSensors = Repository.loadSensors(_channel.getIoName());
-        if((loadSensors==null||loadSensors.size()<1)) {
-            new Label(ioNameGroup, SWT.NONE);
-        }else {
-            Group sensorsGroup = new Group(comp, SWT.NONE);
-            sensorsGroup.setLayout(new GridLayout(1, false));
-            sensorsGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
-            sensorsGroup.setText("Sensors: ");
-            _sensorsViewer = new ComboViewer(sensorsGroup, SWT.READ_ONLY);
-            _sensorsViewer.setLabelProvider(new LabelProvider());
-            _sensorsViewer.setContentProvider(new ArrayContentProvider());
-            _sensorsViewer.setInput(loadSensors.toArray());
-            int id = 0;
-            if(_channel.getCurrentValue()!=null&&_channel.getCurrentValue().length()>0) {
-                id = Integer.parseInt(_channel.getCurrentValue());
-            } else {
-                id = loadSensors.get(0).getId();
-                _channel.setCurrentValue(Integer.toString(id));
-                _channel.setDirty(true);
-            }
-            _sensorsViewer.getCombo().select(0);
-            for (Sensors sensors : loadSensors) {
-                if(id==sensors.getId()) {
-                    _sensorsViewer.setSelection(new StructuredSelection(sensors));
+
+        if (_channel.getIoName() != null && !_channel.getIoName().isEmpty()) {
+            List<Sensors> loadSensors = Repository.loadSensors(_channel.getIoName());
+            if ((loadSensors != null && loadSensors.size() > 0)) {
+                Group sensorsGroup = new Group(comp, SWT.NONE);
+                sensorsGroup.setLayout(new GridLayout(1, false));
+                sensorsGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
+                sensorsGroup.setText("Sensors: ");
+                _sensorsViewer = new ComboViewer(sensorsGroup, SWT.READ_ONLY);
+                _sensorsViewer.setLabelProvider(new LabelProvider());
+                _sensorsViewer.setContentProvider(new ArrayContentProvider());
+                _sensorsViewer.setInput(loadSensors.toArray());
+                int id = 0;
+                if (_channel.getCurrentValue() != null && _channel.getCurrentValue().length() > 0) {
+                    id = Integer.parseInt(_channel.getCurrentValue());
+                } else {
+                    id = loadSensors.get(0).getId();
+                    _channel.setCurrentValue(Integer.toString(id));
+                    _channel.setDirty(true);
                 }
+                _sensorsViewer.getCombo().select(0);
+                for (Sensors sensors : loadSensors) {
+                    if (id == sensors.getId()) {
+                        _sensorsViewer.setSelection(new StructuredSelection(sensors));
+                    }
+                }
+                _sensorsViewer.getCombo().setData(_sensorsViewer.getCombo().getSelectionIndex());
+                _sensorsViewer.getCombo().addModifyListener(getMLSB());
             }
-            _sensorsViewer.getCombo().setData(_sensorsViewer.getCombo().getSelectionIndex());
-            _sensorsViewer.getCombo().addModifyListener(getMLSB());
         }
 
         // EPICS address Group
         Group epicsAddressGroup = new Group(comp, SWT.NONE);
-        epicsAddressGroup.setLayout(new GridLayout(2, false));
+        GridLayoutFactory glf = GridLayoutFactory.fillDefaults().numColumns(2);
+//        epicsAddressGroup.setLayout(new GridLayout(2, false));
+        epicsAddressGroup.setLayout(glf.create());
         epicsAddressGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
         epicsAddressGroup.setText("EPICS address string: ");
 
@@ -197,7 +201,9 @@ public class ChannelConfigComposite extends NodeConfig {
             }
         });
         Button assembleButton = new Button(epicsAddressGroup, SWT.FLAT);
-        assembleButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+//        assembleButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+        GridDataFactory gdf = GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.CENTER);
+        assembleButton.setLayoutData(gdf.create());
         assembleButton.setImage(ActivatorUI.imageDescriptorFromPlugin(ActivatorUI.PLUGIN_ID,
                 "icons/refresh.gif").createImage());
         assembleButton.setToolTipText("Refresh the EPICS Address String\n and save it into the DB");
@@ -217,7 +223,8 @@ public class ChannelConfigComposite extends NodeConfig {
                         .getModuleChannelPrototypeNH();
                 ModuleChannelPrototype[] array = moduleChannelPrototypes
                         .toArray(new ModuleChannelPrototype[0]);
-                ModuleChannelPrototype moduleChannelPrototype = array[_channel.getChannelStructure().getSortIndex()];
+                ModuleChannelPrototype moduleChannelPrototype = array[_channel
+                        .getChannelStructure().getSortIndex()];
                 _channel.setStatusAddressOffset(moduleChannelPrototype.getShift());
                 String name;
                 if (!moduleChannelPrototype.isStructure()) {
@@ -259,7 +266,7 @@ public class ChannelConfigComposite extends NodeConfig {
         sizeText.setEditable(false);
 
         // Description Group
-        makeDescGroup(comp);
+        makeDescGroup(comp, 3);
     }
 
     /**
@@ -287,8 +294,9 @@ public class ChannelConfigComposite extends NodeConfig {
         _channel.setIoName(_ioNameText.getText());
         _channel.setName(getNameWidget().getText());
         _ioNameText.setData(_ioNameText.getText());
-        if(_sensorsViewer!=null) {
-            Sensors firstElement = (Sensors) ((StructuredSelection)_sensorsViewer.getSelection()).getFirstElement();
+        if (_sensorsViewer != null) {
+            Sensors firstElement = (Sensors) ((StructuredSelection) _sensorsViewer.getSelection())
+                    .getFirstElement();
             _channel.setCurrentValue(Integer.toString(firstElement.getId()));
             Combo combo = _sensorsViewer.getCombo();
             combo.setData(combo.getSelectionIndex());
@@ -309,8 +317,8 @@ public class ChannelConfigComposite extends NodeConfig {
     @Override
     public final Node getNode() {
         if (_channel == null) {
-            StructuredSelection selection = (StructuredSelection) getProfiBusTreeView().getTreeViewer()
-                    .getSelection();
+            StructuredSelection selection = (StructuredSelection) getProfiBusTreeView()
+                    .getTreeViewer().getSelection();
             if (selection.getFirstElement() instanceof Module) {
                 Module module = (Module) selection.getFirstElement();
                 _channel = ChannelStructure.makeSimpleChannel(module, false).getFirstChannel();
@@ -342,12 +350,13 @@ public class ChannelConfigComposite extends NodeConfig {
             fill(_gsdFile);
         }
     }
-    
+
     /**
      * 
-     * @param ioNameText Set the new IOName for this channel. 
+     * @param ioNameText
+     *            Set the new IOName for this channel.
      */
     public void setIoNameText(String ioNameText) {
-		_ioNameText.setText(ioNameText);
-	}
+        _ioNameText.setText(ioNameText);
+    }
 }

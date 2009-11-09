@@ -24,7 +24,6 @@
  */
 package org.csstudio.config.ioconfig.model.pbmodel;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Set;
@@ -40,7 +39,6 @@ import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.csstudio.config.ioconfig.model.DBClass;
-import org.csstudio.config.ioconfig.model.Document;
 import org.csstudio.platform.logging.CentralLogger;
 
 /**
@@ -97,10 +95,10 @@ public class GSDModule extends DBClass implements Comparable<GSDModule> {
      */
     private String _parameter;
 
-    /**
-     * A collection of documents that relate to this node.
-     */
-    private Collection<Document> _document = new ArrayList<Document>();
+//    /**
+//     * A collection of documents that relate to this node.
+//     */
+//    private Collection<Document> _document = new ArrayList<Document>();
 
     private Set<ModuleChannelPrototype> _moduleChannelPrototypes;
 

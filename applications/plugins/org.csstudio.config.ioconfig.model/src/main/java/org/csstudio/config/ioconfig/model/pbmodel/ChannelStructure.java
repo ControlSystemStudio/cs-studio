@@ -60,10 +60,6 @@ public class ChannelStructure extends Node implements IStructured {
     public ChannelStructure() {
     }
 
-    // private ChannelStructure(Module module, boolean simple) {
-    // this(module, simple, true, null, null, DEFAULT_MAX_STATION_ADDRESS);
-    // }
-
     private ChannelStructure(Module module, boolean simple, boolean isInput, DataType type,
             String name) {
         this(module, simple, isInput, type, name, DEFAULT_MAX_STATION_ADDRESS);
@@ -93,20 +89,6 @@ public class ChannelStructure extends Node implements IStructured {
         return channelStructure;
     }
 
-    /**
-     * 
-     * @param module
-     * @param isInput
-     * @return
-     */
-    public static ChannelStructure makeSimpleChannelStructure(Module module, boolean isInput) {
-        return new ChannelStructure(module, true, isInput, DataType.SIMPLE, null, 1);
-    }
-
-    public static ChannelStructure makeTestChannelStructure(Module module) {
-        return new ChannelStructure(module, false, true, DataType.SIMPLE, null, 1);
-    }
-
     public static ChannelStructure makeChannelStructure(Module module, boolean isInput,
             DataType type, String name) {
         return new ChannelStructure(module, false, isInput, type, name, DEFAULT_MAX_STATION_ADDRESS);
@@ -123,15 +105,9 @@ public class ChannelStructure extends Node implements IStructured {
                     .getByteSize() < 8, sortIndex);
 
             channel.setName(name + sortIndex);
-            // use setChannelType to reduce the local Updates. Make a local Update after add all
-            // Channles.
-            // channel.setChannelTypeNonHibernate(structerSize);
+            // Use setChannelType to reduce the local Updates.
+            // Make a local Update after add all Channels.
             channel.setChannelType(structer[sortIndex]);
-            // channel.setChannelNumber(channelPrototype.getOffset()*8+sortIndex);
-            // channel.setCreatedOn(now);
-            // channel.setUpdatedOn(now);
-            // channel.setCreatedBy(createdBy);
-            // channel.setUpdatedBy(createdBy);
         }
         getModule().update();
         getModule().update();
@@ -233,7 +209,6 @@ public class ChannelStructure extends Node implements IStructured {
         super.setCreatedBy(createdBy);
         for (NamedDBClass node : getChildren()) {
             node.setCreatedBy(createdBy);
-            // PersistentAndUpdateHelper.addUnsavedNode(node);
         }
     }
 
@@ -242,7 +217,6 @@ public class ChannelStructure extends Node implements IStructured {
         super.setUpdatedBy(updatedBy);
         for (NamedDBClass node : getChildren()) {
             node.setUpdatedBy(updatedBy);
-            // PersistentAndUpdateHelper.addUnsavedNode(node);
         }
     }
 
@@ -302,7 +276,7 @@ public class ChannelStructure extends Node implements IStructured {
             channel.localUpdate();
         }
     }
-    
+
     @Override
     public void assembleEpicsAddressString() throws PersistenceException {
         for (Channel node : getChannelsAsMap().values()) {

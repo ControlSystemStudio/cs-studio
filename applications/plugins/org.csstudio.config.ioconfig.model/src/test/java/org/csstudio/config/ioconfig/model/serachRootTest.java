@@ -11,6 +11,7 @@ public class serachRootTest {
     @Test
     public void testGetRootPath() throws Exception {
         try {
+            @SuppressWarnings("unused")
             List<Integer> rootPath = Repository.getRootPath(9327);
             
         }catch (Exception e) {

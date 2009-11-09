@@ -62,6 +62,7 @@ public class ChannelStructureConfigComposite extends NodeConfig {
      */
     public ChannelStructureConfigComposite(Composite parent, ProfiBusTreeView profiBusTreeView, ChannelStructure channelStructure) {
         super(parent,profiBusTreeView, channelStructure!=null?channelStructure.getClass().getSimpleName():"", channelStructure, false);
+        profiBusTreeView.setConfiguratorName("Channel Structure Configuration");
         _channelStructure = channelStructure;
         setSaveButtonSaved();
         Composite newTabItem = getNewTabItem("Main", 2);

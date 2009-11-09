@@ -55,6 +55,7 @@ public class FacilityConfigComposite extends NodeConfig {
 
     public FacilityConfigComposite(Composite parent, final ProfiBusTreeView profiBusTreeView, short sortIndex) {
         super(parent, profiBusTreeView, "Facility Configuration", null, true);
+        profiBusTreeView.setConfiguratorName("Facility Configuration");
         getProfiBusTreeView().getTreeViewer().setSelection(null);
         newNode();
         getNode().moveSortIndex(sortIndex);
@@ -72,6 +73,7 @@ public class FacilityConfigComposite extends NodeConfig {
     public FacilityConfigComposite(Composite parent, final ProfiBusTreeView profiBusTreeView,
             Facility facility) {
         super(parent, profiBusTreeView, "Facility Configuration", facility, facility == null);
+        profiBusTreeView.setConfiguratorName("Facility Configuration");
         _facility = facility;
         buildGui();
     }
@@ -106,7 +108,7 @@ public class FacilityConfigComposite extends NodeConfig {
         setIndexSpinner(ConfigHelper.getIndexSpinner(gName, _facility, getMLSB(), "Index",
                 getProfiBusTreeView()));
 
-        makeDescGroup(comp);
+        makeDescGroup(comp,3);
     }
 
     /*

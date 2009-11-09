@@ -221,8 +221,9 @@ public final class ProfibusHelper {
 		if (parent == null) {
 			return null;
 		}
-		Text textField = new Text(parent, SWT.SINGLE | SWT.RIGHT | SWT.BORDER);
-		textField.setLayoutData(new GridData(SWT.FILL, SWT.FILL, edit, false,
+        
+		Text textField = new Text(parent, SWT.SINGLE | SWT.TRAIL | SWT.BORDER);
+		textField.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false,
 				1, 1));
 		textField.addTraverseListener(_nETL);
 		textField.setEditable(edit);

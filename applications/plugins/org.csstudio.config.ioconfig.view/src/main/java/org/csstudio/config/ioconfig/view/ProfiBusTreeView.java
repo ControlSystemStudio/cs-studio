@@ -174,7 +174,7 @@ public class ProfiBusTreeView extends Composite {
             return 0;
         }
     }
-    
+
     /**
      * 
      * @author hrickens
@@ -253,12 +253,12 @@ public class ProfiBusTreeView extends Composite {
         }
 
     }
-    
+
     /**
      * The ID of the View.
      */
     public static final String ID = ProfiBusTreeView.class.getName();
-        private IViewSite _site;
+    private IViewSite _site;
     /**
      * The Parent Composite.
      */
@@ -345,7 +345,6 @@ public class ProfiBusTreeView extends Composite {
      */
     private List<FacilityLight> _load;
     private Action _infoDialogAction;
-    
 
     /**
      * Retrieves the image descriptor for specified image from the workbench's image registry.
@@ -698,7 +697,7 @@ public class ProfiBusTreeView extends Composite {
         _infoDialogAction.setToolTipText("Action 1 tooltip");
         _infoDialogAction.setAccelerator('i');
         _infoDialogAction
-                .setImageDescriptor(getSharedImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));        
+                .setImageDescriptor(getSharedImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
     }
 
     /**
@@ -1030,7 +1029,7 @@ public class ProfiBusTreeView extends Composite {
         _cutNodeAction.setToolTipText("Cut this Node");
         _cutNodeAction.setImageDescriptor(getSharedImageDescriptor(ISharedImages.IMG_TOOL_CUT));
     }
-    
+
     private void makePasteNodeAction() {
         _pasteNodeAction = new Action() {
             @SuppressWarnings("static-access")
@@ -1104,7 +1103,6 @@ public class ProfiBusTreeView extends Composite {
                             nodeCopy.moveSortIndex(targetIndex);
                         }
                         refresh();
-                        // refresh(nodeCopy.getParent());
                         _viewer.setSelection(new StructuredSelection(nodeCopy));
                     }
                 }
@@ -1182,8 +1180,7 @@ public class ProfiBusTreeView extends Composite {
                         switch (event.keyCode) {
                             case SWT.CR:
                             case SWT.KEYPAD_CR:
-                                // Enter hit--set the text into the tree and
-                                // drop through
+                                // Enter hit--set the text into the tree and drop through
                                 String changedText = text.getText();
                                 if (node instanceof Channel) {
                                     ((Channel) node).setIoName(changedText);
@@ -1213,7 +1210,7 @@ public class ProfiBusTreeView extends Composite {
         };
 
     }
-    
+
     private void makeRefreshAction() {
         _refreshAction = new Action() {
             public void run() {
@@ -1227,9 +1224,7 @@ public class ProfiBusTreeView extends Composite {
                 .getImageDescriptorFromPlugin(ActivatorUI.PLUGIN_ID, "icons/refresh.gif"));
     }
 
-
     private void openNewEmptyChildrenNode() {
-        // clearEditComposite();
         setEditComposite();
         Object selectedNode = _selectedNode.getFirstElement();
         if (selectedNode instanceof Facility || selectedNode instanceof FacilityLight) {
@@ -1246,7 +1241,6 @@ public class ProfiBusTreeView extends Composite {
             _nodeConfigComposite = new ChannelConfigComposite(_parentConfigComposite, this, null);
         } // Do nothing (have no sub-elements)
         // else if (_selectedNode instanceof Channel) {
-        //        
         // }
         _parentConfigComposite.getParent().layout(true);
     }
@@ -1334,9 +1328,9 @@ public class ProfiBusTreeView extends Composite {
                     NodeConfig nc = (NodeConfig) childrens[i];
                     if (nc.isDirty()) {
                         String[] buttonLabels = new String[] { "&Save", "Don't Save", "&Cancel" };
-                        MessageDialog id = new MessageDialog(getShell(), "Node not saved!",
-                                null, "The Node is not saved.\r\n Save now?",
-                                MessageDialog.WARNING, buttonLabels, 2);
+                        MessageDialog id = new MessageDialog(getShell(), "Node not saved!", null,
+                                "The Node is not saved.\r\n Save now?", MessageDialog.WARNING,
+                                buttonLabels, 2);
                         id.setBlockOnOpen(true);
                         switch (id.open()) {
                             case Dialog.OK:
@@ -1344,8 +1338,7 @@ public class ProfiBusTreeView extends Composite {
                                 nc.store();
                                 break;
                             case Dialog.CANCEL:
-                                // don't save the actual node and change to the
-                                // new selected.
+                                // don't save the actual node and change to the new selected.
                                 Node node = nc.getNode();
                                 if (node != null && node.getId() < 1) {
                                     if (node instanceof Facility) {
@@ -1379,7 +1372,8 @@ public class ProfiBusTreeView extends Composite {
         try {
             showView = page.showView(NodeConfigView.ID);
             if (showView instanceof NodeConfigView) {
-                _parentConfigComposite = new Composite(((NodeConfigView) showView).getComposite(),
+                NodeConfigView nodeConfigView = (NodeConfigView) showView;
+                _parentConfigComposite = new Composite(nodeConfigView.getComposite(),
                         SWT.None);
                 FillLayout layout = new FillLayout();
                 _parentConfigComposite.setLayout(layout);
@@ -1394,28 +1388,55 @@ public class ProfiBusTreeView extends Composite {
             @Override
             protected Control createDialogArea(Composite parent) {
                 Composite createDialogArea = (Composite) super.createDialogArea(parent);
-                createDialogArea.setLayout(GridLayoutFactory.fillDefaults().create());
+                createDialogArea.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
+
+                createDialogArea.setLayout(GridLayoutFactory.swtDefaults().equalWidth(true)
+                        .numColumns(3).create());
                 Label label = new Label(createDialogArea, SWT.NONE);
                 label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
-                label.setText("Nodes: "+NodeMap.getNumberOfNodes());
-                
-                label = new Label(createDialogArea, SWT.NONE);
-                label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
-                label.setText("Assemble: "+NodeMap.getCountAssembleEpicsAddressString());
+                label.setText("Nodes: " + NodeMap.getNumberOfNodes());
 
                 label = new Label(createDialogArea, SWT.NONE);
                 label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
-                label.setText("LocalUpdate: "+NodeMap.getLocalUpdate());
-                
+                label.setText("ClassCallCount: " + NamedDBClass._classCallCount);
+
+                label = new Label(createDialogArea, SWT.NONE);
+
                 label = new Label(createDialogArea, SWT.NONE);
                 label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
-                label.setText("ChannelConfig: "+NodeMap.getChannelConfigComposite());
-                
+                label.setText("Assemble: " + NodeMap.getCountAssembleEpicsAddressString());
+
+                label = new Label(createDialogArea, SWT.NONE);
+                label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+                label.setText("LocalUpdate: " + NodeMap.getLocalUpdate());
+
+                label = new Label(createDialogArea, SWT.NONE);
+                label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+                label.setText("ChannelConfig: " + NodeMap.getChannelConfigComposite());
+
+                Text text = new Text(createDialogArea, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
+                text.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 3, 1));
+                text.setText(NamedDBClass._diagString.toString());
+
+                label = new Label(createDialogArea, SWT.NONE);
                 return createDialogArea;
             }
         };
         infoDialog.open();
-        
     }
-
+    
+    public void setConfiguratorName(String name){
+        IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+        IWorkbenchPage page = window.getActivePage();
+        try {
+            IViewPart showView = page.showView(NodeConfigView.ID);
+            if (showView instanceof NodeConfigView) {
+                NodeConfigView nodeConfigView = (NodeConfigView) showView;
+                nodeConfigView.setPartName(name);
+            }        
+        } catch (PartInitException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
 }

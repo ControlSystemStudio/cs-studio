@@ -238,6 +238,7 @@ public class SlaveConfigComposite extends NodeConfig {
     public SlaveConfigComposite(final Composite parent, final ProfiBusTreeView profiBusTreeView,
             final Slave slave) {
         super(parent, profiBusTreeView, "Profibus Slave Configuration", slave, slave == null);
+        profiBusTreeView.setConfiguratorName("Slave Configuration");
         makeSlaveKonfiguration(parent, slave);
     }
 
@@ -514,7 +515,7 @@ public class SlaveConfigComposite extends NodeConfig {
         /*
          * Description Group
          */
-        makeDescGroup(comp);
+        makeDescGroup(comp,3);
     }
 
     /**
@@ -711,7 +712,7 @@ public class SlaveConfigComposite extends NodeConfig {
         GsdSlaveModel slaveModel = GsdFactory.makeGsdSlave(_gsdFile);
 
         // setGSDData
-        HashMap<Integer, GsdModuleModel> moduleList = GSD2Module.parse(_gsdFile.getGSDFile(),
+        HashMap<Integer, GsdModuleModel> moduleList = GSD2Module.parse(_gsdFile,
                 slaveModel);
         slaveModel.setGsdModuleList(moduleList);
         _slave.setGSDSlaveData(slaveModel);

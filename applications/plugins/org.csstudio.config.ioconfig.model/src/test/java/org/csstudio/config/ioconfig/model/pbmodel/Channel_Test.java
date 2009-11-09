@@ -922,27 +922,27 @@ public class Channel_Test {
         testModule("@Subnet:815", (short) 24, 10, 0, 9, 0, module4);
 
         // create Channels for Module 4
-        ChannelStructure structureM4C1 = ChannelStructure.makeSimpleChannelStructure(module4, true);
+        ChannelStructure structureM4C1 = ChannelStructure.makeSimpleChannel(module4, true);
         Channel channelM4C1 = new Channel(structureM4C1, true, false);
         channelM4C1.setName("channelM4C1");
         channelM4C1.setChannelTypeNonHibernate(DataType.INT16);
         // channelM4C1.localSave();
 
-        ChannelStructure structureM4C2 = ChannelStructure.makeSimpleChannelStructure(module4, true);
+        ChannelStructure structureM4C2 = ChannelStructure.makeSimpleChannel(module4, true);
         Channel channelM4C2 = new Channel(structureM4C2, true, false);
         channelM4C2.setName("channelM4C2");
         channelM4C2.setChannelTypeNonHibernate(DataType.INT8);
         // channelM4C2.localSave();
 
         ChannelStructure structureM4C3 = ChannelStructure
-                .makeSimpleChannelStructure(module4, false);
+                .makeSimpleChannel(module4, false);
         Channel channelM4C3 = new Channel(structureM4C3, false, false);
         channelM4C3.setName("channelM4C3");
         channelM4C3.setChannelTypeNonHibernate(DataType.UINT8);
         // channelM4C3.localSave();
 
         ChannelStructure structureM4C4 = ChannelStructure
-                .makeSimpleChannelStructure(module4, false);
+                .makeSimpleChannel(module4, false);
         Channel channelM4C4 = new Channel(structureM4C4, false, false);
         channelM4C4.setName("channelM4C3");
         channelM4C4.setChannelTypeNonHibernate(DataType.UINT16);

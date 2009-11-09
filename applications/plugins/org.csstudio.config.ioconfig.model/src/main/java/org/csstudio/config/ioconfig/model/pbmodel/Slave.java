@@ -25,8 +25,8 @@
 package org.csstudio.config.ioconfig.model.pbmodel;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Set;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
@@ -37,7 +37,6 @@ import org.csstudio.config.ioconfig.model.NamedDBClass;
 import org.csstudio.config.ioconfig.model.Node;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GSD2Module;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdFactory;
-import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdModuleModel;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdSlaveModel;
 import org.csstudio.platform.logging.CentralLogger;
 
@@ -340,6 +339,7 @@ public class Slave extends Node {
         }
 
         GsdSlaveModel slaveModel = GsdFactory.makeGsdSlave(getGSDFile());
+
         /*
          * Head
          */
@@ -357,7 +357,6 @@ public class Slave extends Node {
             /*
              * Basic - Inputs / Outputs (read only)
              */
-
             /*
              * Set all GSD-File Data to Slave.
              */
@@ -369,13 +368,12 @@ public class Slave extends Node {
             /*
              * Basic - DP / FDL Access
              */
-
             /*
              * Modules
              */
-            HashMap<Integer, GsdModuleModel> moduleList = GSD2Module.parse(getGSDFile()
-                    .getGSDFile(), slaveModel);
-            slaveModel.setGsdModuleList(moduleList);
+            if(slaveModel.getGsdModuleList()==null||slaveModel.getGsdModuleList().isEmpty()) {
+                slaveModel.setGsdModuleList(GSD2Module.parse(getGSDFile(), slaveModel));
+            }
 
             _maxSize = slaveModel.getMaxModule();
             if (_maxSize < 1) {
@@ -385,11 +383,9 @@ public class Slave extends Node {
             /*
              * Settings - Operation Mode
              */
-
             /*
              * Settings - Groups
              */
-
             /*
              * Settings - User Prm Data
              */

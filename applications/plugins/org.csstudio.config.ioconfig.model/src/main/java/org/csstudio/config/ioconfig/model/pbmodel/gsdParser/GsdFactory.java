@@ -24,6 +24,8 @@
  */
 package org.csstudio.config.ioconfig.model.pbmodel.gsdParser;
 
+import java.util.HashMap;
+
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFile;
 
 /**
@@ -34,6 +36,10 @@ import org.csstudio.config.ioconfig.model.pbmodel.GSDFile;
  */
 public final class GsdFactory {
     
+    
+    
+    private static HashMap<Integer, GsdSlaveModel> _gsdSlaveModelMap = new HashMap<Integer, GsdSlaveModel>();
+
     /**
      * Default Constructor.
      */
@@ -64,16 +70,20 @@ public final class GsdFactory {
      * @return The {@link GsdSlaveModel} from GSD File.
      */
     public static GsdSlaveModel makeGsdSlave(final GSDFile gsdFile){
-        GSD2OBJ dataInstanz = new GSD2OBJ();
         
-        GsdSlaveModel slaveModel = new GsdSlaveModel();
-
-        dataInstanz.setGeneralStruct(gsdFile.getGSDFile(), slaveModel);
-        if (dataInstanz.setSlaveStruct(gsdFile.getGSDFile(), slaveModel) != 0) {
-            return null;
-        }
-        GsdFileParser.parseSlave(gsdFile, slaveModel);
-        
+        GsdSlaveModel slaveModel = _gsdSlaveModelMap.get(gsdFile.getId());
+        if(slaveModel==null) {
+            GSD2OBJ dataInstanz = new GSD2OBJ();
+            
+            slaveModel = new GsdSlaveModel();
+    
+            dataInstanz.setGeneralStruct(gsdFile.getGSDFile(), slaveModel);
+            if (dataInstanz.setSlaveStruct(gsdFile.getGSDFile(), slaveModel) != 0) {
+                return null;
+            }
+            GsdFileParser.parseSlave(gsdFile, slaveModel);
+            _gsdSlaveModelMap.put(gsdFile.getId(), slaveModel);
+        }        
 
         return slaveModel;
     }

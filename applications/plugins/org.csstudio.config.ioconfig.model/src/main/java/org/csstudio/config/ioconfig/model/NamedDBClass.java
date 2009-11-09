@@ -24,6 +24,8 @@
  */
 package org.csstudio.config.ioconfig.model;
 
+import java.util.Date;
+
 import javax.persistence.MappedSuperclass;
 
 /**
@@ -38,6 +40,10 @@ import javax.persistence.MappedSuperclass;
 @MappedSuperclass
 public class NamedDBClass extends DBClass {
 
+    public static long _oldTime = 0;
+    public static long _classCallCount = 0;
+    public static StringBuilder _diagString = new StringBuilder();
+    
     /**
      * The Node Name.
      */
@@ -55,6 +61,12 @@ public class NamedDBClass extends DBClass {
      */
     public void setName(final String name) {
         this._name = name;
+       _classCallCount++; 
+        long time = new Date().getTime();
+        long l = time-_oldTime;
+        if(l>50)
+            _diagString.append(_classCallCount+": \t\t"+time+"\t"+l+"\t"+_name+"\t"+this.getClass().getSimpleName()+"\r\n");
+        _oldTime = time;
     }
 
     /**

@@ -79,5 +79,10 @@ public class NodeConfigView extends ViewPart {
     public final Composite getComposite(){
         return _configComposite;
     }
+    
+    @Override
+    protected void setPartName(String partName) {
+        super.setPartName(partName);
+    }
 
 }

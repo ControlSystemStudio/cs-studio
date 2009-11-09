@@ -75,6 +75,7 @@ public class DummyRepository implements IReposetory {
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     public boolean serach(Class class1, int id) {
         return false;
     }

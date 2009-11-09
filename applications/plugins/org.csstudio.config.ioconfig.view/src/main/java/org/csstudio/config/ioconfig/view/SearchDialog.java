@@ -55,6 +55,8 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -182,6 +184,7 @@ public class SearchDialog extends Dialog {
 
     private final class NameViewerFilter extends ViewerFilter {
         private String _searchText = "";
+        private boolean _caseSensetive;
 
         private NameViewerFilter() {
         }
@@ -191,8 +194,17 @@ public class SearchDialog extends Dialog {
             if (element instanceof SearchNode) {
                 SearchNode sNode = (SearchNode) element;
                 if (checkSearchText(_searchText) && checkNodeName(sNode)) {
-                    boolean contains = sNode.getName().contains(_searchText);
-                    return contains;
+                    String string1;
+                    String string2;
+                    if(_caseSensetive) {
+                        string1 = sNode.getName();
+                        string2 = _searchText;
+                    } else {
+                        string1 = sNode.getName().toLowerCase();
+                        string2 = _searchText.toLowerCase();
+                        
+                    }
+                    return string1.contains(string2);
                 }
             }
             return !checkSearchText(_searchText);
@@ -210,10 +222,15 @@ public class SearchDialog extends Dialog {
             _searchText = searchText;
 
         }
+
+        public void setCaseSensetive(boolean caseSensetive) {
+            _caseSensetive = caseSensetive;
+        }
     }
 
     private final class IONameViewerFilter extends ViewerFilter {
         private String _searchText = "";
+        private boolean _caseSensetive;
 
         private IONameViewerFilter() {
         }
@@ -223,8 +240,17 @@ public class SearchDialog extends Dialog {
             if (element instanceof SearchNode) {
                 SearchNode sNode = (SearchNode) element;
                 if (checkSearchText(_searchText) && checkNodeIOName(sNode)) {
-                    boolean contains = sNode.getIoName().contains(_searchText);
-                    return contains;
+                    String string1;
+                    String string2;
+                    if(_caseSensetive) {
+                        string1 = sNode.getIoName();
+                        string2 = _searchText;
+                    } else {
+                        string1 = sNode.getIoName().toLowerCase();
+                        string2 = _searchText.toLowerCase();
+                        
+                    }
+                    return string1.contains(string2);
                 }
             }
             return !checkSearchText(_searchText);
@@ -242,10 +268,15 @@ public class SearchDialog extends Dialog {
             _searchText = searchText;
 
         }
+
+        public void setCaseSensetive(boolean caseSensetive) {
+            _caseSensetive = caseSensetive;
+        }
     }
 
     private final class EpicsAddressViewerFilter extends ViewerFilter {
         private String _searchText = "";
+        private boolean _caseSensetive;
 
         private EpicsAddressViewerFilter() {
         }
@@ -255,8 +286,17 @@ public class SearchDialog extends Dialog {
             if (element instanceof SearchNode) {
                 SearchNode sNode = (SearchNode) element;
                 if (checkSearchText(_searchText) && checkNodeEpicsAddress(sNode)) {
-                    boolean contains = sNode.getEpicsAddressString().contains(_searchText);
-                    return contains;
+                    String string1;
+                    String string2;
+                    if(_caseSensetive) {
+                        string1 = sNode.getEpicsAddressString();
+                        string2 = _searchText;
+                    } else {
+                        string1 = sNode.getEpicsAddressString().toLowerCase();
+                        string2 = _searchText.toLowerCase();
+                        
+                    }
+                    return string1.contains(string2);
                 }
             }
             return !checkSearchText(_searchText);
@@ -273,6 +313,10 @@ public class SearchDialog extends Dialog {
         public void setText(String searchText) {
             _searchText = searchText;
 
+        }
+
+        public void setCaseSensetive(boolean caseSensetive) {
+            _caseSensetive = caseSensetive;
         }
     }
 
@@ -318,33 +362,50 @@ public class SearchDialog extends Dialog {
     protected Control createDialogArea(Composite parent) {
         Composite dialogArea = (Composite) super.createDialogArea(parent);
         dialogArea.getShell().setText("Search DDB Node");
-        dialogArea.setLayout(GridLayoutFactory.swtDefaults().numColumns(3).equalWidth(true)
+        dialogArea.setLayout(GridLayoutFactory.swtDefaults().numColumns(6).equalWidth(false)
                 .create());
-        new Label(dialogArea, SWT.NONE).setText("Name:");
-        new Label(dialogArea, SWT.NONE).setText("IO Name:");
-        new Label(dialogArea, SWT.NONE).setText("EPICS Address:");
+        
+        Label label = new Label(dialogArea, SWT.NONE);
+        label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false,2,1));
+        label.setText("Name:");
+        label = new Label(dialogArea, SWT.NONE);
+        label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false,2,1));
+        label.setText("IO Name:");
+        label = new Label(dialogArea, SWT.NONE);
+        label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false,2,1));
+        label.setText("EPICS Address:");
 
         GridDataFactory gdfText = GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(
                 true, false);
+
+        final Button csNameButton = new Button(dialogArea, SWT.CHECK);
+        csNameButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+        csNameButton.setToolTipText("Case Sensitive");
 
         final Text searchTextName = new Text(dialogArea, SWT.SINGLE | SWT.LEAD | SWT.BORDER
                 | SWT.SEARCH);
         gdfText.applyTo(searchTextName);
         searchTextName.setMessage("Name Filter");
 
+        Button csIONameButton = new Button(dialogArea, SWT.CHECK);
+        csIONameButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+        csIONameButton.setToolTipText("Case Sensitive");
         final Text searchTextIOName = new Text(dialogArea, SWT.SINGLE | SWT.LEAD | SWT.BORDER
                 | SWT.SEARCH);
         gdfText.applyTo(searchTextIOName);
         searchTextIOName.setMessage("IO Name Filter");
         TableColumnLayout tableColumnLayout = new TableColumnLayout();
 
+        Button csEASButton = new Button(dialogArea, SWT.CHECK);
+        csEASButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+        csEASButton.setToolTipText("Case Sensitive");
         final Text searchTextAddressString = new Text(dialogArea, SWT.SINGLE | SWT.LEAD
                 | SWT.BORDER | SWT.SEARCH);
         gdfText.applyTo(searchTextAddressString);
         searchTextAddressString.setMessage("Epics Address Filter");
 
         Composite tableComposite = new Composite(dialogArea, SWT.FULL_SELECTION);
-        GridDataFactory.fillDefaults().grab(true, true).span(3, 1).hint(800, 300).applyTo(
+        GridDataFactory.fillDefaults().grab(true, true).span(6, 1).hint(800, 300).applyTo(
                 tableComposite);
         tableComposite.setLayout(tableColumnLayout);
 
@@ -366,7 +427,7 @@ public class SearchDialog extends Dialog {
                 }
             }
         });
-        tableColumnLayout.setColumnData(columnName.getColumn(), new ColumnWeightData(2, 40, true));
+        tableColumnLayout.setColumnData(columnName.getColumn(), new ColumnWeightData(3, 40, true));
 
         TableViewerColumn columnIOName = new TableViewerColumn(resultTableView, SWT.FULL_SELECTION);
         columnIOName.getColumn().setText("IO Name");
@@ -380,7 +441,7 @@ public class SearchDialog extends Dialog {
             }
         });
         tableColumnLayout
-                .setColumnData(columnIOName.getColumn(), new ColumnWeightData(2, 40, true));
+                .setColumnData(columnIOName.getColumn(), new ColumnWeightData(3, 40, true));
 
         TableViewerColumn columnEpicsAddress = new TableViewerColumn(resultTableView, SWT.NONE);
         columnEpicsAddress.getColumn().addSelectionListener(
@@ -510,6 +571,24 @@ public class SearchDialog extends Dialog {
         final EpicsAddressViewerFilter epicsAddressViewerFilter = new EpicsAddressViewerFilter();
         resultTableView.addFilter(epicsAddressViewerFilter);
 
+        csNameButton.addSelectionListener(new SelectionListener() {
+            
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                setCaseSensetive();
+            }
+            
+            @Override
+            public void widgetDefaultSelected(SelectionEvent e) {
+                setCaseSensetive();
+            }
+            
+            private void setCaseSensetive() {
+                nameViewerFilter.setCaseSensetive(csNameButton.getSelection());
+                resultTableView.refresh();
+            }
+        });
+
         searchTextName.addModifyListener(new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
@@ -518,6 +597,25 @@ public class SearchDialog extends Dialog {
             }
 
         });
+
+        csIONameButton.addSelectionListener(new SelectionListener() {
+            
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                setCaseSensetive();
+            }
+            
+            @Override
+            public void widgetDefaultSelected(SelectionEvent e) {
+                setCaseSensetive();
+            }
+
+            private void setCaseSensetive() {
+                ioNameViewerFilter.setCaseSensetive(csNameButton.getSelection());
+                resultTableView.refresh();
+            }
+        });
+
 
         searchTextIOName.addModifyListener(new ModifyListener() {
 
@@ -528,6 +626,24 @@ public class SearchDialog extends Dialog {
 
         });
 
+        csEASButton.addSelectionListener(new SelectionListener() {
+            
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                setCaseSensetive();
+            }
+            
+            @Override
+            public void widgetDefaultSelected(SelectionEvent e) {
+                setCaseSensetive();
+            }
+
+            private void setCaseSensetive() {
+                epicsAddressViewerFilter.setCaseSensetive(csNameButton.getSelection());
+                resultTableView.refresh();
+            }
+        });
+        
         searchTextAddressString.addModifyListener(new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
@@ -553,13 +669,13 @@ public class SearchDialog extends Dialog {
         });
 
         resultTableView.setInput(_load);
-        columnName.getColumn().pack();
-        columnIOName.getColumn().pack();
-        columnEpicsAddress.getColumn().pack();
-        columnCreateBy.getColumn().pack();
-        columnUpdatedBy.getColumn().pack();
-        columnId.getColumn().pack();
-        columnParentId.getColumn().pack();
+//        columnName.getColumn().pack();
+//        columnIOName.getColumn().pack();
+//        columnEpicsAddress.getColumn().pack();
+//        columnCreateBy.getColumn().pack();
+//        columnUpdatedBy.getColumn().pack();
+//        columnId.getColumn().pack();
+//        columnParentId.getColumn().pack();
 
         /**/
         return dialogArea;

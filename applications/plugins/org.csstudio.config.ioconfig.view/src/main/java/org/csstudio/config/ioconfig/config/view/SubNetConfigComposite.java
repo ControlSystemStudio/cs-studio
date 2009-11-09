@@ -43,6 +43,8 @@ import org.csstudio.config.ioconfig.view.ProfiBusTreeView;
 import org.csstudio.platform.Subnet;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -81,9 +83,20 @@ public class SubNetConfigComposite extends NodeConfig {
     private Combo _hSAddress;
 
     /**
-     * An array with all kinds of Baudrate.
+     * An array with all kinds of Baudrates.
      */
-    private Baudrates[] _dbBaudrates;
+    private static final Baudrates[] DB_BAUDRATES = new Baudrates[] {
+            new Baudrates(" 9,6  kBAUD", "#define DP_KBAUD_9_6    0x00", 0x00),
+            new Baudrates("19,2  kBAUD", "#define DP_KBAUD_19_2   0x01", 0x01),
+            new Baudrates("45,45 kBAUD", "#define DP_KBAUD_45_45  0x0B", 0x0B),
+            new Baudrates("93,75 kBAUD", "#define DP_KBAUD_93_75  0x02", 0x02),
+            new Baudrates("187,5 kBAUD", "#define DP_KBAUD_187_5  0x03", 0x03),
+            new Baudrates("500   kBAUD", "#define DP_KBAUD_500    0x04", 0x04),
+            new Baudrates("750   kBAUD", "#define DP_KBAUD_750    0x05", 0x05),
+            new Baudrates("  1,5 MBAUD", "#define DP_MBAUD_1_5    0x06", 0x06),
+            new Baudrates("  3   MBAUD", "#define DP_MBAUD_3      0x07", 0x07),
+            new Baudrates("  6   MBAUD", "#define DP_MBAUD_6      0x08", 0x08),
+            new Baudrates(" 12   MBAUD", "#define DP_MBAUD_12     0x09", 0x09) };
 
     /**
      * A List viewer to show and select all kinds of Baudrate.
@@ -147,7 +160,7 @@ public class SubNetConfigComposite extends NodeConfig {
      */
     private Text _watchdog2;
     /**
-     * Combo to select the facility of subnet. 
+     * Combo to select the facility of subnet.
      */
     private ComboViewer _facilityViewer;
 
@@ -162,6 +175,7 @@ public class SubNetConfigComposite extends NodeConfig {
     public SubNetConfigComposite(final Composite parent, final ProfiBusTreeView profiBusTreeView,
             final ProfibusSubnet subnet) {
         super(parent, profiBusTreeView, "Profibus Subnet Configuration", subnet, subnet == null);
+        profiBusTreeView.setConfiguratorName("Subnet Configuration");
         _subnet = subnet;
 
         // No Subnet, create a new one.
@@ -199,10 +213,8 @@ public class SubNetConfigComposite extends NodeConfig {
         // Store General
 
         _subnet.setName(getNameWidget().getText());
-        // _subnet.updateName(_nameText.getText());
         getNameWidget().setData(getNameWidget().getText());
 
-        // _subnet.setSortIndex((short)getIndexSpinner().getSelection());
         getIndexSpinner().setData(_subnet.getSortIndex());
         _subnet.setUpdatedOn(new Date());
 
@@ -210,10 +222,11 @@ public class SubNetConfigComposite extends NodeConfig {
 
         _subnet.setUpdatedOn(now);
 
-        String facility = (String) ((StructuredSelection) _facilityViewer.getSelection()).getFirstElement();
+        String facility = (String) ((StructuredSelection) _facilityViewer.getSelection())
+                .getFirstElement();
         _subnet.setProfil(facility);
         _facilityViewer.getCombo().setData(_facilityViewer.getCombo().getSelectionIndex());
-        
+
         // Net Setting
         int index = _hSAddress.getSelectionIndex();
         if (index < 0) {
@@ -335,10 +348,10 @@ public class SubNetConfigComposite extends NodeConfig {
         _facilityViewer.setContentProvider(new ArrayContentProvider());
         String[] facilities = prefNode.get(PreferenceConstants.DDB_FACILITIES, "NONE").split(",");
         _facilityViewer.setInput(facilities);
-        if(_subnet.getProfil()==null||_subnet.getProfil().isEmpty()) {
+        if (_subnet.getProfil() == null || _subnet.getProfil().isEmpty()) {
             _facilityViewer.getCombo().select(0);
             _facilityViewer.getCombo().setData(0);
-        }else {
+        } else {
             _facilityViewer.setSelection(new StructuredSelection(_subnet.getProfil()));
             _facilityViewer.getCombo().setData(_facilityViewer.getCombo().getSelectionIndex());
         }
@@ -347,7 +360,7 @@ public class SubNetConfigComposite extends NodeConfig {
         setIndexSpinner(ConfigHelper.getIndexSpinner(gName, _subnet, getMLSB(), "Index",
                 getProfiBusTreeView()));
 
-        makeDescGroup(comp);
+        makeDescGroup(comp,3);
     }
 
     /**
@@ -355,58 +368,47 @@ public class SubNetConfigComposite extends NodeConfig {
      *            is TabHead Text
      */
     private void netSetting(final String headline) {
-        final Composite comp = ConfigHelper.getNewTabItem(headline, getTabFolder(), 2, 470, 350);
+        final Composite comp = ConfigHelper.getNewTabItem(headline, getTabFolder(), 1, 470, 350);
 
         Group topGroup = new Group(comp, SWT.NONE);
-        topGroup.setLayout(new GridLayout(2, false));
-        topGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
+        topGroup.setLayout(new GridLayout(1, false));
+        topGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
 
         bottom(comp);
+        GridLayoutFactory glf = GridLayoutFactory.fillDefaults();
+        glf.numColumns(2);
+        GridDataFactory gdf = GridDataFactory.fillDefaults();
         final Composite buttonComp = new Composite(topGroup, SWT.NONE);
-        buttonComp.setLayout(new GridLayout(2, false));
-        buttonComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
-
-        Label headLabel = new Label(buttonComp, SWT.NONE);
-        headLabel.setText("Highest Profibus Station");
-        headLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 2, 1));
+        buttonComp.setLayout(glf.create());
+        buttonComp.setLayoutData(gdf.create());
+        final Composite buttonComp2 = new Composite(topGroup, SWT.NONE);
+        buttonComp2.setLayout(glf.create());
+        buttonComp2.setLayoutData(gdf.create());
 
         Label adressLabel = new Label(buttonComp, SWT.NONE);
-        adressLabel.setText("HSA:");
+        adressLabel.setText("Highest Profibus Station:");
 
-        _hSAddress = new Combo(buttonComp, SWT.SINGLE);
-        _hSAddress.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, true, true, 1, 1));
+        _hSAddress = new Combo(buttonComp, SWT.SINGLE | SWT.RIGHT);
+        _hSAddress.setLayoutData(new GridData(SWT.RIGHT, SWT.FILL, true, false, 1, 1));
         for (int i = 1; i <= 126; i++) {
             _hSAddress.add("" + i);
         }
         setCombo(_hSAddress, Short.toString(_subnet.getHsa()));
 
-        Label baudLabel = new Label(buttonComp, SWT.NONE);
-        baudLabel.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, false, false, 1, 1));
+        Label baudLabel = new Label(buttonComp2, SWT.NONE);
         baudLabel.setText("Baudrate: ");
 
         /**
          * --- DP BAUDRATES ----
          */
-        _dbBaudrates = new Baudrates[] {
-                new Baudrates(" 9,6  kBAUD", "#define DP_KBAUD_9_6    0x00", 0x00),
-                new Baudrates("19,2  kBAUD", "#define DP_KBAUD_19_2   0x01", 0x01),
-                new Baudrates("45,45 kBAUD", "#define DP_KBAUD_45_45  0x0B", 0x0B),
-                new Baudrates("93,75 kBAUD", "#define DP_KBAUD_93_75  0x02", 0x02),
-                new Baudrates("187,5 kBAUD", "#define DP_KBAUD_187_5  0x03", 0x03),
-                new Baudrates("500   kBAUD", "#define DP_KBAUD_500    0x04", 0x04),
-                new Baudrates("750   kBAUD", "#define DP_KBAUD_750    0x05", 0x05),
-                new Baudrates("  1,5 MBAUD", "#define DP_MBAUD_1_5    0x06", 0x06),
-                new Baudrates("  3   MBAUD", "#define DP_MBAUD_3      0x07", 0x07),
-                new Baudrates("  6   MBAUD", "#define DP_MBAUD_6      0x08", 0x08),
-                new Baudrates(" 12   MBAUD", "#define DP_MBAUD_12     0x09", 0x09) };
-        _baudList = new ComboViewer(buttonComp, SWT.SINGLE | SWT.V_SCROLL | SWT.RIGHT);
-        _baudList.getCombo().setLayoutData(new GridData(SWT.LEFT, SWT.FILL, true, true, 1, 1));
-        _baudList.add(_dbBaudrates);
+        _baudList = new ComboViewer(buttonComp2, SWT.SINGLE | SWT.V_SCROLL | SWT.RIGHT);
+        _baudList.getCombo().setLayoutData(new GridData(SWT.RIGHT, SWT.FILL, true, false, 1, 1));
+        _baudList.add(DB_BAUDRATES);
         // Default is 1,5 MBit
         _baudList.getCombo().select(7);
-        for (int i = 0; i < _dbBaudrates.length; i++) {
+        for (int i = 0; i < DB_BAUDRATES.length; i++) {
             if ((_subnet.getBaudRate() != null && _subnet.getBaudRate().equals(
-                    Integer.toString(_dbBaudrates[i].getVal())))) {
+                    Integer.toString(DB_BAUDRATES[i].getVal())))) {
                 _baudList.getCombo().select(i);
                 break;
             }
@@ -426,19 +428,24 @@ public class SubNetConfigComposite extends NodeConfig {
      *            The Parent Composite.
      */
     private void bottom(final Composite parent) {
+        GridDataFactory gdf = GridDataFactory.fillDefaults();
+        
         Group bottomGroup = new Group(parent, SWT.NONE);
-        bottomGroup.setLayout(new GridLayout(2, false));
-        bottomGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
+        bottomGroup.setLayout(new GridLayout(3, false));
+        bottomGroup.setLayoutData(gdf.create());
         bottomGroup.setText("Busparameter");
 
         // Left side
-        Group left = new Group(bottomGroup, SWT.NONE);
-        left.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
+        Composite left = new Composite(bottomGroup, SWT.NONE);
+        left.setLayoutData(gdf.create());
         left.setLayout(new GridLayout(3, true));
         left(left);
+        // Separator
+        new Label(bottomGroup, SWT.VERTICAL | SWT.SEPARATOR).setLayoutData(new GridData(SWT.FILL,
+                SWT.FILL, false, false));
         // Rigth Side
-        Group rigth = new Group(bottomGroup, SWT.NONE);
-        rigth.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
+        Composite rigth = new Composite(bottomGroup, SWT.NONE);
+        rigth.setLayoutData(gdf.create());
         rigth.setLayout(new GridLayout(3, true));
         rigth(rigth);
 
@@ -448,7 +455,7 @@ public class SubNetConfigComposite extends NodeConfig {
      * @param rigth
      *            The Parent Group.
      */
-    private void rigth(final Group rigth) {
+    private void rigth(final Composite rigth) {
         Control[] control = new Control[2];
 
         // tslot
@@ -558,7 +565,7 @@ public class SubNetConfigComposite extends NodeConfig {
      * @param left
      *            The Parent Composite.
      */
-    private void left(final Group left) {
+    private void left(final Composite left) {
         // Tslot_Init
         Label front = new Label(left, SWT.NONE);
         front.setAlignment(SWT.RIGHT);

@@ -77,9 +77,7 @@ public class ModuleListLabelProvider extends LabelProvider implements ILabelProv
             _normal = CustomMediaFactory.getInstance().getFont(_name, _height, SWT.NORMAL);
             _italic = CustomMediaFactory.getInstance().getFont(_name, _height, SWT.ITALIC);
             
-    //        _gray = CustomMediaFactory.getInstance().getColor(Display.getCurrent().getSystemColor(SWT.COLOR_WIDGET_NORMAL_SHADOW).getRGB());
-            _gray = CustomMediaFactory.getInstance().getColor(CustomMediaFactory.COLOR_GRAY);
-    //        _black = CustomMediaFactory.getInstance().getColor(table.getForeground().getRGB());
+            _gray = CustomMediaFactory.getInstance().getColor(CustomMediaFactory.COLOR_BLACK);
         }
     }
 

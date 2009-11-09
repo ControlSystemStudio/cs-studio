@@ -295,6 +295,7 @@ public class ModuleConfigComposite extends NodeConfig {
     public ModuleConfigComposite(final Composite parent, final ProfiBusTreeView profiBusTreeView,
             final Module module) {
         super(parent, profiBusTreeView, "Profibus Module Configuration", module, module == null);
+        profiBusTreeView.setConfiguratorName("Module Configuration");
         _module = module;
 
         if (_module == null) {
@@ -305,7 +306,7 @@ public class ModuleConfigComposite extends NodeConfig {
         String[] heads = { "Module" };
         moduels(heads[0]);
         documents();
-        getTabFolder().pack();
+//        getTabFolder().pack();
     }
 
     /**
@@ -337,11 +338,9 @@ public class ModuleConfigComposite extends NodeConfig {
          */
         final Group topGroup = new Group(comp, SWT.NONE);
         topGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true, 1, 1));
-        topGroup.setLayout(new GridLayout(4, false));
-
+        topGroup.setLayout(new GridLayout(3, false));
+        topGroup.setText("Module selection");
         makeDescGroup(comp, 1);
-
-        new Label(topGroup, SWT.NONE).setText("Filter: ");
 
         Composite filterComposite = new Composite(topGroup, SWT.NONE);
         filterComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 2, 1));
@@ -352,9 +351,10 @@ public class ModuleConfigComposite extends NodeConfig {
         layout.marginTop = 0;
         layout.marginBottom = 0;
         filterComposite.setLayout(layout);
-
-        final Text filter = new Text(filterComposite, SWT.SINGLE | SWT.BORDER);
+        
+        final Text filter = new Text(filterComposite, SWT.SINGLE | SWT.BORDER | SWT.SEARCH);
         filter.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
+        filter.setMessage("Module Filter");
         // filter.setLayoutData(GridDataFactory.fillDefaults().create());
         filter.addModifyListener(new ModifyListener() {
 
@@ -402,11 +402,11 @@ public class ModuleConfigComposite extends NodeConfig {
             }
         });
 
-        new Label(topGroup, SWT.NONE).setText("Module Type: ");
+//        new Label(topGroup, SWT.NONE).setText("Module Type: ");
 
         _moduleTypList = new TableViewer(topGroup, SWT.SINGLE | SWT.V_SCROLL | SWT.BORDER);
         _moduleTypList.getTable().setLayoutData(
-                new GridData(SWT.CENTER, SWT.FILL, false, true, 2, 3));
+                new GridData(SWT.FILL, SWT.FILL, true, true, 2, 3));
         _moduleTypList.setContentProvider(new ComboContentProvider());
         _moduleTypList.setLabelProvider(new ModuleListLabelProvider(_moduleTypList.getTable(),
                 getGSDFile()));
@@ -469,10 +469,11 @@ public class ModuleConfigComposite extends NodeConfig {
             HashMap<Integer, GsdModuleModel> gsdModuleList = slave.getGSDSlaveData()
                     .getGsdModuleList();
             _moduleTypList.setInput(gsdModuleList);
+            comp.layout();
             _moduleTypList.getTable().setData(_module.getModuleNumber());
             GsdModuleModel gsdModuleModel2 = gsdModuleList.get(_module.getModuleNumber());
             if (gsdModuleModel2 != null) {
-                _moduleTypList.setSelection(new StructuredSelection(gsdModuleModel2), true);
+                _moduleTypList.setSelection(new StructuredSelection(gsdModuleModel2));
             } else {
                 _moduleTypList.getTable().select(0);
             }

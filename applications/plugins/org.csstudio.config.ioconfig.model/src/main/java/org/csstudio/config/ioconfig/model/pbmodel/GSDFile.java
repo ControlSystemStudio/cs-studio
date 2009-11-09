@@ -24,6 +24,7 @@
  */
 package org.csstudio.config.ioconfig.model.pbmodel;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,6 +43,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.csstudio.config.ioconfig.model.Keywords;
+import org.csstudio.config.ioconfig.model.NamedDBClass;
 import org.csstudio.config.ioconfig.model.Repository;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdFactory;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdMasterModel;
@@ -170,6 +172,11 @@ public class GSDFile {
 	 */
 	public void setName(String name) {
 		this._name = name;
+		long time = new Date().getTime();
+        long l = time-NamedDBClass._oldTime;
+        if(l>50)
+            NamedDBClass._diagString.append(": \t\t"+time+"\t"+l+"\t"+_name+"\t"+this.getClass().getSimpleName()+"\r\n");
+        NamedDBClass._oldTime = time;
 	}
 
 	/**

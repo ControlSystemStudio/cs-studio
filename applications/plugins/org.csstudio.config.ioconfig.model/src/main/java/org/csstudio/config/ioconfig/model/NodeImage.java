@@ -24,8 +24,6 @@
  */
 package org.csstudio.config.ioconfig.model;
 
-import java.util.Set;
-
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -67,7 +65,7 @@ public class NodeImage implements Comparable<NodeImage> {
      */
     private byte[] _imageBytes;
 
-    private Set<Node> _nodes;
+//    private Set<Node> _nodes;
 
     /**
      * Default Constructor needed by Hibernate.

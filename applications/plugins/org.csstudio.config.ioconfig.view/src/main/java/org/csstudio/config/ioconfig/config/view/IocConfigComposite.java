@@ -70,7 +70,7 @@ public class IocConfigComposite extends NodeConfig {
     public IocConfigComposite(final Composite parent, final ProfiBusTreeView profiBusTreeView,
             final Ioc ioc) {
         super(parent, profiBusTreeView, "IOC Configuration", ioc, ioc == null);
-
+        profiBusTreeView.setConfiguratorName("IOC Configuration");
         _ioc = ioc;
 
         if (_ioc == null) {
@@ -106,7 +106,7 @@ public class IocConfigComposite extends NodeConfig {
                 getProfiBusTreeView()));
         getIndexSpinner().setMaximum(_ioc.getParent().getChildren().size() - 1);
 
-        makeDescGroup(comp);
+        makeDescGroup(comp,3);
     }
 
     /*

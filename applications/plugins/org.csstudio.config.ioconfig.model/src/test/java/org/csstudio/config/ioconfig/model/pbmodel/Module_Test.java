@@ -147,7 +147,7 @@ public class Module_Test {
         channelStructure.setId(21);
         channelStructure.moveSortIndex((short) 121);
         
-        ChannelStructure simpleChannelStructure = ChannelStructure.makeSimpleChannelStructure(out, false);
+        ChannelStructure simpleChannelStructure = ChannelStructure.makeSimpleChannel(out, false);
         simpleChannelStructure.setSimple(true);
         
         Channel pureChannel = new Channel(simpleChannelStructure,false,false);
