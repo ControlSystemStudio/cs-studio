@@ -40,8 +40,11 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses( { ConnectionStateTest.class, ConnectorIdentificationTest.class,
-		SimpleDALTest.class, DalConnectorTest.class, SimpleDAL_EPICSTest.class,
-		DalCacheBugTest.class, ProcessVariableConnectionServiceTest.class,
+//		SimpleDALTest.class, 
+//		DalConnectorTest.class, 
+//		SimpleDAL_EPICSTest.class,
+		DalCacheBugTest.class, 
+//		ProcessVariableConnectionServiceTest.class,
 		SimpleNameParserTest.class, ProcessVariableFactoryTest.class,
 		ControlSystemItemFactoriesRegistryTest.class,
 		ProcessVariableAdressTest.class, DataGeneratorInfosTest.class,
@@ -58,8 +61,4 @@ import org.junit.runners.Suite.SuiteClasses;
 		CommandParameterEnumValueTest.class, CommandParametersTest.class,
 		CommandResultTest.class, CommandContributionTest.class })
 public class AllTests {
-        
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(AllTests.class);
-    }
 }
