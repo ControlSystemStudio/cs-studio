@@ -2,6 +2,8 @@
 
 import java.util.Calendar;
 
+import org.csstudio.opibuilder.datadefinition.ColorMap;
+import org.csstudio.opibuilder.datadefinition.ColorMap.PredefinedColorMap;
 import org.csstudio.opibuilder.widgets.figures.BoolButtonFigure;
 import org.csstudio.opibuilder.widgets.figures.BoolSwitchFigure;
 import org.csstudio.opibuilder.widgets.figures.IntensityGraphFigure;
@@ -194,17 +196,35 @@ class TabFigureTest extends Figure {
 class IntensityGraphFigureTest extends Figure {
 	
 	private IntensityGraphFigure intensityGraph;
+	private double[] datas;
 
 	public IntensityGraphFigureTest() {
 		intensityGraph = new IntensityGraphFigure();
-		double[] data = new double[256];
-		for(int i=0;i<256;i++)
-			data[i] = i;
-		intensityGraph.setDataArray(data);
-		intensityGraph.setMax(255);
-		intensityGraph.setDataWidth(16);
-		intensityGraph.setDataHeight(16);
-		add(intensityGraph);		
+		datas = new double[65536];
+		
+		intensityGraph.setDataArray(datas);
+		intensityGraph.setMax(1);
+		intensityGraph.setDataWidth(256);
+		intensityGraph.setDataHeight(256);
+		intensityGraph.setColorMap(new ColorMap(PredefinedColorMap.ColorSpectrum, true, true));
+		add(intensityGraph);	
+		final Runnable task = new Runnable(){
+			public void run() {
+				double phase = Math.random()*10;
+				for(int i=0; i<256; i++){
+					for(int j=0; j<256; j++){
+						int x = j-128;
+						int y = i-128;		
+						double p = Math.sqrt(x*x + y*y);
+						datas[i*256 + j] = Math.sin(p*2*Math.PI/256 + phase);
+					}
+				}
+				intensityGraph.setDataArray(datas);
+				Display.getCurrent().timerExec(10, this);
+			}
+		};
+		Display.getCurrent().timerExec(10, task);
+		
 	}
 	@Override
 	protected void layout() {

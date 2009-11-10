@@ -6,12 +6,12 @@ import org.csstudio.opibuilder.widgets.figureparts.ColorMapRamp;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.geometry.Dimension;
-import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.PaletteData;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.widgets.Display;
 
 /**An intensity graph figure.
  * @author Xihui Chen
@@ -212,7 +212,7 @@ public class IntensityGraphFigure extends Figure {
 				}
 			}
 			
-			Image image = new Image(null, 
+			Image image = new Image(Display.getCurrent(), 
 					colorMap.drawImage(graphData, dataWidth, dataHeight, max, min));
 			graphics.drawImage(image, new Rectangle(image.getBounds()), clientArea);
 			image.dispose();			
