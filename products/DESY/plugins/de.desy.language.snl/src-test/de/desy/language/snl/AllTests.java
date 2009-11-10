@@ -76,7 +76,6 @@ import de.desy.language.snl.parser.parser.WhenParser_Test;
         RegExToMatchAssignDeclaration_Test.class,      
         RegExToMatchTextWithoutSubsequent_Test.class,
         
-		AllParserTests.class,
 //		SNLParser_Test.class,
 		
 		EntryNode_Test.class,             
