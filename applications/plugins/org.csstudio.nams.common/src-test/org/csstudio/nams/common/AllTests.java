@@ -27,33 +27,33 @@ import org.junit.runners.Suite.SuiteClasses;
 
 
 @RunWith(Suite.class)
-@SuiteClasses( { CommonActivator_Test.class,
+@SuiteClasses( { //CommonActivator_Test.class,
 
-Contract_Test.class,
-
-StandardAblagekorb_Test.class,
-Vorgangsmappe_Test.class,
-Vorgangsmappenkennung_Test.class,
+//Contract_Test.class,
+//
+//StandardAblagekorb_Test.class,
+//Vorgangsmappe_Test.class,
+//Vorgangsmappenkennung_Test.class,
 
 Millisekunden_Test.class,
-MessageKeyEnum_Test.class,
-
-AlarmNachricht_Test.class,
-Regelwerkskennung_Test.class,
-
-AbstractNodeVersandRegel_Test.class,
-NichtVersandRegel_Test.class,
-OderVersandRegel_Test.class,
-ProcessVariableRegel_Test.class,
-Pruefliste_Test.class,
-RegelErgebnis_Test.class,
-Regelwerkskennung_Test.class,
-StandardRegelwerk_Test.class,
-StringRegel_Test.class,
-TimeBasedRegel_Test.class,
-TimeBasedRegelAlarmBeiBestaetigung_Test.class,
-UndVersandRegel_Test.class,
-WeiteresVersandVorgehen_Test.class,
+//MessageKeyEnum_Test.class,
+//
+//AlarmNachricht_Test.class,
+//Regelwerkskennung_Test.class,
+//
+//AbstractNodeVersandRegel_Test.class,
+//NichtVersandRegel_Test.class,
+//OderVersandRegel_Test.class,
+//ProcessVariableRegel_Test.class,
+//Pruefliste_Test.class,
+//RegelErgebnis_Test.class,
+//Regelwerkskennung_Test.class,
+//StandardRegelwerk_Test.class,
+//StringRegel_Test.class,
+//TimeBasedRegel_Test.class,
+//TimeBasedRegelAlarmBeiBestaetigung_Test.class,
+//UndVersandRegel_Test.class,
+//WeiteresVersandVorgehen_Test.class,
 })
 public class AllTests {
 }
