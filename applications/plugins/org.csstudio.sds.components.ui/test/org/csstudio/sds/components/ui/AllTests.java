@@ -39,7 +39,6 @@ import org.junit.runners.Suite.SuiteClasses;
 	LogarithmicAxisTest.class,
 	TickCalculatorTest.class,
 	TickTest.class,
-	WidgetFigureTest.class
 } )
 public class AllTests {
 }
