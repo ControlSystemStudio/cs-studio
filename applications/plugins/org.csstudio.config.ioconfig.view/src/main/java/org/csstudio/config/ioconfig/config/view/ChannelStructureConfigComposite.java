@@ -89,7 +89,6 @@ public class ChannelStructureConfigComposite extends NodeConfig {
            StringBuilder sbDesc = new StringBuilder();
            for (Node node : _channelStructure.getChildrenAsMap().values()) {
                Channel channel = (Channel) node;
-               sbDesc.append(LS);
                int length = sbDesc.length();
                sbDesc.append(channel.getName());
                sbDesc.append(": ");
@@ -105,7 +104,17 @@ public class ChannelStructureConfigComposite extends NodeConfig {
                    sbDesc.append(channel.getDescription());
                    sbDesc.append(LS);
                }
-               styleRanges.add(new StyleRange(length, channel.getName().length()+1,null,null,SWT.BOLD));
+               sbDesc.append(LS);
+               StyleRange styleRange = new StyleRange(length, sbDesc.length(),null,null,SWT.NONE);
+               styleRange.borderStyle = SWT.BORDER_DOT;
+               styleRanges.add(styleRange);
+               styleRange = new StyleRange(length, channel.getName().length()+1,null,null,SWT.BOLD);
+               styleRanges.add(styleRange);
+               TextStyle textStyle = new TextStyle();
+               textStyle.borderStyle = SWT.BORDER_DOT;
+//               textStyle.
+//               styleRanges.add(new StyleRange(textStyle));
+               
            }
            setText(_ioNameList, sbIOName.toString(), Text.LIMIT);
            text.setText(sbDesc.toString());

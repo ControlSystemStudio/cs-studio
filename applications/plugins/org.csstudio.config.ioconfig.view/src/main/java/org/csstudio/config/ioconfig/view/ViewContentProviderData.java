@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.csstudio.config.ioconfig.config.view.FacilityConfigComposite;
+import org.csstudio.config.ioconfig.config.view.helper.ProfibusHelper;
 import org.csstudio.config.ioconfig.model.Facility;
 import org.csstudio.config.ioconfig.model.FacilityLight;
 import org.csstudio.config.ioconfig.model.NamedDBClass;
@@ -12,11 +14,16 @@ import org.csstudio.config.ioconfig.model.pbmodel.ChannelStructure;
 import org.csstudio.config.ioconfig.model.pbmodel.Module;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.commands.operations.OperationStatus;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.ui.IViewSite;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * 
@@ -91,55 +98,69 @@ class ProfibusTreeContentProvider implements IStructuredContentProvider, ITreeCo
         if (parent instanceof FacilityLight) {
             final FacilityLight l = (FacilityLight) parent;
             try {
-//                final Set<Node> children = new HashSet<Node>();
-//                Job loadJob = new Job("DBLoader") {
+//                PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 //
 //                    @Override
-//                    protected IStatus run(IProgressMonitor monitor) {
-//                        monitor.beginTask("DBLoaderMonitor", IProgressMonitor.UNKNOWN);
-//                        monitor.setTaskName("Load " + l.getName());
-//                        // das wird beim erstenmal eine zeitlang dauern...
-//                        int i = 0;
-//                        // while(!l.isLoaded()) {
-//                        l.getFacility();
-//                        _run = false;
-////                        while (_run) {
-////                             getThread().yield();
-//////                            try {
-//////                                getThread().sleep(1000);
-//////                            } catch (InterruptedException e) {
-//////                                // TODO Auto-generated catch block
-//////                                e.printStackTrace();
-//////                            }
-////                            i++;
-////                        }
+//                    public void run() {
+//                        Job loadJob = new Job("DBLoader") {
 //
-//                        // PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
-//                        //                            
-//                        // @Override
-//                        // public void run() {
-//                        // _nodeConfigComposite = new FacilityConfigComposite(_editComposite,
-//                        // ProfiBusTreeView.this, f.getFacility()); // XXX
-//                        // _editNodeAction.setEnabled(true);
-//                        // _editComposite.getParent().layout(false);
-//                        // }
-//                        // });
-//                        monitor.done();
-//                        return Status.OK_STATUS;
+//                            @Override
+//                            protected IStatus run(IProgressMonitor monitor) {
+//                                monitor.beginTask("DBLoaderMonitor", IProgressMonitor.UNKNOWN);
+//                                monitor.setTaskName("Load " + l.getName());
+//                                // das wird beim erstenmal eine zeitlang dauern...
+//                                l.getFacility();
+//                                monitor.done();
+//                                return Status.OK_STATUS;
+//                            }
+//
+//                        };
+//                        loadJob.setUser(true);
+//                        loadJob.schedule();
+//                        do {
+//                            try {
+//                                System.out.print('.');
+//                                Thread.sleep(5);
+//                            } catch (InterruptedException e) {
+//                                // TODO Auto-generated catch block
+//                                e.printStackTrace();
+//                            }
+//                            
+//                        }while(loadJob.getState()!=Job.NONE);
 //                    }
-//
-//                };
-//                loadJob.setUser(true);
-//                loadJob.schedule();
+//                    
+//                });
+            
+                final Job loadJob = new Job("DBLoader") {
 
-                // System.out.println("T1");
-                // while(loadJob.getResult()==null) {
-                // Thread.sleep(3000);
-                // }
-                // System.out.println("T2");
-//                while(_run) {
-//                    Thread.sleep(1000);
-//                }
+                    @Override
+                    protected IStatus run(IProgressMonitor monitor) {
+                        monitor.beginTask("DBLoaderMonitor", IProgressMonitor.UNKNOWN);
+                        monitor.setTaskName("Load " + l.getName());
+                        // das wird beim erstenmal eine zeitlang dauern...
+                        l.getFacility();
+                        monitor.done();
+                        return Status.OK_STATUS;
+                    }
+
+                };
+                loadJob.setUser(true);
+                loadJob.schedule();
+                
+                do {
+//                     PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+//
+//                         @Override
+//                         public void run() {
+//                             System.out.println(loadJob.getState());
+//                             System.out.println(loadJob.getResult());
+//                             System.out.println("-------------------");
+//                         }
+//                     });
+//                     Thread.sleep(50);
+                     Thread.yield();
+//                     
+                }while(loadJob.getState()!=Job.NONE);
 
                 Object[] array = l.getFacility().getChildren().toArray();
                 return array;
