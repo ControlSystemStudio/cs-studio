@@ -48,7 +48,7 @@ public class AlarmMessageTableLabelProvider extends MessageTableLabelProvider im
     }
 
 	/**
-	 * Set severity color for outdated messages depending on sevrity color
+	 * Set severity color for outdated messages depending on severity color
 	 * set in preferences. (Performance)
 	 */
     private void setSeverityColorMappingOutdated() {
@@ -94,28 +94,6 @@ public class AlarmMessageTableLabelProvider extends MessageTableLabelProvider im
         Color backgroundColor = readSeverityColor(jmsm);
 		if (jmsm.isOutdated()) {
 		    backgroundColor = _severityColorOutdated.get(jmsm.getProperty("SEVERITY_KEY"));
-//			if (backgroundColor == null) {
-//				backgroundColor = new Color(null, 255, 255, 255);
-//			}
-//			int red = backgroundColor.getRed();
-//			int green = backgroundColor.getGreen();
-//			int blue = backgroundColor.getBlue();
-//			if (red < 125) {
-//				red = red + 130;
-//			} else {
-//				red = 255;
-//			}
-//			if (green < 125) {
-//				green = green + 130;
-//			} else {
-//				green = 255;
-//			}
-//			if (blue < 125) {
-//				blue = blue + 130;
-//			} else {
-//				blue = 255;
-//			}
-//			backgroundColor = new Color(null, red, green, blue);
 		}
 		return backgroundColor;
 	}

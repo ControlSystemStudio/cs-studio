@@ -91,6 +91,9 @@ public class AlarmMessageTable extends MessageTable {
 
         _table.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event event) {
+            	if (_contentProvider.getMessageUpdatePause()) {
+            		return;
+            	}
                 if (event.item instanceof TableItem && event.button == 0 && event.detail == 32) {
                     TableItem ti = (TableItem) event.item;
                     if (canExecute) {

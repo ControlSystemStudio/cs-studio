@@ -239,6 +239,8 @@ public class Messages extends NLS {
 
 	public static String ViewArchive_toTime;
 
+	public static String LogView_updateControlButton;
+
 	/**
 	 * The localzation messages ressource bundle.
 	 */

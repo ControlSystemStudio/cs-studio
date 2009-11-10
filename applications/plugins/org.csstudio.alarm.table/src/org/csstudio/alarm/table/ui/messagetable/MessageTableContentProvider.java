@@ -23,10 +23,9 @@
 package org.csstudio.alarm.table.ui.messagetable;
 
 import org.csstudio.alarm.table.JmsLogsPlugin;
-import org.csstudio.alarm.table.dataModel.IMessageViewer;
 import org.csstudio.alarm.table.dataModel.BasicMessage;
+import org.csstudio.alarm.table.dataModel.IMessageViewer;
 import org.csstudio.alarm.table.dataModel.MessageList;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -44,12 +43,20 @@ public class MessageTableContentProvider implements IMessageViewer,
 
 	private MessageList _messageList;
 
+	/**
+	 * is message update for the table paused.
+	 */
+	boolean _pause = false;
+	
 	public MessageTableContentProvider(TableViewer tv, MessageList jmsml) {
 		_tableViewer = tv;
 		_messageList = jmsml;
 	}
 
 	public void addJMSMessage(final BasicMessage jmsm) {
+		if (_pause) {
+			return;
+		}
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
 				try {
@@ -70,6 +77,9 @@ public class MessageTableContentProvider implements IMessageViewer,
 	}
 
 	public void addJMSMessages(final BasicMessage[] jmsm) {
+		if (_pause) {
+			return;
+		}
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
 				try {
@@ -87,6 +97,9 @@ public class MessageTableContentProvider implements IMessageViewer,
 	}
 
 	public void removeJMSMessage(final BasicMessage jmsm) {
+		if (_pause) {
+			return;
+		}
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
 				try {
@@ -106,6 +119,9 @@ public class MessageTableContentProvider implements IMessageViewer,
 	}
 
 	public void removeJMSMessage(final BasicMessage[] jmsm) {
+		if (_pause) {
+			return;
+		}
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
 				try {
@@ -123,6 +139,9 @@ public class MessageTableContentProvider implements IMessageViewer,
 	}
 
 	public void updateJMSMessage(final BasicMessage jmsm) {
+		if (_pause) {
+			return;
+		}
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
 				try {
@@ -173,5 +192,13 @@ public class MessageTableContentProvider implements IMessageViewer,
 
 	public Object[] getElements(Object inputElement) {
 		return _messageList.getJMSMessageList().toArray();
+	}
+
+	public void setMessageUpdatePause(boolean pause) {
+		_pause = pause;
+	}
+
+	public boolean getMessageUpdatePause() {
+		return _pause;
 	}
 }

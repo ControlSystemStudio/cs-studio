@@ -19,30 +19,27 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.alarm.table.ui.messagetable;
+package org.csstudio.alarm.table.ui.messagetable;
 
-import org.csstudio.alarm.table.dataModel.AlarmMessage;
 import org.csstudio.alarm.table.dataModel.BasicMessage;
 import org.csstudio.alarm.table.dataModel.MessageList;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
-public class DeleteAllMessagesAction extends Action
-{
-    private TableViewer _table;
+public class DeleteAllMessagesAction extends Action {
+	private MessageTable _messageTable;
 
-    private MessageList _messageList;
-    
-	public DeleteAllMessagesAction(final TableViewer table, final MessageList msgList)
-	{
-	    _messageList = msgList;
-        this._table = table;
+	private MessageList _messageList;
+
+	public DeleteAllMessagesAction(final MessageTable messageTable,
+			final MessageList msgList) {
+		_messageList = msgList;
+		_messageTable = messageTable;
 		setText("Delete All");
 		setToolTipText("Delete all messages");
 		setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
@@ -51,12 +48,11 @@ public class DeleteAllMessagesAction extends Action
 				.getImageDescriptor(ISharedImages.IMG_TOOL_DELETE_DISABLED));
 		setEnabled(false);
 		// Conditionally enable this action
-		_table.addSelectionChangedListener(
-				new ISelectionChangedListener()
-				{
-					public void selectionChanged(SelectionChangedEvent event)
-					{
-						boolean anything = !event.getSelection().isEmpty();
+		_messageTable.getTableViewer().addSelectionChangedListener(
+				new ISelectionChangedListener() {
+					public void selectionChanged(SelectionChangedEvent event) {
+						boolean anything = (!event.getSelection().isEmpty() && _messageTable
+								.getMessageUpdatePause());
 						setEnabled(anything);
 					}
 				});
@@ -64,18 +60,18 @@ public class DeleteAllMessagesAction extends Action
 
 	@Override
 	public void run() {
-        TableItem[] allItems = _table.getTable().getItems();
-        BasicMessage[] messages = new BasicMessage[allItems.length];
-        int i = 0;
-        for (TableItem tableItem : allItems) {
-            if (tableItem.getData() instanceof BasicMessage) {
-                messages[i] = (BasicMessage) tableItem.getData();
-                i++;
-            } else {
-                CentralLogger.getInstance().warn(this,
-                        "Unknown object in selection!");
-            }
-        }
-        _messageList.deleteAllMessages(messages); 
+		TableItem[] allItems = _messageTable.getTableViewer().getTable().getItems();
+		BasicMessage[] messages = new BasicMessage[allItems.length];
+		int i = 0;
+		for (TableItem tableItem : allItems) {
+			if (tableItem.getData() instanceof BasicMessage) {
+				messages[i] = (BasicMessage) tableItem.getData();
+				i++;
+			} else {
+				CentralLogger.getInstance().warn(this,
+						"Unknown object in selection!");
+			}
+		}
+		_messageList.deleteAllMessages(messages);
 	}
 }

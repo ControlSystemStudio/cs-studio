@@ -27,7 +27,6 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
@@ -40,14 +39,14 @@ import org.eclipse.ui.PlatformUI;
  *
  */
 public class DeleteMessageAction extends Action {
-    private TableViewer _table;
+    private MessageTable _messageTable;
 
     private MessageList _messageList;
 
-    public DeleteMessageAction(final TableViewer table,
+    public DeleteMessageAction(final MessageTable messageTable,
             final MessageList msgList) {
         _messageList = msgList;
-        this._table = table;
+        _messageTable = messageTable;
         setText("Delete");
         setToolTipText("Delete selected messages");
         setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
@@ -56,9 +55,9 @@ public class DeleteMessageAction extends Action {
                 .getImageDescriptor(ISharedImages.IMG_TOOL_DELETE_DISABLED));
         setEnabled(false);
         //Enable this action only if items are selected
-        _table.addSelectionChangedListener(new ISelectionChangedListener() {
+        _messageTable.getTableViewer().addSelectionChangedListener(new ISelectionChangedListener() {
             public void selectionChanged(SelectionChangedEvent event) {
-                boolean anything = !event.getSelection().isEmpty();
+                boolean anything = (!event.getSelection().isEmpty() && _messageTable.getMessageUpdatePause());
                 setEnabled(anything);
             }
         });
@@ -66,7 +65,7 @@ public class DeleteMessageAction extends Action {
 
     @Override
     public void run() {
-        TableItem[] selection = _table.getTable().getSelection();
+        TableItem[] selection = _messageTable.getTableViewer().getTable().getSelection();
         BasicMessage[] messageSelection = new BasicMessage[selection.length];
         for (int i = 0; i < selection.length; i++) {
 //        for (TableItem tableItem : selection) {

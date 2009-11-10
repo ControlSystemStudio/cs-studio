@@ -28,12 +28,10 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import org.csstudio.alarm.dbaccess.archivedb.Filter;
-import org.csstudio.alarm.dbaccess.archivedb.FilterItem;
 import org.csstudio.alarm.dbaccess.archivedb.Result;
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.dataModel.ArchiveMessageList;
 import org.csstudio.alarm.table.dataModel.BasicMessage;
-import org.csstudio.alarm.table.dataModel.MessageList;
 import org.csstudio.alarm.table.database.AsynchronousDatabaseAccess;
 import org.csstudio.alarm.table.database.IDatabaseAccessListener;
 import org.csstudio.alarm.table.internal.localization.Messages;

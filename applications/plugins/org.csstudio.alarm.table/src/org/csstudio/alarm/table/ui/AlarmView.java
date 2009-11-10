@@ -40,15 +40,11 @@ import org.csstudio.alarm.table.utility.Functions;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.security.SecurityFacade;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowData;
@@ -58,7 +54,6 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.ui.PlatformUI;
 
 /**
  * Add to the base class {@link LogView}: acknowledge button and combo box, send
@@ -77,6 +72,8 @@ public class AlarmView extends LogView {
 	private static final String SECURITY_ID = "operating"; //$NON-NLS-1$
 
 	private Button soundEnableButton;
+
+	private Button _ackButton;
 
 	/**
 	 * Creates the view for the alarm log table.
@@ -119,6 +116,24 @@ public class AlarmView extends LogView {
 
 		_jmsMessageReceiver = new JmsAlarmMessageReceiver();
 		initializeMessageTable();
+		_pauseButton.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				if(_pauseButton.getSelection()) {
+					_ackButton.setEnabled(false);
+				} else {
+					_ackButton.setEnabled(true);
+				}
+				
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 
 		// makeActions();
 		//
@@ -224,10 +239,10 @@ public class AlarmView extends LogView {
 		RowLayout layout = new RowLayout();
 		acknowledgeItemGroup.setLayout(layout);
 
-		Button ackButton = new Button(acknowledgeItemGroup, SWT.PUSH);
-		ackButton.setLayoutData(new RowData(60, 21));
-		ackButton.setText(Messages.AlarmView_acknowledgeButton);
-		ackButton.setEnabled(canExecute);
+		_ackButton = new Button(acknowledgeItemGroup, SWT.PUSH);
+		_ackButton.setLayoutData(new RowData(60, 21));
+		_ackButton.setText(Messages.AlarmView_acknowledgeButton);
+		_ackButton.setEnabled(canExecute);
 		final Combo ackCombo = new Combo(acknowledgeItemGroup, SWT.SINGLE);
 		ackCombo.add(Messages.AlarmView_acknowledgeAllDropDown);
 		IPreferenceStore prefs = JmsLogsPlugin.getDefault()
@@ -254,7 +269,7 @@ public class AlarmView extends LogView {
 			ackCombo.add(prefs.getString(JmsLogPreferenceConstants.VALUE9));
 		ackCombo.select(4);
 
-		ackButton.addSelectionListener(new SelectionListener() {
+		_ackButton.addSelectionListener(new SelectionListener() {
 
 			/**
 			 * Acknowledge button is pressed for all (selection 0) messages or
@@ -318,27 +333,21 @@ public class AlarmView extends LogView {
 
 		soundEnableButton = new Button(soundButtonGroup, SWT.TOGGLE);
 		soundEnableButton.setLayoutData(new RowData(60, 21));
+		soundEnableButton.setText(Messages.AlarmView_soundButtonEnable);
 		if (Functions.is_sound()) {
-			soundEnableButton.setText(Messages.AlarmView_soundButtonEnable);
 			soundEnableButton.setSelection(true);
-		} else {
-			soundEnableButton.setText(Messages.AlarmView_soundButtonDisable);
 		}
 
 		soundEnableButton.addSelectionListener(new SelectionListener() {
 			public void widgetSelected(SelectionEvent e) {
-				if (Functions.is_sound()) {
-					Functions.set_sound(false);
-					((JmsAlarmMessageReceiver) _jmsMessageReceiver)
-							.setPlayAlarmSound(false);
-					AlarmView.this.soundEnableButton
-							.setText(Messages.AlarmView_soundButtonDisable);
-				} else {
+				if (soundEnableButton.getSelection()) {
 					Functions.set_sound(true);
 					((JmsAlarmMessageReceiver) _jmsMessageReceiver)
 							.setPlayAlarmSound(true);
-					AlarmView.this.soundEnableButton
-							.setText(Messages.AlarmView_soundButtonEnable);
+				} else {
+					Functions.set_sound(false);
+					((JmsAlarmMessageReceiver) _jmsMessageReceiver)
+							.setPlayAlarmSound(false);
 				}
 			}
 

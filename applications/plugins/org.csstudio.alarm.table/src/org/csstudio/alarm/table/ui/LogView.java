@@ -24,38 +24,36 @@ package org.csstudio.alarm.table.ui;
 
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.TimeZone;
+import java.util.Timer;
 
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.dataModel.LogMessageList;
 import org.csstudio.alarm.table.dataModel.MessageList;
 import org.csstudio.alarm.table.internal.localization.Messages;
+import org.csstudio.alarm.table.jms.CloseJMSConnectionTimerTask;
+import org.csstudio.alarm.table.jms.JmsAlarmMessageReceiver;
 import org.csstudio.alarm.table.jms.JmsMessageReceiver;
 import org.csstudio.alarm.table.preferences.TopicSet;
 import org.csstudio.alarm.table.preferences.TopicSetColumnService;
-import org.csstudio.alarm.table.preferences.alarm.AlarmViewPreferenceConstants;
 import org.csstudio.alarm.table.preferences.log.LogViewPreferenceConstants;
 import org.csstudio.alarm.table.ui.messagetable.MessageTable;
+import org.csstudio.alarm.table.utility.Functions;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
@@ -134,6 +132,12 @@ public class LogView extends ViewPart {
 
 	private Label _runningSinceLabel;
 
+	Button _pauseButton;
+
+	private PopUpTimerTask _timerTask;
+
+	private Timer _timer;
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -161,6 +165,7 @@ public class LogView extends ViewPart {
 		logTableManagementComposite.setLayout(layout);
 
 		addJmsTopicItems(logTableManagementComposite);
+		// addMessageUpdateControl(logTableManagementComposite);
 		addRunningSinceGroup(logTableManagementComposite);
 		_jmsMessageReceiver = new JmsMessageReceiver();
 
@@ -255,8 +260,8 @@ public class LogView extends ViewPart {
 
 		setCurrentTimeToRunningSince();
 
-		_columnMapping = new ExchangeableColumnWidthPreferenceMapping(_tableViewer,
-				_currentTopicSet);
+		_columnMapping = new ExchangeableColumnWidthPreferenceMapping(
+				_tableViewer, _currentTopicSet);
 		addControlListenerToColumns(LogViewPreferenceConstants.P_STRING,
 				LogViewPreferenceConstants.TOPIC_SET);
 		getSite().setSelectionProvider(_tableViewer);
@@ -272,15 +277,15 @@ public class LogView extends ViewPart {
 		TableColumn[] columns = _tableViewer.getTable().getColumns();
 		for (TableColumn tableColumn : columns) {
 			tableColumn.addControlListener(new ControlListener() {
-				
+
 				@Override
 				public void controlResized(ControlEvent e) {
-					_columnMapping.saveColumn(colSetPref, topicSetPref);		
+					_columnMapping.saveColumn(colSetPref, topicSetPref);
 				}
-				
+
 				@Override
 				public void controlMoved(ControlEvent e) {
-					//do nothing
+					// do nothing
 				}
 			});
 		}
@@ -344,11 +349,54 @@ public class LogView extends ViewPart {
 				String oldTopicSet = _currentTopicSet;
 				_currentTopicSet = _topicSetColumnService.getTopicSets().get(
 						topicSetsCombo.getSelectionIndex()).getName();
-				if ( ! oldTopicSet.equals(_currentTopicSet)) {
+				if (!oldTopicSet.equals(_currentTopicSet)) {
+					_messageTable.setMessageUpdatePause(false);
+					_pauseButton.setSelection(false);
 					initializeMessageTable();
 				}
 			}
 		});
+
+		_pauseButton = new Button(jmsTopicItemsGroup, SWT.TOGGLE);
+		_pauseButton.setLayoutData(new RowData(60, 21));
+
+		_pauseButton.setText("Pause");
+
+		_pauseButton.addSelectionListener(new SelectionListener() {
+
+			public void widgetSelected(SelectionEvent e) {
+				if (_pauseButton.getSelection()) {
+					_messageTable.setMessageUpdatePause(true);
+						if (_timer != null) {
+							if (_timerTask != null) {
+								_timerTask.cancel();
+								_timerTask = null;
+							}
+							_timer.cancel();
+							_timer = null;
+						}
+						_timer = new Timer();
+						_timerTask = new PopUpTimerTask();
+						_timer.schedule(_timerTask, 10000, 10000);
+				} else {
+					if (_timer != null) {
+						if (_timerTask != null) {
+							_timerTask.cancel();
+							_timerTask = null;
+						}
+						_timer.cancel();
+						_timer = null;
+					}
+					_tableViewer.refresh();
+					_messageTable.setMessageUpdatePause(false);
+				}
+			}
+
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+			}
+		});
+
 	}
 
 	/**
@@ -423,8 +471,8 @@ public class LogView extends ViewPart {
 	 */
 	@Override
 	public void dispose() {
-//		_columnMapping.saveColumn(LogViewPreferenceConstants.P_STRING,
-//				LogViewPreferenceConstants.TOPIC_SET);
+		// _columnMapping.saveColumn(LogViewPreferenceConstants.P_STRING,
+		// LogViewPreferenceConstants.TOPIC_SET);
 		_jmsMessageReceiver.stopJMSConnection();
 		_messageTable = null;
 		// JmsLogsPlugin.getDefault().getPluginPreferences()

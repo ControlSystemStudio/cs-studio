@@ -33,8 +33,6 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -59,184 +57,208 @@ import org.eclipse.ui.IWorkbenchPartSite;
  */
 public class MessageTable {
 
-    Table _table;
+	Table _table;
 
-    TableViewer _tableViewer;
+	TableViewer _tableViewer;
 
-    TableColumn[] _tableColumn;
+	TableColumn[] _tableColumn;
 
-    String[] columnHeader;
+	String[] columnHeader;
 
-    String colName = null;
+	String colName = null;
 
-    String columnSelection = null;
+	String columnSelection = null;
 
-    private String lastSort = "";
+	private String lastSort = "";
 
-    private boolean sort = false;
+	private boolean sort = false;
 
-    private MessageList _messageList;
+	private MessageList _messageList;
 
-    int[] columnWidth;
+	int[] columnWidth;
 
-    Map<String, SelectionAdapter> _selectionListenerMap = new HashMap<String, SelectionAdapter>();
+	Map<String, SelectionAdapter> _selectionListenerMap = new HashMap<String, SelectionAdapter>();
 
-    public MessageTable(TableViewer tViewer, String[] colNames, MessageList j) {
+	MessageTableContentProvider _contentProvider;
 
-        _tableViewer = tViewer;
-        _table = _tableViewer.getTable();
-        _messageList = j;
+	public MessageTable(TableViewer tViewer, String[] colNames, MessageList j) {
 
-        _table.setHeaderVisible(true);
-        _table.setLinesVisible(true);
+		_tableViewer = tViewer;
+		_table = _tableViewer.getTable();
+		_messageList = j;
 
-        // Get back column names without width
-        String[] pureColumnNames = setTableColumns(colNames);
+		_table.setHeaderVisible(true);
+		_table.setLinesVisible(true);
 
-        _tableViewer.setContentProvider(new MessageTableContentProvider(
-                _tableViewer, _messageList));
+		// Get back column names without width
+		String[] pureColumnNames = setTableColumns(colNames);
 
-        _tableViewer.setInput(_messageList);
+		_contentProvider = new MessageTableContentProvider(
+				_tableViewer, _messageList);
+		_tableViewer.setContentProvider(_contentProvider);
 
-        initializeMessageTable(pureColumnNames);
+		_tableViewer.setInput(_messageList);
 
-        new ProcessVariableDragSource(_tableViewer.getTable(), _tableViewer);
-    }
+		initializeMessageTable(pureColumnNames);
 
-    public void disposeMessageTable() {
-    	_tableViewer.getTable().dispose();
-    }
+		new ProcessVariableDragSource(_tableViewer.getTable(), _tableViewer);
 
-    /**
-     * Initialize table with content-, label provider, sorter and input
-     * 
-     * @param colNames
-     */
-    void initializeMessageTable(String[] pureColumnNames) {
+		//Remove selected rows by double click
+		_tableViewer.getControl().addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDoubleClick(MouseEvent e) {
+				_table.deselectAll();
+			}
+		});
+	}
 
-        _tableViewer.setLabelProvider(new MessageTableLabelProvider(
-                pureColumnNames));
-        _tableViewer.setComparator(new MessageTableMessageSorter(_tableViewer));
-    }
+	public void disposeMessageTable() {
+		_tableViewer.getTable().dispose();
+	}
 
-    
-    private String[] setTableColumns(String[] colNames) {
-        columnWidth = new int[colNames.length];
-        columnHeader = colNames;
+	/**
+	 * Initialize table with content-, label provider, sorter and input
+	 * 
+	 * @param colNames
+	 */
+	void initializeMessageTable(String[] pureColumnNames) {
 
-        _table
-                .setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1,
-                        1));
-        String[] columnName = new String[columnHeader.length];
-        _tableColumn = new TableColumn[colNames.length];
-        for (int i = 0; i < columnHeader.length; i++) {
-            _tableColumn[i] = new TableColumn(_table, SWT.CENTER);
-            String[] temp = columnHeader[i].split(",");
-            colName = temp[0];
-            columnName[i] = colName;
-            _tableColumn[i].setText(temp[0]);
-            if (temp.length == 2) {
-                _tableColumn[i].setWidth(Integer.parseInt(columnHeader[i]
-                        .split(",")[1]));
-            } else
-                _tableColumn[i].setWidth(100);
-            final int j = i;
-            SelectionAdapter columnSelectionListener = new SelectionAdapter() {
+		_tableViewer.setLabelProvider(new MessageTableLabelProvider(
+				pureColumnNames));
+		_tableViewer.setComparator(new MessageTableMessageSorter(_tableViewer));
+	}
 
-                public String cName = colName;
-                private TableColumn column = _tableColumn[j];
+	private String[] setTableColumns(String[] colNames) {
+		columnWidth = new int[colNames.length];
+		columnHeader = colNames;
 
-                public void widgetSelected(SelectionEvent e) {
-                    _table.setSortColumn(column);
-                    if (cName.equals(lastSort)) {
-                        sort = !sort;
-                        _tableViewer
-                                .setComparator(new MessageTableColumnSorter(
-                                        _tableViewer, cName, sort));
-                    } else {
-                        sort = false;
-                        _tableViewer
-                                .setComparator(new MessageTableColumnSorter(
-                                        _tableViewer, cName, sort));
-                    }
-                    if (sort) {
-                        _table.setSortDirection(SWT.DOWN);
-                    } else {
-                        _table.setSortDirection(SWT.UP);
-                    }
-                    lastSort = cName;
-                    //sorting sets the checked status of table items to false. So we have to reset it the previous checked status.
-                    resetCheckedStatus();
-                }
-            };
-            _tableColumn[i].addSelectionListener(columnSelectionListener);
-            _selectionListenerMap.put(colName, columnSelectionListener);
-        }
+		_table
+				.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1,
+						1));
+		String[] columnName = new String[columnHeader.length];
+		_tableColumn = new TableColumn[colNames.length];
+		for (int i = 0; i < columnHeader.length; i++) {
+			_tableColumn[i] = new TableColumn(_table, SWT.CENTER);
+			String[] temp = columnHeader[i].split(",");
+			colName = temp[0];
+			columnName[i] = colName;
+			_tableColumn[i].setText(temp[0]);
+			if (temp.length == 2) {
+				_tableColumn[i].setWidth(Integer.parseInt(columnHeader[i]
+						.split(",")[1]));
+			} else
+				_tableColumn[i].setWidth(100);
+			final int j = i;
+			SelectionAdapter columnSelectionListener = new SelectionAdapter() {
 
-        return columnName;
-    }
+				public String cName = colName;
+				private TableColumn column = _tableColumn[j];
 
-    protected void resetCheckedStatus() {
-        TableItem[] tableItems = _table.getItems();
-        for (TableItem tableItem : tableItems) {
-            Object item = tableItem.getData();
-            if (item instanceof BasicMessage) {
-                BasicMessage messageItem = (BasicMessage) item;
-                if (messageItem.getProperty("ACK").equalsIgnoreCase("TRUE")) {
-                    tableItem.setChecked(true);
-                }
-            }
-        }
-        _tableViewer.refresh();
-    }
-    
-    public void makeContextMenu(IWorkbenchPartSite site) {
-        MenuManager manager = new MenuManager("#PopupMenu");
-        Control contr = _tableViewer.getControl();
-        manager.add(new ShowMessagePropertiesAction(_tableViewer));
+				public void widgetSelected(SelectionEvent e) {
+					_table.setSortColumn(column);
+					if (cName.equals(lastSort)) {
+						sort = !sort;
+						_tableViewer
+								.setComparator(new MessageTableColumnSorter(
+										_tableViewer, cName, sort));
+					} else {
+						sort = false;
+						_tableViewer
+								.setComparator(new MessageTableColumnSorter(
+										_tableViewer, cName, sort));
+					}
+					if (sort) {
+						_table.setSortDirection(SWT.DOWN);
+					} else {
+						_table.setSortDirection(SWT.UP);
+					}
+					lastSort = cName;
+					// sorting sets the checked status of table items to false.
+					// So we have to reset it the previous checked status.
+					resetCheckedStatus();
+				}
+			};
+			_tableColumn[i].addSelectionListener(columnSelectionListener);
+			_selectionListenerMap.put(colName, columnSelectionListener);
+		}
 
-        manager.add(new DeleteMessageAction(_tableViewer, _messageList));
-        manager.add(new DeleteAllMessagesAction(_tableViewer, _messageList));
+		return columnName;
+	}
 
-        manager.add(new Separator());
-        manager.addMenuListener(new IMenuListener() {
-            public void menuAboutToShow(IMenuManager manager) {
-                manager.add(new Separator(
-                        IWorkbenchActionConstants.MB_ADDITIONS));
-            }
-        });
-        // getSelectedColumn(contr);
-        Menu menu = manager.createContextMenu(contr);
-        contr.setMenu(menu);
-        site.registerContextMenu(manager, _tableViewer);
-    }
+	protected void resetCheckedStatus() {
+		TableItem[] tableItems = _table.getItems();
+		for (TableItem tableItem : tableItems) {
+			Object item = tableItem.getData();
+			if (item instanceof BasicMessage) {
+				BasicMessage messageItem = (BasicMessage) item;
+				if (messageItem.getProperty("ACK").equalsIgnoreCase("TRUE")) {
+					tableItem.setChecked(true);
+				}
+			}
+		}
+		_tableViewer.refresh();
+	}
 
-    /**
-     * Identify the selected column by mouse position. We do not need it now,
-     * but later it is maybe useful.
-     * 
-     * @param contr
-     */
-    private void getSelectedColumn(Control contr) {
-        contr.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseDown(MouseEvent e) {
-                super.mouseDown(e);
-                if (e.button == 3) {
-                    MessageTableLabelProvider lablProvider = (MessageTableLabelProvider) _tableViewer
-                            .getLabelProvider();
+	public void makeContextMenu(IWorkbenchPartSite site) {
+		MenuManager manager = new MenuManager("#PopupMenu");
+		Control contr = _tableViewer.getControl();
+		manager.add(new ShowMessagePropertiesAction(_tableViewer));
 
-                    Table t = _tableViewer.getTable();
-                    TableItem ti = t.getItem(new Point(e.x, e.y));
-                    for (int i = 0; i < MessageTable.this.columnHeader.length; i++) {
-                        Rectangle bounds = ti.getBounds(i);
-                        if (bounds.contains(e.x, e.y)) {
-                            columnSelection = lablProvider.getColumnName(i);
-                            break;
-                        }
-                    }
-                }
-            }
-        });
-    }
+		manager.add(new DeleteMessageAction(this, _messageList));
+		manager.add(new DeleteAllMessagesAction(this, _messageList));
+
+		manager.add(new Separator());
+		manager.addMenuListener(new IMenuListener() {
+			public void menuAboutToShow(IMenuManager manager) {
+				manager.add(new Separator(
+						IWorkbenchActionConstants.MB_ADDITIONS));
+			}
+		});
+		// getSelectedColumn(contr);
+		Menu menu = manager.createContextMenu(contr);
+		contr.setMenu(menu);
+		site.registerContextMenu(manager, _tableViewer);
+	}
+
+	public TableViewer getTableViewer() {
+		return _tableViewer;
+	}
+	
+	public void setMessageUpdatePause(boolean pause) {
+		_contentProvider.setMessageUpdatePause(pause);
+	}
+	
+	public boolean getMessageUpdatePause() {
+		return _contentProvider.getMessageUpdatePause();
+	}
+
+	/**
+	 * Identify the selected column by mouse position. We do not need it now,
+	 * but later it is maybe useful.
+	 * 
+	 * @param contr
+	 */
+	private void getSelectedColumn(Control contr) {
+		contr.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				super.mouseDown(e);
+				if (e.button == 3) {
+					MessageTableLabelProvider lablProvider = (MessageTableLabelProvider) _tableViewer
+							.getLabelProvider();
+
+					Table t = _tableViewer.getTable();
+					TableItem ti = t.getItem(new Point(e.x, e.y));
+					for (int i = 0; i < MessageTable.this.columnHeader.length; i++) {
+						Rectangle bounds = ti.getBounds(i);
+						if (bounds.contains(e.x, e.y)) {
+							columnSelection = lablProvider.getColumnName(i);
+							break;
+						}
+					}
+				}
+			}
+		});
+	}
+
 }
