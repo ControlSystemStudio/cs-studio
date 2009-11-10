@@ -10,9 +10,9 @@ import org.junit.runners.Suite.SuiteClasses;
 
 
 @RunWith(Suite.class)
-@SuiteClasses( { FilterTreeContentProvider_Test.class,
+@SuiteClasses( { //FilterTreeContentProvider_Test.class,
 	
-	ConfigurationBeanServiceImpl_Test.class,
+//	ConfigurationBeanServiceImpl_Test.class,
 	
 	SynchronizeServiceImpl_Test.class})
 public class AllTests {
