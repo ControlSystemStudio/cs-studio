@@ -3,7 +3,6 @@ package org.csstudio.swt.xygraph.figures;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.swt.xygraph.Activator;
 import org.csstudio.swt.xygraph.dataprovider.IDataProvider;
 import org.csstudio.swt.xygraph.dataprovider.IDataProviderListener;
 import org.csstudio.swt.xygraph.linearscale.LinearScale;
@@ -107,6 +106,18 @@ public class Axis extends LinearScale implements IDataProviderListener{
 	private void fireRevalidated(){
 		for(IAxisListener listener : listeners)
 			listener.axisRevalidated(this);
+	}
+	
+	private void fireAxisRangeChanged(Range old_range, Range new_range){
+		for(IAxisListener listener : listeners)
+			listener.axisRangeChanged(this, old_range, new_range);
+	}
+	
+	@Override
+	public void setRange(double lower, double upper) {
+		Range old_range = getRange();
+		super.setRange(lower, upper);
+		fireAxisRangeChanged(old_range, getRange());
 	}
 	
 	@Override

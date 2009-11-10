@@ -6,7 +6,6 @@ import org.csstudio.swt.xygraph.dataprovider.ISample;
 import org.csstudio.swt.xygraph.linearscale.Range;
 import org.csstudio.swt.xygraph.undo.MovingAnnotationCommand;
 import org.csstudio.swt.xygraph.undo.MovingAnnotationLabelCommand;
-import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
 import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
@@ -19,9 +18,7 @@ import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * Annotation Figure. Annotation could be used to indicate the information for a particular
@@ -512,6 +509,10 @@ public class Annotation extends Figure implements IAxisListener, IDataProviderLi
 				yAxis.getValuePosition(yValue, false));
 		updateInfoLableText();
 	}
+	
+	public void axisRangeChanged(Axis axis, Range old_range, Range new_range) {
+		//do nothing
+	}
 
 	public void dataChanged(IDataProvider dataProvider) {
 		if(trace == null)
@@ -719,6 +720,8 @@ class Pointer extends Figure{
 				
 	}
 }
+
+
 }
 
 

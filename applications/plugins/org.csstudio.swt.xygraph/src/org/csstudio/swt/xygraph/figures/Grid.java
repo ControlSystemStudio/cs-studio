@@ -1,5 +1,6 @@
 package org.csstudio.swt.xygraph.figures;
 
+import org.csstudio.swt.xygraph.linearscale.Range;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.swt.SWT;
@@ -44,4 +45,7 @@ public class Grid extends Figure implements IAxisListener{
 			repaint();	
 	}
 	
+	public void axisRangeChanged(Axis axis, Range old_range, Range new_range) {
+		//do nothing
+	}
 }

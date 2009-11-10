@@ -868,6 +868,11 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 	public void axisRevalidated(Axis axis) {
 		repaint();
 	}
+	
+	public void axisRangeChanged(Axis axis, Range old_range, Range new_range) {
+		//do nothing
+	}
+	
 	/**
 	 * @return the traceDataProvider
 	 */
