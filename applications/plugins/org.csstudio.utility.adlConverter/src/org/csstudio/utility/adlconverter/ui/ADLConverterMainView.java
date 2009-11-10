@@ -26,6 +26,7 @@ package org.csstudio.utility.adlconverter.ui;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -38,8 +39,13 @@ import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.ui.preferences.ADLConverterPreferenceConstants;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -70,6 +76,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.progress.UIJob;
 
 /**
  * @author hrickens
@@ -244,7 +251,7 @@ public class ADLConverterMainView extends ViewPart {
             }
 
             public void widgetSelected(SelectionEvent e) {
-                DirectoryDialog dialog = new DirectoryDialog(_shell, SWT.MULTI);
+                final DirectoryDialog dialog = new DirectoryDialog(_shell, SWT.MULTI);
                 String path = _preferences
                         .getString(ADLConverterPreferenceConstants.P_STRING_Path_Source);
                 // path = initial.getProjectRelativePath().toOSString();
@@ -254,14 +261,39 @@ public class ADLConverterMainView extends ViewPart {
                 if (open == null) {
                     return;
                 }
-                path = dialog.getFilterPath();
-                File file = new File(path);
-                fillFiles(file);
-                _avaibleFiles.setInput(_avaibleFilesList);
-                _avaibleFiles.getList().selectAll();
-                refreshexamplePathLabel();
-                checkRelativPath();
-                _preferences.setValue(ADLConverterPreferenceConstants.P_STRING_Path_Source, path);
+                Job job = new Job("ADL File Reader") {
+
+                    @Override
+                    protected IStatus run(IProgressMonitor monitor) {
+                        monitor.beginTask("ADL FileReader Worker", -1);
+                        try {
+                            final String filterPath = dialog.getFilterPath();
+                            File file = new File(filterPath);
+                            fillFiles(file);
+                            PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+
+                                @Override
+                                public void run() {
+                                    _avaibleFiles.setInput(_avaibleFilesList);
+                                    _avaibleFiles.getList().selectAll();
+                                    refreshexamplePathLabel();
+                                    checkRelativPath();
+                                    _preferences.setValue(
+                                            ADLConverterPreferenceConstants.P_STRING_Path_Source,
+                                            filterPath);
+                                }
+                            });
+                            monitor.done();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            monitor.setCanceled(true);
+                            return Status.CANCEL_STATUS;
+                        }
+                        return Status.OK_STATUS;
+                    }
+                };
+                job.setUser(true);
+                job.schedule();
             }
 
             private void fillFiles(File file) {
@@ -312,60 +344,113 @@ public class ADLConverterMainView extends ViewPart {
             public void widgetSelected(final SelectionEvent e) {
                 StructuredSelection sel = (StructuredSelection) _avaibleFiles.getSelection();
                 final ArrayList<Object> list = new ArrayList<Object>(sel.toList());
-                ADLDisplayImporter.reset();
-                Display.getCurrent().asyncExec(new Runnable() {
+                Job job = new Job("Convered ADL Files") {
 
-                    public void run() {
+                    @Override
+                    protected IStatus run(final IProgressMonitor monitor) {
+                        final int startSize = list.size();
+                        monitor.beginTask("ADL Converter Worker", startSize);
+                        ADLDisplayImporter.reset();
                         while (list.size() > 0) {
-                            ADLDisplayImporter di = new ADLDisplayImporter();
-                            File file = (File) list.remove(0);
-                            IPath targetProject;
-                            if (_isRelativePath.getSelection()) {
-                                targetProject = getRelativPath(file);
-                                // remove File Name
-                                targetProject = targetProject.removeLastSegments(1);
+                            final ADLDisplayImporter di = new ADLDisplayImporter();
+                            final File file = (File) list.remove(0);
+                            // IPath targetProject;
+
+                            final SelectContainer selection = new SelectContainer();
+                            PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+
+                                public void run() {
+                                    selection.setBool(_isRelativePath.getSelection());
+                                }
+                            });
+                            if (selection.getBool()) {
+                                selection.setiPath(getRelativPath(file).removeLastSegments(1));
                             } else {
-                                targetProject = initial.getProjectRelativePath()
-                                        .append(_targetPath);
+                                selection.setiPath(initial.getProjectRelativePath().append(
+                                        _targetPath));
                             }
                             try {
                                 if (file.getName().endsWith(".adl")) {//$NON-NLS-1$ 
-                                    if (!di.importDisplay(file.getAbsolutePath(), targetProject,
-                                            file.getName().replace(".adl", ".css-sds"))) { //$NON-NLS-1$ //$NON-NLS-2$
-                                        if (di.getStatus() == 5) {
-                                            // Job is canceled.
-                                            break;
+                                    PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+                                        public void run() {
+                                            try {
+                                                if (!di.importDisplay(file.getAbsolutePath(),
+                                                        selection.getiPath(), file.getName()
+                                                                .replace(".adl", ".css-sds"))) { //$NON-NLS-1$ //$NON-NLS-2$
+                                                }
+                                            } catch (CoreException e) {
+                                                // TODO Auto-generated catch block
+                                                e.printStackTrace();
+                                            }
                                         }
+                                    });
+                                    if (di.getStatus() == 5) {
+                                        // Job is canceled.
+                                        break;
                                     }
-                                } else if (file.getName().endsWith(".mfp")) {//$NON-NLS-1$ 
-                                    if (!di.importFaceplate(file.getAbsolutePath(), targetProject,
-                                            file.getName().concat(".css-sds"))) { //$NON-NLS-1$ //$NON-NLS-2$
-                                        if (di.getStatus() == 5) {
-                                            // Job is canceled.
-                                            break;
+                                } else if (file.getName().endsWith(".mfp")) {//$NON-NLS-1$
+                                    PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+                                        public void run() {
+                                            try {
+                                                if (!di.importFaceplate(file.getAbsolutePath(),
+                                                        selection.getiPath(), file.getName()
+                                                                .concat(".css-sds"))) { //$NON-NLS-1$ //$NON-NLS-2$
+                                                }
+                                            } catch (CoreException e) {
+                                                // TODO Auto-generated catch block
+                                                e.printStackTrace();
+                                            }
                                         }
+                                    });
+                                    if (di.getStatus() == 5) {
+                                        // Job is canceled.
+                                        break;
                                     }
                                 } else if (file.getName().endsWith(".stc")) {//$NON-NLS-1$
-                                    // parse Strip Tool Files
-                                    if (!di.importStripTool(file.getAbsolutePath(), targetProject,
-                                            file.getName().replace(".stc", ".css-plt"))) { //$NON-NLS-1$ //$NON-NLS-2$
-                                        if (di.getStatus() == 5) {
-                                            // Job is canceled.
-                                            break;
+                                    PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+                                        public void run() {
+
+                                            // parse Strip Tool Files
+                                            try {
+                                                if (!di.importStripTool(file.getAbsolutePath(),
+                                                        selection.getiPath(), file.getName()
+                                                                .replace(".stc", ".css-plt"))) { //$NON-NLS-1$ //$NON-NLS-2$
+                                                }
+                                            } catch (CoreException e) {
+                                                // TODO Auto-generated catch block
+                                                e.printStackTrace();
+                                            } catch (IOException e) {
+                                                // TODO Auto-generated catch block
+                                                e.printStackTrace();
+                                            }
                                         }
+                                    });
+                                    if (di.getStatus() == 5) {
+                                        // Job is canceled.
+                                        break;
                                     }
                                 }
                             } catch (Exception e1) {
                                 CentralLogger.getInstance().error(this, e1);
                             }
-                            file = null;
+                            // file = null;
 
-                            _avaibleFiles.setSelection(new StructuredSelection(list), true);
-                            _avaibleFiles.getList().getParent().layout();
+                            PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+
+                                public void run() {
+                                    _avaibleFiles.setSelection(new StructuredSelection(list), true);
+                                    _avaibleFiles.getList().getParent().layout();
+                                }
+                            });
+                            monitor.worked(1);
                         }
-                    }
-                });
 
+                        return Status.OK_STATUS;
+                    }
+
+                };
+                job.setUser(true);
+                job.schedule();
             }
         });
     }
@@ -501,11 +586,11 @@ public class ADLConverterMainView extends ViewPart {
                     File file = (File) iterator.next();
                     if (file != null) {
                         String lowerCase = file.getName().toLowerCase();
-                        if (   lowerCase.contains("_bak") || lowerCase.contains("-bak") || lowerCase.contains(".bak") //$NON-NLS-1$ //$NON-NLS-2$
-                            || lowerCase.contains("_neu") || lowerCase.contains("-neu") || lowerCase.contains(".neu") //$NON-NLS-1$ //$NON-NLS-2$
-                            || lowerCase.contains("_new") || lowerCase.contains("-new") || lowerCase.contains(".new") //$NON-NLS-1$ //$NON-NLS-2$
-                            || lowerCase.contains("_alt") || lowerCase.contains("-alt") || lowerCase.contains(".alt") //$NON-NLS-1$ //$NON-NLS-2$
-                            || lowerCase.contains("_old") || lowerCase.contains("-old") || lowerCase.contains(".old")) { //$NON-NLS-1$ //$NON-NLS-2$
+                        if (lowerCase.contains("_bak") || lowerCase.contains("-bak") || lowerCase.contains(".bak") //$NON-NLS-1$ //$NON-NLS-2$
+                                || lowerCase.contains("_neu") || lowerCase.contains("-neu") || lowerCase.contains(".neu") //$NON-NLS-1$ //$NON-NLS-2$
+                                || lowerCase.contains("_new") || lowerCase.contains("-new") || lowerCase.contains(".new") //$NON-NLS-1$ //$NON-NLS-2$
+                                || lowerCase.contains("_alt") || lowerCase.contains("-alt") || lowerCase.contains(".alt") //$NON-NLS-1$ //$NON-NLS-2$
+                                || lowerCase.contains("_old") || lowerCase.contains("-old") || lowerCase.contains(".old")) { //$NON-NLS-1$ //$NON-NLS-2$
                             iterator.remove();
                         }
                     }
@@ -684,10 +769,16 @@ public class ADLConverterMainView extends ViewPart {
      * @return the relative path.
      */
     private IPath getRelativPath(final File file) {
-        String apsolutPath = Pattern.quote(_relativePathText.getText());
-        IPath relativePath = _targetPath.append(file.getAbsolutePath()
-                .replaceFirst(apsolutPath, "")); //$NON-NLS-1$
-        return relativePath;
+        final SelectContainer container = new SelectContainer();
+        PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+
+            public void run() {
+                String apsolutPath = Pattern.quote(_relativePathText.getText());
+                container.setiPath(_targetPath.append(file.getAbsolutePath().replaceFirst(
+                        apsolutPath, ""))); //$NON-NLS-1$
+            }
+        });
+        return container.getiPath();
     }
 
     /**
