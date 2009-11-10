@@ -14,6 +14,7 @@ import org.junit.runners.Suite.SuiteClasses;
 	
 //	ConfigurationBeanServiceImpl_Test.class,
 	
-	SynchronizeServiceImpl_Test.class})
+//	SynchronizeServiceImpl_Test.class
+	})
 public class AllTests {
 }
