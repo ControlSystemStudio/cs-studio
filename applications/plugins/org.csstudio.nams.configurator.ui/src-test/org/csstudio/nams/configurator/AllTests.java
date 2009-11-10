@@ -10,9 +10,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 
 @RunWith(Suite.class)
-@SuiteClasses( { NAMSNewConfiguratorAllTestsSuite.class,
-	
-	FilterTreeContentProvider_Test.class,
+@SuiteClasses( { FilterTreeContentProvider_Test.class,
 	
 	ConfigurationBeanServiceImpl_Test.class,
 	
