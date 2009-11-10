@@ -8,6 +8,7 @@ import org.csstudio.swt.xygraph.dataprovider.IDataProviderListener;
 import org.csstudio.swt.xygraph.dataprovider.ISample;
 import org.csstudio.swt.xygraph.dataprovider.Sample;
 import org.csstudio.swt.xygraph.linearscale.Range;
+import org.csstudio.swt.xygraph.linearscale.AbstractScale.LabelSide;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.geometry.Point;
@@ -441,11 +442,23 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 					startIndex = (int) indexRange.getLower();
 					endIndex = (int) indexRange.getUpper();
 				}
-		//		System.out.println(name + ": " + startIndex + "  " + endIndex + " size: " + traceDataProvider.getSize());
-
 			}
 			for(int i= startIndex; i<=endIndex; i++){
 				ISample dp = traceDataProvider.getSample(i);
+				if(Double.isNaN(dp.getYValue())){
+					Point markPos = new Point(xAxis.getValuePosition(dp.getXValue(), false),
+							yAxis.getValuePosition(xAxis.getTickLablesSide() == LabelSide.Primary?
+									yAxis.getRange().getLower() : yAxis.getRange().getUpper(), false));
+					int markWidth = 6;
+					graphics.setBackgroundColor(traceColor);
+					graphics.fillRectangle(markPos.x -markWidth/2, markPos.y - markWidth/2, markWidth, markWidth);
+					Sample nanSample = new Sample(dp.getXValue(),xAxis.getTickLablesSide() == LabelSide.Primary?
+							yAxis.getRange().getLower() : yAxis.getRange().getUpper(), 
+							dp.getYPlusError(), dp.getYMinusError(),
+							Double.NaN, dp.getXMinusError());
+					nanSample.setInfo(dp.getInfo());
+					hotSampleist.add(nanSample);
+				}
 				//if the data is not in the plot area
 				dpInRange =
 					xAxis.getRange().inRange(dp.getXValue()) && yAxis.getRange().inRange(dp.getYValue());

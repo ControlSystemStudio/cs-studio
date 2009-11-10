@@ -354,7 +354,8 @@ public class Annotation extends Figure implements IAxisListener, IDataProviderLi
 		if(showSampleInfo && currentSnappedSample != null && !currentSnappedSample.getInfo().equals(""))
 			info += "\n" + currentSnappedSample.getInfo();
 		if(showPosition)
-				info += "\n" + "(" + xAxis.format(xValue) + ", " + yAxis.format(yValue) + ")";				
+				info += "\n" + "(" + xAxis.format(xValue) + ", " + 
+				(Double.isNaN(yValue) ? "NaN" : yAxis.format(yValue)) + ")";				
 		infoLabel.setText(info);
 		knowX0Y0 =false;
 		
@@ -494,9 +495,11 @@ public class Annotation extends Figure implements IAxisListener, IDataProviderLi
 		else{
 			this.currentSnappedSample = currentSnappedSample;
 			currentPosition = new Point(xAxis.getValuePosition(currentSnappedSample.getXValue(), false),
-				 yAxis.getValuePosition(currentSnappedSample.getXValue(), false));
+				 yAxis.getValuePosition(currentSnappedSample.getYValue(), false));
 			xValue = currentSnappedSample.getXValue();
 			yValue = currentSnappedSample.getYValue();
+			if(Double.isNaN(currentSnappedSample.getXPlusError()))
+				yValue = Double.NaN;
 			updateInfoLableText();
 		}
 		repaint();
