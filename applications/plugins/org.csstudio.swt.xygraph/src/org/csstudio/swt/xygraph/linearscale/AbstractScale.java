@@ -307,17 +307,23 @@ public abstract class AbstractScale extends Figure{
 
     /** set the scale range */
     public void setRange(double lower, double upper){
-        if (Double.isNaN(lower) || Double.isNaN(upper)
-                || lower > upper) {
+        if (Double.isNaN(lower) || Double.isNaN(upper)) {
             throw new IllegalArgumentException("Illegal range: lower=" + lower + ", upper=" + upper);
         }
-
+        
+        //in case of lower > upper, reverse them.       
+        if(lower > upper){
+        	double temp = lower;        	
+        	lower = upper;
+        	upper = temp;
+        }        
+        
        // if (min == lower && max == upper) {
        //     return;
        // }
 
         if (lower == upper) {
-            upper = lower +1;
+        	upper = lower +1;
         }
 
         if (logScaleEnabled && lower <= 0) {
