@@ -204,6 +204,7 @@ class IntensityGraphFigureTest extends Figure {
 		
 		intensityGraph.setDataArray(datas);
 		intensityGraph.setMax(1);
+		intensityGraph.setMin(-1);
 		intensityGraph.setDataWidth(256);
 		intensityGraph.setDataHeight(256);
 		intensityGraph.setColorMap(new ColorMap(PredefinedColorMap.ColorSpectrum, true, true));
