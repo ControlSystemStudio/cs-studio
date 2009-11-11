@@ -47,6 +47,7 @@ public class IntensityGraphModel extends AbstractPVWidgetModel {
 	public IntensityGraphModel() {
 		setForegroundColor(new RGB(0,0,0));
 		setSize(400, 240);
+		setTooltip("$(pv_name)"); //$NON-NLS-1$
 	}
 	
 	@Override

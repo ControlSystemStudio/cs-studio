@@ -29,7 +29,7 @@
       <include_parent_macros>true</include_parent_macros>
     </macros>
     <visible>true</visible>
-    <width>348</width>
+    <width>613</width>
     <border_style>13</border_style>
     <lock_children>false</lock_children>
     <scripts>
@@ -37,23 +37,23 @@
         <pv>loc://colorMap</pv>
       </path>
     </scripts>
-    <height>322</height>
+    <height>319</height>
     <border_width>1</border_width>
-    <name>Circular Sine Wave</name>
+    <name>Intensity Graph Demo</name>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
     <transparent>false</transparent>
     <show_scrollbar>true</show_scrollbar>
     <actions hook="false" />
-    <y>156</y>
+    <y>150</y>
     <foreground_color>
       <color red="192" green="192" blue="192" />
     </foreground_color>
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
-    <x>30</x>
+    <x>114</x>
     <tooltip />
     <widget typeId="org.csstudio.opibuilder.widgets.intensityGraph" version="1.0">
       <border_alarm_sensitive>true</border_alarm_sensitive>
@@ -62,8 +62,9 @@
       <minimum>-1.0</minimum>
       <data_height>256</data_height>
       <scripts>
-        <path pathString="/BOY Examples/scripts/SetCircularIntensityGraphData.js">
+        <path pathString="/BOY Examples/scripts/SetIntensityGraphData.js">
           <pv>sim://ramp(0,10,0.2,1)</pv>
+          <pv>loc://dataSource</pv>
         </path>
       </scripts>
       <height>256</height>
@@ -94,7 +95,7 @@
       <border_color>
         <color red="0" green="128" blue="255" />
       </border_color>
-      <y>36</y>
+      <y>18</y>
       <actions hook="false" />
       <tooltip>$(pv_name)
 $(pv_value)</tooltip>
@@ -136,8 +137,8 @@ $(pv_value)</tooltip>
       </border_color>
       <items_from_pv>false</items_from_pv>
       <actions hook="false" />
-      <y>0</y>
-      <x>114</x>
+      <y>24</y>
+      <x>438</x>
       <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     </widget>
@@ -162,10 +163,10 @@ $(pv_value)</tooltip>
       </border_color>
       <horizontal_alignment>0</horizontal_alignment>
       <transparent>true</transparent>
-      <y>2</y>
+      <y>26</y>
       <actions hook="false" />
       <tooltip />
-      <x>0</x>
+      <x>324</x>
       <background_color>
         <color red="255" green="255" blue="255" />
       </background_color>
@@ -173,48 +174,14 @@ $(pv_value)</tooltip>
         <color red="0" green="0" blue="0" />
       </foreground_color>
     </widget>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
-    <enabled>true</enabled>
-    <widget_type>Grouping Container</widget_type>
-    <macros>
-      <include_parent_macros>true</include_parent_macros>
-    </macros>
-    <visible>true</visible>
-    <width>348</width>
-    <border_style>13</border_style>
-    <lock_children>false</lock_children>
-    <scripts>
-      <path pathString="/BOY Examples/scripts/SelectColorMap.js">
-        <pv>loc://colorMap2</pv>
-      </path>
-    </scripts>
-    <height>321</height>
-    <border_width>1</border_width>
-    <name>Linear Sine Wave</name>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <transparent>false</transparent>
-    <show_scrollbar>true</show_scrollbar>
-    <actions hook="false" />
-    <y>156</y>
-    <foreground_color>
-      <color red="192" green="192" blue="192" />
-    </foreground_color>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
-    <x>426</x>
-    <tooltip />
     <widget typeId="org.csstudio.opibuilder.widgets.combo" version="1.0">
       <border_alarm_sensitive>true</border_alarm_sensitive>
       <visible>true</visible>
       <scripts />
       <height>23</height>
-      <name>ColorMapSelector</name>
+      <name>Combo Box_1</name>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-      <pv_name>loc://colorMap2</pv_name>
+      <pv_name>loc://dataSource</pv_name>
       <foreground_color>
         <color red="0" green="0" blue="0" />
       </foreground_color>
@@ -230,12 +197,8 @@ $(pv_value)</tooltip>
       <width>145</width>
       <border_style>0</border_style>
       <items>
-        <s>JET</s>
-        <s>GrayScale</s>
-        <s>ColorSpectrum</s>
-        <s>Hot</s>
-        <s>Cool</s>
-        <s>Shaded</s>
+        <s>Circular Sine Wave</s>
+        <s>Linear Sine Wave</s>
       </items>
       <border_width>1</border_width>
       <border_color>
@@ -243,91 +206,42 @@ $(pv_value)</tooltip>
       </border_color>
       <items_from_pv>false</items_from_pv>
       <actions hook="false" />
-      <y>0</y>
-      <x>126</x>
+      <y>60</y>
+      <x>438</x>
       <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     </widget>
     <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
       <widget_type>Label</widget_type>
       <enabled>true</enabled>
-      <text>Select ColorMap:</text>
+      <text>Select Data Source:</text>
       <visible>true</visible>
       <font>
         <fontdata fontName="Arial" height="9" style="0" />
       </font>
       <vertical_alignment>1</vertical_alignment>
-      <width>93</width>
+      <width>150</width>
       <border_style>0</border_style>
-      <auto_size>true</auto_size>
+      <auto_size>false</auto_size>
       <scripts />
-      <height>15</height>
+      <height>20</height>
       <border_width>1</border_width>
-      <name>Label</name>
+      <name>Label_1</name>
       <border_color>
         <color red="0" green="128" blue="255" />
       </border_color>
       <horizontal_alignment>0</horizontal_alignment>
       <transparent>true</transparent>
-      <y>0</y>
+      <y>62</y>
       <actions hook="false" />
       <tooltip />
-      <x>12</x>
+      <x>324</x>
       <background_color>
         <color red="255" green="255" blue="255" />
       </background_color>
       <foreground_color>
         <color red="0" green="0" blue="0" />
       </foreground_color>
-    </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.intensityGraph" version="1.0">
-      <border_alarm_sensitive>true</border_alarm_sensitive>
-      <graph_area_width>256</graph_area_width>
-      <visible>true</visible>
-      <minimum>-1.0</minimum>
-      <data_height>256</data_height>
-      <scripts>
-        <path pathString="/BOY Examples/scripts/SetLinearIntensityGraphData.js">
-          <pv>sim://ramp(0,100,1,1)</pv>
-        </path>
-      </scripts>
-      <height>256</height>
-      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-      <name>WaveGraph</name>
-      <data_width>256</data_width>
-      <pv_name />
-      <background_color>
-        <color red="240" green="240" blue="240" />
-      </background_color>
-      <foreground_color>
-        <color red="0" green="0" blue="0" />
-      </foreground_color>
-      <widget_type>Intensity Graph</widget_type>
-      <enabled>true</enabled>
-      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-      <width>318</width>
-      <border_style>0</border_style>
-      <color_map>
-        <interpolate>true</interpolate>
-        <autoscale>true</autoscale>
-        <map>
-          <e red="0" green="0" blue="0">0.0</e>
-          <e red="0" green="0" blue="255">0.5</e>
-          <e red="255" green="255" blue="255">1.0</e>
-        </map>
-      </color_map>
-      <graph_area_height>256</graph_area_height>
-      <maximum>1.0</maximum>
-      <border_width>1</border_width>
-      <show_ramp>true</show_ramp>
-      <border_color>
-        <color red="0" green="128" blue="255" />
-      </border_color>
-      <y>35</y>
-      <actions hook="false" />
-      <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-      <x>0</x>
     </widget>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
