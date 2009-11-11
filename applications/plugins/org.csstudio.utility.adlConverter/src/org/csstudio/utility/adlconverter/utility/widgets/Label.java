@@ -136,6 +136,10 @@ public class Label extends Widget {
             DynamicsDescriptor dd = new DynamicsDescriptor("directConnection"); //$NON-NLS-1$
             dd.addInputChannel(new ParameterDescriptor("$channel$"+postfix+", string",Double.class)); //$NON-NLS-1$ //$NON-NLS-2$
             _widget.setDynamicsDescriptor(LabelModel.PROP_TEXTVALUE, dd);
+            getObject().setX(getObject().getX()-2);
+            getObject().setY(getObject().getY()-2);
+            getObject().setWidth(getObject().getWidth()+4);
+            getObject().setHeight(getObject().getHeight()+4);
         }
         int fontSize = ADLHelper.getFontSize("Times New Roman",labelText, getObject().getHeight(), getObject().getWidth(),"0"); //$NON-NLS-1$ //$NON-NLS-2$
         _widget.setPropertyValue(LabelModel.PROP_FONT, new FontData("Times New Roman", fontSize, SWT.NONE)); //$NON-NLS-1$
