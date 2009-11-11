@@ -51,7 +51,7 @@ public class DeleteAllMessagesAction extends Action {
 		_messageTable.getTableViewer().addSelectionChangedListener(
 				new ISelectionChangedListener() {
 					public void selectionChanged(SelectionChangedEvent event) {
-						boolean anything = (!event.getSelection().isEmpty() && _messageTable
+						boolean anything = (!event.getSelection().isEmpty() && !_messageTable
 								.getMessageUpdatePause());
 						setEnabled(anything);
 					}

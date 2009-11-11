@@ -57,7 +57,7 @@ public class DeleteMessageAction extends Action {
         //Enable this action only if items are selected
         _messageTable.getTableViewer().addSelectionChangedListener(new ISelectionChangedListener() {
             public void selectionChanged(SelectionChangedEvent event) {
-                boolean anything = (!event.getSelection().isEmpty() && _messageTable.getMessageUpdatePause());
+                boolean anything = (!event.getSelection().isEmpty() && !_messageTable.getMessageUpdatePause());
                 setEnabled(anything);
             }
         });
