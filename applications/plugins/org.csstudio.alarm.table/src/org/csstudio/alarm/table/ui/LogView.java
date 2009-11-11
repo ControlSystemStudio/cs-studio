@@ -377,7 +377,24 @@ public class LogView extends ViewPart {
 						}
 						_timer = new Timer();
 						_timerTask = new PopUpTimerTask();
-						_timer.schedule(_timerTask, 10000, 10000);
+						_timerTask.addExpirationListener(new IExpirationLisener() {
+
+							@Override
+							public void expired() {
+								_pauseButton.setSelection(false);
+								_tableViewer.refresh();
+								_messageTable.setMessageUpdatePause(false);
+								if (_timer != null) {
+									if (_timerTask != null) {
+										_timerTask.cancel();
+										_timerTask = null;
+									}
+									_timer.cancel();
+									_timer = null;
+								}
+							}
+						});
+						_timer.schedule(_timerTask, 100000, 100000);
 				} else {
 					if (_timer != null) {
 						if (_timerTask != null) {

@@ -21,10 +21,11 @@
  */
 package org.csstudio.alarm.table.ui;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.TimerTask;
 
 import org.csstudio.alarm.table.JmsLogsPlugin;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
@@ -40,21 +41,52 @@ import org.eclipse.ui.PlatformUI;
  */
 public class PopUpTimerTask extends TimerTask {
 
+	List<IExpirationLisener> _listeners = new ArrayList<IExpirationLisener>();
+	private MessageDialog _dialog;
+	private int _result = -1;
+
 	@Override
 	public synchronized void run() {
 		// PopUp with warning
 		Display.getDefault().asyncExec(new Runnable() {
+
 			public void run() {
 				try {
-					MessageDialog.openWarning(PlatformUI.getWorkbench()
-							.getActiveWorkbenchWindow().getShell(),
-							"Message Table",
-							"Die Tabelle wird derzeit nicht aktualisiert!");
+					if (_dialog == null && _result == -1) {
+						System.out.println("dialog null, result -1: open dialog");
+						_dialog = new MessageDialog(PlatformUI.getWorkbench()
+								.getActiveWorkbenchWindow().getShell(),
+								"Message Table", null,
+								"Die Tabelle wird derzeit nicht aktualisiert!",
+								MessageDialog.WARNING, new String[] { "OK" }, 0);
+						_result = _dialog.open();
+					} else {
+						if (_result == -1) {
+							System.out.println("dialog NOT null, result -1: close dialog, call listener");
+							_dialog.close();
+							for (IExpirationLisener listener : _listeners) {
+								listener.expired();
+							}
+						} else {
+							System.out.println("dialog NOT null, result != -1: open dialog again");
+							_result = -1;
+							_dialog = new MessageDialog(PlatformUI.getWorkbench()
+									.getActiveWorkbenchWindow().getShell(),
+									"Message Table", null,
+									"Die Tabelle wird derzeit nicht aktualisiert!",
+									MessageDialog.WARNING, new String[] { "OK" }, 0);
+							_result = _dialog.open();
+						}
+					}
 				} catch (Exception e) {
 					e.printStackTrace();
 					JmsLogsPlugin.logException("", e); //$NON-NLS-1$
 				}
 			}
 		});
+	}
+
+	public void addExpirationListener(IExpirationLisener expirationLisener) {
+		_listeners.add(expirationLisener);
 	}
 }
