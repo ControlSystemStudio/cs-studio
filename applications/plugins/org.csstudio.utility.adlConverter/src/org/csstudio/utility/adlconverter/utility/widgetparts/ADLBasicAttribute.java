@@ -24,6 +24,7 @@
  */
 package org.csstudio.utility.adlconverter.utility.widgetparts;
 
+import org.csstudio.sds.components.model.ArcModel;
 import org.csstudio.sds.components.model.RectangleModel;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
@@ -127,6 +128,7 @@ public class ADLBasicAttribute extends WidgetPart{
             _fill="100.0"; //$NON-NLS-1$
         }
         _widgetModel.setPropertyValue(RectangleModel.PROP_TRANSPARENT, transperncy);
+        _widgetModel.setPropertyValue(ArcModel.PROP_TRANSPARENT, transperncy);
         
         String style = "1"; // Line //$NON-NLS-1$
         if (_style==null){

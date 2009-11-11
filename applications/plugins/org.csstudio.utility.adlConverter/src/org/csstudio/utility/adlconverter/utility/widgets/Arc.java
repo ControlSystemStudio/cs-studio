@@ -72,6 +72,12 @@ public class Arc extends Widget {
             _widget.setPropertyValue(ArcModel.PROP_LINEWIDTH, getBasicAttribute().getWidth());
             getBasicAttribute().setWidth("0"); //$NON-NLS-1$
         }
+        if(getBasicAttribute().getFill()>0) {
+            _widget.setPropertyValue(ArcModel.PROP_FILLCOLOR, _widget.getForegroundColor());
+            _widget.setPropertyValue(ArcModel.PROP_LINEWIDTH, 0);
+            _widget.setPropertyValue(ArcModel.PROP_FILLED, true);
+            
+        }
         
         ADLHelper.checkAndSetLayer(_widget, abstractWidgetModel);
         

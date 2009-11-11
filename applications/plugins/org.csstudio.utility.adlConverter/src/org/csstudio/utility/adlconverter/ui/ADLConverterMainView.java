@@ -349,13 +349,15 @@ public class ADLConverterMainView extends ViewPart {
                     @Override
                     protected IStatus run(final IProgressMonitor monitor) {
                         final int startSize = list.size();
-                        monitor.beginTask("ADL Converter Worker", startSize);
+                        monitor.beginTask("Start Convert Files", startSize);
                         ADLDisplayImporter.reset();
                         while (list.size() > 0) {
                             final ADLDisplayImporter di = new ADLDisplayImporter();
                             final File file = (File) list.remove(0);
                             // IPath targetProject;
-
+                            String format = String.format("Convert File: %1$40s\t(%2$4d/%3$4d)",file.getName(),+(startSize-list.size()),startSize);
+                            monitor.setTaskName(format);
+//                            monitor.setTaskName("Convert File: "+file.getName()+"\t("+(startSize-list.size())+"/"+startSize+")");
                             final SelectContainer selection = new SelectContainer();
                             PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
 
