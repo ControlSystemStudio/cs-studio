@@ -4,8 +4,9 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.InputStream;
 
-import org.csstudio.opibuilder.editparts.AbstractWidgetEditPart;
+import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
+import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.ConsoleService;
@@ -29,7 +30,7 @@ import org.eclipse.swt.graphics.Image;
  * @author Xihui Chen
  * 
  */
-public final class ActionButtonEditPart extends AbstractWidgetEditPart {
+public final class ActionButtonEditPart extends AbstractPVWidgetEditPart {
 	
 	private Image image;
   
@@ -69,7 +70,7 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 				}
 			});
 		}
-		
+		markAsControlPV(AbstractPVWidgetModel.PROP_PVNAME);
 		return buttonFigure;
 	}
 
@@ -215,4 +216,14 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 			ConsoleService.getInstance().writeError(message);
 		} 
 	}
+
+	@Override
+	public void setValue(Object value) {		
+	}
+	
+	@Override
+	public Object getValue() {
+		return getPVValue(AbstractPVWidgetModel.PROP_PVNAME);
+	}
+
 }

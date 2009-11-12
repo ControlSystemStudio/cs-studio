@@ -1,6 +1,6 @@
 package org.csstudio.opibuilder.widgets.model;
 
-import org.csstudio.opibuilder.model.AbstractWidgetModel;
+import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.ActionsProperty;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.FilePathProperty;
@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.Path;
  * @author Xihui Chen
  * 
  */
-public final class ActionButtonModel extends AbstractWidgetModel {
+public final class ActionButtonModel extends AbstractPVWidgetModel {
 	/**
 	 * The ID of the label property.
 	 */
@@ -121,6 +121,7 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 		removeProperty(PROP_BORDER_COLOR);
 		removeProperty(PROP_BORDER_STYLE);
 		removeProperty(PROP_BORDER_WIDTH);
+		removeProperty(PROP_BORDER_ALARMSENSITIVE);
 		setPropertyVisible(PROP_RELEASED_ACTION_INDEX, DEFAULT_TOGGLE_BUTTON);
 		
 	}
