@@ -119,7 +119,8 @@ public class CommandExecutor
             }
         }
         
-        ConsoleService.getInstance().writeInfo("Command executing finished with exit code: " 
+        ConsoleService.getInstance().writeInfo(NLS.bind(
+    			"Command \"{0}\" executing finished with exit code: ", command) 
         		+ (exit_code ==0 ? "OK" : "FAILED") );
         // Process runs so long that we no longer care
         if (exit_code == null)
