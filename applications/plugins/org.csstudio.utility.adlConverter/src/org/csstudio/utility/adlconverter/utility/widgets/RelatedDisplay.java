@@ -107,7 +107,7 @@ public class RelatedDisplay extends Widget {
         }
         
         if(n<2) {
-            label="[_]";
+            label=". . .";
         }
         if(getControl()!=null||n>1){ // if Label text Dyn?
             // <dynamicsDescriptor ruleId="directConnection">               
@@ -159,7 +159,6 @@ public class RelatedDisplay extends Widget {
             _widget.setBackgroundColor(ADLHelper.getRGB(bclr));
         }
         _widget.setPropertyValue(MenuButtonModel.PROP_LABEL, label);
-        
         
         // <property type="sds.integer" id="border.width" value="1" />
         _widget.setPropertyValue(MenuButtonModel.PROP_BORDER_WIDTH, 1);
