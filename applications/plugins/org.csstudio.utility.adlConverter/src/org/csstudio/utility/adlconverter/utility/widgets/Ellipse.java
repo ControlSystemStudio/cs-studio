@@ -56,6 +56,9 @@ public class Ellipse extends Widget {
         }
         if(getBasicAttribute()!=null&&getBasicAttribute().getFill()!=null){
             _widget.setPropertyValue(EllipseModel.PROP_FILL, getBasicAttribute().getFill());
+            if(getBasicAttribute().getFill()<1) {
+                uninit();
+            }
         }
         _widget.setPropertyValue(PolygonModel.PROP_BORDER_STYLE, 6);
         ADLHelper.checkAndSetLayer(_widget, abstractWidgetModel);
