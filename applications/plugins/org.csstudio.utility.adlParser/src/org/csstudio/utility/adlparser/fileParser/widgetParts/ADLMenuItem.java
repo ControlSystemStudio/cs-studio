@@ -142,6 +142,7 @@ public class ADLMenuItem extends WidgetPart {
     @Override
     final void generateElements() {
         _widgetModel.setLayer(Messages.ADLDisplayImporter_ADLDynamicLayerName);
+        _widgetModel.setCursorId("cursor.system.hand");
         if (_type.equals("\"New Display\"")) { //$NON-NLS-1$
             ActionData actionData = _widgetModel.getActionData();
             if (actionData == null) {
@@ -165,7 +166,6 @@ public class ADLMenuItem extends WidgetPart {
                 path = path.append(_command.replaceAll("\"", "").replace(".adl", ".css-sds")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                 // TODO: set the correct Path
                 action.getProperty(OpenDisplayActionModel.PROP_RESOURCE).setPropertyValue(path);
-                // actionData.addAction(action);
             }
 
             if (_args != null) {
@@ -175,6 +175,9 @@ public class ADLMenuItem extends WidgetPart {
                 for (int i = 0; i < params.length; i++) {
                     String[] param = params[i].split("=");//$NON-NLS-1$
                     if (param.length == 2) {
+                        if(i==0) {
+                            ADLHelper.setChan(_widgetModel,param);
+                        }
                         map.put(param[0].trim(), param[1].trim());
                     } else {
                         if (params[i].trim().length() > 0) {
