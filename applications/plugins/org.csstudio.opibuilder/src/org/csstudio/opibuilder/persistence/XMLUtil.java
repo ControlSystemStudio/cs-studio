@@ -12,9 +12,11 @@ import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.util.ConsoleService;
+import org.csstudio.opibuilder.util.WidgetDescriptor;
 import org.csstudio.opibuilder.util.WidgetsService;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osgi.util.NLS;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
@@ -100,6 +102,12 @@ public class XMLUtil {
 	
 	
 	
+	/**
+	 * @param element
+	 * @param displayModel
+	 * @return
+	 * @throws Exception
+	 */
 	@SuppressWarnings("unchecked")
 	public static AbstractWidgetModel XMLElementToWidget(Element element, DisplayModel displayModel) throws Exception{
 		AbstractWidgetModel rootWidgetModel = null;
@@ -110,11 +118,19 @@ public class XMLUtil {
 				rootWidgetModel = new DisplayModel();
 		}
 		else if(element.getName().equals(XMLTAG_WIDGET)){
-			rootWidgetModel = WidgetsService.getInstance().getWidgetDescriptor(
-					element.getAttributeValue(XMLATTR_TYPEID)).getWidgetModel();
+			String typeId = element.getAttributeValue(XMLATTR_TYPEID);
+			WidgetDescriptor desc = WidgetsService.getInstance().getWidgetDescriptor(typeId);
+			if(desc != null)
+				rootWidgetModel = desc.getWidgetModel();
+			if(rootWidgetModel == null){
+				String errorMessage = NLS.bind("Fail to load the widget: {0}\n " +
+					"The widget may not exist, as a consequnce, the widget will be ignored.", typeId);
+				ConsoleService.getInstance().writeError(errorMessage);
+				return null;
+			}	
 		}
-		if(rootWidgetModel == null)
-			throw new Exception("The element is not a widget");
+		
+			//throw new Exception("The element is not a widget");
 		
 		
 		List children = element.getChildren();
@@ -137,8 +153,9 @@ public class XMLUtil {
 				}
 			}else if(subElement.getName().equals(XMLTAG_WIDGET)){
 				if(rootWidgetModel instanceof AbstractContainerModel){
-					((AbstractContainerModel) rootWidgetModel).addChild(
-						XMLElementToWidget(subElement));
+					AbstractWidgetModel child =XMLElementToWidget(subElement);
+					if(child != null)
+						((AbstractContainerModel) rootWidgetModel).addChild(child);
 				}
 			}else {
 				//String warningMessage = subElement.getName() + " cannot be recogonized as a property or widget by the OPI file parser. " +

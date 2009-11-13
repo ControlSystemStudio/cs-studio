@@ -687,7 +687,7 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 		try {
 			XMLUtil.fillDisplayModelFromInputStream(getInputStream(), displayModel);
 		} catch (Exception e) {
-			String message = "The file is not a correct OPI file! An empty OPI will be created instead.\n"
+			String message = "Error happened when loading the OPI file! An empty OPI will be created if no widget was loaded.\n"
 				+ e.getMessage();
 			MessageDialog.openError(getSite().getShell(), "File Open Error",
 					message);
