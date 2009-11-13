@@ -207,10 +207,10 @@ public class ADLDisplayImporter extends AbstractDisplayImporter {
                     displayModel.addWidget(new StripChart(adlWidget, storedBasicAttribute,
                             storedDynamicAttribute).getElement());
                 } else if (adlWidget.getType().equals("text")) { //$NON-NLS-1$
-                    displayModel.addWidget(new Label(adlWidget, storedBasicAttribute,
+                    displayModel.addWidget(new Label(adlWidget, displayModel, storedBasicAttribute,
                             storedDynamicAttribute).getElement());
                 } else if (adlWidget.getType().equals("text update")) { //$NON-NLS-1$
-                    displayModel.addWidget(new Label(adlWidget, storedBasicAttribute,
+                    displayModel.addWidget(new Label(adlWidget, displayModel, storedBasicAttribute,
                             storedDynamicAttribute).getElement());
                 } else if (adlWidget.getType().equals("text entry")) { //$NON-NLS-1$
                     displayModel.addWidget(new Textinput(adlWidget, storedBasicAttribute,

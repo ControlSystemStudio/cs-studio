@@ -69,54 +69,6 @@ public class ADLChildren {
      * @param adlChildren 
      */
     public ADLChildren(final ADLWidget adlChildren, AbstractWidgetModel displayModel, IPath targetPath) {
-//        for (ADLWidget strings : adlChildren.getObjects()) {
-//            try {
-//               
-//                if(strings.getType().equals("arc")){ //$NON-NLS-1$
-//                    _childrens.add(new Arc(strings,abstractWidgetModel));
-//                }else if(strings.getType().equals("bar")){ //$NON-NLS-1$
-//                    _childrens.add(new Bargraph(strings));
-//                }else if(strings.getType().equals("byte")){ //$NON-NLS-1$
-//                    _childrens.add(new SixteenBinaryBar(strings));
-//                }else if(strings.getType().equals("composite")){ //$NON-NLS-1$
-//                    _childrens.add(new GroupingContainer(strings));
-//                }else if(strings.getType().equals("image")){ //$NON-NLS-1$
-//                    _childrens.add(new Image(strings, abstractWidgetModel));
-//                }else if(strings.getType().equals("indicator")){ //$NON-NLS-1$
-//                    _childrens.add(new Bargraph(strings));
-//                }else if(strings.getType().equals("menu")){ //$NON-NLS-1$
-//                    _childrens.add(new RelatedDisplay(strings));
-//                }else if(strings.getType().equals("\"message button\"")){ //$NON-NLS-1$
-//                    _childrens.add(new ActionButton(strings));
-//                }else if(strings.getType().equals("meter")){ //$NON-NLS-1$
-//                    _childrens.add(new Meter(strings));
-//                }else if(strings.getType().equals("oval")){ //$NON-NLS-1$
-//                    _childrens.add(new Ellipse(strings, abstractWidgetModel));
-//                }else if(strings.getType().equals("polygon")){ //$NON-NLS-1$
-//                    _childrens.add(new Polygon(strings, abstractWidgetModel));
-//                }else if(strings.getType().equals("polyline")){ //$NON-NLS-1$
-//                    _childrens.add(new Polyline(strings, abstractWidgetModel));
-//                }else if(strings.getType().equals("rectangle")){ //$NON-NLS-1$
-//                    _childrens.add(new Rectangle(strings, abstractWidgetModel));
-//                }else if(strings.getType().equals("\"related display\"")){ //$NON-NLS-1$
-//                    _childrens.add(new RelatedDisplay(strings));
-//                }else if(strings.getType().equals("\"strip chart\"")){ //$NON-NLS-1$
-//                    _childrens.add(new Waveform(strings));
-//                }else if(strings.getType().equals("text")){ //$NON-NLS-1$
-//                    _childrens.add(new Label(strings));
-//                }else if(strings.getType().equals("\"text update\"")){ //$NON-NLS-1$
-//                    _childrens.add(new Label(strings));
-//                }else if(strings.getType().equals("\"text entry\"")){ //$NON-NLS-1$
-//                    _childrens.add(new Textinput(strings));
-//                }else if(strings.getType().equals("valuator")){ //$NON-NLS-1$
-//                    _childrens.add(new Valuator(strings));
-//                }
-//
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        }
-        
         ADLWidget storedBasicAttribute=null;
         ADLWidget storedDynamicAttribute=null;
 
@@ -201,11 +153,11 @@ public class ADLChildren {
                     storedBasicAttribute = null;
                     storedDynamicAttribute = null;
                 } else if (adlWidget.getType().equals("text")) { //$NON-NLS-1$
-                    _childrens.add(new Label(adlWidget, storedBasicAttribute, storedDynamicAttribute));
+                    _childrens.add(new Label(adlWidget, displayModel, storedBasicAttribute, storedDynamicAttribute));
                     storedBasicAttribute = null;
                     storedDynamicAttribute = null;
                 } else if (adlWidget.getType().equals("text update")) { //$NON-NLS-1$
-                    _childrens.add(new Label(adlWidget, storedBasicAttribute, storedDynamicAttribute));
+                    _childrens.add(new Label(adlWidget, displayModel, storedBasicAttribute, storedDynamicAttribute));
                     storedBasicAttribute = null;
                     storedDynamicAttribute = null;
                 } else if (adlWidget.getType().equals("text entry")) { //$NON-NLS-1$

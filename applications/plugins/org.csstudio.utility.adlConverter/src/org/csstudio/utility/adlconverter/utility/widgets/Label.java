@@ -24,6 +24,8 @@
  */
 package org.csstudio.utility.adlconverter.utility.widgets;
 
+import org.csstudio.sds.model.AbstractWidgetModel;
+import org.csstudio.sds.model.DisplayModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
 import org.csstudio.sds.model.LabelModel;
 import org.csstudio.sds.model.logic.ParameterDescriptor;
@@ -47,11 +49,12 @@ public class Label extends Widget {
 
     /**
      * @param label ADLWidget that describe the Label.
+     * @param displayModel 
      * @param storedDynamicAttribute 
      * @param storedBasicAttribute 
      * @throws WrongADLFormatException WrongADLFormatException Wrong ADL format or untreated parameter found.
      */
-    public Label(final ADLWidget label, ADLWidget storedBasicAttribute, ADLWidget storedDynamicAttribute) throws WrongADLFormatException {
+    public Label(final ADLWidget label, AbstractWidgetModel displayModel, ADLWidget storedBasicAttribute, ADLWidget storedDynamicAttribute) throws WrongADLFormatException {
         super(label, storedBasicAttribute, storedDynamicAttribute);
         String labelText=null;
         if(getBasicAttribute()!=null){
@@ -150,6 +153,9 @@ public class Label extends Widget {
             _widget.setPropertyValue(LabelModel.PROP_TRANSPARENT, true);
         }
         _widget.setLayer(Messages.ADLDisplayImporter_ADLActionLayerName);
+        if(!(displayModel instanceof DisplayModel) && (_widget.getPrimaryPV()==null||_widget.getPrimaryPV().isEmpty())) {
+            _widget.setPrimarPv(displayModel.getPrimaryPV());
+        }
     }
 
     /**
