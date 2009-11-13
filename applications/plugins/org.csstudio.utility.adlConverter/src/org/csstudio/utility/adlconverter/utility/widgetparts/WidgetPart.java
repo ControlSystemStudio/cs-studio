@@ -24,6 +24,8 @@
  */
 package org.csstudio.utility.adlconverter.utility.widgetparts;
 
+import org.csstudio.sds.components.model.MenuButtonModel;
+import org.csstudio.sds.components.model.PolygonModel;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.initializers.WidgetInitializationService;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
@@ -53,7 +55,7 @@ public abstract class WidgetPart {
      */
     public WidgetPart(final ADLWidget widgetPart, final AbstractWidgetModel parentWidgetModel) throws WrongADLFormatException {
         _widgetModel = parentWidgetModel;
-        if (this instanceof ADLMonitor || this instanceof ADLDynamicAttribute || this instanceof ADLControl) {
+        if ((this instanceof ADLMonitor || this instanceof ADLDynamicAttribute || this instanceof ADLControl) &&!(parentWidgetModel instanceof PolygonModel || parentWidgetModel instanceof MenuButtonModel)) {
             WidgetInitializationService instance = WidgetInitializationService.getInstance();
             instance.initialize(parentWidgetModel);
         }
