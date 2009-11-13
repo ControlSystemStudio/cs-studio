@@ -139,9 +139,9 @@ public class ADLBasicAttribute extends WidgetPart{
             style = "6";  // none //$NON-NLS-1$
         }else if(_style.equals("\"dash\"")){ //$NON-NLS-1$
             style = "5";  // Striated //$NON-NLS-1$
-            if(_width!=null&&_width.equals("1")){ //$NON-NLS-1$
-                _width="2"; //$NON-NLS-1$
-            }
+//            if(_width!=null&&_width.equals("1")){ //$NON-NLS-1$
+//                _width="2"; //$NON-NLS-1$
+//            }
         }
         if(_width!=null){
             // <property type="sds.integer" id="border.width" value="0" />
