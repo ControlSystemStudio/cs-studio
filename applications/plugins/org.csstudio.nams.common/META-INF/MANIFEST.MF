@@ -8,7 +8,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.platform,
  org.csstudio.nams.service.logging,
  org.csstudio.nams.common.activatorUtils,
- org.csstudio.platform.libs.dal
+ org.csstudio.platform.libs.dal,
+ org.junit4;bundle-version="4.5.0"
 Eclipse-LazyStart: true
 Export-Package: 
  junit.extensions;uses:="junit.framework",
