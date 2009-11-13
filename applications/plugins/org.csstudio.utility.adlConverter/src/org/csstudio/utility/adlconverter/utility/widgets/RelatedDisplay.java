@@ -168,6 +168,7 @@ public class RelatedDisplay extends Widget {
         _widget.setPropertyValue(MenuButtonModel.PROP_BORDER_STYLE, 3);
         int h = ADLHelper.getFontSize("Times New Roman",label, getObject().getHeight(), getObject().getWidth(),"0"); //$NON-NLS-1$ //$NON-NLS-2$
         _widget.setPropertyValue(MenuButtonModel.PROP_FONT, new FontData("Times New Roman",h,SWT.NONE)); //$NON-NLS-1$
+        _widget.setLayer(Messages.ADLDisplayImporter_ADLActionLayerName);
     }
 
     /**
