@@ -258,6 +258,7 @@ public class ScriptsInputDialog extends Dialog {
 						&& selection.getFirstElement() instanceof ScriptData) {
 					ResourceSelectionDialog rsd = new ResourceSelectionDialog(
 					Display.getCurrent().getActiveShell(), "Select a java script file", new String[]{"js"});
+					rsd.setSelectedResource(((ScriptData)selection.getFirstElement()).getPath());
 					if (rsd.open() == Window.OK) {
 						if (rsd.getSelectedResource() != null) {
 							path = rsd.getSelectedResource();
