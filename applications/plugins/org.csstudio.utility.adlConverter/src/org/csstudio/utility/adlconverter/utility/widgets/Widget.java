@@ -170,9 +170,6 @@ public abstract class Widget extends AbstractDisplayImporter {
             if (_dynamicAttribute.isColor()) {
                 _widget.setDynamicsDescriptor(AbstractWidgetModel.PROP_COLOR_FOREGROUND,
                         _dynamicAttribute.getColorAdlDynamicAttributes());
-                // if (getControl() == null && getMonitor() == null) {
-                // // ???
-                // }
             } else {
             }
         }
@@ -183,12 +180,6 @@ public abstract class Widget extends AbstractDisplayImporter {
      * Generate the default Desy Connenction State XML-Element.
      */
     protected void makeConnectionState() {
-        // if (_dynamicAttribute != null) {
-        // DynamicsDescriptor colorAdlDynamicAttributes = _dynamicAttribute
-        // .getColorAdlDynamicAttributes();
-        // _widget.setDynamicsDescriptor(AbstractWidgetModel.PROP_COLOR_BACKGROUND,
-        // colorAdlDynamicAttributes);
-        // } else
         if (_monitor != null) {
             DynamicsDescriptor dynamicsDescriptor = _widget
                     .getDynamicsDescriptor(AbstractWidgetModel.PROP_COLOR_BACKGROUND);
@@ -201,15 +192,6 @@ public abstract class Widget extends AbstractDisplayImporter {
                 }
             }
         }
-        // DynamicsDescriptor state = new DynamicsDescriptor("directConnection");
-        // state.addInputChannel(new ParameterDescriptor("$channel$", Double.class));
-        // Map<ConnectionState, Object> cState = new HashMap<ConnectionState, Object>();
-        // cState.put(ConnectionState.DISCONNECTED, Integer.valueOf(3));
-        // cState.put(ConnectionState.CONNECTION_FAILED, Integer.valueOf(3));
-        // cState.put(ConnectionState.CONNECTION_LOST, Integer.valueOf(3));
-        // state.setConnectionStateDependentPropertyValues(cState);
-        // _widget.setDynamicsDescriptor(AbstractWidgetModel.PROP_BORDER_WIDTH, state);
-
     }
 
     /**
