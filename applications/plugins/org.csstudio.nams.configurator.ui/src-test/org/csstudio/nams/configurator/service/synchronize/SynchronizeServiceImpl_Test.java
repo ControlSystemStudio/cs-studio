@@ -106,47 +106,47 @@ public class SynchronizeServiceImpl_Test extends
 		EasyMock.verify(this.callback);
 	}
 
-//	@Test
-//	public void testErfolgreicheSynchronization() throws Throwable {
-//
-//		this.localStoreConfigurationServiceMock.prepareSynchonization();
-//		EasyMock.expectLastCall().once();
-//
-//		EasyMock.replay(this.localStoreConfigurationServiceMock);
-//
-//		EasyMock.expect(
-//				this.callback.pruefeObSynchronisationAusgefuehrtWerdenDarf())
-//				.andReturn(true).once();
-//		this.callback.bereiteSynchronisationVor();
-//		EasyMock.expectLastCall().once();
-//		this.callback.sendeNachrichtAnHintergrundSystem();
-//		EasyMock.expectLastCall().once();
-//		this.callback.wartetAufAntowrtDesHintergrundSystems();
-//		EasyMock.expectLastCall().once();
-//		this.callback.synchronisationsDurchHintergrundsystemsErfolgreich();
-//		EasyMock.expectLastCall().once();
-//		EasyMock.replay(this.callback);
-//
-//		final SynchronizeService synchronizeService = this
-//				.getNewInstanceOfClassUnderTest();
-//
-//		synchronizeService.sychronizeAlarmSystem(this.callback);
-//		this.executionServiceMock
-//				.mockExecuteOneStepOf(SynchronizeService.ThreadTypes.SYNCHRONIZER);
-//
-//		/*-
-//		 * FIXME mz 2008-07-10: TODOS Hier und im der Impl!:
-//		 * - Neue SystemNachricht 
-//		 * - ProducerMock mit eq für die Sys-Nachricht, alles andere verboten
-//		 * - Consumer für die Antwort, neue Systemnachricht
-//		 * - TESTFAELLE:
-//		 *   # für JMS-Fehler beim senden
-//		 *   # für JMS Fehler beim empfangen
-//		 */
-//
-//		EasyMock.verify(this.localStoreConfigurationServiceMock);
-//		EasyMock.verify(this.callback);
-//	}
+	@Test
+	public void testErfolgreicheSynchronization() throws Throwable {
+
+		this.localStoreConfigurationServiceMock.prepareSynchonization();
+		EasyMock.expectLastCall().once();
+
+		EasyMock.replay(this.localStoreConfigurationServiceMock);
+
+		EasyMock.expect(
+				this.callback.pruefeObSynchronisationAusgefuehrtWerdenDarf())
+				.andReturn(true).once();
+		this.callback.bereiteSynchronisationVor();
+		EasyMock.expectLastCall().once();
+		this.callback.sendeNachrichtAnHintergrundSystem();
+		EasyMock.expectLastCall().once();
+		this.callback.wartetAufAntowrtDesHintergrundSystems();
+		EasyMock.expectLastCall().once();
+		this.callback.synchronisationsDurchHintergrundsystemsErfolgreich();
+		EasyMock.expectLastCall().once();
+		EasyMock.replay(this.callback);
+
+		final SynchronizeService synchronizeService = this
+				.getNewInstanceOfClassUnderTest();
+
+		synchronizeService.sychronizeAlarmSystem(this.callback);
+		this.executionServiceMock
+				.mockExecuteOneStepOf(SynchronizeService.ThreadTypes.SYNCHRONIZER);
+
+		/*-
+		 * FIXME mz 2008-07-10: TODOS Hier und im der Impl!:
+		 * - Neue SystemNachricht 
+		 * - ProducerMock mit eq für die Sys-Nachricht, alles andere verboten
+		 * - Consumer für die Antwort, neue Systemnachricht
+		 * - TESTFAELLE:
+		 *   # für JMS-Fehler beim senden
+		 *   # für JMS Fehler beim empfangen
+		 */
+
+		EasyMock.verify(this.localStoreConfigurationServiceMock);
+		EasyMock.verify(this.callback);
+	}
 
 	@Override
 	protected SynchronizeService getNewInstanceOfClassUnderTest() {
