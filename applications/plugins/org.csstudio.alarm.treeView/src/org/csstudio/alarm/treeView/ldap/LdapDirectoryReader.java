@@ -23,6 +23,7 @@
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Date;
 
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
@@ -34,6 +35,7 @@ import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
+import org.csstudio.alarm.treeView.EventtimeUtil;
 import org.csstudio.alarm.treeView.model.AbstractAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.Alarm;
 import org.csstudio.alarm.treeView.model.ProcessVariableNode;
@@ -244,12 +246,23 @@ public class LdapDirectoryReader extends Job {
 	private void setAlarmState(final ProcessVariableNode node, final Attributes attrs)
 			throws NamingException {
 		Attribute severityAttr = attrs.get("epicsAlarmSeverity");
+		Attribute eventtimeAttr = attrs.get("epicsAlarmTimeStamp");
 		Attribute highUnAcknAttr = attrs.get("epicsAlarmHighUnAckn");
 		if (severityAttr != null) {
 			String severity = (String) severityAttr.get();
 			if (severity != null) {
 				Severity s = Severity.parseSeverity(severity);
-				node.updateAlarm(new Alarm("", s));
+				Date t = null;
+				if (eventtimeAttr != null) {
+					String eventtimeStr = (String) eventtimeAttr.get();
+					if (eventtimeStr != null) {
+						t = EventtimeUtil.parseTimestamp(eventtimeStr);
+					}
+				}
+				if (t == null) {
+					t = new Date();
+				}
+				node.updateAlarm(new Alarm(node.getName(), s, t));
 			}
 		}
 		Severity unack = Severity.NO_ALARM;
@@ -259,7 +272,7 @@ public class LdapDirectoryReader extends Job {
 				unack = Severity.parseSeverity(severity);
 			}
 		}
-		node.setHighestUnacknowledgedAlarm(new Alarm("", unack));
+		node.setHighestUnacknowledgedAlarm(new Alarm(node.getName(), unack, new Date()));
 	}
 	
 	

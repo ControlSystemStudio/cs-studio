@@ -22,6 +22,7 @@
 
 package org.csstudio.alarm.treeView.jms;
 
+import java.util.Date;
 import java.util.List;
 
 import org.csstudio.alarm.treeView.model.Alarm;
@@ -68,16 +69,15 @@ class AlarmTreeUpdater {
 	 *            received.
 	 * @param severity
 	 *            the severity of the alarm.
+	 * @param eventtime
+	 *            the eventtime of the alarm.
 	 */
-	void applyAlarm(final String name, final Severity severity) {
+	void applyAlarm(final String name, final Severity severity,
+			final Date eventtime) {
 		List<ProcessVariableNode> nodes = findNodes(name);
 		for (ProcessVariableNode node : nodes) {
-			if (severity.isAlarm()) {
-				Alarm alarm = new Alarm(name, severity);
-				node.updateAlarm(alarm);
-			} else {
-				node.cancelAlarm();
-			}
+			Alarm alarm = new Alarm(name, severity, eventtime);
+			node.updateAlarm(alarm);
 		}
 		refreshView();
 	}

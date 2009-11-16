@@ -22,6 +22,8 @@
 
 package org.csstudio.alarm.treeView.jms;
 
+import java.util.Date;
+
 import org.csstudio.alarm.treeView.model.Severity;
 
 /**
@@ -71,14 +73,16 @@ abstract class PendingUpdate {
 	 *            the name of the node to which the alarm will apply.
 	 * @param severity
 	 *            the severity of the alarm.
+	 * @param eventtime
+	 *            the eventtime of the alarm.
 	 * @return an update which will apply the alarm.
 	 */
 	static PendingUpdate createAlarmUpdate(final String name,
-			final Severity severity) {
+			final Severity severity, final Date eventtime) {
 		return new PendingUpdate() {
 			@Override
 			void apply(final AlarmTreeUpdater updater) {
-				updater.applyAlarm(name, severity);
+				updater.applyAlarm(name, severity, eventtime);
 			}
 			
 			@Override

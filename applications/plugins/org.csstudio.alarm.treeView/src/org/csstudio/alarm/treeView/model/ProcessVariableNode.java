@@ -169,16 +169,6 @@ public class ProcessVariableNode extends AbstractAlarmTreeNode
 	}
 	
 	/**
-	 * Cancels the alarm at this node. If there is no alarm, does nothing.
-	 */
-	public final void cancelAlarm() {
-		if (_activeAlarm != null) {
-			_activeAlarm = _noAlarm;
-			_parent.childSeverityChanged(this);
-		}
-	}
-
-	/**
 	 * Removes the highest unacknowledged alarm from this node.
 	 */
 	public final void removeHighestUnacknowledgedAlarm() {

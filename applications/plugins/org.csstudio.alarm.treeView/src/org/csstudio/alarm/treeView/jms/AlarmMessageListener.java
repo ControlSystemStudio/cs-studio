@@ -22,6 +22,7 @@
 
 package org.csstudio.alarm.treeView.jms;
 
+import java.util.Date;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -30,6 +31,7 @@ import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 
+import org.csstudio.alarm.treeView.EventtimeUtil;
 import org.csstudio.alarm.treeView.model.Severity;
 import org.csstudio.platform.logging.CentralLogger;
 
@@ -228,8 +230,16 @@ final class AlarmMessageListener implements MessageListener {
 				return;
 			}
 			Severity severity = Severity.parseSeverity(severityValue);
-			_log.debug(this, "received alarm: name=" + name + ", severity=" + severity);
-			_worker.enqueue(PendingUpdate.createAlarmUpdate(name, severity));
+			String eventtimeValue = message.getString("EVENTTIME");
+			Date eventtime;
+			if (eventtimeValue == null) {
+				_log.warn(this, "Received alarm message which did not contain EVENTTIME! Using current time instead. Message was: " + message);
+				eventtime = new Date();
+			} else {
+				eventtime = EventtimeUtil.parseTimestamp(eventtimeValue);
+			}
+			_log.debug(this, "received alarm: name=" + name + ", severity=" + severity + ", eventtime=" + eventtime);
+			_worker.enqueue(PendingUpdate.createAlarmUpdate(name, severity, eventtime));
 		}
 	}
 

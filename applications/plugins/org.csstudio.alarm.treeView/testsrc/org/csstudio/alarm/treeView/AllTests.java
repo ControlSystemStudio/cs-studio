@@ -16,6 +16,7 @@ import org.junit.runners.Suite.SuiteClasses;
     SeverityTest.class,
     ProcessVariableNodeTest.class,
     PendingUpdateTest.class,
+    EventtimeUtilTest.class,
 })
 public class AllTests {
     // This is a suite which should not contain code.

@@ -66,9 +66,9 @@ public class ProcessVariableNodeTest {
 	}
     
     @Test
-	public void testCancelAlarmSetsAlarmToNoAlarmButKeepsUnacknowledged() throws Exception {
+	public void testNoAlarmAfterAlarmKeepsUnacknowledged() throws Exception {
 		_node.updateAlarm(new Alarm("", Severity.MAJOR, t1));
-		_node.cancelAlarm();
+		_node.updateAlarm(new Alarm("", Severity.NO_ALARM, t2));
         assertEquals(Severity.NO_ALARM, _node.getAlarmSeverity());
         assertEquals(Severity.MAJOR, _node.getUnacknowledgedAlarmSeverity());
         assertTrue(_node.hasAlarm()); // XXX: This is unexpected behavior
