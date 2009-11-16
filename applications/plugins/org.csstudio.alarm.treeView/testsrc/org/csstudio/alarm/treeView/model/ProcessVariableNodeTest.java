@@ -5,6 +5,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Date;
+
 import org.csstudio.platform.model.IProcessVariable;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,6 +15,8 @@ public class ProcessVariableNodeTest {
 
     private ProcessVariableNode _node;
     private SubtreeNode _subtreeNode;
+    private Date t1 = new Date(0);
+    private Date t2 = new Date(1);
 
     @Before
     public void setUp() {
@@ -38,7 +42,7 @@ public class ProcessVariableNodeTest {
     
     @Test
 	public void testAlarmIncreasesSeverityAndUnacknowledgedSeverity() throws Exception {
-		_node.setActiveAlarm(new Alarm("", Severity.MINOR));
+		_node.updateAlarm(new Alarm("", Severity.MINOR, t1));
         assertEquals(Severity.MINOR, _node.getAlarmSeverity());
         assertEquals(Severity.MINOR, _node.getUnacknowledgedAlarmSeverity());
         assertTrue(_node.hasAlarm());
@@ -46,8 +50,8 @@ public class ProcessVariableNodeTest {
     
     @Test
 	public void testMajorAlarmIncreasesSeverityAfterMinorAlarm() throws Exception {
-		_node.setActiveAlarm(new Alarm("", Severity.MINOR));
-		_node.setActiveAlarm(new Alarm("", Severity.MAJOR));
+		_node.updateAlarm(new Alarm("", Severity.MINOR, t1));
+		_node.updateAlarm(new Alarm("", Severity.MAJOR, t2));
         assertEquals(Severity.MAJOR, _node.getAlarmSeverity());
         assertEquals(Severity.MAJOR, _node.getUnacknowledgedAlarmSeverity());
         assertTrue(_node.hasAlarm());
@@ -55,15 +59,15 @@ public class ProcessVariableNodeTest {
     
     @Test
 	public void testMinorAfterMajorLowersSeverityButKeepsUnacknowledgedSeverity() throws Exception {
-		_node.setActiveAlarm(new Alarm("", Severity.MAJOR));
-		_node.setActiveAlarm(new Alarm("", Severity.MINOR));
+		_node.updateAlarm(new Alarm("", Severity.MAJOR, t1));
+		_node.updateAlarm(new Alarm("", Severity.MINOR, t2));
         assertEquals(Severity.MINOR, _node.getAlarmSeverity());
         assertEquals(Severity.MAJOR, _node.getUnacknowledgedAlarmSeverity());
 	}
     
     @Test
 	public void testCancelAlarmSetsAlarmToNoAlarmButKeepsUnacknowledged() throws Exception {
-		_node.setActiveAlarm(new Alarm("", Severity.MAJOR));
+		_node.updateAlarm(new Alarm("", Severity.MAJOR, t1));
 		_node.cancelAlarm();
         assertEquals(Severity.NO_ALARM, _node.getAlarmSeverity());
         assertEquals(Severity.MAJOR, _node.getUnacknowledgedAlarmSeverity());
@@ -72,7 +76,7 @@ public class ProcessVariableNodeTest {
     
     @Test
 	public void testAcknowledgeAlarm() throws Exception {
-		_node.setActiveAlarm(new Alarm("", Severity.MAJOR));
+		_node.updateAlarm(new Alarm("", Severity.MAJOR, t1));
 		_node.removeHighestUnacknowledgedAlarm();
         assertEquals(Severity.MAJOR, _node.getAlarmSeverity());
         assertEquals(Severity.NO_ALARM, _node.getUnacknowledgedAlarmSeverity());

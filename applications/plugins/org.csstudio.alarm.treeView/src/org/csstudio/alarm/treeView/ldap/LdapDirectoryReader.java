@@ -249,7 +249,7 @@ public class LdapDirectoryReader extends Job {
 			String severity = (String) severityAttr.get();
 			if (severity != null) {
 				Severity s = Severity.parseSeverity(severity);
-				node.setActiveAlarm(new Alarm("", s));
+				node.updateAlarm(new Alarm("", s));
 			}
 		}
 		Severity unack = Severity.NO_ALARM;

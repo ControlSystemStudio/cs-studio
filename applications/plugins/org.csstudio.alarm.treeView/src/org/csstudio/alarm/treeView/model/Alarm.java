@@ -21,6 +21,8 @@
  */
 package org.csstudio.alarm.treeView.model;
 
+import java.util.Date;
+
 
 /**
  * Represents an alarm.
@@ -40,16 +42,37 @@ public final class Alarm {
 	 * The severity of this alarm.
 	 */
 	private final Severity _severity;
+	
+	/**
+	 * The time at which this alarm event occured.
+	 */
+	private final Date _eventtime;
 
 
 	/**
 	 * Creates a new alarm with the given severity.
 	 * @param objectName the name of the object on which this alarm occured.
 	 * @param severity the severity of the alarm.
+	 * 
+	 * @deprecated use {@link #Alarm(String, Severity, Date)} instead.
 	 */
+	@Deprecated
 	public Alarm(final String objectName, final Severity severity) {
-		this._objectName = objectName;
-		this._severity = severity;
+		this(objectName, severity, new Date());
+	}
+	
+	
+	/**
+	 * Creates a new alarm.
+	 * 
+	 * @param objectName the name of the object on which this alarm occured.
+	 * @param severity the severity of the alarm.
+	 * @param eventtime the time at which the alarm event occured.
+	 */
+	public Alarm(String objectName, Severity severity, Date eventtime) {
+		_objectName = objectName;
+		_severity = severity;
+		_eventtime = (Date) eventtime.clone();
 	}
 	
 	
@@ -60,6 +83,7 @@ public final class Alarm {
 	public final Severity getSeverity() {
 		return _severity;
 	}
+	
 
 	/**
 	 * Returns whether this alarm has a higher severity than some other alarm.
@@ -73,6 +97,20 @@ public final class Alarm {
 	 */
 	public boolean severityHigherThan(Alarm alarm) {
 		return alarm == null || _severity.compareTo(alarm._severity) > 0;
+	}
+	
+
+	/**
+	 * Returns whether this alarm occured after some other alarm. If the other
+	 * alarm is <code>null</code>, this method returns <code>true</code>.
+	 * 
+	 * @param alarm
+	 *            the alarm to compare to.
+	 * @return <code>true</code> if this alarm occured after the other alarm,
+	 *         <code>false</code> otherwise.
+	 */
+	public boolean occuredAfter(Alarm alarm) {
+		return alarm == null || _eventtime.after(alarm._eventtime);
 	}
 
 	

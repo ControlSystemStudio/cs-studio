@@ -74,7 +74,7 @@ class AlarmTreeUpdater {
 		for (ProcessVariableNode node : nodes) {
 			if (severity.isAlarm()) {
 				Alarm alarm = new Alarm(name, severity);
-				node.setActiveAlarm(alarm);
+				node.updateAlarm(alarm);
 			} else {
 				node.cancelAlarm();
 			}

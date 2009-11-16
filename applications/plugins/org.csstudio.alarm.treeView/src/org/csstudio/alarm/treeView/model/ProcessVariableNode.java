@@ -141,17 +141,22 @@ public class ProcessVariableNode extends AbstractAlarmTreeNode
 	}
 	
 	/**
-	 * Sets an active alarm at this node.
-	 * @param alarm the alarm.
+	 * Updates the active alarm state of this node. This method should be called
+	 * when a new alarm message was received. The alarm state is updated to the
+	 * new alarm only if the new alarm occured after the current alarm.
+	 * 
+	 * @param alarm the new alarm.
 	 */
-	public final void setActiveAlarm(final Alarm alarm) {
-		_activeAlarm = alarm;
-		if (alarm.severityHigherThan(_highestUnacknowledgedAlarm)) {
-			_highestUnacknowledgedAlarm = alarm;
+	public final void updateAlarm(final Alarm alarm) {
+		if (alarm.occuredAfter(_activeAlarm)) {
+			_activeAlarm = alarm;
+			if (alarm.severityHigherThan(_highestUnacknowledgedAlarm)) {
+				_highestUnacknowledgedAlarm = alarm;
+			}
+			
+			// propagate alarm to the parent node
+			_parent.childSeverityChanged(this);
 		}
-		
-		// propagate alarm to the parent node
-		_parent.childSeverityChanged(this);
 	}
 	
 	/**
