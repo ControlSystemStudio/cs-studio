@@ -36,7 +36,11 @@ public class MessageTypes implements IMessageTypes {
             CentralLogger.getInstance().debug(this, "SQL Exception " + e.getMessage());
         }
         if(connectioHandler != null) {
-            connectioHandler.closeConnection();
+            try {
+				connectioHandler.closeConnection();
+			} catch (Exception e) {
+				CentralLogger.getInstance().error(this, "Unknown error, set connector = null" + e.toString());
+			}
             connectioHandler = null;
         }
     }
