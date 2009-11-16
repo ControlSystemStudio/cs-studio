@@ -21,6 +21,8 @@
  */
 package org.csstudio.sds.components.ui.internal.editparts;
 
+import java.util.List;
+
 import org.csstudio.platform.data.ISeverity;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
@@ -58,229 +60,225 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
  * 
  */
 public final class MenuButtonEditPart extends AbstractWidgetEditPart implements
-		IProcessVariableWithSamples {
+        IProcessVariableWithSamples {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected IFigure doCreateFigure() {
-		final MenuButtonModel model = (MenuButtonModel) getWidgetModel();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected IFigure doCreateFigure() {
+        final MenuButtonModel model = (MenuButtonModel) getWidgetModel();
 
-		RefreshableLabelFigure label = new RefreshableLabelFigure();
+        RefreshableLabelFigure label = new RefreshableLabelFigure();
 
-		label.setTextValue(model.getLabel());
-		label
-				.setFont(CustomMediaFactory.getInstance().getFont(
-						model.getFont()));
-		label.setTextAlignment(model.getTextAlignment());
-		label.setTransparent(false);
-		label.setEnabled(model.isAccesible()
-				&& getExecutionMode().equals(ExecutionMode.RUN_MODE));
-		label.addMouseListener(new MouseListener() {
-			public void mouseDoubleClicked(final MouseEvent me) {
-			}
+        label.setTextValue(model.getLabel());
+        label.setFont(CustomMediaFactory.getInstance().getFont(model.getFont()));
+        label.setTextAlignment(model.getTextAlignment());
+        label.setTransparent(false);
+        label.setEnabled(model.isAccesible() && getExecutionMode().equals(ExecutionMode.RUN_MODE));
+        label.addMouseListener(new MouseListener() {
+            public void mouseDoubleClicked(final MouseEvent me) {
+            }
 
-			public void mousePressed(final MouseEvent me) {
-				if (me.button == 1
-						&& getExecutionMode().equals(ExecutionMode.RUN_MODE)) {
-					final org.eclipse.swt.graphics.Point cursorLocation = Display
-							.getCurrent().getCursorLocation();
-					performDirectEdit(me.getLocation(), cursorLocation.x,
-							cursorLocation.y);
-				}
-			}
+            public void mousePressed(final MouseEvent me) {
+                if (me.button == 1 && getExecutionMode().equals(ExecutionMode.RUN_MODE)) {
+                    final org.eclipse.swt.graphics.Point cursorLocation = Display.getCurrent()
+                            .getCursorLocation();
+                    performDirectEdit(me.getLocation(), cursorLocation.x, cursorLocation.y);
+                }
+            }
 
-			public void mouseReleased(final MouseEvent me) {
-			}
+            public void mouseReleased(final MouseEvent me) {
+            }
 
-		});
+        });
 
-		return label;
-	}
+        return label;
+    }
 
-	/**
-	 * Open the cell editor for direct editing.
-	 * 
-	 * @param point
-	 *            the location of the mouse-event
-	 * @param absolutX
-	 *            The x coordinate of the mouse in the display
-	 * @param absolutY
-	 *            The y coordinate of the mouse in the display
-	 */
-	private void performDirectEdit(final Point point, final int absolutX,
-			final int absolutY) {
-		if (this.getCastedModel().isAccesible()
-				&& getExecutionMode().equals(ExecutionMode.RUN_MODE)) {
-			final Shell shell = PlatformUI.getWorkbench()
-					.getActiveWorkbenchWindow().getShell();
-			MenuManager menuManager = new MenuManager();
-			for (AbstractWidgetActionModel action : ((MenuButtonModel) this.getCastedModel())
-					.getActionData().getWidgetActions()) {
-				menuManager.add(new MenuAction(action));
-			}
-			Menu menu = menuManager.createContextMenu(shell);
+    /**
+     * Open the cell editor for direct editing.
+     * 
+     * @param point
+     *            the location of the mouse-event
+     * @param absolutX
+     *            The x coordinate of the mouse in the display
+     * @param absolutY
+     *            The y coordinate of the mouse in the display
+     */
+    private void performDirectEdit(final Point point, final int absolutX, final int absolutY) {
+        if (this.getCastedModel().isAccesible()
+                && getExecutionMode().equals(ExecutionMode.RUN_MODE)) {
+            final List<AbstractWidgetActionModel> widgetActions = ((MenuButtonModel) this
+                    .getCastedModel()).getActionData().getWidgetActions();
+            if (widgetActions.size() == 1) {
+                Display.getCurrent().asyncExec(new Runnable() {
+                    public void run() {
+                        WidgetActionHandlerService.getInstance().performAction(getCastedModel(),
+                                widgetActions.get(0));
+                    }
+                });
+            } else {
+                final Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+                MenuManager menuManager = new MenuManager();
+                for (AbstractWidgetActionModel action : widgetActions) {
+                    menuManager.add(new MenuAction(action));
+                }
+                Menu menu = menuManager.createContextMenu(shell);
 
-			int x = absolutX;
-			int y = absolutY;
-			x = x - point.x + this.getCastedModel().getX();
-			y = y - point.y + this.getCastedModel().getY()
-					+ this.getCastedModel().getHeight();
+                int x = absolutX;
+                int y = absolutY;
+                x = x - point.x + this.getCastedModel().getX();
+                y = y - point.y + this.getCastedModel().getY() + this.getCastedModel().getHeight();
 
-			menu.setLocation(x, y);
-			menu.setVisible(true);
-			
-			
-			// 2008-10-14: swende: The following lines prevent the menu actions from being executed consequently. 
-			// What was the sense for that? A problem on Mac systems?
-//			while (!menu.isDisposed() && menu.isVisible()) {
-//				if (!Display.getCurrent().readAndDispatch()) {
-//					Display.getCurrent().sleep();
-//				}
-//			}
-//			menu.dispose();
-			// shell.setFocus();
-			
-		}
-	}
+                menu.setLocation(x, y);
+                menu.setVisible(true);
+            }
 
-	/**
-	 * Returns the Figure of this EditPart.
-	 * 
-	 * @return RefreshableActionButtonFigure The RefreshableActionButtonFigure
-	 *         of this EditPart
-	 */
-	protected RefreshableLabelFigure getCastedFigure() {
-		return (RefreshableLabelFigure) getFigure();
-	}
+            // 2008-10-14: swende: The following lines prevent the menu actions from being executed
+            // consequently.
+            // What was the sense for that? A problem on Mac systems?
+            // while (!menu.isDisposed() && menu.isVisible()) {
+            // if (!Display.getCurrent().readAndDispatch()) {
+            // Display.getCurrent().sleep();
+            // }
+            // }
+            // menu.dispose();
+            // shell.setFocus();
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void registerPropertyChangeHandlers() {
-		// label
-		IWidgetPropertyChangeHandler labelHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				RefreshableLabelFigure figure = getCastedFigure();
-				figure.setTextValue(newValue.toString());
-				return true;
-			}
-		};
-		setPropertyChangeHandler(ActionButtonModel.PROP_LABEL, labelHandler);
-		// font
-		IWidgetPropertyChangeHandler fontHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				RefreshableLabelFigure figure = getCastedFigure();
-				FontData fontData = (FontData) newValue;
-				figure.setFont(CustomMediaFactory.getInstance().getFont(
-						fontData.getName(), fontData.getHeight(),
-						fontData.getStyle()));
-				return true;
-			}
-		};
-		setPropertyChangeHandler(LabelModel.PROP_FONT, fontHandler);
+        }
+    }
 
-		// text alignment
-		IWidgetPropertyChangeHandler alignmentHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				RefreshableLabelFigure figure = getCastedFigure();
-				figure.setTextAlignment((Integer) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(ActionButtonModel.PROP_TEXT_ALIGNMENT,
-				alignmentHandler);
+    /**
+     * Returns the Figure of this EditPart.
+     * 
+     * @return RefreshableActionButtonFigure The RefreshableActionButtonFigure of this EditPart
+     */
+    protected RefreshableLabelFigure getCastedFigure() {
+        return (RefreshableLabelFigure) getFigure();
+    }
 
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void registerPropertyChangeHandlers() {
+        // label
+        IWidgetPropertyChangeHandler labelHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue, final Object newValue,
+                    final IFigure refreshableFigure) {
+                RefreshableLabelFigure figure = getCastedFigure();
+                figure.setTextValue(newValue.toString());
+                return true;
+            }
+        };
+        setPropertyChangeHandler(ActionButtonModel.PROP_LABEL, labelHandler);
+        // font
+        IWidgetPropertyChangeHandler fontHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue, final Object newValue,
+                    final IFigure refreshableFigure) {
+                RefreshableLabelFigure figure = getCastedFigure();
+                FontData fontData = (FontData) newValue;
+                figure.setFont(CustomMediaFactory.getInstance().getFont(fontData.getName(),
+                        fontData.getHeight(), fontData.getStyle()));
+                return true;
+            }
+        };
+        setPropertyChangeHandler(LabelModel.PROP_FONT, fontHandler);
 
-	/**
-	 * An Action, which encapsulates a {@link AbstractWidgetActionModel}.
-	 * 
-	 * @author Kai Meyer
-	 * 
-	 */
-	private final class MenuAction extends Action {
-		/**
-		 * The {@link AbstractWidgetActionModel}.
-		 */
-		private AbstractWidgetActionModel _widgetAction;
+        // text alignment
+        IWidgetPropertyChangeHandler alignmentHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue, final Object newValue,
+                    final IFigure refreshableFigure) {
+                RefreshableLabelFigure figure = getCastedFigure();
+                figure.setTextAlignment((Integer) newValue);
+                return true;
+            }
+        };
+        setPropertyChangeHandler(ActionButtonModel.PROP_TEXT_ALIGNMENT, alignmentHandler);
 
-		/**
-		 * Constructor.
-		 * 
-		 * @param widgetAction
-		 *            The encapsulated {@link AbstractWidgetActionModel}
-		 */
-		public MenuAction(final AbstractWidgetActionModel widgetAction) {
-			_widgetAction = widgetAction;
-			this.setText(_widgetAction.getActionLabel());
-			IWorkbenchAdapter adapter = (IWorkbenchAdapter) Platform
-					.getAdapterManager().getAdapter(widgetAction,
-							IWorkbenchAdapter.class);
-			if (adapter != null) {
-				this.setImageDescriptor(adapter
-						.getImageDescriptor(widgetAction));
-			}
-			this.setEnabled(_widgetAction.isEnabled());
-		}
+    }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public void run() {
-			Display.getCurrent().asyncExec(new Runnable() {
-				public void run() {
-					WidgetActionHandlerService.getInstance().performAction(
-							getCastedModel(), _widgetAction);
-				}
-			});
-		}
-	}
+    /**
+     * An Action, which encapsulates a {@link AbstractWidgetActionModel}.
+     * 
+     * @author Kai Meyer
+     * 
+     */
+    private final class MenuAction extends Action {
+        /**
+         * The {@link AbstractWidgetActionModel}.
+         */
+        private AbstractWidgetActionModel _widgetAction;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public IValue getSample(final int index) {
-		if (index != 0) {
-			throw new IndexOutOfBoundsException(index
-					+ " is not a valid sample index");
-		}
+        /**
+         * Constructor.
+         * 
+         * @param widgetAction
+         *            The encapsulated {@link AbstractWidgetActionModel}
+         */
+        public MenuAction(final AbstractWidgetActionModel widgetAction) {
+            _widgetAction = widgetAction;
+            this.setText(_widgetAction.getActionLabel());
+            IWorkbenchAdapter adapter = (IWorkbenchAdapter) Platform.getAdapterManager()
+                    .getAdapter(widgetAction, IWorkbenchAdapter.class);
+            if (adapter != null) {
+                this.setImageDescriptor(adapter.getImageDescriptor(widgetAction));
+            }
+            this.setEnabled(_widgetAction.isEnabled());
+        }
 
-		MenuButtonModel model = (MenuButtonModel) getWidgetModel();
-		ITimestamp timestamp = TimestampFactory.now();
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void run() {
+            Display.getCurrent().asyncExec(new Runnable() {
+                public void run() {
+                    WidgetActionHandlerService.getInstance().performAction(getCastedModel(),
+                            _widgetAction);
+                }
+            });
+        }
+    }
 
-		// Note: the IValue implementations require a Severity, otherwise the
-		// format() method will throw a NullPointerException. We don't really
-		// have a severity here, so we fake one. This may cause problems for
-		// clients who rely on getting a meaningful severity from the IValue.
-		ISeverity severity = ValueFactory.createOKSeverity();
+    /**
+     * {@inheritDoc}
+     */
+    public IValue getSample(final int index) {
+        if (index != 0) {
+            throw new IndexOutOfBoundsException(index + " is not a valid sample index");
+        }
 
-		IValue result = ValueFactory.createStringValue(timestamp, severity,
-				null, Quality.Original, new String[] { model.getLabel() });
+        MenuButtonModel model = (MenuButtonModel) getWidgetModel();
+        ITimestamp timestamp = TimestampFactory.now();
 
-		return result;
-	}
+        // Note: the IValue implementations require a Severity, otherwise the
+        // format() method will throw a NullPointerException. We don't really
+        // have a severity here, so we fake one. This may cause problems for
+        // clients who rely on getting a meaningful severity from the IValue.
+        ISeverity severity = ValueFactory.createOKSeverity();
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public int size() {
-		// always one sample
-		return 1;
-	}
+        IValue result = ValueFactory.createStringValue(timestamp, severity, null, Quality.Original,
+                new String[] { model.getLabel() });
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected boolean forceDisabledInEditMode() {
-		return true;
-	}
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public int size() {
+        // always one sample
+        return 1;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected boolean forceDisabledInEditMode() {
+        return true;
+    }
 
 }
