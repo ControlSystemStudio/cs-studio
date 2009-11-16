@@ -78,8 +78,12 @@ public final class InterconnectionServerApplication implements IApplication {
 		String server = prefs.getString(Activator.PLUGIN_ID,
 				PreferenceConstants.XMPP_SERVER, "krykxmpp.desy.de", null);
 		
-		HeadlessConnection.connect(username, password, server, ECFConstants.XMPP);
-		ServiceLauncher.startRemoteServices();
+		try {
+			HeadlessConnection.connect(username, password, server, ECFConstants.XMPP);
+			ServiceLauncher.startRemoteServices();
+		} catch (Exception e) {
+			CentralLogger.getInstance().warn(this, "XMPP connection is not available, " + e.toString());
+		}
 	}
 
 	/**
