@@ -198,6 +198,21 @@ public class Formula implements Node
         // Sub-formula in '( ... )' ?
         if (s.get() == '(')
             result = parseBracedExpression(s);
+        else if (s.get() == '\'')
+        {   // 'VariableName'
+            s.next();
+            while (!s.isDone()  &&   s.get() != '\'')
+            {
+                buf.append(s.get());
+                s.next();
+            }
+            if (s.isDone())
+                throw new Exception("Unexpected end of quoted variable name.");
+            // Skip final quote
+            s.next();
+            final String name = buf.toString();
+            result = findVariable(name);
+        }
         else
         {   // Digits?
             if (digits.indexOf(s.get()) >= 0)

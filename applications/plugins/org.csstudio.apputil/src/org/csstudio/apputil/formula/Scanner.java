@@ -68,4 +68,12 @@ class Scanner
         }
         return buf.toString();
     }
+
+    @Override
+    public String toString()
+    {
+        if (done)
+            return "Scanner is done";
+        return String.format("Scanner on '%c'", current);
+    }
 }

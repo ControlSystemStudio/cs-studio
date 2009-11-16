@@ -227,5 +227,14 @@ public class FormulaTest extends TestCase
     	assertEquals(1.0, f.eval(), epsilon);
     	vars[0].setValue(10);
     	assertEquals(0.0, f.eval(), epsilon);
-	}
+
+        f = new Formula("'IOC2049-102:BMIT:enabled' >= 10", true);
+        vars = f.getVariables();
+        assertEquals(1, vars.length);
+        assertEquals("IOC2049-102:BMIT:enabled", vars[0].getName());
+        vars[0].setValue(5);
+        assertEquals(0.0, f.eval(), epsilon);
+        vars[0].setValue(10);
+        assertEquals(1.0, f.eval(), epsilon);
+    }
 }
