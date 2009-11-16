@@ -51,10 +51,6 @@ public class PerspectiveFactory implements IPerspectiveFactory {
         
         layout.addView(MainView.ID, IPageLayout.LEFT, 0.2f, IPageLayout.ID_EDITOR_AREA);
         layout.addView(NodeConfigView.ID, IPageLayout.TOP, 0.8f, IPageLayout.ID_EDITOR_AREA);
-        
-        
-        
-  
     }
 
 }
