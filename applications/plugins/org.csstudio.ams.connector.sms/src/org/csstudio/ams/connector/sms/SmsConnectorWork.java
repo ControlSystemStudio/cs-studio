@@ -702,12 +702,16 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                     Pattern pattern = null;
                     String r = null;
                             
-                    pattern = Pattern.compile("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}.\\d{3}");
+                    // pattern = Pattern.compile("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}.\\d{3}");
+                    // Get the check id from the SMS text (with curly brackets)
+                    pattern = Pattern.compile("\\{[a-fA-F0-9]+\\}");
                     Matcher m = pattern.matcher(sms.getMessage());
                     if(m.find())
                     {
                         r = m.group();
                         
+                        // Remove the curly brackets
+                        r = r.substring(1, r.length() - 1);
                         if(testStatus.isActive() == false || testStatus.isTimeOut())
                         {
                             sendModemTestSms(r);
@@ -781,7 +785,11 @@ public class SmsConnectorWork extends Thread implements AmsConstants
         return iErr;
     }
     
-    private void sendModemTestSms(String eventTime)
+    /**
+     * 
+     * @param checkId
+     */
+    private void sendModemTestSms(String checkId)
     {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
         OutboundMessage outMsg = null;
@@ -794,7 +802,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
         
         testStatus.reset();
         testStatus.setTimeStamp(timeStamp);
-        testStatus.setAnswerEventTime(eventTime);
+        testStatus.setCheckId(checkId);
         
         Log.log(this, Log.INFO, "Number of modems to test: " + modemInfo.getModemCount());
         for(int i = 0;i < modemInfo.getModemCount();i++)
@@ -838,18 +846,20 @@ public class SmsConnectorWork extends Thread implements AmsConstants
         }
         else
         {
-            sendTestAnswer(testStatus.getAnswerEventTime(), "No modem could send the test SMS.", "MAJOR", "ERROR");
+            sendTestAnswer(testStatus.getCheckId(), "No modem could send the test SMS.", "MAJOR", "ERROR");
             testStatus.reset();
         }
     }
     
-    private void sendTestAnswer(String eventTime, String text, String severity, String value)
+    private void sendTestAnswer(String checkId, String text, String severity, String value)
     {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
         Topic topic = null;
         MessageProducer amsPublisherCheck = null;
         MapMessage mapMessage = null;
         String topicName = null;
 
+        
         IPreferenceStore storeAct = org.csstudio.ams.AmsActivator.getDefault().getPreferenceStore();
         topicName = storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_TOPIC_MONITOR);
 
@@ -859,10 +869,11 @@ public class SmsConnectorWork extends Thread implements AmsConstants
             amsPublisherCheck = amsSenderSession.createProducer(topic);
             mapMessage = amsSenderSession.createMapMessage();
             mapMessage.setString("TYPE", "event");
-            mapMessage.setString("EVENTTIME", eventTime);
+            mapMessage.setString("EVENTTIME", dateFormat.format(Calendar.getInstance().getTime()));
             mapMessage.setString("TEXT", text);
             mapMessage.setString("SEVERITY", severity);
             mapMessage.setString("VALUE", value);
+            mapMessage.setString("CLASS", checkId);
             mapMessage.setString("HOST", Environment.getInstance().getHostName());
             mapMessage.setString("USER", Environment.getInstance().getUserName());
             mapMessage.setString("NAME", "AMS_SYSTEM_CHECK_ANSWER");
@@ -1391,7 +1402,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                     if(testStatus.getBadModemCount() == modemInfo.getModemCount())
                     {
                         Log.log(this, Log.ERROR, "No modem is working properly.");
-                        this.sendTestAnswer(testStatus.getAnswerEventTime(), "No modem is working properly.", "MAJOR", "ERROR");
+                        this.sendTestAnswer(testStatus.getCheckId(), "No modem is working properly.", "MAJOR", "ERROR");
                     }
                     else
                     {
@@ -1402,7 +1413,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                         }
                         
                         Log.log(this, Log.WARN, "Modems not working properly: " + list);
-                        this.sendTestAnswer(testStatus.getAnswerEventTime(), "Modems not working properly: " + list, "MINOR", "WARN");
+                        this.sendTestAnswer(testStatus.getCheckId(), "Modems not working properly: " + list, "MINOR", "WARN");
                     }
                     
                     Log.log(this, Log.INFO, "Reset current test.");
@@ -1421,7 +1432,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                             if(testStatus.getBadModemCount() == 0)
                             {
                                 Log.log(this, Log.INFO, "All modems are working fine.");
-                                this.sendTestAnswer(testStatus.getAnswerEventTime(), "All modems are working fine.", "NO_ALARM", "OK");
+                                this.sendTestAnswer(testStatus.getCheckId(), "All modems are working fine.", "NO_ALARM", "OK");
                             }
                             else
                             {
@@ -1432,7 +1443,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                                 }
                                 
                                 Log.log(this, Log.WARN, "Modems not working properly: " + list);
-                                this.sendTestAnswer(testStatus.getAnswerEventTime(), "Modems not working properly: " + list, "MINOR", "WARN");
+                                this.sendTestAnswer(testStatus.getCheckId(), "Modems not working properly: " + list, "MINOR", "WARN");
                             }
                             
                             Log.log(this, Log.INFO, "Reset current test.");

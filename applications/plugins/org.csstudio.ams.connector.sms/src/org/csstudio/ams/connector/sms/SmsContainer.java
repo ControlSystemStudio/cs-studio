@@ -162,7 +162,8 @@ public class SmsContainer implements AmsConstants
 
     /**
      * Creates a special Sms object from the given MapMessage object that starts a modem test.
-     * It takes the property EVENTTIME from the message and creates the string MODEM_CHECK{$EVENTTIME$}.
+     * It takes the property CLASS from the message and creates the string MODEM_CHECK{$CLASS$}.
+     * Deprecated: It takes the property EVENTTIME from the message and creates the string MODEM_CHECK{$EVENTTIME$}.
      * It acknowledges the JMS message.
      * 
      * @param message
@@ -171,7 +172,7 @@ public class SmsContainer implements AmsConstants
     public int addModemtestSms(Message message)
     {
         Sms sms = null;
-        String eventTime = null;
+        String checkId = null;
         long timestamp = 0;
         int result = SmsConnectorStart.STAT_ERR_UNDEFINED;
         
@@ -198,7 +199,8 @@ public class SmsContainer implements AmsConstants
             
             try
             {
-                eventTime = msg.getString("EVENTTIME");
+                // eventTime = msg.getString("EVENTTIME");
+                checkId = msg.getString("CLASS");
                 timestamp = msg.getJMSTimestamp();
                 
                 if(!acknowledge(message))
@@ -207,7 +209,7 @@ public class SmsContainer implements AmsConstants
                 }
                 else
                 {            
-                    sms = new Sms(timestamp, 1, "NONE", "MODEM_CHECK{" + eventTime + "}", Sms.Type.OUT);
+                    sms = new Sms(timestamp, 1, "NONE", "MODEM_CHECK{" + checkId + "}", Sms.Type.OUT);
                     content.add(sms);
                     
                     result = SmsConnectorStart.STAT_OK;

@@ -41,7 +41,10 @@ public class ModemTestStatus
     private String timeStamp;
     
     /** Content of property EVENTTIME of the JMS message that causes the modem test */ 
-    private String answerEventTime;
+    // private String answerEventTime;
+
+    /** Content of property CLASS of the JMS message that causes the modem test */ 
+    private String checkId;
 
     /** End time of the test */
     private long timeOut;
@@ -64,7 +67,7 @@ public class ModemTestStatus
         gateway.clear();
         badModem.clear();
         timeStamp = "";
-        answerEventTime = "";
+        checkId = "";
         timeOut = 0;
         active = false;
     }
@@ -119,24 +122,37 @@ public class ModemTestStatus
         this.timeStamp = timeStamp;
     }
     
-    public String getAnswerEventTime()
+    /**
+     * 
+     * @return
+     */
+    public String getCheckId()
     {
-        return answerEventTime;
+        return checkId;
     }
     
     /**
-     * @param timeStamp the timeStamp to set
+     * @param checkId - The check id to set
      */
-    public void setAnswerEventTime(String eventTime)
+    public void setCheckId(String checkId)
     {
-        this.answerEventTime = eventTime;
+        this.checkId = checkId;
     }
     
+    /**
+     * 
+     * @param name
+     * @return
+     */
     public boolean containsGatewayId(String name)
     {
         return gateway.contains(name);
     }
     
+    /**
+     * 
+     * @param name
+     */
     public void removeGatewayId(String name)
     {
         if(gateway.contains(name))
