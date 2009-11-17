@@ -102,7 +102,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
     public static final String MANAGE_REPLY_TOPIC_SUB = "T_AMS_TSUB_CON_MANAGE_REPLY";
     
     /** Text for the test SMS */
-    public static final String SMS_TEST_TEXT = "[MODEMTEST{$DATE,$GATEWAYID}]";
+    public static final String SMS_TEST_TEXT = "[MODEMTEST{$CHECKID,$GATEWAYID}]";
     
     public SmsConnectorWork(SmsConnectorStart scs)
     {
@@ -791,17 +791,12 @@ public class SmsConnectorWork extends Thread implements AmsConstants
      */
     private void sendModemTestSms(String checkId)
     {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
         OutboundMessage outMsg = null;
         String name = null;
         String number = null;
         String text = null;
-        String timeStamp = null;
-        
-        timeStamp = dateFormat.format(Calendar.getInstance().getTime());
         
         testStatus.reset();
-        testStatus.setTimeStamp(timeStamp);
         testStatus.setCheckId(checkId);
         
         Log.log(this, Log.INFO, "Number of modems to test: " + modemInfo.getModemCount());
@@ -813,7 +808,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                 number = modemInfo.getPhoneNumber(name);
 
                 text = SMS_TEST_TEXT;
-                text = text.replaceAll("\\$DATE", timeStamp);
+                text = text.replaceAll("\\$CHECKID", testStatus.getCheckId());
                 text = text.replaceAll("\\$GATEWAYID", name);
                 
                 outMsg = new OutboundMessage(number, text);
@@ -892,178 +887,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
             topic = null;
         }
     }
-    
-    @SuppressWarnings("unused")
-    @Deprecated
-    private boolean doModemTest(String eventTime)
-    {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-        OutboundMessage outMsg = null;
-        InboundMessage[] inMsg = null;
-        Topic topic = null;
-        MessageProducer amsPublisherCheck = null;
-        MapMessage mapMessage = null;
-        Vector<String> badModem = null;
-        Object waitObject = null;
-        String name = null;
-        String number = null;
-        String text = null;
-        String topicName = null;
-        String severity = null;
-        String value = null;
-        long endTime = 0;
-        long currentTime = 0;
-        int checkedModems = 0;
-        boolean success = false;
-
-        Log.log(this, Log.INFO, "Starting modem check.");
         
-        badModem = new Vector<String>();
-        
-        // TODO: Senden und Empfangen der Test-SMS getrennt behandeln.
-        for(int i = 0;i < modemInfo.getModemCount();i++)
-        {
-            name = modemInfo.getModemName(i);
-            if(name != null)
-            {
-                number = modemInfo.getPhoneNumber(name);
-                text = SMS_TEST_TEXT;
-                text = text.replaceAll("\\$DATE", dateFormat.format(Calendar.getInstance().getTime()));
-                text = text.replaceAll("\\$GATEWAYID", name);
-                
-                outMsg = new OutboundMessage(number, text);
-                outMsg.setEncoding(MessageEncodings.ENC7BIT);
-                outMsg.setStatusReport(false);
-                outMsg.setValidityPeriod(8);
-                
-                waitObject = new Object();
-                
-                try
-                {
-                    Log.log(this, Log.INFO, "Sending to modem '" + name + "': " + text);
-                    if(modemService.sendMessage(outMsg, name))
-                    {
-                        // Try for 1 minute
-                        endTime = System.currentTimeMillis() + 60000;
-                        
-                        do
-                        {
-                            synchronized(waitObject)
-                            {
-                                try
-                                {
-                                    waitObject.wait(readWaitingPeriod);
-                                }
-                                catch(InterruptedException ie) {}
-                            }
-
-                            inMsg = modemService.readMessages(MessageClasses.ALL, name);
-                            for(InboundMessage im : inMsg)
-                            {
-                                Log.log(this, Log.INFO, "Received text: " + im.getText());
-                                if(im.getText().compareTo(text) == 0)
-                                {
-                                    Log.log(this, Log.INFO, "Modem check was successful for " + name + ".");
-                                    modemService.deleteMessage(im);
-                                    checkedModems++;
-                                    success = true;
-                                    break;
-                                }
-                            }
-                            
-                            currentTime = System.currentTimeMillis();
-                        }
-                        while(!success && (currentTime <= endTime));
-                        
-                        if(!success)
-                        {
-                            badModem.add(name);
-                        }
-                        
-                        success = false;
-                    }
-                    else
-                    {
-                        Log.log(this, Log.WARN, "Could not send SMS test message.");
-                        if(badModem.contains(name) == false)
-                        {
-                            badModem.add(name);
-                        }
-                    }
-                }
-                catch(Exception e)
-                {
-                    Log.log(this, Log.ERROR, "Modem check was NOT successful for " + name + ".");
-                    if(badModem.contains(name) == false)
-                    {
-                        badModem.add(name);
-                    }
-                }
-            } // if
-        } // for
-        
-        Log.log(this, Log.INFO, "Number of checked modems: " + checkedModems);
-        Log.log(this, Log.INFO, "Number of modems:         " + modemInfo.getModemCount());
-        success = (checkedModems == modemInfo.getModemCount());
-
-        IPreferenceStore storeAct = org.csstudio.ams.AmsActivator.getDefault().getPreferenceStore();
-        topicName = storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_TOPIC_MONITOR);
-        
-        if(checkedModems == modemInfo.getModemCount())
-        {
-            severity = "NO_ALARM";
-            value = "OK";
-            text = "Modems are working fine.";            
-        }
-        else if((checkedModems > 0) && (checkedModems < modemInfo.getModemCount()))
-        {
-            severity = "MINOR";
-            value = "WARN";
-            text = (modemInfo.getModemCount() - checkedModems) + " modems are not working properly: ";
-            for(String s : badModem)
-            {
-                text = text + s + " ";
-            }
-        }
-        else if(checkedModems == 0)
-        {
-            severity = "MAJOR";
-            value = "ERROR";
-            text = "No modem is working.";
-        }
-        
-        try
-        {
-            topic = amsSenderSession.createTopic(topicName);
-            amsPublisherCheck = amsSenderSession.createProducer(topic);
-            mapMessage = amsSenderSession.createMapMessage();
-            mapMessage.setString("TYPE", "event");
-            mapMessage.setString("EVENTTIME", eventTime);
-            mapMessage.setString("TEXT", text);
-            mapMessage.setString("SEVERITY", severity);
-            mapMessage.setString("VALUE", value);
-            mapMessage.setString("NAME", "AMS_SYSTEM_CHECK_ANSWER");
-            mapMessage.setString("APPLICATION-ID", "SmsConnector");
-            mapMessage.setString("DESTINATION", "AmsSystemMonitor");
-            
-            amsPublisherCheck.send(mapMessage);
-        }
-        catch(JMSException jmse)
-        {
-            Log.log(this, Log.ERROR, "Answer message could NOT be sent.");
-        }
-        finally
-        {
-            if(amsPublisherCheck!=null){try{amsPublisherCheck.close();}catch(JMSException e){}amsPublisherCheck=null;}
-            topic = null;
-        }
-        
-        badModem.clear();
-        badModem = null;
-        
-        return success;
-    }
-    
     @SuppressWarnings("unused")
     private int sendSmsMsg(Message message) throws Exception
     {

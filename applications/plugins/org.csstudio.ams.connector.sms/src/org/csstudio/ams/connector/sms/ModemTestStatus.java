@@ -36,10 +36,7 @@ public class ModemTestStatus
     
     /** Vector object that contains the names of all modems that have caused an error */
     private Vector<String> badModem;
-    
-    /** Time and date used as text for the check SMS */ 
-    private String timeStamp;
-    
+        
     /** Content of property CLASS of the JMS message that causes the modem test */ 
     private String checkId;
 
@@ -49,7 +46,7 @@ public class ModemTestStatus
     /** Flag that indicates whether or not the current test is active */
     private boolean active;
     
-    public static final String SMS_TEST_TEXT = "[MODEMTEST{$DATE,$GATEWAYID}]";
+    public static final String SMS_TEST_TEXT = "[MODEMTEST{$CHECKID,$GATEWAYID}]";
     
     public ModemTestStatus()
     {
@@ -63,7 +60,6 @@ public class ModemTestStatus
     {
         gateway.clear();
         badModem.clear();
-        timeStamp = "";
         checkId = "";
         timeOut = 0;
         active = false;
@@ -76,7 +72,7 @@ public class ModemTestStatus
         for(String name : gateway)
         {
             text = SMS_TEST_TEXT;
-            text = text.replaceAll("\\$DATE", timeStamp);
+            text = text.replaceAll("\\$CHECKID", checkId);
             text = text.replaceAll("\\$GATEWAYID", name);
             
             if(content.compareTo(text) == 0)
@@ -101,22 +97,6 @@ public class ModemTestStatus
     public boolean isTestAnswer(String text)
     {
         return (text.startsWith("[MODEMTEST{"));
-    }
-    
-    /**
-     * @return the timeStamp
-     */
-    public String getTimeStamp()
-    {
-        return timeStamp;
-    }
-    
-    /**
-     * @param timeStamp the timeStamp to set
-     */
-    public void setTimeStamp(String timeStamp)
-    {
-        this.timeStamp = timeStamp;
     }
     
     /**
