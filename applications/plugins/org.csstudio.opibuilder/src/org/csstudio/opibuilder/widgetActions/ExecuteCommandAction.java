@@ -9,6 +9,10 @@ import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.widgetActions.WidgetActionFactory.ActionType;
 
+/**The action executing a system command.
+ * @author Xihui Chen
+ *
+ */
 public class ExecuteCommandAction extends AbstractWidgetAction {
 
 	private final static String PROP_COMMAND = "command";

@@ -15,7 +15,6 @@ import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.WidgetDescriptor;
 import org.csstudio.opibuilder.util.WidgetsService;
 import org.csstudio.platform.logging.CentralLogger;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -23,6 +22,10 @@ import org.jdom.input.SAXBuilder;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 
+/**The utility class for XML related operation.
+ * @author Xihui Chen
+ *
+ */
 public class XMLUtil {
 	
 	public static String XMLTAG_DISPLAY = "display"; //$NON-NLS-1$

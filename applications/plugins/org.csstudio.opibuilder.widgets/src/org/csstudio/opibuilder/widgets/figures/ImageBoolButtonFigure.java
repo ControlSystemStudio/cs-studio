@@ -14,6 +14,10 @@ import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
+/**The image boolean button figure.
+ * @author Xihui Chen
+ *
+ */
 public class ImageBoolButtonFigure extends AbstractBoolControlFigure {
 
 	/**

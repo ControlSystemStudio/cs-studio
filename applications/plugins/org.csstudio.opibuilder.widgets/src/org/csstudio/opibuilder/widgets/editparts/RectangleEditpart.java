@@ -6,6 +6,10 @@ import org.csstudio.opibuilder.widgets.model.AbstractShapeModel;
 import org.csstudio.opibuilder.widgets.model.RectangleModel;
 import org.eclipse.draw2d.IFigure;
 
+/**The editpart of a rectangle widget.
+ * @author Xihui Chen
+ *
+ */
 public class RectangleEditpart extends AbstractShapeEditPart {
 
 	

@@ -11,6 +11,10 @@ import org.eclipse.draw2d.geometry.Rectangle;
 
 
 
+/**The model for polyline widget.
+ * @author Xihui Chen
+ *
+ */
 public class PolyLineModel extends AbstractPolyModel {
 
 	

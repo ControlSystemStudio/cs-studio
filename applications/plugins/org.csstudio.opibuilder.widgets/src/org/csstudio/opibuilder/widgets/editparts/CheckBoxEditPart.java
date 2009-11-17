@@ -16,6 +16,10 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.widgets.Display;
 
+/**The editpart of a checkbox.
+ * @author Xihui Chen
+ *
+ */
 public class CheckBoxEditPart extends AbstractPVWidgetEditPart {
 
 	@Override

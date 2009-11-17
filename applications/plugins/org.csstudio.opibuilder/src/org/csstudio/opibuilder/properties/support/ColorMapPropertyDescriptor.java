@@ -7,6 +7,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 
 
+/**The property descriptor for color map.
+ * @author Xihui Chen
+ *
+ */
 public class ColorMapPropertyDescriptor extends TextPropertyDescriptor {
 	
 	

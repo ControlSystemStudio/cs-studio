@@ -25,6 +25,10 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.model.BaseWorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 
+/**The dialog for selecting OPIColor.
+ * @author Xihui Chen
+ *
+ */
 public class OPIColorDialog extends Dialog {
 	
 	private OPIColor opiColor;

@@ -11,6 +11,10 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 
+/**The model for a tab widget.
+ * @author Xihui Chen
+ *
+ */
 public class TabModel extends AbstractContainerModel {
 
 	public enum TabProperty{

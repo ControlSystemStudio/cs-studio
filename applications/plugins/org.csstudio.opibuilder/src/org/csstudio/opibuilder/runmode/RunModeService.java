@@ -1,7 +1,5 @@
 package org.csstudio.opibuilder.runmode;
 
-import java.util.HashMap;
-
 import org.csstudio.opibuilder.util.MacrosInput;
 import org.csstudio.opibuilder.util.UIBundlingThread;
 import org.csstudio.platform.logging.CentralLogger;
@@ -15,6 +13,10 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.WorkbenchException;
 
+/**The service for running of OPI.
+ * @author Xihui Chen
+ *
+ */
 public class RunModeService {
 	
 	public enum TargetWindow{

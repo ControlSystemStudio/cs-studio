@@ -2,7 +2,6 @@ package org.csstudio.opibuilder.actions;
 
 import org.csstudio.opibuilder.widgetActions.AbstractWidgetAction;
 import org.eclipse.jface.action.Action;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 
 /**

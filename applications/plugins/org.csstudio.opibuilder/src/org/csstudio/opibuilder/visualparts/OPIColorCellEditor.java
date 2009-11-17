@@ -5,6 +5,10 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 
+/**The cell editor for OPIColor.
+ * @author Xihui Chen
+ *
+ */
 public class OPIColorCellEditor extends AbstractDialogCellEditor {
 
 	private OPIColor opiColor;

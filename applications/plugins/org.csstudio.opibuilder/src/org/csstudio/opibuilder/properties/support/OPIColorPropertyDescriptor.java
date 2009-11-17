@@ -8,6 +8,10 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 
+/**The property descriptor for OPI Color.
+ * @author Xihui Chen
+ *
+ */
 public class OPIColorPropertyDescriptor extends PropertyDescriptor {
 
 	public OPIColorPropertyDescriptor(Object id, String displayName) {

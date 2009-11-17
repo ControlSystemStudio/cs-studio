@@ -9,6 +9,10 @@ import org.csstudio.opibuilder.visualparts.BorderStyle;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 
+/**The model for linking container widget.
+ * @author Xihui Chen
+ *
+ */
 public class LinkingContainerModel extends AbstractContainerModel {
 
 	/**

@@ -5,6 +5,10 @@ import org.csstudio.opibuilder.util.MacrosInput;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.ui.part.FileEditorInput;
 
+/**The editor input for OPI Runner. 
+ * @author Xihui Chen
+ *
+ */
 public class RunnerInput extends FileEditorInput {
 
 	private DisplayOpenManager displayOpenManager;

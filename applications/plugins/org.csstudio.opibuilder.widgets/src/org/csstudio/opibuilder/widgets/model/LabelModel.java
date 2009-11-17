@@ -11,6 +11,10 @@ import org.csstudio.opibuilder.widgets.figures.LabelFigure.H_ALIGN;
 import org.csstudio.opibuilder.widgets.figures.LabelFigure.V_ALIGN;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 
+/**The model for label widget.
+ * @author Xihui Chen
+ *
+ */
 public class LabelModel extends AbstractPVWidgetModel {
 	
 

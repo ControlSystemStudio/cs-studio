@@ -5,6 +5,10 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 
+/**The cell editor for actions.
+ * @author Xihui Chen
+ *
+ */
 public class ActionsCellEditor extends AbstractDialogCellEditor {
 
 	private ActionsInput actionsInput;

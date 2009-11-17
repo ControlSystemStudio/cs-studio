@@ -10,6 +10,10 @@ import org.eclipse.swt.dnd.ByteArrayTransfer;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.TransferData;
 
+/**The transfer for clip board related actions.
+ * @author Xihui Chen
+ *
+ */
 public class OPIWidgetsTransfer extends ByteArrayTransfer {
 	
 	private static OPIWidgetsTransfer instance;
@@ -20,7 +24,7 @@ public class OPIWidgetsTransfer extends ByteArrayTransfer {
 	private static final int TYPEID = registerType(TYPE_NAME);
 	
 	
-	public static OPIWidgetsTransfer getInstance() {
+	public synchronized static OPIWidgetsTransfer getInstance() {
 		if(instance == null)
 			instance = new OPIWidgetsTransfer();
 		return instance;

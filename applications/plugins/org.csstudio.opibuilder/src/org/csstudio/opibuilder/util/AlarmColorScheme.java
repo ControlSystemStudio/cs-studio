@@ -3,6 +3,10 @@ package org.csstudio.opibuilder.util;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.swt.graphics.RGB;
 
+/**The scheme for alarm color which provide unified colors for alarms.
+ * @author Xihui Chen
+ *
+ */
 public class AlarmColorScheme {
 
 	public static RGB getMajorColor(){

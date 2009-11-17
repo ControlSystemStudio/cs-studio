@@ -106,6 +106,10 @@ import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.PropertySheetPage;
 
 
+/**The OPI Editor.
+ * @author Xihui Chen
+ *
+ */
 public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 	
 	/**

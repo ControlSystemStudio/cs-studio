@@ -5,6 +5,10 @@ import org.eclipse.gef.ui.actions.DeleteAction;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.actions.ActionFactory;
 
+/**Cut widgets to clipboard.
+ * @author Xihui Chen
+ *
+ */
 public class CutWidgetsAction extends CopyWidgetsAction {
 
 	private DeleteAction deleteAction;

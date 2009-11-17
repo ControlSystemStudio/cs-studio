@@ -26,6 +26,10 @@ import org.eclipse.ui.actions.RetargetAction;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 
+/**The action bar contributor for OPI editor.
+ * @author Xihui Chen
+ *
+ */
 public class OPIEditorActionBarContributor extends ActionBarContributor {
 
 	public OPIEditorActionBarContributor() {

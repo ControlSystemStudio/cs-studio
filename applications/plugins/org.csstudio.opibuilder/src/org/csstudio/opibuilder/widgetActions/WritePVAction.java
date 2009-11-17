@@ -15,9 +15,11 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.ui.model.IWorkbenchAdapter;
 
+/**An actions writing value to a PV.
+ * @author Xihui Chen
+ *
+ */
 public class WritePVAction extends AbstractWidgetAction {
 
 	private static final int TIMEOUT = 10000;

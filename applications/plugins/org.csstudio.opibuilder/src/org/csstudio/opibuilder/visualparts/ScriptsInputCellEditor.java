@@ -5,6 +5,10 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 
+/**The cell editor for scripts input.
+ * @author Xihui Chen
+ *
+ */
 public class ScriptsInputCellEditor extends AbstractDialogCellEditor {
 	
 	private ScriptsInput scriptsInput;

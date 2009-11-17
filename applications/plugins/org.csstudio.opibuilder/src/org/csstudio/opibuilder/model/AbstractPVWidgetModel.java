@@ -5,6 +5,10 @@ import org.csstudio.opibuilder.properties.PVValueProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 
+/**The abstract widget model for all PV related widgets. 
+ * @author Xihui Chen
+ *
+ */
 public abstract class AbstractPVWidgetModel extends AbstractWidgetModel {
 
 

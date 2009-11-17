@@ -11,6 +11,9 @@ import org.eclipse.swt.graphics.Font;
 /**
  * A Figure with a bent corner and an embedded TextFlow within a FlowPage that contains
  * text.
+ *
+ * @author Xihui Chen
+ *
  */
 public class LabelFigure extends Figure{
 	

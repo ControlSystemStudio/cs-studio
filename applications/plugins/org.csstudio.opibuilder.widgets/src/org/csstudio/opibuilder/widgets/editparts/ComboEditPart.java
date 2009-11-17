@@ -29,7 +29,7 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 
-/**
+/**The editpart of a combo.
  * 
  * @author Xihui Chen
  * 

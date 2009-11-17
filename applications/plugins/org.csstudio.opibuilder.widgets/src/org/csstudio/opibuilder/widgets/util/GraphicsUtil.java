@@ -7,6 +7,10 @@ import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.Rectangle;
 
+/**The utility class contains functions that all related with graphics.
+ * @author Xihui Chen
+ *
+ */
 public class GraphicsUtil {
 
 	public static synchronized boolean testPatternSupported(Graphics graphics){

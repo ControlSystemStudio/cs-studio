@@ -6,11 +6,11 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
 /**
-		 * The {@link LabelProvider} for the properties table.
-		 * 
-		 * @author Xihui Chen
-		 * 
-		 */
+* The {@link LabelProvider} for the properties table.
+* 
+* @author Xihui Chen
+* 
+*/
 public class PropertiesLabelProvider extends LabelProvider implements
 				ITableLabelProvider {
 

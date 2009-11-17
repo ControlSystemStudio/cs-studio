@@ -5,7 +5,7 @@ import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 
 /** Perspective for using the OPI Editor
- *  @author Kay Kasemir
+ *  @author Kay Kasemir, Xihui Chen
  */
 public class OPIEditorPerspective implements IPerspectiveFactory
 {

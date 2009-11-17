@@ -6,6 +6,10 @@ import org.eclipse.gef.tools.CellEditorLocator;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.swt.widgets.Text;
 
+/**The locator of label cell editor.
+ * @author Xihui Chen
+ *
+ */
 public class LabelCellEditorLocator
 		implements CellEditorLocator
 	{

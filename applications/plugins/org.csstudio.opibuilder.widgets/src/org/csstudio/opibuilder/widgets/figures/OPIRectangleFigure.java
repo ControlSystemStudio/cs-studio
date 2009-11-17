@@ -29,7 +29,7 @@ import org.eclipse.swt.SWT;
 /**
  * A rectangle figure.
  * 
- * @author Sven Wende
+ * @author Sven Wende (original author), Xihui Chen (since import from SDS 2009/10) 
  * 
  */
 public final class OPIRectangleFigure extends RectangleFigure {

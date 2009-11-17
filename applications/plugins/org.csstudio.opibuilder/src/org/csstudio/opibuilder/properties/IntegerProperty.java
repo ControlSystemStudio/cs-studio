@@ -4,6 +4,10 @@ import org.csstudio.opibuilder.properties.support.IntegerPropertyDescriptor;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.jdom.Element;
 
+/**The integer property.
+ * @author Xihui Chen
+ *
+ */
 public class IntegerProperty extends AbstractWidgetProperty {
 
 	/**

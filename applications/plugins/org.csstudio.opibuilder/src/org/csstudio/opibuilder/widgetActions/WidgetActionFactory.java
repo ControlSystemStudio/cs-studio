@@ -5,6 +5,10 @@ import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.resource.ImageDescriptor;
 
+/**The factory creating all the widget actions.
+ * @author Xihui Chen
+ *
+ */
 public class WidgetActionFactory {
 	public enum ActionType{
 		OPEN_DISPLAY("Open OPI", createImage("icons/OPIRunner.png")), //$NON-NLS-2$
