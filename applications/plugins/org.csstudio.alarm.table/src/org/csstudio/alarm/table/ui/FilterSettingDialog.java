@@ -129,7 +129,7 @@ public class FilterSettingDialog extends StartEndDialog {
 					break;
 				}
 			}
-			String pattern = filterItem.getValue();
+			String pattern = filterItem.getOriginalValue();
 			boolean patternInHistory = false;
 			for (int i = 0; i < patternItems.length; i++) {
 				if (_patternCombo[j].getItem(i).equalsIgnoreCase(pattern)) {
