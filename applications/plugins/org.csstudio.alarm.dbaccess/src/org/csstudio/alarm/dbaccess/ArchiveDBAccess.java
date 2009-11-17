@@ -349,12 +349,12 @@ public class ArchiveDBAccess implements ILogMessageArchiveAccess {
                 if (filterSetting.getProperty().equalsIgnoreCase("inMessage")) {
                     parameterIndex++;
                     getMessages.setString(parameterIndex, filterSetting
-                            .getValue().replace("*", "%").replace("?", "_"));
+                            .getConvertedValue());
                     CentralLogger.getInstance().debug(
                             this,
                             "DB query, filter Property: "
                                     + filterSetting.getProperty() + "  Value: "
-                                    + filterSetting.getValue() + "  Relation: "
+                                    + filterSetting.getConvertedValue() + "  Relation: "
                                     + filterSetting.getRelation());
                 }
             }
@@ -368,12 +368,12 @@ public class ArchiveDBAccess implements ILogMessageArchiveAccess {
                                     .get(propertyName));
                     parameterIndex++;
                     getMessages.setString(parameterIndex, filterSetting
-                            .getValue());
+                            .getConvertedValue());
                     CentralLogger.getInstance().debug(
                             this,
                             "DB query, filter Property: "
                                     + filterSetting.getProperty() + "  Value: "
-                                    + filterSetting.getValue() + "  Relation: "
+                                    + filterSetting.getConvertedValue() + "  Relation: "
                                     + filterSetting.getRelation());
                 }
             }

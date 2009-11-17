@@ -56,10 +56,23 @@ public class FilterItem {
 		this._property = _property;
 	}
 
-	public String getValue() {
+	/**
+	 * Get original value entered by user.
+	 * @return
+	 */
+	public String getOriginalValue() {
 		return _value;
 	}
 
+	/**
+	 * Get prepared value for SQL. ('*' is replaced by '%'
+	 * and '?' is replaced by '_').
+	 * @return
+	 */
+	public String getConvertedValue() {
+		return _value.replace("*", "%").replace("?", "_");
+	}
+	
 	public void set_value(String _value) {
 		this._value = _value;
 	}

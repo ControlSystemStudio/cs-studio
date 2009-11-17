@@ -158,7 +158,7 @@ public class Filter {
         if (this.filterItems != null) {
             for (FilterItem filterItem : this.getFilterItems()) {
                 FilterItem f = new FilterItem(filterItem.getProperty(),
-                        filterItem.getValue(), filterItem.getRelation());
+                        filterItem.getOriginalValue(), filterItem.getRelation());
                 newFilterItems.add(f);
             }
         } else {
