@@ -27,7 +27,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Hashtable;
 import java.util.LinkedList;
-import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.jms.Connection;
