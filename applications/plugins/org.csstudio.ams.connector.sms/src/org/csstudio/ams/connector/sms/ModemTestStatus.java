@@ -40,9 +40,6 @@ public class ModemTestStatus
     /** Time and date used as text for the check SMS */ 
     private String timeStamp;
     
-    /** Content of property EVENTTIME of the JMS message that causes the modem test */ 
-    // private String answerEventTime;
-
     /** Content of property CLASS of the JMS message that causes the modem test */ 
     private String checkId;
 
