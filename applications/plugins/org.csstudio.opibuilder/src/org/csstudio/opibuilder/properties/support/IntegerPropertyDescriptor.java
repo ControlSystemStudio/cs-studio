@@ -9,7 +9,7 @@ import org.eclipse.ui.views.properties.TextPropertyDescriptor;
  * Descriptor for a property that has a value which should be edited with a
  * integer cell editor.
  * 
- * @author Xihui Chen
+ * @author Alexander Will(Original Author), Xihui Chen (import from SDS since 2009/09)
  * 
  */
 public final class IntegerPropertyDescriptor extends TextPropertyDescriptor {
