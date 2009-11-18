@@ -4,6 +4,10 @@ import org.csstudio.swt.xygraph.dataprovider.ISample;
 import org.csstudio.swt.xygraph.figures.Annotation;
 import org.eclipse.draw2d.geometry.Point;
 
+/**The command of moving an annotation on the graph.
+ * @author Xihui Chen
+ *
+ */
 public class MovingAnnotationCommand implements IUndoableCommand {
 	
 	private Annotation annotation;

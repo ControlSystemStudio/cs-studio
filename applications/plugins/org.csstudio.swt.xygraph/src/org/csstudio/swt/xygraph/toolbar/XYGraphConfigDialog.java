@@ -27,6 +27,10 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 
+/**The dialog for configuring XYGraph properties.
+ * @author Xihui Chen
+ *
+ */
 public class XYGraphConfigDialog extends Dialog {
 	
 	private GraphConfigPage graphConfigPage;

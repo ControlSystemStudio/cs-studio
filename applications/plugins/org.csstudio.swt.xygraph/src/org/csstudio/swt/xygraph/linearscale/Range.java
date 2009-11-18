@@ -2,6 +2,8 @@ package org.csstudio.swt.xygraph.linearscale;
 
 /**
  * A range.
+ * @author Xihui Chen
+ *
  */
 public class Range {
 

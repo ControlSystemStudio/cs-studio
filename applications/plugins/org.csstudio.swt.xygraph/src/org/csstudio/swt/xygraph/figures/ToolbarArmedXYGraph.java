@@ -7,6 +7,10 @@ import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
 
 
+/**An graph which consists of a toolbar and an XYGraph. 
+ * @author Xihui Chen
+ *
+ */
 public class ToolbarArmedXYGraph extends Figure {
 
 	private XYGraph xyGraph;

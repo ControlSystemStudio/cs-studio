@@ -2,6 +2,10 @@ package org.csstudio.swt.xygraph.undo;
 
 import org.csstudio.swt.xygraph.figures.Annotation;
 
+/**The command moving an annotation label.
+ * @author Xihui Chen
+ *
+ */
 public class MovingAnnotationLabelCommand implements IUndoableCommand {
 
 	private Annotation annotation;

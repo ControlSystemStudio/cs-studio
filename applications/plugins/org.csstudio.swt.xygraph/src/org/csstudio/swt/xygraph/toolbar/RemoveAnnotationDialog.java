@@ -12,6 +12,10 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
+/**The dialog for removing annotation.
+ * @author Xihui Chen
+ *
+ */
 public class RemoveAnnotationDialog extends Dialog {
 	
 	

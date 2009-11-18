@@ -8,6 +8,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 
+/**The dialog for adding annotation.
+ * @author Xihui Chen
+ *
+ */
 public class AddAnnotationDialog extends Dialog {
 	
 	private AnnotationConfigPage configPage;
