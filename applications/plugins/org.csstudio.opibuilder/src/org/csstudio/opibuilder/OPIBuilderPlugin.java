@@ -15,7 +15,7 @@ import org.osgi.framework.BundleContext;
 public class OPIBuilderPlugin extends AbstractUIPlugin {
 
 	// The plug-in ID
-	public static final String PLUGIN_ID = "org.csstudio.opibuilder";
+	public static final String PLUGIN_ID = "org.csstudio.opibuilder"; //$NON-NLS-1$
 	
 	/**
 	 * The ID of the widget extension point.

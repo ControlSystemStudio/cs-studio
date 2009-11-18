@@ -7,6 +7,7 @@ import org.csstudio.opibuilder.actions.PastePropertiesAction;
 import org.csstudio.opibuilder.actions.ShowMacrosAction;
 import org.csstudio.opibuilder.actions.ChangeOrderAction.OrderType;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.gef.ContextMenuProvider;
 import org.eclipse.gef.EditPartViewer;
 import org.eclipse.gef.ui.actions.ActionRegistry;
@@ -41,7 +42,7 @@ public final class OPIEditorContextMenuProvider extends ContextMenuProvider {
 	public OPIEditorContextMenuProvider(final EditPartViewer viewer,
 			final ActionRegistry actionRegistry) {
 		super(viewer);
-		assert actionRegistry != null : "actionRegistry is null"; //$NON-NLS-1$
+		Assert.isNotNull(actionRegistry);
 		this.actionRegistry = actionRegistry;
 	}
 

@@ -27,7 +27,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 
 /**The action bar contributor for OPI editor.
- * @author Xihui Chen
+ * @author Sven Wende & Alexander Will(original author), Xihui Chen (since import from SDS 2009/9) 
  *
  */
 public class OPIEditorActionBarContributor extends ActionBarContributor {

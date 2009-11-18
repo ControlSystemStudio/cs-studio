@@ -45,7 +45,7 @@ import org.eclipse.osgi.util.NLS;
  *  When the command finishes right away OK or runs longer,
  *  we leave it be.
  *  
- * @author Kay Kasemir (original author), Xihui Chen (since import from SDS 2009/9) 
+ * @author Kay Kasemir, Xihui Chen
  */
 @SuppressWarnings("nls")
 public class CommandExecutor
