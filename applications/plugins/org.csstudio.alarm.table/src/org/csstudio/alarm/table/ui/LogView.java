@@ -23,11 +23,13 @@
 package org.csstudio.alarm.table.ui;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 import java.util.Timer;
 
 import org.csstudio.alarm.table.JmsLogsPlugin;
+import org.csstudio.alarm.table.dataModel.IMessageListService;
 import org.csstudio.alarm.table.dataModel.LogMessageList;
 import org.csstudio.alarm.table.dataModel.MessageList;
 import org.csstudio.alarm.table.internal.localization.Messages;
@@ -50,6 +52,8 @@ import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
@@ -86,10 +90,10 @@ public class LogView extends ViewPart {
 	 */
 	private static final String PROPERTY_VIEW_ID = "org.eclipse.ui.views.PropertySheet"; //$NON-NLS-1$
 
-	/**
-	 * List of messages displayed by the table on this view.
-	 */
-	public MessageList _messageList = null;
+	// /**
+	// * List of messages displayed by the table on this view.
+	// */
+	// public MessageList _messageList = null;
 
 	/**
 	 * {@link MessageTable} holding a {@link TableViewer} for messages.
@@ -138,6 +142,8 @@ public class LogView extends ViewPart {
 
 	private Timer _timer;
 
+	IMessageListService _messageListService;
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -161,13 +167,15 @@ public class LogView extends ViewPart {
 		Composite logTableManagementComposite = new Composite(parent, SWT.NONE);
 		RowLayout layout = new RowLayout();
 		layout.type = SWT.HORIZONTAL;
-		layout.spacing = 8;
+		layout.spacing = 15;
 		logTableManagementComposite.setLayout(layout);
 
 		addJmsTopicItems(logTableManagementComposite);
 		// addMessageUpdateControl(logTableManagementComposite);
 		addRunningSinceGroup(logTableManagementComposite);
-		_jmsMessageReceiver = new JmsMessageReceiver();
+		_messageListService = JmsLogsPlugin.getDefault()
+				.getMessageListService();
+		// _jmsMessageReceiver = new JmsMessageReceiver();
 
 		initializeMessageTable();
 
@@ -194,9 +202,6 @@ public class LogView extends ViewPart {
 		// _tableViewer.getTable().setFont(font);
 		// }
 
-		makeActions();
-
-		parent.pack();
 		// _propertyChangeListener = new ColumnPropertyChangeListener(
 		// LogViewPreferenceConstants.P_STRING, _messageTable);
 
@@ -245,26 +250,52 @@ public class LogView extends ViewPart {
 			_messageTable.disposeMessageTable();
 			_tableViewer = null;
 			_messageTable = null;
-			_messageList = null;
+			// _messageList = null;
 		}
-		_messageList = new LogMessageList(_maximumNumberOfMessages);
-		// setup message table with context menu etc.
-		_tableViewer = new TableViewer(_parent, SWT.MULTI | SWT.FULL_SELECTION);
+		if (_tableComposite != null) {
+			_tableComposite.dispose();
+			_tableComposite = null;
+		}
+		_tableComposite = new Composite(_parent, SWT.NONE);
+		GridData gridData = new GridData(GridData.FILL, GridData.FILL, true,
+				true);
+		_tableComposite.setLayoutData(gridData);
+		GridLayout grid2 = new GridLayout();
+		grid2.numColumns = 1;
+		_tableComposite.setLayout(grid2);
 
+		// _messageList = new LogMessageList(_maximumNumberOfMessages);
+		// setup message table with context menu etc.
+		_tableViewer = new TableViewer(_tableComposite, SWT.MULTI | SWT.FULL_SELECTION);
+
+		// get the font for the selected topic set. If there was no font defined
+		// in preferences set no font.
+		Font font = _topicSetColumnService.getFont(_currentTopicSet);
+		if (font != null) {
+			_tableViewer.getTable().setFont(font);
+		}
+		GridData gridData2 = new GridData(GridData.FILL, GridData.FILL, true,
+				true);
+		_tableViewer.getTable().setLayoutData(gridData2);
+		
+		MessageList messageList = _messageListService.getLogMessageList(
+				_topicSetColumnService.getJMSTopics(_currentTopicSet),
+				_maximumNumberOfMessages);
 		_messageTable = new MessageTable(_tableViewer, _topicSetColumnService
-				.getColumnSet(_currentTopicSet), _messageList);
+				.getColumnSet(_currentTopicSet), messageList);
 		_messageTable.makeContextMenu(getSite());
 
-		_jmsMessageReceiver.initializeJMSConnection(_topicSetColumnService
-				.getJMSTopics(_currentTopicSet), _messageList);
+		// _jmsMessageReceiver.initializeJMSConnection(_topicSetColumnService
+		// .getJMSTopics(_currentTopicSet), _messageList);
 
-		setCurrentTimeToRunningSince();
+		setCurrentTimeToRunningSince(messageList.getStartTime());
 
 		_columnMapping = new ExchangeableColumnWidthPreferenceMapping(
 				_tableViewer, _currentTopicSet);
 		addControlListenerToColumns(LogViewPreferenceConstants.P_STRING,
 				LogViewPreferenceConstants.TOPIC_SET);
 		getSite().setSelectionProvider(_tableViewer);
+		makeActions();
 		_parent.layout();
 
 	}
@@ -308,11 +339,9 @@ public class LogView extends ViewPart {
 		_runningSinceLabel.setLayoutData(new RowData(90, 21));
 	}
 
-	void setCurrentTimeToRunningSince() {
-		GregorianCalendar currentTime = new GregorianCalendar(TimeZone
-				.getTimeZone("ECT")); //$NON-NLS-1$
+	void setCurrentTimeToRunningSince(Date time) {
 		SimpleDateFormat formater = new SimpleDateFormat();
-		_runningSinceLabel.setText(formater.format(currentTime.getTime()));
+		_runningSinceLabel.setText(formater.format(time));
 	}
 
 	/**
@@ -367,34 +396,34 @@ public class LogView extends ViewPart {
 			public void widgetSelected(SelectionEvent e) {
 				if (_pauseButton.getSelection()) {
 					_messageTable.setMessageUpdatePause(true);
-						if (_timer != null) {
-							if (_timerTask != null) {
-								_timerTask.cancel();
-								_timerTask = null;
-							}
-							_timer.cancel();
-							_timer = null;
+					if (_timer != null) {
+						if (_timerTask != null) {
+							_timerTask.cancel();
+							_timerTask = null;
 						}
-						_timer = new Timer();
-						_timerTask = new PopUpTimerTask();
-						_timerTask.addExpirationListener(new IExpirationLisener() {
+						_timer.cancel();
+						_timer = null;
+					}
+					_timer = new Timer();
+					_timerTask = new PopUpTimerTask();
+					_timerTask.addExpirationListener(new IExpirationLisener() {
 
-							@Override
-							public void expired() {
-								_pauseButton.setSelection(false);
-								_tableViewer.refresh();
-								_messageTable.setMessageUpdatePause(false);
-								if (_timer != null) {
-									if (_timerTask != null) {
-										_timerTask.cancel();
-										_timerTask = null;
-									}
-									_timer.cancel();
-									_timer = null;
+						@Override
+						public void expired() {
+							_pauseButton.setSelection(false);
+							_tableViewer.refresh();
+							_messageTable.setMessageUpdatePause(false);
+							if (_timer != null) {
+								if (_timerTask != null) {
+									_timerTask.cancel();
+									_timerTask = null;
 								}
+								_timer.cancel();
+								_timer = null;
 							}
-						});
-						_timer.schedule(_timerTask, 100000, 100000);
+						}
+					});
+					_timer.schedule(_timerTask, 100000, 100000);
 				} else {
 					if (_timer != null) {
 						if (_timerTask != null) {

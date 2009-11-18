@@ -27,10 +27,14 @@ package org.csstudio.alarm.table;
 import org.csstudio.alarm.dbaccess.MessageTypes;
 import org.csstudio.alarm.dbaccess.archivedb.ILogMessageArchiveAccess;
 import org.csstudio.alarm.dbaccess.archivedb.IMessageTypes;
+import org.csstudio.alarm.table.dataModel.AlarmMessageList;
+import org.csstudio.alarm.table.dataModel.IMessageListService;
+import org.csstudio.alarm.table.dataModel.LogMessageList;
 import org.csstudio.alarm.table.jms.ISendMapMessage;
 import org.csstudio.alarm.table.jms.SendMapMessage;
 import org.csstudio.alarm.table.preferences.ISeverityMapping;
 import org.csstudio.alarm.table.preferences.SeverityMapping;
+import org.csstudio.alarm.table.preferences.TopicSet;
 import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.platform.ui.AbstractCssUiPlugin;
 import org.eclipse.ui.plugin.*;
@@ -70,6 +74,10 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
 
 	private ISendMapMessage _sendMapMessage;
 	
+	private ServiceReference _serviceReferenceMessageListService;
+
+	private IMessageListService _messageListService;
+	
 
     /**
 	 * The constructor.
@@ -87,11 +95,21 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
 	 * This method is called upon plug-in activation
 	 */
 	public void doStart(BundleContext context) throws Exception {
-        ISeverityMapping severityMapping = new SeverityMapping();
+        IMessageListService messageListService = new MessageListService();
+		
+		ServiceRegistration messageListServiceRegistration = context.registerService(
+                IMessageListService.class.getName(), messageListService, null);
+
+		_serviceReferenceMessageListService = context.getServiceReference(IMessageListService.class.getName());
+		if (_serviceReferenceMessageListService != null) {
+			_messageListService = (IMessageListService) context.getService(_serviceReferenceMessageListService);
+		}
+
+		ISeverityMapping severityMapping = new SeverityMapping();
 		
 		ServiceRegistration severityMappingRegistration = context.registerService(
-                ISeverityMapping.class.getName(), severityMapping, null);
-
+				ISeverityMapping.class.getName(), severityMapping, null);
+		
 		_serviceReferenceSeverityMapping = context.getServiceReference(ISeverityMapping.class.getName());
 		if (_serviceReferenceSeverityMapping != null) {
 			_severityMapping = (ISeverityMapping) context.getService(_serviceReferenceSeverityMapping);
@@ -123,6 +141,10 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
 	public void doStop(BundleContext context) throws Exception {
 	    context.ungetService(_serviceReferenceMessageTypes);
 	    context.ungetService(_serviceReferenceArchiveAccess);
+	    context.ungetService(_serviceReferenceMessageListService);
+	    context.ungetService(_serviceReferenceSendMapMessage);
+	    context.ungetService(_serviceReferenceSeverityMapping);
+	    
 		plugin = null;
 	}
 
@@ -185,5 +207,9 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
 
     public ISendMapMessage getSendMapMessage() {
     	return _sendMapMessage;
+    }
+
+    public IMessageListService getMessageListService() {
+    	return _messageListService;
     }
 }

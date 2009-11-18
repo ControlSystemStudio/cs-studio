@@ -28,7 +28,7 @@ import java.util.List;
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.SendAcknowledge;
 import org.csstudio.alarm.table.dataModel.AlarmMessage;
-import org.csstudio.alarm.table.dataModel.AlarmMessageList;
+import org.csstudio.alarm.table.dataModel.MessageList;
 import org.csstudio.alarm.table.internal.localization.Messages;
 import org.csstudio.alarm.table.jms.JmsAlarmMessageReceiver;
 import org.csstudio.alarm.table.preferences.JmsLogPreferenceConstants;
@@ -54,6 +54,12 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IViewReference;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * Add to the base class {@link LogView}: acknowledge button and combo box, send
@@ -113,25 +119,27 @@ public class AlarmView extends LogView {
 		_topicSetColumnService = new TopicSetColumnService(
 				AlarmViewPreferenceConstants.TOPIC_SET,
 				AlarmViewPreferenceConstants.P_STRINGAlarm);
+		_messageListService = JmsLogsPlugin.getDefault()
+		.getMessageListService();
 
-		_jmsMessageReceiver = new JmsAlarmMessageReceiver();
+//		_jmsMessageReceiver = new JmsAlarmMessageReceiver();
 		initializeMessageTable();
 		_pauseButton.addSelectionListener(new SelectionListener() {
-			
+
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				if(_pauseButton.getSelection()) {
+				if (_pauseButton.getSelection()) {
 					_ackButton.setEnabled(false);
 				} else {
 					_ackButton.setEnabled(true);
 				}
-				
+
 			}
-			
+
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
 		});
 
@@ -172,7 +180,7 @@ public class AlarmView extends LogView {
 			_messageTable.disposeMessageTable();
 			_tableViewer = null;
 			_messageTable = null;
-			_messageList = null;
+//			_messageList = null;
 		}
 		if (_tableComposite != null) {
 			_tableComposite.dispose();
@@ -196,11 +204,13 @@ public class AlarmView extends LogView {
 			_tableViewer.getTable().setFont(font);
 		}
 
-	
 		GridData gridData2 = new GridData(GridData.FILL, GridData.FILL, true,
 				true);
 		_tableViewer.getTable().setLayoutData(gridData2);
-		_messageList = new AlarmMessageList();
+		MessageList messageList = _messageListService.getAlarmMessageList(
+				_topicSetColumnService.getJMSTopics(_currentTopicSet));
+
+//		_messageList = new AlarmMessageList();
 		// setup message table with context menu etc.
 
 		String[] columnSet = _topicSetColumnService
@@ -211,14 +221,14 @@ public class AlarmView extends LogView {
 			columnSetWithAck[i + 1] = columnSet[i];
 		}
 		_messageTable = new AlarmMessageTable(_tableViewer, columnSetWithAck,
-				_messageList);
-		_jmsMessageReceiver.initializeJMSConnection(_topicSetColumnService
-				.getJMSTopics(_currentTopicSet), _messageList);
+				messageList);
+//		_jmsMessageReceiver.initializeJMSConnection(_topicSetColumnService
+//				.getJMSTopics(_currentTopicSet), _messageList);
 		_messageTable.makeContextMenu(getSite());
-		setCurrentTimeToRunningSince();
+		setCurrentTimeToRunningSince(messageList.getStartTime());
 
-		_columnMapping = new AlarmExchangeableColumnWidthPreferenceMapping(_tableViewer,
-				_currentTopicSet);
+		_columnMapping = new AlarmExchangeableColumnWidthPreferenceMapping(
+				_tableViewer, _currentTopicSet);
 		addControlListenerToColumns(AlarmViewPreferenceConstants.P_STRINGAlarm,
 				AlarmViewPreferenceConstants.TOPIC_SET);
 		getSite().setSelectionProvider(_tableViewer);
@@ -349,6 +359,56 @@ public class AlarmView extends LogView {
 					((JmsAlarmMessageReceiver) _jmsMessageReceiver)
 							.setPlayAlarmSound(false);
 				}
+				understandingViews();
+			}
+
+			private void understandingViews() {
+				IWorkbench workbench = PlatformUI.getWorkbench();
+				IWorkbenchWindow[] workbenchWindows = workbench
+						.getWorkbenchWindows();
+				for (IWorkbenchWindow iWorkbenchWindow : workbenchWindows) {
+					System.out.println("WorkbenchWindows: "
+							+ iWorkbenchWindow.toString());
+					IWorkbenchPage[] iWorkbenchPages = iWorkbenchWindow
+							.getPages();
+					for (IWorkbenchPage iWorkbenchPage : iWorkbenchPages) {
+						System.out.println("WorkbenchPages: "
+								+ iWorkbenchPage.toString() + ", Label: "
+								+ iWorkbenchPage.getLabel());
+//						IEditorReference[] editorReferences = iWorkbenchPage
+//								.getEditorReferences();
+//						for (IEditorReference iEditorReference : editorReferences) {
+//							System.out.println("EditorReferences, id: "
+//									+ iEditorReference.getId() + ", name: "
+//									+ iEditorReference.getName() + ", title: "
+//									+ iEditorReference.getTitle());
+//						}
+						IViewReference[] viewReferences = iWorkbenchPage
+								.getViewReferences();
+						for (IViewReference iViewReference : viewReferences) {
+							System.out.println("ViewReference, id: "
+									+ iViewReference.getId() + ", sec.id: "
+									+ iViewReference.getSecondaryId()
+									+ ", name: " + iViewReference.getPartName()
+									+ ", title: " + iViewReference.getTitle());
+							IViewPart viewPart = iViewReference.getView(false);
+							if (viewPart != null) {
+							System.out.println("ViewPart: "
+									+ viewPart.toString() + ", title: "
+									+ viewPart.getTitle());
+							} else {
+								System.out.println("ViewPart is null");
+							}
+						}
+					}
+				}
+				IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+				System.out.println("active WorkbenchWindow: "
+						+ window.toString());
+				IWorkbenchPage page = window.getActivePage();
+				System.out.println("active WorkbenchPage: " + page.toString()
+						+ ", Label: " + page.getLabel());
+
 			}
 
 			public void widgetDefaultSelected(SelectionEvent e) {
@@ -363,8 +423,8 @@ public class AlarmView extends LogView {
 	public void dispose() {
 		_jmsMessageReceiver.stopJMSConnection();
 		_jmsMessageReceiver = null;
-//		_columnMapping.saveColumn(AlarmViewPreferenceConstants.P_STRINGAlarm,
-//				AlarmViewPreferenceConstants.TOPIC_SET);
+		// _columnMapping.saveColumn(AlarmViewPreferenceConstants.P_STRINGAlarm,
+		// AlarmViewPreferenceConstants.TOPIC_SET);
 		_messageTable = null;
 		// JmsLogsPlugin.getDefault().getPluginPreferences()
 		// .removePropertyChangeListener(_propertyChangeListener);

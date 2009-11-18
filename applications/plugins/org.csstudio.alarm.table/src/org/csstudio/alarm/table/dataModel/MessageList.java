@@ -21,9 +21,12 @@
  */
 package org.csstudio.alarm.table.dataModel;
 
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.Vector;
 
 /**
@@ -39,7 +42,18 @@ abstract public class MessageList {
      * Listeners to update on changes.
      */
     private Set<IMessageViewer> changeListeners = new HashSet<IMessageViewer>();
+    
+    /**
+     * Time when the list is started.
+     */
+	private Date _startTime;
 
+	
+	public MessageList() {
+		_startTime = (new GregorianCalendar(TimeZone
+				.getTimeZone("ECT"))).getTime();
+	}
+	
     /**
      * Add a new Message to the collection of Messages
      */
@@ -102,4 +116,8 @@ abstract public class MessageList {
 
 
     abstract public Integer getSize();
+
+	public Date getStartTime() {
+		return _startTime;
+	}
 }

@@ -21,7 +21,6 @@
  */
 package org.csstudio.alarm.table.dataModel;
 
-import java.util.Iterator;
 import java.util.Vector;
 
 import org.csstudio.platform.logging.CentralLogger;

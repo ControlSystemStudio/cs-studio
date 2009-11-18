@@ -83,6 +83,15 @@ public class AlarmMessageTableLabelProvider extends MessageTableLabelProvider im
         }
     }
 
+    public Color getForeground(Object element, int columnIndex) {
+		AlarmMessage jmsm = (AlarmMessage) element;
+		if (jmsm.isOutdated()) {
+			return new Color(null, 100, 100, 100);
+		} else {
+			return null;
+		}
+    }
+
     /**
 	 * Check the severity of the current message (element) and
 	 * return the color defined in the preference pages.
@@ -92,9 +101,9 @@ public class AlarmMessageTableLabelProvider extends MessageTableLabelProvider im
 	public Color getBackground(Object element, int columnIndex) {
 		AlarmMessage jmsm = (AlarmMessage) element;
         Color backgroundColor = readSeverityColor(jmsm);
-		if (jmsm.isOutdated()) {
-		    backgroundColor = _severityColorOutdated.get(jmsm.getProperty("SEVERITY_KEY"));
-		}
+//		if (jmsm.isOutdated()) {
+//		    backgroundColor = _severityColorOutdated.get(jmsm.getProperty("SEVERITY_KEY"));
+//		}
 		return backgroundColor;
 	}
 }

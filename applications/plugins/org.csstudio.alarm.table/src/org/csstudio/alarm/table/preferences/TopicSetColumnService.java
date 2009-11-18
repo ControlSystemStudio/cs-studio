@@ -2,14 +2,11 @@ package org.csstudio.alarm.table.preferences;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 import org.csstudio.alarm.table.JmsLogsPlugin;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
 
 /**
  * Service to handle the relation between topic sets and column sets.
@@ -121,12 +118,12 @@ public class TopicSetColumnService {
 	 * @param currentTopicSet
 	 * @return
 	 */
-	public List<String> getJMSTopics(String currentTopicSet) {
+	public TopicSet getJMSTopics(String currentTopicSet) {
 		for (TopicSet topicSetTmp : _topicSets) {
 			if (topicSetTmp.getName().equals(currentTopicSet)) {
-				return topicSetTmp.getTopics();
+				return topicSetTmp;
 			}
 		}
-		return _topicSets.get(0).getTopics();
+		return _topicSets.get(0);
 	}
 }
