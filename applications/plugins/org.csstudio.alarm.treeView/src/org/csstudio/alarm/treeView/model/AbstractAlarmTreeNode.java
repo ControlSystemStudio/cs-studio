@@ -21,7 +21,10 @@
  */
 package org.csstudio.alarm.treeView.model;
 
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.core.runtime.PlatformObject;
 
@@ -32,37 +35,63 @@ import org.eclipse.core.runtime.PlatformObject;
  */
 public abstract class AbstractAlarmTreeNode extends PlatformObject implements
 		IAlarmTreeNode {
-
-	/**
-	 * The name of the CSS alarm display associated with this node.
-	 */
-	private String _cssAlarmDisplay;
 	
 	/**
-	 * The URL of the help page for this node.
+	 * The properties of this node.
 	 */
-	private URL _helpPage;
-	
-	/**
-	 * The help guidance string for this node.
-	 */
-	private String _helpGuidance;
-	
-	/**
-	 * The name of the CSS display file associated with this node.
-	 */
-	private String _cssDisplay;
-	
-	/**
-	 * The name of the CSS strip chart file associated with this node.
-	 */
-	private String _cssStripChart;
+	private Map<AlarmTreeNodePropertyId, String> _properties;
 
 	/**
 	 * Creates a new abstract alarm tree node.
 	 */
 	public AbstractAlarmTreeNode() {
-		super();
+		_properties = new HashMap<AlarmTreeNodePropertyId, String>();
+	}
+
+	/**
+	 * Sets a property of this node.
+	 * 
+	 * @param property
+	 *            the property to set.
+	 * @param value
+	 *            the value.
+	 */
+	public final void setProperty(AlarmTreeNodePropertyId property, String value) {
+		if (value != null) {
+			_properties.put(property, value);
+		} else {
+			_properties.remove(property);
+		}
+	}
+
+	/**
+	 * Returns the value of a property. If the property is not set on this node,
+	 * the value will be inherited from its parent node.
+	 * 
+	 * @param property
+	 *            the property.
+	 * @return the property value, or <code>null</code> if the property is not
+	 *         set on this node or a parent node.
+	 */
+	public final String getProperty(AlarmTreeNodePropertyId property) {
+		String result = _properties.get(property);
+		if (result == null && getParent() != null) {
+			result = getParent().getProperty(property);
+		}
+		return result;
+	}
+
+	/**
+	 * Returns the property value that is set on this node. The value is not
+	 * inherited from a parent node if no value is set on this node.
+	 * 
+	 * @param property
+	 *            the property.
+	 * @return the property value, or <code>null</code> if the property is not
+	 *         set on this node.
+	 */
+	public final String getOwnProperty(AlarmTreeNodePropertyId property) {
+		return _properties.get(property);
 	}
 
 	/**
@@ -70,21 +99,21 @@ public abstract class AbstractAlarmTreeNode extends PlatformObject implements
 	 * @param display the CSS alarm display for this node.
 	 */
 	public final void setCssAlarmDisplay(final String display) {
-		this._cssAlarmDisplay = display;
+		setProperty(AlarmTreeNodePropertyId.CSS_ALARM_DISPLAY, display);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public final String getCssAlarmDisplay() {
-		return _cssAlarmDisplay;
+		return getProperty(AlarmTreeNodePropertyId.CSS_ALARM_DISPLAY);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public final String getCssDisplay() {
-		return _cssDisplay;
+		return getProperty(AlarmTreeNodePropertyId.CSS_DISPLAY);
 	}
 
 	/**
@@ -92,7 +121,7 @@ public abstract class AbstractAlarmTreeNode extends PlatformObject implements
 	 * @param cssDisplay the name of the CSS display for this node.
 	 */
 	public final void setCssDisplay(final String cssDisplay) {
-		_cssDisplay = cssDisplay;
+		setProperty(AlarmTreeNodePropertyId.CSS_DISPLAY, cssDisplay);
 	}
 
 	/**
@@ -100,14 +129,18 @@ public abstract class AbstractAlarmTreeNode extends PlatformObject implements
 	 * @param helpPage the help page URI.
 	 */
 	public final void setHelpPage(final URL helpPage) {
-		this._helpPage = helpPage;
+		setProperty(AlarmTreeNodePropertyId.HELP_PAGE, helpPage.toString());
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public final URL getHelpPage() {
-		return _helpPage;
+		try {
+			return new URL(getProperty(AlarmTreeNodePropertyId.HELP_PAGE));
+		} catch (MalformedURLException e) {
+			return null;
+		}
 	}
 
 	/**
@@ -115,21 +148,21 @@ public abstract class AbstractAlarmTreeNode extends PlatformObject implements
 	 * @param helpGuidance a help guidance string.
 	 */
 	public final void setHelpGuidance(final String helpGuidance) {
-		this._helpGuidance = helpGuidance;
+		setProperty(AlarmTreeNodePropertyId.HELP_GUIDANCE, helpGuidance);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public final String getHelpGuidance() {
-		return _helpGuidance;
+		return getProperty(AlarmTreeNodePropertyId.HELP_GUIDANCE);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public final String getCssStripChart() {
-		return _cssStripChart;
+		return getProperty(AlarmTreeNodePropertyId.CSS_STRIP_CHART);
 	}
 
 	/**
@@ -137,7 +170,7 @@ public abstract class AbstractAlarmTreeNode extends PlatformObject implements
 	 * @param cssStripChart the name of the file.
 	 */
 	public final void setCssStripChart(final String cssStripChart) {
-		_cssStripChart = cssStripChart;
+		setProperty(AlarmTreeNodePropertyId.CSS_STRIP_CHART, cssStripChart);
 	}
 
 }

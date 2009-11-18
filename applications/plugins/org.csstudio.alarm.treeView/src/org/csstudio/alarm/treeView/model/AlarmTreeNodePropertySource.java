@@ -66,31 +66,6 @@ public class AlarmTreeNodePropertySource implements IPropertySource2 {
 		 * Property ID of the object class property. 
 		 */
 		OBJECT_CLASS,
-		
-		/**
-		 * Property ID of the help page property.
-		 */
-		HELP_PAGE,
-		
-		/**
-		 * Property ID of the help guidance property.
-		 */
-		HELP_GUIDANCE,
-		
-		/**
-		 * Property ID of the CSS alarm display property.
-		 */
-		CSS_ALARM_DISPLAY,
-		
-		/**
-		 * Property ID of the CSS display property.
-		 */
-		CSS_DISPLAY,
-		
-		/**
-		 * Property ID of the CSS strip chart property.
-		 */
-		CSS_STRIP_CHART,
 	}
 
 	static {
@@ -109,27 +84,27 @@ public class AlarmTreeNodePropertySource implements IPropertySource2 {
 		PROPERTY_DESCRIPTORS[1] = descriptor;
 		
 		// help page
-		descriptor = new TextPropertyDescriptor(PropertyID.HELP_PAGE, "help page");
+		descriptor = new TextPropertyDescriptor(AlarmTreeNodePropertyId.HELP_PAGE, "help page");
 		descriptor.setDescription("The help page. This should be the URL of a web page.");
 		PROPERTY_DESCRIPTORS[2] = descriptor;
 		
 		// help guidance
-		descriptor = new TextPropertyDescriptor(PropertyID.HELP_GUIDANCE, "help guidance");
+		descriptor = new TextPropertyDescriptor(AlarmTreeNodePropertyId.HELP_GUIDANCE, "help guidance");
 		descriptor.setDescription("A short description of the object.");
 		PROPERTY_DESCRIPTORS[3] = descriptor;
 		
 		// CSS alarm display
-		descriptor = new TextPropertyDescriptor(PropertyID.CSS_ALARM_DISPLAY, "alarm display");
+		descriptor = new TextPropertyDescriptor(AlarmTreeNodePropertyId.CSS_ALARM_DISPLAY, "alarm display");
 		descriptor.setDescription("The CSS alarm display.");
 		PROPERTY_DESCRIPTORS[4] = descriptor;
 		
 		// CSS display
-		descriptor = new TextPropertyDescriptor(PropertyID.CSS_DISPLAY, "display");
+		descriptor = new TextPropertyDescriptor(AlarmTreeNodePropertyId.CSS_DISPLAY, "display");
 		descriptor.setDescription("The CSS display.");
 		PROPERTY_DESCRIPTORS[5] = descriptor;
 		
 		// CSS strip chart
-		descriptor = new TextPropertyDescriptor(PropertyID.CSS_STRIP_CHART, "strip chart");
+		descriptor = new TextPropertyDescriptor(AlarmTreeNodePropertyId.CSS_STRIP_CHART, "strip chart");
 		descriptor.setDescription("The CSS strip chart.");
 		PROPERTY_DESCRIPTORS[6] = descriptor;
 	}
@@ -162,30 +137,17 @@ public class AlarmTreeNodePropertySource implements IPropertySource2 {
 	 */
 	public final Object getPropertyValue(final Object id) {
 		if (id instanceof PropertyID) {
-			String result;
 			switch ((PropertyID) id) {
 			case NAME:
 				return _node.getName();
 			case OBJECT_CLASS:
 				return _node.getObjectClass().getObjectClassName();
-			case HELP_PAGE:
-				URL page = _node.getHelpPage();
-				return (page != null) ? page.toString() : "";
-			case HELP_GUIDANCE:
-				result = _node.getHelpGuidance();
-				return (result != null) ? result : "";
-			case CSS_ALARM_DISPLAY:
-				result = _node.getCssAlarmDisplay();
-				return (result != null) ? result : "";
-			case CSS_DISPLAY:
-				result = _node.getCssDisplay();
-				return (result != null) ? result : "";
-			case CSS_STRIP_CHART:
-				result = _node.getCssStripChart();
-				return (result != null) ? result : "";
 			default:
 				return null;
 			}
+		} else if (id instanceof AlarmTreeNodePropertyId) {
+			String result = _node.getOwnProperty((AlarmTreeNodePropertyId) id);
+			return (result != null) ? result : "";
 		}
 		return null;
 	}
@@ -200,20 +162,12 @@ public class AlarmTreeNodePropertySource implements IPropertySource2 {
 			case OBJECT_CLASS:
 				// no default value, always return true.
 				return true;
-			case HELP_PAGE:
-				return _node.getHelpPage() != null;
-			case HELP_GUIDANCE:
-				return _node.getHelpGuidance() != null;
-			case CSS_ALARM_DISPLAY:
-				return _node.getCssAlarmDisplay() != null;
-			case CSS_DISPLAY:
-				return _node.getCssDisplay() != null;
-			case CSS_STRIP_CHART:
-				return _node.getCssStripChart() != null;
 			default:
 				// this source does not have the specified property
 				return false;
 			}
+		} else if (id instanceof AlarmTreeNodePropertyId) {
+			return _node.getOwnProperty((AlarmTreeNodePropertyId) id) != null;
 		}
 		return false;
 	}
@@ -222,9 +176,9 @@ public class AlarmTreeNodePropertySource implements IPropertySource2 {
 	 * {@inheritDoc}
 	 */
 	public final void resetPropertyValue(final Object id) {
-		if (id instanceof PropertyID) {
+		if (id instanceof AlarmTreeNodePropertyId) {
 			try {
-				switch ((PropertyID) id) {
+				switch ((AlarmTreeNodePropertyId) id) {
 				case HELP_PAGE:
 					DirectoryEditor.modifyHelpPage(_node, null);
 					break;
@@ -254,13 +208,13 @@ public class AlarmTreeNodePropertySource implements IPropertySource2 {
 	 * {@inheritDoc}
 	 */
 	public final void setPropertyValue(final Object id, final Object value) {
-		if (id instanceof PropertyID) {
+		if (id instanceof AlarmTreeNodePropertyId) {
 			try {
 				String str = (String) value;
 				if (str.equals("")) {
 					str = null;
 				}
-				switch ((PropertyID) id) {
+				switch ((AlarmTreeNodePropertyId) id) {
 				case HELP_GUIDANCE:
 					DirectoryEditor.modifyHelpGuidance(_node, str);
 					break;
@@ -296,10 +250,10 @@ public class AlarmTreeNodePropertySource implements IPropertySource2 {
 	 * {@inheritDoc}
 	 */
 	public final boolean isPropertyResettable(final Object id) {
-		return id == PropertyID.HELP_PAGE
-			|| id == PropertyID.HELP_GUIDANCE
-			|| id == PropertyID.CSS_ALARM_DISPLAY
-			|| id == PropertyID.CSS_DISPLAY
-			|| id == PropertyID.CSS_STRIP_CHART;
+		return id == AlarmTreeNodePropertyId.HELP_PAGE
+			|| id == AlarmTreeNodePropertyId.HELP_GUIDANCE
+			|| id == AlarmTreeNodePropertyId.CSS_ALARM_DISPLAY
+			|| id == AlarmTreeNodePropertyId.CSS_DISPLAY
+			|| id == AlarmTreeNodePropertyId.CSS_STRIP_CHART;
 	}
 }
