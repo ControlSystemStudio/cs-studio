@@ -81,6 +81,10 @@ public class InstallExamplesAction extends Action implements
 					IProject dctProject = root.getProject("DCT Demo Project");
 					IProject snlProject = root.getProject("SNL Demo Project");
 
+					if(sdsProject.exists() || dctProject.exists() || snlProject.exists()) {
+						return Status.OK_STATUS;
+					}
+					
 					sdsProject.create(new NullProgressMonitor());
 					dctProject.create(new NullProgressMonitor());
 					snlProject.create(new NullProgressMonitor());
