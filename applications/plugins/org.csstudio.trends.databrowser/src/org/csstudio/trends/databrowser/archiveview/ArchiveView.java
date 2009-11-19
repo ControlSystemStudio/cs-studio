@@ -387,7 +387,9 @@ public class ArchiveView extends ViewPart
         name_table_viewer.getControl().setMenu(menu);
         site.registerContextMenu(manager, name_table_viewer);
         
-        // Get the URLs from preferences.
+        // Load the user's last values
+        url_helper.loadSettings();
+        // Then always add URLs from preferences.
         final String urls[] = Preferences.getArchiveServerURLs();
         for (int i=0; i<urls.length; ++i)
         {
@@ -396,10 +398,6 @@ public class ArchiveView extends ViewPart
         }
         url.setEnabled(true);
         replace_results.setSelection(true);
-        
-        // Then load the user's last values, which might cause values
-        // from prefs to drop off the list
-        url_helper.loadSettings();
         
         // Load previously entered patterns
         pattern_helper.loadSettings();
