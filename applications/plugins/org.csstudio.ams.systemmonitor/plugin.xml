@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         id="AmsSystemMonitorApplication"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run
+               class="org.csstudio.ams.systemmonitor.AmsSystemMonitorApplication">
+         </run>
+      </application>
+   </extension>
+   <extension
+         id="AmsSystemMonitorProduct"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.csstudio.ams.systemmonitor.AmsSystemMonitorApplication"
+            name="AmsSystemMonitor">
+         <property
+               name="appName"
+               value="AmsSystemMonitor">
+         </property>
+      </product>
+   </extension>
+
+</plugin>
