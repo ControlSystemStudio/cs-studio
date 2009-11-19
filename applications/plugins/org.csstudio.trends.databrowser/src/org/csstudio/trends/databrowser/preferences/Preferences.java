@@ -64,6 +64,9 @@ public class Preferences
     /** Identifier for the auto-scale preference. */
     public static final String ARCHIVE_RESCALE = "archive_rescale";    
 
+    /** Identifier for preference to use default archives. */
+    public static final String USE_DEFAULT_ARCHIVES = "use_default_archives";    
+    
     /** Identifier for the plot bin preference. */
     public static final String PLOT_BINS = "plot_bins";
     
@@ -151,6 +154,13 @@ public class Preferences
     {
         final IPreferencesService prefs = Platform.getPreferencesService();
         return prefs.getBoolean(Plugin.ID, SHOW_ARCHIVE_START_TIMES, false, null);
+    }
+    
+    /** @return Use 'default' archives instead of configuration file info? */
+    static public boolean getUseDefaultArchives()
+    {
+        final IPreferencesService prefs = Platform.getPreferencesService();
+        return prefs.getBoolean(Plugin.ID, USE_DEFAULT_ARCHIVES, true, null);
     }
     
     /** @return Default setting for 'show sample file import action'. */

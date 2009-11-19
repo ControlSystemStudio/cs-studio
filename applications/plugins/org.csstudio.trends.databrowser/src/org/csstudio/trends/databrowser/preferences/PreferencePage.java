@@ -99,8 +99,15 @@ public class PreferencePage extends FieldEditorPreferencePage implements
         addField(new BooleanFieldEditor(Preferences.AUTOSCALE,
                 Messages.Label_Autoscale, parent));
 
+        // One column
+        addField(new BooleanFieldEditor(Preferences.USE_DEFAULT_ARCHIVES,
+                Messages.Label_DefaultArchives, parent));
+
+        
         // These again will 2 columns
         addField(new URLListEditor(Preferences.URLS, parent));
         addField(new ArchiveListEditor(Preferences.ARCHIVES, parent));
+
+
     }
 }

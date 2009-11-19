@@ -235,17 +235,26 @@ public class PVModelItem
                           line_width, trace_type, log_scale,
                           request_type);
         
-        // Get archives, if there are any
-        Element arch = DOMHelper.findFirstElementNode(
-                                    pv.getFirstChild(), TAG_ARCHIVE);
-        while (arch != null)
+        if (Preferences.getUseDefaultArchives())
+        {   // Use default archives
+            final IArchiveDataSource archives[] = Preferences.getArchiveDataSources();
+            for (IArchiveDataSource arch : archives)
+                item.silentlyAddArchiveDataSource(arch);
+        }
+        else
         {
-            final String arch_name = DOMHelper.getSubelementString(arch, TAG_NAME);
-            final String url = DOMHelper.getSubelementString(arch, TAG_URL);
-            final int key = DOMHelper.getSubelementInt(arch, TAG_KEY);
-            item.silentlyAddArchiveDataSource(
-                CentralItemFactory.createArchiveDataSource(url, key, arch_name));            
-            arch = DOMHelper.findNextElementNode(arch, TAG_ARCHIVE);
+            // Get archives from configuration, if there are any
+            Element arch = DOMHelper.findFirstElementNode(
+                                        pv.getFirstChild(), TAG_ARCHIVE);
+            while (arch != null)
+            {
+                final String arch_name = DOMHelper.getSubelementString(arch, TAG_NAME);
+                final String url = DOMHelper.getSubelementString(arch, TAG_URL);
+                final int key = DOMHelper.getSubelementInt(arch, TAG_KEY);
+                item.silentlyAddArchiveDataSource(
+                    CentralItemFactory.createArchiveDataSource(url, key, arch_name));            
+                arch = DOMHelper.findNextElementNode(arch, TAG_ARCHIVE);
+            }
         }
         return item;
     }
