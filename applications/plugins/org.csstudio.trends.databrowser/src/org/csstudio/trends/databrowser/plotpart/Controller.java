@@ -350,7 +350,7 @@ public class Controller implements ArchiveFetchJobListener
                     if (item instanceof IPVModelItem)
                     {
                         IPVModelItem pv_item = (IPVModelItem) item;
-                        Controller.this.model.addDefaultArchiveSources(pv_item);
+                        pv_item.useDefaultArchiveDataSources();
                     }
                 }
 

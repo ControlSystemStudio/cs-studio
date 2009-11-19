@@ -18,6 +18,7 @@ import org.csstudio.platform.model.CentralItemFactory;
 import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.swt.chart.TraceType;
 import org.csstudio.trends.databrowser.Plugin;
+import org.csstudio.trends.databrowser.preferences.Preferences;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;
@@ -454,7 +455,17 @@ public class PVModelItem
             }
         }
     }
-        
+    
+    /** Replace archive data sources with default */
+    public void useDefaultArchiveDataSources()
+    {
+        archives.clear();
+        final IArchiveDataSource archives[] = Preferences.getArchiveDataSources();
+        for (IArchiveDataSource arch : archives)
+            silentlyAddArchiveDataSource(arch);
+        model.fireEntryArchivesChanged(this);
+    }
+
     /** Format as string */
     @SuppressWarnings("nls")
     @Override

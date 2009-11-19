@@ -34,7 +34,7 @@ public class AddPVAction extends AbstractAddModelItemAction
 	    try
 	    {
 	        final IPVModelItem pv_item = model.addPV(pv_name);
-	        model.addDefaultArchiveSources(pv_item);
+	        pv_item.useDefaultArchiveDataSources();
 	    }
 	    catch (Throwable ex)
 	    {

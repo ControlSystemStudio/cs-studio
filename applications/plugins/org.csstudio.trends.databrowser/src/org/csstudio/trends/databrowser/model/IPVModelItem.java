@@ -93,4 +93,7 @@ public interface IPVModelItem extends IModelItem
     
     /** Move given archive data source 'down' in the list. */
     public void moveArchiveDataSourceDown(IArchiveDataSource archive);
+
+    /** Replace archive data sources with default */
+    public void useDefaultArchiveDataSources();
 }

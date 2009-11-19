@@ -22,6 +22,9 @@ public class Messages extends NLS
     public static String Color;
     public static String ConfigPV;
     public static String ConfigPVUpdates;
+    
+    public static String DefaultArchives;
+    public static String DefaultArchivesTT;
     public static String Delete;
     public static String DeleteSelectedEntry;
     public static String Down;

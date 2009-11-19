@@ -113,6 +113,7 @@ public class ConfigView extends PlotAwareView
     private Action delete_pv_action;
     private Action archive_up_action, archive_down_action;
     private Action delete_archive_action;
+    private Action default_archives_action;
     private Action import_from_file_action;
 
     // Sash Section for ArchiveDataSources
@@ -279,6 +280,7 @@ public class ConfigView extends PlotAwareView
         archive_up_action = new ArchiveUpAction(this);
         archive_down_action = new ArchiveDownAction(this);
         delete_archive_action = new DeleteArchiveAction(this);
+        default_archives_action = new DefaultArchivesAction(this);
         import_from_file_action = new ImportFileAction(this);
         makePVContextMenu(getSite());
         makeArchiveContextMenu(getSite());
@@ -951,6 +953,7 @@ public class ConfigView extends PlotAwareView
         manager.add(archive_up_action);
         manager.add(archive_down_action);
         manager.add(delete_archive_action);
+        manager.add(default_archives_action);
         // Other plug-ins can contribute their actions here
         manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
         Menu menu = manager.createContextMenu(pv_table_viewer.getControl());
@@ -1149,7 +1152,7 @@ public class ConfigView extends PlotAwareView
         try
         {
             final IPVModelItem pv_item = model.addPV(name);
-            model.addDefaultArchiveSources(pv_item);
+            pv_item.useDefaultArchiveDataSources();
             return pv_item;
         }
         catch (Throwable ex)
