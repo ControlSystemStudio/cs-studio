@@ -8,8 +8,8 @@ import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartFactory;
 
 /**The central factory to create editpart for all widgets.
+ * @author Sven Wende (similar class in SDS)
  * @author Xihui Chen
- *
  */
 public class WidgetEditPartFactory implements EditPartFactory {
 
