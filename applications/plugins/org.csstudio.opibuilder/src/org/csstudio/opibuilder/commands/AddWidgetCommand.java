@@ -8,6 +8,7 @@ import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.eclipse.gef.commands.Command;
 
 /**Add widgets to container 
+ * @author Sven Wende & Stefan Hofer (class of same name in SDS)
  * @author Xihui Chen
  *
  */

@@ -8,9 +8,9 @@ import org.csstudio.opibuilder.widgets.model.PolygonModel;
 import org.eclipse.draw2d.IFigure;
 
 /**
- * EditPart controller for the Polygon widget. The controller mediates between
- * {@link PolygonModel} and {@link PolygonFigure}.
+ * Editpart of polygon widget.
  * 
+ * @author Sven Wende & Stefan Hofer (similar class as in SDS)
  * @author Xihui Chen
  * 
  */

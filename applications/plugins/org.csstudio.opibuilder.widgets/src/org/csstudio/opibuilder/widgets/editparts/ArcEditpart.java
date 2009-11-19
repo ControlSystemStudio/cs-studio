@@ -28,7 +28,8 @@ import org.csstudio.opibuilder.widgets.model.ArcModel;
 import org.eclipse.draw2d.IFigure;
 
 /**The controller for arc widget.
- * @author jbercic (original author), Xihui Chen (import from SDS since 2009/9)
+ * @author jbercic (similar class in SDS)
+ * @author Xihui Chen
  *
  */
 public class ArcEditpart extends AbstractShapeEditPart {

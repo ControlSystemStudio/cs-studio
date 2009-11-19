@@ -55,8 +55,8 @@ import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
 
 /**The abstract base model for display and all widgets .
- * @author Xihui Chen, Alexander Will, Sven Wende, Stefan Hofer (part of the code is copied from SDS)
- *
+ *@author Alexander Will, Sven Wende, Stefan Hofer (similar class in SDS)
+ * @author Xihui Chen
  */
 public abstract class AbstractWidgetModel implements IAdaptable,
 		IPropertySource {

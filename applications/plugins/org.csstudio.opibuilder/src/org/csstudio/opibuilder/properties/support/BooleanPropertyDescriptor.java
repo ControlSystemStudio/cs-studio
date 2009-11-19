@@ -45,7 +45,7 @@ import org.eclipse.ui.views.properties.PropertyDescriptor;
  * 
  * </p>
  * 
- * @author Kai Meyer, Xihui Chen
+ * @author Kai Meyer (original author), Xihui Chen
  */
 public final class BooleanPropertyDescriptor extends PropertyDescriptor {
 

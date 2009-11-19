@@ -33,7 +33,9 @@ import org.eclipse.draw2d.IFigure;
 
 /**
  * The listener on widget property change.
- * @author Xihui Chen, Sven Wende (part of the code is copied from SDS)
+ * 
+ * @author Sven Wende (class of same name in SDS)
+ * @author Xihui Chen, 
  *
  */
 public class WidgetPropertyChangeListener implements PropertyChangeListener {

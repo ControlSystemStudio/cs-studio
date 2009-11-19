@@ -9,9 +9,9 @@ import org.csstudio.opibuilder.widgets.model.PolyLineModel.ArrowType;
 import org.eclipse.draw2d.IFigure;
 
 /**
- * EditPart controller for the Polyline widget. The controller mediates between
- * {@link PolylineModel} and {@link PolylineFigure}.
- * 
+ *Editpart for polyline widget.
+ *
+ * @author Sven Wende, Alexander Will (similar class as in SDS)
  * @author Xihui Chen
  * 
  */

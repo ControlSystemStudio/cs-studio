@@ -17,6 +17,7 @@ import org.eclipse.gef.RequestConstants;
 import org.eclipse.swt.widgets.Display;
 
 /**The editpart for Label widget.
+ * @author jbercic (class of same name in SDS)
  * @author Xihui Chen
  *
  */

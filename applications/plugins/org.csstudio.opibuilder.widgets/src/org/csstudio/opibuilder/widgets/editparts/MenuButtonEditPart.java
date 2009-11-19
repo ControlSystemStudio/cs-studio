@@ -140,17 +140,6 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
 			menu.setLocation(x, y);
 			menu.setVisible(true);
 			
-			
-			// 2008-10-14: swende: The following lines prevent the menu actions from being executed consequently. 
-			// What was the sense for that? A problem on Mac systems?
-//			while (!menu.isDisposed() && menu.isVisible()) {
-//				if (!Display.getCurrent().readAndDispatch()) {
-//					Display.getCurrent().sleep();
-//				}
-//			}
-//			menu.dispose();
-			// shell.setFocus();
-			
 		}
 	}
 

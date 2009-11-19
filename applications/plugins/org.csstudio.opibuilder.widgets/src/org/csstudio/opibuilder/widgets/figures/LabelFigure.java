@@ -9,7 +9,7 @@ import org.eclipse.draw2d.text.TextFlow;
 import org.eclipse.swt.graphics.Font;
 
 /**
- * A Figure with a bent corner and an embedded TextFlow within a FlowPage that contains
+ * A Figure with an embedded TextFlow within a FlowPage that contains
  * text.
  *
  * @author Xihui Chen

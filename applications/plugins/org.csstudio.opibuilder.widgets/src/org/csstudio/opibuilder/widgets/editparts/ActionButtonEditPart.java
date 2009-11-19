@@ -26,7 +26,7 @@ import org.eclipse.swt.graphics.Image;
 /**
  * EditPart controller for the ActioButton widget. The controller mediates
  * between {@link ActionButtonModel} and {@link ActionButtonFigure}.
- * 
+ * @author Sven Wende (class of same name in SDS)
  * @author Xihui Chen
  * 
  */

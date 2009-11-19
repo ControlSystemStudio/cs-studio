@@ -25,8 +25,8 @@ package org.csstudio.opibuilder.properties;
 /**
  * Categories of widget properties.
  * 
- * @author Sven Wende (orignal author), Xihui Chen
- * 
+ * @author Sven Wende (similar class as in SDS), 
+ * @author Xihui Chen 
  */
 public interface WidgetPropertyCategory {
 	

@@ -9,6 +9,7 @@ import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.jdom.Element;
 
 /**
+ * @author Sven Wende (class of same name in SDS)
  * @author Xihui Chen
  *
  */

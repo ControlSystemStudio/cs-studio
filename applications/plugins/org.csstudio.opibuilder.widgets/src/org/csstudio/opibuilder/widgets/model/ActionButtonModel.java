@@ -16,6 +16,7 @@ import org.eclipse.core.runtime.Path;
 /**
  * An action button widget model.
  * 
+ * @author Sven Wende (class of same name in SDS)
  * @author Xihui Chen
  * 
  */

@@ -5,6 +5,7 @@ import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.eclipse.gef.commands.Command;
 
 /**Orphan a child from its parent.
+ * @author Alexander Will (class of same name in SDS)
  * @author Xihui Chen
  *
  */

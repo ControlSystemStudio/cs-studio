@@ -6,6 +6,7 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.gef.commands.Command;
 
 /**The command to change the order of a child.
+ * @author Kai Meyer (class of same name in SDS)
  * @author Xihui Chen
  *
  */

@@ -6,6 +6,7 @@ import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 
 
 /**The widget model 
+ * @author jbercic (class of same name in SDS)
  * @author Xihui Chen
  *
  */

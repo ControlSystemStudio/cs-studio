@@ -29,7 +29,8 @@ import org.csstudio.opibuilder.widgets.model.EllipseModel;
 import org.eclipse.draw2d.IFigure;
 
 /**The controller for ellipse widget.
- * @author Stefan Hofer & Sven Wende (original author), Xihui Chen (import from SDS since 2009/9)
+ * @author Stefan Hofer & Sven Wende (similar class in SDS)
+ * @author Xihui Chen
  *
  */
 public class EllipseEditpart extends AbstractShapeEditPart {

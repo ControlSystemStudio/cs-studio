@@ -12,6 +12,7 @@ import org.eclipse.draw2d.geometry.Rectangle;
 
 
 /**The model for polyline widget.
+ * @author Sven Wende, Alexander Will (class of same name in SDS)
  * @author Xihui Chen
  *
  */

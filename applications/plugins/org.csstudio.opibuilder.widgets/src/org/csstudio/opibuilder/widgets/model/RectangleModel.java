@@ -2,7 +2,9 @@ package org.csstudio.opibuilder.widgets.model;
 
 
 /**The model for rectangle widget.
- * @author Xihui Chen
+ * 
+ *@author Sven Wende, Alexander Will (class of same name in SDS)
+ *@author Xihui Chen
  *
  */
 public class RectangleModel extends AbstractShapeModel {
