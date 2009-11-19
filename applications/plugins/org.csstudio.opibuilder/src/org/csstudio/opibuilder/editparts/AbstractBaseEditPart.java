@@ -19,7 +19,6 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-
 package org.csstudio.opibuilder.editparts;
 
 import java.util.HashMap;
@@ -67,7 +66,8 @@ import org.eclipse.ui.IActionFilter;
 import org.eclipse.ui.progress.UIJob;
 
 /**The editpart for  {@link AbstractWidgetModel}
- * @author Xihui Chen, Sven Wende (part of the code is copied from SDS)
+ * @author Sven Wende (similar class in SDS)
+ * @author Xihui Chen
  *
  */
 public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{

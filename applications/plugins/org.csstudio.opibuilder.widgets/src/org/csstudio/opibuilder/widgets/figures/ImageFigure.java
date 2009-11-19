@@ -50,7 +50,7 @@ import org.eclipse.swt.widgets.Display;
 /**
  * An image figure.
  * 
- * @author jbercic (original author), Xihui Chen (since import from SDS 2009/10) 
+ * @author jbercic, Xihui Chen
  * 
  */
 

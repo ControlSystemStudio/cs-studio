@@ -7,7 +7,7 @@ import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 
 /**
  * The root model for an OPI Display.
- * @author Alexander Will, Sven Wende, Kai Meyer (similar class in SDS)
+ * @author Alexander Will, Sven Wende, Kai Meyer (class of same name in SDS)
  * @author Xihui Chen
  *
  */

@@ -30,7 +30,7 @@ import org.jdom.Element;
 /**
  * A property, which is able to handle Double values.
  * 
- * @author Xihui Chen, Sven Wende (part of the code is copied from SDS)
+ * @author Xihui Chen, Sven Wende (similar class as in SDS)
  * 
  */
 public final class DoubleProperty extends AbstractWidgetProperty {

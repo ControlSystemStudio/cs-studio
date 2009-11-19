@@ -27,7 +27,7 @@ import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.jdom.Element;
 
 /**The integer property.
- * @author Xihui Chen, Sven Wende (part of the code is copied from SDS)
+ * @author Xihui Chen, Sven Wende (similar class as in SDS)
  *
  */
 public class IntegerProperty extends AbstractWidgetProperty {

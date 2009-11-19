@@ -26,7 +26,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.ui.IActionFilter;
 
 /**The editpart for the root display.
- * @author Sven Wende (similar class in SDS)
+ * @author Sven Wende (class of same name in SDS)
  * @author Xihui Chen
  */
 public class DisplayEditpart extends AbstractContainerEditpart {

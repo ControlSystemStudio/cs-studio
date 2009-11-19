@@ -1,5 +1,5 @@
 /* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
@@ -55,7 +55,7 @@ import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
 
 /**The abstract base model for display and all widgets .
- *@author Alexander Will, Sven Wende, Stefan Hofer (similar class in SDS)
+ *@author Alexander Will, Sven Wende, Stefan Hofer (similar class of SDS)
  * @author Xihui Chen
  */
 public abstract class AbstractWidgetModel implements IAdaptable,

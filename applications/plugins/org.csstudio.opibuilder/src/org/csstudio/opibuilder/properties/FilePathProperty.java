@@ -32,7 +32,7 @@ import org.jdom.Element;
 
 /**
  * The property for file path, which is represented as an {@link IPath}.
- * @author Xihui Chen, Kai Meyer (part of the code is copied from SDS)
+ * @author Xihui Chen, Kai Meyer (similar class as in SDS)
  *
  */
 public class FilePathProperty extends AbstractWidgetProperty {
