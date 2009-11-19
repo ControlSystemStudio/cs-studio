@@ -585,8 +585,8 @@ public class SmsConnectorWork extends Thread implements AmsConstants
             // Create second subscriber (topic for the modem test) 
             result = amsReceiver.createRedundantSubscriber(
                     "amsSubscriberSmsModemtest",
-                    storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_TOPIC_SMS_CONNECTOR_MODEMTEST),
-                    storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_TSUB_SMS_CONNECTOR_MODEMTEST),
+                    storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_TOPIC_CONNECTOR_DEVICETEST),
+                    storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_TSUB_SMS_CONNECTOR_DEVICETEST),
                     durable);
             if(result == false)
             {

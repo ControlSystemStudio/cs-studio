@@ -161,9 +161,9 @@ public class SmsContainer implements AmsConstants
     }
 
     /**
-     * Creates a special Sms object from the given MapMessage object that starts a modem test.
+     * Creates a special Sms object from the given MapMessage object that starts a device(modem) test.
      * It takes the property CLASS from the message and creates the string MODEM_CHECK{$CLASS$}.
-     * Deprecated: It takes the property EVENTTIME from the message and creates the string MODEM_CHECK{$EVENTTIME$}.
+     * It checks if the receiver for this message is this connector. 
      * It acknowledges the JMS message.
      * 
      * @param message
@@ -173,6 +173,7 @@ public class SmsContainer implements AmsConstants
     {
         Sms sms = null;
         String checkId = null;
+        String dest = null;
         long timestamp = 0;
         int result = SmsConnectorStart.STAT_ERR_UNDEFINED;
         
@@ -196,22 +197,33 @@ public class SmsContainer implements AmsConstants
         else
         {
             MapMessage msg = (MapMessage) message;
-            
+                        
             try
             {
-                // eventTime = msg.getString("EVENTTIME");
-                checkId = msg.getString("CLASS");
-                timestamp = msg.getJMSTimestamp();
-                
-                if(!acknowledge(message))
+                dest = msg.getString("DESTINATION");
+                if(dest != null)
                 {
-                    result = SmsConnectorStart.STAT_ERR_JMSCON;
+                    if((dest.compareTo("*") == 0) || 
+                       (dest.compareToIgnoreCase(SmsConnectorPlugin.CONNECTOR_ID) == 0))
+                    {
+                        checkId = msg.getString("CLASS");
+                        timestamp = msg.getJMSTimestamp();
+                        
+                        if(!acknowledge(message))
+                        {
+                            result = SmsConnectorStart.STAT_ERR_JMSCON;
+                        }
+                        else
+                        {            
+                            sms = new Sms(timestamp, 1, "NONE", "MODEM_CHECK{" + checkId + "}", Sms.Type.OUT);
+                            content.add(sms);
+                            
+                            result = SmsConnectorStart.STAT_OK;
+                        }
+                    }
                 }
                 else
-                {            
-                    sms = new Sms(timestamp, 1, "NONE", "MODEM_CHECK{" + checkId + "}", Sms.Type.OUT);
-                    content.add(sms);
-                    
+                {
                     result = SmsConnectorStart.STAT_OK;
                 }
             }
