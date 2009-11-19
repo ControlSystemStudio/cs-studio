@@ -38,8 +38,8 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.actions.ActionFactory;
 
 /**The action to copy selected widgets to clipboard.
- * 
- * @author Xihui Chen, Joerg Rathlev (part of the code is copied from SDS)
+ * @author Joerg Rathlev (similar class in SDS)
+ * @author Xihui Chen
  *
  */
 public class CopyWidgetsAction extends SelectionAction {

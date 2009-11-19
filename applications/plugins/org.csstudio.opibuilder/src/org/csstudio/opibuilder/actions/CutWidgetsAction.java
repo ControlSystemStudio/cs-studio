@@ -6,6 +6,7 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.actions.ActionFactory;
 
 /**Cut widgets to clipboard.
+ *@author Joerg Rathlev (class of same name in SDS)
  * @author Xihui Chen
  *
  */
