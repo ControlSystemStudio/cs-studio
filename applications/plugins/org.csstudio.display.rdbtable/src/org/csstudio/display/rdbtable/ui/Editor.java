@@ -63,6 +63,14 @@ public class Editor extends EditorPart
         try
         {
             model = new RDBTableModel(file.getContents());
+        }
+        catch (Exception ex)
+        {
+            throw new PartInitException(NLS.bind("Error opening configuration file {0}", input.getName()), ex);
+        }
+        // Read initial data from RDB
+        try
+        {
             // Does this configuration require a user/password prompt?
             if (model.needPassword())
             {
@@ -82,7 +90,7 @@ public class Editor extends EditorPart
         }
         catch (Exception ex)
         {
-            throw new PartInitException(ex.getMessage());
+            throw new PartInitException("Error reading from database", ex);
         }
         // Set window title and message
         setPartName(file.getName());
