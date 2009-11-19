@@ -146,11 +146,11 @@ public final class PreferencesInitializer extends AbstractPreferenceInitializer 
         node.put(AmsPreferenceKey.P_JMS_AMS_TOPIC_MESSAGEMINDER, "T_AMS_MESSAGEMINDER");
         node.put(AmsPreferenceKey.P_JMS_AMS_TSUB_MESSAGEMINDER, "SUB_AMS_MESSAGEMINDER");
 
+        node.put(AmsPreferenceKey.P_JMS_AMS_TOPIC_CONNECTOR_DEVICETEST, "T_AMS_CON_DEVICETEST");
         node.put(AmsPreferenceKey.P_JMS_AMS_TOPIC_SMS_CONNECTOR, "T_AMS_CON_SMS");
         node.put(AmsPreferenceKey.P_JMS_AMS_TOPIC_SMS_CONNECTOR_FORWARD, "false");
-        node.put(AmsPreferenceKey.P_JMS_AMS_TOPIC_SMS_CONNECTOR_MODEMTEST, "T_AMS_CON_SMS_MODEMTEST");
         node.put(AmsPreferenceKey.P_JMS_AMS_TSUB_SMS_CONNECTOR, "SUB_AMS_CON_SMS");
-        node.put(AmsPreferenceKey.P_JMS_AMS_TSUB_SMS_CONNECTOR_MODEMTEST, "SUB_AMS_CON_SMS_MODEMTEST");
+        node.put(AmsPreferenceKey.P_JMS_AMS_TSUB_SMS_CONNECTOR_DEVICETEST, "SUB_AMS_CON_SMS_DEVICETEST");
         node.put(AmsPreferenceKey.P_JMS_AMS_TOPIC_EMAIL_CONNECTOR, "T_AMS_CON_MAIL");
         node.put(AmsPreferenceKey.P_JMS_AMS_TOPIC_EMAIL_CONNECTOR_FORWARD, "false");
         node.put(AmsPreferenceKey.P_JMS_AMS_TSUB_EMAIL_CONNECTOR, "SUB_AMS_CON_MAIL");

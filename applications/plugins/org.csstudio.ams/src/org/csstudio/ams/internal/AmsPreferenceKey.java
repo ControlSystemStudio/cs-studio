@@ -87,11 +87,11 @@ public class AmsPreferenceKey
 	public static final String P_JMS_AMS_TOPIC_REPLY = "jmsAmsTopicReply";
 	public static final String P_JMS_AMS_TSUB_REPLY = "jmsAmsTSubReply";
 
+	public static final String P_JMS_AMS_TOPIC_CONNECTOR_DEVICETEST = "jmsAmsTopicConnectorDeviceTest";
 	public static final String P_JMS_AMS_TOPIC_SMS_CONNECTOR = "jmsAmsTopicSmsConnector";
-    public static final String P_JMS_AMS_TOPIC_SMS_CONNECTOR_MODEMTEST = "jmsAmsTopicSmsConnectorModemtest";
     public static final String P_JMS_AMS_TOPIC_SMS_CONNECTOR_FORWARD = "jmsAmsTopicSmsConnectorForward";
 	public static final String P_JMS_AMS_TSUB_SMS_CONNECTOR = "jmsAmsTSubSmsConnector";
-	public static final String P_JMS_AMS_TSUB_SMS_CONNECTOR_MODEMTEST = "jmsAmsTSubSmsConnectorModemtest";
+	public static final String P_JMS_AMS_TSUB_SMS_CONNECTOR_DEVICETEST = "jmsAmsTSubSmsConnectorDeviceTest";
     public static final String P_JMS_AMS_TOPIC_EMAIL_CONNECTOR = "jmsAmsTopicEMailConnector";
     public static final String P_JMS_AMS_TOPIC_EMAIL_CONNECTOR_FORWARD = "jmsAmsTopicEMailConnectorForward";
 	public static final String P_JMS_AMS_TSUB_EMAIL_CONNECTOR = "jmsAmsTSubEMailConnector";
