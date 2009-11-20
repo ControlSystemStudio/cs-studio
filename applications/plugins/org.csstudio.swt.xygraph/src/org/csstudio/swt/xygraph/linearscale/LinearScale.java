@@ -159,9 +159,7 @@ public class LinearScale extends AbstractScale {
 	 */
 	public int getValuePosition(double value, boolean relative) {
 		updateTick();
-		//coerce to range
-		double min = getRange().getLower();
-        double max = getRange().getUpper();
+		//coerce to range		
 		//value = value < min ? min : (value > max ? max : value);
 		int pixelsToStart =0;
 		if(isLogScaleEnabled()){
@@ -224,7 +222,7 @@ public class LinearScale extends AbstractScale {
 	
 
     public boolean isHorizontal() {
-		return getOrientation() == Orientation.HORIZONTAL;
+		return orientation == Orientation.HORIZONTAL;
 	}
 
 

@@ -64,10 +64,10 @@ public abstract class AbstractScale extends Figure{
     private boolean logScaleEnabled = false;
     
 	/** The minimum value of the scale */
-	private double min = DEFAULT_MIN;
+    protected double min = DEFAULT_MIN;
 	
 	/** The maximum value of the scale */
-	private double max = DEFAULT_MAX;	
+	protected double max = DEFAULT_MAX;	
 
 	 /** the format for tick labels */
      private String formatPattern;
@@ -95,6 +95,8 @@ public abstract class AbstractScale extends Figure{
 
     private boolean autoFormat = true;
 	
+    private Range range = new Range(min, max);
+    
 	/**
      * Formats the given object.
      * 
@@ -146,7 +148,7 @@ public abstract class AbstractScale extends Figure{
 
 	/** get the scale range */ 
     public Range getRange() {
-        return new Range(min, max);
+        return range;
     }
 
 	
@@ -273,7 +275,7 @@ public abstract class AbstractScale extends Figure{
         }
         	
         logScaleEnabled = enabled;
-        
+        range = new Range(min, max);
         setDirty(true);
 		revalidate();
 		repaint();
@@ -359,7 +361,7 @@ public abstract class AbstractScale extends Figure{
         		formatPattern = default_decimal_format;
         	autoFormat = true;
         } 
-
+        range = new Range(min, max);
         setDirty(true);
         revalidate();
         repaint();
