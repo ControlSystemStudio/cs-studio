@@ -44,18 +44,23 @@ public abstract class AbstractDataProvider implements IDataProvider{
 	public abstract ISample getSample(int index);
 	
 	/**
-	 * update xDataMinMax and yDataMinMax whenever data changed.
+	 * the update needed when {@link #fireDataChange()} was called.
 	 */
 	protected abstract void innerUpdate();
+	
+	/**
+	 * update xDataMinMax and yDataMinMax whenever data changed.
+	 */
+	protected abstract void updateDataRange();
 	
 	/* (non-Javadoc)
 	 * @see org.csstudio.sns.widgets.figureparts.IDataProvider#getXDataMinMax()
 	 */
-	public Range getXDataMinMax(){
+	public Range getXDataMinMax(){		
 		if(getSize() <=0)
 			return null;
-		else
-			return xDataMinMax;
+		updateDataRange();
+		return xDataMinMax;
 	}
 	
 	/* (non-Javadoc)
@@ -64,8 +69,8 @@ public abstract class AbstractDataProvider implements IDataProvider{
 	public Range getYDataMinMax(){
 		if(getSize() <=0)
 			return null;
-		else
-			return yDataMinMax;
+		updateDataRange();
+		return yDataMinMax;
 	}
 	
 	/**

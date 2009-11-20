@@ -69,7 +69,7 @@ public class ColorMapEditDialog extends Dialog {
 	
 	private String title;
 	private Combo preDefinedMapCombo;
-	private double[][] mapData;
+	private double[] mapData;
 	private Label colorMapLabel;
 	private Image colorMapImage;
 
@@ -213,9 +213,9 @@ public class ColorMapEditDialog extends Dialog {
 		
 		colorMapLabel = new Label(group, SWT.None);
 		colorMapLabel.setLayoutData(new GridData(SWT.FILL, SWT.END, true, true));
-		mapData = new double[1][256];
+		mapData = new double[256];
 		for(int j=0; j<256; j++)
-			mapData[0][j] = j/255.0;
+			mapData[j] = j/255.0;
 			
 		refreshGUI();
 		

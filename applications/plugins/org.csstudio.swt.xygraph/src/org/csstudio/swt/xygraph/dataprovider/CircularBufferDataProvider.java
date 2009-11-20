@@ -89,6 +89,12 @@ public class CircularBufferDataProvider extends AbstractDataProvider{
 	private boolean duringDelay = false;
 	private boolean updateTriggered = false;
 	
+	
+	/**
+	 * this indicates if the max and min of the data need to be recalculated.
+	 */
+	private boolean dataRangedirty = false;
+	
 	private UpdateMode updateMode = UpdateMode.X_AND_Y;
 	
 	private PlotMode plotMode = PlotMode.LAST_N;
@@ -311,7 +317,7 @@ public class CircularBufferDataProvider extends AbstractDataProvider{
 			newXValueArray = currentXDataArray;
 			
 			// if the data array size is longer than buffer size, 
-			//just truncate the data at the tail.
+			//just ignore the tail data.
 			for(int i=0; i<Math.min(traceData.getBufferSize(),
 					Math.min(newXValueArray.length, currentYDataArray.length)); i++){
 				traceData.add(new Sample(newXValueArray[i], currentYDataArray[i]));
@@ -360,6 +366,14 @@ public class CircularBufferDataProvider extends AbstractDataProvider{
 
 	@Override
 	protected void innerUpdate() {
+		dataRangedirty = true;
+	}
+	
+	
+	protected void updateDataRange(){
+		if(!dataRangedirty)
+			return;
+		dataRangedirty = false;
 		if(getSize() > 0){
 			double xMin;
 			double xMax;
@@ -388,7 +402,6 @@ public class CircularBufferDataProvider extends AbstractDataProvider{
 			xDataMinMax = null;
 			yDataMinMax = null;
 		}
-		
 	}
 
 	/**
@@ -428,7 +441,7 @@ public class CircularBufferDataProvider extends AbstractDataProvider{
 	}
 	
 	@Override
-	protected void fireDataChange() {
+	protected synchronized void fireDataChange() {
 		if(updateDelay >0){
 			innerUpdate();			
 			if(!duringDelay){

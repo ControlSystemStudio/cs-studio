@@ -158,11 +158,12 @@ public class LinearScale extends AbstractScale {
 	 * @return position in pixels
 	 */
 	public int getValuePosition(double value, boolean relative) {
-		updateTick();
+		if(dirty)
+			updateTick();
 		//coerce to range		
 		//value = value < min ? min : (value > max ? max : value);
 		int pixelsToStart =0;
-		if(isLogScaleEnabled()){
+		if(logScaleEnabled){
 			if(value <=0)
 				value = min;
 			//	throw new IllegalArgumentException(
@@ -173,12 +174,12 @@ public class LinearScale extends AbstractScale {
 			pixelsToStart = (int) ((value - min)/(max-min)*(length-2*margin)) + margin;
 		
 		if(relative) {
-			if(isHorizontal())
+			if(orientation == Orientation.HORIZONTAL)
 				return pixelsToStart;
 			else
 				return length - pixelsToStart;
 		} else {
-			if(isHorizontal())
+			if(orientation == Orientation.HORIZONTAL)
 				return pixelsToStart + bounds.x;
 			else
 				return length - pixelsToStart + bounds.y;

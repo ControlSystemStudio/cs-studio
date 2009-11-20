@@ -20,16 +20,16 @@ public class ColorMapRamp extends Figure {
 
 	private double min, max;
 	
-	private double[][] mapData;
+	private double[] mapData;
 	
 	private ColorMap colorMap;
 	private LinearScale scale;
 	private ColorMapFigure colorMapFigure;
 	private final static int RAMP_WIDTH = 25;
 	public ColorMapRamp() {
-		mapData = new double[256][1];
+		mapData = new double[256];
 		for(int j=0; j<256; j++)
-			mapData[j][0] = 1-j/255.0;
+			mapData[j] = 1-j/255.0;
 		min = 0;
 		max = 1;
 		colorMap = new ColorMap(PredefinedColorMap.GrayScale, true, true);

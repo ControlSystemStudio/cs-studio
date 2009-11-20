@@ -198,22 +198,15 @@ public class IntensityGraphFigure extends Figure {
 				return;
 			}
 										
-			double[][] graphData = new double[dataHeight][dataWidth];
 			//padding with zero if the array length is not long enough
 			if(dataArray.length < dataWidth * dataHeight){
 				double[] originalData = dataArray;			
 				dataArray = new double[dataWidth*dataHeight];
 			    System.arraycopy(originalData, 0, dataArray, 0,originalData.length);
 			}
-				
-			for(int y = 0; y < dataHeight; y++){
-				for(int x = 0; x<dataWidth; x++){
-					graphData[y][x] = dataArray[y*dataWidth + x];					
-				}
-			}
-			
+	
 			Image image = new Image(Display.getCurrent(), 
-					colorMap.drawImage(graphData, dataWidth, dataHeight, max, min));
+					colorMap.drawImage(dataArray, dataWidth, dataHeight, max, min));
 			graphics.drawImage(image, new Rectangle(image.getBounds()), clientArea);
 			image.dispose();			
 		}

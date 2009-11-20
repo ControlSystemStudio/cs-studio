@@ -61,7 +61,7 @@ public abstract class AbstractScale extends Figure{
     private String default_decimal_format = "############.##";    
 	
     /** the state if the axis scale is log scale */
-    private boolean logScaleEnabled = false;
+    protected boolean logScaleEnabled = false;
     
 	/** The minimum value of the scale */
     protected double min = DEFAULT_MIN;
@@ -77,7 +77,7 @@ public abstract class AbstractScale extends Figure{
     
      /** Whenever any parameter has been  changed, the scale should be marked as dirty, 
       * so all the inner parameters could be recalculated before the next paint*/
-    private boolean dirty = true;
+    protected boolean dirty = true;
 
     private boolean dateEnabled = false;
     

@@ -57,7 +57,7 @@ public class Range {
      * @return true if the value is in the range. Otherwise false.
      */
     public boolean inRange(double value){
-    	return inRange(value, true);
+    	return value >= lower && value <= upper;
     }
     /*
      * @see Object#toString()

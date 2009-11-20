@@ -490,7 +490,7 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 				IFigure refreshableFigure) {
 			Trace trace = traceList.get(traceIndex);
 			setTraceProperty(trace, traceProperty, newValue);			
-			return true;
+			return false;
 		}
 	}
 

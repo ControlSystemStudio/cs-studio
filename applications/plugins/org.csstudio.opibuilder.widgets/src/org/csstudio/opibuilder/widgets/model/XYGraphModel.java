@@ -341,7 +341,7 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 	//		addProperty(new DoubleProperty(propID, traceProperty.toString(), category, 0));
 	//		break;
 		case UPDATE_DELAY:
-			addProperty(new IntegerProperty(propID, traceProperty.toString(), category, 0, 0, 655350));
+			addProperty(new IntegerProperty(propID, traceProperty.toString(), category, 100, 0, 655350));
 			break;
 		case UPDATE_MODE:
 			addProperty(new ComboProperty(propID, traceProperty.toString(), category, UpdateMode.stringValues(), 

@@ -165,7 +165,6 @@ public class ColorMap {
 		else 
 			return "Customized";
 	}
-	
 	/**Calculate the image data from source data based on the color map.
 	 * @param dataArray the source data
 	 * @param dataWidth number of columns of dataArray; This will be the width of image data.
@@ -174,17 +173,19 @@ public class ColorMap {
 	 * @param min the lower limit of the data in dataArray
 	 * @return the image data. null if dataWidth or dataHeight is less than 1.
 	 */
-	public ImageData drawImage(double[][] dataArray, int dataWidth, int dataHeight, double max, double min){
+	public ImageData drawImage(double[] dataArray, int dataWidth, int dataHeight, double max, double min){
 		if(dataWidth <1 || dataHeight < 1)
 			return null;
 		PaletteData palette = new PaletteData(0xff, 0xff00, 0xff0000);
-		ImageData imageData = new ImageData(dataWidth,dataHeight, 24, palette);			
+		ImageData imageData = new ImageData(dataWidth,dataHeight, 24, palette);	
+		if(colorsLookupTable == null)
+			getColorsLookupTable();
 		if(autoScale){
 			for(int y = 0; y < dataHeight; y++){
 				for(int x = 0; x<dataWidth; x++){					
 					//the index of the value in the color table array					
-					int index = (int) ((dataArray[y][x]-min)/(max-min)*255);									
-					int pixel = palette.getPixel(getColorsLookupTable()[index]);
+					int index = (int) ((dataArray[y*dataWidth + x]-min)/(max-min)*255);									
+					int pixel = palette.getPixel(colorsLookupTable[index]);
 					imageData.setPixel(x, y, pixel);
 				}
 			}
@@ -210,7 +211,7 @@ public class ColorMap {
 		
 		for(int y = 0; y < dataHeight; y++){
 			for(int x = 0; x<dataWidth; x++){
-				double value = dataArray[y][x];
+				double value = dataArray[y*dataWidth + x];
 				//scale the value to [0,1]
 				if(autoScale){
 					value = (value-min)/(max-min);
@@ -222,6 +223,7 @@ public class ColorMap {
 		
 		return imageData;
 	}
+		
 	
 	/**
 	 * @param colorTupleArray
