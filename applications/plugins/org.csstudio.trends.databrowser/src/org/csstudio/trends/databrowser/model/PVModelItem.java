@@ -145,6 +145,7 @@ public class PVModelItem
         model.fireEntryRemoved(this);
         // Now change name
         name = new_name;
+        display_name = name;
         pv = createPV(name);
         // Invalidate the samples we got because it's now a new PV
         samples.clear();

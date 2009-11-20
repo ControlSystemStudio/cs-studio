@@ -49,7 +49,7 @@ public abstract class AbstractModelItem
     protected String name;
 
     /** The preferred display name of this item. */
-    private String display_name;
+    protected String display_name;
     
     /** Start/end index of visible sample range */
     private int start_index, end_index;
