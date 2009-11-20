@@ -162,7 +162,7 @@ public class SmsConnectorCheck extends ACheckProcessor
             // Timeout?
             if(currentTime > endTime)
             {
-                throw new AmsSystemMonitorException("Timeout! Sent message could not be received.", AmsSystemMonitorException.ERROR_CODE_TIMEOUT);
+                throw new AmsSystemMonitorException("Timeout!", AmsSystemMonitorException.ERROR_CODE_TIMEOUT);
             }
             else
             {
@@ -171,11 +171,11 @@ public class SmsConnectorCheck extends ACheckProcessor
         }
         else if(result == CheckResult.ERROR)
         {
-            throw new AmsSystemMonitorException("Error response from the SmsConnector." + messageHelper.getErrorText(), AmsSystemMonitorException.ERROR_CODE_SMS_CONNECTOR_ERROR);
+            throw new AmsSystemMonitorException("ERROR - " + messageHelper.getErrorText(), AmsSystemMonitorException.ERROR_CODE_SMS_CONNECTOR_ERROR);
         }
         else if(result == CheckResult.WARN)
         {
-            throw new AmsSystemMonitorException("Warn response from the SmsConnector: " + messageHelper.getErrorText(), AmsSystemMonitorException.ERROR_CODE_SMS_CONNECTOR_WARN);
+            throw new AmsSystemMonitorException("WARN - " + messageHelper.getErrorText(), AmsSystemMonitorException.ERROR_CODE_SMS_CONNECTOR_WARN);
         }
     }
 }

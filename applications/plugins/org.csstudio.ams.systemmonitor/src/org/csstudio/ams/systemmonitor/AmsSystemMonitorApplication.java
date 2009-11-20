@@ -308,30 +308,39 @@ public class AmsSystemMonitorApplication implements IApplication
                     // No effect here
                     monitorStatusHandler.forceNextCheck();
                 }
-                else if((asme.getErrorCode() == AmsSystemMonitorException.ERROR_CODE_SMS_CONNECTOR_ERROR)
-                        || (asme.getErrorCode() == AmsSystemMonitorException.ERROR_CODE_TIMEOUT))
+                else if(asme.getErrorCode() == AmsSystemMonitorException.ERROR_CODE_TIMEOUT)
                 {
-                    if(asme.getErrorCode() == AmsSystemMonitorException.ERROR_CODE_SMS_CONNECTOR_ERROR)
+
+                    logger.warn("Timeout!");
+                    modemStatusHandler.setCurrentStatus(CheckResult.TIMEOUT);
+                    
+                    logger.info("Number of timeouts: " + modemStatusHandler.getNumberOfTimeouts());
+                    if(modemStatusHandler.getNumberOfTimeouts() > allowedTimeout)
                     {
-                        logger.warn("SmsConnector does not work properly.");
                         modemStatusHandler.setCurrentStatus(CheckResult.ERROR);
-                    }
-                    else if(asme.getErrorCode() == AmsSystemMonitorException.ERROR_CODE_TIMEOUT)
-                    {
-                        logger.warn("Timeout!");
-                        modemStatusHandler.setCurrentStatus(CheckResult.TIMEOUT);
-                        
-                        logger.info("Number of timeouts: " + modemStatusHandler.getNumberOfTimeouts());
-                        if(modemStatusHandler.getNumberOfTimeouts() > allowedTimeout)
-                        {
-                            modemStatusHandler.setCurrentStatus(CheckResult.ERROR);
-                            modemStatusHandler.setErrorStatusSet(true);
-                        }
+                        modemStatusHandler.setErrorStatusSet(true);
                     }
                     
                     if(modemStatusHandler.sendErrorSms())
                     {
                         sendErrorSms("SmsConnector does NOT respond to the current check: " + asme.getMessage() + " HOWTO:64");
+                        modemStatusHandler.setSmsSent(true);
+                    }
+                    else
+                    {
+                        logger.info("AmsSystemMonitor does not send a SMS yet.");
+                    }
+                    
+                    modemStatusHandler.forceNextCheck();
+                }
+                else if(asme.getErrorCode() == AmsSystemMonitorException.ERROR_CODE_SMS_CONNECTOR_ERROR)
+                {
+                    logger.warn("SmsConnector does not work properly.");
+                    modemStatusHandler.setCurrentStatus(CheckResult.ERROR);
+                    
+                    if(modemStatusHandler.sendErrorSms())
+                    {
+                        sendErrorSms("SmsConnector responds a modem problem: " + asme.getMessage() + " HOWTO:64");
                         modemStatusHandler.setSmsSent(true);
                     }
                     else
