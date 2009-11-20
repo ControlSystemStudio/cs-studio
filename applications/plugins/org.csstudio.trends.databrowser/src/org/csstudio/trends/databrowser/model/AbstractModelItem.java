@@ -244,9 +244,11 @@ public abstract class AbstractModelItem
     /** @param new_name New display name */
     public void setDisplayName(final String new_name)
     {
-        display_name = new_name;
         // Name change looks like remove/add back in
+        // Remove item under current name
         model.fireEntryRemoved(this);
+        // Now change the display name and add w/ new name
+        display_name = new_name;
         model.fireEntryAdded(this);
     }
     

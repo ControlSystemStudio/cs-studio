@@ -538,7 +538,7 @@ public class Controller implements ArchiveFetchJobListener
     {
         for (int i=0; i<chart.getNumTraces(); ++i)
             if (getModelItemName(chart.getTrace(i))
-                    .equals(removed_item.getName()))
+                    .equals(removed_item.getDisplayName()))
             {
                 chart.removeTrace(i);
                 return;
