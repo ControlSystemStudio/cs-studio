@@ -424,6 +424,7 @@ public class ConfigView extends PlotAwareView
         CellEditor editors[] = new CellEditor[columns.length];
         editors[PVTableHelper.Column.VISIBLE.ordinal()] = new CheckboxCellEditor(table);
         editors[PVTableHelper.Column.NAME.ordinal()] = new TextCellEditor(table);
+        editors[PVTableHelper.Column.DISPLAY_NAME.ordinal()] = new TextCellEditor(table);
         editors[PVTableHelper.Column.MIN.ordinal()] = new TextCellEditor(table);
         editors[PVTableHelper.Column.MAX.ordinal()] = new TextCellEditor(table);
         if (use_axis_combobox)

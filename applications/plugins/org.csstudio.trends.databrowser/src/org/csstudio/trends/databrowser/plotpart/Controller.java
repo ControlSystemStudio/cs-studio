@@ -517,10 +517,10 @@ public class Controller implements ArchiveFetchJobListener
     {
         final String units = item.getUnits();
         if (units.length() > 0)
-            return item.getName() + Messages.UnitMarkerStart
+            return item.getDisplayName() + Messages.UnitMarkerStart
                                     + units + Messages.UnitMarkerEnd;
         // else
-        return item.getName();
+        return item.getDisplayName();
     }
     
     /** @return the item name for a trace. */

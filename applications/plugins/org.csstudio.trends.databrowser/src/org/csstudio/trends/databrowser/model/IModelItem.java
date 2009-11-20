@@ -15,6 +15,11 @@ import org.eclipse.swt.graphics.Color;
  */
 public interface IModelItem extends IProcessVariableWithSamples
 {
+    /** @return Preferred display name for the plot, which might
+     *          differ from the PV or formula name
+     */
+    public String getDisplayName();
+    
     /**  @param index of <u>visible</u> Sample 
      *   @return the Sample with index
      *   @see IProcessVariableWithSamples#size()
@@ -26,6 +31,9 @@ public interface IModelItem extends IProcessVariableWithSamples
     
     /** Change the name of this entry. */
     public void changeName(String new_name);
+    
+    /** @param new_name New display name */
+    public void setDisplayName(String new_name);
     
 	/** @return The axis index. */
 	public int getAxisIndex();

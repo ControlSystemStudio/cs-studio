@@ -61,6 +61,7 @@ public class PVModelItem
     /** Constructor
      *  @param model Model
      *  @param pv_name Name of the PV
+     *  @param display_name
      *  @param live_buffer_size Live sample buffer size
      *  @param axis_index The Y axis to use [0, 1, ...]
      *  @param min,
@@ -81,6 +82,7 @@ public class PVModelItem
      *  @see #stop
      */
     public PVModelItem(final Model model, final String pv_name,
+            final String display_name,
             final int live_buffer_size,
             final int axis_index, final double min, final double max,
             final boolean trace_visible, final boolean axis_visible,
@@ -91,7 +93,7 @@ public class PVModelItem
             final boolean log_scale,
             final RequestType request_type)
     {
-        super(model, pv_name, axis_index, min, max, trace_visible,
+        super(model, pv_name, display_name, axis_index, min, max, trace_visible,
               axis_visible, auto_scale,
               red, green , blue, line_width, trace_type, log_scale);
         pv = createPV(pv_name);
@@ -216,6 +218,7 @@ public class PVModelItem
         final String name = DOMHelper.getSubelementString(pv, TAG_NAME);
         if (name.length() <= 0)
             return null;
+        final String display_name = DOMHelper.getSubelementString(pv, TAG_DISPLAY_NAME);
         final int axis_index = DOMHelper.getSubelementInt(pv, TAG_AXIS, 0);
         final int line_width = DOMHelper.getSubelementInt(pv, TAG_LINEWIDTH, 0);
         final double min = DOMHelper.getSubelementDouble(pv, TAG_MIN, 0.0);
@@ -229,7 +232,7 @@ public class PVModelItem
         final RequestType request_type = loadRequestTypeFromDOM(pv);
         
         final PVModelItem item =
-            new PVModelItem(model, name, ring_size, axis_index,
+            new PVModelItem(model, name, display_name, ring_size, axis_index,
                           min, max, trace_visible, axis_visible, auto_scale,
                           rgb[0], rgb[1], rgb[2],
                           line_width, trace_type, log_scale,

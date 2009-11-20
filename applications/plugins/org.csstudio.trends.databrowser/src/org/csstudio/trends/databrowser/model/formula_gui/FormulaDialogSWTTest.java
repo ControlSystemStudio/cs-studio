@@ -31,7 +31,7 @@ public class FormulaDialogSWTTest
         model.addPV("jane");
         model.addPV("janet");
 
-        FormulaModelItem formula = new FormulaModelItem(model, "calc",
+        FormulaModelItem formula = new FormulaModelItem(model, "calc", null,
                         0, 0, 0, true, true, false, 0, 0, 0, 0,
                         TraceType.Lines, false);
         FormulaInput inputs[] = new FormulaInput[]

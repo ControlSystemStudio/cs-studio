@@ -42,6 +42,7 @@ public class FormulaModelItem extends AbstractModelItem
 
     /** Constructor */
     public FormulaModelItem(Model model, String pv_name,
+                            final String display_name,
                             int axis_index, double min, double max,
                             boolean trace_visible,
                             boolean axis_visible,
@@ -51,7 +52,7 @@ public class FormulaModelItem extends AbstractModelItem
                             TraceType trace_type,
                             boolean log_scale)
     {
-        super(model, pv_name, axis_index, min, max, trace_visible,
+        super(model, pv_name, display_name, axis_index, min, max, trace_visible,
               axis_visible, auto_scale,
               red, green, blue, line_width, trace_type, log_scale);
         if (invalid_severity == null)
@@ -203,6 +204,7 @@ public class FormulaModelItem extends AbstractModelItem
         final String name = DOMHelper.getSubelementString(pv, TAG_NAME);
         if (name.length() <= 0)
             return null;
+        final String display_name = DOMHelper.getSubelementString(pv, TAG_DISPLAY_NAME);
         final int axis_index = DOMHelper.getSubelementInt(pv, TAG_AXIS, 0);
         final int line_width = DOMHelper.getSubelementInt(pv, TAG_LINEWIDTH, 0);
         final double min = DOMHelper.getSubelementDouble(pv, TAG_MIN, 0.0);
@@ -214,7 +216,7 @@ public class FormulaModelItem extends AbstractModelItem
         final boolean log_scale = DOMHelper.getSubelementBoolean(pv, TAG_LOG_SCALE);
         final TraceType trace_type = loadTraceTypeFromDOM(pv);
         final FormulaModelItem item =
-            new FormulaModelItem(model, name, axis_index,
+            new FormulaModelItem(model, name, display_name, axis_index,
                       min, max, trace_visible, axis_visible,
                       auto_scale, rgb[0], rgb[1], rgb[2],
                       line_width, trace_type, log_scale);

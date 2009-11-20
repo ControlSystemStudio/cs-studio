@@ -39,6 +39,7 @@ public abstract class AbstractModelItem
     static final String TAG_LINEWIDTH = "linewidth"; //$NON-NLS-1$
     static final String TAG_AXIS = "axis"; //$NON-NLS-1$
     static final String TAG_NAME = "name"; //$NON-NLS-1$
+    static final String TAG_DISPLAY_NAME = "display_name"; //$NON-NLS-1$
     static final String TAG_INPUT = "input"; //$NON-NLS-1$
     
     /** The model to which this item belongs. */
@@ -46,6 +47,9 @@ public abstract class AbstractModelItem
     
     /** The name of this item. */
     protected String name;
+
+    /** The preferred display name of this item. */
+    private String display_name;
     
     /** Start/end index of visible sample range */
     private int start_index, end_index;
@@ -105,6 +109,7 @@ public abstract class AbstractModelItem
      *  @param log_scale
      */
     AbstractModelItem(final Model model, final String pv_name,
+            final String display_name,
             final int axis_index, final double min, final double max,
             final boolean trace_visible,
             final boolean axis_visible,
@@ -116,6 +121,10 @@ public abstract class AbstractModelItem
     {
         this.model = model;
         name = pv_name;
+        if (display_name != null  &&  display_name.length() > 0)
+            this.display_name = display_name;
+        else
+            this.display_name = name;
         this.axis_index = axis_index;
         this.axis_low = min;
         this.axis_high = max;
@@ -199,6 +208,14 @@ public abstract class AbstractModelItem
              return all_samples.get(start_index + index);
          }
      }
+     
+     /** @return Preferred display name for the plot, which might
+      *          differ from the PV or formula name
+      */
+     public String getDisplayName()
+     {
+         return display_name;
+     }
     
     /** Base implementation for changing the name.
      *  Derived classes might also need to change PV names etc.
@@ -219,7 +236,17 @@ public abstract class AbstractModelItem
         model.fireEntryRemoved(this);
         // Now change name
         name = new_name;
+        display_name = name;
         // and add
+        model.fireEntryAdded(this);
+    }
+    
+    /** @param new_name New display name */
+    public void setDisplayName(final String new_name)
+    {
+        display_name = new_name;
+        // Name change looks like remove/add back in
+        model.fireEntryRemoved(this);
         model.fireEntryAdded(this);
     }
     
@@ -425,6 +452,7 @@ public abstract class AbstractModelItem
     protected void addCommonXMLConfig(final StringBuilder b)
     {
         XMLHelper.XML(b, 3, TAG_NAME, name);
+        XMLHelper.XML(b, 3, TAG_DISPLAY_NAME, display_name);
         XMLHelper.XML(b, 3, TAG_AXIS, Integer.toString(axis_index));
         XMLHelper.XML(b, 3, TAG_LINEWIDTH, Integer.toString(line_width));
         XMLHelper.XML(b, 3, TAG_MIN, Double.toString(axis_low));

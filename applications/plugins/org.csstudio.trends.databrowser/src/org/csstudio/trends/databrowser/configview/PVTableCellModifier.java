@@ -58,6 +58,7 @@ public class PVTableCellModifier implements ICellModifier
             case VISIBLE:
                 return new Boolean(entry.isVisible());
             case NAME:
+            case DISPLAY_NAME:
                 break; // use string
             case AXIS:
                 // If we edit Axis index in combo box.
@@ -164,6 +165,9 @@ public class PVTableCellModifier implements ICellModifier
             return;
         case NAME:
             entry.changeName(value.toString());
+            return;
+        case DISPLAY_NAME:
+            entry.setDisplayName(value.toString());
             return;
         case AXIS:
             final int new_axis = Integer.valueOf(value.toString());

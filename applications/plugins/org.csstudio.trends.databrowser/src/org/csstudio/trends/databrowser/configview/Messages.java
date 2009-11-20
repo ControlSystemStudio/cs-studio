@@ -27,6 +27,7 @@ public class Messages extends NLS
     public static String DefaultArchivesTT;
     public static String Delete;
     public static String DeleteSelectedEntry;
+    public static String DisplayName;
     public static String Down;
     public static String DisplayType;
     public static String EmptyPVRowMarker;

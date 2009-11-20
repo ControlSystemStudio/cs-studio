@@ -18,11 +18,11 @@ public class FormulaModelItemTest
     public void testModelItemScan() throws Exception
     {
         final Model model = new Model();
-        PVModelItem fred = new PVModelItem(model, "fred",
+        PVModelItem fred = new PVModelItem(model, "fred", null,
                         1024, 0, 0, 0, true, true, false, 0, 0, 0, 0,
                         TraceType.Lines, false,
                         IPVModelItem.RequestType.OPTIMIZED);
-        PVModelItem janet = new PVModelItem(model, "janet",
+        PVModelItem janet = new PVModelItem(model, "janet", null,
                         1024, 0, 0, 0, true, true, false, 0, 0, 0, 0,
                         TraceType.Lines, false,
                         IPVModelItem.RequestType.OPTIMIZED);
@@ -54,7 +54,7 @@ public class FormulaModelItemTest
         dumpSamples(janet.getSamples());
         
         System.out.println("Formula:");
-        FormulaModelItem formula = new FormulaModelItem(model, "calc",
+        FormulaModelItem formula = new FormulaModelItem(model, "calc", null,
                         0, 0, 0, true, true, false, 0, 0, 0, 0,
                         TraceType.Lines, false);
         FormulaInput inputs[] = new FormulaInput[]

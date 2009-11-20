@@ -18,7 +18,7 @@ public class PVModelItemTest
     public void testModelItemScan() throws Exception
     {
         final Model model = new Model();
-        final PVModelItem item = new PVModelItem(model, "fred",
+        final PVModelItem item = new PVModelItem(model, "fred", null,
                         1024, 0, 0, 0, true, true, false, 0, 0, 0, 0,
                         TraceType.Lines, false,
                         IPVModelItem.RequestType.OPTIMIZED);

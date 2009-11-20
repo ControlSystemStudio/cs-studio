@@ -545,7 +545,7 @@ public class Model
         switch (type)
         {
         case ProcessVariable:
-            item = new PVModelItem(this, pv_name, live_buffer_size,
+            item = new PVModelItem(this, pv_name, null, live_buffer_size,
                             		axis_index, low, high, trace_visible,
                             		axis_visible, auto_scale,
                                     red, green, blue, line_width, trace_type,
@@ -553,7 +553,7 @@ public class Model
                                     IPVModelItem.RequestType.OPTIMIZED);
             break;
         case Formula:
-            item = new FormulaModelItem(this, pv_name, 
+            item = new FormulaModelItem(this, pv_name, null,
                                     axis_index, low, high, trace_visible,
                                     axis_visible, auto_scale,
                                     red, green, blue, line_width, trace_type,

@@ -20,7 +20,10 @@ public class PVTableHelper
 
         /** PV Name column identifier */
     	NAME(Messages.PV, 70, 90, false),
-    
+
+        /** Display Name column identifier */
+        DISPLAY_NAME(Messages.DisplayName, 70, 90, false),
+    	
         /** Axis index column identifier */
         AXIS(Messages.AxisIndex, 30, 5, true),
         
@@ -151,6 +154,8 @@ public class PVTableHelper
                 return null; // no text
             case NAME:
                 return entry.getName();
+            case DISPLAY_NAME:
+                return entry.getDisplayName();
             case MIN:
                 return Double.toString(entry.getAxisLow());
             case MAX:
