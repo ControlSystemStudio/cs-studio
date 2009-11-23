@@ -22,6 +22,7 @@
  package org.csstudio.alarm.treeView.views;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -66,6 +67,7 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -75,9 +77,12 @@ import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DragSourceAdapter;
+import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.DropTargetAdapter;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.DropTargetListener;
+import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -148,6 +153,74 @@ public class AlarmTreeView extends ViewPart {
 			});
 		}
 	}
+	
+	/**
+	 * Implements drag support for the alarm tree.
+	 */
+	private final class AlarmTreeDragListener extends DragSourceAdapter {
+		
+		private ArrayList<ProcessVariableNode> _selectedPVs;
+		
+		@Override
+		public void dragStart(DragSourceEvent event) {
+			ISelection selection = _viewer.getSelection();
+			if (selection instanceof IStructuredSelection) {
+				_selectedPVs = new ArrayList<ProcessVariableNode>();
+				IStructuredSelection sel = (IStructuredSelection) selection;
+				for (Iterator<?> i = sel.iterator(); i.hasNext(); ) {
+					// If any of the selected items is not a PV, the drag
+					// operation is not allowed.
+					Object o = i.next();
+					if (o instanceof ProcessVariableNode) {
+						_selectedPVs.add((ProcessVariableNode) o);
+					} else {
+						event.doit = false;
+						_selectedPVs = null;
+						return;
+					}
+				}
+			} else {
+				event.doit = false;
+				return;
+			}
+		}
+		
+		@Override
+		public void dragSetData(DragSourceEvent event) {
+			ArrayList<IProcessVariable> list = new ArrayList<IProcessVariable>(_selectedPVs);
+			if (ProcessVariableNameTransfer.getInstance().isSupportedType(
+					event.dataType)) {
+				event.data = list;
+			} else if (TextTransfer.getInstance().isSupportedType(event.dataType)) {
+				StringBuilder text = new StringBuilder();
+				for (Iterator<IProcessVariable> i = list.iterator(); i.hasNext(); ) {
+					text.append(i.next().getName());
+					if (i.hasNext()) {
+						text.append(", ");
+					}
+				}
+				event.data = text.toString();
+			}
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void dragFinished(DragSourceEvent event) {
+			if (event.detail == DND.DROP_MOVE) {
+				for (ProcessVariableNode node : _selectedPVs) {
+					try {
+						DirectoryEditor.delete(node);
+					} catch (DirectoryEditException e) {
+						_log.error(this, "Could not delete node after drag&drop move operation: " + node);
+					}
+				}
+				_viewer.refresh();
+			}
+			_selectedPVs = null;
+		}
+	}
 
 	/**
 	 * Implements drop support for the alarm tree. This implementation supports
@@ -157,33 +230,24 @@ public class AlarmTreeView extends ViewPart {
 	private final class AlarmTreeDropListener extends DropTargetAdapter {
 		
 		/**
-		 * This implementation of <code>dragEnter</code> selects copy as the
-		 * default drop operation.
+		 * The drop operation that the user wants to perform. This drop listener
+		 * sets event.detail to DROP_NONE when the user drags over a tree item
+		 * which does not support dropping; when the user later drags over
+		 * another tree item, the operation remembered in this variable will be
+		 * restored.
 		 * 
-		 * @param event
-		 *            the event.
-		 * @see DropTargetListener#dragEnter(DropTargetEvent)
+		 * See also http://dev.eclipse.org/newslists/news.eclipse.platform.swt/msg11183.html
 		 */
+		int _operation;
+		
 		@Override
 		public void dragEnter(final DropTargetEvent event) {
-			if (event.detail == DND.DROP_DEFAULT) {
-				event.detail = DND.DROP_COPY;
-			}
+			_operation = event.detail;
 		}
 
-		/**
-		 * This implementation of <code>dragOperationChanged</code> selects
-		 * copy as the default drop operation.
-		 * 
-		 * @param event
-		 *            the event.
-		 * @see DropTargetListener#dragOperationChanged(DropTargetEvent)
-		 */
 		@Override
 		public void dragOperationChanged(final DropTargetEvent event) {
-			if (event.detail == DND.DROP_DEFAULT) {
-				event.detail = DND.DROP_COPY;
-			}
+			_operation = event.detail;
 		}
 
 		/**
@@ -200,20 +264,11 @@ public class AlarmTreeView extends ViewPart {
 		public void dragOver(final DropTargetEvent event) {
 			event.feedback = DND.FEEDBACK_SCROLL | DND.FEEDBACK_EXPAND;				
 			
-			// Check which item the mouse is hovering over. If none,
-			// disallow the drop. If there is an item, check that it is a
-			// subtree node, not a pv node.
-			TreeItem item = (TreeItem) event.item;
-			if (item == null) {
-				event.detail = DND.DROP_NONE;
-				return;
-			}
-			Object node = item.getData();
-			if (node instanceof SubtreeNode) {
-				// Check that copy is supported
-				if ((event.operations & DND.DROP_COPY) == DND.DROP_COPY) {
-					event.detail = DND.DROP_COPY;
-				}
+			// Allow the drag&drop operation if the mouse is dragged over a tree
+			// item and the item is a subtree node.
+			if ((event.item instanceof TreeItem)
+					&& ((TreeItem) event.item).getData() instanceof SubtreeNode) {
+				event.detail = _operation;
 				event.feedback |= DND.FEEDBACK_SELECT;
 				return;
 			} else {
@@ -533,12 +588,15 @@ public class AlarmTreeView extends ViewPart {
 	private void addDragAndDropSupport() {
 		// The transfer types
 		final Transfer pvTransfer = ProcessVariableNameTransfer.getInstance();
+		final Transfer textTransfer = TextTransfer.getInstance();
 		
-		// Drop support
-		Transfer[] dropTransfer = new Transfer[] { pvTransfer };
-		int dropOperations = DND.DROP_COPY;
-		DropTargetListener dropListener = new AlarmTreeDropListener();
-		_viewer.addDropSupport(dropOperations, dropTransfer, dropListener);
+		_viewer.addDropSupport(DND.DROP_COPY | DND.DROP_MOVE,
+				new Transfer[] {pvTransfer},
+				new AlarmTreeDropListener());
+		
+		_viewer.addDragSupport(DND.DROP_COPY | DND.DROP_MOVE,
+				new Transfer[] {pvTransfer, textTransfer},
+				new AlarmTreeDragListener());
 	}
 
 	/**
