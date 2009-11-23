@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,6 +20,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
+
 package org.csstudio.ams.monitor.views;
 
 import java.io.File;
@@ -37,7 +39,6 @@ import org.csstudio.ams.gui.VerifyInput;
 import org.csstudio.ams.monitor.Messages;
 import org.csstudio.ams.monitor.MonitorPlugin;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
-import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -669,9 +670,10 @@ public class AMSMonitorView extends ViewPart implements SelectionListener {
             }
         }
 
+        // TODO: Die erste Abfrage liefert immer alle Einträge!!!!
+        //       Besser wäre eine Abfrage, die wirklich nur die definierte Anzahl liefert.
         public List<HistoryTObject> getHistory(int maxCount) {
             List<HistoryTObject> array = new ArrayList<HistoryTObject>();
-
             try {
                 if (lastHistoryID < 0)
                     lastHistoryID = HistoryDAO.getLastHistoryID(MonitorPlugin
