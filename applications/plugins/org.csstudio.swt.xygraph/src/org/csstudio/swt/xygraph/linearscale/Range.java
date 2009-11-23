@@ -59,13 +59,6 @@ public class Range {
     public boolean inRange(double value){
     	return value >= lower && value <= upper;
     }
-    /*
-     * @see Object#toString()
-     */
-    @Override
-    public String toString() {
-        return "lower=" + lower + ", upper=" + upper;
-    }
 
 	/**
 	 * @return the lower
@@ -80,4 +73,34 @@ public class Range {
 	public double getUpper() {
 		return upper;
 	}
+
+	/** {@inheritDoc} */
+	@Override
+    public boolean equals(final Object obj)
+    {   // See "Effective Java" Item 7
+	    if (this == obj)
+	        return true;
+	    if (! (obj instanceof Range))
+	        return false;
+	    final Range other = (Range) obj;
+	    return other.lower == lower  &&  other.upper == upper;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public int hashCode()
+    {
+        // "Effective Java" Item 8: When overriding equals(), also implement hashCode
+        int result = (int) Double.doubleToLongBits(lower);
+        result = 37*result + (int) Double.doubleToLongBits(upper);
+        return result;
+    }
+
+    /*
+     * @see Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "lower=" + lower + ", upper=" + upper;
+    }
 }
