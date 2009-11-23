@@ -231,12 +231,15 @@ final class AlarmMessageListener implements MessageListener {
 			}
 			Severity severity = Severity.parseSeverity(severityValue);
 			String eventtimeValue = message.getString("EVENTTIME");
-			Date eventtime;
-			if (eventtimeValue == null) {
-				_log.warn(this, "Received alarm message which did not contain EVENTTIME! Using current time instead. Message was: " + message);
-				eventtime = new Date();
-			} else {
+			Date eventtime = null;
+			if (eventtimeValue != null) {
 				eventtime = EventtimeUtil.parseTimestamp(eventtimeValue);
+			}
+			if (eventtime == null) {
+				// eventtime is null if the message did not contain an EVENTTIME
+				// field or if the EVENTTIME could not be parsed.
+				_log.warn(this, "Received alarm message which did not contain a valid EVENTTIME, using current time instead. Message was: " + message);
+				eventtime = new Date();
 			}
 			_log.debug(this, "received alarm: name=" + name + ", severity=" + severity + ", eventtime=" + eventtime);
 			_worker.enqueue(PendingUpdate.createAlarmUpdate(name, severity, eventtime));
