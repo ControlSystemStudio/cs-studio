@@ -54,7 +54,12 @@ public class XYGraph extends Figure{
 	private boolean showLegend = true;
 	
 	private Map<Axis, Legend> legendMap;
-	private String title;
+	
+	/** Graph title. Should never be <code>null</code> because
+	 *  otherwise the ToolbarArmedXYGraph's GraphConfigPage
+	 *  can crash.
+	 */
+	private String title = "";
 	private Color titleColor;
 	private Label titleLabel;
 	
@@ -109,7 +114,7 @@ public class XYGraph extends Figure{
 		Rectangle clientArea = getClientArea().getCopy();
 		boolean hasRightYAxis = false;
 		boolean hasTopXAxis = false;
-		if(titleLabel != null && titleLabel.isVisible() && !titleLabel.getText().equals("")){
+		if(titleLabel != null && titleLabel.isVisible() && !(titleLabel.getText().length() <= 0)){
 			Dimension titleSize = titleLabel.getPreferredSize();
 			titleLabel.setBounds(new Rectangle(clientArea.x + clientArea.width/2 - titleSize.width/2,
 					clientArea.y, titleSize.width, titleSize.height));
@@ -257,7 +262,7 @@ public class XYGraph extends Figure{
 	 * @param title the title to set
 	 */
 	public void setTitle(String title) {
-		this.title = title;
+		this.title = title.trim();
 		titleLabel.setText(title);
 	}
 	
