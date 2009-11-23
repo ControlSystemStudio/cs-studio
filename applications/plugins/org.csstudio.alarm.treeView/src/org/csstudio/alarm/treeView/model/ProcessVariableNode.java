@@ -53,11 +53,6 @@ public class ProcessVariableNode extends AbstractAlarmTreeNode
 	private Alarm _highestUnacknowledgedAlarm;
 	
 	/**
-	 * An alarm object representing NO_ALARM for this node.
-	 */
-	private final Alarm _noAlarm;
-	
-	/**
 	 * Creates a new node for a process variable as a child of the specified
 	 * parent.
 	 * 
@@ -74,7 +69,6 @@ public class ProcessVariableNode extends AbstractAlarmTreeNode
 		this._name = name;
 		this._activeAlarm = null;
 		this._highestUnacknowledgedAlarm = null;
-		this._noAlarm = new Alarm(name, Severity.NO_ALARM);
 	}
 	
 	/**
@@ -173,7 +167,7 @@ public class ProcessVariableNode extends AbstractAlarmTreeNode
 	 */
 	public final void removeHighestUnacknowledgedAlarm() {
 		if (_highestUnacknowledgedAlarm != null) {
-			_highestUnacknowledgedAlarm = _noAlarm;
+			_highestUnacknowledgedAlarm = null;
 			_parent.childSeverityChanged(this);
 		}
 	}
