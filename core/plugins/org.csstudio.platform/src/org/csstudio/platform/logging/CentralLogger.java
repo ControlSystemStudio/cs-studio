@@ -475,6 +475,9 @@ public final class CentralLogger {
 	    getLogger(caller).fatal(message, throwable);
 	}
 
+	/** Log levels, ordered from 'almost all' to 'only severe errors' */
+	final private static String LOG_LEVELS[] = new String[] { "debug", "info", "warn", "error", "fatal"};
+	
 	/**
 	 * Create the log4j properts object from the given preference store.
 	 * 
@@ -482,7 +485,8 @@ public final class CentralLogger {
 	 *            Source preference store.
 	 * @return The log4j properts object from the given preference store.
 	 */
-	private Properties createLog4jProperties(
+	@SuppressWarnings("deprecation")
+    private Properties createLog4jProperties(
 			final org.eclipse.core.runtime.Preferences prefs) {
 		Properties result = new Properties();
 
@@ -512,19 +516,38 @@ public final class CentralLogger {
 		fillFromSecureStorage(result, PROP_LOG4J_JMS_USER);
 		fillFromSecureStorage(result, PROP_LOG4J_JMS_PASSWORD);
 
-		// create the log4j root property
-		String rootProperty = "debug"; //$NON-NLS-1$
-		if (prefs.getBoolean(PROP_LOG4J_CONSOLE)) {
+		// Maximize the 'threshold' of console, file and JMS appender
+		// and use that as the root logger level.
+		// This way, if nobody uses "debug", the debug level
+		// is suppressed at the root and logger.isDebugEnabled()
+		// can be used as intended to avoid debug message formatting
+        String rootProperty = LOG_LEVELS[LOG_LEVELS.length-1];
+        final boolean use_console = prefs.getBoolean(PROP_LOG4J_CONSOLE);
+        final boolean use_file = prefs.getBoolean(PROP_LOG4J_FILE);
+        final boolean use_jms = prefs.getBoolean(PROP_LOG4J_JMS);
+		final String console_threshold = prefs.getString(PROP_LOG4J_CONSOLE_THRESHOLD);
+        final String file_threshold = prefs.getString(PROP_LOG4J_FILE_THRESHOLD);
+        final String jms_threshold = prefs.getString(PROP_LOG4J_JMS_THRESHOLD);
+        for (int i=0; i < LOG_LEVELS.length; ++i)
+        {
+            if ((use_console && LOG_LEVELS[i].equalsIgnoreCase(console_threshold)) ||
+                (use_file    && LOG_LEVELS[i].equalsIgnoreCase(file_threshold))    ||
+                (use_jms     && LOG_LEVELS[i].equalsIgnoreCase(jms_threshold)))
+            {
+                rootProperty = LOG_LEVELS[i];
+                break;
+            }
+        }
+        // create the log4j root property:
+        // level-of-root-logger, appender1, appender2, appender3
+        if (use_console)
 			rootProperty += "," + "css_console"; //$NON-NLS-1$ //$NON-NLS-2$
-		}
 
-		if (prefs.getBoolean(PROP_LOG4J_FILE)) {
+        if (use_file)
 			rootProperty += "," + "css_file"; //$NON-NLS-1$ //$NON-NLS-2$
-		}
 
-		if (prefs.getBoolean(PROP_LOG4J_JMS)) {
+        if (use_jms)
 			rootProperty += "," + "css_jms"; //$NON-NLS-1$ //$NON-NLS-2$
-		}
 
 		result.setProperty("log4j.rootLogger", rootProperty); //$NON-NLS-1$
 
