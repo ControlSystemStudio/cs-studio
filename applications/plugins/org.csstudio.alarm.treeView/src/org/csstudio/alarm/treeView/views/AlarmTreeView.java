@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -67,6 +68,7 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -187,13 +189,17 @@ public class AlarmTreeView extends ViewPart {
 		
 		@Override
 		public void dragSetData(DragSourceEvent event) {
-			ArrayList<IProcessVariable> list = new ArrayList<IProcessVariable>(_selectedPVs);
+			if (LocalSelectionTransfer.getTransfer().isSupportedType(
+					event.dataType)) {
+				LocalSelectionTransfer.getTransfer().setSelection(
+						_viewer.getSelection());
+			}
 			if (ProcessVariableNameTransfer.getInstance().isSupportedType(
 					event.dataType)) {
-				event.data = list;
+				event.data = _selectedPVs.toArray(new IProcessVariable[_selectedPVs.size()]);
 			} else if (TextTransfer.getInstance().isSupportedType(event.dataType)) {
 				StringBuilder text = new StringBuilder();
-				for (Iterator<IProcessVariable> i = list.iterator(); i.hasNext(); ) {
+				for (Iterator<ProcessVariableNode> i = _selectedPVs.iterator(); i.hasNext(); ) {
 					text.append(i.next().getName());
 					if (i.hasNext()) {
 						text.append(", ");
@@ -221,7 +227,7 @@ public class AlarmTreeView extends ViewPart {
 			_selectedPVs = null;
 		}
 	}
-
+	
 	/**
 	 * Implements drop support for the alarm tree. This implementation supports
 	 * dropping process variables (<code>IProcessVariable</code>) onto subtree
@@ -292,9 +298,30 @@ public class AlarmTreeView extends ViewPart {
 			TreeItem item = (TreeItem) event.item;
 			if (item != null && item.getData() instanceof SubtreeNode) {
 				SubtreeNode node = (SubtreeNode) item.getData();
-				IProcessVariable[] data = (IProcessVariable[]) event.data;
+				IProcessVariable[] droppedPVs = null;
+				if (ProcessVariableNameTransfer.getInstance().isSupportedType(event.currentDataType)) {
+					droppedPVs = (IProcessVariable[]) event.data;
+				} else if (LocalSelectionTransfer.getTransfer().isSupportedType(event.currentDataType)) {
+					ISelection sel = LocalSelectionTransfer.getTransfer().getSelection();
+					List<IProcessVariable> pvs = new ArrayList<IProcessVariable>();
+					if (sel instanceof IStructuredSelection) {
+						IStructuredSelection selection = (IStructuredSelection) sel;
+						for (Iterator<?> i = selection.iterator(); i.hasNext(); ) {
+							Object selected = i.next();
+							if (selected instanceof IProcessVariable) {
+								pvs.add((IProcessVariable) selected);
+							}
+						}
+					}
+					droppedPVs = (IProcessVariable[]) pvs.toArray(new IProcessVariable[pvs
+							.size()]);
+				} else {
+					// Unknown transfer type
+					event.detail = DND.DROP_NONE;
+					return;
+				}
 				boolean errors = false;
-				for (IProcessVariable pv : data) {
+				for (IProcessVariable pv : droppedPVs) {
 					try {
 						DirectoryEditor.createProcessVariableRecord(node, pv.getName());
 					} catch (DirectoryEditException e) {
@@ -589,6 +616,7 @@ public class AlarmTreeView extends ViewPart {
 		// The transfer types
 		final Transfer pvTransfer = ProcessVariableNameTransfer.getInstance();
 		final Transfer textTransfer = TextTransfer.getInstance();
+		final Transfer localTransfer = LocalSelectionTransfer.getTransfer();
 		
 		_viewer.addDropSupport(DND.DROP_COPY | DND.DROP_MOVE,
 				new Transfer[] {pvTransfer},
