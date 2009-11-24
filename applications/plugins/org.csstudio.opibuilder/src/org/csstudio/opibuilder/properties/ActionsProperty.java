@@ -5,10 +5,12 @@ import java.util.List;
 import java.util.Set;
 
 import org.csstudio.opibuilder.properties.support.ActionsPropertyDescriptor;
+import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.widgetActions.AbstractWidgetAction;
 import org.csstudio.opibuilder.widgetActions.ActionsInput;
 import org.csstudio.opibuilder.widgetActions.WidgetActionFactory;
 import org.csstudio.opibuilder.widgetActions.WidgetActionFactory.ActionType;
+import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.jdom.Element;
 
@@ -84,8 +86,15 @@ public class ActionsProperty extends AbstractWidgetProperty {
 					//handle property
 					if(propIdSet.contains(subElement.getName())){
 						String propId = subElement.getName();
-						action.setPropertyValue(propId, 
-								action.getProperty(propId).readValueFromXML(subElement));
+						try {
+							action.setPropertyValue(propId, 
+									action.getProperty(propId).readValueFromXML(subElement));
+						} catch (Exception e) {
+							String errorMessage = "Failed to read the " + propId + " property for " + action.getDescription() +". " +
+							"The default property value will be setted instead. \n" + e;
+							CentralLogger.getInstance().error(errorMessage, e);
+							ConsoleService.getInstance().writeWarning(errorMessage);
+						}
 					}
 				}	
 				result.getActionsList().add(action);

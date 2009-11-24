@@ -112,7 +112,7 @@ public class FontProperty extends AbstractWidgetProperty {
 		Element fontElement = propElement.getChild(XML_ELEMENT_FONT);
 		if(fontElement !=null){
 			return new OPIFont(new FontData(fontElement.getAttributeValue(XML_ATTRIBUTE_FONT_NAME), 
-				Integer.parseInt(fontElement.getAttributeValue(XML_ATTRIBUTE_FONT_HEIGHT)),
+				(int) Double.parseDouble(fontElement.getAttributeValue(XML_ATTRIBUTE_FONT_HEIGHT)),
 				Integer.parseInt(fontElement.getAttributeValue(XML_ATTRIBUTE_FONT_STYLE))));
 		}else{
 			fontElement = propElement.getChild(XML_ELEMENT_FONTNAME);

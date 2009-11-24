@@ -198,7 +198,7 @@ public abstract class AbstractWidgetProperty {
 	 * @param propElement
 	 * @return
 	 */
-	public abstract Object readValueFromXML(Element propElement);
+	public abstract Object readValueFromXML(Element propElement) throws Exception;
 	
 	public void setWidgetModel(AbstractWidgetModel widgetModel) {
 		this.widgetModel = widgetModel;
