@@ -282,7 +282,7 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 	public void drawPoint(Graphics graphics, Point pos){
 		graphics.pushState();
 		graphics.setBackgroundColor(traceColor);
-		graphics.setForegroundColor(traceColor);
+		//graphics.setForegroundColor(traceColor);
 		graphics.setLineWidth(1);
 		graphics.setLineStyle(SWT.LINE_SOLID);
 		switch (pointStyle) {
@@ -358,8 +358,7 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 	 */
 	public void drawLine(Graphics graphics, Point p1, Point p2){
 		graphics.pushState();
-		graphics.setForegroundColor(traceColor);
-		graphics.setLineWidth(lineWidth);
+		
 		switch (traceType) {
 		case SOLID_LINE:
 			graphics.setLineStyle(SWT.LINE_SOLID);
@@ -421,6 +420,8 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 		super.paintFigure(graphics);
 		graphics.pushState();
 		graphics.setAntialias(antiAliasing? SWT.ON : SWT.OFF);
+		graphics.setForegroundColor(traceColor);
+		graphics.setLineWidth(lineWidth);
 		ISample predp = null;
 		Point predpPos = null;
 		boolean predpInRange = false;

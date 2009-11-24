@@ -22,10 +22,6 @@ public class Sample implements ISample {
 	public Sample(double xdata, double ydata) {
 		this.xValue = xdata;
 		this.yValue = ydata;
-		xPlusError = 0;
-		yPlusError = 0;
-		xMinusError = 0;
-		yMinusError = 0;
 	}
 	
 	public Sample(double xValue, double yValue, double yPlusError, double yMinusError, 

@@ -297,9 +297,9 @@ public class CircularBufferDataProvider extends AbstractDataProvider{
 	/**
 	 * add a new data point to trace data.
 	 */
-	private void addDataArray() {	
-		double[] newXValueArray;		
-		if(chronological){		
+	private void addDataArray() {					
+		if(chronological){	
+			double[] newXValueArray;
 			newXValueArray = new double[currentYDataArray.length];
 			if(traceData.size() == 0)
 				for(int i=0; i<currentYDataArray.length; i++){
@@ -314,13 +314,13 @@ public class CircularBufferDataProvider extends AbstractDataProvider{
 			}					
 		}else{
 			traceData.clear();
-			newXValueArray = currentXDataArray;
+			//newXValueArray = currentXDataArray;
 			
 			// if the data array size is longer than buffer size, 
 			//just ignore the tail data.
 			for(int i=0; i<Math.min(traceData.getBufferSize(),
-					Math.min(newXValueArray.length, currentYDataArray.length)); i++){
-				traceData.add(new Sample(newXValueArray[i], currentYDataArray[i]));
+					Math.min(currentXDataArray.length, currentYDataArray.length)); i++){
+				traceData.add(new Sample(currentXDataArray[i], currentYDataArray[i]));
 			}
 		}
 		
