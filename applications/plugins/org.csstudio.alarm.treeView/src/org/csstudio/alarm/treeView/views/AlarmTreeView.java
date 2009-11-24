@@ -168,12 +168,12 @@ public class AlarmTreeView extends ViewPart {
 				_selectedPVs = new ArrayList<ProcessVariableNode>();
 				IStructuredSelection sel = (IStructuredSelection) selection;
 				for (Iterator<?> i = sel.iterator(); i.hasNext(); ) {
-					// If any of the selected items is not a PV, the drag
-					// operation is not allowed.
 					Object o = i.next();
 					if (o instanceof ProcessVariableNode) {
 						_selectedPVs.add((ProcessVariableNode) o);
 					} else {
+						// If any of the selected items is not a PV, the drag
+						// operation is not allowed.
 						event.doit = false;
 						_selectedPVs = null;
 						return;
