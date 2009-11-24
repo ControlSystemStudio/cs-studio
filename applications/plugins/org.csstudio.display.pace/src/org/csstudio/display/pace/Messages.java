@@ -15,6 +15,8 @@ public class Messages extends NLS
 
 
     public static String ConfirmChangesFmt;
+    public static String FileChangedFmt;
+    public static String FileUnchangedFmt;
     public static String InstanceLabelProvider_OrigAppendix;
     public static String InstanceLabelProvider_PVValueFormat;
     public static String InstanceLabelProvider_PVCommentTipFormat;

@@ -59,7 +59,7 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
         }
         // Set window title and message
         setPartName(file.getName());
-        setContentDescription(model.getTitle());
+        updateContentDescription();
     }
 
     /** Create GUI using the model as input. */
@@ -296,6 +296,22 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
         if (is_dirty == model.isEdited())
             return;
         is_dirty = model.isEdited();
+        
+        updateContentDescription();
         firePropertyChange(PROP_DIRTY);
+    }
+
+    /** Update the 'content description', i.e. a line just below
+     *  the editor's title to show the model's title and some
+     *  hint about the 'dirty' state.
+     */
+    private void updateContentDescription()
+    {
+        final String info;
+        if (is_dirty)
+            info = NLS.bind(Messages.FileChangedFmt, model.getTitle());
+        else
+            info = NLS.bind(Messages.FileUnchangedFmt, model.getTitle());
+        setContentDescription(info);
     }
 }

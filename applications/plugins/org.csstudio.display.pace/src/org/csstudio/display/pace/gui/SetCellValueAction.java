@@ -28,14 +28,14 @@ public class SetCellValueAction extends Action
         this.shell = shell;
         this.cells = cells;
         // Only enable if there are cells to set.
-        if (cells == null)
+        if (cells == null  ||  cells.length <= 0)
             setEnabled(false);
     }
 
     @Override
     public void run()
     {
-        // Using value of first selected test as suggestion,
+        // Using value of first selected cell as suggestion,
         // prompt for value to be put into all selected cells
         boolean writable = true;
         for (Cell cell : cells)

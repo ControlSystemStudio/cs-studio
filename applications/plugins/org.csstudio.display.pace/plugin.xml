@@ -25,12 +25,10 @@
       </toc>
     </extension>
    <extension
-         point="org.eclipse.core.runtime.contentTypes">
-      <content-type
+         point="org.eclipse.core.contenttype.contentTypes">
+      <content-type id="org.csstudio.display.pace"
             file-extensions="pace"
-            id="org.csstudio.display.pace"
-            name="PACE Table"
-            priority="normal">
+            name="PACE Configuration">
       </content-type>
    </extension>
    <extension
