@@ -46,6 +46,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -76,7 +77,6 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
-import org.eclipse.ui.progress.UIJob;
 
 /**
  * @author hrickens
@@ -204,7 +204,7 @@ public class ADLConverterMainView extends ViewPart {
         RowData rowData = new RowData(80, 25);
         clearSourceButton.setLayoutData(rowData);
 
-        Button convertButton = new Button(buttonComposite, SWT.PUSH);
+        final Button convertButton = new Button(buttonComposite, SWT.PUSH);
         convertButton.setText(Messages.ADLConverterMainView_ConvcertButtonText);
         rowData = new RowData(80, 25);
         convertButton.setLayoutData(rowData);
@@ -301,12 +301,11 @@ public class ADLConverterMainView extends ViewPart {
 
                     public boolean accept(File dir, String name) {
 
-                        boolean adl = false;
-                        adl |= dir.isDirectory();
-                        adl |= name.endsWith(".adl"); //$NON-NLS-1$
-                        adl |= name.endsWith(".mfp"); //$NON-NLS-1$
-                        adl |= name.endsWith(".stc"); //$NON-NLS-1$
-                        return adl;
+                        if(name.endsWith(".adl")||name.endsWith(".mfp")||name.endsWith(".stc")) { //$NON-NLS-1$
+                            return true;
+                        }
+                        File file2 = new File(dir,name);
+                        return file2.isDirectory();
                     }
 
                 });
@@ -349,6 +348,9 @@ public class ADLConverterMainView extends ViewPart {
                     @Override
                     protected IStatus run(final IProgressMonitor monitor) {
                         final int startSize = list.size();
+                        int adlCount = 0;
+                        int mpfCout = 0;
+                        int stcCount = 0;
                         monitor.beginTask("Start Convert Files", startSize);
                         ADLDisplayImporter.reset();
                         while (list.size() > 0) {
@@ -372,7 +374,8 @@ public class ADLConverterMainView extends ViewPart {
                                         _targetPath));
                             }
                             try {
-                                if (file.getName().endsWith(".adl")) {//$NON-NLS-1$ 
+                                if (file.getName().endsWith(".adl")) {//$NON-NLS-1$
+                                    adlCount++;
                                     PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
                                         public void run() {
                                             try {
@@ -391,6 +394,7 @@ public class ADLConverterMainView extends ViewPart {
                                         break;
                                     }
                                 } else if (file.getName().endsWith(".mfp")) {//$NON-NLS-1$
+                                    mpfCout++;
                                     PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
                                         public void run() {
                                             try {
@@ -409,6 +413,7 @@ public class ADLConverterMainView extends ViewPart {
                                         break;
                                     }
                                 } else if (file.getName().endsWith(".stc")) {//$NON-NLS-1$
+                                    stcCount++;
                                     PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
                                         public void run() {
 
@@ -445,7 +450,25 @@ public class ADLConverterMainView extends ViewPart {
                                 }
                             });
                             monitor.worked(1);
+                            
                         }
+                        final int adlCount2 = adlCount;
+                        final int mpfCount2 = mpfCout;
+                        final int stcCount2 = stcCount;
+                        PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+                            public void run() {
+                                
+                                MessageDialog.openInformation(convertButton.getShell(),
+                                        "Finish", String.format(
+                                                "Es waren %1$s Datein Ausgewählt.\r\n"
+                                                + "Es wurden \r\n"
+                                                + "\tADL Files:\t%2$4s\r\n"
+                                                + "\tMPF Files:\t%3$4s\r\n"
+                                                + "\tSTC Files:\t%4$4s\r\n"
+                                                + "Convertiert", startSize, adlCount2,
+                                                mpfCount2, stcCount2));
+                            }
+                        });
 
                         return Status.OK_STATUS;
                     }

@@ -165,7 +165,6 @@ public class FaceplateParser {
                 // e.g. groupTitle= "VAKUUM KOMPRESSO"
                 displayModel.setPropertyValue(DisplayModel.PROP_NAME, lineParts[1]);
                 try {
-                    System.out.println("Headline");
                     header = getHeader(lineParts[1]);
                 } catch (RuntimeException rte) {
                     CentralLogger.getInstance().warn(FaceplateParser.class,
