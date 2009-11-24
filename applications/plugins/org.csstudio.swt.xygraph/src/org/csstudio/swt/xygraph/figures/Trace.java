@@ -622,10 +622,10 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 			xAxis.removeTrace(this);
 		}
 		
-		if(traceDataProvider != null){
+		/*if(traceDataProvider != null){
 			traceDataProvider.removeDataProviderListener(xAxis);
 			traceDataProvider.addDataProviderListener(axis);
-		}			
+		}		*/	
 		xAxis = axis;
 		xAxis.addTrace(this);
 		xAxis.addListener(this);
@@ -662,10 +662,10 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 			yAxis.removeListenr(this);
 			yAxis.removeTrace(this);
 		}		
-		if(traceDataProvider != null){
+		/*if(traceDataProvider != null){
 			traceDataProvider.removeDataProviderListener(yAxis);
 			traceDataProvider.addDataProviderListener(axis);
-		}			
+		}		*/	
 		yAxis = axis;
 		yAxis.addTrace(this);
 		yAxis.addListener(this);	
@@ -680,8 +680,8 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 	public void setDataProvider(
 			IDataProvider traceDataProvider) {
 		traceDataProvider.addDataProviderListener(this);
-		traceDataProvider.addDataProviderListener(xAxis);
-		traceDataProvider.addDataProviderListener(yAxis);
+	//	traceDataProvider.addDataProviderListener(xAxis);
+	//	traceDataProvider.addDataProviderListener(yAxis);
 		this.traceDataProvider = traceDataProvider;
 	}
 

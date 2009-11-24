@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.swt.xygraph.dataprovider.IDataProvider;
-import org.csstudio.swt.xygraph.dataprovider.IDataProviderListener;
 import org.csstudio.swt.xygraph.linearscale.LinearScale;
 import org.csstudio.swt.xygraph.linearscale.Range;
 import org.csstudio.swt.xygraph.undo.AxisPanningCommand;
@@ -36,7 +35,7 @@ import org.eclipse.swt.widgets.Display;
  * @author Xihui Chen
  *
  */
-public class Axis extends LinearScale implements IDataProviderListener{
+public class Axis extends LinearScale{
 	
 	private static final Color GRAY_COLOR = XYGraphMediaFactory.getInstance().getColor(
 			XYGraphMediaFactory.COLOR_GRAY);
