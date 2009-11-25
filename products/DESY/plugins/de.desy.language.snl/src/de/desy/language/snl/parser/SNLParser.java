@@ -111,21 +111,16 @@ public class SNLParser extends AbstractLanguageParser {
 			progressMonitor.worked(4);
 			final ProgramNode programNode = programParser.getLastFoundAsNode();
 			root = programNode;
-			final OptionStatementParser optionParser = new OptionStatementParser();
-			optionParser.findNext(this._input);
-			if (optionParser.hasFoundElement()) {
-				final OptionStatementNode optionStatementNode = optionParser
-						.getLastFoundAsNode();
-				programNode.addChild(optionStatementNode);
-				progressMonitor.worked(5);
-			}
 
 			// configure the program node:
-			this.findAndAddAllVariables(programNode, this._input);
+			findAndAddAllVariables(programNode, _input);
+			progressMonitor.worked(5);
+			findAndAddAllEventFlags(programNode, _input);
 			progressMonitor.worked(6);
-			this.findAndAddAllEventFlags(programNode, this._input);
+			findAndAddAllStateSets(programNode, _input);
 			progressMonitor.worked(7);
-			this.findAndAddAllStateSets(programNode, this._input);
+			
+			findAndAddAllOptionStatements(programNode, _input);
 			progressMonitor.worked(8);
 		} else {
 			final PlaceholderNode placeholder = new PlaceholderNode(
@@ -358,9 +353,33 @@ public class SNLParser extends AbstractLanguageParser {
 			whenParser.findNext(input, lastFound);
 		}
 	}
+	
+	private void findAndAddAllOptionStatements(Node rootNode, String input) {
+		final OptionStatementParser optionParser = new OptionStatementParser();
+		optionParser.findNext(input);
+		while (optionParser.hasFoundElement()) {
+			final OptionStatementNode optionStatementNode = optionParser
+						.getLastFoundAsNode();
+			Node parentNode = findSurroundingNode(rootNode, optionStatementNode);
+			parentNode.addChild(optionStatementNode);
+			final int lastFound = optionParser.getEndOffsetLastFound();
+			optionParser.findNext(input, lastFound);
+		}
+	}
+	
+	private Node findSurroundingNode(Node rootNode, Node childNode) {
+		for (Node node : rootNode.getChildrenNodes()) {
+			if (node.hasOffsets() &&
+					node.getStatementStartOffset() <= childNode.getStatementStartOffset() && 
+					childNode.getStatementEndOffset() <= node.getStatementEndOffset()) {
+				return findSurroundingNode(node, childNode);
+			}			
+		}
+		return rootNode;
+	}
 
 	public String getClearedInput() {
-		return this._input;
+		return _input;
 	}
 
 	private String removeAllComments(final CharSequence input) {
