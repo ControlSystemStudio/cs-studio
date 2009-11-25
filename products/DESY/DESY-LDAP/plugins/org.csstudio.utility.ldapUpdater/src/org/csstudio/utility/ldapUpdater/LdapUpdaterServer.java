@@ -6,6 +6,7 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.startupservice.IStartupServiceListener;
 import org.csstudio.platform.startupservice.StartupServiceEnumerator;
 import org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceConstants;
+import org.csstudio.utility.ldapUpdater.LdapUpdater;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplication;
@@ -86,26 +87,26 @@ public class LdapUpdaterServer implements IApplication {
 		_log.debug(this, "Delay until autostart is " + delayStr + " (UTC)");
 		CentralLogger.getInstance().debug(this,
 				"Delay until autostart is " + delayStr + " (UTC)");
-
-		for (IStartupServiceListener s : StartupServiceEnumerator.getServices()) {
-			_log.debug(this, "Running startup service: " + s.toString());
-			CentralLogger.getInstance().debug(this,
-					"Running startup service: " + s.toString());
-			s.run();
-		}
-		delay = delay * 1000;
-		interval = interval * 1000;
-		new TimerProcessor(delay, interval); // every 12 hours
+		LdapUpdater.getInstance().start();
+//		for (IStartupServiceListener s : StartupServiceEnumerator.getServices()) {
+//			_log.debug(this, "Running startup service: " + s.toString());
+//			CentralLogger.getInstance().debug(this,
+//					"Running startup service: " + s.toString());
+//			s.run();
+//		}
+//		delay = delay * 1000;
+//		interval = interval * 1000;
+//		new TimerProcessor(delay, interval); // every 12 hours
 
 		// next call was working - for test only (starts the ldapUpdater every
 		// 180 seconds):
 		// new TimerProcessor ( 5000, 1000*180 );
 
-		synchronized (this) {
-			while (!_stopped) {
-				wait();
-			}
-		}
+//		synchronized (this) {
+//			while (!_stopped) {
+//				wait();
+//			}
+//		}
 		return IApplication.EXIT_OK;
 	}
 
