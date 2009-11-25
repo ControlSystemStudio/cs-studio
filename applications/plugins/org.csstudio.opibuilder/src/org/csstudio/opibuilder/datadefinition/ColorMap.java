@@ -184,7 +184,11 @@ public class ColorMap {
 			for(int y = 0; y < dataHeight; y++){
 				for(int x = 0; x<dataWidth; x++){					
 					//the index of the value in the color table array					
-					int index = (int) ((dataArray[y*dataWidth + x]-min)/(max-min)*255);									
+					int index = (int) ((dataArray[y*dataWidth + x]-min)/(max-min)*255);
+					if(index <0)
+						index = 0;
+					else if(index > 255)
+						index = 255;
 					int pixel = palette.getPixel(colorsLookupTable[index]);
 					imageData.setPixel(x, y, pixel);
 				}
