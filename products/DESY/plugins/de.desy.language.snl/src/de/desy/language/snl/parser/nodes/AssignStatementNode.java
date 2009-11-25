@@ -7,12 +7,14 @@ public class AssignStatementNode extends AbstractSNLNode {
 
 	private final String _variableName;
 	private final String _channel;
+	private final boolean _isArray;
 
 	public AssignStatementNode(final String variableName, final String channel,
-			final int startOffset, final int endOffset) {
+			final int startOffset, final int endOffset, boolean isArray) {
 		super.setStatementOffsets(startOffset, endOffset);
 		this._variableName = variableName;
 		this._channel = channel;
+		this._isArray = isArray;
 	}
 
 	@Override
@@ -33,6 +35,10 @@ public class AssignStatementNode extends AbstractSNLNode {
 	@Override
 	protected String doGetContent() {
 		return this._channel;
+	}
+	
+	public boolean isArray() {
+		return _isArray;
 	}
 
 	@Override

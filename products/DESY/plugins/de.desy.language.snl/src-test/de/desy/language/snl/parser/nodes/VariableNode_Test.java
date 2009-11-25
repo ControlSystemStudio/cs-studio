@@ -11,7 +11,7 @@ public class VariableNode_Test extends TestCase {
 	@Test
 	public void testNode() {
 		final VariableNode node = new VariableNode("variableName", "long", 23,
-				42);
+				42, true);
 
 		Assert.assertEquals("variableName", node.getSourceIdentifier());
 		Assert.assertEquals("long", node.getTypeName());
@@ -23,13 +23,14 @@ public class VariableNode_Test extends TestCase {
 		Assert.assertFalse(node.hasContent());
 		Assert.assertEquals("Variable: variableName (Type: long)", node
 				.humanReadableRepresentation());
+		Assert.assertTrue(node.isArray());
 	}
 
 	public void testAssignVariable() {
 		final VariableNode node = new VariableNode("variableName", "long", 23,
-				42);
+				42, false);
 		final AssignStatementNode assignStatementNode = new AssignStatementNode(
-				"variableName", "epics://krykWeather.temp_ai.VAL", 23, 42);
+				"variableName", "epics://krykWeather.temp_ai.VAL", 23, 42, false);
 
 		Assert.assertFalse(node.isAssigned());
 		node.setAssignedChannel(assignStatementNode);
@@ -47,11 +48,12 @@ public class VariableNode_Test extends TestCase {
 				.assertEquals(
 						"Variable: variableName (Type: long, assigned to \"epics://krykWeather.temp_ai.VAL\")",
 						node.humanReadableRepresentation());
+		Assert.assertFalse(node.isArray());
 	}
 
 	public void testMonitoredVariable() {
 		final VariableNode node = new VariableNode("variableName", "long", 23,
-				42);
+				42, false);
 		final MonitorStatementNode monitorNode = new MonitorStatementNode(
 				"variableName", 23, 42);
 
@@ -67,9 +69,9 @@ public class VariableNode_Test extends TestCase {
 
 	public void testAssignAndMonitoredVariable() {
 		final VariableNode node = new VariableNode("variableName", "long", 23,
-				42);
+				42, false);
 		final AssignStatementNode assignStatementNode = new AssignStatementNode(
-				"variableName", "epics://krykWeather.temp_ai.VAL", 23, 42);
+				"variableName", "epics://krykWeather.temp_ai.VAL", 23, 42, false);
 		final MonitorStatementNode monitorNode = new MonitorStatementNode(
 				"variableName", 23, 42);
 

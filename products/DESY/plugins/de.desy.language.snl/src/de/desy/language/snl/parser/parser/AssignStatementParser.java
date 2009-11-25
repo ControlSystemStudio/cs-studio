@@ -25,11 +25,12 @@ public class AssignStatementParser extends
 		this._endOffSet = mainMatcher.end();
 		this._statement = mainMatcher.group();
 		final String channelNameWithQuotes = mainMatcher.group(5);
+		final boolean isArray = mainMatcher.group(3) != null; 
 		this._found = true;
 		this._node = new AssignStatementNode(mainMatcher.group(2),
 				channelNameWithQuotes.substring(1, channelNameWithQuotes
 						.length() - 1), this.getStartOffsetLastFound(), this
-						.getEndOffsetLastFound());
+						.getEndOffsetLastFound(), isArray);
 	}
 
 }

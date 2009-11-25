@@ -10,7 +10,7 @@ public class AssignStatementNode_Test extends TestCase {
 	@Test
 	public void testNode() {
 		final AssignStatementNode node = new AssignStatementNode(
-				"variableName", "epics://krykWeather.temp_ai.VAL", 23, 42);
+				"variableName", "epics://krykWeather.temp_ai.VAL", 23, 42, false);
 
 		Assert.assertEquals("variableName", node.getSourceIdentifier());
 		Assert.assertTrue(node.hasOffsets());
@@ -25,5 +25,6 @@ public class AssignStatementNode_Test extends TestCase {
 				.assertEquals(
 						"variableName is assigned to \"epics://krykWeather.temp_ai.VAL\"",
 						node.humanReadableRepresentation());
+		Assert.assertFalse(node.isArray());
 	}
 }

@@ -119,7 +119,6 @@ public class SNLParser extends AbstractLanguageParser {
 			progressMonitor.worked(6);
 			findAndAddAllStateSets(programNode, _input);
 			progressMonitor.worked(7);
-			
 			findAndAddAllOptionStatements(programNode, _input);
 			progressMonitor.worked(8);
 		} else {
@@ -301,6 +300,11 @@ public class SNLParser extends AbstractLanguageParser {
 				variableParentNode.addChild(assignNode);
 			} else {
 				varNode.setAssignedChannel(assignNode);
+				if (varNode.isArray() && !assignNode.isArray()) {
+					assignNode.addWarning("Variable "+varNode.getSourceIdentifier()+" is declared as array");
+				} else if (!varNode.isArray() && assignNode.isArray()) {
+					assignNode.addWarning("Variable "+varNode.getSourceIdentifier()+" is not declared as array");
+				}
 			}
 
 			final int lastEndPosition = assignParser.getEndOffsetLastFound();
@@ -440,7 +444,7 @@ public class SNLParser extends AbstractLanguageParser {
 
 			singleLineEmbeddedCParser.findNext(result);
 		}
-
+		
 		return result;
 	}
 

@@ -31,6 +31,7 @@ public class AssignStatementParser_Test extends TestCase {
 
 		Assert.assertEquals(parser.getEndOffsetLastFound(), lastFoundAsNode
 				.getStatementEndOffset());
+		Assert.assertFalse(lastFoundAsNode.isArray());
 	}
 	
 	@Test
@@ -55,5 +56,6 @@ public class AssignStatementParser_Test extends TestCase {
 
 		Assert.assertEquals(parser.getEndOffsetLastFound(), lastFoundAsNode
 				.getStatementEndOffset());
+		Assert.assertTrue(lastFoundAsNode.isArray());
 	}
 }

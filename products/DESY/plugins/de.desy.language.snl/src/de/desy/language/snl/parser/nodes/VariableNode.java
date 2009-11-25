@@ -13,15 +13,17 @@ public class VariableNode extends AbstractSNLNode {
 	private final String _variableType;
 	private AssignStatementNode _assignNode;
 	private MonitorStatementNode _monitorNode;
+	private final boolean _isArray;
 
 	public VariableNode(final String variableName, final String variableType,
 			final int statementsStartOffsetInSource,
-			final int statementsEndOffsetInSource) {
-		this._variableName = variableName;
-		this._variableType = variableType;
-		this._assignNode = null;
-		this._monitorNode = null;
-
+			final int statementsEndOffsetInSource, boolean isArray) {
+		_variableName = variableName;
+		_variableType = variableType;
+		_assignNode = null;
+		_monitorNode = null;
+		_isArray = isArray;
+		
 		this.setStatementOffsets(statementsStartOffsetInSource,
 				statementsEndOffsetInSource);
 	}
@@ -77,6 +79,10 @@ public class VariableNode extends AbstractSNLNode {
 
 	public boolean isMonitored() {
 		return this._monitorNode != null;
+	}
+	
+	public boolean isArray() {
+		return _isArray;
 	}
 
 	public void setMonitored(final MonitorStatementNode monitorNode) {

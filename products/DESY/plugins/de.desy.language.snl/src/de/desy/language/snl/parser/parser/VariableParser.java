@@ -73,9 +73,10 @@ public class VariableParser extends
 		this._endOffSet = preMatcher.end() - 1;
 		final String type = mainMatcher.group(1);
 		final String varName = mainMatcher.group(3);
+		final boolean isArray = mainMatcher.group(4) != null;
 		this._found = true;
 		this._node = new VariableNode(varName, type, this
-				.getStartOffsetLastFound(), this.getEndOffsetLastFound());
+				.getStartOffsetLastFound(), this.getEndOffsetLastFound(), isArray);
 	}
 
 }
