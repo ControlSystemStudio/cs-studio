@@ -92,9 +92,13 @@ public class SnooperServer {
 			
 			CentralLogger.getInstance().debug(this, "Request for '" + aliasName + "' from client " + clientAddress + " count " + getBroadcastCounter());
 //			System.out.println("Request for '" + aliasName + "' from client " + clientAddress + " count " + getBroadcastCounter());
-			incrementBroadcastCounter();
-			
-			collector.addBMessage(aliasName, clientAddress);
+			try {
+				incrementBroadcastCounter();
+				
+				collector.addBMessage(aliasName, clientAddress);
+			} catch (Exception e) {
+				CentralLogger.getInstance().error(this, "Error in existance test: " + e.toString());
+			}
 			
 			synchronized (pvs)
 			{
