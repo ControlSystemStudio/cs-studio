@@ -18,4 +18,6 @@ public interface IUndoableCommand {
 	 */
 	public void redo();
 	
+	// toString() is used to obtain the text that's used
+	// when displaying this command in the GUI
 }
