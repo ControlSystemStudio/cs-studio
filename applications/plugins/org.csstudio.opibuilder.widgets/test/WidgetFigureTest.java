@@ -261,7 +261,6 @@ class GaugeFigureTest extends Figure {
 				}
 				Display.getCurrent().timerExec(1, new Runnable() {
 					
-					@Override
 					public void run() {
 						gaugeFigure.repaint();
 					}
