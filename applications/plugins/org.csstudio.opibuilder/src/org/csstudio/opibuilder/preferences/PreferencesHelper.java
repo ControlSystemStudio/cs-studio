@@ -20,6 +20,7 @@ public class PreferencesHelper {
 	public static final String OPI_FONT_FILE = "opi_font_file"; //$NON-NLS-1$
 	public static final String OPI_RUN_MACROS= "opi_run_macros"; //$NON-NLS-1$
 	public static final String OPI_AUTOSAVE= "opi_autosave"; //$NON-NLS-1$
+	public static final String OPI_GUI_REFRESH_CYCLE = "opi_gui_refresh_cycle"; //$NON-NLS-1$
 
 	
 	 /** @param preferenceName Preference identifier
@@ -54,6 +55,11 @@ public class PreferencesHelper {
     public static boolean isAutoSaveBeforeRunning(){
     	final IPreferencesService service = Platform.getPreferencesService();
     	return service.getBoolean(OPIBuilderPlugin.PLUGIN_ID, OPI_AUTOSAVE, false, null);
+    }
+    
+    public static Integer getGUIRefreshCycle(){
+    	final IPreferencesService service = Platform.getPreferencesService();
+    	return service.getInt(OPIBuilderPlugin.PLUGIN_ID, OPI_GUI_REFRESH_CYCLE, 100, null);
     }
     
     /**Get the macros map from preference store.

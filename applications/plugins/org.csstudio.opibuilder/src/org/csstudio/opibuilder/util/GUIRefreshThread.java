@@ -4,6 +4,7 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 
+import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.platform.ExecutionService;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
@@ -12,22 +13,21 @@ import org.eclipse.ui.PlatformUI;
 
 /**
  * 
- * A singleton back thread which will help to execute tasks in UI thread.
+ * A singleton back thread which will help to execute tasks for OPI GUI refreshing.
  * This way we avoid slow downs, that occur on several
  * operating systems, when Display.asyncExec() is called very often from
  * background threads.
  * 
- * This thread sleeps for a time, which is below the processing capacity of
- * human eyes and brain - so the user will not feel any delay.
+ * This thread sleeps for a time which can be set in the preference page.
  * 
  * @author Xihui Chen
  * 
  */
-public final class UIBundlingThread implements Runnable {
+public final class GUIRefreshThread implements Runnable {
 	/**
 	 * The singleton instance.
 	 */
-	private static UIBundlingThread instance;
+	private static GUIRefreshThread instance;
 
 	/**
 	 * A queue, which contains runnables that process the events that occured
@@ -38,11 +38,11 @@ public final class UIBundlingThread implements Runnable {
 	/**
 	 * Standard constructor.
 	 */
-	private UIBundlingThread() {
+	private GUIRefreshThread() {
 		tasksQueue = new ConcurrentLinkedQueue<Runnable>();
-
+		
 		ExecutionService.getInstance().getScheduledExecutorService()
-				.scheduleAtFixedRate(this, 100, 10, TimeUnit.MILLISECONDS);
+				.scheduleWithFixedDelay(this, 100, PreferencesHelper.getGUIRefreshCycle(), TimeUnit.MILLISECONDS);
 	}
 
 	/**
@@ -50,9 +50,9 @@ public final class UIBundlingThread implements Runnable {
 	 * 
 	 * @return the singleton instance
 	 */
-	public static synchronized UIBundlingThread getInstance() {
+	public static synchronized GUIRefreshThread getInstance() {
 		if (instance == null) {
-			instance = new UIBundlingThread();
+			instance = new GUIRefreshThread();
 		}
 
 		return instance;
@@ -71,7 +71,7 @@ public final class UIBundlingThread implements Runnable {
 	 */
 	private void processQueue() {
 		Display display = Display.getCurrent();
-
+		//System.out.println(tasksQueue.size());
 		if (display == null) {
 			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 				public void run() {

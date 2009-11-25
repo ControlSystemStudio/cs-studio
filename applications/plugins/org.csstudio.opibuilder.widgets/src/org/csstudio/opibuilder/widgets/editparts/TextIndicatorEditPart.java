@@ -158,7 +158,7 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 				if(newValue == null)
 					return false;				
 				formatValue(newValue, AbstractPVWidgetModel.PROP_PVVALUE, figure);
-				return true;
+				return false;
 			}		
 		};
 		setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVVALUE, handler);		

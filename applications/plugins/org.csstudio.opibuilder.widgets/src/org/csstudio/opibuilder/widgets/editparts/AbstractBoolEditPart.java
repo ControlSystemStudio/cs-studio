@@ -63,7 +63,7 @@ public abstract class AbstractBoolEditPart extends AbstractPVWidgetEditPart {
 					return false;
 				AbstractBoolFigure figure = (AbstractBoolFigure) refreshableFigure;
 				figure.setValue(ValueUtil.getDouble((IValue)newValue));
-				return true;
+				return false;
 			}
 		};
 		setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVVALUE, handler);

@@ -6,14 +6,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
-import org.csstudio.opibuilder.util.UIBundlingThread;
+import org.csstudio.opibuilder.util.GUIRefreshThread;
 import org.eclipse.draw2d.IFigure;
 
 /**
  * The listener on widget property change.
  * 
  * @author Sven Wende (class of same name in SDS)
- * @author Xihui Chen, 
+ * @author Xihui Chen 
  *
  */
 public class WidgetPropertyChangeListener implements PropertyChangeListener {
@@ -43,7 +43,7 @@ public class WidgetPropertyChangeListener implements PropertyChangeListener {
 				}
 			}
 		};		
-		UIBundlingThread.getInstance().addRunnable(task);
+		GUIRefreshThread.getInstance().addRunnable(task);
 	}
 	
 	/**Add handler, which is informed when a property changed.
