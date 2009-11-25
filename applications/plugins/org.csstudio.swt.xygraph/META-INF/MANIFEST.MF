@@ -13,4 +13,5 @@ Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.swt.xygraph.dataprovider,
  org.csstudio.swt.xygraph.figures,
- org.csstudio.swt.xygraph.linearscale
+ org.csstudio.swt.xygraph.linearscale,
+ org.csstudio.swt.xygraph.undo
