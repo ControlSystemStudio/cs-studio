@@ -1,6 +1,7 @@
 package org.csstudio.swt.xygraph.figures;
 
 import org.csstudio.swt.xygraph.toolbar.XYGraphToolbar;
+import org.eclipse.draw2d.Clickable;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.geometry.Dimension;
@@ -78,7 +79,8 @@ public class ToolbarArmedXYGraph extends Figure {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void paintFigure(final Graphics graphics) {		
+	@Override
+    public void paintFigure(final Graphics graphics) {		
 		if (!transparent)		
 			graphics.fillRectangle(getClientArea());		
 		super.paintFigure(graphics);
@@ -97,4 +99,12 @@ public class ToolbarArmedXYGraph extends Figure {
 		xyGraph.setTransparent(transparent);
 	}
 	
+	/** Add a button to the tool bar.
+	 *  New button will be added to the 'end' of the tool bar.
+	 *  @param button New button
+	 */
+    public void addToolbarButton(final Clickable button)
+    {
+        toolbar.addButton(button);
+    }
 }
