@@ -32,4 +32,28 @@ public class AssignStatementParser_Test extends TestCase {
 		Assert.assertEquals(parser.getEndOffsetLastFound(), lastFoundAsNode
 				.getStatementEndOffset());
 	}
+	
+	@Test
+	public void testArrayAssignment() {
+		final AssignStatementParser parser = new AssignStatementParser();
+
+		parser
+				.findNext("//...\nshort l[2];\nassign l[1] to \"epics://krykWeather.temp_ai.VAL\";\n// usw...\n");
+		Assert.assertTrue(parser.hasFoundElement());
+
+		Assert.assertEquals("assign l[1] to \"epics://krykWeather.temp_ai.VAL\";",
+				parser.getLastFoundStatement());
+		final AssignStatementNode lastFoundAsNode = parser.getLastFoundAsNode();
+		Assert.assertEquals("l", lastFoundAsNode.getSourceIdentifier());
+		Assert.assertTrue(lastFoundAsNode.hasOffsets());
+		Assert.assertEquals(18, lastFoundAsNode.getStatementStartOffset());
+		Assert.assertEquals(67, lastFoundAsNode.getStatementEndOffset());
+		Assert.assertFalse(lastFoundAsNode.hasChildren());
+		Assert.assertTrue(lastFoundAsNode.hasContent());
+		Assert.assertEquals("epics://krykWeather.temp_ai.VAL", lastFoundAsNode
+				.getContent());
+
+		Assert.assertEquals(parser.getEndOffsetLastFound(), lastFoundAsNode
+				.getStatementEndOffset());
+	}
 }

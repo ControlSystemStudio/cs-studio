@@ -10,9 +10,18 @@ import de.desy.language.snl.parser.nodes.VariableNode;
 public class VariableParser_Test extends TestCase {
 
 	private final String _source = "/*HAllo*/\nprogram sncExample;"
-			+ "double v;" + "assign v to \"{user}:aiExample\";"
-			+ "monitor v;\n\n\n" + "long l;\n\n" + "%{\n" + "   Embedded C\n"
-			+ "}%\n" + "ss ss1 {" + "    state init {" + "	when (delay(0.1)) {"
+			+ "double v;" 
+			+ "assign v to \"{user}:aiExample\";"
+			+ "monitor v;\n\n\n" 
+			+ "long l;\n\n"
+			+ "char text[40];\n"
+			+ "char text_Neu;\n"
+			+ "char text2 [40] ;\n"
+			+ "char text3[ 40 ];\n"
+			+ "%{\n" 
+			+ "   Embedded C\n"
+			+ "}%\n" 
+			+ "ss ss1 {" + "    state init {" + "	when (delay(0.1)) {"
 			+ "	    printf(\"sncExample: Startup delay over\n\");"
 			+ "	} state low" + "    }" + " /* Hallo Welt!*" + " ./. */"
 			+ "    state low {" + "	    when (v > 50.0) {"
@@ -25,7 +34,7 @@ public class VariableParser_Test extends TestCase {
 			+ "       } state high" + "   }" + "}";
 
 	@Test
-	public void testFindNextCharSequence() {
+	public void testFindNextCharSequence() {		
 		final VariableParser parser = new VariableParser();
 
 		// double v
@@ -54,6 +63,54 @@ public class VariableParser_Test extends TestCase {
 		Assert.assertTrue(lastFoundAsNode.hasOffsets());
 		Assert.assertEquals(82, lastFoundAsNode.getStatementStartOffset());
 		Assert.assertEquals(88, lastFoundAsNode.getStatementEndOffset());
+		
+		// char text[40]
+		parser.findNext(this._source, parser.getEndOffsetLastFound());
+		Assert.assertTrue(parser.hasFoundElement());
+		Assert.assertEquals("char text[40];", parser.getLastFoundStatement());
+		lastFoundAsNode = parser.getLastFoundAsNode();
+		Assert.assertEquals(VariableNode.class, lastFoundAsNode.getClass());
+		Assert.assertEquals("text", lastFoundAsNode.getSourceIdentifier());
+		Assert.assertEquals("char", lastFoundAsNode.getTypeName());
+		Assert.assertTrue(lastFoundAsNode.hasOffsets());
+		Assert.assertEquals(91, lastFoundAsNode.getStatementStartOffset());
+		Assert.assertEquals(104, lastFoundAsNode.getStatementEndOffset());
+		
+		// char text_Neu
+		parser.findNext(this._source, parser.getEndOffsetLastFound());
+		Assert.assertTrue(parser.hasFoundElement());
+		Assert.assertEquals("char text_Neu;", parser.getLastFoundStatement());
+		lastFoundAsNode = parser.getLastFoundAsNode();
+		Assert.assertEquals(VariableNode.class, lastFoundAsNode.getClass());
+		Assert.assertEquals("text_Neu", lastFoundAsNode.getSourceIdentifier());
+		Assert.assertEquals("char", lastFoundAsNode.getTypeName());
+		Assert.assertTrue(lastFoundAsNode.hasOffsets());
+		Assert.assertEquals(106, lastFoundAsNode.getStatementStartOffset());
+		Assert.assertEquals(119, lastFoundAsNode.getStatementEndOffset());
+		
+		// char text2[40]
+		parser.findNext(this._source, parser.getEndOffsetLastFound());
+		Assert.assertTrue(parser.hasFoundElement());
+		Assert.assertEquals("char text2 [40] ;", parser.getLastFoundStatement());
+		lastFoundAsNode = parser.getLastFoundAsNode();
+		Assert.assertEquals(VariableNode.class, lastFoundAsNode.getClass());
+		Assert.assertEquals("text2", lastFoundAsNode.getSourceIdentifier());
+		Assert.assertEquals("char", lastFoundAsNode.getTypeName());
+		Assert.assertTrue(lastFoundAsNode.hasOffsets());
+		Assert.assertEquals(121, lastFoundAsNode.getStatementStartOffset());
+		Assert.assertEquals(137, lastFoundAsNode.getStatementEndOffset());
+		
+		// char text3[40]
+		parser.findNext(this._source, parser.getEndOffsetLastFound());
+		Assert.assertTrue(parser.hasFoundElement());
+		Assert.assertEquals("char text3[ 40 ];", parser.getLastFoundStatement());
+		lastFoundAsNode = parser.getLastFoundAsNode();
+		Assert.assertEquals(VariableNode.class, lastFoundAsNode.getClass());
+		Assert.assertEquals("text3", lastFoundAsNode.getSourceIdentifier());
+		Assert.assertEquals("char", lastFoundAsNode.getTypeName());
+		Assert.assertTrue(lastFoundAsNode.hasOffsets());
+		Assert.assertEquals(139, lastFoundAsNode.getStatementStartOffset());
+		Assert.assertEquals(155, lastFoundAsNode.getStatementEndOffset());
 	}
 
 }

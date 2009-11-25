@@ -9,8 +9,8 @@ public class AssignStatementParser extends
 
 	@Override
 	protected String getPatternString() {
-		return "(assign\\s+)([a-zA-Z][0-9a-zA-Z]*)(\\s+to\\s+)(\"[\\s\\S]*\")"
-				+ this.getPrePatternString();
+		return "(assign\\s+)([a-zA-Z][0-9a-zA-Z_]*)(\\s*\\[\\s*\\d+\\s*\\])*(\\s+to\\s+)(\"[\\s\\S]*\")"
+				+ this.getPrePatternString(); 
 	}
 
 	@Override
@@ -24,7 +24,7 @@ public class AssignStatementParser extends
 		this._startOffSet = mainMatcher.start();
 		this._endOffSet = mainMatcher.end();
 		this._statement = mainMatcher.group();
-		final String channelNameWithQuotes = mainMatcher.group(4);
+		final String channelNameWithQuotes = mainMatcher.group(5);
 		this._found = true;
 		this._node = new AssignStatementNode(mainMatcher.group(2),
 				channelNameWithQuotes.substring(1, channelNameWithQuotes

@@ -56,7 +56,7 @@ public class VariableParser extends
 				typeBuffer.append(predefinedType.getElementName());
 			}
 		}
-		return "(" + typeBuffer.toString() + ")(\\s+)([a-zA-Z][0-9a-zA-Z]*)"
+		return "(" + typeBuffer.toString() + ")(\\s+)([a-zA-Z][0-9a-zA-Z_]*)(\\s*\\[\\s*\\d+\\s*\\])*"
 				+ this.getPrePatternString();
 	}
 
