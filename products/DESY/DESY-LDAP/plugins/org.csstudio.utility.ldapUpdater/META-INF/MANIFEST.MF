@@ -4,11 +4,12 @@ Bundle-Name: LdapUpdater Plug-in
 Bundle-SymbolicName: org.csstudio.utility.ldapUpdater;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Activator: org.csstudio.utility.ldapUpdater.Activator
+Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.core.runtime,
- org.csstudio.platform,
  org.csstudio.utility.ldap,
  org.csstudio.utility.namespace.utility,
- org.csstudio.platform.libs.dcf,
- org.csstudio.platform.libs.xmpp
-Eclipse-LazyStart: true
+ org.remotercp.common;bundle-version="1.0.0",
+ org.remotercp.ecf;bundle-version="1.0.0",
+ org.eclipse.ui;bundle-version="3.5.1",
+ org.csstudio.platform.ui;bundle-version="1.1.1"
 Bundle-ClassPath: .

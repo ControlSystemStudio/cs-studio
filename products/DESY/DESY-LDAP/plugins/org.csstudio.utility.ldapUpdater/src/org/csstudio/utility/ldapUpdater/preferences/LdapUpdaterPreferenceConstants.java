@@ -34,6 +34,7 @@ public class LdapUpdaterPreferenceConstants {
 	public static final String XMPP_PASSWD = "XMPPPassWD";
 	public static final String LDAP_AUTO_START = "ldapAutoStart";
 	public static final String LDAP_AUTO_INTERVAL = "ldapAutoInterval";
+	public static final String XMPP_SERVER = "XMPPServer";
 	
 	
 

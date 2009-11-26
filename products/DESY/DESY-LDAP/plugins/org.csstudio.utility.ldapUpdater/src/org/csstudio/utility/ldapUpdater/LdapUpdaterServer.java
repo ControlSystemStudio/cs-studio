@@ -1,16 +1,14 @@
 package org.csstudio.utility.ldapUpdater;
 
-import java.text.SimpleDateFormat;
-import java.util.Timer;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.startupservice.IStartupServiceListener;
-import org.csstudio.platform.startupservice.StartupServiceEnumerator;
 import org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceConstants;
-import org.csstudio.utility.ldapUpdater.LdapUpdater;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
+import org.remotercp.common.servicelauncher.ServiceLauncher;
+import org.remotercp.ecf.ECFConstants;
+import org.remotercp.login.connection.HeadlessConnection;
 
 public class LdapUpdaterServer implements IApplication {
 
@@ -25,7 +23,7 @@ public class LdapUpdaterServer implements IApplication {
 	 * The running instance of this server.
 	 */
 	private static LdapUpdaterServer _instance;
-	
+
 	/**
 	 * Returns a reference to the currently running server instance. Note: it
 	 * would probably be better to use the OSGi Application Admin service.
@@ -35,7 +33,7 @@ public class LdapUpdaterServer implements IApplication {
 	static LdapUpdaterServer getRunningServer() {
 		return _instance;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -44,10 +42,10 @@ public class LdapUpdaterServer implements IApplication {
 		_instance = this;
 
 		// CALCULATE THE DELAY FOR THE AUTOMATIC LDAP PROCESSING
-		long startTime = System.currentTimeMillis();		
+		long startTime = System.currentTimeMillis();
 		long one_hour = 3600; // s
 		long one_day = one_hour * 24; // s
-		long time_since_last_midnight=(startTime / 1000) % (one_day); // s
+		long time_since_last_midnight = (startTime / 1000) % (one_day); // s
 		long delay = 0;
 
 		IPreferencesService prefs = Platform.getPreferencesService();
@@ -56,7 +54,7 @@ public class LdapUpdaterServer implements IApplication {
 		String intervalString = prefs.getString(Activator.PLUGIN_ID,
 				LdapUpdaterPreferenceConstants.LDAP_AUTO_INTERVAL, "", null);
 
-		long hexVal = Long.parseLong("AFFE",17);
+		long hexVal = Long.parseLong("AFFE", 17);
 		long startSec = Long.parseLong(startSecString);
 		long interval = Long.parseLong(intervalString);
 
@@ -64,13 +62,13 @@ public class LdapUpdaterServer implements IApplication {
 			delay = one_day - time_since_last_midnight; // start at 1 o'clock am
 		} else {
 			if (time_since_last_midnight < interval) {
-				delay = (interval) - time_since_last_midnight;	// start at
-																// "startTime[Sec]"
+				delay = (interval) - time_since_last_midnight; // start at
+				// "startTime[Sec]"
 			} else {
-				delay = (interval * 2) - time_since_last_midnight;	// start at
-																	// "startTime[Sec]"
-																	// + 12
-																	// hours
+				delay = (interval * 2) - time_since_last_midnight; // start at
+				// "startTime[Sec]"
+				// + 12
+				// hours
 			}
 		}
 
@@ -87,26 +85,32 @@ public class LdapUpdaterServer implements IApplication {
 		_log.debug(this, "Delay until autostart is " + delayStr + " (UTC)");
 		CentralLogger.getInstance().debug(this,
 				"Delay until autostart is " + delayStr + " (UTC)");
-		LdapUpdater.getInstance().start();
-//		for (IStartupServiceListener s : StartupServiceEnumerator.getServices()) {
-//			_log.debug(this, "Running startup service: " + s.toString());
-//			CentralLogger.getInstance().debug(this,
-//					"Running startup service: " + s.toString());
-//			s.run();
-//		}
-//		delay = delay * 1000;
-//		interval = interval * 1000;
-//		new TimerProcessor(delay, interval); // every 12 hours
+
+		String username = prefs.getString(Activator.PLUGIN_ID,
+				LdapUpdaterPreferenceConstants.XMPP_USER, "anonymous", null);
+		String password = prefs.getString(Activator.PLUGIN_ID,
+				LdapUpdaterPreferenceConstants.XMPP_PASSWD, "anonymous", null);
+		String server = prefs.getString(Activator.PLUGIN_ID,
+				LdapUpdaterPreferenceConstants.XMPP_SERVER, "krynfs.desy.de",
+				null);
+
+		HeadlessConnection.connect(username, password, server,
+				ECFConstants.XMPP);
+		ServiceLauncher.startRemoteServices();
+
+		delay = delay * 1000;
+		interval = interval * 1000;
+		new TimerProcessor(delay, interval); // every 12 hours
 
 		// next call was working - for test only (starts the ldapUpdater every
 		// 180 seconds):
 		// new TimerProcessor ( 5000, 1000*180 );
 
-//		synchronized (this) {
-//			while (!_stopped) {
-//				wait();
-//			}
-//		}
+		synchronized (this) {
+			while (!_stopped) {
+				wait();
+			}
+		}
 		return IApplication.EXIT_OK;
 	}
 

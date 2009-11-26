@@ -19,6 +19,7 @@ public class LdapUpdaterPreferenceInitializer extends
 		prefs.put(LdapUpdaterPreferenceConstants.LDAP_HIST_PATH, "Y:\\scripts\\ldap-tests\\");		// unix : "/applic/directoryServer/";
 		prefs.put(LdapUpdaterPreferenceConstants.XMPP_USER, "LDAP_Updater");		
 		prefs.put(LdapUpdaterPreferenceConstants.XMPP_PASSWD, "LDAP_Updater");		
+		prefs.put(LdapUpdaterPreferenceConstants.XMPP_SERVER, "krynfs.desy.de");		
 //		prefs.put(LdapUpdaterPreferenceConstants.LDAP_AUTO_START, "1000*3600");		
 //		prefs.put(LdapUpdaterPreferenceConstants.LDAP_AUTO_INTERVAL, "1000*3600*24");		
 

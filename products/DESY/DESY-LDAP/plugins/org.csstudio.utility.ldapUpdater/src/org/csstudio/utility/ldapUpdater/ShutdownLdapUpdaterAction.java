@@ -1,11 +1,16 @@
 package org.csstudio.utility.ldapUpdater;
 
-import org.csstudio.platform.libs.dcf.actions.IAction;
+import org.csstudio.platform.management.CommandParameters;
+import org.csstudio.platform.management.CommandResult;
+import org.csstudio.platform.management.IManagementCommand;
 
-public class ShutdownLdapUpdaterAction implements IAction {
+public class ShutdownLdapUpdaterAction implements IManagementCommand {
 
-		public Object run(Object param) {
+	/**
+	 * {@inheritDoc}
+	 */
+	public CommandResult execute(CommandParameters parameters) {
 			LdapUpdaterServer.getRunningServer().stop();
-			return "DONE";
+			return CommandResult.createSuccessResult();
 		}
 	}
