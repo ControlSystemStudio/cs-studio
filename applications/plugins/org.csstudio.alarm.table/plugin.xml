@@ -191,4 +191,12 @@
          </adapter>
       </factory>
    </extension>
+   <extension
+         point="org.csstudio.platform.startupListener">
+      <startupService
+            class="org.csstudio.alarm.table.MessageListAutoStart"
+            id="org.csstudio.alarm.table.startupMessageLists"
+            isHighPriority="False">
+      </startupService>
+   </extension>
 </plugin>

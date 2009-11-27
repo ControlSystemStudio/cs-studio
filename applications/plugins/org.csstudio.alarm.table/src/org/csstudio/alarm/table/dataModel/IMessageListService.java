@@ -24,4 +24,21 @@ public interface IMessageListService {
 	 * @return
 	 */
 	public AlarmMessageList getAlarmMessageList(TopicSet topicSet);
+	
+	/**
+	 * Initialize a list for given {@link TopicSet}.
+	 * 
+	 * @param topicSet
+	 */
+	public void initializeAlarmMessageList(TopicSet topicSet);
+
+	/**
+	 * Initialize a list for given {@link TopicSet}.
+	 * 
+	 * @param topicSet
+	 * @param maximumMessageNumber
+	 */
+	public void initializeLogMessageList(TopicSet topicSet,
+			Integer maximumMessageNumber);
+
 }

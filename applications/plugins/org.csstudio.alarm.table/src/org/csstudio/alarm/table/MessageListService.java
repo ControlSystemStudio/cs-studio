@@ -1,6 +1,7 @@
 package org.csstudio.alarm.table;
 
 import java.util.HashMap;
+import java.util.List;
 
 import org.csstudio.alarm.table.dataModel.AlarmMessageList;
 import org.csstudio.alarm.table.dataModel.IMessageListService;
@@ -8,6 +9,12 @@ import org.csstudio.alarm.table.dataModel.LogMessageList;
 import org.csstudio.alarm.table.jms.JmsAlarmMessageReceiver;
 import org.csstudio.alarm.table.jms.JmsMessageReceiver;
 import org.csstudio.alarm.table.preferences.TopicSet;
+import org.csstudio.alarm.table.preferences.TopicSetColumnService;
+import org.csstudio.alarm.table.preferences.alarm.AlarmViewPreferenceConstants;
+import org.csstudio.alarm.table.preferences.log.LogViewPreferenceConstants;
+import org.csstudio.platform.startupservice.IStartupServiceListener;
+import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 public class MessageListService implements IMessageListService {
 
@@ -35,14 +42,13 @@ public class MessageListService implements IMessageListService {
 	 * 
 	 * @param topicSet
 	 */
-	private void initializeAlarmMessageList(TopicSet topicSet) {
+	public void initializeAlarmMessageList(TopicSet topicSet) {
 		AlarmMessageList messageList = new AlarmMessageList();
 		JmsAlarmMessageReceiver jmsMessageReceiver = new JmsAlarmMessageReceiver();
 		jmsMessageReceiver.initializeJMSConnection(topicSet.getTopics(),
 				messageList);
 		_alarmMessageMap.put(topicSet.getName(), messageList);
 	}
-
 
 	@Override
 	public LogMessageList getLogMessageList(TopicSet topicSet,
@@ -58,13 +64,15 @@ public class MessageListService implements IMessageListService {
 	 * the JMSReceiver.
 	 * 
 	 * @param topicSet
-	 * @param maximumMessageNumber 
+	 * @param maximumMessageNumber
 	 */
-	private void initializeLogMessageList(TopicSet topicSet, Integer maximumMessageNumber) {
+	public void initializeLogMessageList(TopicSet topicSet,
+			Integer maximumMessageNumber) {
 		LogMessageList messageList = new LogMessageList(maximumMessageNumber);
 		JmsMessageReceiver jmsMessageReceiver = new JmsMessageReceiver();
 		jmsMessageReceiver.initializeJMSConnection(topicSet.getTopics(),
 				messageList);
 		_logMessageMap.put(topicSet.getName(), messageList);
 	}
+
 }
