@@ -9,7 +9,7 @@ public class AssignStatementParser extends
 
 	@Override
 	protected String getPatternString() {
-		return "(assign\\s+)([a-zA-Z][0-9a-zA-Z_]*)(\\s*\\[\\s*\\d+\\s*\\])*(\\s+to\\s+)(\"[\\s\\S]*\")"
+		return "(assign\\s+)([a-zA-Z_][0-9a-zA-Z_]*)(\\s*\\[\\s*\\d+\\s*\\])*(\\s+to\\s+)(\"[\\s\\S]*\")"
 				+ this.getPrePatternString(); 
 	}
 

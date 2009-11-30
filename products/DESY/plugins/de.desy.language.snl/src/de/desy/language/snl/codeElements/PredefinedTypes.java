@@ -34,12 +34,7 @@ import de.desy.language.editor.core.ILanguageElements;
  * @version 0.2
  */
 public enum PredefinedTypes implements ILanguageElements {
-	CHAR("char"), DOUBLE("double"),
-	/**
-	 * deprecated This is no type
-	 */
-	@Deprecated
-	EVFLAG("evflag"),
+	CHAR("char"), DOUBLE("double"),	EVFLAG("evflag"),
 	FLOAT("float"), INT("int"), LONG("long"), SHORT("short"),
 
 	/**

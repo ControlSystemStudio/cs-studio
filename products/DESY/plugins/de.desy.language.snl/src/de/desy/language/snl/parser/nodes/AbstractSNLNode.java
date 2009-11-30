@@ -5,10 +5,6 @@ import de.desy.language.libraries.utils.contract.Contract;
 
 public abstract class AbstractSNLNode extends Node {
 
-	
-
-	public abstract String getNodeTypeName();
-
 	/**
 	 * Returns the name of the content, like a program name or a variable name.
 	 * 

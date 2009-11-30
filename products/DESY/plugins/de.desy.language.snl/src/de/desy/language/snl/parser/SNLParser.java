@@ -25,6 +25,8 @@ package de.desy.language.snl.parser;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.resources.IMarker;
@@ -34,6 +36,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 import de.desy.language.editor.core.parser.AbstractLanguageParser;
 import de.desy.language.editor.core.parser.Node;
+import de.desy.language.editor.ui.measurement.KeyValuePair;
 import de.desy.language.snl.parser.nodes.AllVariablesNode;
 import de.desy.language.snl.parser.nodes.AssignStatementNode;
 import de.desy.language.snl.parser.nodes.EntryNode;
@@ -83,13 +86,24 @@ public class SNLParser extends AbstractLanguageParser {
 	}
 
 	private String _input;
+	private List<KeyValuePair> _measurementData;
+	private int _entryCount = 0;
+	private int _exitCount = 0;
+	private int _whenCount = 0;
+	private int _statesCount = 0;
+	private int _entryDuration = 0;
+	private int _exitDuration = 0;
+	private int _whenDuration = 0;
+	private int _statesDuration = 0;
 
 	public SNLParser() {
+		_measurementData = new LinkedList<KeyValuePair>();
 	}
 
 	@Override
 	protected Node doParse(final CharSequence input, IResource sourceResource,
 			final IProgressMonitor progressMonitor) {
+		long overallStart = System.currentTimeMillis();
 		if (input.length() == 0) {
 			final PlaceholderNode placeholder = new PlaceholderNode(
 					"No content to outline avail.");
@@ -113,11 +127,11 @@ public class SNLParser extends AbstractLanguageParser {
 			root = programNode;
 
 			// configure the program node:
-			findAndAddAllVariables(programNode, _input);
-			progressMonitor.worked(5);
-			findAndAddAllEventFlags(programNode, _input);
-			progressMonitor.worked(6);
 			findAndAddAllStateSets(programNode, _input);
+			progressMonitor.worked(5);
+			findAndAddAllVariables(programNode, _input);
+			progressMonitor.worked(6);
+			findAndAddAllEventFlags(programNode, _input);
 			progressMonitor.worked(7);
 			findAndAddAllOptionStatements(programNode, _input);
 			progressMonitor.worked(8);
@@ -145,13 +159,17 @@ public class SNLParser extends AbstractLanguageParser {
 			root = placeholder;
 		}
 		progressMonitor.done();
+		long overallEnd = System.currentTimeMillis();
+		_measurementData.add(new KeyValuePair("Overall duration (ms)", (int)(overallEnd-overallStart)));
 		return root;
 	}
 
 	private void findAndAddAllEntrys(final Node node, final String input) {
+		long parseTimeStart = System.currentTimeMillis();
 		final EntryParser entryParser = new EntryParser();
 		entryParser.findNext(input);
 		while (entryParser.hasFoundElement()) {
+			_entryCount++;
 			final EntryNode entryNode = entryParser.getLastFoundAsNode();
 			final int startOffset = entryNode.getStatementStartOffset()
 					+ node.getStatementStartOffset();
@@ -162,53 +180,37 @@ public class SNLParser extends AbstractLanguageParser {
 			final int lastFound = entryParser.getEndOffsetLastFound();
 			entryParser.findNext(input, lastFound);
 		}
+
+		long parseTimeEnd = System.currentTimeMillis();
+		_entryDuration = _entryDuration + (int)(parseTimeEnd - parseTimeStart);
 	}
 
-	private void findAndAddAllEventFlags(final Node node, final String input) {
-		final Map<String, EventFlagNode> eventFlags = new HashMap<String, EventFlagNode>();
-
-		final EventFlagParser eventFlagParser = new EventFlagParser();
-
-		eventFlagParser.findNext(input);
-
-		while (eventFlagParser.hasFoundElement()) {
-			final EventFlagNode varNode = eventFlagParser.getLastFoundAsNode();
-			node.addChild(varNode);
-
-			eventFlags.put(varNode.getSourceIdentifier(), varNode);
-
-			final int lastEndPosition = eventFlagParser.getEndOffsetLastFound();
-
-			// search next one
-			eventFlagParser.findNext(input, lastEndPosition);
+	private void findAndAddAllWhens(final Node node, final String input) {
+		long parseTimeStart = System.currentTimeMillis();
+		final WhenParser whenParser = new WhenParser();
+		whenParser.findNext(input);
+		while (whenParser.hasFoundElement()) {
+			_whenCount++;
+			final WhenNode whenNode = whenParser.getLastFoundAsNode();
+			final int startOffset = whenNode.getStatementStartOffset()
+					+ node.getStatementStartOffset();
+			final int endOffset = whenNode.getStatementEndOffset()
+					+ node.getStatementStartOffset() + 1;
+			whenNode.setOffsets(startOffset, endOffset);
+			node.addChild(whenNode);
+			final int lastFound = whenParser.getEndOffsetLastFound();
+			whenParser.findNext(input, lastFound);
 		}
-
-		final SyncStatemantParser syncParser = new SyncStatemantParser();
-		syncParser.findNext(input);
-
-		while (syncParser.hasFoundElement()) {
-			final SyncStatementNode syncNode = syncParser.getLastFoundAsNode();
-			final EventFlagNode eventNode = eventFlags.get(syncNode
-					.getSourceIdentifier());
-			if (eventNode == null) {
-				syncNode.addWarning("No event flag definition found for '"
-						+ syncNode.getSourceIdentifier() + "'");
-				node.addChild(syncNode);
-			} else {
-				eventNode.setSynchronized(syncNode);
-			}
-
-			final int lastEndPosition = syncParser.getEndOffsetLastFound();
-
-			// search next one
-			syncParser.findNext(input, lastEndPosition);
-		}
+		long parseTimeEnd = System.currentTimeMillis();
+		_whenDuration = _whenDuration + (int)(parseTimeEnd - parseTimeStart);
 	}
 
 	private void findAndAddAllExits(final Node node, final String input) {
+		long parseTimeStart = System.currentTimeMillis();
 		final ExitParser exitParser = new ExitParser();
 		exitParser.findNext(input);
 		while (exitParser.hasFoundElement()) {
+			_exitCount++;
 			final ExitNode exitNode = exitParser.getLastFoundAsNode();
 			final int startOffset = exitNode.getStatementStartOffset()
 					+ node.getStatementStartOffset();
@@ -219,12 +221,16 @@ public class SNLParser extends AbstractLanguageParser {
 			final int lastFound = exitParser.getEndOffsetLastFound();
 			exitParser.findNext(input, lastFound);
 		}
+		long parseTimeEnd = System.currentTimeMillis();
+		_exitDuration = _exitDuration + (int)(parseTimeEnd - parseTimeStart);
 	}
 
 	private void findAndAddAllStates(final Node node, final CharSequence input) {
+		long parseTimeStart = System.currentTimeMillis();
 		final StateParser stateParser = new StateParser();
 		stateParser.findNext(input);
 		while (stateParser.hasFoundElement()) {
+			_statesCount++;
 			final StateNode stateNode = stateParser.getLastFoundAsNode();
 			final int startOffset = stateNode.getStatementStartOffset()
 					+ node.getStatementStartOffset();
@@ -240,14 +246,19 @@ public class SNLParser extends AbstractLanguageParser {
 			final int lastFound = stateParser.getEndOffsetLastFound();
 			stateParser.findNext(input, lastFound);
 		}
+		long parseTimeEnd = System.currentTimeMillis();
+		_statesDuration = _statesDuration + (int)(parseTimeEnd-parseTimeStart);
 	}
 
 	private CharSequence findAndAddAllStateSets(final Node node,
 			final String input) {
+		long parseTimeStart = System.currentTimeMillis();
 		final String result = input;
 		final StateSetParser stateSetParser = new StateSetParser();
 		stateSetParser.findNext(result);
+		int count = 0;
 		while (stateSetParser.hasFoundElement()) {
+			count++;
 			final StateSetNode stateSetNode = stateSetParser
 					.getLastFoundAsNode();
 			node.addChild(stateSetNode);
@@ -258,11 +269,23 @@ public class SNLParser extends AbstractLanguageParser {
 			final int lastFound = stateSetParser.getEndOffsetLastFound();
 			stateSetParser.findNext(result, lastFound);
 		}
-
+		
+		long parseTimeEnd = System.currentTimeMillis();
+		_measurementData.add(new KeyValuePair("StateSet Node parse duration (ms)", (int)(parseTimeEnd-parseTimeStart)));
+		_measurementData.add(new KeyValuePair("StateSet Nodes", count));
+		_measurementData.add(new KeyValuePair("State Nodes", _statesCount));
+		_measurementData.add(new KeyValuePair("State Node parse duration (ms)", _statesDuration));
+		_measurementData.add(new KeyValuePair("Entry Nodes", _entryCount));
+		_measurementData.add(new KeyValuePair("Entry Node parse duration (ms)", _entryDuration));
+		_measurementData.add(new KeyValuePair("When Nodes", _whenCount));
+		_measurementData.add(new KeyValuePair("When Node parse duration (ms)", _whenDuration));
+		_measurementData.add(new KeyValuePair("Exit Nodes", _exitCount));
+		_measurementData.add(new KeyValuePair("Exit Node parse duration (ms)", _exitDuration));
 		return result;
 	}
 
 	private void findAndAddAllVariables(final Node node, final String input) {
+		long parseTimeStart = System.currentTimeMillis();
 		final Map<String, VariableNode> variableMap = new HashMap<String, VariableNode>();
 		final Map<String, AssignStatementNode> assignMap = new HashMap<String, AssignStatementNode>();
 
@@ -285,6 +308,8 @@ public class SNLParser extends AbstractLanguageParser {
 			variableParser.findNext(input, lastEndPosition);
 		}
 
+		long parseTimeIntermediate1 = System.currentTimeMillis();
+		
 		final AssignStatementParser assignParser = new AssignStatementParser();
 		assignParser.findNext(input);
 
@@ -313,10 +338,13 @@ public class SNLParser extends AbstractLanguageParser {
 			assignParser.findNext(input, lastEndPosition);
 		}
 
+		long parseTimeIntermediate2 = System.currentTimeMillis();
 		final MonitorStatementParser monitorParser = new MonitorStatementParser();
 		monitorParser.findNext(input);
 
+		int count = 0;
 		while (monitorParser.hasFoundElement()) {
+			count++;
 			final MonitorStatementNode monitorNode = monitorParser
 					.getLastFoundAsNode();
 			final VariableNode varNode = variableMap.get(monitorNode
@@ -340,28 +368,71 @@ public class SNLParser extends AbstractLanguageParser {
 			// search next one
 			monitorParser.findNext(input, lastEndPosition);
 		}
+		long parseTimeEnd = System.currentTimeMillis();
+		_measurementData.add(new KeyValuePair("Variable parse duration (ms)", (int)(parseTimeIntermediate1-parseTimeStart)));
+		_measurementData.add(new KeyValuePair("Assignment parse duration (ms)", (int)(parseTimeIntermediate2-parseTimeIntermediate1)));
+		_measurementData.add(new KeyValuePair("Monitor parse duration (ms)", (int)(parseTimeEnd-parseTimeIntermediate2)));
+		_measurementData.add(new KeyValuePair("Variable Nodes", variableMap.size()));
+		_measurementData.add(new KeyValuePair("Assignment Nodes", assignMap.size()));
+		_measurementData.add(new KeyValuePair("Monitor Nodes", count));
 	}
 
-	private void findAndAddAllWhens(final Node node, final String input) {
-		final WhenParser whenParser = new WhenParser();
-		whenParser.findNext(input);
-		while (whenParser.hasFoundElement()) {
-			final WhenNode whenNode = whenParser.getLastFoundAsNode();
-			final int startOffset = whenNode.getStatementStartOffset()
-					+ node.getStatementStartOffset();
-			final int endOffset = whenNode.getStatementEndOffset()
-					+ node.getStatementStartOffset() + 1;
-			whenNode.setOffsets(startOffset, endOffset);
-			node.addChild(whenNode);
-			final int lastFound = whenParser.getEndOffsetLastFound();
-			whenParser.findNext(input, lastFound);
-		}
-	}
+	private void findAndAddAllEventFlags(final Node node, final String input) {
+		long parseTimeStart = System.currentTimeMillis();
+		final Map<String, EventFlagNode> eventFlags = new HashMap<String, EventFlagNode>();
 	
+		final EventFlagParser eventFlagParser = new EventFlagParser();
+	
+		eventFlagParser.findNext(input);
+		while (eventFlagParser.hasFoundElement()) {
+			final EventFlagNode varNode = eventFlagParser.getLastFoundAsNode();
+			node.addChild(varNode);
+	
+			eventFlags.put(varNode.getSourceIdentifier(), varNode);
+	
+			final int lastEndPosition = eventFlagParser.getEndOffsetLastFound();
+	
+			// search next one
+			eventFlagParser.findNext(input, lastEndPosition);
+		}
+	
+		long parseTimeMiddle = System.currentTimeMillis();
+		_measurementData.add(new KeyValuePair("EventFlag Node parse duration (ms)", (int)(parseTimeMiddle - parseTimeStart)));
+		final SyncStatemantParser syncParser = new SyncStatemantParser();
+		syncParser.findNext(input);
+	
+		int syncCount = 0;
+		while (syncParser.hasFoundElement()) {
+			syncCount++;
+			final SyncStatementNode syncNode = syncParser.getLastFoundAsNode();
+			final EventFlagNode eventNode = eventFlags.get(syncNode
+					.getSourceIdentifier());
+			if (eventNode == null) {
+				syncNode.addWarning("No event flag definition found for '"
+						+ syncNode.getSourceIdentifier() + "'");
+				node.addChild(syncNode);
+			} else {
+				eventNode.setSynchronized(syncNode);
+			}
+	
+			final int lastEndPosition = syncParser.getEndOffsetLastFound();
+	
+			// search next one
+			syncParser.findNext(input, lastEndPosition);
+		}
+		_measurementData.add(new KeyValuePair("EventFlag Nodes", eventFlags.size()));
+		_measurementData.add(new KeyValuePair("Sync Nodes", syncCount));
+		long parseTimeEnd = System.currentTimeMillis();
+		_measurementData.add(new KeyValuePair("Sync Node parse duration (ms)", (int)(parseTimeEnd - parseTimeMiddle)));
+	}
+
 	private void findAndAddAllOptionStatements(Node rootNode, String input) {
+		long parseTimeStart = System.currentTimeMillis();
 		final OptionStatementParser optionParser = new OptionStatementParser();
 		optionParser.findNext(input);
+		int count = 0;
 		while (optionParser.hasFoundElement()) {
+			count++;
 			final OptionStatementNode optionStatementNode = optionParser
 						.getLastFoundAsNode();
 			Node parentNode = findSurroundingNode(rootNode, optionStatementNode);
@@ -369,15 +440,22 @@ public class SNLParser extends AbstractLanguageParser {
 			final int lastFound = optionParser.getEndOffsetLastFound();
 			optionParser.findNext(input, lastFound);
 		}
+		_measurementData.add(new KeyValuePair("Option Nodes", count));
+		long parseTimeEnd = System.currentTimeMillis();
+		_measurementData.add(new KeyValuePair("Option parse duration (ms)", (int)(parseTimeEnd-parseTimeStart)));
 	}
 	
 	private Node findSurroundingNode(Node rootNode, Node childNode) {
-		for (Node node : rootNode.getChildrenNodes()) {
-			if (node.hasOffsets() &&
-					node.getStatementStartOffset() <= childNode.getStatementStartOffset() && 
-					childNode.getStatementEndOffset() <= node.getStatementEndOffset()) {
-				return findSurroundingNode(node, childNode);
-			}			
+		if (rootNode.hasChildren()) {
+			for (Node node : rootNode.getChildrenNodes()) {
+				if (node.hasOffsets()
+						&& node.getStatementStartOffset() <= childNode
+								.getStatementStartOffset()
+						&& childNode.getStatementEndOffset() <= node
+								.getStatementEndOffset()) {
+					return findSurroundingNode(node, childNode);
+				}
+			}
 		}
 		return rootNode;
 	}
@@ -387,11 +465,14 @@ public class SNLParser extends AbstractLanguageParser {
 	}
 
 	private String removeAllComments(final CharSequence input) {
+		long parseTimeStart = System.currentTimeMillis();
 		String result = input.toString();
 
 		final MultiLineCommentParser multiCommentParser = new MultiLineCommentParser();
 		multiCommentParser.findNext(result);
+		int multiLineCount = 0;
 		while (multiCommentParser.hasFoundElement()) {
+			multiLineCount++;
 			final String comment = multiCommentParser.getLastFoundStatement();
 			if (!result.contains(comment)) {
 				break;
@@ -402,7 +483,9 @@ public class SNLParser extends AbstractLanguageParser {
 
 		final SingleLineCommentParser singleLineCommentParser = new SingleLineCommentParser();
 		singleLineCommentParser.findNext(result);
+		int singleLineCount = 0;
 		while (singleLineCommentParser.hasFoundElement()) {
+			singleLineCount++;
 			final String singleCommentLine = singleLineCommentParser
 					.getLastFoundStatement();
 			if (!result.contains(singleCommentLine)) {
@@ -412,16 +495,22 @@ public class SNLParser extends AbstractLanguageParser {
 
 			singleLineCommentParser.findNext(result);
 		}
-
+		_measurementData.add(new KeyValuePair("Single Line Comments", singleLineCount));
+		_measurementData.add(new KeyValuePair("Multi Line Comments", multiLineCount));
+		long parseTimeEnd = System.currentTimeMillis();
+		_measurementData.add(new KeyValuePair("Comment parse duration (ms)", (int)(parseTimeEnd-parseTimeStart)));
 		return result;
 	}
 
 	private String removeAllEmbeddedC(final String input) {
+		long parseTimeStart = System.currentTimeMillis();
 		String result = input;
 
 		final MultiLineEmbeddedCParser multiLineEmbeddedCParser = new MultiLineEmbeddedCParser();
 		multiLineEmbeddedCParser.findNext(result);
+		int multiLineCount = 0;
 		while (multiLineEmbeddedCParser.hasFoundElement()) {
+			multiLineCount++;
 			final String embeddedCline = multiLineEmbeddedCParser
 					.getLastFoundStatement();
 			if (!result.contains(embeddedCline)) {
@@ -434,7 +523,9 @@ public class SNLParser extends AbstractLanguageParser {
 
 		final SingleLineEmbeddedCParser singleLineEmbeddedCParser = new SingleLineEmbeddedCParser();
 		singleLineEmbeddedCParser.findNext(result);
+		int singleLineCount = 0;
 		while (singleLineEmbeddedCParser.hasFoundElement()) {
+			singleLineCount++;
 			final String embeddedCline = singleLineEmbeddedCParser
 					.getLastFoundStatement();
 			if (!result.contains(embeddedCline)) {
@@ -445,7 +536,16 @@ public class SNLParser extends AbstractLanguageParser {
 			singleLineEmbeddedCParser.findNext(result);
 		}
 		
+		_measurementData.add(new KeyValuePair("Single Line Embedded-C", singleLineCount));
+		_measurementData.add(new KeyValuePair("Multi Line Embedded-C", multiLineCount));
+		long parseTimeEnd = System.currentTimeMillis();
+		_measurementData.add(new KeyValuePair("Embedded-C parse duration (ms)", (int)(parseTimeEnd-parseTimeStart)));		
 		return result;
+	}
+
+	@Override
+	public KeyValuePair[] getMeasurementData() {
+		return _measurementData.toArray(new KeyValuePair[_measurementData.size()]);
 	}
 
 }

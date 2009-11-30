@@ -8,4 +8,9 @@ public class RootNode extends Node {
 		return "This is the root of the tree";
 	}
 
+	@Override
+	public String getNodeTypeName() {
+		return "Root";
+	}
+
 }

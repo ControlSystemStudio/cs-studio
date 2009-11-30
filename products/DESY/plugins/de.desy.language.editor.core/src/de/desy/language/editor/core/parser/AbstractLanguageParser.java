@@ -3,6 +3,7 @@ package de.desy.language.editor.core.parser;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
 
+import de.desy.language.editor.ui.measurement.KeyValuePair;
 import de.desy.language.libraries.utils.contract.Contract;
 
 /**
@@ -32,7 +33,7 @@ public abstract class AbstractLanguageParser {
 			final IProgressMonitor progressMonitor) {
 		Contract.requireNotNull("input", input);
 		this._sequenceToWorkOn = input;
-		return this.doParse(input, sourceResource, progressMonitor);
+		return doParse(input, sourceResource, progressMonitor);
 	}
 
 	/**
@@ -63,4 +64,6 @@ public abstract class AbstractLanguageParser {
 	 */
 	protected abstract Node doParse(final CharSequence input,
 			IResource sourceResource, final IProgressMonitor progressMonitor);
+	
+	public abstract KeyValuePair[] getMeasurementData();
 }

@@ -49,14 +49,12 @@ public class VariableParser extends
 				.getElementName());
 		for (int i = 1; i < predefinedTypes.length; i++) {
 			final PredefinedTypes predefinedType = predefinedTypes[i];
-			// TODO this case can be deleted, when the EventFlag is no longer a
-			// type
 			if (!predefinedType.equals(PredefinedTypes.EVFLAG)) {
 				typeBuffer.append("|");
 				typeBuffer.append(predefinedType.getElementName());
 			}
 		}
-		return "(" + typeBuffer.toString() + ")(\\s+)([a-zA-Z][0-9a-zA-Z_]*)(\\s*\\[\\s*\\d+\\s*\\])*"
+		return "(" + typeBuffer.toString() + ")(\\s+)([a-zA-Z_][0-9a-zA-Z_]*)(\\s*\\[\\s*\\d+\\s*\\])*"
 				+ this.getPrePatternString();
 	}
 

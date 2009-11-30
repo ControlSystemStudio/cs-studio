@@ -80,7 +80,7 @@ public abstract class Node {
 
 		final int result = this._statementEndOffset;
 
-		Contract.ensure(result >= 0, "§result >= 0");
+		Contract.ensure(result >= 0, "ï¿½result >= 0");
 		return result;
 	}
 
@@ -98,7 +98,7 @@ public abstract class Node {
 
 		final int result = this._statementStartOffset;
 
-		Contract.ensure(result >= 0, "¤result >= 0");
+		Contract.ensure(result >= 0, "ï¿½result >= 0");
 		return result;
 	}
 
@@ -112,6 +112,8 @@ public abstract class Node {
 		return (this._statementStartOffset >= 0)
 				&& (this._statementEndOffset >= 0);
 	}
+	
+	public abstract String getNodeTypeName();
 
 	/**
 	 * Gives the name to be shown for this note.
