@@ -161,48 +161,86 @@ public class AlarmTreeView extends ViewPart {
 	 */
 	private final class AlarmTreeDragListener extends DragSourceAdapter {
 		
-		private ArrayList<ProcessVariableNode> _selectedPVs;
+		private List<IAlarmTreeNode> _dragging;
 		
 		@Override
 		public void dragStart(DragSourceEvent event) {
 			ISelection selection = _viewer.getSelection();
-			if (selection instanceof IStructuredSelection) {
-				_selectedPVs = new ArrayList<ProcessVariableNode>();
-				IStructuredSelection sel = (IStructuredSelection) selection;
-				for (Iterator<?> i = sel.iterator(); i.hasNext(); ) {
-					Object o = i.next();
-					if (o instanceof ProcessVariableNode) {
-						_selectedPVs.add((ProcessVariableNode) o);
-					} else {
-						// If any of the selected items is not a PV, the drag
-						// operation is not allowed.
-						event.doit = false;
-						_selectedPVs = null;
-						return;
-					}
-				}
+			List<IAlarmTreeNode> selectedNodes = selectedNodes(selection);
+			if (canDrag(selectedNodes)) {
+				LocalSelectionTransfer.getTransfer().setSelection(selection);
+				_dragging = selectedNodes;
 			} else {
 				event.doit = false;
-				return;
 			}
+		}
+		
+		/**
+		 * Converts a selection into a list of selected alarm tree nodes.
+		 */
+		private List<IAlarmTreeNode> selectedNodes(ISelection selection) {
+			List<IAlarmTreeNode> result = new ArrayList<IAlarmTreeNode>();
+			if (selection instanceof IStructuredSelection) {
+				IStructuredSelection s = (IStructuredSelection) selection;
+				for (Iterator<?> i = s.iterator(); i.hasNext(); ) {
+					result.add((IAlarmTreeNode) i.next());
+				}
+			}
+			return result;
+		}
+
+		/**
+		 * Returns whether the given list of nodes can be dragged. The nodes can
+		 * be dragged if they are all children of the same parent node.
+		 * 
+		 * @param nodes
+		 *            the nodes.
+		 * @return <code>true</code> if the nodes can be dragged,
+		 *         <code>false</code> otherwise.
+		 */
+		private boolean canDrag(List<IAlarmTreeNode> nodes) {
+			if (nodes.isEmpty()) {
+				return false;
+			}
+			SubtreeNode firstParent = nodes.get(0).getParent();
+			for (IAlarmTreeNode node : nodes) {
+				if (node.getParent() != firstParent) {
+					return false;
+				}
+			}
+			return true;
+		}
+		
+		private boolean containsOnlyPVNodes(List<IAlarmTreeNode> nodes) {
+			for (IAlarmTreeNode node : nodes) {
+				if (!(node instanceof ProcessVariableNode)) {
+					return false;
+				}
+			}
+			return true;
 		}
 		
 		@Override
 		public void dragSetData(DragSourceEvent event) {
 			if (LocalSelectionTransfer.getTransfer().isSupportedType(
 					event.dataType)) {
-				LocalSelectionTransfer.getTransfer().setSelection(
-						_viewer.getSelection());
-			}
-			if (ProcessVariableNameTransfer.getInstance().isSupportedType(
+				// no need to do anything
+			} else if (ProcessVariableNameTransfer.getInstance().isSupportedType(
 					event.dataType)) {
-				event.data = _selectedPVs.toArray(new IProcessVariable[_selectedPVs.size()]);
+				if (!containsOnlyPVNodes(_dragging)) {
+					event.doit = false;
+					return;
+				}
+				event.data = _dragging.toArray(new IProcessVariable[_dragging.size()]);
 			} else if (TextTransfer.getInstance().isSupportedType(event.dataType)) {
 				StringBuilder text = new StringBuilder();
-				for (Iterator<ProcessVariableNode> i = _selectedPVs.iterator(); i.hasNext(); ) {
-					text.append(i.next().getName());
-					if (i.hasNext()) {
-						text.append(", ");
+				for (Iterator<IAlarmTreeNode> i = _dragging.iterator(); i.hasNext(); ) {
+					IAlarmTreeNode node = i.next();
+					if (node instanceof ProcessVariableNode) {
+						text.append(node.getName());
+						if (i.hasNext()) {
+							text.append(", ");
+						}
 					}
 				}
 				event.data = text.toString();
@@ -215,7 +253,7 @@ public class AlarmTreeView extends ViewPart {
 		@Override
 		public void dragFinished(DragSourceEvent event) {
 			if (event.detail == DND.DROP_MOVE) {
-				for (ProcessVariableNode node : _selectedPVs) {
+				for (IAlarmTreeNode node : _dragging) {
 					try {
 						DirectoryEditor.delete(node);
 					} catch (DirectoryEditException e) {
@@ -224,7 +262,7 @@ public class AlarmTreeView extends ViewPart {
 				}
 				_viewer.refresh();
 			}
-			_selectedPVs = null;
+			_dragging = null;
 		}
 	}
 	
