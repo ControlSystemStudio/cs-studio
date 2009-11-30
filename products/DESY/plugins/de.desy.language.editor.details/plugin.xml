@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="SNL"
+            id="de.desy.language.editor.details">
+      </category>
+      <view
+            name="SNL Details View"
+            icon="icons/sample.gif"
+            category="de.desy.language.editor.details"
+            class="de.desy.language.editor.details.views.DetailsView"
+            id="de.desy.language.editor.details.views.DetailsView">
+      </view>
+   </extension>
+
+</plugin>
