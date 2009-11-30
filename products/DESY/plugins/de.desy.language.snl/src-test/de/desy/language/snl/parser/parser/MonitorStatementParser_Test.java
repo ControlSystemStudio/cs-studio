@@ -5,13 +5,14 @@ import junit.framework.TestCase;
 
 import org.junit.Test;
 
+import de.desy.language.snl.parser.Interval;
 import de.desy.language.snl.parser.nodes.MonitorStatementNode;
 
 public class MonitorStatementParser_Test extends TestCase {
 
 	@Test
 	public void testParser() {
-		final MonitorStatementParser parser = new MonitorStatementParser();
+		final MonitorStatementParser parser = new MonitorStatementParser(new Interval[0]);
 
 		parser.findNext("//...\nlong l;\nmonitor l;\n// usw...\n");
 		Assert.assertTrue(parser.hasFoundElement());

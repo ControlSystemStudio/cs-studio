@@ -80,9 +80,9 @@ public abstract class AbstractStatementParser<N extends AbstractSNLNode> {
 
 		final int result = this.doStartOffsetLastFound();
 
-		Contract.ensure(result >= 0, "�result >= 0");
+		Contract.ensure(result >= 0, "result >= 0");
 		Contract.ensure(result < this.getInput().length(),
-				"�result < getInput().length()");
+				"result < getInput().length()");
 		return result;
 	}
 

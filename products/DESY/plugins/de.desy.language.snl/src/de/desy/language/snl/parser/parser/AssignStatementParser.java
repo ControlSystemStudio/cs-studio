@@ -2,10 +2,15 @@ package de.desy.language.snl.parser.parser;
 
 import java.util.regex.Matcher;
 
+import de.desy.language.snl.parser.Interval;
 import de.desy.language.snl.parser.nodes.AssignStatementNode;
 
 public class AssignStatementParser extends
 		AbstractDefaultStatementParser<AssignStatementNode> {
+	
+	public AssignStatementParser(Interval[] exclusions) {
+		super(exclusions);
+	}
 
 	@Override
 	protected String getPatternString() {

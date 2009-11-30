@@ -2,11 +2,16 @@ package de.desy.language.snl.parser.parser;
 
 import java.util.regex.Matcher;
 
+import de.desy.language.snl.parser.Interval;
 import de.desy.language.snl.parser.nodes.SyncStatementNode;
 
 public class SyncStatemantParser extends
 		AbstractDefaultStatementParser<SyncStatementNode> {
 
+	public SyncStatemantParser(Interval[] exclusions) {
+		super(exclusions);
+	}
+	
 	@Override
 	protected String getPatternString() {
 		return "(sync\\s+)([a-zA-Z][0-9a-zA-Z_]*)(\\s+to\\s+)([a-zA-Z][0-9a-zA-Z_]*)"

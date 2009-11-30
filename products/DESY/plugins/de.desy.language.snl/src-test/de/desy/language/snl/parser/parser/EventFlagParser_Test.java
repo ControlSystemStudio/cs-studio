@@ -5,6 +5,7 @@ import junit.framework.TestCase;
 
 import org.junit.Test;
 
+import de.desy.language.snl.parser.Interval;
 import de.desy.language.snl.parser.nodes.EventFlagNode;
 
 public class EventFlagParser_Test extends TestCase {
@@ -16,7 +17,7 @@ public class EventFlagParser_Test extends TestCase {
 
 	@Test
 	public void testFindNextCharSequence() {
-		final EventFlagParser parser = new EventFlagParser();
+		final EventFlagParser parser = new EventFlagParser(new Interval[0]);
 
 		// vFlag
 		parser.findNext(this._source);

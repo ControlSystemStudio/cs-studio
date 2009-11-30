@@ -5,13 +5,14 @@ import junit.framework.TestCase;
 
 import org.junit.Test;
 
+import de.desy.language.snl.parser.Interval;
 import de.desy.language.snl.parser.nodes.SyncStatementNode;
 
 public class SyncStatementParser_Test extends TestCase {
 
 	@Test
 	public void testParser() {
-		final SyncStatemantParser parser = new SyncStatemantParser();
+		final SyncStatemantParser parser = new SyncStatemantParser(new Interval[0]);
 
 		parser.findNext("//...\nlong l;\nsync loLimit to loFlag;\n// usw...\n");
 		Assert.assertTrue(parser.hasFoundElement());

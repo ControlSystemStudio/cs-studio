@@ -3,6 +3,7 @@ package de.desy.language.snl.parser.parser;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import de.desy.language.snl.parser.Interval;
 import de.desy.language.snl.parser.nodes.AbstractSNLNode;
 
 public abstract class AbstractDefaultStatementParser<N extends AbstractSNLNode>
@@ -14,6 +15,16 @@ public abstract class AbstractDefaultStatementParser<N extends AbstractSNLNode>
 	protected int _endOffSet;
 	protected N _node;
 	private Matcher _matcher;
+	
+	private final Interval[] _exclusions;
+	
+	public AbstractDefaultStatementParser() {
+		_exclusions = new Interval[0];
+	}
+	
+	public AbstractDefaultStatementParser(Interval[] exclusions) {
+		_exclusions = exclusions;
+	}
 
 	@Override
 	protected void doFindNext(final CharSequence input, final int startIndex) {
@@ -25,18 +36,27 @@ public abstract class AbstractDefaultStatementParser<N extends AbstractSNLNode>
 		while (preMatcher.find(localStart)) {
 			final Pattern pattern = Pattern.compile(this.getPatternString());
 			this._matcher = pattern.matcher(input);
-			final int end = preMatcher.end();
+			final int end = preMatcher.end();			
 			this._matcher.region(startIndex, end);
 			if (this._matcher.find()) {
 				this.matchFound(preMatcher, this._matcher);
 				break;
 			}
-			localStart = end;
+			localStart = determineStartPosition(end);
 			if (localStart > input.length()) {
 				this._found = false;
 				break;
 			}
 		}
+	}
+	
+	protected int determineStartPosition(int pos) {
+		for (Interval current : _exclusions) {
+			if (current.contains(pos)) {
+				return current.getEnd();
+			}
+		}
+		return pos;
 	}
 
 	protected abstract String getPrePatternString();

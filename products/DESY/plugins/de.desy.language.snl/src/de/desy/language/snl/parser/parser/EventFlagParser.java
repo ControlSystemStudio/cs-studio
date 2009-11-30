@@ -2,10 +2,15 @@ package de.desy.language.snl.parser.parser;
 
 import java.util.regex.Matcher;
 
+import de.desy.language.snl.parser.Interval;
 import de.desy.language.snl.parser.nodes.EventFlagNode;
 
 public class EventFlagParser extends
 		AbstractDefaultStatementParser<EventFlagNode> {
+	
+	public EventFlagParser(Interval[] exclusions) {
+		super(exclusions);
+	}
 
 	@Override
 	protected String getPatternString() {

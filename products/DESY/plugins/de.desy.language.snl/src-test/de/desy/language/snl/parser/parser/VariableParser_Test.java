@@ -5,6 +5,7 @@ import junit.framework.TestCase;
 
 import org.junit.Test;
 
+import de.desy.language.snl.parser.Interval;
 import de.desy.language.snl.parser.nodes.VariableNode;
 
 public class VariableParser_Test extends TestCase {
@@ -35,7 +36,7 @@ public class VariableParser_Test extends TestCase {
 
 	@Test
 	public void testFindNextCharSequence() {		
-		final VariableParser parser = new VariableParser();
+		final VariableParser parser = new VariableParser(new Interval[0]);
 
 		// double v
 		parser.findNext(this._source);
