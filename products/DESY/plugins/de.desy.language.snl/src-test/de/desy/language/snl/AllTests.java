@@ -20,8 +20,6 @@ import de.desy.language.snl.codeElements.RegExToMatchSyncDeclaration_Test;
 import de.desy.language.snl.codeElements.RegExToMatchTextWithoutSubsequent_Test;
 import de.desy.language.snl.codeElements.RegExToMatchVariableDeclaration_Test;
 import de.desy.language.snl.codeElements.RegExToMatchWhenStatements_Test;
-import de.desy.language.snl.parser.AllParserTests;
-import de.desy.language.snl.parser.SNLParser_Test;
 import de.desy.language.snl.parser.nodes.AssignStatementNode_Test;
 import de.desy.language.snl.parser.nodes.BlockConditionNode_Test;
 import de.desy.language.snl.parser.nodes.BlockStatementNode_Test;
