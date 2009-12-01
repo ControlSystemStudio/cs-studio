@@ -131,7 +131,7 @@ public class CachingArchiveServer extends ArchiveServer
             throw new Exception("Received " + result.length + " responses");
         samples = result[0];
         // Remember the result - if it contained data
-        if (samples != null)
+        if (samples != null  &&  samples.getSamples().length > 0)
         {
             sample_cache.put(hash_key, samples);
             if (logger.isDebugEnabled())
