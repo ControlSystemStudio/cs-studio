@@ -626,6 +626,9 @@ public class Controller implements ArchiveFetchJobListener
     {
         final ITimestamp start = model.getStartTime();
         final ITimestamp end = model.getEndTime();
+        
+        // System.out.println("Get archived data: " + start + " ... " + end);
+        
         if (item == null)
         {
             // Request new data for all items because the overall time
@@ -634,7 +637,10 @@ public class Controller implements ArchiveFetchJobListener
             synchronized (jobs)
             {
                 for (ArchiveFetchJob job : jobs)
+                {
+                    // System.out.println("All new request cancels " + job);
                     job.cancel();
+                }
                 jobs.clear();
             }
             for (int i=0; i<model.getNumItems(); ++i)
@@ -645,7 +651,22 @@ public class Controller implements ArchiveFetchJobListener
             }
         }
         else if (item instanceof IPVModelItem)
+        {
+            // Cancel jobs that are already running for this item
+            synchronized (jobs)
+            {
+                for (int i=0; i<jobs.size(); ++i)
+                {
+                    final ArchiveFetchJob job = jobs.get(i);
+                    if (job.getItem() != item)
+                        continue;
+                    // System.out.println("Request for " + item.getName() + " cancels " + job);
+                    job.cancel();
+                    jobs.remove(job);
+                }
+            }
             getArchivedData((IPVModelItem) item, start, end);
+        }
     }
 
     /** Get data from archive for given model item and time range. */

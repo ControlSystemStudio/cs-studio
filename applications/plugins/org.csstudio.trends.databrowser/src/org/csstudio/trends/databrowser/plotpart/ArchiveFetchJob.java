@@ -8,6 +8,7 @@ import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.trends.databrowser.Plugin;
+import org.csstudio.trends.databrowser.model.IModelItem;
 import org.csstudio.trends.databrowser.model.IPVModelItem;
 import org.csstudio.trends.databrowser.preferences.Preferences;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -193,6 +194,12 @@ class ArchiveFetchJob extends Job implements ISchedulingRule
         setRule(this);
     }
     
+    /** @return Item for which this job reads archived data */
+    public IModelItem getItem()
+    {
+        return item;
+    }
+
     /** Default implementation
      *  @see ISchedulingRule#contains(ISchedulingRule)
      */
