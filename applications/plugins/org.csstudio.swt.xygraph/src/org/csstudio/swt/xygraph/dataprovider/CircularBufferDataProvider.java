@@ -89,6 +89,7 @@ public class CircularBufferDataProvider extends AbstractDataProvider{
 	private boolean duringDelay = false;
 	private boolean updateTriggered = false;
 	
+	private boolean concatenate_data = true;
 	
 	/**
 	 * this indicates if the max and min of the data need to be recalculated.
@@ -214,6 +215,8 @@ public class CircularBufferDataProvider extends AbstractDataProvider{
 	 */
 	private void addDataPoint() {	
 		double newXValue;		
+		if(!concatenate_data)
+			traceData.clear();
 		if(chronological){
 			if(xAxisDateEnabled)
 				newXValue = currentYDataTimestamp;		
@@ -297,7 +300,10 @@ public class CircularBufferDataProvider extends AbstractDataProvider{
 	/**
 	 * add a new data point to trace data.
 	 */
-	private void addDataArray() {					
+	private void addDataArray() {	
+		if(!concatenate_data)
+			traceData.clear();
+			
 		if(chronological){	
 			double[] newXValueArray;
 			newXValueArray = new double[currentYDataArray.length];
@@ -312,8 +318,7 @@ public class CircularBufferDataProvider extends AbstractDataProvider{
 			for(int i=0; i<Math.min(newXValueArray.length, currentYDataArray.length); i++){
 				traceData.add(new Sample(newXValueArray[i], currentYDataArray[i]));
 			}					
-		}else{
-			traceData.clear();
+		}else{			
 			//newXValueArray = currentXDataArray;
 			
 			// if the data array size is longer than buffer size, 
@@ -450,6 +455,14 @@ public class CircularBufferDataProvider extends AbstractDataProvider{
 			}					
 		}else
 			super.fireDataChange();			
+	}
+
+	public void setConcatenate_data(boolean concatenate_data) {
+		this.concatenate_data = concatenate_data;
+	}
+
+	public boolean isConcatenate_data() {
+		return concatenate_data;
 	}
 	
 

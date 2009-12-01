@@ -92,8 +92,8 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 		POINT_STYLE("point_style", "Point Style"),
 		POINT_SIZE("point_size", "Point Size"),
 		ANTI_ALIAS("anti_alias", "Anti Alias"),
-		UPDATE_MODE("update_mode", "UpdateMode");
-		
+		UPDATE_MODE("update_mode", "UpdateMode"),
+		CONCATENATE_DATA("contatenate_data", "Contatenate Data");
 		public String propIDPre;
 		public String description;
 		
@@ -311,6 +311,9 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 		case BUFFER_SIZE:
 			addProperty(new IntegerProperty(propID, 
 					traceProperty.toString(), category, DEFAULT_BUFFER_SIZE, 0, MAX_BUFFER_SIZE));
+			break;
+		case CONCATENATE_DATA:
+			addProperty(new BooleanProperty(propID, traceProperty.toString(), category, true));
 			break;
 		//case CLEAR_TRACE:
 		//	addProperty(new BooleanProperty(propID, traceProperty.toString(), category, false));

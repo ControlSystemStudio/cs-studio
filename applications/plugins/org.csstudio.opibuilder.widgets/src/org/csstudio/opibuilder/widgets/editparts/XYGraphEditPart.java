@@ -10,6 +10,7 @@ import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.util.OPIFont;
+import org.csstudio.opibuilder.util.UIBundlingThread;
 import org.csstudio.opibuilder.widgets.model.XYGraphModel;
 import org.csstudio.opibuilder.widgets.model.XYGraphModel.AxisProperty;
 import org.csstudio.opibuilder.widgets.model.XYGraphModel.TraceProperty;
@@ -365,12 +366,33 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 	private void registerTracePropertyChangeHandlers(){
 		XYGraphModel model = (XYGraphModel)getModel();
 		//set prop handlers and init all the potential axes
-		for(int i=0; i<XYGraphModel.MAX_TRACES_AMOUNT; i++){							
+		for(int i=0; i<XYGraphModel.MAX_TRACES_AMOUNT; i++){
+			boolean concatenate = (Boolean) getWidgetModel().getProperty(
+					XYGraphModel.makeTracePropID(TraceProperty.CONCATENATE_DATA.propIDPre, i)).getPropertyValue();
 			for(TraceProperty traceProperty : TraceProperty.values()){				
 				String propID = XYGraphModel.makeTracePropID(
 					traceProperty.propIDPre, i);
-				IWidgetPropertyChangeHandler handler = new TracePropertyChangeHandler(i, traceProperty);
-				setPropertyChangeHandler(propID, handler);				
+				final IWidgetPropertyChangeHandler handler = new TracePropertyChangeHandler(i, traceProperty);
+				
+				if(concatenate){
+					//cannot use setPropertyChangeHandler because the PV value has to be buffered 
+					//which means that it cannot be ignored. 
+					getWidgetModel().getProperty(propID).addPropertyChangeListener(new PropertyChangeListener() {
+											
+						@Override
+						public void propertyChange(final PropertyChangeEvent evt) {
+							UIBundlingThread.getInstance().addRunnable(new Runnable() {							
+								@Override
+								public void run() {
+									handler.handleChange(
+											evt.getOldValue(), evt.getNewValue(), getFigure());
+									}
+							});
+						}
+					});
+				}else
+					setPropertyChangeHandler(propID, handler);
+				
 			}			
 		}		
 		for(int i=XYGraphModel.MAX_TRACES_AMOUNT -1; i>= model.getTracesAmount(); i--){
@@ -418,6 +440,9 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 			break;
 		case TRACE_TYPE:
 			trace.setTraceType(TraceType.values()[(Integer)newValue]);
+			break;
+		case CONCATENATE_DATA:
+			dataProvider.setConcatenate_data((Boolean)newValue);
 			break;
 	//	case TRIGGER_VALUE:
 			//dataProvider.triggerUpdate();
