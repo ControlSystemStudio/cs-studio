@@ -24,7 +24,6 @@
 package de.desy.language.editor.ui.editor;
 
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -66,6 +65,7 @@ import de.desy.language.editor.core.parser.AbstractLanguageParser;
 import de.desy.language.editor.core.parser.Node;
 import de.desy.language.editor.ui.EditorUIActivator;
 import de.desy.language.editor.ui.editor.highlighting.AbstractRuleProvider;
+import de.desy.language.editor.ui.eventing.UIEvent;
 import de.desy.language.editor.ui.eventing.UIEventListener;
 import de.desy.language.editor.ui.outline.LanguageOutlinePage;
 import de.desy.language.editor.ui.preferences.PreferenceConstants;
@@ -267,9 +267,9 @@ public abstract class LanguageEditor extends TextEditor {
     public final void dispose() {
         super.dispose();
 
-//        UIEvent.HIGHLIGTHING_RULE_CHANGED.removeListener(this._uiListener);
-//        UIEvent.TEXT_ATTRIBUTE_CHANGED.removeListener(this._uiListener);
-//        UIEvent.HIGHLIGHTING_REFRESH_REQUEST.removeListener(this._refreshListener);
+        UIEvent.HIGHLIGTHING_RULE_CHANGED.removeListener(this._uiListener);
+        UIEvent.TEXT_ATTRIBUTE_CHANGED.removeListener(this._uiListener);
+        UIEvent.HIGHLIGHTING_REFRESH_REQUEST.removeListener(this._refreshListener);
 
         this.doAdditionalDispose();
     }
