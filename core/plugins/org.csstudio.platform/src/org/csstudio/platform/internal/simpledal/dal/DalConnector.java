@@ -107,7 +107,10 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
 	@Override
 	protected void sendInitialValuesForNewListener(String characteristicId, IProcessVariableValueListener listener) {
 		super.sendInitialValuesForNewListener(characteristicId, listener);
-		processConditionChange(_dalProperty.getCondition(), _dalProperty.getLatestValueUpdateTimestamp());
+
+		if (_dalProperty != null) {
+			processConditionChange(_dalProperty.getCondition(), _dalProperty.getLatestValueUpdateTimestamp());
+		}
 	}
 
 	private void processConditionChange(DynamicValueCondition condition, Timestamp timestamp) {
@@ -390,7 +393,7 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
 	protected void doInit() {
 		// get or create a real DAL property
 		DynamicValueProperty property = null;
-		
+
 		try {
 			RemoteInfo ri = getProcessVariableAddress().toDalRemoteInfo();
 
@@ -495,7 +498,6 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
 	@Override
 	protected void doGetCharacteristicAsynchronously(final String characteristicId, final ValueType valueType,
 			final IProcessVariableValueListener listener) {
-
 
 		try {
 			if (_dalProperty != null && _dalProperty.isConnected()) {
