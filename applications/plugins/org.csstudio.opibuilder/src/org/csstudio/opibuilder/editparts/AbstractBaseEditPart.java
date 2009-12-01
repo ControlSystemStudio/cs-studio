@@ -194,9 +194,10 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 			
 			//add listener to all properties.
 			for(String id : getWidgetModel().getAllPropertyIDs()){
-				WidgetPropertyChangeListener listener = 
-					new WidgetPropertyChangeListener(this);
+				
 				AbstractWidgetProperty property = getWidgetModel().getProperty(id); 
+				WidgetPropertyChangeListener listener = 
+					new WidgetPropertyChangeListener(this, property);
 				property.addPropertyChangeListener(
 					listener);
 				propertyListenerMap.put(id, listener);				

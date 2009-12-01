@@ -5,6 +5,7 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.csstudio.opibuilder.datadefinition.WidgetIgnorableUITask;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.util.GUIRefreshThread;
 import org.eclipse.draw2d.IFigure;
@@ -19,20 +20,21 @@ import org.eclipse.draw2d.IFigure;
 public class WidgetPropertyChangeListener implements PropertyChangeListener {
 
 	private AbstractBaseEditPart editpart;
-	
+	private AbstractWidgetProperty widgetProperty;
 	private List<IWidgetPropertyChangeHandler> handlers;
 	
 	/**Constructor.
 	 * @param editpart backlint to the editpart, which uses this listener.
 	 */
-	public WidgetPropertyChangeListener(AbstractBaseEditPart editpart) {
-		assert editpart != null;
+	public WidgetPropertyChangeListener(AbstractBaseEditPart editpart,
+			AbstractWidgetProperty property) {
 		this.editpart = editpart;
+		this.widgetProperty = property;
 		handlers = new ArrayList<IWidgetPropertyChangeHandler>();
 	}
 	
 	public void propertyChange(final PropertyChangeEvent evt) {
-		Runnable task = new Runnable() {			
+		Runnable runnable = new Runnable() {			
 			public void run() {
 				for(IWidgetPropertyChangeHandler h : handlers) {
 					IFigure figure = editpart.getFigure();
@@ -43,7 +45,9 @@ public class WidgetPropertyChangeListener implements PropertyChangeListener {
 				}
 			}
 		};		
-		GUIRefreshThread.getInstance().addRunnable(task);
+		WidgetIgnorableUITask task = new WidgetIgnorableUITask(widgetProperty, runnable);
+		
+		GUIRefreshThread.getInstance().addIgnorableTask(task);
 	}
 	
 	/**Add handler, which is informed when a property changed.

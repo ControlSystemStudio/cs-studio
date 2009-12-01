@@ -42,7 +42,7 @@ public final class UIBundlingThread implements Runnable {
 		tasksQueue = new ConcurrentLinkedQueue<Runnable>();
 
 		ExecutionService.getInstance().getScheduledExecutorService()
-				.scheduleAtFixedRate(this, 100, 10, TimeUnit.MILLISECONDS);
+				.scheduleAtFixedRate(this, 100, 20, TimeUnit.MILLISECONDS);
 	}
 
 	/**
@@ -69,30 +69,13 @@ public final class UIBundlingThread implements Runnable {
 	/**
 	 * Process the complete queue.
 	 */
-	private void processQueue() {
-		Display display = Display.getCurrent();
-
-		if (display == null) {
-			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-				public void run() {
-					Runnable r;
-
-					while ((r = tasksQueue.poll()) != null) {
-						r.run();
-					}
-				}
-			});
-		} else {
-			display.asyncExec(new Runnable(){
-				public void run() {
-					Runnable r;
-					while ((r = tasksQueue.poll()) != null) {
-						r.run();
-					}
-				}
-			});
-			
+	private synchronized void processQueue() {
+		Display display = PlatformUI.getWorkbench().getDisplay();
+		Runnable r;
+		while( (r=tasksQueue.poll()) != null){	
+			display.asyncExec(r);
 		}
+	
 	}
 
 	/**
@@ -101,7 +84,7 @@ public final class UIBundlingThread implements Runnable {
 	 * @param runnable
 	 *            the runnable
 	 */
-	public void addRunnable(final Runnable runnable) {
+	public synchronized void addRunnable(final Runnable runnable) {
 		tasksQueue.add(runnable);
 	}
 

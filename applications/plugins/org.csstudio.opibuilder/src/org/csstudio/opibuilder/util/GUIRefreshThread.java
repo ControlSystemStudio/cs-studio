@@ -1,9 +1,9 @@
 package org.csstudio.opibuilder.util;
 
-import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 
+import org.csstudio.opibuilder.datadefinition.WidgetIgnorableUITask;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.platform.ExecutionService;
 import org.eclipse.swt.widgets.Display;
@@ -14,11 +14,8 @@ import org.eclipse.ui.PlatformUI;
 /**
  * 
  * A singleton back thread which will help to execute tasks for OPI GUI refreshing.
- * This way we avoid slow downs, that occur on several
- * operating systems, when Display.asyncExec() is called very often from
- * background threads.
- * 
- * This thread sleeps for a time which can be set in the preference page.
+ * This thread sleeps for a time which can be set in the preference page. It can
+ * help throttle the unnecessary repaint caused by fast PV value updating.
  * 
  * @author Xihui Chen
  * 
@@ -30,16 +27,16 @@ public final class GUIRefreshThread implements Runnable {
 	private static GUIRefreshThread instance;
 
 	/**
-	 * A queue, which contains runnables that process the events that occured
-	 * during the last SLEEP_TIME milliseconds.
+	 * A queue, which contains {@link WidgetIgnorableUITask}. 
+	 * It will be processed by this thread periodically. 
 	 */
-	private Queue<Runnable> tasksQueue;
+	private ConcurrentLinkedQueue<WidgetIgnorableUITask> tasksQueue;
 
 	/**
 	 * Standard constructor.
 	 */
 	private GUIRefreshThread() {
-		tasksQueue = new ConcurrentLinkedQueue<Runnable>();
+		tasksQueue = new ConcurrentLinkedQueue<WidgetIgnorableUITask>();
 		
 		ExecutionService.getInstance().getScheduledExecutorService()
 				.scheduleWithFixedDelay(this, 100, PreferencesHelper.getGUIRefreshCycle(), TimeUnit.MILLISECONDS);
@@ -69,40 +66,27 @@ public final class GUIRefreshThread implements Runnable {
 	/**
 	 * Process the complete queue.
 	 */
-	private void processQueue() {
-		Display display = Display.getCurrent();
-		//System.out.println(tasksQueue.size());
-		if (display == null) {
-			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-				public void run() {
-					Runnable r;
-
-					while ((r = tasksQueue.poll()) != null) {
-						r.run();
-					}
-				}
-			});
-		} else {
-			display.asyncExec(new Runnable(){
-				public void run() {
-					Runnable r;
-					while ((r = tasksQueue.poll()) != null) {
-						r.run();
-					}
-				}
-			});
-			
-		}
+	private synchronized void processQueue() {
+		Display display = PlatformUI.getWorkbench().getDisplay();
+		WidgetIgnorableUITask r;
+			while( (r=tasksQueue.poll()) != null){	
+				display.asyncExec(r.getRunnableTask());
+		}		
 	}
 
 	/**
 	 * Adds the specified runnable to the queue.
 	 * 
-	 * @param runnable
-	 *            the runnable
+	 * @param task
+	 *            the ignorable UI task.
 	 */
-	public void addRunnable(final Runnable runnable) {
-		tasksQueue.add(runnable);
+	public synchronized void addIgnorableTask(final WidgetIgnorableUITask task) {
+		if(tasksQueue.contains(task))
+			tasksQueue.remove(task);
+		tasksQueue.add(task);
 	}
 
+	
+	
+	
 }
