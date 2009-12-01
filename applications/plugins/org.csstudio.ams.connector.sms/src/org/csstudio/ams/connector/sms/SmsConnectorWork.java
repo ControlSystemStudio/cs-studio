@@ -1129,6 +1129,40 @@ public class SmsConnectorWork extends Thread implements AmsConstants
         
         scs.setStatus(SmsConnectorStart.STAT_READING);
         
+        if(testStatus.isActive())
+        {
+            Log.log(this, Log.INFO, "Self test is active");
+            
+            if(testStatus.isTimeOut())
+            {
+                Log.log(this, Log.WARN, "Current test timed out.");
+                Log.log(this, Log.DEBUG, "Remaining gateways: " + testStatus.getGatewayCount());
+                Log.log(this, Log.DEBUG, "Bad gateways before moving: " + testStatus.getBadModemCount());
+                testStatus.moveGatewayIdToBadModems();
+                Log.log(this, Log.DEBUG, "Remaining gateways after moving: " + testStatus.getGatewayCount());
+                Log.log(this, Log.DEBUG, "Bad gateways after moving: " + testStatus.getBadModemCount());
+                if(testStatus.getBadModemCount() == modemInfo.getModemCount())
+                {
+                    Log.log(this, Log.ERROR, "No modem is working properly.");
+                    this.sendTestAnswer(testStatus.getCheckId(), "No modem is working properly.", "MAJOR", "ERROR");
+                }
+                else
+                {
+                    String list = "";
+                    for(String name : testStatus.getBadModems())
+                    {
+                        list = list + name + " ";
+                    }
+                    
+                    Log.log(this, Log.WARN, "Modems not working properly: " + list);
+                    this.sendTestAnswer(testStatus.getCheckId(), "Modems not working properly: " + list, "MINOR", "WARN");
+                }
+                
+                Log.log(this, Log.INFO, "Reset current test.");
+                testStatus.reset();
+            }
+        }
+
         try
         {
             // Read up to number of messages, read other SMS at the next run.
@@ -1159,7 +1193,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants
                 
             return SmsConnectorStart.STAT_OK;
         }
-        
+                
         // Iterate and display.
         // The CMessage parent object has a toString() method which displays
         // all of its contents. Useful for debugging, but for a real world
@@ -1212,44 +1246,14 @@ public class SmsConnectorWork extends Thread implements AmsConstants
             // Have a look at the current check status
             if(testStatus.isActive())
             {
-                Log.log(this, Log.INFO, "Self test is active");
-                
-                if(testStatus.isTimeOut())
-                {
-                    Log.log(this, Log.WARN, "Current test timed out.");
-                    Log.log(this, Log.DEBUG, "Remaining gateways: " + testStatus.getGatewayCount());
-                    Log.log(this, Log.DEBUG, "Bad gateways before moving: " + testStatus.getBadModemCount());
-                    testStatus.moveGatewayIdToBadModems();
-                    Log.log(this, Log.DEBUG, "Remaining gateways after moving: " + testStatus.getGatewayCount());
-                    Log.log(this, Log.DEBUG, "Bad gateways after moving: " + testStatus.getBadModemCount());
-                    if(testStatus.getBadModemCount() == modemInfo.getModemCount())
-                    {
-                        Log.log(this, Log.ERROR, "No modem is working properly.");
-                        this.sendTestAnswer(testStatus.getCheckId(), "No modem is working properly.", "MAJOR", "ERROR");
-                    }
-                    else
-                    {
-                        String list = "";
-                        for(String name : testStatus.getBadModems())
-                        {
-                            list = list + name + " ";
-                        }
-                        
-                        Log.log(this, Log.WARN, "Modems not working properly: " + list);
-                        this.sendTestAnswer(testStatus.getCheckId(), "Modems not working properly: " + list, "MINOR", "WARN");
-                    }
-                    
-                    Log.log(this, Log.INFO, "Reset current test.");
-                    testStatus.reset();
-                }
-                else
+                if(testStatus.isTimeOut() == false)
                 {
                     if(testStatus.isTestAnswer(text))
                     {
                         Log.log(this, Log.INFO, "Self test SMS");
-                        Log.log(this, Log.DEBUG, "Gateways waiting for answer: " + testStatus.getGatewayCount());
+                        Log.log(this, Log.INFO, "Gateways waiting for answer: " + testStatus.getGatewayCount());
                         testStatus.checkAndRemove(text);
-                        Log.log(this, Log.DEBUG, "Gateways waiting for answer after remove: " + testStatus.getGatewayCount());
+                        Log.log(this, Log.INFO, "Gateways waiting for answer after remove: " + testStatus.getGatewayCount());
                         if((testStatus.getGatewayCount() == 0))
                         {
                             if(testStatus.getBadModemCount() == 0)
