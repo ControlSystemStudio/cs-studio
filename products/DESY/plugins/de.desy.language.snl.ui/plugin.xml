@@ -170,30 +170,5 @@
          </action>
       </objectContribution>
    </extension>
-   <extension
-         point="org.eclipse.help.toc">
-      <toc
-            file="toc.xml"
-            primary="true">
-      </toc>
-   </extension>
-      <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            description="Open SNL Perspective"
-            id="de.desy.language.snl.ui.actionSet"
-            label="CSS Action Set"
-            visible="true">
-         <action
-               class="de.desy.language.snl.ui.ShowSNLPerspective"
-               icon="icons/new_snl_file_wizard.gif"
-               id="de.desy.language.snl.ui.Openaction"
-               label="SNL"
-               menubarPath="css/editors/"
-               style="push"
-               tooltip="SNT Editor">
-         </action>
-      </actionSet>
-   </extension>
 
 </plugin>
