@@ -4,14 +4,9 @@
 
    <extension
          point="org.eclipse.ui.views">
-      <category
-            name="SNL"
-            id="de.desy.language.editor.details">
-      </category>
       <view
             name="SNL Details View"
-            icon="icons/sample.gif"
-            category="de.desy.language.editor.details"
+            icon="icons/inspect.png"
             class="de.desy.language.editor.details.views.DetailsView"
             id="de.desy.language.editor.details.views.DetailsView">
       </view>

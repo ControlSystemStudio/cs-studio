@@ -20,6 +20,7 @@ import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.part.ViewPart;
 
 import de.desy.language.editor.core.measurement.IMeasurementProvider;
+import de.desy.language.editor.core.measurement.IUpdateListener;
 import de.desy.language.editor.core.measurement.KeyValuePair;
 
 
@@ -53,6 +54,8 @@ public class DetailsView extends ViewPart {
 	private Label _resourceLabel;
 	private boolean _partsCreated = false;
 
+	private RefreshDetailViewListener _partListener;
+
 
 	/*
 	 * The content provider class is responsible for
@@ -64,6 +67,41 @@ public class DetailsView extends ViewPart {
 	 * (like Task List, for example).
 	 */
 	 
+	private final class RefreshDetailViewListener implements IPartListener2 {
+		public void partVisible(IWorkbenchPartReference partRef) {
+		}
+
+		public void partOpened(IWorkbenchPartReference partRef) {
+		}
+
+		public void partInputChanged(IWorkbenchPartReference partRef) {
+		}
+
+		public void partHidden(IWorkbenchPartReference partRef) {
+		}
+
+		public void partDeactivated(IWorkbenchPartReference partRef) {
+		}
+
+		public void partClosed(IWorkbenchPartReference partRef) {
+		}
+
+		public void partBroughtToTop(IWorkbenchPartReference partRef) {
+			partChanged(partRef);
+		}
+
+		public void partActivated(IWorkbenchPartReference partRef) {
+			partChanged(partRef);
+		}
+
+		private void partChanged(IWorkbenchPartReference partRef) {
+			IWorkbenchPart part = partRef.getPart(false);
+			IMeasurementProvider measureMentProvider = (IMeasurementProvider) part.getAdapter(IMeasurementProvider.class);
+			if (measureMentProvider != null) {
+				update(measureMentProvider);
+			}
+		}
+	}
 	class DataLabelProvider extends LabelProvider implements ITableLabelProvider {
 		public String getColumnText(Object obj, int index) {
 			if (obj instanceof KeyValuePair) {
@@ -125,60 +163,29 @@ public class DetailsView extends ViewPart {
 		GridData griddata = new GridData(SWT.FILL, SWT.FILL, true, true);
 		_measurementDataViewer.getTable().setLayoutData(griddata);
 
-		getSite().getWorkbenchWindow().getPartService().addPartListener(new IPartListener2() {
-			
-			public void partVisible(IWorkbenchPartReference partRef) {
-				
-			}
-			
-			public void partOpened(IWorkbenchPartReference partRef) {
-				
-			}
-			
-			public void partInputChanged(IWorkbenchPartReference partRef) {
-				
-			}
-			
-			public void partHidden(IWorkbenchPartReference partRef) {
-				
-			}
-			
-			public void partDeactivated(IWorkbenchPartReference partRef) {
-				
-			}
-			
-			public void partClosed(IWorkbenchPartReference partRef) {
-				
-			}
-			
-			public void partBroughtToTop(IWorkbenchPartReference partRef) {
-				partChanged(partRef);
-			}
-			
-			public void partActivated(IWorkbenchPartReference partRef) {
-				partChanged(partRef);
-			}
-			
-			private void partChanged(IWorkbenchPartReference partRef) {
-				IWorkbenchPart part = partRef.getPart(false);
-				IMeasurementProvider measureMentProvider = (IMeasurementProvider) part.getAdapter(IMeasurementProvider.class);
-				if (measureMentProvider != null) {
-					update(measureMentProvider);
-				}
-			}
-		});
+		_partListener = new RefreshDetailViewListener();
+		getSite().getWorkbenchWindow().getPartService().addPartListener(_partListener);
 		_partsCreated = true;
 	}
 	
 	private void update(IMeasurementProvider provider) {
 		if (_partsCreated) {
 			_measurementProvider = provider;
-			_resourceLabel.setText(_measurementProvider
-					.getRessourceIdentifier());
-			 if (_measurementProvider.getMeasuredData() != null) {
-				 _measurementDataViewer.setInput(_measurementProvider.getMeasuredData());
-			 }
+			refreshContent();
+			 _measurementProvider.addUpdateListener(new IUpdateListener() {
+				public void update() {
+					refreshContent();
+				}
+			});
 		}
+	}
+	
+	private void refreshContent() {
+		_resourceLabel.setText(_measurementProvider
+				.getRessourceIdentifier());
+		 if (_measurementProvider.getMeasuredData() != null) {
+			 _measurementDataViewer.setInput(_measurementProvider.getMeasuredData());
+		 }
 	}
 
 	/**
@@ -186,5 +193,11 @@ public class DetailsView extends ViewPart {
 	 */
 	public void setFocus() {
 		_measurementDataViewer.getControl().setFocus();
+	}
+	
+	@Override
+	public void dispose() {
+		getSite().getWorkbenchWindow().getPartService().removePartListener(_partListener);
+		super.dispose();
 	}
 }
