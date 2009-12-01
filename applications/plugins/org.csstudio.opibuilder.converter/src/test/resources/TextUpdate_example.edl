@@ -1,0 +1,47 @@
+4 0 1
+beginScreenProperties
+major 4
+minor 0
+release 1
+x 614
+y 278
+w 280
+h 177
+font "helvetica-bold-r-14.0"
+ctlFont "helvetica-bold-r-14.0"
+btnFont "helvetica-bold-r-14.0"
+fgColor index 14
+bgColor index 3
+textColor index 14
+ctlFgColor1 index 25
+ctlFgColor2 index 30
+ctlBgColor1 index 3
+ctlBgColor2 index 3
+topShadowColor index 1
+botShadowColor index 11
+title "Motor control"
+showGrid
+gridSize 5
+disableScroll
+endScreenProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 490
+y 400
+w 110
+h 20
+controlPv "$(S)_LLRF:ResCtrl$(N):ResErr_Avg"
+fgColor index 112
+bgColor index 5
+fill
+font "courier-medium-r-16.0"
+fontAlign "right"
+lineWidth 2
+lineAlarm
+fgAlarm
+endObjectProperties

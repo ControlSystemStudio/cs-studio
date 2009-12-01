@@ -1,0 +1,9984 @@
+4 0 1
+beginScreenProperties
+major 4
+minor 0
+release 1
+x 1704
+y 1325
+w 1090
+h 960
+font "helvetica-bold-i-18.0"
+fontAlign "center"
+ctlFont "courier-bold-r-14.0"
+ctlFontAlign "right"
+btnFont "courier-medium-r-8.0"
+fgColor index 112
+bgColor index 50
+textColor index 10
+ctlFgColor1 index 25
+ctlFgColor2 index 30
+ctlBgColor1 index 5
+ctlBgColor2 index 10
+topShadowColor index 5
+botShadowColor index 10
+showGrid
+snapToGrid
+pvType "EPICS"
+endScreenProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 330
+y 770
+w 250
+h 180
+lineColor index 112
+fill
+fillColor index 49
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 80
+y 770
+w 250
+h 180
+lineColor index 112
+fill
+fillColor index 49
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 830
+y 590
+w 250
+h 180
+lineColor index 112
+fill
+fillColor index 49
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 580
+y 590
+w 250
+h 180
+lineColor index 112
+fill
+fillColor index 49
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 330
+y 590
+w 250
+h 180
+lineColor index 112
+fill
+fillColor index 49
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 80
+y 590
+w 250
+h 180
+lineColor index 112
+fill
+fillColor index 49
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 830
+y 410
+w 250
+h 180
+lineColor index 112
+fill
+fillColor index 49
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 580
+y 410
+w 250
+h 180
+lineColor index 112
+fill
+fillColor index 49
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 330
+y 410
+w 250
+h 180
+lineColor index 112
+fill
+fillColor index 49
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 80
+y 410
+w 250
+h 180
+lineColor index 112
+fill
+fillColor index 49
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 830
+y 230
+w 250
+h 180
+lineColor index 112
+fill
+fillColor index 49
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 580
+y 230
+w 250
+h 180
+lineColor index 112
+fill
+fillColor index 49
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 330
+y 230
+w 250
+h 180
+lineColor index 112
+fill
+fillColor index 49
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 80
+y 230
+w 250
+h 180
+lineColor index 112
+fill
+fillColor index 49
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 90
+y 270
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM01a:FOARC3_Ind"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 90
+y 240
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "01a"
+}
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 140
+y 380
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+topShadowColor index 107
+botShadowColor index 109
+controlPv "SCL_LLRF:Gate01c_A1:TriggerCntSet"
+pressValue "1"
+onLabel "V124s"
+offLabel "V124s"
+3d
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 130
+y 270
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM01b:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 170
+y 270
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM01c:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 210
+y 270
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM02a:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 250
+y 270
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM02b:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 290
+y 270
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM02c:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 100
+y 270
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM01a:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 140
+y 270
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM01b:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 180
+y 270
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM01c:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 220
+y 270
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM02a:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 260
+y 270
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM02b:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 300
+y 270
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM02c:FOARC4_Ind"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 130
+y 240
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "01b"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 170
+y 240
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "01c"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 210
+y 240
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "02a"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 250
+y 240
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "02b"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 290
+y 240
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "02c"
+}
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 350
+y 270
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM03a:FOARC3_Ind"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 340
+y 240
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "03a"
+}
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 390
+y 380
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+topShadowColor index 107
+botShadowColor index 109
+controlPv "SCL_LLRF:Gate03c_A1:TriggerCntSet"
+pressValue "1"
+onLabel "V124s"
+offLabel "V124s"
+3d
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 390
+y 270
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM03b:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 430
+y 270
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM03c:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 470
+y 270
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM04a:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 510
+y 270
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM04b:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 550
+y 270
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM04c:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 360
+y 270
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM03a:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 400
+y 270
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM03b:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 440
+y 270
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM03c:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 480
+y 270
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM04a:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 520
+y 270
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM04b:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 560
+y 270
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM04c:FOARC4_Ind"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 380
+y 240
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "03b"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 420
+y 240
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "03c"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 460
+y 240
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "04a"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 500
+y 240
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "04b"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 540
+y 240
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "04c"
+}
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 600
+y 270
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM05a:FOARC3_Ind"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 590
+y 240
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "05a"
+}
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 640
+y 380
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+topShadowColor index 107
+botShadowColor index 109
+controlPv "SCL_LLRF:Gate05c_A1:TriggerCntSet"
+pressValue "1"
+onLabel "V124s"
+offLabel "V124s"
+3d
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 640
+y 270
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM05b:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 680
+y 270
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM05c:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 720
+y 270
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM06a:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 760
+y 270
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM06b:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 800
+y 270
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM06c:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 610
+y 270
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM05a:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 650
+y 270
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM05b:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 690
+y 270
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM05c:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 730
+y 270
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM06a:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 770
+y 270
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM06b:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 810
+y 270
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM06c:FOARC4_Ind"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 630
+y 240
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "05b"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 670
+y 240
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "05c"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 710
+y 240
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "06a"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 750
+y 240
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "06b"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 790
+y 240
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "06c"
+}
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 840
+y 270
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM07a:FOARC3_Ind"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 840
+y 240
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "07a"
+}
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 890
+y 380
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+topShadowColor index 107
+botShadowColor index 109
+controlPv "SCL_LLRF:Gate07c_A1:TriggerCntSet"
+pressValue "1"
+onLabel "V124s"
+offLabel "V124s"
+3d
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 880
+y 270
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM07b:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 920
+y 270
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM07c:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 960
+y 270
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM08a:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1000
+y 270
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM08b:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1040
+y 270
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM08c:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 850
+y 270
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM07a:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 890
+y 270
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM07b:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 930
+y 270
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM07c:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 970
+y 270
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM08a:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1010
+y 270
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM08b:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1050
+y 270
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM08c:FOARC4_Ind"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 880
+y 240
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "07b"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 920
+y 240
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "07c"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 960
+y 240
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "08a"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1000
+y 240
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "08b"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1040
+y 240
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "08c"
+}
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 90
+y 450
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM09a:FOARC3_Ind"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 90
+y 420
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "09a"
+}
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 140
+y 560
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+topShadowColor index 107
+botShadowColor index 109
+controlPv "SCL_LLRF:Gate09c_A1:TriggerCntSet"
+pressValue "1"
+onLabel "V124s"
+offLabel "V124s"
+3d
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 130
+y 450
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM09b:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 170
+y 450
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM09c:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 210
+y 450
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM10a:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 250
+y 450
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM10b:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 290
+y 450
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM10c:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 100
+y 450
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM09a:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 140
+y 450
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM09b:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 180
+y 450
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM09c:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 220
+y 450
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM10a:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 260
+y 450
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM10b:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 300
+y 450
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM10c:FOARC4_Ind"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 130
+y 420
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "09b"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 170
+y 420
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "09c"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 210
+y 420
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "10a"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 250
+y 420
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "10b"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 290
+y 420
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "10c"
+}
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 350
+y 450
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM11a:FOARC3_Ind"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 340
+y 420
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "11a"
+}
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 390
+y 560
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+topShadowColor index 107
+botShadowColor index 109
+controlPv "SCL_LLRF:Gate11c_A1:TriggerCntSet"
+pressValue "1"
+onLabel "V124s"
+offLabel "V124s"
+3d
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 390
+y 450
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM11b:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 430
+y 450
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM11c:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 470
+y 450
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM12a:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 510
+y 450
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM12b:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 550
+y 450
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM12c:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 360
+y 450
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM11a:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 400
+y 450
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM11b:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 440
+y 450
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM11c:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 480
+y 450
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM12a:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 520
+y 450
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM12b:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 560
+y 450
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM12c:FOARC4_Ind"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 380
+y 420
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "11b"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 420
+y 420
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "11c"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 460
+y 420
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "12a"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 500
+y 420
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "12b"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 540
+y 420
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "12c"
+}
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 600
+y 450
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM12d:FOARC3_Ind"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 590
+y 420
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "12d"
+}
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 640
+y 560
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+topShadowColor index 107
+botShadowColor index 109
+controlPv "SCL_LLRF:Gate13b_A1:TriggerCntSet"
+pressValue "1"
+onLabel "V124s"
+offLabel "V124s"
+3d
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 640
+y 450
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM13a:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 680
+y 450
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM13b:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 720
+y 450
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM13c:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 760
+y 450
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM13d:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 800
+y 450
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM14a:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 610
+y 450
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM12d:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 650
+y 450
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM13a:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 690
+y 450
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM13b:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 730
+y 450
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM13c:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 770
+y 450
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM13d:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 810
+y 450
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM14a:FOARC4_Ind"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 630
+y 420
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "13a"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 670
+y 420
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "13b"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 710
+y 420
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "13c"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 750
+y 420
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "13d"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 790
+y 420
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "14a"
+}
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 840
+y 450
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM14b:FOARC3_Ind"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 840
+y 420
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "14b"
+}
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 890
+y 560
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+topShadowColor index 107
+botShadowColor index 109
+controlPv "SCL_LLRF:Gate14d_A1:TriggerCntSet"
+pressValue "1"
+onLabel "V124s"
+offLabel "V124s"
+3d
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 880
+y 450
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM14c:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 920
+y 450
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM14d:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 960
+y 450
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM15a:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1000
+y 450
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM15b:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1040
+y 450
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM15c:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 850
+y 450
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM14b:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 890
+y 450
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM14c:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 930
+y 450
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM14d:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 970
+y 450
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM15a:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1010
+y 450
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM15b:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1050
+y 450
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM15c:FOARC4_Ind"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 880
+y 420
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "14c"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 920
+y 420
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "14d"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 960
+y 420
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "15a"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1000
+y 420
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "15b"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1040
+y 420
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "15c"
+}
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 90
+y 630
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM15d:FOARC3_Ind"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 90
+y 600
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "15d"
+}
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 140
+y 740
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+topShadowColor index 107
+botShadowColor index 109
+controlPv "SCL_LLRF:Gate16b_A1:TriggerCntSet"
+pressValue "1"
+onLabel "V124s"
+offLabel "V124s"
+3d
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 130
+y 630
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM16a:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 170
+y 630
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM16b:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 210
+y 630
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM16c:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 250
+y 630
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM16d:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 290
+y 630
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM17a:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 100
+y 630
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM15d:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 140
+y 630
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM16a:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 180
+y 630
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM16b:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 220
+y 630
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM16c:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 260
+y 630
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM16d:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 300
+y 630
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM17a:FOARC4_Ind"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 130
+y 600
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "16a"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 170
+y 600
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "16b"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 210
+y 600
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "16c"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 250
+y 600
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "16d"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 290
+y 600
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "17a"
+}
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 350
+y 630
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM17b:FOARC3_Ind"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 340
+y 600
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "17b"
+}
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 390
+y 740
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+topShadowColor index 107
+botShadowColor index 109
+controlPv "SCL_LLRF:Gate17d_A1:TriggerCntSet"
+pressValue "1"
+onLabel "V124s"
+offLabel "V124s"
+3d
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 390
+y 630
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM17c:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 430
+y 630
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM17d:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 470
+y 630
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM18a:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 510
+y 630
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM18b:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 360
+y 630
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM17b:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 400
+y 630
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM17c:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 440
+y 630
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM17d:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 480
+y 630
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM18a:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 520
+y 630
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM18b:FOARC4_Ind"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 380
+y 600
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "17c"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 420
+y 600
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "17d"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 460
+y 600
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "18a"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 500
+y 600
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "18b"
+}
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 600
+y 630
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM18c:FOARC3_Ind"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 590
+y 600
+w 35
+h 21
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "18c"
+}
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 640
+y 740
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+topShadowColor index 107
+botShadowColor index 109
+controlPv "SCL_LLRF:Gate19a_A1:TriggerCntSet"
+pressValue "1"
+onLabel "V124s"
+offLabel "V124s"
+3d
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 640
+y 630
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM18d:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 680
+y 630
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM19a:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 720
+y 630
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM19b:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 760
+y 630
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM19c:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 800
+y 630
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM19d:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 610
+y 630
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM18c:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 650
+y 630
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM18d:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 690
+y 630
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM19a:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 730
+y 630
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM19b:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 770
+y 630
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM19c:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 810
+y 630
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM19d:FOARC4_Ind"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 630
+y 600
+w 35
+h 21
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "18d"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 670
+y 600
+w 35
+h 21
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "19a"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 710
+y 600
+w 35
+h 21
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "19b"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 750
+y 600
+w 35
+h 21
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "19c"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 790
+y 600
+w 35
+h 21
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "19d"
+}
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 840
+y 630
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM20a:FOARC3_Ind"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 840
+y 600
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "20a"
+}
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 890
+y 740
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+topShadowColor index 107
+botShadowColor index 109
+controlPv "SCL_LLRF:Gate20c_A1:TriggerCntSet"
+pressValue "1"
+onLabel "V124s"
+offLabel "V124s"
+3d
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 880
+y 630
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM20b:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 920
+y 630
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM20c:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 960
+y 630
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM20d:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1000
+y 630
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM21a:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 850
+y 630
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM20a:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 890
+y 630
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM20b:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 930
+y 630
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM20c:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 970
+y 630
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM20d:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1010
+y 630
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM21a:FOARC4_Ind"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 880
+y 600
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "20b"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 920
+y 600
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "20c"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 960
+y 600
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "20d"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1000
+y 600
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "21a"
+}
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 90
+y 810
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM21b:FOARC3_Ind"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 90
+y 780
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "21b"
+}
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 140
+y 920
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+topShadowColor index 107
+botShadowColor index 109
+controlPv "SCL_LLRF:Gate21d_A1:TriggerCntSet"
+pressValue "1"
+onLabel "V124s"
+offLabel "V124s"
+3d
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 130
+y 810
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM21c:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 170
+y 810
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM21d:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 210
+y 810
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM22a:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 250
+y 810
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM22b:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 290
+y 810
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM22c:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 100
+y 810
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM21b:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 140
+y 810
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM21c:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 180
+y 810
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM21d:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 220
+y 810
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM22a:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 260
+y 810
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM22b:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 300
+y 810
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM22c:FOARC4_Ind"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 130
+y 780
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "21c"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 170
+y 780
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "21d"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 210
+y 780
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "22a"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 250
+y 780
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "22b"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 290
+y 780
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "22c"
+}
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 350
+y 810
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM22d:FOARC3_Ind"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 340
+y 780
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "22d"
+}
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 390
+y 920
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+topShadowColor index 107
+botShadowColor index 109
+controlPv "SCL_LLRF:Gate23b_A1:TriggerCntSet"
+pressValue "1"
+onLabel "V124s"
+offLabel "V124s"
+3d
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 390
+y 810
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM23a:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 430
+y 810
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM23b:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 470
+y 810
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM23c:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 510
+y 810
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM23d:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 360
+y 810
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM22d:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 400
+y 810
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM23a:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 440
+y 810
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM23b:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 480
+y 810
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM23c:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 520
+y 810
+w 10
+h 10
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_LLRF:HPM23d:FOARC4_Ind"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 380
+y 780
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "23a"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 420
+y 780
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "23b"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 460
+y 780
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "23c"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 500
+y 780
+w 35
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "23d"
+}
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 760
+y 40
+w 80
+h 170
+lineColor index 112
+fill
+fillColor index 49
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 840
+y 40
+w 80
+h 170
+lineColor index 112
+fill
+fillColor index 49
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 920
+y 40
+w 80
+h 170
+lineColor index 112
+fill
+fillColor index 49
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1000
+y 40
+w 80
+h 170
+lineColor index 112
+fill
+fillColor index 49
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 460
+y 40
+w 80
+h 130
+lineColor index 112
+fill
+fillColor index 49
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 380
+y 40
+w 80
+h 130
+lineColor index 112
+fill
+fillColor index 49
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 300
+y 40
+w 80
+h 130
+lineColor index 112
+fill
+fillColor index 49
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 80
+y 40
+w 220
+h 130
+lineColor index 112
+fill
+fillColor index 49
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 170
+y 130
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+topShadowColor index 107
+botShadowColor index 109
+controlPv "DTL_LLRF:Gate3_A1:TriggerCntSet"
+pressValue "1"
+onLabel "Test!"
+offLabel "V124s"
+3d
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 310
+y 50
+w 60
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "DTL4"
+}
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 320
+y 130
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+topShadowColor index 107
+botShadowColor index 109
+controlPv "DTL_LLRF:Gate4_A1:TriggerCntSet"
+pressValue "1"
+onLabel "Test!"
+offLabel "V124s"
+3d
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 390
+y 50
+w 60
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "DTL5"
+}
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 400
+y 130
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+topShadowColor index 107
+botShadowColor index 109
+controlPv "DTL_LLRF:Gate5_A1:TriggerCntSet"
+pressValue "1"
+onLabel "Test!"
+offLabel "V124s"
+3d
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 470
+y 50
+w 60
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "DTL6"
+}
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 480
+y 130
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+topShadowColor index 107
+botShadowColor index 109
+controlPv "DTL_LLRF:Gate6_A1:TriggerCntSet"
+pressValue "1"
+onLabel "Test!"
+offLabel "V124s"
+3d
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 780
+y 170
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+topShadowColor index 107
+botShadowColor index 109
+controlPv "CCL_LLRF:Gate1_A1:TriggerCntSet"
+pressValue "1"
+onLabel "Test!"
+offLabel "V124s"
+3d
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 770
+y 50
+w 60
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "CCL1"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 850
+y 50
+w 60
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "CCL2"
+}
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 860
+y 170
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+topShadowColor index 107
+botShadowColor index 109
+controlPv "CCL_LLRF:Gate2_A1:TriggerCntSet"
+pressValue "1"
+onLabel "Test!"
+offLabel "V124s"
+3d
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 930
+y 50
+w 60
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "CCL3"
+}
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 940
+y 170
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+topShadowColor index 107
+botShadowColor index 109
+controlPv "CCL_LLRF:Gate3_A1:TriggerCntSet"
+pressValue "1"
+onLabel "Test!"
+offLabel "V124s"
+3d
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1010
+y 50
+w 60
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "CCL4"
+}
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1020
+y 170
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+topShadowColor index 107
+botShadowColor index 109
+controlPv "CCL_LLRF:Gate4_A1:TriggerCntSet"
+pressValue "1"
+onLabel "Test!"
+offLabel "V124s"
+3d
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 110
+y 100
+w 20
+h 20
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "DTL_LLRF:HPM1:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 110
+y 80
+w 20
+h 20
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "DTL_LLRF:HPM1:FOARC3_Ind"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 20
+y 100
+w 53
+h 16
+font "helvetica-medium-r-14.0"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  "WinVac"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 20
+y 80
+w 45
+h 16
+font "helvetica-medium-r-14.0"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  "WinAir"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 90
+y 50
+w 60
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "DTL1"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 160
+y 50
+w 60
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "DTL2"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 230
+y 50
+w 60
+h 20
+font "helvetica-medium-i-18.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+value {
+  "DTL3"
+}
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 180
+y 100
+w 20
+h 20
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "DTL_LLRF:HPM2:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 180
+y 80
+w 20
+h 20
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "DTL_LLRF:HPM2:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 250
+y 100
+w 20
+h 20
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "DTL_LLRF:HPM3:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 250
+y 80
+w 20
+h 20
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "DTL_LLRF:HPM3:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 330
+y 100
+w 20
+h 20
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "DTL_LLRF:HPM4:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 330
+y 80
+w 20
+h 20
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "DTL_LLRF:HPM4:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 410
+y 100
+w 20
+h 20
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "DTL_LLRF:HPM5:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 410
+y 80
+w 20
+h 20
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "DTL_LLRF:HPM5:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 490
+y 100
+w 20
+h 20
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "DTL_LLRF:HPM6:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 490
+y 80
+w 20
+h 20
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "DTL_LLRF:HPM6:FOARC3_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 790
+y 100
+w 20
+h 20
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "CCL_LLRF:HPM1:FOARC5_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 790
+y 80
+w 20
+h 20
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "CCL_LLRF:HPM1:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 870
+y 100
+w 20
+h 20
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "CCL_LLRF:HPM2:FOARC5_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 870
+y 80
+w 20
+h 20
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "CCL_LLRF:HPM2:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 950
+y 100
+w 20
+h 20
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "CCL_LLRF:HPM3:FOARC5_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 950
+y 80
+w 20
+h 20
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "CCL_LLRF:HPM3:FOARC4_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1030
+y 100
+w 20
+h 20
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "CCL_LLRF:HPM4:FOARC5_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1030
+y 80
+w 20
+h 20
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "CCL_LLRF:HPM4:FOARC4_Ind"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 690
+y 100
+w 61
+h 16
+font "helvetica-medium-r-14.0"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  "WinVac1"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 690
+y 80
+w 53
+h 16
+font "helvetica-medium-r-14.0"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  "WinAir1"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 10
+y 10
+w 1070
+h 20
+font "helvetica-bold-r-18.0"
+fgColor index 133
+bgColor index 51
+value {
+  "Arc Detector Test"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 690
+y 120
+w 53
+h 16
+font "helvetica-medium-r-14.0"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  "WinAir2"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 690
+y 140
+w 61
+h 16
+font "helvetica-medium-r-14.0"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  "WinVac2"
+}
+autoSize
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 790
+y 120
+w 20
+h 20
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "CCL_LLRF:HPM1:FOARC6_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 870
+y 120
+w 20
+h 20
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "CCL_LLRF:HPM2:FOARC6_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 950
+y 120
+w 20
+h 20
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "CCL_LLRF:HPM3:FOARC6_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1030
+y 120
+w 20
+h 20
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "CCL_LLRF:HPM4:FOARC6_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1030
+y 140
+w 20
+h 20
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "CCL_LLRF:HPM4:FOARC7_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 950
+y 140
+w 20
+h 20
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "CCL_LLRF:HPM3:FOARC7_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 870
+y 140
+w 20
+h 20
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "CCL_LLRF:HPM2:FOARC7_Ind"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 790
+y 140
+w 20
+h 20
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "CCL_LLRF:HPM1:FOARC7_Ind"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 950
+y 870
+w 127
+h 80
+font "helvetica-medium-i-14.0"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  "During a test,"
+  "indicators"
+  "should turn red and"
+  "revert to green after"
+  "about 60 seconds."
+}
+autoSize
+endObjectProperties
+
+# (Button)
+object activeButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 340
+y 920
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+inconsistentColor index 10
+topShadowColor index 107
+botShadowColor index 109
+controlPv "SCL_LLRF:ArcTest23b:Cmd"
+onLabel "Run"
+3d
+font "courier-medium-r-12.0"
+objType "controls"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 340
+y 890
+w 180
+h 20
+controlPv "SCL_LLRF:ArcTest23b:Info"
+fgColor index 15
+fgAlarm
+bgColor index 10
+fill
+font "courier-medium-r-12.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 90
+y 890
+w 180
+h 20
+controlPv "SCL_LLRF:ArcTest21d:Info"
+fgColor index 15
+fgAlarm
+bgColor index 10
+fill
+font "courier-medium-r-12.0"
+endObjectProperties
+
+# (Button)
+object activeButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 90
+y 920
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+inconsistentColor index 10
+topShadowColor index 107
+botShadowColor index 109
+controlPv "SCL_LLRF:ArcTest21d:Cmd"
+onLabel "Run"
+3d
+font "courier-medium-r-12.0"
+objType "controls"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 90
+y 350
+w 230
+h 20
+controlPv "SCL_LLRF:ArcTest01c:Info"
+fgColor index 15
+fgAlarm
+bgColor index 10
+fill
+font "courier-medium-r-12.0"
+endObjectProperties
+
+# (Button)
+object activeButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 90
+y 380
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+inconsistentColor index 10
+topShadowColor index 107
+botShadowColor index 109
+controlPv "SCL_LLRF:ArcTest01c:Cmd"
+onLabel "Run"
+3d
+font "courier-medium-r-12.0"
+objType "controls"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 340
+y 350
+w 230
+h 20
+controlPv "SCL_LLRF:ArcTest03c:Info"
+fgColor index 15
+fgAlarm
+bgColor index 10
+fill
+font "courier-medium-r-12.0"
+endObjectProperties
+
+# (Button)
+object activeButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 340
+y 380
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+inconsistentColor index 10
+topShadowColor index 107
+botShadowColor index 109
+controlPv "SCL_LLRF:ArcTest03c:Cmd"
+onLabel "Run"
+3d
+font "courier-medium-r-12.0"
+objType "controls"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 590
+y 350
+w 230
+h 20
+controlPv "SCL_LLRF:ArcTest05c:Info"
+fgColor index 15
+fgAlarm
+bgColor index 10
+fill
+font "courier-medium-r-12.0"
+endObjectProperties
+
+# (Button)
+object activeButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 590
+y 380
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+inconsistentColor index 10
+topShadowColor index 107
+botShadowColor index 109
+controlPv "SCL_LLRF:ArcTest05c:Cmd"
+onLabel "Run"
+3d
+font "courier-medium-r-12.0"
+objType "controls"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 840
+y 350
+w 230
+h 20
+controlPv "SCL_LLRF:ArcTest07c:Info"
+fgColor index 15
+fgAlarm
+bgColor index 10
+fill
+font "courier-medium-r-12.0"
+endObjectProperties
+
+# (Button)
+object activeButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 840
+y 380
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+inconsistentColor index 10
+topShadowColor index 107
+botShadowColor index 109
+controlPv "SCL_LLRF:ArcTest07c:Cmd"
+onLabel "Run"
+3d
+font "courier-medium-r-12.0"
+objType "controls"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 90
+y 530
+w 180
+h 20
+controlPv "SCL_LLRF:ArcTest09c:Info"
+fgColor index 15
+fgAlarm
+bgColor index 10
+fill
+font "courier-medium-r-12.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 340
+y 530
+w 180
+h 20
+controlPv "SCL_LLRF:ArcTest11c:Info"
+fgColor index 15
+fgAlarm
+bgColor index 10
+fill
+font "courier-medium-r-12.0"
+endObjectProperties
+
+# (Button)
+object activeButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 340
+y 560
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+inconsistentColor index 10
+topShadowColor index 107
+botShadowColor index 109
+controlPv "SCL_LLRF:ArcTest11c:Cmd"
+onLabel "Run"
+3d
+font "courier-medium-r-12.0"
+objType "controls"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 590
+y 530
+w 180
+h 20
+controlPv "SCL_LLRF:ArcTest13b:Info"
+fgColor index 15
+fgAlarm
+bgColor index 10
+fill
+font "courier-medium-r-12.0"
+endObjectProperties
+
+# (Button)
+object activeButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 590
+y 560
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+inconsistentColor index 10
+topShadowColor index 107
+botShadowColor index 109
+controlPv "SCL_LLRF:ArcTest13b:Cmd"
+onLabel "Run"
+3d
+font "courier-medium-r-12.0"
+objType "controls"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 90
+y 710
+w 180
+h 20
+controlPv "SCL_LLRF:ArcTest16b:Info"
+fgColor index 15
+fgAlarm
+bgColor index 10
+fill
+font "courier-medium-r-12.0"
+endObjectProperties
+
+# (Button)
+object activeButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 90
+y 740
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+inconsistentColor index 10
+topShadowColor index 107
+botShadowColor index 109
+controlPv "SCL_LLRF:ArcTest16b:Cmd"
+onLabel "Run"
+3d
+font "courier-medium-r-12.0"
+objType "controls"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 840
+y 530
+w 180
+h 20
+controlPv "SCL_LLRF:ArcTest14d:Info"
+fgColor index 15
+fgAlarm
+bgColor index 10
+fill
+font "courier-medium-r-12.0"
+endObjectProperties
+
+# (Button)
+object activeButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 840
+y 560
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+inconsistentColor index 10
+topShadowColor index 107
+botShadowColor index 109
+controlPv "SCL_LLRF:ArcTest14d:Cmd"
+onLabel "Run"
+3d
+font "courier-medium-r-12.0"
+objType "controls"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 340
+y 710
+w 180
+h 20
+controlPv "SCL_LLRF:ArcTest17d:Info"
+fgColor index 15
+fgAlarm
+bgColor index 10
+fill
+font "courier-medium-r-12.0"
+endObjectProperties
+
+# (Button)
+object activeButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 340
+y 740
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+inconsistentColor index 10
+topShadowColor index 107
+botShadowColor index 109
+controlPv "SCL_LLRF:ArcTest17d:Cmd"
+onLabel "Run"
+3d
+font "courier-medium-r-12.0"
+objType "controls"
+endObjectProperties
+
+# (Button)
+object activeButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 590
+y 740
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+inconsistentColor index 10
+topShadowColor index 107
+botShadowColor index 109
+controlPv "SCL_LLRF:ArcTest19a:Cmd"
+onLabel "Run"
+3d
+font "courier-medium-r-12.0"
+objType "controls"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 590
+y 710
+w 180
+h 20
+controlPv "SCL_LLRF:ArcTest19a:Info"
+fgColor index 15
+fgAlarm
+bgColor index 10
+fill
+font "courier-medium-r-12.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 840
+y 710
+w 180
+h 20
+controlPv "SCL_LLRF:ArcTest20c:Info"
+fgColor index 15
+fgAlarm
+bgColor index 10
+fill
+font "courier-medium-r-12.0"
+endObjectProperties
+
+# (Button)
+object activeButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 840
+y 740
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+inconsistentColor index 10
+topShadowColor index 107
+botShadowColor index 109
+controlPv "SCL_LLRF:ArcTest20c:Cmd"
+onLabel "Run"
+3d
+font "courier-medium-r-12.0"
+objType "controls"
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 90
+y 290
+w 30
+h 20
+controlPv "SCL_LLRF:ArcTest01c:Hour"
+font "helvetica-medium-r-12.0"
+fontAlign "center"
+fgColor index 25
+bgColor index 5
+editable
+autoHeight
+motifWidget
+limitsFromDb
+nullColor index 30
+newPos
+objType "controls"
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 130
+y 290
+w 30
+h 20
+controlPv "SCL_LLRF:ArcTest01c:Minute"
+font "helvetica-medium-r-12.0"
+fontAlign "center"
+fgColor index 25
+bgColor index 5
+editable
+autoHeight
+motifWidget
+limitsFromDb
+nullColor index 30
+useHexPrefix
+newPos
+objType "controls"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 120
+y 290
+w 10
+h 16
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  ":"
+}
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 190
+y 290
+w 50
+h 20
+controlPv "SCL_LLRF:ArcTest01c:Period"
+font "helvetica-medium-r-12.0"
+fontAlign "center"
+fgColor index 25
+bgColor index 5
+editable
+autoHeight
+motifWidget
+limitsFromDb
+nullColor index 30
+useHexPrefix
+newPos
+objType "controls"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 160
+y 290
+w 30
+h 20
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  " +N*"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 240
+y 290
+w 30
+h 20
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  " min."
+}
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 90
+y 470
+w 30
+h 18
+controlPv "SCL_LLRF:ArcTest09c:Hour"
+font "helvetica-medium-r-12.0"
+fontAlign "center"
+fgColor index 25
+bgColor index 5
+editable
+autoHeight
+motifWidget
+limitsFromDb
+nullColor index 30
+newPos
+objType "controls"
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 130
+y 470
+w 30
+h 18
+controlPv "SCL_LLRF:ArcTest09c:Minute"
+font "helvetica-medium-r-12.0"
+fontAlign "center"
+fgColor index 25
+bgColor index 5
+editable
+autoHeight
+motifWidget
+limitsFromDb
+nullColor index 30
+useHexPrefix
+newPos
+objType "controls"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 120
+y 470
+w 10
+h 16
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  ":"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 160
+y 470
+w 30
+h 20
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  " +N*"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 240
+y 470
+w 30
+h 20
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  " min."
+}
+endObjectProperties
+
+# (Button)
+object activeButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 90
+y 560
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+inconsistentColor index 10
+topShadowColor index 107
+botShadowColor index 109
+controlPv "SCL_LLRF:ArcTest09c:Cmd"
+onLabel "Run"
+3d
+font "courier-medium-r-12.0"
+objType "controls"
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 190
+y 470
+w 50
+h 18
+controlPv "SCL_LLRF:ArcTest09c:Period"
+font "helvetica-medium-r-12.0"
+fontAlign "center"
+fgColor index 25
+bgColor index 5
+editable
+autoHeight
+motifWidget
+limitsFromDb
+nullColor index 30
+useHexPrefix
+newPos
+objType "controls"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 180
+y 500
+w 40
+h 20
+controlPv "SCL_LLRF:ArcTest09c:Runs"
+fgColor index 15
+fgAlarm
+bgColor index 10
+fill
+font "courier-medium-r-12.0"
+fontAlign "right"
+endObjectProperties
+
+# (Button)
+object activeButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 190
+y 560
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+inconsistentColor index 10
+topShadowColor index 107
+botShadowColor index 109
+controlPv "SCL_LLRF:ArcTest09c:Clr"
+onLabel "Clr"
+3d
+font "courier-medium-r-12.0"
+objType "controls"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 90
+y 500
+w 67
+h 16
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  "Runs/Errs:"
+}
+autoSize
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 230
+y 500
+w 40
+h 20
+controlPv "SCL_LLRF:ArcTest09c:Errors"
+fgColor index 15
+fgAlarm
+bgColor index 10
+fill
+font "courier-medium-r-12.0"
+fontAlign "right"
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 340
+y 470
+w 30
+h 18
+controlPv "SCL_LLRF:ArcTest11c:Hour"
+font "helvetica-medium-r-12.0"
+fontAlign "center"
+fgColor index 25
+bgColor index 5
+editable
+autoHeight
+motifWidget
+limitsFromDb
+nullColor index 30
+newPos
+objType "controls"
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 380
+y 470
+w 30
+h 18
+controlPv "SCL_LLRF:ArcTest11c:Minute"
+font "helvetica-medium-r-12.0"
+fontAlign "center"
+fgColor index 25
+bgColor index 5
+editable
+autoHeight
+motifWidget
+limitsFromDb
+nullColor index 30
+useHexPrefix
+newPos
+objType "controls"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 370
+y 470
+w 10
+h 16
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  ":"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 410
+y 470
+w 30
+h 20
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  " +N*"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 490
+y 470
+w 30
+h 20
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  " min."
+}
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 440
+y 470
+w 50
+h 18
+controlPv "SCL_LLRF:ArcTest11c:Period"
+font "helvetica-medium-r-12.0"
+fontAlign "center"
+fgColor index 25
+bgColor index 5
+editable
+autoHeight
+motifWidget
+limitsFromDb
+nullColor index 30
+useHexPrefix
+newPos
+objType "controls"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 430
+y 500
+w 40
+h 20
+controlPv "SCL_LLRF:ArcTest11c:Runs"
+fgColor index 15
+fgAlarm
+bgColor index 10
+fill
+font "courier-medium-r-12.0"
+fontAlign "right"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 340
+y 500
+w 67
+h 16
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  "Runs/Errs:"
+}
+autoSize
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 480
+y 500
+w 40
+h 20
+controlPv "SCL_LLRF:ArcTest11c:Errors"
+fgColor index 15
+fgAlarm
+bgColor index 10
+fill
+font "courier-medium-r-12.0"
+fontAlign "right"
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 590
+y 470
+w 30
+h 18
+controlPv "SCL_LLRF:ArcTest13b:Hour"
+font "helvetica-medium-r-12.0"
+fontAlign "center"
+fgColor index 25
+bgColor index 5
+editable
+autoHeight
+motifWidget
+limitsFromDb
+nullColor index 30
+newPos
+objType "controls"
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 630
+y 470
+w 30
+h 18
+controlPv "SCL_LLRF:ArcTest13b:Minute"
+font "helvetica-medium-r-12.0"
+fontAlign "center"
+fgColor index 25
+bgColor index 5
+editable
+autoHeight
+motifWidget
+limitsFromDb
+nullColor index 30
+useHexPrefix
+newPos
+objType "controls"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 620
+y 470
+w 10
+h 16
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  ":"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 660
+y 470
+w 30
+h 20
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  " +N*"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 740
+y 470
+w 30
+h 20
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  " min."
+}
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 690
+y 470
+w 50
+h 18
+controlPv "SCL_LLRF:ArcTest13b:Period"
+font "helvetica-medium-r-12.0"
+fontAlign "center"
+fgColor index 25
+bgColor index 5
+editable
+autoHeight
+motifWidget
+limitsFromDb
+nullColor index 30
+useHexPrefix
+newPos
+objType "controls"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 680
+y 500
+w 40
+h 20
+controlPv "SCL_LLRF:ArcTest13b:Runs"
+fgColor index 15
+fgAlarm
+bgColor index 10
+fill
+font "courier-medium-r-12.0"
+fontAlign "right"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 590
+y 500
+w 67
+h 16
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  "Runs/Errs:"
+}
+autoSize
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 730
+y 500
+w 40
+h 20
+controlPv "SCL_LLRF:ArcTest13b:Errors"
+fgColor index 15
+fgAlarm
+bgColor index 10
+fill
+font "courier-medium-r-12.0"
+fontAlign "right"
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 840
+y 470
+w 30
+h 18
+controlPv "SCL_LLRF:ArcTest14d:Hour"
+font "helvetica-medium-r-12.0"
+fontAlign "center"
+fgColor index 25
+bgColor index 5
+editable
+autoHeight
+motifWidget
+limitsFromDb
+nullColor index 30
+newPos
+objType "controls"
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 880
+y 470
+w 30
+h 18
+controlPv "SCL_LLRF:ArcTest14d:Minute"
+font "helvetica-medium-r-12.0"
+fontAlign "center"
+fgColor index 25
+bgColor index 5
+editable
+autoHeight
+motifWidget
+limitsFromDb
+nullColor index 30
+useHexPrefix
+newPos
+objType "controls"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 870
+y 470
+w 10
+h 16
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  ":"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 910
+y 470
+w 30
+h 20
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  " +N*"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 990
+y 470
+w 30
+h 20
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  " min."
+}
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 940
+y 470
+w 50
+h 18
+controlPv "SCL_LLRF:ArcTest14d:Period"
+font "helvetica-medium-r-12.0"
+fontAlign "center"
+fgColor index 25
+bgColor index 5
+editable
+autoHeight
+motifWidget
+limitsFromDb
+nullColor index 30
+useHexPrefix
+newPos
+objType "controls"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 930
+y 500
+w 40
+h 20
+controlPv "SCL_LLRF:ArcTest14d:Runs"
+fgColor index 15
+fgAlarm
+bgColor index 10
+fill
+font "courier-medium-r-12.0"
+fontAlign "right"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 840
+y 500
+w 67
+h 16
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  "Runs/Errs:"
+}
+autoSize
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 980
+y 500
+w 40
+h 20
+controlPv "SCL_LLRF:ArcTest14d:Errors"
+fgColor index 15
+fgAlarm
+bgColor index 10
+fill
+font "courier-medium-r-12.0"
+fontAlign "right"
+endObjectProperties
+
+# (Button)
+object activeButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 440
+y 560
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+inconsistentColor index 10
+topShadowColor index 107
+botShadowColor index 109
+controlPv "SCL_LLRF:ArcTest11c:Clr"
+onLabel "Clr"
+3d
+font "courier-medium-r-12.0"
+objType "controls"
+endObjectProperties
+
+# (Button)
+object activeButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 690
+y 560
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+inconsistentColor index 10
+topShadowColor index 107
+botShadowColor index 109
+controlPv "SCL_LLRF:ArcTest13b:Clr"
+onLabel "Clr"
+3d
+font "courier-medium-r-12.0"
+objType "controls"
+endObjectProperties
+
+# (Button)
+object activeButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 940
+y 560
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+inconsistentColor index 10
+topShadowColor index 107
+botShadowColor index 109
+controlPv "SCL_LLRF:ArcTest14d:Clr"
+onLabel "Clr"
+3d
+font "courier-medium-r-12.0"
+objType "controls"
+endObjectProperties
+
+# (Button)
+object activeButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 940
+y 380
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+inconsistentColor index 10
+topShadowColor index 107
+botShadowColor index 109
+controlPv "SCL_LLRF:ArcTest07c:Clr"
+onLabel "Clr"
+3d
+font "courier-medium-r-12.0"
+objType "controls"
+endObjectProperties
+
+# (Button)
+object activeButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 690
+y 380
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+inconsistentColor index 10
+topShadowColor index 107
+botShadowColor index 109
+controlPv "SCL_LLRF:ArcTest05c:Clr"
+onLabel "Clr"
+3d
+font "courier-medium-r-12.0"
+objType "controls"
+endObjectProperties
+
+# (Button)
+object activeButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 440
+y 380
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+inconsistentColor index 10
+topShadowColor index 107
+botShadowColor index 109
+controlPv "SCL_LLRF:ArcTest03c:Clr"
+onLabel "Clr"
+3d
+font "courier-medium-r-12.0"
+objType "controls"
+endObjectProperties
+
+# (Button)
+object activeButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 190
+y 380
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+inconsistentColor index 10
+topShadowColor index 107
+botShadowColor index 109
+controlPv "SCL_LLRF:ArcTest01c:Clr"
+onLabel "Clr"
+3d
+font "courier-medium-r-12.0"
+objType "controls"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 230
+y 320
+w 40
+h 20
+controlPv "SCL_LLRF:ArcTest01c:Errors"
+fgColor index 15
+fgAlarm
+bgColor index 10
+fill
+font "courier-medium-r-12.0"
+fontAlign "right"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 180
+y 320
+w 40
+h 20
+controlPv "SCL_LLRF:ArcTest01c:Runs"
+fgColor index 15
+fgAlarm
+bgColor index 10
+fill
+font "courier-medium-r-12.0"
+fontAlign "right"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 90
+y 320
+w 67
+h 16
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  "Runs/Errs:"
+}
+autoSize
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 340
+y 290
+w 30
+h 18
+controlPv "SCL_LLRF:ArcTest03c:Hour"
+font "helvetica-medium-r-12.0"
+fontAlign "center"
+fgColor index 25
+bgColor index 5
+editable
+autoHeight
+motifWidget
+limitsFromDb
+nullColor index 30
+newPos
+objType "controls"
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 380
+y 290
+w 30
+h 18
+controlPv "SCL_LLRF:ArcTest03c:Minute"
+font "helvetica-medium-r-12.0"
+fontAlign "center"
+fgColor index 25
+bgColor index 5
+editable
+autoHeight
+motifWidget
+limitsFromDb
+nullColor index 30
+useHexPrefix
+newPos
+objType "controls"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 370
+y 290
+w 10
+h 16
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  ":"
+}
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 440
+y 290
+w 50
+h 18
+controlPv "SCL_LLRF:ArcTest03c:Period"
+font "helvetica-medium-r-12.0"
+fontAlign "center"
+fgColor index 25
+bgColor index 5
+editable
+autoHeight
+motifWidget
+limitsFromDb
+nullColor index 30
+useHexPrefix
+newPos
+objType "controls"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 410
+y 290
+w 30
+h 20
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  " +N*"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 490
+y 290
+w 30
+h 20
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  " min."
+}
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 480
+y 320
+w 40
+h 20
+controlPv "SCL_LLRF:ArcTest03c:Errors"
+fgColor index 15
+fgAlarm
+bgColor index 10
+fill
+font "courier-medium-r-12.0"
+fontAlign "right"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 430
+y 320
+w 40
+h 20
+controlPv "SCL_LLRF:ArcTest03c:Runs"
+fgColor index 15
+fgAlarm
+bgColor index 10
+fill
+font "courier-medium-r-12.0"
+fontAlign "right"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 340
+y 320
+w 67
+h 16
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  "Runs/Errs:"
+}
+autoSize
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 590
+y 290
+w 30
+h 18
+controlPv "SCL_LLRF:ArcTest05c:Hour"
+font "helvetica-medium-r-12.0"
+fontAlign "center"
+fgColor index 25
+bgColor index 5
+editable
+autoHeight
+motifWidget
+limitsFromDb
+nullColor index 30
+newPos
+objType "controls"
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 630
+y 290
+w 30
+h 18
+controlPv "SCL_LLRF:ArcTest05c:Minute"
+font "helvetica-medium-r-12.0"
+fontAlign "center"
+fgColor index 25
+bgColor index 5
+editable
+autoHeight
+motifWidget
+limitsFromDb
+nullColor index 30
+useHexPrefix
+newPos
+objType "controls"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 620
+y 290
+w 10
+h 16
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  ":"
+}
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 690
+y 290
+w 50
+h 18
+controlPv "SCL_LLRF:ArcTest05c:Period"
+font "helvetica-medium-r-12.0"
+fontAlign "center"
+fgColor index 25
+bgColor index 5
+editable
+autoHeight
+motifWidget
+limitsFromDb
+nullColor index 30
+useHexPrefix
+newPos
+objType "controls"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 660
+y 290
+w 30
+h 20
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  " +N*"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 740
+y 290
+w 30
+h 20
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  " min."
+}
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 730
+y 320
+w 40
+h 20
+controlPv "SCL_LLRF:ArcTest05c:Errors"
+fgColor index 15
+fgAlarm
+bgColor index 10
+fill
+font "courier-medium-r-12.0"
+fontAlign "right"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 680
+y 320
+w 40
+h 20
+controlPv "SCL_LLRF:ArcTest05c:Runs"
+fgColor index 15
+fgAlarm
+bgColor index 10
+fill
+font "courier-medium-r-12.0"
+fontAlign "right"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 590
+y 320
+w 67
+h 16
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  "Runs/Errs:"
+}
+autoSize
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 840
+y 290
+w 30
+h 18
+controlPv "SCL_LLRF:ArcTest07c:Hour"
+font "helvetica-medium-r-12.0"
+fontAlign "center"
+fgColor index 25
+bgColor index 5
+editable
+autoHeight
+motifWidget
+limitsFromDb
+nullColor index 30
+newPos
+objType "controls"
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 880
+y 290
+w 30
+h 18
+controlPv "SCL_LLRF:ArcTest07c:Minute"
+font "helvetica-medium-r-12.0"
+fontAlign "center"
+fgColor index 25
+bgColor index 5
+editable
+autoHeight
+motifWidget
+limitsFromDb
+nullColor index 30
+useHexPrefix
+newPos
+objType "controls"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 870
+y 290
+w 10
+h 16
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  ":"
+}
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 940
+y 290
+w 50
+h 18
+controlPv "SCL_LLRF:ArcTest07c:Period"
+font "helvetica-medium-r-12.0"
+fontAlign "center"
+fgColor index 25
+bgColor index 5
+editable
+autoHeight
+motifWidget
+limitsFromDb
+nullColor index 30
+useHexPrefix
+newPos
+objType "controls"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 910
+y 290
+w 30
+h 20
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  " +N*"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 990
+y 290
+w 30
+h 20
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  " min."
+}
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 980
+y 320
+w 40
+h 20
+controlPv "SCL_LLRF:ArcTest07c:Errors"
+fgColor index 15
+fgAlarm
+bgColor index 10
+fill
+font "courier-medium-r-12.0"
+fontAlign "right"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 930
+y 320
+w 40
+h 20
+controlPv "SCL_LLRF:ArcTest07c:Runs"
+fgColor index 15
+fgAlarm
+bgColor index 10
+fill
+font "courier-medium-r-12.0"
+fontAlign "right"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 840
+y 320
+w 67
+h 16
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  "Runs/Errs:"
+}
+autoSize
+endObjectProperties
+
+# (Button)
+object activeButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 190
+y 740
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+inconsistentColor index 10
+topShadowColor index 107
+botShadowColor index 109
+controlPv "SCL_LLRF:ArcTest16b:Clr"
+onLabel "Clr"
+3d
+font "courier-medium-r-12.0"
+objType "controls"
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 90
+y 650
+w 30
+h 18
+controlPv "SCL_LLRF:ArcTest16b:Hour"
+font "helvetica-medium-r-12.0"
+fontAlign "center"
+fgColor index 25
+bgColor index 5
+editable
+autoHeight
+motifWidget
+limitsFromDb
+nullColor index 30
+newPos
+objType "controls"
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 130
+y 650
+w 30
+h 18
+controlPv "SCL_LLRF:ArcTest16b:Minute"
+font "helvetica-medium-r-12.0"
+fontAlign "center"
+fgColor index 25
+bgColor index 5
+editable
+autoHeight
+motifWidget
+limitsFromDb
+nullColor index 30
+useHexPrefix
+newPos
+objType "controls"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 120
+y 650
+w 10
+h 16
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  ":"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 160
+y 650
+w 30
+h 20
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  " +N*"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 240
+y 650
+w 30
+h 20
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  " min."
+}
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 190
+y 650
+w 50
+h 18
+controlPv "SCL_LLRF:ArcTest16b:Period"
+font "helvetica-medium-r-12.0"
+fontAlign "center"
+fgColor index 25
+bgColor index 5
+editable
+autoHeight
+motifWidget
+limitsFromDb
+nullColor index 30
+useHexPrefix
+newPos
+objType "controls"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 180
+y 680
+w 40
+h 20
+controlPv "SCL_LLRF:ArcTest16b:Runs"
+fgColor index 15
+fgAlarm
+bgColor index 10
+fill
+font "courier-medium-r-12.0"
+fontAlign "right"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 90
+y 680
+w 67
+h 16
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  "Runs/Errs:"
+}
+autoSize
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 230
+y 680
+w 40
+h 20
+controlPv "SCL_LLRF:ArcTest16b:Errors"
+fgColor index 15
+fgAlarm
+bgColor index 10
+fill
+font "courier-medium-r-12.0"
+fontAlign "right"
+endObjectProperties
+
+# (Button)
+object activeButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 440
+y 740
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+inconsistentColor index 10
+topShadowColor index 107
+botShadowColor index 109
+controlPv "SCL_LLRF:ArcTest17d:Clr"
+onLabel "Clr"
+3d
+font "courier-medium-r-12.0"
+objType "controls"
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 340
+y 650
+w 30
+h 18
+controlPv "SCL_LLRF:ArcTest17d:Hour"
+font "helvetica-medium-r-12.0"
+fontAlign "center"
+fgColor index 25
+bgColor index 5
+editable
+autoHeight
+motifWidget
+limitsFromDb
+nullColor index 30
+newPos
+objType "controls"
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 380
+y 650
+w 30
+h 18
+controlPv "SCL_LLRF:ArcTest17d:Minute"
+font "helvetica-medium-r-12.0"
+fontAlign "center"
+fgColor index 25
+bgColor index 5
+editable
+autoHeight
+motifWidget
+limitsFromDb
+nullColor index 30
+useHexPrefix
+newPos
+objType "controls"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 370
+y 650
+w 10
+h 16
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  ":"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 410
+y 650
+w 30
+h 20
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  " +N*"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 490
+y 650
+w 30
+h 20
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  " min."
+}
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 440
+y 650
+w 50
+h 18
+controlPv "SCL_LLRF:ArcTest17d:Period"
+font "helvetica-medium-r-12.0"
+fontAlign "center"
+fgColor index 25
+bgColor index 5
+editable
+autoHeight
+motifWidget
+limitsFromDb
+nullColor index 30
+useHexPrefix
+newPos
+objType "controls"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 430
+y 680
+w 40
+h 20
+controlPv "SCL_LLRF:ArcTest17d:Runs"
+fgColor index 15
+fgAlarm
+bgColor index 10
+fill
+font "courier-medium-r-12.0"
+fontAlign "right"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 340
+y 680
+w 67
+h 16
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  "Runs/Errs:"
+}
+autoSize
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 480
+y 680
+w 40
+h 20
+controlPv "SCL_LLRF:ArcTest17d:Errors"
+fgColor index 15
+fgAlarm
+bgColor index 10
+fill
+font "courier-medium-r-12.0"
+fontAlign "right"
+endObjectProperties
+
+# (Button)
+object activeButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 690
+y 740
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+inconsistentColor index 10
+topShadowColor index 107
+botShadowColor index 109
+controlPv "SCL_LLRF:ArcTest19a:Clr"
+onLabel "Clr"
+3d
+font "courier-medium-r-12.0"
+objType "controls"
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 590
+y 650
+w 30
+h 18
+controlPv "SCL_LLRF:ArcTest19a:Hour"
+font "helvetica-medium-r-12.0"
+fontAlign "center"
+fgColor index 25
+bgColor index 5
+editable
+autoHeight
+motifWidget
+limitsFromDb
+nullColor index 30
+newPos
+objType "controls"
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 630
+y 650
+w 30
+h 18
+controlPv "SCL_LLRF:ArcTest19a:Minute"
+font "helvetica-medium-r-12.0"
+fontAlign "center"
+fgColor index 25
+bgColor index 5
+editable
+autoHeight
+motifWidget
+limitsFromDb
+nullColor index 30
+useHexPrefix
+newPos
+objType "controls"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 620
+y 650
+w 10
+h 16
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  ":"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 660
+y 650
+w 30
+h 20
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  " +N*"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 740
+y 650
+w 30
+h 20
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  " min."
+}
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 690
+y 650
+w 50
+h 18
+controlPv "SCL_LLRF:ArcTest19a:Period"
+font "helvetica-medium-r-12.0"
+fontAlign "center"
+fgColor index 25
+bgColor index 5
+editable
+autoHeight
+motifWidget
+limitsFromDb
+nullColor index 30
+useHexPrefix
+newPos
+objType "controls"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 680
+y 680
+w 40
+h 20
+controlPv "SCL_LLRF:ArcTest19a:Runs"
+fgColor index 15
+fgAlarm
+bgColor index 10
+fill
+font "courier-medium-r-12.0"
+fontAlign "right"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 590
+y 680
+w 67
+h 16
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  "Runs/Errs:"
+}
+autoSize
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 730
+y 680
+w 40
+h 20
+controlPv "SCL_LLRF:ArcTest19a:Errors"
+fgColor index 15
+fgAlarm
+bgColor index 10
+fill
+font "courier-medium-r-12.0"
+fontAlign "right"
+endObjectProperties
+
+# (Button)
+object activeButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 940
+y 740
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+inconsistentColor index 10
+topShadowColor index 107
+botShadowColor index 109
+controlPv "SCL_LLRF:ArcTest20c:Clr"
+onLabel "Clr"
+3d
+font "courier-medium-r-12.0"
+objType "controls"
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 840
+y 650
+w 30
+h 18
+controlPv "SCL_LLRF:ArcTest20c:Hour"
+font "helvetica-medium-r-12.0"
+fontAlign "center"
+fgColor index 25
+bgColor index 5
+editable
+autoHeight
+motifWidget
+limitsFromDb
+nullColor index 30
+newPos
+objType "controls"
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 880
+y 650
+w 30
+h 18
+controlPv "SCL_LLRF:ArcTest20c:Minute"
+font "helvetica-medium-r-12.0"
+fontAlign "center"
+fgColor index 25
+bgColor index 5
+editable
+autoHeight
+motifWidget
+limitsFromDb
+nullColor index 30
+useHexPrefix
+newPos
+objType "controls"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 870
+y 650
+w 10
+h 16
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  ":"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 910
+y 650
+w 30
+h 20
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  " +N*"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 990
+y 650
+w 30
+h 20
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  " min."
+}
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 940
+y 650
+w 50
+h 18
+controlPv "SCL_LLRF:ArcTest20c:Period"
+font "helvetica-medium-r-12.0"
+fontAlign "center"
+fgColor index 25
+bgColor index 5
+editable
+autoHeight
+motifWidget
+limitsFromDb
+nullColor index 30
+useHexPrefix
+newPos
+objType "controls"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 930
+y 680
+w 40
+h 20
+controlPv "SCL_LLRF:ArcTest20c:Runs"
+fgColor index 15
+fgAlarm
+bgColor index 10
+fill
+font "courier-medium-r-12.0"
+fontAlign "right"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 840
+y 680
+w 67
+h 16
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  "Runs/Errs:"
+}
+autoSize
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 980
+y 680
+w 40
+h 20
+controlPv "SCL_LLRF:ArcTest20c:Errors"
+fgColor index 15
+fgAlarm
+bgColor index 10
+fill
+font "courier-medium-r-12.0"
+fontAlign "right"
+endObjectProperties
+
+# (Button)
+object activeButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 190
+y 920
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+inconsistentColor index 10
+topShadowColor index 107
+botShadowColor index 109
+controlPv "SCL_LLRF:ArcTest21d:Clr"
+onLabel "Clr"
+3d
+font "courier-medium-r-12.0"
+objType "controls"
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 90
+y 830
+w 30
+h 18
+controlPv "SCL_LLRF:ArcTest21d:Hour"
+font "helvetica-medium-r-12.0"
+fontAlign "center"
+fgColor index 25
+bgColor index 5
+editable
+autoHeight
+motifWidget
+limitsFromDb
+nullColor index 30
+newPos
+objType "controls"
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 130
+y 830
+w 30
+h 18
+controlPv "SCL_LLRF:ArcTest21d:Minute"
+font "helvetica-medium-r-12.0"
+fontAlign "center"
+fgColor index 25
+bgColor index 5
+editable
+autoHeight
+motifWidget
+limitsFromDb
+nullColor index 30
+useHexPrefix
+newPos
+objType "controls"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 120
+y 830
+w 10
+h 16
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  ":"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 160
+y 830
+w 30
+h 20
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  " +N*"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 240
+y 830
+w 30
+h 20
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  " min."
+}
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 190
+y 830
+w 50
+h 18
+controlPv "SCL_LLRF:ArcTest21d:Period"
+font "helvetica-medium-r-12.0"
+fontAlign "center"
+fgColor index 25
+bgColor index 5
+editable
+autoHeight
+motifWidget
+limitsFromDb
+nullColor index 30
+useHexPrefix
+newPos
+objType "controls"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 180
+y 860
+w 40
+h 20
+controlPv "SCL_LLRF:ArcTest21d:Runs"
+fgColor index 15
+fgAlarm
+bgColor index 10
+fill
+font "courier-medium-r-12.0"
+fontAlign "right"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 90
+y 860
+w 67
+h 16
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  "Runs/Errs:"
+}
+autoSize
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 230
+y 860
+w 40
+h 20
+controlPv "SCL_LLRF:ArcTest21d:Errors"
+fgColor index 15
+fgAlarm
+bgColor index 10
+fill
+font "courier-medium-r-12.0"
+fontAlign "right"
+endObjectProperties
+
+# (Button)
+object activeButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 440
+y 920
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+inconsistentColor index 10
+topShadowColor index 107
+botShadowColor index 109
+controlPv "SCL_LLRF:ArcTest23b:Clr"
+onLabel "Clr"
+3d
+font "courier-medium-r-12.0"
+objType "controls"
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 340
+y 830
+w 30
+h 18
+controlPv "SCL_LLRF:ArcTest23b:Hour"
+font "helvetica-medium-r-12.0"
+fontAlign "center"
+fgColor index 25
+bgColor index 5
+editable
+autoHeight
+motifWidget
+limitsFromDb
+nullColor index 30
+newPos
+objType "controls"
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 380
+y 830
+w 30
+h 18
+controlPv "SCL_LLRF:ArcTest23b:Minute"
+font "helvetica-medium-r-12.0"
+fontAlign "center"
+fgColor index 25
+bgColor index 5
+editable
+autoHeight
+motifWidget
+limitsFromDb
+nullColor index 30
+useHexPrefix
+newPos
+objType "controls"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 370
+y 830
+w 10
+h 16
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  ":"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 410
+y 830
+w 30
+h 20
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  " +N*"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 490
+y 830
+w 30
+h 20
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  " min."
+}
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 440
+y 830
+w 50
+h 18
+controlPv "SCL_LLRF:ArcTest23b:Period"
+font "helvetica-medium-r-12.0"
+fontAlign "center"
+fgColor index 25
+bgColor index 5
+editable
+autoHeight
+motifWidget
+limitsFromDb
+nullColor index 30
+useHexPrefix
+newPos
+objType "controls"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 430
+y 860
+w 40
+h 20
+controlPv "SCL_LLRF:ArcTest23b:Runs"
+fgColor index 15
+fgAlarm
+bgColor index 10
+fill
+font "courier-medium-r-12.0"
+fontAlign "right"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 340
+y 860
+w 67
+h 16
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  "Runs/Errs:"
+}
+autoSize
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 480
+y 860
+w 40
+h 20
+controlPv "SCL_LLRF:ArcTest23b:Errors"
+fgColor index 15
+fgAlarm
+bgColor index 10
+fill
+font "courier-medium-r-12.0"
+fontAlign "right"
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 930
+y 10
+w 70
+h 20
+fgColor index 133
+bgColor index 44
+topShadowColor index 107
+botShadowColor index 109
+font "helvetica-medium-r-14.0"
+buttonLabel "Help"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "ArcTestHelp"
+}
+menuLabel {
+  0 "Help"
+}
+setPosition {
+  0 "button"
+}
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 1010
+y 10
+w 70
+h 20
+fgColor index 133
+bgColor index 44
+topShadowColor index 107
+botShadowColor index 109
+font "helvetica-medium-r-14.0"
+buttonLabel "LLRF"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "linac_llrf"
+}
+menuLabel {
+  0 "LLRF"
+}
+endObjectProperties
+
+# (Button)
+object activeButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 280
+y 380
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+inconsistentColor index 10
+topShadowColor index 107
+botShadowColor index 109
+controlPv "SCL_LLRF:ArcTest01c:Ctl"
+onLabel "Ena."
+3d
+font "courier-medium-r-12.0"
+objType "controls"
+endObjectProperties
+
+# (Button)
+object activeButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 530
+y 380
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+inconsistentColor index 10
+topShadowColor index 107
+botShadowColor index 109
+controlPv "SCL_LLRF:ArcTest03c:Ctl"
+onLabel "Ena."
+3d
+font "courier-medium-r-12.0"
+objType "controls"
+endObjectProperties
+
+# (Button)
+object activeButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 780
+y 380
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+inconsistentColor index 10
+topShadowColor index 107
+botShadowColor index 109
+controlPv "SCL_LLRF:ArcTest05c:Ctl"
+onLabel "Ena."
+3d
+font "courier-medium-r-12.0"
+objType "controls"
+endObjectProperties
+
+# (Button)
+object activeButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1030
+y 380
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+inconsistentColor index 10
+topShadowColor index 107
+botShadowColor index 109
+controlPv "SCL_LLRF:ArcTest07c:Ctl"
+onLabel "Ena."
+3d
+font "courier-medium-r-12.0"
+objType "controls"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 20
+y 270
+w 52
+h 80
+font "helvetica-medium-r-14.0"
+fgColor index 112
+bgColor index 10
+useDisplayBg
+value {
+  "Air/Vac"
+  "Side of"
+  "Window"
+  "for each"
+  "SCL"
+}
+autoSize
+endObjectProperties
+
+# (Button)
+object activeButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1030
+y 560
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+inconsistentColor index 10
+topShadowColor index 107
+botShadowColor index 109
+controlPv "SCL_LLRF:ArcTest14d:Ctl"
+onLabel "Ena."
+3d
+font "courier-medium-r-12.0"
+objType "controls"
+endObjectProperties
+
+# (Button)
+object activeButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 780
+y 560
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+inconsistentColor index 10
+topShadowColor index 107
+botShadowColor index 109
+controlPv "SCL_LLRF:ArcTest13b:Ctl"
+onLabel "Ena."
+3d
+font "courier-medium-r-12.0"
+objType "controls"
+endObjectProperties
+
+# (Button)
+object activeButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 530
+y 560
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+inconsistentColor index 10
+topShadowColor index 107
+botShadowColor index 109
+controlPv "SCL_LLRF:ArcTest11c:Ctl"
+onLabel "Ena."
+3d
+font "courier-medium-r-12.0"
+objType "controls"
+endObjectProperties
+
+# (Button)
+object activeButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 280
+y 560
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+inconsistentColor index 10
+topShadowColor index 107
+botShadowColor index 109
+controlPv "SCL_LLRF:ArcTest09c:Ctl"
+onLabel "Ena."
+3d
+font "courier-medium-r-12.0"
+objType "controls"
+endObjectProperties
+
+# (Button)
+object activeButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1030
+y 740
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+inconsistentColor index 10
+topShadowColor index 107
+botShadowColor index 109
+controlPv "SCL_LLRF:ArcTest20c:Ctl"
+onLabel "Ena."
+3d
+font "courier-medium-r-12.0"
+objType "controls"
+endObjectProperties
+
+# (Button)
+object activeButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 780
+y 740
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+inconsistentColor index 10
+topShadowColor index 107
+botShadowColor index 109
+controlPv "SCL_LLRF:ArcTest19a:Ctl"
+onLabel "Ena."
+3d
+font "courier-medium-r-12.0"
+objType "controls"
+endObjectProperties
+
+# (Button)
+object activeButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 530
+y 740
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+inconsistentColor index 10
+topShadowColor index 107
+botShadowColor index 109
+controlPv "SCL_LLRF:ArcTest17d:Ctl"
+onLabel "Ena."
+3d
+font "courier-medium-r-12.0"
+objType "controls"
+endObjectProperties
+
+# (Button)
+object activeButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 280
+y 740
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+inconsistentColor index 10
+topShadowColor index 107
+botShadowColor index 109
+controlPv "SCL_LLRF:ArcTest16b:Ctl"
+onLabel "Ena."
+3d
+font "courier-medium-r-12.0"
+objType "controls"
+endObjectProperties
+
+# (Button)
+object activeButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 530
+y 920
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+inconsistentColor index 10
+topShadowColor index 107
+botShadowColor index 109
+controlPv "SCL_LLRF:ArcTest23b:Ctl"
+onLabel "Ena."
+3d
+font "courier-medium-r-12.0"
+objType "controls"
+endObjectProperties
+
+# (Button)
+object activeButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 280
+y 920
+w 40
+h 20
+fgColor index 25
+onColor index 5
+offColor index 5
+inconsistentColor index 10
+topShadowColor index 107
+botShadowColor index 109
+controlPv "SCL_LLRF:ArcTest21d:Ctl"
+onLabel "Ena."
+3d
+font "courier-medium-r-12.0"
+objType "controls"
+endObjectProperties
+

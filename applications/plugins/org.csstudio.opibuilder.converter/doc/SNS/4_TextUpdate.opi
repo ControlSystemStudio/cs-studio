@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<display typeId="org.csstudio.opibuilder.Display" version="1.0">
+  <!-- Text Update, identified by typeId -->
+  <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
+
+    <!-- Use 'EDM Text Update' when created from EDM config file -->
+    <name>Text Update</name>
+
+    <!-- Position, size of text area. Use EDM 'x', 'y', 'w', 'h' -->
+    <x>20</x>
+    <y>20</y>
+    <width>43</width>
+    <height>38</height>
+
+    <!-- Name of PV who's value this widget will display.
+         Use EDM 'controlPv'
+      -->
+    <pv.name>MyPVName</pv.name>
+
+    <!-- Border/outline info. Use EDM 'lineColor', 'lineWidth'.
+         Use border.style 0 for no border,
+                          1 for normal EDM 'lineStyle',
+                          9 for EDM 'lineStyle' "dash"
+      -->
+    <border.style>1</border.style>
+    <border.width>3</border.width>
+    <border.color>
+      <color red="0" green="128" blue="255" />
+    </border.color>
+
+    <!-- Use EDM 'autoSize' -->
+    <auto_size>true</auto_size>
+
+    <!-- Font, translate from EDM 'font' -->
+    <font>
+      <font fontName="Arial" height="14" style="0" />
+    </font>
+
+    <!-- Text color. Use EDM 'fgColor' -->
+    <color.foreground>
+      <color red="0" green="0" blue="0" />
+    </color.foreground>
+
+    <!-- Background color. Use EDM 'bgColor' -->
+    <color.background>
+      <color red="255" green="255" blue="255" />
+    </color.background>
+
+    <!-- Colors can automatically update based on alarms received from PV.
+         Use EDM 'fgAlarm', 'lineAlarm' for foregroundcolor, border
+      -->
+    <foregroundcolor.alarmsensitive>false</foregroundcolor.alarmsensitive>
+    <border.alarmsensitive>true</border.alarmsensitive>
+    <backgroundcolor.alarmsensitive>false</backgroundcolor.alarmsensitive>
+
+    <!-- Use EDM 'useDisplayBg' -->
+    <transparency>true</transparency>
+  </widget>
+</display>

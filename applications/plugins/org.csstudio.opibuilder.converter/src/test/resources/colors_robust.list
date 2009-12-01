@@ -1,0 +1,11 @@
+static 0 "Disconn/Invalid"  { 65535 65535 65535 }    #0 white
+static 142 "blinking purple" {  49344     0 49344     0 0 0 } #
+static 155 "bl in ki ng purple" {  7852     4427 450     1 786 5 } #
+# invalid number
+static 107 "Top Shadow"       { 60652 6ž52 60652 }    #
+# no start quote
+static 5 Wid-alt/Anno-sec" { 44718 44718 44718 }    #5
+# no final quote
+static 6 "GLOBAL title     { 40606 40606 40606 }    #
+# invalid color format
+static 112 "black"            {     0     0      }    #

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<display typeId="org.csstudio.opibuilder.Display" version="1.0">
+  <!-- Label, identified by typeId -->
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <!-- Use 'EDM Label' for labels created from EDM config file -->
+    <name>Label</name>
+
+    <!-- Position, size of text area. Use EDM 'x', 'y', 'w', 'h' -->
+    <x>20</x>
+    <y>20</y>
+    <width>43</width>
+    <height>38</height>
+
+    <!-- Border/outline info. Use EDM 'lineColor', 'lineWidth'.
+         Use border.style 0 for no border,
+                          1 for normal EDM 'lineStyle',
+                          9 for EDM 'lineStyle' "dash"
+      -->
+    <border.style>1</border.style>
+    <border.width>3</border.width>
+    <border.color>
+      <color red="0" green="128" blue="255" />
+    </border.color>
+
+    <!-- Text to display. Use EDM 'value'. Handle multi-line texts -->
+    <text>Hello&#xD;World</text>
+
+    <!-- Use EDM 'autoSize' -->
+    <auto_size>true</auto_size>
+
+    <!-- Font, translate from EDM 'font' -->
+    <font>
+      <font fontName="Arial" height="14" style="0" />
+    </font>
+
+    <!-- Text color. Use EDM 'fgColor' -->
+    <color.foreground>
+      <color red="0" green="0" blue="0" />
+    </color.foreground>
+
+    <!-- Background color. Use EDM 'bgColor' -->
+    <color.background>
+      <color red="255" green="255" blue="255" />
+    </color.background>
+
+    <!-- Use EDM 'useDisplayBg' -->
+    <transparency>true</transparency>
+  </widget>
+</display>

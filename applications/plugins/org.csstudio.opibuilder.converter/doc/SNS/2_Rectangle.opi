@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<display typeId="org.csstudio.opibuilder.Display" version="1.0">
+  <!-- The order of attributes of a display element generally don't matter -->
+  <width>800</width>
+  <showEditRangeBorder>true</showEditRangeBorder>
+  <script />
+  <grid.space>10</grid.space>
+  <font>
+    <font fontName="Courier" height="9" style="0" />
+  </font>
+  <showRuler>true</showRuler>
+  <snapGeometry>true</snapGeometry>
+  <height>600</height>
+  <y>0</y>
+  <color.foreground>
+    <color red="255" green="33" blue="55" />
+  </color.foreground>
+  <color.background>
+    <color red="255" green="209" blue="70" />
+  </color.background>
+  <name>Example Display</name>
+  <x>0</x>
+  <grid.show>true</grid.show>
+
+  <!-- The order of widgets within the display, however,
+       determines the stacking order on the screen.
+       Widgets are drawn in the order in which they are listed
+       in here, so the 'Blue Back' rectangle is drawn first,
+       followed by the 'Red Front' rectangle, which therefore
+       appears "in front of" the blue one.
+   -->
+
+  <!-- 'Rectangle' widget, identified by the typeId -->
+  <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
+    <!-- Name, can be used by human or scripts to identify the widget instance.
+         Use 'EDM Rectangle' for rectangles translated from EDM config files.
+      -->
+    <name>Blue Back</name>
+   
+    <!-- Position, size of rectangle. Use EDM 'x', 'y', 'w', 'h' -->
+    <x>90</x>
+    <y>50</y>
+    <width>191</width>
+    <height>71</height>
+
+    <!-- Border/outline info. Use EDM 'lineColor', 'lineWidth'.
+         Use border.style 0 for no border,
+                          1 for normal EDM 'lineStyle',
+                          9 for EDM 'lineStyle' "dash"
+      -->
+    <border.color>
+      <color red="0" green="128" blue="255" />
+    </border.color>
+    <border.width>1</border.width>
+    <border.style>0</border.style>
+
+    <!-- Background or 'fill' color. Use EDM 'fillColor' -->
+    <color.background>
+      <color red="0" green="0" blue="255" />
+    </color.background>
+  </widget>
+
+  <!-- Another widget, attributes in random order -->
+  <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
+    <border.style>9</border.style>
+    <width>71</width>
+    <border.color>
+      <color red="0" green="128" blue="255" />
+    </border.color>
+    <border.width>1</border.width>
+    <height>111</height>
+    <enabled>true</enabled>
+    <visible>true</visible>
+    <y>30</y>
+    <color.foreground>
+      <color red="0" green="0" blue="0" />
+    </color.foreground>
+    <color.background>
+      <color red="255" green="0" blue="11" />
+    </color.background>
+    <name>Red Front</name>
+    <x>150</x>
+  </widget>
+</display>

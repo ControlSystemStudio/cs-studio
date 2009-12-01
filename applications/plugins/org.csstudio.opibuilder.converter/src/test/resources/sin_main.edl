@@ -1,0 +1,985 @@
+4 0 1
+beginScreenProperties
+major 4
+minor 0
+release 1
+x 614
+y 278
+w 280
+h 177
+font "helvetica-bold-r-14.0"
+ctlFont "helvetica-bold-r-14.0"
+btnFont "helvetica-bold-r-14.0"
+fgColor index 14
+bgColor index 3
+textColor index 14
+ctlFgColor1 index 25
+ctlFgColor2 index 30
+ctlBgColor1 index 3
+ctlBgColor2 index 3
+topShadowColor index 1
+botShadowColor index 11
+title "Motor control"
+showGrid
+gridSize 5
+disableScroll
+endScreenProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 4
+y 45
+w 111
+h 42
+lineColor index 7
+fillColor index 0
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 120
+y 45
+w 155
+h 42
+lineColor index 7
+fillColor index 0
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 4
+y 94
+w 271
+h 80
+lineColor index 7
+fillColor index 0
+endObjectProperties
+
+# (Text Monitor)
+object activeXTextDspClass:noedit
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 159
+y 64
+w 78
+h 18
+controlPv "$(DEVICE):$(MRN)_MON"
+format "decimal"
+font "helvetica-bold-r-14.0"
+fontAlign "center"
+fgColor index 16
+fgAlarm
+bgColor index 10
+limitsFromDb
+nullColor index 0
+fastUpdate
+showUnits
+newPos
+objType "monitors"
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 8
+y 54
+w 14
+h 14
+fgColor index 25
+onColor index 4
+offColor index 3
+topShadowColor index 1
+botShadowColor index 11
+controlPv "$(DEVICE):$(MRN)_TWR.PROC"
+pressValue "1"
+onLabel "-"
+offLabel "-"
+3d
+font "helvetica-bold-r-12.0"
+visInvert
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 97
+y 54
+w 14
+h 14
+fgColor index 25
+onColor index 4
+offColor index 3
+topShadowColor index 1
+botShadowColor index 11
+controlPv "$(DEVICE):$(MRN)_TWF.PROC"
+pressValue "1"
+onLabel "+"
+offLabel "+"
+3d
+font "helvetica-bold-r-12.0"
+visInvert
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 123
+y 50
+w 42
+h 13
+font "helvetica-bold-r-12.0"
+fgColor index 10
+bgColor index 3
+value {
+  "At low"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 223
+y 50
+w 49
+h 13
+font "helvetica-bold-r-12.0"
+fgColor index 10
+bgColor index 3
+value {
+  "At high"
+}
+autoSize
+endObjectProperties
+
+# (Byte)
+object ByteClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 137
+y 68
+w 11
+h 11
+controlPv "$(DEVICE):$(MRN)_LOW_LIMIT_STS"
+lineColor index 14
+onColor index 15
+offColor index 8
+lineWidth 2
+numBits 1
+endObjectProperties
+
+# (Byte)
+object ByteClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 250
+y 68
+w 11
+h 11
+controlPv "$(DEVICE):$(MRN)_HIGH_LIMIT_STS"
+lineColor index 14
+onColor index 15
+offColor index 8
+lineWidth 2
+numBits 1
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 214
+y 127
+w 55
+h 18
+fgColor index 25
+onColor index 4
+offColor index 3
+topShadowColor index 0
+botShadowColor index 11
+controlPv "$(DEVICE):$(MRN)_HOME_CMD.PROC "
+pressValue "1"
+onLabel "HOME"
+offLabel "HOME"
+3d
+font "helvetica-bold-r-12.0"
+visInvert
+visMin "1"
+visMax "2"
+endObjectProperties
+
+# (Menu Button)
+object activeMenuButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 98
+y 127
+w 108
+h 20
+fgColor index 25
+bgColor index 3
+inconsistentColor index 3
+topShadowColor index 1
+botShadowColor index 11
+controlPv "$(DEVICE):$(MRN)_HOME_MODE_CMD"
+font "helvetica-bold-r-12.0"
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 8
+y 120
+w 52
+h 11
+
+beginGroup
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 26
+y 120
+w 35
+h 13
+font "helvetica-bold-r-12.0"
+fgColor index 10
+bgColor index 3
+value {
+  "Homed"
+}
+autoSize
+endObjectProperties
+
+# (Byte)
+object ByteClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 8
+y 121
+w 11
+h 10
+controlPv "$(DEVICE):$(MRN)_HOCPL_STS"
+lineColor index 14
+onColor index 15
+offColor index 8
+lineWidth 2
+numBits 1
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 8
+y 137
+w 73
+h 11
+
+beginGroup
+
+# (Byte)
+object ByteClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 8
+y 137
+w 11
+h 10
+controlPv "$(DEVICE):$(MRN)_HOME_ERROR_STS"
+lineColor index 14
+onColor index 20
+offColor index 8
+lineWidth 2
+numBits 1
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 26
+y 137
+w 70
+h 13
+font "helvetica-bold-r-12.0"
+fgColor index 10
+bgColor index 3
+value {
+  "Home error"
+}
+autoSize
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 215
+y 152
+w 55
+h 18
+fgColor index 44
+bgColor index 3
+topShadowColor index 1
+botShadowColor index 11
+font "helvetica-bold-r-12.0"
+buttonLabel "More"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "sin_motorMore.edl"
+}
+symbols {
+  0 "DEVICE=$(DEVICE),MRN=$(MRN)"
+}
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 8
+y 154
+w 70
+h 11
+
+beginGroup
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 26
+y 154
+w 63
+h 13
+font "helvetica-bold-r-12.0"
+fgColor index 10
+bgColor index 3
+value {
+  "Open loop"
+}
+autoSize
+endObjectProperties
+
+# (Byte)
+object ByteClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 8
+y 155
+w 11
+h 10
+controlPv "$(DEVICE):$(MRN)_LOOPM_STS"
+lineColor index 14
+onColor index 15
+offColor index 8
+lineWidth 2
+numBits 1
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 25
+y 104
+w 42
+h 13
+font "helvetica-bold-r-12.0"
+fgColor index 10
+bgColor index 3
+value {
+  "Moving"
+}
+autoSize
+endObjectProperties
+
+# (Byte)
+object ByteClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 8
+y 104
+w 11
+h 11
+controlPv "$(DEVICE):$(MRN)_IN_POSITION_STS"
+lineColor index 14
+onColor index 8
+offColor index 15
+lineWidth 2
+numBits 1
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 39
+y 39
+w 42
+h 13
+font "helvetica-bold-r-12.0"
+fgColor index 10
+bgColor index 3
+value {
+  "Demand"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 175
+y 39
+w 56
+h 13
+font "helvetica-bold-r-12.0"
+fgColor index 10
+bgColor index 3
+value {
+  "Position"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 8
+y 71
+w 28
+h 13
+font "helvetica-bold-r-12.0"
+fgColor index 10
+bgColor index 3
+value {
+  "Step"
+}
+autoSize
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 43
+y 71
+w 41
+h 14
+controlPv "$(DEVICE):$(MRN)_TWEAK_VALUE"
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 25
+bgColor index 3
+useDisplayBg
+editable
+autoHeight
+limitsFromDb
+nullColor index 30
+fastUpdate
+updatePvOnDrop
+useHexPrefix
+newPos
+objType "controls"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 113
+y 154
+w 28
+h 13
+font "helvetica-bold-r-12.0"
+fgColor index 10
+bgColor index 3
+value {
+  "Busy"
+}
+autoSize
+endObjectProperties
+
+# (Byte)
+object ByteClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 94
+y 156
+w 11
+h 11
+controlPv "$(DEVICE):$(MRN)_CAN_MOVE_MTR_STS"
+lineColor index 14
+onColor index 8
+offColor index 36
+lineWidth 2
+numBits 1
+endObjectProperties
+
+# (Menu Mux)
+object menuMuxClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 143
+y 13
+w 110
+h 19
+fgColor index 25
+bgColor index 3
+topShadowColor index 1
+botShadowColor index 11
+font "helvetica-bold-r-12.0"
+initialState "$(INITSTATE)"
+numItems 8
+symbolTag {
+  0 "MOTOR 1"
+  1 "MOTOR 2"
+  2 "MOTOR 3"
+  3 "MOTOR 4"
+  4 "MOTOR 5"
+  5 "MOTOR 6"
+  6 "MOTOR 7"
+  7 "MOTOR 8"
+}
+symbol0 {
+  0 "MRN"
+  1 "MRN"
+  2 "MRN"
+  3 "MRN"
+  4 "MRN"
+  5 "MRN"
+  6 "MRN"
+  7 "MRN"
+}
+value0 {
+  0 "MOTOR1"
+  1 "MOTOR2"
+  2 "MOTOR3"
+  3 "MOTOR4"
+  4 "MOTOR5"
+  5 "MOTOR6"
+  6 "MOTOR7"
+  7 "MOTOR8"
+}
+symbol1 {
+  0 "INITSTATE"
+  1 "INITSTATE"
+}
+value1 {
+  0 "1"
+  1 "2"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 23
+y 16
+w 105
+h 13
+font "helvetica-bold-r-12.0"
+fgColor index 7
+bgColor index 3
+value {
+  "Motor selector:"
+}
+autoSize
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 192
+y 100
+w 40
+h 18
+fgColor index 25
+onColor index 4
+offColor index 3
+topShadowColor index 1
+botShadowColor index 11
+controlPv "$(DEVICE):$(MRN)_ST_CMD.PROC "
+pressValue "1"
+onLabel "STOP"
+offLabel "STOP"
+3d
+font "helvetica-bold-r-12.0"
+visInvert
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 237
+y 99
+w 33
+h 20
+
+beginGroup
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 237
+y 99
+w 33
+h 18
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 7
+bgColor index 3
+useDisplayBg
+value {
+  "TO 0"
+}
+border
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 237
+y 100
+w 33
+h 18
+fgColor index 25
+onColor index 4
+offColor index 3
+topShadowColor index 1
+botShadowColor index 11
+controlPv "$(DEVICE):$(MRN)_TO_ZERO_CMD.PROC "
+pressValue "1"
+onLabel "To 0"
+offLabel "To 0"
+3d
+font "helvetica-bold-r-12.0"
+visInvert
+visMin "1"
+visMax "2"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 140
+y 101
+w 45
+h 18
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 7
+bgColor index 3
+useDisplayBg
+value {
+  "MOVE"
+}
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 143
+y 100
+w 45
+h 18
+fgColor index 25
+onColor index 4
+offColor index 3
+topShadowColor index 1
+botShadowColor index 11
+controlPv "$(DEVICE):$(MRN)_MV_CMD.PROC "
+pressValue "1"
+onLabel "MOVE"
+offLabel "MOVE"
+3d
+font "helvetica-bold-r-12.0"
+visPv "$(DEVICE):$(MRN)_CAN_MOVE_MTR_STS"
+visMin "1"
+visMax "2"
+endObjectProperties
+
+# (Menu Button)
+object activeMenuButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 79
+y 100
+w 60
+h 20
+fgColor index 25
+bgColor index 3
+inconsistentColor index 3
+topShadowColor index 1
+botShadowColor index 11
+controlPv "$(DEVICE):$(MRN)_MV_MODE_CMD"
+font "helvetica-bold-r-12.0"
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 146
+y 150
+w 61
+h 22
+
+beginGroup
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 146
+y 150
+w 61
+h 22
+lineColor index 3
+lineAlarm
+fillColor index 0
+fillAlarm
+lineWidth 3
+alarmPv "$(DEVICE):$(MRN)_ERROR_STS"
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 149
+y 152
+w 57
+h 18
+fgColor index 44
+bgColor index 3
+topShadowColor index 1
+botShadowColor index 11
+font "helvetica-bold-r-12.0"
+buttonLabel "Status"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "sin_motorStatus.edl"
+}
+symbols {
+  0 "PREFIX=$(PREFIX),MRN=$(MRN)"
+}
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 42
+y 53
+w 43
+h 16
+
+beginGroup
+
+# (Text Monitor)
+object activeXTextDspClass:noedit
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 42
+y 53
+w 43
+h 16
+controlPv "$(DEVICE):$(MRN)_SP"
+format "decimal"
+font "helvetica-bold-r-14.0"
+fontAlign "center"
+fgColor index 25
+fgAlarm
+bgColor index 3
+limitsFromDb
+nullColor index 0
+fastUpdate
+newPos
+objType "monitors"
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 42
+y 53
+w 43
+h 16
+
+beginGroup
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 42
+y 53
+w 43
+h 16
+controlPv "$(DEVICE):$(MRN)_SP"
+font "helvetica-bold-r-14.0"
+fontAlign "center"
+fgColor index 25
+fgAlarm
+bgColor index 3
+editable
+autoHeight
+limitsFromDb
+nullColor index 30
+fastUpdate
+updatePvOnDrop
+useHexPrefix
+newPos
+objType "controls"
+endObjectProperties
+
+endGroup
+
+visPv "$(DEVICE):$(MRN)_CAN_MOVE_MTR_STS"
+visMin "1"
+visMax "2"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+

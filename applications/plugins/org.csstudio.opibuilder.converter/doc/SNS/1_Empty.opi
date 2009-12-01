@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 'Main' element of the XML file must be
+     'display typeId=...' to identify this file
+     as a display description
+  -->
+<display typeId="org.csstudio.opibuilder.Display" version="1.0">
+  <!-- Name of the display, equivalent to EDM 'title' -->
+  <name>Example Display</name>
+
+  <!-- Size and suggested position of the display.
+       Use EDM 'x', 'y', 'w', 'h'
+    -->
+  <x>0</x>
+  <y>0</y>
+  <width>800</width>
+  <height>600</height>
+
+  <!-- Foreground (grid) and background (canvas) colors.
+       Use EDM 'fgColor', 'bgColor'
+    -->
+  <color.foreground>
+    <color red="255" green="33" blue="55" />
+  </color.foreground>
+  <color.background>
+    <color red="255" green="209" blue="70" />
+  </color.background>
+
+  <!-- Font, translate from EDM 'font' -->
+  <font>
+    <font fontName="Courier" height="9" style="0" />
+  </font>
+
+  <!-- Grid for aligning items.
+       Use EDM 'showGrid', 'gridSize' (default 10)
+    -->
+  <grid.show>true</grid.show>
+  <grid.space>10</grid.space>
+
+  <!-- Other editing support without EDM equivalent -->
+  <showEditRangeBorder>true</showEditRangeBorder>
+  <showRuler>true</showRuler>
+  <snapGeometry>true</snapGeometry>
+  <script />
+
+</display>

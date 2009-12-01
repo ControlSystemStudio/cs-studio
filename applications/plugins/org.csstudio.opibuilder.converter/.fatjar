@@ -1,0 +1,14 @@
+#Fat Jar Configuration File
+#Tue Dec 01 12:58:41 CET 2009
+onejar.license.required=true
+manifest.classpath=
+manifest.removesigners=true
+onejar.checkbox=false
+jarname=edm2xml.jar
+manifest.mergeall=false
+manifest.mainclass=
+manifest.file=META-INF\\MANIFEST.MF
+jarname.isextern=false
+onejar.expand=
+excludes=<jar|junit.jar>
+includes=

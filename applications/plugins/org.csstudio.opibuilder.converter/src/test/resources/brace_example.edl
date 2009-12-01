@@ -1,0 +1,64 @@
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 215
+y 152
+w 55
+h 18
+fgColor index 44
+bgColor index 3
+topShadowColor index 1
+botShadowColor index 11
+font "helvetica-bold-r-12.0"
+buttonLabel "More"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "sin_motorMore.edl"
+}
+symbols {
+  0 "DEVICE=$(DEVICE),MRN=$(MRN)"
+}
+endObjectProperties
+
+# (Menu Mux)
+object menuMuxClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 143
+y 13
+w 110
+h 19
+fgColor index 25
+bgColor index 3
+topShadowColor index 1
+botShadowColor index 11
+font "helvetica-bold-r-12.0"
+initialState "$(INITSTATE)"
+numItems 8
+symbolTag {
+  0 "MOTOR 1"
+  1 "MOTOR 2"
+  2 "MOTOR 3"
+  3 "MOTOR 4"
+  4 "MOTOR 5"
+  5 "MOTOR 6"
+  6 "MOTOR 7"
+  7 "MOTOR 8"
+}
+symbol0 {
+  0 "MRN"
+  1 "MRN"
+  2 "MRN"
+  3 "MRN"
+  4 "MRN"
+  5 "MRN"
+  6 "MRN"
+  7 "MRN"
+}
+endObjectProperties

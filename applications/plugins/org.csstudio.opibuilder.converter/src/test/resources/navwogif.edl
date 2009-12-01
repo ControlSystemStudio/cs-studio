@@ -1,0 +1,10377 @@
+4 0 1
+beginScreenProperties
+major 4
+minor 0
+release 1
+x 1780
+y 63
+w 1312
+h 1116
+font "helvetica-bold-i-18.0"
+fontAlign "center"
+ctlFont "courier-bold-r-14.0"
+ctlFontAlign "right"
+btnFont "courier-medium-r-8.0"
+fgColor index 10
+bgColor index 6
+textColor index 10
+ctlFgColor1 index 25
+ctlFgColor2 index 30
+ctlBgColor1 index 5
+ctlBgColor2 index 10
+topShadowColor index 5
+botShadowColor index 10
+pvType "EPICS"
+disableScroll
+endScreenProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 133
+y 517
+w 71
+h 29
+fgColor index 10
+bgColor index 5
+topShadowColor index 5
+botShadowColor index 10
+font "courier-medium-r-8.0"
+invisible
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "ramp.edl"
+}
+menuLabel {
+  0 "New EDM Rampup"
+}
+setPosition {
+  0 "button"
+}
+symbols {
+  0 "S=ICS:Rampup"
+}
+replaceSymbols {
+  0 1
+}
+swapButtons
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 934
+y 135
+w 54
+h 49
+
+beginGroup
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 937
+y 135
+w 47
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 131
+bgColor index 112
+useDisplayBg
+visPv "Ring_Vac:Sum.SEVR"
+visMin "0.5"
+visMax "1.5"
+value {
+  "Vacuum"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 934
+y 147
+w 54
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 131
+bgColor index 112
+useDisplayBg
+visPv "Ring_Mag:Sum.SEVR"
+visMin "0.5"
+visMax "1.5"
+value {
+  "PwrSups"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 949
+y 170
+w 25
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 131
+bgColor index 112
+useDisplayBg
+visPv "Mult_Cool:Summary:Alarm.SEVR"
+visMin "0.5"
+visMax "1.5"
+value {
+  "Cool"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 942
+y 159
+w 40
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 131
+bgColor index 112
+useDisplayBg
+visPv "Ring_Mag:IKick_Sum.SEVR"
+visMin "0.5"
+visMax "1.5"
+value {
+  "InjKick"
+}
+autoSize
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 600
+y 386
+w 73
+h 58
+lineColor index 44
+fillColor index 5
+lineWidth 4
+endObjectProperties
+
+# (Menu Mux)
+object menuMuxClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 765
+y 48
+w 93
+h 16
+fgColor index 133
+bgColor index 44
+topShadowColor index 5
+botShadowColor index 10
+controlPv "LOC\\$(!W)AlarmWindow:i=0"
+font "helvetica-bold-r-10.0"
+initialState "0"
+numItems 2
+symbolTag {
+  0 "HPRF Smoke"
+  1 "Alarms"
+}
+symbol0 {
+  0 "P"
+  1 "P"
+}
+value0 {
+  0 "0"
+  1 "1"
+}
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 30
+y 97
+w 38
+h 16
+fgColor index 133
+bgColor index 44
+topShadowColor index 5
+botShadowColor index 10
+font "helvetica-bold-r-12.0"
+invisible
+buttonLabel "PLC"
+numPvs 4
+numDsps 3
+displayFileName {
+  0 "PLMKeys.edl"
+  1 "PLC_Inputs.edl"
+  2 "PLC_Inputs_Ovr.edl"
+}
+menuLabel {
+  0 "Key Switch"
+  1 "PLC Inputs"
+  2 "PLC Inputs - New"
+}
+setPosition {
+  0 "button"
+  1 "button"
+  2 "button"
+}
+endObjectProperties
+
+# (Byte)
+object ByteClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 51
+y 56
+w 49
+h 18
+controlPv "ICS_MPS:PS_FE65KV:IlkEcho"
+lineColor index 10
+onColor index 15
+offColor index 20
+numBits 1
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 560
+y 460
+w 130
+h 85
+
+beginGroup
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 584
+y 460
+w 84
+h 19
+lineColor index 128
+lineAlarm
+fill
+fillColor index 128
+fillAlarm
+alarmPv "CF:Summary_Pwr:StsCur"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 560
+y 479
+w 130
+h 66
+lineColor index 128
+lineAlarm
+fill
+fillColor index 128
+fillAlarm
+alarmPv "CF:Summary_Pwr:StsCur"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 552
+y 457
+w 145
+h 90
+fgColor index 35
+bgColor index 5
+topShadowColor index 5
+botShadowColor index 10
+font "courier-medium-r-14.0"
+invisible
+buttonLabel "Primary Substation"
+numPvs 4
+numDsps 4
+displayFileName {
+  0 "clo_cu_xfmrs.edl"
+  1 "CF_Site_Pwr_Use.edl"
+  2 "CF_TMP.edl"
+  3 "SysOverview.edl"
+}
+menuLabel {
+  0 "CLO/CUB Use"
+  1 "CF Power Use"
+  2 "KW5 screen"
+  3 "System Overview"
+}
+setPosition {
+  0 "button"
+  1 "button"
+  2 "button"
+}
+propagateMacros {
+  0 0
+}
+swapButtons
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 447
+y 385
+w 151
+h 58
+fgColor index 35
+bgColor index 5
+topShadowColor index 5
+botShadowColor index 10
+font "courier-medium-r-14.0"
+invisible
+buttonLabel "CHL"
+numPvs 4
+numDsps 16
+displayFileName {
+  0 "CHL_GM_storage_menu.edl"
+  1 "CHL_WC_overview.edl"
+  2 "CHL_4K_menu.edl"
+  3 "CHL_2K_overview.edl"
+  4 "SCL_overview.edl"
+  5 "CHL_GM_cooling.edl"
+  6 "CryoCool.edl"
+  7 "CHL_recoveryCompressors.edl"
+  8 "CHL_GM_vacuum.edl"
+  9 "CHL_Oper_Graphs.edl"
+  10 "Cryo_layout"
+  11 "Cryo_ICS_menu.edl"
+  12 "CHL_ODH_Map.edl"
+  13 "CHL_ODH_alarms.edl"
+  14 "CHL_WC_menu.edl"
+  15 "Cryo_alarms_menu.edl"
+}
+menuLabel {
+  0 "He Gas Storage"
+  1 "Main Compressor Overview"
+  2 "Main Cold Box Menu"
+  3 "2.1 K Cold Box Overview"
+  4 "LINAC Distribution System"
+  5 "Cryo Cooling System"
+  6 "Cryo Cooling Water Summary"
+  7 "CHL Recovery Compressors"
+  8 "CHL Vacuum"
+  9 "Operator Graphs"
+  10 "0.9.2 Cryo Layout"
+  11 "Cryo ICS Menu"
+  12 "CHL ODH Map"
+  13 "CHL ODH Alarm Screen"
+  14 "Main Compressor Menu"
+  15 "0.0 Alarm Screens"
+}
+setPosition {
+  0 "button"
+  1 "button"
+  2 "button"
+  3 "button"
+  4 "button"
+  5 "button"
+  6 "button"
+  7 "button"
+  8 "button"
+  9 "button"
+  10 "button"
+  11 "button"
+  12 "button"
+  13 "button"
+  14 "button"
+  15 "button"
+}
+swapButtons
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 728
+y 386
+w 89
+h 67
+fgColor index 133
+bgColor index 44
+topShadowColor index 5
+botShadowColor index 10
+font "helvetica-bold-r-18.0"
+invisible
+buttonLabel "Other CF Areas"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "CFOverview.edl"
+}
+menuLabel {
+  0 "CF Overview"
+}
+setPosition {
+  0 "button"
+}
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 170
+y 56
+w 942
+h 282
+
+beginGroup
+
+# (Lines)
+object activeLineClass
+beginObjectProperties
+major 4
+minor 0
+release 1
+x 1049
+y 232
+w 25
+h 68
+lineColor index 94
+lineAlarm
+fill
+fillColor index 94
+fillAlarm
+lineWidth 10
+alarmPv "EDmp:Summary"
+closePolygon
+numPoints 7
+xPoints {
+  0 1049
+  1 1059
+  2 1070
+  3 1074
+  4 1052
+  5 1049
+  6 1056
+}
+yPoints {
+  0 232
+  1 275
+  2 275
+  3 297
+  4 300
+  5 278
+  6 279
+}
+endObjectProperties
+
+# (Lines)
+object activeLineClass
+beginObjectProperties
+major 4
+minor 0
+release 1
+x 796
+y 301
+w 150
+h 22
+lineColor index 94
+lineAlarm
+fill
+fillColor index 94
+fillAlarm
+lineWidth 10
+alarmPv "LDmp:Summary"
+closePolygon
+numPoints 7
+xPoints {
+  0 796
+  1 925
+  2 925
+  3 946
+  4 946
+  5 925
+  6 925
+}
+yPoints {
+  0 312
+  1 311
+  2 301
+  3 301
+  4 323
+  5 323
+  6 312
+}
+endObjectProperties
+
+# (Lines)
+object activeLineClass
+beginObjectProperties
+major 4
+minor 0
+release 1
+x 1025
+y 153
+w 87
+h 167
+lineColor index 94
+lineAlarm
+fillColor index 94
+lineWidth 10
+alarmPv "RTBT:Summary"
+numPoints 3
+xPoints {
+  0 1025
+  1 1050
+  2 1112
+}
+yPoints {
+  0 153
+  1 230
+  2 320
+}
+endObjectProperties
+
+# (Lines)
+object activeLineClass
+beginObjectProperties
+major 4
+minor 0
+release 1
+x 908
+y 79
+w 115
+h 113
+lineColor index 94
+lineAlarm
+fillColor index 94
+lineWidth 10
+alarmPv "Ring:Summary"
+numPoints 27
+xPoints {
+  0 909
+  1 908
+  2 911
+  3 917
+  4 925
+  5 935
+  6 949
+  7 1000
+  8 1008
+  9 1014
+  10 1017
+  11 1022
+  12 1023
+  13 1023
+  14 1021
+  15 1017
+  16 1014
+  17 1011
+  18 1007
+  19 1003
+  20 995
+  21 941
+  22 933
+  23 926
+  24 917
+  25 910
+  26 908
+}
+yPoints {
+  0 110
+  1 160
+  2 178
+  3 184
+  4 190
+  5 192
+  6 192
+  7 192
+  8 187
+  9 184
+  10 178
+  11 169
+  12 158
+  13 105
+  14 99
+  15 93
+  16 90
+  17 86
+  18 83
+  19 80
+  20 79
+  21 79
+  22 79
+  23 81
+  24 87
+  25 99
+  26 111
+}
+endObjectProperties
+
+# (Lines)
+object activeLineClass
+beginObjectProperties
+major 4
+minor 0
+release 1
+x 714
+y 312
+w 58
+h 1
+lineColor index 94
+lineAlarm
+fillColor index 94
+lineWidth 10
+alarmPv "SCL:Drift_HBOK:Sum"
+visMin "5"
+visMax "70"
+numPoints 2
+xPoints {
+  0 772
+  1 714
+}
+yPoints {
+  0 312
+  1 312
+}
+endObjectProperties
+
+# (Lines)
+object activeLineClass
+beginObjectProperties
+major 4
+minor 0
+release 1
+x 652
+y 312
+w 62
+h 1
+lineColor index 94
+lineAlarm
+fillColor index 94
+lineWidth 10
+alarmPv "SCL:19_23_HBOK:Sum"
+visMin "5"
+visMax "70"
+numPoints 2
+xPoints {
+  0 714
+  1 652
+}
+yPoints {
+  0 312
+  1 312
+}
+endObjectProperties
+
+# (Lines)
+object activeLineClass
+beginObjectProperties
+major 4
+minor 0
+release 1
+x 595
+y 312
+w 58
+h 1
+lineColor index 94
+lineAlarm
+fillColor index 94
+lineWidth 10
+alarmPv "SCL:12_18_HBOK:Sum"
+visMin "5"
+visMax "70"
+numPoints 2
+xPoints {
+  0 653
+  1 595
+}
+yPoints {
+  0 312
+  1 312
+}
+endObjectProperties
+
+# (Lines)
+object activeLineClass
+beginObjectProperties
+major 4
+minor 0
+release 1
+x 427
+y 312
+w 168
+h 1
+lineColor index 94
+lineAlarm
+fillColor index 94
+lineWidth 10
+alarmPv "SCL:MBOK:Sum"
+visMin "5"
+visMax "70"
+numPoints 2
+xPoints {
+  0 595
+  1 427
+}
+yPoints {
+  0 312
+  1 312
+}
+endObjectProperties
+
+# (Lines)
+object activeLineClass
+beginObjectProperties
+major 4
+minor 0
+release 1
+x 338
+y 312
+w 89
+h 1
+lineColor index 94
+lineAlarm
+fillColor index 94
+lineWidth 10
+alarmPv "CCL:Summary"
+visMin "5"
+visMax "70"
+numPoints 2
+xPoints {
+  0 427
+  1 338
+}
+yPoints {
+  0 312
+  1 312
+}
+endObjectProperties
+
+# (Lines)
+object activeLineClass
+beginObjectProperties
+major 4
+minor 0
+release 1
+x 262
+y 311
+w 76
+h 1
+lineColor index 94
+lineAlarm
+fillColor index 94
+lineWidth 10
+alarmPv "DTL:Summary"
+visMin "5"
+visMax "70"
+numPoints 2
+xPoints {
+  0 338
+  1 262
+}
+yPoints {
+  0 311
+  1 312
+}
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 170
+y 299
+w 92
+h 39
+lineColor index 94
+lineAlarm
+fill
+fillColor index 94
+fillAlarm
+alarmPv "FE:Summary"
+visMin "5"
+visMax "70"
+endObjectProperties
+
+# (Lines)
+object activeLineClass
+beginObjectProperties
+major 4
+minor 0
+release 1
+x 772
+y 202
+w 126
+h 110
+lineColor index 94
+lineAlarm
+fillColor index 94
+lineWidth 10
+alarmPv "HEBT:Summary"
+numPoints 9
+xPoints {
+  0 772
+  1 833
+  2 855
+  3 871
+  4 883
+  5 890
+  6 896
+  7 898
+  8 898
+}
+yPoints {
+  0 312
+  1 311
+  2 308
+  3 302
+  4 294
+  5 284
+  6 267
+  7 249
+  8 202
+}
+endObjectProperties
+
+# (Lines)
+object activeLineClass
+beginObjectProperties
+major 4
+minor 0
+release 1
+x 859
+y 56
+w 42
+h 43
+lineColor index 94
+lineAlarm
+fill
+fillColor index 94
+fillAlarm
+lineWidth 10
+alarmPv "ID_DIWS:Summary:Alarm"
+closePolygon
+numPoints 7
+xPoints {
+  0 888
+  1 883
+  2 867
+  3 859
+  4 892
+  5 901
+  6 885
+}
+yPoints {
+  0 99
+  1 85
+  2 89
+  3 68
+  4 56
+  5 77
+  6 83
+}
+endObjectProperties
+
+# (Lines)
+object activeLineClass
+beginObjectProperties
+major 4
+minor 0
+release 1
+x 887
+y 250
+w 66
+h 41
+lineColor index 94
+lineAlarm
+fill
+fillColor index 94
+fillAlarm
+lineWidth 10
+alarmPv "HEBT_MDmp:Summary:Alarm"
+closePolygon
+numPoints 7
+xPoints {
+  0 887
+  1 929
+  2 935
+  3 953
+  4 941
+  5 924
+  6 929
+}
+yPoints {
+  0 291
+  1 270
+  2 277
+  3 266
+  4 250
+  5 260
+  6 269
+}
+endObjectProperties
+
+# (Lines)
+object activeLineClass
+beginObjectProperties
+major 4
+minor 0
+release 1
+x 898
+y 166
+w 7
+h 38
+lineColor index 94
+lineAlarm
+fillColor index 94
+lineWidth 10
+alarmPv "HEBTInj:Summary"
+visMin "5"
+visMax "70"
+numPoints 2
+xPoints {
+  0 905
+  1 898
+}
+yPoints {
+  0 166
+  1 204
+}
+endObjectProperties
+
+# (Lines)
+object activeLineClass
+beginObjectProperties
+major 4
+minor 0
+release 1
+x 889
+y 99
+w 16
+h 69
+lineColor index 94
+lineAlarm
+fillColor index 94
+lineWidth 10
+alarmPv "IDmp:Summary"
+visMin "5"
+visMax "70"
+numPoints 3
+xPoints {
+  0 889
+  1 905
+  2 904
+}
+yPoints {
+  0 99
+  1 157
+  2 168
+}
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 509
+y 392
+w 90
+h 47
+
+beginGroup
+
+# (Lines)
+object activeLineClass
+beginObjectProperties
+major 4
+minor 0
+release 1
+x 509
+y 392
+w 90
+h 47
+lineColor index 126
+lineAlarm
+fill
+fillColor index 126
+fillAlarm
+alarmPv "CHL:Summary_All:StsNOK"
+closePolygon
+numPoints 6
+xPoints {
+  0 509
+  1 545
+  2 545
+  3 599
+  4 599
+  5 509
+}
+yPoints {
+  0 428
+  1 428
+  2 439
+  3 439
+  4 392
+  5 392
+}
+endObjectProperties
+
+# (Lines)
+object activeLineClass
+beginObjectProperties
+major 4
+minor 0
+release 1
+x 512
+y 394
+w 84
+h 42
+lineColor index 15
+lineAlarm
+fill
+fillColor index 15
+fillAlarm
+alarmPv "CHL:Summary_All:StsCur"
+closePolygon
+numPoints 6
+xPoints {
+  0 512
+  1 546
+  2 546
+  3 596
+  4 596
+  5 512
+}
+yPoints {
+  0 426
+  1 426
+  2 436
+  3 436
+  4 394
+  5 394
+}
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 600
+y 392
+w 68
+h 45
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 740
+y 389
+w 61
+h 53
+lineColor index 15
+lineAlarm
+fill
+fillColor index 15
+fillAlarm
+alarmPv "CF:Summary_All:StsCur"
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 426
+y 292
+w 164
+h 84
+fgColor index 35
+bgColor index 5
+topShadowColor index 112
+botShadowColor index 10
+font "courier-medium-r-14.0"
+invisible
+buttonLabel "Medium Beta SCL"
+numPvs 4
+numDsps 10
+displayFileName {
+  0 "SCLMB_status.edl"
+  1 "sclVacOverview.edl"
+  2 "SNSVacOverview.edl"
+  3 "sc_llrf.edl"
+  4 "sc_llrf09.edl"
+  5 "sc_hprf.edl"
+  6 "linac_llrf.edl"
+  7 "RF_opStatus.edl"
+  8 "SCL_MB_MAG_Overview.edl"
+  9 "SNSMagPSTop.edl"
+}
+menuLabel {
+  0 "SCLMB RF Overview"
+  1 "Vacuum"
+  2 "Vacuum Overview"
+  3 "CM 1-8 LLRF Main"
+  4 "CM 9-15c LLRF Main"
+  5 "CM 1-11 HPRF Main"
+  6 "Linac LLRF Overview"
+  7 "Linac HPRF Overview"
+  8 "SCL-MB Magnet Overview"
+  9 "Magnet Overview"
+}
+setPosition {
+  0 "button"
+  1 "button"
+  2 "button"
+  3 "button"
+  4 "button"
+  5 "button"
+  6 "button"
+  7 "button"
+  8 "button"
+  9 "button"
+}
+symbols {
+  5 "TF=''"
+  7 "TF=''"
+}
+propagateMacros {
+  0 0
+}
+swapButtons
+endObjectProperties
+
+# (Lines)
+object activeLineClass
+beginObjectProperties
+major 4
+minor 0
+release 1
+x 2147483647
+y 2147483647
+w -2147483648
+h -2147483648
+lineColor index 44
+fillColor index 5
+numPoints 0
+xPoints {
+}
+yPoints {
+}
+endObjectProperties
+
+# (Lines)
+object activeLineClass
+beginObjectProperties
+major 4
+minor 0
+release 1
+x 1107
+y 490
+w 0
+h 0
+lineColor index 44
+fillColor index 5
+lineWidth 4
+numPoints 1
+xPoints {
+  0 1107
+}
+yPoints {
+  0 490
+}
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 1100
+y 17
+w 51
+h 27
+fgColor index 0
+bgColor index 44
+topShadowColor index 6
+botShadowColor index 11
+font "helvetica-bold-r-18.0"
+buttonLabel "Help"
+numPvs 4
+numDsps 2
+displayFileName {
+  0 "OPChecklist"
+  1 "HELP.edl"
+}
+menuLabel {
+  0 "Checklist Overview"
+  1 "Help"
+}
+setPosition {
+  0 "button"
+}
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 105
+y 321
+w 57
+h 20
+fgColor index 0
+bgColor index 44
+topShadowColor index 5
+botShadowColor index 10
+font "helvetica-bold-r-12.0"
+buttonLabel "Site Map"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "SNS-map.edl"
+}
+menuLabel {
+  0 "Site Map"
+}
+closeAction {
+  0 1
+}
+closeDisplay {
+  0 1
+}
+endObjectProperties
+
+# (Lines)
+object activeLineClass
+beginObjectProperties
+major 4
+minor 0
+release 1
+x 985
+y 294
+w 267
+h 175
+lineColor index 94
+lineAlarm
+fill
+fillColor index 94
+fillAlarm
+alarmPv "Tgt:Summary_All:StsCur"
+numPoints 28
+xPoints {
+  0 1105
+  1 1100
+  2 1098
+  3 1078
+  4 1015
+  5 1016
+  6 988
+  7 985
+  8 1012
+  9 1013
+  10 1075
+  11 1150
+  12 1178
+  13 1184
+  14 1211
+  15 1206
+  16 1234
+  17 1218
+  18 1220
+  19 1222
+  20 1246
+  21 1252
+  22 1220
+  23 1217
+  24 1197
+  25 1154
+  26 1119
+  27 1106
+}
+yPoints {
+  0 325
+  1 330
+  2 331
+  3 344
+  4 336
+  5 329
+  6 325
+  7 352
+  8 355
+  9 349
+  10 357
+  11 469
+  12 452
+  13 461
+  14 442
+  15 434
+  16 414
+  17 390
+  18 389
+  19 387
+  20 392
+  21 360
+  22 354
+  23 362
+  24 359
+  25 294
+  26 317
+  27 324
+}
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 977
+y 311
+w 297
+h 196
+
+beginGroup
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 978
+y 312
+w 296
+h 195
+fgColor index 35
+bgColor index 5
+topShadowColor index 5
+botShadowColor index 10
+font "courier-medium-r-14.0"
+invisible
+buttonLabel "Target"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "tgtNavigator.edl"
+}
+menuLabel {
+  0 "Target Overview"
+}
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 977
+y 311
+w 297
+h 196
+lineColor index 44
+fillColor index 5
+lineWidth 4
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1135
+y 397
+w 57
+h 21
+font "helvetica-bold-r-18.0"
+fgColor index 77
+bgColor index 0
+useDisplayBg
+value {
+  "Target"
+}
+autoSize
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 167
+y 291
+w 97
+h 88
+lineColor index 44
+fillColor index 5
+lineWidth 4
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 263
+y 291
+w 76
+h 88
+lineColor index 44
+fillColor index 5
+lineWidth 4
+endObjectProperties
+
+# (Text w. Reg. Exp.)
+object activeXRegTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 230
+y 421
+w 200
+h 25
+font "helvetica-bold-r-24.0"
+fontAlign "center"
+fgColor index 15
+bgColor index 10
+visPv "ICS_MPS:Lmp_BM:FullPwrEcho"
+visMin "1"
+visMax "99"
+value {
+  "Full Beam Power"
+}
+endObjectProperties
+
+# (Text w. Reg. Exp.)
+object activeXRegTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 25
+y 421
+w 200
+h 25
+font "helvetica-bold-r-24.0"
+fontAlign "center"
+fgColor index 15
+bgColor index 10
+visPv "ICS_MPS:Lmp_MM:TgtEcho"
+visMin "1"
+visMax "99"
+value {
+  "Target"
+}
+endObjectProperties
+
+# (Text w. Reg. Exp.)
+object activeXRegTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 25
+y 422
+w 200
+h 25
+font "helvetica-bold-r-24.0"
+fontAlign "center"
+fgColor index 15
+bgColor index 10
+visPv "ICS_MPS:Lmp_MM:RingEcho"
+visMin "1"
+visMax "99"
+value {
+  "Ring"
+}
+endObjectProperties
+
+# (Text w. Reg. Exp.)
+object activeXRegTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 25
+y 422
+w 200
+h 25
+font "helvetica-bold-r-24.0"
+fontAlign "center"
+fgColor index 15
+bgColor index 10
+visPv "ICS_MPS:Lmp_MM:InjDmpEcho"
+visMin "1"
+visMax "99"
+value {
+  "Injection Dump"
+}
+endObjectProperties
+
+# (Text w. Reg. Exp.)
+object activeXRegTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 25
+y 422
+w 200
+h 25
+font "helvetica-bold-r-24.0"
+fontAlign "center"
+fgColor index 15
+bgColor index 10
+visPv "ICS_MPS:Lmp_MM:CCL_BSEcho"
+visMin "1"
+visMax "99"
+value {
+  "CCL Beamstop"
+}
+endObjectProperties
+
+# (Text w. Reg. Exp.)
+object activeXRegTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 230
+y 420
+w 200
+h 25
+font "helvetica-bold-r-24.0"
+fontAlign "center"
+fgColor index 15
+bgColor index 10
+visPv "ICS_MPS:Lmp_BM:1mSecEcho"
+visMin "1"
+visMax "99"
+value {
+  "1060 turns"
+}
+endObjectProperties
+
+# (Text w. Reg. Exp.)
+object activeXRegTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 230
+y 420
+w 200
+h 25
+font "helvetica-bold-r-24.0"
+fontAlign "center"
+fgColor index 15
+bgColor index 10
+visPv "ICS_MPS:Lmp_BM:50uSecEcho"
+visMin "1"
+visMax "99"
+value {
+  "50 usec"
+}
+endObjectProperties
+
+# (Text w. Reg. Exp.)
+object activeXRegTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 230
+y 420
+w 200
+h 25
+font "helvetica-bold-r-24.0"
+fontAlign "center"
+fgColor index 15
+bgColor index 10
+visPv "ICS_MPS:Lmp_BM:10uSecEcho"
+visMin "1"
+visMax "99"
+value {
+  "10 usec"
+}
+endObjectProperties
+
+# (Text w. Reg. Exp.)
+object activeXRegTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 230
+y 420
+w 200
+h 25
+font "helvetica-bold-r-24.0"
+fontAlign "center"
+fgColor index 15
+bgColor index 10
+visPv "ICS_MPS:Lmp_BM:MPSTestEcho"
+visMin "1"
+visMax "99"
+value {
+  "MPS Test"
+}
+endObjectProperties
+
+# (Text w. Reg. Exp.)
+object activeXRegTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 230
+y 421
+w 200
+h 25
+font "helvetica-bold-r-24.0"
+fontAlign "center"
+fgColor index 15
+bgColor index 10
+visPv "ICS_MPS:Lmp_BM:StandByEcho"
+visMin "1"
+visMax "99"
+value {
+  "Standby"
+}
+endObjectProperties
+
+# (Text w. Reg. Exp.)
+object activeXRegTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 230
+y 421
+w 200
+h 25
+font "helvetica-bold-r-24.0"
+fontAlign "center"
+fgColor index 15
+bgColor index 10
+visPv "ICS_MPS:Lmp_BM:100uSecEcho"
+visMin "1"
+visMax "99"
+value {
+  "100 usec"
+}
+endObjectProperties
+
+# (Text w. Reg. Exp.)
+object activeXRegTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 229
+y 422
+w 200
+h 25
+font "helvetica-bold-r-24.0"
+fontAlign "center"
+fgColor index 15
+bgColor index 10
+visPv "ICS_MPS:Lmp_BM:OffEcho"
+visMin "1"
+visMax "99"
+value {
+  "Beam Off"
+}
+endObjectProperties
+
+# (Text w. Reg. Exp.)
+object activeXRegTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 25
+y 422
+w 200
+h 25
+font "helvetica-bold-r-24.0"
+fontAlign "center"
+fgColor index 15
+bgColor index 10
+visPv "ICS_MPS:Lmp_MM:LinDmpEcho"
+visMin "1"
+visMax "99"
+value {
+  "Linac Dump"
+}
+endObjectProperties
+
+# (Button)
+object activeButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 15
+y 453
+w 100
+h 30
+fgColor index 162
+onColor index 10
+offColor index 10
+inconsistentColor index 10
+topShadowColor index 5
+botShadowColor index 109
+controlPv "ICS_Tim:Gate_BeamOn:SSMode"
+indicatorPv "ICS_Tim:Gate_BeamOn:SSMode"
+onLabel "Single Shot"
+offLabel "Continuous"
+labelType "literal"
+3d
+font "helvetica-bold-r-14.0"
+objType "controls"
+colorPv "ICS_Tim:Gate_BeamOn:SSMode"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 302
+y 492
+w 174
+h 24
+font "helvetica-bold-r-20.0"
+fontAlign "center"
+fgColor index 140
+bgColor index 10
+visPv "ICS_Tim:Gate_BeamOn:Switch"
+visMin "-1"
+visMax "1"
+value {
+  "Manual Beam Off"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 282
+y 522
+w 202
+h 24
+font "helvetica-bold-r-20.0"
+fontAlign "center"
+fgColor index 136
+bgColor index 10
+visPv "ICS_Tim:Gate_BeamOn:Ready"
+visMin "-1"
+visMax "1"
+value {
+  "MPS Beam Disabled"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 138
+y 491
+w 140
+h 25
+font "helvetica-bold-r-18.0"
+fontAlign "center"
+fgColor index 15
+bgColor index 9
+useDisplayBg
+visPv "ICS_Tim:Gate_BeamOn:Switch"
+visInvert
+visMin "-1"
+visMax "1"
+value {
+  "Beam Enabled"
+}
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 313
+y 382
+w 124
+h 24
+fgColor index 133
+bgColor index 44
+topShadowColor index 5
+botShadowColor index 10
+font "helvetica-bold-r-14.0"
+buttonLabel "RCCS Summary"
+numPvs 4
+numDsps 2
+displayFileName {
+  0 "rccs_for_claude.edl"
+  1 "rccsInterlocks.edl"
+}
+menuLabel {
+  0 "RCCS Summary"
+  1 "RCCS Interlocks"
+}
+setPosition {
+  0 "button"
+  1 "button"
+}
+symbols {
+  0 "S=DTL,SS=RCCS,S1=CCL,S2=SCL,SS1=QMCS"
+}
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 167
+y 291
+w 95
+h 86
+fgColor index 35
+bgColor index 5
+topShadowColor index 14
+botShadowColor index 10
+font "courier-medium-r-14.0"
+invisible
+buttonLabel "Front End"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "FE_Overview.edl"
+}
+menuLabel {
+  0 "FE Summary"
+}
+setPosition {
+  0 "button"
+}
+symbols {
+  0 "S=RFQ,N=1,TN=1,FCM_ILK=fcm_ilk_rfq,HPM_ILK=hpm_ilk_rfq"
+}
+replaceSymbols {
+  0 1
+}
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 167
+y 293
+w 95
+h 84
+fgColor index 35
+bgColor index 5
+topShadowColor index 14
+botShadowColor index 10
+font "courier-medium-r-14.0"
+invisible
+buttonLabel "Front End"
+numPvs 4
+numDsps 21
+displayFileName {
+  0 "Src_LEBT.edl"
+  1 "MEBT.edl"
+  2 "tuneRFQ_MEBT.edl"
+  3 "Scope.edl"
+  4 "Scope.edl"
+  5 "Scope.edl"
+  6 "Cool.edl"
+  7 "feVacOverview.edl"
+  8 "FCM-RFQ-oper.edl"
+  9 "nc_llrf.edl"
+  10 "RFQPermSum.edl"
+  11 "HPMod_Equip-Flt.edl"
+  12 "MEBT_MAG_Overview.edl"
+  13 "INTLKS.edl"
+  14 "STATUS_Overview.edl"
+  15 "QEI420.edl"
+  16 "QEI420.edl"
+  17 "QEI420.edl"
+  18 "QEI420.edl"
+  19 "MEBTPA.edl"
+  20 "MEBT-Ilk.edl"
+}
+menuLabel {
+  0 "Source"
+  1 "MEBT"
+  2 "QuickSet Magnet PS"
+  3 "Scope 1"
+  4 "Scope 2"
+  5 "Scope 3"
+  6 "Chiller Summary"
+  7 "Vacuum"
+  8 "RFQ LLRF Operations"
+  9 "LLRF Main"
+  10 "RFQ Permissive Summary"
+  11 "HPRF RFQ Equip Fault"
+  12 "MEBT Magnets"
+  13 "FE Interlocks Overview"
+  14 "FE IOC Status"
+  15 "Rebuncher 1 LLRF"
+  16 "Rebuncher 2 LLRF"
+  17 "Rebuncher 3 LLRF"
+  18 "Rebuncher 4 LLRF"
+  19 "MEBT PAs"
+  20 "MEBT Interlock page"
+}
+setPosition {
+  0 "button"
+  1 "button"
+  2 "button"
+  3 "button"
+  4 "button"
+  5 "button"
+  6 "button"
+  7 "button"
+  8 "button"
+  9 "button"
+  10 "button"
+  11 "button"
+  12 "button"
+  13 "button"
+  14 "button"
+  15 "button"
+  16 "button"
+  17 "button"
+  18 "button"
+  19 "button"
+}
+symbols {
+  3 "P=FE:Scope_1,S=FE"
+  4 "P=FE:Scope_2,S=FE"
+  5 "P=FE:Scope_3,S=FE"
+  8 "P=RFQ:RF,S=RFQ,SS=LLRF,N=1,TN=1,FCM_ILK=fcm_ilk_rfq,HPM_ILK=hpm_ilk_rfq"
+  11 "S=RFQ,N=1"
+  15 "N=MEBT_RF:Bnch01,M=MEBT_RF:Tun_1"
+  16 "N=MEBT_RF:Bnch02,M=MEBT_RF:Tun_2"
+  17 "N=MEBT_RF:Bnch03,M=MEBT_RF:Tun_3"
+  18 "N=MEBT_RF:Bnch04,M=MEBT_RF:Tun_4"
+  19 "N=MEBT_RF:Bnch01,N1=MEBT_RF:Bnch02,S=MEBT,N2=MEBT_RF:Bnch03,N3=MEBT_RF:Bnch04"
+}
+swapButtons
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 263
+y 293
+w 74
+h 84
+fgColor index 35
+bgColor index 5
+topShadowColor index 14
+botShadowColor index 10
+font "courier-medium-r-14.0"
+invisible
+buttonLabel "DTL LINAC"
+numPvs 4
+numDsps 10
+displayFileName {
+  0 "dtlVacOverview.edl"
+  1 "SNSMagPS.edl"
+  2 "nc_llrf.edl"
+  3 "linac_llrf.edl"
+  4 "RF_opStatus.edl"
+  5 "DTL_status.edl"
+  6 "nc_hprf.edl"
+  7 "DTL_MAG_Overview.edl"
+  8 "CoolingWater_Overview.edl"
+  9 "DTL_RCCS_Overview.edl"
+}
+menuLabel {
+  0 "Vacuum"
+  1 "Magnet Overview"
+  2 "MEBT-CCL LLRF Main"
+  3 "Linac LLRF Overview"
+  4 "Linac HPRF Overview"
+  5 "DTL RF Overview"
+  6 "HPRF Main"
+  7 "DTL Magnets"
+  8 "RCCS"
+  9 "DTL RCCS"
+}
+setPosition {
+  0 "button"
+  1 "button"
+  2 "button"
+  3 "button"
+  4 "button"
+  5 "button"
+  6 "button"
+  7 "button"
+  8 "button"
+  9 "button"
+}
+symbols {
+  3 "TF=''"
+  7 "TF=''"
+  8 "TF=''"
+}
+swapButtons
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 340
+y 293
+w 83
+h 83
+fgColor index 35
+bgColor index 5
+topShadowColor index 112
+botShadowColor index 10
+font "courier-medium-r-14.0"
+invisible
+buttonLabel "CCL LINAC"
+numPvs 4
+numDsps 9
+displayFileName {
+  0 "cclVacOverview.edl"
+  1 "SNSMagPS.edl"
+  2 "CCL_MAG_Overview.edl"
+  3 "nc_llrf.edl"
+  4 "linac_llrf.edl"
+  5 "RF_opStatus.edl"
+  6 "nc_hprf2.edl"
+  7 "CCL_status.edl"
+  8 "CCL_RCCS_Overview.edl"
+}
+menuLabel {
+  0 "Vacuum"
+  1 "Magnets Overview"
+  2 "CCL Magnets"
+  3 "MEBT-CCL LLRF Main"
+  4 "Linac LLRF Overview"
+  5 "Linac HPRF Overview"
+  6 "HPRF Main"
+  7 "CCL RF Overview"
+  8 "CCL RCCS"
+}
+setPosition {
+  0 "button"
+  1 "button"
+  2 "button"
+  3 "button"
+  4 "button"
+  5 "button"
+  6 "button"
+  7 "button"
+  8 "button"
+}
+symbols {
+  4 "TF=''"
+  7 "TF=''"
+}
+swapButtons
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 339
+y 291
+w 85
+h 88
+lineColor index 44
+fillColor index 5
+lineWidth 4
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 425
+y 291
+w 167
+h 88
+lineColor index 44
+fillColor index 5
+lineWidth 4
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 426
+y 292
+w 164
+h 85
+fgColor index 35
+bgColor index 5
+topShadowColor index 112
+botShadowColor index 10
+font "courier-medium-r-14.0"
+invisible
+buttonLabel "Medium Beta SCL"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "SCLMB_Vacuum_RF_Combo.edl"
+}
+menuLabel {
+  0 "SCLMB Overview"
+}
+setPosition {
+  0 "button"
+}
+symbols {
+  0 "S=SCL,SS1=Vac,N=1,N1=2,N2=3,N3=4,N4=5,N5=6,N6=7,N7=8,N8=9,N9=10,N10=11,R=MB"
+}
+replaceSymbols {
+  0 1
+}
+propagateMacros {
+  0 0
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 430
+y 296
+w 157
+h 21
+font "helvetica-bold-r-18.0"
+fgColor index 77
+bgColor index 0
+useDisplayBg
+value {
+  "Medium Beta SCL"
+}
+autoSize
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 594
+y 291
+w 179
+h 88
+lineColor index 44
+fillColor index 5
+lineWidth 4
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 595
+y 293
+w 176
+h 83
+fgColor index 35
+bgColor index 5
+topShadowColor index 112
+botShadowColor index 10
+font "courier-medium-r-14.0"
+invisible
+buttonLabel "High Beta SCL"
+numPvs 4
+numDsps 12
+displayFileName {
+  0 "SNSVacOverview.edl"
+  1 "SNSMagPSTop.edl"
+  2 "scl-ps-all-quads.edl"
+  3 "scl-ps-all-steerers.edl"
+  4 "sc_llrf09.edl"
+  5 "sc_llrf15.edl"
+  6 "sc_llrf21.edl"
+  7 "sc_hprf.edl"
+  8 "sc_hprf_hb.edl"
+  9 "sc_hprf_hb2.edl"
+  10 "RF_opStatus.edl"
+  11 "linac_llrf.edl"
+}
+menuLabel {
+  0 "Vacuum Overview"
+  1 "Magnet Overview"
+  2 "All SCL Quadrupoles"
+  3 "All SCL Steerers"
+  4 "CM 9-15c LLRF Main"
+  5 "CM 15d-21a LLRF Main"
+  6 "CM 21b-23 LLRF Main"
+  7 "HPRF HB 1-12"
+  8 "HPRF HB 12-17"
+  9 "HPRF HB 18-23"
+  10 "Linac HPRF Overview"
+  11 "Linac LLRF Overview"
+}
+setPosition {
+  0 "button"
+  1 "button"
+  2 "button"
+  3 "button"
+  4 "button"
+  5 "button"
+  6 "button"
+  7 "button"
+  8 "button"
+  9 "button"
+  10 "button"
+  11 "button"
+}
+symbols {
+  7 "TF=''"
+  8 "TF=''"
+  9 "TF=''"
+  10 "TF=''"
+}
+swapButtons
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 595
+y 292
+w 57
+h 83
+fgColor index 35
+bgColor index 5
+topShadowColor index 112
+botShadowColor index 10
+font "courier-medium-r-14.0"
+invisible
+buttonLabel "High Beta SCL"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "SCLHB_Vacuum_RF_Combo_1-6.edl"
+}
+menuLabel {
+  0 "SCLHB 12-18b Overview"
+}
+setPosition {
+  0 "button"
+}
+symbols {
+  0 "S=SCL,SS1=Vac,N=12,N1=13,N2=14,N3=15,N4=16,N5=17,N6=18,R=HB"
+}
+replaceSymbols {
+  0 1
+}
+propagateMacros {
+  0 0
+}
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 652
+y 292
+w 59
+h 83
+fgColor index 35
+bgColor index 5
+topShadowColor index 112
+botShadowColor index 10
+font "courier-medium-r-14.0"
+invisible
+buttonLabel "High Beta SCL"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "SCLHB_Vacuum_RF_Combo_7-12.edl"
+}
+menuLabel {
+  0 "SCLHB 18c-23 Overview"
+}
+setPosition {
+  0 "button"
+}
+symbols {
+  0 "S=SCL,SS1=Vac,N=19,N1=20,N2=21,N3=22,N4=23,R=HB"
+}
+replaceSymbols {
+  0 1
+}
+propagateMacros {
+  0 0
+}
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 125
+y 453
+w 100
+h 30
+fgColor index 30
+onColor index 5
+offColor index 10
+topShadowColor index 5
+botShadowColor index 109
+controlPv "ICS_Tim:Gate_BeamOn:SSTrigger"
+pressValue "1"
+onLabel "*"
+offLabel "Trigger"
+3d
+useEnumNumeric
+font "helvetica-medium-r-14.0"
+visPv "ICS_Tim:Gate_BeamOn:SSMode.RVAL"
+visMin ".5"
+visMax "1000"
+endObjectProperties
+
+# (Text w. Reg. Exp.)
+object activeXRegTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 28
+y 421
+w 200
+h 25
+font "helvetica-bold-r-24.0"
+fontAlign "center"
+fgColor index 15
+bgColor index 10
+visPv "ICS_MPS:Lmp_MM:MEBT_BSEcho"
+visMin "1"
+visMax "99"
+value {
+  "MEBT BeamStop"
+}
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 710
+y 292
+w 61
+h 83
+fgColor index 35
+bgColor index 5
+topShadowColor index 112
+botShadowColor index 10
+font "courier-medium-r-14.0"
+invisible
+buttonLabel "High Beta SCL"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "SCL_Drift_Overview.edl"
+}
+menuLabel {
+  0 "SCL Drift Overview"
+}
+setPosition {
+  0 "button"
+}
+symbols {
+  0 "S=SCL,SS1=Vac,N=24,N1=25,N2=26,N3=27,N4=28,N5=29,N6=30,N7=31,N8=32,R=HB"
+}
+replaceSymbols {
+  0 1
+}
+propagateMacros {
+  0 0
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 618
+y 295
+w 128
+h 21
+font "helvetica-bold-r-18.0"
+fgColor index 77
+bgColor index 0
+useDisplayBg
+value {
+  "High Beta SCL"
+}
+autoSize
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 264
+y 292
+w 74
+h 86
+fgColor index 35
+bgColor index 5
+topShadowColor index 112
+botShadowColor index 10
+font "helvetica-medium-r-12.0"
+invisible
+buttonLabel "DTL Overview"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "DTL_RCCS_Vacuum_Combo.edl"
+}
+menuLabel {
+  0 "DTL Overview"
+}
+setPosition {
+  0 "button"
+}
+symbols {
+  0 "S=DTL,SS=Cool,SS1=Vac,N=1,N1=2,N2=3,N3=4,N4=5,N5=6"
+}
+replaceSymbols {
+  0 1
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 284
+y 297
+w 36
+h 21
+font "helvetica-bold-r-18.0"
+fgColor index 77
+bgColor index 0
+useDisplayBg
+value {
+  "DTL"
+}
+autoSize
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 340
+y 291
+w 83
+h 87
+fgColor index 35
+bgColor index 5
+topShadowColor index 112
+botShadowColor index 10
+font "courier-medium-r-14.0"
+invisible
+buttonLabel "CCL LINAC"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "CCL_RCCS_Vacuum_Combo.edl"
+}
+menuLabel {
+  0 "CCL Overview"
+}
+setPosition {
+  0 "button"
+}
+symbols {
+  0 "S=CCL,SS=Cool,SS1=Vac,N=1,N1=2,N2=3,N3=4,N4=1,W1=3,W2=4,W3=5,W4=6,W5=7,W6=8,W7=9"
+}
+replaceSymbols {
+  0 1
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 362
+y 296
+w 39
+h 21
+font "helvetica-bold-r-18.0"
+fgColor index 77
+bgColor index 0
+useDisplayBg
+value {
+  "CCL"
+}
+autoSize
+endObjectProperties
+
+# (Text w. Reg. Exp.)
+object activeXRegTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 28
+y 422
+w 200
+h 25
+font "helvetica-bold-r-24.0"
+fontAlign "center"
+fgColor index 15
+bgColor index 10
+visPv "ICS_MPS:Lmp_MM:ExtDmpEcho"
+visMin "1"
+visMax "99"
+value {
+  "Extraction Dump"
+}
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 447
+y 386
+w 151
+h 59
+fgColor index 35
+bgColor index 5
+topShadowColor index 5
+botShadowColor index 10
+font "courier-medium-r-14.0"
+invisible
+buttonLabel "CHL"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "Cryo_overview.edl"
+}
+menuLabel {
+  0 "Cryo"
+}
+setPosition {
+  0 "button"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 52
+y 58
+w 47
+h 21
+font "helvetica-bold-i-18.0"
+fontAlign "center"
+fgColor index 25
+bgColor index 6
+useDisplayBg
+alarmPv "ICS_MPS:PS_FE65KV:IlkEcho"
+value {
+  "65KV"
+}
+autoSize
+endObjectProperties
+
+# (Button)
+object activeButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 51
+y 75
+w 51
+h 20
+fgColor index 112
+onColor index 5
+offColor index 5
+inconsistentColor index 10
+topShadowColor index 5
+botShadowColor index 10
+controlPv "ICS_MPS:PS_65KV:CmdOn"
+onLabel "Reset"
+offLabel "Reset"
+labelType "literal"
+buttonType "push"
+3d
+font "courier-bold-r-12.0"
+objType "controls"
+endObjectProperties
+
+# (Button)
+object activeButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 5
+y 75
+w 45
+h 20
+fgColor index 112
+onColor index 5
+offColor index 5
+inconsistentColor index 10
+topShadowColor index 5
+botShadowColor index 10
+controlPv "ICS_MPS:PS_RFQHV:CmdOn"
+onLabel "Reset"
+offLabel "Reset"
+labelType "literal"
+buttonType "push"
+3d
+font "courier-bold-r-12.0"
+objType "controls"
+endObjectProperties
+
+# (Byte)
+object ByteClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 5
+y 56
+w 44
+h 18
+controlPv "ICS_MPS:PS_RFQHV:IlkEcho"
+lineColor index 10
+onColor index 15
+offColor index 20
+numBits 1
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 8
+y 58
+w 40
+h 21
+font "helvetica-bold-i-18.0"
+fontAlign "center"
+fgColor index 25
+bgColor index 6
+useDisplayBg
+alarmPv "ICS_MPS:PS_RFQHV:IlkEcho"
+value {
+  "RFQ"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1
+y 152
+w 104
+h 32
+font "helvetica-bold-i-14.0"
+fontAlign "center"
+fgColor index 20
+bgColor index 5
+useDisplayBg
+visPv "CCL_MPS:BS:Ilk_Latch"
+visInvert
+visMax "1"
+value {
+  "CCL BeamStop"
+  "Interlocked"
+}
+autoSize
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 911
+y 298
+w 65
+h 81
+
+beginGroup
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 911
+y 298
+w 65
+h 81
+
+beginGroup
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 911
+y 299
+w 63
+h 79
+fgColor index 35
+bgColor index 5
+topShadowColor index 5
+botShadowColor index 10
+font "courier-medium-r-8.0"
+invisible
+buttonLabel "Linac Dump Details"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "Linac_Dump.edl"
+}
+menuLabel {
+  0 "Linac Dump"
+}
+setPosition {
+  0 "button"
+}
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 911
+y 298
+w 65
+h 81
+lineColor index 44
+fillColor index 5
+lineWidth 4
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 915
+y 315
+w 52
+h 42
+font "helvetica-bold-r-18.0"
+fontAlign "center"
+fgColor index 77
+bgColor index 5
+useDisplayBg
+value {
+  "Linac"
+  "Dump"
+}
+autoSize
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 910
+y 213
+w 83
+h 74
+
+beginGroup
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 910
+y 213
+w 83
+h 74
+
+beginGroup
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 910
+y 214
+w 80
+h 72
+fgColor index 35
+bgColor index 5
+topShadowColor index 5
+botShadowColor index 10
+font "courier-medium-r-8.0"
+invisible
+buttonLabel "Momentum Dump"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "MDCoolSkid_embed.edl"
+}
+menuLabel {
+  0 "Momentum Dump"
+}
+setPosition {
+  0 "button"
+}
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 910
+y 213
+w 83
+h 74
+lineColor index 44
+fillColor index 5
+lineWidth 4
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 912
+y 231
+w 77
+h 32
+font "helvetica-bold-r-14.0"
+fontAlign "center"
+fgColor index 77
+bgColor index 5
+useDisplayBg
+value {
+  "Momentum"
+  "Dump"
+}
+autoSize
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Button)
+object activeButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 30
+y 187
+w 47
+h 22
+fgColor index 112
+onColor index 10
+offColor index 136
+inconsistentColor index 10
+topShadowColor index 5
+botShadowColor index 10
+controlPv "CCL_MPS:BS:Ilk_Reset"
+onLabel "RESET"
+offLabel "Reset"
+labelType "literal"
+buttonType "push"
+3d
+font "courier-medium-r-12.0"
+objType "controls"
+visPv "CCL_MPS:BS:Ilk_Latch"
+visInvert
+visMax "1"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 446
+y 386
+w 154
+h 58
+lineColor index 44
+fillColor index 5
+lineWidth 4
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 543
+y 400
+w 38
+h 21
+font "helvetica-bold-r-18.0"
+fontAlign "center"
+fgColor index 77
+bgColor index 5
+useDisplayBg
+value {
+  "CHL"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 609
+y 400
+w 48
+h 21
+font "helvetica-bold-r-18.0"
+fontAlign "center"
+fgColor index 77
+bgColor index 5
+useDisplayBg
+value {
+  "RFTF"
+}
+autoSize
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 854
+y 89
+w 53
+h 72
+fgColor index 131
+bgColor index 5
+topShadowColor index 5
+botShadowColor index 10
+font "helvetica-bold-r-12.0"
+invisible
+buttonLabel "Injection dump"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "InjDmp_Line.edl"
+}
+menuLabel {
+  0 "Injection Dump"
+}
+setPosition {
+  0 "button"
+}
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 907
+y 51
+w 125
+h 146
+fgColor index 35
+bgColor index 5
+topShadowColor index 5
+botShadowColor index 10
+font "courier-medium-r-14.0"
+invisible
+buttonLabel "Ring"
+numPvs 4
+numDsps 19
+displayFileName {
+  0 "ringVacOverview.edl"
+  1 "ringPS-Top.edl"
+  2 "RingHPRFTop.edl"
+  3 "RingLLRFSystems.edl"
+  4 "HROverview.edl"
+  5 "Ring_Extraction_Overview.edl"
+  6 "vfm.edl"
+  7 "operFoils.edl"
+  8 "Harp_embed.edl"
+  9 "ringPS-RingExtraction.edl"
+  10 "ring-ps-all-dipolecorrs.edl"
+  11 "ring-ps-all-oct-sxc-ssxc.edl"
+  12 "ring-ps-all-qsc.edl"
+  13 "ring-ps-all-skewDipoles.edl"
+  14 "ring-ps-all-dh-quad-sx-sptm.edl"
+  15 "ringPS-RingExtraction-Ctl.edl"
+  16 "MagPS-ring-all-quad-trim.edl"
+  17 "ringPS-RingInjection.edl"
+  18 "scopesMenu-RingExtraction.edl"
+}
+menuLabel {
+  0 "Ring Vacuum Overview"
+  1 "Ring Magnets"
+  2 "Ring HPRF"
+  3 "Ring LLRF Overview"
+  4 "HEBT/RTBT Water Skids"
+  5 "Ring Extraction"
+  6 "VFM"
+  7 "Foil Chainsaw"
+  8 "Harp"
+  9 "Ring Extraction Kickers (Beam Line)"
+  10 "Ring Arc Dipole Correctors"
+  11 "Ring SXC/SSXC/Octuple"
+  12 "Ring QSC"
+  13 "All Skew Dipoles (one in IDmp & 8 in Ring)"
+  14 "Ring Maing DH,Quad,Sextupole,Septum"
+  15 "Ring Extraction Kickers (List Form)"
+  16 "Ring All Quad Trim Power Supplies"
+  17 "Ring Injection (with Waveforms) (GUI)"
+  18 "Ring Extraction Extraction WF monitor"
+}
+setPosition {
+  0 "button"
+  1 "button"
+  2 "button"
+  3 "button"
+  4 "button"
+  5 "button"
+  6 "button"
+  7 "button"
+  8 "button"
+  9 "button"
+  10 "button"
+  11 "button"
+  12 "button"
+  13 "button"
+  14 "button"
+  15 "button"
+  16 "button"
+  17 "button"
+  18 "button"
+}
+swapButtons
+endObjectProperties
+
+# (Lines)
+object activeLineClass
+beginObjectProperties
+major 4
+minor 0
+release 1
+x 851
+y 49
+w 184
+h 147
+lineColor index 44
+fillColor index 5
+lineWidth 4
+closePolygon
+numPoints 6
+xPoints {
+  0 851
+  1 1035
+  2 1034
+  3 908
+  4 907
+  5 852
+}
+yPoints {
+  0 50
+  1 49
+  2 196
+  3 195
+  4 163
+  5 162
+}
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 907
+y 51
+w 111
+h 144
+fgColor index 35
+bgColor index 5
+topShadowColor index 5
+botShadowColor index 10
+font "courier-medium-r-14.0"
+invisible
+buttonLabel "Ring"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "Ring_Overview_Detail.edl"
+}
+menuLabel {
+  0 "Ring Overview"
+}
+setPosition {
+  0 "button"
+}
+propagateMacros {
+  0 0
+}
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 853
+y 50
+w 53
+h 39
+fgColor index 131
+bgColor index 5
+topShadowColor index 5
+botShadowColor index 10
+font "helvetica-bold-r-12.0"
+invisible
+buttonLabel "Injection dump"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "TUOverview.edl"
+}
+menuLabel {
+  0 "Injection Dump"
+}
+setPosition {
+  0 "button"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 941
+y 120
+w 41
+h 21
+font "helvetica-bold-r-18.0"
+fgColor index 77
+bgColor index 0
+useDisplayBg
+value {
+  "Ring"
+}
+autoSize
+endObjectProperties
+
+# (Shell Command)
+object shellCmdClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 602
+y 386
+w 70
+h 57
+fgColor index 35
+bgColor index 5
+topShadowColor index 5
+botShadowColor index 10
+font "courier-medium-r-14.0"
+invisible
+buttonLabel "RFTF"
+numCmds 1
+command {
+  0 "ssh test-oper@192.168.240.100 startmap-testf1"
+}
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 1019
+y 50
+w 14
+h 145
+fgColor index 35
+bgColor index 5
+topShadowColor index 5
+botShadowColor index 10
+font "courier-medium-r-14.0"
+invisible
+buttonLabel "Ring"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "Ring_Extraction_Overview.edl"
+}
+menuLabel {
+  0 "Ring Extraction Overview"
+}
+setPosition {
+  0 "button"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 171
+y 298
+w 88
+h 21
+font "helvetica-bold-r-18.0"
+fgColor index 77
+bgColor index 0
+useDisplayBg
+value {
+  "Front End"
+}
+autoSize
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 776
+y 163
+w 132
+h 214
+fgColor index 35
+bgColor index 5
+topShadowColor index 5
+botShadowColor index 10
+font "courier-medium-r-14.0"
+invisible
+buttonLabel "HEBT"
+numPvs 4
+numDsps 8
+displayFileName {
+  0 "hebtVacOverview.edl"
+  1 "HEBT_Scraper.edl"
+  2 "ringPS-HEBT2LDump.edl"
+  3 "ringPS-HEBT2IDump.edl"
+  4 "ringPS-Top.edl"
+  5 "ringPS-HEBT2LDump-Ctl.edl"
+  6 "ringPS-HEBT-ArcSouth-Ctl.edl"
+  7 "ringPS-HEBT2IDump-Ctl.edl"
+}
+menuLabel {
+  0 "HEBT Vacuum Overview"
+  1 "HEBT Scraper Control"
+  2 "HEBT/LDmp/ARC-Ground Break South Magnet PS Controls"
+  3 "HEBT/IDmp/ARC-Ground Break North Magnet PS Controls"
+  4 "HEBT,Ring,RTBT Magnet PS Control Overview"
+  5 "HEBT to LDump (List)"
+  6 "HEBT Arc (G. Break South) (List)"
+  7 "HEBT Arc (G.B.North) and IDmp (List)"
+}
+setPosition {
+  0 "button"
+  1 "button"
+  2 "button"
+  3 "button"
+  4 "button"
+  5 "button"
+  6 "button"
+  7 "button"
+}
+swapButtons
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 816
+y 206
+w 49
+h 21
+font "helvetica-bold-r-18.0"
+fgColor index 77
+bgColor index 0
+useDisplayBg
+value {
+  "HEBT"
+}
+autoSize
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 776
+y 205
+w 132
+h 172
+fgColor index 35
+bgColor index 5
+topShadowColor index 5
+botShadowColor index 10
+font "courier-medium-r-14.0"
+invisible
+buttonLabel "HEBT"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "HEBT_Overview.edl"
+}
+menuLabel {
+  0 "HEBT Overview"
+}
+setPosition {
+  0 "button"
+}
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 775
+y 163
+w 134
+h 216
+lineColor index 44
+fillColor index 5
+lineWidth 4
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 776
+y 163
+w 131
+h 40
+fgColor index 35
+bgColor index 5
+topShadowColor index 5
+botShadowColor index 10
+font "courier-medium-r-14.0"
+invisible
+buttonLabel "HEBT"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "HEBT_Inj.edl"
+}
+menuLabel {
+  0 "HEBT Overview"
+}
+setPosition {
+  0 "button"
+}
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1035
+y 160
+w 105
+h 149
+lineColor index 44
+fillColor index 5
+lineWidth 4
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 1036
+y 161
+w 103
+h 147
+fgColor index 35
+bgColor index 5
+topShadowColor index 5
+botShadowColor index 10
+font "courier-medium-r-14.0"
+invisible
+buttonLabel "RTBT"
+numPvs 4
+numDsps 3
+displayFileName {
+  0 "rtbtVacOverview.edl"
+  1 "MagPS-RTBT-All.edl"
+  2 "HEBT_Cooling_Overview.edl"
+}
+menuLabel {
+  0 "RTBT Vacuum Overview"
+  1 "All RTBT Magnets (list)"
+  2 "HEBT/Ring/RTBT Cooling Page"
+}
+setPosition {
+  0 "button"
+  1 "button"
+  2 "button"
+}
+propagateMacros {
+  1 0
+  2 0
+}
+swapButtons
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 1036
+y 236
+w 39
+h 72
+fgColor index 131
+bgColor index 5
+topShadowColor index 5
+botShadowColor index 10
+font "helvetica-bold-r-12.0"
+invisible
+buttonLabel "RTBT dump"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "dump.edl"
+}
+menuLabel {
+  0 "RTBT dump"
+}
+setPosition {
+  0 "button"
+}
+symbols {
+  0 "SS=RTBT_EDmp,TE=TE96,PNG=Edmp,TTL=Extraction"
+}
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 1036
+y 161
+w 103
+h 75
+fgColor index 35
+bgColor index 5
+topShadowColor index 5
+botShadowColor index 10
+font "courier-medium-r-14.0"
+invisible
+buttonLabel "RTBT"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "RTBT_Overview.edl"
+}
+setPosition {
+  0 "button"
+}
+propagateMacros {
+  0 0
+}
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 1075
+y 233
+w 64
+h 75
+fgColor index 35
+bgColor index 5
+topShadowColor index 5
+botShadowColor index 10
+font "courier-medium-r-14.0"
+invisible
+buttonLabel "RTBT"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "RTBT_Overview.edl"
+}
+setPosition {
+  0 "button"
+}
+propagateMacros {
+  0 0
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1057
+y 239
+w 48
+h 21
+font "helvetica-bold-r-18.0"
+fgColor index 77
+bgColor index 0
+useDisplayBg
+value {
+  "RTBT"
+}
+autoSize
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 230
+y 324
+w 57
+h 43
+
+beginGroup
+
+# (Dynamic Symbol)
+object activeDynSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 230
+y 324
+w 57
+h 43
+file "splat_symbol.edl"
+gateUpValue 1
+continuous
+rate 0.1
+numStates 10
+useOriginalSize
+useOriginalColors
+fgColor index 10
+bgColor index 5
+showOOBState
+endObjectProperties
+
+endGroup
+
+visPv "ICS_MPS:Lmp_MM:MEBT_BSEcho"
+visMin "1"
+visMax "99999"
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 850
+y 47
+w 57
+h 43
+
+beginGroup
+
+# (Dynamic Symbol)
+object activeDynSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 850
+y 47
+w 57
+h 43
+file "splat_symbol.edl"
+gateUpValue 1
+continuous
+rate 0.1
+numStates 10
+useOriginalSize
+useOriginalColors
+fgColor index 10
+bgColor index 5
+showOOBState
+endObjectProperties
+
+endGroup
+
+visPv "ICS_MPS:Lmp_MM:InjDmpEcho"
+visMin "1"
+visMax "99999"
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 915
+y 319
+w 57
+h 43
+
+beginGroup
+
+# (Dynamic Symbol)
+object activeDynSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 915
+y 319
+w 57
+h 43
+file "splat_symbol.edl"
+gateUpValue 1
+continuous
+rate 0.1
+numStates 10
+useOriginalSize
+useOriginalColors
+fgColor index 10
+bgColor index 5
+showOOBState
+endObjectProperties
+
+endGroup
+
+visPv "ICS_MPS:Lmp_MM:LinDmpEcho"
+visMin "1"
+visMax "99999"
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 394
+y 321
+w 57
+h 43
+
+beginGroup
+
+# (Dynamic Symbol)
+object activeDynSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 394
+y 321
+w 57
+h 43
+file "splat_symbol.edl"
+gateUpValue 1
+continuous
+rate 0.1
+numStates 10
+useOriginalSize
+useOriginalColors
+fgColor index 10
+bgColor index 5
+showOOBState
+endObjectProperties
+
+endGroup
+
+visPv "ICS_MPS:Lmp_MM:CCL_BSEcho"
+visMin "1"
+visMax "99999"
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 931
+y 71
+w 57
+h 43
+
+beginGroup
+
+# (Dynamic Symbol)
+object activeDynSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 931
+y 71
+w 57
+h 43
+file "splat_symbol.edl"
+gateUpValue 1
+continuous
+rate 0.1
+numStates 10
+useOriginalColors
+fgColor index 10
+bgColor index 5
+showOOBState
+endObjectProperties
+
+endGroup
+
+visPv "ICS_MPS:Lmp_MM:RingEcho"
+visMin "1"
+visMax "99999"
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1022
+y 263
+w 57
+h 43
+
+beginGroup
+
+# (Dynamic Symbol)
+object activeDynSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1022
+y 263
+w 57
+h 43
+file "splat_symbol.edl"
+gateUpValue 1
+continuous
+rate 0.1
+numStates 10
+useOriginalSize
+useOriginalColors
+fgColor index 10
+bgColor index 5
+showOOBState
+endObjectProperties
+
+endGroup
+
+visPv "ICS_MPS:Lmp_MM:ExtDmpEcho"
+visMin "1"
+visMax "99999"
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1107
+y 351
+w 57
+h 43
+
+beginGroup
+
+# (Dynamic Symbol)
+object activeDynSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1107
+y 351
+w 57
+h 43
+file "splat_symbol.edl"
+gateUpValue 1
+continuous
+rate 0.1
+numStates 10
+useOriginalSize
+useOriginalColors
+fgColor index 10
+bgColor index 5
+showOOBState
+endObjectProperties
+
+endGroup
+
+visPv "ICS_MPS:Lmp_MM:TgtEcho"
+visMin "1"
+visMax "99999"
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 728
+y 386
+w 89
+h 68
+fgColor index 35
+bgColor index 5
+topShadowColor index 5
+botShadowColor index 10
+font "courier-medium-r-14.0"
+invisible
+buttonLabel "CUB"
+numPvs 4
+numDsps 9
+displayFileName {
+  0 "CUBOverview.edl"
+  1 "KLOverview.edl"
+  2 "HROverview.edl"
+  3 "RSBOverview.edl"
+  4 "CHLOverview.edl"
+  5 "CubCoolingTowers.edl"
+  6 "CHWater.edl"
+  7 "PWSOverview.edl"
+  8 "CA-CU-01.edl"
+}
+menuLabel {
+  0 "CUB Overview"
+  1 "Klystron Water Skids"
+  2 "HEBT/RTBT Water Skids"
+  3 "Ring Water Skids"
+  4 "CHL/RFTF Water Skids"
+  5 "Tower Water"
+  6 "Chilled Water"
+  7 "Potable/Sewer Water"
+  8 "CUB Compressed Air"
+}
+setPosition {
+  0 "button"
+  1 "button"
+  2 "button"
+  3 "button"
+  4 "button"
+  5 "button"
+  6 "button"
+  7 "button"
+  8 "button"
+}
+swapButtons
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 747
+y 402
+w 40
+h 21
+font "helvetica-bold-r-18.0"
+fgColor index 77
+bgColor index 0
+useDisplayBg
+value {
+  "CUB"
+}
+autoSize
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 728
+y 385
+w 90
+h 70
+lineColor index 44
+fillColor index 5
+lineWidth 4
+endObjectProperties
+
+# (Embedded Window)
+object activePipClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 11
+y 557
+w 1286
+h 549
+fgColor index 10
+bgColor index 5
+topShadowColor index 5
+botShadowColor index 10
+displaySource "menu"
+filePv "LOC\\$(!W)DIAGALLWindow=i:0"
+labelPv "LOC\\$(!W)DIAGALL=s:"
+setSize
+sizeOfs 5
+numDsps 14
+displayFileName {
+  0 "blank.edl"
+  1 "Linac_Diag_Ovr.edl"
+  2 "Ring_Diag_Ovr.edl"
+  3 "DTLBLM1.edl"
+  4 "CCLBLM1.edl"
+  5 "SCLBLM_embed.edl"
+  6 "HEBTBLM1.edl"
+  7 "RingBLM1.edl"
+  8 "RTBTBLM1.edl"
+  9 "CCLBLM.edl"
+  10 "SCLBLM_embed.edl"
+  11 "HEBT_BLM_embed.edl"
+  12 "BSM.edl"
+  13 "FC_1.edl"
+}
+menuLabel {
+  0 "None"
+  1 "Linac/HEBT Diagnostics"
+  2 "Ring/RTBT Diagnostics"
+  3 "DTL BLMs"
+  4 "CCL BLMs"
+  5 "SCL BLMs"
+  6 "HEBT BLMs"
+  7 "Ring BLMs"
+  8 "RTBT BLMs"
+}
+noScroll
+endObjectProperties
+
+# (Menu Mux)
+object menuMuxClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 974
+y 509
+w 312
+h 48
+fgColor index 0
+bgColor index 44
+topShadowColor index 5
+botShadowColor index 10
+controlPv "LOC\\$(!W)DIAGALLWindow=i:$(P)"
+font "helvetica-bold-r-20.0"
+numItems 3
+symbolTag {
+  0 "None"
+  1 "LINAC/HEBT Diagnostics"
+  2 "Ring/RTBT Diagnostics"
+}
+symbol0 {
+  0 "P"
+  1 "P"
+  2 "P"
+}
+value0 {
+  0 "0"
+  1 "1"
+  2 "2"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 5
+y 115
+w 92
+h 16
+font "helvetica-bold-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 83
+alarmPv "ICS_MPS:CBd_PPS:Sts"
+value {
+  "MPS to PPS"
+}
+border
+endObjectProperties
+
+# (Button)
+object activeButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 8
+y 132
+w 85
+h 15
+fgColor index 10
+onColor index 30
+offColor index 30
+inconsistentColor index 10
+topShadowColor index 5
+botShadowColor index 10
+controlPv "ICS_MPS:CBd_PPS:Rst"
+indicatorPv "ICS_MPS:CBd_PPS:Rst"
+onLabel "MPS/PPS Reset"
+offLabel "MPS/PPS Reset"
+labelType "literal"
+buttonType "push"
+3d
+font "courier-bold-r-10.0"
+objType "controls"
+visPv "ICS_MPS:CBd_PPS:Sts.RVAL"
+visMax "1"
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 649
+y 17
+w 70
+h 27
+fgColor index 133
+bgColor index 44
+topShadowColor index 5
+botShadowColor index 10
+font "helvetica-bold-r-18.0"
+buttonLabel "Timing"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "timingMaster.edl"
+}
+menuLabel {
+  0 "Timing Master"
+}
+setPosition {
+  0 "button"
+}
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 574
+y 17
+w 72
+h 27
+fgColor index 133
+bgColor index 44
+topShadowColor index 5
+botShadowColor index 10
+font "helvetica-bold-r-18.0"
+buttonLabel "MagPS"
+numPvs 4
+numDsps 6
+displayFileName {
+  0 "SNSMagPSTop.edl"
+  1 "SNSMagPS.edl"
+  2 "tuneDipoles1.edl"
+  3 "tuneQuads1.edl"
+  4 "tuneShunts1.edl"
+  5 "MagPS-RTBT-All-WindowControl.edl"
+}
+menuLabel {
+  0 "Magnet "
+  1 "SNS Mag Overview (New)"
+  2 "Tune Dipoles"
+  3 "Tune Linac Quads"
+  4 "Tune CCL Shunts"
+  5 "Errant Beam Control"
+}
+setPosition {
+  0 "button"
+  1 "button"
+  2 "button"
+  3 "button"
+  4 "button"
+  5 "button"
+}
+propagateMacros {
+  0 0
+}
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 184
+y 18
+w 166
+h 24
+fgColor index 133
+bgColor index 44
+topShadowColor index 5
+botShadowColor index 10
+font "helvetica-bold-r-18.0"
+invisible
+buttonLabel "Cooling Overview"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "CoolingWater_Overview.edl"
+}
+menuLabel {
+  0 "Cooling Overview"
+}
+setPosition {
+  0 "button"
+}
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 470
+y 17
+w 54
+h 27
+fgColor index 133
+bgColor index 44
+topShadowColor index 5
+botShadowColor index 10
+font "helvetica-bold-r-18.0"
+buttonLabel "ODH"
+numPvs 4
+numDsps 2
+displayFileName {
+  0 "odh_linac.edl"
+  1 "CHL_ODH_Map.edl"
+}
+menuLabel {
+  0 "LINAC ODH"
+  1 "CHL ODH"
+}
+setPosition {
+  0 "button"
+  1 "button"
+}
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 8
+y 4
+w 75
+h 40
+
+beginGroup
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 9
+y 17
+w 73
+h 27
+fgColor index 133
+bgColor index 44
+topShadowColor index 5
+botShadowColor index 10
+font "helvetica-bold-r-18.0"
+buttonLabel "MPS"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "MPS_System_Top1.edl"
+}
+menuLabel {
+  0 "Linac MPS Overview"
+}
+setPosition {
+  0 "button"
+}
+propagateMacros {
+  0 0
+}
+endObjectProperties
+
+# (Shell Command)
+object shellCmdClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 8
+y 4
+w 75
+h 14
+fgColor index 112
+bgColor index 63
+topShadowColor index 5
+botShadowColor index 10
+font "courier-bold-r-10.0"
+buttonLabel "First Fault"
+numCmds 1
+commandLabel {
+  0 "First Fault"
+}
+command {
+  0 "/ade/epics/site-setup/epicsUtils/xal/mpsclient"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 9
+y 17
+w 73
+h 26
+font "helvetica-bold-r-18.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 5
+bgAlarm
+alarmPv "FE_MPS:MIOC1A:status_sum"
+value {
+  "MPS"
+}
+border
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 87
+y 17
+w 93
+h 26
+
+beginGroup
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 87
+y 17
+w 93
+h 26
+fgColor index 133
+bgColor index 44
+topShadowColor index 5
+botShadowColor index 10
+font "helvetica-bold-r-18.0"
+invisible
+buttonLabel "IOC Status"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "IOCS_snapshot.edl"
+}
+menuLabel {
+  0 "IOC Snapshot"
+}
+setPosition {
+  0 "button"
+}
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 87
+y 19
+w 91
+h 24
+lineColor index 10
+lineAlarm
+fill
+fillColor index 5
+fillAlarm
+alarmPv "ICS:Summary_HBt:StsLch"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 90
+y 22
+w 85
+h 18
+font "helvetica-bold-r-16.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 5
+useDisplayBg
+visPv "ICS:Summary_HBt:StsLch"
+visInvert
+visMin "0"
+visMax "1"
+value {
+  "IOC Status"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 91
+y 22
+w 85
+h 18
+font "helvetica-bold-r-16.0"
+fontAlign "center"
+fgColor index 14
+bgColor index 5
+useDisplayBg
+visPv "ICS:Summary_HBt:StsLch"
+visMin "0"
+visMax "1"
+value {
+  "IOC Status"
+}
+autoSize
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 87
+y 19
+w 91
+h 24
+lineColor index 10
+lineAlarm
+fillColor index 5
+lineWidth 2
+alarmPv "ICS:Summary_HBt:DisSum"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 183
+y 17
+w 166
+h 27
+font "helvetica-bold-r-18.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 5
+bgAlarm
+alarmPv "CoolingWater:Sum"
+value {
+  "Cooling Overview"
+}
+border
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 87
+y 5
+w 93
+h 12
+fgColor index 112
+bgColor index 30
+topShadowColor index 5
+botShadowColor index 10
+font "courier-bold-r-10.0"
+buttonLabel "Temperatures"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "utilTemp.edl"
+}
+setPosition {
+  0 "button"
+}
+propagateMacros {
+  0 0
+}
+endObjectProperties
+
+# (Embedded Window)
+object activePipClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 102
+y 47
+w 663
+h 239
+fgColor index 10
+bgColor index 5
+topShadowColor index 5
+botShadowColor index 10
+displaySource "menu"
+filePv "LOC\\$(!W)AlarmWindow:i=0"
+labelPv "LOC\\$(!W)Alarm=s:"
+sizeOfs 5
+numDsps 2
+displayFileName {
+  0 "Small_Smoke.edl"
+  1 "AlarmTop_1Line.edl"
+}
+menuLabel {
+  0 "Modulator Smoke Alarm"
+  1 "Alarm Handler"
+}
+noScroll
+endObjectProperties
+
+# (Shell Command)
+object shellCmdClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 831
+y 16
+w 135
+h 28
+fgColor index 110
+bgColor index 40
+topShadowColor index 5
+botShadowColor index 10
+font "helvetica-bold-r-18.0"
+buttonLabel "ArchiveViewer"
+numCmds 4
+commandLabel {
+  0 "CSS"
+  1 "CD4 Beam Diagnostics Archiver"
+  2 "Main Archiver (old/not CSS)"
+  3 "PPS Archiver"
+}
+command {
+  0 "css&"
+  1 "archiveviewer -u http://ics-srv-archive3/archive/cgi/ArchiveDataServer.cgi &"
+  2 "archiveviewer -u http://ics-srv-web2.sns.ornl.gov/archive/cgi/ArchiveDataServer.cgi &"
+  3 "archiveviewer -u http://pps-srv-archive1.ics.sns.gov/archive/cgi/ArchiveDataServer.cgi &"
+}
+endObjectProperties
+
+# (Shell Command)
+object shellCmdClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 968
+y 16
+w 129
+h 28
+fgColor index 110
+bgColor index 40
+topShadowColor index 5
+botShadowColor index 10
+font "helvetica-bold-r-18.0"
+buttonLabel "Physics Apps"
+numCmds 3
+commandLabel {
+  0 "Application Launcher"
+  1 "Pasta on phy2"
+  2 "Tuning Guide Outline"
+}
+command {
+  0 "launcher &"
+  1 "rsh -l physics physics \"pasta2 <env:HOSTNAME>\""
+  2 "mozilla http://ics-web.sns.ornl.gov/TuningGuide/Outline/Outline.html"
+}
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 352
+y 17
+w 116
+h 27
+fgColor index 133
+bgColor index 44
+topShadowColor index 5
+botShadowColor index 10
+font "helvetica-bold-r-18.0"
+buttonLabel "Diagnostics"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "Diag_OverView.edl"
+}
+menuLabel {
+  0 "Diagnostics Overview Map"
+}
+setPosition {
+  0 "button"
+}
+endObjectProperties
+
+# (Shell Command)
+object shellCmdClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 722
+y 17
+w 106
+h 27
+fgColor index 110
+bgColor index 40
+topShadowColor index 5
+botShadowColor index 10
+font "helvetica-bold-r-18.0"
+buttonLabel "Misc Tools"
+numCmds 17
+commandLabel {
+  0 "Strip Tool"
+  1 "eLogbook (mozilla)"
+  2 "wiki"
+  3 "QtCATool (Qt Channel Access Tool)"
+  4 "Lab Book"
+  5 "Scientific Calculator"
+  6 "KSnapShot"
+  7 "Score"
+  8 "Channel 13 (Mozilla)"
+  9 "Alarm/IOC Log Interface"
+  10 "Screen Capture (chief-oper)"
+  11 "Screen Capture (accl-oper)"
+  12 "css"
+  13 "The Gimp"
+  14 "Probe"
+  15 "PV Monitor"
+  16 "SNS-OPM (Mozilla)"
+}
+command {
+  0 "StripTool snsOPNS_StripTool.stp  &"
+  1 "seamonkey https://snsapp1.sns.ornl.gov/Logbook/WebObjects/Logbook.woa/ &"
+  2 "seamonkey https://ics-web4.sns.ornl.gov/wiki &"
+  3 "QtCATool &"
+  4 "ssh -Y -c blowfish physics@ics-srv-phy3 /ade/xal/bin/labbook &"
+  5 "kcalc &"
+  6 "ksnapshot &"
+  7 "ssh -Y -c blowfish physics@ics-srv-phy3 /ade/xal/bin/score &"
+  8 "seamonkey http://neutrons.ornl.gov/diagnostics/channel13/Ch13.html"
+  9 "seamonkey http://ics-web1.sns.ornl.gov:1982/reports2"
+  10 "/u/sns/opers/accel/home/chief-oper/peters/starter"
+  11 "/u/sns/opers/accel/home/accl-oper-old/peters/screen_capture/starter"
+  12 "css &"
+  13 "gimp &"
+  14 "probe &"
+  15 "cd /u/sns/opers/accel/home/accl-oper-old/peters/entry_new; python PV_monitor_1c.py &"
+  16 "seamonkey  https://www-internal.sns.gov/operations/SNS-OPM_Folder_Tree/ &"
+}
+endObjectProperties
+
+# (Shell Command)
+object shellCmdClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 1155
+y 17
+w 136
+h 27
+fgColor index 110
+bgColor index 40
+topShadowColor index 5
+botShadowColor index 10
+font "helvetica-bold-r-18.0"
+invisible
+buttonLabel "Alarm Handler"
+numCmds 1
+commandLabel {
+  0 "Alarm Handler (Main)"
+}
+command {
+  0 "cd <env:IOCTOP>/snsMachine/cfg; alh -l ~ -a ALH_logFile.alhAlarm SNS_top.alhConfig &"
+}
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 105
+y 344
+w 57
+h 20
+fgColor index 0
+bgColor index 44
+topShadowColor index 5
+botShadowColor index 10
+font "helvetica-bold-r-12.0"
+buttonLabel "ChuMPS"
+numPvs 4
+numDsps 3
+displayFileName {
+  0 "chumps.edl"
+  1 "chumps-MEBT.edl"
+  2 "chumps-MEBT-Raw.edl"
+}
+menuLabel {
+  0 "LEBT Chumps"
+  1 "MEBT Chumps"
+  2 "Raw Data"
+}
+setPosition {
+  0 "button"
+  1 "button"
+  2 "button"
+}
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 552
+y 457
+w 145
+h 90
+fgColor index 35
+bgColor index 5
+topShadowColor index 5
+botShadowColor index 10
+font "courier-medium-r-14.0"
+invisible
+buttonLabel "Primary Substation"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "SysOverview.edl"
+}
+menuLabel {
+  0 "Transformer Overview"
+}
+propagateMacros {
+  0 0
+}
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 550
+y 455
+w 148
+h 94
+lineColor index 44
+fillColor index 5
+lineWidth 4
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 576
+y 479
+w 95
+h 41
+
+beginGroup
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 591
+y 479
+w 65
+h 21
+font "helvetica-bold-r-18.0"
+fgColor index 77
+bgColor index 0
+useDisplayBg
+value {
+  "Primary"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 576
+y 501
+w 95
+h 21
+font "helvetica-bold-r-18.0"
+fgColor index 77
+bgColor index 0
+useDisplayBg
+value {
+  "Substation"
+}
+autoSize
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 30
+y 97
+w 37
+h 15
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 5
+bgAlarm
+alarmPv "ICS_MPS:PLC_Sum1"
+value {
+  "PLC"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 4
+y 212
+w 99
+h 32
+font "helvetica-bold-i-14.0"
+fontAlign "center"
+fgColor index 20
+bgColor index 5
+useDisplayBg
+visPv "LEBT_Chop:MPS1:FPL_MEBT_BS_chan_status"
+visMax ".5"
+value {
+  "LEBT Chopper"
+  "Interlock"
+}
+autoSize
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 105
+y 290
+w 56
+h 28
+
+beginGroup
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 105
+y 290
+w 56
+h 28
+fgColor index 133
+bgColor index 44
+topShadowColor index 5
+botShadowColor index 10
+font "courier-bold-r-12.0"
+invisible
+buttonLabel "Sprk Cntr"
+numPvs 4
+numDsps 3
+displayFileName {
+  0 "BCM_Src.edl"
+  1 "Spark.edl"
+  2 "VM_LEBT.edl"
+}
+menuLabel {
+  0 "Spark Detector 01"
+  1 "Spark Detector 02"
+  2 "Video Monitor"
+}
+setPosition {
+  0 "button"
+  1 "button"
+  2 "button"
+}
+symbols {
+  0 "S=Src, SS=Diag, N=01"
+  1 "S=LEBT, SS=Diag, N=02"
+  2 "S=LEBT, SS=Diag, N=01"
+}
+propagateMacros {
+  0 0
+  1 0
+  2 0
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 105
+y 290
+w 56
+h 28
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 44
+value {
+  "Spark"
+  "Counter"
+}
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 15
+y 517
+w 116
+h 30
+
+beginGroup
+
+# (Button)
+object activeButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 15
+y 517
+w 116
+h 30
+fgColor index 15
+fgAlarm
+onColor index 10
+offColor index 10
+inconsistentColor index 10
+topShadowColor index 5
+botShadowColor index 109
+controlPv "ICS_Tim:Gate_BeamOn:Switch"
+indicatorPv "ICS_Tim:Gate_BeamOn:Switch"
+onLabel "Beam Enabled"
+offLabel "Beam Disabled"
+labelType "literal"
+3d
+font "helvetica-bold-r-14.0"
+objType "controls"
+endObjectProperties
+
+endGroup
+
+visPv "Tgt_MPS:Dump_Power:Button"
+visMin "0.5"
+visMax "1.5"
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 1050
+y 52
+w 119
+h 33
+fgColor index 0
+bgColor index 44
+topShadowColor index 5
+botShadowColor index 10
+font "helvetica-bold-r-16.0"
+buttonLabel "Gate Keeper"
+numPvs 4
+numDsps 2
+displayFileName {
+  0 "gate_user.edl"
+  1 "Zuul.edl"
+}
+menuLabel {
+  0 "Linux User Interface"
+  1 "Windows User Interface"
+}
+setPosition {
+  0 "button"
+  1 "button"
+}
+propagateMacros {
+  0 0
+}
+helpCommand "http://ics-srv-web1/userlist/"
+endObjectProperties
+
+# (Button)
+object activeButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 9
+y 42
+w 73
+h 14
+fgColor index 25
+onColor index 5
+offColor index 5
+inconsistentColor index 10
+topShadowColor index 5
+botShadowColor index 10
+controlPv "Ring_MPS:Gate_ExtractReset:ManualTrigger"
+onLabel "Kicker Reset"
+offLabel "Kicker Reset"
+labelType "literal"
+buttonType "push"
+3d
+font "helvetica-bold-r-10.0"
+objType "controls"
+endObjectProperties
+
+# (Shell Command)
+object shellCmdClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 132
+y 517
+w 72
+h 31
+fgColor index 15
+bgColor index 10
+topShadowColor index 5
+botShadowColor index 10
+font "helvetica-bold-r-14.0"
+buttonLabel "Ramp Up"
+numCmds 2
+commandLabel {
+  0 "Python Rampup (5 minute)"
+  1 "Python Rampup (30 seconds)"
+}
+command {
+  0 "cd /ade/epics/supTop/operations/scripts; python Rampup.py &"
+  1 "cd /ade/epics/supTop/operations/scripts; python Rampup1.py &"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 768
+y 489
+w 23
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 6
+useDisplayBg
+value {
+  "CCL"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 815
+y 489
+w 24
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 6
+useDisplayBg
+value {
+  "SCL"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 842
+y 474
+w 72
+h 28
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 6
+useDisplayBg
+value {
+  "HEBT/LDmp"
+  "/IDmp"
+}
+autoSize
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 714
+y 503
+w 40
+h 16
+
+beginGroup
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 714
+y 504
+w 40
+h 15
+fgColor index 10
+onColor index 6
+offColor index 6
+topShadowColor index 5
+botShadowColor index 10
+controlPv "LOC\\$(!W)DIAGALLWindow=i:0"
+pressValue "3"
+3d
+invisible
+font "courier-medium-r-8.0"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 714
+y 503
+w 40
+h 16
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "DTL_Diag:BLM_Sum"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 859
+y 502
+w 40
+h 16
+
+beginGroup
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 859
+y 503
+w 40
+h 15
+fgColor index 10
+onColor index 6
+offColor index 6
+topShadowColor index 5
+botShadowColor index 10
+controlPv "LOC\\$(!W)DIAGALLWindow=i:0"
+pressValue "6"
+3d
+invisible
+font "courier-medium-r-8.0"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 859
+y 502
+w 40
+h 16
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "HEBT_Diag:BLM_ND_Sum"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 807
+y 503
+w 40
+h 16
+
+beginGroup
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 807
+y 504
+w 40
+h 15
+fgColor index 10
+onColor index 6
+offColor index 6
+topShadowColor index 5
+botShadowColor index 10
+controlPv "LOC\\$(!W)DIAGALLWindow=i:0"
+pressValue "5"
+3d
+invisible
+font "courier-medium-r-8.0"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 807
+y 503
+w 40
+h 16
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "SCL_Diag:BLM_Sum"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 760
+y 503
+w 40
+h 16
+
+beginGroup
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 760
+y 504
+w 40
+h 15
+fgColor index 10
+onColor index 6
+offColor index 6
+topShadowColor index 5
+botShadowColor index 10
+controlPv "LOC\\$(!W)DIAGALLWindow=i:0"
+pressValue "4"
+3d
+invisible
+font "courier-medium-r-8.0"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 760
+y 503
+w 40
+h 16
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "CCL_Diag:BLM_Sum"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 722
+y 489
+w 24
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 6
+useDisplayBg
+value {
+  "DTL"
+}
+autoSize
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 740
+y 538
+w 40
+h 16
+
+beginGroup
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 740
+y 539
+w 40
+h 15
+fgColor index 10
+onColor index 6
+offColor index 6
+topShadowColor index 5
+botShadowColor index 10
+controlPv "LOC\\$(!W)DIAGALLWindow=i:0"
+pressValue "7"
+3d
+invisible
+font "courier-medium-r-8.0"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 740
+y 538
+w 40
+h 16
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "Ring_Diag:BLM_Sum"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 788
+y 524
+w 73
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 6
+useDisplayBg
+value {
+  "RTBT/EDmp"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 746
+y 524
+w 26
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 6
+useDisplayBg
+value {
+  "Ring"
+}
+autoSize
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 803
+y 538
+w 40
+h 15
+
+beginGroup
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 803
+y 538
+w 40
+h 15
+fgColor index 10
+onColor index 6
+offColor index 6
+topShadowColor index 5
+botShadowColor index 10
+controlPv "LOC\\$(!W)DIAGALLWindow=i:0"
+pressValue "8"
+3d
+invisible
+font "courier-medium-r-8.0"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 803
+y 538
+w 40
+h 15
+lineColor index 10
+fill
+fillColor index 15
+fillAlarm
+alarmPv "RTBT_Diag:BLM_Sum"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 717
+y 458
+w 177
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 6
+useDisplayBg
+value {
+  "Beam Loss Monitor Summary"
+}
+autoSize
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 12
+y 330
+w 85
+h 32
+
+beginGroup
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 12
+y 330
+w 84
+h 31
+fgColor index 133
+bgColor index 44
+topShadowColor index 5
+botShadowColor index 10
+font "helvetica-bold-r-14.0"
+invisible
+buttonLabel "RCCS Summary"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "errant-beam-all.edl"
+}
+menuLabel {
+  0 "Errant Beam Summary"
+}
+setPosition {
+  0 "button"
+}
+propagateMacros {
+  0 0
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 12
+y 330
+w 85
+h 32
+font "helvetica-bold-r-14.0"
+fontAlign "center"
+fgColor index 0
+bgColor index 44
+value {
+  "Errant Beam"
+  "All-in-One"
+}
+autoSize
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 11
+y 299
+w 84
+h 28
+fgColor index 133
+bgColor index 44
+topShadowColor index 5
+botShadowColor index 10
+font "helvetica-bold-r-14.0"
+buttonLabel "Proj. View"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "proj_view.edl"
+}
+menuLabel {
+  0 "Proj. View"
+}
+setPosition {
+  0 "button"
+}
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 11
+y 366
+w 104
+h 22
+fgColor index 133
+bgColor index 44
+topShadowColor index 5
+botShadowColor index 10
+font "helvetica-bold-r-14.0"
+buttonLabel "Summations"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "All_Mag_Vac_RF_Sum.edl"
+}
+menuLabel {
+  0 "Proj. View"
+}
+setPosition {
+  0 "button"
+}
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 526
+y 17
+w 45
+h 27
+
+beginGroup
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 526
+y 17
+w 45
+h 27
+fgColor index 133
+bgColor index 44
+topShadowColor index 5
+botShadowColor index 10
+font "helvetica-bold-r-18.0"
+buttonLabel "PPS"
+numPvs 4
+numDsps 8
+displayFileName {
+  0 "pps_frntend_phase1_3.edl"
+  1 "pps_hebt.edl"
+  2 "ringPPSOverview.edl"
+  3 "rtbtPPSOverview.edl"
+  4 "tgtPPSOverview.edl"
+  5 "StackMonitor1.edl"
+  6 "FEStatus.edl"
+  7 "BPlogicAll.edl"
+}
+menuLabel {
+  0 "Linac PPS Overview"
+  1 "HEBT PPS Overview"
+  2 "Ring PPS Overview"
+  3 "RTBT PPS Overview"
+  4 "Target PPS Overview"
+  5 "Central Exhaust Stack Monitor"
+  6 "Front End Status"
+  7 "Beam Permit Logic"
+}
+setPosition {
+  0 "button"
+  1 "button"
+  2 "button"
+  3 "button"
+  4 "button"
+  5 "button"
+  6 "button"
+  7 "button"
+}
+symbols {
+  5 "TITLE=Stack_Mon1,S=PPS,SS=Tgt,DVC=Stack,N=_Mon,DI=1"
+}
+swapButtons
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 526
+y 17
+w 45
+h 27
+fgColor index 133
+bgColor index 44
+topShadowColor index 5
+botShadowColor index 10
+font "helvetica-bold-r-18.0"
+buttonLabel "PPS"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "ppsBeamPathSum.edl"
+}
+menuLabel {
+  0 "Beam Path & PPS Status"
+}
+setPosition {
+  0 "button"
+}
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 649
+y 17
+w 70
+h 27
+fgColor index 133
+bgColor index 44
+topShadowColor index 5
+botShadowColor index 10
+font "helvetica-bold-r-18.0"
+buttonLabel "Timing"
+numPvs 4
+numDsps 3
+displayFileName {
+  0 "RFTimingSummary.edl"
+  1 "warmLinacTiming"
+  2 "BeamCycleCounters.edl"
+}
+menuLabel {
+  0 "RF Timing Summary"
+  1 "Linac Timing"
+  2 "Beam Cycle Counter"
+}
+setPosition {
+  0 "button"
+  1 "button"
+  2 "button"
+}
+symbols {
+  1 "S=ICS,SS=Tim,N=''"
+  2 "S=ICS,SS=Tim,N=''"
+}
+propagateMacros {
+  1 0
+  2 0
+}
+swapButtons
+endObjectProperties
+
+# (Button)
+object activeButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 15
+y 490
+w 115
+h 27
+fgColor index 15
+onColor index 10
+offColor index 111
+inconsistentColor index 10
+topShadowColor index 5
+botShadowColor index 10
+controlPv "ICS_Tim:Gate_BeamOn:Lockout"
+onLabel "Chief Unlock"
+offLabel "Chief Lock"
+labelType "literal"
+3d
+font "helvetica-bold-r-14.0"
+objType "controls"
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 274
+y 316
+w 54
+h 53
+
+beginGroup
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 277
+y 316
+w 47
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 131
+bgColor index 112
+useDisplayBg
+visPv "DTL_Vac:IOC1:VacOK.SEVR"
+visMin "0.5"
+visMax "1.5"
+value {
+  "Vacuum"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 294
+y 329
+w 16
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 131
+bgColor index 112
+useDisplayBg
+visPv "DTL_RF:LLRFOK.SEVR"
+visMin "0.5"
+visMax "1.5"
+value {
+  "RF"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 274
+y 341
+w 54
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 131
+bgColor index 112
+useDisplayBg
+visPv "DTL_Mag:Summary.SEVR"
+visMin "0.5"
+visMax "1.5"
+value {
+  "PwrSups"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 289
+y 355
+w 25
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 131
+bgColor index 112
+useDisplayBg
+visPv "DTL_Cool:Summary:Alarm.SEVR"
+visMin "0.5"
+visMax "1.5"
+value {
+  "Cool"
+}
+autoSize
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 274
+y 316
+w 54
+h 53
+
+beginGroup
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 289
+y 355
+w 25
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 20
+bgColor index 112
+useDisplayBg
+visPv "DTL_Cool:Summary:Alarm.SEVR"
+visMin "1.5"
+visMax "2.5"
+value {
+  "Cool"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 274
+y 341
+w 54
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 20
+bgColor index 112
+useDisplayBg
+visPv "DTL_Mag:Summary.SEVR"
+visMin "1.5"
+visMax "2.5"
+value {
+  "PwrSups"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 294
+y 329
+w 16
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 20
+bgColor index 112
+useDisplayBg
+visPv "DTL_RF:LLRFOK.SEVR"
+visMin "1.5"
+visMax "2.5"
+value {
+  "RF"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 277
+y 316
+w 47
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 20
+bgColor index 112
+useDisplayBg
+visPv "DTL_Vac:IOC1:VacOK.SEVR"
+visMin "1.5"
+visMax "2.5"
+value {
+  "Vacuum"
+}
+autoSize
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 356
+y 316
+w 54
+h 53
+
+beginGroup
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 359
+y 316
+w 47
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 131
+bgColor index 112
+useDisplayBg
+visPv "CCL_Vac:IOC1:VacOK.SEVR"
+visMin "0.5"
+visMax "1.5"
+value {
+  "Vacuum"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 376
+y 329
+w 16
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 131
+bgColor index 112
+useDisplayBg
+visPv "CCL_RF:Summary.SEVR"
+visMin "0.5"
+visMax "1.5"
+value {
+  "RF"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 356
+y 341
+w 54
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 131
+bgColor index 112
+useDisplayBg
+visPv "CCL_Mag:Summary_Mag.SEVR"
+visMin "0.5"
+visMax "1.5"
+value {
+  "PwrSups"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 371
+y 355
+w 25
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 131
+bgColor index 112
+useDisplayBg
+visPv "CCL_Cool:Summary:Alarm.SEVR"
+visMin "0.5"
+visMax "1.5"
+value {
+  "Cool"
+}
+autoSize
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 356
+y 316
+w 54
+h 53
+
+beginGroup
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 371
+y 355
+w 25
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 20
+bgColor index 112
+useDisplayBg
+visPv "CCL_Cool:Summary:Alarm.SEVR"
+visMin "1.5"
+visMax "2.5"
+value {
+  "Cool"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 356
+y 341
+w 54
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 20
+bgColor index 112
+useDisplayBg
+visPv "CCL_Mag:Summary_Mag.SEVR"
+visMin "1.5"
+visMax "2.5"
+value {
+  "PwrSups"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 376
+y 329
+w 16
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 20
+bgColor index 112
+useDisplayBg
+visPv "CCL_RF:Summary.SEVR"
+visMin "1.5"
+visMax "2.5"
+value {
+  "RF"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 359
+y 316
+w 47
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 20
+bgColor index 112
+useDisplayBg
+visPv "CCL_Vac:IOC1:VacOK.SEVR"
+visMin "1.5"
+visMax "2.5"
+value {
+  "Vacuum"
+}
+autoSize
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 480
+y 315
+w 54
+h 61
+
+beginGroup
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 495
+y 349
+w 25
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 131
+bgColor index 112
+useDisplayBg
+visPv "SCL_Cool:Summary:Alarm.SEVR"
+visMin "0.5"
+visMax "1.5"
+value {
+  "Cool"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 480
+y 337
+w 54
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 131
+bgColor index 112
+useDisplayBg
+visPv "SCL_Mag:MBOK:Sum.SEVR"
+visMin "0.5"
+visMax "1.5"
+value {
+  "PwrSups"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 500
+y 327
+w 16
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 131
+bgColor index 112
+useDisplayBg
+visPv "SCL_RF:MBOK:Sum.SEVR"
+visMin "0.5"
+visMax "1.5"
+value {
+  "RF"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 483
+y 315
+w 47
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 131
+bgColor index 112
+useDisplayBg
+visPv "SCL_Vac:Vac_MBOK:Sum.SEVR"
+visMin "0.5"
+visMax "1.5"
+value {
+  "Vacuum"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 495
+y 362
+w 28
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 131
+bgColor index 112
+useDisplayBg
+visPv "SCL_Cryo:Cryo_MBOK:Sum.SEVR"
+visMin "0.5"
+visMax "1.5"
+value {
+  "Cryo"
+}
+autoSize
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 597
+y 315
+w 54
+h 61
+
+beginGroup
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 612
+y 349
+w 25
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 131
+bgColor index 112
+useDisplayBg
+visPv "SCL_Cool:Summary:Alarm.SEVR"
+visMin "0.5"
+visMax "1.5"
+value {
+  "Cool"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 597
+y 337
+w 54
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 131
+bgColor index 112
+useDisplayBg
+visPv "SCL_Mag:Mag_12_18_HBOK:Sum.SEVR"
+visMin "0.5"
+visMax "1.5"
+value {
+  "PwrSups"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 617
+y 327
+w 16
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 131
+bgColor index 112
+useDisplayBg
+visPv "SCL_RF:RF_12_18_HBOK:Sum.SEVR"
+visMin "0.5"
+visMax "1.5"
+value {
+  "RF"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 600
+y 315
+w 47
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 131
+bgColor index 112
+useDisplayBg
+visPv "SCL_Vac:Vac_12_18_HBOK:Sum.SEVR"
+visMin "0.5"
+visMax "1.5"
+value {
+  "Vacuum"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 612
+y 362
+w 28
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 131
+bgColor index 112
+useDisplayBg
+visPv "SCL_Cryo:Cryo_12_18_HBOK:Sum.SEVR"
+visMin "0.5"
+visMax "1.5"
+value {
+  "Cryo"
+}
+autoSize
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 597
+y 315
+w 54
+h 61
+
+beginGroup
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 612
+y 349
+w 25
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 20
+bgColor index 112
+useDisplayBg
+visPv "SCL_Cool:Summary:Alarm.SEVR"
+visMin "1.5"
+visMax "2.5"
+value {
+  "Cool"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 597
+y 337
+w 54
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 20
+bgColor index 112
+useDisplayBg
+visPv "SCL_Mag:Mag_12_18_HBOK:Sum.SEVR"
+visMin "1.5"
+visMax "2.5"
+value {
+  "PwrSups"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 617
+y 327
+w 16
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 20
+bgColor index 112
+useDisplayBg
+visPv "SCL_RF:RF_12_18_HBOK:Sum.SEVR"
+visMin "1.5"
+visMax "2.5"
+value {
+  "RF"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 600
+y 315
+w 47
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 20
+bgColor index 112
+useDisplayBg
+visPv "SCL_Vac:Vac_12_18_HBOK:Sum.SEVR"
+visMin "1.5"
+visMax "2.5"
+value {
+  "Vacuum"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 612
+y 362
+w 28
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 20
+bgColor index 112
+useDisplayBg
+visPv "SCL_Cryo:Cryo_12_18_HBOK:Sum.SEVR"
+visMin "1.5"
+visMax "2.5"
+value {
+  "Cryo"
+}
+autoSize
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 655
+y 315
+w 54
+h 61
+
+beginGroup
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 670
+y 349
+w 25
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 131
+bgColor index 112
+useDisplayBg
+visPv "SCL_Cool:Summary:Alarm.SEVR"
+visMin "0.5"
+visMax "1.5"
+value {
+  "Cool"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 655
+y 337
+w 54
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 131
+bgColor index 112
+useDisplayBg
+visPv "SCL_Mag:Mag_19_23_HBOK:Sum.SEVR"
+visMin "0.5"
+visMax "1.5"
+value {
+  "PwrSups"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 675
+y 327
+w 16
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 131
+bgColor index 112
+useDisplayBg
+visPv "SCL_RF:19_23_HBOK:Sum.SEVR"
+visMin "0.5"
+visMax "1.5"
+value {
+  "RF"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 658
+y 315
+w 47
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 131
+bgColor index 112
+useDisplayBg
+visPv "SCL_Vac:Vac_19_23_HBOK:Sum.SEVR"
+visMin "0.5"
+visMax "1.5"
+value {
+  "Vacuum"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 670
+y 362
+w 28
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 131
+bgColor index 112
+useDisplayBg
+visPv "SCL_Cryo:Cryo_19_23_HBOK:Sum.SEVR"
+visMin "0.5"
+visMax "1.5"
+value {
+  "Cryo"
+}
+autoSize
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 655
+y 315
+w 54
+h 61
+
+beginGroup
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 670
+y 349
+w 25
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 20
+bgColor index 112
+useDisplayBg
+visPv "SCL_Cool:Summary:Alarm.SEVR"
+visMin "1.5"
+visMax "2.5"
+value {
+  "Cool"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 655
+y 337
+w 54
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 20
+bgColor index 112
+useDisplayBg
+visPv "SCL_Mag:Mag_19_23_HBOK:Sum.SEVR"
+visMin "1.5"
+visMax "2.5"
+value {
+  "PwrSups"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 675
+y 327
+w 16
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 20
+bgColor index 112
+useDisplayBg
+visPv "SCL_RF:19_23_HBOK:Sum.SEVR"
+visMin "1.5"
+visMax "2.5"
+value {
+  "RF"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 658
+y 315
+w 47
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 20
+bgColor index 112
+useDisplayBg
+visPv "SCL_Vac:Vac_19_23_HBOK:Sum.SEVR"
+visMin "1.5"
+visMax "2.5"
+value {
+  "Vacuum"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 670
+y 362
+w 28
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 20
+bgColor index 112
+useDisplayBg
+visPv "SCL_Cryo:Cryo_19_23_HBOK:Sum.SEVR"
+visMin "1.5"
+visMax "2.5"
+value {
+  "Cryo"
+}
+autoSize
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 480
+y 315
+w 54
+h 61
+
+beginGroup
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 495
+y 349
+w 25
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 20
+bgColor index 112
+useDisplayBg
+visPv "SCL_Cool:Summary:Alarm.SEVR"
+visMin "1.5"
+visMax "2.5"
+value {
+  "Cool"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 480
+y 337
+w 54
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 20
+bgColor index 112
+useDisplayBg
+visPv "SCL_Mag:MBOK:Sum.SEVR"
+visMin "1.5"
+visMax "2.5"
+value {
+  "PwrSups"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 500
+y 327
+w 16
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 20
+bgColor index 112
+useDisplayBg
+visPv "SCL_RF:MBOK:Sum.SEVR"
+visMin "1.5"
+visMax "2.5"
+value {
+  "RF"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 483
+y 315
+w 47
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 20
+bgColor index 112
+useDisplayBg
+visPv "SCL_Vac:Vac_MBOK:Sum.SEVR"
+visMin "1.5"
+visMax "2.5"
+value {
+  "Vacuum"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 495
+y 362
+w 28
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 20
+bgColor index 112
+useDisplayBg
+visPv "SCL_Cryo:Cryo_MBOK:Sum.SEVR"
+visMin "1.5"
+visMax "2.5"
+value {
+  "Cryo"
+}
+autoSize
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 714
+y 319
+w 54
+h 44
+
+beginGroup
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 729
+y 349
+w 25
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 131
+bgColor index 112
+useDisplayBg
+visPv "SCL_Cool:Summary:Alarm.SEVR"
+visMin "0.5"
+visMax "1.5"
+value {
+  "Cool"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 714
+y 334
+w 54
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 131
+bgColor index 112
+useDisplayBg
+visPv "SCL_Mag:Mag_Drift_HBOK:Sum.SEVR"
+visMin "0.5"
+visMax "1.5"
+value {
+  "PwrSups"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 717
+y 319
+w 47
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 131
+bgColor index 112
+useDisplayBg
+visPv "SCL_Vac:Vac_Drift_HBOK:Sum.SEVR"
+visMin "0.5"
+visMax "1.5"
+value {
+  "Vacuum"
+}
+autoSize
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 714
+y 319
+w 54
+h 44
+
+beginGroup
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 729
+y 349
+w 25
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 20
+bgColor index 112
+useDisplayBg
+visPv "SCL_Cool:Summary:Alarm.SEVR"
+visMin "1.5"
+visMax "2.5"
+value {
+  "Cool"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 714
+y 334
+w 54
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 20
+bgColor index 112
+useDisplayBg
+visPv "SCL_Mag:Mag_Drift_HBOK:Sum.SEVR"
+visMin "1.5"
+visMax "2.5"
+value {
+  "PwrSups"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 717
+y 319
+w 47
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 20
+bgColor index 112
+useDisplayBg
+visPv "SCL_Vac:Vac_Drift_HBOK:Sum.SEVR"
+visMin "1.5"
+visMax "2.5"
+value {
+  "Vacuum"
+}
+autoSize
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 780
+y 324
+w 54
+h 44
+
+beginGroup
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 795
+y 354
+w 25
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 131
+bgColor index 112
+useDisplayBg
+visPv "Mult_Cool:Summary:Alarm.SEVR"
+visMin "0.5"
+visMax "1.5"
+value {
+  "Cool"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 780
+y 339
+w 54
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 131
+bgColor index 112
+useDisplayBg
+visPv "HEBT_Mag:Summary.SEVR"
+visMin "0.5"
+visMax "1.5"
+value {
+  "PwrSups"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 783
+y 324
+w 47
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 131
+bgColor index 112
+useDisplayBg
+visPv "LDmp_Vac:VacOK.SEVR"
+visMin "0.5"
+visMax "1.5"
+value {
+  "Vacuum"
+}
+autoSize
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 780
+y 324
+w 54
+h 44
+
+beginGroup
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 795
+y 354
+w 25
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 20
+bgColor index 112
+useDisplayBg
+visPv "Mult_Cool:Summary:Alarm.SEVR"
+visMin "1.5"
+visMax "2.5"
+value {
+  "Cool"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 780
+y 339
+w 54
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 20
+bgColor index 112
+useDisplayBg
+visPv "HEBT_Mag:Summary.SEVR"
+visMin "1.5"
+visMax "2.5"
+value {
+  "PwrSups"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 783
+y 324
+w 47
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 20
+bgColor index 112
+useDisplayBg
+visPv "LDmp_Vac:VacOK.SEVR"
+visMin "1.5"
+visMax "2.5"
+value {
+  "Vacuum"
+}
+autoSize
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 842
+y 123
+w 54
+h 38
+
+beginGroup
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 845
+y 123
+w 47
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 131
+bgColor index 112
+useDisplayBg
+visPv "IDmp_Vac:Sum.SEVR"
+visMin "0.5"
+visMax "1.5"
+value {
+  "Vacuum"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 842
+y 135
+w 54
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 131
+bgColor index 112
+useDisplayBg
+visPv "IDmp_Mag:Sum.SEVR"
+visMin "0.5"
+visMax "1.5"
+value {
+  "PwrSups"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 857
+y 147
+w 25
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 131
+bgColor index 112
+useDisplayBg
+visPv "Mult_Cool:Summary:Alarm.SEVR"
+visMin "0.5"
+visMax "1.5"
+value {
+  "Cool"
+}
+autoSize
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 842
+y 123
+w 54
+h 38
+
+beginGroup
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 845
+y 123
+w 47
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 20
+bgColor index 112
+useDisplayBg
+visPv "IDmp_Vac:Sum.SEVR"
+visMin "1.5"
+visMax "2.5"
+value {
+  "Vacuum"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 842
+y 135
+w 54
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 20
+bgColor index 112
+useDisplayBg
+visPv "IDmp_Mag:Sum.SEVR"
+visMin "1.5"
+visMax "2.5"
+value {
+  "PwrSups"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 857
+y 147
+w 25
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 20
+bgColor index 112
+useDisplayBg
+visPv "Mult_Cool:Summary:Alarm.SEVR"
+visMin "1.5"
+visMax "2.5"
+value {
+  "Cool"
+}
+autoSize
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1080
+y 165
+w 54
+h 38
+
+beginGroup
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1083
+y 165
+w 47
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 131
+bgColor index 112
+useDisplayBg
+visPv "RTBT_Vac:Sum.SEVR"
+visMin "0.5"
+visMax "1.5"
+value {
+  "Vacuum"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1080
+y 177
+w 54
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 131
+bgColor index 112
+useDisplayBg
+visPv "RTBT_Mag:Sum.SEVR"
+visMin "0.5"
+visMax "1.5"
+value {
+  "PwrSups"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1095
+y 189
+w 25
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 131
+bgColor index 112
+useDisplayBg
+visPv "Mult_Cool:Summary:Alarm.SEVR"
+visMin "0.5"
+visMax "1.5"
+value {
+  "Cool"
+}
+autoSize
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 184
+y 337
+w 42
+h 38
+
+beginGroup
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 187
+y 361
+w 36
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 131
+bgColor index 112
+useDisplayBg
+visPv "MEBT:Summary_Ovr.SEVR"
+visMin "0.5"
+visMax "1.5"
+value {
+  "MEBT"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 192
+y 349
+w 26
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 131
+bgColor index 112
+useDisplayBg
+visPv "RFQ:Summary.SEVR"
+visMin "0.5"
+visMax "1.5"
+value {
+  "RFQ"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 184
+y 337
+w 42
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 131
+bgColor index 112
+useDisplayBg
+visPv "IS:Summary_Ovr.SEVR"
+visMin "0.5"
+visMax "1.5"
+value {
+  "Source"
+}
+autoSize
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 184
+y 337
+w 42
+h 38
+
+beginGroup
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 187
+y 361
+w 36
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 20
+bgColor index 112
+useDisplayBg
+visPv "MEBT:Summary_Ovr.SEVR"
+visMin "1.5"
+visMax "2.5"
+value {
+  "MEBT"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 192
+y 349
+w 26
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 20
+bgColor index 112
+useDisplayBg
+visPv "RFQ:Summary.SEVR"
+visMin "1.5"
+visMax "2.5"
+value {
+  "RFQ"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 184
+y 337
+w 42
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 20
+bgColor index 112
+useDisplayBg
+visPv "IS:Summary_Ovr.SEVR"
+visMin "1.5"
+visMax "2.5"
+value {
+  "Source"
+}
+autoSize
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1080
+y 165
+w 54
+h 38
+
+beginGroup
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1083
+y 165
+w 47
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 20
+bgColor index 112
+useDisplayBg
+visPv "RTBT_Vac:Sum.SEVR"
+visMin "1.5"
+visMax "2.5"
+value {
+  "Vacuum"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1080
+y 177
+w 54
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 20
+bgColor index 112
+useDisplayBg
+visPv "RTBT_Mag:Sum.SEVR"
+visMin "1.5"
+visMax "2.5"
+value {
+  "PwrSups"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1095
+y 189
+w 25
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 20
+bgColor index 112
+useDisplayBg
+visPv "Mult_Cool:Summary:Alarm.SEVR"
+visMin "1.5"
+visMax "2.5"
+value {
+  "Cool"
+}
+autoSize
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1080
+y 165
+w 54
+h 38
+
+beginGroup
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1083
+y 165
+w 47
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 112
+useDisplayBg
+visPv "RTBT_Vac:Sum.SEVR"
+visMin "2.5"
+visMax "3.5"
+value {
+  "Vacuum"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1080
+y 177
+w 54
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 112
+useDisplayBg
+visPv "RTBT_Mag:Sum.SEVR"
+visMin "2.5"
+visMax "3.5"
+value {
+  "PwrSups"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1095
+y 189
+w 25
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 112
+useDisplayBg
+visPv "Mult_Cool:Summary:Alarm.SEVR"
+visMin "2.5"
+visMax "3.5"
+value {
+  "Cool"
+}
+autoSize
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 842
+y 123
+w 54
+h 38
+
+beginGroup
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 845
+y 123
+w 47
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 112
+useDisplayBg
+visPv "IDmp_Vac:Sum.SEVR"
+visMin "2.5"
+visMax "3.5"
+value {
+  "Vacuum"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 842
+y 135
+w 54
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 112
+useDisplayBg
+visPv "IDmp_Mag:Sum.SEVR"
+visMin "2.5"
+visMax "3.5"
+value {
+  "PwrSups"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 857
+y 147
+w 25
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 112
+useDisplayBg
+visPv "Mult_Cool:Summary:Alarm.SEVR"
+visMin "2.5"
+visMax "3.5"
+value {
+  "Cool"
+}
+autoSize
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 780
+y 324
+w 54
+h 44
+
+beginGroup
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 795
+y 354
+w 25
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 112
+useDisplayBg
+visPv "Mult_Cool:Summary:Alarm.SEVR"
+visMin "2.5"
+visMax "3.5"
+value {
+  "Cool"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 780
+y 339
+w 54
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 112
+useDisplayBg
+visPv "HEBT_Mag:Summary.SEVR"
+visMin "2.5"
+visMax "3.5"
+value {
+  "PwrSups"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 783
+y 324
+w 47
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 112
+useDisplayBg
+visPv "LDmp_Vac:VacOK.SEVR"
+visMin "2.5"
+visMax "3.5"
+value {
+  "Vacuum"
+}
+autoSize
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 778
+y 163
+w 54
+h 38
+
+beginGroup
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 781
+y 163
+w 47
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 131
+bgColor index 112
+useDisplayBg
+visPv "HEBTInj_Vac:Sum.SEVR"
+visMin "0.5"
+visMax "1.5"
+value {
+  "Vacuum"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 778
+y 175
+w 54
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 131
+bgColor index 112
+useDisplayBg
+visPv "HEBTInj_Mag:Sum.SEVR"
+visMin "0.5"
+visMax "1.5"
+value {
+  "PwrSups"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 793
+y 187
+w 25
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 131
+bgColor index 112
+useDisplayBg
+visPv "Mult_Cool:Summary:Alarm.SEVR"
+visMin "0.5"
+visMax "1.5"
+value {
+  "Cool"
+}
+autoSize
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 778
+y 163
+w 54
+h 38
+
+beginGroup
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 781
+y 163
+w 47
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 20
+bgColor index 112
+useDisplayBg
+visPv "HEBTInj_Vac:Sum.SEVR"
+visMin "1.5"
+visMax "2.5"
+value {
+  "Vacuum"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 778
+y 175
+w 54
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 20
+bgColor index 112
+useDisplayBg
+visPv "HEBTInj_Mag:Sum.SEVR"
+visMin "1.5"
+visMax "2.5"
+value {
+  "PwrSups"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 793
+y 187
+w 25
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 20
+bgColor index 112
+useDisplayBg
+visPv "Mult_Cool:Summary:Alarm.SEVR"
+visMin "1.5"
+visMax "2.5"
+value {
+  "Cool"
+}
+autoSize
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 778
+y 163
+w 54
+h 38
+
+beginGroup
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 781
+y 163
+w 47
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 112
+useDisplayBg
+visPv "HEBTInj_Vac:Sum.SEVR"
+visMin "2.5"
+visMax "3.5"
+value {
+  "Vacuum"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 778
+y 175
+w 54
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 112
+useDisplayBg
+visPv "HEBTInj_Mag:Sum.SEVR"
+visMin "2.5"
+visMax "3.5"
+value {
+  "PwrSups"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 793
+y 187
+w 25
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 112
+useDisplayBg
+visPv "Mult_Cool:Summary:Alarm.SEVR"
+visMin "2.5"
+visMax "3.5"
+value {
+  "Cool"
+}
+autoSize
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 714
+y 319
+w 54
+h 44
+
+beginGroup
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 729
+y 349
+w 25
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 112
+useDisplayBg
+visPv "SCL_Cool:Summary:Alarm.SEVR"
+visMin "2.5"
+visMax "3.5"
+value {
+  "Cool"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 714
+y 334
+w 54
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 112
+useDisplayBg
+visPv "SCL_Mag:Mag_Drift_HBOK:Sum.SEVR"
+visMin "2.5"
+visMax "3.5"
+value {
+  "PwrSups"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 717
+y 319
+w 47
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 112
+useDisplayBg
+visPv "SCL_Vac:Vac_Drift_HBOK:Sum.SEVR"
+visMin "2.5"
+visMax "3.5"
+value {
+  "Vacuum"
+}
+autoSize
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 655
+y 315
+w 54
+h 61
+
+beginGroup
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 670
+y 349
+w 25
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 112
+useDisplayBg
+visPv "SCL_Cool:Summary:Alarm.SEVR"
+visMin "2.5"
+visMax "3.5"
+value {
+  "Cool"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 655
+y 337
+w 54
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 112
+useDisplayBg
+visPv "SCL_Mag:Mag_19_23_HBOK:Sum.SEVR"
+visMin "2.5"
+visMax "3.5"
+value {
+  "PwrSups"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 675
+y 327
+w 16
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 112
+useDisplayBg
+visPv "SCL_RF:19_23_HBOK:Sum.SEVR"
+visMin "2.5"
+visMax "3.5"
+value {
+  "RF"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 658
+y 315
+w 47
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 112
+useDisplayBg
+visPv "SCL_Vac:Vac_19_23_HBOK:Sum.SEVR"
+visMin "2.5"
+visMax "3.5"
+value {
+  "Vacuum"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 670
+y 362
+w 28
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 112
+useDisplayBg
+visPv "SCL_Cryo:Cryo_19_23_HBOK:Sum.SEVR"
+visMin "2.5"
+visMax "3.5"
+value {
+  "Cryo"
+}
+autoSize
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 597
+y 315
+w 54
+h 61
+
+beginGroup
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 612
+y 349
+w 25
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 112
+useDisplayBg
+visPv "SCL_Cool:Summary:Alarm.SEVR"
+visMin "2.5"
+visMax "3.5"
+value {
+  "Cool"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 597
+y 337
+w 54
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 112
+useDisplayBg
+visPv "SCL_Mag:Mag_12_18_HBOK:Sum.SEVR"
+visMin "2.5"
+visMax "3.5"
+value {
+  "PwrSups"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 617
+y 327
+w 16
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 112
+useDisplayBg
+visPv "SCL_RF:RF_12_18_HBOK:Sum.SEVR"
+visMin "2.5"
+visMax "3.5"
+value {
+  "RF"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 600
+y 315
+w 47
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 112
+useDisplayBg
+visPv "SCL_Vac:Vac_12_18_HBOK:Sum.SEVR"
+visMin "2.5"
+visMax "3.5"
+value {
+  "Vacuum"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 612
+y 362
+w 28
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 112
+useDisplayBg
+visPv "SCL_Cryo:Cryo_12_18_HBOK:Sum.SEVR"
+visMin "2.5"
+visMax "3.5"
+value {
+  "Cryo"
+}
+autoSize
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 480
+y 315
+w 54
+h 61
+
+beginGroup
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 495
+y 349
+w 25
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 112
+useDisplayBg
+visPv "SCL_Cool:Summary:Alarm.SEVR"
+visMin "2.5"
+visMax "3.5"
+value {
+  "Cool"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 480
+y 337
+w 54
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 112
+useDisplayBg
+visPv "SCL_Mag:MBOK:Sum.SEVR"
+visMin "2.5"
+visMax "3.5"
+value {
+  "PwrSups"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 500
+y 327
+w 16
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 112
+useDisplayBg
+visPv "SCL_RF:MBOK:Sum.SEVR"
+visMin "2.5"
+visMax "3.5"
+value {
+  "RF"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 483
+y 315
+w 47
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 112
+useDisplayBg
+visPv "SCL_Vac:Vac_MBOK:Sum.SEVR"
+visMin "2.5"
+visMax "3.5"
+value {
+  "Vacuum"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 495
+y 362
+w 28
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 112
+useDisplayBg
+visPv "SCL_Cryo:Cryo_MBOK:Sum.SEVR"
+visMin "2.5"
+visMax "3.5"
+value {
+  "Cryo"
+}
+autoSize
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 356
+y 316
+w 54
+h 53
+
+beginGroup
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 371
+y 355
+w 25
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 112
+useDisplayBg
+visPv "CCL_Cool:Summary:Alarm.SEVR"
+visMin "2.5"
+visMax "3.5"
+value {
+  "Cool"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 356
+y 341
+w 54
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 112
+useDisplayBg
+visPv "CCL_Mag:Summary_Mag.SEVR"
+visMin "2.5"
+visMax "3.5"
+value {
+  "PwrSups"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 376
+y 329
+w 16
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 112
+useDisplayBg
+visPv "CCL_RF:Summary.SEVR"
+visMin "2.5"
+visMax "3.5"
+value {
+  "RF"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 359
+y 316
+w 47
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 112
+useDisplayBg
+visPv "CCL_Vac:IOC1:VacOK.SEVR"
+visMin "2.5"
+visMax "3.5"
+value {
+  "Vacuum"
+}
+autoSize
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 274
+y 316
+w 54
+h 53
+
+beginGroup
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 289
+y 355
+w 25
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 112
+useDisplayBg
+visPv "DTL_Cool:Summary:Alarm.SEVR"
+visMin "2.5"
+visMax "3.5"
+value {
+  "Cool"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 274
+y 341
+w 54
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 112
+useDisplayBg
+visPv "DTL_Mag:Summary.SEVR"
+visMin "2.5"
+visMax "3.5"
+value {
+  "PwrSups"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 294
+y 329
+w 16
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 112
+useDisplayBg
+visPv "DTL_RF:LLRFOK.SEVR"
+visMin "2.5"
+visMax "3.5"
+value {
+  "RF"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 277
+y 316
+w 47
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 112
+useDisplayBg
+visPv "DTL_Vac:IOC1:VacOK.SEVR"
+visMin "2.5"
+visMax "3.5"
+value {
+  "Vacuum"
+}
+autoSize
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 184
+y 337
+w 42
+h 38
+
+beginGroup
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 187
+y 361
+w 36
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 112
+useDisplayBg
+visPv "MEBT:Summary_Ovr.SEVR"
+visMin "2.5"
+visMax "3.5"
+value {
+  "MEBT"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 192
+y 349
+w 26
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 112
+useDisplayBg
+visPv "RFQ:Summary.SEVR"
+visMin "2.5"
+visMax "3.5"
+value {
+  "RFQ"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 184
+y 337
+w 42
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 112
+useDisplayBg
+visPv "IS:Summary_Ovr.SEVR"
+visMin "2.5"
+visMax "3.5"
+value {
+  "Source"
+}
+autoSize
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 64
+y 392
+w 56
+h 27
+controlPv "ICS_Tim:Gate_BeamOn:RR"
+displayMode "decimal"
+precision 1
+fgColor index 15
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-24.0"
+fontAlign "center"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 3
+y 394
+w 59
+h 28
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 5
+useDisplayBg
+value {
+  "Current"
+  "Rep-Rate"
+}
+autoSize
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 11
+y 260
+w 85
+h 37
+
+beginGroup
+
+# (Shell Command)
+object shellCmdClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 12
+y 260
+w 84
+h 36
+fgColor index 110
+bgColor index 40
+topShadowColor index 5
+botShadowColor index 10
+font "helvetica-bold-r-14.0"
+numCmds 1
+command {
+  0 "cd /u/sns/opers/accel/home/accl-oper-old/peters/checklist; xterm -hold -e 'python checklist.py'"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 11
+y 260
+w 84
+h 37
+font "helvetica-bold-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 5
+useDisplayBg
+value {
+  "Checklist"
+  "Script"
+}
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Shell Command)
+object shellCmdClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 206
+y 517
+w 73
+h 31
+fgColor index 15
+bgColor index 10
+topShadowColor index 5
+botShadowColor index 10
+font "helvetica-bold-r-14.0"
+buttonLabel "Goto 1 Hz"
+numCmds 1
+commandLabel {
+  0 "Goto 1 Hz"
+}
+command {
+  0 "caput ICS_Tim:Gate_BeamOn:RRSet 1; caput ICS_Tim:EventGen:RRLoad 1"
+}
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 142
+y 392
+w 166
+h 27
+controlPv "RTBT_Diag:BCM25I:Power1"
+precision 1
+fgColor index 15
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-24.0"
+fontAlign "center"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 120
+y 391
+w 24
+h 27
+font "helvetica-bold-r-24.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 5
+useDisplayBg
+value {
+  "@"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 3
+y 420
+w 23
+h 27
+font "helvetica-bold-r-24.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 5
+useDisplayBg
+value {
+  "to"
+}
+autoSize
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 836
+y 390
+w 132
+h 24
+fgColor index 35
+bgColor index 129
+topShadowColor index 5
+botShadowColor index 10
+font "helvetica-bold-r-14.0"
+buttonLabel "New RF! TRY ME!"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "RF_all-in-one.edl"
+}
+setPosition {
+  0 "button"
+}
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 934
+y 135
+w 54
+h 50
+
+beginGroup
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 937
+y 135
+w 47
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 20
+bgColor index 112
+useDisplayBg
+visPv "Ring_Vac:Sum.SEVR"
+visMin "1.5"
+visMax "2.5"
+value {
+  "Vacuum"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 934
+y 147
+w 54
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 20
+bgColor index 112
+useDisplayBg
+visPv "Ring_Mag:Sum.SEVR"
+visMin "1.5"
+visMax "2.5"
+value {
+  "PwrSups"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 949
+y 171
+w 25
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 20
+bgColor index 112
+useDisplayBg
+visPv "Mult_Cool:Summary:Alarm.SEVR"
+visMin "1.5"
+visMax "2.5"
+value {
+  "Cool"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 942
+y 159
+w 40
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 20
+bgColor index 112
+useDisplayBg
+visPv "Ring_Mag:IKick_Sum.SEVR"
+visMin "1.5"
+visMax "2.5"
+value {
+  "InjKick"
+}
+autoSize
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 934
+y 135
+w 54
+h 50
+
+beginGroup
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 937
+y 135
+w 47
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 112
+useDisplayBg
+visPv "Ring_Vac:Sum.SEVR"
+visMin "2.5"
+visMax "3.5"
+value {
+  "Vacuum"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 934
+y 147
+w 54
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 112
+useDisplayBg
+visPv "Ring_Mag:Sum.SEVR"
+visMin "2.5"
+visMax "3.5"
+value {
+  "PwrSups"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 949
+y 171
+w 25
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 112
+useDisplayBg
+visPv "Mult_Cool:Summary:Alarm.SEVR"
+visMin "2.5"
+visMax "3.5"
+value {
+  "Cool"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 942
+y 159
+w 40
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 112
+useDisplayBg
+visPv "Ring_Mag:IKick_Sum.SEVR"
+visMin "2.5"
+visMax "3.5"
+value {
+  "InjKick"
+}
+autoSize
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 934
+y 111
+w 53
+h 14
+
+beginGroup
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 934
+y 111
+w 53
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 35
+bgColor index 112
+useDisplayBg
+visPv "Ring_Mag:EKick_Sum.SEVR"
+visMin "0.5"
+visMax "1.5"
+value {
+  "EKickers"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 934
+y 111
+w 53
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 20
+bgColor index 112
+useDisplayBg
+visPv "Ring_Mag:EKick_Sum.SEVR"
+visMin "1.5"
+visMax "2.5"
+value {
+  "EKickers"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 934
+y 111
+w 53
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 112
+useDisplayBg
+visPv "Ring_Mag:EKick_Sum.SEVR"
+visMin "2.5"
+visMax "3.5"
+value {
+  "EKickers"
+}
+autoSize
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1040
+y 464
+w 56
+h 19
+controlPv "TGT_LWS2:Tnk_TE1710B:MinAvg"
+fgColor index 112
+fgAlarm
+bgColor index 15
+fill
+font "helvetica-bold-r-14.0"
+fontAlign "right"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1040
+y 463
+w 55
+h 20
+lineColor index 45
+fillColor index 5
+lineWidth 3
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1039
+y 486
+w 56
+h 19
+controlPv "TGT_LWS2:Tnk_TE1710F:MinAvg"
+fgColor index 112
+fgAlarm
+bgColor index 15
+fill
+font "helvetica-bold-r-14.0"
+fontAlign "right"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1040
+y 485
+w 55
+h 20
+lineColor index 45
+fillColor index 5
+lineWidth 3
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 981
+y 473
+w 56
+h 19
+controlPv "TGT_LWS2:Tnk_TE1710D:MinAvg"
+fgColor index 112
+fgAlarm
+bgColor index 15
+fill
+font "helvetica-bold-r-14.0"
+fontAlign "right"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 982
+y 473
+w 55
+h 20
+lineColor index 25
+fillColor index 5
+lineWidth 3
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1097
+y 473
+w 56
+h 19
+controlPv "TGT_LWS2:Tnk_TE1710H:MinAvg"
+fgColor index 112
+fgAlarm
+bgColor index 15
+fill
+font "helvetica-bold-r-14.0"
+fontAlign "right"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1098
+y 473
+w 56
+h 20
+lineColor index 25
+fillColor index 5
+lineWidth 3
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 996
+y 414
+w 128
+h 48
+font "helvetica-bold-r-14.0"
+fontAlign "center"
+fgColor index 112
+bgColor index 5
+useDisplayBg
+value {
+  "Beam Halo One"
+  "Minute Avg Temps"
+  "on Target"
+}
+autoSize
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 988
+y 124
+w 16
+h 14
+
+beginGroup
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 988
+y 124
+w 16
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 35
+bgColor index 112
+useDisplayBg
+visPv "Ring_LLRF:Cav:Field_Amp_OK.SEVR"
+visMin "0.5"
+visMax "1.5"
+value {
+  "RF"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 988
+y 124
+w 16
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 20
+bgColor index 112
+useDisplayBg
+visPv "Ring_LLRF:Cav:Field_Amp_OK.SEVR"
+visMin "1.5"
+visMax "2.5"
+value {
+  "RF"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 988
+y 124
+w 16
+h 14
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 133
+bgColor index 112
+useDisplayBg
+visPv "Ring_LLRF:Cav:Field_Amp_OK.SEVR"
+visMin "2.5"
+visMax "3.5"
+value {
+  "RF"
+}
+autoSize
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+

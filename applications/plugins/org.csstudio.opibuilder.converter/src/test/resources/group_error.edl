@@ -1,0 +1,102 @@
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 8
+y 120
+w 52
+h 11
+
+beginGroup
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 8
+y 120
+w 52
+h 11
+
+beginGroup
+
+# (Byte)
+object ByteClass1
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 8
+y 121
+w 11
+h 10
+controlPv "$(DEVICE):$(MRN)_HOCPL_STS"
+lineColor index 14
+onColor index 15
+offColor index 8
+lineWidth 2
+numBits 1
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 8
+y 120
+w 52
+h 11
+
+beginGroup
+
+# (Static Text)
+object activeXTextClassX
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 26
+y 120
+w 35
+h 13
+font "helvetica-bold-r-12.0"
+fgColor index 10
+bgColor index 3
+value {
+  "Homed"
+}
+autoSize
+endObjectProperties
+
+# (Byte)
+object ByteClassX
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 8
+y 121
+w 11
+h 10
+controlPv "$(DEVICE):$(MRN)_HOCPL_STS"
+lineColor index 14
+onColor index 15
+offColor index 8
+lineWidth 2
+numBits 1
+endObjectProperties
+
+endGroup
+
+endObjectProperties
