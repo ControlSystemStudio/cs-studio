@@ -30,11 +30,8 @@ public abstract class Node {
 	/**
 	 * Gives the children of this node.
 	 * 
-	 * @deprecated Use {@link #getChildrenNodes()}.
-	 * 
 	 * @return A not-null array of nodes which are the children of this node (this array may be empty!).
 	 */
-	@Deprecated
 	public final Node[] getChildrenNodesAsArray()
 	{
 		Node[] result = this._children.toArray(new Node[this._children.size()]);

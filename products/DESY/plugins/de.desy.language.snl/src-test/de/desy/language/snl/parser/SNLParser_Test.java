@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import de.desy.language.editor.core.parser.Node;
 import de.desy.language.snl.parser.nodes.AbstractSNLNode;
+import de.desy.language.snl.parser.nodes.AllVariablesNode;
 import de.desy.language.snl.parser.nodes.AssignStatementNode;
 import de.desy.language.snl.parser.nodes.EventFlagNode;
 import de.desy.language.snl.parser.nodes.MonitorStatementNode;
@@ -95,59 +96,12 @@ public class SNLParser_Test extends TestCase {
 				.getSourceIdentifier());
 
 		Assert.assertTrue(programNode.hasChildren());
-		Assert.assertEquals(5, programNode.getChildrenNodesAsArray().length);
+		Assert.assertEquals(4, programNode.getChildrenNodesAsArray().length);
 
 		Node node;
 
-		// option +r;
-		node = programNode.getChildrenNodesAsArray()[0];
-		Assert.assertEquals(OptionStatementNode.class, node.getClass());
-		Assert.assertEquals("+r", ((OptionStatementNode) node)
-				.getSourceIdentifier());
-		Assert.assertFalse(((OptionStatementNode) node).hasChildren());
-		Assert.assertFalse(((OptionStatementNode) node).hasContent());
-
-		// double v;
-		node = programNode.getChildrenNodesAsArray()[1];
-		Assert.assertEquals(VariableNode.class, node.getClass());
-		Assert.assertEquals("v", ((VariableNode) node).getSourceIdentifier());
-		Assert.assertTrue(((VariableNode) node).isAssigned());
-		Assert.assertTrue(((VariableNode) node).isMonitored());
-		Assert.assertEquals("{user}:aiExample", ((VariableNode) node)
-				.getAssignedChannelName());
-		Assert.assertTrue(((VariableNode) node).hasChildren());
-		final Node[] childrenNodes = node.getChildrenNodesAsArray();
-		Assert.assertEquals(2, childrenNodes.length);
-		Assert.assertEquals(AssignStatementNode.class, childrenNodes[0]
-				.getClass());
-		Assert.assertEquals("{user}:aiExample",
-				((AssignStatementNode) childrenNodes[0]).getContent());
-		Assert.assertEquals(MonitorStatementNode.class, childrenNodes[1]
-				.getClass());
-
-		// long l;
-		node = programNode.getChildrenNodesAsArray()[2];
-		Assert.assertEquals(VariableNode.class, node.getClass());
-		Assert.assertEquals("l", ((VariableNode) node).getSourceIdentifier());
-
-		// evFlag vFlag
-		node = programNode.getChildrenNodesAsArray()[3];
-		Assert.assertEquals(EventFlagNode.class, node.getClass());
-		final EventFlagNode eventFlagNode = (EventFlagNode) node;
-		Assert.assertEquals("vFlag", eventFlagNode.getSourceIdentifier());
-
-		Assert.assertTrue(eventFlagNode.hasChildren());
-		Assert.assertEquals(1, eventFlagNode.getChildrenNodesAsArray().length);
-		final SyncStatementNode syncNode = (SyncStatementNode) eventFlagNode
-				.getChildrenNodesAsArray()[0];
-		Assert.assertEquals(SyncStatementNode.class, syncNode.getClass());
-		Assert.assertEquals("vFlag", syncNode.getSourceIdentifier());
-		Assert.assertTrue(syncNode.hasContent());
-		Assert.assertFalse(syncNode.hasChildren());
-		Assert.assertEquals("v", syncNode.getContent());
-
 		// State set ss1
-		node = programNode.getChildrenNodesAsArray()[4];
+		node = programNode.getChildrenNodesAsArray()[0];
 		Assert.assertEquals(StateSetNode.class, node.getClass());
 		final StateSetNode stateSetNode = ((StateSetNode) node);
 		Assert.assertEquals(127, stateSetNode.getStatementStartOffset());
@@ -187,6 +141,58 @@ public class SNLParser_Test extends TestCase {
 		Assert.assertEquals("high",
 				((AbstractSNLNode) stateSetChildrenNodes[2])
 						.getSourceIdentifier());
+		
+		// double v;
+		node = programNode.getChildrenNodesAsArray()[1];
+		Assert.assertEquals(AllVariablesNode.class, node.getClass());
+		Assert.assertEquals(2, node.getChildrenNodes().size());
+		
+		VariableNode varNode = (VariableNode) node.getChildrenNodesAsArray()[0];
+		Assert.assertEquals("v", varNode.getSourceIdentifier());
+		Assert.assertTrue(varNode.isAssigned());
+		Assert.assertTrue(varNode.isMonitored());
+		Assert.assertEquals("{user}:aiExample", varNode
+				.getAssignedChannelName());
+		Assert.assertTrue(varNode.hasChildren());
+		final Node[] childrenNodes = varNode.getChildrenNodesAsArray();
+		Assert.assertEquals(2, childrenNodes.length);
+		Assert.assertEquals(AssignStatementNode.class, childrenNodes[0]
+				.getClass());
+		Assert.assertEquals("{user}:aiExample",
+				((AssignStatementNode) childrenNodes[0]).getContent());
+		Assert.assertEquals(MonitorStatementNode.class, childrenNodes[1]
+				.getClass());
+
+		// long l;
+		varNode = (VariableNode) node.getChildrenNodesAsArray()[1];
+		Assert.assertEquals(VariableNode.class, varNode.getClass());
+		Assert.assertEquals("l", varNode.getSourceIdentifier());
+		
+		// option +r;
+		node = programNode.getChildrenNodesAsArray()[3];
+		Assert.assertEquals(OptionStatementNode.class, node.getClass());
+		Assert.assertEquals("+r", ((OptionStatementNode) node)
+				.getSourceIdentifier());
+		Assert.assertFalse(((OptionStatementNode) node).hasChildren());
+		Assert.assertFalse(((OptionStatementNode) node).hasContent());
+
+		// evFlag vFlag
+		node = programNode.getChildrenNodesAsArray()[2];
+		Assert.assertEquals(EventFlagNode.class, node.getClass());
+		final EventFlagNode eventFlagNode = (EventFlagNode) node;
+		Assert.assertEquals("vFlag", eventFlagNode.getSourceIdentifier());
+
+		Assert.assertTrue(eventFlagNode.hasChildren());
+		Assert.assertEquals(1, eventFlagNode.getChildrenNodesAsArray().length);
+		final SyncStatementNode syncNode = (SyncStatementNode) eventFlagNode
+				.getChildrenNodesAsArray()[0];
+		Assert.assertEquals(SyncStatementNode.class, syncNode.getClass());
+		Assert.assertEquals("vFlag", syncNode.getSourceIdentifier());
+		Assert.assertTrue(syncNode.hasContent());
+		Assert.assertFalse(syncNode.hasChildren());
+		Assert.assertEquals("v", syncNode.getContent());
+
+		
 
 		// // assign v to "{user}:aiExample";
 		// assertTrue(node.getChildrenNodes().length > 1);
@@ -250,27 +256,18 @@ public class SNLParser_Test extends TestCase {
 				.getSourceIdentifier());
 
 		Assert.assertTrue(programNode.hasChildren());
-		Assert.assertEquals(3, programNode.getChildrenNodesAsArray().length);
+		Assert.assertEquals(2, programNode.getChildrenNodesAsArray().length);
 
 		Node node;
 
 		// double v;
 		node = programNode.getChildrenNodesAsArray()[0];
-		Assert.assertEquals(VariableNode.class, node.getClass());
-		Assert.assertEquals("v", ((VariableNode) node).getSourceIdentifier());
+		Assert.assertEquals(StateSetNode.class, node.getClass());
+		Assert.assertEquals("ss1", ((StateSetNode) node).getSourceIdentifier());
 
 		// long l;
 		node = programNode.getChildrenNodesAsArray()[1];
-		Assert.assertEquals(VariableNode.class, node.getClass());
-		Assert.assertEquals("l", ((VariableNode) node).getSourceIdentifier());
-
-		// // assign v to "{user}:aiExample";
-		// assertTrue(node.getChildrenNodes().length > 1);
-		// node = node.getChildrenNodes()[1];
-		// assertEquals(AssignNode.class, node.getClass());
-		// assertEquals("v", ((AssignNode)node).getSourceIdentifier());
-		// assertTrue(((AssignNode)node).hasContent());
-		// assertEquals("\"{user}:aiExample\"",
-		// ((AssignNode)node).getContent());
+		Assert.assertEquals(AllVariablesNode.class, node.getClass());
+		Assert.assertEquals(2, ((AllVariablesNode) node).getChildrenNodes().size());
 	}
 }
