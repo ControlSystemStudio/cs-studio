@@ -17,6 +17,7 @@ import org.csstudio.sds.language.script.parser.statementParser.VariableParser;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
 
+import de.desy.language.editor.core.measurement.KeyValuePair;
 import de.desy.language.editor.core.parser.AbstractLanguageParser;
 import de.desy.language.editor.core.parser.Node;
 import de.desy.language.libraries.utils.contract.Contract;
@@ -203,6 +204,11 @@ public class ScriptParser extends AbstractLanguageParser {
 				parentNode.addError(messageBuffer.toString());
 			}
 		}
+	}
+
+	@Override
+	public KeyValuePair[] getMeasurementData() {
+		return new KeyValuePair[0];
 	}
 
 }
