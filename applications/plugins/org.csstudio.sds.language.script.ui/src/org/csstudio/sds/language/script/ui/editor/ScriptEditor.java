@@ -9,6 +9,7 @@ import org.csstudio.sds.language.script.ui.rules.RuleProvider;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.presentation.IPresentationDamager;
 import org.eclipse.jface.text.presentation.IPresentationRepairer;
 import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
@@ -100,5 +101,11 @@ public class ScriptEditor extends LanguageEditor {
 		} finally {
 			Context.exit();
 		}
+	}
+
+	@Override
+	protected IContentAssistProcessor getContentAssistProcessor() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
