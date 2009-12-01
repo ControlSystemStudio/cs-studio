@@ -34,9 +34,9 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
+import de.desy.language.editor.core.measurement.KeyValuePair;
 import de.desy.language.editor.core.parser.AbstractLanguageParser;
 import de.desy.language.editor.core.parser.Node;
-import de.desy.language.editor.measurement.KeyValuePair;
 import de.desy.language.snl.parser.nodes.AllVariablesNode;
 import de.desy.language.snl.parser.nodes.AssignStatementNode;
 import de.desy.language.snl.parser.nodes.EntryNode;

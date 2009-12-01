@@ -19,8 +19,8 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.part.ViewPart;
 
-import de.desy.language.editor.measurement.IMeasurementProvider;
-import de.desy.language.editor.measurement.KeyValuePair;
+import de.desy.language.editor.core.measurement.IMeasurementProvider;
+import de.desy.language.editor.core.measurement.KeyValuePair;
 
 
 /**

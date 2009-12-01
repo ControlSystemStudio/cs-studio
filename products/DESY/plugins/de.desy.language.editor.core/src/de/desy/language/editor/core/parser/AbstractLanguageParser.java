@@ -3,7 +3,7 @@ package de.desy.language.editor.core.parser;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
 
-import de.desy.language.editor.measurement.KeyValuePair;
+import de.desy.language.editor.core.measurement.KeyValuePair;
 import de.desy.language.libraries.utils.contract.Contract;
 
 /**
