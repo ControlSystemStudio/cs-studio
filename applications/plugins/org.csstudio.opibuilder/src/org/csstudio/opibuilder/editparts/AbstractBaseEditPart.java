@@ -34,6 +34,7 @@ import org.csstudio.opibuilder.properties.WidgetPropertyChangeListener;
 import org.csstudio.opibuilder.script.ScriptData;
 import org.csstudio.opibuilder.script.ScriptService;
 import org.csstudio.opibuilder.script.ScriptsInput;
+import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.util.UIBundlingThread;
 import org.csstudio.opibuilder.visualparts.BorderFactory;
@@ -47,6 +48,7 @@ import org.csstudio.utility.pv.PVFactory;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.InputEvent;
@@ -62,6 +64,8 @@ import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.gef.editpolicies.ComponentEditPolicy;
 import org.eclipse.gef.requests.GroupRequest;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IActionFilter;
 import org.eclipse.ui.progress.UIJob;
 
@@ -248,7 +252,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 				//script execution
 				pvMap.clear();				
 				ScriptsInput scriptsInput = getWidgetModel().getScriptsInput();				
-				for(ScriptData scriptData : scriptsInput.getScriptList()){						
+				for(final ScriptData scriptData : scriptsInput.getScriptList()){						
 						final PV[] pvArray = new PV[scriptData.getPVList().size()];
 						int i = 0;
 						for(String pvName : scriptData.getPVList()){
@@ -267,19 +271,65 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 							i++;							
 						}	
 						
-						ScriptService.getInstance().registerScript(scriptData, this, pvArray);
 						UIBundlingThread.getInstance().addRunnable(new Runnable(){
 							public void run() {
 							for(PV pv : pvArray)
 								try {
-									pv.start();
+									pv.start();									
 								} catch (Exception e) {
-									CentralLogger.getInstance().error(this, "Unable to connect to PV:" +
+									CentralLogger.getInstance().error(this, "Unable to start PV:" +
 											pv.getName());
 								}
 							
 							}
-						});	
+						});							
+						 
+						//register script
+						Job job = new Job("Connecting to PVs"){							
+							private boolean pvsConnected = true;
+							private String disconnectedPVs = ""; //$NON-NLS-1$
+							//attempt to connect with all PVs repeatedly
+							private int connectAttempts = 10;//						
+							@Override
+							protected IStatus run(IProgressMonitor arg0) {
+								//attempt to connect with all PVs repeatedly
+								while (connectAttempts-->=0) {
+									pvsConnected = true;
+									for(PV pv : pvArray){
+										if(!pv.isConnected()){
+											if(connectAttempts == 0){											
+												disconnectedPVs += pv.getName() + ", ";
+											}
+											pvsConnected = false;
+										}
+									}
+									if(pvsConnected){
+										ScriptService.getInstance().registerScript(
+											scriptData, AbstractBaseEditPart.this, pvArray);
+										return Status.OK_STATUS;
+									}
+									else if (connectAttempts == 0){  //give up
+										final String message = "Failed to connect to " + disconnectedPVs + "which are the input PVs for scripts attached to " 
+												+ AbstractBaseEditPart.this.getWidgetModel().getName() + "\n" + 
+												"As a consequence, the scripts won't be executed thereafter.";
+										Display.getDefault().asyncExec(new Runnable() {											
+											public void run() {
+												MessageDialog.openError(null, "PV connecting failed", message);
+											}
+										});
+										ConsoleService.getInstance().writeError(message);
+										return Status.OK_STATUS;
+									}
+									try {
+										Thread.sleep(500);
+									} catch (InterruptedException e) {
+										
+									}	
+								}
+								return Status.OK_STATUS;
+							}
+						};	
+						job.schedule(100);						
 				}
 			}
 		}		
