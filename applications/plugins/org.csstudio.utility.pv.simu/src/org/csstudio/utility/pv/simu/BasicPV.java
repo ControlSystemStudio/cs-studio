@@ -57,6 +57,9 @@ abstract public class BasicPV<T extends Value> extends PlatformObject implements
     public void addListener(final PVListener listener)
     {
         listeners.add(listener);
+    	if(running){
+    		listener.pvValueUpdate(this);    		
+    	}
     }
 
     /** {@inheritDoc} */

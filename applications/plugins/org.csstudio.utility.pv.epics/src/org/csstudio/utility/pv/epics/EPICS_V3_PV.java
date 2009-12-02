@@ -277,8 +277,13 @@ public class EPICS_V3_PV
     }
 
     /** {@inheritDoc} */
-    public void addListener(PVListener listener)
-    {   listeners.add(listener);  }
+    public void addListener(PVListener listener)    
+    {   
+    	listeners.add(listener);  
+    	 if(running){
+    		listener.pvValueUpdate(this);    		
+    	}   		
+    }
 
     /** {@inheritDoc} */
     public void removeListener(PVListener listener)
