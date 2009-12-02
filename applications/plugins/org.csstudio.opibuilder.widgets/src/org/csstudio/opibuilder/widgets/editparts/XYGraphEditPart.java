@@ -378,11 +378,8 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 					//cannot use setPropertyChangeHandler because the PV value has to be buffered 
 					//which means that it cannot be ignored. 
 					getWidgetModel().getProperty(propID).addPropertyChangeListener(new PropertyChangeListener() {
-											
-						@Override
 						public void propertyChange(final PropertyChangeEvent evt) {
 							UIBundlingThread.getInstance().addRunnable(new Runnable() {							
-								@Override
 								public void run() {
 									handler.handleChange(
 											evt.getOldValue(), evt.getNewValue(), getFigure());
