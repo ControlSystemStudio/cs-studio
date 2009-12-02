@@ -4,7 +4,7 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            category="org.csstudio.platform.ui.css.applications.configuration"
+            category="org.csstudio.platform.ui.css.platform"
             class="org.csstudio.utility.pv.ui.PreferencePage"
             id="org.csstudio.utility.pv.ui.PreferencePage"
             name="%PrefName"/>
