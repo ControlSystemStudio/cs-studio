@@ -222,6 +222,91 @@ public final class DirectoryEditor {
 			throw new DirectoryEditException(e.getMessage(), e);
 		}
 	}
+	
+	
+	public static void moveNode(IAlarmTreeNode node, SubtreeNode target) throws DirectoryEditException {
+		String oldName = fullName(node);
+		String targetName = fullName(target);
+		String newName = oldName.substring(0, oldName.indexOf(",")) + "," + targetName;
+		try {
+			_directory.rename(oldName, newName);
+		} catch (NamingException e) {
+			LOG.error(DirectoryEditor.class,
+					"Could not rename object in LDAP. oldName:" +oldName +
+					", newName:" + newName, e);
+			throw new DirectoryEditException(e.getMessage(), e);
+		}
+	}
+
+	/**
+	 * Creates a copy of a node under a new subtree node. If the node to be
+	 * copied is a subtree node, all of its children will be copied into the new
+	 * node, too.
+	 * 
+	 * @param node
+	 *            the original node.
+	 * @param target
+	 *            the target into which the node will be copied.
+	 * @throws DirectoryEditException
+	 *             if an error occurs.
+	 */
+	public static void copyNode(IAlarmTreeNode node, SubtreeNode target)
+			throws DirectoryEditException {
+		if (node instanceof ProcessVariableNode) {
+			copyProcessVariableNode((ProcessVariableNode) node, target);
+		} else {
+			// TODO
+			//copySubtree(node, target);
+		}
+	}
+
+	/**
+	 * Creates a new process variable node which is a copy of the given process
+	 * variable node.
+	 * 
+	 * @param node
+	 *            the original.
+	 * @param target
+	 *            the target.
+	 * @throws DirectoryEditException
+	 *             if an error occurs.
+	 */
+	private static void copyProcessVariableNode(ProcessVariableNode node,
+			SubtreeNode target) throws DirectoryEditException {
+		String name = node.getName();
+		createEntry(fullName(target), name, ObjectClass.RECORD);
+		ProcessVariableNode copy = new ProcessVariableNode(target, name);
+		copyAttributes(node, copy);
+	}
+
+	/**
+	 * Copies the attributes from one node to another node.
+	 * 
+	 * @param source
+	 *            the source node.
+	 * @param target
+	 *            the target node.
+	 * @throws DirectoryEditException
+	 *             if an error occurs.
+	 */
+	private static void copyAttributes(AbstractAlarmTreeNode source,
+			AbstractAlarmTreeNode target) throws DirectoryEditException {
+		if (source.getCssAlarmDisplay() != null) {
+			modifyCssAlarmDisplay(target, source.getCssAlarmDisplay());
+		}
+		if (source.getCssDisplay() != null) {
+			modifyCssDisplay(target, source.getCssDisplay());
+		}
+		if (source.getCssStripChart() != null) {
+			modifyCssStripChart(target, source.getCssStripChart());
+		}
+		if (source.getHelpGuidance() != null) {
+			modifyHelpGuidance(target, source.getHelpGuidance());
+		}
+		if (source.getHelpPage () != null) {
+			modifyHelpPage(target, source.getHelpPage());
+		}
+	}
 
 
 	/**

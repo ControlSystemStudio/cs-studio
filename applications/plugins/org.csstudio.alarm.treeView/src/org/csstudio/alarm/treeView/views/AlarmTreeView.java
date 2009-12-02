@@ -68,7 +68,11 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.util.DelegatingDragAdapter;
+import org.eclipse.jface.util.DelegatingDropAdapter;
 import org.eclipse.jface.util.LocalSelectionTransfer;
+import org.eclipse.jface.util.TransferDragSourceListener;
+import org.eclipse.jface.util.TransferDropTargetListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -79,11 +83,8 @@ import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
-import org.eclipse.swt.dnd.DragSourceAdapter;
 import org.eclipse.swt.dnd.DragSourceEvent;
-import org.eclipse.swt.dnd.DropTargetAdapter;
 import org.eclipse.swt.dnd.DropTargetEvent;
-import org.eclipse.swt.dnd.DropTargetListener;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.layout.GridData;
@@ -157,46 +158,88 @@ public class AlarmTreeView extends ViewPart {
 	}
 	
 	/**
-	 * Implements drag support for the alarm tree.
+	 * Provides drag support for dragging process variable nodes from the alarm
+	 * tree using the text transfer.
 	 */
-	private final class AlarmTreeDragListener extends DragSourceAdapter {
-		
-		private List<IAlarmTreeNode> _dragging;
-		
-		@Override
-		public void dragStart(DragSourceEvent event) {
-			ISelection selection = _viewer.getSelection();
-			List<IAlarmTreeNode> selectedNodes = selectedNodes(selection);
-			if (canDrag(selectedNodes)) {
-				LocalSelectionTransfer.getTransfer().setSelection(selection);
-				_dragging = selectedNodes;
-			} else {
-				event.doit = false;
-			}
-		}
-		
-		/**
-		 * Converts a selection into a list of selected alarm tree nodes.
-		 */
-		private List<IAlarmTreeNode> selectedNodes(ISelection selection) {
-			List<IAlarmTreeNode> result = new ArrayList<IAlarmTreeNode>();
-			if (selection instanceof IStructuredSelection) {
-				IStructuredSelection s = (IStructuredSelection) selection;
-				for (Iterator<?> i = s.iterator(); i.hasNext(); ) {
-					result.add((IAlarmTreeNode) i.next());
-				}
-			}
-			return result;
+	private final class AlarmTreeTextDragListener implements
+			TransferDragSourceListener {
+
+		public Transfer getTransfer() {
+			return TextTransfer.getInstance();
 		}
 
+		public void dragStart(DragSourceEvent event) {
+			List<IAlarmTreeNode> selectedNodes = selectionToNodeList(_viewer.getSelection());
+			event.doit = !selectedNodes.isEmpty() && containsOnlyPVNodes(selectedNodes);
+		}
+		
+		public void dragSetData(DragSourceEvent event) {
+			List<IAlarmTreeNode> selectedNodes = selectionToNodeList(_viewer.getSelection());
+			StringBuilder data = new StringBuilder();
+			for (Iterator<IAlarmTreeNode> i = selectedNodes.iterator(); i.hasNext(); ) {
+				IAlarmTreeNode node = i.next();
+				if (node instanceof ProcessVariableNode) {
+					data.append(node.getName());
+					if (i.hasNext()) {
+						data.append(", ");
+					}
+				}
+			}
+			event.data = data.toString();
+		}
+
+		public void dragFinished(DragSourceEvent event) {
+		}
+	}
+	
+	/**
+	 * Provides drag support for dragging process variable nodes from the alarm
+	 * tree using the process variable name transfer.
+	 */
+	private final class AlarmTreeProcessVariableDragListener implements
+			TransferDragSourceListener {
+		
+		public Transfer getTransfer() {
+			return ProcessVariableNameTransfer.getInstance();
+		}
+
+		public void dragStart(DragSourceEvent event) {
+			List<IAlarmTreeNode> selectedNodes = selectionToNodeList(_viewer.getSelection());
+			event.doit = !selectedNodes.isEmpty() && containsOnlyPVNodes(selectedNodes);
+		}
+		
+		public void dragSetData(DragSourceEvent event) {
+			List<IAlarmTreeNode> selectedNodes = selectionToNodeList(_viewer.getSelection());
+			event.data = (IProcessVariable[]) selectedNodes
+					.toArray(new IProcessVariable[selectedNodes.size()]);
+		}
+
+		public void dragFinished(DragSourceEvent event) {
+		}
+	}
+	
+	/**
+	 * Provides drag support for the alarm tree for drag and drop of structural
+	 * nodes. Drag and drop of structural nodes uses the LocalSelectionTransfer.
+	 */
+	private final class AlarmTreeLocalSelectionDragListener implements
+			TransferDragSourceListener {
+		
+		public Transfer getTransfer() {
+			return LocalSelectionTransfer.getTransfer();
+		}
+
+		public void dragStart(DragSourceEvent event) {
+			List<IAlarmTreeNode> selectedNodes = selectionToNodeList(_viewer.getSelection());
+			event.doit = canDrag(selectedNodes);
+			if (event.doit) {
+				LocalSelectionTransfer.getTransfer().setSelection(_viewer.getSelection());
+			}
+		}
+		
 		/**
 		 * Returns whether the given list of nodes can be dragged. The nodes can
 		 * be dragged if they are all children of the same parent node.
-		 * 
-		 * @param nodes
-		 *            the nodes.
-		 * @return <code>true</code> if the nodes can be dragged,
-		 *         <code>false</code> otherwise.
 		 */
 		private boolean canDrag(List<IAlarmTreeNode> nodes) {
 			if (nodes.isEmpty()) {
@@ -210,170 +253,193 @@ public class AlarmTreeView extends ViewPart {
 			}
 			return true;
 		}
-		
-		private boolean containsOnlyPVNodes(List<IAlarmTreeNode> nodes) {
-			for (IAlarmTreeNode node : nodes) {
-				if (!(node instanceof ProcessVariableNode)) {
-					return false;
-				}
-			}
-			return true;
-		}
-		
-		@Override
+
 		public void dragSetData(DragSourceEvent event) {
-			if (LocalSelectionTransfer.getTransfer().isSupportedType(
-					event.dataType)) {
-				// no need to do anything
-			} else if (ProcessVariableNameTransfer.getInstance().isSupportedType(
-					event.dataType)) {
-				if (!containsOnlyPVNodes(_dragging)) {
-					event.doit = false;
-					return;
-				}
-				event.data = _dragging.toArray(new IProcessVariable[_dragging.size()]);
-			} else if (TextTransfer.getInstance().isSupportedType(event.dataType)) {
-				StringBuilder text = new StringBuilder();
-				for (Iterator<IAlarmTreeNode> i = _dragging.iterator(); i.hasNext(); ) {
-					IAlarmTreeNode node = i.next();
-					if (node instanceof ProcessVariableNode) {
-						text.append(node.getName());
-						if (i.hasNext()) {
-							text.append(", ");
-						}
-					}
-				}
-				event.data = text.toString();
-			}
+			LocalSelectionTransfer.getTransfer().setSelection(_viewer.getSelection());
 		}
-		
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
+
 		public void dragFinished(DragSourceEvent event) {
-			if (event.detail == DND.DROP_MOVE) {
-				for (IAlarmTreeNode node : _dragging) {
-					try {
-						DirectoryEditor.delete(node);
-					} catch (DirectoryEditException e) {
-						_log.error(this, "Could not delete node after drag&drop move operation: " + node);
-					}
-				}
-				_viewer.refresh();
-			}
-			_dragging = null;
+			LocalSelectionTransfer.getTransfer().setSelection(null);
 		}
 	}
 	
 	/**
-	 * Implements drop support for the alarm tree. This implementation supports
-	 * dropping process variables (<code>IProcessVariable</code>) onto subtree
-	 * nodes.
+	 * Provides support for dropping process variables into the alarm tree.
 	 */
-	private final class AlarmTreeDropListener extends DropTargetAdapter {
-		
-		/**
-		 * The drop operation that the user wants to perform. This drop listener
-		 * sets event.detail to DROP_NONE when the user drags over a tree item
-		 * which does not support dropping; when the user later drags over
-		 * another tree item, the operation remembered in this variable will be
-		 * restored.
-		 * 
-		 * See also http://dev.eclipse.org/newslists/news.eclipse.platform.swt/msg11183.html
-		 */
-		int _operation;
-		
-		@Override
-		public void dragEnter(final DropTargetEvent event) {
-			_operation = event.detail;
+	private final class AlarmTreeProcessVariableDropListener implements
+			TransferDropTargetListener {
+
+		public Transfer getTransfer() {
+			return ProcessVariableNameTransfer.getInstance();
 		}
 
-		@Override
-		public void dragOperationChanged(final DropTargetEvent event) {
-			_operation = event.detail;
+		public boolean isEnabled(DropTargetEvent event) {
+			return dropTargetIsSubtreeNode(event);
 		}
 
 		/**
-		 * This implementation of <code>dragOver</code> permits dropping if the
-		 * target item is a subtree node. If the mouse is not hovering over any
-		 * item in the tree or if the item is a process variable node, dropping
-		 * is not permitted.
-		 * 
-		 * @param event
-		 *            the event.
-		 * @see DropTargetListener#dragOver(DropTargetEvent)
+		 * Checks if the target of the drop operation is a SubtreeNode.
 		 */
-		@Override
-		public void dragOver(final DropTargetEvent event) {
-			event.feedback = DND.FEEDBACK_SCROLL | DND.FEEDBACK_EXPAND;				
-			
-			// Allow the drag&drop operation if the mouse is dragged over a tree
-			// item and the item is a subtree node.
-			if ((event.item instanceof TreeItem)
-					&& ((TreeItem) event.item).getData() instanceof SubtreeNode) {
-				event.detail = _operation;
-				event.feedback |= DND.FEEDBACK_SELECT;
-				return;
+		private boolean dropTargetIsSubtreeNode(DropTargetEvent event) {
+			return (event.item instanceof TreeItem)
+				&& (event.item.getData() instanceof SubtreeNode);
+		}
+
+		public void dragEnter(DropTargetEvent event) {
+			// only copy is supported
+			event.detail = event.operations & DND.DROP_COPY;
+		}
+
+		public void dragOperationChanged(DropTargetEvent event) {
+			// only copy is supported
+			event.detail = event.operations & DND.DROP_COPY;
+		}
+
+		public void dragLeave(DropTargetEvent event) {
+		}
+
+		public void dragOver(DropTargetEvent event) {
+			event.feedback = DND.FEEDBACK_EXPAND | DND.FEEDBACK_SCROLL
+					| DND.FEEDBACK_SELECT;
+		}
+
+		public void dropAccept(DropTargetEvent event) {
+		}
+
+		public void drop(DropTargetEvent event) {
+			SubtreeNode parent = (SubtreeNode) event.item.getData();
+			IProcessVariable[] droppedPVs = (IProcessVariable[]) event.data;
+			boolean errors = false;
+			for (IProcessVariable pv : droppedPVs) {
+				try {
+					DirectoryEditor.createProcessVariableRecord(parent, pv.getName());
+				} catch (DirectoryEditException e) {
+					errors = true;
+				}
+			}
+			_viewer.refresh(parent);
+			if (errors) {
+				MessageDialog.openError(getSite().getShell(),
+						"Create New Records",
+						"One or more of the records could not be created.");
+			}
+		}
+	}
+	
+	private final class AlarmTreeLocalSelectionDropListener implements
+			TransferDropTargetListener {
+		
+		public Transfer getTransfer() {
+			return LocalSelectionTransfer.getTransfer();
+		}
+
+		public boolean isEnabled(DropTargetEvent event) {
+			ISelection selection = LocalSelectionTransfer.getTransfer().getSelection();
+			return dropTargetIsSubtreeNode(event) && canDrop(selection, event);
+		}
+
+		/**
+		 * Checks if the target of the drop operation is a SubtreeNode.
+		 */
+		private boolean dropTargetIsSubtreeNode(DropTargetEvent event) {
+			return (event.item instanceof TreeItem)
+				&& (event.item.getData() instanceof SubtreeNode);
+		}
+		
+		/**
+		 * Checks if the given selection can be dropped into the alarm tree. The
+		 * selection can be dropped if all of the selected items are alarm tree
+		 * nodes and the drop target is not one of the nodes or a child of one
+		 * of the nodes. (The dragged items must also all share a common parent,
+		 * but this is already checked in the drag listener.)
+		 */
+		private boolean canDrop(ISelection selection, DropTargetEvent event) {
+			SubtreeNode dropTarget = (SubtreeNode) event.item.getData();
+			if (selection instanceof IStructuredSelection) {
+				IStructuredSelection s = (IStructuredSelection) selection;
+				for (Iterator<?> i = s.iterator(); i.hasNext(); ) {
+					Object o = i.next();
+					if (o instanceof IAlarmTreeNode) {
+						if (o == dropTarget
+								|| isChild(dropTarget, (IAlarmTreeNode) o)) {
+							return false;
+						}
+					} else {
+						return false;
+					}
+				}
 			} else {
-				event.detail = DND.DROP_NONE;
-				return;
+				return false;
+			}
+			return true;
+		}
+		
+		/**
+		 * Returns whether the first node is a direct or indirect child of the
+		 * second node.
+		 */
+		private boolean isChild(SubtreeNode child, IAlarmTreeNode parent) {
+			SubtreeNode directParent = child.getParent();
+			if (directParent == null) {
+				return false;
+			}
+			if (directParent == parent) {
+				return true;
+			} else {
+				return isChild(directParent, parent);
 			}
 		}
 
-		/**
-		 * This implementation of <code>drop</code> performs the drop, if
-		 * possible.
-		 * 
-		 * @param event
-		 *            the event.
-		 * @see DropTargetListener#drop(DropTargetEvent)
-		 */
-		@Override
-		public void drop(final DropTargetEvent event) {
-			// Get the node the PVs are dropped into. If for some reason
-			// the node is not a subtree node, reject the drop.
-			TreeItem item = (TreeItem) event.item;
-			if (item != null && item.getData() instanceof SubtreeNode) {
-				SubtreeNode node = (SubtreeNode) item.getData();
-				IProcessVariable[] droppedPVs = null;
-				if (ProcessVariableNameTransfer.getInstance().isSupportedType(event.currentDataType)) {
-					droppedPVs = (IProcessVariable[]) event.data;
-				} else if (LocalSelectionTransfer.getTransfer().isSupportedType(event.currentDataType)) {
-					ISelection sel = LocalSelectionTransfer.getTransfer().getSelection();
-					List<IProcessVariable> pvs = new ArrayList<IProcessVariable>();
-					if (sel instanceof IStructuredSelection) {
-						IStructuredSelection selection = (IStructuredSelection) sel;
-						for (Iterator<?> i = selection.iterator(); i.hasNext(); ) {
-							Object selected = i.next();
-							if (selected instanceof IProcessVariable) {
-								pvs.add((IProcessVariable) selected);
-							}
-						}
-					}
-					droppedPVs = (IProcessVariable[]) pvs.toArray(new IProcessVariable[pvs
-							.size()]);
-				} else {
-					// Unknown transfer type
-					event.detail = DND.DROP_NONE;
-					return;
-				}
-				boolean errors = false;
-				for (IProcessVariable pv : droppedPVs) {
-					try {
-						DirectoryEditor.createProcessVariableRecord(node, pv.getName());
-					} catch (DirectoryEditException e) {
-						errors = true;
-					}
-				}
-				_viewer.refresh(node);
-				if (errors) {
+		public void dragEnter(DropTargetEvent event) {
+		}
+
+		public void dragOperationChanged(DropTargetEvent event) {
+		}
+
+		public void dragLeave(DropTargetEvent event) {
+		}
+
+		public void dragOver(DropTargetEvent event) {
+			event.feedback = DND.FEEDBACK_EXPAND | DND.FEEDBACK_SCROLL
+					| DND.FEEDBACK_SELECT;
+		}
+
+		public void dropAccept(DropTargetEvent event) {
+		}
+
+		public void drop(DropTargetEvent event) {
+			SubtreeNode dropTarget = (SubtreeNode) event.item.getData();
+			List<IAlarmTreeNode> droppedNodes = selectionToNodeList(
+					LocalSelectionTransfer.getTransfer().getSelection());
+			if (event.detail == DND.DROP_COPY) {
+				try {
+					copyNodes(droppedNodes, dropTarget);
+				} catch (DirectoryEditException e) {
 					MessageDialog.openError(getSite().getShell(),
-							"Create New Records",
-							"One or more of the records could not be created.");
+							"Copying Nodes",
+							"An error occured. The nodes could not be copied.");
 				}
-			} else {
-				event.detail = DND.DROP_NONE;
+			} else if (event.detail == DND.DROP_MOVE){
+				try {
+					moveNodes(droppedNodes, dropTarget);
+				} catch (DirectoryEditException e) {
+					MessageDialog.openError(getSite().getShell(),
+							"Moving Nodes",
+							"An error occured. The nodes could not be moved.");
+				}
+			}
+			_viewer.refresh();
+		}
+		
+		private void copyNodes(List<IAlarmTreeNode> nodes, SubtreeNode target) throws DirectoryEditException {
+			for (IAlarmTreeNode node : nodes) {
+				DirectoryEditor.copyNode(node, target);
+			}
+		}
+		
+		private void moveNodes(List<IAlarmTreeNode> nodes, SubtreeNode target) throws DirectoryEditException {
+			for (IAlarmTreeNode node : nodes) {
+				DirectoryEditor.moveNode(node, target);
 			}
 		}
 	}
@@ -543,6 +609,33 @@ public class AlarmTreeView extends ViewPart {
 	 */
 	private final CentralLogger _log = CentralLogger.getInstance();
 	
+	
+	/**
+	 * Converts a selection into a list of selected alarm tree nodes.
+	 */
+	private static List<IAlarmTreeNode> selectionToNodeList(ISelection selection) {
+		List<IAlarmTreeNode> result = new ArrayList<IAlarmTreeNode>();
+		if (selection instanceof IStructuredSelection) {
+			IStructuredSelection s = (IStructuredSelection) selection;
+			for (Iterator<?> i = s.iterator(); i.hasNext(); ) {
+				result.add((IAlarmTreeNode) i.next());
+			}
+		}
+		return result;
+	}
+	
+	/**
+	 * Returns whether a list of nodes contains only ProcessVariableNodes.
+	 */
+	private static boolean containsOnlyPVNodes(List<IAlarmTreeNode> nodes) {
+		for (IAlarmTreeNode node : nodes) {
+			if (!(node instanceof ProcessVariableNode)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 	/**
 	 * Returns the id of this view.
 	 * @return the id of this view.
@@ -651,18 +744,18 @@ public class AlarmTreeView extends ViewPart {
 	 * Adds drag and drop support to the tree viewer.
 	 */
 	private void addDragAndDropSupport() {
-		// The transfer types
-		final Transfer pvTransfer = ProcessVariableNameTransfer.getInstance();
-		final Transfer textTransfer = TextTransfer.getInstance();
-		final Transfer localTransfer = LocalSelectionTransfer.getTransfer();
-		
+		DelegatingDropAdapter dropAdapter = new DelegatingDropAdapter();
+		dropAdapter.addDropTargetListener(new AlarmTreeLocalSelectionDropListener());
+		dropAdapter.addDropTargetListener(new AlarmTreeProcessVariableDropListener());
 		_viewer.addDropSupport(DND.DROP_COPY | DND.DROP_MOVE,
-				new Transfer[] {pvTransfer},
-				new AlarmTreeDropListener());
+				dropAdapter.getTransfers(), dropAdapter);
 		
+		DelegatingDragAdapter dragAdapter = new DelegatingDragAdapter();
+		dragAdapter.addDragSourceListener(new AlarmTreeLocalSelectionDragListener());
+		dragAdapter.addDragSourceListener(new AlarmTreeProcessVariableDragListener());
+		dragAdapter.addDragSourceListener(new AlarmTreeTextDragListener());
 		_viewer.addDragSupport(DND.DROP_COPY | DND.DROP_MOVE,
-				new Transfer[] {pvTransfer, textTransfer},
-				new AlarmTreeDragListener());
+				dragAdapter.getTransfers(), dragAdapter);
 	}
 
 	/**
