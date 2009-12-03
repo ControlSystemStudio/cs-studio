@@ -8,18 +8,22 @@ import org.csstudio.swt.xygraph.linearscale.Range;
 
 /**The command for graph zooming and panning.
  * @author Xihui Chen
- *
+ * @author Kay Kasemir (allow <code>null</code> for x axis)
  */
 public class ZoomCommand implements IUndoableCommand {
+    final private String name;
 
-	private List<Axis> xAxisList;
-	private List<Axis> yAxisList;
+	final private List<Axis> xAxisList;
+	final private List<Axis> yAxisList;
 	
 	private List<Range> beforeXRangeList, beforeYRangeList,
 		afterXRangeList, afterYRangeList;
 
-	private String name;
-	
+	/** Initialize
+	 *  @param name Name of operation for undo/redo GUI
+	 *  @param xAxisList X Axes to save or <code>null</code>
+	 *  @param yAxisList Y Axes to save
+	 */
 	public ZoomCommand(String name, List<Axis> xAxisList, List<Axis> yAxisList) {
 		this.name = name;
 		this.xAxisList = xAxisList;
@@ -32,9 +36,11 @@ public class ZoomCommand implements IUndoableCommand {
 
 	public void redo() {
 		int i=0;
-		for(Axis axis : xAxisList){
-			axis.setRange(afterXRangeList.get(i));
-			i++;
+		if (xAxisList != null) {
+    		for(Axis axis : xAxisList){
+    			axis.setRange(afterXRangeList.get(i));
+    			i++;
+    		}
 		}
 		i=0;
 		for(Axis axis : yAxisList){
@@ -45,10 +51,12 @@ public class ZoomCommand implements IUndoableCommand {
 
 	public void undo() {
 		int i=0;
-		for(Axis axis : xAxisList){
-			axis.setRange(beforeXRangeList.get(i));
-			i++;
-		}
+        if (xAxisList != null) {
+    		for(Axis axis : xAxisList){
+    			axis.setRange(beforeXRangeList.get(i));
+    			i++;
+    		}
+        }
 		i=0;
 		for(Axis axis : yAxisList){
 			axis.setRange(beforeYRangeList.get(i));
@@ -57,15 +65,17 @@ public class ZoomCommand implements IUndoableCommand {
 	}
 	
 	public void savePreviousStates(){
-		for(Axis axis : xAxisList)
-			beforeXRangeList.add(axis.getRange());
+	    if (xAxisList != null)
+    		for(Axis axis : xAxisList)
+    			beforeXRangeList.add(axis.getRange());
 		for(Axis axis : yAxisList)
 			beforeYRangeList.add(axis.getRange());
 	}
 	
 	public void saveAfterStates(){
-		for(Axis axis : xAxisList)
-			afterXRangeList.add(axis.getRange());
+        if (xAxisList != null)
+    		for(Axis axis : xAxisList)
+    			afterXRangeList.add(axis.getRange());
 		for(Axis axis : yAxisList)
 			afterYRangeList.add(axis.getRange());
 	}

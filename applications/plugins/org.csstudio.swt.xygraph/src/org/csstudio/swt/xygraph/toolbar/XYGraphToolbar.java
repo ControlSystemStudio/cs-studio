@@ -25,6 +25,7 @@ import org.eclipse.draw2d.ToggleButton;
 import org.eclipse.draw2d.ToggleModel;
 import org.eclipse.draw2d.ToolbarLayout;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
@@ -37,7 +38,7 @@ import org.eclipse.swt.widgets.FileDialog;
 
 /**The toolbar for an xy-graph.
  * @author Xihui Chen
- *
+ * @author Kay Kasemir (some zoom operations)
  */
 public class XYGraphToolbar extends Figure {
 
@@ -61,9 +62,7 @@ public class XYGraphToolbar extends Figure {
 				dialog.open();
 			}
 		});
-		
-	
-		
+			
 		final Button addAnnotationButton = new Button(createImage("icons/Add_Annotation.png"));
 		addAnnotationButton.setToolTip(new Label("Add Annotation..."));		
 		addButton(addAnnotationButton);
@@ -95,16 +94,26 @@ public class XYGraphToolbar extends Figure {
 		});
 		
 		addSeparator();	
-		//auto scale button
-		final Button autoScaleButton = new Button(createImage("icons/AutoScale.png"));
-		autoScaleButton.setToolTip(new Label("Perform Auto Scale"));
-		addButton(autoScaleButton);
-		autoScaleButton.addActionListener(new ActionListener(){
+		//stagger axes button
+		final Button staggerButton = new Button(createImage("icons/stagger.png"));
+		staggerButton.setToolTip(new Label("Stagger the axes"));
+		addButton(staggerButton);
+		staggerButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent event) {
-				xyGraph.performAutoScale();
+				xyGraph.performStagger();
 			}
 		});
 
+		//auto scale button
+        final Button autoScaleButton = new Button(createImage("icons/AutoScale.png"));
+        autoScaleButton.setToolTip(new Label("Perform Auto Scale"));
+        addButton(autoScaleButton);
+        autoScaleButton.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent event) {
+                xyGraph.performAutoScale();
+            }
+        });
+		
 		// One-click zoom operations
 		final VerticalZoomCommand vertZoomOut =
 		    new VerticalZoomCommand(xyGraph, "Zoom out vertically", false);
@@ -193,8 +202,9 @@ public class XYGraphToolbar extends Figure {
 			public void operationsHistoryChanged(OperationsManager manager) {
 				if(manager.getUndoCommandsSize() > 0){
 					undoButton.setEnabled(true);
-					undoButton.setToolTip(new Label("Undo " + manager.getUndoCommands()[
-					           manager.getUndoCommandsSize() -1]));
+					final String cmd_name = manager.getUndoCommands()[
+					           manager.getUndoCommandsSize() -1].toString();
+                    undoButton.setToolTip(new Label(NLS.bind("Undo {0}", cmd_name)));
 				}else{
 					undoButton.setEnabled(false);
 					undoButton.setToolTip(new Label("Undo"));
@@ -216,8 +226,9 @@ public class XYGraphToolbar extends Figure {
 			public void operationsHistoryChanged(OperationsManager manager) {
 				if(manager.getRedoCommandsSize() > 0){
 					redoButton.setEnabled(true);
-					redoButton.setToolTip(new Label("Redo " + manager.getRedoCommands()[
-					           manager.getRedoCommandsSize() -1]));
+					final String cmd_name = manager.getRedoCommands()[
+					           manager.getRedoCommandsSize() -1].toString();
+                    redoButton.setToolTip(new Label(NLS.bind("Redo {0}", cmd_name)));
 				}else{
 					redoButton.setEnabled(false);
 					redoButton.setToolTip(new Label("Redo"));
@@ -265,7 +276,6 @@ public class XYGraphToolbar extends Figure {
 		add(separator);
 	}
 	
-	
 	class ToolbarSeparator extends Figure{
 		
 		private final Color GRAY_COLOR = XYGraphMediaFactory.getInstance().getColor(
@@ -280,8 +290,4 @@ public class XYGraphToolbar extends Figure {
 					bounds.x + bounds.width/2, bounds.y + bounds.height);
 		}
 	}
-
-	
-	
-	
 }

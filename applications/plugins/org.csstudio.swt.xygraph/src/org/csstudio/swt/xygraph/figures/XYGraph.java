@@ -11,6 +11,7 @@ import org.csstudio.swt.xygraph.linearscale.LinearScale.Orientation;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.csstudio.swt.xygraph.undo.ZoomCommand;
 import org.csstudio.swt.xygraph.undo.ZoomType;
+import org.csstudio.swt.xygraph.util.Log10;
 import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
@@ -29,7 +30,7 @@ import org.eclipse.swt.graphics.Image;
 /**
  * XY-Graph Figure.
  * @author Xihui Chen
- *
+ * @author Kay Kasemir (performStagger)
  */
 public class XYGraph extends Figure{
 	
@@ -522,5 +523,48 @@ public class XYGraph extends Figure{
 		command.saveAfterStates();
 		operationsManager.addCommand(command);
 	}
-	
+
+	/** Stagger all axes: Autoscale each axis so that traces on various
+	 *  axes don't overlap
+	 */
+    public void performStagger()
+    {
+        final ZoomCommand command = new ZoomCommand("Stagger Axes", null, yAxisList);
+        command.savePreviousStates();
+        for(Axis axis : yAxisList){
+            axis.performAutoScale(true);
+        }
+        
+        // Arrange all so they don't overlap by assigning 1/Nth of
+        // the vertical range to each one
+        final int N = yAxisList.size();
+        for (int i=0; i<N; ++i)
+        {
+            final Axis yaxis = yAxisList.get(i);
+            if (yaxis.isAutoScale())
+                continue; // takes care of itself
+            double low = yaxis.getRange().getLower();
+            double high = yaxis.getRange().getUpper();
+            if (yaxis.isLogScaleEnabled())
+            {
+                low = Log10.log10(low);
+                high = Log10.log10(high);
+            }
+            double range = high - low;
+            // Fudge factor to get some extra space
+            range = 1.1*range;
+            // Shift it down according to its index, using a total of N*range.
+            low -= (N-i-1)*range;
+            high += i*range;
+            if (yaxis.isLogScaleEnabled())
+            {
+                low = Log10.pow10(low);
+                high = Log10.pow10(high);
+            }
+            yaxis.setRange(low, high);
+        }
+        
+        command.saveAfterStates();
+        operationsManager.addCommand(command);
+    }
 }
