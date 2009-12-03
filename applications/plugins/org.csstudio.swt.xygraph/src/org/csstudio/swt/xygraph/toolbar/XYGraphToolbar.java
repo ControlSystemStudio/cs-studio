@@ -6,6 +6,7 @@ import org.csstudio.swt.xygraph.undo.AddAnnotationCommand;
 import org.csstudio.swt.xygraph.undo.IOperationsManagerListener;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.csstudio.swt.xygraph.undo.RemoveAnnotationCommand;
+import org.csstudio.swt.xygraph.undo.VerticalZoomCommand;
 import org.csstudio.swt.xygraph.undo.ZoomType;
 import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
 import org.eclipse.draw2d.ActionEvent;
@@ -103,6 +104,34 @@ public class XYGraphToolbar extends Figure {
 				xyGraph.performAutoScale();
 			}
 		});
+
+		// One-click zoom operations
+		final VerticalZoomCommand vertZoomOut =
+		    new VerticalZoomCommand(xyGraph, "Zoom out vertically", false);
+		final Button vertZoomOutButton = new Button(createImage("icons/VerticalZoomOut.png"));
+		vertZoomOutButton.setToolTip(new Label(vertZoomOut.toString()));
+        addButton(vertZoomOutButton);
+        vertZoomOutButton.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent event)
+            {
+                vertZoomOut.redo();
+                xyGraph.getOperationsManager().addCommand(vertZoomOut);
+            }
+        });
+        final VerticalZoomCommand vertZoomIn =
+            new VerticalZoomCommand(xyGraph, "Zoom in vertically", true);
+        final Button vertZoomInButton = new Button(createImage("icons/VerticalZoomIn.png"));
+        vertZoomInButton.setToolTip(new Label(vertZoomIn.toString()));
+        addButton(vertZoomInButton);
+        vertZoomInButton.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent event)
+            {
+                vertZoomIn.redo();
+                xyGraph.getOperationsManager().addCommand(vertZoomIn);
+            }
+        });
 		
 		//zoom buttons
 		zoomGroup = new ButtonGroup();
