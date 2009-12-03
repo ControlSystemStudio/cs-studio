@@ -16,12 +16,12 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  *
  */
 public class PreferencesHelper {
-	public static final String OPI_COLOR_FILE = "opi_color_file"; //$NON-NLS-1$
-	public static final String OPI_FONT_FILE = "opi_font_file"; //$NON-NLS-1$
-	public static final String OPI_RUN_MACROS= "opi_run_macros"; //$NON-NLS-1$
-	public static final String OPI_AUTOSAVE= "opi_autosave"; //$NON-NLS-1$
+	public static final String COLOR_FILE = "color_file"; //$NON-NLS-1$
+	public static final String FONT_FILE = "font_file"; //$NON-NLS-1$
+	public static final String RUN_MACROS= "macros"; //$NON-NLS-1$
+	public static final String AUTOSAVE= "auto_save"; //$NON-NLS-1$
 	public static final String OPI_GUI_REFRESH_CYCLE = "opi_gui_refresh_cycle"; //$NON-NLS-1$
-
+	public static final String NO_EDIT = "no_edit"; //$NON-NLS-1$
 	
 	 /** @param preferenceName Preference identifier
      *  @return String from preference system, or <code>null</code>
@@ -37,8 +37,8 @@ public class PreferencesHelper {
      * @return the color file path. null if not specified.
      */
     public static IPath getColorFilePath(){
-    	if(getString(OPI_COLOR_FILE) != null)
-    		return new Path(getString(OPI_COLOR_FILE));
+    	if(getString(COLOR_FILE) != null)
+    		return new Path(getString(COLOR_FILE));
     	return null;
     }
 	
@@ -47,14 +47,19 @@ public class PreferencesHelper {
      * @return the color file path. null if not specified.
      */
     public static IPath getFontFilePath(){
-    	if(getString(OPI_FONT_FILE) != null)
-    		return new Path(getString(OPI_FONT_FILE));
+    	if(getString(FONT_FILE) != null)
+    		return new Path(getString(FONT_FILE));
     	return null;
     }
     
     public static boolean isAutoSaveBeforeRunning(){
     	final IPreferencesService service = Platform.getPreferencesService();
-    	return service.getBoolean(OPIBuilderPlugin.PLUGIN_ID, OPI_AUTOSAVE, false, null);
+    	return service.getBoolean(OPIBuilderPlugin.PLUGIN_ID, AUTOSAVE, false, null);
+    }
+    
+      public static boolean isNoEdit(){
+    	final IPreferencesService service = Platform.getPreferencesService();
+    	return service.getBoolean(OPIBuilderPlugin.PLUGIN_ID, NO_EDIT, false, null);
     }
     
     public static Integer getGUIRefreshCycle(){
@@ -66,10 +71,10 @@ public class PreferencesHelper {
      * @return the macros map. null if failed to get macros from preference store.
      */
     public static Map<String, String> getMacros(){
-    	if(getString(OPI_RUN_MACROS) != null){
+    	if(getString(RUN_MACROS) != null){
     		try {
     			Map<String, String> macros = new HashMap<String, String>();
-				List<String[]> items = StringTableFieldEditor.decodeStringTable(getString(OPI_RUN_MACROS));
+				List<String[]> items = StringTableFieldEditor.decodeStringTable(getString(RUN_MACROS));
 				for(String[] item : items){
 					if(item.length == 2)
 						macros.put(item[0], item[1]);

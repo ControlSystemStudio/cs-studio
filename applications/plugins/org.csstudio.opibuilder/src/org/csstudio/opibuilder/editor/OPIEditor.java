@@ -55,6 +55,9 @@ import org.csstudio.opibuilder.model.RulerModel;
 import org.csstudio.opibuilder.palette.OPIEditorPaletteFactory;
 import org.csstudio.opibuilder.palette.WidgetCreationFactory;
 import org.csstudio.opibuilder.persistence.XMLUtil;
+import org.csstudio.opibuilder.preferences.PreferencesHelper;
+import org.csstudio.opibuilder.runmode.RunModeService;
+import org.csstudio.opibuilder.runmode.RunModeService.TargetWindow;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.dialogs.SaveAsDialog;
@@ -117,9 +120,12 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
@@ -158,9 +164,31 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 	public OPIEditor() {
 		if(getPalettePreferences().getPaletteState() <= 0)
 			getPalettePreferences().setPaletteState(FlyoutPaletteComposite.STATE_PINNED_OPEN);
-		setEditDomain(new DefaultEditDomain(this));		
+		setEditDomain(new DefaultEditDomain(this));				
 	}
 	
+	@Override
+	public void init(final IEditorSite site, final IEditorInput input)
+			throws PartInitException {		
+		//in the mode of "no edit", open OPI in runtime and close this editor immediately.
+		if(PreferencesHelper.isNoEdit() && input instanceof FileEditorInput){
+			RunModeService.getInstance().runOPI(((FileEditorInput)input).getFile(),
+					TargetWindow.SAME_WINDOW, null);
+			setSite(site);
+			setInput(input);
+						
+			Display.getDefault().asyncExec(new Runnable(){
+				public void run() {
+					try {
+						getSite().getPage().closeEditor(OPIEditor.this, false);
+					} catch (Exception e) {}	
+				}
+			});					
+		
+		}		
+		else 
+			super.init(site, input);	
+	}
 
 	@Override
 	public void commandStackChanged(EventObject event) {

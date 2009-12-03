@@ -35,31 +35,36 @@ public class OPIBuilderPreferencePage extends FieldEditorPreferencePage
 		final Composite parent = getFieldEditorParent();
 		
 		StringTableFieldEditor macrosEditor = new StringTableFieldEditor(
-				PreferencesHelper.OPI_RUN_MACROS, "Macros: " , parent, new String[]{"Name", "Value"}, 
+				PreferencesHelper.RUN_MACROS, "Macros: " , parent, new String[]{"Name", "Value"}, 
 				new boolean[]{true, true}, new MacroEditDialog(parent.getShell()), new int[]{120, 120});
 		addField(macrosEditor);
 		WorkspaceFileFieldEditor colorEditor = 
-			new WorkspaceFileFieldEditor(PreferencesHelper.OPI_COLOR_FILE, 
+			new WorkspaceFileFieldEditor(PreferencesHelper.COLOR_FILE, 
 					"color file: ", new String[]{"def"}, parent);//$NON-NLS-2$
 		colorEditor.setTooltip(RESTART_MESSAGE);
 		addField(colorEditor);  
 		
 		WorkspaceFileFieldEditor fontEditor =
-			new WorkspaceFileFieldEditor(PreferencesHelper.OPI_FONT_FILE, 
+			new WorkspaceFileFieldEditor(PreferencesHelper.FONT_FILE, 
 				"font file: ", new String[]{"def"}, parent);//$NON-NLS-2$
 		fontEditor.setTooltip(RESTART_MESSAGE);
 		addField(fontEditor);
 		
 		BooleanFieldEditor autoSaveEditor = 
-			new BooleanFieldEditor(PreferencesHelper.OPI_AUTOSAVE, 
+			new BooleanFieldEditor(PreferencesHelper.AUTOSAVE, 
 					"Automatically save file before running.", parent);
 		addField(autoSaveEditor);
 		
 		IntegerFieldEditor guiRefreshCycleEditor = 
 			new IntegerFieldEditor(PreferencesHelper.OPI_GUI_REFRESH_CYCLE,
-					"GUI Refresh Cycle (ms)", parent);
+					"OPI GUI Refresh Cycle (ms)", parent);
 		guiRefreshCycleEditor.setValidRange(10, 5000);
 		addField(guiRefreshCycleEditor);
+		
+		BooleanFieldEditor noEditModeEditor = 
+			new BooleanFieldEditor(PreferencesHelper.NO_EDIT, 
+					"No editing mode", parent);		
+		addField(noEditModeEditor);
 		
 	}
 
@@ -73,8 +78,8 @@ public class OPIBuilderPreferencePage extends FieldEditorPreferencePage
 		Object  src = event.getSource();
 		if(src instanceof FieldEditor){
 			String prefName = ((FieldEditor)src).getPreferenceName();
-			if(prefName.equals(PreferencesHelper.OPI_FONT_FILE) || 
-					prefName.equals(PreferencesHelper.OPI_COLOR_FILE) ||
+			if(prefName.equals(PreferencesHelper.FONT_FILE) || 
+					prefName.equals(PreferencesHelper.COLOR_FILE) ||
 					prefName.equals(PreferencesHelper.OPI_GUI_REFRESH_CYCLE))
 				setMessage(RESTART_MESSAGE, WARNING);
 		}
