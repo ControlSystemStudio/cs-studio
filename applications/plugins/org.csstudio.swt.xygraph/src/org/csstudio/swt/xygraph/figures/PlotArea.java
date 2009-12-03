@@ -409,7 +409,9 @@ public class PlotArea extends Figure {
 		public void mouseDoubleClicked(MouseEvent me) {}
 
 		public void mousePressed(MouseEvent me) {	
-			if(zoomType == ZoomType.NONE)
+		    // Only react to 'main' mouse button
+		    if (me.button != 1 ||
+                zoomType == ZoomType.NONE)
 				return;
 			armed = true;
 			//get start position
