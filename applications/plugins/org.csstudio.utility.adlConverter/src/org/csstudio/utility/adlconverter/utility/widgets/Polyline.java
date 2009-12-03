@@ -29,6 +29,7 @@ import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
+import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
 
 /**
@@ -55,8 +56,34 @@ public class Polyline extends Widget{
             }
             getBasicAttribute().setStyle("0"); //$NON-NLS-1$
         }
-        _widget.setWidth(getObject().getWidth());
-        _widget.setHeight(getObject().getHeight());
+        if(getPoints()!=null&&getPoints().getPointsList()!=null) {
+            int minX = Integer.MAX_VALUE;
+            int maxX = 0;
+            int minY = Integer.MAX_VALUE;
+            int maxY = 0;
+            int size = getPoints().getPointsList().size();
+            for (int i=0;i<size;i++) {
+                Point point = getPoints().getPointsList().getPoint(i);
+                if(point.x<minX) {
+                    minX = point.x;
+                }
+                if(point.x>maxX) {
+                    maxX = point.x;
+                }
+                if(point.y<minY) {
+                    minY = point.y;
+                }
+                if(point.y>maxY) {
+                    maxY = point.y;
+                }
+            }
+            _widget.setWidth(maxX-minX);
+            _widget.setHeight(maxY-minY);
+            
+        }else {
+            _widget.setWidth(getObject().getWidth());
+            _widget.setHeight(getObject().getHeight());
+        }
         _widget.setPropertyValue(PolylineModel.PROP_FILL, 100.0);
         ADLHelper.checkAndSetLayer(_widget, abstractWidgetModel);
         
