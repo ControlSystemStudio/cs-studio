@@ -561,7 +561,9 @@ public class XYGraph extends Figure{
                 low = Log10.pow10(low);
                 high = Log10.pow10(high);
             }
-            yaxis.setRange(low, high);
+            // Sanity check for empty traces
+            if (low < high)
+                yaxis.setRange(low, high);
         }
         
         command.saveAfterStates();
