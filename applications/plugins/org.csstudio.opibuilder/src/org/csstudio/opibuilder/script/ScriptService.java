@@ -77,8 +77,11 @@ public class ScriptService {
 	public void unregisterScript(final ScriptData scriptData){
 		UIBundlingThread.getInstance().addRunnable(new Runnable(){
 			public void run() {
-				scriptMap.get(scriptData).dispose();
-				scriptMap.remove(scriptData);						
+				if(scriptMap.containsKey(scriptData)){
+					scriptMap.get(scriptData).dispose();
+					scriptMap.remove(scriptData);	
+				}
+									
 			}
 		});
 		

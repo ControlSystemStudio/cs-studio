@@ -315,9 +315,9 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 										Display.getDefault().asyncExec(new Runnable() {											
 											public void run() {
 												MessageDialog.openError(null, "PV connecting failed", message);
+												ConsoleService.getInstance().writeError(message);
 											}
 										});
-										ConsoleService.getInstance().writeError(message);
 										return Status.OK_STATUS;
 									}
 									try {

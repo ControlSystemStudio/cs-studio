@@ -42,14 +42,20 @@ public abstract class AbstractPVWidgetModel extends AbstractWidgetModel {
 	}
 
 	public boolean isBorderAlarmSensitve(){
+		if(getProperty(PROP_BORDER_ALARMSENSITIVE) == null)
+			return false;
 		return (Boolean)getCastedPropertyValue(PROP_BORDER_ALARMSENSITIVE);
 	}
 	
 	public boolean isForeColorAlarmSensitve(){
+		if(getProperty(PROP_FORECOLOR_ALARMSENSITIVE) == null)
+			return false;
 		return (Boolean)getCastedPropertyValue(PROP_FORECOLOR_ALARMSENSITIVE);
 	}
 	
 	public boolean isBackColorAlarmSensitve(){
+		if(getProperty(PROP_BACKCOLOR_ALARMSENSITIVE) == null)
+			return false;
 		return (Boolean)getCastedPropertyValue(PROP_BACKCOLOR_ALARMSENSITIVE);
 	}
 	
