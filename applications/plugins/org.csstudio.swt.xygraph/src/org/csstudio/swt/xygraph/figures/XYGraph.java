@@ -531,9 +531,6 @@ public class XYGraph extends Figure{
     {
         final ZoomCommand command = new ZoomCommand("Stagger Axes", null, yAxisList);
         command.savePreviousStates();
-        for(Axis axis : yAxisList){
-            axis.performAutoScale(true);
-        }
         
         // Arrange all so they don't overlap by assigning 1/Nth of
         // the vertical range to each one
@@ -543,6 +540,7 @@ public class XYGraph extends Figure{
             final Axis yaxis = yAxisList.get(i);
             if (yaxis.isAutoScale())
                 continue; // takes care of itself
+            yaxis.performAutoScale(true);
             double low = yaxis.getRange().getLower();
             double high = yaxis.getRange().getUpper();
             if (yaxis.isLogScaleEnabled())
@@ -552,10 +550,12 @@ public class XYGraph extends Figure{
             }
             double range = high - low;
             // Fudge factor to get some extra space
-            range = 1.1*range;
+            range = 1.05*range;
             // Shift it down according to its index, using a total of N*range.
             low -= (N-i-1)*range;
             high += i*range;
+            // Fudge bottom
+            low -= 0.05*range;
             if (yaxis.isLogScaleEnabled())
             {
                 low = Log10.pow10(low);
