@@ -33,6 +33,7 @@ import javax.naming.directory.DirContext;
 import javax.naming.directory.ModificationItem;
 
 import org.csstudio.alarm.treeView.model.AbstractAlarmTreeNode;
+import org.csstudio.alarm.treeView.model.AlarmTreeNodePropertyId;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.ObjectClass;
 import org.csstudio.alarm.treeView.model.ProcessVariableNode;
@@ -255,10 +256,48 @@ public final class DirectoryEditor {
 		if (node instanceof ProcessVariableNode) {
 			copyProcessVariableNode((ProcessVariableNode) node, target);
 		} else {
-			// TODO
-			//copySubtree(node, target);
+			copySubtree((SubtreeNode) node, target);
 		}
 	}
+
+	/**
+	 * Creates a subtree node which is a copy of the given subtree node. All
+	 * children of the original subtree node will be copied into the new node.
+	 * 
+	 * @param node
+	 *            the original.
+	 * @param target
+	 *            the target.
+	 * @throws DirectoryEditException
+	 *             if an error occurs.
+	 */
+	private static void copySubtree(SubtreeNode node, SubtreeNode target) 
+			throws DirectoryEditException {
+		ObjectClass oclass = node.getObjectClass();
+		String name = node.getName();
+		createEntry(fullName(target), name, oclass);
+		SubtreeNode copy = new SubtreeNode(target, name, oclass);
+		copyAttributes(node, copy);
+		copyChildren(node, copy);
+	}
+
+	/**
+	 * Copies the child nodes of the given subtree node into the target node.
+	 * This method works recursively, the children of the copied nodes are
+	 * copied as well.
+	 * 
+	 * @param node
+	 *            the node which contains the original children.
+	 * @param target
+	 *            the target node into which the children will be copied.
+	 */
+	private static void copyChildren(SubtreeNode node, SubtreeNode target)
+			throws DirectoryEditException {
+		for (IAlarmTreeNode child : node.getChildren()) {
+			copyNode(child, target);
+		}
+	}
+
 
 	/**
 	 * Creates a new process variable node which is a copy of the given process
@@ -291,19 +330,19 @@ public final class DirectoryEditor {
 	 */
 	private static void copyAttributes(AbstractAlarmTreeNode source,
 			AbstractAlarmTreeNode target) throws DirectoryEditException {
-		if (source.getCssAlarmDisplay() != null) {
+		if (source.getOwnProperty(AlarmTreeNodePropertyId.CSS_ALARM_DISPLAY) != null) {
 			modifyCssAlarmDisplay(target, source.getCssAlarmDisplay());
 		}
-		if (source.getCssDisplay() != null) {
+		if (source.getOwnProperty(AlarmTreeNodePropertyId.CSS_DISPLAY) != null) {
 			modifyCssDisplay(target, source.getCssDisplay());
 		}
-		if (source.getCssStripChart() != null) {
+		if (source.getOwnProperty(AlarmTreeNodePropertyId.CSS_STRIP_CHART) != null) {
 			modifyCssStripChart(target, source.getCssStripChart());
 		}
-		if (source.getHelpGuidance() != null) {
+		if (source.getOwnProperty(AlarmTreeNodePropertyId.HELP_GUIDANCE) != null) {
 			modifyHelpGuidance(target, source.getHelpGuidance());
 		}
-		if (source.getHelpPage () != null) {
+		if (source.getOwnProperty(AlarmTreeNodePropertyId.HELP_PAGE) != null) {
 			modifyHelpPage(target, source.getHelpPage());
 		}
 	}
