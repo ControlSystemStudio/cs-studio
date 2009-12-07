@@ -5,6 +5,7 @@ import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.FilePathProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -69,7 +70,10 @@ public class LinkingContainerModel extends AbstractContainerModel {
 	 * @return The target resource.
 	 */
 	public IPath getOPIFilePath() {
-		return (IPath) getProperty(PROP_OPI_FILE).getPropertyValue();
+		IPath absolutePath = (IPath) getProperty(PROP_OPI_FILE).getPropertyValue();
+		if(absolutePath != null && !absolutePath.isEmpty() && !absolutePath.isAbsolute())
+			absolutePath = ResourceUtil.buildAbsolutePath(this, absolutePath);
+		return absolutePath;
 	}
 	
 	public void setOPIFilePath(String path){

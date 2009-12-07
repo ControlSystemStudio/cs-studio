@@ -9,6 +9,7 @@ import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.OPIFont;
+import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -168,7 +169,10 @@ public final class ActionButtonModel extends AbstractPVWidgetModel {
 	}
 	
 	public IPath getImagePath(){
-		return (IPath)getCastedPropertyValue(PROP_IMAGE);
+		IPath absolutePath = (IPath) getProperty(PROP_IMAGE).getPropertyValue();
+		if(!absolutePath.isAbsolute())
+			absolutePath = ResourceUtil.buildAbsolutePath(this, absolutePath);
+		return absolutePath;
 	}
 	
 	/**

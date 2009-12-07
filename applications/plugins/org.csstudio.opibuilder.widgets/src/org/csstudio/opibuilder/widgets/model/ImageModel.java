@@ -27,6 +27,7 @@ import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.FilePathProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.csstudio.opibuilder.util.ResourceUtil;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 
@@ -117,7 +118,10 @@ public final class ImageModel extends AbstractWidgetModel {
 	 * @return The path to the specified file
 	 */
 	public IPath getFilename() {
-		return (IPath) getProperty(PROP_IMAGE_FILE).getPropertyValue();
+		IPath absolutePath = (IPath) getProperty(PROP_IMAGE_FILE).getPropertyValue();
+		if(!absolutePath.isAbsolute())
+			absolutePath = ResourceUtil.buildAbsolutePath(this, absolutePath);
+		return absolutePath;
 	}
 	
 	/**

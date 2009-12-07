@@ -219,40 +219,6 @@ $(pv_value)</tooltip>
       <color red="29" green="40" blue="184" />
     </foreground_color>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
-    <enabled>true</enabled>
-    <widget_type>Action Button</widget_type>
-    <text>Go Home</text>
-    <visible>true</visible>
-    <font>
-      <fontdata fontName="Arial" height="9" style="1" />
-    </font>
-    <width>79</width>
-    <push_action_index>0</push_action_index>
-    <image>/BOY Examples/pictures/home-16x16.png</image>
-    <scripts />
-    <height>28</height>
-    <toggle_button>false</toggle_button>
-    <name>Action Button</name>
-    <y>565</y>
-    <actions hook="true">
-      <action type="OPEN_DISPLAY">
-        <path>/BOY Examples/10_widgets.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-        </macros>
-        <replace>true</replace>
-      </action>
-    </actions>
-    <foreground_color>
-      <color red="0" green="0" blue="128" />
-    </foreground_color>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
-    <x>17</x>
-    <tooltip />
-  </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <widget_type>Label</widget_type>
     <enabled>true</enabled>
@@ -305,7 +271,7 @@ $(pv_value)</tooltip>
     </border_color>
     <actions hook="false" />
     <y>114</y>
-    <opi_file>/BOY Examples/widgets/1_5_Polyline_Polygon.opi</opi_file>
+    <opi_file>1_5_Polyline_Polygon.opi</opi_file>
     <foreground_color>
       <color red="192" green="192" blue="192" />
     </foreground_color>
@@ -490,7 +456,7 @@ $(pv_value)</tooltip>
       <fill_level>100.0</fill_level>
       <rotation_angle>0.0</rotation_angle>
       <scripts>
-        <path pathString="/BOY Examples/scripts/RotatePolygon.js">
+        <path pathString="../scripts/RotatePolygon.js">
           <pv>sim://ramp(0,360,10,0.01)</pv>
         </path>
       </scripts>
@@ -539,7 +505,7 @@ $(pv_value)</tooltip>
       <fill_level>100.0</fill_level>
       <rotation_angle>0.0</rotation_angle>
       <scripts>
-        <path pathString="/BOY Examples/scripts/RotatePolygon.js">
+        <path pathString="../scripts/RotatePolygon.js">
           <pv>sim://ramp(0,360,10,0.1)</pv>
         </path>
       </scripts>
@@ -548,12 +514,12 @@ $(pv_value)</tooltip>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <name>Polygon</name>
       <points>
-        <point x="673" y="382" />
-        <point x="621" y="409" />
-        <point x="621" y="469" />
-        <point x="675" y="501" />
-        <point x="724" y="470" />
-        <point x="724" y="412" />
+        <point x="652" y="412" />
+        <point x="600" y="439" />
+        <point x="600" y="499" />
+        <point x="654" y="531" />
+        <point x="703" y="500" />
+        <point x="703" y="442" />
       </points>
       <transparent>false</transparent>
       <pv_name />
@@ -575,11 +541,11 @@ $(pv_value)</tooltip>
       <border_color>
         <color red="0" green="128" blue="255" />
       </border_color>
-      <y>382</y>
+      <y>412</y>
       <actions hook="false" />
       <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-      <x>621</x>
+      <x>600</x>
     </widget>
     <widget typeId="org.csstudio.opibuilder.widgets.polyline" version="1.0">
       <border_alarm_sensitive>true</border_alarm_sensitive>
@@ -717,7 +683,7 @@ $(pv_value)</tooltip>
       <fill_level>40.0</fill_level>
       <rotation_angle>0.0</rotation_angle>
       <scripts>
-        <path pathString="/BOY Examples/scripts/FillLevel.js">
+        <path pathString="../scripts/FillLevel.js">
           <pv>sim://ramp(0,100,1,0.1)</pv>
         </path>
       </scripts>
@@ -726,9 +692,9 @@ $(pv_value)</tooltip>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <name>Polygon_1</name>
       <points>
-        <point x="495" y="399" />
-        <point x="531" y="501" />
-        <point x="562" y="399" />
+        <point x="448" y="420" />
+        <point x="484" y="522" />
+        <point x="515" y="420" />
       </points>
       <transparent>false</transparent>
       <pv_name />
@@ -750,53 +716,11 @@ $(pv_value)</tooltip>
       <border_color>
         <color red="0" green="128" blue="255" />
       </border_color>
-      <y>399</y>
+      <y>420</y>
       <actions hook="false" />
       <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-      <x>495</x>
-    </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.polygon" version="1.0">
-      <border_alarm_sensitive>false</border_alarm_sensitive>
-      <visible>true</visible>
-      <fill_level>0.0</fill_level>
-      <rotation_angle>0.0</rotation_angle>
-      <scripts />
-      <height>28</height>
-      <anti_alias>true</anti_alias>
-      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-      <name>Polygon_2</name>
-      <points>
-        <point x="651" y="284" />
-        <point x="651" y="311" />
-        <point x="717" y="284" />
-        <point x="717" y="311" />
-      </points>
-      <transparent>false</transparent>
-      <pv_name>sim://noise</pv_name>
-      <background_color>
-        <color red="102" green="255" blue="51" />
-      </background_color>
-      <foreground_color>
-        <color red="102" green="51" blue="51" />
-      </foreground_color>
-      <widget_type>Polygon</widget_type>
-      <enabled>true</enabled>
-      <backcolor_alarm_sensitive>true</backcolor_alarm_sensitive>
-      <line_style>0</line_style>
-      <width>67</width>
-      <border_style>0</border_style>
-      <border_width>1</border_width>
-      <horizontal_fill>true</horizontal_fill>
-      <line_width>1</line_width>
-      <border_color>
-        <color red="0" green="128" blue="255" />
-      </border_color>
-      <y>284</y>
-      <actions hook="false" />
-      <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-      <x>651</x>
+      <x>448</x>
     </widget>
     <widget typeId="org.csstudio.opibuilder.widgets.polygon" version="1.0">
       <border_alarm_sensitive>true</border_alarm_sensitive>
@@ -809,11 +733,11 @@ $(pv_value)</tooltip>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <name>Polygon_3</name>
       <points>
-        <point x="464" y="329" />
-        <point x="554" y="273" />
-        <point x="575" y="369" />
-        <point x="476" y="284" />
-        <point x="611" y="308" />
+        <point x="408" y="325" />
+        <point x="498" y="269" />
+        <point x="519" y="365" />
+        <point x="420" y="280" />
+        <point x="555" y="304" />
       </points>
       <transparent>false</transparent>
       <pv_name />
@@ -835,11 +759,11 @@ $(pv_value)</tooltip>
       <border_color>
         <color red="0" green="128" blue="255" />
       </border_color>
-      <y>273</y>
+      <y>269</y>
       <actions hook="false" />
       <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-      <x>464</x>
+      <x>408</x>
     </widget>
     <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
       <widget_type>Label</widget_type>
@@ -975,39 +899,364 @@ $(pv_value)</tooltip>
         <color red="0" green="0" blue="0" />
       </foreground_color>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
       <enabled>true</enabled>
+      <widget_type>Grouping Container</widget_type>
+      <macros>
+        <include_parent_macros>true</include_parent_macros>
+      </macros>
+      <visible>true</visible>
+      <width>40</width>
+      <border_style>0</border_style>
+      <lock_children>true</lock_children>
+      <scripts />
+      <height>45</height>
+      <border_width>1</border_width>
+      <name>Grouping Container</name>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <transparent>true</transparent>
+      <show_scrollbar>true</show_scrollbar>
+      <actions hook="false">
+        <action type="WRITE_PV">
+          <pv_name>loc://bool</pv_name>
+          <value>1</value>
+        </action>
+        <action type="WRITE_PV">
+          <pv_name>loc://bool</pv_name>
+          <value>0</value>
+        </action>
+      </actions>
+      <y>282</y>
+      <foreground_color>
+        <color red="192" green="192" blue="192" />
+      </foreground_color>
+      <background_color>
+        <color red="240" green="240" blue="240" />
+      </background_color>
+      <x>592</x>
+      <tooltip />
+      <widget typeId="org.csstudio.opibuilder.widgets.polyline" version="1.0">
+        <border_alarm_sensitive>true</border_alarm_sensitive>
+        <fill_arrow>true</fill_arrow>
+        <arrow_length>20</arrow_length>
+        <visible>true</visible>
+        <fill_level>0.0</fill_level>
+        <rotation_angle>0.0</rotation_angle>
+        <scripts>
+          <path pathString="../scripts/OnOffColor.js">
+            <pv>sim://ramp(0,1,1,1)</pv>
+          </path>
+        </scripts>
+        <arrows>0</arrows>
+        <height>30</height>
+        <anti_alias>true</anti_alias>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <name>Polyline_4</name>
+        <points>
+          <point x="20" y="30" />
+          <point x="20" y="1" />
+        </points>
+        <transparent>false</transparent>
+        <pv_name />
+        <background_color>
+          <color name="Blue" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="0" blue="255" />
+        </foreground_color>
+        <widget_type>Polyline</widget_type>
+        <enabled>true</enabled>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <line_style>0</line_style>
+        <width>1</width>
+        <border_style>0</border_style>
+        <border_width>1</border_width>
+        <horizontal_fill>true</horizontal_fill>
+        <line_width>2</line_width>
+        <border_color>
+          <color red="0" green="128" blue="255" />
+        </border_color>
+        <y>1</y>
+        <actions hook="false" />
+        <tooltip>$(pv.name)</tooltip>
+        <x>20</x>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.polygon" version="1.0">
+        <border_alarm_sensitive>true</border_alarm_sensitive>
+        <visible>true</visible>
+        <fill_level>0.0</fill_level>
+        <rotation_angle>0.0</rotation_angle>
+        <scripts>
+          <path pathString="../scripts/OnOffColor.js">
+            <pv>sim://ramp(0,1,1,1)</pv>
+          </path>
+        </scripts>
+        <height>30</height>
+        <anti_alias>true</anti_alias>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <name>Polygon_1</name>
+        <points>
+          <point x="0" y="44" />
+          <point x="39" y="15" />
+          <point x="39" y="44" />
+          <point x="0" y="15" />
+        </points>
+        <transparent>false</transparent>
+        <pv_name />
+        <background_color>
+          <color name="Blue" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="0" blue="255" />
+        </foreground_color>
+        <widget_type>Polygon</widget_type>
+        <enabled>true</enabled>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <line_style>0</line_style>
+        <width>40</width>
+        <border_style>0</border_style>
+        <border_width>1</border_width>
+        <horizontal_fill>true</horizontal_fill>
+        <line_width>0</line_width>
+        <border_color>
+          <color red="0" green="128" blue="255" />
+        </border_color>
+        <y>15</y>
+        <actions hook="false" />
+        <tooltip>$(pv.name)</tooltip>
+        <x>0</x>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.arc" version="1.0">
+        <border_alarm_sensitive>true</border_alarm_sensitive>
+        <visible>true</visible>
+        <total_angle>180</total_angle>
+        <start_angle>0</start_angle>
+        <scripts>
+          <path pathString="../scripts/OnOffColor.js">
+            <pv>sim://ramp(0,1,1,1)</pv>
+          </path>
+        </scripts>
+        <height>21</height>
+        <anti_alias>true</anti_alias>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <name>Arc</name>
+        <pv_name />
+        <background_color>
+          <color name="Blue" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="0" blue="255" />
+        </foreground_color>
+        <widget_type>Arc</widget_type>
+        <enabled>true</enabled>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <line_style>0</line_style>
+        <width>38</width>
+        <fill>true</fill>
+        <border_style>0</border_style>
+        <border_width>1</border_width>
+        <line_width>0</line_width>
+        <border_color>
+          <color red="0" green="128" blue="255" />
+        </border_color>
+        <y>0</y>
+        <actions hook="false" />
+        <tooltip>$(pv.name)</tooltip>
+        <x>1</x>
+      </widget>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+      <enabled>true</enabled>
+      <widget_type>Grouping Container</widget_type>
+      <macros>
+        <include_parent_macros>true</include_parent_macros>
+      </macros>
+      <visible>true</visible>
+      <width>60</width>
+      <border_style>0</border_style>
+      <lock_children>true</lock_children>
+      <scripts />
+      <height>59</height>
+      <border_width>1</border_width>
+      <name>Grouping Container_1</name>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <transparent>true</transparent>
+      <show_scrollbar>true</show_scrollbar>
+      <actions hook="false" />
+      <y>275</y>
+      <foreground_color>
+        <color red="192" green="192" blue="192" />
+      </foreground_color>
+      <background_color>
+        <color red="240" green="240" blue="240" />
+      </background_color>
+      <x>664</x>
+      <tooltip />
+      <widget typeId="org.csstudio.opibuilder.widgets.Ellipse" version="1.0">
+        <border_alarm_sensitive>true</border_alarm_sensitive>
+        <visible>true</visible>
+        <fill_level>0.0</fill_level>
+        <scripts>
+          <path pathString="../scripts/OnOffColor.js">
+            <pv>sim://ramp(0,1,1,1)</pv>
+          </path>
+        </scripts>
+        <height>48</height>
+        <anti_alias>true</anti_alias>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <name>Ellipse</name>
+        <transparent>false</transparent>
+        <pv_name />
+        <background_color>
+          <color red="0" green="0" blue="255" />
+        </background_color>
+        <foreground_color>
+          <color red="255" green="0" blue="0" />
+        </foreground_color>
+        <widget_type>Ellipse</widget_type>
+        <enabled>true</enabled>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <line_style>0</line_style>
+        <width>46</width>
+        <border_style>0</border_style>
+        <border_width>1</border_width>
+        <horizontal_fill>true</horizontal_fill>
+        <line_width>0</line_width>
+        <border_color>
+          <color red="0" green="128" blue="255" />
+        </border_color>
+        <y>0</y>
+        <actions hook="false" />
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+        <x>0</x>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.polygon" version="1.0">
+        <border_alarm_sensitive>true</border_alarm_sensitive>
+        <visible>true</visible>
+        <fill_level>0.0</fill_level>
+        <rotation_angle>0.0</rotation_angle>
+        <scripts>
+          <path pathString="../scripts/OnOffColor.js">
+            <pv>sim://ramp(0,1,1,1)</pv>
+          </path>
+        </scripts>
+        <height>21</height>
+        <anti_alias>true</anti_alias>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <name>Polygon_4</name>
+        <points>
+          <point x="15" y="38" />
+          <point x="0" y="58" />
+          <point x="45" y="58" />
+          <point x="31" y="38" />
+        </points>
+        <transparent>false</transparent>
+        <pv_name />
+        <background_color>
+          <color red="0" green="0" blue="255" />
+        </background_color>
+        <foreground_color>
+          <color red="255" green="0" blue="0" />
+        </foreground_color>
+        <widget_type>Polygon</widget_type>
+        <enabled>true</enabled>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <line_style>0</line_style>
+        <width>46</width>
+        <border_style>0</border_style>
+        <border_width>1</border_width>
+        <horizontal_fill>true</horizontal_fill>
+        <line_width>0</line_width>
+        <border_color>
+          <color red="0" green="128" blue="255" />
+        </border_color>
+        <y>38</y>
+        <actions hook="false" />
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+        <x>0</x>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
+        <border_alarm_sensitive>true</border_alarm_sensitive>
+        <visible>true</visible>
+        <fill_level>0.0</fill_level>
+        <scripts>
+          <path pathString="../scripts/OnOffColor.js">
+            <pv>sim://ramp(0,1,1,1)</pv>
+          </path>
+        </scripts>
+        <height>16</height>
+        <anti_alias>true</anti_alias>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <name>Rectangle</name>
+        <transparent>false</transparent>
+        <pv_name />
+        <background_color>
+          <color red="0" green="0" blue="255" />
+        </background_color>
+        <foreground_color>
+          <color red="255" green="0" blue="0" />
+        </foreground_color>
+        <widget_type>Rectangle</widget_type>
+        <enabled>true</enabled>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <line_style>0</line_style>
+        <width>37</width>
+        <border_style>0</border_style>
+        <border_width>1</border_width>
+        <horizontal_fill>true</horizontal_fill>
+        <line_width>0</line_width>
+        <border_color>
+          <color red="0" green="128" blue="255" />
+        </border_color>
+        <y>0</y>
+        <actions hook="false" />
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+        <x>23</x>
+      </widget>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
       <widget_type>Action Button</widget_type>
+      <enabled>true</enabled>
       <text>Go Home</text>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <visible>true</visible>
       <font>
         <fontdata fontName="Arial" height="9" style="1" />
       </font>
       <width>79</width>
       <push_action_index>0</push_action_index>
-      <image>/BOY Examples/pictures/home-16x16.png</image>
+      <image>../pictures/home-16x16.png</image>
       <scripts />
-      <height>28</height>
       <toggle_button>false</toggle_button>
+      <height>28</height>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <name>Action Button</name>
-      <y>561</y>
+      <pv_name />
+      <y>564</y>
       <actions hook="true">
         <action type="OPEN_DISPLAY">
-          <path>/BOY Examples/10_widgets.opi</path>
+          <path>../10_widgets.opi</path>
           <macros>
             <include_parent_macros>true</include_parent_macros>
           </macros>
           <replace>true</replace>
         </action>
       </actions>
-      <foreground_color>
-        <color red="0" green="0" blue="128" />
-      </foreground_color>
+      <tooltip />
+      <x>17</x>
       <background_color>
         <color red="240" green="240" blue="240" />
       </background_color>
-      <x>16</x>
-      <tooltip />
+      <foreground_color>
+        <color red="0" green="0" blue="128" />
+      </foreground_color>
     </widget>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.linkingContainer" version="1.0">
@@ -1020,7 +1269,7 @@ $(pv_value)</tooltip>
     <width>200</width>
     <border_style>3</border_style>
     <scripts>
-      <path pathString="/BOY Examples/scripts/DynamicSymbol.js">
+      <path pathString="../scripts/DynamicSymbol.js">
         <pv>sim://ramp(0,3,1,1)</pv>
       </path>
     </scripts>
@@ -1042,5 +1291,42 @@ $(pv_value)</tooltip>
     </background_color>
     <x>17</x>
     <tooltip />
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <widget_type>Action Button</widget_type>
+    <enabled>true</enabled>
+    <text>Go Home</text>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <visible>true</visible>
+    <font>
+      <fontdata fontName="Arial" height="9" style="1" />
+    </font>
+    <width>79</width>
+    <push_action_index>0</push_action_index>
+    <image>../pictures/home-16x16.png</image>
+    <scripts />
+    <toggle_button>false</toggle_button>
+    <height>28</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Action Button</name>
+    <pv_name />
+    <y>565</y>
+    <actions hook="true">
+      <action type="OPEN_DISPLAY">
+        <path>../10_widgets.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+        </macros>
+        <replace>true</replace>
+      </action>
+    </actions>
+    <tooltip />
+    <x>17</x>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="128" />
+    </foreground_color>
   </widget>
 </display>

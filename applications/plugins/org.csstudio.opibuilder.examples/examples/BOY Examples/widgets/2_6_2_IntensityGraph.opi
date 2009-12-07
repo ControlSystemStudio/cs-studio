@@ -9,7 +9,7 @@
   <show_ruler>true</show_ruler>
   <height>600</height>
   <show_edit_range>true</show_edit_range>
-  <name>Display</name>
+  <name>Intensity Graph</name>
   <grid_space>6</grid_space>
   <snap_to_geometry>true</snap_to_geometry>
   <show_grid>true</show_grid>
@@ -33,7 +33,7 @@
     <border_style>13</border_style>
     <lock_children>false</lock_children>
     <scripts>
-      <path pathString="/BOY Examples/scripts/SelectColorMap.js">
+      <path pathString="../scripts/SelectColorMap.js">
         <pv>loc://colorMap</pv>
       </path>
     </scripts>
@@ -62,7 +62,7 @@
       <minimum>-1.0</minimum>
       <data_height>256</data_height>
       <scripts>
-        <path pathString="/BOY Examples/scripts/SetIntensityGraphData.js">
+        <path pathString="../scripts/SetIntensityGraphData.js">
           <pv>sim://ramp(0,10,0.2,1)</pv>
           <pv>loc://dataSource</pv>
         </path>
@@ -245,9 +245,10 @@ $(pv_value)</tooltip>
     </widget>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
-    <enabled>true</enabled>
     <widget_type>Action Button</widget_type>
+    <enabled>true</enabled>
     <text>Back</text>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="9" style="1" />
@@ -256,61 +257,29 @@ $(pv_value)</tooltip>
     <push_action_index>0</push_action_index>
     <image />
     <scripts />
-    <height>28</height>
     <toggle_button>false</toggle_button>
+    <height>28</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Action Button_2</name>
-    <y>546</y>
+    <pv_name />
+    <y>564</y>
     <actions hook="true">
       <action type="OPEN_DISPLAY">
-        <path>/BOY Examples/widgets/2_6_1_IntensityGraph.opi</path>
+        <path>2_6_1_IntensityGraph.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>true</replace>
       </action>
     </actions>
-    <foreground_color>
-      <color red="0" green="0" blue="128" />
-    </foreground_color>
+    <tooltip />
+    <x>696</x>
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
-    <x>708</x>
-    <tooltip />
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
-    <enabled>true</enabled>
-    <widget_type>Action Button</widget_type>
-    <text>Go Home</text>
-    <visible>true</visible>
-    <font>
-      <fontdata fontName="Arial" height="9" style="1" />
-    </font>
-    <width>79</width>
-    <push_action_index>0</push_action_index>
-    <image>/BOY Examples/pictures/home-16x16.png</image>
-    <scripts />
-    <height>28</height>
-    <toggle_button>false</toggle_button>
-    <name>Action Button</name>
-    <y>552</y>
-    <actions hook="true">
-      <action type="OPEN_DISPLAY">
-        <path>/BOY Examples/10_widgets.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-        </macros>
-        <replace>true</replace>
-      </action>
-    </actions>
     <foreground_color>
       <color red="0" green="0" blue="128" />
     </foreground_color>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
-    <x>24</x>
-    <tooltip />
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <widget_type>Label</widget_type>
@@ -406,6 +375,43 @@ $(pv_value)</tooltip>
     </background_color>
     <foreground_color>
       <color red="29" green="40" blue="184" />
+    </foreground_color>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <widget_type>Action Button</widget_type>
+    <enabled>true</enabled>
+    <text>Go Home</text>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <visible>true</visible>
+    <font>
+      <fontdata fontName="Arial" height="9" style="1" />
+    </font>
+    <width>79</width>
+    <push_action_index>0</push_action_index>
+    <image>../pictures/home-16x16.png</image>
+    <scripts />
+    <toggle_button>false</toggle_button>
+    <height>28</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Action Button</name>
+    <pv_name />
+    <y>564</y>
+    <actions hook="true">
+      <action type="OPEN_DISPLAY">
+        <path>../10_widgets.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+        </macros>
+        <replace>true</replace>
+      </action>
+    </actions>
+    <tooltip />
+    <x>30</x>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="128" />
     </foreground_color>
   </widget>
 </display>

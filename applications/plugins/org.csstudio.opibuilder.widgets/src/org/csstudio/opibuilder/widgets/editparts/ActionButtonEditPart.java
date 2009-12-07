@@ -144,7 +144,11 @@ public final class ActionButtonEditPart extends AbstractPVWidgetEditPart {
 					image.dispose();
 					image = null;
 				}
-				loadImageFromPath((IPath)newValue);
+				IPath absolutePath = (IPath)newValue;
+				if(absolutePath != null && !absolutePath.isEmpty() && !absolutePath.isAbsolute())
+					absolutePath = ResourceUtil.buildAbsolutePath(
+							getWidgetModel(), absolutePath);
+				loadImageFromPath(absolutePath);
 				figure.setImage(image);
 				return true;
 			}

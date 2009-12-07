@@ -4,6 +4,7 @@ import org.csstudio.opibuilder.properties.ActionsProperty;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.FilePathProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -80,14 +81,20 @@ public class ImageBoolButtonModel extends AbstractBoolControlModel {
 	 *  @return the path of the on image.
 	 */
 	public IPath getOnImagePath() {
-		return (IPath) getProperty(PROP_ON_IMAGE).getPropertyValue();
+		IPath absolutePath = (IPath) getProperty(PROP_ON_IMAGE).getPropertyValue();
+		if(absolutePath != null && !absolutePath.isEmpty() && !absolutePath.isAbsolute())
+			absolutePath = ResourceUtil.buildAbsolutePath(this, absolutePath);
+		return absolutePath;
 	}
 
 	/**
 	 *  @return the path of the off image.
 	 */
 	public IPath getOffImagePath() {
-		return (IPath) getProperty(PROP_OFF_IMAGE).getPropertyValue();
+		IPath absolutePath = (IPath) getProperty(PROP_OFF_IMAGE).getPropertyValue();
+		if(!absolutePath.isAbsolute())
+			absolutePath = ResourceUtil.buildAbsolutePath(this, absolutePath);
+		return absolutePath;
 	}
 	
 }

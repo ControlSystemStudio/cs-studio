@@ -5,6 +5,7 @@ import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
+import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.widgets.figures.ImageBoolButtonFigure;
 import org.csstudio.opibuilder.widgets.figures.AbstractBoolControlFigure.IBoolControlListener;
 import org.csstudio.opibuilder.widgets.model.ImageBoolButtonModel;
@@ -82,7 +83,11 @@ public final class ImageBoolButtonEditPart extends AbstractBoolControlEditPart {
 			public boolean handleChange(final Object oldValue, final Object newValue,
 					final IFigure figure) {
 				ImageBoolButtonFigure imageFigure = (ImageBoolButtonFigure) figure;
-				imageFigure.setOnImagePath((IPath)newValue);
+				IPath absolutePath = (IPath)newValue;
+				if(!absolutePath.isAbsolute())
+					absolutePath = ResourceUtil.buildAbsolutePath(
+							getWidgetModel(), absolutePath);				
+				imageFigure.setOnImagePath(absolutePath);
 				autoSizeWidget(imageFigure);
 				return true;
 			}
@@ -96,7 +101,11 @@ public final class ImageBoolButtonEditPart extends AbstractBoolControlEditPart {
 			public boolean handleChange(final Object oldValue, final Object newValue,
 					final IFigure figure) {
 				ImageBoolButtonFigure imageFigure = (ImageBoolButtonFigure) figure;
-				imageFigure.setOffImagePath((IPath)newValue);
+				IPath absolutePath = (IPath)newValue;
+				if(!absolutePath.isAbsolute())
+					absolutePath = ResourceUtil.buildAbsolutePath(
+							getWidgetModel(), absolutePath);				
+				imageFigure.setOffImagePath(absolutePath);
 				autoSizeWidget(imageFigure);
 				return true;
 			}

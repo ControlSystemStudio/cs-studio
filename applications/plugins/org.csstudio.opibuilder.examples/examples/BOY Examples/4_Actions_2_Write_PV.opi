@@ -233,9 +233,10 @@ Execute Script, Open File</text>
     </foreground_color>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
-    <enabled>true</enabled>
     <widget_type>Action Button</widget_type>
+    <enabled>true</enabled>
     <text>Back</text>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="9" style="1" />
@@ -244,40 +245,42 @@ Execute Script, Open File</text>
     <push_action_index>0</push_action_index>
     <image />
     <scripts />
-    <height>28</height>
     <toggle_button>false</toggle_button>
+    <height>28</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Action Button_1</name>
+    <pv_name />
     <y>560</y>
     <actions hook="true">
       <action type="OPEN_DISPLAY">
-        <path>/BOY Examples/4_Actions_1_Open_OPI.opi</path>
+        <path>4_Actions_1_Open_OPI.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>true</replace>
       </action>
     </actions>
-    <foreground_color>
-      <color red="0" green="0" blue="128" />
-    </foreground_color>
+    <tooltip />
+    <x>683</x>
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
-    <x>683</x>
-    <tooltip />
+    <foreground_color>
+      <color red="0" green="0" blue="128" />
+    </foreground_color>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
     <border_alarm_sensitive>true</border_alarm_sensitive>
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
     <show_units>true</show_units>
-    <precision_from_db>true</precision_from_db>
     <auto_size>false</auto_size>
     <scripts />
     <height>20</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Text Update</name>
     <format_type>0</format_type>
+    <precision_from_pv>true</precision_from_pv>
     <transparent>false</transparent>
     <pv_name>loc://test</pv_name>
     <background_color>
@@ -472,7 +475,7 @@ $(pv_value)</tooltip>
     <y>394</y>
     <actions hook="true">
       <action type="EXECUTE_JAVASCRIPT">
-        <path>/BOY Examples/scripts/SimpleDialog.js</path>
+        <path>scripts/SimpleDialog.js</path>
       </action>
     </actions>
     <tooltip />
@@ -508,7 +511,7 @@ $(pv_value)</tooltip>
     <y>478</y>
     <actions hook="true">
       <action type="OPEN_FILE">
-        <path>/BOY Examples/scripts/SimpleDialog.js</path>
+        <path>scripts/SimpleDialog.js</path>
       </action>
     </actions>
     <tooltip />
@@ -651,37 +654,40 @@ $(pv_value)</tooltip>
     </foreground_color>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
-    <enabled>true</enabled>
     <widget_type>Action Button</widget_type>
+    <enabled>true</enabled>
     <text>Go Home</text>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="9" style="1" />
     </font>
     <width>79</width>
     <push_action_index>0</push_action_index>
-    <image>/BOY Examples/pictures/home-16x16.png</image>
+    <image>pictures/home-16x16.png</image>
     <scripts />
-    <height>28</height>
     <toggle_button>false</toggle_button>
+    <height>28</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Action Button</name>
+    <pv_name />
     <y>560</y>
     <actions hook="true">
       <action type="OPEN_DISPLAY">
-        <path>/BOY Examples/main.opi</path>
+        <path>main.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>false</replace>
       </action>
     </actions>
-    <foreground_color>
-      <color red="0" green="0" blue="128" />
-    </foreground_color>
+    <tooltip />
+    <x>17</x>
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
-    <x>17</x>
-    <tooltip />
+    <foreground_color>
+      <color red="0" green="0" blue="128" />
+    </foreground_color>
   </widget>
 </display>

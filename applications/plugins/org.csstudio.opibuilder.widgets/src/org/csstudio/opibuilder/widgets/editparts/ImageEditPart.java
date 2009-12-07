@@ -24,6 +24,7 @@
 
 import org.csstudio.opibuilder.editparts.AbstractWidgetEditPart;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
+import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.widgets.figures.ImageFigure;
 import org.csstudio.opibuilder.widgets.model.ImageModel;
 import org.eclipse.core.runtime.IPath;
@@ -138,7 +139,11 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
 			public boolean handleChange(final Object oldValue, final Object newValue,
 					final IFigure figure) {
 				ImageFigure imageFigure = (ImageFigure) figure;
-				imageFigure.setFilePath((IPath)newValue);
+				IPath absolutePath = (IPath)newValue;
+				if(!absolutePath.isAbsolute())
+					absolutePath = ResourceUtil.buildAbsolutePath(
+							getWidgetModel(), absolutePath);
+				imageFigure.setFilePath(absolutePath);
 				autoSizeWidget(imageFigure);
 				return true;
 			}

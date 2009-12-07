@@ -115,7 +115,7 @@ Replace = false</text>
     <y>373</y>
     <actions hook="true">
       <action type="OPEN_DISPLAY">
-        <path>/BOY Examples/2_OPI_Editor_Perspective.opi</path>
+        <path>2_OPI_Editor_Perspective.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
         </macros>
@@ -156,7 +156,7 @@ Replace = true</text>
     <y>305</y>
     <actions hook="true">
       <action type="OPEN_DISPLAY">
-        <path>/BOY Examples/1_1_Start_Up.opi</path>
+        <path>1_1_Start_Up.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
         </macros>
@@ -173,38 +173,41 @@ Replace = true</text>
     </foreground_color>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
-    <enabled>true</enabled>
     <widget_type>Action Button</widget_type>
+    <enabled>true</enabled>
     <text>Go Home</text>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="9" style="1" />
     </font>
     <width>79</width>
     <push_action_index>0</push_action_index>
-    <image>/BOY Examples/pictures/home-16x16.png</image>
+    <image>pictures/home-16x16.png</image>
     <scripts />
-    <height>28</height>
     <toggle_button>false</toggle_button>
+    <height>28</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Action Button</name>
+    <pv_name />
     <y>554</y>
     <actions hook="true">
       <action type="OPEN_DISPLAY">
-        <path>/BOY Examples/main.opi</path>
+        <path>main.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>false</replace>
       </action>
     </actions>
-    <foreground_color>
-      <color red="0" green="0" blue="128" />
-    </foreground_color>
+    <tooltip />
+    <x>21</x>
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
-    <x>21</x>
-    <tooltip />
+    <foreground_color>
+      <color red="0" green="0" blue="128" />
+    </foreground_color>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <widget_type>Label</widget_type>
@@ -334,7 +337,7 @@ $(pv_value)</tooltip>
     <crop_top>0</crop_top>
     <crop_bottom>0</crop_bottom>
     <border_width>1</border_width>
-    <image_file>/BOY Examples/pictures/NavigateHisotry.png</image_file>
+    <image_file>pictures/NavigateHisotry.png</image_file>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
@@ -409,9 +412,10 @@ $(pv_value)</tooltip>
     </foreground_color>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
-    <enabled>true</enabled>
     <widget_type>Action Button</widget_type>
+    <enabled>true</enabled>
     <text>Next</text>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="9" style="1" />
@@ -420,27 +424,29 @@ $(pv_value)</tooltip>
     <push_action_index>0</push_action_index>
     <image />
     <scripts />
-    <height>28</height>
     <toggle_button>false</toggle_button>
+    <height>28</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Action Button_2</name>
+    <pv_name />
     <y>554</y>
     <actions hook="true">
       <action type="OPEN_DISPLAY">
-        <path>/BOY Examples/4_Actions_2_Write_PV.opi</path>
+        <path>4_Actions_2_Write_PV.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>true</replace>
       </action>
     </actions>
-    <foreground_color>
-      <color red="0" green="0" blue="128" />
-    </foreground_color>
+    <tooltip />
+    <x>683</x>
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
-    <x>683</x>
-    <tooltip />
+    <foreground_color>
+      <color red="0" green="0" blue="128" />
+    </foreground_color>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <widget_type>Label</widget_type>

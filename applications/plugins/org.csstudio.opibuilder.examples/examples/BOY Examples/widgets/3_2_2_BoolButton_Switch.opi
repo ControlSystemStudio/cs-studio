@@ -190,40 +190,6 @@ Image Boolean Button</text>
       <color red="29" green="40" blue="184" />
     </foreground_color>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
-    <enabled>true</enabled>
-    <widget_type>Action Button</widget_type>
-    <text>Go Home</text>
-    <visible>true</visible>
-    <font>
-      <fontdata fontName="Arial" height="9" style="1" />
-    </font>
-    <width>79</width>
-    <push_action_index>0</push_action_index>
-    <image>/BOY Examples/pictures/home-16x16.png</image>
-    <scripts />
-    <height>28</height>
-    <toggle_button>false</toggle_button>
-    <name>Action Button</name>
-    <y>561</y>
-    <actions hook="true">
-      <action type="OPEN_DISPLAY">
-        <path>/BOY Examples/10_widgets.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-        </macros>
-        <replace>true</replace>
-      </action>
-    </actions>
-    <foreground_color>
-      <color red="0" green="0" blue="128" />
-    </foreground_color>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
-    <x>17</x>
-    <tooltip />
-  </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.BoolButton" version="1.0">
     <border_alarm_sensitive>true</border_alarm_sensitive>
     <visible>true</visible>
@@ -1033,21 +999,22 @@ $(pv_value)</tooltip>
     <show_confirm_dialog>false</show_confirm_dialog>
     <on_label>ON</on_label>
     <border_width>1</border_width>
-    <off_image>/BOY Examples/pictures/reset_switch_off.gif</off_image>
+    <off_image>../pictures/reset_switch_off.gif</off_image>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
     <y>429</y>
-    <on_image>/BOY Examples/pictures/reset_switch_on.gif</on_image>
+    <on_image>../pictures/reset_switch_on.gif</on_image>
     <actions hook="false" />
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>506</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
-    <enabled>true</enabled>
     <widget_type>Action Button</widget_type>
+    <enabled>true</enabled>
     <text>Back</text>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="9" style="1" />
@@ -1056,27 +1023,29 @@ $(pv_value)</tooltip>
     <push_action_index>0</push_action_index>
     <image />
     <scripts />
-    <height>28</height>
     <toggle_button>false</toggle_button>
+    <height>28</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Action Button_2</name>
+    <pv_name />
     <y>561</y>
     <actions hook="true">
       <action type="OPEN_DISPLAY">
-        <path>/BOY Examples/widgets/3_2_1_BoolButton_Switch.opi</path>
+        <path>3_2_1_BoolButton_Switch.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>true</replace>
       </action>
     </actions>
-    <foreground_color>
-      <color red="0" green="0" blue="128" />
-    </foreground_color>
+    <tooltip />
+    <x>712</x>
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
-    <x>712</x>
-    <tooltip />
+    <foreground_color>
+      <color red="0" green="0" blue="128" />
+    </foreground_color>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ImageBoolButton" version="1.0">
     <border_alarm_sensitive>true</border_alarm_sensitive>
@@ -1113,12 +1082,12 @@ $(pv_value)</tooltip>
     <show_confirm_dialog>false</show_confirm_dialog>
     <on_label>ON</on_label>
     <border_width>1</border_width>
-    <off_image>/BOY Examples/pictures/valve_off.gif</off_image>
+    <off_image>../pictures/valve_off.gif</off_image>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
     <y>425</y>
-    <on_image>/BOY Examples/pictures/valve_on.gif</on_image>
+    <on_image>../pictures/valve_on.gif</on_image>
     <actions hook="false" />
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
@@ -1159,12 +1128,12 @@ $(pv_value)</tooltip>
     <show_confirm_dialog>false</show_confirm_dialog>
     <on_label>ON</on_label>
     <border_width>1</border_width>
-    <off_image>/BOY Examples/pictures/pump_off.gif</off_image>
+    <off_image>../pictures/pump_off.gif</off_image>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
     <y>416</y>
-    <on_image>/BOY Examples/pictures/pump_on.gif</on_image>
+    <on_image>../pictures/pump_on.gif</on_image>
     <actions hook="false" />
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
@@ -1205,12 +1174,12 @@ $(pv_value)</tooltip>
     <show_confirm_dialog>false</show_confirm_dialog>
     <on_label>ON</on_label>
     <border_width>1</border_width>
-    <off_image>/BOY Examples/pictures/switch_off.gif</off_image>
+    <off_image>../pictures/switch_off.gif</off_image>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
     <y>430</y>
-    <on_image>/BOY Examples/pictures/switch_on.gif</on_image>
+    <on_image>../pictures/switch_on.gif</on_image>
     <actions hook="false" />
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
@@ -1385,5 +1354,42 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
       <x>0</x>
     </widget>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <widget_type>Action Button</widget_type>
+    <enabled>true</enabled>
+    <text>Go Home</text>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <visible>true</visible>
+    <font>
+      <fontdata fontName="Arial" height="9" style="1" />
+    </font>
+    <width>79</width>
+    <push_action_index>0</push_action_index>
+    <image>../pictures/home-16x16.png</image>
+    <scripts />
+    <toggle_button>false</toggle_button>
+    <height>28</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Action Button</name>
+    <pv_name />
+    <y>568</y>
+    <actions hook="true">
+      <action type="OPEN_DISPLAY">
+        <path>../10_widgets.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+        </macros>
+        <replace>true</replace>
+      </action>
+    </actions>
+    <tooltip />
+    <x>20</x>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="128" />
+    </foreground_color>
   </widget>
 </display>

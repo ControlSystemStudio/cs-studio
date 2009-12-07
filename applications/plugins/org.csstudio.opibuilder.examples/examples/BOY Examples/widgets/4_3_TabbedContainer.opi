@@ -11,7 +11,7 @@
   <show_ruler>false</show_ruler>
   <height>600</height>
   <show_edit_range>true</show_edit_range>
-  <name>Linking Container</name>
+  <name>Tabbed Container</name>
   <grid_space>4</grid_space>
   <snap_to_geometry>true</snap_to_geometry>
   <show_grid>false</show_grid>
@@ -253,40 +253,6 @@ $(pv_value)</tooltip>
       <color red="29" green="40" blue="184" />
     </foreground_color>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
-    <enabled>true</enabled>
-    <widget_type>Action Button</widget_type>
-    <text>Go Home</text>
-    <visible>true</visible>
-    <font>
-      <fontdata fontName="Arial" height="9" style="1" />
-    </font>
-    <width>79</width>
-    <push_action_index>0</push_action_index>
-    <image>/BOY Examples/pictures/home-16x16.png</image>
-    <scripts />
-    <height>28</height>
-    <toggle_button>false</toggle_button>
-    <name>Action Button</name>
-    <y>565</y>
-    <actions hook="true">
-      <action type="OPEN_DISPLAY">
-        <path>/BOY Examples/10_widgets.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-        </macros>
-        <replace>true</replace>
-      </action>
-    </actions>
-    <foreground_color>
-      <color red="0" green="0" blue="128" />
-    </foreground_color>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
-    <x>17</x>
-    <tooltip />
-  </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <widget_type>Label</widget_type>
     <enabled>true</enabled>
@@ -383,7 +349,7 @@ $(pv_value)</tooltip>
       <macros>
         <include_parent_macros>true</include_parent_macros>
       </macros>
-      <visible>false</visible>
+      <visible>true</visible>
       <width>398</width>
       <border_style>0</border_style>
       <lock_children>false</lock_children>
@@ -547,7 +513,7 @@ $(pv_value)</tooltip>
       <macros>
         <include_parent_macros>true</include_parent_macros>
       </macros>
-      <visible>true</visible>
+      <visible>false</visible>
       <width>398</width>
       <border_style>0</border_style>
       <lock_children>false</lock_children>
@@ -571,6 +537,7 @@ $(pv_value)</tooltip>
       <x>1</x>
       <tooltip />
       <widget typeId="org.csstudio.opibuilder.widgets.xyGraph" version="1.0">
+        <trace_0_contatenate_data>true</trace_0_contatenate_data>
         <trace_0_trace_color>
           <color red="255" green="0" blue="0" />
         </trace_0_trace_color>
@@ -795,6 +762,43 @@ $(pv_value)</tooltip>
     </background_color>
     <foreground_color>
       <color red="0" green="0" blue="0" />
+    </foreground_color>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <widget_type>Action Button</widget_type>
+    <enabled>true</enabled>
+    <text>Go Home</text>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <visible>true</visible>
+    <font>
+      <fontdata fontName="Arial" height="9" style="1" />
+    </font>
+    <width>79</width>
+    <push_action_index>0</push_action_index>
+    <image>../pictures/home-16x16.png</image>
+    <scripts />
+    <toggle_button>false</toggle_button>
+    <height>28</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Action Button</name>
+    <pv_name />
+    <y>569</y>
+    <actions hook="true">
+      <action type="OPEN_DISPLAY">
+        <path>../10_widgets.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+        </macros>
+        <replace>true</replace>
+      </action>
+    </actions>
+    <tooltip />
+    <x>17</x>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="128" />
     </foreground_color>
   </widget>
 </display>

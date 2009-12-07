@@ -106,7 +106,7 @@
       <crop_top>0</crop_top>
       <crop_bottom>0</crop_bottom>
       <border_width>1</border_width>
-      <image_file>/BOY Examples/pictures/fish.gif</image_file>
+      <image_file>pictures/fish.gif</image_file>
       <border_color>
         <color red="0" green="128" blue="255" />
       </border_color>
@@ -120,7 +120,7 @@
       <visible>true</visible>
       <fill_level>40.0</fill_level>
       <scripts>
-        <path pathString="/BOY Examples/scripts/FillLevel.js">
+        <path pathString="scripts/FillLevel.js">
           <pv>$(pv_name)</pv>
         </path>
       </scripts>
@@ -191,7 +191,7 @@ $(pv_value)</tooltip>
       <visible>true</visible>
       <fill_level>30.0</fill_level>
       <scripts>
-        <path pathString="/BOY Examples/scripts/FillLevel.js">
+        <path pathString="scripts/FillLevel.js">
           <pv>sim://ramp(0,100,1,0.1)</pv>
         </path>
       </scripts>
@@ -307,7 +307,7 @@ $(pv_value)</tooltip>
       <total_angle>135</total_angle>
       <start_angle>15</start_angle>
       <scripts>
-        <path pathString="/BOY Examples/scripts/ArcStartAngle.js">
+        <path pathString="scripts/ArcStartAngle.js">
           <pv>sim://ramp(0,360, 10, 0.1)</pv>
         </path>
       </scripts>
@@ -346,7 +346,7 @@ $(pv_value)</tooltip>
       <fill_level>60.0</fill_level>
       <rotation_angle>0.0</rotation_angle>
       <scripts>
-        <path pathString="/BOY Examples/scripts/RotatePolygon.js">
+        <path pathString="scripts/RotatePolygon.js">
           <pv>sim://ramp(0,360,10,0.1)</pv>
         </path>
       </scripts>
@@ -989,6 +989,7 @@ $(pv_value)</tooltip>
         <x>1</x>
         <tooltip />
         <widget typeId="org.csstudio.opibuilder.widgets.xyGraph" version="1.0">
+          <trace_0_contatenate_data>true</trace_0_contatenate_data>
           <trace_1_trace_type>3</trace_1_trace_type>
           <trace_0_trace_color>
             <color red="255" green="0" blue="0" />
@@ -1043,6 +1044,7 @@ $(pv_value)</tooltip>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <axis_1_axis_title>Amplitude</axis_1_axis_title>
           <axis_0_maximum>100.0</axis_0_maximum>
+          <trace_1_contatenate_data>true</trace_1_contatenate_data>
           <axis_0_time_format>1</axis_0_time_format>
           <trace_1_plot_mode>0</trace_1_plot_mode>
           <axis_1_log_scale>false</axis_1_log_scale>
@@ -1139,7 +1141,7 @@ $(pv_value)</tooltip>
           <minimum>-1.0</minimum>
           <data_height>256</data_height>
           <scripts>
-            <path pathString="/BOY Examples/scripts/SetIntensityGraphData.js">
+            <path pathString="scripts/SetIntensityGraphData.js">
               <pv>const://name(1)</pv>
               <pv>const://name2(1)</pv>
             </path>
@@ -1399,10 +1401,10 @@ $(pv_value)</tooltip>
       <y>3</y>
       <actions hook="false">
         <action type="EXECUTE_JAVASCRIPT">
-          <path>/BOY Examples/scripts/SimpleDialog.js</path>
+          <path>scripts/SimpleDialog.js</path>
         </action>
         <action type="OPEN_DISPLAY">
-          <path>/BOY Examples/10_widgets.opi</path>
+          <path>10_widgets.opi</path>
           <macros>
             <include_parent_macros>true</include_parent_macros>
           </macros>
@@ -1518,38 +1520,41 @@ $(pv_value)</tooltip>
       <x>5</x>
     </widget>
     <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
-      <enabled>true</enabled>
       <widget_type>Action Button</widget_type>
+      <enabled>true</enabled>
       <text>Go Home</text>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <visible>true</visible>
       <font>
         <fontdata fontName="Arial" height="9" style="1" />
       </font>
       <width>79</width>
       <push_action_index>0</push_action_index>
-      <image>/BOY Examples/pictures/home-16x16.png</image>
+      <image>pictures/home-16x16.png</image>
       <scripts />
-      <height>28</height>
       <toggle_button>false</toggle_button>
+      <height>28</height>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <name>Action Button</name>
+      <pv_name />
       <y>144</y>
       <actions hook="true">
         <action type="OPEN_DISPLAY">
-          <path>/BOY Examples/main.opi</path>
+          <path>main.opi</path>
           <macros>
             <include_parent_macros>true</include_parent_macros>
           </macros>
           <replace>false</replace>
         </action>
       </actions>
-      <foreground_color>
-        <color red="0" green="0" blue="128" />
-      </foreground_color>
+      <tooltip />
+      <x>5</x>
       <background_color>
         <color red="240" green="240" blue="240" />
       </background_color>
-      <x>5</x>
-      <tooltip />
+      <foreground_color>
+        <color red="0" green="0" blue="128" />
+      </foreground_color>
     </widget>
     <widget typeId="org.csstudio.opibuilder.widgets.scaledslider" version="1.0">
       <level_lo>30.0</level_lo>
@@ -1623,9 +1628,10 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
     </widget>
     <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
-      <enabled>true</enabled>
       <widget_type>Action Button</widget_type>
+      <enabled>true</enabled>
       <text>Back</text>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <visible>true</visible>
       <font>
         <fontdata fontName="Arial" height="9" style="1" />
@@ -1634,27 +1640,29 @@ $(pv_value)</tooltip>
       <push_action_index>0</push_action_index>
       <image />
       <scripts />
-      <height>28</height>
       <toggle_button>false</toggle_button>
+      <height>28</height>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <name>Action Button_2</name>
+      <pv_name />
       <y>144</y>
       <actions hook="true">
         <action type="OPEN_DISPLAY">
-          <path>/BOY Examples/1_1_Start_Up.opi</path>
+          <path>1_1_Start_Up.opi</path>
           <macros>
             <include_parent_macros>true</include_parent_macros>
           </macros>
           <replace>true</replace>
         </action>
       </actions>
-      <foreground_color>
-        <color red="0" green="0" blue="128" />
-      </foreground_color>
+      <tooltip />
+      <x>690</x>
       <background_color>
         <color red="240" green="240" blue="240" />
       </background_color>
-      <x>690</x>
-      <tooltip />
+      <foreground_color>
+        <color red="0" green="0" blue="128" />
+      </foreground_color>
     </widget>
     <widget typeId="org.csstudio.opibuilder.widgets.BoolSwitch" version="1.0">
       <border_alarm_sensitive>true</border_alarm_sensitive>
@@ -1933,12 +1941,12 @@ $(pv_value)</tooltip>
       <show_confirm_dialog>false</show_confirm_dialog>
       <on_label>ON</on_label>
       <border_width>1</border_width>
-      <off_image>/BOY Examples/pictures/switch_off.gif</off_image>
+      <off_image>pictures/switch_off.gif</off_image>
       <border_color>
         <color red="0" green="128" blue="255" />
       </border_color>
       <y>21</y>
-      <on_image>/BOY Examples/pictures/switch_on.gif</on_image>
+      <on_image>pictures/switch_on.gif</on_image>
       <actions hook="false" />
       <tooltip>$(pv_name)
 $(pv_value)</tooltip>

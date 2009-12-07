@@ -121,9 +121,10 @@ $(pv_value)</tooltip>
     </foreground_color>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
-    <enabled>true</enabled>
     <widget_type>Action Button</widget_type>
+    <enabled>true</enabled>
     <text>Back</text>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="9" style="1" />
@@ -132,27 +133,29 @@ $(pv_value)</tooltip>
     <push_action_index>0</push_action_index>
     <image />
     <scripts />
-    <height>28</height>
     <toggle_button>false</toggle_button>
+    <height>28</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Action Button_2</name>
+    <pv_name />
     <y>558</y>
     <actions hook="true">
       <action type="OPEN_DISPLAY">
-        <path>/BOY Examples/5_Script_1.opi</path>
+        <path>5_Script_1.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>true</replace>
       </action>
     </actions>
-    <foreground_color>
-      <color red="0" green="0" blue="128" />
-    </foreground_color>
+    <tooltip />
+    <x>671</x>
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
-    <x>671</x>
-    <tooltip />
+    <foreground_color>
+      <color red="0" green="0" blue="128" />
+    </foreground_color>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.knob" version="1.0">
     <level_lo>20.0</level_lo>
@@ -231,7 +234,7 @@ $(pv_value)</tooltip>
     </color_hihi>
     <show_lo>true</show_lo>
     <scripts>
-      <path pathString="/BOY Examples/scripts/KnobValueDialog.js">
+      <path pathString="scripts/KnobValueDialog.js">
         <pv>loc://knob0</pv>
       </path>
     </scripts>
@@ -307,7 +310,7 @@ $(pv_value)</tooltip>
     <border_style>0</border_style>
     <auto_size>false</auto_size>
     <scripts>
-      <path pathString="/BOY Examples/scripts/Compare.js">
+      <path pathString="scripts/Compare.js">
         <pv>loc://knob0</pv>
         <pv>loc://knob1</pv>
       </path>
@@ -369,10 +372,10 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <fill_level>100.0</fill_level>
     <scripts>
-      <path pathString="/BOY Examples/scripts/ChangePositionAndSize.js">
+      <path pathString="scripts/ChangePositionAndSize.js">
         <pv>sim://sine(0,20,100,0.1)</pv>
       </path>
-      <path pathString="/BOY Examples/scripts/AlarmColor.js">
+      <path pathString="scripts/AlarmColor.js">
         <pv>sim://noise</pv>
       </path>
     </scripts>
@@ -470,40 +473,6 @@ $(pv_value)</tooltip>
       <color red="29" green="40" blue="184" />
     </foreground_color>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
-    <enabled>true</enabled>
-    <widget_type>Action Button</widget_type>
-    <text>Go Home</text>
-    <visible>true</visible>
-    <font>
-      <fontdata fontName="Arial" height="9" style="1" />
-    </font>
-    <width>79</width>
-    <push_action_index>0</push_action_index>
-    <image>/BOY Examples/pictures/home-16x16.png</image>
-    <scripts />
-    <height>28</height>
-    <toggle_button>false</toggle_button>
-    <name>Action Button</name>
-    <y>560</y>
-    <actions hook="true">
-      <action type="OPEN_DISPLAY">
-        <path>/BOY Examples/main.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-        </macros>
-        <replace>false</replace>
-      </action>
-    </actions>
-    <foreground_color>
-      <color red="0" green="0" blue="128" />
-    </foreground_color>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
-    <x>25</x>
-    <tooltip />
-  </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <widget_type>Label</widget_type>
     <enabled>true</enabled>
@@ -541,7 +510,7 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <fill_level>0.0</fill_level>
     <scripts>
-      <path pathString="/BOY Examples/scripts/BlinkingColor.js">
+      <path pathString="scripts/BlinkingColor.js">
         <pv>sim://ramp(0,1,1,0.5)</pv>
       </path>
     </scripts>
@@ -606,6 +575,43 @@ $(pv_value)</tooltip>
     </background_color>
     <foreground_color>
       <color red="0" green="0" blue="0" />
+    </foreground_color>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <widget_type>Action Button</widget_type>
+    <enabled>true</enabled>
+    <text>Go Home</text>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <visible>true</visible>
+    <font>
+      <fontdata fontName="Arial" height="9" style="1" />
+    </font>
+    <width>79</width>
+    <push_action_index>0</push_action_index>
+    <image>pictures/home-16x16.png</image>
+    <scripts />
+    <toggle_button>false</toggle_button>
+    <height>28</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Action Button</name>
+    <pv_name />
+    <y>558</y>
+    <actions hook="true">
+      <action type="OPEN_DISPLAY">
+        <path>main.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+        </macros>
+        <replace>false</replace>
+      </action>
+    </actions>
+    <tooltip />
+    <x>24</x>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="128" />
     </foreground_color>
   </widget>
 </display>
