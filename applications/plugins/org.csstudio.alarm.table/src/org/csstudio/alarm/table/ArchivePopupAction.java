@@ -29,7 +29,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 
-/** Handle activation of archive view the object contrib. context menu.
+/** Handle activation of archive view the object contrib. Context menu.
  *  @author Jan Hatje
  */
 public class ArchivePopupAction extends ProcessVariablePopupAction {
