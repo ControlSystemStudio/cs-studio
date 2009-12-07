@@ -535,7 +535,6 @@ public class Formula implements Node
         return tree;
     }
     
-    @SuppressWarnings("nls")
     @Override
     public String toString()
     {
