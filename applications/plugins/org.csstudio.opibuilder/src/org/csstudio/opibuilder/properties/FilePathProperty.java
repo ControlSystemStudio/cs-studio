@@ -22,7 +22,9 @@
 
 package org.csstudio.opibuilder.properties;
 
+import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.properties.support.FilePathPropertyDescriptor;
+import org.csstudio.opibuilder.util.ResourceUtil;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
@@ -78,8 +80,22 @@ public class FilePathProperty extends AbstractWidgetProperty {
 
 	@Override
 	protected PropertyDescriptor createPropertyDescriptor() {
-		return new FilePathPropertyDescriptor(prop_id, description, fileExtensions);
+		return new FilePathPropertyDescriptor(prop_id, 
+				description,
+				widgetModel, 
+				fileExtensions);
 	}
+	
+	@Override
+	public Object getPropertyValue() {
+		if(widgetModel !=null && widgetModel.getExecutionMode() == ExecutionMode.RUN_MODE
+				&& propertyValue != null &&
+				!((IPath)propertyValue).isEmpty() && !((IPath)propertyValue).isAbsolute()){
+				return ResourceUtil.buildAbsolutePath(widgetModel, (IPath) propertyValue);
+		}			
+		return super.getPropertyValue();
+	}
+	
 
 	@Override
 	public Object readValueFromXML(Element propElement) {

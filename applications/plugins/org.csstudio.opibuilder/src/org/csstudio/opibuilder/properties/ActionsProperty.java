@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.support.ActionsPropertyDescriptor;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.widgetActions.AbstractWidgetAction;
@@ -119,6 +120,12 @@ public class ActionsProperty extends AbstractWidgetProperty {
 				}
 				propElement.addContent(actionElement);
 		}		
+	}
+	
+	@Override
+	public void setWidgetModel(AbstractWidgetModel widgetModel) {
+		super.setWidgetModel(widgetModel);
+		((ActionsInput)getPropertyValue()).setWidgetModel(widgetModel);
 	}
 
 }

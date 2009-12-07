@@ -6,7 +6,6 @@ import java.util.List;
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.script.ScriptData;
 import org.csstudio.opibuilder.script.ScriptsInput;
-import org.csstudio.platform.ui.dialogs.ResourceSelectionDialog;
 import org.csstudio.platform.ui.swt.stringtable.StringTableEditor;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IPath;
@@ -50,11 +49,14 @@ public class ScriptsInputDialog extends Dialog {
 	private List<ScriptData> scriptDataList;
 	private String title;	
 
-	public ScriptsInputDialog(Shell parentShell, ScriptsInput scriptsInput, String dialogTitle) {
+	private IPath startPath;
+	
+	public ScriptsInputDialog(Shell parentShell, ScriptsInput scriptsInput, IPath startPath, String dialogTitle) {
 		super(parentShell);
 		setShellStyle(getShellStyle() | SWT.RESIZE);
 		this.scriptDataList = scriptsInput.getCopy().getScriptList();
 		title = dialogTitle;
+		this.startPath = startPath;
 	}
 	
 	/**
@@ -232,8 +234,8 @@ public class ScriptsInputDialog extends Dialog {
 			@Override
 			public void run() {
 				IPath path;				
-				ResourceSelectionDialog rsd = new ResourceSelectionDialog(
-						Display.getCurrent().getActiveShell(), "Select a java script file", new String[]{"js"});
+				RelativePathSelectionDialog rsd = new RelativePathSelectionDialog(
+						Display.getCurrent().getActiveShell(), startPath, "Select a java script file", new String[]{"js"});
 				if (rsd.open() == Window.OK) {
 					if (rsd.getSelectedResource() != null) {
 						path = rsd.getSelectedResource();
@@ -256,8 +258,8 @@ public class ScriptsInputDialog extends Dialog {
 				IStructuredSelection selection = (IStructuredSelection) scriptsViewer.getSelection();
 				if (!selection.isEmpty()
 						&& selection.getFirstElement() instanceof ScriptData) {
-					ResourceSelectionDialog rsd = new ResourceSelectionDialog(
-					Display.getCurrent().getActiveShell(), "Select a java script file", new String[]{"js"});
+					RelativePathSelectionDialog rsd = new RelativePathSelectionDialog(
+					Display.getCurrent().getActiveShell(), startPath, "Select a java script file", new String[]{"js"});
 					rsd.setSelectedResource(((ScriptData)selection.getFirstElement()).getPath());
 					if (rsd.open() == Window.OK) {
 						if (rsd.getSelectedResource() != null) {

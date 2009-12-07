@@ -22,6 +22,7 @@
 package org.csstudio.opibuilder.properties.support;
 
 
+import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.visualparts.FilePathCellEditor;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.viewers.CellEditor;
@@ -52,6 +53,8 @@ public class FilePathPropertyDescriptor extends TextPropertyDescriptor {
 	 */
 	private String[] _fileExtensions;
 	
+	private AbstractWidgetModel widgetModel;
+	
 	/**
 	 * Creates an property descriptor with the given id and display name.
 	 * 
@@ -59,13 +62,16 @@ public class FilePathPropertyDescriptor extends TextPropertyDescriptor {
 	 *            the id of the property
 	 * @param displayName
 	 *            the name to display for the property
+	 * @param widgetModel 
+	 * 			  the widget model which contains the property of this descriptor.
 	 * @param fileExtensions
 	 * 			  The accepted file extensions
 	 */
-	public FilePathPropertyDescriptor(final Object id, final String displayName,
+	public FilePathPropertyDescriptor(final Object id, final String displayName, final AbstractWidgetModel widgetModel,
 			final String[] fileExtensions) {
 		super(id, displayName);
 		_fileExtensions = fileExtensions;
+		this.widgetModel = widgetModel;
 		this.setLabelProvider(new PathLabelProvider());
 	}
 
@@ -74,7 +80,7 @@ public class FilePathPropertyDescriptor extends TextPropertyDescriptor {
 	 */
 	@Override
 	public CellEditor createPropertyEditor(final Composite parent) {
-		CellEditor editor = new FilePathCellEditor(parent, _fileExtensions);
+		CellEditor editor = new FilePathCellEditor(parent, widgetModel, _fileExtensions);
 		if (getValidator() != null) {
 			editor.setValidator(getValidator());
 		}

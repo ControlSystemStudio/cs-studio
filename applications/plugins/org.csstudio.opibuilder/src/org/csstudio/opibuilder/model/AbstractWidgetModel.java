@@ -476,6 +476,24 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	}
 	
 	/**
+	 * @return the root display model for this widget. null if its parent is not set yet.
+	 */
+	public DisplayModel getRootDisplayModel(){
+		AbstractContainerModel parent = getParent();
+		if(parent == null){
+			if(this instanceof DisplayModel)
+				return (DisplayModel)this;
+			else 
+				return null;
+		}
+		while(!(parent instanceof DisplayModel)){			
+			parent = parent.getParent();
+		}
+		return (DisplayModel) parent;
+	}
+	
+	
+	/**
 	 * @return the nested depth of the widget in the model tree.
 	 */
 	public int getNestedDepth(){

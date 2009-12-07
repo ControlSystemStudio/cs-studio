@@ -71,7 +71,7 @@ public class ScriptProperty extends AbstractWidgetProperty {
 	
 	@Override
 	protected PropertyDescriptor createPropertyDescriptor() {
-		return new ScriptPropertyDescriptor(prop_id, description);
+		return new ScriptPropertyDescriptor(prop_id, widgetModel, description);
 	}
 
 	@Override

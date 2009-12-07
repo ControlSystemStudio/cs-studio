@@ -78,14 +78,15 @@ public class ActionsInputDialog extends Dialog {
 	private List<AbstractWidgetAction> actionsList;
 	private boolean hookedUpToWidget;
 	private boolean showHookOption = true;
-	
+	private ActionsInput actionsInput;
 	private String title;	
 
 	public ActionsInputDialog(Shell parentShell, 
 			ActionsInput actionsInput, String dialogTitle, boolean showHookOption) {
 		super(parentShell);
 		setShellStyle(getShellStyle() | SWT.RESIZE);
-		this.actionsList = actionsInput.getCopy().getActionsList();
+		this.actionsInput = actionsInput.getCopy();
+		this.actionsList = this.actionsInput.getActionsList();
 		hookedUpToWidget = actionsInput.isHookedUpToWidget();
 		title = dialogTitle;
 		this.showHookOption = showHookOption;
@@ -369,7 +370,7 @@ public class ActionsInputDialog extends Dialog {
 						&& selection.getFirstElement() instanceof AbstractWidgetAction) {
 					AbstractWidgetAction newAction = 
 						((AbstractWidgetAction)selection.getFirstElement()).getCopy();
-					actionsList.add(newAction);
+					actionsInput.addAction(newAction);
 					actionsViewer.setSelection(new StructuredSelection(newAction));
 					refreshActionsViewer(newAction);					
 				}
@@ -489,7 +490,7 @@ public class ActionsInputDialog extends Dialog {
 		public void run() {
 			AbstractWidgetAction widgetAction = WidgetActionFactory.createWidgetAction(type);
 			if(widgetAction != null){
-				actionsList.add(widgetAction);
+				actionsInput.addAction(widgetAction);
 				refreshActionsViewer(widgetAction);
 			}
 			

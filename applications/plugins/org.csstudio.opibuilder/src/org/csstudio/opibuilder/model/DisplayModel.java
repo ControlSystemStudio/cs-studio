@@ -4,6 +4,8 @@ import org.csstudio.opibuilder.properties.ActionsProperty;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.csstudio.opibuilder.util.ResourceUtil;
+import org.eclipse.core.runtime.IPath;
 
 /**
  * The root model for an OPI Display.
@@ -23,6 +25,8 @@ public class DisplayModel extends AbstractContainerModel {
 	public static final String PROP_SHOW_RULER = "show_ruler"; //$NON-NLS-1$
 	public static final String PROP_SNAP_GEOMETRY = "snap_to_geometry"; //$NON-NLS-1$
 	public static final String PROP_SHOW_EDIT_RANGE = "show_edit_range"; //$NON-NLS-1$
+	
+	private IPath opiFilePath;
 	
 	public DisplayModel() {
 		super();
@@ -75,6 +79,20 @@ public class DisplayModel extends AbstractContainerModel {
 	@Override
 	public String getTypeID() {
 		return ID;
+	}
+
+	/**
+	 * @param opiFilePath the opiFilePath to set
+	 */
+	public void setOpiFilePath(IPath opiFilePath) {
+		this.opiFilePath = opiFilePath;
+	}
+
+	/**
+	 * @return the opiFilePath
+	 */
+	public IPath getOpiFilePath() {
+		return opiFilePath;
 	}
 	
 	

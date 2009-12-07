@@ -22,7 +22,7 @@
 package org.csstudio.opibuilder.visualparts;
 
 
-import org.csstudio.platform.ui.dialogs.ResourceSelectionDialog;
+import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.window.Window;
@@ -34,7 +34,7 @@ import org.eclipse.swt.widgets.Shell;
 /**
  * A table cell editor for values of type PointList.
  * 
- * @author Kai Meyer
+ * @author Kai Meyer, Xihui Chen
  */
 public final class FilePathCellEditor extends AbstractDialogCellEditor {
 
@@ -62,6 +62,7 @@ public final class FilePathCellEditor extends AbstractDialogCellEditor {
 	 */
 	private boolean _onlyWorkSpace = true;
 
+	private AbstractWidgetModel widgetModel;
 	
 
 	/**
@@ -70,13 +71,16 @@ public final class FilePathCellEditor extends AbstractDialogCellEditor {
 	 * 
 	 * @param parent
 	 *            The parent table.
+ 	 * @param widgetModel 
+	 * 			  the reference path which doesn't include the file name.
 	 * @param fileExtensions
 	 *            The accepted file extensions
 	 */
-	public FilePathCellEditor(final Composite parent,
+	public FilePathCellEditor(final Composite parent, final AbstractWidgetModel widgetModel,
 			final String[] fileExtensions) {
 		super(parent, "Open File");
 		_orgFileExtensions = fileExtensions;
+		this.widgetModel = widgetModel;
 		convertFileExtensions();
 	}
 
@@ -128,8 +132,8 @@ public final class FilePathCellEditor extends AbstractDialogCellEditor {
 	@Override
 	protected void openDialog(final Shell parentShell, final String dialogTitle) {
 		if (_onlyWorkSpace) {
-			ResourceSelectionDialog rsd = new ResourceSelectionDialog(
-					parentShell, "Select a resource", _fileExtensions);
+			RelativePathSelectionDialog rsd = new RelativePathSelectionDialog(
+					parentShell, widgetModel.getRootDisplayModel().getOpiFilePath().removeLastSegments(1), "Select a resource", _fileExtensions);
 			rsd.setSelectedResource(_path);
 			if (rsd.open() == Window.OK) {
 				if (rsd.getSelectedResource() != null) {

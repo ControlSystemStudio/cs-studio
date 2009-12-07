@@ -49,6 +49,8 @@ public class OPIRunner extends EditorPart {
 
 	private ActionRegistry actionRegistry;
 
+	public static final String ID = "org.csstudio.opibuilder.OPIRunner"; //$NON-NLS-1$
+	
 	public OPIRunner() {
 	}
 
@@ -75,8 +77,9 @@ public class OPIRunner extends EditorPart {
 				inputStream = getInputStream();
 			
 			displayModel = new DisplayModel();
-				
+			
 			XMLUtil.fillDisplayModelFromInputStream(inputStream, displayModel);
+			displayModel.setOpiFilePath(getOPIFilePath());
 		}catch(Exception e) {
 			CentralLogger.getInstance().error(
 					this, "Failed to run file: " + input, e);
@@ -103,7 +106,18 @@ public class OPIRunner extends EditorPart {
 	
 	
 	
-
+	private IPath getOPIFilePath() {
+		IEditorInput editorInput = getEditorInput();
+		if (editorInput instanceof FileEditorInput) {
+			
+			return ((FileEditorInput) editorInput).getFile().getFullPath();						
+			
+		} else if (editorInput instanceof FileStoreEditorInput) {
+			return URIUtil.toPath(((FileStoreEditorInput) editorInput)
+					.getURI());			
+		}
+		return null;
+	}
 	/**
 	 * Returns a stream which can be used to read this editors input data.
 	 * 
