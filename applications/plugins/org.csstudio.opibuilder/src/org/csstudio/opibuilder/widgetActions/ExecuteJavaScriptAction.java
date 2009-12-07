@@ -49,8 +49,13 @@ public class ExecuteJavaScriptAction extends AbstractWidgetAction {
 			if(script == null){
 				scriptContext = ScriptService.getInstance().getScriptContext();
 				scriptScope = new ImporterTopLevel(scriptContext);	
-				//read file			
-				InputStream inputStream = ResourceUtil.pathToInputStream(getPath());
+				//read file		
+				IPath absolutePath = getPath();
+				if(!getPath().isAbsolute()){
+		    		absolutePath = 
+		    			ResourceUtil.buildAbsolutePath(getWidgetModel(), getPath());
+		    	}
+				InputStream inputStream = ResourceUtil.pathToInputStream(absolutePath);
 				BufferedReader reader = new BufferedReader(
 						new InputStreamReader(inputStream));	
 				

@@ -56,8 +56,7 @@ import org.csstudio.opibuilder.palette.OPIEditorPaletteFactory;
 import org.csstudio.opibuilder.palette.WidgetCreationFactory;
 import org.csstudio.opibuilder.persistence.XMLUtil;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
-import org.csstudio.opibuilder.runmode.RunModeService;
-import org.csstudio.opibuilder.runmode.RunModeService.TargetWindow;
+import org.csstudio.opibuilder.runmode.OPIRunner;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.dialogs.SaveAsDialog;
@@ -128,6 +127,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.ide.FileStoreEditorInput;
+import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
@@ -144,6 +144,7 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 	 * The file extension for OPI files.
 	 */
 	public static final String OPI_FILE_EXTENSION = "opi"; //$NON-NLS-1$
+	public static final String ID = "org.csstudio.opibuilder.OPIEditor"; //$NON-NLS-1$
 
 	private PaletteRoot paletteRoot;
 	
@@ -171,9 +172,8 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 	public void init(final IEditorSite site, final IEditorInput input)
 			throws PartInitException {		
 		//in the mode of "no edit", open OPI in runtime and close this editor immediately.
-		if(PreferencesHelper.isNoEdit() && input instanceof FileEditorInput){
-			RunModeService.getInstance().runOPI(((FileEditorInput)input).getFile(),
-					TargetWindow.SAME_WINDOW, null);
+		if(PreferencesHelper.isNoEdit()){			
+			IDE.openEditor(site.getPage(), input, OPIRunner.ID);
 			setSite(site);
 			setInput(input);
 						
@@ -680,6 +680,8 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 	
 	
 	
+	
+	
 	/**
 	* Returns the overview for the outline view.
 	*
@@ -748,9 +750,23 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 			CentralLogger.getInstance().error(this, e);
 			ConsoleService.getInstance().writeError(message);
 			
-		}		
+		}	
+		displayModel.setOpiFilePath(getOPIFilePath());
 	}
 	
+	private IPath getOPIFilePath() {
+		IEditorInput editorInput = getEditorInput();
+		if (editorInput instanceof FileEditorInput) {
+			
+			return ((FileEditorInput) editorInput).getFile().getFullPath();						
+			
+		} else if (editorInput instanceof FileStoreEditorInput) {
+			return URIUtil.toPath(((FileStoreEditorInput) editorInput)
+					.getURI());			
+		}
+		return null;
+	}
+
 	@Override
 	protected void initializeGraphicalViewer() {
 		super.initializeGraphicalViewer();

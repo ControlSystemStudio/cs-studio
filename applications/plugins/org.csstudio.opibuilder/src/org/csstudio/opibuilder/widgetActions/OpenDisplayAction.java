@@ -54,12 +54,18 @@ public class OpenDisplayAction extends AbstractWidgetAction {
 	@Override
 	public void run() {
 		//read file
+		IPath absolutePath = getPath();
+		if(!getPath().isAbsolute()){
+    		absolutePath = 
+    			ResourceUtil.buildAbsolutePath(getWidgetModel(), getPath());
+    	}
 		IFile file = 
-			ResourceUtil.getIFileFromIPath(getPath());
+			ResourceUtil.getIFileFromIPath(absolutePath);
 		
 		if(file == null)
 			try {
-				throw new FileNotFoundException(NLS.bind("The file {0} does not exist", getPath().toString()));
+				throw new FileNotFoundException(NLS.bind(
+						"The file {0} does not exist or the file is not an OPI file in the workspace.", getPath().toString()));
 			} catch (FileNotFoundException e) {				
 				MessageDialog.openError(Display.getDefault().getActiveShell(), "File Open Error",
 						e.getMessage());

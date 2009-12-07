@@ -34,6 +34,11 @@ public class ActionsInput {
 		return actionsList;
 	}
 	
+	public void addAction(AbstractWidgetAction action){
+		actionsList.add(action);
+		action.setWidgetModel(widgetModel);
+	}
+	
 	/**
 	 * @return a total contents copy of this ScriptsInput.
 	 */
@@ -42,6 +47,8 @@ public class ActionsInput {
 		for(AbstractWidgetAction data : actionsList){
 			copy.getActionsList().add(data.getCopy());
 		}
+		copy.setWidgetModel(widgetModel);
+		copy.setHookUpToWidget(hookUpToWidget);
 		return copy;
 	}
 

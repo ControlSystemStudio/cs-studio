@@ -6,6 +6,8 @@ import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.widgetActions.WidgetActionFactory.ActionType;
 import org.csstudio.platform.logging.CentralLogger;
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -46,15 +48,30 @@ public class OpenFileAction extends AbstractWidgetAction {
 			@Override
 			public IStatus runInUIThread(IProgressMonitor monitor) {
 				final IWorkbenchWindow dw = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-				// Open editor on new file.		       
+				// Open editor on new file.		
+				IPath absolutePath = getPath();
 		        try {
 		            if (dw != null) {
 		                IWorkbenchPage page = dw.getActivePage();
-		                if (page != null) {
-		                	IFile file = ResourceUtil.getIFileFromIPath(getPath());
-		                	if(file != null)
-		                		IDE.openEditor(page, file, true);
-		                	else throw new Exception("Cannot find the file at " + getPath());
+		                
+		                if (page != null) {	                	
+		                	if(!getPath().isAbsolute()){
+		                		absolutePath = 
+		                			ResourceUtil.buildAbsolutePath(getWidgetModel(), getPath());
+		                	}
+			                	IFile file = ResourceUtil.getIFileFromIPath(absolutePath);
+			                	if(file != null) // if file exists in workspace
+			                		IDE.openEditor(page, file, true);		                	
+			                	else{ //if it is on local file system.
+			                		try {
+										IFileStore localFile = 
+											EFS.getLocalFileSystem().getStore(absolutePath);
+										IDE.openEditorOnFileStore(page, localFile);
+									} catch (Exception e) {
+				                		throw new Exception("Cannot find the file at " + getPath());
+									}				                		
+			                	}		                	
+		                	
 		                }
 		            }
 		        } catch (Exception e) {
