@@ -295,6 +295,33 @@ public class HibernateReposetory implements IReposetory {
         return HibernateManager.doInDevDBHibernate(hibernateCallback);
     }
 
+    @Override
+    public String getShortChannelDesc(final String ioName) {
+        HibernateCallback hibernateCallback = new HibernateCallback() {
+            @SuppressWarnings("unchecked")
+            public String execute(final Session session) {
+                final Query query = session.createQuery("select channel.description from "
+                        + Channel.class.getName() + " as channel where channel.ioName like ?");
+                query.setString(0, ioName); // Zero-Based!
+
+                final List<String> descList = query.list();
+                if(descList==null||descList.isEmpty()) {
+                    return "";
+                }
+                String string = descList.get(0);
+                if(string==null||string.isEmpty()) {
+                    return "";
+                }
+                String[] split = string.split("[\r\n]");
+                if(split[0].length()>40) {
+                    return split[0].substring(0,40);
+                }
+                return split[0]; 
+            }
+        };
+        return HibernateManager.doInDevDBHibernate(hibernateCallback);
+    }
+    
     public List<Sensors> loadSensors(final String ioName) {
         HibernateCallback hibernateCallback = new HibernateCallback() {
             @SuppressWarnings("unchecked")
@@ -356,4 +383,6 @@ public class HibernateReposetory implements IReposetory {
         };
         return HibernateManager.doInDevDBHibernate(hibernateCallback);    
     }
+
+    
 }

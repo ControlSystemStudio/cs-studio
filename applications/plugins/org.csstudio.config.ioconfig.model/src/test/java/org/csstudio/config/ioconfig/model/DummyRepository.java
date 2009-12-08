@@ -90,5 +90,11 @@ public class DummyRepository implements IReposetory {
         // TODO Auto-generated method stub
         return null;
     }
+
+    @Override
+    public String getShortChannelDesc(String ioName) {
+        // TODO Auto-generated method stub
+        return null;
+    }
     
 }

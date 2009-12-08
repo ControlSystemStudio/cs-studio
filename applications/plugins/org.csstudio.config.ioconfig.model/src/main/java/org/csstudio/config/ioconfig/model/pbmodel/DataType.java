@@ -87,7 +87,11 @@ public enum DataType {
     /**
      * WAGO analog input 4-20 mA.
      */
-    WAGO_AILVZ(16,"WAGO_AILVZ", Messages.getString("DataType.WAGO_AILVZ"), UINT16) //$NON-NLS-1$
+    WAGO_AILVZ(16,"WAGO_AILVZ", Messages.getString("DataType.WAGO_AILVZ"), UINT16), //$NON-NLS-1$
+    /**
+     * Data Type for a Byte with a status bytes.   
+     */
+    DS33_1(16,"DS-33-1",Messages.getString("DataType.DS33-1"),BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT) //$NON-NLS-1$
     ; //$NON-NLS-1$
     
     /**

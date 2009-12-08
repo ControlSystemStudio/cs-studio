@@ -119,4 +119,6 @@ public interface IReposetory {
 
     List<Integer> getRootPath(int id);
 
+    String getShortChannelDesc(String ioName);
+
 }

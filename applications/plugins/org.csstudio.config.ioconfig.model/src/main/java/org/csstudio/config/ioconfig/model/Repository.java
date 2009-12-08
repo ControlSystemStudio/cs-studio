@@ -198,4 +198,8 @@ public final class Repository {
     public static List<Integer> getRootPath(int id){
         return _repository.getRootPath(id);
     }
+
+    public static String getShortChannelDesc(String ioName) {
+        return _repository.getShortChannelDesc(ioName);
+    }
 }

@@ -91,23 +91,24 @@ public class ChannelStructureConfigComposite extends NodeConfig {
                Channel channel = (Channel) node;
                int length = sbDesc.length();
                sbDesc.append(channel.getName());
-               sbDesc.append(": ");
-               if(channel.getIoName()==null) {
+               if(channel.getIoName()==null||channel.getIoName().isEmpty()) {
                    sbIOName.append(LS);
                }else {
                    sbIOName.append(channel.getIoName());
-                   sbDesc.append("("+channel.getIoName()+") ");
+                   sbDesc.append(" ("+channel.getIoName()+") ");
                    sbIOName.append(LS);
                }
+               sbDesc.append(": ");
                sbDesc.append(LS);
                if(channel.getDescription()!=null) {
                    sbDesc.append(channel.getDescription());
                    sbDesc.append(LS);
-               }
+               } 
                sbDesc.append(LS);
-               StyleRange styleRange = new StyleRange(length, sbDesc.length(),null,null,SWT.NONE);
-               styleRange.borderStyle = SWT.BORDER_DOT;
-               styleRanges.add(styleRange);
+               StyleRange styleRange;
+//               styleRange = new StyleRange(length, sbDesc.length(),null,null,SWT.NONE);
+//               styleRange.borderStyle = SWT.BORDER_DOT;
+//               styleRanges.add(styleRange);
                styleRange = new StyleRange(length, channel.getName().length()+1,null,null,SWT.BOLD);
                styleRanges.add(styleRange);
                TextStyle textStyle = new TextStyle();
@@ -118,7 +119,8 @@ public class ChannelStructureConfigComposite extends NodeConfig {
            }
            setText(_ioNameList, sbIOName.toString(), Text.LIMIT);
            text.setText(sbDesc.toString());
-           text.setStyleRanges(styleRanges.toArray(new StyleRange[0]));
+           StyleRange[] array = styleRanges.toArray(new StyleRange[0]);
+           text.setStyleRanges(array);
         }
         _ioNameList.addModifyListener(getMLSB());
     }

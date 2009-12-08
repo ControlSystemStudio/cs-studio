@@ -45,13 +45,14 @@ public class ProfiBusIoNameService implements IoNameService {
      * @return Field and the Epics Address String for the given IO-Name separated by ':'.
      */
     public String getEpicsAddress(String ioName, String field) {
-        String epicsAddressString = Repository.getEpicsAddressString(ioName);
         // return the Bus-type
         if(field.equals("DTYP")) {
             // at the moment only Profibus DP
             return "PBDP";
+        } else if(field.equals("DESC")) {
+            return Repository.getShortChannelDesc(ioName);
         }
-        return epicsAddressString;
+        return Repository.getEpicsAddressString(ioName);
     }
     
     public List<String> getAllIoNames(){
