@@ -142,7 +142,7 @@ public class ProcessVariableNode extends AbstractAlarmTreeNode
 	 * @param alarm the new alarm.
 	 */
 	public final void updateAlarm(final Alarm alarm) {
-		if (alarm.occuredAfter(_activeAlarm)) {
+		if (alarm != null && alarm.occuredAfter(_activeAlarm)) {
 			_activeAlarm = alarm;
 			if (alarm.severityHigherThan(_highestUnacknowledgedAlarm)) {
 				_highestUnacknowledgedAlarm = alarm;
@@ -151,6 +151,20 @@ public class ProcessVariableNode extends AbstractAlarmTreeNode
 			// propagate alarm to the parent node
 			_parent.childSeverityChanged(this);
 		}
+	}
+	
+	/**
+	 * Returns the active alarm of this node.
+	 */
+	public final Alarm getAlarm() {
+		return _activeAlarm;
+	}
+	
+	/**
+	 * Returns the highest unacknowledged alarm of this node.
+	 */
+	public final Alarm getHighestUnacknowledgedAlarm() {
+		return _highestUnacknowledgedAlarm;
 	}
 	
 	/**

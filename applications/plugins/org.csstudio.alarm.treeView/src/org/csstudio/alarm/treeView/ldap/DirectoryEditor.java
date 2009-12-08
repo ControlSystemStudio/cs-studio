@@ -312,11 +312,9 @@ public final class DirectoryEditor {
 	 */
 	private static void copySubtree(SubtreeNode node, SubtreeNode target) 
 			throws DirectoryEditException {
-		ObjectClass oclass = node.getObjectClass();
-		String name = node.getName();
-		createEntry(fullName(target), name, oclass);
-		SubtreeNode copy = new SubtreeNode(target, name, oclass);
-		copyAttributes(node, copy);
+		copyDirectoryEntry(node, target);
+		SubtreeNode copy = new SubtreeNode(target, node.getName(), node.getObjectClass());
+		copyProperties(node, copy);
 		copyChildren(node, copy);
 	}
 
@@ -351,42 +349,58 @@ public final class DirectoryEditor {
 	 */
 	private static void copyProcessVariableNode(ProcessVariableNode node,
 			SubtreeNode target) throws DirectoryEditException {
-		String name = node.getName();
-		createEntry(fullName(target), name, ObjectClass.RECORD);
-		ProcessVariableNode copy = new ProcessVariableNode(target, name);
-		copyAttributes(node, copy);
+		copyDirectoryEntry(node, target);
+		ProcessVariableNode copy = new ProcessVariableNode(target, node.getName());
+		copy.updateAlarm(node.getAlarm());
+		copy.setHighestUnacknowledgedAlarm(node.getHighestUnacknowledgedAlarm());
+		copyProperties(node, copy);
 	}
 
 	/**
-	 * Copies the attributes from one node to another node.
+	 * Copies an entry in the LDAP directory. All of the entries attributes will
+	 * be copied into the new entry.
 	 * 
-	 * @param source
-	 *            the source node.
+	 * @param node
+	 *            the original node which will be copied.
 	 * @param target
-	 *            the target node.
+	 *            the target node which will be the parent of the copy.
 	 * @throws DirectoryEditException
 	 *             if an error occurs.
 	 */
-	private static void copyAttributes(AbstractAlarmTreeNode source,
-			AbstractAlarmTreeNode target) throws DirectoryEditException {
-		if (source.getOwnProperty(AlarmTreeNodePropertyId.CSS_ALARM_DISPLAY) != null) {
-			modifyCssAlarmDisplay(target, source.getCssAlarmDisplay());
-		}
-		if (source.getOwnProperty(AlarmTreeNodePropertyId.CSS_DISPLAY) != null) {
-			modifyCssDisplay(target, source.getCssDisplay());
-		}
-		if (source.getOwnProperty(AlarmTreeNodePropertyId.CSS_STRIP_CHART) != null) {
-			modifyCssStripChart(target, source.getCssStripChart());
-		}
-		if (source.getOwnProperty(AlarmTreeNodePropertyId.HELP_GUIDANCE) != null) {
-			modifyHelpGuidance(target, source.getHelpGuidance());
-		}
-		if (source.getOwnProperty(AlarmTreeNodePropertyId.HELP_PAGE) != null) {
-			modifyHelpPage(target, source.getHelpPage());
+	private static void copyDirectoryEntry(IAlarmTreeNode node,
+			SubtreeNode target) throws DirectoryEditException {
+		try {
+			Attributes attributes = _directory.getAttributes(fullName(node));
+			attributes = (Attributes) attributes.clone();
+			String newName = node.getObjectClass().getRdnAttribute() + "="
+					+ node.getName() + "," + fullName(target);
+			_directory.bind(newName, null, attributes);
+		} catch (NamingException e) {
+			LOG.error(DirectoryEditor.class,
+					"Error creating directory entry", e);
+			throw new DirectoryEditException(e.getMessage(), e);
 		}
 	}
 
+	/**
+	 * Copies the properties from one node to another node.
+	 * 
+	 * @param source
+	 *            the source.
+	 * @param destination
+	 *            the destination.
+	 */
+	private static void copyProperties(AbstractAlarmTreeNode source,
+			AbstractAlarmTreeNode destination) {
+		for (AlarmTreeNodePropertyId id : AlarmTreeNodePropertyId.values()) {
+			String value = source.getOwnProperty(id);
+			if (value != null) {
+				destination.setProperty(id, value);
+			}
+		}
+	}
 
+	
 	/**
 	 * Creates an entry for a process variable record (eren) in the directory
 	 * below the given parent.
