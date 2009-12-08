@@ -80,11 +80,11 @@ public class SubtreeNode extends AbstractAlarmTreeNode implements IAdaptable, IA
 		this._name = name;
 		this._objectClass = objectClass;
 		_children = new ArrayList<IAlarmTreeNode>();
-		if (parent != null) {
-			parent._children.add(this);
-		}
 		_highestChildSeverity = Severity.NO_ALARM;
 		_highestUnacknowledgedChildSeverity = Severity.NO_ALARM;
+		if (parent != null) {
+			parent.addChild(this);
+		}
 	}
 	
 	/**
@@ -113,6 +113,7 @@ public class SubtreeNode extends AbstractAlarmTreeNode implements IAdaptable, IA
 			return;
 		}
 		_children.remove(child);
+		refreshSeverities();
 	}
 	
 	/**
@@ -163,6 +164,7 @@ public class SubtreeNode extends AbstractAlarmTreeNode implements IAdaptable, IA
 	 */
 	final void addChild(final IAlarmTreeNode child) {
 		_children.add(child);
+		childSeverityChanged(child);
 	}
 	
 	/**
@@ -255,11 +257,7 @@ public class SubtreeNode extends AbstractAlarmTreeNode implements IAdaptable, IA
 			_highestChildSeverity = active;
 			thisNodeChanged = true;
 		} else {
-			active = findHighestChildSeverity();
-			if (!active.equals(_highestChildSeverity)) {
-				_highestChildSeverity = active;
-				thisNodeChanged = true;
-			}
+			thisNodeChanged |= refreshActiveSeverity();
 		}
 		// Now the highest unacknowledged severity
 		Severity unack = child.getUnacknowledgedAlarmSeverity();
@@ -267,17 +265,59 @@ public class SubtreeNode extends AbstractAlarmTreeNode implements IAdaptable, IA
 			_highestUnacknowledgedChildSeverity = unack;
 			thisNodeChanged = true;
 		} else {
-			unack = findHighestUnacknowledgedChildSeverity();
-			if (!unack.equals(_highestUnacknowledgedChildSeverity)) {
-				_highestUnacknowledgedChildSeverity = unack;
-				thisNodeChanged = true;
-			}
+			thisNodeChanged |= refreshHighestUnacknowledgedSeverity();
 		}
 		
 		// Notify parent if this node changed
 		if (thisNodeChanged && _parent != null) {
 			_parent.childSeverityChanged(this);
 		}
+	}
+	
+	/**
+	 * Refreshes the severites of this node by searching its children for the
+	 * highest severities.
+	 */
+	private void refreshSeverities() {
+		boolean thisNodeChanged = false;
+		thisNodeChanged |= refreshActiveSeverity();
+		thisNodeChanged |= refreshHighestUnacknowledgedSeverity();
+		
+		if (thisNodeChanged && _parent != null) {
+			_parent.childSeverityChanged(this);
+		}
+	}
+
+	/**
+	 * Refreshes the active severity of this node by searching its children for
+	 * the highest severity.
+	 * 
+	 * @return <code>true</code> if the severity of this node was changed,
+	 *         <code>false</code> otherwise.
+	 */
+	private boolean refreshActiveSeverity() {
+		Severity s = findHighestChildSeverity();
+		if (!s.equals(_highestChildSeverity)) {
+			_highestChildSeverity = s;
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Refreshes the highest unacknowledged severity of this node by searching
+	 * its children for the highest unacknowledged severity.
+	 * 
+	 * @return <code>true</code> if the severity of this node was changed,
+	 *         <code>false</code> otherwise.
+	 */
+	private boolean refreshHighestUnacknowledgedSeverity() {
+		Severity s = findHighestUnacknowledgedChildSeverity();
+		if (!s.equals(_highestUnacknowledgedChildSeverity)) {
+			_highestUnacknowledgedChildSeverity = s;
+			return true;
+		}
+		return false;
 	}
 
 	/**

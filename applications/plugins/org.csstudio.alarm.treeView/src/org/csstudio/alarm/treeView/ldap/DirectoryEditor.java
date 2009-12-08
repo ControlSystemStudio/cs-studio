@@ -223,21 +223,60 @@ public final class DirectoryEditor {
 			throw new DirectoryEditException(e.getMessage(), e);
 		}
 	}
-	
-	
-	public static void moveNode(IAlarmTreeNode node, SubtreeNode target) throws DirectoryEditException {
-		String oldName = fullName(node);
-		String targetName = fullName(target);
-		String newName = oldName.substring(0, oldName.indexOf(",")) + "," + targetName;
-		try {
-			_directory.rename(oldName, newName);
-		} catch (NamingException e) {
-			LOG.error(DirectoryEditor.class,
-					"Could not rename object in LDAP. oldName:" +oldName +
-					", newName:" + newName, e);
-			throw new DirectoryEditException(e.getMessage(), e);
+
+	/**
+	 * Moves a node into a new subtree node. If the node is a subtree node, the
+	 * whole subtree will be moved, including its children.
+	 * 
+	 * @param node
+	 *            the node.
+	 * @param target
+	 *            the target node which will become the new parent of the node.
+	 * @throws DirectoryEditException
+	 *             if an error occurs.
+	 */
+	public static void moveNode(IAlarmTreeNode node, SubtreeNode target)
+			throws DirectoryEditException {
+		/*
+		 * Note: I tried to use _directory.rename(...) here, but that failed
+		 * with an "LDAP: error code 50 - Insufficient Access Rights". So for
+		 * now, this code uses copy-and-delete to move the node. 
+		 */
+		copyNode(node, target);
+		deleteRecursively(node);
+	}
+
+	/**
+	 * Recursively deletes a node and all of its children.
+	 * 
+	 * @param node
+	 *            the node.
+	 * @throws DirectoryEditException
+	 *             if an error occurs.
+	 */
+	private static void deleteRecursively(IAlarmTreeNode node)
+			throws DirectoryEditException {
+		if (node instanceof SubtreeNode) {
+			deleteChildren((SubtreeNode) node);
+		}
+		delete(node);
+	}
+
+	/**
+	 * Deletes the children of a subtree node (recursively).
+	 * 
+	 * @param node
+	 *            the node.
+	 * @throws DirectoryEditException
+	 *             if an error occurs.
+	 */
+	private static void deleteChildren(SubtreeNode node)
+			throws DirectoryEditException {
+		for (IAlarmTreeNode child : node.getChildren()) {
+			deleteRecursively(child);
 		}
 	}
+
 
 	/**
 	 * Creates a copy of a node under a new subtree node. If the node to be
