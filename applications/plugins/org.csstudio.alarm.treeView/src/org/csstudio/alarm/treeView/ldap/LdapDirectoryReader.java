@@ -46,9 +46,10 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.engine.Engine;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Preferences;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 /**
  * This job reads the record entries (eren) from the LDAP directory and creates
@@ -102,8 +103,10 @@ public class LdapDirectoryReader extends Job {
 		super("Alarm Tree Directory Reader");
 		this._treeRoot = treeRoot;
 		
-		Preferences prefs = AlarmTreePlugin.getDefault().getPluginPreferences();
-		_facilityNames = prefs.getString(PreferenceConstants.FACILITIES).split(";");
+		IPreferencesService prefs = Platform.getPreferencesService();
+		String facilitiesPref = prefs.getString(AlarmTreePlugin.PLUGIN_ID,
+				PreferenceConstants.FACILITIES, "", null);
+		_facilityNames = facilitiesPref.split(";");
 	}
 	
 	
