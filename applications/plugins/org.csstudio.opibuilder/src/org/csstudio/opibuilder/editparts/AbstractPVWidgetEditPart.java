@@ -91,8 +91,8 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 		if(!connected)
 			return;
 		connected = false;
-		
-		preBorder = figure.getBorder();
+		if(preBorder == null)
+			preBorder = figure.getBorder();
 		
 		UIBundlingThread.getInstance().addRunnable(new Runnable(){
 			public void run() {
@@ -116,7 +116,7 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 	private void widgetConnectionRecovered(final String pvName){
 		if(connected)
 			return;
-		connected = true;
+		
 		UIBundlingThread.getInstance().addRunnable(new Runnable(){
 			public void run() {
 				boolean allConnected = true;
@@ -129,8 +129,10 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 						nextDisconnecteName = s;					
 				}
 				figure.setEnabled(preEnableState);
-				if(allConnected)
+				if(allConnected){
 					figure.setBorder(preBorder);
+					connected = true;
+				}
 				else if(currentDisconnectPVName.equals(pvName) || currentDisconnectPVName.equals("")){ //$NON-NLS-1$
 					figure.setBorder(BorderFactory.createBorder(
 						BorderStyle.TITLE_BAR, 1, DISCONNECTED_COLOR, 
