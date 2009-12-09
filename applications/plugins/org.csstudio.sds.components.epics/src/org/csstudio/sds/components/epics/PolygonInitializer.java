@@ -36,7 +36,6 @@ public final class PolygonInitializer extends AbstractEpicsWidgetInitializer {
 	 */
 	@Override
 	protected void initialize(final AbstractControlSystemSchema schema) {
-		initializeCommonAlarmBehaviour();
 		initializeCommonConnectionStates();
 	}
 }

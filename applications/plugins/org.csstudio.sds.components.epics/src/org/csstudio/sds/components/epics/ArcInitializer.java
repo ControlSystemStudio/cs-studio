@@ -36,6 +36,5 @@ public final class ArcInitializer extends AbstractEpicsWidgetInitializer {
 	 */
 	@Override
 	protected void initialize(final AbstractControlSystemSchema schema) {
-		initializeCommonAlarmBehaviour();
 	}
 }

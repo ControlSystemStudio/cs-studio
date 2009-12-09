@@ -44,7 +44,6 @@ public final class RectangleInitializer extends AbstractEpicsWidgetInitializer {
 	@Override
 	protected void initialize(final AbstractControlSystemSchema schema) {
 
-		initializeCommonAlarmBehaviour();
 		initializeCommonConnectionStates();
 		initializeDynamicProperty(EllipseModel.PROP_FILL, "$channel$", null,
 				DirectConnectionRule.TYPE_ID);
