@@ -94,7 +94,7 @@ public class ConstantPV extends PlatformObject implements PV
     {
         listeners.add(listener);
         // When running, send the one and only initial update
-        if (running)
+        if (running && isConnected())
             listener.pvValueUpdate(this);
     }
 

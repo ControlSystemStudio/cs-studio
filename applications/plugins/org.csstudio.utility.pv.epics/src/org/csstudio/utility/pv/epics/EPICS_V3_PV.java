@@ -280,7 +280,7 @@ public class EPICS_V3_PV
     public void addListener(PVListener listener)    
     {   
     	listeners.add(listener);  
-    	 if(running){
+    	 if(running && isConnected()){
     		listener.pvValueUpdate(this);    		
     	}   		
     }
