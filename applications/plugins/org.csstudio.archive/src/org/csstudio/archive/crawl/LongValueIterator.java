@@ -1,7 +1,5 @@
 package org.csstudio.archive.crawl;
 
-import java.util.Iterator;
-
 import org.csstudio.platform.data.IDoubleValue;
 import org.csstudio.platform.data.IEnumeratedValue;
 import org.csstudio.platform.data.ILongValue;
@@ -27,7 +25,7 @@ import org.csstudio.platform.data.ValueFactory;
  *  @see org.csstudio.archive.crawl.DoubleValueIterator
  *  @author Kay Kasemir
  */
-public class LongValueIterator implements Iterator<ILongValue>
+public class LongValueIterator implements ValueIterator
 {
     /** Special value to indicate samples without numeric value.
      *  <p>
@@ -41,7 +39,7 @@ public class LongValueIterator implements Iterator<ILongValue>
     
     static ISeverity invalid_type = ValueFactory.createInvalidSeverity();
     
-    private final Iterator<IValue> raw_values;
+    private final ValueIterator raw_values;
     
     static private INumericMetaData numeric_meta = null;
     
@@ -55,7 +53,7 @@ public class LongValueIterator implements Iterator<ILongValue>
         return raw_values.hasNext();
     }
 
-    public ILongValue next()
+    public ILongValue next() throws Exception
     {
         final IValue sample = raw_values.next();
         // Check if meta data is INumericMetaData. Else, create one.
@@ -95,10 +93,5 @@ public class LongValueIterator implements Iterator<ILongValue>
                              (INumericMetaData)meta,
                              IValue.Quality.Interpolated,
                              new long[] { num });
-    }
-    
-    public void remove()
-    {
-        raw_values.remove();
     }
 }

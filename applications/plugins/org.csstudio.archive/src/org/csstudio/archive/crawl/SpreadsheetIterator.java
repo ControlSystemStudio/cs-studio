@@ -36,9 +36,10 @@ public class SpreadsheetIterator
 
     /** Constructor.
      *  @param iters The 'base' iterators.
+     *  @throws Exception on error in archive access
      */
     @SuppressWarnings("nls")
-    public SpreadsheetIterator(ValueIterator iters[])
+    public SpreadsheetIterator(ValueIterator iters[]) throws Exception
     {
         this.iters = iters;
         
@@ -93,10 +94,11 @@ public class SpreadsheetIterator
      *  
      *  @return The next spreadsheed 'line', one sample per channel.
      *          For some channels that might be <code>null</code>.
+     *  @throws Exception on error
      *  @see #getTime()
      *  @see #hasNext()
      */
-    public IValue[] next()
+    public IValue[] next() throws Exception
     {
         assert hasNext();
         // Keep copy(!) of 'current' spreadsheet line
@@ -109,8 +111,9 @@ public class SpreadsheetIterator
 
     /** Fill <code>time</code> and <code>values</code> with the next
      *  spreadsheet line.
+     *  @throws Exception on error
      */
-    private void getNextSpreadsheetLine()
+    private void getNextSpreadsheetLine() throws Exception
     {
         // Find oldest timestamp
         time = null;

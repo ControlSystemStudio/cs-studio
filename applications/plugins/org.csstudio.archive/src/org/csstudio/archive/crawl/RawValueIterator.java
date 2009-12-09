@@ -164,9 +164,10 @@ public class RawValueIterator implements ValueIterator
     }
 
     /** @return Returns the next sample.
+     *  @throws Exception on error
      *  @see #hasNext()
      */
-    public IValue next()
+    public IValue next() throws Exception
     {
         if (batch_idx < 0)
             return null;
@@ -175,28 +176,7 @@ public class RawValueIterator implements ValueIterator
         final IValue sample = curr_batch[sample_idx[batch_idx]];        
         // Prepare what to return next
         ++sample_idx[batch_idx];
-        try
-        {
-            determineNextSample();
-        }
-        catch (Exception ex)
-        {
-            // Would like to pass exception up, but Iterator interface
-            // does not allow next() to throw Exception.
-            // Brute force: Elevate to Error.
-            throw new Error("Cannot get next batch of samples, " //$NON-NLS-1$
-                    + ex.getMessage(), ex);
-            
-        }
+        determineNextSample();
         return sample;
-    }
-
-    /** Required by the <code>Iterator</code> interface, but not supported for
-     *  the archived data.
-     *  @see java.util.Iterator#remove()
-     */
-    public void remove()
-    {
-        throw new UnsupportedOperationException();
     }
 }
