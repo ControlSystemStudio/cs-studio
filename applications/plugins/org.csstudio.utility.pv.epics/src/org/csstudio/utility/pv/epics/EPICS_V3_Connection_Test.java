@@ -30,7 +30,7 @@ public class EPICS_V3_Connection_Test implements PVListener
      */
     static private PV getPV(final String name)
     {
-        PVContext.use_pure_java = false;
+        PVContext.use_pure_java = true;
         System.setProperty("gov.aps.jca.jni.ThreadSafeContext.event_dispatcher",
                            "gov.aps.jca.event.DirectEventDispatcher");
         //                   "gov.aps.jca.event.QueuedEventDispatcher");
