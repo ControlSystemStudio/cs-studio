@@ -1099,6 +1099,7 @@ public class ProfiBusTreeView extends Composite {
                         } else {
                             // paste to a sibling
                             short targetIndex = (short) (selectedNode.getSortIndex());
+                            targetIndex++;
                             nodeCopy = node2Copy.copyThisTo(selectedNode.getParent());
                             nodeCopy.moveSortIndex(targetIndex);
                         }
