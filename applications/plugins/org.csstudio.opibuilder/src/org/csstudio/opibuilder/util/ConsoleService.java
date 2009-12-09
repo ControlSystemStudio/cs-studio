@@ -6,6 +6,8 @@ import java.util.Calendar;
 
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.MessageConsole;
@@ -67,43 +69,63 @@ public class ConsoleService {
 	}
 	
 	/**Write error information to the OPI console.
-	 * @param output the output string.
+	 * @param message the output string.
 	 */
-	public void writeError(String output){
-		output = getTimeString() + " ERROR: " + output + ENTER;
-		if(errorStream == null){
-			errorStream = console.newMessageStream();
-			errorStream.setColor(CustomMediaFactory.getInstance().getColor(
-					CustomMediaFactory.COLOR_RED));
-		}
-		writeToConsole(errorStream, output);
+	public void writeError(final String message){
+		popConsoleView();
+		final String output = getTimeString() + " ERROR: " + message + ENTER;
+		UIBundlingThread.getInstance().addRunnable(new Runnable() {
+		
+			public void run() {
+				if(errorStream == null){
+					errorStream = console.newMessageStream();
+					errorStream.setColor(CustomMediaFactory.getInstance().getColor(
+							CustomMediaFactory.COLOR_RED));
+				}
+				writeToConsole(errorStream, output);
+			}
+		});
+		
 		
 	}
 	
 	/**Write warning information to the OPI console.
-	 * @param output the output string.
+	 * @param message the output string.
 	 */
-	public void writeWarning(String output){
-		output = getTimeString() + " WARNNING: " + output+ ENTER;
-		if(warningStream == null){
-			warningStream = console.newMessageStream();
-			warningStream.setColor(CustomMediaFactory.getInstance().getColor(
-					CustomMediaFactory.COLOR_ORANGE));
-		}
-		writeToConsole(warningStream, output);
+	public void writeWarning(String message){
+		final String output = getTimeString() + " WARNNING: " + message+ ENTER;
+		popConsoleView();
+		UIBundlingThread.getInstance().addRunnable(new Runnable() {
+		
+			public void run() {
+				if(warningStream == null){
+					warningStream = console.newMessageStream();
+					warningStream.setColor(CustomMediaFactory.getInstance().getColor(
+							CustomMediaFactory.COLOR_ORANGE));
+				}
+				writeToConsole(warningStream, output);
+			}
+		});
+		
 	}
 	
 	/**Write information to the OPI console.
-	 * @param output the output string.
+	 * @param message the output string.
 	 */
-	public void writeInfo(String output){
-		output = getTimeString() + " INFO: " + output+ ENTER;
-		if(infoStream == null){
-			infoStream = console.newMessageStream();
-			infoStream.setColor(CustomMediaFactory.getInstance().getColor(
-					CustomMediaFactory.COLOR_BLACK));
-		}
-		writeToConsole(infoStream, output);
+	public void writeInfo(String message){
+		final String output = getTimeString() + " INFO: " + message+ ENTER;
+		popConsoleView();
+		UIBundlingThread.getInstance().addRunnable(new Runnable(){
+			public void run() {
+				if(infoStream == null){
+					infoStream = console.newMessageStream();
+					infoStream.setColor(CustomMediaFactory.getInstance().getColor(
+							CustomMediaFactory.COLOR_BLACK));
+				}
+				writeToConsole(infoStream, output);
+			}
+		});
+		
 	}
 	
 	public void writeString(String s){
@@ -126,6 +148,24 @@ public class ConsoleService {
 		} catch (IOException e) {
 			CentralLogger.getInstance().error(this, "Write Console error",e);
 		}
+	}
+	
+	private void popConsoleView(){
+		if(PlatformUI.getWorkbench() != null){			
+			UIBundlingThread.getInstance().addRunnable(new Runnable() {					
+				public void run() {
+					try {
+						PlatformUI.getWorkbench().getActiveWorkbenchWindow().
+							getActivePage().showView("org.eclipse.ui.console.ConsoleView"); //$NON-NLS-1$
+					} catch (PartInitException e) {
+						CentralLogger.getInstance().error(this, e);
+					}
+				}
+			});
+				
+			
+		}
+		
 	}
 	
 }
