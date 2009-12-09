@@ -56,8 +56,10 @@ class FormulaInputs
         return var_array;
     }
     
-    /** Start the spreadsheet-type iteration over all the input's samples */
-    void startIteration()
+    /** Start the spreadsheet-type iteration over all the input's samples 
+     *  @throws Exception on error
+     */
+    void startIteration() throws Exception
     {
         final int n = getNumInputs();
         if (n <= 0)

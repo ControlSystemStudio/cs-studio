@@ -133,13 +133,13 @@ public class FormulaModelItem extends AbstractModelItem
         final ISeverity ok_severity = ValueFactory.createOKSeverity();
         final String ok_status = ""; //$NON-NLS-1$
         final String invalid_status = Messages.NoNumericValue;
-        input_variables.startIteration();
-        final INumericMetaData meta_data = input_variables.getMetaData();
         synchronized (samples)
         {
             samples.clear();
             try
             {
+                input_variables.startIteration();
+                final INumericMetaData meta_data = input_variables.getMetaData();
                 ITimestamp time = input_variables.next();
                 while (time != null)
                 {        

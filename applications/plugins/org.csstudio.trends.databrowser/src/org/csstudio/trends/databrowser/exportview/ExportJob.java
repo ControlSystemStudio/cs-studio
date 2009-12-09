@@ -1,7 +1,6 @@
 package org.csstudio.trends.databrowser.exportview;
 
 import java.io.PrintWriter;
-import java.util.Iterator;
 
 import org.csstudio.apputil.time.SecondsParser;
 import org.csstudio.archive.ArchiveServer;
@@ -282,10 +281,11 @@ class ExportJob extends Job
      *  @param out
      *  @param channel_iter
      *  @return New line count
+     *  @throws Exception on error
      */
     private int dumpOneItem(final IProgressMonitor monitor,
                             int line_count, final PrintWriter out,
-                            final Iterator<IValue> channel_iter)
+                            final ValueIterator channel_iter) throws Exception
     {
         while (channel_iter.hasNext())
         {
