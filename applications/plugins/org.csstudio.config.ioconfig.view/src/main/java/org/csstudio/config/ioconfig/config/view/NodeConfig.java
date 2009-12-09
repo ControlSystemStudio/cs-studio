@@ -884,11 +884,31 @@ public abstract class NodeConfig extends Composite {
         GridDataFactory gdf = GridDataFactory.fillDefaults().grab(true, true).span(hSize, 1)
                 .minSize(200, 200);
         gDesc.setLayoutData(gdf.create());
-        gDesc.setLayout(new GridLayout(1, false));
+        gDesc.setLayout(new GridLayout(2, false));
 
-        Text descText = new Text(gDesc, SWT.BORDER | SWT.MULTI);
-        descText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+        Label shortDescLabel = new Label(gDesc, SWT.NONE);
+        shortDescLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+        shortDescLabel.setText("Short Desc:");
+        
+        final Text shortDescText = new Text(gDesc, SWT.BORDER | SWT.SINGLE|SWT.READ_ONLY);
+        shortDescText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
+        shortDescText.setEditable(false);
+        final Text descText = new Text(gDesc, SWT.BORDER | SWT.MULTI);
+        descText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
         descText.setEditable(true);
+        descText.addModifyListener(new ModifyListener() {
+            
+            @Override
+            public void modifyText(ModifyEvent e) {
+                String text = descText.getText();
+                String[] split = text.split("[\r\n]");
+                String string = split[0];
+                if(string.length()>40) {
+                    string = string.substring(0,40);
+                }
+                shortDescText.setText(string);
+            }
+        });
         setText(descText, getNode().getDescription(), 255);
         setDescWidget(descText);
     }
