@@ -22,6 +22,9 @@
 
 package org.csstudio.alarm.treeView.ldap;
 
+import javax.naming.ldap.LdapName;
+
+import org.csstudio.alarm.treeView.model.ObjectClass;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
 
 /**
@@ -51,38 +54,36 @@ final class TreeBuilder {
 	 * @return the node.
 	 */
 	static SubtreeNode findCreateSubtreeNode(final SubtreeNode root,
-			final String name) {
+			final LdapName name) {
 		SubtreeNode directParent = findCreateParentNode(root, name);
 		String simpleName = LdapNameUtils.simpleName(name);
+		ObjectClass oClass = LdapNameUtils.objectClass(name);
 		SubtreeNode result = (SubtreeNode) directParent.getChild(simpleName);
 		if (result == null) {
-			result = new SubtreeNode(directParent, simpleName, LdapNameUtils.objectClass(name));
+			result = new SubtreeNode(directParent, simpleName, oClass);
 		}
 		return result;
 	}
 	
-	
+
 	/**
 	 * Finds the parent node of the node with the specified name. If the parent
 	 * node does not exist, it is created.
 	 * 
 	 * @param root
 	 *            the root node of the tree which is searched.
-	 * @param relativeName
-	 *            the relative LDAP name of the node whose parent is to be
-	 *            found.
+	 * @param name
+	 *            the name of the node whose parent is to be found.
 	 * @return the parent node of the node with the specified name.
 	 */
 	static SubtreeNode findCreateParentNode(final SubtreeNode root,
-			final String relativeName) {
-		String parentName = LdapNameUtils.parentName(relativeName);
-		if (parentName != null) {
+			final LdapName name) {
+		if (name.size() > 1) {
+			LdapName parentName = (LdapName) name.getPrefix(name.size() - 1);
 			SubtreeNode parent = findCreateSubtreeNode(root, parentName);
 			return parent;
 		} else {
-			// there is no parent node, so return the root node
 			return root;
 		}
 	}
-
 }

@@ -25,6 +25,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
 
+import javax.naming.CompositeName;
+import javax.naming.Name;
+import javax.naming.NameParser;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.SizeLimitExceededException;
@@ -33,6 +36,8 @@ import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
+import javax.naming.ldap.LdapName;
+import javax.naming.ldap.Rdn;
 
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.EventtimeUtil;
@@ -124,23 +129,25 @@ public class LdapDirectoryReader extends Job {
 	 * @throws NamingException if an LDAP error occurs.
 	 */
 	private void populateSubTree(final String efan) throws NamingException {
-		// build dn of the efan object below which we want to search
-		String searchRootDN = "efan=" + efan + "," + ALARM_ROOT;
+		Name searchRootName = new LdapName(ALARM_ROOT).add(new Rdn("efan", efan));
+		
+		NameParser nameParser = _directory.getNameParser(new CompositeName());
 
 		SearchControls ctrl = new SearchControls();
 		ctrl.setSearchScope(SearchControls.SUBTREE_SCOPE);
 		ctrl.setCountLimit(COUNT_LIMIT);
 		
 		// search all EPICS record names (eren) below the base object
+		LOG.debug(this, "Starting search for eren=* in " + searchRootName);
 		NamingEnumeration<SearchResult> searchResults =
-			_directory.search(searchRootDN, "eren=*", ctrl);
+			_directory.search(searchRootName, "eren=*", ctrl);
 		try {
-			while (searchResults.hasMore()){
+			while (searchResults.hasMore()) {
 				SearchResult result = searchResults.next();
-				String relativeName = result.getName();
-				relativeName = LdapNameUtils.removeQuotes(relativeName);
-				String relativeNameWithEfan = relativeName + ",efan=" + efan;
-				ProcessVariableNode node = createTreeNode(relativeNameWithEfan);
+				Name cname = new CompositeName(result.getName());
+				LdapName name = (LdapName) nameParser.parse(cname.get(0));
+				name.add(0, new Rdn("efan", efan));
+				ProcessVariableNode node = createTreeNode(name);
 				
 				// Read the object's alarm status, and trigger an alarm on the node
 				// that was just created if there is an alarm.
@@ -153,7 +160,7 @@ public class LdapDirectoryReader extends Job {
 			try {
 				searchResults.close();
 			} catch (NamingException e) {
-				LOG.warn(this, "Error cloing search results", e);
+				LOG.warn(this, "Error closing search results", e);
 			}
 		}
 	}
@@ -280,30 +287,15 @@ public class LdapDirectoryReader extends Job {
 	
 	
 	/**
-	 * Creates a tree item for the object with the given name.
-	 * @param relativeName the object's relative name. This name will be used to determine
+	 * Creates a new node with the given name and inserts it into the tree.
+	 * @param name the object's relative name. This name will be used to determine
 	 *        where in the tree to put the object.
 	 * @return the tree item for the given object.
 	 */
-	private ProcessVariableNode createTreeNode(final String relativeName) {
-		return createTreeNode(relativeName, _treeRoot);
-	}
-	
-	
-	/**
-	 * Creates a new node with the given name and inserts it into the tree.
-	 * 
-	 * @param relativeName the relative name of the node. The relative name
-	 *        determines the position in the tree where the node will be
-	 *        inserted.
-	 * @param rootNode the root node of the tree.
-	 * @return the created node.
-	 */
-	private ProcessVariableNode createTreeNode(final String relativeName,
-			final SubtreeNode rootNode) {
-		SubtreeNode parentNode = TreeBuilder.findCreateParentNode(rootNode, relativeName);
-		String name = LdapNameUtils.simpleName(relativeName);
-		ProcessVariableNode node = new ProcessVariableNode(parentNode, name);
+	private ProcessVariableNode createTreeNode(final LdapName name) {
+		SubtreeNode parentNode = TreeBuilder.findCreateParentNode(_treeRoot, name);
+		String sname = LdapNameUtils.simpleName(name);
+		ProcessVariableNode node = new ProcessVariableNode(parentNode, sname);
 		return node;
 	}
 	

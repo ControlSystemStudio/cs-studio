@@ -24,16 +24,24 @@ package org.csstudio.alarm.treeView.ldap;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collections;
 
+import javax.naming.CompositeName;
+import javax.naming.InvalidNameException;
+import javax.naming.Name;
 import javax.naming.NameClassPair;
+import javax.naming.NameParser;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
+import javax.naming.ldap.LdapName;
+import javax.naming.ldap.Rdn;
 
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.model.AbstractAlarmTreeNode;
+import org.csstudio.alarm.treeView.model.ObjectClass;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.alarm.treeView.preferences.PreferenceConstants;
 import org.csstudio.platform.logging.CentralLogger;
@@ -117,7 +125,7 @@ public class LdapDirectoryStructureReader extends Job {
 			long startTime = System.currentTimeMillis();
 			initializeDirectoryContext();
 			for (String facility : _facilityNames) {
-				updateStructureOfSubTree(facility);
+				updateStructureOfFacility(facility);
 			}
 			long endTime = System.currentTimeMillis();
 			LOG.debug(this, "Directory structure reader time: " + (endTime-startTime) + "ms");
@@ -134,42 +142,50 @@ public class LdapDirectoryStructureReader extends Job {
 	 * @param facility
 	 *            the facility.
 	 */
-	private void updateStructureOfSubTree(final String facility) {
-		String efanNodeRelativeName = "efan=" + facility;
-		String efanNodeFullName = efanNodeRelativeName + "," + ALARM_ROOT;
-		
-		SubtreeNode efanNode = updateNode(_treeRoot, efanNodeRelativeName, efanNodeFullName);
-		updateStructureOfSubTreeInternal(efanNodeFullName, efanNode);
+	private void updateStructureOfFacility(final String facility) {
+		try {
+			LdapName efanName = new LdapName(Collections.singletonList(
+					new Rdn("efan", facility)));
+			LdapName fullEfanName = (LdapName) new LdapName(ALARM_ROOT)
+					.addAll(efanName);
+			
+			SubtreeNode efanNode = updateNode(_treeRoot, efanName, fullEfanName);
+			updateStructureOfSubTree(fullEfanName, efanNode);
+		} catch (InvalidNameException e) {
+			LOG.error(this, "Error when updating facility subtree in Alarm Tree", e);
+		}
 	}
 
 
 	/**
 	 * Recursively updates the structure of the given tree.
 	 * 
-	 * @param rootDN
-	 *            the root DN.
+	 * @param treeName
+	 *            the LDAP name of the root node of the tree.
 	 * @param tree
 	 *            the tree.
 	 */
-	private void updateStructureOfSubTreeInternal(final String rootDN,
+	private void updateStructureOfSubTree(final LdapName treeName,
 			final SubtreeNode tree) {
 		try {
-			NamingEnumeration<NameClassPair> results = _directory.list(rootDN);
+			NameParser nameParser = _directory.getNameParser(treeName);
+			NamingEnumeration<NameClassPair> results = _directory.list(treeName);
 			while (results.hasMore()) {
 				NameClassPair entry = results.next();
-				String relativeName = LdapNameUtils.removeQuotes(entry.getName());
-				String fullName = relativeName + "," + rootDN;
+				Name cname = new CompositeName(entry.getName());
+				LdapName entryName = (LdapName) nameParser.parse(cname.get(0));
 				
 				// The update job readas only structural nodes, no eren nodes.
-				if (!fullName.startsWith("eren=")) {
-					SubtreeNode node = updateNode(tree, relativeName, fullName);
-					updateStructureOfSubTreeInternal(fullName, node);
+				if (LdapNameUtils.objectClass(entryName) != ObjectClass.RECORD) {
+					LdapName fullEntryName = (LdapName) ((LdapName) entryName.clone()).addAll(0, treeName);
+					SubtreeNode node = updateNode(tree, entryName, fullEntryName);
+					updateStructureOfSubTree(fullEntryName, node);
 				}
 			}
 		} catch (NamingException e) {
 			LOG.error(this,
 					"Error getting list of objects from LDAP directory " +
-					"for rootDN=" + rootDN, e);
+					"for rootDN=" + treeName, e);
 		}
 	}
 
@@ -186,7 +202,7 @@ public class LdapDirectoryStructureReader extends Job {
 	 * @return the updated node.
 	 */
 	private SubtreeNode updateNode(final SubtreeNode tree,
-			final String relativeName, final String fullName) {
+			final LdapName relativeName, final LdapName fullName) {
 		SubtreeNode node = TreeBuilder.findCreateSubtreeNode(tree, relativeName);
 		try {
 			Attributes attrs = _directory.getAttributes(fullName);

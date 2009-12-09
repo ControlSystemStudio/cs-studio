@@ -23,7 +23,12 @@
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+
+import javax.naming.InvalidNameException;
+import javax.naming.ldap.LdapName;
+import javax.naming.ldap.Rdn;
 
 import org.eclipse.core.runtime.IAdaptable;
 
@@ -133,13 +138,18 @@ public class SubtreeNode extends AbstractAlarmTreeNode implements IAdaptable, IA
 	public final ObjectClass getRecommendedChildSubtreeClass() {
 		return _objectClass.getNestedContainerClass();
 	}
-	
+
 	/**
 	 * Returns the name of object in the directory which this node represents.
-	 * The name depends on the object class and name of this node and the
-	 * object classes and names of this node's parent nodes.
+	 * The name depends on the object class and name of this node and the object
+	 * classes and names of this node's parent nodes.
+	 * 
 	 * @return the name of this node in the directory.
+	 * @deprecated this method does not work correctly if the name of this node
+	 *             or one of its parent nodes contains special characters that
+	 *             need escaping. Use {@link #getLdapName()} instead.
 	 */
+	@Deprecated
 	public final String getDirectoryName() {
 		StringBuilder result = new StringBuilder();
 		result.append(getObjectClass().getRdnAttribute());
@@ -152,6 +162,28 @@ public class SubtreeNode extends AbstractAlarmTreeNode implements IAdaptable, IA
 			result.append(_parent.getDirectoryName());
 		}
 		return result.toString();
+	}
+	
+	/**
+	 * Returns the name of this node in the LDAP directory.
+	 * 
+	 * @return the name of this node in the directory.
+	 */
+	public final LdapName getLdapName() {
+		try {
+			if (_objectClass == null) {
+				return new LdapName("");
+			}
+			
+			LdapName result = new LdapName(Collections.singletonList(
+					new Rdn(_objectClass.getRdnAttribute(), _name)));
+			if (_parent != null) {
+				result.addAll(0, _parent.getLdapName());
+			}
+			return result;
+		} catch (InvalidNameException e) {
+			return null;
+		}
 	}
 	
 	/**

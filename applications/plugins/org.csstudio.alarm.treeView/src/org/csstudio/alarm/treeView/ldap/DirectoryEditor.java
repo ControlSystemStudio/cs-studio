@@ -24,13 +24,15 @@ package org.csstudio.alarm.treeView.ldap;
 
 import java.net.URL;
 
+import javax.naming.InvalidNameException;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttribute;
-import javax.naming.directory.BasicAttributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.ModificationItem;
+import javax.naming.ldap.LdapName;
+import javax.naming.ldap.Rdn;
 
 import org.csstudio.alarm.treeView.model.AbstractAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.AlarmTreeNodePropertyId;
@@ -88,7 +90,7 @@ public final class DirectoryEditor {
 	 */
 	public static void delete(final IAlarmTreeNode node)
 			throws DirectoryEditException {
-		String name = fullName(node);
+		LdapName name = fullLdapName(node);
 		try {
 			LOG.debug(DirectoryEditor.class, "Unbinding " + name);
 			_directory.unbind(name);
@@ -209,7 +211,7 @@ public final class DirectoryEditor {
 	private static void modifyAttribute(final AbstractAlarmTreeNode node,
 			final String attribute, final String value)
 			throws DirectoryEditException {
-		String name = fullName(node);
+		LdapName name = fullLdapName(node);
 		Attribute attr = new BasicAttribute(attribute, value);
 		int op = value == null
 				? DirContext.REMOVE_ATTRIBUTE : DirContext.REPLACE_ATTRIBUTE;
@@ -370,10 +372,11 @@ public final class DirectoryEditor {
 	private static void copyDirectoryEntry(IAlarmTreeNode node,
 			SubtreeNode target) throws DirectoryEditException {
 		try {
-			Attributes attributes = _directory.getAttributes(fullName(node));
+			Attributes attributes = _directory.getAttributes(fullLdapName(node));
 			attributes = (Attributes) attributes.clone();
-			String newName = node.getObjectClass().getRdnAttribute() + "="
-					+ node.getName() + "," + fullName(target);
+			LdapName newName = (LdapName) fullLdapName(target).add(
+					new Rdn(node.getObjectClass().getRdnAttribute(), node
+							.getName()));
 			_directory.bind(newName, null, attributes);
 		} catch (NamingException e) {
 			LOG.error(DirectoryEditor.class,
@@ -414,7 +417,7 @@ public final class DirectoryEditor {
 	public static void createProcessVariableRecord(
 			final SubtreeNode parent, final String recordName)
 			throws DirectoryEditException {
-		createEntry(fullName(parent), recordName, ObjectClass.RECORD);
+		createEntry(fullLdapName(parent), recordName, ObjectClass.RECORD);
 		new ProcessVariableNode(parent, recordName);
 	}
 	
@@ -436,7 +439,7 @@ public final class DirectoryEditor {
 		if (oclass == null) {
 			oclass = ObjectClass.COMPONENT;
 		}
-		createEntry(fullName(parent), componentName, oclass);
+		createEntry(fullLdapName(parent), componentName, oclass);
 		new SubtreeNode(parent, componentName, oclass);
 	}
 	
@@ -453,12 +456,12 @@ public final class DirectoryEditor {
 	 * @throws DirectoryEditException
 	 *             if the entry could not be created.
 	 */
-	private static void createEntry(final String parentName, final String name,
+	private static void createEntry(final LdapName parentName, final String name,
 			final ObjectClass objectClass) throws DirectoryEditException {
-		String fullName = objectClass.getRdnAttribute() + "=" + name
-				+ "," + parentName;
-		Attributes attrs = attributesForEntry(objectClass, name);
 		try {
+			Rdn rdn = new Rdn(objectClass.getRdnAttribute(), name);
+			LdapName fullName = (LdapName) ((LdapName) parentName.clone()).add(rdn);
+			Attributes attrs = attributesForEntry(objectClass, rdn);
 			LOG.debug(DirectoryEditor.class,
 					"Creating entry " + fullName + " with attributes " + attrs);
 			_directory.bind(fullName, null, attrs);
@@ -469,24 +472,29 @@ public final class DirectoryEditor {
 		}
 	}
 
-
 	/**
 	 * Returns the full name of the given node in the directory.
 	 * 
 	 * @param node
 	 *            the node.
 	 * @return the full name of the node in the directory.
+	 * @throws DirectoryEditException
+	 *             if the node has an invalid name.
 	 */
-	private static String fullName(final IAlarmTreeNode node) {
-		StringBuilder sb = new StringBuilder();
-		if (node instanceof ProcessVariableNode) {
-			sb.append("eren=").append(node.getName()).append(",")
-				.append(node.getParent().getDirectoryName());
-		} else {
-			sb.append(((SubtreeNode) node).getDirectoryName());
+	private static LdapName fullLdapName(IAlarmTreeNode node)
+			throws DirectoryEditException {
+		try {
+			LdapName name = new LdapName(ALARM_ROOT);
+			if (node instanceof ProcessVariableNode) {
+				name.addAll(node.getParent().getLdapName());
+				name.add(new Rdn("eren", node.getName()));
+			} else {
+				name.addAll(((SubtreeNode) node).getLdapName());
+			}
+			return name;
+		} catch (InvalidNameException e) {
+			throw new DirectoryEditException(e.getMessage(), e);
 		}
-		sb.append(",").append(ALARM_ROOT);
-		return sb.toString();
 	}
 	
 
@@ -496,15 +504,14 @@ public final class DirectoryEditor {
 	 * 
 	 * @param objectClass
 	 *            the object class of the new entry.
-	 * @param name
-	 *            the name of the new entry.
+	 * @param rdn
+	 *            the relative name of the entry.
 	 * @return the attributes for the new entry.
 	 */
 	private static Attributes attributesForEntry(final ObjectClass objectClass,
-			final String name) {
-		BasicAttributes result = new BasicAttributes();
+			final Rdn rdn) {
+		Attributes result = rdn.toAttributes();
 		result.put("objectClass", objectClass.getObjectClassName());
-		result.put(objectClass.getRdnAttribute(), name);
 		result.put("epicsCssType", objectClass.getCssType());
 		return result;
 	}

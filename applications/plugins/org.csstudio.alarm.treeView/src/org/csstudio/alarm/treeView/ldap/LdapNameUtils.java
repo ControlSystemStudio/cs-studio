@@ -21,15 +21,30 @@
  */
  package org.csstudio.alarm.treeView.ldap;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.naming.ldap.LdapName;
+
 import org.csstudio.alarm.treeView.model.ObjectClass;
 
 
 /**
  * Utility functions for working with names from an LDAP directory.
  * 
- * @author Jurij Kodre
+ * @author Joerg Rathlev, Jurij Kodre
  */
 public final class LdapNameUtils {
+	
+	private static final Map<String, ObjectClass> objectClass;
+	static {
+		objectClass = new HashMap<String, ObjectClass>();
+		objectClass.put("efan", ObjectClass.FACILITY);
+		objectClass.put("ecom", ObjectClass.COMPONENT);
+		objectClass.put("esco", ObjectClass.SUBCOMPONENT);
+		objectClass.put("econ", ObjectClass.IOC);
+		objectClass.put("eren", ObjectClass.RECORD);
+	}
 	
 	/**
 	 * Constructor.
@@ -39,9 +54,15 @@ public final class LdapNameUtils {
 
 	/**
 	 * Removes double quotes from a string.
-	 * @param toClean the string to be cleaned.
+	 * 
+	 * @param toClean
+	 *            the string to be cleaned.
 	 * @return the cleaned string.
+	 * @deprecated This method is a hack to work with JNDI composite names, but
+	 *             it only works for names which do not contain any special
+	 *             characters that need escaping. Use JNDI correctly instead.
 	 */
+	@Deprecated
 	public static String removeQuotes(final String toClean) {
 		StringBuffer tc = new StringBuffer(toClean);
 		String grr = "\"";
@@ -52,57 +73,45 @@ public final class LdapNameUtils {
 		}
 		return tc.toString();
 	}
-	
+
 	/**
 	 * Returns the simple name of the given name.
-	 * For example, given &quot;a=x,b=y,c=z&quot;, returns &quot;x&quot;.
-	 * @param name the name.
+	 * 
+	 * @param name
+	 *            the name.
 	 * @return the simple name.
+	 * @deprecated This method only works for names which do not contain any
+	 *             special characters that need escaping. Use
+	 *             {@link #simpleName(LdapName)} instead.
 	 */
+	@Deprecated
 	public static String simpleName(final String name){
 		int pos1 = name.indexOf("=");
 		int pos2= name.indexOf(",");
 		if (pos2 ==-1 ) {pos2=name.length();} //if comma is not present, we must take last character
 		return name.substring(pos1+1,pos2);
 	}
-	
+
 	/**
-	 * Returns the object class of the given name.
-	 * For example, given &quot;a=x,b=y,c=z&quot;, returns &quot;a&quot;.
-	 * @param name the name.
+	 * Returns the simple name of an object identified by the given LDAP name.
+	 * The simple name is the value of the least significant Rdn.
+	 * 
+	 * @param name
+	 *            the LDAP name.
+	 * @return the simple name.
+	 */
+	public static String simpleName(LdapName name) {
+		return (String) name.getRdn(name.size() - 1).getValue();
+	}
+
+	/**
+	 * Returns the object class of an LDAP name.
+	 * 
+	 * @param name
+	 *            the name.
 	 * @return the object class.
 	 */
-	public static ObjectClass objectClass(final String name) {
-		String objectClass = name.substring(0, name.indexOf("="));
-		if (objectClass.equals("efan")) {
-			return ObjectClass.FACILITY;
-		} else if (objectClass.equals("ecom")) {
-			return ObjectClass.COMPONENT;
-		} else if (objectClass.equals("esco")) {
-			return ObjectClass.SUBCOMPONENT;
-		} else if (objectClass.equals("econ")) {
-			return ObjectClass.IOC;
-		} else if (objectClass.equals("eren")) {
-			return ObjectClass.RECORD;
-		} else {
-			throw new IllegalArgumentException("Unknown object class: " + name);
-		}
-	}
-	
-	/**
-	 * Returns the qualified name of the parent of the given name.
-	 * For example, given &quot;a=x,b=y,c=z&quot;, returns &quot;b=y,c=z&quot;.
-	 * Returns {@code null} if there is no parent.
-	 * @param name the name.
-	 * @return the parent name or {@code null}.
-	 */
-	public static String parentName(final String name){
-		String dum = name;
-		if (dum ==null) {dum ="";}
-		int pos=dum.indexOf(",");
-		if (pos==-1) {
-			return null;
-		}
-		return dum.substring(pos+1);
+	public static ObjectClass objectClass(LdapName name) {
+		return objectClass.get(name.getRdn(name.size() - 1).getType());
 	}
 }

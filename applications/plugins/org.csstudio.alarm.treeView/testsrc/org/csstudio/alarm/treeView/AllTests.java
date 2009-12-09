@@ -1,6 +1,7 @@
 package org.csstudio.alarm.treeView;
 
 import org.csstudio.alarm.treeView.jms.PendingUpdateTest;
+import org.csstudio.alarm.treeView.ldap.LdapNameUtilsTest;
 import org.csstudio.alarm.treeView.ldap.TreeBuilderTest;
 import org.csstudio.alarm.treeView.model.AlarmTest;
 import org.csstudio.alarm.treeView.model.ProcessVariableNodeTest;
@@ -17,6 +18,7 @@ import org.junit.runners.Suite.SuiteClasses;
     ProcessVariableNodeTest.class,
     PendingUpdateTest.class,
     EventtimeUtilTest.class,
+    LdapNameUtilsTest.class,
 })
 public class AllTests {
     // This is a suite which should not contain code.
