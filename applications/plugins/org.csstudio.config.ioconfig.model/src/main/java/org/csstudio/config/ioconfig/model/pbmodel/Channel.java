@@ -512,7 +512,8 @@ public class Channel extends Node {
     @Transient
     private Object getBitPostion() {
         StringBuilder sb = new StringBuilder();
-        if (getChannelType() == DataType.BIT) {
+        if (getChannelType() == DataType.BIT ) {
+//        if (getChannelType() == DataType.BIT && getSortIndex()>=0) {
             sb.append(",B=");
             sb.append(getSortIndex());
         }

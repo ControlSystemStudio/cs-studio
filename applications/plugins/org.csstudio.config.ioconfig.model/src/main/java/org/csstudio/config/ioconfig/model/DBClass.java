@@ -27,8 +27,10 @@ package org.csstudio.config.ioconfig.model;
 import java.util.Date;
 
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Transient;
 
 /**
@@ -72,7 +74,8 @@ public class DBClass {
      * @return the Node key ID.
      */
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="SEQ_G_DDB")
+    @SequenceGenerator(name="SEQ_G_DDB", sequenceName="SEQ_DDB")
     public int getId() {
         return _id;
     }

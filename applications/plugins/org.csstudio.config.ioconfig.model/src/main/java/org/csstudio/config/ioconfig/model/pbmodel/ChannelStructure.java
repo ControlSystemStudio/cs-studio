@@ -100,8 +100,10 @@ public class ChannelStructure extends Node implements IStructured {
         }
 
         DataType[] structer = type.getStructure();
+        Channel channel;
+//        Channel channel = new Channel(this, name, isInput, structer[0].getByteSize() < 8, (short)-1);
         for (short sortIndex = 0; sortIndex < structer.length; sortIndex++) {
-            Channel channel = new Channel(this, name + sortIndex, isInput, structer[sortIndex]
+            channel = new Channel(this, name + sortIndex, isInput, structer[sortIndex]
                     .getByteSize() < 8, sortIndex);
 
             channel.setName(name + sortIndex);
