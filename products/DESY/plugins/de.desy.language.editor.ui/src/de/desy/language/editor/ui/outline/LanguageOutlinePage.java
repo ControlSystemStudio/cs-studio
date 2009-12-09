@@ -94,8 +94,8 @@ public class LanguageOutlinePage extends ContentOutlinePage implements
 			List<Node> nodes = findSurroundingNode(_programNode,
 					event.caretOffset);
 
-			Collections.reverse(nodes);
 			if (nodes != null) {
+				Collections.reverse(nodes);
 				ISelection selection = new StructuredSelection(nodes.toArray());
 				getTreeViewer().setSelection(selection, true);
 			}

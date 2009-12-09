@@ -161,6 +161,8 @@ public class SNLParser extends AbstractLanguageParser {
 		progressMonitor.done();
 		long overallEnd = System.currentTimeMillis();
 		_measurementData.add(new KeyValuePair("Overall duration (ms)", (int)(overallEnd-overallStart)));
+		_measurementData.add(new KeyValuePair("Warnings", root.getAllWarningNodes().size()));
+		_measurementData.add(new KeyValuePair("Errors", root.getAllErrorNodes().size()));
 		return root;
 	}
 
