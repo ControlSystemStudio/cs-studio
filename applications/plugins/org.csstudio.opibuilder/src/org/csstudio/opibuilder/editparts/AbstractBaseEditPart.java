@@ -64,8 +64,7 @@ import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.gef.editpolicies.ComponentEditPolicy;
 import org.eclipse.gef.requests.GroupRequest;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.IActionFilter;
 import org.eclipse.ui.progress.UIJob;
 
@@ -271,6 +270,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 							i++;							
 						}	
 						
+						
 						UIBundlingThread.getInstance().addRunnable(new Runnable(){
 							public void run() {
 							for(PV pv : pvArray)
@@ -284,12 +284,13 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 							}
 						});							
 						 
-						//register script
-						Job job = new Job("Connecting to PVs"){							
+						//register scripts
+						Job job = new Job("Connecting to PV"){							
 							private boolean pvsConnected = true;
 							private String disconnectedPVs = ""; //$NON-NLS-1$
 							//attempt to connect with all PVs repeatedly
-							private int connectAttempts = 10;//						
+							private int connectAttempts = 20;//		
+							
 							@Override
 							protected IStatus run(IProgressMonitor arg0) {
 								//attempt to connect with all PVs repeatedly
@@ -298,7 +299,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 									for(PV pv : pvArray){
 										if(!pv.isConnected()){
 											if(connectAttempts == 0){											
-												disconnectedPVs += pv.getName() + ", ";
+												disconnectedPVs += pv.getName() + ", "; //$NON-NLS-1$
 											}
 											pvsConnected = false;
 										}
@@ -309,15 +310,12 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 										return Status.OK_STATUS;
 									}
 									else if (connectAttempts == 0){  //give up
-										final String message = "Failed to connect to " + disconnectedPVs + "which are the input PVs for scripts attached to " 
-												+ AbstractBaseEditPart.this.getWidgetModel().getName() + "\n" + 
-												"As a consequence, the scripts won't be executed thereafter.";
-										Display.getDefault().asyncExec(new Runnable() {											
-											public void run() {
-												MessageDialog.openError(null, "PV connecting failed", message);
-												ConsoleService.getInstance().writeError(message);
-											}
-										});
+										final String message = NLS.bind("Failed to connect to {0} in 10 seconds, which are the input PVs of scripts attached to {1}", 
+												disconnectedPVs.substring(0, disconnectedPVs.length()-2), 
+												AbstractBaseEditPart.this.getWidgetModel().getName());
+										ConsoleService.getInstance().writeWarning(message);
+										ScriptService.getInstance().registerScript(
+											scriptData, AbstractBaseEditPart.this, pvArray);
 										return Status.OK_STATUS;
 									}
 									try {

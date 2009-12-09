@@ -13,7 +13,6 @@ import org.csstudio.opibuilder.util.UIBundlingThread;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ImporterTopLevel;
@@ -44,8 +43,12 @@ public class RhinoScriptStore {
 	private Map<PV, PVListener> pvListenerMap;
 	
 	private boolean errorInScript;
+	
 
-	public RhinoScriptStore(IPath path, AbstractBaseEditPart editpart, PV[] pvArray) throws Exception {	
+	private Map<PV, Boolean> pvConnectStatusMap;
+	
+	
+	public RhinoScriptStore(final IPath path, final AbstractBaseEditPart editpart, final PV[] pvArray) throws Exception {	
 		this.scriptPath = path;
 		errorInScript = false;
 		scriptContext = ScriptService.getInstance().getScriptContext();
@@ -68,16 +71,37 @@ public class RhinoScriptStore {
 		ScriptableObject.putProperty(scriptScope, ScriptService.PV_ARRAY, pvArrayObject);	
 		
 		
-		pvListenerMap = new HashMap<PV, PVListener>();
+		pvListenerMap = new HashMap<PV, PVListener>();		
+		pvConnectStatusMap = new HashMap<PV, Boolean>();
 		
 		//register pv listener
 		for(PV pv : pvArray){
 			if(pv == null)
 				continue;	
+			pvConnectStatusMap.put(pv, true);
 			PVListener pvListener = new PVListener() {			
 				public void pvValueUpdate(PV pv) {
-					UIBundlingThread.getInstance().addRunnable(new Runnable() {
-						
+					//if pv connection is restored from connection
+					if(!pvConnectStatusMap.get(pv)){
+						ConsoleService.getInstance().writeInfo(
+								NLS.bind("Connection to PV {0} has been restored.", pv.getName()));
+						pvConnectStatusMap.put(pv, true);
+					}
+					
+					//execute script only if all input pvs are connected
+					if(pvArray.length > 1){
+						for(PV pv2 : pvArray){
+							if(!pv2.isConnected()){
+								String message = NLS.bind(
+										"The script: {0} did not executed because the input PV: {1} is disconnected", 
+										scriptPath.toString(), pv2.getName());
+								ConsoleService.getInstance().writeWarning(message);
+								return;
+							}
+						}					
+					}
+					
+					UIBundlingThread.getInstance().addRunnable(new Runnable() {						
 						public void run() {
 							if(!errorInScript){
 								try {								
@@ -86,15 +110,23 @@ public class RhinoScriptStore {
 									errorInScript = true;
 									final String message = NLS.bind("Error in script {0}.\nAs a consequence, the script will not be executed.\n{1}",
 										scriptPath.toString() , e.getMessage());
-									MessageDialog.openError(null, "Script Error", 
-											message);
+									//MessageDialog.openError(null, "Script Error", 
+									//		message);
 									ConsoleService.getInstance().writeError(message);
 								}
 							}
 						}
 					});
 				}			
-				public void pvDisconnected(PV pv) {			
+				public void pvDisconnected(PV pv) {
+					if(pv.isRunning()){
+						pvConnectStatusMap.put(pv, false);
+						String message = NLS.bind(
+								"The PV: {0} which is one of the inputs of the script: {1} is disconnected.", 
+								pv.getName(), scriptPath.toString());
+						ConsoleService.getInstance().writeWarning(message);
+					}
+					
 				}
 			};
 			pvListenerMap.put(pv, pvListener);
@@ -107,6 +139,7 @@ public class RhinoScriptStore {
 			pv.removeListener(pvListenerMap.get(pv));
 		}
 		pvListenerMap.clear();
+		pvConnectStatusMap.clear();
 	}
 	
 	
