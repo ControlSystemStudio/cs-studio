@@ -289,12 +289,20 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 							private boolean pvsConnected = true;
 							private String disconnectedPVs = ""; //$NON-NLS-1$
 							//attempt to connect with all PVs repeatedly
-							private int connectAttempts = 20;//		
+							private int connectAttempts = 30;//		
 							
 							@Override
-							protected IStatus run(IProgressMonitor arg0) {
+							protected IStatus run(IProgressMonitor monitor) {
 								//attempt to connect with all PVs repeatedly
+								String s = "";
+								for(int i=0; i<pvArray.length; i++){
+									s+=pvArray[i].getName();
+									if(i!= pvArray.length-1)
+										s+=", "; //$NON-NLS-1$
+								}
+								monitor.beginTask("Connecting to PVs: " + s, connectAttempts);
 								while (connectAttempts-->=0) {
+									monitor.subTask(connectAttempts + " seconds left.");
 									pvsConnected = true;
 									for(PV pv : pvArray){
 										if(!pv.isConnected()){
@@ -310,16 +318,21 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 										return Status.OK_STATUS;
 									}
 									else if (connectAttempts == 0){  //give up
-										final String message = NLS.bind("Failed to connect to {0} in 10 seconds, which are the input PVs of scripts attached to {1}", 
+										final String message = NLS.bind("Failed to connect to {0} in 30 seconds.\nThey are the input PVs of script {1},  which is attached to {2}.\nThe script will still be executed once the PV was connected.",
+												new String[]{
 												disconnectedPVs.substring(0, disconnectedPVs.length()-2), 
-												AbstractBaseEditPart.this.getWidgetModel().getName());
+												scriptData.getPath().toString(), 
+												AbstractBaseEditPart.this.getWidgetModel().getName()});
 										ConsoleService.getInstance().writeWarning(message);
 										ScriptService.getInstance().registerScript(
 											scriptData, AbstractBaseEditPart.this, pvArray);
 										return Status.OK_STATUS;
 									}
-									try {
-										Thread.sleep(500);
+									try {										
+										Thread.sleep(1000);
+										monitor.worked(1);
+										if(monitor.isCanceled())
+											return Status.CANCEL_STATUS;
 									} catch (InterruptedException e) {
 										
 									}	
@@ -327,7 +340,8 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 								return Status.OK_STATUS;
 							}
 						};	
-						job.schedule(100);						
+						job.schedule(100);		
+						
 				}
 			}
 		}		
