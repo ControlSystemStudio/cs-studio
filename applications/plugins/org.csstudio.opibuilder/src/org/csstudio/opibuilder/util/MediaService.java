@@ -52,6 +52,16 @@ public final class MediaService {
 		loadColorFile();			
 		loadFontFile();
 	}
+	
+	/**
+	 * Reload predefined colors and fonts from color and font file.
+	 */
+	public synchronized void reload(){
+		colorMap.clear();
+		fontMap.clear();
+		loadColorFile();			
+		loadFontFile();
+	}
 
 	private void loadColorFile() {
 		colorFilePath = PreferencesHelper.getColorFilePath();		

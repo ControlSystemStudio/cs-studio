@@ -1,8 +1,12 @@
 package org.csstudio.opibuilder;
 
+import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.opibuilder.script.ScriptService;
-import org.csstudio.opibuilder.util.ConsoleService;
+import org.csstudio.opibuilder.util.GUIRefreshThread;
+import org.csstudio.opibuilder.util.MediaService;
 import org.csstudio.opibuilder.util.ResourceUtil;
+import org.eclipse.core.runtime.Preferences.IPropertyChangeListener;
+import org.eclipse.core.runtime.Preferences.PropertyChangeEvent;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -34,6 +38,8 @@ public class OPIBuilderPlugin extends AbstractUIPlugin {
 	// The shared instance
 	private static OPIBuilderPlugin plugin;
 	
+	private IPropertyChangeListener preferenceLisener;
+	
 	
 	/**
 	 * The constructor
@@ -57,7 +63,21 @@ public class OPIBuilderPlugin extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		ScriptService.getInstance();
-		ConsoleService.getInstance().writeInfo("Welcome to Best OPI, Yet (BOY)!");
+		
+		//ConsoleService.getInstance().writeInfo("Welcome to Best OPI, Yet (BOY)!");
+		preferenceLisener = new IPropertyChangeListener(){
+			public void propertyChange(PropertyChangeEvent event) {
+				if(event.getProperty().equals(PreferencesHelper.COLOR_FILE) ||
+						event.getProperty().equals(PreferencesHelper.FONT_FILE)){
+					MediaService.getInstance().reload();
+				}
+				if(event.getProperty().equals(PreferencesHelper.OPI_GUI_REFRESH_CYCLE))
+					GUIRefreshThread.getInstance().reSchedule();
+			}
+			
+		};
+		
+		getPluginPreferences().addPropertyChangeListener(preferenceLisener);
 	}
 
 	@Override
@@ -65,7 +85,7 @@ public class OPIBuilderPlugin extends AbstractUIPlugin {
 		plugin = null;
 		ScriptService.getInstance().exit();
 		ResourceUtil.disposeResources();
-		
+		getPluginPreferences().removePropertyChangeListener(preferenceLisener);
 	}
 
 

@@ -64,6 +64,7 @@ public class OPIBuilderPreferencePage extends FieldEditorPreferencePage
 		BooleanFieldEditor noEditModeEditor = 
 			new BooleanFieldEditor(PreferencesHelper.NO_EDIT, 
 					"No editing mode", parent);		
+		
 		addField(noEditModeEditor);
 		
 	}
@@ -78,9 +79,7 @@ public class OPIBuilderPreferencePage extends FieldEditorPreferencePage
 		Object  src = event.getSource();
 		if(src instanceof FieldEditor){
 			String prefName = ((FieldEditor)src).getPreferenceName();
-			if(prefName.equals(PreferencesHelper.FONT_FILE) || 
-					prefName.equals(PreferencesHelper.COLOR_FILE) ||
-					prefName.equals(PreferencesHelper.OPI_GUI_REFRESH_CYCLE))
+			if(prefName.equals(PreferencesHelper.NO_EDIT))
 				setMessage(RESTART_MESSAGE, WARNING);
 		}
 	}

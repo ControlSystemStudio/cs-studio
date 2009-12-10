@@ -1,6 +1,7 @@
 package org.csstudio.opibuilder.util;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import org.csstudio.opibuilder.datadefinition.WidgetIgnorableUITask;
@@ -31,6 +32,8 @@ public final class GUIRefreshThread implements Runnable {
 	 * It will be processed by this thread periodically. 
 	 */
 	private ConcurrentLinkedQueue<WidgetIgnorableUITask> tasksQueue;
+	
+	private ScheduledFuture<?> thisTask;
 
 	/**
 	 * Standard constructor.
@@ -38,7 +41,7 @@ public final class GUIRefreshThread implements Runnable {
 	private GUIRefreshThread() {
 		tasksQueue = new ConcurrentLinkedQueue<WidgetIgnorableUITask>();
 		
-		ExecutionService.getInstance().getScheduledExecutorService()
+		thisTask = ExecutionService.getInstance().getScheduledExecutorService()
 				.scheduleWithFixedDelay(this, 100, PreferencesHelper.getGUIRefreshCycle(), TimeUnit.MILLISECONDS);
 	}
 
@@ -53,6 +56,18 @@ public final class GUIRefreshThread implements Runnable {
 		}
 
 		return instance;
+	}
+	
+	/**
+	 * Reschedule this task upon the new GUI refresh cycle.
+	 */
+	public synchronized void reSchedule(){
+		if(!tasksQueue.isEmpty())
+			processQueue();
+		thisTask.cancel(false);		
+		thisTask = ExecutionService.getInstance().getScheduledExecutorService()
+		.scheduleWithFixedDelay(this, 100, PreferencesHelper.getGUIRefreshCycle(), TimeUnit.MILLISECONDS);
+
 	}
 
 	/**
