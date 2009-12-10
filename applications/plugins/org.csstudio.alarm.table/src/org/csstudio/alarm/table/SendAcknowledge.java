@@ -83,7 +83,7 @@ public class SendAcknowledge extends Job {
         for (Map<String, String> map : messages) {
             Set<String> keys = map.keySet();
             String[] keyArray = keys.toArray(new String[0]);
-            AlarmMessage jmsMsg = (AlarmMessage) new BasicMessage(keyArray);
+			AlarmMessage jmsMsg = new AlarmMessage(keyArray);
             for (String key : keys) {
                 jmsMsg.setProperty(key, map.get(key));
             }
