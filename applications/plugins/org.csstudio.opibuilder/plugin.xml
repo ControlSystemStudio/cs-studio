@@ -8,20 +8,22 @@
       <editor
             class="org.csstudio.opibuilder.editor.OPIEditor"
             contributorClass="org.csstudio.opibuilder.editor.OPIEditorActionBarContributor"
-            default="true"
-            extensions="opi"
             icon="icons/OPIBuilder.png"
             id="org.csstudio.opibuilder.OPIEditor"
             name="OPI Editor">
+         <contentTypeBinding
+               contentTypeId="org.csstudio.opibuilder.editmode">
+         </contentTypeBinding>
       </editor>
       <editor
             class="org.csstudio.opibuilder.runmode.OPIRunner"
             contributorClass="org.csstudio.opibuilder.runmode.OPIRunnerToolBarContributor"
-            default="false"
-            extensions="opi"
             icon="icons/OPIRunner.png"
             id="org.csstudio.opibuilder.OPIRunner"
             name="OPI Runtime">
+         <contentTypeBinding
+               contentTypeId="org.csstudio.opibuilder.noeditmode">
+         </contentTypeBinding>
       </editor>
       <editor
             class="org.eclipse.ui.editors.text.TextEditor"
@@ -124,6 +126,28 @@
       <toc
             file="toc.xml">
       </toc>
+   </extension>
+   <extension
+         point="org.eclipse.core.contenttype.contentTypes">
+      <content-type
+            file-extensions="opi"
+            id="org.csstudio.opibuilder.noeditmode"
+            name="non-editable"
+            priority="normal">
+         <describer
+               class="org.csstudio.opibuilder.editor.NonEditableContentDescriber">
+         </describer>
+      </content-type>
+      <content-type
+            base-type="org.csstudio.opibuilder.noeditmode"
+            file-extensions="opi"
+            id="org.csstudio.opibuilder.editmode"
+            name="editable"
+            priority="normal">
+         <describer
+               class="org.csstudio.opibuilder.editor.EditableContentDescriber">
+         </describer>
+      </content-type>
    </extension>
 
 </plugin>
