@@ -262,8 +262,9 @@ public class ChannelStructure extends Node implements IStructured {
             Module module = (Module) parentNode;
             ChannelStructure copy = new ChannelStructure(module, isSimple(), true,
                     getStructureType(), getName());
+            copy.setSortIndex(getSortIndex());
             copy.removeAllChild();
-            for (Node node : getChildren()) {
+            for (Node node : getChildrenAsMap().values()) {
                 node.copyThisTo(copy);
             }
             return copy;

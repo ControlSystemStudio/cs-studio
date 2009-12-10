@@ -294,11 +294,14 @@ public class Module extends Node {
             Slave slave = (Slave) parentNode;
             Module copy = new Module(slave);
             copy.setModuleNumber(getModuleNumber());
+            if(slave.getChildrenAsMap().get(getSortIndex())==null) {
+                copy.setSortIndex(getSortIndex());
+            }
 //            copy.setDocuments(getDocuments());
             copy.setConfigurationData(getConfigurationData());
             copy.setExtModulePrmDataLen(getExtModulePrmDataLen());
 
-            for (Node n: getChildren()) {
+            for (Node n: getChildrenAsMap().values()) {
                 n.copyThisTo(copy);
             }
             
