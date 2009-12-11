@@ -38,9 +38,10 @@ public class ToolbarArmedXYGraph extends Figure {
 	protected void layout() {
 		Rectangle clientArea = getClientArea().getCopy();
 		if(toolbar.isVisible()){
-			Dimension size = toolbar.getPreferredSize();
+			toolbar.invalidate();
+			Dimension size = toolbar.getPreferredSize(clientArea.width - MARGIN, -1);
 			toolbar.setBounds(new Rectangle(clientArea.x + MARGIN, clientArea.y + MARGIN, 
-					size.width, size.height));
+					size.width, size.height));			
 			clientArea.y += size.height + 2*MARGIN;
 			clientArea.height -= size.height + 2*MARGIN;
 		}

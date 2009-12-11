@@ -23,7 +23,6 @@ import org.eclipse.draw2d.ImageFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.ToggleButton;
 import org.eclipse.draw2d.ToggleModel;
-import org.eclipse.draw2d.ToolbarLayout;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
@@ -50,7 +49,7 @@ public class XYGraphToolbar extends Figure {
 	
 	public XYGraphToolbar(final XYGraph xyGraph) {		
 		this.xyGraph = xyGraph;
-		setLayoutManager(new ToolbarLayout(true));
+		setLayoutManager(new WrappableToolbarLayout());
 		
 		final Button configButton = new Button(createImage("icons/Configure.png"));
 		configButton.setToolTip(new Label("Configure Settings..."));
