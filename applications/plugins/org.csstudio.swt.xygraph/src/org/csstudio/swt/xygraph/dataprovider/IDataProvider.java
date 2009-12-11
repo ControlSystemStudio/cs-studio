@@ -6,20 +6,58 @@ import org.csstudio.swt.xygraph.linearscale.Range;
  * Interface for the data provider of trace. This gives the possibilities to implement 
  * different data provider, which could have different data source or data storage structure.
  * For example: the data source could be from user input, database, files, etc,. 
- * The storage structure could be array, queue, circular buffer, bucket buffer, etc,. 
+ * The storage structure could be array, queue, circular buffer, bucket buffer, etc,.
+ * <p>
+ * An API like
+ * <code>
+ *  public ISample[] getSamples()
+ * </code>
+ * would be much easier to use by the XY Graph, but it forces the data
+ * provider to copy its samples into an array, which might be a performance
+ * and memory problem if considerable amounts of data are held in some other
+ * data structure that is more suitable to the application.
+ * <p>
+ * The API is therefore based on single-sample access, allowing the application
+ * to store the samples in arbitrary data structures.
+ * <p>
+ * <b>Synchronization</b><br>
+ * Since the application data might change dynamically, the XY Graph
+ * <code>synchronizes</code> on the <code>IDataProvider</code> like this
+ * to assert that the sample count does not change while accessing individual
+ * samples:
+ * <pre>
+ * IDataProvider data = ...;
+ * synchronized (data)
+ * {
+ *     int count = data.getSize();
+ *     ...
+ *     ... getSample(i) ...
+ * }
+ * </pre>
+ * Implementations of the <code>IDataProvider</code> should likewise synchronize
+ * on it whenever the data is changed, and other methods like
+ * <code>getXDataMinMax</code> should probably be synchronized implementations.
+ * 
  * @author Xihui Chen
- *
+ * @author Kay Kasemir (synchronization)
  */
 public interface IDataProvider {
 
 	/**Total number of samples.
 	 * @return the size.
+     * @see #getSample(int)
 	 */
 	public int getSize();
 
-	/**Get sample by index;
-	 * @param index
-	 * @return the sample. null if the index is out of range.
+	/**Get sample by index
+     * <p>
+     * <b>Synchronization:</b> 
+     * Since the data might change dynamically, <code>synchronize</code> on the
+     * <code>IDataProvider</code> around calls to <code>getSize()</code>
+     * and <code>getSample()</code>.
+     *
+	 * @param index Sample index, 0...<code>getSize()-1</code>
+	 * @return the sample.
 	 */
 	public ISample getSample(int index);
 

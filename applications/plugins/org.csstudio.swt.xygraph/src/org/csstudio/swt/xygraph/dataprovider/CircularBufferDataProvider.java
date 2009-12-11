@@ -374,8 +374,8 @@ public class CircularBufferDataProvider extends AbstractDataProvider{
 		dataRangedirty = true;
 	}
 	
-	
-	protected void updateDataRange(){
+	@Override
+    protected void updateDataRange(){
 		if(!dataRangedirty)
 			return;
 		dataRangedirty = false;

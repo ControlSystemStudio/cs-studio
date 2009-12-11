@@ -20,7 +20,7 @@ import org.eclipse.swt.graphics.Color;
 /**
  * The trace figure.
  * @author Xihui Chen
- *
+ * @author Kay Kasemir (synchronization)
  */
 public class Trace extends Figure implements IDataProviderListener, IAxisListener{
 	
@@ -416,7 +416,6 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 	
 	@Override
 	protected void paintFigure(Graphics graphics) {
-		
 		super.paintFigure(graphics);
 		graphics.pushState();
 		graphics.setAntialias(antiAliasing? SWT.ON : SWT.OFF);
@@ -431,124 +430,124 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 		hotSampleist.clear();
 		if(traceDataProvider == null)
 			throw new RuntimeException("No DataProvider defined for trace: " + name);
-		if(traceDataProvider.getSize()>0){
-			int startIndex =0;
-			int endIndex = traceDataProvider.getSize()-1;
-			if(traceDataProvider.isChronological()){
-				Range indexRange = getIndexRangeOnXAxis();
-				if(indexRange == null){
-					startIndex = 0; 
-					endIndex = -1;
-				}else{
-					startIndex = (int) indexRange.getLower();
-					endIndex = (int) indexRange.getUpper();
-				}
-			}
-			for(int i= startIndex; i<=endIndex; i++){
-				ISample dp = traceDataProvider.getSample(i);
-				if(Double.isNaN(dp.getYValue())){
-					Point markPos = new Point(xAxis.getValuePosition(dp.getXValue(), false),
-							yAxis.getValuePosition(xAxis.getTickLablesSide() == LabelSide.Primary?
-									yAxis.getRange().getLower() : yAxis.getRange().getUpper(), false));
-					int markWidth = 6;
-					graphics.setBackgroundColor(traceColor);
-					graphics.fillRectangle(markPos.x -markWidth/2, markPos.y - markWidth/2, markWidth, markWidth);
-					Sample nanSample = new Sample(dp.getXValue(),xAxis.getTickLablesSide() == LabelSide.Primary?
-							yAxis.getRange().getLower() : yAxis.getRange().getUpper(), 
-							dp.getYPlusError(), dp.getYMinusError(),
-							Double.NaN, dp.getXMinusError());
-					nanSample.setInfo(dp.getInfo());
-					hotSampleist.add(nanSample);
-				}
-				//if the data is not in the plot area
-				dpInRange =
-					xAxis.getRange().inRange(dp.getXValue()) && yAxis.getRange().inRange(dp.getYValue());
-				
-				//draw point
-				if(dpInRange){
-					dpPos = new Point(xAxis.getValuePosition(dp.getXValue(), false),
-							yAxis.getValuePosition(dp.getYValue(), false));
-					hotSampleist.add(dp);
-					drawPoint(graphics, dpPos);
-					if(errorBarEnabled && !drawYErrorInArea)
-						drawErrorBar(graphics, dpPos, dp);
-					
-				}
-				if(traceType == TraceType.POINT && !drawYErrorInArea)
-					continue; // no need to draw line			
-				
-				//draw line
-				if(traceType == TraceType.BAR){					
-					switch (baseLine) {
-					case NEGATIVE_INFINITY:
-						predp = new Sample(dp.getXValue(), yAxis.getRange().getLower());					
-						break;
-					case POSITIVE_INFINITY:
-						predp = new Sample(dp.getXValue(), yAxis.getRange().getUpper());					
-						break;				
-					default:
-						predp = new Sample(dp.getXValue(), 0);
-						break;
-					}
-					predpInRange = xAxis.getRange().inRange(predp.getXValue()) && yAxis.getRange().inRange(predp.getYValue());
-				}
-				if(predp == null){
-					predp = dp;				
-					predpInRange = dpInRange;
-					continue;
-				}
-				
-				origindp = dp; //save original dp
-				if(traceType != TraceType.AREA){
-					if(!predpInRange && !dpInRange){ //both are out of plot area
-						ISample[] dpTuple = getIntersection(predp, dp);
-						if(dpTuple[0] == null || dpTuple[1] == null){ // no intersection with plot area
-							predp = dp;
-							predpInRange=dpInRange;
-							continue;
-						}else{
-							predp = dpTuple[0];					
-							dp = dpTuple[1];
-						}				
-					}else if(!predpInRange || !dpInRange){ // one in and one out
-						//calculate the intersection point with the boundary of plot area.
-						if(!predpInRange){
-							predp = getIntersection(predp, dp)[0];		
-							if(predp == null){ // no intersection
-								predp = origindp;
-								predpInRange = dpInRange;
-								continue;
-							}
-						}else{				
-							dp = getIntersection(predp, dp)[0];				
-							if(dp == null){ // no intersection
-								predp = origindp;
-								predpInRange = dpInRange;
-								continue;
-							}
-						}				
-					}
-				}
-				
-				
-				predpPos = new Point(xAxis.getValuePosition(predp.getXValue(), false),
-								yAxis.getValuePosition(predp.getYValue(), false));
-				dpPos = new Point(xAxis.getValuePosition(dp.getXValue(), false),
-								yAxis.getValuePosition(dp.getYValue(), false));			
-							
-				if(!dpPos.equals(predpPos)){
-					if(errorBarEnabled && drawYErrorInArea && traceType!=TraceType.BAR)
-						drawYErrorArea(graphics, predp, dp, predpPos, dpPos);						
-					drawLine(graphics, predpPos, dpPos);						
-				}
-						
-				
-				
-				
-				predp = origindp;
-				predpInRange = dpInRange;			
-			}			
-		}
+		// Lock data provider to prevent changes while painting
+		synchronized (traceDataProvider)
+        {
+    		if(traceDataProvider.getSize()>0){
+    			int startIndex =0;
+    			int endIndex = traceDataProvider.getSize()-1;
+    			if(traceDataProvider.isChronological()){
+    				Range indexRange = getIndexRangeOnXAxis();
+    				if(indexRange == null){
+    					startIndex = 0;
+    					endIndex = -1;
+    				}else{
+    					startIndex = (int) indexRange.getLower();
+    					endIndex = (int) indexRange.getUpper();
+    				}
+    			}
+    			for(int i= startIndex; i<=endIndex; i++){
+    				ISample dp = traceDataProvider.getSample(i);
+    				if(Double.isNaN(dp.getYValue())){
+    					Point markPos = new Point(xAxis.getValuePosition(dp.getXValue(), false),
+    							yAxis.getValuePosition(xAxis.getTickLablesSide() == LabelSide.Primary?
+    									yAxis.getRange().getLower() : yAxis.getRange().getUpper(), false));
+    					int markWidth = 6;
+    					graphics.setBackgroundColor(traceColor);
+    					graphics.fillRectangle(markPos.x -markWidth/2, markPos.y - markWidth/2, markWidth, markWidth);
+    					Sample nanSample = new Sample(dp.getXValue(),xAxis.getTickLablesSide() == LabelSide.Primary?
+    							yAxis.getRange().getLower() : yAxis.getRange().getUpper(),
+    							dp.getYPlusError(), dp.getYMinusError(),
+    							Double.NaN, dp.getXMinusError());
+    					nanSample.setInfo(dp.getInfo());
+    					hotSampleist.add(nanSample);
+    				}
+    				//if the data is not in the plot area
+    				dpInRange =
+    					xAxis.getRange().inRange(dp.getXValue()) && yAxis.getRange().inRange(dp.getYValue());
+    				
+    				//draw point
+    				if(dpInRange){
+    					dpPos = new Point(xAxis.getValuePosition(dp.getXValue(), false),
+    							yAxis.getValuePosition(dp.getYValue(), false));
+    					hotSampleist.add(dp);
+    					drawPoint(graphics, dpPos);
+    					if(errorBarEnabled && !drawYErrorInArea)
+    						drawErrorBar(graphics, dpPos, dp);
+    					
+    				}
+    				if(traceType == TraceType.POINT && !drawYErrorInArea)
+    					continue; // no need to draw line			
+    				
+    				//draw line
+    				if(traceType == TraceType.BAR){
+    					switch (baseLine) {
+    					case NEGATIVE_INFINITY:
+    						predp = new Sample(dp.getXValue(), yAxis.getRange().getLower());
+    						break;
+    					case POSITIVE_INFINITY:
+    						predp = new Sample(dp.getXValue(), yAxis.getRange().getUpper());
+    						break;
+    					default:
+    						predp = new Sample(dp.getXValue(), 0);
+    						break;
+    					}
+    					predpInRange = xAxis.getRange().inRange(predp.getXValue()) && yAxis.getRange().inRange(predp.getYValue());
+    				}
+    				if(predp == null){
+    					predp = dp;
+    					predpInRange = dpInRange;
+    					continue;
+    				}
+    				
+    				origindp = dp; //save original dp
+    				if(traceType != TraceType.AREA){
+    					if(!predpInRange && !dpInRange){ //both are out of plot area
+    						ISample[] dpTuple = getIntersection(predp, dp);
+    						if(dpTuple[0] == null || dpTuple[1] == null){ // no intersection with plot area
+    							predp = dp;
+    							predpInRange=dpInRange;
+    							continue;
+    						}else{
+    							predp = dpTuple[0];
+    							dp = dpTuple[1];
+    						}
+    					}else if(!predpInRange || !dpInRange){ // one in and one out
+    						//calculate the intersection point with the boundary of plot area.
+    						if(!predpInRange){
+    							predp = getIntersection(predp, dp)[0];
+    							if(predp == null){ // no intersection
+    								predp = origindp;
+    								predpInRange = dpInRange;
+    								continue;
+    							}
+    						}else{
+    							dp = getIntersection(predp, dp)[0];
+    							if(dp == null){ // no intersection
+    								predp = origindp;
+    								predpInRange = dpInRange;
+    								continue;
+    							}
+    						}
+    					}
+    				}
+    				
+    				predpPos = new Point(xAxis.getValuePosition(predp.getXValue(), false),
+    								yAxis.getValuePosition(predp.getYValue(), false));
+    				dpPos = new Point(xAxis.getValuePosition(dp.getXValue(), false),
+    								yAxis.getValuePosition(dp.getYValue(), false));
+    						
+    				if(!dpPos.equals(predpPos)){
+    					if(errorBarEnabled && drawYErrorInArea && traceType!=TraceType.BAR)
+    						drawYErrorArea(graphics, predp, dp, predpPos, dpPos);
+    					drawLine(graphics, predpPos, dpPos);
+    				}
+    				
+    				predp = origindp;
+    				predpInRange = dpInRange;
+    			}			
+    		}
+        }
 		graphics.popState();
 	}
 	

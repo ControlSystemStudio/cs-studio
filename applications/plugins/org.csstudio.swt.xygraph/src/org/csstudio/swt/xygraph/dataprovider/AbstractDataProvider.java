@@ -9,7 +9,7 @@ import org.csstudio.swt.xygraph.linearscale.Range;
  * This gives the most common implementation of the {@link IDataProvider} interface.
  * 
  * @author Xihui Chen
- *
+ * @author Kay Kasemir (synchronization)
  */
 public abstract class AbstractDataProvider implements IDataProvider{
 
@@ -56,7 +56,7 @@ public abstract class AbstractDataProvider implements IDataProvider{
 	/* (non-Javadoc)
 	 * @see org.csstudio.sns.widgets.figureparts.IDataProvider#getXDataMinMax()
 	 */
-	public Range getXDataMinMax(){		
+	synchronized public Range getXDataMinMax(){		
 		if(getSize() <=0)
 			return null;
 		updateDataRange();
@@ -66,7 +66,7 @@ public abstract class AbstractDataProvider implements IDataProvider{
 	/* (non-Javadoc)
 	 * @see org.csstudio.sns.widgets.figureparts.IDataProvider#getYDataMinMax()
 	 */
-	public Range getYDataMinMax(){
+	synchronized public Range getYDataMinMax(){
 		if(getSize() <=0)
 			return null;
 		updateDataRange();
