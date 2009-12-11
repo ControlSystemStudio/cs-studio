@@ -552,13 +552,58 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 		graphics.popState();
 	}
 	
+	
+	/**
+	 * @param dp1
+	 * @param dp2
+	 * @return The intersection points with the axes when draw the line between the two 
+	 * data points. The index 0 of the result is the first intersection point. index 1 is the second one.
+	 */
+	private ISample[] getIntersection(ISample dp1, ISample dp2){
+		if(traceType == TraceType.STEP_HORIZONTALLY){
+			ISample[] result = new Sample[2];
+			//the data point between dp1 and dp2.
+			ISample dp = new Sample(dp2.getXValue(), dp1.getYValue());
+			//intersection with y axis
+			ISample iy = getStraightLineIntersection(dp1, dp)[0];
+			if(iy != null)
+				result[0] = iy;
+			//intersection with x axis
+			ISample ix = getStraightLineIntersection(dp, dp2)[0];
+			if(ix != null)
+				result[iy == null ? 0 : 1] = ix;
+			return result;
+		}	
+		if(traceType == TraceType.STEP_VERTICALLY){
+			ISample[] result = new Sample[2];
+			//the data point between dp1 and dp2.
+			ISample dp = new Sample(dp1.getXValue(), dp2.getYValue());
+			//intersection with x axis
+			ISample ix = getStraightLineIntersection(dp1, dp)[0];
+			if(ix != null)
+				result[0] = ix;
+			//intersection with y axis
+			ISample iy = getStraightLineIntersection(dp, dp2)[0];
+			if(iy != null)
+				result[ix == null ? 0 : 1] = iy;
+			
+			return result;
+		}	
+		return getStraightLineIntersection(dp1, dp2); 
+			
+	}
+	
+	
+	
+	
 	/**
 	 * @param dp1
 	 * @param dp2
 	 * @return The intersection points between the line, 
-	 * which between the two data points, and the axis.
+	 * which is the straight line between the two data points, and the axis. 
+	 * The index 0 of the result is the first intersection point. index 1 is the second one.
 	 */
-	private ISample[] getIntersection(ISample dp1, ISample dp2){
+	private ISample[] getStraightLineIntersection(ISample dp1, ISample dp2){
 		ISample[] dpTuple = new Sample[]{null, null};
 		double x1 = dp1.getXValue();
 		double y1 = dp1.getYValue();
@@ -599,6 +644,13 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 		return dpTuple;
 	}
 	
+	/**
+	 * @param x
+	 * @param y
+	 * @param dp1
+	 * @param dp2
+	 * @return true if the point (x,y) is between dp1 and dp2. false otherwise
+	 */
 	private boolean evalDP(double x, double y, ISample dp1, ISample dp2){
 		//if dp is between dp1 and dp2
 		if(new Range(dp1.getXValue(), dp2.getXValue()).inRange(x) && 
