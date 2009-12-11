@@ -621,7 +621,9 @@ public class ModuleConfigComposite extends NodeConfig {
                     "[\\[\\]]", ""));
         }
         // Document
-        _module.setDocuments(getDocumentationManageView().getDocuments());
+        if(getDocumentationManageView()!=null) {
+            _module.setDocuments(getDocumentationManageView().getDocuments());
+        }
         save();
     }
 

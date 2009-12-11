@@ -775,11 +775,14 @@ public abstract class NodeConfig extends Composite {
      * Generate a new Node on his parent with a Name, creator and creation date.
      */
     protected boolean newNode() {
+        return newNode("");
+    }
+    protected boolean newNode(String nameOffer) {
 
         String nodeType = getNode().getClass().getSimpleName();
 
         InputDialog id = new InputDialog(getShell(), "Create new " + nodeType,
-                "Enter the name of the " + nodeType, "", null);
+                "Enter the name of the " + nodeType, nameOffer, null);
         id.setBlockOnOpen(true);
         if (id.open() == Dialog.OK) {
             getNode().setName(id.getValue());
@@ -901,10 +904,16 @@ public abstract class NodeConfig extends Composite {
             @Override
             public void modifyText(ModifyEvent e) {
                 String text = descText.getText();
-                String[] split = text.split("[\r\n]");
-                String string = split[0];
-                if(string.length()>40) {
-                    string = string.substring(0,40);
+                String string = "";
+                if(text!=null) {
+                    String[] split = text.split("[\r\n]");
+                    if(split.length>0) {
+                        if(string.length()>40) {
+                            string = string.substring(0,40);
+                        } else {
+                            string = split[0];
+                        }
+                    }
                 }
                 shortDescText.setText(string);
             }
