@@ -505,7 +505,7 @@ public class SNLEditor extends LanguageEditor {
     @Override
     protected IPresentationDamager doGetPresentationDamager(
             final ITokenScanner codeScannerUsedForHighligthing) {
-        return new SNLPresentationDamager();
+        return new NewSNLPresentationDamager();
     }
 
     /**

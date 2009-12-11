@@ -32,9 +32,9 @@ public class EmbeddedCCodeRule implements IRule {
 		final CharacterSequence cs = new CharacterSequence(scanner);
 
 		// First char have to be a Line-break:
-		if (!cs.hasMoreCharacters() || (cs.readSingleCharacter() != '\n')) {
-			return this.returnFail(cs);
-		}
+//		if (!cs.hasMoreCharacters() || (cs.readSingleCharacter() != '\n')) {
+//			return this.returnFail(cs);
+//		}
 
 		Character charAsObject = RuleUtils.readUpToFirstNonWhitespace(cs);
 
