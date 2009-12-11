@@ -268,6 +268,8 @@ public class SNLParser extends AbstractLanguageParser {
 					.getLastFoundStatement();
 
 			this.findAndAddAllStates(stateSetNode, lastFoundStatement);
+			checkStatesOfWhens(stateSetNode);
+			
 			final int lastFound = stateSetParser.getEndOffsetLastFound();
 			stateSetParser.findNext(result, lastFound);
 		}
@@ -283,6 +285,35 @@ public class SNLParser extends AbstractLanguageParser {
 		_measurementData.add(new KeyValuePair("When Node parse duration (ms)", _whenDuration));
 		_measurementData.add(new KeyValuePair("Exit Nodes", _exitCount));
 		_measurementData.add(new KeyValuePair("Exit Node parse duration (ms)", _exitDuration));
+	}
+
+	private void checkStatesOfWhens(StateSetNode stateSetNode) {
+		List<String> states = new LinkedList<String>();
+		if (stateSetNode.hasChildren()) {
+			for (Node child : stateSetNode.getChildrenNodes()) {
+				if (child instanceof StateNode) {
+					states.add(((StateNode) child).getSourceIdentifier());
+				}
+			}
+		}
+					
+		if (stateSetNode.hasChildren()) {
+			for (Node child : stateSetNode.getChildrenNodes()) {
+				if (child instanceof StateNode) {
+					StateNode state = (StateNode) child;
+					if (state.hasChildren()) {
+						for (Node current : state.getChildrenNodes()) {
+							if (current instanceof WhenNode) {
+								String followingState = ((WhenNode) current).getFollowingState();
+								if (!states.contains(followingState)) {
+									current.addWarning("Referenced state '" + followingState + "' not found in StateSet '" + stateSetNode.getSourceIdentifier() + "'");
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 
 	private void findAndAddAllVariables(final Node node, final String input) {
@@ -303,6 +334,9 @@ public class SNLParser extends AbstractLanguageParser {
 			final VariableNode varNode = variableParser.getLastFoundAsNode();
 			variableParentNode.addChild(varNode);
 
+			if (variableMap.containsKey(varNode.getSourceIdentifier())) {
+				varNode.addWarning("Duplicated variable declaration");
+			}
 			variableMap.put(varNode.getSourceIdentifier(), varNode);
 
 			final int lastEndPosition = variableParser.getEndOffsetLastFound();
