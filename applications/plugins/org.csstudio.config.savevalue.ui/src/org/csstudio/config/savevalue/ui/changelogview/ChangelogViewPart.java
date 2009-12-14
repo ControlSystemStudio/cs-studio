@@ -79,6 +79,8 @@ import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
  */
 public class ChangelogViewPart extends ViewPart {
 	
+	static final String ID = "org.csstudio.config.savevalue.ui.ChangelogView"; // $NON-NLS-1$
+	
 	private static final String MODIFIED_PROPERTY = "modified"; //$NON-NLS-1$
 	private static final String HOST_PROPERTY = "host"; //$NON-NLS-1$
 	private static final String USER_PROPERTY = "user"; //$NON-NLS-1$
