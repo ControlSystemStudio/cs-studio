@@ -117,6 +117,22 @@ import org.eclipse.ui.views.IViewRegistry;
 public class AlarmTreeView extends ViewPart {
 
 	/**
+	 * Validates a node name.
+	 */
+	private final class NodeNameInputValidator implements
+			IInputValidator {
+		public String isValid(final String newText) {
+			if (newText.equals("")) {
+				return "Please enter a name.";
+			} else if (newText.matches("^\\s.*") || newText.matches(".*\\s$")) {
+				return "The name cannot begin or end with whitespace.";
+			} else {
+				return null;  // input is valid
+			}
+		}
+	}
+
+	/**
 	 * Monitors the connection to the JMS backend system and displays a message
 	 * in the tree view if the JMS connection fails. When the JMS connection is
 	 * established or restored, triggers loading the current state from the
@@ -1263,20 +1279,7 @@ public class AlarmTreeView extends ViewPart {
 			private String promptForRecordName() {
 				InputDialog dialog = new InputDialog(getSite().getShell(),
 						"Create New Record", "Record name:", null,
-						new IInputValidator() {
-					public String isValid(final String newText) {
-						if (newText.equals("")) {
-							return "Please enter a name.";
-						} else if (newText.indexOf("=") != -1
-								|| newText.indexOf("/") != -1
-								|| newText.indexOf(",") != -1) {
-							return "The following characters are not allowed "
-									+ "in names: = / ,";
-						} else {
-							return null;
-						}
-					}
-				});
+						new NodeNameInputValidator());
 				if (Window.OK == dialog.open()) {
 					return dialog.getValue();
 				}
@@ -1310,20 +1313,7 @@ public class AlarmTreeView extends ViewPart {
 			private String promptForRecordName() {
 				InputDialog dialog = new InputDialog(getSite().getShell(),
 						"Create New Component", "Component name:", null,
-						new IInputValidator() {
-					public String isValid(final String newText) {
-						if (newText.equals("")) {
-							return "Please enter a name.";
-						} else if (newText.indexOf("=") != -1
-								|| newText.indexOf("/") != -1
-								|| newText.indexOf(",") != -1) {
-							return "The following characters are not allowed "
-									+ "in names: = / ,";
-						} else {
-							return null;
-						}
-					}
-				});
+						new NodeNameInputValidator());
 				if (Window.OK == dialog.open()) {
 					return dialog.getValue();
 				}
@@ -1353,20 +1343,7 @@ public class AlarmTreeView extends ViewPart {
 			
 			private String promptForNewName(String oldName) {
 				InputDialog dialog = new InputDialog(getSite().getShell(),
-						"Rename", "Name:", oldName, new IInputValidator() {
-					public String isValid(final String newText) {
-						if (newText.equals("")) {
-							return "Please enter a name.";
-						} else if (newText.indexOf("=") != -1
-								|| newText.indexOf("/") != -1
-								|| newText.indexOf(",") != -1) {
-							return "The following characters are not allowed "
-									+ "in names: = / ,";
-						} else {
-							return null;
-						}
-					}
-				});
+						"Rename", "Name:", oldName, new NodeNameInputValidator());
 				if (Window.OK == dialog.open()) {
 					return dialog.getValue();
 				}
