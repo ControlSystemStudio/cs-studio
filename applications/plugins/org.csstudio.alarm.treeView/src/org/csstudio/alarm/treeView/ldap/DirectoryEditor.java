@@ -227,6 +227,34 @@ public final class DirectoryEditor {
 	}
 
 	/**
+	 * Renames a node.
+	 * 
+	 * @param node
+	 *            the node.
+	 * @param newName
+	 *            the new name. This should be just the simple name, not an LDAP
+	 *            name.
+	 * @throws DirectoryEditException
+	 *             if an error occurs.
+	 */
+	public static void rename(IAlarmTreeNode node, String newName)
+			throws DirectoryEditException {
+		try {
+			LdapName oldLdapName = fullLdapName(node);
+			String type = oldLdapName.getRdn(oldLdapName.size() - 1).getType();
+			Rdn newRdn;
+			newRdn = new Rdn(type, newName);
+			LdapName newLdapName = (LdapName) oldLdapName.getPrefix(oldLdapName.size() - 1);
+			newLdapName.add(newRdn);
+			_directory.rename(oldLdapName, newLdapName);
+			node.setName(newName);
+		} catch (NamingException e) {
+			LOG.error(DirectoryEditor.class, "Error renaming node", e);
+			throw new DirectoryEditException(e.getMessage(), e);
+		}
+	}
+
+	/**
 	 * Moves a node into a new subtree node. If the node is a subtree node, the
 	 * whole subtree will be moved, including its children.
 	 * 

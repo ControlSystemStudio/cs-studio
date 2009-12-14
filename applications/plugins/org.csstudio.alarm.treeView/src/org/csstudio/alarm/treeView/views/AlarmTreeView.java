@@ -552,6 +552,11 @@ public class AlarmTreeView extends ViewPart {
 	 * The Create Component action.
 	 */
 	private Action _createComponentAction;
+	
+	/**
+	 * The Rename action.
+	 */
+	private Action _renameAction;
 
 	/**
 	 * The Delete action.
@@ -1036,6 +1041,7 @@ public class AlarmTreeView extends ViewPart {
 			menu.add(_showHelpGuidanceAction);
 			menu.add(_showHelpPageAction);
 			menu.add(new Separator("edit"));
+			menu.add(_renameAction);
 			menu.add(_deleteNodeAction);
 		}
 		if (selection.size() == 1
@@ -1277,7 +1283,7 @@ public class AlarmTreeView extends ViewPart {
 				return null;
 			}
 		};
-		_createRecordAction.setText("Create Record");
+		_createRecordAction.setText("Create Record...");
 
 		_createComponentAction = new Action() {
 			@Override
@@ -1324,7 +1330,50 @@ public class AlarmTreeView extends ViewPart {
 				return null;
 			}
 		};
-		_createComponentAction.setText("Create Component");
+		_createComponentAction.setText("Create Component...");
+		
+		_renameAction = new Action() {
+			@Override
+			public void run() {
+				IStructuredSelection selection =
+					(IStructuredSelection) _viewer.getSelection();
+				IAlarmTreeNode selected = (IAlarmTreeNode) selection.getFirstElement();
+				String name = promptForNewName(selected.getName());
+				if (name != null) {
+					try {
+						DirectoryEditor.rename(selected, name);
+					} catch (DirectoryEditException e) {
+						MessageDialog.openError(getSite().getShell(), 
+								"Rename",
+								"Could not rename the entry: " + e.getMessage());
+					}
+					_viewer.refresh(selected);
+				}
+			}
+			
+			private String promptForNewName(String oldName) {
+				InputDialog dialog = new InputDialog(getSite().getShell(),
+						"Rename", "Name:", oldName, new IInputValidator() {
+					public String isValid(final String newText) {
+						if (newText.equals("")) {
+							return "Please enter a name.";
+						} else if (newText.indexOf("=") != -1
+								|| newText.indexOf("/") != -1
+								|| newText.indexOf(",") != -1) {
+							return "The following characters are not allowed "
+									+ "in names: = / ,";
+						} else {
+							return null;
+						}
+					}
+				});
+				if (Window.OK == dialog.open()) {
+					return dialog.getValue();
+				}
+				return null;
+			}
+		};
+		_renameAction.setText("Rename...");
 
 		_deleteNodeAction = new Action() {
 			@Override

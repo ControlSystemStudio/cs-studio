@@ -241,6 +241,13 @@ public class SubtreeNode extends AbstractAlarmTreeNode implements IAdaptable, IA
 	public final String getName() {
 		return _name;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public final void setName(String name) {
+		_name = name;
+	}
 
 	/**
 	 * {@inheritDoc}

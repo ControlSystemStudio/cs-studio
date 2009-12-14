@@ -39,6 +39,14 @@ public interface IAlarmTreeNode {
 	String getName();
 
 	/**
+	 * Sets the name of this node.
+	 * 
+	 * @param name
+	 *            the new name.
+	 */
+	void setName(String name);
+
+	/**
 	 * Returns the parent node of this node. If this node does not have a
 	 * parent, returns {@code null}.
 	 * 

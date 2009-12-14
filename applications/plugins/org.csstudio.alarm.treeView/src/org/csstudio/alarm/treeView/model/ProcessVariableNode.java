@@ -88,6 +88,13 @@ public class ProcessVariableNode extends AbstractAlarmTreeNode
 	/**
 	 * {@inheritDoc}
 	 */
+	public final void setName(String name) {
+		_name = name;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
 	public final SubtreeNode getParent() {
 		return _parent;
 	}
