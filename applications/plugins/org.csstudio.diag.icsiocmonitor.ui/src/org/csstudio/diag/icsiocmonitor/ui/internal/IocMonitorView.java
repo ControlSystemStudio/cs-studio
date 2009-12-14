@@ -43,6 +43,7 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
@@ -283,6 +284,7 @@ public class IocMonitorView extends ViewPart implements IReportListener {
 		_dynamicTableColumns = new ArrayList<TableViewerColumn>();
 		
 		_tableViewer.setContentProvider(new IocMonitorContentProvider());
+		_tableViewer.setComparator(new ViewerComparator());
 		initializeIocMonitor();
 
 		getViewSite().getActionBars().getToolBarManager().add(new RefreshAction());

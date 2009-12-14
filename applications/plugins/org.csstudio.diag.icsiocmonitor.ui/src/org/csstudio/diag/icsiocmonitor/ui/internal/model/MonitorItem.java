@@ -120,4 +120,12 @@ public class MonitorItem {
 	public boolean isInterconnectionServerSelected() {
 		return getSelectedInterconnectionServer() != null;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString() {
+		return getIocName();
+	}
 }
