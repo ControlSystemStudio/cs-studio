@@ -237,9 +237,13 @@ public class SlaveConfigComposite extends NodeConfig {
      */
     public SlaveConfigComposite(final Composite parent, final ProfiBusTreeView profiBusTreeView,
             final Slave slave) {
+        this(parent,profiBusTreeView,slave,"");
+    }
+    public SlaveConfigComposite(final Composite parent, final ProfiBusTreeView profiBusTreeView,
+            final Slave slave, final String nameOffer) {
         super(parent, profiBusTreeView, "Profibus Slave Configuration", slave, slave == null);
         profiBusTreeView.setConfiguratorName("Slave Configuration");
-        makeSlaveKonfiguration(parent, slave);
+        makeSlaveKonfiguration(parent, slave,nameOffer);
     }
 
     /**
@@ -250,16 +254,18 @@ public class SlaveConfigComposite extends NodeConfig {
      * @param slave
      *            the Profibus Slave to Configer.
      */
-    private void makeSlaveKonfiguration(final Composite parent, final Slave slave) {
+    private void makeSlaveKonfiguration(final Composite parent, final Slave slave, String nameOffer) {
+        boolean nevv = false;
         _slave = slave;
         if (_slave == null) {
-            if (!newNode()) {
+            if (!newNode(nameOffer)) {
                 // this.dispose();
                 setSaveButtonSaved();
                 getProfiBusTreeView().getTreeViewer().setSelection(
                         getProfiBusTreeView().getTreeViewer().getSelection());
                 return;
             }
+            nevv=true;
             _slave.setMinTsdr((short) 11);
             _slave.setWdFact1((short) 100);
         }
@@ -276,6 +282,9 @@ public class SlaveConfigComposite extends NodeConfig {
         }
 
         getTabFolder().pack();
+        if(nevv) {
+            getTabFolder().setSelection(4);
+        }
     }
 
     @SuppressWarnings("unchecked")
