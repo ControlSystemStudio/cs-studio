@@ -252,6 +252,7 @@ public class Controller implements ArchiveFetchJobListener
                     model.setTimeSpecifications(start.toString(), end.toString(),
                                                 false);
                 }
+                gui.updateScrollPauseButton(model.isScrollEnabled());
             }
             catch (Exception ex)
             {
