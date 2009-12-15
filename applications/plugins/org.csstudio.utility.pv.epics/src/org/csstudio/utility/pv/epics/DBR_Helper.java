@@ -2,6 +2,7 @@ package org.csstudio.utility.pv.epics;
 
 import gov.aps.jca.dbr.DBR;
 import gov.aps.jca.dbr.DBRType;
+import gov.aps.jca.dbr.DBR_Byte;
 import gov.aps.jca.dbr.DBR_CTRL_Double;
 import gov.aps.jca.dbr.DBR_CTRL_Int;
 import gov.aps.jca.dbr.DBR_Double;
@@ -10,6 +11,7 @@ import gov.aps.jca.dbr.DBR_Int;
 import gov.aps.jca.dbr.DBR_LABELS_Enum;
 import gov.aps.jca.dbr.DBR_Short;
 import gov.aps.jca.dbr.DBR_String;
+import gov.aps.jca.dbr.DBR_TIME_Byte;
 import gov.aps.jca.dbr.DBR_TIME_Double;
 import gov.aps.jca.dbr.DBR_TIME_Enum;
 import gov.aps.jca.dbr.DBR_TIME_Float;
@@ -120,6 +122,8 @@ public class DBR_Helper
             return plain ? DBRType.SHORT : DBRType.TIME_SHORT;
         else if (type.isENUM())
             return plain ? DBRType.SHORT : DBRType.TIME_ENUM;
+        else if (type.isBYTE())
+            return plain ? DBRType.BYTE: DBRType.TIME_BYTE;
         // default: get as string
         return plain ? DBRType.STRING : DBRType.TIME_STRING;
     }
@@ -151,6 +155,15 @@ public class DBR_Helper
         return result;
     }
 
+    /** Convert byte array to long array. */
+    private static long[] byte2long(final byte[] v)
+    {
+        long result[] = new long[v.length];
+        for (int i = 0; i < result.length; i++)
+            result[i] = v[i];
+        return result;
+    }
+    
     /** Convert float array to a double array. */
     private static double[] float2double(final float[] v)
     {
@@ -269,6 +282,23 @@ public class DBR_Helper
             return ValueFactory.createEnumeratedValue(time, severity,
                                 status, (IEnumeratedMetaData)meta, quality,
                                 short2int(v));
+        }
+        else if (dbr.isBYTE())
+        {
+            byte[] v;
+            if (plain)
+                v = ((DBR_Byte)dbr).getByteValue();
+            else
+            {
+                final DBR_TIME_Byte dt = (DBR_TIME_Byte) dbr;
+                severity = SeverityUtil.forCode(dt.getSeverity().getValue());
+                status = decodeStatus(dt.getStatus());
+                time = createTimeFromEPICS(dt.getTimeStamp());
+                v = dt.getByteValue();
+            }
+            return ValueFactory.createLongValue(time, severity,
+                                status, (INumericMetaData)meta, quality,
+                                byte2long(v));
         }
         else
             // handle many more types!!
