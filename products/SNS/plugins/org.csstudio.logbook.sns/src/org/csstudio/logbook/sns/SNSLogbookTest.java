@@ -13,7 +13,7 @@ import org.junit.Test;
  *  Application code should use org.csstudio.logbook.LogbookFactory
  *  and not directly access a specific implementation like SNS...
  *  
- *  @author Delphy Nypaver
+ *  @author Delphy Nypaver Armstrong
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")

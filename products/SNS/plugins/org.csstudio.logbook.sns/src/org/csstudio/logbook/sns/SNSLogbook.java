@@ -1,13 +1,12 @@
 package org.csstudio.logbook.sns;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Writer;
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
@@ -51,16 +50,21 @@ public class SNSLogbook implements ILogbook
         MAX_TEXT_SIZE = getContentLength();
     }
 
-    /** Create the Elog entry 
-     * 
-     *  @param String title   title of the elog entry
-     *  @param String text    user entered text for the elog entry
-     *  @param String imageName  name of the image to attach or null if no image
-     *  @throws Exception
-     *  @throws SQLException
-     */
+ 	/** Add new entry to the logbook.
+ 	 *  @param title Title
+ 	 *  @param text Text of the entry. Plain ASCII.
+ 	 *  @param file_name Name of a file to attach or <code>null</code>.
+ 	 *      Has to contain the full path to the file including file ending.
+    *      Exact path format depends on the operating system.
+ 	 *      File types that the logbook supports depends on
+ 	 *      implementation but should include	
+ 	 *       *.gif, *.jpg:  File will be attached as image
+ 	 *       *.html, *.htm: File will be attached as web page
+ 	 *       *.txt:         File will be attached as plain ASCII file
+ 	 *  @throws Exception on error
+ 	 */
     @SuppressWarnings("nls")
-    public void createEntry(String title, String text, String imageName)
+    public void createEntry(final String title, final String text, final String imageName)
             throws Exception
     {
         final int entry_id; // Entry ID from RDB
@@ -91,8 +95,11 @@ public class SNSLogbook implements ILogbook
         }
 
         // If an image was input add the image to the elog. 
+        // if a file was input attach a file
         if (imageName != null)
+        {
            addFileToElog(imageName, "I", entry_id, text);
+        }
     }
 
     /** Create basic ELog entry with title and text, obtaining entry ID
@@ -137,16 +144,20 @@ public class SNSLogbook implements ILogbook
      *  @throws SQLException
      */
     
-    private void addFileToElog(String fname, String fileType, int entry_id, String text) throws SQLException, Exception
+    private void addFileToElog(final String fname, String fileType, final int entry_id, final String text) throws SQLException, Exception
     {
- 
-       final File inputFile = new File(fname);
-       final int file_size = (int) inputFile.length();
- 
       // Get the file extension
       final int ndx = fname.lastIndexOf(".");
       final String extension = fname.substring(ndx+1);
-      final long fileTypeID = getFileTypeId(fileType, extension);
+      long fileTypeID = getFileTypeId(fileType, extension);
+      
+      // If the image type cannot be found in the RDB, change it's file type to an attachment and look for the
+      // extension as an attachment
+      if(fileTypeID==-1 && fileType.equals("I"));
+      {
+      	fileType="A";
+      	fileTypeID = getFileTypeId(fileType, extension);
+      }
 
       // Create a Blob to store the attachment in.
       final BLOB blob = BLOB.createTemporary(rdb.getConnection(), true, BLOB.DURATION_SESSION);
@@ -161,12 +172,14 @@ public class SNSLogbook implements ILogbook
            statement.setString(2, fileType);    
            statement.setString(3, fname);
            statement.setLong(4, fileTypeID);
-           
+           final File inputFile = new File(fname);
+
            // Send the image to the sql.
            if(fileType.equals("I"))
            {
               try
               {
+                 final int file_size = (int) inputFile.length();
                  final FileInputStream input_stream = new FileInputStream(inputFile);
                  statement.setBinaryStream(5, input_stream, file_size);
                  input_stream.close();
@@ -180,7 +193,7 @@ public class SNSLogbook implements ILogbook
            // Send the text attachment to the sql
            else
            {
-              blob.setBytes( 1L, text.getBytes() );
+              blob.setBytes( 1L, getBytesFromFile(inputFile) );
               statement.setBlob(5, blob);
            }
            statement.executeQuery();
@@ -192,19 +205,66 @@ public class SNSLogbook implements ILogbook
  }
     
     /**
+     * Returns the contents of the input file in a byte array
+     * @param file File this method should read
+     * @return byte[] Returns a byte[] array of the contents of the file
+     */
+    private static byte[] getBytesFromFile(final File file) throws IOException {
+
+        InputStream is = new FileInputStream(file);
+
+        // Get the size of the file
+        long length = file.length();
+
+        /*
+         * You cannot create an array using a long type. It needs to be an int
+         * type. Before converting to an int type, check to ensure that file is
+         * not longer than Integer.MAX_VALUE;
+         */
+        if (length > Integer.MAX_VALUE) {
+            return null;
+        }
+
+        // Create the byte array to hold the data
+        byte[] bytes = new byte[(int)length];
+
+        // Read in the bytes
+        int offset = 0;
+        int numRead = 0;
+        while ( (offset < bytes.length)
+                &&
+                ( (numRead=is.read(bytes, offset, bytes.length-offset)) >= 0) ) {
+
+            offset += numRead;
+
+        }
+
+        // Ensure all the bytes have been read in
+        if (offset < bytes.length) {
+            throw new IOException("Could not completely read file " + file.getName());
+        }
+
+        is.close();
+        return bytes;
+
+    }
+    
+    /**
      * Ask the RDB for the fileTypeID, based on whether an image or text is to be
      * attached and the file extension.
      *  
      * @param fileType    an "I" for image, "A" for attachment.
      * @param extension   extension of file to be attached
      * 
+     * @return extensioID from the RDB, -1 if not found
      */
     long getFileTypeId(String fileType, String extension) throws Exception
     {
        if(fileType.equalsIgnoreCase("I")) 
-           return fetchImageTypes( extension );
+      	 return fetchImageTypes( extension );
+       
        else
-           return fetchAttachmentTypes( extension );
+          return fetchAttachmentTypes( extension );
     }
 
     /**
@@ -218,7 +278,7 @@ public class SNSLogbook implements ILogbook
      * @throws FileNotFoundException if the file does not exist.
      * @throws IOException if problem encountered during write.
      */
-     static public void setContents(File aFile, String aContents)
+     static public void setContents(final File aFile, final String aContents)
                                     throws FileNotFoundException, IOException {
        if (aFile == null) {
          throw new IllegalArgumentException("File should not be null.");
@@ -289,7 +349,7 @@ public class SNSLogbook implements ILogbook
     * @throws Exception
     * @return image_type_id from the RDB, -1 if not found
     */
-    private long fetchImageTypes( String image_type ) throws SQLException, Exception  {
+    private long fetchImageTypes( final String image_type ) throws SQLException, Exception  {
        final Statement statement = rdb.getConnection().createStatement();
        try {
           final ResultSet result = statement.executeQuery( "select * from LOGBOOK.IMAGE_TYPE" );
