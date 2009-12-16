@@ -64,10 +64,10 @@ public class MeterFigure extends AbstractRoundRampedFigure {
 		
 		setLayoutManager(new XMeterLayout());
 		add(ramp, XMeterLayout.RAMP);
-		add(scale, XMeterLayout.SCALE);		
-		add(valueLabel, XMeterLayout.VALUE_LABEL);
+		add(scale, XMeterLayout.SCALE);			
 		add(needle, XMeterLayout.NEEDLE);
 		add(needleCenter, XMeterLayout.NEEDLE_CENTER);		
+		add(valueLabel, XMeterLayout.VALUE_LABEL);
 		
 		addFigureListener(new FigureListener() {			
 			public void figureMoved(IFigure source) {
