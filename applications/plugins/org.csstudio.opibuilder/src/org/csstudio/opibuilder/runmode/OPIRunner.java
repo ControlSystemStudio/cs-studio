@@ -3,6 +3,8 @@ package org.csstudio.opibuilder.runmode;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.csstudio.opibuilder.actions.PrintDisplayAction;
 import org.csstudio.opibuilder.editor.PatchedScrollingGraphicalViewer;
@@ -22,10 +24,17 @@ import org.eclipse.gef.ContextMenuProvider;
 import org.eclipse.gef.DefaultEditDomain;
 import org.eclipse.gef.EditDomain;
 import org.eclipse.gef.GraphicalViewer;
+import org.eclipse.gef.MouseWheelHandler;
+import org.eclipse.gef.MouseWheelZoomHandler;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
+import org.eclipse.gef.editparts.ZoomManager;
 import org.eclipse.gef.ui.actions.ActionRegistry;
+import org.eclipse.gef.ui.actions.ZoomInAction;
+import org.eclipse.gef.ui.actions.ZoomOutAction;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
@@ -162,9 +171,9 @@ public class OPIRunner extends EditorPart {
 	public void createPartControl(Composite parent) {
 		viewer = new PatchedScrollingGraphicalViewer();
 		
-		
+		ScalableFreeformRootEditPart root = new ScalableFreeformRootEditPart();
 		viewer.createControl(parent);
-		viewer.setRootEditPart(new ScalableFreeformRootEditPart());
+		viewer.setRootEditPart(root);
 		viewer.setEditPartFactory(new WidgetEditPartFactory(ExecutionMode.RUN_MODE));
 		
 		
@@ -180,8 +189,62 @@ public class OPIRunner extends EditorPart {
 		getSite().registerContextMenu(cmProvider, viewer);
 		setPartName(displayModel.getName());
 		viewer.setContents(displayModel);
+		
+		// configure zoom actions
+		ZoomManager zm = root.getZoomManager();
+
+		List<String> zoomLevels = new ArrayList<String>(3);
+		zoomLevels.add(ZoomManager.FIT_ALL);
+		zoomLevels.add(ZoomManager.FIT_WIDTH);
+		zoomLevels.add(ZoomManager.FIT_HEIGHT);
+		zm.setZoomLevelContributions(zoomLevels);
+
+		zm.setZoomLevels(createZoomLevels());
+
+		if (zm != null) {
+			IAction zoomIn = new ZoomInAction(zm);
+			IAction zoomOut = new ZoomOutAction(zm);
+			getActionRegistry().registerAction(zoomIn);
+			getActionRegistry().registerAction(zoomOut);
+		}
+
+		/* scroll-wheel zoom */
+		viewer.setProperty(
+				MouseWheelHandler.KeyGenerator.getKey(SWT.MOD1),
+				MouseWheelZoomHandler.SINGLETON);
 	}
 
+	/**
+	 * Create a double array that contains the pre-defined zoom levels.
+	 * 
+	 * @return A double array that contains the pre-defined zoom levels.
+	 */
+	private double[] createZoomLevels() {
+		List<Double> zoomLevelList = new ArrayList<Double>();
+
+		double level = 0.1;
+		while (level < 1.0) {
+			zoomLevelList.add(level);
+			level = level + 0.05;
+		}
+
+		zoomLevelList.add(1.0);
+		zoomLevelList.add(1.5);
+		zoomLevelList.add(2.0);
+		zoomLevelList.add(2.5);
+		zoomLevelList.add(3.0);
+		zoomLevelList.add(3.5);
+		zoomLevelList.add(4.0);
+		zoomLevelList.add(4.5);
+		zoomLevelList.add(5.0);
+
+		double[] result = new double[zoomLevelList.size()];
+		for (int i = 0; i < zoomLevelList.size(); i++) {
+			result[i] = zoomLevelList.get(i);
+		}
+
+		return result;
+	}
 	
 	/**
 	 * Lazily creates and returns the action registry.
@@ -216,6 +279,9 @@ public class OPIRunner extends EditorPart {
 			return getActionRegistry();
 		if (adapter == CommandStack.class)
 			return viewer.getEditDomain().getCommandStack();
+		if (adapter == ZoomManager.class)
+			return ((ScalableFreeformRootEditPart) viewer
+				.getRootEditPart()).getZoomManager();
 		return super.getAdapter(adapter);
 	}
 }
