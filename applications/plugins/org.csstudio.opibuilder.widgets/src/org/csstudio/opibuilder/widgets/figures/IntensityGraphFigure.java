@@ -3,6 +3,7 @@ package org.csstudio.opibuilder.widgets.figures;
 import org.csstudio.opibuilder.datadefinition.ColorMap;
 import org.csstudio.opibuilder.datadefinition.ColorMap.PredefinedColorMap;
 import org.csstudio.opibuilder.widgets.figureparts.ColorMapRamp;
+import org.csstudio.swt.xygraph.figures.Axis;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.geometry.Dimension;
@@ -27,6 +28,9 @@ public class IntensityGraphFigure extends Figure {
 	private GraphArea graphArea;
 	private ColorMap colorMap;
 	
+	private final Axis xAxis;
+	private final Axis yAxis;
+	
 	private final static int GAP = 3;
 
 
@@ -43,38 +47,105 @@ public class IntensityGraphFigure extends Figure {
 		colorMapRamp.setColorMap(colorMap);
 		
 		graphArea = new GraphArea();
-		
+		xAxis = new Axis("X", false);
+		yAxis = new Axis("Y", true);
 		add(colorMapRamp);
 		add(graphArea);
+		add(xAxis);
+		add(yAxis);
 	}
 	
 	
 	@Override
-	protected void layout() {		
-		Rectangle clientArea = getClientArea();		
+	protected void layout() {	
+		Rectangle clientArea = getClientArea().getCopy();	
+
+		Rectangle yAxisBounds = null, xAxisBounds = null, rampBounds;
+		if(yAxis.isVisible()){
+			Dimension yAxisSize = yAxis.getPreferredSize(clientArea.width, clientArea.height);			
+			yAxisBounds = new Rectangle(clientArea.x, clientArea.y, 
+					yAxisSize.width, yAxisSize.height); // the height is not correct for now
+			clientArea.x += yAxisSize.width;
+			clientArea.y += yAxis.getMargin();	
+			clientArea.height -= xAxis.isVisible()? yAxis.getMargin() : 2*yAxis.getMargin()-1;				
+			clientArea.width -= yAxisSize.width;			
+		}
+		if(xAxis.isVisible()){
+			Dimension xAxisSize = xAxis.getPreferredSize(clientArea.width, clientArea.height);			
+			
+			xAxisBounds = new Rectangle((yAxis.isVisible() ? yAxisBounds.x + yAxisBounds.width - xAxis.getMargin()-1 : clientArea.x), 
+				clientArea.y + clientArea.height - xAxisSize.height,
+				xAxisSize.width, xAxisSize.height); // the width is not correct for now
+			clientArea.height -= xAxisSize.height;	
+			//re-adjust yAxis height					
+			if(yAxis.isVisible()){
+				yAxisBounds.height -= (xAxisSize.height - yAxis.getMargin()); 
+			}else{
+				clientArea.x +=xAxis.getMargin();
+				clientArea.width -= xAxis.getMargin()-1;
+			}
 		
+		}
 		if(colorMapRamp.isVisible()){
 			Dimension rampSize = colorMapRamp.getPreferredSize(clientArea.width, clientArea.height);
-			colorMapRamp.setBounds(new Rectangle(clientArea.x + clientArea.width - rampSize.width, clientArea.y,
-					rampSize.width, clientArea.height));
-			graphArea.setBounds(new Rectangle(clientArea.x, clientArea.y, 
-					clientArea.width - rampSize.width - GAP, clientArea.height));
-		}else
-			graphArea.setBounds(clientArea);
+			rampBounds = new Rectangle(clientArea.x + clientArea.width - rampSize.width, clientArea.y,
+					rampSize.width, clientArea.height);
+			colorMapRamp.setBounds(rampBounds);
+			clientArea.width -= (rampSize.width + GAP);
+			//re-adjust xAxis width
+			if(xAxis.isVisible())
+				if(yAxis.isVisible())
+					xAxisBounds.width -=(rampSize.width + GAP - 2*xAxis.getMargin());
+				else	
+					xAxisBounds.width -= (rampSize.width + GAP - xAxis.getMargin());
+		}else{
+			//re-adjust xAxis width
+			if(xAxis.isVisible()){
+				if(yAxis.isVisible())
+					xAxisBounds.width += xAxis.getMargin();
+				clientArea.width -= xAxis.getMargin();
+			}
+				
+		}
 		
+		if(yAxis.isVisible()){
+			yAxis.setBounds(yAxisBounds);
+		}
+		
+		if(xAxis.isVisible()){
+			xAxis.setBounds(xAxisBounds);
+		}
+			
+		graphArea.setBounds(clientArea);
 		super.layout();
 	}
 	
 	/**
-	 * @return the insets for graph area
+	 * @return the two dimension insets (cropped_width, cropped_height) of graph area
 	 */
 	public Dimension getGraphAreaInsets() {
+		
+		int width = getInsets().getWidth();
+		int height = getInsets().getHeight();
 		if(colorMapRamp.isVisible())
-			return new Dimension(getInsets().left + getInsets().right + colorMapRamp.getPreferredSize(
-				getClientArea().width, getClientArea().height).width + GAP,
-				getInsets().top + getInsets().bottom);
-		else
-			return new Dimension(getInsets().getWidth(), getInsets().getHeight());
+			width += (colorMapRamp.getPreferredSize(
+				getClientArea().width, getClientArea().height).width + GAP);
+		if(yAxis.isVisible()){
+			width += yAxis.getPreferredSize(getClientArea().width, getClientArea().height).width;
+			height += yAxis.getMargin();
+			if(!xAxis.isVisible())
+				height += yAxis.getMargin();
+		}
+		if(xAxis.isVisible()){
+			height += xAxis.getPreferredSize(getClientArea().width, getClientArea().height).height;
+			if(!colorMapRamp.isVisible())
+				width += xAxis.getMargin();
+			if(!yAxis.isVisible())
+				width += xAxis.getMargin();
+				
+		}
+	
+		return new Dimension(width, height);
 	}
 	
 	
@@ -186,15 +257,35 @@ public class IntensityGraphFigure extends Figure {
 	}
 	
 	
+	/**
+	 * @return the xAxis
+	 */
+	public final Axis getXAxis() {
+		return xAxis;
+	}
+
+
+	/**
+	 * @return the yAxis
+	 */
+	public final Axis getYAxis() {
+		return yAxis;
+	}
+
+
 	class GraphArea extends Figure{
 		
 		@Override
 		protected void paintClientArea(Graphics graphics) {
 			super.paintClientArea(graphics);
 			Rectangle clientArea = getClientArea();		
-			
+			if(clientArea.width <0 || clientArea.height <0)
+				return;
 			if(dataWidth == 0 || dataHeight == 0){
-				graphics.drawRectangle(clientArea.getCopy().shrink(1, 1));
+				graphics.drawRectangle(new Rectangle(
+						clientArea.x - (yAxis.isVisible()? 1:0),
+						clientArea.y, 
+						clientArea.width-(yAxis.isVisible()? 0:1), clientArea.height - (xAxis.isVisible()? 0:1)));
 				return;
 			}
 										

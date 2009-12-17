@@ -5,9 +5,15 @@ import org.csstudio.opibuilder.datadefinition.ColorMap.PredefinedColorMap;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.ColorMapProperty;
+import org.csstudio.opibuilder.properties.ColorProperty;
 import org.csstudio.opibuilder.properties.DoubleProperty;
+import org.csstudio.opibuilder.properties.FontProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
+import org.csstudio.opibuilder.properties.NameDefinedCategory;
+import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 
 /**The model for intensity graph.
@@ -16,6 +22,33 @@ import org.eclipse.swt.graphics.RGB;
  */
 public class IntensityGraphModel extends AbstractPVWidgetModel {
 
+	public static final String Y_AXIS_ID = "y_axis";
+
+	public static final String X_AXIS_ID = "x_axis";
+
+	public enum AxisProperty{		
+		TITLE("axis_title", "Axis Title"), //$NON-NLS-1$
+		TITLE_FONT("title_font", "Title Font"),//$NON-NLS-1$
+		AXIS_COLOR("axis_color", "Axis Color"),//$NON-NLS-1$
+		SHOW_MINOR_TICKS("show_minor_ticks", "Show Minor Ticks"),//$NON-NLS-1$
+		MAJOR_TICK_STEP_HINT("major_tick_step_hint", "Major Tick Step Hint"),//$NON-NLS-1$
+		MAX("maximum", "Maximum"),//$NON-NLS-1$
+		MIN("minimum", "Minimum"),//$NON-NLS-1$
+		VISIBLE("visible", "Visible");		//$NON-NLS-1$
+		
+		public String propIDPre;
+		public String description;
+		
+		private AxisProperty(String propertyIDPrefix, String description) {
+			this.propIDPre = propertyIDPrefix;
+			this.description = description;
+		}
+		
+		@Override
+		public String toString() {
+			return description;
+		}
+	}	
 	
 	public static final String PROP_MIN = "minimum"; //$NON-NLS-1$		
 	
@@ -39,6 +72,8 @@ public class IntensityGraphModel extends AbstractPVWidgetModel {
 	/** The default value of the maximum property. */
 	private static final double DEFAULT_MAX = 255;	
 	
+	/** The default color of the axis color property. */
+	private static final RGB DEFAULT_AXIS_COLOR = new RGB(0,0,0);
 	/**
 	 * The ID of this widget model.
 	 */
@@ -76,8 +111,56 @@ public class IntensityGraphModel extends AbstractPVWidgetModel {
 		addProperty(new IntegerProperty(PROP_GRAPH_AREA_HEIGHT, "Graph Area Height", 
 				WidgetPropertyCategory.Position, 0));
 		
+		addAxisProperties();
 	}
 
+	public static String makeAxisPropID(String axisID, String propIDPre){
+		return axisID+ "_" + propIDPre; //$NON-NLS-1$
+	}
+	
+	private void addAxisProperties(){		
+		WidgetPropertyCategory xCategory = new NameDefinedCategory("X Axis");
+		WidgetPropertyCategory yCategory = new NameDefinedCategory("Y Axis");
+		for(AxisProperty axisProperty : AxisProperty.values())
+			addAxisProperty(X_AXIS_ID, axisProperty, xCategory); 
+		
+		for(AxisProperty axisProperty : AxisProperty.values())
+			addAxisProperty(Y_AXIS_ID, axisProperty, yCategory); 
+	}
+	
+	private void addAxisProperty(String axisID, AxisProperty axisProperty, WidgetPropertyCategory category){		
+		String propID = makeAxisPropID(axisID, axisProperty.propIDPre);			
+		
+		switch (axisProperty) {
+		case TITLE:
+			addProperty(new StringProperty(propID, axisProperty.toString(), category, category.toString()));
+			break;
+		case TITLE_FONT:
+			addProperty(new FontProperty(propID, axisProperty.toString(), category, new FontData("Arial", 9, SWT.BOLD)));
+			break;
+		case AXIS_COLOR:
+			addProperty(new ColorProperty(propID, axisProperty.toString(), category, DEFAULT_AXIS_COLOR));
+			break;
+		case VISIBLE:
+		case SHOW_MINOR_TICKS:
+			addProperty(new BooleanProperty(propID, axisProperty.toString(), category,true));
+			break;
+		case MAX:
+			addProperty(new DoubleProperty(propID, axisProperty.toString(), category, 100));
+			break;
+		case MIN:
+			addProperty(new DoubleProperty(propID, axisProperty.toString(), category,0));
+			break;	
+		case MAJOR_TICK_STEP_HINT:
+			addProperty(new IntegerProperty(propID, axisProperty.toString(),
+					category, 50, 1, 1000));		
+			break;			
+		default:
+			break;
+		}
+	}
+	
+	
 	@Override
 	public String getTypeID() {
 		return ID;
