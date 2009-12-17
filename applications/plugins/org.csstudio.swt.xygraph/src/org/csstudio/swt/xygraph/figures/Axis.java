@@ -241,10 +241,20 @@ public class Axis extends LinearScale{
 		double min = getRange().getLower();
 		double thr = (max - min)*autoScaleThreshold;
 		
-		if(((tempMin - min)>=0 && (tempMin - min)<thr))
-			tempMin = min;
-		if((max - tempMax)>=0 && (max - tempMax)<thr)
+		//if both the changes are lower than threshold, return
+		if(((tempMin - min)>=0 && (tempMin - min)<thr)
+				&& ((max - tempMax)>=0 && (max - tempMax)<thr)){
+			tempMin = min;		
 			tempMax = max;
+			return false;
+		}else { //expand more space than needed
+			if((tempMin - min)<0)
+				tempMin = min - thr; 
+			if((tempMax - max) > 0)
+				tempMax = max + thr;
+		}
+		
+		
 		
 		if((tempMin == min && tempMax == max) || 
 				Double.isInfinite(tempMin) || Double.isInfinite(tempMax) ||
