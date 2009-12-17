@@ -161,7 +161,7 @@ public final class CloneCommand extends Command {
 		_clonedWidgets = getWidgetsFromClipboard();
 		
 		_compoundCommand = new CompoundCommand();
-		
+		int i=0;
 		for (AbstractWidgetModel widgetModel : _clonedWidgets) {
 			if (_difference!=null) {				
 				widgetModel.setLocation((widgetModel.getLocation().x+_difference.width),
@@ -171,7 +171,7 @@ public final class CloneCommand extends Command {
 						(widgetModel.getLocation().y+10));
 			}
 			_compoundCommand.add(new WidgetCreateCommand(widgetModel, _parent, 
-					new Rectangle(widgetModel.getLocation(), widgetModel.getSize()), true));
+					new Rectangle(widgetModel.getLocation(), widgetModel.getSize()), (i++ == 0? false : true)));
 			
 			if (_hGuide != null) {
 				ChangeGuideCommand hGuideCommand = new ChangeGuideCommand(widgetModel, true);

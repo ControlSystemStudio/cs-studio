@@ -104,13 +104,13 @@ public final class PasteWidgetsAction extends WorkbenchPartAction {
 				CompoundCommand cmd = new CompoundCommand("Paste "
 						+ widgets.size() + " Widget"
 						+ (widgets.size() > 0 ? "s" : ""));
-
+				int i=0;
 				for (AbstractWidgetModel widgetModel : widgets) {
 				
 					// create command
 					cmd.add(new WidgetCreateCommand(widgetModel, targetModel,
 							new Rectangle(widgetModel.getLocation().getTranslated(diff), 
-									widgetModel.getSize()), true));
+									widgetModel.getSize()), (i++ == 0? false : true)));
 				
 				}
 
