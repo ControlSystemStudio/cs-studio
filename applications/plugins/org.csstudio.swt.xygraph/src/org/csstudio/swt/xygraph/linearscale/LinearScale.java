@@ -108,16 +108,17 @@ public class LinearScale extends AbstractScale {
 	public Dimension getPreferredSize(int wHint, int hHint) {
 		
 		Dimension size = new Dimension(wHint, hHint);
-		
+		LinearScaleTickLabels fakeTickLabels = new LinearScaleTickLabels(this);
+
 		if(isHorizontal()) {
-			length = wHint;
-			tickLabels.update(length-2*getMargin());
-			size.height = (int)getScaleTickLabels().getTickLabelMaxHeight() 
+			//length = wHint;
+			fakeTickLabels.update(wHint-2*getMargin());
+			size.height = (int)fakeTickLabels.getTickLabelMaxHeight() 
 							+ SPACE_BTW_MARK_LABEL + LinearScaleTickMarks.MAJOR_TICK_LENGTH;
 		} else {
-			length = hHint;
-			tickLabels.update(length-2*getMargin());
-			size.width = (int)getScaleTickLabels().getTickLabelMaxLength() 
+			//length = hHint;
+			fakeTickLabels.update(hHint-2*getMargin());
+			size.width = (int)fakeTickLabels.getTickLabelMaxLength() 
 							+ SPACE_BTW_MARK_LABEL + LinearScaleTickMarks.MAJOR_TICK_LENGTH;
 		
 		}
@@ -277,8 +278,13 @@ public class LinearScale extends AbstractScale {
 
     @Override
     public void setBounds(Rectangle rect) {
-    	if(!bounds.equals(rect))
+    	if(!bounds.equals(rect)){
     		setDirty(true);
+    		if(isHorizontal())
+    			length = rect.width - getInsets().getWidth();
+    		else
+    			length = rect.height - getInsets().getHeight();
+    	}
     	super.setBounds(rect);   
     	
     }
