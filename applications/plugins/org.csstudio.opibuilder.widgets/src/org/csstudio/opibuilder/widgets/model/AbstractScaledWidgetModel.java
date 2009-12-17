@@ -3,6 +3,7 @@ package org.csstudio.opibuilder.widgets.model;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.DoubleProperty;
+import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 
 /**
@@ -42,7 +43,7 @@ public abstract class AbstractScaledWidgetModel extends AbstractPVWidgetModel {
 	private static final double DEFAULT_MAX = 100;	
 	
 		/** The default value of the major tick step hint property. */
-	private static final double DEFAULT_MAJOR_TICK_STEP_HINT = 50;	
+	private static final int DEFAULT_MAJOR_TICK_STEP_HINT = 50;	
 
 	@Override
 	protected void configureProperties() {
@@ -57,7 +58,7 @@ public abstract class AbstractScaledWidgetModel extends AbstractPVWidgetModel {
 		addProperty(new DoubleProperty(PROP_MAX, "Maximum", 
 				WidgetPropertyCategory.Behavior, DEFAULT_MAX));			
 		
-		addProperty(new DoubleProperty(PROP_MAJOR_TICK_STEP_HINT, "Major Tick Step Hint", 
+		addProperty(new IntegerProperty(PROP_MAJOR_TICK_STEP_HINT, "Major Tick Step Hint", 
 				WidgetPropertyCategory.Display, DEFAULT_MAJOR_TICK_STEP_HINT, 1, 1000));			
 		
 		addProperty(new BooleanProperty(PROP_SHOW_MINOR_TICKS, "Show Minor Ticks", 
@@ -91,8 +92,8 @@ public abstract class AbstractScaledWidgetModel extends AbstractPVWidgetModel {
 	/**
 	 * @return the major tick step hint value
 	 */
-	public Double getMajorTickStepHint() {
-		return (Double) getProperty(PROP_MAJOR_TICK_STEP_HINT).getPropertyValue();
+	public Integer getMajorTickStepHint() {
+		return (Integer) getProperty(PROP_MAJOR_TICK_STEP_HINT).getPropertyValue();
 	}
 
 	

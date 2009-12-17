@@ -94,7 +94,7 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractPVWidgetEditP
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				AbstractScaledWidgetFigure figure = (AbstractScaledWidgetFigure) refreshableFigure;
-				figure.setMajorTickMarkStepHint((Double) newValue);
+				figure.setMajorTickMarkStepHint((Integer) newValue);
 				return true;
 			}
 		};
