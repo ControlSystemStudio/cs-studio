@@ -234,7 +234,7 @@ public class ThermometerFigure extends AbstractLinearMarkedFigure {
 			if(effect3D && support3D){
 				graphics.setBackgroundColor(fillColor);
 				super.fillShape(graphics);
-				int l = (int) ((bounds.width - lineWidth)*0.293/2);
+				//int l = (int) ((bounds.width - lineWidth)*0.293/2);
 				Pattern backPattern = null;
 				
 				 backPattern = new Pattern(Display.getCurrent(), 
