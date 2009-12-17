@@ -8,6 +8,7 @@ import org.csstudio.opibuilder.properties.ComboProperty;
 import org.csstudio.opibuilder.properties.DoubleProperty;
 import org.csstudio.opibuilder.properties.FontProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
+import org.csstudio.opibuilder.properties.NameDefinedCategory;
 import org.csstudio.opibuilder.properties.PVValueProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
@@ -28,19 +29,7 @@ import org.eclipse.swt.graphics.RGB;
  */
 public class XYGraphModel extends AbstractPVWidgetModel {
 	
-	public class XYGraphCategory implements WidgetPropertyCategory{
-		private String name;
-		
-		public XYGraphCategory(String name) {
-			this.name = name;
-		}
-		
-		@Override
-		public String toString() {
-			return name;
-		}
-		
-	}
+	
 	
 	public enum AxisProperty{
 		Y_AXIS("y_axis", "Y Axis"),
@@ -221,21 +210,20 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 	
 	private void addAxisProperties(){
 		for(int i=0; i < MAX_AXES_AMOUNT; i++){
+			WidgetPropertyCategory category;
+			if(i ==0)
+				category = new NameDefinedCategory("Primary X Axis (0)");
+			else if(i == 1)
+				category = new NameDefinedCategory("Primary Y Axis (1)");
+			else
+				category = new NameDefinedCategory("Secondary Axis (" + i + ")");
 			for(AxisProperty axisProperty : AxisProperty.values())
-				addAxisProperty(axisProperty, i);
+				addAxisProperty(axisProperty, i, category);
 		}
 	}
 	
-	private void addAxisProperty(AxisProperty axisProperty, int axisIndex){		
-		String propID = makeAxisPropID(axisProperty.propIDPre, axisIndex);
-		
-		WidgetPropertyCategory category;
-		if(axisIndex ==0)
-			category = new XYGraphCategory("Primary X Axis (0)");
-		else if(axisIndex == 1)
-			category = new XYGraphCategory("Primary Y Axis (1)");
-		else
-			category = new XYGraphCategory("Secondary Axis (" + axisIndex + ")");
+	private void addAxisProperty(AxisProperty axisProperty, int axisIndex, WidgetPropertyCategory category){		
+		String propID = makeAxisPropID(axisProperty.propIDPre, axisIndex);		
 		
 		switch (axisProperty) {
 		case Y_AXIS:
@@ -252,7 +240,7 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 			addProperty(new StringProperty(propID, axisProperty.toString(), category, category.toString()));
 			break;
 		case TITLE_FONT:
-			addProperty(new FontProperty(propID, axisProperty.toString(), category, new FontData("Arial", 9, SWT.NONE)));
+			addProperty(new FontProperty(propID, axisProperty.toString(), category, new FontData("Arial", 9, SWT.BOLD)));
 			break;
 		case AXIS_COLOR:
 			addProperty(new ColorProperty(propID, axisProperty.toString(), category, DEFAULT_AXIS_COLOR));
@@ -299,7 +287,7 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 	
 	private void addTraceProperty(TraceProperty traceProperty, int traceIndex){		
 		String propID = makeTracePropID(traceProperty.propIDPre, traceIndex);		
-		WidgetPropertyCategory category = new XYGraphCategory("Trace " + traceIndex);
+		WidgetPropertyCategory category = new NameDefinedCategory("Trace " + traceIndex);
 		switch (traceProperty) {
 		case NAME:
 			addProperty(new StringProperty(propID, traceProperty.toString(), category, category.toString()));
