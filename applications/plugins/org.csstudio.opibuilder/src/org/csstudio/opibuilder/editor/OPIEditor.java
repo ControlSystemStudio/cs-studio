@@ -515,6 +515,9 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 		}
 
 		zoomLevelList.add(1.0);
+		zoomLevelList.add(1.1);
+		zoomLevelList.add(1.2);
+		zoomLevelList.add(1.3);
 		zoomLevelList.add(1.5);
 		zoomLevelList.add(2.0);
 		zoomLevelList.add(2.5);
