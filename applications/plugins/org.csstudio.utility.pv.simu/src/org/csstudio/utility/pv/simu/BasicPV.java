@@ -101,7 +101,7 @@ abstract public class BasicPV<T extends Value> extends PlatformObject implements
     /** {@inheritDoc} */
     public boolean isConnected()
     {
-        return running;
+        return running && getValue() != null;
     }
 
     /** {@inheritDoc} */
