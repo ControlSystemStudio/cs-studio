@@ -416,6 +416,7 @@ public class XYGraph extends Figure{
 	 */
 	public void setTransparent(boolean transparent) {
 		this.transparent = transparent;
+		getPlotArea().setOpaque(!transparent);
 		repaint();
 	}
 
