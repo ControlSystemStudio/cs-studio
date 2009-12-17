@@ -90,6 +90,8 @@ public class Axis extends LinearScale{
 		addMouseListener(panner);
 		addMouseMotionListener(panner);
 		grabbing = XYGraphMediaFactory.getCursor(CURSOR_TYPE.GRABBING);	
+		titleFont = XYGraphMediaFactory.getInstance().getFont(
+				new FontData("Arial", 9, SWT.BOLD)); //$NON-NLS-1$
 	}
 
 	public void addListener(final IAxisListener listener){
@@ -133,9 +135,7 @@ public class Axis extends LinearScale{
 	}
 	@Override
 	public Dimension getPreferredSize(int wHint, int hHint) {
-		Dimension d = super.getPreferredSize(wHint, hHint);
-		titleFont = XYGraphMediaFactory.getInstance().getFont(
-				new FontData("Arial", 9, SWT.BOLD));
+		Dimension d = super.getPreferredSize(wHint, hHint);		
 		if(isHorizontal())
 			d.height += FigureUtilities.getTextExtents(title, titleFont).height + GAP;
 		else
@@ -146,6 +146,7 @@ public class Axis extends LinearScale{
 	@Override
 	protected void paintClientArea(Graphics graphics) {	
 		super.paintClientArea(graphics);
+		
 		graphics.pushState();
 		graphics.setFont(titleFont);		
 		Dimension titleSize = FigureUtilities.getTextExtents(title, titleFont);
