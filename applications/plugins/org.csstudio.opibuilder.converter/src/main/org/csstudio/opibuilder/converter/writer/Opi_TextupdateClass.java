@@ -2,13 +2,10 @@ package org.csstudio.opibuilder.converter.writer;
 
 import org.apache.log4j.Logger;
 import org.csstudio.opibuilder.converter.model.Edm_TextupdateClass;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /**
  * XML conversion class for Edm_TextupdateClass.
  * @author Matevz
- *
  */
 public class Opi_TextupdateClass extends OpiWidget {
 
@@ -17,32 +14,39 @@ public class Opi_TextupdateClass extends OpiWidget {
 	private static final String name = "EDM Text Update";
 	private static final String version = "1.0";
 
-	public Opi_TextupdateClass(Document doc, Element parent, Edm_TextupdateClass t) {
-		super(doc, parent, typeId);
+	/**
+	 * Converts the Edm_TextupdateClass to OPI TextUpdate widget XML.  
+	 */
+	public Opi_TextupdateClass(Context con, Edm_TextupdateClass t) {
+		super(con);
+		setTypeId(typeId);
 
-		element.setAttribute("version", version);
+		context.getElement().setAttribute("version", version);
 
-		new OpiString(doc, element, "name", name);
-		new OpiInt(doc, element, "x", t.getX());
-		new OpiInt(doc, element, "y", t.getY());
-		new OpiInt(doc, element, "width", t.getW());
-		new OpiInt(doc, element, "height", t.getH());
+		new OpiString(context, "name", name);
+		new OpiInt(context, "x", t.getX() - context.getX());
+		new OpiInt(context, "y", t.getY() - context.getY());
+		new OpiInt(context, "width", t.getW());
+		new OpiInt(context, "height", t.getH());
 
-		new OpiString(doc, element, "pv_name", t.getControlPv());
+		new OpiString(context, "pv_name", t.getControlPv());
 		
-		new OpiColor(doc, element, "color_foreground", t.getFgColor());
-		new OpiColor(doc, element, "color_background", t.getBgColor());
-		new OpiBoolean(doc, element, "color_fill", t.isFill());
+		new OpiColor(context, "color_foreground", t.getFgColor());
+		new OpiColor(context, "color_background", t.getBgColor());
+		new OpiBoolean(context, "color_fill", t.isFill());
 		
-		new OpiFont(doc, element, "font", t.getFont());
+		new OpiFont(context, "font", t.getFont());
 		if (t.getAttribute("fontAlign").isInitialized())
-			new OpiString(doc, element, "font_align", t.getFontAlign());
+			new OpiString(context, "font_align", t.getFontAlign());
 		
 		if (t.getAttribute("lineWidth").isInitialized()) { 
-			new OpiInt(doc, element, "border_width", t.getLineWidth());
+			new OpiInt(context, "border_width", t.getLineWidth());
 		}
-		new OpiBoolean(doc, element, "border_alarmsensitive", t.isLineAlarm());
-		new OpiBoolean(doc, element, "foregroundcolor_alarmsensitive", t.isFgAlarm());
+		boolean lineAlarm = t.getAttribute("lineAlarm").isInitialized() && t.isLineAlarm();
+		new OpiBoolean(context, "border_alarmsensitive", lineAlarm);
+		
+		boolean fgAlarm = t.getAttribute("fgAlarm").isInitialized() && t.isFgAlarm();
+		new OpiBoolean(context, "foregroundcolor_alarmsensitive", fgAlarm);
 
 		log.debug("Edm_TextupdateClass written.");
 	}

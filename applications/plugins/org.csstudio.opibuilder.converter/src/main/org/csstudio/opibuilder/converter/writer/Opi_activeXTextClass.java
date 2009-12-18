@@ -2,13 +2,10 @@ package org.csstudio.opibuilder.converter.writer;
 
 import org.apache.log4j.Logger;
 import org.csstudio.opibuilder.converter.model.Edm_activeXTextClass;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /**
  * XML conversion class for Edm_activeXTextClass.
  * @author Matevz
- *
  */
 public class Opi_activeXTextClass extends OpiWidget {
 	
@@ -17,42 +14,49 @@ public class Opi_activeXTextClass extends OpiWidget {
 	private static final String name = "EDM Label";
 	private static final String version = "1.0";
 	
-	public Opi_activeXTextClass(Document doc, Element parent, Edm_activeXTextClass t) {
-		super(doc, parent, typeId);
+	/**
+	 * Converts the Edm_activeXTextClass to OPI Label widget XML.  
+	 */
+	public Opi_activeXTextClass(Context con, Edm_activeXTextClass t) {
+		super(con);
+		setTypeId(typeId);
 		
-		element.setAttribute("version", version);
+		context.getElement().setAttribute("version", version);
 		
-		new OpiString(doc, element, "name", name);
-		new OpiInt(doc, element, "x", t.getX());
-		new OpiInt(doc, element, "y", t.getY());
-		new OpiInt(doc, element, "width", t.getW());
-		new OpiInt(doc, element, "height", t.getH());
+		new OpiString(context, "name", name);
+		new OpiInt(context, "x", t.getX() - context.getX());
+		new OpiInt(context, "y", t.getY() - context.getY());
+		new OpiInt(context, "width", t.getW());
+		new OpiInt(context, "height", t.getH());
 		
-		new OpiFont(doc, element, "font", t.getFont());
-		new OpiColor(doc, element, "color_foreground", t.getFgColor());
-		new OpiColor(doc, element, "color_background", t.getBgColor());
+		new OpiFont(context, "font", t.getFont());
+		new OpiColor(context, "color_foreground", t.getFgColor());
+		new OpiColor(context, "color_background", t.getBgColor());
 		
-		new OpiString(doc, element, "text", t.getValue());
-		new OpiBoolean(doc, element, "auto_size", t.isAutoSize());
+		new OpiString(context, "text", t.getValue().get());
+		
+		boolean autoSize = t.getAttribute("autoSize").isInitialized() && t.isAutoSize();
+		new OpiBoolean(context, "auto_size", autoSize);
 		
 		// There is no border (border style == 0) when border attribute is not set. 
 		int borderStyle = 0;
-		if (t.isBorder()) {
+		if (t.getAttribute("border").isInitialized() && t.isBorder()) {
 			// From EDM C code it looks like activeXText always uses solid style. 
 			borderStyle = 1;
 		}
-		new OpiInt(doc, element, "border_style", borderStyle);
+		new OpiInt(context, "border_style", borderStyle);
 		
-		if (t.getLineWidth().isInitialized()) {
-			new OpiInt(doc, element, "border_width", t.getLineWidth().get());
+		if (t.getAttribute("lineWidth").isInitialized()) {
+			new OpiInt(context, "border_width", t.getLineWidth());
 		}
 		
 		// It is not clear where the border color and width should be set from.
-		//new OpiColor(doc, element, "border_color", ?);
-		//new OpiColor(doc, element, "border_width", ?);
+		//new OpiColor(context, "border_color", ?);
+		//new OpiColor(context, "border_width", ?);
 		
 		// Transparency is true only when useDisplayBg attribute is present.
-		new OpiBoolean(doc, element, "transparency", t.isUseDisplayBg());
+		boolean useDisplayBg = t.getAttribute("useDisplayBg").isInitialized() && t.isUseDisplayBg();  
+		new OpiBoolean(context, "transparency", useDisplayBg);
 		
 		log.debug("Edm_activeXTextClass written.");
 	}

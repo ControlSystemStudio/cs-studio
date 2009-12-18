@@ -17,15 +17,16 @@ public class EdmString extends EdmAttribute {
 	/**
 	 * Constructor, which parses string property from EdmAttribute general interface.
 	 * 
-	 * @param copy	EdmAttribute containing string format data.
+	 * @param genericAttribute	EdmAttribute containing string format data.
+	 * @param required false if this attribute is optional, else true
 	 * @throws EdmException 
 	 */
-	public EdmString(EdmAttribute copy, boolean required) throws EdmException {
-		super(copy);
+	public EdmString(EdmAttribute genericAttribute, boolean required) throws EdmException {
+		super(genericAttribute);
 		
 		setRequired(required);
 		
-		if (copy == null || getValueCount() == 0) {
+		if (genericAttribute == null || getValueCount() == 0) {
 			if (isRequired())
 				throw new EdmException(EdmException.REQUIRED_ATTRIBUTE_MISSING,
 						"Trying to initialize a required attribute from null object.");

@@ -12,10 +12,10 @@ public class EdmWidget extends EdmEntity {
 	/**
 	 * Constructs EdmWidget from general EdmEntity.
 	 *
-	 * @param copy
+	 * @param genericEntity
 	 * @throws EdmException
 	 */
-	public EdmWidget(EdmEntity copy) throws EdmException {
-		super(copy);
+	public EdmWidget(EdmEntity genericEntity) throws EdmException {
+		super(genericEntity);
 	}
 }

@@ -1,14 +1,14 @@
 package org.csstudio.opibuilder.converter.writer;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import junit.framework.TestCase;
 
 import org.csstudio.opibuilder.converter.model.EdmColor;
 import org.csstudio.opibuilder.converter.model.EdmDisplay;
 import org.csstudio.opibuilder.converter.model.EdmException;
 import org.csstudio.opibuilder.converter.model.EdmModel;
 import org.csstudio.opibuilder.converter.model.Edm_activeXTextClass;
-import junit.framework.TestCase;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 public class Opi_activeXTextClassTest extends TestCase {
 
@@ -23,10 +23,13 @@ public class Opi_activeXTextClassTest extends TestCase {
 
 		String edlFile = "src/test/resources/EDMDisplayParser_example.edl";
 		EdmModel.getInstance();
-		EdmDisplay d = new EdmDisplay(EdmModel.getDisplay(edlFile));
-		Edm_activeXTextClass t = new Edm_activeXTextClass(d.getSubEntity(6));
+		EdmDisplay d = EdmModel.getDisplay(edlFile);
 
-		Opi_activeXTextClass o = new Opi_activeXTextClass(doc, root, t);
+		assertTrue(d.getSubEntity(6) instanceof Edm_activeXTextClass);
+		Edm_activeXTextClass t = (Edm_activeXTextClass)d.getSubEntity(6);
+
+		Context context = new Context(doc, root, 0, 0);
+		Opi_activeXTextClass o = new Opi_activeXTextClass(context, t);
 		assertTrue(o instanceof OpiWidget);
 
 		Element e = (Element)doc.getElementsByTagName("widget").item(0);
@@ -51,6 +54,6 @@ public class Opi_activeXTextClassTest extends TestCase {
 		XMLFileHandler.isElementEqual("2", "border_width", e);
 		XMLFileHandler.isElementEqual("true", "transparency", e);
 		
-		XMLFileHandler.writeXML(doc);
+		//XMLFileHandler.writeXML(doc);
 	}
 }

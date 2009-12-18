@@ -19,12 +19,13 @@ public class OpiAttributeTest extends TestCase {
 		// instantiating OpiAttribute
 		Element parent = doc.createElement("root");
 		doc.appendChild(parent);
-		new OpiAttribute(doc, parent, name);
+		Context context = new Context(doc, parent, 0, 0);
+		new OpiAttribute(context, name);
 		
 		// testing
 		assertEquals(1, doc.getElementsByTagName(name).getLength());
 		
-		XMLFileHandler.writeXML(doc);
+		//XMLFileHandler.writeXML(doc);
 		
 	}
 }

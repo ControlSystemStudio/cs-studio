@@ -19,6 +19,11 @@ public class Edm_activeGroupClass extends EdmWidget {
 	@EdmAttributeAn private int w;
 	@EdmAttributeAn private int h;
 
+	@EdmAttributeAn @EdmOptionalAn private String visPv;
+	@EdmAttributeAn @EdmOptionalAn private double visMax;
+	@EdmAttributeAn @EdmOptionalAn private double visMin;
+	@EdmAttributeAn @EdmOptionalAn private boolean visInvert;
+	
 	@EdmAttributeAn private Vector<EdmWidget> widgets;
 
 	public Edm_activeGroupClass(EdmEntity genericEntity) throws EdmException {
@@ -51,6 +56,22 @@ public class Edm_activeGroupClass extends EdmWidget {
 
 	public int getH() {
 		return h;
+	}
+
+	public String getVisPv() {
+		return visPv;
+	}
+
+	public double getVisMax() {
+		return visMax;
+	}
+
+	public double getVisMin() {
+		return visMin;
+	}
+
+	public boolean isVisInvert() {
+		return visInvert;
 	}
 
 	public Vector<EdmWidget> getWidgets() {

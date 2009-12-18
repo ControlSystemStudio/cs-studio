@@ -23,10 +23,12 @@ public class Opi_TextupdateClassTest extends TestCase {
 
 		String edlFile = "src/test/resources/TextUpdate_example.edl";
 		EdmModel.getInstance();
-		EdmDisplay d = new EdmDisplay(EdmModel.getDisplay(edlFile));
-		Edm_TextupdateClass t = new Edm_TextupdateClass(d.getSubEntity(0));
+		EdmDisplay d = EdmModel.getDisplay(edlFile);
+		assertTrue(d.getSubEntity(0) instanceof Edm_TextupdateClass);
+		Edm_TextupdateClass t = (Edm_TextupdateClass)d.getSubEntity(0);
 
-		Opi_TextupdateClass o = new Opi_TextupdateClass(doc, root, t);
+		Context context = new Context(doc, root, 0, 0);
+		Opi_TextupdateClass o = new Opi_TextupdateClass(context, t);
 		assertTrue(o instanceof OpiWidget);
 
 		Element e = (Element)doc.getElementsByTagName("widget").item(0);
@@ -52,6 +54,6 @@ public class Opi_TextupdateClassTest extends TestCase {
 		XMLFileHandler.isElementEqual("true", "foregroundcolor_alarmsensitive", e);
 		XMLFileHandler.isElementEqual("true", "border_alarmsensitive", e);
 
-		XMLFileHandler.writeXML(doc);
+		//XMLFileHandler.writeXML(doc);
 	}
 }

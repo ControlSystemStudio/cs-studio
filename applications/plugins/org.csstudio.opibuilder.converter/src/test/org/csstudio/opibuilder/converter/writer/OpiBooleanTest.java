@@ -17,15 +17,16 @@ public class OpiBooleanTest extends TestCase {
 		
 		// OpiBoolean data 
 		String name = "someBooleanElement";
-		EdmBoolean bT = new EdmBoolean(new EdmAttribute());	//[TRUE]
-		EdmBoolean bF = new EdmBoolean(null);				//[FALSE]
+		EdmBoolean bT = new EdmBoolean(new EdmAttribute(), false);	//[TRUE]
+		EdmBoolean bF = new EdmBoolean(null, false);				//[FALSE]
 		
 		// instantiating OpiBoolean
 		Element parent = doc.createElement("root");
 		doc.appendChild(parent);
-		OpiBoolean o = new OpiBoolean(doc, parent, name, bT);
+		Context context = new Context(doc, parent, 0, 0);
+		OpiBoolean o = new OpiBoolean(context, name, bT);
 		assertTrue(o instanceof OpiAttribute);
-		new OpiBoolean(doc, parent, name, bF);
+		new OpiBoolean(context, name, bF);
 		
 		// testing
 		Element x = (Element)doc.getElementsByTagName(name).item(0);
@@ -33,7 +34,7 @@ public class OpiBooleanTest extends TestCase {
 		x = (Element)doc.getElementsByTagName(name).item(1);
 		assertEquals("false", x.getTextContent());
 		
-		XMLFileHandler.writeXML(doc);
+		//XMLFileHandler.writeXML(doc);
 		
 	}
 	

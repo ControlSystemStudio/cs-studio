@@ -70,12 +70,17 @@ public class EdmAttributeTest extends TestCase {
 	public void testCopyConstructor() {
 
 		setupAttribute();
-		EdmAttribute copy = new EdmAttribute(testAttribute);
+		
+		try {
+			EdmAttribute attribute = new EdmAttribute(testAttribute);
+			int valCount = testAttribute.getValueCount();
+			assertEquals(valCount, attribute.getValueCount());
 
-		int valCount = testAttribute.getValueCount();
-		assertEquals(valCount, copy.getValueCount());
-
-		for (int i = 0; i < valCount; i++)
-			assertEquals(testAttribute.getValue(i), copy.getValue(i));
+			for (int i = 0; i < valCount; i++)
+				assertEquals(testAttribute.getValue(i), attribute.getValue(i));
+		}
+		catch (EdmException e) {
+			assertEquals(EdmException.SPECIFIC_PARSING_ERROR, e.getType());
+		}
 	}
 }

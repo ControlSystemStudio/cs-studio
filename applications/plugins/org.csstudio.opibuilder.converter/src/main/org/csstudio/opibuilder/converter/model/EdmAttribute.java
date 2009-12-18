@@ -41,15 +41,22 @@ public class EdmAttribute {
 	
 	/**
 	 * Constructs an instance of EdmAttribute from data of another EdmAttribute instance.
-	 * @param copy EdmAttribute to copy.
+	 * @param genericAttribute EdmAttribute to copy.
 	 */
-	public EdmAttribute(EdmAttribute copy) {
+	public EdmAttribute(EdmAttribute genericAttribute) throws EdmException {
+
+		// Multiple specializations test.
+		if (genericAttribute != null && !genericAttribute.getClass().equals(EdmAttribute.class)) {
+			throw new EdmException(EdmException.SPECIFIC_PARSING_ERROR,
+			"Trying to initialize from an already specialized attribute.");
+		}
+		
 		initDefaultValues();
 		
-		if (copy != null) {
-			int valCount = copy.getValueCount();
+		if (genericAttribute != null) {
+			int valCount = genericAttribute.getValueCount();
 			for (int i = 0; i < valCount; i++)
-				appendValue(copy.getValue(i));
+				appendValue(genericAttribute.getValue(i));
 		}
 	}
 

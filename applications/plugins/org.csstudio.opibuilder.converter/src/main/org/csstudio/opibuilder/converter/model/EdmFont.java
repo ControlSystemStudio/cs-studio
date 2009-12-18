@@ -15,15 +15,16 @@ public class EdmFont extends EdmAttribute {
 
 	private static Logger log = Logger.getLogger("org.csstudio.opibuilder.converter.parser.EdmFont");
 
-	private EdmString	name;
-	private EdmBoolean	bold;
-	private EdmBoolean	italic;
-	private EdmDouble	size;
+	private String name;
+	private boolean bold;
+	private boolean italic;
+	private double size;
 
 	/**
 	 * Constructor which parses EdmFont from general EdmAttribute value.
 	 *
 	 * @param genericAttribute EdmAttribute containing general EdmFont data.
+	 * @param required false if this attribute is optional, else true
 	 * @throws EdmException if EdmAttribute contains invalid data.
 	 */
 	public EdmFont(EdmAttribute genericAttribute, boolean required) throws EdmException {
@@ -59,42 +60,47 @@ public class EdmFont extends EdmAttribute {
 			throw new EdmException(EdmException.FONT_FORMAT_ERROR, "Invalid font format.");
 		}
 
-		name = new EdmString(new EdmAttribute(nameStr), true);
+		name = nameStr;
 
-		if (weightStr.equals("bold"))
-			bold = new EdmBoolean(new EdmAttribute());
-		else if (weightStr.equals("medium"))
-			bold = new EdmBoolean(null);
-		else
+		if (weightStr.equals("bold")) {
+			bold = true;
+		} else if (weightStr.equals("medium")) {
+			bold = false;
+		} else {
 			throw new EdmException(EdmException.SPECIFIC_PARSING_ERROR,
 			"Error parsing font weight (bold) value.");
+		}
 
-		if (styleStr.equals("i"))
-			italic = new EdmBoolean(new EdmAttribute());
-		else if (styleStr.equals("r"))
-			italic = new EdmBoolean(null);
-		else
+		if (styleStr.equals("i")) {
+			italic = true;
+		} else if (styleStr.equals("r")) {
+			italic = false;
+		} else {
 			throw new EdmException(EdmException.SPECIFIC_PARSING_ERROR,
 			"Error parsing font style (italic) value.");
+		}
 
-		size = new EdmDouble(new EdmAttribute(sizeStr), true);
-
+		try {
+			size = Double.valueOf(sizeStr).doubleValue();
+		} catch (Exception e) {
+			throw new EdmException(EdmException.COLOR_FORMAT_ERROR, "Invalid RGB color format.");
+		}
 		setInitialized(true);
 	}
 
 	public String getName() {
-		return name.get();
+		return name;
 	}
 
 	public boolean isBold() {
-		return bold.is();
+		return bold;
 	}
 
 	public boolean isItalic() {
-		return italic.is();
+		return italic;
 	}
 
 	public double getSize() {
-		return size.get();
+		return size;
 	}
 }

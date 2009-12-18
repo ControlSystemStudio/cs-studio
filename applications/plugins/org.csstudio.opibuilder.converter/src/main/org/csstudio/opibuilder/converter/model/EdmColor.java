@@ -15,22 +15,23 @@ public class EdmColor extends EdmAttribute {
 
 	private static Logger log = Logger.getLogger("org.csstudio.opibuilder.converter.parser.EdmColor");
 
-	@EdmAttributeAn @EdmOptionalAn private EdmString name;
+	private String name;
 
-	@EdmAttributeAn private EdmInt	red;
-	@EdmAttributeAn private EdmInt	green;
-	@EdmAttributeAn private EdmInt	blue;
+	private int red;
+	private int green;
+	private int blue;
 
-	private EdmBoolean isBlinking;
+	private boolean blinking;
 
-	@EdmAttributeAn @EdmOptionalAn private EdmInt	blinkRed;
-	@EdmAttributeAn @EdmOptionalAn private EdmInt	blinkGreen;
-	@EdmAttributeAn @EdmOptionalAn private EdmInt	blinkBlue;
+	private int blinkRed;
+	private int blinkGreen;
+	private int blinkBlue;
 
 	/**
 	 * Constructor which parses EdmColor from general EdmAttribute value.
 	 *
 	 * @param genericEntity EdmAttribute containing general EdmColor data.
+	 * @param required false if this attribute is optional, else true
 	 * @throws EdmException if EdmAttribute contains invalid data.
 	 */
 	public EdmColor(EdmAttribute genericEntity, boolean required) throws EdmException {
@@ -39,10 +40,10 @@ public class EdmColor extends EdmAttribute {
 		setRequired(required);
 
 		if (genericEntity == null || getValueCount() == 0) {
-			if (isRequired())
+			if (isRequired()) {
 				throw new EdmException(EdmException.REQUIRED_ATTRIBUTE_MISSING,
-						"Trying to initialize a required attribute from null object.");
-			else {
+				"Trying to initialize a required attribute from null object.");
+			} else {
 				log.warn("Missing optional property.");
 				return;
 			}
@@ -50,12 +51,13 @@ public class EdmColor extends EdmAttribute {
 
 		String firstVal = getValue(0);
 
-		if (firstVal.startsWith("rgb "))
+		if (firstVal.startsWith("rgb ")) {
 			parseRGBColor();
-		else if (firstVal.startsWith("index "))
+		} else if (firstVal.startsWith("index ")) {
 			parseStaticColor(Integer.parseInt(firstVal.replace("index ", "")));
-		else
+		} else {
 			parseColorListDefinition();
+		}
 
 		setInitialized(true);
 	}
@@ -66,32 +68,33 @@ public class EdmColor extends EdmAttribute {
 
 	private void parseColorListDefinition() throws EdmException {
 		//input
-		name = new EdmString(new EdmAttribute(getValue(0)), true);
-
-		String r,g,b;
-		String[] color;
-		color = getValue(1).split(" ");
-		r = color[0];
-		g = color[1];
-		b = color[2];
-
-		red = new EdmInt(new EdmAttribute(r), true);
-		green = new EdmInt(new EdmAttribute(g), true);
-		blue = new EdmInt(new EdmAttribute(b), true);
-
-		if (getValueCount() == 3) {
-			isBlinking = new EdmBoolean(new EdmAttribute());
-			color = getValue(2).split(" ");
-			r = color[0];
-			g = color[1];
-			b = color[2];
-
-			blinkRed = new EdmInt(new EdmAttribute(r), false);
-			blinkGreen = new EdmInt(new EdmAttribute(g), false);
-			blinkBlue = new EdmInt(new EdmAttribute(b), false);
+		name = getValue(0);
+		//new EdmString(new EdmAttribute(getValue(0)), true);
+		if (name == null || name.length() == 0) {
+			throw new EdmException(EdmException.COLOR_FORMAT_ERROR, "Color name is empty");
 		}
-		else
-			isBlinking = new EdmBoolean(null);
+
+		try {
+			String[] color = getValue(1).split(" ");
+
+			red = Integer.valueOf(color[0]).intValue();
+			green = Integer.valueOf(color[1]).intValue();
+			blue = Integer.valueOf(color[2]).intValue();
+			
+			if (getValueCount() == 3) {
+				blinking = true;
+				color = getValue(2).split(" ");
+				blinkRed = Integer.valueOf(color[0]).intValue();
+				blinkGreen = Integer.valueOf(color[1]).intValue();
+				blinkBlue = Integer.valueOf(color[2]).intValue();
+			}
+			else {
+				blinking = false;
+			}
+			
+		} catch (Exception exception) {
+			throw new EdmException(EdmException.COLOR_FORMAT_ERROR, exception.getMessage());
+		}
 
 		log.debug("Parsed colorsList definition.");
 	}
@@ -101,92 +104,73 @@ public class EdmColor extends EdmAttribute {
 		Pattern p = Pattern.compile("(\\w*)\\s+(\\d+)\\s+(\\d+)\\s+(\\d+)");
 		Matcher m = p.matcher(getValue(0));
 
-		if (m.find()) {
-
-			try {
-				String r = m.group(2);
-				String g = m.group(3);
-				String b = m.group(4);
-
-				this.name = new EdmString(new EdmAttribute(""), false);
-				this.red = new EdmInt(new EdmAttribute(r), true);
-				this.green = new EdmInt(new EdmAttribute(g), true);
-				this.blue = new EdmInt(new EdmAttribute(b), true);
-				this.isBlinking = new EdmBoolean(null);
-
-				log.debug("Parsed RGB color.");
-			}
-			catch (Exception e) {
-				throw new EdmException(EdmException.COLOR_FORMAT_ERROR, "Invalid RGB color format.");
-			}
-		}
-		else
+		if (!m.find()) {
 			throw new EdmException(EdmException.COLOR_FORMAT_ERROR, "Invalid RGB color format.");
+		}
 
+		try {
+			name = null;
+			red = Integer.valueOf(m.group(2)).intValue();
+			green = Integer.valueOf(m.group(3)).intValue();
+			blue = Integer.valueOf(m.group(4)).intValue();
+			blinking = false;
+
+			log.debug("Parsed RGB color.");
+		}
+		catch (Exception e) {
+			throw new EdmException(EdmException.COLOR_FORMAT_ERROR, "Invalid RGB color format.");
+		}
 	}
 
 	private void parseStaticColor(int i) throws EdmException {
 
-		try {
-
-			EdmColor c = EdmModel.getColorsList().getColor(i);
-
-			name = new EdmString(new EdmAttribute(c.getName()), true);
-
-			red = new EdmInt(new EdmAttribute(Integer.toString(c.getRed())), true);
-			green = new EdmInt(new EdmAttribute(Integer.toString(c.getGreen())), true);
-			blue = new EdmInt(new EdmAttribute(Integer.toString(c.getBlue())), true);
-
-			isBlinking = new EdmBoolean(null);
-			if (c.blinkRed != null) {
-				blinkRed = new EdmInt(new EdmAttribute(Integer.toString(c.getBlinkRed())), false);
-				if (c.blinkGreen != null) {
-					blinkGreen = new EdmInt(new EdmAttribute(Integer.toString(c.getBlinkGreen())), false);
-					if (c.blinkBlue != null) {
-						blinkBlue = new EdmInt(new EdmAttribute(Integer.toString(c.getBlinkBlue())), false);
-						isBlinking = new EdmBoolean(new EdmAttribute());
-					}
-				}
-			}
-			setInitialized(true);
-		}
-		catch (Exception e) {
+		EdmColor color = EdmModel.getColorsList().getColor(i);
+		if (color == null) {
 			throw new EdmException(EdmException.COLOR_FORMAT_ERROR,
 					"Color index " + i + " is not in given EdmColorsList instance.");
 		}
-
+			
+		name = color.getName();
+		red = color.getRed();
+		green = color.getGreen();
+		blue = color.getBlue();
+		blinking = color.isBlinking();
+		blinkRed = color.getBlinkRed();
+		blinkGreen = color.getBlinkGreen();
+		blinkBlue = color.getBlinkBlue();
+		
 		log.debug("Parsed static color.");
 	}
 
 	public String getName() {
-		return name.get();
+		return name;
 	}
 
 	public int getRed() {
-		return red.get();
+		return red;
 	}
 
 	public int getGreen() {
-		return green.get();
+		return green;
 	}
 
 	public int getBlue() {
-		return blue.get();
+		return blue;
 	}
 
 	public int getBlinkRed() {
-		return blinkRed.get();
+		return blinkRed;
 	}
 
 	public int getBlinkGreen() {
-		return blinkGreen.get();
+		return blinkGreen;
 	}
 
 	public int getBlinkBlue() {
-		return blinkBlue.get();
+		return blinkBlue;
 	}
 
 	public boolean isBlinking() {
-		return isBlinking.is();
+		return blinking;
 	}
 }

@@ -22,12 +22,17 @@ public class Edm_activeXTextClass extends EdmWidget {
 	@EdmAttributeAn private EdmColor fgColor;
 	@EdmAttributeAn private EdmColor bgColor;
 
-	@EdmAttributeAn private String value;
+	@EdmAttributeAn private EdmMultilineText value;
 	@EdmAttributeAn @EdmOptionalAn private boolean autoSize;
 
-	@EdmAttributeAn @EdmOptionalAn private EdmInt lineWidth;
+	@EdmAttributeAn @EdmOptionalAn private int lineWidth;
 	@EdmAttributeAn @EdmOptionalAn private boolean border;
 	@EdmAttributeAn @EdmOptionalAn private boolean useDisplayBg;
+	
+	@EdmAttributeAn @EdmOptionalAn private String visPv;
+	@EdmAttributeAn @EdmOptionalAn private double visMax;
+	@EdmAttributeAn @EdmOptionalAn private double visMin;
+	@EdmAttributeAn @EdmOptionalAn private boolean visInvert;
 	
 	public Edm_activeXTextClass(EdmEntity genericEntity) throws EdmException {
 		super(genericEntity);
@@ -73,7 +78,7 @@ public class Edm_activeXTextClass extends EdmWidget {
 		return bgColor;
 	}
 
-	public String getValue() {
+	public EdmMultilineText getValue() {
 		return value;
 	}
 
@@ -81,7 +86,7 @@ public class Edm_activeXTextClass extends EdmWidget {
 		return autoSize;
 	}
 
-	public EdmInt getLineWidth() {
+	public int getLineWidth() {
 		return lineWidth;
 	}
 
@@ -91,5 +96,21 @@ public class Edm_activeXTextClass extends EdmWidget {
 
 	public boolean isUseDisplayBg() {
 		return useDisplayBg;
+	}
+
+	public String getVisPv() {
+		return visPv;
+	}
+
+	public double getVisMax() {
+		return visMax;
+	}
+
+	public double getVisMin() {
+		return visMin;
+	}
+
+	public boolean isVisInvert() {
+		return visInvert;
 	}
 }

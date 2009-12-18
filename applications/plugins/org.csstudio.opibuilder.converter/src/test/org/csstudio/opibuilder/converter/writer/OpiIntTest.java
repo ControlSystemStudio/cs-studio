@@ -20,13 +20,14 @@ public class OpiIntTest extends TestCase {
 		
 		Element parent = doc.createElement("root");
 		doc.appendChild(parent);
-		OpiInt o = new OpiInt(doc, parent, name, i);
+		Context context = new Context(doc, parent, 0, 0);
+		OpiInt o = new OpiInt(context, name, i);
 		assertTrue(o instanceof OpiAttribute);
 		
 		// testing
 		Element x = (Element)doc.getElementsByTagName(name).item(0);
 		assertEquals(val, x.getTextContent());
 		
-		XMLFileHandler.writeXML(doc);
+		//XMLFileHandler.writeXML(doc);
 	}
 }

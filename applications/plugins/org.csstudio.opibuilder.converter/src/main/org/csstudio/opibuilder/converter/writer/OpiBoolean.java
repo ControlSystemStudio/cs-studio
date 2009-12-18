@@ -1,23 +1,25 @@
 package org.csstudio.opibuilder.converter.writer;
 
 import org.csstudio.opibuilder.converter.model.EdmBoolean;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /**
  * XML output class for EdmBoolean type.
- * Creates an element: <name>booleanValue</name>
  * @author Matevz
- *
  */
 public class OpiBoolean extends OpiAttribute {
 
-	public OpiBoolean(Document doc, Element parent, String name, EdmBoolean b) {
-		this(doc, parent, name, b.is());
+	/**
+	 * Creates an element <name>booleanValue</name> with the given EdmBoolean value.
+	 */
+	public OpiBoolean(Context con, String name, EdmBoolean b) {
+		this(con, name, b.is());
 	}
 	
-	public OpiBoolean(Document doc, Element parent, String name, boolean b) {
-		super(doc, parent, name);
-		element.appendChild(doc.createTextNode(String.valueOf(b)));
+	/**
+	 * Creates an element <name>booleanValue</name> with the given boolean value.
+	 */
+	public OpiBoolean(Context con, String name, boolean b) {
+		super(con, name);
+		context.getElement().appendChild(con.getDocument().createTextNode(String.valueOf(b)));
 	}
 }

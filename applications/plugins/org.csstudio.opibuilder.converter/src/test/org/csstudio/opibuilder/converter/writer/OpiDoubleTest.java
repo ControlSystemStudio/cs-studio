@@ -20,13 +20,14 @@ public class OpiDoubleTest extends TestCase {
 		String val = "12.3";
 		EdmDouble d = new EdmDouble(new EdmAttribute(val), true);
 		
-		OpiDouble o = new OpiDouble(doc, parent, name, d);
+		Context context = new Context(doc, parent, 0, 0);
+		OpiDouble o = new OpiDouble(context, name, d);
 		assertTrue(o instanceof OpiAttribute);
 		
 		// testing
 		Element x = (Element)doc.getElementsByTagName(name).item(0);
 		assertEquals(val, x.getTextContent());
 		
-		XMLFileHandler.writeXML(doc);
+		//XMLFileHandler.writeXML(doc);
 	}
 }

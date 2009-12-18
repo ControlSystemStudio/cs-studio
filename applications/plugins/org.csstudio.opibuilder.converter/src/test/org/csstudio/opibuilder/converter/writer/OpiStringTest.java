@@ -20,13 +20,14 @@ public class OpiStringTest extends TestCase {
 		
 		Element parent = doc.createElement("root");
 		doc.appendChild(parent);
-		OpiString o = new OpiString(doc, parent, name, s);
+		Context context = new Context(doc, parent, 0, 0);
+		OpiString o = new OpiString(context, name, s);
 		assertTrue(o instanceof OpiAttribute);
 		
 		// testing
 		Element x = (Element)doc.getElementsByTagName(name).item(0);
 		assertEquals(val, x.getTextContent());
 		
-		XMLFileHandler.writeXML(doc);
+		//XMLFileHandler.writeXML(doc);
 	}
 }

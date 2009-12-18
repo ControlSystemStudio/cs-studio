@@ -12,12 +12,14 @@ import org.csstudio.opibuilder.converter.model.EdmColorsList;
 import org.csstudio.opibuilder.converter.model.EdmException;
 
 /**
- * Object receives the EdmColorsList object and outputs the color.def data in specified file name.
+ * Class that writes OPI color definition file.
  * @author Matevz
- *
- */
+*/
 public class OpiColorDef {
 
+	/**
+	 * Receives the EdmColorsList object and outputs the color.def data in specified file name.
+	 */
 	public static void writeDefFile(EdmColorsList cList, String fileName) throws EdmException {
 		
 		File colorDefFile = new File(fileName);
@@ -26,12 +28,13 @@ public class OpiColorDef {
 			
 			OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(colorDefFile));
 			
-			for (String id : cList.getAttributeIdSet()) {
-				EdmColor c = cList.getColor(Integer.parseInt(id));
-				out.write(c.getName());
-				out.write(" = " + OpiColor.colorComponentTo8Bits(c.getRed()));
-				out.write(", " + OpiColor.colorComponentTo8Bits(c.getGreen()));
-				out.write(", " + OpiColor.colorComponentTo8Bits(c.getBlue()));
+			for (int colorInd = 0; colorInd < cList.getMenuColorCount(); colorInd++) {
+				EdmColor color = cList.getMenuColor(colorInd);
+				
+				out.write(color.getName());
+				out.write(" = " + OpiColor.colorComponentTo8Bits(color.getRed()));
+				out.write(", " + OpiColor.colorComponentTo8Bits(color.getGreen()));
+				out.write(", " + OpiColor.colorComponentTo8Bits(color.getBlue()));
 				out.write("\r\n");
 			}
 		

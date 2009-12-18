@@ -15,7 +15,8 @@ public class Edm_activeRectangleClassTest extends TestCase {
 
 		//this entity represents activeRectClass in example file
 		EdmEntity e = d.getSubEntity(0);
-		Edm_activeRectangleClass r = new Edm_activeRectangleClass(e);
+		assertTrue(e instanceof Edm_activeRectangleClass);
+		Edm_activeRectangleClass r = (Edm_activeRectangleClass)e;
 
 		assertEquals(4, r.getMajor());
 		assertTrue(r.getAttribute("major") instanceof EdmInt);
@@ -37,9 +38,21 @@ public class Edm_activeRectangleClassTest extends TestCase {
 		EdmComparator.isColorEqual(r.getFillColor(), new EdmColor(0));
 		assertTrue(r.getAttribute("fillColor") instanceof EdmColor);
 
-		assertEquals(2, r.getLineWidth().get());
+		assertEquals(2, r.getLineWidth());
 		assertTrue(r.getAttribute("lineWidth") instanceof EdmInt);
 		assertEquals(EdmLineStyle.DASH, r.getLineStyle().get());
 		assertTrue(r.getAttribute("lineStyle") instanceof EdmLineStyle);
+		
+		assertTrue(r.isInvisible());
+		assertTrue(r.getAttribute("invisible") instanceof EdmBoolean);
+		
+		assertEquals("$(S)_LLRF:FCM$(N):cavAmpCheck.SEVR", r.getVisPv());
+		assertTrue(r.getAttribute("visPv") instanceof EdmString);
+		assertEquals(-1.1, r.getVisMin());
+		assertTrue(r.getAttribute("visMin") instanceof EdmDouble);
+		assertEquals(10.78, r.getVisMax());
+		assertTrue(r.getAttribute("visMax") instanceof EdmDouble);
+		assertTrue(r.isVisInvert());
+		assertTrue(r.getAttribute("visInvert") instanceof EdmBoolean);
 	}
 }

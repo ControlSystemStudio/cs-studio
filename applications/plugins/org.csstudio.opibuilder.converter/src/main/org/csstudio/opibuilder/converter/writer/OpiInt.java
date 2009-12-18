@@ -1,23 +1,25 @@
 package org.csstudio.opibuilder.converter.writer;
 
 import org.csstudio.opibuilder.converter.model.EdmInt;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /**
  * XML output class for EdmInt type.
- * Creates an element: <name>intValue</name>
  * @author Matevz
- *
  */
 public class OpiInt extends OpiAttribute {
 
-	public OpiInt(Document doc, Element parent, String name, EdmInt i) {
-		this(doc, parent, name, i.get());
+	/**
+	 * Creates an element <name>intValue</name> with the given EdmInt value.
+	 */
+	public OpiInt(Context con, String name, EdmInt i) {
+		this(con, name, i.get());
 	}
 	
-	public OpiInt(Document doc, Element parent, String name, int i) {
-		super(doc, parent, name);
-		element.appendChild(doc.createTextNode(String.valueOf(i)));
+	/**
+	 * Creates an element <name>intValue</name> with the given int value.
+	 */
+	public OpiInt(Context con, String name, int i) {
+		super(con, name);
+		context.getElement().appendChild(con.getDocument().createTextNode(String.valueOf(i)));
 	}
 }

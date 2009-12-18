@@ -2,34 +2,38 @@ package org.csstudio.opibuilder.converter.writer;
 
 import org.apache.log4j.Logger;
 import org.csstudio.opibuilder.converter.model.EdmColor;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
  * XML output class for EdmColor type.
- * Creates an element: 
- * <tag>
- *   	<color blue="blueValue" green="greenValue" red="redValue" />
- * </tag>
  * @author Matevz
- *
  */
 public class OpiColor extends OpiAttribute {
 
 	private static Logger log = Logger.getLogger("org.csstudio.opibuilder.converter.writer.OpiColor");
-	
-	public OpiColor(Document doc, Element parent, String tag, EdmColor c) {
-		super(doc, parent, tag);
-		
-		Element colorElement = doc.createElement("color");
-		element.appendChild(colorElement);
-		
-		String colorName = c.getName();
-		
-		if (colorName != "") {
 
+	/**
+	 * If EdmColor name is defined, it creates an element 
+	 * <tag>
+	 *   	<color name="colorName" />
+	 * </tag>
+	 * 
+	 * otherwise creates an element
+	 *  
+	 * <tag>
+	 *   	<color blue="blueValue" green="greenValue" red="redValue" />
+	 * </tag>
+	 */
+	public OpiColor(Context con, String tag, EdmColor c) {
+		super(con, tag);
+
+		Element colorElement = context.getDocument().createElement("color");
+		context.getElement().appendChild(colorElement);
+
+		String colorName = c.getName();
+
+		if (colorName != null && colorName.length() > 0) {
 			colorElement.setAttribute("name", colorName);
-			
 			log.debug("Written color: " + colorName);
 		}
 		else {
@@ -44,7 +48,10 @@ public class OpiColor extends OpiAttribute {
 			log.debug("Written color property with attributes: " + red + ", " + green + ", " + blue);
 		}
 	}
-	
+
+	/**
+	 * Converts the 16 bit color component value to 8 bit and returns it.
+	 */
 	public static int colorComponentTo8Bits(int colorComponent) {
 		return colorComponent / 0x100;
 	}

@@ -12,7 +12,7 @@ public class Edm_activeGroupClassTest extends TestCase {
 
 		String edlFile = "src/test/resources/group_example_spec.edl";
 		EdmModel.getInstance();
-		EdmDisplay d = new EdmDisplay(EdmModel.getDisplay(edlFile));
+		EdmDisplay d = EdmModel.getDisplay(edlFile);
 
 
 		assertEquals("subentity_count", 2, d.getWidgets().size());
@@ -37,6 +37,14 @@ public class Edm_activeGroupClassTest extends TestCase {
 		assertEquals(11, subGroup0.getH());
 		assertTrue(subGroup0.getAttribute("h") instanceof EdmInt);
 
+		assertEquals("$(S)_LLRF:FCM$(N):cavAmpCheck.SEVR", subGroup0.getVisPv());
+		assertTrue(subGroup0.getAttribute("visPv") instanceof EdmString);
+		assertEquals(-1.1, subGroup0.getVisMin());
+		assertTrue(subGroup0.getAttribute("visMin") instanceof EdmDouble);
+		assertEquals(10.78, subGroup0.getVisMax());
+		assertTrue(subGroup0.getAttribute("visMax") instanceof EdmDouble);
+		
+		
 		assertEquals(3, subGroup0.getSubEntityCount());
 		assertEquals(2, subGroup0.getWidgets().size());
 		{
@@ -64,8 +72,8 @@ public class Edm_activeGroupClassTest extends TestCase {
 			assertTrue(t.getAttribute("fgColor") instanceof EdmColor);
 			EdmComparator.isColorEqual(new EdmColor(3), t.getBgColor());
 			assertTrue(t.getAttribute("bgColor") instanceof EdmColor);
-			assertEquals("Homed", t.getValue());
-			assertTrue(t.getAttribute("value") instanceof EdmString);
+			assertEquals("Homed", t.getValue().get());
+			assertTrue(t.getAttribute("value") instanceof EdmMultilineText);
 			assertEquals(true, t.isAutoSize());
 			assertTrue(t.getAttribute("autoSize") instanceof EdmBoolean);
 
@@ -115,8 +123,8 @@ public class Edm_activeGroupClassTest extends TestCase {
 				assertTrue(t.getAttribute("fgColor") instanceof EdmColor);
 				EdmComparator.isColorEqual(new EdmColor(3), t.getBgColor());
 				assertTrue(t.getAttribute("bgColor") instanceof EdmColor);
-				assertEquals("Homed", t.getValue());
-				assertTrue(t.getAttribute("value") instanceof EdmString);
+				assertEquals("Homed", t.getValue().get());
+				assertTrue(t.getAttribute("value") instanceof EdmMultilineText);
 				assertEquals(true, t.isAutoSize());
 				assertTrue(t.getAttribute("autoSize") instanceof EdmBoolean);
 
@@ -166,8 +174,8 @@ public class Edm_activeGroupClassTest extends TestCase {
 					assertTrue(t.getAttribute("fgColor") instanceof EdmColor);
 					EdmComparator.isColorEqual(new EdmColor(3), t.getBgColor());
 					assertTrue(t.getAttribute("bgColor") instanceof EdmColor);
-					assertEquals("Homed", t.getValue());
-					assertTrue(t.getAttribute("value") instanceof EdmString);
+					assertEquals("Homed", t.getValue().get());
+					assertTrue(t.getAttribute("value") instanceof EdmMultilineText);
 					assertEquals(true, t.isAutoSize());
 					assertTrue(t.getAttribute("autoSize") instanceof EdmBoolean);
 
@@ -234,8 +242,8 @@ public class Edm_activeGroupClassTest extends TestCase {
 					assertTrue(t.getAttribute("fgColor") instanceof EdmColor);
 					EdmComparator.isColorEqual(new EdmColor(3), t.getBgColor());
 					assertTrue(t.getAttribute("bgColor") instanceof EdmColor);
-					assertEquals("Homed", t.getValue());
-					assertTrue(t.getAttribute("value") instanceof EdmString);
+					assertEquals("Homed", t.getValue().get());
+					assertTrue(t.getAttribute("value") instanceof EdmMultilineText);
 					assertEquals(true, t.isAutoSize());
 					assertTrue(t.getAttribute("autoSize") instanceof EdmBoolean);
 
@@ -336,8 +344,8 @@ public class Edm_activeGroupClassTest extends TestCase {
 			assertTrue(t.getAttribute("fgColor") instanceof EdmColor);
 			EdmComparator.isColorEqual(new EdmColor(3), t.getBgColor());
 			assertTrue(t.getAttribute("bgColor") instanceof EdmColor);
-			assertEquals("Homed", t.getValue());
-			assertTrue(t.getAttribute("value") instanceof EdmString);
+			assertEquals("Homed", t.getValue().get());
+			assertTrue(t.getAttribute("value") instanceof EdmMultilineText);
 			assertEquals(true, t.isAutoSize());
 			assertTrue(t.getAttribute("autoSize") instanceof EdmBoolean);
 			

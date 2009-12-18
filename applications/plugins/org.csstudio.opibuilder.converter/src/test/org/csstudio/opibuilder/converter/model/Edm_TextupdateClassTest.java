@@ -11,10 +11,11 @@ public class Edm_TextupdateClassTest extends TestCase {
 
 		String edlFile = "src/test/resources/TextUpdate_example.edl";
 		EdmModel.getInstance();
-		EdmDisplay d = new EdmDisplay(EdmModel.getDisplay(edlFile));
+		EdmDisplay d = EdmModel.getDisplay(edlFile);
 
 		EdmEntity e = d.getSubEntity(0);
-		Edm_TextupdateClass t = new Edm_TextupdateClass(e);
+		assertTrue(e instanceof Edm_TextupdateClass);
+		Edm_TextupdateClass t = (Edm_TextupdateClass)e;
 
 		assertEquals(10, t.getMajor());
 		assertTrue(t.getAttribute("major") instanceof EdmInt);

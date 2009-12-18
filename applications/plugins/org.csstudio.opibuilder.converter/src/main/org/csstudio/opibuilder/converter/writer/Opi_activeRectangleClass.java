@@ -3,13 +3,10 @@ package org.csstudio.opibuilder.converter.writer;
 import org.apache.log4j.Logger;
 import org.csstudio.opibuilder.converter.model.EdmLineStyle;
 import org.csstudio.opibuilder.converter.model.Edm_activeRectangleClass;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /**
  * XML conversion class for Edm_activeRectangleClass
  * @author Matevz
- *
  */
 public class Opi_activeRectangleClass extends OpiWidget {
 
@@ -17,12 +14,16 @@ public class Opi_activeRectangleClass extends OpiWidget {
 	private static final String typeId = "Rectangle";
 	private static final String name = "EDM Rectangle";
 	private static final String version = "1.0";
-	
-	public Opi_activeRectangleClass(Document doc, Element parent, Edm_activeRectangleClass r) {
-		super(doc, parent, typeId);
-		
-		element.setAttribute("version", version);
-		
+
+	/**
+	 * Converts the Edm_activeRectangleClass to OPI Rectangle widget XML.  
+	 */
+	public Opi_activeRectangleClass(Context con, Edm_activeRectangleClass r) {
+		super(con);
+		setTypeId(typeId);
+
+		context.getElement().setAttribute("version", version);
+
 		/* It is not clear how rectangle attributes are mapped precisely since the
 		 * mapping is not one to one.
 		 * 
@@ -35,20 +36,20 @@ public class Opi_activeRectangleClass extends OpiWidget {
 		 * line* /foreground* Opi attributes.
 		 */
 
-		new OpiString(doc, element, "name", name);
+		new OpiString(context, "name", name);
 
-		new OpiInt(doc, element, "x", r.getX());
-		new OpiInt(doc, element, "y", r.getY());
-		new OpiInt(doc, element, "width", r.getW());
-		new OpiInt(doc, element, "height", r.getH());
-		
-		new OpiColor(doc, element, "border_color", r.getLineColor());
+		new OpiInt(context, "x", r.getX() - context.getX());
+		new OpiInt(context, "y", r.getY() - context.getY());
+		new OpiInt(context, "width", r.getW());
+		new OpiInt(context, "height", r.getH());
+
+		new OpiColor(context, "border_color", r.getLineColor());
 		if (r.getFillColor().isInitialized()) {
-			new OpiColor(doc, element, "color_background", r.getFillColor());
+			new OpiColor(context, "color_background", r.getFillColor());
 		}
-		
-		if (r.getLineWidth().isInitialized()) {
-			new OpiInt(doc, element, "border_width", r.getLineWidth().get());
+
+		if (r.getAttribute("lineWidth").isInitialized()) {
+			new OpiInt(context, "border_width", r.getLineWidth());
 		}
 
 		/* It is not clear when there is no border for EDM display. 
@@ -60,7 +61,7 @@ public class Opi_activeRectangleClass extends OpiWidget {
 		 */
 		int borderStyle = 0;
 		if (r.getLineStyle().isInitialized()) {
-			
+
 			switch (r.getLineStyle().get()) {
 			case EdmLineStyle.SOLID: {
 				borderStyle = 1;
@@ -69,12 +70,21 @@ public class Opi_activeRectangleClass extends OpiWidget {
 				borderStyle = 9;
 			} break;
 			}
-			
+
 		}
-		new OpiInt(doc, element, "border_style", borderStyle);
-		
+		new OpiInt(context, "border_style", borderStyle);
+
+		/**
+		 * Of the visibility parameters only boolean visibility output specified.
+		 * If invisible, the visibility is false, if not specified it is true.
+		 * 
+		 * visPv, visMin, visMax and visInvert are not output yet.  
+		 */
+		boolean visible = !r.getAttribute("invisible").isInitialized() || !r.isInvisible();
+		new OpiBoolean(context, "visible", visible);
+
 		log.debug("Edm_activeRectangleClass written.");
-		
+
 	}
 
 }

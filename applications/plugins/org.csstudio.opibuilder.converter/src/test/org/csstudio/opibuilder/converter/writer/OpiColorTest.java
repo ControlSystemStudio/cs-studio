@@ -21,10 +21,11 @@ public class OpiColorTest extends TestCase {
 		
 		Element parent = doc.createElement("root");
 		doc.appendChild(parent);
-		new OpiColor(doc, parent, "color", c);
-		XMLFileHandler.writeXML(doc);		
+		Context context = new Context(doc, parent, 0, 0);
+		new OpiColor(context, "color", c);
+		//XMLFileHandler.writeXML(doc);		
 		
-		XMLFileHandler.isColorElementEqual(null, 255, 2, 1, 0, 0, 0, "color", parent);
+		XMLFileHandler.isColorElementEqual("", 255, 2, 1, 0, 0, 0, "color", parent);
 	}
 
 	public void testDefinitionOpiColor() throws EdmException {
@@ -38,8 +39,9 @@ public class OpiColorTest extends TestCase {
 		
 		Element parent = doc.createElement("root");
 		doc.appendChild(parent);
-		new OpiColor(doc, parent, "color", c);
-		XMLFileHandler.writeXML(doc);		
+		Context context = new Context(doc, parent, 0, 0);
+		new OpiColor(context, "color", c);
+		//XMLFileHandler.writeXML(doc);		
 		
 		XMLFileHandler.isColorElementEqual("blinking purple", 255, 2, 1, 0, 0, 0, "color", parent);
 	}

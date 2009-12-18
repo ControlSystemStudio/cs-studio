@@ -18,7 +18,6 @@ import org.csstudio.opibuilder.converter.model.EdmEntity;
 import org.csstudio.opibuilder.converter.model.EdmException;
 import org.csstudio.opibuilder.converter.model.EdmModel;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
@@ -26,7 +25,6 @@ import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 /**
  * Singleton class for writing EdmModel data to XML output.
  * @author Matevz
- *
  */
 public class OpiWriter {
 	
@@ -86,7 +84,7 @@ public class OpiWriter {
 	 */
 	public void writeDisplayFile(String displayFile, String opiFile) throws EdmException {
 		
-		EdmDisplay display = new EdmDisplay(EdmModel.getDisplay(displayFile));
+		EdmDisplay display = EdmModel.getDisplay(displayFile);
 		Document doc = createDomDocument();
 		new OpiDisplay(doc, display, displayFile);
 		writeXML(doc, opiFile);
@@ -96,7 +94,7 @@ public class OpiWriter {
 	/**
 	 * Generates the DOM XML model for a group of entities.
 	 */
-	public static void writeWidgets(Document doc, Element element, Vector<? extends EdmEntity> entities) {
+	public static void writeWidgets(Context context, Vector<? extends EdmEntity> entities) {
 
 		boolean robust = Boolean.parseBoolean(System.getProperty("edm2xml.robustParsing"));
 		
@@ -110,8 +108,8 @@ public class OpiWriter {
 			log.debug("Generating XML model for widget: " + opiClassName);
 			try {
 				Class<?> opiClass = Class.forName(opiClassName);
-				Constructor<?> opiConstructor = opiClass.getConstructor(Document.class, Element.class, edmClass);
-				opiConstructor.newInstance(doc, element, e);
+				Constructor<?> opiConstructor = opiClass.getConstructor(Context.class, edmClass);
+				opiConstructor.newInstance(context, e);
 			} catch (ClassNotFoundException exception) {
 				log.warn("Class not declared: " + opiClassName);
 			} catch (Exception exception) {

@@ -12,7 +12,7 @@ public class EdmDisplayTest extends TestCase {
 		String edlFile = "src/test/resources/EDMDisplayParser_example.edl";
 		//String edlFile = "test/LLRF_AUTO.edl";
 		EdmModel.getInstance();
-		EdmDisplay d = new EdmDisplay(EdmModel.getDisplay(edlFile));
+		EdmDisplay d = EdmModel.getDisplay(edlFile);
 
 		assertEquals(4, d.getMajor());
 		assertTrue(d.getAttribute("major") instanceof EdmInt);
@@ -59,7 +59,12 @@ public class EdmDisplayTest extends TestCase {
 		assertTrue(d.getAttribute("title") instanceof EdmString);
 		assertEquals(true, d.isShowGrid());
 		assertTrue(d.getAttribute("showGrid") instanceof EdmBoolean);
+		assertEquals(false, d.isSnapToGrid());
+		assertTrue(d.getAttribute("snapToGrid") instanceof EdmBoolean);
 
+		assertEquals(true, d.isDisableScroll());
+		assertTrue(d.getAttribute("disableScroll") instanceof EdmBoolean);
+		
 		assertEquals(5, d.getGridSize());
 		assertTrue(d.getAttribute("gridSize") instanceof EdmInt);
 		assertEquals(true, d.isDisableScroll());
@@ -160,8 +165,8 @@ public class EdmDisplayTest extends TestCase {
 		EdmComparator.isColorEqual(new EdmColor(3), t.getBgColor());
 		assertTrue(t.getAttribute("bgColor") instanceof EdmColor);
 
-		assertEquals("At low", t.getValue());
-		assertTrue(t.getAttribute("value") instanceof EdmString);
+		assertEquals("At low", t.getValue().get());
+		assertTrue(t.getAttribute("value") instanceof EdmMultilineText);
 		assertEquals(true, t.isAutoSize());
 		assertTrue(t.getAttribute("autoSize") instanceof EdmBoolean);
 		
@@ -192,8 +197,8 @@ public class EdmDisplayTest extends TestCase {
 			EdmComparator.isColorEqual(new EdmColor(3), t.getBgColor());
 			assertTrue(t.getAttribute("bgColor") instanceof EdmColor);
 
-			assertEquals("Homed", t.getValue());
-			assertTrue(t.getAttribute("value") instanceof EdmString);
+			assertEquals("Hello\rMulti-line\rWorld", t.getValue().toString());
+			assertTrue(t.getAttribute("value") instanceof EdmMultilineText);
 			assertEquals(true, t.isAutoSize());
 			assertTrue(t.getAttribute("autoSize") instanceof EdmBoolean);
 
@@ -208,7 +213,7 @@ public class EdmDisplayTest extends TestCase {
 
 		String edlFile = "src/test/resources/EDM_error01.edl";
 		EdmModel.getInstance();
-		EdmDisplay d = new EdmDisplay(EdmModel.getDisplay(edlFile));
+		EdmDisplay d = EdmModel.getDisplay(edlFile);
 
 		assertEquals(4, d.getMajor());
 		assertTrue(d.getAttribute("major") instanceof EdmInt);
@@ -257,10 +262,10 @@ public class EdmDisplayTest extends TestCase {
 		assertEquals(true, d.isDisableScroll());
 		assertTrue(d.getAttribute("showGrid") instanceof EdmBoolean);
 		
-		assertEquals(3, d.getWidgets().size());
+		assertEquals(4, d.getWidgets().size());
 
 		
-		Edm_activeRectangleClass r = (Edm_activeRectangleClass)d.getWidgets().get(0);
+		Edm_activeRectangleClass r = (Edm_activeRectangleClass)d.getWidgets().get(1);
 		assertEquals(4, r.getMajor());
 		assertTrue(r.getAttribute("major") instanceof EdmInt);
 		assertEquals(0, r.getMinor());
@@ -280,7 +285,7 @@ public class EdmDisplayTest extends TestCase {
 		EdmComparator.isColorEqual(r.getFillColor(), new EdmColor(0));
 		assertTrue(r.getAttribute("fillColor") instanceof EdmColor);
 
-		Edm_activeXTextClass t = (Edm_activeXTextClass)d.getWidgets().get(1);
+		Edm_activeXTextClass t = (Edm_activeXTextClass)d.getWidgets().get(2);
 		assertEquals(4, t.getMajor());
 		assertTrue(t.getAttribute("major") instanceof EdmInt);
 		assertEquals(1, t.getMinor());
@@ -301,14 +306,14 @@ public class EdmDisplayTest extends TestCase {
 		assertTrue(t.getAttribute("fgColor") instanceof EdmColor);
 		EdmComparator.isColorEqual(new EdmColor(3), t.getBgColor());
 		assertTrue(t.getAttribute("bgColor") instanceof EdmColor);
-		assertEquals("At low", t.getValue());
-		assertTrue(t.getAttribute("value") instanceof EdmString);
+		assertEquals("At low", t.getValue().get());
+		assertTrue(t.getAttribute("value") instanceof EdmMultilineText);
 		assertEquals(true, t.isAutoSize());
 		assertTrue(t.getAttribute("autoSize") instanceof EdmBoolean);
 
-		assertTrue(d.getWidgets().get(2) instanceof Edm_activeGroupClass);
+		assertTrue(d.getWidgets().get(3) instanceof Edm_activeGroupClass);
 		{
-			t = (Edm_activeXTextClass)d.getWidgets().get(2).getSubEntity(0);
+			t = (Edm_activeXTextClass)d.getWidgets().get(3).getSubEntity(0);
 
 			assertEquals(4, t.getMajor());
 			assertTrue(t.getAttribute("major") instanceof EdmInt);
@@ -333,8 +338,8 @@ public class EdmDisplayTest extends TestCase {
 			EdmComparator.isColorEqual(new EdmColor(3), t.getBgColor());
 			assertTrue(t.getAttribute("bgColor") instanceof EdmColor);
 
-			assertEquals("Homed", t.getValue());
-			assertTrue(t.getAttribute("value") instanceof EdmString);
+			assertEquals("Homed", t.getValue().get());
+			assertTrue(t.getAttribute("value") instanceof EdmMultilineText);
 			assertEquals(true, t.isAutoSize());
 			assertTrue(t.getAttribute("autoSize") instanceof EdmBoolean);
 		}

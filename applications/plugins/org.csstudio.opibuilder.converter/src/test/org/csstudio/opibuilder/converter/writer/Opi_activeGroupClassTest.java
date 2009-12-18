@@ -27,10 +27,13 @@ public class Opi_activeGroupClassTest extends TestCase {
 		String edlFile = "src/test/resources/group_example_spec.edl";
 		EdmModel.getInstance();
 		EdmDisplay d = EdmModel.getDisplay(edlFile);
-		Edm_activeGroupClass g = new Edm_activeGroupClass(d.getSubEntity(0));
 
-		Opi_activeGroupClass o = new Opi_activeGroupClass(doc, root, g);
-		XMLFileHandler.writeXML(doc);
+		assertTrue(d.getSubEntity(0) instanceof Edm_activeGroupClass);
+		Edm_activeGroupClass g = (Edm_activeGroupClass)d.getSubEntity(0);
+
+		Context context = new Context(doc, root, 0, 0);
+		Opi_activeGroupClass o = new Opi_activeGroupClass(context, g);
+		//XMLFileHandler.writeXML(doc);
 
 		assertTrue(o instanceof OpiWidget);
 
@@ -55,8 +58,8 @@ public class Opi_activeGroupClassTest extends TestCase {
 			assertEquals("org.csstudio.opibuilder.widgets.Label", subElement00.getAttribute("typeId"));
 			assertEquals("1.0", subElement00.getAttribute("version"));
 			XMLFileHandler.isElementEqual("EDM Label", "name", subElement00);
-			XMLFileHandler.isElementEqual("26", "x", subElement00);
-			XMLFileHandler.isElementEqual("120", "y", subElement00);
+			XMLFileHandler.isElementEqual("18", "x", subElement00);
+			XMLFileHandler.isElementEqual("0", "y", subElement00);
 			XMLFileHandler.isElementEqual("35", "width", subElement00);
 			XMLFileHandler.isElementEqual("13", "height", subElement00);
 			XMLFileHandler.isFontElementEqual("helvetica-bold-r-12.0", "font", subElement00);
@@ -71,8 +74,8 @@ public class Opi_activeGroupClassTest extends TestCase {
 
 			assertEquals("org.csstudio.opibuilder.widgets.groupingContainer", subElement01.getAttribute("typeId"));
 			assertEquals("1.0", subElement01.getAttribute("version"));
-			XMLFileHandler.isElementEqual("108", "x", subElement01);
-			XMLFileHandler.isElementEqual("220", "y", subElement01);
+			XMLFileHandler.isElementEqual("100", "x", subElement01);
+			XMLFileHandler.isElementEqual("100", "y", subElement01);
 			XMLFileHandler.isElementEqual("152", "width", subElement01);
 			XMLFileHandler.isElementEqual("111", "height", subElement01);
 
@@ -84,8 +87,8 @@ public class Opi_activeGroupClassTest extends TestCase {
 				assertEquals("org.csstudio.opibuilder.widgets.Label", subElement010.getAttribute("typeId"));
 				assertEquals("1.0", subElement010.getAttribute("version"));
 				XMLFileHandler.isElementEqual("EDM Label", "name", subElement010);
-				XMLFileHandler.isElementEqual("26", "x", subElement010);
-				XMLFileHandler.isElementEqual("120", "y", subElement010);
+				XMLFileHandler.isElementEqual("-82", "x", subElement010);
+				XMLFileHandler.isElementEqual("-100", "y", subElement010);
 				XMLFileHandler.isElementEqual("35", "width", subElement010);
 				XMLFileHandler.isElementEqual("13", "height", subElement010);
 				XMLFileHandler.isFontElementEqual("helvetica-bold-r-12.0", "font", subElement010);
@@ -100,8 +103,8 @@ public class Opi_activeGroupClassTest extends TestCase {
 
 				assertEquals("org.csstudio.opibuilder.widgets.groupingContainer", subElement011.getAttribute("typeId"));
 				assertEquals("1.0", subElement011.getAttribute("version"));
-				XMLFileHandler.isElementEqual("208", "x", subElement011);
-				XMLFileHandler.isElementEqual("320", "y", subElement011);
+				XMLFileHandler.isElementEqual("100", "x", subElement011);
+				XMLFileHandler.isElementEqual("100", "y", subElement011);
 				XMLFileHandler.isElementEqual("252", "width", subElement011);
 				XMLFileHandler.isElementEqual("211", "height", subElement011);
 
@@ -112,8 +115,8 @@ public class Opi_activeGroupClassTest extends TestCase {
 					assertEquals("org.csstudio.opibuilder.widgets.Label", subElement0110.getAttribute("typeId"));
 					assertEquals("1.0", subElement0110.getAttribute("version"));
 					XMLFileHandler.isElementEqual("EDM Label", "name", subElement0110);
-					XMLFileHandler.isElementEqual("26", "x", subElement0110);
-					XMLFileHandler.isElementEqual("120", "y", subElement0110);
+					XMLFileHandler.isElementEqual("-182", "x", subElement0110);
+					XMLFileHandler.isElementEqual("-200", "y", subElement0110);
 					XMLFileHandler.isElementEqual("35", "width", subElement0110);
 					XMLFileHandler.isElementEqual("13", "height", subElement0110);
 					XMLFileHandler.isFontElementEqual("helvetica-bold-r-12.0", "font", subElement0110);
@@ -128,8 +131,8 @@ public class Opi_activeGroupClassTest extends TestCase {
 				Element subElement012 = (Element)subElement01.getChildNodes().item(groupAttributesCount + 2);
 				assertEquals("org.csstudio.opibuilder.widgets.groupingContainer", subElement012.getAttribute("typeId"));
 				assertEquals("1.0", subElement012.getAttribute("version"));
-				XMLFileHandler.isElementEqual("308", "x", subElement012);
-				XMLFileHandler.isElementEqual("420", "y", subElement012);
+				XMLFileHandler.isElementEqual("200", "x", subElement012);
+				XMLFileHandler.isElementEqual("200", "y", subElement012);
 				XMLFileHandler.isElementEqual("352", "width", subElement012);
 				XMLFileHandler.isElementEqual("311", "height", subElement012);
 
@@ -140,8 +143,8 @@ public class Opi_activeGroupClassTest extends TestCase {
 					assertEquals("org.csstudio.opibuilder.widgets.Label", subElement0120.getAttribute("typeId"));
 					assertEquals("1.0", subElement0120.getAttribute("version"));
 					XMLFileHandler.isElementEqual("EDM Label", "name", subElement0120);
-					XMLFileHandler.isElementEqual("26", "x", subElement0120);
-					XMLFileHandler.isElementEqual("120", "y", subElement0120);
+					XMLFileHandler.isElementEqual("-282", "x", subElement0120);
+					XMLFileHandler.isElementEqual("-300", "y", subElement0120);
 					XMLFileHandler.isElementEqual("35", "width", subElement0120);
 					XMLFileHandler.isElementEqual("13", "height", subElement0120);
 					XMLFileHandler.isFontElementEqual("helvetica-bold-r-12.0", "font", subElement0120);

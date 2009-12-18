@@ -3,7 +3,11 @@ package org.csstudio.opibuilder.converter;
 import junit.framework.TestCase;
 
 import org.csstudio.opibuilder.converter.model.EdmException;
-
+/**
+ * This is a convenience operation test that transforms the example files.
+ * It does not perform any assertions so it will only fail if an exception is thrown
+ * during conversion.   
+ */
 public class EdmConverterTest extends TestCase {
 
 	private static final String edl1 = "src/test/resources/ArcTest.edl";
@@ -15,7 +19,10 @@ public class EdmConverterTest extends TestCase {
 
 	private void setEnvironment() {
 		System.setProperty("edm2xml.colorsFile", colorDefFile);
-		// Enable fail-fast mode for stricter tests.
+		/**
+		 * Enable fail-fast mode for stricter tests.
+		 * Set this to true for the partial conversion in case of exceptions.
+		 */
 		System.setProperty("edm2xml.robustParsing", "false");
 	}
 	

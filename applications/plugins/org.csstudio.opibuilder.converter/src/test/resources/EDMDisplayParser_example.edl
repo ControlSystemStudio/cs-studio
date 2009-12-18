@@ -25,7 +25,6 @@ gridSize 5
 disableScroll
 endScreenProperties
 
-
 # (Rectangle)
 object activeRectangleClass
 beginObjectProperties
@@ -40,6 +39,11 @@ lineColor index 7
 fillColor index 0
 lineWidth 2
 lineStyle "dash"
+invisible
+visPv "$(S)_LLRF:FCM$(N):cavAmpCheck.SEVR"
+visInvert
+visMin "-1.1"
+visMax "10.78"
 endObjectProperties
 
 # (Rectangle)
@@ -69,6 +73,8 @@ h 80
 lineColor index 7
 fillColor index 0
 endObjectProperties
+
+
 
 # (Text Monitor)
 object activeXTextDspClass:noedit
@@ -163,6 +169,10 @@ autoSize
 border
 lineWidth 2
 useDisplayBg
+visPv "$(S)_LLRF:FCM$(N):cavAmpCheck.SEVR"
+visInvert
+visMin "-1.1"
+visMax "10.78"
 endObjectProperties
 
 
@@ -193,7 +203,9 @@ font "helvetica-bold-r-12.0"
 fgColor index 10
 bgColor index 3
 value {
-  "Homed"
+  "Hello"
+  "Multi-line"
+  "World"
 }
 autoSize
 endObjectProperties
@@ -219,3 +231,6 @@ endObjectProperties
 endGroup
 
 endObjectProperties
+
+
+

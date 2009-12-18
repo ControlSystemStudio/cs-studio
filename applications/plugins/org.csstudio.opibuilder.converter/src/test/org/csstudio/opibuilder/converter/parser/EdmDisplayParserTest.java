@@ -48,7 +48,7 @@ public class EdmDisplayParserTest extends TestCase {
 
 		EdmEntity subE = p.getRoot().getSubEntity(0);
 		assertEquals("activeRectangleClass", subE.getType());
-		assertEquals("attribute_count", 11, subE.getAttributeCount());
+		assertEquals("attribute_count", 16, subE.getAttributeCount());
 		assertEquals("4", subE.getAttribute("major").getValue(0));
 		assertEquals("0", subE.getAttribute("minor").getValue(0));
 		assertEquals("0", subE.getAttribute("release").getValue(0));
@@ -156,7 +156,7 @@ public class EdmDisplayParserTest extends TestCase {
 		assertNotNull(subE.getAttribute("visInvert"));
 
 		subE = p.getRoot().getSubEntity(6);
-		assertEquals("attribute_count", 15, subE.getAttributeCount());
+		assertEquals("attribute_count", 19, subE.getAttributeCount());
 		assertEquals("activeXTextClass", subE.getType());
 		assertEquals("4", subE.getAttribute("major").getValue(0));
 		assertEquals("1", subE.getAttribute("minor").getValue(0));
@@ -200,7 +200,9 @@ public class EdmDisplayParserTest extends TestCase {
 			assertEquals("helvetica-bold-r-12.0", subE2.getAttribute("font").getValue(0));
 			assertEquals("index 10", subE2.getAttribute("fgColor").getValue(0));
 			assertEquals("index 3", subE2.getAttribute("bgColor").getValue(0));
-			assertEquals("Homed", subE2.getAttribute("value").getValue(0));
+			assertEquals("Hello", subE2.getAttribute("value").getValue(0));
+			assertEquals("Multi-line", subE2.getAttribute("value").getValue(1));
+			assertEquals("World", subE2.getAttribute("value").getValue(2));
 			assertNotNull(subE2.getAttribute("autoSize"));
 
 			subE2 = subE.getSubEntity(1);
@@ -583,7 +585,7 @@ public class EdmDisplayParserTest extends TestCase {
 		assertEquals("45", subE.getAttribute("y").getValue(0));
 		assertEquals("155", subE.getAttribute("w").getValue(0));
 		assertEquals("42", subE.getAttribute("h").getValue(0));
-		assertEquals("index 123456", subE.getAttribute("lineColor").getValue(0));
+		assertEquals("index 123", subE.getAttribute("lineColor").getValue(0));
 		assertEquals("index 0", subE.getAttribute("fillColor").getValue(0));
 
 		subE = p.getRoot().getSubEntity(1);

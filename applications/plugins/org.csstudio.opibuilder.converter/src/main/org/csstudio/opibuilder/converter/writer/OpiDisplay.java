@@ -7,51 +7,64 @@ import org.w3c.dom.Element;
 /**
  * XML output class for EdmDisplay data.
  * @author Matevz
- *
  */
 public class OpiDisplay {
 
 	private static final String version = "1.0";
+	
+	protected Context context;
 
+	/**
+	 * Converts the EdmDisplay d to OPI display widget XML, together with all
+	 * containing widgets.  
+	 */
 	public OpiDisplay(Document doc, EdmDisplay d, String displayFileName) {
 
 		Element element = doc.createElement("display");
 		element.setAttribute("typeId", "org.csstudio.opibuilder.Display");
 		doc.appendChild(element);
 		
-		writeHeader(doc, element, d);
-		OpiWriter.writeWidgets(doc, element, d.getWidgets());
+		/* Treat position of widgets inside as absolute positions, not relative
+		 * to the display position.
+		 */
+		context = new Context(doc, element, 0, 0);
+		
+		writeHeader(context, d);
+		OpiWriter.writeWidgets(context, d.getWidgets());
 	}
 
-	private void writeHeader(Document doc, Element element, EdmDisplay d) {
+	/**
+	 * Converts the attributes on the display.  
+	 */
+	private void writeHeader(Context con, EdmDisplay d) {
 
-		element.setAttribute("version", version);
+		context.getElement().setAttribute("version", version);
 		
-		new OpiInt(doc, element, "x", d.getX());
-		new OpiInt(doc, element, "y", d.getY());
-		new OpiInt(doc, element, "width", d.getW());
-		new OpiInt(doc, element, "height", d.getH());
+		new OpiInt(context, "x", d.getX());
+		new OpiInt(context, "y", d.getY());
+		new OpiInt(context, "width", d.getW());
+		new OpiInt(context, "height", d.getH());
 		
-		new OpiFont(doc, element, "font", d.getFont());
-		new OpiFont(doc, element, "font_ctl", d.getCtlFont());
-		new OpiFont(doc, element, "font_button", d.getBtnFont());
+		new OpiFont(context, "font", d.getFont());
+		new OpiFont(context, "font_ctl", d.getCtlFont());
+		new OpiFont(context, "font_button", d.getBtnFont());
 		
-		new OpiColor(doc, element, "color_foreground", d.getFgColor());
-		new OpiColor(doc, element, "color_background", d.getBgColor());
-		new OpiColor(doc, element, "color_text", d.getTextColor());
-		new OpiColor(doc, element, "color_ctlFgColor1", d.getCtlFgColor1());
-		new OpiColor(doc, element, "color_ctlFgColor2", d.getCtlFgColor2());
-		new OpiColor(doc, element, "color_ctlBgColor1", d.getCtlBgColor1());
-		new OpiColor(doc, element, "color_ctlBgColor2", d.getCtlBgColor2());
-		new OpiColor(doc, element, "color_topshadowcolor", d.getTopShadowColor());
-		new OpiColor(doc, element, "color_botshadowcolor", d.getBotShadowColor());
+		new OpiColor(context, "color_foreground", d.getFgColor());
+		new OpiColor(context, "color_background", d.getBgColor());
+		new OpiColor(context, "color_text", d.getTextColor());
+		new OpiColor(context, "color_ctlFgColor1", d.getCtlFgColor1());
+		new OpiColor(context, "color_ctlFgColor2", d.getCtlFgColor2());
+		new OpiColor(context, "color_ctlBgColor1", d.getCtlBgColor1());
+		new OpiColor(context, "color_ctlBgColor2", d.getCtlBgColor2());
+		new OpiColor(context, "color_topshadowcolor", d.getTopShadowColor());
+		new OpiColor(context, "color_botshadowcolor", d.getBotShadowColor());
 		
 		if (d.getAttribute("title").isInitialized())
-			new OpiString(doc, element, "name", d.getTitle());
-		new OpiBoolean(doc, element, "grid_show", d.isShowGrid());
+			new OpiString(context, "name", d.getTitle());
+		new OpiBoolean(context, "grid_show", d.isShowGrid());
 		if (d.getAttribute("gridSize").isInitialized())
-			new OpiInt(doc, element, "grid_space", d.getGridSize());
-		new OpiBoolean(doc, element, "scroll_disable", d.isDisableScroll());
+			new OpiInt(context, "grid_space", d.getGridSize());
+		new OpiBoolean(context, "scroll_disable", d.isDisableScroll());
 		
 	}
 

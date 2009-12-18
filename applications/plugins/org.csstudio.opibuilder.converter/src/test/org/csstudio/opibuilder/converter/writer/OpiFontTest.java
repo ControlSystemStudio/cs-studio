@@ -28,11 +28,12 @@ public class OpiFontTest extends TestCase {
 		EdmFont f = new EdmFont(new EdmAttribute(val), true);
 		Element parent = doc.createElement("root");
 		doc.appendChild(parent);
-		new OpiFont(doc, parent, "font", f);
+		Context context = new Context(doc, parent, 0, 0);
+		new OpiFont(context, "font", f);
 		
 		XMLFileHandler.isFontElementEqual(val, "font", parent);
 		
-		XMLFileHandler.writeXML(doc);
+		//XMLFileHandler.writeXML(doc);
 		
 	}
 }

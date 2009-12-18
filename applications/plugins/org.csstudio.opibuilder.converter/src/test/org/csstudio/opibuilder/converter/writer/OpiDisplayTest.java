@@ -23,7 +23,7 @@ public class OpiDisplayTest extends TestCase {
 
 		String edlFile = "src/test/resources/EDMDisplayParser_example.edl";
 		EdmModel.getInstance();
-		EdmDisplay display = new EdmDisplay(EdmModel.getDisplay(edlFile));
+		EdmDisplay display = EdmModel.getDisplay(edlFile);
 
 		new OpiDisplay(doc, display, edlFile);
 
@@ -44,7 +44,7 @@ public class OpiDisplayTest extends TestCase {
 		XMLFileHandler.isColorElementEqual(new EdmColor(14), "color_foreground", e);
 		XMLFileHandler.isColorElementEqual(new EdmColor(3), "color_background", e);
 		XMLFileHandler.isColorElementEqual(new EdmColor(14), "color_text", e);
-		XMLFileHandler.isColorElementEqual(null, 1, 2, 255, 0, 0, 0, "color_ctlFgColor1", e);
+		XMLFileHandler.isColorElementEqual("", 1, 2, 255, 0, 0, 0, "color_ctlFgColor1", e);
 		XMLFileHandler.isColorElementEqual(new EdmColor(30), "color_ctlFgColor2", e);
 		XMLFileHandler.isColorElementEqual(new EdmColor(3), "color_ctlBgColor1", e);
 		XMLFileHandler.isColorElementEqual(new EdmColor(3), "color_ctlBgColor2", e);
@@ -56,7 +56,7 @@ public class OpiDisplayTest extends TestCase {
 		XMLFileHandler.isElementEqual("5", "grid_space", e);
 		XMLFileHandler.isElementEqual("true", "scroll_disable", e);
 
-		XMLFileHandler.writeXML(doc);
+		//XMLFileHandler.writeXML(doc);
 	}
 
 	public void testOptionality() throws EdmException {
@@ -69,7 +69,7 @@ public class OpiDisplayTest extends TestCase {
 
 		String edlFile = "src/test/resources/EDMDisplay_optionals.edl";
 		EdmModel.getInstance();
-		EdmDisplay d = new EdmDisplay(EdmModel.getDisplay(edlFile));
+		EdmDisplay d = EdmModel.getDisplay(edlFile);
 
 		new OpiDisplay(doc, d, edlFile);
 
@@ -89,7 +89,7 @@ public class OpiDisplayTest extends TestCase {
 		XMLFileHandler.isColorElementEqual(new EdmColor(14), "color_foreground", e);
 		XMLFileHandler.isColorElementEqual(new EdmColor(3), "color_background", e);
 		XMLFileHandler.isColorElementEqual(new EdmColor(14), "color_text", e);
-		XMLFileHandler.isColorElementEqual(null, 1, 2, 255, 0, 0, 0, "color_ctlFgColor1", e);
+		XMLFileHandler.isColorElementEqual("", 1, 2, 255, 0, 0, 0, "color_ctlFgColor1", e);
 		XMLFileHandler.isColorElementEqual(new EdmColor(30), "color_ctlFgColor2", e);
 		XMLFileHandler.isColorElementEqual(new EdmColor(3), "color_ctlBgColor1", e);
 		XMLFileHandler.isColorElementEqual(new EdmColor(3), "color_ctlBgColor2", e);
@@ -97,15 +97,12 @@ public class OpiDisplayTest extends TestCase {
 		XMLFileHandler.isColorElementEqual(new EdmColor(11), "color_botshadowcolor", e);
 
 		// should be missing!
-		//assertEquals(0, e.getElementsByTagName("name").getLength());
+		//assertFalse(XMLFileHandler.isChildElement("name", e));
 		XMLFileHandler.isElementEqual("true", "grid_show", e);
 		// should be missing!
-		assertEquals(0, e.getElementsByTagName("grid_space").getLength());
+		assertFalse(XMLFileHandler.isChildElement("grid_space", e));
 		XMLFileHandler.isElementEqual("true", "scroll_disable", e);
-
-
 		{
-
 			e = (Element)doc.getElementsByTagName("widget").item(0);
 			assertEquals("org.csstudio.opibuilder.widgets.Rectangle", e.getAttribute("typeId"));
 			assertEquals("1.0", e.getAttribute("version"));
@@ -119,7 +116,7 @@ public class OpiDisplayTest extends TestCase {
 
 			XMLFileHandler.isColorElementEqual(new EdmColor(7), "border_color", e);
 			// should be missing!
-			assertEquals(0, e.getElementsByTagName("color_background").getLength());
+			assertFalse(XMLFileHandler.isChildElement("color_background", e));
 			XMLFileHandler.isElementEqual("0", "border_style", e);
 		}
 
@@ -129,7 +126,7 @@ public class OpiDisplayTest extends TestCase {
 			assertEquals("org.csstudio.opibuilder.widgets.TextUpdate", e.getAttribute("typeId"));
 			assertEquals("1.0", e.getAttribute("version"));
 
-			XMLFileHandler.writeXML(doc);
+			//XMLFileHandler.writeXML(doc);
 
 			XMLFileHandler.isElementEqual("EDM Text Update", "name", e);
 			XMLFileHandler.isElementEqual("490", "x", e);
@@ -145,10 +142,10 @@ public class OpiDisplayTest extends TestCase {
 
 			XMLFileHandler.isFontElementEqual("courier-medium-r-16.0", "font", e);
 			// should be missing!
-			assertEquals(0, e.getElementsByTagName("font_align").getLength());
+			assertFalse(XMLFileHandler.isChildElement("font_align", e));
 
 			// should be missing!
-			assertEquals(0, e.getElementsByTagName("border_width").getLength());
+			assertFalse(XMLFileHandler.isChildElement("border_width", e));
 			XMLFileHandler.isElementEqual("false", "foregroundcolor_alarmsensitive", e);
 			XMLFileHandler.isElementEqual("false", "border_alarmsensitive", e);
 		}

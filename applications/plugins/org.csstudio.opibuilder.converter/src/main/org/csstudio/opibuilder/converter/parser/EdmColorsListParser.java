@@ -26,11 +26,14 @@ public class EdmColorsListParser extends EdmParser {
 	 */
 	public EdmColorsListParser(String fileName) throws EdmException {
 		super(fileName);
-		parseStaticColors(getRoot(), edmData.toString());
+		
+		String data = edmData.toString();
+		parseStaticColors(getRoot(), data);
+		parseMenuMap(getRoot(), data);
 	}
 
 	/**
-	 * Parses EdmColorsList data into EdmEntity.
+	 * Parses static colors to EdmAttributes on parent.
 	 * 
 	 * @param parent EdmEntity which will contain EdmColorsList data.
 	 * @param data Data containing EdmColors.
@@ -132,6 +135,30 @@ public class EdmColorsListParser extends EdmParser {
 				else 
 					log.error("Error when parsing color attribute. Attribute skipped.");
 			}
+		}
+	}
+
+	/**
+	 * Parses menumap order of colors into ordered EdmEntity objects on parent.
+	 * 
+	 * @param parent EdmEntity which will contain data.
+	 * @param data Data containing EdmColors.
+	 * @throws EdmException if there is an invalid format given. If parsing is robust,
+	 * 		no exception is thrown, but erroneous color definition is ignored.
+	 */
+	private void parseMenuMap(EdmEntity parent, String data) throws EdmException  {
+
+		Pattern p = Pattern.compile("menumap\\s*[{](.*)[}]", Pattern.DOTALL);	// get menumap content
+		Matcher m = p.matcher(data);
+		
+		if (m.find()) {
+			p = Pattern.compile("\\s*[\"](.*)[\"]");	// get menumap content
+			Matcher nameMatcher = p.matcher(m.group(1));
+			while (nameMatcher.find()) {
+				parent.addSubEntity(new EdmEntity(nameMatcher.group(1)));
+			}
+		} else {
+			log.warn("Warning: no menumap found in colors definition file.");
 		}
 	}
 }

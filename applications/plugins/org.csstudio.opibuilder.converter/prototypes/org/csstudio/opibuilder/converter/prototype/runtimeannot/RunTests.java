@@ -37,11 +37,13 @@ import java.lang.reflect.*;
 public class RunTests {
 	public static void main(String[] args) throws Exception {
 		int passed = 0, failed = 0;
+
+		Foo foo = new MegaFoo();
 		
-		for (Method m : Class.forName(args[0]).getMethods()) {
+		for (Method m : Foo.class.getMethods()) {
 			if (m.isAnnotationPresent(Test.class)) {
 				try {
-					m.invoke(null);
+					m.invoke(foo);
 					passed++;
 				} catch (Throwable ex) {
 					System.out.printf("Test %s failed: %s %n", m, ex.getCause());
@@ -50,5 +52,11 @@ public class RunTests {
 			}
 		}
 		System.out.printf("Passed: %d, Failed %d%n", passed, failed);
+
+		for (Field f : foo.getClass().getDeclaredFields()) {
+			if (f.isAnnotationPresent(Test.class)) {
+				System.out.printf("Found field: %s\n", f.getName());
+			}
+		}
 	}
 }

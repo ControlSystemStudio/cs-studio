@@ -47,7 +47,7 @@ public class OpiWriterTest extends TestCase {
 			XMLFileHandler.isColorElementEqual(new EdmColor(14), "color_foreground", e);
 			XMLFileHandler.isColorElementEqual(new EdmColor(3), "color_background", e);
 			XMLFileHandler.isColorElementEqual(new EdmColor(14), "color_text", e);
-			XMLFileHandler.isColorElementEqual(null, 1, 2, 255, 0, 0, 0, "color_ctlFgColor1", e);
+			XMLFileHandler.isColorElementEqual("", 1, 2, 255, 0, 0, 0, "color_ctlFgColor1", e);
 			XMLFileHandler.isColorElementEqual(new EdmColor(30), "color_ctlFgColor2", e);
 			XMLFileHandler.isColorElementEqual(new EdmColor(3), "color_ctlBgColor1", e);
 			XMLFileHandler.isColorElementEqual(new EdmColor(3), "color_ctlBgColor2", e);
@@ -123,14 +123,14 @@ public class OpiWriterTest extends TestCase {
 			assertEquals("org.csstudio.opibuilder.widgets.Label", e.getAttribute("typeId"));
 			assertEquals("1.0", e.getAttribute("version"));
 			XMLFileHandler.isElementEqual("EDM Label", "name", e);
-			XMLFileHandler.isElementEqual("26", "x", e);
-			XMLFileHandler.isElementEqual("120", "y", e);
+			XMLFileHandler.isElementEqual("18", "x", e);
+			XMLFileHandler.isElementEqual("0", "y", e);
 			XMLFileHandler.isElementEqual("35", "width", e);
 			XMLFileHandler.isElementEqual("13", "height", e);
 			XMLFileHandler.isFontElementEqual("helvetica-bold-r-12.0", "font", e);
 			XMLFileHandler.isColorElementEqual(new EdmColor(10), "color_foreground", e);
 			XMLFileHandler.isColorElementEqual(new EdmColor(3), "color_background", e);
-			XMLFileHandler.isElementEqual("Homed", "text", e);
+			XMLFileHandler.isElementEqual("Hello\rMulti-line\rWorld", "text", e);
 			XMLFileHandler.isElementEqual("true", "auto_size", e);
 			XMLFileHandler.isElementEqual("0", "border_style", e);
 			XMLFileHandler.isElementEqual("false", "transparency", e);

@@ -1,23 +1,25 @@
 package org.csstudio.opibuilder.converter.writer;
 
 import org.csstudio.opibuilder.converter.model.EdmString;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /**
  * XML output class for EdmString type.
- * Creates an element: <name>stringValue</name>
  * @author Matevz
- *
  */
 public class OpiString extends OpiAttribute {
 
-	public OpiString(Document doc, Element parent, String name, EdmString s) {
-		this(doc, parent, name, s.get());
+	/**
+	 * Creates an element <name>stringValue</name> with the given EdmString value.
+	 */
+	public OpiString(Context con, String name, EdmString s) {
+		this(con, name, s.get());
 	}
 	
-	public OpiString(Document doc, Element parent, String name, String s) {
-		super(doc, parent, name);
-		element.appendChild(doc.createTextNode(String.valueOf(s)));
+	/**
+	 * Creates an element <name>stringValue</name> with the given String value.
+	 */
+	public OpiString(Context con, String name, String s) {
+		super(con, name);
+		context.getElement().appendChild(con.getDocument().createTextNode(String.valueOf(s)));
 	}
 }

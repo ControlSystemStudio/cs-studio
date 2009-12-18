@@ -33,16 +33,20 @@ package org.csstudio.opibuilder.converter.prototype.runtimeannot;
  *
  */
 public class Foo {
-    @Test public static void m1() { }
-    public static void m2() { }
-    @Test public static void m3() {
+
+	@Test public String field1;
+	@Test public String field2;
+	@Test public String field3;
+	
+	@Test public void m1() { }
+    public void m2() { }
+    @Test public void m3() {
         throw new RuntimeException("Boom");
     }
-    public static void m4() { }
-    @Test public static void m5() { }
-    public static void m6() { }
-    @Test public static void m7() {
+    public void m4() { }
+    @Test public void m5() { }
+    public void m6() { }
+    @Test public void m7() {
         throw new RuntimeException("Crash");
     }
-    public static void m8() { }
 }

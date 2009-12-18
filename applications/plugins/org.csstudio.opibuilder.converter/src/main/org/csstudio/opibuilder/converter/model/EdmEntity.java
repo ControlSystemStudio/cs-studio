@@ -1,7 +1,6 @@
 package org.csstudio.opibuilder.converter.model;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -40,101 +39,118 @@ public class EdmEntity extends Object {
 	 * be parsed and replaced with specific extensions of EdmAttribute and EdmWidget
 	 * instances. 
 	 * 
-	 * @param copy EdmEntity to copy.
+	 * @param genericEntity EdmEntity to copy.
 	 * @throws EdmException if there is a parsing error.
 	 */
-	public EdmEntity(EdmEntity copy) throws EdmException {
+	public EdmEntity(EdmEntity genericEntity) throws EdmException {
+
+		// Multiple specializations test.
+		if (!genericEntity.getClass().equals(EdmEntity.class)) {
+			throw new EdmException(EdmException.SPECIFIC_PARSING_ERROR,
+			"Trying to initialize from an already specialized entity.");
+		}
 
 		attributeMap = new HashMap<String, EdmAttribute>();
 		subEntities = new Vector<EdmEntity>();
-		this.type = copy.type;
+		this.type = genericEntity.type;
 
-		for (String key : copy.getAttributeIdSet())
-			attributeMap.put(key, copy.getAttribute(key));
+		for (String key : genericEntity.getAttributeIdSet())
+			attributeMap.put(key, genericEntity.getAttribute(key));
 
-		for (int i = 0; i < copy.getSubEntityCount(); i++)
-			subEntities.add(new EdmEntity(copy.getSubEntity(i)));
+		for (int i = 0; i < genericEntity.getSubEntityCount(); i++)
+			subEntities.add(new EdmEntity(genericEntity.getSubEntity(i)));
 
 		String className = this.getClass().getName();
 		Logger log = Logger.getLogger(className);
 		log.debug("Parsing specific " + className + ".");
 
 		try {
-			for (Field f : this.getClass().getDeclaredFields()) {
-				if (f.isAnnotationPresent(EdmAttributeAn.class)) {
+			Class<?> entitySubClass = this.getClass();
 
-					// new, specific attribute id(name) & instance
-					String			name = f.getName();
-					EdmAttribute	a = null;
-					boolean			isEdmAttribute = true;	// if attribute has been initialized
+			while (entitySubClass != null) {
 
-					boolean required = true;
-					if (f.isAnnotationPresent(EdmOptionalAn.class)) {
-						log.debug("Parsing optional property: " + name);
-						required = false;
+				for (Field f : entitySubClass.getDeclaredFields()) {
+					if (f.isAnnotationPresent(EdmAttributeAn.class)) {
+
+						// new, specific attribute id(name) & instance
+						String name = f.getName();
+						EdmAttribute a = null;
+						boolean isEdmAttribute = true;	// if attribute has been initialized
+
+						boolean required = true;
+						if (f.isAnnotationPresent(EdmOptionalAn.class)) {
+							log.debug("Parsing optional property: " + name);
+							required = false;
+						}
+						else {
+							log.debug("Parsing required property: " + name);
+						}
+
+						f.setAccessible(true);
+
+						// Initialize primitive fields using corresponding EdmAtrtibute classes.
+						if (f.getType().equals(int.class)) {
+							EdmInt i = new EdmInt(getAttribute(name), required);
+							setAttribute(name, i);
+							f.set(this, i.get());
+							isEdmAttribute = false;
+						}
+
+						else if (f.getType().equals(boolean.class)) {
+							EdmBoolean b = new EdmBoolean(getAttribute(name), required);
+							setAttribute(name, b);
+							f.set(this, b.is());
+							isEdmAttribute = false;
+						}
+
+						else if (f.getType().equals(double.class)) {
+							EdmDouble d = new EdmDouble(getAttribute(name), required);
+							setAttribute(name, d);
+							f.set(this, d.get());
+							isEdmAttribute = false;
+						}
+
+						else if (f.getType().equals(String.class)) {
+							EdmString s = new EdmString(getAttribute(name), required);
+							setAttribute(name, s);
+							f.set(this, s.get());
+							isEdmAttribute = false;
+						}
+
+						// Specialize sub-entities recursively.
+						else if (f.getType().equals(Vector.class)) {
+							f.set(this, parseWidgets());
+							isEdmAttribute = false;
+						}
+
+						// Initialize non-primitive fields - EdmAttribute subclasses. 
+						else if (EdmAttribute.class.isAssignableFrom(f.getType())){
+
+							Object attribute = f.getType().getConstructor(EdmAttribute.class, boolean.class)
+							.newInstance(getAttribute(name), required);
+
+							if (attribute instanceof EdmAttribute) {
+								a = (EdmAttribute)attribute;
+							} else {
+								isEdmAttribute = false;
+							}
+
+						} else {
+							isEdmAttribute = false;
+							log.warn("Property type not mapped!");
+						}
+
+
+						if (isEdmAttribute) {
+							setAttribute(name, a);
+							f.set(this, a);
+						}
+
+						f.setAccessible(false);
 					}
-					else
-						log.debug("Parsing required property: " + name);
-
-
-					f.setAccessible(true);
-
-					if (f.getType().equals(EdmInt.class))
-						a = new EdmInt(getAttribute(name), required);
-
-					else if (f.getType().equals(int.class)) {
-						EdmInt i = new EdmInt(getAttribute(name), required);
-						setAttribute(name, i);
-						f.set(this, i.get());
-						isEdmAttribute = false;
-					}
-
-					else if (f.getType().equals(EdmString.class))
-						a = new EdmString(getAttribute(name), required);
-
-					else if (f.getType().equals(String.class)) {
-						EdmString s = new EdmString(getAttribute(name), required);
-						setAttribute(name, s);
-						f.set(this, s.get());
-						isEdmAttribute = false;
-					}
-
-					else if (f.getType().equals(EdmColor.class))
-						a = new EdmColor(getAttribute(name), required);//EdmColor.parseColor(this, name);
-
-					else if (f.getType().equals(EdmFont.class))
-						a = new EdmFont(getAttribute(name), required);
-
-					else if (f.getType().equals(EdmBoolean.class))
-						a =  new EdmBoolean(getAttribute(name));
-
-					else if (f.getType().equals(boolean.class)) {
-						EdmBoolean b = new EdmBoolean(getAttribute(name));
-						setAttribute(name, b);
-						f.set(this, b.is());
-						isEdmAttribute = false;
-					}
-					else if (f.getType().equals(EdmLineStyle.class))
-						a =  new EdmLineStyle(getAttribute(name), required);
-
-					else if (f.getType().equals(Vector.class)) {
-						f.set(this, parseWidgets());
-						isEdmAttribute = false;
-					}
-
-					else {
-						isEdmAttribute = false;
-						log.warn("Property type not mapped!");
-					}
-
-
-					if (isEdmAttribute) {
-						setAttribute(name, a);
-						f.set(this, a);
-					}
-
-					f.setAccessible(false);
 				}
+
+				entitySubClass = entitySubClass.getSuperclass();
 			}
 		} catch (Exception e) {
 			if (e instanceof EdmException)
@@ -238,19 +254,8 @@ public class EdmEntity extends Object {
 		return type;
 	}
 
-
 	/**
 	 * Parses specific widget data from its parent EdmEntity.
-	 *
-	 * @return a vector of parsed EdmWidgets in given EdmEntity.
-	 * @throws EdmException there is an invalid data.
-	 * @throws ClassNotFoundException
-	 * @throws NoSuchMethodException
-	 * @throws InvocationTargetException
-	 * @throws IllegalAccessException
-	 * @throws InstantiationException
-	 * @throws SecurityException
-	 * @throws IllegalArgumentException
 	 */
 	private Vector<EdmEntity> parseWidgets()  {
 

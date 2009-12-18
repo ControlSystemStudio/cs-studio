@@ -40,18 +40,27 @@ public class Edm_activeXTextClassTest extends TestCase {
 		EdmComparator.isColorEqual(new EdmColor(3), t.getBgColor());
 		assertTrue(t.getAttribute("bgColor") instanceof EdmColor);
 
-		assertEquals("At low", t.getValue());
-		assertTrue(t.getAttribute("value") instanceof EdmString);
+		assertEquals("At low", t.getValue().get());
+		assertTrue(t.getAttribute("value") instanceof EdmMultilineText);
 		assertEquals(true, t.isAutoSize());
 		assertTrue(t.getAttribute("autoSize") instanceof EdmBoolean);
 
 		assertEquals(true, t.isBorder());
 		assertTrue(t.getAttribute("border") instanceof EdmBoolean);
-		assertEquals(2, t.getLineWidth().get());
+		assertEquals(2, t.getLineWidth());
 		assertTrue(t.getAttribute("lineWidth") instanceof EdmInt);
 		assertEquals(true, t.isUseDisplayBg());
 		assertTrue(t.getAttribute("useDisplayBg") instanceof EdmBoolean);
 
+		assertEquals("$(S)_LLRF:FCM$(N):cavAmpCheck.SEVR", t.getVisPv());
+		assertTrue(t.getAttribute("visPv") instanceof EdmString);
+		assertEquals(-1.1, t.getVisMin());
+		assertTrue(t.getAttribute("visMin") instanceof EdmDouble);
+		assertEquals(10.78, t.getVisMax());
+		assertTrue(t.getAttribute("visMax") instanceof EdmDouble);
+		assertTrue(t.isVisInvert());
+		assertTrue(t.getAttribute("visInvert") instanceof EdmBoolean);
+		
 		e = d.getSubEntity(7).getSubEntity(0);
 		assertTrue(e instanceof Edm_activeXTextClass);
 		t = (Edm_activeXTextClass)e;
@@ -79,15 +88,15 @@ public class Edm_activeXTextClassTest extends TestCase {
 		EdmComparator.isColorEqual(new EdmColor(3), t.getBgColor());
 		assertTrue(t.getAttribute("bgColor") instanceof EdmColor);
 
-		assertEquals("Homed", t.getValue());
-		assertTrue(t.getAttribute("value") instanceof EdmString);
+		assertEquals("Hello\rMulti-line\rWorld", t.getValue().get());
+		assertTrue(t.getAttribute("value") instanceof EdmMultilineText);
 		assertEquals(true, t.isAutoSize());
 		assertTrue(t.getAttribute("autoSize") instanceof EdmBoolean);
 
 		assertEquals(false, t.isBorder());
 		assertTrue(t.getAttribute("border") instanceof EdmBoolean);
 
-		assertFalse(t.getLineWidth().isInitialized());
+		assertFalse(t.getAttribute("lineWidth").isInitialized());
 
 		assertEquals(false, t.isUseDisplayBg());
 		assertTrue(t.getAttribute("useDisplayBg") instanceof EdmBoolean);

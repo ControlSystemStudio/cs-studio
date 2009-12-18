@@ -34,6 +34,10 @@ x 8
 y 120
 w 52
 h 11
+visPv "$(S)_LLRF:FCM$(N):cavAmpCheck.SEVR"
+visInvert
+visMin "-1.1"
+visMax "10.78"
 
 beginGroup
 

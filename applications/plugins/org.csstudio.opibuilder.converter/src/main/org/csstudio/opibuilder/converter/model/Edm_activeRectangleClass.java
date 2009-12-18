@@ -18,10 +18,16 @@ public class Edm_activeRectangleClass extends EdmWidget {
 	@EdmAttributeAn private int h;
 
 	@EdmAttributeAn private EdmColor lineColor;
-	@EdmAttributeAn @EdmOptionalAn private EdmInt lineWidth;
+	@EdmAttributeAn @EdmOptionalAn private int lineWidth;
 	@EdmAttributeAn @EdmOptionalAn private EdmLineStyle lineStyle;
 	
 	@EdmAttributeAn @EdmOptionalAn private EdmColor fillColor;
+	
+	@EdmAttributeAn @EdmOptionalAn private boolean invisible;
+	@EdmAttributeAn @EdmOptionalAn private String visPv;
+	@EdmAttributeAn @EdmOptionalAn private double visMax;
+	@EdmAttributeAn @EdmOptionalAn private double visMin;
+	@EdmAttributeAn @EdmOptionalAn private boolean visInvert;
 
 	public Edm_activeRectangleClass(EdmEntity genericEntity) throws EdmException {
 		super(genericEntity);
@@ -59,7 +65,7 @@ public class Edm_activeRectangleClass extends EdmWidget {
 		return lineColor;
 	}
 
-	public EdmInt getLineWidth() {
+	public int getLineWidth() {
 		return lineWidth;
 	}
 
@@ -69,5 +75,25 @@ public class Edm_activeRectangleClass extends EdmWidget {
 
 	public EdmColor getFillColor() {
 		return fillColor;
+	}
+
+	public boolean isInvisible() {
+		return invisible;
+	}
+
+	public String getVisPv() {
+		return visPv;
+	}
+
+	public double getVisMax() {
+		return visMax;
+	}
+
+	public double getVisMin() {
+		return visMin;
+	}
+
+	public boolean isVisInvert() {
+		return visInvert;
 	}
 }

@@ -1,7 +1,12 @@
 package org.csstudio.opibuilder.converter.model;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
+
+import org.apache.log4j.Logger;
 
 /**
  * Specific class containing a list of EdmColor instances, parsed from
@@ -12,18 +17,21 @@ import java.util.Map;
  */
 public class EdmColorsList extends EdmEntity {
 
+	private static Logger log = Logger.getLogger("org.csstudio.opibuilder.converter.model.EdmColorsList");
+
 	private Map<Integer, EdmColor> colorsMap;
-	
+	private Map<String, EdmColor> colorsNameMap;
+	private Map<Integer, EdmColor> menuColorsMap;
+
 	/**
 	 * Constructor which parses EdmColors from general EdmEntity interface.
-	 * @param copy EdmEntity containing EdmColorsList data.
+	 * @param genericEntity EdmEntity containing EdmColorsList data.
 	 * @throws EdmException if an error occurs when parsing EdmColor data.
 	 */
-	public EdmColorsList(EdmEntity copy) throws EdmException {
-		super(copy);
-		colorsMap = new HashMap<Integer, EdmColor>();
-		
-		getSpecificColors(copy);
+	public EdmColorsList(EdmEntity genericEntity) throws EdmException {
+		super(genericEntity);
+		populateColorsMaps(genericEntity);
+		populateMenuColorsMap(genericEntity);
 	}
 
 	/**
@@ -32,13 +40,52 @@ public class EdmColorsList extends EdmEntity {
 	 * @param genericColors EdmEntity containing EdmColorsList data.
 	 * @throws EdmException if any of EdmAttributes contain invalid EdmColor data.
 	 */
-	private void getSpecificColors(EdmEntity genericColors) throws EdmException {
+	private void populateColorsMaps(EdmEntity genericColors) throws EdmException {
+		colorsMap = new HashMap<Integer, EdmColor>();
+		colorsNameMap = new HashMap<String, EdmColor>();
+	
 		// parse subentities of generic ColorsList EdmEntity; 
 		// each subentity should be generic EdmColor
 		for (String id : genericColors.getAttributeIdSet()) {
 			int index = Integer.parseInt(id);
-			EdmColor c = new EdmColor(genericColors.getAttribute(id), true);
-			colorsMap.put(index, c);
+			EdmColor color = new EdmColor(genericColors.getAttribute(id), true);
+			colorsMap.put(index, color);
+			colorsNameMap.put(color.getName(), color);
+		}
+	}
+
+	/**
+	 * Method iterates through EdmEntity sub-entities and populates the menu map.
+	 */
+	private void populateMenuColorsMap(EdmEntity colorsData) throws EdmException {
+
+		menuColorsMap = new HashMap<Integer, EdmColor>();
+		
+		// Create a set of all defined colors to check if they are all in the menumap.
+		Set<EdmColor> nonMenuColors = new HashSet<EdmColor>(colorsMap.values());
+		
+		int menuInd = 0;
+		for (int entityInd = 0; entityInd < colorsData.getSubEntityCount(); entityInd++) {
+			EdmEntity entity = colorsData.getSubEntity(entityInd);
+			String colorName = entity.getType();
+			EdmColor color = colorsNameMap.get(colorName);
+
+			if (color != null) {
+				menuColorsMap.put(menuInd, color);
+				nonMenuColors.remove(color);
+				menuInd++;
+			} else  {
+				log.warn("Menumap contains an undefined color: " + colorName);
+			}
+		}
+		
+		if (!nonMenuColors.isEmpty()) {
+			log.warn("Color definitions exist that are not in menumap. Adding them at the end.");
+			Iterator<EdmColor> iterator = nonMenuColors.iterator();
+			while (iterator.hasNext()) {
+				menuColorsMap.put(menuInd, iterator.next());
+				menuInd++;
+			}
 		}
 	}
 
@@ -56,7 +103,21 @@ public class EdmColorsList extends EdmEntity {
 	}
 
 	/**
-	 * Maps static color with specified index.
+	 * Returns the number of colors in the menumap.
+	 */
+	public int getMenuColorCount() {
+		return menuColorsMap.size();
+	}
+
+	/**
+	 * Returns the color at the given index in menumap.
+	 */
+	public EdmColor getMenuColor(int index) {
+		return menuColorsMap.get(index);
+	}
+	
+	/**
+	 * Maps static color with specified index. This method is only for test purposes.
 	 * @param index Index of static color.
 	 * @param c Static EdmColor.
 	 */

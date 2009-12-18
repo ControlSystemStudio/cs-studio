@@ -17,21 +17,19 @@ public class EdmBoolean extends EdmAttribute {
 	/**
 	 * Constructor, which parses boolean property from EdmAttribute general interface.
 	 * 
-	 * @param copy	EdmAttribute containing boolean data.
+	 * @param genericAttribute	EdmAttribute containing boolean data.
+	 * @param required false if this attribute is optional, else true
 	 * @throws EdmException	Throws exception when data from EdmAttribute is not of valid format.
 	 */
-	public EdmBoolean(EdmAttribute copy) throws EdmException {
-		super(copy);
+	public EdmBoolean(EdmAttribute genericAttribute, boolean required) throws EdmException {
+		super(genericAttribute);
+		
+		setRequired(required);
 		
 		// If Edm attribute is present then it is true, else false.
-		if (copy != null) {
+		if (genericAttribute != null) {
 			val = true;
 		} else {
-			val = false;
-		}
-		
-		// TODO: Temporary fix for multiple specializations, remove when fixed.
-		if (copy instanceof EdmBoolean && !((EdmBoolean)copy).is()) {
 			val = false;
 		}
 		

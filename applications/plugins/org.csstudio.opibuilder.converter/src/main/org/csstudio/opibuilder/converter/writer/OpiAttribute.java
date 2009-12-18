@@ -1,23 +1,25 @@
 package org.csstudio.opibuilder.converter.writer;
 
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
  * General OPI output class for EdmAttribute.
- * Creates an empty element: <name></name>
  * @author Matevz
- *
- */
+*/
 public class OpiAttribute {
 
-	protected Element element;
+	protected Context context;
 	
-	public OpiAttribute(Document doc, Element parent, String name) {
-		
-		this.element = doc.createElement(name);
-	    parent.appendChild(element);
-	    
-	}
+	/**
+	 * Appends an element with the given name to current element and
+	 * sets the local context to this element.  
+	 */
+	public OpiAttribute(Context con, String name) {
 
+		Element element = con.getDocument().createElement(name);
+	    con.getElement().appendChild(element);
+		
+	    // Move context to this object. 
+		this.context = new Context(con.getDocument(), element, con.getX(), con.getY());
+	}
 }

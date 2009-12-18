@@ -73,7 +73,7 @@ public class EdmColorTest extends TestCase {
 
 		EdmColor c = new EdmColor(new EdmAttribute("rgb 1 2 3"), true);
 
-		assertEquals("", c.getName());
+		assertEquals(null, c.getName());
 		assertEquals(1, c.getRed());
 		assertEquals(2, c.getGreen());
 		assertEquals(3, c.getBlue());

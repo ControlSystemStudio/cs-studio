@@ -20,14 +20,11 @@ public class OpiWidgetTest extends TestCase {
 		
 		Element parent = doc.createElement("root");
 		doc.appendChild(parent);
-		new OpiWidget(doc, parent, widgetType);
+		Context context = new Context(doc, parent, 0, 0);
+		new OpiWidget(context);
 		
-		// testing
-		Element x = (Element)doc.getElementsByTagName("widget").item(0);
-		assertTrue(x.hasAttribute("typeId"));
-		assertEquals("org.csstudio.opibuilder.widgets." + widgetType, x.getAttribute("typeId"));
+		// Input tests here when there will be some implementation.
 		
-		XMLFileHandler.writeXML(doc);
-		
+		//XMLFileHandler.writeXML(doc);
 	}
 }

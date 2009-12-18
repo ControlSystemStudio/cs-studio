@@ -8,25 +8,25 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import junit.framework.TestCase;
 
 import org.csstudio.opibuilder.converter.model.EdmAttribute;
 import org.csstudio.opibuilder.converter.model.EdmColor;
 import org.csstudio.opibuilder.converter.model.EdmException;
 import org.csstudio.opibuilder.converter.model.EdmFont;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
-
-
-import junit.framework.TestCase;
-
-/* This is a helper class to for XML related test case classes.
+/** This is a helper class to for XML related test case classes.
  */
 public class XMLFileHandler extends TestCase {
 
-	// A dummy method to prevent a warning that this TestCase has no tests. 
+	/**
+	 *  A dummy method to prevent a warning that this TestCase has no tests.
+	 */
 	public void testDummy() {
 	}
 	
@@ -140,5 +140,19 @@ public class XMLFileHandler extends TestCase {
 			s = s + 1;
 		String style = String.valueOf(s);
 		assertEquals(style, fontElement.getAttribute("style"));
+	}
+	
+	/** Returns true if parent element has a child element with the given name.
+	 *  Descendants of children are ignored.
+	 */
+	public static boolean isChildElement(String childName, Element parent) {
+		Node node = parent.getFirstChild();
+		while (node != null) {
+			if (childName.equals(((Element)node).getLocalName())) {
+				return true;
+			}
+			node = node.getNextSibling();
+		}
+		return false;		
 	}
 }

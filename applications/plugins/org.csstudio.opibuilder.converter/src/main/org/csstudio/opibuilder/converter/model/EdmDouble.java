@@ -17,15 +17,16 @@ public class EdmDouble extends EdmAttribute {
 	/**
 	 * Constructor, which parses double property from EdmAttribute general interface.
 	 * 
-	 * @param copy	EdmAttribute containing double format data.
+	 * @param genericAttribute	EdmAttribute containing double format data.
+	 * @param required false if this attribute is optional, else true
 	 * @throws EdmException	if data from EdmAttribute of invalid format.
 	 */
-	public EdmDouble(EdmAttribute copy, boolean required) throws EdmException {
-		super(copy);
+	public EdmDouble(EdmAttribute genericAttribute, boolean required) throws EdmException {
+		super(genericAttribute);
 		
 		setRequired(required);
 		
-		if (copy == null || getValueCount() == 0) {
+		if (genericAttribute == null || getValueCount() == 0) {
 			if (isRequired())
 				throw new EdmException(EdmException.REQUIRED_ATTRIBUTE_MISSING,
 						"Trying to initialize a required attribute from null object.");
@@ -35,10 +36,10 @@ public class EdmDouble extends EdmAttribute {
 			}
 		}
 		
-		if (copy != null)
+		if (genericAttribute != null)
 		{
 			try {
-				val = Double.parseDouble(copy.getValue(0));
+				val = Double.parseDouble(genericAttribute.getValue(0));
 				setInitialized(true);
 				log.debug("Parsed " + this.getClass().getName() + 
 						" = " + val);

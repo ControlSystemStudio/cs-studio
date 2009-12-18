@@ -27,7 +27,7 @@ public class Edm_TextupdateClass extends EdmWidget {
 	@EdmAttributeAn @EdmOptionalAn private String fontAlign;
 
 	@EdmAttributeAn @EdmOptionalAn private int lineWidth;
-	@EdmAttributeAn private boolean lineAlarm;
+	@EdmAttributeAn @EdmOptionalAn private boolean lineAlarm;
 
 	@EdmAttributeAn @EdmOptionalAn private boolean fgAlarm;
 	

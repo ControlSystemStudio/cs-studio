@@ -23,10 +23,12 @@ public class Opi_activeRectangleClassTest extends TestCase {
 
 		String edlFile = "src/test/resources/EDMDisplayParser_example.edl";
 		EdmModel.getInstance();
-		EdmDisplay d = new EdmDisplay(EdmModel.getDisplay(edlFile));
-		Edm_activeRectangleClass r = new Edm_activeRectangleClass(d.getSubEntity(0));
+		EdmDisplay d = EdmModel.getDisplay(edlFile);
+		assertTrue(d.getSubEntity(0) instanceof Edm_activeRectangleClass);
+		Edm_activeRectangleClass r = (Edm_activeRectangleClass)d.getSubEntity(0);
 
-		Opi_activeRectangleClass o = new Opi_activeRectangleClass(doc, root, r);
+		Context context = new Context(doc, root, 0, 0);
+		Opi_activeRectangleClass o = new Opi_activeRectangleClass(context, r);
 		assertTrue(o instanceof OpiWidget);
 
 		Element e = (Element)doc.getElementsByTagName("widget").item(0);
@@ -46,7 +48,9 @@ public class Opi_activeRectangleClassTest extends TestCase {
 		XMLFileHandler.isElementEqual("9", "border_style", e);
 		XMLFileHandler.isElementEqual("2", "border_width", e);
 
-		XMLFileHandler.writeXML(doc);
+		XMLFileHandler.isElementEqual("false", "visible", e);
+		
+		//XMLFileHandler.writeXML(doc);
 	}
 
 }
