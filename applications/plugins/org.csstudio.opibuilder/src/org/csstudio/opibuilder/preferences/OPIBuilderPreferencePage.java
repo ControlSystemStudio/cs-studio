@@ -3,10 +3,8 @@ package org.csstudio.opibuilder.preferences;
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.BooleanFieldEditor;
-import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IntegerFieldEditor;
-import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
@@ -73,14 +71,14 @@ public class OPIBuilderPreferencePage extends FieldEditorPreferencePage
 		
 	}
 	
-	@Override
-	public void propertyChange(PropertyChangeEvent event) {
-		super.propertyChange(event);
-		Object  src = event.getSource();
-		if(src instanceof FieldEditor){
-			String prefName = ((FieldEditor)src).getPreferenceName();
-			if(prefName.equals(PreferencesHelper.NO_EDIT))
-				setMessage(RESTART_MESSAGE, WARNING);
-		}
-	}
+//	@Override
+//	public void propertyChange(PropertyChangeEvent event) {
+//		super.propertyChange(event);
+//		Object  src = event.getSource();
+//		if(src instanceof FieldEditor){
+//			String prefName = ((FieldEditor)src).getPreferenceName();
+//			if(prefName.equals(PreferencesHelper.NO_EDIT))
+//				setMessage(RESTART_MESSAGE, WARNING);
+//		}
+//	}
 }
