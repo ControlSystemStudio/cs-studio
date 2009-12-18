@@ -265,9 +265,9 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 				if(severity.isInvalid() && lastAlarmSeverity.isInvalid())
 					return false;
 				
-				if(lastAlarmSeverity.isOK()){
-					saveFigureOKStatus(figure);
-				}
+//				if(lastAlarmSeverity.isOK()){
+//					saveFigureOKStatus(figure);
+//				}
 				
 				RGB alarmColor; 
 				if(severity.isMajor()){
@@ -302,7 +302,7 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 		figure.setBackgroundColor(saveBackColor);
 		figure.setForegroundColor(saveForeColor);
 	}
-	private void saveFigureOKStatus(IFigure figure) {
+	private void saveFigureOKStatus(IFigure figure) {		
 		saveBorder = figure.getBorder();
 		saveForeColor = figure.getForegroundColor();
 		saveBackColor = figure.getBackgroundColor();
