@@ -351,6 +351,11 @@ public class DragDropDemo
                                 + ", " + archive.getName()
                                 + ")");
             }
+            @Override
+            public void handleDrop(String name, DropTargetEvent event)
+            {
+                appendText(pv_or_archs, " Text " + name);
+            }
         };
         ISelectionProvider combined_data = new DummyCombinedSelectionProvider();
         new ProcessVariableWithArchiveDragSource(combined, combined_data);

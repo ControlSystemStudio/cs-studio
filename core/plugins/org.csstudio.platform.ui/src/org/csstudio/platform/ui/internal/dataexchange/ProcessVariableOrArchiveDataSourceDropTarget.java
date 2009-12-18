@@ -28,6 +28,7 @@ import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTarget;
 import org.eclipse.swt.dnd.DropTargetAdapter;
 import org.eclipse.swt.dnd.DropTargetEvent;
+import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Control;
 
@@ -55,7 +56,8 @@ public abstract class ProcessVariableOrArchiveDataSourceDropTarget extends DropT
             ProcessVariableWithArchiveTransfer.getInstance(),
             // Less desirable alternatives follow:
             ProcessVariableNameTransfer.getInstance(),
-            ArchiveDataSourceTransfer.getInstance()
+            ArchiveDataSourceTransfer.getInstance(),
+            TextTransfer.getInstance(),
         });
 		this.target.addDropListener(this);
 	}
@@ -86,10 +88,17 @@ public abstract class ProcessVariableOrArchiveDataSourceDropTarget extends DropT
                                     IArchiveDataSource archive,
                                     DropTargetEvent event);
     
-	/** Used internally by the system when a DnD operation enters the control.
+    /** Callback for a dropped string, presumably a PV name
+     *  @param name The dropped PV name
+     *  @param event The original event in case you need details.
+     */
+    public abstract void handleDrop(String name, DropTargetEvent event);
+
+    /** Used internally by the system when a DnD operation enters the control.
      *  @see org.eclipse.swt.dnd.DropTargetListener#dragEnter(org.eclipse.swt.dnd.DropTargetEvent)
 	 */
-	public void dragEnter(DropTargetEvent event)
+	@Override
+    public void dragEnter(DropTargetEvent event)
 	{
 		if ((event.operations & DND.DROP_COPY) != 0)
 			event.detail = DND.DROP_COPY;
@@ -100,7 +109,8 @@ public abstract class ProcessVariableOrArchiveDataSourceDropTarget extends DropT
     /** Used internally by the system to drop the data.
      *  @see org.eclipse.swt.dnd.DropTargetListener#drop(org.eclipse.swt.dnd.DropTargetEvent)
      */
-	public void drop(DropTargetEvent event)
+	@Override
+    public void drop(DropTargetEvent event)
 	{
         if (event.data instanceof IProcessVariableWithArchive[])
         {
@@ -119,6 +129,10 @@ public abstract class ProcessVariableOrArchiveDataSourceDropTarget extends DropT
             IArchiveDataSource archives[] = (IArchiveDataSource [])event.data;
             for (int i = 0; i < archives.length; i++)
                 handleDrop(archives[i], event);
+        }
+        else if (event.data instanceof String)
+        {
+                handleDrop((String) event.data, event);
         }
 	}
 }
