@@ -48,16 +48,18 @@ public class OPIBuilderPreferencePage extends FieldEditorPreferencePage
 		fontEditor.setTooltip(RESTART_MESSAGE);
 		addField(fontEditor);
 		
-		BooleanFieldEditor autoSaveEditor = 
-			new BooleanFieldEditor(PreferencesHelper.AUTOSAVE, 
-					"Automatically save file before running.", parent);
-		addField(autoSaveEditor);
-		
 		IntegerFieldEditor guiRefreshCycleEditor = 
 			new IntegerFieldEditor(PreferencesHelper.OPI_GUI_REFRESH_CYCLE,
 					"OPI GUI Refresh Cycle (ms)", parent);
 		guiRefreshCycleEditor.setValidRange(10, 5000);
 		addField(guiRefreshCycleEditor);
+		
+		BooleanFieldEditor autoSaveEditor = 
+			new BooleanFieldEditor(PreferencesHelper.AUTOSAVE, 
+					"Automatically save file before running.", parent);
+		addField(autoSaveEditor);
+		
+		
 		
 		BooleanFieldEditor noEditModeEditor = 
 			new BooleanFieldEditor(PreferencesHelper.NO_EDIT, 
