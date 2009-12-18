@@ -249,9 +249,9 @@ public class Axis extends LinearScale{
 			return false;
 		}else { //expand more space than needed
 			if((tempMin - min)<0)
-				tempMin = min - thr; 
+				tempMin -= thr; 
 			if((tempMax - max) > 0)
-				tempMax = max + thr;
+				tempMax += thr;
 		}
 		
 		
