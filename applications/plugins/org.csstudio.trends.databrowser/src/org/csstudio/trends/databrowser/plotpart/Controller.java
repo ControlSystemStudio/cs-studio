@@ -374,6 +374,21 @@ public class Controller implements ArchiveFetchJobListener
                     if (item instanceof IPVModelItem)
                         ((IPVModelItem) item).addArchiveDataSource(archive);
                 }
+
+                @Override
+                public void handleDrop(final String name, final DropTargetEvent event)
+                {
+                    if (name.length() <= 0)
+                        return;
+                    // Add item with source
+                    YAxis yaxis = chart.getYAxisAtScreenPoint(event.x, event.y);
+                    IModelItem item = nameDropped(name, yaxis);
+                    if (item instanceof IPVModelItem)
+                    {
+                        IPVModelItem pv_item = (IPVModelItem) item;
+                        pv_item.useDefaultArchiveDataSources();
+                    }
+                }
             };
     }
     

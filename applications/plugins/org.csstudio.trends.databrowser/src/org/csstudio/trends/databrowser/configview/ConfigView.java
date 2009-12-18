@@ -327,6 +327,13 @@ public class ConfigView extends PlotAwareView
                 // else: Add to all PVs
                 addArchive(null, archive);
             }
+
+            @Override
+            public void handleDrop(final String name,
+                    DropTargetEvent event)
+            {
+                addPV(name);
+            }
         };
         // .. or drop archive info to the archive sub-table
         new ArchiveDataSourceDropTarget(archive_table_viewer.getTable())
