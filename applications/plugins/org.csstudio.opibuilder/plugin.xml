@@ -116,6 +116,16 @@
                menubarPath="css/display/"
                style="push">
          </action>
+         <action
+               class="org.csstudio.opibuilder.actions.OpenTopOPIsAction"
+               icon="icons/OPIRunner.png"
+               id="org.csstudio.opibuilder.action1"
+               label="Top OPIs"
+               pulldown="true"
+               style="pulldown"
+               toolbarPath="Normal/addtions"
+               tooltip="Open Top OPIs in run mode">
+         </action>
       </actionSet>
    </extension>
    <extension

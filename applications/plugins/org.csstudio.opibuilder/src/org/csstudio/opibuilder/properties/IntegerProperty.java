@@ -105,7 +105,11 @@ public class IntegerProperty extends AbstractWidgetProperty {
 
 	@Override
 	public Object readValueFromXML(Element propElement) {
-		return Integer.parseInt(propElement.getValue());
+		try {
+			return Integer.parseInt(propElement.getValue());
+		} catch (NumberFormatException e) {
+			return new Integer((int) Double.parseDouble(propElement.getValue()));	
+		}
 	}
 
 

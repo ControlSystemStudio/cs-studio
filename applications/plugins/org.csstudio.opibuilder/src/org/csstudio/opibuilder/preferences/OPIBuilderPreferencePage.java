@@ -5,6 +5,7 @@ import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IntegerFieldEditor;
+import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
@@ -57,16 +58,16 @@ public class OPIBuilderPreferencePage extends FieldEditorPreferencePage
 		BooleanFieldEditor autoSaveEditor = 
 			new BooleanFieldEditor(PreferencesHelper.AUTOSAVE, 
 					"Automatically save file before running.", parent);
-		addField(autoSaveEditor);
-		
-		
+		addField(autoSaveEditor);		
 		
 		BooleanFieldEditor noEditModeEditor = 
 			new BooleanFieldEditor(PreferencesHelper.NO_EDIT, 
-					"No editing mode", parent);		
-		
+					"No editing mode", parent);				
 		addField(noEditModeEditor);
 		
+		StringFieldEditor topOPIsEditor = 
+			new StringFieldEditor(PreferencesHelper.TOP_OPIS, "Top OPIs", parent);
+		addField(topOPIsEditor);
 	}
 
 	public void init(IWorkbench workbench) {
