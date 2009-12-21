@@ -84,6 +84,10 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 	
 	private Label tooltipLabel;
 	
+	/**
+	 * This is true if deactivating has been triggered. 
+	 */
+	private boolean deactiveTriggered;
 	private Map<String, Object> externalObjectsMap;
 	public AbstractBaseEditPart() {
 		propertyListenerMap = new HashMap<String, WidgetPropertyChangeListener>();
@@ -192,7 +196,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 	public void activate() {
 		if(!isActive()){
 			super.activate();
-			
+			deactiveTriggered = false;
 			initFigure(getFigure());
 			
 			//add listener to all properties.
@@ -250,7 +254,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 				
 				//script execution
 				pvMap.clear();				
-				ScriptsInput scriptsInput = getWidgetModel().getScriptsInput();				
+				ScriptsInput scriptsInput = getWidgetModel().getScriptsInput();		
 				for(final ScriptData scriptData : scriptsInput.getScriptList()){						
 						final PV[] pvArray = new PV[scriptData.getPVList().size()];
 						int i = 0;
@@ -331,7 +335,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 									try {										
 										Thread.sleep(1000);
 										monitor.worked(1);
-										if(monitor.isCanceled())
+										if(monitor.isCanceled() || deactiveTriggered)
 											return Status.CANCEL_STATUS;
 									} catch (InterruptedException e) {
 										
@@ -352,6 +356,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 	@Override
 	public void deactivate() {
 		if(isActive()){
+			deactiveTriggered = true;
 			super.deactivate();
 			//remove listener from all properties.
 			for(String id : getWidgetModel().getAllPropertyIDs()){
