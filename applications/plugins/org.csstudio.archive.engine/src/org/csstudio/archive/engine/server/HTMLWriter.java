@@ -36,6 +36,7 @@ public class HTMLWriter
         text("<html>");
         text("<head>");
         text("<title>" + title + "</title>");
+        text("<script type=\"text/javascript\" src=\"/sorttable.js\"></script>\n");
         text("</head>");
         text("<body background='" + BACKGROUND + "'>");
         text("<blockquote>");
@@ -95,13 +96,16 @@ public class HTMLWriter
      */
     protected void openTable(final int initial_colspan, final String headers[])
     {
-        text("<table border='0'>");
+        text("<table border='0' class='sortable'>");
+        text("<thead>");
         text("  <tr bgcolor='#FFCC66'>");
         text("    <th align='center' colspan='" + initial_colspan + "'>" +
                         headers[0] + "</th>");
         for (int i=1; i<headers.length; ++i)
             text("    <th align='center'>" + headers[i] + "</th>");
         text("  </tr>");
+        text("</thead>");
+        text("<tbody>");
         odd_table_line = true;
     }
 
@@ -139,6 +143,7 @@ public class HTMLWriter
     /** Close a table */
     protected void closeTable()
     {
+        text("</tbody>");
         text("</table>");
     }    
     

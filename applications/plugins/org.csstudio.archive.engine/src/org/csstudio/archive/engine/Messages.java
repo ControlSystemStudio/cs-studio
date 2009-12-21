@@ -37,6 +37,7 @@ public class Messages
     final public static String HTTP_QueueMax = "Queue Max.";
     final public static String HTTP_QueueCapacity = "Capacity";
     final public static String HTTP_QueueOverruns = "Overruns";
+    final public static String HTTP_ReceivedValues = "Received Values";
     final public static String HTTP_StartTime = "Start Time";
     final public static String HTTP_State = "State";
     final public static String HTTP_Status = "Status";

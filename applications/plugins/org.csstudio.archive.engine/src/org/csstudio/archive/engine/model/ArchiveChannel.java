@@ -82,6 +82,9 @@ abstract public class ArchiveChannel
      */
     protected IValue most_recent_value = null;
     
+    /** Counter for received values (monitor updates) */
+    private long received_value_count = 0;
+
     /** Last value in the archive, i.e. the one most recently written.
      *  <p>
      *  SYNC: Lock on <code>this</code> for access.
@@ -92,7 +95,7 @@ abstract public class ArchiveChannel
     private final SampleBuffer buffer;
 
     private Logger log;
-    
+
     /** Construct an archive channel
      *  @param name Name of the channel (PV)
      *  @param enablement How channel affects its groups
@@ -225,6 +228,12 @@ abstract public class ArchiveChannel
         }
     }
 
+    /** @return Count of received values */
+    synchronized public long getReceivedValues()
+    {
+        return received_value_count;
+    }
+
     /** @return Last value written to archive */
     final public String getLastArchivedValue()
     {
@@ -242,6 +251,16 @@ abstract public class ArchiveChannel
         return buffer;
     }
     
+    /** Reset counters */
+    public void reset()
+    {
+        buffer.reset();
+        synchronized (this)
+        {
+            received_value_count = 0;
+        }
+    }
+
     /** Enable or disable groups based on received value */
     final private void handleEnablement(final IValue value)
     {
@@ -276,6 +295,7 @@ abstract public class ArchiveChannel
     {
         synchronized (this)
         {
+            ++received_value_count;
             most_recent_value = value;
         }
         // NaN test

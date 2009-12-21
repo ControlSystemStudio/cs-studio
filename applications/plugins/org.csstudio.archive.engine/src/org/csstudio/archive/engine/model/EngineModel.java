@@ -368,7 +368,7 @@ public class EngineModel
         writer.reset();
         scanner.reset();
         for (ArchiveChannel channel : channels)
-            channel.getSampleBuffer().reset();
+            channel.reset();
     }
 
     /** Stop monitoring the channels, flush the write buffers. */
