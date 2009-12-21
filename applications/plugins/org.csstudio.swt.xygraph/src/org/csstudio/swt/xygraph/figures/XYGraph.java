@@ -539,9 +539,12 @@ public class XYGraph extends Figure{
         for (int i=0; i<N; ++i)
         {
             final Axis yaxis = yAxisList.get(i);
+            // Does axis handle itself in another way?
             if (yaxis.isAutoScale())
-                continue; // takes care of itself
-            yaxis.performAutoScale(true);
+                continue;
+            // Skip axis which for some reason cannot determine its range
+            if (!yaxis.performAutoScale(true))
+                continue;
             double low = yaxis.getRange().getLower();
             double high = yaxis.getRange().getUpper();
             if (yaxis.isLogScaleEnabled())
