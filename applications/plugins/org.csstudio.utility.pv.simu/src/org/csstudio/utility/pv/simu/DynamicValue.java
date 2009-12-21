@@ -136,13 +136,30 @@ abstract public class DynamicValue extends Value implements Runnable
     }
 
     /** {@inheritDoc} */
-    public synchronized void stop()
+    public void stop()
     {
-        --references;
-        if (references <= 0)
+        final Thread running_thread;
+        synchronized (this)
         {
+            --references;
+            if (references > 0)
+                return;
+            // Ask update thread to stop
+            running_thread = update_thread;
             update_thread = null;
             notifyAll();
+        }
+        // Wait for update_thread to finish.
+        // Without waiting, a quick follow-up call to start() could
+        // set update_thread != null and then the 'old' thread
+        // would continue to run.
+        try
+        {
+            running_thread.join();
+        }
+        catch (InterruptedException ex)
+        {
+            // Ignore
         }
     }
     
