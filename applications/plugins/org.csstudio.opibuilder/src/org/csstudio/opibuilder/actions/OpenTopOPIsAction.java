@@ -81,7 +81,7 @@ public class OpenTopOPIsAction implements IWorkbenchWindowPulldownDelegate {
 	}
 
 	public void dispose() {
-		if(opiListMenu != null){
+		if(opiListMenu != null && !opiListMenu.isDisposed()){
 			for(MenuItem m : opiListMenu.getItems())
 				m.dispose();
 			opiListMenu.dispose();
