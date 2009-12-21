@@ -33,7 +33,7 @@ public class OPIColor implements IAdaptable {
 	static ImageRegistry imageRegistry = new ImageRegistry();
 	private static int imageCount = 0; 
 	
-	private static final int MAX_IMG_COUNT = 30;
+	private static final int MAX_IMG_COUNT = 1000;
 	
 	public OPIColor(String colorName) {
 		this.colorName = colorName;
