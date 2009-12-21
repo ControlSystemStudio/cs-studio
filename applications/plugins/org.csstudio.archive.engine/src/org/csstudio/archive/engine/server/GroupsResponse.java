@@ -44,6 +44,7 @@ class GroupsResponse extends AbstractResponse
         int total_channels = 0;
         int total_connect = 0;
         long total_received_values = 0;
+        // Per group lines
         for (int i=0; i<group_count; ++i)
         {
             final ArchiveGroup group = model.getGroup(i);
@@ -57,8 +58,7 @@ class GroupsResponse extends AbstractResponse
                 final ArchiveChannel channel = group.getChannel(j);
                 if (channel.isConnected())
                     ++connect_count;
-                received_values = channel.getReceivedValues();
-                total_received_values += received_values;
+                received_values += channel.getReceivedValues();
                 final BufferStats stats =
                     channel.getSampleBuffer().getBufferStats();
                 queue_avg += stats.getAverageSize();
@@ -69,6 +69,7 @@ class GroupsResponse extends AbstractResponse
                 queue_avg /= channel_count;
             total_channels += channel_count;
             total_connect += connect_count;
+            total_received_values += received_values;
             
             final String connected = (channel_count == connect_count)
                 ? Integer.toString(connect_count)
@@ -86,6 +87,7 @@ class GroupsResponse extends AbstractResponse
                 Integer.toString(queue_max),
             });
         }
+        // 'Total' line
         final String connected = (total_channels == total_connect)
         	? Integer.toString(total_connect)
         	: HTMLWriter.makeRedText(Integer.toString(total_connect));
