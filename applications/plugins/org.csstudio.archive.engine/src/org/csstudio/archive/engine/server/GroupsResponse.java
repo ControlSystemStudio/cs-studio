@@ -36,12 +36,14 @@ class GroupsResponse extends AbstractResponse
             Messages.HTTP_Enabled,
             Messages.HTTP_ChannelCount,
             Messages.HTTP_Connected,
+            Messages.HTTP_ReceivedValues,
             Messages.HTTP_QueueAvg,
             Messages.HTTP_QueueMax,
         });
         final int group_count = model.getGroupCount();
         int total_channels = 0;
         int total_connect = 0;
+        long total_received_values = 0;
         for (int i=0; i<group_count; ++i)
         {
             final ArchiveGroup group = model.getGroup(i);
@@ -49,11 +51,14 @@ class GroupsResponse extends AbstractResponse
             int connect_count = 0;
             double queue_avg = 0;
             int queue_max = 0;
+            long received_values = 0;
             for (int j=0; j<channel_count; ++j)
             {
                 final ArchiveChannel channel = group.getChannel(j);
                 if (channel.isConnected())
                     ++connect_count;
+                received_values = channel.getReceivedValues();
+                total_received_values += received_values;
                 final BufferStats stats =
                     channel.getSampleBuffer().getBufferStats();
                 queue_avg += stats.getAverageSize();
@@ -76,6 +81,7 @@ class GroupsResponse extends AbstractResponse
                   ? Messages.HTTP_Enabled : HTMLWriter.makeRedText(Messages.HTTP_Disabled),
                 Integer.toString(channel_count),
                 connected,
+                Long.toString(received_values),
                 String.format("%.1f", queue_avg),
                 Integer.toString(queue_max),
             });
@@ -89,6 +95,7 @@ class GroupsResponse extends AbstractResponse
             "",
             Integer.toString(total_channels),
             connected,
+            Long.toString(total_received_values),
             "",
             "",
         });
