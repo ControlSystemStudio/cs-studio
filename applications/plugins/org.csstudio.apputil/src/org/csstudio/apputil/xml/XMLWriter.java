@@ -49,7 +49,7 @@ public class XMLWriter
         }
     }
 
-    /** Start XML tag
+    /** Start XML tag. No newline.
      *  @param out    PrintWriter
      *  @param level  Indentation level
      *  @param tag    XML tag
@@ -60,7 +60,7 @@ public class XMLWriter
         out.append("<").append(tag).append(">");
     }
 
-    /** End XML tag
+    /** End XML tag. No newline.
      *  @param out    PrintWriter
      *  @param level  Indentation level
      *  @param tag    XML tag
@@ -72,7 +72,7 @@ public class XMLWriter
     }
 
     
-    /** Add XML for a one-line tagged value to buffer
+    /** Add XML for a one-line tagged value to buffer. Includes newline.
      *  @param out    PrintWriter
      *  @param level  Indentation level
      *  @param tag    XML tag
