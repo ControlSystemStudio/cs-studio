@@ -84,6 +84,6 @@ public class XMLWriter
         start(out, level, tag);
         escapeXMLstring(out, value.toString());
         end(out, 0, tag);
-        out.append(">\n");
+        out.append("\n");
     }
 }
