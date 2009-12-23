@@ -9,6 +9,13 @@ package org.csstudio.opibuilder.converter.model;
  */
 public class EdmWidget extends EdmEntity {
 
+	@EdmAttributeAn private int x;
+	@EdmAttributeAn private int y;
+	@EdmAttributeAn private int w;
+	@EdmAttributeAn private int h;
+	@EdmAttributeAn private int major;
+	@EdmAttributeAn private int minor;
+	@EdmAttributeAn private int release;
 	/**
 	 * Constructs EdmWidget from general EdmEntity.
 	 *
@@ -17,5 +24,33 @@ public class EdmWidget extends EdmEntity {
 	 */
 	public EdmWidget(EdmEntity genericEntity) throws EdmException {
 		super(genericEntity);
+	}
+	
+	
+	public int getMajor() {
+		return major;
+	}
+
+	public int getMinor() {
+		return minor;
+	}
+
+	public int getRelease() {
+		return release;
+	}
+	public int getX() {
+		return x;
+	}
+
+	public int getY() {
+		return y;
+	}
+
+	public int getW() {
+		return w;
+	}
+
+	public int getH() {
+		return h;
 	}
 }

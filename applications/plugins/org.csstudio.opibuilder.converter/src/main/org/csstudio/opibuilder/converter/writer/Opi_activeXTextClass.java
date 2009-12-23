@@ -18,20 +18,19 @@ public class Opi_activeXTextClass extends OpiWidget {
 	 * Converts the Edm_activeXTextClass to OPI Label widget XML.  
 	 */
 	public Opi_activeXTextClass(Context con, Edm_activeXTextClass t) {
-		super(con);
-		setTypeId(typeId);
+		super(con,t);
+		if(t.getAttribute("alarmPv").isInitialized())
+			setTypeId("TextUpdate");
+		else 
+			setTypeId(typeId);
 		
 		context.getElement().setAttribute("version", version);
 		
 		new OpiString(context, "name", name);
-		new OpiInt(context, "x", t.getX() - context.getX());
-		new OpiInt(context, "y", t.getY() - context.getY());
-		new OpiInt(context, "width", t.getW());
-		new OpiInt(context, "height", t.getH());
-		
+//		
 		new OpiFont(context, "font", t.getFont());
-		new OpiColor(context, "color_foreground", t.getFgColor());
-		new OpiColor(context, "color_background", t.getBgColor());
+		new OpiColor(context, "foreground_color", t.getFgColor());
+		new OpiColor(context, "background_color", t.getBgColor());
 		
 		new OpiString(context, "text", t.getValue().get());
 		
@@ -50,13 +49,17 @@ public class Opi_activeXTextClass extends OpiWidget {
 			new OpiInt(context, "border_width", t.getLineWidth());
 		}
 		
-		// It is not clear where the border color and width should be set from.
-		//new OpiColor(context, "border_color", ?);
-		//new OpiColor(context, "border_width", ?);
-		
-		// Transparency is true only when useDisplayBg attribute is present.
+		new OpiColor(context, "border_color", t.getFgColor());
+				
 		boolean useDisplayBg = t.getAttribute("useDisplayBg").isInitialized() && t.isUseDisplayBg();  
-		new OpiBoolean(context, "transparency", useDisplayBg);
+		new OpiBoolean(context, "transparent", useDisplayBg);
+		
+		if(t.getAttribute("alarmPv").isInitialized()){
+			new OpiString(context, "pv_name", t.getAlarmPv());
+			new OpiBoolean(context, "backcolor_alarm_sensitive", t.isBgAlarm());
+			new OpiBoolean(context, "forecolor_alarm_sensitive", t.isFgAlarm());
+		}
+		
 		
 		log.debug("Edm_activeXTextClass written.");
 	}

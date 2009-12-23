@@ -1,5 +1,6 @@
 package org.csstudio.opibuilder.converter.writer;
 
+import org.csstudio.opibuilder.converter.model.EdmWidget;
 import org.w3c.dom.Element;
 
 /**
@@ -15,13 +16,19 @@ public class OpiWidget {
 	 * 		<widget typeId="org.csstudio.opibuilder.widgets.type">
 	 * 		</widget>
 	 */
-	public OpiWidget(Context con) {
+	public OpiWidget(Context con, EdmWidget r) {
 
 		Element element = con.getDocument().createElement("widget");
 		con.getElement().appendChild(element);
-
+		
 		// Move context to this object. 
 		this.context = new Context(con.getDocument(), element, con.getX(), con.getY());
+		setDefaultPropertyValue();
+		new OpiInt(context, "x", r.getX() - context.getX());
+		new OpiInt(context, "y", r.getY() - context.getY());
+		new OpiInt(context, "width", r.getW()+1);
+		new OpiInt(context, "height", r.getH()+1);
+		
 	}
 
 	/**
@@ -30,5 +37,9 @@ public class OpiWidget {
 	 */
 	protected void setTypeId(String typeId) {
 		context.getElement().setAttribute("typeId", "org.csstudio.opibuilder.widgets." + typeId);
+	}
+	
+	protected void setDefaultPropertyValue(){
+		new OpiBoolean(context, "border_alarm_sensitive", false);
 	}
 }

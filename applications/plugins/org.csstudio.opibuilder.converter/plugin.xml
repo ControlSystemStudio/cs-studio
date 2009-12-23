@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="false"
+            id="org.csstudio.opibuilder.converter.objectContribution1"
+            nameFilter="*.edl"
+            objectClass="org.eclipse.core.resources.IResource">
+         <action
+               class="org.csstudio.opibuilder.converter.ui.ConvertToOPIAction"
+               enablesFor="1"
+               id="org.csstudio.opibuilder.converter.convertedl"
+               label="Convert to OPI file"
+               style="push">
+         </action>
+      </objectContribution>
+   </extension>
+
+</plugin>

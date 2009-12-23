@@ -31,11 +31,11 @@ public class OpiFont extends OpiAttribute {
 	public OpiFont(Context con, String tag, EdmFont f) {
 		super(con, tag);
 
-		Element fontElement = context.getDocument().createElement("font");
+		Element fontElement = context.getDocument().createElement("fontdata");
 		context.getElement().appendChild(fontElement);
 
 		String fontName = f.getName();
-		String height = String.valueOf(f.getSize());
+		String height = String.valueOf(f.getSize()-2);
 
 		// Style conversion copied from org.eclipse.swt.SWT class.
 		int s = NORMAL;

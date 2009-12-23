@@ -8,21 +8,16 @@ package org.csstudio.opibuilder.converter.model;
  */
 public class Edm_TextupdateClass extends EdmWidget {
 
-	@EdmAttributeAn private int major;
-	@EdmAttributeAn private int minor;
-	@EdmAttributeAn private int release;
-
-	@EdmAttributeAn private int x;
-	@EdmAttributeAn private int y;
-	@EdmAttributeAn private int w;
-	@EdmAttributeAn private int h;
 
 	@EdmAttributeAn private String controlPv;
 
 	@EdmAttributeAn private EdmColor fgColor;
 	@EdmAttributeAn private EdmColor bgColor;
 	@EdmAttributeAn @EdmOptionalAn private boolean fill;
-
+	
+	@EdmAttributeAn @EdmOptionalAn private String mode;
+	@EdmAttributeAn @EdmOptionalAn private int precision;
+	
 	@EdmAttributeAn private EdmFont font;
 	@EdmAttributeAn @EdmOptionalAn private String fontAlign;
 
@@ -35,33 +30,22 @@ public class Edm_TextupdateClass extends EdmWidget {
 		super(genericEntity);
 	}
 
-	public int getMajor() {
-		return major;
+/**
+	 * @return the mode
+	 */
+	public final String getMode() {
+		return mode;
 	}
 
-	public int getMinor() {
-		return minor;
+
+
+	/**
+	 * @return the precision
+	 */
+	public final int getPrecision() {
+		return precision;
 	}
 
-	public int getRelease() {
-		return release;
-	}
-
-	public int getX() {
-		return x;
-	}
-
-	public int getY() {
-		return y;
-	}
-
-	public int getW() {
-		return w;
-	}
-
-	public int getH() {
-		return h;
-	}
 
 	public EdmFont getFont() {
 		return font;

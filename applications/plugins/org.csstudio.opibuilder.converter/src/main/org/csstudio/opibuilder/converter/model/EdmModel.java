@@ -69,16 +69,16 @@ public class EdmModel {
 	 * @throws EdmException if there is a parsing error.
 	 */
 	public synchronized static EdmDisplay getDisplay(String fileName) throws EdmException {
-
-		if (displaysMap.containsKey(fileName))
-			return displaysMap.get(fileName);
-		else {
+		//it should not be buffered since the file could be updated outside
+		//if (displaysMap.containsKey(fileName))
+		//	return displaysMap.get(fileName);
+		//else {
 			EdmDisplayParser displayParser = new EdmDisplayParser(fileName);
 			EdmDisplay display = new EdmDisplay(displayParser.getRoot());
 
 			displaysMap.put(fileName, display);
 
 			return display;
-		}
+		//}
 	}
 }

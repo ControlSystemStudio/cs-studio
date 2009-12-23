@@ -10,14 +10,14 @@ import java.util.Vector;
  */
 public class Edm_activeGroupClass extends EdmWidget {
 
-	@EdmAttributeAn private int major;
-	@EdmAttributeAn private int minor;
-	@EdmAttributeAn private int release;
+//	@EdmAttributeAn private int major;
+//	@EdmAttributeAn private int minor;
+//	@EdmAttributeAn private int release;
 
-	@EdmAttributeAn private int x;
-	@EdmAttributeAn private int y;
-	@EdmAttributeAn private int w;
-	@EdmAttributeAn private int h;
+//	@EdmAttributeAn private int x;
+//	@EdmAttributeAn private int y;
+//	@EdmAttributeAn private int w;
+//	@EdmAttributeAn private int h;
 
 	@EdmAttributeAn @EdmOptionalAn private String visPv;
 	@EdmAttributeAn @EdmOptionalAn private double visMax;
@@ -30,33 +30,19 @@ public class Edm_activeGroupClass extends EdmWidget {
 		super(genericEntity);
 	}
 
-	public int getMajor() {
-		return major;
-	}
+//	public int getMajor() {
+//		return major;
+//	}
+//
+//	public int getMinor() {
+//		return minor;
+//	}
+//
+//	public int getRelease() {
+//		return release;
+//	}
 
-	public int getMinor() {
-		return minor;
-	}
-
-	public int getRelease() {
-		return release;
-	}
-
-	public int getX() {
-		return x;
-	}
-
-	public int getY() {
-		return y;
-	}
-
-	public int getW() {
-		return w;
-	}
-
-	public int getH() {
-		return h;
-	}
+	
 
 	public String getVisPv() {
 		return visPv;

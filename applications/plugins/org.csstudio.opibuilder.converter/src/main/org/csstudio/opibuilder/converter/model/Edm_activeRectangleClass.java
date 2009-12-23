@@ -8,22 +8,17 @@ package org.csstudio.opibuilder.converter.model;
  */
 public class Edm_activeRectangleClass extends EdmWidget {
 
-	@EdmAttributeAn private int major;
-	@EdmAttributeAn private int minor;
-	@EdmAttributeAn private int release;
-
-	@EdmAttributeAn private int x;
-	@EdmAttributeAn private int y;
-	@EdmAttributeAn private int w;
-	@EdmAttributeAn private int h;
-
+	
 	@EdmAttributeAn private EdmColor lineColor;
+	
 	@EdmAttributeAn @EdmOptionalAn private int lineWidth;
-	@EdmAttributeAn @EdmOptionalAn private EdmLineStyle lineStyle;
-	
+	@EdmAttributeAn @EdmOptionalAn private EdmLineStyle lineStyle;	
 	@EdmAttributeAn @EdmOptionalAn private EdmColor fillColor;
-	
+	@EdmAttributeAn @EdmOptionalAn private boolean fill;
 	@EdmAttributeAn @EdmOptionalAn private boolean invisible;
+	@EdmAttributeAn @EdmOptionalAn private boolean lineAlarm;
+	@EdmAttributeAn @EdmOptionalAn private boolean fillAlarm;
+	@EdmAttributeAn @EdmOptionalAn private String alarmPv;
 	@EdmAttributeAn @EdmOptionalAn private String visPv;
 	@EdmAttributeAn @EdmOptionalAn private double visMax;
 	@EdmAttributeAn @EdmOptionalAn private double visMin;
@@ -33,33 +28,42 @@ public class Edm_activeRectangleClass extends EdmWidget {
 		super(genericEntity);
 	}
 
-	public int getMajor() {
-		return major;
+	
+
+	
+
+	/**
+	 * @return the lineAlarm
+	 */
+	public final boolean isLineAlarm() {
+		return lineAlarm;
 	}
 
-	public int getMinor() {
-		return minor;
+
+
+
+
+	/**
+	 * @return the fillAlarm
+	 */
+	public final boolean isFillAlarm() {
+		return fillAlarm;
 	}
 
-	public int getRelease() {
-		return release;
+
+
+
+
+	/**
+	 * @return the alarmPv
+	 */
+	public final String getAlarmPv() {
+		return alarmPv;
 	}
 
-	public int getX() {
-		return x;
-	}
 
-	public int getY() {
-		return y;
-	}
 
-	public int getW() {
-		return w;
-	}
 
-	public int getH() {
-		return h;
-	}
 
 	public EdmColor getLineColor() {
 		return lineColor;
@@ -81,6 +85,11 @@ public class Edm_activeRectangleClass extends EdmWidget {
 		return invisible;
 	}
 
+	public boolean isFill(){
+		return fill;
+	}
+	
+	
 	public String getVisPv() {
 		return visPv;
 	}

@@ -8,14 +8,14 @@ package org.csstudio.opibuilder.converter.model;
  */
 public class Edm_activeXTextClass extends EdmWidget {
 
-	@EdmAttributeAn private int major;
-	@EdmAttributeAn private int minor;
-	@EdmAttributeAn private int release;
+//	@EdmAttributeAn private int major;
+//	@EdmAttributeAn private int minor;
+//	@EdmAttributeAn private int release;
 
-	@EdmAttributeAn private int x;
-	@EdmAttributeAn private int y;
-	@EdmAttributeAn private int w;
-	@EdmAttributeAn private int h;
+//	@EdmAttributeAn private int x;
+//	@EdmAttributeAn private int y;
+//	@EdmAttributeAn private int w;
+//	@EdmAttributeAn private int h;
 
 	@EdmAttributeAn private EdmFont font;
 
@@ -28,7 +28,10 @@ public class Edm_activeXTextClass extends EdmWidget {
 	@EdmAttributeAn @EdmOptionalAn private int lineWidth;
 	@EdmAttributeAn @EdmOptionalAn private boolean border;
 	@EdmAttributeAn @EdmOptionalAn private boolean useDisplayBg;
-	
+	@EdmAttributeAn @EdmOptionalAn private boolean fgAlarm;
+	@EdmAttributeAn @EdmOptionalAn private boolean bgAlarm;
+	@EdmAttributeAn @EdmOptionalAn private String alarmPv;
+		
 	@EdmAttributeAn @EdmOptionalAn private String visPv;
 	@EdmAttributeAn @EdmOptionalAn private double visMax;
 	@EdmAttributeAn @EdmOptionalAn private double visMin;
@@ -38,33 +41,30 @@ public class Edm_activeXTextClass extends EdmWidget {
 		super(genericEntity);
 	}
 
-	public int getMajor() {
-		return major;
+
+	/**
+	 * @return the fgAlarm
+	 */
+	public final boolean isFgAlarm() {
+		return fgAlarm;
 	}
 
-	public int getMinor() {
-		return minor;
+
+	/**
+	 * @return the bgAlarm
+	 */
+	public final boolean isBgAlarm() {
+		return bgAlarm;
 	}
 
-	public int getRelease() {
-		return release;
+
+	/**
+	 * @return the alarmPv
+	 */
+	public final String getAlarmPv() {
+		return alarmPv;
 	}
 
-	public int getX() {
-		return x;
-	}
-
-	public int getY() {
-		return y;
-	}
-
-	public int getW() {
-		return w;
-	}
-
-	public int getH() {
-		return h;
-	}
 
 	public EdmFont getFont() {
 		return font;

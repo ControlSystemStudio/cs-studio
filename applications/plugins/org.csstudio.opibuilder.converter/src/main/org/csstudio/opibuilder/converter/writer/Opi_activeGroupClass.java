@@ -17,16 +17,18 @@ public class Opi_activeGroupClass extends OpiWidget {
 	 * Converts the Edm_activeGroupClass to OPI groupingContainer widget XML.  
 	 */
 	public Opi_activeGroupClass(Context con, Edm_activeGroupClass g) {
-		super(con);
+		super(con, g);
 		setTypeId(typeId);
 		
 		context.getElement().setAttribute("version", version);
 		
-		new OpiInt(context, "x", g.getX() - context.getX());
-		new OpiInt(context, "y", g.getY() - context.getY());
-		new OpiInt(context, "width", g.getW());
-		new OpiInt(context, "height", g.getH());
+//		new OpiInt(context, "x", g.getX() - context.getX());
+//		new OpiInt(context, "y", g.getY() - context.getY());
+//		new OpiInt(context, "width", g.getW());
+//		new OpiInt(context, "height", g.getH());
 
+		new OpiInt(context, "border_style", 0);
+		new OpiBoolean(context, "show_scrollbar", false);
 		// Set absolute position in context.
 		context.setX(g.getX());
 		context.setY(g.getY());

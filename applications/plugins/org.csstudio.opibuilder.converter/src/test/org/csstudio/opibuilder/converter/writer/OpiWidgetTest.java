@@ -16,12 +16,12 @@ public class OpiWidgetTest extends TestCase {
 		Document doc = XMLFileHandler.createDomDocument();
 		
 		String widgetType = "newWidget";
-		new EdmWidget(new EdmEntity(widgetType));
+		EdmWidget edmWidget = new EdmWidget(new EdmEntity(widgetType));
 		
 		Element parent = doc.createElement("root");
 		doc.appendChild(parent);
 		Context context = new Context(doc, parent, 0, 0);
-		new OpiWidget(context);
+		new OpiWidget(context, edmWidget);
 		
 		// Input tests here when there will be some implementation.
 		

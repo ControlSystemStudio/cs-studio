@@ -116,7 +116,9 @@ public class EdmEntity extends Object {
 							f.set(this, s.get());
 							isEdmAttribute = false;
 						}
-
+						
+						
+						
 						// Specialize sub-entities recursively.
 						else if (f.getType().equals(Vector.class)) {
 							f.set(this, parseWidgets());

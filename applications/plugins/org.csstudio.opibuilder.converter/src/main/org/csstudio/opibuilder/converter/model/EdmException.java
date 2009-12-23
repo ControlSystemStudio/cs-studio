@@ -48,7 +48,7 @@ public class EdmException extends Exception {
 		else
 			this.message = type + " exception: " + message;
 		
-		log.error(getMessage());
+		log.error(getMessage(), this);
 	}
 
 	public String getType() {
