@@ -36,11 +36,17 @@ Steps to attach scripts to a widget:
 	<pre class="example_code">importPackage(Packages.org.csstudio.platform.data);
 var value0 = ValueUtil.getDouble(pvArray[0].getValue());
 var value1 = ValueUtil.getDouble(pvArray[1].getValue()); </pre>
+	<h4>Write PV Value
+	</h4>
+	<p>Only the input PVs are writable in the script.</p>
+	<pre class="example_code">importPackage(Packages.org.csstudio.platform.data);
+pvArray[0].setValue(0);	</pre>
+
+
 	<h4>Set Widget Properties in Script
 	</h4>
-	<p>The Widget model could be accessed as widgetController.getWidgetModel().
-The property could be set by setPropertyValue(prop_id, value) function.</p>
-	<pre class="example_code">widgetController.getWidgetModel().setPropertyValue("x", 20);</pre>
+	<p>The property could be set by setPropertyValue(prop_id, value) function.</p>
+	<pre class="example_code">widgetController.setPropertyValue("x", 20);</pre>
 <h3>Other Utility Functions</h3>
 <p>The script will be executed with the whole Eclipse and CSS libraries, so that all the libraries can be accessed in the script.
 Followings are some examples:</p>
@@ -50,7 +56,7 @@ Followings are some examples:</p>
 var RED = CustomMediaFactory.COLOR_RED;
 var ORANGE = CustomMediaFactory.COLOR_ORANGE;
 var GREEN = CustomMediaFactory.COLOR_GREEN;
-widgetController.getWidgetModel().setPropertyValue("foreground_color", ORANGE);
+widgetController.setPropertyValue("foreground_color", ORANGE);
 </pre>
 <h5>Use RGB Color</h5>
 <pre class="example_code">importPackage(Packages.org.eclipse.swt.graphics);
@@ -58,7 +64,7 @@ var RED = new RGB(0,0,0);
 RED.red = 255;
 RED.green = 0;
 RED.blue = 0;
-widgetController.getWidgetModel().setPropertyValue("foreground_color", RED);
+widgetController.setPropertyValue("foreground_color", RED);
 </pre>
 <h4>Dialog</h4>
 <pre class="example_code">importPackage(Packages.org.eclipse.jface.dialogs);
