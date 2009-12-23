@@ -309,6 +309,14 @@
                menubarPath="group"
                tooltip="Perform AutoSize on the selected Group Container.">
          </action>
+         <action
+               class="org.csstudio.opibuilder.widgets.actions.SelectAllInGroupAction"
+               enablesFor="1"
+               id="org.csstudio.opibuilder.widgets.selectall"
+               label="Select All Widgets in Group"
+               menubarPath="group"
+               tooltip="Select All Widgets in the selected Group">
+         </action>
          <visibility>
             <objectState
                   name="executionMode"
