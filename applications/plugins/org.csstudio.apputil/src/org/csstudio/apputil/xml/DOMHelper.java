@@ -26,7 +26,7 @@ public class DOMHelper
      * @return Returns the root Element.
      * @throws Exception on error.
      */
-    public static final Element parseXMLString(String xml) throws Exception
+    public static final Element parseXMLString(final String xml) throws Exception
     {
         Document doc;
         // Open the XML file, read as DOM
@@ -63,7 +63,7 @@ public class DOMHelper
      *  @param name Name of the nodes to look for.
      *  @return Returns node or the next matching sibling or null.
      */
-    public static final Element findFirstElementNode(Node node, String name)
+    public static final Element findFirstElementNode(Node node, final String name)
     {
         while (node != null)
         {   
@@ -78,14 +78,14 @@ public class DOMHelper
     /** @return Returns the next matching element.
      *  @see #findFirstElementNode(Node, String)
      */
-    public static final Element findNextElementNode(Node node, String name)
+    public static final Element findNextElementNode(final Node node, final String name)
     {
         return findFirstElementNode(node.getNextSibling(), name);
     }
     
     /** Locate a sub-element tagged 'name', return its value.
      * 
-     *  Will only go one level down, not seach the whole tree.
+     *  Will only go one level down, not search the whole tree.
      *  
      *  @param element Element where to start looking. May be null.
      *  @param name Name of sub-element to locate.
@@ -93,7 +93,7 @@ public class DOMHelper
      *  @return Returns string that was found or empty string.
      */
     public static final String getSubelementString(
-            Element element, String name)
+            final Element element, final String name)
     {
         if (element == null)
             return "";
@@ -109,9 +109,37 @@ public class DOMHelper
         return "";
     }    
 
+    /** Locate a sub-element tagged 'name', return its value.
+     * 
+     *  Will only go one level down, not search the whole tree.
+     *  
+     *  @param element Element where to start looking. May be null.
+     *  @param name Name of sub-element to locate.
+     *  @param default_value Default value if not found
+     *  
+     *  @return Returns string that was found or default_value.
+     */
+    public static final String getSubelementString(
+            final Element element, final String name, final String default_value)
+    {
+        if (element == null)
+            return default_value;
+        Node n = element.getFirstChild();
+        n = findFirstElementNode(n, name);
+        if (n != null)
+        {
+            Node text_node = n.getFirstChild();
+            if (text_node == null)
+                return default_value;
+            return text_node.getNodeValue();
+        }
+        return default_value;
+    }    
+
+    
     /** Locate all sub-elements tagged 'name', return their values.
      * 
-     *  Will only go one level down, not seach the whole tree.
+     *  Will only go one level down, not search the whole tree.
      *  
      *  @param element Element where to start looking.
      *  @param name Name of sub-element to locate.
@@ -119,7 +147,7 @@ public class DOMHelper
      *  @return Returns String array or null if nothing found.
      */
     public static final String [] getSubelementStrings(
-            Element element, String name)
+            final Element element, final String name)
     {
         ArrayList<String> values = null;
         if (element != null)
@@ -153,7 +181,7 @@ public class DOMHelper
      *          If nothing was found, the default is <code>false</code>.
      */
     public static final boolean getSubelementBoolean(
-            Element element, String element_name)
+            final Element element, final String element_name)
     {
         return getSubelementBoolean(element, element_name, false);
     }
@@ -170,9 +198,9 @@ public class DOMHelper
      *          <code>false</code> if it was "false", otherwise the default.
      */
     public static final boolean getSubelementBoolean(
-                    Element element, String element_name, boolean default_value)
+            final Element element, final String element_name, final boolean default_value)
     {
-        String s = getSubelementString(element, element_name);
+        final String s = getSubelementString(element, element_name);
         if (s.equalsIgnoreCase("true"))
             return true;
         if (s.equalsIgnoreCase("false"))
@@ -188,7 +216,7 @@ public class DOMHelper
      *  @return Returns true if attribute was "true". Defaults to false.
      */
     public static final boolean getAttributeBoolean(
-            Element element, String name)
+            final Element element, final String name)
     {
         String s = element.getAttribute(name);
         return s.equalsIgnoreCase("true");
@@ -205,7 +233,7 @@ public class DOMHelper
      *  @exception Exception when nothing found or parse error in number.
      */
     public static final int getSubelementInt(
-            Element element, String element_name) throws Exception
+            final Element element, final String element_name) throws Exception
     {
         String s = getSubelementString(element, element_name);
         if (s.length() < 1)
@@ -224,7 +252,7 @@ public class DOMHelper
     *  @return Returns number found in the sub-element.
     */
    public static final int getSubelementInt(
-           Element element, String element_name, int default_value)
+           final Element element, final String element_name, final int default_value)
    {
        String s = getSubelementString(element, element_name);
        if (s.length() < 1)
@@ -243,7 +271,7 @@ public class DOMHelper
     *  @exception Exception when nothing found or parse error in number.
     */
    public static final double getSubelementDouble(
-           Element element, String element_name) throws Exception
+           final Element element, final String element_name) throws Exception
    {
        String s = getSubelementString(element, element_name);
        if (s.length() < 1)
@@ -262,9 +290,9 @@ public class DOMHelper
    *  @return Returns number found in the sub-element.
    */
   public static final double getSubelementDouble(
-          Element element, String element_name, double default_value)
+          final Element element, final String element_name, final double default_value)
   {
-      String s = getSubelementString(element, element_name);
+      final String s = getSubelementString(element, element_name);
       if (s.length() < 1)
           return default_value;
       return Double.parseDouble(s);
