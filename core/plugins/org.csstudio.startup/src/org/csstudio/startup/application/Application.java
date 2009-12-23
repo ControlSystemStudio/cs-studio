@@ -98,20 +98,12 @@ public class Application implements IApplication {
 		}
 		finally 
 		{
-			try
-		    {
+            // On OS X, when using Command-Q to quit, the display is already
+		    // disposed.
+		    // With the menu File/Exit that doesn't happen, only Cmd-Q.
+		    // So in general, we need to close the display:
+            if (! display.isDisposed())
 		        display.close();
-		    }
-		    catch (Throwable ex)
-		    {
-		        // On OS X, when using Command-Q to quit, we can get a
-		        // "Widget is disposed" error.
-		        // With the menu File/Exit that doesn't happen, only Cmd-Q.
-		        // It's probably not a problem, and catching it here means
-		        // the rest of the shutdown still works OK.
-		        // Log it? Ignore it? Print it?
-		        ex.printStackTrace();
-		    }
 		}
 	}
 	
