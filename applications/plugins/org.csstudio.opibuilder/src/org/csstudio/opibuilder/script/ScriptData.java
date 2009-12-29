@@ -28,17 +28,17 @@ public class ScriptData implements IAdaptable {
 	/**
 	 * The input PVs of the script. Which can be accessed in the script and trigger the script execution.
 	 */
-	private List<String> pvList;
+	private List<PVTuple> pvList;
 	
 	
 	public ScriptData() {
 		path = new Path("");
-		pvList = new ArrayList<String>();
+		pvList = new ArrayList<PVTuple>();
 	}
 	
 	public ScriptData(IPath path) {
 		this.path = path;
-		pvList = new ArrayList<String>();
+		pvList = new ArrayList<PVTuple>();
 	}
 	
 	/**Set the script path.
@@ -63,13 +63,13 @@ public class ScriptData implements IAdaptable {
 	/**Get the input PVs of the script 
 	 * @return
 	 */
-	public List<String> getPVList() {
+	public List<PVTuple> getPVList() {
 		return pvList;
 	}
 	
-	public void addPV(String pv){
-		if(!pvList.contains(pv)){
-			pvList.add(pv);
+	public void addPV(PVTuple pvTuple){
+		if(!pvList.contains(pvTuple)){
+			pvList.add(pvTuple);
 		}			
 	}
 	
@@ -80,8 +80,8 @@ public class ScriptData implements IAdaptable {
 	public ScriptData getCopy(){
 		ScriptData copy = new ScriptData();
 		copy.setPath(path);
-		for(String pv : pvList){
-			copy.addPV(pv);
+		for(PVTuple pv : pvList){
+			copy.addPV(new PVTuple(pv.pvName, pv.trigger));
 		}
 		return copy;
 	}

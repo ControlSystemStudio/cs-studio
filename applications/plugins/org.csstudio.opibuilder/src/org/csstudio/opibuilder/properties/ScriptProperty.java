@@ -2,6 +2,7 @@ package org.csstudio.opibuilder.properties;
 
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.properties.support.ScriptPropertyDescriptor;
+import org.csstudio.opibuilder.script.PVTuple;
 import org.csstudio.opibuilder.script.ScriptData;
 import org.csstudio.opibuilder.script.ScriptsInput;
 import org.csstudio.opibuilder.util.MacrosUtil;
@@ -30,6 +31,9 @@ public class ScriptProperty extends AbstractWidgetProperty {
 	 */
 	public static final String XML_ELEMENT_PV = "pv"; //$NON-NLS-1$
 
+	public static final String XML_ATTRIBUTE_TRIGGER = "trig"; //$NON-NLS-1$
+
+	
 	public ScriptProperty(String prop_id, String description,
 			WidgetPropertyCategory category) {
 		super(prop_id, description, category, new ScriptsInput());
@@ -55,11 +59,12 @@ public class ScriptProperty extends AbstractWidgetProperty {
 			ScriptsInput value = (ScriptsInput) super.getPropertyValue();
 			for(ScriptData sd : value.getScriptList()){
 				for(Object pv : sd.getPVList().toArray()){
-					String newPV = MacrosUtil.replaceMacros(widgetModel, (String)pv);
-					if(!newPV.equals(pv)){
+					PVTuple pvTuple = (PVTuple)pv;
+					String newPV = MacrosUtil.replaceMacros(widgetModel, pvTuple.pvName);
+					if(!newPV.equals(pvTuple.pvName)){
 						int i= sd.getPVList().indexOf(pv);
 						sd.getPVList().remove(pv);
-						sd.getPVList().add(i, newPV);
+						sd.getPVList().add(i, new PVTuple(newPV, pvTuple.trigger));
 					}
 				}
 			}
@@ -82,7 +87,10 @@ public class ScriptProperty extends AbstractWidgetProperty {
 			ScriptData  sd = new ScriptData(new Path(se.getAttributeValue(XML_ATTRIBUTE_PATHSTRING)));
 			for(Object o : se.getChildren(XML_ELEMENT_PV)){
 				Element pve = (Element)o;
-				sd.addPV(pve.getText());
+				boolean trig = true;
+				if(pve.getAttribute(XML_ATTRIBUTE_TRIGGER) != null)
+					trig = Boolean.parseBoolean(pve.getAttributeValue(XML_ATTRIBUTE_TRIGGER));
+				sd.addPV(new PVTuple(pve.getText(), trig));
 			}
 			result.getScriptList().add(sd);			
 		}		
@@ -95,9 +103,10 @@ public class ScriptProperty extends AbstractWidgetProperty {
 				Element pathElement = new Element(XML_ELEMENT_PATH);
 				pathElement.setAttribute(XML_ATTRIBUTE_PATHSTRING, 
 						scriptData.getPath().toPortableString());				
-				for(String pv : scriptData.getPVList()){
+				for(PVTuple pv : scriptData.getPVList()){
 					Element pvElement = new Element(XML_ELEMENT_PV);
-					pvElement.setText(pv);
+					pvElement.setText(pv.pvName);
+					pvElement.setAttribute(XML_ATTRIBUTE_TRIGGER, Boolean.toString(pv.trigger));
 					pathElement.addContent(pvElement);
 				}
 				propElement.addContent(pathElement);

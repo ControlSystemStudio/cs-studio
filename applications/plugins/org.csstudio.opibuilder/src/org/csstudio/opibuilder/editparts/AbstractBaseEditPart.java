@@ -31,6 +31,7 @@ import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.properties.WidgetPropertyChangeListener;
+import org.csstudio.opibuilder.script.PVTuple;
 import org.csstudio.opibuilder.script.ScriptData;
 import org.csstudio.opibuilder.script.ScriptService;
 import org.csstudio.opibuilder.script.ScriptsInput;
@@ -258,7 +259,8 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 				for(final ScriptData scriptData : scriptsInput.getScriptList()){						
 						final PV[] pvArray = new PV[scriptData.getPVList().size()];
 						int i = 0;
-						for(String pvName : scriptData.getPVList()){
+						for(PVTuple pvTuple : scriptData.getPVList()){
+							String pvName = pvTuple.pvName;
 							if(pvMap.containsKey(pvName)){
 								pvArray[i] = pvMap.get(pvName);
 							}else{
@@ -267,8 +269,12 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 									pvMap.put(pvName, pv);	
 									pvArray[i] = pv;
 								} catch (Exception e) {
-									CentralLogger.getInstance().error(this, "Unable to connect to PV:" +
+									String message = NLS.bind("Unable to connect to PV: {0}! \n" +
+											"This may cause error when executing the script.",
 											pvName);
+									CentralLogger.getInstance().error(this, message);
+									ConsoleService.getInstance().writeError(message);
+									pvArray[i] = null;
 								}
 							}
 							i++;							

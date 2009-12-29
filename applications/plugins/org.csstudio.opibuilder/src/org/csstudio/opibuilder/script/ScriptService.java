@@ -4,11 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
-import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.util.UIBundlingThread;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.pv.PV;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.mozilla.javascript.Context;
 
@@ -62,12 +60,8 @@ public class ScriptService {
 		UIBundlingThread.getInstance().addRunnable(new Runnable(){
 			public void run() {
 				RhinoScriptStore scriptStore = null;
-				try {
-					IPath absolutePath = scriptData.getPath();
-					if(!absolutePath.isAbsolute())
-						absolutePath = ResourceUtil.buildAbsolutePath(
-								editpart.getWidgetModel(), absolutePath);
-					scriptStore = new RhinoScriptStore(absolutePath, editpart, pvArray);
+				try {					
+					scriptStore = new RhinoScriptStore(scriptData, editpart, pvArray);
 					scriptMap.put(scriptData, scriptStore);
 				}catch (Exception e) {
 					String errorInfo = "Failed to register script: " +

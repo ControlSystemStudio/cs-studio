@@ -4,20 +4,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
+import org.csstudio.opibuilder.script.PVTuple;
 import org.csstudio.opibuilder.script.ScriptData;
 import org.csstudio.opibuilder.script.ScriptsInput;
-import org.csstudio.platform.ui.swt.stringtable.StringTableEditor;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -43,7 +45,7 @@ public class ScriptsInputDialog extends Dialog {
 	private Action moveDownAction;
 	
 	private TableViewer scriptsViewer;
-	private StringTableEditor pvsEditor;
+	private PVTupleTableEditor pvsEditor;
 	
 	
 	private List<ScriptData> scriptDataList;
@@ -57,6 +59,24 @@ public class ScriptsInputDialog extends Dialog {
 		this.scriptDataList = scriptsInput.getCopy().getScriptList();
 		title = dialogTitle;
 		this.startPath = startPath;
+	}
+	
+	
+	@Override
+	protected void okPressed() {	
+		for(ScriptData scriptData : scriptDataList){
+			boolean hasTrigger = false;
+			for(PVTuple pvTuple : scriptData.getPVList()){
+				hasTrigger |= pvTuple.trigger;
+			}
+			if(!hasTrigger){
+				MessageDialog.openWarning(getShell(), "Warning", 
+						NLS.bind("At least one trigger PV must be selected for the script:\n{0}", 
+								scriptData.getPath().toString()));
+				return;
+			}
+		}
+		super.okPressed();
 	}
 	
 	/**
@@ -109,7 +129,7 @@ public class ScriptsInputDialog extends Dialog {
 		GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
 		gd.widthHint = 350;
 		leftComposite.setLayoutData(gd);
-		createLabel(leftComposite, "Scripts to execute");
+		createLabel(leftComposite, "Scripts");
 		
 		Composite toolBarComposite = new Composite(leftComposite, SWT.BORDER);
 		GridLayout gridLayout = new GridLayout(1, false);
@@ -148,9 +168,9 @@ public class ScriptsInputDialog extends Dialog {
 		gd = new GridData(SWT.FILL, SWT.FILL, true, true);
 		gd.minimumWidth = 250; // Account for the StringTableEditor's minimum size
 		rightComposite.setLayoutData(gd);
-		this.createLabel(rightComposite, "PVs that trigger execution\nof the selected script");
+		this.createLabel(rightComposite, "Input PVs for the selected script");
 		
-		pvsEditor = new StringTableEditor(rightComposite, new ArrayList<String>());
+		pvsEditor = new PVTupleTableEditor(rightComposite, new ArrayList<PVTuple>());
 		pvsEditor.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		pvsEditor.setEnabled(false);
 		

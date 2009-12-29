@@ -43,20 +43,23 @@ public class RhinoScriptStore {
 	private Map<PV, PVListener> pvListenerMap;
 	
 	private boolean errorInScript;
-	
 
-	private Map<PV, Boolean> pvConnectStatusMap;
+	private Map<PV, Boolean> pvConnectStatusMap;	
 	
-	
-	public RhinoScriptStore(final IPath path, final AbstractBaseEditPart editpart, final PV[] pvArray) throws Exception {	
-		this.scriptPath = path;
+	public RhinoScriptStore(ScriptData scriptData, final AbstractBaseEditPart editpart, 
+			final PV[] pvArray) throws Exception {	
+		scriptPath = scriptData.getPath();
+		if(!scriptPath.isAbsolute())
+			scriptPath = ResourceUtil.buildAbsolutePath(
+					editpart.getWidgetModel(), scriptPath);
+		
 		errorInScript = false;
 		scriptContext = ScriptService.getInstance().getScriptContext();
 	
 		scriptScope = new ImporterTopLevel(scriptContext);	
 		
 		//read file			
-		InputStream inputStream = ResourceUtil.pathToInputStream(path);
+		InputStream inputStream = ResourceUtil.pathToInputStream(scriptPath);
 		BufferedReader reader = new BufferedReader(
 				new InputStreamReader(inputStream));	
 		
@@ -75,8 +78,9 @@ public class RhinoScriptStore {
 		pvConnectStatusMap = new HashMap<PV, Boolean>();
 		
 		//register pv listener
+		int i=0;
 		for(PV pv : pvArray){
-			if(pv == null)
+			if(pv == null || !scriptData.getPVList().get(i++).trigger)
 				continue;	
 			pvConnectStatusMap.put(pv, true);
 			PVListener pvListener = new PVListener() {			
