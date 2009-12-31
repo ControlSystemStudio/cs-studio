@@ -64,7 +64,8 @@ public class CopyWidgetsAction extends SelectionAction {
 	/**
 	 * Gets the widget models of all currently selected EditParts.
 	 * 
-	 * @return a list with all widget models that are currently selected
+	 * @return a list with all widget models that are currently selected. 
+	 * The order of the selected widgets was kept. 
 	 */
 	@SuppressWarnings("unchecked")
 	protected final List<AbstractWidgetModel> getSelectedWidgetModels() {

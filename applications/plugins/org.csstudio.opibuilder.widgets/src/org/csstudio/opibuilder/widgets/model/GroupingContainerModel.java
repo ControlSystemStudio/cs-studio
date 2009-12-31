@@ -3,7 +3,6 @@ package org.csstudio.opibuilder.widgets.model;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
-import org.csstudio.opibuilder.visualparts.BorderStyle;
 
 /**The model for grouping container widget.
  * @author Xihui Chen
@@ -26,7 +25,7 @@ public class GroupingContainerModel extends AbstractContainerModel {
 	
 	public GroupingContainerModel() {
 		setSize(200, 200);
-		setBorderStyle(BorderStyle.GROUP_BOX);
+		//setBorderStyle(BorderStyle.GROUP_BOX);
 	}
 	
 	@Override

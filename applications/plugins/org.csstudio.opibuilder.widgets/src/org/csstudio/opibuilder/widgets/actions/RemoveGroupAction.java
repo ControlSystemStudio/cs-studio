@@ -25,9 +25,15 @@ public class RemoveGroupAction extends AbstractWidgetTargetAction{
 		
 		GroupingContainerModel containerModel = getSelectedContainer();
 		
+		//Orphan order should be reversed so that undo operation has the correct order.
+		AbstractWidgetModel[] widgetsArray = containerModel.getChildren().toArray(
+				new AbstractWidgetModel[containerModel.getChildren().size()]);		
+		for(int i = widgetsArray.length -1; i>=0; i--){
+			compoundCommand.add(new OrphanChildCommand(containerModel, widgetsArray[i]));
+		}
+		
 		Point leftCorner = containerModel.getLocation();
 		for(AbstractWidgetModel widget : containerModel.getChildren()){			
-			compoundCommand.add(new OrphanChildCommand(containerModel, widget));
 			compoundCommand.add(new AddWidgetCommand(containerModel.getParent(), widget));
 			compoundCommand.add(new SetBoundsCommand(widget, 
 					new Rectangle(widget.getLocation(), widget.getSize()).translate(leftCorner)));		
