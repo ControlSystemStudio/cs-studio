@@ -12,20 +12,23 @@ import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.util.ResourceUtil;
+import org.csstudio.opibuilder.widgetActions.AbstractWidgetAction;
+import org.csstudio.opibuilder.widgetActions.OpenDisplayAction;
 import org.csstudio.opibuilder.widgets.figures.ActionButtonFigure;
+import org.csstudio.opibuilder.widgets.figures.ActionButtonFigure2;
+import org.csstudio.opibuilder.widgets.figures.ActionButtonFigure.ButtonActionListener;
 import org.csstudio.opibuilder.widgets.model.ActionButtonModel;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.draw2d.ActionEvent;
-import org.eclipse.draw2d.ActionListener;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.InputEvent;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 
 /**
  * EditPart controller for the ActioButton widget. The controller mediates
- * between {@link ActionButtonModel} and {@link ActionButtonFigure}.
+ * between {@link ActionButtonModel} and {@link ActionButtonFigure2}.
  * @author Sven Wende (class of same name in SDS)
  * @author Xihui Chen
  * 
@@ -50,8 +53,8 @@ public final class ActionButtonEditPart extends AbstractPVWidgetEditPart {
 		buttonFigure.setImage(image);
 		updatePropSheet(model.isToggleButton());
 		if(getExecutionMode() == ExecutionMode.RUN_MODE){
-			buttonFigure.addActionListener(new ActionListener(){
-				public void actionPerformed(ActionEvent event) {
+			buttonFigure.addActionListener(new ButtonActionListener(){
+				public void actionPerformed(int mouseEventState) {
 					
 					int actionIndex;
 					
@@ -64,9 +67,21 @@ public final class ActionButtonEditPart extends AbstractPVWidgetEditPart {
 						actionIndex = getWidgetModel().getActionIndex();
 					
 					if(actionIndex >= 0 && getWidgetModel().getActionsInput().getActionsList().size() > 
-						actionIndex)
-						getWidgetModel().getActionsInput().getActionsList().get(
-							actionIndex).run();				
+						actionIndex){
+						AbstractWidgetAction action = 
+							getWidgetModel().getActionsInput().getActionsList().get(actionIndex);	
+						if(action instanceof OpenDisplayAction){
+							((OpenDisplayAction)action).setCtrlPressed(false);
+							((OpenDisplayAction)action).setShiftPressed(false);
+							if(mouseEventState == InputEvent.CONTROL){
+								((OpenDisplayAction)action).setCtrlPressed(true);
+							}else if (mouseEventState == InputEvent.SHIFT){
+								((OpenDisplayAction)action).setShiftPressed(true);
+							}
+						}
+						action.run();
+					}
+								
 				}
 			});
 		}

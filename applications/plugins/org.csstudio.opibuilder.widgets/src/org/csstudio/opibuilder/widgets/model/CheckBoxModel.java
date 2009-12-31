@@ -39,6 +39,7 @@ public class CheckBoxModel extends AbstractPVWidgetModel {
 	public static final String ID = "org.csstudio.opibuilder.widgets.checkbox";
 	
 	public CheckBoxModel() {
+		setSize(100, 20);
 		setForegroundColor(new RGB(0,0,0));
 	}
 	

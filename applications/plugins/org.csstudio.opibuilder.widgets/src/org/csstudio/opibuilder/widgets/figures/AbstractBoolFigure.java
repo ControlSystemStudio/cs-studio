@@ -62,6 +62,7 @@ public class AbstractBoolFigure extends Figure {
 		this.value = (long) value;
 		updateBoolValue();			
 		revalidate();
+		repaint();
 	}
 
 	

@@ -120,10 +120,10 @@ public final class ActionButtonModel extends AbstractPVWidgetModel {
 				WidgetPropertyCategory.Behavior, false));
 		
 		
-		removeProperty(PROP_BORDER_COLOR);
-		removeProperty(PROP_BORDER_STYLE);
-		removeProperty(PROP_BORDER_WIDTH);
-		removeProperty(PROP_BORDER_ALARMSENSITIVE);
+//		removeProperty(PROP_BORDER_COLOR);
+//		removeProperty(PROP_BORDER_STYLE);
+//		removeProperty(PROP_BORDER_WIDTH);
+//		removeProperty(PROP_BORDER_ALARMSENSITIVE);
 		setPropertyVisible(PROP_RELEASED_ACTION_INDEX, DEFAULT_TOGGLE_BUTTON);
 		
 	}
