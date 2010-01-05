@@ -194,6 +194,15 @@
       </widget>
       <widget
             category="Controls"
+            description="A scrollbar widget which could be used to read/write a PV"
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.ScrollbarEditPart"
+            icon="icons/scrollbar.png"
+            model_class="org.csstudio.opibuilder.widgets.model.ScrollBarModel"
+            name="Scrollbar"
+            typeId="org.csstudio.opibuilder.widgets.scrollbar">
+      </widget>
+      <widget
+            category="Controls"
             description="A boolean switch which can write a single bit of a PV or write 0/1 to a PV when bit property is -1."
             editpart_class="org.csstudio.opibuilder.widgets.editparts.BoolSwitchEditPart"
             icon="icons/BoolSwitch.gif"
