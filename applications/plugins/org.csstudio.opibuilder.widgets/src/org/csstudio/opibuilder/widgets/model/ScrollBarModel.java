@@ -30,6 +30,9 @@ public class ScrollBarModel extends AbstractPVWidgetModel {
 	pressed.*/	
 	public static final String PROP_STEP_INCREMENT = "step_increment"; //$NON-NLS-1$	
 	
+	/**The length of the dragging bar.*/	
+	public static final String PROP_BAR_LENGTH = "bar_length"; //$NON-NLS-1$	
+	
 	/** The ID of the horizontal property. */
 	public static final String PROP_HORIZONTAL = "horizontal"; //$NON-NLS-1$
 	
@@ -51,7 +54,14 @@ public class ScrollBarModel extends AbstractPVWidgetModel {
 	
 	private static final double DEFAULT_PAGE_INCREMENT = 20;	
 	private static final double DEFAULT_STEP_INCREMENT = 1;	
-
+	private static final double DEFAULT_BAR_LENGTH = 10;	
+	
+	
+	public ScrollBarModel() {
+		setSize(20, 150);
+	}
+	
+	
 	@Override
 	protected void configureProperties() {		
 		addPVProperty(new StringProperty(PROP_CONTROL_PV, "Control PV", WidgetPropertyCategory.Basic,
@@ -70,8 +80,11 @@ public class ScrollBarModel extends AbstractPVWidgetModel {
 		addProperty(new DoubleProperty(PROP_STEP_INCREMENT, "Step Increment", 
 				WidgetPropertyCategory.Behavior, DEFAULT_STEP_INCREMENT));			
 		
+		addProperty(new DoubleProperty(PROP_BAR_LENGTH, "Bar Length", 
+				WidgetPropertyCategory.Behavior, DEFAULT_BAR_LENGTH));
+		
 		addProperty(new BooleanProperty(PROP_HORIZONTAL, "Horizontal", 
-				WidgetPropertyCategory.Display, true));
+				WidgetPropertyCategory.Display, false));
 		
 	}	
 
@@ -111,6 +124,13 @@ public class ScrollBarModel extends AbstractPVWidgetModel {
 	 */
 	public Double getStepIncrement() {
 		return (Double) getProperty(PROP_STEP_INCREMENT).getPropertyValue();
+	}
+	
+	/**
+	 * @return the length of the dragging bar.
+	 */
+	public Double getBarLength() {
+		return (Double) getProperty(PROP_BAR_LENGTH).getPropertyValue();
 	}
 	
 	

@@ -2,13 +2,11 @@ package org.csstudio.opibuilder.widgets.editparts;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
+import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
-import org.csstudio.opibuilder.widgets.figures.AbstractScaledWidgetFigure;
-import org.csstudio.opibuilder.widgets.model.AbstractScaledWidgetModel;
 import org.csstudio.opibuilder.widgets.model.ScrollBarModel;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueUtil;
@@ -59,23 +57,35 @@ public class ScrollbarEditPart extends AbstractPVWidgetEditPart {
 		scrollBar.setMinimum(scrollBar.getMinimum()*newFactor/oldFactor);
 		scrollBar.setStepIncrement(scrollBar.getStepIncrement()*newFactor/oldFactor);
 		scrollBar.setPageIncrement(scrollBar.getPageIncrement()*newFactor/oldFactor);
+		scrollBar.setExtent(scrollBar.getExtent()*newFactor/oldFactor);
 	}
 	
 	
 	@Override
 	protected IFigure doCreateFigure() {
-		ScrollBar scrollBar = new ScrollBar();
+		ScrollBar scrollBar = new ScrollBar(){ 
+			//synchronize this method to avoid the race condition which
+			//could be caused from manual operation and inner update from new PV value.
+			@Override
+			public synchronized void setValue(int v) {
+				super.setValue(v);
+			}
+		};
 		ScrollBarModel model = getWidgetModel();
 		updateMutiplyFactor(null, model.getMaximum());
 		updateMutiplyFactor(null, model.getMinimum());
 		updateMutiplyFactor(null, model.getPageIncrement());
 		updateMutiplyFactor(null, model.getStepIncrement());
-		scrollBar.setMaximum((int) (model.getMaximum() * multiplyFactor));
+		updateMutiplyFactor(null, model.getBarLength());
+		
+		scrollBar.setMaximum((int) ((model.getMaximum() + model.getBarLength()) * multiplyFactor));
 		scrollBar.setMinimum((int) (model.getMinimum() * multiplyFactor));
 		scrollBar.setStepIncrement((int) (model.getStepIncrement() * multiplyFactor));
 		scrollBar.setPageIncrement((int) (model.getPageIncrement() * multiplyFactor));		
+		scrollBar.setExtent((int) (model.getBarLength() * multiplyFactor));
+		
 		scrollBar.setHorizontal(model.isHorizontal());
-		scrollBar.setExtent((scrollBar.getMaximum() - scrollBar.getMinimum())/5);
+
 		if (getExecutionMode() == ExecutionMode.RUN_MODE){
 			scrollBar.addPropertyChangeListener(RangeModel.PROPERTY_VALUE, 
 					new PropertyChangeListener() {			
@@ -88,14 +98,29 @@ public class ScrollbarEditPart extends AbstractPVWidgetEditPart {
 								(((Integer)evt.getNewValue()).doubleValue())/multiplyFactor);
 				}
 			});
-		}else
-			scrollBar.setEnabled(false);
+		}
 		
 		return scrollBar;
 	}
 
 	@Override
 	protected void registerPropertyChangeHandlers() {
+		((ScrollBar)getFigure()).setEnabled(getWidgetModel().isEnabled() && 
+				(getExecutionMode() == ExecutionMode.RUN_MODE));		
+		
+		removeAllPropertyChangeHandlers(AbstractWidgetModel.PROP_ENABLED);
+		
+		//enable
+		IWidgetPropertyChangeHandler enableHandler = new IWidgetPropertyChangeHandler(){
+			public boolean handleChange(Object oldValue, Object newValue,
+					IFigure figure) {
+				if(getExecutionMode() == ExecutionMode.RUN_MODE)
+					figure.setEnabled((Boolean)newValue);
+				return false;
+			}
+		};		
+		setPropertyChangeHandler(AbstractWidgetModel.PROP_ENABLED, enableHandler);
+		
 		// value
 		IWidgetPropertyChangeHandler valueHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
@@ -118,8 +143,10 @@ public class ScrollbarEditPart extends AbstractPVWidgetEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				ScrollBar figure = (ScrollBar) refreshableFigure;
-				updateMutiplyFactor(refreshableFigure, (Double) newValue);				
+				updateMutiplyFactor(refreshableFigure, (Double) newValue);	
 				figure.setMinimum((int) (((Double)newValue)*multiplyFactor));
+				figure.setEnabled(getWidgetModel().isEnabled() && 
+						getExecutionMode() == ExecutionMode.RUN_MODE && figure.isEnabled());
 				return false;
 			}
 		};
@@ -132,124 +159,86 @@ public class ScrollbarEditPart extends AbstractPVWidgetEditPart {
 					final IFigure refreshableFigure) {
 				ScrollBar figure = (ScrollBar) refreshableFigure;
 				updateMutiplyFactor(refreshableFigure, (Double) newValue);				
-				figure.setMaximum((int) (((Double)newValue)*multiplyFactor));
+				figure.setMaximum((int) (
+						((Double)newValue + getWidgetModel().getBarLength())*multiplyFactor));
+				figure.setEnabled(getWidgetModel().isEnabled() && 
+						getExecutionMode() == ExecutionMode.RUN_MODE && figure.isEnabled());
 				return false;
 			}
 		};
 		setPropertyChangeHandler(ScrollBarModel.PROP_MAX, maximumHandler);
 	
-	
+
+		//page increment
+		IWidgetPropertyChangeHandler pageIncrementHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				ScrollBar figure = (ScrollBar) refreshableFigure;
+				updateMutiplyFactor(refreshableFigure, (Double) newValue);				
+				figure.setPageIncrement((int) (((Double)newValue)*multiplyFactor));
+				return false;
+			}
+		};
+		setPropertyChangeHandler(ScrollBarModel.PROP_PAGE_INCREMENT, pageIncrementHandler);
+		
+		//step increment
+		IWidgetPropertyChangeHandler stepIncrementHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				ScrollBar figure = (ScrollBar) refreshableFigure;
+				updateMutiplyFactor(refreshableFigure, (Double) newValue);				
+				figure.setStepIncrement((int) (((Double)newValue)*multiplyFactor));
+				return false;
+			}
+		};
+		setPropertyChangeHandler(ScrollBarModel.PROP_STEP_INCREMENT, stepIncrementHandler);
+		
+		//bar length
+		IWidgetPropertyChangeHandler barLengthHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				ScrollBar figure = (ScrollBar) refreshableFigure;
+				updateMutiplyFactor(refreshableFigure, (Double) newValue);				
+				figure.setExtent((int) (((Double)newValue)*multiplyFactor));
+				figure.setMaximum((int)
+						((getWidgetModel().getMaximum() + (Double)newValue)*multiplyFactor));
+				figure.setEnabled(getWidgetModel().isEnabled() && 
+						getExecutionMode() == ExecutionMode.RUN_MODE && figure.isEnabled());
+				return false;
+			}
+		};
+		setPropertyChangeHandler(ScrollBarModel.PROP_BAR_LENGTH, barLengthHandler);
+		
+		
+		//horizontal
+		IWidgetPropertyChangeHandler horizontalHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				ScrollBar figure = (ScrollBar) refreshableFigure;
+				figure.setHorizontal((Boolean)newValue);
+				return false;
+			}
+		};
+		setPropertyChangeHandler(ScrollBarModel.PROP_HORIZONTAL, horizontalHandler);
+		
+		
 		
 	}
 	
-	
-	/**
-	 * Registers property change handlers for the properties defined in
-	 * {@link AbstractScaledWidgetModel}. This method is provided for the convenience
-	 * of subclasses, which can call this method in their implementation of
-	 * {@link #registerPropertyChangeHandlers()}.
-	 */
-	protected void registerCommonPropertyChangeHandlers() {
-		
-		
-		//minimum
-		IWidgetPropertyChangeHandler minimumHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				AbstractScaledWidgetFigure figure = (AbstractScaledWidgetFigure) refreshableFigure;
-				figure.setRange((Double) newValue, ((AbstractScaledWidgetModel)getModel()).getMaximum());
-				return true;
-			}
-		};
-		setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_MIN, minimumHandler);
-		
-		//maximum
-		IWidgetPropertyChangeHandler maximumHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				AbstractScaledWidgetFigure figure = (AbstractScaledWidgetFigure) refreshableFigure;
-				figure.setRange(((AbstractScaledWidgetModel)getModel()).getMinimum(), (Double) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_MAX, maximumHandler);
-		
-		//major tick step hint
-		IWidgetPropertyChangeHandler majorTickHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				AbstractScaledWidgetFigure figure = (AbstractScaledWidgetFigure) refreshableFigure;
-				figure.setMajorTickMarkStepHint((Integer) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_MAJOR_TICK_STEP_HINT, majorTickHandler);
-	
-		
-		
-		//logScale
-		IWidgetPropertyChangeHandler logScaleHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				AbstractScaledWidgetFigure figure = (AbstractScaledWidgetFigure) refreshableFigure;
-				figure.setLogScale((Boolean) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_LOG_SCALE, logScaleHandler);
-		
-		//showScale
-		IWidgetPropertyChangeHandler showScaleHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				AbstractScaledWidgetFigure figure = (AbstractScaledWidgetFigure) refreshableFigure;
-				figure.setShowScale((Boolean) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_SHOW_SCALE, showScaleHandler);
-		
-	
-		//showMinorTicks
-		IWidgetPropertyChangeHandler showMinorTicksHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				AbstractScaledWidgetFigure figure = (AbstractScaledWidgetFigure) refreshableFigure;
-				figure.setShowMinorTicks((Boolean) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_SHOW_MINOR_TICKS, showMinorTicksHandler);
-		
-		//Transparent
-		IWidgetPropertyChangeHandler transparentHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				AbstractScaledWidgetFigure figure = (AbstractScaledWidgetFigure) refreshableFigure;
-				figure.setTransparent((Boolean) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_TRANSPARENT, transparentHandler);
-		
-	}
 
 	@Override
 	public void setValue(Object value) {
 		if(value instanceof Double)
-			((AbstractScaledWidgetFigure)getFigure()).setValue((Double)value);
+			((ScrollBar)getFigure()).setValue((Integer)value);
 	}
 	
 	@Override
-	public Double getValue() {
-		return ((AbstractScaledWidgetFigure)getFigure()).getValue();
+	public Integer getValue() {
+		return ((ScrollBar)getFigure()).getValue();
 	}
 
 	
