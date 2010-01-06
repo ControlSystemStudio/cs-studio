@@ -24,13 +24,19 @@ package org.csstudio.alarm.treeView.ldap;
 
 import java.net.URL;
 
+import javax.naming.CompositeName;
 import javax.naming.InvalidNameException;
+import javax.naming.Name;
+import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
+import javax.naming.SizeLimitExceededException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttribute;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.ModificationItem;
+import javax.naming.directory.SearchControls;
+import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
@@ -56,6 +62,8 @@ public final class DirectoryEditor {
 	 */
 	// TODO: refactor (code duplication, see LdapDirectoryReader)
 	private static final String ALARM_ROOT = "ou=EpicsAlarmCfg";
+	
+	private static final String CONTROLS_ROOT = "ou=EpicsControls";
 
 	/**
 	 * The logger that is used by this class.
@@ -405,7 +413,7 @@ public final class DirectoryEditor {
 			LdapName newName = (LdapName) fullLdapName(target).add(
 					new Rdn(node.getObjectClass().getRdnAttribute(), node
 							.getName()));
-			_directory.bind(newName, null, attributes);
+			createEntry(newName, attributes);
 		} catch (NamingException e) {
 			LOG.error(DirectoryEditor.class,
 					"Error creating directory entry", e);
@@ -445,8 +453,19 @@ public final class DirectoryEditor {
 	public static void createProcessVariableRecord(
 			final SubtreeNode parent, final String recordName)
 			throws DirectoryEditException {
-		createEntry(fullLdapName(parent), recordName, ObjectClass.RECORD);
-		new ProcessVariableNode(parent, recordName);
+		try {
+			Rdn rdn = new Rdn(ObjectClass.RECORD.getRdnAttribute(), recordName);
+			LdapName fullName = (LdapName) ((LdapName) fullLdapName(parent).clone()).add(rdn);
+			Attributes attrs = baseAttributesForEntry(ObjectClass.RECORD, rdn);
+			addAlarmAttributes(attrs, recordName);
+			createEntry(fullName, attrs);
+			ProcessVariableNode node = new ProcessVariableNode(parent, recordName);
+			TreeBuilder.setAlarmState(node, attrs);
+		} catch (NamingException e) {
+			LOG.error(DirectoryEditor.class,
+					"Error creating directory entry", e);
+			throw new DirectoryEditException(e.getMessage(), e);
+		}
 	}
 	
 	
@@ -489,10 +508,31 @@ public final class DirectoryEditor {
 		try {
 			Rdn rdn = new Rdn(objectClass.getRdnAttribute(), name);
 			LdapName fullName = (LdapName) ((LdapName) parentName.clone()).add(rdn);
-			Attributes attrs = attributesForEntry(objectClass, rdn);
+			Attributes attrs = baseAttributesForEntry(objectClass, rdn);
+			createEntry(fullName, attrs);
+		} catch (NamingException e) {
+			LOG.error(DirectoryEditor.class,
+					"Error creating directory entry", e);
+			throw new DirectoryEditException(e.getMessage(), e);
+		}
+	}
+
+	/**
+	 * Creates a new directory entry.
+	 * 
+	 * @param name
+	 *            the full name of the new entry.
+	 * @param attributes
+	 *            the attributes of the entry.
+	 * @throws DirectoryEditException
+	 *             if the entry could not be created.
+	 */
+	private static void createEntry(LdapName name, Attributes attributes)
+			throws DirectoryEditException {
+		try {
 			LOG.debug(DirectoryEditor.class,
-					"Creating entry " + fullName + " with attributes " + attrs);
-			_directory.bind(fullName, null, attrs);
+					"Creating entry " + name + " with attributes " + attributes);
+			_directory.bind(name, null, attributes);
 		} catch (NamingException e) {
 			LOG.error(DirectoryEditor.class,
 					"Error creating directory entry", e);
@@ -524,11 +564,10 @@ public final class DirectoryEditor {
 			throw new DirectoryEditException(e.getMessage(), e);
 		}
 	}
-	
 
 	/**
-	 * Returns the attributes for a new entry with the given object class and
-	 * name.
+	 * Returns the base attributes (name, objectclass and EPICS type) for a new
+	 * entry with the given object class and name.
 	 * 
 	 * @param objectClass
 	 *            the object class of the new entry.
@@ -536,11 +575,56 @@ public final class DirectoryEditor {
 	 *            the relative name of the entry.
 	 * @return the attributes for the new entry.
 	 */
-	private static Attributes attributesForEntry(final ObjectClass objectClass,
-			final Rdn rdn) {
+	private static Attributes baseAttributesForEntry(ObjectClass objectClass,
+			Rdn rdn) {
 		Attributes result = rdn.toAttributes();
 		result.put("objectClass", objectClass.getObjectClassName());
 		result.put("epicsCssType", objectClass.getCssType());
 		return result;
+	}
+
+	/**
+	 * Reads the alarm attributes from the EpicsControls path of the LDAP
+	 * directory and adds them to the target attributes.
+	 * 
+	 * @param target
+	 *            the attributes that will be extended.
+	 * @param recordName
+	 *            the name of the record.
+	 * @throws NamingException
+	 */
+	private static void addAlarmAttributes(Attributes target,
+			String recordName) throws NamingException {
+		Name searchRootName = new LdapName(CONTROLS_ROOT);
+		
+		SearchControls ctrl = new SearchControls();
+		ctrl.setSearchScope(SearchControls.SUBTREE_SCOPE);
+		ctrl.setCountLimit(0); // unlimited
+		
+		NamingEnumeration<SearchResult> searchResults =
+			_directory.search(searchRootName, "eren=" + recordName, ctrl);
+		try {
+			if (searchResults.hasMore()) {
+				SearchResult result = searchResults.next();
+				Attributes foundAttributes = result.getAttributes();
+				String[] attrs = { "epicsAlarmSeverity", "epicsAlarmTimeStamp",
+						"epicsAlarmHighUnAckn" };
+				for (String attr : attrs) {
+					Attribute foundAttribute = foundAttributes.get(attr);
+					if (foundAttribute != null) {
+						target.put((Attribute) foundAttribute.clone());
+					}
+				}
+			}
+		} catch (SizeLimitExceededException e) {
+			LOG.error(DirectoryEditor.class, "Size limit exceeded while reading search results: "
+					+ e.getExplanation(), e);
+		} finally {
+			try {
+				searchResults.close();
+			} catch (NamingException e) {
+				LOG.warn(DirectoryEditor.class, "Error closing search results", e);
+			}
+		}
 	}
 }

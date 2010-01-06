@@ -22,9 +22,18 @@
 
 package org.csstudio.alarm.treeView.ldap;
 
+import java.util.Date;
+
+import javax.naming.NamingException;
+import javax.naming.directory.Attribute;
+import javax.naming.directory.Attributes;
 import javax.naming.ldap.LdapName;
 
+import org.csstudio.alarm.treeView.EventtimeUtil;
+import org.csstudio.alarm.treeView.model.Alarm;
 import org.csstudio.alarm.treeView.model.ObjectClass;
+import org.csstudio.alarm.treeView.model.ProcessVariableNode;
+import org.csstudio.alarm.treeView.model.Severity;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
 
 /**
@@ -85,5 +94,48 @@ final class TreeBuilder {
 		} else {
 			return root;
 		}
+	}
+
+
+	/**
+	 * Sets the alarm state of the given node based on the given attributes.
+	 * 
+	 * @param node
+	 *            the node.
+	 * @param attrs
+	 *            the attributes.
+	 * @throws NamingException
+	 *             if an error occurs.
+	 */
+	static void setAlarmState(final ProcessVariableNode node, final Attributes attrs)
+			throws NamingException {
+		Attribute severityAttr = attrs.get("epicsAlarmSeverity");
+		Attribute eventtimeAttr = attrs.get("epicsAlarmTimeStamp");
+		Attribute highUnAcknAttr = attrs.get("epicsAlarmHighUnAckn");
+		if (severityAttr != null) {
+			String severity = (String) severityAttr.get();
+			if (severity != null) {
+				Severity s = Severity.parseSeverity(severity);
+				Date t = null;
+				if (eventtimeAttr != null) {
+					String eventtimeStr = (String) eventtimeAttr.get();
+					if (eventtimeStr != null) {
+						t = EventtimeUtil.parseTimestamp(eventtimeStr);
+					}
+				}
+				if (t == null) {
+					t = new Date();
+				}
+				node.updateAlarm(new Alarm(node.getName(), s, t));
+			}
+		}
+		Severity unack = Severity.NO_ALARM;
+		if (highUnAcknAttr != null) {
+			String severity = (String) highUnAcknAttr.get();
+			if (severity != null) {
+				unack = Severity.parseSeverity(severity);
+			}
+		}
+		node.setHighestUnacknowledgedAlarm(new Alarm(node.getName(), unack, new Date()));
 	}
 }

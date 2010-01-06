@@ -23,7 +23,6 @@
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Date;
 
 import javax.naming.CompositeName;
 import javax.naming.Name;
@@ -40,11 +39,8 @@ import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
-import org.csstudio.alarm.treeView.EventtimeUtil;
 import org.csstudio.alarm.treeView.model.AbstractAlarmTreeNode;
-import org.csstudio.alarm.treeView.model.Alarm;
 import org.csstudio.alarm.treeView.model.ProcessVariableNode;
-import org.csstudio.alarm.treeView.model.Severity;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.alarm.treeView.preferences.PreferenceConstants;
 import org.csstudio.platform.logging.CentralLogger;
@@ -178,7 +174,7 @@ public class LdapDirectoryReader extends Job {
 	private void evaluateAttributes(final SearchResult result,
 			final ProcessVariableNode node) throws NamingException {
 		Attributes attrs = result.getAttributes();
-		setAlarmState(node, attrs);
+		TreeBuilder.setAlarmState(node, attrs);
 		setEpicsAttributes(node, attrs);
 	}
 
@@ -243,49 +239,6 @@ public class LdapDirectoryReader extends Job {
 	}
 
 
-	/**
-	 * Sets the alarm state of the given node based on the given attributes.
-	 * 
-	 * @param node
-	 *            the node.
-	 * @param attrs
-	 *            the attributes.
-	 * @throws NamingException
-	 *             if an error occurs.
-	 */
-	private void setAlarmState(final ProcessVariableNode node, final Attributes attrs)
-			throws NamingException {
-		Attribute severityAttr = attrs.get("epicsAlarmSeverity");
-		Attribute eventtimeAttr = attrs.get("epicsAlarmTimeStamp");
-		Attribute highUnAcknAttr = attrs.get("epicsAlarmHighUnAckn");
-		if (severityAttr != null) {
-			String severity = (String) severityAttr.get();
-			if (severity != null) {
-				Severity s = Severity.parseSeverity(severity);
-				Date t = null;
-				if (eventtimeAttr != null) {
-					String eventtimeStr = (String) eventtimeAttr.get();
-					if (eventtimeStr != null) {
-						t = EventtimeUtil.parseTimestamp(eventtimeStr);
-					}
-				}
-				if (t == null) {
-					t = new Date();
-				}
-				node.updateAlarm(new Alarm(node.getName(), s, t));
-			}
-		}
-		Severity unack = Severity.NO_ALARM;
-		if (highUnAcknAttr != null) {
-			String severity = (String) highUnAcknAttr.get();
-			if (severity != null) {
-				unack = Severity.parseSeverity(severity);
-			}
-		}
-		node.setHighestUnacknowledgedAlarm(new Alarm(node.getName(), unack, new Date()));
-	}
-	
-	
 	/**
 	 * Creates a new node with the given name and inserts it into the tree.
 	 * @param name the object's relative name. This name will be used to determine
