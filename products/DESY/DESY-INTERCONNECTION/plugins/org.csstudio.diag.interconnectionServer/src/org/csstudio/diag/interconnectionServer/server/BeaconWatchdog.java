@@ -31,27 +31,34 @@ import org.csstudio.platform.logging.CentralLogger;
  * @author Matthias Clausen
  *
  */
-public class BeaconWatchdog extends Thread{
-	private int	timeout	= 1000;	// 1mS
+public class BeaconWatchdog extends Thread {
+	private static final int CHECK_DISABLED_INTERVAL_MULTIPLIER = 10;
+	private int	checkInterval = 1000; // ms
 	private boolean isRunning = true;
 	
 	BeaconWatchdog ( int timeout) {
-		this.timeout = timeout;
+		this.checkInterval = timeout;
 		CentralLogger.getInstance().info(this, "Starting new beaconWatchdog @ " + timeout + " ms");
 		this.start();
 	}
 	
 	public void run() {
 		
+		int count = 0;
 		while ( isRunning) {
 			
 			checkBeaconTimeout();
+			
+//			if (++count % CHECK_DISABLED_INTERVAL_MULTIPLIER == 0) {
+//				count = 0;
+//				checkForDisabledIOCs();
+//			}
 			
 			/*
 			 * wait
 			 */
 			try {
-				Thread.sleep( this.timeout);
+				Thread.sleep( this.checkInterval);
 	
 			} catch (InterruptedException e) {
 				// TODO: handle exception
@@ -63,6 +70,29 @@ public class BeaconWatchdog extends Thread{
 		
 	}
 	
+	/**
+	 * 
+	 */
+	private void checkForDisabledIOCs() {
+		Enumeration<IocConnection> connections = IocConnectionManager.getInstance().connectionList.elements();
+		while (connections.hasMoreElements()) {
+			IocConnection connection = connections.nextElement();
+			if (connection.isDisabled()) {
+				CentralLogger.getInstance().warn(this, "IOC is disabled: " + connection.getHost());
+				JmsMessage.getInstance().sendMessage(
+						JmsMessage.JMS_MESSAGE_TYPE_LOG,					// topic 
+						JmsMessage.MESSAGE_TYPE_LOG,     					// type
+						connection.getLogicalIocName() + ":disabledState",	// name
+						"",						 							// value
+						JmsMessage.SEVERITY_NO_ALARM,			 			// severity
+						"", 												// status
+						connection.getHost(),		 						// host
+						null,			 									// facility
+						"IOC is disabled: " + connection.getLogicalIocName());  // text
+			}
+		}
+	}
+
 	/**
 	 * Processing actions if a timeout occurred.
 	 */
@@ -82,9 +112,6 @@ public class BeaconWatchdog extends Thread{
 					  */
 					 connection.setConnectState( false);	// not connected
 					 
-					 /*
-					  * send log message
-					  */
 					 CentralLogger.getInstance().warn(this, "InterconnectionServer: Beacon timeout for Host: " + connection.getHost() + "|" + connection.getLogicalIocName());
 					 /*
 					  * do the changed state stuff in a new thread
