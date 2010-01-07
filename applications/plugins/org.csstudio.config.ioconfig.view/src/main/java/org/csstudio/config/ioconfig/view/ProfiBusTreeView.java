@@ -48,6 +48,7 @@ import org.csstudio.config.ioconfig.config.view.helper.ConfigHelper;
 import org.csstudio.config.ioconfig.config.view.helper.InfoConfigComposte;
 import org.csstudio.config.ioconfig.config.view.helper.ProfibusHelper;
 import org.csstudio.config.ioconfig.model.Activator;
+import org.csstudio.config.ioconfig.model.Diagnose;
 import org.csstudio.config.ioconfig.model.Facility;
 import org.csstudio.config.ioconfig.model.FacilityLight;
 import org.csstudio.config.ioconfig.model.Ioc;
@@ -119,6 +120,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.Tree;
@@ -823,7 +825,7 @@ public class ProfiBusTreeView extends Composite {
             @SuppressWarnings("unchecked")
             public void run() {
                 boolean openConfirm = MessageDialog.openConfirm(getShell(), "Delete Node", String
-                        .format("You are will delete %1s: %2s", _selectedNode.toArray()[0]
+                        .format("Delete %1s: %2s", _selectedNode.toArray()[0]
                                 .getClass().getSimpleName(), _selectedNode));
                 if (openConfirm) {
                     Node parent = null;
@@ -1264,7 +1266,7 @@ public class ProfiBusTreeView extends Composite {
         } else if (selectedNode instanceof Master) {
             _nodeConfigComposite = new MasterConfigComposite(_parentConfigComposite, this, null);
         } else if (selectedNode instanceof Slave) {
-            _nodeConfigComposite = new SlaveConfigComposite(_parentConfigComposite, this, null);
+            _nodeConfigComposite = new SlaveConfigComposite(_parentConfigComposite, this, null,((Slave) selectedNode).getName());
         } else if (selectedNode instanceof Module) {
             _nodeConfigComposite = new ModuleConfigComposite(_parentConfigComposite, this, null);
         }
@@ -1385,7 +1387,10 @@ public class ProfiBusTreeView extends Composite {
     }
 
     private void openInfoDialog() {
-        Dialog infoDialog = new Dialog(getShell()) {
+        Shell shell = new Shell(getShell(), SWT.DIALOG_TRIM | SWT.PRIMARY_MODAL);
+//        Shell shell2 = new Shell(shell, SWT.SHELL_TRIM | SWT.MODELESS);
+//        shell.setSize(800, 600);
+        Dialog infoDialog = new Dialog(shell) {
             @Override
             protected Control createDialogArea(Composite parent) {
                 Composite createDialogArea = (Composite) super.createDialogArea(parent);
@@ -1399,7 +1404,7 @@ public class ProfiBusTreeView extends Composite {
 
                 label = new Label(createDialogArea, SWT.NONE);
                 label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
-                label.setText("ClassCallCount: " + NamedDBClass._classCallCount);
+                label.setText("ClassCallCount: " + Diagnose.getCounts());
 
                 label = new Label(createDialogArea, SWT.NONE);
 
@@ -1417,9 +1422,10 @@ public class ProfiBusTreeView extends Composite {
 
                 Text text = new Text(createDialogArea, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
                 text.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 3, 1));
-                text.setText(NamedDBClass._diagString.toString());
+                text.setText(Diagnose.getString());
 
                 label = new Label(createDialogArea, SWT.NONE);
+                createDialogArea.pack();
                 return createDialogArea;
             }
         };
