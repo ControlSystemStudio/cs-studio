@@ -9,26 +9,24 @@ public class WhenParser extends AbstractDefaultStatementParser<WhenNode> {
 
 	@Override
 	protected String getPatternString() {
-		// return
-		// "(when\\s*\\()([\\S\\s]*[0-9a-zA-Z]*)(\\)\\s*\\{)([\\S\\s]*)"+getPrePatternString();
 		return "(\\s*state\\s*)([a-zA-Z][0-9a-zA-Z_]*)([;]?)";
 	}
 
 	@Override
 	protected String getPrePatternString() {
-		// return "(\\}\\s*state\\s*)([a-zA-Z][0-9a-zA-Z_]*)([;]?)";
 		return "(when\\s*\\()";
 	}
 
 	@Override
 	protected void doFindNext(final CharSequence input, final int startIndex) {
 		this._found = false;
-		final String prePatternString = this.getPrePatternString();
-		final Pattern prePattern = Pattern.compile(prePatternString);
+		final Pattern prePattern = Pattern.compile(getPrePatternString());
 		final Matcher preMatcher = prePattern.matcher(input);
+		final Pattern pattern = Pattern.compile(getPatternString());
+		final Matcher matcher = pattern.matcher(input);
+		
 		int localStart = startIndex;
 		while (preMatcher.find(localStart)) {
-			final Pattern pattern = Pattern.compile(this.getPatternString());
 			final String conditionWithBraces = this.determineCondition(input,
 					preMatcher.end() - 1);
 			if (conditionWithBraces == null) {
@@ -44,7 +42,6 @@ public class WhenParser extends AbstractDefaultStatementParser<WhenNode> {
 				this._found = false;
 				break;
 			}
-			final Matcher matcher = pattern.matcher(input);
 			matcher.region(end - 1 + conditionWithBraces.length()
 					+ bodyContentWithBraces.length(), input.length());
 			if (matcher.find()) {

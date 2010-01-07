@@ -6,7 +6,7 @@ import de.desy.language.snl.parser.Interval;
 import de.desy.language.snl.parser.nodes.MonitorStatementNode;
 
 public class MonitorStatementParser extends
-		AbstractDefaultStatementParser<MonitorStatementNode> {
+		AbstractOptimizedStatementParser<MonitorStatementNode> {
 
 	public MonitorStatementParser(Interval[] exclusions) {
 		super(exclusions);
@@ -14,12 +14,17 @@ public class MonitorStatementParser extends
 
 	@Override
 	protected String getPatternString() {
-		return "(monitor\\s+)([a-zA-Z][0-9a-zA-Z_]*)"
-				+ this.getPrePatternString();
+		return getPrePatternString() + "([a-zA-Z][0-9a-zA-Z_]*)"
+				+ getPostPatternString();
 	}
 
 	@Override
 	protected String getPrePatternString() {
+		return "(monitor\\s+)";
+	}
+
+	@Override
+	protected String getPostPatternString() {
 		return "(\\s*;)";
 	}
 

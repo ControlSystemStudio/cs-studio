@@ -5,15 +5,20 @@ import java.util.regex.Matcher;
 import de.desy.language.snl.parser.nodes.OptionStatementNode;
 
 public class OptionStatementParser extends
-		AbstractDefaultStatementParser<OptionStatementNode> {
+		AbstractOptimizedStatementParser<OptionStatementNode> {
 
 	@Override
 	protected String getPatternString() {
-		return "(option\\s+)([+,\\S\\s]*)" + this.getPrePatternString();
+		return getPrePatternString() + "([+,\\S\\s]*)" + getPostPatternString();
 	}
 
 	@Override
 	protected String getPrePatternString() {
+		return "(option\\s+)";
+	}
+
+	@Override
+	protected String getPostPatternString() {
 		return "(\\s*;)";
 	}
 

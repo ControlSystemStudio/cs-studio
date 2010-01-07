@@ -6,7 +6,7 @@ import de.desy.language.snl.parser.Interval;
 import de.desy.language.snl.parser.nodes.AssignStatementNode;
 
 public class AssignStatementParser extends
-		AbstractDefaultStatementParser<AssignStatementNode> {
+		AbstractOptimizedStatementParser<AssignStatementNode> {
 	
 	public AssignStatementParser(Interval[] exclusions) {
 		super(exclusions);
@@ -14,12 +14,17 @@ public class AssignStatementParser extends
 
 	@Override
 	protected String getPatternString() {
-		return "(assign\\s+)([a-zA-Z_][0-9a-zA-Z_]*)(\\s*\\[\\s*\\d+\\s*\\])*(\\s+to\\s+)(\"[\\s\\S]*\")"
-				+ this.getPrePatternString(); 
+		return getPrePatternString() + "([a-zA-Z_][0-9a-zA-Z_]*)(\\s*\\[\\s*\\d+\\s*\\])*(\\s+to\\s+)(\"[\\s\\S]*\")"
+				+ getPostPatternString(); 
 	}
 
 	@Override
 	protected String getPrePatternString() {
+		return "(assign\\s+)";
+	}
+
+	@Override
+	protected String getPostPatternString() {
 		return "(\\s*;)";
 	}
 

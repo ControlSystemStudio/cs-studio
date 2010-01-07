@@ -21,22 +21,45 @@ import de.desy.language.snl.parser.nodes.VariableNode;
 
 public class SNLParser_Test extends TestCase {
 
-	private final String _source = "program sncExample;" + "double v;"
-			+ "assign v to \"{user}:aiExample\";" + "monitor v;"
-			+ "evflag vFlag;\n" + "sync v to vFlag;\n" + "long l;" + "%{\n"
-			+ "   Embedded C\n" + "}%\n" + "ss ss1 {" + "    state init {"
+	private final String _source = "program sncExample;"
+			+ "double v;"
+			+ "assign v to \"{user}:aiExample\";"
+			+ "monitor v;"
+			+ "evflag vFlag;\n"
+			+ "sync v to vFlag;\n"
+			+ "long l;"
+			+ "%{\n"
+			+ "   Embedded C\n"
+			+ "}%\n"
+			+ "ss ss1 {"
+			+ "    state init {"
 			+ "	when (delay(0.1)) {"
 			+ "	    printf(\"sncExample: Startup delay over\n\");"
-			+ "	} state low" + "    }" + " /* Hallo Welt!*" + " ./. */"
-			+ "    state low {" + "	    when (v > 50.0) {"
-			+ "	        printf(\"sncExample: Changing to high\n\");" + "/* +++"
-			+ "*/	    } state high" + "       " + "       when ( delay(1.0) )"
-			+ "       {" + "       } state low" + "   }" + "    state high {"
+			+ "	} state low"
+			+ "    }"
+			+ " /* Hallo Welt!*"
+			+ " ./. */"
+			+ "    state low {"
+			+ "	    when (v > 50.0) {"
+			+ "	        printf(\"sncExample: Changing to high\n\");"
+			+ "/* +++"
+			+ "*/	    } state high"
+			+ "       "
+			+ "       when ( delay(1.0) )"
+			+ "       {"
+			+ "       } state low"
+			+ "   }"
+			+ "    state high {"
 			+ "when (v <= 50.0) {"
 			+ "	    printf(\"sncExample: Changing to low\n\");"
-			+ "	} state low" + "        when ( delay(1.0) ) {"
-			+ "       } state high" + "   }" + "}" + "option +r;\n"
-			+ " %% Hello C!\n" + "// more and more...\n";
+			+ "	} state low"
+			+ "        when ( delay(1.0) ) {"
+			+ "       } state high"
+			+ "   }"
+			+ "}"
+			+ "option +r;\n"
+			+ " %% Hello C!\n"
+			+ "// more and more...\n";
 
 	private final String _clearSource = "program sncExample;" // 0-18
 			+ "double v;" // 19-27
@@ -60,7 +83,8 @@ public class SNLParser_Test extends TestCase {
 			+ "	    when (v > 50.0) {"
 			+ "	        printf(\"sncExample: Changing to high\n\");"
 			+ "      "
-			+ "  	    } state high" + "       "
+			+ "  	    } state high"
+			+ "       "
 			+ "       when ( delay(1.0) )"
 			+ "       {"
 			+ "       } state low"
@@ -70,9 +94,12 @@ public class SNLParser_Test extends TestCase {
 			+ "	    printf(\"sncExample: Changing to low\n\");"
 			+ "	} state low"
 			+ "        when ( delay(1.0) ) {"
-			+ "       } state high" + "   }" + "}"
+			+ "       } state high"
+			+ "   }"
+			+ "}"
 			+ "option +r;\n"
-			+ "             " + "                    ";
+			+ "             "
+			+ "                   \n";
 
 	@Test
 	public void testSNLParser() {
@@ -181,9 +208,9 @@ public class SNLParser_Test extends TestCase {
 		Assert.assertEquals(EventFlagNode.class, node.getClass());
 		final EventFlagNode eventFlagNode = (EventFlagNode) node;
 		Assert.assertEquals("vFlag", eventFlagNode.getSourceIdentifier());
-
 		Assert.assertTrue(eventFlagNode.hasChildren());
 		Assert.assertEquals(1, eventFlagNode.getChildrenNodesAsArray().length);
+
 		final SyncStatementNode syncNode = (SyncStatementNode) eventFlagNode
 				.getChildrenNodesAsArray()[0];
 		Assert.assertEquals(SyncStatementNode.class, syncNode.getClass());

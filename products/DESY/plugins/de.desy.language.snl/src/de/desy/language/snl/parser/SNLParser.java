@@ -37,8 +37,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import de.desy.language.editor.core.measurement.KeyValuePair;
 import de.desy.language.editor.core.parser.AbstractLanguageParser;
 import de.desy.language.editor.core.parser.Node;
+import de.desy.language.snl.parser.nodes.AllDefineStatementsNode;
 import de.desy.language.snl.parser.nodes.AllVariablesNode;
 import de.desy.language.snl.parser.nodes.AssignStatementNode;
+import de.desy.language.snl.parser.nodes.DefineStatementNode;
 import de.desy.language.snl.parser.nodes.EntryNode;
 import de.desy.language.snl.parser.nodes.EventFlagNode;
 import de.desy.language.snl.parser.nodes.ExitNode;
@@ -52,6 +54,8 @@ import de.desy.language.snl.parser.nodes.SyncStatementNode;
 import de.desy.language.snl.parser.nodes.VariableNode;
 import de.desy.language.snl.parser.nodes.WhenNode;
 import de.desy.language.snl.parser.parser.AssignStatementParser;
+import de.desy.language.snl.parser.parser.DefineConstantStatementParser;
+import de.desy.language.snl.parser.parser.DefineFunctionStatementParser;
 import de.desy.language.snl.parser.parser.EntryParser;
 import de.desy.language.snl.parser.parser.EventFlagParser;
 import de.desy.language.snl.parser.parser.ExitParser;
@@ -131,10 +135,12 @@ public class SNLParser extends AbstractLanguageParser {
 			progressMonitor.worked(5);
 			findAndAddAllVariables(programNode, _input);
 			progressMonitor.worked(6);
-			findAndAddAllEventFlags(programNode, _input);
+			findAndAddAllDefineStatements(programNode, _input);
 			progressMonitor.worked(7);
-			findAndAddAllOptionStatements(programNode, _input);
+			findAndAddAllEventFlags(programNode, _input);
 			progressMonitor.worked(8);
+			findAndAddAllOptionStatements(programNode, _input);
+			progressMonitor.worked(9);
 		} else {
 			final PlaceholderNode placeholder = new PlaceholderNode(
 					"Missing: program statement");
@@ -150,8 +156,7 @@ public class SNLParser extends AbstractLanguageParser {
 									"Missing introducing program statement, place a statement like \"program MyProgramName\"");
 				} catch (CoreException e) {
 					// No need to handle!
-					// TODO Decide for a better exception handling, maybee
-					// extend
+					// TODO Decide for a better exception handling, maybe extend
 					// interface to transport exception!
 					e.printStackTrace();
 				}
@@ -322,9 +327,8 @@ public class SNLParser extends AbstractLanguageParser {
 		final Map<String, AssignStatementNode> assignMap = new HashMap<String, AssignStatementNode>();
 
 		AllVariablesNode variableParentNode = new AllVariablesNode();
-		node.addChild(variableParentNode);
 		
-		Interval[] exclusions = findIllegaleVariablePosition(node);
+		Interval[] exclusions = findIllegalPositions(node);
 
 		final VariableParser variableParser = new VariableParser(exclusions);
 
@@ -343,6 +347,10 @@ public class SNLParser extends AbstractLanguageParser {
 
 			// search next one
 			variableParser.findNext(input, lastEndPosition);
+		}
+		
+		if (!variableMap.isEmpty()) {
+			node.addChild(variableParentNode);
 		}
 
 		long parseTimeIntermediate1 = System.currentTimeMillis();
@@ -414,7 +422,60 @@ public class SNLParser extends AbstractLanguageParser {
 		_measurementData.add(new KeyValuePair("Monitor Nodes", count));
 	}
 	
-	private Interval[] findIllegaleVariablePosition(Node root) {
+	private void findAndAddAllDefineStatements(final Node node, final String input) {
+		long parseTimeStart = System.currentTimeMillis();
+		
+		AllDefineStatementsNode defineParentNode = new AllDefineStatementsNode();
+		
+		List<String> defineNames = new LinkedList<String>();
+		Interval[] exclusions = findIllegalPositions(node);
+		
+		DefineConstantStatementParser constantParser = new DefineConstantStatementParser(exclusions);
+		constantParser.findNext(input);
+
+		while (constantParser.hasFoundElement()) {
+			final DefineStatementNode defineNode = constantParser.getLastFoundAsNode();
+			defineParentNode.addChild(defineNode);
+
+			if (defineNames.contains(defineNode.getSourceIdentifier())) {
+				defineNode.addWarning("Duplicated define declaration");
+			}
+			defineNames.add(defineNode.getSourceIdentifier());
+
+			final int lastEndPosition = constantParser.getEndOffsetLastFound();
+
+			// search next one
+			constantParser.findNext(input, lastEndPosition);
+		}
+		
+		DefineFunctionStatementParser functionParser = new DefineFunctionStatementParser(exclusions);
+		functionParser.findNext(input);
+
+		while (functionParser.hasFoundElement()) {
+			final DefineStatementNode defineNode = functionParser.getLastFoundAsNode();
+			defineParentNode.addChild(defineNode);
+
+			if (defineNames.contains(defineNode.getSourceIdentifier())) {
+				defineNode.addWarning("Duplicated define declaration");
+			}
+			defineNames.add(defineNode.getSourceIdentifier());
+
+			final int lastEndPosition = functionParser.getEndOffsetLastFound();
+
+			// search next one
+			functionParser.findNext(input, lastEndPosition);
+		}
+		
+		if (!defineNames.isEmpty()) {
+			node.addChild(defineParentNode);
+		}
+		
+		long parseTimeEnd = System.currentTimeMillis();
+		_measurementData.add(new KeyValuePair("Define parse duration (ms)", (int)(parseTimeEnd-parseTimeStart)));
+		_measurementData.add(new KeyValuePair("Define Statements", defineNames.size()));
+	}
+	
+	private Interval[] findIllegalPositions(Node root) {
 		List<Interval> result = new LinkedList<Interval>(); 
 		if (root.hasChildren()) {
 			for (Node current : root.getChildrenNodes()) {
@@ -431,7 +492,7 @@ public class SNLParser extends AbstractLanguageParser {
 		long parseTimeStart = System.currentTimeMillis();
 		final Map<String, EventFlagNode> eventFlags = new HashMap<String, EventFlagNode>();
 	
-		Interval[] exclusions = findIllegaleVariablePosition(node);
+		Interval[] exclusions = findIllegalPositions(node);
 		final EventFlagParser eventFlagParser = new EventFlagParser(exclusions);
 	
 		eventFlagParser.findNext(input);

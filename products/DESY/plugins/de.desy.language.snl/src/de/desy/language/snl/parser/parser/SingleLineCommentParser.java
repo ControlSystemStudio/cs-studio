@@ -37,8 +37,8 @@ public class SingleLineCommentParser extends
 			String body = matcher.group(2);
 			body = body.substring(0, body.length() - 1);
 			if (body != null) {
-				this._statement = matcher.group();
-				assert this._statement.charAt(this._statement.length() - 1) == '\n';
+				this._statement = matcher.group().substring(0, matcher.group().length() - 1);
+				assert this._statement.charAt(this._statement.length() - 1) != '\n';
 				this._startOffSet = matcher.start();
 				this._endOffSet = matcher.end() - 1;
 				this._found = true;

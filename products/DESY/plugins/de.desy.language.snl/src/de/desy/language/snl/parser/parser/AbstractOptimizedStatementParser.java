@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 import de.desy.language.snl.parser.Interval;
 import de.desy.language.snl.parser.nodes.AbstractSNLNode;
 
-public abstract class AbstractDefaultStatementParser<N extends AbstractSNLNode>
+public abstract class AbstractOptimizedStatementParser<N extends AbstractSNLNode>
 		extends AbstractStatementParser<N> {
 
 	protected boolean _found;
@@ -18,11 +18,11 @@ public abstract class AbstractDefaultStatementParser<N extends AbstractSNLNode>
 	
 	private final Interval[] _exclusions;
 	
-	public AbstractDefaultStatementParser() {
+	public AbstractOptimizedStatementParser() {
 		_exclusions = new Interval[0];
 	}
 	
-	public AbstractDefaultStatementParser(Interval[] exclusions) {
+	public AbstractOptimizedStatementParser(Interval[] exclusions) {
 		assert exclusions != null : "exclusions != null";
 		
 		_exclusions = exclusions;
@@ -31,23 +31,34 @@ public abstract class AbstractDefaultStatementParser<N extends AbstractSNLNode>
 	@Override
 	protected void doFindNext(final CharSequence input, final int startIndex) {
 		this._found = false;
-		final String prePatternString = this.getPrePatternString();
-		final Pattern prePattern = Pattern.compile(prePatternString);
+		
+		final Pattern prePattern = Pattern.compile(getPrePatternString());
 		final Matcher preMatcher = prePattern.matcher(input);
+		final Pattern postPattern = Pattern.compile(getPostPatternString());
+		final Matcher postMatcher = postPattern.matcher(input);
+		final Pattern pattern = Pattern.compile(this.getPatternString());
+		_matcher = pattern.matcher(input);
+		
 		int localStart = startIndex;
 		while (preMatcher.find(localStart)) {
-			final Pattern pattern = Pattern.compile(this.getPatternString());
-			this._matcher = pattern.matcher(input);
-			final int end = preMatcher.end();			
-			this._matcher.region(startIndex, end);
-			if (this._matcher.find()) {
-				this.matchFound(preMatcher, this._matcher);
-				break;
+			localStart = preMatcher.start();
+			
+			while (postMatcher.find(localStart)) {
+				final int end = postMatcher.end();			
+				this._matcher.region(localStart, end);
+				if (this._matcher.find()) {
+					this.matchFound(postMatcher, this._matcher);
+					return;
+				}
+				localStart = determineStartPosition(end);
+				if (localStart > input.length()) {
+					this._found = false;
+					return;
+				}
 			}
-			localStart = determineStartPosition(end);
 			if (localStart > input.length()) {
 				this._found = false;
-				break;
+				return;
 			}
 		}
 	}
@@ -60,8 +71,10 @@ public abstract class AbstractDefaultStatementParser<N extends AbstractSNLNode>
 		}
 		return pos;
 	}
-
+	
 	protected abstract String getPrePatternString();
+
+	protected abstract String getPostPatternString();
 
 	protected abstract String getPatternString();
 

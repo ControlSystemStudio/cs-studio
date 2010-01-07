@@ -6,7 +6,7 @@ import de.desy.language.snl.parser.Interval;
 import de.desy.language.snl.parser.nodes.SyncStatementNode;
 
 public class SyncStatemantParser extends
-		AbstractDefaultStatementParser<SyncStatementNode> {
+		AbstractOptimizedStatementParser<SyncStatementNode> {
 
 	public SyncStatemantParser(Interval[] exclusions) {
 		super(exclusions);
@@ -14,12 +14,17 @@ public class SyncStatemantParser extends
 	
 	@Override
 	protected String getPatternString() {
-		return "(sync\\s+)([a-zA-Z][0-9a-zA-Z_]*)(\\s+to\\s+)([a-zA-Z][0-9a-zA-Z_]*)"
-				+ this.getPrePatternString();
+		return getPrePatternString() + "([a-zA-Z][0-9a-zA-Z_]*)(\\s+to\\s+)([a-zA-Z][0-9a-zA-Z_]*)"
+				+ getPostPatternString();
 	}
 
 	@Override
 	protected String getPrePatternString() {
+		return "(sync\\s+)";
+	}
+
+	@Override
+	protected String getPostPatternString() {
 		return "(\\s*;)";
 	}
 

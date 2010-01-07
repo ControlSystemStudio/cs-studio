@@ -22,7 +22,7 @@ public class SingleLineCommentParser_Test extends TestCase {
 		Assert.assertFalse(lastFoundAsNode.hasChildren());
 		Assert.assertTrue(lastFoundAsNode.hasContent());
 		Assert.assertEquals("This is a comment", lastFoundAsNode.getContent());
-		Assert.assertEquals("//This is a comment\n", parser
+		Assert.assertEquals("//This is a comment", parser
 				.getLastFoundStatement());
 		Assert.assertTrue(lastFoundAsNode.hasOffsets());
 		Assert.assertEquals(14, lastFoundAsNode.getStatementStartOffset());

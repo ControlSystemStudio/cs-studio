@@ -7,7 +7,7 @@ import de.desy.language.snl.parser.Interval;
 import de.desy.language.snl.parser.nodes.VariableNode;
 
 public class VariableParser extends
-		AbstractDefaultStatementParser<VariableNode> {
+		AbstractOptimizedStatementParser<VariableNode> {
 
 	
 	public VariableParser(Interval[] exclusions) {
@@ -15,7 +15,18 @@ public class VariableParser extends
 	}
 	
 	@Override
+	protected String getPostPatternString() {
+		return "(\\s*;)";
+	}
+	
+	@Override
 	protected String getPatternString() {
+		return getPrePatternString() + "([a-zA-Z_][0-9a-zA-Z_]*)(\\s*\\[\\s*\\d+\\s*\\])*"
+				+ getPostPatternString();
+	}
+
+	@Override
+	protected String getPrePatternString() {
 		final PredefinedTypes[] predefinedTypes = PredefinedTypes.values();
 		final StringBuffer typeBuffer = new StringBuffer(predefinedTypes[0]
 				.getElementName());
@@ -26,13 +37,7 @@ public class VariableParser extends
 				typeBuffer.append(predefinedType.getElementName());
 			}
 		}
-		return "(" + typeBuffer.toString() + ")(\\s+)([a-zA-Z_][0-9a-zA-Z_]*)(\\s*\\[\\s*\\d+\\s*\\])*"
-				+ this.getPrePatternString();
-	}
-
-	@Override
-	protected String getPrePatternString() {
-		return "(\\s*;)";
+		return "(" + typeBuffer.toString() + ")(\\s+)";
 	}
 
 	@Override
