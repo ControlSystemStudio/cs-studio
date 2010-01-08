@@ -165,5 +165,13 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 		return (LabelModel)getModel();
 	}
 
-	
+	@SuppressWarnings("unchecked")
+	@Override
+	public Object getAdapter(Class key) {
+		if(key == LabelFigure.class)
+			return ((LabelFigure)getFigure());
+
+		return super.getAdapter(key);
+	}
+
 }

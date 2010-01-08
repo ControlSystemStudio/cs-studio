@@ -41,13 +41,12 @@ public class LabelModel extends AbstractPVWidgetModel {
 	public LabelModel() {
 		setBackgroundColor(CustomMediaFactory.COLOR_WHITE);
 		setForegroundColor(CustomMediaFactory.COLOR_BLACK);
-		setSize(150, 20);
-		setTooltip("");
-	
+		setSize(150, 20);	
 	}
 
 	@Override
 	protected void configureProperties() {
+		
 		addProperty(new FontProperty(PROP_FONT, "Font", 
 				WidgetPropertyCategory.Display, CustomMediaFactory.FONT_ARIAL));
 		addProperty(new StringProperty(PROP_TEXT, "Text", 
@@ -62,6 +61,7 @@ public class LabelModel extends AbstractPVWidgetModel {
 				WidgetPropertyCategory.Display, V_ALIGN.stringValues(), 1));
 
 		if(!pvModel){
+			setTooltip("");
 			removeProperty(PROP_PVNAME);
 			removeProperty(PROP_PVVALUE);
 			removeProperty(PROP_BACKCOLOR_ALARMSENSITIVE);

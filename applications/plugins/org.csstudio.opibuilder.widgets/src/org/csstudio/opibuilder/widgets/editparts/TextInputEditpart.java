@@ -87,4 +87,6 @@ public class TextInputEditpart extends TextIndicatorEditPart {
 		new LabelEditManager(this, 
 				new LabelCellEditorLocator((LabelFigure)getFigure()), false).show();
 	}
+	
+	
 }

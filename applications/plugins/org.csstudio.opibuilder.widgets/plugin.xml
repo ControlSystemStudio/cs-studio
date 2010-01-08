@@ -176,6 +176,15 @@
       </widget>
       <widget
             category="Controls"
+            description="Write value to a pv by inputing text or press arrow button."
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.SpinnerEditpart"
+            icon="icons/Spinner.gif"
+            model_class="org.csstudio.opibuilder.widgets.model.SpinnerModel"
+            name="Spinner"
+            typeId="org.csstudio.opibuilder.widgets.spinner">
+      </widget>
+      <widget
+            category="Controls"
             description="A scaled slider widget which can read/write a PV"
             editpart_class="org.csstudio.opibuilder.widgets.editparts.ScaledSliderEditPart"
             icon="icons/scaled_slider.gif"

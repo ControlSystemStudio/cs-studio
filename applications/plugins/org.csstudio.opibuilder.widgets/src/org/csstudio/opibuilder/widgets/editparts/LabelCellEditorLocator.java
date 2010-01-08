@@ -14,7 +14,7 @@ public class LabelCellEditorLocator
 		implements CellEditorLocator
 	{
 
-		private LabelFigure stickyNote;
+		private LabelFigure labelFigure;
 	
 		public LabelCellEditorLocator(LabelFigure stickyNote) {
 			setLabel(stickyNote);
@@ -22,8 +22,8 @@ public class LabelCellEditorLocator
 	
 		public void relocate(CellEditor celleditor) {
 			Text text = (Text)celleditor.getControl();
-			Rectangle rect = stickyNote.getClientArea();
-			stickyNote.translateToAbsolute(rect);
+			Rectangle rect = labelFigure.getClientArea();
+			labelFigure.translateToAbsolute(rect);
 			org.eclipse.swt.graphics.Rectangle trim = text.computeTrim(0, 0, 0, 0);
 			rect.translate(trim.x, trim.y);
 			rect.width += trim.width;
@@ -35,7 +35,7 @@ public class LabelCellEditorLocator
 		 * Returns the stickyNote figure.
 		 */
 		protected LabelFigure getLabel() {
-			return stickyNote;
+			return labelFigure;
 		}
 	
 		/**
@@ -43,7 +43,7 @@ public class LabelCellEditorLocator
 		 * @param stickyNote The stickyNote to set
 		 */
 		protected void setLabel(LabelFigure stickyNote) {
-			this.stickyNote = stickyNote;
+			this.labelFigure = stickyNote;
 		}
 
 

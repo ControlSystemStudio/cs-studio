@@ -87,7 +87,7 @@ private void disposeScaledFont() {
 
 protected void initCellEditor() {
 	// update text
-	LabelFigure label = (LabelFigure)getEditPart().getFigure();
+	LabelFigure label = (LabelFigure) getEditPart().getAdapter(LabelFigure.class);
 	AbstractWidgetModel labelModel = (AbstractWidgetModel) getEditPart().getModel();
 	getCellEditor().setValue(label.getText());
 	if(label.isOpaque()){

@@ -296,4 +296,13 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 		((LabelFigure)getFigure()).setText(value.toString());
 	}
 	
+	@SuppressWarnings("unchecked")
+	@Override
+	public Object getAdapter(Class key) {
+		if(key == LabelFigure.class)
+			return ((LabelFigure)getFigure());
+
+		return super.getAdapter(key);
+	}
+	
 }
