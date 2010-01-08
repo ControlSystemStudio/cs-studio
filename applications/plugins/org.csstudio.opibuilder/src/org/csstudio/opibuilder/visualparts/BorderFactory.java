@@ -5,6 +5,7 @@ import org.eclipse.draw2d.AbstractBorder;
 import org.eclipse.draw2d.AbstractLabeledBorder;
 import org.eclipse.draw2d.GroupBoxBorder;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.SchemeBorder;
 import org.eclipse.draw2d.TitleBarBorder;
 import org.eclipse.draw2d.SchemeBorder.Scheme;
@@ -62,7 +63,7 @@ public class BorderFactory {
 	 */
 	private static AbstractBorder createLineBorder(int style, int width, Color color) {
 		if (width>0) {
-			VersatileLineBorder border = new VersatileLineBorder(style, color, width);
+			LineBorder border = new LineBorder(color, width, style);
 			return border;	
 		}
 		return null;
