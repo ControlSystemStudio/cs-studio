@@ -58,7 +58,7 @@ public class ScrollBarModel extends AbstractPVWidgetModel {
 	
 	
 	public ScrollBarModel() {
-		setSize(20, 150);
+		setSize(120, 20);
 	}
 	
 	
