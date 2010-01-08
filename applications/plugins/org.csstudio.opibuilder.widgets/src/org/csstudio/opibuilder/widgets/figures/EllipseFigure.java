@@ -21,10 +21,12 @@
  */
 package org.csstudio.opibuilder.widgets.figures;
 
+import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.Ellipse;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.RGB;
 
 /**
  * An ellipse figure.
@@ -54,6 +56,9 @@ public final class EllipseFigure extends Ellipse {
 	 * The antiAlias flag
 	 */
 	private boolean antiAlias = true;
+	
+	private RGB lineColor = CustomMediaFactory.COLOR_PURPLE;
+
 
 	/**
 	 * {@inheritDoc}
@@ -99,7 +104,27 @@ public final class EllipseFigure extends Ellipse {
 		graphics.popState();
 	}
 
-
+	/**
+	 * Outlines the ellipse.
+	 * @see org.eclipse.draw2d.Shape#outlineShape(org.eclipse.draw2d.Graphics)
+	 */
+	protected void outlineShape(Graphics graphics) {
+	    float lineInset = Math.max(1.0f, getLineWidthFloat()) / 2.0f;
+	    int inset1 = (int)Math.floor(lineInset);
+	    int inset2 = (int)Math.ceil(lineInset);
+	
+	    Rectangle r = Rectangle.SINGLETON.setBounds(getClientArea());
+	    r.x += inset1 ; 
+	    r.y += inset1; 
+	    r.width -= inset1 + inset2;
+	    r.height -= inset1 + inset2;
+		graphics.pushState();
+		graphics.setForegroundColor(CustomMediaFactory.getInstance().getColor(lineColor));
+		graphics.drawOval(r);
+		graphics.popState();
+	}
+	
+	
 	/**
 	 * Sets the fill grade.
 	 * 
@@ -160,6 +185,11 @@ public final class EllipseFigure extends Ellipse {
 	public void setAntiAlias(boolean antiAlias) {
 		this.antiAlias = antiAlias;
 	}
-	
+
+
+	public void setLineColor(RGB lineColor) {
+		this.lineColor = lineColor;
+	}
+
 	
 }

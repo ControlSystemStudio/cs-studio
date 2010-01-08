@@ -84,7 +84,7 @@ public class ScrollBarModel extends AbstractPVWidgetModel {
 				WidgetPropertyCategory.Behavior, DEFAULT_BAR_LENGTH));
 		
 		addProperty(new BooleanProperty(PROP_HORIZONTAL, "Horizontal", 
-				WidgetPropertyCategory.Display, false));
+				WidgetPropertyCategory.Display, true));
 		
 	}	
 

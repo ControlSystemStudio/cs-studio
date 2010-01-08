@@ -56,6 +56,7 @@ public class PolyLineModel extends AbstractPolyModel {
 	@Override
 	protected void configureProperties() {
 		super.configureProperties();
+		removeProperty(PROP_LINE_COLOR);
 		addProperty(new ComboProperty(PROP_ARROW, "Arrows", 
 				WidgetPropertyCategory.Display, ArrowType.stringValues(), 0));
 		addProperty(new BooleanProperty(PROP_FILL_ARROW, "Fill Arrow", 

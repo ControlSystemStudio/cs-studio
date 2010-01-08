@@ -19,70 +19,92 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
+
 package org.csstudio.opibuilder.widgets.figures;
 
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.Graphics;
-import org.eclipse.draw2d.RectangleFigure;
+import org.eclipse.draw2d.RoundedRectangle;
 import org.eclipse.draw2d.Shape;
+import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.RGB;
 
 /**
- * A rectangle figure.
+ * An rounded rectangle figure.
  * 
- * @author Sven Wende (original author), Xihui Chen (since import from SDS 2009/10) 
+ * @author Sven Wende, Alexander Will, Xihui Chen
  * 
  */
-public final class OPIRectangleFigure extends RectangleFigure {
+public final class RoundedRectangleFigure extends RoundedRectangle {
+
 	/**
 	 * The fill grade (0 - 100%).
 	 */
-	private double _fillGrade = 100;
-	
+	private double _fill = 100.0;
+
 	/**
 	 * The orientation (horizontal==true | vertical==false).
 	 */
 	private boolean _orientationHorizontal = true;
-	
+
 	/**
 	 * The transparent state of the background.
 	 */
 	private boolean _transparent = false;
-
-
-	/**
-	 * The antiAlias flag
-	 */
-	private boolean antiAlias = true;
 	
 	private RGB lineColor = CustomMediaFactory.COLOR_PURPLE;
 
 	
 	/**
+	 * The antiAlias flag
+	 */
+	private boolean antiAlias = true;
+
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected synchronized void fillShape(final Graphics graphics) {
+	protected void fillShape(final Graphics graphics) {
 		graphics.setAntialias(antiAlias ? SWT.ON : SWT.OFF);
-		Rectangle figureBounds = getBounds().getCopy();
-		figureBounds.crop(this.getInsets());
-		if (!_transparent) {
-			graphics.setBackgroundColor(getBackgroundColor());
-			graphics.fillRectangle(figureBounds);	
-		}
-		graphics.setBackgroundColor(getForegroundColor());
+		
+		Rectangle figureBounds = getClientArea();
+
+		Rectangle backgroundRectangle;
 		Rectangle fillRectangle;
 		if (_orientationHorizontal) {
 			int newW = (int) Math.round(figureBounds.width * (getFill() / 100));
-			fillRectangle = new Rectangle(figureBounds.x,figureBounds.y,newW,figureBounds.height);
+			backgroundRectangle = new Rectangle(figureBounds.x + newW,
+					figureBounds.y, figureBounds.width - newW,
+					figureBounds.height);
+			fillRectangle = new Rectangle(figureBounds.x, figureBounds.y, newW,
+					figureBounds.height);
 		} else {
-			int newH = (int) Math.round(figureBounds.height * (getFill() / 100));
-			fillRectangle = new Rectangle(figureBounds.x,figureBounds.y+figureBounds.height-newH,figureBounds.width,newH);
+			int newH = (int) Math
+					.round(figureBounds.height * (getFill() / 100));
+			backgroundRectangle = new Rectangle(figureBounds.x, figureBounds.y,
+					figureBounds.width, figureBounds.height - newH);
+			fillRectangle = new Rectangle(figureBounds.x, figureBounds.y
+					+ figureBounds.height - newH, figureBounds.width, newH);
 		}
-		graphics.fillRectangle(fillRectangle);
+		if (!_transparent) {
+			graphics.pushState();
+			graphics.setClip(backgroundRectangle);
+			graphics.setBackgroundColor(getBackgroundColor());
+			graphics.fillRoundRectangle(figureBounds, corner.width, corner.height);
+			graphics.popState();
+		}
+		
+		graphics.pushState();
+		
+		graphics.clipRect(fillRectangle);
+		graphics.setBackgroundColor(getForegroundColor());
+		
+		graphics.fillRoundRectangle(figureBounds, corner.width, corner.height);
+		graphics.popState();
 	}
+
 	
 	/**
 	 * @see Shape#outlineShape(Graphics)
@@ -91,17 +113,19 @@ public final class OPIRectangleFigure extends RectangleFigure {
 	    float lineInset = Math.max(1.0f, getLineWidthFloat()) / 2.0f;
 	    int inset1 = (int)Math.floor(lineInset);
 	    int inset2 = (int)Math.ceil(lineInset);
-
+	
 	    Rectangle r = Rectangle.SINGLETON.setBounds(getClientArea());
 	    r.x += inset1 ; 
 	    r.y += inset1; 
 	    r.width -= inset1 + inset2;
 	    r.height -= inset1 + inset2;
 	    graphics.pushState();
-	    graphics.setForegroundColor(CustomMediaFactory.getInstance().getColor(lineColor));
-	    graphics.drawRectangle(r);
-	    graphics.popState();
+		graphics.setForegroundColor(CustomMediaFactory.getInstance().getColor(lineColor));
+		graphics.drawRoundRectangle(r, Math.max(0, corner.width - (int)lineInset), Math.max(0, corner.height - (int)lineInset));
+		graphics.popState();
 	}
+
+	
 	
 	
 	/**
@@ -111,7 +135,7 @@ public final class OPIRectangleFigure extends RectangleFigure {
 	 *            the fill grade.
 	 */
 	public void setFill(final double fill) {
-		_fillGrade = fill;
+		_fill = fill;
 	}
 
 	/**
@@ -120,9 +144,9 @@ public final class OPIRectangleFigure extends RectangleFigure {
 	 * @return the fill grade
 	 */
 	public double getFill() {
-		return _fillGrade;
+		return _fill;
 	}
-	
+
 	/**
 	 * Sets the transparent state of the background.
 	 * 
@@ -141,7 +165,7 @@ public final class OPIRectangleFigure extends RectangleFigure {
 	public boolean getTransparent() {
 		return _transparent;
 	}
-	
+
 	/**
 	 * Sets the orientation (horizontal==true | vertical==false).
 	 * 
@@ -155,8 +179,7 @@ public final class OPIRectangleFigure extends RectangleFigure {
 	/**
 	 * Gets the orientation (horizontal==true | vertical==false).
 	 * 
-	 * @return boolean
-	 * 				The orientation
+	 * @return boolean The orientation
 	 */
 	public boolean getOrientation() {
 		return _orientationHorizontal;
@@ -165,15 +188,21 @@ public final class OPIRectangleFigure extends RectangleFigure {
 	public void setAntiAlias(boolean antiAlias) {
 		this.antiAlias = antiAlias;
 	}
+	
+	public void setCornerWidth(int value){
+		setCornerDimensions(new Dimension(value, corner.height));
+	}
+	
+
+	public void setCornerHeight(int value){
+		setCornerDimensions(new Dimension(corner.width, value));
+	}
 
 
-	/**
-	 * @param lineColor the lineColor to set
-	 */
 	public void setLineColor(RGB lineColor) {
 		this.lineColor = lineColor;
 	}
 
 
-
+	
 }

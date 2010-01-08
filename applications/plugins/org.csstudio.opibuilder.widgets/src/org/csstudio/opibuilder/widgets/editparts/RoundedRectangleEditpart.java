@@ -1,58 +1,38 @@
-/* 
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
- * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
- *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
- * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
- * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
- * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
- */
 
 package org.csstudio.opibuilder.widgets.editparts;
 
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
-import org.csstudio.opibuilder.widgets.figures.OPIRectangleFigure;
+import org.csstudio.opibuilder.widgets.figures.RoundedRectangleFigure;
 import org.csstudio.opibuilder.widgets.model.AbstractShapeModel;
-import org.csstudio.opibuilder.widgets.model.RectangleModel;
+import org.csstudio.opibuilder.widgets.model.RoundedRectangleModel;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.geometry.Dimension;
 
 /**The editpart of a rectangle widget.
- * @author Sven Wende & Stefan Hofer (similar class in SDS) 
  * @author Xihui Chen
  *
  */
-public class RectangleEditpart extends AbstractShapeEditPart {
+public class RoundedRectangleEditpart extends AbstractShapeEditPart {
 
 	
 
 	@Override
 	protected IFigure doCreateFigure() {
-		OPIRectangleFigure figure = new OPIRectangleFigure();
-		RectangleModel model = getWidgetModel();
+		RoundedRectangleFigure figure = new RoundedRectangleFigure();
+		RoundedRectangleModel model = getWidgetModel();
 		figure.setFill(model.getFillLevel());
 		figure.setOrientation(model.isHorizontalFill());
 		figure.setTransparent(model.isTransparent());
 		figure.setAntiAlias(model.isAntiAlias());
+		figure.setCornerDimensions(new Dimension(model.getCornerWidth(), model.getCornerHeight()));
 		figure.setLineColor(model.getLineColor());
 		return figure;
 	}	
 	
 	@Override
-	public RectangleModel getWidgetModel() {
-		return (RectangleModel)getModel();
+	public RoundedRectangleModel getWidgetModel() {
+		return (RoundedRectangleModel)getModel();
 	}
 	
 
@@ -64,7 +44,7 @@ public class RectangleEditpart extends AbstractShapeEditPart {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IFigure refreshableFigure) {
-				OPIRectangleFigure figure = (OPIRectangleFigure) refreshableFigure;
+				RoundedRectangleFigure figure = (RoundedRectangleFigure) refreshableFigure;
 				figure.setFill((Double) newValue);
 				return true;
 			}
@@ -76,7 +56,7 @@ public class RectangleEditpart extends AbstractShapeEditPart {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IFigure refreshableFigure) {
-				OPIRectangleFigure figure = (OPIRectangleFigure) refreshableFigure;
+				RoundedRectangleFigure figure = (RoundedRectangleFigure) refreshableFigure;
 				figure.setOrientation((Boolean) newValue);
 				return true;
 			}
@@ -88,19 +68,19 @@ public class RectangleEditpart extends AbstractShapeEditPart {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IFigure refreshableFigure) {
-				OPIRectangleFigure figure = (OPIRectangleFigure) refreshableFigure;
+				RoundedRectangleFigure figure = (RoundedRectangleFigure) refreshableFigure;
 				figure.setTransparent((Boolean) newValue);
 				return true;
 			}
 		};
-		setPropertyChangeHandler(RectangleModel.PROP_TRANSPARENT, transparentHandler);	
+		setPropertyChangeHandler(RoundedRectangleModel.PROP_TRANSPARENT, transparentHandler);	
 		
 		// anti alias
 		IWidgetPropertyChangeHandler antiAliasHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IFigure refreshableFigure) {
-				OPIRectangleFigure figure = (OPIRectangleFigure) refreshableFigure;
+				RoundedRectangleFigure figure = (RoundedRectangleFigure) refreshableFigure;
 				figure.setAntiAlias((Boolean) newValue);
 				return true;
 			}
@@ -112,13 +92,41 @@ public class RectangleEditpart extends AbstractShapeEditPart {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IFigure refreshableFigure) {
-				((OPIRectangleFigure)refreshableFigure).setLineColor(
+				((RoundedRectangleFigure)refreshableFigure).setLineColor(
 						((OPIColor)newValue).getRGBValue());
 				return true;
 			}
 		};
 		setPropertyChangeHandler(AbstractShapeModel.PROP_LINE_COLOR,
 				lineColorHandler);
+		
+		
+		//corner width
+		IWidgetPropertyChangeHandler cornerWidthHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				RoundedRectangleFigure figure = (RoundedRectangleFigure) refreshableFigure;
+				figure.setCornerWidth((Integer)newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(RoundedRectangleModel.PROP_CORNER_WIDTH, cornerWidthHandler);	
+	
+		//corner height
+		IWidgetPropertyChangeHandler cornerHeightHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				RoundedRectangleFigure figure = (RoundedRectangleFigure) refreshableFigure;
+				figure.setCornerHeight((Integer)newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(RoundedRectangleModel.PROP_CORNER_HEIGHT, cornerHeightHandler);	
+	
+		
+		
 		
 	}
 

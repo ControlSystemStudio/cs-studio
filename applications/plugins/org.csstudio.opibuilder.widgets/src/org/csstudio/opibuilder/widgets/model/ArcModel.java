@@ -33,6 +33,7 @@ public class ArcModel extends AbstractShapeModel {
 		removeProperty(PROP_FILL_LEVEL);
 		removeProperty(PROP_HORIZONTAL_FILL);
 		removeProperty(PROP_TRANSPARENT);
+		removeProperty(PROP_LINE_COLOR);
 		addProperty(new BooleanProperty(PROP_FILL, "Fill", 
 				WidgetPropertyCategory.Display, false));
 		addProperty(new IntegerProperty(PROP_START_ANGLE, "Start Angle", 

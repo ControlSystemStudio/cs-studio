@@ -23,6 +23,7 @@
 package org.csstudio.opibuilder.widgets.editparts;
 
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
+import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.widgets.figures.EllipseFigure;
 import org.csstudio.opibuilder.widgets.model.AbstractShapeModel;
 import org.csstudio.opibuilder.widgets.model.EllipseModel;
@@ -44,6 +45,7 @@ public class EllipseEditpart extends AbstractShapeEditPart {
 		figure.setOrientation(model.isHorizontalFill());
 		figure.setTransparent(model.isTransparent());
 		figure.setAntiAlias(model.isAntiAlias());
+		figure.setLineColor(model.getLineColor());
 		return figure;
 	}	
 	
@@ -103,6 +105,19 @@ public class EllipseEditpart extends AbstractShapeEditPart {
 			}
 		};
 		setPropertyChangeHandler(AbstractShapeModel.PROP_ANTIALIAS, antiAliasHandler);
+		
+		// line color
+		IWidgetPropertyChangeHandler lineColorHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				((EllipseFigure)refreshableFigure).setLineColor(
+						((OPIColor)newValue).getRGBValue());
+				return true;
+			}
+		};
+		setPropertyChangeHandler(AbstractShapeModel.PROP_LINE_COLOR,
+				lineColorHandler);
 		
 	}
 

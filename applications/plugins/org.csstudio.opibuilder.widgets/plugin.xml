@@ -7,7 +7,7 @@
             category="Graphics"
             description="Create an arc widget"
             editpart_class="org.csstudio.opibuilder.widgets.editparts.ArcEditpart"
-            icon="icons/arc.gif"
+            icon="icons/arc.png"
             model_class="org.csstudio.opibuilder.widgets.model.ArcModel"
             name="Arc"
             typeId="org.csstudio.opibuilder.widgets.arc">
@@ -25,7 +25,7 @@
             category="Graphics"
             description="Create a polygon widget"
             editpart_class="org.csstudio.opibuilder.widgets.editparts.PolygonEditPart"
-            icon="icons/polygon.gif"
+            icon="icons/polygon.png"
             model_class="org.csstudio.opibuilder.widgets.model.PolygonModel"
             name="Polygon"
             typeId="org.csstudio.opibuilder.widgets.polygon">
@@ -34,16 +34,25 @@
             category="Graphics"
             description="Create a rectangle widget"
             editpart_class="org.csstudio.opibuilder.widgets.editparts.RectangleEditpart"
-            icon="icons/rectangle.gif"
+            icon="icons/rectangle2.png"
             model_class="org.csstudio.opibuilder.widgets.model.RectangleModel"
             name="Rectangle"
             typeId="org.csstudio.opibuilder.widgets.Rectangle">
       </widget>
       <widget
             category="Graphics"
+            description="Create a rounded rectangle widget"
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.RoundedRectangleEditpart"
+            icon="icons/roundedRectangle.png"
+            model_class="org.csstudio.opibuilder.widgets.model.RoundedRectangleModel"
+            name="Rounded Rectangle"
+            typeId="org.csstudio.opibuilder.widgets.RoundedRectangle">
+      </widget>
+      <widget
+            category="Graphics"
             description="Create a ellipse widget"
             editpart_class="org.csstudio.opibuilder.widgets.editparts.EllipseEditpart"
-            icon="icons/ellipse.gif"
+            icon="icons/ellipse2.png"
             model_class="org.csstudio.opibuilder.widgets.model.EllipseModel"
             name="Ellipse"
             typeId="org.csstudio.opibuilder.widgets.Ellipse">
@@ -52,7 +61,7 @@
             category="Graphics"
             description="A label for displaying static text or string from PV."
             editpart_class="org.csstudio.opibuilder.widgets.editparts.LabelEditPart"
-            icon="icons/label.gif"
+            icon="icons/label.png"
             model_class="org.csstudio.opibuilder.widgets.model.LabelModel"
             name="Label"
             typeId="org.csstudio.opibuilder.widgets.Label">
@@ -169,7 +178,7 @@
             category="Controls"
             description="Write value to a pv by inputing text in this widget."
             editpart_class="org.csstudio.opibuilder.widgets.editparts.TextInputEditpart"
-            icon="icons/text.gif"
+            icon="icons/textInput.png"
             model_class="org.csstudio.opibuilder.widgets.model.TextInputModel"
             name="Text Input"
             typeId="org.csstudio.opibuilder.widgets.TextInput">

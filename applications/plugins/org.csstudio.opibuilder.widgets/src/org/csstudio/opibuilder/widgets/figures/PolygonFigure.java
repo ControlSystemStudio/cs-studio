@@ -21,12 +21,14 @@
  */
 package org.csstudio.opibuilder.widgets.figures;
 
+import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.Polygon;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.handles.HandleBounds;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.RGB;
 
 /**
  * A polygon figure.
@@ -46,6 +48,8 @@ public final class PolygonFigure extends Polygon implements HandleBounds {
 	private boolean horizontalFill;
 
 	private boolean _transparent;
+
+	private RGB lineColor = CustomMediaFactory.COLOR_BLUE;
 	
 	
 	/**
@@ -87,6 +91,14 @@ public final class PolygonFigure extends Polygon implements HandleBounds {
 		}
 		graphics.fillPolygon(getPoints());
 		graphics.popState();
+	}
+	
+	@Override
+	protected void outlineShape(Graphics g) {
+		g.pushState();
+		g.setForegroundColor(CustomMediaFactory.getInstance().getColor(lineColor));
+		super.outlineShape(g);
+		g.popState();
 	}
 
 	/**
@@ -162,6 +174,10 @@ public final class PolygonFigure extends Polygon implements HandleBounds {
 	 */
 	public boolean getTransparent() {
 		return _transparent;
+	}
+
+	public void setLineColor(RGB lineColor) {
+		this.lineColor = lineColor;
 	}
 
 	

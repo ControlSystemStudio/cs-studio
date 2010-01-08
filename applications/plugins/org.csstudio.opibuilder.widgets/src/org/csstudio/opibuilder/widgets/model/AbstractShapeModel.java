@@ -3,12 +3,15 @@ package org.csstudio.opibuilder.widgets.model;
 
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.BooleanProperty;
+import org.csstudio.opibuilder.properties.ColorProperty;
 import org.csstudio.opibuilder.properties.ComboProperty;
 import org.csstudio.opibuilder.properties.DoubleProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.RGB;
 
 /**
  * The abstract widget model for all shape based widgets.
@@ -70,9 +73,14 @@ public abstract class AbstractShapeModel extends AbstractPVWidgetModel {
 	public static final String PROP_LINE_WIDTH = "line_width";//$NON-NLS-1$
 	
 	/**
-	 * The ID of the width of the line.
+	 * The ID of the style of the line.
 	 */
 	public static final String PROP_LINE_STYLE = "line_style";//$NON-NLS-1$
+	
+	/**
+	 * The ID of the color of the line.
+	 */
+	public static final String PROP_LINE_COLOR = "line_color";//$NON-NLS-1$
 	
 	/**
 	 * The ID of the fill level property.
@@ -91,6 +99,8 @@ public abstract class AbstractShapeModel extends AbstractPVWidgetModel {
 	/** The ID of the <i>transparent</i> property. */
 	public static final String PROP_TRANSPARENT = "transparent";	
 
+	private static final RGB DEFAULT_LINE_COLOR = CustomMediaFactory.COLOR_PURPLE;
+	
 	
 	public AbstractShapeModel() {
 		setBackgroundColor(CustomMediaFactory.COLOR_BLUE);
@@ -106,6 +116,8 @@ public abstract class AbstractShapeModel extends AbstractPVWidgetModel {
 				WidgetPropertyCategory.Display, 0, 0, 100));
 		addProperty(new ComboProperty(PROP_LINE_STYLE, "Line Style",
 				WidgetPropertyCategory.Display, LineStyle.stringValues(), 0));
+		addProperty(new ColorProperty(PROP_LINE_COLOR, "Line Color",
+				WidgetPropertyCategory.Display, DEFAULT_LINE_COLOR));
 		addProperty(new DoubleProperty(PROP_FILL_LEVEL, "Fill Level",
 				WidgetPropertyCategory.Display, 0.0, 0.0, 100.0));
 		addProperty(new BooleanProperty(PROP_HORIZONTAL_FILL, "Horizontal Fill", 
@@ -179,6 +191,10 @@ public abstract class AbstractShapeModel extends AbstractPVWidgetModel {
 	public int getLineStyle() {
 		return LineStyle.values()[(Integer) getProperty(PROP_LINE_STYLE).
 		                          getPropertyValue()].getStyle();
+	}
+	
+	public RGB getLineColor(){
+		return ((OPIColor)getPropertyValue(PROP_LINE_COLOR)).getRGBValue();
 	}
 	
 	/**

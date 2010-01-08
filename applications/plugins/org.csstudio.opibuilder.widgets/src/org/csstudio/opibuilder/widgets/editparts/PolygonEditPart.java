@@ -23,6 +23,7 @@
 package org.csstudio.opibuilder.widgets.editparts;
 
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
+import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.widgets.figures.PolygonFigure;
 import org.csstudio.opibuilder.widgets.model.AbstractPolyModel;
 import org.csstudio.opibuilder.widgets.model.AbstractShapeModel;
@@ -50,6 +51,7 @@ public final class PolygonEditPart extends AbstractPolyEditPart {
 		polygon.setAntiAlias(model.isAntiAlias());
 		polygon.setOrientation(model.isHorizontalFill());
 		polygon.setTransparent(model.isTransparent());
+		polygon.setLineColor(model.getLineColor());
 		return polygon;
 	}
 
@@ -112,6 +114,20 @@ public final class PolygonEditPart extends AbstractPolyEditPart {
 			}
 		};
 		setPropertyChangeHandler(AbstractShapeModel.PROP_TRANSPARENT, transparentHandler);	
+		
+		// line color
+		IWidgetPropertyChangeHandler lineColorHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				((PolygonFigure)refreshableFigure).setLineColor(
+						((OPIColor)newValue).getRGBValue());
+				return true;
+			}
+		};
+		setPropertyChangeHandler(AbstractShapeModel.PROP_LINE_COLOR,
+				lineColorHandler);
+		
 		
 	}
 }

@@ -3,7 +3,6 @@ package org.csstudio.opibuilder.widgets.editparts;
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
-import org.csstudio.opibuilder.widgets.model.AbstractPolyModel;
 import org.csstudio.opibuilder.widgets.model.AbstractShapeModel;
 import org.csstudio.opibuilder.widgets.model.AbstractShapeModel.LineStyle;
 import org.eclipse.draw2d.IFigure;
@@ -54,7 +53,7 @@ public abstract class AbstractShapeEditPart extends AbstractPVWidgetEditPart {
 				return true;
 			}
 		};
-		setPropertyChangeHandler(AbstractPolyModel.PROP_LINE_WIDTH,
+		setPropertyChangeHandler(AbstractShapeModel.PROP_LINE_WIDTH,
 				lineWidthHandler);
 		
 		// line style
@@ -67,8 +66,10 @@ public abstract class AbstractShapeEditPart extends AbstractPVWidgetEditPart {
 				return true;
 			}
 		};
-		setPropertyChangeHandler(AbstractPolyModel.PROP_LINE_STYLE,
+		setPropertyChangeHandler(AbstractShapeModel.PROP_LINE_STYLE,
 				lineStyleHandler);
+		
+		
 		
 	}
 	
