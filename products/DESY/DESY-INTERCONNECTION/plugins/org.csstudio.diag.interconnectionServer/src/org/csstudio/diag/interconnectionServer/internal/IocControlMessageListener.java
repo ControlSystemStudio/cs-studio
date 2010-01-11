@@ -126,7 +126,9 @@ public class IocControlMessageListener implements MessageListener {
 		int duration = Integer.parseInt(splittedArgs[0]);
 		String hostname = splittedArgs[1];
 		IocConnection ioc = getIocFromHostname(hostname);
-		ioc.scheduleDowntime(duration, TimeUnit.SECONDS);
+		if (ioc != null) {
+			ioc.scheduleDowntime(duration, TimeUnit.SECONDS);
+		}
 	}
 
 	/**
@@ -139,7 +141,9 @@ public class IocControlMessageListener implements MessageListener {
 	 */
 	private void setIocEnabled(String args, boolean enabled) {
 		IocConnection ioc = getIocFromHostname(args);
-		ioc.setDisabled(!enabled);
+		if (ioc != null) {
+			ioc.setDisabled(!enabled);
+		}
 	}
 
 	/**
@@ -156,9 +160,13 @@ public class IocControlMessageListener implements MessageListener {
 						PreferenceConstants.DATA_PORT_NUMBER, "", null));
 		InetAddress iocInetAddress =
 			IocConnectionManager.getInstance().getIocInetAdressByName(hostname);
-		IocConnection ioc = IocConnectionManager.getInstance().getIocConnection(
-				iocInetAddress, dataPort);
-		return ioc;
+		if (iocInetAddress != null) {
+			IocConnection ioc = IocConnectionManager.getInstance().getIocConnection(
+					iocInetAddress, dataPort);
+			return ioc;
+		} else {
+			return null;
+		}
 	}
 
 	@Override
