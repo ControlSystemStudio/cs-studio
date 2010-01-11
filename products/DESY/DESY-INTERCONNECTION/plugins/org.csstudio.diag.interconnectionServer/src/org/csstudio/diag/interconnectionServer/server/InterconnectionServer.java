@@ -251,10 +251,11 @@ public class InterconnectionServer
 		//
 		// check beacon timeout of connections to IOCs beaconTimeout
 		//
-	    String beaconTimeout = prefs.getString(Activator.getDefault().getPluginId(),
-	    		PreferenceConstants.BEACON_TIMEOUT, "", null); 
-	    int beaconTimeoutI = Integer.parseInt(beaconTimeout);
-	    this.beaconWatchdog = new BeaconWatchdog(beaconTimeoutI);  // mS
+		int beaconTimeoutI = prefs.getInt(Activator.PLUGIN_ID,
+	    		PreferenceConstants.BEACON_TIMEOUT, 15000, null); 
+	    int multiplier = prefs.getInt(Activator.PLUGIN_ID,
+	    		PreferenceConstants.CHECK_DISABLED_INTERVAL_MULTIPLIER, 10, null);
+	    this.beaconWatchdog = new BeaconWatchdog(beaconTimeoutI, multiplier);  // mS
 	    
 		/*
 		 * do we want to write out message indicators?

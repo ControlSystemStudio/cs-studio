@@ -32,13 +32,20 @@ import org.csstudio.platform.logging.CentralLogger;
  *
  */
 public class BeaconWatchdog extends Thread {
-	private static final int CHECK_DISABLED_INTERVAL_MULTIPLIER = 10;
+	private int checkDisabledIntervalMultiplier = 10;
 	private int	checkInterval = 1000; // ms
 	private boolean isRunning = true;
-	
-	BeaconWatchdog ( int timeout) {
-		this.checkInterval = timeout;
-		CentralLogger.getInstance().info(this, "Starting new beaconWatchdog @ " + timeout + " ms");
+
+	/**
+	 * @param checkInterval
+	 *            The time between two checks for IOCs which are offline.
+	 * @param checkDisabledIntervalMultiplier
+	 *            The multiplier of checkInterval for checks of disabled IOCs.
+	 */
+	BeaconWatchdog(int checkInterval, int checkDisabledIntervalMultiplier) {
+		this.checkInterval = checkInterval;
+		this.checkDisabledIntervalMultiplier = checkDisabledIntervalMultiplier;
+		CentralLogger.getInstance().info(this, "Starting new beaconWatchdog @ " + checkInterval + " ms");
 		this.start();
 	}
 	
@@ -49,10 +56,10 @@ public class BeaconWatchdog extends Thread {
 			
 			checkBeaconTimeout();
 			
-//			if (++count % CHECK_DISABLED_INTERVAL_MULTIPLIER == 0) {
-//				count = 0;
-//				checkForDisabledIOCs();
-//			}
+			if (++count % checkDisabledIntervalMultiplier == 0) {
+				count = 0;
+				checkForDisabledIOCs();
+			}
 			
 			/*
 			 * wait
@@ -61,7 +68,7 @@ public class BeaconWatchdog extends Thread {
 				Thread.sleep( this.checkInterval);
 	
 			} catch (InterruptedException e) {
-				// TODO: handle exception
+				// Ok, if interrupted it will take place more early
 			}
 			finally {
 				//clean up
