@@ -37,7 +37,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	 */
 	public final void initializeDefaultPreferences() {
 		Preferences prefs = new DefaultScope().getNode(AlarmTreePlugin.PLUGIN_ID);
-		prefs.put(PreferenceConstants.FACILITIES, "");
+		prefs.put(PreferenceConstants.FACILITIES, "TEST");
 		prefs.put(PreferenceConstants.JMS_URL_PRIMARY, "failover:(tcp://krykjmsb.desy.de:64616)?maxReconnectDelay=5000");
 		prefs.put(PreferenceConstants.JMS_URL_SECONDARY, "failover:(tcp://krykjmsa.desy.de:62616)?maxReconnectDelay=5000");
 		prefs.put(PreferenceConstants.JMS_TOPICS, "ALARM,ACK");
