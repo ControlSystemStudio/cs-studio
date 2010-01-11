@@ -100,7 +100,7 @@ public class IntensityGraphModel extends AbstractPVWidgetModel {
 				WidgetPropertyCategory.Behavior, 0));
 		
 		addProperty(new ColorMapProperty(PROP_COLOR_MAP, "Color Map", 
-				WidgetPropertyCategory.Display, new ColorMap(PredefinedColorMap.GrayScale, true, true)));
+				WidgetPropertyCategory.Display, new ColorMap(PredefinedColorMap.JET, true, true)));
 		
 		addProperty(new BooleanProperty(PROP_SHOW_RAMP, "Show Ramp",
 				WidgetPropertyCategory.Display, true));
