@@ -623,7 +623,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 
 
 	
-	/**Set the external object
+	/**Add/modify an external object from javascript.
 	 * @param name the name of the object.
 	 * @param var the object.
 	 */
@@ -635,7 +635,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 
 
 
-	/**
+	/**Get the external object by name.
 	 * @return the external object. null if no such an object was set before.
 	 */
 	public Object getExternalObject(String name) {
@@ -644,7 +644,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 		return null;
 	}
 	
-	/**Set the value for one of the properties of the widget. 
+	/**Set the property value of the widget. 
 	 * @param prop_id the property id. 
 	 * @param value the value.
 	 */
@@ -652,13 +652,31 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 		getWidgetModel().setPropertyValue(prop_id, value);
 	}
 	
-	/**Get the value from one the properties of the widget.
+	/**Get property value of the widget.
 	 * @param prop_id
-	 * @return
+	 * @return the property value.
 	 */
 	public Object getPropertyValue(String prop_id){
 		return getWidgetModel().getPropertyValue(prop_id);
 	}
 	
+	
+	/**Run a widget action which is attached to the widget.
+	 * @param index the index of the action in the actions list.
+	 */
+	public void runAction(int index){
+		AbstractWidgetAction action;
+		try {
+			action = getWidgetModel().getActionsInput().getActionsList().get(index);
+			if(action != null)
+				action.run();
+			else
+				throw new IndexOutOfBoundsException();
+		} catch (IndexOutOfBoundsException e) {
+				ConsoleService.getInstance().writeError(
+					NLS.bind("No action at index {0} is configured for {1}", 
+					index, getWidgetModel().getName()));
+		}
+	}
 	
 }
