@@ -102,6 +102,9 @@ public class LdapSupport{
 				return stringReturnArray;
 			}
 		} else {
+			CentralLogger.getInstance().warn(this,
+					"No logical name configured in LDAP for IOC: " +
+					ipName + " [" + ipAddress + "]");
 			/*
 			 * in the meantime ...
 			 */
