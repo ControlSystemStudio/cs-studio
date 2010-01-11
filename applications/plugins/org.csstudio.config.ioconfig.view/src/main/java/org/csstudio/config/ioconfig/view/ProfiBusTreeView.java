@@ -48,7 +48,6 @@ import org.csstudio.config.ioconfig.config.view.helper.ConfigHelper;
 import org.csstudio.config.ioconfig.config.view.helper.InfoConfigComposte;
 import org.csstudio.config.ioconfig.config.view.helper.ProfibusHelper;
 import org.csstudio.config.ioconfig.model.Activator;
-import org.csstudio.config.ioconfig.model.Diagnose;
 import org.csstudio.config.ioconfig.model.Facility;
 import org.csstudio.config.ioconfig.model.FacilityLight;
 import org.csstudio.config.ioconfig.model.Ioc;
@@ -1404,7 +1403,7 @@ public class ProfiBusTreeView extends Composite {
 
                 label = new Label(createDialogArea, SWT.NONE);
                 label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
-                label.setText("ClassCallCount: " + Diagnose.getCounts());
+//                label.setText("ClassCallCount: " + Diagnose.getCounts());
 
                 label = new Label(createDialogArea, SWT.NONE);
 
@@ -1422,7 +1421,7 @@ public class ProfiBusTreeView extends Composite {
 
                 Text text = new Text(createDialogArea, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
                 text.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 3, 1));
-                text.setText(Diagnose.getString());
+//                text.setText(Diagnose.getString());
 
                 label = new Label(createDialogArea, SWT.NONE);
                 createDialogArea.pack();
