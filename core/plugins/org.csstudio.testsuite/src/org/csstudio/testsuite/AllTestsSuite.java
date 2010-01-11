@@ -21,18 +21,19 @@ public class AllTestsSuite {
 	
 	//Comma separated list, must contain one entry!
 	//private static final String packageRoot = "org.csstudio";
-	private static final String packageRoot = "org.csstudio,org.epics,org.remotercp,de.desy";
+	private static final String packageRoot = "org.csstudio,org.epics," +
+			"org.remotercp,de.desy";
 	
 	
 	//Only tests in fragments will be used
-	private static boolean onlyfragments = false;
+	private static final boolean onlyFragments = false;
 	
 	private static final String testClassFilter = "*AllTests";
 	//private static final String testClassFilter = "*Test";
-	private static final String testsuitename = "CSSTestsSuite";
+	private static final String testSuiteName = "CSSTestsSuite";
 	
 	public static Test suite() {
-		TestSuite suite = new TestSuite(testsuitename);
+		TestSuite suite = new TestSuite(testSuiteName);
 		for (Bundle bundle : Activator.getBundles()) {
 			// check fragment & bundleRoot conditions
 			if (checkFragment(bundle) && checkBundleRoot(bundle) ) {
@@ -47,7 +48,7 @@ public class AllTestsSuite {
 
 	private static boolean checkFragment(Bundle bundle) {
 		boolean res = true;
-		if (onlyfragments) 
+		if (onlyFragments) 
 			res = isFragment(bundle);	
 		return res;
 	}
