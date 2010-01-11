@@ -63,7 +63,7 @@ public class BorderFactory {
 	 */
 	private static AbstractBorder createLineBorder(int style, int width, Color color) {
 		if (width>0) {
-			LineBorder border = new LineBorder(color, width, style);
+			LineBorder border = new VersatileLineBorder(color, width, style);
 			return border;	
 		}
 		return null;

@@ -88,7 +88,7 @@ public final class OPIRectangleFigure extends RectangleFigure {
 	 * @see Shape#outlineShape(Graphics)
 	 */
 	protected void outlineShape(Graphics graphics) {
-	    float lineInset = Math.max(1.0f, getLineWidthFloat()) / 2.0f;
+	    float lineInset = Math.max(1.0f, getLineWidth()) / 2.0f;
 	    int inset1 = (int)Math.floor(lineInset);
 	    int inset2 = (int)Math.ceil(lineInset);
 

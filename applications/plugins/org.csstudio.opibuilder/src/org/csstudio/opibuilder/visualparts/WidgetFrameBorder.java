@@ -49,7 +49,7 @@ public WidgetFrameBorder(String label) {
  */
 protected void createBorders() {
 	inner = new TitleBarBorder();
-	outer = new VersatileLineBorder(SWT.LINE_SOLID, ColorConstants.black, 1);
+	outer = new VersatileLineBorder(ColorConstants.black, 1, SWT.LINE_SOLID);
 }
 
 /**
