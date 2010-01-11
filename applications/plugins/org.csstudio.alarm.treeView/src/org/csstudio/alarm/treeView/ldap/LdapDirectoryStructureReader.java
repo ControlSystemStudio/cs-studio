@@ -103,7 +103,11 @@ public class LdapDirectoryStructureReader extends Job {
 		IPreferencesService prefs = Platform.getPreferencesService();
 		String facilitiesPref = prefs.getString(AlarmTreePlugin.PLUGIN_ID,
 				PreferenceConstants.FACILITIES, "", null);
-		_facilityNames = facilitiesPref.split(";");
+		if (facilitiesPref.equals("")) {
+			_facilityNames = new String[0];
+		} else {
+			_facilityNames = facilitiesPref.split(";");
+		}
 	}
 	
 	
@@ -124,6 +128,7 @@ public class LdapDirectoryStructureReader extends Job {
 		try {
 			long startTime = System.currentTimeMillis();
 			initializeDirectoryContext();
+			ensureAtLeastTestFacilityIsShown();
 			for (String facility : _facilityNames) {
 				updateStructureOfFacility(facility);
 			}
@@ -133,6 +138,13 @@ public class LdapDirectoryStructureReader extends Job {
 			monitor.done();
 		}
 		return Status.OK_STATUS;
+	}
+
+
+	private void ensureAtLeastTestFacilityIsShown() {
+		if (_facilityNames.length == 0) {
+			_facilityNames = new String[] { "TEST" };
+		}
 	}
 
 

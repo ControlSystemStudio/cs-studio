@@ -26,12 +26,14 @@ import java.net.URL;
 
 import javax.naming.CompositeName;
 import javax.naming.Name;
+import javax.naming.NameNotFoundException;
 import javax.naming.NameParser;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.SizeLimitExceededException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
+import javax.naming.directory.BasicAttributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
@@ -40,6 +42,7 @@ import javax.naming.ldap.Rdn;
 
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.model.AbstractAlarmTreeNode;
+import org.csstudio.alarm.treeView.model.ObjectClass;
 import org.csstudio.alarm.treeView.model.ProcessVariableNode;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.alarm.treeView.preferences.PreferenceConstants;
@@ -107,7 +110,11 @@ public class LdapDirectoryReader extends Job {
 		IPreferencesService prefs = Platform.getPreferencesService();
 		String facilitiesPref = prefs.getString(AlarmTreePlugin.PLUGIN_ID,
 				PreferenceConstants.FACILITIES, "", null);
-		_facilityNames = facilitiesPref.split(";");
+		if (facilitiesPref.equals("")) {
+			_facilityNames = new String[0];
+		} else {
+			_facilityNames = facilitiesPref.split(";");
+		}
 	}
 	
 	
@@ -251,6 +258,33 @@ public class LdapDirectoryReader extends Job {
 		ProcessVariableNode node = new ProcessVariableNode(parentNode, sname);
 		return node;
 	}
+
+	/**
+	 * Ensures that the facility names are not empty. If the facility names are
+	 * empty, adds TEST to the facility names and ensures that the TEST facility
+	 * exists in the LDAP directory. (See Bug #1552)
+	 */
+	private void ensureAtLeastTestFacilityIsShown() {
+		if (_facilityNames.length == 0) {
+			LOG.debug(this, "No facility names selected, using TEST facility.");
+			_facilityNames = new String[] { "TEST" };
+		}
+		try {
+			Name testFacilityName = new LdapName(ALARM_ROOT).add(new Rdn("efan", "TEST"));
+			try {
+				_directory.lookup(testFacilityName);
+			} catch (NameNotFoundException e) {
+				LOG.info(this, "TEST facility does not exist in LDAP, creating it.");
+				Attributes attrs = new BasicAttributes();
+				attrs.put("efan", "TEST");
+				attrs.put("objectClass", ObjectClass.FACILITY.getObjectClassName());
+				attrs.put("epicsCssType", ObjectClass.FACILITY.getCssType());
+				_directory.bind(testFacilityName, null, attrs);
+			}
+		} catch (NamingException e) {
+			LOG.error(this, "Failed to create TEST facility in LDAP", e);
+		}
+	}
 	
 	
 	/**
@@ -263,6 +297,7 @@ public class LdapDirectoryReader extends Job {
 		try {
 			long startTime = System.currentTimeMillis();
 			initializeDirectoryContext();
+			ensureAtLeastTestFacilityIsShown();
 			for (String facility : _facilityNames) {
 				populateSubTree(facility);
 			}
