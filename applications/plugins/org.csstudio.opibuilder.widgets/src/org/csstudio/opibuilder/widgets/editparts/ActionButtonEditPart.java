@@ -2,14 +2,11 @@ package org.csstudio.opibuilder.widgets.editparts;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.InputStream;
 
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
-import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
-import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.widgetActions.AbstractWidgetAction;
@@ -18,13 +15,11 @@ import org.csstudio.opibuilder.widgets.figures.ActionButtonFigure;
 import org.csstudio.opibuilder.widgets.figures.ActionButtonFigure2;
 import org.csstudio.opibuilder.widgets.figures.ActionButtonFigure.ButtonActionListener;
 import org.csstudio.opibuilder.widgets.model.ActionButtonModel;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.InputEvent;
 import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.graphics.Image;
 
 /**
  * EditPart controller for the ActioButton widget. The controller mediates
@@ -34,9 +29,7 @@ import org.eclipse.swt.graphics.Image;
  * 
  */
 public final class ActionButtonEditPart extends AbstractPVWidgetEditPart {
-	
-	private Image image;
-  
+	  
 	/**
 	 * {@inheritDoc}
 	 */
@@ -49,8 +42,7 @@ public final class ActionButtonEditPart extends AbstractPVWidgetEditPart {
 		buttonFigure.setFont(CustomMediaFactory.getInstance().getFont(
 				model.getFont().getFontData()));
 		buttonFigure.setStyle(model.isToggleButton());
-		loadImageFromPath(model.getImagePath());
-		buttonFigure.setImage(image);
+		buttonFigure.setImagePath(model.getImagePath());
 		updatePropSheet(model.isToggleButton());
 		if(getExecutionMode() == ExecutionMode.RUN_MODE){
 			buttonFigure.addActionListener(new ButtonActionListener(){
@@ -95,11 +87,8 @@ public final class ActionButtonEditPart extends AbstractPVWidgetEditPart {
 	}
 	
 	@Override
-	public void deactivate() {
-		if(image != null){
-			image.dispose();
-			image = null;
-		}
+	public void deactivate() {		
+		((ActionButtonFigure)getFigure()).dispose();
 		super.deactivate();
 	}
 	
@@ -111,22 +100,22 @@ public final class ActionButtonEditPart extends AbstractPVWidgetEditPart {
 	@Override
 	protected void registerPropertyChangeHandlers() {
 		// the button should be disabled in edit mode to make select work.
-		((ActionButtonFigure)getFigure()).setEnabled(
-				getExecutionMode() == ExecutionMode.RUN_MODE);
-		
-		removeAllPropertyChangeHandlers(ActionButtonModel.PROP_ENABLED);
-		
-		IWidgetPropertyChangeHandler enableHandler = new IWidgetPropertyChangeHandler(){
-			public boolean handleChange(Object oldValue, Object newValue,
-					IFigure figure) {
-				//enablement only takes effect in run mode
-				if(getExecutionMode() == ExecutionMode.RUN_MODE)
-					figure.setEnabled((Boolean)newValue);
-				return true;
-			}
-		};		
-		setPropertyChangeHandler(AbstractWidgetModel.PROP_ENABLED, enableHandler);
-		
+//		((ActionButtonFigure)getFigure()).setEnabled(
+//				getExecutionMode() == ExecutionMode.RUN_MODE);
+//		
+//		removeAllPropertyChangeHandlers(ActionButtonModel.PROP_ENABLED);
+//		
+//		IWidgetPropertyChangeHandler enableHandler = new IWidgetPropertyChangeHandler(){
+//			public boolean handleChange(Object oldValue, Object newValue,
+//					IFigure figure) {
+//				//enablement only takes effect in run mode
+//				//if(getExecutionMode() == ExecutionMode.RUN_MODE)
+//					figure.setEnabled((Boolean)newValue);
+//				return false;
+//			}
+//		};		
+//		setPropertyChangeHandler(AbstractWidgetModel.PROP_ENABLED, enableHandler);
+//		
 
 		// text
 		IWidgetPropertyChangeHandler textHandler = new IWidgetPropertyChangeHandler() {
@@ -154,17 +143,12 @@ public final class ActionButtonEditPart extends AbstractPVWidgetEditPart {
 		IWidgetPropertyChangeHandler imageHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
-				ActionButtonFigure figure = (ActionButtonFigure) refreshableFigure;
-				if(image != null){
-					image.dispose();
-					image = null;
-				}
+				ActionButtonFigure figure = (ActionButtonFigure) refreshableFigure;				
 				IPath absolutePath = (IPath)newValue;
 				if(absolutePath != null && !absolutePath.isEmpty() && !absolutePath.isAbsolute())
 					absolutePath = ResourceUtil.buildAbsolutePath(
 							getWidgetModel(), absolutePath);
-				loadImageFromPath(absolutePath);
-				figure.setImage(image);
+				figure.setImagePath(absolutePath);
 				return true;
 			}
 		};
@@ -188,8 +172,7 @@ public final class ActionButtonEditPart extends AbstractPVWidgetEditPart {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
 				ActionButtonFigure figure = (ActionButtonFigure) refreshableFigure;
-				figure.setStyle((Boolean) newValue);
-				
+				figure.setStyle((Boolean) newValue);				
 				updatePropSheet((Boolean) newValue);
 				return true;
 			}
@@ -217,24 +200,7 @@ public final class ActionButtonEditPart extends AbstractPVWidgetEditPart {
 					newValue ? "Push Action Index" : "Click Action Index" );
 	}
 	
-	private void loadImageFromPath(IPath path){
-		if(path == null || path.isEmpty()){
-			if(image !=null){
-				image.dispose();
-				image = null;
-			}
-			return;
-		}
-			
-		try {
-			InputStream stream = ResourceUtil.pathToInputStream(path);
-			image = new Image(null, stream);
-		} catch (Exception e) {
-			String message = "Failed to load image from path" + path + "\n" + e;
-			CentralLogger.getInstance().error(this, message, e);
-			ConsoleService.getInstance().writeError(message);
-		} 
-	}
+	
 
 	@Override
 	public void setValue(Object value) {		

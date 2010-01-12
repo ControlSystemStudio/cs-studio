@@ -115,7 +115,7 @@
             category="Monitors"
             description="A gauge which could display numeric value."
             editpart_class="org.csstudio.opibuilder.widgets.editparts.GaugeEditPart"
-            icon="icons/gauge.gif"
+            icon="icons/gauge2.png"
             model_class="org.csstudio.opibuilder.widgets.model.GaugeModel"
             name="Gauge"
             typeId="org.csstudio.opibuilder.widgets.gauge">

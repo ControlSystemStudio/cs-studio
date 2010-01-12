@@ -1,10 +1,15 @@
 package org.csstudio.opibuilder.widgets.figures;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.opibuilder.editparts.ExecutionMode;
+import org.csstudio.opibuilder.util.ConsoleService;
+import org.csstudio.opibuilder.util.ResourceUtil;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.Figure;
@@ -23,7 +28,9 @@ import org.eclipse.draw2d.SchemeBorder;
 import org.eclipse.draw2d.StackLayout;
 import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 
@@ -67,11 +74,14 @@ public class ActionButtonFigure extends Figure {
 	private final int[] alignments = new int[] {PositionConstants.CENTER, PositionConstants.TOP, PositionConstants.BOTTOM, PositionConstants.LEFT, PositionConstants.RIGHT};
 	
 	
-	private ExecutionMode executionMode;
+	private ExecutionMode executionMode = ExecutionMode.RUN_MODE;
 	
 	private List<ButtonActionListener> listeners;
 	
+	private Image image, grayImage;
+	
 	public ActionButtonFigure(ExecutionMode executionMode) {
+		setEnabled(false);
 		this.executionMode = executionMode;
 		armed = false;
 		mousePressed = false;		
@@ -105,6 +115,7 @@ public class ActionButtonFigure extends Figure {
 		};
 		label.setBorder(new ButtonBorder());
 		add(label);
+		
 		if(executionMode == ExecutionMode.RUN_MODE){
 			hookEventHandler(new ButtonEventHandler());
 			label.setCursor(Cursors.HAND);
@@ -146,6 +157,12 @@ public class ActionButtonFigure extends Figure {
 		} else 
 			super.paintClientArea(graphics);
 	}
+	
+	@Override
+	public void setCursor(Cursor cursor) {
+		label.setCursor(cursor);
+		super.setCursor(cursor);
+	}
 	/**
 	 * Sets the text for the Button.
 	 * @param s
@@ -155,15 +172,46 @@ public class ActionButtonFigure extends Figure {
 		label.setText(s);
 	}
 	
-	public void setImage(final Image img){
-		label.setIcon(img);
+	public void setImagePath(final IPath path){		
+		dispose();	
+		if(path != null && !path.isEmpty()){
+			try {
+				InputStream stream = ResourceUtil.pathToInputStream(path);
+				image = new Image(null, stream);
+			} catch (Exception e) {
+				image = null;
+				String message = "Failed to load image from path" + path + "\n" + e;
+				CentralLogger.getInstance().error(this, message, e);
+				ConsoleService.getInstance().writeError(message);
+			} 
+		}
+		
+		if(label.isEnabled())
+			label.setIcon(image);
+		else{
+			if(grayImage == null && image != null)
+				grayImage = new Image(null, image, SWT.IMAGE_GRAY);
+			label.setIcon(grayImage);
+		}
 	}
 	
 	@Override
-	public void setEnabled(boolean value) {		
-		super.setEnabled(value);
-		if(executionMode == ExecutionMode.EDIT_MODE)
-			label.setEnabled(true);
+	public void setEnabled(boolean value) {	
+		if(label != null){
+			label.setEnabled(value);
+			//update the icon
+			if(image != null){
+				if(value)
+					label.setIcon(image);
+				else {
+					if(grayImage == null)
+						grayImage = new Image(null, image, SWT.IMAGE_GRAY);
+					label.setIcon(grayImage);
+				}
+			}	
+		}			
+		if(executionMode == ExecutionMode.RUN_MODE)			
+			super.setEnabled(value);
 	}
 	
 	/**
@@ -276,7 +324,23 @@ public class ActionButtonFigure extends Figure {
 			listener.actionPerformed(i);
 	}
 	
+	/**
+	 * Dispose the resources on this figure.
+	 */
+	public void dispose() {
 	
+		if(image != null){
+				System.out.println("image dispose");
+			image.dispose();
+			image = null;
+		}
+		if(grayImage != null){
+			System.out.println("gray image dispose");
+
+			grayImage.dispose();
+			grayImage = null;
+		}
+	}
 	
 	public interface ButtonActionListener{
 		public void actionPerformed(int i);
@@ -562,6 +626,11 @@ public class ActionButtonFigure extends Figure {
 	}
 
 	}
+
+
+
+
+	
 
 	
 }
