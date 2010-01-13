@@ -7,7 +7,7 @@ import org.csstudio.utility.pv.IPVFactory;
 import org.csstudio.utility.pv.PV;
 
 /** PV Factory for 'local' PVs
- *  @author Kay Kasemir
+ *  @author Kay Kasemir, Xihui Chen
  */
 @SuppressWarnings("nls")
 public class LocalPVFactory implements IPVFactory
@@ -26,15 +26,33 @@ public class LocalPVFactory implements IPVFactory
     }
 
     /** Create a 'local' PV.
-     *  @param name Name of the PV
+     *  @param name Name of the PV, may also include initial value like "..(123)".
+     * @throws Exception 
      */
-    public PV createPV(final String name)
+    public PV createPV(final String name) throws Exception
     {
-        Value value = values.get(name);
+    	String namePart;
+    	String value_text = null;
+    	// Parse value, locate the "..(value)"
+        final int value_start = name.indexOf('('); //$NON-NLS-1$
+        if(value_start <0) //no initial value specified
+        	namePart = name;
+        else{	//it has initial value specified
+        	namePart = name.substring(0, value_start);
+        	 final int value_end = name.indexOf(')', value_start + 1); //$NON-NLS-1$
+        	 if (value_end < 0)
+        		 throw new Exception("Value in PV " + name +" not terminated by ')'");
+        	 value_text = name.substring(value_start+1, value_end);   
+        }
+    	        	
+    	
+        Value value = values.get(namePart);
         if (value == null)
         {
-            value = new Value(name);
-            values.put(name, value);
+            value = new Value(namePart);
+            values.put(namePart, value);
+            if(value_text != null)
+            	value.setValue(TextUtil.parseValueFromString(value_text, null));
         }
         return new LocalPV(PREFIX, value);
     }

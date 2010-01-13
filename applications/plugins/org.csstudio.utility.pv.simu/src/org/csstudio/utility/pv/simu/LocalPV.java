@@ -1,11 +1,7 @@
 package org.csstudio.utility.pv.simu;
 
 import org.csstudio.platform.data.INumericMetaData;
-import org.csstudio.platform.data.ISeverity;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.platform.data.ValueFactory;
-import org.csstudio.platform.data.IValue.Quality;
 
 /** Local PV.
  *  <p>
@@ -13,7 +9,7 @@ import org.csstudio.platform.data.IValue.Quality;
  *  which can be set by writing to this PV.
  *  Can hold numeric (double) or String value.
  *  
- *  @author Kay Kasemir
+ *  @author Kay Kasemir, Xihui Chen
  */
 @SuppressWarnings("nls")
 public class LocalPV extends BasicPV<Value>
@@ -41,21 +37,7 @@ public class LocalPV extends BasicPV<Value>
     @Override
     public void setValue(Object newValue) throws Exception
     {
-        final ITimestamp time = TimestampFactory.now();
-        final ISeverity severity = ValueFactory.createOKSeverity();
-        double number;
-        try
-        {
-            number = Double.parseDouble(newValue.toString());
-        }
-        catch (Throwable ex)
-        {
-            value.setValue(ValueFactory.createStringValue(time, severity, severity.toString(),  Quality.Original,
-                    new String[] { newValue.toString() }));
-            return;
-        }
-        // else: Value parses into number, so set numeric value
-        value.setValue(ValueFactory.createDoubleValue(time, severity, severity.toString(), meta, Quality.Original, new double[] { number }));
+    	value.setValue(TextUtil.parseValueFromString(newValue.toString(), meta));
     }
 
     /** {@inheritDoc} */
