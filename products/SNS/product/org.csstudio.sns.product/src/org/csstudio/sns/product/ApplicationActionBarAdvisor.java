@@ -3,9 +3,9 @@ package org.csstudio.sns.product;
 import java.util.ArrayList;
 
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.ui.internal.actions.LogoutAction;
 import org.csstudio.platform.ui.workbench.CssWorkbenchActionConstants;
 import org.csstudio.platform.ui.workbench.OpenViewAction;
-import org.csstudio.platform.ui.internal.actions.LogoutAction;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.action.GroupMarker;
@@ -24,6 +24,7 @@ import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.ContributionItemFactory;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
+import org.eclipse.ui.internal.ReopenEditorMenu;
 import org.eclipse.ui.part.CoolItemGroupMarker;
 
 
@@ -33,14 +34,16 @@ import org.eclipse.ui.part.CoolItemGroupMarker;
  *          in the CssWorkbenchAdvisor code
  *  @author Xihui Chen
  */
+@SuppressWarnings("restriction")
 public class ApplicationActionBarAdvisor extends ActionBarAdvisor
 {
-	private static final String MENU_WORKSPACE = "workspace";
+	private static final String MENU_WORKSPACE = "workspace";	//$NON-NLS-1$
+	private static final String RECENT_FILES = "recent_files"; //$NON-NLS-1$
 
 	/**
      * Menu and cool bar ID of switch user
      */
-    private static final String MENU_TOOLBAR_LOGIN = "css_login";
+    private static final String MENU_TOOLBAR_LOGIN = "css_login"; //$NON-NLS-1$
 
 	/**
      * Group ID of switch user and logout toolbar
@@ -65,6 +68,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
 	private IAction cheat;
     private IAction about;
     private IContributionItem menu_perspectives;
+    private IContributionItem recent_files;
     private IContributionItem menu_views;
 
     // SNS Actions
@@ -77,7 +81,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
     }
 
     /** {@inheritDoc} */
-    @Override
+	@Override
     protected void makeActions(IWorkbenchWindow window)
     {
         create_new = ActionFactory.NEW.create(window);
@@ -113,6 +117,11 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
             ContributionItemFactory.PERSPECTIVES_SHORTLIST.create(window);
         menu_views = ContributionItemFactory.VIEWS_SHORTLIST.create(window);
 
+        recent_files = new ReopenEditorMenu(window, "reopenEditors", false); //$NON-NLS-1$
+        //Following is the standard way to create this menu, but it 
+        //will create a separator before the menu. 
+        //ContributionItemFactory.REOPEN_EDITORS.create(window);
+        
         intro = ActionFactory.INTRO.create(window);
         register(intro);
         
@@ -210,6 +219,13 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         menu_file.add(new GroupMarker(IWorkbenchActionConstants.FILE_END));
         menu_file.add(new Separator());
         menu_file.add(new GroupMarker(MENU_WORKSPACE));
+        menu_file.add(new Separator());
+        
+        menu_file.add(new GroupMarker(RECENT_FILES));
+        final MenuManager recentFilesSubMenu =	new MenuManager("Recent Files");
+        recentFilesSubMenu.add(recent_files);
+        menu_file.add(recentFilesSubMenu);
+        
         menu_file.add(new Separator());
         menu_file.add(new GroupMarker(MENU_TOOLBAR_LOGIN));
         menu_file.add(logout);
