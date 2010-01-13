@@ -12,7 +12,12 @@ public interface Node
     public double eval();
     
     /** Check if this node has given node as a subnode
-     *  @return <code>true</code> if given node was found unter this one.
+     *  @return <code>true</code> if given node was found under this one.
      */
     public boolean hasSubnode(Node node);
+
+    /** Check if this node has a sub-node with the name
+     *  @return <code>true</code> if given node name was found under this one.
+     */
+    public boolean hasSubnode(String name);
 }

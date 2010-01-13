@@ -9,7 +9,7 @@ public class MaxNode implements Node
 {
     private final Node args[];
     
-    public MaxNode(Node args[])
+    public MaxNode(final Node args[])
     {
         this.args = args;
     }
@@ -35,6 +35,15 @@ public class MaxNode implements Node
         return false;
     }
 
+    /** {@inheritDoc} */
+    public boolean hasSubnode(final String name)
+    {
+        for (Node arg : args)
+            if (arg.hasSubnode(name))
+                return true;
+        return false;
+    }
+    
     @SuppressWarnings("nls")
     @Override
     public String toString()

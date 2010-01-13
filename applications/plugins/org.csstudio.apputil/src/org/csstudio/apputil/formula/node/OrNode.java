@@ -7,7 +7,7 @@ import org.csstudio.apputil.formula.Node;
  */
 public class OrNode extends AbstractBinaryNode
 {
-    public OrNode(Node left, Node right)
+    public OrNode(final Node left, final Node right)
     {
         super(left, right);
     }

@@ -177,6 +177,12 @@ public class Formula implements Node
         return tree == node  ||  tree.hasSubnode(node);
     }
     
+    /** {@inheritDoc} */
+    public boolean hasSubnode(final String name)
+    {
+        return tree.hasSubnode(name);
+    }
+
     /** Parse -0.1234 or variable or sub-expression in braces. */
     private Node parseConstant(final Scanner s) throws Exception
     {

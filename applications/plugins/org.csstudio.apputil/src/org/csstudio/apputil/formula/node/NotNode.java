@@ -7,7 +7,7 @@ import org.csstudio.apputil.formula.Node;
  */
 public class NotNode extends AbstractUnaryNode
 {
-    public NotNode(Node n)
+    public NotNode(final Node n)
     {
         super(n);
     }

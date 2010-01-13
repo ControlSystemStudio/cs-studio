@@ -180,6 +180,10 @@ public class FormulaTest extends TestCase
         assertEquals(10.0, f.eval(), epsilon);
         assertTrue(f.hasSubnode(v[0]));
         assertTrue(! f.hasSubnode(v[1]));
+
+        assertTrue(f.hasSubnode(v[0].getName()));
+        assertTrue(! f.hasSubnode(v[1].getName()));
+
     }
     
     @Test
@@ -236,5 +240,8 @@ public class FormulaTest extends TestCase
         assertEquals(0.0, f.eval(), epsilon);
         vars[0].setValue(10);
         assertEquals(1.0, f.eval(), epsilon);
+        
+        assertTrue(f.hasSubnode("IOC2049-102:BMIT:enabled"));
+        assertFalse(f.hasSubnode("Fred"));
     }
 }

@@ -9,7 +9,7 @@ public class MinNode implements Node
 {
     private final Node args[];
     
-    public MinNode(Node args[])
+    public MinNode(final Node args[])
     {
         this.args = args;
     }
@@ -27,7 +27,7 @@ public class MinNode implements Node
     }
     
     /** {@inheritDoc} */
-    public boolean hasSubnode(Node node)
+    public boolean hasSubnode(final Node node)
     {
         for (Node arg : args)
             if (arg == node  ||  arg.hasSubnode(node))
@@ -35,6 +35,15 @@ public class MinNode implements Node
         return false;
     }
 
+    /** {@inheritDoc} */
+    public boolean hasSubnode(final String name)
+    {
+        for (Node arg : args)
+            if (arg.hasSubnode(name))
+                return true;
+        return false;
+    }
+    
     @SuppressWarnings("nls")
     @Override
     public String toString()

@@ -7,7 +7,7 @@ import org.csstudio.apputil.formula.Node;
  */
 public class MulNode extends AbstractBinaryNode
 {
-    public MulNode(Node left, Node right)
+    public MulNode(final Node left, final Node right)
     {
         super(left, right);
     }

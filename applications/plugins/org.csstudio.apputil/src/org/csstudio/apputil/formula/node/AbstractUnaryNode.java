@@ -9,14 +9,20 @@ abstract class AbstractUnaryNode implements Node
 {
     protected final Node n;
     
-    public AbstractUnaryNode(Node n)
+    public AbstractUnaryNode(final Node n)
     {
         this.n = n;
     }
     
     /** {@inheritDoc} */
-    final public boolean hasSubnode(Node node)
+    final public boolean hasSubnode(final Node node)
     {
         return n == node  ||  n.hasSubnode(node);
+    }
+
+    /** {@inheritDoc} */
+    final public boolean hasSubnode(final String name)
+    {
+        return n.hasSubnode(name);
     }
 }

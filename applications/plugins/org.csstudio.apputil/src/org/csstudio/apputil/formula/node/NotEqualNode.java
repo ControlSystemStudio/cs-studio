@@ -7,7 +7,7 @@ import org.csstudio.apputil.formula.Node;
  */
 public class NotEqualNode extends AbstractBinaryNode
 {
-    public NotEqualNode(Node left, Node right)
+    public NotEqualNode(final Node left, final Node right)
     {
         super(left, right);
     }

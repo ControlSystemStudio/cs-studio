@@ -19,7 +19,7 @@ public class VariableNode implements Node
     }
 
     /** Create Variable with given name and value. */
-    public VariableNode(String name, double value)
+    public VariableNode(final String name, final double value)
     {
         this.name = name;
         this.value = value;
@@ -32,7 +32,7 @@ public class VariableNode implements Node
     }
 
     /** Set to a new value. */
-    public void setValue(double value)
+    public void setValue(final double value)
     {
         this.value = value;
     }
@@ -49,9 +49,15 @@ public class VariableNode implements Node
     }
     
     /** {@inheritDoc} */
-    public boolean hasSubnode(Node node)
+    public boolean hasSubnode(final Node node)
     {
         return false;
+    }
+
+    /** {@inheritDoc} */
+    public boolean hasSubnode(final String name)
+    {
+        return this.name.equals(name);
     }
     
     @Override

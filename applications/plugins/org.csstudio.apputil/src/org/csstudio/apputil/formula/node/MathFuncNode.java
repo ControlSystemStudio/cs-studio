@@ -21,7 +21,7 @@ public class MathFuncNode implements Node
 	 *  @throws Exception On error
 	 */
     @SuppressWarnings("unchecked")
-	public MathFuncNode(final String function, Node args[]) throws Exception
+	public MathFuncNode(final String function, final Node args[]) throws Exception
     {
     	this.function = function;
         this.args = args;
@@ -53,10 +53,19 @@ public class MathFuncNode implements Node
     }
     
     /** {@inheritDoc} */
-    public boolean hasSubnode(Node node)
+    public boolean hasSubnode(final Node node)
     {
         for (Node arg : args)
             if (arg == node  ||  arg.hasSubnode(node))
+                return true;
+        return false;
+    }
+
+    /** {@inheritDoc} */
+    public boolean hasSubnode(final String name)
+    {
+        for (Node arg : args)
+            if (arg.hasSubnode(name))
                 return true;
         return false;
     }

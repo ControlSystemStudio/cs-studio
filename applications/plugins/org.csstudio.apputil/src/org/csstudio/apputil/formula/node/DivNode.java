@@ -7,7 +7,7 @@ import org.csstudio.apputil.formula.Node;
  */
 public class DivNode extends AbstractBinaryNode
 {
-    public DivNode(Node left, Node right)
+    public DivNode(final Node left, final Node right)
     {
         super(left, right);
     }

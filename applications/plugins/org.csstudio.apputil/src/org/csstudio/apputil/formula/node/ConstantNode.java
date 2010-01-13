@@ -9,7 +9,7 @@ public class ConstantNode implements Node
 {
     final double value;
     
-    public ConstantNode(double value)
+    public ConstantNode(final double value)
     {
         this.value = value;
     }
@@ -20,11 +20,17 @@ public class ConstantNode implements Node
     }
     
     /** {@inheritDoc} */
-    public boolean hasSubnode(Node node)
+    public boolean hasSubnode(final Node node)
     {
         return false;
     }
 
+    /** {@inheritDoc} */
+    public boolean hasSubnode(final String node)
+    {
+        return false;
+    }
+    
     @Override
     public String toString()
     {

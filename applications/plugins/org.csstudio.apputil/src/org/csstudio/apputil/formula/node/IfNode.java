@@ -11,7 +11,7 @@ public class IfNode implements Node
     private final Node yes;
     private final Node no;
     
-    public IfNode(Node cond, Node yes, Node no)
+    public IfNode(final Node cond, final Node yes, final Node no)
     {
         this.cond = cond;
         this.yes = yes;
@@ -24,11 +24,18 @@ public class IfNode implements Node
     }
     
     /** {@inheritDoc} */
-    public boolean hasSubnode(Node node)
+    public boolean hasSubnode(final Node node)
     {
         return cond == node  ||  yes == node  ||  no == node ||
                cond.hasSubnode(node) || yes.hasSubnode(node) ||
                no.hasSubnode(node);
+    }
+    
+    /** {@inheritDoc} */
+    public boolean hasSubnode(final String name)
+    {
+        return cond.hasSubnode(name) || yes.hasSubnode(name) ||
+               no.hasSubnode(name);
     }
     
     @SuppressWarnings("nls")

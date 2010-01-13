@@ -7,7 +7,7 @@ import org.csstudio.apputil.formula.Node;
  */
 public class AddNode extends AbstractBinaryNode
 {
-    public AddNode(Node left, Node right)
+    public AddNode(final Node left, final Node right)
     {
         super(left, right);
     }
