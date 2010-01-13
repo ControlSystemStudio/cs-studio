@@ -2,13 +2,7 @@ package org.csstudio.utility.pv.simu;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.csstudio.platform.data.INumericMetaData;
-import org.csstudio.platform.data.ISeverity;
-import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.TimestampFactory;
-import org.csstudio.platform.data.ValueFactory;
-import org.csstudio.platform.data.IValue.Quality;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
@@ -19,7 +13,7 @@ import org.eclipse.core.runtime.PlatformObject;
  *  Contructed with a fixed value,
  *  sends that value on 'start'.
  *  Read-only, sends no further updates.
- *  @author Kay Kasemir
+ *  @author Kay Kasemir, Xihui Chen
  */
 public class ConstantPV extends PlatformObject implements PV
 {
@@ -57,24 +51,8 @@ public class ConstantPV extends PlatformObject implements PV
         if (value_end < 0)
             throw new Exception("Value in PV " + this.name +" not terminated by ')'");
         final String value_text = name.substring(value_start+1, value_end);
+        value = TextUtil.parseValueFromString(value_text, null);
 
-        // Is the value a number?
-        final ISeverity OK = ValueFactory.createOKSeverity();
-        final ITimestamp now = TimestampFactory.now();
-        try
-        {
-            final double dbl = Double.parseDouble(value_text);
-            final INumericMetaData meta = ValueFactory.createNumericMetaData(dbl-1, dbl+1, 0, 0, 0, 0, 1, "a.u.");
-            
-            value = ValueFactory.createDoubleValue(now,
-                OK, OK.toString(), meta, Quality.Original,
-                new double[] { dbl });
-        }
-        catch (NumberFormatException ex)
-        {
-            // Cannot parse number, assume string data type
-            value = ValueFactory.createStringValue(now, OK, OK.toString(), Quality.Original, new String[] { value_text });
-        }
     }
 
     /** {@inheritDoc} */
