@@ -82,6 +82,11 @@ public class LongValue extends Value implements ILongValue
 		        	 {
 		        		 buf.append(Messages.ArrayElementSeparator);
 		        		 buf.append(values[i]);
+		        		 if(i >= MAX_FORMAT_VALUE_COUNT){
+		                 	 buf.append(Messages.ArrayElementSeparator);
+		        			 buf.append("..."); //$NON-NLS-1$
+		                 	break;
+		                 }
 		        	 }
 	          }
 			

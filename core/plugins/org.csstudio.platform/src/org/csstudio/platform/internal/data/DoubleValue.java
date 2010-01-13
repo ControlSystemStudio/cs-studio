@@ -94,9 +94,14 @@ public class DoubleValue extends Value implements IDoubleValue
             }
             buf.append(formatDouble(fmt, values[0]));
             for (int i = 1; i < values.length; i++)
-            {
-                buf.append(Messages.ArrayElementSeparator);
+            {            	
+            	buf.append(Messages.ArrayElementSeparator);
                 buf.append(formatDouble(fmt, values[i]));
+                if(i >= MAX_FORMAT_VALUE_COUNT){
+                	buf.append(Messages.ArrayElementSeparator);
+                	buf.append("..."); //$NON-NLS-1$
+                	break;
+                }
             }
         }
 		else

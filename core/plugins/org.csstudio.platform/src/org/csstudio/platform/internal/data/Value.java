@@ -46,6 +46,12 @@ abstract public class Value implements IValue
     /** The data quality. */
     private final Quality quality;
 
+	/**
+	 * The max count of values to be formatted into string.
+	 * The value beyond this count will be omitted.  
+	 */
+	public final static int MAX_FORMAT_VALUE_COUNT = 20;
+
     /** Construct a new value from pieces. */
     public Value(ITimestamp time, ISeverity severity,
                  String status, IMetaData meta_data,
