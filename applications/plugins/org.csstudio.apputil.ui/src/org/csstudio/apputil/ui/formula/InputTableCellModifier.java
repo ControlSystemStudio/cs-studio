@@ -9,11 +9,13 @@ import org.eclipse.swt.widgets.Item;
  *  @author Kay Kasemir
  */
 public class InputTableCellModifier implements ICellModifier
-{
-    private final TableViewer viewer;
+{   
+    final private FormulaDialog dialog;
+    final private TableViewer viewer;
     
-    InputTableCellModifier(final TableViewer viewer)
+    InputTableCellModifier(final FormulaDialog dialog, final TableViewer viewer)
     {
+        this.dialog = dialog;
         this.viewer = viewer;
     }
     
@@ -58,6 +60,8 @@ public class InputTableCellModifier implements ICellModifier
             final InputItem entry = (InputItem) element;
             entry.setVariableName(new_var_name);
             viewer.refresh(element);
+            // Trigger check of the formula
+            dialog.parseFormula();
         }
         catch (Exception ex)
         {

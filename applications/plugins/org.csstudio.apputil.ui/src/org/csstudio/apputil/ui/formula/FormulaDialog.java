@@ -246,7 +246,7 @@ public class FormulaDialog extends Dialog
             titles[i] = columns[i].getTitle();
         input_table.setColumnProperties(titles);
         input_table.setCellEditors(editors);
-        input_table.setCellModifier(new InputTableCellModifier(input_table));
+        input_table.setCellModifier(new InputTableCellModifier(this, input_table));
         
         input_table.setInput(inputs);
         
@@ -445,7 +445,7 @@ public class FormulaDialog extends Dialog
      *  case of errors.
      *  @return <code>true</code> when formula parsed OK.
      */
-    private boolean parseFormula()
+    boolean parseFormula()
     {
         // Create array of all available variables
         final VariableNode vars[] = new VariableNode[inputs.length];
