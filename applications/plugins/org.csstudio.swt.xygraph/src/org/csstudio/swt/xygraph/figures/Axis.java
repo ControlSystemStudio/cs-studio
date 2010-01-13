@@ -207,63 +207,88 @@ public class Axis extends LinearScale{
 		graphics.popState();		
 	}	
 	
+	/** @return Range that reflects the minimum and maximum value of all
+	 *          traces on this axis.
+	 *          Returns <code>null</code> if there is no trace data.
+	 */
+    public Range getTraceDataRange()
+    {
+        double low = Double.POSITIVE_INFINITY;
+        double high = Double.NEGATIVE_INFINITY;
+        for (Trace trace : traceList)
+        {
+            if (trace.getDataProvider() == null)
+                continue;
+            Range range;
+            if (isHorizontal())
+                range = trace.getDataProvider().getXDataMinMax();
+            else
+                range = trace.getDataProvider().getYDataMinMax();
+            if (range == null)
+                continue;
+            if (Double.isInfinite(range.getLower())
+                    || Double.isInfinite(range.getUpper())
+                    || Double.isNaN(range.getLower())
+                    || Double.isNaN(range.getUpper()))
+                continue;
+            if (low > range.getLower())
+                low = range.getLower();
+            if (high < range.getUpper())
+                high = range.getUpper();
+        }
+        if (Double.isInfinite(low) || Double.isInfinite(high))
+            return null;
+        return new Range(low, high);
+    }
 	
-	/**@param force If true, the axis will be auto-scaled by force regardless the autoScale field. 
-	 * Otherwise, it will use the autoScale field to judge whether an auto-scale will be performed.  
-	 * @return true if the axis is repainted due to range change.
+	/** Perform an auto-scale:
+	 *  Axis limits are set to the value range of the traces on this axis.
+	 *  Includes some optimization:
+	 *  Axis range is set a little wider than exact trace data range.
+	 *  When auto-scale would only perform a minor axis adjustment,
+	 *  axis is left unchanged.
+	 * 
+	 *  @param force If true, the axis will be auto-scaled by force regardless the autoScale field. 
+	 *  Otherwise, it will use the autoScale field to judge whether an auto-scale will be performed.  
+	 *  @return true if the axis is repainted due to range change.
+	 *  
+	 *  @see #autoScaleThreshold
 	 */
 	public boolean performAutoScale(boolean force){
 		if((force || autoScale) && traceList.size() >0){
-			double tempMin, tempMax;
-			Range range;
+		    // Get range of data in all traces
+            final Range range = getTraceDataRange();
+            if (range == null)
+                return false;
+			double tempMin = range.getLower();
+			double tempMax = range.getUpper();
 			
-			tempMin = Double.POSITIVE_INFINITY;
-			tempMax = Double.NEGATIVE_INFINITY;
-			for(Trace trace : traceList){
-				if(trace.getDataProvider() == null)
-					continue;
-				if(isHorizontal())
-					range = trace.getDataProvider().getXDataMinMax();
-				else
-					range = trace.getDataProvider().getYDataMinMax();
-				if(range == null)
-					continue;
-				if(Double.isInfinite(range.getLower()) || Double.isInfinite(range.getUpper()) ||
-						Double.isNaN(range.getLower()) || Double.isNaN(range.getUpper()))
-					continue;
-				if(tempMin > range.getLower())
-					tempMin = range.getLower();
-				if(tempMax < range.getUpper())
-					tempMax = range.getUpper();					
-			}
-			
-		double max = getRange().getUpper();
-		double min = getRange().getLower();
-		double thr = (max - min)*autoScaleThreshold;
-		
-		//if both the changes are lower than threshold, return
-		if(((tempMin - min)>=0 && (tempMin - min)<thr)
-				&& ((max - tempMax)>=0 && (max - tempMax)<thr)){
-			tempMin = min;		
-			tempMax = max;
-			return false;
-		}else { //expand more space than needed
-			if((tempMin - min)<0)
-				tempMin -= thr; 
-			if((tempMax - max) > 0)
-				tempMax += thr;
-		}
-		
-		
-		
-		if((tempMin == min && tempMax == max) || 
-				Double.isInfinite(tempMin) || Double.isInfinite(tempMax) ||
-				Double.isNaN(tempMin) || Double.isNaN(tempMax))
-			return false;
-		
-		setRange(tempMin, tempMax);
-		repaint();
-		return true;
+			// Get current axis range, determine how 'different' they are
+    		double max = getRange().getUpper();
+    		double min = getRange().getLower();
+    		double thr = (max - min)*autoScaleThreshold;
+    		
+    		//if both the changes are lower than threshold, return
+    		if(((tempMin - min)>=0 && (tempMin - min)<thr)
+    				&& ((max - tempMax)>=0 && (max - tempMax)<thr)){
+    			return false;
+    		}else { //expand more space than needed
+    			if((tempMin - min)<0)
+    				tempMin -= thr; 
+    			if((tempMax - max) > 0)
+    				tempMax += thr;
+    		}
+
+    		// Any change at all?
+    		if((tempMin == min && tempMax == max) || 
+    				Double.isInfinite(tempMin) || Double.isInfinite(tempMax) ||
+    				Double.isNaN(tempMin) || Double.isNaN(tempMax))
+    			return false;
+    		
+    		// Update axis
+    		setRange(tempMin, tempMax);
+    		repaint();
+    		return true;
 		}
 		return false;
 	}

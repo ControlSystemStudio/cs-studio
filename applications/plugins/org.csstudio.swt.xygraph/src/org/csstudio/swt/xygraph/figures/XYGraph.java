@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.csstudio.swt.xygraph.linearscale.Range;
 import org.csstudio.swt.xygraph.linearscale.AbstractScale.LabelSide;
 import org.csstudio.swt.xygraph.linearscale.LinearScale.Orientation;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
@@ -533,7 +534,7 @@ public class XYGraph extends Figure{
         final ZoomCommand command = new ZoomCommand("Stagger Axes", null, yAxisList);
         command.savePreviousStates();
         
-        // Arrange all so they don't overlap by assigning 1/Nth of
+        // Arrange all axes so they don't overlap by assigning 1/Nth of
         // the vertical range to each one
         final int N = yAxisList.size();
         for (int i=0; i<N; ++i)
@@ -542,26 +543,32 @@ public class XYGraph extends Figure{
             // Does axis handle itself in another way?
             if (yaxis.isAutoScale())
                 continue;
+
+            // Determine range of values on this axis
+            final Range axis_range = yaxis.getTraceDataRange();
             // Skip axis which for some reason cannot determine its range
-            if (!yaxis.performAutoScale(true))
+            if (axis_range ==  null)
                 continue;
-            double low = yaxis.getRange().getLower();
-            double high = yaxis.getRange().getUpper();
+            double low = axis_range.getLower();
+            double high = axis_range.getUpper();
             if (yaxis.isLogScaleEnabled())
-            {
+            {   // Transition into log space
                 low = Log10.log10(low);
                 high = Log10.log10(high);
             }
-            double range = high - low;
+            double span = high - low;
             // Fudge factor to get some extra space
-            range = 1.05*range;
-            // Shift it down according to its index, using a total of N*range.
-            low -= (N-i-1)*range;
-            high += i*range;
+            span = 1.05*span;
+            
+            // With N axes, assign 1/Nth of the vertical plot space to this axis
+            // by shifting the span down according to the axis index,
+            // using a total of N*range.
+            low -= (N-i-1)*span;
+            high += i*span;
             // Fudge bottom
-            low -= 0.05*range;
+            low -= 0.05*span;
             if (yaxis.isLogScaleEnabled())
-            {
+            {   // Revert from log space
                 low = Log10.pow10(low);
                 high = Log10.pow10(high);
             }
