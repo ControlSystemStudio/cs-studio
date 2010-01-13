@@ -178,6 +178,7 @@ public class ActionButtonFigure extends Figure {
 			try {
 				InputStream stream = ResourceUtil.pathToInputStream(path);
 				image = new Image(null, stream);
+				stream.close();
 			} catch (Exception e) {
 				image = null;
 				String message = "Failed to load image from path" + path + "\n" + e;
@@ -330,13 +331,10 @@ public class ActionButtonFigure extends Figure {
 	public void dispose() {
 	
 		if(image != null){
-				System.out.println("image dispose");
 			image.dispose();
 			image = null;
 		}
 		if(grayImage != null){
-			System.out.println("gray image dispose");
-
 			grayImage.dispose();
 			grayImage = null;
 		}
