@@ -179,7 +179,8 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 	public XYGraphModel() {
 		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 		setForegroundColor(CustomMediaFactory.COLOR_BLUE);
-		setTooltip(""); //$NON-NLS-1$
+		setPropertyValue(PROP_PVNAME, "$(trace_0_y_pv)"); //$NON-NLS-1$
+		
 	}
 
 	@Override
