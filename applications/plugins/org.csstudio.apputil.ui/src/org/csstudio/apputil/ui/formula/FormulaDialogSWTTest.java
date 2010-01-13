@@ -23,7 +23,7 @@ public class FormulaDialogSWTTest
             new InputItem("janet", "jj"),
         };
 
-        final FormulaDialog dialog = new FormulaDialog(shell, inputs, "2*a + b");
+        final FormulaDialog dialog = new FormulaDialog(shell, "2*a + b", inputs);
         if (dialog.open() == FormulaDialog.OK)
         {
             System.out.println("Formula : " + dialog.getFormula());

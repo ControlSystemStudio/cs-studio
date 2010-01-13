@@ -79,14 +79,14 @@ public class FormulaDialog extends Dialog
 
     /** Construct dialog for editing a formula
      *  @param shell The parent shell
-     *  @param inputs Possible inputs. Their variable names can be edited!
-     *  @param formula Initial formula
+     * @param formula Initial formula
+     * @param inputs Possible inputs. Their variable names can be edited!
      */
-    public FormulaDialog(final Shell shell, final InputItem inputs[], final String formula)
+    public FormulaDialog(final Shell shell, final String formula, final InputItem inputs[])
     {
         super(shell);
-        this.inputs = inputs;
         this.formula = formula;
+        this.inputs = inputs;
         // Allow resize
         setShellStyle(getShellStyle() | SWT.RESIZE);
     }
