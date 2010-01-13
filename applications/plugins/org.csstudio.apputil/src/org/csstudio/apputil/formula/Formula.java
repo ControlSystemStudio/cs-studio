@@ -46,6 +46,9 @@ import org.csstudio.platform.logging.CentralLogger;
  *  The formula string is parsed into a tree, so that subsequent
  *  evaluations, possibly with modified values for input variables,
  *  are reasonably fast.
+ *  <p>
+ *  See FormulaDialog in org.csstudio.apputil.ui plugin.
+ *  That plugin also contains a class diagram.
  *  
  *  @author Kay Kasemir
  *  @author Xiaosong Geng
