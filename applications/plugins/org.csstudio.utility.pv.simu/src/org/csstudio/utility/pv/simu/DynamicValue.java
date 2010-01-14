@@ -154,8 +154,8 @@ abstract public class DynamicValue extends Value implements Runnable
         // set update_thread != null and then the 'old' thread
         // would continue to run.
         try
-        {
-            running_thread.join();
+        {	if(running_thread != null)
+            	running_thread.join();
         }
         catch (InterruptedException ex)
         {
