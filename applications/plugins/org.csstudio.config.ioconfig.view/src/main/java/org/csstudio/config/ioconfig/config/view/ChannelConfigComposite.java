@@ -58,6 +58,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
 
@@ -116,6 +117,7 @@ public class ChannelConfigComposite extends NodeConfig {
         if (_channel.isDirty()) {
             store();
         }
+        _ioNameText.setFocus();
         getTabFolder().pack();
     }
 
@@ -267,6 +269,7 @@ public class ChannelConfigComposite extends NodeConfig {
 
         // Description Group
         makeDescGroup(comp, 3);
+        comp.setTabList(new Control[] {ioNameGroup, getDescWidget().getParent()});
     }
 
     /**

@@ -123,6 +123,7 @@ public class ChannelStructureConfigComposite extends NodeConfig {
            text.setStyleRanges(array);
         }
         _ioNameList.addModifyListener(getMLSB());
+        _ioNameList.setFocus();
     }
 
     /* (non-Javadoc)
@@ -157,7 +158,7 @@ public class ChannelStructureConfigComposite extends NodeConfig {
         String text = _ioNameList.getText();
         String[] ioNames = text.split(LS);
         Channel[] channels = _channelStructure.getChildrenAsMap().values().toArray(new Channel[0]);
-        for (int i = 0; i < channels.length && i < ioNames.length; i++) {
+        for (int i = 0; (i < channels.length) && (i < ioNames.length); i++) {
             channels[i].setIoName(ioNames[i]);
         }
         _ioNameList.setData(_ioNameList.getText());

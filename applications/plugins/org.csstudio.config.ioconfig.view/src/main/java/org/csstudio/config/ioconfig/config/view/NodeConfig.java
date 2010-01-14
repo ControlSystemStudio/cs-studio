@@ -920,6 +920,7 @@ public abstract class NodeConfig extends Composite {
         });
         setText(descText, getNode().getDescription(), 255);
         setDescWidget(descText);
+        gDesc.setTabList(new Control[] {descText});
     }
 
     /**
