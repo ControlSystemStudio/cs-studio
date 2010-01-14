@@ -21,9 +21,11 @@
  */
 package org.csstudio.opibuilder.widgets.figures;
 
+import java.io.InputStream;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.widgets.util.CheckedUiRunnable;
 import org.csstudio.opibuilder.widgets.util.TextPainter;
 import org.csstudio.platform.ExecutionService;
@@ -324,48 +326,63 @@ public final class ImageFigure extends Figure {
 			staticImage.dispose();
 		}
 		staticImage=null;
+		
+		loadImageFromFile();
+		if(animated){
+			startAnimation();
+		}
+	}
+
+	/**
+	 * 
+	 */
+	private void loadImageFromFile() {
+		//load image from file
 		try {
 			if (staticImage==null && !_path.isEmpty()) {	
 				
-//			    _path
+				
+				//loading by path
 				String currentPath = _path.toOSString();
 				IPath fullPath = ResourcesPlugin.getWorkspace().getRoot().getLocation();
 				try {
-					loadImage(currentPath);
-				} catch (Exception e) {
-					try {
-					    IPath append = fullPath.append(_path);
-		                IFile[] findFilesForLocation = ResourcesPlugin.getWorkspace().getRoot().findFilesForLocation(append);
-		                currentPath = findFilesForLocation[0].getLocation().toOSString();
-		                loadImage(currentPath);
-					} catch (Exception ex) {
-						String[] segments = _path.segments();
-						String projectName = segments[0];
-						IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
-						int index = 1;
-						IFolder folder = null;
-						currentPath = null;
-						while (index < segments.length-1) {
-							folder = project.getFolder(segments[index]);
-							if (currentPath!=null) {
-								currentPath = currentPath+ IPath.SEPARATOR +segments[index];
-							}
-							if (folder.isLinked()) {
-								currentPath = folder.getLocation().toString();
-							}
-							index++;
-						}
-						currentPath = currentPath + IPath.SEPARATOR + segments[segments.length-1];
+					//loading by stream					
+					loadImage(_path);
+				} catch (Exception exception) {//if failed, try to load from different path.
+					try {					
 						loadImage(currentPath);
+					} catch (Exception e) {
+						try {
+						    IPath append = fullPath.append(_path);
+			                IFile[] findFilesForLocation = ResourcesPlugin.getWorkspace().getRoot().findFilesForLocation(append);
+			                currentPath = findFilesForLocation[0].getLocation().toOSString();
+			                loadImage(currentPath);
+						} catch (Exception ex) {
+							String[] segments = _path.segments();
+							String projectName = segments[0];
+							IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
+							int index = 1;
+							IFolder folder = null;
+							currentPath = null;
+							while (index < segments.length-1) {
+								folder = project.getFolder(segments[index]);
+								if (currentPath!=null) {
+									currentPath = currentPath+ IPath.SEPARATOR +segments[index];
+								}
+								if (folder.isLinked()) {
+									currentPath = folder.getLocation().toString();
+								}
+								index++;
+							}
+							currentPath = currentPath + IPath.SEPARATOR + segments[segments.length-1];
+							loadImage(currentPath);
+						}
 					}
 				}
 			}
 		} catch (Exception e) {
 			loadingError = true;
 			CentralLogger.getInstance().error(this, "ERROR in loading image\n"+_path, e);
-		}
-		if(animated){
-			startAnimation();
 		}
 	}
 
@@ -380,6 +397,24 @@ public final class ImageFigure extends Figure {
 		}		
 		originalImageDataArray = loader.load(currentPath);
 		animated = (originalImageDataArray.length > 1);		
+	}
+	
+	private void loadImage(IPath path) throws Exception {
+		Image temp = null;
+		try {
+			InputStream stream = ResourceUtil.pathToInputStream(_path);
+			temp=new Image(null,stream); 
+			originalStaticImageData = temp.getImageData();
+			stream.close();
+			stream = ResourceUtil.pathToInputStream(_path); // reopen stream
+			originalImageDataArray = loader.load(stream);
+			stream.close();
+			animated = (originalImageDataArray.length > 1);	
+		}finally {
+			if (temp != null && !temp.isDisposed()) 
+				temp.dispose();
+		}		
+			
 	}
 	
 	/**
@@ -541,7 +576,6 @@ public final class ImageFigure extends Figure {
 					new CheckedUiRunnable(){
 						@Override
 						protected void doRunInUi() {
-							System.out.println("refreshing = " + refreshing + " " + loader.repeatCount + " " + repeatCount);
 							if(refreshing && (loader.repeatCount ==0 || repeatCount >0)) {
 								long currentTime = System.currentTimeMillis();
 								//use Math.abs() to ensure that the system time adjust won't cause problem
@@ -556,8 +590,7 @@ public final class ImageFigure extends Figure {
 									/* If we have just drawn the last image, decrement the repeat count and start again. */
 									if(loader.repeatCount > 0 &&
 											animationIndex == originalImageDataArray.length -1) 
-										repeatCount--;			
-								}															
+										repeatCount--;									}															
 							}else if(loader.repeatCount > 0 && repeatCount <=0){ // stop thread when animation finished
 								if(scheduledFuture !=null){
 									scheduledFuture.cancel(true);
