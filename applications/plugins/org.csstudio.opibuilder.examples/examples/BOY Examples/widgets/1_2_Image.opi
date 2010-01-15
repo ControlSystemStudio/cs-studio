@@ -13,7 +13,7 @@
   <show_edit_range>true</show_edit_range>
   <name>Image</name>
   <grid_space>4</grid_space>
-  <snap_to_geometry>false</snap_to_geometry>
+  <snap_to_geometry>true</snap_to_geometry>
   <show_grid>false</show_grid>
   <y>0</y>
   <actions hook="false" />
@@ -199,7 +199,7 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <auto_size>true</auto_size>
     <scripts />
-    <height>316</height>
+    <height>274</height>
     <name>Image_1</name>
     <stretch_to_fit>true</stretch_to_fit>
     <foreground_color>
@@ -210,7 +210,7 @@ $(pv_value)</tooltip>
     </background_color>
     <enabled>true</enabled>
     <widget_type>Image</widget_type>
-    <width>255</width>
+    <width>240</width>
     <no_animation>false</no_animation>
     <border_style>0</border_style>
     <crop_top>0</crop_top>
@@ -221,8 +221,8 @@ $(pv_value)</tooltip>
       <color red="0" green="128" blue="255" />
     </border_color>
     <actions hook="false" />
-    <y>249</y>
-    <x>16</x>
+    <y>283</y>
+    <x>17</x>
     <tooltip />
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Image" version="1.0">
@@ -232,8 +232,9 @@ $(pv_value)</tooltip>
     <auto_size>true</auto_size>
     <scripts>
       <path pathString="../scripts/MoveImage.js">
-        <pv>sim://ramp(0,400,10,0.1)</pv>
-        <pv>loc://horsestop</pv>
+        <pv trig="true">sim://ramp(0,100,1,0.1)</pv>
+        <pv trig="false">loc://horsePosition</pv>
+        <pv trig="true">loc://horsestop</pv>
       </path>
     </scripts>
     <height>57</height>
@@ -258,29 +259,41 @@ $(pv_value)</tooltip>
       <color red="0" green="128" blue="255" />
     </border_color>
     <actions hook="false" />
-    <y>250</y>
-    <x>284</x>
+    <y>307</y>
+    <x>294</x>
     <tooltip />
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <visible>true</visible>
+    <scripts />
+    <height>31</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Action Button_1</name>
+    <pv_name />
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
     <text>Stop</text>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="9" style="0" />
     </font>
     <width>80</width>
     <push_action_index>0</push_action_index>
+    <border_style>0</border_style>
     <image />
-    <scripts />
     <toggle_button>false</toggle_button>
-    <height>31</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <name>Action Button_1</name>
-    <pv_name />
-    <y>338</y>
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <y>382</y>
     <actions hook="false">
       <action type="WRITE_PV">
         <pv_name>loc://horsestop</pv_name>
@@ -288,33 +301,39 @@ $(pv_value)</tooltip>
       </action>
     </actions>
     <tooltip />
-    <x>480</x>
+    <x>472</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <visible>true</visible>
+    <scripts />
+    <height>31</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Action Button_2</name>
+    <pv_name />
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
     <foreground_color>
       <color red="0" green="0" blue="0" />
     </foreground_color>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
     <text>Start</text>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="9" style="0" />
     </font>
     <width>80</width>
     <push_action_index>0</push_action_index>
+    <border_style>0</border_style>
     <image />
-    <scripts />
     <toggle_button>false</toggle_button>
-    <height>31</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <name>Action Button_2</name>
-    <pv_name />
-    <y>337</y>
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <y>381</y>
     <actions hook="false">
       <action type="WRITE_PV">
         <pv_name>loc://horsestop</pv_name>
@@ -322,13 +341,7 @@ $(pv_value)</tooltip>
       </action>
     </actions>
     <tooltip />
-    <x>387</x>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
-    <foreground_color>
-      <color red="0" green="0" blue="0" />
-    </foreground_color>
+    <x>379</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Image" version="1.0">
     <crop_right>0</crop_right>
@@ -337,7 +350,7 @@ $(pv_value)</tooltip>
     <auto_size>true</auto_size>
     <scripts>
       <path pathString="../scripts/DynamicLoadImage.js">
-        <pv>sim://ramp(0,3,1,0.5)</pv>
+        <pv trig="true">sim://ramp(0,3,1,0.5)</pv>
       </path>
     </scripts>
     <height>91</height>
@@ -362,28 +375,40 @@ $(pv_value)</tooltip>
       <color red="0" green="128" blue="255" />
     </border_color>
     <actions hook="false" />
-    <y>430</y>
-    <x>436</x>
+    <y>466</y>
+    <x>427</x>
     <tooltip />
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <visible>true</visible>
+    <scripts />
+    <height>28</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Action Button</name>
+    <pv_name />
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="128" />
+    </foreground_color>
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
     <text>Go Home</text>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="9" style="1" />
     </font>
     <width>79</width>
     <push_action_index>0</push_action_index>
+    <border_style>0</border_style>
     <image>../pictures/home-16x16.png</image>
-    <scripts />
     <toggle_button>false</toggle_button>
-    <height>28</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <name>Action Button</name>
-    <pv_name />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
     <y>571</y>
     <actions hook="true">
       <action type="OPEN_DISPLAY">
@@ -396,11 +421,101 @@ $(pv_value)</tooltip>
     </actions>
     <tooltip />
     <x>17</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <widget_type>Label</widget_type>
+    <enabled>true</enabled>
+    <text>Example 2: GIF animation and changing its position by script.</text>
+    <visible>true</visible>
+    <font>
+      <fontdata fontName="Arial" height="10" style="0" />
+    </font>
+    <vertical_alignment>1</vertical_alignment>
+    <width>368</width>
+    <border_style>1</border_style>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>26</height>
+    <border_width>1</border_width>
+    <name>Label_5</name>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <transparent>false</transparent>
+    <y>258</y>
+    <actions hook="false" />
+    <tooltip />
+    <x>293</x>
     <background_color>
-      <color red="240" green="240" blue="240" />
+      <color red="255" green="255" blue="223" />
     </background_color>
     <foreground_color>
-      <color red="0" green="0" blue="128" />
+      <color red="0" green="0" blue="203" />
+    </foreground_color>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <widget_type>Label</widget_type>
+    <enabled>true</enabled>
+    <text>Example 1: Static Image.</text>
+    <visible>true</visible>
+    <font>
+      <fontdata fontName="Arial" height="10" style="0" />
+    </font>
+    <vertical_alignment>1</vertical_alignment>
+    <width>162</width>
+    <border_style>1</border_style>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>26</height>
+    <border_width>1</border_width>
+    <name>Label_6</name>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <transparent>false</transparent>
+    <y>253</y>
+    <actions hook="false" />
+    <tooltip />
+    <x>17</x>
+    <background_color>
+      <color red="255" green="255" blue="223" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="203" />
+    </foreground_color>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <widget_type>Label</widget_type>
+    <enabled>true</enabled>
+    <text>Example 3: Dynamic loading image by script.</text>
+    <visible>true</visible>
+    <font>
+      <fontdata fontName="Arial" height="10" style="0" />
+    </font>
+    <vertical_alignment>1</vertical_alignment>
+    <width>347</width>
+    <border_style>1</border_style>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>26</height>
+    <border_width>1</border_width>
+    <name>Label_7</name>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <transparent>false</transparent>
+    <y>433</y>
+    <actions hook="false" />
+    <tooltip />
+    <x>293</x>
+    <background_color>
+      <color red="255" green="255" blue="223" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="203" />
     </foreground_color>
   </widget>
 </display>
