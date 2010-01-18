@@ -6,7 +6,7 @@
          <meta.schema plugin="org.csstudio.platform" id="managementCommands" name="Management Commands"/>
       </appInfo>
       <documentation>
-         This extension point allows plug-ins to register management commands which can be used to manage a running application. Management Commands can be called via the &lt;code&gt;IManagementCommand&lt;/code&gt; service which is defined and implemented by the CSS Platform.
+         This extension point allows plug-ins to contribute management commands to the &lt;code&gt;IManagementCommandService&lt;/code&gt; implemented by the CSS Platform.
       </documentation>
    </annotation>
 
