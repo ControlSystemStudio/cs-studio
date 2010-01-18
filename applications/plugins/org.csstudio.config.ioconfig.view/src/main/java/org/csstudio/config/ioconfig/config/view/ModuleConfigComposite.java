@@ -925,7 +925,12 @@ public class ModuleConfigComposite extends NodeConfig {
         if (gsdModule == null) {
             gsdModule = new GSDModule(model.getName());
         }
-        gsdModule.setModuleId(_module.getModuleNumber());
+        if(_module!=null) {
+            gsdModule.setModuleId(_module.getModuleNumber());
+            if(_module.getGSDFile()!=null) {
+                gsdModule.setGSDFile(_module.getGSDFile());
+            }
+        }
         String createdBy = "UNKNOWN";
         User currentUser = SecurityFacade.getInstance().getCurrentUser();
         if (currentUser != null && currentUser.getUsername() != null) {
