@@ -26,6 +26,9 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Vector;
 
+import javax.naming.CompositeName;
+import javax.naming.Name;
+import javax.naming.NameParser;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
@@ -35,6 +38,8 @@ import javax.naming.directory.DirContext;
 import javax.naming.directory.ModificationItem;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
+import javax.naming.ldap.LdapName;
+import javax.naming.ldap.Rdn;
 
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.statistic.Collector;
@@ -470,63 +475,56 @@ public class Engine extends Job {
         }
     }
 
-    /**
-     * Give back the logical name of a IP address from a IOC.<br>
-     * First search at LPDA.<br>
-     * Second search at a static table.<br>
-     * If in both not found return the alternate Name.<br>
-     * 
-     * @param ipAddress
-     *            The IP Address from a IOC to give the logical name. Accept
-     *            this format:
-     *            "[0-2]?[0-9]?[0-9].[0-2]?[0-9]?[0-9].[0-2]?[0-9]?[0-9].[0-2]?[0-9]?[0-9].*"
-     * @param alternateName
-     *            The name was given when dosn't found a IOC with the given IP
-     *            Address.
-     * @return The Logical Name of the given IOC IP Address.
-     */
+	/**
+	 * Returns the distinguished name of an IOC in the LDAP directory. If no IOC
+	 * with the given IP address is configured in the LDAP directory, returns
+	 * <code>null</code>.
+	 * 
+	 * @param ipAddress
+	 *            the IP address of the IOC.
+	 * @return The LDAP distinguished name of the IOC with the given IP address.
+	 */
     synchronized public String getLogicalNameFromIPAdr(final String ipAddress) {
         if (ipAddress == null
                 || !ipAddress
                         .matches("[0-2]?[0-9]?[0-9].[0-2]?[0-9]?[0-9].[0-2]?[0-9]?[0-9].[0-2]?[0-9]?[0-9].*")) {
             return null;
         }
-        if (getLdapDirContext() != null) {
+        DirContext context = getLdapDirContext();
+        if (context != null) {
             SearchControls ctrl = new SearchControls();
-            ctrl.setSearchScope(SearchControls.ONELEVEL_SCOPE);
+            ctrl.setSearchScope(SearchControls.SUBTREE_SCOPE);
             ctrl.setTimeLimit(1000);
             try {
-                NamingEnumeration<SearchResult> answerFacility = getLdapDirContext().search("ou=epicsControls",
-                        "efan=*", ctrl);
-                try {
-                    while (answerFacility.hasMore()) {
-                        String facilityName = answerFacility.next().getName();
-                        CentralLogger.getInstance().debug(this, "Facility found: " + facilityName);
-                        String path = "ecom=EPICS-IOC," + facilityName + ",ou=epicsControls";
-
-                        NamingEnumeration<SearchResult> answerIOC = getLdapDirContext().search(path,
-                                "epicsIPAddress=" + ipAddress, ctrl);
-                        if (answerIOC.hasMore()) {
-                            String name = answerIOC.next().getName() + "," + path;
-                            if (answerIOC.hasMore()) {
-                                CentralLogger.getInstance().error(this,
-                                        "More then one IOC whith this IP address: " + ipAddress);
-                            }
-                            answerIOC.close();
-                            answerFacility.close();
-                            return name;
-                        }
-                    }
-                } catch (NamingException e) {
-                    _ctx = null;
-                    CentralLogger.getInstance().info(this, "LDAP Fehler");
-                    CentralLogger.getInstance().info(this, e);
-                }
-                answerFacility.close();
+            	NamingEnumeration<SearchResult> results = context.search(
+            			"ou=EpicsControls",
+            			"(&(objectClass=epicsController)" +
+            			  "(|(epicsIPAddress=" + ipAddress + ")" +
+            			    "(epicsIPAddressR=" + ipAddress + ")))",
+            			ctrl);
+        		if (results.hasMore()) {
+        			// The relative name of the search result is relative to
+        			// ou=EpicsControls, but the ou=EpicsControls part should
+        			// be contained in the returned result, so this code adds
+        			// it back to the name. Wrapping/unwrapping in CompositeName
+        			// ensures proper escaping/unescaping of LDAP and JNDI
+        			// special characters.
+        			Name cname = new CompositeName(results.next().getName());
+        			NameParser nameParser = context.getNameParser(new CompositeName());
+        			LdapName ldapName = (LdapName) nameParser.parse(cname.get(0));
+        			ldapName.add(0, new Rdn("ou", "EpicsControls"));
+        			
+        			// Only a single IOC should be found for an IP address.
+        			if (results.hasMore()) {
+        				CentralLogger.getInstance().warn(this,
+        						"More than one IOC entry in LDAP directory for IP address: " + ipAddress);
+        			}
+        			
+        			return ldapName.toString();
+        		}
             } catch (NamingException e) {
                 _ctx = null;
-                CentralLogger.getInstance().info(this, "Falscher LDAP Suchpfad.");
-                CentralLogger.getInstance().info(this, e);
+                CentralLogger.getInstance().error(this, "LDAP directory search failed.", e);
             }
         }
         return null;
