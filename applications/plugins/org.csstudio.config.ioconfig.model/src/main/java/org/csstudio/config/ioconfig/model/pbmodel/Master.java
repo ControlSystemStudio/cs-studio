@@ -55,7 +55,7 @@ public class Master extends Node {
      * The highest accept station address.
      */
     @Transient
-    static final public int MAX_STATION_ADDRESS = 128;
+    static final public int MAX_STATION_ADDRESS = 126;
 
     // ********************
     // * Database Fields. *
@@ -310,7 +310,7 @@ public class Master extends Node {
     public SortedSet<Short> getFreeStationAddress(){
 //        ArrayList<Short> freeAddressList = new ArrayList<Short>();
         TreeSet<Short> freeAddressList = new TreeSet<Short>();
-        for (short i = 0; i < DEFAULT_MAX_STATION_ADDRESS; i++) {
+        for (short i = 0; i < MAX_STATION_ADDRESS; i++) {
             freeAddressList.add(i);
         }
         freeAddressList.remove(getSortIndex());
