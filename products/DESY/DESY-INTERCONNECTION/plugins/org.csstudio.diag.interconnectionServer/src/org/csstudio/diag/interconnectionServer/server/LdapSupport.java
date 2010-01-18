@@ -127,9 +127,6 @@ public class LdapSupport{
 			} else if ( ipAddress.equals("131.169.112.52")) {
 				stringReturnArray[0] = stringReturnArray[1] =  "krykWetter";
 				return stringReturnArray;
-			} else if ( ipAddress.equals("131.169.112.141")) {
-				stringReturnArray[0] = stringReturnArray[1] =  "Bernds_Test_IOC";
-				return stringReturnArray;
 			} else if ( ipAddress.equals("131.169.112.108")) {
 				stringReturnArray[0] = stringReturnArray[1] =  "ttfKryoLinac";
 				return stringReturnArray;
