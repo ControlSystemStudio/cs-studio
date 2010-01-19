@@ -6,6 +6,7 @@ import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.widgets.figures.GroupingContainerFigure;
 import org.csstudio.opibuilder.widgets.model.GroupingContainerModel;
+import org.csstudio.opibuilder.widgets.model.TabModel;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
@@ -76,17 +77,18 @@ public class GroupingContainerEditPart extends AbstractContainerEditpart {
 		setPropertyChangeHandler(GroupingContainerModel.PROP_LOCK_CHILDREN, handler);
 		
 		lockChildren(getWidgetModel().isLocked());
-		
-		removeAllPropertyChangeHandlers(AbstractWidgetModel.PROP_VISIBLE);
-		IWidgetPropertyChangeHandler visibilityHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue, final Object newValue, final IFigure refreshableFigure) {
-				boolean visible = (Boolean) newValue;
-				final IFigure figure = getFigure();
-				figure.setVisible(visible);				
-				return true;
-			}
-		};
-		setPropertyChangeHandler(AbstractWidgetModel.PROP_VISIBLE, visibilityHandler);
+		if(getWidgetModel().getParent() instanceof TabModel){
+			removeAllPropertyChangeHandlers(AbstractWidgetModel.PROP_VISIBLE);
+			IWidgetPropertyChangeHandler visibilityHandler = new IWidgetPropertyChangeHandler() {
+				public boolean handleChange(final Object oldValue, final Object newValue, final IFigure refreshableFigure) {
+					boolean visible = (Boolean) newValue;
+					final IFigure figure = getFigure();
+					figure.setVisible(visible);				
+					return true;
+				}
+			};
+			setPropertyChangeHandler(AbstractWidgetModel.PROP_VISIBLE, visibilityHandler);		
+		}
 		
 		IWidgetPropertyChangeHandler showBarHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue, final Object newValue, final IFigure refreshableFigure) {
