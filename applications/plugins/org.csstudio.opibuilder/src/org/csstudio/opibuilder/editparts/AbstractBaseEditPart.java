@@ -136,7 +136,6 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 	@Override
 	protected IFigure createFigure() {
 		IFigure figure = doCreateFigure();
-		initFigure(figure);
 		return figure;
 	}
 	
@@ -199,7 +198,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 		if(!isActive()){
 			super.activate();
 			deactiveTriggered = false;
-			//initFigure(getFigure());
+			initFigure(getFigure());
 			
 			//add listener to all properties.
 			for(String id : getWidgetModel().getAllPropertyIDs()){

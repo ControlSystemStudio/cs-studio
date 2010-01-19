@@ -26,6 +26,12 @@ public class GroupingContainerEditPart extends AbstractContainerEditpart {
 	}
 	
 	@Override
+	public void activate() {
+		initFigure(getFigure());
+		super.activate();
+	}
+	
+	@Override
 	public GroupingContainerModel getWidgetModel() {
 		return (GroupingContainerModel)getModel();
 	}
