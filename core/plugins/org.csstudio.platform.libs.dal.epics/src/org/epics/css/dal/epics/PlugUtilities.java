@@ -114,7 +114,8 @@ public final class PlugUtilities
 			else if (type.isFLOAT())
 				return DoubleSeqPropertyImpl.class;
 			else if (type.isBYTE())
-				return LongSeqPropertyImpl.class;
+				return StringPropertyImpl.class;
+//				return LongSeqPropertyImpl.class;
 			else if (type.isSHORT())
 				return LongSeqPropertyImpl.class;
 			else if (type.isINT())
@@ -201,9 +202,11 @@ public final class PlugUtilities
 	 * Convert DBR to Java object.
 	 * @param dbr DBR to convet.
 	 * @param javaType type to convert to.
+	 * @originalType the original channel field type (used in case the channel type 
+	 * 				is different than the type presented in DAL) 
 	 * @return converted java object.
 	 */
-	public static <T> T toJavaValue(DBR dbr, Class<T> javaType)
+	public static <T> T toJavaValue(DBR dbr, Class<T> javaType, DBRType originalType)
 	{
 		if (javaType == null) {
 			throw new NullPointerException("javaType");
@@ -306,7 +309,17 @@ public final class PlugUtilities
 
 		if (javaType.equals(String.class)) {
 			if (dbr.isSTRING()) {
-				return javaType.cast(((String[])dbr.getValue())[0]);
+				//if type is char, return string composed of chars else return first element
+				if (originalType.isBYTE()) {
+					String[] val = (String[])dbr.getValue();
+					StringBuilder sb = new StringBuilder();
+					for (int i = 0; i < val.length; i++) {
+						sb.append(val[i]);
+					}
+					return javaType.cast(sb.toString());
+				} else {
+					return javaType.cast(((String[])dbr.getValue())[0]);
+				}
 			}
 		}
 
@@ -381,11 +394,14 @@ public final class PlugUtilities
 	/**
 	 * Convert java object to DBR value.
 	 * @param value java object to convert.
+	 * @param originalType the original channel field type (used when
+	 * 			the channel type is different than the type used in DAL.
+	 * 			e.g. char[] is treated as String)
 	 * @return DBR value.
 	 * @throws CAException
 	 * @throws NullPointerException
 	 */
-	public static Object toDBRValue(Object value) throws CAException
+	public static Object toDBRValue(Object value, DBRType originalType) throws CAException
 	{
 		if (value == null) {
 			throw new NullPointerException("value");
@@ -408,7 +424,16 @@ public final class PlugUtilities
 		}
 
 		if (value.getClass().equals(String.class)) {
-			return new String[]{ (String)value };
+			if (originalType.isBYTE()) {
+				String sVal = (String)value;
+				String[] retVal = new String[sVal.length()];
+				for (int i = 0; i < retVal.length; i++) {
+					retVal[i] = String.valueOf(sVal.charAt(i));
+				}
+				return retVal;
+			} else {
+				return new String[]{ (String)value };
+			}
 		}
 
 		if (value.getClass().equals(BitSet.class)) {

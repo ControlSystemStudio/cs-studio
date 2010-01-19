@@ -284,7 +284,7 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 			throws DataExchangeException {
 		PutRequest<T> r = new PutRequest<T>(this, callback, value);
 		try {
-			Object o = PlugUtilities.toDBRValue(value);
+			Object o = PlugUtilities.toDBRValue(value, channel.getFieldType());
 			if (channel instanceof CAJChannel) 
 				((CAJChannel) channel).put(PlugUtilities.toDBRType(value.getClass()), Array.getLength(o), o, r);
 			else {
@@ -354,7 +354,7 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 			if (event.getDBR() == null)
 				throw new DataExchangeException(this, "Get failed.");
 			
-			return PlugUtilities.toJavaValue(event.getDBR(), dataType);
+			return toJavaValue(event.getDBR());
 		} catch (CAException e) {
 			throw new DataExchangeException(this, "Get failed.", e);
 		} catch (TimeoutException e) {
@@ -367,7 +367,7 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 	 */
 	public void setValueSync(Object value) throws DataExchangeException {
 		try {
-			Object o = PlugUtilities.toDBRValue(value);
+			Object o = PlugUtilities.toDBRValue(value, channel.getFieldType());
 			if (channel instanceof CAJChannel) 
 				((CAJChannel) channel).put(PlugUtilities.toDBRType(value.getClass()), Array.getLength(o), o);
 			else {
@@ -832,9 +832,9 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 	 * @return converted Java value.
 	 */
 	public final T toJavaValue(DBR dbr) {
-		return PlugUtilities.toJavaValue(dbr, dataType);
+		return PlugUtilities.toJavaValue(dbr, dataType, channel.getFieldType());
 	}
-
+	
 	/**
 	 * Get CA channel.
 	 * @return channel.
