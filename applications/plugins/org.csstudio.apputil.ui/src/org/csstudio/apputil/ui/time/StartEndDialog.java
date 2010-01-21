@@ -43,11 +43,11 @@ public class StartEndDialog extends Dialog
     @SuppressWarnings("nls")
     public StartEndDialog(Shell shell)
     {
-        this(shell, "-1day", "now");
+        this(shell, "-1" + RelativeTime.DAY_TOKEN, RelativeTime.NOW);
     }
     
     /** Create dialog with given start and end time specification. */
-    public StartEndDialog(Shell shell, String start, String end)
+    public StartEndDialog(final Shell shell, final String start, final String end)
     {
         super(shell);
         start_specification = start;
@@ -72,6 +72,7 @@ public class StartEndDialog extends Dialog
     public final Calendar getEndCalendar()
     {   return start_end.getEnd(); }
     
+    /** @return <code>true</code> if end time is 'now' */
     public final boolean isEndNow()
     {   return start_end.getRelativeEnd().isNow(); }
 
@@ -195,7 +196,6 @@ public class StartEndDialog extends Dialog
             {
                 info.setText(Messages.StartEnd_StartExceedsEnd);
                 return;
-                
             }
         }
         catch (Exception ex)
