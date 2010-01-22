@@ -15,20 +15,34 @@ public class RingBufferTest
         final RingBuffer<Integer> ring = new RingBuffer<Integer>(5);
         assertTrue(ring.isEmpty());
         
+        // Add/remove one item
         ring.add(1);
         assertFalse(ring.isEmpty());
         assertEquals(new Integer(1), ring.remove());
         assertNull(ring.remove());
         assertTrue(ring.isEmpty());
         
+        // Add 10, but ring only remembers the last 5 items
         for (int i=1; i<10; ++i)
             ring.add(i);
-        
         dump(ring);
+        assertEquals(5, ring.size());
+        assertEquals(new Integer(5), ring.get(0));
+        assertEquals(new Integer(9), ring.get(4));
+
+        // Changing the capacity will preserve those items
         final int cap = ring.getCapacity() * 2;
         ring.setCapacity(cap);
         assertEquals(cap, ring.getCapacity());
-        
+        assertEquals(5, ring.size());
+        assertEquals(new Integer(5), ring.get(0));
+        assertEquals(new Integer(9), ring.get(4));
+        // .. but now we can add more
+        ring.add(10);
+        assertEquals(6, ring.size());
+        assertEquals(new Integer(5), ring.get(0));
+        assertEquals(new Integer(10), ring.get(5));
+
         Integer item = ring.remove();
         while (item != null)
         {
