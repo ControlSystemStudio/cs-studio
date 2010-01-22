@@ -63,9 +63,16 @@ public class StringTableEditor extends Composite
 			final int[] columnsMinWidth) 
 	{
 		super(parent, 0);
-		final GridLayout layout = new GridLayout();
-		layout.numColumns = headers.length;
-		setLayout(layout);
+
+		final int table_columns = headers.length;
+		if (editable.length != table_columns ||
+		    columnsMinWidth.length != table_columns)
+		    throw new Error("Inconsistent table column count"); //$NON-NLS-1$
+
+		// StringTableEditor itself is a Composite that contains 2 columns:
+		// Left column: Table
+		// Right column: Edit/up/down/delete buttons
+		setLayout(new GridLayout(2, false));
 		
 		//Edit-able Table
 		tableViewer = new TableViewer(this, SWT.BORDER | SWT.FULL_SELECTION |
@@ -78,20 +85,20 @@ public class StringTableEditor extends Composite
 		table.setHeaderVisible(true);
 		
 		//Create edit-able columns
-		for(int i = 0; i < layout.numColumns; i++) {
+		for(int i = 0; i < table_columns; i++) {
 			final TableViewerColumn col = 
 				AutoSizeColumn.make(tableViewer, headers[i], columnsMinWidth[i], 100, false);
 			col.setLabelProvider(new StringMultiColumnsLabelProvider(tableViewer, editable[i]));
 			//col.setLabelProvider(new StringColumnLabelProvider(tableViwer));
 			if(editable[i]) {
 				col.setEditingSupport(new StringMultiColumnsEditor(tableViewer,
-						layout.numColumns, i));	
+				        table_columns, i));	
 			}
 		}
 		tableViewer.setContentProvider(new StringTableContentProvider<String[]>());
 		tableViewer.setInput(items);
 		new AutoSizeControlListener(table);		
-		editButton = createEditButton(layout.numColumns, rowEditDialog);
+		editButton = createEditButton(table_columns, rowEditDialog);
 		upButton = createUpButton();
 		downButton = createDownButton();
 		deleteButton = createDeleteButton();		
