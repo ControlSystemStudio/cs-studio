@@ -9,6 +9,11 @@ import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.graphics.RGB;
 
+/**
+ * 
+ * @author Kai Meyer (C1 WPS)
+ *
+ */
 public class BooleanSwitchEditPart extends AbstractWidgetEditPart {
 
 	/**

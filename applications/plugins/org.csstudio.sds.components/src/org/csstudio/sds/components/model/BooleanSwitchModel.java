@@ -8,6 +8,11 @@ import org.csstudio.sds.model.properties.DoubleProperty;
 import org.csstudio.sds.model.properties.StringProperty;
 import org.eclipse.swt.graphics.RGB;
 
+/**
+ * 
+ * @author Kai Meyer (C1 WPS)
+ *
+ */
 public class BooleanSwitchModel extends AbstractWidgetModel {
 	
 	/**
