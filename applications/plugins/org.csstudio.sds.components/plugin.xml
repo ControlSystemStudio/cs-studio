@@ -201,6 +201,17 @@
       </widgetModelFactory>
    </extension>
    <extension
+         point="org.csstudio.sds.widgetModelFactories">
+      <widgetModelFactory
+            category="Controls"
+            class="org.csstudio.sds.components.internal.model.BooleanSwitchModelFactory"
+            description="Boolean Switch"
+            icon="icons/BoolSwitch.gif"
+            name="Boolean Switch"
+            typeId="org.csstudio.sds.components.BooleanSwitch">
+      </widgetModelFactory>
+   </extension>
+   <extension
          point="org.eclipse.help.toc">
       <toc
             file="toc.xml"

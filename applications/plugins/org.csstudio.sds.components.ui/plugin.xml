@@ -75,6 +75,40 @@
      </widgetEditPart>
   </extension>
   <extension
+        point="org.csstudio.sds.ui.widgetEditParts">
+     <widgetEditPart
+           class="org.csstudio.sds.components.ui.internal.editparts.LabelEditPart"
+           typeId="org.csstudio.sds.components.Label">
+     </widgetEditPart>
+     <widgetEditPart
+           class="org.csstudio.sds.components.ui.internal.editparts.ArcEditPart"
+           typeId="org.csstudio.sds.components.Arc">
+     </widgetEditPart>
+     <widgetEditPart
+           class="org.csstudio.sds.components.ui.internal.editparts.ImageEditPart"
+           typeId="org.csstudio.sds.components.Image">
+     </widgetEditPart>
+     <widgetEditPart
+           class="org.csstudio.sds.components.ui.internal.editparts.SwitchEditPart"
+           typeId="org.csstudio.sds.components.Switch">
+     </widgetEditPart>
+     <widgetEditPart
+           class="org.csstudio.sds.components.ui.internal.editparts.MeterEditPart"
+           typeId="org.csstudio.sds.components.Meter">
+     </widgetEditPart>
+     <widgetEditPart
+           class="org.csstudio.sds.components.ui.internal.editparts.MenuButtonEditPart"
+           typeId="org.csstudio.sds.components.MenuButton">
+     </widgetEditPart>
+  </extension>
+  <extension
+        point="org.csstudio.sds.ui.widgetEditParts">
+     <widgetEditPart
+           class="org.csstudio.sds.components.ui.internal.editparts.BooleanSwitchEditPart"
+           typeId="org.csstudio.sds.components.BooleanSwitch">
+     </widgetEditPart>
+  </extension>
+  <extension
         point="org.csstudio.sds.ui.graphicalFeedbackFactories">
      <graphicalFeedbackFactory
            class="org.csstudio.sds.components.ui.internal.feedback.PolygonFeedbackFactory"
@@ -84,29 +118,6 @@
            typeId="org.csstudio.sds.components.Polyline"/>
   </extension>
   
-   <extension
-         point="org.csstudio.sds.ui.widgetEditParts">
-      <widgetEditPart
-            class="org.csstudio.sds.components.ui.internal.editparts.LabelEditPart"
-            typeId="org.csstudio.sds.components.Label"/>
-      <widgetEditPart
-            class="org.csstudio.sds.components.ui.internal.editparts.ArcEditPart"
-            typeId="org.csstudio.sds.components.Arc"/>
-      <widgetEditPart
-            class="org.csstudio.sds.components.ui.internal.editparts.ImageEditPart"
-            typeId="org.csstudio.sds.components.Image"/>
-      <widgetEditPart
-            class="org.csstudio.sds.components.ui.internal.editparts.SwitchEditPart"
-            typeId="org.csstudio.sds.components.Switch"/>
-      <widgetEditPart
-            class="org.csstudio.sds.components.ui.internal.editparts.MeterEditPart"
-            typeId="org.csstudio.sds.components.Meter">
-      </widgetEditPart>
-      <widgetEditPart
-            class="org.csstudio.sds.components.ui.internal.editparts.MenuButtonEditPart"
-            typeId="org.csstudio.sds.components.MenuButton">
-      </widgetEditPart>
-   </extension>
    <extension
          point="org.csstudio.sds.components.Switch">
       <Switch
