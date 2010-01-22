@@ -2,6 +2,7 @@ package org.csstudio.platform.ui.swt.stringtable;
 
 import org.csstudio.platform.ui.internal.localization.Messages;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 
 /**The RowEditDialog is the abstract superclass of dialogs
@@ -12,7 +13,14 @@ public abstract class RowEditDialog extends Dialog {
 
 	protected String[] rowData;
 	
-	/**Set the rowData which will be initially displayed in the Edit Dialog.
+	/** Initialize Dialog */
+	protected RowEditDialog(Shell parentShell) {
+    	super(parentShell);
+        // Allow resize
+        setShellStyle(getShellStyle() | SWT.RESIZE);
+    }
+
+    /**Set the rowData which will be initially displayed in the Edit Dialog.
 	 * It must be called prior to open(). 
 	 * @param rowData the rowData to set
 	 */
@@ -25,10 +33,6 @@ public abstract class RowEditDialog extends Dialog {
 	 */
 	public String[] getRowData() {
 		return rowData;
-	}
-	
-	protected RowEditDialog(Shell parentShell) {
-		super(parentShell);		
 	}
 	
 	@Override
