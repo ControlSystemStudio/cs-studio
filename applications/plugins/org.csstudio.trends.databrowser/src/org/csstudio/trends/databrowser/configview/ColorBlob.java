@@ -52,6 +52,7 @@ public class ColorBlob extends Canvas implements PaintListener, DisposeListener
 	/** @param rgb Set the color displayed in the widget */
 	public void setColor(final RGB rgb)
 	{
+	    color.dispose();
 		color = new Color(getDisplay(), rgb);
 		redraw();
 	}
