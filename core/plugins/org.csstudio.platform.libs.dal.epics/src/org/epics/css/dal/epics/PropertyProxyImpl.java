@@ -832,7 +832,7 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 	 * @return converted Java value.
 	 */
 	public final T toJavaValue(DBR dbr) {
-		return PlugUtilities.toJavaValue(dbr, dataType, channel.getFieldType());
+		return PlugUtilities.toJavaValue(dbr, dataType, channel.getFieldType(), plug.getWaveformBreakStrings());
 	}
 	
 	/**

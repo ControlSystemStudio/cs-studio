@@ -50,7 +50,6 @@ import java.util.concurrent.TimeUnit;
 import javax.naming.NamingException;
 import javax.naming.directory.DirContext;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.epics.css.dal.EventSystemListener;
 import org.epics.css.dal.RemoteException;
 import org.epics.css.dal.SimpleProperty;
@@ -121,6 +120,13 @@ public class EPICSPlug extends AbstractPlug
 	public static final String USE_JNI = "EPICSPlug.use_jni";
 	
 	/**
+	 * Property name for waveform breaks. When waveform is requested as string,
+	 * the array is concatenated together until the first occurrence of the string
+	 * stored under this property name. Multiple delimited can be separated by comma.
+	 */
+	public static final String WAVEFORM_BREAK_STRINGS = "EPICSPlug.waveformBreaks";
+	
+	/**
 	 * Property name for use common executor flag: {@link #useCommonExecutor}
 	 */
 	public static final String PROPERTY_USE_COMMON_EXECUTOR = "EPICSPlug.property.use_common_executor";
@@ -181,6 +187,11 @@ public class EPICSPlug extends AbstractPlug
 	 */
 	private Context context;
 
+	/**
+	 * The waveform breaks.
+	 */
+	private String[] waveformBreaks;
+	
 	private static EPICSPlug sharedInstance;
 	
 	/**
@@ -300,14 +311,24 @@ public class EPICSPlug extends AbstractPlug
 		} else {
 			use_jni = new Boolean(getConfiguration().getProperty(USE_JNI, "false"));
 		}
-		CentralLogger.getInstance().debug(this, "pure java: " + !use_jni);
+		
 		if (!use_jni) {
 			context = createJCAContext();
 		} else {
+			System.out.println("> EPICSPlug using JNI");
 			context = createThreadSafeContext();
 		}
 
-			
+		String delimiters;
+		if (System.getProperties().containsKey(WAVEFORM_BREAK_STRINGS)) {
+			delimiters = System.getProperty(WAVEFORM_BREAK_STRINGS, "00," + (char)0);
+		} else {
+			delimiters = getConfiguration().getProperty(WAVEFORM_BREAK_STRINGS, "00," + (char)0);
+		}
+		if (!delimiters.isEmpty()) {
+			waveformBreaks = delimiters.split(",");
+		}
+		
 		// initialize supported proxy implementation
 		PlugUtilities.initializeSupportedProxyImplementations(this);
 	
@@ -609,10 +630,8 @@ public class EPICSPlug extends AbstractPlug
 				if (!useCommonExecutor) throw new IllegalStateException("EPICSPlug is configured not to use a common executor.");
 				if (maxThreads == 0) throw new IllegalStateException("Maximum number of threads must be greater than 0.");
 				if (executor==null) {
-//					executor= new ThreadPoolExecutor(coreThreads,maxThreads,Long.MAX_VALUE, TimeUnit.NANOSECONDS,
-//			                new ArrayBlockingQueue<Runnable>(maxThreads));
-				    executor= new ThreadPoolExecutor(coreThreads,maxThreads,Long.MAX_VALUE, TimeUnit.NANOSECONDS, 
-				    		new LinkedBlockingQueue<Runnable>());
+					executor= new ThreadPoolExecutor(coreThreads,maxThreads,Long.MAX_VALUE, TimeUnit.NANOSECONDS,
+			                new LinkedBlockingQueue<Runnable>());
 					executor.prestartAllCoreThreads();
 				}				
 			}
@@ -688,7 +707,18 @@ public class EPICSPlug extends AbstractPlug
 			}
 		}
 	}
-
+	
+	/**
+	 * Returns the waveform break strings.
+	 * 
+	 * @return
+	 */
+	String[] getWaveformBreakStrings() {
+		if (waveformBreaks == null) {
+			waveformBreaks = new String[0];
+		}
+		return waveformBreaks;
+	}
 	
 }
 

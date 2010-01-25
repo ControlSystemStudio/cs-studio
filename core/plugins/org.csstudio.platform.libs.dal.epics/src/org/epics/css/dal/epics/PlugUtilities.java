@@ -202,11 +202,13 @@ public final class PlugUtilities
 	 * Convert DBR to Java object.
 	 * @param dbr DBR to convet.
 	 * @param javaType type to convert to.
-	 * @originalType the original channel field type (used in case the channel type 
+	 * @param originalType the original channel field type (used in case the channel type 
 	 * 				is different than the type presented in DAL) 
+	 * @param waveFormTerminations if waveform is extracted as a string, the string can be terminated
+	 * 			when a specific character is found. This parameter defines those characters.
 	 * @return converted java object.
 	 */
-	public static <T> T toJavaValue(DBR dbr, Class<T> javaType, DBRType originalType)
+	public static <T> T toJavaValue(DBR dbr, Class<T> javaType, DBRType originalType, String... waveformTerminations)
 	{
 		if (javaType == null) {
 			throw new NullPointerException("javaType");
@@ -313,9 +315,15 @@ public final class PlugUtilities
 				if (originalType.isBYTE()) {
 					String[] val = (String[])dbr.getValue();
 					StringBuilder sb = new StringBuilder();
+					boolean wavebreak = false;
 					for (int i = 0; i < val.length; i++) {
-						if (val[i] != null && (val[i].trim().equals("00") ||
-								val[i].charAt(0) == 0)) break;
+						for (String w : waveformTerminations) {
+							if (val[i] != null && val[i].trim().equals(w)) {
+								wavebreak = true;
+								break;
+							}
+						}
+						if (wavebreak) break;
 						sb.append(val[i]);
 					}
 					return javaType.cast(sb.toString());
