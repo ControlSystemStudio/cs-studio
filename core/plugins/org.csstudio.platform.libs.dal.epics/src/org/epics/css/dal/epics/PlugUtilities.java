@@ -314,6 +314,8 @@ public final class PlugUtilities
 					String[] val = (String[])dbr.getValue();
 					StringBuilder sb = new StringBuilder();
 					for (int i = 0; i < val.length; i++) {
+						if (val[i] != null && (val[i].trim().equals("00") ||
+								val[i].charAt(0) == 0)) break;
 						sb.append(val[i]);
 					}
 					return javaType.cast(sb.toString());
