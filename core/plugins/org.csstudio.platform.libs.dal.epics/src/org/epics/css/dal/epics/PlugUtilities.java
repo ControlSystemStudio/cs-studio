@@ -204,11 +204,9 @@ public final class PlugUtilities
 	 * @param javaType type to convert to.
 	 * @param originalType the original channel field type (used in case the channel type 
 	 * 				is different than the type presented in DAL) 
-	 * @param waveFormTerminations if waveform is extracted as a string, the string can be terminated
-	 * 			when a specific character is found. This parameter defines those characters.
 	 * @return converted java object.
 	 */
-	public static <T> T toJavaValue(DBR dbr, Class<T> javaType, DBRType originalType, String... waveformTerminations)
+	public static <T> T toJavaValue(DBR dbr, Class<T> javaType, DBRType originalType)
 	{
 		if (javaType == null) {
 			throw new NullPointerException("javaType");

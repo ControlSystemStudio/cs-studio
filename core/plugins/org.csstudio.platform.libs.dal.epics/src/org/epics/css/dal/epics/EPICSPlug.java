@@ -118,14 +118,7 @@ public class EPICSPlug extends AbstractPlug
 	 * Property defined in System properties take precedence before property in defined in configuration.
 	 */
 	public static final String USE_JNI = "EPICSPlug.use_jni";
-	
-	/**
-	 * Property name for waveform breaks. When waveform is requested as string,
-	 * the array is concatenated together until the first occurrence of the string
-	 * stored under this property name. Multiple delimited can be separated by comma.
-	 */
-	public static final String WAVEFORM_BREAK_STRINGS = "EPICSPlug.waveformBreaks";
-	
+		
 	/**
 	 * Property name for use common executor flag: {@link #useCommonExecutor}
 	 */
@@ -186,11 +179,6 @@ public class EPICSPlug extends AbstractPlug
 	 * Context.
 	 */
 	private Context context;
-
-	/**
-	 * The waveform breaks.
-	 */
-	private String[] waveformBreaks;
 	
 	private static EPICSPlug sharedInstance;
 	
@@ -317,16 +305,6 @@ public class EPICSPlug extends AbstractPlug
 		} else {
 			System.out.println("> EPICSPlug using JNI");
 			context = createThreadSafeContext();
-		}
-
-		String delimiters;
-		if (System.getProperties().containsKey(WAVEFORM_BREAK_STRINGS)) {
-			delimiters = System.getProperty(WAVEFORM_BREAK_STRINGS, "00," + (char)0);
-		} else {
-			delimiters = getConfiguration().getProperty(WAVEFORM_BREAK_STRINGS, "00," + (char)0);
-		}
-		if (!delimiters.isEmpty()) {
-			waveformBreaks = delimiters.split(",");
 		}
 		
 		// initialize supported proxy implementation
@@ -706,20 +684,7 @@ public class EPICSPlug extends AbstractPlug
 				iter.next().eventArrived(event);
 			}
 		}
-	}
-	
-	/**
-	 * Returns the waveform break strings.
-	 * 
-	 * @return
-	 */
-	String[] getWaveformBreakStrings() {
-		if (waveformBreaks == null) {
-			waveformBreaks = new String[0];
-		}
-		return waveformBreaks;
-	}
-	
+	}	
 }
 
 
