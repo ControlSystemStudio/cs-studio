@@ -312,19 +312,23 @@ public final class PlugUtilities
 		if (javaType.equals(String.class)) {
 			if (dbr.isSTRING()) {
 				//if type is char, return string composed of chars else return first element
+
 				if (originalType.isBYTE()) {
 					String[] val = (String[])dbr.getValue();
+					int ascii;
 					StringBuilder sb = new StringBuilder();
-					boolean wavebreak = false;
 					for (int i = 0; i < val.length; i++) {
-						for (String w : waveformTerminations) {
-							if (val[i] != null && val[i].equals(w)) {
-								wavebreak = true;
-								break;
-							}
+						// convert string into integer (represents the ASCII value of the character)
+						ascii = Integer.valueOf(val[i]).intValue();
+						if (ascii != 0 ) {
+							// create 'real' char from ASCII number
+							// char singleChar = (char) ascii;
+							
+							// create new string from list of chars
+							sb.append( (char) ascii);
+						} else {
+							break;
 						}
-						if (wavebreak) break;
-						sb.append(val[i]);
 					}
 					return javaType.cast(sb.toString());
 				} else {
