@@ -318,7 +318,7 @@ public final class PlugUtilities
 					boolean wavebreak = false;
 					for (int i = 0; i < val.length; i++) {
 						for (String w : waveformTerminations) {
-							if (val[i] != null && val[i].trim().equals(w)) {
+							if (val[i] != null && val[i].equals(w)) {
 								wavebreak = true;
 								break;
 							}
