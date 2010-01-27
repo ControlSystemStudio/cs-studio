@@ -664,7 +664,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 	/**Run a widget action which is attached to the widget.
 	 * @param index the index of the action in the actions list.
 	 */
-	public void runAction(int index){
+	public void executeAction(int index){
 		AbstractWidgetAction action;
 		try {
 			action = getWidgetModel().getActionsInput().getActionsList().get(index);
