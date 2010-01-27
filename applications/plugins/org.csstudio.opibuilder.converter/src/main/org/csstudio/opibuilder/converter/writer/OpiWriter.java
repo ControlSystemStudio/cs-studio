@@ -45,7 +45,7 @@ public class OpiWriter {
 	 * @return OpiWriter instance.
 	 * @throws EdmException if error occurs when instantiating EdmModel.
 	 */
-	public static OpiWriter getInstance() throws EdmException {
+	public synchronized static OpiWriter getInstance() throws EdmException {
 		if (instance == null)
 			instance = new OpiWriter();
 		return instance;

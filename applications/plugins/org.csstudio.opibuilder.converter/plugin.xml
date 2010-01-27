@@ -10,12 +10,21 @@
             objectClass="org.eclipse.core.resources.IResource">
          <action
                class="org.csstudio.opibuilder.converter.ui.ConvertToOPIAction"
-               enablesFor="1"
+               enablesFor="*"
                id="org.csstudio.opibuilder.converter.convertedl"
                label="Convert to OPI file"
                style="push">
          </action>
       </objectContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.csstudio.platform.ui.css.applications.display"
+            class="org.csstudio.opibuilder.converter.ui.EDMConverterPreferencePage"
+            id="org.csstudio.opibuilder.converter.preferences"
+            name="EDM2OPI Converter">
+      </page>
    </extension>
 
 </plugin>
