@@ -33,7 +33,6 @@ public class BooleanSwitchEditPart extends AbstractWidgetEditPart {
 		figure.setOnLabel(model.getOnLabel());
 		figure.setOffLabel(model.getOffLabel());
 		figure.addBoolControlListener(new IBoolControlListener() {
-			@Override
 			public void valueChanged(boolean newValue) {
 				if (getExecutionMode() == ExecutionMode.RUN_MODE) {
 					model.setValue(newValue);
