@@ -92,7 +92,7 @@ public class EDMConverterPreferencePage extends FieldEditorPreferencePage implem
 		
 		
 		BooleanFieldEditor robustParsingEditor = 
-			new BooleanFieldEditor(PreferencesHelper.ROBUST_PARSING, "Robust Parsing", parent);
+			new BooleanFieldEditor(PreferencesHelper.FAIL_FAST, "Stop parsing at exception", parent);
 		addField(robustParsingEditor);
 		
 //		BooleanFieldEditor openOPIsEditor =

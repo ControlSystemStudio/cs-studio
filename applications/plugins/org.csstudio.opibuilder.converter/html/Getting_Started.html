@@ -1,0 +1,65 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=Cp1252"/>
+    <link rel="stylesheet" href="default.css" type="text/css" />
+    <title>
+      EDM2OPI Converter
+    </title>
+  </head>
+  <body>
+
+    <h2>
+     EDM2OPI Converter
+    </h2>
+    <p>
+      EDM2OPI converter can help to convert some basic widgets from EDM edl file to BOY OPI file. Currently, it only supports the 
+      conversion of limited EDM widgets: Label, TextUpdate, Rectangle, Line and Group. More widgets will
+      be supported in future.
+    </p>
+    <p>
+    To convert edl files to OPI files, all the edl files and colors.list must be copied to CSS Navigator or CSS Workspace at first. 
+    </p>
+    <h2>
+    Getting Started
+    </h2>
+    <h3>
+    Set Preferences
+    </h3>
+    <p>
+    Before edl files can be converted to OPI, some preferences must be set first as shown in this figure.
+   	The preference page can be opened via menu <b>CSS->Preferences...->CSS Applications->Display->EDM2OPI Converter</b>
+	    <p>
+	    <img src="./img/preference.PNG" alt="Preference Page"/>
+	    </p>
+    
+    <ul>
+    <li>
+     <b>EDM colors.list File: </b> This is the path of the colors.list file which was copied from EDM.
+    </li>
+     <li>
+     <b>Output OPI Color File: </b> The output path of the OPI color definition file which will be converted
+     from colors.list file. After this path has been set, you may need to set the BOY color file to this
+     file path too to make colors displayed correctly.
+    </li>
+     <li>
+     <b>Output OPIs Folder: </b> The folder where the converted OPIs will be stored. If this is not specified,
+     the output OPIs will be stored in the same folder as the source edl files.
+    </li>
+     <li>
+     <b>Stop parsing at exception: </b> Enable fail-fast mode for stricter tests, which means the parsing will be 
+     terminated at any exception.
+    </li>
+    </ul>
+   
+   <h3>
+   Convert edl files to OPIs
+   </h3>
+   <p>
+   Right clicking one or multiple edl files in CSS navigator and choose <b>Convert to OPI file</b> will convert
+   all the selected edl files to OPI files.
+   </p>
+    <p>
+	    <img src="./img/convert_to_opi.png" alt="Preference Page"/>
+	 </p>
+      </body>
+    </html>

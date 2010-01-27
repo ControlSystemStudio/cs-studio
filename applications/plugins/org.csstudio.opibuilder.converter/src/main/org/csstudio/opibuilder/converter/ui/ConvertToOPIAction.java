@@ -5,7 +5,6 @@ import java.util.List;
 import org.csstudio.opibuilder.converter.writer.OpiWriter;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.platform.logging.CentralLogger;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
@@ -18,18 +17,14 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.part.FileEditorInput;
 
-/**Convert an EDM file to an OPI file.
+/**Convert selected EDM filef to OPI files.
  * @author Xihui Chen
  *
  */
 public class ConvertToOPIAction implements IObjectActionDelegate {
 
 	private List<IResource> selectedFiles;
-	
-	
 	
 	public ConvertToOPIAction() {
 	}
@@ -94,6 +89,7 @@ public class ConvertToOPIAction implements IObjectActionDelegate {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public void selectionChanged(IAction action, ISelection selection) {
 		if(selection instanceof IStructuredSelection && !((IStructuredSelection)selection).isEmpty())
 			selectedFiles = ((List<IResource>)((IStructuredSelection)selection).toList());

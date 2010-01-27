@@ -58,11 +58,20 @@ public class EDM2OPIConverterPlugin extends AbstractUIPlugin {
 				} else if(event.getProperty().equals(PreferencesHelper.OUTPUT_OPICOLOR_FILE)){
 					setOPIColorFile();
 					convertColorFile();
-				}else if(event.getProperty().equals(PreferencesHelper.ROBUST_PARSING))
+				}else if(event.getProperty().equals(PreferencesHelper.FAIL_FAST))
 					setRobustParsing();
 			}
 		};
 		
+		getPluginPreferences().addPropertyChangeListener(preferenceLisener);
+		
+	}
+	
+	@Override
+	public void stop(BundleContext context) throws Exception {
+		plugin = null;
+		getPluginPreferences().removePropertyChangeListener(preferenceLisener);
+		super.stop(context);
 	}
 	
 	
