@@ -36,7 +36,7 @@ public class OpenWebpageAction extends AbstractWidgetAction {
 	            		getHyperLink().startsWith("file:")) //$NON-NLS-1$
 		{
 			try {
-				PlatformUI.getWorkbench().getBrowserSupport().createBrowser(null).openURL(
+				PlatformUI.getWorkbench().getBrowserSupport().createBrowser("opi_web_browser").openURL( //$NON-NLS-1$
 						new URL(getHyperLink()));
 			} catch (Exception e) {
 				String message = NLS.bind("Failed to open the hyperlink: {0}\n{1}", getHyperLink(), e); 
