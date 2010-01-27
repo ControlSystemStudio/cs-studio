@@ -62,7 +62,7 @@ public class OPIBuilderPreferencePage extends FieldEditorPreferencePage
 		
 		BooleanFieldEditor noEditModeEditor = 
 			new BooleanFieldEditor(PreferencesHelper.NO_EDIT, 
-					"No editing mode", parent);				
+					"No-Editing mode", parent);				
 		addField(noEditModeEditor);
 		
 		StringFieldEditor topOPIsEditor = 

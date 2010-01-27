@@ -4,8 +4,13 @@
 <toc label="Best OPI Yet" link_to="../org.csstudio.platform.ui/tocApps.xml#display">
 <topic label="Best OPI Yet"  href="html/BOY_Introduction.html"> 
   <topic label="Install Examples" href="html/Install Examples.html"/>
+  <topic href="html/Getting Started.html" label="Getting Started">
+  </topic>
   <topic label="OPI Editor Perspective" href="html/OPI Editor Perspective.html" />
-  <topic label="OPI Editor" href="html/OPI Editor.html"/>
+  <topic href="html/OPI Editor.html" label="OPI Editor">
+      </topic>
+      <topic href="html/PreferencePage.html" label="Setting Preferences">
+      </topic>
   <topic label="Widgets Overview" href="html/Widgets_Overview.html"/>
   <topic label="Widget Properties" href="html/Widget Properties.html"/>
   <topic label="PV Connectivity" href="html/PV Connectivity.html"/>
