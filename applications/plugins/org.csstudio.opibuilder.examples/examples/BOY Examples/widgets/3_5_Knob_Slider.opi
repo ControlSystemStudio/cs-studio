@@ -104,7 +104,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <widget_type>Label</widget_type>
     <enabled>true</enabled>
-    <text>Knob/Slider</text>
+    <text>Knob/Slider/Scrollbar/Spinner/ThumbWheel</text>
     <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="18" style="1" />
@@ -214,7 +214,7 @@ $(pv_value)</tooltip>
     </knob_color>
     <height>173</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <major_tick_step_hint>50.0</major_tick_step_hint>
+    <major_tick_step_hint>50</major_tick_step_hint>
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
@@ -283,7 +283,7 @@ $(pv_value)</tooltip>
     </thumb_color>
     <height>190</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <major_tick_step_hint>50.0</major_tick_step_hint>
+    <major_tick_step_hint>50</major_tick_step_hint>
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
@@ -333,7 +333,7 @@ $(pv_value)</tooltip>
     <level_lolo>10.0</level_lolo>
     <actions hook="false" />
     <y>388</y>
-    <x>443</x>
+    <x>404</x>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
   </widget>
@@ -354,7 +354,7 @@ $(pv_value)</tooltip>
     </knob_color>
     <height>173</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <major_tick_step_hint>50.0</major_tick_step_hint>
+    <major_tick_step_hint>50</major_tick_step_hint>
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
@@ -423,7 +423,7 @@ $(pv_value)</tooltip>
     </thumb_color>
     <height>120</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <major_tick_step_hint>50.0</major_tick_step_hint>
+    <major_tick_step_hint>50</major_tick_step_hint>
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
@@ -472,30 +472,42 @@ $(pv_value)</tooltip>
     </border_color>
     <level_lolo>10.0</level_lolo>
     <actions hook="false" />
-    <y>431</y>
-    <x>574</x>
+    <y>340</y>
+    <x>538</x>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <visible>true</visible>
+    <scripts />
+    <height>28</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Action Button</name>
+    <pv_name />
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="128" />
+    </foreground_color>
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
     <text>Go Home</text>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="9" style="1" />
     </font>
     <width>79</width>
     <push_action_index>0</push_action_index>
+    <border_style>0</border_style>
     <image>../pictures/home-16x16.png</image>
-    <scripts />
     <toggle_button>false</toggle_button>
-    <height>28</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <name>Action Button</name>
-    <pv_name />
-    <y>550</y>
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <y>561</y>
     <actions hook="true">
       <action type="OPEN_DISPLAY">
         <path>../10_widgets.opi</path>
@@ -506,12 +518,121 @@ $(pv_value)</tooltip>
       </action>
     </actions>
     <tooltip />
-    <x>17</x>
+    <x>6</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.scrollbar" version="1.0">
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <visible>true</visible>
+    <minimum>0.0</minimum>
+    <bar_length>10.0</bar_length>
+    <scripts />
+    <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Scrollbar</name>
+    <page_increment>20.0</page_increment>
+    <pv_name>loc://k1</pv_name>
+    <control_pv>loc://k1</control_pv>
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
     <foreground_color>
-      <color red="0" green="0" blue="128" />
+      <color red="192" green="192" blue="192" />
     </foreground_color>
+    <widget_type>Scrollbar</widget_type>
+    <enabled>true</enabled>
+    <step_increment>1.0</step_increment>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <width>197</width>
+    <border_style>0</border_style>
+    <maximum>100.0</maximum>
+    <border_width>1</border_width>
+    <horizontal>true</horizontal>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <y>473</y>
+    <actions hook="false" />
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>539</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.spinner" version="1.0">
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <visible>true</visible>
+    <minimum>-Infinity</minimum>
+    <vertical_alignment>1</vertical_alignment>
+    <scripts />
+    <height>25</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Spinner</name>
+    <transparent>false</transparent>
+    <pv_name>loc://k1</pv_name>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Spinner</widget_type>
+    <enabled>true</enabled>
+    <step_increment>1.0</step_increment>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <font>
+      <fontdata fontName="Arial" height="9" style="0" />
+    </font>
+    <width>85</width>
+    <border_style>3</border_style>
+    <border_width>1</border_width>
+    <maximum>Infinity</maximum>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <y>529</y>
+    <actions hook="false" />
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>539</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.ThumbWheel" version="1.0">
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <visible>true</visible>
+    <minimum>0.0</minimum>
+    <integerDigits>3</integerDigits>
+    <scripts />
+    <height>82</height>
+    <decimalDigits>2</decimalDigits>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Thumb Wheel</name>
+    <value>0.0</value>
+    <internalFrameColor>
+      <color red="0" green="0" blue="0" />
+    </internalFrameColor>
+    <pv_name>loc://k1</pv_name>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Thumb Wheel</widget_type>
+    <enabled>true</enabled>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <font>
+      <fontdata fontName="Arial" height="9" style="0" />
+    </font>
+    <width>131</width>
+    <border_style>0</border_style>
+    <internalFrameSize>1</internalFrameSize>
+    <maximum>100.0</maximum>
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <y>507</y>
+    <actions hook="false" />
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>652</x>
   </widget>
 </display>

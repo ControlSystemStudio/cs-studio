@@ -26,6 +26,9 @@
     <border_alarm_sensitive>true</border_alarm_sensitive>
     <visible>true</visible>
     <fill_level>100.0</fill_level>
+    <line_color>
+      <color red="128" green="0" blue="255" />
+    </line_color>
     <scripts />
     <height>161</height>
     <anti_alias>true</anti_alias>
@@ -46,8 +49,8 @@
     <width>229</width>
     <border_style>0</border_style>
     <border_width>1</border_width>
-    <horizontal_fill>true</horizontal_fill>
     <line_width>0</line_width>
+    <horizontal_fill>true</horizontal_fill>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
@@ -58,23 +61,35 @@ $(pv_value)</tooltip>
     <x>17</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <visible>true</visible>
+    <scripts />
+    <height>31</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Action Button_19</name>
+    <pv_name />
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <foreground_color>
+      <color red="51" green="51" blue="204" />
+    </foreground_color>
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
     <text>Grouping Container</text>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="12" style="1" />
     </font>
     <width>193</width>
     <push_action_index>0</push_action_index>
+    <border_style>0</border_style>
     <image />
-    <scripts />
     <toggle_button>false</toggle_button>
-    <height>31</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <name>Action Button_19</name>
-    <pv_name />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
     <y>425</y>
     <actions hook="false">
       <action type="OPEN_DISPLAY">
@@ -87,17 +102,14 @@ $(pv_value)</tooltip>
     </actions>
     <tooltip />
     <x>35</x>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
-    <foreground_color>
-      <color red="51" green="51" blue="204" />
-    </foreground_color>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
     <border_alarm_sensitive>true</border_alarm_sensitive>
     <visible>true</visible>
     <fill_level>100.0</fill_level>
+    <line_color>
+      <color red="128" green="0" blue="255" />
+    </line_color>
     <scripts />
     <height>304</height>
     <anti_alias>true</anti_alias>
@@ -118,8 +130,8 @@ $(pv_value)</tooltip>
     <width>229</width>
     <border_style>0</border_style>
     <border_width>1</border_width>
-    <horizontal_fill>true</horizontal_fill>
     <line_width>0</line_width>
+    <horizontal_fill>true</horizontal_fill>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
@@ -130,23 +142,35 @@ $(pv_value)</tooltip>
     <x>540</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <visible>true</visible>
+    <scripts />
+    <height>31</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Action Button_13</name>
+    <pv_name />
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <foreground_color>
+      <color red="51" green="51" blue="204" />
+    </foreground_color>
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
     <text>Text Input</text>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="12" style="1" />
     </font>
     <width>193</width>
     <push_action_index>0</push_action_index>
+    <border_style>0</border_style>
     <image />
-    <scripts />
     <toggle_button>false</toggle_button>
-    <height>31</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <name>Action Button_13</name>
-    <pv_name />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
     <y>279</y>
     <actions hook="false">
       <action type="OPEN_DISPLAY">
@@ -159,31 +183,37 @@ $(pv_value)</tooltip>
     </actions>
     <tooltip />
     <x>558</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <visible>true</visible>
+    <scripts />
+    <height>31</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Action Button_11</name>
+    <pv_name />
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
     <foreground_color>
       <color red="51" green="51" blue="204" />
     </foreground_color>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
     <text>Menu Button</text>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="12" style="1" />
     </font>
     <width>193</width>
     <push_action_index>0</push_action_index>
+    <border_style>0</border_style>
     <image />
-    <scripts />
     <toggle_button>false</toggle_button>
-    <height>31</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <name>Action Button_11</name>
-    <pv_name />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
     <y>233</y>
     <actions hook="false">
       <action type="OPEN_DISPLAY">
@@ -196,31 +226,37 @@ $(pv_value)</tooltip>
     </actions>
     <tooltip />
     <x>558</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <visible>true</visible>
+    <scripts />
+    <height>31</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Action Button_14</name>
+    <pv_name />
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
     <foreground_color>
       <color red="51" green="51" blue="204" />
     </foreground_color>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
     <text>Action Button</text>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="12" style="1" />
     </font>
     <width>193</width>
     <push_action_index>0</push_action_index>
+    <border_style>0</border_style>
     <image />
-    <scripts />
     <toggle_button>false</toggle_button>
-    <height>31</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <name>Action Button_14</name>
-    <pv_name />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
     <y>141</y>
     <actions hook="false">
       <action type="OPEN_DISPLAY">
@@ -233,17 +269,14 @@ $(pv_value)</tooltip>
     </actions>
     <tooltip />
     <x>558</x>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
-    <foreground_color>
-      <color red="51" green="51" blue="204" />
-    </foreground_color>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
     <border_alarm_sensitive>true</border_alarm_sensitive>
     <visible>true</visible>
     <fill_level>100.0</fill_level>
+    <line_color>
+      <color red="128" green="0" blue="255" />
+    </line_color>
     <scripts />
     <height>304</height>
     <anti_alias>true</anti_alias>
@@ -264,8 +297,8 @@ $(pv_value)</tooltip>
     <width>229</width>
     <border_style>0</border_style>
     <border_width>1</border_width>
-    <horizontal_fill>true</horizontal_fill>
     <line_width>0</line_width>
+    <horizontal_fill>true</horizontal_fill>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
@@ -276,23 +309,35 @@ $(pv_value)</tooltip>
     <x>283</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <visible>true</visible>
+    <scripts />
+    <height>31</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Action Button_9</name>
+    <pv_name />
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <foreground_color>
+      <color red="51" green="51" blue="204" />
+    </foreground_color>
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
     <text>Tank/Thermo/ProgressBar</text>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="9" style="1" />
     </font>
     <width>193</width>
     <push_action_index>0</push_action_index>
+    <border_style>0</border_style>
     <image />
-    <scripts />
     <toggle_button>false</toggle_button>
-    <height>31</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <name>Action Button_9</name>
-    <pv_name />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
     <y>279</y>
     <actions hook="false">
       <action type="OPEN_DISPLAY">
@@ -305,31 +350,37 @@ $(pv_value)</tooltip>
     </actions>
     <tooltip />
     <x>301</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <visible>true</visible>
+    <scripts />
+    <height>31</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Action Button_8</name>
+    <pv_name />
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
     <foreground_color>
       <color red="51" green="51" blue="204" />
     </foreground_color>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
     <text>Gauge/Meter</text>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="12" style="1" />
     </font>
     <width>193</width>
     <push_action_index>0</push_action_index>
+    <border_style>0</border_style>
     <image />
-    <scripts />
     <toggle_button>false</toggle_button>
-    <height>31</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <name>Action Button_8</name>
-    <pv_name />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
     <y>233</y>
     <actions hook="false">
       <action type="OPEN_DISPLAY">
@@ -342,17 +393,14 @@ $(pv_value)</tooltip>
     </actions>
     <tooltip />
     <x>301</x>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
-    <foreground_color>
-      <color red="51" green="51" blue="204" />
-    </foreground_color>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
     <border_alarm_sensitive>true</border_alarm_sensitive>
     <visible>true</visible>
     <fill_level>100.0</fill_level>
+    <line_color>
+      <color red="128" green="0" blue="255" />
+    </line_color>
     <scripts />
     <height>268</height>
     <anti_alias>true</anti_alias>
@@ -373,8 +421,8 @@ $(pv_value)</tooltip>
     <width>229</width>
     <border_style>0</border_style>
     <border_width>1</border_width>
-    <horizontal_fill>true</horizontal_fill>
     <line_width>0</line_width>
+    <horizontal_fill>true</horizontal_fill>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
@@ -385,23 +433,35 @@ $(pv_value)</tooltip>
     <x>17</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <visible>true</visible>
+    <scripts />
+    <height>31</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Action Button_4</name>
+    <pv_name />
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <foreground_color>
+      <color red="51" green="51" blue="204" />
+    </foreground_color>
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
     <text>Polyline/Polygon</text>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="12" style="1" />
     </font>
     <width>193</width>
     <push_action_index>0</push_action_index>
+    <border_style>0</border_style>
     <image />
-    <scripts />
     <toggle_button>false</toggle_button>
-    <height>31</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <name>Action Button_4</name>
-    <pv_name />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
     <y>329</y>
     <actions hook="false">
       <action type="OPEN_DISPLAY">
@@ -414,12 +474,6 @@ $(pv_value)</tooltip>
     </actions>
     <tooltip />
     <x>37</x>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
-    <foreground_color>
-      <color red="51" green="51" blue="204" />
-    </foreground_color>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <widget_type>Label</widget_type>
@@ -518,23 +572,35 @@ $(pv_value)</tooltip>
     </foreground_color>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <visible>true</visible>
+    <scripts />
+    <height>31</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Action Button</name>
+    <pv_name />
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <foreground_color>
+      <color red="51" green="51" blue="204" />
+    </foreground_color>
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
     <text>Ellipse/Rectangle</text>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="12" style="1" />
     </font>
     <width>193</width>
     <push_action_index>0</push_action_index>
+    <border_style>0</border_style>
     <image />
-    <scripts />
     <toggle_button>false</toggle_button>
-    <height>31</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <name>Action Button</name>
-    <pv_name />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
     <y>141</y>
     <actions hook="false">
       <action type="OPEN_DISPLAY">
@@ -547,31 +613,37 @@ $(pv_value)</tooltip>
     </actions>
     <tooltip />
     <x>37</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <visible>true</visible>
+    <scripts />
+    <height>31</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Action Button_1</name>
+    <pv_name />
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
     <foreground_color>
       <color red="51" green="51" blue="204" />
     </foreground_color>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
     <text>Image</text>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="12" style="1" />
     </font>
     <width>193</width>
     <push_action_index>0</push_action_index>
+    <border_style>0</border_style>
     <image />
-    <scripts />
     <toggle_button>false</toggle_button>
-    <height>31</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <name>Action Button_1</name>
-    <pv_name />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
     <y>191</y>
     <actions hook="false">
       <action type="OPEN_DISPLAY">
@@ -584,31 +656,37 @@ $(pv_value)</tooltip>
     </actions>
     <tooltip />
     <x>37</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <visible>true</visible>
+    <scripts />
+    <height>31</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Action Button_2</name>
+    <pv_name />
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
     <foreground_color>
       <color red="51" green="51" blue="204" />
     </foreground_color>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
     <text>Label</text>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="12" style="1" />
     </font>
     <width>193</width>
     <push_action_index>0</push_action_index>
+    <border_style>0</border_style>
     <image />
-    <scripts />
     <toggle_button>false</toggle_button>
-    <height>31</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <name>Action Button_2</name>
-    <pv_name />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
     <y>239</y>
     <actions hook="false">
       <action type="OPEN_DISPLAY">
@@ -621,12 +699,6 @@ $(pv_value)</tooltip>
     </actions>
     <tooltip />
     <x>37</x>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
-    <foreground_color>
-      <color red="51" green="51" blue="204" />
-    </foreground_color>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <widget_type>Label</widget_type>
@@ -669,23 +741,35 @@ $(pv_value)</tooltip>
     </foreground_color>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <visible>true</visible>
+    <scripts />
+    <height>31</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Action Button_3</name>
+    <pv_name />
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <foreground_color>
+      <color red="51" green="51" blue="204" />
+    </foreground_color>
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
     <text>Arc</text>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="12" style="1" />
     </font>
     <width>193</width>
     <push_action_index>0</push_action_index>
+    <border_style>0</border_style>
     <image />
-    <scripts />
     <toggle_button>false</toggle_button>
-    <height>31</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <name>Action Button_3</name>
-    <pv_name />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
     <y>283</y>
     <actions hook="false">
       <action type="OPEN_DISPLAY">
@@ -698,12 +782,6 @@ $(pv_value)</tooltip>
     </actions>
     <tooltip />
     <x>37</x>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
-    <foreground_color>
-      <color red="51" green="51" blue="204" />
-    </foreground_color>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <widget_type>Label</widget_type>
@@ -906,23 +984,35 @@ $(pv_value)</tooltip>
     </foreground_color>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <visible>true</visible>
+    <scripts />
+    <height>31</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Action Button_5</name>
+    <pv_name />
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <foreground_color>
+      <color red="51" green="51" blue="204" />
+    </foreground_color>
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
     <text>LED</text>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="12" style="1" />
     </font>
     <width>193</width>
     <push_action_index>0</push_action_index>
+    <border_style>0</border_style>
     <image />
-    <scripts />
     <toggle_button>false</toggle_button>
-    <height>31</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <name>Action Button_5</name>
-    <pv_name />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
     <y>141</y>
     <actions hook="false">
       <action type="OPEN_DISPLAY">
@@ -935,31 +1025,37 @@ $(pv_value)</tooltip>
     </actions>
     <tooltip />
     <x>301</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <visible>true</visible>
+    <scripts />
+    <height>31</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Action Button_6</name>
+    <pv_name />
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
     <foreground_color>
       <color red="51" green="51" blue="204" />
     </foreground_color>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
     <text>Text Update</text>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="12" style="1" />
     </font>
     <width>193</width>
     <push_action_index>0</push_action_index>
+    <border_style>0</border_style>
     <image />
-    <scripts />
     <toggle_button>false</toggle_button>
-    <height>31</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <name>Action Button_6</name>
-    <pv_name />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
     <y>187</y>
     <actions hook="false">
       <action type="OPEN_DISPLAY">
@@ -972,12 +1068,6 @@ $(pv_value)</tooltip>
     </actions>
     <tooltip />
     <x>301</x>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
-    <foreground_color>
-      <color red="51" green="51" blue="204" />
-    </foreground_color>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <widget_type>Label</widget_type>
@@ -1020,23 +1110,35 @@ $(pv_value)</tooltip>
     </foreground_color>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <visible>true</visible>
+    <scripts />
+    <height>31</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Action Button_7</name>
+    <pv_name />
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <foreground_color>
+      <color red="51" green="51" blue="204" />
+    </foreground_color>
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
     <text>XY Graph</text>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="12" style="1" />
     </font>
     <width>193</width>
     <push_action_index>0</push_action_index>
+    <border_style>0</border_style>
     <image />
-    <scripts />
     <toggle_button>false</toggle_button>
-    <height>31</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <name>Action Button_7</name>
-    <pv_name />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
     <y>325</y>
     <actions hook="false">
       <action type="OPEN_DISPLAY">
@@ -1049,12 +1151,6 @@ $(pv_value)</tooltip>
     </actions>
     <tooltip />
     <x>301</x>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
-    <foreground_color>
-      <color red="51" green="51" blue="204" />
-    </foreground_color>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <widget_type>Label</widget_type>
@@ -1289,23 +1385,35 @@ $(pv_value)</tooltip>
     </foreground_color>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <visible>true</visible>
+    <scripts />
+    <height>31</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Action Button_10</name>
+    <pv_name />
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <foreground_color>
+      <color red="51" green="51" blue="204" />
+    </foreground_color>
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
     <text>Boolean Widgets</text>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="12" style="1" />
     </font>
     <width>193</width>
     <push_action_index>0</push_action_index>
+    <border_style>0</border_style>
     <image />
-    <scripts />
     <toggle_button>false</toggle_button>
-    <height>31</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <name>Action Button_10</name>
-    <pv_name />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
     <y>187</y>
     <actions hook="false">
       <action type="OPEN_DISPLAY">
@@ -1318,12 +1426,6 @@ $(pv_value)</tooltip>
     </actions>
     <tooltip />
     <x>558</x>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
-    <foreground_color>
-      <color red="51" green="51" blue="204" />
-    </foreground_color>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <widget_type>Label</widget_type>
@@ -1398,23 +1500,35 @@ $(pv_value)</tooltip>
     </foreground_color>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
-    <widget_type>Action Button</widget_type>
-    <enabled>true</enabled>
-    <text>Knob/Slider</text>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <border_alarm_sensitive>true</border_alarm_sensitive>
     <visible>true</visible>
-    <font>
-      <fontdata fontName="Arial" height="12" style="1" />
-    </font>
-    <width>193</width>
-    <push_action_index>0</push_action_index>
-    <image />
     <scripts />
-    <toggle_button>false</toggle_button>
     <height>31</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Action Button_12</name>
     <pv_name />
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <foreground_color>
+      <color red="51" green="51" blue="204" />
+    </foreground_color>
+    <widget_type>Action Button</widget_type>
+    <enabled>true</enabled>
+    <text>Knob/Slider/Spinner</text>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <font>
+      <fontdata fontName="Arial" height="9" style="1" />
+    </font>
+    <width>193</width>
+    <push_action_index>0</push_action_index>
+    <border_style>0</border_style>
+    <image />
+    <toggle_button>false</toggle_button>
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
     <y>325</y>
     <actions hook="false">
       <action type="OPEN_DISPLAY">
@@ -1427,12 +1541,6 @@ $(pv_value)</tooltip>
     </actions>
     <tooltip />
     <x>558</x>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
-    <foreground_color>
-      <color red="51" green="51" blue="204" />
-    </foreground_color>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <widget_type>Label</widget_type>
@@ -1440,14 +1548,14 @@ $(pv_value)</tooltip>
     <text>5.</text>
     <visible>true</visible>
     <font>
-      <fontdata fontName="Arial" height="12" style="1" />
+      <fontdata fontName="Arial" height="9" style="1" />
     </font>
     <vertical_alignment>1</vertical_alignment>
-    <width>13</width>
+    <width>15</width>
     <border_style>0</border_style>
     <auto_size>true</auto_size>
     <scripts />
-    <height>19</height>
+    <height>15</height>
     <border_width>1</border_width>
     <name>Label_18</name>
     <border_color>
@@ -1455,7 +1563,7 @@ $(pv_value)</tooltip>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <transparent>true</transparent>
-    <y>331</y>
+    <y>333</y>
     <actions hook="false">
       <action type="OPEN_DISPLAY">
         <path>widgets/1_1_Rectangle_Ellipse.opi</path>
@@ -1466,7 +1574,7 @@ $(pv_value)</tooltip>
       </action>
     </actions>
     <tooltip />
-    <x>564</x>
+    <x>563</x>
     <background_color>
       <color red="255" green="255" blue="255" />
     </background_color>
@@ -1555,23 +1663,35 @@ $(pv_value)</tooltip>
     </foreground_color>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <visible>true</visible>
+    <scripts />
+    <height>31</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Action Button_15</name>
+    <pv_name />
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <foreground_color>
+      <color red="51" green="51" blue="204" />
+    </foreground_color>
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
     <text>Linking Container</text>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="12" style="1" />
     </font>
     <width>193</width>
     <push_action_index>0</push_action_index>
+    <border_style>0</border_style>
     <image />
-    <scripts />
     <toggle_button>false</toggle_button>
-    <height>31</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <name>Action Button_15</name>
-    <pv_name />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
     <y>467</y>
     <actions hook="false">
       <action type="OPEN_DISPLAY">
@@ -1584,12 +1704,6 @@ $(pv_value)</tooltip>
     </actions>
     <tooltip />
     <x>35</x>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
-    <foreground_color>
-      <color red="51" green="51" blue="204" />
-    </foreground_color>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <widget_type>Label</widget_type>
@@ -1704,23 +1818,35 @@ $(pv_value)</tooltip>
     </foreground_color>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <visible>true</visible>
+    <scripts />
+    <height>28</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Action Button_17</name>
+    <pv_name />
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="128" />
+    </foreground_color>
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
     <text>Go Home</text>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="9" style="1" />
     </font>
     <width>79</width>
     <push_action_index>0</push_action_index>
+    <border_style>0</border_style>
     <image>pictures/home-16x16.png</image>
-    <scripts />
     <toggle_button>false</toggle_button>
-    <height>28</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <name>Action Button_17</name>
-    <pv_name />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
     <y>562</y>
     <actions hook="true">
       <action type="OPEN_DISPLAY">
@@ -1733,31 +1859,37 @@ $(pv_value)</tooltip>
     </actions>
     <tooltip />
     <x>24</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <visible>true</visible>
+    <scripts />
+    <height>31</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Action Button_18</name>
+    <pv_name />
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
     <foreground_color>
-      <color red="0" green="0" blue="128" />
+      <color red="51" green="51" blue="204" />
     </foreground_color>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
     <text>Tabbed Container</text>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="12" style="1" />
     </font>
     <width>193</width>
     <push_action_index>0</push_action_index>
+    <border_style>0</border_style>
     <image />
-    <scripts />
     <toggle_button>false</toggle_button>
-    <height>31</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <name>Action Button_18</name>
-    <pv_name />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
     <y>510</y>
     <actions hook="false">
       <action type="OPEN_DISPLAY">
@@ -1770,12 +1902,6 @@ $(pv_value)</tooltip>
     </actions>
     <tooltip />
     <x>35</x>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
-    <foreground_color>
-      <color red="51" green="51" blue="204" />
-    </foreground_color>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <widget_type>Label</widget_type>
@@ -1818,23 +1944,35 @@ $(pv_value)</tooltip>
     </foreground_color>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <visible>true</visible>
+    <scripts />
+    <height>31</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Action Button_19</name>
+    <pv_name />
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <foreground_color>
+      <color red="51" green="51" blue="204" />
+    </foreground_color>
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
     <text>Intensity Graph</text>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="12" style="1" />
     </font>
     <width>193</width>
     <push_action_index>0</push_action_index>
+    <border_style>0</border_style>
     <image />
-    <scripts />
     <toggle_button>false</toggle_button>
-    <height>31</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <name>Action Button_19</name>
-    <pv_name />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
     <y>371</y>
     <actions hook="false">
       <action type="OPEN_DISPLAY">
@@ -1847,12 +1985,6 @@ $(pv_value)</tooltip>
     </actions>
     <tooltip />
     <x>301</x>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
-    <foreground_color>
-      <color red="51" green="51" blue="204" />
-    </foreground_color>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <widget_type>Label</widget_type>
@@ -1895,23 +2027,35 @@ $(pv_value)</tooltip>
     </foreground_color>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <visible>true</visible>
+    <scripts />
+    <height>31</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Action Button_20</name>
+    <pv_name />
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <foreground_color>
+      <color red="51" green="51" blue="204" />
+    </foreground_color>
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
     <text>Combo Box</text>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="12" style="1" />
     </font>
     <width>193</width>
     <push_action_index>0</push_action_index>
+    <border_style>0</border_style>
     <image />
-    <scripts />
     <toggle_button>false</toggle_button>
-    <height>31</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <name>Action Button_20</name>
-    <pv_name />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
     <y>371</y>
     <actions hook="false">
       <action type="OPEN_DISPLAY">
@@ -1924,12 +2068,6 @@ $(pv_value)</tooltip>
     </actions>
     <tooltip />
     <x>558</x>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
-    <foreground_color>
-      <color red="51" green="51" blue="204" />
-    </foreground_color>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <widget_type>Label</widget_type>
