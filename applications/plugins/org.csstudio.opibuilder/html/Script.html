@@ -33,9 +33,26 @@ Steps to attach scripts to a widget:
 	<h4>Read PV Value
 	</h4>
 	<p>The input PVs are accessible from pvArray, in which the PVs have the same order as the input.</p>
+	<h5>Get double value</h5>
 	<pre class="example_code">importPackage(Packages.org.csstudio.platform.data);
 var value0 = ValueUtil.getDouble(pvArray[0].getValue());
 var value1 = ValueUtil.getDouble(pvArray[1].getValue()); </pre>
+	<h5>Get double array value</h5>
+	<pre class="example_code">importPackage(Packages.org.csstudio.platform.data);
+var value0 = ValueUtil.getDoubleArray(pvArray[0].getValue());</pre>
+	<h5>Get String value</h5>
+	<pre class="example_code">importPackage(Packages.org.csstudio.platform.data);
+var value0 = ValueUtil.getString(pvArray[0].getValue());</pre>
+<h5>Get Severity</h5>
+	<pre class="example_code">importPackage(Packages.org.csstudio.platform.data);
+var severity = pvArray[0].getValue().getSeverity();</pre>
+<p>The available methods of Severity:</p>
+<pre class="example_code">boolean severity.isOK();
+boolean severity.isMajor();
+boolean severity.isMinor();
+boolean severity.isInvalid();</pre>
+
+
 	<h4>Write PV Value
 	</h4>
 	<p>Only the input PVs are writable in the script.</p>
@@ -71,5 +88,65 @@ widgetController.setPropertyValue("foreground_color", RED);
 MessageDialog.openInformation(
 			null, "Dialog from JavaScript", "Button Pushed.");</pre>
   <p></p>
+  <h3>Available Methods of widgetController</h3>
+  <h4>Set Property Value</h4>
+  <pre class = "example_code">/**Set the property value of the widget. 
+* <b>prop_id</b> the property id. 
+* <b>value</b> the value.
+*/
+void setPropertyValue(String propID, Object value);</pre>
+  <h4>Get Property Value</h4>
+  <pre class = "example_code">/**Get property value of the widget.
+* <b>prop_id</b> the property id.
+* <b>return</b> the property value.
+*/
+Object getPropertyValue(String propID);</pre>
+   <h4>Execute Action</h4>
+  <pre class = "example_code">/**Run a widget action which is attached to the widget.
+* <b>index</b> the index of the action in the actions list.
+*/
+void executeAction(int index);</pre>
+    <h4>Register Objects to widgetController</h4>    
+    <h5>Set External Object</h5>
+  <pre class = "example_code">/**Register an object to the widgetController. 
+* The widgetController will maintaine this object,
+* so it can be accessed in the following script execution. 
+* This function can help the script <b>"remember"</b> objects. 
+* <b>name</b> the name of the object.
+* <b>var</b> the object.
+*/
+void setExternalObject(String name, Object var);</pre>
+    <h5>Get External Object</h5>
+  <pre class = "example_code">/**Get external object by its name.
+* <b>return</b> the external object. null if no such an object was set before.
+*/
+Object getExternalObject(String name);</pre>
+<p>This is an example which uses these two methods to remember if the dialog has been
+poped before.</p>
+<pre class = "example_code">
+importPackage(Packages.org.eclipse.jface.dialogs);
+importPackage(Packages.org.csstudio.platform.data);
+importPackage(Packages.java.lang);
+
+var flagName = "popped";
+
+if(widgetController.getExternalObject(flagName) == null){
+	widgetController.setExternalObject(flagName, false);	
+}
+
+var b = widgetController.getExternalObject(flagName);
+
+if(ValueUtil.getDouble(pvArray[0].getValue()) > 80){		
+		if( b == false){
+			widgetController.setExternalObject(flagName, true);
+			MessageDialog.openWarning(
+				null, "Warning", "The temperature you set is too high!");
+		}
+		
+}else if (b == true){
+	widgetController.setExternalObject(flagName, false);
+}
+</pre>
+
   </body>
 </html>

@@ -653,7 +653,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 	}
 	
 	/**Get property value of the widget.
-	 * @param prop_id
+	 * @param prop_id the property id.
 	 * @return the property value.
 	 */
 	public Object getPropertyValue(String prop_id){
