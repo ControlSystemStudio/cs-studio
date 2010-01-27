@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.sns.feature.eclipse"
       label="Eclipse Core Feature"
-      version="1.0.22"
+      version="1.0.23"
       provider-name="Kay Kasemir">
 
    <description>
