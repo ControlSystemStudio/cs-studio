@@ -185,7 +185,7 @@
       </widget>
       <widget
             category="Controls"
-            description="Write value to a pv by inputing text or press arrow button."
+            description="Write value to a pv by inputing text or clicking arrow button."
             editpart_class="org.csstudio.opibuilder.widgets.editparts.SpinnerEditpart"
             icon="icons/Spinner.gif"
             model_class="org.csstudio.opibuilder.widgets.model.SpinnerModel"
@@ -218,6 +218,15 @@
             model_class="org.csstudio.opibuilder.widgets.model.ScrollBarModel"
             name="Scrollbar"
             typeId="org.csstudio.opibuilder.widgets.scrollbar">
+      </widget>
+      <widget
+            category="Controls"
+            description="Write value to a pv by clicking the arrow buttons."
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.ThumbWheelEditPart"
+            icon="icons/thumbwheel.gif"
+            model_class="org.csstudio.opibuilder.widgets.model.ThumbWheelModel"
+            name="Thumb Wheel"
+            typeId="org.csstudio.opibuilder.widgets.ThumbWheel">
       </widget>
       <widget
             category="Controls"
