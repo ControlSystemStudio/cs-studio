@@ -28,6 +28,7 @@ import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
+import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.widgets.figures.ThumbWheelFigure;
 import org.csstudio.opibuilder.widgets.figures.ThumbWheelFigure.WheelListener;
@@ -37,7 +38,6 @@ import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.graphics.RGB;
 
 /**
  * Controller for the ThumbWheel.
@@ -269,7 +269,7 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
 				ThumbWheelFigure figure = (ThumbWheelFigure) refreshableFigure;
-				figure.setInternalBorderColor((RGB) newValue);
+				figure.setInternalBorderColor(((OPIColor)newValue).getRGBValue());
 				return true;
 			}
 		};
