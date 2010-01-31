@@ -58,8 +58,8 @@ import org.epics.css.dal.spi.PropertyFactory;
  * For convenience the {@link IProcessVariableValueListener}s are only weakly
  * referenced. The connector tracks for {@link IProcessVariableValueListener}s
  * that have been garbage collected and removes those references from its
- * internal list. This way {@link IProcessVariableValueListener}s donï¿½t have
- * to be disposed explicitly.
+ * internal list. This way {@link IProcessVariableValueListener}s don´t have to
+ * be disposed explicitly.
  * 
  * @author Sven Wende
  * 
@@ -68,6 +68,7 @@ import org.epics.css.dal.spi.PropertyFactory;
 public final class DalConnector extends AbstractConnector implements DynamicValueListener, LinkListener, ResponseListener,
 		PropertyChangeListener {
 
+	private static final int CONNECTION_TIMEOUT = 3000;
 	/**
 	 * The DAL property, this connector is connected to.
 	 */
@@ -97,11 +98,6 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
 		// translate a condition change to certain characteristics listeners
 		// might be registered for
 		processConditionChange(event.getCondition(), event.getTimestamp());
-
-		// ... request initial values, when the condition changes to "normal"
-		if (event.getCondition().isNormal()) {
-			requestAndForwardInitialValues();
-		}
 	}
 
 	@Override
@@ -183,7 +179,7 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
 		doForwardConnectionStateChange(ConnectionState.translate(e.getState()));
 
 		// ... forward initial values
-		requestAndForwardInitialValues();
+		updateCharacteristicListeners();
 	}
 
 	/**
@@ -257,6 +253,7 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
 	 * 
 	 * @param timeout
 	 *            the timeout to wait
+	 * 
 	 * @return <code>true</code> if property was connected
 	 */
 	public boolean waitTillConnected(long timeout) {
@@ -268,40 +265,38 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
 	 */
 	protected void doGetValueAsynchronously(final IProcessVariableValueListener listener) {
 
-		waitTillConnected(3000);
-
-		try {
+		if (waitTillConnected(CONNECTION_TIMEOUT)) {
 			block();
 
-			if (_dalProperty != null) {
-				ResponseListener responseListener = new ResponseListener() {
-					public void responseError(ResponseEvent event) {
-						// forward the error
-						Exception error = event.getResponse().getError();
-						String errorMsg = error != null ? error.getMessage() : "Unknown Error!";
-						listener.errorOccured(errorMsg);
+			ResponseListener responseListener = new ResponseListener() {
+				public void responseError(ResponseEvent event) {
+					// forward the error
+					Exception error = event.getResponse().getError();
+					String errorMsg = error != null ? error.getMessage() : "Unknown Error!";
+					listener.errorOccured(errorMsg);
 
-						printDebugInfo("AGET-ERROR : " + error + "  (" + event.getResponse().toString() + ")");
-					}
+					printDebugInfo("AGET-ERROR : " + error + "  (" + event.getResponse().toString() + ")");
+				}
 
-					public void responseReceived(ResponseEvent event) {
-						Object value = event.getResponse().getValue();
-						Timestamp timestamp = event.getResponse().getTimestamp();
-						listener.valueChanged(ConverterUtil.convert(value, getValueType()), timestamp);
+				public void responseReceived(ResponseEvent event) {
+					Object value = event.getResponse().getValue();
+					Timestamp timestamp = event.getResponse().getTimestamp();
+					listener.valueChanged(ConverterUtil.convert(value, getValueType()), timestamp);
 
-						printDebugInfo("AGET-RETURN: " + getValueType() + " " + value);
-					}
+					printDebugInfo("AGET-RETURN: " + getValueType() + " " + value);
+				}
 
-				};
+			};
 
-				printDebugInfo("GET ASYNC");
+			printDebugInfo("GET ASYNC");
 
+			try {
 				_dalProperty.getAsynchronous(responseListener);
-			} else {
-				listener.errorOccured("Internal error. No connection available.");
+			} catch (Exception e) {
+				listener.errorOccured(e.getLocalizedMessage());
 			}
-		} catch (Exception e) {
-			listener.errorOccured(e.getLocalizedMessage());
+		} else {
+			listener.errorOccured("Internal error. No connection available.");
 		}
 
 	}
@@ -312,11 +307,9 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
 	@Override
 	protected Object doGetValueSynchronously() throws Exception {
 
-		waitTillConnected(3000);
-
 		Object result = null;
 		// ... try to read the value
-		if (_dalProperty != null) {
+		if (waitTillConnected(CONNECTION_TIMEOUT)) {
 			printDebugInfo("GET SYNC");
 			result = _dalProperty.getValue();
 		}
@@ -329,37 +322,39 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
 	 */
 	@Override
 	protected void doSetValueAsynchronously(Object value, final IProcessVariableWriteListener listener) throws Exception {
-		waitTillConnected(3000);
+		if (waitTillConnected(3000)) {
+			if (_dalProperty.isSettable()) {
+				Object convertedValue;
+				try {
+					convertedValue = ConverterUtil.convert(value, getValueType());
 
-		if (_dalProperty != null && _dalProperty.isSettable()) {
-			Object convertedValue;
-			try {
-				convertedValue = ConverterUtil.convert(value, getValueType());
+					_dalProperty.setAsynchronous(convertedValue, new ResponseListener() {
 
-				_dalProperty.setAsynchronous(convertedValue, new ResponseListener() {
-
-					public void responseReceived(ResponseEvent event) {
-						if (listener != null) {
-							listener.success();
+						public void responseReceived(ResponseEvent event) {
+							if (listener != null) {
+								listener.success();
+							}
+							CentralLogger.getInstance().debug(null, event.getResponse().toString());
 						}
-						CentralLogger.getInstance().debug(null, event.getResponse().toString());
-					}
 
-					public void responseError(ResponseEvent event) {
-						if (listener != null) {
-							listener.error(event.getResponse().getError());
+						public void responseError(ResponseEvent event) {
+							if (listener != null) {
+								listener.error(event.getResponse().getError());
+							}
+							CentralLogger.getInstance().error(null, event.getResponse().getError());
 						}
-						CentralLogger.getInstance().error(null, event.getResponse().getError());
-					}
-				});
+					});
 
-			} catch (NumberFormatException nfe) {
-				// Do nothing! Is a invalid value format!
-				CentralLogger.getInstance().warn(this, "Invalid value format. (" + value + ") is not set to " + getName());
-				return;
+				} catch (NumberFormatException nfe) {
+					// Do nothing! Is a invalid value format!
+					CentralLogger.getInstance().warn(this, "Invalid value format. (" + value + ") is not set to " + getName());
+					return;
+				}
+			} else {
+				throw new Exception("Property " + _dalProperty.getUniqueName() + " is not settable");
 			}
 		} else {
-			throw new Exception("Property " + _dalProperty.getUniqueName() + " is not settable");
+			throw new Exception("Property not available");
 		}
 	}
 
@@ -370,19 +365,21 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
 	protected boolean doSetValueSynchronously(Object value) {
 		boolean success = false;
 
-		waitTillConnected(3000);
-
-		if (_dalProperty != null && _dalProperty.isSettable()) {
-			try {
-				_dalProperty.setValue(ConverterUtil.convert(value, getValueType()));
-				success = true;
-			} catch (NumberFormatException nfe) {
-				CentralLogger.getInstance().warn(this, "Invalid value format. (" + value + ") is not set to" + getName());
-			} catch (DataExchangeException e) {
-				CentralLogger.getInstance().error(null, e);
+		if (waitTillConnected(CONNECTION_TIMEOUT)) {
+			if (_dalProperty.isSettable()) {
+				try {
+					_dalProperty.setValue(ConverterUtil.convert(value, getValueType()));
+					success = true;
+				} catch (NumberFormatException nfe) {
+					CentralLogger.getInstance().warn(this, "Invalid value format. (" + value + ") is not set to" + getName());
+				} catch (DataExchangeException e) {
+					CentralLogger.getInstance().error(null, e);
+				}
+			} else {
+				printDebugInfo("Property not settable");
 			}
 		} else {
-			CentralLogger.getInstance().debug(null, "Property " + _dalProperty.getUniqueName() + " is not settable");
+			printDebugInfo("Property not available");
 		}
 		return success;
 	}
@@ -476,11 +473,9 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
 		SettableState result = SettableState.UNKNOWN;
 
 		try {
-			waitTillConnected(2000);
-
 			// DAL encapsulates the detection of the current user internally
 			// (probably via global system properties)
-			if (_dalProperty != null && _dalProperty.isConnected()) {
+			if (waitTillConnected(CONNECTION_TIMEOUT)) {
 				result = _dalProperty.isSettable() ? SettableState.SETTABLE : SettableState.NOT_SETTABLE;
 			}
 		} catch (Exception e) {
@@ -543,10 +538,9 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
 	protected Object doGetCharacteristicSynchronously(String characteristicId, ValueType valueType) throws Exception {
 
 		Object result = null;
-		// ... try to read the value
-		if (_dalProperty != null) {
-			waitTillConnected(3000);
 
+		// ... try to read the value
+		if (waitTillConnected(CONNECTION_TIMEOUT)) {
 			if (characteristicId.equals(CharacteristicInfo.C_SEVERITY_INFO.getName())) {
 				result = EpicsUtil.toEPICSFlavorSeverity(_dalProperty.getCondition());
 			} else if (characteristicId.equals(CharacteristicInfo.C_STATUS_INFO.getName())) {

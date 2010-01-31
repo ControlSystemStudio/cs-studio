@@ -68,8 +68,8 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
 	/**
 	 * True, if the connector has been initialized.
 	 */
-	private boolean initialized=false;
-	
+	private boolean initialized = false;
+
 	/**
 	 * The latest received value.
 	 */
@@ -125,7 +125,7 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
 	/**
 	 * {@inheritDoc}
 	 */
-	public void init() {
+	public synchronized void init() {
 		if (!initialized) {
 			try {
 				doInit();
@@ -276,7 +276,7 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
 	 */
 	public final synchronized boolean isDisposable() {
 		// perform a cleanup first
-//		cleanupWeakReferences();
+		// cleanupWeakReferences();
 
 		// this connector can be disposed it there are not weak references left
 		return _weakListenerReferences.isEmpty() && !isBlocked();
@@ -657,17 +657,22 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
 		});
 	}
 
-	protected void requestAndForwardInitialValues() {
+	/**
+	 * Updates all listeners that are connected to a characteristic.
+	 * 
+	 * Characteristics are requested asynchronously.
+	 * 
+	 * FIXME: This is a only workaround. DAL should deliver propertyChange()
+	 * Events for characteristics whenever a DalProperty switches to "connected"
+	 * state. The same already works for valueChanged() updates.
+	 */
+	protected void updateCharacteristicListeners() {
 		synchronized (_weakListenerReferences) {
 			for (ListenerReference ref : _weakListenerReferences) {
 				IProcessVariableValueListener listener = ref.getListener();
 
-				if (listener != null) {
-					if (ref.getCharacteristicId() != null) {
-						getCharacteristicAsynchronously(ref.getCharacteristicId(), getValueType(), listener);
-					} else {
-						getValueAsynchronously(listener);
-					}
+				if (listener != null && ref.getCharacteristicId() != null) {
+					getCharacteristicAsynchronously(ref.getCharacteristicId(), getValueType(), listener);
 				}
 			}
 		}
