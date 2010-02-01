@@ -495,7 +495,7 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
 			final IProcessVariableValueListener listener) {
 
 		try {
-			if (_dalProperty != null && _dalProperty.isConnected()) {
+			if (waitTillConnected(CONNECTION_TIMEOUT)) {
 				ResponseListener responseListener = new ResponseListener() {
 					public void responseError(ResponseEvent event) {
 						// forward the error
