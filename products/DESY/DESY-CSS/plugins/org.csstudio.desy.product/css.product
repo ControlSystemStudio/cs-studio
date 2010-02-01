@@ -35,7 +35,7 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
 
    <launcherArgs>
       <programArgs>-plugincustomization plugin_customization.ini</programArgs>
-      <vmArgs>-Xmx128m</vmArgs>
+      <vmArgs>-Xmx512m</vmArgs>
    </launcherArgs>
 
    <windowImages i16="/org.csstudio.desy.product/resources/css16x16.gif" i32="/org.csstudio.desy.product/resources/css32x32.gif" i48="/org.csstudio.desy.product/resources/css48x48.gif" i64="/org.csstudio.desy.product/resources/css64x64.gif" i128="/org.csstudio.desy.product/resources/css128x128.gif"/>
@@ -68,23 +68,23 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
       <plugin id="org.csstudio.platform"/>
       <plugin id="org.csstudio.platform.jaasAuthentication"/>
       <plugin id="org.csstudio.platform.ldapAuthorization"/>
-      <plugin id="org.csstudio.platform.ldapauthorization.ui"/>
+      <plugin id="org.csstudio.platform.ldapauthorization.ui" fragment=""/>
       <plugin id="org.csstudio.platform.libs.dal"/>
       <plugin id="org.csstudio.platform.libs.dal.epics"/>
-      <plugin id="org.csstudio.platform.libs.dal.tine"/>
       <plugin id="org.csstudio.platform.libs.dal.tango"/>
-      <plugin id="org.csstudio.platform.libs.dcf"/>
-      <plugin id="org.csstudio.platform.libs.dcf.ui"/>
+      <plugin id="org.csstudio.platform.libs.dal.tine"/>
+      <plugin id="org.csstudio.platform.libs.dcf" fragment=""/>
+      <plugin id="org.csstudio.platform.libs.dcf.ui" fragment=""/>
       <plugin id="org.csstudio.platform.libs.epics"/>
       <plugin id="org.csstudio.platform.libs.epics.ui"/>
       <plugin id="org.csstudio.platform.libs.jdbc"/>
       <plugin id="org.csstudio.platform.libs.jmock"/>
       <plugin id="org.csstudio.platform.libs.jms"/>
       <plugin id="org.csstudio.platform.libs.jms.ui"/>
-      <plugin id="org.csstudio.platform.libs.tine"/>
       <plugin id="org.csstudio.platform.libs.tango"/>
-      <plugin id="org.csstudio.platform.libs.xmpp"/>
-      <plugin id="org.csstudio.platform.libs.xmpp.ui"/>
+      <plugin id="org.csstudio.platform.libs.tine"/>
+      <plugin id="org.csstudio.platform.libs.xmpp" fragment=""/>
+      <plugin id="org.csstudio.platform.libs.xmpp.ui" fragment=""/>
       <plugin id="org.csstudio.platform.ui"/>
       <plugin id="org.csstudio.platform.utility.jms"/>
       <plugin id="org.csstudio.platform.utility.jms.ui"/>
