@@ -134,5 +134,12 @@
             file="toc.xml">
       </toc>
    </extension>
+   <extension
+         point="org.eclipse.ui.elementFactories">
+      <factory
+            class="org.csstudio.opibuilder.runmode.RunnerInputFactory"
+            id="org.csstudio.opibuilder.runmode.RunnerInputFactory">
+      </factory>
+   </extension>
 
 </plugin>

@@ -3,6 +3,7 @@ package org.csstudio.opibuilder.runmode;
 
 import org.csstudio.opibuilder.util.MacrosInput;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.ui.IMemento;
 import org.eclipse.ui.part.FileEditorInput;
 
 /**The editor input for OPI Runner. 
@@ -41,7 +42,7 @@ public class RunnerInput extends FileEditorInput {
 		return displayOpenManager;
 	}
 	
-/*	@Override
+	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
 			return true;
@@ -59,7 +60,7 @@ public class RunnerInput extends FileEditorInput {
 	//		displayOpenManager == other.getDisplayOpenManager()  && 
 			
 	}
-*/
+
 
 	/**
 	 * @return the macrosInput
@@ -67,4 +68,16 @@ public class RunnerInput extends FileEditorInput {
 	public MacrosInput getMacrosInput() {
 		return macrosInput;
 	}
+	
+	@Override
+	public void saveState(IMemento memento) {
+		RunnerInputFactory.saveState(memento, this);
+	}
+	
+	@Override
+	public String getFactoryId() {
+		return RunnerInputFactory.getFactoryId();
+	}
+	
+	
 }
