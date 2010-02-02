@@ -187,9 +187,10 @@ public class OPIRunner extends EditorPart {
 		viewer.setContextMenu(cmProvider);
 		
 		getSite().registerContextMenu(cmProvider, viewer);
-		setPartName(displayModel.getName());
+		
 		viewer.setContents(displayModel);
 		
+		setPartName(displayModel.getName());
 		// configure zoom actions
 		ZoomManager zm = root.getZoomManager();
 
