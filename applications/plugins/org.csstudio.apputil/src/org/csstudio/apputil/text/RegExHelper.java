@@ -47,7 +47,6 @@ public class RegExHelper
      *  </ul>
      *  The result starts and ends with '.*' to support
      *  the Java Matcher which always matches the full string.
-     *  one
      *  @param pattern File-glob
      *  @return Regular expression string.
      */
