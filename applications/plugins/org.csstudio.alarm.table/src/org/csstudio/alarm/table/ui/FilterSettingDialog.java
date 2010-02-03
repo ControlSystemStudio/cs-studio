@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.csstudio.alarm.dbaccess.archivedb.Filter;
 import org.csstudio.alarm.dbaccess.archivedb.FilterItem;
 import org.csstudio.apputil.ui.time.StartEndDialog;
+import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -52,9 +53,9 @@ public class FilterSettingDialog extends StartEndDialog {
 		gridData.horizontalSpan = 4;
 		explanation.setLayoutData(gridData);
 		explanation
-				.setText("Die Suche ignoriert Gross-/Kleinschreibung. Als Wildcard" +
-						" koennen '*' fuer beliebig viele Zeichen\n und '?' für genau " +
-						"ein Zeichen verwendet werden.");
+				.setText("Die Suche ignoriert Gross-/Kleinschreibung. Als Wildcard"
+						+ " koennen '*' fuer beliebig viele Zeichen\n und '?' für genau "
+						+ "ein Zeichen verwendet werden.");
 		// Property: ____property____ Value: ___value___
 		Label l;
 		_patternCombo = new Combo[FILTER_SETTING_SIZE];
@@ -194,9 +195,15 @@ public class FilterSettingDialog extends StartEndDialog {
 				}
 			}
 		}
-		if (_settingHistory.size() > 20) {
-			_settingHistory = (ArrayList<String>) _settingHistory
-					.subList(0, 19);
+		while (_settingHistory.size() > 20) {
+			try {
+				_settingHistory.remove(20);
+			} catch (IndexOutOfBoundsException e) {
+				CentralLogger.getInstance().error(
+						this,
+						"list of filter items not larger than threshold"
+								+ e.getMessage());
+			}
 		}
 		super.okPressed();
 	}
