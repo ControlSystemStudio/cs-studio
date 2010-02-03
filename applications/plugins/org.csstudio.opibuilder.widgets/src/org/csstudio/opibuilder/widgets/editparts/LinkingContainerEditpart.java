@@ -149,7 +149,8 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 		EditPart result = super.createChild(model);
 
 		// setup selection behavior for the new child
-		if (result instanceof AbstractBaseEditPart) {
+		if (getExecutionMode() == ExecutionMode.EDIT_MODE && 
+				result instanceof AbstractBaseEditPart) {
 			((AbstractBaseEditPart) result).setSelectable(false);
 		}
 

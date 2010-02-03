@@ -2,6 +2,7 @@ package org.csstudio.opibuilder.widgets.editparts;
 
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.AbstractContainerEditpart;
+import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.widgets.figures.GroupingContainerFigure;
@@ -109,6 +110,8 @@ public class GroupingContainerEditPart extends AbstractContainerEditpart {
 	* @param lock true if the children should be locked.
 	 */
 	private void lockChildren(boolean lock) {
+		if(getExecutionMode() == ExecutionMode.RUN_MODE)
+			return;
 		for(Object o: getChildren()){
 			if(o instanceof AbstractBaseEditPart){
 				((AbstractBaseEditPart)o).setSelectable(!lock);
@@ -121,7 +124,8 @@ public class GroupingContainerEditPart extends AbstractContainerEditpart {
 		EditPart result = super.createChild(model);
 
 		// setup selection behavior for the new child
-		if (result instanceof AbstractBaseEditPart) {
+		if (getExecutionMode() == ExecutionMode.EDIT_MODE && 
+				result instanceof AbstractBaseEditPart) {
 			((AbstractBaseEditPart) result).setSelectable(!getWidgetModel().isLocked());
 		}
 
