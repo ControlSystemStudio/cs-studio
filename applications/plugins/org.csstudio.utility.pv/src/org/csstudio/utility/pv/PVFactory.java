@@ -10,9 +10,10 @@ import org.eclipse.core.runtime.Platform;
 
 /** PV Factory
  *  <p>
- *  Locates the one and only expected implementation of the IPVFactory
+ *  Locates implementations of the IPVFactory
  *  via an extension to the pvfactory extension point
- *  and creates the PV through it.
+ *  and creates the PV through it, using the PV name prefix
+ *  to select an implementation.
  *  
  *  <pre>
     // Create PV
@@ -61,10 +62,10 @@ public class PVFactory
     final private static String PVFACTORY_EXT_ID =
         "org.csstudio.utility.pv.pvfactory";
 
-    /** Lazyly intialized PV factories found in extension registry */
+    /** Lazyly initialized PV factories found in extension registry */
     private static Map<String, IPVFactory> pv_factory = null;
 
-    /** Default PV type, initiliazed from preferences */
+    /** Default PV type, initialized from preferences */
     private static String default_type;
 
     /** Initialize from preferences and extension point registry */
@@ -77,7 +78,7 @@ public class PVFactory
         pv_factory = new HashMap<String, IPVFactory>();
         final IConfigurationElement[] configs = Platform.getExtensionRegistry()
             .getConfigurationElementsFor(PVFACTORY_EXT_ID);
-        // Allow one and only implementation
+        // Need at least one implementation
         if (configs.length < 1)
             throw new Exception("No extensions to " + PVFACTORY_EXT_ID + " found");
         for (IConfigurationElement config : configs)
