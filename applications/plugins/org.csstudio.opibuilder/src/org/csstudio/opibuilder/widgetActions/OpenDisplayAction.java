@@ -152,7 +152,7 @@ public class OpenDisplayAction extends AbstractWidgetAction {
 	@Override
 	public String getDescription() {
 		String description = (String)getPropertyValue(PROP_DESCRIPTION);	
-		return "Open " + (description.trim().isEmpty()? getPath() : description);
+		return "Open " + (description.trim().length()<=0? getPath() : description);
 	}
 	
 }
