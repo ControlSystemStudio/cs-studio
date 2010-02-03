@@ -5,6 +5,7 @@ import java.beans.PropertyChangeListener;
 
 import org.csstudio.opibuilder.datadefinition.ColorMap;
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
+import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
@@ -13,12 +14,14 @@ import org.csstudio.opibuilder.util.UIBundlingThread;
 import org.csstudio.opibuilder.visualparts.BorderFactory;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
 import org.csstudio.opibuilder.widgets.figures.IntensityGraphFigure;
+import org.csstudio.opibuilder.widgets.figures.IntensityGraphFigure.IProfileDataChangeLisenter;
 import org.csstudio.opibuilder.widgets.model.IntensityGraphModel;
 import org.csstudio.opibuilder.widgets.model.IntensityGraphModel.AxisProperty;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.swt.xygraph.figures.Axis;
+import org.csstudio.swt.xygraph.linearscale.Range;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
 
@@ -41,6 +44,10 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 		graph.setDataHeight(model.getDataHeight());
 		graph.setColorMap(model.getColorMap());
 		graph.setShowRamp(model.isShowRamp());
+		graph.setCropLeft(model.getCropLeft());
+		graph.setCropRigth(model.getCropRight());
+		graph.setCropTop(model.getCropTOP());
+		graph.setCropBottom(model.getCropBottom());
 		//init X-Axis
 		for(AxisProperty axisProperty : AxisProperty.values()){
 			String propID = IntensityGraphModel.makeAxisPropID(
@@ -53,6 +60,34 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 					IntensityGraphModel.Y_AXIS_ID, axisProperty.propIDPre);
 			setAxisProperty(graph.getYAxis(), axisProperty, model.getPropertyValue(propID));
 		}
+		//add profile data listener
+		if(getExecutionMode() == ExecutionMode.RUN_MODE && 
+				(!model.getHorizonProfileYPV().isEmpty() || !model.getVerticalProfileYPV().isEmpty())){
+			graph.addProfileDataListener(new IProfileDataChangeLisenter(){
+
+				public void profileDataChanged(double[] xProfileData,
+						double[] yProfileData, Range xAxisRange, Range yAxisRange) {
+					//horizontal
+					setPVValue(IntensityGraphModel.PROP_HORIZON_PROFILE_Y_PV_NAME, xProfileData);
+					double[] horizonXData = new double[xProfileData.length];
+					double d = (xAxisRange.getUpper() - xAxisRange.getLower())/xProfileData.length;
+					for(int i=0; i<xProfileData.length; i++){
+						horizonXData[i] = xAxisRange.getLower() + d *i;
+					}
+					setPVValue(IntensityGraphModel.PROP_HORIZON_PROFILE_X_PV_NAME, horizonXData);
+					//vertical
+					setPVValue(IntensityGraphModel.PROP_VERTICAL_PROFILE_Y_PV_NAME, yProfileData);
+					double[] verticalXData = new double[yProfileData.length];
+					d = (yAxisRange.getUpper() - yAxisRange.getLower())/yProfileData.length;
+					for(int i=0; i<yProfileData.length; i++){
+						verticalXData[i] = yAxisRange.getLower() + d *i;
+					}
+					setPVValue(IntensityGraphModel.PROP_VERTICAL_PROFILE_X_PV_NAME, verticalXData);					
+				}	
+				
+			});
+		}
+		
 		return graph;
 	}
 	
@@ -152,6 +187,43 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(IntensityGraphModel.PROP_COLOR_MAP, handler);	
+		
+		handler = new IWidgetPropertyChangeHandler(){
+			public boolean handleChange(Object oldValue, Object newValue,
+					IFigure figure) {
+				((IntensityGraphFigure)figure).setCropLeft((Integer)newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(IntensityGraphModel.PROP_CROP_LEFT, handler);	
+		
+		handler = new IWidgetPropertyChangeHandler(){
+			public boolean handleChange(Object oldValue, Object newValue,
+					IFigure figure) {
+				((IntensityGraphFigure)figure).setCropRigth((Integer)newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(IntensityGraphModel.PROP_CROP_RIGHT, handler);	
+		
+		handler = new IWidgetPropertyChangeHandler(){
+			public boolean handleChange(Object oldValue, Object newValue,
+					IFigure figure) {
+				((IntensityGraphFigure)figure).setCropTop((Integer)newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(IntensityGraphModel.PROP_CROP_TOP, handler);	
+		
+		handler = new IWidgetPropertyChangeHandler(){
+			public boolean handleChange(Object oldValue, Object newValue,
+					IFigure figure) {
+				((IntensityGraphFigure)figure).setCropBottom((Integer)newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(IntensityGraphModel.PROP_CROP_BOTTOM, handler);	
+		
 		
 		
 		getWidgetModel().getProperty(IntensityGraphModel.PROP_SHOW_RAMP).addPropertyChangeListener(

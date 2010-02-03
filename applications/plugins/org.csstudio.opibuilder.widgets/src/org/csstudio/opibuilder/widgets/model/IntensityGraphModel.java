@@ -10,6 +10,7 @@ import org.csstudio.opibuilder.properties.DoubleProperty;
 import org.csstudio.opibuilder.properties.FontProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.NameDefinedCategory;
+import org.csstudio.opibuilder.properties.PVValueProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.eclipse.swt.SWT;
@@ -66,7 +67,22 @@ public class IntensityGraphModel extends AbstractPVWidgetModel {
 	
 	public static final String PROP_SHOW_RAMP = "show_ramp"; //$NON-NLS-1$		
 	
-	/** The default value of the minimum property. */
+	public static final String PROP_CROP_LEFT = "crop_left"; //$NON-NLS-1$	
+	public static final String PROP_CROP_RIGHT = "crop_right"; //$NON-NLS-1$	
+	public static final String PROP_CROP_TOP = "crop_top"; //$NON-NLS-1$	
+	public static final String PROP_CROP_BOTTOM = "crop_bottom"; //$NON-NLS-1$
+	
+	public static final String PROP_HORIZON_PROFILE_X_PV_NAME = "horizon_profile_x_pv_name";
+	public static final String PROP_HORIZON_PROFILE_X_PV_VALUE = "horizon_profile_x_pv_value";
+	public static final String PROP_VERTICAL_PROFILE_X_PV_NAME = "vertical_profile_x_pv_name";
+	public static final String PROP_VERTICAL_PROFILE_X_PV_VALUE = "vertial_profile_x_pv_value";
+	
+	public static final String PROP_HORIZON_PROFILE_Y_PV_NAME = "horizon_profile_y_pv_name";
+	public static final String PROP_HORIZON_PROFILE_Y_PV_VALUE = "horizon_profile_y_pv_value";
+	public static final String PROP_VERTICAL_PROFILE_Y_PV_NAME = "vertical_profile_y_pv_name";
+	public static final String PROP_VERTICAL_PROFILE_Y_PV_VALUE = "vertial_profile_y_pv_value";
+	
+	/** The default value of the minimum property. */	
 	private static final double DEFAULT_MIN = 0;
 	
 	/** The default value of the maximum property. */
@@ -87,6 +103,19 @@ public class IntensityGraphModel extends AbstractPVWidgetModel {
 	
 	@Override
 	protected void configureProperties() {
+		addPVProperty(new StringProperty(PROP_HORIZON_PROFILE_X_PV_NAME, "Horizon Profile X PV", 
+				WidgetPropertyCategory.Basic, ""), new PVValueProperty(PROP_HORIZON_PROFILE_X_PV_VALUE, null));
+
+		addPVProperty(new StringProperty(PROP_VERTICAL_PROFILE_X_PV_NAME, "Vertical Profile X PV", 
+				WidgetPropertyCategory.Basic, ""), new PVValueProperty(PROP_VERTICAL_PROFILE_X_PV_VALUE, null));
+		
+		addPVProperty(new StringProperty(PROP_HORIZON_PROFILE_Y_PV_NAME, "Horizon Profile Y PV", 
+				WidgetPropertyCategory.Basic, ""), new PVValueProperty(PROP_HORIZON_PROFILE_Y_PV_VALUE, null));
+
+		addPVProperty(new StringProperty(PROP_VERTICAL_PROFILE_Y_PV_NAME, "Vertical Profile Y PV", 
+				WidgetPropertyCategory.Basic, ""), new PVValueProperty(PROP_VERTICAL_PROFILE_Y_PV_VALUE, null));
+	
+		
 		addProperty(new DoubleProperty(PROP_MIN, "Minimum", 
 				WidgetPropertyCategory.Behavior, DEFAULT_MIN));
 		
@@ -110,6 +139,16 @@ public class IntensityGraphModel extends AbstractPVWidgetModel {
 		
 		addProperty(new IntegerProperty(PROP_GRAPH_AREA_HEIGHT, "Graph Area Height", 
 				WidgetPropertyCategory.Position, 0));
+		
+		addProperty(new IntegerProperty(PROP_CROP_LEFT, "Crop Left", 
+				WidgetPropertyCategory.Behavior, 0));
+		addProperty(new IntegerProperty(PROP_CROP_RIGHT, "Crop Right", 
+				WidgetPropertyCategory.Behavior, 0));
+		addProperty(new IntegerProperty(PROP_CROP_TOP, "Crop Top", 
+				WidgetPropertyCategory.Behavior, 0));
+		addProperty(new IntegerProperty(PROP_CROP_BOTTOM, "Crop BOTTOM", 
+				WidgetPropertyCategory.Behavior, 0));
+		
 		
 		addAxisProperties();
 	}
@@ -221,4 +260,48 @@ public class IntensityGraphModel extends AbstractPVWidgetModel {
 	public Boolean isShowRamp(){
 		return (Boolean) getCastedPropertyValue(PROP_SHOW_RAMP);
 	}
+	
+	/**
+	 * @return the left crop part
+	 */
+	public int getCropLeft(){
+		return (Integer)getPropertyValue(PROP_CROP_LEFT);
+	}
+	
+	/**
+	 * @return the right crop part
+	 */
+	public int getCropRight(){
+		return (Integer)getPropertyValue(PROP_CROP_RIGHT);
+	}
+	/**
+	 * @return the top crop part
+	 */
+	public int getCropTOP(){
+		return (Integer)getPropertyValue(PROP_CROP_TOP);
+	}
+	/**
+	 * @return the bottom crop part
+	 */
+	public int getCropBottom(){
+		return (Integer)getPropertyValue(PROP_CROP_BOTTOM);
+	}
+	
+	public String getHorizonProfileXPV(){
+		return (String)getPropertyValue(PROP_HORIZON_PROFILE_X_PV_NAME);
+	}
+	
+	public String getVerticalProfileXPV(){
+		return (String)getPropertyValue(PROP_VERTICAL_PROFILE_X_PV_NAME);
+	}
+	
+	public String getHorizonProfileYPV(){
+		return (String)getPropertyValue(PROP_HORIZON_PROFILE_Y_PV_NAME);
+	}
+	
+	public String getVerticalProfileYPV(){
+		return (String)getPropertyValue(PROP_VERTICAL_PROFILE_Y_PV_NAME);
+	}
+	
+	
 }

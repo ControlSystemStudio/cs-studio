@@ -1,18 +1,32 @@
 package org.csstudio.opibuilder.widgets.figures;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.csstudio.opibuilder.datadefinition.ColorMap;
 import org.csstudio.opibuilder.datadefinition.ColorMap.PredefinedColorMap;
 import org.csstudio.opibuilder.widgets.figureparts.ColorMapRamp;
+import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.swt.xygraph.figures.Axis;
+import org.csstudio.swt.xygraph.linearscale.Range;
+import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
+import org.eclipse.draw2d.MouseEvent;
+import org.eclipse.draw2d.MouseMotionListener;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Cursor;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.PaletteData;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
 
 /**An intensity graph figure.
  * @author Xihui Chen
@@ -21,7 +35,10 @@ import org.eclipse.swt.widgets.Display;
 public class IntensityGraphFigure extends Figure {
 	
 	private int dataWidth, dataHeight;
+	private int cropLeft, cropRigth, cropTop, cropBottom;
 	private double[] dataArray;
+	private double[] croppedDataArray;
+	private int croppedDataWidth, croppedDataHeight;
 	private double max, min;
 	
 	private ColorMapRamp colorMapRamp;
@@ -33,13 +50,21 @@ public class IntensityGraphFigure extends Figure {
 	
 	private final static int GAP = 3;
 
-
+	private List<IProfileDataChangeLisenter> listeners;
+	
+	private final static Color WHITE_COLOR = CustomMediaFactory.getInstance().getColor(
+			CustomMediaFactory.COLOR_WHITE); 
+	private final static Color BLACK_COLOR = CustomMediaFactory.getInstance().getColor(
+			CustomMediaFactory.COLOR_BLACK); 
+	private final static Color TRANSPARENT_COLOR = CustomMediaFactory.getInstance().getColor(
+			new RGB(123,0,23)); 
 	public IntensityGraphFigure() {
 		dataArray = new double[0];
 		max = 255;
 		min = 0;
 		dataWidth = 0;
 		dataHeight = 0;
+		listeners = new ArrayList<IProfileDataChangeLisenter>();
 		colorMap = new ColorMap(PredefinedColorMap.GrayScale, true, true);
 		colorMapRamp = new ColorMapRamp();
 		colorMapRamp.setMax(max);
@@ -272,8 +297,137 @@ public class IntensityGraphFigure extends Figure {
 		return yAxis;
 	}
 
+	
+	
+
+	/**
+	 * @param cropLeft the cropLeft to set
+	 */
+	public final void setCropLeft(int cropLeft) {
+		this.cropLeft = cropLeft;
+	}
+
+
+	/**
+	 * @param cropRigth the cropRigth to set
+	 */
+	public final void setCropRigth(int cropRigth) {
+		this.cropRigth = cropRigth;
+	}
+
+
+	/**
+	 * @param cropTop the cropTop to set
+	 */
+	public final void setCropTop(int cropTop) {
+		this.cropTop = cropTop;
+	}
+
+
+	/**
+	 * @param cropBottom the cropBottom to set
+	 */
+	public final void setCropBottom(int cropBottom) {
+		this.cropBottom = cropBottom;
+	}
+
+	private double[] calculateXProfileData(double[] data, int dw, int dh){
+		double[] output = new double[dw];
+		for(int i =0; i<dw; i++){
+			for(int j = 0; j < dh; j++)
+				output[i] += data[j*dw + i];
+			output[i] /= dh;
+		}
+		return output;
+	}
+	
+	private double[] calculateYProfileData(double[] data, int dw, int dh){
+		double[] output = new double[dh];
+		for(int i =0; i<dh; i++){
+			for(int j = 0; j < dw; j++)
+				output[i] += data[i*dw + j];
+			output[i] /= dw;
+		}
+		return output;
+	}
+	
+	
+	public void addProfileDataListener(IProfileDataChangeLisenter listener){
+		if(listener != null)
+			listeners.add(listener);
+	}
+	
+	
+	
+	private void fireProfileDataChanged(double[] data, int dw, int dh){
+		if(listeners.size() <= 0)
+			return;
+		double[] xProfileData = calculateXProfileData(data, dw, dh);
+		double[] yProfileData = calculateYProfileData(data, dw, dh);
+		for(IProfileDataChangeLisenter lisenter : listeners)
+			lisenter.profileDataChanged(xProfileData, yProfileData, xAxis.getRange(), yAxis.getRange());
+	}
+	
+	
+	public interface IProfileDataChangeLisenter {
+		void profileDataChanged(double[] xProfileData, double[] yProfileData, 
+				Range xAxisRange, Range yAxisRange);
+	}
+
 
 	class GraphArea extends Figure{
+		private final static int CURSOR_SIZE = 14;
+		
+		public GraphArea() {
+			setCursor(Cursors.CROSS);			
+			addMouseMotionListener(new MouseMotionListener.Stub(){
+				@Override
+				public void mouseMoved(MouseEvent me) {
+					if(croppedDataArray == null)
+						return;
+					if(getCursor() != null)
+						getCursor().dispose();
+					double xCordinate = xAxis.getPositionValue(me.x, false);
+					double yCordinate = yAxis.getPositionValue(me.y, false);
+					
+					Point dataLocation = getDataLocation(me.x, me.y);					
+					String text = "(" + xAxis.format(xCordinate) + ", " + yAxis.format(yCordinate) + ", "+ 
+						yAxis.format(croppedDataArray[(dataLocation.y)*croppedDataWidth + dataLocation.x]) + ")";
+					GC mgc = new GC(new Label(Display.getCurrent().getActiveShell(), SWT.None));
+					Point size = mgc.textExtent(text);
+					mgc.dispose();
+					Image image = new Image(Display.getCurrent(),
+							size.x + CURSOR_SIZE, size.y + CURSOR_SIZE);
+					
+					GC gc = new GC(image);
+					//gc.setAlpha(0);
+					gc.setBackground(TRANSPARENT_COLOR);					
+					gc.fillRectangle(image.getBounds());
+					gc.setForeground(BLACK_COLOR);
+					gc.drawLine(0, CURSOR_SIZE/2, CURSOR_SIZE, CURSOR_SIZE/2);
+					gc.drawLine(CURSOR_SIZE/2, 0, CURSOR_SIZE/2, CURSOR_SIZE);
+					gc.setBackground(WHITE_COLOR);
+					gc.fillRectangle(CURSOR_SIZE, CURSOR_SIZE, 
+							image.getBounds().width-CURSOR_SIZE, 
+							image.getBounds().height-CURSOR_SIZE);					
+					gc.drawText(text, CURSOR_SIZE, CURSOR_SIZE, true);
+					
+					ImageData imageData = image.getImageData();
+					imageData.transparentPixel = imageData.palette.getPixel(TRANSPARENT_COLOR.getRGB());
+					setCursor(new Cursor(null, imageData, CURSOR_SIZE/2 ,CURSOR_SIZE/2));
+					gc.dispose();
+					image.dispose();
+				}
+			});
+		}
+		
+		private Point getDataLocation(int x, int y){
+			if(croppedDataArray == null)
+				return null;
+			int hIndex = croppedDataWidth * (x - getClientArea().x)/getClientArea().width;
+			int vIndex = croppedDataHeight * (y - getClientArea().y)/getClientArea().height;
+			return new Point(hIndex, vIndex);
+		}
 		
 		@Override
 		protected void paintClientArea(Graphics graphics) {
@@ -295,16 +449,33 @@ public class IntensityGraphFigure extends Figure {
 				dataArray = new double[dataWidth*dataHeight];
 			    System.arraycopy(originalData, 0, dataArray, 0,originalData.length);
 			}
-	
+		
+			croppedDataArray = cropDataArray(cropLeft, cropRigth, cropTop, cropBottom);
+			croppedDataWidth = dataWidth - cropLeft - cropRigth;
+			croppedDataHeight = dataHeight - cropTop - cropBottom;
+			fireProfileDataChanged(croppedDataArray, croppedDataWidth, croppedDataHeight);
+			
 			Image image = new Image(Display.getCurrent(), 
-					colorMap.drawImage(dataArray, dataWidth, dataHeight, max, min));
+					colorMap.drawImage(croppedDataArray,
+							croppedDataWidth, croppedDataHeight,
+							max, min));
 			graphics.drawImage(image, new Rectangle(image.getBounds()), clientArea);
 			image.dispose();			
 		}
 		
-		
-		
-		
+		private double[] cropDataArray(int left, int right, int top, int bottom){
+			if(left != 0 || right != 0 || top != 0 || bottom != 0){
+				int i=0;
+				double[] result = new double[(dataWidth - left - right) * (dataHeight - top - bottom)];
+				for(int y = top; y < (dataHeight-bottom); y++){
+					for(int x = left; x<(dataWidth - right); x++){
+						result[i++] = dataArray[y*dataWidth + x];
+					}
+				}
+				return result;
+			}else
+				return dataArray;			
+		}
 	}
 	
 }
