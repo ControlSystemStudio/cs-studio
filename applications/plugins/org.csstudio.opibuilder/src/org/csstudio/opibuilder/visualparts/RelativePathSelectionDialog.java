@@ -204,6 +204,8 @@ public final class RelativePathSelectionDialog extends Dialog implements Listene
     public void handleEvent(Event event) {
         ResourceSelectionGroup widget = (ResourceSelectionGroup) event.widget;
         _path = widget.getFullPath();
+        if(_path == null)
+        	return;
         if(relative)
         	_resourcePathText.setText(ResourceUtil.buildRelativePath(
         			refPath, _path).toString());

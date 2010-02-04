@@ -4,6 +4,7 @@ import java.util.Calendar;
 
 import org.csstudio.opibuilder.datadefinition.ColorMap;
 import org.csstudio.opibuilder.datadefinition.ColorMap.PredefinedColorMap;
+import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.widgets.figures.BoolButtonFigure;
 import org.csstudio.opibuilder.widgets.figures.BoolSwitchFigure;
 import org.csstudio.opibuilder.widgets.figures.GaugeFigure;
@@ -200,7 +201,7 @@ class IntensityGraphFigureTest extends Figure {
 	private double[] datas;
 
 	public IntensityGraphFigureTest() {
-		intensityGraph = new IntensityGraphFigure();
+		intensityGraph = new IntensityGraphFigure(ExecutionMode.RUN_MODE);
 		datas = new double[65536];
 		
 		intensityGraph.setDataArray(datas);

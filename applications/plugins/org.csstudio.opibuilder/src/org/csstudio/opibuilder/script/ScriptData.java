@@ -46,7 +46,8 @@ public class ScriptData implements IAdaptable {
 	 * @return true if successful. false if the input is not a javascript file.
 	 */
 	public boolean setPath(IPath path){
-		if(path.getFileExtension().equals(SCRIPT_EXTENSION)){
+		if(path.getFileExtension() != null && 
+				path.getFileExtension().equals(SCRIPT_EXTENSION)){
 			this.path = path; 
 			return true;
 		}

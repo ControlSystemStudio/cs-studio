@@ -14,7 +14,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.jface.dialogs.MessageDialog;
 
 /**An actions writing value to a PV.
  * @author Xihui Chen
@@ -137,7 +136,6 @@ public class WritePVAction extends AbstractWidgetAction {
 			public void run() {
 				String message = 
 					"Failed to write PV:" + getPVName() + "\n" + e.getMessage();
-				MessageDialog.openError(null, "PV write error", message);
 				ConsoleService.getInstance().writeError(message);
 			}
 		});

@@ -5,14 +5,15 @@ import java.util.List;
 
 import org.csstudio.opibuilder.datadefinition.ColorMap;
 import org.csstudio.opibuilder.datadefinition.ColorMap.PredefinedColorMap;
+import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.widgets.figureparts.ColorMapRamp;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.swt.xygraph.figures.Axis;
 import org.csstudio.swt.xygraph.linearscale.Range;
-import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.MouseEvent;
+import org.eclipse.draw2d.MouseListener;
 import org.eclipse.draw2d.MouseMotionListener;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -47,10 +48,20 @@ public class IntensityGraphFigure extends Figure {
 	
 	private final Axis xAxis;
 	private final Axis yAxis;
-	
+	private Range xAxisRange = null;
+	private Range yAxisRange = null;
+	private Rectangle originalCrop = null;
 	private final static int GAP = 3;
 
+	private org.eclipse.draw2d.geometry.Point start;
+	private org.eclipse.draw2d.geometry.Point end;
+	private boolean armed;
+	private boolean dataDirty;  //true if the image need to be redrawn
+	private Image bufferedImage; //the buffered image
+	
 	private List<IProfileDataChangeLisenter> listeners;
+	
+	private ExecutionMode executionMode = ExecutionMode.EDIT_MODE;
 	
 	private final static Color WHITE_COLOR = CustomMediaFactory.getInstance().getColor(
 			CustomMediaFactory.COLOR_WHITE); 
@@ -58,7 +69,8 @@ public class IntensityGraphFigure extends Figure {
 			CustomMediaFactory.COLOR_BLACK); 
 	private final static Color TRANSPARENT_COLOR = CustomMediaFactory.getInstance().getColor(
 			new RGB(123,0,23)); 
-	public IntensityGraphFigure() {
+	public IntensityGraphFigure(ExecutionMode executionMode) {
+		this.executionMode = executionMode;
 		dataArray = new double[0];
 		max = 255;
 		min = 0;
@@ -227,6 +239,7 @@ public class IntensityGraphFigure extends Figure {
 	 */
 	public final void setDataWidth(int dataWidth) {
 		this.dataWidth = dataWidth;
+		dataDirty = true;
 	}
 
 
@@ -235,6 +248,7 @@ public class IntensityGraphFigure extends Figure {
 	 */
 	public final void setDataHeight(int dataHeight) {
 		this.dataHeight = dataHeight;
+		dataDirty = true;
 	}
 
 
@@ -243,6 +257,7 @@ public class IntensityGraphFigure extends Figure {
 	 */
 	public final void setDataArray(double[] dataArray) {
 		this.dataArray = dataArray;
+		dataDirty = true;
 		graphArea.repaint();
 	}
 
@@ -274,9 +289,11 @@ public class IntensityGraphFigure extends Figure {
 	public final void setColorMap(ColorMap colorMap) {
 		this.colorMap = colorMap;
 		colorMapRamp.setColorMap(colorMap);
+		dataDirty = true;
 	}
 	
 	public void setShowRamp(boolean show){
+		dataDirty = true;
 		colorMapRamp.setVisible(show);
 		revalidate();
 	}
@@ -305,6 +322,7 @@ public class IntensityGraphFigure extends Figure {
 	 */
 	public final void setCropLeft(int cropLeft) {
 		this.cropLeft = cropLeft;
+		dataDirty = true;
 	}
 
 
@@ -313,6 +331,7 @@ public class IntensityGraphFigure extends Figure {
 	 */
 	public final void setCropRigth(int cropRigth) {
 		this.cropRigth = cropRigth;
+		dataDirty = true;
 	}
 
 
@@ -321,6 +340,7 @@ public class IntensityGraphFigure extends Figure {
 	 */
 	public final void setCropTop(int cropTop) {
 		this.cropTop = cropTop;
+		dataDirty = true;
 	}
 
 
@@ -329,6 +349,7 @@ public class IntensityGraphFigure extends Figure {
 	 */
 	public final void setCropBottom(int cropBottom) {
 		this.cropBottom = cropBottom;
+		dataDirty = true;
 	}
 
 	private double[] calculateXProfileData(double[] data, int dw, int dh){
@@ -373,16 +394,65 @@ public class IntensityGraphFigure extends Figure {
 		void profileDataChanged(double[] xProfileData, double[] yProfileData, 
 				Range xAxisRange, Range yAxisRange);
 	}
+	
+	private void zoom(){
+		double t1, t2;
+		if(xAxisRange == null || yAxisRange == null){
+			xAxisRange = xAxis.getRange();
+			yAxisRange = yAxis.getRange();	
+		}
+		if(originalCrop == null){
+			originalCrop = new Rectangle(cropLeft, cropTop, cropRigth, cropBottom);
+		}
+			
+				Point leftTop = graphArea.getDataLocation(
+					Math.min(start.x, end.x), Math.min(start.y, end.y));
+			Point rightBottom = graphArea.getDataLocation(
+					Math.max(start.x, end.x), Math.max(start.y, end.y));
+			if(leftTop == null || rightBottom == null || leftTop.equals(rightBottom))
+				return;
+			int toBeCropLeft = cropLeft + leftTop.x;
+			int toBeCropTop = cropTop + leftTop.y;
+			int toBeCropRight = cropRigth + croppedDataWidth - rightBottom.x;
+			int toBeCropBottom = cropBottom + croppedDataHeight - rightBottom.y;
+			if(toBeCropLeft + toBeCropRight >= dataWidth || 
+					toBeCropBottom + toBeCropTop >=dataHeight)
+				return;
+			setCropLeft(toBeCropLeft);
+			setCropTop(toBeCropTop);
+			
+			setCropRigth(toBeCropRight);
+			setCropBottom(toBeCropBottom);
+			graphArea.repaint();
+			t1 = xAxis.getPositionValue(start.x, false);
+			t2 = xAxis.getPositionValue(end.x, false);
+			xAxis.setRange(t1, t2);			
+			t1 = yAxis.getPositionValue(start.y, false);
+			t2 = yAxis.getPositionValue(end.y, false);
+			yAxis.setRange(t1, t2);			
+	
+		
+	}
 
+	public void dispose(){
+		if(bufferedImage != null){
+			bufferedImage.dispose();
+			bufferedImage = null;
+		}
+	}
 
 	class GraphArea extends Figure{
 		private final static int CURSOR_SIZE = 14;
 		
 		public GraphArea() {
-			setCursor(Cursors.CROSS);			
-			addMouseMotionListener(new MouseMotionListener.Stub(){
-				@Override
-				public void mouseMoved(MouseEvent me) {
+			if(executionMode == ExecutionMode.RUN_MODE){
+				setCursor(null);
+				GraphAreaZoomer zoomer = new GraphAreaZoomer();
+				addMouseMotionListener(zoomer);
+				addMouseListener(zoomer);
+			}
+		}
+		private void updateTextCursor(MouseEvent me) {
 					if(croppedDataArray == null)
 						return;
 					if(getCursor() != null)
@@ -390,7 +460,9 @@ public class IntensityGraphFigure extends Figure {
 					double xCordinate = xAxis.getPositionValue(me.x, false);
 					double yCordinate = yAxis.getPositionValue(me.y, false);
 					
-					Point dataLocation = getDataLocation(me.x, me.y);					
+					Point dataLocation = getDataLocation(me.x, me.y);		
+					if(dataLocation == null)
+						return;
 					String text = "(" + xAxis.format(xCordinate) + ", " + yAxis.format(yCordinate) + ", "+ 
 						yAxis.format(croppedDataArray[(dataLocation.y)*croppedDataWidth + dataLocation.x]) + ")";
 					GC mgc = new GC(new Label(Display.getCurrent().getActiveShell(), SWT.None));
@@ -417,50 +489,69 @@ public class IntensityGraphFigure extends Figure {
 					setCursor(new Cursor(null, imageData, CURSOR_SIZE/2 ,CURSOR_SIZE/2));
 					gc.dispose();
 					image.dispose();
-				}
-			});
 		}
 		
-		private Point getDataLocation(int x, int y){
+		
+		public Point getDataLocation(int x, int y){
 			if(croppedDataArray == null)
 				return null;
 			int hIndex = croppedDataWidth * (x - getClientArea().x)/getClientArea().width;
 			int vIndex = croppedDataHeight * (y - getClientArea().y)/getClientArea().height;
-			return new Point(hIndex, vIndex);
+			if(hIndex >= 0 && vIndex >= 0)
+				return new Point(hIndex, vIndex);
+			else return null;
 		}
 		
 		@Override
 		protected void paintClientArea(Graphics graphics) {
 			super.paintClientArea(graphics);
-			Rectangle clientArea = getClientArea();		
-			if(clientArea.width <0 || clientArea.height <0)
-				return;
-			if(dataWidth == 0 || dataHeight == 0){
-				graphics.drawRectangle(new Rectangle(
-						clientArea.x - (yAxis.isVisible()? 1:0),
-						clientArea.y, 
-						clientArea.width-(yAxis.isVisible()? 0:1), clientArea.height - (xAxis.isVisible()? 0:1)));
-				return;
-			}
-										
-			//padding with zero if the array length is not long enough
-			if(dataArray.length < dataWidth * dataHeight){
-				double[] originalData = dataArray;			
-				dataArray = new double[dataWidth*dataHeight];
-			    System.arraycopy(originalData, 0, dataArray, 0,originalData.length);
+			Rectangle clientArea = getClientArea();
+			//draw image if data is dirty or bufferedImage has not been created yet
+			if(dataDirty || bufferedImage == null){
+				dataDirty = false;
+				if(bufferedImage != null){
+					bufferedImage.dispose();
+					bufferedImage = null;
+				}
+				if(clientArea.width <0 || clientArea.height <0)
+					return;
+				if(dataWidth == 0 || dataHeight == 0){
+					graphics.drawRectangle(new Rectangle(
+							clientArea.x - (yAxis.isVisible()? 1:0),
+							clientArea.y, 
+							clientArea.width-(yAxis.isVisible()? 0:1), clientArea.height - (xAxis.isVisible()? 0:1)));
+					return;
+				}
+											
+				//padding with zero if the array length is not long enough
+				if(dataArray.length < dataWidth * dataHeight){
+					double[] originalData = dataArray;			
+					dataArray = new double[dataWidth*dataHeight];
+				    System.arraycopy(originalData, 0, dataArray, 0,originalData.length);
+				}
+			
+				croppedDataArray = cropDataArray(cropLeft, cropRigth, cropTop, cropBottom);
+				croppedDataWidth = dataWidth - cropLeft - cropRigth;
+				croppedDataHeight = dataHeight - cropTop - cropBottom;
+				fireProfileDataChanged(croppedDataArray, croppedDataWidth, croppedDataHeight);
+				
+				bufferedImage = new Image(Display.getCurrent(), 
+						colorMap.drawImage(croppedDataArray,
+								croppedDataWidth, croppedDataHeight,
+								max, min));
+				
 			}
 		
-			croppedDataArray = cropDataArray(cropLeft, cropRigth, cropTop, cropBottom);
-			croppedDataWidth = dataWidth - cropLeft - cropRigth;
-			croppedDataHeight = dataHeight - cropTop - cropBottom;
-			fireProfileDataChanged(croppedDataArray, croppedDataWidth, croppedDataHeight);
-			
-			Image image = new Image(Display.getCurrent(), 
-					colorMap.drawImage(croppedDataArray,
-							croppedDataWidth, croppedDataHeight,
-							max, min));
-			graphics.drawImage(image, new Rectangle(image.getBounds()), clientArea);
-			image.dispose();			
+			graphics.drawImage(bufferedImage, new Rectangle(bufferedImage.getBounds()), clientArea);
+		
+				
+			if(armed && end != null && start != null){
+				graphics.setLineStyle(SWT.LINE_DOT);
+				graphics.setLineWidth(1);				
+				graphics.setForegroundColor(BLACK_COLOR);
+				graphics.drawRectangle(start.x, start.y, end.x - start.x, end.y - start.y);
+			}
+		
 		}
 		
 		private double[] cropDataArray(int left, int right, int top, int bottom){
@@ -476,6 +567,64 @@ public class IntensityGraphFigure extends Figure {
 			}else
 				return dataArray;			
 		}
+	}
+
+	class GraphAreaZoomer extends MouseMotionListener.Stub implements MouseListener{	
+				
+		@Override
+		public void mouseDragged(MouseEvent me) {
+			if(!armed)
+				return;
+			if(graphArea.getClientArea().contains(me.getLocation())){
+				graphArea.updateTextCursor(me);
+				end = me.getLocation();		
+				graphArea.repaint();
+			}
+		}
+		
+		public void mouseDoubleClicked(MouseEvent me) {
+			if(me.button !=1)
+				return;
+			if(xAxisRange !=null)
+				xAxis.setRange(xAxisRange);
+			if(yAxisRange != null)
+				yAxis.setRange(yAxisRange);
+			if(originalCrop != null){
+				setCropLeft(originalCrop.x);
+				setCropTop(originalCrop.y);
+				setCropRigth(originalCrop.width);
+				setCropBottom(originalCrop.height);
+				graphArea.repaint();
+			}
+				
+		}
+
+		public void mousePressed(MouseEvent me) {	
+		    // Only react to 'main' mouse button
+		    if (me.button != 1)
+				return;
+			armed = true;
+			//get start position
+			start = me.getLocation();
+			end = null;
+			me.consume();			
+		}
+
+		
+		public void mouseReleased(MouseEvent me) {
+			if(!armed || end == null || start == null)
+				return;
+			zoom();
+			armed = false;
+			end = null; 
+			start = null;			
+		}
+		
+		@Override
+		public void mouseMoved(MouseEvent me) {
+			graphArea.updateTextCursor(me);
+		}
+		
 	}
 	
 }

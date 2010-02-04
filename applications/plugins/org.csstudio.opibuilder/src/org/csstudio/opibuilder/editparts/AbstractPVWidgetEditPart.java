@@ -23,7 +23,6 @@ import org.csstudio.utility.pv.PVListener;
 import org.eclipse.draw2d.Border;
 import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 
@@ -158,7 +157,7 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 				for(final StringProperty sp : pvPropertyMap.keySet()){
 					
 					if(sp.getPropertyValue() == null || 
-							sp.getPropertyValue().equals("")) 
+							((String)sp.getPropertyValue()).trim().length() <=0) 
 						continue;
 					
 					try {
@@ -357,12 +356,9 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 					public void run() {
 						String message = 
 							"Failed to write PV:" + pv.getName() + "\n" + e.getMessage();
-						MessageDialog.openError(null, "PV write error", message);
 						ConsoleService.getInstance().writeError(message);
 					}
 				});
-				
-				
 			}
 		}
 	}

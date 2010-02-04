@@ -90,12 +90,16 @@ public class ResourceUtil {
 	 * @return the relative to path to refPath.
 	 */
 	public static IPath buildRelativePath(IPath refPath, IPath fullPath){
+		if(refPath == null || fullPath == null)
+			throw new NullPointerException();
 		int i=0;
 		String[] absolutePathSegs = fullPath.segments();
 		for(String seg : refPath.segments()){
 			if(!seg.equals(fullPath.segment(i)))
 				break;			
 			i++;			
+			if(fullPath.segment(i)== null)
+				i--;
 		}
 		int ellipsisCount = refPath.segmentCount() - i;
 		int remainedSegsCount = fullPath.segmentCount() -i;
@@ -106,7 +110,8 @@ public class ResourceUtil {
 			else
 				sb.append(absolutePathSegs[i++] + IPath.SEPARATOR);
 		}
-		sb.append(absolutePathSegs[i]);
+		if(i<fullPath.segmentCount())
+			sb.append(absolutePathSegs[i]);
 		return new Path(sb.toString());
 	}
 	

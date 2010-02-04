@@ -14,7 +14,6 @@ import org.csstudio.opibuilder.widgetActions.WidgetActionFactory.ActionType;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ImporterTopLevel;
 import org.mozilla.javascript.Script;
@@ -75,7 +74,7 @@ public class ExecuteJavaScriptAction extends AbstractWidgetAction {
 						} catch (Exception e) {
 							String message =  "Error exists in script " + 
 								getPath() + "\n" + e; //$NON-NLS-1$
-							MessageDialog.openError(null, "script error", message);
+							//MessageDialog.openError(null, "script error", message);
 							CentralLogger.getInstance().error(this, message, e);
 							ConsoleService.getInstance().writeError(message);
 							
@@ -85,7 +84,7 @@ public class ExecuteJavaScriptAction extends AbstractWidgetAction {
 			});
 		} catch (Exception e) {
 			String s = "Failed to execute JavaScript: " + getPath() + "\n" + e;
-			MessageDialog.openError(null, "script error",s);
+			//MessageDialog.openError(null, "script error",s);
 			CentralLogger.getInstance().error(this, s, e);
 			ConsoleService.getInstance().writeError(s);
 		

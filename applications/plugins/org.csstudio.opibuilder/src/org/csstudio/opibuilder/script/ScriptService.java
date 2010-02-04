@@ -4,10 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
+import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.UIBundlingThread;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.pv.PV;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.mozilla.javascript.Context;
 
 /**The center service for script execution.
@@ -65,8 +65,8 @@ public class ScriptService {
 					scriptMap.put(scriptData, scriptStore);
 				}catch (Exception e) {
 					String errorInfo = "Failed to register script: " +
-					scriptData.getPath().toString() + ". ";
-					MessageDialog.openError(null, "script error", errorInfo + e.getMessage());
+					scriptData.getPath().toString() + ". " + e.getMessage();
+					ConsoleService.getInstance().writeError(errorInfo);
 					CentralLogger.getInstance().error(this, errorInfo, e);
 				} 				
 			}

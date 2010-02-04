@@ -37,7 +37,7 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 	@Override
 	protected IFigure doCreateFigure() {
 		IntensityGraphModel model = getWidgetModel();
-		IntensityGraphFigure graph = new IntensityGraphFigure();
+		IntensityGraphFigure graph = new IntensityGraphFigure(getExecutionMode());
 		graph.setMin(model.getMinimum());
 		graph.setMax(model.getMaximum());
 		graph.setDataWidth(model.getDataWidth());
@@ -62,7 +62,8 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 		}
 		//add profile data listener
 		if(getExecutionMode() == ExecutionMode.RUN_MODE && 
-				(!model.getHorizonProfileYPV().isEmpty() || !model.getVerticalProfileYPV().isEmpty())){
+				(model.getHorizonProfileYPV().trim().length() >0 || 
+						model.getVerticalProfileYPV().trim().length() > 0)){
 			graph.addProfileDataListener(new IProfileDataChangeLisenter(){
 
 				public void profileDataChanged(double[] xProfileData,
@@ -378,6 +379,12 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 		if(value instanceof double[] || value instanceof Double[]){
 			((IntensityGraphFigure)getFigure()).setDataArray((double[]) value);
 		}
+	}
+	
+	@Override
+	public void deactivate() {
+		((IntensityGraphFigure)getFigure()).dispose();
+		super.deactivate();
 	}
 
 	class AxisPropertyChangeHandler implements IWidgetPropertyChangeHandler {
