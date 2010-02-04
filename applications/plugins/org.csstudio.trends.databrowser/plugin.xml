@@ -200,11 +200,11 @@
       <extension
             point="org.eclipse.ui.cheatsheets.cheatSheetContent">
          <category
-               id="org.csstudio.trends"
+               id="org.csstudio"
                name="CSS">
          </category>
          <cheatsheet
-               category="org.csstudio.trends"
+               category="org.csstudio"
                composite="false"
                contentFile="cheatsheets/archive.xml"
                id="org.csstudio.trends.databrowser.archive"
