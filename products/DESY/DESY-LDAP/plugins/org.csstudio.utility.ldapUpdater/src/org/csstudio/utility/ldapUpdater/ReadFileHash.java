@@ -31,8 +31,9 @@ public class ReadFileHash {
         BufferedReader fr;
         
         try {
-			fr = new BufferedReader(new FileReader(_prefs.getString(Activator.getDefault().getPluginId(),
-    	    		LdapUpdaterPreferenceConstants.LDAP_HIST_PATH, "", null) + histfile ));
+			String string = _prefs.getString(Activator.getDefault().getPluginId(),
+    	    		LdapUpdaterPreferenceConstants.LDAP_HIST_PATH, "", null);
+			fr = new BufferedReader(new FileReader(string + histfile ));
 
 			String pathFile=LdapUpdaterPreferenceConstants.LDAP_HIST_PATH + histfile ;
 			String line;
