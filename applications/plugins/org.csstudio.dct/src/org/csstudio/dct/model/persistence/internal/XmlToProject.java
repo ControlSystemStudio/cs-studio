@@ -415,7 +415,7 @@ public final class XmlToProject {
 		
 		// READ EPICS NAME
 		String epicsName = xmlRecordElement.getAttributeValue("epicsname");
-		record.setEpicsName(recordName.equals("{inherited}") ? null : epicsName);
+		record.setEpicsName(epicsName.equals("{inherited}") ? null : epicsName);
 		
 		// READ DISABLED
 		String disabled = xmlRecordElement.getAttributeValue("disabled", "{inherited}");
