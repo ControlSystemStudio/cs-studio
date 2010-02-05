@@ -50,8 +50,8 @@ public final class ComboEditPart extends AbstractPVWidgetEditPart {
 	protected IFigure doCreateFigure() {
 		final ComboModel model = getWidgetModel();
 		updatePropSheet(model.isItemsFromPV());		
-		ComboFigure comboFigure = new ComboFigure((Composite) getViewer().getControl());
-		comboFigure.setParentModel(getWidgetModel().getParent());
+		ComboFigure comboFigure = new ComboFigure(
+				(Composite) getViewer().getControl(), getWidgetModel().getParent());
 		comboFigure.setRunMode(getExecutionMode() == ExecutionMode.RUN_MODE);
 		comboFigure.setFont(CustomMediaFactory.getInstance().getFont(
 						model.getFont().getFontData()));
