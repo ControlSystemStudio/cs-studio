@@ -171,17 +171,23 @@ public class XYGraphToolbar extends Figure {
 		addButton(snapShotButton);
 		snapShotButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent event) {
-				ImageLoader loader = new ImageLoader();
-				Image image = xyGraph.getImage();
-				loader.data = new ImageData[]{image.getImageData()};
-				image.dispose();
-				  FileDialog dialog = new FileDialog(Display.getDefault().getShells()[0], SWT.SAVE);
-				    dialog
-				        .setFilterNames(new String[] {"PNG Files", "All Files (*.*)" });
-				    dialog.setFilterExtensions(new String[] { "*.png", "*.*" }); // Windows
-				    String path = dialog.open();
-				    if(path != null && !path.equals(""))
-				    	loader.save(path, SWT.IMAGE_PNG);
+			    // Prompt for file name
+				FileDialog dialog = new FileDialog(Display.getDefault().getShells()[0], SWT.SAVE);
+				dialog.setFilterNames(new String[] {"PNG Files", "All Files (*.*)" });
+		        dialog.setFilterExtensions(new String[] { "*.png", "*.*" }); // Windows
+			    String path = dialog.open();
+			    if (path == null || path.length() <= 0)
+			        return;
+			    // Have valid name, so get image
+                ImageLoader loader = new ImageLoader();
+                Image image = xyGraph.getImage();
+                loader.data = new ImageData[]{image.getImageData()};
+                image.dispose();
+				// Assert *.png at end of file name
+			    if (! path.toLowerCase().endsWith(".png"))
+			        path = path + ".png";
+			    // Save
+			    loader.save(path, SWT.IMAGE_PNG);
 			}
 		});
 	}
