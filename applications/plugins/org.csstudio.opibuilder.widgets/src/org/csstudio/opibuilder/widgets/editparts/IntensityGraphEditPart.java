@@ -71,7 +71,7 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 					//horizontal
 					setPVValue(IntensityGraphModel.PROP_HORIZON_PROFILE_Y_PV_NAME, xProfileData);
 					double[] horizonXData = new double[xProfileData.length];
-					double d = (xAxisRange.getUpper() - xAxisRange.getLower())/xProfileData.length;
+					double d = (xAxisRange.getUpper() - xAxisRange.getLower())/(xProfileData.length-1);
 					for(int i=0; i<xProfileData.length; i++){
 						horizonXData[i] = xAxisRange.getLower() + d *i;
 					}
@@ -79,9 +79,9 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 					//vertical
 					setPVValue(IntensityGraphModel.PROP_VERTICAL_PROFILE_Y_PV_NAME, yProfileData);
 					double[] verticalXData = new double[yProfileData.length];
-					d = (yAxisRange.getUpper() - yAxisRange.getLower())/yProfileData.length;
+					d = (yAxisRange.getUpper() - yAxisRange.getLower())/(yProfileData.length-1);
 					for(int i=0; i<yProfileData.length; i++){
-						verticalXData[i] = yAxisRange.getLower() + d *i;
+						verticalXData[i] = yAxisRange.getUpper() - d*i;
 					}
 					setPVValue(IntensityGraphModel.PROP_VERTICAL_PROFILE_X_PV_NAME, verticalXData);					
 				}	
