@@ -1,52 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <display typeId="org.csstudio.opibuilder.Display" version="1.0">
+  <widget_type>Display</widget_type>
+  <macros>
+    <include_parent_macros>true</include_parent_macros>
+  </macros>
   <width>800</width>
   <scripts>
     <path pathString="../scripts/SelectColorMap.js">
       <pv trig="true">loc://colorMap</pv>
     </path>
   </scripts>
-  <actions hook="false" />
-  <macros>
-    <include_parent_macros>true</include_parent_macros>
-  </macros>
+  <show_ruler>false</show_ruler>
+  <height>600</height>
+  <show_edit_range>true</show_edit_range>
+  <name>Intensity Graph</name>
+  <grid_space>6</grid_space>
   <snap_to_geometry>false</snap_to_geometry>
   <show_grid>false</show_grid>
-  <show_edit_range>true</show_edit_range>
-  <grid_space>6</grid_space>
-  <height>600</height>
-  <widget_type>Display</widget_type>
-  <background_color>
-    <color red="240" green="240" blue="240" />
-  </background_color>
+  <y>0</y>
+  <actions hook="false" />
   <foreground_color>
     <color red="192" green="192" blue="192" />
   </foreground_color>
-  <y>0</y>
-  <show_ruler>false</show_ruler>
-  <name>Intensity Graph</name>
+  <background_color>
+    <color red="240" green="240" blue="240" />
+  </background_color>
   <x>0</x>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
-    <width>79</width>
-    <scripts />
-    <border_style>0</border_style>
-    <tooltip />
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
     <border_alarm_sensitive>true</border_alarm_sensitive>
-    <font>
-      <fontdata fontName="Arial" height="9" style="1" />
-    </font>
-    <pv_name />
+    <visible>true</visible>
+    <scripts />
     <height>28</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Action Button_2</name>
+    <pv_name />
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
     <foreground_color>
       <color red="0" green="0" blue="128" />
     </foreground_color>
+    <widget_type>Action Button</widget_type>
+    <enabled>true</enabled>
+    <text>Back</text>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <font>
+      <fontdata fontName="Arial" height="9" style="1" />
+    </font>
+    <width>79</width>
+    <push_action_index>0</push_action_index>
+    <border_style>0</border_style>
     <image />
-    <name>Action Button_2</name>
+    <toggle_button>false</toggle_button>
     <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <y>551</y>
     <actions hook="true">
       <action type="OPEN_DISPLAY">
         <path>2_6_1_IntensityGraph.opi</path>
@@ -57,136 +67,136 @@
         <description />
       </action>
     </actions>
-    <toggle_button>false</toggle_button>
-    <push_action_index>0</push_action_index>
-    <text>Back</text>
-    <widget_type>Action Button</widget_type>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
-    <enabled>true</enabled>
-    <y>551</y>
-    <visible>true</visible>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <tooltip />
     <x>703</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
-    <auto_size>false</auto_size>
-    <width>307</width>
-    <scripts />
-    <border_width>1</border_width>
-    <border_style>0</border_style>
-    <tooltip />
-    <actions hook="false" />
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <vertical_alignment>1</vertical_alignment>
-    <transparent>false</transparent>
+    <widget_type>Label</widget_type>
+    <enabled>true</enabled>
+    <text>Intensity Graph</text>
+    <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="18" style="1" />
     </font>
-    <text>Intensity Graph</text>
-    <widget_type>Label</widget_type>
+    <vertical_alignment>1</vertical_alignment>
+    <width>307</width>
+    <border_style>0</border_style>
+    <auto_size>false</auto_size>
+    <scripts />
     <height>86</height>
+    <border_width>1</border_width>
+    <name>Label_8</name>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <transparent>false</transparent>
+    <y>5</y>
+    <actions hook="false" />
+    <tooltip />
+    <x>5</x>
     <background_color>
       <color red="135" green="181" blue="255" />
     </background_color>
-    <enabled>true</enabled>
-    <y>5</y>
-    <visible>true</visible>
     <foreground_color>
       <color red="128" green="0" blue="64" />
     </foreground_color>
-    <horizontal_alignment>1</horizontal_alignment>
-    <name>Label_8</name>
-    <x>5</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
-    <auto_size>false</auto_size>
-    <width>488</width>
-    <scripts />
-    <border_width>1</border_width>
-    <border_style>0</border_style>
-    <tooltip />
-    <actions hook="false" />
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <vertical_alignment>1</vertical_alignment>
-    <transparent>false</transparent>
-    <font>
-      <fontdata fontName="Arial" height="18" style="1" />
-    </font>
+    <widget_type>Label</widget_type>
+    <enabled>true</enabled>
     <text>Examples</text>
-    <widget_type>Label</widget_type>
-    <height>43</height>
-    <background_color>
-      <color red="135" green="181" blue="255" />
-    </background_color>
-    <enabled>true</enabled>
-    <y>48</y>
     <visible>true</visible>
-    <foreground_color>
-      <color red="29" green="40" blue="184" />
-    </foreground_color>
-    <horizontal_alignment>1</horizontal_alignment>
-    <name>Label_6</name>
-    <x>299</x>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
-    <auto_size>false</auto_size>
-    <width>488</width>
-    <scripts />
-    <border_width>1</border_width>
-    <border_style>0</border_style>
-    <tooltip />
-    <actions hook="false" />
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <vertical_alignment>1</vertical_alignment>
-    <transparent>false</transparent>
     <font>
       <fontdata fontName="Arial" height="18" style="1" />
     </font>
-    <text>Best OPI Yet (BOY)</text>
-    <widget_type>Label</widget_type>
-    <height>44</height>
+    <vertical_alignment>1</vertical_alignment>
+    <width>488</width>
+    <border_style>0</border_style>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>43</height>
+    <border_width>1</border_width>
+    <name>Label_6</name>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <transparent>false</transparent>
+    <y>48</y>
+    <actions hook="false" />
+    <tooltip />
+    <x>299</x>
     <background_color>
       <color red="135" green="181" blue="255" />
     </background_color>
-    <enabled>true</enabled>
-    <y>5</y>
-    <visible>true</visible>
     <foreground_color>
       <color red="29" green="40" blue="184" />
     </foreground_color>
-    <horizontal_alignment>1</horizontal_alignment>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <widget_type>Label</widget_type>
+    <enabled>true</enabled>
+    <text>Best OPI Yet (BOY)</text>
+    <visible>true</visible>
+    <font>
+      <fontdata fontName="Arial" height="18" style="1" />
+    </font>
+    <vertical_alignment>1</vertical_alignment>
+    <width>488</width>
+    <border_style>0</border_style>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>44</height>
+    <border_width>1</border_width>
     <name>Label_9</name>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <transparent>false</transparent>
+    <y>5</y>
+    <actions hook="false" />
+    <tooltip />
     <x>299</x>
+    <background_color>
+      <color red="135" green="181" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="29" green="40" blue="184" />
+    </foreground_color>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
-    <width>79</width>
-    <scripts />
-    <border_style>0</border_style>
-    <tooltip />
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
     <border_alarm_sensitive>true</border_alarm_sensitive>
-    <font>
-      <fontdata fontName="Arial" height="9" style="1" />
-    </font>
-    <pv_name />
+    <visible>true</visible>
+    <scripts />
     <height>28</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Action Button</name>
+    <pv_name />
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
     <foreground_color>
       <color red="0" green="0" blue="128" />
     </foreground_color>
+    <widget_type>Action Button</widget_type>
+    <enabled>true</enabled>
+    <text>Go Home</text>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <font>
+      <fontdata fontName="Arial" height="9" style="1" />
+    </font>
+    <width>79</width>
+    <push_action_index>0</push_action_index>
+    <border_style>0</border_style>
     <image>../pictures/home-16x16.png</image>
-    <name>Action Button</name>
+    <toggle_button>false</toggle_button>
     <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <y>552</y>
     <actions hook="true">
       <action type="OPEN_DISPLAY">
         <path>../10_widgets.opi</path>
@@ -197,112 +207,108 @@
         <description />
       </action>
     </actions>
-    <toggle_button>false</toggle_button>
-    <push_action_index>0</push_action_index>
-    <text>Go Home</text>
-    <widget_type>Action Button</widget_type>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
-    <enabled>true</enabled>
-    <y>552</y>
-    <visible>true</visible>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <tooltip />
     <x>6</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.intensityGraph" version="1.0">
-    <y_axis_visible>true</y_axis_visible>
-    <width>351</width>
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <visible>true</visible>
+    <x_axis_axis_title>X Axis</x_axis_axis_title>
     <scripts>
       <path pathString="../scripts/SetIntensityGraphData.js">
         <pv trig="true">sim://ramp(0,10,0.2,1)</pv>
         <pv trig="true">loc://dataSource</pv>
       </path>
     </scripts>
-    <crop_top>0</crop_top>
-    <border_style>0</border_style>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <horizon_profile_y_pv_name>loc://hpy</horizon_profile_y_pv_name>
-    <x_axis_title_font>
-      <fontdata fontName="Arial" height="9" style="1" />
-    </x_axis_title_font>
-    <horizon_profile_x_pv_name>loc://hpx</horizon_profile_x_pv_name>
+    <height>307</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <foreground_color>
-      <color red="0" green="0" blue="0" />
-    </foreground_color>
-    <show_ramp>true</show_ramp>
-    <vertical_profile_y_pv_name>loc://vpy</vertical_profile_y_pv_name>
-    <border_width>1</border_width>
-    <x_axis_axis_color>
-      <color red="0" green="0" blue="0" />
-    </x_axis_axis_color>
-    <actions hook="false" />
-    <data_height>256</data_height>
-    <graph_area_width>256</graph_area_width>
-    <widget_type>Intensity Graph</widget_type>
+    <y_axis_maximum>100.0</y_axis_maximum>
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
-    <y>108</y>
-    <crop_bottom>0</crop_bottom>
-    <x>258</x>
-    <vertical_profile_x_pv_name>loc://vpx</vertical_profile_x_pv_name>
-    <x_axis_show_minor_ticks>true</x_axis_show_minor_ticks>
-    <tooltip />
-    <data_width>256</data_width>
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <pv_name />
+    <enabled>true</enabled>
+    <widget_type>Intensity Graph</widget_type>
+    <width>367</width>
     <color_map>
       <interpolate>true</interpolate>
       <autoscale>true</autoscale>
       <map>2</map>
     </color_map>
-    <height>294</height>
-    <y_axis_axis_title>Y Axis</y_axis_axis_title>
-    <crop_left>0</crop_left>
-    <y_axis_major_tick_step_hint>50</y_axis_major_tick_step_hint>
-    <name>WaveGraph</name>
+    <border_style>0</border_style>
+    <vertical_profile_y_pv_name>loc://vpy</vertical_profile_y_pv_name>
     <x_axis_minimum>0.0</x_axis_minimum>
+    <x_axis_show_minor_ticks>true</x_axis_show_minor_ticks>
+    <crop_bottom>0</crop_bottom>
+    <maximum>1.0</maximum>
+    <border_width>1</border_width>
+    <x_axis_title_font>
+      <fontdata fontName="Arial" height="9" style="1" />
+    </x_axis_title_font>
     <x_axis_maximum>100.0</x_axis_maximum>
+    <crop_right>0</crop_right>
+    <y_axis_visible>true</y_axis_visible>
+    <crop_left>0</crop_left>
+    <graph_area_width>256</graph_area_width>
     <minimum>-1.0</minimum>
-    <graph_area_height>256</graph_area_height>
-    <y_axis_show_minor_ticks>true</y_axis_show_minor_ticks>
-    <y_axis_maximum>100.0</y_axis_maximum>
-    <y_axis_minimum>0.0</y_axis_minimum>
+    <data_height>256</data_height>
+    <y_axis_axis_title>Y Axis</y_axis_axis_title>
+    <y_axis_major_tick_step_hint>50</y_axis_major_tick_step_hint>
+    <x_axis_axis_color>
+      <color red="0" green="0" blue="0" />
+    </x_axis_axis_color>
     <y_axis_title_font>
       <fontdata fontName="Arial" height="9" style="1" />
     </y_axis_title_font>
-    <maximum>1.0</maximum>
-    <x_axis_axis_title>X Axis</x_axis_axis_title>
-    <x_axis_major_tick_step_hint>50</x_axis_major_tick_step_hint>
-    <crop_right>0</crop_right>
     <x_axis_visible>true</x_axis_visible>
-    <enabled>true</enabled>
-    <visible>true</visible>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <name>WaveGraph</name>
     <y_axis_axis_color>
       <color red="0" green="0" blue="0" />
     </y_axis_axis_color>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.combo" version="1.0">
-    <width>145</width>
-    <scripts />
-    <border_style>0</border_style>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
+    <data_width>256</data_width>
+    <vertical_profile_x_pv_name>loc://vpx</vertical_profile_x_pv_name>
+    <y_axis_show_minor_ticks>true</y_axis_show_minor_ticks>
+    <pv_name />
+    <y_axis_minimum>0.0</y_axis_minimum>
+    <horizon_profile_y_pv_name>loc://hpy</horizon_profile_y_pv_name>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <horizon_profile_x_pv_name>loc://hpx</horizon_profile_x_pv_name>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <crop_top>0</crop_top>
+    <graph_area_height>256</graph_area_height>
+    <x_axis_major_tick_step_hint>50</x_axis_major_tick_step_hint>
+    <show_ramp>true</show_ramp>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
+    <actions hook="false" />
+    <y>108</y>
+    <x>258</x>
+    <tooltip />
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.combo" version="1.0">
     <border_alarm_sensitive>true</border_alarm_sensitive>
-    <items_from_pv>false</items_from_pv>
+    <visible>true</visible>
+    <scripts />
+    <height>23</height>
+    <name>ColorMapSelector</name>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <pv_name>loc://colorMap</pv_name>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <enabled>true</enabled>
+    <widget_type>Combo Box</widget_type>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <font>
       <fontdata fontName="Arial" height="9" style="0" />
     </font>
-    <height>22</height>
+    <width>145</width>
+    <border_style>0</border_style>
     <items>
       <s>JET</s>
       <s>GrayScale</s>
@@ -311,316 +317,346 @@ $(pv_value)</tooltip>
       <s>Cool</s>
       <s>Shaded</s>
     </items>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <foreground_color>
-      <color red="0" green="0" blue="0" />
-    </foreground_color>
-    <name>ColorMapSelector</name>
     <border_width>1</border_width>
-    <actions hook="false" />
-    <widget_type>Combo Box</widget_type>
-    <enabled>true</enabled>
-    <background_color>
-      <color red="255" green="255" blue="255" />
-    </background_color>
-    <visible>true</visible>
-    <y>135</y>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <x>625</x>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
-    <auto_size>false</auto_size>
-    <width>150</width>
-    <scripts />
-    <border_width>1</border_width>
-    <border_style>0</border_style>
-    <tooltip />
-    <actions hook="false" />
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <vertical_alignment>1</vertical_alignment>
-    <transparent>true</transparent>
-    <font>
-      <fontdata fontName="Arial" height="9" style="0" />
-    </font>
-    <text>Select ColorMap:</text>
-    <widget_type>Label</widget_type>
-    <height>20</height>
-    <background_color>
-      <color red="255" green="255" blue="255" />
-    </background_color>
-    <enabled>true</enabled>
-    <y>116</y>
-    <visible>true</visible>
-    <foreground_color>
-      <color red="0" green="0" blue="0" />
-    </foreground_color>
-    <horizontal_alignment>0</horizontal_alignment>
-    <name>Label</name>
-    <x>631</x>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.combo" version="1.0">
-    <width>145</width>
-    <scripts />
-    <border_style>0</border_style>
+    <items_from_pv>false</items_from_pv>
+    <actions hook="false" />
+    <y>133</y>
+    <x>643</x>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <items_from_pv>false</items_from_pv>
-    <pv_name>loc://dataSource</pv_name>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <widget_type>Label</widget_type>
+    <enabled>true</enabled>
+    <text>Select ColorMap:</text>
+    <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="9" style="0" />
     </font>
-    <height>22</height>
+    <vertical_alignment>1</vertical_alignment>
+    <width>150</width>
+    <border_style>0</border_style>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <border_width>1</border_width>
+    <name>Label</name>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <transparent>true</transparent>
+    <y>114</y>
+    <actions hook="false" />
+    <tooltip />
+    <x>643</x>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.combo" version="1.0">
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <visible>true</visible>
+    <scripts />
+    <height>23</height>
+    <name>Combo Box_1</name>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <pv_name>loc://dataSource</pv_name>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <enabled>true</enabled>
+    <widget_type>Combo Box</widget_type>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <font>
+      <fontdata fontName="Arial" height="9" style="0" />
+    </font>
+    <width>145</width>
+    <border_style>0</border_style>
     <items>
       <s>Circular Sine Wave</s>
       <s>Linear Sine Wave</s>
     </items>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <foreground_color>
-      <color red="0" green="0" blue="0" />
-    </foreground_color>
-    <name>Combo Box_1</name>
     <border_width>1</border_width>
-    <actions hook="false" />
-    <widget_type>Combo Box</widget_type>
-    <enabled>true</enabled>
-    <background_color>
-      <color red="255" green="255" blue="255" />
-    </background_color>
-    <visible>true</visible>
-    <y>188</y>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <x>625</x>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
-    <auto_size>false</auto_size>
-    <width>150</width>
-    <scripts />
-    <border_width>1</border_width>
-    <border_style>0</border_style>
-    <tooltip />
-    <actions hook="false" />
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <vertical_alignment>1</vertical_alignment>
-    <transparent>true</transparent>
+    <items_from_pv>false</items_from_pv>
+    <actions hook="false" />
+    <y>186</y>
+    <x>643</x>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <widget_type>Label</widget_type>
+    <enabled>true</enabled>
+    <text>Select Data Source:</text>
+    <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="9" style="0" />
     </font>
-    <text>Select Data Source:</text>
-    <widget_type>Label</widget_type>
+    <vertical_alignment>1</vertical_alignment>
+    <width>150</width>
+    <border_style>0</border_style>
+    <auto_size>false</auto_size>
+    <scripts />
     <height>20</height>
-    <background_color>
-      <color red="255" green="255" blue="255" />
-    </background_color>
-    <enabled>true</enabled>
-    <y>169</y>
-    <visible>true</visible>
-    <foreground_color>
-      <color red="0" green="0" blue="0" />
-    </foreground_color>
-    <horizontal_alignment>0</horizontal_alignment>
+    <border_width>1</border_width>
     <name>Label_1</name>
-    <x>630</x>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.xyGraph" version="1.0">
-    <axis_0_show_grid>true</axis_0_show_grid>
-    <trace_0_y_axis_index>1</trace_0_y_axis_index>
-    <axis_0_axis_color>
-      <color red="0" green="0" blue="0" />
-    </axis_0_axis_color>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
-    <axis_count>2</axis_count>
-    <trace_0_trace_type>0</trace_0_trace_type>
-    <axis_1_show_grid>true</axis_1_show_grid>
-    <axis_0_grid_color>
-      <color red="200" green="200" blue="200" />
-    </axis_0_grid_color>
-    <trace_0_x_pv>loc://vpy</trace_0_x_pv>
-    <axis_0_log_scale>false</axis_0_log_scale>
-    <width>211</width>
-    <trace_0_anti_alias>true</trace_0_anti_alias>
-    <axis_0_maximum>1.0</axis_0_maximum>
-    <show_plot_area_border>false</show_plot_area_border>
-    <title_font>
-      <fontdata fontName="Arial" height="12" style="1" />
-    </title_font>
-    <axis_1_axis_color>
-      <color red="0" green="0" blue="0" />
-    </axis_1_axis_color>
-    <axis_1_log_scale>false</axis_1_log_scale>
-    <trace_0_trace_color>
-      <color red="255" green="0" blue="0" />
-    </trace_0_trace_color>
-    <trace_0_x_axis_index>0</trace_0_x_axis_index>
-    <axis_0_auto_scale_threshold>0.0</axis_0_auto_scale_threshold>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <axis_1_auto_scale>false</axis_1_auto_scale>
-    <trace_0_update_delay>100</trace_0_update_delay>
-    <trace_0_line_width>1</trace_0_line_width>
-    <y>109</y>
-    <x>41</x>
-    <show_legend>false</show_legend>
-    <trace_0_plot_mode>0</trace_0_plot_mode>
-    <transparent>false</transparent>
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <trace_0_update_mode>0</trace_0_update_mode>
-    <border_style>0</border_style>
-    <axis_0_dash_grid_line>true</axis_0_dash_grid_line>
-    <axis_1_auto_scale_threshold>0.0</axis_1_auto_scale_threshold>
-    <trace_0_y_pv>loc://vpx</trace_0_y_pv>
-    <trace_0_point_style>0</trace_0_point_style>
-    <enabled>true</enabled>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <trace_count>1</trace_count>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <axis_0_auto_scale>false</axis_0_auto_scale>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <axis_1_minimum>0.0</axis_1_minimum>
-    <axis_0_axis_title>Profile</axis_0_axis_title>
-    <axis_0_minimum>-1.0</axis_0_minimum>
-    <foreground_color>
-      <color red="0" green="0" blue="255" />
-    </foreground_color>
-    <trace_0_buffer_size>256</trace_0_buffer_size>
-    <trace_0_contatenate_data>true</trace_0_contatenate_data>
-    <border_width>1</border_width>
-    <axis_0_time_format>0</axis_0_time_format>
-    <title />
-    <axis_1_time_format>0</axis_1_time_format>
-    <trace_0_chronological>false</trace_0_chronological>
+    <horizontal_alignment>0</horizontal_alignment>
+    <transparent>true</transparent>
+    <y>167</y>
     <actions hook="false" />
-    <axis_0_title_font>
-      <fontdata fontName="Arial" height="9" style="1" />
-    </axis_0_title_font>
-    <widget_type>XY Graph</widget_type>
-    <trace_0_point_size>4</trace_0_point_size>
-    <axis_1_dash_grid_line>true</axis_1_dash_grid_line>
-    <axis_1_maximum>100.0</axis_1_maximum>
-    <pv_name>$(trace_0_y_pv)</pv_name>
-    <axis_1_grid_color>
-      <color red="200" green="200" blue="200" />
-    </axis_1_grid_color>
-    <name>XY Graph</name>
-    <visible>true</visible>
-    <axis_1_axis_title>Y Axis</axis_1_axis_title>
-    <scripts />
-    <axis_1_title_font>
-      <fontdata fontName="Arial" height="9" style="1" />
-    </axis_1_title_font>
-    <trace_0_name>Trace 0</trace_0_name>
-    <height>293</height>
-    <show_toolbar>false</show_toolbar>
-    <plot_area_background_color>
+    <tooltip />
+    <x>643</x>
+    <background_color>
       <color red="255" green="255" blue="255" />
-    </plot_area_background_color>
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.xyGraph" version="1.0">
-    <axis_0_show_grid>true</axis_0_show_grid>
-    <trace_0_y_axis_index>1</trace_0_y_axis_index>
-    <axis_0_axis_color>
-      <color red="0" green="0" blue="0" />
-    </axis_0_axis_color>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
-    <axis_count>2</axis_count>
-    <trace_0_trace_type>0</trace_0_trace_type>
-    <axis_1_show_grid>true</axis_1_show_grid>
-    <axis_0_grid_color>
-      <color red="200" green="200" blue="200" />
-    </axis_0_grid_color>
-    <trace_0_x_pv>loc://hpx</trace_0_x_pv>
-    <axis_0_log_scale>false</axis_0_log_scale>
-    <width>302</width>
-    <trace_0_anti_alias>true</trace_0_anti_alias>
-    <axis_0_maximum>100.0</axis_0_maximum>
-    <show_plot_area_border>false</show_plot_area_border>
-    <title_font>
-      <fontdata fontName="Arial" height="12" style="1" />
-    </title_font>
-    <axis_1_axis_color>
-      <color red="0" green="0" blue="0" />
-    </axis_1_axis_color>
-    <axis_1_log_scale>false</axis_1_log_scale>
-    <trace_0_trace_color>
-      <color red="255" green="0" blue="0" />
-    </trace_0_trace_color>
-    <trace_0_x_axis_index>0</trace_0_x_axis_index>
-    <axis_0_auto_scale_threshold>0.0</axis_0_auto_scale_threshold>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <axis_1_auto_scale>false</axis_1_auto_scale>
-    <trace_0_update_delay>100</trace_0_update_delay>
-    <trace_0_line_width>1</trace_0_line_width>
-    <y>414</y>
-    <x>258</x>
-    <show_legend>false</show_legend>
-    <trace_0_plot_mode>0</trace_0_plot_mode>
-    <transparent>false</transparent>
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <trace_0_update_mode>0</trace_0_update_mode>
-    <border_style>0</border_style>
-    <axis_0_dash_grid_line>true</axis_0_dash_grid_line>
-    <axis_1_auto_scale_threshold>0.0</axis_1_auto_scale_threshold>
-    <trace_0_y_pv>loc://hpy</trace_0_y_pv>
-    <trace_0_point_style>0</trace_0_point_style>
-    <enabled>true</enabled>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <trace_count>1</trace_count>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <axis_0_auto_scale>false</axis_0_auto_scale>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <axis_1_minimum>-1.0</axis_1_minimum>
-    <axis_0_axis_title>X Axis</axis_0_axis_title>
-    <axis_0_minimum>0.0</axis_0_minimum>
-    <foreground_color>
-      <color red="0" green="0" blue="255" />
-    </foreground_color>
-    <trace_0_buffer_size>256</trace_0_buffer_size>
     <trace_0_contatenate_data>false</trace_0_contatenate_data>
-    <border_width>1</border_width>
-    <axis_0_time_format>0</axis_0_time_format>
-    <title />
+    <trace_0_trace_color>
+      <color red="255" green="0" blue="0" />
+    </trace_0_trace_color>
+    <axis_0_auto_scale>false</axis_0_auto_scale>
     <axis_1_time_format>0</axis_1_time_format>
+    <trace_0_plot_mode>0</trace_0_plot_mode>
+    <trace_count>1</trace_count>
     <trace_0_chronological>false</trace_0_chronological>
-    <actions hook="false" />
-    <axis_0_title_font>
-      <fontdata fontName="Arial" height="9" style="1" />
-    </axis_0_title_font>
-    <widget_type>XY Graph</widget_type>
+    <axis_0_show_grid>true</axis_0_show_grid>
+    <axis_0_log_scale>false</axis_0_log_scale>
     <trace_0_point_size>4</trace_0_point_size>
-    <axis_1_dash_grid_line>true</axis_1_dash_grid_line>
-    <axis_1_maximum>1.0</axis_1_maximum>
-    <pv_name>$(trace_0_y_pv)</pv_name>
-    <axis_1_grid_color>
-      <color red="200" green="200" blue="200" />
-    </axis_1_grid_color>
-    <name>XY Graph_1</name>
+    <show_legend>false</show_legend>
+    <y>106</y>
+    <x>41</x>
     <visible>true</visible>
-    <axis_1_axis_title>Profile</axis_1_axis_title>
-    <scripts />
+    <height>308</height>
+    <axis_1_maximum>100.0</axis_1_maximum>
     <axis_1_title_font>
       <fontdata fontName="Arial" height="9" style="1" />
     </axis_1_title_font>
-    <trace_0_name>Trace 0</trace_0_name>
-    <height>142</height>
+    <border_width>1</border_width>
+    <axis_0_axis_color>
+      <color red="0" green="0" blue="0" />
+    </axis_0_axis_color>
+    <name>XY Graph</name>
+    <axis_1_auto_scale_threshold>0.0</axis_1_auto_scale_threshold>
+    <trace_0_line_width>1</trace_0_line_width>
     <show_toolbar>false</show_toolbar>
+    <axis_1_show_grid>true</axis_1_show_grid>
+    <axis_0_grid_color>
+      <color red="200" green="200" blue="200" />
+    </axis_0_grid_color>
+    <axis_0_auto_scale_threshold>0.0</axis_0_auto_scale_threshold>
+    <trace_0_name>Trace 0</trace_0_name>
+    <trace_0_update_mode>0</trace_0_update_mode>
+    <axis_0_axis_title>Profile</axis_0_axis_title>
+    <axis_1_axis_color>
+      <color red="0" green="0" blue="0" />
+    </axis_1_axis_color>
+    <foreground_color>
+      <color red="0" green="0" blue="255" />
+    </foreground_color>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <axis_1_axis_title>Y Axis</axis_1_axis_title>
+    <axis_0_maximum>1.0</axis_0_maximum>
+    <axis_0_time_format>0</axis_0_time_format>
+    <axis_1_log_scale>false</axis_1_log_scale>
+    <title_font>
+      <fontdata fontName="Arial" height="12" style="1" />
+    </title_font>
+    <axis_1_dash_grid_line>true</axis_1_dash_grid_line>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <trace_0_x_pv>loc://vpy</trace_0_x_pv>
+    <trace_0_y_pv>loc://vpx</trace_0_y_pv>
+    <axis_0_title_font>
+      <fontdata fontName="Arial" height="9" style="1" />
+    </axis_0_title_font>
+    <axis_1_auto_scale>true</axis_1_auto_scale>
+    <actions hook="false" />
+    <show_plot_area_border>false</show_plot_area_border>
+    <widget_type>XY Graph</widget_type>
+    <enabled>true</enabled>
+    <width>211</width>
+    <trace_0_buffer_size>256</trace_0_buffer_size>
+    <axis_count>2</axis_count>
+    <transparent>false</transparent>
+    <axis_0_dash_grid_line>true</axis_0_dash_grid_line>
+    <trace_0_x_axis_index>0</trace_0_x_axis_index>
+    <trace_0_point_style>0</trace_0_point_style>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <trace_0_y_axis_index>1</trace_0_y_axis_index>
+    <border_style>0</border_style>
     <plot_area_background_color>
       <color red="255" green="255" blue="255" />
     </plot_area_background_color>
+    <title />
+    <pv_name>$(trace_0_y_pv)</pv_name>
+    <axis_1_minimum>0.0</axis_1_minimum>
+    <axis_0_minimum>-1.0</axis_0_minimum>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <scripts />
+    <trace_0_anti_alias>true</trace_0_anti_alias>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <trace_0_trace_type>0</trace_0_trace_type>
+    <axis_1_grid_color>
+      <color red="200" green="200" blue="200" />
+    </axis_1_grid_color>
+    <trace_0_update_delay>100</trace_0_update_delay>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.xyGraph" version="1.0">
+    <trace_0_contatenate_data>false</trace_0_contatenate_data>
+    <trace_0_trace_color>
+      <color red="255" green="0" blue="0" />
+    </trace_0_trace_color>
+    <axis_0_auto_scale>true</axis_0_auto_scale>
+    <axis_1_time_format>0</axis_1_time_format>
+    <trace_0_plot_mode>0</trace_0_plot_mode>
+    <trace_count>1</trace_count>
+    <trace_0_chronological>false</trace_0_chronological>
+    <axis_0_show_grid>true</axis_0_show_grid>
+    <axis_0_log_scale>false</axis_0_log_scale>
+    <trace_0_point_size>4</trace_0_point_size>
+    <show_legend>false</show_legend>
+    <y>412</y>
+    <x>258</x>
+    <visible>true</visible>
+    <height>142</height>
+    <axis_1_maximum>1.0</axis_1_maximum>
+    <axis_1_title_font>
+      <fontdata fontName="Arial" height="9" style="1" />
+    </axis_1_title_font>
+    <border_width>1</border_width>
+    <axis_0_axis_color>
+      <color red="0" green="0" blue="0" />
+    </axis_0_axis_color>
+    <name>XY Graph_1</name>
+    <axis_1_auto_scale_threshold>0.0</axis_1_auto_scale_threshold>
+    <trace_0_line_width>1</trace_0_line_width>
+    <show_toolbar>false</show_toolbar>
+    <axis_1_show_grid>true</axis_1_show_grid>
+    <axis_0_grid_color>
+      <color red="200" green="200" blue="200" />
+    </axis_0_grid_color>
+    <axis_0_auto_scale_threshold>0.0</axis_0_auto_scale_threshold>
+    <trace_0_name>Trace 0</trace_0_name>
+    <trace_0_update_mode>0</trace_0_update_mode>
+    <axis_0_axis_title>X Axis</axis_0_axis_title>
+    <axis_1_axis_color>
+      <color red="0" green="0" blue="0" />
+    </axis_1_axis_color>
+    <foreground_color>
+      <color red="0" green="0" blue="255" />
+    </foreground_color>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <axis_1_axis_title>Profile</axis_1_axis_title>
+    <axis_0_maximum>100.0</axis_0_maximum>
+    <axis_0_time_format>0</axis_0_time_format>
+    <axis_1_log_scale>false</axis_1_log_scale>
+    <title_font>
+      <fontdata fontName="Arial" height="12" style="1" />
+    </title_font>
+    <axis_1_dash_grid_line>true</axis_1_dash_grid_line>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <trace_0_x_pv>loc://hpx</trace_0_x_pv>
+    <trace_0_y_pv>loc://hpy</trace_0_y_pv>
+    <axis_0_title_font>
+      <fontdata fontName="Arial" height="9" style="1" />
+    </axis_0_title_font>
+    <axis_1_auto_scale>false</axis_1_auto_scale>
+    <actions hook="false" />
+    <show_plot_area_border>false</show_plot_area_border>
+    <widget_type>XY Graph</widget_type>
+    <enabled>true</enabled>
+    <width>317</width>
+    <trace_0_buffer_size>256</trace_0_buffer_size>
+    <axis_count>2</axis_count>
+    <transparent>false</transparent>
+    <axis_0_dash_grid_line>true</axis_0_dash_grid_line>
+    <trace_0_x_axis_index>0</trace_0_x_axis_index>
+    <trace_0_point_style>0</trace_0_point_style>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <trace_0_y_axis_index>1</trace_0_y_axis_index>
+    <border_style>0</border_style>
+    <plot_area_background_color>
+      <color red="255" green="255" blue="255" />
+    </plot_area_background_color>
+    <title />
+    <pv_name>$(trace_0_y_pv)</pv_name>
+    <axis_1_minimum>-1.0</axis_1_minimum>
+    <axis_0_minimum>0.0</axis_0_minimum>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <scripts />
+    <trace_0_anti_alias>true</trace_0_anti_alias>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <trace_0_trace_type>0</trace_0_trace_type>
+    <axis_1_grid_color>
+      <color red="200" green="200" blue="200" />
+    </axis_1_grid_color>
+    <trace_0_update_delay>100</trace_0_update_delay>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <widget_type>Label</widget_type>
+    <enabled>true</enabled>
+    <text>Tips:&#xD;
+&#xD;
+In Run Mode, dragging mouse on graph area will zoom in. &#xD;
+Double clicking will return to original states.&#xD;
+The text tip right below the cursor is (X, Y, Value)</text>
+    <visible>true</visible>
+    <font>
+      <fontdata fontName="Arial" height="10" style="0" />
+    </font>
+    <vertical_alignment>0</vertical_alignment>
+    <width>154</width>
+    <border_style>1</border_style>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>158</height>
+    <border_width>1</border_width>
+    <name>Label_5</name>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <transparent>false</transparent>
+    <y>219</y>
+    <actions hook="false" />
+    <tooltip />
+    <x>643</x>
+    <background_color>
+      <color red="255" green="255" blue="223" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="203" />
+    </foreground_color>
   </widget>
 </display>

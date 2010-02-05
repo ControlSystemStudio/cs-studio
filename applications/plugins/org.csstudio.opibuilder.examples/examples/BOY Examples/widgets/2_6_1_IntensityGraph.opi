@@ -68,7 +68,16 @@ InputData = P11, P12,...P1M, P21, P22, ... P2M, ... PN1, PN2, ...PNM</text>
 -Color Map(color_map). The color map for the graph.&#xD;
 -Show Ramp(show_ramp). Show the color map ramp.&#xD;
 -Graph Area Height(graph_area_height). The height of the drawing graph area.&#xD;
--Graph Area Width(graph_area_width). The width of the drawing graph area.</text>
+-Graph Area Width(graph_area_width). The width of the drawing graph area.&#xD;
+&#xD;
+-Horizon Profile X PV(horizon_profile_x_pv). The output PV where the horizontal profile data on X axis will be written to.&#xD;
+-Horizon Profile Y PV(horizon_profile_y_pv). The output PV where the horizontal profile data on Y axis will be written to.&#xD;
+-Vertical Profile X PV(vertical_profile_x_pv). The output PV where the vertical profile data on X axis will be written to.&#xD;
+-Vertical Profile Y PV(vertical_profile_y_pv). The output PV where the vertical profile data on Y axis will be written to.&#xD;
+-Crop Left (crop_left). The left cropped part of source data.&#xD;
+-Crop Rigth(crop_right). The right cropped part of source data.&#xD;
+-Crop Top(crop_top). The top cropped part of source data.&#xD;
+-Crop Bottom(crop_bottom). The bottom cropped part of source data.</text>
     <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="9" style="0" />
@@ -78,7 +87,7 @@ InputData = P11, P12,...P1M, P21, P22, ... P2M, ... PN1, PN2, ...PNM</text>
     <border_style>1</border_style>
     <auto_size>false</auto_size>
     <scripts />
-    <height>225</height>
+    <height>273</height>
     <border_width>1</border_width>
     <name>Label_4</name>
     <border_color>
@@ -86,7 +95,7 @@ InputData = P11, P12,...P1M, P21, P22, ... P2M, ... PN1, PN2, ...PNM</text>
     </border_color>
     <horizontal_alignment>0</horizontal_alignment>
     <transparent>false</transparent>
-    <y>280</y>
+    <y>272</y>
     <actions hook="false" />
     <tooltip />
     <x>24</x>
@@ -118,11 +127,11 @@ InputData = P11, P12,...P1M, P21, P22, ... P2M, ... PN1, PN2, ...PNM</text>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <transparent>false</transparent>
-    <y>272</y>
+    <y>264</y>
     <actions hook="false" />
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <x>330</x>
+    <x>338</x>
     <background_color>
       <color red="0" green="255" blue="128" />
     </background_color>
@@ -247,7 +256,7 @@ $(pv_value)</tooltip>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <transparent>false</transparent>
-    <y>92</y>
+    <y>96</y>
     <actions hook="false" />
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
@@ -260,23 +269,35 @@ $(pv_value)</tooltip>
     </foreground_color>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <visible>true</visible>
+    <scripts />
+    <height>28</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Action Button_2</name>
+    <pv_name />
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="128" />
+    </foreground_color>
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
     <text>Next</text>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="9" style="1" />
     </font>
     <width>79</width>
     <push_action_index>0</push_action_index>
+    <border_style>0</border_style>
     <image />
-    <scripts />
     <toggle_button>false</toggle_button>
-    <height>28</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <name>Action Button_2</name>
-    <pv_name />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
     <y>562</y>
     <actions hook="true">
       <action type="OPEN_DISPLAY">
@@ -285,35 +306,42 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>true</replace>
+        <description />
       </action>
     </actions>
     <tooltip />
     <x>690</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <visible>true</visible>
+    <scripts />
+    <height>28</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Action Button</name>
+    <pv_name />
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
     <foreground_color>
       <color red="0" green="0" blue="128" />
     </foreground_color>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
     <text>Go Home</text>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="9" style="1" />
     </font>
     <width>79</width>
     <push_action_index>0</push_action_index>
+    <border_style>0</border_style>
     <image>../pictures/home-16x16.png</image>
-    <scripts />
     <toggle_button>false</toggle_button>
-    <height>28</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <name>Action Button</name>
-    <pv_name />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
     <y>562</y>
     <actions hook="true">
       <action type="OPEN_DISPLAY">
@@ -322,15 +350,10 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>true</replace>
+        <description />
       </action>
     </actions>
     <tooltip />
     <x>24</x>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
-    <foreground_color>
-      <color red="0" green="0" blue="128" />
-    </foreground_color>
   </widget>
 </display>
