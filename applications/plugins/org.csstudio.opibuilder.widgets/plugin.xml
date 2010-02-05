@@ -300,6 +300,15 @@
             name="Tabbed Container"
             typeId="org.csstudio.opibuilder.widgets.tab">
       </widget>
+      <widget
+            category="Others"
+            description="A web browser widget which allows you browsing web pages from OPI."
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.WebBrowserEditPart"
+            icon="icons/web_browser.png"
+            model_class="org.csstudio.opibuilder.widgets.model.WebBrowserModel"
+            name="Web Browser"
+            typeId="org.csstudio.opibuilder.widgets.webbrowser">
+      </widget>
    </extension>
    <extension
          point="org.eclipse.ui.popupMenus">
