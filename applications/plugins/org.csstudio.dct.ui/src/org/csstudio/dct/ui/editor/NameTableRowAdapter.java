@@ -48,8 +48,14 @@ class NameTableRowAdapter extends AbstractTableRowAdapter<IElement> {
 	@Override
 	protected Command doSetValue(IElement element, Object value) {
 		Command result = null;
-		if (value != null && !value.equals(AliasResolutionUtil.getNameFromHierarchy(element))) {
-			result = new ChangeBeanPropertyCommand(element, "name", value.toString());
+		if (value == null || !value.equals(AliasResolutionUtil.getNameFromHierarchy(element))) {
+			String value2set = null;
+			
+			if(value!=null && value.toString().length()>0) {
+				value2set = value.toString();
+			}
+			
+			result = new ChangeBeanPropertyCommand(element, "name", value2set);
 		}
 
 		return result;
