@@ -52,44 +52,43 @@ public final class RecordTest {
 		record.addProperty("property4", "propertyvalue4");
 	}
 
-//	Instance are not equal
-//	
-//	/**
-//	 * Test method for {@link org.csstudio.dct.model.internal.Record#equals()}.
-//	 */
-//	@Test
-//	public void testEquals() {
-//		Record r1 = new Record(record, UUID.randomUUID());
-//		Record r2 = new Record(record, UUID.randomUUID());
-//
-//		// .. parent
-//		assertEquals(r1, r2);
-//
-//		// .. name
-//		r1.setName("xx");
-//		assertNotSame(r1, r2);
-//		r2.setName("xx");
-//		assertEquals(r1, r2);
-//
-//		// .. fields
-//		r1.addField("a", "a");
-//		assertNotSame(r1, r2);
-//		r2.addField("a", "a");
-//		assertEquals(r1, r2);
-//
-//		// .. properties
-//		r1.addProperty("a", "a");
-//		assertNotSame(r1, r2);
-//		r2.addProperty("a", "a");
-//		assertEquals(r1, r2);
-//
-//		// .. container
-//		Prototype prototype = new Prototype("a", UUID.randomUUID());
-//		r1.setContainer(prototype);
-//		assertNotSame(r1, r2);
-//		r2.setContainer(prototype);
-//		assertEquals(r1, r2);
-//	}
+	/**
+	 * Test method for {@link org.csstudio.dct.model.internal.Record#equals()}.
+	 */
+	@Test
+	public void testEquals() {
+		UUID uid = UUID.randomUUID();
+		Record r1 = new Record(record, uid);
+		Record r2 = new Record(record, uid);
+
+		// .. parent
+		assertEquals(r1, r2);
+
+		// .. name
+		r1.setName("xx");
+		assertNotSame(r1, r2);
+		r2.setName("xx");
+		assertEquals(r1, r2);
+
+		// .. fields
+		r1.addField("a", "a");
+		assertNotSame(r1, r2);
+		r2.addField("a", "a");
+		assertEquals(r1, r2);
+
+		// .. properties
+		r1.addProperty("a", "a");
+		assertNotSame(r1, r2);
+		r2.addProperty("a", "a");
+		assertEquals(r1, r2);
+
+		// .. container
+		Prototype prototype = new Prototype("a", uid);
+		r1.setContainer(prototype);
+		assertNotSame(r1, r2);
+		r2.setContainer(prototype);
+		assertEquals(r1, r2);
+	}
 
 	/**
 	 * Test method for {@link org.csstudio.dct.model.internal.Record#getType()}.

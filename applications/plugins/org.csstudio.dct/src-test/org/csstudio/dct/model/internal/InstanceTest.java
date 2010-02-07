@@ -47,52 +47,50 @@ public final class InstanceTest {
 		instance.setParameterValue("name_b", "value_b");
 	}
 
-	
-//	Instances are not equal...
-//	
-//	/**
-//	 * Test method for {@link org.csstudio.dct.model.internal.Instance#equals()}.
-//	 */
-//	@Test
-//	public void testEquals() {
-//		Instance i1 = new Instance(prototype1, UUID.randomUUID());
-//		Instance i2 = new Instance(prototype1, UUID.randomUUID());
-//		
-//		// .. parent
-//		assertEquals(i1, i2);
-//		
-//		// .. name
-//		i1.setName("A");
-//		assertNotSame(i1, i2);
-//		i2.setName("A");
-//		assertEquals(i1, i2);
-//		
-//		// .. parameter values
-//		i1.setParameterValue("a","a");
-//		assertNotSame(i1, i2);
-//		i2.setParameterValue("a","a");
-//		assertEquals(i1, i2);
-//		
-//		// .. properties
-//		i1.addProperty("a","a");
-//		assertNotSame(i1, i2);
-//		i2.addProperty("a","a");
-//		assertEquals(i1, i2);
-//		
-//		// .. records
-//		Record record = new Record("r", "ai", UUID.randomUUID());
-//		i1.addRecord(record);
-//		assertNotSame(i1, i2);
-//		i2.addRecord(record);
-//		assertEquals(i1, i2);
-//		
-//		// .. instances
-//		i1.addInstance(instance);
-//		assertNotSame(i1, i2);
-//		i2.addInstance(instance);
-//		assertEquals(i1, i2);
-//		
-//	}
+	/**
+	 * Test method for {@link org.csstudio.dct.model.internal.Instance#equals()}.
+	 */
+	@Test
+	public void testEquals() {
+		UUID uid = UUID.randomUUID();
+		Instance i1 = new Instance(prototype1, uid);
+		Instance i2 = new Instance(prototype1, uid);
+		
+		// .. parent
+		assertEquals(i1, i2);
+		
+		// .. name
+		i1.setName("A");
+		assertNotSame(i1, i2);
+		i2.setName("A");
+		assertEquals(i1, i2);
+		
+		// .. parameter values
+		i1.setParameterValue("a","a");
+		assertNotSame(i1, i2);
+		i2.setParameterValue("a","a");
+		assertEquals(i1, i2);
+		
+		// .. properties
+		i1.addProperty("a","a");
+		assertNotSame(i1, i2);
+		i2.addProperty("a","a");
+		assertEquals(i1, i2);
+		
+		// .. records
+		Record record = new Record("r", "ai", uid);
+		i1.addRecord(record);
+		assertNotSame(i1, i2);
+		i2.addRecord(record);
+		assertEquals(i1, i2);
+		
+		// .. instances
+		i1.addInstance(instance);
+		assertNotSame(i1, i2);
+		i2.addInstance(instance);
+		assertEquals(i1, i2);
+		
+	}
 
 	
 	/**
