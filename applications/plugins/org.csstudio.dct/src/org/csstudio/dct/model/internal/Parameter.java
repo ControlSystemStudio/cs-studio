@@ -96,4 +96,11 @@ public final class Parameter implements Serializable {
 		}
 		return result;
 	}
+
+	/**
+	 * Clones the parameter.
+	 */
+	public Parameter clone() {
+		return new Parameter(name, defaultValue);
+	}
 }
