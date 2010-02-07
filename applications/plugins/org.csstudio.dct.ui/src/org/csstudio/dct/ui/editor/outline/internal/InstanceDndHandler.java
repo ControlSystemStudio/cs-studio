@@ -42,8 +42,6 @@ public class InstanceDndHandler extends AbstractDnDHandler {
 		} else {
 			result = new CloneInstanceCommand(instance, targetContainer, "Copy of ");
 		}
-//		CompoundCommand cmd = new CompoundCommand();
-//		CloneUtil.chainInstance(targetFolder, targetContainer, instance, cmd, instance.getProject(), "Copy of ");
 
 		return result;
 	}

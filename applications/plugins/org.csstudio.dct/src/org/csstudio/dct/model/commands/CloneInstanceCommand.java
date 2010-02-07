@@ -144,6 +144,10 @@ public final class CloneInstanceCommand extends Command {
 			chain.add(new ChangeParameterValueCommand(instance, pkey, original.getParameterValue(pkey)));
 		}
 
+		// .. synchronize the instance structures
+		//FIXME:
+		chain.add(new SynchronizeInstancesCommand(original, instance, targetProject));
+		
 		// .. synchronize the record structures
 		chain.add(new SynchronizeRecordsCommand(original, instance, targetProject));
 

@@ -98,7 +98,7 @@ public final class Instance extends AbstractContainer implements IInstance {
 	 *{@inheritDoc}
 	 */
 	public boolean isInherited() {
-		return getContainer() instanceof IInstance;
+		return getParent() instanceof IInstance;
 	}
 	
 	/**

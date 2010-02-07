@@ -110,7 +110,6 @@ public final class OutlinePage extends ContentOutlinePage implements CommandStac
 
 		});
 
-		//FIXME: 2010-02-05 DnD anschalten!
 		initDragAndDrop(viewer);
 
 		viewer.getControl().setMenu(menuManager.createContextMenu(viewer.getControl()));
@@ -135,13 +134,15 @@ public final class OutlinePage extends ContentOutlinePage implements CommandStac
 			public void dragStart(DragSourceEvent event) {
 				// .. save current selection in local var
 				IStructuredSelection sel = (IStructuredSelection) viewer.getSelection();
-				if (sel != null && sel.getFirstElement() instanceof IElement) {
+				
+				if (sel != null && sel.toList().size()==1 && sel.getFirstElement() instanceof IElement) {
 					dndSource = (IElement) sel.getFirstElement();
+					event.doit = getDndHandler(dndSource) != null;
 				} else {
 					dndSource = null;
+					event.doit = false;
 				}
 
-				event.doit = getDndHandler(dndSource) != null;
 			}
 
 		});
