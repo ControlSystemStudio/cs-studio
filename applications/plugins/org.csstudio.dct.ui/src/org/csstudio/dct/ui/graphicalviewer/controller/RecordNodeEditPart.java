@@ -3,7 +3,13 @@ package org.csstudio.dct.ui.graphicalviewer.controller;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.ui.UiExecutionService;
@@ -31,6 +37,7 @@ import org.eclipse.gef.EditPart;
 import org.eclipse.gef.NodeEditPart;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.epics.css.dal.Timestamp;
 
@@ -47,6 +54,16 @@ public class RecordNodeEditPart extends AbstractGraphicalEditPart implements Nod
 	private ChopboxAnchor anchorCenter;
 
 	private List<ConnectionAnchor> outgoingAnchors, incomingAnchors;
+
+	private static final Map<ConnectionState, RGB> colors = new HashMap<ConnectionState, RGB>();
+
+	static {
+		colors.put(ConnectionState.INITIAL, new RGB(255, 255, 0));
+		colors.put(ConnectionState.CONNECTED, new RGB(0, 255, 0));
+		colors.put(ConnectionState.CONNECTION_LOST, new RGB(255, 0, 0));
+		colors.put(ConnectionState.DISCONNECTED, new RGB(255, 0, 0));
+		colors.put(ConnectionState.CONNECTION_FAILED, new RGB(255, 0, 0));
+	}
 
 	/**
 	 *{@inheritDoc}
@@ -72,6 +89,27 @@ public class RecordNodeEditPart extends AbstractGraphicalEditPart implements Nod
 				String resolvedName = ResolutionUtil.resolve(name, record);
 				IProcessVariableAddress pv = ProcessVariableAdressFactory.getInstance().createProcessVariableAdress(resolvedName);
 				ProcessVariableConnectionServiceFactory.getDefault().getProcessVariableConnectionService().register(this, pv, ValueType.DOUBLE);
+
+				RecordFigure figure = (RecordFigure) getFigure();
+
+				// .. set initial color for the connection state
+				figure.setConnectionIndictorColor(CustomMediaFactory.getInstance().getColor(colors.get(ConnectionState.INITIAL)));
+
+				// .. prepare record information for tooltip
+				Map<String, String> fields = record.getFinalFields();
+
+				List<String> keys = new ArrayList<String>(fields.keySet());
+				Collections.sort(keys);
+				LinkedHashMap<String, String> infos = new LinkedHashMap<String, String>();
+				for (String key : keys) {
+					String value = fields.get(key);
+
+					if (value != null && value.length() > 0) {
+						infos.put(key, value);
+					}
+				}
+				figure.setRecordInformation(infos);
+
 			} catch (AliasResolutionException e) {
 				CentralLogger.getInstance().error(this, e.getMessage());
 			}
@@ -134,6 +172,22 @@ public class RecordNodeEditPart extends AbstractGraphicalEditPart implements Nod
 
 		createOrUpdateAnchorsLocations();
 
+		Color bgcolor = CustomMediaFactory.getInstance().getColor(100, 100, 255);
+		Color fgcolor = CustomMediaFactory.getInstance().getColor(255, 255, 255);
+
+		// .. render passive records with white background color
+		String scanFieldSetting = getCastedModel().getElement().getFinalFields().get("SCAN");
+		if ("passive".equalsIgnoreCase(scanFieldSetting)) {
+			bgcolor = CustomMediaFactory.getInstance().getColor(255, 255, 255);
+			fgcolor = CustomMediaFactory.getInstance().getColor(0, 0, 0);
+		}
+
+		figure.setBackgroundColor(bgcolor);
+		figure.setForegroundColor(fgcolor);
+
+		// .. render connection state
+		figure.setConnectionIndictorColor(bgcolor);
+
 		return figure;
 	}
 
@@ -157,8 +211,6 @@ public class RecordNodeEditPart extends AbstractGraphicalEditPart implements Nod
 	 *{@inheritDoc}
 	 */
 	public AbstractConnectionAnchor getTargetConnectionAnchor(ConnectionEditPart connectionEditpart) {
-		Connection connection = (Connection) connectionEditpart.getModel();
-		int index = getCastedModel().getTargetConnections().indexOf(connection);
 		return anchorCenter;
 	}
 
@@ -192,35 +244,22 @@ public class RecordNodeEditPart extends AbstractGraphicalEditPart implements Nod
 		return getCastedModel().getTargetConnections();
 	}
 
+	protected RecordFigure getCastedFigure() {
+		return (RecordFigure) getFigure();
+	}
+
 	/**
 	 *{@inheritDoc}
 	 */
 	public void connectionStateChanged(final ConnectionState connectionState) {
-		final RecordFigure figure = (RecordFigure) getFigure();
 		UiExecutionService.getInstance().queue(new Runnable() {
 			public void run() {
-				RGB rgb;
+				getCastedFigure().setConnectionIndictorColor(CustomMediaFactory.getInstance().getColor(colors.get(connectionState)));
 
-				switch (connectionState) {
-				case CONNECTED:
-					rgb = new RGB(0, 255, 0);
-					break;
-				case CONNECTION_LOST:
-					rgb = new RGB(255, 0, 0);
-					break;
-				case DISCONNECTED:
-					rgb = new RGB(255, 255, 0);
-					break;
-				case CONNECTION_FAILED:
-					rgb = new RGB(255, 0, 255);
-					break;
-				default:
-					rgb = new RGB(255, 255, 255);
-					break;
-				}
+				LinkedHashMap<String, String> infos = new LinkedHashMap<String, String>();
+				infos.put("State:", connectionState.name());
 
-				figure.setBackgroundColor(CustomMediaFactory.getInstance().getColor(rgb));
-				figure.setValue(connectionState.toString());
+				getCastedFigure().setConnectionInformation(infos);
 			}
 		});
 
@@ -230,15 +269,6 @@ public class RecordNodeEditPart extends AbstractGraphicalEditPart implements Nod
 	 *{@inheritDoc}
 	 */
 	public void errorOccured(final String error) {
-		final RecordFigure figure = (RecordFigure) getFigure();
-		if (error != null) {
-			UiExecutionService.getInstance().queue(new Runnable() {
-				public void run() {
-					figure.setValue(error);
-					figure.setBackgroundColor(CustomMediaFactory.getInstance().getColor(255, 0, 0));
-				}
-			});
-		}
 
 	}
 
@@ -246,15 +276,6 @@ public class RecordNodeEditPart extends AbstractGraphicalEditPart implements Nod
 	 *{@inheritDoc}
 	 */
 	public void valueChanged(final Object value, Timestamp timestamp) {
-		final RecordFigure figure = (RecordFigure) getFigure();
-		if (value != null) {
-			UiExecutionService.getInstance().queue(new Runnable() {
-				public void run() {
-					figure.setValue(value.toString());
-					figure.setBackgroundColor(CustomMediaFactory.getInstance().getColor(0, 255, 0));
-				}
-			});
-		}
 	}
 
 	private RecordNode getCastedModel() {
@@ -263,17 +284,17 @@ public class RecordNodeEditPart extends AbstractGraphicalEditPart implements Nod
 
 	private void createOrUpdateAnchorsLocations() {
 		Dimension size = new Dimension(70, 30);
-		
+
 		anchorLeft.offsetH = 0;
 		anchorLeft.offsetV = size.height / 2;
 
 		anchorRight.offsetH = size.width;
 		anchorRight.offsetV = size.height / 2;
 
-		anchorTop.offsetH = size.width/2;
+		anchorTop.offsetH = size.width / 2;
 		anchorTop.offsetV = 0;
 
-		anchorBottom.offsetH = size.width/2;
+		anchorBottom.offsetH = size.width / 2;
 		anchorBottom.offsetV = size.height;
 	}
 
