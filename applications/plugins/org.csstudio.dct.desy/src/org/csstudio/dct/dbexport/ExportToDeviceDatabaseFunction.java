@@ -19,9 +19,8 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 /**
- * Record function for archiving records.
- * 
- * FIXME: svw: Replace the dummy implementation with real stuff!
+ * Record function that archives record information. Information ist stored in
+ * DESY device database.
  * 
  * @author Sven Wende
  * 
@@ -50,21 +49,21 @@ public final class ExportToDeviceDatabaseFunction implements IRecordFunction {
 		// get hibernate session
 		Session session = SessionFactoryUtil.getInstance().getCurrentSession();
 		Transaction tx = null;
-		
+
 		// do archiving within a single transaction
 		try {
 			// .. begin transaction
 			tx = session.beginTransaction();
-			
+
 			// .. delete existing database entries for this dct project
 			monitor.subTask("deleting old entries for project");
-			Query query = session.createQuery("DELETE FROM Record WHERE dctProjectId='"+project.getId().toString()+"'");
+			Query query = session.createQuery("DELETE FROM Record WHERE dctProjectId='" + project.getId().toString() + "'");
 			query.executeUpdate();
-			
+
 			// .. archive all records
 			for (IRecord r : project.getFinalRecords()) {
 				monitor.subTask("Processing record " + AliasResolutionUtil.getEpicsNameFromHierarchy(r));
-				
+
 				if (!r.isAbstract()) {
 					try {
 						archiveIoNames(r, session);
@@ -74,7 +73,7 @@ public final class ExportToDeviceDatabaseFunction implements IRecordFunction {
 				}
 				monitor.internalWorked(1);
 			}
-			
+
 			// .. commit transaction
 			tx.commit();
 		} catch (RuntimeException e) {
@@ -87,11 +86,9 @@ public final class ExportToDeviceDatabaseFunction implements IRecordFunction {
 				CentralLogger.getInstance().error(this, e);
 			}
 		}
-		
-		
+
 	}
 
-	
 	private void archiveIoNames(IRecord record, Session session) throws AliasResolutionException {
 		String archiveProperty = record.getFinalProperties().get(ATTR_ARCHIVE);
 		if (archiveProperty == null) {
@@ -99,30 +96,42 @@ public final class ExportToDeviceDatabaseFunction implements IRecordFunction {
 		}
 
 		assert archiveProperty != null;
-
 		boolean archive = Boolean.valueOf(archiveProperty);
 
+		// .. archive this record ?
 		if (archive) {
-
 			Map<String, String> fields = record.getFinalFields();
 
+			// .. find field that uses the ioname() function
 			for (String key : fields.keySet()) {
 				String val = fields.get(key);
 
 				Matcher matcher = FIND_IONAME_FUNCTION.matcher(val);
 
 				if (matcher.find()) {
+					// .. extract parameters of the ioname() function
 					String[] params = matcher.group(1).split(",");
 					for (int i = 0; i < params.length; i++) {
 						params[i] = params[i].trim();
 					}
 
+					// .. create archive entry
 					if (params.length > 0) {
 						Record dbRecord = new Record();
+
+						// .. io name
 						dbRecord.setIoName(ResolutionUtil.resolve(params[0], record));
+
+						// .. resolved epics name
 						dbRecord.setEpicsName(ResolutionUtil.resolve(AliasResolutionUtil.getEpicsNameFromHierarchy(record), record));
+
+						// .. dct id of the record
 						dbRecord.setDctId(record.getId().toString());
+
+						// .. dct id of the project
 						dbRecord.setDctProjectId(record.getContainer().getProject().getId().toString());
+
+						// .. record type
 						dbRecord.setRecordType(record.getType());
 
 						// .. save record to database
@@ -132,26 +141,5 @@ public final class ExportToDeviceDatabaseFunction implements IRecordFunction {
 			}
 		}
 	}
-
-//	private void archive(Record dbRecord) {
-//		Transaction tx = null;
-//		Session session = SessionFactoryUtil.getInstance().getCurrentSession();
-//		try {
-//			tx = session.beginTransaction();
-//			session.save(dbRecord);
-//			Query query = session.createQuery("");
-//			query.executeUpdate();
-//			tx.commit();
-//		} catch (RuntimeException e) {
-//			if (tx != null && tx.isActive()) {
-//				try {
-//					tx.rollback();
-//				} catch (HibernateException e1) {
-//					CentralLogger.getInstance().error(this, "Error during transaction rollback.", e1);
-//				}
-//				CentralLogger.getInstance().error(this, e);
-//			}
-//		}
-//	}
 
 }
