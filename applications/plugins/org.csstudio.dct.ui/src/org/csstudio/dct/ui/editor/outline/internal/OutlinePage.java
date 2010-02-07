@@ -62,7 +62,6 @@ public final class OutlinePage extends ContentOutlinePage implements CommandStac
 		dndHandlers.put(IPrototype.class, new PrototypeDndHandler());
 		dndHandlers.put(IRecord.class, new RecordDndHandler());
 		dndHandlers.put(IInstance.class, new InstanceDndHandler());
-		dndHandlers.put(IFolder.class, new FolderDndHandler());
 	}
 
 	/**
