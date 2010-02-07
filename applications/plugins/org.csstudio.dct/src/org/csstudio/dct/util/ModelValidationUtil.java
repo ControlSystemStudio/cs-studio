@@ -1,5 +1,8 @@
 package org.csstudio.dct.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.csstudio.dct.model.IContainer;
 import org.csstudio.dct.model.IInstance;
 import org.csstudio.dct.model.IPrototype;
@@ -12,6 +15,35 @@ import org.csstudio.dct.model.IPrototype;
  */
 public class ModelValidationUtil {
 	private ModelValidationUtil() {
+	}
+	
+	/**
+	 * Returns all instances that dependend on the specified instance.
+	 *  
+	 * @param instance the instance
+	 * 
+	 * @return all instances depending on the specified instance
+	 */
+	public static List<IInstance> recursivelyGetDependentInstances(IInstance instance) {
+		List<IInstance> result = new ArrayList<IInstance>();
+
+		for (IContainer c : instance.getDependentContainers()) {
+			assert c instanceof IInstance;
+			IInstance di = (IInstance) c;
+			List<IInstance> dependent = recursivelyGetDependentInstances(di);
+
+			for (IInstance i : dependent) {
+				if (result.contains(i)) {
+					throw new IllegalArgumentException("TODO");
+				}
+			}
+
+			result.addAll(dependent);
+			result.add(di);
+		}
+
+		return result;
+
 	}
 
 	/**
@@ -56,4 +88,6 @@ public class ModelValidationUtil {
 
 		return result;
 	}
+	
+	
 }

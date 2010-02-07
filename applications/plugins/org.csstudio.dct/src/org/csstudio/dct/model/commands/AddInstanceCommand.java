@@ -17,34 +17,77 @@ import org.eclipse.gef.commands.CompoundCommand;
  * 
  */
 public final class AddInstanceCommand extends Command {
+	private boolean processInitialization;
 	private CompoundCommand internalCommand;
 	private IContainer container;
 	private IFolder folder;
 	private IInstance instance;
+	private int index;
 
 	/**
 	 * Constructor.
-	 * @param folder the folder
-	 * @param instance the instance
+	 * 
+	 * @param folder
+	 *            the folder
+	 * @param instance
+	 *            the instance
+	 * @param processInitialization
+	 *            true, if the provided instance needs to be initialized from
+	 *            its prototype
+	 * @param index
+	 *            the insertation index
 	 */
-	public AddInstanceCommand(IFolder folder, IInstance instance) {
+	public AddInstanceCommand(IFolder folder, IInstance instance, boolean processInitialization, int index) {
 		assert instance != null;
-		assert instance.getParentFolder() == null;
-		assert instance.getContainer() == null;
 		this.instance = instance;
 		this.folder = folder;
+		this.processInitialization = processInitialization;
+		this.index = index;
 	}
 
 	/**
 	 * Constructor.
-	 * @param container the container
-	 * @param instance the instance
+	 * 
+	 * @param folder
+	 *            the folder
+	 * @param instance
+	 *            the instance
 	 */
-	public AddInstanceCommand(IContainer container, IInstance instance) {
+	public AddInstanceCommand(IFolder folder, IInstance instance) {
+		this(folder, instance, true, -1);
+	}
+
+	/**
+	 * Constructor.
+	 * 
+	 * @param container
+	 *            the container
+	 * @param instance
+	 *            the instance
+	 * @param processInitialization
+	 *            true, if the provided instance needs to be initialized from
+	 *            its prototype
+	 * @param index
+	 *            the insertation index
+	 */
+	public AddInstanceCommand(IContainer container, IInstance instance, boolean processInitialization, int index) {
 		assert instance != null;
-		assert instance.getParentFolder() == null;
 		this.instance = instance;
 		this.container = container;
+		this.processInitialization = processInitialization;
+		this.index = index;
+	}
+
+	/**
+	 * Constructor.
+	 * 
+	 * @param container
+	 *            the container
+	 * @param instance
+	 *            the instance
+	 */
+	public AddInstanceCommand(IContainer container, IInstance instance) {
+		this(container, instance, true, -1);
 	}
 
 	/**
@@ -52,15 +95,28 @@ public final class AddInstanceCommand extends Command {
 	 */
 	@Override
 	public void execute() {
+		assert instance.getParentFolder() == null;
+		assert instance.getContainer() == null;
+
 		internalCommand = new CompoundCommand();
 
-		internalCommand.add(new InitInstanceCommand(instance));
+		if (processInitialization) {
+			internalCommand.add(new InitInstanceCommand(instance));
+		}
 
 		if (folder != null) {
-			folder.addMember(instance);
+			if(index>-1) {
+				folder.addMember(index, instance);
+			} else {
+				folder.addMember(instance);
+			}
 			instance.setParentFolder(folder);
 		} else {
-			container.addInstance(instance);
+			if(index>-1) {
+				container.addInstance(index, instance);
+			} else {
+				container.addInstance(instance);
+			}
 
 			// ... link physical container
 			instance.setContainer(container);
@@ -68,7 +124,7 @@ public final class AddInstanceCommand extends Command {
 			// ... add-push to model elements that inherit from here
 			for (IContainer c : container.getDependentContainers()) {
 				Instance pushedInstance = new Instance(instance, UUID.randomUUID());
-				internalCommand.add(new AddInstanceCommand(c, pushedInstance));
+				internalCommand.add(new AddInstanceCommand(c, pushedInstance, true, index));
 			}
 		}
 

@@ -11,19 +11,34 @@ import org.eclipse.gef.commands.Command;
  * 
  */
 public final class AddPrototypeCommand extends Command {
+	private int index = -1;
 	private IFolder folder;
 	private IPrototype prototype;
 
 	/**
 	 * Constructor.
-	 * @param folder the folder
-	 * @param prototype the prototype
+	 * 
+	 * @param folder
+	 *            the folder
+	 * @param prototype
+	 *            the prototype
+	 */
+	public AddPrototypeCommand(IFolder folder, IPrototype prototype, int index) {
+		this(folder, prototype);
+		this.index = index;
+	}
+
+	/**
+	 * Constructor.
+	 * 
+	 * @param folder
+	 *            the folder
+	 * @param prototype
+	 *            the prototype
 	 */
 	public AddPrototypeCommand(IFolder folder, IPrototype prototype) {
 		assert folder != null;
 		assert prototype != null;
-		assert prototype.getParentFolder() == null;
-		assert prototype.getParent() == null;
 		this.folder = folder;
 		this.prototype = prototype;
 	}
@@ -33,7 +48,14 @@ public final class AddPrototypeCommand extends Command {
 	 */
 	@Override
 	public void execute() {
-		folder.addMember(prototype);
+		assert prototype.getParentFolder() == null;
+		assert prototype.getParent() == null;
+
+		if (index > -1) {
+			folder.addMember(Math.min(index, folder.getMembers().size()), prototype);
+		} else {
+			folder.addMember(prototype);
+		}
 		prototype.setParentFolder(folder);
 	}
 
@@ -42,6 +64,7 @@ public final class AddPrototypeCommand extends Command {
 	 */
 	@Override
 	public void undo() {
+		index = folder.getMembers().indexOf(prototype);
 		folder.removeMember(prototype);
 		prototype.setParentFolder(null);
 	}

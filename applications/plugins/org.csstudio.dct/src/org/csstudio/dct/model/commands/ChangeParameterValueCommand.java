@@ -3,6 +3,7 @@
  */
 package org.csstudio.dct.model.commands;
 
+import org.csstudio.dct.model.IContainer;
 import org.csstudio.dct.model.IInstance;
 import org.eclipse.gef.commands.Command;
 
@@ -12,7 +13,7 @@ import org.eclipse.gef.commands.Command;
  * @author Sven Wende
  */
 public final class ChangeParameterValueCommand extends Command {
-	private IInstance instance;
+	private IContainer instance;
 	private String key;
 	private String value;
 	private String oldValue;
@@ -23,7 +24,7 @@ public final class ChangeParameterValueCommand extends Command {
 	 * @param key the parameter name
 	 * @param value the parameter value
 	 */
-	public ChangeParameterValueCommand(IInstance container, String key, String value) {
+	public ChangeParameterValueCommand(IContainer container, String key, String value) {
 		assert container != null;
 		assert key != null;
 		assert value != null;

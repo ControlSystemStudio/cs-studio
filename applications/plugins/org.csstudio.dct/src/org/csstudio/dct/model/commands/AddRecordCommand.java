@@ -10,10 +10,16 @@ import org.csstudio.dct.model.IRecord;
  * 
  */
 public final class AddRecordCommand extends AbstractRecordCommand {
-
 	private IContainer container;
 	private IRecord record;
+	private int index=-1;
 
+	public AddRecordCommand(IContainer container, IRecord record, int index) {
+		this.container = container;
+		this.record = record;
+		this.index=index;
+	}
+	
 	/**
 	 * Constructor.
 	 * @param container the record container
@@ -29,7 +35,7 @@ public final class AddRecordCommand extends AbstractRecordCommand {
 	 */
 	@Override
 	public void execute() {
-		addRecord(container, record, container.getRecords().size());
+		addRecord(container, record, index>-1?index:container.getRecords().size());
 	}
 
 	/**

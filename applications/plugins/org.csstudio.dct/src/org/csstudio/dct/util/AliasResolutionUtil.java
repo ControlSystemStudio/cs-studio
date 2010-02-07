@@ -106,7 +106,7 @@ public final class AliasResolutionUtil {
 
 	/**
 	 * Returns the final aliases for a container. The aliases are inherited
-	 * by inheritance and from container´s.
+	 * from hierarchical parents (classical inheritance) and from container´s.
 	 * 
 	 * @param container
 	 *            the container

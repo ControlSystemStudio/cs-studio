@@ -23,6 +23,7 @@ import org.csstudio.dct.model.commands.AddRecordCommand;
 import org.csstudio.dct.model.commands.ChangeBeanPropertyCommand;
 import org.csstudio.dct.model.commands.ChangeFieldValueCommand;
 import org.csstudio.dct.model.commands.ChangeParameterValueCommand;
+import org.csstudio.dct.model.commands.CloneInstanceCommand;
 import org.csstudio.dct.model.commands.SynchronizeRecordsCommand;
 import org.csstudio.dct.model.internal.Instance;
 import org.csstudio.dct.model.internal.Parameter;
@@ -73,7 +74,7 @@ public abstract class BaseCopyAndPasteStrategy implements ICopyAndPasteStrategy 
 		IPrototype prototype = null;
 
 		if (element != null && element instanceof IPrototype) {
-			// in case, the copy & paste occured within the same project, we can
+			// in case, the copy & paste occurred within the same project, we can
 			// simply use the prototype from the project
 			prototype = (IPrototype) element;
 		} else if (alreadyCreatedPrototypes.containsKey(pid)) {
@@ -83,23 +84,14 @@ public abstract class BaseCopyAndPasteStrategy implements ICopyAndPasteStrategy 
 			// we have to create a copy of the prototype
 			prototype = chainPrototype(instance2copy.getPrototype(), commandChain, alreadyCreatedPrototypes, project, targetFolder);
 		}
-
-		// chain all necessary commands to create the new instance
-		IInstance instance = new Instance(prototype, UUID.randomUUID());
-
+		
+		
 		if (targetContainer != null) {
-			commandChain.add(new AddInstanceCommand(targetContainer, instance));
+			commandChain.add(new CloneInstanceCommand(instance2copy, targetContainer, null, prototype));
 		} else {
-			commandChain.add(new AddInstanceCommand(targetFolder, instance));
+			commandChain.add(new CloneInstanceCommand(instance2copy, targetFolder, null, prototype));
 		}
-
-		// .. parameter values
-		for (String pkey : instance2copy.getParameterValues().keySet()) {
-			commandChain.add(new ChangeParameterValueCommand(instance, pkey, instance2copy.getParameterValue(pkey)));
-		}
-
-		// .. record settings
-		commandChain.add(new SynchronizeRecordsCommand(instance2copy, instance, project));
+		
 	}
 
 	/**
