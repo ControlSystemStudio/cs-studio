@@ -16,6 +16,8 @@ import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.TraverseEvent;
@@ -37,7 +39,8 @@ public final class MenuCellEditor extends CellEditor {
 	private AbstractListViewer _viewer;
 	private CCombo _combobox;
 	private IChoice _selection;
-
+	private IMenuDefinition _menuDefinition;
+	
 	/**
 	 * Constructor.
 	 * 
@@ -49,7 +52,8 @@ public final class MenuCellEditor extends CellEditor {
 	public MenuCellEditor(Composite parent, IMenuDefinition menuDefinition) {
 		super(parent, SWT.READ_ONLY);
 		assert menuDefinition != null;
-		_viewer.setInput(menuDefinition.getChoices());
+		_menuDefinition = menuDefinition;
+		_viewer.setInput(_menuDefinition.getChoices());
 	}
 
 	/**
@@ -99,34 +103,19 @@ public final class MenuCellEditor extends CellEditor {
 			}
 
 			public void widgetSelected(SelectionEvent event) {
-				Object o = _viewer.getSelection();
-
-				if (o instanceof IChoice) {
-					_selection = (IChoice) o;
-				}
-
-			}
-		});
-
-		_combobox.addKeyListener(new KeyAdapter() {
-			// hook key pressed - see PR 14201
-			public void keyPressed(KeyEvent e) {
-				keyReleaseOccured(e);
-			}
-		});
-
-		_combobox.addSelectionListener(new SelectionAdapter() {
-			public void widgetDefaultSelected(SelectionEvent event) {
-				applyEditorValueAndDeactivate();
-			}
-
-			public void widgetSelected(SelectionEvent event) {
-				ISelection sel = _viewer.getSelection();
+				Object sel = _viewer.getSelection();
 
 				if (sel instanceof IStructuredSelection) {
 					_selection = (IChoice) ((IStructuredSelection) sel).getFirstElement();
-					applyEditorValueAndDeactivate();
 				}
+
+			}
+		});
+
+		_combobox.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDoubleClick(MouseEvent e) {
+				applyEditorValueAndDeactivate();
 			}
 		});
 
@@ -177,7 +166,12 @@ public final class MenuCellEditor extends CellEditor {
 	 */
 	@Override
 	protected void doSetValue(Object value) {
-		_viewer.setSelection(new StructuredSelection(value));
+		for(IChoice choice : _menuDefinition.getChoices()) {
+			if(choice.getDescription().equals(value)) {
+				_selection = choice;
+				_viewer.setSelection(new StructuredSelection(_selection));
+			}
+		}
 	}
 
 	/**
