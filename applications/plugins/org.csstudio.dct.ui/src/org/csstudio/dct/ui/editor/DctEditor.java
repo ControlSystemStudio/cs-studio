@@ -31,10 +31,13 @@ import org.csstudio.platform.ui.util.LayoutUtil;
 import org.csstudio.platform.util.StringUtil;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.commands.CommandStackListener;
+import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -45,10 +48,13 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeSelection;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.layout.FillLayout;
@@ -57,15 +63,19 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IGotoMarker;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
+
+import com.cosylab.naming.Criterion;
 
 /**
  * The DCT Editor implementation.
@@ -173,16 +183,25 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 
 		Composite c = new Composite(composite, SWT.NONE);
 		c.setLayoutData(LayoutUtil.createGridData());
-		c.setLayout(new FillLayout());
+		FillLayout layout = new FillLayout();
+		layout.spacing=5;
+		c.setLayout(layout);
 
-		Label label = new Label(c, SWT.NONE);
-		label.setText("Choose Format:");
 		ComboViewer viewer = new ComboViewer(new CCombo(c, SWT.READ_ONLY | SWT.BORDER));
 		viewer.getCCombo().setEditable(false);
 		viewer.getCCombo().setVisibleItemCount(20);
 		viewer.setContentProvider(new ArrayContentProvider());
 		viewer.setLabelProvider(new LabelProvider());
-		viewer.setInput(Extensions.lookupExporterExtensions().toArray());
+		List<ExporterDescriptor> exporterExtensions = Extensions.lookupExporterExtensions();
+		viewer.setInput(exporterExtensions);
+		
+		// .. choose default exporter
+		for(ExporterDescriptor d : exporterExtensions) {
+			if(d.isStandard()) {
+				exporterDescriptor = d;
+				viewer.setSelection(new StructuredSelection(exporterDescriptor));
+			}
+		}
 
 		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
@@ -192,6 +211,22 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 				updatePreview();
 			}
 		});
+
+		final Text searchBox = new Text(c, SWT.None);
+		searchBox.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				searchAndMarkInPreview(searchBox.getText(), false);
+			}
+		});
+
+		Button searchButton = new Button(c, SWT.NONE);
+		searchButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseUp(MouseEvent e) {
+				searchAndMarkInPreview(searchBox.getText(), true);
+			}
+		});
+		searchButton.setText("Search");
 
 		Button saveToFileButton = new Button(c, SWT.NONE);
 		saveToFileButton.addMouseListener(new MouseAdapter() {
@@ -237,6 +272,22 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 		setPageText(index, "Preview DB-File");
 	}
 
+	private void searchAndMarkInPreview(String criteria, boolean startFromCaret) {
+
+		if (criteria != null && criteria.length() > 0) {
+			int offset = startFromCaret?dbFilePreviewText.getCaretOffset() : 0;
+			String text = dbFilePreviewText.getText();
+			int index = text.substring(offset).indexOf(criteria);
+			
+			if(index>-1) {
+				int pos = offset + index;
+				dbFilePreviewText.setSelection(pos, pos + criteria.length());
+			} else {
+				searchAndMarkInPreview(criteria, false);
+			}
+		}
+
+	}
 	/**
 	 * Updates the preview of the db file.
 	 */
@@ -301,7 +352,6 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 		// .. set editor title
 		setPartName(file.getName());
 
-		
 		try {
 			// .. load the file contents
 			project = DctActivator.getDefault().getPersistenceService().loadProject(file);
@@ -408,6 +458,13 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 				marker.setAttribute(IMarker.LOCATION, e.getId().toString());
 				marker.setAttribute(IMarker.MESSAGE, e.getErrorMessage());
 			}
+			
+			// .. mark file as changed
+			file.touch(new NullProgressMonitor());
+			
+			// .. save workspace changes to persist the new markers
+			ResourcesPlugin.getWorkspace().save(true, new NullProgressMonitor());
+			
 		} catch (CoreException e) {
 			CentralLogger.getInstance().info(this, e);
 		}
