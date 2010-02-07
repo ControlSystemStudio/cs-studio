@@ -86,7 +86,7 @@ public class HierarchyView extends ViewPart implements IPartListener, ISelection
 		});
 
 		partActivated(getSite().getPage().getActivePart());
-		
+
 		getSite().getPage().addPartListener(this);
 
 		getSite().getPage().addSelectionListener("org.eclipse.ui.views.ContentOutline", this);
@@ -100,9 +100,9 @@ public class HierarchyView extends ViewPart implements IPartListener, ISelection
 	public void partActivated(IWorkbenchPart part) {
 		if (part instanceof DctEditor) {
 			editor = (DctEditor) part;
-			
+
 			treeViewer.setInput(editor.getProject());
-			
+
 			selectionChanged(null, null);
 		}
 	}
@@ -123,41 +123,42 @@ public class HierarchyView extends ViewPart implements IPartListener, ISelection
 
 	}
 
-
 	public void selectionChanged(IWorkbenchPart part, ISelection s2) {
 		ISelection selection = getSite().getPage().getSelection("org.eclipse.ui.views.ContentOutline");
 
 		IStructuredSelection sel = (IStructuredSelection) selection;
 
-		Object e = sel.getFirstElement();
+		if (sel != null) {
+			Object e = sel.getFirstElement();
 
-		if (sel != null && e != null && e != currentPrototype) {
+			if (e != null && e != currentPrototype) {
 
-			currentPrototype = null;
+				currentPrototype = null;
 
-			if (e instanceof IPrototype) {
-				currentPrototype = (IPrototype) e;
-			} else if (e instanceof IInstance) {
-				currentPrototype = ((IInstance) e).getPrototype();
-			} else if (e instanceof IRecord) {
-				IRecord r = (IRecord) e;
+				if (e instanceof IPrototype) {
+					currentPrototype = (IPrototype) e;
+				} else if (e instanceof IInstance) {
+					currentPrototype = ((IInstance) e).getPrototype();
+				} else if (e instanceof IRecord) {
+					IRecord r = (IRecord) e;
 
-				if (r.getContainer() instanceof IPrototype) {
-					currentPrototype = (IPrototype) r.getContainer();
-				} else if (r.getContainer() instanceof IInstance) {
-					currentPrototype = ((IInstance) r.getContainer()).getPrototype();
+					if (r.getContainer() instanceof IPrototype) {
+						currentPrototype = (IPrototype) r.getContainer();
+					} else if (r.getContainer() instanceof IInstance) {
+						currentPrototype = ((IInstance) r.getContainer()).getPrototype();
+					}
 				}
-			}
 
-			if (currentPrototype != null) {
-				setPartName("Instances of [" + currentPrototype.getName() + "]");
+				if (currentPrototype != null) {
+					setPartName("Instances of [" + currentPrototype.getName() + "]");
 
-				List<IInstance> instances = new SearchInstancesVisitor().search(editor.getProject(), currentPrototype.getId());
+					List<IInstance> instances = new SearchInstancesVisitor().search(editor.getProject(), currentPrototype.getId());
 
-				visibleIds = determineVisibleIds(instances);
+					visibleIds = determineVisibleIds(instances);
 
-				treeViewer.refresh();
-				treeViewer.expandAll();
+					treeViewer.refresh();
+					treeViewer.expandAll();
+				}
 			}
 		}
 	}
@@ -188,7 +189,7 @@ public class HierarchyView extends ViewPart implements IPartListener, ISelection
 			addPathElements(folder.getParentFolder(), visibleIds);
 		}
 	}
-	
+
 	@Override
 	public void dispose() {
 		super.dispose();
