@@ -50,10 +50,4 @@ public final class AddRecordAction extends AbstractOutlineAction {
 		return command;
 	}
 
-	@Override
-	protected void afterSelectionChanged(List<IElement> selection, IAction action) {
-		IProject project = getProject();
-		action.setEnabled(project != null && project.getDatabaseDefinition() != null);
-	}
-
 }
