@@ -44,15 +44,17 @@ public class ExtensionPointUtil {
 
 		for (IConfigurationElement element : elements) {
 			try {
+				String pluginId = element.getNamespaceIdentifier();
 				String id = element.getAttribute("id"); //$NON-NLS-1$
 				String name = element.getAttribute("name"); //$NON-NLS-1$
 				E service = (E) element.createExecutableExtension("class"); //$NON-NLS-1$
-
+				String iconPath = element.getAttribute("icon");
+				assert pluginId !=null;
 				assert id != null;
 				assert name != null;
 				assert service != null;
 
-				ServiceExtension<E> extension = new ServiceExtension<E>(id, name, service);
+				ServiceExtension<E> extension = new ServiceExtension<E>(pluginId, id, name, service, iconPath);
 				services.put(id, extension);
 
 			} catch (CoreException e) {

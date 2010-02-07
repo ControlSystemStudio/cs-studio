@@ -11,6 +11,7 @@ import org.csstudio.dct.IRecordFunction;
 import org.csstudio.dct.ServiceExtension;
 import org.csstudio.dct.model.IProject;
 import org.csstudio.dct.model.IRecord;
+import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -123,7 +124,7 @@ public final class DctEditorContributor extends MultiPageEditorActionBarContribu
 	 *{@inheritDoc}
 	 */
 	public void contributeToMenu(IMenuManager manager) {
-		IMenuManager menu = new MenuManager("Editor &Menu");
+		IMenuManager menu = new MenuManager("DCT");
 		manager.prependToGroup(IWorkbenchActionConstants.MB_ADDITIONS, menu);
 
 		// actions for record functions
@@ -140,7 +141,10 @@ public final class DctEditorContributor extends MultiPageEditorActionBarContribu
 			this.extension = extension;
 			setText(extension.getName());
 			setDescription(extension.getName());
-			setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(IDE.SharedImages.IMG_OBJS_TASK_TSK));
+			if (extension.getIconPath() != null) {
+				setImageDescriptor(CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(extension.getPluginId(),
+						extension.getIconPath()));
+			}
 		}
 
 		public void setProject(IProject project) {
@@ -153,9 +157,9 @@ public final class DctEditorContributor extends MultiPageEditorActionBarContribu
 				final IRecordFunction function = extension.getService();
 
 				ProgressMonitorDialog dialog = new ProgressMonitorDialog(Display.getCurrent().getActiveShell());
-				
+
 				try {
-					dialog.run(false, true, new IRunnableWithProgress(){
+					dialog.run(false, true, new IRunnableWithProgress() {
 						public void run(IProgressMonitor monitor) {
 							function.run(project, monitor);
 						}
@@ -165,7 +169,7 @@ public final class DctEditorContributor extends MultiPageEditorActionBarContribu
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				
+
 			}
 		}
 	}

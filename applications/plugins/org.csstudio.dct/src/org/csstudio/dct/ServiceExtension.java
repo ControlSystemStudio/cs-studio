@@ -4,15 +4,19 @@
 package org.csstudio.dct;
 
 public class ServiceExtension<E> {
+	private String pluginId;
 	private String id;
 	private String name;
 	private E service;
+	private String iconPath;
 
-	ServiceExtension(String id, String name, E service) {
+	ServiceExtension(String pluginId, String id, String name, E service, String iconPath) {
 		super();
+		this.pluginId = pluginId;
 		this.id = id;
 		this.name = name;
 		this.service = service;
+		this.iconPath = iconPath;
 	}
 
 	public String getId() {
@@ -25,6 +29,14 @@ public class ServiceExtension<E> {
 
 	public E getService() {
 		return service;
+	}
+	
+	public String getPluginId() {
+		return pluginId;
+	}
+	
+	public String getIconPath() {
+		return iconPath;
 	}
 
 }
