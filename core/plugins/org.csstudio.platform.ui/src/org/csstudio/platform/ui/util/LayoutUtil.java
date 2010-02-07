@@ -21,6 +21,7 @@
  */
 package org.csstudio.platform.ui.util;
 
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -32,8 +33,9 @@ import org.eclipse.swt.widgets.Group;
  * This class provides som useful static convinience methods for standard SWT
  * layout tasks.
  * 
- * @author Sven Wende
+ * @deprecated Use {@link GridDataFactory} instead - its much more convenient.
  * 
+ * @author Sven Wende
  */
 public final class LayoutUtil {
 	/**
