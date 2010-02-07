@@ -5,6 +5,7 @@
          point="org.csstudio.dct.recordfunctions">
       <recordfunction
             class="org.csstudio.dct.dbexport.ExportToDeviceDatabaseFunction"
+            icon="icons/function.png"
             id="org.csstudio.dct.dbexport.ExportToDeviceDatabaseFunction"
             name="Export To Device Database">
          <attribute
