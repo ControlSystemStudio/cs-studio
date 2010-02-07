@@ -274,7 +274,7 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
 	 * 
 	 * @return true, if this connector can be disposed, false otherwise
 	 */
-	public final synchronized boolean isDisposable() {
+	public final boolean isDisposable() {
 		// perform a cleanup first
 		// cleanupWeakReferences();
 
@@ -786,7 +786,7 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
 		return IProcessVariable.TYPE_ID;
 	}
 
-	public synchronized void block() {
+	public void block() {
 		_keepAliveUntil = System.currentTimeMillis() + BLOCKING_TIMEOUT;
 	}
 
