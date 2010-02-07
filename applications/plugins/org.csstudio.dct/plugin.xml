@@ -10,20 +10,23 @@
          point="org.csstudio.dct.exporters">
       <exporter
             class="org.csstudio.dct.export.internal.SimpleDbFileExporter"
+            default="false"
             description="Standard DB-File"
-            icon="icons/db-file-exporter.png"
+            icon="icons/exporter.png"
             id="simpleDbExporter">
       </exporter>
       <exporter
             class="org.csstudio.dct.export.internal.AdvancedDbFileExporter"
+            default="true"
             description="Advanced DB-File"
-            icon="icons/db-file-exporter.png"
+            icon="icons/exporter.png"
             id="advancedDbExporter">
       </exporter>
       <exporter
             class="org.csstudio.dct.export.internal.RecordNamesExporter"
+            default="false"
             description="Record Names"
-            icon="icons/db-file-exporter.png"
+            icon="icons/exporter.png"
             id="recordNameExporter">
       </exporter>
    </extension>
