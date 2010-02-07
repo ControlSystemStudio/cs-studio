@@ -79,7 +79,10 @@ public final class ProblemVisitor implements IVisitor {
 		} else {
 			// .. check that final EPICS names for concrete records are unique
 			// all over the project
-			if (!record.isAbstract()) {
+
+			Boolean disabled = AliasResolutionUtil.getPropertyViaHierarchy(record, "disabled");
+			boolean real = !record.isAbstract();
+			if (real && !disabled) {
 				try {
 					String finalEpicsName = ResolutionUtil.resolve(AliasResolutionUtil.getEpicsNameFromHierarchy(record), record);
 
