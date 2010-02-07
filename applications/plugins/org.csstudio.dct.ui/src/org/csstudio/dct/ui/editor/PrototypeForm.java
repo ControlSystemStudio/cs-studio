@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.csstudio.dct.model.IPrototype;
 import org.csstudio.dct.model.commands.AddParameterCommand;
+import org.csstudio.dct.model.commands.ChangeParameterValueCommand;
 import org.csstudio.dct.model.commands.RemoveParameterCommand;
 import org.csstudio.dct.model.internal.Parameter;
 import org.csstudio.dct.ui.Activator;
@@ -14,6 +15,7 @@ import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.platform.ui.util.LayoutUtil;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
+import org.eclipse.gef.commands.CompoundCommand;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
@@ -39,10 +41,13 @@ import org.eclipse.ui.PlatformUI;
  * 
  */
 public final class PrototypeForm extends AbstractPropertyContainerForm<IPrototype> {
-	private IPrototype input;
+	private ParameterClipboard parameterClipboard;
 	private ConvenienceTableWrapper parameterTable;
 	private ParameterAddAction parameterAddAction;
 	private ParameterRemoveAction parameterRemoveAction;
+	private Button copyButton;
+	private Button pasteWithValuesButton;
+	private Button pasteWithoutValuesButton;
 
 	/**
 	 * Constructor.
@@ -52,6 +57,7 @@ public final class PrototypeForm extends AbstractPropertyContainerForm<IPrototyp
 	 */
 	public PrototypeForm(DctEditor editor) {
 		super(editor);
+		parameterClipboard = new ParameterClipboard();
 	}
 
 	/**
@@ -73,7 +79,8 @@ public final class PrototypeForm extends AbstractPropertyContainerForm<IPrototyp
 		buttons.setLayout(new FillLayout());
 
 		Button addButton = new Button(buttons, SWT.FLAT);
-		addButton.setText("Add");
+		addButton.setImage(CustomMediaFactory.getInstance().getImageFromPlugin(Activator.PLUGIN_ID, "icons/add.jpg"));
+		addButton.setToolTipText("Add New Parameter");
 		addButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
@@ -83,11 +90,74 @@ public final class PrototypeForm extends AbstractPropertyContainerForm<IPrototyp
 
 		final Button removeButton = new Button(buttons, SWT.FLAT);
 		removeButton.setEnabled(false);
-		removeButton.setText("Remove");
+		removeButton.setImage(CustomMediaFactory.getInstance().getImageFromPlugin(Activator.PLUGIN_ID, "icons/delete.png"));
+		removeButton.setToolTipText("Remove  Selected Parameter");
 		removeButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
 				removeParameter();
+			}
+		});
+
+		copyButton = new Button(buttons, SWT.FLAT);
+		copyButton.setEnabled(true);
+		copyButton.setImage(CustomMediaFactory.getInstance().getImageFromPlugin(Activator.PLUGIN_ID, "icons/copy.gif"));
+		copyButton.setToolTipText("Copy Parameters");
+		copyButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				parameterClipboard.setContent(getInput().getParameters());
+				updatePasteButtons();
+			}
+		});
+
+		pasteWithValuesButton = new Button(buttons, SWT.FLAT);
+		pasteWithValuesButton.setEnabled(false);
+		pasteWithValuesButton.setImage(CustomMediaFactory.getInstance().getImageFromPlugin(Activator.PLUGIN_ID, "icons/paste.gif"));
+		pasteWithValuesButton.setToolTipText("Paste Parameters");
+		pasteWithValuesButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				List<Parameter> parameters = parameterClipboard.getContent();
+
+				CompoundCommand chain = new CompoundCommand("Paste Parameters");
+
+				for (Parameter p : parameters) {
+					if (getInput().hasParameter(p.getName())) {
+						chain.add(new ChangeParameterValueCommand(getInput(), p.getName(), p.getDefaultValue()));
+					} else {
+						chain.add(new AddParameterCommand(getInput(), p.clone()));
+					}
+				}
+
+				if (!chain.isEmpty()) {
+					getCommandStack().execute(chain);
+				}
+
+			}
+		});
+
+		pasteWithoutValuesButton = new Button(buttons, SWT.FLAT);
+		pasteWithoutValuesButton.setEnabled(false);
+		pasteWithoutValuesButton.setImage(CustomMediaFactory.getInstance().getImageFromPlugin(Activator.PLUGIN_ID, "icons/paste.gif"));
+		pasteWithoutValuesButton.setToolTipText("Paste Parameters (Without Default Values)");
+		pasteWithoutValuesButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				List<Parameter> parameters = parameterClipboard.getContent();
+
+				CompoundCommand chain = new CompoundCommand("Paste Parameters");
+
+				for (Parameter p : parameters) {
+					if (!getInput().hasParameter(p.getName())) {
+
+						chain.add(new AddParameterCommand(getInput(), new Parameter(p.getName(), null)));
+					}
+				}
+
+				if (!chain.isEmpty()) {
+					getCommandStack().execute(chain);
+				}
 			}
 		});
 
@@ -122,16 +192,21 @@ public final class PrototypeForm extends AbstractPropertyContainerForm<IPrototyp
 	protected void doSetInput(IPrototype prototype) {
 		super.doSetInput(prototype);
 
-		// memorize current input 
-		this.input = prototype;
-		
 		// prepare input for parameter table
 		List<ITableRow> rowsForParameters = new ArrayList<ITableRow>();
 		for (Parameter p : prototype.getParameters()) {
 			rowsForParameters.add(new ParameterTableRowAdapter(p));
 		}
-
 		parameterTable.setInput(rowsForParameters);
+
+		// update buttons states
+		copyButton.setEnabled(!rowsForParameters.isEmpty());
+		updatePasteButtons();
+	}
+
+	private void updatePasteButtons() {
+		pasteWithValuesButton.setEnabled(!parameterClipboard.isEmpty());
+		pasteWithoutValuesButton.setEnabled(!parameterClipboard.isEmpty());
 	}
 
 	/**
