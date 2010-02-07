@@ -68,7 +68,7 @@ public final class RecordForm extends AbstractPropertyContainerForm<IRecord> {
 		composite.setLayout(LayoutUtil.createGridLayout(1, 5, 8, 8));
 
 		recordFieldTable = WidgetUtil.create3ColumnTable(composite, commandStack);
-		recordFieldTable.getViewer().getControl().setLayoutData(LayoutUtil.createGridDataForHorizontalFillingCell(300));
+		recordFieldTable.getViewer().getControl().setLayoutData(LayoutUtil.createGridDataForFillingCell());
 
 		Composite buttons = new Composite(composite, SWT.None);
 		buttons.setLayout(LayoutUtil.createGridLayout(3, 0, 5, 5));
@@ -99,7 +99,7 @@ public final class RecordForm extends AbstractPropertyContainerForm<IRecord> {
 
 		// .. filter button
 		final Button hideDefaultsButton = new Button(buttons, SWT.CHECK);
-		hideDefaultsButton.setLayoutData(LayoutUtil.createGridData());
+		hideDefaultsButton.setLayoutData(LayoutUtil.createGridDataForVerticalFillingCell());
 		hideDefaultsButton.setText("Hide Defaults");
 		hideDefaultsButton.addMouseListener(new MouseAdapter() {
 			@Override
@@ -114,7 +114,7 @@ public final class RecordForm extends AbstractPropertyContainerForm<IRecord> {
 		// .. the expand item
 		ExpandItem expandItem = new ExpandItem(bar, SWT.NONE);
 		expandItem.setText("Fields");
-		expandItem.setHeight(370);
+		expandItem.setHeight(400);
 		expandItem.setControl(composite);
 		expandItem.setExpanded(true);
 		expandItem.setImage(CustomMediaFactory.getInstance().getImageFromPlugin(Activator.PLUGIN_ID, "icons/tab_fields.png"));
@@ -145,10 +145,10 @@ public final class RecordForm extends AbstractPropertyContainerForm<IRecord> {
 		StringBuffer sb = new StringBuffer();
 		sb.append(record.getType());
 		sb.append("-Record");
-		
-		if(!record.isAbstract()) {
+
+		if (!record.isAbstract()) {
 			try {
-				String	resolvedName = ResolutionUtil.resolve(AliasResolutionUtil.getEpicsNameFromHierarchy(record), record);
+				String resolvedName = ResolutionUtil.resolve(AliasResolutionUtil.getEpicsNameFromHierarchy(record), record);
 				sb.append(" (");
 				sb.append(resolvedName);
 				sb.append(")");
