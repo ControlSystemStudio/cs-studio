@@ -40,22 +40,22 @@ public enum ZoomType{
 
         /** Zoom 'in' around mouse pointer along horizontal axis */
         ZOOM_IN_HORIZONTALLY("Zoom In Horizontally",  createImage("icons/ZoomInHoriz.png"),
-                createImage("icons/ZoomInCursor.png"),
+                createImage("icons/ZoomInHorizCursor.png"),
                 XYGraphFlags.SEPARATE_ZOOM),
 				
         /** Zoom 'out' around mouse pointer along horizontal axis */
         ZOOM_OUT_HORIZONTALLY("Zoom Out Horizontally",  createImage("icons/ZoomOutHoriz.png"),
-                createImage("icons/ZoomOutCursor.png"),
+                createImage("icons/ZoomOutHorizCursor.png"),
                 XYGraphFlags.SEPARATE_ZOOM),
 
         /** Zoom 'in' around mouse pointer along vertical axis */
         ZOOM_IN_VERTICALLY("Zoom In Vertically",  createImage("icons/ZoomInVert.png"),
-                createImage("icons/ZoomInCursor.png"),
+                createImage("icons/ZoomInVertCursor.png"),
                 XYGraphFlags.SEPARATE_ZOOM),
 				
         /** Zoom 'out' around mouse pointer along vertical axes */
         ZOOM_OUT_VERTICALLY("Zoom Out Vertically",  createImage("icons/ZoomOutVert.png"),
-                createImage("icons/ZoomOutCursor.png"),
+                createImage("icons/ZoomOutHorizCursor.png"),
                 XYGraphFlags.SEPARATE_ZOOM),
 				
         /** Zoom 'out' around mouse pointer */
