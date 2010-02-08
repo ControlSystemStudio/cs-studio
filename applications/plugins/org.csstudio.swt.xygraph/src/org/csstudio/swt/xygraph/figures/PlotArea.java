@@ -239,88 +239,100 @@ public class PlotArea extends Figure {
 		}
 	}
 	
-	private void zoomIn(){
+    /** Zoom 'in'
+     *  @param horizontally along x axes?
+     *  @param vertically along y axes?
+     */
+	private void zoomIn(final boolean horizontally, final boolean vertically){
 		double oValue, l, r1, r2, t1, t2;
-		for(Axis axis : xyGraph.getXAxisList()){
-			oValue = axis.getPositionValue(start.x, false);
-			if(axis.isLogScaleEnabled()){
-				l = Math.log10(axis.getRange().getUpper()) - 
-						Math.log10(axis.getRange().getLower());
-				r1 = (Math.log10(oValue) - Math.log10(axis.getRange().getLower()))/l;
-				r2 = (Math.log10(axis.getRange().getUpper()) - Math.log10(oValue))/l;
-				t1 = Math.pow(10, Math.log10(axis.getRange().getLower()) + r1 * ZOOM_RATIO * l);
-				t2 = Math.pow(10, Math.log10(axis.getRange().getUpper()) - r2 * ZOOM_RATIO * l);
-			}else{
-				l = axis.getRange().getUpper()-axis.getRange().getLower();
-				r1 = (oValue - axis.getRange().getLower())/l;
-				r2 = (axis.getRange().getUpper() - oValue)/l;
-				t1 = axis.getRange().getLower() + 
-					r1 * ZOOM_RATIO * l;
-				t2 = axis.getRange().getUpper() - r2 * ZOOM_RATIO * l;				
-			}
-			axis.setRange(t1, t2);
-		}	
-		for(Axis axis : xyGraph.getYAxisList()){
-			oValue = axis.getPositionValue(start.y, false);
-			if(axis.isLogScaleEnabled()){
-				l = Math.log10(axis.getRange().getUpper()) - 
-						Math.log10(axis.getRange().getLower());
-				r1 = (Math.log10(oValue) - Math.log10(axis.getRange().getLower()))/l;
-				r2 = (Math.log10(axis.getRange().getUpper()) - Math.log10(oValue))/l;
-				t1 = Math.pow(10, Math.log10(axis.getRange().getLower()) + r1 * ZOOM_RATIO * l);
-				t2 = Math.pow(10, Math.log10(axis.getRange().getUpper()) - r2 * ZOOM_RATIO * l);
-			}else{
-				l = axis.getRange().getUpper()-axis.getRange().getLower();
-				r1 = (oValue - axis.getRange().getLower())/l;
-				r2 = (axis.getRange().getUpper() - oValue)/l;
-				t1 = axis.getRange().getLower() + 
-					r1 * ZOOM_RATIO * l;
-				t2 = axis.getRange().getUpper() - r2 * ZOOM_RATIO * l;				
-			}
-			axis.setRange(t1, t2);
-		}		
+        if (horizontally)
+    		for(Axis axis : xyGraph.getXAxisList()){
+    			oValue = axis.getPositionValue(start.x, false);
+    			if(axis.isLogScaleEnabled()){
+    				l = Math.log10(axis.getRange().getUpper()) - 
+    						Math.log10(axis.getRange().getLower());
+    				r1 = (Math.log10(oValue) - Math.log10(axis.getRange().getLower()))/l;
+    				r2 = (Math.log10(axis.getRange().getUpper()) - Math.log10(oValue))/l;
+    				t1 = Math.pow(10, Math.log10(axis.getRange().getLower()) + r1 * ZOOM_RATIO * l);
+    				t2 = Math.pow(10, Math.log10(axis.getRange().getUpper()) - r2 * ZOOM_RATIO * l);
+    			}else{
+    				l = axis.getRange().getUpper()-axis.getRange().getLower();
+    				r1 = (oValue - axis.getRange().getLower())/l;
+    				r2 = (axis.getRange().getUpper() - oValue)/l;
+    				t1 = axis.getRange().getLower() + 
+    					r1 * ZOOM_RATIO * l;
+    				t2 = axis.getRange().getUpper() - r2 * ZOOM_RATIO * l;				
+    			}
+    			axis.setRange(t1, t2);
+    		}	
+        if (vertically)
+    		for(Axis axis : xyGraph.getYAxisList()){
+    			oValue = axis.getPositionValue(start.y, false);
+    			if(axis.isLogScaleEnabled()){
+    				l = Math.log10(axis.getRange().getUpper()) - 
+    						Math.log10(axis.getRange().getLower());
+    				r1 = (Math.log10(oValue) - Math.log10(axis.getRange().getLower()))/l;
+    				r2 = (Math.log10(axis.getRange().getUpper()) - Math.log10(oValue))/l;
+    				t1 = Math.pow(10, Math.log10(axis.getRange().getLower()) + r1 * ZOOM_RATIO * l);
+    				t2 = Math.pow(10, Math.log10(axis.getRange().getUpper()) - r2 * ZOOM_RATIO * l);
+    			}else{
+    				l = axis.getRange().getUpper()-axis.getRange().getLower();
+    				r1 = (oValue - axis.getRange().getLower())/l;
+    				r2 = (axis.getRange().getUpper() - oValue)/l;
+    				t1 = axis.getRange().getLower() + 
+    					r1 * ZOOM_RATIO * l;
+    				t2 = axis.getRange().getUpper() - r2 * ZOOM_RATIO * l;				
+    			}
+    			axis.setRange(t1, t2);
+    		}		
 	}
 	
-	private void zoomOut(){
+	/** Zoom 'out'
+	 *  @param horizontally along x axes?
+	 *  @param vertically along y axes?
+	 */
+	private void zoomOut(final boolean horizontally, final boolean vertically){
 		double oValue, l, r1, r2, t1, t2;
-		for(Axis axis : xyGraph.getXAxisList()){
-			oValue = axis.getPositionValue(start.x, false);
-			if(axis.isLogScaleEnabled()){
-				l = Math.log10(axis.getRange().getUpper()) - 
-						Math.log10(axis.getRange().getLower());
-				r1 = (Math.log10(oValue) - Math.log10(axis.getRange().getLower()))/l;
-				r2 = (Math.log10(axis.getRange().getUpper()) - Math.log10(oValue))/l;
-				t1 = Math.pow(10, Math.log10(axis.getRange().getLower()) - r1 * ZOOM_RATIO * l);
-				t2 = Math.pow(10, Math.log10(axis.getRange().getUpper()) + r2 * ZOOM_RATIO * l);
-			}else{
-				l = axis.getRange().getUpper()-axis.getRange().getLower();
-				r1 = (oValue - axis.getRange().getLower())/l;
-				r2 = (axis.getRange().getUpper() - oValue)/l;
-				t1 = axis.getRange().getLower() - 
-					r1 * ZOOM_RATIO * l;
-				t2 = axis.getRange().getUpper() + r2 * ZOOM_RATIO * l;				
-			}
-			axis.setRange(t1, t2);
-		}	
-		for(Axis axis : xyGraph.getYAxisList()){
-			oValue = axis.getPositionValue(start.y, false);
-			if(axis.isLogScaleEnabled()){
-				l = Math.log10(axis.getRange().getUpper()) - 
-						Math.log10(axis.getRange().getLower());
-				r1 = (Math.log10(oValue) - Math.log10(axis.getRange().getLower()))/l;
-				r2 = (Math.log10(axis.getRange().getUpper()) - Math.log10(oValue))/l;
-				t1 = Math.pow(10, Math.log10(axis.getRange().getLower()) - r1 * ZOOM_RATIO * l);
-				t2 = Math.pow(10, Math.log10(axis.getRange().getUpper()) + r2 * ZOOM_RATIO * l);
-			}else{
-				l = axis.getRange().getUpper()-axis.getRange().getLower();
-				r1 = (oValue - axis.getRange().getLower())/l;
-				r2 = (axis.getRange().getUpper() - oValue)/l;
-				t1 = axis.getRange().getLower() - 
-					r1 * ZOOM_RATIO * l;
-				t2 = axis.getRange().getUpper() + r2 * ZOOM_RATIO * l;				
-			}
-			axis.setRange(t1, t2);
-		}		
+		if (horizontally)
+    		for(Axis axis : xyGraph.getXAxisList()){
+    			oValue = axis.getPositionValue(start.x, false);
+    			if(axis.isLogScaleEnabled()){
+    				l = Math.log10(axis.getRange().getUpper()) - 
+    						Math.log10(axis.getRange().getLower());
+    				r1 = (Math.log10(oValue) - Math.log10(axis.getRange().getLower()))/l;
+    				r2 = (Math.log10(axis.getRange().getUpper()) - Math.log10(oValue))/l;
+    				t1 = Math.pow(10, Math.log10(axis.getRange().getLower()) - r1 * ZOOM_RATIO * l);
+    				t2 = Math.pow(10, Math.log10(axis.getRange().getUpper()) + r2 * ZOOM_RATIO * l);
+    			}else{
+    				l = axis.getRange().getUpper()-axis.getRange().getLower();
+    				r1 = (oValue - axis.getRange().getLower())/l;
+    				r2 = (axis.getRange().getUpper() - oValue)/l;
+    				t1 = axis.getRange().getLower() - 
+    					r1 * ZOOM_RATIO * l;
+    				t2 = axis.getRange().getUpper() + r2 * ZOOM_RATIO * l;				
+    			}
+    			axis.setRange(t1, t2);
+    		}	
+		if (vertically)
+    		for(Axis axis : xyGraph.getYAxisList()){
+    			oValue = axis.getPositionValue(start.y, false);
+    			if(axis.isLogScaleEnabled()){
+    				l = Math.log10(axis.getRange().getUpper()) - 
+    						Math.log10(axis.getRange().getLower());
+    				r1 = (Math.log10(oValue) - Math.log10(axis.getRange().getLower()))/l;
+    				r2 = (Math.log10(axis.getRange().getUpper()) - Math.log10(oValue))/l;
+    				t1 = Math.pow(10, Math.log10(axis.getRange().getLower()) - r1 * ZOOM_RATIO * l);
+    				t2 = Math.pow(10, Math.log10(axis.getRange().getUpper()) + r2 * ZOOM_RATIO * l);
+    			}else{
+    				l = axis.getRange().getUpper()-axis.getRange().getLower();
+    				r1 = (oValue - axis.getRange().getLower())/l;
+    				r2 = (axis.getRange().getUpper() - oValue)/l;
+    				t1 = axis.getRange().getLower() - 
+    					r1 * ZOOM_RATIO * l;
+    				t2 = axis.getRange().getUpper() + r2 * ZOOM_RATIO * l;				
+    			}
+    			axis.setRange(t1, t2);
+    		}		
 	}
 	
 	/**
@@ -382,7 +394,7 @@ public class PlotArea extends Figure {
 		private ZoomCommand command;
 		
 		@Override
-		public void mouseDragged(MouseEvent me) {
+		public void mouseDragged(final MouseEvent me) {
 			if(!armed)
 				return;
 			switch (zoomType) {
@@ -403,13 +415,12 @@ public class PlotArea extends Figure {
 				break;
 			}
 			PlotArea.this.repaint();
-			
 		}
 		
 		public void mouseDoubleClicked(MouseEvent me) {}
 
-		public void mousePressed(MouseEvent me) {	
-		    // Only react to 'main' mouse button
+		public void mousePressed(final MouseEvent me) {	
+		    // Only react to 'main' mouse button, only react to 'real' zoom
 		    if (me.button != 1 ||
                 zoomType == ZoomType.NONE)
 				return;
@@ -440,16 +451,27 @@ public class PlotArea extends Figure {
 					yAxisStartRangeList.add(axis.getRange());
 				break;
 			case ZOOM_IN:
+            case ZOOM_IN_HORIZONTALLY:
+            case ZOOM_IN_VERTICALLY:
 			case ZOOM_OUT:
+			case ZOOM_OUT_HORIZONTALLY:
+			case ZOOM_OUT_VERTICALLY:
 				start = me.getLocation();
 				end = new Point();
+				// Start timer that will zoom while mouse button is pressed
 				Display.getCurrent().timerExec(ZOOM_SPEED, new Runnable(){
 					public void run() {	
-						if(armed){	
-							if(zoomType == ZoomType.ZOOM_IN)
-								zoomIn();
-							else
-								zoomOut();
+						if(armed){
+						    switch (zoomType)
+						    {
+						    case ZOOM_IN:              zoomIn(true, true);  break;
+						    case ZOOM_IN_HORIZONTALLY: zoomIn(true, false); break;
+						    case ZOOM_IN_VERTICALLY:   zoomIn(false, true); break;
+						    case ZOOM_OUT: 			   zoomOut(true, true); break;
+						    case ZOOM_OUT_HORIZONTALLY:zoomOut(true, false);break;
+						    case ZOOM_OUT_VERTICALLY:  zoomOut(false, true);break;
+						    default:                   // NOP
+						    }
 							Display.getCurrent().timerExec(ZOOM_SPEED, this);
 						}
 					}
@@ -460,22 +482,29 @@ public class PlotArea extends Figure {
 			}
 			
 			//add command for undo operation
-			if(zoomType != ZoomType.NONE){
-				command = new ZoomCommand(zoomType.getDescription(), 
-						xyGraph.getXAxisList(), xyGraph.getYAxisList());
-				command.savePreviousStates();
-			}
+			command = new ZoomCommand(zoomType.getDescription(), 
+					xyGraph.getXAxisList(), xyGraph.getYAxisList());
+			command.savePreviousStates();
 			me.consume();			
 		}
 
 		@Override
 		public void mouseExited(MouseEvent me) {
 			//make sure the zoomIn/Out timer could be stopped
-			if(zoomType == ZoomType.ZOOM_IN || zoomType == ZoomType.ZOOM_OUT)
+		    switch (zoomType)
+            {
+            case ZOOM_IN:
+            case ZOOM_IN_HORIZONTALLY:
+            case ZOOM_IN_VERTICALLY:
+            case ZOOM_OUT:
+            case ZOOM_OUT_HORIZONTALLY:
+            case ZOOM_OUT_VERTICALLY:
 				mouseReleased(me);
+		    default:
+            }
 		}
 		
-		public void mouseReleased(MouseEvent me) {
+		public void mouseReleased(final MouseEvent me) {
 			if(zoomType == ZoomType.PANNING)
 				setCursor(zoomType.getCursor());
 			if(!armed || end == null || start == null)
@@ -491,10 +520,22 @@ public class PlotArea extends Figure {
 				pan();					
 				break;	
 			case ZOOM_IN:
-				zoomIn();
+				zoomIn(true, true);
 				break;
+			case ZOOM_IN_HORIZONTALLY:
+			    zoomIn(true, false);
+			    break;
+            case ZOOM_IN_VERTICALLY:
+                zoomIn(false, true);
+                break;
 			case ZOOM_OUT:
-				zoomOut();
+                zoomOut(true, true);
+                break;
+			case ZOOM_OUT_HORIZONTALLY:
+                zoomOut(true, false);
+                break;
+			case ZOOM_OUT_VERTICALLY:
+				zoomOut(false, true);
 				break;
 			default:
 				break;
@@ -508,9 +549,6 @@ public class PlotArea extends Figure {
 			end = null; 
 			start = null;			
 			PlotArea.this.repaint();
-			
 		}
-		
 	}
-	
 }
