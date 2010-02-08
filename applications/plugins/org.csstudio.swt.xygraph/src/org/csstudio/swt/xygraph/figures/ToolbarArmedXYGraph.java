@@ -7,27 +7,39 @@ import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
 
-
 /**An graph which consists of a toolbar and an XYGraph. 
  * @author Xihui Chen
- *
+ * @author Kay Kasemir added flags
  */
 public class ToolbarArmedXYGraph extends Figure {
+	final private XYGraph xyGraph;
 
-	private XYGraph xyGraph;
-
-	private XYGraphToolbar toolbar;
+	final private XYGraphToolbar toolbar;
 
 	private boolean transparent;
 	private final static int MARGIN = 3;
 	
+	/** Construct default graph */
 	public ToolbarArmedXYGraph() {
 		this(new XYGraph());
 	}
-	public ToolbarArmedXYGraph(XYGraph xyGraph) {
-		
+
+	/** Construct default toolbar around existing graph
+	 *  @param xyGraph XYGraph
+	 */
+	public ToolbarArmedXYGraph(final XYGraph xyGraph) {
+	    this(xyGraph, XYGraphFlags.DEFAULT_ZOOMS);
+    }
+
+	/** Construct toolbar around existing graph
+	 *  @param xyGraph XYGraph
+	 *  @param flags Bitwise 'or' of flags
+     *  @see XYGraphFlags#DEFAULT_ZOOMS
+	 *  @see XYGraphFlags#SEPARATE_ZOOMS
+	 */
+	public ToolbarArmedXYGraph(final XYGraph xyGraph, final int flags) {
 		this.xyGraph = xyGraph;
-		toolbar = new XYGraphToolbar(this.xyGraph);
+		toolbar = new XYGraphToolbar(this.xyGraph, flags);
 		xyGraph.setOpaque(false);
 		toolbar.setOpaque(false);
 		add(toolbar);		

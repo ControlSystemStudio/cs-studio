@@ -2,11 +2,11 @@ package org.csstudio.swt.xygraph.toolbar;
 
 import org.csstudio.swt.xygraph.Activator;
 import org.csstudio.swt.xygraph.figures.XYGraph;
+import org.csstudio.swt.xygraph.figures.XYGraphFlags;
 import org.csstudio.swt.xygraph.undo.AddAnnotationCommand;
 import org.csstudio.swt.xygraph.undo.IOperationsManagerListener;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.csstudio.swt.xygraph.undo.RemoveAnnotationCommand;
-import org.csstudio.swt.xygraph.undo.VerticalZoomCommand;
 import org.csstudio.swt.xygraph.undo.ZoomType;
 import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
 import org.eclipse.draw2d.ActionEvent;
@@ -40,14 +40,19 @@ import org.eclipse.swt.widgets.FileDialog;
  * @author Kay Kasemir (some zoom operations)
  */
 public class XYGraphToolbar extends Figure {
+    private final static int BUTTON_SIZE = 25;
 
-	private XYGraph xyGraph;
+    final private XYGraph xyGraph;
 	
-	private final static int BUTTON_SIZE = 25;
-
-	private ButtonGroup zoomGroup;
+	final private ButtonGroup zoomGroup;
 	
-	public XYGraphToolbar(final XYGraph xyGraph) {		
+	/** Initialize
+	 *  @param xyGraph XYGraph on which this toolbar operates
+     *  @param flags Bitwise 'or' of flags
+     *  @see XYGraphFlags#DEFAULT_ZOOMS
+     *  @see XYGraphFlags#SEPARATE_ZOOMS
+	 */
+	public XYGraphToolbar(final XYGraph xyGraph, final int flags) {		
 		this.xyGraph = xyGraph;
 		setLayoutManager(new WrappableToolbarLayout());
 		
@@ -93,15 +98,18 @@ public class XYGraphToolbar extends Figure {
 		});
 		
 		addSeparator();	
-		//stagger axes button
-		final Button staggerButton = new Button(createImage("icons/stagger.png"));
-		staggerButton.setToolTip(new Label("Stagger the axes"));
-		addButton(staggerButton);
-		staggerButton.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent event) {
-				xyGraph.performStagger();
-			}
-		});
+		if ((flags & XYGraphFlags.STAGGER) > 0)
+		{
+    		//stagger axes button
+    		final Button staggerButton = new Button(createImage("icons/stagger.png"));
+    		staggerButton.setToolTip(new Label("Stagger the axes"));
+    		addButton(staggerButton);
+    		staggerButton.addActionListener(new ActionListener(){
+    			public void actionPerformed(ActionEvent event) {
+    				xyGraph.performStagger();
+    			}
+    		});
+		}
 
 		//auto scale button
         final Button autoScaleButton = new Button(createImage("icons/AutoScale.png"));
@@ -113,45 +121,15 @@ public class XYGraphToolbar extends Figure {
             }
         });
 		
-		// One-click zoom operations
-		final VerticalZoomCommand vertZoomOut =
-		    new VerticalZoomCommand(xyGraph, "Zoom out vertically", false);
-		final Button vertZoomOutButton = new Button(createImage("icons/VerticalZoomOut.png"));
-		vertZoomOutButton.setToolTip(new Label(vertZoomOut.toString()));
-        addButton(vertZoomOutButton);
-        vertZoomOutButton.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent event)
-            {
-                vertZoomOut.redo();
-                xyGraph.getOperationsManager().addCommand(vertZoomOut);
-            }
-        });
-        final VerticalZoomCommand vertZoomIn =
-            new VerticalZoomCommand(xyGraph, "Zoom in vertically", true);
-        final Button vertZoomInButton = new Button(createImage("icons/VerticalZoomIn.png"));
-        vertZoomInButton.setToolTip(new Label(vertZoomIn.toString()));
-        addButton(vertZoomInButton);
-        vertZoomInButton.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent event)
-            {
-                vertZoomIn.redo();
-                xyGraph.getOperationsManager().addCommand(vertZoomIn);
-            }
-        });
-		
 		//zoom buttons
 		zoomGroup = new ButtonGroup();
-		createZoomButtons();
+		createZoomButtons(flags);
 	
 		addSeparator();		
 		addUndoRedoButtons();
 		
 		addSeparator();
 		addSnapshotButton();
-	
-
 	}
 
 //	@Override
@@ -242,11 +220,17 @@ public class XYGraphToolbar extends Figure {
 		});
 	}
 	
-	
-	private void createZoomButtons(){
+	/** Create buttons enumerated in <code>ZoomType</code>
+     *  @param flags Bitwise 'or' of flags
+     *  @see XYGraphFlags#DEFAULT_ZOOMS
+     *  @see XYGraphFlags#SEPARATE_ZOOMS
+	 */
+	private void createZoomButtons(final int flags) {
 		for(final ZoomType zoomType : ZoomType.values()){
-			ImageFigure imageFigure =  new ImageFigure(zoomType.getIconImage());
-			Label tip = new Label(zoomType.getDescription());
+		    if (! zoomType.useWithFlags(flags))
+		        continue;
+			final ImageFigure imageFigure =  new ImageFigure(zoomType.getIconImage());
+			final Label tip = new Label(zoomType.getDescription());
 			final ToggleButton button = new ToggleButton(imageFigure);
 			button.setBackgroundColor(ColorConstants.button);
 			button.setOpaque(true);
