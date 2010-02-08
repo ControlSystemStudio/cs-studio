@@ -28,14 +28,14 @@ public class ToolbarArmedXYGraph extends Figure {
 	 *  @param xyGraph XYGraph
 	 */
 	public ToolbarArmedXYGraph(final XYGraph xyGraph) {
-	    this(xyGraph, XYGraphFlags.DEFAULT_ZOOMS);
+	    this(xyGraph, XYGraphFlags.COMBINED_ZOOM);
     }
 
 	/** Construct toolbar around existing graph
 	 *  @param xyGraph XYGraph
 	 *  @param flags Bitwise 'or' of flags
-     *  @see XYGraphFlags#DEFAULT_ZOOMS
-	 *  @see XYGraphFlags#SEPARATE_ZOOMS
+     *  @see XYGraphFlags#COMBINED_ZOOM
+	 *  @see XYGraphFlags#SEPARATE_ZOOM
 	 */
 	public ToolbarArmedXYGraph(final XYGraph xyGraph, final int flags) {
 		this.xyGraph = xyGraph;

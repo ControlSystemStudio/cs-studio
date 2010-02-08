@@ -49,8 +49,8 @@ public class XYGraphToolbar extends Figure {
 	/** Initialize
 	 *  @param xyGraph XYGraph on which this toolbar operates
      *  @param flags Bitwise 'or' of flags
-     *  @see XYGraphFlags#DEFAULT_ZOOMS
-     *  @see XYGraphFlags#SEPARATE_ZOOMS
+     *  @see XYGraphFlags#COMBINED_ZOOM
+     *  @see XYGraphFlags#SEPARATE_ZOOM
 	 */
 	public XYGraphToolbar(final XYGraph xyGraph, final int flags) {		
 		this.xyGraph = xyGraph;
@@ -99,10 +99,9 @@ public class XYGraphToolbar extends Figure {
 		
 		addSeparator();	
 		if ((flags & XYGraphFlags.STAGGER) > 0)
-		{
-    		//stagger axes button
+		{	//stagger axes button
     		final Button staggerButton = new Button(createImage("icons/stagger.png"));
-    		staggerButton.setToolTip(new Label("Stagger the axes"));
+    		staggerButton.setToolTip(new Label("Stagger axes so they don't overlap"));
     		addButton(staggerButton);
     		staggerButton.addActionListener(new ActionListener(){
     			public void actionPerformed(ActionEvent event) {
@@ -110,16 +109,17 @@ public class XYGraphToolbar extends Figure {
     			}
     		});
 		}
-
-		//auto scale button
-        final Button autoScaleButton = new Button(createImage("icons/AutoScale.png"));
-        autoScaleButton.setToolTip(new Label("Perform Auto Scale"));
-        addButton(autoScaleButton);
-        autoScaleButton.addActionListener(new ActionListener(){
-            public void actionPerformed(ActionEvent event) {
-                xyGraph.performAutoScale();
-            }
-        });
+		else
+		{	//auto scale button
+            final Button autoScaleButton = new Button(createImage("icons/AutoScale.png"));
+            autoScaleButton.setToolTip(new Label("Perform Auto Scale"));
+            addButton(autoScaleButton);
+            autoScaleButton.addActionListener(new ActionListener(){
+                public void actionPerformed(ActionEvent event) {
+                    xyGraph.performAutoScale();
+                }
+            });
+		}
 		
 		//zoom buttons
 		zoomGroup = new ButtonGroup();
@@ -222,8 +222,8 @@ public class XYGraphToolbar extends Figure {
 	
 	/** Create buttons enumerated in <code>ZoomType</code>
      *  @param flags Bitwise 'or' of flags
-     *  @see XYGraphFlags#DEFAULT_ZOOMS
-     *  @see XYGraphFlags#SEPARATE_ZOOMS
+     *  @see XYGraphFlags#COMBINED_ZOOM
+     *  @see XYGraphFlags#SEPARATE_ZOOM
 	 */
 	private void createZoomButtons(final int flags) {
 		for(final ZoomType zoomType : ZoomType.values()){

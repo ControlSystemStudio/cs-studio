@@ -16,56 +16,56 @@ public enum ZoomType{
         /** Interactive Rubberband zoom */
 		RUBBERBAND_ZOOM("Rubberband Zoom", createImage("icons/RubberbandZoom.png"),
 				createImage("icons/RubberbandZoomCursor.png"),
-				XYGraphFlags.DEFAULT_ZOOMS | XYGraphFlags.SEPARATE_ZOOMS),
+				XYGraphFlags.COMBINED_ZOOM | XYGraphFlags.SEPARATE_ZOOM),
 				
 		/** Zoom via 'cursors' for horizontal start/end position */		
 		HORIZONTAL_ZOOM("Horizontal Zoom", createImage("icons/HorizontalZoom.png"),
 				createImage("icons/HorizontalZoomCursor.png"),
-                XYGraphFlags.DEFAULT_ZOOMS | XYGraphFlags.SEPARATE_ZOOMS),
+                XYGraphFlags.COMBINED_ZOOM | XYGraphFlags.SEPARATE_ZOOM),
 				
 		/** Zoom via 'cursors' for vertical start/end position */     
 		VERTICAL_ZOOM("Vertical Zoom",  createImage("icons/VerticalZoom.png"),
 				createImage("icons/VerticalZoomCursor.png"),
-                XYGraphFlags.DEFAULT_ZOOMS | XYGraphFlags.SEPARATE_ZOOMS),
+                XYGraphFlags.COMBINED_ZOOM | XYGraphFlags.SEPARATE_ZOOM),
 				
 		/** Zoom 'in' around mouse pointer */
 		ZOOM_IN("Zoom In",  createImage("icons/ZoomIn.png"),
 				createImage("icons/ZoomInCursor.png"),
-                XYGraphFlags.DEFAULT_ZOOMS),
+                XYGraphFlags.COMBINED_ZOOM),
 
         /** Zoom 'out' around mouse pointer */
         ZOOM_OUT("Zoom Out",  createImage("icons/ZoomOut.png"),
                 createImage("icons/ZoomOutCursor.png"),
-                XYGraphFlags.DEFAULT_ZOOMS),
+                XYGraphFlags.COMBINED_ZOOM),
 
         /** Zoom 'in' around mouse pointer along horizontal axis */
         ZOOM_IN_HORIZONTALLY("Zoom In Horizontally",  createImage("icons/ZoomInHoriz.png"),
                 createImage("icons/ZoomInCursor.png"),
-                XYGraphFlags.SEPARATE_ZOOMS),
+                XYGraphFlags.SEPARATE_ZOOM),
 				
         /** Zoom 'out' around mouse pointer along horizontal axis */
         ZOOM_OUT_HORIZONTALLY("Zoom Out Horizontally",  createImage("icons/ZoomOutHoriz.png"),
                 createImage("icons/ZoomOutCursor.png"),
-                XYGraphFlags.SEPARATE_ZOOMS),
+                XYGraphFlags.SEPARATE_ZOOM),
 
         /** Zoom 'in' around mouse pointer along vertical axis */
         ZOOM_IN_VERTICALLY("Zoom In Vertically",  createImage("icons/ZoomInVert.png"),
                 createImage("icons/ZoomInCursor.png"),
-                XYGraphFlags.SEPARATE_ZOOMS),
+                XYGraphFlags.SEPARATE_ZOOM),
 				
         /** Zoom 'out' around mouse pointer along vertical axes */
         ZOOM_OUT_VERTICALLY("Zoom Out Vertically",  createImage("icons/ZoomOutVert.png"),
                 createImage("icons/ZoomOutCursor.png"),
-                XYGraphFlags.SEPARATE_ZOOMS),
+                XYGraphFlags.SEPARATE_ZOOM),
 				
         /** Zoom 'out' around mouse pointer */
 		PANNING("Panning",  createImage("icons/Panning.png"),
 				createImage("icons/PanningCursor.png"),
-                XYGraphFlags.DEFAULT_ZOOMS | XYGraphFlags.SEPARATE_ZOOMS),
+                XYGraphFlags.COMBINED_ZOOM | XYGraphFlags.SEPARATE_ZOOM),
 				
         /** Disarm zoom behavior */
 		NONE("None", createImage("icons/MouseArrow.png"), null,
-                XYGraphFlags.DEFAULT_ZOOMS | XYGraphFlags.SEPARATE_ZOOMS);
+                XYGraphFlags.COMBINED_ZOOM | XYGraphFlags.SEPARATE_ZOOM);
 		
 		final private Image iconImage;
 		final private String description;
@@ -78,8 +78,8 @@ public enum ZoomType{
 		 *  @param cursorImage Cursor when zoom type is selected
          *  @param flags Bitwise 'or' of flags that specify in which zoom
          *               configurations this zoom type should be included
-         *  @see XYGraphFlags#DEFAULT_ZOOMS
-         *  @see XYGraphFlags#SEPARATE_ZOOMS
+         *  @see XYGraphFlags#COMBINED_ZOOM
+         *  @see XYGraphFlags#SEPARATE_ZOOM
 		 */
 		private ZoomType(final String description, 
 				final Image iconImage, final Image cursorImage,
