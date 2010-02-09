@@ -280,6 +280,9 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 	 * @param pos
 	 */
 	public void drawPoint(Graphics graphics, Point pos){
+	    // Shortcut when no point requested
+	    if (pointStyle == PointStyle.NONE)
+	        return;
 		graphics.pushState();
 		graphics.setBackgroundColor(traceColor);
 		//graphics.setForegroundColor(traceColor);
