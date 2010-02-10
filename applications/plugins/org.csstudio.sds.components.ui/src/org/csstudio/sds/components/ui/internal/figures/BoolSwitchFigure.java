@@ -50,6 +50,7 @@ public class BoolSwitchFigure extends AbstractBoolControlFigure {
 	Cursor cursor;
 	public BoolSwitchFigure() {
 		super();	
+		System.out.println("BoolSwitchFigure.BoolSwitchFigure()");
 		pedestal = new Pedestal();		
 		shadow = new Shadow();
 		bar = new Bar();
