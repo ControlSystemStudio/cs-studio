@@ -21,7 +21,6 @@
  */
 package org.csstudio.sds.components.model;
 
-import org.csstudio.sds.components.internal.localization.Messages;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.optionEnums.BorderStyleEnum;
@@ -78,7 +77,7 @@ public final class MenuButtonModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addProperty(PROP_LABEL, new StringProperty(Messages.LabelElement_LABEL,
+		addProperty(PROP_LABEL, new StringProperty("Label Text",
 				WidgetPropertyCategory.Display, "")); //$NON-NLS-1$
 		addProperty(PROP_FONT, new FontProperty("Font",
 				WidgetPropertyCategory.Display, new FontData(

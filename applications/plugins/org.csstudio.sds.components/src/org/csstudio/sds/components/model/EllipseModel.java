@@ -21,7 +21,6 @@
  */
 package org.csstudio.sds.components.model;
 
-import org.csstudio.sds.components.internal.localization.Messages;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.properties.BooleanProperty;
@@ -96,7 +95,7 @@ public final class EllipseModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addProperty(PROP_FILL, new DoubleProperty(Messages.FillLevelProperty,
+		addProperty(PROP_FILL, new DoubleProperty("Value",
 				WidgetPropertyCategory.Behaviour, DEFAULT_FILL, 0.0, 100.0));
 		addProperty(PROP_ORIENTATION, new BooleanProperty(
 				"Horizontal Orientation", WidgetPropertyCategory.Behaviour,

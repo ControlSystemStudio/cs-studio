@@ -63,15 +63,8 @@ public abstract class AbstractDisplayImporter {
 	 * @return A new widget element with the given type ID.
 	 */
 	protected final AbstractWidgetModel createWidgetModel(String typeId) {
-		AbstractWidgetModel result = null;
-
-		IWidgetModelFactory factory = WidgetModelFactoryService.getInstance()
-				.getWidgetModelFactory(typeId);
-
-		if (factory != null) {
-			result = factory.createWidgetModel();
-		}
-
+		AbstractWidgetModel result =  WidgetModelFactoryService.getInstance()
+				.getWidgetModel(typeId);
 		return result;
 	}
 

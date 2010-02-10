@@ -21,7 +21,6 @@
  */
 package org.csstudio.sds.components.model;
 
-import org.csstudio.sds.components.internal.localization.Messages;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.properties.BooleanProperty;
@@ -78,7 +77,7 @@ public final class TriangleModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addProperty(PROP_FILL, new DoubleProperty(Messages.FillLevelProperty,
+		addProperty(PROP_FILL, new DoubleProperty("Value",
 				WidgetPropertyCategory.Behaviour, 50, 0.0, 100.0));
 		addProperty(PROP_TRANSPARENT, new BooleanProperty("Transparent Background",
 				WidgetPropertyCategory.Display, false));

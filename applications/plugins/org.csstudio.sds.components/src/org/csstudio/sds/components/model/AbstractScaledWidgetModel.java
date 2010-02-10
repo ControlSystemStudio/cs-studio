@@ -1,6 +1,5 @@
 package org.csstudio.sds.components.model;
 
-import org.csstudio.sds.components.internal.localization.Messages;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.properties.BooleanProperty;
@@ -56,7 +55,7 @@ public abstract class AbstractScaledWidgetModel extends AbstractWidgetModel {
 		addProperty(PROP_TRANSPARENT, new BooleanProperty("Transparent Background",
 				WidgetPropertyCategory.Display,true));
 		
-		addProperty(PROP_VALUE, new DoubleProperty(Messages.FillLevelProperty,
+		addProperty(PROP_VALUE, new DoubleProperty("Value",
 				WidgetPropertyCategory.Behaviour, DEFAULT_VALUE));
 		
 		addProperty(PROP_MIN, new DoubleProperty("Minimum", 

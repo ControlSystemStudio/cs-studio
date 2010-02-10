@@ -21,7 +21,6 @@
  */
 package org.csstudio.sds.components.model;
 
-import org.csstudio.sds.components.internal.localization.Messages;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.properties.DoubleProperty;
@@ -85,10 +84,9 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addProperty(PROP_POINTS, new PointlistProperty(
-				Messages.PolyElement_POINTS, WidgetPropertyCategory.Position,
+		addProperty(PROP_POINTS, new PointlistProperty("Points", WidgetPropertyCategory.Position,
 				new PointList()));
-		addProperty(PROP_FILL, new DoubleProperty(Messages.FillLevelProperty,
+		addProperty(PROP_FILL, new DoubleProperty("Value",
 				WidgetPropertyCategory.Behaviour, 100.0, 0.0, 100.0));
 	}
 
