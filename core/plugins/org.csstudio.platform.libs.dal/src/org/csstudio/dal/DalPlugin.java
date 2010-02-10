@@ -23,6 +23,9 @@
 
 import org.eclipse.core.runtime.Plugin;
 import org.epics.css.dal.CharacteristicInfo;
+import org.epics.css.dal.impl.DefaultApplicationContext;
+import org.epics.css.dal.simple.SimpleDALBroker;
+import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -49,12 +52,17 @@ public class DalPlugin extends Plugin {
 	 * The shared instance.
 	 */
 	private static DalPlugin plugin;
+	
+	private static DefaultApplicationContext applicationContext;
+	
+	private static SimpleDALBroker broker;
 
 	/**
 	 * The constructor
 	 */
 	public DalPlugin() {
 		plugin = this;
+		applicationContext = new CssApplicationContext("CSS");
 	}
 
 	/**
@@ -64,6 +72,22 @@ public class DalPlugin extends Plugin {
 	 */
 	public static DalPlugin getDefault() {
 		return plugin;
+	}
+
+	public SimpleDALBroker getSimpleDALBroker() {
+		if (broker == null) {
+			broker = SimpleDALBroker.newInstance(applicationContext);
+		}
+		return broker;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.core.runtime.Plugin#stop(org.osgi.framework.BundleContext)
+	 */
+	@Override
+	public void stop(BundleContext context) throws Exception {
+		applicationContext.destroy();
+		super.stop(context);
 	}
 
 }

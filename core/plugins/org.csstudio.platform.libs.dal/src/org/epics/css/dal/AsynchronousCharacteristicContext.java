@@ -125,7 +125,7 @@ public interface AsynchronousCharacteristicContext extends AsynchronousContext
 	 * @exception DataExchangeException when the query for the characteristic
 	 *            value on the data source fails
 	 */
-	public Request<? extends Object> getCharacteristicAsynchronously(String name, ResponseListener<? extends Object> listener)
+	public Request<?> getCharacteristicAsynchronously(String name, ResponseListener<?> listener)
 		throws DataExchangeException;
 }
 

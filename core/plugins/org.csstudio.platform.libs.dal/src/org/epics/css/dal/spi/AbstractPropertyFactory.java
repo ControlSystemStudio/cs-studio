@@ -41,12 +41,12 @@ import org.epics.css.dal.context.LinkBlocker;
 import org.epics.css.dal.context.LinkListener;
 import org.epics.css.dal.context.PropertyContext;
 import org.epics.css.dal.context.PropertyFamily;
-import org.epics.css.dal.context.RemoteInfo;
 import org.epics.css.dal.impl.DynamicValuePropertyImpl;
 import org.epics.css.dal.impl.PropertyFamilyImpl;
 import org.epics.css.dal.impl.SynchronizedPropertyFamilyImpl;
 import org.epics.css.dal.proxy.DirectoryProxy;
 import org.epics.css.dal.proxy.PropertyProxy;
+import org.epics.css.dal.simple.RemoteInfo;
 
 
 /**

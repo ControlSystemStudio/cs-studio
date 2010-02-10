@@ -31,6 +31,7 @@ import javax.naming.NamingException;
 import javax.naming.directory.DirContext;
 
 import org.epics.css.dal.EventSystemContext;
+import org.epics.css.dal.simple.RemoteInfo;
 
 
 /**

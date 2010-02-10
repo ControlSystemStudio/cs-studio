@@ -27,7 +27,7 @@ import org.epics.css.dal.DynamicValueProperty;
 import org.epics.css.dal.RemoteException;
 import org.epics.css.dal.context.LinkListener;
 import org.epics.css.dal.context.PropertyFamily;
-import org.epics.css.dal.context.RemoteInfo;
+import org.epics.css.dal.simple.RemoteInfo;
 
 
 /**

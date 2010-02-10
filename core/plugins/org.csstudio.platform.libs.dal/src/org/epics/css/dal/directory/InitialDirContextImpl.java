@@ -24,8 +24,6 @@ package org.epics.css.dal.directory;
 
 import com.cosylab.naming.URIName;
 
-import org.epics.css.dal.context.RemoteInfo;
-
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -45,6 +43,8 @@ import javax.naming.directory.DirContext;
 import javax.naming.directory.ModificationItem;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
+
+import org.epics.css.dal.simple.RemoteInfo;
 
 
 /**
@@ -336,9 +336,9 @@ public class InitialDirContextImpl implements DirContext
 					    + " is not absolute.");
 				}
 
-				if (!un.get(0).toString().startsWith(RemoteInfo.SCHEME_PREFIX)) {
+				if (!un.get(0).toString().startsWith(RemoteInfo.DAL_TYPE_PREFIX)) {
 					throw new InvalidNameException("Name '" + name
-					    + " does not start with '" + RemoteInfo.SCHEME_PREFIX
+					    + " does not start with '" + RemoteInfo.DAL_TYPE_PREFIX
 					    + "'.");
 				}
 
@@ -387,9 +387,9 @@ public class InitialDirContextImpl implements DirContext
 					    + " is not absolute.");
 				}
 
-				if (!un.get(0).toString().startsWith(RemoteInfo.SCHEME_PREFIX)) {
+				if (!un.get(0).toString().startsWith(RemoteInfo.DAL_TYPE_PREFIX)) {
 					throw new InvalidNameException("Name '" + name
-					    + " does not start with '" + RemoteInfo.SCHEME_PREFIX
+					    + " does not start with '" + RemoteInfo.DAL_TYPE_PREFIX
 					    + "'.");
 				}
 
@@ -438,9 +438,9 @@ public class InitialDirContextImpl implements DirContext
 				    + " is not absolute.");
 			}
 
-			if (!un.get(0).toString().startsWith(RemoteInfo.SCHEME_PREFIX)) {
+			if (!un.get(0).toString().startsWith(RemoteInfo.DAL_TYPE_PREFIX)) {
 				throw new InvalidNameException("Name '" + name
-				    + " does not start with '" + RemoteInfo.SCHEME_PREFIX
+				    + " does not start with '" + RemoteInfo.DAL_TYPE_PREFIX
 				    + "'.");
 			}
 
@@ -700,9 +700,9 @@ public class InitialDirContextImpl implements DirContext
 					    + " is not absolute.");
 				}
 
-				if (!un.get(0).toString().startsWith(RemoteInfo.SCHEME_PREFIX)) {
+				if (!un.get(0).toString().startsWith(RemoteInfo.DAL_TYPE_PREFIX)) {
 					throw new InvalidNameException("Name '" + name
-					    + " does not start with '" + RemoteInfo.SCHEME_PREFIX
+					    + " does not start with '" + RemoteInfo.DAL_TYPE_PREFIX
 					    + "'.");
 				}
 
@@ -986,9 +986,9 @@ public class InitialDirContextImpl implements DirContext
 				    + " is not absolute.");
 			}
 
-			if (!un.get(0).toString().startsWith(RemoteInfo.SCHEME_PREFIX)) {
+			if (!un.get(0).toString().startsWith(RemoteInfo.DAL_TYPE_PREFIX)) {
 				throw new InvalidNameException("Name '" + name
-				    + " does not start with '" + RemoteInfo.SCHEME_PREFIX
+				    + " does not start with '" + RemoteInfo.DAL_TYPE_PREFIX
 				    + "'.");
 			}
 

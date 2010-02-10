@@ -27,9 +27,11 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.epics.css.dal.DataExchangeException;
+import org.epics.css.dal.DynamicValueCondition;
 import org.epics.css.dal.DynamicValueEvent;
 import org.epics.css.dal.DynamicValueListener;
 import org.epics.css.dal.DynamicValueProperty;
+import org.epics.css.dal.DynamicValueState;
 import org.epics.css.dal.EventSystemListener;
 import org.epics.css.dal.ExpertMonitor;
 import org.epics.css.dal.RemoteException;
@@ -43,11 +45,16 @@ import org.epics.css.dal.context.ConnectionState;
 import org.epics.css.dal.context.LinkListener;
 import org.epics.css.dal.context.Linkable;
 import org.epics.css.dal.context.PropertyContext;
+import org.epics.css.dal.context.PropertyFamily;
 import org.epics.css.dal.proxy.DirectoryProxy;
 import org.epics.css.dal.proxy.PropertyProxy;
 import org.epics.css.dal.proxy.Proxy;
 import org.epics.css.dal.proxy.ProxyEvent;
 import org.epics.css.dal.proxy.ProxyListener;
+import org.epics.css.dal.simple.AnyData;
+import org.epics.css.dal.simple.ChannelListener;
+import org.epics.css.dal.simple.impl.ChannelListenerNotifier;
+import org.epics.css.dal.simple.impl.DataUtil;
 
 import com.cosylab.util.ListenerList;
 
@@ -61,6 +68,15 @@ import com.cosylab.util.ListenerList;
 public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 	implements DynamicValueProperty<T>
 {
+	protected final byte DVE_CONDITIONCHANGE = 0;
+	protected final byte DVE_ERRORRESPONSE = 1;
+	protected final byte DVE_TIMELAGSTARTS = 2;
+	protected final byte DVE_TIMELAGSTOPS = 3;
+	protected final byte DVE_TIMEOUTSTARTS = 4;
+	protected final byte DVE_TIMEOUTSTOPS = 5;
+	protected final byte DVE_VALUECHANGED = 6;
+	protected final byte DVE_VALUEUPDATED = 7;
+
 	protected PropertyContext propertyContext;
 	protected ListenerList responseListeners = new ListenerList(ResponseListener.class);
 	protected ResponseListener defaultResponseListener = new ResponseListener() {
@@ -94,14 +110,15 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 			setConnectionState(e.getConnectionState());
 		}
 		public void dynamicValueConditionChange(ProxyEvent<PropertyProxy<T>> e) {
+			DynamicValueCondition oldCond = condition;
 			condition = e.getCondition();
-			fireCondition();
+			checkAndFireConditionEvents(oldCond, condition);
 		}
 		public void characteristicsChange(PropertyChangeEvent e) {
 			firePropertyChangeEvent(e);
 		}
 	};
-
+	
 	protected Request<?> lastRequest = null;
 	protected Request<T> lastValueRequest = null;
 	protected Response<?> lastResponse = null;
@@ -201,6 +218,9 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 	public Request<T> getAsynchronous(ResponseListener<T> listener)
 		throws DataExchangeException
 	{
+		if (proxy == null || proxy.getConnectionState() != ConnectionState.CONNECTED) {
+			throw new DataExchangeException(this, "Proxy not connected");
+		}
 		
 		    lastValueRequest = proxy.getValueAsync(listener == null
 		            ? defaultValueResponseListener : new ResponseForwarder(listener,true));
@@ -225,6 +245,10 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 	public Request<T> setAsynchronous(T value, ResponseListener<T> listener)
 		throws DataExchangeException
 	{
+		if (proxy == null || proxy.getConnectionState() != ConnectionState.CONNECTED) {
+			throw new DataExchangeException(this, "Proxy not connected");
+		}
+		
 		lastValueRequest = proxy.setValueAsync(value,
 			    listener == null ? defaultResponseListener
 			    : new ResponseForwarder(listener));
@@ -348,8 +372,8 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 		return lastRequest;
 	}
 	
-	public Request<? extends Object> getCharacteristicAsynchronously(
-			String name, ResponseListener<? extends Object> listener)
+	public Request<?> getCharacteristicAsynchronously(
+			String name, ResponseListener<?> listener)
 			throws DataExchangeException {
 
 		lastRequest = directoryProxy.getCharacteristics(new String[]{ name }, 
@@ -495,7 +519,7 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 
 		if (connectionState == ConnectionState.CONNECTED) {
 			
-			if (dvListeners!=null && dvListeners.size()>0 && defaultMonitor==null) {
+			if (hasDynamicValueListeners() && defaultMonitor==null) {
 				getDefaultMonitor();
 			}
 			
@@ -564,16 +588,114 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 		}
 	}
 
-	protected void fireCondition()
+	protected void fireDynamicValueEvent(byte type)
 	{
+		if (!hasDynamicValueListeners()) {
+			return;
+		}
+		
+		String msg = null;
+		switch (type) {
+		case DVE_CONDITIONCHANGE:
+			msg = "Condition changed";break;
+		case DVE_ERRORRESPONSE:
+			msg = "Error response";break;
+		case DVE_TIMELAGSTARTS:
+			msg = "Timelag started";break;
+		case DVE_TIMELAGSTOPS:
+			msg = "Timelag stopped";break;
+		case DVE_TIMEOUTSTARTS:
+			msg = "Timeout started";break;
+		case DVE_TIMEOUTSTOPS:
+			msg = "Timeout stopped";break;
+		case DVE_VALUECHANGED:
+			msg = "Value changed";break;
+		case DVE_VALUEUPDATED:
+			msg = "Value updated";break;
+		default:
+			return;
+		}
 		DynamicValueEvent<T, DynamicValueProperty<T>> dve = new DynamicValueEvent<T, DynamicValueProperty<T>>(this,
 			    this, lastValue, condition, null, "Condition changed");
-		DynamicValueListener<T, DynamicValueProperty<T>>[] listen = new DynamicValueListener[dvListeners
+		DynamicValueListener<T, DynamicValueProperty<T>>[] listen = new DynamicValueListener[getDvListeners()
 			.size()];
-		listen = (DynamicValueListener<T, DynamicValueProperty<T>>[])dvListeners.toArray(listen);
+		listen = (DynamicValueListener<T, DynamicValueProperty<T>>[])getDvListeners().toArray(listen);
 
-		for (int i = 0; i < listen.length; i++) {
-			listen[i].conditionChange(dve);
+		switch (type) {
+		case DVE_CONDITIONCHANGE:
+			for (int i = 0; i < listen.length; i++) {
+				listen[i].conditionChange(dve);
+			}
+			break;
+		case DVE_ERRORRESPONSE:
+			for (int i = 0; i < listen.length; i++) {
+				listen[i].errorResponse(dve);
+			}
+			break;
+		case DVE_TIMELAGSTARTS:
+			for (int i = 0; i < listen.length; i++) {
+				listen[i].timelagStarts(dve);
+			}
+			break;
+		case DVE_TIMELAGSTOPS:
+			for (int i = 0; i < listen.length; i++) {
+				listen[i].timelagStops(dve);
+			}
+			break;
+		case DVE_TIMEOUTSTARTS:
+			for (int i = 0; i < listen.length; i++) {
+				listen[i].timeoutStarts(dve);
+			}
+			break;
+		case DVE_TIMEOUTSTOPS:
+			for (int i = 0; i < listen.length; i++) {
+				listen[i].timeoutStops(dve);
+			}
+			break;
+		case DVE_VALUECHANGED:
+			for (int i = 0; i < listen.length; i++) {
+				listen[i].valueChanged(dve);
+			}
+			break;
+		case DVE_VALUEUPDATED:
+			for (int i = 0; i < listen.length; i++) {
+				listen[i].valueUpdated(dve);
+			}
+			break;
+		default:
+			return;
+		}
+	}
+	
+	protected void checkAndFireConditionEvents(DynamicValueCondition oldCond, DynamicValueCondition newCond){
+		fireDynamicValueEvent(DVE_CONDITIONCHANGE);
+		
+		if (newCond == null) return;
+		if (oldCond == null){
+			if (newCond.containsStates(DynamicValueState.TIMELAG))	
+				fireDynamicValueEvent(DVE_TIMELAGSTARTS);
+			if (newCond.containsStates(DynamicValueState.TIMEOUT))	
+				fireDynamicValueEvent(DVE_TIMEOUTSTARTS);
+			if (newCond.containsStates(DynamicValueState.ERROR))	
+				fireDynamicValueEvent(DVE_ERRORRESPONSE);			
+		} else {
+			
+			//timelag checks
+			if (newCond.containsStates(DynamicValueState.TIMELAG) && !oldCond.containsStates(DynamicValueState.TIMELAG))	
+				fireDynamicValueEvent(DVE_TIMELAGSTARTS);
+			else if (oldCond.containsStates(DynamicValueState.TIMELAG) && !condition.containsStates(DynamicValueState.TIMELAG))	
+				fireDynamicValueEvent(DVE_TIMELAGSTOPS);
+			
+			//timeout checks
+			if (newCond.containsStates(DynamicValueState.TIMEOUT) && !oldCond.containsStates(DynamicValueState.TIMEOUT))	
+				fireDynamicValueEvent(DVE_TIMEOUTSTARTS);
+			else if (oldCond.containsStates(DynamicValueState.TIMEOUT) && !condition.containsStates(DynamicValueState.TIMEOUT))	
+				fireDynamicValueEvent(DVE_TIMEOUTSTOPS);
+			
+			//error checks
+			if (newCond.containsStates(DynamicValueState.ERROR) && !oldCond.containsStates(DynamicValueState.ERROR))	
+				fireDynamicValueEvent(DVE_ERRORRESPONSE);
+			
 		}
 	}
 
@@ -659,6 +781,62 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 	{
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	// AnyDataChannel methods...
+	private ChannelListenerNotifier chListeners;
+	
+	private ChannelListenerNotifier getChListeners() {
+		if (chListeners == null) {
+			chListeners = new ChannelListenerNotifier(this);
+		}
+		return chListeners;
+	}
+	
+	public void addListener(ChannelListener listener) {
+		getChListeners().addChannelListener(listener);
+	}
+	
+	public void removeListener(ChannelListener listener) {
+		getChListeners().removeChannelListener(listener);
+	}
+
+	public AnyData getData() {
+		return DataUtil.createAnyData(this);
+	}
+	
+	public void setValueAsObject(Object new_value) throws Exception {
+		setValue(DataUtil.castTo(new_value, getDataType()));
+	}
+
+	public String getStateInfo() {
+		return getConnectionState().toString();
+	}
+
+	public boolean isRunning() {
+		return this.isConnectionAlive();
+	}
+
+	public boolean isWriteAllowed() {
+		return this.isSettable();
+	}
+
+	public void start() throws Exception {
+		// TODO at the moment this method does nothing
+		
+	}
+
+	public void startSync() throws Exception {
+		// TODO at the moment this method does nothing
+		
+	}
+
+	public void stop() {
+		setConnectionState(ConnectionState.DISCONNECTING);
+		((PropertyFamily)propertyContext).destroy(this);
+		releaseProxy(true);
+		setConnectionState(ConnectionState.DISCONNECTED);
+		setConnectionState(ConnectionState.DESTROYED);
 	}
 } /* __oOo__ */
 

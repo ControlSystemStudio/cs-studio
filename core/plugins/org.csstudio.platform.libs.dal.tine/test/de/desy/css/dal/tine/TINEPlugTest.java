@@ -29,8 +29,8 @@ import org.epics.css.dal.DynamicValueAdapter;
 import org.epics.css.dal.DynamicValueEvent;
 import org.epics.css.dal.DynamicValueListener;
 import org.epics.css.dal.DynamicValueProperty;
-import org.epics.css.dal.context.RemoteInfo;
 import org.epics.css.dal.impl.DefaultApplicationContext;
+import org.epics.css.dal.simple.RemoteInfo;
 import org.epics.css.dal.spi.DefaultPropertyFactoryService;
 import org.epics.css.dal.spi.LinkPolicy;
 import org.epics.css.dal.spi.PropertyFactory;
@@ -81,7 +81,7 @@ public class TINEPlugTest extends TestCase {
 		DynamicValueListener listener = createDynamicValueListener();
 
 		DynamicValueProperty property = _propertyFactory.getProperty(
-				new RemoteInfo(PROPERTY_NAME), DoubleProperty.class, null);
+				new RemoteInfo(TINEPlug.PLUG_TYPE, PROPERTY_NAME, null, null), DoubleProperty.class, null);
 
 		assertTrue(_propertyFactory.getPropertyFamily().contains(property));
 
@@ -109,7 +109,7 @@ public class TINEPlugTest extends TestCase {
 		DynamicValueListener listener = createDynamicValueListener();
 
 		DynamicValueProperty property = _propertyFactory.getProperty(
-				new RemoteInfo(PROPERTY_NAME), DoubleProperty.class, null);
+				new RemoteInfo(TINEPlug.PLUG_TYPE, PROPERTY_NAME, null, null), DoubleProperty.class, null);
 
 		long initialEventCount = _eventCount;
 

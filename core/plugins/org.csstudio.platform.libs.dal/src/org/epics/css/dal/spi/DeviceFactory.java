@@ -27,8 +27,8 @@ import org.epics.css.dal.context.ConnectionException;
 import org.epics.css.dal.context.DeviceFamily;
 import org.epics.css.dal.context.LinkListener;
 import org.epics.css.dal.context.Linkable;
-import org.epics.css.dal.context.RemoteInfo;
 import org.epics.css.dal.device.AbstractDevice;
+import org.epics.css.dal.simple.RemoteInfo;
 
 
 /**

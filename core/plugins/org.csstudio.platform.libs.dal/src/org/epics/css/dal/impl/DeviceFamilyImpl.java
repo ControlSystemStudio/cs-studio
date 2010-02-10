@@ -30,7 +30,6 @@ import org.epics.css.dal.device.DeviceCollectionMap;
 import org.epics.css.dal.group.GroupDataAccess;
 import org.epics.css.dal.group.PropertyGroupConstrain;
 import org.epics.css.dal.proxy.AbstractPlug;
-import org.epics.css.dal.proxy.DirectoryProxy;
 import org.epics.css.dal.proxy.Proxy;
 import org.epics.css.dal.spi.DeviceFactory;
 
@@ -66,22 +65,11 @@ public class DeviceFamilyImpl<T extends AbstractDevice>
 	 */
 	public void destroyAll()
 	{
-		// TODO: perform destroy with plug object
-		AbstractDeviceImpl[] devArray = new AbstractDeviceImpl[size()];
-		devArray = (AbstractDeviceImpl[])devices.values().toArray(devArray);
+		Object[] devArray = devices.values().toArray();
 		this.devices.clear();
 
-		AbstractPlug plug = (AbstractPlug)df.getPlug();
-
-		for (AbstractDeviceImpl dev : devArray) {
-			Proxy proxy = dev.getProxy();
-			plug.releaseProxy(proxy);
-			proxy.destroy();
-			if (!(proxy instanceof DirectoryProxy)) {
-				DirectoryProxy dp = dev.getDirectoryProxy();
-				plug.releaseProxy(dp);
-				dp.destroy();
-			}
+		for (Object dev : devArray) {
+			destroy((T)dev);
 		}
 	}
 
@@ -92,9 +80,17 @@ public class DeviceFamilyImpl<T extends AbstractDevice>
 	public void destroy(T device)
 	{
 		remove(device);
-		AbstractPlug plug = (AbstractPlug)df.getPlug();
-		Proxy proxy = ((AbstractDeviceImpl)device).getProxy();
-		plug.releaseProxy(proxy);
+		if (!device.isDestroyed()) {
+
+			AbstractPlug plug = (AbstractPlug)df.getPlug();
+			Proxy[] proxy = ((AbstractDeviceImpl)device).releaseProxy(true);
+			if (proxy != null && proxy[0]!=null) {
+				plug.releaseProxy(proxy[0]);
+			}
+			if (proxy != null && proxy[1]!=null && proxy[1]!=proxy[0]) {
+				plug.releaseProxy(proxy[1]);
+			}
+		}
 	}
 
 	/*

@@ -45,7 +45,6 @@ import org.epics.css.dal.SequencePropertyCharacteristics;
 import org.epics.css.dal.SimpleProperty;
 import org.epics.css.dal.context.AbstractApplicationContext;
 import org.epics.css.dal.context.ConnectionException;
-import org.epics.css.dal.context.RemoteInfo;
 import org.epics.css.dal.device.AbstractDevice;
 import org.epics.css.dal.directory.DALDescriptor;
 import org.epics.css.dal.directory.DescriptorType;
@@ -58,6 +57,7 @@ import org.epics.css.dal.proxy.AbstractPlug;
 import org.epics.css.dal.proxy.DeviceProxy;
 import org.epics.css.dal.proxy.DirectoryProxy;
 import org.epics.css.dal.proxy.PropertyProxy;
+import org.epics.css.dal.simple.RemoteInfo;
 import org.epics.css.dal.simulation.ps.PowerSupplyImpl;
 
 import com.cosylab.naming.URIName;
@@ -347,7 +347,7 @@ public class SimulatorPlug extends AbstractPlug
 		try {
 			DirContext initialContext = DirectoryUtilities.getInitialContext();
 
-			URIName name = new URIName(RemoteInfo.SCHEME_PREFIX + SCHEME_SUFFIX,
+			URIName name = new URIName(RemoteInfo.DAL_TYPE_PREFIX + SCHEME_SUFFIX,
 				    null, null, null);
 			URIName nameS = (URIName)name.getPrefix(1);
 			Object simContext = initialContext.lookup(nameS);
@@ -537,7 +537,7 @@ public class SimulatorPlug extends AbstractPlug
 	public RemoteInfo createRemoteInfo(String uniqueName)
 		throws NamingException
 	{
-		return new RemoteInfo(uniqueName, DEFAULT_AUTHORITY, PLUG_TYPE);
+		return new RemoteInfo(PLUG_TYPE, uniqueName, null, null);
 	}
 
 	@Override

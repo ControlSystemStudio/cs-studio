@@ -32,7 +32,6 @@ import org.epics.css.dal.context.DeviceFamily;
 import org.epics.css.dal.context.LinkBlocker;
 import org.epics.css.dal.context.LinkListener;
 import org.epics.css.dal.context.Linkable;
-import org.epics.css.dal.context.RemoteInfo;
 import org.epics.css.dal.device.AbstractDevice;
 import org.epics.css.dal.impl.AbstractDeviceImpl;
 import org.epics.css.dal.impl.DeviceBean;
@@ -40,6 +39,7 @@ import org.epics.css.dal.impl.DeviceFamilyImpl;
 import org.epics.css.dal.impl.SynchronizedDeviceFamilyImpl;
 import org.epics.css.dal.proxy.DeviceProxy;
 import org.epics.css.dal.proxy.DirectoryProxy;
+import org.epics.css.dal.simple.RemoteInfo;
 
 import javax.naming.NamingException;
 

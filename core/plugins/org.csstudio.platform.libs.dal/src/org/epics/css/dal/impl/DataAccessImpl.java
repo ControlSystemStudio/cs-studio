@@ -22,17 +22,17 @@
 
 package org.epics.css.dal.impl;
 
-import com.cosylab.util.ListenerList;
-
 import org.epics.css.dal.DataAccess;
 import org.epics.css.dal.DataExchangeException;
 import org.epics.css.dal.DynamicValueListener;
 import org.epics.css.dal.SimpleProperty;
-import org.epics.css.dal.Timestamp;
 import org.epics.css.dal.context.ConnectionState;
 import org.epics.css.dal.proxy.PropertyProxy;
 import org.epics.css.dal.proxy.PropertyProxyWrapper;
+import org.epics.css.dal.proxy.Proxy;
 import org.epics.css.dal.proxy.SyncPropertyProxy;
+
+import com.cosylab.util.ListenerList;
 
 
 /**
@@ -46,7 +46,7 @@ public abstract class DataAccessImpl<T> implements DataAccess<T>
 	protected PropertyProxy<T> proxy;
 	protected SyncPropertyProxy<T> sproxy;
 	protected Class<T> valClass;
-	protected ListenerList dvListeners = new ListenerList(DynamicValueListener.class);
+	private ListenerList dvListeners;
 	protected T lastValue;
 
 	/**
@@ -86,7 +86,7 @@ public abstract class DataAccessImpl<T> implements DataAccess<T>
 	 */
 	public <P extends SimpleProperty<T>> void addDynamicValueListener(DynamicValueListener<T, P> l)
 	{
-		dvListeners.add(l);
+		getDvListeners().add(l);
 	}
 
 	/* (non-Javadoc)
@@ -94,7 +94,7 @@ public abstract class DataAccessImpl<T> implements DataAccess<T>
 	 */
 	public <P extends SimpleProperty<T>> void removeDynamicValueListener(DynamicValueListener<T, P> l)
 	{
-		dvListeners.remove(l);
+		getDvListeners().remove(l);
 	}
 
 	/* (non-Javadoc)
@@ -102,8 +102,11 @@ public abstract class DataAccessImpl<T> implements DataAccess<T>
 	 */
 	public DynamicValueListener<T, SimpleProperty<T>>[] getDynamicValueListeners()
 	{
-		return (DynamicValueListener<T, SimpleProperty<T>>[])dvListeners.toArray(new DynamicValueListener[dvListeners
-		    .size()]);
+		if (hasDynamicValueListeners()) {
+			return (DynamicValueListener<T, SimpleProperty<T>>[])getDvListeners().toArray(new DynamicValueListener[getDvListeners()
+			                                                                                                       .size()]);
+		}
+		return new DynamicValueListener[0];
 	}
 
 	/* (non-Javadoc)
@@ -121,6 +124,7 @@ public abstract class DataAccessImpl<T> implements DataAccess<T>
 	 */
 	public boolean isSettable()
 	{
+		if (proxy == null) throw new IllegalStateException("Proxy is null");
 		return proxy.isSettable();
 	}
 
@@ -129,7 +133,7 @@ public abstract class DataAccessImpl<T> implements DataAccess<T>
 	 */
 	public void setValue(T value) throws DataExchangeException
 	{
-		if (sproxy.getConnectionState() != ConnectionState.CONNECTED) {
+		if (sproxy == null || sproxy.getConnectionState() != ConnectionState.CONNECTED) {
 			throw new DataExchangeException(this, "Proxy not connected");
 		}
 		sproxy.setValueSync(value);
@@ -140,7 +144,7 @@ public abstract class DataAccessImpl<T> implements DataAccess<T>
 	 */
 	public T getValue() throws DataExchangeException
 	{
-		if (sproxy.getConnectionState() != ConnectionState.CONNECTED) {
+		if (sproxy == null || sproxy.getConnectionState() != ConnectionState.CONNECTED) {
 			throw new DataExchangeException(this, "Proxy not connected");
 		}
 
@@ -164,6 +168,41 @@ public abstract class DataAccessImpl<T> implements DataAccess<T>
 	public PropertyProxy<T> getProxy()
 	{
 		return proxy;
+	}
+	
+	/**
+	 * Releases the PropertyProxy which represents remote connection of this
+	 * DataAccess and disconnects all listeners and monitors. But it does not call destroy on proxy itself
+	 * 
+	 *  @param boolean if <code>true</code> then if possible property should do also final 
+	 *  cleanup and destroy for internal structure, if <code>false</code> only proxies are release and 
+	 *  property is prepared for connection to new proxy.
+	 * 
+	 * @return the property proxy
+	 */
+	public Proxy[] releaseProxy(boolean destroy) {
+		Proxy[] temp = new Proxy[]{proxy};
+		proxy = null;
+		sproxy = null;
+		if (destroy && hasDynamicValueListeners()) {
+			getDvListeners().clear();
+		}
+		return temp;
+	}
+
+	protected ListenerList getDvListeners() {
+		if (dvListeners==null) {
+			synchronized (this) {
+				if (dvListeners==null) {
+					dvListeners= new ListenerList(DynamicValueListener.class);
+				}
+			}
+		}
+		return dvListeners;
+	}
+	
+	public boolean hasDynamicValueListeners() {
+		return dvListeners!=null && dvListeners.size()>0;
 	}
 }
 

@@ -67,12 +67,51 @@ public final class Plugs
 	 */
 	public static final long DEFAULT_CONNECTION_TIMEOUT = 30000;
 
+	private static Plugs plugs;
+	private Properties properties;
+	
+	/**
+	 * Returns an instance of <code>Plugs</code> with System <code>Properties</code> as storage.
+	 * @return an instance of <code>Plugs</code> with System <code>Properties</code> as storage
+	 */
+	public static final synchronized Plugs getInstance() {
+		if (plugs == null) {
+			plugs = new Plugs(System.getProperties());
+		}
+		return plugs;
+	}
+	
+	/**
+	 * Returns an instance of <code>Plugs</code> with the specified list 
+	 * of <code>Properties</code>.
+	 * @return an instance of <code>Plugs</code>
+	 */
+	public static Plugs getInstance(Properties properties) {
+		return new Plugs(properties);
+	}
+	
+	/**
+	 * Copies the <code>Properties</code> to this <code>Plugs</code>.
+	 * @param properties the <code>Properties</code> to copy from
+	 */
+	public void putAll(Properties properties) {
+		this.properties.putAll(properties);
+	}
+	
+	/**
+	 * Gets the <code>Properties</code> of this <code>Plug</code>.
+	 * @return the <code>Properties</code>
+	 */
+	public Properties getProperties() {
+		return properties;
+	}
+	
 	/**
 	     *
 	     */
-	private Plugs()
+	private Plugs(Properties properties)
 	{
-		super();
+		this.properties = properties;
 	}
 
 	/**
@@ -104,9 +143,11 @@ public final class Plugs
 	 *
 	 * @return array with plug names
 	 */
-	public static String[] getPlugNames()
+	public /*static*/ String[] getPlugNames()
 	{
-		return getPlugNames(System.getProperties());
+//		return getPlugNames(System.getProperties());
+		// TODO is this OK?
+		return getPlugNames(properties);
 	}
 
 	/**
@@ -155,9 +196,11 @@ public final class Plugs
 	 *
 	 * @return property factory class
 	 */
-	public static Class getPropertyFactoryClassForPlug(String name)
+	public /*static*/ Class getPropertyFactoryClassForPlug(String name)
 	{
-		return getPropertyFactoryClassForPlug(name, System.getProperties());
+//		return getPropertyFactoryClassForPlug(name, System.getProperties());
+		// TODO is this OK?
+		return getPropertyFactoryClassForPlug(name, properties);
 	}
 
 	/**
@@ -206,9 +249,11 @@ public final class Plugs
 	 *
 	 * @return device factory class
 	 */
-	public static Class getDeviceFactoryClassForPlug(String name)
+	public /*static*/ Class getDeviceFactoryClassForPlug(String name)
 	{
-		return getDeviceFactoryClassForPlug(name, System.getProperties());
+//		return getDeviceFactoryClassForPlug(name, System.getProperties());
+		// TODO is this OK?
+		return getDeviceFactoryClassForPlug(name, properties);
 	}
 
 	/**
@@ -365,6 +410,50 @@ public final class Plugs
 	{
 		return getConnectionTimeout(p, DEFAULT_CONNECTION_TIMEOUT);
 	}
+	
+	public long getConnectionTimeout() {
+		return getConnectionTimeout(properties);
+	}
+	
+	public Class getDefaultDeviceFacotry() throws ClassNotFoundException {
+		return getDefaultDeviceFactory(properties);
+	}
+	
+	public Class getDefaultPropertyFactory() throws ClassNotFoundException {
+		return getDefaultPropertyFactory(properties);
+	}
+	
+	public void setConnectionTimeout(long timeout) {
+		properties.setProperty(CONNECTION_TIMEOUT, (new Long(timeout)).toString());
+	}
+	
+	public void registerDefaultDeviceFactory(Class<? extends DeviceFactory> cl) {
+		properties.setProperty(DeviceFactoryService.DEFAULT_FACTORY_IMPL, cl.getCanonicalName());
+	}
+	
+	public void registerDefaultPropertyFactory(Class<? extends PropertyFactory> cl) {
+		properties.setProperty(PropertyFactoryService.DEFAULT_FACTORY_IMPL, cl.getCanonicalName());
+	}
+	
+	public void registerDeviceFactoryClassForPlug(String name, Class<? extends DeviceFactory> cl) {
+		properties.setProperty(PLUG_DEVICE_FACTORY_CLASS+name, cl.getCanonicalName());
+	}
+	
+	public void registerPropertyFactoryClassForPlug(String name, Class<? extends PropertyFactory> cl) {
+		properties.setProperty(PLUG_PROPERTY_FACTORY_CLASS+name, cl.getCanonicalName());
+	}
+	
+	public void setPlugNames(String[] names) {
+		StringBuilder sb = new StringBuilder();
+		if (names != null && names.length > 0) {
+			sb.append(names[0]);
+			for (int i = 1; i < names.length; i++) {
+				sb.append(','+names[i]);
+			}
+		}
+		properties.setProperty(PLUGS, sb.toString());
+	}
+	
 }
 
 /* __oOo__ */

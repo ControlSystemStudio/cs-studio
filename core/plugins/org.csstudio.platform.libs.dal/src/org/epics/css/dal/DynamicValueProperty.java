@@ -24,6 +24,7 @@ package org.epics.css.dal;
 
 import org.epics.css.dal.context.Linkable;
 import org.epics.css.dal.context.PropertyContext;
+import org.epics.css.dal.simple.AnyDataChannel;
 
 import java.util.Map;
 

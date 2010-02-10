@@ -57,13 +57,13 @@ import org.epics.css.dal.Timestamp;
 import org.epics.css.dal.context.AbstractApplicationContext;
 import org.epics.css.dal.context.ConnectionException;
 import org.epics.css.dal.context.PlugEvent;
-import org.epics.css.dal.context.RemoteInfo;
 import org.epics.css.dal.device.AbstractDevice;
 import org.epics.css.dal.impl.PropertyUtilities;
 import org.epics.css.dal.proxy.AbstractPlug;
 import org.epics.css.dal.proxy.DeviceProxy;
 import org.epics.css.dal.proxy.DirectoryProxy;
 import org.epics.css.dal.proxy.PropertyProxy;
+import org.epics.css.dal.simple.RemoteInfo;
 import org.epics.css.dal.spi.Plugs;
 
 import com.cosylab.epics.caj.CAJContext;
@@ -466,7 +466,7 @@ public class EPICSPlug extends AbstractPlug
 	 * @see org.epics.css.dal.context.PlugContext#createRemoteInfo(java.lang.String)
 	 */
 	public RemoteInfo createRemoteInfo(String uniqueName) throws NamingException {
-		return new RemoteInfo(uniqueName, DEFAULT_AUTHORITY, PLUG_TYPE);
+		return new RemoteInfo(PLUG_TYPE, uniqueName, null, null);
 	}
 
 	/**

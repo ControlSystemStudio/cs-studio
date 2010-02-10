@@ -22,14 +22,14 @@
 
 package org.epics.css.dal.impl;
 
+import java.util.Iterator;
+import java.util.LinkedList;
+
 import org.epics.css.dal.Request;
 import org.epics.css.dal.Response;
 import org.epics.css.dal.ResponseEvent;
 import org.epics.css.dal.ResponseListener;
 import org.epics.css.dal.context.Identifiable;
-
-import java.util.Iterator;
-import java.util.LinkedList;
 
 
 /**
@@ -45,6 +45,8 @@ public class RequestImpl<T> implements Request<T>
 	protected Identifiable source;
 	protected ResponseListener<T> listener = null;
 	private int capacity = 1;
+	public boolean isDone = false;
+	public T lastValue;
 
 	/**
 	     * Creates new instance. Default response capacity is 1.
@@ -148,8 +150,15 @@ public class RequestImpl<T> implements Request<T>
 			}
 		}
 		
-		// prevent memory leak by releasing listener reference once it is not needed any more. 
+		 
 		if (r.isLast()) {
+			isDone = true;
+			lastValue = r.getValue();
+			synchronized (this) {
+				this.notifyAll();
+			}
+			
+			// prevent memory leak by releasing listener reference once it is not needed any more.
 			listener=null;
 		}
 	}
@@ -205,6 +214,25 @@ public class RequestImpl<T> implements Request<T>
 	public Iterator<Response<T>> iterator() {
 		return responses();
 	}
+	
+	/**
+	 * Blocks call until last response is received. <br><b>NOTE: </b> call from this method is returned after events
+	 * are dispatched on ResponseListeners.
+	 * 
+	 * @return final value received with done event. 
+	 */
+	public T waitUntilDone(){
+		while (isDone == false){
+			synchronized(this)
+			{
+				try {
+					this.wait();
+				} catch (InterruptedException e) {
+				}
+			}
+		}
+		return lastValue;
+	}	
 }
 
 /* __oOo__ */

@@ -22,6 +22,8 @@
 
 package org.epics.css.dal;
 
+import org.epics.css.dal.simple.AnyData;
+
 
 /**
  * General EventSystem event.
@@ -153,6 +155,10 @@ public class DynamicValueEvent<T, P extends SimpleProperty<T>> extends SystemEve
 		}
 
 		return null;
+	}
+	
+	public AnyData getData() {
+		return property.getData();
 	}
 }
 

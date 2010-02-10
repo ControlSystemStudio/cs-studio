@@ -31,6 +31,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.epics.css.dal.simple.MetaData;
+
 import com.cosylab.util.BitCondition;
 
 /**
@@ -243,6 +245,11 @@ public class CharacteristicInfo {
 	 * Returned value type is <code>String</code>.
 	 */
 	public static final CharacteristicInfo C_STATUS_INFO = new CharacteristicInfo("status", String.class, new Class[] { DynamicValueProperty.class }, "Meta characteristic for last received EPICS style status.", null, true);
+	/**
+	 * MetaData characteristic similar to that used by simple DAL.
+	 * Returned value type is <code>MetaData</code>.
+	 */
+	public static final CharacteristicInfo C_META_DATA = new CharacteristicInfo("metaData", MetaData.class, new Class[] { DynamicValueProperty.class }, "MetaData characteristic similar to that used by simple DAL.", null, true);
 
 	
 	private static CharacteristicInfo[] defaultCharacterictics;

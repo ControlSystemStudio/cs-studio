@@ -23,6 +23,7 @@
 package org.epics.css.dal;
 
 import org.epics.css.dal.context.Identifiable;
+import org.epics.css.dal.simple.AnyDataChannel;
 
 
 /**
@@ -34,7 +35,7 @@ import org.epics.css.dal.context.Identifiable;
  *
  */
 public interface SimpleProperty<T> extends DataAccess<T>, CharacteristicContext,
-	PropertyCharacteristics, ValueUpdateable<T>, Identifiable
+	PropertyCharacteristics, ValueUpdateable<T>, Identifiable, AnyDataChannel
 {
 	/**
 	 * Returns the Dynamic Value Unique Name. The name syntax is not

@@ -22,20 +22,20 @@
 
 package org.epics.css.dal.impl;
 
-import com.cosylab.util.ListenerList;
-
 import org.epics.css.dal.DataAccess;
 import org.epics.css.dal.DataExchangeException;
 import org.epics.css.dal.DynamicValueEvent;
 import org.epics.css.dal.DynamicValueListener;
 import org.epics.css.dal.SimpleProperty;
 
+import com.cosylab.util.ListenerList;
+
 public abstract class AbstractDataAccessWrapper<T> implements DataAccess<T>
 {
 	protected static final int UNKNOWN = -1;
 	protected DataAccess sourceDA;
 	protected Class<T> valClass;
-	protected ListenerList dvListeners = new ListenerList(DynamicValueListener.class);
+	private ListenerList dvListeners;
 	//protected T lastValue;
 	protected int conversion = UNKNOWN;
 
@@ -43,6 +43,9 @@ public abstract class AbstractDataAccessWrapper<T> implements DataAccess<T>
 	{
 		private void fireEvent(DynamicValueEvent event, int id)
 		{
+			if (!hasDynamicValueListeners()) {
+				return;
+			}
 			//this event violates generics usage - Property is of different type than
 			//value
 			DynamicValueEvent newEvent = 
@@ -54,7 +57,7 @@ public abstract class AbstractDataAccessWrapper<T> implements DataAccess<T>
 				    event.getTimestamp(), event.getMessage(), event.getError(),
 				    event.getEventID());
 
-			DynamicValueListener<T, SimpleProperty<T>>[] listeners = (DynamicValueListener<T, SimpleProperty<T>>[])dvListeners
+			DynamicValueListener<T, SimpleProperty<T>>[] listeners = (DynamicValueListener<T, SimpleProperty<T>>[])getDvListeners()
 				.toArray();
 
 			for (int i = 0; i < listeners.length; i++) {
@@ -164,7 +167,7 @@ public abstract class AbstractDataAccessWrapper<T> implements DataAccess<T>
 	 */
 	public <P extends SimpleProperty<T>> void addDynamicValueListener(DynamicValueListener<T, P> l)
 	{
-		dvListeners.add(l);
+		getDvListeners().add(l);
 	}
 
 	/*
@@ -173,7 +176,7 @@ public abstract class AbstractDataAccessWrapper<T> implements DataAccess<T>
 	 */
 	public <P extends SimpleProperty<T>> void removeDynamicValueListener(DynamicValueListener<T, P> l)
 	{
-		dvListeners.remove(l);
+		getDvListeners().remove(l);
 	}
 
 	/*
@@ -182,8 +185,12 @@ public abstract class AbstractDataAccessWrapper<T> implements DataAccess<T>
 	 */
 	public DynamicValueListener<T, SimpleProperty<T>>[] getDynamicValueListeners()
 	{
-		return (DynamicValueListener<T, SimpleProperty<T>>[])dvListeners.toArray(new DynamicValueListener[dvListeners
-		    .size()]);
+		if (hasDynamicValueListeners()) {
+			return (DynamicValueListener<T, SimpleProperty<T>>[])
+			getDvListeners().toArray(
+					new DynamicValueListener[getDvListeners().size()]);
+		}
+		return new DynamicValueListener[0];
 	}
 
 	/*
@@ -254,6 +261,21 @@ public abstract class AbstractDataAccessWrapper<T> implements DataAccess<T>
 
 	protected abstract T convertFromOriginal(Object value,
 	    DataAccess dataAccess);
+
+	protected ListenerList getDvListeners() {
+		if (dvListeners==null) {
+			synchronized (this) {
+				if (dvListeners==null) {
+					 dvListeners= new ListenerList(DynamicValueListener.class);
+				}
+			}
+		}
+		return dvListeners;
+	}
+	
+	public boolean hasDynamicValueListeners() {
+		return dvListeners!=null && dvListeners.size()>0;
+	}
 }
 
 /* __oOo__ */

@@ -25,6 +25,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Arrays;
 
+import org.csstudio.dal.DalPlugin;
 import org.csstudio.platform.internal.simpledal.AbstractConnector;
 import org.csstudio.platform.internal.simpledal.converters.ConverterUtil;
 import org.csstudio.platform.logging.CentralLogger;
@@ -46,7 +47,7 @@ import org.epics.css.dal.ResponseListener;
 import org.epics.css.dal.Timestamp;
 import org.epics.css.dal.context.ConnectionEvent;
 import org.epics.css.dal.context.LinkListener;
-import org.epics.css.dal.context.RemoteInfo;
+import org.epics.css.dal.simple.RemoteInfo;
 import org.epics.css.dal.spi.PropertyFactory;
 
 /**
@@ -58,7 +59,7 @@ import org.epics.css.dal.spi.PropertyFactory;
  * For convenience the {@link IProcessVariableValueListener}s are only weakly
  * referenced. The connector tracks for {@link IProcessVariableValueListener}s
  * that have been garbage collected and removes those references from its
- * internal list. This way {@link IProcessVariableValueListener}s don´t have to
+ * internal list. This way {@link IProcessVariableValueListener}s donï¿½t have to
  * be disposed explicitly.
  * 
  * @author Sven Wende
@@ -392,7 +393,8 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
 		DynamicValueProperty property = null;
 
 		try {
-			RemoteInfo ri = getProcessVariableAddress().toDalRemoteInfo();
+			org.epics.css.dal.context.RemoteInfo oldRi = getProcessVariableAddress().toDalRemoteInfo();
+			RemoteInfo ri = new RemoteInfo(oldRi.getPlugType(), oldRi.getName(), null, null);
 
 			PropertyFactory factory = DALPropertyFactoriesProvider.getInstance().getPropertyFactory(
 					getProcessVariableAddress().getControlSystem());

@@ -22,8 +22,9 @@
 
 package org.epics.css.dal;
 
-import java.util.Date;
 import java.util.EnumSet;
+
+import org.epics.css.dal.simple.Severity;
 
 
 /**
@@ -31,7 +32,7 @@ import java.util.EnumSet;
  *
  * @author ikriznar
  */
-public class DynamicValueCondition
+public class DynamicValueCondition implements Severity
 {
 	private EnumSet<DynamicValueState> states;
 	private Timestamp timestamp;
@@ -234,6 +235,28 @@ public class DynamicValueCondition
 			sb.append(description);
 		}
 		return sb.toString();
+	}
+
+	public boolean hasValue() {
+		// TODO is this OK?
+		return !containsStates(new DynamicValueState[]{DynamicValueState.LINK_NOT_AVAILABLE, DynamicValueState.TIMELAG, DynamicValueState.TIMEOUT});
+	}
+
+	public boolean isInvalid() {
+		// TODO is this OK?
+		return containsStates(DynamicValueState.ERROR);
+	}
+
+	public boolean isMajor() {
+		return containsStates(DynamicValueState.ALARM);
+	}
+
+	public boolean isMinor() {
+		return containsStates(DynamicValueState.WARNING);
+	}
+
+	public boolean isOK() {
+		return !containsStates(new DynamicValueState[]{DynamicValueState.WARNING, DynamicValueState.ALARM, DynamicValueState.ERROR, DynamicValueState.LINK_NOT_AVAILABLE, DynamicValueState.TIMELAG, DynamicValueState.TIMEOUT});
 	}
 }
 

@@ -76,6 +76,14 @@ public interface Request<T> extends Iterable<Response<T>>
 	 * @return the last response
 	 */
 	public Response<T> getLastResponse();
+
+	/**
+	 * Blocks call until last response is received. <br><b>NOTE: </b> call from this method is returned after events
+	 * are dispatched on ResponseListeners.
+	 * 
+	 * @return final value received with done event. 
+	 */
+	public T waitUntilDone();
 }
 
 /* __oOo__ */

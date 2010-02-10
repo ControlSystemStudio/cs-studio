@@ -22,6 +22,8 @@
 
 package org.epics.css.dal.context;
 
+import org.epics.css.dal.simple.RemoteInfo;
+
 
 /**
  * An interface for the object that is able to control its own life-cycle of the
@@ -129,6 +131,23 @@ public interface Connectable extends Linkable, ContextBean
 	 *            by calling <code>connect()</code> and failed
 	 */
 	void setRemoteInfo(RemoteInfo rinfo) throws IllegalArgumentException;
+
+	/**
+	 * @see {@link #setAutoConnect(boolean)} 
+	 */
+	public boolean isAutoConnect();
+
+	/**
+	 * If autoConnect is true, Device is automatically connected when all requirements
+	 * are provided. Default value is <code>true</code>.
+	 */
+	public void setAutoConnect(boolean autoConnect);
+	
+	/**
+	 * Returns true, if {@link #getConnectionState()} is {@link ConnectionState#CONNECTING}.
+	 */
+	public boolean isConnecting();
+
 }
 
 /* __oOo__ */

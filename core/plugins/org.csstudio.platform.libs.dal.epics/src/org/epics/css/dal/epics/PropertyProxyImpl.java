@@ -55,6 +55,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import org.epics.css.dal.AccessType;
+import org.epics.css.dal.CharacteristicInfo;
 import org.epics.css.dal.DataExchangeException;
 import org.epics.css.dal.DynamicValueCondition;
 import org.epics.css.dal.DynamicValueState;
@@ -79,6 +80,7 @@ import org.epics.css.dal.proxy.PropertyProxy;
 import org.epics.css.dal.proxy.ProxyEvent;
 import org.epics.css.dal.proxy.ProxyListener;
 import org.epics.css.dal.proxy.SyncPropertyProxy;
+import org.epics.css.dal.simple.impl.DataUtil;
 
 import com.cosylab.epics.caj.CAJChannel;
 import com.cosylab.util.BitCondition;
@@ -208,14 +210,16 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 		// destroy all monitors
 		destroyMonitors();
 		
-		try {
-			channel.removeConnectionListener(this);
-		} catch (IllegalStateException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (CAException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if (channel.getConnectionState() != Channel.CLOSED) { // FIXME workaround because CAJChannel.removeConnectionListener throws IllegalStateException: "Channel closed."
+			try {
+				channel.removeConnectionListener(this);
+			} catch (IllegalStateException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (CAException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		// destory channel
 		channel.dispose();
@@ -615,6 +619,13 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 				characteristics.put(EpicsPropertyCharacteristics.EPICS_ALARM_MAX, characteristics.get(NumericPropertyCharacteristics.C_ALARM_MAX));
 				characteristics.put(EpicsPropertyCharacteristics.EPICS_ALARM_MIN, characteristics.get(NumericPropertyCharacteristics.C_ALARM_MIN));
 				
+				int resolution = ((Number) characteristics.get(NumericPropertyCharacteristics.C_RESOLUTION)).intValue();
+				characteristics.put(CharacteristicInfo.C_META_DATA.getName(), DataUtil.createNumericMetaData(
+						gr.getLowerDispLimit().doubleValue(), gr.getUpperDispLimit().doubleValue(), 
+						gr.getLowerWarningLimit().doubleValue(), gr.getUpperWarningLimit().doubleValue(), 
+						gr.getLowerAlarmLimit().doubleValue(), gr.getUpperAlarmLimit().doubleValue(), 
+						resolution, gr.getUnits()));
+				
 			} else {
 				characteristics.put(NumericPropertyCharacteristics.C_UNITS, "N/A");
 			}
@@ -642,6 +653,8 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 					values[i] = new Long(i);
 				
 				characteristics.put(EnumPropertyCharacteristics.C_ENUM_VALUES, values);
+				
+				characteristics.put(CharacteristicInfo.C_META_DATA.getName(), DataUtil.createEnumeratedMetaData(labels));
 
 			}
 			

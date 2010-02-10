@@ -27,6 +27,7 @@ import org.epics.css.dal.Request;
 import org.epics.css.dal.Response;
 import org.epics.css.dal.Timestamp;
 import org.epics.css.dal.context.Identifiable;
+import org.epics.css.dal.simple.impl.DataUtil;
 
 
 /**
@@ -35,7 +36,7 @@ import org.epics.css.dal.context.Identifiable;
  */
 public class ResponseImpl<T> implements Response<T>
 {
-	private RequestImpl<T> request;
+	private Request<T> request;
 	private T value;
 	private String idTag;
 	private DynamicValueCondition condition;
@@ -58,7 +59,7 @@ public class ResponseImpl<T> implements Response<T>
 	 * @param timestamp response timestamp. If timestamp is 0, current time will be used.
 	 * @param last <code>true</code> if this is the last response.
 	 */
-	public ResponseImpl(Identifiable source, RequestImpl<T> r, T value,
+	public ResponseImpl(Identifiable source, Request<T> r, T value,
 	    String idTag, boolean success, Exception error,
 	    DynamicValueCondition cond, Timestamp timestamp, boolean last)
 	{
@@ -99,7 +100,8 @@ public class ResponseImpl<T> implements Response<T>
 	 */
 	public Number getNumber()
 	{
-		return (Number)value;
+		return DataUtil.castToNumber(value);
+//		return (Number)value;
 	}
 
 	/* (non-Javadoc)

@@ -22,7 +22,6 @@
 
 package org.epics.css.dal;
 
-
 /**
  * Enumeration <code>DynamicValue</code> describes avaliable states in which
  * dynamic value property migth find itself. This state does not described
@@ -69,5 +68,6 @@ public enum DynamicValueState {
 	 * well.
 	 */
 	LINK_NOT_AVAILABLE;
+	
 }
 /* __oOo__ */

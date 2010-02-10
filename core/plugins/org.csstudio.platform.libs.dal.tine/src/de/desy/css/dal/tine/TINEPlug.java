@@ -33,13 +33,13 @@ import org.epics.css.dal.RemoteException;
 import org.epics.css.dal.SimpleProperty;
 import org.epics.css.dal.context.AbstractApplicationContext;
 import org.epics.css.dal.context.ConnectionException;
-import org.epics.css.dal.context.RemoteInfo;
 import org.epics.css.dal.device.AbstractDevice;
 import org.epics.css.dal.impl.PropertyUtilities;
 import org.epics.css.dal.proxy.AbstractPlug;
 import org.epics.css.dal.proxy.DeviceProxy;
 import org.epics.css.dal.proxy.DirectoryProxy;
 import org.epics.css.dal.proxy.PropertyProxy;
+import org.epics.css.dal.simple.RemoteInfo;
 
 import de.desy.tine.definitions.TFormat;
 
@@ -248,7 +248,7 @@ public class TINEPlug extends AbstractPlug {
 	 * @see org.epics.css.dal.context.PlugContext#createRemoteInfo(java.lang.String)
 	 */
 	public RemoteInfo createRemoteInfo(String uniqueName) throws NamingException {
-		return new RemoteInfo(uniqueName, TINEPlug.DEFAULT_AUTHORITY, TINEPlug.PLUG_TYPE);
+		return new RemoteInfo(TINEPlug.PLUG_TYPE, uniqueName, null, null);
 	}
 	
 	/*

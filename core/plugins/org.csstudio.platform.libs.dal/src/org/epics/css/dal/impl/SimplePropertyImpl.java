@@ -32,7 +32,6 @@ import java.util.Map;
 
 import org.epics.css.dal.DataAccess;
 import org.epics.css.dal.DataExchangeException;
-import org.epics.css.dal.DynamicValueAdapter;
 import org.epics.css.dal.DynamicValueCondition;
 import org.epics.css.dal.DynamicValueEvent;
 import org.epics.css.dal.DynamicValueListener;
@@ -49,6 +48,7 @@ import org.epics.css.dal.context.IdentifierUtilities;
 import org.epics.css.dal.proxy.DirectoryProxy;
 import org.epics.css.dal.proxy.MonitorProxy;
 import org.epics.css.dal.proxy.PropertyProxy;
+import org.epics.css.dal.proxy.Proxy;
 
 import com.cosylab.util.ListenerList;
 
@@ -59,7 +59,7 @@ import com.cosylab.util.ListenerList;
  * @author Igor Kriznar (igor.kriznarATcosylab.com)
  *
  */
-public class SimplePropertyImpl<T> extends DataAccessImpl<T>
+public abstract class SimplePropertyImpl<T> extends DataAccessImpl<T>
 	implements SimpleProperty<T>
 {
 	/*    protected Hashtable<Class<? extends DataAccess>,Class<? extends DataAccess> > dataAccessTypes =
@@ -121,6 +121,7 @@ public class SimplePropertyImpl<T> extends DataAccessImpl<T>
 	 */
 	public DynamicValueCondition getCondition()
 	{
+		if (condition == null && proxy == null) throw new IllegalStateException("Proxy is null");
 		return condition != null ? condition : proxy.getCondition();
 	}
 
@@ -162,7 +163,7 @@ public class SimplePropertyImpl<T> extends DataAccessImpl<T>
 	 */
 	public String getDescription() throws DataExchangeException
 	{
-		if (directoryProxy.getConnectionState() != ConnectionState.CONNECTED)
+		if (directoryProxy == null || directoryProxy.getConnectionState() != ConnectionState.CONNECTED)
 			throw new DataExchangeException(this,"Directory proxy is not connected");
 
 		return (String)directoryProxy.getCharacteristic(C_DESCRIPTION);
@@ -173,6 +174,7 @@ public class SimplePropertyImpl<T> extends DataAccessImpl<T>
 	 */
 	public String getUniqueName()
 	{
+		if (proxy == null) throw new IllegalStateException("Proxy is null");
 		return proxy.getUniqueName();
 	}
 
@@ -217,7 +219,7 @@ public class SimplePropertyImpl<T> extends DataAccessImpl<T>
 	 */
 	public Object getCharacteristic(String name) throws DataExchangeException
 	{
-		if (directoryProxy.getConnectionState() != ConnectionState.CONNECTED)
+		if (directoryProxy == null || directoryProxy.getConnectionState() != ConnectionState.CONNECTED)
 			throw new DataExchangeException(this,"Directory proxy is not connected");
 		return directoryProxy.getCharacteristic(name);
 	}
@@ -227,7 +229,7 @@ public class SimplePropertyImpl<T> extends DataAccessImpl<T>
 	 */
 	public String[] getCharacteristicNames() throws DataExchangeException
 	{
-		if (directoryProxy.getConnectionState() != ConnectionState.CONNECTED)
+		if (directoryProxy == null || directoryProxy.getConnectionState() != ConnectionState.CONNECTED)
 			throw new DataExchangeException(this,"Directory proxy is not connected");
 		return directoryProxy.getCharacteristicNames();
 	}
@@ -237,7 +239,7 @@ public class SimplePropertyImpl<T> extends DataAccessImpl<T>
 	 */
 	public Map<String,Object> getCharacteristics(String[] names) throws DataExchangeException
 	{
-		if (directoryProxy.getConnectionState() != ConnectionState.CONNECTED)
+		if (directoryProxy == null || directoryProxy.getConnectionState() != ConnectionState.CONNECTED)
 			throw new DataExchangeException(this,"Directory proxy is not connected");
 
 		// TODO: implement wrapper listener
@@ -281,11 +283,13 @@ public class SimplePropertyImpl<T> extends DataAccessImpl<T>
 	public <E extends SimpleProperty<T>> DynamicValueMonitor createNewMonitor(DynamicValueListener<T, E> listener)
 		throws RemoteException
 	{
+		if (proxy == null) throw new IllegalStateException("Proxy is null");
+		
 		MonitorProxyWrapper<T, E> mpw = new MonitorProxyWrapper<T, E>((E) this, listener);
 		MonitorProxy mp = null;
 		mp = proxy.createMonitor(mpw);
 		mpw.initialize(mp);
-		monitors.add(mp);
+		monitors.add(mpw);
 
 		return mpw;
 	}
@@ -296,12 +300,12 @@ public class SimplePropertyImpl<T> extends DataAccessImpl<T>
 	public synchronized DynamicValueMonitor getDefaultMonitor()
 	{
 		if (defaultMonitor == null && proxy!=null && proxy.getConnectionState()==ConnectionState.CONNECTED) {
-			defaultMonitor = new MonitorProxyWrapper<T, SimpleProperty<T>>(this, dvListeners);
+			defaultMonitor = new MonitorProxyWrapper<T, SimpleProperty<T>>(this, getDvListeners());
 
 			try {
 				MonitorProxy mp = proxy.createMonitor(defaultMonitor);
 				defaultMonitor.initialize(mp);
-				monitors.add(mp);
+				monitors.add(defaultMonitor);
 			} catch (Exception e) {
 				e.printStackTrace();
 				if (defaultMonitor!=null) {
@@ -325,12 +329,14 @@ public class SimplePropertyImpl<T> extends DataAccessImpl<T>
 			getDefaultMonitor();
 		}
 		
-		DynamicValueEvent<T, P> e = new DynamicValueEvent<T, P>(
-				this, (P)this, lastValue, getCondition(),
-				lastValueUpdateTimestamp, "Initial update.");
-		l.conditionChange(e);
-		if (lastValue != null) {
-			l.valueChanged(e);
+		if (proxy != null){
+			DynamicValueEvent<T, P> e = new DynamicValueEvent<T, P>(
+					this, (P)this, lastValue, getCondition(),
+					lastValueUpdateTimestamp, "Initial update.");
+			l.conditionChange(e);
+			if (lastValue != null) {
+				l.valueChanged(e);
+			}
 		}
 	}
 
@@ -381,6 +387,18 @@ public class SimplePropertyImpl<T> extends DataAccessImpl<T>
 	{
 		super.initialize(proxy);
 		this.directoryProxy = dirProxy;
+		for (int i=0;i<monitors.size();i++){
+			MonitorProxyWrapper mon;
+			try {
+				mon = (MonitorProxyWrapper)monitors.get(i);
+				MonitorProxy mp = proxy.createMonitor(mon);
+				mon.initialize(mp);
+			} catch (Exception e) {
+				//TODO Handle exception!!
+				System.out.println("Problem on re-inizializing monitor on property"+getName()+" :");
+				e.printStackTrace();
+			}
+		}
 	}
 
 	/* (non-Javadoc)
@@ -389,6 +407,7 @@ public class SimplePropertyImpl<T> extends DataAccessImpl<T>
 	public String getName()
 	{
 		if (name == null) {
+			if (proxy == null) throw new IllegalStateException("Proxy is null");
 			return proxy.getUniqueName();
 		}
 
@@ -412,6 +431,7 @@ public class SimplePropertyImpl<T> extends DataAccessImpl<T>
 	 */
 	public boolean isDebug()
 	{
+		if (proxy == null) throw new IllegalStateException("Proxy is null");
 		return proxy.isDebug();
 	}
 
@@ -451,5 +471,16 @@ public class SimplePropertyImpl<T> extends DataAccessImpl<T>
 		}
 		this.lastValueUpdateTimestamp=lastUpdate;
 		this.lastValueSuccess=true;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.epics.css.dal.impl.DataAccessImpl#releaseProxy(boolean)
+	 */
+	@Override
+	public Proxy[] releaseProxy(boolean destroy) {
+		Proxy[] proxies = super.releaseProxy(destroy);
+		directoryProxy = null;
+		defaultMonitor = null;
+		return proxies;
 	}
 } 

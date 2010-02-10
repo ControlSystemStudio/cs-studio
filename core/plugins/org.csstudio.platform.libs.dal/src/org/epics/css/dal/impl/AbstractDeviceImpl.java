@@ -26,6 +26,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -226,7 +227,11 @@ public class AbstractDeviceImpl extends LifecycleReporterSupport
 			String[] names = getPropertyNames();
 
 			for (int i = 0; i < names.length; i++) {
-				properties.put(names[i], null);
+				try {
+					properties.put(names[i], createProperty(names[i]));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 		}
 
@@ -364,7 +369,7 @@ public class AbstractDeviceImpl extends LifecycleReporterSupport
 	 * @param e an exception to handle.
 	 */
 	protected void handleException(Exception e) {
-		// overriding if necessary
+		 e.printStackTrace();
 	}
 
 	/* (non-Javadoc)
@@ -467,6 +472,11 @@ public class AbstractDeviceImpl extends LifecycleReporterSupport
 		return connectionState == ConnectionState.CONNECTED
 		|| connectionState == ConnectionState.CONNECTION_LOST;
 	}
+
+	public boolean isConnecting(){
+		return getConnectionState() == ConnectionState.CONNECTING; 
+	}
+
 
 	/* (non-Javadoc)
 	 * @see org.epics.css.dal.context.Linkable#isDestroyed()
@@ -719,6 +729,31 @@ public class AbstractDeviceImpl extends LifecycleReporterSupport
 	public DeviceProxy getProxy()
 	{
 		return deviceProxy;
+	}
+	
+	public Proxy[] releaseProxy(boolean destroy) {
+		
+		if (destroy) {
+			setConnectionState(ConnectionState.DESTROYED);
+		}
+		
+		if (properties!=null) {
+			Collection<DynamicValueProperty<?>> props = properties.values();
+			for (Iterator<DynamicValueProperty<?>> iterator = props.iterator(); iterator.hasNext();) {
+				DynamicValueProperty<?> dynamicValueProperty = (DynamicValueProperty<?>) iterator
+						.next();
+				Proxy[] p=((DataAccessImpl<?>) dynamicValueProperty).releaseProxy(destroy);
+			}
+		}
+		Proxy[] temp = new Proxy[]{deviceProxy,directoryProxy};
+		deviceProxy = null;
+		directoryProxy = null;
+		if (destroy) {
+			linkListeners.clear();
+			propertyListeners.clear();
+			responseListeners.clear();
+		}
+		return temp;
 	}
 	
 	public DirectoryProxy getDirectoryProxy() {
