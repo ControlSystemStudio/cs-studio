@@ -119,7 +119,7 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
 		assert valueType != null;
 		_processVariableAddress = pvAddress;
 		_valueType = valueType;
-		_weakListenerReferences = new ArrayList<ListenerReference>();
+		_weakListenerReferences = Collections.synchronizedList(new ArrayList<ListenerReference>());
 	}
 
 	/**
@@ -209,9 +209,7 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
 
 		assert listener != null;
 
-		synchronized (_weakListenerReferences) {
-			_weakListenerReferences.add(new ListenerReference(characteristicId, listener));
-		}
+		_weakListenerReferences.add(new ListenerReference(characteristicId, listener));
 
 		sendInitialValuesForNewListener(characteristicId, listener);
 	}
@@ -248,19 +246,13 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
 	 *            the value listener to be removed from the connector
 	 */
 	public final boolean removeProcessVariableValueListener(IProcessVariableValueListener listener) {
-		synchronized (_weakListenerReferences) {
+		ListenerReference[] listeners = getWeakReferenceListeners();
+		ListenerReference toRemove = null;
 
-			ListenerReference toRemove = null;
-
-			for (ListenerReference ref : _weakListenerReferences) {
-				IProcessVariableValueListener lr = ref.getListener();
-				if (lr != null && listener == lr) {
-					toRemove = ref;
-					break;
-				}
-			}
-
-			if (toRemove != null) {
+		for (ListenerReference ref : listeners) {
+			IProcessVariableValueListener lr = ref.getListener();
+			if (lr != null && listener == lr) {
+				toRemove = ref;
 				_weakListenerReferences.remove(toRemove);
 				return true;
 			}
@@ -667,15 +659,15 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
 	 * state. The same already works for valueChanged() updates.
 	 */
 	protected void updateCharacteristicListeners() {
-		synchronized (_weakListenerReferences) {
-			for (ListenerReference ref : _weakListenerReferences) {
-				IProcessVariableValueListener listener = ref.getListener();
+		ListenerReference[] listeners = getWeakReferenceListeners();
+		for (ListenerReference ref : listeners) {
+			IProcessVariableValueListener listener = ref.getListener();
 
-				if (listener != null && ref.getCharacteristicId() != null) {
-					getCharacteristicAsynchronously(ref.getCharacteristicId(), getValueType(), listener);
-				}
+			if (listener != null && ref.getCharacteristicId() != null) {
+				getCharacteristicAsynchronously(ref.getCharacteristicId(), getValueType(), listener);
 			}
 		}
+
 
 	}
 
@@ -705,26 +697,22 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
 	 *            the runnable
 	 */
 	private void execute(IInternalRunnable runnable) {
-		synchronized (_weakListenerReferences) {
-			Iterator<ListenerReference> it = _weakListenerReferences.iterator();
+		ListenerReference[] listeners = getWeakReferenceListeners();
+		for (ListenerReference wr : listeners) {
+			IProcessVariableValueListener listener = wr.getListener();
 
-			while (it.hasNext()) {
-				ListenerReference wr = it.next();
-
-				IProcessVariableValueListener listener = wr.getListener();
-
-				if (listener != null) {
-					// split the calls for listeners that are registered for a
-					// characteristic and those which are registered for a
-					// "normal" value
-					if (wr.getCharacteristicId() != null) {
-						runnable.doRun(listener, wr.getCharacteristicId());
-					} else {
-						runnable.doRun(listener);
-					}
+			if (listener != null) {
+				// split the calls for listeners that are registered for a
+				// characteristic and those which are registered for a
+				// "normal" value
+				if (wr.getCharacteristicId() != null) {
+					runnable.doRun(listener, wr.getCharacteristicId());
+				} else {
+					runnable.doRun(listener);
 				}
-			}
+			}			
 		}
+
 	}
 
 	/**
@@ -732,18 +720,14 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
 	 * collected.
 	 */
 	void cleanupWeakReferences() {
-		synchronized (_weakListenerReferences) {
-			List<ListenerReference> deletionCandidates = new ArrayList<ListenerReference>();
-			Iterator<ListenerReference> it = _weakListenerReferences.iterator();
-
-			while (it.hasNext()) {
-				ListenerReference ref = it.next();
-
-				if (ref.getListener() == null) {
-					deletionCandidates.add(ref);
-				}
+		ListenerReference[] listeners = getWeakReferenceListeners();
+		List<ListenerReference> deletionCandidates = new ArrayList<ListenerReference>();
+		for (ListenerReference ref : listeners) {
+			if (ref.getListener() == null) {
+				deletionCandidates.add(ref);
 			}
-
+		}
+		synchronized (_weakListenerReferences) {
 			for (ListenerReference wr : deletionCandidates) {
 				_weakListenerReferences.remove(wr);
 			}
@@ -800,6 +784,14 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
 	private boolean isBlocked() {
 		long diff = _keepAliveUntil - System.currentTimeMillis();
 		return diff > 0;
+	}
+	
+	private ListenerReference[] getWeakReferenceListeners() {
+		ListenerReference[] ret = null;
+		synchronized (_weakListenerReferences) {
+			ret = _weakListenerReferences.toArray(new ListenerReference[_weakListenerReferences.size()]);
+		}
+		return ret;
 	}
 
 	/**
