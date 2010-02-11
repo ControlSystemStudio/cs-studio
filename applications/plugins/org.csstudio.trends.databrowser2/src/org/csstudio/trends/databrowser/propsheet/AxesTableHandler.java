@@ -135,7 +135,7 @@ public class AxesTableHandler implements ILazyContentProvider
         });
         
         // Color Column ----------
-        col = AutoSizeColumn.make(axes_table, Messages.Color, 40, 10);
+        col = AutoSizeColumn.make(axes_table, Messages.Color, 40, 5);
         col.setLabelProvider(new CellLabelProvider()
         {
             @Override
@@ -171,7 +171,7 @@ public class AxesTableHandler implements ILazyContentProvider
         });
 
         // Minimum value Column ----------
-        col = AutoSizeColumn.make(axes_table, Messages.AxisMin, 80, 10);
+        col = AutoSizeColumn.make(axes_table, Messages.AxisMin, 80, 100);
         col.setLabelProvider(new CellLabelProvider()
         {
             @Override
@@ -211,7 +211,7 @@ public class AxesTableHandler implements ILazyContentProvider
         });
         
         // Maximum value Column ----------
-        col = AutoSizeColumn.make(axes_table, Messages.AxisMax, 80, 10);
+        col = AutoSizeColumn.make(axes_table, Messages.AxisMax, 80, 100);
         col.setLabelProvider(new CellLabelProvider()
         {
             @Override
