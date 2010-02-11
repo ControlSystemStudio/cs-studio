@@ -439,9 +439,7 @@ public class XYGraph extends Figure{
 		return plotArea;
 	}
 	
-	/**
-	 * @return the image of the XYFigure
-	 */
+	/** @return Image of the XYFigure. Receiver must dispose. */
 	public Image getImage(){
 		Image image = new Image(null, bounds.width + 6, bounds.height + 6);
 		GC gc = new GC(image);
