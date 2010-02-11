@@ -1,0 +1,73 @@
+/* Style sheet for Data Browser manual */
+
+body
+{
+    font-family: Helvetica, Geneva, Arial, SunSans-Regular, sans-serif;
+    font-variant: normal;
+    font-style: normal;
+    color: black;
+    background: white;
+}
+
+H1
+{
+    font-family: Georgia, "Times New Roman", Times, serif;
+    font-variant: normal;
+    font-style: normal;
+    color: #202080;
+}
+
+H2
+{
+    font-family: Georgia, "Times New Roman", Times, serif;
+    font-variant: normal;
+    font-style: normal;
+    text-decoration: underline;
+    color: #202080;
+}
+
+
+H3, H4
+{
+    font-variant: normal;
+    font-style: bold;
+}
+
+
+
+
+/* Table-of-contents, index */
+span.index
+{
+  border-width: 1px;
+  border-color: gray;
+  border-top-style:solid;
+  border-bottom-style:solid;  
+}
+
+/* Plain anchors */
+a
+{
+  color: blue;
+  text-decoration: none;
+}
+
+/* Indent lists less than usual */
+ul
+{
+    list-style-type: square;
+    position: relative;
+    left: -1em;
+}
+ol
+{
+    position: relative;
+    left: -1em;
+}
+
+em
+{
+  color: #400000;
+  text-decoration: underline;
+}
+

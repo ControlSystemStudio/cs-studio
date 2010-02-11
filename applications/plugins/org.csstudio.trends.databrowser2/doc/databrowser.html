@@ -1,0 +1,249 @@
+<html>
+<head>
+<LINK href="db.css" rel="stylesheet" type="text/css">
+<title>Data Browser</title>
+</head>
+<body>
+
+<h1>Data Browser</h1>
+
+<span class="index">
+- <a href="#overview">Overview</a>
+- <a href="#101">Getting Started</a>
+- <a href="#perspective">Perspective</a>
+- <a href="#toolbar">Toolbar</a>
+- <a href="#config">Properties Panel</a>
+- <a href="#search">Search</a>
+- <a href="#transition">Older Data Browser</a>
+- <a href="#history">History</a>
+-
+</span>
+
+
+<a name=overview><h2>Overview</h2></a>
+<p>
+The Data Browser is a trending tool. It can display the values of 'live'
+Process Variables (PVs) in a Stripchart-type scrolling display,
+as well as historic data.
+</p>
+<div align='center'><img src="DataBrowserSnapshot.png" width="90%"/></div>
+
+<h3>Live Data</h3>
+<p>
+For each PV, the Data Browser collects 'live' samples from the control system
+and plots them over time. The size of this 'live' sample buffer is configurable,
+as is the sample period.
+</p>
+<h3>Historic Data</h3>
+<p>
+The Data Browser queries archive data sources for historic samples to obtain
+data for time ranges 'before' the live sample buffer.
+You can configure one or more archive data source for each PV.
+</p>
+
+
+<a name=101><h2>Getting Started</h2></a>
+<ol>
+<li>Click on the <img src="../icons/databrowser.png" width=16 height=16/>
+    "Open new Data Browser plot" icon in the CSS tool bar.
+<li>Open the plot's context menu by right-clicking into the plot.
+    Select <img src="../icons/add.gif" width=16 height=16/> "Add PV".
+<li>Enter the desired PV name, press "OK"
+<li>Use the <a href="#toolbar">Toolbar</a> or <a href="#config">Properties Panel</a>
+    to change the displayed time range, zoom in/out etc. 
+</ol>
+
+
+<a name=perspective><h2>Data Browser Perspective</h2></a>
+<p>
+The Data Browser "Perspective" provides a suggested arrangement of one or more
+Data Browser Plot windows surrounded by a <a href="#search">Search Panel</a>
+and <a href="#config">Properties Panel</a>.
+</p>
+<p>
+You can close the search panel, move the properties panel around etc.
+</p>
+<p>
+To <em>reset</em> the perspective to its original state, right-click on the
+"<img src="../icons/databrowser.png" width=16 height=16/>Data Browser"
+perspective tab at the top-left of the screen and select "Reset"
+
+
+<a name=toolbar><h2>Plot Toolbar</h2></a>
+<div><img src="toolbar.png" width="463" height="27"/></div>
+<p>
+The toolbar is displayed on top of a Data Browser plot.
+If it is not visible, open the context menu and select "Show Toolbar".
+</p>
+<p>
+Tool tips with brief explanations will appear if you hover the mouse pointer
+over a toolbar button for a few seconds. Explanation of toolbar buttons:
+<ul>
+<li>Configure Settings...<br>
+    Opens dialog for configuring the plot. Note that these are runtime configurations
+    which include things like axes label font settings that will not be saved
+    as part of the Data Browser configuration.
+<li>Add Annotation...<br>
+    After configuring the annotation to for example 'snap' to a selected trace,
+    the next mouse click into the plot will add an annotation.
+<li>Remove Annotation...<br>
+    Prompts for an annotation to remove from the plot.
+</ul>
+<hr width="10%" align="left">
+<ul>
+<li><img src="stagger.png" width=16 height=16/> Stagger Axes:
+    Arranges the value axes such that the traces on different axes don't
+    overlap.
+<li><img src="RubberbandZoom.png" width=16 height=16/> Rubberband Zoom:
+    Click into plot, hold mouse pointer to drag a 'rubberband' rectangle,
+    release to zoom into that area.
+<li><img src="HorizontalZoom.png" width=16 height=16/> Horizontal Zoom:
+    Click into plot at desired start time, hold mouse pointer to drag a
+    'rubberband' rectangle to the desired end time,
+    release to zoom into that area.
+<li><img src="VerticalZoom.png" width=16 height=16/> Horizontal ZoomVertical Zoom:
+    Like Vertical Zoom for vertical (value) axes.
+<li><img src="ZoomInHoriz.png" width=16 height=16/> Zoom In Horizontally:
+    Click and hold mouse pointer to zoom into time axis.
+<li><img src="ZoomOutHoriz.png" width=16 height=16/> Zoom Out Horizontally:
+    Click and hold mouse pointer to zoom out of time axis.
+<li><img src="ZoomInVert.png" width=16 height=16/> Zoom In Vertically:
+    Click and hold mouse pointer to zoom into value axes.
+<li><img src="ZoomOutVert.png" width=16 height=16/> Zoom Out Vertically:
+    Click and hold mouse pointer to zoom out of value axes.
+<li><img src="Panning.png" width=16 height=16/> Panning:
+    Click into plot or axes, hold and drag to desired position, release mouse button.
+<li>None<br>
+    For most of the other toolbar buttons, the (left) mouse button becomes
+    active: Clicking or holding it will for example activate a zoom operation.
+    The "None" option disables these so you can click into the plot and
+    nothing will happen.
+</ul>
+<ul>
+<li><img src="Undo.png" width=16 height=16/>Undo:
+    Undo the last operation. Click again to undo the previous operation, the one
+    before that and so on.
+<li><img src="Redo.png" width=16 height=16/>Redo:
+    Un-do the last undo, i.e. re-do.
+</ul>
+<ul>
+<li>Save Snapshot:
+    Prompts for file name under which an image of the current plot is saved.
+<li>Enable/Disable Scrolling:
+    Turns the strip-chart behavior of the Data Browser on or off:
+    Scroll such that the right end of the time axis is always "now", or
+    freeze the time axis.
+</ul>
+</p>
+
+
+<a name=config><h2>Properties Panel</h2></a>
+<p>
+Configure properties.
+</p>
+
+
+<a name=search><h2>Archive Search Panel</h2></a>
+<p>
+Search for Process Variable names (PVs) in an archive. 
+<ol>
+<li>Optional: Select an archive URL other than the default.
+<li>Optional: If the archive has more than one sub-archive, select one or more
+    sub-archive to search.
+<li>Enter PV name pattern.
+<li>Press "Search".
+<li>Either drag/drop PVs into existing Data Browser Plot, or right-click on
+    PVs of interest and select "CSS/Data Browser" to open a new Data Browser
+    Plot for them. 
+</ol>
+</p>
+<p>
+There are two types of patterns:
+</p>
+
+<h3>Simple Pattern</h3>
+<p>
+By default, PV name patterns can contain a question mark '?' as a place-holder
+for any single character or an asterisk '*' in place of any sequence of characters.
+</p>
+
+<h3>Regular Expression Pattern</h3>
+<p>
+When enabling "Reg.Exp." pattern search via the corresponding check box,
+a more powerful but also slower regular expression can be used:
+</p>
+<p>
+<TABLE BORDER=0>
+<TR BGCOLOR=#FFCC66><TH>Reg.Exp..</TH><TH>Meaning</TH></TR>
+<TR><TD>.</TD><TD>Any Single Character</TD></TR>
+<TR BGCOLOR=#DFDFFF><TD>.*</TD><TD>Zero or More Characters</TD></TR>
+<TR><TD>a?</TD><TD>Single 'a' or no 'a'</TD></TR>
+<TR BGCOLOR=#DFDFFF><TD>a*</TD><TD>Zero or more 'a'</TD></TR>
+<TR><TD>a+</TD><TD>One or more 'a'</TD></TR>
+<TR BGCOLOR=#DFDFFF><TD>.+</TD><TD>One or more arb. characters</TD></TR>
+<TR><TD>a|b</TD><TD>Either single 'a' or 'b'</TD></TR>
+<TR BGCOLOR=#DFDFFF><TD>[0-9]</TD><TD>'0' or '1' or ... or '9'</TD></TR>
+<TR><TD>()</TD><TD>grouping of subexpressions</TD></TR>
+<TR BGCOLOR=#DFDFFF><TD>Temp</TD><TD>Any Channel containing 'Temp'</TD></TR>
+<TR><TD>Temp$</TD><TD>Any Channel <I>ending</I> in 'Temp'</TD></TR>
+<TR BGCOLOR=#DFDFFF><TD>^RFQHR</TD><TD>Any Channel <I>starting</I> with 'RFQHR'</TD></TR>
+<TR><TD>Tin_[0-9]+_sig$</TD><TD>Channels ending in 'Tin_&lt;NUMBER&gt;_sig'</TD></TR>
+<TR BGCOLOR=#DFDFFF><TD>^XYZSys_Temp[2-3]$</TD><TD>'XYZSys_Temp2' or 'XYZSys_Temp3' </TD></TR>
+<TR><TD>Pwr_(in)|(out)</TD><TD>Channels containing 'Pwr_in' or  'Pwr_out'</TD></TR>
+</TABLE>
+</p>
+
+
+<a name=transition><h2>Transition from older Data Browser</h2></a>
+<div align='center'><img src="OldSnapshot.png" width="90%"/></div>
+<p>
+Even though this Data Browser code is quite different from the original code,
+you will notice a very similar look and overall behavior.
+The data browser also loads old "*.css-plt" configuration files.
+</p>
+<p>
+When you first open the new Data Browser, you should reset the perspective.
+</p>
+<p>
+The main differences:
+<ul>
+<li>The <a href="#toolbar">plot's Toolbar</a> has different options
+<li>The "Data Browser Config" panel has been replaced by the standard
+    Eclipse <a href="#config">"Properties" Panel</a>
+</ul>
+</p>
+
+
+<a name=history><h2>Product History</h2></a>
+<p>
+At LANL, Craig McChesney and Sergei Chevtsov with contributions by Peregrine
+McGehee implemented the Java Archive Viewer for displaying Channel Archiver
+data.
+</p>
+<p>
+The first CSS Data Browser was based on Archive Viewer ideas but added
+live data handling as well as CSS integration and pluggable support for more than
+one type of historic data source.
+</p>
+<p>
+After many changes to the code, a rework was required:
+<ul>
+<li>Code cleanup using UML diagrams, 'Model' with standalone Unit tests...
+<li>New XY Chart:
+    <ul>
+    <li>Pan axes or whole plot via mouse
+    <li>More zoom in/out options
+    <li>Annotations can 'snap' to trace or be freely positioned 
+    </ul>
+<li>Undo/redo support for almost everything
+<li>PVs can scan at individual rates, or log every received change.
+<li>Formula handles min/max samples
+<li>Export supports spreadsheet as well as MatLab file format
+<li>Use of "Properties" View allows shared as well as multiple configuration panels
+<li>New archive reader API that is 'smaller', with  better support for cancellation,
+    and support for faster Oracle data readout via 'stored procedure'.
+</ul>
+</p>
+
+</body>
+</html>

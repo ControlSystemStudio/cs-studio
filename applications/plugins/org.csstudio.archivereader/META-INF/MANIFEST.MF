@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Archive API2
+Bundle-SymbolicName: org.csstudio.archivereader;singleton:=true
+Bundle-Version: 2.0.0
+Bundle-Vendor: Kay Kasemir
+Require-Bundle: org.junit4,
+ org.eclipse.core.runtime,
+ org.csstudio.platform;bundle-version="1.1.0";visibility:=reexport
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-ActivationPolicy: lazy
+Export-Package: org.csstudio.archivereader
