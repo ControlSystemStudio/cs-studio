@@ -15,6 +15,7 @@ H1
     font-variant: normal;
     font-style: normal;
     color: #202080;
+    margin-bottom: 0;
 }
 
 H2
@@ -24,45 +25,61 @@ H2
     font-style: normal;
     text-decoration: underline;
     color: #202080;
+    margin-bottom: 0;
 }
 
-
-H3, H4
+H3
 {
     font-variant: normal;
     font-style: bold;
+    margin-top: 0.5ex;
+    margin-bottom: 0;
 }
 
+H4
+{
+    font-variant: normal;
+    font-style: italic;
+    margin-top: 0.5ex;
+    margin-bottom: 0;
+}
 
-
+P
+{
+    margin-top: 0;
+    margin-bottom: 0.5ex;
+}
 
 /* Table-of-contents, index */
 span.index
 {
-  border-width: 1px;
-  border-color: gray;
-  border-top-style:solid;
-  border-bottom-style:solid;  
+    border-width: 1px;
+    border-color: gray;
+    border-top-style:solid;
+    border-bottom-style:solid;  
 }
 
-/* Plain anchors */
+/* Plain anchors
 a
 {
-  color: blue;
-  text-decoration: none;
+    color: blue;
+    text-decoration: none;
 }
+ */
 
 /* Indent lists less than usual */
 ul
 {
     list-style-type: square;
-    position: relative;
-    left: -1em;
+    padding-left: 1em;
+    margin-top: 0;
+    margin-bottom: 0;
 }
 ol
 {
-    position: relative;
-    left: -1em;
+    padding-left: 2em;
+    margin-top: 0;
+    margin-bottom: 0;
 }
 
 em
@@ -71,3 +88,11 @@ em
   text-decoration: underline;
 }
 
+ADDRESS
+{
+    margin-top: 1em;
+    border-width: 1px;
+    border-color: gray;
+    border-top-style:solid;
+    text-align: right;
+}

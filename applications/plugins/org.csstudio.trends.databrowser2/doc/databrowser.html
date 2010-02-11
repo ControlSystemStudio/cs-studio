@@ -14,6 +14,7 @@
 - <a href="#toolbar">Toolbar</a>
 - <a href="#config">Properties Panel</a>
 - <a href="#search">Search</a>
+- <a href="#export">Export</a>
 - <a href="#transition">Older Data Browser</a>
 - <a href="#history">History</a>
 -
@@ -24,7 +25,7 @@
 
 <p>
 The Data Browser is a trending tool. It can display the values of 'live'
-Process Variables (PVs) in a Stripchart-type scrolling display,
+Process Variables (PVs) in a Stripchart-type scrolling display
 as well as historic data.
 </p>
 <div align='center'><img src="DataBrowserSnapshot.png" width="90%"/></div>
@@ -44,6 +45,8 @@ You can configure one or more archive data source for each PV.
 
 
 <a name=101><h2>Getting Started</h2></a>
+<p>
+To create a new plot with one PV:
 <ol>
 <li>Click on the <img src="../icons/databrowser.png" width=16 height=16/>
     "Open new Data Browser plot" icon in the CSS tool bar.
@@ -53,6 +56,7 @@ You can configure one or more archive data source for each PV.
 <li>Use the <a href="#toolbar">Toolbar</a> or <a href="#config">Properties Panel</a>
     to change the displayed time range, zoom in/out etc. 
 </ol>
+</p>
 
 
 <a name=perspective><h2>Data Browser Perspective</h2></a>
@@ -80,17 +84,16 @@ If it is not visible, open the context menu and select "Show Toolbar".
 Tool tips with brief explanations will appear if you hover the mouse pointer
 over a toolbar button for a few seconds. Explanation of toolbar buttons:
 <ul>
-<li>Configure Settings...<br>
+<li><img src="Configure.png" width=16 height=16/> Configure Settings:
     Opens dialog for configuring the plot. Note that these are runtime configurations
     which include things like axes label font settings that will not be saved
     as part of the Data Browser configuration.
-<li>Add Annotation...<br>
+<li><img src="Add_Annotation.png" width=16 height=16/> Add Annotation:
     After configuring the annotation to for example 'snap' to a selected trace,
     the next mouse click into the plot will add an annotation.
-<li>Remove Annotation...<br>
+<li><img src="Del_Annotation.png" width=16 height=16/> Remove Annotation:
     Prompts for an annotation to remove from the plot.
 </ul>
-<hr width="10%" align="left">
 <ul>
 <li><img src="stagger.png" width=16 height=16/> Stagger Axes:
     Arranges the value axes such that the traces on different axes don't
@@ -114,7 +117,7 @@ over a toolbar button for a few seconds. Explanation of toolbar buttons:
     Click and hold mouse pointer to zoom out of value axes.
 <li><img src="Panning.png" width=16 height=16/> Panning:
     Click into plot or axes, hold and drag to desired position, release mouse button.
-<li>None<br>
+<li><img src="MouseArrow.png" width=16 height=16/> None:
     For most of the other toolbar buttons, the (left) mouse button becomes
     active: Clicking or holding it will for example activate a zoom operation.
     The "None" option disables these so you can click into the plot and
@@ -128,9 +131,9 @@ over a toolbar button for a few seconds. Explanation of toolbar buttons:
     Un-do the last undo, i.e. re-do.
 </ul>
 <ul>
-<li>Save Snapshot:
+<li><img src="Camera.png" width=16 height=16/> Save Snapshot:
     Prompts for file name under which an image of the current plot is saved.
-<li>Enable/Disable Scrolling:
+<li><img src="../icons/scroll_on.gif" width=16 height=16/> Enable/Disable Scrolling:
     Turns the strip-chart behavior of the Data Browser on or off:
     Scroll such that the right end of the time axis is always "now", or
     freeze the time axis.
@@ -145,7 +148,7 @@ The Properties panel allows configuration of the plot, its axes and traces.
 <p>
 The same Properties panel is shared with other Data Browser plots or even
 other CSS tools. When you have multiple Data Browser plots open, the Properties
-pabel will show the configuration of the plot that was last selected via a mouse
+panel will show the configuration of the plot that was last selected via a mouse
 click. When no Data Browser plot is the active window, the Properties panel
 will be empty or even show the configuration of a different CSS tool.
 </p>
@@ -239,6 +242,84 @@ a more powerful but also slower regular expression can be used:
 </p>
 
 
+<a name=export><h2>Data Export</h2></a>
+<p>
+Use the "Export Samples" panel to write data into files suitable for spreadsheet
+programs or Matlab.
+</p>
+<h3>Excel Spreadsheets</h3>
+<p>
+The exported data files are in a text format with TAB-delimited columns
+suitable for import into spreadsheet programs like Microsoft Excel.
+</p>
+<p>
+Assume you chose a filename of "test.dat" on your Desktop, follow these
+steps for import into Excel:
+<ol>
+<li>In Excel, use File/Open to open the file "test.dat".<br>
+    You might have to select "Files of type: All Files (*.*)"
+    in the file "Open" dialog to do this.
+<li>A "Text Import Wizard" should appear, and the default settings
+    should already be set to
+   <ul>
+   <li>"Delimited - Characters such as ... tabs ..."
+   <li>"Delimiters: Tab"
+   </ul>
+<li>Excel will default to a less useful format for the first column,
+    the "Time" column, and only show time down to minutes, omitting the
+    seconds or microseconds.<br>
+    Fix this by clicking on the "A" table header,
+    i.e. selecting the whole first column; right-click to get
+    the "Format Cells..." dialog, and enter a "Custom" format:
+    <pre>  m/d/yy h:mm:ss.000</pre>
+</ol>
+</p>
+<p>
+When performing computations on the data, values marked "#N/A"
+which have non numerical value because they represent a status or error
+should be ignored by Excel.
+</p>
+<p>
+For plots, the "X/Y scatter" plot type using time as the X
+axis and the value column for the Y axis tends to work best.
+</p>
+<p>
+Note that Excel is limited to about 65000 lines. If your data
+file includes more lines, those will be lost in the import.
+You can work around this by exporting a smaller time range
+into separate files, or by exporting averaged data.
+</p>
+<p>
+The value columns for averaged data will contain text like
+"5 [0 ... 10]" to indicate that the average value for that time
+was 5, with a minimum/maximum range of 0 to 10.
+To perform computations in excel, it might be useful to
+select the column and perform a text replacement of
+"[*]" with "" (nothing) to delete the min/max info.
+</p>
+
+<h3>Open Office Spreadsheets</h3>
+<p>
+As long as the exported data file has a ".csv" suffix,
+Open Office should open the file with an "import" dialog
+similar to MS Excel, where you select "tab" delimited columns
+as explained above.
+</p>
+<p>
+File names ending in ".dat", ".txt" etc. might only
+open in the Open Office word processor, so you have
+to use the correct file suffix.
+</p>
+
+<h3>Matlab</h3>
+<p>
+The generated data file is suitable for loading (executing) in Matlab R2008
+or newer, creating one 'timeseries' object per trace.
+With previous Matlab releases, you will have to edit the generated file
+to suit your needs, for example use simply "plot(v);" to show the values.
+</p>
+
+
 <a name=transition><h2>Transition from older Data Browser</h2></a>
 <div align='center'><img src="OldSnapshot.png" width="90%"/></div>
 <p>
@@ -263,15 +344,15 @@ The main differences:
 <p>
 At LANL, Craig McChesney and Sergei Chevtsov with contributions by Peregrine
 McGehee implemented the Java Archive Viewer for displaying Channel Archiver
-data.
+data (2004).
 </p>
 <p>
 The first CSS Data Browser was based on Archive Viewer ideas but added
 live data handling as well as CSS integration and pluggable support for more than
-one type of historic data source.
+one type of historic data source (2007)
 </p>
 <p>
-After many changes to the code, a rework was required:
+After many changes to the code, a rework was required (2010):
 <ul>
 <li>Code cleanup using UML diagrams, 'Model' with standalone Unit tests...
 <li>New XY Chart:
@@ -291,9 +372,8 @@ After many changes to the code, a rework was required:
 </p>
 
 <address>
-- Kay Kasemir, kasemirk@ornl.gov
+Kay Kasemir, kasemirk@ornl.gov
 </address>
-
 
 </body>
 </html>
