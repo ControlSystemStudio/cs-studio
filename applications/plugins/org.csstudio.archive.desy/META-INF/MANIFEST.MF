@@ -7,3 +7,4 @@ Bundle-Localization: plugin
 Require-Bundle: org.csstudio.archive;visibility:=reexport,
  org.csstudio.utility.pv;visibility:=reexport,
  org.csstudio.platform;visibility:=reexport
+Export-Package: AAPI

@@ -30,7 +30,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Vector;
 
 //
 // Main class for AAPI package
@@ -40,11 +39,15 @@ import java.util.Vector;
 // see http://www-kryo.desy.de/documents/EPICS/DESY/General/Archiver/AAPI/
 // for details.
 
-public class AAPI {
-	public static String		AAPI_HOST					= "krynfs.desy.de";
+public class AAPI
+{
+    // AAPI settings
+	public static String AAPI_HOST = "krynfs.desy.de";
 
-	public static int			AAPI_PORT					= 4053;
+	public static int AAPI_PORT	 = 4053;
+	
 	public final static String dummyDescription = "AAPI server DESY Hamburg Germany";
+	
 	// AAPI Command number enum:
 	public final static int		VERSION_CMD					= 1;
 
@@ -207,20 +210,19 @@ public class AAPI {
 
 	public final static int		ENNUMERATED_INFO			= 0x101;
 
-	public final static double			DEADBAND_PARAM				= 0.0;
+	public final static double	DEADBAND_PARAM				= 0.0;
 
-	final static int			errorTag					= 0;
-
-	final static int			AAPI_VERSION				= 0x22;
+	public final static int		AAPI_VERSION				= 0x22;
 
 	final static int			headerSize					= 4;
 
 	final static int			byteSize					= 4;
 
-	final int					HEADER_LENGTH				= headerSize
-																* byteSize;
+	public final static int		HEADER_LENGTH				= headerSize * byteSize;
 
 	final static int			maxNameLength				= 1024;
+
+	final static int			errorTag					= 0;
 
 	Socket						socket;
 
