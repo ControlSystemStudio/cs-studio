@@ -82,6 +82,11 @@ ol
     margin-bottom: 0;
 }
 
+ul.plain
+{
+    list-style-type: none;
+}
+
 em
 {
   color: #400000;
