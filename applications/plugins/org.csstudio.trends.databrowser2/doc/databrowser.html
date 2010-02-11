@@ -5,7 +5,7 @@
 </head>
 <body>
 
-<h1>Data Browser</h1>
+<a name=top><h1>Data Browser</h1></a>
 
 <span class="index">
 - <a href="#overview">Overview</a>
@@ -20,7 +20,8 @@
 </span>
 
 
-<a name=overview><h2>Overview</h2></a>
+<a name=overview><h2>Overview</h2></a> 
+
 <p>
 The Data Browser is a trending tool. It can display the values of 'live'
 Process Variables (PVs) in a Stripchart-type scrolling display,
@@ -139,9 +140,53 @@ over a toolbar button for a few seconds. Explanation of toolbar buttons:
 
 <a name=config><h2>Properties Panel</h2></a>
 <p>
-Configure properties.
+The Properties panel allows configuration of the plot, its axes and traces.
+</p>
+<p>
+The same Properties panel is shared with other Data Browser plots or even
+other CSS tools. When you have multiple Data Browser plots open, the Properties
+pabel will show the configuration of the plot that was last selected via a mouse
+click. When no Data Browser plot is the active window, the Properties panel
+will be empty or even show the configuration of a different CSS tool.
+</p>
+<p>
+You can force the Properties panel to stay attached to a specific Data Browser
+plot by selecting the "<img src="pin.gif" width=16 height=16/> pin" icon,
+or open more than one Properties panel (which you can then 'pin' to specific
+Data Browser plots) via the "<img src="view_menu.png" width=18 height=15/> drop-down"
+menu of the panel.
 </p>
 
+<h3>Traces</h3>
+<p>
+Configure color, line width, ... of traces shown in the plot:
+<ul>
+<li>Scan Period: Control system PVs can be scanned at some periodic rate,
+    specified in second, to collect 'live' samples in addition to the data
+    received from an archive.
+    When entering 0 seconds, the Data Browser will show every update received
+    from the PV, and the PV's configuration decides when to send such updates.
+<li>Buffer Size: The Data Browser maintains a fixed-size ring buffer for
+    'live' PV samples. When reaching the end of the ring buffer, older samples
+    are deleted to prevent running out of memory.
+    You can configure the ring buffer size for each trace.
+</ul>
+</p>
+
+<h3>Time Axis</h3>
+<p>
+Configure the start and end time of the time (horizontal) axis.
+</p>
+
+<h3>Value Axes</h3>
+<p>
+Add/remove value ('Y', vertical) axes, change their label or color.
+</p>
+
+<h3>Misc.</h3>
+<p>
+General plot settings: Background color, refresh rate.
+</p>
 
 <a name=search><h2>Archive Search Panel</h2></a>
 <p>
@@ -244,6 +289,11 @@ After many changes to the code, a rework was required:
     and support for faster Oracle data readout via 'stored procedure'.
 </ul>
 </p>
+
+<address>
+- Kay Kasemir, kasemirk@ornl.gov
+</address>
+
 
 </body>
 </html>
