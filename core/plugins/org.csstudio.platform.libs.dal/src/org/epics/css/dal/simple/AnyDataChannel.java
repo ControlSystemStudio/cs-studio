@@ -1,5 +1,7 @@
 package org.epics.css.dal.simple;
 
+import org.epics.css.dal.DynamicValueProperty;
+
 /** A control system PV.
  *  <p>
  *  When 'start'ed, the PV will attempt to connect or
@@ -95,4 +97,10 @@ public interface AnyDataChannel
      *  @throws Exception on error
      */
     public void setValueAsObject(Object new_value) throws Exception;
+    
+    /**
+     * Gets the <code>DynamicValueProperty</code> this channel is associated with.
+     * @return the <code>DynamicValueProperty</code>
+     */
+    public DynamicValueProperty<?> getProperty();
 }

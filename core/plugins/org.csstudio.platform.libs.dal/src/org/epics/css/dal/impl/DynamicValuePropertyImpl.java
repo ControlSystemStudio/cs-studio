@@ -831,6 +831,13 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see org.epics.css.dal.simple.AnyDataChannel#getProperty()
+	 */
+	public DynamicValueProperty<?> getProperty() {
+		return this;
+	}
+
 	public void stop() {
 		setConnectionState(ConnectionState.DISCONNECTING);
 		((PropertyFamily)propertyContext).destroy(this);

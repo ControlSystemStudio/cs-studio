@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
+import org.epics.css.dal.CharacteristicInfo;
 import org.epics.css.dal.DataExchangeException;
 import org.epics.css.dal.DynamicValueCondition;
 import org.epics.css.dal.DynamicValueState;
@@ -27,6 +28,7 @@ import org.epics.css.dal.proxy.PropertyProxy;
 import org.epics.css.dal.proxy.ProxyEvent;
 import org.epics.css.dal.proxy.ProxyListener;
 import org.epics.css.dal.proxy.SyncPropertyProxy;
+import org.epics.css.dal.simple.impl.DataUtil;
 
 import fr.esrf.Tango.AttrWriteType;
 import fr.esrf.Tango.DevFailed;
@@ -287,6 +289,11 @@ public abstract class PropertyProxyImpl<T> extends AbstractProxyImpl implements 
 					this.characteristics.put(NumericPropertyCharacteristics.C_UNITS,ai.display_unit);
 					AttrWriteType wt = ai.writable;
 					this.characteristics.put("settable", wt == AttrWriteType.WRITE || wt == AttrWriteType.READ_WRITE);
+					this.characteristics.put(CharacteristicInfo.C_META_DATA.getName(), DataUtil.createNumericMetaData(
+							((Number) min).doubleValue(), ((Number) max).doubleValue(), 
+							((Number) alarmMin).doubleValue(), ((Number) alarmMax).doubleValue(), 
+							((Number) alarmMin).doubleValue(), ((Number) alarmMax).doubleValue(), 
+							0, ai.display_unit));
 				} else {
 					throw new DevFailed();
 				}

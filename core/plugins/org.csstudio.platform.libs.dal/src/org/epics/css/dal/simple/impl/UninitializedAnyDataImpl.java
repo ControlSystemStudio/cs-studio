@@ -1,8 +1,31 @@
 package org.epics.css.dal.simple.impl;
 
 import org.epics.css.dal.DynamicValueProperty;
+import org.epics.css.dal.simple.Severity;
 
 public class UninitializedAnyDataImpl<T> extends AbstractAnyDataImpl<T> {
+	
+	private Severity severity = new Severity() {
+
+		public boolean hasValue() {
+			return false;
+		}
+
+		public boolean isInvalid() {
+			return true;
+		}
+
+		public boolean isMajor() {
+			return false;
+		}
+
+		public boolean isMinor() {
+			return false;
+		}
+
+		public boolean isOK() {
+			return false;
+		}};
 
 	public UninitializedAnyDataImpl(DynamicValueProperty<T> property) {
 		super(property,Long.MIN_VALUE);
@@ -11,6 +34,20 @@ public class UninitializedAnyDataImpl<T> extends AbstractAnyDataImpl<T> {
 		super(property, beamID);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.epics.css.dal.simple.impl.AbstractAnyDataImpl#getSeverity()
+	 */
+	@Override
+	public Severity getSeverity() {
+		return severity;
+	}
+	/* (non-Javadoc)
+	 * @see org.epics.css.dal.simple.impl.AbstractAnyDataImpl#isValid()
+	 */
+	@Override
+	public boolean isValid() {
+		return false;
+	}
 	/* (non-Javadoc)
 	 * @see org.epics.css.dal.simple.impl.AbstractAnyDataImpl#getQuality()
 	 */

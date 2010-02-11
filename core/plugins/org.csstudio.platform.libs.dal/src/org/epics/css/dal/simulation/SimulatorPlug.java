@@ -36,6 +36,7 @@ import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
 
+import org.epics.css.dal.CharacteristicInfo;
 import org.epics.css.dal.DoubleProperty;
 import org.epics.css.dal.EnumPropertyCharacteristics;
 import org.epics.css.dal.NumericPropertyCharacteristics;
@@ -58,6 +59,7 @@ import org.epics.css.dal.proxy.DeviceProxy;
 import org.epics.css.dal.proxy.DirectoryProxy;
 import org.epics.css.dal.proxy.PropertyProxy;
 import org.epics.css.dal.simple.RemoteInfo;
+import org.epics.css.dal.simple.impl.DataUtil;
 import org.epics.css.dal.simulation.ps.PowerSupplyImpl;
 
 import com.cosylab.naming.URIName;
@@ -402,6 +404,23 @@ public class SimulatorPlug extends AbstractPlug
 			    new Double(10));
 			characteristicsD.put(NumericPropertyCharacteristics.C_MINIMUM,
 			    new Double(-10));
+			characteristicsD.put(NumericPropertyCharacteristics.C_WARNING_MAX,
+				    new Double(8));
+			characteristicsD.put(NumericPropertyCharacteristics.C_WARNING_MIN,
+				    new Double(-8));
+			characteristicsD.put(NumericPropertyCharacteristics.C_ALARM_MAX,
+				    new Double(9));
+			characteristicsD.put(NumericPropertyCharacteristics.C_ALARM_MIN,
+				    new Double(-9));
+			characteristicsD.put(CharacteristicInfo.C_META_DATA.getName(), DataUtil.createNumericMetaData(
+					((Number) characteristicsD.get(NumericPropertyCharacteristics.C_GRAPH_MIN).get()).doubleValue(),
+					((Number) characteristicsD.get(NumericPropertyCharacteristics.C_GRAPH_MAX).get()).doubleValue(),
+					((Number) characteristicsD.get(NumericPropertyCharacteristics.C_WARNING_MIN).get()).doubleValue(),
+					((Number) characteristicsD.get(NumericPropertyCharacteristics.C_WARNING_MAX).get()).doubleValue(),
+					((Number) characteristicsD.get(NumericPropertyCharacteristics.C_ALARM_MAX).get()).doubleValue(),
+					((Number) characteristicsD.get(NumericPropertyCharacteristics.C_ALARM_MIN).get()).doubleValue(),
+					((Number) characteristicsD.get(NumericPropertyCharacteristics.C_RESOLUTION).get()).intValue(),
+					(String) characteristicsD.get(NumericPropertyCharacteristics.C_UNITS).get()));
 			simulatorContext.bind(ppi,
 			    new DoublePropertyProxyImpl(ppi.toString()), characteristicsD);
 
@@ -432,8 +451,25 @@ public class SimulatorPlug extends AbstractPlug
 			    new Double(10));
 			characteristicsDS.put(NumericPropertyCharacteristics.C_MINIMUM,
 			    new Double(-10));
+			characteristicsDS.put(NumericPropertyCharacteristics.C_WARNING_MAX,
+				    new Double(8));
+			characteristicsDS.put(NumericPropertyCharacteristics.C_WARNING_MIN,
+				    new Double(-8));
+			characteristicsDS.put(NumericPropertyCharacteristics.C_ALARM_MAX,
+				    new Double(9));
+			characteristicsDS.put(NumericPropertyCharacteristics.C_ALARM_MIN,
+				    new Double(-9));
 			characteristicsDS.put(SequencePropertyCharacteristics.C_SEQUENCE_LENGTH,
 			    new Integer(5));
+			characteristicsDS.put(CharacteristicInfo.C_META_DATA.getName(), DataUtil.createNumericMetaData(
+					((Number) characteristicsDS.get(NumericPropertyCharacteristics.C_GRAPH_MIN).get()).doubleValue(),
+					((Number) characteristicsDS.get(NumericPropertyCharacteristics.C_GRAPH_MAX).get()).doubleValue(),
+					((Number) characteristicsDS.get(NumericPropertyCharacteristics.C_WARNING_MIN).get()).doubleValue(),
+					((Number) characteristicsDS.get(NumericPropertyCharacteristics.C_WARNING_MAX).get()).doubleValue(),
+					((Number) characteristicsDS.get(NumericPropertyCharacteristics.C_ALARM_MAX).get()).doubleValue(),
+					((Number) characteristicsDS.get(NumericPropertyCharacteristics.C_ALARM_MIN).get()).doubleValue(),
+					((Number) characteristicsDS.get(NumericPropertyCharacteristics.C_RESOLUTION).get()).intValue(),
+					(String) characteristicsDS.get(NumericPropertyCharacteristics.C_UNITS).get()));
 			simulatorContext.bind(ppi,
 			    new DoubleSeqPropertyProxyImpl(ppi.toString()),
 			    characteristicsDS);
@@ -463,6 +499,23 @@ public class SimulatorPlug extends AbstractPlug
 			    new Long(10));
 			characteristicsL.put(NumericPropertyCharacteristics.C_MINIMUM,
 			    new Long(-10));
+			characteristicsL.put(NumericPropertyCharacteristics.C_WARNING_MAX,
+				    new Long(8));
+			characteristicsL.put(NumericPropertyCharacteristics.C_WARNING_MIN,
+				    new Long(-8));
+			characteristicsL.put(NumericPropertyCharacteristics.C_ALARM_MAX,
+				    new Long(9));
+			characteristicsL.put(NumericPropertyCharacteristics.C_ALARM_MIN,
+				    new Long(-9));
+			characteristicsL.put(CharacteristicInfo.C_META_DATA.getName(), DataUtil.createNumericMetaData(
+					((Number) characteristicsL.get(NumericPropertyCharacteristics.C_GRAPH_MIN).get()).doubleValue(),
+					((Number) characteristicsL.get(NumericPropertyCharacteristics.C_GRAPH_MAX).get()).doubleValue(),
+					((Number) characteristicsL.get(NumericPropertyCharacteristics.C_WARNING_MIN).get()).doubleValue(),
+					((Number) characteristicsL.get(NumericPropertyCharacteristics.C_WARNING_MAX).get()).doubleValue(),
+					((Number) characteristicsL.get(NumericPropertyCharacteristics.C_ALARM_MAX).get()).doubleValue(),
+					((Number) characteristicsL.get(NumericPropertyCharacteristics.C_ALARM_MIN).get()).doubleValue(),
+					((Number) characteristicsL.get(NumericPropertyCharacteristics.C_RESOLUTION).get()).intValue(),
+					(String) characteristicsL.get(NumericPropertyCharacteristics.C_UNITS).get()));
 			simulatorContext.bind(ppi,
 			    new LongPropertyProxyImpl(ppi.toString()), characteristicsL);
 
@@ -496,6 +549,8 @@ public class SimulatorPlug extends AbstractPlug
 			    new String[]{ "On", "Off", "not connected" });
 			characteristicsEN.put(EnumPropertyCharacteristics.C_ENUM_VALUES,
 			    new Double[]{ 1.1, 1.2, 1.3 });
+			characteristicsEN.put(CharacteristicInfo.C_META_DATA.getName(), 
+					DataUtil.createEnumeratedMetaData((String[]) characteristicsEN.get(EnumPropertyCharacteristics.C_ENUM_DESCRIPTIONS).get()));
 			simulatorContext.bind(ppi,
 			    new EnumPropertyProxyImpl(ppi.toString()), characteristicsEN);
 

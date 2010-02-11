@@ -41,6 +41,7 @@ import org.epics.css.dal.impl.LongPropertyImpl;
 import org.epics.css.dal.impl.LongSeqPropertyImpl;
 import org.epics.css.dal.impl.StringPropertyImpl;
 import org.epics.css.dal.proxy.PropertyProxy;
+import org.epics.css.dal.simple.impl.DataUtil;
 
 import de.desy.tine.addrUtils.TSrvEntry;
 import de.desy.tine.dataUtils.TDataType;
@@ -414,6 +415,13 @@ public class PropertyProxyUtilities {
            	characteristics.put(CharacteristicInfo.C_FORMAT.getName(),"%5.3f");
         }
        	characteristics.put(CharacteristicInfo.C_SCALE_TYPE.getName(),"linear");
+       	
+       	characteristics.put(CharacteristicInfo.C_META_DATA.getName(), DataUtil.createNumericMetaData(
+				((Number) min).doubleValue(), ((Number) max).doubleValue(), 
+				((Number) min).doubleValue(), ((Number) max).doubleValue(), 
+				((Number) min).doubleValue(), ((Number) max).doubleValue(), 
+				((Number) characteristics.get(CharacteristicInfo.C_RESOLUTION.getName())).intValue(),
+				info[0].prpUnits));
        	
         return characteristics;
 	}
