@@ -95,9 +95,7 @@ public class ArchiveFetchJob extends Job
         @Override
         public void run()
         {
-            // TODO remove thread debug printouts
-            System.out.println("Worker for : " + ArchiveFetchJob.this);
-            
+            // System.out.println("Worker for : " + ArchiveFetchJob.this);
             final int bins = Preferences.getPlotBins();
             final ArchiveDataSource archives[] = item.getArchiveDataSources();
             for (int i=0; i<archives.length && !cancelled; ++i)
@@ -154,9 +152,7 @@ ex.printStackTrace();
             }
             if (!cancelled)
                 listener.fetchCompleted(ArchiveFetchJob.this);
-            
-            System.out.println("End worker for : " + ArchiveFetchJob.this);
-            
+            // System.out.println("End worker for : " + ArchiveFetchJob.this);
             done = true;
         }
 
@@ -197,7 +193,7 @@ ex.printStackTrace();
     {
         if (item == null)
             return Status.OK_STATUS;
-        System.out.println("Start: " + this);
+        // System.out.println("Start: " + this);
         BenchmarkTimer timer = new BenchmarkTimer();
         
         monitor.beginTask(Messages.ArchiveFetchStart, IProgressMonitor.UNKNOWN);
@@ -228,7 +224,8 @@ ex.printStackTrace();
         monitor.done();
 
         timer.stop();
-        System.out.println("End: " + this + ", " + timer.toString());
+        // TODO remot debug printouts
+        System.out.println(this + ": " + timer.toString());
         
         return monitor.isCanceled() ? Status.CANCEL_STATUS : Status.OK_STATUS;
     }
