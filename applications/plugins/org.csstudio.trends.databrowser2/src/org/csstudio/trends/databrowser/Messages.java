@@ -122,6 +122,8 @@ public class Messages extends NLS
     public static String LiveBufferSizeInfoFmt;
     public static String LiveData;
     public static String LiveSampleBufferSize;
+    public static String LogentryDefaultBody;
+    public static String LogentryDefaultTitle;
     public static String LogScale;
     public static String Model_Disconnected;
     public static String Name;
@@ -146,6 +148,7 @@ public class Messages extends NLS
     public static String PrefPage_Title;
     public static String PrefPage_TraceLineWidth;
     public static String PrefPage_UpdatePeriod;
+    public static String PrintSnapshot;
     public static String PVName;
     public static String PVUsedInFormulaFmt;
     public static String RegularExpression;
@@ -179,6 +182,7 @@ public class Messages extends NLS
     public static String SearchPattern;
     public static String SearchPatternTT;
     public static String SearchTT;
+    public static String SendToElog;
     public static String SeverityColumn;
     public static String StartEndDialogBtn;
     public static String StartEndDialogTT;

@@ -466,4 +466,9 @@ public class Plot
     {
         xygraph.getPlotArea().setBackgroundColor(colormap.getColor(color));
     }
+
+    public XYGraph getXYGraph()
+    {
+        return xygraph;
+    }
 }

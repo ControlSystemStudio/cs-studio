@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.csstudio.trends.databrowser.editor;
 
 import java.io.InputStream;
@@ -246,6 +243,11 @@ public class DataBrowserEditor extends EditorPart
         mm.add(new OpenViewAction(ExportView.ID, Messages.OpenExportView,
                 Activator.getDefault().getImageDescriptor("icons/export.png"))); //$NON-NLS-1$
         mm.add(new InspectSamplesAction());
+        mm.add(new Separator());
+        if (SendToElogAction.isElogAvailable())
+            mm.add(new SendToElogAction(shell, plot.getXYGraph()));
+        mm.add(new PrintAction(shell, plot.getXYGraph()));
+        
         final Menu menu = mm.createContextMenu(parent);
         parent.setMenu(menu);
     }
