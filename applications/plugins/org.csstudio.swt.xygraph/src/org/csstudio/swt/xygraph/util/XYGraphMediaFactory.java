@@ -43,7 +43,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 /**
- * A factory, which provides convinience methods for the creation of Images and
+ * A factory, which provides convenience methods for the creation of Images and
  * Fonts.
  * 
  * All resources created via this factory get automatically disposed, when the
