@@ -49,15 +49,6 @@ public final class PolygonElementTest {
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.sds.components.model.PolygonModel#getDoubleTestProperty()}.
-	 */
-	@Test
-	public void testGetDoubleTestProperty() {
-		assertNotNull(_polygonElement.getDoubleTestProperty());
-		assertTrue(_polygonElement.hasProperty(_polygonElement.getDoubleTestProperty()));
-	}
-
-	/**
 	 * Test method for {@link org.csstudio.sds.components.model.PolygonModel#getTypeID()}.
 	 */
 	@Test

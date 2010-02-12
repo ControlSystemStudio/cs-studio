@@ -142,19 +142,4 @@ public final class RectangleModel extends AbstractWidgetModel {
 		return (Boolean) getProperty(PROP_TRANSPARENT).getPropertyValue();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getDoubleTestProperty() {
-		return PROP_FILL;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getColorTestProperty() {
-		return PROP_COLOR_FOREGROUND;
-	}
 }

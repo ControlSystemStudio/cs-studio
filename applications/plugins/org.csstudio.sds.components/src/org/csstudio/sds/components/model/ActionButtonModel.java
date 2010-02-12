@@ -145,22 +145,6 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	}
 
 	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getDoubleTestProperty() {
-		return PROP_LABEL;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getColorTestProperty() {
-		return PROP_COLOR_BACKGROUND;
-	}
-	
-	/**
 	 * Return the index of the selected WidgetAction from the ActionData.
 	 * The Action is running when the button is released.
 	 * @return The index

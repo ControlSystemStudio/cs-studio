@@ -134,22 +134,6 @@ public final class TextInputModel extends AbstractWidgetModel {
 	}
 
 	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getDoubleTestProperty() {
-		return PROP_INPUT_TEXT;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getColorTestProperty() {
-		return PROP_COLOR_BACKGROUND;
-	}
-	
-	/**
 	 * Gets the input text.
 	 * @return the input text
 	 */

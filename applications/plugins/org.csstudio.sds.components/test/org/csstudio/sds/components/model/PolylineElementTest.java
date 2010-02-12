@@ -49,15 +49,6 @@ public final class PolylineElementTest {
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.sds.components.model.PolylineModel#getDoubleTestProperty()}.
-	 */
-	@Test
-	public void testGetDoubleTestProperty() {
-		assertNotNull(_polylineElement.getDoubleTestProperty());
-		assertTrue(_polylineElement.hasProperty(_polylineElement.getDoubleTestProperty()));
-	}
-
-	/**
 	 * Test method for {@link org.csstudio.sds.components.model.PolylineModel#getTypeID()}.
 	 */
 	@Test

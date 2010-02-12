@@ -48,15 +48,6 @@ public final class EllipseElementTest {
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.sds.components.model.EllipseModel#getDoubleTestProperty()}.
-	 */
-	@Test
-	public void testGetDoubleTestProperty() {
-		assertNotNull(_ellipseElement.getDoubleTestProperty());
-		assertTrue(_ellipseElement.hasProperty(_ellipseElement.getDoubleTestProperty()));
-	}
-
-	/**
 	 * Test method for {@link org.csstudio.sds.components.model.EllipseModel#getTypeID()}.
 	 */
 	@Test

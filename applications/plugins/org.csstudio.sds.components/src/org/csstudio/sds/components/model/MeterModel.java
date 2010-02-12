@@ -260,11 +260,6 @@ public final class MeterModel extends AbstractWidgetModel {
 		return (FontData) getProperty(PROP_CHANFONT).getPropertyValue();
 	}
 
-	@Override
-	public String getDoubleTestProperty() {
-		return PROP_VALUE;
-	}
-	
 	/**
 	 * Return the precision.
 	 * 

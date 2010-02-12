@@ -79,14 +79,6 @@ public final class WaveformModel extends AbstractChartModel {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String getDoubleSeqTestProperty() {
-		return dataPropertyId(0);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
 	public int numberOfDataSeries() {
 		return NUMBER_OF_ARRAYS;
 	}

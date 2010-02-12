@@ -117,14 +117,6 @@ public final class EllipseModel extends AbstractWidgetModel {
 	}
 
 	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getDoubleTestProperty() {
-		return PROP_FILL;
-	}
-
-	/**
 	 * Gets the fill level.
 	 * 
 	 * @return the fill level

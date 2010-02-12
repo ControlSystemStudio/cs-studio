@@ -91,14 +91,6 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 	}
 
 	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public final String getDoubleTestProperty() {
-		return PROP_FILL;
-	}
-
-	/**
 	 * Sets the specified _points for the polygon.
 	 * 
 	 * @param points

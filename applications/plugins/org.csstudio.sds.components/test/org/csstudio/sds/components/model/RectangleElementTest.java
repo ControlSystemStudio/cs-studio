@@ -50,16 +50,6 @@ public final class RectangleElementTest {
 
 	/**
 	 * Test method for
-	 * {@link org.csstudio.sds.components.model.RectangleModel#getDoubleTestProperty()}.
-	 */
-	@Test
-	public void testGetDoubleTestProperty() {
-		assertNotNull(_rectangleElement.getDoubleTestProperty());
-		assertTrue(_rectangleElement.hasProperty(_rectangleElement.getDoubleTestProperty()));
-	}
-
-	/**
-	 * Test method for
 	 * {@link org.csstudio.sds.components.model.RectangleModel#getTypeID()}.
 	 */
 	@Test

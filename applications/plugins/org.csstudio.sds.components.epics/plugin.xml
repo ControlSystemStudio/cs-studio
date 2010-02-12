@@ -126,5 +126,14 @@
             primary="true">
       </toc>
    </extension>
+   <extension
+         point="org.csstudio.sds.ui.behaviors">
+      <behaviour
+            class="org.csstudio.sds.behavior.desy.TestRectangleBehaviour"
+            description="Test Behavior"
+            id="Test.rectangle"
+            widgetTypeId="org.csstudio.sds.components.Rectangle">
+      </behaviour>
+   </extension>
    
 </plugin>

@@ -154,14 +154,6 @@ public final class SimpleSliderModel extends AbstractWidgetModel {
 	}
 	
 	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getDoubleTestProperty() {
-		return PROP_VALUE;
-	}
-
-	/**
 	 * Return the min value.
 	 * 
 	 * @return The min value.

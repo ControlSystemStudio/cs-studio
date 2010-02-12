@@ -396,58 +396,6 @@ public final class BargraphModel extends AbstractWidgetModel {
 	}
 	
 	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getDoubleTestProperty() {
-		return PROP_FILL;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getColorTestProperty() {
-		return PROP_COLOR_FOREGROUND;
-	}
-	
-//	/**
-//	 * Return the Id of the widget model lolo color property.
-//	 * @return String
-//	 * 				The Id of the widget model lolo color property
-//	 */
-//	public String getLoloColorTestProperty() {
-//		return PROP_LOLO_COLOR;
-//	}
-//	
-//	/**
-//	 * Return the Id of the widget model lo color property.
-//	 * @return String
-//	 * 				The Id of the widget model lo color property
-//	 */
-//	public String getLoColorTestProperty() {
-//		return PROP_LO_COLOR;
-//	}
-//	
-//	/**
-//	 * Return the Id of the widget model hi color property.
-//	 * @return String
-//	 * 				The Id of the widget model hi color property
-//	 */
-//	public String getHiColorTestProperty() {
-//		return PROP_HI_COLOR;
-//	}
-//	
-//	/**
-//	 * Return the Id of the widget model hihi color property.
-//	 * @return String
-//	 * 				The Id of the widget model hihi color property
-//	 */
-//	public String getHihiColorTestProperty() {
-//		return PROP_HIHI_COLOR;
-//	}
-	
-	/**
 	 * Returns, if this widget should have a transparent background.
 	 * @return boolean
 	 * 				True, if it should have a transparent background, false otherwise
