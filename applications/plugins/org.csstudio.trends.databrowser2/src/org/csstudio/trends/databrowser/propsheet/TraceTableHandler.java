@@ -50,9 +50,7 @@ public class TraceTableHandler implements ILazyContentProvider
     final private ModelListener model_listener = new ModelListener()
     {
         public void changedUpdatePeriod() { /* Ignored */ }
-        
         public void changedColors() { /* Ignored */ }
-
         public void changedTimerange() { /* Ignored */ }
 
         public void changedAxis(AxisConfig axis)
@@ -90,7 +88,6 @@ public class TraceTableHandler implements ILazyContentProvider
         }
         
         public void changedItemDataConfig(final PVItem item) { /* Ignored */ }
-
         public void scrollEnabled(final boolean scroll_enabled) { /* Ignored */ }
     };    
     
@@ -112,7 +109,7 @@ public class TraceTableHandler implements ILazyContentProvider
         TableViewerColumn col;
         
         // Visible Column ----------
-        col = AutoSizeColumn.make(trace_table, Messages.TraceVisibility, 40, 1);
+        col = AutoSizeColumn.make(trace_table, Messages.TraceVisibility, 45, 1);
         col.setLabelProvider(new CellLabelProvider()
         {
             @SuppressWarnings("nls")
