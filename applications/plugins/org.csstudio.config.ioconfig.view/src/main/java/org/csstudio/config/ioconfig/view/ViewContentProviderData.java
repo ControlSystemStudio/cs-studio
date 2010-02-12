@@ -2,6 +2,7 @@ package org.csstudio.config.ioconfig.view;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import org.csstudio.config.ioconfig.model.Facility;
@@ -36,8 +37,6 @@ class ProfibusTreeContentProvider implements IStructuredContentProvider, ITreeCo
     private List<FacilityLight> _facilities;
 
     public ProfibusTreeContentProvider(IViewSite site) {
-        // _site = site;
-        // _facilities = Repository.load(FacilityLight.class);
     }
 
     /** {@inheritDoc} */
@@ -71,9 +70,6 @@ class ProfibusTreeContentProvider implements IStructuredContentProvider, ITreeCo
             return _facilities.toArray();
         }
         return new Object[0];
-        //
-        // Object[] o = getChildren(parent);
-        // return o;
     }
 
     /** {@inheritDoc} */
@@ -95,45 +91,13 @@ class ProfibusTreeContentProvider implements IStructuredContentProvider, ITreeCo
         if (parent instanceof FacilityLight) {
             final FacilityLight l = (FacilityLight) parent;
             try {
-//                PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-//
-//                    @Override
-//                    public void run() {
-//                        Job loadJob = new Job("DBLoader") {
-//
-//                            @Override
-//                            protected IStatus run(IProgressMonitor monitor) {
-//                                monitor.beginTask("DBLoaderMonitor", IProgressMonitor.UNKNOWN);
-//                                monitor.setTaskName("Load " + l.getName());
-//                                // das wird beim erstenmal eine zeitlang dauern...
-//                                l.getFacility();
-//                                monitor.done();
-//                                return Status.OK_STATUS;
-//                            }
-//
-//                        };
-//                        loadJob.setUser(true);
-//                        loadJob.schedule();
-//                        do {
-//                            try {
-//                                System.out.print('.');
-//                                Thread.sleep(5);
-//                            } catch (InterruptedException e) {
-//                                // TODO Auto-generated catch block
-//                                e.printStackTrace();
-//                            }
-//                            
-//                        }while(loadJob.getState()!=Job.NONE);
-//                    }
-//                    
-//                });
-            
+                //FIXME: Der ProgressDialog wired
                 final Job loadJob = new Job("DBLoader") {
 
                     @Override
                     protected IStatus run(IProgressMonitor monitor) {
                         monitor.beginTask("DBLoaderMonitor", IProgressMonitor.UNKNOWN);
-                        monitor.setTaskName("Load " + l.getName());
+                        monitor.setTaskName("Load " + l.getName()+"\t+\t"+new Date());
                         // das wird beim erstenmal eine zeitlang dauern...
                         l.getFacility();
                         monitor.done();
@@ -145,18 +109,7 @@ class ProfibusTreeContentProvider implements IStructuredContentProvider, ITreeCo
                 loadJob.schedule();
                 
                 do {
-//                     PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
-//
-//                         @Override
-//                         public void run() {
-//                             System.out.println(loadJob.getState());
-//                             System.out.println(loadJob.getResult());
-//                             System.out.println("-------------------");
-//                         }
-//                     });
-//                     Thread.sleep(50);
                      Thread.yield();
-//                     
                 }while(loadJob.getState()!=Job.NONE);
 
                 Object[] array = l.getFacility().getChildren().toArray();
@@ -190,7 +143,19 @@ class ProfibusTreeContentProvider implements IStructuredContentProvider, ITreeCo
                 }
             }
             return list.toArray(new Node[list.size()]);
-        } else if (parent instanceof Node) {
+        }else if(parent instanceof ChannelStructure) {
+            ChannelStructure cs = (ChannelStructure) parent;
+            if(cs.isSimple()) {
+                return cs.getChildrenAsMap().values().toArray(new Node[0]);
+            }else {
+                Collection<? extends Node> values = cs.getChildrenAsMap().values();
+                if(cs.getChildrenAsMap().containsKey((short)-1)){
+                    values.remove(values.iterator().next());
+                }
+                return values.toArray(new Node[0]);
+            }
+            
+        }else if (parent instanceof Node) {
             return ((Node) parent).getChildrenAsMap().values().toArray(new Node[0]);
         }
 
