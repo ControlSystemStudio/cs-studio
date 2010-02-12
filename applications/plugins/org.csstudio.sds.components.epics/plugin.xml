@@ -134,6 +134,12 @@
             id="Test.rectangle"
             widgetTypeId="org.csstudio.sds.components.Rectangle">
       </behaviour>
+      <behaviour
+            class="org.csstudio.sds.behavior.desy.TestLabelBehavior"
+            description="Test Behavior"
+            id="Test.label"
+            widgetTypeId="org.csstudio.sds.components.Label">
+      </behaviour>
    </extension>
    
 </plugin>
