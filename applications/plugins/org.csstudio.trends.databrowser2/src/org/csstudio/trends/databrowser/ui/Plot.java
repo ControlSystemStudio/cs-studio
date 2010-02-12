@@ -51,9 +51,11 @@ public class Plot
     /** Color registry, mapping {@link RGB} values to {@link Color} */
     final private ColorRegistry colormap;
 
-//    final private Font axis_font;
-//
-//    final private Font axis_title_font;
+    /** Font applied to axes */
+    final private Font axis_font;
+
+    /** Font applied to axes' titles */
+    final private Font axis_title_font;
     
     /** Plot widget/figure */
     final private ToolbarArmedXYGraph plot;
@@ -84,14 +86,14 @@ public class Plot
         display = canvas.getDisplay();
         colormap = new ColorRegistry(canvas);
 
-//        // Use system font for axis labels
-//        axis_font = display.getSystemFont();
-//        
-//        // Use BOLD version for axis title
-//        final FontData fds[] = axis_font.getFontData();
-//        for (FontData fd : fds)
-//            fd.style = SWT.BOLD;
-//        axis_title_font = XYGraphMediaFactory.getInstance().getFont(fds);
+        // Use system font for axis labels
+        axis_font = display.getSystemFont();
+        
+        // Use BOLD version for axis title
+        final FontData fds[] = axis_font.getFontData();
+        for (FontData fd : fds)
+            fd.setStyle(SWT.BOLD);
+        axis_title_font = XYGraphMediaFactory.getInstance().getFont(fds);
         
         // Create plot with basic configuration
         final LightweightSystem lws = new LightweightSystem(canvas);
@@ -106,11 +108,11 @@ public class Plot
         final Axis time_axis = xygraph.primaryXAxis;
         time_axis.setDateEnabled(true);
         time_axis.setTitle(Messages.Plot_TimeAxisName);
-//        time_axis.setFont(axis_font);
-//        time_axis.setTitleFont(axis_title_font);
-//        xygraph.primaryYAxis.setTitle(Messages.Plot_ValueAxisName);
-//        xygraph.primaryYAxis.setFont(axis_font);
-//        xygraph.primaryYAxis.setTitleFont(axis_title_font);
+        time_axis.setFont(axis_font);
+        time_axis.setTitleFont(axis_title_font);
+        xygraph.primaryYAxis.setTitle(Messages.Plot_ValueAxisName);
+        xygraph.primaryYAxis.setFont(axis_font);
+        xygraph.primaryYAxis.setTitleFont(axis_title_font);
         
         // Forward time axis changes from the GUI to PlotListener
         // (Ignore changes from setTimeRange)
@@ -223,8 +225,8 @@ public class Plot
         {
             final int new_axis_index = axes.size();
             final Axis axis = new Axis(NLS.bind(Messages.Plot_ValueAxisNameFMT, new_axis_index + 1), true);
-//            axis.setFont(axis_font);
-//            axis.setTitleFont(axis_title_font);
+            axis.setFont(axis_font);
+            axis.setTitleFont(axis_title_font);
             xygraph.addAxis(axis);
             axis.addListener(createValueAxisListener(new_axis_index));
         }
