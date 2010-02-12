@@ -275,11 +275,7 @@ public class Document implements Comparable<Document>, IDocument {
 
     public void setSubject(String subject) {
         _subject = subject;
-        long time = new Date().getTime();
-        long l = time-NamedDBClass._oldTime;
-        if(l>50)
-            NamedDBClass._diagString.append(": \t\t"+time+"\t"+l+"\t"+_subject+"\t"+this.getClass().getSimpleName()+"\r\n");
-        NamedDBClass._oldTime = time;
+        Diagnose.addNewLine(_subject+"\t"+this.getClass().getSimpleName());
     }
 
     /* (non-Javadoc)

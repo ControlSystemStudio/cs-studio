@@ -716,8 +716,14 @@ public class SearchDialog extends Dialog {
                         _profiBusTreeView.getTreeViewer().expandToLevel(facility.getFacilityLigth(),1);
                     }
                 }
+                _profiBusTreeView.getTreeViewer().expandToLevel(_selectedNode, _profiBusTreeView.getTreeViewer().ALL_LEVELS);
                 _profiBusTreeView.getTreeViewer().setSelection(new StructuredSelection(_selectedNode));
             }
+        }else if(_selectedNode != null) {
+            _profiBusTreeView.getTreeViewer().setSelection(new StructuredSelection(_selectedNode));
+            _profiBusTreeView.getTreeViewer().getTree().showSelection();
+            _profiBusTreeView.layout();
+//            _profiBusTreeView.getTreeViewer().expandToLevel(_selectedNode, _profiBusTreeView.getTreeViewer().ALL_LEVELS);
         }
         super.okPressed();
     }
