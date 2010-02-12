@@ -255,11 +255,11 @@ public class HibernateReposetory implements IReposetory {
 
                 final List<String> channels = query.list();
                 if (channels.size() < 1) {
-                    return "$$$ IO-Name (" + ioName + ") NOT found! $$$";
+                    return "%%% IO-Name (" + ioName + ") NOT found! %%%";
                 } else if(channels.size() > 1) {
-                    StringBuilder sb = new StringBuilder("$$$ IO-Name (");
+                    StringBuilder sb = new StringBuilder("%%% IO-Name (");
                     sb.append(ioName);
-                    sb.append(" NOT Unique! $$$ ");
+                    sb.append(" NOT Unique! %%% ");
                     for (String string : channels) {
                         sb.append(" ,");
                         sb.append(string);
