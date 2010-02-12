@@ -79,7 +79,7 @@ public class AnyDataTest {
 	 */
 	@Test
 	public void testCacheBug() throws Exception {
-		String pv = "Random:1";
+		String pv = "Chiller:Pressure:1";
 		
 		// get the pv as DoubleProperty
 		DoubleProperty doubleProperty = _propertyFactory.getProperty(pv, DoubleProperty.class, null);
