@@ -32,6 +32,7 @@ import static org.csstudio.config.ioconfig.model.preference.PreferenceConstants.
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -48,6 +49,7 @@ import org.csstudio.config.ioconfig.config.view.helper.ConfigHelper;
 import org.csstudio.config.ioconfig.config.view.helper.InfoConfigComposte;
 import org.csstudio.config.ioconfig.config.view.helper.ProfibusHelper;
 import org.csstudio.config.ioconfig.model.Activator;
+import org.csstudio.config.ioconfig.model.Diagnose;
 import org.csstudio.config.ioconfig.model.Facility;
 import org.csstudio.config.ioconfig.model.FacilityLight;
 import org.csstudio.config.ioconfig.model.Ioc;
@@ -472,7 +474,7 @@ public class ProfiBusTreeView extends Composite {
                     @Override
                     protected IStatus run(IProgressMonitor monitor) {
                         monitor.beginTask("DBLoaderMonitor", IProgressMonitor.UNKNOWN);
-                        monitor.setTaskName("Load " + f.getName());
+                        monitor.setTaskName("Load " + f.getName()+"\t-\tStart Time: "+new Date());
                         // das wird beim erstenmal eine zeitlang dauern...
                         f.getFacility();
                         PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
