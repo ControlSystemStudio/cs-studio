@@ -185,6 +185,7 @@ public class Messages extends NLS
     public static String SearchTT;
     public static String SendToElog;
     public static String SeverityColumn;
+    public static String SeverityStatusFmt;
     public static String StartEndDialogBtn;
     public static String StartEndDialogTT;
     public static String StartTimeLbl;
@@ -214,6 +215,11 @@ public class Messages extends NLS
     public static String ValueAxes;
     public static String ValueAxisName;
     public static String ValueColumn;
+    public static String WaveformAmplitude;
+    public static String WaveformIndex;
+    public static String WaveformStatus;
+    public static String WaveformTimeSelector;
+    public static String WaveformTimestamp;
 
     static
     {

@@ -1,20 +1,18 @@
 package org.csstudio.trends.databrowser.waveformview;
 
 import org.csstudio.platform.data.IValue;
-import org.csstudio.swt.xygraph.dataprovider.IDataProvider;
-import org.csstudio.swt.xygraph.dataprovider.IDataProviderListener;
-import org.csstudio.swt.xygraph.dataprovider.ISample;
 import org.csstudio.swt.xygraph.figures.ToolbarArmedXYGraph;
 import org.csstudio.swt.xygraph.figures.Trace;
 import org.csstudio.swt.xygraph.figures.XYGraph;
 import org.csstudio.swt.xygraph.figures.XYGraphFlags;
-import org.csstudio.swt.xygraph.linearscale.Range;
+import org.csstudio.swt.xygraph.figures.Trace.PointStyle;
 import org.csstudio.trends.databrowser.Messages;
 import org.csstudio.trends.databrowser.editor.DataBrowserAwareView;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.model.ModelItem;
 import org.csstudio.trends.databrowser.model.PlotSamples;
 import org.eclipse.draw2d.LightweightSystem;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -41,50 +39,64 @@ public class WaveformView extends DataBrowserAwareView
     final public static String ID = 
         "org.csstudio.trends.databrowser.waveformview.WaveformView"; //$NON-NLS-1$
 
-    /** Model of the currently active Data Browser plot or <code>null</code> */
-    private Model model;
-    
-    /** Selected model item in model, or <code>null</code> */
-    private ModelItem model_item = null;
-    
     /** PV Name selector */
     private Combo pv_name;
 
-    /** Plot */
-    private ToolbarArmedXYGraph plot;
+    /** XY Graph */
     private XYGraph xygraph;
 
+    /** Selector for model_item's current sample */
+    private Slider sample_index;
+    
     /** Timestamp of current sample. */
     private Text timestamp;
 
     /** Status/severity of current sample. */
     private Text status;
+    
+    /** Model of the currently active Data Browser plot or <code>null</code> */
+    private Model model;
+    
+    /** Selected model item in model, or <code>null</code> */
+    private ModelItem model_item = null;
 
-    private Slider sample_index;
-
+    /** Color for trace of model_item's current sample */ 
     private Color color = null;
+    
+    /** Waveform for the currently selected sample */
+    private WaveformValueDataProvider waveform = null;
     
     /** {@inheritDoc} */
     @Override
     protected void doCreatePartControl(final Composite parent)
     {
+        // Arrange disposal
+        parent.addDisposeListener(new DisposeListener()
+        {
+            public void widgetDisposed(DisposeEvent e)
+            {
+                if (color != null)
+                    color.dispose();
+            }
+        });
+
         final GridLayout layout = new GridLayout(4, false);
         parent.setLayout(layout);
         
-        // PV: ....... [Refresh]
+        // PV: .pvs..... [Refresh]
         // =====================
         // ======= Plot ========
         // =====================
         // <<<<<< Slider >>>>>>
         // Timestamp: __________ Sevr./Status: __________
         
-        // Item: pvs [Refresh]
+        // PV: .pvs..... [Refresh]
         Label l = new Label(parent, 0);
         l.setText(Messages.SampleView_Item);
         l.setLayoutData(new GridData());
         
         pv_name = new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY);
-        pv_name.setLayoutData(new GridData(SWT.FILL, 0, true, false, 2, 1));
+        pv_name.setLayoutData(new GridData(SWT.FILL, 0, true, false, layout.numColumns-2, 1));
         pv_name.addSelectionListener(new SelectionListener()
         {
             public void widgetSelected(final SelectionEvent e)
@@ -93,13 +105,11 @@ public class WaveformView extends DataBrowserAwareView
             }
             
             public void widgetDefaultSelected(final SelectionEvent e)
-            {   // Configure table to display samples of the selected model item
-                if (pv_name.getSelectionIndex() == 0)
-                {
+            {   // First item is "--select PV name--"
+                 if (pv_name.getSelectionIndex() == 0)
                     selectPV(null);
-                    return;
-                }
-                selectPV(pv_name.getText());
+                else
+                    selectPV(pv_name.getText());
             }
         });
         
@@ -116,20 +126,24 @@ public class WaveformView extends DataBrowserAwareView
             }
         });
 
-        // Plot of currently selected waveform sample
+        // =====================
+        // ======= Plot ========
+        // =====================
         final Canvas canvas = new Canvas(parent, 0);
         canvas.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, layout.numColumns, 1));
         // Create plot with basic configuration
         final LightweightSystem lws = new LightweightSystem(canvas);
-        plot = new ToolbarArmedXYGraph(new XYGraph(), XYGraphFlags.COMBINED_ZOOM);
+        final ToolbarArmedXYGraph plot =
+            new ToolbarArmedXYGraph(new XYGraph(), XYGraphFlags.COMBINED_ZOOM);
         xygraph = plot.getXYGraph();
         // Configure axes
-        xygraph.primaryXAxis.setTitle("Waveform Index");
-        xygraph.primaryYAxis.setTitle("Amplitude");
+        xygraph.primaryXAxis.setTitle(Messages.WaveformIndex);
+        xygraph.primaryYAxis.setTitle(Messages.WaveformAmplitude);
         lws.setContents(plot);
         
+        // <<<<<< Slider >>>>>>
         sample_index = new Slider(parent, SWT.HORIZONTAL);
-        sample_index.setToolTipText("Select waveform by time");
+        sample_index.setToolTipText(Messages.WaveformTimeSelector);
         sample_index.setLayoutData(new GridData(SWT.FILL, 0, true, false, layout.numColumns, 1));
         sample_index.addSelectionListener(new SelectionAdapter()
         {
@@ -142,27 +156,16 @@ public class WaveformView extends DataBrowserAwareView
         
         // Timestamp: __________ Sevr./Status: __________
         l = new Label(parent, 0);
-        l.setText("Timestamp:");
+        l.setText(Messages.WaveformTimestamp);
         l.setLayoutData(new GridData());
-
         timestamp = new Text(parent, SWT.BORDER | SWT.READ_ONLY);
         timestamp.setLayoutData(new GridData(SWT.FILL, 0, true, false));
         
         l = new Label(parent, 0);
-        l.setText("Sevr./Status:");
+        l.setText(Messages.WaveformStatus);
         l.setLayoutData(new GridData());
-
         status = new Text(parent, SWT.BORDER | SWT.READ_ONLY);
-        status.setLayoutData(new GridData(SWT.FILL, 0, true, false));
-        
-        parent.addDisposeListener(new DisposeListener()
-        {
-            public void widgetDisposed(DisposeEvent e)
-            {
-                if (color != null)
-                    color.dispose();
-            }
-        });
+        status.setLayoutData(new GridData(SWT.FILL, 0, true, false));        
     }
 
     /** {@inheritDoc} */
@@ -200,7 +203,6 @@ public class WaveformView extends DataBrowserAwareView
             {   // Show same PV name again in combo box
                 pv_name.setItems(names);
                 pv_name.setText(item.getName());
-                showSelectedSample();
                 return;
             }
         }
@@ -215,49 +217,50 @@ public class WaveformView extends DataBrowserAwareView
     /** Select given PV name (or <code>null</code>). */
     private void selectPV(final String new_pv_name)
     {
-        if (new_pv_name != null)
-        {
-            for (int i=0; i<model.getItemCount(); ++i)
-            {
-                final ModelItem item = model.getItem(i);
-                if (item.getName().equals(new_pv_name))
-                {
-                    setModelItem(item);
-                    return;
-                }
-            }
-        }
-        // Invalid PV name, not in model
-        setModelItem(null);
-        pv_name.setText(""); //$NON-NLS-1$
-    }
+        if (new_pv_name == null)
+            model_item = null;
+        else
+            model_item = model.getItem(new_pv_name);
 
-    /** Select model item; display one of its samples. */
-    private void setModelItem(final ModelItem new_item)
-    {
-        model_item = new_item;
-        sample_index.setEnabled(model_item != null);
-        showSelectedSample();
-    }
-
-    /** Show the current sample of the current model item.
-     *  <p>
-     *  Also handles the case where current model item is <code>null</code>.
-     */
-    private void showSelectedSample()
-    {
         // Delete all existing traces
         int N = xygraph.getPlotArea().getTraceList().size();
         while (N > 0)
             xygraph.removeTrace(xygraph.getPlotArea().getTraceList().get(--N));
         
-        // Anything to show?
+        // No or unknown PV name?
         if (model_item == null)
         {
-            clearInfo();
+            pv_name.setText(""); //$NON-NLS-1$
+            sample_index.setEnabled(false);
             return;
         }
 
+        // Prepare to show waveforms of model item in plot
+        waveform = new WaveformValueDataProvider();
+
+        // Create trace for waveform
+        final Trace trace = new Trace(model_item.getDisplayName(),
+                xygraph.primaryXAxis, xygraph.primaryYAxis, waveform);
+        // Configure color, ...
+        final Color old_color = color;
+        color = new Color(pv_name.getDisplay(), model_item.getColor());
+        trace.setTraceColor(color);
+        trace.setLineWidth(model_item.getLineWidth());
+        trace.setPointStyle(PointStyle.POINT);
+        trace.setPointSize(5);
+        // Add to graph
+        xygraph.addTrace(trace);
+        // Dispose previous color
+        if (old_color != null)
+            old_color.dispose();
+        // Enable waveform selection and update slider's range
+        sample_index.setEnabled(true);
+        showSelectedSample();
+    }
+
+    /** Show the current sample of the current model item. */
+    private void showSelectedSample()
+    {
         // Get selected sample (= one waveform)
         final PlotSamples samples = model_item.getSamples();
         final IValue value;
@@ -267,31 +270,20 @@ public class WaveformView extends DataBrowserAwareView
             final int idx = sample_index.getSelection();
             value = samples.getSample(idx).getValue();
         }
+        waveform.setValue(value);
         if (value == null)
-        {
             clearInfo();
-            return;
+        else
+        {
+            timestamp.setText(value.getTime().toString());
+            status.setText(NLS.bind(Messages.SeverityStatusFmt, value.getSeverity().toString(), value.getStatus()));
         }
-
-        // Convert IValue into input for plot
-        final Trace trace = new Trace(model_item.getDisplayName(),
-                xygraph.primaryXAxis, xygraph.primaryYAxis,
-                new WaveformValueDataProvider(value));
-        
-        final Color old_color = color;
-        color = new Color(pv_name.getDisplay(), model_item.getColor());
-        trace.setTraceColor(color);
-        trace.setLineWidth(model_item.getLineWidth());
-        xygraph.addTrace(trace);
-        if (old_color != null)
-            old_color.dispose();
     }
 
     /** Clear all the info fields. */
-    @SuppressWarnings("nls")
     private void clearInfo()
     {
-        timestamp.setText("");
-        status.setText("");
+        timestamp.setText(""); //$NON-NLS-1$
+        status.setText(""); //$NON-NLS-1$
     }
 }

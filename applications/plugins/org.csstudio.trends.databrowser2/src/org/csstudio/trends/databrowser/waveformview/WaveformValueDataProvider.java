@@ -1,5 +1,7 @@
 package org.csstudio.trends.databrowser.waveformview;
 
+import java.util.ArrayList;
+
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.swt.xygraph.dataprovider.IDataProvider;
@@ -13,39 +15,56 @@ import org.csstudio.swt.xygraph.linearscale.Range;
  */
 public class WaveformValueDataProvider implements IDataProvider
 {
-    final private IValue value;
+    final private ArrayList<IDataProviderListener> listeners =
+        new ArrayList<IDataProviderListener>();
+    
+    private IValue value = null;
 
-    public WaveformValueDataProvider(final IValue value)
+    /** Update the waveform value.
+     *  @param value New value
+     *  Fires event to listeners (plot)
+     */
+    public void setValue(final IValue value)
     {
         this.value = value;
+        for (IDataProviderListener listener : listeners)
+            listener.dataChanged(this);
     }
-
-    /** {@inheritDoc} */
+    
+     /** {@inheritDoc} */
     public int getSize()
     {
+        if (value == null)
+            return 0;
         return ValueUtil.getSize(value);
     }
 
     /** {@inheritDoc} */
     public ISample getSample(final int index)
     {
-        return new Sample(index, ValueUtil.getDouble(value, index));
+        if (value.getSeverity().hasValue())
+            return new Sample(index, ValueUtil.getDouble(value, index));
+        return new Sample(index, Double.NaN);
     }
 
     /** {@inheritDoc} */
     public Range getXDataMinMax()
     {
+        if (value == null)
+            return null;
         return new Range(0, getSize()-1);
     }
 
     /** {@inheritDoc} */
     public Range getYDataMinMax()
     {
+        if (value == null)
+            return null;
         double min, max;
         min = max = ValueUtil.getDouble(value);
         for (int i=getSize()-1; i>=1; --i)
         {
-            final double num = ValueUtil.getDouble(value);
+            final double num = ValueUtil.getDouble(value, i);
             if (num < min)
                 min = num;
             if (num > max)
@@ -63,13 +82,12 @@ public class WaveformValueDataProvider implements IDataProvider
     /** {@inheritDoc} */
     public void addDataProviderListener(final IDataProviderListener listener)
     {
-        // Data doesn't change, so we ignore listeners
+        listeners.add(listener);
     }
 
     /** {@inheritDoc} */
     public boolean removeDataProviderListener(final IDataProviderListener listener)
     {
-        // Data doesn't change, so we ignore listeners
-        return true;
+        return listeners.remove(listener);
     }
 }
