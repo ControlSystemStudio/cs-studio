@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,7 +20,8 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package AAPI;
+
+package AAPI;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -31,14 +33,15 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 
-//
-// Main class for AAPI package
-//
-// AAPI-client use AAPI-protocol which was development
-// in discussion between DESY and Kay Kasemir(LANL)
-// see http://www-kryo.desy.de/documents/EPICS/DESY/General/Archiver/AAPI/
-// for details.
-
+/**
+ * Main class for AAPI package. AAPI-client use AAPI-protocol which was development
+ * in discussion between DESY and Kay Kasemir(LANL).
+ * 
+ * For details see
+ * 
+ * http://www-kryo.desy.de/documents/EPICS/DESY/General/Archiver/AAPI/
+ * 
+ */
 public class AAPI
 {
     // AAPI settings
@@ -560,25 +563,37 @@ public class AAPI
 		return null;
 	}
 
-	//
-	// AAPI first 4 bytes is header. Analyze it!
-	//
-
-	byte[] analyzeReturnHeader(byte[] rawAnswer) {
-		try {
-			DataInputStream readStream = new DataInputStream(
-																new ByteArrayInputStream(
-																							rawAnswer));
-			int cmd = readStream.readInt();
-			int err = readStream.readInt();
-			int ver = readStream.readInt();
-			if (err != 0) {
-				System.err.println("AAPI error: " + err);
+    /**
+     * AAPI first 4 bytes is header. Analyze it!
+     * 
+     * @param rawAnswer - Array of bytes containing the data
+     * 
+     */
+	byte[] analyzeReturnHeader(byte[] rawAnswer)
+	{
+        String s = null;
+        @SuppressWarnings("unused")
+        int tmp;
+        int err;
+        
+	    try
+	    {
+	        DataInputStream readStream = new DataInputStream(new ByteArrayInputStream(rawAnswer));
+	        tmp = readStream.readInt();
+			err = readStream.readInt();
+			tmp = readStream.readInt();
+			if(err != 0)
+			{
+                s = new String(rawAnswer, 16, rawAnswer.length - 16);
+                System.err.println("AAPI error: " + new String(s.trim()));
 				return null;
 			}
+			
 			return rawAnswer;
-		} catch (IOException e) {
-			System.err.println("AAPI-client analyzeReturnHeader error" + e);
+		}
+	    catch(IOException ioe)
+	    {
+			System.err.println("AAPI-client: analyzeReturnHeader(): ERROR - " + ioe.getMessage());
 			return null;
 		}
 	}
@@ -679,60 +694,77 @@ public class AAPI
 		}
 	}
 
-
-
-	//
-	// If answer is String[] (getChannelList, getHierarchy) recovery it from
-	// bytes
-	//
-
-	String[] interpreterAnswerAsString(byte[] data) {
-		try {
-			DataInputStream readStream = new DataInputStream(
-																new ByteArrayInputStream(
-																							data));
-			for (int i = 0; i < headerSize - 1; i++) {
-				readStream.readInt();//Skip header
+	/**
+	 * If answer is String[] (getChannelList, getHierarchy) recover it from bytes.
+	 * 
+	 */
+	private String[] interpreterAnswerAsString(byte[] data)
+	{
+		try
+		{
+			DataInputStream readStream = new DataInputStream(new ByteArrayInputStream(data));
+			for(int i = 0;i < headerSize - 1;i++)
+			{
+			    //Skip header
+			    readStream.readInt();
 			}
-			int num = readStream.readInt(); // # of strings
-			if (num <= 0) {
-				System.err.println("AAPI-client interpreterAnswererror\n");
+			
+			 // # of strings
+			int num = readStream.readInt();
+			if(num <= 0)
+			{
+				System.err.println("AAPI-client: interpreterAnswer(): ERROR\n");
 				return null;
 			}
-			ArrayList ret=new ArrayList();
+			
+			ArrayList<String> ret = new ArrayList<String>();
 			char[] answerAsArray = new char[maxNameLength];
 			int j;
-			for (int i = 0; i < num; i++) {
-				for (j = 0; j < maxNameLength; j++) {
-					if ((answerAsArray[j] = (char)readStream.readByte()) == '\0')
-																					break;
-					if (answerAsArray[j] == '\n') { // record with unexpected
-													// carridgeReturn in the end
+			
+			for(int i = 0; i < num; i++)
+			{
+				for (j = 0; j < maxNameLength; j++)
+				{
+					if((answerAsArray[j] = (char)readStream.readByte()) == '\0') break;
+					
+					if(answerAsArray[j] == '\n')
+					{
+					    // record with unexpected
+						// carridgeReturn in the end
 						answerAsArray[j] = '\0';
 						readStream.readByte();
 						break;
 					}
 				}
-				if (j > (maxNameLength - 2)) {
-					System.err.println(i + "-th name is unbelieveable long ="
-										+ new String(answerAsArray));
+				
+				if(j > (maxNameLength - 2))
+				{
+					System.err.println(i + "-th name is unbelieveable long = " + new String(answerAsArray));
 					return null;
 				}
-				if (!(answerAsArray[0]==(char)0 || answerAsArray[1]==(char)0)) {
+				
+				if(!(answerAsArray[0] == (char)0 || answerAsArray[1] == (char)0))
+				{
 					ret.add(toString(answerAsArray));
 				}
 			}
+			
 			String[] retArr = new String[ret.size()];
 			ret.toArray(retArr);
-			if (debugOut) {
-				for(int i=0; i<ret.size(); i++) 
-			        System.out.println("\t"+i+"-th channelName is="+retArr[i]+";");
+			
+			if(debugOut)
+			{
+				for(int i=0; i<ret.size(); i++)
+				{
+			        System.out.println("\t" + i + "-th channelName is = " + retArr[i] + ";");
+				}
 			}
 			
 			return retArr;
-
-		} catch (IOException e) {
-			System.err.println("AAPI-client interpreterAnswererror" + e);
+		}
+		catch(IOException ioe)
+		{
+			System.err.println("AAPI-client: interpreterAnswer(): ERROR - " + ioe.getMessage());
 			return null;
 		}
 	}
@@ -778,19 +810,28 @@ public class AAPI
 		}
 	}
 	
-	private String toString(char[] array) {
-				String cur = new String(array).trim();
-				int zIdx=cur.indexOf(0);
-				if (zIdx>=0) {
-					cur=cur.substring(0,zIdx);
-				}
-				return cur;
+	/**
+	 * 
+	 * @param array
+	 * @return
+	 */
+	private String toString(char[] array)
+	{
+	    String cur = new String(array).trim();
+	    int zIdx = cur.indexOf(0);
+	    if (zIdx>=0)
+	    {
+	        cur=cur.substring(0, zIdx);
+	    }
+		
+	    return cur;
 	}
 
-	//
-	// Misc. function a + b for byteArrays :
-	//
-	byte[] concatination(byte[] a, byte[] b) {
+	/**
+	 * Misc. function a + b for byteArrays
+	 */
+	private byte[] concatination(byte[] a, byte[] b)
+	{
 		if (a == null) return null;
 		if (b == null) return a;
 		byte[] ret = new byte[a.length + b.length];
