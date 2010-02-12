@@ -6,6 +6,7 @@ import org.csstudio.sds.components.ui.internal.figures.RefreshableRectangleFigur
 import org.csstudio.sds.ui.behaviors.AbstractBehavior;
 import org.eclipse.draw2d.IFigure;
 import org.epics.css.dal.simple.AnyData;
+import org.epics.css.dal.simple.MetaData;
 
 public class TestRectangleBehaviour extends AbstractBehavior {
 
@@ -29,6 +30,12 @@ public class TestRectangleBehaviour extends AbstractBehavior {
 			}
 			
 			rectangle.setFill(value.doubleValue());
+			MetaData metaData = value.getMetaData();
+			if (metaData != null) {
+				rectangle.setSize(100, (int)metaData.getAlarmHigh());
+			} else {
+				rectangle.setSize(100, 50);
+			}
 		}
 	}
 
