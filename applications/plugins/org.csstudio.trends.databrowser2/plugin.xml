@@ -49,6 +49,14 @@
             name="%ExportView"
             restorable="true">
       </view>
+      <view
+            category="org.csstudio"
+            class="org.csstudio.trends.databrowser.waveformview.WaveformView"
+            icon="icons/wavesample.gif"
+            id="org.csstudio.trends.databrowser.waveformview.WaveformView"
+            name="%WaveformView"
+            restorable="true">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.actionSets">

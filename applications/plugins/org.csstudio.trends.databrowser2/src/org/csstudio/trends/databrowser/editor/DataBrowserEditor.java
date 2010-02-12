@@ -22,6 +22,7 @@ import org.csstudio.trends.databrowser.ui.AddFormulaAction;
 import org.csstudio.trends.databrowser.ui.AddPVAction;
 import org.csstudio.trends.databrowser.ui.Controller;
 import org.csstudio.trends.databrowser.ui.Plot;
+import org.csstudio.trends.databrowser.waveformview.OpenWaveformAction;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -59,7 +60,7 @@ import org.eclipse.ui.views.properties.IPropertySheetPage;
  *  plugin.xml registers this as an editor for data browser configuration
  *  files.
  *  
- *  TODO Waveform viewer
+ *  TODO Background color issues: Change annotation -> wrong bg color?!
  *  
  *  @author Kay Kasemir
  */
@@ -243,6 +244,7 @@ public class DataBrowserEditor extends EditorPart
         mm.add(new OpenViewAction(ExportView.ID, Messages.OpenExportView,
                 Activator.getDefault().getImageDescriptor("icons/export.png"))); //$NON-NLS-1$
         mm.add(new InspectSamplesAction());
+        mm.add(new OpenWaveformAction());
         mm.add(new Separator());
         if (SendToElogAction.isElogAvailable())
             mm.add(new SendToElogAction(shell, plot.getXYGraph()));
