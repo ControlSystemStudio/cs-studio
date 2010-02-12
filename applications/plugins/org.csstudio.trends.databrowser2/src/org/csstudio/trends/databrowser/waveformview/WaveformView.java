@@ -16,9 +16,12 @@ import org.csstudio.trends.databrowser.model.ModelItem;
 import org.csstudio.trends.databrowser.model.PlotSamples;
 import org.eclipse.draw2d.LightweightSystem;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -58,6 +61,8 @@ public class WaveformView extends DataBrowserAwareView
     private Text status;
 
     private Slider sample_index;
+
+    private Color color = null;
     
     /** {@inheritDoc} */
     @Override
@@ -149,6 +154,15 @@ public class WaveformView extends DataBrowserAwareView
 
         status = new Text(parent, SWT.BORDER | SWT.READ_ONLY);
         status.setLayoutData(new GridData(SWT.FILL, 0, true, false));
+        
+        parent.addDisposeListener(new DisposeListener()
+        {
+            public void widgetDisposed(DisposeEvent e)
+            {
+                if (color != null)
+                    color.dispose();
+            }
+        });
     }
 
     /** {@inheritDoc} */
@@ -260,9 +274,17 @@ public class WaveformView extends DataBrowserAwareView
         }
 
         // Convert IValue into input for plot
-        xygraph.addTrace(new Trace(model_item.getDisplayName(),
+        final Trace trace = new Trace(model_item.getDisplayName(),
                 xygraph.primaryXAxis, xygraph.primaryYAxis,
-                new WaveformValueDataProvider(value)));
+                new WaveformValueDataProvider(value));
+        
+        final Color old_color = color;
+        color = new Color(pv_name.getDisplay(), model_item.getColor());
+        trace.setTraceColor(color);
+        trace.setLineWidth(model_item.getLineWidth());
+        xygraph.addTrace(trace);
+        if (old_color != null)
+            old_color.dispose();
     }
 
     /** Clear all the info fields. */
