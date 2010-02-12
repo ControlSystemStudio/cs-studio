@@ -55,7 +55,7 @@ public enum ZoomType{
 				
         /** Zoom 'out' around mouse pointer along vertical axes */
         ZOOM_OUT_VERTICALLY("Zoom Out Vertically",  createImage("icons/ZoomOutVert.png"),
-                createImage("icons/ZoomOutHorizCursor.png"),
+                createImage("icons/ZoomOutVertCursor.png"),
                 XYGraphFlags.SEPARATE_ZOOM),
 				
         /** Zoom 'out' around mouse pointer */
