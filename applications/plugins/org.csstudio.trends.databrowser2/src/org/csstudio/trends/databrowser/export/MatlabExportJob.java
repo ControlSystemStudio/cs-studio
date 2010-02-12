@@ -13,7 +13,7 @@ import org.csstudio.trends.databrowser.model.ModelItem;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 
-/** Eclipse Job for exporting data from Model to Matlab-format file
+/** Eclipse Job for exporting data from Model to Matlab-format file.
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -47,7 +47,7 @@ public class MatlabExportJob extends ExportJob
     protected void performExport(final IProgressMonitor monitor,
                                  final PrintStream out) throws Exception
     {
-        final DateFormat date_format = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+        final DateFormat date_format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
         for (int i=0; i<model.getItemCount(); ++i)
         {
             final ModelItem item = model.getItem(i);
@@ -68,7 +68,7 @@ public class MatlabExportJob extends ExportJob
             {
                 final IValue value = values.next();
                 ++line_count;
-                // t(1)='03/15/2010 13:30:10';
+                // t(1)='2010/03/15 13:30:10.123';
                 out.println("t{" + line_count + "}='" +
                     date_format.format(value.getTime().toCalendar().getTime()) + "';");
                 // v(1)=4.125;
@@ -82,13 +82,20 @@ public class MatlabExportJob extends ExportJob
                 if (line_count % PROGRESS_UPDATE_LINES == 0)
                     monitor.subTask(NLS.bind("{0}: Wrote {1} samples", item.getName(), line_count));
             }
-            // channel1 = timeseries(v', t, q', 'Name', 'ThePVName');
+
+            out.println(comment + "Convert time stamps into 'date numbers'");
+            out.println("tn=datenum(t, 'yyyy/mm/dd HH:MM:SS.FFF');");
+            out.println(comment + "Prepare patched data because");
+            out.println(comment + "timeseries() cannot handle duplicate time stamps");
+            out.println("[xx, idx]=unique(tn, 'last');");
+            out.println("pt=tn(idx);");
+            out.println("pv=v(idx);");
+            out.println("pq=q(idx);");
+            out.println("clear xx idx");
+            out.println(comment + "Convert into time series and plot");
             // Patch "_" in name because Matlab plot will interprete it as LaTeX sub-script
             final String channel_name = item.getDisplayName().replace("_", "\\_");
-            out.println("channel"+i+"=timeseries(v', t, q', 'Name', '"+channel_name+"');");
-            out.println("clear t;");
-            out.println("clear v;");
-            out.println("clear q;");
+            out.println("channel"+i+"=timeseries(pv', pt', pq', 'IsDatenum', true, 'Name', '"+channel_name+"');");
 
             out.print("channel"+i+".QualityInfo.Code=[");
             for (int q=0; q<qualities.getNumCodes(); ++q)
