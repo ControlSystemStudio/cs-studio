@@ -137,8 +137,7 @@ WITH base_resultset AS (
        str_val
   FROM chan_arch.sample
   WHERE channel_id = :1
-       AND smpl_time > :2
-       AND smpl_time < :3'
+       AND smpl_time BETWEEN :2 AND :3
 )
   SELECT -1 wb,
        smpl_time,
@@ -200,8 +199,7 @@ ORDER BY smpl_time
        str_val
   FROM chan_arch.sample
   WHERE channel_id = :1
-       AND smpl_time > :2
-       AND smpl_time < :3';
+    AND smpl_time BETWEEN :2 AND :3';
 
       l_cursor_width_bucket_2 VARCHAR2 (2000) := '
 )
@@ -303,15 +301,16 @@ ORDER BY smpl_time';
             l_cursor_width_bucket_1
          || l_cursor_base_query
          || l_cursor_width_bucket_2;
+
       DBMS_APPLICATION_INFO.SET_MODULE (
          module_name   => 'archive_reader_pkg.get_browser_data',
-         action_name   => 'Aggregate browser data');
-
+         action_name   => 'Run main query');
       BEGIN
          IF l_return_raw_data = 1
          THEN
-            -- Return data from the base query, i.e. raw data
-            OPEN c_browser_data FOR l_cursor_base_query
+            -- Return data from the base query, i.e. raw data, but(!) sort it by time
+            l_cursor_stmt := l_cursor_base_query || ' ORDER BY smpl_time';
+            OPEN c_browser_data FOR l_cursor_stmt
                USING p_chan_id,
                      v_start_time,
                      p_end_time;
