@@ -37,15 +37,15 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class TraceTableHandler implements ILazyContentProvider
 {
+    /** Prompt for the 'raw request' warning? */
+    static private boolean prompt_for_raw_data_request = true;
+    
+    /** Prompt for the 'hide trace' warning'? */
+    static private boolean prompt_for_not_visible = true;
+
     final private ColorRegistry color_registry;
     private Model model;
     private TableViewer trace_table;
-
-    /** Prompt for the 'raw request' warning? */
-    private boolean prompt_for_raw_data_request = true;
-    
-    /** Prompt for the 'hide trace' warning'? */
-    private boolean prompt_for_not_visible = true;
     
     final private ModelListener model_listener = new ModelListener()
     {
