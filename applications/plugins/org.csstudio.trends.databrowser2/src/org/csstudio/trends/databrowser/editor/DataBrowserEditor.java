@@ -53,6 +53,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.dialogs.SaveAsDialog;
 import org.eclipse.ui.part.EditorPart;
+import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 
 /** Eclipse 'editor' for the Data Browser
@@ -318,7 +319,12 @@ public class DataBrowserEditor extends EditorPart
         final IFile file = promptForFile(null);
         if (file == null)
             return;
-        saveToFile(new NullProgressMonitor(), file);
+        if (! saveToFile(new NullProgressMonitor(), file))
+            return;
+        // Set that file as editor's input, so that just 'save' instead of
+        // 'save as' is possible from now on
+        setInput(new FileEditorInput(file));
+        setPartName(file.getName());
     }
     
     /** Prompt for file name
@@ -399,7 +405,6 @@ public class DataBrowserEditor extends EditorPart
         {
             monitor.done();
         }
-        setPartName(file.getName());
         return true;
     }
 }
