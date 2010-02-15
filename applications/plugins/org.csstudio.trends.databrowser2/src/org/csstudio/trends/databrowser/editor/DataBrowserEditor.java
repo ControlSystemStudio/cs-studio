@@ -59,9 +59,6 @@ import org.eclipse.ui.views.properties.IPropertySheetPage;
  *  <p>
  *  plugin.xml registers this as an editor for data browser configuration
  *  files.
- *  
- *  TODO Background color issues: Change annotation -> wrong bg color?!
- *  
  *  @author Kay Kasemir
  */
 public class DataBrowserEditor extends EditorPart

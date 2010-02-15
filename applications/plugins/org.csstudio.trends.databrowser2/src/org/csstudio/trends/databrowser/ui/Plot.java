@@ -100,7 +100,8 @@ public class Plot
         plot = new ToolbarArmedXYGraph(new XYGraph(),
                 XYGraphFlags.SEPARATE_ZOOM | XYGraphFlags.STAGGER);
         xygraph = plot.getXYGraph();
-
+        xygraph.setTransparent(false);
+        
         scroll_button = new ScrollButton(xygraph.getOperationsManager());
         plot.addToolbarButton(scroll_button);
         
