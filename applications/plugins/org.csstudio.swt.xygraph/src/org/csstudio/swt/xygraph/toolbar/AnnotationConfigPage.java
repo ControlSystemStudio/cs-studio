@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.Text;
 /**This will help to create the necessary widgets 
  * to configure an annotation's properties.
  * @author Xihui Chen
- *
+ * @author Kay Kasemir Layout tweaks
  */
 public class AnnotationConfigPage {
 	private XYGraph xyGraph;
@@ -55,39 +55,31 @@ public class AnnotationConfigPage {
 	public void createPage(final Composite composite){
 		this.composite = composite;
 		composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		composite.setLayout(new GridLayout(3, false));
-		GridData gd;
-		GridData labelGd = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);		
+		composite.setLayout(new GridLayout(2, false));
 		
 		final Label nameLabel = new Label(composite, 0);
 		nameLabel.setText("Name: ");
-		nameLabel.setLayoutData(labelGd);
+		nameLabel.setLayoutData(new GridData());
 		
 		nameText = new Text(composite, SWT.BORDER | SWT.SINGLE);
-		gd = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
-		nameText.setLayoutData(gd);		
+		nameText.setLayoutData(new GridData(SWT.FILL, 0, true, false));		
 		
 		snapToTrace = new Button(composite, SWT.CHECK);
 		snapToTrace.setText("Snap to Trace");		
-		gd = new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false, 3, 2);
-		snapToTrace.setLayoutData(gd);
+		snapToTrace.setLayoutData(new GridData(0, 0, false, false, 2, 1));
 		
 		xAxisLabel = new Label(composite, 0);
-		labelGd = new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 1, 1);	
-		xAxisLabel.setLayoutData(labelGd);		
+		xAxisLabel.setLayoutData(new GridData());		
 		
 		xAxisOrTraceCombo = new Combo(composite, SWT.DROP_DOWN);		
-		gd = new GridData(SWT.BEGINNING, SWT.BEGINNING, true, false, 2, 1);
-		xAxisOrTraceCombo.setLayoutData(gd);		
+		xAxisOrTraceCombo.setLayoutData(new GridData(SWT.FILL, 0, true, false));
 		
 		yAxisLabel = new Label(composite, 0);
 		yAxisLabel.setText("Y-Axis: ");	
-		labelGd = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);	
-		yAxisLabel.setLayoutData(labelGd);
+		yAxisLabel.setLayoutData(new GridData());
 		
 		yAxisCombo = new Combo(composite, SWT.DROP_DOWN);		
-		gd = new GridData(SWT.BEGINNING, SWT.BEGINNING, true, false, 2, 1);
-		yAxisCombo.setLayoutData(gd);
+		yAxisCombo.setLayoutData(new GridData(SWT.FILL, 0, true, false));
 		
 		//snapToTrace listener
 		snapToTrace.addSelectionListener(new SelectionAdapter(){
@@ -119,17 +111,14 @@ public class AnnotationConfigPage {
 		//annotation color
 		useDefaultColorButton = new Button(composite, SWT.CHECK);
 		useDefaultColorButton.setText("Use Y-Axis color as annotation color");
-		gd = new GridData(SWT.FILL, SWT.BEGINNING, false, false, 3, 1);
-		useDefaultColorButton.setLayoutData(gd);		
+		useDefaultColorButton.setLayoutData(new GridData(SWT.FILL, 0, false, false, 2, 1));		
 		
 		colorLabel = new Label(composite, 0);
 		colorLabel.setText("Color:");		
-		labelGd = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);	
-		colorLabel.setLayoutData(labelGd);
+		colorLabel.setLayoutData(new GridData());
 		
 		colorSelector = new ColorSelector(composite);
-		gd = new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 2, 1);
-		colorSelector.getButton().setLayoutData(gd);		
+		colorSelector.getButton().setLayoutData(new GridData());		
 		useDefaultColorButton.addSelectionListener(new SelectionAdapter(){
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -138,14 +127,12 @@ public class AnnotationConfigPage {
 			}
 		});
 		
-		fontLabel = new Label(composite, 0);		
-		labelGd = new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 1);	
-		fontLabel.setLayoutData(labelGd);
+		fontLabel = new Label(composite, 0);
+		fontLabel.setLayoutData(new GridData());
 		
 		final Button fontButton = new Button(composite, SWT.PUSH);
 		fontButton.setText("Change...");
-		gd = new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 1, 1);
-		fontButton.setLayoutData(gd);
+		fontButton.setLayoutData(new GridData());
 		fontButton.addSelectionListener(new SelectionAdapter(){
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -162,31 +149,25 @@ public class AnnotationConfigPage {
 			}
 		});
 		
-		
 		final Label cursorLineLabel = new Label(composite, 0);
 		cursorLineLabel.setText("Cursor Line Style: ");
-		labelGd = new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 1);	
-		cursorLineLabel.setLayoutData(labelGd);
+		cursorLineLabel.setLayoutData(new GridData());
 		
 		cursorLineCombo = new Combo(composite, SWT.DROP_DOWN);
-		cursorLineCombo.setItems(CursorLineStyle.stringValues());		
-		gd = new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 1, 1);
-		cursorLineCombo.setLayoutData(gd);
+		cursorLineCombo.setItems(CursorLineStyle.stringValues());
+		cursorLineCombo.setLayoutData(new GridData());
 		
 		showNameButton = new Button(composite, SWT.CHECK);		
 		showNameButton.setText("Show Name");
-		gd = new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 3, 1);
-		showNameButton.setLayoutData(gd);
+		showNameButton.setLayoutData(new GridData(0, 0, false, false, 2, 1));
 		
 		showSampleInfoButton = new Button(composite, SWT.CHECK);		
 		showSampleInfoButton.setText("Show Sample Infomation");
-		gd = new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 3, 1);
-		showSampleInfoButton.setLayoutData(gd);
+		showSampleInfoButton.setLayoutData(new GridData(0, 0, false, false, 2, 1));
 		
 		showPositionButton = new Button(composite, SWT.CHECK);
 		showPositionButton.setText("Show Position");
-		gd = new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 3, 1);
-		showPositionButton.setLayoutData(gd);
+		showPositionButton.setLayoutData(new GridData(0, 0, false, false, 2, 1));
 		initialize();
 	}
 	
