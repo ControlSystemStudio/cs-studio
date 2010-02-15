@@ -1,7 +1,7 @@
 package org.csstudio.archivereader.rdb;
 
+import org.csstudio.platform.ui.security.PasswordFieldEditor;
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.swt.widgets.Composite;
@@ -36,8 +36,8 @@ public class PreferencePage extends FieldEditorPreferencePage
         setMessage("RDB Archive Reader Settings");
         final Composite parent = getFieldEditorParent();
         addField(new StringFieldEditor(Preferences.USER, "User:", parent));
-        addField(new StringFieldEditor(Preferences.PASSWORD, "Password:", parent));
+        addField(new PasswordFieldEditor(Preferences.PASSWORD, "Password:", parent, Activator.ID));
         addField(new StringFieldEditor(Preferences.SCHEMA, "Database Schema:", parent));
-        addField(new BooleanFieldEditor(Preferences.STORED_PROCEDURE, "Use stored procedure?", parent));
+        addField(new StringFieldEditor(Preferences.STORED_PROCEDURE, "Stored procedure:", parent));
     }
 }

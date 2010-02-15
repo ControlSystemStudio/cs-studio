@@ -42,12 +42,12 @@ public class RDBArchiveReaderTest
 //        "CCL_LLRF:IOC1:Load";
         "RFQ_Vac:IG_2:P";
     final private static String WAVEFORM_NAME = "PPS_SM:SF:Emi_PM";
+    final private static String STORED_PROCEDURE = "chan_arch_sns.archive_reader_pkg";
     
     final private static double TIMERANGE_SECONDS = 60*60*24*14;
     final private static int BUCKETS = 50;
     
     final private static boolean dump = false;
-    private static final boolean USE_STORED_PROCEDURE = true;
     
     /** Basic connection */
     @Ignore
@@ -55,7 +55,7 @@ public class RDBArchiveReaderTest
     public void testBasicInfo() throws Exception
     {
         final ArchiveReader archive = new RDBArchiveReader(
-                URL, USER, PASSWORD, USE_STORED_PROCEDURE);
+                URL, USER, PASSWORD, STORED_PROCEDURE);
         try
         {
             assertEquals("RDB", archive.getServerName());
@@ -75,7 +75,7 @@ public class RDBArchiveReaderTest
     public void testChannelByPattern() throws Exception
     {
         final ArchiveReader archive = new RDBArchiveReader(
-                URL, USER, PASSWORD, USE_STORED_PROCEDURE);
+                URL, USER, PASSWORD, STORED_PROCEDURE);
         try
         {
             System.out.println("Channels matching a pattern:");
@@ -96,7 +96,7 @@ public class RDBArchiveReaderTest
     public void testChannelByRegExp() throws Exception
     {
         final ArchiveReader archive = new RDBArchiveReader(
-                URL, USER, PASSWORD, USE_STORED_PROCEDURE);
+                URL, USER, PASSWORD, STORED_PROCEDURE);
         try
         {
             System.out.println("Channels matching a regular expression, aborted");
@@ -123,7 +123,7 @@ public class RDBArchiveReaderTest
     public void testRawScalarData() throws Exception
     {
         final ArchiveReader archive = new RDBArchiveReader(
-                URL, USER, PASSWORD, USE_STORED_PROCEDURE);
+                URL, USER, PASSWORD, STORED_PROCEDURE);
         try
         {
             System.out.println("Raw samples for " + SCALAR_NAME + ":");
@@ -167,7 +167,7 @@ public class RDBArchiveReaderTest
     public void testRawWaveformData() throws Exception
     {
         final ArchiveReader archive = new RDBArchiveReader(
-                URL, USER, PASSWORD, USE_STORED_PROCEDURE);
+                URL, USER, PASSWORD, STORED_PROCEDURE);
         try
         {
             System.out.println("Raw samples for " + WAVEFORM_NAME + ":");
@@ -203,7 +203,7 @@ public class RDBArchiveReaderTest
         System.out.println("-- Java implementation --");
 
         final ArchiveReader archive = new RDBArchiveReader(
-                URL, USER, PASSWORD, false);
+                URL, USER, PASSWORD, "");
         try
         {
             final ITimestamp end = TimestampFactory.now();
@@ -233,7 +233,7 @@ public class RDBArchiveReaderTest
     {
         System.out.println("Optimized samples for " + SCALAR_NAME + ":");
         System.out.println("-- Based on stored procedure --");
-        final ArchiveReader archive = new RDBArchiveReader(URL, USER, PASSWORD, true);
+        final ArchiveReader archive = new RDBArchiveReader(URL, USER, PASSWORD, STORED_PROCEDURE);
         try
         {
             System.out.println("Optimized samples for " + SCALAR_NAME + ":");

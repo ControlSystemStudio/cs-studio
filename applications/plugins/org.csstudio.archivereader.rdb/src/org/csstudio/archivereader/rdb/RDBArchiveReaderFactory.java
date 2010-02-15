@@ -35,7 +35,7 @@ public class RDBArchiveReaderFactory implements ArchiveReaderFactory
             final String user = Preferences.getUser();
             final String password = Preferences.getPassword();
             return new RDBArchiveReader(url, user,
-                    password, Preferences.useStoredProcedure());
+                    password, Preferences.getStoredProcedure());
         }
     }
 }

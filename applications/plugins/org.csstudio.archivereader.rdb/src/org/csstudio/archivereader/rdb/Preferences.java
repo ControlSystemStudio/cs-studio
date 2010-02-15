@@ -31,9 +31,9 @@ public class Preferences
         return getString(PASSWORD, "");
     }
     
-    public static boolean useStoredProcedure()
+    public static String getStoredProcedure()
     {
-        return Boolean.parseBoolean(getString(STORED_PROCEDURE, "true"));
+        return getString(STORED_PROCEDURE, "");
     }
 
     /** Get string preference

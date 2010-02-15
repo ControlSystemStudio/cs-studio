@@ -25,7 +25,7 @@ public class RDBArchiveReader implements ArchiveReader
     final private String url;
     final private String user;
     final private int password;
-    final private boolean use_stored_procedure;
+    final private String stored_procedure;
     final private RDBUtil rdb;
     final private SQL sql;
 
@@ -43,11 +43,11 @@ public class RDBArchiveReader implements ArchiveReader
      *  @param url Database URL
      *  @param user .. user
      *  @param password .. password
-     *  @param use_stored_procedure Stored procedure or client-side optimization?
+     *  @param stored_procedure Stored procedure or "" for client-side optimization
      *  @throws Exception on error
      */
     public RDBArchiveReader(final String url, final String user,
-            final String password, final boolean use_stored_procedure)
+            final String password, final String stored_procedure)
         throws Exception
     {
         this.url = url;
@@ -56,9 +56,9 @@ public class RDBArchiveReader implements ArchiveReader
         rdb = RDBUtil.connect(url, user, password, false);
         // Ignore the stored procedure for MySQL
         if (rdb.getDialect() == Dialect.MySQL)
-            this.use_stored_procedure = false;
+            this.stored_procedure = "";
         else
-            this.use_stored_procedure = use_stored_procedure;
+            this.stored_procedure = stored_procedure;
         String schema = Preferences.getSchema();
         if (schema.length() > 0)
             schema = schema + ".";
@@ -248,10 +248,10 @@ public class RDBArchiveReader implements ArchiveReader
     {
         if (count <= 0)
             throw new Exception("Count must be positive");
-        if (use_stored_procedure)
+        if (stored_procedure.length() > 0)
         {
             final int channel_id = getChannelID(name);
-            return new StoredProcedureValueIterator(this, channel_id, start, end, count);
+            return new StoredProcedureValueIterator(this, stored_procedure, channel_id, start, end, count);
         }
         // Else: Fetch raw data and perform averaging
         final ValueIterator raw_data = getRawValues(key, name, start, end);

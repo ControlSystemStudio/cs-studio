@@ -21,6 +21,8 @@ import org.csstudio.platform.utility.rdb.TimeWarp;
 @SuppressWarnings("nls")
 public class StoredProcedureValueIterator extends AbstractRDBValueIterator
 {
+    final String stored_procedure;
+    
     /** Values received from the stored procedure */
     private IValue values[] = null;
     
@@ -31,6 +33,7 @@ public class StoredProcedureValueIterator extends AbstractRDBValueIterator
 
     /** Initialize
      *  @param reader RDBArchiveReader
+     *  @param stored_procedure Name of the stored procedure to call
      *  @param channel_id ID of channel
      *  @param start Start time
      *  @param end End time
@@ -38,10 +41,12 @@ public class StoredProcedureValueIterator extends AbstractRDBValueIterator
      *  @throws Exception on error
      */
     public StoredProcedureValueIterator(final RDBArchiveReader reader,
+            final String stored_procedure,
             final int channel_id, final ITimestamp start, final ITimestamp end,
             final int count) throws Exception
     {
         super(reader, channel_id);
+        this.stored_procedure = stored_procedure;
         executeProcedure(start, end, count);
     }
 
@@ -55,7 +60,7 @@ public class StoredProcedureValueIterator extends AbstractRDBValueIterator
             final int count) throws Exception
     {
         final CallableStatement statement = reader.getRDB().getConnection().prepareCall(
-            "begin ? := chan_arch_sns.archive_reader_pkg.get_browser_data(?, ?, ?, ?); end;");
+            "begin ? := " + stored_procedure + " .get_browser_data(?, ?, ?, ?); end;");
         
         reader.addForCancellation(statement);
         try
