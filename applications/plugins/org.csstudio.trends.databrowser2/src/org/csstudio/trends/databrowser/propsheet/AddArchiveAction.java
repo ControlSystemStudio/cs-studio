@@ -37,6 +37,6 @@ public class AddArchiveAction extends Action
         final AddArchiveDialog dlg = new AddArchiveDialog(shell);
         if (dlg.open() != AddArchiveDialog.OK)
             return;
-        new AddArchiveCommand(operations_manager, pvs, dlg.getArchives());
+        new AddArchiveCommand(operations_manager, pvs, dlg.getArchives(), false);
     }
 }

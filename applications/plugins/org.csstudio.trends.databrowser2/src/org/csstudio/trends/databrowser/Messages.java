@@ -12,7 +12,6 @@ public class Messages extends NLS
     public static String AddArchive;
     public static String AddArchiveMsg;
     public static String AddAxis;
-    public static String AddDefaultArchives;
     public static String AddFormula;
     public static String AddFormulaMsg;
     public static String AddFormula_NameTT;
@@ -212,6 +211,7 @@ public class Messages extends NLS
     public static String UpdatePeriodTT;
     public static String URL;
     public static String URL_Lbl;
+    public static String UseDefaultArchives;
     public static String ValueAxes;
     public static String ValueAxisName;
     public static String ValueColumn;

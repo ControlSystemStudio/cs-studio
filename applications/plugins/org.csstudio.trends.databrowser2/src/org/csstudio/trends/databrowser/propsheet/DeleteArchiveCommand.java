@@ -13,6 +13,7 @@ public class DeleteArchiveCommand implements IUndoableCommand
 {
     final private PVItem pv;
     final private ArchiveDataSource archives[];
+    final private ArchiveDataSource original[];
 
     /** Register and perform the command
      *  @param operations_manager OperationsManager where command will be reg'ed
@@ -24,6 +25,7 @@ public class DeleteArchiveCommand implements IUndoableCommand
     {
         this.pv = pv;
         this.archives = archives;
+        original = pv.getArchiveDataSources();
         operations_manager.addCommand(this);
         redo();
     }
@@ -37,7 +39,7 @@ public class DeleteArchiveCommand implements IUndoableCommand
     /** {@inheritDoc} */
     public void undo()
     {
-        pv.addArchiveDataSource(archives);
+        pv.setArchiveDataSource(original);
     }
     
     /** @return Command name that appears in undo/redo menu */

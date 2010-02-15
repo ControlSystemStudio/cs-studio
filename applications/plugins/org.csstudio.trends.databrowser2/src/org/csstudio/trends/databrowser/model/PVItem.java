@@ -225,6 +225,31 @@ public class PVItem extends ModelItem implements PVListener, IProcessVariableWit
             fireItemDataConfigChanged();        
     }
 
+    /** Replace existing archive data sources with given archives
+     *  @param archs ArchiveDataSources to use for this item
+     */
+    public void setArchiveDataSource(final ArchiveDataSource archs[])
+    {
+        // Check if they are the same, i.e. count AND order match
+        if (archs.length == archives.size())
+        {
+            boolean same = true;
+            for (int i=0; i<archs.length; ++i)
+                if (! archs[i].equals(archives.get(i)))
+                {
+                    same = false;
+                    break;
+                }
+            if (same)
+                return;
+        }
+        // Different archives
+        archives.clear();
+        for (ArchiveDataSource arch : archs)
+            archives.add(arch);
+        fireItemDataConfigChanged();
+    }
+
     /** @return Archive data request type */
     public RequestType getRequestType()
     {

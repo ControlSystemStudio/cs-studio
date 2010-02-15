@@ -336,7 +336,7 @@ public class DataBrowserPropertySheetPage extends Page
                 if (pvs.length <= 0)
                     return;
                 menu.add(new AddArchiveAction(operations_manager, shell, pvs));
-                menu.add(new AddDefaultArchivesAction(operations_manager, pvs));
+                menu.add(new UseDefaultArchivesAction(operations_manager, pvs));
             }
         });
 
@@ -369,7 +369,7 @@ public class DataBrowserPropertySheetPage extends Page
                     return;
                 
                 menu.add(new AddArchiveAction(operations_manager, control.getShell(), pvs));
-                menu.add(new AddDefaultArchivesAction(operations_manager, pvs));
+                menu.add(new UseDefaultArchivesAction(operations_manager, pvs));
                 
                 // Only allow removal of archives from single PV
                 if (pvs.length != 1)
