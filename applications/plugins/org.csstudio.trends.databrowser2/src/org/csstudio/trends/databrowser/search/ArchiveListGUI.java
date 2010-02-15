@@ -79,9 +79,9 @@ public abstract class ArchiveListGUI
                 if (reader == null)
                     return;
                 final StringBuilder buf = new StringBuilder();
-                buf.append("Archive Data Server:\n" + reader.getServerName() + "\n\n");
+                buf.append("Archive Data Server: " + reader.getServerName() + "\n\n");
                 buf.append("URL:\n" + reader.getURL() + "\n\n");
-                buf.append("Version:\n" + reader.getVersion() + "\n\n");
+                buf.append("Version: " + reader.getVersion() + "\n\n");
                 buf.append("Description:\n" + reader.getDescription() + "\n\n");
                 MessageDialog.openInformation(info.getShell(), "Archive Server Info", buf.toString());
             }

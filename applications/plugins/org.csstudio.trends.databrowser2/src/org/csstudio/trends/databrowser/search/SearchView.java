@@ -104,7 +104,7 @@ public class SearchView extends ViewPart
         createServerSash(sashform);
         createSearchSash(sashform);
         
-        sashform.setWeights(new int[] { 20, 80 });
+        sashform.setWeights(new int[] { 15, 85 });
     }
 
     /** Create the 'upper' sash for selecting a server and archives
@@ -139,11 +139,16 @@ public class SearchView extends ViewPart
         final GridLayout layout = new GridLayout(3, false);
         parent.setLayout(layout);
 
-        // Pattern:  ___pattern___  [search]
+        // Pattern:  ___pattern___ [x] [search]
         Label l = new Label(parent, 0);
         l.setText(Messages.SearchPattern);
         l.setLayoutData(new GridData());
-        
+
+        // On OS X, a 'search' box might look a little better:
+        // pattern = new Text(parent, SWT.SEARCH | SWT.ICON_CANCEL);
+        // ... except:
+        // a) only takes effect on OS X
+        // b) doesn't support drop-down for recent searches
         pattern = new Combo(parent, SWT.DROP_DOWN);
         pattern.setToolTipText(Messages.SearchPatternTT);
         pattern.setLayoutData(new GridData(SWT.FILL, 0, true, false));
@@ -159,7 +164,7 @@ public class SearchView extends ViewPart
                 searchForChannels();
             }
         };
-        
+
         search = new Button(parent, SWT.PUSH);
         search.setText(Messages.Search);
         search.setToolTipText(Messages.SearchTT);
