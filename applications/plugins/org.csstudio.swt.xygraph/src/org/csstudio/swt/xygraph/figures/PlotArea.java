@@ -23,16 +23,24 @@ import org.eclipse.swt.widgets.Display;
 
 /**The plot area figure.
  * @author Xihui Chen
- *
  */
 public class PlotArea extends Figure {
+    /** The ratio of the shrink/expand area for one zoom. */
+    final private static double ZOOM_RATIO = 0.1;
+    
+    /** The auto zoom interval in ms.*/
+    final private static int ZOOM_SPEED = 100;
+    
+    final private XYGraph xyGraph;
+	final private List<Trace> traceList = new ArrayList<Trace>();
+	final private List<Grid> gridList = new ArrayList<Grid>();
+	final private List<Annotation> annotationList = new ArrayList<Annotation>();
 	
-	private List<Trace> traceList;
-	private List<Grid> gridList;
-	private List<Annotation> annotationList;
-	
-	private XYGraph xyGraph;
-	
+	final private List<Range> xAxisStartRangeList = new ArrayList<Range>();
+	final private List<Range> yAxisStartRangeList = new ArrayList<Range>();
+	    
+	final private Cursor grabbing;
+
 	private boolean showBorder;	
 	
 	private ZoomType zoomType;
@@ -42,24 +50,9 @@ public class PlotArea extends Figure {
 	private boolean armed;
 	
 	private Color revertBackColor;
-
-	private List<Range> xAxisStartRangeList;
-	private List<Range> yAxisStartRangeList;
-	private Cursor grabbing;
 	
-	/** The ratio of the shrink/expand area for one zoom. */
-	private final double ZOOM_RATIO = 0.1;
-	
-	/** The auto zoom interval in ms.*/
-	private final int ZOOM_SPEED = 100;
-	
-	public PlotArea(XYGraph xyGraph) {
+	public PlotArea(final XYGraph xyGraph) {
 		this.xyGraph = xyGraph;
-		traceList = new ArrayList<Trace>();
-		gridList = new ArrayList<Grid>();
-		xAxisStartRangeList = new ArrayList<Range>();
-		yAxisStartRangeList = new ArrayList<Range>();
-		annotationList = new ArrayList<Annotation>();
 		setBackgroundColor(XYGraph.WHITE_COLOR);
 		setForegroundColor(XYGraph.BLACK_COLOR);		
 		setOpaque(true);
