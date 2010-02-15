@@ -14,11 +14,9 @@ import org.eclipse.swt.widgets.Shell;
 
 /**The dialog for removing annotation.
  * @author Xihui Chen
- *
+ * @author Kay Kasemir layout tweaks
  */
 public class RemoveAnnotationDialog extends Dialog {
-	
-	
 	private XYGraph xyGraph;
 	private Combo annotationsCombo;
 	private Annotation removedAnnotation;
@@ -26,6 +24,8 @@ public class RemoveAnnotationDialog extends Dialog {
 	protected RemoveAnnotationDialog(Shell parentShell, XYGraph xyGraph) {
 		super(parentShell);	
 		this.xyGraph = xyGraph;
+        // Allow resize
+        setShellStyle(getShellStyle() | SWT.RESIZE);
 	}
 	
 	@Override
@@ -41,9 +41,11 @@ public class RemoveAnnotationDialog extends Dialog {
         composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		composite.setLayout(new GridLayout(1, false));
         final Label removeLabel = new Label(composite, SWT.None);
+        removeLabel.setLayoutData(new GridData());
         if(xyGraph.getPlotArea().getAnnotationList().size() > 0){        	
 	        removeLabel.setText("Select the annotation to be removed: ");        
 	        annotationsCombo = new Combo(composite, SWT.DROP_DOWN);
+	        annotationsCombo.setLayoutData(new GridData(SWT.FILL, 0, true, false));
 	        for(Annotation annotation : xyGraph.getPlotArea().getAnnotationList())
 	        	annotationsCombo.add(annotation.getName());
 	        annotationsCombo.select(0);
@@ -68,5 +70,4 @@ public class RemoveAnnotationDialog extends Dialog {
 	public Annotation getAnnotation() {
 		return removedAnnotation;
 	}
-	
 }
