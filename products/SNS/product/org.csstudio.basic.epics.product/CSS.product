@@ -66,10 +66,9 @@ See http://ics-web.sns.ornl.gov/css
       <plugin id="org.apache.lucene.analysis"/>
       <plugin id="org.csstudio.apputil"/>
       <plugin id="org.csstudio.apputil.ui"/>
-      <plugin id="org.csstudio.archive"/>
-      <plugin id="org.csstudio.archive.channelarchiver"/>
-      <plugin id="org.csstudio.archive.rdb"/>
-      <plugin id="org.csstudio.archive.rdbclient"/>
+      <plugin id="org.csstudio.archivereader"/>
+      <plugin id="org.csstudio.archivereader.channelarchiver"/>
+      <plugin id="org.csstudio.archivereader.rdb"/>
       <plugin id="org.csstudio.basic.epics.product"/>
       <plugin id="org.csstudio.diag.epics.pvtree"/>
       <plugin id="org.csstudio.diag.postanalyser"/>
@@ -99,7 +98,7 @@ See http://ics-web.sns.ornl.gov/css
       <plugin id="org.csstudio.startuphelper"/>
       <plugin id="org.csstudio.swt.chart"/>
       <plugin id="org.csstudio.swt.xygraph"/>
-      <plugin id="org.csstudio.trends.databrowser"/>
+      <plugin id="org.csstudio.trends.databrowser2"/>
       <plugin id="org.csstudio.utility.clock"/>
       <plugin id="org.csstudio.utility.eliza"/>
       <plugin id="org.csstudio.utility.pv"/>
