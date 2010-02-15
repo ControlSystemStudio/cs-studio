@@ -35,7 +35,8 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Spinner;
 
 /**
- * TODO: Should be replaced by the SWT Calendar widget, which is available since
+ * TODO: Remove when no longer used
+ * Should be replaced by the SWT Calendar widget, which is available since
  * Eclipse 3.3.M3 (http://eclipsezone.com/eclipse/forums/t83882.html). (Sven Wende)
  * 
  * @author  Kay Kasemir
@@ -84,7 +85,9 @@ public class SWTCalendar extends Composite {
 	 *            a parent container.
 	 * @param style
 	 *            FLAT to make the buttons flat, or NONE.
+	 * @deprecated Use org.eclipse.swt.widgets.DateTime
 	 */
+	@Deprecated
 	public SWTCalendar(Composite parent, int style) {
 		super(parent, (style & ~(SWT.FLAT | RED_WEEKEND)));
 
@@ -191,11 +194,10 @@ public class SWTCalendar extends Composite {
 		setFont(parent.getFont());
 	}
 
-	/**
-	 * 
-	 * 
-	 * @param parent 
+	/** @param parent 
+     *  @deprecatedorg.eclipse.swt.widgets.DateTime
 	 */
+	@Deprecated
 	public SWTCalendar(Composite parent) {
 		this(parent, SWT.FLAT);
 	}
