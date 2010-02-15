@@ -22,6 +22,9 @@ public class AddAnnotationDialog extends Dialog {
 	protected AddAnnotationDialog(final Shell parentShell, final XYGraph xyGraph) {
 		super(parentShell);	
 		
+        // Allow resize
+        setShellStyle(getShellStyle() | SWT.RESIZE);
+
 		// Unique annotation names help when trying to edit/delete annotations.
 		// Default name: Annotation 1, Annotation 2, ...
 		final int num = xyGraph.getPlotArea().getAnnotationList().size();
