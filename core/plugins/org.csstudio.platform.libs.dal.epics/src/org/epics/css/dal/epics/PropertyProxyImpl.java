@@ -662,7 +662,10 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 			characteristics.put(PropertyCharacteristics.C_HOSTNAME,channel != null ? channel.getHostName() : "unknown");
 			characteristics.put(EpicsPropertyCharacteristics.EPICS_NUMBER_OF_ELEMENTS, channel != null ? channel.getElementCount() : 1);
 			characteristics.put(PropertyCharacteristics.C_DATATYPE,PlugUtilities.getDataType(dbr.getType()));
-			
+			if(dbr.isSTS()) {
+				updateConditionWithDBRStatus((STS)dbr);
+				characteristics.put(CharacteristicInfo.C_SEVERITY_INFO.getName(), getCondition());
+			}
 			createSpecificCharacteristics(dbr);
 
 			characteristics.notifyAll();
@@ -823,7 +826,7 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 					Object value;
 					try {
 						value= PropertyUtilities.verifyCharacteristic(PropertyProxyImpl.this, characteristics[i], getCharacteristic(characteristics[i]));
-						r.addResponse(new ResponseImpl<Object>(PropertyProxyImpl.this, r,	value, characteristics[i],
+						r.addResponse(new ResponseImpl<Object>(PropertyProxyImpl.this, r, value, characteristics[i],
 								value != null, null, condition, null, true));
 
 					} catch (DataExchangeException e) {
