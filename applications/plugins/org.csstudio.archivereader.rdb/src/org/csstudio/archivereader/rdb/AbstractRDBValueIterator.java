@@ -323,6 +323,16 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
                 vals.add(res.getDouble(1));
             res.close();
         }
+        catch (Exception ex)
+        {
+            final String message = ex.getMessage();
+            if (message != null  &&  message.startsWith(ORACLE_CANCELLATION))
+            {   // Not a real error; return no array elements
+                return new double [] { dbl0 };
+            }
+            else
+                throw ex;
+        }
         finally
         {
             reader.removeFromCancellation(sel_array_samples);

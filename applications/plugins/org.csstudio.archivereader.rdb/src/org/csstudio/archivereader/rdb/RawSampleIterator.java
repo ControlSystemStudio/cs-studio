@@ -40,7 +40,22 @@ public class RawSampleIterator extends AbstractRDBValueIterator
             final ITimestamp end) throws Exception
     {
         super(reader, channel_id);
-        determineInitialSample(start, end);
+        try
+        {
+            determineInitialSample(start, end);
+        }
+        catch (Exception ex)
+        {
+            final String message = ex.getMessage();
+            if (message != null  &&  message.startsWith(ORACLE_CANCELLATION))
+            {
+                // Not a real error; return empty iterator
+                value = null;
+                return;
+            }
+            else
+                throw ex;
+        }
     }
 
     /** Get the samples: <code>result_set</code> will have the samples,
