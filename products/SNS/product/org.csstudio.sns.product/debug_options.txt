@@ -3,7 +3,10 @@
 # This file, renamed to ".options" and placed in the CSS installation directory,
 # is used when the "-debug" option is supplied to css.
 # When placed elsewhere under a different name, it can be used
-# via "-debug /full/path/to/the/file"
+# via "-debug /full/path/to/the/file".
+#
+# During development, the same is effected from the "Run Configuration"
+# "Tracing" tab: Enable tracing, then locate the following options in the GUI.
 #
 # kasemirk@ornl.gov
 
