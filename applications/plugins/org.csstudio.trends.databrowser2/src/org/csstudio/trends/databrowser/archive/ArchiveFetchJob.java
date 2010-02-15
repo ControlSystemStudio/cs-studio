@@ -224,7 +224,7 @@ ex.printStackTrace();
         monitor.done();
 
         timer.stop();
-        // TODO remot debug printouts
+        // TODO remove debug printouts
         System.out.println(this + ": " + timer.toString());
         
         return monitor.isCanceled() ? Status.CANCEL_STATUS : Status.OK_STATUS;
