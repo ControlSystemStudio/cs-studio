@@ -222,14 +222,16 @@ public class Controller implements ArchiveFetchJobListener
 
             public void itemAdded(final ModelItem item)
             {
-                plot.addTrace(item);
+                if (item.isVisible())
+                    plot.addTrace(item);
                 // Get archived data for new item (NOP for non-PVs)
                 getArchivedData(item, model.getStartTime(), model.getEndTime());
             }
             
             public void itemRemoved(final ModelItem item)
             {
-                plot.removeTrace(item);
+                if (item.isVisible())
+                    plot.removeTrace(item);
             }
 
             public void changedItemVisibility(final ModelItem item)
@@ -238,7 +240,7 @@ public class Controller implements ArchiveFetchJobListener
                     // itemAdded(item) would also get archived data
                     plot.addTrace(item);
                 else
-                    itemRemoved(item);
+                    plot.removeTrace(item);
             }
 
             public void changedItemLook(final ModelItem item)
