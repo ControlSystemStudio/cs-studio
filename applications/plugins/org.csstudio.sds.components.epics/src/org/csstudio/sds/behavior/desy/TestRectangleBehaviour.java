@@ -2,38 +2,35 @@ package org.csstudio.sds.behavior.desy;
 
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.components.model.RectangleModel;
-import org.csstudio.sds.components.ui.internal.figures.RefreshableRectangleFigure;
 import org.csstudio.sds.ui.behaviors.AbstractBehavior;
 import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.MetaData;
 
 public class TestRectangleBehaviour extends
-		AbstractBehavior<RectangleModel, RefreshableRectangleFigure> {
+		AbstractBehavior<RectangleModel> {
 
 	@Override
 	protected String[] doGetInvisiblePropertyIds() {
 		String[] result = new String[] { RectangleModel.PROP_FILL,
-				RectangleModel.PROP_COLOR_FOREGROUND };
+				RectangleModel.PROP_COLOR_FOREGROUND, RectangleModel.PROP_WIDTH, RectangleModel.PROP_HEIGHT };
 		return result;
 	}
 
 	@Override
-	protected void doUpdate(RectangleModel model,
-			RefreshableRectangleFigure figure, AnyData value) {
+	protected void doUpdate(RectangleModel model, AnyData value) {
 		if (!value.getSeverity().isOK()) {
-			figure.setForegroundColor(CustomMediaFactory.getInstance()
-					.getColor(CustomMediaFactory.COLOR_RED));
+			model.setPropertyValue(RectangleModel.PROP_COLOR_FOREGROUND, CustomMediaFactory.COLOR_RED);
 		} else {
-			figure.setForegroundColor(CustomMediaFactory.getInstance()
-					.getColor(CustomMediaFactory.COLOR_BLACK));
+			model.setPropertyValue(RectangleModel.PROP_COLOR_FOREGROUND, CustomMediaFactory.COLOR_BLACK);
 		}
 
-		figure.setFill(value.doubleValue());
+		model.setPropertyValue(RectangleModel.PROP_FILL, value.doubleValue());
 		MetaData metaData = value.getMetaData();
+		model.setPropertyValue(RectangleModel.PROP_HEIGHT, 50);
 		if (metaData != null) {
-			figure.setSize(100, (int) metaData.getAlarmHigh());
+			model.setPropertyValue(RectangleModel.PROP_WIDTH, (int) metaData.getAlarmHigh());
 		} else {
-			figure.setSize(100, 50);
+			model.setPropertyValue(RectangleModel.PROP_WIDTH, 50);
 		}
 	}
 

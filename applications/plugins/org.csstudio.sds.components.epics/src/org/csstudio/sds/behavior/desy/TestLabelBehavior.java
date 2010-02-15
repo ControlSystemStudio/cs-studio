@@ -1,13 +1,12 @@
 package org.csstudio.sds.behavior.desy;
 
-import org.csstudio.sds.components.ui.internal.figures.RefreshableLabelFigure;
 import org.csstudio.sds.model.LabelModel;
 import org.csstudio.sds.ui.behaviors.AbstractBehavior;
 import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.MetaData;
 
 public class TestLabelBehavior extends
-		AbstractBehavior<LabelModel, RefreshableLabelFigure> {
+		AbstractBehavior<LabelModel> {
 
 	@Override
 	protected String[] doGetInvisiblePropertyIds() {
@@ -15,7 +14,7 @@ public class TestLabelBehavior extends
 	}
 
 	@Override
-	protected void doUpdate(LabelModel model, RefreshableLabelFigure figure,
+	protected void doUpdate(LabelModel model,
 			AnyData value) {
 		StringBuffer buffer = new StringBuffer();
 
@@ -57,7 +56,7 @@ public class TestLabelBehavior extends
 			}
 		}
 
-		figure.setTextValue(buffer.toString());
+		model.setPropertyValue(LabelModel.PROP_TEXTVALUE, buffer.toString());
 	}
 
 }
