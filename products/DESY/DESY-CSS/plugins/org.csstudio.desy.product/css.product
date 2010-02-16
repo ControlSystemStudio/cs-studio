@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="CSS" id="org.csstudio.desy.product.product" application="org.csstudio.desy.product.application" version="1.2.0" useFeatures="true" includeLaunchers="true">
+<product name="CSS" uid="org.csstudio.desy.product" id="org.csstudio.desy.product.product" application="org.csstudio.desy.product.application" version="1.2.0" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/org.csstudio.desy.product/resources/css64x64.gif"/>
