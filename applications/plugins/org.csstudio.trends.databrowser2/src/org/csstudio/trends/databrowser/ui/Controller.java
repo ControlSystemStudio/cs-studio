@@ -20,6 +20,8 @@ import org.csstudio.trends.databrowser.preferences.Preferences;
 import org.csstudio.trends.databrowser.propsheet.AddArchiveCommand;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.events.ShellEvent;
+import org.eclipse.swt.events.ShellListener;
 import org.eclipse.swt.widgets.Shell;
 
 /** Controller that interfaces the {@link Model} with the {@link Plot}:
@@ -67,6 +69,9 @@ public class Controller implements ArchiveFetchJobListener
     final private ArrayList<ArchiveFetchJob> archive_fetch_jobs =
         new ArrayList<ArchiveFetchJob>();
 
+    /** Is the window (shell) iconized? */
+    private volatile boolean window_is_iconized;
+    
     /** Initialize
      *  @param shell Shell
      *  @param model Model that has the data
@@ -77,6 +82,25 @@ public class Controller implements ArchiveFetchJobListener
         this.shell = shell;
         this.model = model;
         this.plot = plot;
+        
+        // Update 'iconized' state from shell
+        shell.addShellListener(new ShellListener()
+        {
+            public void shellIconified(ShellEvent e)
+            {
+                window_is_iconized = true;
+            }
+            
+            public void shellDeiconified(ShellEvent e)
+            {
+                window_is_iconized = false;
+            }
+            
+            public void shellDeactivated(ShellEvent e) { /* Ignore */  }
+            public void shellClosed(ShellEvent e)      { /* Ignore */  }
+            public void shellActivated(ShellEvent e)   { /* Ignore */  }
+        });
+        window_is_iconized = shell.getMinimized();
         
         createPlotTraces();
         
@@ -310,7 +334,9 @@ public class Controller implements ArchiveFetchJobListener
         {
             @Override
             public void run()
-            {
+            {   // Skip updates while nobody is watching
+                if (window_is_iconized)
+                    return;
                 // Check if anything changed, which also updates formulas
                 final boolean anything_new = model.updateItemsAndCheckForNewSamples();
                 if (model.isScrollEnabled())
