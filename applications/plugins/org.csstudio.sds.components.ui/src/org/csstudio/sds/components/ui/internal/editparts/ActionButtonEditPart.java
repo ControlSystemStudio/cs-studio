@@ -310,11 +310,11 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 	        Font font = CustomMediaFactory.getInstance().getFont(new FontData[] { fontData });
 
 	        // get the chosen foreground color
-	        Color foregroundColor = CustomMediaFactory.getInstance().getColor(
+	        Color foregroundColor = getColor(
 	                getWidgetModel().getForegroundColor());
 
 	        // get the chosen background color
-	        RGB backgroundRgb = getWidgetModel().getBackgroundColor();
+	        RGB backgroundRgb = getRgb(getWidgetModel().getBackgroundColor());
 
 	        int red = Math.min(backgroundRgb.red + INPUT_FIELD_BRIGHTNESS, 255);
 	        int green = Math.min(backgroundRgb.green + INPUT_FIELD_BRIGHTNESS, 255);

@@ -56,7 +56,7 @@ public final class ArcEditPart extends AbstractWidgetEditPart {
 		
 		figure.setTransparent(model.getTransparent());
 		figure.setBorderWidth(model.getBorderWidth());
-		figure.setBorderColor(model.getBorderColor());
+		figure.setBorderColor(getRgb(model.getBorderColor()));
 		figure.setStartAngle(model.getStartAngle());
 		figure.setAngle(model.getAngle());
 		figure.setLineWidth(model.getLineWidth());

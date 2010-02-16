@@ -57,8 +57,8 @@ public class XYGraphModel extends AbstractWidgetModel {
 		return getProperty(PROP_TITLE).getPropertyValue();
 	}
 	
-	public RGB getTitleColor() {
-		return getProperty(PROP_TITLE_COLOR).getPropertyValue();
+	public ColorProperty getTitleColor() {
+		return (ColorProperty) getProperty(PROP_TITLE_COLOR);
 	}
 	
 	public FontData getTitleFont() {

@@ -66,8 +66,8 @@ abstract class AbstractChartEditPart extends AbstractWidgetEditPart {
 		figure.setGridLinesColor(model.getGridLineColor());
 		figure.setLineChart(model.isLineChart());
 		figure.setGraphLineWidth(model.getPlotLineWidth());
-		figure.setBackgroundColor(CustomMediaFactory.getInstance().getColor(model.getBackgroundColor()));
-		figure.setForegroundColor(CustomMediaFactory.getInstance().getColor(model.getForegroundColor()));
+		figure.setBackgroundColor(getColor(model.getBackgroundColor()));
+		figure.setForegroundColor(getColor(model.getForegroundColor()));
 		figure.setTransparent(model.isTransparent());
 		figure.setYAxisScaling(model.getYAxisScaling());
 		figure.setLabel(model.getLabel());

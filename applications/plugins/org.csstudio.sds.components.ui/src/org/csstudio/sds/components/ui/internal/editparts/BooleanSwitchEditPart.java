@@ -25,8 +25,6 @@ public class BooleanSwitchEditPart extends AbstractWidgetEditPart {
 		BoolSwitchFigure figure = new BoolSwitchFigure();
 		figure.setEffect3D(model.get3dEffect());
 		figure.setBooleanValue(model.getValue());
-		figure.setForegroundColor(CustomMediaFactory.getInstance().getColor(model.getForegroundColor()));
-		figure.setBackgroundColor(CustomMediaFactory.getInstance().getColor(model.getBackgroundColor()));
 		figure.setOffColor(model.getOffColor());
 		figure.setOnColor(model.getOnColor());
 		figure.setShowBooleanLabel(model.getShowLabels());
