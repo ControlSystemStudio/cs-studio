@@ -130,6 +130,7 @@ public class Messages extends NLS
     public static String NotApplicable;
     public static String NotSaved;
     public static String NotSavedTT;
+    public static String OpenDataBrowserPerspective;
     public static String OpenExportView;
     public static String OpenSearchView;
     public static String OpenPropertiesView;

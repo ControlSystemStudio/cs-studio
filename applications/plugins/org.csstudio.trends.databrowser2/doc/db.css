@@ -23,9 +23,12 @@ H2
     font-family: Georgia, "Times New Roman", Times, serif;
     font-variant: normal;
     font-style: normal;
-    text-decoration: underline;
+    text-decoration: none;
     color: #202080;
     margin-bottom: 0;
+    border-width: 1px;
+    border-color: gray;
+    border-top-style:solid;
 }
 
 H3
@@ -53,10 +56,12 @@ P
 /* Table-of-contents, index */
 span.index
 {
+/*
     border-width: 1px;
     border-color: gray;
     border-top-style:solid;
-    border-bottom-style:solid;  
+    border-bottom-style:solid; 
+ */ 
 }
 
 /* Plain anchors

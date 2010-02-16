@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 
+import org.csstudio.apputil.ui.workbench.OpenPerspectiveAction;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.workbench.OpenViewAction;
 import org.csstudio.trends.databrowser.Activator;
@@ -228,6 +229,7 @@ public class DataBrowserEditor extends EditorPart
     /** Create context menu */
     private void createContextMenu(final Control parent)
     {
+        final Activator activator = Activator.getDefault();
         final Shell shell = parent.getShell();
         final MenuManager mm = new MenuManager();
         mm.add(plot.getToggleToolbarAction());
@@ -236,13 +238,17 @@ public class DataBrowserEditor extends EditorPart
         mm.add(new AddFormulaAction(plot.getOperationsManager(), shell, model));
         mm.add(new Separator());
         mm.add(new OpenViewAction(IPageLayout.ID_PROP_SHEET, Messages.OpenPropertiesView,
-                Activator.getDefault().getImageDescriptor("icons/prop_ps.gif"))); //$NON-NLS-1$
+                activator.getImageDescriptor("icons/prop_ps.gif"))); //$NON-NLS-1$
         mm.add(new OpenViewAction(SearchView.ID, Messages.OpenSearchView,
-                Activator.getDefault().getImageDescriptor("icons/search.gif"))); //$NON-NLS-1$
+                activator.getImageDescriptor("icons/search.gif"))); //$NON-NLS-1$
         mm.add(new OpenViewAction(ExportView.ID, Messages.OpenExportView,
-                Activator.getDefault().getImageDescriptor("icons/export.png"))); //$NON-NLS-1$
+                activator.getImageDescriptor("icons/export.png"))); //$NON-NLS-1$
         mm.add(new InspectSamplesAction());
         mm.add(new OpenWaveformAction());
+        mm.add(new OpenPerspectiveAction(
+                activator.getImageDescriptor("icons/databrowser.png"), //$NON-NLS-1$
+                Messages.OpenDataBrowserPerspective,
+                Perspective.ID));
         mm.add(new Separator());
         if (SendToElogAction.isElogAvailable())
             mm.add(new SendToElogAction(shell, plot.getXYGraph()));

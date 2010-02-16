@@ -21,6 +21,7 @@ public class NewDataBrowserAction implements IWorkbenchWindowActionDelegate
         // NOP
     }
 
+    /** {@inheritDoc} */
     public void run(IAction action)
     {
         DataBrowserEditor.createInstance();
