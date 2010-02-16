@@ -23,9 +23,7 @@ package org.csstudio.platform.internal.simpledal.dal;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.Arrays;
 
-import org.csstudio.dal.DalPlugin;
 import org.csstudio.platform.internal.simpledal.AbstractConnector;
 import org.csstudio.platform.internal.simpledal.converters.ConverterUtil;
 import org.csstudio.platform.logging.CentralLogger;
@@ -604,7 +602,7 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
 	 */
 	private void doHandleValueUpdate(DynamicValueEvent event) {
 		// ... forward the value
-		doForwardValue(event.getValue(), event.getTimestamp());
+		doForwardValue2(event, event.getTimestamp());
 
 		// ... forward an additional "timestamp" characteristic
 		doForwardCharacteristic(event.getTimestamp(), event.getTimestamp(), CharacteristicInfo.C_TIMESTAMP_INFO.getName());
