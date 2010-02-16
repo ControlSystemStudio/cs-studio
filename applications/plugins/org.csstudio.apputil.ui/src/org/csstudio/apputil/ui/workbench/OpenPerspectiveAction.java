@@ -1,18 +1,20 @@
 package org.csstudio.apputil.ui.workbench;
 
-import org.csstudio.apputil.ui.Activator;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 
-/** An action that opens a perspective.
+/** An action that opens or resets a perspective.
  *  @author Kay Kasemir
  */
 public class OpenPerspectiveAction extends Action
 {
+    /** ID of the Perspective to open */
     final private String ID;
     
     /** Construct the action for opening a perspective.
@@ -28,20 +30,30 @@ public class OpenPerspectiveAction extends Action
         this.ID = ID;
     }
     
-    @SuppressWarnings("nls")
     @Override
     public void run()
     {
+        final IWorkbench wb = PlatformUI.getWorkbench();
+        final IWorkbenchWindow window = wb.getActiveWorkbenchWindow();
+        final Shell shell = window.getShell();
         try
         {
-            final IWorkbench wb = PlatformUI.getWorkbench();
-            wb.showPerspective(ID, wb.getActiveWorkbenchWindow());
+            final IWorkbenchPage page = window.getActivePage();
+            final String current = page.getPerspective().getId();
+            if (current.equals(ID))
+            {
+                if (MessageDialog.openQuestion(shell,
+                        Messages.OpenPerspectiveReset,
+                        Messages.OpenPerspectiveResetQuestion))
+                    page.resetPerspective();
+            }
+            else
+                wb.showPerspective(ID, wb.getActiveWorkbenchWindow());
         }
         catch (Exception e)
         {
-            Activator.getInstance().getLog().log(
-                            new Status(IStatus.ERROR, Activator.ID,
-                                       "Cannot open perspective " + ID));
+            MessageDialog.openError(shell,
+                    "Error", "Cannot open perspective " + ID); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 }
