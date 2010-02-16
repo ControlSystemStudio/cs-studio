@@ -47,7 +47,7 @@ public class AAPI
     // AAPI settings
 	public static String AAPI_HOST = "krynfs.desy.de";
 
-	public static int AAPI_PORT	 = 4053;
+	public static int AAPI_PORT	 = 4059;
 	
 	public final static String dummyDescription = "AAPI server DESY Hamburg Germany";
 	
