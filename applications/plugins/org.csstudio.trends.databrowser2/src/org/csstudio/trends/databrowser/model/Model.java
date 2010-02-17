@@ -242,8 +242,12 @@ public class Model
         // If item is on a non-existing axis, create that axis
         while (item.getAxis() >= getAxisCount())
         {
-            final AxisConfig axis = new AxisConfig(
-                    NLS.bind(Messages.Plot_ValueAxisNameFMT, getAxisCount()+1));
+            final String name;
+            if (getAxisCount() == 0)
+                name = Messages.Plot_ValueAxisName;
+            else
+                name = NLS.bind(Messages.Plot_ValueAxisNameFMT, getAxisCount()+1);
+            final AxisConfig axis = new AxisConfig(name);
             if (item.getAxis() == getAxisCount())
                 axis.setColor(item.getColor());
             addAxis(axis);
