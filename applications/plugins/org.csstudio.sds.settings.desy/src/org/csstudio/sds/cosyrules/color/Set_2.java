@@ -22,7 +22,7 @@
  package org.csstudio.sds.cosyrules.color;
 
 import org.csstudio.sds.model.logic.IRule;
-import org.eclipse.swt.graphics.RGB;
+import org.csstudio.sds.model.properties.ColorUtil;
 
 /**
  * Color rule Set#2, translated from an ADL file.
@@ -54,55 +54,55 @@ public final class Set_2 implements IRule {
                 d = ((Long)  arguments[0]).doubleValue();
             }				
 			if (Math.abs(d-0.00)<0.00001) {
-				return new RGB(253,0,0);
+				return ColorUtil.toHex(253,0,0);
 			}
 			if (Math.abs(d-1.00)<0.00001) {
-				return new RGB(130,4,0);
+				return ColorUtil.toHex(130,4,0);
 			}
 			if (Math.abs(d-2.00)<0.00001) {
-				return new RGB(30,187,0);
+				return ColorUtil.toHex(30,187,0);
 			}
 			if (Math.abs(d-3.00)<0.00001) {
-				return new RGB(33,108,0);
+				return ColorUtil.toHex(33,108,0);
 			}
 			if (Math.abs(d-4.00)<0.00001) {
-				return new RGB(235,241,181);
+				return ColorUtil.toHex(235,241,181);
 			}
 			if (Math.abs(d-5.00)<0.00001) {
-				return new RGB(251,243,74);
+				return ColorUtil.toHex(251,243,74);
 			}
 			if (Math.abs(d-6.00)<0.00001) {
-				return new RGB(42,99,228);
+				return ColorUtil.toHex(42,99,228);
 			}
 			if (Math.abs(d-7.00)<0.00001) {
-				return new RGB(10,0,184);
+				return ColorUtil.toHex(10,0,184);
 			}
 			if (Math.abs(d-8.00)<0.00001) {
-				return new RGB(199,187,109);
+				return ColorUtil.toHex(199,187,109);
 			}
 			if (Math.abs(d-9.00)<0.00001) {
-				return new RGB(164,126,60);
+				return ColorUtil.toHex(164,126,60);
 			}
 			if (Math.abs(d-10.00)<0.00001) {
-				return new RGB(164,170,255);
+				return ColorUtil.toHex(164,170,255);
 			}
 			if (Math.abs(d-11.00)<0.00001) {
-				return new RGB(106,115,193);
+				return ColorUtil.toHex(106,115,193);
 			}
 			if (Math.abs(d-12.00)<0.00001) {
-				return new RGB(238,182,43);
+				return ColorUtil.toHex(238,182,43);
 			}
 			if (Math.abs(d-13.00)<0.00001) {
-				return new RGB(225,144,21);
+				return ColorUtil.toHex(225,144,21);
 			}
 			if (Math.abs(d-14.00)<0.00001) {
-				return new RGB(187,187,187);
+				return ColorUtil.toHex(187,187,187);
 			}
 			if (Math.abs(d-15.00)<0.00001) {
-				return new RGB(0,0,0);
+				return ColorUtil.toHex(0,0,0);
 			}
 		}
 
-		return new RGB(0,0,0);
+		return ColorUtil.toHex(0,0,0);
 	}
 }

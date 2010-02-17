@@ -104,7 +104,7 @@ public class ThumbWheelModel extends AbstractWidgetModel {
 
 		addProperty(PROP_INTERNAL_FRAME_COLOR, new ColorProperty(
 				"Internal frame color", WidgetPropertyCategory.Display,
-				ColorConstants.black.getRGB()));
+				"#000000"));
 
 		addProperty(PROP_INTERNAL_FRAME_THICKNESS, new IntegerProperty(
 				"Internal frame thickness", WidgetPropertyCategory.Display, 0));
@@ -151,8 +151,8 @@ public class ThumbWheelModel extends AbstractWidgetModel {
 		return getProperty(PROP_INTERNAL_FRAME_THICKNESS).getPropertyValue();
 	}
 
-	public RGB getInternalFrameColor() {
-		return getProperty(PROP_INTERNAL_FRAME_COLOR).getPropertyValue();
+	public ColorProperty getInternalFrameColor() {
+		return (ColorProperty) getProperty(PROP_INTERNAL_FRAME_COLOR);
 	}
 
 	public double getMin() {
@@ -167,8 +167,8 @@ public class ThumbWheelModel extends AbstractWidgetModel {
 		getProperty(PROP_VALUE).setManualValue(val);
 	}
 
-	public RGB getInternalBorderColor() {
-		return getProperty(PROP_INTERNAL_FRAME_COLOR).getPropertyValue();
+	public ColorProperty getInternalBorderColor() {
+		return (ColorProperty) getProperty(PROP_INTERNAL_FRAME_COLOR);
 	}
 
 	public int getInternalBorderWidth() {

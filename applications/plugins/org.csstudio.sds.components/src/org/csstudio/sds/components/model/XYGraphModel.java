@@ -27,7 +27,7 @@ public class XYGraphModel extends AbstractWidgetModel {
 		addProperty(PROP_TRANSPARENT, new BooleanProperty("Transparent", WidgetPropertyCategory.Display, true));
 		addProperty(PROP_SHOW_TITLE, new BooleanProperty("Show Title", WidgetPropertyCategory.Display, false));
 		addProperty(PROP_TITLE, new StringProperty("Title", WidgetPropertyCategory.Display, ""));
-		addProperty(PROP_TITLE_COLOR, new ColorProperty("Title Color", WidgetPropertyCategory.Display, new RGB(0,0,0)));
+		addProperty(PROP_TITLE_COLOR, new ColorProperty("Title Color", WidgetPropertyCategory.Display, "#000000"));
 		addProperty(PROP_TITLE_FONT, new FontProperty("Title Font", WidgetPropertyCategory.Display, new FontData("Arial", 8, SWT.NONE)));
 		addProperty(PROP_SHOW_LEGEND, new BooleanProperty("Show Legend", WidgetPropertyCategory.Display, false));
 	}

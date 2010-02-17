@@ -48,9 +48,9 @@ public final class BargraphEditPart extends AbstractWidgetEditPart {
 		bargraph.setFill(model.getFillLevel());
 		bargraph.setOrientation(model.getOrientation());
 		// Colors
-		bargraph.setDefaultFillColor(model.getDefaultFillColor());
+		bargraph.setDefaultFillColor(getRgb(model.getDefaultFillColor()));
 		bargraph.setBorderColor(getRgb(model.getBorderColor()));
-		bargraph.setFillBackgroundColor(model.getFillbackgroundColor());
+		bargraph.setFillBackgroundColor(getRgb(model.getFillbackgroundColor()));
 		// Levels
 		bargraph.setMinimum(model.getMinimum());
 		bargraph.setLoloLevel(model.getLoloLevel());
@@ -183,7 +183,7 @@ public final class BargraphEditPart extends AbstractWidgetEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				RefreshableBargraphFigure bargraph = (RefreshableBargraphFigure) refreshableFigure;
-				bargraph.setDefaultFillColor((RGB) newValue);
+				bargraph.setDefaultFillColor(getRgb((String) newValue));
 				return true;
 			}
 		};
@@ -195,7 +195,7 @@ public final class BargraphEditPart extends AbstractWidgetEditPart {
 		            final Object newValue,
 		            final IFigure refreshableFigure) {
 		        RefreshableBargraphFigure bargraph = (RefreshableBargraphFigure) refreshableFigure;
-		        bargraph.setFillBackgroundColor((RGB) newValue);
+		        bargraph.setFillBackgroundColor(getRgb((String)newValue));
 		        return true;
 		    }
 		};

@@ -25,7 +25,7 @@
 package org.csstudio.sds.cosyrules.color;
 
 import org.csstudio.sds.model.logic.IRule;
-import org.eclipse.swt.graphics.RGB;
+import org.csstudio.sds.model.properties.ColorUtil;
 
 /**
  * @author hrickens
@@ -57,16 +57,16 @@ public class DefaultEpicsAlarmForeground implements IRule{
                  serverity = ((Long)  arguments[0]).doubleValue();
              }
              if (serverity==2) {                            //Major - RED
-                 return new RGB(205,0,0);
+                 return ColorUtil.toHex(205,0,0);
              }else if (serverity==1) {                      //Minor - Orange
-                 return new RGB(255,127,0);
+                 return ColorUtil.toHex(255,127,0);
              }else if (serverity==0) {                      //No Alarm - Green
-                 return new RGB(0,205,0);
+                 return ColorUtil.toHex(0,205,0);
              }else if (serverity==3) {                     //Invalid - White
-                 return new RGB(0,178,238);
+                 return ColorUtil.toHex(0,178,238);
              }
          }
          System.out.println(arguments + "\r\n " + arguments[0]);
-         return new RGB(138,43,226);    }
+         return ColorUtil.toHex(138,43,226);    }
 
 }

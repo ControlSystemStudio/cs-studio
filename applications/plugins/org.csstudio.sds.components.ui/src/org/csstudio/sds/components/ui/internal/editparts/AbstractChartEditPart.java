@@ -22,7 +22,6 @@
 
 package org.csstudio.sds.components.ui.internal.editparts;
 
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.components.model.AbstractChartModel;
 import org.csstudio.sds.components.model.BargraphModel;
 import org.csstudio.sds.components.model.WaveformModel;
@@ -55,7 +54,7 @@ abstract class AbstractChartEditPart extends AbstractWidgetEditPart {
 			final AbstractChartFigure figure, final AbstractChartModel model) {
 		figure.setAliases(model.getAllInheritedAliases());
 		for (int i = 0; i < model.numberOfDataSeries(); i++) {
-			figure.setPlotColor(i, model.getPlotColor(i));
+			figure.setPlotColor(i, getRgb(model.getPlotColorProperty(i)));
 		}
 		figure.setMin(model.getMin());
 		figure.setMax(model.getMax());
@@ -63,7 +62,7 @@ abstract class AbstractChartEditPart extends AbstractWidgetEditPart {
 		figure.setShowScale(model.getShowAxes());
 		figure.setShowValues(model.isLabeledTicksEnabled());
 		figure.setShowGridLines(model.getShowGridLines());
-		figure.setGridLinesColor(model.getGridLineColor());
+		figure.setGridLinesColor(getRgb(model.getGridLineColor()));
 		figure.setLineChart(model.isLineChart());
 		figure.setGraphLineWidth(model.getPlotLineWidth());
 		figure.setBackgroundColor(getColor(model.getBackgroundColor()));
@@ -284,7 +283,7 @@ abstract class AbstractChartEditPart extends AbstractWidgetEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				AbstractChartFigure figure = (AbstractChartFigure) refreshableFigure;
-				figure.setGridLinesColor((RGB) newValue);
+				figure.setGridLinesColor(getRgb((String)newValue));
 				return true;
 			}
 		};
@@ -316,7 +315,7 @@ abstract class AbstractChartEditPart extends AbstractWidgetEditPart {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
 				AbstractChartFigure figure = (AbstractChartFigure) refreshableFigure;
-				figure.setPlotColor(_index, (RGB) newValue);
+				figure.setPlotColor(_index, getRgb((String) newValue));
 				return true;
 			}
 		}

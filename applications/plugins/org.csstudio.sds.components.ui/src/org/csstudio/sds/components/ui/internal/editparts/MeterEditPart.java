@@ -27,7 +27,6 @@ import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.graphics.RGB;
 
 /**
  * The controller.
@@ -56,7 +55,7 @@ public final class MeterEditPart extends AbstractWidgetEditPart {
 		figure.setAngle(model.getAngle());
 		figure.setAliases(model.getAliases());
 		figure.setInnerAngle(model.getInnerAngle());
-		figure.setNeedleColor(model.getNeedleColor());
+		figure.setNeedleColor(getRgb(model.getNeedleColor()));
 		figure.setVisibleRadius(model.getVisibleRadius());
 		figure.setScaleRadius(model.getScaleRadius());
 		figure.setMinorStep(model.getMinorStep());
@@ -64,16 +63,16 @@ public final class MeterEditPart extends AbstractWidgetEditPart {
 		figure.setMinValue(model.getMinValue());
 		figure.setMaxValue(model.getMaxValue());
 		figure.setValue(model.getValue());
-		figure.setScaleColor(model.getScaleColor());
+		figure.setScaleColor(getRgb(model.getScaleColor()));
 		figure.setScaleWidth(model.getScaleWidth());
 		figure.setTextRadius(model.getTextRadius());
 		figure.setTransparent(model.getTransparent());
 		
-		figure.setMColor(model.getMColor());
-		figure.setLOLOColor(model.getLOLOColor());
-		figure.setLOColor(model.getLOColor());
-		figure.setHIColor(model.getHIColor());
-		figure.setHIHIColor(model.getHIHIColor());
+		figure.setMColor(getRgb(model.getMColor()));
+		figure.setLOLOColor(getRgb(model.getLOLOColor()));
+		figure.setLOColor(getRgb(model.getLOColor()));
+		figure.setHIColor(getRgb(model.getHIColor()));
+		figure.setHIHIColor(getRgb(model.getHIHIColor()));
 		
 		figure.setMBound(model.getMBound());
 		figure.setLOLOBound(model.getLOLOBound());
@@ -99,7 +98,7 @@ public final class MeterEditPart extends AbstractWidgetEditPart {
 			public boolean handleChange(final Object oldValue, final Object newValue,
 					final IFigure figure) {
 				RefreshableMeterFigure meterFigure = (RefreshableMeterFigure) figure;
-				meterFigure.setNeedleColor((RGB) newValue);
+				meterFigure.setNeedleColor(getRgb((String) newValue));
 				return true;
 			}
 		};
@@ -110,7 +109,7 @@ public final class MeterEditPart extends AbstractWidgetEditPart {
 			public boolean handleChange(final Object oldValue, final Object newValue,
 					final IFigure figure) {
 				RefreshableMeterFigure meterFigure = (RefreshableMeterFigure) figure;
-				meterFigure.setScaleColor((RGB) newValue);
+				meterFigure.setScaleColor(getRgb((String) newValue));
 				return true;
 			}
 		};
@@ -121,7 +120,7 @@ public final class MeterEditPart extends AbstractWidgetEditPart {
 			public boolean handleChange(final Object oldValue, final Object newValue,
 					final IFigure figure) {
 				RefreshableMeterFigure meterFigure = (RefreshableMeterFigure) figure;
-				meterFigure.setMColor((RGB) newValue);
+				meterFigure.setMColor(getRgb((String) newValue));
 				return true;
 			}
 		};
@@ -132,7 +131,7 @@ public final class MeterEditPart extends AbstractWidgetEditPart {
 			public boolean handleChange(final Object oldValue, final Object newValue,
 					final IFigure figure) {
 				RefreshableMeterFigure meterFigure = (RefreshableMeterFigure) figure;
-				meterFigure.setLOLOColor((RGB) newValue);
+				meterFigure.setLOLOColor(getRgb((String) newValue));
 				return true;
 			}
 		};
@@ -143,7 +142,7 @@ public final class MeterEditPart extends AbstractWidgetEditPart {
 			public boolean handleChange(final Object oldValue, final Object newValue,
 					final IFigure figure) {
 				RefreshableMeterFigure meterFigure = (RefreshableMeterFigure) figure;
-				meterFigure.setLOColor((RGB) newValue);
+				meterFigure.setLOColor(getRgb((String) newValue));
 				return true;
 			}
 		};
@@ -154,7 +153,7 @@ public final class MeterEditPart extends AbstractWidgetEditPart {
 			public boolean handleChange(final Object oldValue, final Object newValue,
 					final IFigure figure) {
 				RefreshableMeterFigure meterFigure = (RefreshableMeterFigure) figure;
-				meterFigure.setHIColor((RGB) newValue);
+				meterFigure.setHIColor(getRgb((String) newValue));
 				return true;
 			}
 		};
@@ -165,7 +164,7 @@ public final class MeterEditPart extends AbstractWidgetEditPart {
 			public boolean handleChange(final Object oldValue, final Object newValue,
 					final IFigure figure) {
 				RefreshableMeterFigure meterFigure = (RefreshableMeterFigure) figure;
-				meterFigure.setHIHIColor((RGB) newValue);
+				meterFigure.setHIHIColor(getRgb((String) newValue));
 				return true;
 			}
 		};

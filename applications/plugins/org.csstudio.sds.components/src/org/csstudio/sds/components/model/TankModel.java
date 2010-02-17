@@ -25,7 +25,7 @@ public class TankModel extends AbstractMarkedWidgetModel{
 	
 	
 	/** The default value of the default fill color property. */
-	private static final RGB DEFAULT_FILL_COLOR = new RGB(0,0,255);
+	private static final String DEFAULT_FILL_COLOR = "#0000ff";
 	
 	/** The default value of the height property. */	
 	private static final int DEFAULT_HEIGHT = 200;
@@ -36,7 +36,7 @@ public class TankModel extends AbstractMarkedWidgetModel{
 	/**
 	 * The default value of the fillbackground color property. 
 	 */
-	private static final RGB DEFAULT_FILLBACKGROUND_COLOR = new RGB(192, 192, 192);
+	private static final String DEFAULT_FILLBACKGROUND_COLOR = "#C0C0C0";
 	
 	/**
 	 * The ID of this widget model.
@@ -45,7 +45,7 @@ public class TankModel extends AbstractMarkedWidgetModel{
 	
 	public TankModel() {
 		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-		setForegroundColor(new RGB(0,0,0));
+		setForegroundColor("#000000");
 	}	
 
 	@Override
@@ -61,8 +61,8 @@ public class TankModel extends AbstractMarkedWidgetModel{
 		addProperty(PROP_FILLBACKGROUND_COLOR, new ColorProperty("Color Fillbackground",
 				WidgetPropertyCategory.Display,DEFAULT_FILLBACKGROUND_COLOR));
 		
-		setPropertyValue(PROP_LO_COLOR, new RGB(255, 128, 0));
-		setPropertyValue(PROP_HI_COLOR, new RGB(255, 128, 0));		
+		setPropertyValue(PROP_LO_COLOR, "#FF8000");
+		setPropertyValue(PROP_HI_COLOR, "#FF8000");		
 	}
 	
 	/**
@@ -85,8 +85,8 @@ public class TankModel extends AbstractMarkedWidgetModel{
 	/**
 	 * @return the fill color
 	 */
-	public RGB getFillColor() {
-		return (RGB) getProperty(PROP_FILL_COLOR).getPropertyValue();
+	public ColorProperty getFillColor() {
+		return (ColorProperty) getProperty(PROP_FILL_COLOR);
 	}	
 	
 	/**
@@ -101,8 +101,8 @@ public class TankModel extends AbstractMarkedWidgetModel{
 	 * Gets the RGB for fillbackground.
 	 * @return The fillbackground color
 	 */
-	public RGB getFillbackgroundColor() {
-		return (RGB) getProperty(PROP_FILLBACKGROUND_COLOR).getPropertyValue();
+	public ColorProperty getFillbackgroundColor() {
+		return (ColorProperty) getProperty(PROP_FILLBACKGROUND_COLOR);
 	}
 	
 }

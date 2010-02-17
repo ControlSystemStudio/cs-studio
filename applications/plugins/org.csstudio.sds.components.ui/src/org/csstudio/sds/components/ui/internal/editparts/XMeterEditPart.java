@@ -25,7 +25,7 @@ public final class XMeterEditPart extends AbstractMarkedWidgetEditPart {
 		RefreshableXMeterFigure xMeter = new RefreshableXMeterFigure();
 		
 		initializeCommonFigureProperties(xMeter, model);		
-		xMeter.setNeedleColor((model.getNeedleColor()));
+		xMeter.setNeedleColor(getRgb(model.getNeedleColor()));
 		xMeter.setGradient(model.isRampGradient());
 		
 		return xMeter;
@@ -45,7 +45,7 @@ public final class XMeterEditPart extends AbstractMarkedWidgetEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				RefreshableXMeterFigure xMeter = (RefreshableXMeterFigure) refreshableFigure;
-				xMeter.setNeedleColor((RGB) newValue);
+				xMeter.setNeedleColor(getRgb((String) newValue));
 				return true;
 			}
 		};

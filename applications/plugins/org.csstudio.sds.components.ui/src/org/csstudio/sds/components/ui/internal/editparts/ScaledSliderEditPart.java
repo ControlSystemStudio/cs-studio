@@ -26,10 +26,10 @@ public final class ScaledSliderEditPart extends AbstractMarkedWidgetEditPart {
 		ScaledSliderFigure slider = new ScaledSliderFigure();
 		
 		initializeCommonFigureProperties(slider, model);		
-		slider.setFillColor(model.getFillColor());
+		slider.setFillColor(getRgb(model.getFillColor()));
 		slider.setEffect3D(model.isEffect3D());	
-		slider.setFillBackgroundColor(model.getFillbackgroundColor());
-		slider.setThumbColor(model.getThumbColor());
+		slider.setFillBackgroundColor(getRgb(model.getFillbackgroundColor()));
+		slider.setThumbColor(getRgb(model.getThumbColor()));
 		slider.setHorizontal(model.isHorizontal());
 		slider.setIncrement(model.getIncrement());
 		slider.addSliderListener(new ScaledSliderFigure.IScaledSliderListener() {
@@ -58,7 +58,7 @@ public final class ScaledSliderEditPart extends AbstractMarkedWidgetEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				ScaledSliderFigure slider = (ScaledSliderFigure) refreshableFigure;
-				slider.setFillColor((RGB) newValue);
+				slider.setFillColor(getRgb((String) newValue));
 				return true;
 			}
 		};
@@ -70,7 +70,7 @@ public final class ScaledSliderEditPart extends AbstractMarkedWidgetEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				ScaledSliderFigure slider = (ScaledSliderFigure) refreshableFigure;
-				slider.setFillBackgroundColor((RGB) newValue);
+				slider.setFillBackgroundColor(getRgb((String) newValue));
 				return true;
 			}
 		};
@@ -82,7 +82,7 @@ public final class ScaledSliderEditPart extends AbstractMarkedWidgetEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				ScaledSliderFigure slider = (ScaledSliderFigure) refreshableFigure;
-				slider.setThumbColor((RGB) newValue);
+				slider.setThumbColor(getRgb((String) newValue));
 				return true;
 			}
 		};

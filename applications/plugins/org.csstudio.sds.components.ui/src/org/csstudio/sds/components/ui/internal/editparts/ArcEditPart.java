@@ -61,7 +61,7 @@ public final class ArcEditPart extends AbstractWidgetEditPart {
 		figure.setAngle(model.getAngle());
 		figure.setLineWidth(model.getLineWidth());
 		figure.setFill(model.getFill());
-		figure.setFillColor(model.getFillColor());
+		figure.setFillColor(getRgb(model.getFillColor()));
 		
 		return figure;
 	}
@@ -75,7 +75,7 @@ public final class ArcEditPart extends AbstractWidgetEditPart {
 			public boolean handleChange(final Object oldValue, final Object newValue,
 					final IFigure figure) {
 				RefreshableArcFigure arcFigure = (RefreshableArcFigure) figure;
-				arcFigure.setBorderColor((RGB)newValue);
+				arcFigure.setBorderColor(getRgb((String) newValue));
 				return true;
 			}
 		};
@@ -86,7 +86,7 @@ public final class ArcEditPart extends AbstractWidgetEditPart {
 			public boolean handleChange(final Object oldValue, final Object newValue,
 					final IFigure figure) {
 				RefreshableArcFigure arcFigure = (RefreshableArcFigure) figure;
-				arcFigure.setFillColor((RGB)newValue);
+				arcFigure.setFillColor(getRgb((String)newValue));
 				return true;
 			}
 		};

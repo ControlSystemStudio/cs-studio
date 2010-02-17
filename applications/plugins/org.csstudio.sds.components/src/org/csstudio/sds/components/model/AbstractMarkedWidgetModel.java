@@ -4,7 +4,6 @@ import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.properties.BooleanProperty;
 import org.csstudio.sds.model.properties.ColorProperty;
 import org.csstudio.sds.model.properties.DoubleProperty;
-import org.eclipse.swt.graphics.RGB;
 
 
 /**
@@ -60,13 +59,13 @@ public abstract class AbstractMarkedWidgetModel extends AbstractScaledWidgetMode
 	private static final double[] DEFAULT_LEVELS = new double[]{10, 20, 80, 90};	
 	
 	/** The default color of the lolo color property. */
-	private static final RGB DEFAULT_LOLO_COLOR = new RGB(255,0,0);
+	private static final String DEFAULT_LOLO_COLOR = "#ff0000";
 	/** The default color of the lo color property. */
-	private static final RGB DEFAULT_LO_COLOR = new RGB(255, 255 ,0);
+	private static final String DEFAULT_LO_COLOR = "#ffff00";
 	/** The default color of the hi color property. */
-	private static final RGB DEFAULT_HI_COLOR = new RGB(255, 255,0);
+	private static final String DEFAULT_HI_COLOR = "#ffff00";
 	/** The default color of the hihi color property. */
-	private static final RGB DEFAULT_HIHI_COLOR = new RGB(255,0,0);
+	private static final String DEFAULT_HIHI_COLOR = "#ff0000";
 	
 
 	@Override
@@ -145,27 +144,27 @@ public abstract class AbstractMarkedWidgetModel extends AbstractScaledWidgetMode
 	/**
 	 * @return the lolo color
 	 */
-	public RGB getLoloColor() {
-		return (RGB) getProperty(PROP_LOLO_COLOR).getPropertyValue();
+	public ColorProperty getLoloColor() {
+		return (ColorProperty) getProperty(PROP_LOLO_COLOR);
 	}	
 	
 	/**
 	 * @return the lo color
 	 */
-	public RGB getLoColor() {
-		return (RGB) getProperty(PROP_LO_COLOR).getPropertyValue();
+	public ColorProperty getLoColor() {
+		return (ColorProperty) getProperty(PROP_LO_COLOR);
 	}	
 	/**
 	 * @return the hi color
 	 */
-	public RGB getHiColor() {
-		return (RGB) getProperty(PROP_HI_COLOR).getPropertyValue();
+	public ColorProperty getHiColor() {
+		return (ColorProperty) getProperty(PROP_HI_COLOR);
 	}	
 	/**
 	 * @return the hihi color
 	 */
-	public RGB getHihiColor() {
-		return (RGB) getProperty(PROP_HIHI_COLOR).getPropertyValue();
+	public ColorProperty getHihiColor() {
+		return (ColorProperty) getProperty(PROP_HIHI_COLOR);
 	}	
 
 	

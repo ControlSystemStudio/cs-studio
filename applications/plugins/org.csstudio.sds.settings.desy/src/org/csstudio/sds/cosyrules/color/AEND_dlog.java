@@ -22,7 +22,7 @@
  package org.csstudio.sds.cosyrules.color;
 
 import org.csstudio.sds.model.logic.IRule;
-import org.eclipse.swt.graphics.RGB;
+import org.csstudio.sds.model.properties.ColorUtil;
 
 /**
  * Color rule AEND_dlog, translated from an ADL file.
@@ -54,22 +54,22 @@ public final class AEND_dlog implements IRule {
                 d = ((Long)  arguments[0]).doubleValue();
             }
 			if (Math.abs(d-0.00)<0.00001) {
-				return new RGB(253,0,0);
+				return ColorUtil.toHex(253,0,0);
 			}
 			if (Math.abs(d-1.00)<0.00001) {
-				return new RGB(42,99,228);
+				return ColorUtil.toHex(42,99,228);
 			}
 			if (Math.abs(d-2.00)<0.00001) {
-				return new RGB(30,187,0);
+				return ColorUtil.toHex(30,187,0);
 			}
 			if (d>=3.00 && d<=15.00) {
-				return new RGB(249,218,60);
+				return ColorUtil.toHex(249,218,60);
 			}
 			if (Math.abs(d-16.00)<0.00001) {
-				return new RGB(255,255,255);
+				return ColorUtil.toHex(255,255,255);
 			}
 		}
 
-		return new RGB(0,0,0);
+		return ColorUtil.toHex(0,0,0);
 	}
 }

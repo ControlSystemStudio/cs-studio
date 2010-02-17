@@ -43,10 +43,10 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
 		figure.setShowHi(model.isShowHi());
 		figure.setShowHihi(model.isShowHihi());
 		
-		figure.setLoloColor(model.getLoloColor());
-		figure.setLoColor(model.getLoColor());
-		figure.setHiColor(model.getHiColor());
-		figure.setHihiColor(model.getHihiColor());
+		figure.setLoloColor(getRgb(model.getLoloColor()));
+		figure.setLoColor(getRgb(model.getLoColor()));
+		figure.setHiColor(getRgb(model.getHiColor()));
+		figure.setHihiColor(getRgb(model.getHihiColor()));
 		
 		
 	}	
@@ -175,7 +175,7 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				AbstractMarkedWidgetFigure figure = (AbstractMarkedWidgetFigure) refreshableFigure;
-				figure.setLoloColor((RGB) newValue);
+				figure.setLoloColor(getRgb((String) newValue));
 				return true;
 			}
 		};
@@ -187,7 +187,7 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				AbstractMarkedWidgetFigure figure = (AbstractMarkedWidgetFigure) refreshableFigure;
-				figure.setLoColor((RGB) newValue);
+				figure.setLoColor(getRgb((String)newValue));
 				return true;
 			}
 		};
@@ -199,7 +199,7 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				AbstractMarkedWidgetFigure figure = (AbstractMarkedWidgetFigure) refreshableFigure;
-				figure.setHiColor((RGB) newValue);
+				figure.setHiColor(getRgb((String)newValue));
 				return true;
 			}
 		};
@@ -211,7 +211,7 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				AbstractMarkedWidgetFigure figure = (AbstractMarkedWidgetFigure) refreshableFigure;
-				figure.setHihiColor((RGB) newValue);
+				figure.setHihiColor(getRgb((String)newValue));
 				return true;
 			}
 		};
@@ -219,5 +219,6 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
 		
 		
 	}
+
 
 }

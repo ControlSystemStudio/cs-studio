@@ -55,8 +55,8 @@ public class BooleanSwitchModel extends AbstractWidgetModel {
 	protected void configureProperties() {
 		addProperty(PROP_3D_EFFECT, new BooleanProperty("3d effect", WidgetPropertyCategory.Display, true));
 		addProperty(PROP_VALUE, new DoubleProperty("Value", WidgetPropertyCategory.Behaviour, 0.0, 0.0, 1.0));
-		addProperty(PROP_OFF_COLOR, new ColorProperty("Off color", WidgetPropertyCategory.Display, new RGB(180,180,180)));
-		addProperty(PROP_ON_COLOR, new ColorProperty("On color", WidgetPropertyCategory.Display, new RGB(100,255,100)));
+		addProperty(PROP_OFF_COLOR, new ColorProperty("Off color", WidgetPropertyCategory.Display, "#B4B4B4"));
+		addProperty(PROP_ON_COLOR, new ColorProperty("On color", WidgetPropertyCategory.Display, "#64FF64"));
 		addProperty(PROP_LABEL_VISIBLE, new BooleanProperty("Show Label", WidgetPropertyCategory.Display, false));
 		addProperty(PROP_ON_LABEL, new StringProperty("On Label", WidgetPropertyCategory.Display, "ON"));
 		addProperty(PROP_OFF_LABEL, new StringProperty("Off Label", WidgetPropertyCategory.Display, "OFF"));
@@ -122,20 +122,12 @@ public class BooleanSwitchModel extends AbstractWidgetModel {
 		return getProperty(PROP_3D_EFFECT).getPropertyValue();
 	}
 
-	/**
-	 * Returns the color for the Off-state.
-	 * @return The {@link RGB} value of the color
-	 */
-	public RGB getOffColor() {
-		return getProperty(PROP_OFF_COLOR).getPropertyValue();
+	public ColorProperty getOffColor() {
+		return (ColorProperty) getProperty(PROP_OFF_COLOR);
 	}
 	
-	/**
-	 * Returns the color for the On-state.
-	 * @return The {@link RGB} value of the color
-	 */
-	public RGB getOnColor() {
-		return getProperty(PROP_ON_COLOR).getPropertyValue();
+	public ColorProperty getOnColor() {
+		return (ColorProperty) getProperty(PROP_ON_COLOR);
 	}
 	
 	/**

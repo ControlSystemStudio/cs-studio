@@ -157,10 +157,10 @@ public abstract class AbstractChartModel extends AbstractWidgetModel {
 		for (int i = 0; i < numberOfDataSeries(); i++) {
 			addProperty(plotColorPropertyId(i), new ColorProperty(
 					"Plot color #" + (i+1), WidgetPropertyCategory.Display,
-					new RGB(0, 0, 0)));
+					"#000000"));
 		}
 		addProperty(PROP_GRID_LINE_COLOR, new ColorProperty("Grid line color",
-				WidgetPropertyCategory.Display, new RGB(210, 210, 210)));
+				WidgetPropertyCategory.Display, "#D2D2D2"));
 		addProperty(PROP_MIN, new DoubleProperty(
 				"Minimum", WidgetPropertyCategory.Display, -100.0));
 		addProperty(PROP_MAX, new DoubleProperty(
@@ -276,8 +276,8 @@ public abstract class AbstractChartModel extends AbstractWidgetModel {
 	 * 
 	 * @return the color of the grid lines.
 	 */
-	public final RGB getGridLineColor() {
-		return (RGB) getProperty(PROP_GRID_LINE_COLOR).getPropertyValue();
+	public final ColorProperty getGridLineColor() {
+		return (ColorProperty) getProperty(PROP_GRID_LINE_COLOR);
 	}
 
 	/**
@@ -343,8 +343,8 @@ public abstract class AbstractChartModel extends AbstractWidgetModel {
 	 *            the index of the data series.
 	 * @return the color for the plot.
 	 */
-	public final RGB getPlotColor(final int index) {
-		return (RGB) getProperty(plotColorPropertyId(index)).getPropertyValue();
+	public final ColorProperty getPlotColorProperty(final int index) {
+		return (ColorProperty) getProperty(plotColorPropertyId(index));
 	}
 
 	/**

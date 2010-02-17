@@ -22,7 +22,7 @@
  package org.csstudio.sds.cosyrules.color;
 
 import org.csstudio.sds.model.logic.IRule;
-import org.eclipse.swt.graphics.RGB;
+import org.csstudio.sds.model.properties.ColorUtil;
 
 /**
  * Color rule BIN_0gn_1rt, translated from an ADL file.
@@ -54,13 +54,13 @@ public final class BIN_0gn_1rt implements IRule {
                 d = ((Long)  arguments[0]).doubleValue();
             }				
 			if (Math.abs(d-0.00)<0.00001) {
-				return new RGB(30,187,0);
+				return ColorUtil.toHex(30,187,0);
 			}
 			if (d>=1.00 && d<=65535.0) {
-				return new RGB(253,0,0);
+				return ColorUtil.toHex(253,0,0);
 			}
 		}
 
-		return new RGB(0,0,0);
+		return ColorUtil.toHex(0,0,0);
 	}
 }

@@ -97,26 +97,17 @@ public class SixteenBinaryBarModel extends AbstractWidgetModel {
 		addProperty(PROP_BITS_TO, new IntegerProperty(
 				"Bit range (to)", WidgetPropertyCategory.Behaviour, 15, 0, 31));
 
-		// Nasty way of getting the colors better say SWT way of getting the
-		// colors.
-		Display.getDefault().syncExec(new Runnable() {
-			public void run() {
-				addProperty(PROP_ON_COLOR, new ColorProperty("On color",
-						WidgetPropertyCategory.Display, Display.getDefault()
-								.getSystemColor(SWT.COLOR_GREEN).getRGB()));
-				addProperty(PROP_OFF_COLOR, new ColorProperty("Off color",
-						WidgetPropertyCategory.Display, Display.getDefault()
-								.getSystemColor(SWT.COLOR_GRAY).getRGB()));
-				addProperty(PROP_LABEL_COLOR, new ColorProperty(
-						"Label text color", WidgetPropertyCategory.Display,
-						Display.getDefault().getSystemColor(SWT.COLOR_BLACK)
-								.getRGB()));
-				addProperty(PROP_INTERNAL_FRAME_COLOR, new ColorProperty(
-						"Internal Frame Color", WidgetPropertyCategory.Display,
-						Display.getDefault().getSystemColor(SWT.COLOR_BLACK)
-								.getRGB()));
-			}
-		});
+		addProperty(PROP_ON_COLOR, new ColorProperty("On color",
+				WidgetPropertyCategory.Display, "#00ff00"));
+		addProperty(PROP_OFF_COLOR, new ColorProperty("Off color",
+				WidgetPropertyCategory.Display, "#c0c0c0"));
+		addProperty(PROP_LABEL_COLOR, new ColorProperty(
+				"Label text color", WidgetPropertyCategory.Display,
+				"#000000"));
+		addProperty(PROP_INTERNAL_FRAME_COLOR, new ColorProperty(
+				"Internal Frame Color", WidgetPropertyCategory.Display,
+				"#000000"));
+		
 	}
 
 	/**
@@ -131,12 +122,12 @@ public class SixteenBinaryBarModel extends AbstractWidgetModel {
 		return buffer.toString();
 	}
 
-	public RGB getOnColor() {
-		return getProperty(PROP_ON_COLOR).getPropertyValue();
+	public ColorProperty getOnColor() {
+		return (ColorProperty) getProperty(PROP_ON_COLOR);
 	}
 
-	public RGB getOffColor() {
-		return getProperty(PROP_OFF_COLOR).getPropertyValue();
+	public ColorProperty getOffColor() {
+		return (ColorProperty) getProperty(PROP_OFF_COLOR);
 	}
 
 	public FontData getLabelFont() {
@@ -159,12 +150,12 @@ public class SixteenBinaryBarModel extends AbstractWidgetModel {
 		return getProperty(PROP_INTERNAL_FRAME_THICKNESS).getPropertyValue();
 	}
 
-	public RGB getInternalFrameColor() {
-		return getProperty(PROP_INTERNAL_FRAME_COLOR).getPropertyValue();
+	public ColorProperty getInternalFrameColor() {
+		return (ColorProperty) getProperty(PROP_INTERNAL_FRAME_COLOR);
 	}
 
-	public RGB getLabelColor() {
-		return getProperty(PROP_LABEL_COLOR).getPropertyValue();
+	public ColorProperty getLabelColor() {
+		return (ColorProperty) getProperty(PROP_LABEL_COLOR);
 	}
 	
 	public int getBitRangeFrom() {

@@ -64,31 +64,6 @@ public final class BargraphEditPartTest {
 		assertTrue(figure instanceof RefreshableBargraphFigure);
 	}
 	
-	/**
-	 * Test method for
-	 * {@link org.csstudio.sds.components.ui.internal.editparts.BargraphEditPart#registerPropertyChangeHandlers()}.
-	 */
-	@Ignore("This test fails, see comment in the code")
-	@Test
-	public void testPropertyChangeHandler() {
-		Color fillColor = ((RefreshableBargraphFigure)_editPart.getFigure()).getDefaultFillColor();
-		RGB newRGB = new RGB(255,0,0);
-		// Test fails below: the color change is not applied because the
-		// PropertyChangeHandler which would apply the new color to the
-		// contained _fillRectangleFigure in the BargraphFigure is not
-		// registered.
-		// All the other EditPartTests only check whether the figure can be
-		// created, so I'm decativating this additional test for now.
-		((BargraphModel)_editPart.getModel()).setPropertyValue(BargraphModel.PROP_DEFAULT_FILL_COLOR, newRGB);
-		Color newColor = ((RefreshableBargraphFigure)_editPart.getFigure()).getDefaultFillColor();
-		assertTrue("Colors: "+fillColor+" | "+newColor,!fillColor.equals(newColor));
-		assertTrue(newColor.getRGB().equals(newRGB));
-		double oldFill = ((RefreshableBargraphFigure)_editPart.getFigure()).getFill();
-		double testFill = 99;
-		((BargraphModel)_editPart.getModel()).setPropertyValue(BargraphModel.PROP_FILL, Double.valueOf(testFill));
-		double newFill = ((RefreshableBargraphFigure)_editPart.getFigure()).getFill();
-		assertTrue("Value: "+oldFill+" | "+newFill, oldFill!=newFill);
-		assertTrue(testFill==newFill);
-	}
+	
 
 }

@@ -3,7 +3,6 @@ package org.csstudio.sds.components.model;
 import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.properties.BooleanProperty;
 import org.csstudio.sds.model.properties.ColorProperty;
-import org.eclipse.swt.graphics.RGB;
 
 
 /**
@@ -31,7 +30,7 @@ public class ThermometerModel extends AbstractMarkedWidgetModel{
 	
 	
 	/** The default value of the default fill color property. */
-	private static final RGB DEFAULT_FILL_COLOR = new RGB(255,0,0);
+	private static final String DEFAULT_FILL_COLOR = "#ff0000";
 	
 	/** The default value of the height property. */	
 	private static final int DEFAULT_HEIGHT = 200;
@@ -42,7 +41,7 @@ public class ThermometerModel extends AbstractMarkedWidgetModel{
 	/**
 	 * The default value of the fillbackground color property. 
 	 */
-	private static final RGB DEFAULT_FILLBACKGROUND_COLOR = new RGB(210,210,210);
+	private static final String DEFAULT_FILLBACKGROUND_COLOR = "#D2D2D2";
 	
 	/**
 	 * The ID of this widget model.
@@ -51,7 +50,7 @@ public class ThermometerModel extends AbstractMarkedWidgetModel{
 	
 	public ThermometerModel() {
 		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-		setForegroundColor(new RGB(0,0,0));
+		setForegroundColor("#000000");
 	}	
 
 	@Override
@@ -72,8 +71,8 @@ public class ThermometerModel extends AbstractMarkedWidgetModel{
 		addProperty(PROP_EFFECT3D, new BooleanProperty("3D Effect", 
 				WidgetPropertyCategory.Display, true));	
 		
-		setPropertyValue(PROP_LO_COLOR, new RGB(255, 128, 0));
-		setPropertyValue(PROP_HI_COLOR, new RGB(255, 128, 0));
+		setPropertyValue(PROP_LO_COLOR, "#FF8000");
+		setPropertyValue(PROP_HI_COLOR, "#FF8000");
 		
 	}
 	
@@ -97,8 +96,8 @@ public class ThermometerModel extends AbstractMarkedWidgetModel{
 	/**
 	 * @return the fill color
 	 */
-	public RGB getFillColor() {
-		return (RGB) getProperty(PROP_FILL_COLOR).getPropertyValue();
+	public ColorProperty getFillColor() {
+		return (ColorProperty) getProperty(PROP_FILL_COLOR);
 	}	
 	
 	/**
@@ -126,8 +125,8 @@ public class ThermometerModel extends AbstractMarkedWidgetModel{
 	 * Gets the RGB for fillbackground.
 	 * @return The fillbackground color
 	 */
-	public RGB getFillbackgroundColor() {
-		return (RGB) getProperty(PROP_FILLBACKGROUND_COLOR).getPropertyValue();
+	public ColorProperty getFillbackgroundColor() {
+		return (ColorProperty) getProperty(PROP_FILLBACKGROUND_COLOR);
 	}
 	
 }

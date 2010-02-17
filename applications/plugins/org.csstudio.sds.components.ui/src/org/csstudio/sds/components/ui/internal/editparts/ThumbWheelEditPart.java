@@ -64,7 +64,7 @@ public class ThumbWheelEditPart extends AbstractWidgetEditPart {
 		model.setWholePartDigits(logic.getIntegerWheels());
 		model.setDecimalPartDigits(logic.getDecimalWheels());
 		figure.setWheelFonts(model.getFont());
-		figure.setInternalBorderColor(model.getInternalBorderColor());
+		figure.setInternalBorderColor(getRgb(model.getInternalBorderColor()));
 		figure.setInternalBorderThickness(model.getInternalBorderWidth());
 
 		figure.addWheelListener(new WheelListener() {
@@ -220,7 +220,7 @@ public class ThumbWheelEditPart extends AbstractWidgetEditPart {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
 				RefreshableThumbWheelFigure figure = (RefreshableThumbWheelFigure) refreshableFigure;
-				figure.setInternalBorderColor((RGB) newValue);
+				figure.setInternalBorderColor(getRgb((String) newValue));
 				return true;
 			}
 		};

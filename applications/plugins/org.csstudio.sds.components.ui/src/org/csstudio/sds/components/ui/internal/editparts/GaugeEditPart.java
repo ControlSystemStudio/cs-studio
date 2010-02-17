@@ -25,7 +25,7 @@ public final class GaugeEditPart extends AbstractMarkedWidgetEditPart {
 		RefreshableGaugeFigure gauge = new RefreshableGaugeFigure();
 		
 		initializeCommonFigureProperties(gauge, model);		
-		gauge.setNeedleColor((model.getNeedleColor()));
+		gauge.setNeedleColor(getRgb(model.getNeedleColor()));
 		gauge.setEffect3D(model.isEffect3D());	
 		gauge.setGradient(model.isRampGradient());
 		
@@ -46,7 +46,7 @@ public final class GaugeEditPart extends AbstractMarkedWidgetEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				RefreshableGaugeFigure gauge = (RefreshableGaugeFigure) refreshableFigure;
-				gauge.setNeedleColor((RGB) newValue);
+				gauge.setNeedleColor(getRgb((String) newValue));
 				return true;
 			}
 		};

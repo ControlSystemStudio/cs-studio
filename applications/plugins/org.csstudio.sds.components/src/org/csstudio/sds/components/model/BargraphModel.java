@@ -28,7 +28,6 @@ import org.csstudio.sds.model.properties.BooleanProperty;
 import org.csstudio.sds.model.properties.ColorProperty;
 import org.csstudio.sds.model.properties.DoubleProperty;
 import org.csstudio.sds.model.properties.IntegerProperty;
-import org.eclipse.swt.graphics.RGB;
 
 /**
  * This class defines an bargraph widget model.
@@ -126,12 +125,12 @@ public final class BargraphModel extends AbstractWidgetModel {
 	/**
 	 * The default value of the default fill color property. 
 	 */
-	private static final RGB DEFAULT_FILL_COLOR = new RGB(0,0,255);
+	private static final String DEFAULT_FILL_COLOR = "#0000ff";
 	
 	/**
 	 * The default value of the fillbackground color property. 
 	 */
-	private static final RGB DEFAULT_FILLBACKGROUND_COLOR = new RGB(120,120,120);
+	private static final String DEFAULT_FILLBACKGROUND_COLOR = "#787878";
 	
 	/**
 	 * The default value of the show_value property. 
@@ -180,7 +179,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 				WidgetPropertyCategory.Behaviour, DEFAULT_FILL));
 		addProperty(PROP_ORIENTATION, new BooleanProperty("Horizontal Orientation", WidgetPropertyCategory.Behaviour, DEFAULT_ORIENTATION_HORIZONTAL));
 		//Colors
-		addProperty(PROP_DEFAULT_FILL_COLOR, new ColorProperty("Fill Color",WidgetPropertyCategory.Display,DEFAULT_FILL_COLOR));
+		addProperty(PROP_DEFAULT_FILL_COLOR, new ColorProperty("Fill Color",WidgetPropertyCategory.Display, DEFAULT_FILL_COLOR));
 		addProperty(PROP_FILLBACKGROUND_COLOR, new ColorProperty("Color Fillbackground",WidgetPropertyCategory.Display,DEFAULT_FILLBACKGROUND_COLOR));
 		//Levels
 		addProperty(PROP_MIN, new DoubleProperty("Minimum", WidgetPropertyCategory.Behaviour,DEFAULT_LEVELS[0]));
@@ -253,8 +252,8 @@ public final class BargraphModel extends AbstractWidgetModel {
 	 * Gets the RGB for the default fill color.
 	 * @return The default fill color
 	 */
-	public RGB getDefaultFillColor() {
-		return (RGB) getProperty(PROP_DEFAULT_FILL_COLOR).getPropertyValue();
+	public ColorProperty getDefaultFillColor() {
+		return (ColorProperty) getProperty(PROP_DEFAULT_FILL_COLOR);
 	}
 	
 //	/**
@@ -293,8 +292,8 @@ public final class BargraphModel extends AbstractWidgetModel {
 	 * Gets the RGB for fillbackground.
 	 * @return The fillbackground color
 	 */
-	public RGB getFillbackgroundColor() {
-		return (RGB) getProperty(PROP_FILLBACKGROUND_COLOR).getPropertyValue();
+	public ColorProperty getFillbackgroundColor() {
+		return (ColorProperty) getProperty(PROP_FILLBACKGROUND_COLOR);
 	}
 	
 	/**

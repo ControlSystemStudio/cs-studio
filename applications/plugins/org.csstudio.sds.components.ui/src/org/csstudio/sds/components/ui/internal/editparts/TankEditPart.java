@@ -25,9 +25,9 @@ public final class TankEditPart extends AbstractMarkedWidgetEditPart {
 		RefreshableTankFigure tank = new RefreshableTankFigure();
 		
 		initializeCommonFigureProperties(tank, model);		
-		tank.setFillColor(model.getFillColor());
+		tank.setFillColor(getRgb(model.getFillColor()));
 		tank.setEffect3D(model.isEffect3D());	
-		tank.setFillBackgroundColor(model.getFillbackgroundColor());
+		tank.setFillBackgroundColor(getRgb(model.getFillbackgroundColor()));
 		return tank;
 
 	}
@@ -45,7 +45,7 @@ public final class TankEditPart extends AbstractMarkedWidgetEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				RefreshableTankFigure tank = (RefreshableTankFigure) refreshableFigure;
-				tank.setFillColor((RGB) newValue);
+				tank.setFillColor(getRgb((String) newValue));
 				return true;
 			}
 		};
@@ -57,7 +57,7 @@ public final class TankEditPart extends AbstractMarkedWidgetEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				RefreshableTankFigure tank = (RefreshableTankFigure) refreshableFigure;
-				tank.setFillBackgroundColor((RGB) newValue);
+				tank.setFillBackgroundColor(getRgb((String) newValue));
 				return true;
 			}
 		};

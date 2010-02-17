@@ -5,7 +5,6 @@ import org.csstudio.sds.components.ui.internal.figures.KnobFigure;
 import org.csstudio.sds.ui.editparts.ExecutionMode;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.swt.graphics.RGB;
 
 /**
  * EditPart controller for the knob widget. The controller mediates between
@@ -26,9 +25,9 @@ public final class KnobEditPart extends AbstractMarkedWidgetEditPart {
 		KnobFigure knob = new KnobFigure();
 		
 		initializeCommonFigureProperties(knob, model);		
-		knob.setBulbColor(model.getKnobColor());
+		knob.setBulbColor(getRgb(model.getKnobColor()));
 		knob.setEffect3D(model.isEffect3D());	
-		knob.setThumbColor(model.getThumbColor());
+		knob.setThumbColor(getRgb(model.getThumbColor()));
 		knob.setValueLabelVisibility(model.isShowValueLabel());
 		knob.setGradient(model.isRampGradient());
 		knob.setIncrement(model.getIncrement());
@@ -57,7 +56,7 @@ public final class KnobEditPart extends AbstractMarkedWidgetEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				KnobFigure knob = (KnobFigure) refreshableFigure;
-				knob.setBulbColor((RGB)newValue);
+				knob.setBulbColor(getRgb((String)newValue));
 				return true;
 			}
 		};
@@ -70,7 +69,7 @@ public final class KnobEditPart extends AbstractMarkedWidgetEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				KnobFigure knob = (KnobFigure) refreshableFigure;
-				knob.setThumbColor((RGB) newValue);
+				knob.setThumbColor(getRgb((String) newValue));
 				return true;
 			}
 		};

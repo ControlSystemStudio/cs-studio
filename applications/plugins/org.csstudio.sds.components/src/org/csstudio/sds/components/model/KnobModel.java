@@ -35,7 +35,7 @@ public class KnobModel extends AbstractMarkedWidgetModel{
 	public static final String PROP_INCREMENT = "increment"; //$NON-NLS-1$
 	
 	/** The default value of the default knob color property. */
-	private static final RGB DEFAULT_KNOB_COLOR = new RGB(150,150,150);
+	private static final String DEFAULT_KNOB_COLOR = "#969669";
 	
 	/** The default value of the height property. */	
 	private static final int DEFAULT_HEIGHT = 173;
@@ -44,7 +44,7 @@ public class KnobModel extends AbstractMarkedWidgetModel{
 	private static final int DEFAULT_WIDTH = 173;
 	
 	/** The default value of the thumb color property. */
-	private static final RGB DEFAULT_THUMB_COLOR = new RGB(127, 127, 127);
+	private static final String DEFAULT_THUMB_COLOR = "#7F7F7F";
 	/**
 	 * The ID of this widget model.
 	 */
@@ -52,7 +52,7 @@ public class KnobModel extends AbstractMarkedWidgetModel{
 	
 	public KnobModel() {
 		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-		setForegroundColor(new RGB(0,0,0));
+		setForegroundColor("#000000");
 	}	
 
 	@Override
@@ -87,8 +87,8 @@ public class KnobModel extends AbstractMarkedWidgetModel{
 	/**
 	 * @return the knob color
 	 */
-	public RGB getKnobColor() {
-		return (RGB) getProperty(PROP_KNOB_COLOR).getPropertyValue();
+	public ColorProperty getKnobColor() {
+		return (ColorProperty) getProperty(PROP_KNOB_COLOR);
 	}	
 	
 	/**
@@ -109,8 +109,8 @@ public class KnobModel extends AbstractMarkedWidgetModel{
 	 * Gets the RGB for thumb.
 	 * @return The thumb color
 	 */
-	public RGB getThumbColor() {
-		return (RGB) getProperty(PROP_THUMB_COLOR).getPropertyValue();
+	public ColorProperty getThumbColor() {
+		return (ColorProperty) getProperty(PROP_THUMB_COLOR);
 	}
 	
 	/**

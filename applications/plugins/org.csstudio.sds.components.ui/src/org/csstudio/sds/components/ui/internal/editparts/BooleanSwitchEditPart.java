@@ -25,8 +25,8 @@ public class BooleanSwitchEditPart extends AbstractWidgetEditPart {
 		BoolSwitchFigure figure = new BoolSwitchFigure();
 		figure.setEffect3D(model.get3dEffect());
 		figure.setBooleanValue(model.getValue());
-		figure.setOffColor(model.getOffColor());
-		figure.setOnColor(model.getOnColor());
+		figure.setOffColor(getRgb(model.getOffColor()));
+		figure.setOnColor(getRgb(model.getOnColor()));
 		figure.setShowBooleanLabel(model.getShowLabels());
 		figure.setOnLabel(model.getOnLabel());
 		figure.setOffLabel(model.getOffLabel());
@@ -77,7 +77,7 @@ public class BooleanSwitchEditPart extends AbstractWidgetEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				BoolSwitchFigure switchFigure = (BoolSwitchFigure) refreshableFigure;
-				switchFigure.setOnColor((RGB) newValue);
+				switchFigure.setOnColor(getRgb((String) newValue));
 				return true;
 			}
 		};
@@ -89,7 +89,7 @@ public class BooleanSwitchEditPart extends AbstractWidgetEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				BoolSwitchFigure switchFigure = (BoolSwitchFigure) refreshableFigure;
-				switchFigure.setOffColor((RGB) newValue);
+				switchFigure.setOffColor(getRgb((String) newValue));
 				return true;
 			}
 		};

@@ -26,7 +26,6 @@ import java.util.Set;
 
 import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
-import org.eclipse.swt.graphics.RGB;
 
 /**
  * This initialization schema holds the property values of the EPICS control
@@ -57,18 +56,18 @@ public final class EpicsSchema extends AbstractControlSystemSchema {
 	}
 
 	@Override
-	protected RGB getDefaultBackgroundColor() {
-		return new RGB(230, 230, 230);
+	protected String getDefaultBackgroundColor() {
+		return "#E6E6E6";
 	}
 
 	@Override
-	protected RGB getDefaultErrorColor() {
-		return new RGB(255, 0, 0);
+	protected String getDefaultErrorColor() {
+		return "#ff0000";
 	}
 
 	@Override
-	protected RGB getDefaultForegroundColor() {
-		return new RGB(0, 0, 192);
+	protected String getDefaultForegroundColor() {
+		return "#0000C0";
 	}
 
 	@Override

@@ -92,7 +92,7 @@ public final class ArcModel extends AbstractWidgetModel {
 		addProperty(PROP_ANGLE, new IntegerProperty("Angle",WidgetPropertyCategory.Display,90,0,360));
 		addProperty(PROP_LINEWIDTH, new IntegerProperty("Line Width",WidgetPropertyCategory.Display,1));
 		addProperty(PROP_FILLED, new BooleanProperty("Filled",WidgetPropertyCategory.Display,false));
-		addProperty(PROP_FILLCOLOR, new ColorProperty("Fill Color",WidgetPropertyCategory.Display,new RGB(255,0,0)));
+		addProperty(PROP_FILLCOLOR, new ColorProperty("Fill Color",WidgetPropertyCategory.Display,"#ff0000"));
 	}
 	
 	/**
@@ -153,7 +153,7 @@ public final class ArcModel extends AbstractWidgetModel {
 	 * Returns the fill color of the arc.
 	 * @return The fill color of the arc
 	 */
-	public RGB getFillColor() {
-		return (RGB) getProperty(PROP_FILLCOLOR).getPropertyValue();
+	public ColorProperty getFillColor() {
+		return (ColorProperty) getProperty(PROP_FILLCOLOR);
 	}
 }

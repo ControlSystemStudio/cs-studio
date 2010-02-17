@@ -25,10 +25,10 @@ public final class ThermometerEditPart extends AbstractMarkedWidgetEditPart {
 		RefreshableThermoFigure thermometer = new RefreshableThermoFigure();
 		
 		initializeCommonFigureProperties(thermometer, model);		
-		thermometer.setFillColor(model.getFillColor());
+		thermometer.setFillColor(getRgb(model.getFillColor()));
 		thermometer.setFahrenheit(model.isFahrenheit());
 		thermometer.setShowBulb(model.isShowBulb());	
-		thermometer.setFillBackgroundColor(model.getFillbackgroundColor());
+		thermometer.setFillBackgroundColor(getRgb(model.getFillbackgroundColor()));
 		thermometer.setEffect3D(model.isEffect3D());
 		return thermometer;
 
@@ -47,7 +47,7 @@ public final class ThermometerEditPart extends AbstractMarkedWidgetEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				RefreshableThermoFigure thermometer = (RefreshableThermoFigure) refreshableFigure;
-				thermometer.setFillColor((RGB) newValue);
+				thermometer.setFillColor(getRgb((String) newValue));
 				return true;
 			}
 		};
@@ -59,7 +59,7 @@ public final class ThermometerEditPart extends AbstractMarkedWidgetEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				RefreshableThermoFigure thermometer = (RefreshableThermoFigure) refreshableFigure;
-				thermometer.setFillBackgroundColor((RGB) newValue);
+				thermometer.setFillBackgroundColor(getRgb((String) newValue));
 				return true;
 			}
 		};

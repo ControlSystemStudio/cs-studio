@@ -24,15 +24,15 @@ public class SixteenBinaryBarEditPart extends AbstractWidgetEditPart {
 		SixteenBinaryBarModel model = (SixteenBinaryBarModel) getWidgetModel();
 
 		final RefreshableSixteenBinaryBarFigure bar = new RefreshableSixteenBinaryBarFigure();
-		bar.setOnColor(model.getOnColor());
-		bar.setOffColor(model.getOffColor());
+		bar.setOnColor(getRgb(model.getOnColor()));
+		bar.setOffColor(getRgb(model.getOffColor()));
 		bar.setLabelFont(model.getLabelFont());
 		bar.setHorizontal(model.getHorizontal());
 		bar.setShowLabels(model.getShowLabels());
 		bar.setValue(model.getValue());
 		bar.setInternalBorderThickness(model.getInternalFrameThickness());
-		bar.setInternalBorderColor(model.getInternalFrameColor());
-		bar.setLabelColor(model.getLabelColor());
+		bar.setInternalBorderColor(getRgb(model.getInternalFrameColor()));
+		bar.setLabelColor(getRgb(model.getLabelColor()));
 		bar.setBitRangeFrom(model.getBitRangeFrom());
 		bar.setBitRangeTo(model.getBitRangeTo());
 		return bar;
@@ -94,7 +94,7 @@ public class SixteenBinaryBarEditPart extends AbstractWidgetEditPart {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
 				RefreshableSixteenBinaryBarFigure rectangle = (RefreshableSixteenBinaryBarFigure) refreshableFigure;
-				rectangle.setOnColor((RGB) newValue);
+				rectangle.setOnColor(getRgb((String) newValue));
 				return true;
 			}
 		};
@@ -105,7 +105,7 @@ public class SixteenBinaryBarEditPart extends AbstractWidgetEditPart {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
 				RefreshableSixteenBinaryBarFigure rectangle = (RefreshableSixteenBinaryBarFigure) refreshableFigure;
-				rectangle.setOffColor((RGB) newValue);
+				rectangle.setOffColor(getRgb((String) newValue));
 				return true;
 			}
 		};
@@ -128,7 +128,7 @@ public class SixteenBinaryBarEditPart extends AbstractWidgetEditPart {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
 				RefreshableSixteenBinaryBarFigure rectangle = (RefreshableSixteenBinaryBarFigure) refreshableFigure;
-				rectangle.setLabelColor((RGB) newValue);
+				rectangle.setLabelColor(getRgb((String) newValue));
 				return true;
 			}
 		};
@@ -140,7 +140,7 @@ public class SixteenBinaryBarEditPart extends AbstractWidgetEditPart {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
 				RefreshableSixteenBinaryBarFigure rectangle = (RefreshableSixteenBinaryBarFigure) refreshableFigure;
-				rectangle.setInternalBorderColor((RGB) newValue);
+				rectangle.setInternalBorderColor(getRgb((String) newValue));
 				return true;
 			}
 		};

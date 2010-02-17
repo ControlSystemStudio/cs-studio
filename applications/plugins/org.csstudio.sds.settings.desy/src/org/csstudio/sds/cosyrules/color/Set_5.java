@@ -22,7 +22,7 @@
  package org.csstudio.sds.cosyrules.color;
 
 import org.csstudio.sds.model.logic.IRule;
-import org.eclipse.swt.graphics.RGB;
+import org.csstudio.sds.model.properties.ColorUtil;
 
 /**
  * Color rule Set#5, translated from an ADL file.
@@ -54,19 +54,19 @@ public final class Set_5 implements IRule {
                 d = ((Long)  arguments[0]).doubleValue();
             }				
 			if (Math.abs(d-0.00)<0.00001) {
-				return new RGB(0,216,0);
+				return ColorUtil.toHex(0,216,0);
 			}
 			if (Math.abs(d-1.00)<0.00001) {
-				return new RGB(253,0,0);
+				return ColorUtil.toHex(253,0,0);
 			}
 			if (Math.abs(d-2.00)<0.00001) {
-				return new RGB(253,0,0);
+				return ColorUtil.toHex(253,0,0);
 			}
 			if (Math.abs(d-3.00)<0.00001) {
-				return new RGB(255,255,255);
+				return ColorUtil.toHex(255,255,255);
 			}
 		}
 
-		return new RGB(0,0,0);
+		return ColorUtil.toHex(0,0,0);
 	}
 }

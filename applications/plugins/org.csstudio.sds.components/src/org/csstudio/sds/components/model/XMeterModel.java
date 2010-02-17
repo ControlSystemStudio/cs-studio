@@ -19,7 +19,7 @@ public class XMeterModel extends AbstractMarkedWidgetModel{
 	public static final String PROP_RAMP_GRADIENT = "ramp_gradient"; //$NON-NLS-1$
 
 	/** The default value of the default fill color property. */
-	private static final RGB DEFAULT_NEEDLE_COLOR = new RGB(255,0,0);
+	private static final String DEFAULT_NEEDLE_COLOR = "#ff0000";
 	
 	/** The default value of the height property. */	
 	private static final int DEFAULT_HEIGHT = 200;
@@ -35,7 +35,7 @@ public class XMeterModel extends AbstractMarkedWidgetModel{
 	
 	public XMeterModel() {
 		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-		setForegroundColor(new RGB(0,0,0));
+		setForegroundColor("#000000");
 	}	
 
 	@Override
@@ -60,8 +60,8 @@ public class XMeterModel extends AbstractMarkedWidgetModel{
 	/**
 	 * @return the needle color
 	 */
-	public RGB getNeedleColor() {
-		return (RGB) getProperty(PROP_NEEDLE_COLOR).getPropertyValue();
+	public ColorProperty getNeedleColor() {
+		return (ColorProperty) getProperty(PROP_NEEDLE_COLOR);
 	}	
 	
 	/**
