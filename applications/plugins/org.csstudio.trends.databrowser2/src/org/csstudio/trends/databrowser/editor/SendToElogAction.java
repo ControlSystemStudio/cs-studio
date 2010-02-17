@@ -40,8 +40,7 @@ public class SendToElogAction extends SendToElogActionHelper
         final File tmp_file;
         try
         {
-            tmp_file = 
-                File.createTempFile("DataBrowser", "png");  //$NON-NLS-1$//$NON-NLS-2$
+            tmp_file = File.createTempFile("DataBrowser", ".png");  //$NON-NLS-1$//$NON-NLS-2$
             tmp_file.deleteOnExit();
         }
         catch (Exception ex)
