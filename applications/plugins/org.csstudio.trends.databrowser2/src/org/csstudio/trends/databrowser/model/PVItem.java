@@ -343,6 +343,9 @@ public class PVItem extends ModelItem implements PVListener, IProcessVariableWit
     public void pvDisconnected(PV pv)
     {
         current_value = null;
+        // In 'monitor' mode, mark in live sample buffer 
+        if (period <= 0)
+            logDisconnected();
     }
 
     // PVListener
