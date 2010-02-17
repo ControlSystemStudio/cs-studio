@@ -14,7 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import oracle.jdbc.driver.OracleTypes;
+import oracle.jdbc.OracleTypes;
 import oracle.sql.BLOB;
 
 import org.csstudio.logbook.ILogbook;
@@ -153,16 +153,13 @@ public class SNSLogbook implements ILogbook
       
       // If the image type cannot be found in the RDB, change it's file type to an attachment and look for the
       // extension as an attachment
-      if(fileTypeID==-1 && fileType.equals("I"));
+      if (fileTypeID==-1 && fileType.equals("I"))
       {
       	fileType="A";
       	fileTypeID = getFileTypeId(fileType, extension);
       }
-
-      // Create a Blob to store the attachment in.
-      final BLOB blob = BLOB.createTemporary(rdb.getConnection(), true, BLOB.DURATION_SESSION);
     
-          // Initiate the sql to add attachments to the elog
+       // Initiate the sql to add attachments to the elog
        final String mysql = "call logbook.logbook_pkg.add_entry_attachment"
                        + "(?, ?, ?, ?, ?)";
        final CallableStatement statement = rdb.getConnection().prepareCall(mysql);
@@ -193,6 +190,8 @@ public class SNSLogbook implements ILogbook
            // Send the text attachment to the sql
            else
            {
+              // Create a Blob to store the attachment in.
+              final BLOB blob = BLOB.createTemporary(rdb.getConnection(), true, BLOB.DURATION_SESSION);
               blob.setBytes( 1L, getBytesFromFile(inputFile) );
               statement.setBlob(5, blob);
            }

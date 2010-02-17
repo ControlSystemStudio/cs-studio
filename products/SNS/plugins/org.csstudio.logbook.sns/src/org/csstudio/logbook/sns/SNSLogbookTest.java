@@ -2,10 +2,8 @@ package org.csstudio.logbook.sns;
 
 import static org.junit.Assert.*;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-
 import org.csstudio.logbook.ILogbook;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /** JUnit test of the SNS Logbook.
@@ -25,46 +23,86 @@ public class SNSLogbookTest
 
     private static final String LOGBOOK = "Scratch Pad";
 
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // Set user, password, image to use.
+    // Then remove at least the password before checking into CVS!
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    private static final String USER = "user_name";
+    private static final String PASSWORD = "";
+    private static final String IMAGE = "/tmp/print.gif";
+
     @Test
-    public void testLoogbook() throws Exception
+    public void shortText() throws Exception
     {
-        final BufferedReader command_line
-            = new BufferedReader(new InputStreamReader(System.in));
-
-        System.out.print("User      : ");
-        final String user = command_line.readLine();
-        
-        System.out.print("Password  : ");
-        final String password = command_line.readLine();
-
-        System.out.print("Image File: ");
-        final String image = command_line.readLine();
-
-        final String short_text = "This is a test entry";
-        // Create a very large text string to force an attachment
-        String long_text = "abcdefghijklm";        
-        for(int i=0;i<4011;i++)
-           long_text=long_text.concat(" "+i);
-
         final ILogbook logbook =
-            new SNSLogbookFactory().connect(URL, LOGBOOK, user, password);
+            new SNSLogbookFactory().connect(URL, LOGBOOK, USER, PASSWORD);
         assertNotNull(logbook);
-
         try
         {
-            String title = "Test Entry (short)";
-            logbook.createEntry(title, short_text, null);
-            if (image.trim().length() > 0)
-                logbook.createEntry("Image " + title, short_text, image);
-    
-            title = "Test Entry (long)";
-            logbook.createEntry(title, long_text, null);
-            if (image.trim().length() > 0)
-                logbook.createEntry("Image " + title, long_text, image);
+            logbook.createEntry("Test Entry", "This is a test entry", null);
         }
         finally
         {
             logbook.close();
         }
+    }
+
+    @Test
+    public void longText() throws Exception
+    {
+        final ILogbook logbook =
+            new SNSLogbookFactory().connect(URL, LOGBOOK, USER, PASSWORD);
+        assertNotNull(logbook);
+        try
+        {
+            logbook.createEntry("Test Entry (long)", getLongText(), null);
+        }
+        finally
+        {
+            logbook.close();
+        }
+    }
+    
+    @Test
+    public void shortTextWithImage() throws Exception
+    {
+        final ILogbook logbook =
+            new SNSLogbookFactory().connect(URL, LOGBOOK, USER, PASSWORD);
+        assertNotNull(logbook);
+        try
+        {
+            logbook.createEntry("Test Entry with image", "Look at that image", IMAGE);
+        }
+        finally
+        {
+            logbook.close();
+        }
+    }
+
+    @Test
+    public void longTextWithImage() throws Exception
+    {
+        final ILogbook logbook =
+            new SNSLogbookFactory().connect(URL, LOGBOOK, USER, PASSWORD);
+        assertNotNull(logbook);
+        try
+        {
+            logbook.createEntry("Test Entry (long) with image", getLongText(), IMAGE);
+        }
+        finally
+        {
+            logbook.close();
+        }
+    }
+
+
+    /** @return Very large text string to force an attachment */
+    private String getLongText()
+    {
+        final StringBuilder long_text = new StringBuilder();
+        long_text.append("abcdefghijklm");        
+        for(int i=0;i<4011;i++)
+           long_text.append(" "+i);
+        return long_text.toString();
     }
 }
