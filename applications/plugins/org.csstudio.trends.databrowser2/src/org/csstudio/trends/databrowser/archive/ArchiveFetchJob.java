@@ -77,7 +77,6 @@ public class ArchiveFetchJob extends Job
         public synchronized void cancel()
         {
             cancelled = true;
-            System.out.println("Cancel " + ArchiveFetchJob.this);
             synchronized (this)
             {
                 if (reader != null)
