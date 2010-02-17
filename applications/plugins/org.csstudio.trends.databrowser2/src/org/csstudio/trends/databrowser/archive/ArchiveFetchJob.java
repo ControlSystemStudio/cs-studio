@@ -135,8 +135,6 @@ public class ArchiveFetchJob extends Job
                 }
                 catch (Exception ex)
                 {
-// TODO remove
-ex.printStackTrace();
                     listener.archiveFetchFailed(ArchiveFetchJob.this, archive, ex);
                     break;
                 }
@@ -224,8 +222,7 @@ ex.printStackTrace();
         monitor.done();
 
         timer.stop();
-        // TODO remove debug printouts
-        System.out.println(this + ": " + timer.toString());
+        // System.out.println(this + ": " + timer.toString());
         
         return monitor.isCanceled() ? Status.CANCEL_STATUS : Status.OK_STATUS;
     }

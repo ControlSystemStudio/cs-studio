@@ -10,6 +10,7 @@
 <span class="index">
 - <a href="#overview">Overview</a>
 - <a href="#101">Getting Started</a>
+- <a href="#common">Common Tasks</a>
 - <a href="#perspective">Perspective</a>
 - <a href="#toolbar">Toolbar</a>
 - <a href="#config">Properties Panel</a>
@@ -22,8 +23,7 @@
 </span>
 
 
-<a name=overview><h2>Overview</h2></a> 
-
+<h2><a name=overview>Overview</a></h2> 
 <p>
 The Data Browser is a trending tool. It can display the values of 'live'
 Process Variables (PVs) as well as historic data in a Stripchart-type plot.
@@ -50,7 +50,7 @@ You can configure one or more archive data source for each PV.
 </p>
 
 
-<a name=101><h2>Getting Started</h2></a>
+<h2><a name=101>Getting Started</a></h2>
 <p>
 To create a new plot, displaying one Process Variable (PV):
 <ol>
@@ -65,7 +65,30 @@ To create a new plot, displaying one Process Variable (PV):
 </p>
 
 
-<a name=perspective><h2>Data Browser Perspective</h2></a>
+<h2><a name=common>Common Tasks</a></h2>
+<ul>
+<li>Add PV or Formula: Right-click on plot or trace table in 
+    <a href="#config">Properties Panel</a>,
+    select "Add PV" or "Add Formula".
+<li>Delete PVs or Formulas:
+    In <a href="#config">Properties Panel</a>,
+    right-click on selected item in trace table and select "Delete Item".
+<li>Find PV Name: Use the <a href="#search">Search Panel</a>
+<li>Add archive data source:
+    Select PV in <a href="#config">Properties Panel</a>.
+    Right-click to "Add Archive".
+    Or drag archive from <a href="#search">Search Panel</a>
+    onto PV to cause that PV to be read from archive,
+    or drag archive from <a href="#search">Search Panel</a>
+    onto plot to cause all PVs in plot to be read from that archive.
+<li>Remove archive data source:
+    Select PV in <a href="#config">Properties Panel</a>.
+    In lower "Archive Data Sources" list, 
+    right-click and select "Remove Archive Data Source".
+</ul>
+
+
+<h2><a name=perspective>Data Browser Perspective</a></h2>
 <p>
 In addition to the Browser plot window itself, you typically use the
 <a href="#config">Properties Panel</a> to change colors etc.,
@@ -91,7 +114,7 @@ to its original state.
 </p>
 
 
-<a name=toolbar><h2>Plot Toolbar</h2></a>
+<h2><a name=toolbar>Plot Toolbar</a></h2>
 <p>
 The toolbar is displayed on top of a Data Browser plot.
 If it is not visible, open the context menu and select "Show Toolbar".
@@ -167,7 +190,7 @@ over a toolbar button for a few seconds. Explanation of toolbar buttons:
 </p>
 
 
-<a name=config><h2>Properties Panel</h2></a>
+<h2><a name=config>Properties Panel</a></h2>
 <p>
 The Properties panel allows configuration of the plot, its axes and traces.
 </p>
@@ -281,22 +304,28 @@ Add/remove value ('Y', vertical) axes, change their label or color.
 General plot settings: Background color, refresh rate.
 </p>
 
-<a name=search><h2>Archive Search Panel</h2></a>
+<h2><a name=search>Archive Search Panel</a></h2>
 <p>
-Search for Process Variable names (PVs) in an archive. 
+The Archive Search Panel is part of the default
+<a href="#perspective">Perspective</a>. If you cannot find it,
+try to reset the perspective, or open a new one by right-clicking
+into the plot and selecting "Open Archive Search Panel".
+</p>
+<p>
+To locate Process Variable names (PVs) in an archive:
+</p>
 <ol>
 <li>Optional: Select an archive URL other than the default.
 <li>Optional: If the archive has more than one sub-archive, select one or more
     sub-archive to search.
-<li>Enter PV name pattern.
+<li>Enter PV name pattern, see details below.
 <li>Press "Search".
-<li>Either drag/drop PVs into existing Data Browser Plot, or right-click on
-    PVs of interest and select "CSS/Data Browser" to open a new Data Browser
-    Plot for them. 
 </ol>
-</p>
 <p>
-There are two types of patterns:
+To show data for the resulting PVs, either right-click on PVs of interest
+and select "CSS/Data Browser" to open a <i>new</i> Data Browser Plot for them,
+or drag/drop the PVs from the search result table into an existing Data Browser
+Plot. 
 </p>
 
 <h3>Simple Pattern</h3>
@@ -332,7 +361,7 @@ a more powerful but also slower regular expression can be used:
 </p>
 
 
-<a name=export><h2>Data Export</h2></a>
+<h2><a name=export>Data Export</a></h2>
 <p>
 Use the "Export Samples" panel to write data into files suitable for spreadsheet
 programs or Matlab.
@@ -411,14 +440,14 @@ to suit your needs, for example use simply "plot(v);" to show the values.
 
 
 
-<a name=preferences><h2>Preference Settings</h2></a>
+<h2><a name=preferences>Preference Settings</a></h2>
 Use the menu CSS/Preferences/CSS Applications/Trends/Data Browser
 to change various settings including the default time range
 of a new plot, the number of 'Plot Bins' used by the
 Optimized request type. 
 
 
-<a name=transition><h2>Transition from older Data Browser</h2></a>
+<a name=transition><h2>Transition from older Data Browser</a></h2>
 <div align='center'><img src="OldSnapshot.png" width="90%"/></div>
 <p>
 Even though this Data Browser code is quite different from the original code,
@@ -438,7 +467,7 @@ The main differences:
 </p>
 
 
-<a name=history><h2>Product History</h2></a>
+<h2><a name=history>Product History</a></h2>
 <p>
 At LANL, Craig McChesney and Sergei Chevtsov with contributions by Peregrine
 McGehee implemented the Java Archive Viewer for displaying Channel Archiver

@@ -7,6 +7,7 @@ body
     font-style: normal;
     color: black;
     background: white;
+    counter-reset: section;
 }
 
 H1
@@ -18,6 +19,11 @@ H1
     margin-bottom: 0;
 }
 
+H2:before
+{
+    counter-increment: section;
+    content: counter(section) ". ";
+}
 H2
 {
     font-family: Georgia, "Times New Roman", Times, serif;
@@ -29,8 +35,13 @@ H2
     border-width: 1px;
     border-color: gray;
     border-top-style:solid;
+    counter-reset: subsection;
 }
 
+H3:before {
+    counter-increment: subsection;
+    content: counter(section) "." counter(subsection) " ";
+}
 H3
 {
     font-variant: normal;
@@ -49,7 +60,7 @@ H4
 
 P
 {
-    margin-top: 0;
+    margin-top: 0.2ex;
     margin-bottom: 0.5ex;
 }
 
@@ -69,6 +80,7 @@ div.figure
     margin: 2ex;
 }
 
+
 /* Plain anchors
 a
 {
@@ -82,8 +94,8 @@ ul
 {
     list-style-type: square;
     padding-left: 1em;
-    margin-top: 0;
-    margin-bottom: 0;
+    margin-top: 0.5ex;
+    margin-bottom: 0.5ex;
 }
 ol
 {
