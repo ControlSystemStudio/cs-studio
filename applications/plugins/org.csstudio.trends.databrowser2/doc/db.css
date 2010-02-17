@@ -64,6 +64,11 @@ span.index
  */ 
 }
 
+div.figure
+{
+    margin: 2ex;
+}
+
 /* Plain anchors
 a
 {

@@ -15,6 +15,7 @@
 - <a href="#config">Properties Panel</a>
 - <a href="#search">Search</a>
 - <a href="#export">Export</a>
+- <a href="#preferences">Preferences</a>
 - <a href="#transition">Older Data Browser</a>
 - <a href="#history">History</a>
 -
@@ -25,10 +26,15 @@
 
 <p>
 The Data Browser is a trending tool. It can display the values of 'live'
-Process Variables (PVs) in a Stripchart-type scrolling display
-as well as historic data.
+Process Variables (PVs) as well as historic data in a Stripchart-type plot.
+
 </p>
-<div align='center'><img src="DataBrowserSnapshot.png" width="90%"/></div>
+<div class='figure'>
+   <img src="DataBrowserSnapshot.png" width="90%"/>
+   <p>
+   Fig. 1: Data Browser Screenshot
+   </p>
+</div>
 
 <h3>Live Data</h3>
 <p>
@@ -61,29 +67,41 @@ To create a new plot, displaying one Process Variable (PV):
 
 <a name=perspective><h2>Data Browser Perspective</h2></a>
 <p>
-In addition to the Data Browswe plot window itself, you typically use the
+In addition to the Browser plot window itself, you typically use the
 <a href="#config">Properties Panel</a> to change colors etc.,
 or the <a href="#search">Search Panel</a> to locate the names
 of PVs with historic data.
 </p>
 The Data Browser "Perspective" provides a suggested arrangement of these
-additional panels around the plot window.
+additional panels around the plot window, similar to the screenshot in
+Fig. 1 where the Properties and <a href="#export">Export</a> panels are
+below the plot, and a Search panel is to its left.
 </p>
 <p>
-You can close the search panel, move the properties panel around etc.
+To switch to the Data Browser Perspective in case it is not currently
+selected, right-click on the Data Browser plot and select "Data Browser Perspective".
 </p>
 <p>
-To <em>reset</em> the perspective to its original state, right-click on the
-"<img src="../icons/databrowser.png" width=16 height=16/>Data Browser"
-perspective tab at the top-left of the screen and select "Reset"
+While in the perspective, you can then close the search panel, move the
+properties panel around as desired.
+If you later want to restore the default arrangement, 
+again right-click on the Data Browser plot and select "Data Browser Perspective".
+Since it's already active, it will ask if you want to <em>reset</em> the perspective
+to its original state.
+</p>
 
 
 <a name=toolbar><h2>Plot Toolbar</h2></a>
-<div><img src="toolbar.png" width="463" height="27"/></div>
 <p>
 The toolbar is displayed on top of a Data Browser plot.
 If it is not visible, open the context menu and select "Show Toolbar".
 </p>
+<div class='figure'>
+   <img src="toolbar.png" width="463" height="27"/>
+   <p>
+   Fig. 2: Data Browser Plot Toolbar
+   </p>
+</div>
 <p>
 Tool tips with brief explanations will appear if you hover the mouse pointer
 over a toolbar button for a few seconds. Explanation of toolbar buttons:
@@ -168,10 +186,27 @@ Data Browser plots) via the "<img src="view_menu.png" width=18 height=15/> drop-
 menu of the panel.
 </p>
 
-<h3>Traces</h3>
+<h3>Subsection 'Traces'</h3>
+
+<div class='figure'>
+   <img src="prop_traces.png"/>
+   <p>
+   Fig. 3: Properties panel, subseciton 'Traces'
+   </p>
+</div>
+
 <p>
-Configure color, line width, ... of traces shown in the plot:
+Configure the individual traces in the plot via the table of traces.
+Right-click in the table to open a context menu for adding PVs or Formulas,
+deleting selected items, or adding archive data sources to PVs.
 <ul>
+<li>Trace: Allows to <i>temporarily</i> hide a trace from the plot.
+    If the trace is really not needed any more, consider deleting it.
+<li>Item: Edit the item's name. For a PV, this would be the control system
+    process variable. For a formula, this is the name under which the formula
+    can appear as an input to other formulas.
+<li>Display Name: The name shown in the plot legend.
+<li>Color: Click to select the trace color
 <li>Scan Period: Control system PVs can be scanned at some periodic rate,
     specified in second, to collect 'live' samples in addition to the data
     received from an archive.
@@ -181,20 +216,67 @@ Configure color, line width, ... of traces shown in the plot:
     'live' PV samples. When reaching the end of the ring buffer, older samples
     are deleted to prevent running out of memory.
     You can configure the ring buffer size for each trace.
+<li>Width: The line widths of the trace in the plot.
+<li>Axis: Click to select the axis on which to plot the trace.
+<li>Trace Type: Click to select how the trace should be displayed.
+<li>Request: Click to select 'Optimized' vs. 'Raw Data'.
 </ul>
 </p>
 
-<h3>Time Axis</h3>
+<div class='figure'>
+   <img src="optimized.png"/>
+   <p>
+   Fig. 4a: Traces with 'Optimized' Requests.
+   </p>
+</div>
+
+<p>
+With 'Optimized' requests, the Data Browser requests historic data as a reduced
+(optimized) set of min/max/average samples.
+When using 'Area' traces as shown in Fig. 4a, the average values are plotted
+as a line, and the min/max outline is displayed as a light-colored area.
+This not only reduces the amount of data compared to plotting every single
+raw sample from the archive. In addition it makes it obvious if a value
+was fairly stable over time, or if there was a lot of movement in the data
+as around 06:00:00 in Fig. 4a.
+</p>
+<p>
+The number of requested min/max/average samples is configurable in the
+<a href="#preferences">Preferences</a>. When there are less 'raw' data points
+than requested min/max/average samples, the 'Optimized' algorithm falls back
+to returning the raw data, meaning:
+When you zoom into the data far enough, you will eventually get raw data.
+</p>
+
+<div class='figure'>
+   <img src="raw.png"/>
+   <p>
+   Fig. 4b: Blue traces switched to 'Raw' Request.
+   </p>
+</div>
+
+<p>
+When switching to 'Raw Data' requests as in Fig. 4b, each original sample is
+requested from the history. Not only is this usually more data, taking longer
+to receive and then plot to. It also uses more memory, and when you try to
+look at raw data for a long time range your computer will eventually ran out
+of memory.
+The 'Raw Data' requests should therefore only be used when necessary because
+of shortcomings in the 'Optimized' algorithm.
+</p>
+
+
+<h3>Subsection 'Time Axis'</h3>
 <p>
 Configure the start and end time of the time (horizontal) axis.
 </p>
 
-<h3>Value Axes</h3>
+<h3>Subsection 'Value Axes'</h3>
 <p>
 Add/remove value ('Y', vertical) axes, change their label or color.
 </p>
 
-<h3>Misc.</h3>
+<h3>Subsection 'Misc.'</h3>
 <p>
 General plot settings: Background color, refresh rate.
 </p>
@@ -326,6 +408,14 @@ or newer, creating one 'timeseries' object per trace.
 With previous Matlab releases, you will have to edit the generated file
 to suit your needs, for example use simply "plot(v);" to show the values.
 </p>
+
+
+
+<a name=preferences><h2>Preference Settings</h2></a>
+Use the menu CSS/Preferences/CSS Applications/Trends/Data Browser
+to change various settings including the default time range
+of a new plot, the number of 'Plot Bins' used by the
+Optimized request type. 
 
 
 <a name=transition><h2>Transition from older Data Browser</h2></a>
