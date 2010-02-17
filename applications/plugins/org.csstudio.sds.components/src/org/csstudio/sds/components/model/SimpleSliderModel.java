@@ -134,7 +134,7 @@ public final class SimpleSliderModel extends AbstractWidgetModel {
 		addProperty(PROP_SLIDER_WIDTH, new IntegerProperty("Slider wide",
 				WidgetPropertyCategory.Display, 5, 0, Integer.MAX_VALUE));
 
-		setBackgroundColor("#ffffff");
+		setColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND, "#ffffff");
 	}
 
 	/**

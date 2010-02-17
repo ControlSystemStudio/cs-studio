@@ -23,14 +23,11 @@ package org.csstudio.sds.components.model;
 
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
-import org.csstudio.sds.model.properties.ColorProperty;
 import org.csstudio.sds.model.properties.DoubleProperty;
 import org.csstudio.sds.model.properties.FontProperty;
 import org.csstudio.sds.model.properties.IntegerProperty;
-import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.graphics.RGB;
 
 /**
  *  A thumb wheel widget model.
@@ -102,9 +99,8 @@ public class ThumbWheelModel extends AbstractWidgetModel {
 				WidgetPropertyCategory.Display, new FontData("Arial", 9,
 						SWT.NORMAL)));
 
-		addProperty(PROP_INTERNAL_FRAME_COLOR, new ColorProperty(
-				"Internal frame color", WidgetPropertyCategory.Display,
-				"#000000"));
+		addColorProperty(PROP_INTERNAL_FRAME_COLOR, "Internal frame color", WidgetPropertyCategory.Display,
+				"#000000");
 
 		addProperty(PROP_INTERNAL_FRAME_THICKNESS, new IntegerProperty(
 				"Internal frame thickness", WidgetPropertyCategory.Display, 0));
@@ -151,10 +147,6 @@ public class ThumbWheelModel extends AbstractWidgetModel {
 		return getProperty(PROP_INTERNAL_FRAME_THICKNESS).getPropertyValue();
 	}
 
-	public ColorProperty getInternalFrameColor() {
-		return (ColorProperty) getProperty(PROP_INTERNAL_FRAME_COLOR);
-	}
-
 	public double getMin() {
 		return getProperty(PROP_MIN).getPropertyValue();
 	}
@@ -165,10 +157,6 @@ public class ThumbWheelModel extends AbstractWidgetModel {
 
 	public void setManualValue(double val) {
 		getProperty(PROP_VALUE).setManualValue(val);
-	}
-
-	public ColorProperty getInternalBorderColor() {
-		return (ColorProperty) getProperty(PROP_INTERNAL_FRAME_COLOR);
 	}
 
 	public int getInternalBorderWidth() {

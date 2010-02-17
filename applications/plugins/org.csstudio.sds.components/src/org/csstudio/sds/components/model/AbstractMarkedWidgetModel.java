@@ -2,7 +2,6 @@ package org.csstudio.sds.components.model;
 
 import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.properties.BooleanProperty;
-import org.csstudio.sds.model.properties.ColorProperty;
 import org.csstudio.sds.model.properties.DoubleProperty;
 
 
@@ -93,14 +92,14 @@ public abstract class AbstractMarkedWidgetModel extends AbstractScaledWidgetMode
 		addProperty(PROP_SHOW_HIHI, new BooleanProperty("Show HIHI", 
 				WidgetPropertyCategory.Display, true));
 		
-		addProperty(PROP_LOLO_COLOR, new ColorProperty("Color LOLO ",
-				WidgetPropertyCategory.Display, DEFAULT_LOLO_COLOR));
-		addProperty(PROP_LO_COLOR, new ColorProperty("Color LO",
-				WidgetPropertyCategory.Display, DEFAULT_LO_COLOR));
-		addProperty(PROP_HI_COLOR, new ColorProperty("Color HI",
-				WidgetPropertyCategory.Display, DEFAULT_HI_COLOR));
-		addProperty(PROP_HIHI_COLOR, new ColorProperty("Color HIHI",
-				WidgetPropertyCategory.Display, DEFAULT_HIHI_COLOR));		
+		addColorProperty(PROP_LOLO_COLOR, "Color LOLO ",
+				WidgetPropertyCategory.Display, DEFAULT_LOLO_COLOR);
+				addColorProperty(PROP_LO_COLOR, "Color LO",
+				WidgetPropertyCategory.Display, DEFAULT_LO_COLOR);
+				addColorProperty(PROP_HI_COLOR, "Color HI",
+				WidgetPropertyCategory.Display, DEFAULT_HI_COLOR);
+				addColorProperty(PROP_HIHI_COLOR, "Color HIHI",
+				WidgetPropertyCategory.Display, DEFAULT_HIHI_COLOR);		
 		
 	}
 	
@@ -139,37 +138,6 @@ public abstract class AbstractMarkedWidgetModel extends AbstractScaledWidgetMode
 	public double getHihiLevel() {
 		return (Double) getProperty(PROP_HIHI_LEVEL).getPropertyValue();
 	}
-	
-	
-	/**
-	 * @return the lolo color
-	 */
-	public ColorProperty getLoloColor() {
-		return (ColorProperty) getProperty(PROP_LOLO_COLOR);
-	}	
-	
-	/**
-	 * @return the lo color
-	 */
-	public ColorProperty getLoColor() {
-		return (ColorProperty) getProperty(PROP_LO_COLOR);
-	}	
-	/**
-	 * @return the hi color
-	 */
-	public ColorProperty getHiColor() {
-		return (ColorProperty) getProperty(PROP_HI_COLOR);
-	}	
-	/**
-	 * @return the hihi color
-	 */
-	public ColorProperty getHihiColor() {
-		return (ColorProperty) getProperty(PROP_HIHI_COLOR);
-	}	
-
-	
-	
-
 	
 	/**
 	 * @return true if the minor ticks should be shown, false otherwise

@@ -4,7 +4,6 @@ import org.csstudio.sds.components.model.ThermometerModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableThermoFigure;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.swt.graphics.RGB;
 
 /**
  * EditPart controller for the Thermometer widget. The controller mediates between
@@ -25,10 +24,10 @@ public final class ThermometerEditPart extends AbstractMarkedWidgetEditPart {
 		RefreshableThermoFigure thermometer = new RefreshableThermoFigure();
 		
 		initializeCommonFigureProperties(thermometer, model);		
-		thermometer.setFillColor(getRgb(model.getFillColor()));
+		thermometer.setFillColor(getModelColor(ThermometerModel.PROP_FILL_COLOR));
 		thermometer.setFahrenheit(model.isFahrenheit());
 		thermometer.setShowBulb(model.isShowBulb());	
-		thermometer.setFillBackgroundColor(getRgb(model.getFillbackgroundColor()));
+		thermometer.setFillBackgroundColor(getModelColor(ThermometerModel.PROP_FILLBACKGROUND_COLOR));
 		thermometer.setEffect3D(model.isEffect3D());
 		return thermometer;
 

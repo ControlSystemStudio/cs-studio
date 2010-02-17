@@ -23,10 +23,10 @@
 
 import org.csstudio.sds.components.model.ArcModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableArcFigure;
+import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.swt.graphics.RGB;
 
 /**
  * EditPart controller for the arc widget.
@@ -56,12 +56,12 @@ public final class ArcEditPart extends AbstractWidgetEditPart {
 		
 		figure.setTransparent(model.getTransparent());
 		figure.setBorderWidth(model.getBorderWidth());
-		figure.setBorderColor(getRgb(model.getBorderColor()));
+		figure.setBorderColor(getModelColor(AbstractWidgetModel.PROP_BORDER_COLOR));
 		figure.setStartAngle(model.getStartAngle());
 		figure.setAngle(model.getAngle());
 		figure.setLineWidth(model.getLineWidth());
 		figure.setFill(model.getFill());
-		figure.setFillColor(getRgb(model.getFillColor()));
+		figure.setFillColor(getModelColor(ArcModel.PROP_FILLCOLOR));
 		
 		return figure;
 	}

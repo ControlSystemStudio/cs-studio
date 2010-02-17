@@ -1,8 +1,8 @@
 package org.csstudio.sds.components.model;
 
+import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.properties.BooleanProperty;
-import org.csstudio.sds.model.properties.ColorProperty;
 
 
 /**
@@ -50,14 +50,14 @@ public class ThermometerModel extends AbstractMarkedWidgetModel{
 	
 	public ThermometerModel() {
 		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-		setForegroundColor("#000000");
+		setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND,"#000000");
 	}	
 
 	@Override
 	protected void configureProperties() {
 		super.configureProperties();		
-		addProperty(PROP_FILL_COLOR, new ColorProperty("Fill Color",
-				WidgetPropertyCategory.Display,DEFAULT_FILL_COLOR));	
+		addColorProperty(PROP_FILL_COLOR, "Fill Color",
+				WidgetPropertyCategory.Display,DEFAULT_FILL_COLOR);	
 		
 		addProperty(PROP_SHOW_BULB, new BooleanProperty("Show Bulb", 
 				WidgetPropertyCategory.Display, true));	
@@ -65,8 +65,8 @@ public class ThermometerModel extends AbstractMarkedWidgetModel{
 		addProperty(PROP_FAHRENHEIT, new BooleanProperty("Fahrenheit?", 
 				WidgetPropertyCategory.Display, false));	
 		
-		addProperty(PROP_FILLBACKGROUND_COLOR, new ColorProperty("Color Fillbackground",
-				WidgetPropertyCategory.Display,DEFAULT_FILLBACKGROUND_COLOR));
+		addColorProperty(PROP_FILLBACKGROUND_COLOR, "Color Fillbackground",
+				WidgetPropertyCategory.Display,DEFAULT_FILLBACKGROUND_COLOR);
 		
 		addProperty(PROP_EFFECT3D, new BooleanProperty("3D Effect", 
 				WidgetPropertyCategory.Display, true));	
@@ -92,13 +92,6 @@ public class ThermometerModel extends AbstractMarkedWidgetModel{
 	public String getTypeID() {
 		return ID;
 	}		
-
-	/**
-	 * @return the fill color
-	 */
-	public ColorProperty getFillColor() {
-		return (ColorProperty) getProperty(PROP_FILL_COLOR);
-	}	
 	
 	/**
 	 * @return true if the bulb should be shown, false otherwise
@@ -120,13 +113,4 @@ public class ThermometerModel extends AbstractMarkedWidgetModel{
 	public boolean isEffect3D() {
 		return (Boolean) getProperty(PROP_EFFECT3D).getPropertyValue();
 	}
-	
-	/**
-	 * Gets the RGB for fillbackground.
-	 * @return The fillbackground color
-	 */
-	public ColorProperty getFillbackgroundColor() {
-		return (ColorProperty) getProperty(PROP_FILLBACKGROUND_COLOR);
-	}
-	
 }

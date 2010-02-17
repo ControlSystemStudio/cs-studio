@@ -26,11 +26,9 @@ import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.properties.ArrayOptionProperty;
 import org.csstudio.sds.model.properties.BooleanProperty;
-import org.csstudio.sds.model.properties.ColorProperty;
 import org.csstudio.sds.model.properties.DoubleProperty;
 import org.csstudio.sds.model.properties.IntegerProperty;
 import org.csstudio.sds.model.properties.StringProperty;
-import org.eclipse.swt.graphics.RGB;
 
 /**
  * Abstract base class for widgets that draw a chart.
@@ -155,12 +153,12 @@ public abstract class AbstractChartModel extends AbstractWidgetModel {
 		addProperty(PROP_LINE_CHART, new BooleanProperty("Line chart",
 				WidgetPropertyCategory.Display, false));
 		for (int i = 0; i < numberOfDataSeries(); i++) {
-			addProperty(plotColorPropertyId(i), new ColorProperty(
+			addColorProperty(plotColorPropertyId(i),
 					"Plot color #" + (i+1), WidgetPropertyCategory.Display,
-					"#000000"));
+					"#000000");
 		}
-		addProperty(PROP_GRID_LINE_COLOR, new ColorProperty("Grid line color",
-				WidgetPropertyCategory.Display, "#D2D2D2"));
+		addColorProperty(PROP_GRID_LINE_COLOR, "Grid line color",
+				WidgetPropertyCategory.Display, "#D2D2D2");
 		addProperty(PROP_MIN, new DoubleProperty(
 				"Minimum", WidgetPropertyCategory.Display, -100.0));
 		addProperty(PROP_MAX, new DoubleProperty(
@@ -272,15 +270,6 @@ public abstract class AbstractChartModel extends AbstractWidgetModel {
 	}
 
 	/**
-	 * Returns the color of the grid lines.
-	 * 
-	 * @return the color of the grid lines.
-	 */
-	public final ColorProperty getGridLineColor() {
-		return (ColorProperty) getProperty(PROP_GRID_LINE_COLOR);
-	}
-
-	/**
 	 * Returns whether the background of the chart is transparent.
 	 * 
 	 * @return <code>true</code> if the background is transparent,
@@ -334,17 +323,6 @@ public abstract class AbstractChartModel extends AbstractWidgetModel {
 	 */
 	public final String getYAxisLabel() {
 		return getProperty(PROP_Y_AXIS_LABEL).getPropertyValue();
-	}
-
-	/**
-	 * Returns the color for plotting the specified data series.
-	 * 
-	 * @param index
-	 *            the index of the data series.
-	 * @return the color for the plot.
-	 */
-	public final ColorProperty getPlotColorProperty(final int index) {
-		return (ColorProperty) getProperty(plotColorPropertyId(index));
 	}
 
 	/**

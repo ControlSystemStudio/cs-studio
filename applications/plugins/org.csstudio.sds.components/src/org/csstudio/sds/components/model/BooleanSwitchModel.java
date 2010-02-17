@@ -3,10 +3,8 @@ package org.csstudio.sds.components.model;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.properties.BooleanProperty;
-import org.csstudio.sds.model.properties.ColorProperty;
 import org.csstudio.sds.model.properties.DoubleProperty;
 import org.csstudio.sds.model.properties.StringProperty;
-import org.eclipse.swt.graphics.RGB;
 
 /**
  * 
@@ -55,8 +53,8 @@ public class BooleanSwitchModel extends AbstractWidgetModel {
 	protected void configureProperties() {
 		addProperty(PROP_3D_EFFECT, new BooleanProperty("3d effect", WidgetPropertyCategory.Display, true));
 		addProperty(PROP_VALUE, new DoubleProperty("Value", WidgetPropertyCategory.Behaviour, 0.0, 0.0, 1.0));
-		addProperty(PROP_OFF_COLOR, new ColorProperty("Off color", WidgetPropertyCategory.Display, "#B4B4B4"));
-		addProperty(PROP_ON_COLOR, new ColorProperty("On color", WidgetPropertyCategory.Display, "#64FF64"));
+		addColorProperty(PROP_OFF_COLOR,"Off color", WidgetPropertyCategory.Display, "#B4B4B4");
+		addColorProperty(PROP_ON_COLOR, "On color", WidgetPropertyCategory.Display, "#64FF64");
 		addProperty(PROP_LABEL_VISIBLE, new BooleanProperty("Show Label", WidgetPropertyCategory.Display, false));
 		addProperty(PROP_ON_LABEL, new StringProperty("On Label", WidgetPropertyCategory.Display, "ON"));
 		addProperty(PROP_OFF_LABEL, new StringProperty("Off Label", WidgetPropertyCategory.Display, "OFF"));
@@ -120,14 +118,6 @@ public class BooleanSwitchModel extends AbstractWidgetModel {
 	 */
 	public boolean get3dEffect() {
 		return getProperty(PROP_3D_EFFECT).getPropertyValue();
-	}
-
-	public ColorProperty getOffColor() {
-		return (ColorProperty) getProperty(PROP_OFF_COLOR);
-	}
-	
-	public ColorProperty getOnColor() {
-		return (ColorProperty) getProperty(PROP_ON_COLOR);
 	}
 	
 	/**

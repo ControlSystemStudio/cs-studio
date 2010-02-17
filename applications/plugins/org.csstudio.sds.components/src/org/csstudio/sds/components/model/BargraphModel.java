@@ -25,7 +25,6 @@ import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.properties.ArrayOptionProperty;
 import org.csstudio.sds.model.properties.BooleanProperty;
-import org.csstudio.sds.model.properties.ColorProperty;
 import org.csstudio.sds.model.properties.DoubleProperty;
 import org.csstudio.sds.model.properties.IntegerProperty;
 
@@ -179,8 +178,8 @@ public final class BargraphModel extends AbstractWidgetModel {
 				WidgetPropertyCategory.Behaviour, DEFAULT_FILL));
 		addProperty(PROP_ORIENTATION, new BooleanProperty("Horizontal Orientation", WidgetPropertyCategory.Behaviour, DEFAULT_ORIENTATION_HORIZONTAL));
 		//Colors
-		addProperty(PROP_DEFAULT_FILL_COLOR, new ColorProperty("Fill Color",WidgetPropertyCategory.Display, DEFAULT_FILL_COLOR));
-		addProperty(PROP_FILLBACKGROUND_COLOR, new ColorProperty("Color Fillbackground",WidgetPropertyCategory.Display,DEFAULT_FILLBACKGROUND_COLOR));
+		addColorProperty(PROP_DEFAULT_FILL_COLOR, "Fill Color",WidgetPropertyCategory.Display, DEFAULT_FILL_COLOR);
+		addColorProperty(PROP_FILLBACKGROUND_COLOR, "Color Fillbackground",WidgetPropertyCategory.Display,DEFAULT_FILLBACKGROUND_COLOR);
 		//Levels
 		addProperty(PROP_MIN, new DoubleProperty("Minimum", WidgetPropertyCategory.Behaviour,DEFAULT_LEVELS[0]));
 		addProperty(PROP_LOLO_LEVEL, new DoubleProperty("Level LOLO", WidgetPropertyCategory.Behaviour,DEFAULT_LEVELS[1]));
@@ -246,54 +245,6 @@ public final class BargraphModel extends AbstractWidgetModel {
 	 */
 	public boolean getOrientation() {
 		return (Boolean) getProperty(PROP_ORIENTATION).getPropertyValue();
-	}
-	
-	/**
-	 * Gets the RGB for the default fill color.
-	 * @return The default fill color
-	 */
-	public ColorProperty getDefaultFillColor() {
-		return (ColorProperty) getProperty(PROP_DEFAULT_FILL_COLOR);
-	}
-	
-//	/**
-//	 * Gets the RGB for lolo fill level.
-//	 * @return The lolo fill level color
-//	 */
-//	public RGB getLoloColor() {
-//		return (RGB) getProperty(PROP_LOLO_COLOR).getPropertyValue();
-//	}
-//	
-//	/**
-//	 * Gets the RGB for lo fill level.
-//	 * @return The lo fill level color
-//	 */
-//	public RGB getLoColor() {
-//		return (RGB) getProperty(PROP_LO_COLOR).getPropertyValue();
-//	}
-//	
-//	/**
-//	 * Gets the RGB for hi fill level.
-//	 * @return The hi fill level color
-//	 */
-//	public RGB getHiColor() {
-//		return (RGB) getProperty(PROP_HI_COLOR).getPropertyValue();
-//	}
-//	
-//	/**
-//	 * Gets the RGB for hihi fill level.
-//	 * @return The hihi fill level color
-//	 */
-//	public RGB getHihiColor() {
-//		return (RGB) getProperty(PROP_HIHI_COLOR).getPropertyValue();
-//	}
-	
-	/**
-	 * Gets the RGB for fillbackground.
-	 * @return The fillbackground color
-	 */
-	public ColorProperty getFillbackgroundColor() {
-		return (ColorProperty) getProperty(PROP_FILLBACKGROUND_COLOR);
 	}
 	
 	/**

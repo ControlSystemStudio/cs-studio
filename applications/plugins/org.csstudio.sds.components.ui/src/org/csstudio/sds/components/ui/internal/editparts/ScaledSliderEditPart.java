@@ -5,7 +5,6 @@ import org.csstudio.sds.components.ui.internal.figures.ScaledSliderFigure;
 import org.csstudio.sds.ui.editparts.ExecutionMode;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.swt.graphics.RGB;
 
 /**
  * EditPart controller for the scaled slider widget. The controller mediates between
@@ -26,10 +25,10 @@ public final class ScaledSliderEditPart extends AbstractMarkedWidgetEditPart {
 		ScaledSliderFigure slider = new ScaledSliderFigure();
 		
 		initializeCommonFigureProperties(slider, model);		
-		slider.setFillColor(getRgb(model.getFillColor()));
+		slider.setFillColor(getModelColor(ScaledSliderModel.PROP_FILL_COLOR));
 		slider.setEffect3D(model.isEffect3D());	
-		slider.setFillBackgroundColor(getRgb(model.getFillbackgroundColor()));
-		slider.setThumbColor(getRgb(model.getThumbColor()));
+		slider.setFillBackgroundColor(getModelColor(ScaledSliderModel.PROP_FILLBACKGROUND_COLOR));
+		slider.setThumbColor(getModelColor(ScaledSliderModel.PROP_THUMB_COLOR));
 		slider.setHorizontal(model.isHorizontal());
 		slider.setIncrement(model.getIncrement());
 		slider.addSliderListener(new ScaledSliderFigure.IScaledSliderListener() {

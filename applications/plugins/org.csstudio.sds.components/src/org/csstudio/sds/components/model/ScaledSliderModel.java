@@ -1,8 +1,8 @@
 package org.csstudio.sds.components.model;
 
+import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.properties.BooleanProperty;
-import org.csstudio.sds.model.properties.ColorProperty;
 import org.csstudio.sds.model.properties.DoubleProperty;
 
 /**
@@ -53,22 +53,22 @@ public class ScaledSliderModel extends AbstractMarkedWidgetModel {
 
 	public ScaledSliderModel() {
 		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-		setForegroundColor("#000000");
+		setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND,"#000000");
 	}
 
 	@Override
 	protected void configureProperties() {
 		super.configureProperties();
-		addProperty(PROP_FILL_COLOR, new ColorProperty("Fill Color", WidgetPropertyCategory.Display, DEFAULT_FILL_COLOR));
+		addColorProperty(PROP_FILL_COLOR, "Fill Color", WidgetPropertyCategory.Display, DEFAULT_FILL_COLOR);
 
 		addProperty(PROP_EFFECT3D, new BooleanProperty("3D Effect", WidgetPropertyCategory.Display, true));
 
 		addProperty(PROP_HORIZONTAL, new BooleanProperty("Horizontal", WidgetPropertyCategory.Display, false));
 
-		addProperty(PROP_FILLBACKGROUND_COLOR, new ColorProperty("Color Fillbackground", WidgetPropertyCategory.Display,
-				DEFAULT_FILLBACKGROUND_COLOR));
+		addColorProperty(PROP_FILLBACKGROUND_COLOR, "Color Fillbackground", WidgetPropertyCategory.Display,
+				DEFAULT_FILLBACKGROUND_COLOR);
 
-		addProperty(PROP_THUMB_COLOR, new ColorProperty("Thumb Color", WidgetPropertyCategory.Display, DEFAULT_THUMB_COLOR));
+		addColorProperty(PROP_THUMB_COLOR, "Thumb Color", WidgetPropertyCategory.Display, DEFAULT_THUMB_COLOR);
 
 		addProperty(PROP_INCREMENT, new DoubleProperty("Increment", WidgetPropertyCategory.Behaviour, 1.0));
 
@@ -80,13 +80,6 @@ public class ScaledSliderModel extends AbstractMarkedWidgetModel {
 	@Override
 	public String getTypeID() {
 		return ID;
-	}
-
-	/**
-	 * @return the fill color
-	 */
-	public ColorProperty getFillColor() {
-		return (ColorProperty) getProperty(PROP_FILL_COLOR);
 	}
 
 	/**
@@ -102,24 +95,6 @@ public class ScaledSliderModel extends AbstractMarkedWidgetModel {
 	 */
 	public boolean isHorizontal() {
 		return (Boolean) getProperty(PROP_HORIZONTAL).getPropertyValue();
-	}
-
-	/**
-	 * Gets the RGB for fillbackground.
-	 * 
-	 * @return The fillbackground color
-	 */
-	public ColorProperty getFillbackgroundColor() {
-		return (ColorProperty) getProperty(PROP_FILLBACKGROUND_COLOR);
-	}
-
-	/**
-	 * Gets the RGB for thumb.
-	 * 
-	 * @return The thumb color
-	 */
-	public ColorProperty getThumbColor() {
-		return (ColorProperty) getProperty(PROP_THUMB_COLOR);
 	}
 
 	/**

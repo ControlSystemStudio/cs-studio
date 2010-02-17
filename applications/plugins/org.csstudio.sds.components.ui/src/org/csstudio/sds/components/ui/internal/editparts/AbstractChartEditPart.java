@@ -26,6 +26,7 @@ import org.csstudio.sds.components.model.AbstractChartModel;
 import org.csstudio.sds.components.model.BargraphModel;
 import org.csstudio.sds.components.model.WaveformModel;
 import org.csstudio.sds.components.ui.internal.figures.AbstractChartFigure;
+import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.eclipse.draw2d.IFigure;
@@ -54,7 +55,7 @@ abstract class AbstractChartEditPart extends AbstractWidgetEditPart {
 			final AbstractChartFigure figure, final AbstractChartModel model) {
 		figure.setAliases(model.getAllInheritedAliases());
 		for (int i = 0; i < model.numberOfDataSeries(); i++) {
-			figure.setPlotColor(i, getRgb(model.getPlotColorProperty(i)));
+			figure.setPlotColor(i, getModelColor(AbstractChartModel.plotColorPropertyId(i)));
 		}
 		figure.setMin(model.getMin());
 		figure.setMax(model.getMax());
@@ -62,11 +63,11 @@ abstract class AbstractChartEditPart extends AbstractWidgetEditPart {
 		figure.setShowScale(model.getShowAxes());
 		figure.setShowValues(model.isLabeledTicksEnabled());
 		figure.setShowGridLines(model.getShowGridLines());
-		figure.setGridLinesColor(getRgb(model.getGridLineColor()));
+		figure.setGridLinesColor(getModelColor(AbstractChartModel.PROP_GRID_LINE_COLOR));
 		figure.setLineChart(model.isLineChart());
 		figure.setGraphLineWidth(model.getPlotLineWidth());
-		figure.setBackgroundColor(getColor(model.getBackgroundColor()));
-		figure.setForegroundColor(getColor(model.getForegroundColor()));
+		figure.setBackgroundColor(getModelColor2(AbstractWidgetModel.PROP_COLOR_BACKGROUND));
+		figure.setForegroundColor(getModelColor2(AbstractWidgetModel.PROP_COLOR_FOREGROUND));
 		figure.setTransparent(model.isTransparent());
 		figure.setYAxisScaling(model.getYAxisScaling());
 		figure.setLabel(model.getLabel());

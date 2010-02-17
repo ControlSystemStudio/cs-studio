@@ -32,7 +32,6 @@ import org.csstudio.sds.ui.editparts.ExecutionMode;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.graphics.RGB;
 
 /**
  * Controller for the ThumbWheel.
@@ -64,7 +63,7 @@ public class ThumbWheelEditPart extends AbstractWidgetEditPart {
 		model.setWholePartDigits(logic.getIntegerWheels());
 		model.setDecimalPartDigits(logic.getDecimalWheels());
 		figure.setWheelFonts(model.getFont());
-		figure.setInternalBorderColor(getRgb(model.getInternalBorderColor()));
+		figure.setInternalBorderColor(getModelColor(ThumbWheelModel.PROP_INTERNAL_FRAME_COLOR));
 		figure.setInternalBorderThickness(model.getInternalBorderWidth());
 
 		figure.addWheelListener(new WheelListener() {

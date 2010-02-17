@@ -1,9 +1,8 @@
 package org.csstudio.sds.components.model;
 
+import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.properties.BooleanProperty;
-import org.csstudio.sds.model.properties.ColorProperty;
-import org.eclipse.swt.graphics.RGB;
 
 
 /**
@@ -38,14 +37,14 @@ public class GaugeModel extends AbstractMarkedWidgetModel{
 	
 	public GaugeModel() {
 		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-		setForegroundColor("#000000");
+		setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND,"#000000");
 	}	
 
 	@Override
 	protected void configureProperties() {
 		super.configureProperties();		
-		addProperty(PROP_NEEDLE_COLOR, new ColorProperty("Needle Color",
-				WidgetPropertyCategory.Display,DEFAULT_NEEDLE_COLOR));	
+		addColorProperty(PROP_NEEDLE_COLOR, "Needle Color",
+				WidgetPropertyCategory.Display,DEFAULT_NEEDLE_COLOR);	
 		
 		addProperty(PROP_EFFECT3D, new BooleanProperty("3D Effect", 
 				WidgetPropertyCategory.Display, true));	
@@ -61,13 +60,6 @@ public class GaugeModel extends AbstractMarkedWidgetModel{
 		return ID;
 	}		
 
-	/**
-	 * @return the needle color
-	 */
-	public ColorProperty getNeedleColor() {
-		return (ColorProperty) getProperty(PROP_NEEDLE_COLOR);
-	}	
-	
 	/**
 	 * @return true if the widget would be painted with 3D effect, false otherwise
 	 */

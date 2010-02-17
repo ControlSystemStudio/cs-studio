@@ -25,9 +25,7 @@ import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.optionEnums.BorderStyleEnum;
 import org.csstudio.sds.model.properties.BooleanProperty;
-import org.csstudio.sds.model.properties.ColorProperty;
 import org.csstudio.sds.model.properties.IntegerProperty;
-import org.eclipse.swt.graphics.RGB;
 
 /**
  * An arc widget model.
@@ -92,7 +90,7 @@ public final class ArcModel extends AbstractWidgetModel {
 		addProperty(PROP_ANGLE, new IntegerProperty("Angle",WidgetPropertyCategory.Display,90,0,360));
 		addProperty(PROP_LINEWIDTH, new IntegerProperty("Line Width",WidgetPropertyCategory.Display,1));
 		addProperty(PROP_FILLED, new BooleanProperty("Filled",WidgetPropertyCategory.Display,false));
-		addProperty(PROP_FILLCOLOR, new ColorProperty("Fill Color",WidgetPropertyCategory.Display,"#ff0000"));
+		addColorProperty(PROP_FILLCOLOR, "Fill Color",WidgetPropertyCategory.Display,"#ff0000");
 	}
 	
 	/**
@@ -147,13 +145,5 @@ public final class ArcModel extends AbstractWidgetModel {
 	 */
 	public boolean getFill() {
 		return (Boolean) getProperty(PROP_FILLED).getPropertyValue();
-	}
-	
-	/**
-	 * Returns the fill color of the arc.
-	 * @return The fill color of the arc
-	 */
-	public ColorProperty getFillColor() {
-		return (ColorProperty) getProperty(PROP_FILLCOLOR);
 	}
 }

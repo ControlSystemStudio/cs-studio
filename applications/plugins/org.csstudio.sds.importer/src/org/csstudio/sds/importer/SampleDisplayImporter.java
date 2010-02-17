@@ -98,8 +98,8 @@ public class SampleDisplayImporter extends AbstractDisplayImporter {
 		AbstractWidgetModel result = createWidgetModel("org.csstudio.sds.components.ActionButton");
 		result.setLocation(0, 0);
 		result.setSize(100, 50);
-		result.setForegroundColor("#000000");
-		result.setBackgroundColor("#00FF00");
+		result.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND,"#000000");
+		result.setColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND, "#00FF00");
 		result.setVisible(true);
 
 		result.setPropertyValue("border.color", ColorConstants.black.getRGB());
@@ -122,11 +122,11 @@ public class SampleDisplayImporter extends AbstractDisplayImporter {
 		AbstractWidgetModel result = createWidgetModel("org.csstudio.sds.components.Bargraph");
 		result.setLocation(150, 0);
 		result.setSize(150, 50);
-		result.setForegroundColor("#000000");
-		result.setBackgroundColor("#00FF00");
+		result.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND,"#000000");
+		result.setColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND, "#00FF00");
 		result.setVisible(true);
 
-		result.setBorderColor("#000000");
+		result.setColor(AbstractWidgetModel.PROP_BORDER_COLOR, "#000000");
 		result.setPropertyValue(AbstractWidgetModel.PROP_BORDER_WIDTH, 1);
 
 		result.setPropertyValue("defaultFillColor", ColorConstants.darkGreen
@@ -168,8 +168,8 @@ public class SampleDisplayImporter extends AbstractDisplayImporter {
 		AbstractWidgetModel result = createWidgetModel("org.csstudio.sds.components.Ellipse");
 		result.setLocation(400, 0);
 		result.setSize(100, 50);
-		result.setForegroundColor("#000000");
-		result.setBackgroundColor("#00FF00");
+		result.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND,"#000000");
+		result.setColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND, "#00FF00");
 		result.setVisible(true);
 
 		result.setPropertyValue("fill", 75.0d);
@@ -187,8 +187,8 @@ public class SampleDisplayImporter extends AbstractDisplayImporter {
 		AbstractWidgetModel result = createWidgetModel("org.csstudio.sds.components.Label");
 		result.setLocation(0, 100);
 		result.setSize(100, 50);
-		result.setForegroundColor("#000000");
-		result.setBackgroundColor("#00FF00");
+		result.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND,"#000000");
+		result.setColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND, "#00FF00");
 		result.setVisible(true);
 
 		result.setPropertyValue("label", "Hello SDS");
@@ -207,8 +207,8 @@ public class SampleDisplayImporter extends AbstractDisplayImporter {
 		AbstractWidgetModel result = createWidgetModel("org.csstudio.sds.components.Meter");
 		result.setLocation(150, 100);
 		result.setSize(50, 50);
-		result.setForegroundColor("#000000");
-		result.setBackgroundColor("#00FF00");
+		result.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND,"#000000");
+		result.setColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND, "#00FF00");
 		result.setVisible(true);
 
 		result.setPropertyValue("value", 10.0d);
@@ -231,8 +231,8 @@ public class SampleDisplayImporter extends AbstractDisplayImporter {
 		AbstractWidgetModel result = createWidgetModel("org.csstudio.sds.components.Rectangle");
 		result.setLocation(400, 100);
 		result.setSize(100, 50);
-		result.setForegroundColor("#000000");
-		result.setBackgroundColor("#00FF00");
+		result.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND,"#000000");
+		result.setColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND, "#00FF00");
 		result.setVisible(true);
 
 		result.setPropertyValue("fill", 75.0d);
@@ -251,8 +251,8 @@ public class SampleDisplayImporter extends AbstractDisplayImporter {
 
 		result.setLocation(0, 200);
 		result.setSize(100, 50);
-		result.setForegroundColor("#000000");
-		result.setBackgroundColor("#00FF00");
+		result.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND,"#000000");
+		result.setColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND, "#00FF00");
 		result.setVisible(true);
 
 		result.setPropertyValue("value", 10.0d);
@@ -276,8 +276,8 @@ public class SampleDisplayImporter extends AbstractDisplayImporter {
 		AbstractWidgetModel result = createWidgetModel("org.csstudio.sds.components.Textinput");
 		result.setLocation(150, 200);
 		result.setSize(100, 50);
-		result.setForegroundColor("#000000");
-		result.setBackgroundColor("#00FF00");
+		result.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND,"#000000");
+		result.setColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND, "#00FF00");
 		result.setVisible(true);
 
 		result.setPropertyValue("inputText", "120.0");
@@ -299,8 +299,8 @@ public class SampleDisplayImporter extends AbstractDisplayImporter {
 		AbstractWidgetModel result = createWidgetModel("org.csstudio.sds.components.Waveform");
 		result.setLocation(0, 300);
 		result.setSize(200, 200);
-		result.setForegroundColor("#000000");
-		result.setBackgroundColor("#00FF00");
+		result.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND,"#000000");
+		result.setColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND, "#00FF00");
 		result.setVisible(true);
 
 		result.setPropertyValue("autoscale", Boolean.TRUE);
@@ -331,8 +331,8 @@ public class SampleDisplayImporter extends AbstractDisplayImporter {
 	 */
 	private AbstractWidgetModel createPolygon() {
 		AbstractWidgetModel result = createWidgetModel("org.csstudio.sds.components.Polygon");
-		result.setForegroundColor("#000000");
-		result.setBackgroundColor("#00FF00");
+		result.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND,"#000000");
+		result.setColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND, "#00FF00");
 		result.setVisible(true);
 
 		result.setPropertyValue("fill", 50.0d);
@@ -352,8 +352,8 @@ public class SampleDisplayImporter extends AbstractDisplayImporter {
 	 */
 	private AbstractWidgetModel createPolyline() {
 		AbstractWidgetModel result = createWidgetModel("org.csstudio.sds.components.Polyline");
-		result.setForegroundColor("#000000");
-		result.setBackgroundColor("#00FF00");
+		result.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND,"#000000");
+		result.setColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND, "#00FF00");
 		result.setVisible(true);
 
 		result.setPropertyValue("fill", 50.0d);

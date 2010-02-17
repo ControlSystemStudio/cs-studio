@@ -4,7 +4,6 @@ import org.csstudio.sds.components.model.TankModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableTankFigure;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.swt.graphics.RGB;
 
 /**
  * EditPart controller for the tank widget. The controller mediates between
@@ -25,9 +24,9 @@ public final class TankEditPart extends AbstractMarkedWidgetEditPart {
 		RefreshableTankFigure tank = new RefreshableTankFigure();
 		
 		initializeCommonFigureProperties(tank, model);		
-		tank.setFillColor(getRgb(model.getFillColor()));
+		tank.setFillColor(getModelColor(TankModel.PROP_FILL_COLOR));
 		tank.setEffect3D(model.isEffect3D());	
-		tank.setFillBackgroundColor(getRgb(model.getFillbackgroundColor()));
+		tank.setFillBackgroundColor(getModelColor(TankModel.PROP_FILLBACKGROUND_COLOR));
 		return tank;
 
 	}

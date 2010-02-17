@@ -6,7 +6,6 @@ import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.graphics.RGB;
 
 /**
  * Edit Part for Sixteen Binary Bar.
@@ -24,15 +23,15 @@ public class SixteenBinaryBarEditPart extends AbstractWidgetEditPart {
 		SixteenBinaryBarModel model = (SixteenBinaryBarModel) getWidgetModel();
 
 		final RefreshableSixteenBinaryBarFigure bar = new RefreshableSixteenBinaryBarFigure();
-		bar.setOnColor(getRgb(model.getOnColor()));
-		bar.setOffColor(getRgb(model.getOffColor()));
+		bar.setOnColor(getModelColor(SixteenBinaryBarModel.PROP_ON_COLOR));
+		bar.setOffColor(getModelColor(SixteenBinaryBarModel.PROP_OFF_COLOR));
 		bar.setLabelFont(model.getLabelFont());
 		bar.setHorizontal(model.getHorizontal());
 		bar.setShowLabels(model.getShowLabels());
 		bar.setValue(model.getValue());
 		bar.setInternalBorderThickness(model.getInternalFrameThickness());
-		bar.setInternalBorderColor(getRgb(model.getInternalFrameColor()));
-		bar.setLabelColor(getRgb(model.getLabelColor()));
+		bar.setInternalBorderColor(getModelColor(SixteenBinaryBarModel.PROP_INTERNAL_FRAME_COLOR));
+		bar.setLabelColor(getModelColor(SixteenBinaryBarModel.PROP_LABEL_COLOR));
 		bar.setBitRangeFrom(model.getBitRangeFrom());
 		bar.setBitRangeTo(model.getBitRangeTo());
 		return bar;

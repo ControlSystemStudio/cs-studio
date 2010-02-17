@@ -23,10 +23,10 @@ package org.csstudio.sds.components.ui.internal.editparts;
 
 import org.csstudio.sds.components.model.BargraphModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableBargraphFigure;
+import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.swt.graphics.RGB;
 
 /**
  * EditPart controller for the Bargraph widget. The controller mediates between
@@ -48,9 +48,9 @@ public final class BargraphEditPart extends AbstractWidgetEditPart {
 		bargraph.setFill(model.getFillLevel());
 		bargraph.setOrientation(model.getOrientation());
 		// Colors
-		bargraph.setDefaultFillColor(getRgb(model.getDefaultFillColor()));
-		bargraph.setBorderColor(getRgb(model.getBorderColor()));
-		bargraph.setFillBackgroundColor(getRgb(model.getFillbackgroundColor()));
+		bargraph.setDefaultFillColor(getModelColor(BargraphModel.PROP_DEFAULT_FILL_COLOR));
+		bargraph.setBorderColor(getModelColor(AbstractWidgetModel.PROP_BORDER_COLOR));
+		bargraph.setFillBackgroundColor(getModelColor(BargraphModel.PROP_FILLBACKGROUND_COLOR));
 		// Levels
 		bargraph.setMinimum(model.getMinimum());
 		bargraph.setLoloLevel(model.getLoloLevel());

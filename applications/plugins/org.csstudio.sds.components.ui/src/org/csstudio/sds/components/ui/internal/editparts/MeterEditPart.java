@@ -55,7 +55,7 @@ public final class MeterEditPart extends AbstractWidgetEditPart {
 		figure.setAngle(model.getAngle());
 		figure.setAliases(model.getAliases());
 		figure.setInnerAngle(model.getInnerAngle());
-		figure.setNeedleColor(getRgb(model.getNeedleColor()));
+		figure.setNeedleColor(getModelColor(MeterModel.PROP_NEEDLECOLOR));
 		figure.setVisibleRadius(model.getVisibleRadius());
 		figure.setScaleRadius(model.getScaleRadius());
 		figure.setMinorStep(model.getMinorStep());
@@ -63,16 +63,16 @@ public final class MeterEditPart extends AbstractWidgetEditPart {
 		figure.setMinValue(model.getMinValue());
 		figure.setMaxValue(model.getMaxValue());
 		figure.setValue(model.getValue());
-		figure.setScaleColor(getRgb(model.getScaleColor()));
+		figure.setScaleColor(getModelColor(MeterModel.PROP_SCALECOLOR));
 		figure.setScaleWidth(model.getScaleWidth());
 		figure.setTextRadius(model.getTextRadius());
 		figure.setTransparent(model.getTransparent());
 		
-		figure.setMColor(getRgb(model.getMColor()));
-		figure.setLOLOColor(getRgb(model.getLOLOColor()));
-		figure.setLOColor(getRgb(model.getLOColor()));
-		figure.setHIColor(getRgb(model.getHIColor()));
-		figure.setHIHIColor(getRgb(model.getHIHIColor()));
+		figure.setMColor(getModelColor(MeterModel.PROP_MCOLOR));
+		figure.setLOLOColor(getModelColor(MeterModel.PROP_LOLOCOLOR));
+		figure.setLOColor(getModelColor(MeterModel.PROP_LOCOLOR));
+		figure.setHIColor(getModelColor(MeterModel.PROP_HICOLOR));
+		figure.setHIHIColor(getModelColor(MeterModel.PROP_HIHICOLOR));
 		
 		figure.setMBound(model.getMBound());
 		figure.setLOLOBound(model.getLOLOBound());

@@ -25,9 +25,9 @@ public final class KnobEditPart extends AbstractMarkedWidgetEditPart {
 		KnobFigure knob = new KnobFigure();
 		
 		initializeCommonFigureProperties(knob, model);		
-		knob.setBulbColor(getRgb(model.getKnobColor()));
+		knob.setBulbColor(getModelColor(KnobModel.PROP_KNOB_COLOR));
 		knob.setEffect3D(model.isEffect3D());	
-		knob.setThumbColor(getRgb(model.getThumbColor()));
+		knob.setThumbColor(getModelColor(KnobModel.PROP_THUMB_COLOR));
 		knob.setValueLabelVisibility(model.isShowValueLabel());
 		knob.setGradient(model.isRampGradient());
 		knob.setIncrement(model.getIncrement());

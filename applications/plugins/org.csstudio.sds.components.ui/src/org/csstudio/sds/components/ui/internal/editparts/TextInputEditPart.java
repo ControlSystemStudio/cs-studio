@@ -36,6 +36,7 @@ import org.csstudio.platform.model.IProcessVariableWithSamples;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.components.model.TextInputModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableLabelFigure;
+import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetProperty;
 import org.csstudio.sds.model.optionEnums.TextTypeEnum;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
@@ -293,11 +294,10 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements
         Font font = CustomMediaFactory.getInstance().getFont(new FontData[] { fontData });
 
         // get the chosen foreground color
-        Color foregroundColor = getColor(
-                getWidgetModel().getForegroundColor());
+        Color foregroundColor = getModelColor2(AbstractWidgetModel.PROP_COLOR_FOREGROUND);
 
         // get the chosen background color
-        RGB backgroundRgb = getRgb(getWidgetModel().getBackgroundColor());
+        RGB backgroundRgb = getModelColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND);
 
         int red = Math.min(backgroundRgb.red + INPUT_FIELD_BRIGHTNESS, 255);
         int green = Math.min(backgroundRgb.green + INPUT_FIELD_BRIGHTNESS, 255);

@@ -3,13 +3,10 @@ package org.csstudio.sds.components.model;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.properties.BooleanProperty;
-import org.csstudio.sds.model.properties.ColorProperty;
 import org.csstudio.sds.model.properties.FontProperty;
 import org.csstudio.sds.model.properties.IntegerProperty;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * Represents the model for the Sixteen Binary Bar.
@@ -97,16 +94,16 @@ public class SixteenBinaryBarModel extends AbstractWidgetModel {
 		addProperty(PROP_BITS_TO, new IntegerProperty(
 				"Bit range (to)", WidgetPropertyCategory.Behaviour, 15, 0, 31));
 
-		addProperty(PROP_ON_COLOR, new ColorProperty("On color",
-				WidgetPropertyCategory.Display, "#00ff00"));
-		addProperty(PROP_OFF_COLOR, new ColorProperty("Off color",
-				WidgetPropertyCategory.Display, "#c0c0c0"));
-		addProperty(PROP_LABEL_COLOR, new ColorProperty(
+		addColorProperty(PROP_ON_COLOR, "On color",
+				WidgetPropertyCategory.Display, "#00ff00");
+		addColorProperty(PROP_OFF_COLOR, "Off color",
+				WidgetPropertyCategory.Display, "#c0c0c0");
+		addColorProperty(PROP_LABEL_COLOR, 
 				"Label text color", WidgetPropertyCategory.Display,
-				"#000000"));
-		addProperty(PROP_INTERNAL_FRAME_COLOR, new ColorProperty(
+				"#000000");
+		addColorProperty(PROP_INTERNAL_FRAME_COLOR, 
 				"Internal Frame Color", WidgetPropertyCategory.Display,
-				"#000000"));
+				"#000000");
 		
 	}
 
@@ -120,14 +117,6 @@ public class SixteenBinaryBarModel extends AbstractWidgetModel {
 		buffer.append("Value:\t");
 		buffer.append(createTooltipParameter(PROP_VALUE));
 		return buffer.toString();
-	}
-
-	public ColorProperty getOnColor() {
-		return (ColorProperty) getProperty(PROP_ON_COLOR);
-	}
-
-	public ColorProperty getOffColor() {
-		return (ColorProperty) getProperty(PROP_OFF_COLOR);
 	}
 
 	public FontData getLabelFont() {
@@ -150,14 +139,6 @@ public class SixteenBinaryBarModel extends AbstractWidgetModel {
 		return getProperty(PROP_INTERNAL_FRAME_THICKNESS).getPropertyValue();
 	}
 
-	public ColorProperty getInternalFrameColor() {
-		return (ColorProperty) getProperty(PROP_INTERNAL_FRAME_COLOR);
-	}
-
-	public ColorProperty getLabelColor() {
-		return (ColorProperty) getProperty(PROP_LABEL_COLOR);
-	}
-	
 	public int getBitRangeFrom() {
 		return getProperty(PROP_BITS_FROM).getPropertyValue();
 	}

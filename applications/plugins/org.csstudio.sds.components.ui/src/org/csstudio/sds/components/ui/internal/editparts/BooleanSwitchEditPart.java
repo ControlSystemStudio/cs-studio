@@ -1,13 +1,11 @@
 package org.csstudio.sds.components.ui.internal.editparts;
 
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.components.model.BooleanSwitchModel;
 import org.csstudio.sds.components.ui.internal.figures.BoolSwitchFigure;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.ExecutionMode;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.swt.graphics.RGB;
 
 /**
  * 
@@ -25,8 +23,8 @@ public class BooleanSwitchEditPart extends AbstractWidgetEditPart {
 		BoolSwitchFigure figure = new BoolSwitchFigure();
 		figure.setEffect3D(model.get3dEffect());
 		figure.setBooleanValue(model.getValue());
-		figure.setOffColor(getRgb(model.getOffColor()));
-		figure.setOnColor(getRgb(model.getOnColor()));
+		figure.setOffColor(getModelColor(BooleanSwitchModel.PROP_OFF_COLOR));
+		figure.setOnColor(getModelColor(BooleanSwitchModel.PROP_ON_COLOR));
 		figure.setShowBooleanLabel(model.getShowLabels());
 		figure.setOnLabel(model.getOnLabel());
 		figure.setOffLabel(model.getOffLabel());

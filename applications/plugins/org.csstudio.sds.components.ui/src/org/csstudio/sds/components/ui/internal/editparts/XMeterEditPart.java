@@ -4,7 +4,6 @@ import org.csstudio.sds.components.model.XMeterModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableXMeterFigure;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.swt.graphics.RGB;
 
 /**
  * EditPart controller for the Gauge widget. The controller mediates between
@@ -25,7 +24,7 @@ public final class XMeterEditPart extends AbstractMarkedWidgetEditPart {
 		RefreshableXMeterFigure xMeter = new RefreshableXMeterFigure();
 		
 		initializeCommonFigureProperties(xMeter, model);		
-		xMeter.setNeedleColor(getRgb(model.getNeedleColor()));
+		xMeter.setNeedleColor(getModelColor(XMeterModel.PROP_NEEDLE_COLOR));
 		xMeter.setGradient(model.isRampGradient());
 		
 		return xMeter;

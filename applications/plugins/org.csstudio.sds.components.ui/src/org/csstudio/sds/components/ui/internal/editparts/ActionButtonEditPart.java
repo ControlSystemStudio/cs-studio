@@ -27,6 +27,7 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.components.model.ActionButtonModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableActionButtonFigure;
+import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.LabelModel;
 import org.csstudio.sds.model.WidgetProperty;
 import org.csstudio.sds.model.properties.actions.AbstractWidgetActionModel;
@@ -310,11 +311,10 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 	        Font font = CustomMediaFactory.getInstance().getFont(new FontData[] { fontData });
 
 	        // get the chosen foreground color
-	        Color foregroundColor = getColor(
-	                getWidgetModel().getForegroundColor());
+	        Color foregroundColor = getModelColor2(AbstractWidgetModel.PROP_COLOR_FOREGROUND);
 
 	        // get the chosen background color
-	        RGB backgroundRgb = getRgb(getWidgetModel().getBackgroundColor());
+	        RGB backgroundRgb = getModelColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND);
 
 	        int red = Math.min(backgroundRgb.red + INPUT_FIELD_BRIGHTNESS, 255);
 	        int green = Math.min(backgroundRgb.green + INPUT_FIELD_BRIGHTNESS, 255);

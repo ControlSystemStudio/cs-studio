@@ -24,7 +24,6 @@
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.properties.BooleanProperty;
-import org.csstudio.sds.model.properties.ColorProperty;
 import org.csstudio.sds.model.properties.DoubleProperty;
 import org.csstudio.sds.model.properties.FontProperty;
 import org.csstudio.sds.model.properties.IntegerProperty;
@@ -94,7 +93,7 @@ public final class MeterModel extends AbstractWidgetModel {
 		// add the necessary properties for the meter
 		addProperty(PROP_ANGLE,new IntegerProperty("Display Angle",WidgetPropertyCategory.Display,90,1,359));
 		addProperty(PROP_INNANGLE,new IntegerProperty("Inner Angle",WidgetPropertyCategory.Display,80,1,359));
-		addProperty(PROP_NEEDLECOLOR,new ColorProperty("Needle Color",WidgetPropertyCategory.Display,"#00ff00"));
+		addColorProperty(PROP_NEEDLECOLOR,"Needle Color",WidgetPropertyCategory.Display,"#00ff00");
 		addProperty(PROP_RADIUS,new DoubleProperty("Visible Radius",WidgetPropertyCategory.Display,0.15,0.0,1.0));
 		addProperty(PROP_TEXTRADIUS,new DoubleProperty("Scale Text Radius",WidgetPropertyCategory.Display,0.25,0.0,1.0));
 		addProperty(PROP_TRANSPARENT,new BooleanProperty("Transparent Background",WidgetPropertyCategory.Display,false));
@@ -102,7 +101,7 @@ public final class MeterModel extends AbstractWidgetModel {
 		addProperty(PROP_SCALERADIUS,new DoubleProperty("Scale Radius",WidgetPropertyCategory.Display,0.25,0.0,1.0));
 		addProperty(PROP_MINSTEP,new DoubleProperty("Minor Scale Step",WidgetPropertyCategory.Behaviour,1.0));
 		addProperty(PROP_MAJSTEP,new DoubleProperty("Major Scale Step",WidgetPropertyCategory.Behaviour,5.0));
-		addProperty(PROP_SCALECOLOR,new ColorProperty("Scale Color",WidgetPropertyCategory.Display,"#000000"));
+		addColorProperty(PROP_SCALECOLOR,"Scale Color",WidgetPropertyCategory.Display,"#000000");
 		addProperty(PROP_SCALEWIDTH,new IntegerProperty("Scale Width",WidgetPropertyCategory.Display,1));
 		
 		addProperty(PROP_MINVAL,new DoubleProperty("Minimum Value",WidgetPropertyCategory.Behaviour,0.0));
@@ -110,11 +109,11 @@ public final class MeterModel extends AbstractWidgetModel {
 		addProperty(PROP_VALUE,new DoubleProperty("Value",WidgetPropertyCategory.Behaviour,0.0));
 		
 		//background colors
-		addProperty(PROP_MCOLOR,new ColorProperty("Color M",WidgetPropertyCategory.Display,"#00ff00"));
-		addProperty(PROP_LOLOCOLOR,new ColorProperty("Color LOLO",WidgetPropertyCategory.Display,"#ff0000"));
-		addProperty(PROP_LOCOLOR,new ColorProperty("Color LO",WidgetPropertyCategory.Display,"#ff5151"));
-		addProperty(PROP_HICOLOR,new ColorProperty("Color HI",WidgetPropertyCategory.Display,"#ff5151"));
-		addProperty(PROP_HIHICOLOR,new ColorProperty("Color HIHI",WidgetPropertyCategory.Display,"#ff0000"));
+		addColorProperty(PROP_MCOLOR,"Color M",WidgetPropertyCategory.Display,"#00ff00");
+		addColorProperty(PROP_LOLOCOLOR,"Color LOLO",WidgetPropertyCategory.Display,"#ff0000");
+		addColorProperty(PROP_LOCOLOR,"Color LO",WidgetPropertyCategory.Display,"#ff5151");
+		addColorProperty(PROP_HICOLOR,"Color HI",WidgetPropertyCategory.Display,"#ff5151");
+		addColorProperty(PROP_HIHICOLOR,"Color HIHI",WidgetPropertyCategory.Display,"#ff0000");
 		
 		//level boundaries
 		addProperty(PROP_MBOUND,new DoubleProperty("Boundary M",WidgetPropertyCategory.Behaviour,6.0));
@@ -163,10 +162,6 @@ public final class MeterModel extends AbstractWidgetModel {
 		return (Integer) getProperty(PROP_INNANGLE).getPropertyValue();
 	}
 	
-	public ColorProperty getNeedleColor() {
-		return (ColorProperty) getProperty(PROP_NEEDLECOLOR);
-	}
-	
 	public double getVisibleRadius() {
 		return (Double) getProperty(PROP_RADIUS).getPropertyValue();
 	}
@@ -195,10 +190,6 @@ public final class MeterModel extends AbstractWidgetModel {
 		return (Double) getProperty(PROP_VALUE).getPropertyValue();
 	}
 	
-	public ColorProperty getScaleColor() {
-		return (ColorProperty) getProperty(PROP_SCALECOLOR);
-	}
-	
 	public int getScaleWidth() {
 		return (Integer) getProperty(PROP_SCALEWIDTH).getPropertyValue();
 	}
@@ -209,26 +200,6 @@ public final class MeterModel extends AbstractWidgetModel {
 	
 	public boolean getTransparent() {
 		return (Boolean) getProperty(PROP_TRANSPARENT).getPropertyValue();
-	}
-	
-	public ColorProperty getMColor() {
-		return (ColorProperty) getProperty(PROP_MCOLOR);
-	}
-	
-	public ColorProperty getLOLOColor() {
-		return (ColorProperty) getProperty(PROP_LOLOCOLOR);
-	}
-	
-	public ColorProperty getLOColor() {
-		return (ColorProperty) getProperty(PROP_LOCOLOR);
-	}
-	
-	public ColorProperty getHIColor() {
-		return (ColorProperty) getProperty(PROP_HICOLOR);
-	}
-	
-	public ColorProperty getHIHIColor() {
-		return (ColorProperty) getProperty(PROP_HIHICOLOR);
 	}
 	
 	public double getMBound() {

@@ -1,10 +1,9 @@
 package org.csstudio.sds.components.model;
 
+import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.properties.BooleanProperty;
-import org.csstudio.sds.model.properties.ColorProperty;
 import org.csstudio.sds.model.properties.DoubleProperty;
-import org.eclipse.swt.graphics.RGB;
 
 
 /**
@@ -52,14 +51,14 @@ public class KnobModel extends AbstractMarkedWidgetModel{
 	
 	public KnobModel() {
 		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-		setForegroundColor("#000000");
+		setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND,"#000000");
 	}	
 
 	@Override
 	protected void configureProperties() {
 		super.configureProperties();		
-		addProperty(PROP_KNOB_COLOR, new ColorProperty("Knob Color",
-				WidgetPropertyCategory.Display,DEFAULT_KNOB_COLOR));	
+		addColorProperty(PROP_KNOB_COLOR, "Knob Color",
+				WidgetPropertyCategory.Display,DEFAULT_KNOB_COLOR);	
 		
 		addProperty(PROP_EFFECT3D, new BooleanProperty("3D Effect", 
 				WidgetPropertyCategory.Display, true));
@@ -67,8 +66,8 @@ public class KnobModel extends AbstractMarkedWidgetModel{
 		addProperty(PROP_SHOW_VALUE_LABEL, new BooleanProperty("Show Value Label", 
 				WidgetPropertyCategory.Display, true));		
 		
-		addProperty(PROP_THUMB_COLOR, new ColorProperty("Thumb Color",
-				WidgetPropertyCategory.Display,DEFAULT_THUMB_COLOR));
+		addColorProperty(PROP_THUMB_COLOR, "Thumb Color",
+				WidgetPropertyCategory.Display,DEFAULT_THUMB_COLOR);
 		
 		addProperty(PROP_RAMP_GRADIENT, new BooleanProperty("Ramp Gradient", 
 				WidgetPropertyCategory.Display, true));	
@@ -85,13 +84,6 @@ public class KnobModel extends AbstractMarkedWidgetModel{
 	}		
 
 	/**
-	 * @return the knob color
-	 */
-	public ColorProperty getKnobColor() {
-		return (ColorProperty) getProperty(PROP_KNOB_COLOR);
-	}	
-	
-	/**
 	 * @return true if the widget would be painted with 3D effect, false otherwise
 	 */
 	public boolean isEffect3D() {
@@ -103,14 +95,6 @@ public class KnobModel extends AbstractMarkedWidgetModel{
 	 */
 	public boolean isShowValueLabel() {
 		return (Boolean) getProperty(PROP_SHOW_VALUE_LABEL).getPropertyValue();
-	}
-	
-	/**
-	 * Gets the RGB for thumb.
-	 * @return The thumb color
-	 */
-	public ColorProperty getThumbColor() {
-		return (ColorProperty) getProperty(PROP_THUMB_COLOR);
 	}
 	
 	/**

@@ -43,10 +43,10 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
 		figure.setShowHi(model.isShowHi());
 		figure.setShowHihi(model.isShowHihi());
 		
-		figure.setLoloColor(getRgb(model.getLoloColor()));
-		figure.setLoColor(getRgb(model.getLoColor()));
-		figure.setHiColor(getRgb(model.getHiColor()));
-		figure.setHihiColor(getRgb(model.getHihiColor()));
+		figure.setLoloColor(getModelColor(AbstractMarkedWidgetModel.PROP_LOLO_COLOR));
+		figure.setLoColor(getModelColor(AbstractMarkedWidgetModel.PROP_LO_COLOR));
+		figure.setHiColor(getModelColor(AbstractMarkedWidgetModel.PROP_HI_COLOR));
+		figure.setHihiColor(getModelColor(AbstractMarkedWidgetModel.PROP_HIHI_COLOR));
 		
 		
 	}	
