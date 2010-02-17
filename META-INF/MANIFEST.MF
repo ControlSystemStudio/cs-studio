@@ -1,12 +1,12 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Jdbc Plug-in
+Bundle-Name: JDBC Plug-in
 Bundle-SymbolicName: org.csstudio.platform.libs.jdbc;singleton:=true
-Bundle-Version: 1.1.0
+Bundle-Version: 1.1.1
 Bundle-Activator: org.csstudio.platform.libs.jdbc.JdbcPlugin
 Require-Bundle: org.eclipse.core.runtime
 Eclipse-LazyStart: true
-Bundle-ClassPath: libs/ojdbc14.jar,
+Bundle-ClassPath: libs/ojdbc5_g.jar,
  libs/mysql-connector-java-5.0.4-bin.jar,
  .
 Export-Package: com.mysql.jdbc,
@@ -26,12 +26,9 @@ Export-Package: com.mysql.jdbc,
  oracle.jdbc.xa,
  oracle.jdbc.xa.client,
  oracle.jpub.runtime,
- oracle.net.TNSAddress,
  oracle.net.ano,
  oracle.net.aso,
  oracle.net.jndi,
- oracle.net.nl,
- oracle.net.nl.mesg,
  oracle.net.ns,
  oracle.net.nt,
  oracle.net.resolver,
