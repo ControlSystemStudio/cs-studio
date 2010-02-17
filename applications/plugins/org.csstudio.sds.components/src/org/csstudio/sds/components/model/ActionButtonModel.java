@@ -26,7 +26,6 @@ import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.optionEnums.TextAlignmentEnum;
 import org.csstudio.sds.model.properties.ArrayOptionProperty;
 import org.csstudio.sds.model.properties.BooleanProperty;
-import org.csstudio.sds.model.properties.FontProperty;
 import org.csstudio.sds.model.properties.IntegerProperty;
 import org.csstudio.sds.model.properties.StringProperty;
 import org.eclipse.swt.SWT;
@@ -107,9 +106,9 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	protected void configureProperties() {
 		addProperty(PROP_LABEL, new StringProperty("Label Text",
 				WidgetPropertyCategory.Display, "")); //$NON-NLS-1$
-		addProperty(PROP_FONT, new FontProperty("Font",
+		addFontProperty(PROP_FONT, "Font",
 				WidgetPropertyCategory.Display, new FontData(
-						"Arial", 8, SWT.NONE))); //$NON-NLS-1$
+						"Arial", 8, SWT.NONE)); //$NON-NLS-1$
 		addProperty(PROP_TEXT_ALIGNMENT, new ArrayOptionProperty("Text Alignment", 
 				WidgetPropertyCategory.Display, TextAlignmentEnum.getDisplayNames() ,TextAlignmentEnum.CENTER.getIndex()));
 		addProperty(PROP_ACTION_RELEASED_INDEX, new IntegerProperty("Action Index (released)",

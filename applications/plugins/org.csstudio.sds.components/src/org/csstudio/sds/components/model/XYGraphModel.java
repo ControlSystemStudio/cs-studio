@@ -3,7 +3,6 @@ package org.csstudio.sds.components.model;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.properties.BooleanProperty;
-import org.csstudio.sds.model.properties.FontProperty;
 import org.csstudio.sds.model.properties.StringProperty;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
@@ -26,7 +25,7 @@ public class XYGraphModel extends AbstractWidgetModel {
 		addProperty(PROP_SHOW_TITLE, new BooleanProperty("Show Title", WidgetPropertyCategory.Display, false));
 		addProperty(PROP_TITLE, new StringProperty("Title", WidgetPropertyCategory.Display, ""));
 		addColorProperty(PROP_TITLE_COLOR, "Title Color", WidgetPropertyCategory.Display, "#000000");
-		addProperty(PROP_TITLE_FONT, new FontProperty("Title Font", WidgetPropertyCategory.Display, new FontData("Arial", 8, SWT.NONE)));
+		addFontProperty(PROP_TITLE_FONT, "Title Font", WidgetPropertyCategory.Display, new FontData("Arial", 8, SWT.NONE));
 		addProperty(PROP_SHOW_LEGEND, new BooleanProperty("Show Legend", WidgetPropertyCategory.Display, false));
 	}
 

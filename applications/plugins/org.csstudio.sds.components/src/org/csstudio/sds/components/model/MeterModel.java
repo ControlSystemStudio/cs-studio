@@ -25,7 +25,6 @@ import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.properties.BooleanProperty;
 import org.csstudio.sds.model.properties.DoubleProperty;
-import org.csstudio.sds.model.properties.FontProperty;
 import org.csstudio.sds.model.properties.IntegerProperty;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
@@ -123,8 +122,8 @@ public final class MeterModel extends AbstractWidgetModel {
 		addProperty(PROP_HIHIBOUND,new DoubleProperty("Boundary HIHI",WidgetPropertyCategory.Behaviour,10.0));
 		
 		//font properties
-		addProperty(PROP_VALFONT, new FontProperty("Values Font",WidgetPropertyCategory.Display, new FontData("Arial", 8, SWT.NONE)));
-		addProperty(PROP_CHANFONT, new FontProperty("Channel Font",WidgetPropertyCategory.Display, new FontData("Arial", 8, SWT.NONE)));
+		addFontProperty(PROP_VALFONT, "Values Font",WidgetPropertyCategory.Display, new FontData("Arial", 8, SWT.NONE));
+		addFontProperty(PROP_CHANFONT, "Channel Font",WidgetPropertyCategory.Display, new FontData("Arial", 8, SWT.NONE));
 		// precision
 		addProperty(PROP_PRECISION, new IntegerProperty("Decimal places",
 				WidgetPropertyCategory.Behaviour, 2, 0, 5));
