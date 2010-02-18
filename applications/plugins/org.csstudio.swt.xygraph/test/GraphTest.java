@@ -252,9 +252,10 @@ class XYGraphTest extends Figure {
 					running = false;
 				}
 				else{
-					Sample sampe = new Sample(t, Math.sin(updateIndex), 0.1* Math.random(),
-							0.1*Math.random(), t*0.0000001* Math.random(),t*0.0000001* Math.random());
-					sampe.setInfo("sdfsf");
+					Sample sampe = new Sample(t, Math.sin(updateIndex),
+					        0.1* Math.random(), 0.1*Math.random(),
+					        t*0.0000001* Math.random(), t*0.0000001* Math.random(),
+					        "sdfsf");
 					trace2Provider.addSample(sampe);		
 				}
 						

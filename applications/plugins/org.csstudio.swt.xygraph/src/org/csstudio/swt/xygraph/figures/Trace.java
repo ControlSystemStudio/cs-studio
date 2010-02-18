@@ -458,8 +458,7 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
     					Sample nanSample = new Sample(dp.getXValue(),xAxis.getTickLablesSide() == LabelSide.Primary?
     							yAxis.getRange().getLower() : yAxis.getRange().getUpper(),
     							dp.getYPlusError(), dp.getYMinusError(),
-    							Double.NaN, dp.getXMinusError());
-    					nanSample.setInfo(dp.getInfo());
+    							Double.NaN, dp.getXMinusError(), dp.getInfo());
     					hotSampleist.add(nanSample);
     				}
     				//if the data is not in the plot area
