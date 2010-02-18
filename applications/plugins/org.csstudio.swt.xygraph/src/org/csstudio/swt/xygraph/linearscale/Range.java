@@ -1,51 +1,44 @@
 package org.csstudio.swt.xygraph.linearscale;
 
-/**
- * A range.
- * @author Xihui Chen
- *
+/** A value range of 'start' ... 'end' or 'lower' .. 'upper'.
+ *  @author Xihui Chen
+ *  @author Kay Kasemir Removed a broken and unused copy-constructor, 'final'
  */
 public class Range {
-
     /** the lower value of range */
-    private double lower;
+    final private double lower;
 
     /** the upper value of range */
-    private double upper;
+    final private double upper;
 
-    /**
-     * Constructor.
+    /** Initialize with start...end values, sorting them to get lower...upper.
      * 
      * @param start
      *            the start value of range
      * @param end
      *            the end value of range
      */
-    public Range(double start, double end) {
+    public Range(final double start, final double end) {
     	//if(end == start)
     	//	end = start + 1;
-        this.lower = (end > start) ? start : end;
-        this.upper = (end > start) ? end : start;
+        if (start <= end)
+        {
+            lower = start;
+            upper = end;
+        }
+        else
+        {
+            lower = end;
+            upper = start;
+        }
     }
 
-    /**
-     * Constructor.
-     * 
-     * @param range
-     *            the range
-     */
-    public Range(Range range) {
-        lower = (range.upper > range.lower) ? lower : upper;
-        upper = (range.upper > range.lower) ? upper : lower;
-    }
-
-    
     /**If a value in the range or not.
      * @param value
      * @param includeBoundary true if the boundary should be considered.
      * @return true if the value is in the range. Otherwise false.
      */
-    public boolean inRange(double value, boolean includeBoundary){
+    public boolean inRange(final double value, final boolean includeBoundary){
     	if(includeBoundary)
     		return (value >= lower && value <= upper);
     	else
@@ -56,7 +49,7 @@ public class Range {
      * @param value
      * @return true if the value is in the range. Otherwise false.
      */
-    public boolean inRange(double value){
+    public boolean inRange(final double value){
     	return value >= lower && value <= upper;
     }
 
@@ -99,6 +92,7 @@ public class Range {
     /*
      * @see Object#toString()
      */
+    @SuppressWarnings("nls")
     @Override
     public String toString() {
         return "lower=" + lower + ", upper=" + upper;
