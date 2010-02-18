@@ -55,11 +55,11 @@ public class ChoiceButton extends Widget {
         _widget.setPropertyValue(ActionButtonModel.PROP_TOGGLE_BUTTON, true);
         ActionData actionData = new ActionData();
         CommitValueActionModelFactory fac = new CommitValueActionModelFactory();
-        CommitValueActionModel action = (CommitValueActionModel) fac.createWidgetAction();
+        CommitValueActionModel action = (CommitValueActionModel) fac.createWidgetActionModel();
         action.getProperty(CommitValueActionModel.PROP_VALUE).setPropertyValue(0);
         action.getProperty(CommitValueActionModel.PROP_DESCRIPTION).setPropertyValue("0");
         actionData.addAction(action);
-        action = (CommitValueActionModel) fac.createWidgetAction();
+        action = (CommitValueActionModel) fac.createWidgetActionModel();
         action.getProperty(CommitValueActionModel.PROP_VALUE).setPropertyValue(1);
         action.getProperty(CommitValueActionModel.PROP_DESCRIPTION).setPropertyValue("1");
         actionData.addAction(action);

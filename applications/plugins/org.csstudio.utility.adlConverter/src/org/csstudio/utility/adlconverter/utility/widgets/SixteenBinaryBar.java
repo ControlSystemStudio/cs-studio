@@ -25,6 +25,7 @@
 package org.csstudio.utility.adlconverter.utility.widgets;
 
 import org.csstudio.sds.components.model.SixteenBinaryBarModel;
+import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
 import org.csstudio.sds.model.logic.ParameterDescriptor;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
@@ -50,8 +51,8 @@ public class SixteenBinaryBar extends Widget {
         DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor("directConnection"); //$NON-NLS-1$
         dynamicsDescriptor.addInputChannel(new ParameterDescriptor(_widget.getPrimaryPV(),Integer.class)); //$NON-NLS-1$        
         _widget.setDynamicsDescriptor(SixteenBinaryBarModel.PROP_VALUE, dynamicsDescriptor );
-      //TODO: new property interface       _widget.setPropertyValue(SixteenBinaryBarModel.PROP_ON_COLOR, _widget.getForegroundColor());
-      //TODO: new property interface      _widget.setPropertyValue(SixteenBinaryBarModel.PROP_OFF_COLOR, _widget.getBackgroundColor());
+        _widget.setColor(SixteenBinaryBarModel.PROP_ON_COLOR, _widget.getColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND));
+        _widget.setColor(SixteenBinaryBarModel.PROP_OFF_COLOR, _widget.getColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND));
         for (FileLine fileLine : sixteenBinaryBar.getBody()) {
             String bodyPart = fileLine.getLine();
             String[] row = bodyPart.trim().split("="); //$NON-NLS-1$

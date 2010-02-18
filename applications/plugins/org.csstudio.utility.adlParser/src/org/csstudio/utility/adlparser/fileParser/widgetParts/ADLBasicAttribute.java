@@ -113,7 +113,7 @@ public class ADLBasicAttribute extends WidgetPart{
     @Override
     final void generateElements() {
         if(_clr!=null){
-        	//TODO: new property interface            _widgetModel.setForegroundColor(ADLHelper.getRGB(_clr));
+            _widgetModel.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND,ADLHelper.getRGB(_clr));
         }
         boolean transperncy=false;
         if(_fill!=null){

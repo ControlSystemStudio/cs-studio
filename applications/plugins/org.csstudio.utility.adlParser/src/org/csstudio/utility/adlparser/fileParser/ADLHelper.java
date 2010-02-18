@@ -35,6 +35,7 @@ import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DisplayModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
+import org.csstudio.sds.model.properties.ColorUtil;
 import org.csstudio.utility.adlconverter.Activator;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.ui.preferences.ADLConverterPreferenceConstants;
@@ -76,14 +77,14 @@ public final class ADLHelper {
      *            the adl color value.
      * @return the converted RGB
      */
-    public static RGB getRGB(final String clr) {
+    public static String getRGB(final String clr) {
         String color = clr.replaceAll("\"", "");
         int colorID = Integer.parseInt(color);
         if (_rgbColor ==null || 0 > colorID || colorID >= _rgbColor.length) {
             return null;
         }
 
-        return _rgbColor[colorID].getRGB();
+        return _rgbColor[colorID].getHex();
     }
 
     /**

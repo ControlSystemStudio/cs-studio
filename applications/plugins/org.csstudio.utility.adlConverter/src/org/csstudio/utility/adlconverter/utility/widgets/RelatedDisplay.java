@@ -153,10 +153,10 @@ public class RelatedDisplay extends Widget {
             }
         }
         if(clr!=null){
-        	//TODO: new property interface           _widget.setForegroundColor(ADLHelper.getRGB(clr));
+            _widget.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND,ADLHelper.getRGB(clr));
         }
         if(bclr!=null){
-        	//TODO: new property interface         _widget.setBackgroundColor(ADLHelper.getRGB(bclr));
+            _widget.setColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND, ADLHelper.getRGB(bclr));
         }
         _widget.setPropertyValue(MenuButtonModel.PROP_LABEL, label);
         

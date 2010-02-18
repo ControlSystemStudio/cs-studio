@@ -272,7 +272,6 @@ public class ADLConverterMainView extends ViewPart {
                             fillFiles(file);
                             PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
 
-                                @Override
                                 public void run() {
                                     _avaibleFiles.setInput(_avaibleFilesList);
                                     _avaibleFiles.getList().selectAll();
@@ -495,12 +494,10 @@ public class ADLConverterMainView extends ViewPart {
         MenuItem showItem = new MenuItem(menu, SWT.PUSH);
         showItem.addSelectionListener(new SelectionListener() {
 
-            @Override
             public void widgetSelected(SelectionEvent e) {
                 removeSTC();
             }
 
-            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 removeSTC();
             }
@@ -529,12 +526,10 @@ public class ADLConverterMainView extends ViewPart {
         MenuItem showItem = new MenuItem(menu, SWT.PUSH);
         showItem.addSelectionListener(new SelectionListener() {
 
-            @Override
             public void widgetSelected(SelectionEvent e) {
                 removeMFP();
             }
 
-            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 removeMFP();
             }
@@ -562,12 +557,10 @@ public class ADLConverterMainView extends ViewPart {
         MenuItem showItem = new MenuItem(menu, SWT.PUSH);
         showItem.addSelectionListener(new SelectionListener() {
 
-            @Override
             public void widgetSelected(SelectionEvent e) {
                 removeADL();
             }
 
-            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 removeADL();
             }
@@ -595,12 +588,10 @@ public class ADLConverterMainView extends ViewPart {
         MenuItem showItem = new MenuItem(menu, SWT.PUSH);
         showItem.addSelectionListener(new SelectionListener() {
 
-            @Override
             public void widgetSelected(SelectionEvent e) {
                 removeBak();
             }
 
-            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 removeBak();
             }
@@ -633,13 +624,11 @@ public class ADLConverterMainView extends ViewPart {
         MenuItem showItem = new MenuItem(menu, SWT.PUSH);
         showItem.addSelectionListener(new SelectionListener() {
 
-            @Override
             public void widgetSelected(SelectionEvent e) {
                 StructuredSelection selection = (StructuredSelection) _avaibleFiles.getSelection();
                 _avaibleFiles.remove(selection.toArray());
             }
 
-            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 StructuredSelection selection = (StructuredSelection) _avaibleFiles.getSelection();
                 _avaibleFiles.remove(selection.toArray());

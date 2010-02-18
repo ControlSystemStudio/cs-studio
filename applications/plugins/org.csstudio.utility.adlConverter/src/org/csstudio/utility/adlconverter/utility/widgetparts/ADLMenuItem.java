@@ -151,7 +151,7 @@ public class ADLMenuItem extends WidgetPart {
 
             // new Open Shell Action
             OpenDisplayActionModelFactory factory = new OpenDisplayActionModelFactory();
-            OpenDisplayActionModel action = (OpenDisplayActionModel) factory.createWidgetAction();
+            OpenDisplayActionModel action = (OpenDisplayActionModel) factory.createWidgetActionModel();
             action.setEnabled(true);
 
             if (_label != null) {
@@ -199,7 +199,7 @@ public class ADLMenuItem extends WidgetPart {
             if (_command.contains("StripHistoryToolAAPI")) {
 //                OpenDisplayActionModelFactory factory = new OpenDisplayActionModelFactory(); 
                 OpenDataBrowserActionModelFactory factory = new OpenDataBrowserActionModelFactory();
-                OpenDataBrowserActionModel action = (OpenDataBrowserActionModel) factory.createWidgetAction();
+                OpenDataBrowserActionModel action = (OpenDataBrowserActionModel) factory.createWidgetActionModel();
                 action.getProperty(OpenDataBrowserActionModel.PROP_DESCRIPTION).setPropertyValue(_label.replace('"', ' ').trim());
                 String[] cleanString = ADLHelper.cleanString(_args);
                 IPath path = new Path(_trendPath.concat(cleanString[0]));
@@ -208,7 +208,7 @@ public class ADLMenuItem extends WidgetPart {
             } else {
                 CommitValueActionModelFactory factory = new CommitValueActionModelFactory();
                 CommitValueActionModel action = (CommitValueActionModel) factory
-                        .createWidgetAction();
+                        .createWidgetActionModel();
 
                 action.getProperty(CommitValueActionModel.PROP_VALUE).setPropertyValue(
                         new Path(_label.replaceAll("\"", ""))); //$NON-NLS-1$ //$NON-NLS-2$

@@ -29,6 +29,7 @@ import java.util.Map;
 
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DisplayModel;
 import org.csstudio.sds.model.LabelModel;
 import org.csstudio.sds.model.LinkingContainerModel;
@@ -217,7 +218,7 @@ public class FaceplateParser {
             int height = ADLHelper.getFontSize("Tahoma", header, h, w, "1");
             headerLabel.setFont(new FontData("Tahoma", height, SWT.BOLD));
             headerLabel.setTextValue(header);
-//TODO: new property interface            headerLabel.setForegroundColor(CustomMediaFactory.COLOR_BLACK);
+            headerLabel.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, "#000000");
             return headerLabel;
         } catch (Exception e) {
             e.printStackTrace();

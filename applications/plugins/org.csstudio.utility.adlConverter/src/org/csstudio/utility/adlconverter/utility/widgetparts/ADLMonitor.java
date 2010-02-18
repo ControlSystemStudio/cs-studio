@@ -115,10 +115,10 @@ public class ADLMonitor extends WidgetPart{
     @Override
     final void generateElements() {
         if(_clr!=null){
-        	//TODO: new property interface            _widgetModel.setForegroundColor(ADLHelper.getRGB(_clr));
+            _widgetModel.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, ADLHelper.getRGB(_clr));
         }
         if(_bclr!=null){
-        	//TODO: new property interface            _widgetModel.setBackgroundColor(ADLHelper.getRGB(_bclr));
+            _widgetModel.setColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND, ADLHelper.getRGB(_bclr));
         }
         if(_chan!=null){
             /*

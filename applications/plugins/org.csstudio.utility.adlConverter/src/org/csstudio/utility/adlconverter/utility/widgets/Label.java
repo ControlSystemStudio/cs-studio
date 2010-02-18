@@ -153,7 +153,7 @@ public class Label extends Widget {
             _widget.setPropertyValue(LabelModel.PROP_TRANSPARENT, true);
         }
         _widget.setLayer(Messages.ADLDisplayImporter_ADLActionLayerName);
-        if(!(displayModel instanceof DisplayModel) && (_widget.getPrimaryPV()==null||_widget.getPrimaryPV().isEmpty())) {
+        if(!(displayModel instanceof DisplayModel) && (_widget.getPrimaryPV()==null||_widget.getPrimaryPV().length()==0)) {
             _widget.setPrimarPv(displayModel.getPrimaryPV());
         }
     }

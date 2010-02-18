@@ -24,6 +24,7 @@
  */
 package org.csstudio.utility.adlconverter.utility;
 
+import org.csstudio.sds.model.properties.ColorUtil;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.eclipse.swt.graphics.RGB;
 
@@ -74,8 +75,8 @@ public class RGBColor {
         return _blue;
     }
     /** @return the blue value. */
-    public final RGB getRGB() {
-        return new RGB(_red,_green,_blue);
+    public final String getHex() {
+        return ColorUtil.toHex(_red,_green,_blue);
     }
     
     /**

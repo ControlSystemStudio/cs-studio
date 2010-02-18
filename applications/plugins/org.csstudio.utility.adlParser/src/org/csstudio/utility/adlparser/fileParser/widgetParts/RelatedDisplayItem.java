@@ -226,7 +226,7 @@ public class RelatedDisplayItem extends WidgetPart {
 
         // new Open Shell Action
         OpenDisplayActionModelFactory factoy = new OpenDisplayActionModelFactory();
-        OpenDisplayActionModel action = (OpenDisplayActionModel) factoy.createWidgetAction();
+        OpenDisplayActionModel action = (OpenDisplayActionModel) factoy.createWidgetActionModel();
 
         if (_label != null) {
             action.getProperty(OpenDisplayActionModel.PROP_DESCRIPTION).setPropertyValue(

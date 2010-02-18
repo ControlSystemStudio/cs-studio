@@ -25,6 +25,7 @@
 package org.csstudio.utility.adlconverter.utility.widgets;
 
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DisplayModel;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
@@ -117,10 +118,10 @@ public class ADLDisplay extends Widget{
 //            }
 //        }
         if(_clr!=null){
-        	//TODO: new property interface           _widget.setForegroundColor(ADLHelper.getRGB(_clr));
+            _widget.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND,ADLHelper.getRGB(_clr));
         }
         if(_bclr!=null){
-        	//TODO: new property interface           _widget.setBackgroundColor(ADLHelper.getRGB(_bclr));
+            _widget.setColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND, ADLHelper.getRGB(_bclr));
         }
         if(_cmap!=null){
             //TODO: Muss das übernommen werden ???

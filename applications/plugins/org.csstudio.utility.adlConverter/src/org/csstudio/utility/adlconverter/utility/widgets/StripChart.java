@@ -27,6 +27,7 @@ package org.csstudio.utility.adlconverter.utility.widgets;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.components.model.AbstractChartModel;
 import org.csstudio.sds.components.model.StripChartModel;
+import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
 import org.csstudio.sds.model.logic.ParameterDescriptor;
 import org.csstudio.sds.model.optionEnums.BorderStyleEnum;
@@ -146,9 +147,9 @@ public class StripChart extends Widget {
                 String name = row[1].replaceAll("\"", "").trim();
                 _widget.setPropertyValue(StripChartModel.PROP_LABEL, name);
             }else if(parameter.equals("clr")){
-            	//TODO: new property interface               _widget.setForegroundColor(ADLHelper.getRGB(row[1]));
+                _widget.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, ADLHelper.getRGB(row[1]));
             }else if(parameter.equals("bclr")){
-            	//TODO: new property interface               _widget.setBackgroundColor(ADLHelper.getRGB(row[1]));
+                _widget.setColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND, ADLHelper.getRGB(row[1]));
             }else if(parameter.equals("xlabel")){
                 String xLabel = row[1].replaceAll("\"", "").trim();
                 _widget.setPropertyValue(StripChartModel.PROP_X_AXIS_LABEL,xLabel);

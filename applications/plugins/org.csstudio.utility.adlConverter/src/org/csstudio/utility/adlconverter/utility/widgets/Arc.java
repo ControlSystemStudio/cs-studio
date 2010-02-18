@@ -73,7 +73,7 @@ public class Arc extends Widget {
             getBasicAttribute().setWidth("0"); //$NON-NLS-1$
         }
         if(getBasicAttribute().getFill()>0) {
-        	//TODO: new property interface           _widget.setPropertyValue(ArcModel.PROP_FILLCOLOR, _widget.getForegroundColor());
+            _widget.setPropertyValue(ArcModel.PROP_FILLCOLOR, _widget.getColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND));
             _widget.setPropertyValue(ArcModel.PROP_LINEWIDTH, 0);
             _widget.setPropertyValue(ArcModel.PROP_FILLED, true);
             

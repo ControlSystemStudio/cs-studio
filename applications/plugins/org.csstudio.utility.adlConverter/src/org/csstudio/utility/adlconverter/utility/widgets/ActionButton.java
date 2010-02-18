@@ -82,7 +82,7 @@ public class ActionButton extends Widget {
                 // <property type="sds.double" id="click_value" value="0.0" />
                 _widget.setPropertyValue("click_value", row[1].replaceAll("\"", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 CommitValueActionModelFactory fac = new CommitValueActionModelFactory();
-                CommitValueActionModel action = (CommitValueActionModel) fac.createWidgetAction();
+                CommitValueActionModel action = (CommitValueActionModel) fac.createWidgetActionModel();
                 action.setEnabled(true);
                 action.getProperty(CommitValueActionModel.PROP_VALUE).setPropertyValue(
                         row[1].replaceAll("\"", "")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -91,7 +91,7 @@ public class ActionButton extends Widget {
             } else if (row[0].equals("release_msg")) { //$NON-NLS-1$
                 _widget.setPropertyValue("click_value", row[1].replaceAll("\"", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 CommitValueActionModelFactory fac = new CommitValueActionModelFactory();
-                CommitValueActionModel action = (CommitValueActionModel) fac.createWidgetAction();
+                CommitValueActionModel action = (CommitValueActionModel) fac.createWidgetActionModel();
                 action.getProperty(CommitValueActionModel.PROP_VALUE).setPropertyValue(
                         row[1].replaceAll("\"", "")); //$NON-NLS-1$ //$NON-NLS-2$
                 result.addAction(action);
