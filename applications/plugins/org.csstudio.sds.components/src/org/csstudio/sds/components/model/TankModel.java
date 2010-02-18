@@ -60,8 +60,8 @@ public class TankModel extends AbstractMarkedWidgetModel{
 		addColorProperty(PROP_FILLBACKGROUND_COLOR, "Color Fillbackground",
 				WidgetPropertyCategory.Display,DEFAULT_FILLBACKGROUND_COLOR);
 		
-		setPropertyValue(PROP_LO_COLOR, "#FF8000");
-		setPropertyValue(PROP_HI_COLOR, "#FF8000");		
+		setColor(PROP_LO_COLOR, "#FF8000");
+		setColor(PROP_HI_COLOR, "#FF8000");		
 	}
 	
 	/**

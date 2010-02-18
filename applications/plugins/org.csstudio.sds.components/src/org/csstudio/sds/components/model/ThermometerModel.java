@@ -71,8 +71,8 @@ public class ThermometerModel extends AbstractMarkedWidgetModel{
 		addProperty(PROP_EFFECT3D, new BooleanProperty("3D Effect", 
 				WidgetPropertyCategory.Display, true));	
 		
-		setPropertyValue(PROP_LO_COLOR, "#FF8000");
-		setPropertyValue(PROP_HI_COLOR, "#FF8000");
+		setColor(PROP_LO_COLOR, "#FF8000");
+		setColor(PROP_HI_COLOR, "#FF8000");
 		
 	}
 	

@@ -72,8 +72,8 @@ public class ScaledSliderModel extends AbstractMarkedWidgetModel {
 
 		addProperty(PROP_INCREMENT, new DoubleProperty("Increment", WidgetPropertyCategory.Behaviour, 1.0));
 
-		setPropertyValue(PROP_LO_COLOR, "#FF8000");
-		setPropertyValue(PROP_HI_COLOR, "#FF8000");
+		setColor(PROP_LO_COLOR, "#FF8000");
+		setColor(PROP_HI_COLOR, "#FF8000");
 
 	}
 
