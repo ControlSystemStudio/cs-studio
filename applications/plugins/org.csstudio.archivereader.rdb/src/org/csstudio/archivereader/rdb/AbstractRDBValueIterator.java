@@ -29,9 +29,6 @@ import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 @SuppressWarnings("nls")
 abstract public class AbstractRDBValueIterator  implements ValueIterator
 {
-    /** Oracle error code for cancelled statements */
-    final protected static String ORACLE_CANCELLATION = "ORA-01013"; //$NON-NLS-1$
-
     /** Special Severity that's INVALID without a value */
     private static ISeverity no_value_severity = null;
 
@@ -73,13 +70,9 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
         {
             // Set iterator to empty
             close();
-            final String message = ex.getMessage();
-            if (message != null  &&  message.startsWith(ORACLE_CANCELLATION))
-            {
-                // Ignore
-            }
-            else
+            if (! RDBArchiveReader.isCancellation(ex))
                 throw ex;
+            // Else: Not a real error, return empty iterator
         }
     }
     
@@ -156,7 +149,7 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
     /** Extract value from SQL result
      *  @param result ResultSet that must contain contain time, severity, ..., value
      *  @return IValue Decoded IValue
-     *  @throws Exception on error
+     *  @throws Exception on error, including cancellation
      */
     protected IValue decodeSampleTableValue(final ResultSet result) throws Exception
     {
@@ -184,7 +177,7 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
                         (IEnumeratedMetaData) meta, IValue.Quality.Original,
                         new int [] { (int) dbl0 });
             // Double data. Get array elements - if any.
-            final double data[] = readArrayElements(severity, stamp, dbl0);
+            final double data[] = readArrayElements(stamp, dbl0, severity);
             if (meta instanceof INumericMetaData)
                 return ValueFactory.createDoubleValue(time, severity, status,
                         (INumericMetaData)meta, IValue.Quality.Original, data);
@@ -291,21 +284,26 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
     
     /** Given the time and first element of the  sample, see if there
      *  are more array elements.
+     *  @param stamp Time stamp of the sample
+     *  @param dbl0 Value of the first (maybe only) array element
+     *  @param severity Severity of the sample
      *  @return Array with given element and maybe more.
+     *  @throws Exception on error, including 'cancel'
      */
-    private double[] readArrayElements(final ISeverity severity,
-            final Timestamp stamp,
-            final double dbl0) throws Exception
+    private double[] readArrayElements(final Timestamp stamp,
+            final double dbl0,
+            final ISeverity severity) throws Exception
     {
-        // For performance reasons, we only look for array data
-        // until we hit a scalar sample.
+        // For performance reasons, only look for array data until we hit a scalar sample.
         if (data_is_scalar)
             return new double [] { dbl0 };
         
         // See if there are more array elements
-        if (sel_array_samples == null)   // Lazy initialization
+        if (sel_array_samples == null)
+        {   // Lazy initialization
             sel_array_samples = reader.getRDB().getConnection().prepareStatement(
                     reader.getSQL().sample_sel_array_vals);
+        }
         sel_array_samples.setInt(1, channel_id);
         sel_array_samples.setTimestamp(2, stamp);
         // MySQL keeps nanoseconds in designated column, not TIMESTAMP
@@ -323,21 +321,10 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
                 vals.add(res.getDouble(1));
             res.close();
         }
-        catch (Exception ex)
-        {
-            final String message = ex.getMessage();
-            if (message != null  &&  message.startsWith(ORACLE_CANCELLATION))
-            {   // Not a real error; return no array elements
-                return new double [] { dbl0 };
-            }
-            else
-                throw ex;
-        }
         finally
         {
             reader.removeFromCancellation(sel_array_samples);
         }
-        
         // Convert to plain double array
         final int N = vals.size();
         final double ret[] = new double[N];

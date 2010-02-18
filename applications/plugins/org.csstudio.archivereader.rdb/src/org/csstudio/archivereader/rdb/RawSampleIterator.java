@@ -46,15 +46,10 @@ public class RawSampleIterator extends AbstractRDBValueIterator
         }
         catch (Exception ex)
         {
-            final String message = ex.getMessage();
-            if (message != null  &&  message.startsWith(ORACLE_CANCELLATION))
-            {
-                // Not a real error; return empty iterator
-                value = null;
-                return;
-            }
-            else
+            if (! RDBArchiveReader.isCancellation(ex))
                 throw ex;
+            // Else: Not a real error; return empty iterator
+            value = null;
         }
     }
 
@@ -62,7 +57,7 @@ public class RawSampleIterator extends AbstractRDBValueIterator
      *  <code>value</code> will contain the first sample
      *  @param start Start time
      *  @param end End time
-     *  @throws Exception on error
+     *  @throws Exception on error, including cancellation
      */
     private void determineInitialSample(final ITimestamp start, final ITimestamp end) throws Exception
     {
@@ -161,13 +156,9 @@ public class RawSampleIterator extends AbstractRDBValueIterator
         catch (Exception ex)
         {
             close();
-            final String message = ex.getMessage();
-            if (message != null  &&  message.startsWith(ORACLE_CANCELLATION))
-            {
-                // Not a real error; return empty iterator
-            }
-            else
+            if (! RDBArchiveReader.isCancellation(ex))
                 throw ex;
+            // Else: Not a real error; return empty iterator
         }
         last_value = result;
         return result;

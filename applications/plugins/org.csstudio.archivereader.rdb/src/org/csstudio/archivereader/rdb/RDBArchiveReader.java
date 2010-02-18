@@ -22,6 +22,12 @@ import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 @SuppressWarnings("nls")
 public class RDBArchiveReader implements ArchiveReader
 {
+    /** Oracle error code for canceled statements */
+    final private static String ORACLE_CANCELLATION = "ORA-01013"; //$NON-NLS-1$
+
+    /** Oracle error code "error occurred at recursive SQL level ...: */
+    final private static String ORACLE_RECURSIVE_ERROR = "ORA-00604"; //$NON-NLS-1$
+    
     final private String url;
     final private String user;
     final private int password;
@@ -303,6 +309,23 @@ public class RDBArchiveReader implements ArchiveReader
         {
             cancellable_statements.remove(statement);
         }
+    }
+
+    /** Check if an exception indicates Oracle operation was canceled,
+     *  i.e. this program requested the operation to abort
+     *  @param ex Exception (Throwable) to test
+     *  @return <code>true</code> if it looks like the result of cancellation.
+     */
+    public static boolean isCancellation(final Throwable ex)
+    {
+        final String message = ex.getMessage();
+        if (message == null)
+            return false;
+        if (message.startsWith(ORACLE_CANCELLATION))
+            return true;
+        if (message.startsWith(ORACLE_RECURSIVE_ERROR))
+            return isCancellation(ex.getCause());
+        return false;
     }
 
     /** Cancel an ongoing RDB query.

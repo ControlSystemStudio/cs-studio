@@ -88,13 +88,9 @@ public class StoredProcedureValueIterator extends AbstractRDBValueIterator
         }
         catch (Exception ex)
         {
-            final String message = ex.getMessage();
-            if (message != null  &&  message.startsWith(ORACLE_CANCELLATION))
-            {
-                // Not a real error; return empty iterator
-            }
-            else
+            if (! RDBArchiveReader.isCancellation(ex))
                 throw ex;
+            // Else: Not a real error; return empty iterator
         }
         finally
         {
@@ -180,7 +176,7 @@ public class StoredProcedureValueIterator extends AbstractRDBValueIterator
     /** Decode samples from SAMPLE table
      *  @param result ResultSet
      *  @return IValue array of samples
-     *  @throws Exception on error
+     *  @throws Exception on error, including cancellation
      */
     private IValue[] decodeSampleTable(final ResultSet result) throws Exception
     {
