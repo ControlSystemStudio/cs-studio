@@ -19,7 +19,6 @@ import org.eclipse.draw2d.RectangleFigure;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.graphics.RGB;
 
 /**
  * The view for ThumbWheel.
@@ -52,7 +51,8 @@ public class RefreshableThumbWheelFigure extends RectangleFigure implements
 
 	private boolean test;
 
-	private RGB internalBorderColor;
+	// FIXME: 18.02.2010: swende: Farbe ist überfläss
+	private Color internalBorderColor;
 
 	private int internalBorderWidth;
 	
@@ -160,23 +160,22 @@ public class RefreshableThumbWheelFigure extends RectangleFigure implements
 		minus.setBorderThickness(thickness);
 	}
 
-	public void setInternalBorderColor(RGB color) {
+	public void setInternalBorderColor(Color color) {
 		this.internalBorderColor = color;
 		if(color == null){
 			return;
 		}
-		Color col = CustomMediaFactory.getInstance().getColor(color);
 
 		for (DigitBox box : wholePart) {
-			box.setBorderColor(col);
+			box.setBorderColor(color);
 		}
 
 		for (DigitBox box : decimalPart) {
-			box.setBorderColor(col);
+			box.setBorderColor(color);
 		}
 
-		dot.setBorderColor(col);
-		minus.setBorderColor(col);
+		dot.setBorderColor(color);
+		minus.setBorderColor(color);
 	}
 
 	/**

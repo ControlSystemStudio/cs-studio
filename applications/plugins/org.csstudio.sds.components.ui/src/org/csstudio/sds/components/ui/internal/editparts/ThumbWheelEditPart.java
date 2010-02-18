@@ -31,6 +31,7 @@ import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.ExecutionMode;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.FontData;
 
 /**
@@ -215,16 +216,13 @@ public class ThumbWheelEditPart extends AbstractWidgetEditPart {
 		setPropertyChangeHandler(ThumbWheelModel.PROP_FONT, handler);
 
 		// border color
-		handler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				RefreshableThumbWheelFigure figure = (RefreshableThumbWheelFigure) refreshableFigure;
-				figure.setInternalBorderColor(getRgb((String) newValue));
-				return true;
-			}
-		};
 		setPropertyChangeHandler(ThumbWheelModel.PROP_INTERNAL_FRAME_COLOR,
-				handler);
+				new ColorChangeHander<RefreshableThumbWheelFigure>(){
+					@Override
+					protected void doHandle(RefreshableThumbWheelFigure figure, Color color) {
+						figure.setInternalBorderColor(color);
+					}
+		});
 
 		// border width
 		handler = new IWidgetPropertyChangeHandler() {

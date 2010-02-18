@@ -5,6 +5,7 @@ import org.csstudio.sds.components.ui.internal.figures.KnobFigure;
 import org.csstudio.sds.ui.editparts.ExecutionMode;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.swt.graphics.Color;
 
 /**
  * EditPart controller for the knob widget. The controller mediates between
@@ -51,29 +52,21 @@ public final class KnobEditPart extends AbstractMarkedWidgetEditPart {
 		registerCommonPropertyChangeHandlers();
 		
 		//knob color
-		IWidgetPropertyChangeHandler knobColorHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				KnobFigure knob = (KnobFigure) refreshableFigure;
-				knob.setBulbColor(getRgb((String)newValue));
-				return true;
+		setPropertyChangeHandler(KnobModel.PROP_KNOB_COLOR, new ColorChangeHander<KnobFigure>(){
+			@Override
+			protected void doHandle(KnobFigure figure, Color color) {
+				figure.setBulbColor(color);
 			}
-		};
-		setPropertyChangeHandler(KnobModel.PROP_KNOB_COLOR, knobColorHandler);	
+		});	
 		
 	
 		//thumbColor
-		IWidgetPropertyChangeHandler thumbColorHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				KnobFigure knob = (KnobFigure) refreshableFigure;
-				knob.setThumbColor(getRgb((String) newValue));
-				return true;
+		setPropertyChangeHandler(KnobModel.PROP_THUMB_COLOR, new ColorChangeHander<KnobFigure>(){
+			@Override
+			protected void doHandle(KnobFigure figure, Color color) {
+				figure.setThumbColor(color);
 			}
-		};
-		setPropertyChangeHandler(KnobModel.PROP_THUMB_COLOR, thumbColorHandler);		
+		});		
 		
 		//effect 3D
 		IWidgetPropertyChangeHandler effect3DHandler = new IWidgetPropertyChangeHandler() {

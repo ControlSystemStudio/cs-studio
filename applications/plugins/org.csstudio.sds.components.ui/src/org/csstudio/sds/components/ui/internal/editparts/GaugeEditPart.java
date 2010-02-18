@@ -4,6 +4,7 @@ import org.csstudio.sds.components.model.GaugeModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableGaugeFigure;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.swt.graphics.Color;
 
 /**
  * EditPart controller for the Gauge widget. The controller mediates between
@@ -40,16 +41,12 @@ public final class GaugeEditPart extends AbstractMarkedWidgetEditPart {
 		registerCommonPropertyChangeHandlers();
 		
 		//needle Color
-		IWidgetPropertyChangeHandler needleColorColorHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				RefreshableGaugeFigure gauge = (RefreshableGaugeFigure) refreshableFigure;
-				gauge.setNeedleColor(getRgb((String) newValue));
-				return true;
+		setPropertyChangeHandler(GaugeModel.PROP_NEEDLE_COLOR, new ColorChangeHander<RefreshableGaugeFigure>(){
+			@Override
+			protected void doHandle(RefreshableGaugeFigure figure, Color color) {
+				figure.setNeedleColor(color);
 			}
-		};
-		setPropertyChangeHandler(GaugeModel.PROP_NEEDLE_COLOR, needleColorColorHandler);	
+		});	
 		
 		
 		//effect 3D

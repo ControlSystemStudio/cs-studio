@@ -168,18 +168,12 @@ public class AbstractBoolFigure extends Figure {
 	}
 	
 	
-	/**
-	 * @param onColor the onColor to set
-	 */
-	public void setOnColor(RGB onColor) {
-		this.onColor = CustomMediaFactory.getInstance().getColor(onColor);
+	public void setOnColor(Color color) {
+		this.onColor = color;
 	}
 
-	/**
-	 * @param offColor the offColor to set
-	 */
-	public void setOffColor(RGB offColor) {
-		this.offColor = CustomMediaFactory.getInstance().getColor(offColor);
+	public void setOffColor(Color color) {
+		this.offColor = color;
 	}
 	
 	@Override

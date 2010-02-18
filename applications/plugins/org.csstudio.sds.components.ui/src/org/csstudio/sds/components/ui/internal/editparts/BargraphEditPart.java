@@ -27,6 +27,7 @@ import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.swt.graphics.Color;
 
 /**
  * EditPart controller for the Bargraph widget. The controller mediates between
@@ -178,29 +179,22 @@ public final class BargraphEditPart extends AbstractWidgetEditPart {
 	 * Registers PropertyChangeHandler for the color properties.
 	 */
 	private void registerColorPropertyChangeHandler() {
-		IWidgetPropertyChangeHandler defaultFillColorHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				RefreshableBargraphFigure bargraph = (RefreshableBargraphFigure) refreshableFigure;
-				bargraph.setDefaultFillColor(getRgb((String) newValue));
-				return true;
-			}
-		};
 		setPropertyChangeHandler(BargraphModel.PROP_DEFAULT_FILL_COLOR,
-				defaultFillColorHandler);
+				new ColorChangeHander<RefreshableBargraphFigure>() {
+					@Override
+					protected void doHandle(RefreshableBargraphFigure figure, Color color) {
+						figure.setDefaultFillColor(color);						
+					}
+		});
 		
-		IWidgetPropertyChangeHandler backgrundFillColorHandler = new IWidgetPropertyChangeHandler() {
-		    public boolean handleChange(final Object oldValue,
-		            final Object newValue,
-		            final IFigure refreshableFigure) {
-		        RefreshableBargraphFigure bargraph = (RefreshableBargraphFigure) refreshableFigure;
-		        bargraph.setFillBackgroundColor(getRgb((String)newValue));
-		        return true;
-		    }
-		};
 		setPropertyChangeHandler(BargraphModel.PROP_FILLBACKGROUND_COLOR,
-		        backgrundFillColorHandler);
+
+				new ColorChangeHander<RefreshableBargraphFigure>() {
+					@Override
+					protected void doHandle(RefreshableBargraphFigure figure, Color color) {
+						figure.setFillBackgroundColor(color);						
+					}
+		});
 		
 		
 		IWidgetPropertyChangeHandler borderHandler = new IWidgetPropertyChangeHandler() {

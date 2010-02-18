@@ -5,6 +5,7 @@ import org.csstudio.sds.components.ui.internal.figures.ScaledSliderFigure;
 import org.csstudio.sds.ui.editparts.ExecutionMode;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.swt.graphics.Color;
 
 /**
  * EditPart controller for the scaled slider widget. The controller mediates between
@@ -52,40 +53,28 @@ public final class ScaledSliderEditPart extends AbstractMarkedWidgetEditPart {
 		registerCommonPropertyChangeHandlers();
 		
 		//fillColor
-		IWidgetPropertyChangeHandler fillColorHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				ScaledSliderFigure slider = (ScaledSliderFigure) refreshableFigure;
-				slider.setFillColor(getRgb((String) newValue));
-				return true;
+		setPropertyChangeHandler(ScaledSliderModel.PROP_FILL_COLOR, new ColorChangeHander<ScaledSliderFigure>(){
+			@Override
+			protected void doHandle(ScaledSliderFigure figure, Color color) {
+					figure.setFillColor(color);
 			}
-		};
-		setPropertyChangeHandler(ScaledSliderModel.PROP_FILL_COLOR, fillColorHandler);	
+		});	
 		
 		//fillBackgroundColor
-		IWidgetPropertyChangeHandler fillBackColorHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				ScaledSliderFigure slider = (ScaledSliderFigure) refreshableFigure;
-				slider.setFillBackgroundColor(getRgb((String) newValue));
-				return true;
+		setPropertyChangeHandler(ScaledSliderModel.PROP_FILLBACKGROUND_COLOR, new ColorChangeHander<ScaledSliderFigure>(){
+			@Override
+			protected void doHandle(ScaledSliderFigure figure, Color color) {
+					figure.setFillBackgroundColor(color);
 			}
-		};
-		setPropertyChangeHandler(ScaledSliderModel.PROP_FILLBACKGROUND_COLOR, fillBackColorHandler);	
+		});	
 		
 		//thumbColor
-		IWidgetPropertyChangeHandler thumbColorHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				ScaledSliderFigure slider = (ScaledSliderFigure) refreshableFigure;
-				slider.setThumbColor(getRgb((String) newValue));
-				return true;
+		setPropertyChangeHandler(ScaledSliderModel.PROP_THUMB_COLOR, new ColorChangeHander<ScaledSliderFigure>(){
+			@Override
+			protected void doHandle(ScaledSliderFigure figure, Color color) {
+					figure.setThumbColor(color);
 			}
-		};
-		setPropertyChangeHandler(ScaledSliderModel.PROP_THUMB_COLOR, thumbColorHandler);		
+		});		
 		
 		//effect 3D
 		IWidgetPropertyChangeHandler effect3DHandler = new IWidgetPropertyChangeHandler() {

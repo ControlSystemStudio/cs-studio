@@ -48,7 +48,7 @@ public final class RefreshableArcFigure extends Shape implements IAdaptable {
      * start angle and length (in degrees) of the arc should it be drawn filled? (using fill_color)
      */
     private int start_angle = 0, angle = 90;
-    private RGB fill_color = new RGB(255, 0, 0);
+    private Color fill_color;
 
     /**
      * A border adapter, which covers all border handlings.
@@ -64,7 +64,9 @@ public final class RefreshableArcFigure extends Shape implements IAdaptable {
      * Border properties.
      */
     private int border_width;
-    private RGB border_color = new RGB(0, 0, 0);
+    
+    private Color border_color;
+    
     private boolean filled;
 
     /**
@@ -85,7 +87,7 @@ public final class RefreshableArcFigure extends Shape implements IAdaptable {
             gfx.setBackgroundColor(getBackgroundColor());
             gfx.fillOval(getBounds().getCropped(new Insets(border_width/2)));
         }
-        gfx.setBackgroundColor(CustomMediaFactory.getInstance().getColor(fill_color));
+        gfx.setBackgroundColor(fill_color);
         gfx.fillArc(getBounds()
                 .getCropped(new Insets(lineWidth / 2 + lineWidth % 2 + border_width)), start_angle,
                 angle);
@@ -133,12 +135,9 @@ public final class RefreshableArcFigure extends Shape implements IAdaptable {
         return border_width;
     }
 
-    public void setBorderColor(final RGB newval) {
-        border_color = newval;
-    }
-
-    public RGB getBorderColor() {
-        return border_color;
+    // FIXME: 18.02.2010: swende: Scheint überflüssig zu sein!
+    public void setBorderColor(final Color color) {
+        border_color = color;
     }
 
     public void setStartAngle(final int newval) {
@@ -157,12 +156,8 @@ public final class RefreshableArcFigure extends Shape implements IAdaptable {
         return angle;
     }
 
-    public void setFillColor(final RGB newval) {
-        fill_color = newval;
-    }
-
-    public RGB getFillColor() {
-        return fill_color;
+    public void setFillColor(final Color color) {
+        fill_color = color;
     }
 
     /**

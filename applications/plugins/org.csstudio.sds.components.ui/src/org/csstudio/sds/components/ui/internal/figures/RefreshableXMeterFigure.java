@@ -18,9 +18,9 @@ import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.graphics.RGB;
 
 
 /**
@@ -50,8 +50,8 @@ public class RefreshableXMeterFigure extends AbstractRoundRampedFigure {
 		((RoundScale)scale).setStartAngle(180-SPACE_ANGLE);
 		((RoundScale)scale).setEndAngle(SPACE_ANGLE);
 		ramp.setRampWidth(12);
-		setLoColor(CustomMediaFactory.COLOR_YELLOW);
-		setHiColor(CustomMediaFactory.COLOR_YELLOW);
+		setLoColor(CustomMediaFactory.getInstance().getColor(CustomMediaFactory.COLOR_YELLOW));
+		setHiColor(CustomMediaFactory.getInstance().getColor(CustomMediaFactory.COLOR_YELLOW));
 		
 		valueLabel = new Label();
 		valueLabel.setText("20.00");
@@ -94,8 +94,8 @@ public class RefreshableXMeterFigure extends AbstractRoundRampedFigure {
 	/**
 	 * @param needleColor the needleColor to set
 	 */
-	public void setNeedleColor(RGB needleColor) {
-		needle.setBackgroundColor(CustomMediaFactory.getInstance().getColor(needleColor));
+	public void setNeedleColor(Color needleColor) {
+		needle.setBackgroundColor(needleColor);
 	}
 
 	class Needle extends Polygon {

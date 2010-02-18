@@ -24,7 +24,7 @@ public class Bulb extends Figure{
 	private boolean effect3D;
 	
 	public Bulb() {
-		setBulbColor(new RGB(150,150,150));
+		setBulbColor(CustomMediaFactory.getInstance().getColor(new RGB(150,150,150)));
 		setEffect3D(true);
 	}
 	
@@ -71,8 +71,8 @@ public class Bulb extends Figure{
 	/**
 	 * @param bulbColor the bulbColor to set
 	 */
-	public void setBulbColor(RGB color) {
-		this.bulbColor = CustomMediaFactory.getInstance().getColor(color);
+	public void setBulbColor(Color color) {
+		this.bulbColor = color;
 	}
 	
 	private int getHeight() {

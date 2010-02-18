@@ -165,11 +165,8 @@ public class RefreshableGaugeFigure extends AbstractRoundRampedFigure {
 		
 	}
 	
-	/**
-	 * @param needleColor the needleColor to set
-	 */
-	public void setNeedleColor(RGB needleColor) {
-		needle.setBackgroundColor(CustomMediaFactory.getInstance().getColor(needleColor));
+	public void setNeedleColor(Color color) {
+		needle.setBackgroundColor(color);
 	}
 
 	/**

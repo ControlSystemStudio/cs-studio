@@ -27,6 +27,7 @@ import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.swt.graphics.Color;
 
 /**
  * EditPart controller for the arc widget.
@@ -71,26 +72,20 @@ public final class ArcEditPart extends AbstractWidgetEditPart {
 	 */
 	protected void registerColorPropertyHandlers() {
 		// border
-		IWidgetPropertyChangeHandler handle = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue, final Object newValue,
-					final IFigure figure) {
-				RefreshableArcFigure arcFigure = (RefreshableArcFigure) figure;
-				arcFigure.setBorderColor(getRgb((String) newValue));
-				return true;
+		setPropertyChangeHandler(ArcModel.PROP_BORDER_COLOR, new ColorChangeHander<RefreshableArcFigure>(){
+			@Override
+			protected void doHandle(RefreshableArcFigure figure, Color color) {
+				figure.setBorderColor(color);
 			}
-		};
-		setPropertyChangeHandler(ArcModel.PROP_BORDER_COLOR, handle);
+		});
 		
 		// fill
-		handle = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue, final Object newValue,
-					final IFigure figure) {
-				RefreshableArcFigure arcFigure = (RefreshableArcFigure) figure;
-				arcFigure.setFillColor(getRgb((String)newValue));
-				return true;
+		setPropertyChangeHandler(ArcModel.PROP_FILLCOLOR, new ColorChangeHander<RefreshableArcFigure>(){
+			@Override
+			protected void doHandle(RefreshableArcFigure figure, Color color) {
+				figure.setFillColor(color);
 			}
-		};
-		setPropertyChangeHandler(ArcModel.PROP_FILLCOLOR, handle);
+		});
 	}
 	
 	/**

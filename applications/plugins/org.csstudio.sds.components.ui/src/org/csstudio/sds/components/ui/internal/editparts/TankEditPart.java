@@ -4,6 +4,7 @@ import org.csstudio.sds.components.model.TankModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableTankFigure;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.swt.graphics.Color;
 
 /**
  * EditPart controller for the tank widget. The controller mediates between
@@ -39,28 +40,20 @@ public final class TankEditPart extends AbstractMarkedWidgetEditPart {
 		registerCommonPropertyChangeHandlers();
 		
 		//fillColor
-		IWidgetPropertyChangeHandler fillColorHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				RefreshableTankFigure tank = (RefreshableTankFigure) refreshableFigure;
-				tank.setFillColor(getRgb((String) newValue));
-				return true;
+		setPropertyChangeHandler(TankModel.PROP_FILL_COLOR, new ColorChangeHander<RefreshableTankFigure>(){
+			@Override
+			protected void doHandle(RefreshableTankFigure figure, Color color) {
+				figure.setFillColor(color);
 			}
-		};
-		setPropertyChangeHandler(TankModel.PROP_FILL_COLOR, fillColorHandler);	
+		});	
 		
 		//fillBackgroundColor
-		IWidgetPropertyChangeHandler fillBackColorHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				RefreshableTankFigure tank = (RefreshableTankFigure) refreshableFigure;
-				tank.setFillBackgroundColor(getRgb((String) newValue));
-				return true;
+		setPropertyChangeHandler(TankModel.PROP_FILLBACKGROUND_COLOR, new ColorChangeHander<RefreshableTankFigure>(){
+			@Override
+			protected void doHandle(RefreshableTankFigure figure, Color color) {
+				figure.setFillBackgroundColor(color);
 			}
-		};
-		setPropertyChangeHandler(TankModel.PROP_FILLBACKGROUND_COLOR, fillBackColorHandler);	
+		});	
 		
 		//effect 3D
 		IWidgetPropertyChangeHandler effect3DHandler = new IWidgetPropertyChangeHandler() {

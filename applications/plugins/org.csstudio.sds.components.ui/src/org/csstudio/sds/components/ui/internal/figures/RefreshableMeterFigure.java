@@ -72,7 +72,7 @@ public final class RefreshableMeterFigure extends Shape implements IAdaptable {
 	/**
 	 * This defines the color, with which the needle is drawn.
 	 */
-	private RGB _needleColor = new RGB(0,255,0);
+	private Color _needleColor = CustomMediaFactory.getInstance().getColor(new RGB(0,255,0));
 	/**
 	 * The width of the display as a fraction of the total radius (height of the widget figure).
 	 */
@@ -109,23 +109,23 @@ public final class RefreshableMeterFigure extends Shape implements IAdaptable {
 	/**
 	 * Color value for the level LOLO.
 	 */
-	private RGB _loloColor=new RGB(255,0,0);
+	private Color _loloColor=CustomMediaFactory.getInstance().getColor(new RGB(255,0,0));
 	/**
 	 * Color value for the level LO.
 	 */
-	private RGB _loColor=new RGB(255,81,81);
+	private Color _loColor=CustomMediaFactory.getInstance().getColor(new RGB(255,81,81));
 	/**
 	 * Color value for the level M.
 	 */
-	private RGB _mColor=new RGB(0,255,0);
+	private Color _mColor=CustomMediaFactory.getInstance().getColor(new RGB(0,255,0));
 	/**
 	 * Color value for the level HI.
 	 */
-	private RGB _hiColor=new RGB(255,81,81);
+	private Color _hiColor=CustomMediaFactory.getInstance().getColor(new RGB(255,81,81));
 	/**
 	 * Color value for the level HIHI.
 	 */
-	private RGB _hihiColor=new RGB(255,0,0);	
+	private Color _hihiColor=CustomMediaFactory.getInstance().getColor(new RGB(255,0,0));	
 	/**
 	 * Upper value for the level LOLO.
 	 */
@@ -149,7 +149,7 @@ public final class RefreshableMeterFigure extends Shape implements IAdaptable {
 	/**
 	 * The color for the scale.
 	 */
-	private RGB _scaleColor = new RGB(0,0,0);
+	private Color _scaleColor = CustomMediaFactory.getInstance().getColor(new RGB(0,0,0));
 	/**
 	 * The width of the scale.
 	 */
@@ -417,12 +417,9 @@ public final class RefreshableMeterFigure extends Shape implements IAdaptable {
 		return _innerAngle;
 	}
 	
-	public void setNeedleColor(final RGB color) {
+	public void setNeedleColor(final Color color) {
 		_needleColor=color;
 		invalidateNeedle();
-	}
-	public RGB getNeedleColor() {
-		return _needleColor;
 	}
 	
 	public void setVisibleRadius(final double newrad) {
@@ -484,12 +481,9 @@ public final class RefreshableMeterFigure extends Shape implements IAdaptable {
 		return _value;
 	}
 	
-	public void setScaleColor(final RGB newval) {
+	public void setScaleColor(final Color newval) {
 		_scaleColor=newval;
 		invalidateBackground();
-	}
-	public RGB getScaleColor() {
-		return _scaleColor;
 	}
 	
 	public void setScaleWidth(final int newval) {
@@ -515,44 +509,29 @@ public final class RefreshableMeterFigure extends Shape implements IAdaptable {
 		return _transparent;
 	}
 	
-	public void setMColor(final RGB newval) {
+	public void setMColor(final Color newval) {
 		_mColor=newval;
 		invalidateBackground();
 	}
-	public RGB getMColor() {
-		return _mColor;
-	}
 	
-	public void setLOLOColor(final RGB newval) {
+	public void setLOLOColor(final Color newval) {
 		_loloColor=newval;
 		invalidateBackground();
 	}
-	public RGB getLOLOColor() {
-		return _loloColor;
-	}
 	
-	public void setLOColor(final RGB newval) {
+	public void setLOColor(final Color newval) {
 		_loColor=newval;
 		invalidateBackground();
 	}
-	public RGB getLOColor() {
-		return _loColor;
-	}
 	
-	public void setHIColor(final RGB newval) {
+	public void setHIColor(final Color newval) {
 		_hiColor=newval;
 		invalidateBackground();
 	}
-	public RGB getHIColor() {
-		return _hiColor;
-	}
 	
-	public void setHIHIColor(final RGB newval) {
+	public void setHIHIColor(final Color newval) {
 		_hihiColor=newval;
 		invalidateBackground();
-	}
-	public RGB getHIHIColor() {
-		return _hihiColor;
 	}
 	
 	public void setMBound(final double newval) {
@@ -657,35 +636,35 @@ public final class RefreshableMeterFigure extends Shape implements IAdaptable {
 			
 			AntialiasingUtil.getInstance().enableAntialiasing(gfx);
 			//lolo area
-			gfx.setBackgroundColor(CustomMediaFactory.getInstance().getColor(_loloColor));
+			gfx.setBackgroundColor(_loloColor);
 			gfx.fillArc((int)(_imgWidth/2-out_r),(int)(R-out_r)+_topDelta,
 					(int)(out_r*2.0),(int)(out_r*2.0),
 					(int)Math.round(lo_angle-upp_angle),(int)Math.round(upp_angle));
 			//lo area
 			lo_angle-=upp_angle;
 			upp_angle=((double)_innerAngle/(_maxValue-_minValue))*(_loBound-_loloBound);
-			gfx.setBackgroundColor(CustomMediaFactory.getInstance().getColor(_loColor));
+			gfx.setBackgroundColor(_loColor);
 			gfx.fillArc((int)(_imgWidth/2-out_r),(int)(R-out_r)+_topDelta,
 					(int)(out_r*2.0),(int)(out_r*2.0),
 					(int)Math.round(lo_angle-upp_angle),(int)Math.round(upp_angle));
 			//m area
 			lo_angle-=upp_angle;
 			upp_angle=((double)_innerAngle/(_maxValue-_minValue))*(_mBound-_loBound);
-			gfx.setBackgroundColor(CustomMediaFactory.getInstance().getColor(_mColor));
+			gfx.setBackgroundColor(_mColor);
 			gfx.fillArc((int)(_imgWidth/2-out_r),(int)(R-out_r)+_topDelta,
 					(int)(out_r*2.0),(int)(out_r*2.0),
 					(int)Math.round(lo_angle-upp_angle),(int)Math.round(upp_angle));
 			//hi area
 			lo_angle-=upp_angle;
 			upp_angle=((double)_innerAngle/(_maxValue-_minValue))*(_hiBound-_mBound);
-			gfx.setBackgroundColor(CustomMediaFactory.getInstance().getColor(_hiColor));
+			gfx.setBackgroundColor(_hiColor);
 			gfx.fillArc((int)(_imgWidth/2-out_r),(int)(R-out_r)+_topDelta,
 					(int)(out_r*2.0),(int)(out_r*2.0),
 					(int)Math.round(lo_angle-upp_angle),(int)Math.round(upp_angle));
 			//hihi area
 			lo_angle-=upp_angle;
 			upp_angle=((double)_innerAngle/(_maxValue-_minValue))*(_hihiBound-_hiBound);
-			gfx.setBackgroundColor(CustomMediaFactory.getInstance().getColor(_hihiColor));
+			gfx.setBackgroundColor(_hihiColor);
 			gfx.fillArc((int)(_imgWidth/2-out_r),(int)(R-out_r)+_topDelta,
 					(int)(out_r*2.0),(int)(out_r*2.0),
 					(int)Math.round(lo_angle-upp_angle),(int)Math.round(upp_angle));
@@ -759,7 +738,7 @@ public final class RefreshableMeterFigure extends Shape implements IAdaptable {
 			double curr;
 			double curr_angle;
 			
-			gfx.setForegroundColor(CustomMediaFactory.getInstance().getColor(_scaleColor));
+			gfx.setForegroundColor(_scaleColor);
 			gfx.setLineWidth(_scaleWidth);
 			//minor scale lines
 			for (curr=_minValue+_minorStep;curr<=_maxValue-_minorStep;curr+=_minorStep) {
@@ -775,7 +754,7 @@ public final class RefreshableMeterFigure extends Shape implements IAdaptable {
 			for (curr=_minValue;curr<=_maxValue;curr+=_majorStep) {
 				//the tick mark
 				curr_angle=90.0+(double)_innerAngle/2-((double)_innerAngle/(_maxValue-_minValue))*(curr-_minValue);
-				gfx.setForegroundColor(CustomMediaFactory.getInstance().getColor(_scaleColor));
+				gfx.setForegroundColor(_scaleColor);
 				ShadedDrawing.drawLineAtAngle(gfx,out_r,scale_maj_r,curr_angle,_imgWidth/2,(int)R+_topDelta);
 				//the value of the tick mark
 				
@@ -848,7 +827,7 @@ public final class RefreshableMeterFigure extends Shape implements IAdaptable {
 		 */
 		protected void outlineShape(final Graphics gfx) {
 			AntialiasingUtil.getInstance().enableAntialiasing(gfx);
-			gfx.setForegroundColor(CustomMediaFactory.getInstance().getColor(_needleColor));
+			gfx.setForegroundColor(_needleColor);
 			gfx.setLineWidth(4);
 			gfx.setFont(_channelFont);
 			double currAngle=90.0+(double)_innerAngle/2-((double)_innerAngle/(_maxValue-_minValue))*(_value-_minValue);

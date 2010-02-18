@@ -87,11 +87,11 @@ public class RefreshableThermoFigure extends AbstractLinearMarkedFigure {
 	/**
 	 * @param fillColor the fillColor to set
 	 */
-	public void setFillColor(RGB fillColor) {
-		this.fillColor = CustomMediaFactory.getInstance().getColor(fillColor);
-		int blue = 255 - fillColor.blue;
-		int green = 255 - fillColor.green;
-		int red = fillColor.red;
+	public void setFillColor(Color fillColor) {
+		this.fillColor = fillColor;
+		int red = fillColor.getRed();
+		int green = 255 - fillColor.getGreen();
+		int blue = 255 - fillColor.getBlue();
 		this.contrastFillColor = CustomMediaFactory.getInstance().getColor(
 				new RGB(red, green, blue));
 	}
@@ -115,12 +115,8 @@ public class RefreshableThermoFigure extends AbstractLinearMarkedFigure {
 			unit.setText("\u2103");
 	}
 
-	/**
-	 * @param fillBackgroundColor the fillBackgroundColor to set
-	 */
-	public void setFillBackgroundColor(RGB fillBackgroundColor) {
-		this.fillBackgroundColor = CustomMediaFactory.getInstance().getColor(
-				fillBackgroundColor);
+	public void setFillBackgroundColor(Color fillBackgroundColor) {
+		this.fillBackgroundColor = fillBackgroundColor;
 	}
 
 	/**

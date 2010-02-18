@@ -28,7 +28,6 @@ import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Pattern;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 
 
@@ -145,7 +144,7 @@ public class KnobFigure extends AbstractRoundRampedFigure {
 	/**
 	 * @param color the bulb color to set
 	 */
-	public void setBulbColor(RGB color) {
+	public void setBulbColor(Color color) {
 		bulb.setBulbColor(color);
 	}
 
@@ -157,11 +156,8 @@ public class KnobFigure extends AbstractRoundRampedFigure {
 		bulb.setEffect3D(effect3D);
 	}
 
-	/**
-	 * @param thumbColor the thumbColor to set
-	 */
-	public void setThumbColor(RGB thumbColor) {
-		this.thumbColor = CustomMediaFactory.getInstance().getColor(thumbColor);
+	public void setThumbColor(Color color) {
+		this.thumbColor = color;
 	}
 
 	public void setValueLabelVisibility(boolean visible) {

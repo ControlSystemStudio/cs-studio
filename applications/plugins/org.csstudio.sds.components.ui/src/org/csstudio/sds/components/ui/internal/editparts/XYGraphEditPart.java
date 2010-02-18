@@ -14,13 +14,13 @@ public class XYGraphEditPart extends AbstractWidgetEditPart {
 		XYGraphModel model = (XYGraphModel) getWidgetModel();
 		ToolbarArmedXYGraph figure = new ToolbarArmedXYGraph();
 		
-		figure.setBackgroundColor(getModelColor2(AbstractWidgetModel.PROP_COLOR_BACKGROUND));
+		figure.setBackgroundColor(getModelColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND));
 		figure.setTransparent(model.isTransparent());
 		figure.setShowToolbar(model.isToolbarVisible());
 		figure.getXYGraph().setShowTitle(model.isTitleVisible());
 		figure.getXYGraph().setTitle(model.getTitle());
 		figure.getXYGraph().setTitleFont(CustomMediaFactory.getInstance().getFont(model.getTitleFont()));
-		figure.getXYGraph().setTitleColor(CustomMediaFactory.getInstance().getColor(getModelColor(XYGraphModel.PROP_TITLE_COLOR)));
+		figure.getXYGraph().setTitleColor(getModelColor(XYGraphModel.PROP_TITLE_COLOR));
 		figure.getXYGraph().setShowLegend(model.isLegendVisible());
 		
 		return figure;

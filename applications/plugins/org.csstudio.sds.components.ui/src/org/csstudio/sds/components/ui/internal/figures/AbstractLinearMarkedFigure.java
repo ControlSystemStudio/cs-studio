@@ -4,6 +4,7 @@ package org.csstudio.sds.components.ui.internal.figures;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.swt.xygraph.linearscale.LinearScale;
 import org.csstudio.swt.xygraph.linearscale.LinearScaledMarker;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 
 
@@ -115,27 +116,27 @@ public class AbstractLinearMarkedFigure extends AbstractMarkedWidgetFigure {
 	}	
 	
 	@Override
-	public void setLoloColor(RGB color) {
+	public void setLoloColor(Color color) {
 		super.setLoloColor(color);	
-		marker.setMarkerElementColor(LOLO, color);
+		marker.setMarkerElementColor(LOLO, color.getRGB());
 	}
 	
 	@Override
-	public void setLoColor(RGB color) {
+	public void setLoColor(Color color) {
 		super.setLoColor(color);	
-		marker.setMarkerElementColor(LO, color);
+		marker.setMarkerElementColor(LO, color.getRGB());
 	}
 	
 	@Override
-	public void setHiColor(RGB color) {
+	public void setHiColor(Color color) {
 		super.setHiColor(color);	
-		marker.setMarkerElementColor(HI, color);
+		marker.setMarkerElementColor(HI, color.getRGB());
 	}
 	
 	@Override
-	public void setHihiColor(RGB color) {
+	public void setHihiColor(Color color) {
 		super.setHihiColor(color);	
-		marker.setMarkerElementColor(HIHI, color);
+		marker.setMarkerElementColor(HIHI, color.getRGB());
 	}
 	
 	@Override

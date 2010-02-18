@@ -294,10 +294,10 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements
         Font font = CustomMediaFactory.getInstance().getFont(new FontData[] { fontData });
 
         // get the chosen foreground color
-        Color foregroundColor = getModelColor2(AbstractWidgetModel.PROP_COLOR_FOREGROUND);
+        Color foregroundColor = getModelColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND);
 
         // get the chosen background color
-        RGB backgroundRgb = getModelColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND);
+        RGB backgroundRgb = getModelColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND).getRGB();
 
         int red = Math.min(backgroundRgb.red + INPUT_FIELD_BRIGHTNESS, 255);
         int green = Math.min(backgroundRgb.green + INPUT_FIELD_BRIGHTNESS, 255);

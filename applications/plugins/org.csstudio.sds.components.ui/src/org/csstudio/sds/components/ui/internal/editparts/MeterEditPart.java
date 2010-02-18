@@ -26,6 +26,7 @@ import org.csstudio.sds.components.ui.internal.figures.RefreshableMeterFigure;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.FontData;
 
 /**
@@ -94,81 +95,60 @@ public final class MeterEditPart extends AbstractWidgetEditPart {
 	 */
 	protected void registerColorPropertyHandlers() {
 		// needle
-		IWidgetPropertyChangeHandler handle = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue, final Object newValue,
-					final IFigure figure) {
-				RefreshableMeterFigure meterFigure = (RefreshableMeterFigure) figure;
-				meterFigure.setNeedleColor(getRgb((String) newValue));
-				return true;
-			}
-		};
-		setPropertyChangeHandler(MeterModel.PROP_NEEDLECOLOR, handle);
+		setPropertyChangeHandler(MeterModel.PROP_NEEDLECOLOR, new ColorChangeHander<RefreshableMeterFigure>(){
+			@Override
+			protected void doHandle(RefreshableMeterFigure figure, Color color) {
+				figure.setNeedleColor(color);
+			}				
+		});
 		
 		// scale
-		handle = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue, final Object newValue,
-					final IFigure figure) {
-				RefreshableMeterFigure meterFigure = (RefreshableMeterFigure) figure;
-				meterFigure.setScaleColor(getRgb((String) newValue));
-				return true;
-			}
-		};
-		setPropertyChangeHandler(MeterModel.PROP_SCALECOLOR, handle);
+		setPropertyChangeHandler(MeterModel.PROP_SCALECOLOR, new ColorChangeHander<RefreshableMeterFigure>(){
+			@Override
+			protected void doHandle(RefreshableMeterFigure figure, Color color) {
+				figure.setScaleColor(color);
+			}				
+		});
 		
 		//M area
-		handle = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue, final Object newValue,
-					final IFigure figure) {
-				RefreshableMeterFigure meterFigure = (RefreshableMeterFigure) figure;
-				meterFigure.setMColor(getRgb((String) newValue));
-				return true;
-			}
-		};
-		setPropertyChangeHandler(MeterModel.PROP_MCOLOR, handle);
+		setPropertyChangeHandler(MeterModel.PROP_MCOLOR,  new ColorChangeHander<RefreshableMeterFigure>(){
+			@Override
+			protected void doHandle(RefreshableMeterFigure figure, Color color) {
+				figure.setMColor(color);
+			}				
+		});
 		
 		//LOLO area
-		handle = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue, final Object newValue,
-					final IFigure figure) {
-				RefreshableMeterFigure meterFigure = (RefreshableMeterFigure) figure;
-				meterFigure.setLOLOColor(getRgb((String) newValue));
-				return true;
-			}
-		};
-		setPropertyChangeHandler(MeterModel.PROP_LOLOCOLOR, handle);
+		setPropertyChangeHandler(MeterModel.PROP_LOLOCOLOR,  new ColorChangeHander<RefreshableMeterFigure>(){
+			@Override
+			protected void doHandle(RefreshableMeterFigure figure, Color color) {
+				figure.setLOLOColor(color);
+			}				
+		});
 		
 		//LO area
-		handle = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue, final Object newValue,
-					final IFigure figure) {
-				RefreshableMeterFigure meterFigure = (RefreshableMeterFigure) figure;
-				meterFigure.setLOColor(getRgb((String) newValue));
-				return true;
-			}
-		};
-		setPropertyChangeHandler(MeterModel.PROP_LOCOLOR, handle);
+		setPropertyChangeHandler(MeterModel.PROP_LOCOLOR,  new ColorChangeHander<RefreshableMeterFigure>(){
+			@Override
+			protected void doHandle(RefreshableMeterFigure figure, Color color) {
+				figure.setLOColor(color);
+			}				
+		});
 		
 		//HI area
-		handle = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue, final Object newValue,
-					final IFigure figure) {
-				RefreshableMeterFigure meterFigure = (RefreshableMeterFigure) figure;
-				meterFigure.setHIColor(getRgb((String) newValue));
-				return true;
-			}
-		};
-		setPropertyChangeHandler(MeterModel.PROP_HICOLOR, handle);
+		setPropertyChangeHandler(MeterModel.PROP_HICOLOR,  new ColorChangeHander<RefreshableMeterFigure>(){
+			@Override
+			protected void doHandle(RefreshableMeterFigure figure, Color color) {
+				figure.setHIColor(color);
+			}				
+		});
 		
 		//HIHI area
-		handle = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue, final Object newValue,
-					final IFigure figure) {
-				RefreshableMeterFigure meterFigure = (RefreshableMeterFigure) figure;
-				meterFigure.setHIHIColor(getRgb((String) newValue));
-				return true;
-			}
-		};
-		setPropertyChangeHandler(MeterModel.PROP_HIHICOLOR, handle);
+		setPropertyChangeHandler(MeterModel.PROP_HIHICOLOR,  new ColorChangeHander<RefreshableMeterFigure>(){
+			@Override
+			protected void doHandle(RefreshableMeterFigure figure, Color color) {
+				figure.setHIHIColor(color);
+			}				
+		});
 		
 		// precision
 		IWidgetPropertyChangeHandler precisionHandler = new IWidgetPropertyChangeHandler() {

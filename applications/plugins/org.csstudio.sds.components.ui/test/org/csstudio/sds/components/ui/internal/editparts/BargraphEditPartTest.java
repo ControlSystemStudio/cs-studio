@@ -23,6 +23,7 @@ package org.csstudio.sds.components.ui.internal.editparts;
 
 import static org.junit.Assert.assertTrue;
 
+import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.components.model.BargraphModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableBargraphFigure;
 import org.eclipse.draw2d.IFigure;
@@ -50,7 +51,7 @@ public final class BargraphEditPartTest {
 	public void setUp() {
 		_editPart = new BargraphEditPart();
 		_editPart.setModel(new BargraphModel());
-		((RefreshableBargraphFigure)_editPart.getFigure()).setDefaultFillColor(new RGB(100,100,100));
+		((RefreshableBargraphFigure)_editPart.getFigure()).setDefaultFillColor(CustomMediaFactory.getInstance().getColor(new RGB(100,100,100)));
 		((BargraphModel)_editPart.getModel()).setPropertyValue(BargraphModel.PROP_FILL, 50);
 	}
 

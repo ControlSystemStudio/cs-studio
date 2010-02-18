@@ -4,6 +4,7 @@ package org.csstudio.sds.components.ui.internal.figures;
 import org.csstudio.sds.components.ui.internal.figureparts.RoundScale;
 import org.csstudio.sds.components.ui.internal.figureparts.RoundScaledRamp;
 import org.csstudio.sds.components.ui.internal.figureparts.RoundScaledRamp.Threshold;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 
 
@@ -79,27 +80,27 @@ public class AbstractRoundRampedFigure extends AbstractMarkedWidgetFigure {
 	}	
 	
 	@Override
-	public void setLoloColor(RGB color) {
+	public void setLoloColor(Color color) {
 		super.setLoloColor(color);	
-		ramp.setThresholdColor(Threshold.LOLO, color);
+		ramp.setThresholdColor(Threshold.LOLO, color.getRGB());
 	}
 	
 	@Override
-	public void setLoColor(RGB color) {
+	public void setLoColor(Color color) {
 		super.setLoColor(color);	
-		ramp.setThresholdColor(Threshold.LO, color);
+		ramp.setThresholdColor(Threshold.LO, color.getRGB());
 	}
 	
 	@Override
-	public void setHiColor(RGB color) {
+	public void setHiColor(Color color) {
 		super.setHiColor(color);	
-		ramp.setThresholdColor(Threshold.HI, color);
+		ramp.setThresholdColor(Threshold.HI, color.getRGB());
 	}
 	
 	@Override
-	public void setHihiColor(RGB color) {
+	public void setHihiColor(Color color) {
 		super.setHihiColor(color);	
-		ramp.setThresholdColor(Threshold.HIHI, color);
+		ramp.setThresholdColor(Threshold.HIHI, color.getRGB());
 	}
 
 	/**

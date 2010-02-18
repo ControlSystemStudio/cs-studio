@@ -175,24 +175,22 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 	/**
 	 * @param fillColor the fillColor to set
 	 */
-	public void setFillColor(RGB fillColor) {
-		this.fillColor = CustomMediaFactory.getInstance().getColor(fillColor);
+	public void setFillColor(Color fillColor) {
+		this.fillColor = fillColor;
 	}
 	
 	/**
 	 * @param fillBackgroundColor the fillBackgroundColor to set
 	 */
-	public void setFillBackgroundColor(RGB fillBackgroundColor) {
-		this.fillBackgroundColor = CustomMediaFactory.getInstance().getColor(
-				fillBackgroundColor);
+	public void setFillBackgroundColor(Color fillBackgroundColor) {
+		this.fillBackgroundColor = fillBackgroundColor;
 	}
 	
 	/**
 	 * @param thumbColor the thumbColor to set
 	 */
-	public void setThumbColor(RGB thumbColor) {
-		this.thumbColor = CustomMediaFactory.getInstance().getColor(
-				thumbColor);
+	public void setThumbColor(Color thumbColor) {
+		this.thumbColor = thumbColor;
 	}
 
 	/**

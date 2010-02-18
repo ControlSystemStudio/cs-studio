@@ -5,6 +5,7 @@ import org.csstudio.sds.components.ui.internal.figures.RefreshableSixteenBinaryB
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.FontData;
 
 /**
@@ -89,26 +90,20 @@ public class SixteenBinaryBarEditPart extends AbstractWidgetEditPart {
 		setPropertyChangeHandler(SixteenBinaryBarModel.PROP_LABEL_FONT, handler);
 
 		// on color
-		handler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				RefreshableSixteenBinaryBarFigure rectangle = (RefreshableSixteenBinaryBarFigure) refreshableFigure;
-				rectangle.setOnColor(getRgb((String) newValue));
-				return true;
+		setPropertyChangeHandler(SixteenBinaryBarModel.PROP_ON_COLOR, new ColorChangeHander<RefreshableSixteenBinaryBarFigure>(){
+			@Override
+			protected void doHandle(RefreshableSixteenBinaryBarFigure figure, Color color) {
+				figure.setOnColor(color);
 			}
-		};
-		setPropertyChangeHandler(SixteenBinaryBarModel.PROP_ON_COLOR, handler);
+		});
 
 		// off color
-		handler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				RefreshableSixteenBinaryBarFigure rectangle = (RefreshableSixteenBinaryBarFigure) refreshableFigure;
-				rectangle.setOffColor(getRgb((String) newValue));
-				return true;
+		setPropertyChangeHandler(SixteenBinaryBarModel.PROP_OFF_COLOR, new ColorChangeHander<RefreshableSixteenBinaryBarFigure>(){
+			@Override
+			protected void doHandle(RefreshableSixteenBinaryBarFigure figure, Color color) {
+				figure.setOffColor(color);
 			}
-		};
-		setPropertyChangeHandler(SixteenBinaryBarModel.PROP_OFF_COLOR, handler);
+		});
 
 		// i frame thickness
 		handler = new IWidgetPropertyChangeHandler() {
@@ -123,28 +118,22 @@ public class SixteenBinaryBarEditPart extends AbstractWidgetEditPart {
 				SixteenBinaryBarModel.PROP_INTERNAL_FRAME_THICKNESS, handler);
 
 		// label color
-		handler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				RefreshableSixteenBinaryBarFigure rectangle = (RefreshableSixteenBinaryBarFigure) refreshableFigure;
-				rectangle.setLabelColor(getRgb((String) newValue));
-				return true;
-			}
-		};
 		setPropertyChangeHandler(SixteenBinaryBarModel.PROP_LABEL_COLOR,
-				handler);
+				new ColorChangeHander<RefreshableSixteenBinaryBarFigure>(){
+			@Override
+			protected void doHandle(RefreshableSixteenBinaryBarFigure figure, Color color) {
+				figure.setLabelColor(color);
+			}
+		});
 
 		// frame color
-		handler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				RefreshableSixteenBinaryBarFigure rectangle = (RefreshableSixteenBinaryBarFigure) refreshableFigure;
-				rectangle.setInternalBorderColor(getRgb((String) newValue));
-				return true;
-			}
-		};
 		setPropertyChangeHandler(
-				SixteenBinaryBarModel.PROP_INTERNAL_FRAME_COLOR, handler);
+				SixteenBinaryBarModel.PROP_INTERNAL_FRAME_COLOR, new ColorChangeHander<RefreshableSixteenBinaryBarFigure>(){
+					@Override
+					protected void doHandle(RefreshableSixteenBinaryBarFigure figure, Color color) {
+						figure.setInternalBorderColor(color);
+					}
+				});
 		
 		// bit range from
 		handler = new IWidgetPropertyChangeHandler() {

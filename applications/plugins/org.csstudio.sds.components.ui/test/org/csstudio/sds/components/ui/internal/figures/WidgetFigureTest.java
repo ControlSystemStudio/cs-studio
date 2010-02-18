@@ -87,7 +87,7 @@ class KnobTest extends Figure {
 		//	knob.setMaximum(60);
 		//knob.setGradient(false);
 		//knob.setLogScale(true);
-		knob.setThumbColor(new RGB(127, 127, 127));
+		knob.setThumbColor(CustomMediaFactory.getInstance().getColor(new RGB(127, 127, 127)));
 		knob.setForegroundColor(CustomMediaFactory.getInstance().getColor(CustomMediaFactory.COLOR_BLACK));
 		add(knob);		
 	}
@@ -100,7 +100,7 @@ class BulbTest extends Figure {
 
 		Bulb bulb = new Bulb();	
 		bulb.setBounds(bounds);		
-		bulb.setBulbColor(CustomMediaFactory.COLOR_GRAY);
+		bulb.setBulbColor(CustomMediaFactory.getInstance().getColor(CustomMediaFactory.COLOR_GRAY));
 		add(bulb);		
 	}
 	
@@ -120,7 +120,7 @@ class XMeterTest extends Figure {
 	public XMeterTest(Rectangle bounds) {
 
 		RefreshableXMeterFigure xMeter = new RefreshableXMeterFigure();	
-		xMeter.setNeedleColor(CustomMediaFactory.COLOR_RED);
+		xMeter.setNeedleColor(CustomMediaFactory.getInstance().getColor(CustomMediaFactory.COLOR_RED));
 		xMeter.setValue(65);
 		//xMeter.setNeedleColor(CustomMediaFactory.COLOR_BLUE);
 		xMeter.setBounds(bounds);		
@@ -143,7 +143,7 @@ class GaugeTest extends Figure {
 	public GaugeTest(Rectangle bounds) {
 
 		RefreshableGaugeFigure gauge = new RefreshableGaugeFigure();	
-		gauge.setNeedleColor(CustomMediaFactory.COLOR_RED);
+		gauge.setNeedleColor(CustomMediaFactory.getInstance().getColor(CustomMediaFactory.COLOR_RED));
 		gauge.setValue(34.28);
 		gauge.setBounds(bounds);		
 		gauge.setBackgroundColor(CustomMediaFactory.getInstance().getColor(
@@ -254,8 +254,8 @@ class XSliderFigureTest extends Figure {
 		slider.setBackgroundColor(CustomMediaFactory.getInstance().getColor(
 				CustomMediaFactory.COLOR_WHITE));
 		slider.setValue(50);		
-		slider.setFillColor(CustomMediaFactory.COLOR_RED);
-		slider.setFillBackgroundColor(CustomMediaFactory.COLOR_GRAY);
+		slider.setFillColor(CustomMediaFactory.getInstance().getColor(CustomMediaFactory.COLOR_RED));
+		slider.setFillBackgroundColor(CustomMediaFactory.getInstance().getColor(CustomMediaFactory.COLOR_GRAY));
 		slider.setForegroundColor(CustomMediaFactory.getInstance().getColor(
 				CustomMediaFactory.COLOR_BLACK));
 		slider.setTransparent(true);	
@@ -278,8 +278,8 @@ class TankFigureTest extends Figure {
 		tank.setBackgroundColor(CustomMediaFactory.getInstance().getColor(
 				CustomMediaFactory.COLOR_WHITE));
 		tank.setValue(50);		
-		tank.setFillColor(CustomMediaFactory.COLOR_BLUE);
-		tank.setFillBackgroundColor(CustomMediaFactory.COLOR_RED);
+		tank.setFillColor(CustomMediaFactory.getInstance().getColor(CustomMediaFactory.COLOR_BLUE));
+		tank.setFillBackgroundColor(CustomMediaFactory.getInstance().getColor(CustomMediaFactory.COLOR_RED));
 		tank.setForegroundColor(CustomMediaFactory.getInstance().getColor(
 				CustomMediaFactory.COLOR_BLACK));
 		tank.setTransparent(true);	
@@ -299,8 +299,8 @@ class ThermoFigureTest extends Figure {
 		thermo.setBackgroundColor(CustomMediaFactory.getInstance().getColor(
 				CustomMediaFactory.COLOR_WHITE));
 		thermo.setValue(28.01);		
-		thermo.setFillColor(CustomMediaFactory.COLOR_RED);
-		thermo.setFillBackgroundColor(CustomMediaFactory.COLOR_GRAY);
+		thermo.setFillColor(CustomMediaFactory.getInstance().getColor(CustomMediaFactory.COLOR_RED));
+		thermo.setFillBackgroundColor(CustomMediaFactory.getInstance().getColor(CustomMediaFactory.COLOR_GRAY));
 		thermo.setForegroundColor(CustomMediaFactory.getInstance().getColor(
 				CustomMediaFactory.COLOR_BLACK));
 		thermo.setTransparent(true);	

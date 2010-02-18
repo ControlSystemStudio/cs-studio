@@ -1,9 +1,11 @@
 package org.csstudio.sds.components.ui.internal.editparts;
 
 import org.csstudio.sds.components.model.ThermometerModel;
+import org.csstudio.sds.components.ui.internal.figures.RefreshableTankFigure;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableThermoFigure;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.swt.graphics.Color;
 
 /**
  * EditPart controller for the Thermometer widget. The controller mediates between
@@ -41,28 +43,20 @@ public final class ThermometerEditPart extends AbstractMarkedWidgetEditPart {
 		registerCommonPropertyChangeHandlers();
 		
 		//fillColor
-		IWidgetPropertyChangeHandler fillColorHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				RefreshableThermoFigure thermometer = (RefreshableThermoFigure) refreshableFigure;
-				thermometer.setFillColor(getRgb((String) newValue));
-				return true;
+		setPropertyChangeHandler(ThermometerModel.PROP_FILL_COLOR, new ColorChangeHander<RefreshableThermoFigure>(){
+			@Override
+			protected void doHandle(RefreshableThermoFigure figure, Color color) {
+				figure.setFillColor(color);
 			}
-		};
-		setPropertyChangeHandler(ThermometerModel.PROP_FILL_COLOR, fillColorHandler);	
+		});	
 		
 		//fillBackgroundColor
-		IWidgetPropertyChangeHandler fillBackColorHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				RefreshableThermoFigure thermometer = (RefreshableThermoFigure) refreshableFigure;
-				thermometer.setFillBackgroundColor(getRgb((String) newValue));
-				return true;
+		setPropertyChangeHandler(ThermometerModel.PROP_FILLBACKGROUND_COLOR, new ColorChangeHander<RefreshableThermoFigure>(){
+			@Override
+			protected void doHandle(RefreshableThermoFigure figure, Color color) {
+				figure.setFillBackgroundColor(color);
 			}
-		};
-		setPropertyChangeHandler(ThermometerModel.PROP_FILLBACKGROUND_COLOR, fillBackColorHandler);	
+		});	
 		
 		//show bulb
 		IWidgetPropertyChangeHandler showBulbHandler = new IWidgetPropertyChangeHandler() {

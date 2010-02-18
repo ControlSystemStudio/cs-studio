@@ -15,15 +15,13 @@ import org.eclipse.draw2d.RectangleFigure;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.graphics.RGB;
 
 /**
  * Sixteen Bit Binary Bar widget figure.
  * 
  * @author Alen Vrecko, Joerg Rathlev
  */
-public class RefreshableSixteenBinaryBarFigure extends RectangleFigure
-		implements IAdaptable {
+public class RefreshableSixteenBinaryBarFigure extends RectangleFigure implements IAdaptable {
 
 	/**
 	 * The orientation (horizontal==true | vertical==false).
@@ -43,14 +41,14 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure
 
 	private int _internalFrameThickness;
 
-	private RGB _internalFrameColor;
+	private Color _internalFrameColor;
 
 	private OnOffBox[] boxes;
 
 	private GridLayout layout;
-	
+
 	private int bitRangeFrom = 0;
-	
+
 	private int bitRangeTo = 15;
 
 	private boolean _showLabels;
@@ -67,10 +65,10 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure
 	 * Creates the layout and the boxes for this figure.
 	 */
 	private void createLayoutAndBoxes() {
-	    int column = 1;
-	    if(_orientationHorizontal) {
-	        column = numberOfBits();
-	    }
+		int column = 1;
+		if (_orientationHorizontal) {
+			column = numberOfBits();
+		}
 		layout = new GridLayout(column, false);
 		layout.horizontalSpacing = 0;
 		layout.verticalSpacing = 0;
@@ -99,7 +97,7 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure
 
 		}
 	}
-	
+
 	/**
 	 * Removes the boxes from this figure, then recreates them and refreshes the
 	 * layout.
@@ -109,7 +107,7 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure
 		createLayoutAndBoxes();
 		updateBoxes();
 	}
-	
+
 	/**
 	 * Removes the boxes from this figure.
 	 */
@@ -179,18 +177,18 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure
 		}
 	}
 
-	public void setOnColor(RGB newValue) {
-		if (newValue == null) {
+	public void setOnColor(Color color) {
+		if (color == null) {
 			return;
 		}
-		_onColor = CustomMediaFactory.getInstance().getColor(newValue);
+		_onColor = color;
 	}
 
-	public void setOffColor(RGB newValue) {
-		if (newValue == null) {
+	public void setOffColor(Color color) {
+		if (color == null) {
 			return;
 		}
-		_offColor = CustomMediaFactory.getInstance().getColor(newValue);
+		_offColor = color;
 	}
 
 	public void setInternalBorderThickness(int internalFrameThickness) {
@@ -200,7 +198,7 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure
 		}
 	}
 
-	public void setInternalBorderColor(RGB internalFrameColor) {
+	public void setInternalBorderColor(Color internalFrameColor) {
 		_internalFrameColor = internalFrameColor;
 		for (OnOffBox box : boxes) {
 			applyInternalBorderSettings(box);
@@ -216,25 +214,23 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure
 	 */
 	private void applyInternalBorderSettings(OnOffBox box) {
 		if (_internalFrameColor != null) {
-			Color color = CustomMediaFactory.getInstance().getColor(
-					_internalFrameColor);
-			box.setInternalFrame(_internalFrameThickness, color);
+			box.setInternalFrame(_internalFrameThickness, _internalFrameColor);
 		} else {
 			box.setInternalFrame(_internalFrameThickness, null);
 		}
 	}
 
-	public void setLabelColor(RGB labelColor) {
+	public void setLabelColor(Color labelColor) {
 		if (labelColor == null) {
 			return;
 		}
-		_labelColor = CustomMediaFactory.getInstance().getColor(labelColor);
+		_labelColor = labelColor;
 
 		for (OnOffBox box : boxes) {
 			box.setLabelColor(_labelColor);
 		}
 	}
-	
+
 	/**
 	 * Sets the range of bits that are displayed by this figure.
 	 * 
@@ -246,7 +242,7 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure
 		this.bitRangeFrom = from;
 		recreateLayoutAndBoxes();
 	}
-	
+
 	/**
 	 * Sets the range of bits that are displayed by this figure.
 	 * 
@@ -258,20 +254,20 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure
 		this.bitRangeTo = to;
 		recreateLayoutAndBoxes();
 	}
-	
+
 	/**
 	 * Returns the number of bits displayed in this figure.
 	 * 
 	 * @return the number of bits displayed in this figure.
 	 */
 	private int numberOfBits() {
-        return bitRangeTo - bitRangeFrom + 1;
+		return bitRangeTo - bitRangeFrom + 1;
 	}
 
 	/**
-	 * A box used to display the state of a single bit. A box is in either on
-	 * or off state, and displays in a different color depending on that state.
-	 * It can also optionally display a label with the index of the bit it
+	 * A box used to display the state of a single bit. A box is in either on or
+	 * off state, and displays in a different color depending on that state. It
+	 * can also optionally display a label with the index of the bit it
 	 * displays.
 	 */
 	private class OnOffBox extends Figure {
@@ -302,7 +298,7 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure
 		@Override
 		protected void paintFigure(Graphics graphics) {
 			super.paintFigure(graphics);
-			
+
 			setBackgroundColor(_isOn ? _onColor : _offColor);
 			graphics.fillRectangle(getClientArea());
 		}
@@ -330,7 +326,8 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure
 		/**
 		 * Sets whether this box is on.
 		 * 
-		 * @param isOn whether this box is on.
+		 * @param isOn
+		 *            whether this box is on.
 		 */
 		public void setOn(boolean isOn) {
 			this._isOn = isOn;

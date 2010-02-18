@@ -531,14 +531,12 @@ public abstract class AbstractChartFigure extends Figure implements IAdaptable {
 	/**
 	 * Sets the color for the grid lines.
 	 * 
-	 * @param lineRGB
-	 *            The RGB-value for the color
+	 * @param color
+	 *            the color
 	 */
-	public final void setGridLinesColor(final RGB lineRGB) {
-		_yAxisGridLines.setForegroundColor(CustomMediaFactory
-				.getInstance().getColor(lineRGB));
-		_xAxisGridLines.setForegroundColor(CustomMediaFactory
-				.getInstance().getColor(lineRGB));
+	public final void setGridLinesColor(final Color color) {
+		_yAxisGridLines.setForegroundColor(color);
+		_xAxisGridLines.setForegroundColor(color);
 	}
 	
 	/**
@@ -709,12 +707,12 @@ public abstract class AbstractChartFigure extends Figure implements IAdaptable {
 	 * @param color
 	 *            the color.
 	 */
-	public final void setPlotColor(final int index, final RGB color) {
+	public final void setPlotColor(final int index, final Color color) {
 		if (index < 0 || index >= _numberOfDataSeries) {
 			throw new IndexOutOfBoundsException(
 					"invalid index: " + index);
 		}
-		_plotColor[index] = CustomMediaFactory.getInstance().getColor(color);
+		_plotColor[index] = color;
 	}
 	
 	/**

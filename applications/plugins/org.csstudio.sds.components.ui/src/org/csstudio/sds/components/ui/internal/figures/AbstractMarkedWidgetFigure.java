@@ -1,9 +1,7 @@
 package org.csstudio.sds.components.ui.internal.figures;
 
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.components.model.AbstractMarkedWidgetModel;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.RGB;
 
 /**
  * Base figure for a widget based on {@link AbstractMarkedWidgetModel}.
@@ -107,29 +105,29 @@ public abstract class AbstractMarkedWidgetFigure extends AbstractScaledWidgetFig
 	/**
 	 * @param loloColor the loloColor to set
 	 */
-	public void setLoloColor(RGB loloColor) {
-		this.loloColor = CustomMediaFactory.getInstance().getColor(loloColor);
+	public void setLoloColor(Color loloColor) {
+		this.loloColor = loloColor;
 	}
 
 	/**
 	 * @param loColor the loColor to set
 	 */
-	public void setLoColor(RGB loColor) {
-		this.loColor = CustomMediaFactory.getInstance().getColor(loColor);
+	public void setLoColor(Color loColor) {
+		this.loColor = loColor;
 	}
 
 	/**
 	 * @param hiColor the hiColor to set
 	 */
-	public void setHiColor(RGB hiColor) {
-		this.hiColor = CustomMediaFactory.getInstance().getColor(hiColor);
+	public void setHiColor(Color hiColor) {
+		this.hiColor = hiColor;
 	}
 
 	/**
 	 * @param hihiColor the hihiColor to set
 	 */
-	public void setHihiColor(RGB hihiColor) {
-		this.hihiColor = CustomMediaFactory.getInstance().getColor(hihiColor);
+	public void setHihiColor(Color hihiColor) {
+		this.hihiColor = hihiColor;
 	}
 
 }

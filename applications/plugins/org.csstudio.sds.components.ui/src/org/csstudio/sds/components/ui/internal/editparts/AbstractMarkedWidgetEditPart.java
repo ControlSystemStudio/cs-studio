@@ -6,6 +6,7 @@ import org.csstudio.sds.components.ui.internal.figures.AbstractMarkedWidgetFigur
 import org.csstudio.sds.ui.editparts.AbstractBaseEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 
 /**
@@ -170,52 +171,36 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
 		
 		
 		//Lolo color
-		IWidgetPropertyChangeHandler LoloColorHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				AbstractMarkedWidgetFigure figure = (AbstractMarkedWidgetFigure) refreshableFigure;
-				figure.setLoloColor(getRgb((String) newValue));
-				return true;
+		setPropertyChangeHandler(AbstractMarkedWidgetModel.PROP_LOLO_COLOR, new ColorChangeHander<AbstractMarkedWidgetFigure>(){
+			@Override
+			protected void doHandle(AbstractMarkedWidgetFigure figure, Color color) {
+				figure.setLoloColor(color);
 			}
-		};
-		setPropertyChangeHandler(AbstractMarkedWidgetModel.PROP_LOLO_COLOR, LoloColorHandler);
+		});
 		
 		//Lo color
-		IWidgetPropertyChangeHandler LoColorHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				AbstractMarkedWidgetFigure figure = (AbstractMarkedWidgetFigure) refreshableFigure;
-				figure.setLoColor(getRgb((String)newValue));
-				return true;
+		setPropertyChangeHandler(AbstractMarkedWidgetModel.PROP_LO_COLOR,  new ColorChangeHander<AbstractMarkedWidgetFigure>(){
+			@Override
+			protected void doHandle(AbstractMarkedWidgetFigure figure, Color color) {
+				figure.setLoColor(color);
 			}
-		};
-		setPropertyChangeHandler(AbstractMarkedWidgetModel.PROP_LO_COLOR, LoColorHandler);		
+		});		
 		
 		//Hi color
-		IWidgetPropertyChangeHandler HiColorHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				AbstractMarkedWidgetFigure figure = (AbstractMarkedWidgetFigure) refreshableFigure;
-				figure.setHiColor(getRgb((String)newValue));
-				return true;
+		setPropertyChangeHandler(AbstractMarkedWidgetModel.PROP_HI_COLOR,  new ColorChangeHander<AbstractMarkedWidgetFigure>(){
+			@Override
+			protected void doHandle(AbstractMarkedWidgetFigure figure, Color color) {
+				figure.setHiColor(color);
 			}
-		};
-		setPropertyChangeHandler(AbstractMarkedWidgetModel.PROP_HI_COLOR, HiColorHandler);
+		});
 		
 		//Hihi color
-		IWidgetPropertyChangeHandler HihiColorHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				AbstractMarkedWidgetFigure figure = (AbstractMarkedWidgetFigure) refreshableFigure;
-				figure.setHihiColor(getRgb((String)newValue));
-				return true;
+		setPropertyChangeHandler(AbstractMarkedWidgetModel.PROP_HIHI_COLOR,  new ColorChangeHander<AbstractMarkedWidgetFigure>(){
+			@Override
+			protected void doHandle(AbstractMarkedWidgetFigure figure, Color color) {
+				figure.setHihiColor(color);
 			}
-		};
-		setPropertyChangeHandler(AbstractMarkedWidgetModel.PROP_HIHI_COLOR, HihiColorHandler);	
+		});	
 		
 		
 	}

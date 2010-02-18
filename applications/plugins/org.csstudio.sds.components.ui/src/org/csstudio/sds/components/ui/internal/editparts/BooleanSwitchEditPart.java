@@ -6,6 +6,7 @@ import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.ExecutionMode;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.swt.graphics.Color;
 
 /**
  * 
@@ -70,28 +71,20 @@ public class BooleanSwitchEditPart extends AbstractWidgetEditPart {
 		setPropertyChangeHandler(BooleanSwitchModel.PROP_3D_EFFECT, effectHandler);
 		
 		// on color
-		IWidgetPropertyChangeHandler onColorHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				BoolSwitchFigure switchFigure = (BoolSwitchFigure) refreshableFigure;
-				switchFigure.setOnColor(getRgb((String) newValue));
-				return true;
+		setPropertyChangeHandler(BooleanSwitchModel.PROP_ON_COLOR, new ColorChangeHander<BoolSwitchFigure>(){
+			@Override
+			protected void doHandle(BoolSwitchFigure figure, Color color) {
+				figure.setOnColor(color);
 			}
-		};
-		setPropertyChangeHandler(BooleanSwitchModel.PROP_ON_COLOR, onColorHandler);
+		});
 		
 		// off color
-		IWidgetPropertyChangeHandler offColorHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				BoolSwitchFigure switchFigure = (BoolSwitchFigure) refreshableFigure;
-				switchFigure.setOffColor(getRgb((String) newValue));
-				return true;
+		setPropertyChangeHandler(BooleanSwitchModel.PROP_OFF_COLOR, new ColorChangeHander<BoolSwitchFigure>(){
+			@Override
+			protected void doHandle(BoolSwitchFigure figure, Color color) {
+				figure.setOffColor(color);
 			}
-		};
-		setPropertyChangeHandler(BooleanSwitchModel.PROP_OFF_COLOR, offColorHandler);
+		});
 		
 		// on label
 		IWidgetPropertyChangeHandler onLabelHandler = new IWidgetPropertyChangeHandler() {

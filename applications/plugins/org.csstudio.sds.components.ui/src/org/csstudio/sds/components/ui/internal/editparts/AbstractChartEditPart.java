@@ -29,7 +29,9 @@ import org.csstudio.sds.components.ui.internal.figures.AbstractChartFigure;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
+import org.csstudio.sds.ui.editparts.AbstractBaseEditPart.ColorChangeHander;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 
 /**
@@ -66,8 +68,8 @@ abstract class AbstractChartEditPart extends AbstractWidgetEditPart {
 		figure.setGridLinesColor(getModelColor(AbstractChartModel.PROP_GRID_LINE_COLOR));
 		figure.setLineChart(model.isLineChart());
 		figure.setGraphLineWidth(model.getPlotLineWidth());
-		figure.setBackgroundColor(getModelColor2(AbstractWidgetModel.PROP_COLOR_BACKGROUND));
-		figure.setForegroundColor(getModelColor2(AbstractWidgetModel.PROP_COLOR_FOREGROUND));
+		figure.setBackgroundColor(getModelColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND));
+		figure.setForegroundColor(getModelColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND));
 		figure.setTransparent(model.isTransparent());
 		figure.setYAxisScaling(model.getYAxisScaling());
 		figure.setLabel(model.getLabel());
@@ -279,52 +281,27 @@ abstract class AbstractChartEditPart extends AbstractWidgetEditPart {
 		setPropertyChangeHandler(WaveformModel.PROP_DATA_POINT_DRAWING_STYLE, drawingStyleHandler);
 		
 		// grid line color
-		IWidgetPropertyChangeHandler ledgerColorHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				AbstractChartFigure figure = (AbstractChartFigure) refreshableFigure;
-				figure.setGridLinesColor(getRgb((String)newValue));
-				return true;
+		setPropertyChangeHandler(WaveformModel.PROP_GRID_LINE_COLOR, new ColorChangeHander<AbstractChartFigure>() {
+			@Override
+			protected void doHandle(AbstractChartFigure figure, Color color) {
+				figure.setGridLinesColor(color);
 			}
-		};
-		setPropertyChangeHandler(WaveformModel.PROP_GRID_LINE_COLOR, ledgerColorHandler);		
+		});		
 	}
 	
 	/**
 	 * Registers change handlers for the plot color properties.
 	 */
 	private void registerPlotColorChangeHandlers() {
-		/**
-		 * Change handler for the plot color properties.
-		 */
-		class PlotColorChangeHandler implements IWidgetPropertyChangeHandler {
-			
-			private final int _index;
-
-			/**
-			 * Constructor.
-			 * @param index the index of the plot color.
-			 */
-			PlotColorChangeHandler(final int index) {
-				_index = index;
-			}
-			
-			/**
-			 * {@inheritDoc}
-			 */
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				AbstractChartFigure figure = (AbstractChartFigure) refreshableFigure;
-				figure.setPlotColor(_index, getRgb((String) newValue));
-				return true;
-			}
-		}
-		
 		AbstractChartModel model = ((AbstractChartModel) getModel());
 		for (int i = 0; i < model.numberOfDataSeries(); i++) {
-			setPropertyChangeHandler(WaveformModel.plotColorPropertyId(i),
-					new PlotColorChangeHandler(i));
+			final int nr = i;
+			setPropertyChangeHandler(WaveformModel.plotColorPropertyId(i),new ColorChangeHander<AbstractChartFigure>() {
+				@Override
+				protected void doHandle(AbstractChartFigure figure, Color color) {
+					figure.setPlotColor(nr, color);
+				}
+			});
 		}
 	}
 }

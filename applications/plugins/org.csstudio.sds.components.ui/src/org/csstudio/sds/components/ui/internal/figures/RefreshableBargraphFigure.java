@@ -200,7 +200,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 			bounds.crop(this.getInsets());
 			graphics.fillRectangle(bounds);
 			graphics.setBackgroundColor(this.getBackgroundColor());
-			graphics.setForegroundColor(this.getBorderColor());	
+			graphics.setForegroundColor(_borderColor);	
 		}
 	}
 
@@ -479,27 +479,18 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	 * @param borderRGB
 	 *            The RGB-value of the Color for the border
 	 */
-	public void setBorderColor(final RGB borderRGB) {
-		_borderColor = CustomMediaFactory.getInstance().getColor(borderRGB);
+	public void setBorderColor(final Color borderRGB) {
+		_borderColor = borderRGB;
 		_fillRectangleFigure.setBorderColor(_borderColor);
 	}
 
 	/**
-	 * Gets the color for the border.
-	 * @return Color The color for the border
-	 */
-	public Color getBorderColor() {
-		return _borderColor;
-	}
-
-	/**
 	 * Sets the default fill Color.
-	 * @param defaultFillRGB
-	 *            The RGB-value of the default fill Color
+	 * @param color
+	 *            the color
 	 */
-	public void setDefaultFillColor(final RGB defaultFillRGB) {
-		_fillRectangleFigure.setDefaultFillColor(CustomMediaFactory
-				.getInstance().getColor(defaultFillRGB));
+	public void setDefaultFillColor(final Color color) {
+		_fillRectangleFigure.setDefaultFillColor(color);
 	}
 
 	/**
@@ -511,21 +502,12 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	}
 
 	/**
-	 * Sets the color for the backgrounf of the fill-area.
-	 * @param fillBackgroundRGB
-	 *            The RGB-value of the Color for the backgrounf of the fill-area
+	 * Sets the color for the background of the fill-area.
+	 * @param color
+	 *            the background color
 	 */
-	public void setFillBackgroundColor(final RGB fillBackgroundRGB) {
-		_fillRectangleFigure.setBackgroundColor(CustomMediaFactory
-				.getInstance().getColor(fillBackgroundRGB));
-	}
-
-	/**
-	 * Gets the color for the backgrounf of the fill-area.
-	 * @return Color The color for the backgrounf of the fill-area
-	 */
-	public Color getFillBackgroundColor() {
-		return _fillRectangleFigure.getBackgroundColor();
+	public void setFillBackgroundColor(final Color color) {
+		_fillRectangleFigure.setBackgroundColor(color);
 	}
 
 	/**
