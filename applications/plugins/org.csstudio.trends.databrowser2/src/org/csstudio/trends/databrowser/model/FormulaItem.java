@@ -190,6 +190,9 @@ public class FormulaItem extends ModelItem
                         {
                             min[i] = max[i] = Double.NaN;
                             val[i] = ValueUtil.getDouble(values[i]);
+                            // Use NaN for any non-number
+                            if (Double.isInfinite(val[i]))
+                                val[i] = Double.NaN;
                             have_min_max = false;
                         }
                         // Move to next input sample

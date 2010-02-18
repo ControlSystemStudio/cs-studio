@@ -95,9 +95,7 @@ public class PlotTest implements PlotListener
         for (int i=1; i<10; ++i)
             values.add(TestSampleBuilder.makeValue(i));
         values.add(TestSampleBuilder.makeError(15, "Disconnected"));
-        // TODO This case is not handled: There is a value. Line should continue
-        //      until the following 'disconnect', but since it's only one sample,
-        //      the plot doesn't show it at all.
+        // Single value. Line should continue until the following 'disconnect'.
         values.add(TestSampleBuilder.makeValue(17));
         values.add(TestSampleBuilder.makeError(18, "Disconnected"));
         

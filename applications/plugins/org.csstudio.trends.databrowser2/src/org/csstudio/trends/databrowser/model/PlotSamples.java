@@ -75,13 +75,15 @@ abstract public class PlotSamples implements IDataProvider
         double max = -Double.MAX_VALUE;
         for (int i=getSize()-1; i>=0; --i)
         {
-            final double val = getSample(i).getYValue();
+            final PlotSample sample = getSample(i);
+            final double val = sample.getYValue();
             if (Double.isNaN(val) || Double.isInfinite(val))
                 continue;
-            if (val < min)
-                min = val;
-            if (val > max)
-                max = val;
+            // Include min/max error in range
+            if (val-sample.getYMinusError() < min)
+                min = val-sample.getYMinusError();
+            if (val+sample.getYPlusError() > max)
+                max = val+sample.getYPlusError();
         }
         // No valid range because no samples, all NaN, or with outrageous values?
         if (min == Double.MAX_VALUE  ||  max == -Double.MAX_VALUE)
