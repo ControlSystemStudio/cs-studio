@@ -470,8 +470,8 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
     					hotSampleist.add(nanSample);
     				}
     				// Is data point in the plot area?
-                    final boolean dpInRange = dpInXRange &&
-                                    yAxis.getRange().inRange(dp.getYValue());
+                    boolean dpInRange = dpInXRange &&
+                                        yAxis.getRange().inRange(dp.getYValue());
     				//draw point
     				if(dpInRange){
     					dpPos = new Point(xAxis.getValuePosition(dp.getXValue(), false),
@@ -506,9 +506,24 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
     					continue;
     				}
     				
-    				final ISample origindp = dp; //save original dp
-    				if(traceType != TraceType.AREA){
-    					if(!predpInRange && !dpInRange){ //both are out of plot area
+    				// Save original dp info because handling of NaN or
+    				// axis intersections might patch it
+    				final ISample origin_dp = dp; 
+    				final boolean origin_dpInRange = dpInRange;
+
+    				// In 'STEP' modes, if there was a value, now there is none,
+    				// continue that last value until the NaN location
+    				if (valueIsNaN  &&  !Double.isNaN(predp.getYValue()) &&
+                        (traceType == TraceType.STEP_HORIZONTALLY  ||
+                         traceType == TraceType.STEP_VERTICALLY))
+                    {   // Patch 'y' of dp, re-compute dpInRange for new 'y'
+    				    dp = new Sample(dp.getXValue(), predp.getYValue());
+    				    dpInRange = yAxis.getRange().inRange(dp.getYValue());
+                    }
+    				
+    				if(traceType != TraceType.AREA)
+    				{
+    				    if(!predpInRange && !dpInRange){ //both are out of plot area
     						ISample[] dpTuple = getIntersection(predp, dp);
     						if(dpTuple[0] == null || dpTuple[1] == null){ // no intersection with plot area
     							predp = dp;
@@ -523,14 +538,14 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
     						if(!predpInRange){
     							predp = getIntersection(predp, dp)[0];
     							if(predp == null){ // no intersection
-    								predp = origindp;
+    								predp = origin_dp;
     								predpInRange = dpInRange;
     								continue;
     							}
     						}else{
     							dp = getIntersection(predp, dp)[0];
     							if(dp == null){ // no intersection
-    								predp = origindp;
+    								predp = origin_dp;
     								predpInRange = dpInRange;
     								continue;
     							}
@@ -549,8 +564,8 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
     					drawLine(graphics, predpPos, dpPos);
     				}
     				
-    				predp = origindp;
-    				predpInRange = dpInRange;
+    				predp = origin_dp;
+    				predpInRange = origin_dpInRange;
     			}			
     		}
         }

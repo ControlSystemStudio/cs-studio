@@ -51,6 +51,8 @@ public class StaircaseTest
         // Another gap, single point
         data.addSample(new Sample(next_x++, Double.NaN, 0, 0, 0, 0, "Disconnected"));
         data.addSample(new Sample(next_x++, 1, 0, 0, 0, 0));
+        // Last value is valid 'forever'
+        data.addSample(new Sample(Double.MAX_VALUE, 1, 0, 0, 0, 0));
 
         // Always looked OK with this range
         xygraph.primaryXAxis.setRange(data.getXDataMinMax());
@@ -78,7 +80,11 @@ public class StaircaseTest
                 xygraph.primaryYAxis, data);
         trace.setTraceType(TraceType.STEP_HORIZONTALLY);
 //        trace.setTraceType(TraceType.STEP_VERTICALLY);
-        trace.setPointStyle(PointStyle.NONE);
+        
+//        // SOLID_LINE does not show individual points
+//        trace.setTraceType(TraceType.SOLID_LINE);
+//        trace.setPointStyle(PointStyle.CIRCLE);
+        
         trace.setErrorBarEnabled(true);
         trace.setDrawYErrorInArea(true);
         xygraph.addTrace(trace);        
