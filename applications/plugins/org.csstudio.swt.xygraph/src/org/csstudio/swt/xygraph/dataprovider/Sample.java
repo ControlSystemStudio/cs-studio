@@ -1,109 +1,133 @@
 package org.csstudio.swt.xygraph.dataprovider;
 
 /** An (x,y) sample data with error.
- * @author Xihui Chen
- *
+ *  <p>
+ *  The error values are absolute, positive numbers.
+ *  For example, a Sample with Y=5, negative Y error 1 and positive Y error 2
+ *  represents a number of 5 that could also be anywhere in 4 .. 7.
+ *  The errors are not percentages.
+ *  The 'negative' error is actually a positive number.
+ *  <p>
+ *  Note:
+ *  Only the x/y value is used in equals()!
+ *  Error ranges and info texts are ignored when determining equality
+ *  with another Sample.
+ *  
+ *  @author Xihui Chen
+ *  @author Kay Kasemir Comments, made immutable
  */
 public class Sample implements ISample {
-	// TODO final
-	private double xValue;
-	private double yValue;
-	private double xPlusError;
-	private double yPlusError;
-	private double xMinusError;
-	private double yMinusError;
-	private String info = "";
+    final private double xValue;
+    final private double yValue;
+    final private double xPlusError;
+    final private double yPlusError;
+    final private double xMinusError;
+    final private double yMinusError;
+    final private String info;
 	
-	
-	/**
-	 * @param xdata
-	 * @param ydata
+	/** Initialize with x/y value
+	 *  @param xdata
+	 *  @param ydata
 	 */
-	public Sample(double xdata, double ydata) {
-		this.xValue = xdata;
-		this.yValue = ydata;
+	public Sample(final double xdata, final double ydata) {
+	    this(xdata, ydata, 0, 0, 0, 0, ""); //$NON-NLS-1$
 	}
-	
-	public Sample(double xValue, double yValue, double yPlusError, double yMinusError, 
-			double xPlusError,double xMinusError) {
+
+   /** Initialize with value and error range
+    *  @param xValue
+    *  @param yValue
+    *  @param yPlusError
+    *  @param yMinusError
+    *  @param xPlusError
+    *  @param xMinusError
+    */
+    public Sample(final double xValue, final double yValue,
+            final double yPlusError, final double yMinusError, 
+            final double xPlusError, final double xMinusError) {
+       this(xValue, yValue, yPlusError, yMinusError,
+           xPlusError, xMinusError,  ""); //$NON-NLS-1$
+    }
+
+    /** Initialize with value, error ranges and info text
+     *  @param xValue
+     *  @param yValue
+     *  @param yPlusError
+     *  @param yMinusError
+     *  @param xPlusError
+     *  @param xMinusError
+     *  @param info
+     */
+	public Sample(final double xValue, final double yValue,
+	        final double yPlusError, final double yMinusError, 
+	        final double xPlusError, final double xMinusError,
+	        final String info) {
 		this.xValue = xValue;
 		this.yValue = yValue;
 		this.xPlusError = xPlusError;
 		this.yPlusError = yPlusError;
 		this.xMinusError = xMinusError;
 		this.yMinusError = yMinusError;
+		this.info = info;
 	}
 
-	/**
-	 * @param plusError the xPlusError to set
-	 */
-	public void setXPlusError(double plusError) {
-		xPlusError = plusError;
-	}
+	/** @return X value */
+	public double getXValue() {
+    	return xValue;
+    }
 
-	/**
-	 * @param plusError the yPlusError to set
-	 */
-	public void setYPlusError(double plusError) {
-		yPlusError = plusError;
-	}
+    /** @return Y value */
+    public double getYValue() {
+    	return yValue;
+    }
 
-	/**
-	 * @param minusError the xMinusError to set
-	 */
-	public void setXMinusError(double minusError) {
-		xMinusError = minusError;
-	}
-
-	/**
-	 * @param minusError the yMinusError to set
-	 */
-	public void setYMinusError(double minusError) {
-		yMinusError = minusError;
-	}
-	
-
-	@Override
-	public boolean equals(Object obj) {
-		if(obj instanceof Sample)
-			return  (((Sample)obj).xValue == xValue && ((Sample)obj).yValue == yValue);
-		return false;
-	}
-	
-	@Override
-	public String toString() {
-		return "(" + xValue + ", " + yValue + ")";
-	}
-
-	public double getXMinusError() {
+    /** @return Negative X error. */
+    public double getXMinusError() {
 		return xMinusError;
 	}
-	
+    
+    /** @return Positive X error. */
 	public double getXPlusError() {
 		return xPlusError;
 	}
 	
-	public double getXValue() {
-		return xValue;
-	}
-
+    /** @return Negative Y error. */
 	public double getYMinusError() {
 		return yMinusError;
 	}
 
+    /** @return Positive Y error. */
 	public double getYPlusError() {
 		return yPlusError;
 	}
 
-	public double getYValue() {
-		return yValue;
-	}
-
+    /** @return Sample info text. */
 	public String getInfo() {
 		return info;
 	}
-	
-	public void setInfo(String info){
-		this.info = info;
-	}
+
+    @Override
+    public boolean equals(final Object obj) {
+    	if(obj instanceof Sample)
+    		return  (((Sample)obj).xValue == xValue && ((Sample)obj).yValue == yValue);
+    	return false;
+    }
+
+    /** @return String representation, mostly for debugging */
+    @SuppressWarnings("nls")
+    @Override
+    public String toString() {
+        final StringBuilder buf = new StringBuilder();
+        buf.append("(");
+        buf.append(xValue);
+        if (xMinusError != 0  ||  xPlusError != 0)
+            buf.append(" [-" + xMinusError + " ... +" + xPlusError + "]");
+        buf.append(", ");
+        buf.append(xValue);
+        if (yMinusError != 0  ||  yPlusError != 0)
+            buf.append(" [-" + yMinusError + " ... +" + yPlusError + "]");
+        if (info != null  &&  info.length() > 0)
+            buf.append(", '" + info + "'");
+        buf.append(")");
+        return buf.toString();
+    }
 }
