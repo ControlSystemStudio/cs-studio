@@ -122,7 +122,7 @@ public class Sample implements ISample {
         if (xMinusError != 0  ||  xPlusError != 0)
             buf.append(" [-" + xMinusError + " ... +" + xPlusError + "]");
         buf.append(", ");
-        buf.append(xValue);
+        buf.append(yValue);
         if (yMinusError != 0  ||  yPlusError != 0)
             buf.append(" [-" + yMinusError + " ... +" + yPlusError + "]");
         if (info != null  &&  info.length() > 0)
