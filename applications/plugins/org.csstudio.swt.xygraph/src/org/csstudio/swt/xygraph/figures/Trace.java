@@ -558,8 +558,10 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 	 *  @return The intersection points with the axes when draw the line between the two 
 	 * data points. The index 0 of the result is the first intersection point. index 1 is the second one.
 	 */
-	private ISample[] getIntersection(final ISample dp1, final ISample dp2){
-		if(traceType == TraceType.STEP_HORIZONTALLY){
+	private ISample[] getIntersection(final ISample dp1, final ISample dp2)
+	{
+		if (traceType == TraceType.STEP_HORIZONTALLY)
+		{
 			final ISample[] result = new Sample[2];
 			int count = 0;
 			// Data point between dp1 and dp2 using horizontal steps:
@@ -569,10 +571,10 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 			final ISample dp = new Sample(dp2.getXValue(), dp1.getYValue());
 			// Check intersections of horizontal  dp1------dp section
 			final ISample iy[] = getStraightLineIntersection(dp1, dp);
-			// intersects both y axes?
+			// Intersects both y axes?
             if (iy[1] != null)
 			    return iy;
-            // intersects one y axis?
+            // Intersects one y axis?
 			if(iy[0] != null)
 				result[count++] = iy[0];
 			// Check intersections of vertical  dp/dp2 section with x axes
@@ -585,21 +587,31 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 				result[count++] = ix[0];
 			return result;
 		}	
-		if(traceType == TraceType.STEP_VERTICALLY){
+		if (traceType == TraceType.STEP_VERTICALLY)
+		{
 			final ISample[] result = new Sample[2];
+	         int count = 0;
             // Data point between dp1 and dp2 using vertical steps:
             // dp---------dp2
             //  |           
             // dp1
 			final ISample dp = new Sample(dp1.getXValue(), dp2.getYValue());
-			//intersection with x axis
-			final ISample ix = getStraightLineIntersection(dp1, dp)[0];
-			if(ix != null)
-				result[0] = ix;
-			//intersection with y axis
-			final ISample iy = getStraightLineIntersection(dp, dp2)[0];
-			if(iy != null)
-				result[ix == null ? 0 : 1] = iy;
+			// Check intersections of vertical dp1/dp section
+			final ISample ix[] = getStraightLineIntersection(dp1, dp);
+			// Intersects both X axes?
+			if (ix[1] != null)
+			    return ix;
+			// Intersects one X axis?
+			if (ix[0] != null)
+				result[count++] = ix[0];
+			// Check intersection of horizontal dp----dp2 section with Y axes
+			final ISample iy[] = getStraightLineIntersection(dp, dp2);
+            // Intersects both y axes?
+            if (iy[1] != null)
+                return iy;
+            // Intersects one y axis?
+            if (iy[0] != null)
+				result[count++] = iy[0];
 			return result;
 		}	
 		return getStraightLineIntersection(dp1, dp2);
@@ -621,7 +633,7 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 		final double y2 = dp2.getYValue();
 		final double dx = x2 - x1;
 		final double dy = y2 - y1;
-        final ISample[] dpTuple = new Sample[]{null, null};
+        final ISample[] dpTuple = new Sample[2];
         int count = 0; // number of valid dbTuple entries
 		double x, y;
 		
@@ -639,6 +651,11 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
             if(evalDP(x, y, dp1, dp2))
                 dpTuple[count++] =  new Sample(x, y);
 		}
+		// A line that runs diagonally through the plot,
+		// hitting for example the lower left as well as upper right corners
+		// would cut both X as well as both Y axes.
+		// Return only the X axes hits, since Y axes hits are actually the
+		// same points.
 		if (count == 2)
 		    return dpTuple;
 		if (dx != 0.0)
@@ -658,25 +675,32 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 		return dpTuple;
 	}
 	
-	/**
-	 * @param x
-	 * @param y
-	 * @param dp1
-	 * @param dp2
-	 * @return true if the point (x,y) is between dp1 and dp2 AND within the x/y axes. false otherwise
+	/** Sanity check:
+	 *  Point x/y was computed to be an axis intersection.
+	 *  Is it in the plot area?
+	 *  Is it between the start/end points?
+	 *  @param x
+	 *  @param y
+	 *  @param dp1
+	 *  @param dp2
+	 *  @return true if the point (x,y) is between dp1 and dp2
+	 *          BUT not equal to either
+	 *          AND within the x/y axes. false otherwise
 	 */
-	private boolean evalDP(double x, double y, ISample dp1, ISample dp2){
-		//if dp is between dp1 and dp2
-	    // TODO Constructing two Ranges seems expensive 
-	    // Directly use value >= lower && value <= upper?
-		if(new Range(dp1.getXValue(), dp2.getXValue()).inRange(x) && 
-				new Range(dp1.getYValue(), dp2.getYValue()).inRange(y)){
-			ISample  dp = new Sample(x, y);
-			if(dp.equals(dp1) || dp.equals(dp2))
-				return false;
-			return xAxis.getRange().inRange(x) && yAxis.getRange().inRange(y);
-		}		
-		return false;	
+	private boolean evalDP(final double x, final double y, final ISample dp1, final ISample dp2){
+	    // First check axis limits
+	    if (!xAxis.getRange().inRange(x)  ||   !yAxis.getRange().inRange(y))
+	        return false;
+	    // Check if dp is between dp1 and dp2.
+	    // Could this be done without constructing 2 new Ranges?
+		if (! new Range(dp1.getXValue(), dp2.getXValue()).inRange(x)  ||
+		    ! new Range(dp1.getYValue(), dp2.getYValue()).inRange(y))
+		    return false;
+		// TODO why the ==dp1,2 test?
+        final ISample dp = new Sample(x, y);
+		if(dp.equals(dp1) || dp.equals(dp2))
+			return false;
+		return true;	
 	}	
 
 	/**

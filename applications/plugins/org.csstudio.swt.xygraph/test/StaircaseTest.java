@@ -11,7 +11,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.junit.Test;
 
-
 /** JUnit demo of the plot with 'staircase' data, including gaps,
  *  as it can be used for showing historic data.
  *  @author Kay Kasemir
@@ -98,24 +97,29 @@ public class StaircaseTest
         data.addSample(new TestSample(1));
         data.addSample(new TestSample(1));
         data.addSample(new TestSample(1));
+        // TODO add Double.NaN gaps
 
-        // Looks OK with this range
+        // Always looked OK with this range
         xygraph.primaryXAxis.setRange(data.getXDataMinMax());
         xygraph.primaryYAxis.setRange(data.getYDataMinMax());
         
-        // Should show a horizontal line with this range, but
-        // instead displays nothing when both the 'start' and 'end'
-        // point of the horizontal line are outside the plot range
+        // With STEP_HORIZONTALLY this should have shown just a horizontal
+        // line, but a bug resulted in nothing when both the 'start' and 'end'
+        // point of the horizontal line were outside the plot range.
+        // Similarly, using STEP_VERTICALLY failed to draw anything when
+        // both end-points of the horizontal or vertical section of the step
+        // were outside the plot. (fixed)
+        // TODO No area?
         xygraph.primaryXAxis.setRange(4.1, 4.9);
-        
+  
         final Trace trace = new Trace("Demo", xygraph.primaryXAxis,
                 xygraph.primaryYAxis, data);
-        trace.setTraceType(TraceType.STEP_HORIZONTALLY);
+//        trace.setTraceType(TraceType.STEP_HORIZONTALLY);
+        trace.setTraceType(TraceType.STEP_VERTICALLY);
         trace.setPointStyle(PointStyle.NONE);
         trace.setErrorBarEnabled(true);
         trace.setDrawYErrorInArea(true);
-        xygraph.addTrace(trace);
-        
+        xygraph.addTrace(trace);        
         
         // SWT main loop
         final Display display = Display.getDefault();
