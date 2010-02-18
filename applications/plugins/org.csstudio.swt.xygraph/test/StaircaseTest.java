@@ -45,7 +45,12 @@ public class StaircaseTest
         data.addSample(new Sample(next_x++, 1, 1, 1, 0, 0));
         data.addSample(new Sample(next_x++, 1, 1, 1, 0, 0));
         data.addSample(new Sample(next_x++, 1, 1, 1, 0, 0));
-        // TODO add Double.NaN gaps
+        // Add Double.NaN gap, single point
+        data.addSample(new Sample(next_x++, Double.NaN, 0, 0, 0, 0, "Disconnected"));
+        data.addSample(new Sample(next_x++, 1, 0, 0, 0, 0));
+        // Another gap, single point
+        data.addSample(new Sample(next_x++, Double.NaN, 0, 0, 0, 0, "Disconnected"));
+        data.addSample(new Sample(next_x++, 1, 0, 0, 0, 0));
 
         // Always looked OK with this range
         xygraph.primaryXAxis.setRange(data.getXDataMinMax());
@@ -64,6 +69,10 @@ public class StaircaseTest
         // of the plot range, the error area suddenly shrinks when
         // the axis intersection is assumed to have +-0 y error.
         xygraph.primaryXAxis.setRange(4.1, 4.9);
+        
+        // Gap, start of X range, sample @ x==8, gap @ 9, end of range.
+        // Bug failed to show line from that sample up to gap @ 9.
+        xygraph.primaryXAxis.setRange(7.5, 9.5);
 
         final Trace trace = new Trace("Demo", xygraph.primaryXAxis,
                 xygraph.primaryYAxis, data);

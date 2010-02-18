@@ -22,6 +22,8 @@ import org.eclipse.swt.graphics.Color;
  * @author Kay Kasemir (synchronization, STEP_HORIZONTALLY tweaks)
  */
 public class Trace extends Figure implements IDataProviderListener, IAxisListener{
+    /** Size of 'markers' used on X axis to indicate non-plottable samples */
+    final private static int MARKER_SIZE = 6;
 	
 	/** The way how the trace will be drawn.
 	 *  @author Xihui Chen
@@ -422,11 +424,8 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 		graphics.setForegroundColor(traceColor);
 		graphics.setLineWidth(lineWidth);
 		ISample predp = null;
-		Point predpPos = null;
 		boolean predpInRange = false;
-		boolean dpInRange = true;
 		Point dpPos = null;
-		ISample origindp =null;
 		hotSampleist.clear();
 		if(traceDataProvider == null)
 			throw new RuntimeException("No DataProvider defined for trace: " + name); //$NON-NLS-1$
@@ -434,37 +433,45 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 		synchronized (traceDataProvider)
         {
     		if(traceDataProvider.getSize()>0){
-    			int startIndex =0;
-    			int endIndex = traceDataProvider.getSize()-1;
+    		    // Is only a sub-set of the trace data visible?
+    			final int startIndex, endIndex;
     			if(traceDataProvider.isChronological()){
-    				Range indexRange = getIndexRangeOnXAxis();
+    			    final Range indexRange = getIndexRangeOnXAxis();
     				if(indexRange == null){
-    					startIndex = 0;
+    				    startIndex = 0;
     					endIndex = -1;
     				}else{
     					startIndex = (int) indexRange.getLower();
     					endIndex = (int) indexRange.getUpper();
     				}
     			}
-    			for(int i= startIndex; i<=endIndex; i++){
-    				ISample dp = traceDataProvider.getSample(i);
-    				if(Double.isNaN(dp.getYValue())){
+    			else
+    			{   // Cannot optimize range, use all data points
+    			    startIndex = 0;
+                    endIndex = traceDataProvider.getSize()-1;
+    			}
+    			for (int i=startIndex; i<=endIndex; i++)
+    			{
+    			    ISample dp = traceDataProvider.getSample(i);
+                    final boolean dpInXRange = xAxis.getRange().inRange(dp.getXValue());
+    				// Mark 'NaN' samples on X axis
+    				final boolean valueIsNaN = Double.isNaN(dp.getYValue());
+                    if (dpInXRange  &&  valueIsNaN)
+                    {
     					Point markPos = new Point(xAxis.getValuePosition(dp.getXValue(), false),
     							yAxis.getValuePosition(xAxis.getTickLablesSide() == LabelSide.Primary?
     									yAxis.getRange().getLower() : yAxis.getRange().getUpper(), false));
-    					int markWidth = 6;
     					graphics.setBackgroundColor(traceColor);
-    					graphics.fillRectangle(markPos.x -markWidth/2, markPos.y - markWidth/2, markWidth, markWidth);
+    					graphics.fillRectangle(markPos.x -MARKER_SIZE/2, markPos.y - MARKER_SIZE/2, MARKER_SIZE, MARKER_SIZE);
     					Sample nanSample = new Sample(dp.getXValue(),xAxis.getTickLablesSide() == LabelSide.Primary?
     							yAxis.getRange().getLower() : yAxis.getRange().getUpper(),
     							dp.getYPlusError(), dp.getYMinusError(),
     							Double.NaN, dp.getXMinusError(), dp.getInfo());
     					hotSampleist.add(nanSample);
     				}
-    				//if the data is not in the plot area
-    				dpInRange =
-    					xAxis.getRange().inRange(dp.getXValue()) && yAxis.getRange().inRange(dp.getYValue());
-    				
+    				// Is data point in the plot area?
+                    final boolean dpInRange = dpInXRange &&
+                                    yAxis.getRange().inRange(dp.getYValue());
     				//draw point
     				if(dpInRange){
     					dpPos = new Point(xAxis.getValuePosition(dp.getXValue(), false),
@@ -473,7 +480,6 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
     					drawPoint(graphics, dpPos);
     					if(errorBarEnabled && !drawYErrorInArea)
     						drawErrorBar(graphics, dpPos, dp);
-    					
     				}
     				if(traceType == TraceType.POINT && !drawYErrorInArea)
     					continue; // no need to draw line			
@@ -493,13 +499,14 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
     					}
     					predpInRange = xAxis.getRange().inRange(predp.getXValue()) && yAxis.getRange().inRange(predp.getYValue());
     				}
-    				if(predp == null){
+    				if(predp == null)
+    				{   // No previous data point from which to draw a line
     					predp = dp;
     					predpInRange = dpInRange;
     					continue;
     				}
     				
-    				origindp = dp; //save original dp
+    				final ISample origindp = dp; //save original dp
     				if(traceType != TraceType.AREA){
     					if(!predpInRange && !dpInRange){ //both are out of plot area
     						ISample[] dpTuple = getIntersection(predp, dp);
@@ -531,7 +538,7 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
     					}
     				}
     				
-    				predpPos = new Point(xAxis.getValuePosition(predp.getXValue(), false),
+    				final Point predpPos = new Point(xAxis.getValuePosition(predp.getXValue(), false),
     								yAxis.getValuePosition(predp.getYValue(), false));
     				dpPos = new Point(xAxis.getValuePosition(dp.getXValue(), false),
     								yAxis.getValuePosition(dp.getYValue(), false));
@@ -675,9 +682,10 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 	}
 	
 	/** Sanity check:
-	 *  Point x/y was computed to be an axis intersection.
+	 *  Point x/y was computed to be an axis intersection, but that can fail
+	 *  because of rounding errors or for samples with NaN, Infinity.
 	 *  Is it in the plot area?
-	 *  Is it between the start/end points?
+	 *  Is it between the start/end points.
 	 *  @param x
 	 *  @param y
 	 *  @param dp1
