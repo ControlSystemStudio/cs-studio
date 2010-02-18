@@ -5,7 +5,7 @@ package org.csstudio.swt.xygraph.dataprovider;
  *
  */
 public class Sample implements ISample {
-	
+	// TODO final
 	private double xValue;
 	private double yValue;
 	private double xPlusError;

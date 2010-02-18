@@ -65,6 +65,12 @@ public class StaircaseTest
         {
             return y;
         }
+        
+        @Override
+        public String toString()
+        {
+            return getInfo() + "(" + x + ", " + y + ")";
+        }
     }
     
     @Test
@@ -81,6 +87,7 @@ public class StaircaseTest
                 XYGraphFlags.SEPARATE_ZOOM | XYGraphFlags.STAGGER);
         final XYGraph xygraph = plot.getXYGraph();
         xygraph.setTransparent(false);
+        xygraph.setTitle("You should see a line. Zoom out to see more data");
         lws.setContents(plot);
 
         // Add data & trace

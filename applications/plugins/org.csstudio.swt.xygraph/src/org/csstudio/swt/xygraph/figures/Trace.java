@@ -16,18 +16,15 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 
-
 /**
  * The trace figure.
  * @author Xihui Chen
- * @author Kay Kasemir (synchronization)
+ * @author Kay Kasemir (synchronization, STEP_HORIZONTALLY tweaks)
  */
 public class Trace extends Figure implements IDataProviderListener, IAxisListener{
 	
-	/** The way how the trace will be drawn. */
-	/**
-	 * @author Xihui Chen
-	 *
+	/** The way how the trace will be drawn.
+	 *  @author Xihui Chen
 	 */
 	public enum TraceType {
 		/** Solid Line */
@@ -432,7 +429,7 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 		ISample origindp =null;
 		hotSampleist.clear();
 		if(traceDataProvider == null)
-			throw new RuntimeException("No DataProvider defined for trace: " + name);
+			throw new RuntimeException("No DataProvider defined for trace: " + name); //$NON-NLS-1$
 		// Lock data provider to prevent changes while painting
 		synchronized (traceDataProvider)
         {
@@ -555,94 +552,109 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 	}
 	
 	
-	/**
-	 * @param dp1
-	 * @param dp2
-	 * @return The intersection points with the axes when draw the line between the two 
+	/** Compute axes intersection considering the 'TraceType'
+	 *  @param dp1 'Start' point of line
+	 *  @param dp2 'End' point of line
+	 *  @return The intersection points with the axes when draw the line between the two 
 	 * data points. The index 0 of the result is the first intersection point. index 1 is the second one.
 	 */
-	private ISample[] getIntersection(ISample dp1, ISample dp2){
+	private ISample[] getIntersection(final ISample dp1, final ISample dp2){
 		if(traceType == TraceType.STEP_HORIZONTALLY){
-			ISample[] result = new Sample[2];
-			//the data point between dp1 and dp2.
-			ISample dp = new Sample(dp2.getXValue(), dp1.getYValue());
-			//intersection with y axis
-			ISample iy = getStraightLineIntersection(dp1, dp)[0];
-			if(iy != null)
-				result[0] = iy;
-			//intersection with x axis
-			ISample ix = getStraightLineIntersection(dp, dp2)[0];
-			if(ix != null)
-				result[iy == null ? 0 : 1] = ix;
+			final ISample[] result = new Sample[2];
+			int count = 0;
+			// Data point between dp1 and dp2 using horizontal steps:
+			//            dp2
+			//             |
+			// dp1--------dp
+			final ISample dp = new Sample(dp2.getXValue(), dp1.getYValue());
+			// Check intersections of horizontal  dp1------dp section
+			final ISample iy[] = getStraightLineIntersection(dp1, dp);
+			// intersects both y axes?
+            if (iy[1] != null)
+			    return iy;
+            // intersects one y axis?
+			if(iy[0] != null)
+				result[count++] = iy[0];
+			// Check intersections of vertical  dp/dp2 section with x axes
+			final ISample ix[] = getStraightLineIntersection(dp, dp2);
+			// Intersects both x axes?
+			if (ix[1] != null)
+			    return ix;
+			// Intersects one x axis?
+			if (ix[0] != null)
+				result[count++] = ix[0];
 			return result;
 		}	
 		if(traceType == TraceType.STEP_VERTICALLY){
-			ISample[] result = new Sample[2];
-			//the data point between dp1 and dp2.
-			ISample dp = new Sample(dp1.getXValue(), dp2.getYValue());
+			final ISample[] result = new Sample[2];
+            // Data point between dp1 and dp2 using vertical steps:
+            // dp---------dp2
+            //  |           
+            // dp1
+			final ISample dp = new Sample(dp1.getXValue(), dp2.getYValue());
 			//intersection with x axis
-			ISample ix = getStraightLineIntersection(dp1, dp)[0];
+			final ISample ix = getStraightLineIntersection(dp1, dp)[0];
 			if(ix != null)
 				result[0] = ix;
 			//intersection with y axis
-			ISample iy = getStraightLineIntersection(dp, dp2)[0];
+			final ISample iy = getStraightLineIntersection(dp, dp2)[0];
 			if(iy != null)
 				result[ix == null ? 0 : 1] = iy;
-			
 			return result;
 		}	
-		return getStraightLineIntersection(dp1, dp2); 
-			
+		return getStraightLineIntersection(dp1, dp2);
 	}
 	
 	
-	
-	
-	/**
-	 * @param dp1
-	 * @param dp2
-	 * @return The intersection points between the line, 
-	 * which is the straight line between the two data points, and the axis. 
-	 * The index 0 of the result is the first intersection point. index 1 is the second one.
+	/** Compute intersection of straight line with axes,
+	 *  no correction for 'TraceType'.
+     *  @param dp1 'Start' point of line
+     *  @param dp2 'End' point of line
+	 *  @return The intersection points between the line, 
+	 *  which is the straight line between the two data points, and the axes.
+	 *  Result could be { null, null }, { point1, null } or { point1, point2 }.
 	 */
-	private ISample[] getStraightLineIntersection(ISample dp1, ISample dp2){
-		ISample[] dpTuple = new Sample[]{null, null};
-		double x1 = dp1.getXValue();
-		double y1 = dp1.getYValue();
-		double x2 = dp2.getXValue();
-		double y2 = dp2.getYValue();
-		double dx = x2 - x1;
-		double dy = y2 - y1;
+	private ISample[] getStraightLineIntersection(final ISample dp1, final ISample dp2){
+		final double x1 = dp1.getXValue();
+		final double y1 = dp1.getYValue();
+		final double x2 = dp2.getXValue();
+		final double y2 = dp2.getYValue();
+		final double dx = x2 - x1;
+		final double dy = y2 - y1;
+        final ISample[] dpTuple = new Sample[]{null, null};
+        int count = 0; // number of valid dbTuple entries
+		double x, y;
 		
-		double x;
-		double y;
-		//Intersection with xAxis
-		double ymin = yAxis.getRange().getLower();
-		x = (ymin-y1)*dx/dy + x1;
-		y = ymin;
-		if(dy != 0 && evalDP(x, y, dp1, dp2))
-			dpTuple[0] = new Sample(x, y);
-		
-		//Intersection with yAxis
-		double xmin = xAxis.getRange().getLower();
-		x = xmin;
-		y = (xmin-x1)*dy/dx+y1;
-		if(dx !=0 && evalDP(x, y, dp1, dp2))
-			dpTuple[dpTuple[0]==null? 0 : 1] = 	new Sample(x, y);
-		
-		//Intersection with up xAxis
-		double ymax = yAxis.getRange().getUpper();
-		x = (ymax-y1)*dx/dy+x1;
-		y = ymax;
-		if(dy != 0 && evalDP(x, y, dp1, dp2))
-			dpTuple[dpTuple[0]==null? 0 : 1] = 	new Sample(x, y);
-		
-		//Intersection with right yAxis
-		double xmax = xAxis.getRange().getUpper();
-		x = xmax;
-		y = (xmax-x1)*dy/dx + y1;
-		if(dx != 0 && evalDP(x, y, dp1, dp2))
-			dpTuple[dpTuple[0]==null? 0 : 1] = 	new Sample(x, y);
+		if (dy != 0.0)
+		{   // Intersection with lower xAxis
+    		final double ymin = yAxis.getRange().getLower();
+    		x = (ymin-y1)*dx/dy + x1;
+    		y = ymin;
+    		if(evalDP(x, y, dp1, dp2))
+    			dpTuple[count++] = new Sample(x, y);
+            // Intersection with upper xAxis
+            final double ymax = yAxis.getRange().getUpper();
+            x = (ymax-y1)*dx/dy+x1;
+            y = ymax;
+            if(evalDP(x, y, dp1, dp2))
+                dpTuple[count++] =  new Sample(x, y);
+		}
+		if (count == 2)
+		    return dpTuple;
+		if (dx != 0.0)
+		{   // Intersection with left yAxis
+		    final double xmin = xAxis.getRange().getLower();
+    		x = xmin;
+    		y = (xmin-x1)*dy/dx+y1;
+    		if(evalDP(x, y, dp1, dp2))
+    			dpTuple[count++] = 	new Sample(x, y);
+            // Intersection with right yAxis
+            final double xmax = xAxis.getRange().getUpper();
+            x = xmax;
+            y = (xmax-x1)*dy/dx + y1;
+            if(dx != 0 && evalDP(x, y, dp1, dp2))
+                dpTuple[count++] =  new Sample(x, y);
+		}
 		return dpTuple;
 	}
 	
@@ -651,10 +663,12 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 	 * @param y
 	 * @param dp1
 	 * @param dp2
-	 * @return true if the point (x,y) is between dp1 and dp2. false otherwise
+	 * @return true if the point (x,y) is between dp1 and dp2 AND within the x/y axes. false otherwise
 	 */
 	private boolean evalDP(double x, double y, ISample dp1, ISample dp2){
 		//if dp is between dp1 and dp2
+	    // TODO Constructing two Ranges seems expensive 
+	    // Directly use value >= lower && value <= upper?
 		if(new Range(dp1.getXValue(), dp2.getXValue()).inRange(x) && 
 				new Range(dp1.getYValue(), dp2.getYValue()).inRange(y)){
 			ISample  dp = new Sample(x, y);
