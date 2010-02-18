@@ -117,7 +117,6 @@ public class StoredProcedureValueIterator extends AbstractRDBValueIterator
         // Row with String value:
         // WB: -1, SMPL_TIME: 2010/01/28 11:14:11.086000000, SEVERITY_ID: 2, STATUS_ID: 2, MIN_VAL: null, MAX_VAL: null, AVG_VAL: null, STR_VAL: Archive_Off, CNT: 1
         // i.e. Columns 1 WB, 2 SMPL_TIME, 3 SEVERITY_ID, 4 STATUS_ID, 5 MIN_VAL, 6 MAX_VAL, 7 AVG_VAL, 8 STR_VAL, 9 CNT
-        IValue last_value = null;
         while (result.next())
         {
             // Time stamp
@@ -137,36 +136,26 @@ public class StoredProcedureValueIterator extends AbstractRDBValueIterator
                 severity = filterSeverity(severity, status);
             }
             
-            // If this value starts a 'gap' in the data, but the previous
-            // sample was 'good', extrapolate that last sample so that the
-            // plot draws a line up to the start of the gap.
-            // TODO this could be removed if the XYGraph handled gaps the same way
-            if (!severity.hasValue()  &&
-                last_value != null  && last_value.getSeverity().hasValue())
-            {   // Patch last value to have current time
-                last_value = changeTimestamp(last_value, time);
-                tmp_values.add(last_value);
-            }
-            
             // WB==-1 indicates a String sample
+            final IValue value;
             if (result.getInt(1) < 0)
-                last_value = ValueFactory.createStringValue(time, severity, status,
+                value = ValueFactory.createStringValue(time, severity, status,
                         IValue.Quality.Original, new String[] { result.getString(8) });
             else
             {   // Only one value within averaging bucket?
                 final int cnt = result.getInt(9);
                 if (cnt == 1)
-                    last_value = ValueFactory.createDoubleValue(time, severity,
+                    value = ValueFactory.createDoubleValue(time, severity,
                             status, meta, IValue.Quality.Original,
                             new double[] { result.getDouble(7) });
                 else // Decode min/max/average
-                    last_value = ValueFactory.createMinMaxDoubleValue(time, severity,
+                    value = ValueFactory.createMinMaxDoubleValue(time, severity,
                             status, meta, IValue.Quality.Interpolated,
                             new double[] { result.getDouble(7) },
                             result.getDouble(5),
                             result.getDouble(6));
             }
-            tmp_values.add(last_value);
+            tmp_values.add(value);
         }
         // Convert to plain array
         final IValue values[] = tmp_values.toArray(new IValue[tmp_values.size()]);
@@ -181,22 +170,10 @@ public class StoredProcedureValueIterator extends AbstractRDBValueIterator
     private IValue[] decodeSampleTable(final ResultSet result) throws Exception
     {
         final ArrayList<IValue> tmp_values = new ArrayList<IValue>();
-        IValue last_value = null;
         while (result.next())
         {
             final IValue value = decodeSampleTableValue(result);
-            // If this value starts a 'gap' in the data, but the previous
-            // sample was 'good', extrapolate that last sample so that the
-            // plot draws a line up to the start of the gap.
-            // TODO this could be removed if the XYGraph handled gaps the same way
-            if (!value.getSeverity().hasValue()  &&
-                last_value != null  && last_value.getSeverity().hasValue())
-            {   // Patch last value to have current time
-                last_value = changeTimestamp(last_value, value.getTime());
-                tmp_values.add(last_value);
-            }
             tmp_values.add(value);
-            last_value = value;
         }
         return tmp_values.toArray(new IValue[tmp_values.size()]);
     }

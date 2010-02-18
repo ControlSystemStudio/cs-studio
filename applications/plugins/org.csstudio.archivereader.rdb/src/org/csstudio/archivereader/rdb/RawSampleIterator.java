@@ -25,9 +25,6 @@ public class RawSampleIterator extends AbstractRDBValueIterator
      */
     private IValue value = null;
     
-    /** The last value that next() returned */
-    private IValue last_value = null;
-
     /** Initialize
      *  @param reader RDBArchiveReader
      *  @param channel_id ID of channel
@@ -126,25 +123,12 @@ public class RawSampleIterator extends AbstractRDBValueIterator
     @SuppressWarnings("nls")
     public IValue next() throws Exception
     {
-        // Remember value to return...
-        final IValue result = value;
-        
-        // If this value starts a 'gap' in the data, but the previous
-        // sample was 'good', extrapolate that last sample so that the
-        // plot draws a line up to the start of the gap.
-        // TODO this could be removed if the XYGraph handled gaps the same way
-        if (!result.getSeverity().hasValue()  &&
-            last_value != null  && last_value.getSeverity().hasValue())
-        {   // Patch last value to have current time
-            final IValue extra = changeTimestamp(last_value, result.getTime());
-            last_value = null; // Do this only once. Next time it'll be 'value'
-            return extra;
-        }
-        
         // This should not happen...
         if (result_set == null)
             throw new Exception("RawSampleIterator.next(" + channel_id + ") called after end");
-        
+
+        // Remember value to return...
+        final IValue result = value;
         // ... and prepare next value
         try
         {
@@ -160,7 +144,6 @@ public class RawSampleIterator extends AbstractRDBValueIterator
                 throw ex;
             // Else: Not a real error; return empty iterator
         }
-        last_value = result;
         return result;
     }
 
