@@ -121,7 +121,7 @@ public final class RectangleModel extends AbstractWidgetModel {
 	 * @return the fill level
 	 */
 	public double getFillLevel() {
-		return (Double) getProperty(PROP_FILL).getPropertyValue();
+		return getDoubleProperty(PROP_FILL).getPropertyValue();
 	}
 	
 	/**
@@ -130,7 +130,7 @@ public final class RectangleModel extends AbstractWidgetModel {
 	 * @return the orientation.
 	 */
 	public boolean getOrientation() {
-		return (Boolean) getProperty(PROP_ORIENTATION).getPropertyValue();
+		return getBooleanProperty(PROP_ORIENTATION).getPropertyValue();
 	}
 	
 	/**
@@ -139,7 +139,7 @@ public final class RectangleModel extends AbstractWidgetModel {
 	 * @return The state of the background.
 	 */
 	public boolean getTransparent() {
-		return (Boolean) getProperty(PROP_TRANSPARENT).getPropertyValue();
+		return getBooleanProperty(PROP_TRANSPARENT).getPropertyValue();
 	}
 
 }

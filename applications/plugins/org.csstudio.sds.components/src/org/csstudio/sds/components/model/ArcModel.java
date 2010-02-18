@@ -112,7 +112,7 @@ public final class ArcModel extends AbstractWidgetModel {
 	 * @return true, if the background is transparent, false otherwise
 	 */
 	public boolean getTransparent() {
-		return (Boolean) getProperty(PROP_TRANSPARENT).getPropertyValue();
+		return getBooleanProperty(PROP_TRANSPARENT).getPropertyValue();
 	}
 	
 	/**
@@ -120,7 +120,7 @@ public final class ArcModel extends AbstractWidgetModel {
 	 * @return The value for the start angle
 	 */
 	public int getStartAngle() {
-		return (Integer) getProperty(PROP_STARTANGLE).getPropertyValue();
+		return getIntegerProperty(PROP_STARTANGLE).getPropertyValue();
 	}
 	
 	/**
@@ -128,7 +128,7 @@ public final class ArcModel extends AbstractWidgetModel {
 	 * @return The value for the angle
 	 */
 	public int getAngle() {
-		return (Integer) getProperty(PROP_ANGLE).getPropertyValue();
+		return getIntegerProperty(PROP_ANGLE).getPropertyValue();
 	}
 	
 	/**
@@ -136,7 +136,7 @@ public final class ArcModel extends AbstractWidgetModel {
 	 * @return The width of the arc
 	 */
 	public int getLineWidth() {
-		return (Integer) getProperty(PROP_LINEWIDTH).getPropertyValue();
+		return getIntegerProperty(PROP_LINEWIDTH).getPropertyValue();
 	}
 	
 	/**
@@ -144,6 +144,6 @@ public final class ArcModel extends AbstractWidgetModel {
 	 * @return true, if the arc should be filled, false otherwise
 	 */
 	public boolean getFill() {
-		return (Boolean) getProperty(PROP_FILLED).getPropertyValue();
+		return getBooleanProperty(PROP_FILLED).getPropertyValue();
 	}
 }

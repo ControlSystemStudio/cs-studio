@@ -47,12 +47,12 @@ public class ActionButtonDataPostProcessor
 				if (size == 0) {
 					for (String propertyId : propertyIds) {
 						chain.add(new HidePropertyCommand(widget
-								.getProperty(propertyId), property));
+								.getProperty2(propertyId), property));
 					}
 				} else {
 					for (String propertyId : propertyIds) {
 						chain.add(new ShowPropertyCommand(widget
-								.getProperty(propertyId), property));
+								.getProperty2(propertyId), property));
 					}
 				}
 			}

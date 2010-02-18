@@ -81,7 +81,7 @@ public final class PolylineModel extends AbstractPolyModel {
 	 * 				The width of the line
 	 */
 	public int getLineWidth() {
-		return (Integer) getProperty(PROP_LINE_WIDTH).getPropertyValue();
+		return getIntegerProperty(PROP_LINE_WIDTH).getPropertyValue();
 	}
 	
 	/**
@@ -90,6 +90,6 @@ public final class PolylineModel extends AbstractPolyModel {
 	 * 				The style of the line
 	 */
 	public int getLineStyle() {
-		return (Integer) getProperty(PROP_LINE_STYLE).getPropertyValue();
+		return getArrayOptionProperty(PROP_LINE_STYLE).getPropertyValue();
 	}
 }

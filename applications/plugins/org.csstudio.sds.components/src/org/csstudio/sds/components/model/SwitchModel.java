@@ -86,22 +86,22 @@ public final class SwitchModel extends AbstractWidgetModel {
 	}
 
 	public boolean getTransparent() {
-		return (Boolean) getProperty(PROP_TRANSPARENT).getPropertyValue();
+		return getBooleanProperty(PROP_TRANSPARENT).getPropertyValue();
 	}
 	
 	public int getType() {
-		return (Integer) getProperty(PROP_TYPE).getPropertyValue();
+		return getArrayOptionProperty(PROP_TYPE).getPropertyValue();
 	}
 	
 	public int getState() {
-		return (Integer) getProperty(PROP_STATE).getPropertyValue();
+		return getIntegerProperty(PROP_STATE).getPropertyValue();
 	}
 	
 	public int getRotation() {
-		return (Integer) getProperty(PROP_ROTATE).getPropertyValue();
+		return getIntegerProperty(PROP_ROTATE).getPropertyValue();
 	}
 	
 	public int getLineWidth() {
-		return (Integer) getProperty(PROP_LINEWIDTH).getPropertyValue();
+		return getIntegerProperty(PROP_LINEWIDTH).getPropertyValue();
 	}
 }

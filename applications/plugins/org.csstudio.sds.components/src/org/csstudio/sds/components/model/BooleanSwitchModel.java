@@ -96,7 +96,7 @@ public class BooleanSwitchModel extends AbstractWidgetModel {
 	 * @return <code>true</code> if on, <code>false</code> otherwise
 	 */
 	public boolean getValue() {
-		double value = getProperty(PROP_VALUE).getPropertyValue(); 
+		double value = getDoubleProperty(PROP_VALUE).getPropertyValue(); 
 		return value == 1.0;
 	}
 	
@@ -109,7 +109,7 @@ public class BooleanSwitchModel extends AbstractWidgetModel {
 		if (newValue) {
 			value = 1.0;
 		}
-		getProperty(PROP_VALUE).setManualValue(value);
+		getDoubleProperty(PROP_VALUE).setManualValue(value);
 	}
 	
 	/**
@@ -117,7 +117,7 @@ public class BooleanSwitchModel extends AbstractWidgetModel {
 	 * @return <code>true</code> if enabled, <code>false</code> otherwise
 	 */
 	public boolean get3dEffect() {
-		return getProperty(PROP_3D_EFFECT).getPropertyValue();
+		return getBooleanProperty(PROP_3D_EFFECT).getPropertyValue();
 	}
 	
 	/**
@@ -125,7 +125,7 @@ public class BooleanSwitchModel extends AbstractWidgetModel {
 	 * @return <code>true</code> if enabled, <code>false</code> otherwise
 	 */
 	public boolean getShowLabels() {
-		return getProperty(PROP_LABEL_VISIBLE).getPropertyValue();
+		return getBooleanProperty(PROP_LABEL_VISIBLE).getPropertyValue();
 	}
 	
 	/**
@@ -133,7 +133,7 @@ public class BooleanSwitchModel extends AbstractWidgetModel {
 	 * @return The text for the label
 	 */
 	public String getOnLabel() {
-		return getProperty(PROP_ON_LABEL).getPropertyValue();
+		return getStringProperty(PROP_ON_LABEL).getPropertyValue();
 	}
 	
 	/**
@@ -141,7 +141,7 @@ public class BooleanSwitchModel extends AbstractWidgetModel {
 	 * @return The text for the label
 	 */
 	public String getOffLabel() {
-		return getProperty(PROP_OFF_LABEL).getPropertyValue();
+		return getStringProperty(PROP_OFF_LABEL).getPropertyValue();
 	}
 
 }

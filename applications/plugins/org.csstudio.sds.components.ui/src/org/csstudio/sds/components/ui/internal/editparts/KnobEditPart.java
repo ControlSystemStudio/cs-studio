@@ -35,7 +35,7 @@ public final class KnobEditPart extends AbstractMarkedWidgetEditPart {
 		knob.addKnobListener(new KnobFigure.IKnobListener() {
 			public void knobValueChanged(final double newValue) {
 				if (getExecutionMode() == ExecutionMode.RUN_MODE)
-					model.getProperty(KnobModel.PROP_VALUE)
+					model.getDoubleProperty(KnobModel.PROP_VALUE)
 							.setManualValue(newValue);					
 			}
 		});		

@@ -149,7 +149,7 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	 * @return The index
 	 */
 	public int getChoosenReleasedActionIndex() {
-		return (Integer) getProperty(PROP_ACTION_RELEASED_INDEX).getPropertyValue();
+		return getIntegerProperty(PROP_ACTION_RELEASED_INDEX).getPropertyValue();
 	}
 	
 	/**
@@ -158,7 +158,7 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	 * @return The index
 	 */
 	public int getChoosenPressedActionIndex() {
-		return (Integer) getProperty(PROP_ACTION_PRESSED_INDEX).getPropertyValue();
+		return getIntegerProperty(PROP_ACTION_PRESSED_INDEX).getPropertyValue();
 	}
 
 	/**
@@ -167,7 +167,7 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	 * @return The label text.
 	 */
 	public String getLabel() {
-		return (String) getProperty(PROP_LABEL).getPropertyValue();
+		return getStringProperty(PROP_LABEL).getPropertyValue();
 	}
 
 	/**
@@ -176,7 +176,7 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	 * @return The label font.
 	 */
 	public FontData getFont() {
-		return (FontData) getProperty(PROP_FONT).getPropertyValue();
+		return getFont(PROP_FONT);
 	}
 	
 	/**
@@ -185,7 +185,7 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	 * 			0 = Center, 1 = Top, 2 = Bottom, 3 = Left, 4 = Right
 	 */
 	public int getTextAlignment() {
-		return (Integer) getProperty(PROP_TEXT_ALIGNMENT).getPropertyValue();
+		return getArrayOptionProperty(PROP_TEXT_ALIGNMENT).getPropertyValue();
 	}
 
 	/**
@@ -193,6 +193,6 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	 *  @return false = Push, true=Toggle
 	 */
 	public boolean isToggleButton(){
-	    return (Boolean)getProperty(PROP_TOGGLE_BUTTON).getPropertyValue();
+	    return getBooleanProperty(PROP_TOGGLE_BUTTON).getPropertyValue();
 	}
 }

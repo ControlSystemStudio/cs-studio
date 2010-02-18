@@ -134,7 +134,7 @@ public final class AdvancedSliderModel extends AbstractWidgetModel {
 	 * @return The min value.
 	 */
 	public double getMin() {
-		return (Double) getProperty(PROP_MIN).getPropertyValue();
+		return getDoubleProperty(PROP_MIN).getPropertyValue();
 	}
 
 	/**
@@ -143,7 +143,7 @@ public final class AdvancedSliderModel extends AbstractWidgetModel {
 	 * @return The max value.
 	 */
 	public double getMax() {
-		return (Double) getProperty(PROP_MAX).getPropertyValue();
+		return getDoubleProperty(PROP_MAX).getPropertyValue();
 	}
 
 	/**
@@ -152,7 +152,7 @@ public final class AdvancedSliderModel extends AbstractWidgetModel {
 	 * @return The increment value.
 	 */
 	public double getIncrement() {
-		return (Double) getProperty(PROP_INCREMENT).getPropertyValue();
+		return getDoubleProperty(PROP_INCREMENT).getPropertyValue();
 	}
 
 	/**
@@ -161,7 +161,7 @@ public final class AdvancedSliderModel extends AbstractWidgetModel {
 	 * @return The current slider value.
 	 */
 	public double getValue() {
-		return (Double) getProperty(PROP_VALUE).getPropertyValue();
+		return getDoubleProperty(PROP_VALUE).getPropertyValue();
 	}
 
 	/**
@@ -170,6 +170,7 @@ public final class AdvancedSliderModel extends AbstractWidgetModel {
 	 * @return True if the slider has a horizontal orientation.
 	 */
 	public boolean isHorizontal() {
-		return (Integer) getProperty(PROP_ORIENTATION).getPropertyValue()==0;
+		int orientation = getArrayOptionProperty(PROP_ORIENTATION).getPropertyValue();
+		return orientation==0;
 	}
 }

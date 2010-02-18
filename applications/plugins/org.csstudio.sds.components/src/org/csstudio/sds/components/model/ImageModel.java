@@ -129,7 +129,7 @@ public final class ImageModel extends AbstractWidgetModel {
 	 * @return The path to the specified file
 	 */
 	public IPath getFilename() {
-		return (IPath) getProperty(PROP_FILENAME).getPropertyValue();
+		return getResourceProperty(PROP_FILENAME).getPropertyValue();
 	}
 	
 	/**
@@ -137,7 +137,7 @@ public final class ImageModel extends AbstractWidgetModel {
 	 * @return The amount of pixels
 	 */
 	public int getTopCrop() {
-		return (Integer) getProperty(PROP_TOPCROP).getPropertyValue();
+		return getIntegerProperty(PROP_TOPCROP).getPropertyValue();
 	}
 	
 	/**
@@ -145,7 +145,7 @@ public final class ImageModel extends AbstractWidgetModel {
 	 * @return The amount of pixels
 	 */
 	public int getBottomCrop() {
-		return (Integer) getProperty(PROP_BOTTOMCROP).getPropertyValue();
+		return getIntegerProperty(PROP_BOTTOMCROP).getPropertyValue();
 	}
 	
 	/**
@@ -153,7 +153,7 @@ public final class ImageModel extends AbstractWidgetModel {
 	 * @return The amount of pixels
 	 */
 	public int getLeftCrop() {
-		return (Integer) getProperty(PROP_LEFTCROP).getPropertyValue();
+		return getIntegerProperty(PROP_LEFTCROP).getPropertyValue();
 	}
 	
 	/**
@@ -161,7 +161,7 @@ public final class ImageModel extends AbstractWidgetModel {
 	 * @return The amount of pixels
 	 */
 	public int getRightCrop() {
-		return (Integer) getProperty(PROP_RIGHTCROP).getPropertyValue();
+		return getIntegerProperty(PROP_RIGHTCROP).getPropertyValue();
 	}
 	
 	/**
@@ -169,20 +169,20 @@ public final class ImageModel extends AbstractWidgetModel {
 	 * @return True is it should be stretched, false otherwise
 	 */
 	public boolean getStretch() {
-		return (Boolean) getProperty(PROP_STRETCH).getPropertyValue();
+		return getBooleanProperty(PROP_STRETCH).getPropertyValue();
 	}
 	
 	/**
 	 *  @return True if the widget should be auto sized according the image size.
 	 */
 	public boolean isAutoSize() {
-		return (Boolean) getProperty(PROP_AUTOSIZE).getPropertyValue();
+		return getBooleanProperty(PROP_AUTOSIZE).getPropertyValue();
 	}
 	
 	/**
 	 *  @return True if the animation is stopped.
 	 */
 	public boolean isStopAnimation() {
-		return (Boolean) getProperty(PROP_STOP_ANIMATION).getPropertyValue();
+		return getBooleanProperty(PROP_STOP_ANIMATION).getPropertyValue();
 	}
 }

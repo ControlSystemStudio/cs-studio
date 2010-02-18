@@ -119,31 +119,31 @@ public class SixteenBinaryBarModel extends AbstractWidgetModel {
 	}
 
 	public FontData getLabelFont() {
-		return getProperty(PROP_LABEL_FONT).getPropertyValue();
+		return getFont(PROP_LABEL_FONT);
 	}
 
 	public boolean getHorizontal() {
-		return getProperty(PROP_HORIZONTAL).getPropertyValue();
+		return getBooleanProperty(PROP_HORIZONTAL).getPropertyValue();
 	}
 
 	public boolean getShowLabels() {
-		return getProperty(PROP_SHOW_LABELS).getPropertyValue();
+		return getBooleanProperty(PROP_SHOW_LABELS).getPropertyValue();
 	}
 
 	public int getValue() {
-		return getProperty(PROP_VALUE).getPropertyValue();
+		return getIntegerProperty(PROP_VALUE).getPropertyValue();
 	}
 
 	public int getInternalFrameThickness() {
-		return getProperty(PROP_INTERNAL_FRAME_THICKNESS).getPropertyValue();
+		return getIntegerProperty(PROP_INTERNAL_FRAME_THICKNESS).getPropertyValue();
 	}
 
 	public int getBitRangeFrom() {
-		return getProperty(PROP_BITS_FROM).getPropertyValue();
+		return getIntegerProperty(PROP_BITS_FROM).getPropertyValue();
 	}
 	
 	public int getBitRangeTo() {
-		return getProperty(PROP_BITS_TO).getPropertyValue();
+		return getIntegerProperty(PROP_BITS_TO).getPropertyValue();
 	}
 
 }

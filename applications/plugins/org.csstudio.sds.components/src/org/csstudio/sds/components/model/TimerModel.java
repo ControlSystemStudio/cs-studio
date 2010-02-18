@@ -132,7 +132,7 @@ public final class TimerModel extends AbstractWidgetModel {
 	 * @return the script
 	 */
 	public IPath getScriptPath() {
-		return (IPath) getProperty(PROP_SCRIPT).getPropertyValue();
+		return getResourceProperty(PROP_SCRIPT).getPropertyValue();
 	}
 	
 	/**
@@ -141,7 +141,7 @@ public final class TimerModel extends AbstractWidgetModel {
 	 * @return the delay.
 	 */
 	public int getDelay() {
-		return (Integer) getProperty(PROP_DELAY).getPropertyValue();
+		return getIntegerProperty(PROP_DELAY).getPropertyValue();
 	}
 
 }

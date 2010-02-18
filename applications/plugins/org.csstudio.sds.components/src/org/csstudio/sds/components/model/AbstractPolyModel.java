@@ -70,7 +70,8 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 		super(true);
 		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 
-		getProperty(PROP_ROTATION).addPropertyChangeListener(
+		// FIXME: 18.02.2010: swende: Prüfen, ob das nur so geht?!
+		getDoubleProperty(PROP_ROTATION).addPropertyChangeListener(
 				new PropertyChangeAdapter() {
 					public void propertyValueChanged(final Object oldValue,
 							final Object newValue) {
@@ -119,7 +120,7 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 	 * @return the polygon _points
 	 */
 	public final PointList getPoints() {
-		return (PointList) getProperty(PROP_POINTS).getPropertyValue();
+		return getPointlistProperty(PROP_POINTS).getPropertyValue();
 	}
 
 	/**
@@ -128,7 +129,7 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 	 * @return the fill grade
 	 */
 	public final double getFill() {
-		return (Double) getProperty(PROP_FILL).getPropertyValue();
+		return getDoubleProperty(PROP_FILL).getPropertyValue();
 	}
 
 	/**

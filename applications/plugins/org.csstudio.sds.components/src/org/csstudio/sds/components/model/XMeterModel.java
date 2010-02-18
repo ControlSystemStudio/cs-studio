@@ -56,7 +56,7 @@ public class XMeterModel extends AbstractMarkedWidgetModel {
 	 * @return true if the widget is in horizontal orientation, false otherwise
 	 */
 	public boolean isRampGradient() {
-		return (Boolean) getProperty(PROP_RAMP_GRADIENT).getPropertyValue();
+		return getBooleanProperty(PROP_RAMP_GRADIENT).getPropertyValue();
 	}
 
 }

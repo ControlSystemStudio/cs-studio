@@ -35,7 +35,7 @@ public final class ScaledSliderEditPart extends AbstractMarkedWidgetEditPart {
 		slider.addSliderListener(new ScaledSliderFigure.IScaledSliderListener() {
 			public void sliderValueChanged(final double newValue) {
 				if (getExecutionMode() == ExecutionMode.RUN_MODE)
-					model.getProperty(ScaledSliderModel.PROP_VALUE)
+					model.getDoubleProperty(ScaledSliderModel.PROP_VALUE)
 							.setManualValue(newValue);					
 				
 			}

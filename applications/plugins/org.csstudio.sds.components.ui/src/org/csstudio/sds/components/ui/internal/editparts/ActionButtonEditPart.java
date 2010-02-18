@@ -280,13 +280,8 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 
 	        // init cell editor...
 	        String currentValue = "N/A"; //$NON-NLS-1$
-	        WidgetProperty inputTextProperty = getWidgetModel().getProperty(
-	                ActionButtonModel.PROP_LABEL);
-
-	        if (inputTextProperty != null) {
-	            currentValue = inputTextProperty.getPropertyValue().toString();
-	        }
-
+	        currentValue = getWidgetModel().getStringProperty(ActionButtonModel.PROP_LABEL).getPropertyValue();
+	        
 	        result.setValue(currentValue);
 	        final Text text = (Text) result.getControl();
 	        // input text
@@ -306,8 +301,7 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 
 	        });
 	        // get the chosen font
-	        FontData fontData = (FontData) getWidgetModel().getProperty(ActionButtonModel.PROP_FONT)
-	                .getPropertyValue();
+	        FontData fontData = getWidgetModel().getFont(ActionButtonModel.PROP_FONT);
 	        Font font = CustomMediaFactory.getInstance().getFont(new FontData[] { fontData });
 
 	        // get the chosen foreground color

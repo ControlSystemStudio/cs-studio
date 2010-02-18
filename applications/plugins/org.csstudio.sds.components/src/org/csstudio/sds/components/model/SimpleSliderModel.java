@@ -159,7 +159,7 @@ public final class SimpleSliderModel extends AbstractWidgetModel {
 	 * @return The min value.
 	 */
 	public double getMin() {
-		return (Double) getProperty(PROP_MIN).getPropertyValue();
+		return getDoubleProperty(PROP_MIN).getPropertyValue();
 	}
 
 	/**
@@ -168,7 +168,7 @@ public final class SimpleSliderModel extends AbstractWidgetModel {
 	 * @return The max value.
 	 */
 	public double getMax() {
-		return (Double) getProperty(PROP_MAX).getPropertyValue();
+		return getDoubleProperty(PROP_MAX).getPropertyValue();
 	}
 
 	/**
@@ -177,7 +177,7 @@ public final class SimpleSliderModel extends AbstractWidgetModel {
 	 * @return The increment value.
 	 */
 	public double getIncrement() {
-		return (Double) getProperty(PROP_INCREMENT).getPropertyValue();
+		return getDoubleProperty(PROP_INCREMENT).getPropertyValue();
 	}
 
 	/**
@@ -186,7 +186,7 @@ public final class SimpleSliderModel extends AbstractWidgetModel {
 	 * @return The current slider value.
 	 */
 	public double getValue() {
-		return (Double) getProperty(PROP_VALUE).getPropertyValue();
+		return getDoubleProperty(PROP_VALUE).getPropertyValue();
 	}
 
 	/**
@@ -195,7 +195,7 @@ public final class SimpleSliderModel extends AbstractWidgetModel {
 	 * @return The precision.
 	 */
 	public int getPrecision() {
-		return (Integer) getProperty(PROP_PRECISION).getPropertyValue();
+		return getIntegerProperty(PROP_PRECISION).getPropertyValue();
 	}
 
 	/**
@@ -204,7 +204,7 @@ public final class SimpleSliderModel extends AbstractWidgetModel {
 	 * @return The slider width.
 	 */
 	public int getSliderWidth() {
-		return (Integer) getProperty(PROP_SLIDER_WIDTH).getPropertyValue();
+		return getIntegerProperty(PROP_SLIDER_WIDTH).getPropertyValue();
 	}
 
 	/**
@@ -213,7 +213,7 @@ public final class SimpleSliderModel extends AbstractWidgetModel {
 	 * @return True if the slider has a horizontal orientation.
 	 */
 	public boolean isHorizontal() {
-		return (Boolean) getProperty(PROP_ORIENTATION).getPropertyValue();
+		return getBooleanProperty(PROP_ORIENTATION).getPropertyValue();
 	}
 
 	/**
@@ -222,7 +222,7 @@ public final class SimpleSliderModel extends AbstractWidgetModel {
 	 * @return True if the slider value should also be displayed as a text.
 	 */
 	public boolean isShowValueAsText() {
-		return (Boolean) getProperty(PROP_SHOW_VALUE_AS_TEXT)
+		return getBooleanProperty(PROP_SHOW_VALUE_AS_TEXT)
 				.getPropertyValue();
 	}
 }

@@ -35,27 +35,27 @@ public class XYGraphModel extends AbstractWidgetModel {
 	}
 	
 	public boolean isToolbarVisible() {
-		return getProperty(PROP_SHOW_TOOLBAR).getPropertyValue();
+		return getBooleanProperty(PROP_SHOW_TOOLBAR).getPropertyValue();
 	}
 	
 	public boolean isLegendVisible() {
-		return getProperty(PROP_SHOW_LEGEND).getPropertyValue();
+		return getBooleanProperty(PROP_SHOW_LEGEND).getPropertyValue();
 	}
 	
 	public boolean isTransparent() {
-		return getProperty(PROP_TRANSPARENT).getPropertyValue();
+		return getBooleanProperty(PROP_TRANSPARENT).getPropertyValue();
 	}
 	
 	public boolean isTitleVisible() {
-		return getProperty(PROP_SHOW_TITLE).getPropertyValue();
+		return getBooleanProperty(PROP_SHOW_TITLE).getPropertyValue();
 	}
 	
 	public String getTitle() {
-		return getProperty(PROP_TITLE).getPropertyValue();
+		return getStringProperty(PROP_TITLE).getPropertyValue();
 	}
 
 	public FontData getTitleFont() {
-		return getProperty(PROP_TITLE_FONT).getPropertyValue();
+		return getFont(PROP_TITLE_FONT);
 	}
 	
 }

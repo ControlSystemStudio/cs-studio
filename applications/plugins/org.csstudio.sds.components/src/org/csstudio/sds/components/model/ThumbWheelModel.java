@@ -89,6 +89,8 @@ public class ThumbWheelModel extends AbstractWidgetModel {
 				WidgetPropertyCategory.Behaviour, Double.NaN));
 		addProperty(PROP_MAX, new DoubleProperty("Max",
 				WidgetPropertyCategory.Behaviour, Double.NaN));
+		
+		// FIXME: 18.02.2010: swende: Ist für PROP_WHOLE_DIGITS_PART bereits angemeldet!? Prüfen!
 		addProperty(PROP_WHOLE_DIGITS_PART, new IntegerProperty(
 				"Integer digits", WidgetPropertyCategory.Behaviour, 5));
 		addProperty(PROP_DECIMAL_DIGITS_PART, new IntegerProperty(
@@ -119,11 +121,11 @@ public class ThumbWheelModel extends AbstractWidgetModel {
 	}
 
 	public FontData getFont() {
-		return getProperty(PROP_FONT).getPropertyValue();
+		return getFont(PROP_FONT);
 	}
 
 	public int getWholePartDigits() {
-		return getProperty(PROP_WHOLE_DIGITS_PART).getPropertyValue();
+		return getIntegerProperty(PROP_WHOLE_DIGITS_PART).getPropertyValue();
 	}
 
 	public void setWholePartDigits(int val) {
@@ -131,7 +133,7 @@ public class ThumbWheelModel extends AbstractWidgetModel {
 	}
 
 	public int getDecimalPartDigits() {
-		return getProperty(PROP_DECIMAL_DIGITS_PART).getPropertyValue();
+		return getIntegerProperty(PROP_DECIMAL_DIGITS_PART).getPropertyValue();
 	}
 
 	public void setDecimalPartDigits(int val) {
@@ -139,26 +141,26 @@ public class ThumbWheelModel extends AbstractWidgetModel {
 	}
 
 	public double getValue() {
-		return getProperty(PROP_VALUE).getPropertyValue();
+		return getDoubleProperty(PROP_VALUE).getPropertyValue();
 	}
 
 	public int getInternalFrameThickness() {
-		return getProperty(PROP_INTERNAL_FRAME_THICKNESS).getPropertyValue();
+		return getIntegerProperty(PROP_INTERNAL_FRAME_THICKNESS).getPropertyValue();
 	}
 
 	public double getMin() {
-		return getProperty(PROP_MIN).getPropertyValue();
+		return getDoubleProperty(PROP_MIN).getPropertyValue();
 	}
 
 	public double getMax() {
-		return getProperty(PROP_MAX).getPropertyValue();
+		return getDoubleProperty(PROP_MAX).getPropertyValue();
 	}
 
 	public void setManualValue(double val) {
-		getProperty(PROP_VALUE).setManualValue(val);
+		getDoubleProperty(PROP_VALUE).setManualValue(val);
 	}
 
 	public int getInternalBorderWidth() {
-		return getProperty(PROP_INTERNAL_FRAME_THICKNESS).getPropertyValue();
+		return getIntegerProperty(PROP_INTERNAL_FRAME_THICKNESS).getPropertyValue();
 	}
 }

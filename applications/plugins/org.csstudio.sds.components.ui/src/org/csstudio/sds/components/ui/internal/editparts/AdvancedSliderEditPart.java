@@ -68,7 +68,7 @@ public final class AdvancedSliderEditPart extends AbstractWidgetEditPart impleme
 		slider.addSliderListener(new AdvancedSliderFigure.ISliderListener() {
 			public void sliderValueChanged(final double newValue) {
 				if (getExecutionMode().equals(ExecutionMode.RUN_MODE)) {
-					model.getProperty(AdvancedSliderModel.PROP_VALUE).setManualValue(
+					model.getDoubleProperty(AdvancedSliderModel.PROP_VALUE).setManualValue(
 							newValue);
 
 					slider.setManualValue(newValue);

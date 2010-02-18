@@ -96,7 +96,7 @@ public class ByteModel extends AbstractWidgetModel {
      * @return the orientation.
      */
     public boolean getOrientation() {
-        return (Boolean) getProperty(PROP_ORIENTATION).getPropertyValue();
+        return getBooleanProperty(PROP_ORIENTATION).getPropertyValue();
     }
 
 }

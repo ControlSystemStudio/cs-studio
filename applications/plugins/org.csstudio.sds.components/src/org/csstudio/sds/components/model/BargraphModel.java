@@ -235,7 +235,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 	 * 				The fill level
 	 */
 	public double getFillLevel() {
-		return (Double) getProperty(PROP_FILL).getPropertyValue();
+		return getDoubleProperty(PROP_FILL).getPropertyValue();
 	}
 	
 	/**
@@ -244,7 +244,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 	 * @return the orientation
 	 */
 	public boolean getOrientation() {
-		return (Boolean) getProperty(PROP_ORIENTATION).getPropertyValue();
+		return getBooleanProperty(PROP_ORIENTATION).getPropertyValue();
 	}
 	
 	/**
@@ -253,7 +253,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 	 * 				The minimum value
 	 */
 	public double getMinimum() {
-		return (Double) getProperty(PROP_MIN).getPropertyValue();
+		return getDoubleProperty(PROP_MIN).getPropertyValue();
 	}
 	
 	/**
@@ -262,7 +262,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 	 * 				The lolo level
 	 */
 	public double getLoloLevel() {
-		return (Double) getProperty(PROP_LOLO_LEVEL).getPropertyValue();
+		return getDoubleProperty(PROP_LOLO_LEVEL).getPropertyValue();
 	}
 	
 	/**
@@ -271,7 +271,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 	 * 				The lo level
 	 */
 	public double getLoLevel() {
-		return (Double) getProperty(PROP_LO_LEVEL).getPropertyValue();
+		return getDoubleProperty(PROP_LO_LEVEL).getPropertyValue();
 	}
 	
 	/**
@@ -280,7 +280,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 	 * 				The hi level
 	 */
 	public double getHiLevel() {
-		return (Double) getProperty(PROP_HI_LEVEL).getPropertyValue();
+		return getDoubleProperty(PROP_HI_LEVEL).getPropertyValue();
 	}
 	
 	/**
@@ -289,7 +289,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 	 * 				The minimum value
 	 */
 	public double getHihiLevel() {
-		return (Double) getProperty(PROP_HIHI_LEVEL).getPropertyValue();
+		return getDoubleProperty(PROP_HIHI_LEVEL).getPropertyValue();
 	}
 	
 	/**
@@ -298,7 +298,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 	 * 				The maximum value
 	 */
 	public double getMaximum() {
-		return (Double) getProperty(PROP_MAX).getPropertyValue();
+		return getDoubleProperty(PROP_MAX).getPropertyValue();
 	}
 	
 	/**
@@ -307,7 +307,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 	 * 				true, if the values should be shown, false otherwise
 	 */
 	public boolean isShowValues() {
-		return (Boolean) getProperty(PROP_SHOW_VALUES).getPropertyValue();
+		return getBooleanProperty(PROP_SHOW_VALUES).getPropertyValue();
 	}
 	
 	/**
@@ -316,7 +316,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 	 * 				0 = don't show, 1 = show Bottom/Right, 2 = show Top/Left
 	 */
 	public int getShowMarks() {
-		return (Integer) getProperty(PROP_SHOW_MARKS).getPropertyValue();
+		return getArrayOptionProperty(PROP_SHOW_MARKS).getPropertyValue();
 	}
 	
 	/**
@@ -325,7 +325,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 	 * 				0 = don't show, 1 = show Bottom/Right, 2 = show Top/Left
 	 */
 	public int getShowScale() {
-		return (Integer) getProperty(PROP_SHOW_SCALE).getPropertyValue();
+		return getArrayOptionProperty(PROP_SHOW_SCALE).getPropertyValue();
 	}
 	
 	/**
@@ -334,7 +334,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 	 * 				The count of sections in  the scale
 	 */
 	public int getScaleSectionCount() {
-		return (Integer) getProperty(PROP_SCALE_SECTION_COUNT).getPropertyValue();
+		return getIntegerProperty(PROP_SCALE_SECTION_COUNT).getPropertyValue();
 	}
 	
 	/**
@@ -342,7 +342,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 	 * @return True if only the value should be shown, false otherwise
 	 */
 	public boolean getShowOnlyValue() {
-		return (Boolean) getProperty(PROP_SHOW_ONLY_VALUE).getPropertyValue();
+		return getBooleanProperty(PROP_SHOW_ONLY_VALUE).getPropertyValue();
 	}
 	
 	/**
@@ -351,7 +351,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 	 * 				True, if it should have a transparent background, false otherwise
 	 */
 	public boolean getTransparent() {
-		return (Boolean) getProperty(PROP_TRANSPARENT).getPropertyValue();
+		return getBooleanProperty(PROP_TRANSPARENT).getPropertyValue();
 	}
 
 }

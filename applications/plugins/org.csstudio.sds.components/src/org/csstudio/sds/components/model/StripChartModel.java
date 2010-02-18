@@ -124,7 +124,7 @@ public final class StripChartModel extends AbstractChartModel {
 	 *             if the index is invalid.
 	 */
 	public double getCurrentValue(final int index) {
-		return getProperty(valuePropertyId(index)).getPropertyValue();
+		return getDoubleProperty(valuePropertyId(index)).getPropertyValue();
 	}
 
 	/**
@@ -139,7 +139,7 @@ public final class StripChartModel extends AbstractChartModel {
 	 *             if the index is invalid.
 	 */
 	public boolean isPlotEnabled(final int index) {
-		return getProperty(enablePlotPropertyId(index)).getPropertyValue();
+		return getBooleanProperty(enablePlotPropertyId(index)).getPropertyValue();
 	}
 	
 	/**
@@ -148,7 +148,7 @@ public final class StripChartModel extends AbstractChartModel {
 	 * @return x-axis timespan in seconds.
 	 */
 	public double getXAxisTimespan() {
-		return getProperty(PROP_X_AXIS_TIMESPAN).getPropertyValue();
+		return getDoubleProperty(PROP_X_AXIS_TIMESPAN).getPropertyValue();
 	}
 	
 	/**
@@ -157,7 +157,7 @@ public final class StripChartModel extends AbstractChartModel {
 	 * @return the update interval in seconds.
 	 */
 	public double getUpdateInterval() {
-		return getProperty(PROP_UPDATE_INTERVAL).getPropertyValue();
+		return getDoubleProperty(PROP_UPDATE_INTERVAL).getPropertyValue();
 	}
 
 	/**
