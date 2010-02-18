@@ -1,5 +1,5 @@
 import org.csstudio.swt.xygraph.dataprovider.CircularBufferDataProvider;
-import org.csstudio.swt.xygraph.dataprovider.ISample;
+import org.csstudio.swt.xygraph.dataprovider.Sample;
 import org.csstudio.swt.xygraph.figures.ToolbarArmedXYGraph;
 import org.csstudio.swt.xygraph.figures.Trace;
 import org.csstudio.swt.xygraph.figures.XYGraph;
@@ -20,58 +20,6 @@ public class StaircaseTest
 {
     private static int next_x = 1;
 
-    class TestSample implements ISample
-    {
-        final private double x, y;
-        
-        public TestSample(double y)
-        {
-            this.x = next_x++;
-            this.y = y;
-        }
-
-        public String getInfo()
-        {
-            return "Test Sample";
-        }
-    
-        public double getXMinusError()
-        {
-            return 0;
-        }
-    
-        public double getXPlusError()
-        {
-            return 0;
-        }
-    
-        public double getXValue()
-        {
-            return x;
-        }
-    
-        public double getYMinusError()
-        {
-            return 1.0;
-        }
-    
-        public double getYPlusError()
-        {
-            return 1.0;
-        }
-    
-        public double getYValue()
-        {
-            return y;
-        }
-        
-        @Override
-        public String toString()
-        {
-            return getInfo() + "(" + x + ", " + y + ")";
-        }
-    }
-    
     @Test
     public void testStaircasePlot()
     {
@@ -91,12 +39,12 @@ public class StaircaseTest
 
         // Add data & trace
         final CircularBufferDataProvider data = new CircularBufferDataProvider(true);
-        data.addSample(new TestSample(1));
-        data.addSample(new TestSample(2));
-        data.addSample(new TestSample(3));
-        data.addSample(new TestSample(1));
-        data.addSample(new TestSample(1));
-        data.addSample(new TestSample(1));
+        data.addSample(new Sample(next_x++, 1, 1, 1, 0, 0));
+        data.addSample(new Sample(next_x++, 2, 1, 1, 0, 0));
+        data.addSample(new Sample(next_x++, 3, 1, 1, 0, 0));
+        data.addSample(new Sample(next_x++, 1, 1, 1, 0, 0));
+        data.addSample(new Sample(next_x++, 1, 1, 1, 0, 0));
+        data.addSample(new Sample(next_x++, 1, 1, 1, 0, 0));
         // TODO add Double.NaN gaps
 
         // Always looked OK with this range
@@ -109,13 +57,18 @@ public class StaircaseTest
         // Similarly, using STEP_VERTICALLY failed to draw anything when
         // both end-points of the horizontal or vertical section of the step
         // were outside the plot. (fixed)
-        // TODO No area?
+        // 
+        // There's still a question about handling 'YErrorInArea':
+        // For now, the axis intersection removes x/y errors,
+        // so when moving a sample with y error left or right outside
+        // of the plot range, the error area suddenly shrinks when
+        // the axis intersection is assumed to have +-0 y error.
         xygraph.primaryXAxis.setRange(4.1, 4.9);
-  
+
         final Trace trace = new Trace("Demo", xygraph.primaryXAxis,
                 xygraph.primaryYAxis, data);
-//        trace.setTraceType(TraceType.STEP_HORIZONTALLY);
-        trace.setTraceType(TraceType.STEP_VERTICALLY);
+        trace.setTraceType(TraceType.STEP_HORIZONTALLY);
+//        trace.setTraceType(TraceType.STEP_VERTICALLY);
         trace.setPointStyle(PointStyle.NONE);
         trace.setErrorBarEnabled(true);
         trace.setDrawYErrorInArea(true);
