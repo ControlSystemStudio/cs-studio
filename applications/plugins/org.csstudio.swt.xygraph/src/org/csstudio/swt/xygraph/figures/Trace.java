@@ -526,8 +526,8 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
     				    if(!predpInRange && !dpInRange){ //both are out of plot area
     						ISample[] dpTuple = getIntersection(predp, dp);
     						if(dpTuple[0] == null || dpTuple[1] == null){ // no intersection with plot area
-    							predp = dp;
-    							predpInRange=dpInRange;
+    							predp = origin_dp;
+    							predpInRange = origin_dpInRange;
     							continue;
     						}else{
     							predp = dpTuple[0];
@@ -539,14 +539,14 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
     							predp = getIntersection(predp, dp)[0];
     							if(predp == null){ // no intersection
     								predp = origin_dp;
-    								predpInRange = dpInRange;
+    								predpInRange = origin_dpInRange;
     								continue;
     							}
     						}else{
     							dp = getIntersection(predp, dp)[0];
     							if(dp == null){ // no intersection
     								predp = origin_dp;
-    								predpInRange = dpInRange;
+    								predpInRange = origin_dpInRange;
     								continue;
     							}
     						}

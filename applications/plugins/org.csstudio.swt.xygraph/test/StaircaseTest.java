@@ -50,9 +50,9 @@ public class StaircaseTest
         data.addSample(new Sample(next_x++, 1, 0, 0, 0, 0));
         // Another gap, single point
         data.addSample(new Sample(next_x++, Double.NaN, 0, 0, 0, 0, "Disconnected"));
-        data.addSample(new Sample(next_x++, 1, 0, 0, 0, 0));
+        data.addSample(new Sample(next_x++, 2, 0, 0, 0, 0));
         // Last value is valid 'forever'
-        data.addSample(new Sample(Double.MAX_VALUE, 1, 0, 0, 0, 0));
+        data.addSample(new Sample(Double.MAX_VALUE, 2, 0, 0, 0, 0));
 
         // Always looked OK with this range
         xygraph.primaryXAxis.setRange(data.getXDataMinMax());
@@ -75,7 +75,7 @@ public class StaircaseTest
         // Gap, start of X range, sample @ x==8, gap @ 9, end of range.
         // Bug failed to show line from that sample up to gap @ 9.
         xygraph.primaryXAxis.setRange(7.5, 9.5);
-
+        
         final Trace trace = new Trace("Demo", xygraph.primaryXAxis,
                 xygraph.primaryYAxis, data);
         trace.setTraceType(TraceType.STEP_HORIZONTALLY);
