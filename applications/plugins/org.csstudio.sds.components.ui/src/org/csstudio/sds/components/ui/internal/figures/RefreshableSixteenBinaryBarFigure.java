@@ -1,6 +1,5 @@
 package org.csstudio.sds.components.ui.internal.figures;
 
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.ui.figures.BorderAdapter;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.eclipse.core.runtime.IAdaptable;
@@ -14,7 +13,6 @@ import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.RectangleFigure;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
 
 /**
  * Sixteen Bit Binary Bar widget figure.
@@ -169,8 +167,7 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure implement
 		updateBoxes();
 	}
 
-	public void setLabelFont(FontData newValue) {
-		Font font = CustomMediaFactory.getInstance().getFont(newValue);
+	public void setLabelFont(Font font) {
 		_labelFont = font;
 		for (OnOffBox box : boxes) {
 			box.setLabelFont(font);

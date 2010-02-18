@@ -118,10 +118,6 @@ public class SixteenBinaryBarModel extends AbstractWidgetModel {
 		return buffer.toString();
 	}
 
-	public FontData getLabelFont() {
-		return getFont(PROP_LABEL_FONT);
-	}
-
 	public boolean getHorizontal() {
 		return getBooleanProperty(PROP_HORIZONTAL).getPropertyValue();
 	}

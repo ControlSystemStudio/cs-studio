@@ -58,7 +58,7 @@ public class RefreshableThumbWheelFigure extends RectangleFigure implements
 	
 	private ArrayList<WheelListener> listeners = new ArrayList<WheelListener>();
 
-	private FontData wheelFont;
+	private Font wheelFont;
 
 	public boolean isTest() {
 		return test;
@@ -444,12 +444,8 @@ public class RefreshableThumbWheelFigure extends RectangleFigure implements
 
 	}
 
-	public void setWheelFonts(FontData fontData) {
-		this.wheelFont = fontData;
-		if(fontData == null){
-			return;
-		}
-		Font font = CustomMediaFactory.getInstance().getFont(fontData);
+	public void setWheelFonts(Font font) {
+		this.wheelFont = font;
 
 		for (DigitBox box : wholePart) {
 			box.setLabelFont(font);

@@ -54,8 +54,4 @@ public class XYGraphModel extends AbstractWidgetModel {
 		return getStringProperty(PROP_TITLE).getPropertyValue();
 	}
 
-	public FontData getTitleFont() {
-		return getFont(PROP_TITLE_FONT);
-	}
-	
 }

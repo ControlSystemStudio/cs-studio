@@ -141,14 +141,6 @@ public final class TextInputModel extends AbstractWidgetModel {
 	}
 	
 	/**
-	 * Gets the font.
-	 * @return the font
-	 */
-	public FontData getFont() {
-		return (FontData) getFont(PROP_FONT);
-	}
-	
-	/**
 	 * Gets, if the marks should be shown or not.
 	 * @return int
 	 * 				0 = Center, 1 = Top, 2 = Bottom, 3 = Left, 4 = Right

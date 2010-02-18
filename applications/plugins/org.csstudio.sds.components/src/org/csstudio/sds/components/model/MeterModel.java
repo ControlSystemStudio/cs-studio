@@ -221,14 +221,6 @@ public final class MeterModel extends AbstractWidgetModel {
 		return getDoubleProperty(PROP_HIHIBOUND).getPropertyValue();
 	}
 	
-	public FontData getValuesFont() {
-		return getFont(PROP_VALFONT);
-	}
-	
-	public FontData getChannelFont() {
-		return getFont(PROP_CHANFONT);
-	}
-
 	/**
 	 * Return the precision.
 	 * 

@@ -27,6 +27,7 @@ import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 
 /**
@@ -81,8 +82,8 @@ public final class MeterEditPart extends AbstractWidgetEditPart {
 		figure.setHIBound(model.getHIBound());
 		figure.setHIHIBound(model.getHIHIBound());
 		
-		figure.setValuesFont(model.getValuesFont());
-		figure.setChannelFont(model.getChannelFont());
+		figure.setValuesFont(getModelFont(MeterModel.PROP_VALFONT));
+		figure.setChannelFont(getModelFont(MeterModel.PROP_CHANFONT));
 		
 		figure.setDecimalPlaces(model.getPrecision());
 
@@ -359,24 +360,23 @@ public final class MeterEditPart extends AbstractWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(MeterModel.PROP_TRANSPARENT, handle);
+
 		//values font change handler
-		handle = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure) {
-				RefreshableMeterFigure meterFigure = (RefreshableMeterFigure) figure;
-				meterFigure.setValuesFont((FontData) newValue);
-				return true;
+		setPropertyChangeHandler(MeterModel.PROP_VALFONT, new FontChangeHander<RefreshableMeterFigure>(){
+			@Override
+			protected void doHandle(RefreshableMeterFigure figure, Font font) {
+				figure.setValuesFont(font);
 			}
-		};
-		setPropertyChangeHandler(MeterModel.PROP_VALFONT, handle);
+		});
+		
+		
 		//channel font change handler
-		handle = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure) {
-				RefreshableMeterFigure meterFigure = (RefreshableMeterFigure) figure;
-				meterFigure.setChannelFont((FontData) newValue); 
-				return true;
+		setPropertyChangeHandler(MeterModel.PROP_CHANFONT, new FontChangeHander<RefreshableMeterFigure>(){
+			@Override
+			protected void doHandle(RefreshableMeterFigure figure, Font font) {
+				figure.setChannelFont(font);
 			}
-		};
-		setPropertyChangeHandler(MeterModel.PROP_CHANFONT, handle);
+		});
 		
 		IWidgetPropertyChangeHandler borderHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure) {

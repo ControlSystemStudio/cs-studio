@@ -145,7 +145,7 @@ public class Label extends Widget {
             getObject().setHeight(getObject().getHeight()+4);
         }
         int fontSize = ADLHelper.getFontSize("Times New Roman",labelText, getObject().getHeight(), getObject().getWidth(),"0"); //$NON-NLS-1$ //$NON-NLS-2$
-        _widget.setPropertyValue(LabelModel.PROP_FONT, new FontData("Times New Roman", fontSize, SWT.NONE)); //$NON-NLS-1$
+        _widget.setFont(LabelModel.PROP_FONT, new FontData("Times New Roman", fontSize, SWT.NONE)); //$NON-NLS-1$
 
         if(getBasicAttribute()==null){
             _widget.setPropertyValue(LabelModel.PROP_TRANSPARENT, false);

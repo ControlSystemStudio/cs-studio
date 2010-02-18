@@ -574,10 +574,8 @@ public final class RefreshableMeterFigure extends Shape implements IAdaptable {
 		return _hihiBound;
 	}
 	
-	public void setValuesFont(final FontData newval) {
-		values_font=CustomMediaFactory.getInstance().getFont(
-				newval.getName(), newval.getHeight(),
-				newval.getStyle());
+	public void setValuesFont(final Font font) {
+		values_font=font;
 		invalidateBackground();
 		invalidateNeedle();
 	}
@@ -585,10 +583,8 @@ public final class RefreshableMeterFigure extends Shape implements IAdaptable {
 		return values_font;
 	}
 	
-	public void setChannelFont(final FontData newval) {
-		_channelFont=CustomMediaFactory.getInstance().getFont(
-				newval.getName(), newval.getHeight(),
-				newval.getStyle());
+	public void setChannelFont(final Font font) {
+		_channelFont=font;
 		invalidateBackground();
 		invalidateNeedle();
 	}

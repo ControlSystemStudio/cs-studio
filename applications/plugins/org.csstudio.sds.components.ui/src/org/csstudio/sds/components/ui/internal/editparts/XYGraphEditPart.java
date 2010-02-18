@@ -1,6 +1,5 @@
 package org.csstudio.sds.components.ui.internal.editparts;
 
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.components.model.XYGraphModel;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
@@ -19,7 +18,7 @@ public class XYGraphEditPart extends AbstractWidgetEditPart {
 		figure.setShowToolbar(model.isToolbarVisible());
 		figure.getXYGraph().setShowTitle(model.isTitleVisible());
 		figure.getXYGraph().setTitle(model.getTitle());
-		figure.getXYGraph().setTitleFont(CustomMediaFactory.getInstance().getFont(model.getTitleFont()));
+		figure.getXYGraph().setTitleFont(getModelFont(XYGraphModel.PROP_TITLE_FONT));
 		figure.getXYGraph().setTitleColor(getModelColor(XYGraphModel.PROP_TITLE_COLOR));
 		figure.getXYGraph().setShowLegend(model.isLegendVisible());
 		

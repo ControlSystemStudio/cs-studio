@@ -171,15 +171,6 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	}
 
 	/**
-	 * Return the label font.
-	 * 
-	 * @return The label font.
-	 */
-	public FontData getFont() {
-		return getFont(PROP_FONT);
-	}
-	
-	/**
 	 * Returns the alignment for the text.
 	 * @return int 
 	 * 			0 = Center, 1 = Top, 2 = Bottom, 3 = Left, 4 = Right

@@ -114,15 +114,6 @@ public final class MenuButtonModel extends AbstractWidgetModel {
 	public String getLabel() {
 		return getStringProperty(PROP_LABEL).getPropertyValue();
 	}
-
-	/**
-	 * Return the label font.
-	 * 
-	 * @return The label font.
-	 */
-	public FontData getFont() {
-		return getFont(PROP_FONT);
-	}
 	
 	/**
 	 * Returns the alignment for the text.

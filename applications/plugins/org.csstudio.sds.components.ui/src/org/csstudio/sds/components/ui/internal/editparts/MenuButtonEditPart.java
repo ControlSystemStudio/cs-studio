@@ -39,6 +39,7 @@ import org.csstudio.sds.model.properties.actions.AbstractWidgetActionModel;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.ExecutionMode;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
+import org.csstudio.sds.ui.editparts.AbstractBaseEditPart.FontChangeHander;
 import org.csstudio.sds.ui.widgetactionhandler.WidgetActionHandlerService;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.draw2d.IFigure;
@@ -47,6 +48,7 @@ import org.eclipse.draw2d.MouseListener;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
@@ -72,7 +74,7 @@ public final class MenuButtonEditPart extends AbstractWidgetEditPart implements
         RefreshableLabelFigure label = new RefreshableLabelFigure();
 
         label.setTextValue(model.getLabel());
-        label.setFont(CustomMediaFactory.getInstance().getFont(model.getFont()));
+        label.setFont(getModelFont(MenuButtonModel.PROP_FONT));
         label.setTextAlignment(model.getTextAlignment());
         label.setTransparent(false);
         label.setEnabled(model.isAccesible() && getExecutionMode().equals(ExecutionMode.RUN_MODE));
@@ -173,18 +175,16 @@ public final class MenuButtonEditPart extends AbstractWidgetEditPart implements
             }
         };
         setPropertyChangeHandler(ActionButtonModel.PROP_LABEL, labelHandler);
+        
         // font
-        IWidgetPropertyChangeHandler fontHandler = new IWidgetPropertyChangeHandler() {
-            public boolean handleChange(final Object oldValue, final Object newValue,
-                    final IFigure refreshableFigure) {
-                RefreshableLabelFigure figure = getCastedFigure();
-                FontData fontData = (FontData) newValue;
-                figure.setFont(CustomMediaFactory.getInstance().getFont(fontData.getName(),
-                        fontData.getHeight(), fontData.getStyle()));
-                return true;
-            }
-        };
-        setPropertyChangeHandler(LabelModel.PROP_FONT, fontHandler);
+        setPropertyChangeHandler(LabelModel.PROP_FONT, new FontChangeHander<RefreshableLabelFigure>(){
+
+			@Override
+			protected void doHandle(RefreshableLabelFigure figure, Font font) {
+				figure.setFont(font);
+			}
+			
+		});
 
         // text alignment
         IWidgetPropertyChangeHandler alignmentHandler = new IWidgetPropertyChangeHandler() {

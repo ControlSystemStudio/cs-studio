@@ -112,7 +112,7 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements I
 		RefreshableLabelFigure label = new RefreshableLabelFigure();
 
 		label.setTextValue(determineLabel(null));
-		label.setFont(CustomMediaFactory.getInstance().getFont(model.getFont()));
+		label.setFont(getModelFont(TextInputModel.PROP_FONT));
 		label.setTextAlignment(model.getTextAlignment());
 		label.setTransparent(model.getTransparent());
 
@@ -275,14 +275,10 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements I
 			}
 		});
 
-		// get the chosen font
-		FontData fontData = getWidgetModel().getFont(TextInputModel.PROP_FONT);
-		Font font = CustomMediaFactory.getInstance().getFont(new FontData[] { fontData });
+		text.setForeground(getModelColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND));
+		text.setFont(getModelFont(TextInputModel.PROP_FONT));
 
-		// get the chosen foreground color
-		Color foregroundColor = getModelColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND);
-
-		// get the chosen background color
+		// calculate background color
 		RGB backgroundRgb = getModelColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND).getRGB();
 
 		int red = Math.min(backgroundRgb.red + INPUT_FIELD_BRIGHTNESS, 255);
@@ -291,9 +287,7 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements I
 
 		Color backgroundColor = CustomMediaFactory.getInstance().getColor(new RGB(red, green, blue));
 
-		text.setForeground(foregroundColor);
 		text.setBackground(backgroundColor);
-		text.setFont(font);
 		text.selectAll();
 
 		return result;
@@ -477,15 +471,13 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements I
 		setPropertyChangeHandler(TextInputModel.PROP_INPUT_TEXT, textHandler);
 
 		// font
-		IWidgetPropertyChangeHandler fontHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue, final Object newValue, final IFigure refreshableFigure) {
-				RefreshableLabelFigure label = (RefreshableLabelFigure) refreshableFigure;
-				FontData fontData = (FontData) newValue;
-				label.setFont(CustomMediaFactory.getInstance().getFont(fontData.getName(), fontData.getHeight(), fontData.getStyle()));
-				return true;
+		setPropertyChangeHandler(TextInputModel.PROP_FONT, new FontChangeHander<RefreshableLabelFigure>(){
+			@Override
+			protected void doHandle(RefreshableLabelFigure figure, Font font) {
+				figure.setFont(font);
 			}
-		};
-		setPropertyChangeHandler(TextInputModel.PROP_FONT, fontHandler);
+		});
+		
 		// text alignment
 		IWidgetPropertyChangeHandler alignmentHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue, final Object newValue, final IFigure refreshableFigure) {

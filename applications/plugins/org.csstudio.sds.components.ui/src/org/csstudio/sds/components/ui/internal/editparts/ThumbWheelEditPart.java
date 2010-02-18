@@ -32,7 +32,7 @@ import org.csstudio.sds.ui.editparts.ExecutionMode;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.Font;
 
 /**
  * Controller for the ThumbWheel.
@@ -63,7 +63,7 @@ public class ThumbWheelEditPart extends AbstractWidgetEditPart {
 				logic.getDecimalWheels());
 		model.setWholePartDigits(logic.getIntegerWheels());
 		model.setDecimalPartDigits(logic.getDecimalWheels());
-		figure.setWheelFonts(model.getFont());
+		figure.setWheelFonts(getModelFont(ThumbWheelModel.PROP_FONT));
 		figure.setInternalBorderColor(getModelColor(ThumbWheelModel.PROP_INTERNAL_FRAME_COLOR));
 		figure.setInternalBorderThickness(model.getInternalBorderWidth());
 
@@ -205,15 +205,14 @@ public class ThumbWheelEditPart extends AbstractWidgetEditPart {
 		setPropertyChangeHandler(ThumbWheelModel.PROP_VALUE, handler);
 
 		// font
-		handler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				RefreshableThumbWheelFigure figure = (RefreshableThumbWheelFigure) refreshableFigure;
-				figure.setWheelFonts((FontData) newValue);
-				return true;
+		setPropertyChangeHandler(ThumbWheelModel.PROP_FONT, new FontChangeHander<RefreshableThumbWheelFigure>(){
+
+			@Override
+			protected void doHandle(RefreshableThumbWheelFigure figure, Font font) {
+				figure.setWheelFonts(font);
 			}
-		};
-		setPropertyChangeHandler(ThumbWheelModel.PROP_FONT, handler);
+			
+		});
 
 		// border color
 		setPropertyChangeHandler(ThumbWheelModel.PROP_INTERNAL_FRAME_COLOR,

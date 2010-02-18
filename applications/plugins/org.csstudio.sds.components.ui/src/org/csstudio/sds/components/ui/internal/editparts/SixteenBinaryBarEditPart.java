@@ -6,6 +6,7 @@ import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 
 /**
@@ -26,7 +27,7 @@ public class SixteenBinaryBarEditPart extends AbstractWidgetEditPart {
 		final RefreshableSixteenBinaryBarFigure bar = new RefreshableSixteenBinaryBarFigure();
 		bar.setOnColor(getModelColor(SixteenBinaryBarModel.PROP_ON_COLOR));
 		bar.setOffColor(getModelColor(SixteenBinaryBarModel.PROP_OFF_COLOR));
-		bar.setLabelFont(model.getLabelFont());
+		bar.setLabelFont(getModelFont(SixteenBinaryBarModel.PROP_LABEL_FONT));
 		bar.setHorizontal(model.getHorizontal());
 		bar.setShowLabels(model.getShowLabels());
 		bar.setValue(model.getValue());
@@ -79,15 +80,12 @@ public class SixteenBinaryBarEditPart extends AbstractWidgetEditPart {
 		setPropertyChangeHandler(SixteenBinaryBarModel.PROP_VALUE, handler);
 
 		// font
-		handler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				RefreshableSixteenBinaryBarFigure rectangle = (RefreshableSixteenBinaryBarFigure) refreshableFigure;
-				rectangle.setLabelFont((FontData) newValue);
-				return true;
+		setPropertyChangeHandler(SixteenBinaryBarModel.PROP_LABEL_FONT, new FontChangeHander<RefreshableSixteenBinaryBarFigure>(){
+			@Override
+			protected void doHandle(RefreshableSixteenBinaryBarFigure figure, Font font) {
+				figure.setLabelFont(font);
 			}
-		};
-		setPropertyChangeHandler(SixteenBinaryBarModel.PROP_LABEL_FONT, handler);
+		});
 
 		// on color
 		setPropertyChangeHandler(SixteenBinaryBarModel.PROP_ON_COLOR, new ColorChangeHander<RefreshableSixteenBinaryBarFigure>(){

@@ -120,10 +120,6 @@ public class ThumbWheelModel extends AbstractWidgetModel {
 		return buffer.toString();
 	}
 
-	public FontData getFont() {
-		return getFont(PROP_FONT);
-	}
-
 	public int getWholePartDigits() {
 		return getIntegerProperty(PROP_WHOLE_DIGITS_PART).getPropertyValue();
 	}

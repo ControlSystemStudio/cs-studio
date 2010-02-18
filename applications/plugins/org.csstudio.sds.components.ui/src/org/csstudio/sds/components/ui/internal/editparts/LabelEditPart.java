@@ -25,6 +25,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
 import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.sds.components.ui.internal.figures.RefreshableActionButtonFigure;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableLabelFigure;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.LabelModel;
@@ -33,6 +34,7 @@ import org.csstudio.sds.model.optionEnums.TextTypeEnum;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.ExecutionMode;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
+import org.csstudio.sds.ui.editparts.AbstractBaseEditPart.FontChangeHander;
 import org.csstudio.sds.util.ChannelReferenceValidationException;
 import org.csstudio.sds.util.ChannelReferenceValidationUtil;
 import org.eclipse.draw2d.IFigure;
@@ -92,7 +94,7 @@ public final class LabelEditPart extends AbstractWidgetEditPart {
 		// create AND initialize the view properly
 		final RefreshableLabelFigure figure = new RefreshableLabelFigure();
 
-		figure.setFont(CustomMediaFactory.getInstance().getFont(model.getFont()));
+		figure.setFont(getModelFont(LabelModel.PROP_FONT));
 		figure.setTextAlignment(model.getTextAlignment());
 		figure.setTransparent(model.getTransparent());
 		figure.setRotation(model.getRotation());
@@ -250,7 +252,14 @@ public final class LabelEditPart extends AbstractWidgetEditPart {
 				return true;
 			}
 		};
-		setPropertyChangeHandler(LabelModel.PROP_FONT, handle);
+		setPropertyChangeHandler(LabelModel.PROP_FONT, new FontChangeHander<RefreshableLabelFigure>(){
+
+			@Override
+			protected void doHandle(RefreshableLabelFigure figure, Font font) {
+				figure.setFont(font);
+			}
+			
+		});
 
 		// changes to the text alignment property
 		handle = new IWidgetPropertyChangeHandler() {
@@ -352,14 +361,11 @@ public final class LabelEditPart extends AbstractWidgetEditPart {
 			}
 
 		});
-		// get the chosen font
-		FontData fontData = (FontData) getWidgetModel().getFont(LabelModel.PROP_FONT);
-		Font font = CustomMediaFactory.getInstance().getFont(new FontData[] { fontData });
 
-		// get the chosen foreground color
-		Color foregroundColor = getModelColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND);
-
-		// get the chosen background color
+		text.setForeground(getModelColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND));
+		text.setFont(getModelFont(LabelModel.PROP_FONT));
+		
+		// calculate the chosen background color
 		RGB backgroundRgb = getModelColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND).getRGB();
 
 		int red = Math.min(backgroundRgb.red + INPUT_FIELD_BRIGHTNESS, 255);
@@ -368,9 +374,7 @@ public final class LabelEditPart extends AbstractWidgetEditPart {
 
 		Color backgroundColor = CustomMediaFactory.getInstance().getColor(new RGB(red, green, blue));
 
-		text.setForeground(foregroundColor);
 		text.setBackground(backgroundColor);
-		text.setFont(font);
 		text.selectAll();
 
 		return result;

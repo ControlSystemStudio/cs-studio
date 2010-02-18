@@ -84,8 +84,7 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 
 		final RefreshableActionButtonFigure buttonFigure = new RefreshableActionButtonFigure();
 		buttonFigure.setText(model.getLabel());
-		buttonFigure.setFont(CustomMediaFactory.getInstance().getFont(
-				model.getFont()));
+		buttonFigure.setFont(getModelFont(ActionButtonModel.PROP_FONT));
 		buttonFigure.setTextAlignment(model.getTextAlignment());
 		buttonFigure.setEnabled(getExecutionMode().equals(
 				ExecutionMode.RUN_MODE)
@@ -221,19 +220,14 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(ActionButtonModel.PROP_LABEL, labelHandler);
+		
 		// font
-		IWidgetPropertyChangeHandler fontHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				RefreshableActionButtonFigure figure = getCastedFigure();
-				FontData fontData = (FontData) newValue;
-				figure.setFont(CustomMediaFactory.getInstance().getFont(
-						fontData.getName(), fontData.getHeight(),
-						fontData.getStyle()));
-				return true;
+		setPropertyChangeHandler(LabelModel.PROP_FONT, new FontChangeHander<RefreshableActionButtonFigure>(){
+			@Override
+			protected void doHandle(RefreshableActionButtonFigure figure, Font font) {
+				figure.setFont(font);
 			}
-		};
-		setPropertyChangeHandler(LabelModel.PROP_FONT, fontHandler);
+		});
 
 		// text alignment
 		IWidgetPropertyChangeHandler alignmentHandler = new IWidgetPropertyChangeHandler() {
@@ -300,14 +294,11 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 	            }
 
 	        });
-	        // get the chosen font
-	        FontData fontData = getWidgetModel().getFont(ActionButtonModel.PROP_FONT);
-	        Font font = CustomMediaFactory.getInstance().getFont(new FontData[] { fontData });
 
-	        // get the chosen foreground color
-	        Color foregroundColor = getModelColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND);
-
-	        // get the chosen background color
+	        text.setForeground(getModelColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND));
+	        text.setFont(getModelFont(ActionButtonModel.PROP_FONT));
+	        
+	        // calculate background color
 	        RGB backgroundRgb = getModelColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND).getRGB();
 
 	        int red = Math.min(backgroundRgb.red + INPUT_FIELD_BRIGHTNESS, 255);
@@ -317,13 +308,13 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 	        Color backgroundColor = CustomMediaFactory.getInstance()
 	                .getColor(new RGB(red, green, blue));
 
-	        text.setForeground(foregroundColor);
 	        text.setBackground(backgroundColor);
-	        text.setFont(font);
 	        text.selectAll();
 	        
 	        return result;
 	    }
+	    
+	    
 	    /**
 	     * Locate the given cell editor .
 	     * 
