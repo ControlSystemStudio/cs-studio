@@ -225,5 +225,13 @@
             primary="true">
       </toc>
    </extension>
+   <extension
+         point="org.csstudio.sds.widgetPropertyPostProcessors">
+      <widgetPropertyPostProcessor
+            class="org.csstudio.sds.components.model.eventing.ActionButtonDataPostProcessor"
+            propertyId="actionData"
+            widgetId="org.csstudio.sds.components.ActionButton">
+      </widgetPropertyPostProcessor>
+   </extension>
 
 </plugin>
