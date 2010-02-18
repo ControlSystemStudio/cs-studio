@@ -117,10 +117,10 @@ public class ADLDisplay extends Widget{
 //            }
 //        }
         if(_clr!=null){
-            _widget.setForegroundColor(ADLHelper.getRGB(_clr));
+        	//TODO: new property interface           _widget.setForegroundColor(ADLHelper.getRGB(_clr));
         }
         if(_bclr!=null){
-            _widget.setBackgroundColor(ADLHelper.getRGB(_bclr));
+        	//TODO: new property interface           _widget.setBackgroundColor(ADLHelper.getRGB(_bclr));
         }
         if(_cmap!=null){
             //TODO: Muss das übernommen werden ???

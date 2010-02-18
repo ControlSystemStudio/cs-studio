@@ -54,7 +54,7 @@ public class Polygon extends Widget{
         }
         _widget.setPropertyValue(PolygonModel.PROP_FILL, 100.0);
         _widget.setPropertyValue(PolygonModel.PROP_BORDER_STYLE, 0);
-        _widget.setPropertyValue(PolygonModel.PROP_BORDER_COLOR, _widget.getForegroundColor());
+      //TODO: new property interface        _widget.setPropertyValue(PolygonModel.PROP_BORDER_COLOR, _widget.getForegroundColor());
         ADLHelper.checkAndSetLayer(_widget, abstractWidgetModel);
     }
 

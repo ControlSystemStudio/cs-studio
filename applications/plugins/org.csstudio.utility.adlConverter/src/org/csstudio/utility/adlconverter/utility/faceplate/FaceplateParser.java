@@ -217,7 +217,7 @@ public class FaceplateParser {
             int height = ADLHelper.getFontSize("Tahoma", header, h, w, "1");
             headerLabel.setFont(new FontData("Tahoma", height, SWT.BOLD));
             headerLabel.setTextValue(header);
-            headerLabel.setForegroundColor(CustomMediaFactory.COLOR_BLACK);
+//TODO: new property interface            headerLabel.setForegroundColor(CustomMediaFactory.COLOR_BLACK);
             return headerLabel;
         } catch (Exception e) {
             e.printStackTrace();

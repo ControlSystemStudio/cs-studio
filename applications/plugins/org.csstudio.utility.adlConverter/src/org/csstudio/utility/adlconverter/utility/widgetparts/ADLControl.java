@@ -119,10 +119,10 @@ public class ADLControl extends WidgetPart{
     @Override
     final void generateElements() {
         if(_clr!=null){
-            _widgetModel.setForegroundColor(ADLHelper.getRGB(_clr));
+        	//TODO: new property interface            _widgetModel.setForegroundColor(ADLHelper.getRGB(_clr));
         }
         if(_bclr!=null){
-            _widgetModel.setBackgroundColor(ADLHelper.getRGB(_bclr));
+        	//TODO: new property interface            _widgetModel.setBackgroundColor(ADLHelper.getRGB(_bclr));
             if(_connectionState){
                 DynamicsDescriptor dynDis = new DynamicsDescriptor("rule.null"); //$NON-NLS-1$
                 dynDis.addInputChannel(new ParameterDescriptor("$channel$",Double.class)); //$NON-NLS-1$

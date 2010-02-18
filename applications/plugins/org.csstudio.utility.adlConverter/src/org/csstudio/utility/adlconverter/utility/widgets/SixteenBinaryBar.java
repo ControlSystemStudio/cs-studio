@@ -50,8 +50,8 @@ public class SixteenBinaryBar extends Widget {
         DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor("directConnection"); //$NON-NLS-1$
         dynamicsDescriptor.addInputChannel(new ParameterDescriptor(_widget.getPrimaryPV(),Integer.class)); //$NON-NLS-1$        
         _widget.setDynamicsDescriptor(SixteenBinaryBarModel.PROP_VALUE, dynamicsDescriptor );
-        _widget.setPropertyValue(SixteenBinaryBarModel.PROP_ON_COLOR, _widget.getForegroundColor());
-        _widget.setPropertyValue(SixteenBinaryBarModel.PROP_OFF_COLOR, _widget.getBackgroundColor());
+      //TODO: new property interface       _widget.setPropertyValue(SixteenBinaryBarModel.PROP_ON_COLOR, _widget.getForegroundColor());
+      //TODO: new property interface      _widget.setPropertyValue(SixteenBinaryBarModel.PROP_OFF_COLOR, _widget.getBackgroundColor());
         for (FileLine fileLine : sixteenBinaryBar.getBody()) {
             String bodyPart = fileLine.getLine();
             String[] row = bodyPart.trim().split("="); //$NON-NLS-1$

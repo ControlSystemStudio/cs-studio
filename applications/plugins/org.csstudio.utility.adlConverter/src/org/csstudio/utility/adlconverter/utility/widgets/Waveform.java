@@ -290,9 +290,9 @@ public class Waveform extends Widget {
                 String name = row[1].replaceAll("\"", "").trim();
                 _widget.setPropertyValue(WaveformModel.PROP_LABEL, name);
             }else if(parameter.equals("clr")){
-                _widget.setForegroundColor(ADLHelper.getRGB(row[1]));
+            	//TODO: new property interface               _widget.setForegroundColor(ADLHelper.getRGB(row[1]));
             }else if(parameter.equals("bclr")){
-                _widget.setBackgroundColor(ADLHelper.getRGB(row[1]));
+            	//TODO: new property interface              _widget.setBackgroundColor(ADLHelper.getRGB(row[1]));
             }else if(parameter.equals("xlabel")){
                 String xLabel = row[1].replaceAll("\"", "").trim();
                 _widget.setPropertyValue(WaveformModel.PROP_X_AXIS_LABEL,xLabel);
