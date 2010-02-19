@@ -1,7 +1,7 @@
 package org.csstudio.sds.behavior.desy;
 
+import org.csstudio.sds.behaviors.AbstractBehavior;
 import org.csstudio.sds.model.LabelModel;
-import org.csstudio.sds.ui.behaviors.AbstractBehavior;
 import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.MetaData;
 

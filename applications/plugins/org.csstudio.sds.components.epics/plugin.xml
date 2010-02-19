@@ -127,7 +127,7 @@
       </toc>
    </extension>
    <extension
-         point="org.csstudio.sds.ui.behaviors">
+         point="org.csstudio.sds.behaviors">
       <behavior
             class="org.csstudio.sds.behavior.desy.TestRectangleBehavior"
             description="Test Behavior"
