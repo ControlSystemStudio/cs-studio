@@ -534,6 +534,8 @@ public class XYGraph extends Figure{
 	 */
     public void performStagger()
     {
+        final double GAP = 0.1;
+
         final ZoomCommand command = new ZoomCommand("Stagger Axes", null, yAxisList);
         command.savePreviousStates();
         
@@ -552,31 +554,43 @@ public class XYGraph extends Figure{
             // Skip axis which for some reason cannot determine its range
             if (axis_range ==  null)
                 continue;
+
             double low = axis_range.getLower();
             double high = axis_range.getUpper();
+            if (low == high)
+            {   // Center trace with constant value (empty range)
+                final double half = low/2;
+                low -= half;
+                high += half;
+            }
+            
             if (yaxis.isLogScaleEnabled())
             {   // Transition into log space
                 low = Log10.log10(low);
                 high = Log10.log10(high);
             }
+            
             double span = high - low;
-            // Fudge factor to get some extra space
-            span = 1.05*span;
+            // Make some extra space
+            low -= GAP*span;
+            high += GAP*span;
+            span = high-low;
             
             // With N axes, assign 1/Nth of the vertical plot space to this axis
             // by shifting the span down according to the axis index,
             // using a total of N*range.
             low -= (N-i-1)*span;
             high += i*span;
-            // Fudge bottom
-            low -= 0.05*span;
+            
             if (yaxis.isLogScaleEnabled())
             {   // Revert from log space
                 low = Log10.pow10(low);
                 high = Log10.pow10(high);
             }
+            
             // Sanity check for empty traces
-            if (low < high)
+            if (low < high  &&
+                !Double.isInfinite(low) && !Double.isInfinite(high))
                 yaxis.setRange(low, high);
         }
         
