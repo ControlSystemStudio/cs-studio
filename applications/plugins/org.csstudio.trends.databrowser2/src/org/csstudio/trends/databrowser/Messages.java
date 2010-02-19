@@ -56,7 +56,6 @@ public class Messages extends NLS
     public static String DeleteArchive;
     public static String DeleteAxis;
     public static String DeleteAxisWarningFmt;
-    public static String DeleteEmptyAxes;
     public static String DeleteItem;
     public static String DuplicateItemFmt;
     public static String EmptyNameError;
@@ -158,6 +157,8 @@ public class Messages extends NLS
     public static String PVUsedInFormulaFmt;
     public static String RegularExpression;
     public static String RegularExpressionTT;
+    public static String RemoveEmptyAxes;
+
     public static String ReplaceSearchResults;
     public static String ReplaceSearchResultsTT;
     public static String Request_raw;

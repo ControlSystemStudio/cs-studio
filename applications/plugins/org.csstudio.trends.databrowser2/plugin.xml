@@ -67,7 +67,7 @@
             visible="true">
          <action
                class="org.csstudio.trends.databrowser.NewDataBrowserAction"
-               icon="icons/databrowser.png"
+               icon="icons/new_databrowser.png"
                id="org.csstudio.trends.databrowser.NewDataBrowserAction"
                label="%Databrowser"
                menubarPath="css/trends/"
