@@ -20,7 +20,7 @@ public class Messages extends NLS
     public static String AddPV_Axis;
     public static String AddPV_AxisTT;
     public static String AddPV_NameTT;
-    public static String AddPV_NewAxis;
+    public static String AddPV_NewOrEmptyAxis;
     public static String AddPV_OnChange;
     public static String AddPV_OnChangeTT;
     public static String AddPV_Period;

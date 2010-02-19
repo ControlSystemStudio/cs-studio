@@ -4,6 +4,7 @@ import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.csstudio.trends.databrowser.Messages;
 import org.csstudio.trends.databrowser.model.AxisConfig;
 import org.csstudio.trends.databrowser.model.Model;
+import org.csstudio.trends.databrowser.model.ModelItem;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -44,17 +45,15 @@ public class DeleteAxesAction extends Action
         for (int i=0; i<axes.length; ++i)
         {
             axes[i] = (AxisConfig)sel[i];
-            // Check if axis is used by any model items
-            for (int j=0; j<model.getItemCount(); ++j)
+            // Check if axis is used by any model items.
+            final ModelItem item = model.getFirstItemOnAxis(axes[i]);
+            if (item != null)
             {
-                if (model.getItem(j).getAxis() == axes[i])
-                {
-                    MessageDialog.openWarning(axes_table.getTable().getShell(),
-                            Messages.DeleteAxis,
-                            NLS.bind(Messages.DeleteAxisWarningFmt,
-                                    axes[i].getName(), model.getItem(j).getName()));
-                    return;
-                }
+                MessageDialog.openWarning(axes_table.getTable().getShell(),
+                        Messages.DeleteAxis,
+                        NLS.bind(Messages.DeleteAxisWarningFmt,
+                                axes[i].getName(), item.getName()));
+                return;
             }
         }
         // Delete axes one by one.

@@ -183,11 +183,11 @@ public class Controller implements ArchiveFetchJobListener
                     if (item == null)
                     { 
                         final OperationsManager operations_manager = plot.getOperationsManager();
-                        final AxisConfig axis;
-                        if (model.getAxisCount() <= 0)
+                        
+                        // Add to first empty axis, or create new axis
+                        AxisConfig axis = model.getEmptyAxis();
+                        if (axis == null)
                             axis = new AddAxisCommand(operations_manager, model).getAxis();
-                        else
-                            axis = model.getAxis(0);
                             
                         // Add new PV
                         AddModelItemCommand.forPV(shell, operations_manager,

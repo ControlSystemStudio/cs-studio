@@ -152,6 +152,29 @@ public class Model
         return axes.indexOf(axis);
     }
 
+    /** @param axis Axis to test
+     *  @return First ModelItem that uses the axis, <code>null</code> if
+     *          axis is empty
+     */
+    public ModelItem getFirstItemOnAxis(final AxisConfig axis)
+    {
+        for (ModelItem item : items)
+            if (item.getAxis() == axis)
+                return item;
+        return null;
+    }
+    
+    /** @return First unused axis (no items on axis),
+     *          <code>null</code> if none found
+     */
+    public AxisConfig getEmptyAxis()
+    {
+        for (AxisConfig axis : axes)
+            if (getFirstItemOnAxis(axis) == null)
+                return axis;
+        return null;
+    }
+
     /** Add value axis with default settings
      *  @return Newly added axis configuration
      */

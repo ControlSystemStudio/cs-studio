@@ -46,8 +46,8 @@ public class AddPVDialog  extends TitleAreaDialog
     /** Entered period */
     private double period;
 
-    /** Selected Axis */
-    private String axis_name;
+    /** Selected Axis index or -1 */
+    private int axis_index = -1;
 
     /** Initialize
      *  @param shell Shell
@@ -152,7 +152,7 @@ public class AddPVDialog  extends TitleAreaDialog
             axis.setToolTipText(Messages.AddPV_AxisTT);
             axis.setLayoutData(new GridData(SWT.FILL, 0, true, false));
             // First entry is 'new axis', rest actual axis names
-            axis.add(Messages.AddPV_NewAxis);
+            axis.add(Messages.AddPV_NewOrEmptyAxis);
             for (String name : axes)
                 axis.add(name);
             axis.select(0);
@@ -207,9 +207,9 @@ public class AddPVDialog  extends TitleAreaDialog
         }
         
         if (axis == null   ||   axis.getSelectionIndex() <= 0)
-            axis_name = null;
-        else
-            axis_name = axis.getText();
+            axis_index = -1;
+        else // entry 0 is 'no axis'
+            axis_index = axis.getSelectionIndex() - 1;
         // All OK
         super.okPressed();
     }
@@ -234,9 +234,9 @@ public class AddPVDialog  extends TitleAreaDialog
         return period;
     }
 
-    /** @return Name of Value Axis or <code>null</code> for 'create new' */
-    public String getAxis()
+    /** @return Index of Value Axis or -1 for 'create new' */
+    public int getAxisIndex()
     {
-        return axis_name;
+        return axis_index;
     }
 }

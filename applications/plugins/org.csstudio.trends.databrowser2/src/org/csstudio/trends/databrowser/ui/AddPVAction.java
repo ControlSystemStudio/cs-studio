@@ -58,24 +58,25 @@ public class AddPVAction extends Action
             existing_names[i] = model.getItem(i).getName();
         final String axes[] = new String[model.getAxisCount()];
         for (int i=0; i<axes.length; ++i)
-            axes[i] = model.getAxis(i).getName();
+        {
+            final AxisConfig axis = model.getAxis(i);
+            axes[i] = axis.getName();
+        }
         final AddPVDialog dlg = new AddPVDialog(shell, existing_names, axes, formula);
         dlg.setName(name);
         if (dlg.open() != AddPVDialog.OK)
             return;
         
-        AxisConfig axis = null;
-        // Locate axis
-        if (dlg.getAxis() != null)
-            for (int i=0;  i<model.getAxisCount();  ++i)
-                if (model.getAxis(i).getName().equals(dlg.getAxis()))
-                {
-                    axis  = model.getAxis(i);
-                    break;
-                }
-        // If necessary, add axis, which adds another undo-able command
-        if (axis == null)
-            axis = new AddAxisCommand(operations_manager, model).getAxis();
+        // Did user select axis?
+        AxisConfig axis;
+        if (dlg.getAxisIndex() >= 0)
+            axis = model.getAxis(dlg.getAxisIndex());
+        else
+        {   // Use first empty axis, or create a new one
+            axis = model.getEmptyAxis();
+            if (axis == null)
+                axis = new AddAxisCommand(operations_manager, model).getAxis();
+        }
         
         // Create item
         if (formula)

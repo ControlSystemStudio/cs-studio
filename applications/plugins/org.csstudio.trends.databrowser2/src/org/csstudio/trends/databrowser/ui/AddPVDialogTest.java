@@ -21,7 +21,7 @@ public class AddPVDialogTest
         {
             System.out.println("Name  : " + dlg.getName());
             System.out.println("Period: " + dlg.getScanPeriod());
-            System.out.println("Axis  : " + dlg.getAxis());
+            System.out.println("Axis  : " + dlg.getAxisIndex());
         }
     }
 
@@ -33,7 +33,7 @@ public class AddPVDialogTest
         if (dlg.open() == AddPVDialog.OK)
         {
             System.out.println("Name  : " + dlg.getName());
-            System.out.println("Axis  : " + dlg.getAxis());
+            System.out.println("Axis  : " + dlg.getAxisIndex());
         }
     }
 }
