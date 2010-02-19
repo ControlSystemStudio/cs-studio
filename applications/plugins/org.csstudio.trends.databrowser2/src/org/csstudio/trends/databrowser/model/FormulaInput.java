@@ -76,12 +76,20 @@ public class FormulaInput
 
     /** Check for new samples.
      *  Note that this will not reset the new-sample flag,
-     *  so it's use has to be coordinated with the overall mechanism
+     *  so its use has to be coordinated with the overall mechanism
      *  that checks for the need to redraw.
      *  @return <code>true</code> if ModelItem has new samples
      */
     public boolean hasNewSamples()
     {
         return item.getSamples().hasNewSamples();
+    }
+    
+    /** @return Debug text */
+    @SuppressWarnings("nls")
+    @Override
+    public String toString()
+    {
+        return "FormulaInput '" + variable_name + "': " + item.getName();
     }
 }
