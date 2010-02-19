@@ -33,5 +33,6 @@ public class PlotSampleArray extends PlotSamples
         samples = new PlotSample[values.size()];
         for (int i = 0; i < samples.length; ++i)
             samples[i] = new PlotSample(source, values.get(i));
+        have_new_samples = true;
     }
 }
