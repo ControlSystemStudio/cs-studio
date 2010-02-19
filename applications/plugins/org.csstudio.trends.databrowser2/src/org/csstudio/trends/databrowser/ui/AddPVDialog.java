@@ -54,7 +54,7 @@ public class AddPVDialog  extends TitleAreaDialog
      *  @param shell Shell
      *  @param existing_names Existing names that will be prohibited for the new PV
      *  @param axes Value axis names
-     *  @param formula Add formula, not PV
+     *  @param formula Add formula, not PV?
      */
     public AddPVDialog(final Shell shell, final String existing_names[],
             final String axes[], final boolean formula)
@@ -146,19 +146,19 @@ public class AddPVDialog  extends TitleAreaDialog
         if (axes.length > 0)
         {
             l = new Label(box, 0);
-            l.setText("Value Axis:");
+            l.setText(Messages.AddPV_Axis);
             l.setLayoutData(new GridData());
     
             axis = new Combo(box, SWT.READ_ONLY | SWT.DROP_DOWN | SWT.SINGLE);
-            axis.setToolTipText("Select value axis for new item");
+            axis.setToolTipText(Messages.AddPV_AxisTT);
             axis.setLayoutData(new GridData(SWT.FILL, 0, true, false));
             axis.setItems(axes);
             axis.select(0);
             axis.setEnabled(false);
     
             new_axis = new Button(box, SWT.CHECK);
-            new_axis.setText("create new axis");
-            new_axis.setToolTipText("Should the new item initially be assigned to a new value axis?");
+            new_axis.setText(Messages.AddPV_NewAxis);
+            new_axis.setToolTipText(Messages.AddPV_NewAxisTT);
             new_axis.setLayoutData(new GridData());
             new_axis.setSelection(true);
             

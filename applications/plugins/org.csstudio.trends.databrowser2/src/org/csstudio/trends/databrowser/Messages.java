@@ -17,7 +17,11 @@ public class Messages extends NLS
     public static String AddFormula_NameTT;
     public static String AddItemErrorFmt;
     public static String AddPV;
+    public static String AddPV_Axis;
+    public static String AddPV_AxisTT;
     public static String AddPV_NameTT;
+    public static String AddPV_NewAxis;
+    public static String AddPV_NewAxisTT;
     public static String AddPV_OnChange;
     public static String AddPV_OnChangeTT;
     public static String AddPV_Period;

@@ -9,18 +9,30 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class AddPVDialogTest
 {
+    final String names[] = new String[] { "Fred", "Jane" };
+    final String axes[] = new String[] { "Value", "Value 2" };
+
     @Test
-    public void dialogTest()
+    public void pvTest()
     {
         final Shell shell = new Shell();
-        final String names[] = new String[] { "Fred", "Jane" };
-        final String axes[] = new String[] { "Value", "Value 2" };
-
-        final AddPVDialog dlg = new AddPVDialog(shell, names, axes, true);
+        final AddPVDialog dlg = new AddPVDialog(shell, names, axes, false);
         if (dlg.open() == AddPVDialog.OK)
         {
             System.out.println("Name  : " + dlg.getName());
             System.out.println("Period: " + dlg.getScanPeriod());
+            System.out.println("Axis  : " + dlg.getAxis());
+        }
+    }
+
+    @Test
+    public void formulaTest()
+    {
+        final Shell shell = new Shell();
+        final AddPVDialog dlg = new AddPVDialog(shell, names, axes, true);
+        if (dlg.open() == AddPVDialog.OK)
+        {
+            System.out.println("Name  : " + dlg.getName());
             System.out.println("Axis  : " + dlg.getAxis());
         }
     }
