@@ -249,7 +249,7 @@ abstract public class ModelItem
         final int axis_index = DOMHelper.getSubelementInt(node, Model.TAG_AXIS, 0);
         while (model.getAxisCount() <= axis_index)
             model.addAxis();
-        axis = model.getAxisConfig(axis_index);
+        axis = model.getAxis(axis_index);
         line_width = DOMHelper.getSubelementInt(node, Model.TAG_LINEWIDTH, line_width);
         rgb = Model.loadColorFromDocument(node);
         final String type = DOMHelper.getSubelementString(node, Model.TAG_TRACE_TYPE, TraceType.AREA.name());

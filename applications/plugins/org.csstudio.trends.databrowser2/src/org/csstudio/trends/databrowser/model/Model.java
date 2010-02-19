@@ -138,7 +138,7 @@ public class Model
     /** @param axis_index Index of axis, 0 ... <code>getAxisCount()-1</code>
      *  @return {@link AxisConfig}
      */
-    public AxisConfig getAxisConfig(final int axis_index)
+    public AxisConfig getAxis(final int axis_index)
     {
         return axes.get(axis_index);
     }

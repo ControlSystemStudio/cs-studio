@@ -74,7 +74,7 @@ public class ControllerTest
         item = new FormulaItem("calc", "dtl-10",
                 new FormulaInput[] { new FormulaInput(item, "dtl") });
         item.setDisplayName("Lessened Load");
-        item.setAxis(model.getAxisConfig(2));
+        item.setAxis(model.getAxis(2));
         model.addItem(item);
     }
 

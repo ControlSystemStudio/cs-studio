@@ -58,7 +58,7 @@ public class AddPVAction extends Action
             existing_names[i] = model.getItem(i).getName();
         final String axes[] = new String[model.getAxisCount()];
         for (int i=0; i<axes.length; ++i)
-            axes[i] = model.getAxisConfig(i).getName();
+            axes[i] = model.getAxis(i).getName();
         final AddPVDialog dlg = new AddPVDialog(shell, existing_names, axes, formula);
         dlg.setName(name);
         if (dlg.open() != AddPVDialog.OK)
@@ -68,9 +68,9 @@ public class AddPVAction extends Action
         // Locate axis
         if (dlg.getAxis() != null)
             for (int i=0;  i<model.getAxisCount();  ++i)
-                if (model.getAxisConfig(i).getName().equals(dlg.getAxis()))
+                if (model.getAxis(i).getName().equals(dlg.getAxis()))
                 {
-                    axis  = model.getAxisConfig(i);
+                    axis  = model.getAxis(i);
                     break;
                 }
         // If necessary, add axis, which adds another undo-able command

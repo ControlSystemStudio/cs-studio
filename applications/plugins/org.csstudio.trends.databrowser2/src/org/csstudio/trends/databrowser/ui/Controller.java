@@ -149,7 +149,7 @@ public class Controller implements ArchiveFetchJobListener
 
             public void valueAxisChanged(final int index, final double lower, final double upper)
             {   // Update axis range in model
-                final AxisConfig axis = model.getAxisConfig(index);
+                final AxisConfig axis = model.getAxis(index);
                 axis.setRange(lower, upper);
             }
 
@@ -187,7 +187,7 @@ public class Controller implements ArchiveFetchJobListener
                         if (model.getAxisCount() <= 0)
                             axis = new AddAxisCommand(operations_manager, model).getAxis();
                         else
-                            axis = model.getAxisConfig(0);
+                            axis = model.getAxis(0);
                             
                         // Add new PV
                         AddModelItemCommand.forPV(shell, operations_manager,
@@ -247,7 +247,7 @@ public class Controller implements ArchiveFetchJobListener
                 // Else: Update specific axis
                 for (int i=0; i<model.getAxisCount(); ++i)
                 {
-                    if (model.getAxisConfig(i) == axis)
+                    if (model.getAxis(i) == axis)
                     {
                         plot.updateAxis(i, axis);
                         return;
@@ -390,7 +390,7 @@ public class Controller implements ArchiveFetchJobListener
         plot.updateScrollButton(model.isScrollEnabled());
         plot.removeAll();
         for (int i=0; i<model.getAxisCount(); ++i)
-            plot.updateAxis(i, model.getAxisConfig(i));
+            plot.updateAxis(i, model.getAxis(i));
         for (int i=0; i<model.getItemCount(); ++i)
         {
             final ModelItem item = model.getItem(i);

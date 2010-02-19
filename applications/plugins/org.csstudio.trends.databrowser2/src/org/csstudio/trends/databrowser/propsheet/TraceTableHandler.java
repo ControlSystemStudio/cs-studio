@@ -423,7 +423,7 @@ public class TraceTableHandler implements ILazyContentProvider
             {
                 final String axis_names[] = new String[model.getAxisCount()];
                 for (int i=0; i<axis_names.length; ++i)
-                    axis_names[i] = model.getAxisConfig(i).getName();
+                    axis_names[i] = model.getAxis(i).getName();
                 final ComboBoxCellEditor combo = new ComboBoxCellEditor(trace_table.getTable(),
                         axis_names, SWT.READ_ONLY);
                 combo.setValue(getValue(element));
@@ -438,7 +438,7 @@ public class TraceTableHandler implements ILazyContentProvider
             protected void setValue(final Object element, final Object value)
             {
                 final int axis_index = ((Integer)value).intValue();
-                final AxisConfig axis = model.getAxisConfig(axis_index);
+                final AxisConfig axis = model.getAxis(axis_index);
                 final ModelItem item = (ModelItem)element;
                 if (axis != item.getAxis())
                     new ChangeAxisCommand(operations_manager, item, axis);

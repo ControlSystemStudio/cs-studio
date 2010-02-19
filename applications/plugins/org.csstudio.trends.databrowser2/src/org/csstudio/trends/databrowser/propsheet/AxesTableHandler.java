@@ -384,7 +384,7 @@ public class AxesTableHandler implements ILazyContentProvider
      */
     public void updateElement(int index)
     {
-        axes_table.replace(model.getAxisConfig(index), index);
+        axes_table.replace(model.getAxis(index), index);
     }
 
     // ILazyContentProvider
