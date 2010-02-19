@@ -56,6 +56,7 @@ public class Messages extends NLS
     public static String DeleteArchive;
     public static String DeleteAxis;
     public static String DeleteAxisWarningFmt;
+    public static String DeleteEmptyAxes;
     public static String DeleteItem;
     public static String DuplicateItemFmt;
     public static String EmptyNameError;

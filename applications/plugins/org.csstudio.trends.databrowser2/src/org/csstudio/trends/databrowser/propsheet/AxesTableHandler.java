@@ -357,6 +357,8 @@ public class AxesTableHandler implements ILazyContentProvider
                 menu.add(new AddAxisAction(operations_manager, model));
                 if (!axes_table.getSelection().isEmpty())
                     menu.add(new DeleteAxesAction(operations_manager, axes_table, model));
+                if (model.getEmptyAxis() != null)
+                    menu.add(new DeleteUnusedAxesAction(operations_manager, model));
             }
         });
         final Table table = axes_table.getTable();
