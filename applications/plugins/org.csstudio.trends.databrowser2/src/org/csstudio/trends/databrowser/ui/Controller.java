@@ -481,8 +481,6 @@ public class Controller implements ArchiveFetchJobListener
     public void archiveFetchFailed(final ArchiveFetchJob job,
             final ArchiveDataSource archive, final Exception error)
     {
-        // TODO Got a 'nested' Oracle exception where error.getCause() is 'cancelled by user'
-        error.printStackTrace();
         if (shell.isDisposed())
             return;
         shell.getDisplay().asyncExec(new Runnable()
