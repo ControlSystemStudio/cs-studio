@@ -22,7 +22,7 @@
  package org.csstudio.sds.cosyrules.color;
 
 import org.csstudio.sds.model.logic.IRule;
-import org.csstudio.sds.model.properties.ColorUtil;
+import org.csstudio.sds.util.ColorAndFontUtil;
 
 /**
  * Color rule CRYO_Temp#1, translated from an ADL file.
@@ -55,22 +55,22 @@ public final class CRYO_Temp_1 implements IRule {
             }
             
 			if (d>=0.0 && d<5.0) {
-				return ColorUtil.toHex(42,99,228);
+				return ColorAndFontUtil.toHex(42,99,228);
 			}
 			if (d>=5.0 && d<9.0) {
-				return ColorUtil.toHex(78,165,249);
+				return ColorAndFontUtil.toHex(78,165,249);
 			}
 			if (d>=9.0 && d<20.0) {
-				return ColorUtil.toHex(238,182,43);
+				return ColorAndFontUtil.toHex(238,182,43);
 			}
 			if (d>=20.0 && d<80.0) {
-				return ColorUtil.toHex(205,97,0);
+				return ColorAndFontUtil.toHex(205,97,0);
 			}
 			if (d>=80.0 && d<=1000.0) {
-				return ColorUtil.toHex(190,25,11);
+				return ColorAndFontUtil.toHex(190,25,11);
 			}
 		}
 
-		return ColorUtil.toHex(0,0,0);
+		return ColorAndFontUtil.toHex(0,0,0);
 	}
 }

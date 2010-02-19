@@ -4,6 +4,7 @@ import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.properties.BooleanProperty;
 import org.csstudio.sds.model.properties.IntegerProperty;
+import org.csstudio.sds.util.ColorAndFontUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 
@@ -79,8 +80,7 @@ public class SixteenBinaryBarModel extends AbstractWidgetModel {
 		addProperty(PROP_SHOW_LABELS, new BooleanProperty("Show labels",
 				WidgetPropertyCategory.Display, false));
 		addFontProperty(PROP_LABEL_FONT, "Label fonts",
-				WidgetPropertyCategory.Display, new FontData("Arial", 9,
-						SWT.NORMAL));
+				WidgetPropertyCategory.Display, ColorAndFontUtil.toFontString("Arial", 9));
 		addProperty(PROP_INTERNAL_FRAME_THICKNESS, new IntegerProperty(
 				"Internal frame thickness", WidgetPropertyCategory.Display, 1));
 		

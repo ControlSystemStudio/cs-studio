@@ -28,7 +28,7 @@ import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.sds.components.model.BargraphModel;
 import org.csstudio.sds.cosyrules.color.Alarm;
 import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
-import org.csstudio.sds.model.properties.ColorUtil;
+import org.csstudio.sds.util.ColorAndFontUtil;
 
 /**
  * Initializes a bargraph with EPICS specific property values.
@@ -60,11 +60,11 @@ public final class BargraphInitializer extends AbstractEpicsWidgetInitializer {
 		initializeDynamicProperty(BargraphModel.PROP_DEFAULT_FILL_COLOR, "$channel$[severity]", null, Alarm.TYPE_ID);
 
 		Map<ConnectionState, Object> colorsByConnectionState = new HashMap<ConnectionState, Object>();
-		colorsByConnectionState.put(ConnectionState.CONNECTION_LOST, ColorUtil.toHex(255,
+		colorsByConnectionState.put(ConnectionState.CONNECTION_LOST, ColorAndFontUtil.toHex(255,
 				9, 163));
-		colorsByConnectionState.put(ConnectionState.INITIAL, ColorUtil.toHex(255, 168,
+		colorsByConnectionState.put(ConnectionState.INITIAL, ColorAndFontUtil.toHex(255, 168,
 				222));
-		colorsByConnectionState.put(ConnectionState.CONNECTED, ColorUtil.toHex(120, 120,
+		colorsByConnectionState.put(ConnectionState.CONNECTED, ColorAndFontUtil.toHex(120, 120,
 				120));
 		initializeDynamicPropertyForConnectionState(
 				BargraphModel.PROP_FILLBACKGROUND_COLOR, "$channel$",

@@ -22,7 +22,7 @@
  package org.csstudio.sds.cosyrules.color;
 
 import org.csstudio.sds.model.logic.IRule;
-import org.csstudio.sds.model.properties.ColorUtil;
+import org.csstudio.sds.util.ColorAndFontUtil;
 
 /**
  * Color rule MKK-10KV, translated from an ADL file.
@@ -54,22 +54,22 @@ public final class MKK_10KV implements IRule {
                 d = ((Long)  arguments[0]).doubleValue();
             }
 			if (Math.abs(d-0.00)<0.00001) {
-				return ColorUtil.toHex(187,193,135);
+				return ColorAndFontUtil.toHex(187,193,135);
 			}
 			if (Math.abs(d-1.00)<0.00001) {
-				return ColorUtil.toHex(255,176,255);
+				return ColorAndFontUtil.toHex(255,176,255);
 			}
 			if (Math.abs(d-2.00)<0.00001) {
-				return ColorUtil.toHex(153,255,255);
+				return ColorAndFontUtil.toHex(153,255,255);
 			}
 			if (Math.abs(d-3.00)<0.00001) {
-				return ColorUtil.toHex(42,99,228);
+				return ColorAndFontUtil.toHex(42,99,228);
 			}
 			if (Math.abs(d-4.00)<0.00001) {
-				return ColorUtil.toHex(205,97,0);
+				return ColorAndFontUtil.toHex(205,97,0);
 			}
 		}
 
-		return ColorUtil.toHex(0,0,0);
+		return ColorAndFontUtil.toHex(0,0,0);
 	}
 }

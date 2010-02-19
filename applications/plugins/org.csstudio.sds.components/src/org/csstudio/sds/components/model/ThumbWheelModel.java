@@ -25,6 +25,7 @@ import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.properties.DoubleProperty;
 import org.csstudio.sds.model.properties.IntegerProperty;
+import org.csstudio.sds.util.ColorAndFontUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 
@@ -97,8 +98,7 @@ public class ThumbWheelModel extends AbstractWidgetModel {
 				"Decimal digits", WidgetPropertyCategory.Behaviour, 5));
 
 		addFontProperty(PROP_FONT, "Wheel Fonts",
-				WidgetPropertyCategory.Display, new FontData("Arial", 9,
-						SWT.NORMAL));
+				WidgetPropertyCategory.Display, ColorAndFontUtil.toFontString("Arial", 9));
 
 		addColorProperty(PROP_INTERNAL_FRAME_COLOR, "Internal frame color", WidgetPropertyCategory.Display,
 				"#000000");

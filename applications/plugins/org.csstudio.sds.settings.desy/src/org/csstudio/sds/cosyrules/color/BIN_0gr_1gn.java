@@ -22,7 +22,7 @@
  package org.csstudio.sds.cosyrules.color;
 
 import org.csstudio.sds.model.logic.IRule;
-import org.csstudio.sds.model.properties.ColorUtil;
+import org.csstudio.sds.util.ColorAndFontUtil;
 
 /**
  * Color rule BIN_0gr_1gn, translated from an ADL file.
@@ -55,13 +55,13 @@ public final class BIN_0gr_1gn implements IRule {
             }
 				
 			if (Math.abs(d-0.00)<0.00001) {
-				return ColorUtil.toHex(90,90,90);
+				return ColorAndFontUtil.toHex(90,90,90);
 			}
 			if (d>=1.00 && d<=65535.0) {
-				return ColorUtil.toHex(30,187,0);
+				return ColorAndFontUtil.toHex(30,187,0);
 			}
 		}
 
-		return ColorUtil.toHex(0,0,0);
+		return ColorAndFontUtil.toHex(0,0,0);
 	}
 }

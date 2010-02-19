@@ -22,7 +22,7 @@
  package org.csstudio.sds.cosyrules.color;
 
 import org.csstudio.sds.model.logic.IRule;
-import org.csstudio.sds.model.properties.ColorUtil;
+import org.csstudio.sds.util.ColorAndFontUtil;
 
 /**
  * Gradient color rule, needs a double channel type.
@@ -55,8 +55,8 @@ public final class Gradient implements IRule {
                 d = ((Long)  arguments[0]).doubleValue();
             }
             double b=(d+1.0)/2.0;
-			return ColorUtil.toHex((int)(b*240.0),(int)(b*240.0),(int)(b*240.0));
+			return ColorAndFontUtil.toHex((int)(b*240.0),(int)(b*240.0),(int)(b*240.0));
 		}
-		return ColorUtil.toHex(0,0,0);
+		return ColorAndFontUtil.toHex(0,0,0);
 	}
 }

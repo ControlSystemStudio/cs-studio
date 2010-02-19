@@ -22,7 +22,7 @@
  package org.csstudio.sds.cosyrules.color;
 
 import org.csstudio.sds.model.logic.IRule;
-import org.csstudio.sds.model.properties.ColorUtil;
+import org.csstudio.sds.util.ColorAndFontUtil;
 
 /**
  * Color rule Set#4, translated from an ADL file.
@@ -54,55 +54,55 @@ public final class Set_4 implements IRule {
                 d = ((Long)  arguments[0]).doubleValue();
             }
             if (Math.abs(d-0.00)<0.00001) {
-				return ColorUtil.toHex(0,216,0);
+				return ColorAndFontUtil.toHex(0,216,0);
 			}
 			if (Math.abs(d-1.00)<0.00001) {
-				return ColorUtil.toHex(253,0,0);
+				return ColorAndFontUtil.toHex(253,0,0);
 			}
 			if (Math.abs(d-2.00)<0.00001) {
-				return ColorUtil.toHex(253,0,0);
+				return ColorAndFontUtil.toHex(253,0,0);
 			}
 			if (Math.abs(d-3.00)<0.00001) {
-				return ColorUtil.toHex(255,255,255);
+				return ColorAndFontUtil.toHex(255,255,255);
 			}
 			if (Math.abs(d-4.00)<0.00001) {
-				return ColorUtil.toHex(255,176,255);
+				return ColorAndFontUtil.toHex(255,176,255);
 			}
 			if (Math.abs(d-5.00)<0.00001) {
-				return ColorUtil.toHex(235,241,181);
+				return ColorAndFontUtil.toHex(235,241,181);
 			}
 			if (Math.abs(d-6.00)<0.00001) {
-				return ColorUtil.toHex(164,170,255);
+				return ColorAndFontUtil.toHex(164,170,255);
 			}
 			if (Math.abs(d-7.00)<0.00001) {
-				return ColorUtil.toHex(164,170,255);
+				return ColorAndFontUtil.toHex(164,170,255);
 			}
 			if (Math.abs(d-8.00)<0.00001) {
-				return ColorUtil.toHex(251,243,74);
+				return ColorAndFontUtil.toHex(251,243,74);
 			}
 			if (Math.abs(d-9.00)<0.00001) {
-				return ColorUtil.toHex(238,182,43);
+				return ColorAndFontUtil.toHex(238,182,43);
 			}
 			if (Math.abs(d-10.00)<0.00001) {
-				return ColorUtil.toHex(251,243,74);
+				return ColorAndFontUtil.toHex(251,243,74);
 			}
 			if (Math.abs(d-11.00)<0.00001) {
-				return ColorUtil.toHex(238,182,43);
+				return ColorAndFontUtil.toHex(238,182,43);
 			}
 			if (Math.abs(d-12.00)<0.00001) {
-				return ColorUtil.toHex(251,243,74);
+				return ColorAndFontUtil.toHex(251,243,74);
 			}
 			if (Math.abs(d-13.00)<0.00001) {
-				return ColorUtil.toHex(238,182,43);
+				return ColorAndFontUtil.toHex(238,182,43);
 			}
 			if (Math.abs(d-14.00)<0.00001) {
-				return ColorUtil.toHex(251,243,74);
+				return ColorAndFontUtil.toHex(251,243,74);
 			}
 			if (Math.abs(d-15.00)<0.00001) {
-				return ColorUtil.toHex(238,182,43);
+				return ColorAndFontUtil.toHex(238,182,43);
 			}
 		}
 
-		return ColorUtil.toHex(0,0,0);
+		return ColorAndFontUtil.toHex(0,0,0);
 	}
 }

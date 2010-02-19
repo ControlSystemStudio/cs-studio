@@ -244,14 +244,6 @@ public final class LabelEditPart extends AbstractWidgetEditPart {
 	@Override
 	protected void registerPropertyChangeHandlers() {
 		// changes to the font property
-		IWidgetPropertyChangeHandler handle = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure) {
-				RefreshableLabelFigure labelFigure = (RefreshableLabelFigure) figure;
-				FontData fontData = (FontData) newValue;
-				labelFigure.setFont(CustomMediaFactory.getInstance().getFont(fontData.getName(), fontData.getHeight(), fontData.getStyle()));
-				return true;
-			}
-		};
 		setPropertyChangeHandler(LabelModel.PROP_FONT, new FontChangeHander<RefreshableLabelFigure>(){
 
 			@Override
@@ -262,7 +254,7 @@ public final class LabelEditPart extends AbstractWidgetEditPart {
 		});
 
 		// changes to the text alignment property
-		handle = new IWidgetPropertyChangeHandler() {
+		IWidgetPropertyChangeHandler handle = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure) {
 				RefreshableLabelFigure labelFigure = (RefreshableLabelFigure) figure;
 				labelFigure.setTextAlignment((Integer) newValue);

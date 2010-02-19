@@ -25,7 +25,7 @@
 package org.csstudio.sds.cosyrules.color;
 
 import org.csstudio.sds.model.logic.IRule;
-import org.csstudio.sds.model.properties.ColorUtil;
+import org.csstudio.sds.util.ColorAndFontUtil;
 
 /**
  * @author hrickens
@@ -57,15 +57,15 @@ public class DefaultEpicsAlarmBackground implements IRule{
                  serverity = ((Long)  arguments[0]).doubleValue();
              }
              if (serverity==2) {                            //Major - RED
-                 return ColorUtil.toHex(255,80,80);
+                 return ColorAndFontUtil.toHex(255,80,80);
              }else if (serverity==1) {                      //Minor - Orange
-                 return ColorUtil.toHex(255,127,0);
+                 return ColorAndFontUtil.toHex(255,127,0);
              }else if (serverity==0) {                      //No Alarm - Green
-                 return ColorUtil.toHex(80,255,80);
+                 return ColorAndFontUtil.toHex(80,255,80);
              }else if (serverity==3) {                     //Invalid - White
-                 return ColorUtil.toHex(255,255,255);
+                 return ColorAndFontUtil.toHex(255,255,255);
              }
          }
-         return ColorUtil.toHex(138,43,226);    }
+         return ColorAndFontUtil.toHex(138,43,226);    }
 
 }

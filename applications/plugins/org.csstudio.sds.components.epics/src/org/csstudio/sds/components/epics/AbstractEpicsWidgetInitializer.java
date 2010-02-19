@@ -9,7 +9,7 @@ import org.csstudio.sds.cosyrules.color.AlarmBorder;
 import org.csstudio.sds.cosyrules.color.AlarmBorderWidth;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.initializers.AbstractWidgetModelInitializer;
-import org.csstudio.sds.model.properties.ColorUtil;
+import org.csstudio.sds.util.ColorAndFontUtil;
 
 /**
  * Common EPICS initializer for (dynamic) properties of all widgets.
@@ -39,11 +39,11 @@ public abstract class AbstractEpicsWidgetInitializer extends AbstractWidgetModel
 	
 	public void initializeCommonConnectionStates() {
 		Map<ConnectionState, Object> colorsByConnectionState = new HashMap<ConnectionState, Object>();
-		colorsByConnectionState.put(ConnectionState.CONNECTION_LOST, ColorUtil.toHex(255,
+		colorsByConnectionState.put(ConnectionState.CONNECTION_LOST, ColorAndFontUtil.toHex(255,
 				9, 163));
-		colorsByConnectionState.put(ConnectionState.INITIAL, ColorUtil.toHex(255, 168,
+		colorsByConnectionState.put(ConnectionState.INITIAL, ColorAndFontUtil.toHex(255, 168,
 				222));
-		colorsByConnectionState.put(ConnectionState.CONNECTED, ColorUtil.toHex(230, 230,
+		colorsByConnectionState.put(ConnectionState.CONNECTED, ColorAndFontUtil.toHex(230, 230,
 				230));
 		initializeDynamicPropertyForConnectionState(
 				AbstractWidgetModel.PROP_COLOR_BACKGROUND, "$channel$",

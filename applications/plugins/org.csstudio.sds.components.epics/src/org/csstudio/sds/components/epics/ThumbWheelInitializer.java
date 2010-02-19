@@ -27,7 +27,7 @@ import java.util.Map;
 import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.sds.components.model.ThumbWheelModel;
 import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
-import org.csstudio.sds.model.properties.ColorUtil;
+import org.csstudio.sds.util.ColorAndFontUtil;
 
 /**
  * Initializes a thumb wheel with EPICS specific property values.
@@ -51,12 +51,12 @@ public final class ThumbWheelInitializer extends AbstractEpicsWidgetInitializer 
 				"$channel$", null);
 
 		Map<ConnectionState, Object> colorsByConnectionState = new HashMap<ConnectionState, Object>();
-		colorsByConnectionState.put(ConnectionState.CONNECTION_LOST, ColorUtil.toHex(
+		colorsByConnectionState.put(ConnectionState.CONNECTION_LOST, ColorAndFontUtil.toHex(
 				255, 9, 163));
-		colorsByConnectionState.put(ConnectionState.INITIAL, ColorUtil.toHex(255, 168,
+		colorsByConnectionState.put(ConnectionState.INITIAL, ColorAndFontUtil.toHex(255, 168,
 				222));
 		colorsByConnectionState
-				.put(ConnectionState.CONNECTED, ColorUtil.toHex(0, 0, 0));
+				.put(ConnectionState.CONNECTED, ColorAndFontUtil.toHex(0, 0, 0));
 		initializeDynamicPropertyForConnectionState(
 				ThumbWheelModel.PROP_INTERNAL_FRAME_COLOR, "$channel$",
 				colorsByConnectionState);

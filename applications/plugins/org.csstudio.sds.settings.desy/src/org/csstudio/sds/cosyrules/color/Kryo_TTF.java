@@ -22,7 +22,7 @@
  package org.csstudio.sds.cosyrules.color;
 
 import org.csstudio.sds.model.logic.IRule;
-import org.csstudio.sds.model.properties.ColorUtil;
+import org.csstudio.sds.util.ColorAndFontUtil;
 
 /**
  * Color rule Kryo-TTF, translated from an ADL file.
@@ -55,16 +55,16 @@ public final class Kryo_TTF implements IRule {
             }
             
 			if (d>=0.0 && d<=4.00) {
-				return ColorUtil.toHex(253,0,0);
+				return ColorAndFontUtil.toHex(253,0,0);
 			}
 			if (d>=4.50 && d<=95.00) {
-				return ColorUtil.toHex(164,170,255);
+				return ColorAndFontUtil.toHex(164,170,255);
 			}
 			if (d>=95.1 && d<=101.0) {
-				return ColorUtil.toHex(0,216,0);
+				return ColorAndFontUtil.toHex(0,216,0);
 			}
 		}
 
-		return ColorUtil.toHex(0,0,0);
+		return ColorAndFontUtil.toHex(0,0,0);
 	}
 }

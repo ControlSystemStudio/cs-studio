@@ -27,7 +27,7 @@ import java.util.Map;
 import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.sds.components.model.SixteenBinaryBarModel;
 import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
-import org.csstudio.sds.model.properties.ColorUtil;
+import org.csstudio.sds.util.ColorAndFontUtil;
 
 /**
  * Initializes a SixteenBinaryBar widget with EPICS specific property values.
@@ -48,11 +48,11 @@ public final class SixteenBinaryBarInitializer extends AbstractEpicsWidgetInitia
 		initializeDynamicProperty(SixteenBinaryBarModel.PROP_VALUE, "$channel$");
 		
 		Map<ConnectionState, Object> colorsByConnectionState = new HashMap<ConnectionState, Object>();
-		colorsByConnectionState.put(ConnectionState.CONNECTION_LOST, ColorUtil.toHex(255,
+		colorsByConnectionState.put(ConnectionState.CONNECTION_LOST, ColorAndFontUtil.toHex(255,
 				9, 163));
-		colorsByConnectionState.put(ConnectionState.INITIAL, ColorUtil.toHex(255, 168,
+		colorsByConnectionState.put(ConnectionState.INITIAL, ColorAndFontUtil.toHex(255, 168,
 				222));
-		colorsByConnectionState.put(ConnectionState.CONNECTED, ColorUtil.toHex(0, 0,
+		colorsByConnectionState.put(ConnectionState.CONNECTED, ColorAndFontUtil.toHex(0, 0,
 				0));
 		
 		initializeDynamicPropertyForConnectionState(

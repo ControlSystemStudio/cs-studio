@@ -28,6 +28,7 @@ import org.csstudio.sds.model.properties.ArrayOptionProperty;
 import org.csstudio.sds.model.properties.BooleanProperty;
 import org.csstudio.sds.model.properties.IntegerProperty;
 import org.csstudio.sds.model.properties.StringProperty;
+import org.csstudio.sds.util.ColorAndFontUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 
@@ -107,8 +108,8 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 		addProperty(PROP_LABEL, new StringProperty("Label Text",
 				WidgetPropertyCategory.Display, "")); //$NON-NLS-1$
 		addFontProperty(PROP_FONT, "Font",
-				WidgetPropertyCategory.Display, new FontData(
-						"Arial", 8, SWT.NONE)); //$NON-NLS-1$
+				WidgetPropertyCategory.Display, ColorAndFontUtil.toFontString(
+						"Arial", 8)); //$NON-NLS-1$
 		addProperty(PROP_TEXT_ALIGNMENT, new ArrayOptionProperty("Text Alignment", 
 				WidgetPropertyCategory.Display, TextAlignmentEnum.getDisplayNames() ,TextAlignmentEnum.CENTER.getIndex()));
 		addProperty(PROP_ACTION_RELEASED_INDEX, new IntegerProperty("Action Index (released)",
