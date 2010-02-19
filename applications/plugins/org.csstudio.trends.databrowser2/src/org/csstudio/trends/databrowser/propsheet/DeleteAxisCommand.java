@@ -6,22 +6,32 @@ import org.csstudio.trends.databrowser.Messages;
 import org.csstudio.trends.databrowser.model.AxisConfig;
 import org.csstudio.trends.databrowser.model.Model;
 
-/** Undo-able command to delete value axes from Msodel
+/** Undo-able command to delete value axis from Model.
  *  @author Kay Kasemir
  */
-public class DeleteAxesCommand implements IUndoableCommand
+public class DeleteAxisCommand implements IUndoableCommand
 {
     /** Model to which axis is added */
     final private Model model;
     
-    /** The axis that was added */
-    final private AxisConfig axes[];
+    /** The axis that was removed */
+    final private AxisConfig axis;
 
-    public DeleteAxesCommand(final OperationsManager operationsManager, 
-            final Model model, final AxisConfig axes[])
+    /** Index where axis used to be */
+    final private int index;
+
+    /** Initialize
+     *  @param operationsManager
+     *  @param model
+     *  @param axis
+     */
+    public DeleteAxisCommand(final OperationsManager operationsManager, 
+            final Model model, final AxisConfig axis)
     {
         this.model = model;
-        this.axes = axes;
+        this.axis = axis;
+        // Remember axis locations
+        this.index = model.getAxisIndex(axis);
         operationsManager.addCommand(this);
         redo();
     }
@@ -29,15 +39,13 @@ public class DeleteAxesCommand implements IUndoableCommand
     /** {@inheritDoc} */
     public void redo()
     {
-        for (AxisConfig axis : axes)
-            model.removeAxis(axis);
+        model.removeAxis(axis);
     }
 
     /** {@inheritDoc} */
     public void undo()
     {
-        for (AxisConfig axis : axes)
-            model.addAxis(axis);
+        model.addAxis(index, axis);
     }
     
     /** @return Command name that appears in undo/redo menu */

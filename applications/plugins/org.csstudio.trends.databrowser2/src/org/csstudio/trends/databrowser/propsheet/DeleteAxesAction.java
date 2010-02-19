@@ -57,6 +57,13 @@ public class DeleteAxesAction extends Action
                 }
             }
         }
-        new DeleteAxesCommand(operations_manager, model, axes);
+        // Delete axes one by one.
+        // While it would be almost trivial to remove many axes 'at once',
+        // restoring them in the same order means keeping a copy of
+        // the original axes array.
+        // Doing it one by one, each DeleteAxisCommand only needs to remember
+        // one axis position
+        for (AxisConfig axis : axes)
+            new DeleteAxisCommand(operations_manager, model, axis);
     }
 }

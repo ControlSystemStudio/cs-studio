@@ -172,13 +172,29 @@ public class Model
         fireAxisChangedEvent(null);
     }
 
-    /** @param axis Axis to remove
-     *  @throws Error when axis not in model
+    /** Add axis at given index.
+     *  Adding at '1' means the new axis will be at index '1',
+     *  and what used to be at '1' will be at '2' and so on.
+     *  @param index Index where axis will be placed.
+     *  @param axis New axis to add
      */
-    public void removeAxis(AxisConfig axis)
+    public void addAxis(final int index, final AxisConfig axis)
+    {
+        axes.add(index, axis);
+        axis.setModel(this);
+        fireAxisChangedEvent(null);
+    }
+    
+    /** @param axis Axis to remove
+     *  @throws Error when axis not in model, or axis in use by model item
+     */
+    public void removeAxis(final AxisConfig axis)
     {
         if (! axes.contains(axis))
             throw new Error("Unknown AxisConfig");
+        for (ModelItem item : items)
+            if (item.getAxis() == axis)
+                throw new Error("Cannot removed AxisConfig while in use");
         axis.setModel(null);
         axes.remove(axis);
         fireAxisChangedEvent(null);
