@@ -5,6 +5,7 @@ import org.csstudio.swt.xygraph.undo.IUndoableCommand;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.csstudio.trends.databrowser.Messages;
 import org.csstudio.trends.databrowser.model.ArchiveDataSource;
+import org.csstudio.trends.databrowser.model.AxisConfig;
 import org.csstudio.trends.databrowser.model.FormulaInput;
 import org.csstudio.trends.databrowser.model.FormulaItem;
 import org.csstudio.trends.databrowser.model.Model;
@@ -30,6 +31,7 @@ public class AddModelItemCommand implements IUndoableCommand
      *  @param model Model were PV is to be added
      *  @param pv_name Name of new PV
      *  @param period scan period
+     *  @param axis Axis
      *  @param archive Archive data source
      *  @return AddModelItemCommand or <code>null</code> on error
      */
@@ -38,6 +40,7 @@ public class AddModelItemCommand implements IUndoableCommand
             final Model model,
             final String pv_name,
             final double period,
+            final AxisConfig axis,
             final IArchiveDataSource archive)
     {
         // Create item
@@ -49,6 +52,9 @@ public class AddModelItemCommand implements IUndoableCommand
                 item.addArchiveDataSource(new ArchiveDataSource(archive));
             else
                 item.useDefaultArchiveDataSources();
+            final int axis_index = model.getAxisIndex(axis);
+            if (axis_index >= 0)
+                item.setAxis(axis_index);
         }
         catch (Exception ex)
         {

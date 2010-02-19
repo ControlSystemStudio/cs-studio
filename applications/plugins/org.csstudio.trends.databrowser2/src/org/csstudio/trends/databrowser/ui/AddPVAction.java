@@ -4,7 +4,9 @@ import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.csstudio.trends.databrowser.Activator;
 import org.csstudio.trends.databrowser.Messages;
+import org.csstudio.trends.databrowser.model.AxisConfig;
 import org.csstudio.trends.databrowser.model.Model;
+import org.csstudio.trends.databrowser.propsheet.AddAxisCommand;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.widgets.Shell;
 
@@ -49,13 +51,29 @@ public class AddPVAction extends Action
         final String existing_names[] = new String[model.getItemCount()];
         for (int i=0; i<existing_names.length; ++i)
             existing_names[i] = model.getItem(i).getName();
-        final AddPVDialog dlg = new AddPVDialog(shell, existing_names);
+        final String axes[] = new String[model.getAxisCount()];
+        for (int i=0; i<axes.length; ++i)
+            axes[i] = model.getAxisConfig(i).getName();
+        final AddPVDialog dlg = new AddPVDialog(shell, existing_names, axes);
         dlg.setName(name);
         if (dlg.open() != AddPVDialog.OK)
             return;
         
+        AxisConfig axis = null;
+        // Locate axis
+        if (dlg.getAxis() != null)
+            for (int i=0;  i<model.getAxisCount();  ++i)
+                if (model.getAxisConfig(i).getName().equals(dlg.getAxis()))
+                {
+                    axis  = model.getAxisConfig(i);
+                    break;
+                }
+        // If necessary, add axis, which adds another undo-able command
+        if (axis == null)
+            axis = new AddAxisCommand(operations_manager, model).getAxis();
+        
         // Create item
         AddModelItemCommand.forPV(shell, operations_manager, model,
-                dlg.getName(), dlg.getScanPeriod(), archive);
+                dlg.getName(), dlg.getScanPeriod(), axis, archive);
     }
 }

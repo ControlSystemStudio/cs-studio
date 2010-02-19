@@ -29,6 +29,12 @@ public class AddAxisCommand implements IUndoableCommand
         operations_manager.addCommand(this);
         axis = model.addAxis();
     }
+    
+    /** @return AxisConfig that was added */
+    public AxisConfig getAxis()
+    {
+        return axis;
+    }
 
     /** {@inheritDoc} */
     public void redo()

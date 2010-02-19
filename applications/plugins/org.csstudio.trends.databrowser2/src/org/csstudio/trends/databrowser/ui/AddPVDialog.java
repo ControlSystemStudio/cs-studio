@@ -11,6 +11,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -25,10 +26,15 @@ public class AddPVDialog  extends TitleAreaDialog
     /** Existing names that will be prohibited for the new PV */
     final private String[] existing_names;
 
+    /** Value axis names */
+    final private String[] axes;
+    
     // GUI elements
     private Text txt_name;
     private Text txt_period;
     private Button btn_monitor;
+    private Combo axis;
+    private Button new_axis;
     
     /** Entered name */
     private String name = null;
@@ -36,14 +42,20 @@ public class AddPVDialog  extends TitleAreaDialog
     /** Entered period */
     private double period;
 
+    /** Selected Axis */
+    private String axis_name;
+
     /** Initialize
      *  @param shell Shell
      *  @param existing_names Existing names that will be prohibited for the new PV
+     *  @param axes Value axis names
      */
-    public AddPVDialog(final Shell shell, final String existing_names[])
+    public AddPVDialog(final Shell shell, final String existing_names[],
+            final String axes[])
     {
         super(shell);
         this.existing_names = existing_names;
+        this.axes = axes;
         setShellStyle(getShellStyle() | SWT.RESIZE);
         setHelpAvailable(false);
     }
@@ -75,7 +87,6 @@ public class AddPVDialog  extends TitleAreaDialog
         box.setLayout(layout);
         
         // PV Name              : _____________________
-        // Scan Period [seconds]: _____   [x] on Change
         Label l = new Label(box, 0);
         l.setText(Messages.Name);
         l.setLayoutData(new GridData());
@@ -86,6 +97,7 @@ public class AddPVDialog  extends TitleAreaDialog
         if (name != null)
             txt_name.setText(name);
         
+        // Scan Period [seconds]: _____   [x] on change
         l = new Label(box, 0);
         l.setText(Messages.AddPV_Period);
         l.setLayoutData(new GridData());
@@ -94,12 +106,11 @@ public class AddPVDialog  extends TitleAreaDialog
         txt_period.setToolTipText(Messages.AddPV_PeriodTT);
         txt_period.setLayoutData(new GridData(SWT.FILL, 0, true, false));
 
-
         btn_monitor = new Button(box, SWT.CHECK);
         btn_monitor.setText(Messages.AddPV_OnChange);
         btn_monitor.setToolTipText(Messages.AddPV_OnChangeTT);
         btn_monitor.setLayoutData(new GridData());
-        
+
         // Initialize to default period
         final double period = Preferences.getScanPeriod();
         if (period > 0.0)
@@ -119,6 +130,38 @@ public class AddPVDialog  extends TitleAreaDialog
                 txt_period.setEnabled(!btn_monitor.getSelection());
             }
         });
+        
+        // Value Axis:            _____   [x] create new Axis
+        // If there are axes to select, add related GUI
+        if (axes.length > 0)
+        {
+            l = new Label(box, 0);
+            l.setText("Value Axis:");
+            l.setLayoutData(new GridData());
+    
+            axis = new Combo(box, SWT.READ_ONLY | SWT.DROP_DOWN | SWT.SINGLE);
+            axis.setToolTipText("Select value axis for new item");
+            axis.setLayoutData(new GridData(SWT.FILL, 0, true, false));
+            axis.setItems(axes);
+            axis.select(0);
+            axis.setEnabled(false);
+    
+            new_axis = new Button(box, SWT.CHECK);
+            new_axis.setText("create new axis");
+            new_axis.setToolTipText("Should the new item initially be assigned to a new value axis?");
+            new_axis.setLayoutData(new GridData());
+            new_axis.setSelection(true);
+            
+            // Axis selection enabled unless 'new axis'
+            new_axis.addSelectionListener(new SelectionAdapter()
+            {
+                @Override
+                public void widgetSelected(SelectionEvent e)
+                {
+                    axis.setEnabled(! new_axis.getSelection());
+                }
+            });            
+        }
         
         return parent_composite;
     }
@@ -160,6 +203,11 @@ public class AddPVDialog  extends TitleAreaDialog
                 return;
             }
         }
+        
+        if (new_axis == null   ||   new_axis.getSelection())
+            axis_name = null;
+        else
+            axis_name = axis.getText();
         // All OK
         super.okPressed();
     }
@@ -182,5 +230,11 @@ public class AddPVDialog  extends TitleAreaDialog
     public double getScanPeriod()
     {
         return period;
+    }
+
+    /** @return Name of Value Axis or <code>null</code> for 'create new' */
+    public String getAxis()
+    {
+        return axis_name;
     }
 }

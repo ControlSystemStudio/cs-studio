@@ -14,11 +14,14 @@ public class AddPVDialogTest
     {
         final Shell shell = new Shell();
         final String names[] = new String[] { "Fred", "Jane" };
-        final AddPVDialog dlg = new AddPVDialog(shell, names);
+        final String axes[] = new String[] { "Value", "Value 2" };
+
+        final AddPVDialog dlg = new AddPVDialog(shell, names, axes);
         if (dlg.open() == AddPVDialog.OK)
         {
             System.out.println("Name  : " + dlg.getName());
             System.out.println("Period: " + dlg.getScanPeriod());
+            System.out.println("Axis  : " + dlg.getAxis());
         }
     }
 }

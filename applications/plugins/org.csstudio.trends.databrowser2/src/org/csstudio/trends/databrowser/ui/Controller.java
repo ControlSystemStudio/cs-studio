@@ -179,9 +179,11 @@ public class Controller implements ArchiveFetchJobListener
                 {   // Received PV name
                     final ModelItem item = model.getItem(name);
                     if (item == null)
-                    {   // Add new PV
+                    { 
+                        // Add new PV
                         AddModelItemCommand.forPV(shell, plot.getOperationsManager(),
-                                model, name, Preferences.getScanPeriod(), archive);
+                                model, name, Preferences.getScanPeriod(),
+                                model.getAxisConfig(0), archive);
                         return;
                     }
                     if (archive == null  ||   ! (item instanceof PVItem))
