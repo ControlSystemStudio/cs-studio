@@ -126,6 +126,7 @@ public class SimpleDALBrokerTest extends TestCase {
 		assertEquals(initialValue+2*addValue, newValue);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void testChannelListener() {
 		RemoteInfo ri = new RemoteInfo(RemoteInfo.DAL_TYPE_PREFIX+"Simulator", "DoubleProperty", null, null);
 		ConnectionParameters cp = new ConnectionParameters(ri, Double.class);
@@ -149,38 +150,38 @@ public class SimpleDALBrokerTest extends TestCase {
 		}
 		
 		try {
-			dalPlugin.getSimpleDALBroker().registerListener(cp, new DynamicValueListener<?, SimpleProperty<?>>() {
+			dalPlugin.getSimpleDALBroker().registerListener(cp, new DynamicValueListener() {
 
-				public void conditionChange(DynamicValueEvent<?, SimpleProperty<?>> event) {
+				public void conditionChange(DynamicValueEvent event) {
 					System.out.println(">>> testChannelListener/DynamicValueListener/conditionChange");
 				}
 
-				public void errorResponse(DynamicValueEvent<?, SimpleProperty<?>> event) {
+				public void errorResponse(DynamicValueEvent event) {
 					System.out.println(">>> testChannelListener/DynamicValueListener/errorResponse");
 					
 				}
 
-				public void timelagStarts(DynamicValueEvent<?, SimpleProperty<?>> event) {
+				public void timelagStarts(DynamicValueEvent event) {
 					System.out.println(">>> testChannelListener/DynamicValueListener/timelagStarts");
 				}
 
-				public void timelagStops(DynamicValueEvent<?, SimpleProperty<?>> event) {
+				public void timelagStops(DynamicValueEvent event) {
 					System.out.println(">>> testChannelListener/DynamicValueListener/timelagStops");
 				}
 
-				public void timeoutStarts(DynamicValueEvent<?, SimpleProperty<?>> event) {
+				public void timeoutStarts(DynamicValueEvent event) {
 					System.out.println(">>> testChannelListener/DynamicValueListener/timeoutStarts");
 				}
 
-				public void timeoutStops(DynamicValueEvent<?, SimpleProperty<?>> event) {
+				public void timeoutStops(DynamicValueEvent event) {
 					System.out.println(">>> testChannelListener/DynamicValueListener/timeoutStops");
 				}
 
-				public void valueChanged(DynamicValueEvent<?, SimpleProperty<?>> event) {
+				public void valueChanged(DynamicValueEvent event) {
 					System.out.println(">>> testChannelListener/DynamicValueListener/valueChanged");
 				}
 
-				public void valueUpdated(DynamicValueEvent<?, SimpleProperty<?>> event) {
+				public void valueUpdated(DynamicValueEvent event) {
 					System.out.println(">>> testChannelListener/DynamicValueListener/valueUpdated");
 				}
 				
