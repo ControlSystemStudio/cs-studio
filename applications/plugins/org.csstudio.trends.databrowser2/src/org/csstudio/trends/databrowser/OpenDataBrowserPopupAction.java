@@ -42,6 +42,8 @@ public class OpenDataBrowserPopupAction extends ProcessVariablePopupAction
                 }
                 else
                     item.useDefaultArchiveDataSources();
+                // Add items to new axes
+                item.setAxis(model.addAxis());
                 model.addItem(item);
             }
         }
