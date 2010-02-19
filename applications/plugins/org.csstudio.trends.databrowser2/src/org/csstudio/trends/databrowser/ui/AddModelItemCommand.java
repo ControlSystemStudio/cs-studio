@@ -72,21 +72,23 @@ public class AddModelItemCommand implements IUndoableCommand
      *  @param shell Shell used for error dialogs
      *  @param operations_manager OperationsManager where command will be reg'ed
      *  @param model Model were PV is to be added
-     *  @param pv_name Name of new PV
-     *  @param period scan period
-     *  @param archive Archive data source
+     *  @param axis Axis
      *  @return AddModelItemCommand or <code>null</code> on error
      */
     public static AddModelItemCommand forFormula(final Shell shell, 
             final OperationsManager operations_manager,
             final Model model,
-            final String formula_name)
+            final String formula_name,
+            final AxisConfig axis)
     {
         // Create item
         final FormulaItem item;
         try
         {
             item = new FormulaItem(formula_name, "0", new FormulaInput[0]); //$NON-NLS-1$
+            final int axis_index = model.getAxisIndex(axis);
+            if (axis_index >= 0)
+                item.setAxis(axis_index);
         }
         catch (Exception ex)
         {

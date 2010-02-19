@@ -39,7 +39,6 @@ public class AddPVDialog  extends TitleAreaDialog
     private Text txt_period;
     private Button btn_monitor;
     private Combo axis;
-    private Button new_axis;
     
     /** Entered name */
     private String name = null;
@@ -141,7 +140,7 @@ public class AddPVDialog  extends TitleAreaDialog
             });
         }
         
-        // Value Axis:            _____   [x] create new Axis
+        // Value Axis:            _____
         // If there are axes to select, add related GUI
         if (axes.length > 0)
         {
@@ -152,25 +151,15 @@ public class AddPVDialog  extends TitleAreaDialog
             axis = new Combo(box, SWT.READ_ONLY | SWT.DROP_DOWN | SWT.SINGLE);
             axis.setToolTipText(Messages.AddPV_AxisTT);
             axis.setLayoutData(new GridData(SWT.FILL, 0, true, false));
-            axis.setItems(axes);
+            // First entry is 'new axis', rest actual axis names
+            axis.add(Messages.AddPV_NewAxis);
+            for (String name : axes)
+                axis.add(name);
             axis.select(0);
-            axis.setEnabled(false);
-    
-            new_axis = new Button(box, SWT.CHECK);
-            new_axis.setText(Messages.AddPV_NewAxis);
-            new_axis.setToolTipText(Messages.AddPV_NewAxisTT);
-            new_axis.setLayoutData(new GridData());
-            new_axis.setSelection(true);
-            
-            // Axis selection enabled unless 'new axis'
-            new_axis.addSelectionListener(new SelectionAdapter()
-            {
-                @Override
-                public void widgetSelected(SelectionEvent e)
-                {
-                    axis.setEnabled(! new_axis.getSelection());
-                }
-            });            
+
+            // Empty label to fill last column
+            l = new Label(box, 0);
+            l.setLayoutData(new GridData());
         }
         
         return parent_composite;
@@ -217,7 +206,7 @@ public class AddPVDialog  extends TitleAreaDialog
             }
         }
         
-        if (new_axis == null   ||   new_axis.getSelection())
+        if (axis == null   ||   axis.getSelectionIndex() <= 0)
             axis_name = null;
         else
             axis_name = axis.getText();

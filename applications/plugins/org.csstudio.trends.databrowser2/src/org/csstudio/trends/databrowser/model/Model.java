@@ -159,6 +159,7 @@ public class Model
     {
         final AxisConfig axis = new AxisConfig(
                 NLS.bind(Messages.Plot_ValueAxisNameFMT, getAxisCount()+1));
+        axis.setColor(getNextItemColor());
         addAxis(axis);
         return axis;
     }

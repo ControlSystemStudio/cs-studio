@@ -81,7 +81,7 @@ public class AddPVAction extends Action
         if (formula)
         {
             final AddModelItemCommand command = AddModelItemCommand.forFormula(
-                                shell, operations_manager, model, dlg.getName());
+                        shell, operations_manager, model, dlg.getName(), axis);
             if (command == null)
                 return;
             // Open configuration dialog
