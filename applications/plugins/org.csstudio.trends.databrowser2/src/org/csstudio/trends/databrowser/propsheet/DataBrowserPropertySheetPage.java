@@ -13,7 +13,6 @@ import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.model.ModelItem;
 import org.csstudio.trends.databrowser.model.ModelListener;
 import org.csstudio.trends.databrowser.model.PVItem;
-import org.csstudio.trends.databrowser.ui.AddFormulaAction;
 import org.csstudio.trends.databrowser.ui.AddPVAction;
 import org.csstudio.trends.databrowser.ui.ColorRegistry;
 import org.eclipse.jface.action.IMenuListener;
@@ -315,15 +314,14 @@ public class DataBrowserPropertySheetPage extends Page
         formula_panel.setVisible(false);
     }
 
-    /** Create context menu and toolbar actions for the traces table
-     */
+    /** Create context menu and toolbar actions for the traces table */
     private void createTracesMenuAndToolbarActions()
     {
         final MenuManager menu = new MenuManager();
         menu.setRemoveAllWhenShown(true);
         final Shell shell = trace_table.getControl().getShell();
-        final AddPVAction add_pv = new AddPVAction(operations_manager, shell, model);
-        final AddFormulaAction add_formula = new AddFormulaAction(operations_manager, shell, model);
+        final AddPVAction add_pv = new AddPVAction(operations_manager, shell, model, false);
+        final AddPVAction add_formula = new AddPVAction(operations_manager, shell, model, true);
         final DeleteItemsAction delete_pv = new DeleteItemsAction(operations_manager, trace_table, model);
         menu.addMenuListener(new IMenuListener()
         {

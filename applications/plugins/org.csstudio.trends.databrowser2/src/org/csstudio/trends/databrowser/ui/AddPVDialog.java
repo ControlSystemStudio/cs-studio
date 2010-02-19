@@ -18,7 +18,9 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-/** Dialog for creating a new PV Item: Get name, scan period
+/** Dialog for creating a new PV or Formula Item: Get name, axis.
+ *  For PV, also scan period.
+ *  
  *  @author Kay Kasemir
  */
 public class AddPVDialog  extends TitleAreaDialog
@@ -28,6 +30,9 @@ public class AddPVDialog  extends TitleAreaDialog
 
     /** Value axis names */
     final private String[] axes;
+    
+    /** Add formula, not PV? */
+    final private boolean formula;
     
     // GUI elements
     private Text txt_name;
@@ -49,13 +54,15 @@ public class AddPVDialog  extends TitleAreaDialog
      *  @param shell Shell
      *  @param existing_names Existing names that will be prohibited for the new PV
      *  @param axes Value axis names
+     *  @param formula Add formula, not PV
      */
     public AddPVDialog(final Shell shell, final String existing_names[],
-            final String axes[])
+            final String axes[], final boolean formula)
     {
         super(shell);
         this.existing_names = existing_names;
         this.axes = axes;
+        this.formula = formula;
         setShellStyle(getShellStyle() | SWT.RESIZE);
         setHelpAvailable(false);
     }
@@ -65,7 +72,7 @@ public class AddPVDialog  extends TitleAreaDialog
     protected void configureShell(Shell shell)
     {
         super.configureShell(shell);
-        shell.setText(Messages.AddPV);
+        shell.setText(formula ? Messages.AddFormula : Messages.AddPV);
     }
     
     /** @see org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets.Composite) */
@@ -75,8 +82,8 @@ public class AddPVDialog  extends TitleAreaDialog
         final Composite parent_composite = (Composite) super.createDialogArea(parent_widget);
 
         // Title & Image
-        setTitle(Messages.AddPV);
-        setMessage(Messages.AddPVMsg);
+        setTitle(formula ? Messages.AddFormula : Messages.AddPV);
+        setMessage(formula ? Messages.AddFormulaMsg : Messages.AddPVMsg);
         setTitleImage(Activator.getDefault().getImage("icons/config_image.png")); //$NON-NLS-1$
 
         // Create box for widgets we're about to add
@@ -92,44 +99,47 @@ public class AddPVDialog  extends TitleAreaDialog
         l.setLayoutData(new GridData());
         
         txt_name = new Text(box, SWT.BORDER);
-        txt_name.setToolTipText(Messages.AddPV_NameTT);
+        txt_name.setToolTipText(formula ? Messages.AddFormula_NameTT : Messages.AddPV_NameTT);
         txt_name.setLayoutData(new GridData(SWT.FILL, 0, true, false, layout.numColumns-1, 1));
         if (name != null)
             txt_name.setText(name);
         
-        // Scan Period [seconds]: _____   [x] on change
-        l = new Label(box, 0);
-        l.setText(Messages.AddPV_Period);
-        l.setLayoutData(new GridData());
-
-        txt_period = new Text(box, SWT.BORDER);
-        txt_period.setToolTipText(Messages.AddPV_PeriodTT);
-        txt_period.setLayoutData(new GridData(SWT.FILL, 0, true, false));
-
-        btn_monitor = new Button(box, SWT.CHECK);
-        btn_monitor.setText(Messages.AddPV_OnChange);
-        btn_monitor.setToolTipText(Messages.AddPV_OnChangeTT);
-        btn_monitor.setLayoutData(new GridData());
-
-        // Initialize to default period
-        final double period = Preferences.getScanPeriod();
-        if (period > 0.0)
-            txt_period.setText(Double.toString(period));
-        else
-        {   // 'monitor'
-            txt_period.setText("1.0"); //$NON-NLS-1$
-            txt_period.setEnabled(false);        
-            btn_monitor.setSelection(true);
-        }
-        // In 'monitor' mode, the period entry is disabled
-        btn_monitor.addSelectionListener(new SelectionAdapter()
+        if (! formula)
         {
-            @Override
-            public void widgetSelected(SelectionEvent e)
-            {
-                txt_period.setEnabled(!btn_monitor.getSelection());
+            // Scan Period [seconds]: _____   [x] on change
+            l = new Label(box, 0);
+            l.setText(Messages.AddPV_Period);
+            l.setLayoutData(new GridData());
+    
+            txt_period = new Text(box, SWT.BORDER);
+            txt_period.setToolTipText(Messages.AddPV_PeriodTT);
+            txt_period.setLayoutData(new GridData(SWT.FILL, 0, true, false));
+    
+            btn_monitor = new Button(box, SWT.CHECK);
+            btn_monitor.setText(Messages.AddPV_OnChange);
+            btn_monitor.setToolTipText(Messages.AddPV_OnChangeTT);
+            btn_monitor.setLayoutData(new GridData());
+    
+            // Initialize to default period
+            final double period = Preferences.getScanPeriod();
+            if (period > 0.0)
+                txt_period.setText(Double.toString(period));
+            else
+            {   // 'monitor'
+                txt_period.setText("1.0"); //$NON-NLS-1$
+                txt_period.setEnabled(false);        
+                btn_monitor.setSelection(true);
             }
-        });
+            // In 'monitor' mode, the period entry is disabled
+            btn_monitor.addSelectionListener(new SelectionAdapter()
+            {
+                @Override
+                public void widgetSelected(SelectionEvent e)
+                {
+                    txt_period.setEnabled(!btn_monitor.getSelection());
+                }
+            });
+        }
         
         // Value Axis:            _____   [x] create new Axis
         // If there are axes to select, add related GUI
@@ -187,20 +197,23 @@ public class AddPVDialog  extends TitleAreaDialog
                 return;
             }
         
-        if (btn_monitor.getSelection())
-            period = 0.0;
-        else
+        if (! formula)
         {
-            try
+            if (btn_monitor.getSelection())
+                period = 0.0;
+            else
             {
-                period = Double.parseDouble(txt_period.getText().trim());
-                if (period < 0)
-                    throw new Exception();
-            }
-            catch (Throwable ex)
-            {
-                setErrorMessage(Messages.InvalidScanPeriodError);
-                return;
+                try
+                {
+                    period = Double.parseDouble(txt_period.getText().trim());
+                    if (period < 0)
+                        throw new Exception();
+                }
+                catch (Throwable ex)
+                {
+                    setErrorMessage(Messages.InvalidScanPeriodError);
+                    return;
+                }
             }
         }
         

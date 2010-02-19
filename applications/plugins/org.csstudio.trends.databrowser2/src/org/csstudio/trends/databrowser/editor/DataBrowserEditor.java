@@ -19,7 +19,6 @@ import org.csstudio.trends.databrowser.model.PVItem;
 import org.csstudio.trends.databrowser.propsheet.DataBrowserPropertySheetPage;
 import org.csstudio.trends.databrowser.sampleview.InspectSamplesAction;
 import org.csstudio.trends.databrowser.search.SearchView;
-import org.csstudio.trends.databrowser.ui.AddFormulaAction;
 import org.csstudio.trends.databrowser.ui.AddPVAction;
 import org.csstudio.trends.databrowser.ui.Controller;
 import org.csstudio.trends.databrowser.ui.Plot;
@@ -234,8 +233,8 @@ public class DataBrowserEditor extends EditorPart
         final MenuManager mm = new MenuManager();
         mm.add(plot.getToggleToolbarAction());
         mm.add(new Separator());
-        mm.add(new AddPVAction(plot.getOperationsManager(), shell, model));
-        mm.add(new AddFormulaAction(plot.getOperationsManager(), shell, model));
+        mm.add(new AddPVAction(plot.getOperationsManager(), shell, model, false));
+        mm.add(new AddPVAction(plot.getOperationsManager(), shell, model, true));
         mm.add(new Separator());
         mm.add(new OpenViewAction(IPageLayout.ID_PROP_SHEET, Messages.OpenPropertiesView,
                 activator.getImageDescriptor("icons/prop_ps.gif"))); //$NON-NLS-1$

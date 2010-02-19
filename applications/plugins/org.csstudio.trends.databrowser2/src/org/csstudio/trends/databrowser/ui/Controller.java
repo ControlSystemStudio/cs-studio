@@ -153,7 +153,7 @@ public class Controller implements ArchiveFetchJobListener
 
             public void droppedName(final String name)
             {   // Offer potential PV name in dialog so user can edit/cancel
-                final AddPVAction add = new AddPVAction(plot.getOperationsManager(), shell, model);
+                final AddPVAction add = new AddPVAction(plot.getOperationsManager(), shell, model, false);
                 add.runWithSuggestedName(name, null);
             }
 

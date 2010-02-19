@@ -16,7 +16,7 @@ public class AddPVDialogTest
         final String names[] = new String[] { "Fred", "Jane" };
         final String axes[] = new String[] { "Value", "Value 2" };
 
-        final AddPVDialog dlg = new AddPVDialog(shell, names, axes);
+        final AddPVDialog dlg = new AddPVDialog(shell, names, axes, true);
         if (dlg.open() == AddPVDialog.OK)
         {
             System.out.println("Name  : " + dlg.getName());
