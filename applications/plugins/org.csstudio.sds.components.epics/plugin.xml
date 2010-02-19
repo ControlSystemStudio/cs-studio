@@ -128,18 +128,18 @@
    </extension>
    <extension
          point="org.csstudio.sds.ui.behaviors">
-      <behaviour
-            class="org.csstudio.sds.behavior.desy.TestRectangleBehaviour"
+      <behavior
+            class="org.csstudio.sds.behavior.desy.TestRectangleBehavior"
             description="Test Behavior"
-            id="Test.rectangle"
+            id="rectangleTestBehavior"
             widgetTypeId="org.csstudio.sds.components.Rectangle">
-      </behaviour>
-      <behaviour
+      </behavior>
+      <behavior
             class="org.csstudio.sds.behavior.desy.TestLabelBehavior"
             description="Test Behavior"
-            id="Test.label"
+            id="labelTestBehavior"
             widgetTypeId="org.csstudio.sds.components.Label">
-      </behaviour>
+      </behavior>
    </extension>
    
 </plugin>

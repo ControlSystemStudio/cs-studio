@@ -10,7 +10,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.sds.components,
  org.eclipse.swt,
  org.csstudio.sds.settings.desy,
- org.csstudio.sds.ui;bundle-version="1.0.8",
- org.csstudio.sds.components.ui;bundle-version="1.0.8"
+ org.csstudio.sds.ui;bundle-version="1.0.8"
 Eclipse-LazyStart: true
 Export-Package: org.csstudio.sds.components.epics

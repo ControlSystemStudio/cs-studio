@@ -6,7 +6,7 @@ import org.csstudio.sds.ui.behaviors.AbstractBehavior;
 import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.MetaData;
 
-public class TestRectangleBehaviour extends
+public class TestRectangleBehavior extends
 		AbstractBehavior<RectangleModel> {
 
 	@Override

@@ -9,8 +9,7 @@ import org.csstudio.sds.model.properties.ActionDataProperty;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CompoundCommand;
 
-public class ActionButtonDataPostProcessor
-		extends
+public class ActionButtonDataPostProcessor extends
 		AbstractWidgetPropertyPostProcessor<ActionButtonModel, ActionDataProperty> {
 
 	@Override
