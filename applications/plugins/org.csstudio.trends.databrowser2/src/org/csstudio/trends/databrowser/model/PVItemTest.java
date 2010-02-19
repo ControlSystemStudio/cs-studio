@@ -9,7 +9,7 @@ import org.csstudio.swt.xygraph.linearscale.Range;
 import org.csstudio.utility.pv.PVFactory;
 import org.junit.Test;
 
-/** Headless JUnit Plug-In test of the PVItem
+/** [Headless] JUnit Plug-In test of the PVItem
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")

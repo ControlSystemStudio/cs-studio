@@ -7,6 +7,7 @@ import java.util.TimerTask;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.platform.model.IArchiveDataSource;
+import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.csstudio.trends.databrowser.Messages;
 import org.csstudio.trends.databrowser.archive.ArchiveFetchJob;
 import org.csstudio.trends.databrowser.archive.ArchiveFetchJobListener;
@@ -18,6 +19,7 @@ import org.csstudio.trends.databrowser.model.ModelListener;
 import org.csstudio.trends.databrowser.model.PVItem;
 import org.csstudio.trends.databrowser.preferences.Preferences;
 import org.csstudio.trends.databrowser.propsheet.AddArchiveCommand;
+import org.csstudio.trends.databrowser.propsheet.AddAxisCommand;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.events.ShellEvent;
@@ -180,10 +182,17 @@ public class Controller implements ArchiveFetchJobListener
                     final ModelItem item = model.getItem(name);
                     if (item == null)
                     { 
+                        final OperationsManager operations_manager = plot.getOperationsManager();
+                        final AxisConfig axis;
+                        if (model.getAxisCount() <= 0)
+                            axis = new AddAxisCommand(operations_manager, model).getAxis();
+                        else
+                            axis = model.getAxisConfig(0);
+                            
                         // Add new PV
-                        AddModelItemCommand.forPV(shell, plot.getOperationsManager(),
+                        AddModelItemCommand.forPV(shell, operations_manager,
                                 model, name, Preferences.getScanPeriod(),
-                                model.getAxisConfig(0), archive);
+                                axis, archive);
                         return;
                     }
                     if (archive == null  ||   ! (item instanceof PVItem))

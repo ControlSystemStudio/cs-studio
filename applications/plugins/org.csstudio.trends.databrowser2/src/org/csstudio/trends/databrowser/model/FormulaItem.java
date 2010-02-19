@@ -324,7 +324,7 @@ public class FormulaItem extends ModelItem
         }
         // Create model item, parse common properties
         final FormulaItem formula = new FormulaItem(name, expression, (FormulaInput[]) inputs.toArray(new FormulaInput[inputs.size()]));
-        formula.configureFromDocument(node);
+        formula.configureFromDocument(model, node);
         return formula;
     }
 }

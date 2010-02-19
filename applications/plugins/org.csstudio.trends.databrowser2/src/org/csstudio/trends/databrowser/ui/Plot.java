@@ -280,7 +280,7 @@ public class Plot
     public void addTrace(final ModelItem item)
     {
         final Axis xaxis = xygraph.primaryXAxis;
-        final Axis yaxis = getYAxis(item.getAxis());
+        final Axis yaxis = getYAxis(item.getAxisIndex());
         final Trace trace = new Trace(item.getDisplayName(),
                xaxis, yaxis, item.getSamples());
         trace.setPointStyle(PointStyle.NONE);
@@ -392,7 +392,7 @@ public class Plot
         for (/**/; axis_index < yaxes.size(); ++axis_index)
             if (axis == yaxes.get(axis_index))
                 break;
-        final int desired_axis = item.getAxis();
+        final int desired_axis = item.getAxisIndex();
         // Change to desired Y Axis?
         if (axis_index != desired_axis  &&  desired_axis < yaxes.size())
             trace.setYAxis(yaxes.get(desired_axis));

@@ -413,7 +413,7 @@ public class TraceTableHandler implements ILazyContentProvider
             public void update(final ViewerCell cell)
             {
                 final ModelItem item = (ModelItem) cell.getElement();
-                cell.setText(model.getAxisConfig(item.getAxis()).getName());
+                cell.setText(item.getAxis().getName());
             }
         });
         col.setEditingSupport(new EditSupportBase(trace_table)
@@ -432,14 +432,15 @@ public class TraceTableHandler implements ILazyContentProvider
             @Override
             protected Object getValue(final Object element)
             {
-                return ((ModelItem) element).getAxis();
+                return model.getAxisIndex(((ModelItem) element).getAxis());
             }
             @Override
             protected void setValue(final Object element, final Object value)
             {
-                final int axis = ((Integer)value).intValue();
+                final int axis_index = ((Integer)value).intValue();
+                final AxisConfig axis = model.getAxisConfig(axis_index);
                 final ModelItem item = (ModelItem)element;
-                if (axis >= 0  &&  axis != item.getAxis())
+                if (axis != item.getAxis())
                     new ChangeAxisCommand(operations_manager, item, axis);
             }
         });

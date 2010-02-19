@@ -17,7 +17,7 @@ import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
 import org.junit.Test;
 
-/** Headless JUnit Plug-In test of the FormulaItem
+/** [Headless] JUnit Plug-In test of the FormulaItem
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")

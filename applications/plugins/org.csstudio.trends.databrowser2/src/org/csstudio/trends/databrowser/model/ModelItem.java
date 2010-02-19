@@ -43,8 +43,8 @@ abstract public class ModelItem
     /** How to display the trace */
     private TraceType trace_type = TraceType.AREA;
 
-    /** Y-Axis index */
-    private int axis = 0;
+    /** Y-Axis */
+    private AxisConfig axis = null;
 
     /** Initialize
      *  @param name Name of the PV or the formula
@@ -187,15 +187,21 @@ abstract public class ModelItem
         fireItemLookChanged();
     }
     
-    /** @return X-Axis index */
-    public int getAxis()
+    /** @return Y-Axis */
+    public AxisConfig getAxis()
     {
         return axis;
     }
 
-    /** @param axis New X-Axis index */
-    public void setAxis(final int axis)
+    /** @return Index of Y-Axis in model */
+    public int getAxisIndex()
     {
+        return model.getAxisIndex(axis);
+    }
+
+    /** @param axis New X-Axis index */
+    public void setAxis(final AxisConfig axis)
+    {   // Comparing exact AxisConfig reference, not equals()!
         if (axis == this.axis)
             return;
         this.axis = axis;
@@ -224,20 +230,26 @@ abstract public class ModelItem
         XMLWriter.XML(writer, 3, Model.TAG_NAME, getName());
         XMLWriter.XML(writer, 3, Model.TAG_DISPLAYNAME, getDisplayName());
         XMLWriter.XML(writer, 3, Model.TAG_VISIBLE, Boolean.toString(isVisible()));
-        XMLWriter.XML(writer, 3, Model.TAG_AXIS, getAxis());
+        XMLWriter.XML(writer, 3, Model.TAG_AXIS, model.getAxisIndex(getAxis()));
         XMLWriter.XML(writer, 3, Model.TAG_LINEWIDTH, getLineWidth());
         Model.writeColor(writer, 3, Model.TAG_COLOR, getColor());
         XMLWriter.XML(writer, 3, Model.TAG_TRACE_TYPE, getTraceType().name());
     }
 
     /** Load common XML configuration elements into this item
+     *  @param model Model to which this item will belong (but doesn't, yet)
      *  @param node XML document node for this item
      */
-    protected void configureFromDocument(final Element node)
+    protected void configureFromDocument(final Model model, final Element node)
     {
         display_name = DOMHelper.getSubelementString(node, Model.TAG_DISPLAYNAME, display_name);
         visible = DOMHelper.getSubelementBoolean(node, Model.TAG_VISIBLE, true);
-        axis = DOMHelper.getSubelementInt(node, Model.TAG_AXIS, axis);
+        // Ideally, configuration should define all axes before they're used,
+        // but as a fall-back create missing axes
+        final int axis_index = DOMHelper.getSubelementInt(node, Model.TAG_AXIS, 0);
+        while (model.getAxisCount() <= axis_index)
+            model.addAxis();
+        axis = model.getAxisConfig(axis_index);
         line_width = DOMHelper.getSubelementInt(node, Model.TAG_LINEWIDTH, line_width);
         rgb = Model.loadColorFromDocument(node);
         final String type = DOMHelper.getSubelementString(node, Model.TAG_TRACE_TYPE, TraceType.AREA.name());

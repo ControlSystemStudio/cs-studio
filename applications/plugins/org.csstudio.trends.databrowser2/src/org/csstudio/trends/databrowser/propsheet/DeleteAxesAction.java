@@ -45,10 +45,9 @@ public class DeleteAxesAction extends Action
         {
             axes[i] = (AxisConfig)sel[i];
             // Check if axis is used by any model items
-            final int index = model.getAxisIndex(axes[i]);
             for (int j=0; j<model.getItemCount(); ++j)
             {
-                if (model.getItem(j).getAxis() == index)
+                if (model.getItem(j).getAxis() == axes[i])
                 {
                     MessageDialog.openWarning(axes_table.getTable().getShell(),
                             Messages.DeleteAxis,

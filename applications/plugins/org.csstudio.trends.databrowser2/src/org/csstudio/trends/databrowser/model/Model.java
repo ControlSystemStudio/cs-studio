@@ -240,19 +240,16 @@ public class Model
         if (item.getColor() == null)
             item.setColor(getNextItemColor());
         
-        // If item is on a non-existing axis, create that axis
-        while (item.getAxis() >= getAxisCount())
+        // Force item to be on an axis
+        if (item.getAxis() == null)
         {
-            final String name;
-            if (getAxisCount() == 0)
-                name = Messages.Plot_ValueAxisName;
-            else
-                name = NLS.bind(Messages.Plot_ValueAxisNameFMT, getAxisCount()+1);
-            final AxisConfig axis = new AxisConfig(name);
-            if (item.getAxis() == getAxisCount())
-                axis.setColor(item.getColor());
-            addAxis(axis);
+            if (axes.size() == 0)
+                addAxis();
+            item.setAxis(axes.get(0));
         }
+        // Check item axis
+        if (! axes.contains(item.getAxis()))
+            throw new Exception("Item " + item.getName() + " added with invalid axis " + item.getAxis());
         
         // Add to model
         items.add(item);
@@ -711,14 +708,14 @@ public class Model
                     list.getFirstChild(), TAG_PV);
             while (item != null)
             {
-                final PVItem model_item = PVItem.fromDocument(item);
+                final PVItem model_item = PVItem.fromDocument(this, item);
                 if (buffer_size > 0)
                     model_item.setLiveCapacity(buffer_size);
                 // Adding item creates the axis for it if not already there
                 addItem(model_item);
                 // Backwards compatibility with previous data browser which
-                // stored axis config with each item: Update axis from that.
-                final AxisConfig axis = getAxisConfig(model_item.getAxis());
+                // stored axis configuration with each item: Update axis from that.
+                final AxisConfig axis = model_item.getAxis();
                 String s = DOMHelper.getSubelementString(item, TAG_AUTO_SCALE);
                 if (s.equalsIgnoreCase("true"))
                     axis.setAutoScale(true);
@@ -728,7 +725,6 @@ public class Model
                 final double min = DOMHelper.getSubelementDouble(item, Model.TAG_MIN, axis.getMin());
                 final double max = DOMHelper.getSubelementDouble(item, Model.TAG_MAX, axis.getMax());
                 axis.setRange(min, max);
-
 
                 item = DOMHelper.findNextElementNode(item, TAG_PV);
             }

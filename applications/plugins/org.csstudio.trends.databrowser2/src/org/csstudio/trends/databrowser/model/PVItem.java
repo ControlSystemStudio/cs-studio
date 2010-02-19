@@ -434,11 +434,12 @@ public class PVItem extends ModelItem implements PVListener, IProcessVariableWit
     }
 
     /** Create PVItem from XML document
-     *  @param node
+     *  @param model Model to which this item will belong (but doesn't, yet)
+     *  @param node XML node with item configuration
      *  @return PVItem
      *  @throws Exception on error
      */
-    public static PVItem fromDocument(final Element node) throws Exception
+    public static PVItem fromDocument(final Model model, final Element node) throws Exception
     {
         final String name = DOMHelper.getSubelementString(node, Model.TAG_NAME);
         final double period = DOMHelper.getSubelementDouble(node, Model.TAG_PERIOD, 0.0);
@@ -458,7 +459,7 @@ public class PVItem extends ModelItem implements PVListener, IProcessVariableWit
             // Ignore
         }
         
-        item.configureFromDocument(node);
+        item.configureFromDocument(model, node);
         // Load archives
         Element archive = DOMHelper.findFirstElementNode(node.getFirstChild(), Model.TAG_ARCHIVE);
         while (archive != null)

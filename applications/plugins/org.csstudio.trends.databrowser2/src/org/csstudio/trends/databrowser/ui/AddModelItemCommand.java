@@ -52,9 +52,7 @@ public class AddModelItemCommand implements IUndoableCommand
                 item.addArchiveDataSource(new ArchiveDataSource(archive));
             else
                 item.useDefaultArchiveDataSources();
-            final int axis_index = model.getAxisIndex(axis);
-            if (axis_index >= 0)
-                item.setAxis(axis_index);
+            item.setAxis(axis);
         }
         catch (Exception ex)
         {
@@ -86,9 +84,7 @@ public class AddModelItemCommand implements IUndoableCommand
         try
         {
             item = new FormulaItem(formula_name, "0", new FormulaInput[0]); //$NON-NLS-1$
-            final int axis_index = model.getAxisIndex(axis);
-            if (axis_index >= 0)
-                item.setAxis(axis_index);
+            item.setAxis(axis);
         }
         catch (Exception ex)
         {
