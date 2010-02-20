@@ -2,18 +2,17 @@ package org.csstudio.sds.components.model;
 
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
-import org.csstudio.sds.model.properties.BooleanProperty;
-
 
 /**
  * This class defines a gauge widget model.
+ * 
  * @author Xihui Chen
  */
-public class GaugeModel extends AbstractMarkedWidgetModel{	
-	
+public class GaugeModel extends AbstractMarkedWidgetModel {
+
 	/** The ID of the fill color property. */
 	public static final String PROP_NEEDLE_COLOR = "needle_color"; //$NON-NLS-1$	
-	
+
 	/** The ID of the effect 3D property. */
 	public static final String PROP_EFFECT3D = "effect3D"; //$NON-NLS-1$
 
@@ -22,57 +21,53 @@ public class GaugeModel extends AbstractMarkedWidgetModel{
 
 	/** The default value of the default fill color property. */
 	private static final String DEFAULT_NEEDLE_COLOR = "#ff0000";
-	
-	/** The default value of the height property. */	
+
+	/** The default value of the height property. */
 	private static final int DEFAULT_HEIGHT = 200;
-	
+
 	/** The default value of the width property. */
 	private static final int DEFAULT_WIDTH = 200;
-	
 
 	/**
 	 * The ID of this widget model.
 	 */
 	public static final String ID = "org.csstudio.sds.components.Gauge"; //$NON-NLS-1$	
-	
+
 	public GaugeModel() {
 		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-		setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND,"#000000");
-	}	
+		setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, "#000000");
+	}
 
 	@Override
 	protected void configureProperties() {
-		super.configureProperties();		
-		addColorProperty(PROP_NEEDLE_COLOR, "Needle Color",
-				WidgetPropertyCategory.Display,DEFAULT_NEEDLE_COLOR);	
-		
-		addProperty(PROP_EFFECT3D, new BooleanProperty("3D Effect", 
-				WidgetPropertyCategory.Display, true));	
-		
-		addProperty(PROP_RAMP_GRADIENT, new BooleanProperty("Ramp Gradient", 
-				WidgetPropertyCategory.Display, true));	
-		
+		super.configureProperties();
+		addColorProperty(PROP_NEEDLE_COLOR, "Needle Color", WidgetPropertyCategory.Display, DEFAULT_NEEDLE_COLOR);
+
+		addBooleanProperty(PROP_EFFECT3D, "3D Effect", WidgetPropertyCategory.Display, true);
+
+		addBooleanProperty(PROP_RAMP_GRADIENT, "Ramp Gradient", WidgetPropertyCategory.Display, true);
+
 		setPropertyDescription(PROP_SHOW_MARKERS, "Show Ramp");
-	}	
+	}
 
 	@Override
 	public String getTypeID() {
 		return ID;
-	}		
+	}
 
 	/**
-	 * @return true if the widget would be painted with 3D effect, false otherwise
+	 * @return true if the widget would be painted with 3D effect, false
+	 *         otherwise
 	 */
 	public boolean isEffect3D() {
 		return getBooleanProperty(PROP_EFFECT3D).getPropertyValue();
 	}
-	
+
 	/**
 	 * @return true if the ramp is gradient, false otherwise
 	 */
 	public boolean isRampGradient() {
 		return getBooleanProperty(PROP_RAMP_GRADIENT).getPropertyValue();
 	}
-	
-	
+
 }

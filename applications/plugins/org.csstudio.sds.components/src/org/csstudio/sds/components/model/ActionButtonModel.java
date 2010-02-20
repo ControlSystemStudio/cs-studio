@@ -24,13 +24,7 @@ package org.csstudio.sds.components.model;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.optionEnums.TextAlignmentEnum;
-import org.csstudio.sds.model.properties.ArrayOptionProperty;
-import org.csstudio.sds.model.properties.BooleanProperty;
-import org.csstudio.sds.model.properties.IntegerProperty;
-import org.csstudio.sds.model.properties.StringProperty;
 import org.csstudio.sds.util.ColorAndFontUtil;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.FontData;
 
 /**
  * An action button widget model.
@@ -63,8 +57,8 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	/**
 	 * The ID of the ToggelButton property.
 	 */
-	public static final String PROP_TOGGLE_BUTTON= "toggleButton"; //$NON-NLS-1$
-	
+	public static final String PROP_TOGGLE_BUTTON = "toggleButton"; //$NON-NLS-1$
+
 	/**
 	 * The ID of this widget model.
 	 */
@@ -79,11 +73,11 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	 * The default value of the width property.
 	 */
 	private static final int DEFAULT_WIDTH = 80;
-	
+
 	/**
-	 * The default value of the Button style.  
+	 * The default value of the Button style.
 	 */
-    private static final boolean DEFAULT_TOGGLE_BUTTON = false;
+	private static final boolean DEFAULT_TOGGLE_BUTTON = false;
 
 	/**
 	 * Standard constructor.
@@ -105,21 +99,15 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addProperty(PROP_LABEL, new StringProperty("Label Text",
-				WidgetPropertyCategory.Display, "")); //$NON-NLS-1$
-		addFontProperty(PROP_FONT, "Font",
-				WidgetPropertyCategory.Display, ColorAndFontUtil.toFontString(
-						"Arial", 8)); //$NON-NLS-1$
-		addProperty(PROP_TEXT_ALIGNMENT, new ArrayOptionProperty("Text Alignment", 
-				WidgetPropertyCategory.Display, TextAlignmentEnum.getDisplayNames() ,TextAlignmentEnum.CENTER.getIndex()));
-		addProperty(PROP_ACTION_RELEASED_INDEX, new IntegerProperty("Action Index (released)",
-				WidgetPropertyCategory.Behaviour, 0, -1, Integer.MAX_VALUE));
-		addProperty(PROP_ACTION_PRESSED_INDEX, new IntegerProperty("Action Index (pressed)",
-				WidgetPropertyCategory.Behaviour, -1, -1, Integer.MAX_VALUE));
-		addProperty(PROP_TOGGLE_BUTTON, new BooleanProperty("Toggle Button",
-		        WidgetPropertyCategory.Behaviour,DEFAULT_TOGGLE_BUTTON));
+		addStringProperty(PROP_LABEL, "Label Text", WidgetPropertyCategory.Display, ""); //$NON-NLS-1$
+		addFontProperty(PROP_FONT, "Font", WidgetPropertyCategory.Display, ColorAndFontUtil.toFontString("Arial", 8)); //$NON-NLS-1$
+		addArrayOptionProperty(PROP_TEXT_ALIGNMENT, "Text Alignment", WidgetPropertyCategory.Display, TextAlignmentEnum.getDisplayNames(),
+				TextAlignmentEnum.CENTER.getIndex());
+		addIntegerProperty(PROP_ACTION_RELEASED_INDEX, "Action Index (released)", WidgetPropertyCategory.Behaviour, 0, -1, Integer.MAX_VALUE);
+		addIntegerProperty(PROP_ACTION_PRESSED_INDEX, "Action Index (pressed)", WidgetPropertyCategory.Behaviour, -1, -1, Integer.MAX_VALUE);
+		addBooleanProperty(PROP_TOGGLE_BUTTON, "Toggle Button", WidgetPropertyCategory.Behaviour, DEFAULT_TOGGLE_BUTTON);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -129,15 +117,15 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 		this.markPropertyAsInvisible(PROP_BORDER_STYLE);
 		this.markPropertyAsInvisible(PROP_BORDER_WIDTH);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	protected String getDefaultToolTip() {
 		StringBuffer buffer = new StringBuffer();
-		buffer.append(createTooltipParameter(PROP_ALIASES)+"\n");
-		buffer.append(createTooltipParameter(PROP_ACTIONDATA)+"\n");
+		buffer.append(createTooltipParameter(PROP_ALIASES) + "\n");
+		buffer.append(createTooltipParameter(PROP_ACTIONDATA) + "\n");
 		buffer.append("Performed Action: ");
 		buffer.append(createTooltipParameter(PROP_ACTION_PRESSED_INDEX));
 		buffer.append(createTooltipParameter(PROP_ACTION_RELEASED_INDEX));
@@ -145,17 +133,19 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	}
 
 	/**
-	 * Return the index of the selected WidgetAction from the ActionData.
-	 * The Action is running when the button is released.
+	 * Return the index of the selected WidgetAction from the ActionData. The
+	 * Action is running when the button is released.
+	 * 
 	 * @return The index
 	 */
 	public int getChoosenReleasedActionIndex() {
 		return getIntegerProperty(PROP_ACTION_RELEASED_INDEX).getPropertyValue();
 	}
-	
+
 	/**
-	 * Return the index of the selected WidgetAction from the ActionData.
-	 * The Action is running when the button is pressed.
+	 * Return the index of the selected WidgetAction from the ActionData. The
+	 * Action is running when the button is pressed.
+	 * 
 	 * @return The index
 	 */
 	public int getChoosenPressedActionIndex() {
@@ -173,8 +163,8 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 
 	/**
 	 * Returns the alignment for the text.
-	 * @return int 
-	 * 			0 = Center, 1 = Top, 2 = Bottom, 3 = Left, 4 = Right
+	 * 
+	 * @return int 0 = Center, 1 = Top, 2 = Bottom, 3 = Left, 4 = Right
 	 */
 	public int getTextAlignment() {
 		return getArrayOptionProperty(PROP_TEXT_ALIGNMENT).getPropertyValue();
@@ -182,9 +172,10 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 
 	/**
 	 * Returns whether the button is a toggle button.
-	 *  @return false = Push, true=Toggle
+	 * 
+	 * @return false = Push, true=Toggle
 	 */
-	public boolean isToggleButton(){
-	    return getBooleanProperty(PROP_TOGGLE_BUTTON).getPropertyValue();
+	public boolean isToggleButton() {
+		return getBooleanProperty(PROP_TOGGLE_BUTTON).getPropertyValue();
 	}
 }

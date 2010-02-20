@@ -23,10 +23,6 @@ package org.csstudio.sds.components.model;
 
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
-import org.csstudio.sds.model.properties.BooleanProperty;
-import org.csstudio.sds.model.properties.DoubleProperty;
-import org.csstudio.sds.model.properties.IntegerProperty;
-import org.eclipse.swt.graphics.RGB;
 
 /**
  * An ellipse widget model.
@@ -113,26 +109,18 @@ public final class SimpleSliderModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addProperty(PROP_VALUE, new DoubleProperty("Slider Value",
-				WidgetPropertyCategory.Behaviour, 50.0));
-		addProperty(PROP_SHOW_VALUE_AS_TEXT, new BooleanProperty(
-				"Show Value As Text", WidgetPropertyCategory.Display, false));
-		addProperty(PROP_MIN, new DoubleProperty("Min",
-				WidgetPropertyCategory.Behaviour, 0.0));
-		addProperty(PROP_MAX, new DoubleProperty("Max",
-				WidgetPropertyCategory.Behaviour, 100.0));
+		addDoubleProperty(PROP_VALUE, "Slider Value", WidgetPropertyCategory.Behaviour, 50.0);
+		addBooleanProperty(PROP_SHOW_VALUE_AS_TEXT, "Show Value As Text", WidgetPropertyCategory.Display, false);
+		addDoubleProperty(PROP_MIN, "Min", WidgetPropertyCategory.Behaviour, 0.0);
+		addDoubleProperty(PROP_MAX, "Max", WidgetPropertyCategory.Behaviour, 100.0);
 		// The increment is limited to the range 0.001..1000 because the
 		// scrollbar control used internally by the widget causes problems
 		// if the value range of the scrollbar gets too large, probably because
 		// it uses integer numbers internally.
-		addProperty(PROP_INCREMENT, new DoubleProperty("Increment",
-				WidgetPropertyCategory.Behaviour, 1.0, 0.001, 1000.0));
-		addProperty(PROP_ORIENTATION, new BooleanProperty(
-				"Horizontal orientation", WidgetPropertyCategory.Display, true));
-		addProperty(PROP_PRECISION, new IntegerProperty("Decimal places",
-				WidgetPropertyCategory.Behaviour, 2, 0, 5));
-		addProperty(PROP_SLIDER_WIDTH, new IntegerProperty("Slider wide",
-				WidgetPropertyCategory.Display, 5, 0, Integer.MAX_VALUE));
+		addDoubleProperty(PROP_INCREMENT, "Increment", WidgetPropertyCategory.Behaviour, 1.0, 0.001, 1000.0);
+		addBooleanProperty(PROP_ORIENTATION, "Horizontal orientation", WidgetPropertyCategory.Display, true);
+		addIntegerProperty(PROP_PRECISION, "Decimal places", WidgetPropertyCategory.Behaviour, 2, 0, 5);
+		addIntegerProperty(PROP_SLIDER_WIDTH, "Slider wide", WidgetPropertyCategory.Display, 5, 0, Integer.MAX_VALUE);
 
 		setColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND, "#ffffff");
 	}
@@ -143,16 +131,16 @@ public final class SimpleSliderModel extends AbstractWidgetModel {
 	@Override
 	protected String getDefaultToolTip() {
 		StringBuffer buffer = new StringBuffer();
-		buffer.append(createTooltipParameter(PROP_ALIASES)+"\n");
+		buffer.append(createTooltipParameter(PROP_ALIASES) + "\n");
 		buffer.append("Maximum:\t");
-		buffer.append(createTooltipParameter(PROP_MAX)+"\n");
+		buffer.append(createTooltipParameter(PROP_MAX) + "\n");
 		buffer.append("Minimum:\t");
-		buffer.append(createTooltipParameter(PROP_MIN)+"\n");
+		buffer.append(createTooltipParameter(PROP_MIN) + "\n");
 		buffer.append("Value:\t\t");
 		buffer.append(createTooltipParameter(PROP_VALUE));
 		return buffer.toString();
 	}
-	
+
 	/**
 	 * Return the min value.
 	 * 
@@ -222,7 +210,6 @@ public final class SimpleSliderModel extends AbstractWidgetModel {
 	 * @return True if the slider value should also be displayed as a text.
 	 */
 	public boolean isShowValueAsText() {
-		return getBooleanProperty(PROP_SHOW_VALUE_AS_TEXT)
-				.getPropertyValue();
+		return getBooleanProperty(PROP_SHOW_VALUE_AS_TEXT).getPropertyValue();
 	}
 }

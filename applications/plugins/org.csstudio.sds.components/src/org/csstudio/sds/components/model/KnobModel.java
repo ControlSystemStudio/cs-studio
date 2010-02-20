@@ -2,109 +2,101 @@ package org.csstudio.sds.components.model;
 
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
-import org.csstudio.sds.model.properties.BooleanProperty;
-import org.csstudio.sds.model.properties.DoubleProperty;
-
 
 /**
  * This class defines a knob widget model.
+ * 
  * @author Xihui Chen
  */
-public class KnobModel extends AbstractMarkedWidgetModel{	
-	
+public class KnobModel extends AbstractMarkedWidgetModel {
+
 	/** The ID of the knob color property. */
 	public static final String PROP_KNOB_COLOR = "bulb_color"; //$NON-NLS-1$	
-	
+
 	/** The ID of the effect 3D property. */
 	public static final String PROP_EFFECT3D = "effect3D"; //$NON-NLS-1$
-	
-	
+
 	/** The ID of the effect show value label property. */
 	public static final String PROP_SHOW_VALUE_LABEL = "show_value_label"; //$NON-NLS-1$
-	
+
 	/** The ID of the thumb Color property. */
 	public static final String PROP_THUMB_COLOR = "thumbColor"; //$NON-NLS-1$
-	
+
 	/** The ID of the Ramp Gradient. */
 	public static final String PROP_RAMP_GRADIENT = "ramp_gradient"; //$NON-NLS-1$
-	
+
 	/**
 	 * The ID of the increment property.
 	 */
 	public static final String PROP_INCREMENT = "increment"; //$NON-NLS-1$
-	
+
 	/** The default value of the default knob color property. */
 	private static final String DEFAULT_KNOB_COLOR = "#969669";
-	
-	/** The default value of the height property. */	
+
+	/** The default value of the height property. */
 	private static final int DEFAULT_HEIGHT = 173;
-	
+
 	/** The default value of the width property. */
 	private static final int DEFAULT_WIDTH = 173;
-	
+
 	/** The default value of the thumb color property. */
 	private static final String DEFAULT_THUMB_COLOR = "#7F7F7F";
 	/**
 	 * The ID of this widget model.
 	 */
 	public static final String ID = "org.csstudio.sds.components.Knob"; //$NON-NLS-1$	
-	
+
 	public KnobModel() {
 		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-		setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND,"#000000");
-	}	
+		setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, "#000000");
+	}
 
 	@Override
 	protected void configureProperties() {
-		super.configureProperties();		
-		addColorProperty(PROP_KNOB_COLOR, "Knob Color",
-				WidgetPropertyCategory.Display,DEFAULT_KNOB_COLOR);	
-		
-		addProperty(PROP_EFFECT3D, new BooleanProperty("3D Effect", 
-				WidgetPropertyCategory.Display, true));
-		
-		addProperty(PROP_SHOW_VALUE_LABEL, new BooleanProperty("Show Value Label", 
-				WidgetPropertyCategory.Display, true));		
-		
-		addColorProperty(PROP_THUMB_COLOR, "Thumb Color",
-				WidgetPropertyCategory.Display,DEFAULT_THUMB_COLOR);
-		
-		addProperty(PROP_RAMP_GRADIENT, new BooleanProperty("Ramp Gradient", 
-				WidgetPropertyCategory.Display, true));	
-		
-		addProperty(PROP_INCREMENT, new DoubleProperty("Increment",
-				WidgetPropertyCategory.Behaviour, 1.0));
-		
+		super.configureProperties();
+		addColorProperty(PROP_KNOB_COLOR, "Knob Color", WidgetPropertyCategory.Display, DEFAULT_KNOB_COLOR);
+
+		addBooleanProperty(PROP_EFFECT3D, "3D Effect", WidgetPropertyCategory.Display, true);
+
+		addBooleanProperty(PROP_SHOW_VALUE_LABEL, "Show Value Label", WidgetPropertyCategory.Display, true);
+
+		addColorProperty(PROP_THUMB_COLOR, "Thumb Color", WidgetPropertyCategory.Display, DEFAULT_THUMB_COLOR);
+
+		addBooleanProperty(PROP_RAMP_GRADIENT, "Ramp Gradient", WidgetPropertyCategory.Display, true);
+
+		addDoubleProperty(PROP_INCREMENT, "Increment", WidgetPropertyCategory.Behaviour, 1.0);
+
 		setPropertyDescription(PROP_SHOW_MARKERS, "Show Ramp");
-	}	
+	}
 
 	@Override
 	public String getTypeID() {
 		return ID;
-	}		
+	}
 
 	/**
-	 * @return true if the widget would be painted with 3D effect, false otherwise
+	 * @return true if the widget would be painted with 3D effect, false
+	 *         otherwise
 	 */
 	public boolean isEffect3D() {
 		return getBooleanProperty(PROP_EFFECT3D).getPropertyValue();
 	}
 
 	/**
-	 * @return true if the widget would be painted with 3D effect, false otherwise
+	 * @return true if the widget would be painted with 3D effect, false
+	 *         otherwise
 	 */
 	public boolean isShowValueLabel() {
 		return getBooleanProperty(PROP_SHOW_VALUE_LABEL).getPropertyValue();
 	}
-	
+
 	/**
 	 * @return true if the ramp is gradient, false otherwise
 	 */
 	public boolean isRampGradient() {
 		return getBooleanProperty(PROP_RAMP_GRADIENT).getPropertyValue();
 	}
-	
-	
+
 	/**
 	 * Return the increment value.
 	 * 

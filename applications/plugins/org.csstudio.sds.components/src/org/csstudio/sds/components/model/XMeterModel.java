@@ -2,7 +2,6 @@ package org.csstudio.sds.components.model;
 
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
-import org.csstudio.sds.model.properties.BooleanProperty;
 
 /**
  * This class defines a XMeter widget model.
@@ -41,7 +40,7 @@ public class XMeterModel extends AbstractMarkedWidgetModel {
 		super.configureProperties();
 		addColorProperty(PROP_NEEDLE_COLOR, "Needle Color", WidgetPropertyCategory.Display, DEFAULT_NEEDLE_COLOR);
 
-		addProperty(PROP_RAMP_GRADIENT, new BooleanProperty("Ramp Gradient", WidgetPropertyCategory.Display, true));
+		addBooleanProperty(PROP_RAMP_GRADIENT, "Ramp Gradient", WidgetPropertyCategory.Display, true);
 
 		setPropertyDescription(PROP_SHOW_MARKERS, "Show Ramp");
 		setPropertyValue(PROP_TRANSPARENT, false);

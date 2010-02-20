@@ -22,7 +22,6 @@
 package org.csstudio.sds.components.model;
 
 import org.csstudio.sds.model.WidgetPropertyCategory;
-import org.csstudio.sds.model.properties.DoubleArrayProperty;
 
 /**
  * This class defines a simple waverform widget model.
@@ -32,23 +31,23 @@ import org.csstudio.sds.model.properties.DoubleArrayProperty;
  * 
  */
 public final class WaveformModel extends AbstractChartModel {
-	
+
 	/**
 	 * The number of data arrays this model supports.
 	 */
 	public static final int NUMBER_OF_ARRAYS = 4;
-	
+
 	/**
-     * The ID of this widget model.
-     */
-    public static final String ID = "org.csstudio.sds.components.Waveform"; //$NON-NLS-1$
-    
-    /**
+	 * The ID of this widget model.
+	 */
+	public static final String ID = "org.csstudio.sds.components.Waveform"; //$NON-NLS-1$
+
+	/**
 	 * The base property ID for the data properties. Use the
-	 * {@link #dataPropertyId(int)} method to get the property ID for the
-	 * value of a specific data series. 
-     */
-    private static final String INTERNAL_PROP_DATA = "data";
+	 * {@link #dataPropertyId(int)} method to get the property ID for the value
+	 * of a specific data series.
+	 */
+	private static final String INTERNAL_PROP_DATA = "data";
 
 	/**
 	 * Constructor.
@@ -56,7 +55,7 @@ public final class WaveformModel extends AbstractChartModel {
 	public WaveformModel() {
 		setSize(100, 60);
 	}
-	
+
 	/**
 	 * Returns the property ID for the waveform data with the specified index.
 	 * 
@@ -71,7 +70,7 @@ public final class WaveformModel extends AbstractChartModel {
 		if (index < 0 || index >= NUMBER_OF_ARRAYS) {
 			throw new IndexOutOfBoundsException("Invalid index: " + index);
 		}
-		
+
 		return INTERNAL_PROP_DATA + Integer.toString(index + 1);
 	}
 
@@ -89,12 +88,10 @@ public final class WaveformModel extends AbstractChartModel {
 	@Override
 	protected void configureProperties() {
 		super.configureProperties();
-		
+
 		// The waveform data properties
 		for (int i = 0; i < numberOfDataSeries(); i++) {
-			addProperty(dataPropertyId(i), new DoubleArrayProperty(
-					"Data #" + (i+1), WidgetPropertyCategory.Behaviour,
-					new double[0]));
+			addDoubleArrayProperty(dataPropertyId(i), "Data #" + (i + 1), WidgetPropertyCategory.Behaviour, new double[0]);
 		}
 	}
 
@@ -110,7 +107,7 @@ public final class WaveformModel extends AbstractChartModel {
 	 * Returns the waveform data for the specified index.
 	 * 
 	 * @param index
-	 *            the data index.  The valid range for the index is
+	 *            the data index. The valid range for the index is
 	 *            <code>0 &lt;= index &lt; NUMBER_OF_ARRAYS</code>.
 	 * @return the waveform data array.
 	 * @throws IndexOutOfBoundsException

@@ -19,16 +19,11 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.sds.components.model;
+package org.csstudio.sds.components.model;
 
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
-import org.csstudio.sds.model.properties.BooleanProperty;
-import org.csstudio.sds.model.properties.DoubleProperty;
-import org.csstudio.sds.model.properties.IntegerProperty;
 import org.csstudio.sds.util.ColorAndFontUtil;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.FontData;
 
 /**
  * The meter model.
@@ -71,12 +66,12 @@ public final class MeterModel extends AbstractWidgetModel {
 	public static final String PROP_HIHIBOUND = "bound.hihi";
 	public static final String PROP_VALFONT = "font.values";
 	public static final String PROP_CHANFONT = "font.channel";
-	
+
 	/**
 	 * The ID of the precision property.
 	 */
 	public static final String PROP_PRECISION = "precision"; //$NON-NLS-1$
-	
+
 	/**
 	 * Constructor.
 	 */
@@ -85,70 +80,70 @@ public final class MeterModel extends AbstractWidgetModel {
 		setWidth(90);
 		setHeight(90);
 	}
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	protected void configureProperties() {
 		// add the necessary properties for the meter
-		addProperty(PROP_ANGLE,new IntegerProperty("Display Angle",WidgetPropertyCategory.Display,90,1,359));
-		addProperty(PROP_INNANGLE,new IntegerProperty("Inner Angle",WidgetPropertyCategory.Display,80,1,359));
-		addColorProperty(PROP_NEEDLECOLOR,"Needle Color",WidgetPropertyCategory.Display,"#00ff00");
-		addProperty(PROP_RADIUS,new DoubleProperty("Visible Radius",WidgetPropertyCategory.Display,0.15,0.0,1.0));
-		addProperty(PROP_TEXTRADIUS,new DoubleProperty("Scale Text Radius",WidgetPropertyCategory.Display,0.25,0.0,1.0));
-		addProperty(PROP_TRANSPARENT,new BooleanProperty("Transparent Background",WidgetPropertyCategory.Display,false));
-		
-		addProperty(PROP_SCALERADIUS,new DoubleProperty("Scale Radius",WidgetPropertyCategory.Display,0.25,0.0,1.0));
-		addProperty(PROP_MINSTEP,new DoubleProperty("Minor Scale Step",WidgetPropertyCategory.Behaviour,1.0));
-		addProperty(PROP_MAJSTEP,new DoubleProperty("Major Scale Step",WidgetPropertyCategory.Behaviour,5.0));
-		addColorProperty(PROP_SCALECOLOR,"Scale Color",WidgetPropertyCategory.Display,"#000000");
-		addProperty(PROP_SCALEWIDTH,new IntegerProperty("Scale Width",WidgetPropertyCategory.Display,1));
-		
-		addProperty(PROP_MINVAL,new DoubleProperty("Minimum Value",WidgetPropertyCategory.Behaviour,0.0));
-		addProperty(PROP_MAXVAL,new DoubleProperty("Maximum Value",WidgetPropertyCategory.Behaviour,10.0));
-		addProperty(PROP_VALUE,new DoubleProperty("Value",WidgetPropertyCategory.Behaviour,0.0));
-		
-		//background colors
-		addColorProperty(PROP_MCOLOR,"Color M",WidgetPropertyCategory.Display,"#00ff00");
-		addColorProperty(PROP_LOLOCOLOR,"Color LOLO",WidgetPropertyCategory.Display,"#ff0000");
-		addColorProperty(PROP_LOCOLOR,"Color LO",WidgetPropertyCategory.Display,"#ff5151");
-		addColorProperty(PROP_HICOLOR,"Color HI",WidgetPropertyCategory.Display,"#ff5151");
-		addColorProperty(PROP_HIHICOLOR,"Color HIHI",WidgetPropertyCategory.Display,"#ff0000");
-		
-		//level boundaries
-		addProperty(PROP_MBOUND,new DoubleProperty("Boundary M",WidgetPropertyCategory.Behaviour,6.0));
-		addProperty(PROP_LOLOBOUND,new DoubleProperty("Boundary LOLO",WidgetPropertyCategory.Behaviour,2.0));
-		addProperty(PROP_LOBOUND,new DoubleProperty("Boundary LO",WidgetPropertyCategory.Behaviour,4.0));
-		addProperty(PROP_HIBOUND,new DoubleProperty("Boundary HI",WidgetPropertyCategory.Behaviour,8.0));
-		addProperty(PROP_HIHIBOUND,new DoubleProperty("Boundary HIHI",WidgetPropertyCategory.Behaviour,10.0));
-		
-		//font properties
-		addFontProperty(PROP_VALFONT, "Values Font",WidgetPropertyCategory.Display, ColorAndFontUtil.toFontString("Arial", 8));
-		addFontProperty(PROP_CHANFONT, "Channel Font",WidgetPropertyCategory.Display, ColorAndFontUtil.toFontString("Arial", 8));
+		addIntegerProperty(PROP_ANGLE, "Display Angle", WidgetPropertyCategory.Display, 90, 1, 359);
+		addIntegerProperty(PROP_INNANGLE, "Inner Angle", WidgetPropertyCategory.Display, 80, 1, 359);
+		addColorProperty(PROP_NEEDLECOLOR, "Needle Color", WidgetPropertyCategory.Display, "#00ff00");
+		addDoubleProperty(PROP_RADIUS, "Visible Radius", WidgetPropertyCategory.Display, 0.15, 0.0, 1.0);
+		addDoubleProperty(PROP_TEXTRADIUS, "Scale Text Radius", WidgetPropertyCategory.Display, 0.25, 0.0, 1.0);
+		addBooleanProperty(PROP_TRANSPARENT, "Transparent Background", WidgetPropertyCategory.Display, false);
+
+		addDoubleProperty(PROP_SCALERADIUS, "Scale Radius", WidgetPropertyCategory.Display, 0.25, 0.0, 1.0);
+		addDoubleProperty(PROP_MINSTEP, "Minor Scale Step", WidgetPropertyCategory.Behaviour, 1.0);
+		addDoubleProperty(PROP_MAJSTEP, "Major Scale Step", WidgetPropertyCategory.Behaviour, 5.0);
+		addColorProperty(PROP_SCALECOLOR, "Scale Color", WidgetPropertyCategory.Display, "#000000");
+		addIntegerProperty(PROP_SCALEWIDTH, "Scale Width", WidgetPropertyCategory.Display, 1);
+
+		addDoubleProperty(PROP_MINVAL, "Minimum Value", WidgetPropertyCategory.Behaviour, 0.0);
+		addDoubleProperty(PROP_MAXVAL, "Maximum Value", WidgetPropertyCategory.Behaviour, 10.0);
+		addDoubleProperty(PROP_VALUE, "Value", WidgetPropertyCategory.Behaviour, 0.0);
+
+		// background colors
+		addColorProperty(PROP_MCOLOR, "Color M", WidgetPropertyCategory.Display, "#00ff00");
+		addColorProperty(PROP_LOLOCOLOR, "Color LOLO", WidgetPropertyCategory.Display, "#ff0000");
+		addColorProperty(PROP_LOCOLOR, "Color LO", WidgetPropertyCategory.Display, "#ff5151");
+		addColorProperty(PROP_HICOLOR, "Color HI", WidgetPropertyCategory.Display, "#ff5151");
+		addColorProperty(PROP_HIHICOLOR, "Color HIHI", WidgetPropertyCategory.Display, "#ff0000");
+
+		// level boundaries
+		addDoubleProperty(PROP_MBOUND, "Boundary M", WidgetPropertyCategory.Behaviour, 6.0);
+		addDoubleProperty(PROP_LOLOBOUND, "Boundary LOLO", WidgetPropertyCategory.Behaviour, 2.0);
+		addDoubleProperty(PROP_LOBOUND, "Boundary LO", WidgetPropertyCategory.Behaviour, 4.0);
+		addDoubleProperty(PROP_HIBOUND, "Boundary HI", WidgetPropertyCategory.Behaviour, 8.0);
+		addDoubleProperty(PROP_HIHIBOUND, "Boundary HIHI", WidgetPropertyCategory.Behaviour, 10.0);
+
+		// font properties
+		addFontProperty(PROP_VALFONT, "Values Font", WidgetPropertyCategory.Display, ColorAndFontUtil.toFontString("Arial", 8));
+		addFontProperty(PROP_CHANFONT, "Channel Font", WidgetPropertyCategory.Display, ColorAndFontUtil.toFontString("Arial", 8));
 		// precision
-		addProperty(PROP_PRECISION, new IntegerProperty("Decimal places",
-				WidgetPropertyCategory.Behaviour, 2, 0, 5));
+		addIntegerProperty(PROP_PRECISION, "Decimal places", WidgetPropertyCategory.Behaviour, 2, 0, 5);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	protected String getDefaultToolTip() {
 		StringBuffer buffer = new StringBuffer();
-		buffer.append(createTooltipParameter(PROP_ALIASES)+"\n");
+		buffer.append(createTooltipParameter(PROP_ALIASES) + "\n");
 		buffer.append("Maximum:\t");
-		buffer.append(createTooltipParameter(PROP_MAXVAL)+"\n");
+		buffer.append(createTooltipParameter(PROP_MAXVAL) + "\n");
 		buffer.append("Minimum:\t");
-		buffer.append(createTooltipParameter(PROP_MINVAL)+"\n");
+		buffer.append(createTooltipParameter(PROP_MINVAL) + "\n");
 		buffer.append("Value:\t");
-		buffer.append(createTooltipParameter(PROP_VALUE)+"\n");
+		buffer.append(createTooltipParameter(PROP_VALUE) + "\n");
 		buffer.append("Level HIHI:\t");
-		buffer.append(createTooltipParameter(PROP_HIHIBOUND)+"\n");
+		buffer.append(createTooltipParameter(PROP_HIHIBOUND) + "\n");
 		buffer.append("Level HI:\t");
-		buffer.append(createTooltipParameter(PROP_HIBOUND)+"\n");
+		buffer.append(createTooltipParameter(PROP_HIBOUND) + "\n");
 		buffer.append("Level LO:\t");
-		buffer.append(createTooltipParameter(PROP_LOBOUND)+"\n");
+		buffer.append(createTooltipParameter(PROP_LOBOUND) + "\n");
 		buffer.append("Level LOLO:\t");
 		buffer.append(createTooltipParameter(PROP_LOLOBOUND));
 		return buffer.toString();
@@ -157,71 +152,71 @@ public final class MeterModel extends AbstractWidgetModel {
 	public int getAngle() {
 		return getIntegerProperty(PROP_ANGLE).getPropertyValue();
 	}
-	
+
 	public int getInnerAngle() {
 		return getIntegerProperty(PROP_INNANGLE).getPropertyValue();
 	}
-	
+
 	public double getVisibleRadius() {
 		return getDoubleProperty(PROP_RADIUS).getPropertyValue();
 	}
-	
+
 	public double getScaleRadius() {
 		return getDoubleProperty(PROP_SCALERADIUS).getPropertyValue();
 	}
-	
+
 	public double getMinorStep() {
 		return getDoubleProperty(PROP_MINSTEP).getPropertyValue();
 	}
-	
+
 	public double getMajorStep() {
 		return getDoubleProperty(PROP_MAJSTEP).getPropertyValue();
 	}
-	
+
 	public double getMaxValue() {
 		return getDoubleProperty(PROP_MAXVAL).getPropertyValue();
 	}
-	
+
 	public double getMinValue() {
 		return getDoubleProperty(PROP_MINVAL).getPropertyValue();
 	}
-	
+
 	public double getValue() {
 		return getDoubleProperty(PROP_VALUE).getPropertyValue();
 	}
-	
+
 	public int getScaleWidth() {
 		return getIntegerProperty(PROP_SCALEWIDTH).getPropertyValue();
 	}
-	
+
 	public double getTextRadius() {
 		return getDoubleProperty(PROP_TEXTRADIUS).getPropertyValue();
 	}
-	
+
 	public boolean getTransparent() {
 		return getBooleanProperty(PROP_TRANSPARENT).getPropertyValue();
 	}
-	
+
 	public double getMBound() {
 		return getDoubleProperty(PROP_MBOUND).getPropertyValue();
 	}
-	
+
 	public double getLOLOBound() {
 		return getDoubleProperty(PROP_LOLOBOUND).getPropertyValue();
 	}
-	
+
 	public double getLOBound() {
 		return getDoubleProperty(PROP_LOBOUND).getPropertyValue();
 	}
-	
+
 	public double getHIBound() {
 		return getDoubleProperty(PROP_HIBOUND).getPropertyValue();
 	}
-	
+
 	public double getHIHIBound() {
 		return getDoubleProperty(PROP_HIHIBOUND).getPropertyValue();
 	}
-	
+
 	/**
 	 * Return the precision.
 	 * 

@@ -23,10 +23,6 @@ package org.csstudio.sds.components.model;
 
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
-import org.csstudio.sds.model.properties.ArrayOptionProperty;
-import org.csstudio.sds.model.properties.BooleanProperty;
-import org.csstudio.sds.model.properties.DoubleProperty;
-import org.csstudio.sds.model.properties.IntegerProperty;
 
 /**
  * This class defines an bargraph widget model.
@@ -35,32 +31,32 @@ import org.csstudio.sds.model.properties.IntegerProperty;
  * 
  */
 public final class BargraphModel extends AbstractWidgetModel {
-	
+
 	/**
 	 * The ID of the fill grade property.
 	 */
 	public static final String PROP_FILL = "fill"; //$NON-NLS-1$
-	
+
 	/**
 	 * The ID of the orientation property.
 	 */
 	public static final String PROP_ORIENTATION = "orientation"; //$NON-NLS-1$
-	
+
 	/**
 	 * The ID of the default-fill-Color property.
 	 */
 	public static final String PROP_DEFAULT_FILL_COLOR = "defaultFillColor";
-	
+
 	/**
 	 * The ID of the fillbackground-Color property.
 	 */
 	public static final String PROP_FILLBACKGROUND_COLOR = "fillbackgroundColor";
-	
+
 	/**
 	 * The ID of the show_value property.
 	 */
 	public static final String PROP_SHOW_VALUES = "showValues";
-	
+
 	/**
 	 * The ID of the minimum property.
 	 */
@@ -110,56 +106,56 @@ public final class BargraphModel extends AbstractWidgetModel {
 	 * The ID of this widget model.
 	 */
 	public static final String ID = "org.csstudio.sds.components.Bargraph"; //$NON-NLS-1$
-		
+
 	/**
 	 * The default value of the fill grade property.
 	 */
 	private static final double DEFAULT_FILL = 0.25;
-	
+
 	/**
 	 * The default value of the orientation property.
 	 */
 	private static final boolean DEFAULT_ORIENTATION_HORIZONTAL = true;
 
 	/**
-	 * The default value of the default fill color property. 
+	 * The default value of the default fill color property.
 	 */
 	private static final String DEFAULT_FILL_COLOR = "#0000ff";
-	
+
 	/**
-	 * The default value of the fillbackground color property. 
+	 * The default value of the fillbackground color property.
 	 */
 	private static final String DEFAULT_FILLBACKGROUND_COLOR = "#787878";
-	
+
 	/**
-	 * The default value of the show_value property. 
+	 * The default value of the show_value property.
 	 */
 	private static final boolean DEFAULT_SHOW_VALUES = false;
-	
+
 	/**
 	 * The default value for the show status of the marks.
 	 */
 	private static final int DEFAULT_SHOW_MARKS = 1;
-	
+
 	/**
 	 * The default value for the show status of the scale.
 	 */
 	private static final int DEFAULT_SHOW_SCALE = 1;
-	
+
 	/**
 	 * The default value for the section count.
 	 */
 	private static final int DEFAULT_SECTION_COUNT = 10;
-	
+
 	/**
 	 * The labels for the MARKS_SHOW_STATUS- property.
 	 */
-	private static final String[] SHOW_LABELS = new String[] {"None", "Bottom / Right", "Top / Left"};
-	
+	private static final String[] SHOW_LABELS = new String[] { "None", "Bottom / Right", "Top / Left" };
+
 	/**
-	 * The default value of the levels property. 
+	 * The default value of the levels property.
 	 */
-	private static final double[] DEFAULT_LEVELS = new double[]{0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.0};
+	private static final double[] DEFAULT_LEVELS = new double[] { 0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.0 };
 
 	/**
 	 * Constructor.
@@ -168,53 +164,51 @@ public final class BargraphModel extends AbstractWidgetModel {
 		setSize(100, 60);
 	}
 
-	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	protected void configureProperties() {
-		addProperty(PROP_FILL, new DoubleProperty("Value",
-				WidgetPropertyCategory.Behaviour, DEFAULT_FILL));
-		addProperty(PROP_ORIENTATION, new BooleanProperty("Horizontal Orientation", WidgetPropertyCategory.Behaviour, DEFAULT_ORIENTATION_HORIZONTAL));
-		//Colors
-		addColorProperty(PROP_DEFAULT_FILL_COLOR, "Fill Color",WidgetPropertyCategory.Display, DEFAULT_FILL_COLOR);
-		addColorProperty(PROP_FILLBACKGROUND_COLOR, "Color Fillbackground",WidgetPropertyCategory.Display,DEFAULT_FILLBACKGROUND_COLOR);
-		//Levels
-		addProperty(PROP_MIN, new DoubleProperty("Minimum", WidgetPropertyCategory.Behaviour,DEFAULT_LEVELS[0]));
-		addProperty(PROP_LOLO_LEVEL, new DoubleProperty("Level LOLO", WidgetPropertyCategory.Behaviour,DEFAULT_LEVELS[1]));
-		addProperty(PROP_LO_LEVEL, new DoubleProperty("Level LO", WidgetPropertyCategory.Behaviour,DEFAULT_LEVELS[2]));
-		addProperty(PROP_HI_LEVEL, new DoubleProperty("Level HI", WidgetPropertyCategory.Behaviour,DEFAULT_LEVELS[4]));
-		addProperty(PROP_HIHI_LEVEL, new DoubleProperty("Level HIHI", WidgetPropertyCategory.Behaviour,DEFAULT_LEVELS[5]));
-		addProperty(PROP_MAX, new DoubleProperty("Maximum", WidgetPropertyCategory.Behaviour,DEFAULT_LEVELS[6]));
-		//Show_Value
-		addProperty(PROP_SHOW_VALUES, new BooleanProperty("Show Values", WidgetPropertyCategory.Display, DEFAULT_SHOW_VALUES));
-		addProperty(PROP_SHOW_MARKS, new ArrayOptionProperty("Tickmarks",WidgetPropertyCategory.Display,SHOW_LABELS,DEFAULT_SHOW_MARKS));
-		addProperty(PROP_SHOW_SCALE, new ArrayOptionProperty("Scale",WidgetPropertyCategory.Display,SHOW_LABELS,DEFAULT_SHOW_SCALE));
-		addProperty(PROP_SCALE_SECTION_COUNT, new IntegerProperty("SectionCount", WidgetPropertyCategory.Display,DEFAULT_SECTION_COUNT,1,Integer.MAX_VALUE));
-		addProperty(PROP_TRANSPARENT, new BooleanProperty("Transparent Background",WidgetPropertyCategory.Display,true));
-		addProperty(PROP_SHOW_ONLY_VALUE, new BooleanProperty("Show only value", WidgetPropertyCategory.Display, false));
+		addDoubleProperty(PROP_FILL, "Value", WidgetPropertyCategory.Behaviour, DEFAULT_FILL);
+		addBooleanProperty(PROP_ORIENTATION, "Horizontal Orientation", WidgetPropertyCategory.Behaviour, DEFAULT_ORIENTATION_HORIZONTAL);
+		// Colors
+		addColorProperty(PROP_DEFAULT_FILL_COLOR, "Fill Color", WidgetPropertyCategory.Display, DEFAULT_FILL_COLOR);
+		addColorProperty(PROP_FILLBACKGROUND_COLOR, "Color Fillbackground", WidgetPropertyCategory.Display, DEFAULT_FILLBACKGROUND_COLOR);
+		// Levels
+		addDoubleProperty(PROP_MIN, "Minimum", WidgetPropertyCategory.Behaviour, DEFAULT_LEVELS[0]);
+		addDoubleProperty(PROP_LOLO_LEVEL, "Level LOLO", WidgetPropertyCategory.Behaviour, DEFAULT_LEVELS[1]);
+		addDoubleProperty(PROP_LO_LEVEL, "Level LO", WidgetPropertyCategory.Behaviour, DEFAULT_LEVELS[2]);
+		addDoubleProperty(PROP_HI_LEVEL, "Level HI", WidgetPropertyCategory.Behaviour, DEFAULT_LEVELS[4]);
+		addDoubleProperty(PROP_HIHI_LEVEL, "Level HIHI", WidgetPropertyCategory.Behaviour, DEFAULT_LEVELS[5]);
+		addDoubleProperty(PROP_MAX, "Maximum", WidgetPropertyCategory.Behaviour, DEFAULT_LEVELS[6]);
+		// Show_Value
+		addBooleanProperty(PROP_SHOW_VALUES, "Show Values", WidgetPropertyCategory.Display, DEFAULT_SHOW_VALUES);
+		addArrayOptionProperty(PROP_SHOW_MARKS, "Tickmarks", WidgetPropertyCategory.Display, SHOW_LABELS, DEFAULT_SHOW_MARKS);
+		addArrayOptionProperty(PROP_SHOW_SCALE, "Scale", WidgetPropertyCategory.Display, SHOW_LABELS, DEFAULT_SHOW_SCALE);
+		addIntegerProperty(PROP_SCALE_SECTION_COUNT, "SectionCount", WidgetPropertyCategory.Display, DEFAULT_SECTION_COUNT, 1, Integer.MAX_VALUE);
+		addBooleanProperty(PROP_TRANSPARENT, "Transparent Background", WidgetPropertyCategory.Display, true);
+		addBooleanProperty(PROP_SHOW_ONLY_VALUE, "Show only value", WidgetPropertyCategory.Display, false);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	protected String getDefaultToolTip() {
 		StringBuffer buffer = new StringBuffer();
-		buffer.append(createTooltipParameter(PROP_ALIASES)+"\n");
+		buffer.append(createTooltipParameter(PROP_ALIASES) + "\n");
 		buffer.append("Maximum:\t");
-		buffer.append(createTooltipParameter(PROP_MAX)+"\n");
+		buffer.append(createTooltipParameter(PROP_MAX) + "\n");
 		buffer.append("Minimum:\t");
-		buffer.append(createTooltipParameter(PROP_MIN)+"\n");
+		buffer.append(createTooltipParameter(PROP_MIN) + "\n");
 		buffer.append("Value:\t");
-		buffer.append(createTooltipParameter(PROP_FILL)+"\n");
+		buffer.append(createTooltipParameter(PROP_FILL) + "\n");
 		buffer.append("Level HIHI:\t");
-		buffer.append(createTooltipParameter(PROP_HIHI_LEVEL)+"\n");
+		buffer.append(createTooltipParameter(PROP_HIHI_LEVEL) + "\n");
 		buffer.append("Level HI:\t");
-		buffer.append(createTooltipParameter(PROP_HI_LEVEL)+"\n");
+		buffer.append(createTooltipParameter(PROP_HI_LEVEL) + "\n");
 		buffer.append("Level LO:\t");
-		buffer.append(createTooltipParameter(PROP_LO_LEVEL)+"\n");
+		buffer.append(createTooltipParameter(PROP_LO_LEVEL) + "\n");
 		buffer.append("Level LOLO:\t");
 		buffer.append(createTooltipParameter(PROP_LOLO_LEVEL));
 		return buffer.toString();
@@ -227,17 +221,16 @@ public final class BargraphModel extends AbstractWidgetModel {
 	public String getTypeID() {
 		return ID;
 	}
-	
+
 	/**
 	 * Gets the fill level.
 	 * 
-	 * @return double
-	 * 				The fill level
+	 * @return double The fill level
 	 */
 	public double getFillLevel() {
 		return getDoubleProperty(PROP_FILL).getPropertyValue();
 	}
-	
+
 	/**
 	 * Gets the orientation.
 	 * 
@@ -246,109 +239,111 @@ public final class BargraphModel extends AbstractWidgetModel {
 	public boolean getOrientation() {
 		return getBooleanProperty(PROP_ORIENTATION).getPropertyValue();
 	}
-	
+
 	/**
 	 * Gets the minimum value for this model.
-	 * @return double
-	 * 				The minimum value
+	 * 
+	 * @return double The minimum value
 	 */
 	public double getMinimum() {
 		return getDoubleProperty(PROP_MIN).getPropertyValue();
 	}
-	
+
 	/**
 	 * Gets the lolo level for this model.
-	 * @return double
-	 * 				The lolo level
+	 * 
+	 * @return double The lolo level
 	 */
 	public double getLoloLevel() {
 		return getDoubleProperty(PROP_LOLO_LEVEL).getPropertyValue();
 	}
-	
+
 	/**
 	 * Gets the lo level for this model.
-	 * @return double
-	 * 				The lo level
+	 * 
+	 * @return double The lo level
 	 */
 	public double getLoLevel() {
 		return getDoubleProperty(PROP_LO_LEVEL).getPropertyValue();
 	}
-	
+
 	/**
 	 * Gets the hi level for this model.
-	 * @return double
-	 * 				The hi level
+	 * 
+	 * @return double The hi level
 	 */
 	public double getHiLevel() {
 		return getDoubleProperty(PROP_HI_LEVEL).getPropertyValue();
 	}
-	
+
 	/**
 	 * Gets the minimum value for this model.
-	 * @return double
-	 * 				The minimum value
+	 * 
+	 * @return double The minimum value
 	 */
 	public double getHihiLevel() {
 		return getDoubleProperty(PROP_HIHI_LEVEL).getPropertyValue();
 	}
-	
+
 	/**
 	 * Gets the maximum value for this model.
-	 * @return double
-	 * 				The maximum value
+	 * 
+	 * @return double The maximum value
 	 */
 	public double getMaximum() {
 		return getDoubleProperty(PROP_MAX).getPropertyValue();
 	}
-	
+
 	/**
 	 * Gets, if the values should be shown or not.
-	 * @return boolean
-	 * 				true, if the values should be shown, false otherwise
+	 * 
+	 * @return boolean true, if the values should be shown, false otherwise
 	 */
 	public boolean isShowValues() {
 		return getBooleanProperty(PROP_SHOW_VALUES).getPropertyValue();
 	}
-	
+
 	/**
 	 * Gets, if the marks should be shown or not.
-	 * @return int
-	 * 				0 = don't show, 1 = show Bottom/Right, 2 = show Top/Left
+	 * 
+	 * @return int 0 = don't show, 1 = show Bottom/Right, 2 = show Top/Left
 	 */
 	public int getShowMarks() {
 		return getArrayOptionProperty(PROP_SHOW_MARKS).getPropertyValue();
 	}
-	
+
 	/**
 	 * Gets, if the scale should be shown or not.
-	 * @return int
-	 * 				0 = don't show, 1 = show Bottom/Right, 2 = show Top/Left
+	 * 
+	 * @return int 0 = don't show, 1 = show Bottom/Right, 2 = show Top/Left
 	 */
 	public int getShowScale() {
 		return getArrayOptionProperty(PROP_SHOW_SCALE).getPropertyValue();
 	}
-	
+
 	/**
 	 * Gets the count of section in the scale.
-	 * @return int
-	 * 				The count of sections in  the scale
+	 * 
+	 * @return int The count of sections in the scale
 	 */
 	public int getScaleSectionCount() {
 		return getIntegerProperty(PROP_SCALE_SECTION_COUNT).getPropertyValue();
 	}
-	
+
 	/**
 	 * Return if only the current value should be showed.
+	 * 
 	 * @return True if only the value should be shown, false otherwise
 	 */
 	public boolean getShowOnlyValue() {
 		return getBooleanProperty(PROP_SHOW_ONLY_VALUE).getPropertyValue();
 	}
-	
+
 	/**
 	 * Returns, if this widget should have a transparent background.
-	 * @return boolean
-	 * 				True, if it should have a transparent background, false otherwise
+	 * 
+	 * @return boolean True, if it should have a transparent background, false
+	 *         otherwise
 	 */
 	public boolean getTransparent() {
 		return getBooleanProperty(PROP_TRANSPARENT).getPropertyValue();

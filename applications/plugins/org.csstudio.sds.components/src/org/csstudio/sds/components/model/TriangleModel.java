@@ -23,8 +23,6 @@ package org.csstudio.sds.components.model;
 
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
-import org.csstudio.sds.model.properties.BooleanProperty;
-import org.csstudio.sds.model.properties.DoubleProperty;
 
 /**
  * This class defines a triangle widget model.
@@ -77,12 +75,9 @@ public final class TriangleModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addProperty(PROP_FILL, new DoubleProperty("Value",
-				WidgetPropertyCategory.Behaviour, 50, 0.0, 100.0));
-		addProperty(PROP_TRANSPARENT, new BooleanProperty("Transparent Background",
-				WidgetPropertyCategory.Display, false));
-		addProperty(PROP_ROTATION, new DoubleProperty("Rotation Angle",
-				WidgetPropertyCategory.Display, 0, 0, 360));
+		addDoubleProperty(PROP_FILL, "Value", WidgetPropertyCategory.Behaviour, 50, 0.0, 100.0);
+		addBooleanProperty(PROP_TRANSPARENT, "Transparent Background", WidgetPropertyCategory.Display, false);
+		addDoubleProperty(PROP_ROTATION, "Rotation Angle", WidgetPropertyCategory.Display, 0, 0, 360);
 	}
 
 	/**
@@ -99,9 +94,9 @@ public final class TriangleModel extends AbstractWidgetModel {
 	@Override
 	protected String getDefaultToolTip() {
 		StringBuffer buffer = new StringBuffer();
-		buffer.append(createTooltipParameter(PROP_ALIASES)+"\n");
+		buffer.append(createTooltipParameter(PROP_ALIASES) + "\n");
 		buffer.append("Value:\t");
-		buffer.append(createTooltipParameter(PROP_FILL)+"\n");
+		buffer.append(createTooltipParameter(PROP_FILL) + "\n");
 		return buffer.toString();
 	}
 
@@ -122,14 +117,14 @@ public final class TriangleModel extends AbstractWidgetModel {
 	public boolean getTransparent() {
 		return getBooleanProperty(PROP_TRANSPARENT).getPropertyValue();
 	}
-	
-//	/**
-//	 * Gets the rotation angle.
-//	 * 
-//	 * @return the rotation angle
-//	 */
-//	public double getRotationAngle() {
-//		return getDoubleProperty(PROP_ROTATION).getPropertyValue();
-//	}
+
+	// /**
+	// * Gets the rotation angle.
+	// *
+	// * @return the rotation angle
+	// */
+	// public double getRotationAngle() {
+	// return getDoubleProperty(PROP_ROTATION).getPropertyValue();
+	// }
 
 }

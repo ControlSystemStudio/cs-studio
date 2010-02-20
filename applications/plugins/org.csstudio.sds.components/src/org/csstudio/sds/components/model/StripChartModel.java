@@ -23,8 +23,6 @@
 package org.csstudio.sds.components.model;
 
 import org.csstudio.sds.model.WidgetPropertyCategory;
-import org.csstudio.sds.model.properties.BooleanProperty;
-import org.csstudio.sds.model.properties.DoubleProperty;
 
 /**
  * Model for strip chart widgets.
@@ -37,7 +35,7 @@ public final class StripChartModel extends AbstractChartModel {
 	 * The ID of this widget model.
 	 */
 	public static final String ID = "org.csstudio.sds.components.StripChart";
-	
+
 	/**
 	 * The number of data channels that this model supports.
 	 */
@@ -55,18 +53,18 @@ public final class StripChartModel extends AbstractChartModel {
 
 	/**
 	 * The base property ID for the value properties. Use the
-	 * {@link #valuePropertyId(int)} method to get the property ID for the
-	 * value of a specific data series. 
+	 * {@link #valuePropertyId(int)} method to get the property ID for the value
+	 * of a specific data series.
 	 */
 	private static final String INTERNAL_PROP_VALUE = "value";
-	
+
 	/**
 	 * The base property ID for the enable plot properties. Use the
 	 * {@link #enablePlotPropertyId(int)} method to get the property ID for the
-	 * property of a specific data series. 
+	 * property of a specific data series.
 	 */
 	private static final String INTERNAL_PROP_ENABLE_PLOT = "enable_plot";
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -81,43 +79,35 @@ public final class StripChartModel extends AbstractChartModel {
 	@Override
 	protected void configureProperties() {
 		super.configureProperties();
-		
+
 		// The value properties.
 		for (int i = 0; i < numberOfDataSeries(); i++) {
 			// The value property is a double property because the strip chart
-			// reads only individual values from the channel. They will be 
+			// reads only individual values from the channel. They will be
 			// aggregated into an array by the edit part.
-			addProperty(valuePropertyId(i), new DoubleProperty(
-					"Value #" + (i+1), WidgetPropertyCategory.Behaviour,
-					0.0));
-			
+			addDoubleProperty(valuePropertyId(i), "Value #" + (i + 1), WidgetPropertyCategory.Behaviour, 0.0);
+
 			// By default, enable the plot for the first value, and disable
 			// all other plots:
 			boolean enableByDefault = (i == 0);
-			addProperty(enablePlotPropertyId(i), new BooleanProperty(
-					"Enable plot #" + (i+1), WidgetPropertyCategory.Display,
-					enableByDefault));
+			addBooleanProperty(enablePlotPropertyId(i), "Enable plot #" + (i + 1), WidgetPropertyCategory.Display, enableByDefault);
 		}
-		
+
 		// The minimum range (size) of the x-axis is one second; the maximum is
 		// practically unbounded.
-		addProperty(PROP_X_AXIS_TIMESPAN, new DoubleProperty(
-				"X-axis timespan (seconds)", WidgetPropertyCategory.Behaviour,
-				300.0, 1.0, Double.MAX_VALUE));
-		
+		addDoubleProperty(PROP_X_AXIS_TIMESPAN, "X-axis timespan (seconds)", WidgetPropertyCategory.Behaviour, 300.0, 1.0, Double.MAX_VALUE);
+
 		// The minimum update interval is 100 milliseconds. Shorter update
 		// intervals may cause problems because the widget redraws after every
 		// update. The maximum interval is 60 seconds.
-		addProperty(PROP_UPDATE_INTERVAL, new DoubleProperty(
-				"Update interval (seconds)", WidgetPropertyCategory.Behaviour,
-				1.0, 0.1, 60.0));
+		addDoubleProperty(PROP_UPDATE_INTERVAL, "Update interval (seconds)", WidgetPropertyCategory.Behaviour, 1.0, 0.1, 60.0);
 	}
 
 	/**
 	 * Returns the current value of the value property with the specified index.
 	 * 
 	 * @param index
-	 *            the value property index.  The valid range for the index is
+	 *            the value property index. The valid range for the index is
 	 *            <code>0 &lt;= index &lt; NUMBER_OF_CHANNELS</code>.
 	 * @return the current value of the property.
 	 * @throws IndexOutOfBoundsException
@@ -141,7 +131,7 @@ public final class StripChartModel extends AbstractChartModel {
 	public boolean isPlotEnabled(final int index) {
 		return getBooleanProperty(enablePlotPropertyId(index)).getPropertyValue();
 	}
-	
+
 	/**
 	 * Returns the timespan displayed on the x-axis in seconds.
 	 * 
@@ -150,7 +140,7 @@ public final class StripChartModel extends AbstractChartModel {
 	public double getXAxisTimespan() {
 		return getDoubleProperty(PROP_X_AXIS_TIMESPAN).getPropertyValue();
 	}
-	
+
 	/**
 	 * Returns the update interval in seconds.
 	 * 
@@ -173,7 +163,7 @@ public final class StripChartModel extends AbstractChartModel {
 	 * the specified index.
 	 * 
 	 * @param index
-	 *            the value index.  The valid range for the index is
+	 *            the value index. The valid range for the index is
 	 *            <code>0 &lt;= index &lt; NUMBER_OF_CHANNELS</code>.
 	 * @return the property ID.
 	 * @throws IndexOutOfBoundsException
@@ -183,16 +173,16 @@ public final class StripChartModel extends AbstractChartModel {
 		if (index < 0 || index >= NUMBER_OF_CHANNELS) {
 			throw new IndexOutOfBoundsException("Invalid index: " + index);
 		}
-		
+
 		return INTERNAL_PROP_VALUE + Integer.toString(index + 1);
 	}
-	
+
 	/**
 	 * Returns the property ID of the enable plot property for the data series
 	 * with the specified index.
 	 * 
 	 * @param index
-	 *            the value index.  The valid range for the index is
+	 *            the value index. The valid range for the index is
 	 *            <code>0 &lt;= index &lt; NUMBER_OF_CHANNELS</code>.
 	 * @return the property ID.
 	 * @throws IndexOutOfBoundsException
@@ -202,7 +192,7 @@ public final class StripChartModel extends AbstractChartModel {
 		if (index < 0 || index >= NUMBER_OF_CHANNELS) {
 			throw new IndexOutOfBoundsException("Invalid index: " + index);
 		}
-		
+
 		return INTERNAL_PROP_ENABLE_PLOT + Integer.toString(index + 1);
 	}
 

@@ -26,9 +26,9 @@ package org.csstudio.utility.adlconverter.utility.widgets;
 
 import org.csstudio.sds.components.model.ActionButtonModel;
 import org.csstudio.sds.model.AbstractWidgetModel;
+import org.csstudio.sds.model.ActionData;
 import org.csstudio.sds.model.DynamicsDescriptor;
 import org.csstudio.sds.model.logic.ParameterDescriptor;
-import org.csstudio.sds.model.properties.ActionData;
 import org.csstudio.sds.model.properties.actions.CommitValueActionModel;
 import org.csstudio.sds.model.properties.actions.CommitValueActionModelFactory;
 import org.csstudio.utility.adlconverter.internationalization.Messages;

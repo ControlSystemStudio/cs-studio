@@ -19,14 +19,11 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.sds.components.model;
+package org.csstudio.sds.components.model;
 
 import org.csstudio.sds.components.common.SwitchPlugins;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
-import org.csstudio.sds.model.properties.ArrayOptionProperty;
-import org.csstudio.sds.model.properties.BooleanProperty;
-import org.csstudio.sds.model.properties.IntegerProperty;
 
 /**
  * A switch widget model.
@@ -39,7 +36,7 @@ public final class SwitchModel extends AbstractWidgetModel {
 	 * Unique identifier.
 	 */
 	public static final String ID = "org.csstudio.sds.components.Switch";
-	
+
 	/**
 	 * The IDs of the properties.
 	 */
@@ -48,7 +45,7 @@ public final class SwitchModel extends AbstractWidgetModel {
 	public static final String PROP_STATE = "switch.state";
 	public static final String PROP_ROTATE = "rotation";
 	public static final String PROP_LINEWIDTH = "linewidth";
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -56,30 +53,30 @@ public final class SwitchModel extends AbstractWidgetModel {
 	public String getTypeID() {
 		return ID;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	protected void configureProperties() {
-		addProperty(PROP_TRANSPARENT, new BooleanProperty("Transparent Background",WidgetPropertyCategory.Display,true));
-		if (SwitchPlugins.names.length>0) {
-			addProperty(PROP_TYPE, new ArrayOptionProperty("Switch Type",WidgetPropertyCategory.Behaviour,SwitchPlugins.names,0));
+		addBooleanProperty(PROP_TRANSPARENT, "Transparent Background", WidgetPropertyCategory.Display, true);
+		if (SwitchPlugins.names.length > 0) {
+			addArrayOptionProperty(PROP_TYPE, "Switch Type", WidgetPropertyCategory.Behaviour, SwitchPlugins.names, 0);
 		}
-		addProperty(PROP_STATE, new IntegerProperty("Switch State",WidgetPropertyCategory.Display,0));
-		addProperty(PROP_ROTATE, new IntegerProperty("Rotation",WidgetPropertyCategory.Display,0,0,360));
-		addProperty(PROP_LINEWIDTH, new IntegerProperty("Line Width",WidgetPropertyCategory.Display,4));
+		addIntegerProperty(PROP_STATE, "Switch State", WidgetPropertyCategory.Display, 0);
+		addIntegerProperty(PROP_ROTATE, "Rotation", WidgetPropertyCategory.Display, 0, 0, 360);
+		addIntegerProperty(PROP_LINEWIDTH, "Line Width", WidgetPropertyCategory.Display, 4);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	protected String getDefaultToolTip() {
 		StringBuffer buffer = new StringBuffer();
-		buffer.append(createTooltipParameter(PROP_ALIASES)+"\n");
+		buffer.append(createTooltipParameter(PROP_ALIASES) + "\n");
 		buffer.append("Type:\t");
-		buffer.append(createTooltipParameter(PROP_TYPE)+"\n");
+		buffer.append(createTooltipParameter(PROP_TYPE) + "\n");
 		buffer.append("State:\t");
 		buffer.append(createTooltipParameter(PROP_STATE));
 		return buffer.toString();
@@ -88,19 +85,19 @@ public final class SwitchModel extends AbstractWidgetModel {
 	public boolean getTransparent() {
 		return getBooleanProperty(PROP_TRANSPARENT).getPropertyValue();
 	}
-	
+
 	public int getType() {
 		return getArrayOptionProperty(PROP_TYPE).getPropertyValue();
 	}
-	
+
 	public int getState() {
 		return getIntegerProperty(PROP_STATE).getPropertyValue();
 	}
-	
+
 	public int getRotation() {
 		return getIntegerProperty(PROP_ROTATE).getPropertyValue();
 	}
-	
+
 	public int getLineWidth() {
 		return getIntegerProperty(PROP_LINEWIDTH).getPropertyValue();
 	}

@@ -1,11 +1,11 @@
 package org.csstudio.sds.components.model.eventing;
 
 import org.csstudio.sds.components.model.ActionButtonModel;
+import org.csstudio.sds.model.ActionData;
 import org.csstudio.sds.model.eventing.AbstractWidgetPropertyPostProcessor;
 import org.csstudio.sds.model.eventing.HidePropertyCommand;
 import org.csstudio.sds.model.eventing.ShowPropertyCommand;
-import org.csstudio.sds.model.properties.ActionData;
-import org.csstudio.sds.model.properties.ActionDataProperty;
+import org.csstudio.sds.model.properties.internal.ActionDataProperty;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CompoundCommand;
 

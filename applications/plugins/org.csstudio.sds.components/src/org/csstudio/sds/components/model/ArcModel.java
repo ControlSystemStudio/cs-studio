@@ -19,13 +19,11 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.sds.components.model;
+package org.csstudio.sds.components.model;
 
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.optionEnums.BorderStyleEnum;
-import org.csstudio.sds.model.properties.BooleanProperty;
-import org.csstudio.sds.model.properties.IntegerProperty;
 
 /**
  * An arc widget model.
@@ -38,7 +36,7 @@ public final class ArcModel extends AbstractWidgetModel {
 	 * Unique identifier.
 	 */
 	public static final String ID = "org.csstudio.sds.components.Arc";
-	
+
 	/**
 	 * The ID of the <i>transparent</i> property.
 	 */
@@ -67,11 +65,12 @@ public final class ArcModel extends AbstractWidgetModel {
 	/**
 	 * Constructor.
 	 */
-	public ArcModel () {
+	public ArcModel() {
 		setWidth(50);
 		setHeight(50);
 		this.setPropertyValue(PROP_BORDER_STYLE, BorderStyleEnum.SHAPE.getIndex());
 	}
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -85,23 +84,23 @@ public final class ArcModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addProperty(PROP_TRANSPARENT, new BooleanProperty("Transparent Background",WidgetPropertyCategory.Display,true));
-		addProperty(PROP_STARTANGLE, new IntegerProperty("Start Angle",WidgetPropertyCategory.Display,0,0,360));
-		addProperty(PROP_ANGLE, new IntegerProperty("Angle",WidgetPropertyCategory.Display,90,0,360));
-		addProperty(PROP_LINEWIDTH, new IntegerProperty("Line Width",WidgetPropertyCategory.Display,1));
-		addProperty(PROP_FILLED, new BooleanProperty("Filled",WidgetPropertyCategory.Display,false));
-		addColorProperty(PROP_FILLCOLOR, "Fill Color",WidgetPropertyCategory.Display,"#ff0000");
+		addBooleanProperty(PROP_TRANSPARENT, "Transparent Background", WidgetPropertyCategory.Display, true);
+		addIntegerProperty(PROP_STARTANGLE, "Start Angle", WidgetPropertyCategory.Display, 0, 0, 360);
+		addIntegerProperty(PROP_ANGLE, "Angle", WidgetPropertyCategory.Display, 90, 0, 360);
+		addIntegerProperty(PROP_LINEWIDTH, "Line Width", WidgetPropertyCategory.Display, 1);
+		addBooleanProperty(PROP_FILLED, "Filled", WidgetPropertyCategory.Display, false);
+		addColorProperty(PROP_FILLCOLOR, "Fill Color", WidgetPropertyCategory.Display, "#ff0000");
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	protected String getDefaultToolTip() {
 		StringBuffer buffer = new StringBuffer();
-		buffer.append(createTooltipParameter(PROP_ALIASES)+"\n");
+		buffer.append(createTooltipParameter(PROP_ALIASES) + "\n");
 		buffer.append("Start Angle:\t");
-		buffer.append(createTooltipParameter(PROP_STARTANGLE)+"\n");
+		buffer.append(createTooltipParameter(PROP_STARTANGLE) + "\n");
 		buffer.append("Angle:\t");
 		buffer.append(createTooltipParameter(PROP_ANGLE));
 		return buffer.toString();
@@ -109,38 +108,43 @@ public final class ArcModel extends AbstractWidgetModel {
 
 	/**
 	 * Returns the transparent state of the background.
+	 * 
 	 * @return true, if the background is transparent, false otherwise
 	 */
 	public boolean getTransparent() {
 		return getBooleanProperty(PROP_TRANSPARENT).getPropertyValue();
 	}
-	
+
 	/**
-	 * Returns the value for the start angle. 
+	 * Returns the value for the start angle.
+	 * 
 	 * @return The value for the start angle
 	 */
 	public int getStartAngle() {
 		return getIntegerProperty(PROP_STARTANGLE).getPropertyValue();
 	}
-	
+
 	/**
 	 * Returns the value for the angle.
+	 * 
 	 * @return The value for the angle
 	 */
 	public int getAngle() {
 		return getIntegerProperty(PROP_ANGLE).getPropertyValue();
 	}
-	
+
 	/**
 	 * Returns the width of the arc.
+	 * 
 	 * @return The width of the arc
 	 */
 	public int getLineWidth() {
 		return getIntegerProperty(PROP_LINEWIDTH).getPropertyValue();
 	}
-	
+
 	/**
 	 * Returns the fill state of the arc.
+	 * 
 	 * @return true, if the arc should be filled, false otherwise
 	 */
 	public boolean getFill() {

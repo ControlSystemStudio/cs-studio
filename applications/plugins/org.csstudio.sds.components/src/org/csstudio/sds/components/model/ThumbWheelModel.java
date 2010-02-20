@@ -23,17 +23,13 @@ package org.csstudio.sds.components.model;
 
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
-import org.csstudio.sds.model.properties.DoubleProperty;
-import org.csstudio.sds.model.properties.IntegerProperty;
 import org.csstudio.sds.util.ColorAndFontUtil;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.FontData;
 
 /**
- *  A thumb wheel widget model.
+ * A thumb wheel widget model.
  * 
- *  @author Alen Vrecko, Jozef Stefan Institute
- *  @author Joerg Rathlev, Universitaet Hamburg
+ * @author Alen Vrecko, Jozef Stefan Institute
+ * @author Joerg Rathlev, Universitaet Hamburg
  */
 public class ThumbWheelModel extends AbstractWidgetModel {
 
@@ -82,29 +78,21 @@ public class ThumbWheelModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addProperty(PROP_VALUE, new DoubleProperty("Value",
-				WidgetPropertyCategory.Behaviour, 0));
-		addProperty(PROP_WHOLE_DIGITS_PART, new IntegerProperty("Whole digits",
-				WidgetPropertyCategory.Display, 5));
-		addProperty(PROP_MIN, new DoubleProperty("Min",
-				WidgetPropertyCategory.Behaviour, Double.NaN));
-		addProperty(PROP_MAX, new DoubleProperty("Max",
-				WidgetPropertyCategory.Behaviour, Double.NaN));
-		
-		// FIXME: 18.02.2010: swende: Ist für PROP_WHOLE_DIGITS_PART bereits angemeldet!? Prüfen!
-		addProperty(PROP_WHOLE_DIGITS_PART, new IntegerProperty(
-				"Integer digits", WidgetPropertyCategory.Behaviour, 5));
-		addProperty(PROP_DECIMAL_DIGITS_PART, new IntegerProperty(
-				"Decimal digits", WidgetPropertyCategory.Behaviour, 5));
+		addDoubleProperty(PROP_VALUE, "Value", WidgetPropertyCategory.Behaviour, 0);
+		addIntegerProperty(PROP_WHOLE_DIGITS_PART, "Whole digits", WidgetPropertyCategory.Display, 5);
+		addDoubleProperty(PROP_MIN, "Min", WidgetPropertyCategory.Behaviour, Double.NaN);
+		addDoubleProperty(PROP_MAX, "Max", WidgetPropertyCategory.Behaviour, Double.NaN);
 
-		addFontProperty(PROP_FONT, "Wheel Fonts",
-				WidgetPropertyCategory.Display, ColorAndFontUtil.toFontString("Arial", 9));
+		// FIXME: 18.02.2010: swende: Ist für PROP_WHOLE_DIGITS_PART bereits
+		// angemeldet!? Prüfen!
+		addIntegerProperty(PROP_WHOLE_DIGITS_PART, "Integer digits", WidgetPropertyCategory.Behaviour, 5);
+		addIntegerProperty(PROP_DECIMAL_DIGITS_PART, "Decimal digits", WidgetPropertyCategory.Behaviour, 5);
 
-		addColorProperty(PROP_INTERNAL_FRAME_COLOR, "Internal frame color", WidgetPropertyCategory.Display,
-				"#000000");
+		addFontProperty(PROP_FONT, "Wheel Fonts", WidgetPropertyCategory.Display, ColorAndFontUtil.toFontString("Arial", 9));
 
-		addProperty(PROP_INTERNAL_FRAME_THICKNESS, new IntegerProperty(
-				"Internal frame thickness", WidgetPropertyCategory.Display, 0));
+		addColorProperty(PROP_INTERNAL_FRAME_COLOR, "Internal frame color", WidgetPropertyCategory.Display, "#000000");
+
+		addIntegerProperty(PROP_INTERNAL_FRAME_THICKNESS, "Internal frame thickness", WidgetPropertyCategory.Display, 0);
 
 	}
 

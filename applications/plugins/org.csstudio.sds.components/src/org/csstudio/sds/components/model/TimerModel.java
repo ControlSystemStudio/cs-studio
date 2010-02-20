@@ -23,8 +23,6 @@ package org.csstudio.sds.components.model;
 
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
-import org.csstudio.sds.model.properties.IntegerProperty;
-import org.csstudio.sds.model.properties.ResourceProperty;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 
@@ -40,7 +38,7 @@ public final class TimerModel extends AbstractWidgetModel {
 	 * The ID of the script property.
 	 */
 	public static final String PROP_SCRIPT = "script"; //$NON-NLS-1$
-	
+
 	/**
 	 * The ID of the delay property.
 	 */
@@ -54,7 +52,7 @@ public final class TimerModel extends AbstractWidgetModel {
 	/**
 	 * The default value of the height property.
 	 */
-	
+
 	private static final int DEFAULT_HEIGHT = 16;
 
 	/**
@@ -87,12 +85,10 @@ public final class TimerModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addProperty(PROP_SCRIPT, new ResourceProperty("Script",
-				WidgetPropertyCategory.Behaviour, new Path(""), new String[] {"css-sdss"}));
-		addProperty(PROP_DELAY, new IntegerProperty("Delay (in ms)", 
-				WidgetPropertyCategory.Behaviour, DEFAULT_DELAY, 0, Integer.MAX_VALUE));
+		addResourceProperty(PROP_SCRIPT, "Script", WidgetPropertyCategory.Behaviour, new Path(""), new String[] { "css-sdss" });
+		addIntegerProperty(PROP_DELAY, "Delay (in ms)", WidgetPropertyCategory.Behaviour, DEFAULT_DELAY, 0, Integer.MAX_VALUE);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -107,20 +103,20 @@ public final class TimerModel extends AbstractWidgetModel {
 		this.markPropertyAsInvisible(PROP_HEIGHT);
 		this.markPropertyAsInvisible(PROP_POS_X);
 		this.markPropertyAsInvisible(PROP_POS_Y);
-//		this.markPropertyAsInvisible(PROP_VISIBILITY);
+		// this.markPropertyAsInvisible(PROP_VISIBILITY);
 		this.markPropertyAsInvisible(PROP_WIDTH);
 		this.markPropertyAsInvisible(PROP_CURSOR);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	protected String getDefaultToolTip() {
 		StringBuffer buffer = new StringBuffer();
-		buffer.append(createTooltipParameter(PROP_ALIASES)+"\n");
+		buffer.append(createTooltipParameter(PROP_ALIASES) + "\n");
 		buffer.append("Script:\t");
-		buffer.append(createTooltipParameter(PROP_SCRIPT)+"\n");
+		buffer.append(createTooltipParameter(PROP_SCRIPT) + "\n");
 		buffer.append("Delay:\t");
 		buffer.append(createTooltipParameter(PROP_DELAY));
 		return buffer.toString();
@@ -134,7 +130,7 @@ public final class TimerModel extends AbstractWidgetModel {
 	public IPath getScriptPath() {
 		return getResourceProperty(PROP_SCRIPT).getPropertyValue();
 	}
-	
+
 	/**
 	 * Gets the delay.
 	 * 

@@ -23,8 +23,6 @@ package org.csstudio.sds.components.model;
 
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
-import org.csstudio.sds.model.properties.BooleanProperty;
-import org.csstudio.sds.model.properties.DoubleProperty;
 
 /**
  * This class defines an rectangle widget model.
@@ -38,12 +36,12 @@ public final class RectangleModel extends AbstractWidgetModel {
 	 * The ID of the fill grade property.
 	 */
 	public static final String PROP_FILL = "fill"; //$NON-NLS-1$
-	
+
 	/**
 	 * The ID of the orientation property.
 	 */
 	public static final String PROP_ORIENTATION = "orientation"; //$NON-NLS-1$
-	
+
 	/**
 	 * The ID of the transparent property.
 	 */
@@ -57,9 +55,9 @@ public final class RectangleModel extends AbstractWidgetModel {
 	/**
 	 * The default value of the height property.
 	 */
-	
+
 	private static final int DEFAULT_HEIGHT = 10;
-	
+
 	/**
 	 * The default value of the orientation property.
 	 */
@@ -95,21 +93,18 @@ public final class RectangleModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addProperty(PROP_FILL, new DoubleProperty("Value","Value??",
-				WidgetPropertyCategory.Behaviour, DEFAULT_FILL, 0.0, 100.0));
-		addProperty(PROP_ORIENTATION, new BooleanProperty("Horizontal Orientation", 
-				WidgetPropertyCategory.Behaviour, DEFAULT_ORIENTATION_HORIZONTAL));
-		addProperty(PROP_TRANSPARENT, new BooleanProperty("Transparent Background", 
-				WidgetPropertyCategory.Display, false));
+		addDoubleProperty(PROP_FILL, "Value", "Value??", WidgetPropertyCategory.Behaviour, DEFAULT_FILL, 0.0, 100.0);
+		addBooleanProperty(PROP_ORIENTATION, "Horizontal Orientation", WidgetPropertyCategory.Behaviour, DEFAULT_ORIENTATION_HORIZONTAL);
+		addBooleanProperty(PROP_TRANSPARENT, "Transparent Background", WidgetPropertyCategory.Display, false);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	protected String getDefaultToolTip() {
 		StringBuffer buffer = new StringBuffer();
-		buffer.append(createTooltipParameter(PROP_ALIASES)+"\n");
+		buffer.append(createTooltipParameter(PROP_ALIASES) + "\n");
 		buffer.append("Value:\t");
 		buffer.append(createTooltipParameter(PROP_FILL));
 		return buffer.toString();
@@ -123,7 +118,7 @@ public final class RectangleModel extends AbstractWidgetModel {
 	public double getFillLevel() {
 		return getDoubleProperty(PROP_FILL).getPropertyValue();
 	}
-	
+
 	/**
 	 * Gets the orientation.
 	 * 
@@ -132,7 +127,7 @@ public final class RectangleModel extends AbstractWidgetModel {
 	public boolean getOrientation() {
 		return getBooleanProperty(PROP_ORIENTATION).getPropertyValue();
 	}
-	
+
 	/**
 	 * Returns if the background is transparent.
 	 * 

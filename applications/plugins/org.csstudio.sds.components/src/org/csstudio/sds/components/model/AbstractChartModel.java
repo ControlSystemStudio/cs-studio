@@ -24,11 +24,6 @@ package org.csstudio.sds.components.model;
 
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
-import org.csstudio.sds.model.properties.ArrayOptionProperty;
-import org.csstudio.sds.model.properties.BooleanProperty;
-import org.csstudio.sds.model.properties.DoubleProperty;
-import org.csstudio.sds.model.properties.IntegerProperty;
-import org.csstudio.sds.model.properties.StringProperty;
 
 /**
  * Abstract base class for widgets that draw a chart.
@@ -36,7 +31,7 @@ import org.csstudio.sds.model.properties.StringProperty;
  * @author Joerg Rathlev
  */
 public abstract class AbstractChartModel extends AbstractWidgetModel {
-	
+
 	/**
 	 * The ID of the show axes property.
 	 */
@@ -115,28 +110,22 @@ public abstract class AbstractChartModel extends AbstractWidgetModel {
 	/**
 	 * The show axes options.
 	 */
-	private static final String[] AXES_OPTIONS = new String[] {
-		"None", "X-Axis", "Y-Axis", "Both"
-	};
-	
+	private static final String[] AXES_OPTIONS = new String[] { "None", "X-Axis", "Y-Axis", "Both" };
+
 	/**
 	 * The options for the data point drawing style property.
 	 */
-	private static final String[] DRAWING_STYLE_OPTIONS = new String[] {
-		"Single pixel", "Small plus sign", "Small square", "Diamond"
-	};
-	
+	private static final String[] DRAWING_STYLE_OPTIONS = new String[] { "Single pixel", "Small plus sign", "Small square", "Diamond" };
+
 	/**
 	 * The options for the axis scaling property.
 	 */
-	private static final String[] AXIS_SCALING_OPTIONS = new String[] {
-		"Linear", "Logarithmic"
-	};
+	private static final String[] AXIS_SCALING_OPTIONS = new String[] { "Linear", "Logarithmic" };
 
 	/**
 	 * The base property ID for the data color properties. Use the
 	 * {@link #plotColorPropertyId(int)} method to get the property ID for the
-	 * color of a specific data series. 
+	 * color of a specific data series.
 	 */
 	private static final String INTERNAL_PROP_PLOT_COLOR = "plot_color";
 
@@ -146,44 +135,25 @@ public abstract class AbstractChartModel extends AbstractWidgetModel {
 	// CheckStyle won't believe it, but there is nothing wrong here.
 	@Override
 	protected void configureProperties() {
-		addProperty(PROP_SHOW_AXES, new ArrayOptionProperty("Show axes",
-				WidgetPropertyCategory.Display, AXES_OPTIONS, 3));
-		addProperty(PROP_SHOW_GRID_LINES, new ArrayOptionProperty(
-				"Grid lines", WidgetPropertyCategory.Display, AXES_OPTIONS, 0));
-		addProperty(PROP_LINE_CHART, new BooleanProperty("Line chart",
-				WidgetPropertyCategory.Display, false));
+		addArrayOptionProperty(PROP_SHOW_AXES, "Show axes", WidgetPropertyCategory.Display, AXES_OPTIONS, 3);
+		addArrayOptionProperty(PROP_SHOW_GRID_LINES, "Grid lines", WidgetPropertyCategory.Display, AXES_OPTIONS, 0);
+		addBooleanProperty(PROP_LINE_CHART, "Line chart", WidgetPropertyCategory.Display, false);
 		for (int i = 0; i < numberOfDataSeries(); i++) {
-			addColorProperty(plotColorPropertyId(i),
-					"Plot color #" + (i+1), WidgetPropertyCategory.Display,
-					"#000000");
+			addColorProperty(plotColorPropertyId(i), "Plot color #" + (i + 1), WidgetPropertyCategory.Display, "#000000");
 		}
-		addColorProperty(PROP_GRID_LINE_COLOR, "Grid line color",
-				WidgetPropertyCategory.Display, "#D2D2D2");
-		addProperty(PROP_MIN, new DoubleProperty(
-				"Minimum", WidgetPropertyCategory.Display, -100.0));
-		addProperty(PROP_MAX, new DoubleProperty(
-				"Maximum", WidgetPropertyCategory.Display, 100.0));
-		addProperty(PROP_AUTOSCALE, new BooleanProperty(
-				"Automatic scaling", WidgetPropertyCategory.Display, false));
-		addProperty(PROP_LABELED_TICKS, new BooleanProperty(
-				"Labeled ticks", WidgetPropertyCategory.Display, true));
-		addProperty(PROP_PLOT_LINE_WIDTH, new IntegerProperty(
-				"Graph line width",WidgetPropertyCategory.Display, 1, 1, 100));
-		addProperty(PROP_TRANSPARENT, new BooleanProperty(
-				"Transparent background", WidgetPropertyCategory.Display,
-				false));
-		addProperty(PROP_DATA_POINT_DRAWING_STYLE, new ArrayOptionProperty(
-				"Data point drawing style", WidgetPropertyCategory.Display, 
-				DRAWING_STYLE_OPTIONS, 2));
-		addProperty(PROP_Y_AXIS_SCALING, new ArrayOptionProperty(
-				"Y-axis scaling", WidgetPropertyCategory.Display,
-				AXIS_SCALING_OPTIONS, 0));
-		addProperty(PROP_LABEL, new StringProperty("Label",
-				WidgetPropertyCategory.Display, ""));
-		addProperty(PROP_X_AXIS_LABEL, new StringProperty("X-axis label",
-				WidgetPropertyCategory.Display, ""));
-		addProperty(PROP_Y_AXIS_LABEL, new StringProperty("Y-axis label",
-				WidgetPropertyCategory.Display, ""));
+		addColorProperty(PROP_GRID_LINE_COLOR, "Grid line color", WidgetPropertyCategory.Display, "#D2D2D2");
+		addDoubleProperty(PROP_MIN, "Minimum", WidgetPropertyCategory.Display, -100.0);
+		addDoubleProperty(PROP_MAX, "Maximum", WidgetPropertyCategory.Display, 100.0);
+		addBooleanProperty(PROP_AUTOSCALE, "Automatic scaling", WidgetPropertyCategory.Display, false);
+		addBooleanProperty(PROP_LABELED_TICKS, "Labeled ticks", WidgetPropertyCategory.Display, true);
+		addIntegerProperty(PROP_PLOT_LINE_WIDTH, "Graph line width", WidgetPropertyCategory.Display, 1, 1, 100);
+		addBooleanProperty(PROP_TRANSPARENT, "Transparent background", WidgetPropertyCategory.Display, false);
+		addArrayOptionProperty(PROP_DATA_POINT_DRAWING_STYLE, "Data point drawing style", WidgetPropertyCategory.Display, DRAWING_STYLE_OPTIONS,
+				2);
+		addArrayOptionProperty(PROP_Y_AXIS_SCALING, "Y-axis scaling", WidgetPropertyCategory.Display, AXIS_SCALING_OPTIONS, 0);
+		addStringProperty(PROP_LABEL, "Label", WidgetPropertyCategory.Display, "");
+		addStringProperty(PROP_X_AXIS_LABEL, "X-axis label", WidgetPropertyCategory.Display, "");
+		addStringProperty(PROP_Y_AXIS_LABEL, "Y-axis label", WidgetPropertyCategory.Display, "");
 	}
 
 	/**
@@ -206,8 +176,8 @@ public abstract class AbstractChartModel extends AbstractWidgetModel {
 
 	/**
 	 * Returns the minimum value.
-	 * @return	double
-	 * 				The minimum value
+	 * 
+	 * @return double The minimum value
 	 */
 	public final double getMin() {
 		return getDoubleProperty(PROP_MIN).getPropertyValue();
@@ -215,8 +185,8 @@ public abstract class AbstractChartModel extends AbstractWidgetModel {
 
 	/**
 	 * Returns the maximum value.
-	 * @return	double
-	 * 				The maximum value
+	 * 
+	 * @return double The maximum value
 	 */
 	public final double getMax() {
 		return getDoubleProperty(PROP_MAX).getPropertyValue();
@@ -326,14 +296,18 @@ public abstract class AbstractChartModel extends AbstractWidgetModel {
 	}
 
 	/**
-	 * <p>Returns the property ID of the data color property for the data with
-	 * the specified index.</p>
+	 * <p>
+	 * Returns the property ID of the data color property for the data with the
+	 * specified index.
+	 * </p>
 	 * 
-	 * <p>The valid range of the index depends on the concrete widget type and
-	 * is defined by the concrete subclass. Clients must not call this method
-	 * with an index outside the range of valid indices. If this method is
-	 * called with an invalid index, it will return a property ID which is not
-	 * defined for the concrete widget type.</p>
+	 * <p>
+	 * The valid range of the index depends on the concrete widget type and is
+	 * defined by the concrete subclass. Clients must not call this method with
+	 * an index outside the range of valid indices. If this method is called
+	 * with an invalid index, it will return a property ID which is not defined
+	 * for the concrete widget type.
+	 * </p>
 	 * 
 	 * @param index
 	 *            the data index.

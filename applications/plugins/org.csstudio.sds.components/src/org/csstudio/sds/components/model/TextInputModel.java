@@ -25,13 +25,7 @@ import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.optionEnums.TextAlignmentEnum;
 import org.csstudio.sds.model.optionEnums.TextTypeEnum;
-import org.csstudio.sds.model.properties.ArrayOptionProperty;
-import org.csstudio.sds.model.properties.BooleanProperty;
-import org.csstudio.sds.model.properties.IntegerProperty;
-import org.csstudio.sds.model.properties.StringProperty;
 import org.csstudio.sds.util.ColorAndFontUtil;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.FontData;
 
 /**
  * A widget model for text inputs.
@@ -50,12 +44,12 @@ public final class TextInputModel extends AbstractWidgetModel {
 	 * The ID of the font property.
 	 */
 	public static final String PROP_FONT = "font"; //$NON-NLS-1$
-	
+
 	/**
 	 * The ID of the text alignment property.
 	 */
 	public static final String PROP_TEXT_ALIGNMENT = "textAlignment"; //$NON-NLS-1$
-	
+
 	/**
 	 * The ID of the precision property.
 	 */
@@ -74,19 +68,19 @@ public final class TextInputModel extends AbstractWidgetModel {
 	/**
 	 * The default value of the width property.
 	 */
-	private static final int DEFAULT_WIDTH = 80;	
+	private static final int DEFAULT_WIDTH = 80;
 	/**
 	 * The ID of the <i>transparent</i> property.
 	 */
 	public static final String PROP_TRANSPARENT = "transparent";
 	/**
-     * Type of the displayed text.
-     */
-    public static final String PROP_VALUE_TYPE = "value_type";
-    /**
-     * The ID of the <i>double type</i> property.
-     */
-    public static final int TYPE_DOUBLE = 1;
+	 * Type of the displayed text.
+	 */
+	public static final String PROP_VALUE_TYPE = "value_type";
+	/**
+	 * The ID of the <i>double type</i> property.
+	 */
+	public static final int TYPE_DOUBLE = 1;
 
 	/**
 	 * Standard constructor.
@@ -108,26 +102,24 @@ public final class TextInputModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addProperty(PROP_INPUT_TEXT, new StringProperty("Input Text", 
-				WidgetPropertyCategory.Behaviour, "")); //$NON-NLS-1$
-		addFontProperty(PROP_FONT, "Font",
-				WidgetPropertyCategory.Display, ColorAndFontUtil.toFontString("Arial", 8)); //$NON-NLS-1$
-		addProperty(PROP_TEXT_ALIGNMENT, new ArrayOptionProperty("Text Alignment", 
-				WidgetPropertyCategory.Display, TextAlignmentEnum.getDisplayNames() ,TextAlignmentEnum.CENTER.getIndex()));
-		addProperty(PROP_TRANSPARENT, new BooleanProperty("Transparent Background",WidgetPropertyCategory.Display,true));
-		//FIXME: 2008-07-11: swende: Use an OptionProperty instead!
-		addProperty(PROP_VALUE_TYPE, new ArrayOptionProperty("Value Type",WidgetPropertyCategory.Behaviour, TextTypeEnum.getDisplayNames(), TextTypeEnum.DOUBLE.getIndex()));
-		addProperty(PROP_PRECISION, new IntegerProperty("Decimal places",
-				WidgetPropertyCategory.Behaviour, 2, 0, 10));
+		addStringProperty(PROP_INPUT_TEXT, "Input Text", WidgetPropertyCategory.Behaviour, ""); //$NON-NLS-1$
+		addFontProperty(PROP_FONT, "Font", WidgetPropertyCategory.Display, ColorAndFontUtil.toFontString("Arial", 8)); //$NON-NLS-1$
+		addArrayOptionProperty(PROP_TEXT_ALIGNMENT, "Text Alignment", WidgetPropertyCategory.Display, TextAlignmentEnum.getDisplayNames(),
+				TextAlignmentEnum.CENTER.getIndex());
+		addBooleanProperty(PROP_TRANSPARENT, "Transparent Background", WidgetPropertyCategory.Display, true);
+		// FIXME: 2008-07-11: swende: Use an OptionProperty instead!
+		addArrayOptionProperty(PROP_VALUE_TYPE, "Value Type", WidgetPropertyCategory.Behaviour, TextTypeEnum.getDisplayNames(),
+				TextTypeEnum.DOUBLE.getIndex());
+		addIntegerProperty(PROP_PRECISION, "Decimal places", WidgetPropertyCategory.Behaviour, 2, 0, 10);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	protected String getDefaultToolTip() {
 		StringBuffer buffer = new StringBuffer();
-		buffer.append(createTooltipParameter(PROP_ALIASES)+"\n");
+		buffer.append(createTooltipParameter(PROP_ALIASES) + "\n");
 		buffer.append("Text:\t");
 		buffer.append(createTooltipParameter(PROP_INPUT_TEXT));
 		return buffer.toString();
@@ -135,48 +127,50 @@ public final class TextInputModel extends AbstractWidgetModel {
 
 	/**
 	 * Gets the input text.
+	 * 
 	 * @return the input text
 	 */
 	public String getInputText() {
 		return getStringProperty(PROP_INPUT_TEXT).getPropertyValue();
 	}
-	
+
 	/**
 	 * Gets, if the marks should be shown or not.
-	 * @return int
-	 * 				0 = Center, 1 = Top, 2 = Bottom, 3 = Left, 4 = Right
+	 * 
+	 * @return int 0 = Center, 1 = Top, 2 = Bottom, 3 = Left, 4 = Right
 	 */
 	public int getTextAlignment() {
 		return getArrayOptionProperty(PROP_TEXT_ALIGNMENT).getPropertyValue();
 	}
-	
+
 	/**
 	 * Returns, if this widget should have a transparent background.
-	 * @return boolean
-	 * 				True, if it should have a transparent background, false otherwise
+	 * 
+	 * @return boolean True, if it should have a transparent background, false
+	 *         otherwise
 	 */
 	public boolean getTransparent() {
 		return getBooleanProperty(PROP_TRANSPARENT).getPropertyValue();
 	}
-	
+
 	/**
 	 * Returns the type of the text (Double or String).
+	 * 
 	 * @return The type of the text
 	 */
 	public TextTypeEnum getValueType() {
 		TextTypeEnum result = TextTypeEnum.TEXT;
-		
+
 		int index = (Integer) getArrayOptionProperty(PROP_VALUE_TYPE).getPropertyValue();
-		
-		if(index>= 0 && index<TextTypeEnum.values().length){
+
+		if (index >= 0 && index < TextTypeEnum.values().length) {
 			result = TextTypeEnum.values()[index];
 		}
-		
+
 		return result;
 	}
 
-    
-    /**
+	/**
 	 * Return the precision.
 	 * 
 	 * @return The precision.

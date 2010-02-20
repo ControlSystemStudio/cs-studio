@@ -25,16 +25,12 @@ import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.optionEnums.BorderStyleEnum;
 import org.csstudio.sds.model.optionEnums.TextAlignmentEnum;
-import org.csstudio.sds.model.properties.ArrayOptionProperty;
-import org.csstudio.sds.model.properties.StringProperty;
 import org.csstudio.sds.util.ColorAndFontUtil;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.FontData;
 
 /**
  * 
  * @author Helge Rickens, Kai Meyer
- *
+ * 
  */
 public final class MenuButtonModel extends AbstractWidgetModel {
 	/**
@@ -45,7 +41,7 @@ public final class MenuButtonModel extends AbstractWidgetModel {
 	 * The ID of the font property.
 	 */
 	public static final String PROP_FONT = "font"; //$NON-NLS-1$
-	
+
 	/**
 	 * The ID of the text alignment property.
 	 */
@@ -63,7 +59,7 @@ public final class MenuButtonModel extends AbstractWidgetModel {
 	 * The ID of this widget model.
 	 */
 	public static final String ID = "org.csstudio.sds.components.MenuButton";
-	
+
 	/**
 	 * Constructor.
 	 */
@@ -77,23 +73,21 @@ public final class MenuButtonModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addProperty(PROP_LABEL, new StringProperty("Label Text",
-				WidgetPropertyCategory.Display, "")); //$NON-NLS-1$
-		addFontProperty(PROP_FONT,"Font",
-				WidgetPropertyCategory.Display, ColorAndFontUtil.toFontString("Arial", 8)); //$NON-NLS-1$
-		addProperty(PROP_TEXT_ALIGNMENT, new ArrayOptionProperty("Text Alignment", 
-				WidgetPropertyCategory.Display, TextAlignmentEnum.getDisplayNames() ,TextAlignmentEnum.CENTER.getIndex()));
-//		addProperty(PROP_ACTIONDATA, new ActionDataProperty("Action Data",
-//				WidgetPropertyCategory.Behaviour, new ActionData()));
+		addStringProperty(PROP_LABEL, "Label Text", WidgetPropertyCategory.Display, ""); //$NON-NLS-1$
+		addFontProperty(PROP_FONT, "Font", WidgetPropertyCategory.Display, ColorAndFontUtil.toFontString("Arial", 8)); //$NON-NLS-1$
+		addArrayOptionProperty(PROP_TEXT_ALIGNMENT, "Text Alignment", WidgetPropertyCategory.Display, TextAlignmentEnum.getDisplayNames(),
+				TextAlignmentEnum.CENTER.getIndex());
+		// addProperty(PROP_ACTIONDATA, new ActionDataProperty("Action Data",
+		// WidgetPropertyCategory.Behaviour, new ActionData()));
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	protected String getDefaultToolTip() {
 		StringBuffer buffer = new StringBuffer();
-		buffer.append(createTooltipParameter(PROP_ALIASES)+"\n");
+		buffer.append(createTooltipParameter(PROP_ALIASES) + "\n");
 		buffer.append("Actions:\t");
 		buffer.append(createTooltipParameter(PROP_ACTIONDATA));
 		return buffer.toString();
@@ -106,6 +100,7 @@ public final class MenuButtonModel extends AbstractWidgetModel {
 	public String getTypeID() {
 		return ID;
 	}
+
 	/**
 	 * Return the label text.
 	 * 
@@ -114,11 +109,11 @@ public final class MenuButtonModel extends AbstractWidgetModel {
 	public String getLabel() {
 		return getStringProperty(PROP_LABEL).getPropertyValue();
 	}
-	
+
 	/**
 	 * Returns the alignment for the text.
-	 * @return int 
-	 * 			0 = Center, 1 = Top, 2 = Bottom, 3 = Left, 4 = Right
+	 * 
+	 * @return int 0 = Center, 1 = Top, 2 = Bottom, 3 = Left, 4 = Right
 	 */
 	public int getTextAlignment() {
 		return getArrayOptionProperty(PROP_TEXT_ALIGNMENT).getPropertyValue();

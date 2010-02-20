@@ -23,8 +23,6 @@ package org.csstudio.sds.components.model;
 
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
-import org.csstudio.sds.model.properties.ArrayOptionProperty;
-import org.csstudio.sds.model.properties.DoubleProperty;
 
 /**
  * An ellipse widget model.
@@ -96,33 +94,28 @@ public final class AdvancedSliderModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addProperty(PROP_VALUE, new DoubleProperty("Slider Value",
-				WidgetPropertyCategory.Behaviour, 50.0));
-		addProperty(PROP_MIN, new DoubleProperty("Min",
-				WidgetPropertyCategory.Behaviour, 0.0));
-		addProperty(PROP_MAX, new DoubleProperty("Max",
-				WidgetPropertyCategory.Behaviour, 100.0));
+		addDoubleProperty(PROP_VALUE, "Slider Value", WidgetPropertyCategory.Behaviour, 50.0);
+		addDoubleProperty(PROP_MIN, "Min", WidgetPropertyCategory.Behaviour, 0.0);
+		addDoubleProperty(PROP_MAX, "Max", WidgetPropertyCategory.Behaviour, 100.0);
 		// The increment is limited to the range 0.001..1000 because the
 		// scrollbar control used internally by the widget causes problems
 		// if the value range of the scrollbar gets too large, probably because
 		// it uses integer numbers internally.
-		addProperty(PROP_INCREMENT, new DoubleProperty("Increment",
-				WidgetPropertyCategory.Behaviour, 1, 0.001, 1000.0));
-		addProperty(PROP_ORIENTATION, new ArrayOptionProperty("Orientation",
-				WidgetPropertyCategory.Display, new String[] {"Horizontal", "Vertical"}, 0));
+		addDoubleProperty(PROP_INCREMENT, "Increment", WidgetPropertyCategory.Behaviour, 1, 0.001, 1000.0);
+		addArrayOptionProperty(PROP_ORIENTATION, "Orientation", WidgetPropertyCategory.Display, new String[] { "Horizontal", "Vertical" }, 0);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	protected String getDefaultToolTip() {
 		StringBuffer buffer = new StringBuffer();
-		buffer.append(createTooltipParameter(PROP_ALIASES)+"\n");
+		buffer.append(createTooltipParameter(PROP_ALIASES) + "\n");
 		buffer.append("Maximum:\t");
-		buffer.append(createTooltipParameter(PROP_MAX)+"\n");
+		buffer.append(createTooltipParameter(PROP_MAX) + "\n");
 		buffer.append("Minimum:\t");
-		buffer.append(createTooltipParameter(PROP_MIN)+"\n");
+		buffer.append(createTooltipParameter(PROP_MIN) + "\n");
 		buffer.append("Current Value:\t");
 		buffer.append(createTooltipParameter(PROP_VALUE));
 		return buffer.toString();
@@ -171,6 +164,6 @@ public final class AdvancedSliderModel extends AbstractWidgetModel {
 	 */
 	public boolean isHorizontal() {
 		int orientation = getArrayOptionProperty(PROP_ORIENTATION).getPropertyValue();
-		return orientation==0;
+		return orientation == 0;
 	}
 }

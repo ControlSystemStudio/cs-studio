@@ -23,8 +23,6 @@ package org.csstudio.sds.components.model;
 
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
-import org.csstudio.sds.model.properties.DoubleProperty;
-import org.csstudio.sds.model.properties.PointlistProperty;
 import org.csstudio.sds.model.properties.PropertyChangeAdapter;
 import org.csstudio.sds.util.RotationUtil;
 import org.eclipse.draw2d.geometry.Dimension;
@@ -71,13 +69,11 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 
 		// FIXME: 18.02.2010: swende: Prüfen, ob das nur so geht?!
-		getDoubleProperty(PROP_ROTATION).addPropertyChangeListener(
-				new PropertyChangeAdapter() {
-					public void propertyValueChanged(final Object oldValue,
-							final Object newValue) {
-						setPoints(rotatePoints(_originalPoints.getCopy(), (Double) newValue), false);
-					}
-				});
+		getDoubleProperty(PROP_ROTATION).addPropertyChangeListener(new PropertyChangeAdapter() {
+			public void propertyValueChanged(final Object oldValue, final Object newValue) {
+				setPoints(rotatePoints(_originalPoints.getCopy(), (Double) newValue), false);
+			}
+		});
 	}
 
 	/**
@@ -85,10 +81,8 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addProperty(PROP_POINTS, new PointlistProperty("Points", WidgetPropertyCategory.Position,
-				new PointList()));
-		addProperty(PROP_FILL, new DoubleProperty("Value",
-				WidgetPropertyCategory.Behaviour, 100.0, 0.0, 100.0));
+		addPointlistProperty(PROP_POINTS, "Points", WidgetPropertyCategory.Position, new PointList());
+		addDoubleProperty(PROP_FILL, "Value", WidgetPropertyCategory.Behaviour, 100.0, 0.0, 100.0);
 	}
 
 	/**
@@ -96,10 +90,11 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 	 * 
 	 * @param points
 	 *            the polygon points
-	 * @param rememberPoints true if the zero relative points should be remembered, false otherwise.
+	 * @param rememberPoints
+	 *            true if the zero relative points should be remembered, false
+	 *            otherwise.
 	 */
-	public final void setPoints(final PointList points,
-			final boolean rememberPoints) {
+	public final void setPoints(final PointList points, final boolean rememberPoints) {
 		if (points.size() > 0) {
 			PointList copy = points.getCopy();
 			if (rememberPoints) {
@@ -188,37 +183,39 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 	/**
 	 * Rotates all points.
 	 * 
-	 * @param points The PoinList, which points should be rotated
+	 * @param points
+	 *            The PoinList, which points should be rotated
 	 * @param angle
 	 *            The angle to rotate
 	 * @return The rotated PointList
 	 */
-	public final PointList rotatePoints(final PointList points, final double angle) {		
+	public final PointList rotatePoints(final PointList points, final double angle) {
 		Rectangle pointBounds = points.getBounds();
 		Point rotationPoint = pointBounds.getCenter();
 		PointList newPoints = new PointList();
 
 		for (int i = 0; i < points.size(); i++) {
-			newPoints.addPoint(RotationUtil.rotate(points.getPoint(i), angle,
-					rotationPoint));
+			newPoints.addPoint(RotationUtil.rotate(points.getPoint(i), angle, rotationPoint));
 		}
 
 		Rectangle newPointBounds = newPoints.getBounds();
 		if (!rotationPoint.equals(newPointBounds.getCenter())) {
-			Dimension difference = rotationPoint.getCopy().getDifference(
-					newPointBounds.getCenter());
+			Dimension difference = rotationPoint.getCopy().getDifference(newPointBounds.getCenter());
 			newPoints.translate(difference.width, difference.height);
 		}
 
 		return newPoints;
 	}
-	
+
 	/**
-	 * Rotates the given points to 0 degrees and sets them as <code>_originalPoints</code>.
-	 * @param points The current {@link PointList}
+	 * Rotates the given points to 0 degrees and sets them as
+	 * <code>_originalPoints</code>.
+	 * 
+	 * @param points
+	 *            The current {@link PointList}
 	 */
 	private void rememberZeroDegreePoints(final PointList points) {
-		if (this.getRotationAngle()==0) {
+		if (this.getRotationAngle() == 0) {
 			_originalPoints = points.getCopy();
 		} else {
 			_originalPoints = this.rotatePoints(points, -this.getRotationAngle());
@@ -229,23 +226,18 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final synchronized void setPropertyValue(final String propertyID,
-			final Object value) {
+	public final synchronized void setPropertyValue(final String propertyID, final Object value) {
 		if (propertyID.equals(AbstractPolyModel.PROP_POINTS)) {
 			if (value instanceof PointList) {
 				this.setPoints((PointList) value, true);
 			}
-		} else if (propertyID.equals(AbstractWidgetModel.PROP_POS_X)
-				&& ((Integer) value != getPoints().getBounds().x)) {
+		} else if (propertyID.equals(AbstractWidgetModel.PROP_POS_X) && ((Integer) value != getPoints().getBounds().x)) {
 			setLocation((Integer) value, getY());
-		} else if (propertyID.equals(AbstractWidgetModel.PROP_POS_Y)
-				&& ((Integer) value != getPoints().getBounds().y)) {
+		} else if (propertyID.equals(AbstractWidgetModel.PROP_POS_Y) && ((Integer) value != getPoints().getBounds().y)) {
 			setLocation(getX(), (Integer) value);
-		} else if (propertyID.equals(AbstractWidgetModel.PROP_WIDTH)
-				&& ((Integer) value != getPoints().getBounds().width)) {
+		} else if (propertyID.equals(AbstractWidgetModel.PROP_WIDTH) && ((Integer) value != getPoints().getBounds().width)) {
 			setSize((Integer) value, getHeight());
-		} else if (propertyID.equals(AbstractWidgetModel.PROP_HEIGHT)
-				&& ((Integer) value != getPoints().getBounds().height)) {
+		} else if (propertyID.equals(AbstractWidgetModel.PROP_HEIGHT) && ((Integer) value != getPoints().getBounds().height)) {
 			setSize(getWidth(), (Integer) value);
 		} else {
 			super.setPropertyValue(propertyID, value);

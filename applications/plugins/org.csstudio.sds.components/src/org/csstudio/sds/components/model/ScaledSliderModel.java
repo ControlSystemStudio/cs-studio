@@ -2,8 +2,6 @@ package org.csstudio.sds.components.model;
 
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
-import org.csstudio.sds.model.properties.BooleanProperty;
-import org.csstudio.sds.model.properties.DoubleProperty;
 
 /**
  * This class defines a scaled slider widget model.
@@ -61,16 +59,16 @@ public class ScaledSliderModel extends AbstractMarkedWidgetModel {
 		super.configureProperties();
 		addColorProperty(PROP_FILL_COLOR, "Fill Color", WidgetPropertyCategory.Display, DEFAULT_FILL_COLOR);
 
-		addProperty(PROP_EFFECT3D, new BooleanProperty("3D Effect", WidgetPropertyCategory.Display, true));
+		addBooleanProperty(PROP_EFFECT3D, "3D Effect", WidgetPropertyCategory.Display, true);
 
-		addProperty(PROP_HORIZONTAL, new BooleanProperty("Horizontal", WidgetPropertyCategory.Display, false));
+		addBooleanProperty(PROP_HORIZONTAL, "Horizontal", WidgetPropertyCategory.Display, false);
 
 		addColorProperty(PROP_FILLBACKGROUND_COLOR, "Color Fillbackground", WidgetPropertyCategory.Display,
 				DEFAULT_FILLBACKGROUND_COLOR);
 
 		addColorProperty(PROP_THUMB_COLOR, "Thumb Color", WidgetPropertyCategory.Display, DEFAULT_THUMB_COLOR);
 
-		addProperty(PROP_INCREMENT, new DoubleProperty("Increment", WidgetPropertyCategory.Behaviour, 1.0));
+		addDoubleProperty(PROP_INCREMENT, "Increment", WidgetPropertyCategory.Behaviour, 1.0);
 
 		setColor(PROP_LO_COLOR, "#FF8000");
 		setColor(PROP_HI_COLOR, "#FF8000");
