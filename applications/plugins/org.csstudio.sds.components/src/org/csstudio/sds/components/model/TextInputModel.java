@@ -22,9 +22,9 @@
 package org.csstudio.sds.components.model;
 
 import org.csstudio.sds.model.AbstractWidgetModel;
+import org.csstudio.sds.model.TextAlignmentEnum;
+import org.csstudio.sds.model.TextTypeEnum;
 import org.csstudio.sds.model.WidgetPropertyCategory;
-import org.csstudio.sds.model.optionEnums.TextAlignmentEnum;
-import org.csstudio.sds.model.optionEnums.TextTypeEnum;
 import org.csstudio.sds.util.ColorAndFontUtil;
 
 /**

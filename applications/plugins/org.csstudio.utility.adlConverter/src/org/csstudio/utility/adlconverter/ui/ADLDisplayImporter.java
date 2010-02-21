@@ -31,11 +31,11 @@ import java.util.Formatter;
 
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.importer.AbstractDisplayImporter;
+import org.csstudio.sds.internal.model.Layer;
+import org.csstudio.sds.internal.persistence.DisplayModelInputStream;
+import org.csstudio.sds.internal.persistence.PersistenceUtil;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DisplayModel;
-import org.csstudio.sds.model.layers.Layer;
-import org.csstudio.sds.model.persistence.DisplayModelInputStream;
-import org.csstudio.sds.model.persistence.PersistenceUtil;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;

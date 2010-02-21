@@ -22,8 +22,8 @@
 package org.csstudio.sds.components.epics;
 
 import org.csstudio.sds.components.model.TextInputModel;
+import org.csstudio.sds.model.CursorStyleEnum;
 import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
-import org.csstudio.sds.model.optionEnums.CursorStyleEnum;
 
 /**
  * Initializes a TextInput with EPICS specific property values.

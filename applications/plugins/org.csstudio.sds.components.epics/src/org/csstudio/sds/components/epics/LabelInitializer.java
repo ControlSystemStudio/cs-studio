@@ -25,9 +25,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.csstudio.platform.simpledal.ConnectionState;
+import org.csstudio.sds.internal.rules.DirectConnectionRule;
 import org.csstudio.sds.model.LabelModel;
 import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
-import org.csstudio.sds.model.logic.DirectConnectionRule;
 
 /**
  * Initializes a label with EPICS specific property values.

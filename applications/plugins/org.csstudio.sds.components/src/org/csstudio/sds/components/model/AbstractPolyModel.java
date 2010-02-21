@@ -22,8 +22,8 @@
 package org.csstudio.sds.components.model;
 
 import org.csstudio.sds.model.AbstractWidgetModel;
+import org.csstudio.sds.model.PropertyChangeAdapter;
 import org.csstudio.sds.model.WidgetPropertyCategory;
-import org.csstudio.sds.model.properties.PropertyChangeAdapter;
 import org.csstudio.sds.util.RotationUtil;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;

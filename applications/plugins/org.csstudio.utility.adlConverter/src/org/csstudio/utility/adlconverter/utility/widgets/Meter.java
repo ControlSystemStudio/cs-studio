@@ -25,8 +25,8 @@
 package org.csstudio.utility.adlconverter.utility.widgets;
 
 import org.csstudio.sds.components.model.MeterModel;
+import org.csstudio.sds.internal.rules.ParameterDescriptor;
 import org.csstudio.sds.model.DynamicsDescriptor;
-import org.csstudio.sds.model.logic.ParameterDescriptor;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 
 /**

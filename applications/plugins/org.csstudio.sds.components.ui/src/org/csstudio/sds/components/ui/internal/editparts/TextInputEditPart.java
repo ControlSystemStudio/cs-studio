@@ -37,7 +37,7 @@ import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.components.model.TextInputModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableLabelFigure;
 import org.csstudio.sds.model.AbstractWidgetModel;
-import org.csstudio.sds.model.optionEnums.TextTypeEnum;
+import org.csstudio.sds.model.TextTypeEnum;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.ExecutionMode;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;

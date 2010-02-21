@@ -22,8 +22,8 @@
 package org.csstudio.sds.components.model;
 
 import org.csstudio.sds.model.AbstractWidgetModel;
+import org.csstudio.sds.model.BorderStyleEnum;
 import org.csstudio.sds.model.WidgetPropertyCategory;
-import org.csstudio.sds.model.optionEnums.BorderStyleEnum;
 
 /**
  * An arc widget model.

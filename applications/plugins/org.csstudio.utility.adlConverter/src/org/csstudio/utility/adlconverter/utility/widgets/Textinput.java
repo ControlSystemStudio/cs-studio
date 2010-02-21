@@ -26,9 +26,9 @@ package org.csstudio.utility.adlconverter.utility.widgets;
 
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.components.model.TextInputModel;
+import org.csstudio.sds.internal.rules.ParameterDescriptor;
 import org.csstudio.sds.model.DynamicsDescriptor;
-import org.csstudio.sds.model.logic.ParameterDescriptor;
-import org.csstudio.sds.model.optionEnums.TextTypeEnum;
+import org.csstudio.sds.model.TextTypeEnum;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;

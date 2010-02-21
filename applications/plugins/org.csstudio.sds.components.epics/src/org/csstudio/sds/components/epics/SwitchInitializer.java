@@ -22,8 +22,8 @@
 package org.csstudio.sds.components.epics;
 
 import org.csstudio.sds.components.model.SwitchModel;
+import org.csstudio.sds.internal.rules.DirectConnectionRule;
 import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
-import org.csstudio.sds.model.logic.DirectConnectionRule;
 
 /**
  * Initializes a switch with EPICS specific property values.

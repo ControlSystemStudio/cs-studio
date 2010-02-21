@@ -24,7 +24,7 @@
  */
 package org.csstudio.sds.cosyrules.color;
 
-import org.csstudio.sds.model.logic.IRule;
+import org.csstudio.sds.model.IRule;
 import org.csstudio.sds.util.ColorAndFontUtil;
 
 /**

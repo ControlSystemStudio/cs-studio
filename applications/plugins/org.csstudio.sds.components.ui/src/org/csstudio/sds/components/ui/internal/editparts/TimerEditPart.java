@@ -30,7 +30,7 @@ import org.csstudio.sds.components.model.TimerModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableTimerFigure;
 import org.csstudio.sds.internal.model.logic.ScriptEngine;
 import org.csstudio.sds.model.AbstractWidgetModel;
-import org.csstudio.sds.model.logic.IScript;
+import org.csstudio.sds.model.IScript;
 import org.csstudio.sds.ui.CheckedUiRunnable;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.ExecutionMode;

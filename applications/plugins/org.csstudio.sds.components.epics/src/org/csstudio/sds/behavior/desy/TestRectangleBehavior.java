@@ -1,8 +1,8 @@
 package org.csstudio.sds.behavior.desy;
 
 import org.csstudio.platform.ui.util.CustomMediaFactory;
-import org.csstudio.sds.behaviors.AbstractBehavior;
 import org.csstudio.sds.components.model.RectangleModel;
+import org.csstudio.sds.eventhandling.AbstractBehavior;
 import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.MetaData;
 

@@ -25,9 +25,9 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.InputStream;
 
+import org.csstudio.sds.internal.persistence.PersistenceUtil;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DisplayModel;
-import org.csstudio.sds.model.persistence.PersistenceUtil;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
