@@ -45,13 +45,11 @@ public class ActionButtonDataPostProcessor extends
 
 				if (size == 0) {
 					for (String propertyId : propertyIds) {
-						chain.add(new HidePropertyCommand(widget
-								.getProperty2(propertyId), property));
+						chain.add(new HidePropertyCommand(widget, propertyId, property.getId()));
 					}
 				} else {
 					for (String propertyId : propertyIds) {
-						chain.add(new ShowPropertyCommand(widget
-								.getProperty2(propertyId), property));
+						chain.add(new ShowPropertyCommand(widget, propertyId, property.getId()));
 					}
 				}
 			}

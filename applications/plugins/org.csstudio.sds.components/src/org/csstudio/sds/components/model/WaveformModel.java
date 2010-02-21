@@ -114,7 +114,7 @@ public final class WaveformModel extends AbstractChartModel {
 	 *             if the index is invalid.
 	 */
 	public double[] getData(final int index) {
-		return getDoubleArrayProperty(dataPropertyId(index)).getPropertyValue();
+		return getDoubleArrayProperty(dataPropertyId(index));
 	}
 
 }

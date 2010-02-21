@@ -60,14 +60,14 @@ public class GaugeModel extends AbstractMarkedWidgetModel {
 	 *         otherwise
 	 */
 	public boolean isEffect3D() {
-		return getBooleanProperty(PROP_EFFECT3D).getPropertyValue();
+		return getBooleanProperty(PROP_EFFECT3D);
 	}
 
 	/**
 	 * @return true if the ramp is gradient, false otherwise
 	 */
 	public boolean isRampGradient() {
-		return getBooleanProperty(PROP_RAMP_GRADIENT).getPropertyValue();
+		return getBooleanProperty(PROP_RAMP_GRADIENT);
 	}
 
 }

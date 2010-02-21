@@ -171,7 +171,7 @@ public abstract class AbstractChartModel extends AbstractWidgetModel {
 	 *         <code>false</code> otherwise.
 	 */
 	public final boolean getAutoscale() {
-		return getBooleanProperty(PROP_AUTOSCALE).getPropertyValue();
+		return getBooleanProperty(PROP_AUTOSCALE);
 	}
 
 	/**
@@ -180,7 +180,7 @@ public abstract class AbstractChartModel extends AbstractWidgetModel {
 	 * @return double The minimum value
 	 */
 	public final double getMin() {
-		return getDoubleProperty(PROP_MIN).getPropertyValue();
+		return getDoubleProperty(PROP_MIN);
 	}
 
 	/**
@@ -189,7 +189,7 @@ public abstract class AbstractChartModel extends AbstractWidgetModel {
 	 * @return double The maximum value
 	 */
 	public final double getMax() {
-		return getDoubleProperty(PROP_MAX).getPropertyValue();
+		return getDoubleProperty(PROP_MAX);
 	}
 
 	/**
@@ -199,7 +199,7 @@ public abstract class AbstractChartModel extends AbstractWidgetModel {
 	 *         <code>false</code> otherwise.
 	 */
 	public final boolean isLabeledTicksEnabled() {
-		return getBooleanProperty(PROP_LABELED_TICKS).getPropertyValue();
+		return getBooleanProperty(PROP_LABELED_TICKS);
 	}
 
 	/**
@@ -208,7 +208,7 @@ public abstract class AbstractChartModel extends AbstractWidgetModel {
 	 * @return 0 for none, 1 for x-axis, 2 for y-axis, 3 for both.
 	 */
 	public final int getShowAxes() {
-		return getArrayOptionProperty(PROP_SHOW_AXES).getPropertyValue();
+		return getArrayOptionProperty(PROP_SHOW_AXES);
 	}
 
 	/**
@@ -217,7 +217,7 @@ public abstract class AbstractChartModel extends AbstractWidgetModel {
 	 * @return 0 for none, 1 for x-axis, 2 for y-axis, 3 for both.
 	 */
 	public final int getShowGridLines() {
-		return getArrayOptionProperty(PROP_SHOW_GRID_LINES).getPropertyValue();
+		return getArrayOptionProperty(PROP_SHOW_GRID_LINES);
 	}
 
 	/**
@@ -227,7 +227,7 @@ public abstract class AbstractChartModel extends AbstractWidgetModel {
 	 *         <code>false</code> if only the data points should be drawn.
 	 */
 	public final boolean isLineChart() {
-		return getBooleanProperty(PROP_LINE_CHART).getPropertyValue();
+		return getBooleanProperty(PROP_LINE_CHART);
 	}
 
 	/**
@@ -236,7 +236,7 @@ public abstract class AbstractChartModel extends AbstractWidgetModel {
 	 * @return the width of the lines in pixels.
 	 */
 	public final int getPlotLineWidth() {
-		return getIntegerProperty(PROP_PLOT_LINE_WIDTH).getPropertyValue();
+		return getIntegerProperty(PROP_PLOT_LINE_WIDTH);
 	}
 
 	/**
@@ -246,7 +246,7 @@ public abstract class AbstractChartModel extends AbstractWidgetModel {
 	 *         <code>false</code> otherwise.
 	 */
 	public final boolean isTransparent() {
-		return getBooleanProperty(PROP_TRANSPARENT).getPropertyValue();
+		return getBooleanProperty(PROP_TRANSPARENT);
 	}
 
 	/**
@@ -256,7 +256,7 @@ public abstract class AbstractChartModel extends AbstractWidgetModel {
 	 * @return the data point drawing style.
 	 */
 	public final int getDataPointDrawingStyle() {
-		return getArrayOptionProperty(PROP_DATA_POINT_DRAWING_STYLE).getPropertyValue();
+		return getArrayOptionProperty(PROP_DATA_POINT_DRAWING_STYLE);
 	}
 
 	/**
@@ -265,7 +265,7 @@ public abstract class AbstractChartModel extends AbstractWidgetModel {
 	 * @return the y-axis scaling. 0 = linear, 1 = logarithmic.
 	 */
 	public final int getYAxisScaling() {
-		return getArrayOptionProperty(PROP_Y_AXIS_SCALING).getPropertyValue();
+		return getArrayOptionProperty(PROP_Y_AXIS_SCALING);
 	}
 
 	/**
@@ -274,7 +274,7 @@ public abstract class AbstractChartModel extends AbstractWidgetModel {
 	 * @return the label.
 	 */
 	public final String getLabel() {
-		return getStringProperty(PROP_LABEL).getPropertyValue();
+		return getStringProperty(PROP_LABEL);
 	}
 
 	/**
@@ -283,7 +283,7 @@ public abstract class AbstractChartModel extends AbstractWidgetModel {
 	 * @return the x-axis label.
 	 */
 	public final String getXAxisLabel() {
-		return getStringProperty(PROP_X_AXIS_LABEL).getPropertyValue();
+		return getStringProperty(PROP_X_AXIS_LABEL);
 	}
 
 	/**
@@ -292,7 +292,7 @@ public abstract class AbstractChartModel extends AbstractWidgetModel {
 	 * @return the y-axis label.
 	 */
 	public final String getYAxisLabel() {
-		return getStringProperty(PROP_Y_AXIS_LABEL).getPropertyValue();
+		return getStringProperty(PROP_Y_AXIS_LABEL);
 	}
 
 	/**

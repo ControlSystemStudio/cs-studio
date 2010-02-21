@@ -79,6 +79,6 @@ public class TankModel extends AbstractMarkedWidgetModel {
 	 * @return true if the bulb should be shown, false otherwise
 	 */
 	public boolean isEffect3D() {
-		return getBooleanProperty(PROP_EFFECT3D).getPropertyValue();
+		return getBooleanProperty(PROP_EFFECT3D);
 	}
 }

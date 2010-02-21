@@ -109,7 +109,7 @@ public class ThumbWheelModel extends AbstractWidgetModel {
 	}
 
 	public int getWholePartDigits() {
-		return getIntegerProperty(PROP_WHOLE_DIGITS_PART).getPropertyValue();
+		return getIntegerProperty(PROP_WHOLE_DIGITS_PART);
 	}
 
 	public void setWholePartDigits(int val) {
@@ -117,7 +117,7 @@ public class ThumbWheelModel extends AbstractWidgetModel {
 	}
 
 	public int getDecimalPartDigits() {
-		return getIntegerProperty(PROP_DECIMAL_DIGITS_PART).getPropertyValue();
+		return getIntegerProperty(PROP_DECIMAL_DIGITS_PART);
 	}
 
 	public void setDecimalPartDigits(int val) {
@@ -125,26 +125,26 @@ public class ThumbWheelModel extends AbstractWidgetModel {
 	}
 
 	public double getValue() {
-		return getDoubleProperty(PROP_VALUE).getPropertyValue();
+		return getDoubleProperty(PROP_VALUE);
 	}
 
 	public int getInternalFrameThickness() {
-		return getIntegerProperty(PROP_INTERNAL_FRAME_THICKNESS).getPropertyValue();
+		return getIntegerProperty(PROP_INTERNAL_FRAME_THICKNESS);
 	}
 
 	public double getMin() {
-		return getDoubleProperty(PROP_MIN).getPropertyValue();
+		return getDoubleProperty(PROP_MIN);
 	}
 
 	public double getMax() {
-		return getDoubleProperty(PROP_MAX).getPropertyValue();
+		return getDoubleProperty(PROP_MAX);
 	}
 
 	public void setManualValue(double val) {
-		getDoubleProperty(PROP_VALUE).setManualValue(val);
+		setPropertyValue(PROP_VALUE, val);
 	}
 
 	public int getInternalBorderWidth() {
-		return getIntegerProperty(PROP_INTERNAL_FRAME_THICKNESS).getPropertyValue();
+		return getIntegerProperty(PROP_INTERNAL_FRAME_THICKNESS);
 	}
 }

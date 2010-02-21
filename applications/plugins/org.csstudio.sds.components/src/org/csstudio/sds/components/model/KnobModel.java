@@ -79,7 +79,7 @@ public class KnobModel extends AbstractMarkedWidgetModel {
 	 *         otherwise
 	 */
 	public boolean isEffect3D() {
-		return getBooleanProperty(PROP_EFFECT3D).getPropertyValue();
+		return getBooleanProperty(PROP_EFFECT3D);
 	}
 
 	/**
@@ -87,14 +87,14 @@ public class KnobModel extends AbstractMarkedWidgetModel {
 	 *         otherwise
 	 */
 	public boolean isShowValueLabel() {
-		return getBooleanProperty(PROP_SHOW_VALUE_LABEL).getPropertyValue();
+		return getBooleanProperty(PROP_SHOW_VALUE_LABEL);
 	}
 
 	/**
 	 * @return true if the ramp is gradient, false otherwise
 	 */
 	public boolean isRampGradient() {
-		return getBooleanProperty(PROP_RAMP_GRADIENT).getPropertyValue();
+		return getBooleanProperty(PROP_RAMP_GRADIENT);
 	}
 
 	/**
@@ -103,6 +103,6 @@ public class KnobModel extends AbstractMarkedWidgetModel {
 	 * @return The increment value.
 	 */
 	public double getIncrement() {
-		return getDoubleProperty(PROP_INCREMENT).getPropertyValue();
+		return getDoubleProperty(PROP_INCREMENT);
 	}
 }

@@ -90,14 +90,14 @@ public class ThermometerModel extends AbstractMarkedWidgetModel {
 	 * @return true if the bulb should be shown, false otherwise
 	 */
 	public boolean isShowBulb() {
-		return getBooleanProperty(PROP_SHOW_BULB).getPropertyValue();
+		return getBooleanProperty(PROP_SHOW_BULB);
 	}
 
 	/**
 	 * @return true if unit is in fahrenheit, false otherwise
 	 */
 	public boolean isFahrenheit() {
-		return getBooleanProperty(PROP_FAHRENHEIT).getPropertyValue();
+		return getBooleanProperty(PROP_FAHRENHEIT);
 	}
 
 	/**
@@ -105,6 +105,6 @@ public class ThermometerModel extends AbstractMarkedWidgetModel {
 	 *         otherwise
 	 */
 	public boolean isEffect3D() {
-		return getBooleanProperty(PROP_EFFECT3D).getPropertyValue();
+		return getBooleanProperty(PROP_EFFECT3D);
 	}
 }

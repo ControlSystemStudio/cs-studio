@@ -337,7 +337,7 @@ public final class LabelEditPart extends AbstractWidgetEditPart {
 
 		// init cell editor...
 		String currentValue = "N/A"; //$NON-NLS-1$
-		currentValue = getWidgetModel().getStringProperty(LabelModel.PROP_TEXTVALUE).getPropertyValue();
+		currentValue = getWidgetModel().getStringProperty(LabelModel.PROP_TEXTVALUE);
 
 		result.setValue(currentValue);
 		final Text text = (Text) result.getControl();

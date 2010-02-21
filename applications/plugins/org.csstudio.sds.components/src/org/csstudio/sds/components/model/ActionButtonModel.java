@@ -106,16 +106,11 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 		addIntegerProperty(PROP_ACTION_RELEASED_INDEX, "Action Index (released)", WidgetPropertyCategory.Behaviour, 0, -1, Integer.MAX_VALUE);
 		addIntegerProperty(PROP_ACTION_PRESSED_INDEX, "Action Index (pressed)", WidgetPropertyCategory.Behaviour, -1, -1, Integer.MAX_VALUE);
 		addBooleanProperty(PROP_TOGGLE_BUTTON, "Toggle Button", WidgetPropertyCategory.Behaviour, DEFAULT_TOGGLE_BUTTON);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void markPropertiesAsInvisible() {
-		this.markPropertyAsInvisible(PROP_BORDER_COLOR);
-		this.markPropertyAsInvisible(PROP_BORDER_STYLE);
-		this.markPropertyAsInvisible(PROP_BORDER_WIDTH);
+		
+		// .. hide properties
+		hideProperty(PROP_BORDER_COLOR, getTypeID());
+		hideProperty(PROP_BORDER_STYLE, getTypeID());
+		hideProperty(PROP_BORDER_WIDTH, getTypeID());
 	}
 
 	/**
@@ -139,7 +134,7 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	 * @return The index
 	 */
 	public int getChoosenReleasedActionIndex() {
-		return getIntegerProperty(PROP_ACTION_RELEASED_INDEX).getPropertyValue();
+		return getIntegerProperty(PROP_ACTION_RELEASED_INDEX);
 	}
 
 	/**
@@ -149,7 +144,7 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	 * @return The index
 	 */
 	public int getChoosenPressedActionIndex() {
-		return getIntegerProperty(PROP_ACTION_PRESSED_INDEX).getPropertyValue();
+		return getIntegerProperty(PROP_ACTION_PRESSED_INDEX);
 	}
 
 	/**
@@ -158,7 +153,7 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	 * @return The label text.
 	 */
 	public String getLabel() {
-		return getStringProperty(PROP_LABEL).getPropertyValue();
+		return getStringProperty(PROP_LABEL);
 	}
 
 	/**
@@ -167,7 +162,7 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	 * @return int 0 = Center, 1 = Top, 2 = Bottom, 3 = Left, 4 = Right
 	 */
 	public int getTextAlignment() {
-		return getArrayOptionProperty(PROP_TEXT_ALIGNMENT).getPropertyValue();
+		return getArrayOptionProperty(PROP_TEXT_ALIGNMENT);
 	}
 
 	/**
@@ -176,6 +171,6 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	 * @return false = Push, true=Toggle
 	 */
 	public boolean isToggleButton() {
-		return getBooleanProperty(PROP_TOGGLE_BUTTON).getPropertyValue();
+		return getBooleanProperty(PROP_TOGGLE_BUTTON);
 	}
 }

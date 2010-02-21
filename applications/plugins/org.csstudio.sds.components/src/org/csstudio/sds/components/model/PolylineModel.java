@@ -63,13 +63,11 @@ public final class PolylineModel extends AbstractPolyModel {
 		addIntegerProperty(PROP_LINE_WIDTH, "Line Width", WidgetPropertyCategory.Display, 1, 1, 100);
 		addArrayOptionProperty(PROP_LINE_STYLE, "Line Style", WidgetPropertyCategory.Display, new String[] { "Solid", "Dash", "Dot", "DashDot",
 				"DashDotDot" }, 0);
-	}
-
-	@Override
-	protected void markPropertiesAsInvisible() {
-		this.markPropertyAsInvisible(AbstractWidgetModel.PROP_BORDER_COLOR);
-		this.markPropertyAsInvisible(AbstractWidgetModel.PROP_BORDER_WIDTH);
-		this.markPropertyAsInvisible(AbstractWidgetModel.PROP_BORDER_STYLE);
+		
+		// .. hide properties
+		hideProperty(AbstractWidgetModel.PROP_BORDER_COLOR, getTypeID());
+		hideProperty(AbstractWidgetModel.PROP_BORDER_WIDTH, getTypeID());
+		hideProperty(AbstractWidgetModel.PROP_BORDER_STYLE, getTypeID());
 	}
 
 	/**
@@ -78,7 +76,7 @@ public final class PolylineModel extends AbstractPolyModel {
 	 * @return int The width of the line
 	 */
 	public int getLineWidth() {
-		return getIntegerProperty(PROP_LINE_WIDTH).getPropertyValue();
+		return getIntegerProperty(PROP_LINE_WIDTH);
 	}
 
 	/**
@@ -87,6 +85,6 @@ public final class PolylineModel extends AbstractPolyModel {
 	 * @return int The style of the line
 	 */
 	public int getLineStyle() {
-		return getArrayOptionProperty(PROP_LINE_STYLE).getPropertyValue();
+		return getArrayOptionProperty(PROP_LINE_STYLE);
 	}
 }

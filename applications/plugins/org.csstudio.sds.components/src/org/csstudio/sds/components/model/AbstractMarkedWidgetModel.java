@@ -90,7 +90,7 @@ public abstract class AbstractMarkedWidgetModel extends AbstractScaledWidgetMode
 	 * @return double The lolo level
 	 */
 	public double getLoloLevel() {
-		return getDoubleProperty(PROP_LOLO_LEVEL).getPropertyValue();
+		return getDoubleProperty(PROP_LOLO_LEVEL);
 	}
 
 	/**
@@ -99,7 +99,7 @@ public abstract class AbstractMarkedWidgetModel extends AbstractScaledWidgetMode
 	 * @return double The lo level
 	 */
 	public double getLoLevel() {
-		return getDoubleProperty(PROP_LO_LEVEL).getPropertyValue();
+		return getDoubleProperty(PROP_LO_LEVEL);
 	}
 
 	/**
@@ -108,7 +108,7 @@ public abstract class AbstractMarkedWidgetModel extends AbstractScaledWidgetMode
 	 * @return double The hi level
 	 */
 	public double getHiLevel() {
-		return getDoubleProperty(PROP_HI_LEVEL).getPropertyValue();
+		return getDoubleProperty(PROP_HI_LEVEL);
 	}
 
 	/**
@@ -117,42 +117,42 @@ public abstract class AbstractMarkedWidgetModel extends AbstractScaledWidgetMode
 	 * @return double The hihi level
 	 */
 	public double getHihiLevel() {
-		return getDoubleProperty(PROP_HIHI_LEVEL).getPropertyValue();
+		return getDoubleProperty(PROP_HIHI_LEVEL);
 	}
 
 	/**
 	 * @return true if the minor ticks should be shown, false otherwise
 	 */
 	public boolean isShowMarkers() {
-		return getBooleanProperty(PROP_SHOW_MARKERS).getPropertyValue();
+		return getBooleanProperty(PROP_SHOW_MARKERS);
 	}
 
 	/**
 	 * @return true if the lolo marker should be shown, false otherwise
 	 */
 	public boolean isShowLolo() {
-		return getBooleanProperty(PROP_SHOW_LOLO).getPropertyValue();
+		return getBooleanProperty(PROP_SHOW_LOLO);
 	}
 
 	/**
 	 * @return true if the lo marker should be shown, false otherwise
 	 */
 	public boolean isShowLo() {
-		return getBooleanProperty(PROP_SHOW_LO).getPropertyValue();
+		return getBooleanProperty(PROP_SHOW_LO);
 	}
 
 	/**
 	 * @return true if the hi marker should be shown, false otherwise
 	 */
 	public boolean isShowHi() {
-		return getBooleanProperty(PROP_SHOW_HI).getPropertyValue();
+		return getBooleanProperty(PROP_SHOW_HI);
 	}
 
 	/**
 	 * @return true if the hihi marker should be shown, false otherwise
 	 */
 	public boolean isShowHihi() {
-		return getBooleanProperty(PROP_SHOW_HIHI).getPropertyValue();
+		return getBooleanProperty(PROP_SHOW_HIHI);
 	}
 
 }

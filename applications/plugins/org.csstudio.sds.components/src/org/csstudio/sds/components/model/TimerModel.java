@@ -87,25 +87,20 @@ public final class TimerModel extends AbstractWidgetModel {
 	protected void configureProperties() {
 		addResourceProperty(PROP_SCRIPT, "Script", WidgetPropertyCategory.Behaviour, new Path(""), new String[] { "css-sdss" });
 		addIntegerProperty(PROP_DELAY, "Delay (in ms)", WidgetPropertyCategory.Behaviour, DEFAULT_DELAY, 0, Integer.MAX_VALUE);
-	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void markPropertiesAsInvisible() {
-		this.markPropertyAsInvisible(PROP_ACTIONDATA);
-		this.markPropertyAsInvisible(PROP_BORDER_COLOR);
-		this.markPropertyAsInvisible(PROP_BORDER_STYLE);
-		this.markPropertyAsInvisible(PROP_BORDER_WIDTH);
-		this.markPropertyAsInvisible(PROP_COLOR_BACKGROUND);
-		this.markPropertyAsInvisible(PROP_COLOR_FOREGROUND);
-		this.markPropertyAsInvisible(PROP_HEIGHT);
-		this.markPropertyAsInvisible(PROP_POS_X);
-		this.markPropertyAsInvisible(PROP_POS_Y);
-		// this.markPropertyAsInvisible(PROP_VISIBILITY);
-		this.markPropertyAsInvisible(PROP_WIDTH);
-		this.markPropertyAsInvisible(PROP_CURSOR);
+		// .. hide properties
+		hideProperty(PROP_ACTIONDATA,getTypeID());
+		hideProperty(PROP_BORDER_COLOR,getTypeID());
+		hideProperty(PROP_BORDER_STYLE,getTypeID());
+		hideProperty(PROP_BORDER_WIDTH,getTypeID());
+		hideProperty(PROP_COLOR_BACKGROUND,getTypeID());
+		hideProperty(PROP_COLOR_FOREGROUND,getTypeID());
+		hideProperty(PROP_HEIGHT,getTypeID());
+		hideProperty(PROP_POS_X,getTypeID());
+		hideProperty(PROP_POS_Y,getTypeID());
+		// hideProperty(PROP_VISIBILITY,getTypeID());
+		hideProperty(PROP_WIDTH,getTypeID());
+		hideProperty(PROP_CURSOR,getTypeID());
 	}
 
 	/**
@@ -128,7 +123,7 @@ public final class TimerModel extends AbstractWidgetModel {
 	 * @return the script
 	 */
 	public IPath getScriptPath() {
-		return getResourceProperty(PROP_SCRIPT).getPropertyValue();
+		return getResourceProperty(PROP_SCRIPT);
 	}
 
 	/**
@@ -137,7 +132,7 @@ public final class TimerModel extends AbstractWidgetModel {
 	 * @return the delay.
 	 */
 	public int getDelay() {
-		return getIntegerProperty(PROP_DELAY).getPropertyValue();
+		return getIntegerProperty(PROP_DELAY);
 	}
 
 }

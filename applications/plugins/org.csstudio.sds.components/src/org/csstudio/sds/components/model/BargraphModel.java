@@ -228,7 +228,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 	 * @return double The fill level
 	 */
 	public double getFillLevel() {
-		return getDoubleProperty(PROP_FILL).getPropertyValue();
+		return getDoubleProperty(PROP_FILL);
 	}
 
 	/**
@@ -237,7 +237,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 	 * @return the orientation
 	 */
 	public boolean getOrientation() {
-		return getBooleanProperty(PROP_ORIENTATION).getPropertyValue();
+		return getBooleanProperty(PROP_ORIENTATION);
 	}
 
 	/**
@@ -246,7 +246,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 	 * @return double The minimum value
 	 */
 	public double getMinimum() {
-		return getDoubleProperty(PROP_MIN).getPropertyValue();
+		return getDoubleProperty(PROP_MIN);
 	}
 
 	/**
@@ -255,7 +255,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 	 * @return double The lolo level
 	 */
 	public double getLoloLevel() {
-		return getDoubleProperty(PROP_LOLO_LEVEL).getPropertyValue();
+		return getDoubleProperty(PROP_LOLO_LEVEL);
 	}
 
 	/**
@@ -264,7 +264,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 	 * @return double The lo level
 	 */
 	public double getLoLevel() {
-		return getDoubleProperty(PROP_LO_LEVEL).getPropertyValue();
+		return getDoubleProperty(PROP_LO_LEVEL);
 	}
 
 	/**
@@ -273,7 +273,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 	 * @return double The hi level
 	 */
 	public double getHiLevel() {
-		return getDoubleProperty(PROP_HI_LEVEL).getPropertyValue();
+		return getDoubleProperty(PROP_HI_LEVEL);
 	}
 
 	/**
@@ -282,7 +282,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 	 * @return double The minimum value
 	 */
 	public double getHihiLevel() {
-		return getDoubleProperty(PROP_HIHI_LEVEL).getPropertyValue();
+		return getDoubleProperty(PROP_HIHI_LEVEL);
 	}
 
 	/**
@@ -291,7 +291,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 	 * @return double The maximum value
 	 */
 	public double getMaximum() {
-		return getDoubleProperty(PROP_MAX).getPropertyValue();
+		return getDoubleProperty(PROP_MAX);
 	}
 
 	/**
@@ -300,7 +300,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 	 * @return boolean true, if the values should be shown, false otherwise
 	 */
 	public boolean isShowValues() {
-		return getBooleanProperty(PROP_SHOW_VALUES).getPropertyValue();
+		return getBooleanProperty(PROP_SHOW_VALUES);
 	}
 
 	/**
@@ -309,7 +309,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 	 * @return int 0 = don't show, 1 = show Bottom/Right, 2 = show Top/Left
 	 */
 	public int getShowMarks() {
-		return getArrayOptionProperty(PROP_SHOW_MARKS).getPropertyValue();
+		return getArrayOptionProperty(PROP_SHOW_MARKS);
 	}
 
 	/**
@@ -318,7 +318,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 	 * @return int 0 = don't show, 1 = show Bottom/Right, 2 = show Top/Left
 	 */
 	public int getShowScale() {
-		return getArrayOptionProperty(PROP_SHOW_SCALE).getPropertyValue();
+		return getArrayOptionProperty(PROP_SHOW_SCALE);
 	}
 
 	/**
@@ -327,7 +327,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 	 * @return int The count of sections in the scale
 	 */
 	public int getScaleSectionCount() {
-		return getIntegerProperty(PROP_SCALE_SECTION_COUNT).getPropertyValue();
+		return getIntegerProperty(PROP_SCALE_SECTION_COUNT);
 	}
 
 	/**
@@ -336,7 +336,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 	 * @return True if only the value should be shown, false otherwise
 	 */
 	public boolean getShowOnlyValue() {
-		return getBooleanProperty(PROP_SHOW_ONLY_VALUE).getPropertyValue();
+		return getBooleanProperty(PROP_SHOW_ONLY_VALUE);
 	}
 
 	/**
@@ -346,7 +346,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 	 *         otherwise
 	 */
 	public boolean getTransparent() {
-		return getBooleanProperty(PROP_TRANSPARENT).getPropertyValue();
+		return getBooleanProperty(PROP_TRANSPARENT);
 	}
 
 }

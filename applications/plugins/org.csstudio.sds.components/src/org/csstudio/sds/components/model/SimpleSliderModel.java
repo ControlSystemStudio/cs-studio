@@ -147,7 +147,7 @@ public final class SimpleSliderModel extends AbstractWidgetModel {
 	 * @return The min value.
 	 */
 	public double getMin() {
-		return getDoubleProperty(PROP_MIN).getPropertyValue();
+		return getDoubleProperty(PROP_MIN);
 	}
 
 	/**
@@ -156,7 +156,7 @@ public final class SimpleSliderModel extends AbstractWidgetModel {
 	 * @return The max value.
 	 */
 	public double getMax() {
-		return getDoubleProperty(PROP_MAX).getPropertyValue();
+		return getDoubleProperty(PROP_MAX);
 	}
 
 	/**
@@ -165,7 +165,7 @@ public final class SimpleSliderModel extends AbstractWidgetModel {
 	 * @return The increment value.
 	 */
 	public double getIncrement() {
-		return getDoubleProperty(PROP_INCREMENT).getPropertyValue();
+		return getDoubleProperty(PROP_INCREMENT);
 	}
 
 	/**
@@ -174,7 +174,7 @@ public final class SimpleSliderModel extends AbstractWidgetModel {
 	 * @return The current slider value.
 	 */
 	public double getValue() {
-		return getDoubleProperty(PROP_VALUE).getPropertyValue();
+		return getDoubleProperty(PROP_VALUE);
 	}
 
 	/**
@@ -183,7 +183,7 @@ public final class SimpleSliderModel extends AbstractWidgetModel {
 	 * @return The precision.
 	 */
 	public int getPrecision() {
-		return getIntegerProperty(PROP_PRECISION).getPropertyValue();
+		return getIntegerProperty(PROP_PRECISION);
 	}
 
 	/**
@@ -192,7 +192,7 @@ public final class SimpleSliderModel extends AbstractWidgetModel {
 	 * @return The slider width.
 	 */
 	public int getSliderWidth() {
-		return getIntegerProperty(PROP_SLIDER_WIDTH).getPropertyValue();
+		return getIntegerProperty(PROP_SLIDER_WIDTH);
 	}
 
 	/**
@@ -201,7 +201,7 @@ public final class SimpleSliderModel extends AbstractWidgetModel {
 	 * @return True if the slider has a horizontal orientation.
 	 */
 	public boolean isHorizontal() {
-		return getBooleanProperty(PROP_ORIENTATION).getPropertyValue();
+		return getBooleanProperty(PROP_ORIENTATION);
 	}
 
 	/**
@@ -210,6 +210,6 @@ public final class SimpleSliderModel extends AbstractWidgetModel {
 	 * @return True if the slider value should also be displayed as a text.
 	 */
 	public boolean isShowValueAsText() {
-		return getBooleanProperty(PROP_SHOW_VALUE_AS_TEXT).getPropertyValue();
+		return getBooleanProperty(PROP_SHOW_VALUE_AS_TEXT);
 	}
 }

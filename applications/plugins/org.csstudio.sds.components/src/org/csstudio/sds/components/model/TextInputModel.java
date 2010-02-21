@@ -131,7 +131,7 @@ public final class TextInputModel extends AbstractWidgetModel {
 	 * @return the input text
 	 */
 	public String getInputText() {
-		return getStringProperty(PROP_INPUT_TEXT).getPropertyValue();
+		return getStringProperty(PROP_INPUT_TEXT);
 	}
 
 	/**
@@ -140,7 +140,7 @@ public final class TextInputModel extends AbstractWidgetModel {
 	 * @return int 0 = Center, 1 = Top, 2 = Bottom, 3 = Left, 4 = Right
 	 */
 	public int getTextAlignment() {
-		return getArrayOptionProperty(PROP_TEXT_ALIGNMENT).getPropertyValue();
+		return getArrayOptionProperty(PROP_TEXT_ALIGNMENT);
 	}
 
 	/**
@@ -150,7 +150,7 @@ public final class TextInputModel extends AbstractWidgetModel {
 	 *         otherwise
 	 */
 	public boolean getTransparent() {
-		return getBooleanProperty(PROP_TRANSPARENT).getPropertyValue();
+		return getBooleanProperty(PROP_TRANSPARENT);
 	}
 
 	/**
@@ -161,7 +161,7 @@ public final class TextInputModel extends AbstractWidgetModel {
 	public TextTypeEnum getValueType() {
 		TextTypeEnum result = TextTypeEnum.TEXT;
 
-		int index = (Integer) getArrayOptionProperty(PROP_VALUE_TYPE).getPropertyValue();
+		int index = (Integer) getArrayOptionProperty(PROP_VALUE_TYPE);
 
 		if (index >= 0 && index < TextTypeEnum.values().length) {
 			result = TextTypeEnum.values()[index];
@@ -176,6 +176,6 @@ public final class TextInputModel extends AbstractWidgetModel {
 	 * @return The precision.
 	 */
 	public int getPrecision() {
-		return getIntegerProperty(PROP_PRECISION).getPropertyValue();
+		return getIntegerProperty(PROP_PRECISION);
 	}
 }

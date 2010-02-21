@@ -55,17 +55,11 @@ public class BooleanSwitchModel extends AbstractWidgetModel {
 		addBooleanProperty(PROP_LABEL_VISIBLE, "Show Label", WidgetPropertyCategory.Display, false);
 		addStringProperty(PROP_ON_LABEL, "On Label", WidgetPropertyCategory.Display, "ON");
 		addStringProperty(PROP_OFF_LABEL, "Off Label", WidgetPropertyCategory.Display, "OFF");
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void markPropertiesAsInvisible() {
-		super.markPropertiesAsInvisible();
-		markPropertyAsInvisible(PROP_BORDER_COLOR);
-		markPropertyAsInvisible(PROP_BORDER_STYLE);
-		markPropertyAsInvisible(PROP_BORDER_WIDTH);
+		
+		// .. hide properties
+		hideProperty(PROP_BORDER_COLOR, getTypeID());
+		hideProperty(PROP_BORDER_STYLE, getTypeID());
+		hideProperty(PROP_BORDER_WIDTH, getTypeID());
 	}
 
 	/**
@@ -94,7 +88,7 @@ public class BooleanSwitchModel extends AbstractWidgetModel {
 	 * @return <code>true</code> if on, <code>false</code> otherwise
 	 */
 	public boolean getValue() {
-		double value = getDoubleProperty(PROP_VALUE).getPropertyValue();
+		double value = getDoubleProperty(PROP_VALUE);
 		return value == 1.0;
 	}
 
@@ -109,7 +103,7 @@ public class BooleanSwitchModel extends AbstractWidgetModel {
 		if (newValue) {
 			value = 1.0;
 		}
-		getDoubleProperty(PROP_VALUE).setManualValue(value);
+		setPropertyManualValue(PROP_VALUE, value);
 	}
 
 	/**
@@ -118,7 +112,7 @@ public class BooleanSwitchModel extends AbstractWidgetModel {
 	 * @return <code>true</code> if enabled, <code>false</code> otherwise
 	 */
 	public boolean get3dEffect() {
-		return getBooleanProperty(PROP_3D_EFFECT).getPropertyValue();
+		return getBooleanProperty(PROP_3D_EFFECT);
 	}
 
 	/**
@@ -127,7 +121,7 @@ public class BooleanSwitchModel extends AbstractWidgetModel {
 	 * @return <code>true</code> if enabled, <code>false</code> otherwise
 	 */
 	public boolean getShowLabels() {
-		return getBooleanProperty(PROP_LABEL_VISIBLE).getPropertyValue();
+		return getBooleanProperty(PROP_LABEL_VISIBLE);
 	}
 
 	/**
@@ -136,7 +130,7 @@ public class BooleanSwitchModel extends AbstractWidgetModel {
 	 * @return The text for the label
 	 */
 	public String getOnLabel() {
-		return getStringProperty(PROP_ON_LABEL).getPropertyValue();
+		return getStringProperty(PROP_ON_LABEL);
 	}
 
 	/**
@@ -145,7 +139,7 @@ public class BooleanSwitchModel extends AbstractWidgetModel {
 	 * @return The text for the label
 	 */
 	public String getOffLabel() {
-		return getStringProperty(PROP_OFF_LABEL).getPropertyValue();
+		return getStringProperty(PROP_OFF_LABEL);
 	}
 
 }

@@ -274,7 +274,7 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 
 	        // init cell editor...
 	        String currentValue = "N/A"; //$NON-NLS-1$
-	        currentValue = getWidgetModel().getStringProperty(ActionButtonModel.PROP_LABEL).getPropertyValue();
+	        currentValue = getWidgetModel().getStringProperty(ActionButtonModel.PROP_LABEL);
 	        
 	        result.setValue(currentValue);
 	        final Text text = (Text) result.getControl();

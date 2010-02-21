@@ -85,14 +85,14 @@ public class ScaledSliderModel extends AbstractMarkedWidgetModel {
 	 *         otherwise
 	 */
 	public boolean isEffect3D() {
-		return getBooleanProperty(PROP_EFFECT3D).getPropertyValue();
+		return getBooleanProperty(PROP_EFFECT3D);
 	}
 
 	/**
 	 * @return true if the widget is in horizontal orientation, false otherwise
 	 */
 	public boolean isHorizontal() {
-		return getBooleanProperty(PROP_HORIZONTAL).getPropertyValue();
+		return getBooleanProperty(PROP_HORIZONTAL);
 	}
 
 	/**
@@ -101,6 +101,6 @@ public class ScaledSliderModel extends AbstractMarkedWidgetModel {
 	 * @return The increment value.
 	 */
 	public double getIncrement() {
-		return getDoubleProperty(PROP_INCREMENT).getPropertyValue();
+		return getDoubleProperty(PROP_INCREMENT);
 	}
 }

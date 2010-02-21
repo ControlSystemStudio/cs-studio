@@ -37,7 +37,6 @@ import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.components.model.TextInputModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableLabelFigure;
 import org.csstudio.sds.model.AbstractWidgetModel;
-import org.csstudio.sds.model.WidgetProperty;
 import org.csstudio.sds.model.optionEnums.TextTypeEnum;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.ExecutionMode;
@@ -66,7 +65,6 @@ import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -231,7 +229,7 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements I
 
 		// init cell editor...
 		String currentValue = "N/A"; //$NON-NLS-1$
-		currentValue = getWidgetModel().getStringProperty(TextInputModel.PROP_INPUT_TEXT).getPropertyValue();
+		currentValue = getWidgetModel().getStringProperty(TextInputModel.PROP_INPUT_TEXT);
 
 		result.setValue(currentValue);
 		final Text text = (Text) result.getControl();
@@ -239,7 +237,7 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements I
 			@Override
 			public void keyPressed(final KeyEvent e) {
 				if (e.keyCode == SWT.CR || e.keyCode == SWT.KEYPAD_CR) {
-					int option = getWidgetModel().getArrayOptionProperty(TextInputModel.PROP_VALUE_TYPE).getPropertyValue();
+					int option = getWidgetModel().getArrayOptionProperty(TextInputModel.PROP_VALUE_TYPE);
 
 					TextTypeEnum propertyValue = TextTypeEnum.values()[option];
 					if (!propertyValue.isValidFormat(text.getText())) {
@@ -268,7 +266,7 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements I
 
 			public void verifyText(VerifyEvent e) {
 				e.doit = true;
-				int option = getWidgetModel().getArrayOptionProperty(TextInputModel.PROP_VALUE_TYPE).getPropertyValue();
+				int option = getWidgetModel().getArrayOptionProperty(TextInputModel.PROP_VALUE_TYPE);
 				TextTypeEnum propertyValue = TextTypeEnum.values()[option];
 				e.doit = propertyValue.isValidChars(e.character, e.text, e.start);
 
@@ -404,18 +402,16 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements I
 		}
 
 		private void execute(String newText) {
-			WidgetProperty inputTextProperty = getWidgetModel().getStringProperty(TextInputModel.PROP_INPUT_TEXT);
-			_oldValue = inputTextProperty.getPropertyValue();
-			if (inputTextProperty != null) {
-				if (_executionMode == ExecutionMode.RUN_MODE) {
-					// In RUN mode set the manual value, because the connected
-					// channel sets the
-					// property value.
-					inputTextProperty.setManualValue(newText);
-				} else {
-					// In EDIT mode we can set the property value directly.
-					inputTextProperty.setPropertyValue(newText);
-				}
+			_oldValue = getWidgetModel().getStringProperty(TextInputModel.PROP_INPUT_TEXT);
+			
+			if (_executionMode == ExecutionMode.RUN_MODE) {
+				// In RUN mode set the manual value, because the connected
+				// channel sets the
+				// property value.
+				getCastedModel().setPropertyManualValue(TextInputModel.PROP_INPUT_TEXT, newText);
+			} else {
+				// In EDIT mode we can set the property value directly.
+				getCastedModel().setPropertyValue(TextInputModel.PROP_INPUT_TEXT, newText);
 			}
 		}
 
@@ -471,13 +467,13 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements I
 		setPropertyChangeHandler(TextInputModel.PROP_INPUT_TEXT, textHandler);
 
 		// font
-		setPropertyChangeHandler(TextInputModel.PROP_FONT, new FontChangeHander<RefreshableLabelFigure>(){
+		setPropertyChangeHandler(TextInputModel.PROP_FONT, new FontChangeHander<RefreshableLabelFigure>() {
 			@Override
 			protected void doHandle(RefreshableLabelFigure figure, Font font) {
 				figure.setFont(font);
 			}
 		});
-		
+
 		// text alignment
 		IWidgetPropertyChangeHandler alignmentHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue, final Object newValue, final IFigure refreshableFigure) {

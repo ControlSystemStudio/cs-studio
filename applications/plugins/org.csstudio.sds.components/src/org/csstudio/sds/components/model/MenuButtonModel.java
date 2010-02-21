@@ -107,7 +107,7 @@ public final class MenuButtonModel extends AbstractWidgetModel {
 	 * @return The label text.
 	 */
 	public String getLabel() {
-		return getStringProperty(PROP_LABEL).getPropertyValue();
+		return getStringProperty(PROP_LABEL);
 	}
 
 	/**
@@ -116,7 +116,7 @@ public final class MenuButtonModel extends AbstractWidgetModel {
 	 * @return int 0 = Center, 1 = Top, 2 = Bottom, 3 = Left, 4 = Right
 	 */
 	public int getTextAlignment() {
-		return getArrayOptionProperty(PROP_TEXT_ALIGNMENT).getPropertyValue();
+		return getArrayOptionProperty(PROP_TEXT_ALIGNMENT);
 	}
 
 }

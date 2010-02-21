@@ -72,49 +72,49 @@ public abstract class AbstractScaledWidgetModel extends AbstractWidgetModel {
 	 * @return the value
 	 */
 	public Double getValue() {
-		return getDoubleProperty(PROP_VALUE).getPropertyValue();
+		return getDoubleProperty(PROP_VALUE);
 	}
 
 	/**
 	 * @return the minimum value
 	 */
 	public Double getMinimum() {
-		return getDoubleProperty(PROP_MIN).getPropertyValue();
+		return getDoubleProperty(PROP_MIN);
 	}
 
 	/**
 	 * @return the maximum value
 	 */
 	public Double getMaximum() {
-		return getDoubleProperty(PROP_MAX).getPropertyValue();
+		return getDoubleProperty(PROP_MAX);
 	}
 
 	/**
 	 * @return the major tick step hint value
 	 */
 	public Double getMajorTickStepHint() {
-		return getDoubleProperty(PROP_MAJOR_TICK_STEP_HINT).getPropertyValue();
+		return getDoubleProperty(PROP_MAJOR_TICK_STEP_HINT);
 	}
 
 	/**
 	 * @return true if the minor ticks should be shown, false otherwise
 	 */
 	public boolean isShowMinorTicks() {
-		return getBooleanProperty(PROP_SHOW_MINOR_TICKS).getPropertyValue();
+		return getBooleanProperty(PROP_SHOW_MINOR_TICKS);
 	}
 
 	/**
 	 * @return true if the scale should be shown, false otherwise
 	 */
 	public boolean isShowScale() {
-		return getBooleanProperty(PROP_SHOW_SCALE).getPropertyValue();
+		return getBooleanProperty(PROP_SHOW_SCALE);
 	}
 
 	/**
 	 * @return true if log scale enabled, false otherwise
 	 */
 	public boolean isLogScaleEnabled() {
-		return getBooleanProperty(PROP_LOG_SCALE).getPropertyValue();
+		return getBooleanProperty(PROP_LOG_SCALE);
 	}
 
 	/**
@@ -124,7 +124,7 @@ public abstract class AbstractScaledWidgetModel extends AbstractWidgetModel {
 	 *         otherwise
 	 */
 	public boolean isTransparent() {
-		return getBooleanProperty(PROP_TRANSPARENT).getPropertyValue();
+		return getBooleanProperty(PROP_TRANSPARENT);
 	}
 
 }

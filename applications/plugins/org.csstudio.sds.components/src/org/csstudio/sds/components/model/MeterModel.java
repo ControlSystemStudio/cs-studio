@@ -150,71 +150,71 @@ public final class MeterModel extends AbstractWidgetModel {
 	}
 
 	public int getAngle() {
-		return getIntegerProperty(PROP_ANGLE).getPropertyValue();
+		return getIntegerProperty(PROP_ANGLE);
 	}
 
 	public int getInnerAngle() {
-		return getIntegerProperty(PROP_INNANGLE).getPropertyValue();
+		return getIntegerProperty(PROP_INNANGLE);
 	}
 
 	public double getVisibleRadius() {
-		return getDoubleProperty(PROP_RADIUS).getPropertyValue();
+		return getDoubleProperty(PROP_RADIUS);
 	}
 
 	public double getScaleRadius() {
-		return getDoubleProperty(PROP_SCALERADIUS).getPropertyValue();
+		return getDoubleProperty(PROP_SCALERADIUS);
 	}
 
 	public double getMinorStep() {
-		return getDoubleProperty(PROP_MINSTEP).getPropertyValue();
+		return getDoubleProperty(PROP_MINSTEP);
 	}
 
 	public double getMajorStep() {
-		return getDoubleProperty(PROP_MAJSTEP).getPropertyValue();
+		return getDoubleProperty(PROP_MAJSTEP);
 	}
 
 	public double getMaxValue() {
-		return getDoubleProperty(PROP_MAXVAL).getPropertyValue();
+		return getDoubleProperty(PROP_MAXVAL);
 	}
 
 	public double getMinValue() {
-		return getDoubleProperty(PROP_MINVAL).getPropertyValue();
+		return getDoubleProperty(PROP_MINVAL);
 	}
 
 	public double getValue() {
-		return getDoubleProperty(PROP_VALUE).getPropertyValue();
+		return getDoubleProperty(PROP_VALUE);
 	}
 
 	public int getScaleWidth() {
-		return getIntegerProperty(PROP_SCALEWIDTH).getPropertyValue();
+		return getIntegerProperty(PROP_SCALEWIDTH);
 	}
 
 	public double getTextRadius() {
-		return getDoubleProperty(PROP_TEXTRADIUS).getPropertyValue();
+		return getDoubleProperty(PROP_TEXTRADIUS);
 	}
 
 	public boolean getTransparent() {
-		return getBooleanProperty(PROP_TRANSPARENT).getPropertyValue();
+		return getBooleanProperty(PROP_TRANSPARENT);
 	}
 
 	public double getMBound() {
-		return getDoubleProperty(PROP_MBOUND).getPropertyValue();
+		return getDoubleProperty(PROP_MBOUND);
 	}
 
 	public double getLOLOBound() {
-		return getDoubleProperty(PROP_LOLOBOUND).getPropertyValue();
+		return getDoubleProperty(PROP_LOLOBOUND);
 	}
 
 	public double getLOBound() {
-		return getDoubleProperty(PROP_LOBOUND).getPropertyValue();
+		return getDoubleProperty(PROP_LOBOUND);
 	}
 
 	public double getHIBound() {
-		return getDoubleProperty(PROP_HIBOUND).getPropertyValue();
+		return getDoubleProperty(PROP_HIBOUND);
 	}
 
 	public double getHIHIBound() {
-		return getDoubleProperty(PROP_HIHIBOUND).getPropertyValue();
+		return getDoubleProperty(PROP_HIHIBOUND);
 	}
 
 	/**
@@ -223,7 +223,7 @@ public final class MeterModel extends AbstractWidgetModel {
 	 * @return The precision.
 	 */
 	public int getPrecision() {
-		return getIntegerProperty(PROP_PRECISION).getPropertyValue();
+		return getIntegerProperty(PROP_PRECISION);
 	}
 
 	/**

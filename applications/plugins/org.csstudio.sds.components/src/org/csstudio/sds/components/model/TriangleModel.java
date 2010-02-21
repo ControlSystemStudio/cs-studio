@@ -106,7 +106,7 @@ public final class TriangleModel extends AbstractWidgetModel {
 	 * @return the fill level
 	 */
 	public double getFillLevel() {
-		return getDoubleProperty(PROP_FILL).getPropertyValue();
+		return getDoubleProperty(PROP_FILL);
 	}
 
 	/**
@@ -115,7 +115,7 @@ public final class TriangleModel extends AbstractWidgetModel {
 	 * @return The state of the background.
 	 */
 	public boolean getTransparent() {
-		return getBooleanProperty(PROP_TRANSPARENT).getPropertyValue();
+		return getBooleanProperty(PROP_TRANSPARENT);
 	}
 
 	// /**
@@ -124,7 +124,7 @@ public final class TriangleModel extends AbstractWidgetModel {
 	// * @return the rotation angle
 	// */
 	// public double getRotationAngle() {
-	// return getDoubleProperty(PROP_ROTATION).getPropertyValue();
+	// return getDoubleProperty(PROP_ROTATION);
 	// }
 
 }

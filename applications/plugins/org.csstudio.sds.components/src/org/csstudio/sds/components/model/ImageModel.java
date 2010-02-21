@@ -120,7 +120,7 @@ public final class ImageModel extends AbstractWidgetModel {
 	 * @return The path to the specified file
 	 */
 	public IPath getFilename() {
-		return getResourceProperty(PROP_FILENAME).getPropertyValue();
+		return getResourceProperty(PROP_FILENAME);
 	}
 
 	/**
@@ -130,7 +130,7 @@ public final class ImageModel extends AbstractWidgetModel {
 	 * @return The amount of pixels
 	 */
 	public int getTopCrop() {
-		return getIntegerProperty(PROP_TOPCROP).getPropertyValue();
+		return getIntegerProperty(PROP_TOPCROP);
 	}
 
 	/**
@@ -140,7 +140,7 @@ public final class ImageModel extends AbstractWidgetModel {
 	 * @return The amount of pixels
 	 */
 	public int getBottomCrop() {
-		return getIntegerProperty(PROP_BOTTOMCROP).getPropertyValue();
+		return getIntegerProperty(PROP_BOTTOMCROP);
 	}
 
 	/**
@@ -150,7 +150,7 @@ public final class ImageModel extends AbstractWidgetModel {
 	 * @return The amount of pixels
 	 */
 	public int getLeftCrop() {
-		return getIntegerProperty(PROP_LEFTCROP).getPropertyValue();
+		return getIntegerProperty(PROP_LEFTCROP);
 	}
 
 	/**
@@ -160,7 +160,7 @@ public final class ImageModel extends AbstractWidgetModel {
 	 * @return The amount of pixels
 	 */
 	public int getRightCrop() {
-		return getIntegerProperty(PROP_RIGHTCROP).getPropertyValue();
+		return getIntegerProperty(PROP_RIGHTCROP);
 	}
 
 	/**
@@ -169,20 +169,20 @@ public final class ImageModel extends AbstractWidgetModel {
 	 * @return True is it should be stretched, false otherwise
 	 */
 	public boolean getStretch() {
-		return getBooleanProperty(PROP_STRETCH).getPropertyValue();
+		return getBooleanProperty(PROP_STRETCH);
 	}
 
 	/**
 	 * @return True if the widget should be auto sized according the image size.
 	 */
 	public boolean isAutoSize() {
-		return getBooleanProperty(PROP_AUTOSIZE).getPropertyValue();
+		return getBooleanProperty(PROP_AUTOSIZE);
 	}
 
 	/**
 	 * @return True if the animation is stopped.
 	 */
 	public boolean isStopAnimation() {
-		return getBooleanProperty(PROP_STOP_ANIMATION).getPropertyValue();
+		return getBooleanProperty(PROP_STOP_ANIMATION);
 	}
 }
