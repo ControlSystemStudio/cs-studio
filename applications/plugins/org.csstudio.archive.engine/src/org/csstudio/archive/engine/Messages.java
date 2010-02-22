@@ -48,4 +48,5 @@ public class Messages
     final public static String HTTP_WriteCount = "Write Count";
     final public static String HTTP_WriteDuration = "Write Duration";
     final public static String HTTP_WritePeriod = "Write Period";
+    final public static String HTTP_WriteState = "Write State";
 }

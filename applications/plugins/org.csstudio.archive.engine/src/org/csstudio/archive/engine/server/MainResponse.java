@@ -9,6 +9,7 @@ import org.csstudio.apputil.time.PeriodFormat;
 import org.csstudio.archive.engine.Messages;
 import org.csstudio.archive.engine.model.ArchiveGroup;
 import org.csstudio.archive.engine.model.EngineModel;
+import org.csstudio.archive.engine.model.SampleBuffer;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.TimestampFactory;
 import org.eclipse.core.runtime.Platform;
@@ -120,6 +121,16 @@ class MainResponse extends AbstractResponse
             Messages.HTTP_WritePeriod,
             model.getWritePeriod() + " sec"
         });
+        
+        // Currently in 'Write Error' state?
+        html.tableLine(new String[]
+        {
+            Messages.HTTP_WriteState,
+            (SampleBuffer.isInErrorState()
+             ? HTMLWriter.makeRedText("Write Error")
+             : "OK")
+        });
+        
         final ITimestamp last_write_time = model.getLastWriteTime();
         html.tableLine(new String[]
         {

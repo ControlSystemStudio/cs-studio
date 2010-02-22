@@ -41,7 +41,7 @@ public class SampleBuffer
     /** Is the buffer in an error state because of RDB write errors?
      *  Note that this is global for all buffers, not per instance!
      */
-    private static boolean error = false;
+    private static volatile boolean error = false;
 
     /** Create sample buffer of given capacity */
     SampleBuffer(final String channel_name, final int capacity)
