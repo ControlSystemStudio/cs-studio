@@ -131,6 +131,13 @@
       <cheatsheet
             category="org.csstudio"
             composite="false"
+            contentFile="cheatsheets/reset.xml"
+            id="org.csstudio.trends.databrowser2.reset"
+            name="Reset Data Browser Perspective">
+      </cheatsheet>
+      <cheatsheet
+            category="org.csstudio"
+            composite="false"
             contentFile="cheatsheets/plot.xml"
             id="org.csstudio.trends.databrowser2.plot"
             name="Plot Archived Data">
@@ -138,9 +145,9 @@
       <cheatsheet
             category="org.csstudio"
             composite="false"
-            contentFile="cheatsheets/reset.xml"
-            id="org.csstudio.trends.databrowser2.creset"
-            name="Reset Data Browser Perspective">
+            contentFile="cheatsheets/archives.xml"
+            id="org.csstudio.trends.databrowser2.archives"
+            name="Change Data Browser Archive Data Sources">
       </cheatsheet>
    </extension>
 

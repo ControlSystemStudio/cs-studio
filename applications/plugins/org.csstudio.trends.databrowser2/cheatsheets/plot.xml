@@ -42,16 +42,22 @@ Enter a process variable name &quot;Pattern&quot; and press &quot;Search&quot;.
 For simple search pattern, do <b>not</b> check the "Reg.Exp." box and use
 "?" to represent any single character, '*' to represent several arbitrary
 characters.
+Click the (?) button above for more details from the online help.
 <br/>
-Click the (?) button above for the more detailed online help.
+You can search multiple times, either "Add..." the results to the list
+or "Replace..." the search results until you have located the desired PV names.
 </description>
 </item>
 
 <item title="Drag PVs into the Plot Data Browser">
 <description>
-Select one or more PV Names from the search result by clicking on them with
+Select PV Name from the search result by clicking on it with
 the left mouse button.
-Then click one selected PV, and while holding the mouse button down,
+Depending on the operating system, you can click while holding
+the Shift, Control, Command, or Alt keys to select multiple
+PV names in the list.
+<br/>
+Finally, click one selected PV again and <b>while holding the mouse button down</b>,
 drag them into the Data Browser plot window, then release the left mouse
 button.
 </description>
