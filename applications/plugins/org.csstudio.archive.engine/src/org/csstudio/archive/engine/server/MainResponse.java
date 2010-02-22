@@ -127,7 +127,7 @@ class MainResponse extends AbstractResponse
         {
             Messages.HTTP_WriteState,
             (SampleBuffer.isInErrorState()
-             ? HTMLWriter.makeRedText("Write Error")
+             ? HTMLWriter.makeRedText(Messages.HTTP_WriteError)
              : "OK")
         });
         
