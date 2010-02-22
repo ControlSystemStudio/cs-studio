@@ -14,6 +14,7 @@
 - <a href="#perspective">Perspective</a>
 - <a href="#toolbar">Toolbar</a>
 - <a href="#config">Properties Panel</a>
+- <a href="#annotate">Annotations</a>
 - <a href="#search">Search</a>
 - <a href="#export">Export</a>
 - <a href="#preferences">Preferences</a>
@@ -117,7 +118,8 @@ to its original state.
 <h2><a name=toolbar>Plot Toolbar</a></h2>
 <p>
 The toolbar is displayed on top of a Data Browser plot.
-If it is not visible, open the context menu and select "Show Toolbar".
+If it is not visible, right-click on the plot to open the context menu,
+then select "Show Toolbar".
 </p>
 <div class='figure'>
    <img src="toolbar.png" width="463" height="27"/>
@@ -133,10 +135,10 @@ over a toolbar button for a few seconds. Explanation of toolbar buttons:
     Opens dialog for configuring the plot.<br>
     Note that these are runtime settings which include things like font settings
     that will not be saved as part of the Data Browser configuration.
-<li><img src="Add_Annotation.png" width=16 height=16/> Add Annotation:
+<li><img src="Add_Annotation.png" width=16 height=16/> Add <a href="#annotate">Annotation</a>:
     After configuring the annotation to for example 'snap' to a selected trace,
     the next mouse click into the plot will add an annotation.
-<li><img src="Del_Annotation.png" width=16 height=16/> Remove Annotation:
+<li><img src="Del_Annotation.png" width=16 height=16/> Remove <a href="#annotate">Annotation</a>:
     Prompts for an annotation to remove from the plot.
 </ul>
 </p>
@@ -303,6 +305,33 @@ Add/remove value ('Y', vertical) axes, change their label or color.
 <p>
 General plot settings: Background color, refresh rate.
 </p>
+
+
+<h2><a name=annotate>Annotations</a></h2>
+<p>
+The <a href="#toolbar">Toolbar</a> contains buttons to 
+<img src="Add_Annotation.png" width=16 height=16/> add and
+<img src="Del_Annotation.png" width=16 height=16/> remove Annotations.
+</p>
+<p>
+When you <img src="Add_Annotation.png" width=16 height=16/> add an Annotation,
+you select if and to which trace it should "snap".
+You can enter an arbitrary annotation text ("Name") and show that with the
+Annotation, and/or have it display the plotposition or Sample Information.
+</p>
+<p>
+Move Annotation around the plot in the 
+<img src="Panning.png" width=16 height=16/> Panning or 
+<img src="MouseArrow.png" width=16 height=16/> inactive zoom modes.
+</p>
+<p>
+Change the Name, color, "snap" behavior of existing Annotations
+via the 
+<img src="Configure.png" width=16 height=16/> Configure Settings button
+in the toolbar.
+</p>
+
+
 
 <h2><a name=search>Archive Search Panel</a></h2>
 <p>
