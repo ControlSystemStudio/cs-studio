@@ -26,7 +26,6 @@ public class StartEndTimeAction
                 start_time, end_time);
         if (dlg.open() != StartEndDialog.OK)
             return;
-        // TODO dlg.isEndNow() doesn't seem to work
         new ChangeTimerangeCommand(model, operations_manager,
                 dlg.isEndNow(), dlg.getStartCalendar(), dlg.getEndCalendar());
     }
