@@ -150,7 +150,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 	/**
 	 * The labels for the MARKS_SHOW_STATUS- property.
 	 */
-	private static final String[] SHOW_LABELS = new String[] { "None", "Bottom / Right", "Top / Left" };
+	public static final String[] SHOW_LABELS = new String[] { "None", "Bottom / Right", "Top / Left" };
 
 	/**
 	 * The default value of the levels property.
@@ -175,12 +175,12 @@ public final class BargraphModel extends AbstractWidgetModel {
 		addColorProperty(PROP_DEFAULT_FILL_COLOR, "Fill Color", WidgetPropertyCategory.Display, DEFAULT_FILL_COLOR);
 		addColorProperty(PROP_FILLBACKGROUND_COLOR, "Color Fillbackground", WidgetPropertyCategory.Display, DEFAULT_FILLBACKGROUND_COLOR);
 		// Levels
-		addDoubleProperty(PROP_MIN, "Minimum", WidgetPropertyCategory.Behaviour, DEFAULT_LEVELS[0]);
-		addDoubleProperty(PROP_LOLO_LEVEL, "Level LOLO", WidgetPropertyCategory.Behaviour, DEFAULT_LEVELS[1]);
-		addDoubleProperty(PROP_LO_LEVEL, "Level LO", WidgetPropertyCategory.Behaviour, DEFAULT_LEVELS[2]);
-		addDoubleProperty(PROP_HI_LEVEL, "Level HI", WidgetPropertyCategory.Behaviour, DEFAULT_LEVELS[4]);
-		addDoubleProperty(PROP_HIHI_LEVEL, "Level HIHI", WidgetPropertyCategory.Behaviour, DEFAULT_LEVELS[5]);
 		addDoubleProperty(PROP_MAX, "Maximum", WidgetPropertyCategory.Behaviour, DEFAULT_LEVELS[6]);
+		addDoubleProperty(PROP_HIHI_LEVEL, "Level HIHI", WidgetPropertyCategory.Behaviour, DEFAULT_LEVELS[5]);
+		addDoubleProperty(PROP_HI_LEVEL, "Level HI", WidgetPropertyCategory.Behaviour, DEFAULT_LEVELS[4]);
+		addDoubleProperty(PROP_LO_LEVEL, "Level LO", WidgetPropertyCategory.Behaviour, DEFAULT_LEVELS[2]);
+		addDoubleProperty(PROP_LOLO_LEVEL, "Level LOLO", WidgetPropertyCategory.Behaviour, DEFAULT_LEVELS[1]);
+		addDoubleProperty(PROP_MIN, "Minimum", WidgetPropertyCategory.Behaviour, DEFAULT_LEVELS[0]);
 		// Show_Value
 		addBooleanProperty(PROP_SHOW_VALUES, "Show Values", WidgetPropertyCategory.Display, DEFAULT_SHOW_VALUES);
 		addArrayOptionProperty(PROP_SHOW_MARKS, "Tickmarks", WidgetPropertyCategory.Display, SHOW_LABELS, DEFAULT_SHOW_MARKS);

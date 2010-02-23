@@ -2,7 +2,6 @@ package org.csstudio.sds.components.model.eventing;
 
 import org.csstudio.sds.components.model.ActionButtonModel;
 import org.csstudio.sds.eventhandling.AbstractWidgetPropertyPostProcessor;
-import org.csstudio.sds.internal.model.ActionDataProperty;
 import org.csstudio.sds.model.ActionData;
 import org.csstudio.sds.model.commands.HidePropertyCommand;
 import org.csstudio.sds.model.commands.ShowPropertyCommand;
@@ -10,25 +9,23 @@ import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CompoundCommand;
 
 public class ActionButtonDataPostProcessor extends
-		AbstractWidgetPropertyPostProcessor<ActionButtonModel, ActionDataProperty> {
+		AbstractWidgetPropertyPostProcessor<ActionButtonModel> {
 
 	@Override
-	protected Command doCreateCommand(ActionButtonModel widget,
-			ActionDataProperty property) {
+	protected Command doCreateCommand(ActionButtonModel widget) {
 		assert widget != null : "widget != null";
-		assert property != null : "property != null";
-		return new EnsureInvariantsCommand(widget, property);
+		return new EnsureInvariantsCommand(widget, ActionButtonModel.PROP_ACTIONDATA);
 	}
 
 	private static final class EnsureInvariantsCommand extends Command {
 		private ActionButtonModel widget;
-		private ActionDataProperty property;
+		private String propertyId;
 		private CompoundCommand chain;
 
 		private EnsureInvariantsCommand(ActionButtonModel widget,
-				ActionDataProperty property) {
+				String propertyId) {
 			this.widget = widget;
-			this.property = property;
+			this.propertyId = propertyId;
 		}
 
 		@Override
@@ -36,7 +33,7 @@ public class ActionButtonDataPostProcessor extends
 			if (chain == null) {
 				chain = new CompoundCommand();
 
-				ActionData data = property.getPropertyValue();
+				ActionData data = widget.getActionDataProperty(propertyId);
 				int size = data.getWidgetActions().size();
 
 				String[] propertyIds = new String[] {
@@ -45,11 +42,11 @@ public class ActionButtonDataPostProcessor extends
 
 				if (size == 0) {
 					for (String propertyId : propertyIds) {
-						chain.add(new HidePropertyCommand(widget, propertyId, property.getId()));
+						chain.add(new HidePropertyCommand(widget, propertyId, propertyId));
 					}
 				} else {
 					for (String propertyId : propertyIds) {
-						chain.add(new ShowPropertyCommand(widget, propertyId, property.getId()));
+						chain.add(new ShowPropertyCommand(widget, propertyId, propertyId));
 					}
 				}
 			}

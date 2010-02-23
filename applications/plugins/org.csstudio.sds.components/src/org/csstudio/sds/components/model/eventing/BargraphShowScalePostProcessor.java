@@ -2,32 +2,29 @@ package org.csstudio.sds.components.model.eventing;
 
 import org.csstudio.sds.components.model.BargraphModel;
 import org.csstudio.sds.eventhandling.AbstractWidgetPropertyPostProcessor;
-import org.csstudio.sds.internal.model.ArrayOptionProperty;
 import org.csstudio.sds.model.commands.HidePropertyCommand;
 import org.csstudio.sds.model.commands.ShowPropertyCommand;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CompoundCommand;
 
 public class BargraphShowScalePostProcessor extends
-		AbstractWidgetPropertyPostProcessor<BargraphModel, ArrayOptionProperty> {
+		AbstractWidgetPropertyPostProcessor<BargraphModel> {
 
 	@Override
-	protected Command doCreateCommand(BargraphModel widget,
-			ArrayOptionProperty property) {
+	protected Command doCreateCommand(BargraphModel widget) {
 		assert widget != null : "widget != null";
-		assert property != null : "property != null";
-		return new EnsureInvariantsCommand(widget, property);
+		return new EnsureInvariantsCommand(widget, BargraphModel.PROP_SHOW_SCALE);
 	}
 	
 	private static final class EnsureInvariantsCommand extends Command {
-		private BargraphModel widget;
-		private ArrayOptionProperty property;
+		private final BargraphModel widget;
+		private final String propertyId;
 		private CompoundCommand chain;
 
 		private EnsureInvariantsCommand(BargraphModel widget,
-				ArrayOptionProperty property) {
+				String propertyId) {
 			this.widget = widget;
-			this.property = property;
+			this.propertyId = propertyId;
 		}
 
 		@Override
@@ -35,20 +32,19 @@ public class BargraphShowScalePostProcessor extends
 			if (chain == null) {
 				chain = new CompoundCommand();
 
-				Object selectedEntry = property.getPropertyValue();
-
+				int optionProperty = widget.getArrayOptionProperty(propertyId);
+				
 				String[] propertyIds = new String[] {
 						BargraphModel.PROP_SCALE_SECTION_COUNT };
 
-				int index = (Integer) selectedEntry;
-				String selectedString = property.getOptions()[index];
+				String selectedString = BargraphModel.SHOW_LABELS[optionProperty];
 				if ("None".equals(selectedString)) {
 					for (String propertyId : propertyIds) {
-						chain.add(new HidePropertyCommand(widget, propertyId, property.getId()));
+						chain.add(new HidePropertyCommand(widget, propertyId, propertyId));
 					}
 				} else {
 					for (String propertyId : propertyIds) {
-						chain.add(new ShowPropertyCommand(widget, propertyId, property.getId()));
+						chain.add(new ShowPropertyCommand(widget, propertyId, propertyId));
 					}
 				}
 			}
