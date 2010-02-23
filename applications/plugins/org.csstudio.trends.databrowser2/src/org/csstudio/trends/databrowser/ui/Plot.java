@@ -458,6 +458,20 @@ public class Plot
         scroll_button.setButtonState(scroll_on);
     }
 
+    /** Update Y axis auto-scale */
+    public void updateAutoscale()
+    {
+        display.asyncExec(new Runnable()
+        {
+            public void run()
+            {
+                System.out.println("Autoscale?");
+                for (Axis yaxis : xygraph.getYAxisList())
+                    yaxis.performAutoScale(false);
+            }
+        });
+    }
+    
     /** Refresh the plot because the data has changed */
     public void redrawTraces()
     {
@@ -465,6 +479,8 @@ public class Plot
         {
             public void run()
             {
+                for (Axis yaxis : xygraph.getYAxisList())
+                    yaxis.performAutoScale(false);
                 xygraph.revalidate();
             }
         });

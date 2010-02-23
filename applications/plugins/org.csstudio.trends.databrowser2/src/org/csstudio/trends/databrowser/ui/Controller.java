@@ -356,6 +356,10 @@ public class Controller implements ArchiveFetchJobListener
                     return;
                 // Check if anything changed, which also updates formulas
                 final boolean anything_new = model.updateItemsAndCheckForNewSamples();
+                
+                if (anything_new)
+                    plot.updateAutoscale();
+                
                 if (model.isScrollEnabled())
                     performScroll();
                 else
