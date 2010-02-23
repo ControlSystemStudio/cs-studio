@@ -73,6 +73,9 @@ public class Controller implements ArchiveFetchJobListener
 
     /** Is the window (shell) iconized? */
     private volatile boolean window_is_iconized;
+
+    /** Is there any Y axis that's auto-scaled? */
+    private volatile boolean have_autoscale_axis = false;
     
     /** Initialize
      *  @param shell Shell
@@ -104,6 +107,7 @@ public class Controller implements ArchiveFetchJobListener
         });
         window_is_iconized = shell.getMinimized();
         
+        checkAutoscaleAxes();
         createPlotTraces();
         
         // Listen to user input from Plot UI, update model
@@ -117,7 +121,6 @@ public class Controller implements ArchiveFetchJobListener
             public void timeConfigRequested()
             {
                 StartEndTimeAction.run(shell, model, plot.getOperationsManager());
-                // TODO Auto-generated method stub
             }
 
             public void timeAxisChanged(final long start_ms, final long end_ms)
@@ -244,6 +247,7 @@ public class Controller implements ArchiveFetchJobListener
 
             public void changedAxis(final AxisConfig axis)
             {
+                checkAutoscaleAxes();
                 if (axis == null)
                 {
                     // New or removed axis: Recreate the whole plot
@@ -299,6 +303,20 @@ public class Controller implements ArchiveFetchJobListener
                 plot.updateScrollButton(scroll_enabled);
             }
         });
+    }
+
+    /** Check if there's any axis in 'auto scale' mode.
+     *  @see #have_autoscale_axis
+     */
+    private void checkAutoscaleAxes()
+    {
+        have_autoscale_axis = false;
+        for (int i=0;  i<model.getAxisCount(); ++i)
+            if (model.getAxis(i).isAutoScale())
+            {
+                have_autoscale_axis = true;
+                break;
+            }
     }
 
     /** When the user moves the time axis around, archive requests for the
@@ -357,7 +375,7 @@ public class Controller implements ArchiveFetchJobListener
                 // Check if anything changed, which also updates formulas
                 final boolean anything_new = model.updateItemsAndCheckForNewSamples();
                 
-                if (anything_new)
+                if (anything_new  &&   have_autoscale_axis )
                     plot.updateAutoscale();
                 
                 if (model.isScrollEnabled())

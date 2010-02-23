@@ -465,7 +465,6 @@ public class Plot
         {
             public void run()
             {
-                System.out.println("Autoscale?");
                 for (Axis yaxis : xygraph.getYAxisList())
                     yaxis.performAutoScale(false);
             }
