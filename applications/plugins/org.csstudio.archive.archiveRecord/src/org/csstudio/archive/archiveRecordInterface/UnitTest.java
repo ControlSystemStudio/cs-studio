@@ -23,8 +23,8 @@
 
 import java.util.Calendar;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
+//import junit.framework.Assert;
+//import junit.framework.TestCase;
 
 import org.csstudio.archive.ArchiveInfo;
 import org.csstudio.archive.ArchiveValues;
