@@ -13,7 +13,8 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.apputil,
  org.csstudio.apputil.ui,
  org.eclipse.core.resources;bundle-version="3.4.1",
- org.csstudio.platform.utility.jms;bundle-version="1.1.1"
+ org.csstudio.platform.utility.jms;bundle-version="1.1.1",
+ org.junit4;bundle-version="4.5.0"
 Eclipse-LazyStart: true
 Export-Package: com.sun.mail.handlers,
  org.csstudio.alarm.table,

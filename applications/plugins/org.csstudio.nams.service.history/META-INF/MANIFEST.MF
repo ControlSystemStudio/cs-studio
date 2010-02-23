@@ -8,7 +8,8 @@ Bundle-Vendor: C1 WPS
 Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.nams.common.activatorUtils,
  org.csstudio.nams.service.logging,
- org.csstudio.nams.common
+ org.csstudio.nams.common,
+ org.junit4;bundle-version="4.5.0"
 Eclipse-LazyStart: true
 Export-Package: org.csstudio.nams.service.history;x-friends:="org.csstudio.nams.testUtils.testSuites",
  org.csstudio.nams.service.history.declaration,
