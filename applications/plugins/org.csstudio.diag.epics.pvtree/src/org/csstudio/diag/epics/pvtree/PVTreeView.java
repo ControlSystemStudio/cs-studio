@@ -177,6 +177,7 @@ public class PVTreeView extends ViewPart
     /** Update the tree with information for a newly entered PV name. */
     public void setPVName(String new_pv_name)
     {
+        new_pv_name = new_pv_name.trim();
         if (! pv_name.getText().equals(new_pv_name))
         {
             pv_name.setText(new_pv_name);
