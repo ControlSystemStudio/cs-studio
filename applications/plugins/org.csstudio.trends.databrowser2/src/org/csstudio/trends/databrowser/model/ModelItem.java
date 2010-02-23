@@ -195,7 +195,9 @@ abstract public class ModelItem
 
     /** @return Index of Y-Axis in model */
     public int getAxisIndex()
-    {
+    {   // Allow this to work in Tests w/o model
+        if (model == null)
+            return 0;
         return model.getAxisIndex(axis);
     }
 

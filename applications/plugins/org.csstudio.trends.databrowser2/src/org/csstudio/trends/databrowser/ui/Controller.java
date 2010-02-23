@@ -114,6 +114,12 @@ public class Controller implements ArchiveFetchJobListener
                 model.enableScrolling(enable_scrolling);
             }
  
+            public void timeConfigRequested()
+            {
+                StartEndTimeAction.run(shell, model, plot.getOperationsManager());
+                // TODO Auto-generated method stub
+            }
+
             public void timeAxisChanged(final long start_ms, final long end_ms)
             {
                 if (model.isScrollEnabled())

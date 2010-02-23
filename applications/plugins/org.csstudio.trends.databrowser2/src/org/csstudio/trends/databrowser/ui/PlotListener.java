@@ -13,6 +13,9 @@ public interface PlotListener
      */
     public void scrollRequested(boolean enable_scrolling);
 
+    /** Called when the user requests time config dialog. */
+    public void timeConfigRequested();
+    
     /** Called when the user enables/disables scrolling
      *  @param start_ms New time axis start time in ms since 1970
      *  @param end_ms ... end time ...
@@ -36,4 +39,5 @@ public interface PlotListener
      *  @param archive Archive data source or <code>null</code>
      */
     public void droppedPVName(String name, IArchiveDataSource archive);
+
 }

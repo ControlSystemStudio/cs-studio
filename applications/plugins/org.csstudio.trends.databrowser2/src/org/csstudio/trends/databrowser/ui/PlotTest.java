@@ -30,41 +30,44 @@ import org.junit.Test;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class PlotTest implements PlotListener
+public class PlotTest
 {
     private boolean run = true;
     
-    // PlotListener
-    public void scrollRequested(final boolean enable_scrolling)
+    final private PlotListener listener = new PlotListener()
     {
-        System.out.println("Scroll enabled: " + enable_scrolling);
+        public void scrollRequested(final boolean enable_scrolling)
+        {
+            System.out.println("Scroll enabled: " + enable_scrolling);
+            
+        }
         
-    }
-
-    // PlotListener
-    public void timeAxisChanged(final long start_ms, final long end_ms)
-    {
-        System.out.println("Time axis: " + start_ms + " ... " + end_ms);
-    }
+        public void timeConfigRequested()
+        {
+            System.out.println("Time Config requested");
+        }
     
-    // PlotListener
-    public void valueAxisChanged(int index, double lower, double upper)
-    {
-        System.out.println("Value axis " + index + ": " + lower + " ... " + upper);
-    }
-
-    // PlotListener
-    public void droppedName(final String name)
-    {
-        System.out.println("Name dropped: " + name);
-    }
+        public void timeAxisChanged(final long start_ms, final long end_ms)
+        {
+            System.out.println("Time axis: " + start_ms + " ... " + end_ms);
+        }
+        
+        public void valueAxisChanged(int index, double lower, double upper)
+        {
+            System.out.println("Value axis " + index + ": " + lower + " ... " + upper);
+        }
     
-    // PlotListener
-    public void droppedPVName(final String name, final IArchiveDataSource archive)
-    {
-        System.out.println("PV Name dropped: " + name);
-    }
-
+        public void droppedName(final String name)
+        {
+            System.out.println("Name dropped: " + name);
+        }
+        
+        public void droppedPVName(final String name, final IArchiveDataSource archive)
+        {
+            System.out.println("PV Name dropped: " + name);
+        }
+    };
+    
     private void createGUI(final Composite parent)
     {
         final GridLayout layout = new GridLayout(1, false);
@@ -88,7 +91,7 @@ public class PlotTest implements PlotListener
         });
 
         final Plot plot = new Plot(plot_box);
-        plot.addListener(this);
+        plot.addListener(listener);
 
         // Create demo samples
         final ArrayList<IValue> values = new ArrayList<IValue>();

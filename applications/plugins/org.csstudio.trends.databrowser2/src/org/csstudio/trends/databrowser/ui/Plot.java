@@ -76,6 +76,8 @@ public class Plot
      */
     private boolean plot_changes_valueaxis = false;
 
+    private TimeConfigButton time_config_button;
+
     
     /** Initialize plot inside Canvas
      *  @param canvas Parent {@link Canvas}
@@ -104,6 +106,9 @@ public class Plot
         
         scroll_button = new ScrollButton(xygraph.getOperationsManager());
         plot.addToolbarButton(scroll_button);
+        
+        time_config_button = new TimeConfigButton();
+        plot.addToolbarButton(time_config_button);
         
         // Configure axes
         final Axis time_axis = xygraph.primaryXAxis;
@@ -188,6 +193,7 @@ public class Plot
             throw new IllegalStateException();
         this.listener = listener;
         scroll_button.addPlotListener(listener);
+        time_config_button.addPlotListener(listener);
     }
    
     /** @return Operations manager for undo/redo */

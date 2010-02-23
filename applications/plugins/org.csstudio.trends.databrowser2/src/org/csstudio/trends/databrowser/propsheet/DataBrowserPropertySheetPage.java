@@ -2,8 +2,6 @@ package org.csstudio.trends.databrowser.propsheet;
 
 import java.util.ArrayList;
 
-import org.csstudio.apputil.time.StartEndTimeParser;
-import org.csstudio.apputil.ui.time.StartEndDialog;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.csstudio.trends.databrowser.Messages;
 import org.csstudio.trends.databrowser.model.ArchiveDataSource;
@@ -15,6 +13,7 @@ import org.csstudio.trends.databrowser.model.ModelListener;
 import org.csstudio.trends.databrowser.model.PVItem;
 import org.csstudio.trends.databrowser.ui.AddPVAction;
 import org.csstudio.trends.databrowser.ui.ColorRegistry;
+import org.csstudio.trends.databrowser.ui.StartEndTimeAction;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
@@ -457,15 +456,14 @@ public class DataBrowserPropertySheetPage extends Page
             {
                 try
                 {
-                    final StartEndTimeParser parser =
-                        new StartEndTimeParser(start_time.getText(), end_time.getText());
-                    new ChangeTimerangeCommand(model, operations_manager, parser.isEndNow(), parser.getStart(), parser.getEnd());
+                    StartEndTimeAction.run(model, operations_manager,
+                            start_time.getText(), end_time.getText());
                 }
                 catch (Exception ex)
                 {
                     MessageDialog.openError(parent.getShell(), Messages.Error,
                             Messages.InvalidStartEndTimeError);
-                    // Restore
+                    // Restore unchanged model time range
                     changedTimerange();
                 }
             }
@@ -479,11 +477,7 @@ public class DataBrowserPropertySheetPage extends Page
             @Override
             public void widgetSelected(SelectionEvent e)
             {
-                final StartEndDialog dlg = new StartEndDialog(parent.getShell(), start_time.getText(), end_time.getText());
-                if (dlg.open() != StartEndDialog.OK)
-                    return;
-                new ChangeTimerangeCommand(model, operations_manager,
-                        dlg.isEndNow(), dlg.getStartCalendar(), dlg.getEndCalendar());
+                StartEndTimeAction.run(parent.getShell(), model, operations_manager);
             }
         };
         start_end.addSelectionListener(start_end_action);
