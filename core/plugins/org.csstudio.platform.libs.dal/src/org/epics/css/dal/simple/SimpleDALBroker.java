@@ -43,15 +43,17 @@ public class SimpleDALBroker {
 		public void run() {
 			ArrayList<ConnectionParameters> toRemove = new ArrayList<ConnectionParameters>();
 			synchronized (properties) {
+				PropertyHolder holder;
 				for (Iterator<ConnectionParameters> iterator = properties.keySet().iterator(); iterator.hasNext();) {
 					ConnectionParameters cp = (ConnectionParameters) iterator.next();
-					PropertyHolder holder = properties.get(cp);
+					holder = properties.get(cp);
 					if (holder.expires > 0 && holder.expires < System.currentTimeMillis() && !holder.property.hasDynamicValueListeners()) {
 						toRemove.add(cp);
 					}
 				}
 				for (ConnectionParameters connectionParameters : toRemove) {
-					properties.remove(connectionParameters);
+					holder = properties.remove(connectionParameters);
+					factory.destroy(holder.property);
 				}
 			}
 		}

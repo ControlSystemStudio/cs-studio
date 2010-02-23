@@ -1,6 +1,7 @@
 package org.epics.css.dal.spi;
 
 import java.util.HashMap;
+import java.util.Iterator;
 
 import javax.naming.directory.DirContext;
 
@@ -108,6 +109,13 @@ public class DefaultPropertyFactoryBroker implements PropertyFactoryBroker {
 	public PropertyFamily getPropertyFamily() {
 		// has no sense
 		return null;
+	}
+	
+	public void destroy(DynamicValueProperty<?> property) {
+		Iterator<PropertyFactory> it = factories.values().iterator();
+		while(it.hasNext()) {
+			it.next().getPropertyFamily().destroy(property);
+		}
 	}
 
 	public AbstractApplicationContext getApplicationContext() {

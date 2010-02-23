@@ -94,6 +94,7 @@ public class PropertyFamilyImpl
 	 */
 	public void destroy(DynamicValueProperty<?> prop)
 	{
+		if (!contains(prop)) return;
 		this.remove((DynamicValueProperty<?>) prop); 
 		AbstractPlug plug = (AbstractPlug)pf.getPlug();
 		PropertyProxy<?> proxy = ((DataAccessImpl<?>)prop).getProxy();
