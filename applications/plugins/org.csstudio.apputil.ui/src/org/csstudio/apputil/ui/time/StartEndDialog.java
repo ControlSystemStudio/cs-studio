@@ -74,7 +74,7 @@ public class StartEndDialog extends Dialog
     
     /** @return <code>true</code> if end time is 'now' */
     public final boolean isEndNow()
-    {   return start_end.getRelativeEnd().isNow(); }
+    {   return start_end.isEndNow(); }
 
     @Override
     protected void configureShell(Shell shell)
