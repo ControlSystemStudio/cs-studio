@@ -232,6 +232,11 @@
             propertyId="actionData"
             widgetId="org.csstudio.sds.components.ActionButton">
       </widgetPropertyPostProcessor>
+      <widgetPropertyPostProcessor
+            class="org.csstudio.sds.components.model.eventing.BargraphShowScalePostProcessor"
+            propertyId="scaleShowStatus"
+            widgetId="org.csstudio.sds.components.Bargraph">
+      </widgetPropertyPostProcessor>
    </extension>
 
 </plugin>
