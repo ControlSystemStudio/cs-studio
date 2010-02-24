@@ -74,7 +74,7 @@ public class SQL
             sample_sel_by_id_start_end =
                 "SELECT smpl_time, severity_id, status_id, num_val, float_val, str_val FROM " + prefix + "sample"+
                 "   WHERE channel_id=?" +
-                "     AND smpl_time>? AND smpl_time<=?" +
+                "     AND smpl_time BETWEEN ? AND ?" +
                 "   ORDER BY smpl_time";
             sample_sel_array_vals = "SELECT float_val FROM " + prefix + "array_val" +
                 " WHERE channel_id=? AND smpl_time=? ORDER BY seq_nbr";
@@ -88,7 +88,7 @@ public class SQL
             sample_sel_by_id_start_end =
                 "SELECT smpl_time, severity_id, status_id, num_val, float_val, str_val, nanosecs FROM " + prefix + "sample" +
                 "   WHERE channel_id=?" +
-                "     AND smpl_time>? AND smpl_time<=?" +
+                "     AND smpl_time>=? AND smpl_time<=?" +
                 "   ORDER BY smpl_time, nanosecs";
             sample_sel_array_vals = "SELECT float_val FROM " + prefix + "array_val" +
                 " WHERE channel_id=? AND smpl_time=? AND nanosecs=? ORDER BY seq_nbr";
