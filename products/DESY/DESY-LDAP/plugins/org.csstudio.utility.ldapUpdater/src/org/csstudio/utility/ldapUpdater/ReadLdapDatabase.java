@@ -24,14 +24,21 @@ public class ReadLdapDatabase implements Observer{
         _ergebnis = new ErgebnisListe();
         _ergebnis.addObserver(this);
 
-        LDAPReader reader = new LDAPReader("ou=EpicsControls","econ=*",_ergebnis);
+        final LDAPReader reader = new LDAPReader("ou=EpicsControls","econ=*",_ergebnis);
         reader.addJobChangeListener(new JobChangeAdapter() {
             public void done(final IJobChangeEvent event) {
+                int trys =3;
                 if (event.getResult().isOK()) {
                     _ergebnis.notifyView();
                 }
                 else {
-                    CentralLogger.getInstance().error(this, "LDAP: NOT event.getResult().isOK() ");
+                    if(trys<3) {
+                        CentralLogger.getInstance().debug(this, "No LDAP connection! Try: "+trys);
+                        trys++;
+                        reader.schedule();
+                    }else {
+                        CentralLogger.getInstance().error(this, "LDAP: NOT event.getResult().isOK() ");
+                    }
                 }             
             }
          });
