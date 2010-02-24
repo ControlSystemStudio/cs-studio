@@ -7,12 +7,12 @@ import com.sun.speech.freetts.VoiceManager;
  *  @author Katia Danilova
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class FreeTTSAnnunciator implements Annunciator
 {
 	final public static String DEFAULT_VOICE = "kevin16";
 
 	private Translation translations[] = null; 
-
 
 	final private Voice voice;
 
@@ -31,6 +31,21 @@ public class FreeTTSAnnunciator implements Annunciator
 	 */
 	public FreeTTSAnnunciator(final String voice_name) throws Exception
 	{
+	    // While this is not GUI code, the FreeTTS library somehow uses AWT.
+	    // In Eclipse GUI code, that activates the SWT/AWT bridge.
+	    // Under OS X, the SWT/AWT bridge is broken.
+	    // Worked in 10.4 with updated JVM, but in 10.5 any speech code
+	    // invoked from GUI programs would lock the whole application up.
+	    // Setting
+	    //     -Djava.awt.headless=true
+	    // or the equivalent in here seems to avoid the hangup
+	    // (from http://www.digitalsanctuary.com/tech-blog/java/eclipse-startonfirstthread-error-and-fix.html )
+	    
+	    // Look for something like "Mac OS X"
+	    final String os = System.getProperty("os.name");
+	    if (os.contains("Mac"))
+	        System.setProperty("java.awt.headless", "true");
+	    
 		// Setting this property eliminates the need for voices.txt
 		System.setProperty("freetts.voices",
 				"com.sun.speech.freetts.en.us.cmu_time_awb.AlanVoiceDirectory," +
