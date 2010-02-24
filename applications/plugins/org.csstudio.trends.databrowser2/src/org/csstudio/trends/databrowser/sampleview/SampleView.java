@@ -8,8 +8,11 @@ import org.csstudio.platform.ui.swt.AutoSizeColumn;
 import org.csstudio.platform.ui.swt.AutoSizeControlListener;
 import org.csstudio.trends.databrowser.Messages;
 import org.csstudio.trends.databrowser.editor.DataBrowserAwareView;
+import org.csstudio.trends.databrowser.model.AxisConfig;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.model.ModelItem;
+import org.csstudio.trends.databrowser.model.ModelListener;
+import org.csstudio.trends.databrowser.model.PVItem;
 import org.csstudio.trends.databrowser.model.PlotSample;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
@@ -219,7 +222,7 @@ public class SampleView extends DataBrowserAwareView
 
     /** {@inheritDoc} */
     @Override
-    protected void updateModel(Model oldModel, Model model)
+    protected void updateModel(final Model old_model, final Model model)
     {
         this.model = model;
         if (model == null)
@@ -236,7 +239,7 @@ public class SampleView extends DataBrowserAwareView
         names[0] = Messages.SampleView_SelectItem;
         for (int i=1; i<names.length; ++i)
             names[i] = model.getItem(i-1).getName();
-        if (oldModel == model  &&  items.getSelectionIndex() > 0)
+        if (old_model == model  &&  items.getSelectionIndex() > 0)
         {
             // Is the previously selected item still valid?
             final String old_name = items.getText();
@@ -247,6 +250,7 @@ public class SampleView extends DataBrowserAwareView
                 items.setText(item.getName());
                 // Update sample table size
                 sample_table.setItemCount(item.getSamples().getSize());
+                sample_table.refresh();
                 return;
             }
         }

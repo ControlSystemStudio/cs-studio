@@ -17,6 +17,7 @@
 - <a href="#annotate">Annotations</a>
 - <a href="#search">Search</a>
 - <a href="#export">Export</a>
+- <a href="#inspect">Inspect Samples</a>
 - <a href="#preferences">Preferences</a>
 - <a href="#transition">Older Data Browser</a>
 - <a href="#history">History</a>
@@ -465,6 +466,20 @@ The generated data file is suitable for loading (executing) in Matlab R2006b
 or newer, creating one 'timeseries' object per trace.
 With previous Matlab releases, you will have to edit the generated file
 to suit your needs, for example use simply "plot(v);" to show the values.
+</p>
+
+
+<h2><a name=inspect>Inspect Samples</a></h2>
+<p>
+The "Inspect Samples" panel, accessible from the context menu of the plot,
+provides a tabular view of all samples in the Data Browser memory.
+It is mostly used for debugging.
+</p>
+<p>
+For performance reasons, the table does <u>not</u> update with each received
+sample. Instead, a manual update via the "Refresh" button is required to
+show newly received "live" samples or to force an update of a table that
+appears inconsitent.
 </p>
 
 
