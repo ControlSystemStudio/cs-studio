@@ -6,12 +6,13 @@ import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.widgets.figures.LabelFigure;
 import org.csstudio.opibuilder.widgets.model.LabelModel;
 import org.csstudio.opibuilder.widgets.model.TextInputModel;
+import org.csstudio.opibuilder.widgets.model.TextIndicatorModel.FormatEnum;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
 
-/**The editpart for text input widget.
+/**The editpart for text input widget.)
  * @author Xihui Chen
  *
  */
@@ -64,9 +65,24 @@ public class TextInputEditpart extends TextIndicatorEditPart {
 					//}
 					if(getWidgetModel().getPVName().trim().length() == 0)
 						((LabelFigure)figure).setText(text);
-					else
-						setPVValue(AbstractPVWidgetModel.PROP_PVNAME, text);
-					
+					else {
+						FormatEnum formatEnum = getWidgetModel().getFormat();
+						switch (formatEnum){
+						case STRING:
+							Integer[] iString = new Integer[text.length()];
+							char[] textChars = text.toCharArray();
+							
+							for (int ii = 0; ii< text.length(); ii++){
+								iString[ii] = new Integer(textChars[ii]);
+							}
+							setPVValue(AbstractPVWidgetModel.PROP_PVNAME, iString);
+							break;
+						case DEFAULT:
+						default:
+							setPVValue(AbstractPVWidgetModel.PROP_PVNAME, text);
+							break;
+						}
+					}
 					return false;
 				}
 			};			

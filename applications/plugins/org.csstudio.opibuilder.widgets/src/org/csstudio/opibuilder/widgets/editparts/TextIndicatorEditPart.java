@@ -267,6 +267,11 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 			else
 				text = value.format();			
 			break;
+		case STRING:
+			text ="";
+			if(value instanceof ILongValue)
+				text = value.format(Format.String, precision);
+			break;
 		case DEFAULT:
 		default:		
 			text = value.format(Format.Default, precision);
