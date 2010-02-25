@@ -156,6 +156,8 @@ public class PVContext
         else
         {
             channel_ref.incRefs();
+            // TODO: Saw null pointer exception here.
+            // Must have been getChannel() == null, but how is that possible?
             channel_ref.getChannel().addConnectionListener(conn_callback);
             Activator.getLogger().debug("Re-using CA channel " + name);
         }
