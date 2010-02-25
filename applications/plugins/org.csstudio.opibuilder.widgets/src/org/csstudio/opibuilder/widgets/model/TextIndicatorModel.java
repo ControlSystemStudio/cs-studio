@@ -16,7 +16,8 @@ public class TextIndicatorModel extends LabelModel {
 		DEFAULT("Default"),
 		DECIAML("Decimal"),
 		EXP("Exponential"),
-		HEX("Hex");
+		HEX("Hex"),
+		STRING("String");
 		
 		private String description;
 		private FormatEnum(String description) {
