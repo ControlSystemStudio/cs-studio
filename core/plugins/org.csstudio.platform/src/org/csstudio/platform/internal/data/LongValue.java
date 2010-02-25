@@ -76,6 +76,15 @@ public class LongValue extends Value implements ILongValue
 		        		 buf.append(Messages.ArrayElementSeparator);
 		        		 buf.append(buf.append(fmt.format(values[i])));
 		        	 }
+			 }else if (how == Format.String){
+				 for (int i = 0; i<values.length; i++)
+				 {
+					 if (values[i] != 0){
+					     buf.append((char)values[i]);
+					 } else {
+						 i = values.length;
+					 }
+				 }
 	          }else{
 		        	 buf.append(values[0]);
 		        	 for (int i = 1; i < values.length; i++)
