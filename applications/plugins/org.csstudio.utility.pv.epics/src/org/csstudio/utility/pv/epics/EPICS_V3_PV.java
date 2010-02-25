@@ -455,7 +455,15 @@ public class EPICS_V3_PV
                 final double val = ((Integer)new_value).intValue();
                 channel_ref.getChannel().put(val);
             }
-            else throw new Exception("Cannot handle type "
+            else if (new_value instanceof Integer [])
+            {
+                final Integer ival[] = (Integer [])new_value;
+                final int val[] = new int[ival.length];
+                for (int i=0; i<val.length; ++i)
+                    val[i] = ival[i].intValue();
+                channel_ref.getChannel().put(val);
+            }
+           else throw new Exception("Cannot handle type "
                             + new_value.getClass().getName());
         }
     }
