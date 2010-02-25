@@ -6,8 +6,11 @@ import org.osgi.framework.BundleContext;
 /** Plugin activator
  *  @author Kay Kasemir
  *  reviewed by Katia Danilova 08/20/08
+ *  
+ *  @deprecated Replaced by org.csstudio.alarm.annunciator, Feb. 2010
  */
 @SuppressWarnings("nls")
+@Deprecated
 public class Activator extends Plugin
 {
     /** The plug-in ID defined in MANIFEST.MF */
