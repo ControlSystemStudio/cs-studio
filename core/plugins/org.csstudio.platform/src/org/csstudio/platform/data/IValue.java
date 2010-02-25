@@ -132,7 +132,10 @@ public interface IValue
         Decimal,
         
         /** If possible, use exponential notation. */
-        Exponential
+        Exponential,
+        
+        /** If possible, convert to String */
+        String
     }
 
     /** Format the value as a string.
