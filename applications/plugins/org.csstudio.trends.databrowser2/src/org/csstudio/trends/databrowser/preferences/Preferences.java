@@ -108,6 +108,8 @@ public class Preferences
         for (String spec : specs)
         {
             // Each spec is "<name>|<key>|<url>"
+            if (spec.length() <= 0)
+                continue;
             try
             {
                 final String segs[] = spec.split(COMPONENT_SEPARATOR_RE);
