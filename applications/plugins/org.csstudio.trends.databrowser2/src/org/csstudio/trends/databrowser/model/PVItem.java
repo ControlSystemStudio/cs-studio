@@ -405,6 +405,24 @@ public class PVItem extends ModelItem implements PVListener, IProcessVariableWit
             final ArrayList<IValue> result)
     {
         samples.mergeArchivedData(server_name, result);
+        
+//        // Order check
+//        final int N = samples.getSize();
+//        if (N <= 0)
+//            return;
+//        ITimestamp prev = samples.getSample(0).getTime();
+//        for (int i=1;  i<N;  ++i)
+//        {
+//            final ITimestamp time = samples.getSample(i).getTime();
+//            if (time.isLessThan(prev))
+//            {
+//                System.out.println("Time stamp problem at " + i);
+//                System.out.println(samples.getSample(i));
+//                return;
+//            }
+//            prev = time;
+//        }
+//        System.out.println(N + " Samples in order");   
     }
     
     /** Write XML formatted PV configuration
