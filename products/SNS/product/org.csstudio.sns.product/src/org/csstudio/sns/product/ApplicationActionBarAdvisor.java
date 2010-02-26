@@ -65,7 +65,6 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
     private IContributionItem open_windows;
     private IAction intro;
     private IAction help;
-	private IAction cheat;
     private IAction about;
     private IContributionItem menu_perspectives;
     private IContributionItem recent_files;
@@ -128,10 +127,6 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         help = ActionFactory.HELP_CONTENTS.create(window);
         register(help);
 
-        cheat = new OpenViewAction(
-        		"org.eclipse.ui.cheatsheets.views.CheatSheetView",
-        		Messages.Menu_Help_CheatSheet);
-        
         about = ActionFactory.ABOUT.create(window);
         about.setImageDescriptor(Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/css16.gif")); //$NON-NLS-1$
         register(about);
@@ -222,7 +217,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         menu_file.add(new Separator());
         
         menu_file.add(new GroupMarker(RECENT_FILES));
-        final MenuManager recentFilesSubMenu =	new MenuManager("Recent Files");
+        final MenuManager recentFilesSubMenu =	new MenuManager(Messages.Menu_File_Recent);
         recentFilesSubMenu.add(recent_files);
         menu_file.add(recentFilesSubMenu);
         
@@ -298,7 +293,14 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
        	menu_help.add(intro);
        	menu_help.add(new Separator());
         menu_help.add(help);
-        menu_help.add(cheat);
+        // Not sure if this is the best way.
+        // Is the Sheet Cheat View ID defined as a public somewhere?
+        // Does org.eclipse.* already provide an action for opening it?
+        // There is org.eclipse.ui.internal.cheatsheets.actions.CheatSheetHelpMenuAction(),
+        // but that is "internal"...
+        menu_help.add(new OpenViewAction(
+                "org.eclipse.ui.cheatsheets.views.CheatSheetView", //$NON-NLS-1$
+                Messages.Menu_Help_CheatSheet));
         menu_help.add(new Separator());
         menu_help.add(new GroupMarker(IWorkbenchActionConstants.HELP_START));
         // CSS platform.ui plugin hooks software update into help/group.updates

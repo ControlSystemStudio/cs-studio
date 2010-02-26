@@ -21,9 +21,9 @@ public class Messages extends NLS
     public static String Menu_CSS_Utilities;
     public static String Menu_CSS_Weblinks;
     public static String Menu_File;
+    public static String Menu_File_Recent;
     public static String Menu_Help;
     public static String Menu_Help_CheatSheet;
-
 	public static String Menu_New;
     public static String Menu_Perspectives;
     public static String Menu_Views;
