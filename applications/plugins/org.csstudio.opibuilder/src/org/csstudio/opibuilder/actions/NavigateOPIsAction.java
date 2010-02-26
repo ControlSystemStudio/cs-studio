@@ -55,7 +55,8 @@ public class NavigateOPIsAction extends Action implements IDisplayOpenManagerLis
 	    
 	    private void initMenu() {
 	    	historyMenu.addMenuListener(new MenuAdapter() {
-	    		public void menuShown(MenuEvent e) {
+	    		@Override
+                public void menuShown(MenuEvent e) {
 	    			if (recreateMenu) {
 						Menu m = (Menu) e.widget;
 						MenuItem[] items = m.getItems();
@@ -69,6 +70,8 @@ public class NavigateOPIsAction extends Action implements IDisplayOpenManagerLis
 	    }
 	    
 	    private void fillMenu(final Menu menu) {
+	        if (manager == null)
+	            return;
 	    	Object[] entries = forward ? 
 	    			manager.getForwardStackEntries() : manager.getBackStackEntries();	    	
 	    	RunnerInput[] runnerInputArray = new RunnerInput[entries.length];
@@ -135,7 +138,7 @@ public class NavigateOPIsAction extends Action implements IDisplayOpenManagerLis
 	}
 	
 	@Override
-	public void run() {		
+	public void run() {
 		if(manager == null)
 			return;
 		if(forward)
@@ -146,6 +149,8 @@ public class NavigateOPIsAction extends Action implements IDisplayOpenManagerLis
 	
 	@Override
 	public boolean isEnabled() {
+        if (manager == null)
+            return false;
 		return forward?manager.canForward() : manager.canBackward();
 	}
 	
