@@ -509,6 +509,8 @@ public class Controller implements ArchiveFetchJobListener
     public void archiveFetchFailed(final ArchiveFetchJob job,
             final ArchiveDataSource archive, final Exception error)
     {
+        // TODO Remove when done debugging
+        error.printStackTrace();
         if (shell.isDisposed())
             return;
         shell.getDisplay().asyncExec(new Runnable()
