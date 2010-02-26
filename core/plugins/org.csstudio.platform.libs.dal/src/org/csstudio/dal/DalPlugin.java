@@ -53,9 +53,9 @@ public class DalPlugin extends Plugin {
 	 */
 	private static DalPlugin plugin;
 	
-	private static DefaultApplicationContext applicationContext;
+	private DefaultApplicationContext applicationContext;
 	
-	private static SimpleDALBroker broker;
+	private SimpleDALBroker broker;
 
 	/**
 	 * The constructor
@@ -71,9 +71,19 @@ public class DalPlugin extends Plugin {
 	 * @return the shared instance
 	 */
 	public static DalPlugin getDefault() {
+		if (plugin == null) {
+			plugin = new DalPlugin();
+		}
 		return plugin;
 	}
 
+	/**
+	 * Returns the simple dal broker to be used with this DAL plugin.
+	 * The broker is configured to use all available property factories
+	 * registered with this plugin.
+	 * 
+	 * @return the simple dal broker
+	 */
 	public SimpleDALBroker getSimpleDALBroker() {
 		if (broker == null) {
 			broker = SimpleDALBroker.newInstance(applicationContext);
