@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="CSS (EPICS)" id="org.csstudio.basic.epics.product.product" application="org.csstudio.basic.epics.application" version="1.0.22" useFeatures="false" includeLaunchers="true">
+<product name="CSS (EPICS)" id="org.csstudio.basic.epics.product.product" application="org.csstudio.basic.epics.application" version="1.1.0" useFeatures="false" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/org.csstudio.basic.epics.product/icons/about.gif"/>
@@ -54,6 +54,7 @@ See http://ics-web.sns.ornl.gov/css
 
    <vm>
    </vm>
+
 
    <plugins>
       <plugin id="com.ibm.icu"/>
@@ -141,6 +142,7 @@ See http://ics-web.sns.ornl.gov/css
       <plugin id="org.eclipse.ecf.filetransfer"/>
       <plugin id="org.eclipse.ecf.identity"/>
       <plugin id="org.eclipse.ecf.provider.filetransfer"/>
+      <plugin id="org.eclipse.ecf.provider.filetransfer.ssl" fragment="true"/>
       <plugin id="org.eclipse.ecf.ssl" fragment="true"/>
       <plugin id="org.eclipse.equinox.app"/>
       <plugin id="org.eclipse.equinox.common"/>
