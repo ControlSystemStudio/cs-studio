@@ -237,6 +237,16 @@
             propertyId="scaleShowStatus"
             widgetId="org.csstudio.sds.components.Bargraph">
       </widgetPropertyPostProcessor>
+      <widgetPropertyPostProcessor
+            class="org.csstudio.sds.components.model.eventing.BargraphSizePostProcessor"
+            propertyId="width"
+            widgetId="org.csstudio.sds.components.Bargraph">
+      </widgetPropertyPostProcessor>
+      <widgetPropertyPostProcessor
+            class="org.csstudio.sds.components.model.eventing.BargraphSizePostProcessor"
+            propertyId="height"
+            widgetId="org.csstudio.sds.components.Bargraph">
+      </widgetPropertyPostProcessor>
    </extension>
 
 </plugin>
