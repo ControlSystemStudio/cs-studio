@@ -36,6 +36,8 @@ public class Messages extends NLS
     public static String ArchiveFetchProgressFmt;
     public static String ArchiveFetchDetailFmt;
     public static String ArchiveKey;
+
+    public static String ArchiveListGUI_NoArchives;
     public static String ArchiveName;   
     public static String ArchiveServerErrorFmt;
     public static String ArchiveServerInfo;

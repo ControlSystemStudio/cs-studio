@@ -88,11 +88,8 @@ public abstract class ArchiveListGUI
         });
         
         // Activate the first archive server URL
-        if (urls.getItemCount() > 0)
-        {
-            urls.select(0);
+        if (urls.getEnabled())
             connectToArchiveServer(urls.getText());
-        }
         
         // Archive table: Allow dragging of archive data sources and PVs
         new ArchiveDataSourceDragSource(archive_table.getTable(), archive_table);
@@ -122,6 +119,12 @@ public abstract class ArchiveListGUI
         urls.setToolTipText(Messages.Search_URL_TT);
         urls.setItems(Preferences.getArchiveServerURLs());
         urls.setLayoutData(new GridData(SWT.FILL, 0, true, false));
+        if (urls.getItemCount() <= 0)
+        {
+            urls.add(Messages.ArchiveListGUI_NoArchives);
+            urls.setEnabled(false);
+        }
+        urls.select(0);
         
         info = new Button(parent, SWT.PUSH);
         info.setText(Messages.ArchiveServerInfo);

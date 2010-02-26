@@ -92,7 +92,9 @@ public class Preferences
     public static String[] getArchiveServerURLs()
     {
         final IPreferencesService prefs = Platform.getPreferencesService();
-        final String urls = prefs.getString(Activator.PLUGIN_ID, URLS, "", null);
+        final String urls = prefs.getString(Activator.PLUGIN_ID, URLS, "", null).trim();
+        if (urls.length() <= 0)
+            return new String[0];
         return urls.split("\\*");
     }
 
