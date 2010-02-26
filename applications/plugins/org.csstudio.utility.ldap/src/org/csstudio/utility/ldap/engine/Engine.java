@@ -66,6 +66,7 @@ public class Engine extends Job {
 
     private static int LDAP_MAX_BUFFER_SIZE = 10000; // 1000 too small!!
     private volatile boolean running = true;
+    private int reStartSendDiff = 0;
 
     private class AttriebutSet {
         private SearchControls _ctrl;
@@ -297,12 +298,17 @@ public class Engine extends Job {
 
         // / System.out.println("Engine.addLdapWriteRequest actual buffer size:
         // " + bufferSize);
-        if (bufferSize > maxBuffersize) {
+        /**
+         *  Start the sending, after a Buffer overflow,
+         *  when the buffer have minimum 10% free space   
+         */
+        if (bufferSize > (maxBuffersize-reStartSendDiff)) {
             if (addVectorOK) {
                 System.out.println("Engine.addLdapWriteRequest writeVector > " + maxBuffersize
                         + " - cannot store more!");
                 CentralLogger.getInstance().warn(this,
                         "writeVector > " + maxBuffersize + " - cannot store more!");
+                reStartSendDiff = (int)(LDAP_MAX_BUFFER_SIZE*0.1);
                 addVectorOK = false;
             }
         } else {
@@ -310,6 +316,7 @@ public class Engine extends Job {
                 System.out.println("Engine.addLdapWriteRequest writeVector - continue writing");
                 CentralLogger.getInstance().warn(this,
                         "writeVector < " + maxBuffersize + " - resume writing");
+                reStartSendDiff = 0;
                 addVectorOK = true;
             }
             _writeVector.add(writeRequest);
