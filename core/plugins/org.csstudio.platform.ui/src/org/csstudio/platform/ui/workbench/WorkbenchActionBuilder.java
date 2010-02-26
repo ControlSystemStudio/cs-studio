@@ -22,6 +22,7 @@
 package org.csstudio.platform.ui.workbench;
 
 import org.csstudio.platform.ui.internal.localization.Messages;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IContributionItem;
@@ -316,10 +317,20 @@ public final class WorkbenchActionBuilder {
 			menu.add(_introAction);
 			menu.add(new Separator());
 		}
-
+		
 		// about should always be at the bottom
 		menu.add(new Separator("group.about")); //$NON-NLS-1$
 		menu.add(_aboutAction);
+
+		// Not sure if this is the best way.
+		// Is the Sheet Cheat View ID defined as a public somewhere?
+		// Does org.eclipse.* already provide an action for opening it?
+		// There is org.eclipse.ui.internal.cheatsheets.actions.CheatSheetHelpMenuAction(),
+		// but that is "internal"...
+        menu.add(new OpenViewAction(
+	                "org.eclipse.ui.cheatsheets.views.CheatSheetView", //$NON-NLS-1$
+	                "Cheat Sheets..."));
+		
 		menu.add(new GroupMarker("group.about.ext")); //$NON-NLS-1$
 		menu.add(_documentationAction);
 		return menu;
