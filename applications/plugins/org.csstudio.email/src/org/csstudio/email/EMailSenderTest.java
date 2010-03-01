@@ -21,7 +21,7 @@ public class EMailSenderTest
         mailer.addText("Hello, this is a test");
         mailer.attachText("testfile.txt");
         mailer.attachImage("/tmp/test.png");
-        mailer.attachText("src/org/csstudio/email/MailerTest.java");
+        mailer.attachText("src/org/csstudio/email/EMailSender.java");
         mailer.close();
     }
 }

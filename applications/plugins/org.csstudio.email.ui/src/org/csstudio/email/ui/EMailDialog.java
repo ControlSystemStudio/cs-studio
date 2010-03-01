@@ -1,6 +1,6 @@
 package org.csstudio.email.ui;
 
-import org.csstudio.email.Mailer;
+import org.csstudio.email.EMailSender;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
@@ -167,7 +167,7 @@ public class EMailDialog extends TitleAreaDialog
     {
         try
         {
-            final Mailer mailer = new Mailer(host,
+            final EMailSender mailer = new EMailSender(host,
                     txt_from.getText().trim(),
                     txt_to.getText().trim(),
                     txt_subject.getText().trim());

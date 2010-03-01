@@ -13,3 +13,4 @@ Require-Bundle: org.junit4,
  org.eclipse.ui.workbench;bundle-version="3.5.0",
  org.csstudio.email;bundle-version="1.0.0"
 Bundle-Activator: org.csstudio.email.ui.Activator
+Export-Package: org.csstudio.email.ui
