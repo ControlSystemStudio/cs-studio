@@ -193,7 +193,7 @@ public class WorkspaceDialog extends TitleAreaDialog
                         + File.separator + ".metadata"); //$NON-NLS-1$
                 if (meta.exists())
                 {
-                   setErrorMessage(Messages.Workspace_NestedError);
+                   setErrorMessage(NLS.bind(Messages.Workspace_NestedErrorFMT, parent.getName()));
                    return;
                 }
                 // OK, go one up
