@@ -425,7 +425,10 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 	 */
 	protected void setCondition(DynamicValueCondition s) {
 		condition = s;
-		characteristics.put(CharacteristicInfo.C_SEVERITY_INFO.getName(), s);
+		String name = CharacteristicInfo.C_SEVERITY_INFO.getName();
+		if (characteristics.get(name) != null) {
+			characteristics.put(name, s);
+		}
 		fireCondition();
 	}
 
