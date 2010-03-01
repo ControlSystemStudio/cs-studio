@@ -42,7 +42,7 @@ import org.epics.css.dal.simple.SimpleDALBroker;
  * @author Sven Wende
  * 
  */
-public class AbstractDataAccessLayerTest extends TestCase {
+public class Base extends TestCase {
 	protected static final String PV = "Chiller:Pressure:1";
 
 	protected SimpleDALBroker broker;
@@ -131,7 +131,7 @@ public class AbstractDataAccessLayerTest extends TestCase {
 
 		broker.registerListener(new ConnectionParameters(ri, Double.class), listener);
 		
-		Thread.sleep(5000);
+		Thread.sleep(15000);
 
 		return holder.getValue();
 	}

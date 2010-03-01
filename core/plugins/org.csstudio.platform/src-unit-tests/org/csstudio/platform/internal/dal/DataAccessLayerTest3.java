@@ -1,7 +1,6 @@
 package org.csstudio.platform.internal.dal;
 
 import org.epics.css.dal.simple.AnyData;
-import org.epics.css.dal.simple.AnyDataChannel;
 import org.epics.css.dal.simple.ChannelListener;
 import org.epics.css.dal.simple.ConnectionParameters;
 import org.epics.css.dal.simple.MetaData;
@@ -38,7 +37,7 @@ import org.epics.css.dal.simple.SimpleDALBroker;
  * @author Sven Wende
  * 
  */
-public class DataAccessLayerTest3 extends AbstractDataAccessLayerTest {
+public class DataAccessLayerTest3 extends Base {
 	private RemoteInfo ri = new RemoteInfo(RemoteInfo.DAL_TYPE_PREFIX + "EPICS", PV, null, null);
 
 	public void testAnyData() throws Exception {
@@ -57,7 +56,7 @@ public class DataAccessLayerTest3 extends AbstractDataAccessLayerTest {
 
 		// .. metadata has to be there and correctly filled
 		MetaData meta = data.getMetaData();
-		assertNotNull(data.getMetaData());
+		assertNotNull(meta);
 		assertEquals(RECORD_LOPR, meta.getDisplayLow());
 		assertEquals(RECORD_HOPR, meta.getDisplayHigh());
 		assertEquals(RECORD_LOLO, meta.getAlarmLow());
