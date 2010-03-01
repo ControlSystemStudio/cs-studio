@@ -103,7 +103,7 @@ public class SimpleDALBroker {
 	 * Time duration which property is alive after has been last used. 
 	 * After this time it could be deleted.
 	 */
-	private long timeToLive;
+	private long timeToLive = 60000;
 	private DefaultPropertyFactoryBroker factory;
 	
 	private static final long CLEANUP_INTERVAL = 60000;
@@ -286,6 +286,7 @@ public class SimpleDALBroker {
 		}
 		
 		ph.property.removeListener(listener);
+		destroyIfNotUsed(ph);
 	}
 	public void registerListener(ConnectionParameters cparam, DynamicValueListener listener) throws RemoteException, InstantiationException {
 		PropertyHolder ph= getPropertyHolder(cparam, 0);
@@ -303,10 +304,16 @@ public class SimpleDALBroker {
 		}
 		
 		ph.property.removeDynamicValueListener(listener);
+		destroyIfNotUsed(ph);
 	}
 	
 	private void blockUntillConnected(DynamicValueProperty<?> property) throws ConnectionException {
 		LinkBlocker.blockUntillConnected(property, Plugs.getConnectionTimeout(ctx.getConfiguration(), 30000) * 2, true);
 	}
 	
+	private void destroyIfNotUsed(PropertyHolder ph) {
+		if (ph.property.getListeners().length == 0 && ph.property.getDynamicValueListeners().length == 0) {
+			factory.destroy(ph.property);
+		}
+	}
 }
