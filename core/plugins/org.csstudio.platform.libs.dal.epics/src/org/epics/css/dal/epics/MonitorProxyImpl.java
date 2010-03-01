@@ -305,7 +305,7 @@ public class MonitorProxyImpl<T> extends RequestImpl<T> implements MonitorProxy,
 		}
 
 		synchronized (valueSync) {
-			if (dbr.isTIME()) {
+			if (dbr.isTIME() && ((TIME) dbr).getTimeStamp() != null) {
 				timestamp = PlugUtilities.convertTimestamp(((TIME) dbr).getTimeStamp());
 			} else {
 				timestamp = new Timestamp();

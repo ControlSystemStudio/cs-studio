@@ -827,7 +827,7 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 					Object value;
 					try {
 						value= PropertyUtilities.verifyCharacteristic(PropertyProxyImpl.this, characteristics[i], getCharacteristic(characteristics[i]));
-						r.addResponse(new ResponseImpl<Object>(PropertyProxyImpl.this, r, value, characteristics[i],
+						r.addResponse(new ResponseImpl<Object>(PropertyProxyImpl.this, r,	value, characteristics[i],
 								value != null, null, condition, null, true));
 
 					} catch (DataExchangeException e) {
@@ -892,7 +892,8 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 		}
 
 		Timestamp timestamp = null;
-		if (dbr instanceof TIME) {
+		//((TIME)dbr).getTimeStamp() != null - could happen
+		if (dbr instanceof TIME && ((TIME)dbr).getTimeStamp() != null) {
 			timestamp = PlugUtilities.convertTimestamp(((TIME) dbr).getTimeStamp());
 		}
 
