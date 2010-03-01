@@ -70,6 +70,7 @@ public class BargraphBehavior extends AbstractBehavior<BargraphModel> {
 		String color = colorsByConnectionState.get(connectionState);
 		if (color != null) {
 			widget.setPropertyValue(BargraphModel.PROP_FILLBACKGROUND_COLOR, color);
+			widget.setPropertyValue(AbstractWidgetModel.PROP_BORDER_COLOR, color);
 		}
 
 		// .. change transparency
