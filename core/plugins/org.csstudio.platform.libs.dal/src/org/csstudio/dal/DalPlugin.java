@@ -90,6 +90,10 @@ public class DalPlugin extends Plugin {
 		}
 		return broker;
 	}
+	
+	public DefaultApplicationContext getApplicationContext() {
+		return applicationContext;
+	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.runtime.Plugin#stop(org.osgi.framework.BundleContext)
