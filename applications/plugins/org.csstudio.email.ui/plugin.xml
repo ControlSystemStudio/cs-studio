@@ -7,7 +7,7 @@
             category="org.csstudio.platform.ui.css.platform"
             class="org.csstudio.email.ui.PreferencePage"
             id="org.csstudio.email.ui.preferences"
-            name="%Mail">
+            name="%EMail">
       </page>
    </extension>
 
