@@ -1,5 +1,6 @@
 package org.csstudio.email;
 
+import java.io.File;
 import java.io.PrintStream;
 
 import org.csstudio.email.internal.Base64Encoder;
@@ -70,7 +71,7 @@ public class EMailSender
         message.println("--" + boundary);
         message.println("Content-Type: text/plain");
         message.println("Content-Transfer-Encoding: base64");
-        message.println("Content-Disposition: attachment; filename=\"" + filename + "\"");
+        message.println("Content-Disposition: attachment; filename=\"" + basename(filename) + "\"");
         message.println();
         final Base64Encoder encoder = new Base64Encoder(message);
         encoder.encode(filename);
@@ -89,11 +90,20 @@ public class EMailSender
         message.println("--" + boundary);
         message.println("Content-Type: image/" + type);
         message.println("Content-Transfer-Encoding: base64");
-        message.println("Content-Disposition: attachment; filename=\"" + filename + "\"");
+        message.println("Content-Disposition: attachment; filename=\"" + basename(filename) + "\"");
         message.println();
         final Base64Encoder encoder = new Base64Encoder(message);
         encoder.encode(filename);
         message.println();
+    }
+
+    /** @param filename File name with full path
+     *  @return Just the file name without path
+     */
+    private String basename(final String filename)
+    {
+        final File file = new File(filename);
+        return file.getName();
     }
 
     /** Close the message, send it out 
