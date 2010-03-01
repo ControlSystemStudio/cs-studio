@@ -8,7 +8,7 @@ import org.junit.Test;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class MailerTest
+public class EMailSenderTest
 {
     final private static String host = "smtp.ornl.gov";
     final private static String from = "kasemirk@ornl.gov";
@@ -17,7 +17,7 @@ public class MailerTest
     @Test
     public void testMailer() throws Exception
     {
-        final Mailer mailer = new Mailer(host, from, to, "Test Subject");
+        final EMailSender mailer = new EMailSender(host, from, to, "Test Subject");
         mailer.addText("Hello, this is a test");
         mailer.attachText("testfile.txt");
         mailer.attachImage("/tmp/test.png");

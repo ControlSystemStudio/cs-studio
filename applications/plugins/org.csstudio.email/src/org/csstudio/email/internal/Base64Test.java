@@ -1,4 +1,4 @@
-package org.csstudio.email;
+package org.csstudio.email.internal;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;

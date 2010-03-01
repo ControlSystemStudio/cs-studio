@@ -2,6 +2,8 @@ package org.csstudio.email;
 
 import java.io.PrintStream;
 
+import org.csstudio.email.internal.Base64Encoder;
+
 import sun.net.smtp.SmtpClient;
 
 /** Send EMail with text or image attachments.
@@ -13,7 +15,7 @@ import sun.net.smtp.SmtpClient;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class Mailer
+public class EMailSender
 {
     /** Message boundary marker */
     final private static String boundary = "==XOXOX-ThisIsTheMessageBoundary-XOXOX==";
@@ -31,7 +33,7 @@ public class Mailer
      *  @param subject Message subject
      * @throws Exception on I/O error
      */
-    public Mailer(final String host, final String from, final String to,
+    public EMailSender(final String host, final String from, final String to,
                   final String subject) throws Exception
     {
         smtp = new SmtpClient(host);
