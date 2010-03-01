@@ -27,14 +27,19 @@ public class RDBArchiveReader implements ArchiveReader
 
     /** Oracle error code "error occurred at recursive SQL level ...: */
     final private static String ORACLE_RECURSIVE_ERROR = "ORA-00604"; //$NON-NLS-1$
-    
+
     final private String url;
     final private String user;
     final private int password;
+    /** Timeout [secs] used for some operations that should be 'fast' */
+    final private int timeout;
+    
+    /** Name of stored procedure or "" */
     final private String stored_procedure;
+    
     final private RDBUtil rdb;
     final private SQL sql;
-
+    
     /** Map of status IDs to Status strings */
     final private HashMap<Integer, String> stati;
 
@@ -59,6 +64,7 @@ public class RDBArchiveReader implements ArchiveReader
         this.url = url;
         this.user = user;
         this.password = (password == null) ? 0 : password.length();
+        timeout = Preferences.getTimeoutSecs();
         rdb = RDBUtil.connect(url, user, password, false);
         // Ignore the stored procedure for MySQL
         if (rdb.getDialect() == Dialect.MySQL)
@@ -80,9 +86,10 @@ public class RDBArchiveReader implements ArchiveReader
     {
         final HashMap<Integer, String> stati = new HashMap<Integer, String>();
         final Statement statement = rdb.getConnection().createStatement();
-        statement.setFetchSize(100);
         try
         {
+            statement.setQueryTimeout(timeout);
+            statement.setFetchSize(100);
             final ResultSet result = statement.executeQuery(sql.sel_stati);
             while (result.next())
                 stati.put(result.getInt(1), result.getString(2));
@@ -101,9 +108,10 @@ public class RDBArchiveReader implements ArchiveReader
     {
         final HashMap<Integer, ISeverity> severities = new HashMap<Integer, ISeverity>();
         final Statement statement = rdb.getConnection().createStatement();
-        statement.setFetchSize(100);
         try
         {
+            statement.setQueryTimeout(timeout);
+            statement.setFetchSize(100);
             final ResultSet result = statement.executeQuery(sql.sel_severities);
             while (result.next())
             {
@@ -275,6 +283,7 @@ public class RDBArchiveReader implements ArchiveReader
             rdb.getConnection().prepareStatement(sql.channel_sel_by_name);
         try
         {
+            statement.setQueryTimeout(timeout);
             statement.setString(1, name);
             final ResultSet result = statement.executeQuery();
             if (!result.next())
@@ -324,7 +333,11 @@ public class RDBArchiveReader implements ArchiveReader
         if (message.startsWith(ORACLE_CANCELLATION))
             return true;
         if (message.startsWith(ORACLE_RECURSIVE_ERROR))
-            return isCancellation(ex.getCause());
+        {
+            final Throwable cause = ex.getCause();
+            if (cause != null)
+                return isCancellation(cause);
+        }
         return false;
     }
 

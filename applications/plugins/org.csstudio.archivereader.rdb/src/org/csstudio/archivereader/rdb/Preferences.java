@@ -15,6 +15,7 @@ public class Preferences
     final public static String USER = "user";
     final public static String PASSWORD = "password";
     final public static String STORED_PROCEDURE = "use_stored_procedure";
+    final public static String TIMEOUT_SECS = "timeout_secs";
 
     public static String getSchema()
     {
@@ -36,6 +37,14 @@ public class Preferences
         return getString(STORED_PROCEDURE, "");
     }
 
+    public static int getTimeoutSecs()
+    {
+        final IPreferencesService prefs = Platform.getPreferencesService();
+        if (prefs == null)
+            return 120;
+        return prefs.getInt(Activator.ID, TIMEOUT_SECS, 120, null);
+    }
+    
     /** Get string preference
      *  @param key Preference key
      *  @return String or <code>null</code>
