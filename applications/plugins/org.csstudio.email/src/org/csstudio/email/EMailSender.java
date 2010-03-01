@@ -44,7 +44,7 @@ public class EMailSender
         
         message.println("To: " + to);
         message.println("From: " + from);
-        message.println("Subject: Test");
+        message.println("Subject: " + subject);
 
         message.println("Content-Type: multipart/mixed; boundary=\"" + boundary + "\"");
         message.println();
