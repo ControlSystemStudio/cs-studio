@@ -1,4 +1,4 @@
-package org.csstudio.email.ui;
+package org.csstudio.email;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;

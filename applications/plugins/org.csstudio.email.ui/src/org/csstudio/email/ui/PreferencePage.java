@@ -1,5 +1,6 @@
 package org.csstudio.email.ui;
 
+import org.csstudio.email.Preferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.StringFieldEditor;
@@ -21,8 +22,9 @@ implements IWorkbenchPreferencePage
     public PreferencePage()
     {
         super(GRID);
+        // Note prefs are in the basic EMail plugin, not in the GUI plugin!
         setPreferenceStore(new ScopedPreferenceStore(new InstanceScope(),
-                Activator.ID));
+                org.csstudio.email.Activator.ID));
     }
     
     public void init(IWorkbench workbench)

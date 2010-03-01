@@ -1,5 +1,6 @@
 package org.csstudio.email.ui;
 
+import org.csstudio.email.Preferences;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.widgets.Shell;
