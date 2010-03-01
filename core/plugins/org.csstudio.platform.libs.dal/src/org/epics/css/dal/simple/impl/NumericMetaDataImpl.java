@@ -13,7 +13,7 @@ public final class NumericMetaDataImpl implements MetaData {
 	private final int precision;
 	private final String units;
 	
-	public NumericMetaDataImpl(double alarmHigh, double alarmLow, double displayHigh, double displayLow, double warnHigh, double warnLow, int precision, String units) {
+	public NumericMetaDataImpl(double displayHigh, double displayLow, double warnHigh, double warnLow, double alarmHigh, double alarmLow, int precision, String units) {
 		this.alarmHigh = alarmHigh;
 		this.alarmLow = alarmLow;
 		this.displayHigh = displayHigh;

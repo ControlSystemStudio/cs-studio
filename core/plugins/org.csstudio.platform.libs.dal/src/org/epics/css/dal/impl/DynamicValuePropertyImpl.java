@@ -783,24 +783,6 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 		return null;
 	}
 
-	// AnyDataChannel methods...
-	private ChannelListenerNotifier chListeners;
-	
-	private ChannelListenerNotifier getChListeners() {
-		if (chListeners == null) {
-			chListeners = new ChannelListenerNotifier(this);
-		}
-		return chListeners;
-	}
-	
-	public void addListener(ChannelListener listener) {
-		getChListeners().addChannelListener(listener);
-	}
-	
-	public void removeListener(ChannelListener listener) {
-		getChListeners().removeChannelListener(listener);
-	}
-
 	public AnyData getData() {
 		return DataUtil.createAnyData(this);
 	}

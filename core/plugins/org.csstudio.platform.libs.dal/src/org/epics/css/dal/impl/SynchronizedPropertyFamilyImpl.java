@@ -47,5 +47,5 @@ public class SynchronizedPropertyFamilyImpl extends PropertyFamilyImpl
 	public synchronized void add(DynamicValueProperty<?> property) {
 		super.add(property);
 	}
-
+	
 }

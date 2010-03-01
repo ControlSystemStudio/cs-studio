@@ -24,13 +24,27 @@ public interface AnyDataChannel
      */
     public String getUniqueName();
     
-    /** Add a new listener.
-     *  @see ChannelListener
+    /**
+     * Add a new channel listener.
+     * 
+     * @param listener listener to add
+     * @see ChannelListener
      */
     public void addListener(ChannelListener listener);
 
-    /** Remove a listener. */
+    /** 
+     * Remove a listener.
+     * 
+     * @param listener the listener to be removed
+     */
     public void removeListener(ChannelListener listener);
+    
+    /**
+     * Returns the array of all registered channel listeners.
+     * 
+     * @return registered channel listeners
+     */
+    public ChannelListener[] getListeners();
 
     /** Start the PV: connect, get meta data, subscribe to updates,
      *  invoke {@link ChannelListener} for incoming values, ...

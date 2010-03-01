@@ -74,6 +74,10 @@ public class ChannelListenerNotifier {
 		if (listeners.size() == 0) unsubscribe();
 	}
 	
+	public synchronized ChannelListener[] getChannelListeners() {
+		return (ChannelListener[]) listeners.toArray(new ChannelListener[listeners.size()]);
+	}
+	
 	public void subscribe(AnyDataChannel channel) {
 		if (this.channel != channel) unsubscribe();
 		this.channel = channel;
