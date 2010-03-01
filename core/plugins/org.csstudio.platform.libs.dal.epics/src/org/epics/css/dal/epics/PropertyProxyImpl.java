@@ -500,7 +500,6 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 	 * @see gov.aps.jca.event.GetListener#getCompleted(gov.aps.jca.event.GetEvent)
 	 */
 	public  void getCompleted(GetEvent ev) {
-		
 		if (ev.getStatus() == CAStatus.NORMAL)
 			createCharacteristics(ev.getDBR());
 		else
@@ -1003,7 +1002,7 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 	private DynamicValueCondition createCondition(DynamicValueState dbrState, DynamicValueState connState, Timestamp timestamp) {
 		if (this.dbrState == dbrState && this.connState == connState
 				&& equal(condDesc, condition.getDescription())) {
-			return null;
+			return getCondition();
 		}
 
 		this.dbrState = dbrState;
