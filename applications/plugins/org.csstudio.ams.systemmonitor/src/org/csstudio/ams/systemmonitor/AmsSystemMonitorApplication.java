@@ -110,18 +110,36 @@ public class AmsSystemMonitorApplication implements IApplication
     {
         logger.info("AmsSystemMonitor started [" + version.toString() + "]");
         
+        monitorStatusHandler.beginCurrentCheck();
         try
         {
             amsSystemCheck = new AmsSystemCheck("AmsSystemCheckSender", "AmsSystemCheckReceiver", "AmsSystemCheck");
             smsConnectorCheck = new SmsConnectorCheck("AmsSmsConnectorSender", "AmsSmsConnectorReceiver", "SmsConnectorCheck");
+            
+            monitorStatusHandler.setSmsSent(false);
+            monitorStatusHandler.setCurrentStatus(CheckResult.OK);
+            if((monitorStatusHandler.getPreviousStatus() == CheckResult.ERROR) && (monitorStatusHandler.isPriviousSmsSent() == true))
+            {
+                sendErrorSms("AmsSystemMonitor switched from " + CheckResult.ERROR + " to OK.");
+            }
+
+            monitorStatusHandler.resetErrorFlag();
         }
         catch(AmsSystemMonitorException asme)
         {
             logger.error("[*** AmsSystemMonitorException ***]: " + asme.getMessage());
-            sendErrorSms("AmsSystemMonitor could not initialize JMS. HOWTO:64");
-                
+            monitorStatusHandler.setCurrentStatus(CheckResult.ERROR);
+            if(monitorStatusHandler.sendErrorSms())
+            {
+                sendErrorSms("AmsSystemMonitor could not initialize JMS. HOWTO:64");
+                monitorStatusHandler.setSmsSent(true);
+            }
+            
+            monitorStatusHandler.stopCurrentCheck();
             return IApplication.EXIT_OK;
         }
+        
+        monitorStatusHandler.stopCurrentCheck();
         
         while(running)
         {
