@@ -9,12 +9,12 @@ import org.eclipse.swt.widgets.Shell;
  */
 abstract public class AbstractSendEMailAction extends Action
 {
-    final private Shell shell;
-    final private String from, subject, body, image_filename;
+    final protected Shell shell;
+    final private String from, subject, body;
     
     public AbstractSendEMailAction(final Shell shell, final String from,
             final String subject,
-            final String body, final String image_filename)
+            final String body)
     {
         super("Send E-Mail...",
               Activator.getImageDescriptor("icons/email.gif"));
@@ -22,14 +22,16 @@ abstract public class AbstractSendEMailAction extends Action
         this.from = from;
         this.subject = subject;
         this.body = body;
-        this.image_filename = image_filename;
     }
 
     @Override
     public void run()
     {
+        final String image_filename = getImage();
         Dialog dlg = new EMailDialog(shell, Preferences.getSMTP_Host(), from,
                 "<enter destination email>", subject, body, image_filename);
         dlg.open();
     }
+
+    abstract protected String getImage();
 }
