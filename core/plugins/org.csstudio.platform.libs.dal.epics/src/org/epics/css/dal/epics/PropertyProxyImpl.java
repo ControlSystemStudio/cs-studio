@@ -664,7 +664,9 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 			characteristics.put(EpicsPropertyCharacteristics.EPICS_NUMBER_OF_ELEMENTS, channel != null ? channel.getElementCount() : 1);
 			characteristics.put(PropertyCharacteristics.C_DATATYPE,PlugUtilities.getDataType(dbr.getType()));
 			if(dbr.isSTS()) {
-				updateConditionWithDBRStatus((STS)dbr);
+				DynamicValueCondition condition = createCondition((STS)dbr,false);
+				characteristics.put(CharacteristicInfo.C_SEVERITY_INFO.getName(), condition);
+			} else {
 				characteristics.put(CharacteristicInfo.C_SEVERITY_INFO.getName(), getCondition());
 			}
 			createSpecificCharacteristics(dbr);
@@ -867,12 +869,23 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 	protected DBRType getType() {
 		return type;
 	}
-
+	
 	/**
 	 * Update conditions.
 	 * @param dbr status DBR.
 	 */
 	void updateConditionWithDBRStatus(STS dbr) {
+		createCondition(dbr, true);
+	}
+
+	/**
+	 * Creates the condition and notifies the listeners if requested.
+	 * 
+	 * @param dbr status DBR.
+	 * @param notify if true the listeners will be notified about the change 
+	 * 			of condition otherwise the condition will be created and returned
+	 */
+	private DynamicValueCondition createCondition(STS dbr, boolean notify) {
 
 		Status st = dbr.getStatus();
 		Severity se = dbr.getSeverity();
@@ -897,7 +910,11 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 			timestamp = PlugUtilities.convertTimestamp(((TIME) dbr).getTimeStamp());
 		}
 
-		checkStates(dbrState, connState, timestamp);
+		if (notify) {
+			return checkStates(dbrState, connState, timestamp);
+		} else {
+			return createCondition(dbrState, connState, timestamp);
+		}
 	}
 
 	/*
@@ -971,12 +988,19 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 	 * Check states.
 	 * @param timestamp
 	 */
-	private void checkStates(DynamicValueState dbrState, DynamicValueState connState, Timestamp timestamp) {
-		
+	private DynamicValueCondition checkStates(DynamicValueState dbrState, DynamicValueState connState, Timestamp timestamp) {
 		// noop check (state already reported)
+		DynamicValueCondition condition = createCondition(dbrState,connState,timestamp);
+		if (condition != null) {
+			setCondition(condition);
+		}
+		return condition;
+	}
+	
+	private DynamicValueCondition createCondition(DynamicValueState dbrState, DynamicValueState connState, Timestamp timestamp) {
 		if (this.dbrState == dbrState && this.connState == connState
 				&& equal(condDesc, condition.getDescription())) {
-			return;
+			return null;
 		}
 
 		this.dbrState = dbrState;
@@ -998,9 +1022,8 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 				}
 			}
 		}
-
-		setCondition(new DynamicValueCondition(en, timestamp, condDesc));
-
+		
+		return new DynamicValueCondition(en, timestamp, condDesc);
 	}
 
 	/*
