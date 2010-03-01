@@ -140,11 +140,14 @@ public class StringTableFieldEditor extends FieldEditor {
 		return result.toString();
 	}
 	
-	public static List<String[]> decodeStringTable(String flattedString) throws Exception{
-		List<String[]> result = new ArrayList<String[]>();
-		String[] rows = StringUtil.splitIgnoreInQuotes(flattedString, ROW_SEPARATOR, false); 
+	public static List<String[]> decodeStringTable(final String flattedString) throws Exception{
+		final List<String[]> result = new ArrayList<String[]>();
+		final String[] rows = StringUtil.splitIgnoreInQuotes(flattedString, ROW_SEPARATOR, false); 
 		for(String rowString : rows){
-			String[] items = StringUtil.splitIgnoreInQuotes(rowString, ITEM_SEPARATOR, true);
+		    // Skip empty rowString, don't split it into String[1] { "" }
+		    if (rowString.length() <= 0)
+		        continue;
+			final String[] items = StringUtil.splitIgnoreInQuotes(rowString, ITEM_SEPARATOR, true);
 			result.add(items);
 		}
 		return result;

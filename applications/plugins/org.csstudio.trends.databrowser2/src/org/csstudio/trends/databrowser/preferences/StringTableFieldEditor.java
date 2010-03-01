@@ -158,11 +158,14 @@ public class StringTableFieldEditor extends FieldEditor
      */
     private List<String[]> decodeStringTable(final String flattened_preference)
     {
-        List<String[]> result = new ArrayList<String[]>();
+        final List<String[]> result = new ArrayList<String[]>();
         final String rows[] = flattened_preference.split(Preferences.ITEM_SEPARATOR_RE);
         for (String rowString : rows)
         {
-            String items[] = rowString.split(Preferences.COMPONENT_SEPARATOR_RE);
+            // Skip empty rowString, don't split it into String[1] { "" }
+            if (rowString.length() <= 0)
+                continue;
+            final String items[] = rowString.split(Preferences.COMPONENT_SEPARATOR_RE);
             result.add(items);
         }
         return result;
