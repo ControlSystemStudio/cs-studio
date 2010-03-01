@@ -23,467 +23,411 @@
 package org.epics.css.dal.impl;
 
 import java.beans.PropertyChangeEvent;
-import java.util.Iterator;
+import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
+import org.epics.css.dal.DataAccess;
 import org.epics.css.dal.DataExchangeException;
 import org.epics.css.dal.DynamicValueCondition;
 import org.epics.css.dal.DynamicValueEvent;
 import org.epics.css.dal.DynamicValueListener;
-import org.epics.css.dal.DynamicValueProperty;
-import org.epics.css.dal.DynamicValueState;
-import org.epics.css.dal.EventSystemListener;
-import org.epics.css.dal.ExpertMonitor;
+import org.epics.css.dal.DynamicValueMonitor;
+import org.epics.css.dal.IllegalViewException;
 import org.epics.css.dal.RemoteException;
-import org.epics.css.dal.Request;
-import org.epics.css.dal.Response;
-import org.epics.css.dal.ResponseEvent;
-import org.epics.css.dal.ResponseListener;
+import org.epics.css.dal.SimpleMonitor;
 import org.epics.css.dal.SimpleProperty;
-import org.epics.css.dal.context.ConnectionEvent;
+import org.epics.css.dal.StringAccess;
+import org.epics.css.dal.Timestamp;
 import org.epics.css.dal.context.ConnectionState;
-import org.epics.css.dal.context.LinkListener;
-import org.epics.css.dal.context.Linkable;
-import org.epics.css.dal.context.PropertyContext;
-import org.epics.css.dal.context.PropertyFamily;
+import org.epics.css.dal.context.Identifier;
+import org.epics.css.dal.context.IdentifierUtilities;
 import org.epics.css.dal.proxy.DirectoryProxy;
+import org.epics.css.dal.proxy.MonitorProxy;
 import org.epics.css.dal.proxy.PropertyProxy;
 import org.epics.css.dal.proxy.Proxy;
-import org.epics.css.dal.proxy.ProxyEvent;
-import org.epics.css.dal.proxy.ProxyListener;
-import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.ChannelListener;
 import org.epics.css.dal.simple.impl.ChannelListenerNotifier;
-import org.epics.css.dal.simple.impl.DataUtil;
 
 import com.cosylab.util.ListenerList;
 
 
 /**
- * Glue code implementation of DynamicValueProperty.
+ * Simple property implementation
  *
- * @author ikriznar
+ * @author Igor Kriznar (igor.kriznarATcosylab.com)
  *
  */
-public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
-	implements DynamicValueProperty<T>
+public abstract class SimplePropertyImpl<T> extends DataAccessImpl<T>
+	implements SimpleProperty<T>
 {
-	protected final byte DVE_CONDITIONCHANGE = 0;
-	protected final byte DVE_ERRORRESPONSE = 1;
-	protected final byte DVE_TIMELAGSTARTS = 2;
-	protected final byte DVE_TIMELAGSTOPS = 3;
-	protected final byte DVE_TIMEOUTSTARTS = 4;
-	protected final byte DVE_TIMEOUTSTOPS = 5;
-	protected final byte DVE_VALUECHANGED = 6;
-	protected final byte DVE_VALUEUPDATED = 7;
+	/*    protected Hashtable<Class<? extends DataAccess>,Class<? extends DataAccess> > dataAccessTypes =
+	        new Hashtable<Class<? extends DataAccess>,Class<? extends DataAccess> >();
+	        */
+	protected Hashtable<Class<? extends DataAccess<?>>,Class<? extends DataAccess<?>>> dataAccessTypes = new Hashtable<Class<? extends DataAccess<?>>,Class<? extends DataAccess<?>>>();
+	protected DirectoryProxy directoryProxy;
+	protected MonitorProxyWrapper<T, ? extends SimpleProperty<T>> defaultMonitor;
+	protected List<SimpleMonitor> monitors = new ArrayList<SimpleMonitor>();
+	protected ListenerList propertyListener = new ListenerList(PropertyChangeListener.class);
+	protected String name;
+	protected Identifier identifier;
+	protected DynamicValueCondition condition;
 
-	protected PropertyContext propertyContext;
-	protected ListenerList responseListeners = new ListenerList(ResponseListener.class);
-	protected ResponseListener defaultResponseListener = new ResponseListener() {
-			public void responseReceived(ResponseEvent event)
-			{
-				fireResponseReceived(event);
-			}
+	protected Timestamp lastValueChangeTimestamp;
+	protected Timestamp lastValueUpdateTimestamp;
+	protected boolean lastValueSuccess=true;
 
-			public void responseError(ResponseEvent event)
-			{
-				fireResponseError(event);
-			}
-		};
-	protected ResponseListener<T> defaultValueResponseListener = new ResponseListener<T>() {
-			public void responseReceived(ResponseEvent<T> event)
-			{
-				lastValueResponse = event.getResponse();
-				fireResponseReceived(event);
-			}
-
-			public void responseError(ResponseEvent<T> event)
-			{
-				lastValueResponse = event.getResponse();
-				fireResponseError(event);
-			}
-		};
-
-	protected ListenerList linkListeners = new ListenerList(LinkListener.class);
-	protected ProxyListener<T> proxyListener = new ProxyListener<T>() {
-		public void connectionStateChange(ProxyEvent<Proxy> e) {
-			setConnectionState(e.getConnectionState());
-		}
-		public void dynamicValueConditionChange(ProxyEvent<PropertyProxy<T>> e) {
-			DynamicValueCondition oldCond = condition;
-			condition = e.getCondition();
-			checkAndFireConditionEvents(oldCond, condition);
-		}
-		public void characteristicsChange(PropertyChangeEvent e) {
-			firePropertyChangeEvent(e);
-		}
-	};
-	
-	protected Request<?> lastRequest = null;
-	protected Request<T> lastValueRequest = null;
-	protected Response<?> lastResponse = null;
-	protected Response<T> lastValueResponse = null;
-	private int suspended = 0;
-	protected ConnectionState connectionState = ConnectionState.INITIAL;
-
-	private class ResponseForwarder<F extends Object> implements ResponseListener<F>
-	{
-		private boolean isValue=false;
-		private ResponseListener<F> listener;
-
-		/**
-		         * Creates a new ResponseForwarder object.
-		         *
-		         * @param listener Response listener
-		         */
-		public ResponseForwarder(ResponseListener<F> listener)
-		{
-			this.listener = listener;
-		}
-
-		public ResponseForwarder(ResponseListener<F> listener, boolean value)
-		{
-			this.listener = listener;
-			this.isValue=value;
-		}
-
-		/**
-		 * Accepts responsReceived notifications
-		 *
-		 * @param event Response event
-		 */
-		public void responseReceived(ResponseEvent<F> event)
-		{
-			if (listener != null) {
-				listener.responseReceived(event);
-			}
-			if (isValue) {
-				lastValueResponse= (Response<T>)event.getResponse();
-			}
-			fireResponseReceived(event);
-			if (event.isLast()) {
-				listener=null;
-			}
-		}
-
-		/**
-		 * Accepts responseError notifications
-		 *
-		 * @param event Response event
-		 */
-		public void responseError(ResponseEvent<F> event)
-		{
-			if (listener != null) {
-				listener.responseError(event);
-			}
-			if (isValue) {
-				lastValueResponse= (Response<T>)event.getResponse();
-			}
-			fireResponseError(event);
-			if (event.isLast()) {
-				listener=null;
-			}
-		}
-	}
-
+	// AnyDataChannel methods...
+	private ChannelListenerNotifier chListeners;
 	/**
-	     * @param valClass
-	     */
-	public DynamicValuePropertyImpl(Class<T> valClass, String name,
-	    PropertyContext propertyContext)
+	 * Creates a new SimplePropertyImpl object.
+	 *
+	 * @param valClass value datatype class
+	 * @param name property name
+	 */
+	public SimplePropertyImpl(Class<T> valClass, String name)
 	{
-		super(valClass, name);
-		this.propertyContext = propertyContext;
+		super(valClass);
+		dataAccessTypes.put(StringAccess.class, StringDataAccessWrapper.class);
+
+		this.name = name;
 	}
 
 	/* (non-Javadoc)
-	 * @see org.epics.css.dal.DynamicValueProperty#getParentContext()
+	 * @see org.epics.css.dal.SimpleProperty#getAccessTypes()
 	 */
-	public PropertyContext getParentContext()
+	@SuppressWarnings("unchecked")
+	public Class<? extends DataAccess<?>>[] getAccessTypes()
 	{
-		return propertyContext;
+		Class<? extends DataAccess<?>>[] daTypes = (Class<? extends DataAccess<?>>[])new Class<?>[dataAccessTypes
+			.size()];
+		dataAccessTypes.keySet().toArray(daTypes);
+
+		return daTypes;
+	}
+
+	public void addDataAccessType(Class<? extends DataAccess<?>> dataAccessType,
+	    Class<? extends AbstractDataAccessWrapper<?>> implementation)
+	{
+		dataAccessTypes.put(dataAccessType, implementation);
+	}
+
+	public void removeDataAccessType(Class<?extends DataAccess<?>> dataAccessType)
+	{
+		dataAccessTypes.remove(dataAccessType);
 	}
 
 	/* (non-Javadoc)
-	 * @see org.epics.css.dal.AsynchronousAccess#getAsynchronous()
+	 * @see org.epics.css.dal.SimpleProperty#getCondition()
 	 */
-	public Request<T> getAsynchronous() throws DataExchangeException
+	public DynamicValueCondition getCondition()
 	{
-		return getAsynchronous(null);
+		if (condition == null && proxy == null) throw new IllegalStateException("Proxy is null");
+		return condition != null ? condition : proxy.getCondition();
 	}
 
 	/* (non-Javadoc)
-	 * @see org.epics.css.dal.AsynchronousAccess#getAsynchronous(org.epics.css.dal.ResponseListener)
+	 * @see org.epics.css.dal.SimpleProperty#getDataAccess(java.lang.Class)
 	 */
-	public Request<T> getAsynchronous(ResponseListener<T> listener)
-		throws DataExchangeException
+	public <D extends DataAccess<?>> D getDataAccess(Class<D> type)
+		throws IllegalViewException
 	{
-		if (proxy == null || proxy.getConnectionState() != ConnectionState.CONNECTED) {
-			throw new DataExchangeException(this, "Proxy not connected");
+		if (type.isAssignableFrom(this.getClass())) {
+			return type.cast(this);
+		}
+
+		Class<? extends DataAccess<?>> implClass = (Class<? extends DataAccess<?>>)dataAccessTypes.get(type);
+
+		if (implClass != null) {
+			try {
+				return (D)implClass.getConstructor(DataAccess.class)
+				.newInstance(this);
+			} catch (Exception e) {
+				throw new IllegalViewException(this,
+				    "Unable to instantiate: " + implClass.toString());
+			}
+		}
+
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.epics.css.dal.SimpleProperty#getDefaultDataAccess()
+	 */
+	public DataAccess<T> getDefaultDataAccess()
+	{
+		return this;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.epics.css.dal.SimpleProperty#getDescription()
+	 */
+	public String getDescription() throws DataExchangeException
+	{
+		if (directoryProxy == null || directoryProxy.getConnectionState() != ConnectionState.CONNECTED)
+			throw new DataExchangeException(this,"Directory proxy is not connected");
+
+		return (String)directoryProxy.getCharacteristic(C_DESCRIPTION);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.epics.css.dal.SimpleProperty#getUniqueName()
+	 */
+	public String getUniqueName()
+	{
+		if (proxy == null) throw new IllegalStateException("Proxy is null");
+		return proxy.getUniqueName();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.epics.css.dal.SimpleProperty#isTimelag()
+	 */
+	public boolean isTimelag()
+	{
+		if (condition != null) {
+			return condition.isTimelag();
+		} else if (defaultMonitor != null) {
+			return defaultMonitor.isTimelag();
+		} else {
+			return false;
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see org.epics.css.dal.SimpleProperty#isTimeout()
+	 */
+	public boolean isTimeout()
+	{
+		if (condition != null) {
+			return condition.isTimeout();
+		} else if (defaultMonitor != null) {
+			return defaultMonitor.isTimeout();
+		} else {
+			return false;
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see org.epics.css.dal.CharacteristicContext#addPropertyChangeListener(java.beans.PropertyChangeListener)
+	 */
+	public void addPropertyChangeListener(PropertyChangeListener l)
+	{
+		propertyListener.add(l);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.epics.css.dal.CharacteristicContext#getCharacteristic(java.lang.String)
+	 */
+	public Object getCharacteristic(String name) throws DataExchangeException
+	{
+		if (directoryProxy == null || directoryProxy.getConnectionState() != ConnectionState.CONNECTED)
+			throw new DataExchangeException(this,"Directory proxy is not connected");
+		return directoryProxy.getCharacteristic(name);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.epics.css.dal.CharacteristicContext#getCharacteristicNames()
+	 */
+	public String[] getCharacteristicNames() throws DataExchangeException
+	{
+		if (directoryProxy == null || directoryProxy.getConnectionState() != ConnectionState.CONNECTED)
+			throw new DataExchangeException(this,"Directory proxy is not connected");
+		return directoryProxy.getCharacteristicNames();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.epics.css.dal.CharacteristicContext#getCharacteristics(java.lang.String[])
+	 */
+	public Map<String,Object> getCharacteristics(String[] names) throws DataExchangeException
+	{
+		if (directoryProxy == null || directoryProxy.getConnectionState() != ConnectionState.CONNECTED)
+			throw new DataExchangeException(this,"Directory proxy is not connected");
+
+		// TODO: implement wrapper listener
+		//w= new Wrapper...(names);
+		//dirProxy.getCharacteristics(names, );
+		//return w.getCharacteristics();
+
+		// TODO : this is dummy implementation, improve it
+		Map<String,Object> ch = new HashMap<String,Object>(names.length + 1);
+
+		for (int i = 0; i < names.length; i++) {
+			Object o = directoryProxy.getCharacteristic(names[i]);
+
+			if (o != null) {
+				ch.put(names[i], o);
+			}
+		}
+
+		return ch;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.epics.css.dal.CharacteristicContext#getPropertyChangeListeners()
+	 */
+	public PropertyChangeListener[] getPropertyChangeListeners()
+	{
+		return (PropertyChangeListener[])propertyListener.toArray();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.epics.css.dal.CharacteristicContext#removePropertyChangeListener(java.beans.PropertyChangeListener)
+	 */
+	public void removePropertyChangeListener(PropertyChangeListener l)
+	{
+		propertyListener.remove(l);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.epics.css.dal.ValueUpdateable#createNewMonitor(org.epics.css.dal.DynamicValueListener)
+	 */
+	public <E extends SimpleProperty<T>> DynamicValueMonitor createNewMonitor(DynamicValueListener<T, E> listener)
+		throws RemoteException
+	{
+		if (proxy == null) throw new IllegalStateException("Proxy is null");
+		
+		MonitorProxyWrapper<T, E> mpw = new MonitorProxyWrapper<T, E>((E) this, listener);
+		MonitorProxy mp = null;
+		mp = proxy.createMonitor(mpw);
+		mpw.initialize(mp);
+		monitors.add(mpw);
+
+		return mpw;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.epics.css.dal.ValueUpdateable#getDefaultMonitor()
+	 */
+	public synchronized DynamicValueMonitor getDefaultMonitor()
+	{
+		if (defaultMonitor == null && proxy!=null && proxy.getConnectionState()==ConnectionState.CONNECTED) {
+			defaultMonitor = new MonitorProxyWrapper<T, SimpleProperty<T>>(this, getDvListeners());
+
+			try {
+				MonitorProxy mp = proxy.createMonitor(defaultMonitor);
+				defaultMonitor.initialize(mp);
+				monitors.add(defaultMonitor);
+			} catch (Exception e) {
+				e.printStackTrace();
+				if (defaultMonitor!=null) {
+					defaultMonitor.destroy();
+					defaultMonitor=null;
+				}
+			}
+		}
+
+		return defaultMonitor;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.epics.css.dal.DataAccess#addDynamicValueListener(org.epics.css.dal.DynamicValueListener)
+	 */
+	public <P extends SimpleProperty<T>> void addDynamicValueListener(DynamicValueListener<T, P> l)
+	{
+		super.addDynamicValueListener(l);
+
+		if (defaultMonitor == null) {
+			getDefaultMonitor();
 		}
 		
-		    lastValueRequest = proxy.getValueAsync(listener == null
-		            ? defaultValueResponseListener : new ResponseForwarder(listener,true));
-		
-		//lastValueRequest = proxy.getValueAsync(new ResponseForwarder(listener));
-		lastRequest = lastValueRequest;
-
-		return lastValueRequest;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.AsynchronousAccess#setAsynchronous(T)
-	 */
-	public Request<T> setAsynchronous(T value) throws DataExchangeException
-	{
-		return setAsynchronous(value, null);
-	}
-
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.AsynchronousAccess#setAsynchronous(T, org.epics.css.dal.ResponseListener)
-	 */
-	public Request<T> setAsynchronous(T value, ResponseListener<T> listener)
-		throws DataExchangeException
-	{
-		if (proxy == null || proxy.getConnectionState() != ConnectionState.CONNECTED) {
-			throw new DataExchangeException(this, "Proxy not connected");
-		}
-		
-		lastValueRequest = proxy.setValueAsync(value,
-			    listener == null ? defaultResponseListener
-			    : new ResponseForwarder(listener));
-		lastRequest = lastValueRequest;
-
-		return lastValueRequest;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.AsynchronousContext#addResponseListener(org.epics.css.dal.ResponseListener)
-	 */
-	public void addResponseListener(ResponseListener<?> l)
-	{
-		responseListeners.add(l);
-	}
-
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.AsynchronousContext#removeResponseListener(org.epics.css.dal.ResponseListener)
-	 */
-	public void removeResponseListener(ResponseListener<?> l)
-	{
-		responseListeners.remove(l);
-	}
-
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.AsynchronousContext#getResponseListeners()
-	 */
-	public ResponseListener<?>[] getResponseListeners()
-	{
-		return (ResponseListener<?>[])responseListeners.toArray(new ResponseListener[responseListeners
-		    .size()]);
-	}
-
-	protected void fireResponseReceived(ResponseEvent event)
-	{
-		lastResponse = event.getResponse();
-
-		Iterator<ResponseListener<?>> ite = responseListeners.iterator();
-
-		while (ite.hasNext()) {
-			ite.next().responseReceived(event);
-		}
-	}
-
-	protected void fireResponseError(ResponseEvent event)
-	{
-		lastResponse = event.getResponse();
-
-		Iterator<ResponseListener<?>> ite = responseListeners.iterator();
-
-		while (ite.hasNext()) {
-			ite.next().responseError(event);
-		}
-	}
-
-	void updateLastValueCache(Response<T> r, boolean success, boolean change)
-	{
-		lastValueResponse = r;
-		updateLastValueCache(r.getValue(), r.getTimestamp(), success, change);
-	}
-
-	/*void setLastResponse(Response<?> r)
-	{
-		lastResponse = r;
-	}*/
-
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.AsynchronousContext#getLatestRequest()
-	 */
-	public Request<?> getLatestRequest()
-	{
-		return lastRequest;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.AsynchronousContext#getLatestResponse()
-	 */
-	public Response<?> getLatestResponse()
-	{
-		return lastResponse;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.AsynchronousContext#getLatestSuccess()
-	 */
-	public boolean getLatestSuccess()
-	{
-		return lastResponse == null ? true : lastResponse.success();
-	}
-
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.AsynchronousCharacteristicContext#getCharacteristicsAsynchronously(java.lang.String[])
-	 */
-	public Request<? extends Object> getCharacteristicsAsynchronously(String[] names)
-		throws DataExchangeException
-	{
-		lastRequest = directoryProxy.getCharacteristics(names,
-			    defaultResponseListener);
-
-		return lastRequest;
-	}
-	
-	public Request<? extends Object> getCharacteristicsAsynchronously(
-			String[] names, ResponseListener<? extends Object> listener)
-			throws DataExchangeException {
-		lastRequest = directoryProxy.getCharacteristics(names, 
-				listener == null ? defaultResponseListener : new ResponseForwarder(listener));
-		
-		return lastRequest;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.AsynchronousCharacteristicContext#getCharacteristicAsynchronously(java.lang.String)
-	 */
-	public Request<? extends Object> getCharacteristicAsynchronously(String name)
-		throws DataExchangeException
-	{
-		lastRequest = directoryProxy.getCharacteristics(new String[]{ name },
-			    defaultResponseListener);
-
-		return lastRequest;
-	}
-	
-	public Request<?> getCharacteristicAsynchronously(
-			String name, ResponseListener<?> listener)
-			throws DataExchangeException {
-
-		lastRequest = directoryProxy.getCharacteristics(new String[]{ name }, 
-				listener == null ? defaultResponseListener : new ResponseForwarder(listener));
-		
-		return lastRequest;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.Updateable#getLatestValueRequest()
-	 */
-	public Request<T> getLatestValueRequest()
-	{
-		return lastValueRequest;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.Updateable#getLatestValueResponse()
-	 */
-	public Response<T> getLatestValueResponse()
-	{
-		return lastValueResponse;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.context.Linkable#addLinkListener(org.epics.css.dal.context.LinkListener)
-	 */
-	public void addLinkListener(LinkListener<? extends Linkable> l)
-	{
-		linkListeners.add(l);
-	}
-
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.context.Linkable#isConnected()
-	 */
-	public boolean isConnected()
-	{
-		if (connectionState == ConnectionState.CONNECTED
-		    || connectionState == ConnectionState.CONNECTION_LOST) {
-			return true;
-		}
-
-		return false;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.context.Linkable#isDestroyed()
-	 */
-	public boolean isDestroyed()
-	{
-		return connectionState == ConnectionState.DESTROYED;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.context.Linkable#isSuspended()
-	 */
-	public boolean isSuspended()
-	{
-		return suspended > 0;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.context.Linkable#isConnectionAlive()
-	 */
-	public boolean isConnectionAlive()
-	{
-		return connectionState == ConnectionState.CONNECTED;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.context.Linkable#isConnectionFailed()
-	 */
-	public boolean isConnectionFailed()
-	{
-		return connectionState == ConnectionState.CONNECTION_FAILED;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.context.Linkable#refresh()
-	 */
-	public void refresh() throws RemoteException
-	{
-		directoryProxy.refresh();
-		if ((proxy != directoryProxy) && (proxy instanceof DirectoryProxy)) ((DirectoryProxy)proxy).refresh();
-	}
-
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.context.Linkable#removeLinkListener(org.epics.css.dal.context.LinkListener)
-	 */
-	public void removeLinkListener(LinkListener<? extends Linkable> l)
-	{
-		linkListeners.remove(l);
-	}
-
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.context.Linkable#resume()
-	 */
-	public void resume() throws RemoteException
-	{
-		if (suspended > 0) {
-			suspended--;
+		if (proxy != null){
+			DynamicValueEvent<T, P> e = new DynamicValueEvent<T, P>(
+					this, (P)this, lastValue, getCondition(),
+					lastValueUpdateTimestamp, "Initial update.");
+			l.conditionChange(e);
+			if (lastValue != null) {
+				l.valueChanged(e);
+			}
 		}
 	}
 
 	/* (non-Javadoc)
-	 * @see org.epics.css.dal.context.Linkable#suspend()
+	 * @see org.epics.css.dal.DataAccess#removeDynamicValueListener(org.epics.css.dal.DynamicValueListener)
 	 */
-	public void suspend() throws RemoteException
+	public <P extends SimpleProperty<T>> void removeDynamicValueListener(DynamicValueListener<T, P> l)
 	{
-		suspended++;
+		super.removeDynamicValueListener(l);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.epics.css.dal.ValueUpdateable#getLatestReceivedValueAsObject()
+	 */
+	public Object getLatestReceivedValueAsObject()
+	{
+		return lastValue;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.epics.css.dal.ValueUpdateable#getLatestValueChangeTimestamp()
+	 */
+	public Timestamp getLatestValueChangeTimestamp()
+	{
+		return lastValueChangeTimestamp;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.epics.css.dal.ValueUpdateable#getLatestValueSuccess()
+	 */
+	public boolean getLatestValueSuccess()
+	{
+		return lastValueSuccess;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.epics.css.dal.ValueUpdateable#getLatestValueUpdateTimestamp()
+	 */
+	public Timestamp getLatestValueUpdateTimestamp()
+	{
+		return lastValueUpdateTimestamp;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.epics.css.dal.impl.DataAccessImpl#initialize(org.epics.css.dal.proxy.PropertyProxy)
+	 */
+	public void initialize(PropertyProxy<T> proxy, DirectoryProxy dirProxy)
+	{
+		super.initialize(proxy);
+		this.directoryProxy = dirProxy;
+		for (int i=0;i<monitors.size();i++){
+			MonitorProxyWrapper mon;
+			try {
+				mon = (MonitorProxyWrapper)monitors.get(i);
+				MonitorProxy mp = proxy.createMonitor(mon);
+				mon.initialize(mp);
+			} catch (Exception e) {
+				//TODO Handle exception!!
+				System.out.println("Problem on re-inizializing monitor on property"+getName()+" :");
+				e.printStackTrace();
+			}
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see org.epics.css.dal.SimpleProperty#getName()
+	 */
+	public String getName()
+	{
+		if (name == null) {
+			if (proxy == null) throw new IllegalStateException("Proxy is null");
+			return proxy.getUniqueName();
+		}
+
+		return name;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.epics.css.dal.context.Identifiable#getIdentifier()
+	 */
+	public Identifier getIdentifier()
+	{
+		if (identifier == null) {
+			identifier = IdentifierUtilities.createIdentifier(this);
+		}
+
+		return identifier;
 	}
 
 	/* (non-Javadoc)
@@ -491,343 +435,75 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 	 */
 	public boolean isDebug()
 	{
-		return false;
+		if (proxy == null) throw new IllegalStateException("Proxy is null");
+		return proxy.isDebug();
 	}
 
 	/**
-	 * @return Returns the connectionState.
+	 * TODO must be fired when characteristics values change or characteristics
+	 * are added or removed
+	 * @param e
 	 */
-	public ConnectionState getConnectionState()
+	protected void firePropertyChangeEvent(PropertyChangeEvent e)
 	{
-		return connectionState;
+		PropertyChangeListener[] l= (PropertyChangeListener[])propertyListener.toArray();
+		for (int i = 0; i < l.length; i++) {
+			try {
+				l[i].propertyChange(e);
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
 	}
-
+	
 	/**
-	 * @param connectionState The connectionState to set.
+	 * Returns the DirectoryProxy which describes characteristics of the remote
+	 * connection associated with this property.
+	 * 
+	 * @return the directory proxy
 	 */
-	protected void setConnectionState(ConnectionState connectionState)
-	{
-		if (this.connectionState == connectionState) {
-			return;
-		}
-
-		this.connectionState = connectionState;
-
-		LinkListener<Linkable>[] l = (LinkListener<Linkable>[])linkListeners.toArray();
-
-		ConnectionEvent<Linkable> e = new ConnectionEvent<Linkable>(this, connectionState);
-
-		if (connectionState == ConnectionState.CONNECTED) {
-			
-			if (hasDynamicValueListeners() && defaultMonitor==null) {
-				getDefaultMonitor();
-			}
-			
-			for (int i = 0; i < l.length; i++) {
-				try {
-					l[i].connected(e);
-				} catch (Exception ex) {
-					ex.printStackTrace();
-				}
-			}
-		}else if (connectionState == ConnectionState.CONNECTION_FAILED) {
-			for (int i = 0; i < l.length; i++) {
-				try {
-					l[i].connectionFailed(e);
-				} catch (Exception ex) {
-					ex.printStackTrace();
-				}
-			}
-		}	else if (connectionState == ConnectionState.CONNECTION_LOST) {
-			for (int i = 0; i < l.length; i++) {
-				try {
-					l[i].connectionLost(e);
-				} catch (Exception ex) {
-					ex.printStackTrace();
-				}
-			}
-		} else if (connectionState == ConnectionState.DISCONNECTED) {
-			for (int i = 0; i < l.length; i++) {
-				try {
-					l[i].disconnected(e);
-				} catch (Exception ex) {
-					ex.printStackTrace();
-				}
-			}
-		} else if (connectionState == ConnectionState.DESTROYED) {
-			for (int i = 0; i < l.length; i++) {
-				try {
-					l[i].destroyed(e);
-				} catch (Exception ex) {
-					ex.printStackTrace();
-				}
-			}
-		}
-	}
-
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.impl.SimplePropertyImpl#initialize(org.epics.css.dal.proxy.PropertyProxy, org.epics.css.dal.proxy.DirectoryProxy)
-	 */
-	@Override
-	public void initialize(PropertyProxy<T> proxy, DirectoryProxy dirProxy)
-	{
-		if (this.proxy != null) {
-			this.proxy.removeProxyListener(proxyListener);
-			if (this.directoryProxy != null && this.directoryProxy != this.proxy) {
-				this.directoryProxy.removeProxyListener(proxyListener);
-			}
-		} 
-
-		super.initialize(proxy, dirProxy);
-
-		if (proxy != null) {
-			proxy.addProxyListener(proxyListener);
-			if (dirProxy != null && dirProxy != proxy) {
-				dirProxy.addProxyListener(proxyListener);
-			}
-		}
-	}
-
-	protected void fireDynamicValueEvent(byte type)
-	{
-		if (!hasDynamicValueListeners()) {
-			return;
-		}
-		
-		String msg = null;
-		switch (type) {
-		case DVE_CONDITIONCHANGE:
-			msg = "Condition changed";break;
-		case DVE_ERRORRESPONSE:
-			msg = "Error response";break;
-		case DVE_TIMELAGSTARTS:
-			msg = "Timelag started";break;
-		case DVE_TIMELAGSTOPS:
-			msg = "Timelag stopped";break;
-		case DVE_TIMEOUTSTARTS:
-			msg = "Timeout started";break;
-		case DVE_TIMEOUTSTOPS:
-			msg = "Timeout stopped";break;
-		case DVE_VALUECHANGED:
-			msg = "Value changed";break;
-		case DVE_VALUEUPDATED:
-			msg = "Value updated";break;
-		default:
-			return;
-		}
-		DynamicValueEvent<T, DynamicValueProperty<T>> dve = new DynamicValueEvent<T, DynamicValueProperty<T>>(this,
-			    this, lastValue, condition, null, "Condition changed");
-		DynamicValueListener<T, DynamicValueProperty<T>>[] listen = new DynamicValueListener[getDvListeners()
-			.size()];
-		listen = (DynamicValueListener<T, DynamicValueProperty<T>>[])getDvListeners().toArray(listen);
-
-		switch (type) {
-		case DVE_CONDITIONCHANGE:
-			for (int i = 0; i < listen.length; i++) {
-				listen[i].conditionChange(dve);
-			}
-			break;
-		case DVE_ERRORRESPONSE:
-			for (int i = 0; i < listen.length; i++) {
-				listen[i].errorResponse(dve);
-			}
-			break;
-		case DVE_TIMELAGSTARTS:
-			for (int i = 0; i < listen.length; i++) {
-				listen[i].timelagStarts(dve);
-			}
-			break;
-		case DVE_TIMELAGSTOPS:
-			for (int i = 0; i < listen.length; i++) {
-				listen[i].timelagStops(dve);
-			}
-			break;
-		case DVE_TIMEOUTSTARTS:
-			for (int i = 0; i < listen.length; i++) {
-				listen[i].timeoutStarts(dve);
-			}
-			break;
-		case DVE_TIMEOUTSTOPS:
-			for (int i = 0; i < listen.length; i++) {
-				listen[i].timeoutStops(dve);
-			}
-			break;
-		case DVE_VALUECHANGED:
-			for (int i = 0; i < listen.length; i++) {
-				listen[i].valueChanged(dve);
-			}
-			break;
-		case DVE_VALUEUPDATED:
-			for (int i = 0; i < listen.length; i++) {
-				listen[i].valueUpdated(dve);
-			}
-			break;
-		default:
-			return;
-		}
+	public DirectoryProxy getDirectoryProxy() {
+		return directoryProxy;
 	}
 	
-	protected void checkAndFireConditionEvents(DynamicValueCondition oldCond, DynamicValueCondition newCond){
-		fireDynamicValueEvent(DVE_CONDITIONCHANGE);
-		
-		if (newCond == null) return;
-		if (oldCond == null){
-			if (newCond.containsStates(DynamicValueState.TIMELAG))	
-				fireDynamicValueEvent(DVE_TIMELAGSTARTS);
-			if (newCond.containsStates(DynamicValueState.TIMEOUT))	
-				fireDynamicValueEvent(DVE_TIMEOUTSTARTS);
-			if (newCond.containsStates(DynamicValueState.ERROR))	
-				fireDynamicValueEvent(DVE_ERRORRESPONSE);			
-		} else {
-			
-			//timelag checks
-			if (newCond.containsStates(DynamicValueState.TIMELAG) && !oldCond.containsStates(DynamicValueState.TIMELAG))	
-				fireDynamicValueEvent(DVE_TIMELAGSTARTS);
-			else if (oldCond.containsStates(DynamicValueState.TIMELAG) && !condition.containsStates(DynamicValueState.TIMELAG))	
-				fireDynamicValueEvent(DVE_TIMELAGSTOPS);
-			
-			//timeout checks
-			if (newCond.containsStates(DynamicValueState.TIMEOUT) && !oldCond.containsStates(DynamicValueState.TIMEOUT))	
-				fireDynamicValueEvent(DVE_TIMEOUTSTARTS);
-			else if (oldCond.containsStates(DynamicValueState.TIMEOUT) && !condition.containsStates(DynamicValueState.TIMEOUT))	
-				fireDynamicValueEvent(DVE_TIMEOUTSTOPS);
-			
-			//error checks
-			if (newCond.containsStates(DynamicValueState.ERROR) && !oldCond.containsStates(DynamicValueState.ERROR))	
-				fireDynamicValueEvent(DVE_ERRORRESPONSE);
-			
+	void updateLastValueCache(T lastValue, Timestamp lastUpdate, boolean sucess, boolean change) {
+		if (lastValue!=null) {
+			this.lastValue=lastValue;
 		}
+		if (change) {
+			this.lastValueChangeTimestamp=lastUpdate;
+		}
+		this.lastValueUpdateTimestamp=lastUpdate;
+		this.lastValueSuccess=true;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.epics.css.dal.impl.SimplePropertyImpl#addDynamicValueListener(org.epics.css.dal.DynamicValueListener)
+	/* (non-Javadoc)
+	 * @see org.epics.css.dal.impl.DataAccessImpl#releaseProxy(boolean)
 	 */
 	@Override
-	public <P extends SimpleProperty<T>> void addDynamicValueListener(DynamicValueListener<T, P> l)
-	{
-		super.addDynamicValueListener(l);
-	}
-
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.DynamicValueProperty#getSupportedExpertMonitorParameters()
-	 */
-	public Map<String, Object> getSupportedExpertMonitorParameters()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.DynamicValueProperty#createNewExpertMonitor(org.epics.css.dal.DynamicValueListener, java.util.Map)
-	 */
-	public ExpertMonitor createNewExpertMonitor(DynamicValueListener<T, SimpleProperty<T>> listener,
-	    Map<String, Object> parameters) throws RemoteException
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.EventSystemContext#addEventSystemListener(org.epics.css.dal.EventSystemListener, java.util.Map)
-	 */
-	public void addEventSystemListener(
-	    EventSystemListener<DynamicValueEvent<T, SimpleProperty<T>>> l, Map<String, Object> parameters)
-		throws RemoteException
-	{
-		// TODO Auto-generated method stub
-	}
-
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.EventSystemContext#addEventSystemListener(org.epics.css.dal.EventSystemListener)
-	 */
-	public void addEventSystemListener(EventSystemListener<DynamicValueEvent<T, SimpleProperty<T>>> l)
-		throws RemoteException
-	{
-		// TODO Auto-generated method stub
-	}
-
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.EventSystemContext#removeEventSystemListener(org.epics.css.dal.EventSystemListener, java.util.Map)
-	 */
-	public void removeEventSystemListener(
-	    EventSystemListener<DynamicValueEvent<T, SimpleProperty<T>>> l, Map<String, Object> parameters)
-	{
-		// TODO Auto-generated method stub
-	}
-
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.EventSystemContext#removeEventSystemListener(org.epics.css.dal.EventSystemListener)
-	 */
-	public void removeEventSystemListener(
-	    EventSystemListener<DynamicValueEvent<T, SimpleProperty<T>>> l)
-	{
-		// TODO Auto-generated method stub
-	}
-
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.EventSystemContext#getEventSystemListeners()
-	 */
-	public EventSystemListener<DynamicValueEvent<T, SimpleProperty<T>>>[] getEventSystemListeners()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.EventSystemContext#getSupportedEventSystemParameters()
-	 */
-	public Map<String, Object> getSupportedEventSystemParameters()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public AnyData getData() {
-		return DataUtil.createAnyData(this);
+	public Proxy[] releaseProxy(boolean destroy) {
+		Proxy[] proxies = super.releaseProxy(destroy);
+		directoryProxy = null;
+		defaultMonitor = null;
+		return proxies;
 	}
 	
-	public void setValueAsObject(Object new_value) throws Exception {
-		setValue(DataUtil.castTo(new_value, getDataType()));
+	public ChannelListener[] getListeners() {
+		return getChListeners().getChannelListeners();
 	}
-
-	public String getStateInfo() {
-		return getConnectionState().toString();
-	}
-
-	public boolean isRunning() {
-		return this.isConnectionAlive();
-	}
-
-	public boolean isWriteAllowed() {
-		return this.isSettable();
-	}
-
-	public void start() throws Exception {
-		// TODO at the moment this method does nothing
 		
+	private ChannelListenerNotifier getChListeners() {
+		if (chListeners == null) {
+			chListeners = new ChannelListenerNotifier(this);
+		}
+		return chListeners;
 	}
-
-	public void startSync() throws Exception {
-		// TODO at the moment this method does nothing
-		
+	
+	public void addListener(ChannelListener listener) {
+		getChListeners().addChannelListener(listener);
 	}
-
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.simple.AnyDataChannel#getProperty()
-	 */
-	public DynamicValueProperty<?> getProperty() {
-		return this;
+	
+	public void removeListener(ChannelListener listener) {
+		getChListeners().removeChannelListener(listener);
 	}
-
-	public void stop() {
-		setConnectionState(ConnectionState.DISCONNECTING);
-		((PropertyFamily)propertyContext).destroy(this);
-		releaseProxy(true);
-		setConnectionState(ConnectionState.DISCONNECTED);
-		setConnectionState(ConnectionState.DESTROYED);
-	}
-} /* __oOo__ */
-
-
-/* __oOo__ */
+} 
