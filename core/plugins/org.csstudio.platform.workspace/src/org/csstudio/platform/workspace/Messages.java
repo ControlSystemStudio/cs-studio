@@ -31,7 +31,8 @@ public class Messages extends NLS
     public static String Workspace_InUseErrorTitle;
     public static String Workspace_LockError;
     public static String Workspace_LockErrorTitle;
-    public static String Workspace_NestedError;
+    public static String Workspace_NestedErrorFMT;
+    public static String Workspace_ContainsWorkspacesErrorFMT;
     
     static
     {
