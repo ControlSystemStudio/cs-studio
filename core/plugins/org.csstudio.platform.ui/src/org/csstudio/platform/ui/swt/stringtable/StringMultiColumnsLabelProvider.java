@@ -36,18 +36,19 @@ class StringMultiColumnsLabelProvider extends CellLabelProvider {
 			if(editable)
 				cell.setText(Messages.StringTableEditor_AddRowText);
 			else
-				cell.setText("");
+				cell.setText(""); //$NON-NLS-1$
 		//if not
 		else
 		{
 		    // For multi-line text, only show the first line
-			String text = items.get(index)[cell.getColumnIndex()];
+			final int column = cell.getColumnIndex();
+            String text = items.get(index)[column];
 			// Not sure whether to look for '\r' or '\n'. Try both
 			int nl = text.indexOf('\r');
 			if (nl < 0)
 			    nl = text.indexOf('\n');
 			if (nl > 0)
-			    text = text.substring(0, nl) + "...";
+			    text = text.substring(0, nl) + "..."; //$NON-NLS-1$
             cell.setText(text);
 		}
 	}
