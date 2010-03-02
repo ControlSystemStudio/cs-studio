@@ -86,11 +86,6 @@ public interface TODO
     For ENUM type data (e.g. mbbo records), the widget should be able to set a certain state (and have its 
     LED lit for that state). 
     
-    TODO Simpler Notation for Constant Arguments of Scripts 4 
-    Currently script arguments are restricted to PVs. A constant argument has to be typed as a pseudo PV, 
-    i.e. Òconst://foo(2)Ó for Ò2Ó. 
-    There should be an easier way to specify constants. 
-    
     TODO Spinner: Clicks are Sometimes Ignored 4 
     When using the Spinner, some clicks are ignored, and the displayed label jumps back to the previous 
     value. This behavior seems to change with the Step Increment attribute, as if the was a hold-off time of 
