@@ -108,8 +108,6 @@ public class SimpleDALBroker {
 	
 	private static final long CLEANUP_INTERVAL = 60000;
 	private Timer cleanupTimer;
-	// TODO  SimpleDALBroker should be destroyed at one point and cleanupTask canceled...
-	private PropertiesCleanupTask cleanupTask;
 	
 	private SimpleDALBroker(AbstractApplicationContext ctx) {
 		this.ctx=ctx;
@@ -127,6 +125,7 @@ public class SimpleDALBroker {
 			public void destroying(LifecycleEvent event) {
 				// TODO implement
 				System.out.println(">>> DESTROYING!");
+				cleanupTimer.cancel();
 			}
 
 			public void initialized(LifecycleEvent event) {

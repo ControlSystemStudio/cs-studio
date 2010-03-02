@@ -23,6 +23,7 @@
 
 import org.eclipse.core.runtime.Plugin;
 import org.epics.css.dal.CharacteristicInfo;
+import org.epics.css.dal.context.AbstractApplicationContext;
 import org.epics.css.dal.impl.DefaultApplicationContext;
 import org.epics.css.dal.simple.SimpleDALBroker;
 import org.osgi.framework.BundleContext;
@@ -53,7 +54,7 @@ public class DalPlugin extends Plugin {
 	 */
 	private static DalPlugin plugin;
 	
-	private DefaultApplicationContext applicationContext;
+	private AbstractApplicationContext applicationContext;
 	
 	private SimpleDALBroker broker;
 
@@ -90,10 +91,6 @@ public class DalPlugin extends Plugin {
 		}
 		return broker;
 	}
-	
-	public DefaultApplicationContext getApplicationContext() {
-		return applicationContext;
-	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.runtime.Plugin#stop(org.osgi.framework.BundleContext)
@@ -104,4 +101,12 @@ public class DalPlugin extends Plugin {
 		super.stop(context);
 	}
 
+	/**
+	 * Returns the application context.
+	 * 
+	 * @return the context
+	 */
+	public AbstractApplicationContext getApplicationContext() {
+		return applicationContext;
+	}
 }
