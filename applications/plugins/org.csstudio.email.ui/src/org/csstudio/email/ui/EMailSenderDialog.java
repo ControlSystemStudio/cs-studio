@@ -71,7 +71,7 @@ public class EMailSenderDialog extends TitleAreaDialog
     protected void configureShell(Shell shell)
     {
         super.configureShell(shell);
-        shell.setText("Send E-Mail");
+        shell.setText(Messages.SendEmail);
     }
     
     /** Create the GUI. */
@@ -81,8 +81,8 @@ public class EMailSenderDialog extends TitleAreaDialog
         // Title, title image, handle image disposal
         final Image title_image =
             Activator.getImageDescriptor("icons/email_image.png").createImage(); //$NON-NLS-1$
-        setTitle("Send E-Mail");
-        setMessage("Enter destination, edit subject and details...");
+        setTitle(Messages.SendEmail);
+        setMessage(Messages.EmailDialogMessage);
         setTitleImage(title_image);
         parent.addDisposeListener(new DisposeListener()
         {
@@ -111,31 +111,31 @@ public class EMailSenderDialog extends TitleAreaDialog
         // Subject:  ___subject____
         // _____________text _______
         Label l = new Label(box, 0);
-        l.setText("From:");
+        l.setText(Messages.From);
         l.setLayoutData(new GridData());
         txt_from = new Text(box, SWT.BORDER);
-        txt_from.setToolTipText("Email address from which this is sent");
+        txt_from.setToolTipText(Messages.FromTT);
         txt_from.setLayoutData(new GridData(SWT.FILL, 0, true, false));
         txt_from.setText(from);
 
         l = new Label(box, 0);
-        l.setText("To:");
+        l.setText(Messages.To);
         l.setLayoutData(new GridData());
         txt_to = new Text(box, SWT.BORDER);
-        txt_to.setToolTipText("Destination Email address");
+        txt_to.setToolTipText(Messages.ToTT);
         txt_to.setLayoutData(new GridData(SWT.FILL, 0, true, false));
         txt_to.setText(to);
 
         l = new Label(box, 0);
-        l.setText("Subject:");
+        l.setText(Messages.Subject);
         l.setLayoutData(new GridData());
         txt_subject = new Text(box, SWT.BORDER);
-        txt_subject.setToolTipText("Email subject");
+        txt_subject.setToolTipText(Messages.SubjectTT);
         txt_subject.setLayoutData(new GridData(SWT.FILL, 0, true, false));
         txt_subject.setText(subject);
 
         txt_body = new Text(box, SWT.BORDER | SWT.MULTI | SWT.WRAP);
-        txt_body.setToolTipText("Email subject");
+        txt_body.setToolTipText(Messages.MessageBodyTT);
         GridData gd = new GridData();
         gd.heightHint = 400; // Size guess. Hope that 'RESIZE' works as well.
         gd.widthHint = 400;
@@ -150,7 +150,7 @@ public class EMailSenderDialog extends TitleAreaDialog
         // Maybe add image
         if (image_filename != null)
         {
-            new ImagePreview(sash, "Attached Image", image_filename);
+            new ImagePreview(sash, Messages.AttachedImage, image_filename);
             sash.setWeights(new int[] { 80, 20 });
         }
     

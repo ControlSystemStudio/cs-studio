@@ -5,9 +5,6 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 /** Plugin Activator
  *  @author Kay Kasemir
- *  TODO Externalize Strings
- *  TODO Preferences
- *  TODO Preference GUI
  */
 @SuppressWarnings("nls")
 public class Activator extends AbstractUIPlugin

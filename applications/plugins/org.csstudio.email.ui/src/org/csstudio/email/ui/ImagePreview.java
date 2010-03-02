@@ -18,6 +18,7 @@ import org.eclipse.swt.widgets.Composite;
  *  Similar to a Label with image, but image is resized to fit the widget.
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class ImagePreview extends Canvas implements DisposeListener, PaintListener
 {
     private Image image;

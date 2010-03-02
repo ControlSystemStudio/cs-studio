@@ -17,8 +17,8 @@ abstract public class AbstractSendEMailAction extends Action
             final String subject,
             final String body)
     {
-        super("Send E-Mail...",
-              Activator.getImageDescriptor("icons/email.gif"));
+        super(Messages.SendEmail,
+              Activator.getImageDescriptor("icons/email.gif")); //$NON-NLS-1$
         this.shell = shell;
         this.from = from;
         this.subject = subject;
@@ -30,7 +30,7 @@ abstract public class AbstractSendEMailAction extends Action
     {
         final String image_filename = getImage();
         Dialog dlg = new EMailSenderDialog(shell, Preferences.getSMTP_Host(), from,
-                "<enter destination email>", subject, body, image_filename);
+                Messages.DefaultDestination, subject, body, image_filename);
         dlg.open();
     }
 

@@ -35,8 +35,8 @@ implements IWorkbenchPreferencePage
     @Override
     protected void createFieldEditors()
     {
-        setMessage("EMail Settings");
+        setMessage(Messages.Preferences);
         final Composite parent = getFieldEditorParent();
-        addField(new StringFieldEditor(Preferences.SMTP_HOST, "SMTP Host:", parent));
+        addField(new StringFieldEditor(Preferences.SMTP_HOST, Messages.SMTPHost, parent));
     }
 }
