@@ -29,7 +29,7 @@ abstract public class AbstractSendEMailAction extends Action
     public void run()
     {
         final String image_filename = getImage();
-        Dialog dlg = new EMailDialog(shell, Preferences.getSMTP_Host(), from,
+        Dialog dlg = new EMailSenderDialog(shell, Preferences.getSMTP_Host(), from,
                 "<enter destination email>", subject, body, image_filename);
         dlg.open();
     }

@@ -24,7 +24,7 @@ public class EMailDialogTest
             MessageDialog.openQuestion(shell, "With image?", "Include image?")
             ? "icons/email_image.png"
             : null;
-        Dialog dlg = new EMailDialog(shell, host, from, to, "Test",
+        Dialog dlg = new EMailSenderDialog(shell, host, from, to, "Test",
                 "This is a test", image_filename);
         dlg.open();
     }

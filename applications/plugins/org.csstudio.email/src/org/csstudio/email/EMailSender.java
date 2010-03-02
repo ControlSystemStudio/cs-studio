@@ -26,6 +26,11 @@ public class EMailSender
 
     /** Stream for the message content */
     final private PrintStream message;
+    
+    public static boolean isEmailSupported()
+    {
+        return Preferences.getSMTP_Host().length() > 0;
+    }
 
     /** Initialize
      *  @param host SMTP Host

@@ -19,7 +19,7 @@ import org.eclipse.swt.widgets.Text;
 /** Dialog for entering EMail and sending it.
  *  @author Kay Kasemir
  */
-public class EMailDialog extends TitleAreaDialog
+public class EMailSenderDialog extends TitleAreaDialog
 {
     final private String host, from, to, subject, body;
     final private String image_filename;
@@ -34,7 +34,7 @@ public class EMailDialog extends TitleAreaDialog
      *  @param subject
      *  @param body
      */
-    public EMailDialog(final Shell shell, final String host, final String from,
+    public EMailSenderDialog(final Shell shell, final String host, final String from,
             final String to, final String subject, final String body)
     {
         this(shell, host, from, to, subject, body, null);
@@ -49,7 +49,7 @@ public class EMailDialog extends TitleAreaDialog
      *  @param body
      *  @param image_filename
      */
-    public EMailDialog(final Shell shell, final String host, final String from,
+    public EMailSenderDialog(final Shell shell, final String host, final String from,
             final String to, final String subject, final String body,
             final String image_filename)
     {
@@ -159,8 +159,6 @@ public class EMailDialog extends TitleAreaDialog
         return area;
     }
     
-    
-
     /** Send email, display errors. */
     @Override
     protected void okPressed()
