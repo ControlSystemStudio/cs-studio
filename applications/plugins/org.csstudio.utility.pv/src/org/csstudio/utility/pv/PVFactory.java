@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
@@ -68,6 +70,9 @@ public class PVFactory
     /** Default PV type, initialized from preferences */
     private static String default_type;
 
+    /** Regular expression for numeric constants */
+    final private static Pattern number = Pattern.compile("-?[0-9.]+");
+
     /** Initialize from preferences and extension point registry */
     final private static void initialize() throws Exception
     {
@@ -113,10 +118,21 @@ public class PVFactory
      *  @return PV
      *  @exception Exception on error
      */
-    final public static PV createPV(final String name) throws Exception
+    final public static PV createPV(String name) throws Exception
     {
         if (pv_factory == null)
             initialize();
+
+        // Special handling of numeric constants
+        if (number.matcher(name).matches())
+            name = "const://x(" + name + ")";
+        else
+        {   // ... and text constants
+            final int l = name.length();
+            if (l > 2 && name.charAt(0) == '"'  &&  name.charAt(l-1) == '"')
+                name = "const://x(" + name + ")";
+        }
+        
         // Identify type of PV
         // PV name = "type:...."
         final String type, base;
