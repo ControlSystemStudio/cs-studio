@@ -5,7 +5,7 @@ import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 
 import org.csstudio.apputil.ui.workbench.OpenPerspectiveAction;
-import org.csstudio.email.ui.AbstractSendEMailAction;
+import org.csstudio.email.EMailSender;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.workbench.OpenViewAction;
 import org.csstudio.trends.databrowser.Activator;
@@ -252,7 +252,8 @@ public class DataBrowserEditor extends EditorPart
         mm.add(new Separator());
         if (SendToElogAction.isElogAvailable())
             mm.add(new SendToElogAction(shell, plot.getXYGraph()));
-        mm.add(new SendEMailAction(shell, plot.getXYGraph()));
+        if (EMailSender.isEmailSupported())
+            mm.add(new SendEMailAction(shell, plot.getXYGraph()));
         mm.add(new PrintAction(shell, plot.getXYGraph()));
         
         final Menu menu = mm.createContextMenu(parent);
