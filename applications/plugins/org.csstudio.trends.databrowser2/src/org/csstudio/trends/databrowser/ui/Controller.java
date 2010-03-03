@@ -369,23 +369,32 @@ public class Controller implements ArchiveFetchJobListener
         {
             @Override
             public void run()
-            {   // Skip updates while nobody is watching
-                if (window_is_iconized)
-                    return;
-                // Check if anything changed, which also updates formulas
-                final boolean anything_new = model.updateItemsAndCheckForNewSamples();
-                
-                if (anything_new  &&   have_autoscale_axis )
-                    plot.updateAutoscale();
-                
-                if (model.isScrollEnabled())
-                    performScroll();
-                else
+            {
+                try
                 {
-                    scrolling_was_off = true;
-                    // Only redraw when needed
-                    if (anything_new)
-                        plot.redrawTraces();
+                    // Skip updates while nobody is watching
+                    if (window_is_iconized)
+                        return;
+                    // Check if anything changed, which also updates formulas
+                    final boolean anything_new = model.updateItemsAndCheckForNewSamples();
+                    
+                    if (anything_new  &&   have_autoscale_axis )
+                        plot.updateAutoscale();
+                    
+                    if (model.isScrollEnabled())
+                        performScroll();
+                    else
+                    {
+                        scrolling_was_off = true;
+                        // Only redraw when needed
+                        if (anything_new)
+                            plot.redrawTraces();
+                    }
+                }
+                catch (Throwable ex)
+                {
+                    // TODO Remove when no more errors caught in Update Timer
+                    ex.printStackTrace();
                 }
             }
         };
