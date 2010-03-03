@@ -36,7 +36,6 @@ public class MinMaxDoubleValue extends DoubleValue implements IMinMaxDoubleValue
 	final private double minimum, maximum;
 	
     /** Constructor from pieces. */
-	@SuppressWarnings("nls")
     public MinMaxDoubleValue(final ITimestamp time, final ISeverity severity,
                        final String status, final INumericMetaData meta_data,
                        final Quality quality,
@@ -45,11 +44,16 @@ public class MinMaxDoubleValue extends DoubleValue implements IMinMaxDoubleValue
                        final double maximum)
 	{
 		super(time, severity, status, meta_data, quality, values);
-        if (minimum > maximum)
-            throw new IllegalArgumentException("Minimum " + minimum +
-                                               " > Maximum " + maximum);
-		this.minimum = minimum;
-        this.maximum = maximum;
+        if (minimum <= maximum)
+        {
+    		this.minimum = minimum;
+            this.maximum = maximum;
+        }
+        else
+        {
+            this.minimum = maximum;
+            this.maximum = minimum;
+        }
 	}
 
     /** {@inheritDoc} */
