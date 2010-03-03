@@ -46,8 +46,10 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IPageLayout;
+import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
@@ -222,6 +224,43 @@ public class DataBrowserEditor extends EditorPart
             MessageDialog.openError(parent.getShell(), Messages.Error,
                     NLS.bind(Messages.ControllerStartErrorFmt, ex.getMessage()));
         }
+
+        // Only the 'page' seems to know if a part is visible or not,
+        // so use PartListener to update controller's redraw handling
+        getSite().getPage().addPartListener(new IPartListener2()
+        {
+            private boolean isThisEditor(final IWorkbenchPartReference part)
+            {
+                return part.getPart(false) == DataBrowserEditor.this;
+            }
+            // Enable redaws...
+            public void partOpened(final IWorkbenchPartReference part)
+            {
+                if (isThisEditor(part))
+                    controller.suppressRedraws(false);
+            }
+            public void partVisible(final IWorkbenchPartReference part)
+            {
+                if (isThisEditor(part))
+                    controller.suppressRedraws(false);
+            }
+            // Supress redraws...
+            public void partHidden(final IWorkbenchPartReference part)
+            {
+                if (isThisEditor(part))
+                    controller.suppressRedraws(true);
+            }
+            public void partClosed(final IWorkbenchPartReference part)
+            {
+                if (isThisEditor(part))
+                    controller.suppressRedraws(true);
+            }
+            // Ignore
+            public void partInputChanged(final IWorkbenchPartReference part) {}
+            public void partDeactivated(final IWorkbenchPartReference part)  {}
+            public void partBroughtToTop(final IWorkbenchPartReference part) {}
+            public void partActivated(final IWorkbenchPartReference part)    {}
+        });
         
         createContextMenu(plot_box);
     }

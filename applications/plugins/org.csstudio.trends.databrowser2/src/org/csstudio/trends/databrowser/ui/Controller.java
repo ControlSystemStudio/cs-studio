@@ -74,9 +74,12 @@ public class Controller implements ArchiveFetchJobListener
     /** Is the window (shell) iconized? */
     private volatile boolean window_is_iconized;
 
+    /** Should we perform redraws, or is the window hidden and we should suppress them? */
+    private boolean suppress_redraws = false;
+    
     /** Is there any Y axis that's auto-scaled? */
     private volatile boolean have_autoscale_axis = false;
-    
+
     /** Initialize
      *  @param shell Shell
      *  @param model Model that has the data
@@ -305,6 +308,18 @@ public class Controller implements ArchiveFetchJobListener
         });
     }
 
+    /** @param suppress_redraws <code>true</code> if controller should suppress
+     *        redraws because window is hidden
+     */
+    public void suppressRedraws(final boolean suppress_redraws)
+    {
+        if (this.suppress_redraws == suppress_redraws)
+            return;
+        this.suppress_redraws = suppress_redraws;
+        if (!suppress_redraws)
+            plot.redrawTraces();
+    }
+
     /** Check if there's any axis in 'auto scale' mode.
      *  @see #have_autoscale_axis
      */
@@ -373,7 +388,7 @@ public class Controller implements ArchiveFetchJobListener
                 try
                 {
                     // Skip updates while nobody is watching
-                    if (window_is_iconized)
+                    if (window_is_iconized || suppress_redraws)
                         return;
                     // Check if anything changed, which also updates formulas
                     final boolean anything_new = model.updateItemsAndCheckForNewSamples();
