@@ -16,6 +16,8 @@ import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * The trace figure.
@@ -253,9 +255,19 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 		graphics.pushState();
 		if(errorBarColor == null)
 			errorBarColor = traceColor;
-		graphics.setBackgroundColor(errorBarColor);
+		Color lighter = null;
 		if (use_advanced_graphics)
+		{
+	        graphics.setBackgroundColor(errorBarColor);
 		    graphics.setAlpha(areaAlpha);
+		}
+		else
+		{
+	        final float[] hsb = errorBarColor.getRGB().getHSB();
+		    lighter = new Color(Display.getCurrent(),
+	                new RGB(hsb[0], hsb[1]*areaAlpha/255, 1.0f));
+            graphics.setBackgroundColor(lighter);
+		}
 		Point preEp, ep;
 		switch (yErrorBarType) {
 		case BOTH:
@@ -280,6 +292,8 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 			break;
 		}
 		graphics.popState();
+		if (lighter != null)
+		    lighter.dispose();
 	}
 	
 	/**Draw point with the pointStyle and size of the trace;
