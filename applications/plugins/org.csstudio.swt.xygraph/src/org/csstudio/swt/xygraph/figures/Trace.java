@@ -3,6 +3,7 @@ package org.csstudio.swt.xygraph.figures;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.csstudio.swt.xygraph.Preferences;
 import org.csstudio.swt.xygraph.dataprovider.IDataProvider;
 import org.csstudio.swt.xygraph.dataprovider.IDataProviderListener;
 import org.csstudio.swt.xygraph.dataprovider.ISample;
@@ -24,6 +25,12 @@ import org.eclipse.swt.graphics.Color;
 public class Trace extends Figure implements IDataProviderListener, IAxisListener{
     /** Size of 'markers' used on X axis to indicate non-plottable samples */
     final private static int MARKER_SIZE = 6;
+    
+    /** Use advanced graphics?
+     *  Might not make a real performance difference, but since this it called a lot,
+     *  keep it in variable
+     */
+    final private static boolean use_advanced_graphics = Preferences.useAdvancedGraphics();
 	
 	/** The way how the trace will be drawn.
 	 *  @author Xihui Chen
@@ -247,7 +254,8 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 		if(errorBarColor == null)
 			errorBarColor = traceColor;
 		graphics.setBackgroundColor(errorBarColor);
-		graphics.setAlpha(areaAlpha);
+		if (use_advanced_graphics)
+		    graphics.setAlpha(areaAlpha);
 		Point preEp, ep;
 		switch (yErrorBarType) {
 		case BOTH:
@@ -367,7 +375,8 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 			graphics.drawLine(p1, p2);
 			break;
 		case BAR:
-			graphics.setAlpha(areaAlpha);
+		    if (use_advanced_graphics)
+		        graphics.setAlpha(areaAlpha);
 			graphics.setLineStyle(SWT.LINE_SOLID);
 			graphics.drawLine(p1, p2);
 			break;
@@ -388,7 +397,8 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 				basey = yAxis.getValuePosition(0, false);
 				break;
 			}
-			graphics.setAlpha(areaAlpha);
+			if (use_advanced_graphics)
+			    graphics.setAlpha(areaAlpha);
 			graphics.setBackgroundColor(traceColor);
 			graphics.fillPolygon(new int[]{
 					p1.x, p1.y,
@@ -420,7 +430,8 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 	protected void paintFigure(Graphics graphics) {
 		super.paintFigure(graphics);
 		graphics.pushState();
-		graphics.setAntialias(antiAliasing? SWT.ON : SWT.OFF);
+		if (use_advanced_graphics)
+		    graphics.setAntialias(antiAliasing? SWT.ON : SWT.OFF);
 		graphics.setForegroundColor(traceColor);
 		graphics.setLineWidth(lineWidth);
 		ISample predp = null;

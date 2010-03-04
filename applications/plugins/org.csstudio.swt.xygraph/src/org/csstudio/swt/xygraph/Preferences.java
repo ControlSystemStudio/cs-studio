@@ -11,9 +11,21 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 @SuppressWarnings("nls")
 public class Preferences
 {
-    public static boolean useAdvancedGraphics()
+    // useAdvancedGraphics() is called from many drawing operations, so
+    // only determine it once
+    private static boolean use_advanced_graphics;
+
+    static
     {
         final IPreferencesService prefs = Platform.getPreferencesService();
-        return prefs.getBoolean(Activator.PLUGIN_ID, "use_advanced_graphics", true, null);
+        if (prefs == null)
+            use_advanced_graphics = true;
+        else
+            use_advanced_graphics = prefs.getBoolean(Activator.PLUGIN_ID, "use_advanced_graphics", true, null);
+    }
+
+    public static boolean useAdvancedGraphics()
+    {
+        return use_advanced_graphics;
     }
 }

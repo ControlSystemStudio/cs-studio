@@ -3,6 +3,7 @@ package org.csstudio.swt.xygraph.figures;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.csstudio.swt.xygraph.Preferences;
 import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
 import org.eclipse.draw2d.FigureUtilities;
 import org.eclipse.draw2d.Graphics;
@@ -19,7 +20,6 @@ import org.eclipse.swt.graphics.Font;
  *
  */
 public class Legend extends RectangleFigure {
-
 	private final static int ICON_WIDTH = 25;
 	private final static int INNER_GAP = 2;
 	private final static int OUT_GAP = 5;
@@ -32,11 +32,10 @@ public class Legend extends RectangleFigure {
 	
 	private final static Color BLACK_COLOR = XYGraphMediaFactory.getInstance().getColor(
 			XYGraphMediaFactory.COLOR_BLACK);
-	private List<Trace> traceList;
 	
+	private final List<Trace> traceList = new ArrayList<Trace>();	
 	
 	public Legend() {
-		traceList = new ArrayList<Trace>();
 		setFont(LEGEND_FONT);
 		setBackgroundColor(WHITE_COLOR);
 		setForegroundColor(BLACK_COLOR);
@@ -93,7 +92,8 @@ public class Legend extends RectangleFigure {
 	
 	private void drawTraceLagend(Trace trace, Graphics graphics, int hPos, int vPos){
 		graphics.pushState();
-		graphics.setAntialias(SWT.ON);
+        if (Preferences.useAdvancedGraphics())
+            graphics.setAntialias(SWT.ON);
 		graphics.setForegroundColor(trace.getTraceColor());
 		//draw symbol
 		switch (trace.getTraceType()) {
@@ -104,13 +104,15 @@ public class Legend extends RectangleFigure {
 			break;
 		case AREA:
 			graphics.setBackgroundColor(trace.getTraceColor());
-			graphics.setAlpha(trace.getAreaAlpha());
+	        if (Preferences.useAdvancedGraphics())
+	            graphics.setAlpha(trace.getAreaAlpha());
 			graphics.fillPolygon(new int[]{hPos, vPos + ICON_WIDTH/2,
 					hPos + ICON_WIDTH/2, vPos + trace.getPointSize()/2, 
 					hPos + ICON_WIDTH, vPos + ICON_WIDTH/2,
 					hPos + ICON_WIDTH, vPos + ICON_WIDTH,
 					hPos, vPos + ICON_WIDTH});
-			graphics.setAlpha(255);
+	        if (Preferences.useAdvancedGraphics())
+	            graphics.setAlpha(255);
 			trace.drawPoint(graphics, new Point(hPos + ICON_WIDTH/2, vPos+ trace.getPointSize()/2));
 			break;
 		default:
@@ -139,7 +141,7 @@ public class Legend extends RectangleFigure {
 			
 			if(hEnd	> wHint){
 				hEnd= INNER_GAP + OUT_GAP + ICON_WIDTH + INNER_GAP +  
-					+ FigureUtilities.getTextExtents(trace.getName(), getFont()).width;;
+					+ FigureUtilities.getTextExtents(trace.getName(), getFont()).width;
 				height += ICON_WIDTH + INNER_GAP;				
 			}	
 			if(maxWidth < hEnd) 

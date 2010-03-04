@@ -1,5 +1,6 @@
 package org.csstudio.swt.xygraph.figures;
 
+import org.csstudio.swt.xygraph.Preferences;
 import org.csstudio.swt.xygraph.dataprovider.IDataProvider;
 import org.csstudio.swt.xygraph.dataprovider.IDataProviderListener;
 import org.csstudio.swt.xygraph.dataprovider.ISample;
@@ -27,7 +28,6 @@ import org.eclipse.swt.graphics.Font;
  *
  */
 public class Annotation extends Figure implements IAxisListener, IDataProviderListener {
-
 	/** The way how the cursor line will be drawn. */
 	/**
 	 * @author Xihui Chen
@@ -156,8 +156,8 @@ public class Annotation extends Figure implements IAxisListener, IDataProviderLi
 		if(trace != null && currentSnappedSample == null &&!pointerDragged)
 			updateToDefaultPosition();
 			
-		
-		graphics.setAntialias(SWT.ON);
+        if (Preferences.useAdvancedGraphics())
+            graphics.setAntialias(SWT.ON);
 		Color tempColor;
 		if(annotationColor == null){
 			tempColor = yAxis.getForegroundColor();			
@@ -713,7 +713,8 @@ class Pointer extends Figure{
 	@Override
 	protected void paintClientArea(Graphics graphics) {
 		super.paintClientArea(graphics);
-		graphics.setAntialias(SWT.ON);
+        if (Preferences.useAdvancedGraphics())
+            graphics.setAntialias(SWT.ON);
 		//draw X-cross point		
 		Rectangle clientArea = getClientArea().getCopy().shrink(POINT_SIZE/2, POINT_SIZE/2);		
 		graphics.drawLine(clientArea.x, clientArea.y,
