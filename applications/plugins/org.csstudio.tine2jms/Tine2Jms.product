@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Tine2Jms" id="org.csstudio.tine2jms.Tine2JmsProduct" application="org.csstudio.tine2jms.Tine2Jms" useFeatures="false" includeLaunchers="true">
+<product name="Tine2Jms" id="org.csstudio.tine2jms.Tine2JmsProduct" application="org.csstudio.tine2jms.Tine2Jms" version="1.0.1" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>

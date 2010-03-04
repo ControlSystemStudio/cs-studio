@@ -1,6 +1,6 @@
 
 /* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+ * Copyright (c) 2009 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
@@ -23,60 +23,18 @@
 
 package org.csstudio.tine2jms;
 
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
-import org.eclipse.core.runtime.Plugin;
-import org.osgi.framework.BundleContext;
-
 /**
- * The activator class controls the plug-in life cycle
+ * @author Markus Moeller
+ *
  */
-public class TineToJmsActivator extends Plugin
+public class VersionInfo
 {
-	/** The plug-in ID */
-	public static final String PLUGIN_ID = "org.csstudio.tine2jms";
-
-	/** The shared instance */
-	private static TineToJmsActivator plugin;
-
-    /** Logger */
-    private Logger logger = null;
+    public static final String NAME = "Tine2Jms";
+    public static final String VERSION = " 1.0.1";
+    public static final String BUILD = " - BUILD 2010-03-04 12:00";
     
-	/**
-	 * The constructor
-	 */
-	public TineToJmsActivator() {}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.core.runtime.Plugins#start(org.osgi.framework.BundleContext)
-	 */
-	public void start(BundleContext context) throws Exception
-	{
-		super.start(context);
-		plugin = this;
-		
-        logger = CentralLogger.getInstance().getLogger(this);
-        logger.info("Tine2Jms started...");
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.core.runtime.Plugin#stop(org.osgi.framework.BundleContext)
-	 */
-	public void stop(BundleContext context) throws Exception
-	{
-		plugin = null;
-		super.stop(context);
-	}
-
-	/**
-	 * Returns the shared instance
-	 *
-	 * @return the shared instance
-	 */
-	public static TineToJmsActivator getDefault()
-	{
-		return plugin;
-	}
+    public static String getAll()
+    {
+        return NAME + VERSION + BUILD;
+    }
 }

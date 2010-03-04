@@ -27,10 +27,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Observable;
 import java.util.Observer;
-
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
-
+import org.csstudio.platform.statistic.Collector;
 import de.desy.tine.alarmUtils.AlarmMonitor;
 import de.desy.tine.alarmUtils.AlarmMonitorHandler;
 import de.desy.tine.alarmUtils.TAlarmSystem;
@@ -43,10 +42,22 @@ import de.desy.tine.server.alarms.TAlarmMessage;
  */
 public class TineAlarmMonitor extends Observable implements AlarmMonitorHandler
 {
+    /** */
     private String context = null;
+
+    /** */
     private Logger logger = null;
+    
+    /** */
     private TLink tineLink = null;
+
+    /** */
     private SimpleDateFormat dateFormat = null;
+    
+    /** Class that collects statistic informations. Query it via XMPP. */
+    private Collector receivedMessages = null;
+
+    /** */
     private long lastTimeStamp = 0;
     
     public TineAlarmMonitor(Observer observer, String context)
@@ -56,6 +67,12 @@ public class TineAlarmMonitor extends Observable implements AlarmMonitorHandler
         this.addObserver(observer);
         dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
         
+        receivedMessages = new Collector();
+        receivedMessages.setApplication(VersionInfo.NAME);
+        receivedMessages.setDescriptor(context + ": Received messages");
+        receivedMessages.setContinuousPrint(false);
+        receivedMessages.setContinuousPrintCount(1000.0);
+
         tineLink = TAlarmSystem.monitorAlarms(context, null, "ALL", 0, new AlarmMonitor(this));
     }
     
@@ -95,6 +112,7 @@ public class TineAlarmMonitor extends Observable implements AlarmMonitorHandler
                     date = null;
                     
                     am = new AlarmMessage(alarm, context);
+                    receivedMessages.incrementValue();
                     
                     setChanged();
                     notifyObservers(am);
