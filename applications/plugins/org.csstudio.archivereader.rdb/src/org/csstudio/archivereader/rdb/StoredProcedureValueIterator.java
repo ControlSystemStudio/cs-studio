@@ -84,7 +84,10 @@ public class StoredProcedureValueIterator extends AbstractRDBValueIterator
                 values = decodeOptimizedTable(result);
             else
                 values = decodeSampleTable(result);
-            index = 0;
+            // Initialize iterator for first value
+            if (values.length > 0)
+                index = 0;
+            // else: No data, leave as -1
         }
         catch (Exception ex)
         {

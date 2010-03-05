@@ -97,6 +97,8 @@ AS
                                           Result ordered by time, not bucket number
                                           so that the 'string' samples are in the
                                           time line.
+      1.1        03/05/2010  Kay Kasemir  When there is no sample before the requested
+                                          start time, use the start time as given.
 
    ******************************************************************************/
 
@@ -272,24 +274,25 @@ ORDER BY smpl_time';
       --
       v_count := get_count_by_date_range (p_chan_id, p_start_time, p_end_time);
       
-      --- If there is less data than requested, return raw data
+      --- If there is less data than requested, return raw data.
+      --- This includes the case of no data at all.
       IF v_count < p_reduction_nbr
       THEN
          l_return_raw_data := 1;
-      END IF;
-      
-      --
-      -- Find out what datatype the channel value is.
-      --
-      v_datatype := get_sample_datatype (p_chan_id, v_start_time, p_end_time);
-
-      IF v_datatype IS NOT NULL
-      THEN
-         l_cursor_width_bucket_2 :=
-            REPLACE (l_cursor_width_bucket_2, '<tag>', v_datatype);
       ELSE
-         -- Data cannot be reduced numerically. Return the raw data
-         l_return_raw_data := 1;
+         --
+         -- Find out what datatype the channel value is.
+         --
+         v_datatype := get_sample_datatype (p_chan_id, v_start_time, p_end_time);
+  
+         IF v_datatype IS NOT NULL
+         THEN
+            l_cursor_width_bucket_2 :=
+               REPLACE (l_cursor_width_bucket_2, '<tag>', v_datatype);
+         ELSE
+            -- Data cannot be reduced numerically. Return the raw data
+            l_return_raw_data := 1;
+         END IF;
       END IF;
       
       -- Construct the basic query for raw data
@@ -365,9 +368,10 @@ ORDER BY smpl_time';
                   set of buckets determined by the reduction number.
 
                   The is an alternative way to get the browser data using
-                  an array to acheive the same thing as we did using SQL
+                  an array to achieve the same thing as we did using SQL
                   in the get_browser_data function.
 
+                  This is left here for comparison, it's not used by CSS
    ******************************************************************************/
 
    FUNCTION get_browser_data_by_array (p_chan_id         IN NUMBER,
@@ -376,7 +380,7 @@ ORDER BY smpl_time';
                                       p_reduction_nbr   IN NUMBER)
       RETURN SYS_REFCURSOR
    IS
-      a_aggr              sample_aggr_tab := sample_aggr_tab ();
+      a_aggr              proj_types.sample_aggr_tab := proj_types.sample_aggr_tab ();
       
       v_start_time        TIMESTAMP_UNCONSTRAINED;
 
@@ -481,7 +485,7 @@ ORDER BY smpl_time';
                THEN
                   a_aggr.EXTEND;
                   a_aggr (x) :=
-                     SAMPLE_AGGR_TYP (NULL,
+                     proj_types.sample_aggr_typ (NULL,
                                       NULL,
                                       NULL,
                                       NULL,
@@ -524,7 +528,7 @@ ORDER BY smpl_time';
                      x := x + 1;
                      a_aggr.EXTEND;
                      a_aggr (x) :=
-                        SAMPLE_AGGR_TYP (NULL,
+                        proj_types.sample_aggr_typ (NULL,
                                          NULL,
                                          NULL,
                                          NULL,
@@ -560,7 +564,7 @@ ORDER BY smpl_time';
                a_aggr.EXTEND;
                x := x + 1;
                a_aggr (x) :=
-                  SAMPLE_AGGR_TYP (NULL,
+                  proj_types.sample_aggr_typ (NULL,
                                    NULL,
                                    NULL,
                                    NULL,
@@ -612,7 +616,7 @@ ORDER BY smpl_time';
       -- Convert the array to a weak reference cursor before we pass it back.
       --
       OPEN c_sr_browser_data FOR
-         SELECT * FROM TABLE (CAST (a_aggr AS sample_aggr_tab));
+         SELECT * FROM TABLE (CAST (a_aggr AS proj_types.sample_aggr_tab));
 
       RETURN c_sr_browser_data;
    EXCEPTION
@@ -690,8 +694,7 @@ ORDER BY smpl_time';
      v_count      NUMBER;
      l_count_text VARCHAR2 (1000)
             := ' COUNT(channel_id) from chan_arch.sample where channel_id = :1
-       AND smpl_time > :2
-       AND smpl_time < :3';
+       AND smpl_time BETWEEN :2 AND :3';
    BEGIN
       DBMS_APPLICATION_INFO.SET_MODULE (
          module_name   => 'archive_reader_pkg.get_count_by_date_range',
@@ -702,7 +705,6 @@ ORDER BY smpl_time';
       --
       v_sql_stmt :=
          get_parallel_degree (p_start_time, p_end_time) || l_count_text;
-
 
       BEGIN
          EXECUTE IMMEDIATE v_sql_stmt
@@ -747,6 +749,10 @@ ORDER BY smpl_time';
             INTO l_time
             USING p_chan_id, p_start_time;
       EXCEPTION
+         WHEN NO_DATA_FOUND
+         THEN
+            -- Use original start time if no sample found before then
+            l_time := p_start_time;
          WHEN OTHERS
          THEN
             opr$oracle.global_utils.v_program :=
@@ -759,7 +765,7 @@ ORDER BY smpl_time';
                opr$oracle.global_utils.v_errortxt);
             RAISE;
       END;
-
+      
       RETURN l_time;
    END get_actual_start_time;
 

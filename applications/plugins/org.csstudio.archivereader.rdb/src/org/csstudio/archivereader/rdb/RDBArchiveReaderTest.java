@@ -48,6 +48,8 @@ public class RDBArchiveReaderTest
     final private static int BUCKETS = 50;
     
     final private static boolean dump = false;
+
+    final private static SimpleDateFormat parser = new SimpleDateFormat("yyyy/MM/dd");
     
     /** Basic connection */
     @Ignore
@@ -228,7 +230,6 @@ public class RDBArchiveReaderTest
 
     /** Get optimized data for scalar */
     @Test
-    @Ignore
     public void testStoredProcedureOptimizedScalarData() throws Exception
     {
         System.out.println("Optimized samples for " + SCALAR_NAME + ":");
@@ -237,8 +238,14 @@ public class RDBArchiveReaderTest
         try
         {
             System.out.println("Optimized samples for " + SCALAR_NAME + ":");
-            final ITimestamp end = TimestampFactory.now();
-            final ITimestamp start = TimestampFactory.fromDouble(end.toDouble() - TIMERANGE_SECONDS);
+            // Recent samples
+//            final ITimestamp end = TimestampFactory.now();
+//            final ITimestamp start = TimestampFactory.fromDouble(end.toDouble() - TIMERANGE_SECONDS);
+
+            // Start time before, end after start of SNS Oracle data
+            final ITimestamp start = TimestampFactory.fromMillisecs(parser.parse("2009/04/01").getTime());
+            final ITimestamp end = TimestampFactory.fromMillisecs(parser.parse("2009/04/16").getTime());
+                        
             final ValueIterator values = archive.getOptimizedValues(0, SCALAR_NAME, start, end, BUCKETS);
             IMetaData meta = null;
             while (values.hasNext())
@@ -352,10 +359,9 @@ public class RDBArchiveReaderTest
 
     /** Directly call the stored procedure */
     @Test
+    @Ignore
     public void testSQL() throws Exception
     {
-        final SimpleDateFormat parser = new SimpleDateFormat("yyyy/MM/dd");
-        
         final RDBUtil rdb = RDBUtil.connect(URL, USER, PASSWORD, false);
         final PreparedStatement statement = rdb.getConnection().prepareStatement(
             "SELECT smpl_time, severity_id, status_id, num_val, float_val, str_val" +
