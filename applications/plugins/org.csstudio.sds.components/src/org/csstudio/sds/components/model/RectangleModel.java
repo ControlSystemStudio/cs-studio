@@ -93,7 +93,7 @@ public final class RectangleModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addDoubleProperty(PROP_FILL, "Value", "Value??", WidgetPropertyCategory.Behaviour, DEFAULT_FILL, 0.0, 100.0);
+		addDoubleProperty(PROP_FILL, "Value", WidgetPropertyCategory.Behaviour, DEFAULT_FILL, 0.0, 100.0);
 		addBooleanProperty(PROP_ORIENTATION, "Horizontal Orientation", WidgetPropertyCategory.Behaviour, DEFAULT_ORIENTATION_HORIZONTAL);
 		addBooleanProperty(PROP_TRANSPARENT, "Transparent Background", WidgetPropertyCategory.Display, false);
 	}
