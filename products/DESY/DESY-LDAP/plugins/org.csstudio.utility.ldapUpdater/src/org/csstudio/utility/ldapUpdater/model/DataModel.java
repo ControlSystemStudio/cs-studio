@@ -1,34 +1,38 @@
 package org.csstudio.utility.ldapUpdater.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.csstudio.utility.ldapUpdater.IOC;
 
 public class DataModel {
 	private boolean _ready=false;
-    private int _serror;
-    	
+
 	/**
 	 * historyMap is a hash map won from the long file history.dat
 	 */
-    private HashMap<String, Long> _historyMap;   
-    private ArrayList<String> ldapList;
-    private ArrayList<String> _ldapRecordNames;   
     private List<IOC> _iocList;
-    private List<String> _BootedIocNames;
-    private List<String> _NewIocNames = new ArrayList<String>();
-    private List<String> _ObsoleteIocNames;
+    private List<String> _bootedIocNames;
+    private List<String> _newIocNames = new ArrayList<String>();
+    private List<String> _obsoleteIocNames;
+
+    // FIXME : 
+    private HashMap<String, Long> _historyMap;   
+    private Map<String, String> _econToEfanMap = Collections.emptyMap();
+    private Map<String, String> _erenToEconMap = Collections.emptyMap();
+    
  
 //	Getters and Setters :
 	    
 	public List<String> getBootedIocNames() {
-		return _BootedIocNames;
+		return _bootedIocNames;
 	}
 
 	public void setBootedIocNames(List<String> bootedIocNames) {
-		_BootedIocNames = bootedIocNames;
+		_bootedIocNames = bootedIocNames;
 	}
 
 	public List<IOC> getIocList() {
@@ -47,14 +51,6 @@ public class DataModel {
 		_historyMap = historyMap;
 	}
 
-	public ArrayList<String> getLdapList() {
-		return ldapList;
-	}
-
-	public void setLdapList(ArrayList<String> ldapList) {
-		this.ldapList = ldapList;
-	}
-
 	public boolean isReady() {
 		return _ready;
 	}
@@ -64,34 +60,34 @@ public class DataModel {
 	}
 
 	public List<String> getNewIocNames() {
-		return _NewIocNames;
+		return _newIocNames;
 	}
 
 	public void setNewIocNames(List<String> newIocNames) {
-		_NewIocNames = newIocNames;
+		_newIocNames = newIocNames;
 	}
 
 	public List<String> getObsoleteIocNames() {
-		return _ObsoleteIocNames;
+		return _obsoleteIocNames;
 	}
 
 	public void setObsoleteIocNames(List<String> obsoleteIocNames) {
-		_ObsoleteIocNames = obsoleteIocNames;
+		_obsoleteIocNames = obsoleteIocNames;
 	}
 
-	public void setLdapRecordNames(ArrayList<String> ldapRecordNames) {
-		_ldapRecordNames=ldapRecordNames;
+	public void setEconToEfanMap(Map<String, String> map) {
+		_econToEfanMap = new HashMap<String, String>(map);
 	}
 
-	public ArrayList<String> getLdapRecordNames() {
-		return _ldapRecordNames;
+	public Map<String, String> getEconToEfanMap() {
+		return _econToEfanMap;
+	}
+	
+	public void setErenToEconMap(Map<String, String> map) {
+		_erenToEconMap = new HashMap<String, String>(map);
 	}
 
-	public int getSerror() {
-		return _serror;
-	}
-
-	public void setSerror(int serror) {
-		_serror = serror;
+	public Map<String, String> getErenToEconMap() {
+		return _erenToEconMap;
 	}
 }

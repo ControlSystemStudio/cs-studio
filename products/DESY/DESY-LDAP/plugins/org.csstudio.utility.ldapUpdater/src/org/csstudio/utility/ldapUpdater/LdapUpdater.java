@@ -30,40 +30,23 @@
 
 package org.csstudio.utility.ldapUpdater;
 
-// import Entry;
-
-/*
-
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Formatter;
-*/
-
-// import java.awt.FileDialog;
-// import java.awt.peer.FileDialogPeer;
-// import java.text.SimpleDateFormat;
-//import java.io.File;
-//import java.util.ArrayList;
+import java.util.List;
 
 import org.csstudio.platform.logging.CentralLogger;
-//import org.csstudio.utility.ldap.reader.ErgebnisListe;
+
+
+import org.csstudio.utility.ldap.reader.ErgebnisListe;
+import org.csstudio.utility.ldap.reader.ErgebnisListeObserver;
+import org.csstudio.utility.ldap.reader.IocFinder;
+import org.csstudio.utility.ldap.reader.LDAPReader;
 import org.csstudio.utility.ldapUpdater.model.DataModel;
-// import org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceConstants;
-//import org.csstudio.utility.namespace.utility.ControlSystemItem;
-//import org.eclipse.core.runtime.Platform;
-// import org.eclipse.core.runtime.preferences.IPreferencesService;
-// import org.eclipse.equinox.app.IApplication;
-// import org.eclipse.equinox.app.IApplicationContext;
+
 import org.csstudio.utility.ldapUpdater.myDateTimeString;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 
-// import com.sun.jndi.toolkit.dir.DirSearch;
-
-// import Test;
+import quicktime.qd.SetGWorld;
 
 /**
  * Updates the IOC information in the LDAP directory.
@@ -73,84 +56,107 @@ import org.csstudio.utility.ldapUpdater.myDateTimeString;
  * @version $Revision$
  * @since 17.04.2008
  */
+
 public class LdapUpdater {
 
-	private static LdapUpdater _instance; 
+	public boolean _busy = false;
 	
+	private static final CentralLogger LOGGER = CentralLogger.getInstance();
+
+	private static LdapUpdater INSTANCE; 
+
 	private DataModel _model;
-//	private ErgebnisListe _ergebnis;
-//	private boolean _ready = false;
-//	private boolean _ldapReadDone = false;
-//	private ArrayList<ControlSystemItem> _al;
-	public boolean busy=false;
+
+	/**
+	 * Don't instantiate with constructor.
+	 */
+	private LdapUpdater()
+	{
+	}
 	
+	/**
+	 * Factory method for creating a singleton instance.
+	 * @return the singleton instance of this class
+	 */
 	public static LdapUpdater getInstance() {
-		
-		if (_instance == null) {
+		if (INSTANCE == null) {
 			synchronized (LdapUpdater.class) {
-						
-				if ( _instance == null) {
-					_instance = new LdapUpdater();
+				if ( INSTANCE == null) {
+					INSTANCE = new LdapUpdater();
 				}
 			}
 		}
-		return _instance;
+		return INSTANCE;
 	}
 
+	
 	public final void start() throws Exception {
-       
-		if ( busy ) {
+
+		if ( _busy ) {
 			return;
 		}
-        
-        long endTime=0L;
-        long deltaTime; 
-        busy=true;
-        CentralLogger.getInstance().info(this, "start" );
-        long startTime = System.currentTimeMillis();
-   	
-        myDateTimeString dateTimeString = new myDateTimeString();
-        String now= dateTimeString.getDateTimeString( "yyyy-MM-dd", "HH:mm:ss", startTime);
 
-        CentralLogger.getInstance().info(this, "-------------------------------------------------------------------" );
-        CentralLogger.getInstance().info(this, "start" + " at " + now + "  ( " + startTime +" )" );
-        
+		_busy = true;
 
-    	_model=new DataModel();
+		long endTime = 0L;
+		long deltaTime = 0L; 
+		long startTime = System.currentTimeMillis();
+		myDateTimeString dateTimeString = new myDateTimeString();
+		String now= dateTimeString.getDateTimeString( "yyyy-MM-dd", "HH:mm:ss", startTime);
+		StringBuilder strBuilder = new StringBuilder();
+		strBuilder.append("-------------------------------------------------------------------" )
+		          .append("start at ").append(now).append("  ( ")
+		          .append(startTime).append(" )");
+		LOGGER.info(this, strBuilder.toString() );
 
-    	IocListReader iocReader=new IocListReader(_model);
-    	
-    	ReadFileHash hashReader=new ReadFileHash(_model);
-    	
-    	ReadLdapDatabase ldapReader=new ReadLdapDatabase(_model);
-    	   	
+		_model = new DataModel();
 
-        ldapReader.readLdap();        
-        hashReader.readFile();
-        iocReader.readIocList();
-        iocReader.readIocRecordNames();
-        
-        for (IOC ioc : _model.getIocList()) {
-    		CentralLogger.getInstance().debug(this, "" + ioc.getName());
-    	}
-        CentralLogger.getInstance().info(this, "Read from IOC list : " + _model.getIocList().size());
-        		
-        while(!_model.isReady()){ Thread.sleep(100);}
-        CentralLogger.getInstance().info(this, "ldap Read Done");
+		try {
 
-        UpdateComparator updComp=new UpdateComparator(_model); 
+			ReadLdapDatabase ldapDataBase = new ReadLdapDatabase(_model);
+			ldapDataBase.readLdapEcons();     /* liest eine liste, die alle ldap econ namen enthält */
+			
+			while(!_model.isReady()){ Thread.sleep(100);}
+			LOGGER.info(this, "ldap Read Done");
 
-        updComp.compareLDAPWithIOC();
-         
-		endTime = System.currentTimeMillis();
-		deltaTime = endTime - startTime;
-        now = dateTimeString.getDateTimeString( "yyyy-MM-dd", "HH:mm:ss", endTime);
-        CentralLogger.getInstance().info(this, "end" + " at " + now + "  ( " + endTime + " )" );
-        CentralLogger.getInstance().info(this, "time used : " + deltaTime/1000.  + " s" );
-        CentralLogger.getInstance().info(this, "Ende." );
-        CentralLogger.getInstance().info(this, "-------------------------------------------------------------------" );
-        busy=false;
-    }
+			ReadFileHash hashReader = new ReadFileHash();
+			_model.setHistoryMap(hashReader.readFile()); /* liest das history file */
+
+			// TODO (kvalett) : once the procedure is clarified - ask mclausen 
+			//validateHistoryFileEntriesVsLDAPEntries();
+			
+			List<IOC> iocList= IOCFilesDirTree.findIOCFiles(1); /* neu, statt der von epxLDAPgen.sh erzeugten Liste */
+			
+			
+			IocGroupAndRecordFactory iocFactory = new IocGroupAndRecordFactory();
+			iocList = iocFactory.createGroupAffiliation(iocList, _model.getEconToEfanMap());
+
+			iocList = iocFactory.readRecordsForIOCs(iocList);	/* liest u.a. alle  record namen aus /applic/dirServer-files */
+			
+			_model.setIocList(iocList);
+
+			// TODO (bknerr) : remove model from constructor
+			UpdateComparator updComp=new UpdateComparator(_model); 
+			updComp.compareLDAPWithIOC();
+
+			endTime = System.currentTimeMillis();
+			deltaTime = endTime - startTime;
+			now = dateTimeString.getDateTimeString( "yyyy-MM-dd", "HH:mm:ss", endTime);
+			LOGGER.info(this, "end" + " at " + now + "  ( " + endTime + " )" );
+			LOGGER.info(this, "time used : " + deltaTime/1000.  + " s" );
+			LOGGER.info(this, "Ende." );
+			LOGGER.info(this, "-------------------------------------------------------------------" );
+			
+			_busy=false;
+
+		} catch (Exception e) {
+			// TODO (kvalett): handle exception
+			e.printStackTrace();
+		}
+
+	}
+	
+
 
 }
 

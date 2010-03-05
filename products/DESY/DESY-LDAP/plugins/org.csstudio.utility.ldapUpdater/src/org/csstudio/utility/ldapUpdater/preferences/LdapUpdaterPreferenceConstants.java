@@ -21,11 +21,20 @@
  */
  package org.csstudio.utility.ldapUpdater.preferences;
 
+import org.csstudio.utility.ldapUpdater.Activator;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
+
 /**
  * Constant definitions for plug-in preferences
  */
 public class LdapUpdaterPreferenceConstants {
 
+	/**
+	 * Don't instantiate.
+	 */
+	private LdapUpdaterPreferenceConstants () {}
+	
 	public static final String IOC_DBL_DUMP_PATH = "iocDblDumpPath";
 	public static final String IOC_LIST_FILE = "iocListFile";
 	public static final String LDAP_CONT_ROOT = "ldapContRoot";
@@ -36,7 +45,9 @@ public class LdapUpdaterPreferenceConstants {
 	public static final String LDAP_AUTO_INTERVAL = "ldapAutoInterval";
 	public static final String XMPP_SERVER = "XMPPServer";
 	
-	
-
-
+	public static String createFileNameFromPreferences(final String prefFileName) {
+		IPreferencesService prefs = Platform.getPreferencesService();
+		return prefs.getString(Activator.getDefault().getPluginId(),
+				prefFileName, "", null);
+	}
 }

@@ -23,9 +23,11 @@
 package org.csstudio.utility.ldapUpdater;
 
 import java.util.ArrayList;
-import java.util.Date;
+// import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+
+import org.csstudio.utility.ldapUpdater.model.DataModel;
 
 /**
  * Stores information about an IOC.
@@ -36,7 +38,9 @@ import java.util.List;
  * @since 30.04.2008
  */
 public class IOC {
-
+	
+	public static final String NO_GROUP = "<no group>";
+	
     /**
      * The name of this IOC.
      */
@@ -45,7 +49,7 @@ public class IOC {
     /**
      * The group of this IOC.
      */
-    private String _group;
+    private String _group = NO_GROUP;
 
     /**
      * The physical name of this IOC.
@@ -55,7 +59,7 @@ public class IOC {
     /**
      * room for record names of the current ioc read from file
      */    
-    private List<String> iocRecordNamesFromFile=new ArrayList<String>();
+    private List<String> _iocRecordNamesFromFile;
 
     /**
      * room for record names of the current ioc read from ldap
@@ -92,6 +96,10 @@ public class IOC {
         _dateTime = dateTime;
     }
     
+    public IOC(String name, GregorianCalendar dateTime) {
+    	this(name, "<no group>", "<no physicalname>", dateTime);
+	}
+    
     /**
      * Returns the name of this IOC.
      * @return the name of this IOC.
@@ -107,15 +115,19 @@ public class IOC {
     public final String getGroup() {
         return _group;
     }
-    
-    /**
+   
+    public void setGroup(String group) {
+		_group = group;
+	}
+
+	/**
      * Returns the physical name of this IOC.
      * @return the physical name of this IOC.
      */
     public final String getPhysicalName() {
         return _physicalName;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -131,22 +143,22 @@ public class IOC {
     public void setMustAdd2Ldap(boolean add2Ldap) {
         _mustAdd2Ldap = add2Ldap;
     }
-
+    
     public GregorianCalendar getDateTime() {
         return _dateTime;
     }
 
-	public String split(String string) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+//	public String split(String string) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
 
 	public List<String> getIocRecordNames() {
-		return iocRecordNamesFromFile;
+		return _iocRecordNamesFromFile;
 	}
 
 	public void setIocRecordNames(List<String> iocRecordNames) {
-		this.iocRecordNamesFromFile = iocRecordNames;
+		this._iocRecordNamesFromFile = iocRecordNames;
 	}
 
 	public List<String> getIocRecordNamesFromLDAP() {

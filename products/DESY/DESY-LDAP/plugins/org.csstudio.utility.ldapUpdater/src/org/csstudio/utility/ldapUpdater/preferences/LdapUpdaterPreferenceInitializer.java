@@ -12,11 +12,11 @@ public class LdapUpdaterPreferenceInitializer extends
 	public void initializeDefaultPreferences() {
 		IEclipsePreferences prefs = new DefaultScope().getNode(
 				Activator.getDefault().getPluginId());
-//		prefs.put(LdapUpdaterPreferenceConstants.IOC_LIST_PATH, "P:\\scripts\\epxLDAPgen\\");		// unix : "/applic/directoryServer/";
-		prefs.put(LdapUpdaterPreferenceConstants.IOC_DBL_DUMP_PATH, "Y:\\directoryServer\\");		// unix : "/applic/directoryServer/";
-		prefs.put(LdapUpdaterPreferenceConstants.IOC_LIST_FILE, "P:\\scripts\\epxLDAPgen\\IOCpathes");		// unix : "/applic/directoryServer/";
-		prefs.put(LdapUpdaterPreferenceConstants.LDAP_CONT_ROOT, "de.desy.epicsControls.");		// unix : "/applic/directoryServer/";
-		prefs.put(LdapUpdaterPreferenceConstants.LDAP_HIST_PATH, "Y:\\scripts\\ldap-tests\\");		// unix : "/applic/directoryServer/";
+//		prefs.put(LdapUpdaterPreferenceConstants.IOC_LIST_PATH, "P:\\scripts\\epxLDAPgen\\");			// unix : "/applic/directoryServer/";
+		prefs.put(LdapUpdaterPreferenceConstants.IOC_DBL_DUMP_PATH, "Y:\\directoryServer\\");			// unix : "/applic/directoryServer/";
+		prefs.put(LdapUpdaterPreferenceConstants.IOC_LIST_FILE, "Y:\\scripts\\epxLDAPgen\\IOCpathes");	// unix : "/applic/directoryServer/";
+		prefs.put(LdapUpdaterPreferenceConstants.LDAP_CONT_ROOT, "de.desy.epicsControls.");				// unix : "de.desy.epicsControls."
+		prefs.put(LdapUpdaterPreferenceConstants.LDAP_HIST_PATH, "Y:\\scripts\\ldap-tests\\");			// unix : "/applic/directoryServer/";
 		prefs.put(LdapUpdaterPreferenceConstants.XMPP_USER, "LDAP_Updater");		
 		prefs.put(LdapUpdaterPreferenceConstants.XMPP_PASSWD, "LDAP_Updater");		
 		prefs.put(LdapUpdaterPreferenceConstants.XMPP_SERVER, "krynfs.desy.de");		

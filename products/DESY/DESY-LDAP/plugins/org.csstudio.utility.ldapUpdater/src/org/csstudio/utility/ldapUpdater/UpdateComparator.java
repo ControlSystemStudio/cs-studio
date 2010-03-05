@@ -1,10 +1,33 @@
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
+ * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
+ *
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
+ * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
+ * OR MODIFICATIONS.
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
+ * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
+ */
+
 package org.csstudio.utility.ldapUpdater;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+// import java.text.SimpleDateFormat;
+// import java.util.Date;
 import java.util.Formatter;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.naming.NamingException;
@@ -21,6 +44,8 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 public class UpdateComparator {
 
+	private static final CentralLogger LOGGER = CentralLogger.getInstance();
+
 	private DataModel _model;
 
 	private IPreferencesService _prefs;
@@ -30,46 +55,61 @@ public class UpdateComparator {
 	    _prefs = Platform.getPreferencesService();
 	}
 
+	
+	
 	public void compareLDAPWithIOC() {
-		int ind = 0;
-		Boolean error_found=true;
+		Boolean warning_found = false;
+		
 		for (IOC ioc : _model.getIocList()) {
-			// todo : auf NEUE history einträge filtern 
-			if (_model.getHistoryMap().get(ioc.getName()) != null) {
+			
+			String iocName = ioc.getName();
+			HashMap<String, Long> historyMap = _model.getHistoryMap();
+			if (historyMap.containsKey(iocName)) {
+
+				if (isIOCFileOlderThanHistoryEntry(ioc, historyMap.get(iocName))) {
+					continue;
+				}
+				
 				List<String> recordNames = ioc.getIocRecordNames();
 				for (String recordName : recordNames) {
-					ind = (recordName.indexOf("+")) + (recordName.indexOf("/"));
-//					if (ind < 0) {
+					int ind = (recordName.indexOf("+")) + (recordName.indexOf("/"));
 					if (ind <= 0) {
 						InLdap inLdap = new InLdap();
 						if (!inLdap.existRecord(ioc, recordName)) {
 							DirContext directory = Engine.getInstance().getLdapDirContext();
 							Formatter f = new Formatter();
  							f.format("eren=%s, econ=%s, ecom=EPICS-IOC, efan=%s, ou=EpicsControls",
-										recordName, ioc.getName(), ioc.getGroup());
+										recordName, iocName, ioc.getGroup());
 							Attributes afe = attributesForEntry("epicsRecord", "eren", recordName);
 							try {
 								directory.bind(f.toString(), null, afe); // = Record schreiben
-								CentralLogger.getInstance().info( this," Record written: \"" + ioc.getName()+ " - " + recordName + "\"");
-								ioc.set_mustWriteIOCToHistory(true);
-								error_found=false;
+								LOGGER.info( this," Record written: \"" + iocName+ " - " + recordName + "\"");
+								warning_found = false;
+								
 							} catch (NamingException e) {
-								CentralLogger.getInstance().error (this, "Naming Exception while try to write " + ioc.getName() + " " + recordName);
-								error_found=true;
+								LOGGER.warn(this, "Naming Exception while try to write " + iocName + " " + recordName);
+								warning_found = true;
 							}
 						}
 					}
 				}
-			}
-			if (_model.getHistoryMap().get(ioc.getName()) == null) {
-				_model.getNewIocNames().add(ioc.getName());
-		        CentralLogger.getInstance().info(this, ioc + " added to NewIocNames, try to write this IOC data to LDAP completely");
-
+				LOGGER.info(this, "IOC " + iocName + "\t\t records " +  recordNames.size());
+				if (!warning_found) {
+					AppendLineToHistfile(iocName); 
+				}
+				
+			} else {
+				_model.getNewIocNames().add(iocName);
+//		        CentralLogger.getInstance().info(this, ioc + " added to NewIocNames, try to write this IOC data to LDAP completely");
+		        LOGGER.info(this, iocName + " added to NewIocNames, cannot write to LDAP : unknown efan ");
+/*
 		        // ^ hier kommt das programm vorbei,
 				// wenn der IOC in iocListFile (=IOCpathes) steht und
 				// wenn der IOC NICHT in der history-liste steht.
 				// -------------------------------------------------------------------------
 				// erst neuen IOC in LDAP anlegen
+		        // Folgendes kann jetzt nicht mehr ausgeführt werden, da der group name = facility name jetzt 
+		        // in dieser neuen Programmversion nicht mehr bekannt ist.
 //				System.out.println(ioc.getName());
 				CentralLogger.getInstance().info( this, "New ioc : " + ioc.getName());
 				DirContext directory = Engine.getInstance().getLdapDirContext();
@@ -122,12 +162,18 @@ public class UpdateComparator {
 						}
 					}
 				}
-			}
-			if  (!error_found) {
-				if ( ioc.is_mustWriteIOCToHistory()) { AppendLineToHistfile(ioc.getName()); }
+*/			
 			}
 		}
+		//}
 	}
+
+	private boolean isIOCFileOlderThanHistoryEntry(IOC ioc, Long historyMapTimeInMillis) {
+		Long iocTime = ioc.getDateTime().getTimeInMillis();
+		return iocTime < historyMapTimeInMillis;
+	}
+
+
 
 	/**
 	 * Returns the attributes for a new entry with the given object class and
@@ -135,6 +181,8 @@ public class UpdateComparator {
 	 * 
 	 * @param objectClass
 	 *            the object class of the new entry.
+	 * @param rdnAttr 
+	 * 			  ? // TODO (someone) : 
 	 * @param name
 	 *            the name of the new entry.
 	 * @return the attributes for the new entry.
@@ -171,7 +219,7 @@ public class UpdateComparator {
 			fw.flush();
 			fw.close();
 		} catch (IOException e) {
-				CentralLogger.getInstance().error (this, "I/O-Exception while try to append a line to " + LdapUpdaterPreferenceConstants.LDAP_HIST_PATH + "" + null + "history.dat");
+				LOGGER.error (this, "I/O-Exception while try to append a line to " + LdapUpdaterPreferenceConstants.LDAP_HIST_PATH + "" + null + "history.dat");
 		}
 	}
 }
