@@ -3,8 +3,11 @@ package org.csstudio.apputil.xml;
 /** Helper for XML output.
  *  
  *  @author Kay Kasemir
+ *  @deprecated Use the XMLWrite instead, because it writes out directly to
+ *              PrintWriter instead of creating intermediate strings
  */
 @SuppressWarnings("nls")
+@Deprecated
 public class XMLHelper
 {
     /** Add string for indentation to given level to buffer. */
