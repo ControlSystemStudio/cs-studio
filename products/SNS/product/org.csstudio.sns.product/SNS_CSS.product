@@ -58,9 +58,9 @@ See http://ics-web.sns.ornl.gov/css
    </plugins>
 
    <features>
-      <feature id="org.csstudio.sns.feature.eclipse" version="1.1.0"/>
+      <feature id="org.csstudio.sns.feature.eclipse" version="1.1.1"/>
       <feature id="org.csstudio.sns.feature.core" version="1.1.1"/>
-      <feature id="org.csstudio.sns.feature.applications" version="1.1.0"/>
+      <feature id="org.csstudio.sns.feature.applications" version="1.1.1"/>
    </features>
 
 
