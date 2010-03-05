@@ -4,7 +4,8 @@ package org.csstudio.apputil.xml;
  *  
  *  @author Kay Kasemir
  *  @deprecated Use the XMLWrite instead, because it writes out directly to
- *              PrintWriter instead of creating intermediate strings
+ *              PrintWriter instead of creating intermediate strings.
+ *              Or use JDOM?
  */
 @SuppressWarnings("nls")
 @Deprecated
