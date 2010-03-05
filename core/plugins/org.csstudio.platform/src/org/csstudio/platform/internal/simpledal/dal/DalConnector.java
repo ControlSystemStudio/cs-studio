@@ -602,7 +602,7 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
 	 */
 	private void doHandleValueUpdate(DynamicValueEvent event) {
 		// ... forward the value
-		doForwardValue2(event, event.getTimestamp());
+		doForwardValue(event.getValue(), event.getTimestamp());
 
 		// ... forward an additional "timestamp" characteristic
 		doForwardCharacteristic(event.getTimestamp(), event.getTimestamp(), CharacteristicInfo.C_TIMESTAMP_INFO.getName());

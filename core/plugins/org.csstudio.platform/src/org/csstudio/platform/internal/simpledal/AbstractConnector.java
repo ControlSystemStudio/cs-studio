@@ -24,7 +24,6 @@ package org.csstudio.platform.internal.simpledal;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import org.csstudio.platform.internal.simpledal.converters.ConverterUtil;
@@ -35,14 +34,10 @@ import org.csstudio.platform.model.pvs.IProcessVariableAdressProvider;
 import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.platform.simpledal.IConnector;
 import org.csstudio.platform.simpledal.IProcessVariableValueListener;
-import org.csstudio.platform.simpledal.IProcessVariableValueListener2;
 import org.csstudio.platform.simpledal.IProcessVariableWriteListener;
 import org.csstudio.platform.simpledal.SettableState;
 import org.csstudio.platform.simpledal.ValueType;
 import org.eclipse.core.runtime.Platform;
-
-//FIXME: swende: 28.04.2009: Dont´t reference any DAL specific classes in this class
-import org.epics.css.dal.DynamicValueEvent;
 import org.epics.css.dal.Timestamp;
 
 /**
@@ -597,30 +592,6 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
 					}
 				}
 			});
-		}
-	}
-
-	// FIXME: 12.02.2010: swende: Refactoring in Progress ..
-	protected final void doForwardValue2(final DynamicValueEvent dalEvent, final Timestamp timestamp) {
-		try {
-			final Object value = ConverterUtil.convert(dalEvent.getValue(), _valueType);
-			_latestValue = value;
-			
-			execute(new IInternalRunnable() {
-				public void doRun(IProcessVariableValueListener valueListener, String characteristicId) {
-					// nothing to do - this is for "normal" value listeners only
-				}
-
-				public void doRun(IProcessVariableValueListener valueListener) {
-					if (valueListener instanceof IProcessVariableValueListener2) {
-						((IProcessVariableValueListener2) valueListener).valueChanged(value, timestamp, dalEvent);
-					} else {
-						valueListener.valueChanged(value, timestamp);
-					}
-				}
-			});
-		} catch (NumberFormatException nfe) {
-			CentralLogger.getInstance().warn(this, "Invalid value format. (" + dalEvent.getValue() + ") is not set to " + getName() + ".");
 		}
 	}
 
