@@ -38,6 +38,15 @@ public class XMLWriter
             // Escape '<' into '&lt;'.
             else if (c == '<')
                 out.append("&lt;");
+            // Escape '>' into '&gt;'.
+	    else if (c == '>')
+		out.append("&gt;");
+	    // Escape '"' into '&quot;'.
+	    else if (c == '"')
+		out.append("&quot;");
+	    // Escape ''' into '&#039;'.
+	    else if (c == '\'')
+		out.append("&#039;");
             else if (c < 32 || c > 126)
             {   // Other non-printable. Exact definition not clear.
                 out.append("&#");

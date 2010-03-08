@@ -45,6 +45,15 @@ public class XMLHelper
             // Escape '<' into '&lt;'.
             else if (c == '<')
                 b.append("&lt;");
+            // Escape '>' into '&gt;'.
+	    else if (c == '>')
+		b.append("&gt;");
+	    // Escape '"' into '&quot;'.
+	    else if (c == '"')
+		b.append("&quot;");
+	    // Escape ''' into '&#039;'.
+	    else if (c == '\'')
+		b.append("&#039;");
             else if (c < 32 || c > 126)
             {   // Other non-printable. Exact definition not clear.
                 b.append("&#");
