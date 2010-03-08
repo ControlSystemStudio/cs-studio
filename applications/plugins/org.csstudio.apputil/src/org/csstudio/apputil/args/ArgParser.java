@@ -96,12 +96,13 @@ public class ArgParser
     @SuppressWarnings("nls")
     final public String getHelp()
     {
-        final StringBuffer buf = new StringBuffer();
+        final StringBuilder buf = new StringBuilder();
         buf.append("Options:\n");
         for (Option option : options)
         {
-            buf.append(String.format("  %-20s : %s\n",
-                                     option.getOption(), option.getInfo()));
+            buf.append(String.format("  %-30s: %s\n",
+                                     option.getOption() + " " + option.getArgument(),
+                                     option.getInfo()));
         }
         return buf.toString();
     }

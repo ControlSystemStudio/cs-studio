@@ -19,7 +19,23 @@ public class StringOption extends Option
                         final String info,
                         final String default_value)
     {
-        super(parser, option, info);
+        this(parser, option, "<string>", info, default_value); //$NON-NLS-1$
+    }
+
+    /** Construct String option
+     *  @param parser Parser to which to add
+     *  @param option Option name: "-something"
+     *  @param arg_info Information about argument
+     *  @param info Help string
+     *  @param default_value Default value
+     */
+    public StringOption(final ArgParser parser,
+                        final String option,
+                        final String arg_info,
+                        final String info,
+                        final String default_value)
+    {
+        super(parser, option, arg_info, info);
         value = default_value;
     }
 

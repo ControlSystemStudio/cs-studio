@@ -8,6 +8,9 @@ abstract class Option
     /** Option name */
     final private String option;
 
+    /** Information about argument */
+    final private String arg_info;
+    
     /** Information for help */
     final private String info;
 
@@ -20,7 +23,22 @@ abstract class Option
                   final String option,
                   final String info)
     {
+        this(parser, option, "", info); //$NON-NLS-1$
+    }
+    
+    /** Constructor
+     *  @param parser Parser to which to add
+     *  @param option Option name: "-something"
+     *  @param arg_info Information about argument
+     *  @param info Information for help
+     */
+    public Option(final ArgParser parser,
+            final String option,
+            final String arg_info,
+            final String info)
+    {
         this.option = option;
+        this.arg_info = arg_info;
         this.info = info;
         parser.add(this);
     }
@@ -31,6 +49,12 @@ abstract class Option
         return option;
     }
 
+    /** @return Argument that the option might take, or "" */
+    final public String getArgument()
+    {
+        return arg_info;
+    }
+    
     /** @return Argument information (description) for help */
     final public String getInfo()
     {

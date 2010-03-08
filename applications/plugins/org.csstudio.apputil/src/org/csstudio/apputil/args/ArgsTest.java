@@ -59,8 +59,11 @@ public class ArgsTest
         final ArgParser parser = new ArgParser(true);
         final BooleanOption help = new BooleanOption(parser, "-help", "Help");
         final StringOption url =
-            new StringOption(parser, "-url", "URL", "http://localhost");
+            new StringOption(parser, "-url", "http://...", "URL", "http://localhost");
         final IntegerOption port = new IntegerOption(parser, "-port", "TCP Port", 4812);
+        
+        // Show help
+        System.out.println(parser.getHelp());
         
         // Check if option match is somewhat flexible
         assertTrue(help.matchesThisOption("-help"));
