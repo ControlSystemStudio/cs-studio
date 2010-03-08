@@ -2,7 +2,7 @@ package org.csstudio.apputil.xml;
 
 /** Helper for XML output.
  *  
- *  @author Kay Kasemir
+ *  @author Kay Kasemir, Kunal Shroff
  *  @deprecated Use the XMLWrite instead, because it writes out directly to
  *              PrintWriter instead of creating intermediate strings.
  *              Or use JDOM?

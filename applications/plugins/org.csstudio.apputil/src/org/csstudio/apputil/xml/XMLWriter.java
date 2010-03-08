@@ -4,7 +4,7 @@ import java.io.PrintWriter;
 
 /** Helper for XML output.
  *  
- *  @author Kay Kasemir
+ *  @author Kay Kasemir, Kunal Shroff
  */
 @SuppressWarnings("nls")
 public class XMLWriter
