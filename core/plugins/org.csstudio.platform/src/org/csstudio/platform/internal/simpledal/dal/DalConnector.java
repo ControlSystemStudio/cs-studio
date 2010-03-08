@@ -401,16 +401,16 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
 			case OBJECT:
 				property = factory.getProperty(ri);
 				break;
-			case STRING:
-				/*
-				 * swende: 2010-03-06: this is a dirty quickfix which is related
-				 * to problems with SDS displays that specifiy
-				 * "pv[severity], String" as pv address / please remove if it
-				 * does not work as expected or when all current SDS files at
-				 * DESY have been propertly changed
-				 */
-				property = factory.getProperty(ri);
-				break;
+//			case STRING:
+//				/*
+//				 * swende: 2010-03-06: this is a dirty quickfix which is related
+//				 * to problems with SDS displays that specifiy
+//				 * "pv[severity], String" as pv address / please remove if it
+//				 * does not work as expected or when all current SDS files at
+//				 * DESY have been propertly changed
+//				 */
+//				property = factory.getProperty(ri);
+//				break;
 			default:
 				property = factory.getProperty(ri, getValueType().getDalType(), null);
 				break;
