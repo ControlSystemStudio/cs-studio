@@ -35,23 +35,23 @@ public class EngineConfigImportApp implements IApplication
         final BooleanOption help = new BooleanOption(parser,
                 "-help", "show help");
         final StringOption filename = new StringOption(parser,
-                "-config", "XML Engine config file", "");
+                "-config", "my_config.xml", "XML Engine config file", "");
         final StringOption  rdb_url = new StringOption(parser,
-                "-rdb_url", "RDB URL", RDBArchivePreferences.getURL());
+                "-rdb_url", "jdbc:...", "RDB URL", RDBArchivePreferences.getURL());
         final StringOption  user = new StringOption(parser,
-                "-rdb_user", "RDB User", RDBArchivePreferences.getUser());
+                "-rdb_user", "user", "RDB User", RDBArchivePreferences.getUser());
         final StringOption  password = new StringOption(parser,
-                "-rdb_password", "RDB Password", RDBArchivePreferences.getPassword());
+                "-rdb_password", "password", "RDB Password", RDBArchivePreferences.getPassword());
         final StringOption  engine_name = new StringOption(parser,
-                "-engine", "Engine Name", "");
+                "-engine", "my_engine", "Engine Name", "");
         final BooleanOption export = new BooleanOption(parser,
                 "-export", "export configuration as XML");
         final StringOption  engine_description = new StringOption(parser,
-                "-description", "Engine Description", "Imported");
+                "-description", "'My Engine'", "Engine Description", "Imported");
         final StringOption  engine_host = new StringOption(parser,
-                "-host", "Engine Host", "localhost");
+                "-host", "my.host.org", "Engine Host", "localhost");
         final IntegerOption engine_port = new IntegerOption(parser,
-                "-port", "Engine Port", 4812);
+                "-port", "4812", "Engine Port", 4812);
         final BooleanOption replace_engine = new BooleanOption(parser,
                 "-replace_engine", "Replace existing engine config, or stop?");
         final BooleanOption steal_channels = new BooleanOption(parser,
