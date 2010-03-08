@@ -57,8 +57,8 @@ import org.epics.css.dal.spi.PropertyFactory;
  * For convenience the {@link IProcessVariableValueListener}s are only weakly
  * referenced. The connector tracks for {@link IProcessVariableValueListener}s
  * that have been garbage collected and removes those references from its
- * internal list. This way {@link IProcessVariableValueListener}s don�t have to
- * be disposed explicitly.
+ * internal list. This way {@link IProcessVariableValueListener}s don�t have
+ * to be disposed explicitly.
  * 
  * @author Sven Wende
  * 
@@ -397,10 +397,23 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
 			PropertyFactory factory = DALPropertyFactoriesProvider.getInstance().getPropertyFactory(
 					getProcessVariableAddress().getControlSystem());
 
-			if (getValueType() == ValueType.OBJECT) {
+			switch (getValueType()) {
+			case OBJECT:
 				property = factory.getProperty(ri);
-			} else {
+				break;
+			case STRING:
+				/*
+				 * swende: 2010-03-06: this is a dirty quickfix which is related
+				 * to problems with SDS displays that specifiy
+				 * "pv[severity], String" as pv address / please remove if it
+				 * does not work as expected or when all current SDS files at
+				 * DESY have been propertly changed
+				 */
+				property = factory.getProperty(ri);
+				break;
+			default:
 				property = factory.getProperty(ri, getValueType().getDalType(), null);
+				break;
 			}
 
 			if (property != null) {
