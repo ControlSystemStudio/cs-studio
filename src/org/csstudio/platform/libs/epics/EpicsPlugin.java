@@ -182,7 +182,7 @@ public class EpicsPlugin extends Plugin
 	        // sets the number of core threads in the selected Executor
 	        setSystemProperty("EPICSPlug.property.core_threads", Integer.toString(100));
 	        // sets the maximum number of threads in the selected Executor
-	        setSystemProperty("EPICSPlug.property.max_threads", Integer.toString(100));
+	        setSystemProperty("EPICSPlug.property.max_threads", Integer.toString(500));
 	        
 	        // Set the 'CAJ' and 'JNI' copies of the settings
 	        setSystemProperty("com.cosylab.epics.caj.CAJContext.use_pure_java", Boolean.toString(use_pure_java));
