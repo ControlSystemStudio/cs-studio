@@ -3,7 +3,6 @@ package org.csstudio.archive.rdb.engineconfig;
 import java.net.URL;
 
 import org.csstudio.archive.rdb.RDBArchive;
-import org.csstudio.archive.rdb.Retention;
 
 /** Info for a sample engine.
  *  @author Kay Kasemir
@@ -49,14 +48,13 @@ public class SampleEngineConfig
 
     /** Add group of channels
      *  @param group_name Name that identifies the group
-     *  @param retention How to retain the values over time
      *  @return ChannelGroup
      *  @throws Exception on error
      */
-    public ChannelGroupConfig addGroup(String group_name, Retention retention)
+    public ChannelGroupConfig addGroup(final String group_name)
         throws Exception
     {
-        return archive.addGroup(this, group_name,retention);
+        return archive.addGroup(this, group_name);
     }
 
     /** Get all groups under this engine.

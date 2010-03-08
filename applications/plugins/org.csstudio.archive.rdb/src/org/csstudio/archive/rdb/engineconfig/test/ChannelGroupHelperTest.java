@@ -10,9 +10,8 @@ import org.csstudio.archive.rdb.engineconfig.ChannelGroupConfig;
 import org.csstudio.archive.rdb.engineconfig.ChannelGroupHelper;
 import org.junit.Test;
 
-/** Retention tests
+/** ChannelGroupHelper test
  *  <p>
- *  Assumes that there is already a manually created entry 9999/Forever
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -27,7 +26,7 @@ public class ChannelGroupHelperTest
         ChannelGroupConfig group = groups.find("Test", 1);
         System.out.println(group);
         
-        group = groups.add("Another Test", 2, 0, 9999);
+        group = groups.add("Another Test", 2, 0);
         System.out.println(group);
         
         final Statement statement = archive.getRDB().getConnection().createStatement();

@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 
 import org.csstudio.archive.rdb.RDBArchive;
 
@@ -26,12 +28,11 @@ public class ChannelGroupHelper
      *  @param name Group name
      *  @param engine_id Engine that samples this group of channels
      *  @param enabling_channel_id ID of enabling channel, or &lt;= 0 if none
-     *  @param retention_id Retention ID
      *  @return ChannelGroup
      *  @throws Exception on error
      */
     public ChannelGroupConfig add(final String name, final int engine_id,
-            final int enabling_channel_id, final int retention_id)
+            final int enabling_channel_id)
         throws Exception
     {
         final Connection connection = archive.getRDB().getConnection();
@@ -50,7 +51,7 @@ public class ChannelGroupHelper
         else
             id = getNextID();
         final ChannelGroupConfig group = new ChannelGroupConfig(archive, id, name, engine_id,
-                enabling_channel_id, retention_id);
+                enabling_channel_id);
         final PreparedStatement statement = connection.prepareStatement(
                 archive.getSQL().chan_grp_insert);
         try
@@ -62,7 +63,6 @@ public class ChannelGroupHelper
                 statement.setInt(4, enabling_channel_id);
             else
                 statement.setNull(4, java.sql.Types.INTEGER);
-            statement.setInt(5, retention_id);            
             statement.executeUpdate();
         }
         finally
@@ -96,12 +96,23 @@ public class ChannelGroupHelper
                         result.getInt(1),
                         result.getString(2),
                         engine_id,
-                        result.getInt(3),
-                        result.getInt(4));
+                        result.getInt(3));
                 groups.add(group);
             }
             final ChannelGroupConfig grp_arr[] = new ChannelGroupConfig[groups.size()];
-            return groups.toArray(grp_arr);
+            groups.toArray(grp_arr);
+            // Sort by group name in Java.
+            // SQL should already give sorted result, but handling of upper/lowercase
+            // names seems to differ between Oracle and MySQL, resulting in
+            // files that were hard to compare
+            Arrays.sort(grp_arr, new Comparator<ChannelGroupConfig>()
+            {
+                public int compare(ChannelGroupConfig a, ChannelGroupConfig b)
+                {
+                    return a.getName().compareTo(b.getName());
+                }
+            });
+            return grp_arr;
         }
         finally
         {
@@ -154,7 +165,7 @@ public class ChannelGroupHelper
             {
                 final ChannelGroupConfig group =
                     new ChannelGroupConfig(archive, res.getInt(1), group_name,
-                        engine_id, res.getInt(2), res.getInt(3));
+                        engine_id, res.getInt(2));
                 return group;
             }
         }
@@ -181,10 +192,10 @@ public class ChannelGroupHelper
             statement.setInt(1, group_id);
             final ResultSet res = statement.executeQuery();
             if (res.next())
-            {   // name, eng_id, enabling_chan_id, retent_id
+            {   // name, eng_id, enabling_chan_id
                 final ChannelGroupConfig group =
                     new ChannelGroupConfig(archive, group_id, res.getString(1),
-                            res.getInt(2), res.getInt(3), res.getInt(4));
+                            res.getInt(2), res.getInt(3));
                 return group;
             }
         }

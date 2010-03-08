@@ -57,7 +57,7 @@ public class XMLImport extends DefaultHandler
     /** Engine info entry */
     final private SampleEngineConfig engine;
     
-    /** Retention used for all groups */
+    /** Retention used for all channels */
     final private Retention retention;
     
     /** Sample modes */
@@ -203,8 +203,9 @@ public class XMLImport extends DefaultHandler
     {
         if (element.equals(TAG_NAME))
         {
-            name = accumulator.toString();
-            // Chop the ".arReq" off
+            // Remove leading/trailing spaces
+            name = accumulator.toString().trim();
+            // Chop the ".arReq" off old archive request file names
             final int arReq = name.lastIndexOf(".arReq");
             if (arReq > 0)
                 name = name.substring(0, arReq); 
@@ -212,7 +213,7 @@ public class XMLImport extends DefaultHandler
             {   // Fetch the group for the following channels
                 try
                 {
-                    group = engine.addGroup(name, retention);
+                    group = engine.addGroup(name);
                     CentralLogger.getInstance().getLogger(this).info("Import '" + engine.getName()
                             + "', Group '" + name + "'");
                 }

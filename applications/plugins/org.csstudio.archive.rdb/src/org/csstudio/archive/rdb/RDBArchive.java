@@ -905,14 +905,13 @@ public class RDBArchive
     /** Add group
      *  @param engine SampleEngineInfo
      *  @param group_name Name that identifies the group
-     *  @param retention How to retain the values over time
      *  @return ChannelGroup
      *  @throws Exception on error
      */
     public ChannelGroupConfig addGroup(final SampleEngineConfig engine,
-            final String group_name, final Retention retention) throws Exception
+            final String group_name) throws Exception
     {
         final ChannelGroupHelper groups = new ChannelGroupHelper(this);
-        return groups.add(group_name, engine.getId(), 0, retention.getId());
+        return groups.add(group_name, engine.getId(), 0);
     }    
 }

@@ -42,7 +42,7 @@ public class ChannelConfig extends StringID
             final int group_id,final SampleMode sample_mode,
             final double sample_period)
     {
-        super(id, name);
+        super(id, name.trim());
         this.archive = archive;
         this.group_id = group_id;
         this.sample_mode = sample_mode;

@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 
 import org.csstudio.archive.rdb.ChannelConfig;
 import org.csstudio.archive.rdb.RDBArchive;
@@ -18,21 +20,18 @@ public class ChannelGroupConfig extends StringID
     final private RDBArchive archive;
     final private int engine_id;
     private int enabling_channel_id;
-    final private int retention_id;
     
     /** Constructor, only used within package. */
     ChannelGroupConfig(final RDBArchive archive,
             final int id, final String name, final int engine_id,
-            final int enabling_channel_id, final int retention_id)
+            final int enabling_channel_id)
     {
-        super(id, name);
+        super(id, name.trim());
         this.archive = archive;
         this.engine_id = engine_id;
         this.enabling_channel_id = enabling_channel_id;
-        this.retention_id = retention_id;
     }
 
-    // TODO should it give SampleEngineInfo, Channel, Retention instead of IDs?
     public int getEngineId()
     {
         return engine_id;
@@ -73,13 +72,19 @@ public class ChannelGroupConfig extends StringID
         }
         // Convert to array
         final ChannelConfig chan_arr[] = new ChannelConfig[channels.size()];
-        return channels.toArray(chan_arr);
-    }
-
-    /** @return ID of retention */
-    public int getRetentionId()
-    {
-        return retention_id;
+        channels.toArray(chan_arr);
+        // Sort by channel name in Java.
+        // SQL should already give sorted result, but handling of upper/lowercase
+        // names seems to differ between Oracle and MySQL, resulting in
+        // files that were hard to compare
+        Arrays.sort(chan_arr, new Comparator<ChannelConfig>()
+        {
+            public int compare(ChannelConfig a, ChannelConfig b)
+            {
+                return a.getName().compareTo(b.getName());
+            }
+        });
+        return chan_arr;
     }
 
     /** Define the 'enabling' channel.
@@ -110,7 +115,7 @@ public class ChannelGroupConfig extends StringID
     public String toString()
     {
         return String.format(
-                "Group '%s' (%d): Engine %d, enabled by %d, retention: %d",
-                getName(), getId(), engine_id, enabling_channel_id, retention_id);
+                "Group '%s' (%d): Engine %d, enabled by %d",
+                getName(), getId(), engine_id, enabling_channel_id);
     }
 }

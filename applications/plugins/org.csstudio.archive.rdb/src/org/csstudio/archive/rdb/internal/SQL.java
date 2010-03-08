@@ -103,10 +103,10 @@ public class SQL
         // 'chan_grp' table
         chan_grp_delete_by_engine_id = "DELETE FROM " + prefix + "chan_grp WHERE eng_id=?";
         chan_grp_next_id = "SELECT MAX(grp_id) FROM " + prefix + "chan_grp";
-        chan_grp_sel_by_name_and_eng_id = "SELECT grp_id, enabling_chan_id, retent_id FROM " + prefix + "chan_grp WHERE name=? AND eng_id=?";
-        chan_grp_sel_by_id = "SELECT name, eng_id, enabling_chan_id, retent_id FROM " + prefix + "chan_grp WHERE grp_id=?";
-        chan_grp_insert = "INSERT INTO " + prefix + "chan_grp (grp_id, name, eng_id, enabling_chan_id, retent_id) VALUES (?,?,?,?,?)";
-        chan_grp_sel_by_eng_id = "SELECT grp_id, name, enabling_chan_id, retent_id FROM " + prefix + "chan_grp WHERE eng_id=?";
+        chan_grp_sel_by_name_and_eng_id = "SELECT grp_id, enabling_chan_id FROM " + prefix + "chan_grp WHERE name=? AND eng_id=?";
+        chan_grp_sel_by_id = "SELECT name, eng_id, enabling_chan_id FROM " + prefix + "chan_grp WHERE grp_id=?";
+        chan_grp_insert = "INSERT INTO " + prefix + "chan_grp (grp_id, name, eng_id, enabling_chan_id) VALUES (?,?,?,?)";
+        chan_grp_sel_by_eng_id = "SELECT grp_id, name, enabling_chan_id FROM " + prefix + "chan_grp WHERE eng_id=? ORDER BY name";
         
         chan_grp_set_enable_channel = "UPDATE " + prefix + "chan_grp SET enabling_chan_id=? WHERE grp_id=?";
         
@@ -132,7 +132,7 @@ public class SQL
 		else
 			channel_sel_by_pattern = "SELECT channel_id, name, grp_id, smpl_mode_id, smpl_per FROM " + prefix + "channel WHERE name REGEXP ? ORDER BY name";
 		channel_sel_last_time_by_id = "SELECT MAX(smpl_time) FROM " + prefix + sample + " WHERE channel_id=?";
-		channel_sel_by_group_id = "SELECT channel_id, name, smpl_mode_id, smpl_per FROM " + prefix + "channel WHERE grp_id=?";
+		channel_sel_by_group_id = "SELECT channel_id, name, smpl_mode_id, smpl_per FROM " + prefix + "channel WHERE grp_id=? ORDER BY name";
 		channel_set_grp_by_id = "UPDATE " + prefix + "channel SET grp_id=? WHERE channel_id=?";        
         channel_clear_grp_for_engine =
             "UPDATE " + prefix + "channel SET grp_id=null WHERE grp_id IN " +

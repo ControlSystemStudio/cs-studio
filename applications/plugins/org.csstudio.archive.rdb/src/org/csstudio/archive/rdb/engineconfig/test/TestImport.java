@@ -44,9 +44,9 @@ public class TestImport
         assertSame(retention, retention2); // expect the same from cache
 
         // Add Group
-        final ChannelGroupConfig group = engine.addGroup("TestGroup", retention);
+        final ChannelGroupConfig group = engine.addGroup("TestGroup");
         System.out.println(group);
-        final ChannelGroupConfig group2 = engine.addGroup("TestGroup2", retention);
+        final ChannelGroupConfig group2 = engine.addGroup("TestGroup2");
         System.out.println(group2);
                 
         // Add Channels to Group
