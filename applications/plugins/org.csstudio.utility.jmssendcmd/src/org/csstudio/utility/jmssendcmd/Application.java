@@ -32,19 +32,19 @@ public class Application implements IApplication
             (String []) context.getArguments().get("application.args");
         final ArgParser parser = new ArgParser();
         final StringOption url = new StringOption(parser,
-                "-url", "JMS Server URL (default: " + DEFAULT_URL + ")", DEFAULT_URL);
+                "-url", "tcp:...", "JMS Server URL (default: " + DEFAULT_URL + ")", DEFAULT_URL);
         final StringOption jms_user = new StringOption(parser,
-                "-jms_user", "JMS User Name", null);
+                "-jms_user", "fred", "JMS User Name", null);
         final StringOption jms_pass = new StringOption(parser,
-                "-jms_pass", "JMS Password", null);
+                "-jms_pass", "secret", "JMS Password", null);
         final StringOption topic = new StringOption(parser,
-                "-topic", "JMS Topic (default: " + DEFAULT_TOPIC + ")", DEFAULT_TOPIC);
+                "-topic", DEFAULT_TOPIC, "JMS Topic (default: " + DEFAULT_TOPIC + ")", DEFAULT_TOPIC);
         final StringOption type = new StringOption(parser,
-                "-type", "Message type (default: " + DEFAULT_TYPE + ")", DEFAULT_TYPE);
+                "-type", DEFAULT_TYPE, "Message type (default: " + DEFAULT_TYPE + ")", DEFAULT_TYPE);
         final StringOption app = new StringOption(parser,
-                "-app", "Application type (default: " + DEFAULT_APP + ")", DEFAULT_APP);
+                "-app", DEFAULT_APP, "Application type (default: " + DEFAULT_APP + ")", DEFAULT_APP);
         final StringOption text = new StringOption(parser,
-                "-text", "Send given text (default: read from stdin)", null);
+                "-text", "'This is a test'", "Send given text (default: read from stdin)", null);
         
         /**
          * Use the -edm_mode if the string being parsed is from EDM.  This will set

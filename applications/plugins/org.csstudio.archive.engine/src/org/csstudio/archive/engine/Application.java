@@ -44,21 +44,21 @@ public class Application implements IApplication
         final ArgParser parser = new ArgParser();
         final BooleanOption help_opt = new BooleanOption(parser, "-help",
                     "Display Help");
-        final IntegerOption port_opt = new IntegerOption(parser, "-port",
+        final IntegerOption port_opt = new IntegerOption(parser, "-port", "4812",
                     "HTTP server port", 4812);
-        final StringOption url_opt = new StringOption(parser, "-rdb_url",
+        final StringOption url_opt = new StringOption(parser, "-rdb_url", "jdbc:...",
                     "Database URL, overrides preference setting", this.url);
-        final StringOption user_opt = new StringOption(parser, "-rdb_user",
+        final StringOption user_opt = new StringOption(parser, "-rdb_user", "arch_user",
                 "Database user, overrides preference setting", this.user);
-        final StringOption pass_opt = new StringOption(parser, "-rdb_password",
+        final StringOption pass_opt = new StringOption(parser, "-rdb_password", "secret",
                 "Database password, overrides preference setting", this.password);
         final StringOption engine_name_opt = new StringOption(parser,
-                    "-engine", "Engine config name", null);
+                    "-engine", "demo_engine", "Engine config name", null);
         // Options handled by Eclipse,
         // but this way they show up in the help message
-        new StringOption(parser, "-pluginCustomization",
+        new StringOption(parser, "-pluginCustomization", "/path/to/mysettings.ini",
                         "Eclipse plugin defaults", null);
-        new StringOption(parser, "-data", "Eclipse workspace location", null);
+        new StringOption(parser, "-data", "/home/fred/Workspace", "Eclipse workspace location", null);
         try
         {
             parser.parse(args);
