@@ -1,0 +1,97 @@
+<?xml version='1.0' encoding='iso-8859-1'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de" lang="de" dir="ltr">
+
+<head>
+	<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type" />
+	<title>Overview</title>
+</head>
+
+<body>
+<h1>EPICS Library</h1>
+<p>
+Die EPICS Library unterst&uuml;tzt die ChannelAccess (CA) client library
+beim Zugriff auf Prozess-Variable (PVs) auf EPICS-IOCs &uuml;ber das Netztwerk.
+</p>
+
+<h2>Preferences</h2>
+<p>
+Man kann / mu&szlig; zwei Konfigurationen durchf&uuml;hren:
+</p>
+
+<ul>
+<li>JCA Context:<br />
+Es sind sowoh eine pure Java-Implementaion, als auch eine 
+JNI -Implementaion verf&uuml;gbar.
+Die pure Java-Implementaion ist voreingestellt,  weil sie leichter
+zu inbstallieren ist.
+    Die pure Java-Version ist voreingestellt,
+    weil sie leichter zu installieren ist und "out of the box"
+    funktionieren sollte, w&auml;hrend die JNI-Implementation die
+    beste Kompatibilit&auml;t mit existierenden EPICS-Installationen
+    bringt.
+</li>
+<li>addr_list und auto_addr_list:<br />
+    Wenn alle CA Server (IOCs) auf dem gleichen Subnetz liegen,
+    wie der Computer, auf dem die CSS-Anwendung l&auml;uft,
+    k&ouml;nne die Voreinstellungen 'Empty addr_list',
+    'using auto_addr_list'beibehalten werden.
+    Ansonsten, wenn man auf PVs &uuml;ber ein Gateway oder in einem
+    anderen Subnetz zugrerift, mu&szlig; man die IP-Adressen der IOCs
+    bzw. IOC-Subnetze in 'addr_list' und     
+    'un-check auto_addr_list' eintragen.
+    Einzelheiten hier&uuml;ber, sowie die verbleibenden Eintragungen 
+    kann man dem EPICS Channel Access reference manual entnehmen.
+    </li>
+</ul>
+<p>
+Beachten, dass &Auml;nderungen einen Neustart der Anwendung erfordern;
+zur Laufzeit haben sie keine Wirkung!
+
+</p>
+<h2>Default Settings</h2>
+<p>
+Jeder Benutzer kann f&uuml;r jeden Workspace Voreistellungen ver&auml;ndern;
+an einer Stelle werden spezielle Voreinstellungs-Auswahlen angeboten.
+Es ist die "preferences.ini"-Datei auf dem Unterverzeichnis
+org.csstudio.platform.libs.epics plugin .
+System-Administratoren k&ouml;nnen hier die Voreinstellungen ver&auml;ndern.
+</p>
+<h2>Installation</h2>
+<p>
+Wenn man die 'pure java'-Version (auch CAJ genannt) benutzt,
+sind keine weiteren Einstellungen zu ver&auml;ndern.
+</p>
+<p>
+F&uuml;r die JNI-Version mu&szlig; man OS-spezifische Bin&auml;rdateien installieren.	
+Das Plugin enth&auml;lt z.Zt. Bin&auml;rdateien f&uuml;r:
+</p>
+<ul>
+<li>RedHat Linux (x86, g++ 3.4.6, kernel 2.6.9-55.0.2.EL)<br />
+    Build 2007, Aug 20 with EPICS base R3.14.8.2 from the jca-2.3.1 sources.
+    Kompiliert als eine Bibliothek ohne weitere Abh&auml;ngigkeiten zu mitgenutzten EPICS libs.
+</li>
+<li>Linux (x86_64)<br />
+    Von ernesto@slac.stanford.edu,
+    Auf Basis der Quellprogramme R3.14.9 und jca-2.3.1 
+</li>
+<li>Mac OS X (10.4.8 on PPC)<br />
+    Build 2007, Aug 14 with EPICS base R3.14.8.2 from the jca-2.3.1 sources.
+    Kompiliert als eine Bibliothek ohne weitere Abh&auml;ngigkeiten zu mitgenutzten EPICS libs.
+
+</li>
+</ul>
+
+<h2>Internal Issues</h2>
+<p>
+Wir m&ouml;chten vermeiden, den ((DY)LD_LIBRARY_)Pfad zu setzten.
+Deswegen ist die JCA-Bibliothek vorzugsweise ohne weitere Verweise 
+auf andere mitgenutzte Biobliotheken &uuml;bersetzt, insbesondere ohne 
+Verweise zu EPICS ca und Com Bibliotheken.
+</p>
+<p>
+Die Quelltexte dieses Plugins enthalten Kopien der JCA und CAJ-Quellen
+und ein README.txt zur Kompilation.	
+</p>
+</body>
+</html>

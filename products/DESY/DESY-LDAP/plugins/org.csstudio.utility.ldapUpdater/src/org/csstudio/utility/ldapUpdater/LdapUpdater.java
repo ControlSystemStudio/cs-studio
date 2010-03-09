@@ -30,23 +30,17 @@
 
 package org.csstudio.utility.ldapUpdater;
 
-import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Map.Entry;
 
+import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
-
-
-import org.csstudio.utility.ldap.reader.ErgebnisListe;
-import org.csstudio.utility.ldap.reader.ErgebnisListeObserver;
-import org.csstudio.utility.ldap.reader.IocFinder;
-import org.csstudio.utility.ldap.reader.LDAPReader;
-import org.csstudio.utility.ldapUpdater.model.DataModel;
-
-import org.csstudio.utility.ldapUpdater.myDateTimeString;
-import org.eclipse.core.runtime.jobs.IJobChangeEvent;
-import org.eclipse.core.runtime.jobs.JobChangeAdapter;
-
-import quicktime.qd.SetGWorld;
+import org.csstudio.utility.ldapUpdater.model.HistoryFileContentModel;
+import org.csstudio.utility.ldapUpdater.model.LDAPContentModel;
+import org.csstudio.utility.ldapUpdater.model.IOC;
 
 /**
  * Updates the IOC information in the LDAP directory.
@@ -59,13 +53,14 @@ import quicktime.qd.SetGWorld;
 
 public class LdapUpdater {
 
-	public boolean _busy = false;
-	
-	private static final CentralLogger LOGGER = CentralLogger.getInstance();
+	public static final String DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
 	private static LdapUpdater INSTANCE; 
+	
+	private final Logger LOGGER = CentralLogger.getInstance().getLogger(this);
 
-	private DataModel _model;
+
+	boolean _busy = false;
 
 	/**
 	 * Don't instantiate with constructor.
@@ -101,53 +96,48 @@ public class LdapUpdater {
 		long endTime = 0L;
 		long deltaTime = 0L; 
 		long startTime = System.currentTimeMillis();
-		myDateTimeString dateTimeString = new myDateTimeString();
-		String now= dateTimeString.getDateTimeString( "yyyy-MM-dd", "HH:mm:ss", startTime);
+		
+		String now = convertMillisToDateTimeString(startTime, DATETIME_FORMAT);
+		
 		StringBuilder strBuilder = new StringBuilder();
 		strBuilder.append("-------------------------------------------------------------------" )
 		          .append("start at ").append(now).append("  ( ")
 		          .append(startTime).append(" )");
-		LOGGER.info(this, strBuilder.toString() );
+		LOGGER.info(strBuilder.toString() );
 
-		_model = new DataModel();
+		LDAPContentModel ldapContentModel = new LDAPContentModel();
 
 		try {
 
-			ReadLdapDatabase ldapDataBase = new ReadLdapDatabase(_model);
-			ldapDataBase.readLdapEcons();     /* liest eine liste, die alle ldap econ namen enthält */
+			ReadLdapDatabase ldapDataBase = new ReadLdapDatabase(ldapContentModel);
+			ldapDataBase.readLdapEntries();     /* liest eine liste, die alle ldap econ namen enthält */
 			
-			while(!_model.isReady()){ Thread.sleep(100);}
-			LOGGER.info(this, "ldap Read Done");
+			while(!ldapContentModel.isReady()){ Thread.sleep(100);}
+			LOGGER.info("LDAP Read Done");
 
-			ReadFileHash hashReader = new ReadFileHash();
-			_model.setHistoryMap(hashReader.readFile()); /* liest das history file */
+			HistoryFileAccess histFileReader = new HistoryFileAccess();
+			HistoryFileContentModel historyFileModel = histFileReader.readFile(); /* liest das history file */
 
-			// TODO (kvalett) : once the procedure is clarified - ask mclausen 
-			//validateHistoryFileEntriesVsLDAPEntries();
+			validateHistoryFileEntriesVsLDAPEntries(ldapContentModel, historyFileModel);
 			
 			List<IOC> iocList= IOCFilesDirTree.findIOCFiles(1); /* neu, statt der von epxLDAPgen.sh erzeugten Liste */
-			
-			
-			IocGroupAndRecordFactory iocFactory = new IocGroupAndRecordFactory();
-			iocList = iocFactory.createGroupAffiliation(iocList, _model.getEconToEfanMap());
 
-			iocList = iocFactory.readRecordsForIOCs(iocList);	/* liest u.a. alle  record namen aus /applic/dirServer-files */
-			
-			_model.setIocList(iocList);
-
-			// TODO (bknerr) : remove model from constructor
-			UpdateComparator updComp=new UpdateComparator(_model); 
-			updComp.compareLDAPWithIOC();
+			UpdateComparator updComp = new UpdateComparator(); 
+			updComp.updateLDAPFromIOCList(ldapContentModel, iocList, historyFileModel);
 
 			endTime = System.currentTimeMillis();
 			deltaTime = endTime - startTime;
-			now = dateTimeString.getDateTimeString( "yyyy-MM-dd", "HH:mm:ss", endTime);
-			LOGGER.info(this, "end" + " at " + now + "  ( " + endTime + " )" );
-			LOGGER.info(this, "time used : " + deltaTime/1000.  + " s" );
-			LOGGER.info(this, "Ende." );
-			LOGGER.info(this, "-------------------------------------------------------------------" );
 			
-			_busy=false;
+			now = convertMillisToDateTimeString(endTime, DATETIME_FORMAT);
+			
+			StringBuilder builder = new StringBuilder();
+			builder.append("end at").append(now).append("  (").append(endTime).append(")\n")
+			       .append("time used : ").append(deltaTime/1000.).append(" s\n")
+			       .append("Ende.\n")
+			       .append("-------------------------------------------------------------------\n");
+			LOGGER.info( builder.toString() );
+			
+			_busy = false;
 
 		} catch (Exception e) {
 			// TODO (kvalett): handle exception
@@ -155,9 +145,30 @@ public class LdapUpdater {
 		}
 
 	}
-	
 
 
+	private void validateHistoryFileEntriesVsLDAPEntries(
+			final LDAPContentModel ldapContentModel,
+			final HistoryFileContentModel historyFileModel) {
+		
+		ldapContentModel.getIOCNames()
+		
+		for (Entry<String, Long> histEntry : historyFileModel.getEntrySet()) {
+			String iocName = histEntry.getKey();
+			if (ldapContentModel.getIOC(iocName) == null) {
+				throw new IllegalStateException("IOC " + iocName);
+			}
+		}
+		LOGGER.info("History file for IOCs matches IOC entries in LDAP.");
+	}
+
+	public static String convertMillisToDateTimeString(long millis, String datetimeFormat) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTimeInMillis(millis);
+		DateFormat formatter = new SimpleDateFormat(datetimeFormat);
+		String now = formatter.format(calendar.getTime());
+		return now;
+	}
 }
 
 
