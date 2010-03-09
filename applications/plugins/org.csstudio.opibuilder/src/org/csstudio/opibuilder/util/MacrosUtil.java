@@ -22,8 +22,19 @@ public class MacrosUtil {
 	
 	private static final String DOLLARCHAR = "$"; //$NON-NLS-1$
 	
-		/**Replace the macros in the input with the real value.
+
+	/**Replace the macros in the input with the real value.  Simply calls the three argument version below
+	 * @param input the raw string which include the macros string $(macro)
+	 * @return the string in which the macros have been replaced with the real value.
+	 */
+	public static String replaceMacros(AbstractWidgetModel widgetModel, String input){
+		return MacrosUtil.replaceMacros(widgetModel, input, 0);
+	}
+	
+	/**Replace the macros in the input with the real value. This is typically only called by the above two argument 
+	 * version to iterate over macros included in the macro itself 
 		 * @param input the raw string which include the macros string $(macro)
+		 * @param level tells how many times this has iterated through this routine
 		 * @return the string in which the macros have been replaced with the real value.
 		 */
 		public static String replaceMacros(AbstractWidgetModel widgetModel, String input, int level){
