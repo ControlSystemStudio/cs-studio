@@ -3,11 +3,5 @@
 
 <toc link_to="../org.csstudio.platform.ui/tocApps.xml#utility" label="Namespace Browser">
 	<topic label="Namespace Browser">
-		<topic label="English">
-			<topic label="Namespace Browser"  href="html/maintopic.html"/>
-		</topic>
-		<topic label="German">
-			<topic label="Namespace Browser"  href="html/NamespaceBrowser_de.html"/>
-		</topic>
 	</topic>
 </toc>
