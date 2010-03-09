@@ -47,7 +47,6 @@ public abstract class AbstractBoolControlEditPart extends AbstractBoolEditPart {
 					setPVValue(AbstractBoolControlModel.PROP_PVNAME, newValue);
 			}
 		});		
-		updatePropSheet(model.isToggleButton());
 		markAsControlPV(AbstractBoolControlModel.PROP_PVNAME);
 	}	
 	
@@ -70,7 +69,6 @@ public abstract class AbstractBoolControlEditPart extends AbstractBoolEditPart {
 					final IFigure refreshableFigure) {
 				AbstractBoolControlFigure figure = (AbstractBoolControlFigure) refreshableFigure;
 				figure.setToggle((Boolean) newValue);
-				updatePropSheet((Boolean) newValue);
 				return true;
 			}
 		};
@@ -155,14 +153,11 @@ public abstract class AbstractBoolControlEditPart extends AbstractBoolEditPart {
 					return;				
 				
 				int actionIndex;
-				
-				if(getWidgetModel().isToggleButton()){
-					if(figure.getBoolValue()){
-						actionIndex = getWidgetModel().getActionIndex();
-					}else
-						actionIndex = getWidgetModel().getReleasedActionIndex();
+
+				if(figure.getBoolValue()){
+					actionIndex = getWidgetModel().getPushActionIndex();
 				}else
-					actionIndex = getWidgetModel().getActionIndex();
+				actionIndex = getWidgetModel().getReleasedActionIndex();				
 				
 				if(actionIndex >= 0 && getWidgetModel().getActionsInput().getActionsList().size() > 
 					actionIndex)
@@ -172,16 +167,4 @@ public abstract class AbstractBoolControlEditPart extends AbstractBoolEditPart {
 			
 		});
 	}
-
-	
-	/**
-	* @param newValue
-	*/
-	private void updatePropSheet(final boolean newValue) {
-		getWidgetModel().setPropertyVisible(
-				AbstractBoolControlModel.PROP_RELEASED_ACTION_INDEX, newValue);
-		getWidgetModel().setPropertyDescription(AbstractBoolControlModel.PROP_ACTION_INDEX, 
-				newValue ? "Push Action Index" : "Click Action Index" );
-	}
-
 }

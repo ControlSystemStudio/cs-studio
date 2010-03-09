@@ -33,7 +33,7 @@ public class AbstractBoolControlModel extends AbstractBoolWidgetModel {
 	/**
 	 * The ID of the ActionData property.
 	 */
-	public static final String PROP_ACTION_INDEX = "push_action_index"; //$NON-NLS-1$
+	public static final String PROP_PUSH_ACTION_INDEX = "push_action_index"; //$NON-NLS-1$
 	
 	
 	/**
@@ -58,13 +58,11 @@ public class AbstractBoolControlModel extends AbstractBoolWidgetModel {
 		addProperty(new StringProperty(PROP_CONFIRM_TIP, "Confirm Message", 
 				WidgetPropertyCategory.Behavior, DEFAULT_CONFIRM_TIP));		
 	
-		addProperty(new IntegerProperty(PROP_ACTION_INDEX, "Click Action Index",
+		addProperty(new IntegerProperty(PROP_PUSH_ACTION_INDEX, "Push Action Index",
 				WidgetPropertyCategory.Behavior, 0, 0, Integer.MAX_VALUE));
 		
 		addProperty(new IntegerProperty(PROP_RELEASED_ACTION_INDEX, "Release Action Index",
-				WidgetPropertyCategory.Behavior, 0, 0, Integer.MAX_VALUE));
-		
-		setPropertyVisible(PROP_RELEASED_ACTION_INDEX, DEFAULT_TOGGLE_BUTTON );
+				WidgetPropertyCategory.Behavior, 0, 0, Integer.MAX_VALUE));		
 	}
 	/**
 	 * The ID of this widget model.
@@ -109,8 +107,8 @@ public class AbstractBoolControlModel extends AbstractBoolWidgetModel {
 	 * The Action is running when the button is released.
 	 * @return The index
 	 */
-	public int getActionIndex() {
-		return (Integer) getProperty(PROP_ACTION_INDEX).getPropertyValue();
+	public int getPushActionIndex() {
+		return (Integer) getProperty(PROP_PUSH_ACTION_INDEX).getPropertyValue();
 	}
 	
 	

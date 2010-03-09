@@ -163,7 +163,7 @@ public class AbstractBoolControlFigure extends AbstractBoolFigure {
 	}
 
 	/**open a confirm dialog.
-	 * @return false if user canceled, true if user pressed OK.
+	 * @return false if user canceled, true if user pressed OK or no confirm dialog needed. 
 	 */
 	private boolean openConfirmDialog() {
 		//confirm & password input dialog
