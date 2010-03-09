@@ -1,6 +1,6 @@
 package org.csstudio.opibuilder.visualparts;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 import org.csstudio.opibuilder.util.MacrosInput;
 import org.eclipse.jface.window.Window;
@@ -42,7 +42,7 @@ public class MacrosCellEditor extends AbstractDialogCellEditor {
 	@Override
 	protected void doSetValue(Object value) {
 		if(value == null || !(value instanceof MacrosInput))
-			macrosInput = new MacrosInput(new HashMap<String, String>(), true);
+			macrosInput = new MacrosInput(new LinkedHashMap<String, String>(), true);
 		else
 			macrosInput = (MacrosInput)value;
 			

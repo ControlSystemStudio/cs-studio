@@ -1,7 +1,6 @@
 package org.csstudio.opibuilder.properties;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedHashMap;
 
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.properties.support.MacrosPropertyDescriptor;
@@ -63,7 +62,7 @@ public class MacrosProperty extends AbstractWidgetProperty {
 
 	@Override
 	public MacrosInput readValueFromXML(Element propElement) {
-		Map<String, String> macros = new HashMap<String, String>();
+		LinkedHashMap<String, String> macros = new LinkedHashMap<String, String>();
 		boolean b = true;
 		for(Object oe : propElement.getChildren()){
 			Element se = (Element)oe;

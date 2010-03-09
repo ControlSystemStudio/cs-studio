@@ -1,6 +1,5 @@
 package org.csstudio.opibuilder.util;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -14,7 +13,7 @@ import org.csstudio.platform.util.StringUtil;
  */
 public class MacrosInput {
 
-	private Map<String, String> macrosMap;
+	private LinkedHashMap<String, String> macrosMap;
 	
 	private boolean include_parent_macros;	
 	
@@ -22,7 +21,7 @@ public class MacrosInput {
 	private static final char MACRO_SEPARATOR = '='; //$NON-NLS-1$
 	private static final char QUOTE = '\"'; //$NON-NLS-1$
 	
-	public MacrosInput(Map<String, String> macros, boolean include_parent_macros) {
+	public MacrosInput(LinkedHashMap<String, String> macros, boolean include_parent_macros) {
 		this.macrosMap = macros;
 		this.include_parent_macros = include_parent_macros;
 	}
@@ -37,7 +36,7 @@ public class MacrosInput {
 	/**
 	 * @param macrosMap the macrosMap to set
 	 */
-	public final void setMacrosMap(Map<String, String> macrosMap) {
+	public final void setMacrosMap(LinkedHashMap<String, String> macrosMap) {
 		this.macrosMap = macrosMap;
 	}
 
@@ -57,7 +56,7 @@ public class MacrosInput {
 	
 	public MacrosInput getCopy(){
 		MacrosInput result = new MacrosInput(
-				new HashMap<String, String>(), include_parent_macros);
+				new LinkedHashMap<String, String>(), include_parent_macros);
 		result.getMacrosMap().putAll(macrosMap);
 		return result;		
 	}

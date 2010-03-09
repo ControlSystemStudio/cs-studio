@@ -2,6 +2,7 @@ package org.csstudio.opibuilder.model;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +43,7 @@ public abstract class AbstractContainerModel extends AbstractWidgetModel {
 		childrenProperty = new AbstractWidgetProperty(
 				PROP_CHILDREN, "children", WidgetPropertyCategory.Behavior, childrenList){
 
+			@SuppressWarnings("unchecked")
 			@Override
 			public Object checkValue(Object value) {
 				if(value instanceof List)
@@ -67,6 +69,7 @@ public abstract class AbstractContainerModel extends AbstractWidgetModel {
 		selectionProperty = new AbstractWidgetProperty(
 				PROP_SELECTION, "selection", WidgetPropertyCategory.Behavior, null){
 
+			@SuppressWarnings("unchecked")
 			@Override
 			public Object checkValue(Object value) {
 				if(value instanceof List)
@@ -133,7 +136,7 @@ public abstract class AbstractContainerModel extends AbstractWidgetModel {
 		super.configureBaseProperties();	
 		addProperty(new MacrosProperty(
 				PROP_MACROS, "Macros", WidgetPropertyCategory.Basic, 
-				new MacrosInput(new HashMap<String, String>(), true)));
+				new MacrosInput(new LinkedHashMap<String, String>(), true)));
 	}
 
 	public List<AbstractWidgetModel> getChildren() {

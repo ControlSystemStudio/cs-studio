@@ -1,9 +1,8 @@
 package org.csstudio.opibuilder.visualparts;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.csstudio.opibuilder.preferences.MacroEditDialog;
 import org.csstudio.opibuilder.util.MacrosInput;
@@ -79,7 +78,7 @@ public class MacrosInputDialog extends Dialog {
 	}
 
 	public MacrosInput getResult() {
-		Map<String, String> macrosMap = new HashMap<String, String>();
+		LinkedHashMap<String, String> macrosMap = new LinkedHashMap<String, String>();
 		for(String[] row : contents){
 			macrosMap.put(row[0], row[1]);
 		}		

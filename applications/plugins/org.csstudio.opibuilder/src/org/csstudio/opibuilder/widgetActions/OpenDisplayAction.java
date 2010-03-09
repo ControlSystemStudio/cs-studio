@@ -1,7 +1,7 @@
 package org.csstudio.opibuilder.widgetActions;
 
 import java.io.FileNotFoundException;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.csstudio.opibuilder.properties.BooleanProperty;
@@ -48,7 +48,7 @@ public class OpenDisplayAction extends AbstractWidgetAction {
 		addProperty(new FilePathProperty(
 				PROP_PATH, "File Path", WidgetPropertyCategory.Basic, new Path(""), new String[]{"opi"}));
 		addProperty(new MacrosProperty(PROP_MACROS, "Macros", WidgetPropertyCategory.Basic, 
-				new MacrosInput(new HashMap<String, String>(), true)));
+				new MacrosInput(new LinkedHashMap<String, String>(), true)));
 		addProperty(new BooleanProperty(PROP_REPLACE, "Replace", WidgetPropertyCategory.Basic, true));
 		addProperty(new StringProperty(PROP_DESCRIPTION, "Description", WidgetPropertyCategory.Basic, ""));
 	}
