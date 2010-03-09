@@ -26,7 +26,7 @@ public class MacrosUtil {
 		 * @param input the raw string which include the macros string $(macro)
 		 * @return the string in which the macros have been replaced with the real value.
 		 */
-		public static String replaceMacros(AbstractWidgetModel widgetModel, String input){
+		public static String replaceMacros(AbstractWidgetModel widgetModel, String input, int level){
 			String result = input;
 			if(!input.contains(DOLLARCHAR)) //$NON-NLS-1$
 				return result;
@@ -41,9 +41,19 @@ public class MacrosUtil {
 				Pattern pattern = Pattern.compile(MACRO_LEFT_PART + macroName + MACRO_RIGHT_PART);
 				if(!macroMap.get(macroName).contains(DOLLARCHAR))
 					result = pattern.matcher(result).replaceAll(macroMap.get(macroName));
-				else
+				else{
+					//TODO Add a preference to allow the user how deep to allow macro substitution
+					if (level+1 <3){
+						String intResult = MacrosUtil.replaceMacros(widgetModel, macroMap.get(macroName), level+1);
+						intResult = pattern.matcher(intResult).replaceAll(macroMap.get(macroName));
+						result = pattern.matcher(result).replaceAll(intResult);
+
+					}
+					else {
 					CentralLogger.getInstance().warn(null, DOLLARCHAR + " is not allowed in macros");
-			}
+					}
+				}
+					}
 			
 			
 			//replace with properties macro
