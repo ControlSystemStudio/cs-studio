@@ -1,5 +1,6 @@
 package org.csstudio.platform.ui.swt;
 
+import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.DisposeEvent;
@@ -17,12 +18,14 @@ import org.eclipse.swt.widgets.TableColumn;
  *  The AutoSizeControlListener then adds itself as a ControlListener
  *  to the table and performs the automated resizing.
  *  <p> 
- *  Related ideas are in the Eclipse 3.4 sources for
- *  org.eclipse.ui.views.properties.PropertySheetViewer
- *  and 
- *  org.eclipse.jface.internal.ConfigureColumnsDialog.
- *  That code, however, is 'internal' API and only performs
- *  one initial resizing.
+ *  Related ideas are in the Eclipse TableLayout, which only performs
+ *  one initial table layout based on ColumnWeightData, no re-layout
+ *  when the table is resized.
+ *  There's also the TableColumnLayout which I have not fully investigated,
+ *  but http://www.korbel.tk/korbel/?p=24 suggests that you still need to
+ *  implement a ControlListener for tables that always re-layout on
+ *  resize, so there seems no support in Eclipse that replaces this
+ *  AutoSizeControlListener.
  *  
  *  @author Kay Kasemir
  */
@@ -61,7 +64,7 @@ public class AutoSizeControlListener
 			if (data == null)
 			    throw new Error("Column " + column.getText() + "(" + i
 			            + ") has null data");
-            if (!(data instanceof AutoSizeColumn))
+            if (!(data instanceof ColumnWeightData))
 				throw new Error("Column " + column.getText() + "(" + i
 				        + ") has invalid data type " + data.getClass().getName());
 		}
@@ -98,8 +101,8 @@ public class AutoSizeControlListener
 		for (i = 0; i < table.getColumnCount(); ++i)
 		{
 			final TableColumn col = table.getColumn(i);
-			total_weight += ((AutoSizeColumn) col.getData()).getWeight();
-			total_min += ((AutoSizeColumn) col.getData()).getMinSize();
+			total_weight += ((ColumnWeightData) col.getData()).weight;
+			total_min += ((ColumnWeightData) col.getData()).minimumWidth;
 		}
 		// Resize columns to fit total
 		final Rectangle bounds = table.getClientArea();
@@ -115,10 +118,10 @@ public class AutoSizeControlListener
 		for (i = 0; i < table.getColumnCount(); ++i)
 		{
 		    final TableColumn col = table.getColumn(i);
-			int size = ((AutoSizeColumn) col.getData()).getMinSize();
+			int size = ((ColumnWeightData) col.getData()).minimumWidth;
 			if (extra > 0)
 			{
-				int weight = ((AutoSizeColumn) col.getData()).getWeight();
+				int weight = ((ColumnWeightData) col.getData()).weight;
 				size += (extra * weight) / total_weight;
 			}
 			col.setWidth(size);

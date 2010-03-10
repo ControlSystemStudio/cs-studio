@@ -1,5 +1,6 @@
 package org.csstudio.platform.ui.swt;
 
+import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
@@ -12,30 +13,6 @@ import org.eclipse.swt.widgets.TableColumn;
  */
 public class AutoSizeColumn
 {
-	final private int min_size;
-	final private int weight;
-
-	/** Private constructor.
-	 *  @see #make()
-	 */
-    private AutoSizeColumn(final int min_size, final int weight)
-	{
-		this.min_size = min_size;
-		this.weight = weight;
-	}
-    
-    /** @return Requested minimum columns size (width) */
-    public int getMinSize()
-    {
-        return min_size;
-    }
-
-    /** @return Weight factor used to distribute extra column space. */
-    public int getWeight()
-    {
-        return weight;
-    }
-
     /** Create a new auto-size table column.
      *  <p>
      *  The 'data' of the column will be set to the auto-size info,
@@ -64,7 +41,7 @@ public class AutoSizeColumn
         col.setText(header);
         col.setMoveable(true);
         col.setWidth(min_size);
-        col.setData(new AutoSizeColumn(min_size, weight));
+        col.setData(new ColumnWeightData(weight, min_size, true));
         return view_col;
     }
 
@@ -87,7 +64,7 @@ public class AutoSizeColumn
 		col.setText(header);
         col.setMoveable(true);
         col.setWidth(min_size);
-        col.setData(new AutoSizeColumn(min_size, weight));
+        col.setData(new ColumnWeightData(weight, min_size, true));
         if (center)
             col.setAlignment(SWT.CENTER);
 		return col;
