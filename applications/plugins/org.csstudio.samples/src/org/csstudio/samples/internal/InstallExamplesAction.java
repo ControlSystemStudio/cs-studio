@@ -106,14 +106,8 @@ public class InstallExamplesAction extends Action implements
 	// inside the run method.
 	protected IStatus copySamples(final IWorkspaceRoot root,
 			IProgressMonitor monitor) {
-		IPreferencesService prefs = Platform.getPreferencesService();
-		String sourceDirPrefs = prefs.getString(SamplesActivator.PLUGIN_ID,
-				PreferenceConstants.SOURCE_DIRECTORIES, DEFAULT_SOURCE_DIRS, null);
-
-		String[] sourceDirectorise = sourceDirPrefs.split(";");
-
 		IStatus result = Status.OK_STATUS;
-		for (String sourceDirectory : sourceDirectorise) {
+		for (String sourceDirectory : getSourceDirectories()) {
 			IStatus singleResult = copySampleFromProjectPathToWorkspaceRoot(
 					root, monitor, sourceDirectory);
 			result = singleResult.equals(Status.OK_STATUS) ? result
@@ -124,6 +118,16 @@ public class InstallExamplesAction extends Action implements
 		// die in den Sample-Displays benötigt werden!!
 
 		return result;
+	}
+
+	private String[] getSourceDirectories() {
+		IPreferencesService preferencesService = Platform.getPreferencesService();
+		String sourceDirPrefs = preferencesService.getString(
+				SamplesActivator.PLUGIN_ID,
+				PreferenceConstants.SOURCE_DIRECTORIES, DEFAULT_SOURCE_DIRS,
+				null);
+
+		return sourceDirPrefs.split(";");
 	}
 
 	private IStatus copySampleFromProjectPathToWorkspaceRoot(
