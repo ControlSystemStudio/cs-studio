@@ -101,8 +101,9 @@
          &lt;pre&gt;
    &lt;extension point=&quot;org.csstudio.utility.pv.pvfactory&quot;&gt;
       &lt;PVFactory
+            prefix=&quot;xy&quot;
+            name=&quot;XY PV Factory&quot;
             class=&quot;your.class.that.implements.IPVFactory&quot;
-            name=&quot;Your PV Factory&quot;
        /&gt;
    &lt;/extension&gt;
 &lt;/pre&gt;
