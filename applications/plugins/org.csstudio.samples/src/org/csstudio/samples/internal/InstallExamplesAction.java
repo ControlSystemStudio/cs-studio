@@ -23,10 +23,11 @@ package org.csstudio.samples.internal;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
-import java.util.HashMap;
 
+import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.samples.SamplesActivator;
 import org.eclipse.core.resources.IContainer;
@@ -35,6 +36,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -50,22 +52,30 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
 /**
- * Install sample projects for SDS, DCT and SNL Editor.
+ * Provides an action to install sample projects for SDS, DCT and SNL Editor.
+ * If the action is started from within the IDE, the CVS information is present in the
+ * source directories. To prevent it from being copied, it is filtered.
  * 
- * Copy of SDS plug-in 'org.csstudio.sds.samples'.
+ * Replacement for SDS plug-in 'org.csstudio.sds.samples'.
  * 
- * @author jhatje
+ * @author jhatje, jpenning
  * 
  */
 public class InstallExamplesAction extends Action implements
 		IWorkbenchWindowActionDelegate {
 
-	public void dispose() {
+	private final Logger log = CentralLogger.getInstance().getLogger(this);
 
+	public void dispose() {
+		// Nothing to dispose
 	}
 
 	public void init(IWorkbenchWindow window) {
+		// Only ProgressMonitor is used for user feedback
+	}
 
+	public void selectionChanged(IAction action, ISelection selection) {
+		// Selection ignored
 	}
 
 	public void run(IAction action) {
@@ -75,80 +85,78 @@ public class InstallExamplesAction extends Action implements
 
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
-				try {
-					// copy the sample displays
-					IProject sdsProject = root.getProject("SDS Demo Display");
-					IProject dctProject = root.getProject("DCT Demo Project");
-					IProject snlProject = root.getProject("SNL Demo Project");
-
-					if(sdsProject.exists() || dctProject.exists() || snlProject.exists()) {
-						return Status.OK_STATUS;
-					}
-					
-					sdsProject.create(new NullProgressMonitor());
-					dctProject.create(new NullProgressMonitor());
-					snlProject.create(new NullProgressMonitor());
-
-					sdsProject.open(new NullProgressMonitor());
-					dctProject.open(new NullProgressMonitor());
-					snlProject.open(new NullProgressMonitor());
-
-					URL sdsUrl = FileLocator.find(SamplesActivator.getDefault()
-							.getBundle(), new Path("SDS Demo Display"),
-							new HashMap());
-					URL dctUrl = FileLocator.find(SamplesActivator.getDefault()
-							.getBundle(), new Path("DCT Demo Project"),
-							new HashMap());
-					URL snlUrl = FileLocator.find(SamplesActivator.getDefault()
-							.getBundle(), new Path("SNL Demo Project"),
-							new HashMap());
-
-					try {
-						File sdsDirectory = new File(FileLocator.toFileURL(
-								sdsUrl).getPath());
-						File dctDirectory = new File(FileLocator.toFileURL(
-								dctUrl).getPath());
-						File snlDirectory = new File(FileLocator.toFileURL(
-								snlUrl).getPath());
-
-						File[] sdsFiles = null;
-						File[] dctFiles = null;
-						File[] snlFiles = null;
-
-						int totalFileNumber = 0;
-						if (sdsDirectory.isDirectory()) {
-							sdsFiles = sdsDirectory.listFiles();
-							totalFileNumber = count(sdsFiles, totalFileNumber);
-						}
-						if (dctDirectory.isDirectory()) {
-							dctFiles = dctDirectory.listFiles();
-							totalFileNumber = count(dctFiles, totalFileNumber);
-						}
-						if (snlDirectory.isDirectory()) {
-							snlFiles = snlDirectory.listFiles();
-							totalFileNumber = count(snlFiles, totalFileNumber);
-						}
-						monitor.beginTask("Copying Samples", totalFileNumber);
-						copy(sdsFiles, sdsProject, monitor);
-						copy(dctFiles, dctProject, monitor);
-						copy(snlFiles, snlProject, monitor);
-
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-
-					// TODO: 2008-10-07: Kopieren von Scripted Rules einbauen,
-					// die in den Sample-Displays benötigt werden!!
-
-				} catch (CoreException e) {
-				}
-
-				return Status.OK_STATUS;
+				return copySamples(root, monitor);
 			}
 
 		};
 
 		job.schedule();
+	}
+
+	IStatus copySamples(final IWorkspaceRoot root, IProgressMonitor monitor) {
+		IStatus resultSDS = copySampleFromProjectPathToWorkspaceRoot(root,
+				monitor, "SDS Demo Display");
+		IStatus resultDCT = copySampleFromProjectPathToWorkspaceRoot(root,
+				monitor, "DCT Demo Project");
+		IStatus resultSNL = copySampleFromProjectPathToWorkspaceRoot(root,
+				monitor, "SNL Demo Project");
+
+		// TODO: 2008-10-07: Kopieren von Scripted Rules einbauen,
+		// die in den Sample-Displays benötigt werden!!
+
+		// copySampleFromProjectPathToWorkspaceRoot returns OK_STATUS or ERROR
+		// If any result is ERROR, it will be returned.
+		IStatus result = resultSDS;
+		result = resultDCT.equals(Status.OK_STATUS) ? result : resultDCT;
+		result = resultSNL.equals(Status.OK_STATUS) ? result : resultSNL;
+
+		return result;
+	}
+
+	private IStatus copySampleFromProjectPathToWorkspaceRoot(
+			IWorkspaceRoot root, IProgressMonitor monitor, String projectPath) {
+		Assert.isNotNull(root);
+		Assert.isNotNull(monitor);
+		Assert.isNotNull(projectPath);
+
+		// Default status is ERROR
+		IStatus result = new Status(IStatus.ERROR, SamplesActivator.PLUGIN_ID,
+				IStatus.OK, "Copying from project path " + projectPath
+						+ " failed", null);
+		IProject project = root.getProject(projectPath);
+
+		// Guard: Do nothing if destination already exists, Status is OK
+		if (project.exists()) {
+			return Status.OK_STATUS;
+		}
+
+		try {
+			URL url = FileLocator.find(SamplesActivator.getDefault()
+					.getBundle(), new Path(projectPath), null);
+
+			if (url != null) {
+				project.create(new NullProgressMonitor());
+				project.open(new NullProgressMonitor());
+				File directory = new File(FileLocator.toFileURL(url).getPath());
+				// Only directories get copied
+				if (directory.isDirectory()) {
+					File[] files = directory.listFiles();
+					int totalFileNumber = count(files, 0);
+					monitor.beginTask("Copying Samples for " + projectPath,
+							totalFileNumber);
+					copyWithoutCVS(files, project, monitor);
+					// Now we succeeded, Status is OK
+					result = Status.OK_STATUS;
+				}
+			}
+		} catch (IOException e) {
+			log.warn("IOException while copying the project " + projectPath, e);
+		} catch (CoreException e) {
+			log.warn("Creation or opening of project " + projectPath
+					+ " failed", e);
+		}
+
+		return result;
 	}
 
 	private int count(File[] files, int totalFileNumber) {
@@ -160,39 +168,32 @@ public class InstallExamplesAction extends Action implements
 				result++;
 			}
 		}
-
 		return result;
 	}
 
-	private void copy(File[] files, IContainer container,
-			IProgressMonitor monitor) {
-		try {
-			for (File file : files) {
-				monitor.subTask("Copying " + file.getName());
-				if (file.isDirectory()) {
+	private void copyWithoutCVS(File[] files, IContainer container,
+			IProgressMonitor monitor) throws CoreException,
+			FileNotFoundException {
+		for (File file : files) {
+			monitor.subTask("Copying " + file.getName());
+			if (file.isDirectory()) {
+				if (!file.getName().equals("CVS")) {
 					IFolder folder = container.getFolder(new Path(file
 							.getName()));
 
 					if (!folder.exists()) {
 						folder.create(true, true, null);
-						copy(file.listFiles(), folder, monitor);
+						copyWithoutCVS(file.listFiles(), folder, monitor);
 					}
-				} else {
-					IFile pFile = container.getFile(new Path(file.getName()));
-					if (!pFile.exists()) {
-						pFile.create(new FileInputStream(file), true,
-								new NullProgressMonitor());
-					}
-					monitor.internalWorked(1);
 				}
-
+			} else {
+				IFile pFile = container.getFile(new Path(file.getName()));
+				if (!pFile.exists()) {
+					pFile.create(new FileInputStream(file), true,
+							new NullProgressMonitor());
+				}
+				monitor.internalWorked(1);
 			}
-		} catch (Exception e) {
-			CentralLogger.getInstance().error(null, e);
 		}
-	}
-
-	public void selectionChanged(IAction action, ISelection selection) {
-
 	}
 }
