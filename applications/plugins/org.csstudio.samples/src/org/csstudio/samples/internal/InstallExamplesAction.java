@@ -110,6 +110,9 @@ public class InstallExamplesAction extends Action implements
 		for (String sourceDirectory : getSourceDirectories()) {
 			IStatus singleResult = copySampleFromProjectPathToWorkspaceRoot(
 					root, monitor, sourceDirectory);
+
+			// copySampleFromProjectPathToWorkspaceRoot returns OK_STATUS or
+			// ERROR, ERROR is considered more important.
 			result = singleResult.equals(Status.OK_STATUS) ? result
 					: singleResult;
 		}
@@ -121,7 +124,8 @@ public class InstallExamplesAction extends Action implements
 	}
 
 	private String[] getSourceDirectories() {
-		IPreferencesService preferencesService = Platform.getPreferencesService();
+		IPreferencesService preferencesService = Platform
+				.getPreferencesService();
 		String sourceDirPrefs = preferencesService.getString(
 				SamplesActivator.PLUGIN_ID,
 				PreferenceConstants.SOURCE_DIRECTORIES, DEFAULT_SOURCE_DIRS,
