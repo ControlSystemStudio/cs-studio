@@ -1,7 +1,6 @@
 package org.csstudio.opibuilder.model;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -33,13 +32,13 @@ public abstract class AbstractContainerModel extends AbstractWidgetModel {
 	
 	private List<AbstractWidgetModel> childrenList;
 	
-	private Map<String, String> macroMap;
+	private LinkedHashMap<String, String> macroMap;
 	
 	
 	public AbstractContainerModel() {
 		super();
 		childrenList = new LinkedList<AbstractWidgetModel>();
-		macroMap = new HashMap<String, String>();
+		macroMap = new LinkedHashMap<String, String>();
 		childrenProperty = new AbstractWidgetProperty(
 				PROP_CHILDREN, "children", WidgetPropertyCategory.Behavior, childrenList){
 
@@ -191,7 +190,7 @@ public abstract class AbstractContainerModel extends AbstractWidgetModel {
 	}
 	
 	
-	public void setMacroMap(Map<String, String> macroMap) {
+	public void setMacroMap(LinkedHashMap<String, String> macroMap) {
 		this.macroMap = macroMap;
 	}
 	

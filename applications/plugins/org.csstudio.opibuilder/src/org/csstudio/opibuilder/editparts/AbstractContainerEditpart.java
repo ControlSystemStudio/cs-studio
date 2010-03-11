@@ -3,9 +3,8 @@ package org.csstudio.opibuilder.editparts;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.csstudio.opibuilder.commands.OrphanChildCommand;
 import org.csstudio.opibuilder.editpolicies.WidgetXYLayoutEditPolicy;
@@ -87,7 +86,7 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
 	@Override
 	public void activate() {
 		//set macro map
-		Map<String, String> macrosMap = new HashMap<String, String>();
+		LinkedHashMap<String, String> macrosMap = new LinkedHashMap<String, String>();
 		if(getWidgetModel().getMacrosInput().isInclude_parent_macros()){
 			macrosMap.putAll(getWidgetModel().getParentMacroMap());
 		}
@@ -152,7 +151,7 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
 			public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {
 				MacrosInput macrosInput = (MacrosInput)newValue;
-				Map<String, String> macrosMap = new HashMap<String, String>();
+				LinkedHashMap<String, String> macrosMap = new LinkedHashMap<String, String>();
 				macrosMap.putAll(macrosInput.getMacrosMap());
 				if(macrosInput.isInclude_parent_macros()){	
 					macrosMap.putAll(getWidgetModel().getParentMacroMap());					

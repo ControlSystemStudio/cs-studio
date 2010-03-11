@@ -1,6 +1,5 @@
 package org.csstudio.opibuilder.preferences;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -76,10 +75,10 @@ public class PreferencesHelper {
     /**Get the macros map from preference store.
      * @return the macros map. null if failed to get macros from preference store.
      */
-    public static Map<String, String> getMacros(){
+    public static LinkedHashMap<String, String> getMacros(){
     	if(getString(RUN_MACROS) != null){
     		try {
-    			Map<String, String> macros = new HashMap<String, String>();
+    			LinkedHashMap<String, String> macros = new LinkedHashMap<String, String>();
 				List<String[]> items = StringTableFieldEditor.decodeStringTable(getString(RUN_MACROS));
 				for(String[] item : items){
 					if(item.length == 2)
@@ -89,10 +88,10 @@ public class PreferencesHelper {
 				
 			} catch (Exception e) {
 				CentralLogger.getInstance().error("OPIBuilder.Preference Helper", e); //$NON-NLS-1$
-				return new HashMap<String, String>();
+				return new LinkedHashMap<String, String>();
 			}    		
     	}
-    	return new HashMap<String, String>();
+    	return new LinkedHashMap<String, String>();
     	
     }
     
