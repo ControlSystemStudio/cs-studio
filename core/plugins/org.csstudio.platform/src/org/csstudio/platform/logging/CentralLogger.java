@@ -489,7 +489,6 @@ public final class CentralLogger {
     private Properties createLog4jProperties(
 			final org.eclipse.core.runtime.Preferences prefs) {
 		Properties result = new Properties();
-
 		// console logger
 		fillFromStore(result, prefs, PROP_LOG4J_CONSOLE_APPENDER);
 		fillFromStore(result, prefs, PROP_LOG4J_CONSOLE_LAYOUT);
