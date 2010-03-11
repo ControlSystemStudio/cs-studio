@@ -316,7 +316,7 @@ public class RecordPropertyGetRDB {
 		Registry reg;
 
 		try {
-			nameIOC = IocFinder.getIoc(record);
+			nameIOC = IocFinder.getEconForEren(record);
 
 			IPreferencesService prefs = Platform.getPreferencesService();
 			String registryHost = prefs.getString(
