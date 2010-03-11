@@ -5,7 +5,7 @@ import java.util.LinkedHashMap;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.properties.support.MacrosPropertyDescriptor;
 import org.csstudio.opibuilder.util.MacrosInput;
-import org.csstudio.opibuilder.util.MacrosUtil;
+import org.csstudio.opibuilder.util.OPIBuilderMacroUtil;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.jdom.Element;
 
@@ -44,7 +44,7 @@ public class MacrosProperty extends AbstractWidgetProperty {
 		if(executionMode == ExecutionMode.RUN_MODE && widgetModel !=null){
 			MacrosInput value = ((MacrosInput) super.getPropertyValue()).getCopy();
 			for(String key : value.getMacrosMap().keySet()){
-					String newS = MacrosUtil.replaceMacros(widgetModel, value.getMacrosMap().get(key));
+					String newS = OPIBuilderMacroUtil.replaceMacros(widgetModel, value.getMacrosMap().get(key));
 					if(!newS.equals(value.getMacrosMap().get(key))){
 						value.getMacrosMap().put(key, newS);
 					}

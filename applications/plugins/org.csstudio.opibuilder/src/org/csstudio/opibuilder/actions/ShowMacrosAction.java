@@ -7,7 +7,7 @@ import java.util.Map;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.util.ConsoleService;
-import org.csstudio.opibuilder.util.MacrosUtil;
+import org.csstudio.opibuilder.util.OPIBuilderMacroUtil;
 import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
@@ -47,7 +47,7 @@ public class ShowMacrosAction extends SelectionAction {
 		AbstractWidgetModel widget = getSelectedWidgetModels().get(0);
 		String message = NLS.bind("The predefined macros of {0}:\n", widget.getName());
 		StringBuilder sb = new StringBuilder(message);
-		Map<String, String> macroMap = MacrosUtil.getWidgetMacroMap(widget);
+		Map<String, String> macroMap = OPIBuilderMacroUtil.getWidgetMacroMap(widget);
 		for(String key : macroMap.keySet()){
 			sb.append(key + "=" + macroMap.get(key) + "\n");
 		}

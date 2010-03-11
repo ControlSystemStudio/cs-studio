@@ -5,7 +5,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.csstudio.opibuilder.util.IMacroTableProvider;
 import org.csstudio.opibuilder.util.InfiniteLoopException;
-import org.csstudio.opibuilder.util.MacrosUtil;
+import org.csstudio.opibuilder.util.MacroUtil;
 import org.junit.Test;
 
 class TestMacroTableProvider implements IMacroTableProvider{
@@ -40,23 +40,23 @@ public class MacroUtilTest {
 	public void testReplacemacros() throws InfiniteLoopException{		
 		//simple test
 		String input = "$(ABC)";		
-		String result = MacrosUtil.replaceMacros(input, new TestMacroTableProvider());
+		String result = MacroUtil.replaceMacros(input, new TestMacroTableProvider());
 		assertEquals("DEF", result);
 		
 		//nested macro string test
 		input = "$($(abc_$(123)_def))";		
-		result = MacrosUtil.replaceMacros(input, new TestMacroTableProvider());
+		result = MacroUtil.replaceMacros(input, new TestMacroTableProvider());
 		assertEquals("$(789)", result);
 		
 		//nested macro table test
 		input = "$(A)";		
-		result = MacrosUtil.replaceMacros(input, new TestMacroTableProvider());
+		result = MacroUtil.replaceMacros(input, new TestMacroTableProvider());
 		assertEquals("C", result);
 		
 		//throw exception when infinite loop detected
 		try {
 			input = "$(1)";		
-			result = MacrosUtil.replaceMacros(input, new TestMacroTableProvider());			
+			result = MacroUtil.replaceMacros(input, new TestMacroTableProvider());			
 		} catch (InfiniteLoopException e) {			
 			result = "InfiniteLoopException";
 		}
@@ -64,7 +64,7 @@ public class MacroUtilTest {
 		
 		//robust parsing test
 		input = "$($($(abc_$(123)_def)))Hello $($($(A)))Best OPI $(ABC)D) Yet ${ABC}))!";
-		result = MacrosUtil.replaceMacros(input, new TestMacroTableProvider());
+		result = MacroUtil.replaceMacros(input, new TestMacroTableProvider());
 		assertEquals("$($(789))Hello $(D)Best OPI DEFD) Yet DEF))!", result);
 	
 	}

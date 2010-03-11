@@ -2,59 +2,20 @@ package org.csstudio.opibuilder.util;
 
 import java.util.EmptyStackException;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
-import org.csstudio.opibuilder.model.AbstractContainerModel;
-import org.csstudio.opibuilder.model.AbstractWidgetModel;
-import org.csstudio.opibuilder.preferences.PreferencesHelper;
-
-class WidgetMacroTableProvider implements IMacroTableProvider{
-	private AbstractWidgetModel widgetModel;
-	private Map<String, String> macroMap;
-	public WidgetMacroTableProvider(AbstractWidgetModel widgetModel) {
-		this.widgetModel = widgetModel;
-		macroMap = MacrosUtil.getWidgetMacroMap(widgetModel);
-	}
-	
-	public String getMacroValue(String macroName) {
-		if(macroMap != null && macroMap.containsKey(macroName))
-			return macroMap.get(macroName);
-		else if(widgetModel.getAllPropertyIDs().contains(macroName)){
-			Object propertyValue = widgetModel.getPropertyValue(macroName);
-			if(propertyValue != null)
-				return propertyValue.toString();
-		}
-		return null;
-	}
-}
 
 /**The utility functions for macros operations.
  * @author Xihui Chen
  *
  */
-public class MacrosUtil {
+public class MacroUtil {
 
 	
 	private static final String MACRO_RIGHT_PART = "[)}]"; //$NON-NLS-1$
 
 	private static final String MACRO_LEFT_PART = "\\$[{(]"; //$NON-NLS-1$
-	
-
-	/**Replace the macros in the input with the real value.  Simply calls the three argument version below
-	 * @param input the raw string which include the macros string $(macro)
-	 * @return the string in which the macros have been replaced with the real value.
-	 */
-	public static String replaceMacros(AbstractWidgetModel widgetModel, String input){
-		
-		try {
-			return MacrosUtil.replaceMacros(input, new WidgetMacroTableProvider(widgetModel));
-		} catch (InfiniteLoopException e) {
-			ConsoleService.getInstance().writeWarning(e.getMessage());
-			return input;
-		}
-	}
 	
 	
 	/**Replace macros in String.
@@ -65,6 +26,9 @@ public class MacrosUtil {
 	 * "a=$(b), b=$(a)", this string "$(a)" will result in infinite loop.
 	 */
 	public static String replaceMacros(String input, IMacroTableProvider macroTableProvider) throws InfiniteLoopException {
+		//if there is no macro in the input, return
+		if(!input.contains("$"))
+			return input;
 		StringBuilder stringBuilder = new StringBuilder();
 		Stack<Integer> stack = new Stack<Integer>();
 		boolean lockStack = false; //lock the stack to prevent pushing new element
@@ -150,25 +114,5 @@ public class MacrosUtil {
 		
 		return result;
 	}
-	
-		/**
-		 * @param widgetModel
-		 * @return the predefined macro map of the widget.
-		 * This is the intrinsic map from the widget. Be careful to change the map contents.
-		 */
-		public static Map<String, String> getWidgetMacroMap(
-				AbstractWidgetModel widgetModel) {
-			Map<String, String> macroMap;
-			if(widgetModel instanceof AbstractContainerModel)
-				macroMap = ((AbstractContainerModel)widgetModel).getMacroMap();
-			else {
-				if(widgetModel.getParent() != null)
-					macroMap = widgetModel.getParent().getMacroMap();
-				else
-					macroMap = PreferencesHelper.getMacros();
-			}
-			return macroMap;
-		}
-		
 	
 }

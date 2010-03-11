@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.properties.support.StringListPropertyDescriptor;
-import org.csstudio.opibuilder.util.MacrosUtil;
+import org.csstudio.opibuilder.util.OPIBuilderMacroUtil;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.jdom.Element;
 
@@ -46,7 +46,7 @@ public class StringListProperty extends AbstractWidgetProperty {
 		if(widgetModel !=null && widgetModel.getExecutionMode() == ExecutionMode.RUN_MODE){
 			List<String> result= new ArrayList<String>();
 			for(String item : (List<String>) super.getPropertyValue()){
-				result.add(MacrosUtil.replaceMacros(
+				result.add(OPIBuilderMacroUtil.replaceMacros(
 					widgetModel, item));
 			}
 			return result;

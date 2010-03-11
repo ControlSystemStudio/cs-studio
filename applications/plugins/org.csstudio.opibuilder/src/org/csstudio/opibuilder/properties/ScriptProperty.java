@@ -5,7 +5,7 @@ import org.csstudio.opibuilder.properties.support.ScriptPropertyDescriptor;
 import org.csstudio.opibuilder.script.PVTuple;
 import org.csstudio.opibuilder.script.ScriptData;
 import org.csstudio.opibuilder.script.ScriptsInput;
-import org.csstudio.opibuilder.util.MacrosUtil;
+import org.csstudio.opibuilder.util.OPIBuilderMacroUtil;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.jdom.Element;
@@ -60,7 +60,7 @@ public class ScriptProperty extends AbstractWidgetProperty {
 			for(ScriptData sd : value.getScriptList()){
 				for(Object pv : sd.getPVList().toArray()){
 					PVTuple pvTuple = (PVTuple)pv;
-					String newPV = MacrosUtil.replaceMacros(widgetModel, pvTuple.pvName);
+					String newPV = OPIBuilderMacroUtil.replaceMacros(widgetModel, pvTuple.pvName);
 					if(!newPV.equals(pvTuple.pvName)){
 						int i= sd.getPVList().indexOf(pv);
 						sd.getPVList().remove(pv);

@@ -2,7 +2,7 @@ package org.csstudio.opibuilder.properties;
 
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.properties.support.MultiLineTextPropertyDescriptor;
-import org.csstudio.opibuilder.util.MacrosUtil;
+import org.csstudio.opibuilder.util.OPIBuilderMacroUtil;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 import org.jdom.Element;
@@ -69,7 +69,7 @@ public class StringProperty extends AbstractWidgetProperty {
 	@Override
 	public Object getPropertyValue() {
 		if(widgetModel !=null && widgetModel.getExecutionMode() == ExecutionMode.RUN_MODE)
-			return MacrosUtil.replaceMacros(
+			return OPIBuilderMacroUtil.replaceMacros(
 					widgetModel, (String) super.getPropertyValue());
 		else
 			return super.getPropertyValue();
