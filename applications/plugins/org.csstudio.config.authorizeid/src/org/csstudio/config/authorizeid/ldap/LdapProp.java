@@ -1,11 +1,12 @@
 package org.csstudio.config.authorizeid.ldap;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
 import org.csstudio.config.authorizeid.AuthorizeIdEntry;
-import org.csstudio.utility.ldap.reader.ErgebnisListe;
+import org.csstudio.utility.ldap.reader.LdapResultList;
 import org.csstudio.utility.ldap.reader.LDAPReader;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
@@ -16,13 +17,13 @@ public class LdapProp implements Observer {
 	
 	private LDAPReader _ldapr;
 	
-	private ErgebnisListe _ergebnisListe = new ErgebnisListe();
+	private LdapResultList _ergebnisListe = new LdapResultList();
 	
-	private ArrayList<String> er;
+	private List<String> _er;
 	
 	private String[] stringArray;
 	
-	ArrayList<AuthorizeIdEntry> al = new ArrayList<AuthorizeIdEntry>();
+	List<AuthorizeIdEntry> al = new ArrayList<AuthorizeIdEntry>();
 	
 	/**
 	 * Return attributes from LDAP.
@@ -86,10 +87,10 @@ public class LdapProp implements Observer {
 	 * Update() is executed when notifyView() is called.
 	 */
 	public void update(Observable arg0, Object arg1) {
-		er = _ergebnisListe.getAnswer();
+		_er = _ergebnisListe.getAnswer();
 
 		// change ArrayList to Array
-        stringArray = (String[])er.toArray(new String[er.size()]);
+        stringArray = (String[])_er.toArray(new String[_er.size()]);
         
 		for (int i = 0; i < stringArray.length; i++) {
 			String eaig = null;
