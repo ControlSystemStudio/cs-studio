@@ -25,6 +25,7 @@
 package org.csstudio.utility.tine.reader;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.pvs.ControlSystemEnum;
@@ -48,7 +49,7 @@ public class TineReader extends Job {
 	/** The name of {@link ControlSystemItem}.*/
 	private String _name;
 	/** List with the read elements. */
-    private NameSpaceResultListTine _resaultList;
+    private NameSpaceResultListTine _resultList;
     /** Not used !? */
 	private String _type;
      
@@ -71,9 +72,9 @@ public class TineReader extends Job {
         	_type="";
         }
         if(liste!=null){
-        	_resaultList = liste;	
+        	_resultList = liste;	
         }else{
-        	_resaultList = new NameSpaceResultListTine();
+        	_resultList = new NameSpaceResultListTine();
         }
         CentralLogger.getInstance().debug(this,"name:"+_name);        
         CentralLogger.getInstance().debug(this,"Type:"+_type);
@@ -90,7 +91,7 @@ public class TineReader extends Job {
      * Read the data from Tine Name Server.
      */
     public final void read(){
-    	ArrayList<ControlSystemItem> csi = new ArrayList<ControlSystemItem>();
+    	List<ControlSystemItem> csi = new ArrayList<ControlSystemItem>();
     	String[] content;
     	String[] path = _type.split(",");
     	CentralLogger.getInstance().debug(this,"Name: '"+_name+"'\t Type: '"+_type+"'\t länge: "+path.length);
@@ -162,7 +163,7 @@ public class TineReader extends Job {
     	}else{
     		CentralLogger.getInstance().warn(this,"No Elements found");
     	}
-    	_resaultList.setResultList(csi);
+    	_resultList.setCSIResultList(csi);
     	tine=null;
     	content=null;
     	path=null;

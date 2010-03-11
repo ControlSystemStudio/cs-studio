@@ -25,6 +25,7 @@
 package org.csstudio.utility.tine.reader;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.csstudio.utility.namespace.utility.ControlSystemItem;
 import org.csstudio.utility.namespace.utility.NameSpaceResultList;
@@ -38,13 +39,14 @@ import org.csstudio.utility.namespace.utility.NameSpaceResultList;
 public class NameSpaceResultListTine extends NameSpaceResultList {
     
 	/** The list whit Result from Tine namespace server.*/
-    private ArrayList<ControlSystemItem> _ergbnis = new ArrayList<ControlSystemItem>();
+    private List<ControlSystemItem> _csiResult = new ArrayList<ControlSystemItem>();
+    
     
     /** {@inheritDoc} */
     @Override
 	public final NameSpaceResultList copy() {
         NameSpaceResultListTine nsrlt = new NameSpaceResultListTine();
-        nsrlt.setCSIResultList(_ergbnis);
+        nsrlt.setCSIResultList(_csiResult);
         return nsrlt;    }
 
     /** {@inheritDoc}*/
@@ -55,8 +57,8 @@ public class NameSpaceResultListTine extends NameSpaceResultList {
 
     /** {@inheritDoc}*/
     @Override
-	public final ArrayList<ControlSystemItem> getResultList() {
-        return _ergbnis;
+	public final List<ControlSystemItem> getCSIResultList() {
+        return _csiResult;
     }
 
     /** {@inheritDoc}*/
@@ -66,39 +68,27 @@ public class NameSpaceResultListTine extends NameSpaceResultList {
         notifyObservers();
     }
 
+    /**
+     * Copies the list of {@link ControlSystemItem}. 
+     * {@inheritDoc}*/
+	public final void setCSIResultList(final List<ControlSystemItem> resultList) {
+    	
+    	_csiResult = new ArrayList<ControlSystemItem>(resultList);			
+        setChanged();
+        notifyObservers();
+    }
+    
     /** resultList a filled only String or only {@link ControlSystemItem}. 
      * {@inheritDoc}*/
     @Override
-	public final void setResultList(final ArrayList resultList) {
-    	if (resultList.get(0) instanceof String) {
-    		for (String name : (ArrayList<String>)resultList) {
-				_ergbnis.add(new ControlSystemItem(name,name));
-			}
-		}else if (resultList.get(0) instanceof ControlSystemItem) {
-	    	_ergbnis.addAll((ArrayList<ControlSystemItem>)resultList);			
+	public final void setResultList(final List<String> resultList) {
+    	
+    	_csiResult = new ArrayList<ControlSystemItem>();
+		for (String name : resultList) {
+			_csiResult.add(new ControlSystemItem(name, name));
 		}
         setChanged();
         notifyObservers();
     }
-
-    /** alternate from to fill the result list.
-     * @see NameSpaceResultList#setResultList(ArrayList)
-     * @param resultList A list whit results.
-     *  */
-    public final void setCSIResultList(final ArrayList<ControlSystemItem> resultList) {
-        this._ergbnis.addAll(resultList);
-        setChanged();
-        notifyObservers();
-    }
-
-//    /** alternate from to fill the result list.
-//     * @see NameSpaceResultList#setResultList(ArrayList) 
-//     * @param resultList A list whit results.
-//     * @param is used to      */
-//    public final void setResultList(final ArrayList<ControlSystemItem> resultList,final boolean div) {
-//
-//        setChanged();
-//        notifyObservers();
-//    }
 
 }
