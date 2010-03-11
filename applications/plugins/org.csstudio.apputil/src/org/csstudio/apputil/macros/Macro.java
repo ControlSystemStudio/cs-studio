@@ -12,8 +12,11 @@ import java.util.regex.Pattern;
  *  @author Kay Kasemir
  *  
  *    reviewed by Delphy 01/29/09
+ *  @deprecated Use {@link MacroUtil}
+ *  @see MacroUtilTest
  */
 @SuppressWarnings("nls")
+@Deprecated
 public class Macro
 {
     /** Macro name and replacement value */

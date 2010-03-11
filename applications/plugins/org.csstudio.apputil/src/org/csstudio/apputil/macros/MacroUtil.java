@@ -11,12 +11,13 @@ import java.util.Stack;
  * @author Xihui Chen
  *
  */
+@SuppressWarnings("nls")
 public class MacroUtil {
 
 	
-	private static final String MACRO_RIGHT_PART = "[)}]"; //$NON-NLS-1$
+	private static final String MACRO_RIGHT_PART = "[)}]";
 
-	private static final String MACRO_LEFT_PART = "\\$[{(]"; //$NON-NLS-1$
+	private static final String MACRO_LEFT_PART = "\\$[{(]";
 	
 	
 	/**Replace macros in String.
