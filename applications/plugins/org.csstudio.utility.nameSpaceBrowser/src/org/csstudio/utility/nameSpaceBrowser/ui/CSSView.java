@@ -23,6 +23,7 @@ package org.csstudio.utility.nameSpaceBrowser.ui;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -87,504 +88,507 @@ import org.eclipse.ui.PlatformUI;
 
 public class CSSView extends Composite implements Observer {
 
-    private static final int JAVA_REG_EXP = 1;
-    private static final int JAVA_REG_EXP_NO_CASE = 2;
-    private static final int SIMPLE_WIN = 3;
+	class myLabelProvider implements ILabelProvider {
 
-    // UI elements
-    private Display disp;
-    private Composite parent;
-    private Group group;
-    private Text filter;
-    private NameSpaceResultList ergebnisListe;
+		public void addListener(final ILabelProviderListener listener) {
+		}
 
-//    private ListViewer listViewer;
-    private TableViewer listViewer;
-    private boolean haveChildern = false;
-    private boolean haveFixFirst = true;
-    private CSSView children;
-    private Automat automat;
-    private NameSpace nameSpace;
-    private LinkedHashMap<String, ControlSystemItem> itemList;
-    private int start = -1;
+		public void dispose() {
+		}
 
-    private IWorkbenchPartSite site;
-    private String defaultPVFilter;
+		public Image getImage(final Object element) {
+			return null;
+		}
 
-    private CSSViewParameter para;
-    private String[] headlines;
-    private int level;
-    private String _fixFirst;
+		public String getText(final Object element) {
+			if (element instanceof IControlSystemItem) {
+				final String[] name = ((IControlSystemItem) element).getName().split("[/ ]");
+				return name[name.length - 1];
+			} else
+				return element.toString();
+		}
 
-    class myLabelProvider implements ILabelProvider {
+		public boolean isLabelProperty(final Object element, final String property) {
+			return false;
+		}
 
-        public Image getImage(Object element) {
-            return null;
-        }
+		public void removeListener(final ILabelProviderListener listener) {
+		}
 
-        public String getText(Object element) {
-            if (element instanceof IControlSystemItem) {
-                String[] name = ((IControlSystemItem) element).getName().split("[/ ]");
-                return name[name.length - 1];
-            } else
-                return element.toString();
-        }
+	}
+	private static final int JAVA_REG_EXP = 1;
+	private static final int JAVA_REG_EXP_NO_CASE = 2;
 
-        public void addListener(ILabelProviderListener listener) {
-        }
+	private static final int SIMPLE_WIN = 3;
+	// UI elements
+	private final Display disp;
+	private final Composite parent;
+	private Group group;
+	private Text filter;
 
-        public void dispose() {
-        }
+	private final NameSpaceResultList ergebnisListe;
+	//    private ListViewer listViewer;
+	private TableViewer listViewer;
+	private boolean haveChildern = false;
+	private boolean haveFixFirst = true;
+	private CSSView children;
+	private final Automat automat;
+	private final NameSpace nameSpace;
+	private LinkedHashMap<String, ControlSystemItem> itemList;
 
-        public boolean isLabelProperty(Object element, String property) {
-            return false;
-        }
+	private int start = -1;
+	private final IWorkbenchPartSite site;
 
-        public void removeListener(ILabelProviderListener listener) {
-        }
+	private String defaultPVFilter;
+	private CSSViewParameter para;
+	private final String[] headlines;
+	private final int level;
 
-    }
+	private String _fixFirst;
 
-    private CSSView(final Composite parent, Automat automat, NameSpace nameSpace,
-            IWorkbenchPartSite site, String defaultFilter, String[] headlines, int level,
-            NameSpaceResultList resultList) {
-        super(parent, SWT.NONE);
-        disp = parent.getDisplay();
+	public CSSView(final Composite parent, final Automat automat, final NameSpace nameSpace,
+			final IWorkbenchPartSite site, final String defaultFilter, final String selection, final String[] headlines,
+			final int level, final NameSpaceResultList resultList) {
+		this(parent, automat, nameSpace, site, defaultFilter, headlines, level, resultList);
+		// Make a Textfield to Filter the list. Can text drop
+		makeFilterField();
 
-        this.automat = automat;
-        this.nameSpace = nameSpace;
-        this.parent = parent;
-        this.site = site;
-        this.headlines = headlines;
-        this.level = level;
-        defaultPVFilter = defaultFilter;
-        ergebnisListe = resultList;
-        ergebnisListe.addObserver(this);
-        init();
-    }
+		//
+		makeListField(selection);
+	}
 
-    public CSSView(final Composite parent, Automat automat, NameSpace nameSpace,
-            IWorkbenchPartSite site, String defaultFilter, String selection, String[] headlines,
-            int level, NameSpaceResultList resultList, String fixFrist) {
-        this(parent, automat, nameSpace, site, defaultFilter, headlines, level, resultList);
-        haveFixFirst = true;
-        _fixFirst = fixFrist;
-        // Make a Textfield to Filter the list. Can text drop
-        makeFilterField();
-        //
-        makeListField(selection);
-    }
+	public CSSView(final Composite parent, final Automat automat, final NameSpace nameSpace,
+			final IWorkbenchPartSite site, final String defaultFilter, final String selection, final String[] headlines,
+			final int level, final NameSpaceResultList resultList, final String fixFrist) {
+		this(parent, automat, nameSpace, site, defaultFilter, headlines, level, resultList);
+		haveFixFirst = true;
+		_fixFirst = fixFrist;
+		// Make a Textfield to Filter the list. Can text drop
+		makeFilterField();
+		//
+		makeListField(selection);
+	}
 
-    public CSSView(final Composite parent, Automat automat, NameSpace nameSpace,
-            IWorkbenchPartSite site, String defaultFilter, String selection, String[] headlines,
-            int level, NameSpaceResultList resultList) {
-        this(parent, automat, nameSpace, site, defaultFilter, headlines, level, resultList);
-        // Make a Textfield to Filter the list. Can text drop
-        makeFilterField();
+	private CSSView(final Composite parent, final Automat automat, final NameSpace nameSpace,
+			final IWorkbenchPartSite site, final String defaultFilter, final String[] headlines, final int level,
+			final NameSpaceResultList resultList) {
+		super(parent, SWT.NONE);
+		disp = parent.getDisplay();
 
-        //
-        makeListField(selection);
-    }
+		this.automat = automat;
+		this.nameSpace = nameSpace;
+		this.parent = parent;
+		this.site = site;
+		this.headlines = headlines;
+		this.level = level;
+		defaultPVFilter = defaultFilter;
+		ergebnisListe = resultList;
+		ergebnisListe.addObserver(this);
+		init();
+	}
 
-    /**
-     * @param selection
-     * 
-     */
-    private void makeListField(String selection) {
-        para = getParameter(selection);
+	@Override
+	/**
+	 *  dispose self and Children
+	 */
+	public void dispose() {
+		if (haveChildern) {
+			haveChildern = false;
+			children.dispose();
+			while (!children.isDisposed()) {
+			}
+		}
 
-        Zustand zu = automat.getZustand();
-        if (zu == Zustand.RECORD) {
-//            listViewer = new ListViewer(group, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
-            listViewer = new TableViewer(group, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
-        } else {
-//            listViewer = new ListViewer(group, SWT.BORDER | SWT.SINGLE | SWT.V_SCROLL);
-            listViewer = new TableViewer(group, SWT.BORDER | SWT.SINGLE | SWT.V_SCROLL);
-        }
-        listViewer.getControl().getStyle();
-//        listViewer.getList().setSize(getClientArea().x - 100, getClientArea().y - 100);
-        listViewer.getTable().setSize(getClientArea().x - 100, getClientArea().y - 100);
-//        listViewer.getList().addPaintListener(new PaintListener() {
-        listViewer.getTable().addPaintListener(new PaintListener() {
-            public void paintControl(PaintEvent e) {
-//                listViewer.getList().setSize(getSize().x - 16,
-                listViewer.getTable().setSize(getSize().x - 16,
-                        getSize().y - (filter.getSize().y + 31));
-            }
-        });
-        listViewer.setLabelProvider(new myLabelProvider());
-        listViewer.setContentProvider(new ArrayContentProvider());
-        listViewer.setSorter(new ViewerSorter());
-//        listViewer.getList().setToolTipText(Messages.getString("CSSView_ToolTip2"));
-        listViewer.getTable().setToolTipText(Messages.getString("CSSView_ToolTip2"));
+		((GridLayout) parent.getLayout()).numColumns--;
+		super.dispose();
+		parent.layout(false);
 
-        nameSpace.setName(para.name);
-        nameSpace.setFilter(para.filter);
-        _fixFirst = para.fixFirst;
-        nameSpace.setErgebnisListe(ergebnisListe);
-        nameSpace.setSelection(selection);
-        nameSpace.start();
+	}
 
-//        listViewer.getList().addKeyListener(new KeyListener() {
-        listViewer.getTable().addKeyListener(new KeyListener() {
-            public void keyReleased(KeyEvent e) {
-                if (e.keyCode == SWT.F1) {
-                    PlatformUI.getWorkbench().getHelpSystem().displayDynamicHelp();
-                }
-            }
+	/*****************************
+	 * 
+	 * @param list
+	 *            Fill the list with ProcessVariable or ControlSystemItem
+	 * 
+	 */
+	private void fillItemList(final List<ControlSystemItem> list) {
+		if (list == null)
+			return;
+		itemList = new LinkedHashMap<String, ControlSystemItem>();
+		if (para.newCSSView && haveFixFirst) {
+			if (_fixFirst == null) {
+				start = 0;
+				itemList
+				.put(
+						Messages.getString("CSSView.All"), new ControlSystemItem(Messages.getString("CSSView.All"), para.filter + "ALL,")); //$NON-NLS-1$ //$NON-NLS-2$
+			} else if (_fixFirst.trim().length() > 0) {
+				itemList.put(_fixFirst, new ControlSystemItem(_fixFirst, para.filter + _fixFirst)); //$NON-NLS-1$ //$NON-NLS-2$
+			}
 
-            public void keyPressed(KeyEvent e) {
-            }
-        });
-    }
+		} else {
+			filter.setText(defaultPVFilter);
+		}
+		boolean first = true;
+		for (final ControlSystemItem row : list) {
+			if (row instanceof ProcessVariable) {
+				final ProcessVariable pv = (ProcessVariable) row;
+				itemList.put(pv.getName(), pv);
+			} else {
+				itemList.put(row.getName(), row);
+			}
+			if (first) {
+				first = false;
+				group.setText(headlines[level]);
+			}
+		}
+		System.out.println("nothing");
+	}
 
-    private void init() {
-        // set Layout
-        this.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, false, true, 1, 1));
-        this.setLayout(new FillLayout());
-        group = new Group(this, SWT.LINE_SOLID);
-        group.setLayout(new GridLayout(1, false));
+	public Group getGroup() {
+		return group;
+	}
 
-    }
+	//    public org.eclipse.swt.widgets.List getList() {
+	//        return listViewer.getTable();
+	//    }
+	public org.eclipse.swt.widgets.Table getList() {
+		return listViewer.getTable();
+	}
 
-    private void makeFilterField() {
-        filter = new Text(group, SWT.SINGLE | SWT.BORDER);
-        filter.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
-        filter.setToolTipText(Messages.getString("CSSView_ToolTip1"));
-        // Eclipse
-        int operations = DND.DROP_MOVE | DND.DROP_COPY | DND.DROP_DEFAULT;
-        DropTarget target = new DropTarget(filter, operations);
+	/**
+	 * @param selection
+	 * @return CSSViewParameter
+	 */
+	private CSSViewParameter getParameter(final String selection) {
+		return automat.goDown(Ereignis.DOWN, selection);
+	}
 
-        // Receive data in Text or File format
-        final TextTransfer textTransfer = TextTransfer.getInstance();
-        target.setTransfer(new Transfer[] { textTransfer });
+	private void init() {
+		// set Layout
+		this.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, false, true, 1, 1));
+		this.setLayout(new FillLayout());
+		group = new Group(this, SWT.LINE_SOLID);
+		group.setLayout(new GridLayout(1, false));
 
-        target.addDropListener(new DropTargetListener() {
-            public void dragEnter(DropTargetEvent event) {
-                if (event.detail == DND.DROP_DEFAULT) {
-                    if ((event.operations & DND.DROP_COPY) != 0) {
-                        event.detail = DND.DROP_COPY;
-                    } else {
-                        event.detail = DND.DROP_NONE;
-                    }
-                }
-            }
+	}
 
-            public void dragOver(DropTargetEvent event) {
-            }
+	// make a new CSSView Children
+	/**
+	 * @param parameter
+	 */
+	protected void makeChildren(final CSSViewParameter parameter) {
+		parent.setRedraw(false);
+		// Have a Children, destroy it.
+		if (haveChildern) {
+			children.dispose();
+			while (!children.isDisposed()) {
+				;
+			}
+		}
+		// make new Children
 
-            public void dragOperationChanged(DropTargetEvent event) {
-                if (event.detail == DND.DROP_DEFAULT) {
-                    if ((event.operations & DND.DROP_COPY) != 0) {
-                        event.detail = DND.DROP_COPY;
-                    } else {
-                        event.detail = DND.DROP_NONE;
-                    }
-                }
-            }
+		((GridLayout) parent.getLayout()).numColumns++;
+		// The first element is the "All" element
+		//        if (listViewer.getList().getSelectionIndex() > start || _fixFirst != null) {
+		if (listViewer.getTable().getSelectionIndex() > start || _fixFirst != null) {
+			if (itemList.get(listViewer.getSelection().toString().substring(1,
+					listViewer.getSelection().toString().length() - 1)) instanceof ProcessVariable) {
+				final ProcessVariable pv = (ProcessVariable) itemList
+				.get(listViewer.getSelection().toString().substring(1,
+						listViewer.getSelection().toString().length() - 1));
+				//				children = new CSSView(parent, automat, nameSpace,site,defaultPVFilter,pv.getPath()+",",headlines,level+1, ergebnisListe.getNew()); //$NON-NLS-1$
+				children = new CSSView(parent, automat, nameSpace, site, defaultPVFilter, pv
+						.getPath(), headlines, level + 1, ergebnisListe.getNew()); //$NON-NLS-1$
+			} else {
+				if (_fixFirst == null) {
+					final ControlSystemItem csi = itemList.get(listViewer
+							.getSelection().toString().substring(1,
+									listViewer.getSelection().toString().length() - 1));
+					//					children = new CSSView(parent, automat, nameSpace,site,defaultPVFilter,csi.getPath()+",",headlines,level+1,ergebnisListe.getNew()); //$NON-NLS-1$
+					children = new CSSView(parent, automat, nameSpace, site, defaultPVFilter, csi
+							.getPath(), headlines, level + 1, ergebnisListe.getNew()); //$NON-NLS-1$
+				} else {
+					final ControlSystemItem csi = itemList.get(listViewer
+							.getSelection().toString().substring(1,
+									listViewer.getSelection().toString().length() - 1));
+					//					children = new CSSView(parent, automat, nameSpace,site,defaultPVFilter,csi.getPath()+",",headlines,level+1,ergebnisListe.getNew(),_fixFirst); //$NON-NLS-1$
+					children = new CSSView(parent, automat, nameSpace, site, defaultPVFilter, csi
+							.getPath(), headlines, level + 1, ergebnisListe.getNew(), _fixFirst); //$NON-NLS-1$
+				}
 
-            public void dragLeave(DropTargetEvent event) {
-            }
+			}
+		} else {
+			final String df = itemList.values().toArray(new ControlSystemItem[0])[1].getPath().split("=")[0] + "=*,"; //$NON-NLS-1$ //$NON-NLS-2$
+			children = new CSSView(parent, automat, nameSpace, site, defaultPVFilter, df,
+					headlines, level + 1, ergebnisListe.getNew()); //$NON-NLS-1$
+		}
+		haveChildern = true;
 
-            public void dropAccept(DropTargetEvent event) {
-            }
+		parent.setRedraw(true);
+	}
 
-            public void drop(DropTargetEvent event) {
-                if (textTransfer.isSupportedType(event.currentDataType)) {
-                    filter.insert((String) event.data);
-                }
-            }
+	// Make the MB3 ContextMenu
+	private void makeContextMenu() {
+		final MenuManager manager = new MenuManager("#PopupMenu"); //$NON-NLS-1$
+		final Control contr = listViewer.getControl();
+		manager.addMenuListener(new IMenuListener() {
+			public void menuAboutToShow(final IMenuManager manager) {
+				manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+			}
+		});
+		// contr.addMouseListener(new MouseAdapter() {
+		// @Override
+		// public void mouseDown(MouseEvent e) {
+		// super.mouseDown(e);
+		// if (e.button == 3) {
+		// list.getSelection();
+		// //
+		// list.getList().setSelection(e.y/list.getList().getItemHeight()+list.getList().getVerticalBar().getSelection());
+		// }
+		// }
+		// });
+		final Menu menu = manager.createContextMenu(contr);
+		contr.setMenu(menu);
+		site.registerContextMenu(manager, listViewer);
+	}
 
-        });
+	private void makeFilterField() {
+		filter = new Text(group, SWT.SINGLE | SWT.BORDER);
+		filter.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
+		filter.setToolTipText(Messages.getString("CSSView_ToolTip1"));
+		// Eclipse
+		final int operations = DND.DROP_MOVE | DND.DROP_COPY | DND.DROP_DEFAULT;
+		final DropTarget target = new DropTarget(filter, operations);
 
-        filter.addKeyListener(new KeyListener() {
-            public void keyReleased(KeyEvent e) {
-                if (e.keyCode == SWT.CR) {
-                    listViewer.setInput(new ArrayList<Object>(itemList.values()).toArray());
-                } else if (e.keyCode == SWT.F1) {
-                    PlatformUI.getWorkbench().getHelpSystem().displayDynamicHelp();
-                }
-            }
+		// Receive data in Text or File format
+		final TextTransfer textTransfer = TextTransfer.getInstance();
+		target.setTransfer(new Transfer[] { textTransfer });
 
-            public void keyPressed(KeyEvent e) {
-            }
+		target.addDropListener(new DropTargetListener() {
+			public void dragEnter(final DropTargetEvent event) {
+				if (event.detail == DND.DROP_DEFAULT) {
+					if ((event.operations & DND.DROP_COPY) != 0) {
+						event.detail = DND.DROP_COPY;
+					} else {
+						event.detail = DND.DROP_NONE;
+					}
+				}
+			}
 
-        });
+			public void dragLeave(final DropTargetEvent event) {
+			}
 
-    }
+			public void dragOperationChanged(final DropTargetEvent event) {
+				if (event.detail == DND.DROP_DEFAULT) {
+					if ((event.operations & DND.DROP_COPY) != 0) {
+						event.detail = DND.DROP_COPY;
+					} else {
+						event.detail = DND.DROP_NONE;
+					}
+				}
+			}
 
-    /**
-     * @param selection
-     * @return CSSViewParameter
-     */
-    private CSSViewParameter getParameter(String selection) {
-        return automat.goDown(Ereignis.DOWN, selection);
-    }
+			public void dragOver(final DropTargetEvent event) {
+			}
 
-    /*****************************
-     * 
-     * @param list
-     *            Fill the list with ProcessVariable or ControlSystemItem
-     * 
-     */
-    private void fillItemList(ArrayList<ControlSystemItem> list) {
-        if (list == null)
-            return;
-        itemList = new LinkedHashMap<String, ControlSystemItem>();
-        if (para.newCSSView && haveFixFirst) {
-            if (_fixFirst == null) {
-                start = 0;
-                itemList
-                        .put(
-                                Messages.getString("CSSView.All"), new ControlSystemItem(Messages.getString("CSSView.All"), para.filter + "ALL,")); //$NON-NLS-1$ //$NON-NLS-2$
-            } else if (_fixFirst.trim().length() > 0) {
-                itemList.put(_fixFirst, new ControlSystemItem(_fixFirst, para.filter + _fixFirst)); //$NON-NLS-1$ //$NON-NLS-2$
-            }
+			public void drop(final DropTargetEvent event) {
+				if (textTransfer.isSupportedType(event.currentDataType)) {
+					filter.insert((String) event.data);
+				}
+			}
 
-        } else
-            filter.setText(defaultPVFilter);
-        boolean first = true;
-        for (ControlSystemItem row : list) {
-            if (row instanceof ProcessVariable) {
-                ProcessVariable pv = (ProcessVariable) row;
-                itemList.put(pv.getName(), pv);
-            } else {
-                itemList.put(row.getName(), row);
-            }
-            if (first) {
-                first = false;
-                group.setText(headlines[level]);
-            }
-        }
-        System.out.println("nothing");
-    }
+			public void dropAccept(final DropTargetEvent event) {
+			}
 
-    private void workItemList() {
-        // fill the List
-        if (itemList != null) {
-            listViewer.setInput(new ArrayList<ControlSystemItem>(itemList.values())
-                    .toArray(new ControlSystemItem[0]));
-        }
+		});
 
-        listViewer.addFilter(new ViewerFilter() {
-            @Override
-            public boolean select(Viewer viewer, Object parentElement, Object element) {
-                return true;
-            }
+		filter.addKeyListener(new KeyListener() {
+			public void keyPressed(final KeyEvent e) {
+			}
 
-            @Override
-            public Object[] filter(Viewer viewer, Object parent, Object[] elements) {
-                String search = filter.getText().trim();
-                ArrayList<Object> al = new ArrayList<Object>();
-                for (Object element : elements) {
-                    String name = ""; //$NON-NLS-1$
-                    if (element instanceof IControlSystemItem) {
-                        String[] names = ((IControlSystemItem) element).getName().split("[/ ]");
-                        name = names[names.length - 1];
-                        // name= ((IControlSystemItem) element).getName();
-                    }
-                    if (search.length() == 0 || searchString(name, search)) {
-                        al.add(element);
-                    }
-                }
-                return al.toArray();
-            }
-        });
+			public void keyReleased(final KeyEvent e) {
+				if (e.keyCode == SWT.CR) {
+					listViewer.setInput(new ArrayList<Object>(itemList.values()).toArray());
+				} else if (e.keyCode == SWT.F1) {
+					PlatformUI.getWorkbench().getHelpSystem().displayDynamicHelp();
+				}
+			}
 
-        Zustand zu = automat.getZustand();
-        if (zu != Zustand.RECORD) {
-            listViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-                public void selectionChanged(SelectionChangedEvent event) {
-                    // TODO: Checken ob dadurch vermieden werden kann das ein Elemente zu häufig
-                    // angeklickt werden kann.
-                    if (para.newCSSView) {
-                        parent.setEnabled(false);
-                        makeChildren(para);
-                        parent.setEnabled(true);
-                    }
-                }
-            });
-        }
+		});
 
-        parent.layout();
-        parent.pack();
+	}
 
-        // Make List Drageble
-//        new ProcessVariableDragSource(listViewer.getControl(), listViewer);
-//        new ProcessVariableDragSource(listViewer.getList(), listViewer);
-        new ProcessVariableDragSource(listViewer.getTable(), listViewer);
-        // MB3
-        makeContextMenu();
+	/**
+	 * @param selection
+	 * 
+	 */
+	private void makeListField(final String selection) {
+		para = getParameter(selection);
 
-    }
+		final Zustand zu = automat.getZustand();
+		if (zu == Zustand.RECORD) {
+			//            listViewer = new ListViewer(group, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
+			listViewer = new TableViewer(group, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
+		} else {
+			//            listViewer = new ListViewer(group, SWT.BORDER | SWT.SINGLE | SWT.V_SCROLL);
+			listViewer = new TableViewer(group, SWT.BORDER | SWT.SINGLE | SWT.V_SCROLL);
+		}
+		listViewer.getControl().getStyle();
+		//        listViewer.getList().setSize(getClientArea().x - 100, getClientArea().y - 100);
+		listViewer.getTable().setSize(getClientArea().x - 100, getClientArea().y - 100);
+		//        listViewer.getList().addPaintListener(new PaintListener() {
+		listViewer.getTable().addPaintListener(new PaintListener() {
+			public void paintControl(final PaintEvent e) {
+				//                listViewer.getList().setSize(getSize().x - 16,
+				listViewer.getTable().setSize(getSize().x - 16,
+						getSize().y - (filter.getSize().y + 31));
+			}
+		});
+		listViewer.setLabelProvider(new myLabelProvider());
+		listViewer.setContentProvider(new ArrayContentProvider());
+		listViewer.setSorter(new ViewerSorter());
+		//        listViewer.getList().setToolTipText(Messages.getString("CSSView_ToolTip2"));
+		listViewer.getTable().setToolTipText(Messages.getString("CSSView_ToolTip2"));
 
-    /**
-     * @param serach1
-     *            this String a not modified (by no Casesensitivity toLowerCase)
-     * @param regExp
-     *            this String a modified
-     * @return true match search and regExp and false don´t match
-     */
-    protected boolean searchString(String search1, String regExp) {
-        return searchString(search1, regExp, SIMPLE_WIN);
-    }
+		nameSpace.setName(para.name);
+		nameSpace.setFilter(para.filter);
+		_fixFirst = para.fixFirst;
+		nameSpace.setErgebnisListe(ergebnisListe);
+		nameSpace.setSelection(selection);
+		nameSpace.start();
 
-    /**
-     * @param serach1
-     *            this String a not modified (by no Casesensitivity toLowerCase)
-     * @param regExp
-     *            this String a modified by searchType
-     * @param searchTyp
-     *            :
-     * 
-     *            <pre>
-     * SIMPLE_WIN: Search used only * and ? as Wildcard
-     * JAVA_REG_EXP: used String match
-     * JAVA_REG_EXP_NO_CASE: used String match after toLowerCase
-     * </pre>
-     * @return true match search and regExp and false don´t match
-     */
+		//        listViewer.getList().addKeyListener(new KeyListener() {
+		listViewer.getTable().addKeyListener(new KeyListener() {
+			public void keyPressed(final KeyEvent e) {
+			}
 
-    protected boolean searchString(String search1, String regExp, int searchTyp) {
-        switch (searchTyp) {
-            case JAVA_REG_EXP:
-                return search1.matches(regExp);
-            case JAVA_REG_EXP_NO_CASE:
-                return search1.toLowerCase().matches(regExp.toLowerCase());
-            case SIMPLE_WIN:
-            default:
-                return search1.toLowerCase().matches(
-                        regExp.replace("$", "\\$").replace(".", "\\.").replace("*", ".*").replace(
-                                "?", ".?").toLowerCase()
-                                + ".*");
-        }
+			public void keyReleased(final KeyEvent e) {
+				if (e.keyCode == SWT.F1) {
+					PlatformUI.getWorkbench().getHelpSystem().displayDynamicHelp();
+				}
+			}
+		});
+	}
 
-    }
+	/**
+	 * @param serach1
+	 *            this String a not modified (by no Casesensitivity toLowerCase)
+	 * @param regExp
+	 *            this String a modified
+	 * @return true match search and regExp and false don´t match
+	 */
+	protected boolean searchString(final String search1, final String regExp) {
+		return searchString(search1, regExp, SIMPLE_WIN);
+	}
 
-    // make a new CSSView Children
-    /**
-     * @param parameter
-     */
-    protected void makeChildren(CSSViewParameter parameter) {
-        parent.setRedraw(false);
-        // Have a Children, destroy it.
-        if (haveChildern) {
-            children.dispose();
-            while (!children.isDisposed()) {
-                ;
-            }
-        }
-        // make new Children
+	/**
+	 * @param serach1
+	 *            this String a not modified (by no Casesensitivity toLowerCase)
+	 * @param regExp
+	 *            this String a modified by searchType
+	 * @param searchTyp
+	 *            :
+	 * 
+	 *            <pre>
+	 * SIMPLE_WIN: Search used only * and ? as Wildcard
+	 * JAVA_REG_EXP: used String match
+	 * JAVA_REG_EXP_NO_CASE: used String match after toLowerCase
+	 * </pre>
+	 * @return true match search and regExp and false don´t match
+	 */
 
-        ((GridLayout) parent.getLayout()).numColumns++;
-        // The first element is the "All" element
-//        if (listViewer.getList().getSelectionIndex() > start || _fixFirst != null) {
-        if (listViewer.getTable().getSelectionIndex() > start || _fixFirst != null) {
-            if (itemList.get(listViewer.getSelection().toString().substring(1,
-                    listViewer.getSelection().toString().length() - 1)) instanceof ProcessVariable) {
-                ProcessVariable pv = (ProcessVariable) itemList
-                        .get(listViewer.getSelection().toString().substring(1,
-                                listViewer.getSelection().toString().length() - 1));
-                //				children = new CSSView(parent, automat, nameSpace,site,defaultPVFilter,pv.getPath()+",",headlines,level+1, ergebnisListe.getNew()); //$NON-NLS-1$
-                children = new CSSView(parent, automat, nameSpace, site, defaultPVFilter, pv
-                        .getPath(), headlines, level + 1, ergebnisListe.getNew()); //$NON-NLS-1$
-            } else {
-                if (_fixFirst == null) {
-                    ControlSystemItem csi = (ControlSystemItem) itemList.get(listViewer
-                            .getSelection().toString().substring(1,
-                                    listViewer.getSelection().toString().length() - 1));
-                    //					children = new CSSView(parent, automat, nameSpace,site,defaultPVFilter,csi.getPath()+",",headlines,level+1,ergebnisListe.getNew()); //$NON-NLS-1$
-                    children = new CSSView(parent, automat, nameSpace, site, defaultPVFilter, csi
-                            .getPath(), headlines, level + 1, ergebnisListe.getNew()); //$NON-NLS-1$
-                } else {
-                    ControlSystemItem csi = (ControlSystemItem) itemList.get(listViewer
-                            .getSelection().toString().substring(1,
-                                    listViewer.getSelection().toString().length() - 1));
-                    //					children = new CSSView(parent, automat, nameSpace,site,defaultPVFilter,csi.getPath()+",",headlines,level+1,ergebnisListe.getNew(),_fixFirst); //$NON-NLS-1$
-                    children = new CSSView(parent, automat, nameSpace, site, defaultPVFilter, csi
-                            .getPath(), headlines, level + 1, ergebnisListe.getNew(), _fixFirst); //$NON-NLS-1$
-                }
+	protected boolean searchString(final String search1, final String regExp, final int searchTyp) {
+		switch (searchTyp) {
+		case JAVA_REG_EXP:
+			return search1.matches(regExp);
+		case JAVA_REG_EXP_NO_CASE:
+			return search1.toLowerCase().matches(regExp.toLowerCase());
+		case SIMPLE_WIN:
+		default:
+			return search1.toLowerCase().matches(
+					regExp.replace("$", "\\$").replace(".", "\\.").replace("*", ".*").replace(
+							"?", ".?").toLowerCase()
+							+ ".*");
+		}
 
-            }
-        } else {
-            String df = itemList.values().toArray(new ControlSystemItem[0])[1].getPath().split("=")[0] + "=*,"; //$NON-NLS-1$ //$NON-NLS-2$
-            children = new CSSView(parent, automat, nameSpace, site, defaultPVFilter, df,
-                    headlines, level + 1, ergebnisListe.getNew()); //$NON-NLS-1$
-        }
-        haveChildern = true;
+	}
 
-        parent.setRedraw(true);
-    }
+	// Setzt den Defaultfilter für IProzessVariablen
+	public void setDefaultFilter(final String defaultPVFilter) {
+		this.defaultPVFilter = defaultPVFilter;
+		if (!para.newCSSView) {
+			filter.setText(defaultPVFilter);
+		}
+		if (haveChildern) {
+			children.setDefaultFilter(defaultPVFilter);
+		}
+	}
 
-    public Group getGroup() {
-        return group;
-    }
+	public void update(final Observable arg0, final Object arg1) {
+		disp.syncExec(new Runnable() {
+			public void run() {
+				fillItemList(ergebnisListe.getCSIResultList());
+				workItemList();
+			}
+		});
+	}
 
-//    public org.eclipse.swt.widgets.List getList() {
-//        return listViewer.getTable();
-//    }
-    public org.eclipse.swt.widgets.Table getList() {
-        return listViewer.getTable();
-    }
+	private void workItemList() {
+		// fill the List
+		if (itemList != null) {
+			listViewer.setInput(new ArrayList<ControlSystemItem>(itemList.values())
+					.toArray(new ControlSystemItem[0]));
+		}
 
-    @Override
-    /**
-     *  dispose self and Children
-     */
-    public void dispose() {
-        if (haveChildern) {
-            haveChildern = false;
-            children.dispose();
-            while (!children.isDisposed()) {
-            }
-        }
+		listViewer.addFilter(new ViewerFilter() {
+			@Override
+			public Object[] filter(final Viewer viewer, final Object parent, final Object[] elements) {
+				final String search = filter.getText().trim();
+				final ArrayList<Object> al = new ArrayList<Object>();
+				for (final Object element : elements) {
+					String name = ""; //$NON-NLS-1$
+					if (element instanceof IControlSystemItem) {
+						final String[] names = ((IControlSystemItem) element).getName().split("[/ ]");
+						name = names[names.length - 1];
+						// name= ((IControlSystemItem) element).getName();
+					}
+					if (search.length() == 0 || searchString(name, search)) {
+						al.add(element);
+					}
+				}
+				return al.toArray();
+			}
 
-        ((GridLayout) parent.getLayout()).numColumns--;
-        super.dispose();
-        parent.layout(false);
+			@Override
+			public boolean select(final Viewer viewer, final Object parentElement, final Object element) {
+				return true;
+			}
+		});
 
-    }
+		final Zustand zu = automat.getZustand();
+		if (zu != Zustand.RECORD) {
+			listViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+				public void selectionChanged(final SelectionChangedEvent event) {
+					// TODO: Checken ob dadurch vermieden werden kann das ein Elemente zu häufig
+					// angeklickt werden kann.
+					if (para.newCSSView) {
+						parent.setEnabled(false);
+						makeChildren(para);
+						parent.setEnabled(true);
+					}
+				}
+			});
+		}
 
-    // Make the MB3 ContextMenu
-    private void makeContextMenu() {
-        MenuManager manager = new MenuManager("#PopupMenu"); //$NON-NLS-1$
-        Control contr = listViewer.getControl();
-        manager.addMenuListener(new IMenuListener() {
-            public void menuAboutToShow(IMenuManager manager) {
-                manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-            }
-        });
-        // contr.addMouseListener(new MouseAdapter() {
-        // @Override
-        // public void mouseDown(MouseEvent e) {
-        // super.mouseDown(e);
-        // if (e.button == 3) {
-        // list.getSelection();
-        // //
-        // list.getList().setSelection(e.y/list.getList().getItemHeight()+list.getList().getVerticalBar().getSelection());
-        // }
-        // }
-        // });
-        Menu menu = manager.createContextMenu(contr);
-        contr.setMenu(menu);
-        site.registerContextMenu(manager, listViewer);
-    }
+		parent.layout();
+		parent.pack();
 
-    // Setzt den Defaultfilter für IProzessVariablen
-    public void setDefaultFilter(String defaultPVFilter) {
-        this.defaultPVFilter = defaultPVFilter;
-        if (!para.newCSSView)
-            filter.setText(defaultPVFilter);
-        if (haveChildern)
-            children.setDefaultFilter(defaultPVFilter);
-    }
+		// Make List Drageble
+		//        new ProcessVariableDragSource(listViewer.getControl(), listViewer);
+		//        new ProcessVariableDragSource(listViewer.getList(), listViewer);
+		new ProcessVariableDragSource(listViewer.getTable(), listViewer);
+		// MB3
+		makeContextMenu();
 
-    public void update(Observable arg0, Object arg1) {
-        disp.syncExec(new Runnable() {
-            public void run() {
-                fillItemList(ergebnisListe.getResultList());
-                workItemList();
-            }
-        });
-    }
+	}
 }
