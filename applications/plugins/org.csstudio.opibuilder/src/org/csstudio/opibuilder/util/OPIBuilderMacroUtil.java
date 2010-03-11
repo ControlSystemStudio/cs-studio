@@ -2,6 +2,9 @@ package org.csstudio.opibuilder.util;
 
 import java.util.Map;
 
+import org.csstudio.apputil.macros.IMacroTableProvider;
+import org.csstudio.apputil.macros.InfiniteLoopException;
+import org.csstudio.apputil.macros.MacroUtil;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;

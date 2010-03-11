@@ -1,11 +1,8 @@
-package org.csstudio.opibuilder.miscellaneousTest;
+package org.csstudio.apputil.macros;
 
 
 import static org.junit.Assert.assertEquals;
 
-import org.csstudio.opibuilder.util.IMacroTableProvider;
-import org.csstudio.opibuilder.util.InfiniteLoopException;
-import org.csstudio.opibuilder.util.MacroUtil;
 import org.junit.Test;
 
 class TestMacroTableProvider implements IMacroTableProvider{

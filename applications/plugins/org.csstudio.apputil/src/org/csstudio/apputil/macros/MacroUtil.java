@@ -1,9 +1,10 @@
-package org.csstudio.opibuilder.util;
+package org.csstudio.apputil.macros;
 
 import java.util.EmptyStackException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Stack;
+
 
 
 /**The utility functions for macros operations.
@@ -65,7 +66,7 @@ public class MacroUtil {
 		return stringBuilder.toString();
 	}
 	
-	public static String parseMacro(String input, IMacroTableProvider macroTableProvider) throws InfiniteLoopException{
+	private static String parseMacro(String input, IMacroTableProvider macroTableProvider) throws InfiniteLoopException{
 		return parseMacro(input, macroTableProvider, new HashSet<String>());
 	}
 	

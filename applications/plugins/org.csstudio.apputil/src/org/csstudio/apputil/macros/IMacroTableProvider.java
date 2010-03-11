@@ -1,4 +1,4 @@
-package org.csstudio.opibuilder.util;
+package org.csstudio.apputil.macros;
 /**Provides value for a macro.
  * @author Xihui Chen
  *
