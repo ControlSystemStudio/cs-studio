@@ -24,6 +24,7 @@ package org.csstudio.config.savevalue.ui;
 import java.net.SocketTimeoutException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
 import org.csstudio.config.savevalue.service.SaveValueRequest;
@@ -35,20 +36,13 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.platform.security.User;
 import org.csstudio.utility.ldap.reader.IocFinder;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.IJobChangeEvent;
-import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -57,7 +51,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -109,7 +102,7 @@ public class SaveValueDialog extends Dialog {
 	/**
 	 * The name of the IOC.
 	 */
-	private volatile String _iocName;
+	private String _iocName;
 
 	/**
 	 * The label displaying the overall result.
@@ -125,8 +118,6 @@ public class SaveValueDialog extends Dialog {
 	 * The services.
 	 */
 	private SaveValueServiceDescription[] _services;
-
-	private Job _findIocJob;
 	
 	/**
 	 * Creates a new Save Value Dialog.
@@ -184,134 +175,42 @@ public class SaveValueDialog extends Dialog {
 	 */
 	@Override
 	protected final Control createDialogArea(final Composite parent) {
-		final Composite stackParent = new Composite(parent, SWT.NONE);
-		stackParent.setLayoutData(new GridData(GridData.FILL_BOTH));
-		final StackLayout stackLayout = new StackLayout();
-		stackParent.setLayout(stackLayout);
-		
-		Composite waitComposite = new Composite(stackParent, SWT.NONE);
-		GridLayout waitLayout = new GridLayout(1, false);
-		waitLayout.marginHeight = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
-		waitLayout.marginWidth = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
-		waitLayout.verticalSpacing = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
-		waitLayout.horizontalSpacing = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
-		waitComposite.setLayout(waitLayout);
-		waitComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
-		
-		Label waitLabel = new Label(waitComposite, SWT.NONE);
-		waitLabel.setText(Messages.SaveValueDialog_IocSearchPleaseWait);
-		
-		final ProgressBar progressBar = new ProgressBar(waitComposite, SWT.INDETERMINATE);
-		GridData layoutData = new GridData(SWT.BEGINNING, SWT.BEGINNING, false, true);
-		layoutData.widthHint = 200;
-		progressBar.setLayoutData(layoutData);
-		
-		final Composite saveValueComposite = new Composite(stackParent, SWT.NONE);
+		Composite composite = new Composite(parent, SWT.NONE);
 		GridLayout layout = new GridLayout(2, false);
 		layout.marginHeight = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
 		layout.marginWidth = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
 		layout.verticalSpacing = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
 		layout.horizontalSpacing = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
-		saveValueComposite.setLayout(layout);
-		saveValueComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
-		applyDialogFont(saveValueComposite);
-		
-		stackLayout.topControl = waitComposite;
-		stackParent.layout();
-		
-		_findIocJob = new Job(Messages.SaveValueDialog_IocSearchJob) {
-			@Override
-			protected IStatus run(IProgressMonitor monitor) {
-				monitor.beginTask(Messages.SaveValueDialog_IocSearchJob, IProgressMonitor.UNKNOWN);
-				_log.debug(this, "Trying to find IOC for process variable: " + _pv); //$NON-NLS-1$
-				_iocName = IocFinder.getIoc(_pv);
-				monitor.done();
-				if (_iocName != null) {
-					_log.debug(this, "IOC found: " + _iocName); //$NON-NLS-1$
-					return Status.OK_STATUS;
-				} else {
-					if (monitor.isCanceled()) {
-						_log.debug(this, "Search canceled by the user."); //$NON-NLS-1$
-						return Status.CANCEL_STATUS;
-					} else {
-						_log.error(this, "No IOC was found for PV: " + _pv); //$NON-NLS-1$
-						// Note: we return OK because if an error status is
-						// returned, Eclipse tries to display its own error
-						// dialog which immediately disappears when the Save
-						// Value dialog is closed. By returning OK_STATUS, we
-						// can display our own error dialog.
-						return Status.OK_STATUS;
-					}
-				}
-			}
-			
-			@Override
-			protected void canceling() {
-				Thread runner = getThread();
-				if (runner != null) {
-					runner.interrupt();
-				}
-			}
-		};
-		_findIocJob.addJobChangeListener(new JobChangeAdapter() {
-			@Override
-			public void done(final IJobChangeEvent event) {
-				Display.getDefault().asyncExec(new Runnable() {
-					public void run() {
-						_log.debug(this, "Searching IOC directory: job finished"); //$NON-NLS-1$
-						if (_iocName != null) {
-							_ioc.setText(_iocName);
-							stackLayout.topControl = saveValueComposite;
-							stackParent.layout();
-							getButton(IDialogConstants.OK_ID).setEnabled(true);
-						} else if (event.getResult().isOK()) {
-							// Search completed, but IOC was not found
-							stackParent.setVisible(false);
-							MessageDialog.openError(null, Messages.SaveValueDialog_DIALOG_TITLE,
-									NLS.bind(Messages.SaveValueDialog_ERRMSG_IOC_NOT_FOUND, _pv));
-							SaveValueDialog.this.close();
-						} else {
-							// User clicked Cancel before the IOC was found
-							SaveValueDialog.this.close();
-						}
-						
-						// Set job to null. This changes the functionality of
-						// the Cancel button from canceling the find IOC job to
-						// canceling the dialog. Note: this assignment is in the
-						// UI thread to avoid race conditions.
-						_findIocJob = null;
-					}
-				});
-			};
-		});
-		_findIocJob.setSystem(true);
-		_findIocJob.schedule();
+		composite.setLayout(layout);
+		composite.setLayoutData(new GridData(GridData.FILL_BOTH));
+		applyDialogFont(composite);
 		
 		// PV Name
-		Label label = new Label(saveValueComposite, SWT.NONE);
+		Label label = new Label(composite, SWT.NONE);
 		label.setText(Messages.SaveValueDialog_PV_FIELD_LABEL);
-		_processVariable = new Text(saveValueComposite, SWT.BORDER | SWT.READ_ONLY);
+		_processVariable = new Text(composite, SWT.BORDER | SWT.READ_ONLY);
 		_processVariable.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 		_processVariable.setText(_pv);
 		
 		// IOC Name
-		label = new Label(saveValueComposite, SWT.NONE);
+		label = new Label(composite, SWT.NONE);
 		label.setText(Messages.SaveValueDialog_IOC_FIELD_LABEL);
-		_ioc = new Text(saveValueComposite, SWT.BORDER | SWT.READ_ONLY);
+		_ioc = new Text(composite, SWT.BORDER | SWT.READ_ONLY);
 		_ioc.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+		_ioc.setText(_iocName);
 		
 		// value
-		label = new Label(saveValueComposite, SWT.NONE);
+		label = new Label(composite, SWT.NONE);
 		label.setText(Messages.SaveValueDialog_VALUE_FIELD_LABEL);
-		_valueTextField = new Text(saveValueComposite, SWT.BORDER | SWT.READ_ONLY);
+		_valueTextField = new Text(composite, SWT.BORDER | SWT.READ_ONLY);
 		_valueTextField.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 		_valueTextField.setText(_value);
 		
-		Label separator = new Label(saveValueComposite, SWT.HORIZONTAL | SWT.SEPARATOR);
+		Label separator = new Label(composite, SWT.HORIZONTAL | SWT.SEPARATOR);
 		separator.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false, 2, 1));
 		
 		// results table
-		_resultsTable = new Table(saveValueComposite, SWT.BORDER);
+		_resultsTable = new Table(composite, SWT.BORDER);
 		GridData tableLayout = new GridData(SWT.FILL, SWT.BEGINNING, true, false, 2, 1);
 		tableLayout.heightHint = 70;
 		_resultsTable.setLayoutData(tableLayout);
@@ -330,18 +229,18 @@ public class SaveValueDialog extends Dialog {
 		}
 		
 		// overall result
-		_resultImage = new Label(saveValueComposite, SWT.NONE);
+		_resultImage = new Label(composite, SWT.NONE);
 		_resultImage.setLayoutData(new GridData(SWT.RIGHT, SWT.BEGINNING, false, false));
 		// Assign an image here so that the correct size for the label is
 		// computed. The actual image to be displayed is assigned when the
 		// result is displayed.
 		_resultImage.setImage(getErrorImage());
 		_resultImage.setVisible(false);
-		_resultLabel = new Label(saveValueComposite, SWT.NONE);
+		_resultLabel = new Label(composite, SWT.NONE);
 		_resultLabel.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 		_resultLabel.setVisible(false);
 
-		return saveValueComposite;
+		return composite;
 	}
 	
 	/**
@@ -349,9 +248,7 @@ public class SaveValueDialog extends Dialog {
 	 */
 	@Override
 	protected final void createButtonsForButtonBar(final Composite parent) {
-		Button okButton = createButton(parent, IDialogConstants.OK_ID, Messages.SaveValueDialog_SAVE_BUTTON, true);
-		// OK button will be enabled when the IOC for the PV has been found.
-		okButton.setEnabled(false);
+		createButton(parent, IDialogConstants.OK_ID, Messages.SaveValueDialog_SAVE_BUTTON, true);
 		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
 	}
 	
@@ -364,9 +261,32 @@ public class SaveValueDialog extends Dialog {
 			MessageDialog.openError(null, Messages.SaveValueDialog_DIALOG_TITLE, Messages.SaveValueDialog_ERRMSG_NO_REQUIRED_SERVICES);
 			return CANCEL;
 		}
+		if (!findIoc(_pv)) {
+			MessageDialog.openError(null, Messages.SaveValueDialog_DIALOG_TITLE,
+					NLS.bind(Messages.SaveValueDialog_ERRMSG_IOC_NOT_FOUND, _pv));
+			return CANCEL;
+		}
 		return super.open();
 	}
 
+	/**
+	 * Finds the IOC for the PV.
+	 * @param pv 
+	 * 
+	 * @return <code>true</code> if the IOC was found, <code>false</code>
+	 *         otherwise.
+	 */
+	private boolean findIoc(final String pv) {
+		_log.debug(this, "Trying to find IOC for process variable: " + pv); //$NON-NLS-1$
+		_iocName = IocFinder.getEconForEren(pv);
+		if (_iocName == null) {
+			_log.error(this, "No IOC was found for PV: " + pv); //$NON-NLS-1$
+			return false;
+		}
+		_log.debug(this, "IOC found: " + _iocName); //$NON-NLS-1$
+		return true;
+	}
+	
 	/**
 	 * Checks that at least one service is selected as required in the
 	 * preferences.
@@ -399,18 +319,6 @@ public class SaveValueDialog extends Dialog {
 			}
 		}
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void cancelPressed() {
-		if (_findIocJob != null) {
-			_findIocJob.cancel();
-		} else {
-			super.cancelPressed();
-		}
-	}
 
 	/**
 	 * Called when the close button of this dialog has been pressed.
@@ -429,78 +337,102 @@ public class SaveValueDialog extends Dialog {
 		getButton(IDialogConstants.CANCEL_ID).setEnabled(false);
 		_resultsTable.setEnabled(true);
 		
-		Job job = new RemoteMethodCallJob(Messages.SaveValueDialog_SaveValueServiceJob) {
+		Runnable r = new Runnable() {
 			private Registry _reg;
 
-			@Override
-			public IStatus runWithRmiRegistry(Registry registry) {
-				_reg = registry;
+			public void run() {
 				final boolean[] success = new boolean[_services.length];
-				for (int i = 0; i < _services.length; i++) {
-					String result;
-					success[i] = false;
-					try {
-						SaveValueResult srr = callService(_services[i], _value);
-						success[i] = true;
-						String replacedValue = srr.getReplacedValue();
-						if (replacedValue != null) {
-							result = NLS.bind(Messages.SaveValueDialog_SUCCESS_REPLACED, replacedValue);
-						} else {
-							result = Messages.SaveValueDialog_SUCCESS_NEW_ENTRY;
+				try {
+					locateRmiRegistry();
+					for (int i = 0; i < _services.length; i++) {
+						String result;
+						success[i] = false;
+						try {
+							SaveValueResult srr = callService(_services[i], _value);
+							success[i] = true;
+							String replacedValue = srr.getReplacedValue();
+							if (replacedValue != null) {
+								result = NLS.bind(Messages.SaveValueDialog_SUCCESS_REPLACED, replacedValue);
+							} else {
+								result = Messages.SaveValueDialog_SUCCESS_NEW_ENTRY;
+							}
+						} catch (RemoteException e) {
+							Throwable cause = e.getCause();
+							if (cause instanceof SocketTimeoutException) {
+								_log.warn(this, "Remote call to " + _services[i] + " timed out"); //$NON-NLS-1$ //$NON-NLS-2$
+								result = Messages.SaveValueDialog_FAILED_TIMEOUT;
+							} else {
+								_log.error(this, "Remote call to " + _services[i] + " failed with RemoteException", e); //$NON-NLS-1$ //$NON-NLS-2$
+								result = Messages.SaveValueDialog_FAILED_WITH_REMOTE_EXCEPTION + e.getMessage();
+							}
+						} catch (SaveValueServiceException e) {
+							_log.warn(this, "Save Value service " + _services[i] + " reported an error", e); //$NON-NLS-1$ //$NON-NLS-2$
+							result = Messages.SaveValueDialog_FAILED_WITH_SERVICE_ERROR + e.getMessage();
+						} catch (NotBoundException e) {
+							_log.warn(this, "Save value service " + _services[i] + " is not bound in RMI registry"); //$NON-NLS-1$ //$NON-NLS-2$
+							result = Messages.SaveValueDialog_NOT_BOUND;
 						}
-					} catch (RemoteException e) {
-						Throwable cause = e.getCause();
-						if (cause instanceof SocketTimeoutException) {
-							_log.warn(this, "Remote call to " + _services[i] + " timed out"); //$NON-NLS-1$ //$NON-NLS-2$
-							result = Messages.SaveValueDialog_FAILED_TIMEOUT;
-						} else {
-							_log.error(this, "Remote call to " + _services[i] + " failed with RemoteException", e); //$NON-NLS-1$ //$NON-NLS-2$
-							result = Messages.SaveValueDialog_FAILED_WITH_REMOTE_EXCEPTION + e.getMessage();
-						}
-					} catch (SaveValueServiceException e) {
-						_log.warn(this, "Save Value service " + _services[i] + " reported an error", e); //$NON-NLS-1$ //$NON-NLS-2$
-						result = Messages.SaveValueDialog_FAILED_WITH_SERVICE_ERROR + e.getMessage();
-					} catch (NotBoundException e) {
-						_log.warn(this, "Save value service " + _services[i] + " is not bound in RMI registry"); //$NON-NLS-1$ //$NON-NLS-2$
-						result = Messages.SaveValueDialog_NOT_BOUND;
+						final int index = i;
+						final String resultCopy = result;
+						Display.getDefault().asyncExec(new Runnable() {
+							public void run() {
+								TableItem item = _resultsTable.getItem(index);
+								item.setText(1, resultCopy);
+								int color = success[index] ? SWT.COLOR_DARK_GREEN
+										: (_services[index].isRequired()) ? SWT.COLOR_RED : SWT.COLOR_DARK_GRAY;
+								item.setForeground(Display.getCurrent().getSystemColor(color));
+								_resultsTable.showItem(item);
+							}
+						});
 					}
-					final int index = i;
-					final String resultCopy = result;
+					_log.debug(this, "Finished calling remote Save Value services"); //$NON-NLS-1$
 					Display.getDefault().asyncExec(new Runnable() {
 						public void run() {
-							TableItem item = _resultsTable.getItem(index);
-							item.setText(1, resultCopy);
-							int color = success[index] ? SWT.COLOR_DARK_GREEN
-									: (_services[index].isRequired()) ? SWT.COLOR_RED : SWT.COLOR_DARK_GRAY;
-							item.setForeground(Display.getCurrent().getSystemColor(color));
-							_resultsTable.showItem(item);
+							boolean overallSuccess = true;
+							for (int i = 0; i < success.length; i++) {
+								if (_services[i].isRequired()) {
+									overallSuccess &= success[i];
+								}
+							}
+							if (overallSuccess) {
+								_resultLabel.setText(Messages.SaveValueDialog_RESULT_SUCCESS);
+								_resultImage.setImage(getInfoImage());
+							} else {
+								_resultLabel.setText(Messages.SaveValueDialog_RESULT_ERROR_VALUE_NOT_SAVED);
+								_resultImage.setImage(getErrorImage());
+							}
+							_resultLabel.setVisible(true);
+							_resultImage.setVisible(true);
+							Button close = getButton(IDialogConstants.CANCEL_ID);
+							close.setEnabled(true);
+							close.setFocus();
+						}
+					});
+				} catch (RemoteException e) {
+					_log.error(this, "Could not connect to RMI registry", e); //$NON-NLS-1$
+					final String message = e.getMessage();
+					Display.getDefault().asyncExec(new Runnable() {
+						public void run() {
+							MessageDialog.openError(null, Messages.SaveValueDialog_DIALOG_TITLE,
+									Messages.SaveValueDialog_ERRMSG_NO_RMI_REGISTRY
+											+ message);
+							SaveValueDialog.this.close();
 						}
 					});
 				}
-				_log.debug(this, "Finished calling remote Save Value services"); //$NON-NLS-1$
-				Display.getDefault().asyncExec(new Runnable() {
-					public void run() {
-						boolean overallSuccess = true;
-						for (int i = 0; i < success.length; i++) {
-							if (_services[i].isRequired()) {
-								overallSuccess &= success[i];
-							}
-						}
-						if (overallSuccess) {
-							_resultLabel.setText(Messages.SaveValueDialog_RESULT_SUCCESS);
-							_resultImage.setImage(getInfoImage());
-						} else {
-							_resultLabel.setText(Messages.SaveValueDialog_RESULT_ERROR_VALUE_NOT_SAVED);
-							_resultImage.setImage(getErrorImage());
-						}
-						_resultLabel.setVisible(true);
-						_resultImage.setVisible(true);
-						Button close = getButton(IDialogConstants.CANCEL_ID);
-						close.setEnabled(true);
-						close.setFocus();
-					}
-				});
-				return Status.OK_STATUS;
+			}
+
+			/**
+			 * @throws RemoteException
+			 */
+			private void locateRmiRegistry() throws RemoteException {
+				IPreferencesService prefs = Platform.getPreferencesService();
+				String registryHost = prefs.getString(
+						Activator.PLUGIN_ID,
+						PreferenceConstants.RMI_REGISTRY_SERVER,
+						null, null);
+				_log.debug(this, "Connecting to RMI registry."); //$NON-NLS-1$
+				_reg = LocateRegistry.getRegistry(registryHost);
 			}
 
 			/**
@@ -524,14 +456,14 @@ public class SaveValueDialog extends Dialog {
 				if (user != null) {
 					req.setUsername(user.getUsername());
 				} else {
-					req.setUsername(""); //$NON-NLS-1$
+					req.setUsername("");
 				}
 				req.setHostname(CSSPlatformInfo.getInstance().getQualifiedHostname());
 				SaveValueResult srr = service.saveValue(req);
 				return srr;
 			}
 		};
-		job.schedule();
+		new Thread(r).start();
 	}
 
 
