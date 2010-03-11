@@ -27,7 +27,7 @@ package org.csstudio.utility.ldap.namespacebrowser.utility;
 import javax.naming.directory.SearchControls;
 
 import org.csstudio.utility.ldap.namespacebrowser.Activator;
-import org.csstudio.utility.ldap.reader.ErgebnisListe;
+import org.csstudio.utility.ldap.reader.LdapResultList;
 import org.csstudio.utility.ldap.reader.LDAPReader;
 import org.csstudio.utility.nameSpaceBrowser.utility.NameSpace;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
@@ -48,8 +48,8 @@ public class NameSpaceLDAP extends NameSpace {
 	public void start() {
 		try{
 			LDAPReader ldapr;
-            if (getNameSpaceResultList() instanceof ErgebnisListe) {
-                ErgebnisListe eListe = (ErgebnisListe) getNameSpaceResultList();
+            if (getNameSpaceResultList() instanceof LdapResultList) {
+                LdapResultList eListe = (LdapResultList) getNameSpaceResultList();
                 String tmp = getSelection();
         		if(tmp.endsWith("=*,")) //$NON-NLS-1$
         			ldapr = new LDAPReader(getName(), getFilter(),SearchControls.SUBTREE_SCOPE, eListe);

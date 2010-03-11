@@ -35,8 +35,6 @@ import javax.naming.directory.SearchResult;
 
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.engine.Engine;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Status;
 
 /**
  * @author hrickens
@@ -68,7 +66,7 @@ public class LDAPSyncReader {
      *
      * @param nameUFilter<br> 0: name<br>1: = filter<br>
      * @param searchScope set the Scope {@link SearchControls}
-     * @param ergebnisListe the list for the result {@link ErgebnisListe}
+     * @param ergebnisListe the list for the result {@link LdapResultList}
      */
 
     public LDAPSyncReader(String[] nameUFilter, int searchScope){
@@ -166,7 +164,7 @@ public class LDAPSyncReader {
         _defaultScope = defaultScope;
     }
 
-    public ErgebnisListe getAnswer(){
+    public LdapResultList getAnswer(){
         DirContext ctx = Engine.getInstance().getLdapDirContext();
         if(ctx !=null){
             SearchControls ctrl = new SearchControls();
@@ -188,7 +186,7 @@ public class LDAPSyncReader {
                     CentralLogger.getInstance().info(this,e);
                 }
                 answer.close();
-                ErgebnisListe ergebnisListe = new ErgebnisListe();
+                LdapResultList ergebnisListe = new LdapResultList();
                 ergebnisListe.setResultList(list);
                 return ergebnisListe;
             } catch (NamingException e) {

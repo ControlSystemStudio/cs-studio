@@ -47,7 +47,7 @@ import org.csstudio.utility.ldap.Activator;
 import org.csstudio.utility.ldap.connection.LDAPConnector;
 import org.csstudio.utility.ldap.engine.LdapReferences.Entry;
 import org.csstudio.utility.ldap.preference.PreferenceConstants;
-import org.csstudio.utility.ldap.reader.ErgebnisListe;
+import org.csstudio.utility.ldap.reader.LdapResultList;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.Job;
@@ -576,7 +576,7 @@ public class Engine extends Job {
         } else if (!path.startsWith("econ=")) {
             path = "econ=" + path;
         }
-        final ErgebnisListe allRecordsList = new ErgebnisListe();
+        final LdapResultList allRecordsList = new LdapResultList();
         allRecordsList.setStatus(status);
         allRecordsList.setSeverity(severity);
         allRecordsList.setEventTime(eventTime);

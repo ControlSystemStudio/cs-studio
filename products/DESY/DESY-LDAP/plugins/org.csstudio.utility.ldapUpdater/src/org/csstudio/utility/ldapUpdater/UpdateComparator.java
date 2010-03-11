@@ -19,15 +19,17 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-
 package org.csstudio.utility.ldapUpdater;
 
-import java.io.FileWriter;
+import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceKey.IOC_DBL_DUMP_PATH;
+import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferences.getValueFromPreferences;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
-// import java.text.SimpleDateFormat;
-// import java.util.Date;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Formatter;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.naming.NamingException;
@@ -35,144 +37,52 @@ import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttributes;
 import javax.naming.directory.DirContext;
 
+import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.engine.Engine;
-import org.csstudio.utility.ldapUpdater.model.DataModel;
-import org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceConstants;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.csstudio.utility.ldap.reader.LdapService;
+import org.csstudio.utility.ldapUpdater.model.HistoryFileContentModel;
+import org.csstudio.utility.ldapUpdater.model.IOC;
+import org.csstudio.utility.ldapUpdater.model.LDAPContentModel;
+import org.csstudio.utility.ldapUpdater.model.Record;
+import org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceKey;
+
 
 public class UpdateComparator {
 
-	private static final CentralLogger LOGGER = CentralLogger.getInstance();
+	private static class UpdateIOCResult {
+		private final int _numOfRecsWritten;
+		private final boolean _noError;
+		private final int _numOfRecsInFile;
 
-	private DataModel _model;
-
-	private IPreferencesService _prefs;
-	
-	public UpdateComparator(DataModel model) {
-		this._model = model;
-	    _prefs = Platform.getPreferencesService();
-	}
-
-	
-	
-	public void compareLDAPWithIOC() {
-		Boolean warning_found = false;
-		
-		for (IOC ioc : _model.getIocList()) {
-			
-			String iocName = ioc.getName();
-			HashMap<String, Long> historyMap = _model.getHistoryMap();
-			if (historyMap.containsKey(iocName)) {
-
-				if (isIOCFileOlderThanHistoryEntry(ioc, historyMap.get(iocName))) {
-					continue;
-				}
-				
-				List<String> recordNames = ioc.getIocRecordNames();
-				for (String recordName : recordNames) {
-					int ind = (recordName.indexOf("+")) + (recordName.indexOf("/"));
-					if (ind <= 0) {
-						InLdap inLdap = new InLdap();
-						if (!inLdap.existRecord(ioc, recordName)) {
-							DirContext directory = Engine.getInstance().getLdapDirContext();
-							Formatter f = new Formatter();
- 							f.format("eren=%s, econ=%s, ecom=EPICS-IOC, efan=%s, ou=EpicsControls",
-										recordName, iocName, ioc.getGroup());
-							Attributes afe = attributesForEntry("epicsRecord", "eren", recordName);
-							try {
-								directory.bind(f.toString(), null, afe); // = Record schreiben
-								LOGGER.info( this," Record written: \"" + iocName+ " - " + recordName + "\"");
-								warning_found = false;
-								
-							} catch (NamingException e) {
-								LOGGER.warn(this, "Naming Exception while try to write " + iocName + " " + recordName);
-								warning_found = true;
-							}
-						}
-					}
-				}
-				LOGGER.info(this, "IOC " + iocName + "\t\t records " +  recordNames.size());
-				if (!warning_found) {
-					AppendLineToHistfile(iocName); 
-				}
-				
-			} else {
-				_model.getNewIocNames().add(iocName);
-//		        CentralLogger.getInstance().info(this, ioc + " added to NewIocNames, try to write this IOC data to LDAP completely");
-		        LOGGER.info(this, iocName + " added to NewIocNames, cannot write to LDAP : unknown efan ");
-/*
-		        // ^ hier kommt das programm vorbei,
-				// wenn der IOC in iocListFile (=IOCpathes) steht und
-				// wenn der IOC NICHT in der history-liste steht.
-				// -------------------------------------------------------------------------
-				// erst neuen IOC in LDAP anlegen
-		        // Folgendes kann jetzt nicht mehr ausgeführt werden, da der group name = facility name jetzt 
-		        // in dieser neuen Programmversion nicht mehr bekannt ist.
-//				System.out.println(ioc.getName());
-				CentralLogger.getInstance().info( this, "New ioc : " + ioc.getName());
-				DirContext directory = Engine.getInstance().getLdapDirContext();
-				Formatter f = new Formatter();
-				f.format("econ=%s, ecom=EPICS-IOC, efan=%s, ou=EpicsControls", ioc.getName(), ioc.getGroup());
-				Attributes afe = attributesForEntry("epicsController", "econ", ioc.getName());
-				try {
-					directory.bind(f.toString(), null, afe); // = iocNamen schreiben
-					CentralLogger.getInstance().info(this, "iocName written to LDAP : " + ioc);
-					error_found=false;
-				} catch (NamingException e) {
-					CentralLogger.getInstance().error (this, "Naming Exception while try to write " + ioc);
-					error_found=true;
-				}
-
-				// hier müssen die header-parameter geschrieben werden, zB epicsIPAddress, ...
-				//...
-				//...
-				//...
-				
-				// und wenn das fertig ist, müssen sie in dem exist-zweig auch aktualisiert werden, wenn
-				// sie noch nicht vorhanden sind.
-				// das ist dann fast der gleiche mechanismus wie bei den record-namen, nur der LDAP-level ist ein anderer.
-				
-				// -------------------------------------------------------------------------
-				// dann alle recordNames dieses IOC in LDAP anlegen:
-				if  (!error_found) {
-					List<String> recordNames2 = ioc.getIocRecordNames();
-					for (String recordName2 : recordNames2) {
-						ind = (recordName2.indexOf("+")) + (recordName2.indexOf("/"));
-						if (ind <= 0) {
-							InLdap inLdap = new InLdap();
-							if (!inLdap.existRecord(ioc, recordName2)) {
-								DirContext directory2 = Engine.getInstance().getLdapDirContext();
-								Formatter f2 = new Formatter();
-								f2.format("eren=%s, econ=%s, ecom=EPICS-IOC, efan=%s, ou=EpicsControls",
-												recordName2, ioc.getName(), ioc.getGroup());
-								Attributes afe2 = attributesForEntry("epicsRecord","eren", recordName2);
-								try {
-									directory2.bind(f2.toString(), null, afe2); // = ioc records schreiben
-									CentralLogger.getInstance().info(this,
-										"Record written!" + ioc.getName() + " - " + recordName2);
-										error_found=false;
-								} catch (NamingException e) {
-									CentralLogger.getInstance().error (this, "Naming Exception while try to write " + ioc.getName() + " " + recordName2);
-									error_found=true;
-								}
-							}
-							ioc.set_mustWriteIOCToHistory(true);
-						}
-					}
-				}
-*/			
-			}
+		public UpdateIOCResult(final int numOfRecsInFile, final int numOfRecsWritten, final boolean noError) {
+			_numOfRecsInFile = numOfRecsInFile;
+			_numOfRecsWritten = numOfRecsWritten;
+			_noError = noError;
 		}
-		//}
+
+		public int getNumOfRecsInFile() {
+			return _numOfRecsInFile;
+		}
+
+		public int getNumOfRecsWritten() {
+			return _numOfRecsWritten;
+		}
+
+		public boolean hasNoError() {
+			return _noError;
+		}
 	}
 
-	private boolean isIOCFileOlderThanHistoryEntry(IOC ioc, Long historyMapTimeInMillis) {
-		Long iocTime = ioc.getDateTime().getTimeInMillis();
-		return iocTime < historyMapTimeInMillis;
-	}
+	private final Logger LOGGER = CentralLogger.getInstance().getLogger(this);
 
+
+	/**
+	 * Constructor.
+	 */
+	public UpdateComparator() {
+		// Empty
+	}
 
 
 	/**
@@ -181,45 +91,182 @@ public class UpdateComparator {
 	 * 
 	 * @param objectClass
 	 *            the object class of the new entry.
-	 * @param rdnAttr 
-	 * 			  ? // TODO (someone) : 
+	 * @param rdnAttr
+	 * 			  ? // TODO (someone) :
 	 * @param name
 	 *            the name of the new entry.
 	 * @return the attributes for the new entry.
 	 */
 	private Attributes attributesForEntry(final String objectClass,
-			String rdnAttr, final String name) {
-		BasicAttributes result = new BasicAttributes();
+			final String rdnAttr, final String name) {
+		final BasicAttributes result = new BasicAttributes();
 		result.put("objectClass", objectClass);
 		result.put(rdnAttr, name);
 		// result.put("epicsCssType", objectClass.getCssType());
 		return result;
 	}
 
-	
-	/**
-	 * append a line to the history file.
-	 * 
-	 * @param iocname
+
+	/**d
+	 * TODO (bknerr) : centralize filtering in ldap read/write utils
+	 * @param recordName
+	 * @return
 	 */
-	private void AppendLineToHistfile(final String iocname) {
+	private boolean filterLDAPNames(final String recordName) {
+
+		if (recordName.contains("+"))
+			return false;
+		else if (recordName.contains("/"))
+			return false;
+		return true;
+	}
+
+
+
+	private List<Record> getRecordsFromFile(final String pathToFile) {
+		final List<Record> records = new ArrayList<Record>();
 		try {
-			FileWriter fw = new FileWriter(
-					_prefs.getString(Activator.getDefault().getPluginId(),
-		    	    		LdapUpdaterPreferenceConstants.LDAP_HIST_PATH, "", null) + "history.dat", true);	
-			long now = System.currentTimeMillis();			
-			myDateTimeString dateTimeString = new myDateTimeString();
-			String ymd_hms = dateTimeString.getDateTimeString( "yyyy-MM-dd", "HH:mm:ss", now);
-			now = now / 1000; // now is now in seconds
-			
-			String _iocname = iocname;
-			do  { _iocname = _iocname.concat ( " " ); } while (_iocname.length() < 20);
-            
-			fw.append ( _iocname + "xxx     " + now + "   " + ymd_hms + System.getProperty("line.separator" ) ); 
-			fw.flush();
-			fw.close();
-		} catch (IOException e) {
-				LOGGER.error (this, "I/O-Exception while try to append a line to " + LdapUpdaterPreferenceConstants.LDAP_HIST_PATH + "" + null + "history.dat");
+			final BufferedReader br = new BufferedReader(new FileReader(pathToFile));
+			String strLine;
+			while ((strLine = br.readLine()) != null)   {
+				records.add(new Record(strLine));
+			}
+			return records;
+		} catch (final Exception e){ //Catch exception if any
+			LOGGER.error("Error while reading from file: " + e.getMessage());
 		}
+		return Collections.emptyList();
+	}
+
+
+	private boolean isIOCFileNewerThanHistoryEntry(final IOC ioc, final HistoryFileContentModel historyFileModel) {
+		final long timeFromFile = ioc.getDateTime().getTimeInMillis() / 1000;
+		final long timeFromHistoryFile = historyFileModel.getTimeForRecord(ioc.getName());
+		return timeFromFile > timeFromHistoryFile;
+	}
+
+
+
+	public UpdateIOCResult updateIOC(
+			final LdapService service, final ReadLdapObserver ldapDataObserver, final DirContext directory,
+			final Formatter f,
+			final LDAPContentModel ldapContentModel,
+			final String iocFilePath,
+			final IOC ioc) {
+
+		boolean success = true;
+		final String iocName = ioc.getName();
+		int numOfRecsWritten = 0;
+		final List<Record> recordsFromFile = getRecordsFromFile(iocFilePath + iocName);
+
+		LOGGER.info( "Process IOC " + iocName + "\t\t #records " +  recordsFromFile.size());
+		for (final Record record : recordsFromFile) {
+			final String recordName = record.getName();
+
+			if (ldapContentModel.getRecord(ioc.getGroup(), iocName, recordName) == null) { // does not yet exist
+				if (filterLDAPNames(recordName)) {
+					// TODO (bknerr) : Stopping or proceeding? Transaction rollback? Hist file update ?
+					if (!updateLDAPRecord(directory, f, ioc, recordName)) {
+						LOGGER.error("Error while updating LDAP record for " + recordName +
+						"\nProceed with next record.");
+						success = false; // at least one record coult not be written
+					}
+					numOfRecsWritten++;
+				} else {
+					LOGGER.warn("Record " + recordName + " could not be written. Unallowed characters!");
+				}
+			}
+
+
+		}
+		return new UpdateIOCResult(recordsFromFile.size(), numOfRecsWritten, success);
+	}
+
+	/**
+	 * This method compares the contents of the current LDAP hierarchy with the contents
+	 * found in the directory, where the IOC files reside.
+	 * The contents of the ioc list are firstly checked whether they are more recent than those stored
+	 * in the history file, if not so the ioc file has already been processed.
+	 * If so, the LDAP is updated with the newer content of the ioc files conservatively,
+	 * i.e. by adding references to existing files, but not removing entries from the LDAP in case
+	 * the corresponding file does not exist in the ioc directory.
+	 * @param service
+	 * @param ldapDataObserver
+	 * @param ldapContentModel
+	 * @param iocList the list of ioc filenames as found in the ioc directory
+	 * @param historyFileModel the contents of the history file
+	 * @throws InterruptedException
+	 */
+	public void updateLDAPFromIOCList(
+			final LdapService service,
+			final ReadLdapObserver ldapDataObserver,
+			final LDAPContentModel ldapContentModel,
+			final List<IOC> iocList,
+			final HistoryFileContentModel historyFileModel) throws InterruptedException {
+
+		final DirContext directory = Engine.getInstance().getLdapDirContext();
+		final Formatter f = new Formatter();
+		final String iocFilePath = getValueFromPreferences(IOC_DBL_DUMP_PATH);
+
+		for (final IOC iocFromFS : iocList) {
+
+			final String iocName = iocFromFS.getName();
+
+			if (historyFileModel.contains(iocName) &&
+					!isIOCFileNewerThanHistoryEntry(iocFromFS, historyFileModel)) {
+				LOGGER.debug( "IOC file for " + iocName + " is not newer than history file time stamp.");
+				continue;
+			}
+
+			final IOC iocFromLDAP = ldapContentModel.getIOC(iocName);
+			if (iocFromLDAP == null) {
+				LOGGER.warn("IOC file for " + iocName +
+						" does not exist in LDAP - no facility association possible.\n" +
+				"Hence, records could not be updated in LDAP.");
+				continue;
+			}
+
+			final String efanName = iocFromLDAP.getGroup();
+
+			ldapDataObserver.setReady(false);
+			ldapDataObserver.setResult(service.readLdapEntries("econ="+iocName+",ecom=EPICS-IOC,efan="+efanName+",ou=EpicsControls", "eren=*", ldapDataObserver));
+			while(!ldapDataObserver.isReady()){ Thread.sleep(100);}
+
+			final UpdateIOCResult updateResult = updateIOC(service, ldapDataObserver, directory, f, ldapContentModel, iocFilePath, iocFromLDAP);
+
+			// TODO (bknerr) : does only make sense when the update process has been stopped
+			if (updateResult.hasNoError()) {
+				try {
+					HistoryFileAccess.appendLineToHistfile(iocName, updateResult.getNumOfRecsWritten(), updateResult.getNumOfRecsInFile());
+				} catch (final IOException e) {
+					LOGGER.error ("I/O-Exception while trying to append a line to " + LdapUpdaterPreferenceKey.LDAP_HIST_PATH + "" + null + "history.dat");
+				}
+			}
+		}
+	}
+
+
+
+	public boolean updateLDAPRecord(
+			final DirContext directory,
+			final Formatter f,
+			final IOC ioc,
+			final String recordName) {
+
+		final String iocName = ioc.getName();
+		final String facName = ioc.getGroup();
+
+		f.format("eren=%s, econ=%s, ecom=EPICS-IOC, efan=%s, ou=EpicsControls",
+				recordName, iocName, facName);
+		final Attributes afe = attributesForEntry("epicsRecord", "eren", recordName);
+		try {
+			directory.bind(f.toString(), null, afe); // = Record schreiben
+			LOGGER.info( "Record written: \"" + iocName+ " - " + recordName + "\"");
+		} catch (final NamingException e) {
+			LOGGER.warn( "Naming Exception while trying to bind " + f);
+			System.out.println(e.getExplanation());
+			return false;
+		}
+		return true;
 	}
 }

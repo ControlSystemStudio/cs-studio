@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2007 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -19,31 +19,22 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
+package org.csstudio.utility.ldap.reader;
 
-package org.csstudio.utility.ldapUpdater;
+import java.util.Observer;
 
-import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.management.CommandParameters;
-import org.csstudio.platform.management.CommandResult;
-import org.csstudio.platform.management.IManagementCommand;
 
-public class UpdateLdapAction implements IManagementCommand {
+public interface LdapService {
 
-	@Override
-	public CommandResult execute(CommandParameters parameters) {
-    	LdapUpdater ldapUpdater = LdapUpdater.getInstance();
-    	try {
-			if (!ldapUpdater._busy){
-				ldapUpdater.start();
-			}else{
-				return CommandResult.createMessageResult("ldapUpdater is busy for max. 150 s (was probably started by timer). Try later!");
-			}
+	public static final String LDAP_ENTRY_FIELD_SEPARATOR = ",";
+	public static final String LDAP_ENTRY_FIELD_ASSIGNMENT = "=";
+	public static final String EREN_FIELD_NAME = "eren";
+	public static final String EFAN_FIELD_NAME = "efan";
+	public static final String ECON_FIELD_NAME = "econ";
+	public static final String ECOM_FIELD_NAME = "ecom";
+	
+	
+	LdapResultList readLdapEntries(String ldapReaderName, String filter, Observer observer);
 
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-//			e.printStackTrace();
-			CentralLogger.getInstance().error (this, "\"" + e.getCause() + "\"" + "-" + "Exception while running ldapUpdater" );		
-		}
-		return CommandResult.createSuccessResult();
-	}
+	
 }

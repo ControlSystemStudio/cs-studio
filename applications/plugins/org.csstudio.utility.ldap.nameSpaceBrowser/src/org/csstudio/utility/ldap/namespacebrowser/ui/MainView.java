@@ -24,7 +24,7 @@ package org.csstudio.utility.ldap.namespacebrowser.ui;
 import org.csstudio.utility.ldap.namespacebrowser.Activator;
 import org.csstudio.utility.ldap.namespacebrowser.utility.LDAP2Automat;
 import org.csstudio.utility.ldap.namespacebrowser.utility.NameSpaceLDAP;
-import org.csstudio.utility.ldap.reader.ErgebnisListe;
+import org.csstudio.utility.ldap.reader.LdapResultList;
 import org.csstudio.utility.nameSpaceBrowser.ui.CSSView;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -81,7 +81,7 @@ public class MainView extends ViewPart {
 								Messages.getString("CSSView_Record")
 		};
 		// Namend the Records
-		cssview = new CSSView(c, automat,new NameSpaceLDAP(), getSite(),defaultPVFilter,"ou=epicsControls", headlines, 0, new ErgebnisListe());
+		cssview = new CSSView(c, automat,new NameSpaceLDAP(), getSite(),defaultPVFilter,"ou=epicsControls", headlines, 0, new LdapResultList());
 		// Aufruf bevor LDAP Read geändert wurde für den Interconetiocn Server.
 //		cssview = new CSSView(c, automat,new NameSpaceLDAP(), getSite(),defaultPVFilter,"ou=epicsControls", headlines, 0, new ErgebnisListe());
 	}

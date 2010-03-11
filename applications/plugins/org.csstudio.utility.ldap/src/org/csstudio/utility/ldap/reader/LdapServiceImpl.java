@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2007 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -19,31 +19,52 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
+package org.csstudio.utility.ldap.reader;
 
-package org.csstudio.utility.ldapUpdater;
+import java.util.Observer;
 
+import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.management.CommandParameters;
-import org.csstudio.platform.management.CommandResult;
-import org.csstudio.platform.management.IManagementCommand;
 
-public class UpdateLdapAction implements IManagementCommand {
+
+public class LdapServiceImpl implements LdapService {
+
+	private final Logger LOGGER = CentralLogger.getInstance().getLogger(this);
+
+
+	/**
+	 * Constructor.
+	 */
+	public LdapServiceImpl() {
+		// Empty
+	}
+
+
+
+	private LdapResultList createLdapReader(final String readerName, final String filter, final Observer observer) {
+		final LdapResultList list = new LdapResultList(observer);
+
+		final LDAPReader ldapr = new LDAPReader(readerName, filter, list);
+		// For some reason the LdapResultList doesn't notify its observers
+		// when the result is written to it. The job change listener works
+		// around this problem by sending the notification when the LDAP
+		// reader job is done.
+		//		ldapr.addJobChangeListener(new JobChangeAdapter() {
+		//			@Override
+		//			public void done(final IJobChangeEvent event) {
+		//				if (event.getResult().isOK()) {
+		//					list.notifyView();
+		//				}
+		//			}
+		//		});
+		ldapr.schedule();
+
+		return list;
+	}
 
 	@Override
-	public CommandResult execute(CommandParameters parameters) {
-    	LdapUpdater ldapUpdater = LdapUpdater.getInstance();
-    	try {
-			if (!ldapUpdater._busy){
-				ldapUpdater.start();
-			}else{
-				return CommandResult.createMessageResult("ldapUpdater is busy for max. 150 s (was probably started by timer). Try later!");
-			}
-
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-//			e.printStackTrace();
-			CentralLogger.getInstance().error (this, "\"" + e.getCause() + "\"" + "-" + "Exception while running ldapUpdater" );		
-		}
-		return CommandResult.createSuccessResult();
+	public LdapResultList readLdapEntries(final String readerName, final String filter, final Observer observer) {
+		final LdapResultList result = createLdapReader(readerName, filter, observer);
+		return result;
 	}
 }

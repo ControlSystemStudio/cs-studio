@@ -19,20 +19,16 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
+package org.csstudio.utility.ldapUpdater.model;
 
-package org.csstudio.utility.ldapUpdater;
-
-import java.util.ArrayList;
-// import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.csstudio.utility.ldapUpdater.model.DataModel;
 
 /**
  * Stores information about an IOC.
  * 
- * @author valett
  * @author $Author$
  * @version $Revision$
  * @since 30.04.2008
@@ -55,26 +51,21 @@ public class IOC {
      * The physical name of this IOC.
      */
     private final String _physicalName;
-
-    /**
-     * room for record names of the current ioc read from file
-     */    
-    private List<String> _iocRecordNamesFromFile;
-
-    /**
-     * room for record names of the current ioc read from ldap
-     */    
-    private List<String> iocRecordNamesFromLDAP=new ArrayList<String>();
     
     /**
-     * If true then Ioc data must be added to Ldap. 
+     * Set of records in this IOC.
      */
-    private boolean _mustAdd2Ldap = true;
+    private Map<String, Record> _records = new HashMap<String, Record>();
 
-    /**
-     * If true then write IOC to history file. 
-     */
-    private boolean _mustWriteIOCToHistory = false;
+//    /**
+//     * room for record names of the current ioc read from file
+//     */    
+//    private List<String> _iocRecordNamesFromFile = Collections.emptyList();
+//
+//    /**
+//     * room for record names of the current ioc read from ldap
+//     */    
+//    private List<String> iocRecordNamesFromLDAP = new ArrayList<String>();
     
     /**
      * The date time of last change.
@@ -100,7 +91,11 @@ public class IOC {
     	this(name, "<no group>", "<no physicalname>", dateTime);
 	}
     
-    /**
+    public IOC(String econ, String efan) {
+    	this(econ, efan, "<no physicalname>", null);
+    }
+
+	/**
      * Returns the name of this IOC.
      * @return the name of this IOC.
      */
@@ -136,44 +131,50 @@ public class IOC {
         return "IOC(name=" + _name + ", group=" + _group + ", phys=" + _physicalName + ")";
     }
 
-    public boolean isMustAdd2Ldap() {
-        return _mustAdd2Ldap;
-    }
-
-    public void setMustAdd2Ldap(boolean add2Ldap) {
-        _mustAdd2Ldap = add2Ldap;
-    }
-    
     public GregorianCalendar getDateTime() {
-        return _dateTime;
+    	return _dateTime;
     }
-
-//	public String split(String string) {
-//		// TODO Auto-generated method stub
-//		return null;
+//
+//    public boolean isMustAdd2Ldap() {
+//        return _mustAdd2Ldap;
+//    }
+//
+//    public void setMustAdd2Ldap(boolean add2Ldap) {
+//        _mustAdd2Ldap = add2Ldap;
+//    }
+//    
+//
+//	public List<String> getIocRecordNames() {
+//		return _iocRecordNamesFromFile;
 //	}
 
-	public List<String> getIocRecordNames() {
-		return _iocRecordNamesFromFile;
+//	public void setIocRecordNames(List<String> iocRecordNames) {
+//		_iocRecordNamesFromFile = iocRecordNames;
+//	}
+//
+//	public List<String> getIocRecordNamesFromLDAP() {
+//		return iocRecordNamesFromLDAP;
+//	}
+//
+//	public void setIocRecordNamesFromLDAP(List<String> iocRecordNamesFromLDAP) {
+//		this.iocRecordNamesFromLDAP = iocRecordNamesFromLDAP;
+//	}
+//
+//	public boolean is_mustWriteIOCToHistory() {
+//		return _mustWriteIOCToHistory;
+//	}
+//
+//	public void set_mustWriteIOCToHistory(boolean writeIOCToHistory) {
+//		_mustWriteIOCToHistory = writeIOCToHistory;
+//	}
+
+	public Record getRecord(String eren) {
+		return _records.get(eren);
 	}
 
-	public void setIocRecordNames(List<String> iocRecordNames) {
-		this._iocRecordNamesFromFile = iocRecordNames;
-	}
-
-	public List<String> getIocRecordNamesFromLDAP() {
-		return iocRecordNamesFromLDAP;
-	}
-
-	public void setIocRecordNamesFromLDAP(List<String> iocRecordNamesFromLDAP) {
-		this.iocRecordNamesFromLDAP = iocRecordNamesFromLDAP;
-	}
-
-	public boolean is_mustWriteIOCToHistory() {
-		return _mustWriteIOCToHistory;
-	}
-
-	public void set_mustWriteIOCToHistory(boolean writeIOCToHistory) {
-		_mustWriteIOCToHistory = writeIOCToHistory;
+	public void addRecord(String eren) {
+		if (!_records.containsKey(eren)) {
+			_records.put(eren, new Record(eren));
+		}
 	}
 }

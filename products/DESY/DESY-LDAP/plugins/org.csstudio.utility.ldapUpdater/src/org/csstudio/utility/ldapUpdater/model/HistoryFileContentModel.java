@@ -19,31 +19,46 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
+package org.csstudio.utility.ldapUpdater.model;
 
-package org.csstudio.utility.ldapUpdater;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.Map.Entry;
 
-import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.management.CommandParameters;
-import org.csstudio.platform.management.CommandResult;
-import org.csstudio.platform.management.IManagementCommand;
+/**
+ * 
+ * @author bknerr
+ */
+public class HistoryFileContentModel {
 
-public class UpdateLdapAction implements IManagementCommand {
+	private final Map<String, Long> _historyMap = new HashMap<String, Long>();
+	
+	/**
+	 * Constructor.
+	 */
+	public HistoryFileContentModel() {
+		// Empty
+	}
+	
+	public void setEntry(String name, Long millis) {
+		_historyMap.put(name, millis);
+	}
+	
+	public Set<Entry<String,Long>> getEntrySet() {
+		return _historyMap.entrySet();
+	}
 
-	@Override
-	public CommandResult execute(CommandParameters parameters) {
-    	LdapUpdater ldapUpdater = LdapUpdater.getInstance();
-    	try {
-			if (!ldapUpdater._busy){
-				ldapUpdater.start();
-			}else{
-				return CommandResult.createMessageResult("ldapUpdater is busy for max. 150 s (was probably started by timer). Try later!");
-			}
+	public Long getTimeForRecord(String record) {
+		return _historyMap.get(record);
+	}
 
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-//			e.printStackTrace();
-			CentralLogger.getInstance().error (this, "\"" + e.getCause() + "\"" + "-" + "Exception while running ldapUpdater" );		
-		}
-		return CommandResult.createSuccessResult();
+	public boolean contains(String iocName) {
+		return _historyMap.containsKey(iocName);
+	}
+
+	public Set<String> getIOCNames() {
+		return new HashSet<String>(_historyMap.keySet());
 	}
 }

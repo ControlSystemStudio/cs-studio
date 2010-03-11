@@ -19,22 +19,22 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
+package org.csstudio.utility.ldapUpdater.model;
 
-package org.csstudio.utility.ldapUpdater;
-
-import org.csstudio.utility.ldapUpdater.model.DataModel;
-
-public class ReadFileSequential {
-
-	private DataModel _model;
+/**
+ * 
+ * 
+ * @author bknerr
+ */
+public class Record {
 	
-	public ReadFileSequential(DataModel model) {
-		this._model=model;
-		// TODO Auto-generated constructor stub
+	private final String _name;
+
+	public Record(String name) {
+		_name = name;
 	}
-	
-// /	public void ReadFile(){
-		
-// /	}
-}
 
+	public String getName() {
+		return _name;
+	}
+}

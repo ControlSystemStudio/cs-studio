@@ -24,8 +24,6 @@ package org.csstudio.utility.ldap.reader;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 
 import org.csstudio.platform.model.pvs.ControlSystemEnum;
 import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
@@ -39,64 +37,19 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
  */
 public final class IocFinder {
 	
-	/**
-	 * Observer for the ErgebnisListe.
-	 */
-	private static class ErgebnisListeObserver implements Observer {
-		
-		/**
-		 * The result received from the LDAP server.
-		 */
-		private String _ldapResult;
-		
-		/**
-		 * Set to <code>true</code> when the update method was called. 
-		 */
-		private boolean _done = false;
-		
-		/**
-		 * {@inheritDoc}
-		 */
-		public synchronized void update(final Observable o, final Object arg) {
-			if (!(o instanceof ErgebnisListe)) {
-				throw new IllegalArgumentException("Observed object must be of type ErgebnisListe");
-			}
-			
-            ArrayList<String> l = ((ErgebnisListe) o).getAnswer();
-            String answerLDAP = l.get(0);
-            // The LDAP reader returns a list containing the single entry
-            // "no entry found" if nothing was found, so we must check that
-            // here.
-            if (!answerLDAP.equals("no entry found")) {
-                _ldapResult = answerLDAP;
-            } else {
-            	_ldapResult = null;
-            }
-            _done = true;
-            notifyAll();
-		}
-		
-		/**
-		 * Returns the result received from the LDAP server.
-		 * @return the result received from the LDAP server.
-		 */
-		public synchronized String getResult() {
-			while (!_done) {
-				try {
-					wait();
-				} catch (InterruptedException e) {
-					// handle as if no result was found
-					return null;
-				}
-			}
-			return _ldapResult;
-		}
-	}
+	public static final String LDAP_ENTRY_FIELD_SEPARATOR = ",";
+	public static final String LDAP_ENTRY_FIELD_ASSIGNMENT = "=";
+	public static final String EREN_FIELD_NAME = "eren";
+	public static final String EFAN_FIELD_NAME = "efan";
+	public static final String ECON_FIELD_NAME = "econ";
+	public static final String ECOM_FIELD_NAME = "ecom";
 	
+
 	/**
 	 * private constructor.
 	 */
 	private IocFinder() {
+		// Empty
 	}
 	
 	/**
@@ -105,26 +58,26 @@ public final class IocFinder {
 	 * @param pv the name of the process variable.
 	 * @return the name of the IOC.
 	 */
-	public static String getIoc(final String pv) {
+	public static String getEconForEren(final String pv) {
 		if (pv == null) {
 			throw new NullPointerException("pv must not be null");
 		}
 		
-		final ErgebnisListe ergebnisListe = new ErgebnisListe();
-		ErgebnisListeObserver obs = new ErgebnisListeObserver();
-		ergebnisListe.addObserver(obs);
+		final LdapResultList resultList = new LdapResultList();
+		LdapResultListObserver obs = new LdapResultListObserver();
+		resultList.addObserver(obs);
 		
-        String filter = "eren=" + pvNameToRecordName(pv);
-        LDAPReader ldapr = new LDAPReader("ou=EpicsControls",
-                filter, ergebnisListe);
+        String filter = EREN_FIELD_NAME + LDAP_ENTRY_FIELD_ASSIGNMENT + pvNameToRecordName(pv);
+        LDAPReader ldapr = new LDAPReader("ou=EpicsControls", filter, resultList);
         // For some reason the ErgebnisListe doesn't notify its observers
         // when the result is written to it. The job change listener works
         // around this problem by sending the notification when the LDAP
         // reader job is done.
         ldapr.addJobChangeListener(new JobChangeAdapter() {
-            public void done(final IJobChangeEvent event) {
+            @Override
+			public void done(final IJobChangeEvent event) {
 	            if (event.getResult().isOK()) {
-	               ergebnisListe.notifyView();
+	               resultList.notifyView();
 	            }
             }
          });
@@ -133,9 +86,8 @@ public final class IocFinder {
         String ldapPath = obs.getResult();
         if (ldapPath != null) {
             return ldapResultToControllerName(ldapPath);
-        } else {
-        	return null;
         }
+		return null;
 	}
 	
 	/**
@@ -175,9 +127,10 @@ public final class IocFinder {
 	 */
 	public static List<String> getIocList() {
 		final List<String> result = new ArrayList<String>();
-		final ErgebnisListe el = new ErgebnisListe();
-		LDAPReader lr = new LDAPReader("ou=EpicsControls", "econ=*", el);
+		final LdapResultList el = new LdapResultList();
+		LDAPReader lr = new LDAPReader("ou=EpicsControls", ECON_FIELD_NAME + LDAP_ENTRY_FIELD_ASSIGNMENT + "*", el);
 		lr.addJobChangeListener(new JobChangeAdapter() {
+			@Override
 			public void done(final IJobChangeEvent event) {
 				if (event.getResult().isOK()) {
 					for (String ioc : el.getAnswer()) {
@@ -201,11 +154,84 @@ public final class IocFinder {
 	 * @param ldapPath the LDAP path.
 	 * @return the IOC name.
 	 */
-	private static String ldapResultToControllerName(final String ldapPath) {
-        String[] answerTmp = ldapPath.split("econ=");
-        String[] answerTmp2 = answerTmp[1].split(",");
+	public static String ldapResultToControllerName(final String ldapPath) {
+        String[] answerTmp = ldapPath.split(ECON_FIELD_NAME + LDAP_ENTRY_FIELD_ASSIGNMENT);
+        String[] answerTmp2 = answerTmp[1].split(LDAP_ENTRY_FIELD_SEPARATOR);
         String controllerName = answerTmp2[0];
         return controllerName;
+	}
+	
+	public static class LdapQueryResult {
+		
+		private String _eren;
+		private String _econ;
+		private String _efan;
+
+		/**
+		 * Constructor.
+		 * @param efan
+		 * @param econ
+		 //* @param eren
+		 */
+		public LdapQueryResult(
+				final String efan, 
+				final String econ, 
+				final String eren) {
+			_efan = efan;
+			_econ = econ;
+			//_eren = eren;
+		}
+
+		public LdapQueryResult() {
+			// Empty
+		}
+
+		public String getEren() {
+			return _eren;
+		}
+
+		public String getEcon() {
+			return _econ;
+		}
+
+		public String getEfan() {
+			return _efan;
+		}
+
+		public void setEcon(String econ) {
+			_econ = econ;
+		}
+
+		public void setEfan(String efan) {
+			_efan = efan;
+		}
+
+		public void setEren(String eren) {
+			_eren = eren;
+		}
+	}
+	
+	public static LdapQueryResult parseLdapQueryResult(final String ldapPath) {
+
+		String[] fields = ldapPath.split(LDAP_ENTRY_FIELD_SEPARATOR);
+		
+		LdapQueryResult entry = new LdapQueryResult();
+		
+		String econPrefix = ECON_FIELD_NAME + LDAP_ENTRY_FIELD_ASSIGNMENT;
+		String efanPrefix = EFAN_FIELD_NAME + LDAP_ENTRY_FIELD_ASSIGNMENT;
+		String erenPrefix = EREN_FIELD_NAME + LDAP_ENTRY_FIELD_ASSIGNMENT;
+		
+		for (String field : fields) {
+			if (field.startsWith(econPrefix)) {
+				entry.setEcon(field.substring(econPrefix.length()));
+			} else if (field.startsWith(efanPrefix)){
+				entry.setEfan(field.substring(efanPrefix.length()));
+			} 
+			else if (field.startsWith(erenPrefix)) {
+				entry.setEren(field.substring(erenPrefix.length()));
+			}				
+		}		
+		return entry;
 	}
 
 }

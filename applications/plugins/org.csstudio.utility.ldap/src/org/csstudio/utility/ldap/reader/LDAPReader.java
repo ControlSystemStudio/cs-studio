@@ -23,6 +23,7 @@ package org.csstudio.utility.ldap.reader;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 
 import javax.naming.NameNotFoundException;
 import javax.naming.NamingEnumeration;
@@ -39,22 +40,22 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 
 public class LDAPReader extends Job {
-	private String _name;
+	private String _searchRoot;
 	private String _filter;
-	private int defaultScope=SearchControls.SUBTREE_SCOPE;
-	private ArrayList<String> list;
-	private ErgebnisListe _ergebnisListe;
+	private int _defaultScope = SearchControls.SUBTREE_SCOPE;
+	private List<String> _list;
+	private LdapResultList _resultList;
 
 	/**
 	 * Used the connection settings from org.csstudio.utility.ldap.ui
 	 * (used with UI)
 	 *
 	 * @param nameUFilter<br> 0: name<br>1: = filter<br>
-	 * @param ergebnisListe
+	 * @param resultList
 	 */
-	public LDAPReader(String[] nameUFilter, ErgebnisListe ergebnisListe){
+	public LDAPReader(String[] nameUFilter, LdapResultList resultList){
 		super("LDAPReader");
-		setBasics(nameUFilter[0], nameUFilter[1], ergebnisListe);
+		setBasics(nameUFilter[0], nameUFilter[1], resultList);
 	}
 
 
@@ -64,14 +65,14 @@ public class LDAPReader extends Job {
 	 *
 	 * @param nameUFilter<br> 0: name<br>1: = filter<br>
 	 * @param searchScope set the Scope {@link SearchControls}
-	 * @param ergebnisListe the list for the result {@link ErgebnisListe}
+	 * @param ergebnisListe the list for the result {@link LdapResultList}
 	 */
 
-	public LDAPReader(String[] nameUFilter, int searchScope, ErgebnisListe ergebnisListe){
+	public LDAPReader(String[] nameUFilter, int searchScope, LdapResultList resultList){
 
 		super("LDAPReader");
 
-		setBasics(nameUFilter[0], nameUFilter[1], ergebnisListe);
+		setBasics(nameUFilter[0], nameUFilter[1], resultList);
 		setDefaultScope(searchScope);
 	}
 
@@ -81,11 +82,11 @@ public class LDAPReader extends Job {
 	 *
 	 * @param name
 	 * @param filter
-	 * @param ergebnisListe the list for the result {@link ErgebnisListe}
+	 * @param ldapResultList the list for the result {@link LdapResultList}
 	 */
-	public LDAPReader(String name, String filter, ErgebnisListe ergebnisListe){
+	public LDAPReader(String name, String filter, LdapResultList ldapResultList){
 		super("LDAPReader");
-		setBasics(name, filter, ergebnisListe);
+		setBasics(name, filter, ldapResultList);
 	}
 
 	/**
@@ -95,11 +96,11 @@ public class LDAPReader extends Job {
 	 * @param name
 	 * @param filter
 	 * @param searchScope
-	 * @param ergebnisListe the list for the result {@link ErgebnisListe}
+	 * @param resultList the list for the result {@link LdapResultList}
 	 */
-	public LDAPReader(String name, String filter, int searchScope, ErgebnisListe ergebnisListe){
+	public LDAPReader(String name, String filter, int searchScope, LdapResultList resultList){
 		super("LDAPReader");
-		setBasics(name, filter, ergebnisListe);
+		setBasics(name, filter, resultList);
 		setDefaultScope(searchScope);
 	}
 
@@ -109,13 +110,13 @@ public class LDAPReader extends Job {
 	 * @param name
 	 * @param filter
 	 * @param searchScope
-	 * @param ergebnisListe the list for the result {@link ErgebnisListe}
+	 * @param resultList the list for the result {@link LdapResultList}
 	 * @param env connection settings.
 	 */
 
-	public LDAPReader(String name, String filter, int searchScope, ErgebnisListe ergebnisListe, Hashtable<Object,String> env){
+	public LDAPReader(String name, String filter, int searchScope, LdapResultList resultList, Hashtable<Object,String> env){
 		super("LDAPReader");
-		setBasics(name, filter, ergebnisListe);
+		setBasics(name, filter, resultList);
 		setDefaultScope(searchScope);
 	}
 	/**
@@ -123,7 +124,7 @@ public class LDAPReader extends Job {
 	 *
 	 * @param name
 	 * @param filter
-	 * @param ergebnisListe
+	 * @param resultList
 	 * @param env value for<br>
 	 * 	0: Context.PROVIDER_URL<br>
 	 *  1: Context.SECURITY_PROTOCOL<br>
@@ -132,16 +133,16 @@ public class LDAPReader extends Job {
 	 *  4: Context.SECURITY_CREDENTIALS<br>
 	 *
 	 */
-	public LDAPReader(String name, String filter,  ErgebnisListe ergebnisListe, String[] env){
+	public LDAPReader(String name, String filter,  LdapResultList resultList, String[] env){
 		super("LDAPReader");
-		setBasics(name, filter, ergebnisListe);
+		setBasics(name, filter, resultList);
 	}
 	/**
 	 *
 	 * @param name
 	 * @param filter
 	 * @param searchScope
-	 * @param ergebnisListe
+	 * @param resultList
 	 * @param env value for<br>
 	 * 	0: Context.PROVIDER_URL<br>
 	 *  1: Context.SECURITY_PROTOCOL<br>
@@ -150,21 +151,21 @@ public class LDAPReader extends Job {
 	 *  4: Context.SECURITY_CREDENTIALS<br>
 	 *
 	 */
-	public LDAPReader(String name, String filter, int searchScope, ErgebnisListe ergebnisListe, String[] env){
+	public LDAPReader(String searchRoot, String filter, int searchScope, LdapResultList resultList, String[] env){
 		super("LDAPReader");
-		setBasics(name, filter, ergebnisListe);
+		setBasics(searchRoot, filter, resultList);
 		setDefaultScope(searchScope);
 	}
 
 	/**
-	 * @param name
+	 * @param searchRoot
 	 * @param filter
-	 * @param ergebnisListe
+	 * @param resultList
 	 * @param ctx 
 	 */
-	private void setBasics(String name, String filter, ErgebnisListe ergebnisListe) {
-		_ergebnisListe = ergebnisListe;
-		_name = name;
+	private void setBasics(String searchRoot, String filter, LdapResultList resultList) {
+		_resultList = resultList;
+		_searchRoot = searchRoot;
 		_filter = filter;
     }
 
@@ -173,7 +174,7 @@ public class LDAPReader extends Job {
      * @param defaultScope set the given Scope.
      */
     private void setDefaultScope(int defaultScope) {
-        this.defaultScope = defaultScope;
+        this._defaultScope = defaultScope;
     }
 
 	@Override
@@ -182,23 +183,21 @@ public class LDAPReader extends Job {
 	    DirContext ctx = Engine.getInstance().getLdapDirContext();
 		if(ctx !=null){
 	        SearchControls ctrl = new SearchControls();
-	        ctrl.setSearchScope(defaultScope);
-//	        ctrl.setReturningAttributes(null);
+	        ctrl.setSearchScope(_defaultScope);
 	        try{
-	        	list = new ArrayList<String>();
-	            NamingEnumeration<SearchResult> answer = ctx.search(_name, _filter, ctrl);
-             //   CentralLogger.getInstance().info(this,"answer = " + answer);
-
+	        	_list = new ArrayList<String>();
+	            NamingEnumeration<SearchResult> answer = ctx.search(_searchRoot, _filter, ctrl);
+//
 				try {
 					while(answer.hasMore()){
-						String name = answer.next().getName()+","+_name;
-						list.add(name);
+						String name = answer.next().getName() + "," + _searchRoot;
+						_list.add(name);
 						if(monitor.isCanceled()) {
 							return Status.CANCEL_STATUS;
 						}
 					}
-					if(list.size()<1){
-						list.add("no entry found");
+					if(_list.size()<1){
+						_list.add("no entry found");
 					}
 				} catch (NamingException e) {
 				    ctx = Engine.getInstance().reconnectDirContext();
@@ -206,7 +205,7 @@ public class LDAPReader extends Job {
                     CentralLogger.getInstance().info(this,e);
 				}
 				answer.close();
-				_ergebnisListe.setResultList(list);
+				_resultList.setResultList(_list);
 				monitor.done();
 				return Status.OK_STATUS;
 			} catch (NameNotFoundException nnfe){
@@ -222,7 +221,7 @@ public class LDAPReader extends Job {
 			
 		}
 		monitor.setCanceled(true);
-		_ergebnisListe.setResultList(list);
+		_resultList.setResultList(_list);
 		return Status.CANCEL_STATUS;
 	}
 }

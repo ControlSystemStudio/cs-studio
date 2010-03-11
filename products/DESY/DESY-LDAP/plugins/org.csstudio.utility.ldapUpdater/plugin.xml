@@ -9,9 +9,10 @@
             cardinality="1"
             thread="any"
             visible="false">
-         <run
-               class="org.csstudio.utility.ldapUpdater.LdapUpdaterServer">
-         </run></application>
+         <run 
+            class="org.csstudio.utility.ldapUpdater.LdapUpdaterServer">
+         </run>
+      </application>
    </extension>
    <extension
          id="product"
@@ -28,7 +29,7 @@
    <extension
          point="org.eclipse.core.runtime.preferences">
       <initializer
-            class="org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceInitializer">
+            class="org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferences">
       </initializer>
    </extension>
    <extension
@@ -38,7 +39,7 @@
             id="org.csstudio.utility.ldapUpdater.ShutdownLdapUpdaterAction"
             label="Stop Ldap Updater">
       </command>
-            <command
+      <command
             class="org.csstudio.utility.ldapUpdater.UpdateLdapAction"
             id="org.csstudio.utility.ldapUpdater.UpdateLdapAction"
             label="Start Ldap Update">

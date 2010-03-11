@@ -45,12 +45,13 @@ public class TimerProcessor {
 	
 
     static class ProcessOnTime extends TimerTask {
-        public void run() {
+        @Override
+		public void run() {
         	
         	LdapUpdater ldapUpdater=LdapUpdater.getInstance();
         	try {
         		if (!ldapUpdater._busy){
- 				ldapUpdater.start();
+        			ldapUpdater.start();
  				}
 			} catch (Exception e) {
 				CentralLogger.getInstance().info  (this, "LdapUpdater is busy" );

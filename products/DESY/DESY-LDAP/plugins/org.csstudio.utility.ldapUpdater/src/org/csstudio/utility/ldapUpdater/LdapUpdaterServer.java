@@ -22,10 +22,17 @@
 
 package org.csstudio.utility.ldapUpdater;
 
+import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceKey.LDAP_AUTO_INTERVAL;
+import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceKey.LDAP_AUTO_START;
+import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceKey.XMPP_PASSWD;
+import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceKey.XMPP_SERVER;
+import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceKey.XMPP_USER;
+import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferences.getValueFromPreferences;
+
+import java.text.SimpleDateFormat;
+
+import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceConstants;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.remotercp.common.servicelauncher.ServiceLauncher;
@@ -34,17 +41,14 @@ import org.remotercp.login.connection.HeadlessConnection;
 
 public class LdapUpdaterServer implements IApplication {
 
-	private boolean _stopped;
+	private final Logger LOG = CentralLogger.getInstance().getLogger(this);
 
-	/**
-	 * The logger that is used by this class.
-	 */
-	private CentralLogger _log = CentralLogger.getInstance();
+	private boolean _stopped;
 
 	/**
 	 * The running instance of this server.
 	 */
-	private static LdapUpdaterServer _instance;
+	private static LdapUpdaterServer INSTANCE;
 
 	/**
 	 * Returns a reference to the currently running server instance. Note: it
@@ -53,75 +57,61 @@ public class LdapUpdaterServer implements IApplication {
 	 * @return the running server.
 	 */
 	static LdapUpdaterServer getRunningServer() {
-		return _instance;
+		return INSTANCE;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public final Object start(final IApplicationContext context)
 			throws Exception {
-		_instance = this;
+		
+		INSTANCE = this;
 
-		// CALCULATE THE DELAY FOR THE AUTOMATIC LDAP PROCESSING
-		long startTime = System.currentTimeMillis();
-		long one_hour = 3600; // s
-		long one_day = one_hour * 24; // s
-		long time_since_last_midnight = (startTime / 1000) % (one_day); // s
-		long delay = 0;
-
-		IPreferencesService prefs = Platform.getPreferencesService();
-		String startSecString = prefs.getString(Activator.PLUGIN_ID,
-				LdapUpdaterPreferenceConstants.LDAP_AUTO_START, "", null);
-		String intervalString = prefs.getString(Activator.PLUGIN_ID,
-				LdapUpdaterPreferenceConstants.LDAP_AUTO_INTERVAL, "", null);
-
-		long hexVal = Long.parseLong("AFFE", 17);
+		String startSecString = getValueFromPreferences(LDAP_AUTO_START);
+		String intervalString = getValueFromPreferences(LDAP_AUTO_INTERVAL);
 		long startSec = Long.parseLong(startSecString);
 		long interval = Long.parseLong(intervalString);
 
-		if (time_since_last_midnight < startSec) {
-			delay = one_day - time_since_last_midnight; // start at 1 o'clock am
+		// CALCULATE THE DELAY FOR THE AUTOMATIC LDAP PROCESSING
+		long currentTime_s = System.currentTimeMillis() * 1000;
+		long one_hour_s = 3600; // s
+		long one_day_s = one_hour_s * 24; // s
+		long time_since_last_midnight_s = currentTime_s  % (one_day_s); // s
+
+		long delay_s;
+		if (time_since_last_midnight_s < startSec) {
+			delay_s = one_day_s - time_since_last_midnight_s; // start at 1 o'clock am
 		} else {
-			if (time_since_last_midnight < interval) {
-				delay = (interval) - time_since_last_midnight; // start at
+			if (time_since_last_midnight_s < interval) {
+				delay_s = (interval) - time_since_last_midnight_s; // start at
 				// "startTime[Sec]"
 			} else {
-				delay = (interval * 2) - time_since_last_midnight; // start at
+				delay_s = (interval * 2) - time_since_last_midnight_s; // start at
 				// "startTime[Sec]"
 				// + 12
 				// hours
 			}
 		}
+		
+		String delayStr = new SimpleDateFormat("HH:mm:ss").format(delay_s * 1000);
+		
+		LOG.debug("Delay until autostart is " + delayStr + " (UTC)");
 
-		myDateTimeString dateTimeString = new myDateTimeString();
-		// String autostart = dateTimeString.getDateTimeString( "", "HH:mm:ss",
-		// (startSec)*1000);
-		// _log.debug(this, "Time interval until autostart is " + autostart +
-		// " (UTC)");
-		// CentralLogger.getInstance().debug(this,
-		// "Time interval until autostart is " + autostart + " (UTC)");
-
-		String delayStr = dateTimeString.getDateTimeString("", "HH:mm:ss",
-				(delay) * 1000);
-		_log.debug(this, "Delay until autostart is " + delayStr + " (UTC)");
-		CentralLogger.getInstance().debug(this,
-				"Delay until autostart is " + delayStr + " (UTC)");
-
-		String username = prefs.getString(Activator.PLUGIN_ID,
-				LdapUpdaterPreferenceConstants.XMPP_USER, "anonymous", null);
-		String password = prefs.getString(Activator.PLUGIN_ID,
-				LdapUpdaterPreferenceConstants.XMPP_PASSWD, "anonymous", null);
-		String server = prefs.getString(Activator.PLUGIN_ID,
-				LdapUpdaterPreferenceConstants.XMPP_SERVER, "krynfs.desy.de",
-				null);
+		
+		String username = getValueFromPreferences(XMPP_USER, "anonymous");
+		String password = getValueFromPreferences(XMPP_PASSWD, "anonymous");
+		String server = getValueFromPreferences(XMPP_SERVER, "krynfs.desy.de");
+		
 
 		HeadlessConnection.connect(username, password, server, ECFConstants.XMPP);
 		ServiceLauncher.startRemoteServices();
 
-		delay = delay * 1000;
+		delay_s = delay_s * 1000;
 		interval = interval * 1000;
-		new TimerProcessor(delay, interval); // every 12 hours
+		
+		new TimerProcessor(delay_s, interval); // every 12 hours
 
 		// next call was working - for test only (starts the ldapUpdater every
 		// 180 seconds):
@@ -138,8 +128,9 @@ public class LdapUpdaterServer implements IApplication {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public final synchronized void stop() {
-		_log.debug(this, "stop() was called, stopping server.");
+		LOG.debug("stop() was called, stopping server.");
 		_stopped = true;
 		notifyAll();
 	}

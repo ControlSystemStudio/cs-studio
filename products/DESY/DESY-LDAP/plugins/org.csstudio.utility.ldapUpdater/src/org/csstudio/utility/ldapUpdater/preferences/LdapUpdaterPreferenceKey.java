@@ -21,33 +21,34 @@
  */
  package org.csstudio.utility.ldapUpdater.preferences;
 
-import org.csstudio.utility.ldapUpdater.Activator;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 /**
  * Constant definitions for plug-in preferences
  */
-public class LdapUpdaterPreferenceConstants {
-
+public enum LdapUpdaterPreferenceKey {
+	
+	IOC_DBL_DUMP_PATH("iocDblDumpPath"),
+	IOC_LIST_FILE("iocListFile"),
+	LDAP_CONT_ROOT("ldapContRoot"),
+	LDAP_HIST_PATH("ldapHistPath"),
+	XMPP_USER("XMPPUser"),
+	XMPP_PASSWD("XMPPPassWD"),
+	LDAP_AUTO_START("ldapAutoStart"),
+	LDAP_AUTO_INTERVAL("ldapAutoInterval"),
+	XMPP_SERVER("XMPPServer");
+	
+	
+	private final String _description;
+	
 	/**
-	 * Don't instantiate.
+	 * Constructor.
 	 */
-	private LdapUpdaterPreferenceConstants () {}
-	
-	public static final String IOC_DBL_DUMP_PATH = "iocDblDumpPath";
-	public static final String IOC_LIST_FILE = "iocListFile";
-	public static final String LDAP_CONT_ROOT = "ldapContRoot";
-	public static final String LDAP_HIST_PATH = "ldapHistPath";
-	public static final String XMPP_USER = "XMPPUser";
-	public static final String XMPP_PASSWD = "XMPPPassWD";
-	public static final String LDAP_AUTO_START = "ldapAutoStart";
-	public static final String LDAP_AUTO_INTERVAL = "ldapAutoInterval";
-	public static final String XMPP_SERVER = "XMPPServer";
-	
-	public static String createFileNameFromPreferences(final String prefFileName) {
-		IPreferencesService prefs = Platform.getPreferencesService();
-		return prefs.getString(Activator.getDefault().getPluginId(),
-				prefFileName, "", null);
+	LdapUpdaterPreferenceKey (String keyDescription) {
+		_description = keyDescription;
 	}
+	
+	public String getDescription() {
+		return _description;
+	}
+	
 }

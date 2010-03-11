@@ -19,50 +19,53 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
+package org.csstudio.utility.ldapUpdater.model;
 
-package org.csstudio.utility.ldapUpdater;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
-import java.text.SimpleDateFormat;
-// import java.util.ArrayList;
-// import java.util.Date;
-import com.sun.org.apache.xerces.internal.impl.xs.SubstitutionGroupHandler;
+/**
+ * 
+ * 
+ * @author bknerr
+ */
+public class Facility {
+	private final String _name;
 
+	private final Map<String, IOC> _iocs = new HashMap<String, IOC>();
 
-public class myDateTimeString {
-			  
 	/**
-	 * Konversion von Millisekunden-Wert nach String
-	 * 		params in : Date_Format, Time_Format, Millisekunden
-	 * 		params out: String, der Datum und / oder Uhrzeit enthält
-	 * (dateform und / oder timeform dürfen leere Strings sein, aber beide Strings leer zu übergeben macht 
-	 * nicht viel Sinn, denn wer will schon einen leeren String zurückgegeben haben !)
-
-	 * sample call :
-	 * String ymd_hms = getDateTimeString( "yyyy-MM-dd", "HH:mm:ss", now);	
-	 * 
-	 * @author valett
-	 *
+	 * Constructor.
 	 */
-
-	public String getDateTimeString(final String dateform, final String timeform, final long millis) {
-		  String result = "";
-
-		  if ( dateform.length() != 0 ) {
-			  SimpleDateFormat sdfDate = new SimpleDateFormat(dateform);
-			  String strDate = sdfDate.format(millis);
-			  result = strDate;
-		  } 
-		    
-		  if ( timeform.length() != 0 ) {
-			  SimpleDateFormat sdfTime = new SimpleDateFormat(timeform);
-			  String strTime = sdfTime.format(millis);
-			  if ( result.length() != 0 ){
-				  result = result + " " + strTime ;
-			  } else {
-				  result = strTime;
-			  }
-		  }
-
-		  return ( result );
+	public Facility(final String name) {
+		_name = name;
 	}
+
+	public IOC addIOC(final String efan, final String econ) {
+		IOC ioc = _iocs.get(econ);
+		if (ioc == null) {
+			ioc = new IOC(econ, efan);
+			_iocs.put(econ, ioc);
+		}
+		return ioc;
+	}
+
+	public IOC getIOC(final String iocName) {
+		return _iocs.get(iocName);
+	}
+
+	/**
+	 * The names of the contained IOCs.
+	 * @return a copy of the name set of the currently contained IOCs
+	 */
+	public Set<String> getIocNames() {
+		return new HashSet<String>(_iocs.keySet());
+	}
+
+	public String getName() {
+		return _name;
+	}
+
 }

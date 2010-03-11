@@ -7,9 +7,9 @@ package org.csstudio.utility.ldapUpdater;
  * Modified for settable recursion depth by Klaus Valett - DESY Hamburg
  */
 
-import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceConstants.IOC_DBL_DUMP_PATH;
-import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceConstants.IOC_LIST_FILE;
-import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceConstants.createFileNameFromPreferences;
+import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceKey.IOC_DBL_DUMP_PATH;
+import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceKey.IOC_LIST_FILE;
+import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferences.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -18,6 +18,10 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
+
+import org.apache.log4j.Logger;
+import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.utility.ldapUpdater.model.IOC;
 
 /**
  * DirTree - directory lister, like UNIX ls or DOS/VMS dir
@@ -31,17 +35,17 @@ public class IOCFilesDirTree {
 	private static int _currentDepth = 0;
 	private static PrintWriter _zielDatei = null;
 	
-	
+	public static Logger LOG = CentralLogger.getInstance().getLogger(IOCFilesDirTree.class);
 	
 	public static List<IOC> findIOCFiles(int recursiveDepth) {
 		
 		List<IOC> iocList = new ArrayList<IOC>();
 		
 		try {
-			String iocListFile = createFileNameFromPreferences(IOC_LIST_FILE);
+			String iocListFile = getValueFromPreferences(IOC_LIST_FILE);
 			_zielDatei =  new PrintWriter(iocListFile);
 			IOCFilesDirTree dt = new IOCFilesDirTree();
-			String iocDblDumpPath = createFileNameFromPreferences(IOC_DBL_DUMP_PATH); 
+			String iocDblDumpPath = getValueFromPreferences(IOC_DBL_DUMP_PATH); 
 				
 			dt.doDir(recursiveDepth, iocDblDumpPath, iocList);
 
@@ -61,7 +65,6 @@ public class IOCFilesDirTree {
 	@SuppressWarnings("static-access")
 	private void doDir(final int recDepth, final String s, List<IOC> iocList) {
 		
-		//System.out.println("doDir for " + s);
 		File f = new File(s);
 		if (!f.exists()) {
 			System.out.println(f.getName() + " does not exist");
@@ -98,6 +101,7 @@ public class IOCFilesDirTree {
 			GregorianCalendar dateTime = findLastModifiedDateForFile(fileName);
 
 			iocList.add(new IOC(fileName, dateTime));
+			LOG.debug("File found for IOC: " + fileName);
 			
 			// TODO (kvalett) : do this with a log file on a dedicated logging location !
 			_zielDatei.println(fileName);
@@ -118,7 +122,7 @@ public class IOCFilesDirTree {
 
 	private static GregorianCalendar findLastModifiedDateForFile(final String iocName) {
 		GregorianCalendar dateTime = new GregorianCalendar();
-		String prefFileName = createFileNameFromPreferences(IOC_DBL_DUMP_PATH); 
+		String prefFileName = getValueFromPreferences(IOC_DBL_DUMP_PATH); 
 		File filePath = new File(prefFileName);
 		dateTime.setTimeInMillis(new File(filePath,iocName).lastModified());
 		return dateTime;
