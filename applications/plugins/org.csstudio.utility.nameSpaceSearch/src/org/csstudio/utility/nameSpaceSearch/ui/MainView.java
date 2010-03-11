@@ -29,7 +29,7 @@ import java.util.Observer;
 import org.csstudio.platform.model.IControlSystemItem;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
-import org.csstudio.utility.ldap.reader.ErgebnisListe;
+import org.csstudio.utility.ldap.reader.LdapResultList;
 import org.csstudio.utility.ldap.reader.LDAPReader;
 import org.csstudio.utility.nameSpaceSearch.Activator;
 import org.csstudio.utility.nameSpaceSearch.Messages;
@@ -97,7 +97,7 @@ public class MainView extends ViewPart implements Observer{
     private Label _workIcon;
     private LDAPReader _ldapr;
     private Display _disp;
-    private ErgebnisListe _ergebnisListe;
+    private LdapResultList _ergebnisListe;
     /**
      * The search Button.
      */
@@ -175,7 +175,7 @@ public class MainView extends ViewPart implements Observer{
     }
 
     public MainView() {
-        _ergebnisListe = new ErgebnisListe();
+        _ergebnisListe = new LdapResultList();
         _ergebnisListe.addObserver(this);
     }
 
