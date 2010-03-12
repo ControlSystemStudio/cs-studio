@@ -8,9 +8,18 @@ import org.junit.Test;
  *  @author Xihui Chen, Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class MacroUtilTest {
+public class MacroUtilTest
+{
 	@Test
-	public void testReplacemacros() throws Exception{	
+	public void testReplacemacros() throws Exception
+	{
+	    // The there-are-no-macros case
+        final IMacroTableProvider nothing = new MacroTable("");
+        assertEquals("No Change", MacroUtil.replaceMacros("No Change", nothing));
+
+        assertEquals("$(undefined)", MacroUtil.replaceMacros("$(undefined)", nothing));
+        
+	    // Actual macros
 	    final IMacroTableProvider macros =
 	        new MacroTable("ABC=DEF, 123=456, abc_456_def=789, A=$(B), B=C, C=D, 1=$(2), 2=$(1)");
 	    
@@ -33,10 +42,13 @@ public class MacroUtilTest {
 		assertEquals("C", result);
 		
 		//throw exception when infinite loop detected
-		try {
+		try 
+		{
 			input = "$(1)";		
 			result = MacroUtil.replaceMacros(input, macros);			
-		} catch (InfiniteLoopException e) {			
+		}
+		catch (InfiniteLoopException e)
+		{			
 			result = "InfiniteLoopException";
 		}
 		assertEquals("InfiniteLoopException", result);
