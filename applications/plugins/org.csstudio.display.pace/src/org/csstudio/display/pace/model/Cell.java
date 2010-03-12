@@ -4,7 +4,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.csstudio.apputil.macros.Macro;
+import org.csstudio.apputil.macros.MacroUtil;
 import org.csstudio.display.pace.Messages;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueUtil;
@@ -71,7 +71,7 @@ public class Cell implements PVListener, IProcessVariable
     {
         this.instance = instance;
         this.column = column;
-        pv_name = Macro.apply(instance.getMacros(), column.getPvWithMacros());
+        pv_name = MacroUtil.replaceMacros(column.getPvWithMacros(), instance.getMacros());
 
         //  Create the main PV and add listener
         this.pv = PVFactory.createPV(pv_name);
@@ -79,19 +79,19 @@ public class Cell implements PVListener, IProcessVariable
 
         // Create the optional comment pvs.
         // No listener. Their value is fetched on demand.
-        String name=Macro.apply(instance.getMacros(), column.getNamePvWithMacros());
+        String name=MacroUtil.replaceMacros(column.getNamePvWithMacros(), instance.getMacros());
         if (name.length() <= 0)
             last_name_pv = null;
         else
             last_name_pv = PVFactory.createPV(name);
         
-        name = Macro.apply(instance.getMacros(), column.getDatePvWithMacros());
+        name = MacroUtil.replaceMacros(column.getDatePvWithMacros(), instance.getMacros());
         if (name.length() <= 0)
             last_date_pv = null;
         else
             last_date_pv = PVFactory.createPV(name);
         
-        name = Macro.apply(instance.getMacros(), column.getCommentPvWithMacros());
+        name = MacroUtil.replaceMacros(column.getCommentPvWithMacros(), instance.getMacros());
         if (name.length() <= 0)
             last_comment_pv = null;
         else

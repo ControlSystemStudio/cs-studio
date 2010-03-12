@@ -2,7 +2,8 @@ package org.csstudio.display.pace.model;
 
 import java.util.List;
 
-import org.csstudio.apputil.macros.Macro;
+import org.csstudio.apputil.macros.IMacroTableProvider;
+import org.csstudio.apputil.macros.MacroTable;
 import org.csstudio.apputil.xml.DOMHelper;
 import org.w3c.dom.Element;
 
@@ -21,7 +22,7 @@ public class Instance
 {
     final private Model model;
     final private String name;
-    final private Macro macros[];
+    final private IMacroTableProvider macros;
     private Cell[] cells;
     
     /** Parse and create Column from DOM
@@ -39,7 +40,7 @@ public class Instance
         if (name.length() <= 0)
             throw new Exception("Missing instance name");
         // Parse macro definition. OK to be empty, but errors result in exception
-        final Macro macros[] = Macro.fromList(macro_text);
+        final IMacroTableProvider macros = new MacroTable(macro_text);
         // Read instance definition from configuration file ... create the instance
         // Cells will be added later in createCells()
         return new Instance(model, name, macros);
@@ -50,7 +51,7 @@ public class Instance
      *  @param name Instance name, row title
      *  @param macros List of macros
      */
-    public Instance(final Model model, final String name, final Macro macros[])
+    public Instance(final Model model, final String name, final IMacroTableProvider macros)
     {
         this.model = model;
         this.name = name;
@@ -84,7 +85,7 @@ public class Instance
     }
 
     /** @return Macros that turn macro-ized PV name into name for this instance */
-    Macro[] getMacros()
+    IMacroTableProvider getMacros()
     {
         return macros;
     }
@@ -112,16 +113,6 @@ public class Instance
     @Override
     public String toString()
     {
-        final StringBuilder buf = new StringBuilder();
-        buf.append("Instance '" + name + "'");
-        // List all the macros that define this instance
-        for (int i=0; i<macros.length; ++i)
-        {
-            if (i > 0)
-                buf.append(", " + macros[i].toString());
-            else
-                buf.append(" " + macros[i].toString());
-        }
-        return buf.toString();
+        return "Instance '" + name + "', " + macros.toString();
     }
 }
