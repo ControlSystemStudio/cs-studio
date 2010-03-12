@@ -235,7 +235,7 @@
       <widgetPropertyPostProcessor
             class="org.csstudio.sds.components.model.eventing.BargraphShowScalePostProcessor"
             propertyId="scaleShowStatus"
-            widgetId="org.csstudio.sds.components.Bargraph">
+            widgetId="org.csstudio.sds.components.SimpleSlider">
       </widgetPropertyPostProcessor>
       <widgetPropertyPostProcessor
             class="org.csstudio.sds.components.model.eventing.BargraphSizePostProcessor"
@@ -246,6 +246,16 @@
             class="org.csstudio.sds.components.model.eventing.BargraphSizePostProcessor"
             propertyId="height"
             widgetId="org.csstudio.sds.components.Bargraph">
+      </widgetPropertyPostProcessor>
+      <widgetPropertyPostProcessor
+            class="org.csstudio.sds.components.model.eventing.SimpleSliderSizePostProcessor"
+            propertyId="width"
+            widgetId="org.csstudio.sds.components.SimpleSlider">
+      </widgetPropertyPostProcessor>
+      <widgetPropertyPostProcessor
+            class="org.csstudio.sds.components.model.eventing.SimpleSliderSizePostProcessor"
+            propertyId="height"
+            widgetId="org.csstudio.sds.components.SimpleSlider">
       </widgetPropertyPostProcessor>
    </extension>
 

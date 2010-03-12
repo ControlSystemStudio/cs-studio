@@ -140,6 +140,12 @@
             id="behavior.desy.bargraph.default"
             widgetTypeId="org.csstudio.sds.components.Bargraph">
       </behavior>
+      <behavior
+            class="org.csstudio.sds.behavior.desy.SimpleSliderBehavior"
+            description="DESY Default"
+            id="behavior.desy.simpleslider.default"
+            widgetTypeId="org.csstudio.sds.components.SimpleSlider">
+      </behavior>
    </extension>
    
 </plugin>

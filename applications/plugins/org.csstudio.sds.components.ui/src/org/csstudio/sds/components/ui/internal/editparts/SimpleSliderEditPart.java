@@ -215,13 +215,7 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart
 					final Object newValue, final IFigure refreshableFigure) {
 				SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
 				slider.setPopulateEvents(false);
-
 				slider.setOrientation((Boolean) newValue);
-
-				SimpleSliderModel model = (SimpleSliderModel) getModel();
-
-				// invert the size of the element
-				model.setSize(model.getHeight(), model.getWidth());
 				slider.setPopulateEvents(true);
 				return true;
 			}

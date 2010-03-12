@@ -2,11 +2,13 @@ package org.csstudio.sds.behavior.desy;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.csstudio.sds.components.model.BargraphModel;
 import org.csstudio.sds.cosyrules.color.Alarm;
 import org.csstudio.sds.eventhandling.AbstractBehavior;
 import org.csstudio.sds.model.AbstractWidgetModel;
+import org.csstudio.sds.model.BorderStyleEnum;
 import org.csstudio.sds.model.LabelModel;
 import org.csstudio.sds.util.ColorAndFontUtil;
 import org.epics.css.dal.context.ConnectionState;
@@ -47,13 +49,13 @@ public class BargraphBehavior extends AbstractBehavior<BargraphModel> {
 
 	@Override
 	protected void doInitialize(BargraphModel widget) {
-
+		widget.setPropertyValue(AbstractWidgetModel.PROP_BORDER_STYLE, BorderStyleEnum.DOTTED.getIndex());
+		widget.setPropertyValue(AbstractWidgetModel.PROP_BORDER_WIDTH, 2);
+		widget.setPropertyValue(AbstractWidgetModel.PROP_BORDER_COLOR, "#C0C000"); 
 	}
 
 	@Override
 	protected void doProcessValueChange(BargraphModel widget, AnyData anyData) {
-		System.out.println(anyData.getMetaData());
-		
 		// .. fill level (influenced by current value)
 		widget.setPropertyValue(BargraphModel.PROP_FILL, anyData.doubleValue());
 
@@ -66,10 +68,18 @@ public class BargraphBehavior extends AbstractBehavior<BargraphModel> {
 
 	@Override
 	protected void doProcessConnectionStateChange(BargraphModel widget, org.epics.css.dal.context.ConnectionState connectionState) {
+		System.out.println(connectionState);
+		// .. change border
+		if(connectionState!=ConnectionState.INITIAL) {
+			widget.setPropertyValue(AbstractWidgetModel.PROP_BORDER_STYLE, BorderStyleEnum.NONE.getIndex());
+			System.out.println("setting border style to none");
+		}
+		
 		// .. change color
 		String color = colorsByConnectionState.get(connectionState);
 		if (color != null) {
 			widget.setPropertyValue(BargraphModel.PROP_FILLBACKGROUND_COLOR, color);
+			widget.setPropertyValue(BargraphModel.PROP_COLOR_BACKGROUND, color);
 			widget.setPropertyValue(AbstractWidgetModel.PROP_BORDER_COLOR, color);
 		}
 
@@ -86,12 +96,6 @@ public class BargraphBehavior extends AbstractBehavior<BargraphModel> {
 		MetaData meta = anyData.getMetaData();
 
 		if (meta != null) {
-			System.out.println("(MIN) = Meta.getDisplayLow()="+meta.getDisplayLow());
-			System.out.println("(MAX) = Meta.getDisplayHigh()="+meta.getDisplayHigh());
-			System.out.println("(HIHI) = Meta.getAlarmHigh()="+meta.getAlarmHigh());
-			System.out.println("(HI) = Meta.getWarnHigh()="+meta.getWarnHigh());
-			System.out.println("(LOLO) = Meta.getAlarmLow()="+meta.getAlarmLow());
-			System.out.println("(LO) = Meta.getWarnLow()="+meta.getWarnLow());
 			// .. limits
 			widget.setPropertyValue(BargraphModel.PROP_MIN, meta.getDisplayLow());
 			widget.setPropertyValue(BargraphModel.PROP_MAX, meta.getDisplayHigh());
@@ -155,4 +159,5 @@ public class BargraphBehavior extends AbstractBehavior<BargraphModel> {
 
 		return color;
 	}
+
 }
