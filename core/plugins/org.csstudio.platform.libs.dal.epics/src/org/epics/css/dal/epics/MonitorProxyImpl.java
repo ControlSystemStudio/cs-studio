@@ -271,10 +271,14 @@ public class MonitorProxyImpl<T> extends RequestImpl<T> implements MonitorProxy,
 				monitor.clear();
 			} catch (CAException e) {
 				// noop
+			} catch (RuntimeException e) {
+				//might happen in the CA - disconnect monitor and it should eventually be gc
+				throw e;
+			} finally {
+				monitor.removeMonitorListener(this);
+				destroyed = true;
 			}
-			monitor.removeMonitorListener(this);
 		}
-		
 		destroyed = true;
 	}
 
