@@ -36,4 +36,19 @@ public class MacroTable implements IMacroTableProvider
     {
         return macros.get(name);
     }
+
+    /** @return String representation for debugging */
+    @Override
+    public String toString()
+    {
+        final StringBuilder buf = new StringBuilder();
+        final String names[] = macros.keySet().toArray(new String[macros.size()]);
+        for (String name: names)
+        {
+            if (buf.length() > 0)
+                buf.append(", ");
+            buf.append(name + "=\"" + getMacroValue(name) + "\"");
+        }
+        return buf.toString();
+    }
 }

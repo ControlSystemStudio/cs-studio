@@ -23,6 +23,8 @@ public class MacroUtilTest
 	    final IMacroTableProvider macros =
 	        new MacroTable("ABC=DEF, 123=456, abc_456_def=789, A=$(B), B=C, C=D, 1=$(2), 2=$(1)");
 	    
+	    System.out.println("Macros: " + macros);
+	    
 		//simple test
 		String input = "$(ABC)";		
 		String result = MacroUtil.replaceMacros(input, macros);
