@@ -1,7 +1,8 @@
 package org.csstudio.opibuilder.util;
 
+import java.util.Arrays;
 import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.List;
 
 import org.csstudio.opibuilder.properties.MacrosProperty;
 import org.csstudio.platform.util.StringUtil;
@@ -29,7 +30,7 @@ public class MacrosInput {
 	/**
 	 * @return the macrosMap
 	 */
-	public final Map<String, String> getMacrosMap() {
+	public final LinkedHashMap<String, String> getMacrosMap() {
 		return macrosMap;
 	}
 
@@ -71,11 +72,17 @@ public class MacrosInput {
 	public boolean equals(Object obj) {
 		if(obj != null && obj instanceof MacrosInput){
 			MacrosInput input = (MacrosInput)obj;
-			if(input.isInclude_parent_macros() == include_parent_macros &&
-					macrosMap.equals(input.getMacrosMap()))
-				return true;
-			else 
+			if(include_parent_macros != input.isInclude_parent_macros())
 				return false;
+			if(!macrosMap.equals(input.getMacrosMap()))
+				return false;
+			List<Object> keyList = Arrays.asList(macrosMap.keySet().toArray());
+			List<Object> inputKeyList = Arrays.asList(input.getMacrosMap().keySet().toArray());
+			if(keyList.equals(inputKeyList))
+				return true;
+			else
+				return false;	
+			
 		}else
 			return false;
 		
