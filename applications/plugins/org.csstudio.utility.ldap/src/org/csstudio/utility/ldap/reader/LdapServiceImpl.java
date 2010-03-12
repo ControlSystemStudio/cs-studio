@@ -23,14 +23,8 @@ package org.csstudio.utility.ldap.reader;
 
 import java.util.Observer;
 
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
-
 
 public class LdapServiceImpl implements LdapService {
-
-	private final Logger LOGGER = CentralLogger.getInstance().getLogger(this);
-
 
 	/**
 	 * Constructor.
@@ -39,24 +33,12 @@ public class LdapServiceImpl implements LdapService {
 		// Empty
 	}
 
-
-
 	private LdapResultList createLdapReader(final String readerName, final String filter, final Observer observer) {
-		final LdapResultList list = new LdapResultList(observer);
+		
+		final LdapResultList list = new LdapResultList();
+		list.addObserver(observer);
 
 		final LDAPReader ldapr = new LDAPReader(readerName, filter, list);
-		// For some reason the LdapResultList doesn't notify its observers
-		// when the result is written to it. The job change listener works
-		// around this problem by sending the notification when the LDAP
-		// reader job is done.
-		//		ldapr.addJobChangeListener(new JobChangeAdapter() {
-		//			@Override
-		//			public void done(final IJobChangeEvent event) {
-		//				if (event.getResult().isOK()) {
-		//					list.notifyView();
-		//				}
-		//			}
-		//		});
 		ldapr.schedule();
 
 		return list;

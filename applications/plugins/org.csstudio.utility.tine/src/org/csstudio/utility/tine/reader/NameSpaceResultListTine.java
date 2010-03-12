@@ -25,6 +25,7 @@
 package org.csstudio.utility.tine.reader;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.csstudio.utility.namespace.utility.ControlSystemItem;
@@ -38,8 +39,8 @@ import org.csstudio.utility.namespace.utility.NameSpaceResultList;
  */
 public class NameSpaceResultListTine extends NameSpaceResultList {
     
-	/** The list whit Result from Tine namespace server.*/
-    private List<ControlSystemItem> _csiResult = new ArrayList<ControlSystemItem>();
+	/** The list with results from Tine namespace server.*/
+    private List<ControlSystemItem> _csiResult = Collections.emptyList();
     
     
     /** {@inheritDoc} */
@@ -47,7 +48,8 @@ public class NameSpaceResultListTine extends NameSpaceResultList {
 	public final NameSpaceResultList copy() {
         NameSpaceResultListTine nsrlt = new NameSpaceResultListTine();
         nsrlt.setCSIResultList(_csiResult);
-        return nsrlt;    }
+        return nsrlt;    
+    }
 
     /** {@inheritDoc}*/
     @Override
@@ -74,8 +76,7 @@ public class NameSpaceResultListTine extends NameSpaceResultList {
 	public final void setCSIResultList(final List<ControlSystemItem> resultList) {
     	
     	_csiResult = new ArrayList<ControlSystemItem>(resultList);			
-        setChanged();
-        notifyObservers();
+        notifyView();
     }
     
     /** resultList a filled only String or only {@link ControlSystemItem}. 
@@ -87,8 +88,7 @@ public class NameSpaceResultListTine extends NameSpaceResultList {
 		for (String name : resultList) {
 			_csiResult.add(new ControlSystemItem(name, name));
 		}
-        setChanged();
-        notifyObservers();
+        notifyView();
     }
 
 }

@@ -22,10 +22,12 @@
 package org.csstudio.utility.nameSpaceBrowser.ui;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Random;
 
 import org.csstudio.platform.model.IControlSystemItem;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
@@ -80,15 +82,14 @@ import org.eclipse.ui.PlatformUI;
  * 
  * @author Helge Rickens
  * 
- *         CSSView is a NameSpaceBrowser View-Elemet. Composed of - A Grpup with name of "Type" - A
- *         Filter: Textfield [filter] - A List of Elemets - is the Elemet a IProzessVariuable
+ *         CSSView is a NameSpaceBrowser View-Element. Composed of - A Group with name of "Type" - A
+ *         Filter: Textfield [filter] - A List of Elements - is the Element a IProcessVariable
  * 
  * 
  */
-
 public class CSSView extends Composite implements Observer {
 
-	class myLabelProvider implements ILabelProvider {
+	class CSSLabelProvider implements ILabelProvider {
 
 		public void addListener(final ILabelProviderListener listener) {
 		}
@@ -116,75 +117,96 @@ public class CSSView extends Composite implements Observer {
 		}
 
 	}
-	private static final int JAVA_REG_EXP = 1;
+	private static final int JAVA_REG_EXP = 1; // FIXME (bknerr) : AntiPattern! Use Enum
 	private static final int JAVA_REG_EXP_NO_CASE = 2;
 
 	private static final int SIMPLE_WIN = 3;
 	// UI elements
-	private final Display disp;
+	private final Display _display;
 	private final Composite parent;
 	private Group group;
 	private Text filter;
 
-	private final NameSpaceResultList ergebnisListe;
-	//    private ListViewer listViewer;
-	private TableViewer listViewer;
-	private boolean haveChildern = false;
+	private NameSpaceResultList _resultList;
+
+	private TableViewer _tableViewer;
+	
+	private boolean _hasChild = false;
 	private boolean haveFixFirst = true;
-	private CSSView children;
+	private CSSView _child;
 	private final Automat automat;
-	private final NameSpace nameSpace;
+	private final NameSpace _nameSpace;
 	private LinkedHashMap<String, ControlSystemItem> itemList;
 
 	private int start = -1;
 	private final IWorkbenchPartSite site;
 
 	private String defaultPVFilter;
-	private CSSViewParameter para;
+	private CSSViewParameter _cssParameter;
 	private final String[] headlines;
 	private final int level;
 
 	private String _fixFirst;
+	
+	private long _id;
 
-	public CSSView(final Composite parent, final Automat automat, final NameSpace nameSpace,
-			final IWorkbenchPartSite site, final String defaultFilter, final String selection, final String[] headlines,
-			final int level, final NameSpaceResultList resultList) {
+	public CSSView(
+			final Composite parent, 
+			final Automat automat, 
+			final NameSpace nameSpace,
+			final IWorkbenchPartSite site, 
+			final String defaultFilter, 
+			final String selection, 
+			final String[] headlines,
+			final int level,
+			final NameSpaceResultList resultList) {
 		this(parent, automat, nameSpace, site, defaultFilter, headlines, level, resultList);
+		
 		// Make a Textfield to Filter the list. Can text drop
 		makeFilterField();
-
-		//
 		makeListField(selection);
 	}
 
-	public CSSView(final Composite parent, final Automat automat, final NameSpace nameSpace,
-			final IWorkbenchPartSite site, final String defaultFilter, final String selection, final String[] headlines,
-			final int level, final NameSpaceResultList resultList, final String fixFrist) {
+	public CSSView(
+			final Composite parent, 
+			final Automat automat, 
+			final NameSpace nameSpace,
+			final IWorkbenchPartSite site, 
+			final String defaultFilter, 
+			final String selection, 
+			final String[] headlines,
+			final int level,
+			final NameSpaceResultList resultList,
+			final String fixFrist) {
 		this(parent, automat, nameSpace, site, defaultFilter, headlines, level, resultList);
+		
 		haveFixFirst = true;
 		_fixFirst = fixFrist;
+
 		// Make a Textfield to Filter the list. Can text drop
 		makeFilterField();
-		//
 		makeListField(selection);
 	}
 
 	private CSSView(final Composite parent, final Automat automat, final NameSpace nameSpace,
-			final IWorkbenchPartSite site, final String defaultFilter, final String[] headlines, final int level,
-			final NameSpaceResultList resultList) {
+			final IWorkbenchPartSite site, final String defaultFilter, final String[] headlines, final int level, NameSpaceResultList resultList) {
 		super(parent, SWT.NONE);
-		disp = parent.getDisplay();
+		_display = parent.getDisplay();
 
 		this.automat = automat;
-		this.nameSpace = nameSpace;
+		this._nameSpace = nameSpace;
 		this.parent = parent;
 		this.site = site;
 		this.headlines = headlines;
 		this.level = level;
 		defaultPVFilter = defaultFilter;
-		ergebnisListe = resultList;
-		ergebnisListe.addObserver(this);
+		
 		init();
+		
+		Random rand = new Random();
+		_id = rand.nextLong();
+		
+		setObservable(resultList); // FIXME (bknerr) : Antipattern - herein this pointer is used although object is not completely constructed
 	}
 
 	@Override
@@ -192,10 +214,10 @@ public class CSSView extends Composite implements Observer {
 	 *  dispose self and Children
 	 */
 	public void dispose() {
-		if (haveChildern) {
-			haveChildern = false;
-			children.dispose();
-			while (!children.isDisposed()) {
+		if (_hasChild) {
+			_hasChild = false;
+			_child.dispose();
+			while (!_child.isDisposed()) {
 			}
 		}
 
@@ -214,34 +236,36 @@ public class CSSView extends Composite implements Observer {
 	private void fillItemList(final List<ControlSystemItem> list) {
 		if (list == null)
 			return;
+		
 		itemList = new LinkedHashMap<String, ControlSystemItem>();
-		if (para.newCSSView && haveFixFirst) {
+		if (_cssParameter.newCSSView && haveFixFirst) {
 			if (_fixFirst == null) {
 				start = 0;
-				itemList
-				.put(
-						Messages.getString("CSSView.All"), new ControlSystemItem(Messages.getString("CSSView.All"), para.filter + "ALL,")); //$NON-NLS-1$ //$NON-NLS-2$
+				itemList.put(Messages.getString("CSSView.All"), 
+						     new ControlSystemItem(Messages.getString("CSSView.All"), _cssParameter.filter + "ALL,")); //$NON-NLS-1$ //$NON-NLS-2$
 			} else if (_fixFirst.trim().length() > 0) {
-				itemList.put(_fixFirst, new ControlSystemItem(_fixFirst, para.filter + _fixFirst)); //$NON-NLS-1$ //$NON-NLS-2$
+				itemList.put(_fixFirst, new ControlSystemItem(_fixFirst, _cssParameter.filter + _fixFirst)); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 
 		} else {
 			filter.setText(defaultPVFilter);
 		}
 		boolean first = true;
-		for (final ControlSystemItem row : list) {
+		for (final ControlSystemItem row : list) { 
+			
+			// FIXME (bknerr) : just insert rwo (CSI) in map - no difference - instanceof checks still yield PV!!!
 			if (row instanceof ProcessVariable) {
 				final ProcessVariable pv = (ProcessVariable) row;
 				itemList.put(pv.getName(), pv);
 			} else {
 				itemList.put(row.getName(), row);
 			}
+			
 			if (first) {
 				first = false;
 				group.setText(headlines[level]);
 			}
 		}
-		System.out.println("nothing");
 	}
 
 	public Group getGroup() {
@@ -252,7 +276,7 @@ public class CSSView extends Composite implements Observer {
 	//        return listViewer.getTable();
 	//    }
 	public org.eclipse.swt.widgets.Table getList() {
-		return listViewer.getTable();
+		return _tableViewer.getTable();
 	}
 
 	/**
@@ -276,12 +300,12 @@ public class CSSView extends Composite implements Observer {
 	/**
 	 * @param parameter
 	 */
-	protected void makeChildren(final CSSViewParameter parameter) {
+	protected void makeChild(final CSSViewParameter parameter) {
 		parent.setRedraw(false);
-		// Have a Children, destroy it.
-		if (haveChildern) {
-			children.dispose();
-			while (!children.isDisposed()) {
+		// Has a child, destroy it.
+		if (_hasChild) {
+			_child.dispose();
+			while (!_child.isDisposed()) {
 				;
 			}
 		}
@@ -290,39 +314,53 @@ public class CSSView extends Composite implements Observer {
 		((GridLayout) parent.getLayout()).numColumns++;
 		// The first element is the "All" element
 		//        if (listViewer.getList().getSelectionIndex() > start || _fixFirst != null) {
-		if (listViewer.getTable().getSelectionIndex() > start || _fixFirst != null) {
-			if (itemList.get(listViewer.getSelection().toString().substring(1,
-					listViewer.getSelection().toString().length() - 1)) instanceof ProcessVariable) {
-				final ProcessVariable pv = (ProcessVariable) itemList
-				.get(listViewer.getSelection().toString().substring(1,
-						listViewer.getSelection().toString().length() - 1));
-				//				children = new CSSView(parent, automat, nameSpace,site,defaultPVFilter,pv.getPath()+",",headlines,level+1, ergebnisListe.getNew()); //$NON-NLS-1$
-				children = new CSSView(parent, automat, nameSpace, site, defaultPVFilter, pv
-						.getPath(), headlines, level + 1, ergebnisListe.getNew()); //$NON-NLS-1$
+		if (_tableViewer.getTable().getSelectionIndex() > start || _fixFirst != null) {
+			
+			// FIXME (bknerr) : is difference between PC and CSI important here ?
+			// only getPath is required which is the very same code !
+			
+			
+//			if (itemList.get(_tableViewer.getSelection().toString().substring(1,
+//					_tableViewer.getSelection().toString().length() - 1)) instanceof ProcessVariable) {
+
+			String selectionString = _tableViewer.getSelection().toString();
+			String substring = selectionString.substring(1,
+					selectionString.length() - 1);
+			
+			ControlSystemItem controlSystemItem = itemList.get(substring);
+			
+			if (controlSystemItem instanceof ProcessVariable) {
+				
+				final ProcessVariable pv = (ProcessVariable) controlSystemItem;
+				
+				_child = new CSSView(parent, automat, _nameSpace, site, defaultPVFilter, pv.getPath(), headlines, level + 1, _resultList.getNew()); //$NON-NLS-1$
+
 			} else {
+				final ControlSystemItem csi = controlSystemItem;
+				
 				if (_fixFirst == null) {
-					final ControlSystemItem csi = itemList.get(listViewer
-							.getSelection().toString().substring(1,
-									listViewer.getSelection().toString().length() - 1));
-					//					children = new CSSView(parent, automat, nameSpace,site,defaultPVFilter,csi.getPath()+",",headlines,level+1,ergebnisListe.getNew()); //$NON-NLS-1$
-					children = new CSSView(parent, automat, nameSpace, site, defaultPVFilter, csi
-							.getPath(), headlines, level + 1, ergebnisListe.getNew()); //$NON-NLS-1$
+					_child = 
+						new CSSView(parent, automat, _nameSpace, site, defaultPVFilter, csi.getPath(), headlines, level + 1, _resultList.getNew()); //$NON-NLS-1$
 				} else {
-					final ControlSystemItem csi = itemList.get(listViewer
-							.getSelection().toString().substring(1,
-									listViewer.getSelection().toString().length() - 1));
-					//					children = new CSSView(parent, automat, nameSpace,site,defaultPVFilter,csi.getPath()+",",headlines,level+1,ergebnisListe.getNew(),_fixFirst); //$NON-NLS-1$
-					children = new CSSView(parent, automat, nameSpace, site, defaultPVFilter, csi
-							.getPath(), headlines, level + 1, ergebnisListe.getNew(), _fixFirst); //$NON-NLS-1$
+					_child = 
+						new CSSView(parent, automat, _nameSpace, site, defaultPVFilter, csi.getPath(), headlines, level + 1, _resultList.getNew(), _fixFirst); //$NON-NLS-1$
 				}
 
 			}
 		} else {
-			final String df = itemList.values().toArray(new ControlSystemItem[0])[1].getPath().split("=")[0] + "=*,"; //$NON-NLS-1$ //$NON-NLS-2$
-			children = new CSSView(parent, automat, nameSpace, site, defaultPVFilter, df,
-					headlines, level + 1, ergebnisListe.getNew()); //$NON-NLS-1$
+			
+			Collection<ControlSystemItem> values = itemList.values();
+			ControlSystemItem[] array = values.toArray(new ControlSystemItem[values.size()]);
+			ControlSystemItem item = array[0];
+			String path = item.getPath();
+			String[] fields = path.split("=");
+			String df = fields[0] + "=*,";
+			
+			//final String df = values.toArray(new ControlSystemItem[0])[1].getPath().split("=")[0] + "=*,"; //$NON-NLS-1$ //$NON-NLS-2$
+			
+			_child = new CSSView(parent, automat, _nameSpace, site, defaultPVFilter, df, headlines, level + 1, _resultList.getNew()); //$NON-NLS-1$
 		}
-		haveChildern = true;
+		_hasChild = true;
 
 		parent.setRedraw(true);
 	}
@@ -330,7 +368,7 @@ public class CSSView extends Composite implements Observer {
 	// Make the MB3 ContextMenu
 	private void makeContextMenu() {
 		final MenuManager manager = new MenuManager("#PopupMenu"); //$NON-NLS-1$
-		final Control contr = listViewer.getControl();
+		final Control contr = _tableViewer.getControl();
 		manager.addMenuListener(new IMenuListener() {
 			public void menuAboutToShow(final IMenuManager manager) {
 				manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
@@ -349,7 +387,7 @@ public class CSSView extends Composite implements Observer {
 		// });
 		final Menu menu = manager.createContextMenu(contr);
 		contr.setMenu(menu);
-		site.registerContextMenu(manager, listViewer);
+		site.registerContextMenu(manager, _tableViewer);
 	}
 
 	private void makeFilterField() {
@@ -408,7 +446,7 @@ public class CSSView extends Composite implements Observer {
 
 			public void keyReleased(final KeyEvent e) {
 				if (e.keyCode == SWT.CR) {
-					listViewer.setInput(new ArrayList<Object>(itemList.values()).toArray());
+					_tableViewer.setInput(new ArrayList<Object>(itemList.values()).toArray());
 				} else if (e.keyCode == SWT.F1) {
 					PlatformUI.getWorkbench().getHelpSystem().displayDynamicHelp();
 				}
@@ -423,42 +461,42 @@ public class CSSView extends Composite implements Observer {
 	 * 
 	 */
 	private void makeListField(final String selection) {
-		para = getParameter(selection);
+		_cssParameter = getParameter(selection);
 
 		final Zustand zu = automat.getZustand();
 		if (zu == Zustand.RECORD) {
 			//            listViewer = new ListViewer(group, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
-			listViewer = new TableViewer(group, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
+			_tableViewer = new TableViewer(group, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
 		} else {
 			//            listViewer = new ListViewer(group, SWT.BORDER | SWT.SINGLE | SWT.V_SCROLL);
-			listViewer = new TableViewer(group, SWT.BORDER | SWT.SINGLE | SWT.V_SCROLL);
+			_tableViewer = new TableViewer(group, SWT.BORDER | SWT.SINGLE | SWT.V_SCROLL);
 		}
-		listViewer.getControl().getStyle();
+		_tableViewer.getControl().getStyle();
 		//        listViewer.getList().setSize(getClientArea().x - 100, getClientArea().y - 100);
-		listViewer.getTable().setSize(getClientArea().x - 100, getClientArea().y - 100);
+		_tableViewer.getTable().setSize(getClientArea().x - 100, getClientArea().y - 100);
 		//        listViewer.getList().addPaintListener(new PaintListener() {
-		listViewer.getTable().addPaintListener(new PaintListener() {
+		_tableViewer.getTable().addPaintListener(new PaintListener() {
 			public void paintControl(final PaintEvent e) {
 				//                listViewer.getList().setSize(getSize().x - 16,
-				listViewer.getTable().setSize(getSize().x - 16,
+				_tableViewer.getTable().setSize(getSize().x - 16,
 						getSize().y - (filter.getSize().y + 31));
 			}
 		});
-		listViewer.setLabelProvider(new myLabelProvider());
-		listViewer.setContentProvider(new ArrayContentProvider());
-		listViewer.setSorter(new ViewerSorter());
+		_tableViewer.setLabelProvider(new CSSLabelProvider());
+		_tableViewer.setContentProvider(new ArrayContentProvider());
+		_tableViewer.setSorter(new ViewerSorter());
 		//        listViewer.getList().setToolTipText(Messages.getString("CSSView_ToolTip2"));
-		listViewer.getTable().setToolTipText(Messages.getString("CSSView_ToolTip2"));
+		_tableViewer.getTable().setToolTipText(Messages.getString("CSSView_ToolTip2"));
 
-		nameSpace.setName(para.name);
-		nameSpace.setFilter(para.filter);
-		_fixFirst = para.fixFirst;
-		nameSpace.setErgebnisListe(ergebnisListe);
-		nameSpace.setSelection(selection);
-		nameSpace.start();
+		_nameSpace.setName(_cssParameter.name);
+		_nameSpace.setFilter(_cssParameter.filter);
+		_fixFirst = _cssParameter.fixFirst;
+		_nameSpace.setErgebnisListe(_resultList);
+		_nameSpace.setSelection(selection);
+		_nameSpace.start();
 
 		//        listViewer.getList().addKeyListener(new KeyListener() {
-		listViewer.getTable().addKeyListener(new KeyListener() {
+		_tableViewer.getTable().addKeyListener(new KeyListener() {
 			public void keyPressed(final KeyEvent e) {
 			}
 
@@ -477,7 +515,7 @@ public class CSSView extends Composite implements Observer {
 	 *            this String a modified
 	 * @return true match search and regExp and false don´t match
 	 */
-	protected boolean searchString(final String search1, final String regExp) {
+	protected boolean searchString(final String search1, final String regExp) { 
 		return searchString(search1, regExp, SIMPLE_WIN);
 	}
 
@@ -497,7 +535,7 @@ public class CSSView extends Composite implements Observer {
 	 * @return true match search and regExp and false don´t match
 	 */
 
-	protected boolean searchString(final String search1, final String regExp, final int searchTyp) {
+	protected boolean searchString(final String search1, final String regExp, final int searchTyp) { // FIXME (bknerr) : encapsulate somewhere else !
 		switch (searchTyp) {
 		case JAVA_REG_EXP:
 			return search1.matches(regExp);
@@ -516,18 +554,18 @@ public class CSSView extends Composite implements Observer {
 	// Setzt den Defaultfilter für IProzessVariablen
 	public void setDefaultFilter(final String defaultPVFilter) {
 		this.defaultPVFilter = defaultPVFilter;
-		if (!para.newCSSView) {
+		if (!_cssParameter.newCSSView) {
 			filter.setText(defaultPVFilter);
 		}
-		if (haveChildern) {
-			children.setDefaultFilter(defaultPVFilter);
+		if (_hasChild) {
+			_child.setDefaultFilter(defaultPVFilter);
 		}
 	}
 
 	public void update(final Observable arg0, final Object arg1) {
-		disp.syncExec(new Runnable() {
+		_display.syncExec(new Runnable() {
 			public void run() {
-				fillItemList(ergebnisListe.getCSIResultList());
+				fillItemList(_resultList.getCSIResultList());
 				workItemList();
 			}
 		});
@@ -535,14 +573,15 @@ public class CSSView extends Composite implements Observer {
 
 	private void workItemList() {
 		// fill the List
-		if (itemList != null) {
-			listViewer.setInput(new ArrayList<ControlSystemItem>(itemList.values())
-					.toArray(new ControlSystemItem[0]));
+		if (itemList != null && itemList.size() > 1) {
+//			_tableViewer.setInput(new ArrayList<ControlSystemItem>(itemList.values()).toArray(new ControlSystemItem[0])); // FIXME (bknerr) : wtf?
+			_tableViewer.setInput(new ArrayList<ControlSystemItem>(itemList.values()));
 		}
 
-		listViewer.addFilter(new ViewerFilter() {
+		_tableViewer.addFilter(new ViewerFilter() {
 			@Override
 			public Object[] filter(final Viewer viewer, final Object parent, final Object[] elements) {
+				
 				final String search = filter.getText().trim();
 				final ArrayList<Object> al = new ArrayList<Object>();
 				for (final Object element : elements) {
@@ -567,13 +606,13 @@ public class CSSView extends Composite implements Observer {
 
 		final Zustand zu = automat.getZustand();
 		if (zu != Zustand.RECORD) {
-			listViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			_tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 				public void selectionChanged(final SelectionChangedEvent event) {
 					// TODO: Checken ob dadurch vermieden werden kann das ein Elemente zu häufig
 					// angeklickt werden kann.
-					if (para.newCSSView) {
+					if (_cssParameter.newCSSView) {
 						parent.setEnabled(false);
-						makeChildren(para);
+						makeChild(_cssParameter);
 						parent.setEnabled(true);
 					}
 				}
@@ -586,9 +625,20 @@ public class CSSView extends Composite implements Observer {
 		// Make List Drageble
 		//        new ProcessVariableDragSource(listViewer.getControl(), listViewer);
 		//        new ProcessVariableDragSource(listViewer.getList(), listViewer);
-		new ProcessVariableDragSource(listViewer.getTable(), listViewer);
+		new ProcessVariableDragSource(_tableViewer.getTable(), _tableViewer);
 		// MB3
 		makeContextMenu();
 
+	}
+
+	/**
+	 * Sets the observable entity (resultList) in this observer (CSSView) 
+	 * and adds <code>this</code> object as observer to its list.
+	 * 
+	 * @param resultList the observable object for <code>this</code> observer
+	 */
+	public void setObservable(NameSpaceResultList resultList) {
+		_resultList = resultList;
+		_resultList.addObserver(this);
 	}
 }

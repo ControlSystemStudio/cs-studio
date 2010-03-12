@@ -35,34 +35,25 @@ import org.csstudio.utility.namespace.utility.ProcessVariable;
 public class LdapResultList extends NameSpaceResultList {
 
 	private List<String> _result = new ArrayList<String>();
-	private String _eventTime;
-	private String _parentName;
-	private String _severity;
-	private String _status;
-	private final Observer _observer;
 
 	public LdapResultList() {
-		_observer = null;
+		// Empty
 	}
-
-	public LdapResultList(final Observer observer) {
-		_observer = observer;
-		addObserver(observer);
-	}
-
+	
 	/* (non-Javadoc)
 	 * @see org.csstudio.utility.nameSpaceBrowser.utility.NameSpaceResultList#copy()
 	 */
 	@Override
 	public NameSpaceResultList copy() {
-		final LdapResultList e = new LdapResultList(_observer);
+		//final LdapResultList e = new LdapResultList(_observer);
+		final LdapResultList e = new LdapResultList();
 		e.setResultList(_result);
 		return e;
 	}
 
 	public List<String> getAnswer() {
 		final List<String> tmp = new ArrayList<String>(_result);
-		_result.clear();
+		_result.clear(); // TODO (bknerr) : wtf ?
 		return tmp;
 	}
 
@@ -72,9 +63,10 @@ public class LdapResultList extends NameSpaceResultList {
 	@Override
 	public List<ControlSystemItem> getCSIResultList() {
 		final List<ControlSystemItem> tmpList = new ArrayList<ControlSystemItem>();
-		if(_result == null)
+		if(_result == null) // TODO (bknerr) : why not Collections.emptyList ?
 			return null;
-		for (final String row : _result) {
+		
+		for (final String row : _result) { // TODO (bknerr) : encapsulate LDAP answer parsing !
 			String cleanList = row;
 			// Delete "-Chars that add from LDAP-Reader when the result contains special character
 			if(cleanList.startsWith("\"")){ //$NON-NLS-1$
@@ -100,12 +92,8 @@ public class LdapResultList extends NameSpaceResultList {
 				tmpList.add(new ControlSystemItem(token[1], cleanList));
 			}
 		}
-		_result = new ArrayList<String>();
+		_result = new ArrayList<String>(); // TODO (bknerr) : wtf ?
 		return tmpList;
-	}
-
-	public String getEventTime() {
-		return _eventTime;
 	}
 
 	/* (non-Javadoc)
@@ -113,23 +101,8 @@ public class LdapResultList extends NameSpaceResultList {
 	 */
 	@Override
 	public NameSpaceResultList getNew() {
-		return new LdapResultList(_observer);
-	}
-
-	public Observer getObserver() {
-		return _observer;
-	}
-
-	public String getParentName() {
-		return _parentName;
-	}
-
-	public String getSeverity() {
-		return _severity;
-	}
-
-	public String getStatus() {
-		return _status;
+		//return new LdapResultList(_observer);
+		return new LdapResultList();
 	}
 
 	@Override
@@ -138,31 +111,13 @@ public class LdapResultList extends NameSpaceResultList {
 		notifyObservers();
 	}
 
-	public void setEventTime(final String eventTime) {
-		_eventTime = eventTime;
-	}
-
-	public void setParentName(final String parentName) {
-		_parentName = parentName;
-	}
-
 	/* (non-Javadoc)
 	 * @see org.csstudio.utility.nameSpaceBrowser.utility.NameSpaceResultList#setResultList(java.util.ArrayList)
 	 */
 	@Override
 	public void setResultList(final List<String> resultList) {
-		_result.clear();
-		_result.addAll(resultList);
+		_result = new ArrayList<String>(resultList);
 		notifyView();
-
-	}
-
-	public void setSeverity(final String severity) {
-		_severity = severity;
-	}
-
-	public void setStatus(final String status) {
-		_status = status;
 	}
 
 }

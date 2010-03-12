@@ -40,7 +40,7 @@ public class LdapUpdaterPreferences extends
 				Activator.getDefault().getPluginId());
 //		prefs.put(LdapUpdaterPreferenceConstants.IOC_LIST_PATH, "P:\\scripts\\epxLDAPgen\\");			// unix : "/applic/directoryServer/";
 		prefs.put(IOC_DBL_DUMP_PATH.getDescription(), "Y:\\directoryServer\\");			// unix : "/applic/directoryServer/";
-		prefs.put(IOC_LIST_FILE.getDescription(), "Y:\\scripts\\epxLDAPgen\\IOCpathes");	// unix : "/applic/directoryServer/";
+//		prefs.put(IOC_LIST_FILE.getDescription(), "Y:\\scripts\\epxLDAPgen\\IOCpathes");	// unix : "/applic/directoryServer/";
 		prefs.put(LDAP_CONT_ROOT.getDescription(), "de.desy.epicsControls.");				// unix : "de.desy.epicsControls."
 		prefs.put(LDAP_HIST_PATH.getDescription(), "Y:\\scripts\\ldap-tests\\");			// unix : "/applic/directoryServer/";
 		prefs.put(XMPP_USER.getDescription(), "LDAP_Updater");		

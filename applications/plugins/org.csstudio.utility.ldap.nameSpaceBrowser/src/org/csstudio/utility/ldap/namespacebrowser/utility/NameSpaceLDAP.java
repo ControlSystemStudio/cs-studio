@@ -55,12 +55,8 @@ public class NameSpaceLDAP extends NameSpace {
         			ldapr = new LDAPReader(getName(), getFilter(),SearchControls.SUBTREE_SCOPE, eListe);
         		else
         			ldapr = new LDAPReader(getName(), getFilter(),SearchControls.ONELEVEL_SCOPE, eListe);
-        		ldapr.addJobChangeListener(new JobChangeAdapter() {
-        	        public void done(IJobChangeEvent event) {
-        		        if (event.getResult().isOK())
-        		        	getNameSpaceResultList().notifyView();
-        		        }
-        	     });
+        		
+
         		ldapr.schedule();
             }else{
                 // TODO: Was soll gemacht werden wenn das 'getNameSpaceResultList() instanceof ErgebnisListe' nicht stimmt.

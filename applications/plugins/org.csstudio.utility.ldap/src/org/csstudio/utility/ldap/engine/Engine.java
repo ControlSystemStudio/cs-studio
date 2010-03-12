@@ -577,10 +577,10 @@ public class Engine extends Job {
             path = "econ=" + path;
         }
         final LdapResultList allRecordsList = new LdapResultList();
-        allRecordsList.setStatus(status);
-        allRecordsList.setSeverity(severity);
-        allRecordsList.setEventTime(eventTime);
-        allRecordsList.setParentName(ldapPath);
+//        allRecordsList.setStatus(status);
+//        allRecordsList.setSeverity(severity);
+//        allRecordsList.setEventTime(eventTime);
+//        allRecordsList.setParentName(ldapPath);
 
         if (getLdapDirContext() != null) {
             SearchControls ctrl = new SearchControls();

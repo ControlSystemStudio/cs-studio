@@ -301,12 +301,12 @@ public class MainView extends ViewPart implements Observer{
         }
         _ldapr = new LDAPReader(Activator.getDefault().getPluginPreferences().getString(PreferenceConstants.P_STRING_SEARCH_ROOT),
                 filter, _ergebnisListe);
-        _ldapr.addJobChangeListener(new JobChangeAdapter() {
-            public void done(IJobChangeEvent event) {
-            if (event.getResult().isOK())
-                MainView.this._ergebnisListe.notifyView();
-            }
-         });
+//        _ldapr.addJobChangeListener(new JobChangeAdapter() {
+//            public void done(IJobChangeEvent event) {
+//            if (event.getResult().isOK())
+//                MainView.this._ergebnisListe.notifyView();
+//            }
+//         });
         _ldapr.schedule();
         _ergebnissTableView.getTable().layout();
     }

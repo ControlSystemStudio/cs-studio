@@ -164,39 +164,41 @@ public class LDAPSyncReader {
         _defaultScope = defaultScope;
     }
 
-    public LdapResultList getAnswer(){
-        DirContext ctx = Engine.getInstance().getLdapDirContext();
-        if(ctx !=null){
-            SearchControls ctrl = new SearchControls();
-            ctrl.setSearchScope(_defaultScope);
-            try{
-                ArrayList<String> list = new ArrayList<String>();
-                NamingEnumeration<SearchResult> answer = ctx.search(_name, _filter, ctrl);
-                try {
-                    while(answer.hasMore()){
-                        String name = answer.next().getName()+","+_name;
-                        list.add(name);
-                    }
-                    if(list.size()<1){
-                        list.add("no entry found");
-                    }
-                } catch (NamingException e) {
-                    ctx = Engine.getInstance().reconnectDirContext();
-                    CentralLogger.getInstance().info(this,"LDAP Fehler");
-                    CentralLogger.getInstance().info(this,e);
-                }
-                answer.close();
-                LdapResultList ergebnisListe = new LdapResultList();
-                ergebnisListe.setResultList(list);
-                return ergebnisListe;
-            } catch (NamingException e) {
-                Engine.getInstance().reconnectDirContext();
-                CentralLogger.getInstance().info(this,"Falscher LDAP Suchpfad.");
-                CentralLogger.getInstance().info(this,e);
-            }
-        }
-        return null;
-    }
+//    public LdapResultList getAnswer(){
+//        DirContext ctx = Engine.getInstance().getLdapDirContext();
+//        if(ctx !=null){
+//            SearchControls ctrl = new SearchControls();
+//            ctrl.setSearchScope(_defaultScope);
+//            try{
+//                ArrayList<String> list = new ArrayList<String>();
+//                NamingEnumeration<SearchResult> answer = ctx.search(_name, _filter, ctrl);
+//                try {
+//                    while(answer.hasMore()){
+//                        String name = answer.next().getName()+","+_name;
+//                        list.add(name);
+//                    }
+//                    if(list.size()<1){
+//                        list.add("no entry found");
+//                    }
+//                } catch (NamingException e) {
+//                    ctx = Engine.getInstance().reconnectDirContext();
+//                    CentralLogger.getInstance().info(this,"LDAP Fehler");
+//                    CentralLogger.getInstance().info(this,e);
+//                }
+//                answer.close();
+//                LdapResultList ergebnisListe = new LdapResultList();
+//                ergebnisListe.setResultList(list);
+//                return ergebnisListe;
+//            } catch (NamingException e) {
+//                Engine.getInstance().reconnectDirContext();
+//                CentralLogger.getInstance().info(this,"Falscher LDAP Suchpfad.");
+//                CentralLogger.getInstance().info(this,e);
+//            }
+//        }
+//        return null;
+//    }
+    
+    
     public ArrayList<String> getAnswerString(){
         DirContext ctx = Engine.getInstance().getLdapDirContext();
         if(ctx !=null){

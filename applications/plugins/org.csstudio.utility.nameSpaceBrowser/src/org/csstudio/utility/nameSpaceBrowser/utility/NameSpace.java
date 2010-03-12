@@ -34,10 +34,10 @@ import org.csstudio.utility.namespace.utility.NameSpaceResultList;
  */
 public abstract class NameSpace {
 	
-	private String name;
-	private String filter;
-	private NameSpaceResultList ergebnisListe;
-	private String selection;
+	private String _name;
+	private String _filter;
+	private NameSpaceResultList _resultList;
+	private String _selection;
 
 	abstract public void start();
 	
@@ -46,44 +46,44 @@ public abstract class NameSpace {
 	 * @param name
 	 */
 	public void setName(String name) {
-		this.name = name;
+		this._name = name;
 	}
 
 	/**
 	 * @param filter
 	 */
 	public void setFilter(String filter) {
-		this.filter = filter;
+		this._filter = filter;
 	}
 
 	/**
 	 * @param ergebnisListe
 	 */
 	public void setErgebnisListe(NameSpaceResultList ergebnisListe) {
-		this.ergebnisListe = ergebnisListe;
+		this._resultList = ergebnisListe;
 	}
 
 	/**
 	 * @param selection
 	 */
 	public void setSelection(String selection) {
-		 this.selection=selection;
+		 this._selection=selection;
 	}
 
 	protected NameSpaceResultList getNameSpaceResultList() {
-		return ergebnisListe;
+		return _resultList;
 	}
 
 	protected String getFilter() {
-		return filter;
+		return _filter;
 	}
 
 	protected String getName() {
-		return name;
+		return _name;
 	}
 
 	protected String getSelection() {
-		return selection;
+		return _selection;
 	}
 	
 

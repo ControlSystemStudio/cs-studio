@@ -19,31 +19,50 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
+package org.csstudio.utility.ldap;
 
-package org.csstudio.utility.ldapUpdater;
+import org.csstudio.platform.util.StringUtil;
 
-import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.management.CommandParameters;
-import org.csstudio.platform.management.CommandResult;
-import org.csstudio.platform.management.IManagementCommand;
+/**
+ * Constants class for LDAP entries.
+ * 
+ * @author bknerr
+ * @version $Revision$
+ * @since 11.03.2010
+ */
+public class LdapConstants {
+	
+	/**
+	 * Don't instantiate.
+	 */
+	private LdapConstants() {}
+	
+	public static final String FIELD_SEPARATOR = ",";
+	public static final String FIELD_ASSIGNMENT = "=";
+	public static final String EREN_FIELD_NAME = "eren";
+	public static final String EFAN_FIELD_NAME = "efan";
+	public static final String ECON_FIELD_NAME = "econ";
+	public static final String ECOM_FIELD_NAME = "ecom";
+	
+	public static final String[] FORBIDDEN_SUBSTRINGS = new String[] {
+		"/","\\","+","@"
+	};
 
-public class UpdateLdapAction implements IManagementCommand {
-
-	@Override
-	public CommandResult execute(CommandParameters parameters) {
-    	LdapUpdater ldapUpdater = LdapUpdater.getInstance();
-    	try {
-			if (!ldapUpdater.isBusy()){
-				ldapUpdater.updateLdapFromIOCFiles();
-			}else{
-				return CommandResult.createMessageResult("ldapUpdater is busy for max. 150 s (was probably started by timer). Try later!");
-			}
-
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-//			e.printStackTrace();
-			CentralLogger.getInstance().error (this, "\"" + e.getCause() + "\"" + "-" + "Exception while running ldapUpdater" );		
+	/**
+	 * Filters for forbidden substrings {@link LdapConstants}. 
+	 * @param recordName the name to filter
+	 * @return true, if the forbidden substring is contained, false otherwise (even for empty and null strings)
+	 */
+	public static boolean filterLDAPNames(final String recordName) {
+		if (!StringUtil.hasLength(recordName)) {
+			return false;
 		}
-		return CommandResult.createSuccessResult();
+		for (String s : FORBIDDEN_SUBSTRINGS) {
+			if (recordName.contains(s)) {
+				return true;
+			}
+		}
+		return false;
 	}
+
 }

@@ -60,7 +60,14 @@ public class LdapUpdater {
 	private final Logger LOGGER = CentralLogger.getInstance().getLogger(this);
 
 
-	volatile boolean _busy = false;
+	private volatile boolean _busy = false;
+	
+	public boolean isBusy() {
+		return _busy;
+	}
+	public void setBusy(boolean busy) {
+		_busy = busy;
+	}
 
 	/**
 	 * Don't instantiate with constructor.
@@ -84,7 +91,7 @@ public class LdapUpdater {
 	}
 
 	
-	public final void start() throws Exception {
+	public final void updateLdapFromIOCFiles() throws Exception {
 
 		if ( _busy ) {
 			return;
@@ -157,14 +164,14 @@ public class LdapUpdater {
 		
 		iocsFromLDAP.removeAll(iocsFromHistFile);
 		for (String ioc : iocsFromLDAP) {
-			LOGGER.error("IOC " + ioc + " from LDAP is not present in history file!");
+			LOGGER.warn("IOC " + ioc + " from LDAP is not present in history file!");
 			inconsistency = true;
 		}
 		
 		iocsFromLDAP = ldapContentModel.getIOCNames();
 		iocsFromHistFile.removeAll(iocsFromLDAP);
 		for (String ioc : iocsFromHistFile) {
-			LOGGER.error("IOC " + ioc + " found in history file is not present in LDAP!");
+			LOGGER.warn("IOC " + ioc + " found in history file is not present in LDAP!");
 			inconsistency = true;
 		}
 		

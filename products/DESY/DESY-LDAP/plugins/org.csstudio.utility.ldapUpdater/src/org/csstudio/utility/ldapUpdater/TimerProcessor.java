@@ -48,10 +48,10 @@ public class TimerProcessor {
         @Override
 		public void run() {
         	
-        	LdapUpdater ldapUpdater=LdapUpdater.getInstance();
+        	LdapUpdater ldapUpdater = LdapUpdater.getInstance();
         	try {
-        		if (!ldapUpdater._busy){
-        			ldapUpdater.start();
+        		if (!ldapUpdater.isBusy()){
+        			ldapUpdater.updateLdapFromIOCFiles();
  				}
 			} catch (Exception e) {
 				CentralLogger.getInstance().info  (this, "LdapUpdater is busy" );

@@ -82,7 +82,18 @@ public class MainViewTine extends ViewPart {
 		};
         System.out.println(lalalal++);
 		// Namend the Records
-		cssview = new CSSView(composite, automat,new NameSpaceTine(), getSite(),defaultPVFilter,"Context", headlines, 0, new NameSpaceResultListTine(),Messages.getString("MainViewTine.Default"));
+		cssview = 
+			new CSSView(
+					composite, 
+					automat,
+					new NameSpaceTine(), 
+					getSite(),
+					defaultPVFilter,
+					"Context", 
+					headlines, 
+					0,
+					new NameSpaceResultListTine(),
+					Messages.getString("MainViewTine.Default"));
 	}
 
 	// @Override

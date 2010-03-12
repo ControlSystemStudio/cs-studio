@@ -33,7 +33,7 @@ import org.csstudio.utility.ldapUpdater.model.IOC;
  */
 public class IOCFilesDirTree {
 	private static int _currentDepth = 0;
-	private static PrintWriter _zielDatei = null;
+	//private static PrintWriter _zielDatei = null;
 	
 	public static Logger LOG = CentralLogger.getInstance().getLogger(IOCFilesDirTree.class);
 	
@@ -41,21 +41,21 @@ public class IOCFilesDirTree {
 		
 		List<IOC> iocList = new ArrayList<IOC>();
 		
-		try {
-			String iocListFile = getValueFromPreferences(IOC_LIST_FILE);
-			_zielDatei =  new PrintWriter(iocListFile);
+//		try {
+//			String iocListFile = getValueFromPreferences(IOC_LIST_FILE);
+//			_zielDatei =  new PrintWriter(iocListFile);
 			IOCFilesDirTree dt = new IOCFilesDirTree();
 			String iocDblDumpPath = getValueFromPreferences(IOC_DBL_DUMP_PATH); 
 				
 			dt.doDir(recursiveDepth, iocDblDumpPath, iocList);
 
-		} catch (FileNotFoundException e) {
-			// TODO : Loggen
-			e.printStackTrace();
-		}
-		finally {
-			_zielDatei.close();
-		}
+//		} catch (FileNotFoundException e) {
+//			// TODO : Loggen
+//			e.printStackTrace();
+//		}
+//		finally {
+//			_zielDatei.close();
+//		}
 		return iocList;
 	}
 
@@ -104,7 +104,7 @@ public class IOCFilesDirTree {
 			LOG.debug("File found for IOC: " + fileName);
 			
 			// TODO (kvalett) : do this with a log file on a dedicated logging location !
-			_zielDatei.println(fileName);
+		//	_zielDatei.println(fileName);
 		}
 	}
 

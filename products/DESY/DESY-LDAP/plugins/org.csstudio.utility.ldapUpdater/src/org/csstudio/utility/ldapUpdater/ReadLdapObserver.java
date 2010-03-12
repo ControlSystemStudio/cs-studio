@@ -51,6 +51,11 @@ public class ReadLdapObserver implements Observer {
 		final List<String> ldapAnswer = _result.getAnswer();
 
 		for (final String ldapPath : ldapAnswer) {
+			
+			if(ldapPath.contains("mkkSender") && ldapPath.contains("@")) {
+				System.out.println(ldapPath);
+			}
+			
 			final LdapQueryResult ldapEntry = IocFinder.parseLdapQueryResult(ldapPath);
 
 			final String efan = ldapEntry.getEfan();

@@ -63,8 +63,8 @@ public final class IocFinder {
 			throw new NullPointerException("pv must not be null");
 		}
 		
-		final LdapResultList resultList = new LdapResultList();
 		LdapResultListObserver obs = new LdapResultListObserver();
+		final LdapResultList resultList = new LdapResultList();
 		resultList.addObserver(obs);
 		
         String filter = EREN_FIELD_NAME + LDAP_ENTRY_FIELD_ASSIGNMENT + pvNameToRecordName(pv);

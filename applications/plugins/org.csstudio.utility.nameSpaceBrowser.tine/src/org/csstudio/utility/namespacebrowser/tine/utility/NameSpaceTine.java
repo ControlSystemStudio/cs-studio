@@ -50,7 +50,7 @@ public class NameSpaceTine extends NameSpace {
             TineReader tineReader;
             if (getNameSpaceResultList() instanceof NameSpaceResultListTine) {
                 NameSpaceResultListTine eListe = (NameSpaceResultListTine) getNameSpaceResultList();
-                String tmp = getSelection();
+//                String tmp = getSelection();
 //                if(tmp.endsWith("=*,")) //$NON-NLS-1$
 //                    tineReader = new TineReader(getName(), getFilter(),SearchControls.SUBTREE_SCOPE, eListe);
 //                else

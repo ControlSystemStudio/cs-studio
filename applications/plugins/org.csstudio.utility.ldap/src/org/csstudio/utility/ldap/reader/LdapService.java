@@ -26,15 +26,6 @@ import java.util.Observer;
 
 public interface LdapService {
 
-	public static final String LDAP_ENTRY_FIELD_SEPARATOR = ",";
-	public static final String LDAP_ENTRY_FIELD_ASSIGNMENT = "=";
-	public static final String EREN_FIELD_NAME = "eren";
-	public static final String EFAN_FIELD_NAME = "efan";
-	public static final String ECON_FIELD_NAME = "econ";
-	public static final String ECOM_FIELD_NAME = "ecom";
-	
-	
 	LdapResultList readLdapEntries(String ldapReaderName, String filter, Observer observer);
-
 	
 }

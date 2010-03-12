@@ -17,4 +17,5 @@ Require-Bundle: org.eclipse.ui,
 Eclipse-LazyStart: true
 Bundle-Vendor: DESY
 Import-Package: org.csstudio.platform.utility.jms,
- org.csstudio.platform.utility.jms.sharedconnection
+ org.csstudio.platform.utility.jms.sharedconnection,
+ org.eclipse.core.resources

@@ -187,7 +187,6 @@ public class LDAPReader extends Job {
 	        try{
 	        	_list = new ArrayList<String>();
 	            NamingEnumeration<SearchResult> answer = ctx.search(_searchRoot, _filter, ctrl);
-//
 				try {
 					while(answer.hasMore()){
 						String name = answer.next().getName() + "," + _searchRoot;

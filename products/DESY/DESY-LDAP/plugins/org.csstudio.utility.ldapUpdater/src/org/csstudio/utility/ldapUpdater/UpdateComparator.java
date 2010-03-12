@@ -29,7 +29,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Formatter;
 import java.util.List;
 
 import javax.naming.NamingException;
@@ -39,6 +38,7 @@ import javax.naming.directory.DirContext;
 
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.utility.ldap.LdapConstants;
 import org.csstudio.utility.ldap.engine.Engine;
 import org.csstudio.utility.ldap.reader.LdapService;
 import org.csstudio.utility.ldapUpdater.model.HistoryFileContentModel;
@@ -149,12 +149,10 @@ public class UpdateComparator {
 
 	public UpdateIOCResult updateIOC(
 			final LdapService service, final ReadLdapObserver ldapDataObserver, final DirContext directory,
-			final Formatter f,
 			final LDAPContentModel ldapContentModel,
 			final String iocFilePath,
 			final IOC ioc) {
 
-		boolean success = true;
 		final String iocName = ioc.getName();
 		int numOfRecsWritten = 0;
 		final List<Record> recordsFromFile = getRecordsFromFile(iocFilePath + iocName);
@@ -162,14 +160,15 @@ public class UpdateComparator {
 		LOGGER.info( "Process IOC " + iocName + "\t\t #records " +  recordsFromFile.size());
 		for (final Record record : recordsFromFile) {
 			final String recordName = record.getName();
-
+			
 			if (ldapContentModel.getRecord(ioc.getGroup(), iocName, recordName) == null) { // does not yet exist
-				if (filterLDAPNames(recordName)) {
+				LOGGER.info("New Record: " + iocFilePath + " " + recordName);
+				
+				if (!LdapConstants.filterLDAPNames(recordName)) {
 					// TODO (bknerr) : Stopping or proceeding? Transaction rollback? Hist file update ?
-					if (!updateLDAPRecord(directory, f, ioc, recordName)) {
+					if (!updateLDAPRecord(directory, ioc, recordName)) {
 						LOGGER.error("Error while updating LDAP record for " + recordName +
 						"\nProceed with next record.");
-						success = false; // at least one record coult not be written
 					}
 					numOfRecsWritten++;
 				} else {
@@ -179,7 +178,8 @@ public class UpdateComparator {
 
 
 		}
-		return new UpdateIOCResult(recordsFromFile.size(), numOfRecsWritten, success);
+		// TODO (bknerr) : what to do with success variable ?
+		return new UpdateIOCResult(recordsFromFile.size(), numOfRecsWritten, true);
 	}
 
 	/**
@@ -205,34 +205,36 @@ public class UpdateComparator {
 			final HistoryFileContentModel historyFileModel) throws InterruptedException {
 
 		final DirContext directory = Engine.getInstance().getLdapDirContext();
-		final Formatter f = new Formatter();
 		final String iocFilePath = getValueFromPreferences(IOC_DBL_DUMP_PATH);
 
 		for (final IOC iocFromFS : iocList) {
 
 			final String iocName = iocFromFS.getName();
 
-			if (historyFileModel.contains(iocName) &&
-					!isIOCFileNewerThanHistoryEntry(iocFromFS, historyFileModel)) {
-				LOGGER.debug( "IOC file for " + iocName + " is not newer than history file time stamp.");
-				continue;
+			if (historyFileModel.contains(iocName)) {
+				if (!isIOCFileNewerThanHistoryEntry(iocFromFS, historyFileModel)) {
+					LOGGER.info( "IOC file for " + iocName + " is not newer than history file time stamp.");
+					continue;
+				}
 			}
 
 			final IOC iocFromLDAP = ldapContentModel.getIOC(iocName);
 			if (iocFromLDAP == null) {
 				LOGGER.warn("IOC file for " + iocName +
-						" does not exist in LDAP - no facility association possible.\n" +
-				"Hence, records could not be updated in LDAP.");
+						    " does not exist in LDAP - no facility association possible.\n" +
+				            "Hence, records could not be updated in LDAP.");
 				continue;
 			}
 
 			final String efanName = iocFromLDAP.getGroup();
 
+			
 			ldapDataObserver.setReady(false);
 			ldapDataObserver.setResult(service.readLdapEntries("econ="+iocName+",ecom=EPICS-IOC,efan="+efanName+",ou=EpicsControls", "eren=*", ldapDataObserver));
 			while(!ldapDataObserver.isReady()){ Thread.sleep(100);}
 
-			final UpdateIOCResult updateResult = updateIOC(service, ldapDataObserver, directory, f, ldapContentModel, iocFilePath, iocFromLDAP);
+			
+			final UpdateIOCResult updateResult = updateIOC(service, ldapDataObserver, directory, ldapContentModel, iocFilePath, iocFromLDAP);
 
 			// TODO (bknerr) : does only make sense when the update process has been stopped
 			if (updateResult.hasNoError()) {
@@ -249,21 +251,20 @@ public class UpdateComparator {
 
 	public boolean updateLDAPRecord(
 			final DirContext directory,
-			final Formatter f,
 			final IOC ioc,
 			final String recordName) {
 
 		final String iocName = ioc.getName();
 		final String facName = ioc.getGroup();
-
-		f.format("eren=%s, econ=%s, ecom=EPICS-IOC, efan=%s, ou=EpicsControls",
-				recordName, iocName, facName);
+		
+		String query = String.format("eren=%s, econ=%s, ecom=EPICS-IOC, efan=%s, ou=EpicsControls",
+				                     recordName, iocName, facName);
 		final Attributes afe = attributesForEntry("epicsRecord", "eren", recordName);
 		try {
-			directory.bind(f.toString(), null, afe); // = Record schreiben
-			LOGGER.info( "Record written: \"" + iocName+ " - " + recordName + "\"");
+			directory.bind(query, null, afe); // = Record schreiben
+			LOGGER.info( "Record written: " + query);
 		} catch (final NamingException e) {
-			LOGGER.warn( "Naming Exception while trying to bind " + f);
+			LOGGER.warn( "Naming Exception while trying to bind: " + query);
 			System.out.println(e.getExplanation());
 			return false;
 		}

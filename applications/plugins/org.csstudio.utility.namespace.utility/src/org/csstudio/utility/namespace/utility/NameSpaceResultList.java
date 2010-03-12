@@ -26,6 +26,7 @@ package org.csstudio.utility.namespace.utility;
 
 import java.util.List;
 import java.util.Observable;
+import java.util.Observer;
 
 /**
  * @author hrickens
@@ -34,9 +35,17 @@ import java.util.Observable;
  * @since 09.05.2007
  */
 public abstract class NameSpaceResultList extends Observable {
+	//protected Observer _observer;
+	
 	abstract public NameSpaceResultList copy();
 	abstract public List<ControlSystemItem> getCSIResultList();
 	abstract public NameSpaceResultList getNew();
 	abstract public void notifyView();
 	abstract public void setResultList(List<String> resultList);
+	
+	@Override
+	public void addObserver(Observer o) {
+	//	_observer = o;
+		super.addObserver(o);
+	}
 }
