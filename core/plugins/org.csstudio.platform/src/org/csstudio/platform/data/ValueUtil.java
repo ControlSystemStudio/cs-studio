@@ -197,13 +197,14 @@ public class ValueUtil
 	 * Converts the given value into a string representation. For string values,
 	 * returns the value. For numeric (double and long) values, returns a
 	 * non-localized string representation. Double values use a point as the
-	 * decimal seperator. For other types of values, the value's
+	 * decimal separator. For other types of values, the value's
 	 * {@link IValue#format()} method is called and its result returned.
 	 * 
 	 * @param value
 	 *            the value.
 	 * @return a string representation of the value.
 	 */
+    @SuppressWarnings("nls")
     public static String getString(final IValue value)
     {
 		if (value instanceof IStringValue) {
@@ -218,7 +219,7 @@ public class ValueUtil
 			int precision = ((INumericMetaData) idv.getMetaData()).getPrecision();
 			DecimalFormatSymbols dcf = new DecimalFormatSymbols(Locale.US);
 			dcf.setDecimalSeparator('.');
-			DecimalFormat format = new DecimalFormat("0.#", dcf); //$NON-NLS-1$
+			DecimalFormat format = new DecimalFormat("0.#", dcf);
 			format.setMinimumFractionDigits(precision);
 			format.setMaximumFractionDigits(precision);
 			return format.format(dv);
