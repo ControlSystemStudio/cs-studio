@@ -70,7 +70,7 @@ public class MinMaxDoubleValue extends DoubleValue implements IMinMaxDoubleValue
 
     /** {@inheritDoc} */
 	@Override
-    final public String format(Format how, int precision)
+    final public String format(final Format how, final int precision)
 	{
 		if (getSeverity().hasValue())
             return super.format(how, precision)

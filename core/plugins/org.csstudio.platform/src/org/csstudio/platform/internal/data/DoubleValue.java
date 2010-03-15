@@ -26,8 +26,8 @@ import java.text.NumberFormat;
 
 import org.csstudio.platform.data.IDoubleValue;
 import org.csstudio.platform.data.INumericMetaData;
-import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.ISeverity;
+import org.csstudio.platform.data.ITimestamp;
 
 /** Implementation of {@link IDoubleValue}.
  *  @author Kay Kasemir, Xihui Chen
@@ -56,65 +56,78 @@ public class DoubleValue extends Value implements IDoubleValue
 	{	return values[0];	}
 	
     /** {@inheritDoc} 
-     * <br> If precision is less than zero, the precision from meta data will be used. */
+     * <br> 
+     * If precision is less than zero, the precision from meta data will be used.
+     */
 	@Override
-    public String format(Format how, int precision)
+    public String format(final Format how, int precision)
 	{
-		StringBuffer buf = new StringBuffer();
-		if (getSeverity().hasValue())
-		{
-            NumberFormat fmt;
-            if (how == Format.Exponential)
-            {   // Is there a better way to get this silly format?
-                StringBuffer pattern = new StringBuffer(10);
-                pattern.append("0."); //$NON-NLS-1$
-                for (int i=0; i<precision; ++i)
-                    pattern.append('0');
-                pattern.append("E0"); //$NON-NLS-1$
-                fmt = new DecimalFormat(pattern.toString());
+	    // Any value at all?
+	    if (!getSeverity().hasValue())
+	        return Messages.NoValue;
+	    
+		final StringBuilder buf = new StringBuilder();
+        NumberFormat fmt;
+        if (how == Format.Exponential)
+        {   // Is there a better way to get this silly format?
+            StringBuffer pattern = new StringBuffer(10);
+            pattern.append("0."); //$NON-NLS-1$
+            for (int i=0; i<precision; ++i)
+                pattern.append('0');
+            pattern.append("E0"); //$NON-NLS-1$
+            fmt = new DecimalFormat(pattern.toString());
+        }
+        else
+        {
+            // For the default format, or when requested via <0 prec.,
+            // use the precision from meta data
+            if (how == Format.Default  ||  precision < 0)
+            {
+                final INumericMetaData num_meta = (INumericMetaData)getMetaData();
+                // Should have numeric meta data, but in case of errors
+                // that might be null.
+                if (num_meta != null)
+                    precision = num_meta.getPrecision();
+            }
+            // Hack: If default format precision is 0, assume nobody configured
+            // it properly, and fall back to Double.toString
+            if (how == Format.Default  &&  precision == 0)
+            {
+                fmt = null;
             }
             else
             {
                 fmt = NumberFormat.getNumberInstance();
-                if (how == Format.Default)
-                {
-                    final INumericMetaData num_meta = (INumericMetaData)getMetaData();
-                    // Should have numeric meta data, but in case of errors
-                    // that might be null.
-                    if (num_meta != null)
-                        precision = num_meta.getPrecision();
-                }
-                if(precision < 0){
-                	final INumericMetaData num_meta = (INumericMetaData)getMetaData();
-                	 if (num_meta != null)
-                        precision = num_meta.getPrecision();
-                }
                 fmt.setMinimumFractionDigits(precision);
                 fmt.setMaximumFractionDigits(precision);
             }
-            buf.append(formatDouble(fmt, values[0]));
-            for (int i = 1; i < values.length; i++)
-            {            	
+        }
+        buf.append(formatDouble(fmt, values[0]));
+        for (int i = 1; i < values.length; i++)
+        {            	
+        	buf.append(Messages.ArrayElementSeparator);
+            buf.append(formatDouble(fmt, values[i]));
+            if(i >= MAX_FORMAT_VALUE_COUNT){
             	buf.append(Messages.ArrayElementSeparator);
-                buf.append(formatDouble(fmt, values[i]));
-                if(i >= MAX_FORMAT_VALUE_COUNT){
-                	buf.append(Messages.ArrayElementSeparator);
-                	buf.append("..."); //$NON-NLS-1$
-                	break;
-                }
+            	buf.append("..."); //$NON-NLS-1$
+            	break;
             }
         }
-		else
-			buf.append(Messages.NoValue);
 		return buf.toString();
 	}
 
+	/** @param fmt NumberFormat or <code>null</code> to use Double.toString
+	 *  @param d Number to format
+	 *  @return String
+	 */
     private String formatDouble(final NumberFormat fmt, double d)
     {
         if (Double.isInfinite(d))
             return Messages.Infinite;
         if (Double.isNaN(d))
             return Messages.NaN;
+        if (fmt == null)
+            return Double.toString(d);
         return fmt.format(d);
     }
 	
