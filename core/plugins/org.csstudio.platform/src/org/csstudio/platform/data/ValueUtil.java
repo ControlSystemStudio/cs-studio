@@ -146,7 +146,7 @@ public class ValueUtil
      *  a possible severity/status text,
      *  while <code>getDouble()</code> will return <code>NaN</code>.
      *  
-     *  TOFO Rethink this one. Only used in Data Browser??
+     *  TODO Rethink this one. Only used in old Data Browser??
      *  
      *  @param value The value to decode.
      *  @return The info string, never <code>null</code>.
