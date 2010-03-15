@@ -19,12 +19,12 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.platform.internal.data;
+package org.csstudio.platform.internal.data;
 
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.IMetaData;
 import org.csstudio.platform.data.ISeverity;
+import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.platform.data.IValue;
 
 /** Implementation of the {@link IValue} interface.
  *  @author Kay Kasemir
@@ -95,10 +95,10 @@ abstract public class Value implements IValue
     @Override
     final public String toString()
     {
-        StringBuffer buffer = new StringBuffer();
+        final StringBuilder buffer = new StringBuilder();
         buffer.append(getTime().toString());
         buffer.append(Messages.ColumnSeperator);
-        buffer.append(format());
+        buffer.append(format(Format.Default, -1));
         String sevr = getSeverity().toString();
         String stat = getStatus();
         if (sevr.length() > 0 || stat.length() > 0)
