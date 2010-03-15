@@ -153,8 +153,7 @@ public class SampleDisplayImporter extends AbstractDisplayImporter {
 
 		result.addAlias("channel", "channelName");
 
-		connectToSingleInputChannel(result, "fill", "$channel$.VALUE",
-				Double.class);
+		connectToSingleInputChannel(result, "fill", "$channel$.VALUE");
 
 		return result;
 	}
@@ -284,8 +283,7 @@ public class SampleDisplayImporter extends AbstractDisplayImporter {
 		result.setPropertyValue("font", new FontData("Arial", 12, SWT.BOLD));
 		result.setPropertyValue("textAlignment", 0);
 
-		connectToOutputChannel(result, "inputText", "channelName.VALUE",
-				Double.class);
+		connectToOutputChannel(result, "inputText", "channelName.VALUE");
 
 		return result;
 	}

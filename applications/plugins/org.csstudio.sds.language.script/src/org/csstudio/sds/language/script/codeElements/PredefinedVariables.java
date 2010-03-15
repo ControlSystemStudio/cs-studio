@@ -3,7 +3,8 @@ package org.csstudio.sds.language.script.codeElements;
 import de.desy.language.editor.core.ILanguageElements;
 
 public enum PredefinedVariables implements ILanguageElements {
-	RETURNS("returns", false),
+	RETURNS("returns", true),
+	COMPATIBLE_PROPERTIES("compatibleProperties", false),
 	DESCRIPTION("description", false),
 	PARAMETERS("parameters", false),
 	PARAMETERTYPES("parameterTypes", true);

@@ -83,10 +83,9 @@ public abstract class AbstractDisplayImporter {
 	 */
 	protected final void connectToSingleInputChannel(
 			final AbstractWidgetModel model, final String propertyId,
-			final String channelName, final Class channelType) {
+			final String channelName) {
 		DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor();
-		dynamicsDescriptor.addInputChannel(new ParameterDescriptor(channelName,
-				channelType));
+		dynamicsDescriptor.addInputChannel(new ParameterDescriptor(channelName));
 		model.setDynamicsDescriptor(propertyId, dynamicsDescriptor);
 	}
 
@@ -107,11 +106,10 @@ public abstract class AbstractDisplayImporter {
 	 */
 	protected final void connectToSingleInputChannel(
 			final AbstractWidgetModel model, final String propertyId,
-			final String channelName, final Class channelType,
+			final String channelName,
 			final String ruleId) {
 		DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor(ruleId);
-		dynamicsDescriptor.addInputChannel(new ParameterDescriptor(channelName,
-				channelType));
+		dynamicsDescriptor.addInputChannel(new ParameterDescriptor(channelName));
 		model.setDynamicsDescriptor(propertyId, dynamicsDescriptor);
 	}
 
@@ -129,10 +127,9 @@ public abstract class AbstractDisplayImporter {
 	 */
 	protected final void connectToOutputChannel(
 			final AbstractWidgetModel model, final String propertyId,
-			final String channelName, final Class channelType) {
+			final String channelName) {
 		DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor();
-		ParameterDescriptor channel = new ParameterDescriptor(channelName,
-				channelType);
+		ParameterDescriptor channel = new ParameterDescriptor(channelName);
 		dynamicsDescriptor.addInputChannel(channel);
 		dynamicsDescriptor.setOutputChannel(channel);
 		model.setDynamicsDescriptor(propertyId, dynamicsDescriptor);
