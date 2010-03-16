@@ -63,7 +63,7 @@ public class SampleBuffer
         return capacity;
     }
 
-    /** @return Current queue size. */
+    /** @return Current queue size, i.e. number of samples in the queue. */
     public int getQueueSize()
     {
         return samples.size();
@@ -132,8 +132,9 @@ public class SampleBuffer
     public String toString()
     {
         return String.format(
-        "Sample buffer '%s': %d samples max, %.1f samples average, %d overruns",
+        "Sample buffer '%s': %d samples, %d samples max, %.1f samples average, %d overruns",
             channel_name,
+            samples.size(),
             stats.getMaxSize(),
             stats.getAverageSize(),
             stats.getOverruns());
