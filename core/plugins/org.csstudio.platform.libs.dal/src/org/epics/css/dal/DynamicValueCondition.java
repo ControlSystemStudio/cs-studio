@@ -202,6 +202,17 @@ public class DynamicValueCondition implements Severity
 
 		return true;
 	}
+	
+	public boolean containsAnyOfStates(DynamicValueState... states)
+	{
+		for (int i = 0; i < states.length; i++) {
+			if (this.states.contains(states[i])) {
+				return true;
+			}
+		}
+
+		return false;
+	}
 
 	public boolean areStatesEqual(DynamicValueCondition condition)
 	{
@@ -256,7 +267,7 @@ public class DynamicValueCondition implements Severity
 	}
 
 	public boolean isOK() {
-		return !containsStates(new DynamicValueState[]{DynamicValueState.WARNING, DynamicValueState.ALARM, DynamicValueState.ERROR, DynamicValueState.LINK_NOT_AVAILABLE, DynamicValueState.TIMELAG, DynamicValueState.TIMEOUT});
+		return !containsAnyOfStates(new DynamicValueState[]{DynamicValueState.WARNING, DynamicValueState.ALARM, DynamicValueState.ERROR, DynamicValueState.LINK_NOT_AVAILABLE, DynamicValueState.TIMELAG, DynamicValueState.TIMEOUT});
 	}
 }
 

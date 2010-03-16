@@ -37,7 +37,7 @@ public class LongPropertyProxyImpl extends PropertyProxyImpl<Long>
 	 */
 	public LongPropertyProxyImpl(String name)
 	{
-		super(name);
+		super(name,Long.class);
 
 		try {
 			valueProvider.set(0L);

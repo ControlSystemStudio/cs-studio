@@ -26,13 +26,18 @@
 package org.epics.css.dal.simulation;
 
 import org.epics.css.dal.DataExchangeException;
+import org.epics.css.dal.DoubleProperty;
+import org.epics.css.dal.DynamicValueAdapter;
 import org.epics.css.dal.DynamicValueCondition;
+import org.epics.css.dal.DynamicValueEvent;
+import org.epics.css.dal.DynamicValueListener;
 import org.epics.css.dal.DynamicValueState;
 import org.epics.css.dal.RemoteException;
 import org.epics.css.dal.Request;
 import org.epics.css.dal.ResponseListener;
 import org.epics.css.dal.SimpleProperty;
 import org.epics.css.dal.context.ConnectionState;
+import org.epics.css.dal.impl.DefaultApplicationContext;
 import org.epics.css.dal.impl.PropertyUtilities;
 import org.epics.css.dal.impl.RequestImpl;
 import org.epics.css.dal.impl.ResponseImpl;
@@ -43,6 +48,8 @@ import org.epics.css.dal.proxy.PropertyProxy;
 import org.epics.css.dal.proxy.ProxyEvent;
 import org.epics.css.dal.proxy.ProxyListener;
 import org.epics.css.dal.proxy.SyncPropertyProxy;
+import org.epics.css.dal.simulation.data.DataGeneratorInfo;
+import org.epics.css.dal.spi.LinkPolicy;
 
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
@@ -61,19 +68,39 @@ import java.util.TimerTask;
 public class PropertyProxyImpl<T> extends AbstractProxyImpl
 	implements PropertyProxy<T>, SyncPropertyProxy<T>, DirectoryProxy
 {
+	
+	public static void main(String[] args) throws Exception, InstantiationException {
+		PropertyFactoryImpl factory = new PropertyFactoryImpl();
+		factory.initialize(new DefaultApplicationContext("test"), LinkPolicy.SYNC_LINK_POLICY);
+		DoubleProperty dp = factory.getProperty("sim://abc COUNTDOWN:100:0:10000:200",DoubleProperty.class,null);
+		dp.addDynamicValueListener(new DynamicValueAdapter(){
+			@Override
+			public void valueChanged(DynamicValueEvent event) {
+				System.out.println(event.getValue());
+			}
+			
+			@Override
+			public void valueUpdated(DynamicValueEvent event) {
+				System.out.println(event.getValue());
+			}
+		});
+		
+		Thread.sleep(20000);
+	}
+	
 	protected ValueProvider<T> valueProvider = new MemoryValueProvider<T>();
 	protected DynamicValueCondition condition = new DynamicValueCondition(EnumSet
 		    .of(DynamicValueState.NORMAL), System.currentTimeMillis(), null);
 	protected List<MonitorProxyImpl> monitors = new ArrayList<MonitorProxyImpl>(1);
 	protected boolean isSettable = true;
-
+	private long refreshRate = 1000;
 	/**
 	 * Creates new instance.
 	 * @param name
 	 */
-	public PropertyProxyImpl(String name)
+	public PropertyProxyImpl(String name, Class<T> type)
 	{
-		this(name, (Long)SimulatorUtilities.getConfiguration(SimulatorUtilities.CONNECTION_DELAY));
+		this(name, (Long)SimulatorUtilities.getConfiguration(SimulatorUtilities.CONNECTION_DELAY),type);
 	}
 	
 	/**
@@ -81,10 +108,13 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl
 	 * @param name
 	 * @param connectDelay
 	 */
-	public PropertyProxyImpl(String name, long connectDelay)
+	public PropertyProxyImpl(String name, long connectDelay, Class<T> type)
 	{
 		super(name);
 		delayedConnect(connectDelay);
+		DataGeneratorInfo info = DataGeneratorInfo.getInfo(name);
+		refreshRate = info.getRefreshRate(name);
+		setValueProvider(info.getDataGeneratorFactory().createGenerator(type, info.getOptions(name)));
 	}
 
 	public void delayedConnect(long timeout)
@@ -159,6 +189,7 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl
 		throws RemoteException
 	{
 		MonitorProxyImpl<T> m = new MonitorProxyImpl<T>(this, callback);
+		m.setTimerTrigger(refreshRate);
 		monitors.add(m);
 
 		return m;

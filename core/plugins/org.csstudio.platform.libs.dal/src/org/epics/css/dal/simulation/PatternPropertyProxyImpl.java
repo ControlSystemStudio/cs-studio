@@ -39,7 +39,7 @@ public class PatternPropertyProxyImpl extends PropertyProxyImpl<BitSet>
 	 */
 	public PatternPropertyProxyImpl(String name)
 	{
-		super(name);
+		super(name,BitSet.class);
 
 		try {
 			valueProvider.set(new BitSet());

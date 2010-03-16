@@ -38,7 +38,7 @@ public class DoublePropertyProxyImpl extends PropertyProxyImpl<Double>
 	 */
 	public DoublePropertyProxyImpl(String name)
 	{
-		super(name);
+		super(name,Double.class);
 
 		try {
 			valueProvider.set(0.0);

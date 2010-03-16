@@ -31,7 +31,7 @@ public class EnumPropertyProxyImpl extends PropertyProxyImpl<Long>
 	 */
 	public EnumPropertyProxyImpl(String name)
 	{
-		super(name);
+		super(name,Long.class);
 
 		try {
 			valueProvider.set(0L);

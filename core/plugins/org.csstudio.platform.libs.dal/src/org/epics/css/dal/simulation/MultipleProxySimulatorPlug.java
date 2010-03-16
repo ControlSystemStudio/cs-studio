@@ -410,7 +410,7 @@ public class MultipleProxySimulatorPlug extends SimulatorPlug {
 	@Override
 	protected DirectoryProxy createNewDirectoryProxy(String uniqueName) {
 		try {
-			PropertyProxyImpl<?> proxy = new PropertyProxyImpl<Object>(uniqueName);
+			PropertyProxyImpl<?> proxy = new PropertyProxyImpl<Object>(uniqueName,Object.class);
 			return proxy;
 			
 		} catch (Exception e) {

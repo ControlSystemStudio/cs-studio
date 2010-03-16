@@ -1,7 +1,9 @@
 package org.epics.css.dal.simple.impl;
 
+import org.epics.css.dal.AccessType;
 import org.epics.css.dal.simple.MetaData;
 
+@Deprecated
 public final class NumericMetaDataImpl implements MetaData {
 	
 	private final double alarmHigh;
@@ -50,9 +52,18 @@ public final class NumericMetaDataImpl implements MetaData {
 	}
 
 	public String[] getStates() {
-		// default value
+		return new String[0];
+	}
+	
+	public Object getStateValue(int state) {
+		//default value
 		return null;
 	}
+	
+	public Object[] getStateValues() {
+		return new Object[0];
+	}
+	
 
 	public String getUnits() {
 		return units;
@@ -64,6 +75,41 @@ public final class NumericMetaDataImpl implements MetaData {
 
 	public double getWarnLow() {
 		return warnLow;
+	}
+
+	public AccessType getAccessType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String getDataType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String getDescription() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String getFormat() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String getHostname() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String getName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public int getSequenceLength() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }

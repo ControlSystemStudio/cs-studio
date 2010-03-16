@@ -21,6 +21,9 @@
  */
  package org.epics.css.dal.simple;
 
+import org.epics.css.dal.AccessType;
+import org.epics.css.dal.CommonDataTypes;
+
 /** Base interface for a sample's meta data.
  *  @see AnyData
  *  @see INumericMetaData
@@ -53,21 +56,89 @@ public interface MetaData
     /** @return The engineering units string. */
     public String getUnits();
     
-    /** Obtain the state strings.
+    /** 
+     *  Obtains the states.
      *  <p>
-     *  The array element <code>i</code> represends state number <code>i</code>.
+     *  The array element <code>i</code> represents enum number <code>i</code>.
      *  
      *  @return The state string array, never <code>null</code>.
      */
     public String[] getStates();
 
-    /** Convenience routine for getting a state string.
-     *  <p>
-     *  Also allows getting undefined states. Applications that want to
-     *  specifically handle undefined states should use
-     *  <code>getStates()</code> instead.
-     *  @param state The state to get.
-     *  @return A state string.
+    /** 
+     *  Convenience routine for getting the state.
+     *  
+     *  @param index the index for which the enum description is returned
+     *  
+     *  @return the enum description.
      */
-    public String getState(int state);
+    public String getState(int index);
+    
+    /**
+     *  Obtains the enumeration values.
+     *  <p>
+     *  The array element <code>i</code> represents enum number <code>i</code>.
+     *  
+     *  @return The state value object array, never <code>null</code>.
+     */
+    public Object[] getStateValues();
+
+    /** 
+     *  Convenience routine for getting a state value.
+     *    
+     *  @param index the index for which the value is returned
+     *  
+     *  @return the state value
+     */
+    public Object getStateValue(int index);
+    
+    /**
+     * Return the display format for the numerical values.
+     * 
+     * @return the display format 
+     */
+    public String getFormat();
+    
+    /**
+     * Returns the access type.
+     * 
+     * @return the access type
+     */
+    public AccessType getAccessType();
+    
+    /**
+     * Returns the host name of the channel that this meta data belongs to.
+     * 
+     * @return the host name
+     */
+    public String getHostname();
+    
+    /**
+     * Returns the datatype of the channel. This method returns one of the
+     * string in {@link CommonDataTypes}.
+     * 
+     * @return the datatype
+     */
+    public String getDataType();
+    
+    /**
+     * Returns the description of the channel.
+     * 
+     * @return the description
+     */
+    public String getDescription();
+    
+    /**
+     * Returns the name of the channel.
+     * 
+     * @return the name of the channel
+     */
+    public String getName();
+ 
+    /**
+     * Returns the sequence length
+     * 
+     * @return the sequence length
+     */
+    public int getSequenceLength();
 }

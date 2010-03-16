@@ -34,7 +34,7 @@ public class DoubleSeqPropertyProxyImpl extends PropertyProxyImpl<double[]>
 	 */
 	public DoubleSeqPropertyProxyImpl(String name)
 	{
-		super(name);
+		super(name,double[].class);
 
 		try {
 			Integer length = (Integer)getCharacteristic(SequencePropertyCharacteristics.C_SEQUENCE_LENGTH);

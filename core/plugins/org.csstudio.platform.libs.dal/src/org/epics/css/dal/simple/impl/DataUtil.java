@@ -1,6 +1,18 @@
 package org.epics.css.dal.simple.impl;
 
+import java.util.Map;
+
+import javax.naming.NamingException;
+import javax.naming.directory.Attribute;
+import javax.naming.directory.Attributes;
+
+import org.epics.css.dal.AccessType;
 import org.epics.css.dal.DynamicValueProperty;
+import org.epics.css.dal.EnumPropertyCharacteristics;
+import org.epics.css.dal.NumericPropertyCharacteristics;
+import org.epics.css.dal.PatternPropertyCharacteristics;
+import org.epics.css.dal.PropertyCharacteristics;
+import org.epics.css.dal.SequencePropertyCharacteristics;
 import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.MetaData;
 
@@ -48,8 +60,8 @@ public class DataUtil {
 		throw new IllegalArgumentException("Object of type "+arg.getClass().getName()+" can not be cast to Number.");
 	}
 	
-    public static MetaData
-    createNumericMetaData(double disp_low, double disp_high,
+	@Deprecated
+    public static MetaData createNumericMetaData(double disp_low, double disp_high,
                     double warn_low, double warn_high,
                     double alarm_low, double alarm_high,
                     int prec, String units)
@@ -58,9 +70,92 @@ public class DataUtil {
 	                    alarm_low, alarm_high, prec, units);
 	}
     
-    public static MetaData createEnumeratedMetaData(String[] labels) {
-    	return new EnumeratedMetaDataImpl(labels);
+	@Deprecated
+    public static MetaData createEnumeratedMetaData(String[] labels, Object[] values) {
+    	return new EnumeratedMetaDataImpl(labels,values);
     }
+    
+    /**
+     * Method gathers known types from the given characteristics and constructs
+     * a {@link MetaData} that carries all that information. If the characteristics
+     * do not contain certain data, the metadata will return null for all those
+     * objects.
+     * 
+     * @param characteristics the characteristics that carries the data
+     * @return the metadata
+     */
+    public static MetaData createMetaData(Map<String, Object> characteristics) {
+    	String description = (String)characteristics.get(PropertyCharacteristics.C_DESCRIPTION);
+		String name = (String) characteristics.get(PropertyCharacteristics.C_DISPLAY_NAME);
+		Integer sequenceLength = (Integer) characteristics.get(SequencePropertyCharacteristics.C_SEQUENCE_LENGTH);
+		Integer resolution = (Integer) characteristics.get(NumericPropertyCharacteristics.C_RESOLUTION);
+		AccessType accessType = (AccessType) characteristics.get(PropertyCharacteristics.C_ACCESS_TYPE);
+		String hostname = (String) characteristics.get(PropertyCharacteristics.C_HOSTNAME);
+		String dataType = (String) characteristics.get(PropertyCharacteristics.C_DATATYPE);
+		String units = (String) characteristics.get(NumericPropertyCharacteristics.C_UNITS);
+		Number dispMin = (Number) characteristics.get(NumericPropertyCharacteristics.C_GRAPH_MIN);
+		Number dispMax = (Number) characteristics.get(NumericPropertyCharacteristics.C_GRAPH_MAX);
+		Number warningMin = (Number) characteristics.get(NumericPropertyCharacteristics.C_WARNING_MIN);
+		Number warningMax = (Number) characteristics.get(NumericPropertyCharacteristics.C_WARNING_MAX);
+		Number alarmMin = (Number) characteristics.get(NumericPropertyCharacteristics.C_ALARM_MIN);
+		Number alarmMax = (Number) characteristics.get(NumericPropertyCharacteristics.C_ALARM_MAX);
+		String format = (String) characteristics.get(NumericPropertyCharacteristics.C_FORMAT);
+		String[] enumDescriptions = (String[]) characteristics.get(PatternPropertyCharacteristics.C_BIT_DESCRIPTIONS);
+		Object[] enumValues = (Object[]) characteristics.get(EnumPropertyCharacteristics.C_ENUM_VALUES);
+		return new MetaDataImpl(name,description,dispMin,dispMax,warningMin,warningMax,
+				alarmMin,alarmMax,enumDescriptions,enumValues,format,units,
+				sequenceLength,resolution,dataType,accessType,hostname);
+	}
+    
+    /**
+     * Method gathers known types from the given characteristics and constructs
+     * a {@link MetaData} that carries all that information. If the characteristics
+     * do not contain certain data, the metadata will return null for all those
+     * objects.
+     * 
+     * @param characteristics the characteristics that carries the data
+     * @return the metadata
+     * @throws NamingException if one of the attributes cannot be read
+     */
+    public static MetaData createMetaData(Attributes characteristics) throws NamingException {
+    	Attribute o = characteristics.get(PropertyCharacteristics.C_DESCRIPTION);
+    	String description = (String) (o != null ? o.get() : null);
+		o = characteristics.get(PropertyCharacteristics.C_DISPLAY_NAME);
+		String name = (String) (o != null ? o.get() : null);
+		o = characteristics.get(SequencePropertyCharacteristics.C_SEQUENCE_LENGTH);
+		Integer sequenceLength = (Integer) (o != null ? o.get() : null);
+		o = characteristics.get(NumericPropertyCharacteristics.C_RESOLUTION);
+		Integer resolution = (Integer) (o != null ? o.get() : null);
+		o = characteristics.get(PropertyCharacteristics.C_ACCESS_TYPE);
+		AccessType accessType = (AccessType) (o != null ? o.get() : null);
+		o = characteristics.get(PropertyCharacteristics.C_HOSTNAME);
+		String hostname = (String)(o != null ? o.get() : null);
+		o = characteristics.get(PropertyCharacteristics.C_DATATYPE);
+		String dataType = (String)(o != null ? o.get() : null);
+		o = characteristics.get(NumericPropertyCharacteristics.C_UNITS);
+		String units = (String)(o != null ? o.get() : null);
+		o = characteristics.get(NumericPropertyCharacteristics.C_GRAPH_MIN);
+		Number dispMin = (Number) (o != null ? o.get() : null);
+		o = characteristics.get(NumericPropertyCharacteristics.C_GRAPH_MAX);
+		Number dispMax = (Number) (o != null ? o.get() : null);
+		o = characteristics.get(NumericPropertyCharacteristics.C_WARNING_MIN);
+		Number warningMin = (Number) (o != null ? o.get() : null);
+		o = characteristics.get(NumericPropertyCharacteristics.C_WARNING_MAX);
+		Number warningMax = (Number)(o != null ? o.get() : null); 
+		o = characteristics.get(NumericPropertyCharacteristics.C_ALARM_MIN);
+		Number alarmMin = (Number) (o != null ? o.get() : null);
+		o = characteristics.get(NumericPropertyCharacteristics.C_ALARM_MAX);
+		Number alarmMax = (Number) (o != null ? o.get() : null);
+		o = characteristics.get(NumericPropertyCharacteristics.C_FORMAT);
+		String format = (String) (o != null ? o.get() : null);
+		o = characteristics.get(PatternPropertyCharacteristics.C_BIT_DESCRIPTIONS);
+		String[] enumDescriptions = (String[]) (o != null ? o.get() : null);
+		o = characteristics.get(EnumPropertyCharacteristics.C_ENUM_VALUES);
+		Object[] enumValues = (Object[]) (o != null ? o.get() : null);
+		return new MetaDataImpl(name,description,dispMin,dispMax,warningMin,warningMax,
+				alarmMin,alarmMax,enumDescriptions,enumValues,format,units,
+				sequenceLength,resolution,dataType,accessType,hostname);
+	}
     
     public static AnyData createAnyData(DynamicValueProperty<?> property) {
     	Class<?> type = property.getDataType();

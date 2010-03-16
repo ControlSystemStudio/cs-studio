@@ -37,7 +37,7 @@ public class StringPropertyProxyImpl extends PropertyProxyImpl<String>
 	 */
 	public StringPropertyProxyImpl(String name)
 	{
-		super(name);
+		super(name, String.class);
 
 		try {
 			valueProvider.set("");

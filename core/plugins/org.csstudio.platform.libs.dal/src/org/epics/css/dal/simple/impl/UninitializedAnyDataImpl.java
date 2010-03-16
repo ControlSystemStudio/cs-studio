@@ -65,43 +65,43 @@ public class UninitializedAnyDataImpl<T> extends AbstractAnyDataImpl<T> {
 	}
 
 	public Object[] anySeqValue() {
-		throw new UnsupportedOperationException("UninitializedAnyDataImpl does not support this operation.");
+		return null;
 	}
 
 	public Object anyValue() {
-		throw new UnsupportedOperationException("UninitializedAnyDataImpl does not support this operation.");
+		return null;
 	}
 
 	public double[] doubleSeqValue() {
-		throw new UnsupportedOperationException("UninitializedAnyDataImpl does not support this operation.");
+		return null;
 	}
 
 	public double doubleValue() {
-		throw new UnsupportedOperationException("UninitializedAnyDataImpl does not support this operation.");
+		return Double.NaN;
 	}
 
 	public long[] longSeqValue() {
-		throw new UnsupportedOperationException("UninitializedAnyDataImpl does not support this operation.");
+		return null;
 	}
 
 	public long longValue() {
-		throw new UnsupportedOperationException("UninitializedAnyDataImpl does not support this operation.");
+		return 0;
 	}
 
 	public Number[] numberSeqValue() {
-		throw new UnsupportedOperationException("UninitializedAnyDataImpl does not support this operation.");
+		return null;
 	}
 
 	public Number numberValue() {
-		throw new UnsupportedOperationException("UninitializedAnyDataImpl does not support this operation.");
+		return null;
 	}
 
 	public String[] stringSeqValue() {
-		throw new UnsupportedOperationException("UninitializedAnyDataImpl does not support this operation.");
+		return null;
 	}
 
 	public String stringValue() {
-		throw new UnsupportedOperationException("UninitializedAnyDataImpl does not support this operation.");
+		return null;
 	}
 
 }
