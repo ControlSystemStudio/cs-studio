@@ -71,10 +71,12 @@ public class LocalPV extends BasicPV<Value>
     {
         running = true;
         value.addListener(this);
-        //give an initial value
-        if(getValue() == null)
-        	setValue(0);
-        
+        if (getValue() == null)
+        {   // Give an initial 'Double' value, which will send initial update.
+            // Note that just 0 would auto-box to Integer, which is then
+            // handled as String. This way we assert that it's a number
+            setValue(new Double(0.0));
+        }
     }
 
     /** {@inheritDoc} */
