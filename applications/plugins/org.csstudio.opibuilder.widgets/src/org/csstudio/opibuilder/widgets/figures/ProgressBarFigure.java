@@ -149,9 +149,23 @@ public class ProgressBarFigure extends AbstractLinearMarkedFigure {
 	@Override
 	public void setValue(double value) {
 		super.setValue(value);
-		label.setText(""+ (int)
-				(100*value/(scale.getRange().getUpper() - scale.getRange().getLower())) + "%");
+		updateLabelText();
 		revalidate();
+	}
+
+	@Override
+	public void setRange(double min, double max) {
+		super.setRange(min, max);
+		updateLabelText();
+	}
+	
+	
+	
+	/**
+	 * Update the text of the label.
+	 */
+	private void updateLabelText() {
+		label.setText(scale.format(getValue()));
 	}
 
 	
