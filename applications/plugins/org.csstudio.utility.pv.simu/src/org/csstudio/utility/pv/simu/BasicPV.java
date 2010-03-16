@@ -68,7 +68,9 @@ abstract public class BasicPV<T extends Value> extends PlatformObject implements
         listeners.remove(listener);
     }
     
-    /** Inform all registered listeners about value update
+    /** Called by this PV's value when it changes.
+     *  Informs all registered listeners about value update.
+     *  
      *  @see ValueListener#changed(Value)
      */
     public void changed(Value value)
