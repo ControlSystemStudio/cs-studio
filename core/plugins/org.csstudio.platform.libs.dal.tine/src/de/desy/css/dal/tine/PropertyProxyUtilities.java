@@ -34,6 +34,7 @@ import org.epics.css.dal.LongProperty;
 import org.epics.css.dal.LongSeqProperty;
 import org.epics.css.dal.NumericPropertyCharacteristics;
 import org.epics.css.dal.PropertyCharacteristics;
+import org.epics.css.dal.SequencePropertyCharacteristics;
 import org.epics.css.dal.SimpleProperty;
 import org.epics.css.dal.impl.DoublePropertyImpl;
 import org.epics.css.dal.impl.DoubleSeqPropertyImpl;
@@ -365,13 +366,15 @@ public class PropertyProxyUtilities {
         characteristics.put(PropertyCharacteristics.C_DATATYPE,format.toString());
         characteristics.put("dataFormat", format);
         characteristics.put(NumericPropertyCharacteristics.C_UNITS, info[0].prpUnits);
-        characteristics.put("sequenceLength",info[0].prpSize);
+        characteristics.put(SequencePropertyCharacteristics.C_SEQUENCE_LENGTH,info[0].prpSize);
         characteristics.put("redirection",info[0].prpRedirection);
         characteristics.put("tag",info[0].prpTag);
         characteristics.put("rows",(int)info[0].numRows);
         characteristics.put("rowSize",(int)info[0].rowSize);
         characteristics.put("access",TAccess.valueOf(info[0].prpAccess));
         characteristics.put("editable",access.isWrite());
+        characteristics.put("settable",access.isWrite());
+        characteristics.put(PropertyCharacteristics.C_ACCESS_TYPE, AccessType.getAccess(access.isRead(),access.isWrite()));
         TArrayType arrayType = TArrayType.valueOf(info[0].prpArrayType);
        	if (arrayType.isChannel()) {
        		String[] names = TQuery.getDeviceNames(dissector.getDeviceContext(), dissector.getDeviceGroup(), dissector.getDeviceProperty());
@@ -415,13 +418,7 @@ public class PropertyProxyUtilities {
            	characteristics.put(CharacteristicInfo.C_FORMAT.getName(),"%5.3f");
         }
        	characteristics.put(CharacteristicInfo.C_SCALE_TYPE.getName(),"linear");
-       	
-       	characteristics.put(CharacteristicInfo.C_META_DATA.getName(), DataUtil.createNumericMetaData(
-				((Number) min).doubleValue(), ((Number) max).doubleValue(), 
-				((Number) min).doubleValue(), ((Number) max).doubleValue(), 
-				((Number) min).doubleValue(), ((Number) max).doubleValue(), 
-				((Number) characteristics.get(CharacteristicInfo.C_RESOLUTION.getName())).intValue(),
-				info[0].prpUnits));
+    	characteristics.put(CharacteristicInfo.C_META_DATA.getName(),DataUtil.createMetaData(characteristics));
        	
         return characteristics;
 	}

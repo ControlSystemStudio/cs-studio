@@ -26,6 +26,7 @@ import org.epics.css.dal.DataExchangeException;
 import org.epics.css.dal.DoubleProperty;
 import org.epics.css.dal.DynamicValueAdapter;
 import org.epics.css.dal.DynamicValueEvent;
+import org.epics.css.dal.LongProperty;
 import org.epics.css.dal.RemoteException;
 import org.epics.css.dal.StringProperty;
 import org.epics.css.dal.impl.DefaultApplicationContext;
@@ -115,7 +116,8 @@ public class SimpleDemo {
 			// Choose TINe channel name. Name must be of form:
 			// <protocol, always TINE>/<context name>/<group name>/<device name>/<property name>
 //			String name = "TINE/WORKSHOP/WKSineGen/Device 3/Amplitude";
-			String name = "DESY2/PEStrahlung/Platz-451/D3PlatzDesc";
+//			String name = "DESY2/PEStrahlung/Platz-451/D3PlatzDesc";
+			String name = "TTF2/QUENCHDETECT/C1.ACC1/ERROR";
 			
 			// Create application context
 			DefaultApplicationContext ctx= new TINEApplicationContext("SimpleDemo");
@@ -129,7 +131,7 @@ public class SimpleDemo {
 				getPropertyFactoryService().getPropertyFactory(ctx, null);
 			
 			// We request double channel with specified name
-			final StringProperty property = propertyFactory.getProperty(name, StringProperty.class, null);
+			final LongProperty property = propertyFactory.getProperty(name, LongProperty.class, null);
 			
 			// We register listener, which will receive value updates
 			

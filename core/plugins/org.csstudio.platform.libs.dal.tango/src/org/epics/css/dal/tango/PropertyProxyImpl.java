@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
+import org.epics.css.dal.AccessType;
 import org.epics.css.dal.CharacteristicInfo;
 import org.epics.css.dal.DataExchangeException;
 import org.epics.css.dal.DynamicValueCondition;
@@ -289,11 +290,14 @@ public abstract class PropertyProxyImpl<T> extends AbstractProxyImpl implements 
 					this.characteristics.put(NumericPropertyCharacteristics.C_UNITS,ai.display_unit);
 					AttrWriteType wt = ai.writable;
 					this.characteristics.put("settable", wt == AttrWriteType.WRITE || wt == AttrWriteType.READ_WRITE);
-					this.characteristics.put(CharacteristicInfo.C_META_DATA.getName(), DataUtil.createNumericMetaData(
-							((Number) min).doubleValue(), ((Number) max).doubleValue(), 
-							((Number) alarmMin).doubleValue(), ((Number) alarmMax).doubleValue(), 
-							((Number) alarmMin).doubleValue(), ((Number) alarmMax).doubleValue(), 
-							0, ai.display_unit));
+					this.characteristics.put(PropertyCharacteristics.C_ACCESS_TYPE, AccessType.getAccess(wt == AttrWriteType.READ || wt == AttrWriteType.READ_WITH_WRITE || wt == AttrWriteType.READ_WRITE, wt == AttrWriteType.WRITE || wt == AttrWriteType.READ_WRITE || wt == AttrWriteType.READ_WITH_WRITE));
+					this.characteristics.put(CharacteristicInfo.C_META_DATA.getName(),DataUtil.createMetaData(characteristics));
+//					this.characteristics.put(CharacteristicInfo.C_META_DATA.getName(), DataUtil.createNumericMetaData(
+//							((Number) min).doubleValue(), ((Number) max).doubleValue(), 
+//							((Number) alarmMin).doubleValue(), ((Number) alarmMax).doubleValue(), 
+//							((Number) alarmMin).doubleValue(), ((Number) alarmMax).doubleValue(), 
+//							0, ai.display_unit));
+					
 				} else {
 					throw new DevFailed();
 				}

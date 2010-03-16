@@ -588,11 +588,12 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 					characteristics.put(NumericPropertyCharacteristics.C_GRAPH_MIN, new Long(gr.getLowerDispLimit().longValue()));
 					characteristics.put(NumericPropertyCharacteristics.C_GRAPH_MAX, new Long(gr.getUpperDispLimit().longValue()));
 					
-					characteristics.put(NumericPropertyCharacteristics.C_WARNING_MAX, new Long(gr.getUpperWarningLimit().longValue()));
 					characteristics.put(NumericPropertyCharacteristics.C_WARNING_MIN, new Long(gr.getLowerWarningLimit().longValue()));
+					characteristics.put(NumericPropertyCharacteristics.C_WARNING_MAX, new Long(gr.getUpperWarningLimit().longValue()));
 					
-					characteristics.put(NumericPropertyCharacteristics.C_ALARM_MAX, new Long(gr.getUpperAlarmLimit().longValue()));
 					characteristics.put(NumericPropertyCharacteristics.C_ALARM_MIN, new Long(gr.getLowerAlarmLimit().longValue()));
+					characteristics.put(NumericPropertyCharacteristics.C_ALARM_MAX, new Long(gr.getUpperAlarmLimit().longValue()));
+					
 										
 				}
 				else
@@ -602,12 +603,12 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 
 					characteristics.put(NumericPropertyCharacteristics.C_GRAPH_MIN, gr.getLowerDispLimit());
 					characteristics.put(NumericPropertyCharacteristics.C_GRAPH_MAX, gr.getUpperDispLimit());
-					
-					characteristics.put(NumericPropertyCharacteristics.C_WARNING_MAX, gr.getUpperWarningLimit());
+
 					characteristics.put(NumericPropertyCharacteristics.C_WARNING_MIN, gr.getLowerWarningLimit());
-					
-					characteristics.put(NumericPropertyCharacteristics.C_ALARM_MAX, gr.getUpperAlarmLimit());
+					characteristics.put(NumericPropertyCharacteristics.C_WARNING_MAX, gr.getUpperWarningLimit());
+
 					characteristics.put(NumericPropertyCharacteristics.C_ALARM_MIN, gr.getLowerAlarmLimit());
+					characteristics.put(NumericPropertyCharacteristics.C_ALARM_MAX, gr.getUpperAlarmLimit());
 				}
 				
 				characteristics.put(EpicsPropertyCharacteristics.EPICS_MIN, characteristics.get(NumericPropertyCharacteristics.C_MINIMUM));
@@ -622,12 +623,12 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 				characteristics.put(EpicsPropertyCharacteristics.EPICS_ALARM_MAX, characteristics.get(NumericPropertyCharacteristics.C_ALARM_MAX));
 				characteristics.put(EpicsPropertyCharacteristics.EPICS_ALARM_MIN, characteristics.get(NumericPropertyCharacteristics.C_ALARM_MIN));
 				
-				int resolution = ((Number) characteristics.get(NumericPropertyCharacteristics.C_RESOLUTION)).intValue();
-				characteristics.put(CharacteristicInfo.C_META_DATA.getName(), DataUtil.createNumericMetaData(
-						gr.getLowerDispLimit().doubleValue(), gr.getUpperDispLimit().doubleValue(), 
-						gr.getLowerWarningLimit().doubleValue(), gr.getUpperWarningLimit().doubleValue(), 
-						gr.getLowerAlarmLimit().doubleValue(), gr.getUpperAlarmLimit().doubleValue(), 
-						resolution, gr.getUnits()));
+//				int resolution = ((Number) characteristics.get(NumericPropertyCharacteristics.C_RESOLUTION)).intValue();
+//				characteristics.put(CharacteristicInfo.C_META_DATA.getName(), DataUtil.createNumericMetaData(
+//						gr.getLowerDispLimit().doubleValue(), gr.getUpperDispLimit().doubleValue(), 
+//						gr.getLowerWarningLimit().doubleValue(), gr.getUpperWarningLimit().doubleValue(), 
+//						gr.getLowerAlarmLimit().doubleValue(), gr.getUpperAlarmLimit().doubleValue(), 
+//						resolution, gr.getUnits()));
 				
 			} else {
 				characteristics.put(NumericPropertyCharacteristics.C_UNITS, "N/A");
@@ -657,7 +658,7 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 				
 				characteristics.put(EnumPropertyCharacteristics.C_ENUM_VALUES, values);
 				
-				characteristics.put(CharacteristicInfo.C_META_DATA.getName(), DataUtil.createEnumeratedMetaData(labels));
+//				characteristics.put(CharacteristicInfo.C_META_DATA.getName(), DataUtil.createEnumeratedMetaData(labels,values));
 
 			}
 			
@@ -673,6 +674,8 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 			}
 			createSpecificCharacteristics(dbr);
 
+			characteristics.put(CharacteristicInfo.C_META_DATA.getName(), DataUtil.createMetaData(characteristics));
+			
 			characteristics.notifyAll();
 		}
 	}
