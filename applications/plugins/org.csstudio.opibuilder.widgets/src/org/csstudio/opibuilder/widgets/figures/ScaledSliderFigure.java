@@ -425,34 +425,14 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 		class ThumbDragger
 		extends MouseMotionListener.Stub
 		implements MouseListener {
-			private static final int LABEL_MARGIN = 3;
 			protected Point start;
 				
-				protected boolean armed;				
-				
-				private void setLabel() {
-					String text = scale.format(value);
-					Dimension textSize = FigureUtilities.getStringExtents(text, label.getFont());
-					label.setText(text);
-					if(horizontal)
-						label.setBounds(new Rectangle(
-							Thumb.this.getBounds().x + Thumb.this.getBounds().width/2 
-							- (textSize.width + 2*LABEL_MARGIN)/2,
-							Thumb.this.getBounds().y  - textSize.height - 2*LABEL_MARGIN,
-							textSize.width + 2 * LABEL_MARGIN, textSize.height+LABEL_MARGIN));
-					else
-						label.setBounds(new Rectangle(
-							Thumb.this.getBounds().x - textSize.width - 3*LABEL_MARGIN,
-							Thumb.this.getBounds().y + Thumb.this.getBounds().height/2 
-							- (textSize.height + LABEL_MARGIN)/2, 
-							textSize.width + 2 * LABEL_MARGIN, textSize.height+LABEL_MARGIN));
-					label.setVisible(true);
-				}
-				
+				protected boolean armed;						
+			
 				public void mousePressed(MouseEvent me) {
 					armed = true;
 					start = me.getLocation();					
-					setLabel();					
+					label.setVisible(true);
 					me.consume();
 				}
 				
@@ -467,6 +447,7 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 							setValue(value + increment * Math.round(valueChange/increment));		
 						else 
 							setValue(value + valueChange);
+						label.setVisible(true);
 						double newValue = value;
 						double valuePosition = 
 								((LinearScale)scale).getValuePosition(value, false);
@@ -474,10 +455,7 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 									horizontal? valuePosition: 0, 
 									horizontal ? 0 : valuePosition);
 						if(newValue != oldValue)
-							fireManualValueChange(value);						
-						//ScaledSliderFigure.this.layout();
-						//ScaledSliderFigure.this.repaint();
-						setLabel();		
+							fireManualValueChange(value);							
 					}
 					me.consume();
 				}
@@ -554,6 +532,8 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 		
 		private static final int GAP_BTW_THUMB_SCALE = 5;
 		private static final int ADDITIONAL_MARGIN = 3;
+		private static final int LABEL_MARGIN = 3;
+
 		
 		/** Used as a constraint for the scale. */
 		public static final String SCALE = "scale";   //$NON-NLS-1$
@@ -563,11 +543,14 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 		public static final String MARKERS = "markers";      //$NON-NLS-1$
 		/** Used as a constraint for the thumb */
 		public static final String THUMB = "thumb";      //$NON-NLS-1$
-
+		/** Used as a constraint for the label*/
+		public static final String LABEL = "label";      //$NON-NLS-1$
+		
 		private LinearScale scale;
 		private LinearScaledMarker marker;
 		private Track track;
 		private Thumb thumb;
+		private AlphaLabel label;
 
 		
 		@Override
@@ -580,6 +563,8 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 				track = (Track) child;
 			else if (constraint.equals(THUMB))
 				thumb = (Thumb) child;
+			else if (constraint.equals(LABEL))
+				label = (AlphaLabel) child;
 		}
 		
 		@Override
@@ -635,6 +620,8 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 						);
 				thumb.setPoints(newPointList);
 			}
+			if(label != null && label.isVisible())
+				setLabel();
 		}
 
 		private void verticalLayout(IFigure container) {
@@ -671,6 +658,26 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 						scale.getValuePosition(value, false) - Thumb.BREADTH/2);
 				thumb.setPoints(newPointList);
 			}
+			if(label != null && label.isVisible())
+				setLabel();
+		}
+		
+		private void setLabel() {
+			String text = scale.format(value);
+			Dimension textSize = FigureUtilities.getStringExtents(text, label.getFont());
+			label.setText(text);
+			if(horizontal)
+				label.setBounds(new Rectangle(
+					thumb.getBounds().x + thumb.getBounds().width/2 
+					- (textSize.width + 2*LABEL_MARGIN)/2,
+					thumb.getBounds().y  - textSize.height - 2*LABEL_MARGIN,
+					textSize.width + 2 * LABEL_MARGIN, textSize.height+LABEL_MARGIN));
+			else
+				label.setBounds(new Rectangle(
+						thumb.getBounds().x - textSize.width - 3*LABEL_MARGIN,
+						thumb.getBounds().y + thumb.getBounds().height/2 
+					- (textSize.height + LABEL_MARGIN)/2, 
+					textSize.width + 2 * LABEL_MARGIN, textSize.height+LABEL_MARGIN));
 		}
 	
 	}
