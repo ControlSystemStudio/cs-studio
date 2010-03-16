@@ -246,7 +246,8 @@ public class Waveform extends Widget {
                             _widget.setPrimarPv(alias);
                         }
                         DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor();
-                        dynamicsDescriptor.addInputChannel(new ParameterDescriptor(alias, String[].class ));
+//                        FIXME: Parameter was String[].class
+                        dynamicsDescriptor.addInputChannel(new ParameterDescriptor(alias, ""));
                         _widget.setDynamicsDescriptor(WaveformModel.dataPropertyId(idInt), dynamicsDescriptor);
                     }
                 }else{

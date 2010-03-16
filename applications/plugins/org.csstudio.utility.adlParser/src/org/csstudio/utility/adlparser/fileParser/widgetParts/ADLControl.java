@@ -125,7 +125,7 @@ public class ADLControl extends WidgetPart{
             _widgetModel.setColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND, ADLHelper.getRGB(_bclr));
             if(_connectionState){
                 DynamicsDescriptor dynDis = new DynamicsDescriptor("rule.null"); //$NON-NLS-1$
-                dynDis.addInputChannel(new ParameterDescriptor("$channel$",Double.class)); //$NON-NLS-1$
+                dynDis.addInputChannel(new ParameterDescriptor("$channel$","")); //$NON-NLS-1$
                 _widgetModel.setDynamicsDescriptor("color.background", dynDis); //$NON-NLS-1$
             }
         }

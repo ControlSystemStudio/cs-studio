@@ -76,11 +76,11 @@ public class ADLSensitive extends WidgetPart {
         }
         if(_sensitiveMode!=null && _sensitiveMode.equals("if not zero")){ //$NON-NLS-1$
             DynamicsDescriptor adlBooleanDynamicAttribute = new DynamicsDescriptor("org.css.sds.color.if_not_zero"); //$NON-NLS-1$
-            adlBooleanDynamicAttribute.addInputChannel(new ParameterDescriptor("$channel$"+_postfix,Double.class)); //$NON-NLS-1$
+            adlBooleanDynamicAttribute.addInputChannel(new ParameterDescriptor("$channel$"+_postfix,"")); //$NON-NLS-1$
             _widgetModel.setDynamicsDescriptor(AbstractWidgetModel.PROP_ENABLED, adlBooleanDynamicAttribute);
         }else if(_sensitiveMode!=null && _sensitiveMode.equals("if zero")){ //$NON-NLS-1$
             DynamicsDescriptor adlBooleanDynamicAttribute = new DynamicsDescriptor("org.css.sds.color.if_zero"); //$NON-NLS-1$
-            adlBooleanDynamicAttribute.addInputChannel(new ParameterDescriptor("$channel$"+_postfix,Double.class)); //$NON-NLS-1$
+            adlBooleanDynamicAttribute.addInputChannel(new ParameterDescriptor("$channel$"+_postfix,"")); //$NON-NLS-1$
             _widgetModel.setDynamicsDescriptor(AbstractWidgetModel.PROP_ENABLED, adlBooleanDynamicAttribute);
         }
     }

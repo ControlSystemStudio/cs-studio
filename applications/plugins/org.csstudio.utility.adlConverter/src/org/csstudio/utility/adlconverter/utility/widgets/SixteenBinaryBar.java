@@ -49,7 +49,8 @@ public class SixteenBinaryBar extends Widget {
     public SixteenBinaryBar(ADLWidget sixteenBinaryBar, ADLWidget storedBasicAttribute, ADLWidget storedDynamicAttribute) throws WrongADLFormatException {
         super(sixteenBinaryBar, storedBasicAttribute, storedDynamicAttribute);
         DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor("directConnection"); //$NON-NLS-1$
-        dynamicsDescriptor.addInputChannel(new ParameterDescriptor(_widget.getPrimaryPV(),Integer.class)); //$NON-NLS-1$        
+//        FIXME: Parameter was Integer.class!!
+        dynamicsDescriptor.addInputChannel(new ParameterDescriptor(_widget.getPrimaryPV(),"")); //$NON-NLS-1$        
         _widget.setDynamicsDescriptor(SixteenBinaryBarModel.PROP_VALUE, dynamicsDescriptor );
         _widget.setColor(SixteenBinaryBarModel.PROP_ON_COLOR, _widget.getColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND));
         _widget.setColor(SixteenBinaryBarModel.PROP_OFF_COLOR, _widget.getColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND));

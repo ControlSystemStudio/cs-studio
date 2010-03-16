@@ -156,11 +156,11 @@ public class ADLDynamicAttribute extends WidgetPart{
             if(_vis!=null && _vis.equals("if not zero")){ //$NON-NLS-1$
                 _bool=true;
                 _adlBooleanDynamicAttribute = new DynamicsDescriptor("org.css.sds.color.if_zero"); //$NON-NLS-1$
-                _adlBooleanDynamicAttribute.addInputChannel(new ParameterDescriptor(channel,Double.class)); //$NON-NLS-1$
+                _adlBooleanDynamicAttribute.addInputChannel(new ParameterDescriptor(channel,"")); //$NON-NLS-1$
             }else if(_vis!=null && _vis.equals("if zero")){ //$NON-NLS-1$
                 _bool=true;
                 _adlBooleanDynamicAttribute = new DynamicsDescriptor("org.css.sds.color.if_not_zero"); //$NON-NLS-1$
-                _adlBooleanDynamicAttribute.addInputChannel(new ParameterDescriptor(channel,Double.class)); //$NON-NLS-1$
+                _adlBooleanDynamicAttribute.addInputChannel(new ParameterDescriptor(channel,"")); //$NON-NLS-1$
             }
             if( _colorRule!=null){
                 _color = true;
@@ -168,7 +168,7 @@ public class ADLDynamicAttribute extends WidgetPart{
             //                <inputChannel name="$channel$" type="java.lang.Double" />
             //            </dynamicsDescriptor>
                 _adlColorDynamicAttribute = new DynamicsDescriptor("cosyrules.color."+_colorRule.toLowerCase()); //$NON-NLS-1$
-                _adlColorDynamicAttribute.addInputChannel(new ParameterDescriptor(channel,Double.class));
+                _adlColorDynamicAttribute.addInputChannel(new ParameterDescriptor(channel,""));
 //                if(_chan.length>2&&_chan[2].startsWith("$")){ //$NON-NLS-1$
 //                    ADLHelper.setChan(_parentWidgetModel, _chan);
 //                }
@@ -194,7 +194,7 @@ public class ADLDynamicAttribute extends WidgetPart{
 //                    if(!temp.endsWith(".SEVR")){
 //                        temp= temp.concat("[severity]");
 //                    }
-                    _adlColorDynamicAttribute.addInputChannel(new ParameterDescriptor(temp,Double.class)); //$NON-NLS-1$
+                    _adlColorDynamicAttribute.addInputChannel(new ParameterDescriptor(temp,"")); //$NON-NLS-1$
                 }
             }
         }

@@ -112,7 +112,8 @@ public class StripChart extends Widget {
                 }
                 _widget.setPropertyValue(StripChartModel.enablePlotPropertyId(index),true);
                 DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor();
-                ParameterDescriptor parameterDescriptor = new ParameterDescriptor(row[1], String[].class );
+//                FIXME: Parameter was String[].class
+                ParameterDescriptor parameterDescriptor = new ParameterDescriptor(row[1], "");
                 dynamicsDescriptor.addInputChannel(parameterDescriptor);
                 _widget.setPropertyValue(StripChartModel.valuePropertyId(index),index);
                 _widget.setDynamicsDescriptor(StripChartModel.valuePropertyId(index),dynamicsDescriptor);

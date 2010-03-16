@@ -51,37 +51,37 @@ public class Meter extends Widget {
 //      </property>
         _widget.setPropertyValue(MeterModel.PROP_MAXVAL, 10.0);
         DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor("directConnection"); //$NON-NLS-1$
-        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$[graphMax]",Object.class)); //$NON-NLS-1$
+        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$[graphMax]","")); //$NON-NLS-1$
         _widget.setDynamicsDescriptor(MeterModel.PROP_MAXVAL, dynamicsDescriptor);
         
         _widget.setPropertyValue(MeterModel.PROP_MINVAL, 0.0);
         dynamicsDescriptor = new DynamicsDescriptor("directConnection"); //$NON-NLS-1$
-        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$[graphMin]",Object.class)); //$NON-NLS-1$
+        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$[graphMin]","")); //$NON-NLS-1$
         _widget.setDynamicsDescriptor(MeterModel.PROP_MINVAL, dynamicsDescriptor);
 
         _widget.setPropertyValue(MeterModel.PROP_HIHIBOUND, 8.0);
         dynamicsDescriptor = new DynamicsDescriptor("directConnection"); //$NON-NLS-1$
-        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$[alarmMax]",Object.class)); //$NON-NLS-1$
+        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$[alarmMax]","")); //$NON-NLS-1$
         _widget.setDynamicsDescriptor(MeterModel.PROP_HIHIBOUND, dynamicsDescriptor);
 
         _widget.setPropertyValue(MeterModel.PROP_HIBOUND, 6.0);
         dynamicsDescriptor = new DynamicsDescriptor("directConnection"); //$NON-NLS-1$
-        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$[warningMax]",Object.class)); //$NON-NLS-1$
+        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$[warningMax]","")); //$NON-NLS-1$
         _widget.setDynamicsDescriptor(MeterModel.PROP_HIBOUND, dynamicsDescriptor);
 
         _widget.setPropertyValue(MeterModel.PROP_LOBOUND, 4.0);
         dynamicsDescriptor = new DynamicsDescriptor("directConnection"); //$NON-NLS-1$
-        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$[warningMin]",Object.class)); //$NON-NLS-1$
+        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$[warningMin]","")); //$NON-NLS-1$
         _widget.setDynamicsDescriptor(MeterModel.PROP_LOBOUND, dynamicsDescriptor);
 
         _widget.setPropertyValue(MeterModel.PROP_LOLOBOUND, 2.0);
         dynamicsDescriptor = new DynamicsDescriptor("directConnection"); //$NON-NLS-1$
-        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$[alarmMin]",Object.class)); //$NON-NLS-1$
+        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$[alarmMin]","")); //$NON-NLS-1$
         _widget.setDynamicsDescriptor(MeterModel.PROP_LOLOBOUND, dynamicsDescriptor);
 
         _widget.setPropertyValue(MeterModel.PROP_VALUE, 5.0);
         dynamicsDescriptor = new DynamicsDescriptor("directConnection"); //$NON-NLS-1$
-        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$",Object.class)); //$NON-NLS-1$
+        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$","")); //$NON-NLS-1$
         _widget.setDynamicsDescriptor(MeterModel.PROP_VALUE, dynamicsDescriptor);
     }
 

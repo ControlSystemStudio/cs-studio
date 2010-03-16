@@ -57,12 +57,12 @@ public class Valuator extends Widget {
 //        </property>
         _widget.setPropertyValue(SimpleSliderModel.PROP_MAX, 100);
         DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor("directConnection"); //$NON-NLS-1$
-        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$[graphMax]", Object.class)); //$NON-NLS-1$
+        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$[graphMax]", "")); //$NON-NLS-1$
         _widget.setDynamicsDescriptor(SimpleSliderModel.PROP_MAX, dynamicsDescriptor );
 
         _widget.setPropertyValue(SimpleSliderModel.PROP_MIN, 0);
         dynamicsDescriptor = new DynamicsDescriptor("directConnection"); //$NON-NLS-1$
-        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$[graphMin]", Object.class)); //$NON-NLS-1$
+        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$[graphMin]", "")); //$NON-NLS-1$
         _widget.setDynamicsDescriptor(SimpleSliderModel.PROP_MIN, dynamicsDescriptor );
 //        <property type="sds.double" id="increment" value="1.0" />
         _widget.setPropertyValue(SimpleSliderModel.PROP_INCREMENT, 1.0); //TODO: Prüfen ob man den Wert aus dem ADLfile bekommt
@@ -79,8 +79,8 @@ public class Valuator extends Widget {
 
         _widget.setPropertyValue(SimpleSliderModel.PROP_VALUE, 50);
         dynamicsDescriptor = new DynamicsDescriptor("directConnection"); //$NON-NLS-1$
-        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$"+postfix, Object.class)); //$NON-NLS-1$
-        dynamicsDescriptor.setOutputChannel(new ParameterDescriptor("$channel$"+postfix, Object.class)); //$NON-NLS-1$
+        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$"+postfix, "")); //$NON-NLS-1$
+        dynamicsDescriptor.setOutputChannel(new ParameterDescriptor("$channel$"+postfix, "")); //$NON-NLS-1$
         _widget.setDynamicsDescriptor(SimpleSliderModel.PROP_VALUE, dynamicsDescriptor );
         _widget.setLayer(Messages.ADLDisplayImporter_ADLActionLayerName);
     }

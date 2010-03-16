@@ -137,7 +137,7 @@ public class Label extends Widget {
                 postfix=getMonitor().getPostfix();
             }
             DynamicsDescriptor dd = new DynamicsDescriptor("directConnection"); //$NON-NLS-1$
-            dd.addInputChannel(new ParameterDescriptor("$channel$"+postfix+", string",Double.class)); //$NON-NLS-1$ //$NON-NLS-2$
+            dd.addInputChannel(new ParameterDescriptor("$channel$"+postfix+", string","")); //$NON-NLS-1$ //$NON-NLS-2$
             _widget.setDynamicsDescriptor(LabelModel.PROP_TEXTVALUE, dd);
             getObject().setX(getObject().getX()-2);
             getObject().setY(getObject().getY()-2);
