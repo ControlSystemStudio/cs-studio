@@ -33,20 +33,20 @@ public class LdapServiceImpl implements LdapService {
 		// Empty
 	}
 
-	private LdapResultList createLdapReader(final String readerName, final String filter, final Observer observer) {
+	private LdapResultList createLdapReader(final String searchRoot, final String filter, final Observer observer) {
 		
 		final LdapResultList list = new LdapResultList();
 		list.addObserver(observer);
 
-		final LDAPReader ldapr = new LDAPReader(readerName, filter, list);
+		final LDAPReader ldapr = new LDAPReader(searchRoot, filter, list);
 		ldapr.schedule();
 
 		return list;
 	}
 
 	@Override
-	public LdapResultList readLdapEntries(final String readerName, final String filter, final Observer observer) {
-		final LdapResultList result = createLdapReader(readerName, filter, observer);
+	public LdapResultList readLdapEntries(final String searchRoot, final String filter, final Observer observer) {
+		final LdapResultList result = createLdapReader(searchRoot, filter, observer);
 		return result;
 	}
 }

@@ -19,51 +19,31 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.utility.ldapUpdater;
 
-import org.csstudio.platform.AbstractCssPlugin;
-import org.osgi.framework.BundleContext;
+package org.csstudio.utility.ldapUpdater.action;
 
-/**
- * The activator class controls the plug-in life cycle
- */
-public class Activator extends AbstractCssPlugin {
-    
-    // The plug-in ID
-    public static final String PLUGIN_ID = "org.csstudio.utility.ldapUpdater";
-    
-    // The shared instance
-    private static Activator plugin;
-    
-    /**
-     * Returns the shared instance
-     *
-     * @return the shared instance
-     */
-    public static Activator getDefault() {
-        return plugin;
-    }
-    
-    /**
-     * Constructor.
-     */
-    public Activator() {
-        plugin = this;
-    }
+import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.management.CommandParameters;
+import org.csstudio.platform.management.CommandResult;
+import org.csstudio.platform.management.IManagementCommand;
+import org.csstudio.utility.ldapUpdater.LdapUpdater;
+
+public class UpdateLdapAction implements IManagementCommand {
     
     @Override
-    protected void doStart(BundleContext context) throws Exception {
-        // Empty
+    public CommandResult execute(CommandParameters parameters) {
+        LdapUpdater ldapUpdater = LdapUpdater.getInstance();
+        try {
+            if (!ldapUpdater.isBusy()){
+                ldapUpdater.updateLdapFromIOCFiles();
+            }else{
+                return CommandResult.createMessageResult("ldapUpdater is busy for max. 150 s (was probably started by timer). Try later!");
+            }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            CentralLogger.getInstance().error (this, "\"" + e.getCause() + "\"" + "-" + "Exception while running ldapUpdater" );
+        }
+        return CommandResult.createSuccessResult();
     }
-    
-    @Override
-    protected void doStop(BundleContext context) throws Exception {
-        plugin = null;
-    }
-    
-    @Override
-    public String getPluginId() {
-        return PLUGIN_ID;
-    }
-    
 }

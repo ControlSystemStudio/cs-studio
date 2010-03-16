@@ -26,6 +26,6 @@ import java.util.Observer;
 
 public interface LdapService {
 
-	LdapResultList readLdapEntries(String ldapReaderName, String filter, Observer observer);
+	LdapResultList readLdapEntries(String searchRoot, String filter, Observer observer);
 	
 }

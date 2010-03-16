@@ -29,10 +29,16 @@
  */
 package org.csstudio.utility.ldapUpdater;
 
+import static org.csstudio.utility.ldap.LdapConstants.ECON_FIELD_NAME;
+import static org.csstudio.utility.ldap.LdapConstants.EPICS_CTRL_FIELD_VALUE;
+import static org.csstudio.utility.ldap.LdapConstants.FIELD_ASSIGNMENT;
+import static org.csstudio.utility.ldap.LdapConstants.LDAP_OU_FIELD_NAME;
+import static org.csstudio.utility.ldap.LdapConstants.any;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -52,141 +58,188 @@ import org.csstudio.utility.ldapUpdater.model.LDAPContentModel;
  * @since 17.04.2008
  */
 public class LdapUpdater {
-
-	public static final String DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
-
-	private static LdapUpdater INSTANCE; 
-	
-	private final Logger LOGGER = CentralLogger.getInstance().getLogger(this);
-
-
-	private volatile boolean _busy = false;
-	
-	public boolean isBusy() {
-		return _busy;
-	}
-	public void setBusy(boolean busy) {
-		_busy = busy;
-	}
-
-	/**
-	 * Don't instantiate with constructor.
-	 */
-	private LdapUpdater()
-	{
-		// empty
-	}
-	
-	/**
-	 * Factory method for creating a singleton instance.
-	 * @return the singleton instance of this class
-	 */
-	public static LdapUpdater getInstance() {
-		synchronized (LdapUpdater.class) {
-			if ( INSTANCE == null) {
-				INSTANCE = new LdapUpdater();
-			}
-		}
-		return INSTANCE;
-	}
-
-	
-	public final void updateLdapFromIOCFiles() throws Exception {
-
-		if ( _busy ) {
-			return;
-		}
-
-		_busy = true;
-
-		long endTime = 0L;
-		long deltaTime = 0L; 
-		long startTime = System.currentTimeMillis();
-		
-		String now = convertMillisToDateTimeString(startTime, DATETIME_FORMAT);
-		
-		StringBuilder strBuilder = new StringBuilder();
-		strBuilder.append("\n-------------------------------------------------------------------\n" )
-		          .append("start at ").append(now).append("  ( ")
-		          .append(startTime).append(" )");
-		LOGGER.info(strBuilder.toString() );
-
-		LDAPContentModel ldapContentModel = new LDAPContentModel();
-		LdapService service = new LdapServiceImpl();
-
-		HistoryFileAccess histFileReader = new HistoryFileAccess();
-		HistoryFileContentModel historyFileModel = histFileReader.readFile(); /* liest das history file */
-
-		try {
-		
-			ReadLdapObserver ldapDataObserver = new ReadLdapObserver(ldapContentModel);
-			ldapDataObserver.setResult(service.readLdapEntries("ou=EpicsControls", "econ=*", ldapDataObserver));
-			while(!ldapDataObserver.isReady()){ Thread.sleep(100);} // observer finished update of the model
-			LOGGER.info("LDAP Read Done");
-
-			validateHistoryFileEntriesVsLDAPEntries(ldapContentModel, historyFileModel);
-			
-			List<IOC> iocList= IOCFilesDirTree.findIOCFiles(1); /* neu, statt der von epxLDAPgen.sh erzeugten Liste */
-
-			UpdateComparator updComp = new UpdateComparator(); 
-			updComp.updateLDAPFromIOCList(service, ldapDataObserver, ldapContentModel, iocList, historyFileModel);
-
-			endTime = System.currentTimeMillis();
-			deltaTime = endTime - startTime;
-			now = convertMillisToDateTimeString(endTime, DATETIME_FORMAT);
-			
-			StringBuilder builder = new StringBuilder();
-			builder.append("end at").append(now).append("  (").append(endTime).append(")\n")
-			       .append("time used : ").append(deltaTime/1000.).append(" s\n")
-			       .append("Ende.\n")
-			       .append("-------------------------------------------------------------------\n");
-			LOGGER.info( builder.toString() );
-			
-			_busy = false;
-
-		} catch (Exception e) {
-			// TODO (kvalett): handle exception
-			e.printStackTrace();
-		}
-
-	}
-
-
-	private void validateHistoryFileEntriesVsLDAPEntries(
-			final LDAPContentModel ldapContentModel,
-			final HistoryFileContentModel historyFileModel) {
-		
-		
-		boolean inconsistency = false;
-		
-		Set<String> iocsFromLDAP = ldapContentModel.getIOCNames();
-		Set<String> iocsFromHistFile = historyFileModel.getIOCNames();
-		
-		iocsFromLDAP.removeAll(iocsFromHistFile);
-		for (String ioc : iocsFromLDAP) {
-			LOGGER.warn("IOC " + ioc + " from LDAP is not present in history file!");
-			inconsistency = true;
-		}
-		
-		iocsFromLDAP = ldapContentModel.getIOCNames();
-		iocsFromHistFile.removeAll(iocsFromLDAP);
-		for (String ioc : iocsFromHistFile) {
-			LOGGER.warn("IOC " + ioc + " found in history file is not present in LDAP!");
-			inconsistency = true;
-		}
-		
-		if (inconsistency) {
-			//throw new IllegalStateException("Inconsistency of LDAP and history file " + HistoryFileAccess.HISTORY_DAT_FILE);
-		}
-	}
-
-	public static String convertMillisToDateTimeString(long millis, String datetimeFormat) {
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTimeInMillis(millis);
-		DateFormat formatter = new SimpleDateFormat(datetimeFormat);
-		String now = formatter.format(calendar.getTime());
-		return now;
-	}
+    
+    public static final String DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    
+    private static final String UPDATE_ACTION_NAME = "LDAP Update Action.";
+    private static final String TIDYUP_ACTION_NAME = "LDAP Tidy Up Action.";
+    
+    private static LdapUpdater INSTANCE;
+    
+    public static String convertMillisToDateTimeString(final long millis, final String datetimeFormat) {
+        final Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(millis);
+        final DateFormat formatter = new SimpleDateFormat(datetimeFormat);
+        final String now = formatter.format(calendar.getTime());
+        return now;
+    }
+    
+    private final Logger LOGGER = CentralLogger.getInstance().getLogger(this);
+    
+    private static final LdapService _service = new LdapServiceImpl();
+    
+    
+    /**
+     * Factory method for creating a singleton instance.
+     * @return the singleton instance of this class
+     */
+    public static LdapUpdater getInstance() {
+        synchronized (LdapUpdater.class) {
+            if ( INSTANCE == null) {
+                INSTANCE = new LdapUpdater();
+            }
+        }
+        return INSTANCE;
+    }
+    
+    private volatile boolean _busy = false;
+    
+    /**
+     * Don't instantiate with constructor.
+     */
+    private LdapUpdater()
+    {
+        // empty
+    }
+    
+    
+    private void fillModelFromLdap(final ReadLdapObserver ldapDataObserver, final String searchRoot, final String filter)
+    throws InterruptedException {
+        ldapDataObserver.setResult(_service.readLdapEntries(searchRoot, filter, ldapDataObserver));
+        while(!ldapDataObserver.isReady()){ Thread.sleep(100);} // observer finished update of the model
+        LOGGER.info("LDAP Read Done");
+    }
+    
+    public boolean isBusy() {
+        return _busy;
+    }
+    
+    public void setBusy(final boolean busy) {
+        _busy = busy;
+    }
+    
+    private void logFooter(final String actionName, final long startTime) {
+        final long endTime = System.currentTimeMillis();
+        final long deltaTime = endTime - startTime;
+        final String now = convertMillisToDateTimeString(endTime, DATETIME_FORMAT);
+        
+        final StringBuilder builder = new StringBuilder();
+        builder.append(actionName).append(" ends at").append(now).append("  (").append(endTime).append(")\n")
+        .append("time used : ").append(deltaTime/1000.).append("s\n")
+        .append("End.\n")
+        .append("-------------------------------------------------------------------\n");
+        LOGGER.info( builder.toString() );
+    }
+    
+    private long logHeader(final String action) {
+        final long startTime = System.currentTimeMillis();
+        final String now = convertMillisToDateTimeString(startTime, DATETIME_FORMAT);
+        
+        final StringBuilder strBuilder = new StringBuilder();
+        strBuilder.append("\n-------------------------------------------------------------------\n" )
+        .append(action)
+        .append(" start at ").append(now).append("  ( ")
+        .append(startTime).append(" )");
+        LOGGER.info(strBuilder.toString() );
+        return startTime;
+    }
+    
+    
+    /**
+     * TODO (bknerr) : Docu
+     */
+    public void tidyUpLdapFromIOCFiles() {
+        if ( _busy ) {
+            return;
+        }
+        _busy = true;
+        
+        final long startTime = logHeader(TIDYUP_ACTION_NAME);
+        
+        final LDAPContentModel ldapContentModel = new LDAPContentModel();
+        final ReadLdapObserver ldapDataObserver = new ReadLdapObserver(ldapContentModel);
+        try {
+            fillModelFromLdap(ldapDataObserver, LDAP_OU_FIELD_NAME + FIELD_ASSIGNMENT + EPICS_CTRL_FIELD_VALUE, any(ECON_FIELD_NAME));
+            final Map<String, IOC> iocMapFromFS = IOCFilesDirTree.findIOCFiles(1);
+            
+            final LdapAccess updComp = new LdapAccess();
+            updComp.tidyUpLDAPFromIOCList(_service, ldapDataObserver, ldapContentModel, iocMapFromFS);
+            
+        } catch (final InterruptedException e) {
+            // TODO (bknerr) : Auto-generated catch block
+            e.printStackTrace();
+        } finally {
+            _busy = false;
+        }
+        logFooter(TIDYUP_ACTION_NAME, startTime);
+    }
+    
+    /**
+     * TODO (bknerr) : Docu
+     */
+    public final void updateLdapFromIOCFiles() throws Exception {
+        
+        if ( _busy ) {
+            return;
+        }
+        _busy = true;
+        
+        final long startTime = logHeader(UPDATE_ACTION_NAME);
+        
+        final LDAPContentModel ldapContentModel = new LDAPContentModel();
+        
+        final HistoryFileAccess histFileReader = new HistoryFileAccess();
+        final HistoryFileContentModel historyFileModel = histFileReader.readFile(); /* liest das history file */
+        
+        final ReadLdapObserver ldapDataObserver = new ReadLdapObserver(ldapContentModel);
+        
+        try {
+            fillModelFromLdap(ldapDataObserver, LDAP_OU_FIELD_NAME + FIELD_ASSIGNMENT + EPICS_CTRL_FIELD_VALUE, any(ECON_FIELD_NAME));
+            
+            validateHistoryFileEntriesVsLDAPEntries(ldapContentModel, historyFileModel);
+            
+            final Map<String, IOC> iocList = IOCFilesDirTree.findIOCFiles(1);
+            
+            final LdapAccess access = new LdapAccess();
+            access.updateLDAPFromIOCList(_service, ldapDataObserver, ldapContentModel, iocList, historyFileModel);
+            
+        } catch (final InterruptedException e) {
+            // TODO (kvalett): handle exception
+            e.printStackTrace();
+        } finally {
+            _busy = false;
+        }
+        logFooter(UPDATE_ACTION_NAME, startTime);
+    }
+    
+    
+    private void validateHistoryFileEntriesVsLDAPEntries(final LDAPContentModel ldapContentModel,
+                                                         final HistoryFileContentModel historyFileModel) {
+        
+        boolean inconsistency = false;
+        
+        Set<String> iocsFromLDAP = ldapContentModel.getIOCNames();
+        final Set<String> iocsFromHistFile = historyFileModel.getIOCNames();
+        
+        iocsFromLDAP.removeAll(iocsFromHistFile);
+        for (final String ioc : iocsFromLDAP) {
+            LOGGER.warn("IOC " + ioc + " from LDAP is not present in history file!");
+            inconsistency = true;
+        }
+        
+        iocsFromLDAP = ldapContentModel.getIOCNames();
+        iocsFromHistFile.removeAll(iocsFromLDAP);
+        for (final String ioc : iocsFromHistFile) {
+            LOGGER.warn("IOC " + ioc + " found in history file is not present in LDAP!");
+            inconsistency = true;
+        }
+        
+        if (inconsistency) {
+            // TODO (bknerr) : what to do with inconsistencies?
+            //throw new IllegalStateException("Inconsistency of LDAP and history file " + HistoryFileAccess.HISTORY_DAT_FILE);
+        }
+    }
+    
 }
 
 

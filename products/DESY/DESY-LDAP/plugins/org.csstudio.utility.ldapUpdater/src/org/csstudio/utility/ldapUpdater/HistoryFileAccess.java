@@ -30,7 +30,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Formatter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -39,99 +38,94 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldapUpdater.model.HistoryFileContentModel;
 
 public class HistoryFileAccess {
-	
-	public static final String HISTORY_DAT_FILE = "history.dat";
-
-	private final Logger LOGGER = CentralLogger.getInstance().getLogger(this);
-
-	/**
-	 * Constructor.
-	 */
-	public HistoryFileAccess () {
-		// Empty
-	}
-	
-	public HistoryFileContentModel readFile() {
+    
+    public static final String HISTORY_DAT_FILE = "history.dat";
+    
+    private final Logger LOGGER = CentralLogger.getInstance().getLogger(this);
+    
+    /**
+     * Constructor.
+     */
+    public HistoryFileAccess () {
+        // Empty
+    }
+    
+    public HistoryFileContentModel readFile() {
         
         HistoryFileContentModel model = new HistoryFileContentModel();
         BufferedReader fr;
         
         try {
-			String path = getValueFromPreferences(LDAP_HIST_PATH);
-			fr = new BufferedReader(new FileReader(path + HISTORY_DAT_FILE ));
-
-//			String pathFile=LdapUpdaterPreferenceConstants.LDAP_HIST_PATH + HISTORY_DAT_FILE ;
-			String line;
-			while ((line = fr.readLine()) != null) {
-            if (line.length() > 0) {
-//              CentralLogger.getInstance().info(this,line);
-            	Pattern comment = Pattern.compile("\\s*#.*");
-                Matcher commentMatcher = comment.matcher(line);
-                if (commentMatcher.matches()) {
-                	continue;
+            final String path = getValueFromPreferences(LDAP_HIST_PATH);
+            fr = new BufferedReader(new FileReader(path + HISTORY_DAT_FILE ));
+            
+            String line;
+            while ((line = fr.readLine()) != null) {
+                if (line.length() > 0) {
+                    final Pattern comment = Pattern.compile("\\s*#.*");
+                    final Matcher commentMatcher = comment.matcher(line);
+                    if (commentMatcher.matches()) {
+                        continue;
+                    }
+                    final Pattern p = Pattern.compile("(\\S+)\\s+(\\S+)\\s+(\\S+).*");
+                    // matches any rows with at least 3 columns separated by spaces
+                    final Matcher m = p.matcher(line);
+                    if(!m.matches()) {
+                        final String emsg = "Error during file parsing in " + HISTORY_DAT_FILE + ", row: " + "\"" + line + "\"" ;
+                        LOGGER.error(emsg);
+                        throw new RuntimeException(emsg);
+                    }
+                    model = storeRecentRecordEntry(m.group(1), Long.parseLong(m.group(3)), model);
                 }
-                Pattern p = Pattern.compile("(\\S+)\\s+(\\S+)\\s+(\\S+).*"); // old format : 3 parameters on histfile line
-                Matcher m = p.matcher(line);
-                if(!m.matches()) {
-//                    p = Pattern.compile("(\\S+)\\s+(\\S+)\\s+(\\S+)\\s+(\\S+)\\s+(\\S+)"); // new format : 5 parameters on histfile line
-//                    m = p.matcher(line);                	
-//                    if(!m.matches()) {
-                    	String emsg = "Error during file parsing in " + HISTORY_DAT_FILE + ", row: " + "\"" + line + "\"" ;
-                    	LOGGER.error(emsg);
-                    	throw new RuntimeException(emsg);
-//                    }
-                }
-                model = storeRecentRecordEntry(m.group(1), Long.parseLong(m.group(3)), model);
             }
+        } catch (final FileNotFoundException e) {
+            LOGGER.error ("Error : File not Found(r) : " + LDAP_HIST_PATH.getDescription() + HISTORY_DAT_FILE );
+        } catch (final IOException e) {
+            LOGGER.error ("I/O-Exception while handling " + LDAP_HIST_PATH.getDescription() + HISTORY_DAT_FILE );
         }
-		} catch (FileNotFoundException e) {
-			LOGGER.error ("Error : File not Found(r) : " + LDAP_HIST_PATH.getDescription() + HISTORY_DAT_FILE );
-		} catch (IOException e) {
-			LOGGER.error ("I/O-Exception while handling " + LDAP_HIST_PATH.getDescription() + HISTORY_DAT_FILE );
-		}
-
+        
         LOGGER.info("IOC names in history-file : " + model.getEntrySet().size());
-
+        
         return model;
         
-	}
-	
-	private HistoryFileContentModel storeRecentRecordEntry(final String record, final Long lastUpdated, HistoryFileContentModel model) {
-        Long storedLastUpdated = model.getTimeForRecord(record);
-        if (storedLastUpdated == null || storedLastUpdated < lastUpdated) {
-        	model.setEntry(record, lastUpdated);
+    }
+    
+    private HistoryFileContentModel storeRecentRecordEntry(final String record, final Long lastUpdated, final HistoryFileContentModel model) {
+        final Long storedLastUpdated = model.getTimeForRecord(record);
+        if ((storedLastUpdated == null) || (storedLastUpdated < lastUpdated)) {
+            model.setEntry(record, lastUpdated);
         }
         return model;
-	}
-	
-	/**
-	 * append a line to the history file.
-	 * 
-	 * @param iocName the name of ioc to be inserted in the history file
-	 * @param numOfRecordsWritten 
-	 * @param numOfRecords 
-	 * @param  
-	 * @throws IOException when the history file could not be accessed
-	 */
-	public static void appendLineToHistfile(final String iocName, int numOfRecordsWritten, int numOfRecords) throws IOException {
-
-			FileWriter fw = 
-				new FileWriter(getValueFromPreferences(LDAP_HIST_PATH) + HistoryFileAccess.HISTORY_DAT_FILE, 
-						       true);	
-			
-			long now = System.currentTimeMillis();			
-			String dateTime = LdapUpdater.convertMillisToDateTimeString(now, LdapUpdater.DATETIME_FORMAT);
-            
-			String line = String.format("%1$-20sxxx%2$15s   %3$s   %4$s%5$s",
-					iocName,
-					String.valueOf(now / 1000), 
-					dateTime, 
-					String.valueOf(numOfRecordsWritten + "/" + numOfRecords),
-					System.getProperty("line.separator" ));
-
-			fw.append ( line ); 
-			fw.flush();
-			fw.close();
-	}
-	
+    }
+    
+    /**
+     * append a line to the history file.
+     * 
+     * @param iocName the name of ioc to be inserted in the history file
+     * @param numOfRecordsWritten
+     * @param numOfRecords
+     * @param
+     * @throws IOException when the history file could not be accessed
+     */
+    public static void appendLineToHistfile(final String iocName, final int numOfRecordsWritten, final int numOfRecords) throws IOException {
+        
+        final String histFilePath = getValueFromPreferences(LDAP_HIST_PATH) + HistoryFileAccess.HISTORY_DAT_FILE;
+        final FileWriter fw =
+            new FileWriter(histFilePath, true);
+        
+        final long now = System.currentTimeMillis();
+        final String dateTime = LdapUpdater.convertMillisToDateTimeString(now, LdapUpdater.DATETIME_FORMAT);
+        
+        final String line = String.format("%1$-20sxxx%2$15s   %3$s   %4$s%5$s",
+                                          iocName,
+                                          String.valueOf(now / 1000),
+                                          dateTime,
+                                          String.valueOf(numOfRecordsWritten + "/" + numOfRecords),
+                                          System.getProperty("line.separator" ));
+        
+        fw.append ( line );
+        fw.flush();
+        fw.close();
+    }
+    
 }

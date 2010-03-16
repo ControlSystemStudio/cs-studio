@@ -253,7 +253,7 @@ public class CSSView extends Composite implements Observer {
 		boolean first = true;
 		for (final ControlSystemItem row : list) { 
 			
-			// FIXME (bknerr) : just insert rwo (CSI) in map - no difference - instanceof checks still yield PV!!!
+			// FIXME (bknerr) : just insert row (CSI) in map - instanceof checks would still yield PV!!!
 			if (row instanceof ProcessVariable) {
 				final ProcessVariable pv = (ProcessVariable) row;
 				itemList.put(pv.getName(), pv);
@@ -261,6 +261,7 @@ public class CSSView extends Composite implements Observer {
 				itemList.put(row.getName(), row);
 			}
 			
+			// FIXME (bknerr) : independent of loop invariants! move out
 			if (first) {
 				first = false;
 				group.setText(headlines[level]);

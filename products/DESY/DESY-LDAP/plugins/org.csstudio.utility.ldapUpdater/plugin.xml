@@ -35,16 +35,20 @@
    <extension
          point="org.csstudio.platform.managementCommands">
       <command
-            class="org.csstudio.utility.ldapUpdater.ShutdownLdapUpdaterAction"
-            id="org.csstudio.utility.ldapUpdater.ShutdownLdapUpdaterAction"
-            label="Stop Ldap Updater">
+            class="org.csstudio.utility.ldapUpdater.action.ShutdownLdapUpdaterAction"
+            id="org.csstudio.utility.ldapUpdater.action.ShutdownLdapUpdaterAction"
+            label="Stop LDAP Updater Service">
       </command>
       <command
-            class="org.csstudio.utility.ldapUpdater.UpdateLdapAction"
-            id="org.csstudio.utility.ldapUpdater.UpdateLdapAction"
-            label="Start Ldap Update">
+            class="org.csstudio.utility.ldapUpdater.action.UpdateLdapAction"
+            id="org.csstudio.utility.ldapUpdater.action.UpdateLdapAction"
+            label="Start LDAP Update">
       </command>
-      
+      <!--command
+            class="org.csstudio.utility.ldapUpdater.action.TidyUpLdapAction"
+            id="org.csstudio.utility.ldapUpdater.action.TidyUpLdapAction"
+            label="Tidy up LDAP">
+      </command-->      
     </extension>
 
 </plugin>

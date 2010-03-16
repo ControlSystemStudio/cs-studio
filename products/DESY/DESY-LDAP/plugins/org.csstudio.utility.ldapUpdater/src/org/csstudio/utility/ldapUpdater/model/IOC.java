@@ -23,7 +23,9 @@ package org.csstudio.utility.ldapUpdater.model;
 
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -34,19 +36,19 @@ import java.util.Map;
  * @since 30.04.2008
  */
 public class IOC {
-	
-	public static final String NO_GROUP = "<no group>";
-	
+    
+    public static final String NO_GROUP = "<no group>";
+    
     /**
      * The name of this IOC.
      */
-    private String _name;
+    private final String _name;
     
     /**
      * The group of this IOC.
      */
     private String _group = NO_GROUP;
-
+    
     /**
      * The physical name of this IOC.
      */
@@ -55,22 +57,30 @@ public class IOC {
     /**
      * Set of records in this IOC.
      */
-    private Map<String, Record> _records = new HashMap<String, Record>();
-
-//    /**
-//     * room for record names of the current ioc read from file
-//     */    
-//    private List<String> _iocRecordNamesFromFile = Collections.emptyList();
-//
-//    /**
-//     * room for record names of the current ioc read from ldap
-//     */    
-//    private List<String> iocRecordNamesFromLDAP = new ArrayList<String>();
+    private final Map<String, Record> _records = new HashMap<String, Record>();
+    
+    //    /**
+    //     * room for record names of the current ioc read from file
+    //     */
+    //    private List<String> _iocRecordNamesFromFile = Collections.emptyList();
+    //
+    //    /**
+    //     * room for record names of the current ioc read from ldap
+    //     */
+    //    private List<String> iocRecordNamesFromLDAP = new ArrayList<String>();
     
     /**
      * The date time of last change.
      */
-    private GregorianCalendar _dateTime;
+    private final GregorianCalendar _dateTime;
+    
+    public IOC(final String name, final GregorianCalendar dateTime) {
+        this(name, "<no group>", "<no physicalname>", dateTime);
+    }
+    
+    public IOC(final String econ, final String efan) {
+        this(econ, efan, "<no physicalname>", null);
+    }
     
     /**
      * Creates a new IOC information object.
@@ -78,29 +88,23 @@ public class IOC {
      * @param name the name of the IOC.
      * @param group the group of the IOC.
      * @param physicalName the physical name of the IOC.
-     * @param dateTime 
+     * @param dateTime
      */
-    public IOC(final String name, final String group, final String physicalName, GregorianCalendar dateTime) {
+    public IOC(final String name, final String group, final String physicalName, final GregorianCalendar dateTime) {
         _name = name;
         _group = group;
         _physicalName = physicalName;
         _dateTime = dateTime;
     }
     
-    public IOC(String name, GregorianCalendar dateTime) {
-    	this(name, "<no group>", "<no physicalname>", dateTime);
-	}
-    
-    public IOC(String econ, String efan) {
-    	this(econ, efan, "<no physicalname>", null);
+    public void addRecord(final String eren) {
+        if (!_records.containsKey(eren)) {
+            _records.put(eren, new Record(eren));
+        }
     }
-
-	/**
-     * Returns the name of this IOC.
-     * @return the name of this IOC.
-     */
-    public final String getName() {
-        return _name;
+    
+    public GregorianCalendar getDateTime() {
+        return _dateTime;
     }
     
     /**
@@ -110,19 +114,40 @@ public class IOC {
     public final String getGroup() {
         return _group;
     }
-   
-    public void setGroup(String group) {
-		_group = group;
-	}
-
-	/**
+    
+    /**
+     * Returns the name of this IOC.
+     * @return the name of this IOC.
+     */
+    public final String getName() {
+        return _name;
+    }
+    
+    /**
      * Returns the physical name of this IOC.
      * @return the physical name of this IOC.
      */
     public final String getPhysicalName() {
         return _physicalName;
     }
-
+    
+    public Record getRecord(final String eren) {
+        return _records.get(eren);
+    }
+    
+    /**
+     * Returns a copy of the set of records for this IOC.
+     * 
+     * @return a copy of the records
+     */
+    public Set<Record> getRecords() {
+        return new HashSet<Record>(_records.values());
+    }
+    
+    public void setGroup(final String group) {
+        _group = group;
+    }
+    
     /**
      * {@inheritDoc}
      */
@@ -130,51 +155,4 @@ public class IOC {
     public final String toString() {
         return "IOC(name=" + _name + ", group=" + _group + ", phys=" + _physicalName + ")";
     }
-
-    public GregorianCalendar getDateTime() {
-    	return _dateTime;
-    }
-//
-//    public boolean isMustAdd2Ldap() {
-//        return _mustAdd2Ldap;
-//    }
-//
-//    public void setMustAdd2Ldap(boolean add2Ldap) {
-//        _mustAdd2Ldap = add2Ldap;
-//    }
-//    
-//
-//	public List<String> getIocRecordNames() {
-//		return _iocRecordNamesFromFile;
-//	}
-
-//	public void setIocRecordNames(List<String> iocRecordNames) {
-//		_iocRecordNamesFromFile = iocRecordNames;
-//	}
-//
-//	public List<String> getIocRecordNamesFromLDAP() {
-//		return iocRecordNamesFromLDAP;
-//	}
-//
-//	public void setIocRecordNamesFromLDAP(List<String> iocRecordNamesFromLDAP) {
-//		this.iocRecordNamesFromLDAP = iocRecordNamesFromLDAP;
-//	}
-//
-//	public boolean is_mustWriteIOCToHistory() {
-//		return _mustWriteIOCToHistory;
-//	}
-//
-//	public void set_mustWriteIOCToHistory(boolean writeIOCToHistory) {
-//		_mustWriteIOCToHistory = writeIOCToHistory;
-//	}
-
-	public Record getRecord(String eren) {
-		return _records.get(eren);
-	}
-
-	public void addRecord(String eren) {
-		if (!_records.containsKey(eren)) {
-			_records.put(eren, new Record(eren));
-		}
-	}
 }

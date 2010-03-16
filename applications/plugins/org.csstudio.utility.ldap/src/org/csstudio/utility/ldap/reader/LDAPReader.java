@@ -50,49 +50,6 @@ public class LDAPReader extends Job {
 	 * Used the connection settings from org.csstudio.utility.ldap.ui
 	 * (used with UI)
 	 *
-	 * @param nameUFilter<br> 0: name<br>1: = filter<br>
-	 * @param resultList
-	 */
-	public LDAPReader(String[] nameUFilter, LdapResultList resultList){
-		super("LDAPReader");
-		setBasics(nameUFilter[0], nameUFilter[1], resultList);
-	}
-
-
-	/**
-	 * Used the connection settings from org.csstudio.utility.ldap.ui
-	 * (used with UI)
-	 *
-	 * @param nameUFilter<br> 0: name<br>1: = filter<br>
-	 * @param searchScope set the Scope {@link SearchControls}
-	 * @param ergebnisListe the list for the result {@link LdapResultList}
-	 */
-
-	public LDAPReader(String[] nameUFilter, int searchScope, LdapResultList resultList){
-
-		super("LDAPReader");
-
-		setBasics(nameUFilter[0], nameUFilter[1], resultList);
-		setDefaultScope(searchScope);
-	}
-
-	/**
-	 * Used the connection settings from org.csstudio.utility.ldap.ui
-	 * (used with UI)
-	 *
-	 * @param name
-	 * @param filter
-	 * @param ldapResultList the list for the result {@link LdapResultList}
-	 */
-	public LDAPReader(String name, String filter, LdapResultList ldapResultList){
-		super("LDAPReader");
-		setBasics(name, filter, ldapResultList);
-	}
-
-	/**
-	 * Used the connection settings from org.csstudio.utility.ldap.ui
-	 * (used with UI)
-	 *
 	 * @param name
 	 * @param filter
 	 * @param searchScope
@@ -103,6 +60,7 @@ public class LDAPReader extends Job {
 		setBasics(name, filter, resultList);
 		setDefaultScope(searchScope);
 	}
+
 
 	/**
 	 * Need connection settings. (For Headless use)
@@ -119,24 +77,7 @@ public class LDAPReader extends Job {
 		setBasics(name, filter, resultList);
 		setDefaultScope(searchScope);
 	}
-	/**
-	 * Need connection settings. (For Headless use)
-	 *
-	 * @param name
-	 * @param filter
-	 * @param resultList
-	 * @param env value for<br>
-	 * 	0: Context.PROVIDER_URL<br>
-	 *  1: Context.SECURITY_PROTOCOL<br>
-	 *  2: Context.SECURITY_AUTHENTICATION<br>
-	 *  3: Context.SECURITY_PRINCIPAL<br>
-	 *  4: Context.SECURITY_CREDENTIALS<br>
-	 *
-	 */
-	public LDAPReader(String name, String filter,  LdapResultList resultList, String[] env){
-		super("LDAPReader");
-		setBasics(name, filter, resultList);
-	}
+
 	/**
 	 *
 	 * @param name
@@ -158,24 +99,63 @@ public class LDAPReader extends Job {
 	}
 
 	/**
-	 * @param searchRoot
+	 * Used the connection settings from org.csstudio.utility.ldap.ui
+	 * (used with UI)
+	 *
+	 * @param name
 	 * @param filter
-	 * @param resultList
-	 * @param ctx 
+	 * @param ldapResultList the list for the result {@link LdapResultList}
 	 */
-	private void setBasics(String searchRoot, String filter, LdapResultList resultList) {
-		_resultList = resultList;
-		_searchRoot = searchRoot;
-		_filter = filter;
-    }
+	public LDAPReader(String name, String filter, LdapResultList ldapResultList){
+		super("LDAPReader");
+		setBasics(name, filter, ldapResultList);
+	}
 
 	/**
-     * Set the Scope. @link SearchControls.
-     * @param defaultScope set the given Scope.
-     */
-    private void setDefaultScope(int defaultScope) {
-        this._defaultScope = defaultScope;
-    }
+	 * Need connection settings. (For Headless use)
+	 *
+	 * @param name
+	 * @param filter
+	 * @param resultList
+	 * @param env value for<br>
+	 * 	0: Context.PROVIDER_URL<br>
+	 *  1: Context.SECURITY_PROTOCOL<br>
+	 *  2: Context.SECURITY_AUTHENTICATION<br>
+	 *  3: Context.SECURITY_PRINCIPAL<br>
+	 *  4: Context.SECURITY_CREDENTIALS<br>
+	 *
+	 */
+	public LDAPReader(String name, String filter,  LdapResultList resultList, String[] env){
+		super("LDAPReader");
+		setBasics(name, filter, resultList);
+	}
+	/**
+	 * Used the connection settings from org.csstudio.utility.ldap.ui
+	 * (used with UI)
+	 *
+	 * @param nameUFilter<br> 0: name<br>1: = filter<br>
+	 * @param searchScope set the Scope {@link SearchControls}
+	 * @param ergebnisListe the list for the result {@link LdapResultList}
+	 */
+
+	public LDAPReader(String[] nameUFilter, int searchScope, LdapResultList resultList){
+
+		super("LDAPReader");
+
+		setBasics(nameUFilter[0], nameUFilter[1], resultList);
+		setDefaultScope(searchScope);
+	}
+	/**
+	 * Used the connection settings from org.csstudio.utility.ldap.ui
+	 * (used with UI)
+	 *
+	 * @param nameUFilter<br> 0: name<br>1: = filter<br>
+	 * @param resultList
+	 */
+	public LDAPReader(String[] nameUFilter, LdapResultList resultList){
+		super("LDAPReader");
+		setBasics(nameUFilter[0], nameUFilter[1], resultList);
+	}
 
 	@Override
 	protected IStatus run(IProgressMonitor monitor ) {
@@ -201,7 +181,7 @@ public class LDAPReader extends Job {
 				} catch (NamingException e) {
 				    ctx = Engine.getInstance().reconnectDirContext();
                     CentralLogger.getInstance().info(this,"LDAP Fehler");
-                    CentralLogger.getInstance().info(this,e);
+                    CentralLogger.getInstance().info(this, e);
 				}
 				answer.close();
 				_resultList.setResultList(_list);
@@ -223,4 +203,24 @@ public class LDAPReader extends Job {
 		_resultList.setResultList(_list);
 		return Status.CANCEL_STATUS;
 	}
+
+	/**
+	 * @param searchRoot
+	 * @param filter
+	 * @param resultList
+	 * @param ctx 
+	 */
+	private void setBasics(String searchRoot, String filter, LdapResultList resultList) {
+		_resultList = resultList;
+		_searchRoot = searchRoot;
+		_filter = filter;
+    }
+
+	/**
+     * Set the Scope. @link SearchControls.
+     * @param defaultScope set the given Scope.
+     */
+    private void setDefaultScope(int defaultScope) {
+        this._defaultScope = defaultScope;
+    }
 }

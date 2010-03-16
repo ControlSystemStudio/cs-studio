@@ -23,7 +23,6 @@ package org.csstudio.utility.ldap.reader;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observer;
 
 import org.csstudio.utility.ldap.Activator;
 import org.csstudio.utility.ldap.Messages;
@@ -33,91 +32,93 @@ import org.csstudio.utility.namespace.utility.ProcessVariable;
 
 
 public class LdapResultList extends NameSpaceResultList {
-
-	private List<String> _result = new ArrayList<String>();
-
-	public LdapResultList() {
-		// Empty
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.csstudio.utility.nameSpaceBrowser.utility.NameSpaceResultList#copy()
-	 */
-	@Override
-	public NameSpaceResultList copy() {
-		//final LdapResultList e = new LdapResultList(_observer);
-		final LdapResultList e = new LdapResultList();
-		e.setResultList(_result);
-		return e;
-	}
-
-	public List<String> getAnswer() {
-		final List<String> tmp = new ArrayList<String>(_result);
-		_result.clear(); // TODO (bknerr) : wtf ?
-		return tmp;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.csstudio.utility.nameSpaceBrowser.utility.NameSpaceResultList#getResultList()
-	 */
-	@Override
-	public List<ControlSystemItem> getCSIResultList() {
-		final List<ControlSystemItem> tmpList = new ArrayList<ControlSystemItem>();
-		if(_result == null) // TODO (bknerr) : why not Collections.emptyList ?
-			return null;
-		
-		for (final String row : _result) { // TODO (bknerr) : encapsulate LDAP answer parsing !
-			String cleanList = row;
-			// Delete "-Chars that add from LDAP-Reader when the result contains special character
-			if(cleanList.startsWith("\"")){ //$NON-NLS-1$
-				if(cleanList.endsWith("\"")) {
-					cleanList = cleanList.substring(1,cleanList.length()-1);
-				} else {
-					cleanList = cleanList.substring(1);
-				}
-			}
-			final String[] token = cleanList.split("[,=]"); //$NON-NLS-1$
-			if(token.length<2) {
-				if(!token[0].equals("no entry found")){
-					Activator.logError(Messages.getString("CSSView.Error1")+row+"'");//$NON-NLS-1$ //$NON-NLS-2$
-				}
-				break;
-
-			}
-
-			if(token[0].compareTo("eren")==0){ //$NON-NLS-1$
-				tmpList.add(new ProcessVariable(token[1], cleanList));
-			}
-			else{
-				tmpList.add(new ControlSystemItem(token[1], cleanList));
-			}
-		}
-		_result = new ArrayList<String>(); // TODO (bknerr) : wtf ?
-		return tmpList;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.csstudio.utility.nameSpaceBrowser.utility.NameSpaceResultList#getNew()
-	 */
-	@Override
-	public NameSpaceResultList getNew() {
-		//return new LdapResultList(_observer);
-		return new LdapResultList();
-	}
-
-	@Override
-	public void notifyView() {
-		setChanged();
-		notifyObservers();
-	}
-
-	/* (non-Javadoc)
-	 * @see org.csstudio.utility.nameSpaceBrowser.utility.NameSpaceResultList#setResultList(java.util.ArrayList)
-	 */
-	@Override
-	public void setResultList(final List<String> resultList) {
-		_result = new ArrayList<String>(resultList);
-		notifyView();
-	}
-
+    
+    private List<String> _result = new ArrayList<String>();
+    
+    
+    public LdapResultList() {
+        // Empty
+    }
+    
+    /* (non-Javadoc)
+     * @see org.csstudio.utility.nameSpaceBrowser.utility.NameSpaceResultList#copy()
+     */
+    @Override
+    public NameSpaceResultList copy() {
+        //final LdapResultList e = new LdapResultList(_observer);
+        final LdapResultList e = new LdapResultList();
+        e.setResultList(_result);
+        return e;
+    }
+    
+    public List<String> getAnswer() {
+        final List<String> tmp = new ArrayList<String>(_result);
+        _result.clear(); // TODO (bknerr) : wtf ?
+        return tmp;
+    }
+    
+    /* (non-Javadoc)
+     * @see org.csstudio.utility.nameSpaceBrowser.utility.NameSpaceResultList#getResultList()
+     */
+    @Override
+    public List<ControlSystemItem> getCSIResultList() {
+        final List<ControlSystemItem> tmpList = new ArrayList<ControlSystemItem>();
+        if(_result == null) {
+            return null;
+        }
+        
+        for (final String row : _result) { // TODO (bknerr) : encapsulate LDAP answer parsing !
+            String cleanList = row;
+            // Delete "-Chars that add from LDAP-Reader when the result contains special character
+            if(cleanList.startsWith("\"")){ //$NON-NLS-1$
+                if(cleanList.endsWith("\"")) {
+                    cleanList = cleanList.substring(1,cleanList.length()-1);
+                } else {
+                    cleanList = cleanList.substring(1);
+                }
+            }
+            final String[] token = cleanList.split("[,=]"); //$NON-NLS-1$
+            if(token.length<2) {
+                if(!token[0].equals("no entry found")){
+                    Activator.logError(Messages.getString("CSSView.Error1")+row+"'");//$NON-NLS-1$ //$NON-NLS-2$
+                }
+                break;
+                
+            }
+            
+            if(token[0].compareTo("eren")==0){ //$NON-NLS-1$
+                tmpList.add(new ProcessVariable(token[1], cleanList));
+            }
+            else{
+                tmpList.add(new ControlSystemItem(token[1], cleanList));
+            }
+        }
+        _result = new ArrayList<String>(); // TODO (bknerr) : wtf ?
+        return tmpList;
+    }
+    
+    /* (non-Javadoc)
+     * @see org.csstudio.utility.nameSpaceBrowser.utility.NameSpaceResultList#getNew()
+     */
+    @Override
+    public NameSpaceResultList getNew() {
+        //return new LdapResultList(_observer);
+        return new LdapResultList();
+    }
+    
+    @Override
+    public void notifyView() {
+        setChanged();
+        notifyObservers();
+    }
+    
+    /* (non-Javadoc)
+     * @see org.csstudio.utility.nameSpaceBrowser.utility.NameSpaceResultList#setResultList(java.util.ArrayList)
+     */
+    @Override
+    public void setResultList(final List<String> resultList) {
+        _result = new ArrayList<String>(resultList);
+        notifyView();
+    }
+    
 }

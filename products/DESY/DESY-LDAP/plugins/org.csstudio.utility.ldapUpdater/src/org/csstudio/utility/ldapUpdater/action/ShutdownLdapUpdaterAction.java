@@ -20,17 +20,24 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
-package org.csstudio.utility.ldapUpdater;
+package org.csstudio.utility.ldapUpdater.action;
 
 import org.csstudio.platform.management.CommandParameters;
 import org.csstudio.platform.management.CommandResult;
 import org.csstudio.platform.management.IManagementCommand;
+import org.csstudio.utility.ldapUpdater.LdapUpdaterServer;
 
+/**
+ * Shuts down the LdapUpdater service.
+
+ * @author bknerr
+ */
 public class ShutdownLdapUpdaterAction implements IManagementCommand {
 
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public CommandResult execute(CommandParameters parameters) {
 			LdapUpdaterServer.getRunningServer().stop();
 			return CommandResult.createSuccessResult();

@@ -19,31 +19,42 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-
-package org.csstudio.utility.ldapUpdater;
+package org.csstudio.utility.ldapUpdater.action;
 
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.management.CommandParameters;
 import org.csstudio.platform.management.CommandResult;
 import org.csstudio.platform.management.IManagementCommand;
+import org.csstudio.utility.ldapUpdater.LdapUpdater;
 
-public class UpdateLdapAction implements IManagementCommand {
+/**
+ * Command to start the tidy up mechanism for LDAP.
+ * This action scans the IOC file directory for existing IOC record files and compares to the IOC entries in the LDAP system.
+ * IOC names found in the LDAP that are not present in the directory are removed from LDAP including all records.  
+ * 
+ * @author bknerr
+ */
+public class TidyUpLdapAction implements IManagementCommand {
 
+	/* (non-Javadoc)
+	 * @see org.csstudio.platform.management.IManagementCommand#execute(org.csstudio.platform.management.CommandParameters)
+	 */
 	@Override
 	public CommandResult execute(CommandParameters parameters) {
-    	LdapUpdater ldapUpdater = LdapUpdater.getInstance();
-    	try {
-			if (!ldapUpdater.isBusy()){
-				ldapUpdater.updateLdapFromIOCFiles();
-			}else{
-				return CommandResult.createMessageResult("ldapUpdater is busy for max. 150 s (was probably started by timer). Try later!");
-			}
+		
+	      LdapUpdater ldapUpdater = LdapUpdater.getInstance();
+	        try {
+	            if (!ldapUpdater.isBusy()){
+	                ldapUpdater.tidyUpLdapFromIOCFiles();
+	            }else{
+	                return CommandResult.createMessageResult("ldapUpdater is busy for max. 150 s (was probably started by timer). Try later!");
+	            }
 
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-//			e.printStackTrace();
-			CentralLogger.getInstance().error (this, "\"" + e.getCause() + "\"" + "-" + "Exception while running ldapUpdater" );		
-		}
-		return CommandResult.createSuccessResult();
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            CentralLogger.getInstance().error (this, "\"" + e.getCause() + "\"" + "-" + "Exception while running ldapUpdater" );        
+	        }
+	        return CommandResult.createSuccessResult();
 	}
+
 }
