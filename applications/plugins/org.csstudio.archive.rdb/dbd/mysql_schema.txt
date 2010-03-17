@@ -115,10 +115,10 @@ CREATE TABLE IF NOT EXISTS channel
    retent_id INT UNSIGNED NULL,
    retent_val DOUBLE NULL
 );
-INSERT INTO channel(channel_id, name) VALUES (1, 'sim://sine'), (2, 'freddy'), (3, 'jane');
+INSERT INTO channel(channel_id, name) VALUES (1, 'sim://sine(0, 10, 50, 0.1)'), (2, 'freddy'), (3, 'jane');
 UPDATE channel SET retent_id=9999 WHERE channel_id < 4;
 UPDATE channel SET grp_id=1 WHERE channel_id < 4;
-UPDATE channel SET smpl_val=0.1 WHERE channel_id = 1;
+UPDATE channel SET smpl_val=1 WHERE channel_id = 1;
 SELECT * FROM channel;
 
 # ----------------------
@@ -228,7 +228,7 @@ SELECT channel.name, smpl_time, severity.name, status.name, float_val
    WHERE channel.channel_id = sample.channel_id AND
          severity.severity_id = sample.severity_id AND
          status.status_id = sample.status_id
-   ORDER BY smpl_time
+   ORDER BY channel.name, smpl_time
    LIMIT 50;
 
 # Same with INNER JOIN
