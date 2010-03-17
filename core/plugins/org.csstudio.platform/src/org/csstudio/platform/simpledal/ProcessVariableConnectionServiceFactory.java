@@ -22,8 +22,12 @@
 package org.csstudio.platform.simpledal;
 
 
+import javax.swing.tree.FixedHeightLayoutCache;
+
+import org.csstudio.dal.CssApplicationContext;
 import org.csstudio.platform.internal.simpledal.ConnectorFactory;
 import org.csstudio.platform.internal.simpledal.ProcessVariableConnectionService;
+import org.epics.css.dal.simple.SimpleDALBroker;
 
 /**
  * Factory of
@@ -36,6 +40,8 @@ public class ProcessVariableConnectionServiceFactory {
 	private static ProcessVariableConnectionServiceFactory sharedInstance;
 
 	private IProcessVariableConnectionService _mainProcessVariableConnectionService;
+
+	private SimpleDALBroker broker;
 
 	/**
 	 * Returns the singleton instance of this factory.
@@ -75,6 +81,19 @@ public class ProcessVariableConnectionServiceFactory {
 		// Overview View to display channels for different connection services
 		return getMainProcessVariableConnectionService();
 	}
+	
+
+	/**
+	 * Returns the {@link SimpleDALBroker} which is a narrow interface to the DAL layer.
+	 * @return the {@link SimpleDALBroker}
+	 */
+	// FIXME: 15.03.2010: swende: Eventuell n Broker-Instanzen betreiben - pro Display eine!
+	public SimpleDALBroker getSimpleDALBroker() {
+		if (broker == null) {
+			broker = SimpleDALBroker.newInstance(new CssApplicationContext("CSS"));
+		}
+		return broker;
+	}
 
 	private synchronized IProcessVariableConnectionService getMainProcessVariableConnectionService() {
 			if (_mainProcessVariableConnectionService == null) {
@@ -83,4 +102,5 @@ public class ProcessVariableConnectionServiceFactory {
 		return _mainProcessVariableConnectionService;
 	}
 
+	
 }
