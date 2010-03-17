@@ -86,7 +86,10 @@ public class LDAPContentModel {
         return null;
     }
     
-    
+    /**
+     * Returns a copy of the set of all IOC names (of all facilities).
+     * @return a copy of the set of all IOC names.
+     */
     public Set<String> getIOCNames() {
         final Set<String> names = new HashSet<String>();
         for (final Facility fac : _facilities.values()) {
@@ -106,7 +109,17 @@ public class LDAPContentModel {
     
     public Set<Record> getRecords(final String iocName) {
         final IOC ioc = getIOC(iocName);
-        return ioc.getRecords();
+        return ioc.getRecordValues();
+    }
+    
+    
+    public Set<IOC> getIOCs() {
+        final Set<IOC> iocs = new HashSet<IOC>();
+        for (final Facility fac : _facilities.values()) {
+            iocs.addAll(fac.getIOCs());
+        }
+        return iocs;
+        
     }
     
 }

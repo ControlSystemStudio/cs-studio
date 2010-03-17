@@ -44,6 +44,28 @@
             id="org.csstudio.utility.ldapUpdater.action.UpdateLdapAction"
             label="Start LDAP Update">
       </command>
+      <command
+      		class="org.csstudio.utility.ldapUpdater.action.IocManagement"
+      		id="org.csstudio.utility.ldapUpdater.action.IocManagement"
+      		label="Modify IOC">
+      	<dynamicEnumerationParameter
+               class="org.csstudio.utility.ldapUpdater.action.IocEnumeration"
+               id="ioc"
+               label="IOC">
+         </dynamicEnumerationParameter>
+         <enumerationParameter
+               id="command"
+               label="Command">
+            <enumerationValue
+                  label="Tidy Up IOC"
+                  value="TIDY_UP">
+            </enumerationValue>
+            <enumerationValue
+                  label="Delete IOC from LDAP (incl. all Records)"
+                  value="DELETE">
+            </enumerationValue>
+         </enumerationParameter>
+      </command>
       <!--command
             class="org.csstudio.utility.ldapUpdater.action.TidyUpLdapAction"
             id="org.csstudio.utility.ldapUpdater.action.TidyUpLdapAction"

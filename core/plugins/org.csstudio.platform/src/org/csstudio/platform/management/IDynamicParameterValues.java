@@ -28,7 +28,7 @@ package org.csstudio.platform.management;
  * 
  * @author Joerg Rathlev
  */
-public interface IDynamicParamterValues {
+public interface IDynamicParameterValues {
 
 	/**
 	 * Returns the enumeration values for the dynamic enumeration parameter.

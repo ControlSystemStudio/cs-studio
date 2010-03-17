@@ -29,14 +29,14 @@ import java.util.List;
 import org.csstudio.diag.interconnectionServer.server.IocConnection;
 import org.csstudio.diag.interconnectionServer.server.IocConnectionManager;
 import org.csstudio.platform.management.CommandParameterEnumValue;
-import org.csstudio.platform.management.IDynamicParamterValues;
+import org.csstudio.platform.management.IDynamicParameterValues;
 
 /**
  * Enumeration of IOCs for the management commands.
  * 
  * @author Joerg Rathlev
  */
-public class IocEnumeration implements IDynamicParamterValues {
+public class IocEnumeration implements IDynamicParameterValues {
 
 	/**
 	 * {@inheritDoc}

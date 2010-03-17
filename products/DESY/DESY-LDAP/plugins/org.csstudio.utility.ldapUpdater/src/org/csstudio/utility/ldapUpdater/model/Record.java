@@ -21,20 +21,66 @@
  */
 package org.csstudio.utility.ldapUpdater.model;
 
+import java.io.Serializable;
+
 /**
  * 
  * 
  * @author bknerr
  */
-public class Record {
-	
-	private final String _name;
-
-	public Record(String name) {
-		_name = name;
-	}
-
-	public String getName() {
-		return _name;
-	}
+public class Record implements Serializable {
+    
+    private static final long serialVersionUID = 1L;
+    
+    private String _name;
+    
+    public Record(final String name) {
+        _name = name;
+    }
+    
+    public void setName(final String name) {
+        _name = name;
+    }
+    
+    public String getName() {
+        return _name;
+    }
+    
+    /**
+     * (@inheritDoc)
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ( (_name == null) ? 0 : _name.hashCode());
+        return result;
+    }
+    
+    /**
+     * (@inheritDoc)
+     */
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Record other = (Record) obj;
+        if (_name == null) {
+            if (other._name != null) {
+                return false;
+            }
+        } else if (!_name.equals(other._name)) {
+            return false;
+        }
+        return true;
+    }
+    
+    
 }

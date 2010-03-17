@@ -64,3 +64,4 @@ Bundle-ClassPath: .,
  lib/log4j/log4j-1.2.14.jar,
  lib/jdom.jar
 Eclipse-LazyStart: true
+Import-Package: javax.jms

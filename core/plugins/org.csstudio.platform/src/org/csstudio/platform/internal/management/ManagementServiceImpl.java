@@ -34,7 +34,7 @@ import org.csstudio.platform.management.CommandParameterEnumValue;
 import org.csstudio.platform.management.CommandParameterType;
 import org.csstudio.platform.management.CommandParameters;
 import org.csstudio.platform.management.CommandResult;
-import org.csstudio.platform.management.IDynamicParamterValues;
+import org.csstudio.platform.management.IDynamicParameterValues;
 import org.csstudio.platform.management.IManagementCommand;
 import org.csstudio.platform.management.IManagementCommandService;
 import org.eclipse.core.runtime.CoreException;
@@ -152,7 +152,7 @@ public class ManagementServiceImpl implements IManagementCommandService {
 					.setLabel(parameterConfig.getAttribute("label"));
 
 			String parameterType = parameterConfig.getName();
-			IDynamicParamterValues dynamicValues = null;
+			IDynamicParameterValues dynamicValues = null;
 			if ("stringParameter".equals(parameterType)) {
 				definitionBuilder.setType(CommandParameterType.STRING);
 			} else if ("integerParameter".equals(parameterType)) {
@@ -167,7 +167,7 @@ public class ManagementServiceImpl implements IManagementCommandService {
 			} else if ("dynamicEnumerationParameter".equals(parameterType)) {
 				definitionBuilder.setType(CommandParameterType.DYNAMIC_ENUMERATION);
 				try {
-					dynamicValues = (IDynamicParamterValues)
+					dynamicValues = (IDynamicParameterValues)
 							parameterConfig.createExecutableExtension("class");
 				} catch (CoreException e) {
 					throw new RuntimeException(

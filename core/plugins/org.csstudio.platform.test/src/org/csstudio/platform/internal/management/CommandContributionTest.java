@@ -29,7 +29,7 @@ import org.csstudio.platform.management.CommandParameterEnumValue;
 import org.csstudio.platform.management.CommandParameterType;
 import org.csstudio.platform.management.CommandParameters;
 import org.csstudio.platform.management.CommandResult;
-import org.csstudio.platform.management.IDynamicParamterValues;
+import org.csstudio.platform.management.IDynamicParameterValues;
 import org.csstudio.platform.management.IManagementCommand;
 import org.junit.Before;
 import org.junit.Test;
@@ -90,7 +90,7 @@ public class CommandContributionTest {
 				.build();
 		final CommandParameterEnumValue enumValue =
 			new CommandParameterEnumValue("value", "Value Label");
-		IDynamicParamterValues dynamicValues = new IDynamicParamterValues() {
+		IDynamicParameterValues dynamicValues = new IDynamicParameterValues() {
 			public CommandParameterEnumValue[] getEnumerationValues() {
 				return new CommandParameterEnumValue[] { enumValue };
 			}

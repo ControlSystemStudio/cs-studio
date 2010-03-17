@@ -53,7 +53,7 @@ public class PreferencePage extends FieldEditorPreferencePage
 	@Override
 	protected void createFieldEditors() {
 		addField(new StringFieldEditor(
-						PreferenceConstants.P_STRING_RECORD_ATTRIEBUT,
+						PreferenceConstants.P_STRING_RECORD_ATTRIBUTE,
 						Messages.getString(Messages.PreferencePage_RECORD_ATTRIEBUT),
 						getFieldEditorParent()
 		));

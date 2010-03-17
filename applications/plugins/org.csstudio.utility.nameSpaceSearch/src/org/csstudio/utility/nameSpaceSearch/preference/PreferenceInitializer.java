@@ -38,7 +38,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	public void initializeDefaultPreferences() {
 		IPreferenceStore prefs = Activator.getDefault().getPreferenceStore();
 //		System.out.println("Path init"+prefs.absolutePath());
-		prefs.setDefault(PreferenceConstants.P_STRING_RECORD_ATTRIEBUT, "eren"); //$NON-NLS-1$
+		prefs.setDefault(PreferenceConstants.P_STRING_RECORD_ATTRIBUTE, "eren"); //$NON-NLS-1$
 		prefs.setDefault(PreferenceConstants.P_STRING_SEARCH_ROOT, "ou=EpicsControls"); //$NON-NLS-1$
 	}
 

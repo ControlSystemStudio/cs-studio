@@ -31,7 +31,7 @@ import org.csstudio.platform.management.CommandDescription;
 import org.csstudio.platform.management.CommandParameterDefinition;
 import org.csstudio.platform.management.CommandParameterEnumValue;
 import org.csstudio.platform.management.CommandParameterType;
-import org.csstudio.platform.management.IDynamicParamterValues;
+import org.csstudio.platform.management.IDynamicParameterValues;
 import org.csstudio.platform.management.IManagementCommand;
 
 /**
@@ -59,7 +59,7 @@ final class CommandContribution {
 
 	private final CommandDescription _description;
 	private final IManagementCommand _implementation;
-	private final Map<String, IDynamicParamterValues> _dynamicParameterValues;
+	private final Map<String, IDynamicParameterValues> _dynamicParameterValues;
 
 	/**
 	 * Private constructor which is called only by the {@link Builder}.
@@ -68,7 +68,7 @@ final class CommandContribution {
 	 *            the builder.
 	 */
 	private CommandContribution(Builder builder) {
-		_dynamicParameterValues = new HashMap<String, IDynamicParamterValues>();
+		_dynamicParameterValues = new HashMap<String, IDynamicParameterValues>();
 		List<CommandParameterDefinition> parameterList =
 			new ArrayList<CommandParameterDefinition>();
 		for (ParameterContribution param : builder._parameters) {
@@ -113,7 +113,7 @@ final class CommandContribution {
 	 *             if the parameter is not a dynamic enumeration parameter.
 	 */
 	CommandParameterEnumValue[] getDynamicEnumerationValues(String parameterId) {
-		IDynamicParamterValues dynamicValues = _dynamicParameterValues.get(parameterId);
+		IDynamicParameterValues dynamicValues = _dynamicParameterValues.get(parameterId);
 		if (dynamicValues != null) {
 			return dynamicValues.getEnumerationValues();
 		} else {
@@ -124,11 +124,11 @@ final class CommandContribution {
 	
 	/**
 	 * Instances of this class are responsible for associating a parameter
-	 * definition with the relevant {@link IDynamicParamterValues}.
+	 * definition with the relevant {@link IDynamicParameterValues}.
 	 */
 	private static final class ParameterContribution {
 		private final CommandParameterDefinition _definition;
-		private final IDynamicParamterValues _dynamicValues;
+		private final IDynamicParameterValues _dynamicValues;
 
 		/**
 		 * Creates a new parameter contribution.
@@ -141,7 +141,7 @@ final class CommandContribution {
 		 *            {@link CommandParameterType#DYNAMIC_ENUMERATION}.
 		 */
 		ParameterContribution(CommandParameterDefinition definition,
-				IDynamicParamterValues dynamicValues) {
+				IDynamicParameterValues dynamicValues) {
 			_definition = definition;
 			_dynamicValues = dynamicValues;
 		}
@@ -215,7 +215,7 @@ final class CommandContribution {
 		 *             and <code>dynamicValues</code> is <code>null</code>.
 		 */
 		Builder addParameter(CommandParameterDefinition definition,
-				IDynamicParamterValues dynamicValues) {
+				IDynamicParameterValues dynamicValues) {
 			if (definition == null) {
 				throw new IllegalArgumentException("definition was null");
 			}

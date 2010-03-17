@@ -31,53 +31,54 @@ import java.io.Serializable;
  * @author Joerg Rathlev
  */
 public final class CommandParameterEnumValue implements Serializable {
-
-	private static final long serialVersionUID = 2L;
-
-	private final String _value;
-	private final String _label;
-
-	/**
-	 * Creates a new enumeration value.
-	 * 
-	 * @param value
-	 *            the value. Must not be null.
-	 * @param label
-	 *            the label to be displayed in the user interface for this
-	 *            value. Must not be null.
-	 */
-	public CommandParameterEnumValue(String value, String label) {
-		if (value == null || label == null) {
-			throw new NullPointerException("value and label must not be null");
-		}
-		
-		_value = value;
-		_label = label;
-	}
-	
-	/**
-	 * Returns the value.
-	 * 
-	 * @return the value.
-	 */
-	public String getValue() {
-		return _value;
-	}
-	
-	/**
-	 * Returns the label.
-	 * 
-	 * @return the label.
-	 */
-	public String getLabel() {
-		return _label;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String toString() {
-		return _label;
-	}
+    
+    private static final long serialVersionUID = 2L;
+    
+    private final String _label;
+    // TODO (bknerr) : check whether any serializable works here!!!
+    private final String _value;
+    
+    /**
+     * Creates a new enumeration value.
+     * 
+     * @param value
+     *            the value. Must not be null.
+     * @param label
+     *            the label to be displayed in the user interface for this
+     *            value. Must not be null.
+     */
+    public CommandParameterEnumValue(final String value, final String label) {
+        if ((value == null) || (label == null)) {
+            throw new NullPointerException("value and label must not be null");
+        }
+        
+        _value = value;
+        _label = label;
+    }
+    
+    /**
+     * Returns the value.
+     * 
+     * @return the value.
+     */
+    public String getValue() {
+        return _value;
+    }
+    
+    /**
+     * Returns the label.
+     * 
+     * @return the label.
+     */
+    public String getLabel() {
+        return _label;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return _label;
+    }
 }

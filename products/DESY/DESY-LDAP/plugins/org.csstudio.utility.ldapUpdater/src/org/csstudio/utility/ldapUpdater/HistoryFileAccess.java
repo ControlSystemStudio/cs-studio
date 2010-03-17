@@ -103,11 +103,14 @@ public class HistoryFileAccess {
      * 
      * @param iocName the name of ioc to be inserted in the history file
      * @param numOfRecordsWritten
-     * @param numOfRecords
-     * @param
+     * @param numOfRecordsInFile
+     * @param numOfRecordsInLDAP
      * @throws IOException when the history file could not be accessed
      */
-    public static void appendLineToHistfile(final String iocName, final int numOfRecordsWritten, final int numOfRecords) throws IOException {
+    public static void appendLineToHistfile(final String iocName,
+                                            final int numOfRecordsWritten,
+                                            final int numOfRecordsInFile,
+                                            final int numOfRecordsInLDAP) throws IOException {
         
         final String histFilePath = getValueFromPreferences(LDAP_HIST_PATH) + HistoryFileAccess.HISTORY_DAT_FILE;
         final FileWriter fw =
@@ -116,11 +119,12 @@ public class HistoryFileAccess {
         final long now = System.currentTimeMillis();
         final String dateTime = LdapUpdater.convertMillisToDateTimeString(now, LdapUpdater.DATETIME_FORMAT);
         
-        final String line = String.format("%1$-20sxxx%2$15s   %3$s   %4$s%5$s",
+        final String line = String.format("%1$-20sxxx%2$15s   %3$s   %4$-12s(%5$s)%6$s",
                                           iocName,
                                           String.valueOf(now / 1000),
                                           dateTime,
-                                          String.valueOf(numOfRecordsWritten + "/" + numOfRecords),
+                                          String.valueOf(numOfRecordsWritten + "/" + numOfRecordsInFile),
+                                          String.valueOf(numOfRecordsInLDAP),
                                           System.getProperty("line.separator" ));
         
         fw.append ( line );

@@ -39,9 +39,8 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
@@ -56,6 +55,7 @@ import org.csstudio.utility.ldap.LdapConstants;
 import org.csstudio.utility.ldap.engine.Engine;
 import org.csstudio.utility.ldap.reader.LdapResultList;
 import org.csstudio.utility.ldap.reader.LdapService;
+import org.csstudio.utility.ldap.reader.LdapServiceImpl;
 import org.csstudio.utility.ldapUpdater.model.HistoryFileContentModel;
 import org.csstudio.utility.ldapUpdater.model.IOC;
 import org.csstudio.utility.ldapUpdater.model.LDAPContentModel;
@@ -63,16 +63,26 @@ import org.csstudio.utility.ldapUpdater.model.Record;
 import org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceKey;
 
 
-public class LdapAccess {
+public final class LdapAccess {
+    
+    
+    private static final LdapService _service = new LdapServiceImpl();
+    
     
     private static class UpdateIOCResult {
         private final int _numOfRecsWritten;
         private final boolean _noError;
         private final int _numOfRecsInFile;
+        private final int _numOfRecsInLDAP;
         
-        public UpdateIOCResult(final int numOfRecsInFile, final int numOfRecsWritten, final boolean noError) {
+        
+        public UpdateIOCResult(final int numOfRecsInFile,
+                               final int numOfRecsWritten,
+                               final int numOfRecordsInLDAP,
+                               final boolean noError) {
             _numOfRecsInFile = numOfRecsInFile;
             _numOfRecsWritten = numOfRecsWritten;
+            _numOfRecsInLDAP = numOfRecordsInLDAP;
             _noError = noError;
         }
         
@@ -87,67 +97,71 @@ public class LdapAccess {
         public boolean hasNoError() {
             return _noError;
         }
+        
+        public int getNumOfRecsInLDAP() {
+            return _numOfRecsInLDAP;
+        }
     }
     
-    private final Logger LOGGER = CentralLogger.getInstance().getLogger(this);
+    private final static Logger LOGGER = CentralLogger.getInstance().getLogger(LdapAccess.class);
     
     
     /**
-     * Constructor.
+     * Don't instantiate.
      */
-    public LdapAccess() {
+    private LdapAccess() {
         // Empty
     }
     
-    
-    // /**
-    // * Returns the attributes for a new entry with the given object class and
-    // * name.
-    // *
-    // * @param objectClass
-    // * the object class of the new entry.
-    // * @param rdnAttr
-    // * ? // TODO (someone) :
-    // * @param name
-    // * the name of the new entry.
-    // * @return the attributes for the new entry.
-    // */
-    // private Attributes attributesForEntry(final String objectClass,
-    // final String rdnAttr, final String name) {
-    // final BasicAttributes result = new BasicAttributes();
-    // result.put("objectClass", objectClass);
-    // result.put(rdnAttr, name);
-    // // result.put("epicsCssType", objectClass.getCssType());
-    // return result;
-    // }
-    
-    private String fillModelWithLdapRecordsForIOC(final LdapService service,
-                                                  final ReadLdapObserver ldapDataObserver,
-                                                  final IOC iocFromLDAP)
+    /**
+     * The method triggers an LDAP search with the given parameters.
+     * The ldapDataObserver is triggered to fill its internal LDAPContentModel as soon as the LDAP search has been completed.
+     * 
+     * @param ldapDataObserver
+     * @param searchRoot
+     * @param filter
+     * @return the filled LDAP content model from the current search request.
+     * @throws InterruptedException
+     */
+    public static LDAPContentModel fillModelFromLdap(final ReadLdapObserver ldapDataObserver, final String searchRoot, final String filter)
     throws InterruptedException {
-        final String efanName = iocFromLDAP.getGroup();
+        ldapDataObserver.setResult(_service.readLdapEntries(searchRoot, filter, ldapDataObserver));
+        while(!ldapDataObserver.isReady()){ Thread.sleep(100);} // observer finished update of the model
+        LOGGER.info("LDAP Read Done");
+        return ldapDataObserver.getLdapModel();
+    }
+    
+    
+    private static void fillModelWithLdapRecordsForIOC(final ReadLdapObserver ldapDataObserver,
+                                                       final IOC iocFromLDAP) throws InterruptedException {
+        fillModelWithLdapRecordsForIOC(ldapDataObserver, iocFromLDAP.getName(), iocFromLDAP.getGroup());
+    }
+    
+    
+    private static void fillModelWithLdapRecordsForIOC(final ReadLdapObserver ldapDataObserver,
+                                                       final String iocName,
+                                                       final String facilityName) throws InterruptedException {
         
         ldapDataObserver.setReady(false);
-        final String query = createLdapQuery(ECON_FIELD_NAME, iocFromLDAP.getName(),
+        final String query = createLdapQuery(ECON_FIELD_NAME, iocName,
                                              ECOM_FIELD_NAME, ECOM_FIELD_VALUE,
-                                             EFAN_FIELD_NAME, iocFromLDAP.getGroup(),
+                                             EFAN_FIELD_NAME, facilityName,
                                              LDAP_OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE);
         
-        final LdapResultList result = service.readLdapEntries(query, LdapConstants.any(EREN_FIELD_NAME), ldapDataObserver);
+        final LdapResultList result = _service.readLdapEntries(query, LdapConstants.any(EREN_FIELD_NAME), ldapDataObserver);
         ldapDataObserver.setResult(result);
         
         while (!ldapDataObserver.isReady()) {
             Thread.sleep(100);
         }
-        return efanName;
     }
     
     
     /**
      * TODO (bknerr) : should be encapsulated in a file access class - does not belong here.
      */
-    private List<Record> getRecordsFromFile(final String pathToFile) {
-        final List<Record> records = new ArrayList<Record>();
+    private static Set<Record> getRecordsFromFile(final String pathToFile) {
+        final Set<Record> records = new HashSet<Record>();
         try {
             final BufferedReader br = new BufferedReader(new FileReader(pathToFile));
             String strLine;
@@ -160,33 +174,41 @@ public class LdapAccess {
         } catch (final IOException e) {
             LOGGER.error("Error while reading from file: " + e.getMessage());
         }
-        return Collections.emptyList();
+        return Collections.emptySet();
     }
     
-    private boolean isIOCFileNewerThanHistoryEntry(final IOC ioc, final HistoryFileContentModel historyFileModel) {
+    private static boolean isIOCFileNewerThanHistoryEntry(final IOC ioc, final HistoryFileContentModel historyFileModel) {
         final long timeFromFile = ioc.getDateTime().getTimeInMillis() / 1000;
         final long timeFromHistoryFile = historyFileModel.getTimeForRecord(ioc.getName());
         return timeFromFile > timeFromHistoryFile;
     }
     
     
-    private void removeIocEntryFromLdap(final IOC iocFromLdap) {
+    public static void removeIocEntryFromLdap(final String iocName, final String facilityName) {
         final DirContext directory = Engine.getInstance().getLdapDirContext();
         
-        final String query = createLdapQuery(ECON_FIELD_NAME, iocFromLdap.getName(),
+        final String query = createLdapQuery(ECON_FIELD_NAME, iocName,
                                              ECOM_FIELD_NAME, ECOM_FIELD_VALUE,
-                                             EFAN_FIELD_NAME, iocFromLdap.getGroup(),
+                                             EFAN_FIELD_NAME, facilityName,
                                              LDAP_OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE);
-        try {
-            directory.unbind(query);
-            LOGGER.info("IOC removed from LDAP: " + query);
-        } catch (final NamingException e) {
-            LOGGER.warn("Naming Exception while trying to unbind: " + query);
-            LOGGER.warn(e.getExplanation());
-        }
+        //        try {
+        //            directory.unbind(query);
+        // FIXME (bknerr) : test missing
+        LOGGER.info("IOC removed from LDAP: " + query);
+        //        } catch (final NamingException e) {
+        //            LOGGER.warn("Naming Exception while trying to unbind: " + query);
+        //            LOGGER.warn(e.getExplanation());
+        //        }
+        
     }
     
-    private void removeRecordEntryFromLdap(final IOC ioc, final Record record) {
+    
+    public static void removeIocEntryFromLdap(final IOC iocFromLdap) {
+        removeIocEntryFromLdap(iocFromLdap.getName(), iocFromLdap.getGroup());
+    }
+    
+    
+    private static void removeRecordEntryFromLdap(final IOC ioc, final Record record) {
         final DirContext directory = Engine.getInstance().getLdapDirContext();
         
         final String query = createLdapQuery(EREN_FIELD_NAME, record.getName(),
@@ -203,6 +225,7 @@ public class LdapAccess {
         }
     }
     
+    
     /**
      * @param service
      * @param ldapDataObserver
@@ -210,46 +233,73 @@ public class LdapAccess {
      * @param iocFilePath
      * @param iocList
      */
-    public void tidyUpLDAPFromIOCList(final LdapService service, final ReadLdapObserver ldapDataObserver,
-                                      final LDAPContentModel ldapContentModel,
-                                      final Map<String, IOC> iocMapFromFS) {
-        
+    public static void tidyUpLDAPFromIOCList(final ReadLdapObserver ldapDataObserver,
+                                             final LDAPContentModel ldapContentModel,
+                                             final Map<String, IOC> iocMapFromFS) {
         
         for (final String iocNameFromLdap : ldapContentModel.getIOCNames()) {
             
             final IOC iocFromLdap = ldapContentModel.getIOC(iocNameFromLdap);
-            
             if (iocMapFromFS.containsKey(iocNameFromLdap)) {
                 
-                updateIOC(ldapContentModel, iocFromLdap, true);
-                
-            } else { // LDAP entry is not contained in current IOC directory - is considered
-                // obsolete!
+                tidyUpIocEntryInLdap(iocFromLdap);
+            } else { // LDAP entry is not contained in current IOC directory - is considered obsolete!
                 removeIocEntryFromLdap(iocFromLdap);
             }
-            
-            
+        }
+    }
+    
+    /**
+     * Compares the records found in the file on directoryServer with the records specified in LDAP and
+     * removes any record from LDAP that is not found in the file.
+     * 
+     * @param ioc the IOC
+     */
+    public static void tidyUpIocEntryInLdap(final IOC ioc) {
+        tidyUpIocEntryInLdap(ioc.getName(), ioc.getGroup());
+    }
+    
+    /**
+     * Compares the records found in the file on directoryServer with the records specified in LDAP and
+     * removes any record from LDAP that is not found in the file.
+     * 
+     * @param iocName IOC name
+     * @param facName Facility name
+     */
+    public static void tidyUpIocEntryInLdap(final String iocName, final String facName) {
+        final String iocFilePath = getValueFromPreferences(IOC_DBL_DUMP_PATH);
+        final Set<Record> fileRecords = getRecordsFromFile(iocFilePath + iocName);
+        
+        final LDAPContentModel ldapContentModel = new LDAPContentModel();
+        final ReadLdapObserver ldapDataObserver = new ReadLdapObserver(ldapContentModel);
+        try {
+            LdapAccess.fillModelWithLdapRecordsForIOC(ldapDataObserver, iocName, facName);
+        } catch (final InterruptedException e) {
+            Thread.currentThread().interrupt();
+            e.printStackTrace();
         }
         
+        final IOC ioc = ldapContentModel.getIOC(facName, iocName);
+        final Set<Record> ldapRecords = ioc.getRecordValues();
+        
+        ldapRecords.removeAll(fileRecords); // removes all that are contained in the file
+        
+        for (final Record record : ldapRecords) {
+            removeRecordEntryFromLdap(ioc, record);
+            LOGGER.info("Tidying: Record " + record.getName() + " removed.");
+        }
     }
     
     
-    
-    private UpdateIOCResult updateIOC(final LDAPContentModel ldapContentModel,
-                                      final IOC ioc,
-                                      final boolean tidyUp) {
+    private static UpdateIOCResult updateIOC(final LDAPContentModel ldapContentModel,
+                                             final IOC ioc) {
         
         final String iocName = ioc.getName();
         int numOfRecsWritten = 0;
         
         final String iocFilePath = getValueFromPreferences(IOC_DBL_DUMP_PATH);
-        final List<Record> recordsFromFile = getRecordsFromFile(iocFilePath + iocName);
+        final Set<Record> recordsFromFile = getRecordsFromFile(iocFilePath + iocName);
         
-        // just in case LDAP shall be cleaned
-        Set<Record> obsoleteRecords = null;
-        if (tidyUp) {
-            obsoleteRecords = ldapContentModel.getRecords(iocName);
-        }
         
         LOGGER.info( "Process IOC " + iocName + "\t\t #records " +  recordsFromFile.size());
         for (final Record record : recordsFromFile) {
@@ -270,19 +320,10 @@ public class LdapAccess {
                     LOGGER.warn("Record " + recordName + " could not be written. Unallowed characters!");
                 }
             }
-            if (tidyUp && (obsoleteRecords != null)) { // TODO (bknerr) : javax.annotations !!!
-                obsoleteRecords.remove(record);
-            }
-        }
-        
-        if (tidyUp && !obsoleteRecords.isEmpty()) {
-            for (final Record record : obsoleteRecords) {
-                removeRecordEntryFromLdap(ioc, record);
-            }
         }
         
         // TODO (bknerr) : what to do with success variable ?
-        return new UpdateIOCResult(recordsFromFile.size(), numOfRecsWritten, true);
+        return new UpdateIOCResult(recordsFromFile.size(), numOfRecsWritten, ldapContentModel.getRecords(iocName).size(), true);
     }
     
     /**
@@ -302,11 +343,10 @@ public class LdapAccess {
      *            the contents of the history file
      * @throws InterruptedException
      */
-    public void updateLDAPFromIOCList(final LdapService service,
-                                      final ReadLdapObserver ldapDataObserver,
-                                      final LDAPContentModel ldapContentModel,
-                                      final Map<String, IOC> iocMap,
-                                      final HistoryFileContentModel historyFileModel) throws InterruptedException {
+    public static void updateLDAPFromIOCList(final ReadLdapObserver ldapDataObserver,
+                                             final LDAPContentModel ldapContentModel,
+                                             final Map<String, IOC> iocMap,
+                                             final HistoryFileContentModel historyFileModel) throws InterruptedException {
         
         for (final Entry<String, IOC> iocFromFS : iocMap.entrySet()) {
             
@@ -314,31 +354,32 @@ public class LdapAccess {
             
             if (historyFileModel.contains(iocName)) {
                 if (!isIOCFileNewerThanHistoryEntry(iocFromFS.getValue(), historyFileModel)) {
-                    LOGGER.info("IOC file for " + iocName
-                                + " is not newer than history file time stamp.");
+                    LOGGER.debug("IOC file for " + iocName
+                                 + " is not newer than history file time stamp.");
                     continue;
                 }
             } // else means 'new IOC file in directory'
             
             final IOC iocFromLDAP = ldapContentModel.getIOC(iocName);
             if (iocFromLDAP == null) {
-                LOGGER
-                .warn("IOC "
-                      + iocName
-                      + " (from file system) does not exist in LDAP - no facility/group association possible.\n"
-                      + "No LDAP Update! Generate an LDAP entry for this IOC manually!");
+                LOGGER.warn("IOC "
+                            + iocName
+                            + " (from file system) does not exist in LDAP - no facility/group association possible.\n"
+                            + "No LDAP Update! Generate an LDAP entry for this IOC manually!");
                 continue;
             }
             
-            fillModelWithLdapRecordsForIOC(service, ldapDataObserver, iocFromLDAP);
+            LdapAccess.fillModelWithLdapRecordsForIOC(ldapDataObserver, iocFromLDAP);
             
-            final UpdateIOCResult updateResult = updateIOC(ldapContentModel, iocFromLDAP, false);
+            final UpdateIOCResult updateResult = updateIOC(ldapContentModel, iocFromLDAP);
             
             // TODO (bknerr) : does only make sense when the update process has been stopped
             if (updateResult.hasNoError()) {
                 try {
-                    HistoryFileAccess.appendLineToHistfile(iocName, updateResult
-                                                           .getNumOfRecsWritten(), updateResult.getNumOfRecsInFile());
+                    HistoryFileAccess.appendLineToHistfile(iocName,
+                                                           updateResult.getNumOfRecsWritten(),
+                                                           updateResult.getNumOfRecsInFile(),
+                                                           updateResult.getNumOfRecsInLDAP() );
                 } catch (final IOException e) {
                     LOGGER.error("I/O-Exception while trying to append a line to "
                                  + getValueFromPreferences(LdapUpdaterPreferenceKey.LDAP_HIST_PATH) + "history.dat");
@@ -347,8 +388,8 @@ public class LdapAccess {
         }
     }
     
-    private boolean updateLDAPRecord(final IOC ioc,
-                                     final String recordName) {
+    private static boolean updateLDAPRecord(final IOC ioc,
+                                            final String recordName) {
         
         final DirContext directory = Engine.getInstance().getLdapDirContext();
         

@@ -288,7 +288,7 @@ public class MainView extends ViewPart implements Observer{
         _ergebnissTableView.refresh();
         // ersetzt mehrfach vorkommende '*' durch einen. Da die LDAP abfrage damit nicht zurecht kommt.
         search = search.replaceAll("\\*\\**", WILDCARD); //$NON-NLS-1$ //$NON-NLS-2$
-        String filter = Activator.getDefault().getPluginPreferences().getString(PreferenceConstants.P_STRING_RECORD_ATTRIEBUT)+
+        String filter = Activator.getDefault().getPluginPreferences().getString(PreferenceConstants.P_STRING_RECORD_ATTRIBUTE)+
         "="+search; //$NON-NLS-1$
         if(search.compareTo(WILDCARD)!=0) //$NON-NLS-1$
             filter = filter.concat(WILDCARD); //$NON-NLS-1$

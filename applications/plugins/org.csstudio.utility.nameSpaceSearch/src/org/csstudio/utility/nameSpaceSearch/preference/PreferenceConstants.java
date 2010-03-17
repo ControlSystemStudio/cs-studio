@@ -29,6 +29,6 @@ package org.csstudio.utility.nameSpaceSearch.preference;
  */
 
 public class PreferenceConstants {
-	public static final String P_STRING_RECORD_ATTRIEBUT = "P_STRING_RECORD_ATTRIEBUT";
+	public static final String P_STRING_RECORD_ATTRIBUTE = "P_STRING_RECORD_ATTRIEBUT";
 	public static final String P_STRING_SEARCH_ROOT = "P_STRING_SEARCH_ROOT";
 	}

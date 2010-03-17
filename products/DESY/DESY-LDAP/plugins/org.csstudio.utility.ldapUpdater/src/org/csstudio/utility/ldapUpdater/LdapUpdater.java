@@ -43,8 +43,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.utility.ldap.reader.LdapService;
-import org.csstudio.utility.ldap.reader.LdapServiceImpl;
+import org.csstudio.utility.ldap.LdapConstants;
 import org.csstudio.utility.ldapUpdater.model.HistoryFileContentModel;
 import org.csstudio.utility.ldapUpdater.model.IOC;
 import org.csstudio.utility.ldapUpdater.model.LDAPContentModel;
@@ -76,7 +75,6 @@ public class LdapUpdater {
     
     private final Logger LOGGER = CentralLogger.getInstance().getLogger(this);
     
-    private static final LdapService _service = new LdapServiceImpl();
     
     
     /**
@@ -102,13 +100,6 @@ public class LdapUpdater {
         // empty
     }
     
-    
-    private void fillModelFromLdap(final ReadLdapObserver ldapDataObserver, final String searchRoot, final String filter)
-    throws InterruptedException {
-        ldapDataObserver.setResult(_service.readLdapEntries(searchRoot, filter, ldapDataObserver));
-        while(!ldapDataObserver.isReady()){ Thread.sleep(100);} // observer finished update of the model
-        LOGGER.info("LDAP Read Done");
-    }
     
     public boolean isBusy() {
         return _busy;
@@ -159,11 +150,10 @@ public class LdapUpdater {
         final LDAPContentModel ldapContentModel = new LDAPContentModel();
         final ReadLdapObserver ldapDataObserver = new ReadLdapObserver(ldapContentModel);
         try {
-            fillModelFromLdap(ldapDataObserver, LDAP_OU_FIELD_NAME + FIELD_ASSIGNMENT + EPICS_CTRL_FIELD_VALUE, any(ECON_FIELD_NAME));
+            LdapAccess.fillModelFromLdap(ldapDataObserver, LDAP_OU_FIELD_NAME + FIELD_ASSIGNMENT + EPICS_CTRL_FIELD_VALUE, any(ECON_FIELD_NAME));
             final Map<String, IOC> iocMapFromFS = IOCFilesDirTree.findIOCFiles(1);
             
-            final LdapAccess updComp = new LdapAccess();
-            updComp.tidyUpLDAPFromIOCList(_service, ldapDataObserver, ldapContentModel, iocMapFromFS);
+            LdapAccess.tidyUpLDAPFromIOCList(ldapDataObserver, ldapContentModel, iocMapFromFS);
             
         } catch (final InterruptedException e) {
             // TODO (bknerr) : Auto-generated catch block
@@ -186,22 +176,22 @@ public class LdapUpdater {
         
         final long startTime = logHeader(UPDATE_ACTION_NAME);
         
-        final LDAPContentModel ldapContentModel = new LDAPContentModel();
-        
         final HistoryFileAccess histFileReader = new HistoryFileAccess();
         final HistoryFileContentModel historyFileModel = histFileReader.readFile(); /* liest das history file */
         
+        final LDAPContentModel ldapContentModel = new LDAPContentModel();
         final ReadLdapObserver ldapDataObserver = new ReadLdapObserver(ldapContentModel);
         
         try {
-            fillModelFromLdap(ldapDataObserver, LDAP_OU_FIELD_NAME + FIELD_ASSIGNMENT + EPICS_CTRL_FIELD_VALUE, any(ECON_FIELD_NAME));
+            LdapAccess.fillModelFromLdap(ldapDataObserver,
+                                         LdapConstants.createLdapQuery(LDAP_OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE),
+                                         any(ECON_FIELD_NAME));
             
             validateHistoryFileEntriesVsLDAPEntries(ldapContentModel, historyFileModel);
             
             final Map<String, IOC> iocList = IOCFilesDirTree.findIOCFiles(1);
             
-            final LdapAccess access = new LdapAccess();
-            access.updateLDAPFromIOCList(_service, ldapDataObserver, ldapContentModel, iocList, historyFileModel);
+            LdapAccess.updateLDAPFromIOCList(ldapDataObserver, ldapContentModel, iocList, historyFileModel);
             
         } catch (final InterruptedException e) {
             // TODO (kvalett): handle exception

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -19,61 +19,28 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.utility.ldapUpdater.model;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+package org.csstudio.utility.ldapUpdater.action;
 
 /**
+ * TODO (bknerr) :
  * 
- * 
- * @author bknerr
+ * @author bknerr 17.03.2010
  */
-public class Facility {
-    private final String _name;
+public enum IocModificationCommand {
+    DELETE("delete"),
+    TIDY_UP("tidyUp");
     
-    private final Map<String, IOC> _iocs = new HashMap<String, IOC>();
+    private final String _description;
     
     /**
      * Constructor.
      */
-    public Facility(final String name) {
-        _name = name;
+    private IocModificationCommand(final String description) {
+        _description = description;
     }
     
-    public IOC addIOC(final String efan, final String econ) {
-        IOC ioc = _iocs.get(econ);
-        if (ioc == null) {
-            ioc = new IOC(econ, efan);
-            _iocs.put(econ, ioc);
-        }
-        return ioc;
-    }
-    
-    public IOC getIOC(final String iocName) {
-        return _iocs.get(iocName);
-    }
-    
-    /**
-     * The names of the contained IOCs.
-     * @return a copy of the name set of the currently contained IOCs
-     */
-    public Set<String> getIocNames() {
-        return new HashSet<String>(_iocs.keySet());
-    }
-    
-    /**
-     * A copy of the contained IOCs.
-     * @return a copy of the set of the currently contained IOCs
-     */
-    public Set<IOC> getIOCs() {
-        return new HashSet<IOC>(_iocs.values());
-    }
-    
-    public String getName() {
-        return _name;
+    public String getDescription() {
+        return _description;
     }
     
 }

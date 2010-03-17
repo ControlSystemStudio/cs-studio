@@ -105,10 +105,10 @@ public class LdapConstants {
         final StringBuilder query = new StringBuilder();
         for (int i = 0; i < fieldsAndValues.length; i+=2) {
             query.append(fieldsAndValues[i]).append(FIELD_ASSIGNMENT).append(fieldsAndValues[i + 1])
-            .append(FIELD_SEPARATOR).append(" ");
+            .append(FIELD_SEPARATOR);
         }
-        if (query.length() >= 2) {
-            query.delete(query.length() - 2, query.length());
+        if (query.length() >= 1) {
+            query.delete(query.length() - 1, query.length());
         }
         
         return query.toString();
