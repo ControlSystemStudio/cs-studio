@@ -8,6 +8,10 @@ import org.csstudio.sds.model.WidgetPropertyCategory;
  * @author Kai Meyer (C1 WPS)
  * 
  */
+
+// FIXME: 15.03.2010: swende: 2 zusätzliche Properties (onTrue, onFalse)
+// einbauen! Diese sollen mit Werten konfiguriert werden können, die auf
+// Kontrollsystemebene true bzw. false entsprechen (z.B. 0/1).
 public class BooleanSwitchModel extends AbstractWidgetModel {
 
 	/**
@@ -55,7 +59,7 @@ public class BooleanSwitchModel extends AbstractWidgetModel {
 		addBooleanProperty(PROP_LABEL_VISIBLE, "Show Label", WidgetPropertyCategory.Display, false);
 		addStringProperty(PROP_ON_LABEL, "On Label", WidgetPropertyCategory.Display, "ON");
 		addStringProperty(PROP_OFF_LABEL, "Off Label", WidgetPropertyCategory.Display, "OFF");
-		
+
 		// .. hide properties
 		hideProperty(PROP_BORDER_COLOR, getTypeID());
 		hideProperty(PROP_BORDER_STYLE, getTypeID());

@@ -32,9 +32,7 @@ public class SimpleSliderBehavior extends AbstractBehavior<SimpleSliderModel> {
 	}
 
 	@Override
-	protected void doProcessMetaDataChange(SimpleSliderModel widget, AnyData anyData) {
-		MetaData meta = anyData.getMetaData();
-
+	protected void doProcessMetaDataChange(SimpleSliderModel widget, MetaData meta) {
 		if (meta != null) {
 			// .. update min / max
 			widget.setPropertyValue(SimpleSliderModel.PROP_MAX, meta.getDisplayHigh());

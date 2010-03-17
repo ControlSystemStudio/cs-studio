@@ -129,12 +129,6 @@
    <extension
          point="org.csstudio.sds.behaviors">
       <behavior
-            class="org.csstudio.sds.behavior.desy.LabelBehavior"
-            description="DESY Default"
-            id="org.csstudio.sds.components.label.behavior.desy.default"
-            widgetTypeId="org.csstudio.sds.components.Label">
-      </behavior>
-      <behavior
             class="org.csstudio.sds.behavior.desy.BargraphBehavior"
             description="DESY Default"
             id="behavior.desy.bargraph.default"
