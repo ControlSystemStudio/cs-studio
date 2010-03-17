@@ -222,9 +222,9 @@ abstract public class ArchiveChannel
     {
         synchronized (this)
         {
-            if (last_archived_value == null)
+            if (most_recent_value == null)
                 return "null"; //$NON-NLS-1$
-            return last_archived_value.toString();
+            return most_recent_value.toString();
         }
     }
 
