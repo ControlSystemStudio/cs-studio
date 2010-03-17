@@ -117,6 +117,8 @@ CREATE TABLE IF NOT EXISTS channel
 );
 INSERT INTO channel(channel_id, name) VALUES (1, 'sim://sine'), (2, 'freddy'), (3, 'jane');
 UPDATE channel SET retent_id=9999 WHERE channel_id < 4;
+UPDATE channel SET grp_id=1 WHERE channel_id < 4;
+UPDATE channel SET smpl_val=0.1 WHERE channel_id = 1;
 SELECT * FROM channel;
 
 # ----------------------
