@@ -2,6 +2,7 @@ package org.csstudio.archive.rdb.engineconfig;
 
 import org.csstudio.archive.rdb.ChannelConfig;
 import org.csstudio.archive.rdb.RDBArchive;
+import org.csstudio.platform.data.TimestampFactory;
 
 /** Export engine configuration as XML (to stdout)
  *  @author Kay Kasemir
@@ -30,6 +31,8 @@ public class XMLExport
     private void dumpEngine(final SampleEngineConfig engine) throws Exception
     {
         System.out.println("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>");
+        System.out.println("<!-- Created by EngineConfigImport (Export), " +
+                           TimestampFactory.now().toString() + " -->");
         System.out.println("<engineconfig>");
         final ChannelGroupConfig[] groups = engine.getGroups();
         for (ChannelGroupConfig group : groups)
@@ -40,7 +43,7 @@ public class XMLExport
     private void dumpGroup(final ChannelGroupConfig group) throws Exception
     {
         System.out.println("  <group>");
-        System.out.println("  <name>" + group.getName() + "</name>");
+        System.out.println("    <name>" + group.getName() + "</name>");
         final ChannelConfig[] channels = group.getChannels();
         for (ChannelConfig channel : channels)
             dumpChannel(channel);
@@ -49,11 +52,16 @@ public class XMLExport
 
     private void dumpChannel(final ChannelConfig channel)
     {
-        System.out.print("    <channel>");
+        System.out.print("      <channel>");
         System.out.print("<name>" + channel.getName() + "</name>");
         System.out.print("<period>" + channel.getSamplePeriod() + "</period>");
         if (channel.getSampleMode().isMonitor())
-            System.out.print("<monitor/>");
+        {
+            if (channel.getSampleValue() != 0.0)
+                System.out.print("<monitor>" + channel.getSampleValue() + "</monitor>");
+            else
+                System.out.print("<monitor/>");
+        }
         else
             System.out.print("<scan/>");
         System.out.println("</channel>");

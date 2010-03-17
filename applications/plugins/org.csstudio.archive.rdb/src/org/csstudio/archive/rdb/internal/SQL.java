@@ -120,7 +120,7 @@ public class SQL
 //		channel_id_colunm = "channel_id";
 //	    channel_name_column = "name";
         
-        channel_insert = "INSERT INTO " + prefix + "channel (channel_id, name, smpl_mode_id, smpl_val, smpl_per) VALUES (?,?,?,?)";
+        channel_insert = "INSERT INTO " + prefix + "channel (channel_id, name, smpl_mode_id, smpl_val, smpl_per) VALUES (?,?,?,?,?)";
         
         channel_sel_next_id = "SELECT MAX(channel_id) FROM " + prefix + "channel";
         
