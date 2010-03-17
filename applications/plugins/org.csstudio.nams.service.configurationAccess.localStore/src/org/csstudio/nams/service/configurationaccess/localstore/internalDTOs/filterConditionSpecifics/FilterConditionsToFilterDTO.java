@@ -28,7 +28,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Fil
 public class FilterConditionsToFilterDTO implements
 		NewAMSConfigurationElementDTO {
 	@EmbeddedId
-	private FilterConditionsToFilterDTO_PK filterCTFPK;
+	private FilterCondToFilterDTOPK filterCTFPK;
 
 	/**
 	 * This column is no more in use.
@@ -38,12 +38,12 @@ public class FilterConditionsToFilterDTO implements
 	private int iPos = 0; // INT
 
 	public FilterConditionsToFilterDTO() {
-		this.filterCTFPK = new FilterConditionsToFilterDTO_PK();
+		this.filterCTFPK = new FilterCondToFilterDTOPK();
 	}
 
 	public FilterConditionsToFilterDTO(final int iFilterRef,
 			final int iFilterConditionRef) {
-		this.filterCTFPK = new FilterConditionsToFilterDTO_PK(iFilterRef,
+		this.filterCTFPK = new FilterCondToFilterDTOPK(iFilterRef,
 				iFilterConditionRef);
 	}
 
@@ -113,7 +113,7 @@ public class FilterConditionsToFilterDTO implements
 	}
 
 	public void setFilterConditionsToFilterDTO_PK(
-			final FilterConditionsToFilterDTO_PK key) {
+			final FilterCondToFilterDTOPK key) {
 		this.filterCTFPK = key;
 	}
 

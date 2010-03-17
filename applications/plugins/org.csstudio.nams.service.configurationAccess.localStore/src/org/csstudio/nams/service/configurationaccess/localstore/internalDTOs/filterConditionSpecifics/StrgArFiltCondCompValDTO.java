@@ -22,11 +22,11 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.NewA
  */
 @Entity
 @Table(name = "AMS_FilterCond_ArrStrVal")
-public class StringArrayFilterConditionCompareValuesDTO implements
+public class StrgArFiltCondCompValDTO implements
 		NewAMSConfigurationElementDTO {
 
 	@EmbeddedId
-	private StringArrayFilterConditionCompareValuesDTOPK pk;
+	private StrgArFiltCondCompValDTOPK pk;
 
 	@Override
 	public boolean equals(final Object obj) {
@@ -39,7 +39,7 @@ public class StringArrayFilterConditionCompareValuesDTO implements
 		if (this.getClass() != obj.getClass()) {
 			return false;
 		}
-		final StringArrayFilterConditionCompareValuesDTO other = (StringArrayFilterConditionCompareValuesDTO) obj;
+		final StrgArFiltCondCompValDTO other = (StrgArFiltCondCompValDTO) obj;
 		if (this.pk == null) {
 			if (other.pk != null) {
 				return false;
@@ -80,7 +80,7 @@ public class StringArrayFilterConditionCompareValuesDTO implements
 		return false;
 	}
 
-	public void setPk(final StringArrayFilterConditionCompareValuesDTOPK pk) {
+	public void setPk(final StrgArFiltCondCompValDTOPK pk) {
 		this.pk = pk;
 	}
 

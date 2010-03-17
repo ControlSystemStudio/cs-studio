@@ -22,8 +22,8 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Fil
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.FilterConditionsToFilterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.HasManuallyJoinedElements;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionForFilterTreeDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.NegationConditionForFilterTreeDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorCondForFilterTreeDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.NegationCondForFilterTreeDTO;
 
 /**
  * Dieses Daten-Transfer-Objekt stellt hält die Konfiguration eines Filters dar
@@ -77,8 +77,8 @@ public class FilterDTO implements NewAMSConfigurationElementDTO,
 		}
 
 		for (final FilterConditionDTO condition : this.getFilterConditions()) {
-			if ((condition instanceof JunctorConditionForFilterTreeDTO)
-					|| (condition instanceof NegationConditionForFilterTreeDTO)) {
+			if ((condition instanceof JunctorCondForFilterTreeDTO)
+					|| (condition instanceof NegationCondForFilterTreeDTO)) {
 				final FilterConditionDTO foundFC = mapper.findForId(
 						FilterConditionDTO.class, condition
 								.getIFilterConditionID(), true);
@@ -276,8 +276,8 @@ public class FilterDTO implements NewAMSConfigurationElementDTO,
 							this.getIFilterID(), fc.getIFilterConditionID());
 					mapper.save(newJoin);
 				}
-				if ((operand instanceof JunctorConditionForFilterTreeDTO)
-						|| (operand instanceof NegationConditionForFilterTreeDTO)) {
+				if ((operand instanceof JunctorCondForFilterTreeDTO)
+						|| (operand instanceof NegationCondForFilterTreeDTO)) {
 					((HasManuallyJoinedElements) operand)
 							.storeJoinLinkData(mapper);
 				}
@@ -293,10 +293,10 @@ public class FilterDTO implements NewAMSConfigurationElementDTO,
 			final FilterConditionsToFilterDTO found = this.findForId(toRemove
 					.getIFilterConditionID(), joins);
 			mapper.delete(found);
-			if (toRemove instanceof JunctorConditionForFilterTreeDTO) {
+			if (toRemove instanceof JunctorCondForFilterTreeDTO) {
 				mapper.delete(toRemove);
 			}
-			if (toRemove instanceof NegationConditionForFilterTreeDTO) {
+			if (toRemove instanceof NegationCondForFilterTreeDTO) {
 				mapper.delete(toRemove);
 			}
 		}

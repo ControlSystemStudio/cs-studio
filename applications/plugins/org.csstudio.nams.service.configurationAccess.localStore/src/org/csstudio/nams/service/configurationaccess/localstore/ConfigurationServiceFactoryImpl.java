@@ -18,15 +18,15 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.Hist
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ReplicationStateDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.TopicDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbearbeiterEmailFilterActionDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbearbeiterGruppenEmailBestFilterActionDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbearbeiterGruppenEmailFilterActionDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbearbeiterGruppenSMSBestFilterActionDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbearbeiterGruppenSMSFilterActionDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbearbeiterGruppenVMailBestFilterActionDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbearbeiterGruppenVMailFilterActionDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbearbeiterSMSFilterActionDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbearbeiterVoiceMailFilterActionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbEmailFilterActionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbGruppenEmailBestFilterActionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbGruppenEmailFilterActionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbGruppenSMSBestFilterActionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbGruppenSMSFilterActionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbGruppenVMailBestFilterActionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbGruppenVMailFilterActionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbSMSFilterActionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbVoiceMailFilterActionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.TopicFilterActionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.DefaultFilterTextDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterAction2FilterDTO;
@@ -37,11 +37,11 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Rub
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.User2UserGroupDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.FilterConditionsToFilterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionForFilterTreeDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.NegationConditionForFilterTreeDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.ProcessVariableFilterConditionDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionCompareValuesDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorCondForFilterTreeDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.NegationCondForFilterTreeDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.ProcessVarFiltCondDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StrgArFiltCondCompValDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArFilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringFilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.TimeBasedFilterConditionDTO;
 import org.hibernate.SessionFactory;
@@ -272,40 +272,40 @@ public class ConfigurationServiceFactoryImpl implements
 
 				.addAnnotatedClass(JunctorConditionDTO.class)
 				.addAnnotatedClass(StringFilterConditionDTO.class)
-				.addAnnotatedClass(StringArrayFilterConditionDTO.class)
+				.addAnnotatedClass(StringArFilterConditionDTO.class)
 
 				.addAnnotatedClass(
-						StringArrayFilterConditionCompareValuesDTO.class)
+						StrgArFiltCondCompValDTO.class)
 				// TODO Mapping in Configuration!!!
 				.addAnnotatedClass(TimeBasedFilterConditionDTO.class)
-				.addAnnotatedClass(ProcessVariableFilterConditionDTO.class)
+				.addAnnotatedClass(ProcessVarFiltCondDTO.class)
 				.addAnnotatedClass(FilterDTO.class).addAnnotatedClass(
 						HistoryDTO.class).addAnnotatedClass(RubrikDTO.class)
-				.addAnnotatedClass(NegationConditionForFilterTreeDTO.class)
-				.addAnnotatedClass(JunctorConditionForFilterTreeDTO.class)
+				.addAnnotatedClass(NegationCondForFilterTreeDTO.class)
+				.addAnnotatedClass(JunctorCondForFilterTreeDTO.class)
 				.addAnnotatedClass(
 						JunctorConditionForFilterTreeConditionJoinDTO.class)
 				.addAnnotatedClass(User2UserGroupDTO.class).addAnnotatedClass(
-						NegationConditionForFilterTreeDTO.class)
+						NegationCondForFilterTreeDTO.class)
 
 				.addAnnotatedClass(FilterActionDTO.class).addAnnotatedClass(
 						TopicFilterActionDTO.class).addAnnotatedClass(
-						AlarmbearbeiterEmailFilterActionDTO.class)
+						AlarmbEmailFilterActionDTO.class)
 				.addAnnotatedClass(
-						AlarmbearbeiterGruppenEmailBestFilterActionDTO.class)
+						AlarmbGruppenEmailBestFilterActionDTO.class)
 				.addAnnotatedClass(
-						AlarmbearbeiterGruppenEmailFilterActionDTO.class)
+						AlarmbGruppenEmailFilterActionDTO.class)
 				.addAnnotatedClass(
-						AlarmbearbeiterGruppenSMSBestFilterActionDTO.class)
+						AlarmbGruppenSMSBestFilterActionDTO.class)
 				.addAnnotatedClass(
-						AlarmbearbeiterGruppenSMSFilterActionDTO.class)
+						AlarmbGruppenSMSFilterActionDTO.class)
 				.addAnnotatedClass(
-						AlarmbearbeiterGruppenVMailBestFilterActionDTO.class)
+						AlarmbGruppenVMailBestFilterActionDTO.class)
 				.addAnnotatedClass(
-						AlarmbearbeiterGruppenVMailFilterActionDTO.class)
-				.addAnnotatedClass(AlarmbearbeiterSMSFilterActionDTO.class)
+						AlarmbGruppenVMailFilterActionDTO.class)
+				.addAnnotatedClass(AlarmbSMSFilterActionDTO.class)
 				.addAnnotatedClass(
-						AlarmbearbeiterVoiceMailFilterActionDTO.class)
+						AlarmbVoiceMailFilterActionDTO.class)
 				.addAnnotatedClass(FilterAction2FilterDTO.class)
 
 				.addAnnotatedClass(DefaultFilterTextDTO.class)

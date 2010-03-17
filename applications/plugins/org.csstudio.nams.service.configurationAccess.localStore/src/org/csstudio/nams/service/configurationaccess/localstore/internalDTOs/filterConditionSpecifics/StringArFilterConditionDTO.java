@@ -33,14 +33,14 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Fil
 @Entity
 @Table(name = "AMS_FilterCond_ArrStr")
 @PrimaryKeyJoinColumn(name = "iFilterConditionRef", referencedColumnName = "iFilterConditionID")
-public class StringArrayFilterConditionDTO extends FilterConditionDTO implements
+public class StringArFilterConditionDTO extends FilterConditionDTO implements
 		HasManuallyJoinedElements {
 
 	/**
 	 * Die Compare-Values. Werden manuell zugeordnet.
 	 */
 	@Transient
-	private List<StringArrayFilterConditionCompareValuesDTO> compareValues = new LinkedList<StringArrayFilterConditionCompareValuesDTO>();
+	private List<StrgArFiltCondCompValDTO> compareValues = new LinkedList<StrgArFiltCondCompValDTO>();
 
 	@Column(name = "cKeyValue", length = 16)
 	private String keyValue;
@@ -49,10 +49,10 @@ public class StringArrayFilterConditionDTO extends FilterConditionDTO implements
 	private short operator;
 
 	public void deleteJoinLinkData(final Mapper mapper) throws Throwable {
-		List<StringArrayFilterConditionCompareValuesDTO> allCompList = mapper
-				.loadAll(StringArrayFilterConditionCompareValuesDTO.class,
+		List<StrgArFiltCondCompValDTO> allCompList = mapper
+				.loadAll(StrgArFiltCondCompValDTO.class,
 						false);
-		for (StringArrayFilterConditionCompareValuesDTO comp : allCompList) {
+		for (StrgArFiltCondCompValDTO comp : allCompList) {
 			if (comp.getFilterConditionRef() == this.getIFilterConditionID()) {
 				mapper.delete(comp);
 			}
@@ -67,10 +67,10 @@ public class StringArrayFilterConditionDTO extends FilterConditionDTO implements
 		if (obj == null) {
 			return false;
 		}
-		if (!(obj instanceof StringArrayFilterConditionDTO)) {
+		if (!(obj instanceof StringArFilterConditionDTO)) {
 			return false;
 		}
-		final StringArrayFilterConditionDTO other = (StringArrayFilterConditionDTO) obj;
+		final StringArFilterConditionDTO other = (StringArFilterConditionDTO) obj;
 		if (this.compareValues == null) {
 			if (other.compareValues != null) {
 				return false;
@@ -91,14 +91,14 @@ public class StringArrayFilterConditionDTO extends FilterConditionDTO implements
 		return true;
 	}
 
-	public List<StringArrayFilterConditionCompareValuesDTO> getCompareValueList() {
-		return new LinkedList<StringArrayFilterConditionCompareValuesDTO>(
+	public List<StrgArFiltCondCompValDTO> getCompareValueList() {
+		return new LinkedList<StrgArFiltCondCompValDTO>(
 				this.compareValues);
 	}
 
 	public List<String> getCompareValueStringList() {
 		final List<String> list = new LinkedList<String>();
-		for (final StringArrayFilterConditionCompareValuesDTO value : this
+		for (final StrgArFiltCondCompValDTO value : this
 				.getCompareValueList()) {
 			list.add(value.getCompValue());
 		}
@@ -128,12 +128,12 @@ public class StringArrayFilterConditionDTO extends FilterConditionDTO implements
 	}
 
 	public void loadJoinData(final Mapper mapper) throws Throwable {
-		final List<StringArrayFilterConditionCompareValuesDTO> alleVergleichswerte = mapper
-				.loadAll(StringArrayFilterConditionCompareValuesDTO.class, true);
+		final List<StrgArFiltCondCompValDTO> alleVergleichswerte = mapper
+				.loadAll(StrgArFiltCondCompValDTO.class, true);
 
 		this.compareValues.clear();
 
-		for (final StringArrayFilterConditionCompareValuesDTO vergleichswert : alleVergleichswerte) {
+		for (final StrgArFiltCondCompValDTO vergleichswert : alleVergleichswerte) {
 			if (vergleichswert.getFilterConditionRef() == this
 					.getIFilterConditionID()) {
 				this.compareValues.add(vergleichswert);
@@ -147,7 +147,7 @@ public class StringArrayFilterConditionDTO extends FilterConditionDTO implements
 	 */
 	@SuppressWarnings("unused")
 	public void setCompareValues(
-			final List<StringArrayFilterConditionCompareValuesDTO> compareValues) {
+			final List<StrgArFiltCondCompValDTO> compareValues) {
 		this.compareValues = compareValues;
 	}
 
@@ -178,13 +178,13 @@ public class StringArrayFilterConditionDTO extends FilterConditionDTO implements
 	}
 
 	public void storeJoinLinkData(final Mapper mapper) throws Throwable {
-		List<StringArrayFilterConditionCompareValuesDTO> compList = new ArrayList<StringArrayFilterConditionCompareValuesDTO>(
+		List<StrgArFiltCondCompValDTO> compList = new ArrayList<StrgArFiltCondCompValDTO>(
 				this.compareValues.size());
 
-		List<StringArrayFilterConditionCompareValuesDTO> allCompList = mapper
-				.loadAll(StringArrayFilterConditionCompareValuesDTO.class,
+		List<StrgArFiltCondCompValDTO> allCompList = mapper
+				.loadAll(StrgArFiltCondCompValDTO.class,
 						false);
-		for (StringArrayFilterConditionCompareValuesDTO comp : allCompList) {
+		for (StrgArFiltCondCompValDTO comp : allCompList) {
 			if (comp.getFilterConditionRef() == this.getIFilterConditionID()) {
 				if (!this.compareValues.contains(comp)) {
 					mapper.delete(comp);
@@ -194,7 +194,7 @@ public class StringArrayFilterConditionDTO extends FilterConditionDTO implements
 			}
 		}
 
-		for (StringArrayFilterConditionCompareValuesDTO element : this.compareValues) {
+		for (StrgArFiltCondCompValDTO element : this.compareValues) {
 			if (!compList.contains(element)) {
 				mapper.save(element);
 			}

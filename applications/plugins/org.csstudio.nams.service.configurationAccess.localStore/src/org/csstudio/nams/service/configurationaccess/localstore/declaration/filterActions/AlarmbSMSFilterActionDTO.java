@@ -5,10 +5,10 @@ import javax.persistence.Entity;
 
 @Entity
 @DiscriminatorValue("1")
-public class AlarmbearbeiterSMSFilterActionDTO extends
-		AbstractAlarmbearbeiterFilterActionDTO {
+public class AlarmbSMSFilterActionDTO extends
+		AbstAlarmbFilterActionDTO {
 
-	public AlarmbearbeiterSMSFilterActionDTO() {
-		this.filterActionType = AlarmbearbeiterFilterActionType.SMS;
+	public AlarmbSMSFilterActionDTO() {
+		this.filterActionType = AlarmbFilterActionType.SMS;
 	}
 }

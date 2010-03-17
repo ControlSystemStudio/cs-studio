@@ -6,7 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
-public class FilterConditionsToFilterDTO_PK implements Serializable {
+public class FilterCondToFilterDTOPK implements Serializable {
 	private static final long serialVersionUID = 4223187179567040076L;
 
 	@Column(name = "iFilterConditionRef")
@@ -15,10 +15,10 @@ public class FilterConditionsToFilterDTO_PK implements Serializable {
 	@Column(name = "iFilterRef", nullable = false)
 	private int iFilterRef;
 
-	public FilterConditionsToFilterDTO_PK() {
+	public FilterCondToFilterDTOPK() {
 	}
 
-	public FilterConditionsToFilterDTO_PK(final int iFilterRef,
+	public FilterCondToFilterDTOPK(final int iFilterRef,
 			final int iFilterConditionRef) {
 		this.iFilterRef = iFilterRef;
 		this.iFilterConditionRef = iFilterConditionRef;
@@ -35,7 +35,7 @@ public class FilterConditionsToFilterDTO_PK implements Serializable {
 		if (this.getClass() != obj.getClass()) {
 			return false;
 		}
-		final FilterConditionsToFilterDTO_PK other = (FilterConditionsToFilterDTO_PK) obj;
+		final FilterCondToFilterDTOPK other = (FilterCondToFilterDTOPK) obj;
 		if (this.iFilterConditionRef != other.iFilterConditionRef) {
 			return false;
 		}

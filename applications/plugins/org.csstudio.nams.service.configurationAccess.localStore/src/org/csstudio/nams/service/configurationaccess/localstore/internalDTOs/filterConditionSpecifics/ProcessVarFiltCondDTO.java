@@ -31,7 +31,7 @@ import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
 @Entity
 @PrimaryKeyJoinColumn(name = "iFilterConditionRef", referencedColumnName = "iFilterConditionID")
 @Table(name = "AMS_FilterCondition_PV")
-public class ProcessVariableFilterConditionDTO extends FilterConditionDTO {
+public class ProcessVarFiltCondDTO extends FilterConditionDTO {
 
 	@Column(name = "cPvChannelName")
 	private String cPvChannelName;
@@ -53,10 +53,10 @@ public class ProcessVariableFilterConditionDTO extends FilterConditionDTO {
 		if (!super.equals(obj)) {
 			return false;
 		}
-		if (!(obj instanceof ProcessVariableFilterConditionDTO)) {
+		if (!(obj instanceof ProcessVarFiltCondDTO)) {
 			return false;
 		}
-		final ProcessVariableFilterConditionDTO other = (ProcessVariableFilterConditionDTO) obj;
+		final ProcessVarFiltCondDTO other = (ProcessVarFiltCondDTO) obj;
 		if (this.cCompValue == null) {
 			if (other.cCompValue != null) {
 				return false;

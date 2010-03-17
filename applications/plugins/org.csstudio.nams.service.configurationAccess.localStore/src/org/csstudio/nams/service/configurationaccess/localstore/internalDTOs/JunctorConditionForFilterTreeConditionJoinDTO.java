@@ -10,10 +10,10 @@ import javax.persistence.Table;
 
 import org.csstudio.nams.common.contract.Contract;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.NewAMSConfigurationElementDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionForFilterTreeDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorCondForFilterTreeDTO;
 
 /**
- * Representiert eine JOIN-Zeile für {@link JunctorConditionForFilterTreeDTO}-Operanden.
+ * Representiert eine JOIN-Zeile für {@link JunctorCondForFilterTreeDTO}-Operanden.
  * 
  * <pre>
  * create table AMSFilterCondConj4FilterFCJoin (
@@ -23,7 +23,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.fil
  * </pre>
  * 
  * @author gs, mz
- * @see JunctorConditionForFilterTreeDTO
+ * @see JunctorCondForFilterTreeDTO
  * 
  */
 @Entity
@@ -54,7 +54,7 @@ public class JunctorConditionForFilterTreeConditionJoinDTO implements
 		private static final long serialVersionUID = 2331180922158582062L;
 
 		/**
-		 * Die {@link JunctorConditionForFilterTreeDTO} zu der dieses Join
+		 * Die {@link JunctorCondForFilterTreeDTO} zu der dieses Join
 		 * gehört.
 		 */
 		@Column(name = "iFilterConditionID", nullable = false)
@@ -112,7 +112,7 @@ public class JunctorConditionForFilterTreeConditionJoinDTO implements
 	}
 
 	public JunctorConditionForFilterTreeConditionJoinDTO(
-			final JunctorConditionForFilterTreeDTO filterCondition,
+			final JunctorCondForFilterTreeDTO filterCondition,
 			final FilterConditionDTO joinedCondition) {
 		Contract.requireNotNull("filterCondition", filterCondition);
 		Contract.requireNotNull("joinedCondition", joinedCondition);

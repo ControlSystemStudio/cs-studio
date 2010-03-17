@@ -24,8 +24,8 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.filt
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.DefaultFilterTextDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.PreferedAlarmType;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionForFilterTreeDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.NegationConditionForFilterTreeDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorCondForFilterTreeDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.NegationCondForFilterTreeDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringFilterConditionDTO;
 import org.csstudio.nams.service.logging.declaration.LoggerMock;
 import org.csstudio.nams.service.logging.declaration.LoggerMock.LogEntry;
@@ -517,7 +517,7 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresHSQ
 		operands.add(leftCondition);
 		operands.add(rightCondition);
 
-		final JunctorConditionForFilterTreeDTO orCondition = new JunctorConditionForFilterTreeDTO();
+		final JunctorCondForFilterTreeDTO orCondition = new JunctorCondForFilterTreeDTO();
 		orCondition.setCName("TEST-Con JCFFT");
 		orCondition.setCDesc("Test-Description");
 		orCondition.setOperator(JunctorConditionType.OR);
@@ -582,7 +582,7 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresHSQ
 		final List<FilterConditionDTO> list = foundFilter.getFilterConditions();
 		Assert.assertEquals(1, list.size());
 		Assert.assertEquals(orCondition, list.get(0));
-		final JunctorConditionForFilterTreeDTO junctionDTO = (JunctorConditionForFilterTreeDTO) list
+		final JunctorCondForFilterTreeDTO junctionDTO = (JunctorCondForFilterTreeDTO) list
 				.get(0);
 		final Set<FilterConditionDTO> operands3 = junctionDTO.getOperands();
 		Assert.assertEquals(1, operands3.size());
@@ -628,13 +628,13 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresHSQ
 		this.service.saveDTO(leftCondition);
 		this.service.saveDTO(rightCondition);
 
-		final JunctorConditionForFilterTreeDTO orCondition = new JunctorConditionForFilterTreeDTO();
+		final JunctorCondForFilterTreeDTO orCondition = new JunctorCondForFilterTreeDTO();
 		orCondition.setCName("TEST-Con JCFFT");
 		orCondition.setCDesc("Test-Description");
 		orCondition.setOperator(JunctorConditionType.OR);
 		orCondition.setOperands(operands);
 
-		final NegationConditionForFilterTreeDTO notOR = new NegationConditionForFilterTreeDTO();
+		final NegationCondForFilterTreeDTO notOR = new NegationCondForFilterTreeDTO();
 		notOR.setNegatedFilterCondition(orCondition);
 
 		// Filter
@@ -696,13 +696,13 @@ public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresHSQ
 		final List<FilterConditionDTO> list = foundFilter.getFilterConditions();
 		Assert.assertEquals(1, list.size());
 		Assert.assertEquals(notOR, list.get(0));
-		final NegationConditionForFilterTreeDTO notOrFound = (NegationConditionForFilterTreeDTO) list
+		final NegationCondForFilterTreeDTO notOrFound = (NegationCondForFilterTreeDTO) list
 				.get(0);
 		final FilterConditionDTO foundNotOr = notOrFound
 				.getNegatedFilterCondition();
 		Assert
-				.assertTrue(foundNotOr instanceof JunctorConditionForFilterTreeDTO);
-		final JunctorConditionForFilterTreeDTO junctionDTO = (JunctorConditionForFilterTreeDTO) foundNotOr;
+				.assertTrue(foundNotOr instanceof JunctorCondForFilterTreeDTO);
+		final JunctorCondForFilterTreeDTO junctionDTO = (JunctorCondForFilterTreeDTO) foundNotOr;
 		final Set<FilterConditionDTO> operands3 = junctionDTO.getOperands();
 		Assert.assertEquals(1, operands3.size());
 		Assert.assertEquals(leftCondition, operands3.iterator().next());

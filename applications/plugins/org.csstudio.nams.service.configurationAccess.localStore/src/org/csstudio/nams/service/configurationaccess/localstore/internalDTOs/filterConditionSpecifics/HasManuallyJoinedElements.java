@@ -43,13 +43,13 @@ public interface HasManuallyJoinedElements {
 	 * 
 	 * For Example: This method is used to load the join-data and set
 	 * {@link NewAMSConfigurationElementDTO}s (see:
-	 * {@link JunctorConditionForFilterTreeDTO#setOperands(Set)} in class
-	 * {@link JunctorConditionForFilterTreeDTO}. IMPORTANT: This method has to
+	 * {@link JunctorCondForFilterTreeDTO#setOperands(Set)} in class
+	 * {@link JunctorCondForFilterTreeDTO}. IMPORTANT: This method has to
 	 * be called in a valid open transaction!
 	 * 
 	 * @param mapper
 	 *            The session to store to; it is guaranteed that only
-	 *            {@link JunctorConditionForFilterTreeDTO} will be loaded and
+	 *            {@link JunctorCondForFilterTreeDTO} will be loaded and
 	 *            nothing be deleted.
 	 * @throws If
 	 *             an error occurred
@@ -61,8 +61,8 @@ public interface HasManuallyJoinedElements {
 	 * 
 	 * For Example: This method is used to store the join-data for previously
 	 * set {@link FilterConditionDTO}s (see:
-	 * {@link JunctorConditionForFilterTreeDTO#setOperands(Set)}in class
-	 * {@link JunctorConditionForFilterTreeDTO}. IMPORTANT: This method has to
+	 * {@link JunctorCondForFilterTreeDTO#setOperands(Set)}in class
+	 * {@link JunctorCondForFilterTreeDTO}. IMPORTANT: This method has to
 	 * be called in a valid open transaction!
 	 * 
 	 * @param mapper

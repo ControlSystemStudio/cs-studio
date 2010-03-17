@@ -11,7 +11,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Fil
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.RubrikDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.User2UserGroupDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.FilterConditionsToFilterDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionCompareValuesDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StrgArFiltCondCompValDTO;
 import org.csstudio.nams.service.logging.declaration.Logger;
 
 @Entity
@@ -32,7 +32,7 @@ public class Configuration {
 	private final Collection<FilterConditionDTO> allFilterConditions;
 	private final Collection<RubrikDTO> alleRubriken;
 	private final List<User2UserGroupDTO> alleUser2UserGroupMappings;
-	private final Collection<StringArrayFilterConditionCompareValuesDTO> allCompareValues;
+	private final Collection<StrgArFiltCondCompValDTO> allCompareValues;
 
 	private final Collection<DefaultFilterTextDTO> allDefaultFilterTextDTO;
 
@@ -53,7 +53,7 @@ public class Configuration {
 		this.allFilterConditions = allFilterConditions;
 		this.alleRubriken = alleRubriken;
 		this.alleUser2UserGroupMappings = new LinkedList<User2UserGroupDTO>();
-		this.allCompareValues = new LinkedList<StringArrayFilterConditionCompareValuesDTO>();
+		this.allCompareValues = new LinkedList<StrgArFiltCondCompValDTO>();
 		this.allDefaultFilterTextDTO = allDefaultFilterTextDTO;
 	}
 
@@ -67,7 +67,7 @@ public class Configuration {
 	}
 
 	@Deprecated
-	public Collection<StringArrayFilterConditionCompareValuesDTO> getAllStringArrayCompareValues() {
+	public Collection<StrgArFiltCondCompValDTO> getAllStringArrayCompareValues() {
 		return this.allCompareValues;
 	}
 

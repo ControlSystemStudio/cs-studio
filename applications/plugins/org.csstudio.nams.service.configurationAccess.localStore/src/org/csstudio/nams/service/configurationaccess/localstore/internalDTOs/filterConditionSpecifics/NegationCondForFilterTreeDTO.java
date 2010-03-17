@@ -28,7 +28,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Fil
 @Entity
 @PrimaryKeyJoinColumn(name = "iFilterConditionRef", referencedColumnName = "iFilterConditionID")
 @Table(name = "AMS_FILTERCOND_NEGATION")
-public class NegationConditionForFilterTreeDTO extends FilterConditionDTO
+public class NegationCondForFilterTreeDTO extends FilterConditionDTO
 		implements HasManuallyJoinedElements {
 
 	@SuppressWarnings("unused")
@@ -38,7 +38,7 @@ public class NegationConditionForFilterTreeDTO extends FilterConditionDTO
 	@Transient
 	private FilterConditionDTO negatedFilterCondition;
 
-	public NegationConditionForFilterTreeDTO() {
+	public NegationCondForFilterTreeDTO() {
 		this.setCName("NegationConditionForFilterTreeDTO");
 		this
 				.setCDesc("The type NegationConditionForFilterTreeDTO is not to be used directly! It is used internally on filters.");
@@ -46,8 +46,8 @@ public class NegationConditionForFilterTreeDTO extends FilterConditionDTO
 
 	public void deleteJoinLinkData(final Mapper mapper) throws Throwable {
 		if (this.negatedFilterCondition instanceof HasManuallyJoinedElements) {
-			if ((this.negatedFilterCondition instanceof JunctorConditionForFilterTreeDTO)
-					|| (this.negatedFilterCondition instanceof NegationConditionForFilterTreeDTO)) {
+			if ((this.negatedFilterCondition instanceof JunctorCondForFilterTreeDTO)
+					|| (this.negatedFilterCondition instanceof NegationCondForFilterTreeDTO)) {
 				mapper.delete(this.negatedFilterCondition);
 			} else {
 				((HasManuallyJoinedElements) this.negatedFilterCondition)
@@ -64,10 +64,10 @@ public class NegationConditionForFilterTreeDTO extends FilterConditionDTO
 		if (!super.equals(obj)) {
 			return false;
 		}
-		if (!(obj instanceof NegationConditionForFilterTreeDTO)) {
+		if (!(obj instanceof NegationCondForFilterTreeDTO)) {
 			return false;
 		}
-		final NegationConditionForFilterTreeDTO other = (NegationConditionForFilterTreeDTO) obj;
+		final NegationCondForFilterTreeDTO other = (NegationCondForFilterTreeDTO) obj;
 		if (this.iNegatedFCRef != other.iNegatedFCRef) {
 			return false;
 		}
@@ -136,8 +136,8 @@ public class NegationConditionForFilterTreeDTO extends FilterConditionDTO
 
 	public void storeJoinLinkData(final Mapper mapper) throws Throwable {
 		if (this.negatedFilterCondition instanceof HasManuallyJoinedElements) {
-			if ((this.negatedFilterCondition instanceof JunctorConditionForFilterTreeDTO)
-					|| (this.negatedFilterCondition instanceof NegationConditionForFilterTreeDTO)) {
+			if ((this.negatedFilterCondition instanceof JunctorCondForFilterTreeDTO)
+					|| (this.negatedFilterCondition instanceof NegationCondForFilterTreeDTO)) {
 
 				final FilterConditionDTO found = mapper.findForId(
 						FilterConditionDTO.class, this.negatedFilterCondition
@@ -146,9 +146,9 @@ public class NegationConditionForFilterTreeDTO extends FilterConditionDTO
 				if (found == null) {
 					mapper.save(this.negatedFilterCondition);
 				} else {
-					if (found instanceof JunctorConditionForFilterTreeDTO) {
-						final JunctorConditionForFilterTreeDTO oldJCFFT = (JunctorConditionForFilterTreeDTO) found;
-						final JunctorConditionForFilterTreeDTO newJCFFT = (JunctorConditionForFilterTreeDTO) this.negatedFilterCondition;
+					if (found instanceof JunctorCondForFilterTreeDTO) {
+						final JunctorCondForFilterTreeDTO oldJCFFT = (JunctorCondForFilterTreeDTO) found;
+						final JunctorCondForFilterTreeDTO newJCFFT = (JunctorCondForFilterTreeDTO) this.negatedFilterCondition;
 						oldJCFFT.setCDesc(newJCFFT.getCDesc());
 						oldJCFFT.setCName(newJCFFT.getCName());
 						oldJCFFT.setIGroupRef(newJCFFT.getIGroupRef());
@@ -156,8 +156,8 @@ public class NegationConditionForFilterTreeDTO extends FilterConditionDTO
 						oldJCFFT.setOperator(newJCFFT.getOperator());
 						mapper.save(oldJCFFT);
 					} else {
-						final NegationConditionForFilterTreeDTO oldNot = (NegationConditionForFilterTreeDTO) found;
-						final NegationConditionForFilterTreeDTO newNot = (NegationConditionForFilterTreeDTO) this.negatedFilterCondition;
+						final NegationCondForFilterTreeDTO oldNot = (NegationCondForFilterTreeDTO) found;
+						final NegationCondForFilterTreeDTO newNot = (NegationCondForFilterTreeDTO) this.negatedFilterCondition;
 
 						oldNot.setCDesc(newNot.getCDesc());
 						oldNot.setCName(newNot.getCName());

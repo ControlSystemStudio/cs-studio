@@ -43,7 +43,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Jun
 @Entity
 @PrimaryKeyJoinColumn(name = "iFilterConditionRef", referencedColumnName = "iFilterConditionID")
 @Table(name = "AMS_FILTERCOND_JUNCTION")
-public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO
+public class JunctorCondForFilterTreeDTO extends FilterConditionDTO
 		implements HasManuallyJoinedElements {
 
 	@Column(name = "Operator", nullable = false)
@@ -65,15 +65,15 @@ public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO
 				final int joinId = joinElement.getJoinedConditionsDatabaseId();
 				mapper.delete(joinElement);
 
-				final JunctorConditionForFilterTreeDTO jcfft = mapper
-						.findForId(JunctorConditionForFilterTreeDTO.class,
+				final JunctorCondForFilterTreeDTO jcfft = mapper
+						.findForId(JunctorCondForFilterTreeDTO.class,
 								joinId, false);
 				if (jcfft != null) {
 					mapper.delete(jcfft);
 				}
 
-				final NegationConditionForFilterTreeDTO ncfft = mapper
-						.findForId(NegationConditionForFilterTreeDTO.class,
+				final NegationCondForFilterTreeDTO ncfft = mapper
+						.findForId(NegationCondForFilterTreeDTO.class,
 								joinId, false);
 				if (ncfft != null) {
 					mapper.delete(ncfft);
@@ -91,10 +91,10 @@ public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO
 		if (!super.equals(obj)) {
 			return false;
 		}
-		if (!(obj instanceof JunctorConditionForFilterTreeDTO)) {
+		if (!(obj instanceof JunctorCondForFilterTreeDTO)) {
 			return false;
 		}
-		final JunctorConditionForFilterTreeDTO other = (JunctorConditionForFilterTreeDTO) obj;
+		final JunctorCondForFilterTreeDTO other = (JunctorCondForFilterTreeDTO) obj;
 		if (!Arrays.equals(this.operands, other.operands)) {
 			return false;
 		}
@@ -164,7 +164,7 @@ public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO
 	 * 
 	 * @param mapper
 	 *            The session to store to; it is guaranteed that only
-	 *            {@link JunctorConditionForFilterTreeDTO} will be loaded and
+	 *            {@link JunctorCondForFilterTreeDTO} will be loaded and
 	 *            nothing be deleted.
 	 * @throws If
 	 *             an error occurred
@@ -230,7 +230,7 @@ public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO
 	 * 
 	 * @param session
 	 *            The session to store to; it is guaranteed that only
-	 *            {@link JunctorConditionForFilterTreeDTO} will be stored and/or
+	 *            {@link JunctorCondForFilterTreeDTO} will be stored and/or
 	 *            deleted.
 	 * @throws If
 	 *             an error occurred
@@ -272,8 +272,8 @@ public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO
 							this, fc);
 					mapper.save(newJoin);
 				}
-				if ((operand instanceof JunctorConditionForFilterTreeDTO)
-						|| (operand instanceof NegationConditionForFilterTreeDTO)) {
+				if ((operand instanceof JunctorCondForFilterTreeDTO)
+						|| (operand instanceof NegationCondForFilterTreeDTO)) {
 					((HasManuallyJoinedElements) operand)
 							.storeJoinLinkData(mapper);
 				}
@@ -289,10 +289,10 @@ public class JunctorConditionForFilterTreeDTO extends FilterConditionDTO
 			final JunctorConditionForFilterTreeConditionJoinDTO found = this
 					.findForId(toRemove.getIFilterConditionID(), joins);
 			mapper.delete(found);
-			if (toRemove instanceof JunctorConditionForFilterTreeDTO) {
+			if (toRemove instanceof JunctorCondForFilterTreeDTO) {
 				mapper.delete(toRemove);
 			}
-			if (toRemove instanceof NegationConditionForFilterTreeDTO) {
+			if (toRemove instanceof NegationCondForFilterTreeDTO) {
 				mapper.delete(toRemove);
 			}
 		}

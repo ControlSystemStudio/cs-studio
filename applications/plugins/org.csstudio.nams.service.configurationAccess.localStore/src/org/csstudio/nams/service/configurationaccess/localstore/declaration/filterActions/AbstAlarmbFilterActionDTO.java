@@ -4,7 +4,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.Mapper;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.FilterActionDTO;
 
-public abstract class AbstractAlarmbearbeiterFilterActionDTO extends
+public abstract class AbstAlarmbFilterActionDTO extends
 		FilterActionDTO {
 
 	public AlarmbearbeiterDTO getReceiver() {

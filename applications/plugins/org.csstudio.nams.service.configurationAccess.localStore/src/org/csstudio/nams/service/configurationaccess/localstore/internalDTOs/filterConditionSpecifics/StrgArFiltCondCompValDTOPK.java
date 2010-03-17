@@ -6,7 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
-public class StringArrayFilterConditionCompareValuesDTOPK implements
+public class StrgArFiltCondCompValDTOPK implements
 		Serializable {
 
 	/**
@@ -15,7 +15,7 @@ public class StringArrayFilterConditionCompareValuesDTOPK implements
 	private static final long serialVersionUID = -7501395016232068023L;
 
 	public static long getSerialVersionUID() {
-		return StringArrayFilterConditionCompareValuesDTOPK.serialVersionUID;
+		return StrgArFiltCondCompValDTOPK.serialVersionUID;
 	}
 
 	@Column(name = "iFilterConditionRef", nullable = false, insertable = false, updatable = false)
@@ -35,7 +35,7 @@ public class StringArrayFilterConditionCompareValuesDTOPK implements
 		if (this.getClass() != obj.getClass()) {
 			return false;
 		}
-		final StringArrayFilterConditionCompareValuesDTOPK other = (StringArrayFilterConditionCompareValuesDTOPK) obj;
+		final StrgArFiltCondCompValDTOPK other = (StrgArFiltCondCompValDTOPK) obj;
 		if (this.compValue == null) {
 			if (other.compValue != null) {
 				return false;
