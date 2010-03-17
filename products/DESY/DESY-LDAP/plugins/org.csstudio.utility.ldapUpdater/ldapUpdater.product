@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="ldapUpdater" id="org.csstudio.utility.ldapUpdater.product" application="org.csstudio.utility.ldapUpdater.LdapUpdaterApplication" useFeatures="false" includeLaunchers="true">
+<product name="ldapUpdater" id="org.csstudio.utility.ldapUpdater.product" application="org.csstudio.utility.ldapUpdater.LdapUpdaterApplication" useFeatures="true" includeLaunchers="true">
 
    <configIni use="default" path="d:\temp">
    </configIni>
@@ -185,6 +185,10 @@
       <plugin id="org.remotercp.util"/>
       <plugin id="org.remotercp.util.ui"/>
    </plugins>
+
+   <features>
+      <feature id="org.csstudio.utility.ldapUpdater.feature" version="1.0.0.qualifier"/>
+   </features>
 
 
 </product>
