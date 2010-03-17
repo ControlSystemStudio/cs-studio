@@ -20,7 +20,7 @@ class GroupResponse extends AbstractResponse
     private static final long serialVersionUID = 1L;
     
     /** Maximum text length of last value that's displayed */
-    private static final int MAX_VALUE_DISPLAY = 20;
+    private static final int MAX_VALUE_DISPLAY = 60;
 
     GroupResponse(final EngineModel model)
     {
@@ -99,6 +99,10 @@ class GroupResponse extends AbstractResponse
             String overruns = Integer.toString(overrun_count);
             if (overrun_count > 0)
                 overruns = HTMLWriter.makeRedText(overruns);
+
+            String current_value = channel.getCurrentValue();
+            if (current_value.length() > MAX_VALUE_DISPLAY)
+                current_value = current_value.substring(0, MAX_VALUE_DISPLAY);
             String last_value = channel.getLastArchivedValue();
             if (last_value.length() > MAX_VALUE_DISPLAY)
                 last_value = last_value.substring(0, MAX_VALUE_DISPLAY);
@@ -107,7 +111,7 @@ class GroupResponse extends AbstractResponse
                 HTMLWriter.makeLink("channel?name=" + channel.getName(), channel.getName()),
                 connected,
                 channel.getMechanism(),
-                channel.getCurrentValue(),
+                current_value,
                 last_value,
                 Long.toString(channel.getReceivedValues()),
                 Integer.toString(buffer.getQueueSize()),
