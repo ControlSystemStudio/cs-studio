@@ -30,7 +30,9 @@ public class ChannelConfig extends StringID
     protected int group_id;
 
     private SampleMode sample_mode;
-    
+
+    private double sample_value;
+
     private double sample_period;
 
     /** The channel's meta data */
@@ -40,17 +42,20 @@ public class ChannelConfig extends StringID
     public ChannelConfig(final RDBArchive archive, final int id,
             final String name,
             final int group_id,final SampleMode sample_mode,
+            final double sample_value,
             final double sample_period)
     {
         super(id, name.trim());
         this.archive = archive;
         this.group_id = group_id;
         this.sample_mode = sample_mode;
+        this.sample_value = sample_value;
         this.sample_period = sample_period;
         if (this.sample_period < MIN_SAMPLE_PERIOD)
             this.sample_period = MIN_SAMPLE_PERIOD;
     }
 
+    /** @return Numeric group ID */
     public int getGroupId()
     {
         return group_id;
@@ -60,6 +65,12 @@ public class ChannelConfig extends StringID
     public SampleMode getSampleMode()
     {
         return sample_mode;
+    }
+
+    /** @return Sample mode configuration value, e.g. 'delta' for Monitor */
+    public double getSampleValue()
+    {
+        return sample_value;
     }
 
     /** @return Scan period or estimated monitor period in seconds */
@@ -82,9 +93,11 @@ public class ChannelConfig extends StringID
     
     /** Define the sample mode of this channel
      *  @param sample_mode SampleMode
+     *  @param sample_value Sample mode configuration value
      *  @param period_secs Sample period or estimated update rate in seconds
      */
     public void setSampleMode(final SampleMode sample_mode,
+            final double sample_value,
             double period_secs) throws Exception
     {
         if (period_secs < MIN_SAMPLE_PERIOD)
@@ -93,10 +106,11 @@ public class ChannelConfig extends StringID
             archive.getRDB().getConnection().prepareStatement(
                         archive.getSQL().channel_set_sampling);
         try
-        {   // UPDATE channel SET smpl_mode_id=?,smpl_per=? WHERE channel_id=?
+        {   // UPDATE channel SET smpl_mode_id=?,smpl_val=?,smpl_per=? WHERE channel_id=?
             statement.setInt(1, sample_mode.getId());
-            statement.setDouble(2, period_secs);
-            statement.setInt(3, getId());
+            statement.setDouble(2, sample_value);
+            statement.setDouble(3, period_secs);
+            statement.setInt(4, getId());
             statement.executeUpdate();
         }
         finally

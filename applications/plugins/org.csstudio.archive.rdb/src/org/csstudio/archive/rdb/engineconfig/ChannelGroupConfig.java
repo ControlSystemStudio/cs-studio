@@ -55,7 +55,7 @@ public class ChannelGroupConfig extends StringID
             statement.setInt(1, getId());
             final ResultSet result = statement.executeQuery();
             while (result.next())
-            {   // channel_id, name, smpl_mode_id, smpl_per
+            {   // channel_id, name, smpl_mode_id, smpl_val, smpl_per
                 final SampleMode sample_mode =
                     archive.getSampleMode(result.getInt(3));
                 channels.add(new ChannelConfig(archive,
@@ -63,7 +63,8 @@ public class ChannelGroupConfig extends StringID
                         result.getString(2),
                         getId(),
                         sample_mode,
-                        result.getDouble(4)));
+                        result.getDouble(4),
+                        result.getDouble(5)));
             }
         }
         finally

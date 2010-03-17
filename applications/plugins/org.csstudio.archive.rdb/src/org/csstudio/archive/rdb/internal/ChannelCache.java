@@ -54,7 +54,7 @@ public class ChannelCache
 		        archive.getSQL().channel_sel_by_name);
 		try
 		{
-		    // SELECT channel_id, grp_id, smpl_mode_id, smpl_per FROM channel WHERE name=?
+		    // SELECT channel_id, grp_id, smpl_mode_id, smpl_val, smpl_per FROM channel WHERE name=?
 		    statement.setString(1, name);
 		    final ResultSet result = statement.executeQuery();
 		    if (result.next())
@@ -63,7 +63,7 @@ public class ChannelCache
                     archive.getSampleMode(result.getInt(3));
                 channel = new ChannelConfig(archive,
                         result.getInt(1), name, result.getInt(2),
-                        sample_mode, result.getDouble(4));
+                        sample_mode, result.getDouble(4), result.getDouble(5));
                 memorize(channel);
             }
 		}
@@ -93,12 +93,13 @@ public class ChannelCache
         try
         {
             channel = new ChannelConfig(archive, getNextId(), name,
-                    0, archive.getSampleModes()[0], 60.0);
+                    0, archive.getSampleModes()[0], 0.0, 60.0);
             // channel_id, name, smpl_mode_id, smpl_per
             statement.setInt(1, channel.getId());
             statement.setString(2, name);
             statement.setInt(3, channel.getSampleMode().getId());
-            statement.setDouble(4, channel.getSamplePeriod());
+            statement.setDouble(4, channel.getSampleValue());
+            statement.setDouble(5, channel.getSamplePeriod());
             statement.executeUpdate();
             memorize(channel);
             return channel;

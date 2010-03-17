@@ -414,13 +414,14 @@ public class RDBArchive
         ResultSet res = sel.executeQuery();
         final ArrayList<ChannelConfig> tmp_res = new ArrayList<ChannelConfig>();
         while (res.next())
-        {   // channel_id, name, grp_id, smpl_mode_id, smpl_per
+        {   // channel_id, name, grp_id, smpl_mode_id, smpl_val, smpl_per
             final int group_id = res.getInt(3);
             
             final ChannelConfig channel =
                 new ChannelConfig(this,
                         res.getInt(1), res.getString(2), group_id,
-                        getSampleMode(res.getInt(4)), res.getDouble(5));
+                        getSampleMode(res.getInt(4)),
+                        res.getDouble(5), res.getDouble(6));
             channels.memorize(channel);
             tmp_res.add(channel);
         }

@@ -120,24 +120,24 @@ public class SQL
 //		channel_id_colunm = "channel_id";
 //	    channel_name_column = "name";
         
-        channel_insert = "INSERT INTO " + prefix + "channel (channel_id, name, smpl_mode_id, smpl_per) VALUES (?,?,?,?)";
+        channel_insert = "INSERT INTO " + prefix + "channel (channel_id, name, smpl_mode_id, smpl_val, smpl_per) VALUES (?,?,?,?)";
         
         channel_sel_next_id = "SELECT MAX(channel_id) FROM " + prefix + "channel";
         
         channel_sel_by_name = 
-            "SELECT channel_id, grp_id, smpl_mode_id, smpl_per FROM " + prefix + "channel WHERE name=?";
+            "SELECT channel_id, grp_id, smpl_mode_id, smpl_val, smpl_per FROM " + prefix + "channel WHERE name=?";
 		
 		if (dialect == RDBUtil.Dialect.Oracle)
-			channel_sel_by_pattern = "SELECT channel_id, name, grp_id, smpl_mode_id, smpl_per FROM " + prefix + "channel WHERE REGEXP_LIKE(name, ?, 'i') ORDER BY name";
+			channel_sel_by_pattern = "SELECT channel_id, name, grp_id, smpl_mode_id, smpl_val, smpl_per FROM " + prefix + "channel WHERE REGEXP_LIKE(name, ?, 'i') ORDER BY name";
 		else
-			channel_sel_by_pattern = "SELECT channel_id, name, grp_id, smpl_mode_id, smpl_per FROM " + prefix + "channel WHERE name REGEXP ? ORDER BY name";
+			channel_sel_by_pattern = "SELECT channel_id, name, grp_id, smpl_mode_id, smpl_val, smpl_per FROM " + prefix + "channel WHERE name REGEXP ? ORDER BY name";
 		channel_sel_last_time_by_id = "SELECT MAX(smpl_time) FROM " + prefix + sample + " WHERE channel_id=?";
-		channel_sel_by_group_id = "SELECT channel_id, name, smpl_mode_id, smpl_per FROM " + prefix + "channel WHERE grp_id=? ORDER BY name";
+		channel_sel_by_group_id = "SELECT channel_id, name, smpl_mode_id, smpl_val, smpl_per FROM " + prefix + "channel WHERE grp_id=? ORDER BY name";
 		channel_set_grp_by_id = "UPDATE " + prefix + "channel SET grp_id=? WHERE channel_id=?";        
         channel_clear_grp_for_engine =
             "UPDATE " + prefix + "channel SET grp_id=null WHERE grp_id IN " +
                 "(SELECT grp_id FROM " + prefix + "chan_grp WHERE eng_id=?)";
-        channel_set_sampling = "UPDATE " + prefix + "channel SET smpl_mode_id=?,smpl_per=? WHERE channel_id=?";
+        channel_set_sampling = "UPDATE " + prefix + "channel SET smpl_mode_id=?,smpl_val=?,smpl_per=? WHERE channel_id=?";
         
         // 'sample mode' table
         sample_mode_sel = "SELECT smpl_mode_id, name, descr FROM " + prefix + "smpl_mode";

@@ -91,6 +91,9 @@ public class XMLImport extends DefaultHandler
     /** Most recent 'monitor' tag */
     private boolean monitor;
     
+    /** Most recent sample mode value, for example the optional monitor delta */
+    private double sample_value;
+
     /** Is current channel enabling the group ? */
     private boolean is_enabling;
 
@@ -183,6 +186,7 @@ public class XMLImport extends DefaultHandler
             state = State.CHANNEL;
             name = null;
             period = 1.0;
+            sample_value = 0.0;
             monitor = false;
             is_enabling = false;
         }
@@ -237,6 +241,19 @@ public class XMLImport extends DefaultHandler
         else if (element.equals(TAG_MONITOR))
         {
             checkStateForTag(State.CHANNEL, element);
+            // Did the monitor tag contain a 'delta' for the scan mode value?
+            final String arg = accumulator.toString().trim();
+            if (arg.length() > 0)
+            {
+                try
+                {
+                    sample_value = Double.parseDouble(arg);
+                }
+                catch (NumberFormatException ex)
+                {
+                    throw new SAXException("Invalid monitor 'delta' for channel " + name);
+                }
+            }
             monitor = true;
         }
         else if (element.equals(TAG_SCAN))
@@ -287,7 +304,7 @@ public class XMLImport extends DefaultHandler
                     }
                 }
                 channel.addToGroup(group);
-                channel.setSampleMode(monitor ? monitor_mode : scan_mode, period);
+                channel.setSampleMode(monitor ? monitor_mode : scan_mode, sample_value, period);
                 if (is_enabling)
                     group.setEnablingChannel(channel);
             }
