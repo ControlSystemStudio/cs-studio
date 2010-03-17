@@ -20,9 +20,12 @@ import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;
+import org.eclipse.draw2d.AbstractBorder;
 import org.eclipse.draw2d.Border;
 import org.eclipse.draw2d.Cursors;
+import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 
@@ -34,6 +37,8 @@ import org.eclipse.swt.graphics.RGB;
 public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart 
 	implements IProcessVariable{
 	
+	
+
 	private static RGB DISCONNECTED_COLOR = new RGB(255, 0, 255);
 	
 	private Map<String, PV> pvMap = new HashMap<String, PV>(); 
@@ -54,6 +59,18 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 	private interface AlarmSeverity extends ISeverity{
 		public void copy(ISeverity severity);
 	}
+	//invisible border for no_alarm state, this can prevent the widget from resizing
+	//when alarm turn back to no_alarm state/
+	private static final AbstractBorder BORDER_NO_ALARM = new AbstractBorder() {
+		
+		public void paint(IFigure figure, Graphics graphics, Insets insets) {							
+		}
+		
+		public Insets getInsets(IFigure figure) {
+			return new Insets(2);
+		}
+	};
+	
 	private AlarmSeverity lastAlarmSeverity = new AlarmSeverity(){
 		
 		boolean isOK = true;
@@ -141,6 +158,15 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 				figure.repaint();
 			}
 		});		
+	}
+	
+	@Override
+	protected void initFigure(IFigure figure) {
+		super.initFigure(figure);
+		if(getWidgetModel().isBorderAlarmSensitve()
+				&& getWidgetModel().getBorderStyle()== BorderStyle.NONE){
+			figure.setBorder(BORDER_NO_ALARM);
+		}
 	}
 	
 	@Override
@@ -293,6 +319,21 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 			
 		};
 		setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVVALUE, valueHandler);
+		
+		//border alarm sensitive
+		IWidgetPropertyChangeHandler borderAlarmSentiveHandler = new IWidgetPropertyChangeHandler() {
+			
+			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+				if(getWidgetModel().isBorderAlarmSensitve()
+						&& getWidgetModel().getBorderStyle()== BorderStyle.NONE){
+					figure.setBorder(BORDER_NO_ALARM);
+				}
+				return false;
+			}
+		};
+		setPropertyChangeHandler(AbstractPVWidgetModel.PROP_BORDER_ALARMSENSITIVE, borderAlarmSentiveHandler);
+		setPropertyChangeHandler(AbstractPVWidgetModel.PROP_BORDER_STYLE, borderAlarmSentiveHandler);
+		
 	}
 
 
