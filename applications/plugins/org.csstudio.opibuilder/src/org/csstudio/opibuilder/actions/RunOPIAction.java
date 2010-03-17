@@ -43,7 +43,7 @@ public class RunOPIAction extends Action{
 		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 		IEditorPart activeEditor = page.getActiveEditor();
 		if(activeEditor instanceof OPIEditor){
-			if(PreferencesHelper.isAutoSaveBeforeRunning())
+			if(PreferencesHelper.isAutoSaveBeforeRunning() && activeEditor.isDirty())
 				activeEditor.doSave(null);
 			
 			//It seems that the synch with editor is not necessary
