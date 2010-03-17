@@ -23,7 +23,7 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 public class EngineModel
 {
     /** Version code. See also webroot/version.html */
-    final public static String VERSION = "1.0.8"; //$NON-NLS-1$
+    final public static String VERSION = "1.2.0"; //$NON-NLS-1$
 
     /** Name of this model */
     private String name = "Archive Engine";  //$NON-NLS-1$
@@ -222,6 +222,8 @@ public class EngineModel
      *  @param name Channel name
      *  @param group Name of the group to which to add
      *  @param enablement How channel acts on the group
+     *  @param monitor Monitor or scan?
+     *  @param sample_val Sample mode configuration value: 'delta' for monitor
      *  @param period Estimated update period [seconds]
      *  @return {@link ArchiveChannel}
      *  @throws Exception on error from channel creation
@@ -229,8 +231,9 @@ public class EngineModel
     @SuppressWarnings("nls")
     final public ArchiveChannel addChannel(final String name,
                          final ArchiveGroup group,
-                         final Enablement enablement, final double period,
-                         final boolean monitor) throws Exception
+                         final Enablement enablement, final boolean monitor,
+                         final double sample_val,
+                         final double period) throws Exception
     {
         if (state != State.IDLE)
             throw new Exception("Cannot add channel while " + state); //$NON-NLS-1$
@@ -247,10 +250,10 @@ public class EngineModel
                      group.getName(), name, channel.getGroup(0).getName());
             if (channel.getEnablement() != enablement)
                 throw new Exception(gripe + " with different enablement");
-            if (/** Now monitor, but not before? */
+            if (// Now monitor, but not before?
                 (monitor && (channel instanceof ScannedArchiveChannel))
                 ||
-                /** Or now scanned, but before monitor, or other scan rate? */
+                // Or now scanned, but before monitor, or other scan rate?
                 (!monitor
                  && ((channel instanceof MonitoredArchiveChannel)
                      || ((ScannedArchiveChannel)channel).getPeriod() != period)
@@ -282,9 +285,15 @@ public class EngineModel
             
             // Create new channel
             if (monitor)
-                channel = new MonitoredArchiveChannel(name, enablement,
+            {
+                if (sample_val > 0)
+                    channel = new DeltaArchiveChannel(name, enablement,
+                            buffer_capacity, last_sample, period, sample_val);
+                else
+                    channel = new MonitoredArchiveChannel(name, enablement,
                                                  buffer_capacity, last_sample,
                                                  period);
+            }
             else
             {
                 channel = new ScannedArchiveChannel(name, enablement,
@@ -423,8 +432,9 @@ public class EngineModel
                 if (group_config.getEnablingChannelId() == channel_config.getId())
                     enablement = Enablement.Enabling;
                 addChannel(channel_config.getName(), group, enablement,
-                        channel_config.getSamplePeriod(),
-                        channel_config.getSampleMode().isMonitor());
+                        channel_config.getSampleMode().isMonitor(),
+                        channel_config.getSampleValue(),
+                        channel_config.getSamplePeriod());
             }
         }
     }
