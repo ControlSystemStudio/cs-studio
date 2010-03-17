@@ -327,7 +327,9 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 				if(getWidgetModel().isBorderAlarmSensitve()
 						&& getWidgetModel().getBorderStyle()== BorderStyle.NONE){
 					figure.setBorder(BORDER_NO_ALARM);
-				}
+				}else if (!getWidgetModel().isBorderAlarmSensitve()
+						&& getWidgetModel().getBorderStyle()== BorderStyle.NONE)
+					figure.setBorder(null);
 				return false;
 			}
 		};
