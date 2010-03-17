@@ -45,20 +45,20 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.Topi
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.InconsistentConfigurationException;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageError;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageException;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AbstractAlarmbearbeiterFilterActionDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AbstractAlarmbearbeiterGruppenFilterActionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AbstAlarmbFilterActionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AbstAlarmbGruppenFilterActionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmTopicFilterActionType;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbearbeiterEmailFilterActionDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbearbeiterFilterActionType;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbearbeiterGruppenEmailBestFilterActionDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbearbeiterGruppenEmailFilterActionDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbearbeiterGruppenSMSBestFilterActionDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbearbeiterGruppenSMSFilterActionDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbearbeiterGruppenVMailBestFilterActionDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbearbeiterGruppenVMailFilterActionDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbearbeiterSMSFilterActionDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbearbeiterVoiceMailFilterActionDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbearbeitergruppenFilterActionType;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbEmailFilterActionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbFilterActionType;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbGruppenEmailBestFilterActionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbGruppenEmailFilterActionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbGruppenSMSBestFilterActionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbGruppenSMSFilterActionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbGruppenVMailBestFilterActionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbGruppenVMailFilterActionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbSMSFilterActionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbVoiceMailFilterActionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbGruppenFilterActionType;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.FilterActionType;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.TopicFilterActionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.DefaultFilterTextDTO;
@@ -66,12 +66,12 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Fil
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.RubrikDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.User2UserGroupDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionForFilterTreeDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.NegationConditionForFilterTreeDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.ProcessVariableFilterConditionDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionCompareValuesDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionCompareValuesDTOPK;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorCondForFilterTreeDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.NegationCondForFilterTreeDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.ProcessVarFiltCondDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StrgArFiltCondCompValDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StrgArFiltCondCompValDTOPK;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArFilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringFilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.TimeBasedFilterConditionDTO;
 import org.csstudio.nams.service.logging.declaration.Logger;
@@ -344,18 +344,18 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 				.getFilterActions();
 		for (final FilterActionDTO filterActionDTO : filterActions) {
 			FilterAction filterAction = null;
-			if (filterActionDTO instanceof AbstractAlarmbearbeiterFilterActionDTO) {
+			if (filterActionDTO instanceof AbstAlarmbFilterActionDTO) {
 				final AlarmbearbeiterFilterAction alarmbearbeiterFilterAction = new AlarmbearbeiterFilterAction();
 				alarmbearbeiterFilterAction
 						.setReceiver(this.alarmbearbeiterBeans
-								.get(((AbstractAlarmbearbeiterFilterActionDTO) filterActionDTO)
+								.get(((AbstAlarmbFilterActionDTO) filterActionDTO)
 										.getReceiver().getUserId()));
 				filterAction = alarmbearbeiterFilterAction;
-			} else if (filterActionDTO instanceof AbstractAlarmbearbeiterGruppenFilterActionDTO) {
+			} else if (filterActionDTO instanceof AbstAlarmbGruppenFilterActionDTO) {
 				final AlarmbearbeitergruppenFilterAction alarmbearbeitergruppenFilterAction = new AlarmbearbeitergruppenFilterAction();
 				alarmbearbeitergruppenFilterAction
 						.setReceiver(this.alarmbearbeitergruppenBeans
-								.get(((AbstractAlarmbearbeiterGruppenFilterActionDTO) filterActionDTO)
+								.get(((AbstAlarmbGruppenFilterActionDTO) filterActionDTO)
 										.getReceiver().getUserGroupId()));
 				filterAction = alarmbearbeitergruppenFilterAction;
 			} else if (filterActionDTO instanceof TopicFilterActionDTO) {
@@ -408,7 +408,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 						.createFilterConditionDTOListForFilter(junctorBean
 								.getOperands());
 
-				final JunctorConditionForFilterTreeDTO newDTO = new JunctorConditionForFilterTreeDTO();
+				final JunctorCondForFilterTreeDTO newDTO = new JunctorCondForFilterTreeDTO();
 				newDTO.setCName(junctorBean.getJunctorConditionType()
 						.toString());
 				newDTO.setCDesc(""); //$NON-NLS-1$
@@ -417,7 +417,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 				newDTO.setOperator(junctorBean.getJunctorConditionType());
 
 				conditionDTO = newDTO;
-				((JunctorConditionForFilterTreeDTO) conditionDTO)
+				((JunctorCondForFilterTreeDTO) conditionDTO)
 						.setOperands(new HashSet<FilterConditionDTO>(
 								listForFilter));
 			}
@@ -428,7 +428,7 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 						.createFilterConditionDTOListForFilter(Collections
 								.singletonList(notBean.getFilterbedingungBean()));
 
-				final NegationConditionForFilterTreeDTO newDTO = new NegationConditionForFilterTreeDTO();
+				final NegationCondForFilterTreeDTO newDTO = new NegationCondForFilterTreeDTO();
 
 				newDTO.setCName("NOT"); //$NON-NLS-1$
 				newDTO.setCDesc(""); //$NON-NLS-1$
@@ -584,34 +584,34 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 					.DTO2Bean(((JunctorConditionDTO) filterCondtionDTO)
 							.getSecondFilterCondition()));
 			filterSpecificBean = junctorConditionBean;
-		} else if (filterCondtionDTO instanceof ProcessVariableFilterConditionDTO) {
+		} else if (filterCondtionDTO instanceof ProcessVarFiltCondDTO) {
 			final PVFilterConditionBean filterbedingungBean = new PVFilterConditionBean();
 			filterbedingungBean.setRubrikName(""); //$NON-NLS-1$
 			filterbedingungBean
-					.setChannelName(((ProcessVariableFilterConditionDTO) filterCondtionDTO)
+					.setChannelName(((ProcessVarFiltCondDTO) filterCondtionDTO)
 							.getCPvChannelName());
 			filterbedingungBean
-					.setCompareValue(((ProcessVariableFilterConditionDTO) filterCondtionDTO)
+					.setCompareValue(((ProcessVarFiltCondDTO) filterCondtionDTO)
 							.getCCompValue());
 			filterbedingungBean
-					.setOperator(((ProcessVariableFilterConditionDTO) filterCondtionDTO)
+					.setOperator(((ProcessVarFiltCondDTO) filterCondtionDTO)
 							.getPVOperator());
 			filterbedingungBean
-					.setSuggestedType(((ProcessVariableFilterConditionDTO) filterCondtionDTO)
+					.setSuggestedType(((ProcessVarFiltCondDTO) filterCondtionDTO)
 							.getSuggestedPVType());
 			filterSpecificBean = filterbedingungBean;
-		} else if (filterCondtionDTO instanceof StringArrayFilterConditionDTO) {
+		} else if (filterCondtionDTO instanceof StringArFilterConditionDTO) {
 			final StringArrayFilterConditionBean stringArrayFilterConditionBean = new StringArrayFilterConditionBean();
 			stringArrayFilterConditionBean.setRubrikName(""); //$NON-NLS-1$
 
 			stringArrayFilterConditionBean
-					.setCompareValues(((StringArrayFilterConditionDTO) filterCondtionDTO)
+					.setCompareValues(((StringArFilterConditionDTO) filterCondtionDTO)
 							.getCompareValueStringList());
 			stringArrayFilterConditionBean
-					.setKeyValue(((StringArrayFilterConditionDTO) filterCondtionDTO)
+					.setKeyValue(((StringArFilterConditionDTO) filterCondtionDTO)
 							.getKeyValueEnum());
 			stringArrayFilterConditionBean
-					.setOperator(((StringArrayFilterConditionDTO) filterCondtionDTO)
+					.setOperator(((StringArFilterConditionDTO) filterCondtionDTO)
 							.getOperatorEnum());
 			filterSpecificBean = stringArrayFilterConditionBean;
 		} else if (filterCondtionDTO instanceof StringFilterConditionDTO) {
@@ -655,8 +655,8 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 					.setTimePeriod(((TimeBasedFilterConditionDTO) filterCondtionDTO)
 							.getTimePeriod());
 			filterSpecificBean = timeBasedConditionBean;
-		} else if (filterCondtionDTO instanceof JunctorConditionForFilterTreeDTO) {
-			final JunctorConditionForFilterTreeDTO fcdto = (JunctorConditionForFilterTreeDTO) filterCondtionDTO;
+		} else if (filterCondtionDTO instanceof JunctorCondForFilterTreeDTO) {
+			final JunctorCondForFilterTreeDTO fcdto = (JunctorCondForFilterTreeDTO) filterCondtionDTO;
 			final JunctorConditionForFilterTreeBean jcfftBean = new JunctorConditionForFilterTreeBean();
 			jcfftBean.setJunctorConditionType(fcdto.getOperator());
 			for (final FilterConditionDTO innerFC : fcdto.getOperands()) {
@@ -666,8 +666,8 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 				jcfftBean.addOperand(this.DTO2Bean(innerFC));
 			}
 			bean = jcfftBean;
-		} else if (filterCondtionDTO instanceof NegationConditionForFilterTreeDTO) {
-			final NegationConditionForFilterTreeDTO ncffDTO = (NegationConditionForFilterTreeDTO) filterCondtionDTO;
+		} else if (filterCondtionDTO instanceof NegationCondForFilterTreeDTO) {
+			final NegationCondForFilterTreeDTO ncffDTO = (NegationCondForFilterTreeDTO) filterCondtionDTO;
 			final NotConditionForFilterTreeBean notBean = new NotConditionForFilterTreeBean();
 
 			// TODO (gs) dieses Verhalten hebelt das eindeute hinzufügen in die
@@ -690,8 +690,8 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			bean.setFilterSpecificBean(filterSpecificBean);
 		} else {
 			// FCFFT und NCFFT haben keine speciefic beans!
-			if (!(filterCondtionDTO instanceof JunctorConditionForFilterTreeDTO)
-					&& !(filterCondtionDTO instanceof NegationConditionForFilterTreeDTO)) {
+			if (!(filterCondtionDTO instanceof JunctorCondForFilterTreeDTO)
+					&& !(filterCondtionDTO instanceof NegationCondForFilterTreeDTO)) {
 				throw new IllegalArgumentException(
 						"Unrecognized FilterConditionDTO: " + filterCondtionDTO); //$NON-NLS-1$
 			}
@@ -961,15 +961,15 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 	private void removeJunctorConditionForFilterTreeBeans(
 			final Collection<FilterConditionDTO> filterConditions) {
 		for (final FilterConditionDTO filterConditionDTO : filterConditions) {
-			if (filterConditionDTO instanceof JunctorConditionForFilterTreeDTO) {
-				final JunctorConditionForFilterTreeDTO junctorDTO = (JunctorConditionForFilterTreeDTO) filterConditionDTO;
+			if (filterConditionDTO instanceof JunctorCondForFilterTreeDTO) {
+				final JunctorCondForFilterTreeDTO junctorDTO = (JunctorCondForFilterTreeDTO) filterConditionDTO;
 				this.removeJunctorConditionForFilterTreeBeans(junctorDTO
 						.getOperands());
 				this.filterbedingungBeans.remove(new Integer(junctorDTO
 						.getIFilterConditionID()));
 			}
-			if (filterConditionDTO instanceof NegationConditionForFilterTreeDTO) {
-				final NegationConditionForFilterTreeDTO notDTO = (NegationConditionForFilterTreeDTO) filterConditionDTO;
+			if (filterConditionDTO instanceof NegationCondForFilterTreeDTO) {
+				final NegationCondForFilterTreeDTO notDTO = (NegationCondForFilterTreeDTO) filterConditionDTO;
 				this.removeJunctorConditionForFilterTreeBeans(Collections
 						.singletonList(notDTO.getNegatedFilterCondition()));
 				this.filterbedingungBeans.remove(new Integer(notDTO
@@ -1123,18 +1123,18 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 				continue;
 			}
 
-			if (filterActionType instanceof AlarmbearbeiterFilterActionType) {
-				AlarmbearbeiterFilterActionType type = (AlarmbearbeiterFilterActionType) filterActionType;
-				AbstractAlarmbearbeiterFilterActionDTO actiondto = null;
+			if (filterActionType instanceof AlarmbFilterActionType) {
+				AlarmbFilterActionType type = (AlarmbFilterActionType) filterActionType;
+				AbstAlarmbFilterActionDTO actiondto = null;
 				switch (type) {
 				case EMAIL:
-					actiondto = new AlarmbearbeiterEmailFilterActionDTO();
+					actiondto = new AlarmbEmailFilterActionDTO();
 					break;
 				case SMS:
-					actiondto = new AlarmbearbeiterSMSFilterActionDTO();
+					actiondto = new AlarmbSMSFilterActionDTO();
 					break;
 				case VMAIL:
-					actiondto = new AlarmbearbeiterVoiceMailFilterActionDTO();
+					actiondto = new AlarmbVoiceMailFilterActionDTO();
 					break;
 				}
 				actiondto
@@ -1142,27 +1142,27 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 								.getReceiver()));
 				actiondto.setMessage(filterAction.getMessage());
 				newActionDTOs.add(actiondto);
-			} else if (filterActionType instanceof AlarmbearbeitergruppenFilterActionType) {
-				AlarmbearbeitergruppenFilterActionType type = (AlarmbearbeitergruppenFilterActionType) filterActionType;
-				AbstractAlarmbearbeiterGruppenFilterActionDTO actiondto = null;
+			} else if (filterActionType instanceof AlarmbGruppenFilterActionType) {
+				AlarmbGruppenFilterActionType type = (AlarmbGruppenFilterActionType) filterActionType;
+				AbstAlarmbGruppenFilterActionDTO actiondto = null;
 				switch (type) {
 				case EMAIL:
-					actiondto = new AlarmbearbeiterGruppenEmailFilterActionDTO();
+					actiondto = new AlarmbGruppenEmailFilterActionDTO();
 					break;
 				case EMAIL_Best:
-					actiondto = new AlarmbearbeiterGruppenEmailBestFilterActionDTO();
+					actiondto = new AlarmbGruppenEmailBestFilterActionDTO();
 					break;
 				case SMS:
-					actiondto = new AlarmbearbeiterGruppenSMSFilterActionDTO();
+					actiondto = new AlarmbGruppenSMSFilterActionDTO();
 					break;
 				case SMS_Best:
-					actiondto = new AlarmbearbeiterGruppenSMSBestFilterActionDTO();
+					actiondto = new AlarmbGruppenSMSBestFilterActionDTO();
 					break;
 				case VMAIL:
-					actiondto = new AlarmbearbeiterGruppenVMailFilterActionDTO();
+					actiondto = new AlarmbGruppenVMailFilterActionDTO();
 					break;
 				case VMAIL_Best:
-					actiondto = new AlarmbearbeiterGruppenVMailBestFilterActionDTO();
+					actiondto = new AlarmbGruppenVMailBestFilterActionDTO();
 					break;
 				}
 				actiondto
@@ -1244,13 +1244,13 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			final PVFilterConditionBean specificBean = (PVFilterConditionBean) bean
 					.getFilterSpecificBean();
 
-			ProcessVariableFilterConditionDTO pvFilterConditionDTO = null;
+			ProcessVarFiltCondDTO pvFilterConditionDTO = null;
 			final FilterConditionDTO dto4Bean = this.findDTO4Bean(bean);
 			if ((dto4Bean != null)
-					&& (dto4Bean instanceof ProcessVariableFilterConditionDTO)) {
-				pvFilterConditionDTO = (ProcessVariableFilterConditionDTO) dto4Bean;
+					&& (dto4Bean instanceof ProcessVarFiltCondDTO)) {
+				pvFilterConditionDTO = (ProcessVarFiltCondDTO) dto4Bean;
 			} else {
-				pvFilterConditionDTO = new ProcessVariableFilterConditionDTO();
+				pvFilterConditionDTO = new ProcessVarFiltCondDTO();
 				inserted = true;
 			}
 			pvFilterConditionDTO.setCPvChannelName(specificBean
@@ -1287,16 +1287,16 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			final StringArrayFilterConditionBean specificBean = (StringArrayFilterConditionBean) bean
 					.getFilterSpecificBean();
 
-			StringArrayFilterConditionDTO stringArrayFilterConditionDTO = null;
+			StringArFilterConditionDTO stringArrayFilterConditionDTO = null;
 			final FilterConditionDTO dto4Bean = this.findDTO4Bean(bean);
 			if ((dto4Bean != null)
-					&& (dto4Bean instanceof StringArrayFilterConditionDTO)) {
-				stringArrayFilterConditionDTO = (StringArrayFilterConditionDTO) dto4Bean;
+					&& (dto4Bean instanceof StringArFilterConditionDTO)) {
+				stringArrayFilterConditionDTO = (StringArFilterConditionDTO) dto4Bean;
 				// stringArrayFilterConditionDTO
 				// .setCompareValues(new
 				// LinkedList<StringArrayFilterConditionCompareValuesDTO>());
 			} else {
-				stringArrayFilterConditionDTO = new StringArrayFilterConditionDTO();
+				stringArrayFilterConditionDTO = new StringArFilterConditionDTO();
 				inserted = true;
 			}
 
@@ -1315,13 +1315,13 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 			// .add(stringArrayFilterConditionCompareValuesDTO);
 			// }
 			// }
-			final List<StringArrayFilterConditionCompareValuesDTO> currentCompareValues = new LinkedList<StringArrayFilterConditionCompareValuesDTO>();
+			final List<StrgArFiltCondCompValDTO> currentCompareValues = new LinkedList<StrgArFiltCondCompValDTO>();
 			for (final String compValue : specificBean.getCompareValues()) {
 				// currentCompareValues.add(this.getCompareValueDTO(
 				// oldCompareValues, bean, compValue));
 
-				final StringArrayFilterConditionCompareValuesDTO newCompValue = new StringArrayFilterConditionCompareValuesDTO();
-				final StringArrayFilterConditionCompareValuesDTOPK pk = new StringArrayFilterConditionCompareValuesDTOPK();
+				final StrgArFiltCondCompValDTO newCompValue = new StrgArFiltCondCompValDTO();
+				final StrgArFiltCondCompValDTOPK pk = new StrgArFiltCondCompValDTOPK();
 				pk.setCompValue(compValue);
 				pk.setFilterConditionRef(bean.getFilterbedinungID());
 				newCompValue.setPk(pk);
@@ -1400,14 +1400,14 @@ public class ConfigurationBeanServiceImpl implements ConfigurationBeanService {
 	public boolean isDeleteable(IConfigurationBean bean) {
 		if (bean instanceof AlarmbearbeiterBean) {
 			if (isReferencedByFilterAction(bean,
-					AlarmbearbeiterFilterActionType.class)
+					AlarmbFilterActionType.class)
 					|| isReferencedByAlarmbearbeiterGruppen(bean)) {
 				return false;
 			}
 		}
 		if (bean instanceof AlarmbearbeiterGruppenBean) {
 			if (isReferencedByFilterAction(bean,
-					AlarmbearbeitergruppenFilterActionType.class)) {
+					AlarmbGruppenFilterActionType.class)) {
 				return false;
 			}
 		}

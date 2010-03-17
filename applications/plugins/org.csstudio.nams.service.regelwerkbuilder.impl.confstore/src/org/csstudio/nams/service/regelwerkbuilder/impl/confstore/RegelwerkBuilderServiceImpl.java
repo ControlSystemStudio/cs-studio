@@ -24,10 +24,10 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.Junc
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionForFilterTreeDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.NegationConditionForFilterTreeDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.ProcessVariableFilterConditionDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorCondForFilterTreeDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.NegationCondForFilterTreeDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.ProcessVarFiltCondDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArFilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringFilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.TimeBasedFilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.TimeBasedType;
@@ -173,7 +173,7 @@ public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 		case STRING_ARRAY: {
 			final List<VersandRegel> versandRegels = new LinkedList<VersandRegel>();
 
-			final StringArrayFilterConditionDTO stringArayCondition = (StringArrayFilterConditionDTO) filterConditionDTO;
+			final StringArFilterConditionDTO stringArayCondition = (StringArFilterConditionDTO) filterConditionDTO;
 
 			final List<String> compareValueList = stringArayCondition
 					.getCompareValueStringList();
@@ -190,7 +190,7 @@ public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 					.toArray(new VersandRegel[versandRegels.size()]));
 		}
 		case PV: {
-			final ProcessVariableFilterConditionDTO pvCondition = (ProcessVariableFilterConditionDTO) filterConditionDTO;
+			final ProcessVarFiltCondDTO pvCondition = (ProcessVarFiltCondDTO) filterConditionDTO;
 			return new ProcessVariableRegel(
 					RegelwerkBuilderServiceImpl.pvConnectionService,
 					pvCondition.getPVAddress(), pvCondition.getPVOperator(),
@@ -198,12 +198,12 @@ public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 							.getCCompValue());
 		}
 		case NEGATION: {
-			final NegationConditionForFilterTreeDTO notCondition = (NegationConditionForFilterTreeDTO) filterConditionDTO;
+			final NegationCondForFilterTreeDTO notCondition = (NegationCondForFilterTreeDTO) filterConditionDTO;
 			return new NichtVersandRegel(this.createVersandRegel(notCondition
 					.getNegatedFilterCondition()));
 		}
 		case JUNCTOR_FOR_TREE: {
-			final JunctorConditionForFilterTreeDTO junctorCondition = (JunctorConditionForFilterTreeDTO) filterConditionDTO;
+			final JunctorCondForFilterTreeDTO junctorCondition = (JunctorCondForFilterTreeDTO) filterConditionDTO;
 
 			final Set<FilterConditionDTO> operands = junctorCondition
 					.getOperands();

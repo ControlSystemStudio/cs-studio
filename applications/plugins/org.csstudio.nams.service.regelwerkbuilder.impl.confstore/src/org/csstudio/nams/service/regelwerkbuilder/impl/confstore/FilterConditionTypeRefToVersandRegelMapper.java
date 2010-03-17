@@ -2,10 +2,10 @@ package org.csstudio.nams.service.regelwerkbuilder.impl.confstore;
 
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionForFilterTreeDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.NegationConditionForFilterTreeDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.ProcessVariableFilterConditionDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorCondForFilterTreeDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.NegationCondForFilterTreeDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.ProcessVarFiltCondDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArFilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringFilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.TimeBasedFilterConditionDTO;
 
@@ -20,11 +20,11 @@ public enum FilterConditionTypeRefToVersandRegelMapper {
 
 	STRING(StringFilterConditionDTO.class), TIMEBASED(
 			TimeBasedFilterConditionDTO.class), STRING_ARRAY(
-			StringArrayFilterConditionDTO.class), PV(
-			ProcessVariableFilterConditionDTO.class), JUNCTOR(
+			StringArFilterConditionDTO.class), PV(
+			ProcessVarFiltCondDTO.class), JUNCTOR(
 			JunctorConditionDTO.class), JUNCTOR_FOR_TREE(
-			JunctorConditionForFilterTreeDTO.class), NEGATION(
-			NegationConditionForFilterTreeDTO.class);
+			JunctorCondForFilterTreeDTO.class), NEGATION(
+			NegationCondForFilterTreeDTO.class);
 
 	public static FilterConditionTypeRefToVersandRegelMapper valueOf(
 			final Class<? extends FilterConditionDTO> clazz) {

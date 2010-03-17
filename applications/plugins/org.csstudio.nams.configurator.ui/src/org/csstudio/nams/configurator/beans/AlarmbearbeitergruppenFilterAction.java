@@ -1,6 +1,6 @@
 package org.csstudio.nams.configurator.beans;
 
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbearbeitergruppenFilterActionType;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.AlarmbGruppenFilterActionType;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.filterActions.FilterActionType;
 
 /**
@@ -10,10 +10,10 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.filt
  * 
  */
 public class AlarmbearbeitergruppenFilterAction extends
-		AbstractFilterAction<AlarmbearbeitergruppenFilterActionType> {
+		AbstractFilterAction<AlarmbGruppenFilterActionType> {
 
 	public AlarmbearbeitergruppenFilterAction() {
-		super(AlarmbearbeitergruppenFilterActionType.class);
+		super(AlarmbGruppenFilterActionType.class);
 	}
 
 	@Override
@@ -26,7 +26,7 @@ public class AlarmbearbeitergruppenFilterAction extends
 	}
 
 	public FilterActionType[] getFilterActionTypeValues() {
-		return AlarmbearbeitergruppenFilterActionType.values();
+		return AlarmbGruppenFilterActionType.values();
 	}
 
 }

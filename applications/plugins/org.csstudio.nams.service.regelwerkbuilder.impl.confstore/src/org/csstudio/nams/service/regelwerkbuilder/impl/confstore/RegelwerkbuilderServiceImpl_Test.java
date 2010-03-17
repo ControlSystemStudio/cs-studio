@@ -27,11 +27,11 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.exce
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.UnknownConfigurationElementError;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionForFilterTreeDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.NegationConditionForFilterTreeDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionCompareValuesDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionCompareValuesDTOPK;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorCondForFilterTreeDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.NegationCondForFilterTreeDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StrgArFiltCondCompValDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StrgArFiltCondCompValDTOPK;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArFilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringFilterConditionDTO;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.simpledal.ConnectionException;
@@ -174,20 +174,20 @@ public class RegelwerkbuilderServiceImpl_Test extends TestCase {
 
 	@Test
 	public void testBuildStringArrayCondition() {
-		StringArrayFilterConditionDTO arrayDTO = new StringArrayFilterConditionDTO();
+		StringArFilterConditionDTO arrayDTO = new StringArFilterConditionDTO();
 		arrayDTO.setKeyValue(MessageKeyEnum.HOST);
 		arrayDTO.setOperatorEnum(StringRegelOperator.OPERATOR_TEXT_EQUAL);
 
-		ArrayList<StringArrayFilterConditionCompareValuesDTO> arrayList = new ArrayList<StringArrayFilterConditionCompareValuesDTO>();
+		ArrayList<StrgArFiltCondCompValDTO> arrayList = new ArrayList<StrgArFiltCondCompValDTO>();
 
-		StringArrayFilterConditionCompareValuesDTO compareValuesDTO = new StringArrayFilterConditionCompareValuesDTO();
-		StringArrayFilterConditionCompareValuesDTOPK valuesDTO_PK = new StringArrayFilterConditionCompareValuesDTOPK();
+		StrgArFiltCondCompValDTO compareValuesDTO = new StrgArFiltCondCompValDTO();
+		StrgArFiltCondCompValDTOPK valuesDTO_PK = new StrgArFiltCondCompValDTOPK();
 		valuesDTO_PK.setCompValue("gnarf");
 		compareValuesDTO.setPk(valuesDTO_PK);
 		arrayList.add(compareValuesDTO);
 
-		compareValuesDTO = new StringArrayFilterConditionCompareValuesDTO();
-		valuesDTO_PK = new StringArrayFilterConditionCompareValuesDTOPK();
+		compareValuesDTO = new StrgArFiltCondCompValDTO();
+		valuesDTO_PK = new StrgArFiltCondCompValDTOPK();
 		valuesDTO_PK.setCompValue("gnarf2");
 		compareValuesDTO.setPk(valuesDTO_PK);
 		arrayList.add(compareValuesDTO);
@@ -245,7 +245,7 @@ public class RegelwerkbuilderServiceImpl_Test extends TestCase {
 
 	@Test
 	public void testBuildJunctorCondtionTreeNegation() {
-		NegationConditionForFilterTreeDTO negationDTO = new NegationConditionForFilterTreeDTO();
+		NegationCondForFilterTreeDTO negationDTO = new NegationCondForFilterTreeDTO();
 		negationDTO.setNegatedFilterCondition(childDTO);
 		VersandRegel zielRegel = new NichtVersandRegel(childRegel);
 		assertEquals(zielRegel, regelwerkBuilderService
@@ -254,7 +254,7 @@ public class RegelwerkbuilderServiceImpl_Test extends TestCase {
 
 	@Test
 	public void testBuildJunctorConditionTreeAnd() {
-		JunctorConditionForFilterTreeDTO junctorDTO = new JunctorConditionForFilterTreeDTO();
+		JunctorCondForFilterTreeDTO junctorDTO = new JunctorCondForFilterTreeDTO();
 		junctorDTO.setOperator(JunctorConditionType.AND);
 		Set<FilterConditionDTO> childConditions = new HashSet<FilterConditionDTO>();
 		childConditions.add(childDTO);
@@ -271,7 +271,7 @@ public class RegelwerkbuilderServiceImpl_Test extends TestCase {
 
 	@Test
 	public void testBuildJunctorConditionTreeOr() {
-		JunctorConditionForFilterTreeDTO junctorDTO = new JunctorConditionForFilterTreeDTO();
+		JunctorCondForFilterTreeDTO junctorDTO = new JunctorCondForFilterTreeDTO();
 		junctorDTO.setOperator(JunctorConditionType.OR);
 		Set<FilterConditionDTO> childConditions = new HashSet<FilterConditionDTO>();
 		childConditions.add(childDTO);
