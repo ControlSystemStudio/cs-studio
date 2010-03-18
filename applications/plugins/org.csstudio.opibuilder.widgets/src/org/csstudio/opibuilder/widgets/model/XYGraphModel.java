@@ -81,8 +81,8 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 		POINT_STYLE("point_style", "Point Style"),
 		POINT_SIZE("point_size", "Point Size"),
 		ANTI_ALIAS("anti_alias", "Anti Alias"),
-		UPDATE_MODE("update_mode", "UpdateMode"),
-		CONCATENATE_DATA("contatenate_data", "Contatenate Data");
+		UPDATE_MODE("update_mode", "Update Mode"),
+		CONCATENATE_DATA("concatenate_data", "Concatenate Data");
 		public String propIDPre;
 		public String description;
 		
