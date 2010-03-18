@@ -9,7 +9,6 @@ package org.csstudio.archivereader;
  *  
  *  @author Kay Kasemir
  */
-@SuppressWarnings("nls")
 public class UnknownChannelException extends Exception
 {
     /** To avoid warning from missing serialization ID */
@@ -20,6 +19,6 @@ public class UnknownChannelException extends Exception
      */
     public UnknownChannelException(final String channel)
     {
-        super("Unknown channel name: " + channel);
+        super(channel);
     }
 }

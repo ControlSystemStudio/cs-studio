@@ -9,6 +9,7 @@ import java.util.HashMap;
 import org.csstudio.archivereader.ArchiveInfo;
 import org.csstudio.archivereader.ArchiveReader;
 import org.csstudio.archivereader.Severity;
+import org.csstudio.archivereader.UnknownChannelException;
 import org.csstudio.archivereader.ValueIterator;
 import org.csstudio.platform.data.ISeverity;
 import org.csstudio.platform.data.ITimestamp;
@@ -250,7 +251,7 @@ public class RDBArchiveReader implements ArchiveReader
 
     /** {@inheritDoc} */
     public ValueIterator getRawValues(final int key, final String name,
-            final ITimestamp start, final ITimestamp end) throws Exception
+            final ITimestamp start, final ITimestamp end) throws UnknownChannelException, Exception
     {
         final int channel_id = getChannelID(name);
         return new RawSampleIterator(this, channel_id, start, end);
@@ -258,7 +259,7 @@ public class RDBArchiveReader implements ArchiveReader
 
     /** {@inheritDoc} */
     public ValueIterator getOptimizedValues(final int key, final String name,
-            final ITimestamp start, final ITimestamp end, int count) throws Exception
+            final ITimestamp start, final ITimestamp end, int count) throws UnknownChannelException, Exception
     {
         if (count <= 0)
             throw new Exception("Count must be positive");
@@ -275,9 +276,10 @@ public class RDBArchiveReader implements ArchiveReader
     
     /** @param name Channel name
      *  @return Numeric channel ID
+     *  @throws UnknownChannelException when channel not known
      *  @throws Exception on error
      */
-    private int getChannelID(final String name) throws Exception
+    private int getChannelID(final String name) throws UnknownChannelException, Exception
     {
         final PreparedStatement statement =
             rdb.getConnection().prepareStatement(sql.channel_sel_by_name);
@@ -287,7 +289,7 @@ public class RDBArchiveReader implements ArchiveReader
             statement.setString(1, name);
             final ResultSet result = statement.executeQuery();
             if (!result.next())
-                throw new Exception("Unknown channel name '" + name + "'");
+                throw new UnknownChannelException(name);
             return result.getInt(1);
         }
         finally

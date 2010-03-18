@@ -113,10 +113,11 @@ public interface ArchiveReader
      *  @param start Start time
      *  @param end End time
      *  @return ValueIterator for the 'raw' samples in the archive
+     *  @throws UnknownChannelException when channel is not known
      *  @throws Exception on error
      */
     public ValueIterator getRawValues(int key, String name,
-            ITimestamp start, ITimestamp end) throws Exception;
+            ITimestamp start, ITimestamp end) throws UnknownChannelException, Exception;
 
     /** Read optimized samples from the archive.
      *  <p>
@@ -137,10 +138,11 @@ public interface ArchiveReader
      *  @param end End time
      *  @param count Hint for number of values
      *  @return ValueIterator for the 'raw' samples in the archive
+     *  @throws UnknownChannelException when channel is not known
      *  @throws Exception on error
      */
     public ValueIterator getOptimizedValues(int key, String name,
-        ITimestamp start, ITimestamp end, int count) throws Exception;
+        ITimestamp start, ITimestamp end, int count) throws UnknownChannelException, Exception;
     
     /** Cancel an ongoing archive query.
      *  It's up to the implementation to support this for all queries,
