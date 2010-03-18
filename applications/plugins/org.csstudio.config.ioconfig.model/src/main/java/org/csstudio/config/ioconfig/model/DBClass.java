@@ -87,8 +87,6 @@ public class DBClass {
      */
     public void setId(final int id) {
         this._id = id;
-//        CentralLogger.getInstance().info(this, "Id-\t"+id+"\tTime\t"+System.currentTimeMillis()+"\tClass\t"+
-//               this.getClass().getSimpleName()+"");
     }
     
     /**
