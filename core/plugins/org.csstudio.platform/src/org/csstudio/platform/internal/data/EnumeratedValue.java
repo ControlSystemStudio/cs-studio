@@ -62,7 +62,7 @@ public class EnumeratedValue extends Value implements IEnumeratedValue
 	    final StringBuffer buf = new StringBuffer();
 		if (getSeverity().hasValue())
 		{
-			if(how == Format.Default){
+			if(how == Format.Default || how == Format.String){
 				buf.append(enum_meta.getState(values[0]));
 				for (int i = 1; i < values.length; i++)
 				{
