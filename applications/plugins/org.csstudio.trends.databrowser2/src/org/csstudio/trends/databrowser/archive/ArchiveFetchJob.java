@@ -133,8 +133,9 @@ public class ArchiveFetchJob extends Job
                     value_iter.close();
                 }
                 catch (Exception ex)
-                {
-                    listener.archiveFetchFailed(ArchiveFetchJob.this, archive, ex);
+                {   // Tell listener unless it's the result of a 'cancel'?
+                    if (! cancelled)
+                        listener.archiveFetchFailed(ArchiveFetchJob.this, archive, ex);
                     break;
                 }
                 finally
