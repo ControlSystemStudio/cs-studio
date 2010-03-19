@@ -107,7 +107,6 @@ public final class TextInputModel extends AbstractWidgetModel {
 		addArrayOptionProperty(PROP_TEXT_ALIGNMENT, "Text Alignment", WidgetPropertyCategory.Display, TextAlignmentEnum.getDisplayNames(),
 				TextAlignmentEnum.CENTER.getIndex());
 		addBooleanProperty(PROP_TRANSPARENT, "Transparent Background", WidgetPropertyCategory.Display, true);
-		// FIXME: 2008-07-11: swende: Use an OptionProperty instead!
 		addArrayOptionProperty(PROP_VALUE_TYPE, "Value Type", WidgetPropertyCategory.Behaviour, TextTypeEnum.getDisplayNames(),
 				TextTypeEnum.DOUBLE.getIndex());
 		addIntegerProperty(PROP_PRECISION, "Decimal places", WidgetPropertyCategory.Behaviour, 2, 0, 10);

@@ -23,7 +23,6 @@
 
 import org.csstudio.sds.components.model.ArcModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableArcFigure;
-import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.eclipse.draw2d.IFigure;
@@ -57,7 +56,6 @@ public final class ArcEditPart extends AbstractWidgetEditPart {
 		
 		figure.setTransparent(model.getTransparent());
 		figure.setBorderWidth(model.getBorderWidth());
-		figure.setBorderColor(getModelColor(AbstractWidgetModel.PROP_BORDER_COLOR));
 		figure.setStartAngle(model.getStartAngle());
 		figure.setAngle(model.getAngle());
 		figure.setLineWidth(model.getLineWidth());
@@ -71,14 +69,6 @@ public final class ArcEditPart extends AbstractWidgetEditPart {
 	 * Register color property change handlers.
 	 */
 	protected void registerColorPropertyHandlers() {
-		// border
-		setPropertyChangeHandler(ArcModel.PROP_BORDER_COLOR, new ColorChangeHander<RefreshableArcFigure>(){
-			@Override
-			protected void doHandle(RefreshableArcFigure figure, Color color) {
-				figure.setBorderColor(color);
-			}
-		});
-		
 		// fill
 		setPropertyChangeHandler(ArcModel.PROP_FILLCOLOR, new ColorChangeHander<RefreshableArcFigure>(){
 			@Override

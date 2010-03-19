@@ -18,14 +18,14 @@ public class ActionButtonDataPostProcessor extends
 	}
 
 	private static final class EnsureInvariantsCommand extends Command {
-		private ActionButtonModel widget;
-		private String propertyId;
+		private ActionButtonModel _widget;
+		private String _propertyId;
 		private CompoundCommand chain;
 
 		private EnsureInvariantsCommand(ActionButtonModel widget,
 				String propertyId) {
-			this.widget = widget;
-			this.propertyId = propertyId;
+			_widget = widget;
+			_propertyId = propertyId;
 		}
 
 		@Override
@@ -33,7 +33,7 @@ public class ActionButtonDataPostProcessor extends
 			if (chain == null) {
 				chain = new CompoundCommand();
 
-				ActionData data = widget.getActionDataProperty(propertyId);
+				ActionData data = _widget.getActionDataProperty(_propertyId);
 				int size = data.getWidgetActions().size();
 
 				String[] propertyIds = new String[] {
@@ -42,11 +42,11 @@ public class ActionButtonDataPostProcessor extends
 
 				if (size == 0) {
 					for (String propertyId : propertyIds) {
-						chain.add(new HidePropertyCommand(widget, propertyId, propertyId));
+						chain.add(new HidePropertyCommand(_widget, propertyId, _propertyId));
 					}
 				} else {
 					for (String propertyId : propertyIds) {
-						chain.add(new ShowPropertyCommand(widget, propertyId, propertyId));
+						chain.add(new ShowPropertyCommand(_widget, propertyId, _propertyId));
 					}
 				}
 			}

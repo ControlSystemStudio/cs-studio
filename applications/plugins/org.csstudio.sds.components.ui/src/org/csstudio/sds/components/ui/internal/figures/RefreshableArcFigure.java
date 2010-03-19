@@ -21,7 +21,6 @@
  */
 package org.csstudio.sds.components.ui.internal.figures;
 
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.ui.figures.BorderAdapter;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.util.AntialiasingUtil;
@@ -35,7 +34,6 @@ import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.RGB;
 
 /**
  * An arc figure.
@@ -64,8 +62,6 @@ public final class RefreshableArcFigure extends Shape implements IAdaptable {
      * Border properties.
      */
     private int border_width;
-    
-    private Color border_color;
     
     private boolean filled;
 
@@ -133,11 +129,6 @@ public final class RefreshableArcFigure extends Shape implements IAdaptable {
 
     public int getBorderWidth() {
         return border_width;
-    }
-
-    // FIXME: 18.02.2010: swende: Scheint überflüssig zu sein!
-    public void setBorderColor(final Color color) {
-        border_color = color;
     }
 
     public void setStartAngle(final int newval) {

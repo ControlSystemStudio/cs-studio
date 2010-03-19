@@ -28,7 +28,7 @@ public class SimpleSliderBehavior extends AbstractBehavior<SimpleSliderModel> {
 
 	@Override
 	protected void doProcessConnectionStateChange(SimpleSliderModel widget, ConnectionState connectionState) {
-		// FIXME: 11.03.2010: swende: Keine status-abhängigen Einstellungen?
+		// TODO: 11.03.2010: swende: Keine status-abhängigen Einstellungen?
 	}
 
 	@Override

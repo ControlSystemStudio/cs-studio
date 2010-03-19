@@ -83,8 +83,7 @@ public class ThumbWheelModel extends AbstractWidgetModel {
 		addDoubleProperty(PROP_MIN, "Min", WidgetPropertyCategory.Behaviour, Double.NaN);
 		addDoubleProperty(PROP_MAX, "Max", WidgetPropertyCategory.Behaviour, Double.NaN);
 
-		// FIXME: 18.02.2010: swende: Ist für PROP_WHOLE_DIGITS_PART bereits
-		// angemeldet!? Prüfen!
+		// FIXME: 18.02.2010: swende: Ist für PROP_WHOLE_DIGITS_PART bereits angemeldet!? Von Jörg oder CosyLab zu prüfen!
 		addIntegerProperty(PROP_WHOLE_DIGITS_PART, "Integer digits", WidgetPropertyCategory.Behaviour, 5);
 		addIntegerProperty(PROP_DECIMAL_DIGITS_PART, "Decimal digits", WidgetPropertyCategory.Behaviour, 5);
 

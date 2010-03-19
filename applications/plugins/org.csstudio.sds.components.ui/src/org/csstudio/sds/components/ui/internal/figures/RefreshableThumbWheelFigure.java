@@ -2,7 +2,6 @@ package org.csstudio.sds.components.ui.internal.figures;
 
 import java.util.ArrayList;
 
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.ui.figures.BorderAdapter;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.eclipse.core.runtime.IAdaptable;
@@ -18,7 +17,6 @@ import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.RectangleFigure;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
 
 /**
  * The view for ThumbWheel.
@@ -51,14 +49,20 @@ public class RefreshableThumbWheelFigure extends RectangleFigure implements
 
 	private boolean test;
 
-	// FIXME: 18.02.2010: swende: Farbe ist überfläss
-	private Color internalBorderColor;
-
 	private int internalBorderWidth;
 	
 	private ArrayList<WheelListener> listeners = new ArrayList<WheelListener>();
 
 	private Font wheelFont;
+
+	public RefreshableThumbWheelFigure(int integerWheels, int decimalDigits) {
+		wholePartDigits = integerWheels;
+		decimalPartDigits = decimalDigits;
+	
+		// we will be displaying the widget anyway so I don't see a point in
+		// deferring this till later.
+		createWidgets();
+	}
 
 	public boolean isTest() {
 		return test;
@@ -107,7 +111,6 @@ public class RefreshableThumbWheelFigure extends RectangleFigure implements
 			setConstraint(box, createGridData());
 		}
 
-		setInternalBorderColor(internalBorderColor);
 		setInternalBorderThickness(internalBorderWidth);
 		setWheelFonts(wheelFont);
 
@@ -121,15 +124,6 @@ public class RefreshableThumbWheelFigure extends RectangleFigure implements
 		data.grabExcessVerticalSpace = true;
 		data.grabExcessHorizontalSpace = true;
 		return data;
-	}
-
-	public RefreshableThumbWheelFigure(int integerWheels, int decimalDigits) {
-		wholePartDigits = integerWheels;
-		decimalPartDigits = decimalDigits;
-
-		// we will be displaying the widget anyway so I don't see a point in
-		// deferring this till later.
-		createWidgets();
 	}
 
 	/**
@@ -161,7 +155,6 @@ public class RefreshableThumbWheelFigure extends RectangleFigure implements
 	}
 
 	public void setInternalBorderColor(Color color) {
-		this.internalBorderColor = color;
 		if(color == null){
 			return;
 		}

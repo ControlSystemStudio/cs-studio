@@ -68,7 +68,6 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 		super(true);
 		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 
-		// FIXME: 18.02.2010: swende: Das ist evtl. auch etwas für die neuen Post-Prozessoren!
 		addPropertyChangeListener(PROP_ROTATION, new PropertyChangeAdapter() {
 			public void propertyValueChanged(final Object oldValue, final Object newValue) {
 				setPoints(rotatePoints(_originalPoints.getCopy(), (Double) newValue), false);
