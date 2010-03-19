@@ -106,10 +106,14 @@ public abstract class AbstractWidgetProperty {
 
 	public final void removeAllPropertyChangeListeners(){
 		for(PropertyChangeListener l : pcsDelegate.getPropertyChangeListeners()){
-			if(l instanceof WidgetPropertyChangeListener)
-				((WidgetPropertyChangeListener) l).removeAllHandlers();
+			//if(l instanceof WidgetPropertyChangeListener)
+			//	((WidgetPropertyChangeListener) l).removeAllHandlers();
 			pcsDelegate.removePropertyChangeListener(l);
 		}
+	}
+	
+	public final PropertyChangeListener[] getAllPropertyChangeListeners(){
+		return pcsDelegate.getPropertyChangeListeners();
 	}
 	
 	public final void removePropertyChangeListener(PropertyChangeListener listener){
@@ -142,17 +146,25 @@ public abstract class AbstractWidgetProperty {
 		Object newValue = checkValue(value);
 		if(newValue == null || newValue.equals(propertyValue))
 			return;
-		firePropertyChange(propertyValue, newValue);
-		propertyValue = newValue;		
+		Object oldValue= propertyValue;
+		propertyValue = newValue;
+		firePropertyChange(oldValue, newValue);				
 	}
-	
+		
 	/**Set the property value.
 	 * @param value the value to be set.
-	 * @param fire true if listeners should be fired. otherwise false.
+	 * @param fire true if listeners should be fired regardless the old value. 
+	 * If false, only set the property value without firing listeners.
 	 */
 	public void setPropertyValue(Object value, boolean fire){
 		if(fire){
-			setPropertyValue(value);
+			//do conversion and legally check
+			Object newValue = checkValue(value);
+			if(newValue == null)
+				return;
+			propertyValue = newValue;
+			firePropertyChange(null, newValue);
+				
 		}else{
 			Object newValue = checkValue(value);
 			if(newValue == null || newValue.equals(propertyValue))

@@ -1,14 +1,17 @@
 package org.csstudio.opibuilder.editparts;
 
+import java.beans.PropertyChangeListener;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
+import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.properties.PVValueProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.util.AlarmColorScheme;
 import org.csstudio.opibuilder.util.ConsoleService;
+import org.csstudio.opibuilder.util.OPITimer;
 import org.csstudio.opibuilder.util.UIBundlingThread;
 import org.csstudio.opibuilder.visualparts.BorderFactory;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
@@ -56,6 +59,13 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 	
 	private Border saveBorder;
 	private Color saveForeColor, saveBackColor;
+	
+	//The update from PV will be suppressed for a brief time when writing was performed
+	protected OPITimer updateSuppressTimer;
+	//the task which will be executed when the updateSuppressTimer due.
+	protected Runnable timerTask;
+	private final static int UPDATE_SUPPRESS_TIME = 1000;
+	
 	private interface AlarmSeverity extends ISeverity{
 		public void copy(ISeverity severity);
 	}
@@ -100,7 +110,9 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 		public boolean isOK() {
 			return isOK;
 		}		
-	}; 
+	};
+
+	private PropertyChangeListener[] pvValueListeners; 
 	
 	
 	private void markWidgetAsDisconnected(final String pvName){
@@ -389,11 +401,17 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 	 * @param pvPropId
 	 * @param value
 	 */
-	public void setPVValue(String pvPropId, Object value){
+	public synchronized void setPVValue(String pvPropId, Object value){		
 		final PV pv = pvMap.get(pvPropId);
 		if(pv != null){
 			try {
 				pv.setValue(value);
+				if(updateSuppressTimer == null || timerTask == null)
+					initUpdateSuppressTimer();
+				if(!updateSuppressTimer.isDue())
+					updateSuppressTimer.reset();
+				else
+					startUpdateSuppressTimer();				
 			} catch (final Exception e) {
 				UIBundlingThread.getInstance().addRunnable(new Runnable(){
 					public void run() {
@@ -426,8 +444,48 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 		return null;
 	}
 	
+	/**For PV Control widgets, mark this PV as control PV.
+	 * @param pvPropId the propId of the PV.
+	 */
 	protected void markAsControlPV(String pvPropId){
 		controlPVPropId  = pvPropId;
+		initUpdateSuppressTimer();
+	}
+
+	/**
+	 * Initialize the updateSuppressTimer
+	 */
+	protected synchronized void initUpdateSuppressTimer() {
+		if(updateSuppressTimer == null)
+			updateSuppressTimer = new OPITimer();
+		if(timerTask == null)
+			timerTask = new Runnable() {				
+				public void run() {
+					AbstractWidgetProperty pvValueProperty = 
+						getWidgetModel().getProperty(AbstractPVWidgetModel.PROP_PVVALUE);
+					//recover update
+					if(pvValueListeners != null){
+						for(PropertyChangeListener listener: pvValueListeners){
+							pvValueProperty.addPropertyChangeListener(listener);
+						}
+					}						
+					//forcefully set PV_Value property again					
+					pvValueProperty.setPropertyValue(
+							pvValueProperty.getPropertyValue(), true);
+				}
+			};
+	}
+	
+	/**
+	 * Start the updateSuppressTimer. All property change listeners of PV_Value property will
+	 * temporarily removed until timer is due.
+	 */
+	protected synchronized void startUpdateSuppressTimer(){
+		AbstractWidgetProperty pvValueProperty = 
+			getWidgetModel().getProperty(AbstractPVWidgetModel.PROP_PVVALUE);
+		pvValueListeners = pvValueProperty.getAllPropertyChangeListeners();
+		pvValueProperty.removeAllPropertyChangeListeners();
+		updateSuppressTimer.start(timerTask, UPDATE_SUPPRESS_TIME);
 	}
 	
 	@Override
