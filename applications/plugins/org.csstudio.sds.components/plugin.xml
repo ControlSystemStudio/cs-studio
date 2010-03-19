@@ -210,13 +210,6 @@
             name="Boolean Switch"
             typeId="org.csstudio.sds.components.BooleanSwitch">
       </widgetModelFactory>
-      <widgetModelFactory
-            class="org.csstudio.sds.components.internal.model.XYGraphModelFactory"
-            description="XYGraph"
-            icon="icons/XYGraph.gif"
-            name="XYGraph"
-            typeId="org.csstudio.sds.components.XYGraph">
-      </widgetModelFactory>
    </extension>
    <extension
          point="org.eclipse.help.toc">
