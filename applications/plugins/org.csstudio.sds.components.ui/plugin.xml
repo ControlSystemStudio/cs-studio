@@ -151,4 +151,17 @@
             SwitchID="org.csstudio.sds.components.Switch.trennschalter">
       </Switch>
    </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="false"
+            id="org.csstudio.sds.components.ui.SimpleSliderIncrementContribution"
+            objectClass="org.csstudio.sds.components.ui.internal.editparts.SimpleSliderEditPart">
+         <action
+               class="org.csstudio.sds.components.ui.internal.actions.SimpleSliderIncrementAction"
+               id="org.csstudio.sds.components.ui.SimpleSliderIncrementAction"
+               label="Configure Increment">
+         </action>
+      </objectContribution>
+   </extension>
 </plugin>
