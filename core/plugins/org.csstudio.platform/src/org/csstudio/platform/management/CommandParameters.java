@@ -34,77 +34,77 @@ import java.util.Set;
  * @author Joerg Rathlev
  */
 public final class CommandParameters implements Serializable {
-
-	private static final long serialVersionUID = 2L;
-
-	private final Map<String, Serializable> _values;
-	
-	/**
-	 * Creates a new <code>CommandParameters</code> object.
-	 */
-	public CommandParameters() {
-		_values = new HashMap<String, Serializable>();
-	}
-
-	/**
-	 * Sets a parameter value. The caller is responsible for ensuring that the
-	 * value is a legal value for the specified parameter.
-	 * 
-	 * @param parameterId
-	 *            the identifier of the parameter.
-	 * @param value
-	 *            the parameter value.
-	 * @see CommandParameterDefinition#isLegalParameterValue(Object)
-	 */
-	public void set(String parameterId, Serializable value) {
-		if (parameterId == null || value == null) {
-			throw new NullPointerException("parameterId and value must not be null");
-		}
-		
-		_values.put(parameterId, value);
-	}
-
-	/**
-	 * Returns a parameter value.
-	 * 
-	 * @param parameterId
-	 *            the identifier of the parameter.
-	 * @return the parameter value, or <code>null</code> if no value has been
-	 *         set for the specified parameter.
-	 */
-	public Object get(String parameterId) {
-		if (parameterId == null) {
-			throw new NullPointerException("parameterId must not be null");
-		}
-		
-		return _values.get(parameterId);
-	}
-
-	/**
-	 * Returns the parameter identifiers of the parameters that are set.
-	 * 
-	 * @return an unmodifiable set containing the parameter identifiers.
-	 */
-	public Set<String> identifiers() {
-		return Collections.unmodifiableSet(_values.keySet());
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		boolean first = true;
-		for (Map.Entry<String, Serializable> entry : _values.entrySet()) {
-			if (!first) {
-				builder.append(", ");
-			}
-			builder.append(entry.getKey());
-			builder.append("=");
-			builder.append(entry.getValue().toString());
-			first = false;
-		}
-		return builder.toString();
-	}
+    
+    private static final long serialVersionUID = 2L;
+    
+    private final Map<String, Serializable> _values;
+    
+    /**
+     * Creates a new <code>CommandParameters</code> object.
+     */
+    public CommandParameters() {
+        _values = new HashMap<String, Serializable>();
+    }
+    
+    /**
+     * Sets a parameter value. The caller is responsible for ensuring that the
+     * value is a legal value for the specified parameter.
+     * 
+     * @param parameterId
+     *            the identifier of the parameter.
+     * @param value
+     *            the parameter value.
+     * @see CommandParameterDefinition#isLegalParameterValue(Object)
+     */
+    public void set(final String parameterId, final Serializable value) {
+        if ((parameterId == null) || (value == null)) {
+            throw new NullPointerException("parameterId and value must not be null");
+        }
+        
+        _values.put(parameterId, value);
+    }
+    
+    /**
+     * Returns a parameter value.
+     * 
+     * @param parameterId
+     *            the identifier of the parameter.
+     * @return the parameter value, or <code>null</code> if no value has been
+     *         set for the specified parameter.
+     */
+    public Serializable get(final String parameterId) {
+        if (parameterId == null) {
+            throw new NullPointerException("parameterId must not be null");
+        }
+        
+        return _values.get(parameterId);
+    }
+    
+    /**
+     * Returns the parameter identifiers of the parameters that are set.
+     * 
+     * @return an unmodifiable set containing the parameter identifiers.
+     */
+    public Set<String> identifiers() {
+        return Collections.unmodifiableSet(_values.keySet());
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        final StringBuilder builder = new StringBuilder();
+        boolean first = true;
+        for (final Map.Entry<String, Serializable> entry : _values.entrySet()) {
+            if (!first) {
+                builder.append(", ");
+            }
+            builder.append(entry.getKey());
+            builder.append("=");
+            builder.append(entry.getValue().toString());
+            first = false;
+        }
+        return builder.toString();
+    }
 }

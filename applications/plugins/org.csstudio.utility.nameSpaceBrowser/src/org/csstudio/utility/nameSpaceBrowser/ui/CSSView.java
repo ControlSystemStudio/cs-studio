@@ -27,7 +27,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.Random;
 
 import org.csstudio.platform.model.IControlSystemItem;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
@@ -39,7 +38,6 @@ import org.csstudio.utility.nameSpaceBrowser.utility.Automat.Ereignis;
 import org.csstudio.utility.nameSpaceBrowser.utility.Automat.Zustand;
 import org.csstudio.utility.namespace.utility.ControlSystemItem;
 import org.csstudio.utility.namespace.utility.NameSpaceResultList;
-import org.csstudio.utility.namespace.utility.ProcessVariable;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -84,23 +82,23 @@ import org.eclipse.ui.PlatformUI;
  * 
  *         CSSView is a NameSpaceBrowser View-Element. Composed of - A Group with name of "Type" - A
  *         Filter: Textfield [filter] - A List of Elements - is the Element a IProcessVariable
- * 
- * 
  */
 public class CSSView extends Composite implements Observer {
     
     class CSSLabelProvider implements ILabelProvider {
         
-        public void addListener(final ILabelProviderListener listener) {
-        }
-        
-        public void dispose() {
-        }
-        
+        /**
+         * (@inheritDoc)
+         */
+        @Override
         public Image getImage(final Object element) {
             return null;
         }
         
+        /**
+         * (@inheritDoc)
+         */
+        @Override
         public String getText(final Object element) {
             if (element instanceof IControlSystemItem) {
                 final String[] name = ((IControlSystemItem) element).getName().split("[/ ]");
@@ -109,19 +107,47 @@ public class CSSView extends Composite implements Observer {
                 return element.toString();
             }
         }
-        
+        /**
+         * (@inheritDoc)
+         */
+        @Override
         public boolean isLabelProperty(final Object element, final String property) {
             return false;
         }
         
-        public void removeListener(final ILabelProviderListener listener) {
+        /**
+         * (@inheritDoc)
+         */
+        @Override
+        public void addListener(final ILabelProviderListener listener) {
+            // Empty
         }
         
+        /**
+         * (@inheritDoc)
+         */
+        @Override
+        public void dispose() {
+            // Empty
+        }
+        
+        /**
+         * (@inheritDoc)
+         */
+        @Override
+        public void removeListener(final ILabelProviderListener listener) {
+            // Empty
+        }
     }
-    private static final int JAVA_REG_EXP = 1; // FIXME (bknerr) : AntiPattern! Use Enum
-    private static final int JAVA_REG_EXP_NO_CASE = 2;
     
-    private static final int SIMPLE_WIN = 3;
+    
+    private static enum RegExpParam {
+        JAVA_REG_EXP,
+        JAVA_REG_EXP_NO_CASE,
+        SIMPLE_WIN;
+    }
+    
+    
     // UI elements
     private final Display _display;
     private final Composite _parent;
@@ -149,10 +175,7 @@ public class CSSView extends Composite implements Observer {
     
     private String _fixFirst;
     
-    private final long _id;
-    
-    public CSSView(
-                   final Composite parent,
+    public CSSView(final Composite parent,
                    final Automat automat,
                    final NameSpace nameSpace,
                    final IWorkbenchPartSite site,
@@ -168,8 +191,7 @@ public class CSSView extends Composite implements Observer {
         makeListField(selection);
     }
     
-    public CSSView(
-                   final Composite parent,
+    public CSSView(final Composite parent,
                    final Automat automat,
                    final NameSpace nameSpace,
                    final IWorkbenchPartSite site,
@@ -189,8 +211,14 @@ public class CSSView extends Composite implements Observer {
         makeListField(selection);
     }
     
-    private CSSView(final Composite parent, final Automat automat, final NameSpace nameSpace,
-                    final IWorkbenchPartSite site, final String defaultFilter, final String[] headlines, final int level, final NameSpaceResultList resultList) {
+    private CSSView(final Composite parent,
+                    final Automat automat,
+                    final NameSpace nameSpace,
+                    final IWorkbenchPartSite site,
+                    final String defaultFilter,
+                    final String[] headlines,
+                    final int level,
+                    final NameSpaceResultList resultList) {
         super(parent, SWT.NONE);
         _display = parent.getDisplay();
         
@@ -204,10 +232,6 @@ public class CSSView extends Composite implements Observer {
         
         init();
         
-        // FIXME (bknerr) : _id is never read ?
-        final Random rand = new Random();
-        _id = rand.nextLong();
-        
         setObservable(resultList); // FIXME (bknerr) : Antipattern - herein 'this' pointer is used although object is not completely constructed
     }
     
@@ -220,6 +244,7 @@ public class CSSView extends Composite implements Observer {
             _hasChild = false;
             _child.dispose();
             while (!_child.isDisposed()) {
+                // Empty // TODO (bknerr) :
             }
         }
         
@@ -251,22 +276,13 @@ public class CSSView extends Composite implements Observer {
         } else {
             _filter.setText(_defaultPVFilter);
         }
-        boolean first = true;
+        
         for (final ControlSystemItem row : list) {
-            
-            // FIXME (bknerr) : just insert row (CSI) in map - instanceof checks would still yield PV!!!
-            if (row instanceof ProcessVariable) {
-                final ProcessVariable pv = (ProcessVariable) row;
-                _itemList.put(pv.getName(), pv);
-            } else {
-                _itemList.put(row.getName(), row);
-            }
-            
-            // FIXME (bknerr) : independent of loop invariants! move out
-            if (first) {
-                first = false;
-                _group.setText(_headlines[_level]);
-            }
+            _itemList.put(row.getName(), row);
+        }
+        
+        if (!list.isEmpty()) {
+            _group.setText(_headlines[_level]);
         }
     }
     
@@ -317,32 +333,16 @@ public class CSSView extends Composite implements Observer {
         // The first element is the "All" element
         if ((_tableViewer.getTable().getSelectionIndex() > _start) || (_fixFirst != null)) {
             
-            // FIXME (bknerr) : is difference between PC and CSI important here ?
-            // only getPath is required which is the very same code !
-            
-            
-            //			if (itemList.get(_tableViewer.getSelection().toString().substring(1,
-            //					_tableViewer.getSelection().toString().length() - 1)) instanceof ProcessVariable) {
-            
             final String selectionString = _tableViewer.getSelection().toString();
             final String stringWithoutBrackets = selectionString.substring(1, selectionString.length() - 1);
-            final ControlSystemItem controlSystemItem = _itemList.get(stringWithoutBrackets);
+            final ControlSystemItem csi = _itemList.get(stringWithoutBrackets);
             
-            if (controlSystemItem instanceof ProcessVariable) {
-                final ProcessVariable pv = (ProcessVariable) controlSystemItem;
-                
-                _child = new CSSView(_parent, _automat, _nameSpace, _site, _defaultPVFilter, pv.getPath(), _headlines, _level + 1, _resultList.getNew()); //$NON-NLS-1$
-                
+            if (_fixFirst == null) {
+                _child =
+                    new CSSView(_parent, _automat, _nameSpace, _site, _defaultPVFilter, csi.getPath(), _headlines, _level + 1, _resultList.getNew()); //$NON-NLS-1$
             } else {
-                final ControlSystemItem csi = controlSystemItem;
-                
-                if (_fixFirst == null) {
-                    _child =
-                        new CSSView(_parent, _automat, _nameSpace, _site, _defaultPVFilter, csi.getPath(), _headlines, _level + 1, _resultList.getNew()); //$NON-NLS-1$
-                } else {
-                    _child =
-                        new CSSView(_parent, _automat, _nameSpace, _site, _defaultPVFilter, csi.getPath(), _headlines, _level + 1, _resultList.getNew(), _fixFirst); //$NON-NLS-1$
-                }
+                _child =
+                    new CSSView(_parent, _automat, _nameSpace, _site, _defaultPVFilter, csi.getPath(), _headlines, _level + 1, _resultList.getNew(), _fixFirst); //$NON-NLS-1$
             }
         } else {
             
@@ -352,8 +352,6 @@ public class CSSView extends Composite implements Observer {
             final String path = item.getPath();
             final String[] fields = path.split("=");
             final String df = fields[0] + "=*,";
-            
-            //final String df = values.toArray(new ControlSystemItem[0])[1].getPath().split("=")[0] + "=*,"; //$NON-NLS-1$ //$NON-NLS-2$
             
             _child = new CSSView(_parent, _automat, _nameSpace, _site, _defaultPVFilter, df, _headlines, _level + 1, _resultList.getNew()); //$NON-NLS-1$
         }
@@ -513,7 +511,7 @@ public class CSSView extends Composite implements Observer {
      * @return true match search and regExp and false don´t match
      */
     protected boolean searchString(final String search1, final String regExp) {
-        return searchString(search1, regExp, SIMPLE_WIN);
+        return searchString(search1, regExp, RegExpParam.SIMPLE_WIN);
     }
     
     /**
@@ -532,7 +530,7 @@ public class CSSView extends Composite implements Observer {
      * @return true match search and regExp and false don´t match
      */
     
-    protected boolean searchString(final String search1, final String regExp, final int searchTyp) { // FIXME (bknerr) : encapsulate somewhere else !
+    protected boolean searchString(final String search1, final String regExp, final RegExpParam searchTyp) { // FIXME (bknerr) : encapsulate somewhere else !
         switch (searchTyp) {
             case JAVA_REG_EXP:
                 return search1.matches(regExp);
@@ -571,7 +569,6 @@ public class CSSView extends Composite implements Observer {
     private void workItemList() {
         // fill the List
         if ((_itemList != null) && (_itemList.size() > 1)) {
-            //			_tableViewer.setInput(new ArrayList<ControlSystemItem>(itemList.values()).toArray(new ControlSystemItem[0])); // FIXME (bknerr) : wtf?
             _tableViewer.setInput(new ArrayList<ControlSystemItem>(_itemList.values()));
         }
         

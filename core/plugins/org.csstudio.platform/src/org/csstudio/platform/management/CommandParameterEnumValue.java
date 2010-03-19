@@ -35,8 +35,9 @@ public final class CommandParameterEnumValue implements Serializable {
     private static final long serialVersionUID = 2L;
     
     private final String _label;
+    
     // TODO (bknerr) : check whether any serializable works here!!!
-    private final String _value;
+    private final Serializable _value;
     
     /**
      * Creates a new enumeration value.
@@ -47,7 +48,7 @@ public final class CommandParameterEnumValue implements Serializable {
      *            the label to be displayed in the user interface for this
      *            value. Must not be null.
      */
-    public CommandParameterEnumValue(final String value, final String label) {
+    public CommandParameterEnumValue(final Serializable value, final String label) {
         if ((value == null) || (label == null)) {
             throw new NullPointerException("value and label must not be null");
         }
@@ -61,7 +62,7 @@ public final class CommandParameterEnumValue implements Serializable {
      * 
      * @return the value.
      */
-    public String getValue() {
+    public Serializable getValue() {
         return _value;
     }
     

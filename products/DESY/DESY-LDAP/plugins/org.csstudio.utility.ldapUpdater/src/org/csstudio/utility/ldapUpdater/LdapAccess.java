@@ -21,17 +21,17 @@
  */
 package org.csstudio.utility.ldapUpdater;
 
-import static org.csstudio.utility.ldap.LdapConstants.ECOM_FIELD_NAME;
-import static org.csstudio.utility.ldap.LdapConstants.ECOM_FIELD_VALUE;
-import static org.csstudio.utility.ldap.LdapConstants.ECON_FIELD_NAME;
-import static org.csstudio.utility.ldap.LdapConstants.EFAN_FIELD_NAME;
-import static org.csstudio.utility.ldap.LdapConstants.EPICS_CTRL_FIELD_VALUE;
-import static org.csstudio.utility.ldap.LdapConstants.EREN_FIELD_NAME;
-import static org.csstudio.utility.ldap.LdapConstants.LDAP_ATTR_FIELD_OBJECT_CLASS;
-import static org.csstudio.utility.ldap.LdapConstants.LDAP_ATTR_VAL_OBJECT_CLASS;
-import static org.csstudio.utility.ldap.LdapConstants.LDAP_OU_FIELD_NAME;
-import static org.csstudio.utility.ldap.LdapConstants.attributesForLdapEntry;
-import static org.csstudio.utility.ldap.LdapConstants.createLdapQuery;
+import static org.csstudio.utility.ldap.LdapUtils.ECOM_FIELD_NAME;
+import static org.csstudio.utility.ldap.LdapUtils.ECOM_FIELD_VALUE;
+import static org.csstudio.utility.ldap.LdapUtils.ECON_FIELD_NAME;
+import static org.csstudio.utility.ldap.LdapUtils.EFAN_FIELD_NAME;
+import static org.csstudio.utility.ldap.LdapUtils.EPICS_CTRL_FIELD_VALUE;
+import static org.csstudio.utility.ldap.LdapUtils.EREN_FIELD_NAME;
+import static org.csstudio.utility.ldap.LdapUtils.LDAP_ATTR_FIELD_OBJECT_CLASS;
+import static org.csstudio.utility.ldap.LdapUtils.LDAP_ATTR_VAL_OBJECT_CLASS;
+import static org.csstudio.utility.ldap.LdapUtils.LDAP_OU_FIELD_NAME;
+import static org.csstudio.utility.ldap.LdapUtils.attributesForLdapEntry;
+import static org.csstudio.utility.ldap.LdapUtils.createLdapQuery;
 import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceKey.IOC_DBL_DUMP_PATH;
 import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferences.getValueFromPreferences;
 
@@ -51,7 +51,7 @@ import javax.naming.directory.DirContext;
 
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.utility.ldap.LdapConstants;
+import org.csstudio.utility.ldap.LdapUtils;
 import org.csstudio.utility.ldap.engine.Engine;
 import org.csstudio.utility.ldap.reader.LdapResultList;
 import org.csstudio.utility.ldap.reader.LdapService;
@@ -132,15 +132,15 @@ public final class LdapAccess {
     }
     
     
-    private static void fillModelWithLdapRecordsForIOC(final ReadLdapObserver ldapDataObserver,
-                                                       final IOC iocFromLDAP) throws InterruptedException {
-        fillModelWithLdapRecordsForIOC(ldapDataObserver, iocFromLDAP.getName(), iocFromLDAP.getGroup());
+    private static LDAPContentModel fillModelWithLdapRecordsForIOC(final ReadLdapObserver ldapDataObserver,
+                                                                   final IOC iocFromLDAP) throws InterruptedException {
+        return fillModelWithLdapRecordsForIOC(ldapDataObserver, iocFromLDAP.getName(), iocFromLDAP.getGroup());
     }
     
     
-    private static void fillModelWithLdapRecordsForIOC(final ReadLdapObserver ldapDataObserver,
-                                                       final String iocName,
-                                                       final String facilityName) throws InterruptedException {
+    private static LDAPContentModel fillModelWithLdapRecordsForIOC(final ReadLdapObserver ldapDataObserver,
+                                                                   final String iocName,
+                                                                   final String facilityName) throws InterruptedException {
         
         ldapDataObserver.setReady(false);
         final String query = createLdapQuery(ECON_FIELD_NAME, iocName,
@@ -148,12 +148,13 @@ public final class LdapAccess {
                                              EFAN_FIELD_NAME, facilityName,
                                              LDAP_OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE);
         
-        final LdapResultList result = _service.readLdapEntries(query, LdapConstants.any(EREN_FIELD_NAME), ldapDataObserver);
+        final LdapResultList result = _service.readLdapEntries(query, LdapUtils.any(EREN_FIELD_NAME), ldapDataObserver);
         ldapDataObserver.setResult(result);
         
         while (!ldapDataObserver.isReady()) {
             Thread.sleep(100);
         }
+        return ldapDataObserver.getLdapModel();
     }
     
     
@@ -185,31 +186,46 @@ public final class LdapAccess {
     
     
     public static void removeIocEntryFromLdap(final String iocName, final String facilityName) {
-        final DirContext directory = Engine.getInstance().getLdapDirContext();
         
-        final String query = createLdapQuery(ECON_FIELD_NAME, iocName,
-                                             ECOM_FIELD_NAME, ECOM_FIELD_VALUE,
-                                             EFAN_FIELD_NAME, facilityName,
-                                             LDAP_OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE);
-        //        try {
-        //            directory.unbind(query);
-        // FIXME (bknerr) : test missing
-        LOGGER.info("IOC removed from LDAP: " + query);
-        //        } catch (final NamingException e) {
-        //            LOGGER.warn("Naming Exception while trying to unbind: " + query);
-        //            LOGGER.warn(e.getExplanation());
-        //        }
-        
+        // retrieve all info from
+        final LDAPContentModel ldapContentModel = new LDAPContentModel();
+        final ReadLdapObserver ldapDataObserver = new ReadLdapObserver(ldapContentModel);
+        String query = "";
+        try {
+            final LDAPContentModel model =
+                fillModelWithLdapRecordsForIOC(ldapDataObserver, iocName, facilityName);
+            
+            final IOC ioc = model.getIOC(facilityName, iocName);
+            
+            final Map<String, Record> records = ioc.getRecords();
+            for (final Record record : records.values()) {
+                removeRecordEntryFromLdap(ioc , record);
+            }
+            
+            final DirContext context = Engine.getInstance().getLdapDirContext();
+            query = createLdapQuery(ECON_FIELD_NAME, iocName,
+                                    ECOM_FIELD_NAME, ECOM_FIELD_VALUE,
+                                    EFAN_FIELD_NAME, facilityName,
+                                    LDAP_OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE);
+            context.unbind(query);
+            // FIXME (bknerr) : test missing
+            LOGGER.info("IOC removed from LDAP: " + query);
+        } catch (final NamingException e) {
+            LOGGER.warn("Naming Exception while trying to unbind: " + query);
+            LOGGER.warn(e.getExplanation());
+        } catch (final InterruptedException ie) {
+            Thread.currentThread().interrupt();
+        }
     }
     
     
-    public static void removeIocEntryFromLdap(final IOC iocFromLdap) {
+    public static void removeIocEntryFromLdap(final IOC iocFromLdap) throws InterruptedException {
         removeIocEntryFromLdap(iocFromLdap.getName(), iocFromLdap.getGroup());
     }
     
     
     private static void removeRecordEntryFromLdap(final IOC ioc, final Record record) {
-        final DirContext directory = Engine.getInstance().getLdapDirContext();
+        final DirContext context = Engine.getInstance().getLdapDirContext();
         
         final String query = createLdapQuery(EREN_FIELD_NAME, record.getName(),
                                              ECON_FIELD_NAME, ioc.getName(),
@@ -217,7 +233,7 @@ public final class LdapAccess {
                                              EFAN_FIELD_NAME, ioc.getGroup(),
                                              LDAP_OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE);
         try {
-            directory.unbind(query);
+            context.unbind(query);
             LOGGER.info("Record removed from LDAP: " + query);
         } catch (final NamingException e) {
             LOGGER.warn("Naming Exception while trying to unbind: " + query);
@@ -232,10 +248,11 @@ public final class LdapAccess {
      * @param ldapContentModel
      * @param iocFilePath
      * @param iocList
+     * @throws InterruptedException
      */
     public static void tidyUpLDAPFromIOCList(final ReadLdapObserver ldapDataObserver,
                                              final LDAPContentModel ldapContentModel,
-                                             final Map<String, IOC> iocMapFromFS) {
+                                             final Map<String, IOC> iocMapFromFS) throws InterruptedException {
         
         for (final String iocNameFromLdap : ldapContentModel.getIOCNames()) {
             
@@ -308,9 +325,9 @@ public final class LdapAccess {
             if (ldapContentModel.getRecord(ioc.getGroup(), iocName, recordName) == null) { // does not yet exist
                 LOGGER.info("New Record: " + iocFilePath + " " + recordName);
                 
-                if (!LdapConstants.filterLDAPNames(recordName)) {
+                if (!LdapUtils.filterLDAPNames(recordName)) {
                     // TODO (bknerr) : Stopping or proceeding? Transaction rollback? Hist file update ?
-                    if (!updateLDAPRecord(ioc, recordName)) {
+                    if (!createLDAPRecord(ioc, recordName)) {
                         LOGGER.error("Error while updating LDAP record for " + recordName +
                         "\nProceed with next record.");
                     } else {
@@ -388,10 +405,10 @@ public final class LdapAccess {
         }
     }
     
-    private static boolean updateLDAPRecord(final IOC ioc,
+    private static boolean createLDAPRecord(final IOC ioc,
                                             final String recordName) {
         
-        final DirContext directory = Engine.getInstance().getLdapDirContext();
+        final DirContext context = Engine.getInstance().getLdapDirContext();
         
         final String query = createLdapQuery(EREN_FIELD_NAME, recordName,
                                              ECON_FIELD_NAME, ioc.getName(),
@@ -403,7 +420,7 @@ public final class LdapAccess {
             attributesForLdapEntry(LDAP_ATTR_FIELD_OBJECT_CLASS, LDAP_ATTR_VAL_OBJECT_CLASS,
                                    EREN_FIELD_NAME, recordName);
         try {
-            directory.bind(query, null, afe);
+            context.bind(query, null, afe);
             LOGGER.info( "Record written: " + query);
         } catch (final NamingException e) {
             LOGGER.warn( "Naming Exception while trying to bind: " + query);

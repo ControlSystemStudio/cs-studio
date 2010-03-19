@@ -29,11 +29,11 @@
  */
 package org.csstudio.utility.ldapUpdater;
 
-import static org.csstudio.utility.ldap.LdapConstants.ECON_FIELD_NAME;
-import static org.csstudio.utility.ldap.LdapConstants.EPICS_CTRL_FIELD_VALUE;
-import static org.csstudio.utility.ldap.LdapConstants.FIELD_ASSIGNMENT;
-import static org.csstudio.utility.ldap.LdapConstants.LDAP_OU_FIELD_NAME;
-import static org.csstudio.utility.ldap.LdapConstants.any;
+import static org.csstudio.utility.ldap.LdapUtils.ECON_FIELD_NAME;
+import static org.csstudio.utility.ldap.LdapUtils.EPICS_CTRL_FIELD_VALUE;
+import static org.csstudio.utility.ldap.LdapUtils.FIELD_ASSIGNMENT;
+import static org.csstudio.utility.ldap.LdapUtils.LDAP_OU_FIELD_NAME;
+import static org.csstudio.utility.ldap.LdapUtils.any;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -43,7 +43,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.utility.ldap.LdapConstants;
+import org.csstudio.utility.ldap.LdapUtils;
 import org.csstudio.utility.ldapUpdater.model.HistoryFileContentModel;
 import org.csstudio.utility.ldapUpdater.model.IOC;
 import org.csstudio.utility.ldapUpdater.model.LDAPContentModel;
@@ -184,7 +184,7 @@ public class LdapUpdater {
         
         try {
             LdapAccess.fillModelFromLdap(ldapDataObserver,
-                                         LdapConstants.createLdapQuery(LDAP_OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE),
+                                         LdapUtils.createLdapQuery(LDAP_OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE),
                                          any(ECON_FIELD_NAME));
             
             validateHistoryFileEntriesVsLDAPEntries(ldapContentModel, historyFileModel);

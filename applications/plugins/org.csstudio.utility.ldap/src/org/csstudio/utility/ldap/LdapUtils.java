@@ -35,9 +35,9 @@ import org.csstudio.platform.util.StringUtil;
  * @version $Revision$
  * @since 11.03.2010
  */
-public class LdapConstants {
+public class LdapUtils {
     
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(LdapConstants.class);
+    private static final Logger LOG = CentralLogger.getInstance().getLogger(LdapUtils.class);
     
     public static final String LDAP_OU_FIELD_NAME = "ou";
     
@@ -115,7 +115,7 @@ public class LdapConstants {
     }
     
     /**
-     * Filters for forbidden substrings {@link LdapConstants}.
+     * Filters for forbidden substrings {@link LdapUtils}.
      * @param recordName the name to filter
      * @return true, if the forbidden substring is contained, false otherwise (even for empty and null strings)
      */
@@ -134,7 +134,7 @@ public class LdapConstants {
     /**
      * Don't instantiate.
      */
-    private LdapConstants() {
+    private LdapUtils() {
         // Empty.
     }
     

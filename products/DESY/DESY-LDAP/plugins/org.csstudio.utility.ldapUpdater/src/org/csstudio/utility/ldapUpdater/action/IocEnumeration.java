@@ -21,15 +21,17 @@
  */
 package org.csstudio.utility.ldapUpdater.action;
 
-import static org.csstudio.utility.ldap.LdapConstants.ECON_FIELD_NAME;
-import static org.csstudio.utility.ldap.LdapConstants.EPICS_CTRL_FIELD_VALUE;
-import static org.csstudio.utility.ldap.LdapConstants.FIELD_ASSIGNMENT;
-import static org.csstudio.utility.ldap.LdapConstants.LDAP_OU_FIELD_NAME;
-import static org.csstudio.utility.ldap.LdapConstants.any;
+import static org.csstudio.utility.ldap.LdapUtils.ECON_FIELD_NAME;
+import static org.csstudio.utility.ldap.LdapUtils.EFAN_FIELD_NAME;
+import static org.csstudio.utility.ldap.LdapUtils.EPICS_CTRL_FIELD_VALUE;
+import static org.csstudio.utility.ldap.LdapUtils.FIELD_ASSIGNMENT;
+import static org.csstudio.utility.ldap.LdapUtils.LDAP_OU_FIELD_NAME;
+import static org.csstudio.utility.ldap.LdapUtils.any;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -47,6 +49,8 @@ import org.csstudio.utility.ldapUpdater.model.LDAPContentModel;
  */
 public class IocEnumeration implements IDynamicParameterValues {
     
+    
+    
     /**
      * (@inheritDoc)
      */
@@ -63,14 +67,16 @@ public class IocEnumeration implements IDynamicParameterValues {
                                              LDAP_OU_FIELD_NAME + FIELD_ASSIGNMENT + EPICS_CTRL_FIELD_VALUE,
                                              any(ECON_FIELD_NAME));
             iocs = model.getIOCs();
-            
         } catch (final InterruptedException e) {
             Thread.currentThread().interrupt();
         }
         
         final List<CommandParameterEnumValue> params = new ArrayList<CommandParameterEnumValue>(iocs.size());
         for (final IOC ioc : iocs) {
-            params.add(new CommandParameterEnumValue(ioc.getName() + "###" + ioc.getGroup(), ioc.getName()));
+            final HashMap<String, String> map = new HashMap<String, String>();
+            map.put(ECON_FIELD_NAME, ioc.getName());
+            map.put(EFAN_FIELD_NAME, ioc.getGroup());
+            params.add(new CommandParameterEnumValue(map, ioc.getName()));
         }
         
         Collections.sort(params, new Comparator<CommandParameterEnumValue>() {
