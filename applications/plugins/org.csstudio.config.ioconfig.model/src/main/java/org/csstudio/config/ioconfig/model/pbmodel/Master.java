@@ -170,15 +170,20 @@ public class Master extends Node {
         this._dataControlTime = dataControlTime;
     }
 
+    /**
+     * Get the Redundant Station Address.
+     * If the Station Address < 0 the ICO have no redundant.
+     * @return the redundant Station Address. 
+     */
     @Column(name = "FDLADDRESS")
     public short getRedundant() {
         return _fdlAddress;
     }
 
     /**
-     * 0 is not redundant.
-     * 1 is redundant and Master is selected. 
-     * 2 is redundant and Salve is selected. 
+     * Set the redundant Address.  
+     * < 0 is not redundant.
+     * >= is redundant. 
      * @param fdlAddress
      */
     public void setRedundant(final short fdlAddress) {
@@ -314,10 +319,8 @@ public class Master extends Node {
             freeAddressList.add(i);
         }
         freeAddressList.remove(getSortIndex());
-//        if(getRedundant()>=0) {
-            freeAddressList.remove(getRedundant());
-//        }
-//        freeAddressList.remove(getSortIndex());
+        freeAddressList.remove(getRedundant());
+        
         Set<Short> keySet = getChildrenAsMap().keySet();
         freeAddressList.removeAll(keySet);
         return freeAddressList;
