@@ -103,8 +103,8 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 		addFontProperty(PROP_FONT, "Font", WidgetPropertyCategory.Display, ColorAndFontUtil.toFontString("Arial", 8)); //$NON-NLS-1$
 		addArrayOptionProperty(PROP_TEXT_ALIGNMENT, "Text Alignment", WidgetPropertyCategory.Display, TextAlignmentEnum.getDisplayNames(),
 				TextAlignmentEnum.CENTER.getIndex());
-		addIntegerProperty(PROP_ACTION_RELEASED_INDEX, "Action Index (released)", WidgetPropertyCategory.Behaviour, 0, -1, Integer.MAX_VALUE);
-		addIntegerProperty(PROP_ACTION_PRESSED_INDEX, "Action Index (pressed)", WidgetPropertyCategory.Behaviour, -1, -1, Integer.MAX_VALUE);
+		addIntegerProperty(PROP_ACTION_RELEASED_INDEX, "Action Index (released)", WidgetPropertyCategory.ACTIONS, 0, -1, Integer.MAX_VALUE);
+		addIntegerProperty(PROP_ACTION_PRESSED_INDEX, "Action Index (pressed)", WidgetPropertyCategory.ACTIONS, -1, -1, Integer.MAX_VALUE);
 		addBooleanProperty(PROP_TOGGLE_BUTTON, "Toggle Button", WidgetPropertyCategory.Behaviour, DEFAULT_TOGGLE_BUTTON);
 		
 		// .. hide properties
