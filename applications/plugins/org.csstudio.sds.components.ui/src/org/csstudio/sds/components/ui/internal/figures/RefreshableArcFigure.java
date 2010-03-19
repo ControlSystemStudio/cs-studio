@@ -177,7 +177,6 @@ public final class RefreshableArcFigure extends Shape implements IAdaptable {
 
     @Override
     public void setBorder(Border border) {
-        // TODO Auto-generated method stub
         super.setBorder(border);
     }
     

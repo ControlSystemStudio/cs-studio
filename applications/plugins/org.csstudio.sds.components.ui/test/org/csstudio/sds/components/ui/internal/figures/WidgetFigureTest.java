@@ -180,7 +180,6 @@ class ArcTest extends Figure {
 		Color yellow = new Color(Display.getCurrent(), 255,255,0);
 		Color red = new Color(Display.getCurrent(), 255,0,0);
 
-		// TODO Auto-generated method stub
 		super.paintFigure(graphics);
 		graphics.fillArc(bounds, 0, 20);
 		graphics.setAntialias(SWT.ON);
@@ -198,7 +197,6 @@ class ArcTest extends Figure {
 	}
 	@Override
 	protected void paintClientArea(Graphics graphics) {
-		// TODO Auto-generated method stub
 		super.paintClientArea(graphics);
 		
 	}
