@@ -35,6 +35,7 @@ class ProfibusTreeContentProvider implements IStructuredContentProvider, ITreeCo
     /** The Tree Root Node. */
     private IViewSite _site;
     private List<FacilityLight> _facilities;
+    private String _wait;
 
     public ProfibusTreeContentProvider(IViewSite site) {
     }
@@ -56,6 +57,8 @@ class ProfibusTreeContentProvider implements IStructuredContentProvider, ITreeCo
         } else if (newInput instanceof List) {
             _facilities = (List<FacilityLight>) newInput;
             return;
+        } else if(newInput instanceof String) {
+            _wait = (String) newInput;
         }
 
     }
@@ -68,6 +71,8 @@ class ProfibusTreeContentProvider implements IStructuredContentProvider, ITreeCo
     public Object[] getElements(final Object parent) {
         if (_facilities != null) {
             return _facilities.toArray();
+        } else if(_wait!=null) {
+            return new String[] {_wait};
         }
         return new Object[0];
     }

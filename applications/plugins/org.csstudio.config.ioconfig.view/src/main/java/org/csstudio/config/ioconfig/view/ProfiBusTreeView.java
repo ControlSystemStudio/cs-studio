@@ -49,7 +49,6 @@ import org.csstudio.config.ioconfig.config.view.helper.ConfigHelper;
 import org.csstudio.config.ioconfig.config.view.helper.InfoConfigComposte;
 import org.csstudio.config.ioconfig.config.view.helper.ProfibusHelper;
 import org.csstudio.config.ioconfig.model.Activator;
-import org.csstudio.config.ioconfig.model.Diagnose;
 import org.csstudio.config.ioconfig.model.Facility;
 import org.csstudio.config.ioconfig.model.FacilityLight;
 import org.csstudio.config.ioconfig.model.Ioc;
@@ -109,6 +108,7 @@ import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
@@ -420,8 +420,50 @@ public class ProfiBusTreeView extends Composite {
         CentralLogger.getInstance().debug(this, "PlugIn ID: " + _site.getPluginId());
         CentralLogger.getInstance().debug(this, "Name: " + _site.getRegisteredName());
         CentralLogger.getInstance().debug(this, "SecID: " + _site.getSecondaryId());
-        _load = Repository.load(FacilityLight.class);
-        _viewer.setInput(_load);
+        
+        // ---
+        _viewer.setInput("Please wait a moment");
+        try {
+
+            Job loadJob = new Job("DBLoader") {
+
+                @Override
+                protected IStatus run(IProgressMonitor monitor) {
+                    monitor.beginTask("DBLoaderMonitor", IProgressMonitor.UNKNOWN);
+                    monitor.setTaskName("Load \t-\tStart Time: "+new Date());
+                    
+                    PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            Cursor oldCursor = getDisplay().getCursorControl().getCursor();
+                            Cursor handCursor = new Cursor(Display.getCurrent(),SWT.CURSOR_WAIT);
+                            getDisplay().getCursorControl().setCursor(handCursor);
+                            _viewer.getTree().setEnabled(false);
+                            _load = Repository.load(FacilityLight.class);
+                            _viewer.setInput(_load);
+                            _viewer.getTree().setEnabled(true);
+                            getDisplay().getCursorControl().setCursor(oldCursor);
+                        }
+                    });
+                    monitor.done();
+                    return Status.OK_STATUS;
+                }
+
+            };
+            loadJob.setUser(true);
+            loadJob.schedule();
+
+        } catch (RuntimeException e) {
+            ProfibusHelper.openErrorDialog(_site.getShell(), "Data Base Error",
+                    "Device Data Base (DDB) Error\n" + "Can't load the Root data", null,
+                    e);
+            return;
+        } finally {
+        }
+        
+        // ---
+        
 
         makeActions();
         hookContextMenu();
