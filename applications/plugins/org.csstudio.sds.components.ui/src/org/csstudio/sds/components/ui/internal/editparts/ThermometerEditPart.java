@@ -1,7 +1,6 @@
 package org.csstudio.sds.components.ui.internal.editparts;
 
 import org.csstudio.sds.components.model.ThermometerModel;
-import org.csstudio.sds.components.ui.internal.figures.RefreshableTankFigure;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableThermoFigure;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.eclipse.draw2d.IFigure;

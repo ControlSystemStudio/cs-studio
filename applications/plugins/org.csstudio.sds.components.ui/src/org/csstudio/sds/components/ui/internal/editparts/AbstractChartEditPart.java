@@ -29,10 +29,8 @@ import org.csstudio.sds.components.ui.internal.figures.AbstractChartFigure;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
-import org.csstudio.sds.ui.editparts.AbstractBaseEditPart.ColorChangeHander;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.RGB;
 
 /**
  * Abstract base class for the edit parts of chart widgets (waveform, strip

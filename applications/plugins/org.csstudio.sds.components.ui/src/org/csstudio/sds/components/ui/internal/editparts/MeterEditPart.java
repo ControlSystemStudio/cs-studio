@@ -28,7 +28,6 @@ import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
 
 /**
  * The controller.

@@ -15,7 +15,6 @@ import org.csstudio.sds.components.ui.internal.figures.LinearAxisTest;
 import org.csstudio.sds.components.ui.internal.figures.LogarithmicAxisTest;
 import org.csstudio.sds.components.ui.internal.figures.TickCalculatorTest;
 import org.csstudio.sds.components.ui.internal.figures.TickTest;
-import org.csstudio.sds.components.ui.internal.figures.WidgetFigureTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;

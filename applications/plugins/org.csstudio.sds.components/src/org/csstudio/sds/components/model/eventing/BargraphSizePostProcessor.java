@@ -2,9 +2,7 @@ package org.csstudio.sds.components.model.eventing;
 
 import org.csstudio.sds.components.model.BargraphModel;
 import org.csstudio.sds.eventhandling.AbstractWidgetPropertyPostProcessor;
-import org.csstudio.sds.model.commands.HidePropertyCommand;
 import org.csstudio.sds.model.commands.SetPropertyCommand;
-import org.csstudio.sds.model.commands.ShowPropertyCommand;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CompoundCommand;
 

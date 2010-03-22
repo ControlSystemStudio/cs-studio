@@ -1,5 +1,6 @@
 package org.csstudio.sds.behavior.desy;
 
+import org.csstudio.sds.components.model.BargraphModel;
 import org.csstudio.sds.components.model.SimpleSliderModel;
 import org.csstudio.sds.eventhandling.AbstractBehavior;
 import org.epics.css.dal.context.ConnectionState;

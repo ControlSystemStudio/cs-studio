@@ -23,11 +23,9 @@ package org.csstudio.sds.importer;
 
 import org.csstudio.sds.SdsPlugin;
 import org.csstudio.sds.eventhandling.EventType;
-import org.csstudio.sds.internal.eventhandling.WidgetPropertyPostProcessingService;
 import org.csstudio.sds.internal.rules.ParameterDescriptor;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
-import org.csstudio.sds.model.IWidgetModelFactory;
 import org.csstudio.sds.model.WidgetModelFactoryService;
 import org.eclipse.core.runtime.IPath;
 

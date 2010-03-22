@@ -27,10 +27,8 @@ import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.components.model.BargraphModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableBargraphFigure;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**

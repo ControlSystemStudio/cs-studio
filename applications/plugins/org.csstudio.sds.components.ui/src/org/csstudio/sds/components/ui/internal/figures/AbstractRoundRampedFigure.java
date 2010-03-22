@@ -5,7 +5,6 @@ import org.csstudio.sds.components.ui.internal.figureparts.RoundScale;
 import org.csstudio.sds.components.ui.internal.figureparts.RoundScaledRamp;
 import org.csstudio.sds.components.ui.internal.figureparts.RoundScaledRamp.Threshold;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.RGB;
 
 
 /**

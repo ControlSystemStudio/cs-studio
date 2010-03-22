@@ -7,7 +7,6 @@ import org.csstudio.sds.ui.editparts.AbstractBaseEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.RGB;
 
 /**
  * Base editPart controller for a widget based on {@link AbstractMarkedWidgetModel}.
