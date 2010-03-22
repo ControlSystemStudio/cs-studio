@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Runtimetests
+Bundle-SymbolicName: org.csstudio.runtimetests;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.csstudio.runtimetests.Activator
+Require-Bundle: org.eclipse.ui,
+ org.csstudio.sds.ui;bundle-version="1.0.8"
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

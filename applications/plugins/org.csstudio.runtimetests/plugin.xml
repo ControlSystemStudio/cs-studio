@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.csstudio.platform.startupListener">
+      <startupService
+            class="org.csstudio.runtimetests.Startup"
+            id="org.csstudio.runtimetests.startup"
+            isHighPriority="False">
+      </startupService>
+   </extension>
+
+</plugin>
