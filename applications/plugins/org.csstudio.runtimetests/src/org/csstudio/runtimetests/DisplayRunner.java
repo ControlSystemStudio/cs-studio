@@ -3,6 +3,7 @@ package org.csstudio.runtimetests;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.ui.runmode.RunModeService;
@@ -13,11 +14,10 @@ import org.eclipse.ui.PlatformUI;
 
 public class DisplayRunner implements Runnable {
 
-	private List<IResource> displays;
-	private List<IResource> runningDisplays;
+	private List<IResource> displays = new ArrayList<IResource>();
+	private List<IResource> runningDisplays = new ArrayList<IResource>();
 
 	public DisplayRunner(IResource[] members) {
-		displays = new ArrayList<IResource>();
 		for (IResource iResource : members) {
 			if (iResource.getName().contains("css-sds")) {
 				displays.add(iResource);
@@ -31,14 +31,23 @@ public class DisplayRunner implements Runnable {
 		try {
 			waitForWorkbench();
 			while (true) {
-				if (runningDisplays.size() > 0) {
-					Collections.shuffle(runningDisplays);
-					closeDisplay(runningDisplays.get(0));
+				Random rand = new Random();
+				Double randomNumber = rand.nextDouble();
+				if (randomNumber < 0.5) {
+					if (runningDisplays.size() > 0) {
+						Collections.shuffle(runningDisplays);
+						closeDisplay(runningDisplays.get(0));
+						runningDisplays.remove(0);
+					}
 				}
-				Thread.sleep(10000);
-				if (runningDisplays.size() < 10) {
-					Collections.shuffle(displays);
-					openDisplay(displays.get(0));
+				Thread.sleep(5000);
+				randomNumber = rand.nextDouble();
+				if (randomNumber < 0.5) {
+					if ((runningDisplays.size() < 10) && (displays.size() > 0)) {
+						Collections.shuffle(displays);
+						openDisplay(displays.get(0));
+						runningDisplays.add(displays.get(0));
+					}
 				}
 				Thread.sleep(30000);
 			}
