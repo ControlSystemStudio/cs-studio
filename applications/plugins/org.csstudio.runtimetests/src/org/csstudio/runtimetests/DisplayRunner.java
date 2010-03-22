@@ -1,9 +1,10 @@
 package org.csstudio.runtimetests;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.TimerTask;
 
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.ui.runmode.RunModeService;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
@@ -13,6 +14,7 @@ import org.eclipse.ui.PlatformUI;
 public class DisplayRunner implements Runnable {
 
 	private List<IResource> displays;
+	private List<IResource> runningDisplays;
 
 	public DisplayRunner(IResource[] members) {
 		displays = new ArrayList<IResource>();
@@ -25,45 +27,47 @@ public class DisplayRunner implements Runnable {
 
 	@Override
 	public void run() {
+
 		try {
 			waitForWorkbench();
-			int runningDisplayNo = -1;
 			while (true) {
-				for (int i = 0; i < displays.size(); i++) {
-					if ((runningDisplayNo > -1)
-							&& (runningDisplayNo <= displays.size())) {
-						final IPath iPath = displays.get(runningDisplayNo).getFullPath();
-						System.out.println("close: " + runningDisplayNo
-								+ iPath);
-						PlatformUI.getWorkbench().getDisplay().asyncExec(
-								new Runnable() {
-									public void run() {
-										RunModeService.getInstance()
-										.closeDisplayShellInRunMode(iPath);
-									}
-								});
-					}
-					Thread.sleep(2000);
-					runningDisplayNo = i;
-					final IPath iPath = displays.get(i).getFullPath();
-					System.out.println("start: " + i
-							+ iPath);
-					PlatformUI.getWorkbench().getDisplay().asyncExec(
-							new Runnable() {
-								public void run() {
-									RunModeService.getInstance()
-									.openDisplayShellInRunMode(iPath);
-								}
-							});
-					
-					Thread.sleep(10000);
+				if (runningDisplays.size() > 0) {
+					Collections.shuffle(runningDisplays);
+					closeDisplay(runningDisplays.get(0));
 				}
+				Thread.sleep(10000);
+				if (runningDisplays.size() < 10) {
+					Collections.shuffle(displays);
+					openDisplay(displays.get(0));
+				}
+				Thread.sleep(30000);
 			}
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
+	}
+
+	private void openDisplay(IResource iResource) {
+		final IPath iPath = iResource.getFullPath();
+		CentralLogger.getInstance().debug(this, "open: " + iPath);
+		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+			public void run() {
+				RunModeService.getInstance().openDisplayShellInRunMode(iPath);
+			}
+		});
+
+	}
+
+	private void closeDisplay(IResource iResource) {
+		final IPath iPath = iResource.getFullPath();
+		CentralLogger.getInstance().debug(this, "close: " + iPath);
+		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+			public void run() {
+				RunModeService.getInstance().closeDisplayShellInRunMode(iPath);
+			}
+		});
 	}
 
 	/**
