@@ -21,6 +21,9 @@
  */
 package org.csstudio.sds.importer;
 
+import org.csstudio.sds.SdsPlugin;
+import org.csstudio.sds.eventhandling.EventType;
+import org.csstudio.sds.internal.eventhandling.WidgetPropertyPostProcessingService;
 import org.csstudio.sds.internal.rules.ParameterDescriptor;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
@@ -65,6 +68,10 @@ public abstract class AbstractDisplayImporter {
 	protected final AbstractWidgetModel createWidgetModel(String typeId) {
 		AbstractWidgetModel result =  WidgetModelFactoryService.getInstance()
 				.getWidgetModel(typeId);
+		
+		// .. update model to ensure invariants that have been declared by {@link SdsPlugin#EXTPOINT_WIDGET_PROPERTY_POSTPROCESSORS}
+		SdsPlugin.getDefault().getWidgetPropertyPostProcessingService().applyForAllProperties(result, EventType.ON_DISPLAY_MODEL_LOADED);
+		
 		return result;
 	}
 

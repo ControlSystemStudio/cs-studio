@@ -223,32 +223,40 @@
       <widgetPropertyPostProcessor
             class="org.csstudio.sds.components.model.eventing.ActionButtonDataPostProcessor"
             propertyId="actionData"
+            skipOnLoad="false"
             widgetId="org.csstudio.sds.components.ActionButton">
       </widgetPropertyPostProcessor>
       <widgetPropertyPostProcessor
             class="org.csstudio.sds.components.model.eventing.BargraphShowScalePostProcessor"
             propertyId="scaleShowStatus"
+            skipOnLoad="false"
             widgetId="org.csstudio.sds.components.SimpleSlider">
       </widgetPropertyPostProcessor>
       <widgetPropertyPostProcessor
             class="org.csstudio.sds.components.model.eventing.BargraphSizePostProcessor"
             propertyId="width"
-            widgetId="org.csstudio.sds.components.Bargraph">
+            widgetId="org.csstudio.sds.components.Bargraph"
+            skipOnLoad="true">
       </widgetPropertyPostProcessor>
       <widgetPropertyPostProcessor
             class="org.csstudio.sds.components.model.eventing.BargraphSizePostProcessor"
             propertyId="height"
-            widgetId="org.csstudio.sds.components.Bargraph">
+            widgetId="org.csstudio.sds.components.Bargraph"
+             skipOnLoad="true">
       </widgetPropertyPostProcessor>
       <widgetPropertyPostProcessor
             class="org.csstudio.sds.components.model.eventing.SimpleSliderSizePostProcessor"
+            invariant="false"
             propertyId="width"
-            widgetId="org.csstudio.sds.components.SimpleSlider">
+            widgetId="org.csstudio.sds.components.SimpleSlider"
+            skipOnLoad="true">
       </widgetPropertyPostProcessor>
       <widgetPropertyPostProcessor
             class="org.csstudio.sds.components.model.eventing.SimpleSliderSizePostProcessor"
+            invariant="false"
             propertyId="height"
-            widgetId="org.csstudio.sds.components.SimpleSlider">
+            widgetId="org.csstudio.sds.components.SimpleSlider"
+            skipOnLoad="true">
       </widgetPropertyPostProcessor>
    </extension>
 
