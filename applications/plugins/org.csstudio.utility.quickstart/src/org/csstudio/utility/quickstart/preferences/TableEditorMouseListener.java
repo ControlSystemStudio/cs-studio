@@ -1,5 +1,6 @@
 package org.csstudio.utility.quickstart.preferences;
 
+import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.events.ModifyEvent;
@@ -63,6 +64,21 @@ public class TableEditorMouseListener extends MouseAdapter {
               break;
             }
           }
+          
+		// The third column is not editable (switch from true to false by
+		// mouse)
+		if (column == 2) {
+			String text = item.getText(2);
+			if (text.equals("false")) {
+				item.setText(2, "true");
+			} else {
+				item.setText(2, "false");
+			}
+			CentralLogger.getInstance().debug(this,
+					"text of column 2: " + text);
+			return;
+		}
+
           
           // Create the Text object for our editor
           final Text text = new Text(_table, SWT.NONE);
