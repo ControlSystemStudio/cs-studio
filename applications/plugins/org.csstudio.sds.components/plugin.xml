@@ -242,21 +242,25 @@
             class="org.csstudio.sds.components.model.eventing.BargraphSizePostProcessor"
             propertyId="height"
             widgetId="org.csstudio.sds.components.Bargraph"
-             skipOnLoad="true">
+            skipOnLoad="true">
       </widgetPropertyPostProcessor>
       <widgetPropertyPostProcessor
             class="org.csstudio.sds.components.model.eventing.SimpleSliderSizePostProcessor"
-            invariant="false"
             propertyId="width"
             widgetId="org.csstudio.sds.components.SimpleSlider"
             skipOnLoad="true">
       </widgetPropertyPostProcessor>
       <widgetPropertyPostProcessor
             class="org.csstudio.sds.components.model.eventing.SimpleSliderSizePostProcessor"
-            invariant="false"
             propertyId="height"
             widgetId="org.csstudio.sds.components.SimpleSlider"
             skipOnLoad="true">
+      </widgetPropertyPostProcessor>
+      <widgetPropertyPostProcessor
+            class="org.csstudio.sds.components.model.eventing.BooleanSwitchShowLabelPostProcessor"
+            propertyId="PROP_LABEL_VISIBLE"
+            skipOnLoad="false"
+            widgetId="org.csstudio.sds.components.BooleanSwitch">
       </widgetPropertyPostProcessor>
    </extension>
 

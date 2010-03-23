@@ -8,10 +8,6 @@ import org.csstudio.sds.model.WidgetPropertyCategory;
  * @author Kai Meyer (C1 WPS)
  * 
  */
-
-// FIXME: 15.03.2010: swende: 2 zusätzliche Properties (onTrue, onFalse)
-// einbauen! Diese sollen mit Werten konfiguriert werden können, die auf
-// Kontrollsystemebene true bzw. false entsprechen (z.B. 0/1).
 public class BooleanSwitchModel extends AbstractWidgetModel {
 
 	/**
@@ -46,19 +42,29 @@ public class BooleanSwitchModel extends AbstractWidgetModel {
 	 * The property-ID for the off-state label.
 	 */
 	public static final String PROP_OFF_LABEL = "PROP_OFF_LABEL";
+	/**
+	 * The property-ID for the on-state value.
+	 */
+	public static final String PROP_ON_STATE_VALUE = "PROP_ON_STATE_VALUE";
+	/**
+	 * The property-ID for the off-state value.
+	 */
+	public static final String PROP_OFF_STATE_VALUE = "PROP_OFF_STATE_VALUE";
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	protected void configureProperties() {
-		addBooleanProperty(PROP_3D_EFFECT, "3d effect", WidgetPropertyCategory.Display, true);
-		addDoubleProperty(PROP_VALUE, "Value", WidgetPropertyCategory.Behaviour, 0.0, 0.0, 1.0);
-		addColorProperty(PROP_OFF_COLOR, "Off color", WidgetPropertyCategory.Display, "#B4B4B4");
+		addBooleanProperty(PROP_VALUE, "Value", WidgetPropertyCategory.Behaviour, false);
+		addDoubleProperty(PROP_ON_STATE_VALUE, "On value", WidgetPropertyCategory.Behaviour, 1, -Double.MAX_VALUE, Double.MAX_VALUE);
+		addDoubleProperty(PROP_OFF_STATE_VALUE, "Off value", WidgetPropertyCategory.Behaviour, 0, -Double.MAX_VALUE, Double.MAX_VALUE);
 		addColorProperty(PROP_ON_COLOR, "On color", WidgetPropertyCategory.Display, "#64FF64");
+		addColorProperty(PROP_OFF_COLOR, "Off color", WidgetPropertyCategory.Display, "#B4B4B4");
 		addBooleanProperty(PROP_LABEL_VISIBLE, "Show Label", WidgetPropertyCategory.Display, false);
 		addStringProperty(PROP_ON_LABEL, "On Label", WidgetPropertyCategory.Display, "ON");
 		addStringProperty(PROP_OFF_LABEL, "Off Label", WidgetPropertyCategory.Display, "OFF");
+		addBooleanProperty(PROP_3D_EFFECT, "3d effect", WidgetPropertyCategory.Display, true);
 
 		// .. hide properties
 		hideProperty(PROP_BORDER_COLOR, getTypeID());
@@ -92,8 +98,7 @@ public class BooleanSwitchModel extends AbstractWidgetModel {
 	 * @return <code>true</code> if on, <code>false</code> otherwise
 	 */
 	public boolean getValue() {
-		double value = getDoubleProperty(PROP_VALUE);
-		return value == 1.0;
+		return getBooleanProperty(PROP_VALUE);
 	}
 
 	/**
@@ -103,11 +108,7 @@ public class BooleanSwitchModel extends AbstractWidgetModel {
 	 *            the new state
 	 */
 	public void setValue(boolean newValue) {
-		double value = 0.0;
-		if (newValue) {
-			value = 1.0;
-		}
-		setPropertyManualValue(PROP_VALUE, value);
+		setPropertyManualValue(PROP_VALUE, newValue);
 	}
 
 	/**
