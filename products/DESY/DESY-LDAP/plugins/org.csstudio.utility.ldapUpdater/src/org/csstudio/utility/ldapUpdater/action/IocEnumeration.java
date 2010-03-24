@@ -25,7 +25,7 @@ import static org.csstudio.utility.ldap.LdapUtils.ECON_FIELD_NAME;
 import static org.csstudio.utility.ldap.LdapUtils.EFAN_FIELD_NAME;
 import static org.csstudio.utility.ldap.LdapUtils.EPICS_CTRL_FIELD_VALUE;
 import static org.csstudio.utility.ldap.LdapUtils.FIELD_ASSIGNMENT;
-import static org.csstudio.utility.ldap.LdapUtils.LDAP_OU_FIELD_NAME;
+import static org.csstudio.utility.ldap.LdapUtils.OU_FIELD_NAME;
 import static org.csstudio.utility.ldap.LdapUtils.any;
 
 import java.util.ArrayList;
@@ -64,7 +64,7 @@ public class IocEnumeration implements IDynamicParameterValues {
         try {
             final LDAPContentModel model =
                 LdapAccess.fillModelFromLdap(ldapDataObserver,
-                                             LDAP_OU_FIELD_NAME + FIELD_ASSIGNMENT + EPICS_CTRL_FIELD_VALUE,
+                                             OU_FIELD_NAME + FIELD_ASSIGNMENT + EPICS_CTRL_FIELD_VALUE,
                                              any(ECON_FIELD_NAME));
             iocs = model.getIOCs();
         } catch (final InterruptedException e) {

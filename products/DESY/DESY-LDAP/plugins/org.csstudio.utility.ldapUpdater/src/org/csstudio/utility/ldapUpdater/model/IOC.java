@@ -38,9 +38,12 @@ import java.util.Set;
  */
 public class IOC implements Serializable {
     
+    public static final String NO_GROUP = "<no group>";
+    
+    public static final String DEFAULT_RESPONSIBLE_EMAILADDRESS = "klaus.valett@desy.de";
+    
     private static final long serialVersionUID = 1L;
     
-    public static final String NO_GROUP = "<no group>";
     
     /**
      * The name of this IOC.
@@ -61,6 +64,10 @@ public class IOC implements Serializable {
      * The date time of last change.
      */
     private GregorianCalendar _dateTime;
+    /**
+     * The email address of the responsible person for this IOC.
+     */
+    private String _responsible = DEFAULT_RESPONSIBLE_EMAILADDRESS;
     
     /**
      * Set of records in this IOC.
@@ -69,11 +76,11 @@ public class IOC implements Serializable {
     
     
     public IOC(final String name, final GregorianCalendar dateTime) {
-        this(name, "<no group>", "<no physicalname>", dateTime);
+        this(name, "<no group>", "<no physicalname>", dateTime, DEFAULT_RESPONSIBLE_EMAILADDRESS);
     }
     
     public IOC(final String econ, final String efan) {
-        this(econ, efan, "<no physicalname>", null);
+        this(econ, efan, "<no physicalname>", null, DEFAULT_RESPONSIBLE_EMAILADDRESS);
     }
     
     /**
@@ -84,11 +91,12 @@ public class IOC implements Serializable {
      * @param physicalName the physical name of the IOC.
      * @param dateTime
      */
-    public IOC(final String name, final String group, final String physicalName, final GregorianCalendar dateTime) {
+    public IOC(final String name, final String group, final String physicalName, final GregorianCalendar dateTime, final String resp) {
         _name = name;
         _group = group;
         _physicalName = physicalName;
         _dateTime = dateTime;
+        setResponsible(resp);
     }
     
     
@@ -172,6 +180,14 @@ public class IOC implements Serializable {
         if (!_records.containsKey(eren)) {
             _records.put(eren, new Record(eren));
         }
+    }
+    
+    public String getResponsible() {
+        return _responsible;
+    }
+    
+    public void setResponsible(final String responsible) {
+        _responsible = responsible;
     }
     
 }

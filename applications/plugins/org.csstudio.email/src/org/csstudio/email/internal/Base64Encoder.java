@@ -2,6 +2,8 @@ package org.csstudio.email.internal;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintStream;
 
 /** Encode (Buffered)Reader input as Base64 and write to PrintStream.
@@ -9,23 +11,23 @@ import java.io.PrintStream;
  *  Base on code from http://www.wikihow.com/Encode-a-String-to-Base64-With-Java
  *  that did this by coying the whole input String several times, while this code
  *  handles streams, handling 3 chars at a time.
- *  
+ * 
  *  @author Kay Kasemir
  */
 public class Base64Encoder
 {
     /** Line width of output */
     final private static int LINE_WIDTH = 75;
-
+    
     /** The ASCII used to encode 0...63 */
     private static final String base64code = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"; //$NON-NLS-1$
-
+    
     /** Where generated base64 output is written */
     final private PrintStream out;
     
     /** Chars within a line to handle line breaks */
     private int charcount = 0;
-
+    
     /** Initialize
      *  @param out Output stream for generated Bas64 text
      */
@@ -33,12 +35,13 @@ public class Base64Encoder
     {
         this.out = out;
     }
-
+    
     /** Encode input stream as Base64
-     *  @param filename Name of file to encode 
-     *  @throws Exception on I/O error
+     *  @param filename Name of file to encode
+     *  @throws IOException on I/O error
+     *  @throws FileNotFoundException a file not found error
      */
-    public void encode(final String filename) throws Exception
+    public void encode(final String filename) throws FileNotFoundException, IOException
     {
         final BufferedInputStream input = new BufferedInputStream(new FileInputStream(filename));
         try
@@ -53,9 +56,9 @@ public class Base64Encoder
     
     /** Encode input stream as Base64
      *  @param input BufferedInputStream
-     *  @throws Exception on I/O error
+     *  @throws IOException on I/O error
      */
-    public void encode(final BufferedInputStream input) throws Exception
+    public void encode(final BufferedInputStream input) throws IOException
     {
         int pad = 0;
         
@@ -78,8 +81,8 @@ public class Base64Encoder
             }
             // Encode them as 4 ASCII bytes
             final int j = ((ch1 & 0xff) << 16)
-                        + ((ch2 & 0xff) << 8)
-                        +  (ch3 & 0xff);
+            + ((ch2 & 0xff) << 8)
+            +  (ch3 & 0xff);
             print(base64code.charAt((j >> 18) & 0x3f));
             print(base64code.charAt((j >> 12) & 0x3f));
             // .. replacing padded chars with "="
@@ -95,8 +98,9 @@ public class Base64Encoder
     private void print(final char chr)
     {
         out.print(chr);
-        if (++charcount <= LINE_WIDTH)
+        if (++charcount <= LINE_WIDTH) {
             return;
+        }
         out.println();
         charcount = 0;
     }

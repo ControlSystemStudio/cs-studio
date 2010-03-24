@@ -26,6 +26,7 @@ import java.util.Observer;
 
 public class LdapServiceImpl implements LdapService {
     
+    
     /**
      * Constructor.
      */

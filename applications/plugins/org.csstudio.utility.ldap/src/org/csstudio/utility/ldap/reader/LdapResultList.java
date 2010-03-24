@@ -22,33 +22,26 @@
 package org.csstudio.utility.ldap.reader;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+
+import javax.naming.directory.SearchResult;
 
 import org.csstudio.utility.ldap.Activator;
 import org.csstudio.utility.ldap.Messages;
 import org.csstudio.utility.namespace.utility.ControlSystemItem;
 import org.csstudio.utility.namespace.utility.NameSpaceResultList;
-import org.csstudio.utility.namespace.utility.ProcessVariable;
 
 
 public class LdapResultList extends NameSpaceResultList {
     
-    private List<String> _result = new ArrayList<String>();
+    private List<String> _result = Collections.emptyList();
+    private Set<SearchResult> _answerSet = Collections.emptySet();
     
     
     public LdapResultList() {
         // Empty
-    }
-    
-    /* (non-Javadoc)
-     * @see org.csstudio.utility.nameSpaceBrowser.utility.NameSpaceResultList#copy()
-     */
-    @Override
-    public NameSpaceResultList copy() {
-        //final LdapResultList e = new LdapResultList(_observer);
-        final LdapResultList e = new LdapResultList();
-        e.setResultList(_result);
-        return e;
     }
     
     public List<String> getAnswer() {
@@ -86,14 +79,15 @@ public class LdapResultList extends NameSpaceResultList {
                 
             }
             
-            if(token[0].compareTo("eren")==0){ //$NON-NLS-1$
-                tmpList.add(new ProcessVariable(token[1], cleanList));
-            }
-            else{
-                tmpList.add(new ControlSystemItem(token[1], cleanList));
-            }
+            //            if(token[0].compareTo("eren")==0){ //$NON-NLS-1$
+            //                tmpList.add(new ProcessVariable(token[1], cleanList));
+            //            }
+            //            else{
+            tmpList.add(new ControlSystemItem(token[1], cleanList));
+            //            }
         }
-        _result = new ArrayList<String>(); // TODO (bknerr) : wtf ?
+        //_result = new ArrayList<String>(); // TODO (bknerr) : wtf ?
+        _result.clear();
         return tmpList;
     }
     
@@ -112,6 +106,7 @@ public class LdapResultList extends NameSpaceResultList {
         notifyObservers();
     }
     
+    // TODO (bknerr) : replace all accesses to this List<String by the Set<SearchResult> (answerSet)
     /* (non-Javadoc)
      * @see org.csstudio.utility.nameSpaceBrowser.utility.NameSpaceResultList#setResultList(java.util.ArrayList)
      */
@@ -120,5 +115,22 @@ public class LdapResultList extends NameSpaceResultList {
         _result = new ArrayList<String>(resultList);
         notifyView();
     }
+    /**
+     * @param list
+     * @param answerSet
+     */
+    public void setResultList(final List<String> list, final Set<SearchResult> answerSet) {
+        setAnswerSet(answerSet);
+        setResultList(list);
+    }
+    
+    
+    private void setAnswerSet(final Set<SearchResult> answerSet) {
+        _answerSet = answerSet;
+    }
+    public Set<SearchResult> getAnswerSet() {
+        return _answerSet;
+    }
+    
     
 }

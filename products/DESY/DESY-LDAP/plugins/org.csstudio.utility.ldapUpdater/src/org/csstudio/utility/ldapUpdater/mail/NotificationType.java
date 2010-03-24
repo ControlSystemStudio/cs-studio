@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -19,24 +19,49 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-/*
- * $Id$
- */
-package org.csstudio.utility.namespace.utility;
+package org.csstudio.utility.ldapUpdater.mail;
 
-import java.util.List;
-import java.util.Observable;
+import org.csstudio.utility.ldap.LdapUtils;
 
 /**
- * @author hrickens
- * @author $Author$
- * @version $Revision$
- * @since 09.05.2007
+ * Mail templates for notification purposes of the LDAP update process.
+ *
+ * @author bknerr 24.03.2010
  */
-public abstract class NameSpaceResultList extends Observable {
-    
-    abstract public List<ControlSystemItem> getCSIResultList();
-    abstract public NameSpaceResultList getNew();
-    abstract public void notifyView();
-    abstract public void setResultList(List<String> resultList);
+public enum NotificationType {
+
+    UNALLOWED_CHARS("Forbidden character is LDAP entry",
+                    "The LDAP entry contains at least one forbidden character\n" +
+                    "any of :" + LdapUtils.FORBIDDEN_SUBSTRINGS + ")"),
+
+    UNKNOWN_IOCS_IN_LDAP("IOCs in LDAP not backed by an IOC file.",
+                         "The LDAP contains IOC entries, for which a corresponding IOC file could not be identified.");
+
+    private static final String SUBJECT_PREFIX = "[LDAP Updater]";
+
+    private final String _subject;
+    private final String _text;
+
+    /**
+     * Constructor.
+     */
+    private NotificationType(final String subject, final String text) {
+        _subject = subject;
+        _text= text;
+    }
+
+    /**
+     * @return the static subject
+     */
+    public String getSubject() {
+        return SUBJECT_PREFIX + " " + _subject;
+    }
+
+    /**
+     * @return the static text
+     */
+    public String getText() {
+        return _text;
+    }
+
 }

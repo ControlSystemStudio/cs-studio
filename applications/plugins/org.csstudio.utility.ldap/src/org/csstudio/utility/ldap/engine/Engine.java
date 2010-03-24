@@ -68,7 +68,7 @@ public class Engine extends Job {
     private volatile boolean running = true;
     private int reStartSendDiff = 0;
     
-    private class AttriebutSet {
+    private class AttributeSet {
         private final SearchControls _ctrl;
         private String _path;
         private String _filter;
@@ -76,7 +76,7 @@ public class Engine extends Job {
         /**
          * The default Constructor. Set default the Timelimit to 1000 ms.
          */
-        public AttriebutSet() {
+        public AttributeSet() {
             _ctrl = new SearchControls();
             _ctrl.setTimeLimit(1000);
         }
@@ -87,15 +87,6 @@ public class Engine extends Job {
          */
         public void setSearchScope(final int searchScope) {
             _ctrl.setSearchScope(searchScope);
-        }
-        
-        /**
-         * 
-         * @param timeLimit
-         *            set the timelimit of {@link SearchControls} in ms.
-         */
-        public void setSearchControlsTimeLimit(final int timeLimit) {
-            _ctrl.setTimeLimit(timeLimit);
         }
         
         /**
@@ -383,7 +374,7 @@ public class Engine extends Job {
             return null;
         }
         if (getLdapDirContext() != null) {
-            final AttriebutSet attriebutSet = helpAttriebut(recordPath);
+            final AttributeSet attriebutSet = helpAttriebut(recordPath);
             try {
                 final String[] attStrings = new String[] { attriebute.name() };
                 Attributes attributes = null;
@@ -443,7 +434,7 @@ public class Engine extends Job {
                                            final ChannelAttribute attriebute, final String value) {
         assert (recordPath != null) && (attriebute != null) && (value != null) : "The recordPath, attriebute and/or value are NULL";
         if (getLdapDirContext() != null) {
-            AttriebutSet attriebutSet = helpAttriebut(recordPath);
+            AttributeSet attriebutSet = helpAttriebut(recordPath);
             try {
                 String ldapChannelName = "";
                 if (attriebutSet.getSearchControls().getSearchScope() == SearchControls.SUBTREE_SCOPE) {
@@ -477,7 +468,7 @@ public class Engine extends Job {
                 CentralLogger
                 .getInstance()
                 .info(this,
-                      "Falscher LDAP Suchpfad für Record suche. Beim setzen eines Atributes fehlgeschlagen.");
+                "Falscher LDAP Suchpfad für Record suche. Beim setzen eines Atributes fehlgeschlagen.");
                 CentralLogger.getInstance().info(this, e);
             }
         }
@@ -829,7 +820,7 @@ public class Engine extends Job {
                 .getInstance()
                 .warn(
                       this,
-                      "Error code 10: Please check LDAP replica! - replica may be out of synch - use: [start accepting updates] in SUN-LDAP Console");
+                "Error code 10: Please check LDAP replica! - replica may be out of synch - use: [start accepting updates] in SUN-LDAP Console");
             }
             // e.printStackTrace();
             //
@@ -845,8 +836,8 @@ public class Engine extends Job {
         }
     }
     
-    private AttriebutSet helpAttriebut(String record) {
-        final AttriebutSet attriebutSet = new AttriebutSet();
+    private AttributeSet helpAttriebut(String record) {
+        final AttributeSet attriebutSet = new AttributeSet();
         if (record != null) {
             // Prüft ob der record schon in der ldapReferences gespeichert ist.
             if (!record.contains("ou=epicsControls") && !record.contains("econ=")

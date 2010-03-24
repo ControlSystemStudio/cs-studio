@@ -27,6 +27,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import javax.naming.directory.Attributes;
+
 
 /**
  * 
@@ -53,8 +55,12 @@ public class LDAPContentModel {
     
     
     public IOC addIOC(final String efan, final String econ) {
+        return addIOC(efan, econ, null);
+    }
+    
+    public IOC addIOC(final String efan, final String econ, final Attributes attributes) {
         final Facility facility = addFacility(efan);
-        return facility.addIOC(efan, econ);
+        return facility.addIOC(efan, econ, attributes);
     }
     
     

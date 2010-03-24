@@ -30,15 +30,16 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
  * Class used to initialize default preference values.
  */
 public class PreferenceInitializer extends AbstractPreferenceInitializer {
-
+    
     /*
      * (non-Javadoc)
      *
      * @see org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#initializeDefaultPreferences()
      */
+    @Override
     public void initializeDefaultPreferences() {
-        IEclipsePreferences prefs = new DefaultScope().getNode(Activator.PLUGIN_ID);
-//      System.out.println("Path init"+prefs.absolutePath());
+        final IEclipsePreferences prefs = new DefaultScope().getNode(Activator.PLUGIN_ID);
+        //      System.out.println("Path init"+prefs.absolutePath());
         prefs.put(PreferenceConstants.P_STRING_URL,"ldap://krynfs.desy.de:389/o=DESY,c=DE"); //$NON-NLS-1$
         prefs.put(PreferenceConstants.P_STRING_USER_DN,"uid=css_user,ou=people,o=DESY,c=DE"); //$NON-NLS-1$
         prefs.put(PreferenceConstants.P_STRING_USER_PASSWORD,"cssPass"); //$NON-NLS-1$
@@ -46,5 +47,5 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         prefs.put(PreferenceConstants.SECURITY_AUTHENTICATION,""); //$NON-NLS-1$
         prefs.put(PreferenceConstants.ENGINE_TIMER,"100");//$NON-NLS-1$
     }
-
+    
 }

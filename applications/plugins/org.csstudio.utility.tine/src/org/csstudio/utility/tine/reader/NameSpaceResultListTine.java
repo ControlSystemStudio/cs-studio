@@ -39,56 +39,49 @@ import org.csstudio.utility.namespace.utility.NameSpaceResultList;
  */
 public class NameSpaceResultListTine extends NameSpaceResultList {
     
-	/** The list with results from Tine namespace server.*/
+    /** The list with results from Tine namespace server.*/
     private List<ControlSystemItem> _csiResult = Collections.emptyList();
     
     
-    /** {@inheritDoc} */
-    @Override
-	public final NameSpaceResultList copy() {
-        NameSpaceResultListTine nsrlt = new NameSpaceResultListTine();
-        nsrlt.setCSIResultList(_csiResult);
-        return nsrlt;    
-    }
-
     /** {@inheritDoc}*/
     @Override
-	public final NameSpaceResultList getNew() {
+    public final NameSpaceResultList getNew() {
         return new NameSpaceResultListTine();
     }
-
+    
     /** {@inheritDoc}*/
     @Override
-	public final List<ControlSystemItem> getCSIResultList() {
+    public final List<ControlSystemItem> getCSIResultList() {
         return _csiResult;
     }
-
+    
     /** {@inheritDoc}*/
     @Override
-	public final void notifyView() {
+    public final void notifyView() {
         setChanged();
         notifyObservers();
     }
-
+    
     /**
-     * Copies the list of {@link ControlSystemItem}. 
-     * {@inheritDoc}*/
-	public final void setCSIResultList(final List<ControlSystemItem> resultList) {
-    	
-    	_csiResult = new ArrayList<ControlSystemItem>(resultList);			
+     * Copies the list of {@link ControlSystemItem}.
+     * {@inheritDoc}
+     */
+    public final void setCSIResultList(final List<ControlSystemItem> resultList) {
+        
+        _csiResult = new ArrayList<ControlSystemItem>(resultList);
         notifyView();
     }
     
-    /** resultList a filled only String or only {@link ControlSystemItem}. 
+    /** resultList a filled only String or only {@link ControlSystemItem}.
      * {@inheritDoc}*/
     @Override
-	public final void setResultList(final List<String> resultList) {
-    	
-    	_csiResult = new ArrayList<ControlSystemItem>();
-		for (String name : resultList) {
-			_csiResult.add(new ControlSystemItem(name, name));
-		}
+    public final void setResultList(final List<String> resultList) {
+        
+        _csiResult = new ArrayList<ControlSystemItem>();
+        for (final String name : resultList) {
+            _csiResult.add(new ControlSystemItem(name, name));
+        }
         notifyView();
     }
-
+    
 }

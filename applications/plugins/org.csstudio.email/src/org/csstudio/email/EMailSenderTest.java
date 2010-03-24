@@ -13,7 +13,7 @@ public class EMailSenderTest
     final private static String host = "smtp.ornl.gov";
     final private static String from = "kasemirk@ornl.gov";
     final private static String to = from;
-
+    
     @Test
     public void testMailer() throws Exception
     {

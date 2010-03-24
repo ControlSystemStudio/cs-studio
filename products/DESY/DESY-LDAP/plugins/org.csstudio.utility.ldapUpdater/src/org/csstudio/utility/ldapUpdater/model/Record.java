@@ -24,7 +24,7 @@ package org.csstudio.utility.ldapUpdater.model;
 import java.io.Serializable;
 
 /**
- * 
+ * Class type for IOC records.
  * 
  * @author bknerr
  */

@@ -155,7 +155,7 @@ public class LDAPConnector {
      * Read first the preferences in instance scope and if there is no
      * user defined setting, get them from default scope.
      * 
-     * @return env with the setings from PreferencPage
+     * @return env with the settings from PreferencPage
      */
     private void getUIenv() {
         

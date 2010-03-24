@@ -36,7 +36,6 @@ public final class CommandParameterEnumValue implements Serializable {
     
     private final String _label;
     
-    // TODO (bknerr) : check whether any serializable works here!!!
     private final Serializable _value;
     
     /**

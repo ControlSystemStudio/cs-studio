@@ -39,26 +39,28 @@ public class LdapUtils {
     
     private static final Logger LOG = CentralLogger.getInstance().getLogger(LdapUtils.class);
     
-    public static final String LDAP_OU_FIELD_NAME = "ou";
-    
+    public static final String OU_FIELD_NAME = "ou";
     public static final String EPICS_CTRL_FIELD_VALUE = "EpicsControls";
-    public static final String FIELD_SEPARATOR = ",";
     
+    public static final String FIELD_SEPARATOR = ",";
     public static final String FIELD_ASSIGNMENT = "=";
     public static final String FIELD_WILDCARD = "*";
+    
     public static final String EREN_FIELD_NAME = "eren";
-    
-    
     public static final String EFAN_FIELD_NAME = "efan";
     public static final String ECON_FIELD_NAME = "econ";
     public static final String ECOM_FIELD_NAME = "ecom";
     public static final String ECOM_FIELD_VALUE = "EPICS-IOC";
-    public static final String LDAP_ATTR_FIELD_OBJECT_CLASS = "objectClass";
     
-    public static final String LDAP_ATTR_VAL_OBJECT_CLASS = "epicsRecord";
+    public static final String ATTR_FIELD_OBJECT_CLASS = "objectClass";
+    public static final String ATTR_VAL_OBJECT_CLASS = "epicsRecord";
+    
+    public static final String ATTR_FIELD_RESPONSIBLE_EMAIL = "epicsResponsibleEmailAddress";
+    
     public static final String[] FORBIDDEN_SUBSTRINGS = new String[] {
         "/","\\","+","@"
     };
+    
     
     
     /**

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -19,24 +19,39 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-/*
- * $Id$
- */
-package org.csstudio.utility.namespace.utility;
+package org.csstudio.utility.ldapUpdater.mail;
 
-import java.util.List;
-import java.util.Observable;
+import java.io.IOException;
+
+import org.csstudio.email.EMailSender;
 
 /**
- * @author hrickens
- * @author $Author$
- * @version $Revision$
- * @since 09.05.2007
+ * Encapsulates LDAP Updater specific mail functionality.
+ * 
+ * @author bknerr 24.03.2010
  */
-public abstract class NameSpaceResultList extends Observable {
+public class NotificationMail {
+    private static final String HOST = "smtp.desy.de";
+    private static final String FROM = "DontReply@LDAPUpdater";
     
-    abstract public List<ControlSystemItem> getCSIResultList();
-    abstract public NameSpaceResultList getNew();
-    abstract public void notifyView();
-    abstract public void setResultList(List<String> resultList);
+    /**
+     * Don't instantiate.
+     */
+    private NotificationMail() {
+        // Empty.
+    }
+    
+    public static boolean sendMail(final NotificationType type, final String receiver, final String addInfo) {
+        EMailSender mailer = null;
+        try {
+            mailer = new EMailSender(HOST, FROM, receiver, type.getSubject());
+            mailer.addText(type.getText() + addInfo);
+            mailer.close();
+        } catch (final IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+    
 }

@@ -21,15 +21,15 @@
  */
 package org.csstudio.utility.ldapUpdater;
 
+import static org.csstudio.utility.ldap.LdapUtils.ATTR_FIELD_OBJECT_CLASS;
+import static org.csstudio.utility.ldap.LdapUtils.ATTR_VAL_OBJECT_CLASS;
 import static org.csstudio.utility.ldap.LdapUtils.ECOM_FIELD_NAME;
 import static org.csstudio.utility.ldap.LdapUtils.ECOM_FIELD_VALUE;
 import static org.csstudio.utility.ldap.LdapUtils.ECON_FIELD_NAME;
 import static org.csstudio.utility.ldap.LdapUtils.EFAN_FIELD_NAME;
 import static org.csstudio.utility.ldap.LdapUtils.EPICS_CTRL_FIELD_VALUE;
 import static org.csstudio.utility.ldap.LdapUtils.EREN_FIELD_NAME;
-import static org.csstudio.utility.ldap.LdapUtils.LDAP_ATTR_FIELD_OBJECT_CLASS;
-import static org.csstudio.utility.ldap.LdapUtils.LDAP_ATTR_VAL_OBJECT_CLASS;
-import static org.csstudio.utility.ldap.LdapUtils.LDAP_OU_FIELD_NAME;
+import static org.csstudio.utility.ldap.LdapUtils.OU_FIELD_NAME;
 import static org.csstudio.utility.ldap.LdapUtils.attributesForLdapEntry;
 import static org.csstudio.utility.ldap.LdapUtils.createLdapQuery;
 import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceKey.IOC_DBL_DUMP_PATH;
@@ -56,6 +56,8 @@ import org.csstudio.utility.ldap.engine.Engine;
 import org.csstudio.utility.ldap.reader.LdapResultList;
 import org.csstudio.utility.ldap.reader.LdapService;
 import org.csstudio.utility.ldap.reader.LdapServiceImpl;
+import org.csstudio.utility.ldapUpdater.mail.NotificationMail;
+import org.csstudio.utility.ldapUpdater.mail.NotificationType;
 import org.csstudio.utility.ldapUpdater.model.HistoryFileContentModel;
 import org.csstudio.utility.ldapUpdater.model.IOC;
 import org.csstudio.utility.ldapUpdater.model.LDAPContentModel;
@@ -146,7 +148,7 @@ public final class LdapAccess {
         final String query = createLdapQuery(ECON_FIELD_NAME, iocName,
                                              ECOM_FIELD_NAME, ECOM_FIELD_VALUE,
                                              EFAN_FIELD_NAME, facilityName,
-                                             LDAP_OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE);
+                                             OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE);
         
         final LdapResultList result = _service.readLdapEntries(query, LdapUtils.any(EREN_FIELD_NAME), ldapDataObserver);
         ldapDataObserver.setResult(result);
@@ -206,7 +208,7 @@ public final class LdapAccess {
             query = createLdapQuery(ECON_FIELD_NAME, iocName,
                                     ECOM_FIELD_NAME, ECOM_FIELD_VALUE,
                                     EFAN_FIELD_NAME, facilityName,
-                                    LDAP_OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE);
+                                    OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE);
             context.unbind(query);
             // FIXME (bknerr) : test missing
             LOGGER.info("IOC removed from LDAP: " + query);
@@ -219,7 +221,7 @@ public final class LdapAccess {
     }
     
     
-    public static void removeIocEntryFromLdap(final IOC iocFromLdap) throws InterruptedException {
+    public static void removeIocEntryFromLdap(final IOC iocFromLdap) {
         removeIocEntryFromLdap(iocFromLdap.getName(), iocFromLdap.getGroup());
     }
     
@@ -231,7 +233,7 @@ public final class LdapAccess {
                                              ECON_FIELD_NAME, ioc.getName(),
                                              ECOM_FIELD_NAME, ECOM_FIELD_VALUE,
                                              EFAN_FIELD_NAME, ioc.getGroup(),
-                                             LDAP_OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE);
+                                             OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE);
         try {
             context.unbind(query);
             LOGGER.info("Record removed from LDAP: " + query);
@@ -317,6 +319,7 @@ public final class LdapAccess {
         final String iocFilePath = getValueFromPreferences(IOC_DBL_DUMP_PATH);
         final Set<Record> recordsFromFile = getRecordsFromFile(iocFilePath + iocName);
         
+        final StringBuilder forbiddenRecords = new StringBuilder();
         
         LOGGER.info( "Process IOC " + iocName + "\t\t #records " +  recordsFromFile.size());
         for (final Record record : recordsFromFile) {
@@ -335,13 +338,20 @@ public final class LdapAccess {
                     }
                 } else {
                     LOGGER.warn("Record " + recordName + " could not be written. Unallowed characters!");
+                    forbiddenRecords.append(recordName + "\n");
                 }
             }
+        }
+        if (forbiddenRecords.length() > 0) {
+            NotificationMail.sendMail(NotificationType.UNALLOWED_CHARS,
+                                      ioc.getResponsible(),
+                                      "\nIn IOC " + iocName + ":\n\n" + forbiddenRecords.toString());
         }
         
         // TODO (bknerr) : what to do with success variable ?
         return new UpdateIOCResult(recordsFromFile.size(), numOfRecsWritten, ldapContentModel.getRecords(iocName).size(), true);
     }
+    
     
     /**
      * This method compares the contents of the current LDAP hierarchy with the contents found in
@@ -414,10 +424,10 @@ public final class LdapAccess {
                                              ECON_FIELD_NAME, ioc.getName(),
                                              ECOM_FIELD_NAME, ECOM_FIELD_VALUE,
                                              EFAN_FIELD_NAME, ioc.getGroup(),
-                                             LDAP_OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE);
+                                             OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE);
         
         final Attributes afe =
-            attributesForLdapEntry(LDAP_ATTR_FIELD_OBJECT_CLASS, LDAP_ATTR_VAL_OBJECT_CLASS,
+            attributesForLdapEntry(ATTR_FIELD_OBJECT_CLASS, ATTR_VAL_OBJECT_CLASS,
                                    EREN_FIELD_NAME, recordName);
         try {
             context.bind(query, null, afe);

@@ -1,8 +1,10 @@
 package org.csstudio.utility.ldapUpdater;
 
-import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Set;
+
+import javax.naming.directory.SearchResult;
 
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
@@ -49,19 +51,18 @@ public class ReadLdapObserver implements Observer {
     public void update(final Observable o, final Object arg) {
         LOGGER.info("Observer update: fill LDAP model.");
         
-        final List<String> ldapAnswer = _result.getAnswer();
-        
-        for (final String ldapPath : ldapAnswer) {
+        final Set<SearchResult> answerSet = _result.getAnswerSet();
+        for (final SearchResult entry : answerSet) {
+            entry.setRelative(false);
             
-            final LdapQueryResult ldapEntry = IocFinder.parseLdapQueryResult(ldapPath);
-            
+            final LdapQueryResult ldapEntry = IocFinder.parseLdapQueryResult(entry.getName());
             final String efan = ldapEntry.getEfan();
             if (StringUtil.hasLength(efan)) {
                 _model.addFacility(efan);
                 
                 final String econ = ldapEntry.getEcon();
                 if (StringUtil.hasLength(econ)) {
-                    _model.addIOC(efan, econ);
+                    _model.addIOC(efan, econ, entry.getAttributes());
                     
                     final String eren = ldapEntry.getEren();
                     if (StringUtil.hasLength(eren)) {
@@ -70,7 +71,7 @@ public class ReadLdapObserver implements Observer {
                 }
             }
         }
-        LOGGER.info("LDAP entries retrieved: " + ldapAnswer.size());
+        LOGGER.info("LDAP entries retrieved: " + answerSet.size());
         
         setReady(true);
         LOGGER.info("Observer update finished.");

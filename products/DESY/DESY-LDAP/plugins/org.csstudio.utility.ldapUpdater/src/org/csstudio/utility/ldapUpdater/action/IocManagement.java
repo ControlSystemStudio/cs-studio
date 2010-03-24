@@ -41,6 +41,7 @@ public class IocManagement implements IManagementCommand {
     /**
      * {@inheritDoc}
      */
+    @SuppressWarnings("unchecked")
     public CommandResult execute(final CommandParameters parameters) {
         
         final Map<String, String> map = (Map<String, String>) parameters.get("ioc");

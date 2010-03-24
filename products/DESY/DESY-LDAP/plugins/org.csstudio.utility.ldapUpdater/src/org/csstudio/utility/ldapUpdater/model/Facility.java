@@ -24,7 +24,16 @@ package org.csstudio.utility.ldapUpdater.model;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
+
+import javax.naming.NamingException;
+import javax.naming.directory.Attribute;
+import javax.naming.directory.Attributes;
+
+import org.apache.log4j.Logger;
+import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.utility.ldap.LdapUtils;
 
 /**
  * 
@@ -32,6 +41,8 @@ import java.util.Set;
  * @author bknerr
  */
 public class Facility {
+    private final Logger LOG = CentralLogger.getInstance().getLogger(this);
+    
     private final String _name;
     
     private final Map<String, IOC> _iocs = new HashMap<String, IOC>();
@@ -44,10 +55,26 @@ public class Facility {
     }
     
     public IOC addIOC(final String efan, final String econ) {
+        return addIOC(efan, econ, null);
+    }
+    
+    public IOC addIOC(final String efan, final String econ, final Attributes attributes) {
         IOC ioc = _iocs.get(econ);
         if (ioc == null) {
             ioc = new IOC(econ, efan);
             _iocs.put(econ, ioc);
+        }
+        if (attributes != null) {
+            final Attribute emailAddressAttr = attributes.get(LdapUtils.ATTR_FIELD_RESPONSIBLE_EMAIL);
+            if (emailAddressAttr != null) {
+                try {
+                    ioc.setResponsible((String)emailAddressAttr.get());
+                } catch (final NoSuchElementException nsee) {
+                    LOG.warn("Attribute " + LdapUtils.ATTR_FIELD_RESPONSIBLE_EMAIL + " has not any values set.");
+                } catch (final NamingException ne) {
+                    LOG.warn("Attribute " + LdapUtils.ATTR_FIELD_RESPONSIBLE_EMAIL + " could not be retrieved.\n" + ne.getExplanation());
+                }
+            }
         }
         return ioc;
     }
