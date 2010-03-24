@@ -52,12 +52,7 @@ public class XYGraph extends Figure{
 	};
 	
 	private int traceNum = 0;
-	// TODO Is something wrong with the initial 'transparent' setting?
-	// It's 'true', and shows like that in the ToolbarArmedXYGraph's
-	// configuration panel, but it otherwise looks like a non-transparent graph.
-	// When simply opening the config panel, doing nothing but press 'OK',
-	// the plot really becomes transparent.
-	private boolean transparent = true;
+	private boolean transparent = false;
 	private boolean showLegend = true;
 	
 	private Map<Axis, Legend> legendMap;
@@ -95,6 +90,8 @@ public class XYGraph extends Figure{
 		xAxisList = new ArrayList<Axis>();
 		yAxisList = new ArrayList<Axis>();
 		plotArea = new PlotArea(this);
+		getPlotArea().setOpaque(!transparent);
+
 		add(titleLabel);		
 		add(plotArea);
 		primaryYAxis = new Axis("Y-Axis", true);
