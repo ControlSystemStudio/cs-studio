@@ -46,11 +46,11 @@ public class BargraphShowScalePostProcessor extends AbstractWidgetPropertyPostPr
 				String selectedString = BargraphModel.SHOW_LABELS[optionProperty];
 				if ("None".equals(selectedString)) {
 					for (String propertyId : propertyIds) {
-						chain.add(new HidePropertyCommand(widget, propertyId, propertyId));
+						chain.add(new HidePropertyCommand(widget, propertyId, this.propertyId));
 					}
 				} else {
 					for (String propertyId : propertyIds) {
-						chain.add(new ShowPropertyCommand(widget, propertyId, propertyId));
+						chain.add(new ShowPropertyCommand(widget, propertyId, this.propertyId));
 					}
 				}
 			}
