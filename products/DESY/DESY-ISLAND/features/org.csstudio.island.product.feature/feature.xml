@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.csstudio.desy.product.feature"
+      id="org.csstudio.island.product.feature"
       label="Feature"
       version="1.0.0.qualifier">
 
@@ -21,10 +21,6 @@
          version="0.0.0"/>
 
    <includes
-         id="org.csstudio.platform.feature.product"
-         version="0.0.0"/>
-
-   <includes
          id="org.csstudio.configuration.epics.feature"
          version="0.0.0"/>
 
@@ -38,6 +34,10 @@
 
    <includes
          id="org.eclipse.p2helios.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.csstudio.platform.island.feature.product"
          version="0.0.0"/>
 
    <plugin
