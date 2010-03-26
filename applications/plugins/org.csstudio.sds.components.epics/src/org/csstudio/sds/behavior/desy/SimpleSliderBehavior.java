@@ -18,7 +18,7 @@ public class SimpleSliderBehavior extends AbstractBehavior<SimpleSliderModel> {
 
 	@Override
 	protected String[] doGetInvisiblePropertyIds() {
-		return new String[] { SimpleSliderModel.PROP_VALUE, SimpleSliderModel.PROP_MAX, SimpleSliderModel.PROP_MIN,
+		return new String[] { SimpleSliderModel.PROP_NAME, SimpleSliderModel.PROP_VALUE, SimpleSliderModel.PROP_MAX, SimpleSliderModel.PROP_MIN,
 				SimpleSliderModel.PROP_BORDER_COLOR, SimpleSliderModel.PROP_BORDER_STYLE, SimpleSliderModel.PROP_BORDER_WIDTH };
 	}
 

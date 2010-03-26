@@ -127,6 +127,7 @@
       </toc>
    </extension>
    <extension
+         name="DESY Default"
          point="org.csstudio.sds.behaviors">
       <behavior
             class="org.csstudio.sds.behavior.desy.BargraphBehavior"
@@ -145,6 +146,30 @@
             description="DESY Default"
             id="behavior.desy.booleanswitch.default"
             widgetTypeId="org.csstudio.sds.components.BooleanSwitch">
+      </behavior>
+      <behavior
+            class="org.csstudio.sds.behavior.desy.LabelBehavior"
+            description="DESY Dyn Default"
+            id="behavior.desy.label.default"
+            widgetTypeId="org.csstudio.sds.components.Label">
+      </behavior>
+      <behavior
+            class="org.csstudio.sds.behavior.desy.MenuButtonBehavior"
+            description="DESY Default"
+            id="behavior.desy.menuButton.default"
+            widgetTypeId="org.csstudio.sds.components.MenuButton">
+      </behavior>
+      <behavior
+            class="org.csstudio.sds.behavior.desy.TextInputBehavior"
+            description="DESY Default"
+            id="behavior.desy.textInput.default"
+            widgetTypeId="org.csstudio.sds.components.TextInput">
+      </behavior>
+      <behavior
+            class="org.csstudio.sds.behavior.desy.StripChartBehavior"
+            description="DESY Default"
+            id="behavior.desy.stripChart.default"
+            widgetTypeId="org.csstudio.sds.components.StripChart">
       </behavior>
    </extension>
    
