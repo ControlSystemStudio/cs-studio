@@ -14,9 +14,10 @@
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective
-            name="Perspective"
             class="org.csstudio.utility.adlparser.Perspective"
-            id="org.csstudio.utility.adlParser.perspective">
+            icon="icons/medm.JPG"
+            id="org.csstudio.utility.adlParser.perspective"
+            name="Perspective">
       </perspective>
    </extension>
    <extension
@@ -33,6 +34,7 @@
       </category>
       <view
             class="org.csstudio.utility.adlparser.ADLTreeView"
+            icon="icons/medm.JPG"
             id="org.csstudio.utility.adlParser.ADLTreeView"
             name="ADL Tree View"
             restorable="true">
@@ -46,7 +48,7 @@
             name="RCP Application">
          <property
                name="windowImages"
-               value="icons/alt_window_16.gif,icons/alt_window_32.gif">
+               value="icons/medm.jpg">
          </property>
       </product>
    </extension>
