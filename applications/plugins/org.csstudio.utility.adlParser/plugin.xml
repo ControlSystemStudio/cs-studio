@@ -26,6 +26,17 @@
             class="org.csstudio.utility.adlparser.View"
             id="org.csstudio.utility.adlParser.view">
       </view>
+      <category
+            id="org.csstudio.utility.adlParser.adlParserCategory"
+            name="ADL Parser"
+            parentCategory="org.csstudio">
+      </category>
+      <view
+            class="org.csstudio.utility.adlparser.ADLTreeView"
+            id="org.csstudio.utility.adlParser.ADLTreeView"
+            name="ADL Tree View"
+            restorable="true">
+      </view>
    </extension>
    <extension
          id="product"
