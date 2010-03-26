@@ -7,8 +7,8 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses( { VariableParser_Test.class,
-	AllStatementParserTests.class} )
+@SuiteClasses( { VariableParser_Test.class
+	} )
 public class AllTests {
 }
 
