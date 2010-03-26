@@ -21,10 +21,6 @@
          version="0.0.0"/>
 
    <includes
-         id="org.csstudio.configuration.epics.feature"
-         version="0.0.0"/>
-
-   <includes
          id="org.csstudio.diag.controlsystemtools.feature"
          version="0.0.0"/>
 
