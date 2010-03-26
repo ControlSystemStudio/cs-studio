@@ -31,49 +31,50 @@ import javax.naming.directory.Attributes;
 
 
 /**
- * 
+ *
  * @author bknerr
  */
 public class LDAPContentModel {
-    
+
     private final Map<String, Facility> _facilities = new HashMap<String, Facility>();
-    
+
     /**
      * Constructor.
      */
     public LDAPContentModel() {
         // Empty.
     }
-    
-    
+
+
     public Facility addFacility(final String efan) {
-        if (_facilities.get(efan) == null) {
-            _facilities.put(efan, new Facility(efan));
+        final String efanKey = efan.toUpperCase();
+        if (!_facilities.containsKey(efanKey)) {
+            _facilities.put(efanKey, new Facility(efan));
         }
-        return _facilities.get(efan);
+        return _facilities.get(efanKey);
     }
-    
-    
+
+
     public IOC addIOC(final String efan, final String econ) {
         return addIOC(efan, econ, null);
     }
-    
+
     public IOC addIOC(final String efan, final String econ, final Attributes attributes) {
         final Facility facility = addFacility(efan);
         return facility.addIOC(efan, econ, attributes);
     }
-    
-    
+
+
     public void addRecord(final String efan, final String econ, final String eren) {
         final IOC ioc = addIOC(efan, econ);
         ioc.addRecord(eren);
     }
-    
-    
-    public Facility getFacility(final String efan) {
-        return _facilities.get(efan);
+
+
+    private Facility getFacility(final String efan) {
+        return _facilities.get(efan.toUpperCase());
     }
-    
+
     public IOC getIOC(final String iocName) {
         for (final Entry<String, Facility> entry : _facilities.entrySet()) {
             final IOC ioc = getIOC(entry.getValue().getName(), iocName);
@@ -83,7 +84,7 @@ public class LDAPContentModel {
         }
         return null;
     }
-    
+
     public IOC getIOC(final String efan, final String iocName) {
         final Facility facility = getFacility(efan);
         if (facility != null) {
@@ -91,7 +92,7 @@ public class LDAPContentModel {
         }
         return null;
     }
-    
+
     /**
      * Returns a copy of the set of all IOC names (of all facilities).
      * @return a copy of the set of all IOC names.
@@ -103,8 +104,8 @@ public class LDAPContentModel {
         }
         return names;
     }
-    
-    
+
+
     public Record getRecord(final String group, final String iocName, final String recordName) {
         final IOC ioc = getIOC(group, iocName);
         if (ioc != null) {
@@ -112,20 +113,28 @@ public class LDAPContentModel {
         }
         return null;
     }
-    
+
     public Set<Record> getRecords(final String iocName) {
         final IOC ioc = getIOC(iocName);
         return ioc.getRecordValues();
     }
-    
-    
+
+
     public Set<IOC> getIOCs() {
         final Set<IOC> iocs = new HashSet<IOC>();
         for (final Facility fac : _facilities.values()) {
             iocs.addAll(fac.getIOCs());
         }
         return iocs;
-        
+
     }
-    
+
+
+    /**
+     * @return
+     */
+    public Set<Entry<String, Facility>> getFacilities() {
+        return _facilities.entrySet();
+    }
+
 }

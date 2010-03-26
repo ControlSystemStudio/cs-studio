@@ -19,31 +19,31 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.utility.ldapUpdater.action;
+package org.csstudio.utility.ldapUpdater.contextMenu;
 
 import org.csstudio.platform.management.CommandParameterEnumValue;
 import org.csstudio.platform.management.IDynamicParameterValues;
 
 /**
- * TODO (bknerr) :
- * 
+ * Commands to process selected IOCs for the LDAP Updater Context Menu.
+ *
  * @author bknerr 19.03.2010
  */
 public class CommandEnumeration implements IDynamicParameterValues {
-    
+
     public enum IocModificationCommand {
         DELETE("Delete IOC from LDAP (incl. all Records)."),
-        TIDY_UP("Tidy up (removes all Records from LDAP not contained in current IOC file).");
-        
+        TIDY_UP("Tidy up (removes all records not present in IOC file).");
+
         private final String _description;
-        
+
         /**
          * Constructor.
          */
         private IocModificationCommand(final String desc) {
             _description = desc;
         }
-        
+
         /**
          * @return the _description
          */
@@ -51,8 +51,8 @@ public class CommandEnumeration implements IDynamicParameterValues {
             return _description;
         }
     }
-    
-    
+
+
     /**
      * (@inheritDoc)
      */
@@ -64,8 +64,8 @@ public class CommandEnumeration implements IDynamicParameterValues {
         for (final IocModificationCommand command : IocModificationCommand.values()) {
             params[i++] = new CommandParameterEnumValue(command.name(), command.getDescription());
         }
-        
+
         return params;
     }
-    
+
 }

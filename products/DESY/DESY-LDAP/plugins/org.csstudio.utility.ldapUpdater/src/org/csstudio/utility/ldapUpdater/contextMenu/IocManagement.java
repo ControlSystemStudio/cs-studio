@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.utility.ldapUpdater.action;
+package org.csstudio.utility.ldapUpdater.contextMenu;
 
 import static org.csstudio.utility.ldap.LdapUtils.ECON_FIELD_NAME;
 import static org.csstudio.utility.ldap.LdapUtils.EFAN_FIELD_NAME;
@@ -33,29 +33,28 @@ import org.csstudio.utility.ldapUpdater.LdapAccess;
 
 /**
  * TODO (bknerr) :
- * 
+ *
  * @author bknerr 17.03.2010
  */
 public class IocManagement implements IManagementCommand {
-    
+
     /**
      * {@inheritDoc}
      */
     @SuppressWarnings("unchecked")
     public CommandResult execute(final CommandParameters parameters) {
-        
+
         final Map<String, String> map = (Map<String, String>) parameters.get("ioc");
         final String command = (String) parameters.get("command");
-        
+
         commandDispatchAndExecute(command, map);
-        
+
         return CommandResult.createSuccessResult();
     }
-    
-    
+
+
     private void commandDispatchAndExecute(final String command, final Map<String, String> map) {
-        
-        
+
         switch (IocModificationCommand.valueOf(command)) {
             case DELETE : {
                 // TODO (bknerr) : another popup 'do you really want to do this?'
@@ -70,8 +69,8 @@ public class IocManagement implements IManagementCommand {
             }
         }
     }
-    
-    
-    
+
+
+
 }
 

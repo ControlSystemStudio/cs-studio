@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.utility.ldapUpdater.action;
+package org.csstudio.utility.ldapUpdater.contextMenu;
 
 import static org.csstudio.utility.ldap.LdapUtils.ECON_FIELD_NAME;
 import static org.csstudio.utility.ldap.LdapUtils.EFAN_FIELD_NAME;

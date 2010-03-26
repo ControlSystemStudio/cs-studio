@@ -25,6 +25,7 @@
 package org.csstudio.config.ioconfig.model;
 
 import java.util.Set;
+
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -45,10 +46,11 @@ public class Facility extends Node {
      * Default Constructor needed by Hibernate.
      */
     public Facility() {
+        // Empty.
     }
 
     /**
-     * 
+     *
      * @return the children IOC's.
      */
     @Transient
@@ -61,8 +63,8 @@ public class Facility extends Node {
      * {@inheritDoc}
      */
     @Override
-    public Node copyParameter(NamedDBClass parent) {
-        Facility copy = new Facility();
+    public Node copyParameter(final NamedDBClass parent) {
+        final Facility copy = new Facility();
         copy.setDescription(getDescription());
         copy.setDocuments(getDocuments());
         return copy;
@@ -72,37 +74,37 @@ public class Facility extends Node {
      * {@inheritDoc}
      */
     @Override
-    public Node copyThisTo(Node parentNode) {
-        Node copy = super.copyThisTo(parentNode);
-        for (Node node : getChildren()) {
+    public Node copyThisTo(final Node parentNode) {
+        final Node copy = super.copyThisTo(parentNode);
+        for (final Node node : getChildren()) {
             node.copyThisTo(copy);
         }
         return copy;
     }
-    
+
     /**
      * Do nothing!
-     * 
+     *
      * @param parent
      *            facility can't have a parent!
      */
     @Override
-    public void setParent(Node parent) {
+    public void setParent(final Node parent) {
         // do nothing
     }
 
     /**
-     * 
+     *
      * @param facilityLight set the equivalent {@link FacilityLight}.
      */
     @Transient
-    public void setFacilityLigth(FacilityLight facilityLight) {
+    public void setFacilityLigth(final FacilityLight facilityLight) {
         _facilityLight = facilityLight;
 
     }
 
     /**
-     * 
+     *
      * @return the equivalent {@link FacilityLight}.
      */
     @Transient
@@ -115,26 +117,26 @@ public class Facility extends Node {
      * {@inheritDoc}
      */
     @Override
-    public void setName(String name) {
+    public void setName(final String name) {
         super.setName(name);
         if (_facilityLight != null) {
             _facilityLight.setName(name);
         }
     }
 
-    
-    
+
+
     @Override
-	public <T extends Node> Node addChild(T child) {
-    	Node addChild = super.addChild(child);
+	public <T extends Node> Node addChild(final T child) {
+    	final Node addChild = super.addChild(child);
         if (_facilityLight != null) {
             _facilityLight.setCount(getChildren().size());
         }
 		return addChild;
 	}
 
-    
-    
+
+
 	@Override
     public void removeAllChild() {
         super.removeAllChild();
@@ -144,7 +146,7 @@ public class Facility extends Node {
     }
 
     @Override
-    public void removeChild(Node child) {
+    public void removeChild(final Node child) {
         super.removeChild(child);
         if (_facilityLight != null) {
             _facilityLight.setCount(getChildren().size());
@@ -156,7 +158,7 @@ public class Facility extends Node {
      * {@inheritDoc}
      */
     @Override
-    public void setSortIndex(Short sortIndex) {
+    public void setSortIndex(final Short sortIndex) {
         super.setSortIndex(sortIndex);
         if (_facilityLight != null) {
             _facilityLight.setSortIndex(sortIndex);

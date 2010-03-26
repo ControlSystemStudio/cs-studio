@@ -31,35 +31,35 @@ import java.util.Set;
 
 /**
  * Stores information about an IOC.
- * 
+ *
  * @author $Author$
  * @version $Revision$
  * @since 30.04.2008
  */
 public class IOC implements Serializable {
-    
+
     public static final String NO_GROUP = "<no group>";
-    
+
     public static final String DEFAULT_RESPONSIBLE_EMAILADDRESS = "klaus.valett@desy.de";
-    
+
     private static final long serialVersionUID = 1L;
-    
-    
+
+
     /**
      * The name of this IOC.
      */
     private String _name;
-    
+
     /**
      * The group of this IOC.
      */
     private String _group = NO_GROUP;
-    
+
     /**
      * The physical name of this IOC.
      */
     private String _physicalName;
-    
+
     /**
      * The date time of last change.
      */
@@ -68,24 +68,24 @@ public class IOC implements Serializable {
      * The email address of the responsible person for this IOC.
      */
     private String _responsible = DEFAULT_RESPONSIBLE_EMAILADDRESS;
-    
+
     /**
      * Set of records in this IOC.
      */
-    private Map<String, Record> _records = new HashMap<String, Record>();
-    
-    
+    private final Map<String, Record> _records = new HashMap<String, Record>();
+
+
     public IOC(final String name, final GregorianCalendar dateTime) {
         this(name, "<no group>", "<no physicalname>", dateTime, DEFAULT_RESPONSIBLE_EMAILADDRESS);
     }
-    
+
     public IOC(final String econ, final String efan) {
         this(econ, efan, "<no physicalname>", null, DEFAULT_RESPONSIBLE_EMAILADDRESS);
     }
-    
+
     /**
      * Creates a new IOC information object.
-     * 
+     *
      * @param name the name of the IOC.
      * @param group the group of the IOC.
      * @param physicalName the physical name of the IOC.
@@ -98,16 +98,16 @@ public class IOC implements Serializable {
         _dateTime = dateTime;
         setResponsible(resp);
     }
-    
-    
+
+
     public GregorianCalendar getDateTime() {
         return _dateTime;
     }
-    
+
     public void setDateTime(final GregorianCalendar date) {
         _dateTime = date;
     }
-    
+
     /**
      * Returns the group of this IOC.
      * @return the group of this IOC.
@@ -115,11 +115,11 @@ public class IOC implements Serializable {
     public final String getGroup() {
         return _group;
     }
-    
+
     public void setGroup(final String group) {
         _group = group;
     }
-    
+
     /**
      * Returns the name of this IOC.
      * @return the name of this IOC.
@@ -127,11 +127,11 @@ public class IOC implements Serializable {
     public final String getName() {
         return _name;
     }
-    
+
     public void setName(final String name) {
         _name = name;
     }
-    
+
     /**
      * Returns the physical name of this IOC.
      * @return the physical name of this IOC.
@@ -139,35 +139,31 @@ public class IOC implements Serializable {
     public final String getPhysicalName() {
         return _physicalName;
     }
-    
+
     public final void setPhysicalName(final String physicalName) {
         _physicalName = physicalName;
     }
-    
+
     /**
      * Returns a copy of the set of records for this IOC.
-     * 
+     *
      * @return a copy of the records
      */
     public Set<Record> getRecordValues() {
         return new HashSet<Record>(_records.values());
     }
-    
+
     public Map<String, Record> getRecords() {
         return new HashMap<String, Record>(_records);
     }
-    
-    public void setRecords(final Map<String, Record> records) {
-        _records = new HashMap<String, Record>(records);
-    }
-    
+
     public Record getRecord(final String eren) {
-        return _records.get(eren);
+        return _records.get(eren.toUpperCase());
     }
-    
-    
-    
-    
+
+
+
+
     /**
      * {@inheritDoc}
      */
@@ -175,19 +171,20 @@ public class IOC implements Serializable {
     public final String toString() {
         return "IOC(name=" + _name + ", group=" + _group + ", phys=" + _physicalName + ")";
     }
-    
+
     public void addRecord(final String eren) {
-        if (!_records.containsKey(eren)) {
-            _records.put(eren, new Record(eren));
+        final String erenKey = eren.toUpperCase();
+        if (!_records.containsKey(erenKey)) {
+            _records.put(erenKey, new Record(eren));
         }
     }
-    
+
     public String getResponsible() {
         return _responsible;
     }
-    
+
     public void setResponsible(final String responsible) {
         _responsible = responsible;
     }
-    
+
 }

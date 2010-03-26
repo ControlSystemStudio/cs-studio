@@ -38,19 +38,20 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 
+/**
+ * Default initialization values, if there isn't any plugin_custimization.ini present.
+ *
+ * @author bknerr 25.03.2010
+ */
 public class LdapUpdaterPreferences extends
 AbstractPreferenceInitializer {
-    
+
     @Override
     public void initializeDefaultPreferences() {
-        final IEclipsePreferences prefs = new DefaultScope().getNode(
-                                                                     Activator.getDefault().getPluginId());
-        
-        //prefs.put(IOC_DBL_DUMP_PATH.getDescription(), "D:\\bknerr\\misc\\");
-        // TODO (bknerr) : does not seem to have any effect (as to plugin_customization.ini)
+        final IEclipsePreferences prefs =
+            new DefaultScope().getNode(Activator.getDefault().getPluginId());
+
         prefs.put(IOC_DBL_DUMP_PATH.getDescription(), "Y:\\directoryServer\\");  // unix : "/applic/directoryServer/";
-        
-        
         prefs.put(LDAP_CONT_ROOT.getDescription(), "de.desy.epicsControls.");
         prefs.put(LDAP_HIST_PATH.getDescription(), "Y:\\scripts\\ldap-tests\\");
         prefs.put(XMPP_USER.getDescription(), "LDAP_Updater");
@@ -58,18 +59,18 @@ AbstractPreferenceInitializer {
         prefs.put(XMPP_SERVER.getDescription(), "krynfs.desy.de");
         prefs.put(LDAP_AUTO_START.getDescription(), "1000*3600");
         prefs.put(LDAP_AUTO_INTERVAL.getDescription(), "1000*3600*24");
-        
+
     }
-    
+
     public static String getValueFromPreferences(final LdapUpdaterPreferenceKey prefKey) {
         return getValueFromPreferences(Activator.getDefault(), prefKey, "", null);
     }
-    
+
     public static String getValueFromPreferences(final LdapUpdaterPreferenceKey prefKey,
                                                  final String defaultValue) {
         return getValueFromPreferences(Activator.getDefault(), prefKey, defaultValue, null);
     }
-    
+
     public static String getValueFromPreferences(final Activator activator,
                                                  final LdapUpdaterPreferenceKey prefKey,
                                                  final String defaultValue,
@@ -78,5 +79,5 @@ AbstractPreferenceInitializer {
         return prefs.getString(activator.getPluginId(),
                                prefKey.getDescription(), defaultValue, contexts);
     }
-    
+
 }

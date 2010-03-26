@@ -27,25 +27,30 @@ import org.csstudio.email.EMailSender;
 
 /**
  * Encapsulates LDAP Updater specific mail functionality.
- * 
+ *
  * @author bknerr 24.03.2010
  */
 public class NotificationMail {
     private static final String HOST = "smtp.desy.de";
     private static final String FROM = "DontReply@LDAPUpdater";
-    
+
     /**
      * Don't instantiate.
      */
     private NotificationMail() {
         // Empty.
     }
-    
-    public static boolean sendMail(final NotificationType type, final String receiver, final String addInfo) {
+
+    public static boolean sendMail(final NotificationType type,
+                                   final String receiver,
+                                   final String additionalBody) {
         EMailSender mailer = null;
         try {
-            mailer = new EMailSender(HOST, FROM, receiver, type.getSubject());
-            mailer.addText(type.getText() + addInfo);
+            mailer = new EMailSender(HOST,
+                                     FROM,
+                                     receiver,
+                                     type.getSubject());
+            mailer.addText(type.getText() + additionalBody);
             mailer.close();
         } catch (final IOException e) {
             e.printStackTrace();
@@ -53,5 +58,5 @@ public class NotificationMail {
         }
         return true;
     }
-    
+
 }

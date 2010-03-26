@@ -30,7 +30,7 @@ import org.csstudio.utility.ldap.LdapUtils;
  */
 public enum NotificationType {
 
-    UNALLOWED_CHARS("Forbidden character is LDAP entry",
+    UNALLOWED_CHARS("Forbidden character in LDAP entry",
                     "The LDAP entry contains at least one forbidden character\n" +
                     "any of :" + LdapUtils.FORBIDDEN_SUBSTRINGS + ")"),
 

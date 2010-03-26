@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -19,46 +19,28 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.utility.ldapUpdater.model;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
+package org.csstudio.utility.ldapUpdater.contextMenu;
 
 /**
+ * TODO (bknerr) :
  * 
- * @author bknerr
+ * @author bknerr 17.03.2010
  */
-public class HistoryFileContentModel {
-
-	private final Map<String, Long> _historyMap = new HashMap<String, Long>();
-	
-	/**
-	 * Constructor.
-	 */
-	public HistoryFileContentModel() {
-		// Empty
-	}
-	
-	public void setEntry(String name, Long millis) {
-		_historyMap.put(name, millis);
-	}
-	
-	public Set<Entry<String,Long>> getEntrySet() {
-		return _historyMap.entrySet();
-	}
-
-	public Long getTimeForRecord(String record) {
-		return _historyMap.get(record);
-	}
-
-	public boolean contains(String iocName) {
-		return _historyMap.containsKey(iocName);
-	}
-
-	public Set<String> getIOCNames() {
-		return new HashSet<String>(_historyMap.keySet());
-	}
+public enum IocModificationCommand {
+    DELETE("delete"),
+    TIDY_UP("tidyUp");
+    
+    private final String _description;
+    
+    /**
+     * Constructor.
+     */
+    private IocModificationCommand(final String description) {
+        _description = description;
+    }
+    
+    public String getDescription() {
+        return _description;
+    }
+    
 }

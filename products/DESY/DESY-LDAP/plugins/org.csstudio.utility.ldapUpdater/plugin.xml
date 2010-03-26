@@ -45,16 +45,16 @@
             label="Start LDAP Update">
       </command>
       <command
-      		class="org.csstudio.utility.ldapUpdater.action.IocManagement"
+      		class="org.csstudio.utility.ldapUpdater.contextMenu.IocManagement"
       		id="org.csstudio.utility.ldapUpdater.action.IocManagement"
       		label="Modify IOC">
         <dynamicEnumerationParameter
-               class="org.csstudio.utility.ldapUpdater.action.IocEnumeration"
+               class="org.csstudio.utility.ldapUpdater.contextMenu.IocEnumeration"
                id="ioc"
                label="IOC">
         </dynamicEnumerationParameter>
         <dynamicEnumerationParameter
-               class="org.csstudio.utility.ldapUpdater.action.CommandEnumeration"
+               class="org.csstudio.utility.ldapUpdater.contextMenu.CommandEnumeration"
                id="command"
                label="Command">
         </dynamicEnumerationParameter>

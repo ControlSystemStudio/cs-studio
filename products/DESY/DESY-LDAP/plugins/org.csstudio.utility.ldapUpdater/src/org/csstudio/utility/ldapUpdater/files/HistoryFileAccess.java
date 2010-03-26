@@ -20,7 +20,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
-package org.csstudio.utility.ldapUpdater;
+package org.csstudio.utility.ldapUpdater.files;
 
 import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceKey.LDAP_HIST_PATH;
 import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferences.getValueFromPreferences;
@@ -35,7 +35,7 @@ import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.utility.ldapUpdater.model.HistoryFileContentModel;
+import org.csstudio.utility.ldapUpdater.LdapUpdater;
 
 public class HistoryFileAccess {
     

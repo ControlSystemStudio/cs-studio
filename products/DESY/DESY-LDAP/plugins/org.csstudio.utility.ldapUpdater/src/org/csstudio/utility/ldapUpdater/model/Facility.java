@@ -36,33 +36,34 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.LdapUtils;
 
 /**
- * 
- * 
+ *
+ *
  * @author bknerr
  */
 public class Facility {
     private final Logger LOG = CentralLogger.getInstance().getLogger(this);
-    
+
     private final String _name;
-    
+
     private final Map<String, IOC> _iocs = new HashMap<String, IOC>();
-    
+
     /**
      * Constructor.
      */
     public Facility(final String name) {
         _name = name;
     }
-    
+
     public IOC addIOC(final String efan, final String econ) {
         return addIOC(efan, econ, null);
     }
-    
+
     public IOC addIOC(final String efan, final String econ, final Attributes attributes) {
-        IOC ioc = _iocs.get(econ);
+        final String econKey = econ.toUpperCase();
+        IOC ioc = _iocs.get(econKey);
         if (ioc == null) {
             ioc = new IOC(econ, efan);
-            _iocs.put(econ, ioc);
+            _iocs.put(econKey, ioc);
         }
         if (attributes != null) {
             final Attribute emailAddressAttr = attributes.get(LdapUtils.ATTR_FIELD_RESPONSIBLE_EMAIL);
@@ -78,11 +79,11 @@ public class Facility {
         }
         return ioc;
     }
-    
+
     public IOC getIOC(final String iocName) {
-        return _iocs.get(iocName);
+        return _iocs.get(iocName.toUpperCase());
     }
-    
+
     /**
      * The names of the contained IOCs.
      * @return a copy of the name set of the currently contained IOCs
@@ -90,7 +91,7 @@ public class Facility {
     public Set<String> getIocNames() {
         return new HashSet<String>(_iocs.keySet());
     }
-    
+
     /**
      * A copy of the contained IOCs.
      * @return a copy of the set of the currently contained IOCs
@@ -98,9 +99,9 @@ public class Facility {
     public Set<IOC> getIOCs() {
         return new HashSet<IOC>(_iocs.values());
     }
-    
+
     public String getName() {
         return _name;
     }
-    
+
 }

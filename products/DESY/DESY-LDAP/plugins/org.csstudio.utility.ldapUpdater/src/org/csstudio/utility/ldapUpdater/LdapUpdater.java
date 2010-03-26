@@ -44,9 +44,11 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.LdapUtils;
+import org.csstudio.utility.ldapUpdater.files.HistoryFileAccess;
+import org.csstudio.utility.ldapUpdater.files.HistoryFileContentModel;
+import org.csstudio.utility.ldapUpdater.files.IOCFilesDirTree;
 import org.csstudio.utility.ldapUpdater.mail.NotificationMail;
 import org.csstudio.utility.ldapUpdater.mail.NotificationType;
-import org.csstudio.utility.ldapUpdater.model.HistoryFileContentModel;
 import org.csstudio.utility.ldapUpdater.model.IOC;
 import org.csstudio.utility.ldapUpdater.model.LDAPContentModel;
 
@@ -169,7 +171,7 @@ public class LdapUpdater {
     /**
      * TODO (bknerr) : Docu
      */
-    public final void updateLdapFromIOCFiles() throws Exception {
+    public final void updateLdapFromIOCFiles() {
 
         if ( _busy ) {
             return;
@@ -191,13 +193,13 @@ public class LdapUpdater {
 
             validateHistoryFileEntriesVsLDAPEntries(ldapContentModel, historyFileModel);
 
-            final Map<String, IOC> iocList = IOCFilesDirTree.findIOCFiles(1);
+            final Map<String, IOC> iocMap = IOCFilesDirTree.findIOCFiles(1);
 
-            LdapAccess.updateLDAPFromIOCList(ldapDataObserver, ldapContentModel, iocList, historyFileModel);
+            LdapAccess.updateLDAPFromIOCList(ldapDataObserver, ldapContentModel, iocMap, historyFileModel);
 
         } catch (final InterruptedException e) {
-            // TODO (kvalett): handle exception
             e.printStackTrace();
+            Thread.currentThread().interrupt();
         } finally {
             _busy = false;
         }

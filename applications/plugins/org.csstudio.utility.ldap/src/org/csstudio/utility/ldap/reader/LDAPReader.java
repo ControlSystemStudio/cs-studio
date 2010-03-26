@@ -43,17 +43,17 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 
 public class LDAPReader extends Job {
-    
+
     private final Logger LOG = CentralLogger.getInstance().getLogger(this);
-    
+
     private String _searchRoot;
     private String _filter;
     private int _defaultScope = SearchControls.SUBTREE_SCOPE;
-    
+
     private List<String> _list = Collections.emptyList();
-    
+
     private LdapResultList _resultList;
-    
+
     /**
      * Used the connection settings from org.csstudio.utility.ldap.ui
      * (used with UI)
@@ -68,8 +68,8 @@ public class LDAPReader extends Job {
         setBasics(name, filter, resultList);
         setDefaultScope(searchScope);
     }
-    
-    
+
+
     /**
      * Need connection settings. (For Headless use)
      *
@@ -79,13 +79,13 @@ public class LDAPReader extends Job {
      * @param resultList the list for the result {@link LdapResultList}
      * @param env connection settings.
      */
-    
+
     public LDAPReader(final String name, final String filter, final int searchScope, final LdapResultList resultList, final Hashtable<Object,String> env){
         super("LDAPReader");
         setBasics(name, filter, resultList);
         setDefaultScope(searchScope);
     }
-    
+
     /**
      *
      * @param name
@@ -105,7 +105,7 @@ public class LDAPReader extends Job {
         setBasics(searchRoot, filter, resultList);
         setDefaultScope(searchScope);
     }
-    
+
     /**
      * Used the connection settings from org.csstudio.utility.ldap.ui
      * (used with UI)
@@ -118,7 +118,7 @@ public class LDAPReader extends Job {
         super("LDAPReader");
         setBasics(name, filter, ldapResultList);
     }
-    
+
     /**
      * Need connection settings. (For Headless use)
      *
@@ -145,11 +145,11 @@ public class LDAPReader extends Job {
      * @param searchScope set the Scope {@link SearchControls}
      * @param ergebnisListe the list for the result {@link LdapResultList}
      */
-    
+
     public LDAPReader(final String[] nameUFilter, final int searchScope, final LdapResultList resultList){
-        
+
         super("LDAPReader");
-        
+
         setBasics(nameUFilter[0], nameUFilter[1], resultList);
         setDefaultScope(searchScope);
     }
@@ -164,7 +164,7 @@ public class LDAPReader extends Job {
         super("LDAPReader");
         setBasics(nameUFilter[0], nameUFilter[1], resultList);
     }
-    
+
     @Override
     protected IStatus run(final IProgressMonitor monitor ) {
         monitor.beginTask("LDAP Reader", IProgressMonitor.UNKNOWN);
@@ -176,13 +176,13 @@ public class LDAPReader extends Job {
                 // TODO (bknerr) : replace all references to the List<String> by the Set<SearchResult>
                 final HashSet<SearchResult> answerSet = new HashSet<SearchResult>();
                 _list = new ArrayList<String>();
-                
+
                 final NamingEnumeration<SearchResult> answer = ctx.search(_searchRoot, _filter, ctrl);
                 try {
                     while(answer.hasMore()){
                         final SearchResult result = answer.next();
                         answerSet.add(result);
-                        
+
                         final String name = result.getName() + "," + _searchRoot;
                         _list.add(name);
                         if(monitor.isCanceled()) {
@@ -197,9 +197,9 @@ public class LDAPReader extends Job {
                     LOG.info("LDAP Fehler " + e.getExplanation());
                 }
                 answer.close();
-                
+
                 _resultList.setResultList(_list, answerSet);
-                
+
                 monitor.done();
                 return Status.OK_STATUS;
             } catch (final NameNotFoundException nnfe){
@@ -209,13 +209,13 @@ public class LDAPReader extends Job {
                 Engine.getInstance().reconnectDirContext();
                 LOG.info("Falscher LDAP Suchpfad. " + e.getExplanation());
             }
-            
+
         }
         monitor.setCanceled(true);
         _resultList.setResultList(_list, Collections.<SearchResult>emptySet());
         return Status.CANCEL_STATUS;
     }
-    
+
     /**
      * @param searchRoot
      * @param filter
@@ -227,7 +227,7 @@ public class LDAPReader extends Job {
         _searchRoot = searchRoot;
         _filter = filter;
     }
-    
+
     /**
      * Set the Scope. @link SearchControls.
      * @param defaultScope set the given Scope.

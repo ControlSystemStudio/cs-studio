@@ -30,39 +30,39 @@ import org.csstudio.platform.util.StringUtil;
 
 /**
  * Constants class for LDAP entries.
- * 
+ *
  * @author bknerr
  * @version $Revision$
  * @since 11.03.2010
  */
 public class LdapUtils {
-    
+
     private static final Logger LOG = CentralLogger.getInstance().getLogger(LdapUtils.class);
-    
+
     public static final String OU_FIELD_NAME = "ou";
     public static final String EPICS_CTRL_FIELD_VALUE = "EpicsControls";
-    
+
     public static final String FIELD_SEPARATOR = ",";
     public static final String FIELD_ASSIGNMENT = "=";
     public static final String FIELD_WILDCARD = "*";
-    
+
     public static final String EREN_FIELD_NAME = "eren";
     public static final String EFAN_FIELD_NAME = "efan";
     public static final String ECON_FIELD_NAME = "econ";
     public static final String ECOM_FIELD_NAME = "ecom";
     public static final String ECOM_FIELD_VALUE = "EPICS-IOC";
-    
+
     public static final String ATTR_FIELD_OBJECT_CLASS = "objectClass";
     public static final String ATTR_VAL_OBJECT_CLASS = "epicsRecord";
-    
+
     public static final String ATTR_FIELD_RESPONSIBLE_EMAIL = "epicsResponsibleEmailAddress";
-    
+
     public static final String[] FORBIDDEN_SUBSTRINGS = new String[] {
-        "/","\\","+","@"
+        "/","\\","+","@","$"
     };
-    
-    
-    
+
+
+
     /**
      * Returns a filter for 'any' match of the field name (e.g. '<fieldName>=*').
      * @param fieldName the field to match any
@@ -71,11 +71,11 @@ public class LdapUtils {
     public static final String any(final String fieldName) {
         return fieldName + FIELD_ASSIGNMENT + FIELD_WILDCARD;
     }
-    
+
     /**
      * Returns the attributes for a new entry with the given object class and
      * name.
-     * 
+     *
      * @param an array of Strings that represent key value pairs, consecutively (1st=key, 2nd=value, 3rd=key, 4th=value, etc.)
      * @return the attributes for the new entry.
      */
@@ -84,17 +84,17 @@ public class LdapUtils {
             LOG.error("Ldap Attributes: For key value pairs the length of String array has to be multiple of 2!");
             throw new IllegalArgumentException("Length of parameter keysAndValues has to be multiple of 2.");
         }
-        
+
         final BasicAttributes result = new BasicAttributes();
         for (int i = 0; i < keysAndValues.length; i+=2) {
             result.put(keysAndValues[i], keysAndValues[i + 1]);
         }
         return result;
     }
-    
+
     /**
      * Assembles and LDAP query from field and value pairs.
-     * 
+     *
      * @param fieldsAndValues
      * @return the String with <field1>=<value1>, <field2>=<value2> assignements.
      */
@@ -103,7 +103,7 @@ public class LdapUtils {
             LOG.error("Ldap Attributes: For field and value pairs the length of String array has to be multiple of 2!");
             throw new IllegalArgumentException("Length of parameter fieldsAndValues has to be multiple of 2.");
         }
-        
+
         final StringBuilder query = new StringBuilder();
         for (int i = 0; i < fieldsAndValues.length; i+=2) {
             query.append(fieldsAndValues[i]).append(FIELD_ASSIGNMENT).append(fieldsAndValues[i + 1])
@@ -112,10 +112,10 @@ public class LdapUtils {
         if (query.length() >= 1) {
             query.delete(query.length() - 1, query.length());
         }
-        
+
         return query.toString();
     }
-    
+
     /**
      * Filters for forbidden substrings {@link LdapUtils}.
      * @param recordName the name to filter
@@ -132,12 +132,87 @@ public class LdapUtils {
         }
         return false;
     }
-    
+
+    public static class LdapQueryResult {
+
+        private String _eren;
+        private String _econ;
+        private String _efan;
+
+        /**
+         * Constructor.
+         * @param efan
+         * @param econ
+         * @param eren
+         */
+        public LdapQueryResult(final String efan,
+                               final String econ,
+                               final String eren) {
+            _efan = efan;
+            _econ = econ;
+            _eren = eren;
+        }
+
+        public LdapQueryResult() {
+            // Empty
+        }
+
+        public String getEren() {
+            return _eren;
+        }
+
+        public String getEcon() {
+            return _econ;
+        }
+
+        public String getEfan() {
+            return _efan;
+        }
+
+        public void setEcon(final String econ) {
+            _econ = econ;
+        }
+
+        public void setEfan(final String efan) {
+            _efan = efan;
+        }
+
+        public void setEren(final String eren) {
+            _eren = eren;
+        }
+    }
+
+    public static LdapQueryResult parseLdapQueryResult(final String ldapPath) {
+
+        final String[] fields = ldapPath.split(FIELD_SEPARATOR);
+
+        final LdapQueryResult entry = new LdapQueryResult();
+
+        final String econPrefix = ECON_FIELD_NAME + FIELD_ASSIGNMENT;
+        final String efanPrefix = EFAN_FIELD_NAME + FIELD_ASSIGNMENT;
+        final String erenPrefix = EREN_FIELD_NAME + FIELD_ASSIGNMENT;
+
+        for (final String field : fields) {
+            final String trimmedString = field.trim();
+            if (trimmedString.startsWith(econPrefix)) {
+                final String econ = trimmedString.substring(econPrefix.length());
+                entry.setEcon(econ);
+            } else if (trimmedString.startsWith(efanPrefix)){
+                final String efan = trimmedString.substring(efanPrefix.length());
+                entry.setEfan(efan);
+            } else if (trimmedString.startsWith(erenPrefix)) {
+                final String eren = trimmedString.substring(erenPrefix.length());
+                entry.setEren(eren);
+            }
+        }
+        return entry;
+    }
+
     /**
      * Don't instantiate.
      */
     private LdapUtils() {
         // Empty.
     }
-    
+
 }
