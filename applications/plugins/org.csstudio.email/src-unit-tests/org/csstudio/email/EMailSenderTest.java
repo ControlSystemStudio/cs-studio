@@ -21,7 +21,11 @@ public class EMailSenderTest
     @Test
     public void testMailer() throws Exception
     {
+        /**
+         * Please, overwrite these settings to your host and email address.
+         */
         final EMailSender mailer = new EMailSender(HOST, FROM, TO, "Test Subject");
+
         mailer.addText("Hello, this is a test");
         mailer.attachText("testfile.txt");
         mailer.attachImage("test.jpg");
