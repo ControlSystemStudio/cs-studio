@@ -545,11 +545,17 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 				characteristics.put(NumericPropertyCharacteristics.C_RESOLUTION, 0xFFFF);
 			}
 			
-			characteristics.put(PropertyCharacteristics.C_ACCESS_TYPE,channel != null ? AccessType.getAccess(channel.getReadAccess(),channel.getWriteAccess()) : AccessType.NONE);
-			characteristics.put(PropertyCharacteristics.C_HOSTNAME,channel != null ? channel.getHostName() : "unknown");
-			characteristics.put(EpicsPropertyCharacteristics.EPICS_NUMBER_OF_ELEMENTS, channel != null ? channel.getElementCount() : 1);
-			characteristics.put(PropertyCharacteristics.C_DATATYPE,PlugUtilities.getDataType(null));
+			if (channel != null && getConnectionState() == ConnectionState.CONNECTED) {
+				characteristics.put(PropertyCharacteristics.C_ACCESS_TYPE,AccessType.getAccess(channel.getReadAccess(),channel.getWriteAccess()));
+				characteristics.put(PropertyCharacteristics.C_HOSTNAME, channel.getHostName());
+				characteristics.put(EpicsPropertyCharacteristics.EPICS_NUMBER_OF_ELEMENTS, channel.getElementCount());
+			} else {
+				characteristics.put(PropertyCharacteristics.C_ACCESS_TYPE,AccessType.NONE);
+				characteristics.put(PropertyCharacteristics.C_HOSTNAME,"unknown");
+				characteristics.put(EpicsPropertyCharacteristics.EPICS_NUMBER_OF_ELEMENTS,1);
+			}
 
+			characteristics.put(PropertyCharacteristics.C_DATATYPE,PlugUtilities.getDataType(null));
 			//characteristics.put(NumericPropertyCharacteristics.C_SCALE_TYPE, );
 
 			characteristics.put(PatternPropertyCharacteristics.C_CONDITION_WHEN_SET, patternWhenSet);
