@@ -1,12 +1,11 @@
 package org.csstudio.opibuilder.widgets.editparts;
 
 import org.csstudio.opibuilder.editparts.ExecutionMode;
+import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.widgets.figures.KnobFigure;
 import org.csstudio.opibuilder.widgets.model.KnobModel;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.ValueUtil;
 import org.eclipse.draw2d.IFigure;
 
 /**
@@ -39,27 +38,18 @@ public final class KnobEditPart extends AbstractMarkedWidgetEditPart {
 		knob.addKnobListener(new KnobFigure.IKnobListener() {
 			public void knobValueChanged(final double newValue) {
 				if (getExecutionMode() == ExecutionMode.RUN_MODE){
-					setPVValue(KnobModel.PROP_CONTROL_PV, newValue);
+					setPVValue(AbstractPVWidgetModel.PROP_PVNAME, newValue);
 				}
 									
 			}
 		});		
 		
-		markAsControlPV(KnobModel.PROP_CONTROL_PV);
+		markAsControlPV(AbstractPVWidgetModel.PROP_PVNAME);
 		
 		return knob;
 
 	}
 	
-	@Override
-	public void activate() {
-		// TODO Auto-generated method stub
-		super.activate();
-		IValue value = getPVValue(KnobModel.PROP_CONTROL_PV);
-		if(value != null)
-			((KnobFigure)getFigure()).setValue(ValueUtil.getDouble(value));
-	}
-
 	/**
 	 * {@inheritDoc}
 	 */

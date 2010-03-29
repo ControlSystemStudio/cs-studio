@@ -36,12 +36,12 @@ public final class ScaledSliderEditPart extends AbstractMarkedWidgetEditPart {
 		slider.addSliderListener(new ScaledSliderFigure.IScaledSliderListener() {
 			public void sliderValueChanged(final double newValue) {
 				if (getExecutionMode() == ExecutionMode.RUN_MODE)
-					setPVValue(ScaledSliderModel.PROP_CONTROL_PV, newValue);				
+					setPVValue(ScaledSliderModel.PROP_PVNAME, newValue);				
 				
 			}
 		});	
 		
-		markAsControlPV(ScaledSliderModel.PROP_CONTROL_PV);
+		markAsControlPV(ScaledSliderModel.PROP_PVNAME);
 		return slider;
 
 	}

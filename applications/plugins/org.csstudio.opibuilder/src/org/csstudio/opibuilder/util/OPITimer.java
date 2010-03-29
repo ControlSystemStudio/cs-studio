@@ -1,19 +1,17 @@
 package org.csstudio.opibuilder.util;
 
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import org.csstudio.platform.ExecutionService;
 
 /**A customized timer for the internal use of OPI builder. 
- * It adapts the java {@link Timer} by wrapping it in. 
- * It can only host one {@link TimerTask}, which will be executed when timer is due.
- * The timer will stop automatically when it is due.
+ * It will execute a task after certain delay. The timer can be reseted
+ * or stopped during the delay period.
+ * The timer will stop and dispose automatically when it is due.
  * <pre>
- *   |------------|---------------|-----------|
- * Start      Due/start task  task done  timer stop
+ *   |------------|---------------|
+ * Start      Due/start task  task done 
  * </pre>
  * @author Xihui Chen
  *
@@ -42,7 +40,7 @@ public class OPITimer {
      * @throws IllegalArgumentException if <tt>delay</tt> is negative, or
      *         <tt>delay + System.currentTimeMillis()</tt> is negative.
      * @throws IllegalStateException if task was already scheduled or
-     *         cancelled, or timer was cancelled.
+     *         canceled, or timer was canceled.
      */
     public synchronized void start(final Runnable task, long delay) {    	
     	this.delay = delay;

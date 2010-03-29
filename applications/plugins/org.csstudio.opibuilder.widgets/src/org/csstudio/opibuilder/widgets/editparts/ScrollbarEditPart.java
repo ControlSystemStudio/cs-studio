@@ -94,12 +94,13 @@ public class ScrollbarEditPart extends AbstractPVWidgetEditPart {
 								innerUpdate = false;
 								return;
 							}
-							setPVValue(ScrollBarModel.PROP_CONTROL_PV, 
+							setPVValue(ScrollBarModel.PROP_PVNAME, 
 								(((Integer)evt.getNewValue()).doubleValue())/multiplyFactor);
 				}
 			});
 		}
 		
+		markAsControlPV(AbstractPVWidgetModel.PROP_PVNAME);
 		return scrollBar;
 	}
 

@@ -3,8 +3,6 @@ package org.csstudio.opibuilder.widgets.model;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.ColorProperty;
 import org.csstudio.opibuilder.properties.DoubleProperty;
-import org.csstudio.opibuilder.properties.PVValueProperty;
-import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.eclipse.swt.graphics.RGB;
 
@@ -50,15 +48,15 @@ public class KnobModel extends AbstractMarkedWidgetModel{
 	/** The default value of the thumb color property. */
 	private static final RGB DEFAULT_THUMB_COLOR = new RGB(127, 127, 127);
 	
-	/**
-	 * The ID of the pv name property.
-	 */
-	public static final String PROP_CONTROL_PV= "control_pv"; //$NON-NLS-1$
-	
-	/**
-	 * The ID of the pv value property.
-	 */
-	public static final String PROP_CONTROL_PV_VALUE= "control_pv_value"; //$NON-NLS-1$
+//	/**
+//	 * The ID of the pv name property.
+//	 */
+//	public static final String PROP_CONTROL_PV= "control_pv"; //$NON-NLS-1$
+//	
+//	/**
+//	 * The ID of the pv value property.
+//	 */
+//	public static final String PROP_CONTROL_PV_VALUE= "control_pv_value"; //$NON-NLS-1$
 	/**
 	 * The ID of this widget model.
 	 */
@@ -73,9 +71,9 @@ public class KnobModel extends AbstractMarkedWidgetModel{
 	protected void configureProperties() {
 		super.configureProperties();	
 		
-		addPVProperty(new StringProperty(PROP_CONTROL_PV, "Control PV", WidgetPropertyCategory.Basic,
-				""), new PVValueProperty(PROP_CONTROL_PV_VALUE, null));
-		
+//		addPVProperty(new StringProperty(PROP_CONTROL_PV, "Control PV", WidgetPropertyCategory.Basic,
+//				""), new PVValueProperty(PROP_CONTROL_PV_VALUE, null));
+//		
 		addProperty(new ColorProperty(PROP_KNOB_COLOR, "Knob Color",
 				WidgetPropertyCategory.Display, DEFAULT_KNOB_COLOR));	
 		
@@ -95,7 +93,7 @@ public class KnobModel extends AbstractMarkedWidgetModel{
 				WidgetPropertyCategory.Behavior, 1.0));
 		
 		setPropertyDescription(PROP_SHOW_MARKERS, "Show Ramp");
-		setPropertyDescription(PROP_PVNAME, "Readback PV");
+//		setPropertyDescription(PROP_PVNAME, "Readback PV");
 	}	
 
 	@Override

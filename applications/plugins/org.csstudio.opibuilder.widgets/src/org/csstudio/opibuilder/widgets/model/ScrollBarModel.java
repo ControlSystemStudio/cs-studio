@@ -3,8 +3,6 @@ package org.csstudio.opibuilder.widgets.model;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.DoubleProperty;
-import org.csstudio.opibuilder.properties.PVValueProperty;
-import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 
 /**
@@ -36,15 +34,15 @@ public class ScrollBarModel extends AbstractPVWidgetModel {
 	/** The ID of the horizontal property. */
 	public static final String PROP_HORIZONTAL = "horizontal"; //$NON-NLS-1$
 	
-	/**
-	 * The ID of the pv name property.
-	 */
-	public static final String PROP_CONTROL_PV= "control_pv"; //$NON-NLS-1$
-	
-	/**
-	 * The ID of the pv value property.
-	 */
-	public static final String PROP_CONTROL_PV_VALUE= "control_pv_value"; //$NON-NLS-1$
+//	/**
+//	 * The ID of the pv name property.
+//	 */
+//	public static final String PROP_CONTROL_PV= "control_pv"; //$NON-NLS-1$
+//	
+//	/**
+//	 * The ID of the pv value property.
+//	 */
+//	public static final String PROP_CONTROL_PV_VALUE= "control_pv_value"; //$NON-NLS-1$
 	
 	/** The default value of the minimum property. */
 	private static final double DEFAULT_MIN = 0;
@@ -64,9 +62,9 @@ public class ScrollBarModel extends AbstractPVWidgetModel {
 	
 	@Override
 	protected void configureProperties() {		
-		addPVProperty(new StringProperty(PROP_CONTROL_PV, "Control PV", WidgetPropertyCategory.Basic,
-		""), new PVValueProperty(PROP_CONTROL_PV_VALUE, null));
-		
+//		addPVProperty(new StringProperty(PROP_CONTROL_PV, "Control PV", WidgetPropertyCategory.Basic,
+//		""), new PVValueProperty(PROP_CONTROL_PV_VALUE, null));
+//		
 		
 		addProperty(new DoubleProperty(PROP_MIN, "Minimum", 
 				WidgetPropertyCategory.Behavior, DEFAULT_MIN));

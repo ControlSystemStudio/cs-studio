@@ -4,8 +4,6 @@ package org.csstudio.opibuilder.widgets.model;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.ColorProperty;
 import org.csstudio.opibuilder.properties.DoubleProperty;
-import org.csstudio.opibuilder.properties.PVValueProperty;
-import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.eclipse.swt.graphics.RGB;
@@ -37,16 +35,16 @@ public class ScaledSliderModel extends AbstractMarkedWidgetModel{
 	 */
 	public static final String PROP_INCREMENT = "increment"; //$NON-NLS-1$
 	
-	/**
-	 * The ID of the pv name property.
-	 */
-	public static final String PROP_CONTROL_PV= "control_pv"; //$NON-NLS-1$
-	
-	/**
-	 * The ID of the pv value property.
-	 */
-	public static final String PROP_CONTROL_PV_VALUE= "control_pv_value"; //$NON-NLS-1$
-	
+//	/**
+//	 * The ID of the pv name property.
+//	 */
+//	public static final String PROP_CONTROL_PV= "control_pv"; //$NON-NLS-1$
+//	
+//	/**
+//	 * The ID of the pv value property.
+//	 */
+//	public static final String PROP_CONTROL_PV_VALUE= "control_pv_value"; //$NON-NLS-1$
+//	
 	/** The default value of the default fill color property. */
 	private static final RGB DEFAULT_FILL_COLOR = new RGB(0,0,255);
 	
@@ -74,8 +72,8 @@ public class ScaledSliderModel extends AbstractMarkedWidgetModel{
 	@Override
 	protected void configureProperties() {
 		super.configureProperties();		
-		addPVProperty(new StringProperty(PROP_CONTROL_PV, "Control PV", WidgetPropertyCategory.Basic,
-		""), new PVValueProperty(PROP_CONTROL_PV_VALUE, null));
+//		addPVProperty(new StringProperty(PROP_CONTROL_PV, "Control PV", WidgetPropertyCategory.Basic,
+//		""), new PVValueProperty(PROP_CONTROL_PV_VALUE, null));
 		
 		addProperty(new ColorProperty(PROP_FILL_COLOR, "Fill Color",
 				WidgetPropertyCategory.Display,DEFAULT_FILL_COLOR));	
@@ -97,7 +95,7 @@ public class ScaledSliderModel extends AbstractMarkedWidgetModel{
 		
 		setPropertyValue(PROP_LO_COLOR, new OPIColor(255, 128, 0));
 		setPropertyValue(PROP_HI_COLOR, new OPIColor(255, 128, 0));
-		setPropertyDescription(PROP_PVNAME, "Readback PV");
+		//setPropertyDescription(PROP_PVNAME, "Readback PV");
 		
 	}	
 
