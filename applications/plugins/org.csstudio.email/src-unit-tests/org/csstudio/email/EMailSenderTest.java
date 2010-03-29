@@ -10,14 +10,18 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class EMailSenderTest
 {
-    final private static String host = "krynfs.desy.de";
-    final private static String from = "bastian.knerr@desy.de";
-    final private static String to = from;
+    /**
+     * Please, overwrite these settings to your host and email address.
+     */
+    final private static String HOST = "krynfs.desy.de";
+    final private static String FROM = "bastian.knerr@desy.de";
+    final private static String TO = FROM;
+
 
     @Test
     public void testMailer() throws Exception
     {
-        final EMailSender mailer = new EMailSender(host, from, to, "Test Subject");
+        final EMailSender mailer = new EMailSender(HOST, FROM, TO, "Test Subject");
         mailer.addText("Hello, this is a test");
         mailer.attachText("testfile.txt");
         mailer.attachImage("test.jpg");
