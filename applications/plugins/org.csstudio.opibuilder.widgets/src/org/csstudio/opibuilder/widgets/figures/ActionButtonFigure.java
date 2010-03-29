@@ -110,6 +110,11 @@ public class ActionButtonFigure extends Figure {
 					
 				}
 			}
+			
+			@Override
+			public boolean isOpaque() {
+				return true;
+			}
 
 			
 		};
@@ -234,7 +239,7 @@ public class ActionButtonFigure extends Figure {
 	
 	@Override
 	public boolean isOpaque() {
-		return true;
+		return false;
 	}
 	
 	@Override
