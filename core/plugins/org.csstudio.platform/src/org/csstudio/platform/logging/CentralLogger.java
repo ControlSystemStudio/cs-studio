@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
+/*
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.platform.logging;
@@ -35,7 +35,7 @@ import org.csstudio.platform.security.SecureStorage;
  * <pre>
  *  CentralLogger.getInstance()
  * </pre>
- * 
+ *
  * Logging is straight forward:
  * <pre>
  *  final Logger log = CentralLogger.getInstance().getLogger(this);
@@ -216,7 +216,7 @@ public final class CentralLogger {
 
 	/**
 	 * Return the only one instance of this class.
-	 * 
+	 *
 	 * @return The only one instance of this class.
 	 */
 	public static CentralLogger getInstance() {
@@ -252,15 +252,26 @@ public final class CentralLogger {
 	 * @return A Log4j <code>Logger</code>.
 	 */
     public Logger getLogger(final Object caller) {
-        if (caller == null)
+        if (caller == null) {
             return Logger.getRootLogger();
+        }
         return Logger.getLogger(caller.getClass());
     }
-	
+
+    /**
+     * Obtain a logger for the given class name (for static classes).
+     * @param caller Calling className, must not be <code>null</code>.
+     * @return A Log4j <code>Logger</code>.
+     */
+    public Logger getLogger(final String className) {
+        return Logger.getLogger(className);
+    }
+
+
 	/**
 	 * Log a message with log level <i>info</i>. The reference to the calling
 	 * object is used to automatically generate more detailled log4j messages.
-	 * 
+	 *
 	 * @param caller
 	 *            The calling object.
 	 * @param message
@@ -273,7 +284,7 @@ public final class CentralLogger {
 	/**
 	 * Log a throwable with log level <i>info</i>. The reference to the calling
 	 * object is used to automatically generate more detailled log4j messages.
-	 * 
+	 *
 	 * @param caller
 	 *            The calling object.
 	 * @param throwable
@@ -287,7 +298,7 @@ public final class CentralLogger {
 	 * Log a message together with a throwable with log level <i>info</i>. The
 	 * reference to the calling object is used to automatically generate more
 	 * detailled log4j messages.
-	 * 
+	 *
 	 * @param caller
 	 *            The calling object.
 	 * @param message
@@ -303,7 +314,7 @@ public final class CentralLogger {
 	/**
 	 * Log a message with log level <i>debug</i>. The reference to the calling
 	 * object is used to automatically generate more detailled log4j messages.
-	 * 
+	 *
 	 * @param caller
 	 *            The calling object.
 	 * @param message
@@ -317,7 +328,7 @@ public final class CentralLogger {
 	 * Log a throwable with log level <i>debug</i>. The reference to the
 	 * calling object is used to automatically generate more detailled log4j
 	 * messages.
-	 * 
+	 *
 	 * @param caller
 	 *            The calling object.
 	 * @param throwable
@@ -331,7 +342,7 @@ public final class CentralLogger {
 	 * Log a message together with a throwable with log level <i>debug</i>. The
 	 * reference to the calling object is used to automatically generate more
 	 * detailled log4j messages.
-	 * 
+	 *
 	 * @param caller
 	 *            The calling object.
 	 * @param message
@@ -347,7 +358,7 @@ public final class CentralLogger {
 	/**
 	 * Log a message with log level <i>warn</i>. The reference to the calling
 	 * object is used to automatically generate more detailled log4j messages.
-	 * 
+	 *
 	 * @param caller
 	 *            The calling object.
 	 * @param message
@@ -360,7 +371,7 @@ public final class CentralLogger {
 	/**
 	 * Log a throwable with log level <i>warn</i>. The reference to the calling
 	 * object is used to automatically generate more detailled log4j messages.
-	 * 
+	 *
 	 * @param caller
 	 *            The calling object.
 	 * @param throwable
@@ -374,7 +385,7 @@ public final class CentralLogger {
 	 * Log a message together with a throwable with log level <i>warn</i>. The
 	 * reference to the calling object is used to automatically generate more
 	 * detailled log4j messages.
-	 * 
+	 *
 	 * @param caller
 	 *            The calling object.
 	 * @param message
@@ -390,7 +401,7 @@ public final class CentralLogger {
 	/**
 	 * Log a message with log level <i>error</i>. The reference to the calling
 	 * object is used to automatically generate more detailled log4j messages.
-	 * 
+	 *
 	 * @param caller
 	 *            The calling object.
 	 * @param message
@@ -404,7 +415,7 @@ public final class CentralLogger {
 	 * Log a throwable with log level <i>error</i>. The reference to the
 	 * calling object is used to automatically generate more detailled log4j
 	 * messages.
-	 * 
+	 *
 	 * @param caller
 	 *            The calling object.
 	 * @param throwable
@@ -418,7 +429,7 @@ public final class CentralLogger {
 	 * Log a message together with a throwable with log level <i>error</i>. The
 	 * reference to the calling object is used to automatically generate more
 	 * detailled log4j messages.
-	 * 
+	 *
 	 * @param caller
 	 *            The calling object.
 	 * @param message
@@ -434,7 +445,7 @@ public final class CentralLogger {
 	/**
 	 * Log a message with log level <i>fatal</i>. The reference to the calling
 	 * object is used to automatically generate more detailled log4j messages.
-	 * 
+	 *
 	 * @param caller
 	 *            The calling object.
 	 * @param message
@@ -448,7 +459,7 @@ public final class CentralLogger {
 	 * Log a throwable with log level <i>fatal</i>. The reference to the
 	 * calling object is used to automatically generate more detailled log4j
 	 * messages.
-	 * 
+	 *
 	 * @param caller
 	 *            The calling object.
 	 * @param throwable
@@ -462,7 +473,7 @@ public final class CentralLogger {
 	 * Log a message together with a throwable with log level <i>fatal</i>. The
 	 * reference to the calling object is used to automatically generate more
 	 * detailled log4j messages.
-	 * 
+	 *
 	 * @param caller
 	 *            The calling object.
 	 * @param message
@@ -477,10 +488,10 @@ public final class CentralLogger {
 
 	/** Log levels, ordered from 'almost all' to 'only severe errors' */
 	final private static String LOG_LEVELS[] = new String[] { "debug", "info", "warn", "error", "fatal"};
-	
+
 	/**
 	 * Create the log4j properts object from the given preference store.
-	 * 
+	 *
 	 * @param prefs
 	 *            Source preference store.
 	 * @return The log4j properts object from the given preference store.
@@ -488,7 +499,7 @@ public final class CentralLogger {
 	@SuppressWarnings("deprecation")
     private Properties createLog4jProperties(
 			final org.eclipse.core.runtime.Preferences prefs) {
-		Properties result = new Properties();
+		final Properties result = new Properties();
 		// console logger
 		fillFromStore(result, prefs, PROP_LOG4J_CONSOLE_APPENDER);
 		fillFromStore(result, prefs, PROP_LOG4J_CONSOLE_LAYOUT);
@@ -539,14 +550,17 @@ public final class CentralLogger {
         }
         // create the log4j root property:
         // level-of-root-logger, appender1, appender2, appender3
-        if (use_console)
-			rootProperty += "," + "css_console"; //$NON-NLS-1$ //$NON-NLS-2$
+        if (use_console) {
+            rootProperty += "," + "css_console"; //$NON-NLS-1$ //$NON-NLS-2$
+        }
 
-        if (use_file)
-			rootProperty += "," + "css_file"; //$NON-NLS-1$ //$NON-NLS-2$
+        if (use_file) {
+            rootProperty += "," + "css_file"; //$NON-NLS-1$ //$NON-NLS-2$
+        }
 
-        if (use_jms)
-			rootProperty += "," + "css_jms"; //$NON-NLS-1$ //$NON-NLS-2$
+        if (use_jms) {
+            rootProperty += "," + "css_jms"; //$NON-NLS-1$ //$NON-NLS-2$
+        }
 
 		result.setProperty("log4j.rootLogger", rootProperty); //$NON-NLS-1$
 
@@ -557,7 +571,7 @@ public final class CentralLogger {
 	 * Fill the given properties object (java.util) with a certain property that
 	 * is read from the given plugin preference store
 	 * (org.eclipse.core.runtime.Preferences).
-	 * 
+	 *
 	 * @param p
 	 *            Properties object to fill.
 	 * @param prefs
@@ -570,12 +584,12 @@ public final class CentralLogger {
 			final String propertyID) {
 		p.setProperty(propertyID, prefs.getString(propertyID));
 	}
-	
+
 	/**
 	 * Fill the given properties object (java.util) with a certain property that
 	 * is read from secure storage
 	 * (org.eclipse.core.runtime.Preferences).
-	 * 
+	 *
 	 * @param p
 	 *            Properties object to fill.
 
