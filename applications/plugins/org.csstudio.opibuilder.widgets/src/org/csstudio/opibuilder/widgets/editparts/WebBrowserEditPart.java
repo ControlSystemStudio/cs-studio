@@ -6,6 +6,7 @@ import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.widgets.figures.WebBrowserFigure;
 import org.csstudio.opibuilder.widgets.model.WebBrowserModel;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.widgets.Composite;
 
 /**The editpart of web browser widget.
@@ -55,5 +56,8 @@ public final class WebBrowserEditPart extends AbstractBaseEditPart {
 		super.deactivate();
 	}
 	
-
+	public Browser getBrowser(){
+		return ((WebBrowserFigure)getFigure()).getSWTWidget();
+	}
+	
 }

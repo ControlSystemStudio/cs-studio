@@ -55,7 +55,7 @@ public abstract class AbstractSWTWidgetFigure extends Figure {
 		relocateWidget();
 	}
 	
-	abstract protected Composite getSWTWidget();
+	abstract public Composite getSWTWidget();
 	
 	public Composite getComposite() {
 		return composite;

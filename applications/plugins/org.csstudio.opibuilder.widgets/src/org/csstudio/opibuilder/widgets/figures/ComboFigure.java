@@ -96,7 +96,7 @@ public class ComboFigure extends AbstractSWTWidgetFigure {
 
 
 	@Override
-	protected Composite getSWTWidget() {
+	public Composite getSWTWidget() {
 		return combo;
 	}	
 	

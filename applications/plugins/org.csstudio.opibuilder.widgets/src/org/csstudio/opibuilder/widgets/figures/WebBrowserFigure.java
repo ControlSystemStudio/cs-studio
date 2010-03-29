@@ -51,7 +51,7 @@ public class WebBrowserFigure extends AbstractSWTWidgetFigure {
 	}
 	
 	@Override
-	protected Composite getSWTWidget() {
+	public Browser getSWTWidget() {
 		return browser;
 	}	
 	
