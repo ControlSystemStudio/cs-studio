@@ -2,6 +2,7 @@ package org.csstudio.opibuilder.widgets.figures;
 
 
 import org.csstudio.opibuilder.model.AbstractContainerModel;
+import org.csstudio.opibuilder.util.UIBundlingThread;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -53,5 +54,18 @@ public class WebBrowserFigure extends AbstractSWTWidgetFigure {
 	protected Composite getSWTWidget() {
 		return browser;
 	}	
+	
+	@Override
+	public void dispose() {
+		super.dispose();	
+		//the browser must be disposed in the queue of UI thread, 
+		//so that multiple browsers can be properly disposed.
+		UIBundlingThread.getInstance().addRunnable(new Runnable() {			
+			public void run() {				
+				browser.dispose();
+				browser = null;
+			}
+		});
+	}
 	
 }

@@ -112,7 +112,9 @@ public abstract class AbstractSWTWidgetFigure extends Figure {
 				updateManagerListener = new UpdateListener(){				
 					@SuppressWarnings("unchecked")
 					public void notifyPainting(Rectangle damage, Map dirtyRegions) {
-						getSWTWidget().setVisible(isVisible() && isShowing());				
+						if(getSWTWidget() != null && 
+								(getSWTWidget().isVisible() != (isVisible() && isShowing())))
+							getSWTWidget().setVisible(isVisible() && isShowing());				
 					}
 					public void notifyValidating() {}
 					
@@ -154,9 +156,7 @@ public abstract class AbstractSWTWidgetFigure extends Figure {
 		if(updateFlag && updateManagerListener != null)
 			getUpdateManager().removeUpdateListener(updateManagerListener);
 		updateFlag =false;
-		removeAncestorListener(ancestorListener);
-		getSWTWidget().setMenu(null);
-		getSWTWidget().dispose();		
+		removeAncestorListener(ancestorListener);		
 	}
 
 }

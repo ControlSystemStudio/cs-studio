@@ -100,4 +100,12 @@ public class ComboFigure extends AbstractSWTWidgetFigure {
 		return combo;
 	}	
 	
+	@Override
+	public void dispose() {
+		super.dispose();
+		combo.setMenu(null);
+		combo.dispose();
+		combo = null;
+	}
+	
 }
