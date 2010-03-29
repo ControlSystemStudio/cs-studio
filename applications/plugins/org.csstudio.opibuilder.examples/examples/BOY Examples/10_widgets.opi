@@ -30,7 +30,7 @@
       <color red="128" green="0" blue="255" />
     </line_color>
     <scripts />
-    <height>161</height>
+    <height>143</height>
     <anti_alias>true</anti_alias>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Rectangle_3</name>
@@ -46,7 +46,7 @@
     <enabled>true</enabled>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <line_style>0</line_style>
-    <width>229</width>
+    <width>493</width>
     <border_style>0</border_style>
     <border_width>1</border_width>
     <line_width>0</line_width>
@@ -54,11 +54,11 @@
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <y>394</y>
+    <y>420</y>
     <actions hook="false" />
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <x>17</x>
+    <x>19</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <border_alarm_sensitive>true</border_alarm_sensitive>
@@ -90,7 +90,7 @@ $(pv_value)</tooltip>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <y>425</y>
+    <y>464</y>
     <actions hook="false">
       <action type="OPEN_DISPLAY">
         <path>widgets/4_1_GroupingContainer.opi</path>
@@ -98,10 +98,11 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>true</replace>
+        <description />
       </action>
     </actions>
     <tooltip />
-    <x>35</x>
+    <x>37</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
     <border_alarm_sensitive>true</border_alarm_sensitive>
@@ -179,6 +180,7 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>true</replace>
+        <description />
       </action>
     </actions>
     <tooltip />
@@ -222,6 +224,7 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>true</replace>
+        <description />
       </action>
     </actions>
     <tooltip />
@@ -265,6 +268,7 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>true</replace>
+        <description />
       </action>
     </actions>
     <tooltip />
@@ -346,6 +350,7 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>true</replace>
+        <description />
       </action>
     </actions>
     <tooltip />
@@ -389,6 +394,7 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>true</replace>
+        <description />
       </action>
     </actions>
     <tooltip />
@@ -402,7 +408,7 @@ $(pv_value)</tooltip>
       <color red="128" green="0" blue="255" />
     </line_color>
     <scripts />
-    <height>268</height>
+    <height>304</height>
     <anti_alias>true</anti_alias>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Rectangle</name>
@@ -431,49 +437,6 @@ $(pv_value)</tooltip>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>17</x>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <visible>true</visible>
-    <scripts />
-    <height>31</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <name>Action Button_4</name>
-    <pv_name />
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
-    <foreground_color>
-      <color red="51" green="51" blue="204" />
-    </foreground_color>
-    <widget_type>Action Button</widget_type>
-    <enabled>true</enabled>
-    <text>Polyline/Polygon</text>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <font>
-      <fontdata fontName="Arial" height="12" style="1" />
-    </font>
-    <width>193</width>
-    <push_action_index>0</push_action_index>
-    <border_style>0</border_style>
-    <image />
-    <toggle_button>false</toggle_button>
-    <border_width>1</border_width>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <y>329</y>
-    <actions hook="false">
-      <action type="OPEN_DISPLAY">
-        <path>widgets/1_5_Polyline_Polygon.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-        </macros>
-        <replace>true</replace>
-      </action>
-    </actions>
-    <tooltip />
-    <x>37</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <widget_type>Label</widget_type>
@@ -609,6 +572,7 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>true</replace>
+        <description />
       </action>
     </actions>
     <tooltip />
@@ -652,6 +616,7 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>true</replace>
+        <description />
       </action>
     </actions>
     <tooltip />
@@ -695,89 +660,7 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>true</replace>
-      </action>
-    </actions>
-    <tooltip />
-    <x>37</x>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
-    <widget_type>Label</widget_type>
-    <enabled>true</enabled>
-    <text>5.</text>
-    <visible>true</visible>
-    <font>
-      <fontdata fontName="Arial" height="12" style="1" />
-    </font>
-    <vertical_alignment>1</vertical_alignment>
-    <width>13</width>
-    <border_style>0</border_style>
-    <auto_size>true</auto_size>
-    <scripts />
-    <height>19</height>
-    <border_width>1</border_width>
-    <name>Label_6</name>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <horizontal_alignment>1</horizontal_alignment>
-    <transparent>true</transparent>
-    <y>335</y>
-    <actions hook="false">
-      <action type="OPEN_DISPLAY">
-        <path>widgets/1_1_Rectangle_Ellipse.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-        </macros>
-        <replace>false</replace>
-      </action>
-    </actions>
-    <tooltip />
-    <x>43</x>
-    <background_color>
-      <color red="255" green="255" blue="255" />
-    </background_color>
-    <foreground_color>
-      <color red="51" green="51" blue="204" />
-    </foreground_color>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <visible>true</visible>
-    <scripts />
-    <height>31</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <name>Action Button_3</name>
-    <pv_name />
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
-    <foreground_color>
-      <color red="51" green="51" blue="204" />
-    </foreground_color>
-    <widget_type>Action Button</widget_type>
-    <enabled>true</enabled>
-    <text>Arc</text>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <font>
-      <fontdata fontName="Arial" height="12" style="1" />
-    </font>
-    <width>193</width>
-    <push_action_index>0</push_action_index>
-    <border_style>0</border_style>
-    <image />
-    <toggle_button>false</toggle_button>
-    <border_width>1</border_width>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <y>283</y>
-    <actions hook="false">
-      <action type="OPEN_DISPLAY">
-        <path>widgets/1_4_Arc.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-        </macros>
-        <replace>true</replace>
+        <description />
       </action>
     </actions>
     <tooltip />
@@ -812,46 +695,7 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>false</replace>
-      </action>
-    </actions>
-    <tooltip />
-    <x>43</x>
-    <background_color>
-      <color red="255" green="255" blue="255" />
-    </background_color>
-    <foreground_color>
-      <color red="51" green="51" blue="204" />
-    </foreground_color>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
-    <widget_type>Label</widget_type>
-    <enabled>true</enabled>
-    <text>4.</text>
-    <visible>true</visible>
-    <font>
-      <fontdata fontName="Arial" height="12" style="1" />
-    </font>
-    <vertical_alignment>1</vertical_alignment>
-    <width>13</width>
-    <border_style>0</border_style>
-    <auto_size>true</auto_size>
-    <scripts />
-    <height>19</height>
-    <border_width>1</border_width>
-    <name>Label_5</name>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <horizontal_alignment>1</horizontal_alignment>
-    <transparent>true</transparent>
-    <y>289</y>
-    <actions hook="false">
-      <action type="OPEN_DISPLAY">
-        <path>widgets/1_1_Rectangle_Ellipse.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-        </macros>
-        <replace>false</replace>
+        <description />
       </action>
     </actions>
     <tooltip />
@@ -892,6 +736,7 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>false</replace>
+        <description />
       </action>
     </actions>
     <tooltip />
@@ -932,6 +777,7 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>false</replace>
+        <description />
       </action>
     </actions>
     <tooltip />
@@ -972,6 +818,7 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>false</replace>
+        <description />
       </action>
     </actions>
     <tooltip />
@@ -1021,6 +868,7 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>true</replace>
+        <description />
       </action>
     </actions>
     <tooltip />
@@ -1064,6 +912,7 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>true</replace>
+        <description />
       </action>
     </actions>
     <tooltip />
@@ -1098,6 +947,7 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>false</replace>
+        <description />
       </action>
     </actions>
     <tooltip />
@@ -1147,6 +997,7 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>true</replace>
+        <description />
       </action>
     </actions>
     <tooltip />
@@ -1181,6 +1032,7 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>false</replace>
+        <description />
       </action>
     </actions>
     <tooltip />
@@ -1221,6 +1073,7 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>false</replace>
+        <description />
       </action>
     </actions>
     <tooltip />
@@ -1293,6 +1146,7 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>false</replace>
+        <description />
       </action>
     </actions>
     <tooltip />
@@ -1333,6 +1187,7 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>false</replace>
+        <description />
       </action>
     </actions>
     <tooltip />
@@ -1373,6 +1228,7 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>false</replace>
+        <description />
       </action>
     </actions>
     <tooltip />
@@ -1422,6 +1278,7 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>true</replace>
+        <description />
       </action>
     </actions>
     <tooltip />
@@ -1456,6 +1313,7 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>false</replace>
+        <description />
       </action>
     </actions>
     <tooltip />
@@ -1537,6 +1395,7 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>true</replace>
+        <description />
       </action>
     </actions>
     <tooltip />
@@ -1551,7 +1410,7 @@ $(pv_value)</tooltip>
       <fontdata fontName="Arial" height="9" style="1" />
     </font>
     <vertical_alignment>1</vertical_alignment>
-    <width>15</width>
+    <width>10</width>
     <border_style>0</border_style>
     <auto_size>true</auto_size>
     <scripts />
@@ -1571,6 +1430,7 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>false</replace>
+        <description />
       </action>
     </actions>
     <tooltip />
@@ -1611,6 +1471,7 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>false</replace>
+        <description />
       </action>
     </actions>
     <tooltip />
@@ -1651,6 +1512,7 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>false</replace>
+        <description />
       </action>
     </actions>
     <tooltip />
@@ -1692,7 +1554,7 @@ $(pv_value)</tooltip>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <y>467</y>
+    <y>506</y>
     <actions hook="false">
       <action type="OPEN_DISPLAY">
         <path>widgets/4_2_LinkingContainer.opi</path>
@@ -1700,10 +1562,11 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>true</replace>
+        <description />
       </action>
     </actions>
     <tooltip />
-    <x>35</x>
+    <x>37</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <widget_type>Label</widget_type>
@@ -1726,10 +1589,10 @@ $(pv_value)</tooltip>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <transparent>true</transparent>
-    <y>394</y>
+    <y>427</y>
     <actions hook="false" />
     <tooltip />
-    <x>57</x>
+    <x>191</x>
     <background_color>
       <color red="255" green="255" blue="255" />
     </background_color>
@@ -1758,7 +1621,7 @@ $(pv_value)</tooltip>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <transparent>true</transparent>
-    <y>473</y>
+    <y>512</y>
     <actions hook="false">
       <action type="OPEN_DISPLAY">
         <path>widgets/1_1_Rectangle_Ellipse.opi</path>
@@ -1766,10 +1629,11 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>false</replace>
+        <description />
       </action>
     </actions>
     <tooltip />
-    <x>41</x>
+    <x>43</x>
     <background_color>
       <color red="255" green="255" blue="255" />
     </background_color>
@@ -1798,7 +1662,7 @@ $(pv_value)</tooltip>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <transparent>true</transparent>
-    <y>431</y>
+    <y>470</y>
     <actions hook="false">
       <action type="OPEN_DISPLAY">
         <path>widgets/1_1_Rectangle_Ellipse.opi</path>
@@ -1806,10 +1670,11 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>false</replace>
+        <description />
       </action>
     </actions>
     <tooltip />
-    <x>41</x>
+    <x>43</x>
     <background_color>
       <color red="255" green="255" blue="255" />
     </background_color>
@@ -1855,6 +1720,7 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>false</replace>
+        <description />
       </action>
     </actions>
     <tooltip />
@@ -1890,7 +1756,7 @@ $(pv_value)</tooltip>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <y>510</y>
+    <y>464</y>
     <actions hook="false">
       <action type="OPEN_DISPLAY">
         <path>widgets/4_3_TabbedContainer.opi</path>
@@ -1898,10 +1764,11 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>true</replace>
+        <description />
       </action>
     </actions>
     <tooltip />
-    <x>35</x>
+    <x>301</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <widget_type>Label</widget_type>
@@ -1924,7 +1791,7 @@ $(pv_value)</tooltip>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <transparent>true</transparent>
-    <y>516</y>
+    <y>470</y>
     <actions hook="false">
       <action type="OPEN_DISPLAY">
         <path>widgets/1_1_Rectangle_Ellipse.opi</path>
@@ -1932,10 +1799,11 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>false</replace>
+        <description />
       </action>
     </actions>
     <tooltip />
-    <x>41</x>
+    <x>307</x>
     <background_color>
       <color red="255" green="255" blue="255" />
     </background_color>
@@ -1981,6 +1849,7 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>true</replace>
+        <description />
       </action>
     </actions>
     <tooltip />
@@ -2015,6 +1884,7 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>false</replace>
+        <description />
       </action>
     </actions>
     <tooltip />
@@ -2064,6 +1934,7 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>true</replace>
+        <description />
       </action>
     </actions>
     <tooltip />
@@ -2098,10 +1969,266 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>false</replace>
+        <description />
       </action>
     </actions>
     <tooltip />
     <x>564</x>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="51" green="51" blue="204" />
+    </foreground_color>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <visible>true</visible>
+    <scripts />
+    <height>31</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Action Button_3</name>
+    <pv_name />
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <foreground_color>
+      <color red="51" green="51" blue="204" />
+    </foreground_color>
+    <widget_type>Action Button</widget_type>
+    <enabled>true</enabled>
+    <text>Arc</text>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <font>
+      <fontdata fontName="Arial" height="12" style="1" />
+    </font>
+    <width>193</width>
+    <push_action_index>0</push_action_index>
+    <border_style>0</border_style>
+    <image />
+    <toggle_button>false</toggle_button>
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <y>283</y>
+    <actions hook="false">
+      <action type="OPEN_DISPLAY">
+        <path>widgets/1_4_Arc.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+        </macros>
+        <replace>true</replace>
+        <description />
+      </action>
+    </actions>
+    <tooltip />
+    <x>37</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <widget_type>Label</widget_type>
+    <enabled>true</enabled>
+    <text>4.</text>
+    <visible>true</visible>
+    <font>
+      <fontdata fontName="Arial" height="12" style="1" />
+    </font>
+    <vertical_alignment>1</vertical_alignment>
+    <width>13</width>
+    <border_style>0</border_style>
+    <auto_size>true</auto_size>
+    <scripts />
+    <height>19</height>
+    <border_width>1</border_width>
+    <name>Label_5</name>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <transparent>true</transparent>
+    <y>289</y>
+    <actions hook="false">
+      <action type="OPEN_DISPLAY">
+        <path>widgets/1_1_Rectangle_Ellipse.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+        </macros>
+        <replace>false</replace>
+        <description />
+      </action>
+    </actions>
+    <tooltip />
+    <x>43</x>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="51" green="51" blue="204" />
+    </foreground_color>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <visible>true</visible>
+    <scripts />
+    <height>31</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Action Button_4</name>
+    <pv_name />
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <foreground_color>
+      <color red="51" green="51" blue="204" />
+    </foreground_color>
+    <widget_type>Action Button</widget_type>
+    <enabled>true</enabled>
+    <text>Polyline/Polygon</text>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <font>
+      <fontdata fontName="Arial" height="12" style="1" />
+    </font>
+    <width>193</width>
+    <push_action_index>0</push_action_index>
+    <border_style>0</border_style>
+    <image />
+    <toggle_button>false</toggle_button>
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <y>329</y>
+    <actions hook="false">
+      <action type="OPEN_DISPLAY">
+        <path>widgets/1_5_Polyline_Polygon.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+        </macros>
+        <replace>true</replace>
+        <description />
+      </action>
+    </actions>
+    <tooltip />
+    <x>37</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <widget_type>Label</widget_type>
+    <enabled>true</enabled>
+    <text>5.</text>
+    <visible>true</visible>
+    <font>
+      <fontdata fontName="Arial" height="12" style="1" />
+    </font>
+    <vertical_alignment>1</vertical_alignment>
+    <width>13</width>
+    <border_style>0</border_style>
+    <auto_size>true</auto_size>
+    <scripts />
+    <height>19</height>
+    <border_width>1</border_width>
+    <name>Label_6</name>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <transparent>true</transparent>
+    <y>335</y>
+    <actions hook="false">
+      <action type="OPEN_DISPLAY">
+        <path>widgets/1_1_Rectangle_Ellipse.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+        </macros>
+        <replace>false</replace>
+        <description />
+      </action>
+    </actions>
+    <tooltip />
+    <x>43</x>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="51" green="51" blue="204" />
+    </foreground_color>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <visible>true</visible>
+    <scripts />
+    <height>31</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Action Button_21</name>
+    <pv_name />
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <foreground_color>
+      <color red="51" green="51" blue="204" />
+    </foreground_color>
+    <widget_type>Action Button</widget_type>
+    <enabled>true</enabled>
+    <text>Web Browser</text>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <font>
+      <fontdata fontName="Arial" height="12" style="1" />
+    </font>
+    <width>193</width>
+    <push_action_index>0</push_action_index>
+    <border_style>0</border_style>
+    <image />
+    <toggle_button>false</toggle_button>
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <y>506</y>
+    <actions hook="false">
+      <action type="OPEN_DISPLAY">
+        <path>widgets/4_4_WebBrowser.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+        </macros>
+        <replace>true</replace>
+        <description />
+      </action>
+    </actions>
+    <tooltip />
+    <x>301</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <widget_type>Label</widget_type>
+    <enabled>true</enabled>
+    <text>4.</text>
+    <visible>true</visible>
+    <font>
+      <fontdata fontName="Arial" height="12" style="1" />
+    </font>
+    <vertical_alignment>1</vertical_alignment>
+    <width>13</width>
+    <border_style>0</border_style>
+    <auto_size>true</auto_size>
+    <scripts />
+    <height>19</height>
+    <border_width>1</border_width>
+    <name>Label_27</name>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <transparent>true</transparent>
+    <y>512</y>
+    <actions hook="false">
+      <action type="OPEN_DISPLAY">
+        <path>widgets/1_1_Rectangle_Ellipse.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+        </macros>
+        <replace>false</replace>
+        <description />
+      </action>
+    </actions>
+    <tooltip />
+    <x>307</x>
     <background_color>
       <color red="255" green="255" blue="255" />
     </background_color>
