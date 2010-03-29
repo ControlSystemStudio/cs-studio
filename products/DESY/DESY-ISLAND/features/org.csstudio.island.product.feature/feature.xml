@@ -21,14 +21,6 @@
          version="0.0.0"/>
 
    <includes
-         id="org.csstudio.diag.controlsystemtools.feature"
-         version="0.0.0"/>
-
-   <includes
-         id="org.csstudio.sds.feature"
-         version="0.0.0"/>
-
-   <includes
          id="org.eclipse.p2helios.feature"
          version="0.0.0"/>
 
