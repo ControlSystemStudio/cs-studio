@@ -17,7 +17,7 @@ public class LdapResultListObserver implements Observer {
 	/**
 	 * Set to <code>true</code> when the update method was called.
 	 */
-	private boolean _done = false;
+	private volatile boolean _done = false;
 
 	/**
 	 * {@inheritDoc}
@@ -56,4 +56,8 @@ public class LdapResultListObserver implements Observer {
 		}
 		return _ldapResult;
 	}
+
+    public boolean isReady() {
+        return _done;
+    }
 }

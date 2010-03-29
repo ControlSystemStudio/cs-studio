@@ -105,7 +105,7 @@ public final class LdapAccess {
         }
     }
 
-    private final static Logger LOGGER = CentralLogger.getInstance().getLogger(LdapAccess.class);
+    private final static Logger LOGGER = CentralLogger.getInstance().getLogger(LdapAccess.class.getCanonicalName());
 
 
     /**

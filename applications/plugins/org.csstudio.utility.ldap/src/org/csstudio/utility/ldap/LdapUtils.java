@@ -37,7 +37,7 @@ import org.csstudio.platform.util.StringUtil;
  */
 public class LdapUtils {
 
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(LdapUtils.class);
+    private static final Logger LOG = CentralLogger.getInstance().getLogger(LdapUtils.class.getName());
 
     public static final String OU_FIELD_NAME = "ou";
     public static final String EPICS_CTRL_FIELD_VALUE = "EpicsControls";

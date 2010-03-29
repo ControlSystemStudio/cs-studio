@@ -29,19 +29,19 @@ import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
 
 public class TimerProcessor {
-    
+
     static class ProcessOnTime extends TimerTask {
-        
+
         private static final Logger LOGGER = CentralLogger.getInstance().getLogger(ProcessOnTime.class);
-        
+
         @Override
         public void run() {
-            
-            LdapUpdater ldapUpdater = LdapUpdater.getInstance();
+
+            final LdapUpdater ldapUpdater = LdapUpdater.getInstance();
             try {
                 long time = 0L;
                 boolean timeOut = false;
-                
+
                 while (ldapUpdater.isBusy()) {
                     if (time < LDAP_TIMEOUT) {
                         LOGGER.error("LDAP Update Time out. Service still busy after " + LDAP_TIMEOUT / 1000 + "s.");
@@ -51,53 +51,46 @@ public class TimerProcessor {
                     time += LDAP_RECHECK;
                     Thread.sleep(LDAP_RECHECK);
                 }
-                
+
                 if (!timeOut) {
                     ldapUpdater.updateLdapFromIOCFiles();
                 }
-                
-            } catch (InterruptedException ie) {
+
+            } catch (final InterruptedException ie) {
                 // TODO (bknerr) : check appropriate thread handling (see Goetz book)
                 ie.printStackTrace();
-            } catch (Exception e) {
+                Thread.currentThread().interrupt();
+            } catch (final Exception e) {
                 LOGGER.info  ("LdapUpdater is busy" );
                 LOGGER.error ("LdapUpdater is busy" );
             }
         }
     }
-    private static long delay;
-    private static long interval;
+    private static long _delay;
+    private static long _interval;
     private static long LDAP_RECHECK = 10000; // every 10 seconds
-    
+
     private static long LDAP_TIMEOUT = 300000; // until 300 seconds are over
-    
-    
-    public static long getDelay() {
-        return delay;
+
+
+    public static void setDelay(final long delay) {
+        TimerProcessor._delay = delay;
     }
-    
-    public static long getInterval() {
-        return interval;
+
+    public static void setInterval(final long interval) {
+        TimerProcessor._interval = interval;
     }
-    
-    public static void setDelay(long delay) {
-        TimerProcessor.delay = delay;
-    }
-    
-    public static void setInterval(long interval) {
-        TimerProcessor.interval = interval;
-    }
-    
-    TimerProcessor( long delay, long interval) {
-        TimerProcessor.delay = delay;
-        TimerProcessor.interval = interval;
-        
+
+    TimerProcessor( final long delay, final long interval) {
+        TimerProcessor._delay = delay;
+        TimerProcessor._interval = interval;
+
         execute();
     }
-    
+
     public void execute() {
-        Timer timer = new Timer();
-        TimerTask processOnTime = new ProcessOnTime();
-        timer.scheduleAtFixedRate(processOnTime, getDelay(), getInterval());
+        final Timer timer = new Timer();
+        final TimerTask processOnTime = new ProcessOnTime();
+        timer.scheduleAtFixedRate(processOnTime, _delay, _interval);
     }
 }
