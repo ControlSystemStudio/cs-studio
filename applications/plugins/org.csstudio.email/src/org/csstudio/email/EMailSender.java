@@ -22,18 +22,18 @@ public class EMailSender
 {
     /** Message boundary marker */
     final private static String boundary = "==XOXOX-ThisIsTheMessageBoundary-XOXOX==";
-    
+
     /** SMPT client connection */
     final private SmtpClient smtp;
-    
+
     /** Stream for the message content */
     final private PrintStream message;
-    
+
     public static boolean isEmailSupported()
     {
         return Preferences.getSMTP_Host().length() > 0;
     }
-    
+
     /** Initialize
      *  @param host SMTP Host
      *  @param from Sender's email
@@ -48,17 +48,17 @@ public class EMailSender
         smtp.from(from);
         smtp.to(to);
         message = smtp.startMessage();
-        
+
         message.println("To: " + to);
         message.println("From: " + from);
         message.println("Subject: " + subject);
-        
+
         message.println("Content-Type: multipart/mixed; boundary=\"" + boundary + "\"");
         message.println();
         message.println("This is a multi-part message in MIME format.");
         message.println();
-                       }
-    
+    }
+
     /**
      * @param text Message body, added to email
      */
@@ -71,7 +71,7 @@ public class EMailSender
         message.println(text);
         message.println();
     }
-    
+
     /** @param filename Name of text file to attach
      *  @throws IOException on File I/O error
      *  @throws FileNotFoundException a file not found error
@@ -87,7 +87,7 @@ public class EMailSender
         encoder.encode(filename);
         message.println();
     }
-    
+
     /** @param filename Name of image file to attach
      *  @throws IOException on File I/O error
      *  @throws FileNotFoundException a file not found error
@@ -108,7 +108,7 @@ public class EMailSender
         encoder.encode(filename);
         message.println();
     }
-    
+
     /** @param filename File name with full path
      *  @return Just the file name without path
      */
@@ -117,7 +117,7 @@ public class EMailSender
         final File file = new File(filename);
         return file.getName();
     }
-    
+
     /** Close the message, send it out
      *  @throws IOException on I/O error
      */

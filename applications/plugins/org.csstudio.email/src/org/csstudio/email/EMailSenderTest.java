@@ -10,17 +10,17 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class EMailSenderTest
 {
-    final private static String host = "smtp.ornl.gov";
-    final private static String from = "kasemirk@ornl.gov";
+    final private static String host = "krynfs.desy.de";
+    final private static String from = "bastian.knerr@desy.de";
     final private static String to = from;
-    
+
     @Test
     public void testMailer() throws Exception
     {
         final EMailSender mailer = new EMailSender(host, from, to, "Test Subject");
         mailer.addText("Hello, this is a test");
         mailer.attachText("testfile.txt");
-        mailer.attachImage("/tmp/test.png");
+        mailer.attachImage("test.jpg");
         mailer.attachText("src/org/csstudio/email/EMailSender.java");
         mailer.close();
     }
