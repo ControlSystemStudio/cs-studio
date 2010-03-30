@@ -155,7 +155,7 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractPVWidgetEditP
 
 	@Override
 	public void setValue(Object value) {
-		if(value instanceof Double)
+		if(value instanceof Double || value instanceof Integer)
 			((AbstractScaledWidgetFigure)getFigure()).setValue((Double)value);
 	}
 	

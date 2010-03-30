@@ -58,6 +58,7 @@ public abstract class AbstractScaledWidgetFigure extends Figure {
 	public void setValue(final double value) {
 		this.value = 
 			Math.max(scale.getRange().getLower(), Math.min(scale.getRange().getUpper(), value));
+		repaint();
 	}
 	
 	public double getValue() {
