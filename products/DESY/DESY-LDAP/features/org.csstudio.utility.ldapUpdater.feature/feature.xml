@@ -362,13 +362,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.equinox.common"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.equinox.concurrent"
          download-size="0"
          install-size="0"
@@ -523,13 +516,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.osgi"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.osgi.services"
          download-size="0"
          install-size="0"
@@ -566,13 +552,6 @@
 
    <plugin
          id="org.eclipse.ui.forms"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ui.ide"
          download-size="0"
          install-size="0"
          version="0.0.0"
