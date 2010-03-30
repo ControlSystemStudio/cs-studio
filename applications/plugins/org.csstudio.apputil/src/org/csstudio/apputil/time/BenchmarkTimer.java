@@ -7,7 +7,8 @@ package org.csstudio.apputil.time;
  *  <li>Create (which also starts)
  *  <li>stop(), use get... to get time
  *  </ol>
- *  It's also possible to stop multiple times to get "lap" readings.
+ *  It's also possible to stop multiple times to get "lap" readings,
+ *  or to 'continue' a timer from the last 'stop'.
  *  @author Kay Kasemir
  */
 public class BenchmarkTimer
@@ -39,6 +40,12 @@ public class BenchmarkTimer
         return elapsed;
     }
     
+    /** Continue timer that was stop()ed from when it was stopped */
+    public void cont()
+    {
+        start = System.nanoTime() - elapsed;
+    }
+
     /** @return Milliseconds between <code>start()</code> and <code>stop()</code> */
     public long getMilliseconds()
     {
