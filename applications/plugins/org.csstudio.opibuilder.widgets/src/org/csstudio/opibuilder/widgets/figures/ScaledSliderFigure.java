@@ -168,11 +168,6 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 	
 	
 	@Override
-	public void repaint() {
-		// TODO Auto-generated method stub
-		super.repaint();
-	}
-	@Override
 	public void setForegroundColor(Color fg) {
 		super.setForegroundColor(fg);
 		outlineColor = fg;
@@ -206,7 +201,6 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 	 */
 	public void setEffect3D(boolean effect3D) {
 		this.effect3D = effect3D;
-		track.setOutline(!effect3D);
 	}
 
 	@Override
@@ -398,13 +392,13 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 				graphics.setBackgroundColor(fillColor);
 				if(horizontal)
 					graphics.fillRectangle(new Rectangle(bounds.x + lineWidth,
-							bounds.y + lineWidth, 						
+							bounds.y, 						
 							valuePosition - bounds.x - lineWidth, 
-							bounds.height - 2*lineWidth));
+							bounds.height));
 				else
-					graphics.fillRectangle(new Rectangle(bounds.x + lineWidth, 
+					graphics.fillRectangle(new Rectangle(bounds.x,
 							valuePosition,
-							bounds.width - 2* lineWidth, 
+							bounds.width,
 							bounds.height - (valuePosition - bounds.y)));
 				graphics.setForegroundColor(outlineColor);
 			}			
