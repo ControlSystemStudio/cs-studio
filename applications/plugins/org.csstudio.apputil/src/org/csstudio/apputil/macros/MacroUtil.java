@@ -45,7 +45,7 @@ public class MacroUtil {
 			}
 			if(stack.size() > 0 && (input.charAt(i) == ')' || input.charAt(i)=='}')){
 				try {
-					lockStack = true; //lock the stack until it is poped out.
+					lockStack = true; //lock the stack until it is popped out.
 					int start = stack.pop();
 					if(stack.size() == 0){  //arrived the most out, we got a macro
 						String macro = input.substring(start, i+1);						
@@ -61,7 +61,7 @@ public class MacroUtil {
 			}								
 		}
 		//if there is more chars behind the last macro
-		if(scanPosition < input.length() -1)
+		if(scanPosition < input.length())
 			stringBuilder.append(input.substring(scanPosition));		
 		 
 		return stringBuilder.toString();

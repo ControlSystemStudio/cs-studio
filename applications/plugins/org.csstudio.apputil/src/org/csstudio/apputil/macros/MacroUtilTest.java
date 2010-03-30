@@ -55,6 +55,11 @@ public class MacroUtilTest
 		}
 		assertEquals("InfiniteLoopException", result);
 		
+		//special character and boundary test
+		input = "($(B))";
+		result = MacroUtil.replaceMacros(input, macros);
+		assertEquals("(C)", result);
+		
 		//robust parsing test
 		input = "$($($(abc_$(123)_def)))Hello $($($(A)))Best OPI $(ABC)D) Yet ${ABC}))!";
 		result = MacroUtil.replaceMacros(input, macros);
