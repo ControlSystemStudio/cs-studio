@@ -34,6 +34,7 @@ public class ChangeOrderCommand extends Command {
 	public void execute() {
 		oldIndex = container.getIndexOf(widget);
 		container.changeChildOrder(widget, newIndex);
+		container.selectWidget(widget, true);
 	}
 	
 	

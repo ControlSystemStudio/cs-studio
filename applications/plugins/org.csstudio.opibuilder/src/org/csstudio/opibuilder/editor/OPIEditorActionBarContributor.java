@@ -1,6 +1,7 @@
 package org.csstudio.opibuilder.editor;
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.actions.RunOPIAction;
+import org.csstudio.opibuilder.actions.ChangeOrderAction.OrderType;
 import org.csstudio.opibuilder.actions.DistributeWidgetsAction.DistributeType;
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.gef.ui.actions.ActionBarContributor;
@@ -167,6 +168,10 @@ public class OPIEditorActionBarContributor extends ActionBarContributor {
 		addGlobalActionKey(ActionFactory.DELETE.getId());
 		addGlobalActionKey(ActionFactory.COPY.getId());
 		addGlobalActionKey(ActionFactory.CUT.getId());
+		addGlobalActionKey(OrderType.TO_FRONT.getActionID());
+		addGlobalActionKey(OrderType.TO_BACK.getActionID());
+		addGlobalActionKey(OrderType.STEP_BACK.getActionID());
+		addGlobalActionKey(OrderType.STEP_FRONT.getActionID());
 	}
 
 }

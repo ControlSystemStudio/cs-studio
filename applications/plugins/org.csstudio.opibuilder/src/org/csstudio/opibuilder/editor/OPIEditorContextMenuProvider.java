@@ -92,9 +92,9 @@ public final class OPIEditorContextMenuProvider extends ContextMenuProvider {
 						OPIBuilderPlugin.PLUGIN_ID, "icons/order.png"), null);	 //$NON-NLS-1$	
 		orderMenu.add(new Separator(orderGroup));
 		orderMenu.appendToGroup(orderGroup, getAction(OrderType.TO_FRONT.getActionID()));
-		orderMenu.appendToGroup(orderGroup, getAction(OrderType.STEP_FRONT.getActionID()));
-		orderMenu.appendToGroup(orderGroup, getAction(OrderType.STEP_BACK.getActionID()));
 		orderMenu.appendToGroup(orderGroup, getAction(OrderType.TO_BACK.getActionID()));
+		orderMenu.appendToGroup(orderGroup, getAction(OrderType.STEP_FRONT.getActionID()));
+		orderMenu.appendToGroup(orderGroup, getAction(OrderType.STEP_BACK.getActionID()));		
 		menu.appendToGroup(GEFActionConstants.GROUP_COPY, orderMenu);
 		
 		menu.add(new Separator("group")); //$NON-NLS-1$

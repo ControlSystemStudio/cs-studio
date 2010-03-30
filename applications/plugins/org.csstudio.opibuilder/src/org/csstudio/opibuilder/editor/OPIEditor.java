@@ -126,6 +126,7 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.FileEditorInput;
@@ -331,7 +332,10 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 	@Override
 	protected void createActions() {
 		super.createActions();
-
+		
+		((IContextService)getEditorSite().getService(IContextService.class)).
+		activateContext("org.csstudio.opibuilder.opiEditor"); //$NON-NLS-1$
+		
 		ActionRegistry registry = getActionRegistry();
 		IAction action;
 
@@ -451,6 +455,7 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 		action = new CopyPropertiesAction(this, pastePropAction);
 		registry.registerAction(action);
 		getSelectionActions().add(action.getId());
+	
 		
 	}
 	

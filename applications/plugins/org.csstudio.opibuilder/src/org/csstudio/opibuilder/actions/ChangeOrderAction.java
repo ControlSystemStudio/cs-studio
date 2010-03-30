@@ -91,6 +91,7 @@ public class ChangeOrderAction extends SelectionAction {
 		super(part);
 		this.orderType = orderType;
 		setId(orderType.getActionID());
+		setActionDefinitionId(orderType.getActionID());
 		setText(orderType.getLabel());
 		setImageDescriptor(orderType.getImageDescriptor());
 	}

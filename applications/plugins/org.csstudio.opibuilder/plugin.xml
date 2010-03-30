@@ -53,6 +53,26 @@
             id="org.csstudio.opibuilder.runopi"
             name="Run OPI">
       </command>
+      <command
+            description="Change the widget order to front"
+            id="org.csstudio.opibuilder.actions.TO_FRONT"
+            name="To Front">
+      </command>
+      <command
+            description="Change the widget order a step front"
+            id="org.csstudio.opibuilder.actions.STEP_FRONT"
+            name="Step Front">
+      </command>
+      <command
+            description="Change the widget order to back"
+            id="org.csstudio.opibuilder.actions.TO_BACK"
+            name="To Back">
+      </command>
+      <command
+            description="Change the widget order a step back"
+            id="org.csstudio.opibuilder.actions.STEP_BACK"
+            name="Step Back">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
@@ -61,6 +81,30 @@
             contextId="org.eclipse.ui.contexts.window"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+G">
+      </key>
+      <key
+            commandId="org.csstudio.opibuilder.actions.TO_FRONT"
+            contextId="org.csstudio.opibuilder.opiEditor"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+ARROW_DOWN">
+      </key>
+      <key
+            commandId="org.csstudio.opibuilder.actions.TO_BACK"
+            contextId="org.csstudio.opibuilder.opiEditor"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+ARROW_UP">
+      </key>
+      <key
+            commandId="org.csstudio.opibuilder.actions.STEP_BACK"
+            contextId="org.csstudio.opibuilder.opiEditor"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+ARROW_LEFT">
+      </key>
+      <key
+            commandId="org.csstudio.opibuilder.actions.STEP_FRONT"
+            contextId="org.csstudio.opibuilder.opiEditor"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+ARROW_RIGHT">
       </key>
       <scheme
             description="OPIBuilder Key Binding Scheme"
@@ -140,6 +184,14 @@
             class="org.csstudio.opibuilder.runmode.RunnerInputFactory"
             id="org.csstudio.opibuilder.runmode.RunnerInputFactory">
       </factory>
+   </extension>
+   <extension
+         point="org.eclipse.ui.contexts">
+      <context
+            id="org.csstudio.opibuilder.opiEditor"
+            name="OPI Editor Context"
+            parentId="org.eclipse.ui.contexts.window">
+      </context>
    </extension>
 
 </plugin>
