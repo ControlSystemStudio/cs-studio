@@ -1,6 +1,7 @@
 package org.csstudio.opibuilder.widgets.figures;
 
 
+import org.csstudio.opibuilder.widgets.util.GraphicsUtil;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.swt.xygraph.linearscale.LinearScale;
 import org.csstudio.swt.xygraph.linearscale.LinearScaledMarker;
@@ -106,21 +107,21 @@ public class TankFigure extends AbstractLinearMarkedFigure {
 			corner.width = fill_corner;
 			graphics.setAntialias(SWT.ON);			
 			int valuePosition = ((LinearScale) scale).getValuePosition(value, false);
-			boolean support3D = true;
-			Pattern pattern = null;
-			//just test if pattern is supported on the platform.
-			try {
-				graphics.pushState();
-				pattern = new Pattern(Display.getCurrent(),
-								0, 0, 0, 0,	fillBackgroundColor,WHITE_COLOR);
-				graphics.setBackgroundPattern(pattern);
-			} catch (Exception e) {
-				support3D= false;
-				if(pattern != null)
-					pattern.dispose();	
-			}finally{
-				graphics.popState();
-			}
+			boolean support3D = GraphicsUtil.testPatternSupported(graphics);
+	//		Pattern pattern = null;
+//			//just test if pattern is supported on the platform.
+//			try {
+//				graphics.pushState();
+//				pattern = new Pattern(Display.getCurrent(),
+//								0, 0, 0, 0,	fillBackgroundColor,WHITE_COLOR);
+//				graphics.setBackgroundPattern(pattern);
+//			} catch (Exception e) {
+//				support3D= false;
+//				if(pattern != null)
+//					pattern.dispose();	
+//			}finally{
+//				graphics.popState();
+//			}
 			
 			if(effect3D && support3D) {				
 				graphics.setBackgroundColor(WHITE_COLOR);

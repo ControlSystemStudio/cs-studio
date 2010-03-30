@@ -1,5 +1,6 @@
 package org.csstudio.opibuilder.widgets.util;
 
+import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.opibuilder.widgets.figureparts.PolarPoint;
 import org.csstudio.opibuilder.widgets.model.PolyLineModel.ArrowType;
 import org.eclipse.draw2d.Graphics;
@@ -14,6 +15,9 @@ import org.eclipse.draw2d.geometry.Rectangle;
 public class GraphicsUtil {
 
 	public static synchronized boolean testPatternSupported(Graphics graphics){
+		if(PreferencesHelper.isAdvancedGraphicsDisabled())
+			return false;
+		
 		boolean support3D = true;
 		//just test if pattern is supported on the platform.		
 		try {						

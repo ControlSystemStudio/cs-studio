@@ -1,5 +1,6 @@
 package org.csstudio.opibuilder.widgets.figureparts;
 
+import org.csstudio.opibuilder.widgets.util.GraphicsUtil;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
@@ -47,7 +48,7 @@ public class Bulb extends Figure{
 	protected void paintClientArea(Graphics graphics) {		
 		graphics.setAntialias(SWT.ON);
 		
-		if(effect3D) {			
+		if(effect3D && GraphicsUtil.testPatternSupported(graphics)) {			
 			// Fills the circle with solid bulb color
 	        graphics.setBackgroundColor(bulbColor);
 	        graphics.fillOval(bounds);

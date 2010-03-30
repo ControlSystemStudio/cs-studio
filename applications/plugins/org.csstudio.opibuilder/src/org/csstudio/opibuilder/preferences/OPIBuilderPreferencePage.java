@@ -65,6 +65,11 @@ public class OPIBuilderPreferencePage extends FieldEditorPreferencePage
 					"No-Editing mode", parent);				
 		addField(noEditModeEditor);
 		
+		BooleanFieldEditor advanceGraphicsEditor = 
+			new BooleanFieldEditor(PreferencesHelper.DISABLE_ADVANCED_GRAPHICS, 
+					"Disable Advanced Graphics", parent);				
+		addField(advanceGraphicsEditor);
+		
 		StringFieldEditor topOPIsEditor = 
 			new StringFieldEditor(PreferencesHelper.TOP_OPIS, "Top OPIs", parent);
 		addField(topOPIsEditor);

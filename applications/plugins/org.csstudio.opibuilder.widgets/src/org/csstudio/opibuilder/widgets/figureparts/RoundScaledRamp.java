@@ -1,5 +1,6 @@
 package org.csstudio.opibuilder.widgets.figureparts;
 
+import org.csstudio.opibuilder.widgets.util.GraphicsUtil;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
@@ -159,7 +160,9 @@ public class RoundScaledRamp extends Figure {
     	graphics.pushState();
     	int overlap = 0;
     	Pattern pattern = null;
-    	boolean support3D = true;
+    	boolean support3D = GraphicsUtil.testPatternSupported(graphics);
+    		
+    	
     	//draw lolo part
     	if(lolo.visible){    		
   			graphics.setBackgroundColor(lolo.color);
@@ -168,7 +171,7 @@ public class RoundScaledRamp extends Figure {
     	}
     	//draw lo part
     	if(lo.visible){
-    		if(gradient && lolo.visible){
+    		if(support3D && gradient && lolo.visible){
     				try {
 						pattern = new Pattern(Display.getCurrent(), lolo.leftPoint.x, lolo.leftPoint.y, 
 								lo.rightPoint.x, lo.rightPoint.y, lolo.color, lo.color);

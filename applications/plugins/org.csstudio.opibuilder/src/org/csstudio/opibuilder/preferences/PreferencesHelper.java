@@ -25,9 +25,13 @@ public class PreferencesHelper {
 	public static final String OPI_GUI_REFRESH_CYCLE = "opi_gui_refresh_cycle"; //$NON-NLS-1$
 	public static final String NO_EDIT = "no_edit"; //$NON-NLS-1$
 	public static final String TOP_OPIS = "top_opis"; //$NON-NLS-1$
+	public static final String DISABLE_ADVANCED_GRAPHICS = "disable_advanced_graphics"; //$NON-NLS-1$
+		
 	private static final char ROW_SEPARATOR = '|'; //$NON-NLS-1$
 	private static final char ITEM_SEPARATOR = ','; //$NON-NLS-1$
 	private static final char MACRO_SEPARATOR = '='; //$NON-NLS-1$
+	
+	
 	 /** @param preferenceName Preference identifier
      *  @return String from preference system, or <code>null</code>
      */
@@ -62,9 +66,14 @@ public class PreferencesHelper {
     	return service.getBoolean(OPIBuilderPlugin.PLUGIN_ID, AUTOSAVE, false, null);
     }
     
-      public static boolean isNoEdit(){
+    public static boolean isNoEdit(){
     	final IPreferencesService service = Platform.getPreferencesService();
     	return service.getBoolean(OPIBuilderPlugin.PLUGIN_ID, NO_EDIT, false, null);
+    }
+    
+    public static boolean isAdvancedGraphicsDisabled(){
+    	final IPreferencesService service = Platform.getPreferencesService();
+    	return service.getBoolean(OPIBuilderPlugin.PLUGIN_ID, DISABLE_ADVANCED_GRAPHICS, false, null);
     }
     
     public static Integer getGUIRefreshCycle(){

@@ -7,6 +7,7 @@ import org.csstudio.opibuilder.widgets.figureparts.Bulb;
 import org.csstudio.opibuilder.widgets.figureparts.PolarPoint;
 import org.csstudio.opibuilder.widgets.figureparts.RoundScale;
 import org.csstudio.opibuilder.widgets.figureparts.RoundScaledRamp;
+import org.csstudio.opibuilder.widgets.util.GraphicsUtil;
 import org.csstudio.opibuilder.widgets.util.RotationUtil;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.AbstractLayout;
@@ -305,8 +306,8 @@ public class KnobFigure extends AbstractRoundRampedFigure {
 			graphics.setAntialias(SWT.ON);
 			Pattern pattern = null;
 			graphics.setBackgroundColor(thumbColor);
-			boolean support3D = true;
-			if(effect3D){
+			boolean support3D = GraphicsUtil.testPatternSupported(graphics);
+			if(support3D && effect3D){
 				try {
 					graphics.setBackgroundColor(thumbColor);
 					super.fillShape(graphics);
