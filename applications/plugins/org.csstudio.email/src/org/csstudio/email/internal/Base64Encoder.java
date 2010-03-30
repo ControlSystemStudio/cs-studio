@@ -11,31 +11,31 @@ import java.io.PrintStream;
  *  Base on code from http://www.wikihow.com/Encode-a-String-to-Base64-With-Java
  *  that did this by coying the whole input String several times, while this code
  *  handles streams, handling 3 chars at a time.
- * 
+ *
  *  @author Kay Kasemir
  */
 public class Base64Encoder
 {
     /** Line width of output */
     final private static int LINE_WIDTH = 75;
-    
+
     /** The ASCII used to encode 0...63 */
     private static final String base64code = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"; //$NON-NLS-1$
-    
+
     /** Where generated base64 output is written */
-    final private PrintStream out;
-    
+    final private PrintStream _out;
+
     /** Chars within a line to handle line breaks */
     private int charcount = 0;
-    
+
     /** Initialize
      *  @param out Output stream for generated Bas64 text
      */
     public Base64Encoder(final PrintStream out)
     {
-        this.out = out;
+        this._out = out;
     }
-    
+
     /** Encode input stream as Base64
      *  @param filename Name of file to encode
      *  @throws IOException on I/O error
@@ -53,7 +53,7 @@ public class Base64Encoder
             input.close();
         }
     }
-    
+
     /** Encode input stream as Base64
      *  @param input BufferedInputStream
      *  @throws IOException on I/O error
@@ -61,7 +61,7 @@ public class Base64Encoder
     public void encode(final BufferedInputStream input) throws IOException
     {
         int pad = 0;
-        
+
         // Read 3 input bytes...
         int ch1 = input.read();
         int ch2 = input.read();
@@ -93,15 +93,15 @@ public class Base64Encoder
             ch3 = input.read();
         }
     }
-    
+
     /** @param chr Char to append to output, handling line wraps */
     private void print(final char chr)
     {
-        out.print(chr);
+        _out.print(chr);
         if (++charcount <= LINE_WIDTH) {
             return;
         }
-        out.println();
+        _out.println();
         charcount = 0;
     }
 }
