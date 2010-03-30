@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
+/*
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.platform.internal.model;
@@ -26,6 +26,7 @@ import java.util.HashMap;
 import org.csstudio.platform.CSSPlatformPlugin;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.AbstractControlSystemItemFactory;
+import org.csstudio.platform.model.IControlSystemItem;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
@@ -36,9 +37,9 @@ import org.eclipse.core.runtime.Platform;
  * the extension point the <b>org.ccstudio.platform.controlSystemItemFactories</b>
  * extension point. For further details please refer to the documentation of
  * that extension point.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class ControlSystemItemFactoriesRegistry {
 	/**
@@ -75,13 +76,13 @@ public final class ControlSystemItemFactoriesRegistry {
 	private void lookup() {
 		_factories = new HashMap<String, FactoryDescriptor>();
 
-		IExtensionRegistry extReg = Platform.getExtensionRegistry();
-		String id = CSSPlatformPlugin.EXTPOINT_CONTROL_SYSTEM_ITEM_FACTORIES;
-		IConfigurationElement[] confElements = extReg
+		final IExtensionRegistry extReg = Platform.getExtensionRegistry();
+		final String id = CSSPlatformPlugin.EXTPOINT_CONTROL_SYSTEM_ITEM_FACTORIES;
+		final IConfigurationElement[] confElements = extReg
 				.getConfigurationElementsFor(id);
 
-		for (IConfigurationElement element : confElements) {
-			String typeId = element.getAttribute("typeId"); //$NON-NLS-1$
+		for (final IConfigurationElement element : confElements) {
+			final String typeId = element.getAttribute("typeId"); //$NON-NLS-1$
 
 			if (_factories.containsKey(typeId)) {
 				throw new IllegalArgumentException(
@@ -95,18 +96,18 @@ public final class ControlSystemItemFactoriesRegistry {
 	/**
 	 * Gets the control system item factory, which has been registrated for the
 	 * specified type id.
-	 * 
+	 *
 	 * @param typeId
 	 *            the type id
 	 * @return a factory, that is responsible for control system items of the
 	 *         specified type or null, if no corresponding factory was
 	 *         registered as plugin extension
 	 */
-	public AbstractControlSystemItemFactory getControlSystemItemFactory(
+	public AbstractControlSystemItemFactory<IControlSystemItem> getControlSystemItemFactory(
 			final String typeId) {
-		AbstractControlSystemItemFactory result = null;
+		AbstractControlSystemItemFactory<IControlSystemItem> result = null;
 
-		FactoryDescriptor descriptor = _factories.get(typeId);
+		final FactoryDescriptor descriptor = _factories.get(typeId);
 
 		if (descriptor != null) {
 			result = descriptor.getFactory();
@@ -119,25 +120,25 @@ public final class ControlSystemItemFactoriesRegistry {
 	/**
 	 * Descriptor for factory extension, which is used to implement the lazy
 	 * loading pattern that is recommended by the Eclipse plugin mechanism.
-	 * 
+	 *
 	 * @author Sven Wende
-	 * 
+	 *
 	 */
 	class FactoryDescriptor {
 		/**
 		 * Reference to a configuration element of the Eclipse plugin registry.
 		 */
-		private IConfigurationElement _configurationElement;
+		private final IConfigurationElement _configurationElement;
 
 		/**
 		 * A control system item factory, which is instantiated lazy.
 		 */
-		private AbstractControlSystemItemFactory _factory;
+		private AbstractControlSystemItemFactory<IControlSystemItem> _factory;
 
 		/**
 		 * Constructs a descriptor, which is based on the specified
 		 * configuration element.
-		 * 
+		 *
 		 * @param configurationElement
 		 *            the configuration element
 		 */
@@ -149,12 +150,14 @@ public final class ControlSystemItemFactoriesRegistry {
 		/**
 		 * @return The control system item factory.
 		 */
-		public AbstractControlSystemItemFactory getFactory() {
+		@SuppressWarnings("unchecked")
+        public AbstractControlSystemItemFactory<IControlSystemItem> getFactory() {
 			if (_factory == null) {
 				try {
-					_factory = (AbstractControlSystemItemFactory) _configurationElement
+					_factory =
+					    (AbstractControlSystemItemFactory<IControlSystemItem>) _configurationElement
 							.createExecutableExtension("class"); //$NON-NLS-1$
-				} catch (CoreException e) {
+				} catch (final CoreException e) {
 					CentralLogger.getInstance().error(this, e);
 				}
 			}
