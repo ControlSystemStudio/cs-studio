@@ -76,6 +76,10 @@ public abstract class AbstractQuickstartCompoundContributionItem extends
 					menuText = filePath[1];
 				}
 				currentCommandID = commandIDNo;
+			} else {
+				//Set an invalid command id that the menu item will not be
+				//displayed in the menu.
+				currentCommandID = "xx";
 			}
 		} else {
 			//Set an invalid command id that the menu item will not be
