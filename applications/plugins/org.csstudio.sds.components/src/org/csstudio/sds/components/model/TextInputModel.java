@@ -102,14 +102,14 @@ public final class TextInputModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addStringProperty(PROP_INPUT_TEXT, "Input Text", WidgetPropertyCategory.Behaviour, ""); //$NON-NLS-1$
-		addFontProperty(PROP_FONT, "Font", WidgetPropertyCategory.Display, ColorAndFontUtil.toFontString("Arial", 8)); //$NON-NLS-1$
-		addArrayOptionProperty(PROP_TEXT_ALIGNMENT, "Text Alignment", WidgetPropertyCategory.Display, TextAlignmentEnum.getDisplayNames(),
+		addStringProperty(PROP_INPUT_TEXT, "Input Text", WidgetPropertyCategory.BEHAVIOR, ""); //$NON-NLS-1$
+		addFontProperty(PROP_FONT, "Font", WidgetPropertyCategory.DISPLAY, ColorAndFontUtil.toFontString("Arial", 8)); //$NON-NLS-1$
+		addArrayOptionProperty(PROP_TEXT_ALIGNMENT, "Text Alignment", WidgetPropertyCategory.DISPLAY, TextAlignmentEnum.getDisplayNames(),
 				TextAlignmentEnum.CENTER.getIndex());
-		addBooleanProperty(PROP_TRANSPARENT, "Transparent Background", WidgetPropertyCategory.Display, true);
-		addArrayOptionProperty(PROP_VALUE_TYPE, "Value Type", WidgetPropertyCategory.Behaviour, TextTypeEnum.getDisplayNames(),
+		addBooleanProperty(PROP_TRANSPARENT, "Transparent Background", WidgetPropertyCategory.DISPLAY, true);
+		addArrayOptionProperty(PROP_VALUE_TYPE, "Value Type", WidgetPropertyCategory.BEHAVIOR, TextTypeEnum.getDisplayNames(),
 				TextTypeEnum.DOUBLE.getIndex());
-		addIntegerProperty(PROP_PRECISION, "Decimal places", WidgetPropertyCategory.Behaviour, 2, 0, 10);
+		addIntegerProperty(PROP_PRECISION, "Decimal places", WidgetPropertyCategory.BEHAVIOR, 2, 0, 10);
 	}
 
 	/**

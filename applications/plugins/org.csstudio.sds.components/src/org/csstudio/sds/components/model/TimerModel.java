@@ -85,8 +85,8 @@ public final class TimerModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addResourceProperty(PROP_SCRIPT, "Script", WidgetPropertyCategory.Behaviour, new Path(""), new String[] { "css-sdss" });
-		addIntegerProperty(PROP_DELAY, "Delay (in ms)", WidgetPropertyCategory.Behaviour, DEFAULT_DELAY, 0, Integer.MAX_VALUE);
+		addResourceProperty(PROP_SCRIPT, "Script", WidgetPropertyCategory.BEHAVIOR, new Path(""), new String[] { "css-sdss" });
+		addIntegerProperty(PROP_DELAY, "Delay (in ms)", WidgetPropertyCategory.BEHAVIOR, DEFAULT_DELAY, 0, Integer.MAX_VALUE);
 
 		// .. hide properties
 		hideProperty(PROP_ACTIONDATA,getTypeID());

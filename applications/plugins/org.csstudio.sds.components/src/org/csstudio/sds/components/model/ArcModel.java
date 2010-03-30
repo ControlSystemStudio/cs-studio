@@ -84,12 +84,12 @@ public final class ArcModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addBooleanProperty(PROP_TRANSPARENT, "Transparent Background", WidgetPropertyCategory.Display, true);
-		addIntegerProperty(PROP_STARTANGLE, "Start Angle", WidgetPropertyCategory.Display, 0, 0, 360);
-		addIntegerProperty(PROP_ANGLE, "Angle", WidgetPropertyCategory.Display, 90, 0, 360);
-		addIntegerProperty(PROP_LINEWIDTH, "Line Width", WidgetPropertyCategory.Display, 1);
-		addBooleanProperty(PROP_FILLED, "Filled", WidgetPropertyCategory.Display, false);
-		addColorProperty(PROP_FILLCOLOR, "Fill Color", WidgetPropertyCategory.Display, "#ff0000");
+		addBooleanProperty(PROP_TRANSPARENT, "Transparent Background", WidgetPropertyCategory.DISPLAY, true);
+		addIntegerProperty(PROP_STARTANGLE, "Start Angle", WidgetPropertyCategory.DISPLAY, 0, 0, 360);
+		addIntegerProperty(PROP_ANGLE, "Angle", WidgetPropertyCategory.DISPLAY, 90, 0, 360);
+		addIntegerProperty(PROP_LINEWIDTH, "Line Width", WidgetPropertyCategory.DISPLAY, 1);
+		addBooleanProperty(PROP_FILLED, "Filled", WidgetPropertyCategory.DISPLAY, false);
+		addColorProperty(PROP_FILLCOLOR, "Fill Color", WidgetPropertyCategory.DISPLAY, "#ff0000");
 	}
 
 	/**

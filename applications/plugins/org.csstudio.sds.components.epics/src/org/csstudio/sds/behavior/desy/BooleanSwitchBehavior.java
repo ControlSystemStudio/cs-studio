@@ -15,19 +15,16 @@ public class BooleanSwitchBehavior extends
 
 	@Override
 	protected void doInitialize(BooleanSwitchModel widget) {
-		// TODO Auto-generated method stub
 	}
 
 	@Override
 	protected void doProcessConnectionStateChange(BooleanSwitchModel widget,
 			ConnectionState connectionState) {
-		// TODO Auto-generated method stub
 	}
 
 	@Override
 	protected void doProcessMetaDataChange(BooleanSwitchModel widget,
 			MetaData metaData) {
-		// TODO Auto-generated method stub
 	}
 
 	@Override

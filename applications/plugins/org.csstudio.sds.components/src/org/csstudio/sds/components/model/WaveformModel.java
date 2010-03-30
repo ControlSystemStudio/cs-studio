@@ -91,7 +91,7 @@ public final class WaveformModel extends AbstractChartModel {
 
 		// The waveform data properties
 		for (int i = 0; i < numberOfDataSeries(); i++) {
-			addDoubleArrayProperty(dataPropertyId(i), "Data #" + (i + 1), WidgetPropertyCategory.Behaviour, new double[0]);
+			addDoubleArrayProperty(dataPropertyId(i), "Data #" + (i + 1), WidgetPropertyCategory.BEHAVIOR, new double[0]);
 		}
 	}
 

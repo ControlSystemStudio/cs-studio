@@ -66,7 +66,6 @@ public class TextInputBehavior extends AbstractDesyBehavior<TextInputModel> {
 
     @Override
     protected void doProcessMetaDataChange(TextInputModel widget, MetaData metaData) {
-        // TODO Auto-generated method stub
 
     }
 

@@ -85,22 +85,22 @@ public final class StripChartModel extends AbstractChartModel {
 			// The value property is a double property because the strip chart
 			// reads only individual values from the channel. They will be
 			// aggregated into an array by the edit part.
-			addDoubleProperty(valuePropertyId(i), "Value #" + (i + 1), WidgetPropertyCategory.Behaviour, 0.0);
+			addDoubleProperty(valuePropertyId(i), "Value #" + (i + 1), WidgetPropertyCategory.BEHAVIOR, 0.0);
 
 			// By default, enable the plot for the first value, and disable
 			// all other plots:
 			boolean enableByDefault = (i == 0);
-			addBooleanProperty(enablePlotPropertyId(i), "Enable plot #" + (i + 1), WidgetPropertyCategory.Display, enableByDefault);
+			addBooleanProperty(enablePlotPropertyId(i), "Enable plot #" + (i + 1), WidgetPropertyCategory.DISPLAY, enableByDefault);
 		}
 
 		// The minimum range (size) of the x-axis is one second; the maximum is
 		// practically unbounded.
-		addDoubleProperty(PROP_X_AXIS_TIMESPAN, "X-axis timespan (seconds)", WidgetPropertyCategory.Behaviour, 300.0, 1.0, Double.MAX_VALUE);
+		addDoubleProperty(PROP_X_AXIS_TIMESPAN, "X-axis timespan (seconds)", WidgetPropertyCategory.BEHAVIOR, 300.0, 1.0, Double.MAX_VALUE);
 
 		// The minimum update interval is 100 milliseconds. Shorter update
 		// intervals may cause problems because the widget redraws after every
 		// update. The maximum interval is 60 seconds.
-		addDoubleProperty(PROP_UPDATE_INTERVAL, "Update interval (seconds)", WidgetPropertyCategory.Behaviour, 1.0, 0.1, 60.0);
+		addDoubleProperty(PROP_UPDATE_INTERVAL, "Update interval (seconds)", WidgetPropertyCategory.BEHAVIOR, 1.0, 0.1, 60.0);
 	}
 
 	/**

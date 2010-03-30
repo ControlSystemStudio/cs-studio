@@ -75,9 +75,9 @@ public final class TriangleModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addDoubleProperty(PROP_FILL, "Value", WidgetPropertyCategory.Behaviour, 50, 0.0, 100.0);
-		addBooleanProperty(PROP_TRANSPARENT, "Transparent Background", WidgetPropertyCategory.Display, false);
-		addDoubleProperty(PROP_ROTATION, "Rotation Angle", WidgetPropertyCategory.Display, 0, 0, 360);
+		addDoubleProperty(PROP_FILL, "Value", WidgetPropertyCategory.BEHAVIOR, 50, 0.0, 100.0);
+		addBooleanProperty(PROP_TRANSPARENT, "Transparent Background", WidgetPropertyCategory.DISPLAY, false);
+		addDoubleProperty(PROP_ROTATION, "Rotation Angle", WidgetPropertyCategory.DISPLAY, 0, 0, 360);
 	}
 
 	/**

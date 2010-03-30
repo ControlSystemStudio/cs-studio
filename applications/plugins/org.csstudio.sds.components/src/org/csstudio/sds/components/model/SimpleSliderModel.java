@@ -109,18 +109,18 @@ public final class SimpleSliderModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addDoubleProperty(PROP_VALUE, "Slider Value", WidgetPropertyCategory.Behaviour, 50.0);
-		addBooleanProperty(PROP_SHOW_VALUE_AS_TEXT, "Show Value As Text", WidgetPropertyCategory.Display, false);
-		addDoubleProperty(PROP_MIN, "Min", WidgetPropertyCategory.Behaviour, 0.0);
-		addDoubleProperty(PROP_MAX, "Max", WidgetPropertyCategory.Behaviour, 100.0);
+		addDoubleProperty(PROP_VALUE, "Slider Value", WidgetPropertyCategory.BEHAVIOR, 50.0);
+		addBooleanProperty(PROP_SHOW_VALUE_AS_TEXT, "Show Value As Text", WidgetPropertyCategory.DISPLAY, false);
+		addDoubleProperty(PROP_MIN, "Min", WidgetPropertyCategory.BEHAVIOR, 0.0);
+		addDoubleProperty(PROP_MAX, "Max", WidgetPropertyCategory.BEHAVIOR, 100.0);
 		// The increment is limited to the range 0.001..1000 because the
 		// scrollbar control used internally by the widget causes problems
 		// if the value range of the scrollbar gets too large, probably because
 		// it uses integer numbers internally.
-		addDoubleProperty(PROP_INCREMENT, "Increment", WidgetPropertyCategory.Behaviour, 1.0, 0.001, 1000.0);
-		addBooleanProperty(PROP_ORIENTATION, "Horizontal orientation", WidgetPropertyCategory.Display, true);
-		addIntegerProperty(PROP_PRECISION, "Decimal places", WidgetPropertyCategory.Behaviour, 2, 0, 5);
-		addIntegerProperty(PROP_SLIDER_WIDTH, "Slider wide", WidgetPropertyCategory.Display, 5, 0, Integer.MAX_VALUE);
+		addDoubleProperty(PROP_INCREMENT, "Increment", WidgetPropertyCategory.BEHAVIOR, 1.0, 0.001, 1000.0);
+		addBooleanProperty(PROP_ORIENTATION, "Horizontal orientation", WidgetPropertyCategory.DISPLAY, true);
+		addIntegerProperty(PROP_PRECISION, "Decimal places", WidgetPropertyCategory.BEHAVIOR, 2, 0, 5);
+		addIntegerProperty(PROP_SLIDER_WIDTH, "Slider wide", WidgetPropertyCategory.DISPLAY, 5, 0, Integer.MAX_VALUE);
 
 		setColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND, "#ffffff");
 	}

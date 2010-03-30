@@ -135,25 +135,25 @@ public abstract class AbstractChartModel extends AbstractWidgetModel {
 	// CheckStyle won't believe it, but there is nothing wrong here.
 	@Override
 	protected void configureProperties() {
-		addArrayOptionProperty(PROP_SHOW_AXES, "Show axes", WidgetPropertyCategory.Display, AXES_OPTIONS, 3);
-		addArrayOptionProperty(PROP_SHOW_GRID_LINES, "Grid lines", WidgetPropertyCategory.Display, AXES_OPTIONS, 0);
-		addBooleanProperty(PROP_LINE_CHART, "Line chart", WidgetPropertyCategory.Display, false);
+		addArrayOptionProperty(PROP_SHOW_AXES, "Show axes", WidgetPropertyCategory.DISPLAY, AXES_OPTIONS, 3);
+		addArrayOptionProperty(PROP_SHOW_GRID_LINES, "Grid lines", WidgetPropertyCategory.DISPLAY, AXES_OPTIONS, 0);
+		addBooleanProperty(PROP_LINE_CHART, "Line chart", WidgetPropertyCategory.DISPLAY, false);
 		for (int i = 0; i < numberOfDataSeries(); i++) {
-			addColorProperty(plotColorPropertyId(i), "Plot color #" + (i + 1), WidgetPropertyCategory.Display, "#000000");
+			addColorProperty(plotColorPropertyId(i), "Plot color #" + (i + 1), WidgetPropertyCategory.DISPLAY, "#000000");
 		}
-		addColorProperty(PROP_GRID_LINE_COLOR, "Grid line color", WidgetPropertyCategory.Display, "#D2D2D2");
-		addDoubleProperty(PROP_MIN, "Minimum", WidgetPropertyCategory.Display, -100.0);
-		addDoubleProperty(PROP_MAX, "Maximum", WidgetPropertyCategory.Display, 100.0);
-		addBooleanProperty(PROP_AUTOSCALE, "Automatic scaling", WidgetPropertyCategory.Display, false);
-		addBooleanProperty(PROP_LABELED_TICKS, "Labeled ticks", WidgetPropertyCategory.Display, true);
-		addIntegerProperty(PROP_PLOT_LINE_WIDTH, "Graph line width", WidgetPropertyCategory.Display, 1, 1, 100);
-		addBooleanProperty(PROP_TRANSPARENT, "Transparent background", WidgetPropertyCategory.Display, false);
-		addArrayOptionProperty(PROP_DATA_POINT_DRAWING_STYLE, "Data point drawing style", WidgetPropertyCategory.Display, DRAWING_STYLE_OPTIONS,
+		addColorProperty(PROP_GRID_LINE_COLOR, "Grid line color", WidgetPropertyCategory.DISPLAY, "#D2D2D2");
+		addDoubleProperty(PROP_MIN, "Minimum", WidgetPropertyCategory.DISPLAY, -100.0);
+		addDoubleProperty(PROP_MAX, "Maximum", WidgetPropertyCategory.DISPLAY, 100.0);
+		addBooleanProperty(PROP_AUTOSCALE, "Automatic scaling", WidgetPropertyCategory.DISPLAY, false);
+		addBooleanProperty(PROP_LABELED_TICKS, "Labeled ticks", WidgetPropertyCategory.DISPLAY, true);
+		addIntegerProperty(PROP_PLOT_LINE_WIDTH, "Graph line width", WidgetPropertyCategory.DISPLAY, 1, 1, 100);
+		addBooleanProperty(PROP_TRANSPARENT, "Transparent background", WidgetPropertyCategory.DISPLAY, false);
+		addArrayOptionProperty(PROP_DATA_POINT_DRAWING_STYLE, "Data point drawing style", WidgetPropertyCategory.DISPLAY, DRAWING_STYLE_OPTIONS,
 				2);
-		addArrayOptionProperty(PROP_Y_AXIS_SCALING, "Y-axis scaling", WidgetPropertyCategory.Display, AXIS_SCALING_OPTIONS, 0);
-		addStringProperty(PROP_LABEL, "Label", WidgetPropertyCategory.Display, "");
-		addStringProperty(PROP_X_AXIS_LABEL, "X-axis label", WidgetPropertyCategory.Display, "");
-		addStringProperty(PROP_Y_AXIS_LABEL, "Y-axis label", WidgetPropertyCategory.Display, "");
+		addArrayOptionProperty(PROP_Y_AXIS_SCALING, "Y-axis scaling", WidgetPropertyCategory.DISPLAY, AXIS_SCALING_OPTIONS, 0);
+		addStringProperty(PROP_LABEL, "Label", WidgetPropertyCategory.DISPLAY, "");
+		addStringProperty(PROP_X_AXIS_LABEL, "X-axis label", WidgetPropertyCategory.DISPLAY, "");
+		addStringProperty(PROP_Y_AXIS_LABEL, "Y-axis label", WidgetPropertyCategory.DISPLAY, "");
 	}
 
 	/**

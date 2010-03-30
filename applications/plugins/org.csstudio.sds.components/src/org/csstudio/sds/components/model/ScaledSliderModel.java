@@ -57,18 +57,18 @@ public class ScaledSliderModel extends AbstractMarkedWidgetModel {
 	@Override
 	protected void configureProperties() {
 		super.configureProperties();
-		addColorProperty(PROP_FILL_COLOR, "Fill Color", WidgetPropertyCategory.Display, DEFAULT_FILL_COLOR);
+		addColorProperty(PROP_FILL_COLOR, "Fill Color", WidgetPropertyCategory.DISPLAY, DEFAULT_FILL_COLOR);
 
-		addBooleanProperty(PROP_EFFECT3D, "3D Effect", WidgetPropertyCategory.Display, true);
+		addBooleanProperty(PROP_EFFECT3D, "3D Effect", WidgetPropertyCategory.DISPLAY, true);
 
-		addBooleanProperty(PROP_HORIZONTAL, "Horizontal", WidgetPropertyCategory.Display, false);
+		addBooleanProperty(PROP_HORIZONTAL, "Horizontal", WidgetPropertyCategory.DISPLAY, false);
 
-		addColorProperty(PROP_FILLBACKGROUND_COLOR, "Color Fillbackground", WidgetPropertyCategory.Display,
+		addColorProperty(PROP_FILLBACKGROUND_COLOR, "Color Fillbackground", WidgetPropertyCategory.DISPLAY,
 				DEFAULT_FILLBACKGROUND_COLOR);
 
-		addColorProperty(PROP_THUMB_COLOR, "Thumb Color", WidgetPropertyCategory.Display, DEFAULT_THUMB_COLOR);
+		addColorProperty(PROP_THUMB_COLOR, "Thumb Color", WidgetPropertyCategory.DISPLAY, DEFAULT_THUMB_COLOR);
 
-		addDoubleProperty(PROP_INCREMENT, "Increment", WidgetPropertyCategory.Behaviour, 1.0);
+		addDoubleProperty(PROP_INCREMENT, "Increment", WidgetPropertyCategory.BEHAVIOR, 1.0);
 
 		setColor(PROP_LO_COLOR, "#FF8000");
 		setColor(PROP_HI_COLOR, "#FF8000");

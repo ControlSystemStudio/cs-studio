@@ -17,13 +17,13 @@ public class XYGraphModel extends AbstractWidgetModel {
 
 	@Override
 	protected void configureProperties() {
-		addBooleanProperty(PROP_SHOW_TOOLBAR, "Show Toolbar", WidgetPropertyCategory.Display, false);
-		addBooleanProperty(PROP_TRANSPARENT, "Transparent", WidgetPropertyCategory.Display, true);
-		addBooleanProperty(PROP_SHOW_TITLE, "Show Title", WidgetPropertyCategory.Display, false);
-		addStringProperty(PROP_TITLE, "Title", WidgetPropertyCategory.Display, "");
-		addColorProperty(PROP_TITLE_COLOR, "Title Color", WidgetPropertyCategory.Display, "#000000");
-		addFontProperty(PROP_TITLE_FONT, "Title Font", WidgetPropertyCategory.Display, ColorAndFontUtil.toFontString("Arial", 8));
-		addBooleanProperty(PROP_SHOW_LEGEND, "Show Legend", WidgetPropertyCategory.Display, false);
+		addBooleanProperty(PROP_SHOW_TOOLBAR, "Show Toolbar", WidgetPropertyCategory.DISPLAY, false);
+		addBooleanProperty(PROP_TRANSPARENT, "Transparent", WidgetPropertyCategory.DISPLAY, true);
+		addBooleanProperty(PROP_SHOW_TITLE, "Show Title", WidgetPropertyCategory.DISPLAY, false);
+		addStringProperty(PROP_TITLE, "Title", WidgetPropertyCategory.DISPLAY, "");
+		addColorProperty(PROP_TITLE_COLOR, "Title Color", WidgetPropertyCategory.DISPLAY, "#000000");
+		addFontProperty(PROP_TITLE_FONT, "Title Font", WidgetPropertyCategory.DISPLAY, ColorAndFontUtil.toFontString("Arial", 8));
+		addBooleanProperty(PROP_SHOW_LEGEND, "Show Legend", WidgetPropertyCategory.DISPLAY, false);
 	}
 
 	@Override

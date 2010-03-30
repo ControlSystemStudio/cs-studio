@@ -87,42 +87,42 @@ public final class MeterModel extends AbstractWidgetModel {
 	@Override
 	protected void configureProperties() {
 		// add the necessary properties for the meter
-		addIntegerProperty(PROP_ANGLE, "Display Angle", WidgetPropertyCategory.Display, 90, 1, 359);
-		addIntegerProperty(PROP_INNANGLE, "Inner Angle", WidgetPropertyCategory.Display, 80, 1, 359);
-		addColorProperty(PROP_NEEDLECOLOR, "Needle Color", WidgetPropertyCategory.Display, "#00ff00");
-		addDoubleProperty(PROP_RADIUS, "Visible Radius", WidgetPropertyCategory.Display, 0.15, 0.0, 1.0);
-		addDoubleProperty(PROP_TEXTRADIUS, "Scale Text Radius", WidgetPropertyCategory.Display, 0.25, 0.0, 1.0);
-		addBooleanProperty(PROP_TRANSPARENT, "Transparent Background", WidgetPropertyCategory.Display, false);
+		addIntegerProperty(PROP_ANGLE, "Display Angle", WidgetPropertyCategory.DISPLAY, 90, 1, 359);
+		addIntegerProperty(PROP_INNANGLE, "Inner Angle", WidgetPropertyCategory.DISPLAY, 80, 1, 359);
+		addColorProperty(PROP_NEEDLECOLOR, "Needle Color", WidgetPropertyCategory.DISPLAY, "#00ff00");
+		addDoubleProperty(PROP_RADIUS, "Visible Radius", WidgetPropertyCategory.DISPLAY, 0.15, 0.0, 1.0);
+		addDoubleProperty(PROP_TEXTRADIUS, "Scale Text Radius", WidgetPropertyCategory.DISPLAY, 0.25, 0.0, 1.0);
+		addBooleanProperty(PROP_TRANSPARENT, "Transparent Background", WidgetPropertyCategory.DISPLAY, false);
 
-		addDoubleProperty(PROP_SCALERADIUS, "Scale Radius", WidgetPropertyCategory.Display, 0.25, 0.0, 1.0);
-		addDoubleProperty(PROP_MINSTEP, "Minor Scale Step", WidgetPropertyCategory.Behaviour, 1.0);
-		addDoubleProperty(PROP_MAJSTEP, "Major Scale Step", WidgetPropertyCategory.Behaviour, 5.0);
-		addColorProperty(PROP_SCALECOLOR, "Scale Color", WidgetPropertyCategory.Display, "#000000");
-		addIntegerProperty(PROP_SCALEWIDTH, "Scale Width", WidgetPropertyCategory.Display, 1);
+		addDoubleProperty(PROP_SCALERADIUS, "Scale Radius", WidgetPropertyCategory.DISPLAY, 0.25, 0.0, 1.0);
+		addDoubleProperty(PROP_MINSTEP, "Minor Scale Step", WidgetPropertyCategory.BEHAVIOR, 1.0);
+		addDoubleProperty(PROP_MAJSTEP, "Major Scale Step", WidgetPropertyCategory.BEHAVIOR, 5.0);
+		addColorProperty(PROP_SCALECOLOR, "Scale Color", WidgetPropertyCategory.DISPLAY, "#000000");
+		addIntegerProperty(PROP_SCALEWIDTH, "Scale Width", WidgetPropertyCategory.DISPLAY, 1);
 
-		addDoubleProperty(PROP_MINVAL, "Minimum Value", WidgetPropertyCategory.Behaviour, 0.0);
-		addDoubleProperty(PROP_MAXVAL, "Maximum Value", WidgetPropertyCategory.Behaviour, 10.0);
-		addDoubleProperty(PROP_VALUE, "Value", WidgetPropertyCategory.Behaviour, 0.0);
+		addDoubleProperty(PROP_MINVAL, "Minimum Value", WidgetPropertyCategory.BEHAVIOR, 0.0);
+		addDoubleProperty(PROP_MAXVAL, "Maximum Value", WidgetPropertyCategory.BEHAVIOR, 10.0);
+		addDoubleProperty(PROP_VALUE, "Value", WidgetPropertyCategory.BEHAVIOR, 0.0);
 
 		// background colors
-		addColorProperty(PROP_MCOLOR, "Color M", WidgetPropertyCategory.Display, "#00ff00");
-		addColorProperty(PROP_LOLOCOLOR, "Color LOLO", WidgetPropertyCategory.Display, "#ff0000");
-		addColorProperty(PROP_LOCOLOR, "Color LO", WidgetPropertyCategory.Display, "#ff5151");
-		addColorProperty(PROP_HICOLOR, "Color HI", WidgetPropertyCategory.Display, "#ff5151");
-		addColorProperty(PROP_HIHICOLOR, "Color HIHI", WidgetPropertyCategory.Display, "#ff0000");
+		addColorProperty(PROP_MCOLOR, "Color M", WidgetPropertyCategory.DISPLAY, "#00ff00");
+		addColorProperty(PROP_LOLOCOLOR, "Color LOLO", WidgetPropertyCategory.DISPLAY, "#ff0000");
+		addColorProperty(PROP_LOCOLOR, "Color LO", WidgetPropertyCategory.DISPLAY, "#ff5151");
+		addColorProperty(PROP_HICOLOR, "Color HI", WidgetPropertyCategory.DISPLAY, "#ff5151");
+		addColorProperty(PROP_HIHICOLOR, "Color HIHI", WidgetPropertyCategory.DISPLAY, "#ff0000");
 
 		// level boundaries
-		addDoubleProperty(PROP_MBOUND, "Boundary M", WidgetPropertyCategory.Behaviour, 6.0);
-		addDoubleProperty(PROP_LOLOBOUND, "Boundary LOLO", WidgetPropertyCategory.Behaviour, 2.0);
-		addDoubleProperty(PROP_LOBOUND, "Boundary LO", WidgetPropertyCategory.Behaviour, 4.0);
-		addDoubleProperty(PROP_HIBOUND, "Boundary HI", WidgetPropertyCategory.Behaviour, 8.0);
-		addDoubleProperty(PROP_HIHIBOUND, "Boundary HIHI", WidgetPropertyCategory.Behaviour, 10.0);
+		addDoubleProperty(PROP_MBOUND, "Boundary M", WidgetPropertyCategory.BEHAVIOR, 6.0);
+		addDoubleProperty(PROP_LOLOBOUND, "Boundary LOLO", WidgetPropertyCategory.BEHAVIOR, 2.0);
+		addDoubleProperty(PROP_LOBOUND, "Boundary LO", WidgetPropertyCategory.BEHAVIOR, 4.0);
+		addDoubleProperty(PROP_HIBOUND, "Boundary HI", WidgetPropertyCategory.BEHAVIOR, 8.0);
+		addDoubleProperty(PROP_HIHIBOUND, "Boundary HIHI", WidgetPropertyCategory.BEHAVIOR, 10.0);
 
 		// font properties
-		addFontProperty(PROP_VALFONT, "Values Font", WidgetPropertyCategory.Display, ColorAndFontUtil.toFontString("Arial", 8));
-		addFontProperty(PROP_CHANFONT, "Channel Font", WidgetPropertyCategory.Display, ColorAndFontUtil.toFontString("Arial", 8));
+		addFontProperty(PROP_VALFONT, "Values Font", WidgetPropertyCategory.DISPLAY, ColorAndFontUtil.toFontString("Arial", 8));
+		addFontProperty(PROP_CHANFONT, "Channel Font", WidgetPropertyCategory.DISPLAY, ColorAndFontUtil.toFontString("Arial", 8));
 		// precision
-		addIntegerProperty(PROP_PRECISION, "Decimal places", WidgetPropertyCategory.Behaviour, 2, 0, 5);
+		addIntegerProperty(PROP_PRECISION, "Decimal places", WidgetPropertyCategory.BEHAVIOR, 2, 0, 5);
 	}
 
 	/**

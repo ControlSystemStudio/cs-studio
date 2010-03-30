@@ -59,13 +59,13 @@ public final class SwitchModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addBooleanProperty(PROP_TRANSPARENT, "Transparent Background", WidgetPropertyCategory.Display, true);
+		addBooleanProperty(PROP_TRANSPARENT, "Transparent Background", WidgetPropertyCategory.DISPLAY, true);
 		if (SwitchPlugins.names.length > 0) {
-			addArrayOptionProperty(PROP_TYPE, "Switch Type", WidgetPropertyCategory.Behaviour, SwitchPlugins.names, 0);
+			addArrayOptionProperty(PROP_TYPE, "Switch Type", WidgetPropertyCategory.BEHAVIOR, SwitchPlugins.names, 0);
 		}
-		addIntegerProperty(PROP_STATE, "Switch State", WidgetPropertyCategory.Display, 0);
-		addIntegerProperty(PROP_ROTATE, "Rotation", WidgetPropertyCategory.Display, 0, 0, 360);
-		addIntegerProperty(PROP_LINEWIDTH, "Line Width", WidgetPropertyCategory.Display, 4);
+		addIntegerProperty(PROP_STATE, "Switch State", WidgetPropertyCategory.DISPLAY, 0);
+		addIntegerProperty(PROP_ROTATE, "Rotation", WidgetPropertyCategory.DISPLAY, 0, 0, 360);
+		addIntegerProperty(PROP_LINEWIDTH, "Line Width", WidgetPropertyCategory.DISPLAY, 4);
 	}
 
 	/**

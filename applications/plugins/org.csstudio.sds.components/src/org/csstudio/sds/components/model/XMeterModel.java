@@ -38,9 +38,9 @@ public class XMeterModel extends AbstractMarkedWidgetModel {
 	@Override
 	protected void configureProperties() {
 		super.configureProperties();
-		addColorProperty(PROP_NEEDLE_COLOR, "Needle Color", WidgetPropertyCategory.Display, DEFAULT_NEEDLE_COLOR);
+		addColorProperty(PROP_NEEDLE_COLOR, "Needle Color", WidgetPropertyCategory.DISPLAY, DEFAULT_NEEDLE_COLOR);
 
-		addBooleanProperty(PROP_RAMP_GRADIENT, "Ramp Gradient", WidgetPropertyCategory.Display, true);
+		addBooleanProperty(PROP_RAMP_GRADIENT, "Ramp Gradient", WidgetPropertyCategory.DISPLAY, true);
 
 		setPropertyDescription(PROP_SHOW_MARKERS, "Show Ramp");
 		setPropertyValue(PROP_TRANSPARENT, false);

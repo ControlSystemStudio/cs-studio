@@ -49,22 +49,22 @@ public abstract class AbstractScaledWidgetModel extends AbstractWidgetModel {
 	@Override
 	protected void configureProperties() {
 
-		addBooleanProperty(PROP_TRANSPARENT, "Transparent Background", WidgetPropertyCategory.Display, true);
+		addBooleanProperty(PROP_TRANSPARENT, "Transparent Background", WidgetPropertyCategory.DISPLAY, true);
 
-		addDoubleProperty(PROP_VALUE, "Value", WidgetPropertyCategory.Behaviour, DEFAULT_VALUE);
+		addDoubleProperty(PROP_VALUE, "Value", WidgetPropertyCategory.BEHAVIOR, DEFAULT_VALUE);
 
-		addDoubleProperty(PROP_MIN, "Minimum", WidgetPropertyCategory.Behaviour, DEFAULT_MIN);
+		addDoubleProperty(PROP_MIN, "Minimum", WidgetPropertyCategory.BEHAVIOR, DEFAULT_MIN);
 
-		addDoubleProperty(PROP_MAX, "Maximum", WidgetPropertyCategory.Behaviour, DEFAULT_MAX);
+		addDoubleProperty(PROP_MAX, "Maximum", WidgetPropertyCategory.BEHAVIOR, DEFAULT_MAX);
 
-		addDoubleProperty(PROP_MAJOR_TICK_STEP_HINT, "Major Tick Step Hint", WidgetPropertyCategory.Display, DEFAULT_MAJOR_TICK_STEP_HINT, 1,
+		addDoubleProperty(PROP_MAJOR_TICK_STEP_HINT, "Major Tick Step Hint", WidgetPropertyCategory.DISPLAY, DEFAULT_MAJOR_TICK_STEP_HINT, 1,
 				1000);
 
-		addBooleanProperty(PROP_SHOW_MINOR_TICKS, "Show Minor Ticks", WidgetPropertyCategory.Display, true);
+		addBooleanProperty(PROP_SHOW_MINOR_TICKS, "Show Minor Ticks", WidgetPropertyCategory.DISPLAY, true);
 
-		addBooleanProperty(PROP_SHOW_SCALE, "Show Scale", WidgetPropertyCategory.Display, true);
+		addBooleanProperty(PROP_SHOW_SCALE, "Show Scale", WidgetPropertyCategory.DISPLAY, true);
 
-		addBooleanProperty(PROP_LOG_SCALE, "Log Scale", WidgetPropertyCategory.Display, false);
+		addBooleanProperty(PROP_LOG_SCALE, "Log Scale", WidgetPropertyCategory.DISPLAY, false);
 
 	}
 

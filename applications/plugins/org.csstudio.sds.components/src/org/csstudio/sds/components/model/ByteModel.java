@@ -86,7 +86,7 @@ public class ByteModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addBooleanProperty(PROP_ORIENTATION, "Horizontal Orientation", WidgetPropertyCategory.Behaviour,
+		addBooleanProperty(PROP_ORIENTATION, "Horizontal Orientation", WidgetPropertyCategory.BEHAVIOR,
 				DEFAULT_ORIENTATION_HORIZONTAL);
 	}
 

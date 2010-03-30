@@ -54,19 +54,16 @@ public class MenuButtonBehavior extends AbstractDesyBehavior<MenuButtonModel> {
     @Override
     protected void doProcessConnectionStateChange(MenuButtonModel widget,
             ConnectionState connectionState) {
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     protected void doProcessMetaDataChange(MenuButtonModel widget, MetaData metaData) {
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     protected void doProcessValueChange(MenuButtonModel model, AnyData anyData) {
-        // TODO Auto-generated method stub
 
     }
 

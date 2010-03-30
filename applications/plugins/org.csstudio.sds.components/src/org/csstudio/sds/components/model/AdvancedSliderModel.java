@@ -94,15 +94,15 @@ public final class AdvancedSliderModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addDoubleProperty(PROP_VALUE, "Slider Value", WidgetPropertyCategory.Behaviour, 50.0);
-		addDoubleProperty(PROP_MIN, "Min", WidgetPropertyCategory.Behaviour, 0.0);
-		addDoubleProperty(PROP_MAX, "Max", WidgetPropertyCategory.Behaviour, 100.0);
+		addDoubleProperty(PROP_VALUE, "Slider Value", WidgetPropertyCategory.BEHAVIOR, 50.0);
+		addDoubleProperty(PROP_MIN, "Min", WidgetPropertyCategory.BEHAVIOR, 0.0);
+		addDoubleProperty(PROP_MAX, "Max", WidgetPropertyCategory.BEHAVIOR, 100.0);
 		// The increment is limited to the range 0.001..1000 because the
 		// scrollbar control used internally by the widget causes problems
 		// if the value range of the scrollbar gets too large, probably because
 		// it uses integer numbers internally.
-		addDoubleProperty(PROP_INCREMENT, "Increment", WidgetPropertyCategory.Behaviour, 1, 0.001, 1000.0);
-		addArrayOptionProperty(PROP_ORIENTATION, "Orientation", WidgetPropertyCategory.Display, new String[] { "Horizontal", "Vertical" }, 0);
+		addDoubleProperty(PROP_INCREMENT, "Increment", WidgetPropertyCategory.BEHAVIOR, 1, 0.001, 1000.0);
+		addArrayOptionProperty(PROP_ORIENTATION, "Orientation", WidgetPropertyCategory.DISPLAY, new String[] { "Horizontal", "Vertical" }, 0);
 	}
 
 	/**

@@ -54,15 +54,15 @@ public class ThermometerModel extends AbstractMarkedWidgetModel {
 	@Override
 	protected void configureProperties() {
 		super.configureProperties();
-		addColorProperty(PROP_FILL_COLOR, "Fill Color", WidgetPropertyCategory.Display, DEFAULT_FILL_COLOR);
+		addColorProperty(PROP_FILL_COLOR, "Fill Color", WidgetPropertyCategory.DISPLAY, DEFAULT_FILL_COLOR);
 
-		addBooleanProperty(PROP_SHOW_BULB, "Show Bulb", WidgetPropertyCategory.Display, true);
+		addBooleanProperty(PROP_SHOW_BULB, "Show Bulb", WidgetPropertyCategory.DISPLAY, true);
 
-		addBooleanProperty(PROP_FAHRENHEIT, "Fahrenheit?", WidgetPropertyCategory.Display, false);
+		addBooleanProperty(PROP_FAHRENHEIT, "Fahrenheit?", WidgetPropertyCategory.DISPLAY, false);
 
-		addColorProperty(PROP_FILLBACKGROUND_COLOR, "Color Fillbackground", WidgetPropertyCategory.Display, DEFAULT_FILLBACKGROUND_COLOR);
+		addColorProperty(PROP_FILLBACKGROUND_COLOR, "Color Fillbackground", WidgetPropertyCategory.DISPLAY, DEFAULT_FILLBACKGROUND_COLOR);
 
-		addBooleanProperty(PROP_EFFECT3D, "3D Effect", WidgetPropertyCategory.Display, true);
+		addBooleanProperty(PROP_EFFECT3D, "3D Effect", WidgetPropertyCategory.DISPLAY, true);
 
 		setColor(PROP_LO_COLOR, "#FF8000");
 		setColor(PROP_HI_COLOR, "#FF8000");

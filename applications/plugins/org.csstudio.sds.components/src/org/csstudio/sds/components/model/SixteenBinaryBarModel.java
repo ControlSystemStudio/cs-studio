@@ -68,22 +68,22 @@ public class SixteenBinaryBarModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addIntegerProperty(PROP_VALUE, "Value", WidgetPropertyCategory.Behaviour, 0);
-		addBooleanProperty(PROP_HORIZONTAL, "Horizontal Orientation", WidgetPropertyCategory.Display, DEFAULT_ORIENTATION_HORIZONTAL);
-		addBooleanProperty(PROP_SHOW_LABELS, "Show labels", WidgetPropertyCategory.Display, false);
-		addFontProperty(PROP_LABEL_FONT, "Label fonts", WidgetPropertyCategory.Display, ColorAndFontUtil.toFontString("Arial", 9));
-		addIntegerProperty(PROP_INTERNAL_FRAME_THICKNESS, "Internal frame thickness", WidgetPropertyCategory.Display, 1);
+		addIntegerProperty(PROP_VALUE, "Value", WidgetPropertyCategory.BEHAVIOR, 0);
+		addBooleanProperty(PROP_HORIZONTAL, "Horizontal Orientation", WidgetPropertyCategory.DISPLAY, DEFAULT_ORIENTATION_HORIZONTAL);
+		addBooleanProperty(PROP_SHOW_LABELS, "Show labels", WidgetPropertyCategory.DISPLAY, false);
+		addFontProperty(PROP_LABEL_FONT, "Label fonts", WidgetPropertyCategory.DISPLAY, ColorAndFontUtil.toFontString("Arial", 9));
+		addIntegerProperty(PROP_INTERNAL_FRAME_THICKNESS, "Internal frame thickness", WidgetPropertyCategory.DISPLAY, 1);
 
 		// The maximum bit range that can be handled by this widget is 0..31.
 		// More than 32 bits are not possible because the value property is an
 		// integer property.
-		addIntegerProperty(PROP_BITS_FROM, "Bit range (from)", WidgetPropertyCategory.Behaviour, 0, 0, 31);
-		addIntegerProperty(PROP_BITS_TO, "Bit range (to)", WidgetPropertyCategory.Behaviour, 15, 0, 31);
+		addIntegerProperty(PROP_BITS_FROM, "Bit range (from)", WidgetPropertyCategory.BEHAVIOR, 0, 0, 31);
+		addIntegerProperty(PROP_BITS_TO, "Bit range (to)", WidgetPropertyCategory.BEHAVIOR, 15, 0, 31);
 
-		addColorProperty(PROP_ON_COLOR, "On color", WidgetPropertyCategory.Display, "#00ff00");
-		addColorProperty(PROP_OFF_COLOR, "Off color", WidgetPropertyCategory.Display, "#c0c0c0");
-		addColorProperty(PROP_LABEL_COLOR, "Label text color", WidgetPropertyCategory.Display, "#000000");
-		addColorProperty(PROP_INTERNAL_FRAME_COLOR, "Internal Frame Color", WidgetPropertyCategory.Display, "#000000");
+		addColorProperty(PROP_ON_COLOR, "On color", WidgetPropertyCategory.DISPLAY, "#00ff00");
+		addColorProperty(PROP_OFF_COLOR, "Off color", WidgetPropertyCategory.DISPLAY, "#c0c0c0");
+		addColorProperty(PROP_LABEL_COLOR, "Label text color", WidgetPropertyCategory.DISPLAY, "#000000");
+		addColorProperty(PROP_INTERNAL_FRAME_COLOR, "Internal Frame Color", WidgetPropertyCategory.DISPLAY, "#000000");
 
 	}
 
