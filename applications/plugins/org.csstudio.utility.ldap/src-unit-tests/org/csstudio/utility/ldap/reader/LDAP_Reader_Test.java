@@ -25,10 +25,6 @@ import static org.junit.Assert.fail;
 import junit.framework.Assert;
 
 import org.csstudio.utility.ldap.LdapUtils;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -36,34 +32,6 @@ import org.junit.Test;
  *
  */
 public class LDAP_Reader_Test {
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@Before
-	public void setUp() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
-	}
 
 	/**
 	 * Test method for {@link org.csstudio.utility.ldap.reader.LDAPReader#LDAPReader(java.lang.String[], org.csstudio.utility.ldap.LdapResultList.utility.LdapResultList)}.
@@ -90,26 +58,26 @@ public class LDAP_Reader_Test {
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.utility.ldap.reader.LDAPReader#LDAPReader(java.lang.String[], int, org.csstudio.utility.ldap.LdapResultList.utility.ErgebnisListe)}.
+	 * Test method for {@link org.csstudio.utility.ldap.reader.LDAPReader#LDAPReader(java.lang.String[], int, org.csstudio.utility.ldap.LdapResultList.utility.ResultList)}.
 	 */
 	@Test
-	public void testLDAPReaderStringArrayIntErgebnisListe() {
+	public void testLDAPReaderStringArrayIntResultList() {
 		fail("Not yet implemented");
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.utility.ldap.reader.LDAPReader#LDAPReader(java.lang.String, java.lang.String, org.csstudio.utility.ldap.LdapResultList.utility.ErgebnisListe)}.
+	 * Test method for {@link org.csstudio.utility.ldap.reader.LDAPReader#LDAPReader(java.lang.String, java.lang.String, org.csstudio.utility.ldap.LdapResultList.utility.ResultList)}.
 	 */
 	@Test
-	public void testLDAPReaderStringStringErgebnisListe() {
+	public void testLDAPReaderStringStringResultList() {
 		fail("Not yet implemented");
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.utility.ldap.reader.LDAPReader#LDAPReader(java.lang.String, java.lang.String, int, org.csstudio.utility.ldap.LdapResultList.utility.ErgebnisListe)}.
+	 * Test method for {@link org.csstudio.utility.ldap.reader.LDAPReader#LDAPReader(java.lang.String, java.lang.String, int, org.csstudio.utility.ldap.LdapResultList.utility.ResultList)}.
 	 */
 	@Test
-	public void testLDAPReaderStringStringIntErgebnisListe() {
+	public void testLDAPReaderStringStringIntResultList() {
 		fail("Not yet implemented");
 	}
 
