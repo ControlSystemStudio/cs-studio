@@ -113,4 +113,15 @@ public class ConnectionParameters {
 		return hashCode;
 	}
 	
+	
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof ConnectionParameters)) return false;
+		return obj.toString().equals(this.toString());
+	}
+	
 }

@@ -298,6 +298,26 @@ public class CharacteristicInfo {
 		return defaultCharacterictics;
 	}
 	
+	private static final CharacteristicInfo[] getDeclaredCharacteristics() {
+		List<CharacteristicInfo> l= new ArrayList<CharacteristicInfo>(32);
+		
+		Field[] f= CharacteristicInfo.class.getDeclaredFields();
+		for (int i = 0; i < f.length; i++) {
+			if (Modifier.isStatic(f[i].getModifiers()) && f[i].getType()==CharacteristicInfo.class) {
+				try {
+					CharacteristicInfo ci= (CharacteristicInfo)f[i].get(null);
+					l.add(ci);
+				} catch (IllegalArgumentException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		return l.toArray(new CharacteristicInfo[l.size()]);
+	}
+
 	/**
 	 * 
 	 * @param property the property type 
@@ -334,6 +354,17 @@ public class CharacteristicInfo {
 		}
 		
 		infos.add(info);
+	}
+	
+	
+	public static void main(String[] args) {
+		
+		CharacteristicInfo[] infos= getDeclaredCharacteristics();
+
+		for (CharacteristicInfo info : infos) {
+			System.out.println(info);
+		}
+		
 	}
 	
 	private String name;
@@ -437,15 +468,16 @@ public class CharacteristicInfo {
 	public String toString() {
 		StringBuilder sb= new StringBuilder(256);
 		sb.append(name);
-		sb.append(':');
-		sb.append(type.getName());
+		sb.append(":{");
+		sb.append(type.getSimpleName());
 		
 		if (properties!=null) {
 			for (int i = 0; i < properties.length; i++) {
-				sb.append(':');
-				sb.append(properties[i].getName());
+				sb.append(',');
+				sb.append(properties[i].getSimpleName());
 			}
 		}
+		sb.append("}");
 		return sb.toString();
 	}
 	

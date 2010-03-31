@@ -69,6 +69,7 @@ public abstract class AbstractAnyDataImpl<T> implements AnyData {
 		try {
 			return (MetaData) property.getCharacteristic(CharacteristicInfo.C_META_DATA.getName());
 		} catch (DataExchangeException e) {
+			e.printStackTrace();
 			return null;
 		}
 	}
