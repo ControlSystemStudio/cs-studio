@@ -226,14 +226,23 @@ public class TankFigure extends AbstractLinearMarkedFigure {
 	
 		public void layout(IFigure container) {
 			Rectangle area = container.getClientArea();		
-			
+			area.height-=1;
 			Dimension scaleSize = new Dimension(0, 0);
 			Dimension markerSize = new Dimension(0, 0);
 			
 			if(scale != null) {
-				scaleSize = scale.getPreferredSize(-1, area.height);
-				scale.setBounds(new Rectangle(area.x, area.y, 
-						scaleSize.width, scaleSize.height));					
+				if(scale.isVisible()){
+					scaleSize = scale.getPreferredSize(-1, area.height);
+					scale.setBounds(new Rectangle(area.x, area.y, 
+						scaleSize.width, scaleSize.height));	
+				}else{
+					scaleSize = scale.getPreferredSize(-1, area.height+2*scale.getMargin());
+					scale.setBounds(new Rectangle(area.x, area.y-scale.getMargin(), 
+							scaleSize.width, scaleSize.height));
+					scaleSize.height=0;
+					scaleSize.width=0;
+				}
+								
 			}
 			
 			if(marker != null && marker.isVisible()) {
@@ -245,9 +254,9 @@ public class TankFigure extends AbstractLinearMarkedFigure {
 			if(tank != null) {
 				tank.setBounds(new Rectangle(
 						area.x + scaleSize.width,
-						scale.getValuePosition(scale.getRange().getUpper(), false) - tank.getLineWidth(),
+						scale.getValuePosition(scale.getRange().getUpper(), false),
 						area.width - scaleSize.width - markerSize.width,
-						scale.getTickLength()+ 2*tank.getLineWidth()));
+						scale.getTickLength()+ tank.getLineWidth()));
 			}	
 		}
 	
