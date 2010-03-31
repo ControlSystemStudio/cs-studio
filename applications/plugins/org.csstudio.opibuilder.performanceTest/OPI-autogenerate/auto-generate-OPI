@@ -1,0 +1,33 @@
+#!/bin/bash
+echo "start"
+outputFile=$1
+pv=$2
+ch=channel0
+x=0
+y=0
+h=$3
+w=$4
+xtotal=1280
+ytotal=1024
+#
+echo "A"
+pwd
+ls
+cat ./basic_OPI_layout > $1
+echo "x"
+#
+while [[ $x -lt $xtotal && $y -lt $ytotal ]]
+do	
+echo "enter" $x $y $pv
+	awk -f generic-filter xposition=$x yposition=$y width=$w height=$h pv=pv\$\(M\)$pv channel=$ch $5-widget >> $1
+	x=$(($x+$w))
+	if [ $x -ge $xtotal ]; then 
+		x=0
+		y=$(($y+$h))
+	fi
+	pv=$[$pv+1]
+echo $x $xtotal $y $ytotal $pv
+done
+#
+echo "D"
+echo "</display>" >> $1

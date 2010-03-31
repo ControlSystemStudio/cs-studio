@@ -1,0 +1,18 @@
+file output_offset.db {
+    pattern { X, Scan }
+        { "k0", ".1 second" }
+        { "k1", ".1 second" }
+        { "k2", ".1 second" }
+	{ "k3", "1 second" }
+	{ "k4", "1 second" }
+	{ "k5", "1 second" }
+	{ "k6", "1 second" }
+	{ "k7", "1 second" }
+	{ "k8", "1 second" }
+	{ "k9", "1 second" }
+	{ "k10", "1 second" }
+	{ "k11", "1 second" }
+	{ "k12", "1 second" }
+	{ "k13", "1 second" }
+	{ "k14", "1 second" }	
+}

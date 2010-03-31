@@ -1,0 +1,25 @@
+BEGIN{
+xposition
+yposition
+width
+height
+pv
+channel
+}
+{
+	if(/<pv_name/){
+		printf("<pv_name>%s</pv_name>\n",pv)
+	}else if(/<y>/){
+		printf("<y>%d</y>\n",yposition)
+	}else if(/<x>/){
+		printf("<x>%d</x>\n",xposition)
+	}else if(/<width>/){
+		printf("<width>%d</width>\n",width)
+	}else if(/<height>/){
+		printf("<height>%d</height>\n",height)
+	}else{
+		print
+	}
+}
+END{
+}

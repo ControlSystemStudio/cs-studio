@@ -1,0 +1,68 @@
+<widget typeId="org.csstudio.opibuilder.widgets.thermometer" version="1.0">
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <level_lo>20.0</level_lo>
+    <visible>true</visible>
+    <color_fillbackground>
+      <color red="210" green="210" blue="210" />
+    </color_fillbackground>
+    <minimum>0.0</minimum>
+    <color_hihi>
+      <color red="255" green="0" blue="0" />
+    </color_hihi>
+    <fahrenheit>false</fahrenheit>
+    <show_lo>true</show_lo>
+    <scripts />
+    <height>217</height>
+    <show_scale>true</show_scale>
+    <show_hihi>true</show_hihi>
+    <color_lo>
+      <color red="255" green="128" blue="0" />
+    </color_lo>
+    <major_tick_step_hint>50.0</major_tick_step_hint>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Thermometer</name>
+    <pv_name />
+    <color_hi>
+      <color red="255" green="128" blue="0" />
+    </color_hi>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Thermometer</widget_type>
+    <enabled>true</enabled>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <level_hi>80.0</level_hi>
+    <show_minor_ticks>true</show_minor_ticks>
+    <width>109</width>
+    <level_hihi>90.0</level_hihi>
+    <border_style>0</border_style>
+    <show_lolo>true</show_lolo>
+    <effect_3d>true</effect_3d>
+    <show_bulb>true</show_bulb>
+    <color_lolo>
+      <color red="255" green="0" blue="0" />
+    </color_lolo>
+    <fill_color>
+      <color red="255" green="0" blue="0" />
+    </fill_color>
+    <transparent_background>true</transparent_background>
+    <show_markers>true</show_markers>
+    <show_hi>true</show_hi>
+    <maximum>100.0</maximum>
+    <border_width>1</border_width>
+    <log_scale>false</log_scale>
+    <limits_from_pv>true</limits_from_pv>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <y>12</y>
+    <actions hook="false" />
+    <level_lolo>10.0</level_lolo>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>18</x>
+  </widget>
+
