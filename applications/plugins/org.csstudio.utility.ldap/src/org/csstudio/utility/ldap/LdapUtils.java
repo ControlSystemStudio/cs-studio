@@ -26,6 +26,8 @@ import javax.naming.directory.BasicAttributes;
 
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.model.pvs.ControlSystemEnum;
+import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
 import org.csstudio.platform.util.StringUtil;
 
 /**
@@ -131,6 +133,36 @@ public class LdapUtils {
             }
         }
         return false;
+    }
+
+    /**
+     * Converts the given process variable name (<recordName>.<fieldName>) into a
+     * record name (<recordName>) which can be
+     * looked up in the LDAP directory. If the default control system is EPICS,
+     * this will truncate everything after the first dot in the PV name.
+     *
+     * @param pv
+     *            the name of the process variable.
+     * @return the name of the record in the LDAP directory.
+     */
+    public static String pvNameToRecordName(final String pv) {
+        if (pv.contains(".") && isEpicsDefaultControlSystem()) {
+            return pv.substring(0, pv.indexOf("."));
+        }
+        return pv;
+    }
+
+    /**
+     * Returns <code>true</code> if EPICS is the default control system.
+     *
+     * @return <code>true</code> if EPICS is the default control system,
+     *         <code>false</code> otherwise.
+     */
+    private static boolean isEpicsDefaultControlSystem() {
+        final ControlSystemEnum controlSystem = ProcessVariableAdressFactory
+        .getInstance().getDefaultControlSystem();
+        return controlSystem == ControlSystemEnum.EPICS;
+        //              || controlSystem == ControlSystemEnum.DAL_EPICS;
     }
 
     public static class LdapQueryResult {

@@ -66,7 +66,7 @@ public class LDAPSyncReader {
      *
      * @param nameUFilter<br> 0: name<br>1: = filter<br>
      * @param searchScope set the Scope {@link SearchControls}
-     * @param ergebnisListe the list for the result {@link LdapResultList}
+     * @param ergebnisListe the list for the result {@link LdapSearchResult}
      */
 
     public LDAPSyncReader(String[] nameUFilter, int searchScope){

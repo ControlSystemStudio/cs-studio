@@ -17,5 +17,6 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.utility.pv,
  org.csstudio.platform.ui,
  org.csstudio.platform
-Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
 Bundle-Vendor: Kay Kasemir
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

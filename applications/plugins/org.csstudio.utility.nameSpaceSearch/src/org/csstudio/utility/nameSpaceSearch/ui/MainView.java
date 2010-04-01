@@ -26,16 +26,16 @@ import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
 
+import javax.naming.directory.SearchResult;
+
 import org.csstudio.platform.model.IControlSystemItem;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
-import org.csstudio.utility.ldap.reader.LdapResultList;
 import org.csstudio.utility.ldap.reader.LDAPReader;
+import org.csstudio.utility.ldap.reader.LdapSearchResult;
 import org.csstudio.utility.nameSpaceSearch.Activator;
 import org.csstudio.utility.nameSpaceSearch.Messages;
 import org.csstudio.utility.nameSpaceSearch.preference.PreferenceConstants;
-import org.eclipse.core.runtime.jobs.IJobChangeEvent;
-import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -71,9 +71,10 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 /**
- * 
+ *
  * @author hrickens
  * @author $Author$
  * @version $Revision$
@@ -85,31 +86,31 @@ public class MainView extends ViewPart implements Observer{
      */
     public static final String ID = MainView.class.getName();
     private Text _searchText;
-    private TableViewer _ergebnissTableView;
+    private TableViewer _resultTableView;
     private boolean _lastSortBackward;
-    private int[] _sorts = {0,0,0};
+    private final int[] _sorts = {0,0,0};
     private Image _up;
     private Image _upOld;
     private Image _down;
     private Image _downOld;
-    private HashMap<String, String> _headline = new HashMap<String, String>();
+    private final HashMap<String, String> _headline = new HashMap<String, String>();
     private Image _workDisable;
     private Label _workIcon;
     private LDAPReader _ldapr;
     private Display _disp;
-    private LdapResultList _ergebnisListe;
+    private final LdapSearchResult _ldapSearchResult;
     /**
      * The search Button.
      */
     private Button _searchButton;
-    
+
     /**
      * The Wildcard char.
      */
     private static final String WILDCARD  = "*"; //$NON-NLS-1$
 
     /**
-     * 
+     *
      * @author hrickens
      * @author $Author$
      * @version $Revision$
@@ -117,25 +118,26 @@ public class MainView extends ViewPart implements Observer{
      */
     class MyTableLabelProvider implements ITableLabelProvider{
         // No Image
-        public Image getColumnImage(Object element, int columnIndex) {return null;}
+        public Image getColumnImage(final Object element, final int columnIndex) {return null;}
 
-        
-		public String getColumnText(Object element, int columnIndex) {
+
+		public String getColumnText(final Object element, final int columnIndex) {
             if (element instanceof ProcessVariable) {
-                ProcessVariable pv = (ProcessVariable) element;
+                final ProcessVariable pv = (ProcessVariable) element;
                 try{
                 	if(pv.getPath()!=null){
                 		return pv.getPath()[columnIndex].split("=")[1]; //$NON-NLS-1$
                 	}else{
                 		return "";
                 	}
-                }catch (ArrayIndexOutOfBoundsException e) {
+                }catch (final ArrayIndexOutOfBoundsException e) {
                     return "";
                 }
 
             }
             if (element instanceof ArrayList) {
             	@SuppressWarnings("unchecked")
+                final
                 Object o = ((ArrayList)element).get(columnIndex);
                 if (o instanceof IControlSystemItem) {
                     return ((IProcessVariable)o).getName();
@@ -146,22 +148,22 @@ public class MainView extends ViewPart implements Observer{
 
         }
 
-        public void addListener(ILabelProviderListener listener) {}
+        public void addListener(final ILabelProviderListener listener) {}
 
         public void dispose() {}
 
-        public boolean isLabelProperty(Object element, String property) {
+        public boolean isLabelProperty(final Object element, final String property) {
             return false;
         }
 
-        public void removeListener(ILabelProviderListener listener) {}
+        public void removeListener(final ILabelProviderListener listener) {}
 
     }
 
     class myContentProvider implements IStructuredContentProvider{
 
         @SuppressWarnings("unchecked")
-		public Object[] getElements(Object inputElement) {
+		public Object[] getElements(final Object inputElement) {
             if (inputElement instanceof ArrayList) {
                 return ((ArrayList)inputElement).toArray();
             }
@@ -170,13 +172,13 @@ public class MainView extends ViewPart implements Observer{
 
         public void dispose() {     }
 
-        public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {     }
+        public void inputChanged(final Viewer viewer, final Object oldInput, final Object newInput) {     }
 
     }
 
     public MainView() {
-        _ergebnisListe = new LdapResultList();
-        _ergebnisListe.addObserver(this);
+        _ldapSearchResult = new LdapSearchResult();
+        _ldapSearchResult.addObserver(this);
     }
 
     /**
@@ -193,11 +195,11 @@ public class MainView extends ViewPart implements Observer{
     public final void createPartControl(final Composite parent) {
         _disp = parent.getDisplay();
         parent.setLayout(new GridLayout(3,false));
-        _up = Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/up.gif").createImage(); //$NON-NLS-1$
-        _down = Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/down.gif").createImage(); //$NON-NLS-1$
-        _upOld = Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/up_old.gif").createImage(); //$NON-NLS-1$
-        _downOld = Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/down_old.gif").createImage(); //$NON-NLS-1$
-        _workDisable = Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/LDAPLupe.gif").createImage(); //$NON-NLS-1$
+        _up = AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/up.gif").createImage(); //$NON-NLS-1$
+        _down = AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/down.gif").createImage(); //$NON-NLS-1$
+        _upOld = AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/up_old.gif").createImage(); //$NON-NLS-1$
+        _downOld = AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/down_old.gif").createImage(); //$NON-NLS-1$
+        _workDisable = AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/LDAPLupe.gif").createImage(); //$NON-NLS-1$
 
         _searchText = makeSearchField(parent);
 
@@ -215,32 +217,32 @@ public class MainView extends ViewPart implements Observer{
 //      world.getImageData().
 
         // make ErgebnisTable
-        _ergebnissTableView = new TableViewer(parent,SWT.MULTI|SWT.FULL_SELECTION);
-        Table ergebnissTable = _ergebnissTableView.getTable();
+        _resultTableView = new TableViewer(parent,SWT.MULTI|SWT.FULL_SELECTION);
+        final Table ergebnissTable = _resultTableView.getTable();
         ergebnissTable.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,3,1));
         ergebnissTable.setLinesVisible (true);
         ergebnissTable.setHeaderVisible (true);
 
-        _ergebnissTableView.setContentProvider(new myContentProvider());
-        _ergebnissTableView.setLabelProvider(new MyTableLabelProvider());
+        _resultTableView.setContentProvider(new myContentProvider());
+        _resultTableView.setLabelProvider(new MyTableLabelProvider());
 
 
         // add Listeners
         _searchButton.addSelectionListener(new SelectionListener() {
 
-            public void widgetSelected(SelectionEvent e) {
+            public void widgetSelected(final SelectionEvent e) {
                 _workIcon.setEnabled(true);
                 _searchButton.setEnabled(false);
 //              workIcon.setImage(world);
                 search(_searchText.getText());
             }
-            public void widgetDefaultSelected(SelectionEvent e) {}
+            public void widgetDefaultSelected(final SelectionEvent e) {}
 
         });
 
         _searchText.addKeyListener(new KeyListener() {
 
-            public void keyReleased(KeyEvent e) {
+            public void keyReleased(final KeyEvent e) {
                 if(e.keyCode==SWT.CR){
                     _workIcon.setEnabled(true);
                     _searchButton.setEnabled(false);
@@ -249,12 +251,12 @@ public class MainView extends ViewPart implements Observer{
                 }
             }
 
-            public void keyPressed(KeyEvent e) {}
+            public void keyPressed(final KeyEvent e) {}
 
         });
 
         // Make Table row Drageble
-        new ProcessVariableDragSource(_ergebnissTableView.getControl(), _ergebnissTableView);
+        new ProcessVariableDragSource(_resultTableView.getControl(), _resultTableView);
         // MB3
         makeContextMenu();
         _searchText.forceFocus();
@@ -267,7 +269,7 @@ public class MainView extends ViewPart implements Observer{
         _searchText.forceFocus();
     }
 
-    public void startSearch(String search){
+    public void startSearch(final String search){
         _searchText.setText(search);
         search(search);
     }
@@ -283,15 +285,16 @@ public class MainView extends ViewPart implements Observer{
      ***************************************************************************/
     protected void search(String search) {
         // Leere die Tabelle
-        _ergebnissTableView.getTable().removeAll();
-        _ergebnissTableView.getTable().clearAll();
-        _ergebnissTableView.refresh();
+        _resultTableView.getTable().removeAll();
+        _resultTableView.getTable().clearAll();
+        _resultTableView.refresh();
         // ersetzt mehrfach vorkommende '*' durch einen. Da die LDAP abfrage damit nicht zurecht kommt.
         search = search.replaceAll("\\*\\**", WILDCARD); //$NON-NLS-1$ //$NON-NLS-2$
         String filter = Activator.getDefault().getPluginPreferences().getString(PreferenceConstants.P_STRING_RECORD_ATTRIBUTE)+
         "="+search; //$NON-NLS-1$
-        if(search.compareTo(WILDCARD)!=0) //$NON-NLS-1$
+        if(search.compareTo(WILDCARD)!=0) {
             filter = filter.concat(WILDCARD); //$NON-NLS-1$
+        }
 
         if(_headline.isEmpty()){
             _headline.put("efan", Messages.MainView_facility); //$NON-NLS-1$ //$NON-NLS-2$
@@ -300,7 +303,7 @@ public class MainView extends ViewPart implements Observer{
             _headline.put("eren", Messages.MainView_Record); //$NON-NLS-1$ //$NON-NLS-2$
         }
         _ldapr = new LDAPReader(Activator.getDefault().getPluginPreferences().getString(PreferenceConstants.P_STRING_SEARCH_ROOT),
-                filter, _ergebnisListe);
+                filter, _ldapSearchResult);
 //        _ldapr.addJobChangeListener(new JobChangeAdapter() {
 //            public void done(IJobChangeEvent event) {
 //            if (event.getResult().isOK())
@@ -308,14 +311,16 @@ public class MainView extends ViewPart implements Observer{
 //            }
 //         });
         _ldapr.schedule();
-        _ergebnissTableView.getTable().layout();
+        _resultTableView.getTable().layout();
     }
 
     private void getText() {
-        _ergebnissTableView.refresh(false);
-        ArrayList<IControlSystemItem> tableElements = new ArrayList<IControlSystemItem>();
-        ArrayList<String> list = new ArrayList<String>();
-        list.addAll(_ergebnisListe.getAnswer());
+        _resultTableView.refresh(false);
+        final ArrayList<IControlSystemItem> tableElements = new ArrayList<IControlSystemItem>();
+
+//        ArrayList<String> list = new ArrayList<String>();
+//        list.addAll(_ergebnisListe.getSimpleResultNames());
+
         /*
          * Vorbereitung für die Nutzung der ersten Zeile als Filter Feld.
          */
@@ -326,7 +331,7 @@ public class MainView extends ViewPart implements Observer{
 //        }
 //        filter = filter.substring(0,filter.length()-1);
 //        list.add(0, filter);
-//        
+//
 //        TextCellEditor[] ces = new TextCellEditor[]{new TextCellEditor(ergebnissTableView.getTable()),new TextCellEditor(ergebnissTableView.getTable()),new TextCellEditor(ergebnissTableView.getTable()),new TextCellEditor(ergebnissTableView.getTable())};
 //        ergebnissTableView.setCellEditors(ces);
 //        ergebnissTableView.setCellModifier(new ICellModifier(){
@@ -335,7 +340,7 @@ public class MainView extends ViewPart implements Observer{
 //                System.out.println("canModify: "+element+" -- "+property);
 //                if (element instanceof ControlSystemItem) {
 //                    return true;
-//                    
+//
 //                }
 //                return false;
 //            }
@@ -345,7 +350,7 @@ public class MainView extends ViewPart implements Observer{
 //                if (element instanceof ControlSystemItem) {
 //                    ControlSystemItem new_name = (ControlSystemItem) element;
 //                    return new_name.getPath();
-//                    
+//
 //                }
 //                return null;
 //            }
@@ -355,36 +360,37 @@ public class MainView extends ViewPart implements Observer{
 //                if (element instanceof ControlSystemItem) {
 //                    ControlSystemItem new_name = (ControlSystemItem) element;
 //                }
-//                
+//
 //            }
-//            
+//
 //        });
         /*
          * Ende
          * Vorbereitung für die Nutzung der ersten Zeile als Filter Feld.
          */
-        
+
         int i=0;
-        for (String row : list) {
-            String[] elements = row.split(","); //$NON-NLS-1$
+        for (final SearchResult result : _ldapSearchResult.getAnswerSet()) {
+            final String row = result.getName();
+            final String[] elements = row.split(","); //$NON-NLS-1$
             String path =""; //$NON-NLS-1$
             for(int j=0;j<elements.length;j++){
-                if(i==0&&j>=_ergebnissTableView.getTable().getColumnCount()){
+                if((i==0)&&(j>=_resultTableView.getTable().getColumnCount())){
 //                  lastSort = new int[elements.length-1];
-                    final TableColumn tc = new TableColumn(_ergebnissTableView.getTable(),SWT.NONE);
+                    final TableColumn tc = new TableColumn(_resultTableView.getTable(),SWT.NONE);
                     tc.setResizable(true);
-                    tc.setWidth(_ergebnissTableView.getTable().getSize().x/4-4); // TODO: 4 replace whit true columsize
+                    tc.setWidth(_resultTableView.getTable().getSize().x/4-4); // TODO: 4 replace whit true columsize
                     tc.setToolTipText(Messages.MainView_ToolTip_Sort);
                     tc.setMoveable(true);
                     final int spalte = j;
                     tc.addSelectionListener(new SelectionListener(){
                         boolean backward = true;
-                        public void widgetDefaultSelected(SelectionEvent e) {}
-                        public void widgetSelected(SelectionEvent e) {
+                        public void widgetDefaultSelected(final SelectionEvent e) {}
+                        public void widgetSelected(final SelectionEvent e) {
                                 backward=!backward;
                                 tc.setAlignment(SWT.LEFT);
                                 if(_sorts[0]!=spalte){
-                                    TableColumn[] chil = tc.getParent().getColumns();
+                                    final TableColumn[] chil = tc.getParent().getColumns();
                                     chil[_sorts[1]].setImage(null);
                                     _sorts[1]=_sorts[0];
                                     _lastSortBackward=backward;
@@ -395,7 +401,7 @@ public class MainView extends ViewPart implements Observer{
                                     }
                                 }
                                 _sorts[0]=spalte;
-                                _ergebnissTableView.setSorter(new TableSorter(_sorts[0],backward,_sorts[1], _lastSortBackward));
+                                _resultTableView.setSorter(new TableSorter(_sorts[0],backward,_sorts[1], _lastSortBackward));
                                 if(backward) {
                                     tc.setImage(_down);
                                 } else {
@@ -409,19 +415,19 @@ public class MainView extends ViewPart implements Observer{
                         temp = elements[j].split("=")[0]; //$NON-NLS-1$
                     }
                     if(j==0){
-                        temp=temp.concat(" ("+list.size()+")"); //$NON-NLS-1$ //$NON-NLS-2$
+                        temp=temp.concat(" ("+_ldapSearchResult.getAnswerSet().size()+")"); //$NON-NLS-1$ //$NON-NLS-2$
                     }
                     tc.setText(temp);
-                }else if(i==0&&j==0){
-                    String tmp = _ergebnissTableView.getTable().getColumn(j).getText();
-                    tmp = tmp.substring(0,tmp.lastIndexOf("(")+1)+list.size()+")"; //$NON-NLS-1$ //$NON-NLS-2$
-                    _ergebnissTableView.getTable().getColumn(j).setText(tmp);
+                }else if((i==0)&&(j==0)){
+                    String tmp = _resultTableView.getTable().getColumn(j).getText();
+                    tmp = tmp.substring(0,tmp.lastIndexOf("(")+1)+_ldapSearchResult.getAnswerSet().size()+")"; //$NON-NLS-1$ //$NON-NLS-2$
+                    _resultTableView.getTable().getColumn(j).setText(tmp);
                 }
                 path +=","+elements[j];
             }
             // TODO: hier Stecken irgend wo die Infos um die Table head aus dem LDAP-Tree zu bekommen.
 //            System.out.println("Path: "+path);
-            if(elements.length==1&&elements[0].split("=").length==1){
+            if((elements.length==1)&&(elements[0].split("=").length==1)){
             	elements[0] = "="+elements[0];
             	for (int k = 1; k < elements.length; k++) {
 					elements[k] = elements[0];
@@ -431,10 +437,10 @@ public class MainView extends ViewPart implements Observer{
             i++;
         }
 //      System.out.println("Thread test 2");
-        _ergebnissTableView.setContentProvider(new myContentProvider());
-        _ergebnissTableView.setLabelProvider(new MyTableLabelProvider());
-        _ergebnissTableView.setInput(tableElements);
-        _ergebnissTableView.refresh(true);
+        _resultTableView.setContentProvider(new myContentProvider());
+        _resultTableView.setLabelProvider(new MyTableLabelProvider());
+        _resultTableView.setInput(tableElements);
+        _resultTableView.refresh(true);
 //      workIcon.setImage(work_disable);
         _searchButton.setEnabled(true);
         _workIcon.setEnabled(false);
@@ -446,16 +452,16 @@ public class MainView extends ViewPart implements Observer{
      * Make the MB3-ContextMenu.
      */
     private void makeContextMenu() {
-        MenuManager manager = new MenuManager("#PopupMenu"); //$NON-NLS-1$
-        Control contr = _ergebnissTableView.getControl();
+        final MenuManager manager = new MenuManager("#PopupMenu"); //$NON-NLS-1$
+        final Control contr = _resultTableView.getControl();
         manager.addMenuListener(new IMenuListener() {
-            public void menuAboutToShow(IMenuManager manager) {
+            public void menuAboutToShow(final IMenuManager manager) {
                 manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
             }
         });
-        Menu menu = manager.createContextMenu(contr);
+        final Menu menu = manager.createContextMenu(contr);
         contr.setMenu(menu);
-        getSite().registerContextMenu(manager, _ergebnissTableView);
+        getSite().registerContextMenu(manager, _resultTableView);
     }
     /**
      *
@@ -465,23 +471,23 @@ public class MainView extends ViewPart implements Observer{
      *
      * @return
      */
-    private Text makeSearchField(Composite parent) {
+    private Text makeSearchField(final Composite parent) {
             _searchText = new Text(parent,SWT.BORDER|SWT.SINGLE);
             _searchText.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,false,1,1));
             _searchText.setText(WILDCARD); //$NON-NLS-1$
             _searchText.setToolTipText(Messages.MainView_ToolTip);
 
             //   Eclipse
-            int operations = DND.DROP_MOVE | DND.DROP_COPY | DND.DROP_DEFAULT;
-            DropTarget target = new DropTarget(_searchText, operations);
+            final int operations = DND.DROP_MOVE | DND.DROP_COPY | DND.DROP_DEFAULT;
+            final DropTarget target = new DropTarget(_searchText, operations);
 
             // Receive data in Text or File format
             final TextTransfer textTransfer = TextTransfer.getInstance();
-            Transfer[] types = new Transfer[] {textTransfer};
+            final Transfer[] types = new Transfer[] {textTransfer};
             target.setTransfer(types);
 
             target.addDropListener(new DropTargetListener() {
-              public void dragEnter(DropTargetEvent event) {
+              public void dragEnter(final DropTargetEvent event) {
                  if (event.detail == DND.DROP_DEFAULT) {
                      if ((event.operations & DND.DROP_COPY) != 0) {
                          event.detail = DND.DROP_COPY;
@@ -490,8 +496,8 @@ public class MainView extends ViewPart implements Observer{
                      }
                  }
                }
-               public void dragOver(DropTargetEvent event) {}
-               public void dragOperationChanged(DropTargetEvent event) {
+               public void dragOver(final DropTargetEvent event) {}
+               public void dragOperationChanged(final DropTargetEvent event) {
                     if (event.detail == DND.DROP_DEFAULT) {
                         if ((event.operations & DND.DROP_COPY) != 0) {
                             event.detail = DND.DROP_COPY;
@@ -500,9 +506,9 @@ public class MainView extends ViewPart implements Observer{
                         }
                     }
                 }
-                public void dragLeave(DropTargetEvent event) {      }
-                public void dropAccept(DropTargetEvent event) {     }
-                public void drop(DropTargetEvent event) {
+                public void dragLeave(final DropTargetEvent event) {      }
+                public void dropAccept(final DropTargetEvent event) {     }
+                public void drop(final DropTargetEvent event) {
                     if (textTransfer.isSupportedType(event.currentDataType)) {
                        _searchText.insert((String)event.data);
                     }
@@ -512,7 +518,7 @@ public class MainView extends ViewPart implements Observer{
         return _searchText;
     }
 
-    public void update(Observable arg0, Object arg1) {
+    public void update(final Observable arg0, final Object arg1) {
         _disp.syncExec(new Runnable() {
             public void run() {
                 getText();

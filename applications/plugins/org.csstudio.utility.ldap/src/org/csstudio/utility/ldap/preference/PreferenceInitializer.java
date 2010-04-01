@@ -30,7 +30,7 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
  * Class used to initialize default preference values.
  */
 public class PreferenceInitializer extends AbstractPreferenceInitializer {
-    
+
     /*
      * (non-Javadoc)
      *
@@ -39,13 +39,12 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
     @Override
     public void initializeDefaultPreferences() {
         final IEclipsePreferences prefs = new DefaultScope().getNode(Activator.PLUGIN_ID);
-        //      System.out.println("Path init"+prefs.absolutePath());
-        prefs.put(PreferenceConstants.P_STRING_URL,"ldap://krynfs.desy.de:389/o=DESY,c=DE"); //$NON-NLS-1$
-        prefs.put(PreferenceConstants.P_STRING_USER_DN,"uid=css_user,ou=people,o=DESY,c=DE"); //$NON-NLS-1$
-        prefs.put(PreferenceConstants.P_STRING_USER_PASSWORD,"cssPass"); //$NON-NLS-1$
-        prefs.put(PreferenceConstants.SECURITY_PROTOCOL,""); //$NON-NLS-1$
-        prefs.put(PreferenceConstants.SECURITY_AUTHENTICATION,""); //$NON-NLS-1$
-        prefs.put(PreferenceConstants.ENGINE_TIMER,"100");//$NON-NLS-1$
+
+        prefs.put(PreferenceKey.P_STRING_USER_DN.name(), "uid=css_user,ou=people,o=DESY,c=DE"); //$NON-NLS-1$
+        prefs.put(PreferenceKey.P_STRING_USER_PASSWORD.name(), "cssPass"); //$NON-NLS-1$
+        prefs.put(PreferenceKey.SECURITY_PROTOCOL.name(), ""); //$NON-NLS-1$
+        prefs.put(PreferenceKey.SECURITY_AUTHENTICATION.name(), ""); //$NON-NLS-1$
+        prefs.put(PreferenceKey.P_STRING_URL.name(), "ldap://krynfs.desy.de:389/o=DESY,c=DE"); //$NON-NLS-1$
     }
-    
+
 }

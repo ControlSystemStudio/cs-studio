@@ -964,7 +964,7 @@ public class ClientRequest implements Runnable
 				/*
 				 * check for actual alarm state
 				 */
-				String currentSeverity = Engine.getInstance().getAttriebute(channel, Engine.ChannelAttribute.epicsAlarmHighUnAckn);
+				String currentSeverity = Engine.getInstance().getAttribute(channel, Engine.ChannelAttribute.epicsAlarmHighUnAckn);
 				CentralLogger.getInstance().debug( this, "Channel: " + channel + " current severity: " + currentSeverity + "[" +getSeverityEnum(currentSeverity)+ "]" + " new severity: " + severity + "[" +getSeverityEnum(severity)+ "]");
 				
 				if ( getSeverityEnum(severity) > getSeverityEnum(currentSeverity)) {

@@ -25,9 +25,9 @@
 package org.csstudio.utility.namespacebrowser.tine.utility;
 
 
+import org.csstudio.utility.nameSpaceBrowser.utility.NameSpace;
 import org.csstudio.utility.namespacebrowser.tine.Activator;
 import org.csstudio.utility.namespacebrowser.tine.Messages;
-import org.csstudio.utility.nameSpaceBrowser.utility.NameSpace;
 import org.csstudio.utility.tine.reader.NameSpaceResultListTine;
 import org.csstudio.utility.tine.reader.TineReader;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
@@ -49,26 +49,27 @@ public class NameSpaceTine extends NameSpace {
         try{
             TineReader tineReader;
             if (getNameSpaceResultList() instanceof NameSpaceResultListTine) {
-                NameSpaceResultListTine eListe = (NameSpaceResultListTine) getNameSpaceResultList();
+                final NameSpaceResultListTine eListe = (NameSpaceResultListTine) getNameSpaceResultList();
 //                String tmp = getSelection();
 //                if(tmp.endsWith("=*,")) //$NON-NLS-1$
 //                    tineReader = new TineReader(getName(), getFilter(),SearchControls.SUBTREE_SCOPE, eListe);
 //                else
 //                    tineReader = new TineReader(getName(), eListe);
-                tineReader = new TineReader(getName(),getFilter(),eListe);                
+                tineReader = new TineReader(getName(), getFilter(), eListe);
                 tineReader.addJobChangeListener(new JobChangeAdapter() {
-                    public void done(IJobChangeEvent event) {
-                        if (event.getResult().isOK())
+                    public void done(final IJobChangeEvent event) {
+                        if (event.getResult().isOK()) {
                             getNameSpaceResultList().notifyView();
                         }
+                        }
                  });
-               
+
                 tineReader.schedule();
             }else{
                 // TODO: Was soll gemacht werden wenn das 'getNameSpaceResultList() instanceof ErgebnisListe' nicht stimmt.
                 Activator.logError(Messages.getString("CSSView.exp.IAE.2")); //$NON-NLS-1$
             }
-        }catch (IllegalArgumentException e) {
+        }catch (final IllegalArgumentException e) {
             Activator.logException(Messages.getString("CSSView.exp.IAE.1"), e); //$NON-NLS-1$
         }
 

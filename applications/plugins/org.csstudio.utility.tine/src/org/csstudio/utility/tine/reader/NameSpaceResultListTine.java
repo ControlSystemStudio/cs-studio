@@ -29,7 +29,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.csstudio.utility.namespace.utility.ControlSystemItem;
-import org.csstudio.utility.namespace.utility.NameSpaceResultList;
+import org.csstudio.utility.namespace.utility.NameSpaceSearchResult;
 
 /**
  * @author hrickens
@@ -37,51 +37,38 @@ import org.csstudio.utility.namespace.utility.NameSpaceResultList;
  * @version $Revision$
  * @since 15.05.2007
  */
-public class NameSpaceResultListTine extends NameSpaceResultList {
-    
+public class NameSpaceResultListTine extends NameSpaceSearchResult {
+
     /** The list with results from Tine namespace server.*/
     private List<ControlSystemItem> _csiResult = Collections.emptyList();
-    
-    
+
+
     /** {@inheritDoc}*/
     @Override
-    public final NameSpaceResultList getNew() {
+    public final NameSpaceSearchResult getNew() {
         return new NameSpaceResultListTine();
     }
-    
+
     /** {@inheritDoc}*/
     @Override
     public final List<ControlSystemItem> getCSIResultList() {
         return _csiResult;
     }
-    
+
     /** {@inheritDoc}*/
     @Override
     public final void notifyView() {
         setChanged();
         notifyObservers();
     }
-    
+
     /**
      * Copies the list of {@link ControlSystemItem}.
      * {@inheritDoc}
      */
+    @Override
     public final void setCSIResultList(final List<ControlSystemItem> resultList) {
-        
         _csiResult = new ArrayList<ControlSystemItem>(resultList);
         notifyView();
     }
-    
-    /** resultList a filled only String or only {@link ControlSystemItem}.
-     * {@inheritDoc}*/
-    @Override
-    public final void setResultList(final List<String> resultList) {
-        
-        _csiResult = new ArrayList<ControlSystemItem>();
-        for (final String name : resultList) {
-            _csiResult.add(new ControlSystemItem(name, name));
-        }
-        notifyView();
-    }
-    
 }

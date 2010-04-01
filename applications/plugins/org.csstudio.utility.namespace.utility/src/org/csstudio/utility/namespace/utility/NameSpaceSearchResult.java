@@ -19,16 +19,23 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.utility.ldap.preference;
+/*
+ * $Id$
+ */
+package org.csstudio.utility.namespace.utility;
+
+import java.util.List;
+import java.util.Observable;
 
 /**
- * Constant definitions for plug-in preferences
+ * @author $Author$
+ * @version $Revision$
+ * @since 09.05.2007
  */
-public class PreferenceConstants {
-	public static final String P_STRING_URL = "P_STRING_URL";
-	public static final String P_STRING_USER_DN = "P_STRING_USER_DN";
-	public static final String P_STRING_USER_PASSWORD = "P_STRING_USER_PASSWORD";
-	public static final String SECURITY_PROTOCOL = "SECURITY_PROTOCOL";
-	public static final String SECURITY_AUTHENTICATION = "SECURITY_AUTHENTICATION";
-	public static final String ENGINE_TIMER = "ENGINE_TIMER";
-	}
+public abstract class NameSpaceSearchResult extends Observable {
+
+    abstract public List<ControlSystemItem> getCSIResultList();
+    abstract public void setCSIResultList(List<ControlSystemItem> list);
+    abstract public NameSpaceSearchResult getNew();
+    abstract public void notifyView();
+}

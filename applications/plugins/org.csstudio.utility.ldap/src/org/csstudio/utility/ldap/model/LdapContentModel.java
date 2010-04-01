@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.utility.ldapUpdater.model;
+package org.csstudio.utility.ldap.model;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -29,19 +29,24 @@ import java.util.Map.Entry;
 
 import javax.naming.directory.Attributes;
 
+import org.csstudio.utility.ldap.reader.LdapSearchResult;
+
 
 /**
  *
  * @author bknerr
  */
-public class LDAPContentModel {
+public class LdapContentModel {
 
     private final Map<String, Facility> _facilities = new HashMap<String, Facility>();
+
+
+    private LdapSearchResult _currentSearchResult;
 
     /**
      * Constructor.
      */
-    public LDAPContentModel() {
+    public LdapContentModel() {
         // Empty.
     }
 
@@ -135,6 +140,15 @@ public class LDAPContentModel {
      */
     public Set<Entry<String, Facility>> getFacilities() {
         return _facilities.entrySet();
+    }
+
+
+
+    public LdapSearchResult getCurrentLdapSearchResult() {
+        return _currentSearchResult;
+    }
+    public void setCurrentLdapSearchResult(final LdapSearchResult res) {
+        _currentSearchResult = res;
     }
 
 }

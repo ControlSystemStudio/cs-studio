@@ -18,7 +18,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.utility.ldapUpdater.model.IOC;
+import org.csstudio.utility.ldap.model.IOC;
 
 
 /**

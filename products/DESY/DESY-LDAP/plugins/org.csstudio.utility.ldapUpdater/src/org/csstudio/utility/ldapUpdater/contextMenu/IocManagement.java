@@ -29,7 +29,11 @@ import java.util.Map;
 import org.csstudio.platform.management.CommandParameters;
 import org.csstudio.platform.management.CommandResult;
 import org.csstudio.platform.management.IManagementCommand;
+import org.csstudio.utility.ldap.engine.Engine;
 import org.csstudio.utility.ldapUpdater.LdapAccess;
+
+import service.LdapService;
+import service.impl.LdapServiceImpl;
 
 /**
  * TODO (bknerr) :
@@ -37,6 +41,9 @@ import org.csstudio.utility.ldapUpdater.LdapAccess;
  * @author bknerr 17.03.2010
  */
 public class IocManagement implements IManagementCommand {
+
+    private final LdapService _service = LdapServiceImpl.getInstance();
+
 
     /**
      * {@inheritDoc}
@@ -55,14 +62,20 @@ public class IocManagement implements IManagementCommand {
 
     private void commandDispatchAndExecute(final String command, final Map<String, String> map) {
 
+        final String iocName = map.get(ECON_FIELD_NAME);
+        final String facilityName = map.get(EFAN_FIELD_NAME);
+
         switch (IocModificationCommand.valueOf(command)) {
             case DELETE : {
                 // TODO (bknerr) : another popup 'do you really want to do this?'
-                LdapAccess.removeIocEntryFromLdap(map.get(ECON_FIELD_NAME), map.get(EFAN_FIELD_NAME));
+                _service.removeIocEntryFromLdap(Engine.getInstance().getLdapDirContext(), iocName, facilityName);
             } break;
             case TIDY_UP : {
                 // TODO (bknerr) : another popup 'do you really want to do this?'
-                LdapAccess.tidyUpIocEntryInLdap(map.get(ECON_FIELD_NAME), map.get(EFAN_FIELD_NAME));
+                _service.tidyUpIocEntryInLdap(Engine.getInstance().getLdapDirContext(),
+                                              iocName,
+                                              facilityName,
+                                              LdapAccess.getValidRecordsForIOC(iocName));
             } break;
             default : {
                 throw new AssertionError("Unknown Ioc Modification Command: " + command);

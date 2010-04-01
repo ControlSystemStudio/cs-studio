@@ -12,6 +12,9 @@ Require-Bundle: org.eclipse.core.runtime,
 Eclipse-LazyStart: true
 Export-Package: org.csstudio.utility.ldap,
  org.csstudio.utility.ldap.engine,
+ org.csstudio.utility.ldap.model,
  org.csstudio.utility.ldap.preference,
- org.csstudio.utility.ldap.reader
+ org.csstudio.utility.ldap.reader,
+ service,
+ service.impl
 Import-Package: org.eclipse.ecf.core.util

@@ -14,6 +14,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	public void initializeDefaultPreferences() {
 		final IEclipsePreferences node = new DefaultScope()
 				.getNode(EditorUIActivator.PLUGIN_ID);
+
 		String value = StringConverter.asString(new RGB(230,230,255));
 		node.put(PreferenceConstants.CURSOR_LINE_COLOR.getPreferenceStoreId(), value);
 		node.put(PreferenceConstants.CURSOR_LINE_ENABLE.getPreferenceStoreId(), Boolean.toString(true));

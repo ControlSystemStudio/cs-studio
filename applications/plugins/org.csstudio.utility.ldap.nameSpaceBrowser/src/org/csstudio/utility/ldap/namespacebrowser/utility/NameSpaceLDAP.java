@@ -26,12 +26,15 @@ package org.csstudio.utility.ldap.namespacebrowser.utility;
 
 import javax.naming.directory.SearchControls;
 
+import org.csstudio.utility.ldap.model.LdapContentModel;
 import org.csstudio.utility.ldap.namespacebrowser.Activator;
-import org.csstudio.utility.ldap.reader.LdapResultList;
-import org.csstudio.utility.ldap.reader.LDAPReader;
+import org.csstudio.utility.ldap.reader.LdapSeachResultObserver;
+import org.csstudio.utility.ldap.reader.LdapSearchResult;
 import org.csstudio.utility.nameSpaceBrowser.utility.NameSpace;
-import org.eclipse.core.runtime.jobs.IJobChangeEvent;
-import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+import org.csstudio.utility.namespace.utility.NameSpaceSearchResult;
+
+import service.LdapService;
+import service.impl.LdapServiceImpl;
 
 /**
  * @author hrickens
@@ -40,29 +43,32 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
  * @since 07.05.2007
  */
 public class NameSpaceLDAP extends NameSpace {
-    
+
+    private final LdapService _service = LdapServiceImpl.getInstance();
+
 	/* (non-Javadoc)
 	 * @see org.csstudio.utility.nameSpaceBrowser.utility.NameSpace#start()
 	 */
 	@Override
 	public void start() {
 		try{
-			LDAPReader ldapr;
-            if (getNameSpaceResultList() instanceof LdapResultList) {
-                LdapResultList eListe = (LdapResultList) getNameSpaceResultList();
-                String tmp = getSelection();
-        		if(tmp.endsWith("=*,")) //$NON-NLS-1$
-        			ldapr = new LDAPReader(getName(), getFilter(),SearchControls.SUBTREE_SCOPE, eListe);
-        		else
-        			ldapr = new LDAPReader(getName(), getFilter(),SearchControls.ONELEVEL_SCOPE, eListe);
-        		
+			//LDAPReader ldapr;
+            final NameSpaceSearchResult nameSpaceResultList = getNameSpaceResultList();
+            if (nameSpaceResultList instanceof LdapSearchResult) {
 
-        		ldapr.schedule();
-            }else{
+                LdapContentModel model;
+                if(getSelection().endsWith("=*,")) {
+        		    model = _service.getEntries(new LdapSeachResultObserver(), getName(), getFilter(), SearchControls.SUBTREE_SCOPE);
+                } else {
+                    model = _service.getEntries(new LdapSeachResultObserver(), getName(), getFilter(), SearchControls.ONELEVEL_SCOPE);
+                }
+                updateResultList(model.getCurrentLdapSearchResult());
+
+            } else{
                 // TODO: Was soll gemacht werden wenn das 'getNameSpaceResultList() instanceof ErgebnisListe' nicht stimmt.
                 Activator.logError(Messages.getString("CSSView.exp.IAE.2")); //$NON-NLS-1$
             }
-        }catch (IllegalArgumentException e) {
+        }catch (final IllegalArgumentException e) {
             Activator.logException(Messages.getString("CSSView.exp.IAE.1"), e); //$NON-NLS-1$
         }
 	}

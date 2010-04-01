@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2007 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -22,21 +22,35 @@
 /*
  * $Id$
  */
-package org.csstudio.utility.namespace.utility;
+package org.csstudio.utility.ldap.preference;
 
-import java.util.List;
-import java.util.Observable;
+import javax.naming.Context;
 
 /**
- * @author hrickens
- * @author $Author$
+ * Preference keys.
+ *
+ * @author bknerr
  * @version $Revision$
- * @since 09.05.2007
+ * @since 30.03.2010
  */
-public abstract class NameSpaceResultList extends Observable {
-    
-    abstract public List<ControlSystemItem> getCSIResultList();
-    abstract public NameSpaceResultList getNew();
-    abstract public void notifyView();
-    abstract public void setResultList(List<String> resultList);
+public enum PreferenceKey {
+    P_STRING_USER_PASSWORD(Context.SECURITY_CREDENTIALS),
+    P_STRING_USER_DN(Context.SECURITY_PRINCIPAL),
+    SECURITY_PROTOCOL(Context.SECURITY_PROTOCOL),
+    SECURITY_AUTHENTICATION(Context.SECURITY_AUTHENTICATION),
+    P_STRING_URL(Context.PROVIDER_URL);
+
+    private final String _contextId;
+
+
+    /**
+     * Constructor.
+     */
+    private PreferenceKey(final String contextId) {
+        _contextId = contextId;
+    }
+
+    public String getContextId() {
+        return _contextId;
+    }
 }

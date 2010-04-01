@@ -24,7 +24,7 @@
  */
 package org.csstudio.utility.nameSpaceBrowser.utility;
 
-import org.csstudio.utility.namespace.utility.NameSpaceResultList;
+import org.csstudio.utility.namespace.utility.NameSpaceSearchResult;
 
 /**
  * @author hrickens
@@ -33,46 +33,51 @@ import org.csstudio.utility.namespace.utility.NameSpaceResultList;
  * @since 07.05.2007
  */
 public abstract class NameSpace {
-	
+
 	private String _name;
 	private String _filter;
-	private NameSpaceResultList _resultList;
+	private NameSpaceSearchResult _resultList;
 	private String _selection;
 
 	abstract public void start();
-	
+
 
 	/**
 	 * @param name
 	 */
-	public void setName(String name) {
+	public void setName(final String name) {
 		this._name = name;
 	}
 
 	/**
 	 * @param filter
 	 */
-	public void setFilter(String filter) {
+	public void setFilter(final String filter) {
 		this._filter = filter;
 	}
 
 	/**
 	 * @param ergebnisListe
 	 */
-	public void setErgebnisListe(NameSpaceResultList ergebnisListe) {
+	public void setResult(final NameSpaceSearchResult ergebnisListe) {
 		this._resultList = ergebnisListe;
 	}
 
 	/**
 	 * @param selection
 	 */
-	public void setSelection(String selection) {
+	public void setSelection(final String selection) {
 		 this._selection=selection;
 	}
 
-	protected NameSpaceResultList getNameSpaceResultList() {
+	public NameSpaceSearchResult getNameSpaceResultList() {
 		return _resultList;
 	}
+
+    public void updateResultList(final NameSpaceSearchResult res) {
+        _resultList.setCSIResultList(res.getCSIResultList());
+    }
+
 
 	protected String getFilter() {
 		return _filter;
@@ -85,6 +90,8 @@ public abstract class NameSpace {
 	protected String getSelection() {
 		return _selection;
 	}
-	
+
+
+
 
 }

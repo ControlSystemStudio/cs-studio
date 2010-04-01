@@ -23,7 +23,7 @@ package org.csstudio.utility.ldap.ui.preference;
 
 import org.csstudio.utility.ldap.Activator;
 import org.csstudio.utility.ldap.Messages;
-import org.csstudio.utility.ldap.preference.PreferenceConstants;
+import org.csstudio.utility.ldap.preference.PreferenceKey;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.StringFieldEditor;
@@ -47,25 +47,38 @@ public class PreferencePage extends FieldEditorPreferencePage
 	 * of preferences. Each field editor knows how to save and
 	 * restore itself.
 	 */
-	public void createFieldEditors() {
-		addField(
-			new StringFieldEditor(PreferenceConstants.P_STRING_URL, Messages.getString("PreferencePage.URL"), getFieldEditorParent())); //$NON-NLS-1$
-		addField(
-			new StringFieldEditor(PreferenceConstants.P_STRING_USER_DN, Messages.getString("PreferencePage.DN"), getFieldEditorParent())); //$NON-NLS-1$
-		StringFieldEditor sfeP= new StringFieldEditor(PreferenceConstants.P_STRING_USER_PASSWORD, Messages.getString("PreferencePage.PASS"), getFieldEditorParent()); //$NON-NLS-1$
+	@Override
+    public void createFieldEditors() {
+		addField(new StringFieldEditor(PreferenceKey.P_STRING_URL.name(),
+		                               Messages.getString("PreferencePage.URL"),
+		                               getFieldEditorParent())); //$NON-NLS-1$
+		addField(new StringFieldEditor(PreferenceKey.P_STRING_USER_DN.name(),
+		                               Messages.getString("PreferencePage.DN"),
+		                               getFieldEditorParent())); //$NON-NLS-1$
+
+		final StringFieldEditor sfeP =
+		    new StringFieldEditor(PreferenceKey.P_STRING_USER_PASSWORD.name(),
+		                          Messages.getString("PreferencePage.PASS"),
+		                          getFieldEditorParent()); //$NON-NLS-1$
+
         sfeP.getTextControl(getFieldEditorParent()).setEchoChar('*');
-		addField(sfeP);		        
-		addField(
-				new StringFieldEditor(PreferenceConstants.SECURITY_PROTOCOL, Messages.getString("PreferencePage.SECURITY_PROTOCOL"), getFieldEditorParent())); //$NON-NLS-1$
-		addField(
-				new StringFieldEditor(PreferenceConstants.SECURITY_AUTHENTICATION, Messages.getString("PreferencePage.SECURITY_AUTHENTICATION"), getFieldEditorParent())); //$NON-NLS-1$
+		addField(sfeP);
+
+		addField(new StringFieldEditor(PreferenceKey.SECURITY_PROTOCOL.name(),
+		                               Messages.getString("PreferencePage.SECURITY_PROTOCOL"),
+		                               getFieldEditorParent())); //$NON-NLS-1$
+
+		addField(new StringFieldEditor(PreferenceKey.SECURITY_AUTHENTICATION.name(),
+		                               Messages.getString("PreferencePage.SECURITY_AUTHENTICATION"),
+		                               getFieldEditorParent())); //$NON-NLS-1$
 
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
 	 */
-	public void init(IWorkbench workbench) {
+	public void init(final IWorkbench workbench) {
+	    // Empty
 	}
 
 

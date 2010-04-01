@@ -28,67 +28,67 @@ import java.util.Vector;
 import org.csstudio.platform.logging.CentralLogger;
 
 public class LdapReferences {
-    
+
     public Hashtable<String, Entry> ldapEntries = null;
-    
+
     public LdapReferences() {
         //
         // initialize hash table
         //
         ldapEntries = new Hashtable<String, Entry>();
     }
-    
+
     public class Entry {
-        
-        private GregorianCalendar timeCreated = null;
-        private GregorianCalendar lastTimeUsed = null;
-        private Vector<String> namesInNamespace = null;
-        
+
+        private GregorianCalendar _timeCreated = null;
+        private GregorianCalendar _lastTimeUsed = null;
+        private Vector<String> _namesInNamespace = null;
+
         public Entry ( final Vector<String> namesInNamespace) {
             //
             // initialize timer
             //
             setTimeCreated( new GregorianCalendar());
             setNamesInNamespace(namesInNamespace);
-            
+
         }
-        
-        
+
+
         public GregorianCalendar getLastTimeUsed() {
-            return lastTimeUsed;
+            return _lastTimeUsed;
         }
         public void setLastTimeUsed(final GregorianCalendar lastTimeUsed) {
-            this.lastTimeUsed = lastTimeUsed;
+            this._lastTimeUsed = lastTimeUsed;
         }
         public Vector<String> getNamesInNamespace() {
-            return namesInNamespace;
+            return _namesInNamespace;
         }
         public void setNamesInNamespace(final Vector<String> namesInNamespace) {
-            this.namesInNamespace = namesInNamespace;
+            this._namesInNamespace = namesInNamespace;
         }
         public void replaceNamesInNamespace(final Vector<String> namesInNamespace) {
-            this.namesInNamespace = namesInNamespace;
+            this._namesInNamespace = namesInNamespace;
         }
         public GregorianCalendar getTimeCreated() {
-            return timeCreated;
+            return _timeCreated;
         }
         public void setTimeCreated(final GregorianCalendar timeCreated) {
-            this.timeCreated = timeCreated;
+            this._timeCreated = timeCreated;
         }
-        
+
     }
-    
+
     public Hashtable<String, Entry> getLdapEntries() {
         //
         // return hash table
         //
         return ldapEntries;
     }
-    
+
     public void setLdapEntries(final Hashtable<String, Entry> entries) {
         this.ldapEntries = entries;
     }
-    
+
     public void newLdapEntry ( final String channelName, final Vector<String> namesInNamespace) {
         //
         // insert new entry
@@ -96,14 +96,14 @@ public class LdapReferences {
         final Entry newEntry = new Entry ( namesInNamespace);
         this.ldapEntries.put( channelName, newEntry);
     }
-    
+
     public Entry getEntry ( final String channelName) {
         //
         // find and return entry in hastable
         //
         return this.ldapEntries.get( channelName);
     }
-    
+
     public void changeLdapEntry ( final String channelName, final Vector<String> namesInNamespace) {
         //
         // insert new entry
@@ -116,22 +116,22 @@ public class LdapReferences {
         } else {
             CentralLogger.getInstance().warn( this, "no entry for: " + channelName + " in ldapEntries hashTable");
         }
-        
+
     }
-    
+
     public boolean hasEntry ( final String channelName) {
         //
         // find ldap entry by searchig for the channel name
         //
         return ldapEntries.containsKey( channelName);
     }
-    
+
     public void clearAll(){
         ldapEntries.clear();
     }
-    
+
     public void clear(final String channelName){
         ldapEntries.remove(channelName);
     }
-    
+
 }

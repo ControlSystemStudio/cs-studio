@@ -24,7 +24,11 @@
  */
 package org.csstudio.utility.ldap.connection;
 
+import java.util.Collections;
+import java.util.EnumMap;
 import java.util.Hashtable;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.naming.Context;
 import javax.naming.NamingException;
@@ -33,9 +37,11 @@ import javax.naming.ldap.InitialLdapContext;
 
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.util.StringUtil;
 import org.csstudio.utility.ldap.Activator;
-import org.csstudio.utility.ldap.preference.PreferenceConstants;
-import org.eclipse.core.runtime.Preferences;
+import org.csstudio.utility.ldap.preference.PreferenceKey;
+import org.eclipse.core.runtime.preferences.DefaultScope;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
 /**
  * @author hrickens
@@ -44,12 +50,13 @@ import org.eclipse.core.runtime.Preferences;
  * @since 12.04.2007
  */
 public class LDAPConnector {
-    
+
     private final Logger LOG = CentralLogger.getInstance().getLogger(this);
-    
+
     private InitialLdapContext _ctx = null;
-    private Hashtable<Object, String> _env;
-    
+
+    private Map<PreferenceKey, String> _prefsMap = Collections.emptyMap();
+
     /**
      * The connection settings come from
      * {@link org.csstudio.utility.ldap.ui.preference}
@@ -58,33 +65,21 @@ public class LDAPConnector {
      */
     public LDAPConnector () throws NamingException{// throws NamingException{
         try {
-            getUIenv();
-            _ctx = createInitialContext(_env); // does the same now, but better naming
-            
-            
+            _prefsMap = getUIenv();
+            _ctx = createInitialContext(_prefsMap); // does the same now, but better naming
+
+
         } catch (final NamingException e) {
             LOG.error(e);
             LOG.error("The follow setting(s) a invalid: \r\n"
-                      +"RemainingName: "+e.getRemainingName()+"\r\n"
-                      +"ResolvedObj: "+e.getResolvedObj()+"\r\n"
-                      +"Explanation: "+e.getExplanation()
+                      +"RemainingName: " + e.getRemainingName()+"\r\n"
+                      +"ResolvedObj: " + e.getResolvedObj()+"\r\n"
+                      +"Explanation: " + e.getExplanation()
             );
             throw e;
         }
     }
-    
-    /**
-     *
-     * @param env connection settings.
-     * @throws NamingException
-     *  @see javax.naming.directory.DirContext;
-     *  @see    javax.naming.Context;
-     */
-    public LDAPConnector (final Hashtable<Object,String> env) throws NamingException{
-        setEnv(env);
-        _ctx = createInitialContext(_env);
-    }
-    
+
     /**
      *
      * @return the LDAP Connection
@@ -92,11 +87,11 @@ public class LDAPConnector {
     public DirContext getDirContext() {
         return _ctx;
     }
-    
+
     public DirContext reconnect() throws NamingException {
         try {
-            _ctx = createInitialContext(_env);
-            
+            _ctx = createInitialContext(_prefsMap);
+
         } catch (final NamingException e) {
             LOG.error(e);
             LOG.error("The follow setting(s) a invalid: \r\n"
@@ -107,117 +102,66 @@ public class LDAPConnector {
             throw e;
         }
         return getDirContext();
-        
+
     }
-    /**
-     * @param env
-     * @return
-     */
-    private void setDefaultENV(final String[] env) {
-        // Set up the environment for creating the initial context
-        _env = new Hashtable<Object, String>(11);
-        _env.put(Context.INITIAL_CONTEXT_FACTORY,"com.sun.jndi.ldap.LdapCtxFactory"); //$NON-NLS-1$
-        int i=0;
-        switch(env.length){
-            default:
-            case 5:
-                i=4;
-                if(env[i]!=null){
-                    _env.put(Context.SECURITY_CREDENTIALS, env[i]);
-                }
-            case 4:
-                i=3;
-                if(env[i]!=null){
-                    _env.put(Context.SECURITY_PRINCIPAL, env[i]);
-                }
-            case 3:
-                i=2;
-                if(env[i]!=null){
-                    _env.put(Context.SECURITY_AUTHENTICATION, env[i]);
-                }
-            case 2:
-                i=1;
-                if(env[i]!=null){
-                    _env.put(Context.SECURITY_PROTOCOL, env[i]);
-                }
-            case 1:
-                i=0;
-                if(env[i]!=null){
-                    _env.put(Context.PROVIDER_URL, env[i]);
-                }
-            case 0:
-                break;
-        }
-    }
-    
-    
+
+
     /**
      * Read first the preferences in instance scope and if there is no
      * user defined setting, get them from default scope.
-     * 
+     *
      * @return env with the settings from PreferencPage
      */
-    private void getUIenv() {
-        
-        final Preferences prefs = Activator.getDefault().getPluginPreferences();
-        // Set up the environment for creating the initial context
-        
+    private Map<PreferenceKey, String> getUIenv() {
+
+        final IEclipsePreferences prefs = new DefaultScope().getNode(Activator.PLUGIN_ID);
+
+        final String url = prefs.get(PreferenceKey.P_STRING_URL.name(), "");
+        final String proto = prefs.get(PreferenceKey.SECURITY_PROTOCOL.name(), "");
+        final String auth = prefs.get(PreferenceKey.SECURITY_AUTHENTICATION.name(), "");
+        final String dn = prefs.get(PreferenceKey.P_STRING_USER_DN.name(), "");
+        final String pw = prefs.get(PreferenceKey.P_STRING_USER_PASSWORD.name(), "");
+
+        _prefsMap = new EnumMap<PreferenceKey, String>(PreferenceKey.class);
+
+        if (StringUtil.hasLength(url)) {
+            _prefsMap.put(PreferenceKey.P_STRING_URL, url);
+        }
+        if (StringUtil.hasLength(proto)) {
+            _prefsMap.put(PreferenceKey.SECURITY_PROTOCOL, proto);
+        }
+        if (StringUtil.hasLength(auth)) {
+            _prefsMap.put(PreferenceKey.SECURITY_AUTHENTICATION, auth);
+        }
+        if (StringUtil.hasLength(dn)) {
+            _prefsMap.put(PreferenceKey.P_STRING_USER_DN, dn);
+        }
+        if (StringUtil.hasLength(pw)) {
+            _prefsMap.put(PreferenceKey.P_STRING_USER_PASSWORD, pw);
+        }
+
         LOG.debug("++++++++++++++++++++++++++++++++++++++++++++++");
-        LOG.debug("+ PLUGIN_ID: "+Activator.PLUGIN_ID);
-        LOG.debug("+ P_STRING_URL: "+prefs.getString(PreferenceConstants.P_STRING_URL));
-        LOG.debug("+ SECURITY_PROTOCOL: "+prefs.getString(PreferenceConstants.SECURITY_PROTOCOL));
-        LOG.debug("+ SECURITY_AUTHENTICATION: "+prefs.getString(PreferenceConstants.SECURITY_AUTHENTICATION));
-        LOG.debug("+ P_STRING_USER_DN: "+prefs.getString(PreferenceConstants.P_STRING_USER_DN));
-        LOG.debug("+ P_STRING_USER_PASSWORD: "+prefs.getString(PreferenceConstants.P_STRING_USER_PASSWORD));
+        LOG.debug("+ PLUGIN_ID: " + Activator.PLUGIN_ID);
+        LOG.debug("+ P_STRING_URL: " + url);
+        LOG.debug("+ SECURITY_PROTOCOL: " + proto);
+        LOG.debug("+ SECURITY_AUTHENTICATION: " + auth);
+        LOG.debug("+ P_STRING_USER_DN: " + dn);
+        LOG.debug("+ P_STRING_USER_PASSWORD: " + pw);
         LOG.debug("----------------------------------------------");
-        String[] env = null;
-        // password
-        if(prefs.getString(PreferenceConstants.P_STRING_USER_PASSWORD).trim().length()>0){
-            env = new String[5];
-            env[4] = prefs.getString(PreferenceConstants.P_STRING_USER_PASSWORD);
-        }
-        // user
-        if(prefs.getString(PreferenceConstants.P_STRING_USER_DN).trim().length()>0){
-            if(env==null){
-                env = new String[4];
-            }
-            env[3] = prefs.getString(PreferenceConstants.P_STRING_USER_DN);
-        }
-        
-        if(prefs.getString(PreferenceConstants.SECURITY_AUTHENTICATION).trim().length()>0){
-            if(env==null){
-                env = new String[3];
-            }
-            env[2]=prefs.getString(PreferenceConstants.SECURITY_AUTHENTICATION);
-        }
-        
-        if(prefs.getString(PreferenceConstants.SECURITY_PROTOCOL).trim().length()>0){
-            if(env==null){
-                env = new String[2];
-            }
-            env[1]=prefs.getString(PreferenceConstants.SECURITY_PROTOCOL);
-        }
-        
-        if(env==null){
-            env = new String[1];
-        }
-        env[0]=prefs.getString(PreferenceConstants.P_STRING_URL);
-        setDefaultENV(env);
+
+        return _prefsMap;
     }
-    
-    /**
-     * Sets the environment Hashtable with a defensive copy of the parameter Hashtable
-     * @param env the environment
-     * @throws NamingException
-     */
-    private void setEnv(final Hashtable<Object, String> env) throws NamingException {
-        _env = new Hashtable<Object, String>();
-        _env.putAll(env);
-    }
-    
-    
-    private InitialLdapContext createInitialContext(final Hashtable<Object, String> env) throws NamingException {
+
+
+    private InitialLdapContext createInitialContext(final Map<PreferenceKey, String> prefsMap) throws NamingException {
+
+        final Hashtable<Object, String> env = new Hashtable<Object, String>();
+        for (final Entry<PreferenceKey, String> entry : prefsMap.entrySet()) {
+            env.put(entry.getKey().getContextId(), entry.getValue());
+        }
+        env.put(Context.INITIAL_CONTEXT_FACTORY,"com.sun.jndi.ldap.LdapCtxFactory");
+
         return new InitialLdapContext(env, null);
     }
-    
+
 }

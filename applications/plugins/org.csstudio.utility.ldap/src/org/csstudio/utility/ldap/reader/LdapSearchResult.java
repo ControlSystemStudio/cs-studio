@@ -29,39 +29,46 @@ import java.util.Set;
 import javax.naming.directory.SearchResult;
 
 import org.csstudio.utility.ldap.Activator;
+import org.csstudio.utility.ldap.LdapUtils;
 import org.csstudio.utility.ldap.Messages;
 import org.csstudio.utility.namespace.utility.ControlSystemItem;
-import org.csstudio.utility.namespace.utility.NameSpaceResultList;
+import org.csstudio.utility.namespace.utility.NameSpaceSearchResult;
+import org.csstudio.utility.namespace.utility.ProcessVariable;
 
 
-public class LdapResultList extends NameSpaceResultList {
-    
-    private List<String> _result = Collections.emptyList();
+public class LdapSearchResult extends NameSpaceSearchResult {
+
     private Set<SearchResult> _answerSet = Collections.emptySet();
-    
-    
-    public LdapResultList() {
+
+    private String _searchroot;
+
+    private String _filter;
+
+    private List<ControlSystemItem> _csiResult;
+
+    /**
+     * Constructor.
+     */
+    public LdapSearchResult() {
         // Empty
     }
-    
-    public List<String> getAnswer() {
-        final List<String> tmp = new ArrayList<String>(_result);
-        _result.clear(); // TODO (bknerr) : wtf ?
-        return tmp;
-    }
-    
+
     /* (non-Javadoc)
      * @see org.csstudio.utility.nameSpaceBrowser.utility.NameSpaceResultList#getResultList()
      */
     @Override
     public List<ControlSystemItem> getCSIResultList() {
+        if ((_csiResult != null) && !_csiResult.isEmpty()) {
+            return _csiResult;
+        }
+
         final List<ControlSystemItem> tmpList = new ArrayList<ControlSystemItem>();
-        if(_result == null) {
+        if(_answerSet == null) {
             return null;
         }
-        
-        for (final String row : _result) { // TODO (bknerr) : encapsulate LDAP answer parsing !
-            String cleanList = row;
+
+        for (final SearchResult row : _answerSet) { // TODO (bknerr) : encapsulate LDAP answer parsing !
+            String cleanList = row.getName();
             // Delete "-Chars that add from LDAP-Reader when the result contains special character
             if(cleanList.startsWith("\"")){ //$NON-NLS-1$
                 if(cleanList.endsWith("\"")) {
@@ -76,61 +83,60 @@ public class LdapResultList extends NameSpaceResultList {
                     Activator.logError(Messages.getString("CSSView.Error1")+row+"'");//$NON-NLS-1$ //$NON-NLS-2$
                 }
                 break;
-                
+
             }
-            
-            //            if(token[0].compareTo("eren")==0){ //$NON-NLS-1$
-            //                tmpList.add(new ProcessVariable(token[1], cleanList));
-            //            }
-            //            else{
-            tmpList.add(new ControlSystemItem(token[1], cleanList));
-            //            }
+
+            if (cleanList.startsWith(LdapUtils.EREN_FIELD_NAME)) {
+                tmpList.add(new ProcessVariable(token[1], cleanList));
+            } else {
+                tmpList.add(new ControlSystemItem(token[1], cleanList));
+            }
+
         }
-        //_result = new ArrayList<String>(); // TODO (bknerr) : wtf ?
-        _result.clear();
         return tmpList;
     }
-    
+
     /* (non-Javadoc)
      * @see org.csstudio.utility.nameSpaceBrowser.utility.NameSpaceResultList#getNew()
      */
     @Override
-    public NameSpaceResultList getNew() {
-        //return new LdapResultList(_observer);
-        return new LdapResultList();
+    public NameSpaceSearchResult getNew() {
+        return new LdapSearchResult();
     }
-    
+
     @Override
     public void notifyView() {
         setChanged();
         notifyObservers();
     }
-    
-    // TODO (bknerr) : replace all accesses to this List<String by the Set<SearchResult> (answerSet)
-    /* (non-Javadoc)
-     * @see org.csstudio.utility.nameSpaceBrowser.utility.NameSpaceResultList#setResultList(java.util.ArrayList)
-     */
-    @Override
-    public void setResultList(final List<String> resultList) {
-        _result = new ArrayList<String>(resultList);
+
+    public void setResult(final String root, final String filter, final Set<SearchResult> answerSet) {
+        _searchroot = root;
+        _filter = filter;
+        _answerSet = answerSet;
+
         notifyView();
     }
-    /**
-     * @param list
-     * @param answerSet
-     */
-    public void setResultList(final List<String> list, final Set<SearchResult> answerSet) {
-        setAnswerSet(answerSet);
-        setResultList(list);
-    }
-    
-    
-    private void setAnswerSet(final Set<SearchResult> answerSet) {
-        _answerSet = answerSet;
-    }
+
     public Set<SearchResult> getAnswerSet() {
         return _answerSet;
     }
-    
-    
+
+    public String getSearchRoot() {
+        return _searchroot;
+    }
+
+    public String getFilter() {
+        return _filter;
+    }
+
+    /**
+     * Copies the list of {@link ControlSystemItem}.
+     * {@inheritDoc}
+     */
+    @Override
+    public final void setCSIResultList(final List<ControlSystemItem> resultList) {
+        _csiResult = new ArrayList<ControlSystemItem>(resultList);
+        notifyView();
+    }
 }

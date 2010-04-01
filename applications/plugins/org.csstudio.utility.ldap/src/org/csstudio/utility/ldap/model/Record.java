@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -19,35 +19,67 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.utility.ldap.reader;
+package org.csstudio.utility.ldap.model;
 
-import java.util.Observer;
+import java.io.Serializable;
 
-
-public class LdapServiceImpl implements LdapService {
-
-
+/**
+ * Class type for IOC records.
+ * 
+ * @author bknerr
+ */
+public class Record implements Serializable {
+    
+    private static final long serialVersionUID = 1L;
+    
+    private String _name;
+    
+    public Record(final String name) {
+        _name = name;
+    }
+    
+    public void setName(final String name) {
+        _name = name;
+    }
+    
+    public String getName() {
+        return _name;
+    }
+    
     /**
-     * Constructor.
+     * (@inheritDoc)
      */
-    public LdapServiceImpl() {
-        // Empty
-    }
-
-    private LdapResultList createLdapReader(final String searchRoot, final String filter, final Observer observer) {
-
-        final LdapResultList list = new LdapResultList();
-        list.addObserver(observer);
-
-        final LDAPReader ldapr = new LDAPReader(searchRoot, filter, list);
-        ldapr.schedule();
-
-        return list;
-    }
-
     @Override
-    public LdapResultList readLdapEntries(final String searchRoot, final String filter, final Observer observer) {
-        final LdapResultList result = createLdapReader(searchRoot, filter, observer);
+    public int hashCode() {
+        final int prime = 31;
+        final int result = prime + ( (_name == null) ? 0 : _name.hashCode());
         return result;
     }
+    
+    /**
+     * (@inheritDoc)
+     */
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Record other = (Record) obj;
+        if (_name == null) {
+            if (other._name != null) {
+                return false;
+            }
+        } else if (!_name.equals(other._name)) {
+            return false;
+        }
+        return true;
+    }
+    
+    
 }

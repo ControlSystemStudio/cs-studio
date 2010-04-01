@@ -24,8 +24,12 @@
  */
 package org.csstudio.utility.ldap.namespacebrowser.utility;
 
+import static org.csstudio.utility.ldap.LdapUtils.FIELD_SEPARATOR;
+
+import org.csstudio.utility.ldap.LdapUtils;
 import org.csstudio.utility.nameSpaceBrowser.utility.Automat;
 import org.csstudio.utility.nameSpaceBrowser.utility.CSSViewParameter;
+
 
 /**
  * @author hrickens
@@ -36,73 +40,67 @@ import org.csstudio.utility.nameSpaceBrowser.utility.CSSViewParameter;
 public class LDAP2Automat extends Automat {
 
 	// State machines parameter
-	private Zustand aktuell = Zustand.START;
+	private NameSpaceBrowserState _currentState = NameSpaceBrowserState.START;
+
 	// LDAP parameter
-	private String storeName=""; 
-    private String root="";
+	private String _storeName = "";
+    private String _root = "";
 
 	/* (non-Javadoc)
 	 * @see org.csstudio.utility.nameSpaceBrowser.utility.Automat#event(org.csstudio.utility.nameSpaceBrowser.utility.Automat.Ereignis, java.lang.String)
 	 */
 	@Override
-	public CSSViewParameter goDown(Ereignis ereignis, String select) {
-		CSSViewParameter parameter = new CSSViewParameter();
-		String aktuelleEbene = select.split("=")[0]+"=";
-		int index = storeName.indexOf(aktuelleEbene);
-		if(aktuelleEbene.compareTo("ou=")==0){
-            if(select.indexOf("*")<0){
-                parameter.name=select;
-                root=select;
-            }
+	public CSSViewParameter goDown(final String selection) {
+
+	    final CSSViewParameter parameter = new CSSViewParameter();
+
+	    final String[] selectionFields = selection.split(LdapUtils.FIELD_ASSIGNMENT);
+	    final String levelIdentifier = selectionFields[0];
+
+	    if (_storeName.contains(levelIdentifier)) { // navigation to the same or a higher level
+	        // Delete everything from _storeName from the beginning of the string to current level
+	        final String regexp = "(.*)" + levelIdentifier + LdapUtils.FIELD_ASSIGNMENT + "[^,]*,";
+	        _storeName = _storeName.replaceFirst(regexp, "");
+	    }
+
+
+		if(selection.startsWith("ou=")){
+		    _root = selection;
+
+		    parameter.name = _root;
 			parameter.filter = "efan=*";
-			parameter.newCSSView=true;
-			aktuell=Zustand.CONTROLLER;
-		}else if(aktuelleEbene.compareTo("efan=")==0){
-		    // All selected?
-            if(select.indexOf("*")<0){
-                // new sub
-    			if(index<0){
-//    				parameter.name = "ecom=EPICS-IOC,"+select+storeName;
-    			    if(select.endsWith(",")){
-    			        select = select.substring(0,select.length()-1);
-    			    }
-    				parameter.name = "ecom=EPICS-IOC,"+select;
-                // change sub
-    			}else{
-    				// Replace the start of the String to the first ',' after aktuelleEbene
-//    				parameter.name = "ecom=EPICS-IOC,"+select+storeName.substring(storeName.indexOf(',',index)+1,storeName.length());
-    			    parameter.name = "ecom=EPICS-IOC,"+select;
-    			}
-            }else parameter.name = root;
+			parameter.newCSSView = true;
+
+			_currentState = NameSpaceBrowserState.CONTROLLER;
+
+		} else if(selection.startsWith("efan=")){
+		    if (selection.contains("*")) { // [All] efans selected
+		        parameter.name = _root;
+		    } else {                       // <efan> selected
+		        parameter.name = "ecom=EPICS-IOC" + FIELD_SEPARATOR +
+		                         selection + FIELD_SEPARATOR +
+		                         _root;
+		    }
 
 			parameter.filter = "econ=*";
 			parameter.newCSSView=true;
-			aktuell=Zustand.CONTROLLER;
-		}else if(aktuelleEbene.compareTo("econ=")==0){
-            // All selected?
-            if(select.indexOf("*")<0){
-                // new sub
-    			if(index<0){
-//    				parameter.name = select+storeName;
-    				parameter.name = select;
-                // change sub                    
-    			}else{
-    				// Replace the start of the String to the first ',' after aktuelleEbene
-    				parameter.name = select;
-//    				parameter.name = select+storeName.substring(storeName.indexOf(',',index)+1,storeName.length());
-    			}
-            }else{
-                if(storeName.startsWith("econ=")){
-                    parameter.name = storeName.substring(storeName.indexOf(',')+1);
-                }else{
-                    parameter.name = storeName;
-                }
+
+			_currentState=NameSpaceBrowserState.CONTROLLER;
+
+		} else if(selection.startsWith("econ=")){
+            if(selection.contains("*")){ // [All] econs selected
+                parameter.name = _storeName;
+            } else{                      // <econ> selected
+                parameter.name = selection + FIELD_SEPARATOR +_storeName;
             }
 			parameter.filter = "eren=*";
-			parameter.newCSSView=false;
-			aktuell=Zustand.RECORD;
+			parameter.newCSSView = false;
+
+			_currentState = NameSpaceBrowserState.RECORD;
+
 		}
-		storeName = parameter.name; 		
+		_storeName = parameter.name;
+
 		return parameter;
 	}
 
@@ -110,8 +108,8 @@ public class LDAP2Automat extends Automat {
 	 * @see org.csstudio.utility.nameSpaceBrowser.utility.Automat#getZustand()
 	 */
 	@Override
-	public Zustand getZustand() {
-		return aktuell;
+	public NameSpaceBrowserState getState() {
+		return _currentState;
 	}
 
 }

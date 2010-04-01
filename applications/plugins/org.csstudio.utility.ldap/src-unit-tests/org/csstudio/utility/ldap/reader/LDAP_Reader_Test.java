@@ -21,11 +21,19 @@
  */
 package org.csstudio.utility.ldap.reader;
 
+import static org.csstudio.utility.ldap.LdapUtils.EFAN_FIELD_NAME;
+import static org.csstudio.utility.ldap.LdapUtils.EPICS_CTRL_FIELD_VALUE;
+import static org.csstudio.utility.ldap.LdapUtils.FIELD_ASSIGNMENT;
+import static org.csstudio.utility.ldap.LdapUtils.OU_FIELD_NAME;
+import static org.csstudio.utility.ldap.LdapUtils.any;
 import static org.junit.Assert.fail;
 import junit.framework.Assert;
 
-import org.csstudio.utility.ldap.LdapUtils;
+import org.csstudio.utility.ldap.model.LdapContentModel;
 import org.junit.Test;
+
+import service.LdapService;
+import service.impl.LdapServiceImpl;
 
 /**
  * @author hrickens
@@ -33,32 +41,23 @@ import org.junit.Test;
  */
 public class LDAP_Reader_Test {
 
+    private final LdapService _service = LdapServiceImpl.getInstance();
+
 	/**
-	 * Test method for {@link org.csstudio.utility.ldap.reader.LDAPReader#LDAPReader(java.lang.String[], org.csstudio.utility.ldap.LdapResultList.utility.LdapResultList)}.
+	 * Test method for {@link org.csstudio.utility.ldap.reader.LDAPReader#LDAPReader(java.lang.String[], org.csstudio.utility.ldap.LdapSearchResult.utility.LdapResultList)}.
 	 */
 	@Test
-	public void testLDAPReaderStringArrayResultList() {
-	    final LdapResultListObserver o = new LdapResultListObserver();
-		final LdapResultList el = new LdapResultList();
-		el.addObserver(o);
+	public void testLDAPServiceFacilityLookup() {
+	    final LdapContentModel model =
+	        _service.getEntries(new LdapSeachResultObserver(),
+	                            OU_FIELD_NAME + FIELD_ASSIGNMENT + EPICS_CTRL_FIELD_VALUE,
+	                            any(EFAN_FIELD_NAME));
 
-		final String nameUFilter[]= {LdapUtils.OU_FIELD_NAME + LdapUtils.FIELD_ASSIGNMENT + LdapUtils.EPICS_CTRL_FIELD_VALUE,
-		                             LdapUtils.EFAN_FIELD_NAME + LdapUtils.FIELD_ASSIGNMENT + LdapUtils.FIELD_WILDCARD};
-		final LDAPReader lr = new LDAPReader(nameUFilter, el);
-		lr.schedule();
-
-		while(!o.isReady()){
-		    try {
-		        Thread.sleep(100);
-		    } catch (final InterruptedException e) {
-		        // ignore
-		    }
-		} // observer finished update of the model
-		Assert.assertNotNull(o.getResult());
+		Assert.assertTrue(!model.getFacilities().isEmpty());
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.utility.ldap.reader.LDAPReader#LDAPReader(java.lang.String[], int, org.csstudio.utility.ldap.LdapResultList.utility.ResultList)}.
+	 * Test method for {@link org.csstudio.utility.ldap.reader.LDAPReader#LDAPReader(java.lang.String[], int, org.csstudio.utility.ldap.LdapSearchResult.utility.ResultList)}.
 	 */
 	@Test
 	public void testLDAPReaderStringArrayIntResultList() {
@@ -66,7 +65,7 @@ public class LDAP_Reader_Test {
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.utility.ldap.reader.LDAPReader#LDAPReader(java.lang.String, java.lang.String, org.csstudio.utility.ldap.LdapResultList.utility.ResultList)}.
+	 * Test method for {@link org.csstudio.utility.ldap.reader.LDAPReader#LDAPReader(java.lang.String, java.lang.String, org.csstudio.utility.ldap.LdapSearchResult.utility.ResultList)}.
 	 */
 	@Test
 	public void testLDAPReaderStringStringResultList() {
@@ -74,7 +73,7 @@ public class LDAP_Reader_Test {
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.utility.ldap.reader.LDAPReader#LDAPReader(java.lang.String, java.lang.String, int, org.csstudio.utility.ldap.LdapResultList.utility.ResultList)}.
+	 * Test method for {@link org.csstudio.utility.ldap.reader.LDAPReader#LDAPReader(java.lang.String, java.lang.String, int, org.csstudio.utility.ldap.LdapSearchResult.utility.ResultList)}.
 	 */
 	@Test
 	public void testLDAPReaderStringStringIntResultList() {

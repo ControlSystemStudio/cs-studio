@@ -1,4 +1,4 @@
-package org.csstudio.utility.ldapUpdater;
+package org.csstudio.utility.ldap.reader;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -11,46 +11,61 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.util.StringUtil;
 import org.csstudio.utility.ldap.LdapUtils;
 import org.csstudio.utility.ldap.LdapUtils.LdapQueryResult;
-import org.csstudio.utility.ldap.reader.LdapResultList;
-import org.csstudio.utility.ldapUpdater.model.LDAPContentModel;
+import org.csstudio.utility.ldap.model.LdapContentModel;
 
 /**
- * TODO (kvalett) : Documentation missing.
- * @author valett
+ * TODO (bknerr) : Documentation missing.
+ * @author bknerr
  */
-public class ReadLdapObserver implements Observer {
+public class LdapSeachResultObserver implements Observer {
 
     private final Logger LOGGER = CentralLogger.getInstance().getLogger(this);
-    private final LDAPContentModel _model;
+    private final LdapContentModel _model;
 
-    private boolean _ready = false;
+    private boolean _modelReady = false;
 
-    public ReadLdapObserver(final LDAPContentModel model) {
+    /**
+     * Constructor.
+     */
+    public LdapSeachResultObserver() {
+
+        _model = new LdapContentModel();
+    }
+
+    /**
+     * Constructor.
+     * @param model the content model to be filled by the observable.
+     */
+    public LdapSeachResultObserver(final LdapContentModel model) {
+
         _model = model;
     }
 
-    public boolean isReady() {
-        return _ready;
+    public boolean isModelReady() {
+        return _modelReady;
     }
 
-    public void setReady(final boolean ready) {
-        _ready = ready;
+    public void setModelReady(final boolean ready) {
+        _modelReady = ready;
     }
 
 
     /**
      * Retrieves the contents of the currents result from the LDAP lookup.
      * Invokes parser for any LDAP entry and stores the results in the
-     * {@link LDAPContentModel}.
+     * {@link LdapContentModel}.
      */
     @Override
     public synchronized void update(final Observable o, final Object arg) {
-        if (!(o instanceof LdapResultList)) {
-            throw new IllegalArgumentException("Observed object must be of type " + LdapResultList.class.getName());
+        if (!(o instanceof LdapSearchResult)) {
+            throw new IllegalArgumentException("Observed object must be of type " + LdapSearchResult.class.getName());
         }
         LOGGER.info("Observer update: fill LDAP model.");
 
-        final Set<SearchResult> answerSet = ((LdapResultList) o).getAnswerSet();
+        final LdapSearchResult result = (LdapSearchResult) o;
+        _model.setCurrentLdapSearchResult(result);
+
+        final Set<SearchResult> answerSet = result.getAnswerSet();
 
         for (final SearchResult entry : answerSet) {
             entry.setRelative(false);
@@ -74,14 +89,14 @@ public class ReadLdapObserver implements Observer {
 
         LOGGER.info("LDAP entries retrieved: " + answerSet.size());
 
-        setReady(true);
+        setModelReady(true);
         LOGGER.info("Observer update finished.");
     }
 
     /**
      * @return the backing model from the ldap update filled with values from the last ready request.
      */
-    public LDAPContentModel getLdapModel() {
+    public LdapContentModel getLdapModel() {
         return _model;
     }
 

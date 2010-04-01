@@ -25,33 +25,35 @@ import org.csstudio.platform.model.IControlSystemItem;
 
 public class ControlSystemItem implements IControlSystemItem {
 
-	private String name;
-	private String TYPE_ID = "css:controlSystemItem"; //$NON-NLS-1$
-	private String path;
+	private final String _name;
+	private final String TYPE_ID = "css:controlSystemItem"; //$NON-NLS-1$
+	private final String _path;
 
 
-	public ControlSystemItem(String name, String path) {
-		this.name = name;
-		this.path = path;
+	public ControlSystemItem(final String name, final String path) {
+		this._name = name;
+		this._path = path;
 	}
 
 	public String getName() {
-		return name;
+		return _name;
 	}
 
 	public String getPath() {
-		return path;
+		return _path;
 	}
 
 	public String getTypeId() {
 		return TYPE_ID;
 	}
 
-	public Object getAdapter(Class adapter) {
+	@Override
+	public Object getAdapter(final Class adapter) {
 		return null;
 	}
 
-	public String toString(){
-		return name;
+	@Override
+    public String toString(){
+		return _name;
 	}
 }

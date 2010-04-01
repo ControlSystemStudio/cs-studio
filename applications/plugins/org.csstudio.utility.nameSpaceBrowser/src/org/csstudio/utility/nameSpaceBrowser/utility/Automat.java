@@ -31,10 +31,14 @@ package org.csstudio.utility.nameSpaceBrowser.utility;
  * @since 07.05.2007
  */
 public abstract class Automat {
-	public static enum Zustand {START,TOP,CONTROLLER,RECORD};
-	public static enum Ereignis {ou,efan,econ,UNKNOWN, UP,DOWN,CHANGE};
 
-	abstract public Zustand getZustand();
-	abstract public CSSViewParameter goDown(Ereignis ereignis, String select);
+    public static enum NameSpaceBrowserState {
+	    START,
+	    TOP,
+	    CONTROLLER,
+	    RECORD}
+
+	abstract public NameSpaceBrowserState getState();
+	abstract public CSSViewParameter goDown(String select);
 
 }

@@ -35,7 +35,8 @@ import org.csstudio.platform.CSSPlatformInfo;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.platform.security.User;
-import org.csstudio.utility.ldap.reader.IocFinder;
+import org.csstudio.utility.ldap.LdapUtils;
+import org.csstudio.utility.ldap.model.IOC;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.dialogs.Dialog;
@@ -57,42 +58,47 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
+import service.LdapService;
+import service.impl.LdapServiceImpl;
+
 /**
  * Dialog for the Save Value function.
- * 
+ *
  * @author Joerg Rathlev
  */
 public class SaveValueDialog extends Dialog {
-	
+
+    private  final LdapService _service = LdapServiceImpl.getInstance();
+
 	/**
 	 * The logger.
 	 */
 	private final CentralLogger _log = CentralLogger.getInstance();
 
 	/**
-	 * Text box that displays the process variable. 
+	 * Text box that displays the process variable.
 	 */
 	private Text _processVariable;
-	
+
 	/**
 	 * Text box that displays the value that will be saved.
 	 */
 	private Text _valueTextField;
-	
+
 	/**
 	 * Table that displays the save value service results.
 	 */
 	private Table _resultsTable;
-	
+
 	/**
 	 * The name of the process variable.
 	 */
-	private String _pv;
-	
+	private final String _pv;
+
 	/**
 	 * The value to be saved.
 	 */
-	private String _value;
+	private final String _value;
 
 	/**
 	 * The text field which displays the IOC name.
@@ -113,15 +119,15 @@ public class SaveValueDialog extends Dialog {
 	 * The image indicating the overall result.
 	 */
 	private Label _resultImage;
-	
+
 	/**
 	 * The services.
 	 */
 	private SaveValueServiceDescription[] _services;
-	
+
 	/**
 	 * Creates a new Save Value Dialog.
-	 * 
+	 *
 	 * @param parentShell
 	 *            the parent shell, or <code>null</code> to create a top-level
 	 *            shell.
@@ -141,7 +147,7 @@ public class SaveValueDialog extends Dialog {
 	 * Initializes the descriptions of the services that will be used.
 	 */
 	private void initializeServiceDescriptions() {
-		IPreferencesService prefs = Platform.getPreferencesService();		
+		final IPreferencesService prefs = Platform.getPreferencesService();
 		_services = new SaveValueServiceDescription[] {
 			new SaveValueServiceDescription("SaveValue.EpicsOra", //$NON-NLS-1$
 					prefs.getBoolean(Activator.PLUGIN_ID,
@@ -160,7 +166,7 @@ public class SaveValueDialog extends Dialog {
 					Messages.CA_FILE_SERVICE_NAME),
 		};
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -175,8 +181,8 @@ public class SaveValueDialog extends Dialog {
 	 */
 	@Override
 	protected final Control createDialogArea(final Composite parent) {
-		Composite composite = new Composite(parent, SWT.NONE);
-		GridLayout layout = new GridLayout(2, false);
+		final Composite composite = new Composite(parent, SWT.NONE);
+		final GridLayout layout = new GridLayout(2, false);
 		layout.marginHeight = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
 		layout.marginWidth = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
 		layout.verticalSpacing = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
@@ -184,50 +190,50 @@ public class SaveValueDialog extends Dialog {
 		composite.setLayout(layout);
 		composite.setLayoutData(new GridData(GridData.FILL_BOTH));
 		applyDialogFont(composite);
-		
+
 		// PV Name
 		Label label = new Label(composite, SWT.NONE);
 		label.setText(Messages.SaveValueDialog_PV_FIELD_LABEL);
 		_processVariable = new Text(composite, SWT.BORDER | SWT.READ_ONLY);
 		_processVariable.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 		_processVariable.setText(_pv);
-		
+
 		// IOC Name
 		label = new Label(composite, SWT.NONE);
 		label.setText(Messages.SaveValueDialog_IOC_FIELD_LABEL);
 		_ioc = new Text(composite, SWT.BORDER | SWT.READ_ONLY);
 		_ioc.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 		_ioc.setText(_iocName);
-		
+
 		// value
 		label = new Label(composite, SWT.NONE);
 		label.setText(Messages.SaveValueDialog_VALUE_FIELD_LABEL);
 		_valueTextField = new Text(composite, SWT.BORDER | SWT.READ_ONLY);
 		_valueTextField.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 		_valueTextField.setText(_value);
-		
-		Label separator = new Label(composite, SWT.HORIZONTAL | SWT.SEPARATOR);
+
+		final Label separator = new Label(composite, SWT.HORIZONTAL | SWT.SEPARATOR);
 		separator.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false, 2, 1));
-		
+
 		// results table
 		_resultsTable = new Table(composite, SWT.BORDER);
-		GridData tableLayout = new GridData(SWT.FILL, SWT.BEGINNING, true, false, 2, 1);
+		final GridData tableLayout = new GridData(SWT.FILL, SWT.BEGINNING, true, false, 2, 1);
 		tableLayout.heightHint = 70;
 		_resultsTable.setLayoutData(tableLayout);
 		_resultsTable.setHeaderVisible(true);
 		_resultsTable.setEnabled(false);
-		TableColumn stepColumn = new TableColumn(_resultsTable, SWT.LEFT);
+		final TableColumn stepColumn = new TableColumn(_resultsTable, SWT.LEFT);
 		stepColumn.setText(Messages.SaveValueDialog_STEP_COLUMN);
 		stepColumn.setWidth(80);
-		TableColumn resultColumn = new TableColumn(_resultsTable, SWT.LEFT);
+		final TableColumn resultColumn = new TableColumn(_resultsTable, SWT.LEFT);
 		resultColumn.setText(Messages.SaveValueDialog_RESULT_COLUMN);
 		resultColumn.setWidth(420);
-		
-		for (SaveValueServiceDescription service : _services) {
-			TableItem item = new TableItem(_resultsTable, SWT.NONE);
+
+		for (final SaveValueServiceDescription service : _services) {
+			final TableItem item = new TableItem(_resultsTable, SWT.NONE);
 			item.setText(service.getDisplayName());
 		}
-		
+
 		// overall result
 		_resultImage = new Label(composite, SWT.NONE);
 		_resultImage.setLayoutData(new GridData(SWT.RIGHT, SWT.BEGINNING, false, false));
@@ -242,7 +248,7 @@ public class SaveValueDialog extends Dialog {
 
 		return composite;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -251,7 +257,7 @@ public class SaveValueDialog extends Dialog {
 		createButton(parent, IDialogConstants.OK_ID, Messages.SaveValueDialog_SAVE_BUTTON, true);
 		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -269,33 +275,37 @@ public class SaveValueDialog extends Dialog {
 		return super.open();
 	}
 
+
+
 	/**
 	 * Finds the IOC for the PV.
-	 * @param pv 
-	 * 
+	 * @param pv
+	 *
 	 * @return <code>true</code> if the IOC was found, <code>false</code>
 	 *         otherwise.
 	 */
 	private boolean findIoc(final String pv) {
 		_log.debug(this, "Trying to find IOC for process variable: " + pv); //$NON-NLS-1$
-		_iocName = IocFinder.getEconForEren(pv);
-		if (_iocName == null) {
+		final IOC ioc = _service.getIOCForRecordName(LdapUtils.pvNameToRecordName(pv));
+
+		if (ioc == null) {
 			_log.error(this, "No IOC was found for PV: " + pv); //$NON-NLS-1$
 			return false;
 		}
-		_log.debug(this, "IOC found: " + _iocName); //$NON-NLS-1$
+		 _iocName = ioc.getName();
+        _log.debug(this, "IOC found: " + _iocName); //$NON-NLS-1$
 		return true;
 	}
-	
+
 	/**
 	 * Checks that at least one service is selected as required in the
 	 * preferences.
-	 * 
+	 *
 	 * @return <code>true</code> if there is at least one required service,
 	 *         <code>false</code> otherwise.
 	 */
 	private boolean hasRequiredService() {
-		for (SaveValueServiceDescription service : _services) {
+		for (final SaveValueServiceDescription service : _services) {
 			if (service.isRequired()) {
 				return true;
 			}
@@ -336,8 +346,8 @@ public class SaveValueDialog extends Dialog {
 		getButton(IDialogConstants.CANCEL_ID).setText(IDialogConstants.CLOSE_LABEL);
 		getButton(IDialogConstants.CANCEL_ID).setEnabled(false);
 		_resultsTable.setEnabled(true);
-		
-		Runnable r = new Runnable() {
+
+		final Runnable r = new Runnable() {
 			private Registry _reg;
 
 			public void run() {
@@ -348,16 +358,16 @@ public class SaveValueDialog extends Dialog {
 						String result;
 						success[i] = false;
 						try {
-							SaveValueResult srr = callService(_services[i], _value);
+							final SaveValueResult srr = callService(_services[i], _value);
 							success[i] = true;
-							String replacedValue = srr.getReplacedValue();
+							final String replacedValue = srr.getReplacedValue();
 							if (replacedValue != null) {
 								result = NLS.bind(Messages.SaveValueDialog_SUCCESS_REPLACED, replacedValue);
 							} else {
 								result = Messages.SaveValueDialog_SUCCESS_NEW_ENTRY;
 							}
-						} catch (RemoteException e) {
-							Throwable cause = e.getCause();
+						} catch (final RemoteException e) {
+							final Throwable cause = e.getCause();
 							if (cause instanceof SocketTimeoutException) {
 								_log.warn(this, "Remote call to " + _services[i] + " timed out"); //$NON-NLS-1$ //$NON-NLS-2$
 								result = Messages.SaveValueDialog_FAILED_TIMEOUT;
@@ -365,10 +375,10 @@ public class SaveValueDialog extends Dialog {
 								_log.error(this, "Remote call to " + _services[i] + " failed with RemoteException", e); //$NON-NLS-1$ //$NON-NLS-2$
 								result = Messages.SaveValueDialog_FAILED_WITH_REMOTE_EXCEPTION + e.getMessage();
 							}
-						} catch (SaveValueServiceException e) {
+						} catch (final SaveValueServiceException e) {
 							_log.warn(this, "Save Value service " + _services[i] + " reported an error", e); //$NON-NLS-1$ //$NON-NLS-2$
 							result = Messages.SaveValueDialog_FAILED_WITH_SERVICE_ERROR + e.getMessage();
-						} catch (NotBoundException e) {
+						} catch (final NotBoundException e) {
 							_log.warn(this, "Save value service " + _services[i] + " is not bound in RMI registry"); //$NON-NLS-1$ //$NON-NLS-2$
 							result = Messages.SaveValueDialog_NOT_BOUND;
 						}
@@ -376,9 +386,9 @@ public class SaveValueDialog extends Dialog {
 						final String resultCopy = result;
 						Display.getDefault().asyncExec(new Runnable() {
 							public void run() {
-								TableItem item = _resultsTable.getItem(index);
+								final TableItem item = _resultsTable.getItem(index);
 								item.setText(1, resultCopy);
-								int color = success[index] ? SWT.COLOR_DARK_GREEN
+								final int color = success[index] ? SWT.COLOR_DARK_GREEN
 										: (_services[index].isRequired()) ? SWT.COLOR_RED : SWT.COLOR_DARK_GRAY;
 								item.setForeground(Display.getCurrent().getSystemColor(color));
 								_resultsTable.showItem(item);
@@ -403,12 +413,12 @@ public class SaveValueDialog extends Dialog {
 							}
 							_resultLabel.setVisible(true);
 							_resultImage.setVisible(true);
-							Button close = getButton(IDialogConstants.CANCEL_ID);
+							final Button close = getButton(IDialogConstants.CANCEL_ID);
 							close.setEnabled(true);
 							close.setFocus();
 						}
 					});
-				} catch (RemoteException e) {
+				} catch (final RemoteException e) {
 					_log.error(this, "Could not connect to RMI registry", e); //$NON-NLS-1$
 					final String message = e.getMessage();
 					Display.getDefault().asyncExec(new Runnable() {
@@ -426,8 +436,8 @@ public class SaveValueDialog extends Dialog {
 			 * @throws RemoteException
 			 */
 			private void locateRmiRegistry() throws RemoteException {
-				IPreferencesService prefs = Platform.getPreferencesService();
-				String registryHost = prefs.getString(
+				final IPreferencesService prefs = Platform.getPreferencesService();
+				final String registryHost = prefs.getString(
 						Activator.PLUGIN_ID,
 						PreferenceConstants.RMI_REGISTRY_SERVER,
 						null, null);
@@ -441,25 +451,25 @@ public class SaveValueDialog extends Dialog {
 			 * @return
 			 * @throws SaveValueServiceException
 			 * @throws RemoteException
-			 * @throws NotBoundException 
+			 * @throws NotBoundException
 			 */
 			private SaveValueResult callService(final SaveValueServiceDescription serviceDescr,
 					final String pvValue)
 					throws SaveValueServiceException, RemoteException, NotBoundException {
 				_log.debug(this, "Calling save value service: " + serviceDescr); //$NON-NLS-1$
-				SaveValueService service = (SaveValueService) _reg.lookup(serviceDescr.getRmiName());
-				SaveValueRequest req = new SaveValueRequest();
+				final SaveValueService service = (SaveValueService) _reg.lookup(serviceDescr.getRmiName());
+				final SaveValueRequest req = new SaveValueRequest();
 				req.setPvName(_pv);
 				req.setIocName(_iocName);
 				req.setValue(pvValue);
-				User user = SecurityFacade.getInstance().getCurrentUser();
+				final User user = SecurityFacade.getInstance().getCurrentUser();
 				if (user != null) {
 					req.setUsername(user.getUsername());
 				} else {
 					req.setUsername("");
 				}
 				req.setHostname(CSSPlatformInfo.getInstance().getQualifiedHostname());
-				SaveValueResult srr = service.saveValue(req);
+				final SaveValueResult srr = service.saveValue(req);
 				return srr;
 			}
 		};
@@ -469,7 +479,7 @@ public class SaveValueDialog extends Dialog {
 
 	/**
 	 * Return the <code>Image</code> to be used when displaying information.
-	 * 
+	 *
 	 * @return image the information image
 	 */
 	// copied from org.eclipse.jface.dialogs.IconAndMessageDialog
@@ -479,7 +489,7 @@ public class SaveValueDialog extends Dialog {
 
 	/**
 	 * Return the <code>Image</code> to be used when displaying an error.
-	 * 
+	 *
 	 * @return image the error image
 	 */
 	// copied from org.eclipse.jface.dialogs.IconAndMessageDialog
@@ -489,7 +499,7 @@ public class SaveValueDialog extends Dialog {
 
 	/**
 	 * Get an <code>Image</code> from the provide SWT image constant.
-	 * 
+	 *
 	 * @param imageID
 	 *            the SWT image constant
 	 * @return image the image

@@ -36,32 +36,32 @@ import org.csstudio.utility.nameSpaceBrowser.utility.CSSViewParameter;
 public class AutomatTine extends Automat {
 
 	// State machines parameter
-	private Zustand aktuell = Zustand.START;
-	private String storeName="";
+	private NameSpaceBrowserState _currentState = NameSpaceBrowserState.START;
+	private final String storeName="";
 
 	/* (non-Javadoc)
 	 * @see org.csstudio.utility.nameSpaceBrowser.utility.Automat#event(org.csstudio.utility.nameSpaceBrowser.utility.Automat.Ereignis, java.lang.String)
 	 */
 	// @Override
-	public CSSViewParameter goDown(Ereignis ereignis, String select) {
-        CSSViewParameter parameter = new CSSViewParameter();
+	public CSSViewParameter goDown(final String select) {
+        final CSSViewParameter parameter = new CSSViewParameter();
         parameter.name=select;
         parameter.fixFirst="";
-        if(aktuell==Zustand.START){
+        if(_currentState==NameSpaceBrowserState.START){
         	parameter.filter=select+",";
         	parameter.fixFirst="DEFAULT";
         }else{
         	parameter.filter=select;
         }
 
-        if(select.split(",").length==2){			
+        if(select.split(",").length==2){
         	parameter.fixFirst="ALL";
         }
 		if(select.split(",").length>4){
-			aktuell = Zustand.RECORD;
+			_currentState = NameSpaceBrowserState.RECORD;
 			parameter.newCSSView=false;
 		}else {
-			aktuell = Zustand.TOP;
+			_currentState = NameSpaceBrowserState.TOP;
 			parameter.newCSSView=true;
 		}
         System.out.println("Zustand: "+select.split(",").length);
@@ -72,8 +72,8 @@ public class AutomatTine extends Automat {
 	 * @see org.csstudio.utility.nameSpaceBrowser.utility.Automat#getZustand()
 	 */
 	// @Override
-	public Zustand getZustand() {
-		return aktuell;
+	public NameSpaceBrowserState getState() {
+		return _currentState;
 	}
 
 }

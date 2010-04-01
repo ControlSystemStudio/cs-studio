@@ -37,40 +37,39 @@ import java.util.Set;
 
 import org.csstudio.platform.management.CommandParameterEnumValue;
 import org.csstudio.platform.management.IDynamicParameterValues;
-import org.csstudio.utility.ldapUpdater.LdapAccess;
-import org.csstudio.utility.ldapUpdater.ReadLdapObserver;
-import org.csstudio.utility.ldapUpdater.model.IOC;
-import org.csstudio.utility.ldapUpdater.model.LDAPContentModel;
+import org.csstudio.utility.ldap.model.IOC;
+import org.csstudio.utility.ldap.model.LdapContentModel;
+import org.csstudio.utility.ldap.reader.LdapSeachResultObserver;
+
+import service.LdapService;
+import service.impl.LdapServiceImpl;
 
 /**
  * Enumeration of IOCs as retrieved from LDAP for the management commands.
- * 
+ *
  * @author bknerr 17.03.2010
  */
 public class IocEnumeration implements IDynamicParameterValues {
-    
-    
-    
+
+    private final LdapService _service = LdapServiceImpl.getInstance();
+
+
     /**
      * (@inheritDoc)
      */
     @Override
     public CommandParameterEnumValue[] getEnumerationValues() {
-        
-        final LDAPContentModel ldapContentModel = new LDAPContentModel();
-        final ReadLdapObserver ldapDataObserver = new ReadLdapObserver(ldapContentModel);
-        
+
+        final LdapContentModel ldapContentModel = new LdapContentModel();
+        final LdapSeachResultObserver ldapDataObserver = new LdapSeachResultObserver(ldapContentModel);
+
         Set<IOC> iocs = Collections.emptySet();
-        try {
-            final LDAPContentModel model =
-                LdapAccess.fillModelFromLdap(ldapDataObserver,
-                                             OU_FIELD_NAME + FIELD_ASSIGNMENT + EPICS_CTRL_FIELD_VALUE,
-                                             any(ECON_FIELD_NAME));
-            iocs = model.getIOCs();
-        } catch (final InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
-        
+        final LdapContentModel model =
+            _service.getEntries(ldapDataObserver,
+                                OU_FIELD_NAME + FIELD_ASSIGNMENT + EPICS_CTRL_FIELD_VALUE,
+                                any(ECON_FIELD_NAME));
+        iocs = model.getIOCs();
+
         final List<CommandParameterEnumValue> params = new ArrayList<CommandParameterEnumValue>(iocs.size());
         for (final IOC ioc : iocs) {
             final HashMap<String, String> map = new HashMap<String, String>();
@@ -78,7 +77,7 @@ public class IocEnumeration implements IDynamicParameterValues {
             map.put(EFAN_FIELD_NAME, ioc.getGroup());
             params.add(new CommandParameterEnumValue(map, ioc.getName()));
         }
-        
+
         Collections.sort(params, new Comparator<CommandParameterEnumValue>() {
             @Override
             public int compare(final CommandParameterEnumValue arg0, final CommandParameterEnumValue arg1) {
@@ -87,5 +86,5 @@ public class IocEnumeration implements IDynamicParameterValues {
         });
         return params.toArray(new CommandParameterEnumValue[params.size()]);
     }
-    
+
 }

@@ -44,13 +44,17 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.LdapUtils;
+import org.csstudio.utility.ldap.model.IOC;
+import org.csstudio.utility.ldap.model.LdapContentModel;
+import org.csstudio.utility.ldap.reader.LdapSeachResultObserver;
 import org.csstudio.utility.ldapUpdater.files.HistoryFileAccess;
 import org.csstudio.utility.ldapUpdater.files.HistoryFileContentModel;
 import org.csstudio.utility.ldapUpdater.files.IOCFilesDirTree;
 import org.csstudio.utility.ldapUpdater.mail.NotificationMail;
 import org.csstudio.utility.ldapUpdater.mail.NotificationType;
-import org.csstudio.utility.ldapUpdater.model.IOC;
-import org.csstudio.utility.ldapUpdater.model.LDAPContentModel;
+
+import service.LdapService;
+import service.impl.LdapServiceImpl;
 
 /**
  * Updates the IOC information in the LDAP directory.
@@ -69,18 +73,6 @@ public class LdapUpdater {
 
     private static LdapUpdater INSTANCE;
 
-    public static String convertMillisToDateTimeString(final long millis, final String datetimeFormat) {
-        final Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(millis);
-        final DateFormat formatter = new SimpleDateFormat(datetimeFormat);
-        final String now = formatter.format(calendar.getTime());
-        return now;
-    }
-
-    private final Logger LOGGER = CentralLogger.getInstance().getLogger(this);
-
-
-
     /**
      * Factory method for creating a singleton instance.
      * @return the singleton instance of this class
@@ -94,7 +86,21 @@ public class LdapUpdater {
         return INSTANCE;
     }
 
+    public static String convertMillisToDateTimeString(final long millis, final String datetimeFormat) {
+        final Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(millis);
+        final DateFormat formatter = new SimpleDateFormat(datetimeFormat);
+        final String now = formatter.format(calendar.getTime());
+        return now;
+    }
+
+
+    private final Logger LOGGER = CentralLogger.getInstance().getLogger(this);
+
+    private final LdapService _service = LdapServiceImpl.getInstance();
+
     private volatile boolean _busy = false;
+
 
     /**
      * Don't instantiate with constructor.
@@ -151,17 +157,15 @@ public class LdapUpdater {
 
         final long startTime = logHeader(TIDYUP_ACTION_NAME);
 
-        final LDAPContentModel ldapContentModel = new LDAPContentModel();
-        final ReadLdapObserver ldapDataObserver = new ReadLdapObserver(ldapContentModel);
+        final LdapSeachResultObserver ldapDataObserver = new LdapSeachResultObserver();
         try {
-            LdapAccess.fillModelFromLdap(ldapDataObserver, OU_FIELD_NAME + FIELD_ASSIGNMENT + EPICS_CTRL_FIELD_VALUE, any(ECON_FIELD_NAME));
+            _service.getEntries(ldapDataObserver,
+                                OU_FIELD_NAME + FIELD_ASSIGNMENT + EPICS_CTRL_FIELD_VALUE,
+                                any(ECON_FIELD_NAME));
             final Map<String, IOC> iocMapFromFS = IOCFilesDirTree.findIOCFiles(1);
 
-            LdapAccess.tidyUpLDAPFromIOCList(ldapDataObserver, ldapContentModel, iocMapFromFS);
+            LdapAccess.tidyUpLDAPFromIOCList(ldapDataObserver.getLdapModel(), iocMapFromFS);
 
-        } catch (final InterruptedException e) {
-            // TODO (bknerr) : Auto-generated catch block
-            e.printStackTrace();
         } finally {
             _busy = false;
         }
@@ -183,19 +187,17 @@ public class LdapUpdater {
         final HistoryFileAccess histFileReader = new HistoryFileAccess();
         final HistoryFileContentModel historyFileModel = histFileReader.readFile(); /* liest das history file */
 
-        final LDAPContentModel ldapContentModel = new LDAPContentModel();
-        final ReadLdapObserver ldapDataObserver = new ReadLdapObserver(ldapContentModel);
-
+        final LdapSeachResultObserver ldapDataObserver = new LdapSeachResultObserver();
         try {
-            LdapAccess.fillModelFromLdap(ldapDataObserver,
-                                         LdapUtils.createLdapQuery(OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE),
-                                         any(ECON_FIELD_NAME));
+            final LdapContentModel model = _service.getEntries(ldapDataObserver,
+                                LdapUtils.createLdapQuery(OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE),
+                                any(ECON_FIELD_NAME));
 
-            validateHistoryFileEntriesVsLDAPEntries(ldapContentModel, historyFileModel);
+            validateHistoryFileEntriesVsLDAPEntries(model, historyFileModel);
 
             final Map<String, IOC> iocMap = IOCFilesDirTree.findIOCFiles(1);
 
-            LdapAccess.updateLDAPFromIOCList(ldapDataObserver, ldapContentModel, iocMap, historyFileModel);
+            LdapAccess.updateLDAPFromIOCList(ldapDataObserver, iocMap, historyFileModel);
 
         } catch (final InterruptedException e) {
             e.printStackTrace();
@@ -207,7 +209,7 @@ public class LdapUpdater {
     }
 
 
-    private void validateHistoryFileEntriesVsLDAPEntries(final LDAPContentModel ldapContentModel,
+    private void validateHistoryFileEntriesVsLDAPEntries(final LdapContentModel ldapContentModel,
                                                          final HistoryFileContentModel historyFileModel) {
 
         Set<String> iocsFromLDAP = ldapContentModel.getIOCNames();

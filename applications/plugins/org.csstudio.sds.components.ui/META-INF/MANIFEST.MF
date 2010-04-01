@@ -4,7 +4,6 @@ Bundle-Name: Ui Plug-in
 Bundle-SymbolicName: org.csstudio.sds.components.ui;singleton:=true
 Bundle-Version: 1.0.8
 Bundle-Activator: org.csstudio.sds.components.ui.Activator
-Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.csstudio.sds.ui,
@@ -13,6 +12,6 @@ Require-Bundle: org.eclipse.ui,
  org.junit4,
  org.eclipse.help,
  org.csstudio.swt.xygraph;bundle-version="1.0.0"
-Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.sds.components.ui.internal.figureparts,
  org.csstudio.sds.components.ui.internal.figures
