@@ -6,6 +6,7 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IPageListener;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -77,6 +78,7 @@ public class RunModeService {
 	 */
 	public void runOPI(final IFile file, final TargetWindow target,
 			final DisplayOpenManager displayOpenManager, final MacrosInput macrosInput, final Dimension windowSize){
+		final RunnerInput runnerInput = new RunnerInput(file, displayOpenManager, macrosInput);
 		UIBundlingThread.getInstance().addRunnable(new Runnable(){
 			 public void run() {
 		
@@ -101,6 +103,16 @@ public class RunModeService {
 								
 							}
 						});
+					}else{
+						for(IEditorReference editor : 
+							runWorkbenchWindow.getActivePage().getEditorReferences()){
+							try {
+								if(editor.getEditorInput().equals(runnerInput))
+									editor.getPage().closeEditor(editor.getEditor(false), false);
+							} catch (PartInitException e) {
+								CentralLogger.getInstance().error(this,e);
+							}
+						}
 					}
 					targetWindow = runWorkbenchWindow;
 					break;
@@ -114,8 +126,10 @@ public class RunModeService {
 				
 				if(targetWindow != null){
 					try {
+						targetWindow.getShell().forceActive();
+						targetWindow.getShell().forceFocus();
 						targetWindow.getActivePage().openEditor(
-								new RunnerInput(file, displayOpenManager, macrosInput), "org.csstudio.opibuilder.OPIRunner"); //$NON-NLS-1$
+								runnerInput, "org.csstudio.opibuilder.OPIRunner"); //$NON-NLS-1$
 						targetWindow.getShell().moveAbove(null);
 					} catch (PartInitException e) {
 						CentralLogger.getInstance().error(this, "Failed to run OPI " + file.getName(), e);
