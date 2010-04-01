@@ -25,8 +25,8 @@ package org.csstudio.utility.screenshot.preference;
 
 public final class ScreenshotPreferenceConstants
 {
-    public static final String MAIL_ADDRESS_SENDER = "user mail address";
-    public static final String MAIL_SERVER = "mail server";
+    public static final String MAIL_ADDRESS_SENDER = "senderMailAddress";
+    public static final String MAIL_SERVER = "mailServer";
 
     private ScreenshotPreferenceConstants() { }
 }

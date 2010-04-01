@@ -35,30 +35,30 @@ import java.util.Hashtable;
  */
 public class LogbookEntry
 {
-    private Hashtable<String, String>   content = null;
-    private String[]                    keyList = null;
-    private String                      logbook = null;
+    private Hashtable<String, String> content = null;
+    private String[] keyList = null;
+    private String logbook = null;
     
-    public static final String PROPERTY_IDENTIFYER             = "IDENTIFYER";
-    public static final String PROPERTY_ACCOUNTNAME            = "ACCOUNTNAME";
-    public static final String PROPERTY_LOGGROUP               = "LOGGROUP";
-    public static final String PROPERTY_ENTRYDATE              = "ENTRYDATE";
-    public static final String PROPERTY_EVENTFROM              = "EVENTFROM";
-    public static final String PROPERTY_EVENTUNTIL             = "EVENTUNTIL";
-    public static final String PROPERTY_TITLE                  = "DESCSHORT";
-    public static final String PROPERTY_TEXT                   = "DESCLONG";
-    public static final String PROPERTY_MULTIMEDIAIDENTIFYER   = "MULTIMEDIAIDENTIFYER";
-    public static final String PROPERTY_ERRORIDENTIFYER        = "ERRORIDENTIFYER";
-    public static final String PROPERTY_PREVIOUSOPERATORLOG    = "PREVIOUSOPERATORLOG";
-    public static final String PROPERTY_STOCKTRANSACTION       = "STOCKTRANSACTION";
-    public static final String PROPERTY_HTMLLINK               = "HTMLLINK";
-    public static final String PROPERTY_PROJECT                = "PROJECT";
-    public static final String PROPERTY_DEVICE                 = "DEVICE";
-    public static final String PROPERTY_LOCATION               = "LOCATION";
-    public static final String PROPERTY_KEYWORDS               = "KEYWORDS";
-    public static final String PROPERTY_SENDEMAILTO            = "SENDEMAILTO";
-    public static final String PROPERTY_MAINTENANCE            = "MAINTENANCE";
-    public static final String PROPERTY_LOGSEVERITY            = "LOGSEVERITY";
+    public static final String PROPERTY_IDENTIFYER = "IDENTIFYER";
+    public static final String PROPERTY_ACCOUNTNAME = "ACCOUNTNAME";
+    public static final String PROPERTY_LOGGROUP = "LOGGROUP";
+    public static final String PROPERTY_ENTRYDATE = "ENTRYDATE";
+    public static final String PROPERTY_EVENTFROM = "EVENTFROM";
+    public static final String PROPERTY_EVENTUNTIL = "EVENTUNTIL";
+    public static final String PROPERTY_TITLE = "DESCSHORT";
+    public static final String PROPERTY_TEXT = "DESCLONG";
+    public static final String PROPERTY_MULTIMEDIAIDENTIFYER = "MULTIMEDIAIDENTIFYER";
+    public static final String PROPERTY_ERRORIDENTIFYER = "ERRORIDENTIFYER";
+    public static final String PROPERTY_PREVIOUSOPERATORLOG = "PREVIOUSOPERATORLOG";
+    public static final String PROPERTY_STOCKTRANSACTION = "STOCKTRANSACTION";
+    public static final String PROPERTY_HTMLLINK = "HTMLLINK";
+    public static final String PROPERTY_PROJECT = "PROJECT";
+    public static final String PROPERTY_DEVICE = "DEVICE";
+    public static final String PROPERTY_LOCATION = "LOCATION";
+    public static final String PROPERTY_KEYWORDS = "KEYWORDS";
+    public static final String PROPERTY_SENDEMAILTO = "SENDEMAILTO";
+    public static final String PROPERTY_MAINTENANCE = "MAINTENANCE";
+    public static final String PROPERTY_LOGSEVERITY = "LOGSEVERITY";
     
     private final int PROPERTYCOUNT = 20;
     

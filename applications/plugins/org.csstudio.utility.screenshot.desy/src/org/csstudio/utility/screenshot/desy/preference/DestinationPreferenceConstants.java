@@ -25,8 +25,8 @@ package org.csstudio.utility.screenshot.desy.preference;
 
 public final class DestinationPreferenceConstants
 {
-    public static final String MAIL_ADDRESS_SENDER = "user mail address";
-    public static final String MAIL_SERVER = "mail server";
+    public static final String MAIL_ADDRESS_SENDER = "senderMailAddress";
+    public static final String MAIL_SERVER = "mailServer";
     public static final String LOGBOOK_NAMES = "logbooks";
     public static final String GROUP_NAMES = "groups";
 

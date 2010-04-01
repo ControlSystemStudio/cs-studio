@@ -25,19 +25,18 @@ package org.csstudio.utility.screenshot.desy.preference;
 
 import org.csstudio.utility.screenshot.desy.DestinationPlugin;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
-import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.core.runtime.preferences.DefaultScope;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
 public class DestinationPreferenceInitializer extends AbstractPreferenceInitializer
 {
-
     @Override
     public void initializeDefaultPreferences()
     {
-        IPreferenceStore store = DestinationPlugin.getDefault().getPreferenceStore();
-        
-        store.setDefault(DestinationPreferenceConstants.MAIL_ADDRESS_SENDER, "css_user@desy.de");
-        store.setDefault(DestinationPreferenceConstants.MAIL_SERVER, "smtp.desy.de");
-        store.setDefault(DestinationPreferenceConstants.LOGBOOK_NAMES, "MKS-2;KRYO;CTA;CMTB;MKK;MKS-1;MKS-3;MKS-4;MVA;MHF;MST;MDI;MHF-SL;HASYLAB;D3;D5;EVENT;IT-NEWS;HERA;eLog;ALARM-KRYO;ALARM-D3;ALARM-SMS;ALARM-MKK;ALARM-WASS;ALARM-KLIM;IOC-Log;IOC-PutLog;TTFX;HERAX;PETRAX;DORISX;DESY2X;DESY3X;LINAC2X;LINAC3X;MySql;HERA-X;OP-LOG;CMLOG;TTF;ALARM;TEST;CMTB"); 
-        store.setDefault(DestinationPreferenceConstants.GROUP_NAMES, "D3;Guest;IHEP-CHINA;IHEP-RUSS;IPP;IT;MDI;MHF-SL;MKI;MKK;MKS;MKS-1;MKS-2;MKS-3;MKS-4;MPY;MVP;MVA;Test"); 
+        IEclipsePreferences node = new DefaultScope().getNode(DestinationPlugin.PLUGIN_ID);
+        node.put(DestinationPreferenceConstants.MAIL_ADDRESS_SENDER, "css_user@desy.de");
+        node.put(DestinationPreferenceConstants.MAIL_SERVER, "smtp.desy.de");
+        node.put(DestinationPreferenceConstants.LOGBOOK_NAMES, "NONE"); 
+        node.put(DestinationPreferenceConstants.GROUP_NAMES, "NONE"); 
     }
 }

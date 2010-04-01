@@ -25,7 +25,8 @@ package org.csstudio.utility.screenshot.preference;
 
 import org.csstudio.utility.screenshot.ScreenshotPlugin;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
-import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.core.runtime.preferences.DefaultScope;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
 public class ScreenshotPreferenceInitializer extends AbstractPreferenceInitializer
 {
@@ -33,9 +34,9 @@ public class ScreenshotPreferenceInitializer extends AbstractPreferenceInitializ
     @Override
     public void initializeDefaultPreferences()
     {
-        IPreferenceStore store = ScreenshotPlugin.getDefault().getPreferenceStore();
+        IEclipsePreferences node = new DefaultScope().getNode(ScreenshotPlugin.PLUGIN_ID);
         
-        store.setDefault(ScreenshotPreferenceConstants.MAIL_ADDRESS_SENDER, "css_user@desy.de");
-        store.setDefault(ScreenshotPreferenceConstants.MAIL_SERVER, "smtp.desy.de");
+        node.put(ScreenshotPreferenceConstants.MAIL_ADDRESS_SENDER, "user.name@where.ever.nir");
+        node.put(ScreenshotPreferenceConstants.MAIL_SERVER, "your.mail.host");
     }
 }

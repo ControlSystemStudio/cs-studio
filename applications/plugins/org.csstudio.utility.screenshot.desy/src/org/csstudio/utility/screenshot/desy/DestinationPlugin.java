@@ -35,7 +35,7 @@ import org.osgi.framework.BundleContext;
 public class DestinationPlugin  extends AbstractCssUiPlugin
 {
 	/** The plug-in ID */
-	public static final String PLUGIN_ID = "de.desy.screenshot.destination";
+	public static final String PLUGIN_ID = "org.csstudio.utility.screenshot.desy";
 
 	/** The shared instance */
 	private static DestinationPlugin plugin;

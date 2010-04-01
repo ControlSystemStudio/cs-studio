@@ -30,6 +30,8 @@ import org.csstudio.utility.screenshot.desy.DestinationPlugin;
 import org.csstudio.utility.screenshot.desy.LogbookEntry;
 import org.csstudio.utility.screenshot.desy.internal.localization.LogbookSenderMessages;
 import org.csstudio.utility.screenshot.desy.preference.DestinationPreferenceConstants;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.swt.SWT;
@@ -56,51 +58,51 @@ import org.eclipse.swt.widgets.Text;
 
 public class LogbookSenderDialog extends Dialog implements SelectionListener
 {
-    private GregorianCalendar   cal             = null;
-    private SimpleDateFormat    tempFormat      = null;
-    private Shell               parentShell     = null;
-    private LogbookEntry        logbookEntry    = null;
-    private Button              buttonSend      = null;
-    private Button              buttonCancel    = null;
-    private Button              btnClearLbEntry = null;
-    private Label               labelAuthor     = null;
-    private Label               labelDate       = null;
-    private Label               labelTime       = null;
-    private Label               labelSeverity   = null;
-    private Label               labelKeywords   = null;
-    private Label               labelTitle      = null;
-    private Label               labelText       = null;
-    private Label               labelGroup      = null;
-    private Label               labelLogbook    = null;
-    private Label               labelIdentifyer = null;
-    private Label               labelDummyRow1  = null;
-    private Label               labelDummyRow2  = null;
-    private Label               labelDummyRow3  = null;
-    private Label               labelDummyRow4  = null;
-    private Label               labelDummyRow5  = null;
-    private Text                textText        = null;
-    private Text                textIdentifyer  = null;
-    private Text                textTitel       = null;
-    private Text                textKeywordlist = null;
-    private Text                textDate        = null;
-    private Text                textTime        = null;
-    private Text                textAuthor      = null;
-    private Combo               cbLogbook       = null;
-    private Combo               cbSeverity      = null;
-    private Combo               cbGroup         = null;
-    private ComboViewer         cbKeyword       = null;  
-    private ComboHistoryHelper  keywordHelper   = null;  
-    private String[]            logbookList     = null;
-    private String[]            groupList       = null;
+    private GregorianCalendar cal = null;
+    private SimpleDateFormat tempFormat = null;
+    private Shell parentShell = null;
+    private LogbookEntry logbookEntry = null;
+    private Button buttonSend = null;
+    private Button buttonCancel = null;
+    private Button btnClearLbEntry = null;
+    private Label labelAuthor = null;
+    private Label labelDate = null;
+    private Label labelTime = null;
+    private Label labelSeverity = null;
+    private Label labelKeywords = null;
+    private Label labelTitle = null;
+    private Label labelText = null;
+    private Label labelGroup = null;
+    private Label labelLogbook = null;
+    private Label labelIdentifyer = null;
+    private Label labelDummyRow1 = null;
+    private Label labelDummyRow2 = null;
+    private Label labelDummyRow3 = null;
+    private Label labelDummyRow4 = null;
+    private Label labelDummyRow5 = null;
+    private Text textText = null;
+    private Text textIdentifyer = null;
+    private Text textTitel = null;
+    private Text textKeywordlist = null;
+    private Text textDate = null;
+    private Text textTime = null;
+    private Text textAuthor = null;
+    private Combo cbLogbook = null;
+    private Combo cbSeverity = null;
+    private Combo cbGroup = null;
+    private ComboViewer cbKeyword = null;  
+    private ComboHistoryHelper keywordHelper = null;  
+    private String[] logbookList = null;
+    private String[] groupList = null;
 
-    private final           String  DATE_FORMAT         = "dd-MM-yyyy";
-    private final           String  TIME_FORMAT         = "HH:mm:ss";
-    private final           String  DATE_TIME_FORMAT    = "yyyy-MM-dd HH:mm:ss";
+    private final String DATE_FORMAT = "dd-MM-yyyy";
+    private final String TIME_FORMAT = "HH:mm:ss";
+    private final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
-    private static final    String  KW_LIST_TAG         = "keyword_list";
+    private static final String KW_LIST_TAG = "keyword_list";
 
-    private final           int     INIT_WIDTH          = DialogUnit.mapUnitX(432);
-    private final           int     INIT_HEIGHT         = DialogUnit.mapUnitY(310);
+    private final int INIT_WIDTH = DialogUnit.mapUnitX(432);
+    private final int INIT_HEIGHT = DialogUnit.mapUnitY(310);
 
     /**
      * 
@@ -110,21 +112,17 @@ public class LogbookSenderDialog extends Dialog implements SelectionListener
     public LogbookSenderDialog(Shell shell)
     {
         super(shell);
-        
         parentShell = shell;
-        
         setBlockOnOpen(true);
-        
-        String temp = DestinationPlugin.getDefault().getPluginPreferences().getString(DestinationPreferenceConstants.LOGBOOK_NAMES);
 
+        IPreferencesService pref = Platform.getPreferencesService();
+        String temp = pref.getString(DestinationPlugin.PLUGIN_ID, DestinationPreferenceConstants.LOGBOOK_NAMES, "NONE",null);
         StringTokenizer token = new StringTokenizer(temp, ";");
-        
         if(token.countTokens() > 0)
         {
             logbookList = new String[token.countTokens()];
             
             int count = 0;
-            
             while(token.hasMoreTokens())
             {
                 logbookList[count++] = token.nextToken();
@@ -133,16 +131,13 @@ public class LogbookSenderDialog extends Dialog implements SelectionListener
         
         token = null;
         
-        temp = DestinationPlugin.getDefault().getPluginPreferences().getString(DestinationPreferenceConstants.GROUP_NAMES);
-
+        temp = pref.getString(DestinationPlugin.PLUGIN_ID, DestinationPreferenceConstants.GROUP_NAMES, "NONE", null);
         token = new StringTokenizer(temp, ";");
-        
         if(token.countTokens() > 0)
         {
             groupList = new String[token.countTokens()];
             
             int count = 0;
-            
             while(token.hasMoreTokens())
             {
                 groupList[count++] = token.nextToken();
