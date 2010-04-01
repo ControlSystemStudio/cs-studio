@@ -29,9 +29,10 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 
-public class PVpopupAction extends ProcessVariablePopupAction{
+public class PvPopupAction extends ProcessVariablePopupAction{
 
-	public void handlePVs(IProcessVariable pv_names[])
+	@Override
+    public void handlePVs(IProcessVariable pv_names[])
     {
         if (pv_names.length < 1)
             return;

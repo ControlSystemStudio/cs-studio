@@ -78,7 +78,9 @@ public class MainView extends ViewPart {
 				}
 			}
 
-			public void keyPressed(final KeyEvent e) {}
+			public void keyPressed(final KeyEvent e) {
+			    // EMPTY
+			}
 		});
 		final String[] headlines = {	Messages.getString("CSSView_Facility"),
 //								Messages.getString("CSSView_ecom"),
@@ -106,7 +108,9 @@ public class MainView extends ViewPart {
 	}
 
 	@Override
-	public void setFocus() {}
+	public void setFocus() {
+	    // EMPTY
+	}
 
 	public void setDefaultPVFilter(final String defaultFilter) {
 		defaultPVFilter = defaultFilter;

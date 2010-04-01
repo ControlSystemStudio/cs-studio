@@ -34,25 +34,29 @@ public class ShowNamespaceBrowser implements IWorkbenchWindowActionDelegate {
 
     /** A workbench window handle. */
     private IWorkbenchWindow _window;
-    
-	public void dispose() {	}
 
-	public void init(IWorkbenchWindow window) {	
-        _window = window;   
+	public void dispose() {
+	    // EMPTY
+	}
+
+	public void init(final IWorkbenchWindow window) {
+        _window = window;
     }
 
-	public void run(IAction action) {
-        IWorkbench workbench = PlatformUI.getWorkbench();
-        IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-        IWorkbenchPage page = window.getActivePage();
+	public void run(final IAction action) {
+        final IWorkbench workbench = PlatformUI.getWorkbench();
+        final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+        final IWorkbenchPage page = window.getActivePage();
 	    try {
 	        page.showView(MainView.class.getName());
-	    } catch (PartInitException e) {
+	    } catch (final PartInitException e) {
 	        e.printStackTrace();
 	    }
 	}
 
-	public void selectionChanged(IAction action, ISelection selection) {	}
+	public void selectionChanged(final IAction action, final ISelection selection) {
+	    // EMPTY
+	}
 
     public IWorkbenchWindow getWorkbenchWindow()
     {
