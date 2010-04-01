@@ -152,7 +152,7 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 	private static final int DEFAULT_BUFFER_SIZE = 100;	
 	
 	/** The maximum allowed buffer size. */
-	private static final int MAX_BUFFER_SIZE = 100000;	
+	private static final int MAX_BUFFER_SIZE = 1000000;	
 	
 	public static final int MAX_AXES_AMOUNT = 4;
 	
