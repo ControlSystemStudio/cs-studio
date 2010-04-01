@@ -16,6 +16,10 @@
       [Enter License Description here.]
    </license>
 
+   <includes
+         id="org.eclipse.p2helios.feature"
+         version="0.0.0"/>
+
    <plugin
          id="org.csstudio.platform"
          download-size="0"
