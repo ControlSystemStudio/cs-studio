@@ -23,6 +23,7 @@ package org.csstudio.utility.ldap.engine;
 
 import java.util.GregorianCalendar;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import org.csstudio.platform.logging.CentralLogger;
@@ -42,9 +43,9 @@ public class LdapReferences {
 
         private GregorianCalendar _timeCreated = null;
         private GregorianCalendar _lastTimeUsed = null;
-        private Vector<String> _namesInNamespace = null;
+        private List<String> _namesInNamespace = null;
 
-        public Entry ( final Vector<String> namesInNamespace) {
+        public Entry ( final List<String> namesInNamespace) {
             //
             // initialize timer
             //
@@ -60,10 +61,10 @@ public class LdapReferences {
         public void setLastTimeUsed(final GregorianCalendar lastTimeUsed) {
             this._lastTimeUsed = lastTimeUsed;
         }
-        public Vector<String> getNamesInNamespace() {
+        public List<String> getNamesInNamespace() {
             return _namesInNamespace;
         }
-        public void setNamesInNamespace(final Vector<String> namesInNamespace) {
+        public void setNamesInNamespace(final List<String> namesInNamespace) {
             this._namesInNamespace = namesInNamespace;
         }
         public void replaceNamesInNamespace(final Vector<String> namesInNamespace) {
@@ -89,7 +90,8 @@ public class LdapReferences {
         this.ldapEntries = entries;
     }
 
-    public void newLdapEntry ( final String channelName, final Vector<String> namesInNamespace) {
+    public void newLdapEntry (final String channelName,
+                              final List<String> namesInNamespace) {
         //
         // insert new entry
         //

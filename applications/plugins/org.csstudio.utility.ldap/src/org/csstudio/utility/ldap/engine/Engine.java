@@ -22,8 +22,10 @@
 package org.csstudio.utility.ldap.engine;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Vector;
 
 import javax.naming.CompositeName;
@@ -51,6 +53,8 @@ import org.csstudio.utility.ldap.preference.PreferenceKey;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.preferences.DefaultScope;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
 public class Engine extends Job {
 
@@ -58,7 +62,7 @@ public class Engine extends Job {
     private final Logger LOG = CentralLogger.getInstance().getLogger(this);
 
     private static int LDAP_MAX_BUFFER_SIZE = 10000; // 1000 too small!!
-    private volatile boolean running = true;
+    private volatile boolean _running = true;
     private int reStartSendDiff = 0;
 
     /**
@@ -255,7 +259,8 @@ public class Engine extends Job {
              * sleep before we check for work again
              */
             try {
-                final String protocol = Activator.getDefault().getPluginPreferences().getString(PreferenceKey.SECURITY_PROTOCOL.name());
+                final IEclipsePreferences prefs = new DefaultScope().getNode(Activator.PLUGIN_ID);
+                final String protocol = prefs.get(PreferenceKey.SECURITY_PROTOCOL.name(), "");
                 if (protocol.trim().length() > 0) {
                     intSleepTimer = new Integer(protocol);
                 } else {
@@ -402,7 +407,7 @@ public class Engine extends Job {
                                                                        + attributeSet.getPath(), attStrings);
                     }
                 } catch (final NamingException ne) {
-                    attributes = null;
+                    // fall through
                 }
                 if (attributes == null) {
                     return "NONE";
@@ -691,7 +696,7 @@ public class Engine extends Job {
     private void changeValue(final String string, final String channel, final ModificationItem[] modItem) {
         int j = 0;
         int n;
-        Vector<String> namesInNamespace = null;
+        List<String> namesInNamespace = Collections.emptyList();
         GregorianCalendar startTime = null;
 
         // Delete null values and make right size
@@ -724,7 +729,7 @@ public class Engine extends Job {
             // channel: " + channel);
             namesInNamespace = this._ldapReferences.getEntry(channel).getNamesInNamespace();
             for (int index = 0; index < namesInNamespace.size(); index++) {
-                final String ldapChannelName = namesInNamespace.elementAt(index);
+                final String ldapChannelName = namesInNamespace.get(index);
                 modifyAttributes(ldapChannelName, modItemTemp, channel, startTime);
             }
 
@@ -782,17 +787,19 @@ public class Engine extends Job {
      * @param modItemTemp
      * @param startTime
      */
-    private void modifyAttributes(String ldapChannelName, final ModificationItem[] modItemTemp,
+    private void modifyAttributes(final String ldapChannelName, final ModificationItem[] modItemTemp,
                                   final String channel, final GregorianCalendar startTime) {
         //
         // TODO put 'endsWith' into preference page
         //
-        if (ldapChannelName.endsWith(",o=DESY,c=DE")) {
-            ldapChannelName = ldapChannelName.substring(0, ldapChannelName.length() - 12);
+        String channelName = new String(ldapChannelName);
+
+        if (channelName.endsWith(",o=DESY,c=DE")) {
+            channelName = channelName.substring(0, channelName.length() - 12);
         }
         try {
-            ldapChannelName = ldapChannelName.replace("/", "\\/");
-            getLdapDirContext().modifyAttributes(ldapChannelName, modItemTemp);
+            channelName = channelName.replace("/", "\\/");
+            getLdapDirContext().modifyAttributes(channelName, modItemTemp);
             _ldapWriteTimeCollector.setInfo(channel);
             _ldapWriteTimeCollector.setValue(gregorianTimeDifference(startTime,
                                                                      new GregorianCalendar())
@@ -803,9 +810,9 @@ public class Engine extends Job {
         } catch (final NamingException e) {
             _ctx = null;
             LOG.warn("Engine.changeValue: Naming Exception in modifyAttributes! Channel: "
-                     + ldapChannelName);
+                     + channelName);
             System.out.println("Engine.changeValue: Naming Exceptionin modifyAttributes! Channel: "
-                               + ldapChannelName);
+                               + channelName);
             // for (ModificationItem modificationItem : modItemTemp) {
             // System.out.println(" - ModificationItem is:
             // "+modificationItem.getAttribute().get().toString());
@@ -834,49 +841,50 @@ public class Engine extends Job {
         }
     }
 
-    private AttributeSet helpAttribute(String record) {
+    private AttributeSet helpAttribute(final String record) {
         final AttributeSet attributeSet = new AttributeSet();
 
-        if (record != null) {
-            // Prüft ob der record schon in der ldapReferences gespeichert ist.
-            if (!record.contains("ou=epicsControls") &&
-                !record.contains("econ=") &&
-                (_ldapReferences != null) &&
-                _ldapReferences.hasEntry(record)) {// &&!record.contains("ou=")){
+        String nRecord = new String(record);
 
-                final Entry entry = _ldapReferences.getEntry(record);
-                final Vector<String> vector = entry.getNamesInNamespace();
+        if (nRecord.length() > 0) {
+            // Prüft ob der nRecord schon in der ldapReferences gespeichert ist.
+            if (!nRecord.contains("ou=epicsControls") &&
+                !nRecord.contains("econ=") &&
+                (_ldapReferences != null) &&
+                _ldapReferences.hasEntry(nRecord)) {// &&!nRecord.contains("ou=")){
+
+                final Entry entry = _ldapReferences.getEntry(nRecord);
+                final List<String> vector = entry.getNamesInNamespace();
                 for (final String string : vector) {
                     if (string.contains("ou=EpicsControls")) {
-                        record = string;
+                        nRecord = new String(string);
                     }
                 }
                 attributeSet.setSearchScope(SearchControls.ONELEVEL_SCOPE);
-            } else if (record.contains("ou=epicsControls") && record.contains("econ=")) {
-                // TODO: Der record ist und wird noch nicht im ldapReferences
+            } else if (nRecord.contains("ou=epicsControls") && nRecord.contains("econ=")) {
+                // TODO: Der nRecord ist und wird noch nicht im ldapReferences
                 // gecachet. Enthält aber den kompletten Pfad.
                 attributeSet.setSearchScope(SearchControls.ONELEVEL_SCOPE);
             } else {
-                // TODO: Der record ist und wird noch nicht im ldapReferences
+                // TODO: Der nRecord ist und wird noch nicht im ldapReferences
                 // gecachet.
                 attributeSet.setSearchScope(SearchControls.SUBTREE_SCOPE);
             }
-            if (record.endsWith(",o=DESY,c=DE")) {
-                record = record.substring(0, record.length() - 12);
-            } else if (record.endsWith(",o=DESY")) {
-                record = record.substring(0, record.length() - 7);
+            if (nRecord.endsWith(",o=DESY,c=DE")) {
+                nRecord = nRecord.substring(0, nRecord.length() - 12);
+            } else if (nRecord.endsWith(",o=DESY")) {
+                nRecord = nRecord.substring(0, nRecord.length() - 7);
             }
-            if (record.contains(",")) {
-                attributeSet.setFilter(record.split(",")[0]);
-                attributeSet.setPath(record.substring(attributeSet.getFilter().length() + 1));
+            if (nRecord.contains(",")) {
+                attributeSet.setFilter(nRecord.split(",")[0]);
+                attributeSet.setPath(nRecord.substring(attributeSet.getFilter().length() + 1));
             } else {
                 attributeSet.setPath("ou=epicsControls");
-                attributeSet.setFilter("eren=" + record);
+                attributeSet.setFilter("eren=" + nRecord);
             }
             return attributeSet;
-        } else {
-            return null;
         }
+        return null;
     }
 
     /**
@@ -952,37 +960,37 @@ public class Engine extends Job {
     // }
 
     private class WriteRequest {
-        private String attribute = null;
-        private String channel = null;
-        private String value = null;
+        private String _attribute = null;
+        private String _channel = null;
+        private String _value = null;
 
         public WriteRequest(final String attribute, final String channel, final String value) {
 
-            this.attribute = attribute;
-            this.channel = channel;
-            this.value = value;
+            this._attribute = attribute;
+            this._channel = channel;
+            this._value = value;
         }
 
         public String getAttribute() {
-            return this.attribute;
+            return this._attribute;
         }
 
         public String getChannel() {
-            return this.channel;
+            return this._channel;
         }
 
         public String getValue() {
-            return this.value;
+            return this._value;
         }
 
     }
 
     public boolean isRunning() {
-        return running;
+        return _running;
     }
 
     public void setRunning(final boolean running) {
-        this.running = running;
+        this._running = running;
     }
 
     public Vector<WriteRequest> getWriteVector() {

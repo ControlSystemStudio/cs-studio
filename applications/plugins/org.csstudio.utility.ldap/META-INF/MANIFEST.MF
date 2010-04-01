@@ -9,7 +9,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.platform,
  org.csstudio.utility.namespace.utility,
  org.junit4;bundle-version="4.5.0"
-Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.utility.ldap,
  org.csstudio.utility.ldap.engine,
  org.csstudio.utility.ldap.model,
@@ -18,3 +18,4 @@ Export-Package: org.csstudio.utility.ldap,
  service,
  service.impl
 Import-Package: org.eclipse.ecf.core.util
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

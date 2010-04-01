@@ -48,7 +48,8 @@ public class Activator extends AbstractCssUiPlugin {
 	 * (non-Javadoc)
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
 	 */
-	public void doStart(BundleContext context) throws Exception {
+	@Override
+    public void doStart(final BundleContext context) throws Exception {
 //		super.start(context);
 	}
 
@@ -56,7 +57,8 @@ public class Activator extends AbstractCssUiPlugin {
 	 * (non-Javadoc)
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
 	 */
-	public void doStop(BundleContext context) throws Exception {
+	@Override
+    public void doStop(final BundleContext context) throws Exception {
 		plugin = null;
 //		super.stop(context);
 	}
@@ -75,19 +77,19 @@ public class Activator extends AbstractCssUiPlugin {
 		return PLUGIN_ID;
 	}
 	/** Add informational message to the plugin log. */
-    public static void logInfo(String message)
+    public static void logInfo(final String message)
     {
         getDefault().log(IStatus.INFO, message, null);
     }
 
     /** Add error message to the plugin log. */
-    public static void logError(String message)
+    public static void logError(final String message)
     {
         getDefault().log(IStatus.ERROR, message, null);
     }
 
     /** Add an exception to the plugin log. */
-    public static void logException(String message, Exception e)
+    public static void logException(final String message, final Exception e)
     {
         getDefault().log(IStatus.ERROR, message, e);
     }
@@ -96,7 +98,7 @@ public class Activator extends AbstractCssUiPlugin {
      * @param type
      * @param message
      */
-    private void log(int type, String message, Exception e)
+    private void log(final int type, final String message, final Exception e)
     {
         getLog().log(new Status(type, PLUGIN_ID, IStatus.OK, message, e));
     }
