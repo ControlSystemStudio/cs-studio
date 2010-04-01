@@ -7,6 +7,8 @@ import org.epics.css.dal.simple.ConnectionParameters;
 import org.epics.css.dal.simple.RemoteInfo;
 import org.epics.css.dal.simple.SimpleDALBroker;
 
+import com.cosylab.util.CommonException;
+
 /**
  * DAL Tests. This test class concentrates on functionalities that receive plain
  * and simple values synchronously via
@@ -31,7 +33,7 @@ import org.epics.css.dal.simple.SimpleDALBroker;
 public class DataAccessLayerTest1 extends Base {
 	private static final RemoteInfo ri = new RemoteInfo(RemoteInfo.DAL_TYPE_PREFIX + "EPICS", PV, null, null);
 
-	public void testSynchronousAccess() throws RemoteException, InstantiationException {
+	public void testSynchronousAccess() throws InstantiationException, CommonException {
 		assertEquals(RECORD_VAL, broker.getValue(ri));
 	}
 
