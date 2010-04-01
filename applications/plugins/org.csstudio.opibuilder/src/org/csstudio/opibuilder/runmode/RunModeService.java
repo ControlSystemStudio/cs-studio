@@ -4,7 +4,7 @@ import org.csstudio.opibuilder.util.MacrosInput;
 import org.csstudio.opibuilder.util.UIBundlingThread;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.draw2d.geometry.Dimension;
+import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IPageListener;
@@ -66,7 +66,7 @@ public class RunModeService {
 	 * @param file
 	 * @param targetWindow
 	 */
-	public void runOPI(IFile file, TargetWindow targetWindow, Dimension windowSize){
+	public void runOPI(IFile file, TargetWindow targetWindow, Rectangle windowSize){
 		runOPI(file, targetWindow, null, null, windowSize);
 	}
 	
@@ -77,7 +77,7 @@ public class RunModeService {
 	 * replacing the current active display. 
 	 */
 	public void runOPI(final IFile file, final TargetWindow target,
-			final DisplayOpenManager displayOpenManager, final MacrosInput macrosInput, final Dimension windowSize){
+			final DisplayOpenManager displayOpenManager, final MacrosInput macrosInput, final Rectangle windowBounds){
 		final RunnerInput runnerInput = new RunnerInput(file, displayOpenManager, macrosInput);
 		UIBundlingThread.getInstance().addRunnable(new Runnable(){
 			 public void run() {
@@ -85,11 +85,11 @@ public class RunModeService {
 				IWorkbenchWindow targetWindow = null;
 				switch (target) {
 				case NEW_WINDOW:
-					targetWindow = createNewWindow(windowSize);
+					targetWindow = createNewWindow(windowBounds);
 					break;
 				case RUN_WINDOW:
 					if(runWorkbenchWindow == null){
-						runWorkbenchWindow = createNewWindow(windowSize);
+						runWorkbenchWindow = createNewWindow(windowBounds);
 						runWorkbenchWindow.addPageListener(new IPageListener(){
 							public void pageClosed(IWorkbenchPage page) {
 								runWorkbenchWindow = null;
@@ -144,7 +144,7 @@ public class RunModeService {
 	/**
 	 * @param displayModel
 	 */
-	private IWorkbenchWindow createNewWindow(Dimension size) {
+	private IWorkbenchWindow createNewWindow(Rectangle windowBounds) {
 		IWorkbenchWindow newWindow = null;
 		try {				
 			newWindow = 
@@ -152,8 +152,10 @@ public class RunModeService {
 			//ActionFactory.IWorkbenchAction toggleToolbar = ActionFactory.TOGGLE_COOLBAR.create(runWorkbenchWindow); 
 			//toggleToolbar.run(); 
 	
-			if(size != null)
-				newWindow.getShell().setSize(size.width+45, size.height + 165);			
+			if(windowBounds != null){
+				newWindow.getShell().setLocation(windowBounds.x, windowBounds.y);
+				newWindow.getShell().setSize(windowBounds.width+45, windowBounds.height + 165);
+			}
 		
 		} catch (WorkbenchException e) {
 			CentralLogger.getInstance().error(this, "Failed to open new window", e);

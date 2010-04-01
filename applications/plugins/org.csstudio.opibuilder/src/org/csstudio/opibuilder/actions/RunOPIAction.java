@@ -13,6 +13,7 @@ import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
@@ -55,7 +56,8 @@ public class RunOPIAction extends Action{
 			IFile file = null;
 			try {
 				file = ResourceUtil.getFileInEditor(input);
-				RunModeService.getInstance().runOPI(file, TargetWindow.RUN_WINDOW, displayModel.getSize());
+				RunModeService.getInstance().runOPI(file, TargetWindow.RUN_WINDOW,  
+						new Rectangle(displayModel.getLocation(), displayModel.getSize()));
 			} catch (FileNotFoundException e) {
 				String message = "Failed to open OPI file: " + file;  
 				CentralLogger.getInstance().error(this, message, e);				
