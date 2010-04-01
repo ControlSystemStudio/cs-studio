@@ -220,7 +220,7 @@
         <pv trig="true">loc://dataSource</pv>
       </path>
     </scripts>
-    <height>307</height>
+    <height>311</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <y_axis_maximum>100.0</y_axis_maximum>
     <background_color>
@@ -228,7 +228,7 @@
     </background_color>
     <enabled>true</enabled>
     <widget_type>Intensity Graph</widget_type>
-    <width>367</width>
+    <width>371</width>
     <color_map>
       <interpolate>true</interpolate>
       <autoscale>true</autoscale>
@@ -291,7 +291,7 @@
     <border_alarm_sensitive>true</border_alarm_sensitive>
     <visible>true</visible>
     <scripts />
-    <height>23</height>
+    <height>27</height>
     <name>ColorMapSelector</name>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <pv_name>loc://colorMap</pv_name>
@@ -364,7 +364,7 @@ $(pv_value)</tooltip>
     <border_alarm_sensitive>true</border_alarm_sensitive>
     <visible>true</visible>
     <scripts />
-    <height>23</height>
+    <height>27</height>
     <name>Combo Box_1</name>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <pv_name>loc://dataSource</pv_name>
@@ -430,7 +430,6 @@ $(pv_value)</tooltip>
     </foreground_color>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.xyGraph" version="1.0">
-    <trace_0_contatenate_data>false</trace_0_contatenate_data>
     <trace_0_trace_color>
       <color red="255" green="0" blue="0" />
     </trace_0_trace_color>
@@ -446,7 +445,7 @@ $(pv_value)</tooltip>
     <y>106</y>
     <x>41</x>
     <visible>true</visible>
-    <height>308</height>
+    <height>313</height>
     <axis_1_maximum>100.0</axis_1_maximum>
     <axis_1_title_font>
       <fontdata fontName="Arial" height="9" style="1" />
@@ -489,6 +488,7 @@ $(pv_value)</tooltip>
       <fontdata fontName="Arial" height="9" style="1" />
     </axis_0_title_font>
     <axis_1_auto_scale>true</axis_1_auto_scale>
+    <trace_0_concatenate_data>false</trace_0_concatenate_data>
     <actions hook="false" />
     <show_plot_area_border>false</show_plot_area_border>
     <widget_type>XY Graph</widget_type>
@@ -527,7 +527,6 @@ $(pv_value)</tooltip>
     <trace_0_update_delay>100</trace_0_update_delay>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.xyGraph" version="1.0">
-    <trace_0_contatenate_data>false</trace_0_contatenate_data>
     <trace_0_trace_color>
       <color red="255" green="0" blue="0" />
     </trace_0_trace_color>
@@ -586,11 +585,12 @@ $(pv_value)</tooltip>
       <fontdata fontName="Arial" height="9" style="1" />
     </axis_0_title_font>
     <axis_1_auto_scale>false</axis_1_auto_scale>
+    <trace_0_concatenate_data>false</trace_0_concatenate_data>
     <actions hook="false" />
     <show_plot_area_border>false</show_plot_area_border>
     <widget_type>XY Graph</widget_type>
     <enabled>true</enabled>
-    <width>317</width>
+    <width>321</width>
     <trace_0_buffer_size>256</trace_0_buffer_size>
     <axis_count>2</axis_count>
     <transparent>false</transparent>
