@@ -22,7 +22,7 @@
 /*
  * $Id$
  */
-package org.csstudio.utility.adlconverter.internationalization;
+package org.csstudio.utility.adlparser.internationalization;
 
 import org.eclipse.osgi.util.NLS;
 
