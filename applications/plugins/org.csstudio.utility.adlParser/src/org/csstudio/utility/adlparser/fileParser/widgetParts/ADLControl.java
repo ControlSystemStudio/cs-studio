@@ -22,16 +22,17 @@
 /*
  * $Id$
  */
-package org.csstudio.utility.adlconverter.utility.widgetparts;
+package org.csstudio.utility.adlparser.fileParser.widgetParts;
 
-import org.csstudio.sds.internal.rules.ParameterDescriptor;
-import org.csstudio.sds.model.AbstractWidgetModel;
-import org.csstudio.sds.model.DynamicsDescriptor;
-import org.csstudio.utility.adlconverter.internationalization.Messages;
-import org.csstudio.utility.adlconverter.utility.ADLHelper;
-import org.csstudio.utility.adlconverter.utility.ADLWidget;
-import org.csstudio.utility.adlconverter.utility.FileLine;
-import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
+//**import org.csstudio.sds.internal.rules.ParameterDescriptor;
+//**import org.csstudio.sds.model.AbstractWidgetModel;
+//**import org.csstudio.sds.model.DynamicsDescriptor;
+import org.csstudio.utility.adlparser.internationalization.Messages;
+//**import org.csstudio.utility.adlparser.fileParser.ADLHelper;
+import org.csstudio.utility.adlparser.fileParser.ADLResource;
+import org.csstudio.utility.adlparser.fileParser.ADLWidget;
+import org.csstudio.utility.adlparser.fileParser.FileLine;
+import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
 
 /**
  * @author hrickens
@@ -52,16 +53,16 @@ public class ADLControl extends WidgetPart{
     /**
      * The channel.
      */
-    private String[] _chan;
+    private String _chan;
     /**
      * If true backgroundColor get the ConnectionState.
      * Default is false.
      */
     private boolean _connectionState;
-    /**
-     * The Record property/Feldname.
-     */
-    private String _postfix;
+  //**    /**
+  //**     * The Record property/Feldname.
+  //**     */
+  //**    private String _postfix;
      
 
     /**
@@ -71,8 +72,8 @@ public class ADLControl extends WidgetPart{
      * @param parentWidgetModel The Widget that set the parameter from ADLWidget.
      * @throws WrongADLFormatException Wrong ADL format or untreated parameter found.
      */
-    public ADLControl(final ADLWidget adlControl, final AbstractWidgetModel parentWidgetModel) throws WrongADLFormatException {
-        super(adlControl, parentWidgetModel);
+    public ADLControl(final ADLWidget adlControl) throws WrongADLFormatException {
+        super(adlControl);
     }
     
     /**
@@ -104,35 +105,37 @@ public class ADLControl extends WidgetPart{
             }else if(row[0].trim().toLowerCase().equals("bclr")){ //$NON-NLS-1$
                 _bclr=row[1].trim();
             }else if(row[0].trim().toLowerCase().equals("chan")){ // chan and ctrl means both the same.  //$NON-NLS-1$
-                _chan=ADLHelper.cleanString(row[1]);
+            	_chan = row[1].replaceAll("\"", "");
+            	//**                _chan=ADLHelper.cleanString(row[1]);
             }else if(row[0].trim().toLowerCase().equals("ctrl")){ //$NON-NLS-1$
-                _chan=ADLHelper.cleanString(row[1]);
+            	_chan = row[1].replaceAll("\"", "");
+//**                _chan=ADLHelper.cleanString(row[1]);
             }else {
                 throw new WrongADLFormatException(Messages.ADLControl_WrongADLFormatException_Parameter_Begin+parameter+Messages.ADLControl_WrongADLFormatException_Parameter_End);
             }
         }
     }
 
-    /**
-     * Generate all Elements from ADL Control Attributes.
-     */
-    @Override
-    final void generateElements() {
-        if(_clr!=null){
-            _widgetModel.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, ADLHelper.getRGB(_clr));
-        }
-        if(_bclr!=null){
-            _widgetModel.setColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND, ADLHelper.getRGB(_bclr));
-            if(_connectionState){
-                DynamicsDescriptor dynDis = new DynamicsDescriptor("rule.null"); //$NON-NLS-1$
-                dynDis.addInputChannel(new ParameterDescriptor("$channel$","")); //$NON-NLS-1$
-                _widgetModel.setDynamicsDescriptor("color.background", dynDis); //$NON-NLS-1$
-            }
-        }
-        if(_chan!=null){
-            _postfix = ADLHelper.setChan(_widgetModel,_chan);
-        }
-    }
+//**    /**
+  //**     * Generate all Elements from ADL Control Attributes.
+  //**     */
+  //**    @Override
+  //**    final void generateElements() {
+  //**        if(_clr!=null){
+  //**            _widgetModel.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, ADLHelper.getRGB(_clr));
+  //**        }
+  //**        if(_bclr!=null){
+  //**            _widgetModel.setColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND, ADLHelper.getRGB(_bclr));
+  //**            if(_connectionState){
+  //**                DynamicsDescriptor dynDis = new DynamicsDescriptor("rule.null"); //$NON-NLS-1$
+  //**                dynDis.addInputChannel(new ParameterDescriptor("$channel$","")); //$NON-NLS-1$
+  //**                _widgetModel.setDynamicsDescriptor("color.background", dynDis); //$NON-NLS-1$
+  //**            }
+  //**        }
+  //**        if(_chan!=null){
+  //**            _postfix = ADLHelper.setChan(_widgetModel,_chan);
+  //**        }
+  //**    }
     
     /**
      * @return the state of background color display the ConnectionState.
@@ -141,17 +144,29 @@ public class ADLControl extends WidgetPart{
         return _connectionState;
     }
 
-    /**
-     * @param connectionState set background color display the ConnectionState.
-     */
-    public final void setConnectionState(final boolean connectionState) {
-        _connectionState = connectionState;
-    }
+//**    /**
+  //**     * @param connectionState set background color display the ConnectionState.
+  //**     */
+  //**    public final void setConnectionState(final boolean connectionState) {
+  //**        _connectionState = connectionState;
+  //**    }
+
+//**    /**
+  //**     * @return the postfix (property/Feldname) of the record.
+  //**    */
+  //**    public final String getPostfix() {
+  //**        return _postfix;
+  //**    }
 
     /**
-     * @return the postfix (property/Feldname) of the record.
+     * @return child objects
      */
-    public final String getPostfix() {
-        return _postfix;
+    public Object[] getChildren(){
+    	Object[] ret = new Object[4];
+		ret[0] = new ADLResource(ADLResource.FOREGROUND_COLOR, _clr);
+		ret[1] = new ADLResource(ADLResource.BACKGROUND_COLOR, _bclr);
+		ret[2] = new ADLResource(ADLResource.CHANNEL, _chan);
+		ret[3] = new ADLResource(ADLResource.CONNECTION_STATE, _connectionState);
+		return ret;
     }
 }

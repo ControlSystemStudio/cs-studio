@@ -22,15 +22,16 @@
 /*
  * $Id$
  */
-package org.csstudio.utility.adlconverter.utility.widgetparts;
+package org.csstudio.utility.adlparser.fileParser.widgetParts;
 
-import org.csstudio.sds.components.model.MenuButtonModel;
-import org.csstudio.sds.components.model.PolygonModel;
-import org.csstudio.sds.components.model.RectangleModel;
-import org.csstudio.sds.model.AbstractWidgetModel;
-import org.csstudio.sds.model.initializers.WidgetInitializationService;
-import org.csstudio.utility.adlconverter.utility.ADLWidget;
-import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
+
+//**import org.csstudio.sds.components.model.MenuButtonModel;
+//**import org.csstudio.sds.components.model.PolygonModel;
+//**import org.csstudio.sds.components.model.RectangleModel;
+//**import org.csstudio.sds.model.AbstractWidgetModel;
+//**import org.csstudio.sds.model.initializers.WidgetInitializationService;
+import org.csstudio.utility.adlparser.fileParser.ADLWidget;
+import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
 
 /**
  * @author hrickens
@@ -43,9 +44,9 @@ public abstract class WidgetPart {
     /**
      * The Widget that set the parameter from ADLWidget.
      */
-    protected AbstractWidgetModel _widgetModel;
+//**    protected AbstractWidgetModel _widgetModel;
     
-//    protected AbstractWidgetModel _parentWidgetModel;
+//**    protected AbstractWidgetModel _parentWidgetModel;
 
     /**
      * The default constructor.
@@ -54,15 +55,15 @@ public abstract class WidgetPart {
      * @param parentWidgetModel The Widget that set the parameter from ADLWidget.
      * @throws WrongADLFormatException Wrong ADL format or untreated parameter found.
      */
-    public WidgetPart(final ADLWidget widgetPart, final AbstractWidgetModel parentWidgetModel) throws WrongADLFormatException {
-        _widgetModel = parentWidgetModel;
-        if ((this instanceof ADLMonitor || this instanceof ADLDynamicAttribute || this instanceof ADLControl) &&!(parentWidgetModel instanceof PolygonModel || parentWidgetModel instanceof MenuButtonModel || parentWidgetModel instanceof RectangleModel)) {
-            WidgetInitializationService instance = WidgetInitializationService.getInstance();
-            instance.initialize(parentWidgetModel);
-        }
+    public WidgetPart(final ADLWidget widgetPart) throws WrongADLFormatException {
+//**        _widgetModel = parentWidgetModel;
+//**        if ((this instanceof ADLMonitor || this instanceof ADLDynamicAttribute || this instanceof ADLControl) &&!(parentWidgetModel instanceof PolygonModel || parentWidgetModel instanceof MenuButtonModel || parentWidgetModel instanceof RectangleModel)) {
+//**            WidgetInitializationService instance = WidgetInitializationService.getInstance();
+//**            instance.initialize(parentWidgetModel);
+//**        }
         init();
         parseWidgetPart(widgetPart);
-        generateElements();
+//**        generateElements();
     }
 
     /**
@@ -78,24 +79,24 @@ public abstract class WidgetPart {
      */
     abstract void parseWidgetPart(ADLWidget widgetPart) throws WrongADLFormatException;
 
+    abstract public Object[] getChildren();
 
+//**   /**
+  //**     * Set all property's to the Parent Widget Model.
+  //**     */
+  //**    abstract void generateElements();
+  //**
+  //**    public final void setParentWidgetModel(AbstractWidgetModel parentWidgetModel) {
+  //**        _widgetModel = parentWidgetModel;
+  //**    }
+  //**
+  //**    protected void uninit() {
+  //**        _widgetModel.setDynamicsDescriptor(AbstractWidgetModel.PROP_BORDER_COLOR, null);
+  //**        _widgetModel.setDynamicsDescriptor(AbstractWidgetModel.PROP_BORDER_STYLE, null);
+  //**        _widgetModel.setDynamicsDescriptor(AbstractWidgetModel.PROP_BORDER_WIDTH, null);
+  //**        _widgetModel.setDynamicsDescriptor(AbstractWidgetModel.PROP_COLOR_BACKGROUND, null);
+  //**        _widgetModel.setDynamicsDescriptor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, null);
+  //**    }
 
-    /**
-     * Set all property's to the Parent Widget Model.
-     */
-    abstract void generateElements();
-
-    public final void setParentWidgetModel(AbstractWidgetModel parentWidgetModel) {
-        _widgetModel = parentWidgetModel;
-    }
-
-    protected void uninit() {
-        _widgetModel.setDynamicsDescriptor(AbstractWidgetModel.PROP_BORDER_COLOR, null);
-        _widgetModel.setDynamicsDescriptor(AbstractWidgetModel.PROP_BORDER_STYLE, null);
-        _widgetModel.setDynamicsDescriptor(AbstractWidgetModel.PROP_BORDER_WIDTH, null);
-        _widgetModel.setDynamicsDescriptor(AbstractWidgetModel.PROP_COLOR_BACKGROUND, null);
-        _widgetModel.setDynamicsDescriptor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, null);
-    }
-
-
+ 
 }

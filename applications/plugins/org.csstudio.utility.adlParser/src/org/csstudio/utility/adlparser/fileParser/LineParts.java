@@ -22,13 +22,13 @@
 /*
  * $Id$
  */
-package org.csstudio.utility.adlconverter.utility;
+package org.csstudio.utility.adlparser.fileParser;
 
 /**
  * @author hrickens
  * @author $Author$
  * @version $Revision$
- * @since 12.08.2008
+ * @since 12.08.2008ls 
  */
 public class LineParts {
 

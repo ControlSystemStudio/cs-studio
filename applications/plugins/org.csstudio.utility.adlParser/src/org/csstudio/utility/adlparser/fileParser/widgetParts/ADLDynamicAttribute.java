@@ -22,16 +22,17 @@
 /*
  * $Id$
  */
-package org.csstudio.utility.adlconverter.utility.widgetparts;
+package org.csstudio.utility.adlparser.fileParser.widgetParts;
 
-import org.csstudio.sds.internal.rules.ParameterDescriptor;
-import org.csstudio.sds.model.AbstractWidgetModel;
-import org.csstudio.sds.model.DynamicsDescriptor;
-import org.csstudio.utility.adlconverter.internationalization.Messages;
-import org.csstudio.utility.adlconverter.utility.ADLHelper;
-import org.csstudio.utility.adlconverter.utility.ADLWidget;
-import org.csstudio.utility.adlconverter.utility.FileLine;
-import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
+//**import org.csstudio.sds.internal.rules.ParameterDescriptor;
+//**import org.csstudio.sds.model.AbstractWidgetModel;
+//**import org.csstudio.sds.model.DynamicsDescriptor;
+import org.csstudio.utility.adlparser.internationalization.Messages;
+//import org.csstudio.utility.adlparser.fileParser.ADLHelper;
+import org.csstudio.utility.adlparser.fileParser.ADLResource;
+import org.csstudio.utility.adlparser.fileParser.ADLWidget;
+import org.csstudio.utility.adlparser.fileParser.FileLine;
+import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
 
 /**
  * @author hrickens
@@ -52,19 +53,19 @@ public class ADLDynamicAttribute extends WidgetPart{
     /**
      * The Channel.
      */
-    private String[] _chan;
+    private String _chan;
     /**
      * The Color rule.
      */
     private String _colorRule;
-    /**
-     * The dynamic attribute for a boolean.
-     */
-    private DynamicsDescriptor _adlBooleanDynamicAttribute;
-    /**
-     * The dynamic attribute for a color.
-     */
-    private DynamicsDescriptor _adlColorDynamicAttribute;
+  //**    /**
+  //**     * The dynamic attribute for a boolean.
+  //**     */
+  //**    private DynamicsDescriptor _adlBooleanDynamicAttribute;
+  //**    /**
+  //**     * The dynamic attribute for a color.
+  //**     */
+  //**    private DynamicsDescriptor _adlColorDynamicAttribute;
     /**
      * If the Dynamic Attribute a boolean Attribute.
      */
@@ -81,8 +82,8 @@ public class ADLDynamicAttribute extends WidgetPart{
      * @param parentWidgetModel The Widget that set the parameter from ADLWidget.
      * @throws WrongADLFormatException Wrong ADL format or untreated parameter found.
      */
-    public ADLDynamicAttribute(final ADLWidget adlDynamicAttribute, final AbstractWidgetModel parentWidgetModel) throws WrongADLFormatException {
-        super(adlDynamicAttribute, parentWidgetModel);
+    public ADLDynamicAttribute(final ADLWidget adlDynamicAttribute) throws WrongADLFormatException {
+        super(adlDynamicAttribute);
     }
 
     /**
@@ -100,9 +101,8 @@ public class ADLDynamicAttribute extends WidgetPart{
     final void parseWidgetPart(final ADLWidget adlDynamicAttribute) throws WrongADLFormatException {
 
         assert adlDynamicAttribute.isType("dynamic attribute") : Messages.ADLDynamicAttribute_AssertError_Begin+adlDynamicAttribute.getType()+Messages.ADLDynamicAttribute_AssertError_End; //$NON-NLS-1$
-
         for (ADLWidget adlWidget : adlDynamicAttribute.getObjects()) {
-            if(adlWidget.getType().equals("attr")){
+        	if(adlWidget.getType().equals("attr")){
                 for (FileLine fileLine : adlWidget.getBody()) {
                     adlDynamicAttribute.addBody(fileLine);    
                 }
@@ -113,21 +113,24 @@ public class ADLDynamicAttribute extends WidgetPart{
         _color=false;
 
         for (FileLine parameter : adlDynamicAttribute.getBody()) {
+            System.out.println(parameter);
             if(parameter.getLine().trim().startsWith("//")){ //$NON-NLS-1$
                 continue;
             }
-            String head = parameter.getLine().split("=")[0]; //$NON-NLS-1$
-            String[] row=ADLHelper.cleanString(parameter.getLine().substring(head.length()+1));
+            String head = parameter.getLine().replaceAll("\"", "").split("=")[0]; //$NON-NLS-1$
+//            String[] row=ADLHelper.cleanString(parameter.getLine().substring(head.length()+1));
+            String[] row = {parameter.getLine().replaceAll("\"", "").substring(head.length()+1)};
             head=head.trim().toLowerCase();
+            System.out.println("Head, val:(" + head + ")," + row[0]);
             if(head.equals("clr")){ //$NON-NLS-1$
                 _clr=row[0];
             }else if(head.equals("vis")){ //$NON-NLS-1$
                 _vis=row[0];
             }else if(head.equals("chan")){ //$NON-NLS-1$
-                _chan=row;
-                if(_chan[0].contains("[")) {
-                    uninit();
-                }
+                _chan=row[0];
+//**                if(_chan[0].contains("[")) {
+//**                    uninit();
+//**                }
             }else if(head.equals("chanb")){ //$NON-NLS-1$
 //                CentralLogger.getInstance().debug(this, "chanB"+adlDynamicAttribute.toString());
             }else if(head.equals("colorrule")){ //$NON-NLS-1$
@@ -140,78 +143,78 @@ public class ADLDynamicAttribute extends WidgetPart{
         }
     }
 
-    /**
-     * Generate all Elements from ADL dynamic Attributes.
-     */
-    final void generateElements() {
-//        _adlDynamicAttribute= new Element[1];
-        if(_chan!=null){
-//            ADLHelper.setChan(_parentWidgetModel, _chan);
-            ADLHelper.setChan(_widgetModel, _chan);
-            String channel = "$channel$";
-            if(_chan.length>2){ //$NON-NLS-1$
-                // Beim Oval als Led AN/Aus wird post fix doppelet gesetzt.
-                //channel = channel.concat("."+_chan[2]);
-            }
-            if(_vis!=null && _vis.equals("if not zero")){ //$NON-NLS-1$
-                _bool=true;
-                _adlBooleanDynamicAttribute = new DynamicsDescriptor("org.css.sds.color.if_zero"); //$NON-NLS-1$
-                _adlBooleanDynamicAttribute.addInputChannel(new ParameterDescriptor(channel,"")); //$NON-NLS-1$
-            }else if(_vis!=null && _vis.equals("if zero")){ //$NON-NLS-1$
-                _bool=true;
-                _adlBooleanDynamicAttribute = new DynamicsDescriptor("org.css.sds.color.if_not_zero"); //$NON-NLS-1$
-                _adlBooleanDynamicAttribute.addInputChannel(new ParameterDescriptor(channel,"")); //$NON-NLS-1$
-            }
-            if( _colorRule!=null){
-                _color = true;
-            //            <dynamicsDescriptor ruleId="cosyrules.color.aend_dlog">
-            //                <inputChannel name="$channel$" type="java.lang.Double" />
-            //            </dynamicsDescriptor>
-                _adlColorDynamicAttribute = new DynamicsDescriptor("cosyrules.color."+_colorRule.toLowerCase()); //$NON-NLS-1$
-                _adlColorDynamicAttribute.addInputChannel(new ParameterDescriptor(channel,""));
-//                if(_chan.length>2&&_chan[2].startsWith("$")){ //$NON-NLS-1$
-//                    ADLHelper.setChan(_parentWidgetModel, _chan);
-//                }
-//                ADLHelper.setConnectionState(_adlColorDynamicAttribute);
-            }
-//            else {
-//                _color = true;
-//                _adlColorDynamicAttribute = new Element("dynamicsDescriptor");
-//                _adlColorDynamicAttribute.setAttribute("ruleId", "org.css.sds.color.default_epics_alarm_background");
-//                Element inputChannel = new Element("inputChannel");
-//                inputChannel.setAttribute("name", _chan[0]);
-//                inputChannel.setAttribute("type", "java.lang.Double");
-//                _adlColorDynamicAttribute.addContent(inputChannel);
-//            }
-            if(_clr!=null){
-                if(_clr.equals("alarm")){ //$NON-NLS-1$
-                    _color = true;
-                    _adlColorDynamicAttribute = new DynamicsDescriptor("org.css.sds.color.default_epics_alarm_background"); //$NON-NLS-1$
-                    String temp = _chan[0];
-                    if(temp.contains("[")) {
-                        temp = String.format("%1$s[severity]", temp.substring(0,temp.indexOf('[')));
-                    }
-//                    if(!temp.endsWith(".SEVR")){
-//                        temp= temp.concat("[severity]");
-//                    }
-                    _adlColorDynamicAttribute.addInputChannel(new ParameterDescriptor(temp,"")); //$NON-NLS-1$
-                }
-            }
-        }
-    }
+//**    /**
+  //**     * Generate all Elements from ADL dynamic Attributes.
+  //**     */
+  //**    final void generateElements() {
+  //**//        _adlDynamicAttribute= new Element[1];
+  //**        if(_chan!=null){
+  //**//            ADLHelper.setChan(_parentWidgetModel, _chan);
+  //**            ADLHelper.setChan(_widgetModel, _chan);
+  //**            String channel = "$channel$";
+  //**            if(_chan.length>2){ //$NON-NLS-1$
+  //**                // Beim Oval als Led AN/Aus wird post fix doppelet gesetzt.
+  //**                //channel = channel.concat("."+_chan[2]);
+  //**            }
+  //**            if(_vis!=null && _vis.equals("if not zero")){ //$NON-NLS-1$
+  //**                _bool=true;
+  //**                _adlBooleanDynamicAttribute = new DynamicsDescriptor("org.css.sds.color.if_zero"); //$NON-NLS-1$
+  //**                _adlBooleanDynamicAttribute.addInputChannel(new ParameterDescriptor(channel,"")); //$NON-NLS-1$
+  //**            }else if(_vis!=null && _vis.equals("if zero")){ //$NON-NLS-1$
+  //**                _bool=true;
+  //**                _adlBooleanDynamicAttribute = new DynamicsDescriptor("org.css.sds.color.if_not_zero"); //$NON-NLS-1$
+  //**                _adlBooleanDynamicAttribute.addInputChannel(new ParameterDescriptor(channel,"")); //$NON-NLS-1$
+  //**            }
+  //**            if( _colorRule!=null){
+  //**                _color = true;
+  //**            //            <dynamicsDescriptor ruleId="cosyrules.color.aend_dlog">
+  //**            //                <inputChannel name="$channel$" type="java.lang.Double" />
+  //**            //            </dynamicsDescriptor>
+  //**                _adlColorDynamicAttribute = new DynamicsDescriptor("cosyrules.color."+_colorRule.toLowerCase()); //$NON-NLS-1$
+  //**                _adlColorDynamicAttribute.addInputChannel(new ParameterDescriptor(channel,""));
+  //**//                if(_chan.length>2&&_chan[2].startsWith("$")){ //$NON-NLS-1$
+  //**//                    ADLHelper.setChan(_parentWidgetModel, _chan);
+  //**//                }
+  //**//                ADLHelper.setConnectionState(_adlColorDynamicAttribute);
+  //**            }
+  //**//            else {
+  //**//                _color = true;
+  //**//                _adlColorDynamicAttribute = new Element("dynamicsDescriptor");
+  //**//                _adlColorDynamicAttribute.setAttribute("ruleId", "org.css.sds.color.default_epics_alarm_background");
+  //**//                Element inputChannel = new Element("inputChannel");
+  //**//                inputChannel.setAttribute("name", _chan[0]);
+  //**//                inputChannel.setAttribute("type", "java.lang.Double");
+  //**//                _adlColorDynamicAttribute.addContent(inputChannel);
+  //**//            }
+  //**            if(_clr!=null){
+  //**                if(_clr.equals("alarm")){ //$NON-NLS-1$
+  //**                    _color = true;
+  //**                    _adlColorDynamicAttribute = new DynamicsDescriptor("org.css.sds.color.default_epics_alarm_background"); //$NON-NLS-1$
+  //**                    String temp = _chan[0];
+  //**                    if(temp.contains("[")) {
+  //**                        temp = String.format("%1$s[severity]", temp.substring(0,temp.indexOf('[')));
+  //**                    }
+  //**//                    if(!temp.endsWith(".SEVR")){
+  //**//                        temp= temp.concat("[severity]");
+  //**//                    }
+  //**                    _adlColorDynamicAttribute.addInputChannel(new ParameterDescriptor(temp,"")); //$NON-NLS-1$
+  //**                }
+  //**            }
+  //**        }
+  //**    }
     
-    /**
-     * @return the boolean dynamic Attributes DynamicsDescriptor.
-     */
-    public final DynamicsDescriptor getBooleanAdlDynamicAttributes() {
-        return _adlBooleanDynamicAttribute;
-    }
-    /**
-     * @return the boolean dynamic Attributes Elememt.
-     */
-    public final DynamicsDescriptor getColorAdlDynamicAttributes() {
-        return _adlColorDynamicAttribute;
-    }
+  //**    /**
+  //**     * @return the boolean dynamic Attributes DynamicsDescriptor.
+  //**     */
+  //**    public final DynamicsDescriptor getBooleanAdlDynamicAttributes() {
+  //**        return _adlBooleanDynamicAttribute;
+  //**    }
+  //**    /**
+  //**     * @return the boolean dynamic Attributes Elememt.
+  //**     */
+  //**    public final DynamicsDescriptor getColorAdlDynamicAttributes() {
+  //**        return _adlColorDynamicAttribute;
+  //**    }
 
     /**
      * @return true when the DynamicAttribute have a <b>boolean rule</b> otherwise false.
@@ -226,4 +229,15 @@ public class ADLDynamicAttribute extends WidgetPart{
     public final boolean isColor() {
         return _color;
     }
+
+	@Override
+	public Object[] getChildren() {
+    	System.out.println("processing DynamicAttribute object getChildren");
+    	Object[] ret = new Object[4];
+		ret[0] = new ADLResource(ADLResource.FOREGROUND_COLOR, _clr);
+		ret[1] = new ADLResource(ADLResource.VISIBILITY, _vis);
+		ret[2] = new ADLResource(ADLResource.CHANNEL, _chan);
+		ret[3] = new ADLResource(ADLResource.COLOR_RULE, _colorRule);
+		return ret;
+	}
 }

@@ -22,14 +22,15 @@
 /*
  * $Id$
  */
-package org.csstudio.utility.adlconverter.utility.widgetparts;
+package org.csstudio.utility.adlparser.fileParser.widgetParts;
 
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.sds.model.AbstractWidgetModel;
-import org.csstudio.utility.adlconverter.internationalization.Messages;
-import org.csstudio.utility.adlconverter.utility.ADLWidget;
-import org.csstudio.utility.adlconverter.utility.FileLine;
-import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
+//**import org.csstudio.sds.model.AbstractWidgetModel;
+import org.csstudio.utility.adlparser.internationalization.Messages;
+import org.csstudio.utility.adlparser.fileParser.ADLResource;
+import org.csstudio.utility.adlparser.fileParser.ADLWidget;
+import org.csstudio.utility.adlparser.fileParser.FileLine;
+import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
 
 /**
  * @author hrickens
@@ -55,8 +56,8 @@ public class ADLObject extends WidgetPart{
      * @param parentWidgetModel The Widget that set the parameter from ADLWidget.
      * @throws WrongADLFormatException Wrong ADL format or untreated parameter found.
      */
-    public ADLObject(final ADLWidget adlObject, final AbstractWidgetModel parentWidgetModel) throws WrongADLFormatException {
-       super(adlObject, parentWidgetModel);
+    public ADLObject(final ADLWidget adlObject) throws WrongADLFormatException {
+       super(adlObject);
     }
 
     /**
@@ -110,17 +111,17 @@ public class ADLObject extends WidgetPart{
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    final void generateElements() {
-            setX(_x);
-            setY(_y);
-            setWidth(_width);
-            setHeight(_height);
-        
-    }
+//**    /**
+//**     * {@inheritDoc}
+//**     */
+//**    @Override
+//**    final void generateElements() {
+//**            setX(_x);
+//**            setY(_y);
+//**            setWidth(_width);
+//**            setHeight(_height);
+//**        
+//**    }
 
     /**
      * @return the x-coordinate.
@@ -148,35 +149,51 @@ public class ADLObject extends WidgetPart{
         return _height;
     }
 
-    /**
-     * @param x set the x-coordinate.
-     */
-    public final void setX(final int x) {
-        _x = x;
-        _widgetModel.setX(_x);
-    }
+//**    /**
+//**     * @param x set the x-coordinate.
+//**     */
+    //**    public final void setX(final int x) {
+//**        _x = x;
+//**        _widgetModel.setX(_x);
+//**    }
+//**
+//**    /**
+//**     * @param y set the y-coordinate
+//**     */
+    //**    public final void setY(final int y) {
+//**        _y = y;
+//**        _widgetModel.setY(_y);
+//**    }
+//**
+//**    /**
+//**     * @param width set the width-coordinate
+//**     */
+    //**    public final void setWidth(final int width) {
+//**        _width = width;
+//**        _widgetModel.setWidth(_width);
+//**    }
+//**
+//**    /**
+//**     * @param height set the height-coordinate.
+//**     */
+
+    
+//**        public final void setHeight(final int height) {
+//**        _height = height;
+//**        _widgetModel.setHeight(_height);
+//**    }
+
 
     /**
-     * @param y set the y-coordinate
+     * @return child objects
      */
-    public final void setY(final int y) {
-        _y = y;
-        _widgetModel.setY(_y);
-    }
-
-    /**
-     * @param width set the width-coordinate
-     */
-    public final void setWidth(final int width) {
-        _width = width;
-        _widgetModel.setWidth(_width);
-    }
-
-    /**
-     * @param height set the height-coordinate.
-     */
-    public final void setHeight(final int height) {
-        _height = height;
-        _widgetModel.setHeight(_height);
+    public Object[] getChildren(){
+    	Object[] ret = new Object[4];
+    	ret[0] = new ADLResource(ADLResource.X, new Integer(_x));
+    	ret[1] = new ADLResource(ADLResource.Y, new Integer(_y));
+    	ret[2] = new ADLResource(ADLResource.WIDTH, new Integer(_width));
+    	ret[3] = new ADLResource(ADLResource.HEIGHT, new Integer(_height));
+    	
+    	return ret;
     }
 }

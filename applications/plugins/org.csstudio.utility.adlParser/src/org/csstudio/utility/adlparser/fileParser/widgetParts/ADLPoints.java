@@ -22,13 +22,13 @@
 /*
  * $Id$
  */
-package org.csstudio.utility.adlconverter.utility.widgetparts;
+package org.csstudio.utility.adlparser.fileParser.widgetParts;
 
-import org.csstudio.sds.model.AbstractWidgetModel;
-import org.csstudio.utility.adlconverter.internationalization.Messages;
-import org.csstudio.utility.adlconverter.utility.ADLWidget;
-import org.csstudio.utility.adlconverter.utility.FileLine;
-import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
+//**import org.csstudio.sds.model.AbstractWidgetModel;
+import org.csstudio.utility.adlparser.internationalization.Messages;
+import org.csstudio.utility.adlparser.fileParser.ADLWidget;
+import org.csstudio.utility.adlparser.fileParser.FileLine;
+import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
 import org.eclipse.draw2d.geometry.PointList;
 
 /**
@@ -50,8 +50,8 @@ public class ADLPoints extends WidgetPart{
      * @param parentWidgetModel The Widget that set the parameter from ADLWidget.
      * @throws WrongADLFormatException Wrong ADL format or untreated parameter found.
      */
-    public ADLPoints (final ADLWidget adlPoints , final AbstractWidgetModel parentWidgetModel) throws WrongADLFormatException {
-        super(adlPoints, parentWidgetModel);
+    public ADLPoints (final ADLWidget adlPoints ) throws WrongADLFormatException {
+        super(adlPoints);
     }
 
     /**
@@ -82,13 +82,13 @@ public class ADLPoints extends WidgetPart{
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */ 
-    @Override
-    final void generateElements() {
-        _widgetModel.setPropertyValue("points", _pointsList); //$NON-NLS-1$
-    }
+//**    /**
+//**     * {@inheritDoc}
+//**     */ 
+//**    @Override
+//**    final void generateElements() {
+//**        _widgetModel.setPropertyValue("points", _pointsList); //$NON-NLS-1$
+//**    }
 
     /**
      * 
@@ -98,13 +98,23 @@ public class ADLPoints extends WidgetPart{
         return _pointsList;
     }
 
-    /**
-     * 
-     * @param pointsList set the Coordinate list.
-     */
-    public final void setPointsList(final PointList pointsList) {
-        _pointsList = pointsList;
-        _widgetModel.setPropertyValue("points", _pointsList); //$NON-NLS-1$
-    }
+//**    /**
+  //**     * 
+  //**     * @param pointsList set the Coordinate list.
+  //**     */
+  //**    public final void setPointsList(final PointList pointsList) {
+  //**        _pointsList = pointsList;
+  //**        _widgetModel.setPropertyValue("points", _pointsList); //$NON-NLS-1$
+  //**    }
+
+	@Override
+	public Object[] getChildren() {
+		// TODO Auto-generated method stub
+		Object[] ret = new Object[_pointsList.size()];
+		for (int ii=0; ii<_pointsList.size(); ii++){
+			ret[ii] = _pointsList.getPoint(ii);
+		}
+		return ret;
+	}
 
 }

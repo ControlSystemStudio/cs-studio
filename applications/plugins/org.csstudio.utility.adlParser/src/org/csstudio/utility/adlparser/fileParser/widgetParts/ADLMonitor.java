@@ -22,14 +22,15 @@
 /*
  * $Id$
  */
-package org.csstudio.utility.adlconverter.utility.widgetparts;
+package org.csstudio.utility.adlparser.fileParser.widgetParts;
 
-import org.csstudio.sds.model.AbstractWidgetModel;
-import org.csstudio.utility.adlconverter.internationalization.Messages;
-import org.csstudio.utility.adlconverter.utility.ADLHelper;
-import org.csstudio.utility.adlconverter.utility.ADLWidget;
-import org.csstudio.utility.adlconverter.utility.FileLine;
-import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
+//**import org.csstudio.sds.model.AbstractWidgetModel;
+import org.csstudio.utility.adlparser.internationalization.Messages;
+import org.csstudio.utility.adlparser.fileParser.ADLHelper;
+import org.csstudio.utility.adlparser.fileParser.ADLResource;
+import org.csstudio.utility.adlparser.fileParser.ADLWidget;
+import org.csstudio.utility.adlparser.fileParser.FileLine;
+import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
 
 /**
  * @author hrickens
@@ -50,11 +51,11 @@ public class ADLMonitor extends WidgetPart{
     /**
      * The Channel.
      */
-    private String[] _chan;
-    /**
-     * The Record property/Feldname.
-     */
-    private String _postfix="";
+    private String _chan;
+  //**    /**
+  //**     * The Record property/Feldname.
+  //**     */
+  //**    private String _postfix="";
 
     /**
      * The default constructor.
@@ -63,8 +64,8 @@ public class ADLMonitor extends WidgetPart{
      * @param parentWidgetModel The Widget that set the parameter from ADLWidget.
      * @throws WrongADLFormatException Wrong ADL format or untreated parameter found.
      */
-    public ADLMonitor(final ADLWidget monitor, final AbstractWidgetModel parentWidgetModel) throws WrongADLFormatException {
-        super(monitor, parentWidgetModel);
+    public ADLMonitor(final ADLWidget monitor) throws WrongADLFormatException {
+        super(monitor);
     }
 
     /**
@@ -96,12 +97,15 @@ public class ADLMonitor extends WidgetPart{
             }else if(row[0].trim().toLowerCase().equals("bclr")){ //$NON-NLS-1$
                 _bclr=row[1].trim();
             }else if(row[0].trim().toLowerCase().equals("chan")){   // chan and rdbk means both the same. Readback channel. //$NON-NLS-1$
-                _chan=ADLHelper.cleanString(row[1]);
-                if(_chan[0].contains("[")) {
-                    uninit();
-                }
+//**                _chan=ADLHelper.cleanString(row[1]);
+            	_chan = row[1].replaceAll("\"", "");
+
+            	//**                if(_chan[0].contains("[")) {
+//**                    uninit();
+//**                }
             }else if(row[0].trim().toLowerCase().equals("rdbk")){ //$NON-NLS-1$
-                _chan=ADLHelper.cleanString(row[1]);
+            	_chan = row[1].replaceAll("\"", "");
+            	//**                _chan=ADLHelper.cleanString(row[1]);
             }else {
                 throw new WrongADLFormatException(Messages.ADLMonitor_WrongADLFormatException_Parameter_Begin+row[0]+Messages.ADLMonitor_WrongADLFormatException_Parameter_End+parameter);
             }
@@ -109,35 +113,35 @@ public class ADLMonitor extends WidgetPart{
     }
 
     
-    /**
-     * Generate all Elements from ADL Monitor Attributes.
-     */
-    @Override
-    final void generateElements() {
-        if(_clr!=null){
-            _widgetModel.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, ADLHelper.getRGB(_clr));
-        }
-        if(_bclr!=null){
-            _widgetModel.setColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND, ADLHelper.getRGB(_bclr));
-        }
-        if(_chan!=null){
-            /*
-             * EDIT: Helge Rickens 21.11.08
-             * Im alias ist der Postfix enthalten und wurde hier noch mal weiter gegeben.
-             * Dadurch kam es das der Postfix doppelt gesetzt wurde. 
-             */
-//            _postfix = ADLHelper.setChan(_widgetModel,_chan);
-            ADLHelper.setChan(_widgetModel,_chan);
-        }
-    }
+//**    /**
+  //**     * Generate all Elements from ADL Monitor Attributes.
+  //**     */
+  //**    @Override
+  //**    final void generateElements() {
+  //**        if(_clr!=null){
+  //**            _widgetModel.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, ADLHelper.getRGB(_clr));
+  //**        }
+  //**        if(_bclr!=null){
+  //**            _widgetModel.setColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND, ADLHelper.getRGB(_bclr));
+  //**        }
+  //**        if(_chan!=null){
+  //**            /*
+  //**             * EDIT: Helge Rickens 21.11.08
+  //**             * Im alias ist der Postfix enthalten und wurde hier noch mal weiter gegeben.
+  //**             * Dadurch kam es das der Postfix doppelt gesetzt wurde. 
+  //**             */
+  //**//            _postfix = ADLHelper.setChan(_widgetModel,_chan);
+  //**            ADLHelper.setChan(_widgetModel,_chan);
+  //**        }
+  //**    }
 
-    /**
-     * 
-     * @return the postfix (property/Feldname) of the record.
-     */
-    public final String getPostfix() {
-        return _postfix;
-    }
+  //**    /**
+  //**     * 
+  //**     * @return the postfix (property/Feldname) of the record.
+  //**     */
+  //**    public final String getPostfix() {
+  //**       return _postfix;
+  //**    }
 
     /**
      * 
@@ -175,9 +179,20 @@ public class ADLMonitor extends WidgetPart{
      * 
      * @return get the Channel.
      */
-    public final String[] getChan() {
+    public final String getChan() {
         return _chan;
     }
+
+	@Override
+	public Object[] getChildren() {
+    	System.out.println("processing monitor object getChildren");
+		Object[] ret = new Object[3];
+		ret[0] = new ADLResource(ADLResource.FOREGROUND_COLOR, _clr);
+		ret[1] = new ADLResource(ADLResource.BACKGROUND_COLOR, _bclr);
+		ret[2] = new ADLResource(ADLResource.CHANNEL, _chan);
+//**		ret[3] = new ADLResource(ADLResource.POSTFIX, _postfix);
+		return ret;
+	}
 
 }
 

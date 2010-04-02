@@ -22,7 +22,7 @@
 /*
  * $Id$
  */
-package org.csstudio.utility.adlconverter.utility;
+package org.csstudio.utility.adlparser.fileParser;
 
 /**
  * @author hrickens

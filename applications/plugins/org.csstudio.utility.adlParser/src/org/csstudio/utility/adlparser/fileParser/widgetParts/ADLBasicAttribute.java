@@ -22,17 +22,18 @@
 /*
  * $Id$
  */
-package org.csstudio.utility.adlconverter.utility.widgetparts;
+package org.csstudio.utility.adlparser.fileParser.widgetParts;
 
-import org.csstudio.sds.components.model.ArcModel;
-import org.csstudio.sds.components.model.RectangleModel;
-import org.csstudio.sds.model.AbstractWidgetModel;
-import org.csstudio.sds.model.DynamicsDescriptor;
-import org.csstudio.utility.adlconverter.internationalization.Messages;
-import org.csstudio.utility.adlconverter.utility.ADLHelper;
-import org.csstudio.utility.adlconverter.utility.ADLWidget;
-import org.csstudio.utility.adlconverter.utility.FileLine;
-import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
+//**import org.csstudio.sds.components.model.ArcModel;
+//**import org.csstudio.sds.components.model.RectangleModel;
+//**import org.csstudio.sds.model.AbstractWidgetModel;
+//**import org.csstudio.sds.model.DynamicsDescriptor;
+import org.csstudio.utility.adlparser.internationalization.Messages;
+//**import org.csstudio.utility.adlparser.fileParser.ADLHelper;
+import org.csstudio.utility.adlparser.fileParser.ADLResource;
+import org.csstudio.utility.adlparser.fileParser.ADLWidget;
+import org.csstudio.utility.adlparser.fileParser.FileLine;
+import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
 
 /**
  * @author hrickens
@@ -49,18 +50,18 @@ public class ADLBasicAttribute extends WidgetPart{
      * @param parentWidgetModel The Widget that set the parameter from ADLWidget.
      * @throws WrongADLFormatException Wrong ADL format or untreated parameter found.    
      */
-    public ADLBasicAttribute(final ADLWidget adlBasicAttribute, final AbstractWidgetModel parentWidgetModel) throws WrongADLFormatException {
-        super(adlBasicAttribute, parentWidgetModel);
+    public ADLBasicAttribute(final ADLWidget adlBasicAttribute) throws WrongADLFormatException {
+        super(adlBasicAttribute);
     }
 
     /** The Color of (front?) Object. */
-    private String _clr;
+    private String _clr = new String("");
     /** width of the Border. */
-    private String _width;
+    private String _width = new String("");
     /** The style of border. */
-    private String _style;
+    private String _style = new String("");
     /** Is type of fill.*/
-    private String _fill;
+    private String _fill = new String("");
 
     
     /**
@@ -107,89 +108,93 @@ public class ADLBasicAttribute extends WidgetPart{
         }
     }
     
-    /**
-     * Generate all Elements from ADL Basic Attributes.
-     */
-    @Override
-    final void generateElements() {
-        if(_clr!=null){
-            _widgetModel.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND,ADLHelper.getRGB(_clr));
-        }
-        boolean transperncy=false;
-        if(_fill!=null){
-            if(_fill.equals("\"outline\"")){ //$NON-NLS-1$
-                transperncy =true;
-                _fill="0.0"; //$NON-NLS-1$
-            }
-            if(_width==null){
-                _width="1"; //$NON-NLS-1$
-            }
-        }else if(_fill==null){
-            _fill="100.0"; //$NON-NLS-1$
-        }
-        _widgetModel.setPropertyValue(RectangleModel.PROP_TRANSPARENT, transperncy);
-        _widgetModel.setPropertyValue(ArcModel.PROP_TRANSPARENT, transperncy);
-        
-        String style = "1"; // Line //$NON-NLS-1$
-        if (_style==null){
-            style = "1";  // Line //$NON-NLS-1$
-        }else if (_style.equals("none")){ //$NON-NLS-1$
-            style = "0";  // none //$NON-NLS-1$
-        }else if (_style.equals("shape")){ //$NON-NLS-1$
-            style = "6";  // none //$NON-NLS-1$
-        }else if(_style.equals("\"dash\"")){ //$NON-NLS-1$
-            style = "5";  // Striated //$NON-NLS-1$
-//            if(_width!=null&&_width.equals("1")){ //$NON-NLS-1$
-//                _width="2"; //$NON-NLS-1$
-//            }
-        }
-        if(_width!=null){
-            // <property type="sds.integer" id="border.width" value="0" />
-            setWidth(_width);
-            _widgetModel.setPropertyValue(AbstractWidgetModel.PROP_BORDER_COLOR, ADLHelper.getRGB(_clr));
-        }
+//**    /**
+//**     * Generate all Elements from ADL Basic Attributes.
+//**     */
+  //**    @Override
+  //**    final void generateElements() {
+  //**        if(_clr!=null){
+  //**            _widgetModel.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND,ADLHelper.getRGB(_clr));
+  //**        }
+  //**        boolean transperncy=false;
+  //**        if(_fill!=null){
+  //**            if(_fill.equals("\"outline\"")){ //$NON-NLS-1$
+  //**                transperncy =true;
+  //**                _fill="0.0"; //$NON-NLS-1$
+  //**            }
+  //**            if(_width==null){
+  //**                _width="1"; //$NON-NLS-1$
+  //**            }
+  //**        }else if(_fill==null){
+  //**            _fill="100.0"; //$NON-NLS-1$
+  //**        }
+  //**        _widgetModel.setPropertyValue(RectangleModel.PROP_TRANSPARENT, transperncy);
+  //**        _widgetModel.setPropertyValue(ArcModel.PROP_TRANSPARENT, transperncy);
+  //**        
+  //**        String style = "1"; // Line //$NON-NLS-1$
+  //**        if (_style==null){
+  //**            style = "1";  // Line //$NON-NLS-1$
+  //**        }else if (_style.equals("none")){ //$NON-NLS-1$
+  //**            style = "0";  // none //$NON-NLS-1$
+  //**        }else if (_style.equals("shape")){ //$NON-NLS-1$
+  //**            style = "6";  // none //$NON-NLS-1$
+  //**        }else if(_style.equals("\"dash\"")){ //$NON-NLS-1$
+  //**            style = "5";  // Striated //$NON-NLS-1$
+  //**//            if(_width!=null&&_width.equals("1")){ //$NON-NLS-1$
+  //**//                _width="2"; //$NON-NLS-1$
+  //**//            }
+  //**        }
+  //**        if(_width!=null){
+  //**            // <property type="sds.integer" id="border.width" value="0" />
+  //**            setWidth(_width);
+  //**            _widgetModel.setPropertyValue(AbstractWidgetModel.PROP_BORDER_COLOR, ADLHelper.getRGB(_clr));
+  //**        }
+  //**
+  //**        setStyle(style);
+  //**    }
 
-        setStyle(style);
-    }
-
-    /**
-     * @param adlDynamicAttributes set a dynamic attribute for the Color element.
-     */
-    public final void setDynamicColor(final DynamicsDescriptor adlDynamicAttributes) {
-        _widgetModel.setDynamicsDescriptor(AbstractWidgetModel.PROP_COLOR_FOREGROUND,adlDynamicAttributes);
-    }
+  //**    /**
+  //**     * @param adlDynamicAttributes set a dynamic attribute for the Color element.
+  //**     */
+  //**    public final void setDynamicColor(final DynamicsDescriptor adlDynamicAttributes) {
+  //**        _widgetModel.setDynamicsDescriptor(AbstractWidgetModel.PROP_COLOR_FOREGROUND,adlDynamicAttributes);
+  //**    }
 
     /** @return the Color */
     public final String getClr() {
         return _clr;
     }
-    /** @param clr set the Color */
-    public final void setClr(final String clr) {
-        _clr = clr;
-    }
+
+   //**    /** @param clr set the Color */
+  //**    public final void setClr(final String clr) {
+  //**        _clr = clr;
+  //**    }
+
     /** @return the width */
     public final String getWidth() {
         return _width;
     }
-    /** @param width set the width */
-    public final void setWidth(final String width) {
-        _width = width;
-        _widgetModel.setPropertyValue(AbstractWidgetModel.PROP_BORDER_WIDTH, _width);
-    }
+
+  //**    /** @param width set the width */
+  //**    public final void setWidth(final String width) {
+  //**        _width = width;
+  //**        _widgetModel.setPropertyValue(AbstractWidgetModel.PROP_BORDER_WIDTH, _width);
+  //**    }
+
     /** @return the style */
     public final String getStyle() {
         return _style;
     }
-    /** @param style set the style */
-    public final void setStyle(final String style) {
-        _style = style;
-//      <property type="sds.option" id="border.style">
-//          <option id="3" />
-//      </property>
-        if(_style!=null){
-            _widgetModel.setPropertyValue(AbstractWidgetModel.PROP_BORDER_STYLE, _style);
-        }
-    }
+  //**    /** @param style set the style */
+  //**    public final void setStyle(final String style) {
+  //**        _style = style;
+  //**//      <property type="sds.option" id="border.style">
+  //**//          <option id="3" />
+  //**//      </property>
+  //**        if(_style!=null){
+  //**            _widgetModel.setPropertyValue(AbstractWidgetModel.PROP_BORDER_STYLE, _style);
+  //**        }
+  //**    }
     
     /** @return the fill */
     public final Double getFill() {
@@ -203,8 +208,21 @@ public class ADLBasicAttribute extends WidgetPart{
             }
         }
     }
-    /** @param fill set the fill */
-    public final void setFill(final String fill) {
-        _fill = fill;
+//**    /** @param fill set the fill */
+    //**    public final void setFill(final String fill) {
+  //**        _fill = fill;
+  //**    }
+
+    /**
+     * @return child objects
+     */
+    public Object[] getChildren(){
+    	Object[] ret = new Object[4];
+    	ret[0] = new ADLResource(ADLResource.FOREGROUND_COLOR, _clr);
+    	ret[1] = new ADLResource(ADLResource.LINE_WIDTH, _width);
+    	ret[2] = new ADLResource(ADLResource.STYLE, _style);
+    	ret[3] = new ADLResource(ADLResource.FILL, _fill);
+    	
+    	return ret;
     }
 }
