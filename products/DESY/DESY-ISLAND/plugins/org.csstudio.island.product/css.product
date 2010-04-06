@@ -6,7 +6,7 @@
    <aboutInfo>
       <image path="/org.csstudio.island.product/resources/css64x64.gif"/>
       <text>
-         Control System Studio 1.2.2
+         Control System Studio Island
 
 Copyright (c) 2007 Stiftung Deutsches Elektronen-Synchrotron,
 Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -54,7 +54,6 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
 
    <vm>
    </vm>
-
 
    <plugins>
       <plugin id="com.ibm.icu"/>
