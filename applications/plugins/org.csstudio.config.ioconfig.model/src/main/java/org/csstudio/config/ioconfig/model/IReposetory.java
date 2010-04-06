@@ -3,6 +3,7 @@ package org.csstudio.config.ioconfig.model;
 import java.io.Serializable;
 import java.util.List;
 
+import org.csstudio.config.ioconfig.model.pbmodel.Channel;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFile;
 
 /**
@@ -120,5 +121,9 @@ public interface IReposetory {
     List<Integer> getRootPath(int id);
 
     String getShortChannelDesc(String ioName);
+
+    Channel loadChannel(String ioName);
+
+    void close();
 
 }

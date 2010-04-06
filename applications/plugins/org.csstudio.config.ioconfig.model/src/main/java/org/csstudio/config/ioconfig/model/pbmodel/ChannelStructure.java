@@ -38,6 +38,7 @@ import javax.persistence.Transient;
 import org.csstudio.config.ioconfig.model.NamedDBClass;
 import org.csstudio.config.ioconfig.model.Node;
 import org.csstudio.config.ioconfig.model.PersistenceException;
+import org.hibernate.annotations.BatchSize;
 
 /**
  * @author hrickens
@@ -46,6 +47,7 @@ import org.csstudio.config.ioconfig.model.PersistenceException;
  * @since 18.12.2008
  */
 @Entity
+@BatchSize(size=32)
 @Table(name = "ddb_Profibus_Channel_Structure")
 public class ChannelStructure extends Node implements IStructured {
 

@@ -324,7 +324,7 @@ public class MasterConfigComposite extends NodeConfig {
         makeInformationGroup(comp,2);                                                       makeFmbSetGroup(comp);
         makeMasterUserData(comp,2);
         makeDescGroup(comp,3);
-
+        fillStationAddressCombo();
     }
 
     private void makeMemoryAddressingGroup(Composite comp) {
@@ -498,11 +498,7 @@ public class MasterConfigComposite extends NodeConfig {
             private void select() {
                 setSavebuttonEnabled("MasterRedundent", _redundentButton.getSelection()!=(Boolean)_redundentButton.getData());
                 Short sortIndex = (Short)((StructuredSelection)_indexCombo.getSelection()).getFirstElement();
-                if(_redundentButton.getSelection()) {
-                    _freeStationAddress.remove((short)(sortIndex+1));
-                } else {
-                    _freeStationAddress.add((short)(sortIndex+1));
-                }
+                _freeStationAddress = _master.getFreeMStationAddress(_redundentButton.getSelection());
                 _indexCombo.setInput(_freeStationAddress);
                 _indexCombo.setSelection(new StructuredSelection(sortIndex));
                 
@@ -531,7 +527,6 @@ public class MasterConfigComposite extends NodeConfig {
         _indexCombo.getCombo().setLayoutData(new GridData(SWT.RIGHT, SWT.RIGHT, false, false));
         _indexCombo.setContentProvider(new ArrayContentProvider());
         _indexCombo.setLabelProvider(new LabelProvider());
-        fillStationAddressCombo();
         _indexCombo.getCombo().setData(_indexCombo.getCombo().getSelectionIndex());
         _indexCombo.getCombo().addModifyListener(getMLSB());
         _indexCombo.addSelectionChangedListener(new ISelectionChangedListener() {
@@ -552,7 +547,7 @@ public class MasterConfigComposite extends NodeConfig {
     }
 
     private void fillStationAddressCombo() {
-        _freeStationAddress = _master.getFreeStationAddress();
+        _freeStationAddress = _master.getFreeMStationAddress(_redundentButton.getSelection());
         Short sortIndex = _master.getSortIndex();
         if (sortIndex >= 0) {
             if (!_freeStationAddress.contains(sortIndex)) {

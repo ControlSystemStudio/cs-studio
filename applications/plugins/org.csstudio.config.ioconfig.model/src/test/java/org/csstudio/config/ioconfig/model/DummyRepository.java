@@ -3,6 +3,7 @@ package org.csstudio.config.ioconfig.model;
 import java.io.Serializable;
 import java.util.List;
 
+import org.csstudio.config.ioconfig.model.pbmodel.Channel;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFile;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDModule;
 
@@ -96,5 +97,17 @@ public class DummyRepository implements IReposetory {
         // TODO Auto-generated method stub
         return null;
     }
-    
+
+    @Override
+    public Channel loadChannel(String ioName) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void close() {
+        // TODO Auto-generated method stub
+        
+    }
+
 }

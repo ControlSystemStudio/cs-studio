@@ -39,6 +39,7 @@ import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GSD2Module;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdFactory;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdSlaveModel;
 import org.csstudio.platform.logging.CentralLogger;
+import org.hibernate.annotations.BatchSize;
 
 /**
  * @author gerke
@@ -48,6 +49,7 @@ import org.csstudio.platform.logging.CentralLogger;
  */
 
 @Entity
+@BatchSize(size=32)
 @Table(name = "ddb_Profibus_Slave")
 public class Slave extends Node {
     /**

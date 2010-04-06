@@ -134,7 +134,7 @@ public abstract class Node extends NamedDBClass implements Comparable<Node> {
      * 
      * @return the Children of this node.
      */
-    @OneToMany(mappedBy = "parent", targetEntity = Node.class, fetch = FetchType.EAGER, cascade = {
+    @OneToMany(mappedBy = "parent", targetEntity = Node.class, fetch = FetchType.LAZY, cascade = {
             CascadeType.PERSIST, CascadeType.MERGE })
     @Cascade( { org.hibernate.annotations.CascadeType.SAVE_UPDATE,
             org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
@@ -260,7 +260,7 @@ public abstract class Node extends NamedDBClass implements Comparable<Node> {
      * 
      * @return Documents for the Node.
      */
-    @ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.REFRESH })
+    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.REFRESH })
     @JoinTable(name = "MIME_FILES_DDB_NODES_LINK", joinColumns = @JoinColumn(name = "docs_id", referencedColumnName = "id", unique = true), inverseJoinColumns = @JoinColumn(name = "nodes_id", referencedColumnName = "id"))
 //    @JoinTable(name = "MIME_FILES_DDB_NODES_LINK_TEST", joinColumns = @JoinColumn(name = "docs_id", referencedColumnName = "id", unique = true), inverseJoinColumns = @JoinColumn(name = "nodes_id", referencedColumnName = "id"))
     public Set<Document> getDocuments() {
@@ -558,4 +558,26 @@ public abstract class Node extends NamedDBClass implements Comparable<Node> {
         }
     }
 
+    /** 
+     * (@inheritDoc)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (super.equals(obj)) {
+            return true;
+        }
+        if (obj instanceof Node ) {
+            
+            Node node = (Node) obj;
+            if(getId()==node.getId()) {
+                if(getId()>0) {
+                    return true;
+                }
+                return false;
+            }
+        }
+        return false;
+   }
+
+    
 }

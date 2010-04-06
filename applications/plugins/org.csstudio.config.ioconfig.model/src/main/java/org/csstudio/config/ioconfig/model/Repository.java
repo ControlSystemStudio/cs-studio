@@ -28,6 +28,7 @@ package org.csstudio.config.ioconfig.model;
 import java.io.Serializable;
 import java.util.List;
 
+import org.csstudio.config.ioconfig.model.pbmodel.Channel;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFile;
 
 /**
@@ -199,7 +200,16 @@ public final class Repository {
         return _repository.getRootPath(id);
     }
 
+    public static Channel loadChannel(String ioName) {
+        Channel loadChannel = _repository.loadChannel(ioName);
+        return loadChannel;
+    }
+
     public static String getShortChannelDesc(String ioName) {
         return _repository.getShortChannelDesc(ioName);
+    }
+
+    public static void close() {
+        _repository.close();
     }
 }

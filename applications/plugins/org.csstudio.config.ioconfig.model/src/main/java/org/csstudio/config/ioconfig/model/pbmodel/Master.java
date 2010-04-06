@@ -313,7 +313,6 @@ public class Master extends Node {
     
     @Transient
     public SortedSet<Short> getFreeStationAddress(){
-//        ArrayList<Short> freeAddressList = new ArrayList<Short>();
         TreeSet<Short> freeAddressList = new TreeSet<Short>();
         for (short i = 0; i < MAX_STATION_ADDRESS; i++) {
             freeAddressList.add(i);
@@ -323,8 +322,28 @@ public class Master extends Node {
         
         Set<Short> keySet = getChildrenAsMap().keySet();
         freeAddressList.removeAll(keySet);
+        
         return freeAddressList;
     }
+
+    @Transient
+    public SortedSet<Short> getFreeMStationAddress(boolean redunant){
+        TreeSet<Short> freeAddressList = new TreeSet<Short>();
+        for (short i = 0; i < MAX_STATION_ADDRESS; i++) {
+            freeAddressList.add(i);
+        }
+        Set<Short> keySet = getChildrenAsMap().keySet();
+        if(redunant) {
+            for (Short key : keySet) {
+                freeAddressList.remove((short)(key-1));
+                freeAddressList.remove(key);
+            }
+        }else {
+            freeAddressList.removeAll(keySet);
+        }
+        return freeAddressList;
+    }
+
     
     @Transient
     public short getfirstFreeStationAddress(int maxStationAddress) {

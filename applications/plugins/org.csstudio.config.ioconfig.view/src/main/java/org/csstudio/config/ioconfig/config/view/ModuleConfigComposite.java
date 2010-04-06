@@ -653,7 +653,7 @@ public class ModuleConfigComposite extends NodeConfig {
         return String.format("%1$#04x", val);
     }
 
-    private int getValue2BitMask(ExtUserPrmData ranges, String value) {
+    public static int getValue2BitMask(ExtUserPrmData ranges, String value) {
         int val = ProfibusConfigXMLGenerator.getInt(value);
 
         int minBit = ranges.getMinBit();

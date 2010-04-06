@@ -19,7 +19,7 @@ import org.hibernate.Session;
 
 /**
  * Implementation for a Hibernate Repository.
- *  
+ * 
  * @author hrickens
  * @author $Author$
  * @version $Revision$
@@ -242,7 +242,8 @@ public class HibernateReposetory implements IReposetory {
      * Get the Epics Address string to an IO Name. It the name not found return the string '$$$
      * IO-Name NOT found! $$$'.
      * 
-     * @param ioName the IO-Name.
+     * @param ioName
+     *            the IO-Name.
      * @return the Epics Adress for the given IO-Name.
      */
     public String getEpicsAddressString(final String ioName) {
@@ -256,7 +257,7 @@ public class HibernateReposetory implements IReposetory {
                 final List<String> channels = query.list();
                 if (channels.size() < 1) {
                     return "%%% IO-Name (" + ioName + ") NOT found! %%%";
-                } else if(channels.size() > 1) {
+                } else if (channels.size() > 1) {
                     StringBuilder sb = new StringBuilder("%%% IO-Name (");
                     sb.append(ioName);
                     sb.append(" NOT Unique! %%% ");
@@ -314,57 +315,55 @@ public class HibernateReposetory implements IReposetory {
                 query.setString(0, ioName); // Zero-Based!
 
                 final List<String> descList = query.list();
-                if(descList==null||descList.isEmpty()) {
+                if (descList == null || descList.isEmpty()) {
                     return "";
                 }
                 String string = descList.get(0);
-                if(string==null||string.isEmpty()) {
+                if (string == null || string.isEmpty()) {
                     return "";
                 }
                 String[] split = string.split("[\r\n]");
-                if(split[0].length()>40) {
-                    return split[0].substring(0,40);
+                if (split[0].length() > 40) {
+                    return split[0].substring(0, 40);
                 }
-                return split[0]; 
+                return split[0];
             }
         };
         return HibernateManager.doInDevDBHibernate(hibernateCallback);
     }
-    
+
     public List<Sensors> loadSensors(final String ioName) {
         HibernateCallback hibernateCallback = new HibernateCallback() {
             @SuppressWarnings("unchecked")
             public List<Sensors> execute(final Session session) {
-                final Query query = session.createQuery("from "+ Sensors.class.getName() +
-                                    " as sensors where sensors.ioName like ?");
+                final Query query = session.createQuery("from " + Sensors.class.getName()
+                        + " as sensors where sensors.ioName like ?");
                 query.setString(0, ioName); // Zero-Based!
 
                 final List<Sensors> sensors = query.list();
                 return sensors;
             }
         };
-        return HibernateManager.doInDevDBHibernate(hibernateCallback);    }
-    
+        return HibernateManager.doInDevDBHibernate(hibernateCallback);
+    }
+
     public Sensors loadSensor(final String ioName, final String selection) {
         HibernateCallback hibernateCallback = new HibernateCallback() {
             @SuppressWarnings("unchecked")
             public Sensors execute(final Session session) {
-                String statment = "select" +
-                		          " s"+
-                		          " from "+Sensors.class.getName()+" s" +
-                		          ", "+Channel.class.getName()+" c"+
-                                  " where c.currentValue like s.id" +
-                                  " and c.ioName like ?";
+                String statment = "select" + " s" + " from " + Sensors.class.getName() + " s"
+                        + ", " + Channel.class.getName() + " c" + " where c.currentValue like s.id"
+                        + " and c.ioName like '" + ioName + "'";
                 final Query query = session.createQuery(statment);
-                query.setString(0, ioName); // Zero-Based!
-                final List<Sensors> channels = query.list();
-                if(channels==null||channels.size()<1) {
+                // query.setString(0, ioName); // Zero-Based!
+                final List<Sensors> sensors = query.list();
+                if (sensors == null || sensors.size() < 1) {
                     return null;
                 }
-                return channels.get(0);
+                return sensors.get(0);
             }
         };
-        return HibernateManager.doInDevDBHibernate(hibernateCallback);    
+        return HibernateManager.doInDevDBHibernate(hibernateCallback);
     }
 
     public List<Integer> getRootPath(final int id) {
@@ -372,16 +371,15 @@ public class HibernateReposetory implements IReposetory {
             public List<Integer> execute(final Session session) {
                 int level = 0;
                 int searchId = id;
-                String statment = "select node.parent_Id"+
-                                  " from ddb_node node"+
-                                  " where node.id like ?";
+                String statment = "select node.parent_Id" + " from ddb_node node"
+                        + " where node.id like ?";
                 final List<Integer> rootPath = new ArrayList<Integer>();
                 rootPath.add(searchId);
                 SQLQuery query = session.createSQLQuery(statment);
-                while(searchId>0) {
+                while (searchId > 0) {
                     query.setInteger(0, searchId); // Zero-Based!
                     BigDecimal uniqueResult = (BigDecimal) query.uniqueResult();
-                    if(uniqueResult==null||level++>10) {
+                    if (uniqueResult == null || level++ > 10) {
                         break;
                     }
                     searchId = uniqueResult.intValue();
@@ -390,8 +388,27 @@ public class HibernateReposetory implements IReposetory {
                 return rootPath;
             }
         };
-        return HibernateManager.doInDevDBHibernate(hibernateCallback);    
+        return HibernateManager.doInDevDBHibernate(hibernateCallback);
     }
 
-    
+    @Override
+    public Channel loadChannel(final String ioName) {
+        HibernateCallback hibernateCallback = new HibernateCallback() {
+            @SuppressWarnings("unchecked")
+            public Channel execute(final Session session) {
+                Query createQuery = session.createQuery("select c from " + Channel.class.getName()
+                        + " c where c.ioName like ?");
+                createQuery.setString(0, ioName);
+                final Channel nodes = (Channel) createQuery.uniqueResult();
+                return nodes;
+            }
+        };
+        return HibernateManager.doInDevDBHibernate(hibernateCallback);
+    }
+
+    @Override
+    public void close() {
+        HibernateManager.closeSession();
+    }
+
 }

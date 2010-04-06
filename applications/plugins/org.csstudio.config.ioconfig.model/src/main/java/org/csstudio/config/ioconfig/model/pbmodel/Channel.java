@@ -36,6 +36,7 @@ import org.csstudio.config.ioconfig.model.NamedDBClass;
 import org.csstudio.config.ioconfig.model.Node;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.tools.NodeMap;
+import org.hibernate.annotations.BatchSize;
 
 /**
  * 
@@ -45,6 +46,7 @@ import org.csstudio.config.ioconfig.model.tools.NodeMap;
  * @since 21.03.2007
  */
 @Entity
+@BatchSize(size=32)
 @Table(name = "ddb_Profibus_Channel")
 public class Channel extends Node {
 
@@ -510,7 +512,7 @@ public class Channel extends Node {
     }
 
     @Transient
-    private Object getBitPostion() {
+    public String getBitPostion() {
         StringBuilder sb = new StringBuilder();
         if (getChannelType() == DataType.BIT ) {
 //        if (getChannelType() == DataType.BIT && getSortIndex()>=0) {
