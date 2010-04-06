@@ -24,8 +24,6 @@
  */
 package org.csstudio.config.ioconfig.model;
 
-import java.util.Date;
-
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -82,14 +80,9 @@ public class FacilityLight extends NamedDBClass {
     @Transient
     public Facility getFacility() {
         if (_facility == null) {
-            Date date = new Date();
             Diagnose.clear();
             Facility facility = Repository.load(Facility.class, getId());
             _facility = facility;
-            Diagnose.print();
-            Date endDate = new Date();
-            System.out.println("Start um "+endDate);
-            System.out.println("differenc: "+(endDate.getTime()-date.getTime()));
             _facility.setFacilityLigth(this);
         }
         return _facility;
