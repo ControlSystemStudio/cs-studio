@@ -244,7 +244,7 @@ public class CSSView extends Composite implements Observer {
             _hasChild = false;
             _child.dispose();
             while (!_child.isDisposed()) {
-                // Empty // TODO (bknerr) :
+                // Empty
             }
         }
 
@@ -325,7 +325,6 @@ public class CSSView extends Composite implements Observer {
             _child.dispose();
             while (!_child.isDisposed()) {
              // EMPTY
-                ;
             }
         }
         // make new child

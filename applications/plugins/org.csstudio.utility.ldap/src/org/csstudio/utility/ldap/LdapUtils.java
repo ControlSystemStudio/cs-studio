@@ -57,7 +57,7 @@ public class LdapUtils {
     public static final String ATTR_FIELD_OBJECT_CLASS = "objectClass";
     public static final String ATTR_VAL_OBJECT_CLASS = "epicsRecord";
 
-    public static final String ATTR_FIELD_RESPONSIBLE_EMAIL = "epicsResponsibleEmailAddress";
+    public static final String ATTR_FIELD_RESPONSIBLE_PERSON = "epicsResponsibleName";
 
     public static final String[] FORBIDDEN_SUBSTRINGS = new String[] {
         "/","\\","+","@","$"

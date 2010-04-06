@@ -22,8 +22,10 @@
 package org.csstudio.utility.ldapUpdater.mail;
 
 import java.io.IOException;
+import java.util.Set;
 
 import org.csstudio.email.EMailSender;
+import org.csstudio.email.EmailUtils;
 
 /**
  * Encapsulates LDAP Updater specific mail functionality.
@@ -41,22 +43,39 @@ public class NotificationMail {
         // Empty.
     }
 
+    /**
+     *
+     * @param type
+     * @param receiverString
+     * @param additionalBody
+     * @return
+     */
     public static boolean sendMail(final NotificationType type,
-                                   final String receiver,
+                                   final String receiverString,
                                    final String additionalBody) {
-        EMailSender mailer = null;
+        final Set<String> receivers = EmailUtils.extractEmailAddresses(receiverString);
         try {
+            for (final String receiver : receivers) {
+                sendSingleMail(type, receiver, additionalBody);
+            }
+        } catch (final IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+
+    private static void sendSingleMail(final NotificationType type,
+                                   final String receiver,
+                                   final String additionalBody) throws IOException {
+        EMailSender mailer = null;
             mailer = new EMailSender(HOST,
                                      FROM,
                                      receiver,
                                      type.getSubject());
             mailer.addText(type.getText() + additionalBody);
             mailer.close();
-        } catch (final IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
     }
 
 }

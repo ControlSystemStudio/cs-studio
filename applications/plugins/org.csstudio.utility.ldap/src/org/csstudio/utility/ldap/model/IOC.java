@@ -40,7 +40,7 @@ public class IOC implements Serializable {
 
     public static final String NO_GROUP = "<no group>";
 
-    public static final String DEFAULT_RESPONSIBLE_EMAILADDRESS = "klaus.valett@desy.de";
+    public static final String DEFAULT_RESPONSIBLE_PERSON = "klaus.valett@desy.de";
 
     private static final long serialVersionUID = 1L;
 
@@ -67,7 +67,7 @@ public class IOC implements Serializable {
     /**
      * The email address of the responsible person for this IOC.
      */
-    private String _responsible = DEFAULT_RESPONSIBLE_EMAILADDRESS;
+    private String _responsible = DEFAULT_RESPONSIBLE_PERSON;
 
     /**
      * Set of records in this IOC.
@@ -76,11 +76,11 @@ public class IOC implements Serializable {
 
 
     public IOC(final String name, final GregorianCalendar dateTime) {
-        this(name, "<no group>", "<no physicalname>", dateTime, DEFAULT_RESPONSIBLE_EMAILADDRESS);
+        this(name, "<no group>", "<no physicalname>", dateTime, DEFAULT_RESPONSIBLE_PERSON);
     }
 
     public IOC(final String econ, final String efan) {
-        this(econ, efan, "<no physicalname>", null, DEFAULT_RESPONSIBLE_EMAILADDRESS);
+        this(econ, efan, "<no physicalname>", null, DEFAULT_RESPONSIBLE_PERSON);
     }
 
     /**

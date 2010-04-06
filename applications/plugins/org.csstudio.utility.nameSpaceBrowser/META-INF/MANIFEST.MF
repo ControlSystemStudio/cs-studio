@@ -4,13 +4,13 @@ Bundle-Name: NameSpaceBrowser Plug-in
 Bundle-SymbolicName: org.csstudio.utility.nameSpaceBrowser;singleton:=true
 Bundle-Version: 1.0.11
 Bundle-Activator: org.csstudio.utility.nameSpaceBrowser.Activator
-Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.csstudio.platform,
  org.csstudio.platform.ui,
  org.eclipse.help,
  org.csstudio.utility.namespace.utility
-Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.utility.nameSpaceBrowser.ui,
  org.csstudio.utility.nameSpaceBrowser.utility
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

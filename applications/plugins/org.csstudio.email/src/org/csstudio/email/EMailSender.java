@@ -34,6 +34,7 @@ public class EMailSender
         return Preferences.getSMTP_Host().length() > 0;
     }
 
+
     /** Initialize
      *  @param host SMTP Host
      *  @param from Sender's email

@@ -14,7 +14,7 @@ public class EMailSenderTest
      * Please, overwrite these settings to your host and email address.
      */
     final private static String HOST = "krynfs.desy.de";
-    final private static String FROM = "bastian.knerr@desy.de";
+    final private static String FROM = "Bastian Knerr <bastian.knerr@desy.de>";
     final private static String TO = FROM;
 
 

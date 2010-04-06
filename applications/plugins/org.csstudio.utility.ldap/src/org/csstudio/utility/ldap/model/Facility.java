@@ -66,14 +66,14 @@ public class Facility {
             _iocs.put(econKey, ioc);
         }
         if (attributes != null) {
-            final Attribute emailAddressAttr = attributes.get(LdapUtils.ATTR_FIELD_RESPONSIBLE_EMAIL);
+            final Attribute emailAddressAttr = attributes.get(LdapUtils.ATTR_FIELD_RESPONSIBLE_PERSON);
             if (emailAddressAttr != null) {
                 try {
                     ioc.setResponsible((String)emailAddressAttr.get());
                 } catch (final NoSuchElementException nsee) {
-                    LOG.warn("Attribute " + LdapUtils.ATTR_FIELD_RESPONSIBLE_EMAIL + " has not any values set.");
+                    LOG.warn("Attribute " + LdapUtils.ATTR_FIELD_RESPONSIBLE_PERSON + " has not any values set.");
                 } catch (final NamingException ne) {
-                    LOG.warn("Attribute " + LdapUtils.ATTR_FIELD_RESPONSIBLE_EMAIL + " could not be retrieved.\n" + ne.getExplanation());
+                    LOG.warn("Attribute " + LdapUtils.ATTR_FIELD_RESPONSIBLE_PERSON + " could not be retrieved.\n" + ne.getExplanation());
                 }
             }
         }
