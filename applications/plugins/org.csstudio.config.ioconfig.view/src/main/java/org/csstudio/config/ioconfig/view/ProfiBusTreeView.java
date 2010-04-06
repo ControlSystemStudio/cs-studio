@@ -103,12 +103,13 @@ import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.TreeEditor;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
@@ -436,14 +437,14 @@ public class ProfiBusTreeView extends Composite {
 
                         @Override
                         public void run() {
-                            Cursor oldCursor = getDisplay().getCursorControl().getCursor();
-                            Cursor handCursor = new Cursor(Display.getCurrent(),SWT.CURSOR_WAIT);
-                            getDisplay().getCursorControl().setCursor(handCursor);
+                            // Cursor oldCursor = getDisplay().getCursorControl().getCursor();
+                            // Cursor handCursor = new Cursor(Display.getCurrent(),SWT.CURSOR_WAIT);
+                            // getDisplay().getCursorControl().setCursor(handCursor);
                             _viewer.getTree().setEnabled(false);
                             _load = Repository.load(FacilityLight.class);
                             _viewer.setInput(_load);
                             _viewer.getTree().setEnabled(true);
-                            getDisplay().getCursorControl().setCursor(oldCursor);
+                            // getDisplay().getCursorControl().setCursor(oldCursor);
                         }
                     });
                     monitor.done();
@@ -480,8 +481,17 @@ public class ProfiBusTreeView extends Composite {
                 }
             }
         });
-    }
+        
+        this.addDisposeListener(new DisposeListener() {
+            
+            public void widgetDisposed(DisposeEvent e) {
+                checkDirtyConfig(_nodeConfigComposite);
+                Repository.close();
+            }
+        });
 
+    }
+    
     /**
      * Add a new Facility to the tree root.
      * 
@@ -1488,5 +1498,48 @@ public class ProfiBusTreeView extends Composite {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+    }
+    
+    /**
+     * @param nc
+     */
+    private boolean checkDirtyConfig(NodeConfig nc) {
+        if (nc.isDirty()) {
+            String[] buttonLabels = new String[] { "&Save", "Don't Save", "&Cancel" };
+            MessageDialog id = new MessageDialog(getShell(),
+                                                 "Node not saved!",
+                                                 null,
+                                                 "The Node is not saved.\r\n Save now?",
+                                                 MessageDialog.WARNING,
+                                                 buttonLabels,
+                                                 2);
+            id.setBlockOnOpen(true);
+            switch (id.open()) {
+                case Dialog.OK:
+                    // Persist the node.
+                    nc.store();
+                    break;
+                case Dialog.CANCEL:
+                    // don't save the actual node and change to the new selected.
+                    Node node = nc.getNode();
+                    if (node != null && node.getId() < 1) {
+                        if (node instanceof Facility) {
+                            Facility fac = (Facility) node;
+                            _viewer.remove(fac.getFacilityLigth());
+                        } else if (node.getParent() != null) {
+                            nc.getNode().getParent().removeChild(nc.getNode());
+                        }
+                    }
+                    nc.cancel();
+                    _editNodeAction.setEnabled(true);
+                    break;
+                default:
+                    _viewer.setSelection(new StructuredSelection(nc), true);
+                    _editNodeAction.setEnabled(true);
+                    return false;
+            }
+            id.close();
+        }
+        return true;
     }
 }
