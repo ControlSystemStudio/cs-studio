@@ -36,7 +36,7 @@ import service.LdapService;
 import service.impl.LdapServiceImpl;
 
 /**
- * TODO (bknerr) :
+ * IOC Management Commands for the context menu of the LDAP Updater product.
  *
  * @author bknerr 17.03.2010
  */
@@ -67,11 +67,9 @@ public class IocManagement implements IManagementCommand {
 
         switch (IocModificationCommand.valueOf(command)) {
             case DELETE : {
-                // TODO (bknerr) : another popup 'do you really want to do this?'
                 _service.removeIocEntryFromLdap(Engine.getInstance().getLdapDirContext(), iocName, facilityName);
             } break;
             case TIDY_UP : {
-                // TODO (bknerr) : another popup 'do you really want to do this?'
                 _service.tidyUpIocEntryInLdap(Engine.getInstance().getLdapDirContext(),
                                               iocName,
                                               facilityName,

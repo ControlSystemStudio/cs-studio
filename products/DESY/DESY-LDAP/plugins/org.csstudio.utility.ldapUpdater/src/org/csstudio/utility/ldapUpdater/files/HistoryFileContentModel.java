@@ -28,6 +28,8 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 /**
+ * Model for the contents of the file that contains the time spans of the last
+ * processing of an IOC file.
  *
  * @author bknerr
  */

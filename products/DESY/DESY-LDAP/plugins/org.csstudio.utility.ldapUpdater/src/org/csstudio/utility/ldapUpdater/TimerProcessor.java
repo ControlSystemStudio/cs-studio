@@ -30,6 +30,12 @@ import org.csstudio.platform.logging.CentralLogger;
 
 public class TimerProcessor {
 
+    private static long _delay;
+    private static long _interval;
+    private static long LDAP_RECHECK = 10000; // every 10 seconds
+
+    private static long LDAP_TIMEOUT = 300000; // until 300 seconds are over
+
     static class ProcessOnTime extends TimerTask {
 
         private static final Logger LOGGER = CentralLogger.getInstance().getLogger(ProcessOnTime.class);
@@ -57,7 +63,6 @@ public class TimerProcessor {
                 }
 
             } catch (final InterruptedException ie) {
-                // TODO (bknerr) : check appropriate thread handling (see Goetz book)
                 ie.printStackTrace();
                 Thread.currentThread().interrupt();
             } catch (final Exception e) {
@@ -66,11 +71,6 @@ public class TimerProcessor {
             }
         }
     }
-    private static long _delay;
-    private static long _interval;
-    private static long LDAP_RECHECK = 10000; // every 10 seconds
-
-    private static long LDAP_TIMEOUT = 300000; // until 300 seconds are over
 
 
     public static void setDelay(final long delay) {

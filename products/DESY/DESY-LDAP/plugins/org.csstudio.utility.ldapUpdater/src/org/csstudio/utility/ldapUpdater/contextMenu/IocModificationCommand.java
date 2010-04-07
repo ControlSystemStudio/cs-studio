@@ -22,25 +22,25 @@
 package org.csstudio.utility.ldapUpdater.contextMenu;
 
 /**
- * TODO (bknerr) :
- * 
+ * Enum of available IOC management commands for the context menu of the LDAP Updater
+ *
  * @author bknerr 17.03.2010
  */
 public enum IocModificationCommand {
     DELETE("delete"),
     TIDY_UP("tidyUp");
-    
+
     private final String _description;
-    
+
     /**
      * Constructor.
      */
     private IocModificationCommand(final String description) {
         _description = description;
     }
-    
+
     public String getDescription() {
         return _description;
     }
-    
+
 }

@@ -24,16 +24,36 @@ package org.csstudio.utility.ldap;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+/**
+ * TODO (hrickens): Docu
+ *
+ * @author bknerr
+ * @author $Author$
+ * @version $Revision$
+ * @since 07.04.2010
+ */
 public class Messages {
 	private static final String BUNDLE_NAME = "org.csstudio.utility.ldap.messages"; //$NON-NLS-1$
 
 	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle
 			.getBundle(BUNDLE_NAME);
 
-	public static String getString(String key) {
+	/**
+     * Constructor.
+     */
+    private Messages() {
+        // Don't instantiate.
+    }
+
+	/**
+	 *
+	 * @param key
+	 * @return
+	 */
+	public static String getString(final String key) {
 		try {
 			return RESOURCE_BUNDLE.getString(key);
-		} catch (MissingResourceException e) {
+		} catch (final MissingResourceException e) {
 			return '!' + key + '!';
 		}
 	}

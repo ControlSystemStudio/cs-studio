@@ -14,13 +14,15 @@ import org.csstudio.utility.ldap.LdapUtils.LdapQueryResult;
 import org.csstudio.utility.ldap.model.LdapContentModel;
 
 /**
- * TODO (bknerr) : Documentation missing.
+ * Observes the result of an LDAP query and updates the current content model with
+ * the result.
+ *
  * @author bknerr
  */
 public class LdapSeachResultObserver implements Observer {
 
     private final Logger LOGGER = CentralLogger.getInstance().getLogger(this);
-    private final LdapContentModel _model;
+    private LdapContentModel _model;
 
     private boolean _modelReady = false;
 
@@ -47,6 +49,10 @@ public class LdapSeachResultObserver implements Observer {
 
     public void setModelReady(final boolean ready) {
         _modelReady = ready;
+    }
+
+    public void clearModel() {
+        _model = new LdapContentModel();
     }
 
 

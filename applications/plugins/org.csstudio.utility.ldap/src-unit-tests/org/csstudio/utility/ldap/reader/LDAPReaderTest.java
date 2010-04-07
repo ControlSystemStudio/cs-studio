@@ -39,12 +39,13 @@ import service.impl.LdapServiceImpl;
  * @author hrickens
  *
  */
-public class LDAP_Reader_Test {
+public class LDAPReaderTest {
 
     private final LdapService _service = LdapServiceImpl.getInstance();
 
-	/**
-	 * Test method for {@link org.csstudio.utility.ldap.reader.LDAPReader#LDAPReader(java.lang.String[], org.csstudio.utility.ldap.LdapSearchResult.utility.LdapResultList)}.
+    /**
+     * Test method for {@link org.csstudio.utility.ldap.reader.LDAPReader#LDAPReader(java.lang.String[],
+     * org.csstudio.utility.ldap.LdapSearchResult.utility.LdapResultList)}.
 	 */
 	@Test
 	public void testLDAPServiceFacilityLookup() {
@@ -57,7 +58,8 @@ public class LDAP_Reader_Test {
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.utility.ldap.reader.LDAPReader#LDAPReader(java.lang.String[], int, org.csstudio.utility.ldap.LdapSearchResult.utility.ResultList)}.
+	 * Test method for {@link org.csstudio.utility.ldap.reader.LDAPReader#LDAPReader(java.lang.String[],
+	 * int, org.csstudio.utility.ldap.LdapSearchResult.utility.ResultList)}.
 	 */
 	@Test
 	public void testLDAPReaderStringArrayIntResultList() {
@@ -65,7 +67,8 @@ public class LDAP_Reader_Test {
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.utility.ldap.reader.LDAPReader#LDAPReader(java.lang.String, java.lang.String, org.csstudio.utility.ldap.LdapSearchResult.utility.ResultList)}.
+	 * Test method for {@link org.csstudio.utility.ldap.reader.LDAPReader#LDAPReader(java.lang.String,
+	 * java.lang.String, org.csstudio.utility.ldap.LdapSearchResult.utility.ResultList)}.
 	 */
 	@Test
 	public void testLDAPReaderStringStringResultList() {
@@ -73,7 +76,8 @@ public class LDAP_Reader_Test {
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.utility.ldap.reader.LDAPReader#LDAPReader(java.lang.String, java.lang.String, int, org.csstudio.utility.ldap.LdapSearchResult.utility.ResultList)}.
+	 * Test method for {@link org.csstudio.utility.ldap.reader.LDAPReader#LDAPReader(java.lang.String,
+	 * java.lang.String, int, org.csstudio.utility.ldap.LdapSearchResult.utility.ResultList)}.
 	 */
 	@Test
 	public void testLDAPReaderStringStringIntResultList() {

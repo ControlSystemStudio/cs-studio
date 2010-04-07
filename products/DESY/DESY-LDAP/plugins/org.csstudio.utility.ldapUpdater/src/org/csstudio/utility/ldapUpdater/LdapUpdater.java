@@ -147,7 +147,8 @@ public class LdapUpdater {
 
 
     /**
-     * TODO (bknerr) : Docu
+     * Scans the IOC file directory on /applic and the contents of the IOC files.
+     * Removes any record from LDAP that is not found in any of the IOC files.
      */
     public void tidyUpLdapFromIOCFiles() {
         if ( _busy ) {
@@ -173,7 +174,8 @@ public class LdapUpdater {
     }
 
     /**
-     * TODO (bknerr) : Docu
+     * Scans the IOC files on /applic and checks whether contained records are already listed in LDAP.
+     * If not so, these entries are added to LDAP.
      */
     public final void updateLdapFromIOCFiles() {
 

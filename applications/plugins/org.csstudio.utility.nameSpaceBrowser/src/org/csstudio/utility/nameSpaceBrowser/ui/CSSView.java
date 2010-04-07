@@ -139,13 +139,6 @@ public class CSSView extends Composite implements Observer {
     }
 
 
-    private static enum RegExpParam {
-        JAVA_REG_EXP,
-        JAVA_REG_EXP_NO_CASE,
-        SIMPLE_WIN;
-    }
-
-
     // UI elements
     private final Display _display;
     private final Composite _parent;
@@ -505,46 +498,23 @@ public class CSSView extends Composite implements Observer {
     }
 
     /**
-     * @param serach1
+     * String matcher for regExp that only contains * and ? as wildcards.
+     * Case-insensitive.
+     *
+     * @param searchString
      *            this String a not modified (by no Casesensitivity toLowerCase)
-     * @param regExp
+     * @param simpleRegExp
      *            this String a modified
      * @return true match search and regExp and false don´t match
      */
-    protected boolean searchString(final String search1, final String regExp) {
-        return searchString(search1, regExp, RegExpParam.SIMPLE_WIN);
-    }
+    protected boolean searchString(final String searchString, final String simpleRegExp) {
 
-    /**
-     * @param serach1
-     *            this String a not modified (by no Casesensitivity toLowerCase)
-     * @param regExp
-     *            this String a modified by searchType
-     * @param searchTyp
-     *            :
-     *
-     *            <pre>
-     * SIMPLE_WIN: Search used only * and ? as Wildcard
-     * JAVA_REG_EXP: used String match
-     * JAVA_REG_EXP_NO_CASE: used String match after toLowerCase
-     * </pre>
-     * @return true match search and regExp and false don´t match
-     */
-
-    protected boolean searchString(final String search1, final String regExp, final RegExpParam searchTyp) { // FIXME (bknerr) : encapsulate somewhere else !
-        switch (searchTyp) {
-            case JAVA_REG_EXP:
-                return search1.matches(regExp);
-            case JAVA_REG_EXP_NO_CASE:
-                return search1.toLowerCase().matches(regExp.toLowerCase());
-            case SIMPLE_WIN:
-            default:
-                return search1.toLowerCase().matches(
-                                                     regExp.replace("$", "\\$").replace(".", "\\.").replace("*", ".*").replace(
-                                                                                                                               "?", ".?").toLowerCase()
-                                                                                                                               + ".*");
-        }
-
+        final String regExp = simpleRegExp.replace("$", "\\$")
+                                          .replace(".", "\\.")
+                                          .replace("*", ".*")
+                                          .replace("?", ".?").toLowerCase() +
+                                          ".*";
+        return searchString.toLowerCase().matches(regExp);
     }
 
     // Setzt den Defaultfilter für IProzessVariablen
@@ -577,7 +547,7 @@ public class CSSView extends Composite implements Observer {
             @Override
             public Object[] filter(final Viewer viewer, final Object parent, final Object[] elements) {
 
-                final String search = _filter.getText().trim();
+                final String simpleRegExp = _filter.getText().trim();
                 final ArrayList<Object> al = new ArrayList<Object>();
                 for (final Object element : elements) {
                     String name = ""; //$NON-NLS-1$
@@ -586,7 +556,7 @@ public class CSSView extends Composite implements Observer {
                         name = names[names.length - 1];
                         // name= ((IControlSystemItem) element).getName();
                     }
-                    if ((search.length() == 0) || searchString(name, search)) {
+                    if ((simpleRegExp.length() == 0) || searchString(name, simpleRegExp)) {
                         al.add(element);
                     }
                 }

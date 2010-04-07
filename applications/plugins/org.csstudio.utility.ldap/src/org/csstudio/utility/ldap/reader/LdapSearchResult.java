@@ -67,7 +67,7 @@ public class LdapSearchResult extends NameSpaceSearchResult {
             return null;
         }
 
-        for (final SearchResult row : _answerSet) { // TODO (bknerr) : encapsulate LDAP answer parsing !
+        for (final SearchResult row : _answerSet) { // TODO (hrickens) : encapsulate LDAP answer parsing !
             String cleanList = row.getName();
             // Delete "-Chars that add from LDAP-Reader when the result contains special character
             if(cleanList.startsWith("\"")){ //$NON-NLS-1$
