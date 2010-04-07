@@ -27,7 +27,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * TODO (bknerr) :
+ * Static utility class for EmailSender.
  *
  * @author bknerr
  * @author $Author$
