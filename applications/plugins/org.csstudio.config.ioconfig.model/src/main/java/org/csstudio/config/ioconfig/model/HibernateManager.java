@@ -119,16 +119,6 @@ public final class HibernateManager {
 			_sessionUseCounter++;
 		}
 
-//		/**
-//		 * Set the time to close the DB Session in millisecond.
-//		 * 
-//		 * @param timeToCloseSession
-//		 *            the time to close the Session.
-//		 */
-//		public void setTimeToCloseSession(long timeToCloseSession) {
-//			_timeToCloseSession = timeToCloseSession;
-//		}
-
 		public long getTimeToCloseSession() {
 			return _timeToCloseSession;
 		}
@@ -230,6 +220,13 @@ public final class HibernateManager {
 						"org.hibernate.cache.HashtableCacheProvider")
 				.setProperty("hibernate.cache.use_minimal_puts", "true")
 				.setProperty("hibernate.cache.use_query_cache", "true")
+				// connection Pool
+				.setProperty("c3p0.min_size", "1")
+				.setProperty("c3p0.max_size", "3")
+				.setProperty("c3p0.timeout", "1800")
+				.setProperty("c3p0.acquire_increment", "1")
+				.setProperty("c3p0.idel_test_period", "100") // sec
+				.setProperty("c3p0.max_statements", "1")
 //				.setProperty("hibernate.show_sql", "true")
 //                .setProperty("hibernate.format_sql", "true")
 //                .setProperty("hibernate.use_sql_comments", "true")
@@ -351,11 +348,17 @@ public final class HibernateManager {
 	@SuppressWarnings("unchecked")
 	public static <T> T doInDevDBHibernate(HibernateCallback callback) {
 		
-		if (_sess == null || !_sess.isOpen()) {
+		if (_sess == null ||!_sess.isConnected() || !_sess.isOpen()) {
+		    if (_sessionWatchDog == null) {
+	            _sessionWatchDog = new SessionWatchDog("Session Watch Dog");
+	            _sessionWatchDog.setSystem(true);
+	        }
 		    initSessionFactoryDevDB();
 			_sess = _sessionFactoryDevDB.openSession();
 		}
-
+		_sessionWatchDog.setSessionFactory(_sessionFactoryDevDB);
+        _sessionWatchDog.schedule(30000);
+        _sessionWatchDog.useSession();
 		_trx = null;
 		try {
 			CentralLogger.getInstance().debug(
@@ -390,6 +393,10 @@ public final class HibernateManager {
 	    if(_sessionFactoryDevDB!=null&&!_sessionFactoryDevDB.isClosed()) {
 	        _sessionFactoryDevDB.close();
 	        _sessionFactoryDevDB=null;
+	    }
+	    if(_sessionWatchDog!=null) {
+	        _sessionWatchDog.cancel();
+	        _sessionWatchDog=null;
 	    }
 	    CentralLogger.getInstance().info(HibernateManager.class, "DB Session closed");
         
