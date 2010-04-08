@@ -23,6 +23,12 @@ public class ADLResource {
 	public static final String RD_ARGS = "Args";
 	public static final String VISIBILITY = "Visibility";
 	public static final String COLOR_RULE = "Color Rule";
+	public static final String LOPR_SRC = "LOPR Source";
+	public static final String LOPR_DEFAULT = "LOPR Default";
+	public static final String HOPR_SRC = "HOPR Source";
+	public static final String HOPR_DEFAULT = "HOPR Default";
+	public static final String PREC_SRC = "PREC Source";
+	public static final String PREC_DEFAULT = "PREC Default";
 	
 	public ADLResource (String name, Object value){
 		this._name = name;
