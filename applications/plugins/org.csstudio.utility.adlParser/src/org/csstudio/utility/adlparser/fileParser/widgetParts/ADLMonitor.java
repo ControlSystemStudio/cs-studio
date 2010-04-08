@@ -26,7 +26,6 @@ package org.csstudio.utility.adlparser.fileParser.widgetParts;
 
 //**import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.utility.adlparser.internationalization.Messages;
-import org.csstudio.utility.adlparser.fileParser.ADLHelper;
 import org.csstudio.utility.adlparser.fileParser.ADLResource;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
 import org.csstudio.utility.adlparser.fileParser.FileLine;
