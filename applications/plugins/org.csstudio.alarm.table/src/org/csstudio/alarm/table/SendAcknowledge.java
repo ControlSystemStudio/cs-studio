@@ -36,7 +36,6 @@ import javax.jms.MapMessage;
 import org.csstudio.alarm.table.dataModel.AlarmMessage;
 import org.csstudio.alarm.table.dataModel.BasicMessage;
 import org.csstudio.alarm.table.jms.ISendMapMessage;
-import org.csstudio.alarm.table.jms.SendMapMessage;
 import org.csstudio.platform.CSSPlatformInfo;
 import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.platform.security.User;
@@ -68,7 +67,7 @@ public class SendAcknowledge extends Job {
     }
 
     /**
-     * Creates a new job for sending acknowledgements from a collection of
+     * Creates a new job for sending acknowledgments from a collection of
      * messages to send. For each message to send, the collection must contain a
      * map of properties for that message.
      * 

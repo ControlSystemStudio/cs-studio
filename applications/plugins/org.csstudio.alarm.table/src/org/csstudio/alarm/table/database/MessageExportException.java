@@ -2,6 +2,8 @@ package org.csstudio.alarm.table.database;
 
 public class MessageExportException extends Exception {
 
+    private static final long serialVersionUID = 1L;
+
     public MessageExportException() {
         super();
     }

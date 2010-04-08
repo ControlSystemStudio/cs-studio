@@ -1,7 +1,6 @@
 package org.csstudio.alarm.table;
 
 import java.util.HashMap;
-import java.util.List;
 
 import org.csstudio.alarm.table.dataModel.AlarmMessageList;
 import org.csstudio.alarm.table.dataModel.IMessageListService;
@@ -9,12 +8,6 @@ import org.csstudio.alarm.table.dataModel.LogMessageList;
 import org.csstudio.alarm.table.jms.JmsAlarmMessageReceiver;
 import org.csstudio.alarm.table.jms.JmsMessageReceiver;
 import org.csstudio.alarm.table.preferences.TopicSet;
-import org.csstudio.alarm.table.preferences.TopicSetColumnService;
-import org.csstudio.alarm.table.preferences.alarm.AlarmViewPreferenceConstants;
-import org.csstudio.alarm.table.preferences.log.LogViewPreferenceConstants;
-import org.csstudio.platform.startupservice.IStartupServiceListener;
-import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 public class MessageListService implements IMessageListService {
 

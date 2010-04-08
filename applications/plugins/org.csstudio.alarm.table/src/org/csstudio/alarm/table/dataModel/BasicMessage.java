@@ -26,11 +26,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.csstudio.alarm.table.JmsLogsPlugin;
-import org.csstudio.alarm.table.preferences.SeverityMapping;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.IProcessVariable;
 import org.eclipse.core.runtime.PlatformObject;
-import org.eclipse.jface.preference.IPreferenceStore;
 
 /**
  * Message received from the JMS server. The properties of messages are not

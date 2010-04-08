@@ -24,23 +24,18 @@ package org.csstudio.alarm.table;
 
 
 
-import org.csstudio.alarm.dbaccess.MessageTypes;
 import org.csstudio.alarm.dbaccess.archivedb.ILogMessageArchiveAccess;
 import org.csstudio.alarm.dbaccess.archivedb.IMessageTypes;
-import org.csstudio.alarm.table.dataModel.AlarmMessageList;
 import org.csstudio.alarm.table.dataModel.IMessageListService;
-import org.csstudio.alarm.table.dataModel.LogMessageList;
 import org.csstudio.alarm.table.jms.ISendMapMessage;
 import org.csstudio.alarm.table.jms.SendMapMessage;
 import org.csstudio.alarm.table.preferences.ISeverityMapping;
 import org.csstudio.alarm.table.preferences.SeverityMapping;
-import org.csstudio.alarm.table.preferences.TopicSet;
-import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.platform.ui.AbstractCssUiPlugin;
-import org.eclipse.ui.plugin.*;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
@@ -97,6 +92,7 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
 	public void doStart(BundleContext context) throws Exception {
         IMessageListService messageListService = new MessageListService();
 		
+        @SuppressWarnings("unused")
 		ServiceRegistration messageListServiceRegistration = context.registerService(
                 IMessageListService.class.getName(), messageListService, null);
 
@@ -107,7 +103,8 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
 
 		ISeverityMapping severityMapping = new SeverityMapping();
 		
-		ServiceRegistration severityMappingRegistration = context.registerService(
+		@SuppressWarnings("unused")
+        ServiceRegistration severityMappingRegistration = context.registerService(
 				ISeverityMapping.class.getName(), severityMapping, null);
 		
 		_serviceReferenceSeverityMapping = context.getServiceReference(ISeverityMapping.class.getName());
@@ -117,6 +114,7 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
 
 		ISendMapMessage sendMapMessage = new SendMapMessage();
 
+		@SuppressWarnings("unused")
 		ServiceRegistration sendMapMessageRegistration = context.registerService(
 				ISendMapMessage.class.getName(), sendMapMessage, null);
 		
