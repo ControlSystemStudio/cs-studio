@@ -3,6 +3,7 @@ package org.csstudio.utility.adlparser.fileParser;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLBasicAttribute;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLControl;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLDynamicAttribute;
+import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLLimits;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLMonitor;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLObject;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLPoints;
@@ -31,8 +32,11 @@ public class ADLWidgetUtils {
 				return (new RelatedDisplayItem(adlWidget)).getChildren();
 			}
 			else if ( adlWidget.getType().equals("dynamic attribute")){
-				System.out.println("Catching dynamic attribute");
 				return (new ADLDynamicAttribute(adlWidget)).getChildren();
+			}
+			else if ( adlWidget.getType().equals("limits")){
+				System.out.println("--Processing limits");
+				return (new ADLLimits(adlWidget)).getChildren();
 			}
 
 		}
