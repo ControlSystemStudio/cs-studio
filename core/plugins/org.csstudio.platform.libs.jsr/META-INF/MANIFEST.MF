@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Jsr305
+Bundle-SymbolicName: org.csstudio.platform.libs.jsr;singleton:=true
+Bundle-Version: 1.0.0
+Export-Package: javax.annotation,
+ javax.annotation.concurrent,
+ javax.annotation.meta
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
