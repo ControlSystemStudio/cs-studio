@@ -30,31 +30,31 @@ public abstract class ADLAbstractWidget {
 		
 	}
 	
-	boolean hasADLObject(){
+	public boolean hasADLObject(){
 		return _hasObject;
 	}
 	
-	boolean hasADLBasicAttribute(){
+	public boolean hasADLBasicAttribute(){
 		return _hasBasicAttribute;
 	}
 
-	boolean hasADLControl(){
+	public boolean hasADLControl(){
 		return _hasControl;
 	}
 	
-	boolean hasADLMonitor(){
+	public boolean hasADLMonitor(){
 		return _hasMonitor;
 	}
 	
-	boolean hasADLPoints(){
+	public boolean hasADLPoints(){
 		return _hasPoints;
 	}
 	
-	boolean hasRelatedDisplayItem(){
+	public boolean hasRelatedDisplayItem(){
 		return _hasRelatedDisplayItem;
 	}
 	
-	boolean hasADLDynamicAttribute(){
+	public boolean hasADLDynamicAttribute(){
 		return _hasDynamicAttribute;
 	}
 	
