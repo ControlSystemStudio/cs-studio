@@ -30,6 +30,9 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.CheckReturnValue;
+import javax.annotation.Nonnull;
 import javax.naming.Context;
 import javax.naming.NamingException;
 import javax.naming.directory.DirContext;
@@ -51,7 +54,7 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
  */
 public class LDAPConnector {
 
-    private final Logger LOG = CentralLogger.getInstance().getLogger(this);
+    private final Logger _log = CentralLogger.getInstance().getLogger(this);
 
     private InitialLdapContext _ctx = null;
 
@@ -63,15 +66,15 @@ public class LDAPConnector {
      * @throws NamingException
      *
      */
-    public LDAPConnector () throws NamingException{// throws NamingException{
+    public LDAPConnector() throws NamingException{// throws NamingException{
         try {
             _prefsMap = getUIenv();
             _ctx = createInitialContext(_prefsMap); // does the same now, but better naming
 
 
         } catch (final NamingException e) {
-            LOG.error(e);
-            LOG.error("The follow setting(s) a invalid: \r\n"
+            _log.error(e);
+            _log.error("The follow setting(s) a invalid: \r\n"
                       +"RemainingName: " + e.getRemainingName()+"\r\n"
                       +"ResolvedObj: " + e.getResolvedObj()+"\r\n"
                       +"Explanation: " + e.getExplanation()
@@ -84,17 +87,23 @@ public class LDAPConnector {
      *
      * @return the LDAP Connection
      */
-    public DirContext getDirContext() {
+    @CheckForNull
+    public final DirContext getDirContext() {
         return _ctx;
     }
 
-    public DirContext reconnect() throws NamingException {
+    /**
+     * @return the DirContext
+     * @throws NamingException
+     */
+    @CheckReturnValue
+    public final DirContext reconnect() throws NamingException {
         try {
             _ctx = createInitialContext(_prefsMap);
 
         } catch (final NamingException e) {
-            LOG.error(e);
-            LOG.error("The follow setting(s) a invalid: \r\n"
+            _log.error(e);
+            _log.error("The follow setting(s) a invalid: \r\n"
                       +e.getRemainingName()+"\r\n"
                       +e.getResolvedObj()+"\r\n"
                       +e.getExplanation()
@@ -112,6 +121,7 @@ public class LDAPConnector {
      *
      * @return env with the settings from PreferencPage
      */
+    @CheckReturnValue
     private Map<PreferenceKey, String> getUIenv() {
 
         final IEclipsePreferences prefs = new DefaultScope().getNode(Activator.PLUGIN_ID);
@@ -140,20 +150,21 @@ public class LDAPConnector {
             _prefsMap.put(PreferenceKey.P_STRING_USER_PASSWORD, pw);
         }
 
-        LOG.debug("++++++++++++++++++++++++++++++++++++++++++++++");
-        LOG.debug("+ PLUGIN_ID: " + Activator.PLUGIN_ID);
-        LOG.debug("+ P_STRING_URL: " + url);
-        LOG.debug("+ SECURITY_PROTOCOL: " + proto);
-        LOG.debug("+ SECURITY_AUTHENTICATION: " + auth);
-        LOG.debug("+ P_STRING_USER_DN: " + dn);
-        LOG.debug("+ P_STRING_USER_PASSWORD: " + pw);
-        LOG.debug("----------------------------------------------");
+        _log.debug("++++++++++++++++++++++++++++++++++++++++++++++");
+        _log.debug("+ PLUGIN_ID: " + Activator.PLUGIN_ID);
+        _log.debug("+ P_STRING_URL: " + url);
+        _log.debug("+ SECURITY_PROTOCOL: " + proto);
+        _log.debug("+ SECURITY_AUTHENTICATION: " + auth);
+        _log.debug("+ P_STRING_USER_DN: " + dn);
+        _log.debug("+ P_STRING_USER_PASSWORD: " + pw);
+        _log.debug("----------------------------------------------");
 
         return _prefsMap;
     }
 
 
-    private InitialLdapContext createInitialContext(final Map<PreferenceKey, String> prefsMap) throws NamingException {
+    @CheckReturnValue
+    private InitialLdapContext createInitialContext(@Nonnull final Map<PreferenceKey, String> prefsMap) throws NamingException {
 
         final Hashtable<Object, String> env = new Hashtable<Object, String>();
         for (final Entry<PreferenceKey, String> entry : prefsMap.entrySet()) {

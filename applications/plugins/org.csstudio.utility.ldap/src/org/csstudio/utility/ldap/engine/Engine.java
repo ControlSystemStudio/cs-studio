@@ -56,14 +56,23 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
-public class Engine extends Job {
+/**
+ * TODO (hrickens) : Docu
+ *
+ * @author bknerr
+ * @author $Author$
+ * @version $Revision$
+ * @since 07.04.2010
+ */
+public final class Engine extends Job {
 
 
-    private final Logger LOG = CentralLogger.getInstance().getLogger(this);
+    private final Logger _log = CentralLogger.getInstance().getLogger(this);
 
     private static int LDAP_MAX_BUFFER_SIZE = 10000; // 1000 too small!!
+
     private volatile boolean _running = true;
-    private int reStartSendDiff = 0;
+    private int _reStartSendDiff = 0;
 
     /**
      * An Objectclass as return Object for the setAttribute and getAttribute
@@ -73,7 +82,7 @@ public class Engine extends Job {
      * @version $Revision$
      * @since 23.01.2008
      */
-    private class AttributeSet {
+    private static class AttributeSet {
         private final SearchControls _ctrl;
         private String _path;
         private String _filter;
@@ -234,7 +243,7 @@ public class Engine extends Job {
     protected IStatus run(final IProgressMonitor monitor) {
         Integer intSleepTimer = null;
 
-        LOG.info("Ldap Engine started");
+        _log.info("Ldap Engine started");
 
         // TODO:
         /*
@@ -243,7 +252,7 @@ public class Engine extends Job {
          * LDAPConnector().getDirContext(); to 'background process'
          *
          */
-        LOG.debug("Engine.run - start");
+        _log.debug("Engine.run - start");
         if (_ctx == null) {
             _ctx = getLdapDirContext();
         }
@@ -310,19 +319,19 @@ public class Engine extends Job {
          *  Start the sending, after a Buffer overflow,
          *  when the buffer have minimum 10% free space
          */
-        if (bufferSize > (maxBuffersize-reStartSendDiff)) {
+        if (bufferSize > (maxBuffersize-_reStartSendDiff)) {
             if (addVectorOK) {
                 System.out.println("Engine.addLdapWriteRequest writeVector > " + maxBuffersize
                                    + " - cannot store more!");
-                LOG.warn("writeVector > " + maxBuffersize + " - cannot store more!");
-                reStartSendDiff = (int)(LDAP_MAX_BUFFER_SIZE*0.1);
+                _log.warn("writeVector > " + maxBuffersize + " - cannot store more!");
+                _reStartSendDiff = (int)(LDAP_MAX_BUFFER_SIZE*0.1);
                 addVectorOK = false;
             }
         } else {
             if (!addVectorOK) {
                 System.out.println("Engine.addLdapWriteRequest writeVector - continue writing");
-                LOG.warn("writeVector < " + maxBuffersize + " - resume writing");
-                reStartSendDiff = 0;
+                _log.warn("writeVector < " + maxBuffersize + " - resume writing");
+                _reStartSendDiff = 0;
                 addVectorOK = true;
             }
             _writeVector.add(writeRequest);
@@ -343,18 +352,18 @@ public class Engine extends Job {
                     Thread.sleep(100);
                     _ctx = new LDAPConnector().getDirContext();
                 } catch (final InterruptedException e) {
-                    LOG.error(Engine.getInstance(), e);
+                    _log.error(Engine.getInstance(), e);
                     return null;
                 } catch (final NamingException e) {
-                    LOG.error(Engine.getInstance(), e);
+                    _log.error(Engine.getInstance(), e);
                     return null;
                 }
             }
-            LOG.debug("Engine.run - ctx: " + _ctx.toString());
+            _log.debug("Engine.run - ctx: " + _ctx.toString());
             if (_ctx != null) {
-                LOG.info("Engine.run - successfully connected to LDAP server");
+                _log.info("Engine.run - successfully connected to LDAP server");
             } else {
-                LOG.fatal("Engine.run - connection to LDAP server failed");
+                _log.fatal("Engine.run - connection to LDAP server failed");
             }
         }
         return _ctx;
@@ -424,8 +433,8 @@ public class Engine extends Job {
 
             } catch (final NamingException e) {
                 _ctx = null;
-                LOG.info("Falscher LDAP Suchpfad für Record suche.");
-                LOG.info(e);
+                _log.info("Falscher LDAP Suchpfad für Record suche.");
+                _log.info(e);
             }
         }
         return null;
@@ -470,13 +479,13 @@ public class Engine extends Job {
                     modifyAttributes(ldapChannelName, modItemTemp, channel, new GregorianCalendar());
                     // _ctx.modifyAttributes(ldapChannelName,modItemTemp);
                 } else {
-                    LOG.warn("Set attribute faild. Record: " + recordPath + " with attriebute: "
+                    _log.warn("Set attribute faild. Record: " + recordPath + " with attriebute: "
                              + attribute.name() + " not found!");
                 }
             } catch (final NamingException e) {
                 _ctx = null;
-                LOG.info("Falscher LDAP Suchpfad für Record suche. Beim setzen eines Atributes fehlgeschlagen.");
-                LOG.info(e);
+                _log.info("Falscher LDAP Suchpfad für Record suche. Beim setzen eines Atributes fehlgeschlagen.");
+                _log.info(e);
             }
         }
     }
@@ -522,14 +531,14 @@ public class Engine extends Job {
 
                     // Only a single IOC should be found for an IP address.
                     if (results.hasMore()) {
-                        LOG.warn("More than one IOC entry in LDAP directory for IP address: " + ipAddress);
+                        _log.warn("More than one IOC entry in LDAP directory for IP address: " + ipAddress);
                     }
 
                     return ldapName.toString();
                 }
             } catch (final NamingException e) {
                 _ctx = null;
-                LOG.error("LDAP directory search failed.", e);
+                _log.error("LDAP directory search failed.", e);
             }
         }
         return null;
@@ -554,7 +563,7 @@ public class Engine extends Job {
         String path = ldapPath;
         int searchControls = SearchControls.SUBTREE_SCOPE;
         if (path == null) {
-            LOG.warn("LDAPPath is NULL!");
+            _log.warn("LDAPPath is NULL!");
             return null;
         } else if (path.contains(("ou=epicsControls"))) {
             if (path.endsWith(",o=DESY,c=DE")) {
@@ -569,7 +578,7 @@ public class Engine extends Job {
             // Unbekannter LDAP Pfad
             // TODO: Mir ist nicht klar ob diese Abfrage Stimmt. Kann es nicht
             // einen gültigen Path geben?
-            LOG.warn("Unknown LDAP Path! Path is " + path);
+            _log.warn("Unknown LDAP Path! Path is " + path);
             return null;
         } else if (!path.startsWith("econ=")) {
             path = "econ=" + path;
@@ -600,10 +609,10 @@ public class Engine extends Job {
                 return list;
             } catch (final NamingException e) {
                 _ctx = null;
-                LOG.info("Wrong LDAP path.", e);
+                _log.info("Wrong LDAP path.", e);
             }
         }
-        LOG.warn("Can't connect the LDAP Server!");
+        _log.warn("Can't connect the LDAP Server!");
         return null;
     }
 
@@ -724,7 +733,7 @@ public class Engine extends Job {
             //
             // take what's already stored
             //
-            LOG.debug("Engine.changeValue : found entry for channel: " + channel);
+            _log.debug("Engine.changeValue : found entry for channel: " + channel);
             // System.out.println ("Engine.changeValue : found entry for
             // channel: " + channel);
             namesInNamespace = this._ldapReferences.getEntry(channel).getNamesInNamespace();
@@ -809,7 +818,7 @@ public class Engine extends Job {
             // GregorianCalendar()));
         } catch (final NamingException e) {
             _ctx = null;
-            LOG.warn("Engine.changeValue: Naming Exception in modifyAttributes! Channel: "
+            _log.warn("Engine.changeValue: Naming Exception in modifyAttributes! Channel: "
                      + channelName);
             System.out.println("Engine.changeValue: Naming Exceptionin modifyAttributes! Channel: "
                                + channelName);

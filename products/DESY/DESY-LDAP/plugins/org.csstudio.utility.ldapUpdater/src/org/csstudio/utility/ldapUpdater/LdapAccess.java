@@ -54,7 +54,7 @@ import service.impl.LdapServiceImpl;
 
 public final class LdapAccess {
 
-    private static final LdapService _service = LdapServiceImpl.getInstance();
+    private static final LdapService SERVICE = LdapServiceImpl.getInstance();
 
 
     private static class UpdateIOCResult {
@@ -144,13 +144,13 @@ public final class LdapAccess {
             final IOC iocFromLdap = ldapContentModel.getIOC(iocNameFromLdap);
             if (iocMapFromFS.containsKey(iocNameFromLdap)) {
 
-                _service.tidyUpIocEntryInLdap(Engine.getInstance().getLdapDirContext(),
+                SERVICE.tidyUpIocEntryInLdap(Engine.getInstance().getLdapDirContext(),
                                               iocFromLdap.getName(),
                                               iocFromLdap.getGroup(),
                                               LdapAccess.getValidRecordsForIOC(iocFromLdap.getName()));
 
             } else { // LDAP entry is not contained in current IOC directory - is considered obsolete!
-                _service.removeIocEntryFromLdap(Engine.getInstance().getLdapDirContext(),
+                SERVICE.removeIocEntryFromLdap(Engine.getInstance().getLdapDirContext(),
                                                 iocFromLdap);
             }
         }
@@ -188,7 +188,7 @@ public final class LdapAccess {
 
                 if (!LdapUtils.filterLDAPNames(recordName)) {
                     // TODO (bknerr) : Stopping or proceeding? Transaction rollback? Hist file update ?
-                    if (!_service.createLDAPRecord(Engine.getInstance().getLdapDirContext(), ioc, recordName)) {
+                    if (!SERVICE.createLDAPRecord(Engine.getInstance().getLdapDirContext(), ioc, recordName)) {
                         LOGGER.error("Error while updating LDAP record for " + recordName +
                         "\nProceed with next record.");
                     } else {
@@ -255,7 +255,7 @@ public final class LdapAccess {
                 continue;
             }
 
-            final LdapContentModel model = _service.getRecords(ldapDataObserver, iocFromLDAP.getGroup(), iocFromLDAP.getName());
+            final LdapContentModel model = SERVICE.getRecords(ldapDataObserver, iocFromLDAP.getGroup(), iocFromLDAP.getName());
 
             final UpdateIOCResult updateResult = updateIOC(model, iocFromLDAP);
 
