@@ -44,7 +44,7 @@ public final class ParserADL {
     /**
      * Default Constructor.
      */
-    private ParserADL(){}
+    public ParserADL(){}
     
     /**
      * Main method of class ParserADL.<br/>
