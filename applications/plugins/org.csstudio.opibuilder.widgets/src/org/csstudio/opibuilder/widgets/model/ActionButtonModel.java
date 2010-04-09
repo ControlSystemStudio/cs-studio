@@ -84,6 +84,7 @@ public final class ActionButtonModel extends AbstractPVWidgetModel {
 	public ActionButtonModel() {
 		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 		setForegroundColor(CustomMediaFactory.COLOR_BLACK);
+		setPropertyValue(PROP_BORDER_ALARMSENSITIVE, false);
 	}
 
 	/**
