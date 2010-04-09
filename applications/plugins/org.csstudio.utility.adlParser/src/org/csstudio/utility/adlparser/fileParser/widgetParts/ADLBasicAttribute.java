@@ -55,13 +55,13 @@ public class ADLBasicAttribute extends WidgetPart{
     }
 
     /** The Color of (front?) Object. */
-    private String _clr = new String("");
+    private String _clr;
     /** width of the Border. */
-    private String _width = new String("");
+    private String _width;
     /** The style of border. */
-    private String _style = new String("");
+    private String _style;
     /** Is type of fill.*/
-    private String _fill = new String("");
+    private String _fill;
 
     
     /**
@@ -69,7 +69,11 @@ public class ADLBasicAttribute extends WidgetPart{
      */
     @Override
     void init() {
-        /* Not to initialization*/
+    	_clr = new String();
+    	_width = new String();
+    	_style =  new String();
+    	_fill = new String();
+    	/* Not to initialization*/
     }
     
     /**
