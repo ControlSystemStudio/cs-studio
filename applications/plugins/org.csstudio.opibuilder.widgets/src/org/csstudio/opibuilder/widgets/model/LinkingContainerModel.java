@@ -1,7 +1,11 @@
 package org.csstudio.opibuilder.widgets.model;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
+import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.FilePathProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
@@ -88,4 +92,11 @@ public class LinkingContainerModel extends AbstractContainerModel {
 		return (Boolean) getProperty(PROP_ZOOMTOFITALL).getPropertyValue();
 	}
 	
+	
+	@Override
+	public List<AbstractWidgetModel> getChildren() {
+		//Linking container should have "no" children. 
+		//Its children should be dynamically loaded from opi file.
+		return new LinkedList<AbstractWidgetModel>();
+	}
 }

@@ -16,6 +16,7 @@ import org.csstudio.opibuilder.widgets.model.LinkingContainerModel;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
@@ -110,14 +111,20 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 					getActivePage().getActiveEditor();
 				if(activeEditor != null){
 					IEditorInput input = activeEditor.getEditorInput();			
-					if(path.equals(ResourceUtil.getFileInEditor(input).getFullPath()))
+					if(path.equals(ResourceUtil.getPathInEditor(input))){
+						getWidgetModel().getProperty(
+								LinkingContainerModel.PROP_OPI_FILE).
+								setPropertyValue(new Path(""), false);
 						throw new Exception("It is not allowed to link to the OPI file itself.");
+					}
 				}
 			}
+			tempDisplayModel.setOpiFilePath(path);
 			XMLUtil.fillDisplayModelFromInputStream(
 					ResourceUtil.pathToInputStream(path), tempDisplayModel);
-			for(AbstractWidgetModel child : tempDisplayModel.getChildren())	
-				getWidgetModel().addChild(child);
+			for(AbstractWidgetModel child : tempDisplayModel.getChildren()){	
+				getWidgetModel().addChild(child, false);
+			}
 			getWidgetModel().setBackgroundColor(tempDisplayModel.getBackgroundColor());
 			tempDisplayModel.removeAllChildren();
 		} catch (Exception e) {
