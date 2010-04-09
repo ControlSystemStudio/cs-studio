@@ -2,9 +2,8 @@ package org.csstudio.opibuilder.runmode;
 
 import org.csstudio.opibuilder.util.MacrosInput;
 import org.csstudio.platform.logging.CentralLogger;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.ui.IElementFactory;
 import org.eclipse.ui.IMemento;
@@ -33,15 +32,14 @@ public class RunnerInputFactory implements IElementFactory {
 
 	public IAdaptable createElement(IMemento memento) {
 		 // Get the file name.
-        String fileName = memento.getString(TAG_PATH);
-        if (fileName == null) {
+        String pathString = memento.getString(TAG_PATH);
+        if (pathString == null) {
 			return null;
 		}
 
         // Get a handle to the IFile...which can be a handle
         // to a resource that does not exist in workspace
-        IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(
-                new Path(fileName));
+        IPath path = new Path(pathString);
         MacrosInput macrosInput = null;
         String macroString = memento.getString(TAG_MACRO);
         if(macroString != null)
@@ -49,12 +47,9 @@ public class RunnerInputFactory implements IElementFactory {
 				macrosInput = MacrosInput.recoverFromString(macroString);
 			} catch (Exception e) {
 				CentralLogger.getInstance().error(this, "Failed to recover macro", e);
-			}
-        if (file != null) {
-			return new RunnerInput(file, null, macrosInput);
-		} else {
-			return null;
-		}
+			}       
+		return new RunnerInput(path, null, macrosInput);
+		
 	}
 	
 	/**
@@ -73,8 +68,8 @@ public class RunnerInputFactory implements IElementFactory {
      * @param input the opi runner input
      */
     public static void saveState(IMemento memento, RunnerInput input) {
-        IFile file = input.getFile();
-        memento.putString(TAG_PATH, file.getFullPath().toString());
+        IPath path = input.getPath();
+        memento.putString(TAG_PATH, path.toString());
         MacrosInput macros = input.getMacrosInput();
         if(macros != null)
         	memento.putString(TAG_MACRO, macros.toPersistenceString());

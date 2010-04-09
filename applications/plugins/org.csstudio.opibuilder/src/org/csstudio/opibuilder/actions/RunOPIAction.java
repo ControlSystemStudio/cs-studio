@@ -1,22 +1,16 @@
 package org.csstudio.opibuilder.actions;
 
-import java.io.FileNotFoundException;
-
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.editor.OPIEditor;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.opibuilder.runmode.RunModeService;
 import org.csstudio.opibuilder.runmode.RunModeService.TargetWindow;
-import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.ResourceUtil;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
-import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
@@ -53,18 +47,11 @@ public class RunOPIAction extends Action{
 			IEditorInput input = activeEditor.getEditorInput();	
 			
 			
-			IFile file = null;
-			try {
-				file = ResourceUtil.getFileInEditor(input);
-				RunModeService.getInstance().runOPI(file, TargetWindow.RUN_WINDOW,  
+			IPath path = null;
+				path = ResourceUtil.getPathInEditor(input);
+				RunModeService.getInstance().runOPI(path, TargetWindow.RUN_WINDOW,  
 						new Rectangle(displayModel.getLocation(), displayModel.getSize()));
-			} catch (FileNotFoundException e) {
-				String message = "Failed to open OPI file: " + file;  
-				CentralLogger.getInstance().error(this, message, e);				
-				MessageDialog.openError(Display.getDefault().getActiveShell(), "File Open Error",
-						e.getMessage());
-				ConsoleService.getInstance().writeError(message + "\n" + e);
-			}			
+	
 		}
 			
 	}

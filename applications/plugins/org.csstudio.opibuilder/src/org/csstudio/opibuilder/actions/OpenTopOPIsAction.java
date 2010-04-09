@@ -7,10 +7,8 @@ import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.opibuilder.runmode.RunModeService;
 import org.csstudio.opibuilder.runmode.RunModeService.TargetWindow;
 import org.csstudio.opibuilder.util.MacrosInput;
-import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -41,17 +39,16 @@ public class OpenTopOPIsAction implements IWorkbenchWindowPulldownDelegate {
 		if(topOPIs == null)
 			return null;
 		opiListMenu = new Menu(parent);	
-			for(final IPath path : topOPIs.keySet()){
-				final IFile file = ResourceUtil.getIFileFromIPath(path);
-				if(file != null){
+			for(final IPath path : topOPIs.keySet()){				
+				if(path != null){
 					MenuItem item = new MenuItem(opiListMenu, SWT.PUSH);
-					item.setText(file.getName());
+					item.setText(path.lastSegment());
 					item.setImage(OPI_RUNTIME_IMAGE);
 					item.addSelectionListener(new SelectionAdapter() {
 						@Override
 						public void widgetSelected(SelectionEvent e) {						
 							RunModeService.getInstance().runOPI(
-									file, TargetWindow.SAME_WINDOW, null, topOPIs.get(path));
+									path, TargetWindow.SAME_WINDOW, null, topOPIs.get(path));
 						}
 					});
 				}
@@ -99,10 +96,9 @@ public class OpenTopOPIsAction implements IWorkbenchWindowPulldownDelegate {
 		Map<IPath, MacrosInput> topOPIs = loadTopOPIs();
 		if(topOPIs.keySet().size() >= 1){
 			IPath path = (IPath) topOPIs.keySet().toArray()[0];
-			final IFile file = ResourceUtil.getIFileFromIPath(path);
-			if(file != null){
+			if(path != null){
 				RunModeService.getInstance().runOPI(
-						file, TargetWindow.SAME_WINDOW, null, topOPIs.get(path));
+						path, TargetWindow.SAME_WINDOW, null, topOPIs.get(path));
 			}
 		}
 	}

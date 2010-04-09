@@ -79,11 +79,11 @@ public class OPIRunner extends EditorPart {
 		setInput(input);
 		InputStream inputStream;
 		try {
-			if(input instanceof RunnerInput){
-				inputStream = ((RunnerInput)input).getFile().getContents();
-				displayOpenManager = ((RunnerInput)input).getDisplayOpenManager();					
+			if(input instanceof IRunnerInput){
+				inputStream = ((IRunnerInput)input).getInputStream();
+				displayOpenManager = ((IRunnerInput)input).getDisplayOpenManager();					
 			}else
-				inputStream = getInputStream();
+				inputStream = getInputStream(input);
 			
 			displayModel = new DisplayModel();
 			
@@ -92,14 +92,15 @@ public class OPIRunner extends EditorPart {
 		}catch(Exception e) {
 			CentralLogger.getInstance().error(
 					this, "Failed to run file: " + input, e);
-			String message = input + "is not a correct OPI file! An empty OPI will be created instead.\n" + e.getMessage();
+			String message = input + " is not a correct OPI file!\n" + e;
 			MessageDialog.openError(Display.getDefault().getActiveShell(), "File Open Error",
 					message);
 			ConsoleService.getInstance().writeError(message);
+			getSite().getPage().closeEditor(this, false);
 		}
 			
-		if(input instanceof RunnerInput){
-			MacrosInput macrosInput = ((RunnerInput)input).getMacrosInput();			
+		if(input instanceof IRunnerInput){
+			MacrosInput macrosInput = ((IRunnerInput)input).getMacrosInput();			
 			if(macrosInput != null){
 				macrosInput.getMacrosMap().putAll(displayModel.getMacrosInput().getMacrosMap());
 				displayModel.setPropertyValue(AbstractContainerModel.PROP_MACROS, macrosInput);
@@ -124,18 +125,18 @@ public class OPIRunner extends EditorPart {
 		} else if (editorInput instanceof FileStoreEditorInput) {
 			return URIUtil.toPath(((FileStoreEditorInput) editorInput)
 					.getURI());			
-		}
+		}else if (editorInput instanceof IRunnerInput)
+			return ((IRunnerInput)editorInput).getPath();
 		return null;
 	}
 	/**
 	 * Returns a stream which can be used to read this editors input data.
+	 * @param editorInput 
 	 * 
 	 * @return a stream which can be used to read this editors input data
 	 */
-	private InputStream getInputStream() {
+	private InputStream getInputStream(IEditorInput editorInput) {
 		InputStream result = null;
-
-		IEditorInput editorInput = getEditorInput();
 		if (editorInput instanceof FileEditorInput) {
 			try {
 				result = ((FileEditorInput) editorInput).getFile()

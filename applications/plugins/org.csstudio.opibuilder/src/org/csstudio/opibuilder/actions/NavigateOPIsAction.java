@@ -2,6 +2,7 @@ package org.csstudio.opibuilder.actions;
 
 import org.csstudio.opibuilder.runmode.DisplayOpenManager;
 import org.csstudio.opibuilder.runmode.IDisplayOpenManagerListener;
+import org.csstudio.opibuilder.runmode.IRunnerInput;
 import org.csstudio.opibuilder.runmode.RunnerInput;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuCreator;
@@ -169,12 +170,12 @@ public class NavigateOPIsAction extends Action implements IDisplayOpenManagerLis
 		recreateMenu = true;
 		if(forward){
 			if(manager.canForward())
-				setToolTipText(FORWARD + " to " + ((RunnerInput)(manager.getForwardStackEntries()[0])).getName());
+				setToolTipText(FORWARD + " to " + ((IRunnerInput)(manager.getForwardStackEntries()[0])).getName());
 			else
 				setToolTipText(FORWARD);
 		}else{
 			if(manager.canBackward())
-				setToolTipText(BACK + " to " + ((RunnerInput)(manager.getBackStackEntries()[0])).getName());
+				setToolTipText(BACK + " to " + ((IRunnerInput)(manager.getBackStackEntries()[0])).getName());
 			else
 				setToolTipText(BACK);
 		}

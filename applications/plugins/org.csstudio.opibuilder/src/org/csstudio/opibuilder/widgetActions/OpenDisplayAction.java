@@ -19,7 +19,6 @@ import org.csstudio.opibuilder.util.MacrosInput;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.widgetActions.WidgetActionFactory.ActionType;
 import org.csstudio.platform.logging.CentralLogger;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -61,10 +60,7 @@ public class OpenDisplayAction extends AbstractWidgetAction {
     		absolutePath = 
     			ResourceUtil.buildAbsolutePath(getWidgetModel(), getPath());
     	}
-		IFile file = 
-			ResourceUtil.getIFileFromIPath(absolutePath);
-		
-		if(file == null)
+		if(absolutePath == null)
 			try {
 				throw new FileNotFoundException(NLS.bind(
 						"The file {0} does not exist or the file is not an OPI file in the workspace.", getPath().toString()));
@@ -86,11 +82,11 @@ public class OpenDisplayAction extends AbstractWidgetAction {
 					manager.openNewDisplay();
 					try {
 						RunModeService.getInstance().replaceActiveEditorContent(new RunnerInput(
-								file, manager, getMacrosInput()));
+								absolutePath, manager, getMacrosInput()));
 					} catch (PartInitException e) {
-						CentralLogger.getInstance().error(this, "Failed to open " + file, e);
+						CentralLogger.getInstance().error(this, "Failed to open " + absolutePath, e);
 						MessageDialog.openError(Display.getDefault().getActiveShell(), "Open file error", 
-								NLS.bind("Failed to open {0}", file));
+								NLS.bind("Failed to open {0}", absolutePath));
 					}
 				}
 			}else{
@@ -100,7 +96,7 @@ public class OpenDisplayAction extends AbstractWidgetAction {
 				else
 					target = TargetWindow.SAME_WINDOW;
 			
-				RunModeService.getInstance().runOPI(file, target, null, getMacrosInput(), null);
+				RunModeService.getInstance().runOPI(absolutePath, target, null, getMacrosInput(), null);
 			}
 		}
 	}

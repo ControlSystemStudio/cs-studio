@@ -1,13 +1,12 @@
 package org.csstudio.opibuilder.runmode;
 
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.util.SizeLimitedStack;
 import org.csstudio.platform.logging.CentralLogger;
-import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
@@ -20,18 +19,18 @@ import org.eclipse.ui.PlatformUI;
  *
  */
 public class DisplayOpenManager {
-	private SizeLimitedStack<RunnerInput> backStack;
-	private SizeLimitedStack<RunnerInput> forwardStack;
+	private SizeLimitedStack<IRunnerInput> backStack;
+	private SizeLimitedStack<IRunnerInput> forwardStack;
 	private List<IDisplayOpenManagerListener> listeners;
 	private static int STACK_SIZE = 10;
 	public DisplayOpenManager() {
-		backStack =  new SizeLimitedStack<RunnerInput>(STACK_SIZE);
-		forwardStack = new SizeLimitedStack<RunnerInput>(STACK_SIZE);
+		backStack =  new SizeLimitedStack<IRunnerInput>(STACK_SIZE);
+		forwardStack = new SizeLimitedStack<IRunnerInput>(STACK_SIZE);
 		listeners = new ArrayList<IDisplayOpenManagerListener>();
 	}
 	
 	public void openNewDisplay(){
-		RunnerInput input = getCurrentRunnerInputInEditor();
+		IRunnerInput input = getCurrentRunnerInputInEditor();
 		if(input !=null)
 			backStack.push(input);
 		forwardStack.clear();
@@ -42,7 +41,7 @@ public class DisplayOpenManager {
 		if(backStack.size() ==0)
 			return;
 		
-		RunnerInput input = getCurrentRunnerInputInEditor();
+		IRunnerInput input = getCurrentRunnerInputInEditor();
 		if(input !=null)
 			forwardStack.push(input);
 		
@@ -50,46 +49,40 @@ public class DisplayOpenManager {
 		
 	}
 
-	private RunnerInput getCurrentRunnerInputInEditor() {
+	private IRunnerInput getCurrentRunnerInputInEditor() {
 
 		IEditorPart activeEditor = PlatformUI.getWorkbench().
 			getActiveWorkbenchWindow().getActivePage().getActiveEditor();
 		IEditorInput input = activeEditor.getEditorInput();
 		
-		if(input instanceof RunnerInput){
-			if(((RunnerInput)input).getDisplayOpenManager() == null)
-				((RunnerInput)input).setDisplayOpenManager(
+		if(input instanceof IRunnerInput){
+			if(((IRunnerInput)input).getDisplayOpenManager() == null)
+				((IRunnerInput)input).setDisplayOpenManager(
 					(DisplayOpenManager)activeEditor.getAdapter(DisplayOpenManager.class));
-			return (RunnerInput)input;	
+			return (IRunnerInput)input;	
 		}
 			
 		else
-			return new RunnerInput(getCurrentFileInEditor(),
+			return new RunnerInput(getCurrentPathInEditor(),
 					(DisplayOpenManager)activeEditor.getAdapter(DisplayOpenManager.class));
 
 		
 	}
 
-	private IFile getCurrentFileInEditor() {
-		IFile file = null;
+	private IPath getCurrentPathInEditor() {
 		IEditorInput input = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().
 		getActiveEditor().getEditorInput();
-		try {
-			file = ResourceUtil.getFileInEditor(input);
-		} catch (FileNotFoundException e) {
-			CentralLogger.getInstance().error(this, e);
-			MessageDialog.openError(Display.getDefault().getActiveShell(), "File Open Error",
-					e.getMessage());	
-		}
 		
-		return file;
+		return ResourceUtil.getPathInEditor(input);
+		
+		
 	}
 	
 	/**
 	 * @param file 
 	 * 
 	 */
-	private void openOPI(RunnerInput input) {
+	private void openOPI(IRunnerInput input) {
 		try {
 			RunModeService.getInstance().replaceActiveEditorContent(input);
 		} catch (PartInitException e) {
@@ -104,7 +97,7 @@ public class DisplayOpenManager {
 	public void goForward(){
 		if(forwardStack.size() ==0)
 			return;
-		RunnerInput input = getCurrentRunnerInputInEditor();
+		IRunnerInput input = getCurrentRunnerInputInEditor();
 		if(input !=null)
 			backStack.push(input);
 		
@@ -115,7 +108,7 @@ public class DisplayOpenManager {
 	public void goBack(int index){
 		if(backStack.size() > index){
 			
-			RunnerInput input = getCurrentRunnerInputInEditor();
+			IRunnerInput input = getCurrentRunnerInputInEditor();
 			if(input !=null)
 				forwardStack.push(input);
 			
@@ -130,7 +123,7 @@ public class DisplayOpenManager {
 	public void goForward(int index){
 		if(forwardStack.size() > index){
 			
-			RunnerInput input = getCurrentRunnerInputInEditor();
+			IRunnerInput input = getCurrentRunnerInputInEditor();
 			if(input !=null)
 				backStack.push(input);
 			

@@ -3,7 +3,7 @@ package org.csstudio.opibuilder.runmode;
 import org.csstudio.opibuilder.util.MacrosInput;
 import org.csstudio.opibuilder.util.UIBundlingThread;
 import org.csstudio.platform.logging.CentralLogger;
-import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
@@ -43,7 +43,7 @@ public class RunModeService {
 	}
 	
 	
-	public void replaceActiveEditorContent(RunnerInput input) throws PartInitException{
+	public void replaceActiveEditorContent(IRunnerInput input) throws PartInitException{
 		IEditorPart activeEditor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().
 			getActivePage().getActiveEditor();		
 		activeEditor.init(activeEditor.getEditorSite(),input);
@@ -52,33 +52,33 @@ public class RunModeService {
 	
 	/**Run an OPI file with necessary parameters. This function should be called when open an OPI
 	 * from another OPI.
-	 * @param file
+	 * @param path
 	 * @param targetWindow
 	 * @param displayOpenManager
 	 * @param macrosInput
 	 */
-	public void runOPI(IFile file, TargetWindow targetWindow, DisplayOpenManager displayOpenManager, 
+	public void runOPI(IPath path, TargetWindow targetWindow, DisplayOpenManager displayOpenManager, 
 			MacrosInput macrosInput){
-		runOPI(file, targetWindow, displayOpenManager, macrosInput, null);
+		runOPI(path, targetWindow, displayOpenManager, macrosInput, null);
 	}
 	
 	/**Run an OPI file in the target window.
-	 * @param file
+	 * @param path
 	 * @param targetWindow
 	 */
-	public void runOPI(IFile file, TargetWindow targetWindow, Rectangle windowSize){
-		runOPI(file, targetWindow, null, null, windowSize);
+	public void runOPI(IPath path, TargetWindow targetWindow, Rectangle windowSize){
+		runOPI(path, targetWindow, null, null, windowSize);
 	}
 	
 	/**Run an OPI file.
-	 * @param file the file to be ran. If displayModel is not null, this will be ignored.
+	 * @param path the file to be ran. If displayModel is not null, this will be ignored.
 	 * @param displayModel the display model to be ran. null for file input only.
 	 * @param displayOpenManager the manager help to manage the opened displays. null if the OPI is not 
 	 * replacing the current active display. 
 	 */
-	public void runOPI(final IFile file, final TargetWindow target,
+	public void runOPI(final IPath path, final TargetWindow target,
 			final DisplayOpenManager displayOpenManager, final MacrosInput macrosInput, final Rectangle windowBounds){
-		final RunnerInput runnerInput = new RunnerInput(file, displayOpenManager, macrosInput);
+		final RunnerInput runnerInput = new RunnerInput(path, displayOpenManager, macrosInput);
 		UIBundlingThread.getInstance().addRunnable(new Runnable(){
 			 public void run() {
 		
@@ -132,7 +132,7 @@ public class RunModeService {
 								runnerInput, "org.csstudio.opibuilder.OPIRunner"); //$NON-NLS-1$
 						targetWindow.getShell().moveAbove(null);
 					} catch (PartInitException e) {
-						CentralLogger.getInstance().error(this, "Failed to run OPI " + file.getName(), e);
+						CentralLogger.getInstance().error(this, "Failed to run OPI " + path.lastSegment(), e);
 					}
 				}
 				

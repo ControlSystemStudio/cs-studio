@@ -3,16 +3,16 @@ package org.csstudio.opibuilder.util;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.net.URL;
 
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IPathEditorInput;
 import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
 
@@ -23,8 +23,6 @@ import org.eclipse.ui.part.FileEditorInput;
 public class ResourceUtil {
 
 	
-	private static final String ELLIPSIS = ".."; //$NON-NLS-1$
-
 	public static void disposeResources(){
 	
 	}
@@ -37,23 +35,41 @@ public class ResourceUtil {
 	 *            The {@link IPath} to the file
 	 * 
 	 * @return The corresponding {@link InputStream} or null
-	 * @throws CoreException 
-	 * @throws FileNotFoundException 
+	 * @throws Exception 
 	 */
-	public static InputStream pathToInputStream(final IPath path) throws CoreException, FileNotFoundException {
+	public static InputStream pathToInputStream(final IPath path) throws Exception{
 		InputStream result = null;
-
-		// try workspace
-		IResource r = ResourcesPlugin.getWorkspace().getRoot().findMember(
-				path, false);
-		if (r!= null && r instanceof IFile) {			
-				result = ((IFile) r).getContents();			
-		} else {
+		
+		IResource r = null;
+		try {
+			// try workspace
+			r = ResourcesPlugin.getWorkspace().getRoot().findMember(
+					path, false);
+			if (r!= null && r instanceof IFile) {			
+				result = ((IFile) r).getContents();		
+				return result;
+			}else
+				throw new Exception();
+		} catch (Exception e) {
 			// try from local file system			
-			result = new FileInputStream(path.toFile());
+			try {
+				result = new FileInputStream(path.toFile());
+				if(result != null)
+					return result;
+				else
+					throw new Exception();
+			} catch (Exception e1) {
+				try {
+					//try from URL				
+					URL url = new URL(path.toString());
+					result = url.openStream();
+					return result;
+				} catch (Exception e2) {
+					throw new Exception("This exception includes three sub-exceptions:\n"+ 
+							e+ "\n" + e1 + "\n" + e2);
+				}				
+			}
 		}
-
-		return result;
 	}
 	
 	/**Get the IFile from IPath.
@@ -92,51 +108,24 @@ public class ResourceUtil {
 	public static IPath buildRelativePath(IPath refPath, IPath fullPath){
 		if(refPath == null || fullPath == null)
 			throw new NullPointerException();
-		int i=0;
-		String[] absolutePathSegs = fullPath.segments();
-		for(String seg : refPath.segments()){
-			if(!seg.equals(fullPath.segment(i)))
-				break;			
-			i++;			
-			if(fullPath.segment(i)== null)
-				i--;
-		}
-		int ellipsisCount = refPath.segmentCount() - i;
-		int remainedSegsCount = fullPath.segmentCount() -i;
-		StringBuilder sb = new StringBuilder();
-		for(int j = 0; j<ellipsisCount + remainedSegsCount - 1; j++){
-			if(j < ellipsisCount)
-				sb.append(ELLIPSIS + IPath.SEPARATOR);
-			else
-				sb.append(absolutePathSegs[i++] + IPath.SEPARATOR);
-		}
-		if(i<fullPath.segmentCount())
-			sb.append(absolutePathSegs[i]);
-		return new Path(sb.toString());
+		return fullPath.makeRelativeTo(refPath);
 	}
 	
 	/**
 	 * @return
 	 * @throws FileNotFoundException 
 	 */
-	public static IFile getFileInEditor(IEditorInput input) throws FileNotFoundException {
-		IFile file = null;		
+	public static IPath getPathInEditor(IEditorInput input){
 		if(input instanceof FileEditorInput)
-			file = ((FileEditorInput)input).getFile();
-		else if (input instanceof FileStoreEditorInput) {
+			return ((FileEditorInput)input).getFile().getFullPath();
+		else if(input instanceof IPathEditorInput)
+			return ((IPathEditorInput)input).getPath();
+		else if(input instanceof FileStoreEditorInput) {
 			IPath path = URIUtil.toPath(((FileStoreEditorInput) input)
 					.getURI());
-			//read file
-			IFile[] files = 
-				ResourcesPlugin.getWorkspace().getRoot().findFilesForLocation(
-						ResourcesPlugin.getWorkspace().getRoot().getLocation().append(path));
-			
-			if(files.length < 1)			
-				throw new FileNotFoundException("The file " + path.toString() + "does not exist!");
-		
-			file = files[0];
+			return path;
 		}
-		return file;
+			return null;
 	}
 
 
