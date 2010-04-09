@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
 import javax.naming.NameNotFoundException;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
@@ -39,15 +40,41 @@ import org.csstudio.utility.ldap.engine.Engine;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 
+/**
+ * The LDAP read job. Creates a {@link LdapSearchResult} for a given query.
+ *
+ * @author bknerr
+ * @author $Author$
+ * @version $Revision$
+ * @since 08.04.2010
+ */
 public class LDAPReader extends Job {
 
     public static final int DEFAULT_SCOPE = SearchControls.SUBTREE_SCOPE;
 
+    /**
+     * Callback interface to invoke a custom method on a successful LDAP read.
+     *
+     * @author bknerr
+     * @author $Author$
+     * @version $Revision$
+     * @since 08.04.2010
+     */
+    public interface JobCompletedCallBack {
+        /**
+         * Callback method.
+         */
+        void onLdapReadComplete();
+    }
+
+
     private int _defaultScope = DEFAULT_SCOPE;
 
-    private final Logger LOG = CentralLogger.getInstance().getLogger(this);
+    private final Logger _log = CentralLogger.getInstance().getLogger(this);
 
     private String _searchRoot;
     private String _filter;
@@ -63,11 +90,47 @@ public class LDAPReader extends Job {
      * @param searchScope
      * @param resultList the list for the result {@link LdapSearchResult}
      */
-    public LDAPReader(final String name, final String filter, final int searchScope, final LdapSearchResult resultList){
+    public LDAPReader(final String name,
+                      final String filter,
+                      final int searchScope,
+                      final LdapSearchResult resultList){
         super("LDAPReader");
         setBasics(name, filter, resultList);
         setDefaultScope(searchScope);
     }
+
+
+    /**
+     * Constructor.
+     *
+     * @param name the search root
+     * @param filter the search filter
+     * @param resultList the list for the result {@link LdapSearchResult}
+     * @param callBack callback to invoke custom method on sucessful LDAP read
+     */
+    public LDAPReader(final String name,
+                      final String filter,
+                      final LdapSearchResult resultList,
+                      @Nonnull final JobCompletedCallBack callBack){
+        super("LDAPReader");
+        setBasics(name, filter, resultList);
+        setJobCompletedCallBack(callBack);
+    }
+
+    /**
+     * @param callBack
+     */
+    private void setJobCompletedCallBack(final JobCompletedCallBack callBack) {
+        addJobChangeListener(new JobChangeAdapter() {
+            @Override
+            public void done(@Nonnull final IJobChangeEvent event) {
+                if (event.getResult().isOK()) {
+                    callBack.onLdapReadComplete();
+                }
+            }
+        });
+    }
+
 
 
     /**
@@ -168,7 +231,7 @@ public class LDAPReader extends Job {
     @Override
     protected IStatus run(final IProgressMonitor monitor ) {
         monitor.beginTask("LDAP Reader", IProgressMonitor.UNKNOWN);
-        DirContext ctx = Engine.getInstance().getLdapDirContext();
+        final DirContext ctx = Engine.getInstance().getLdapDirContext();
         if(ctx !=null){
             final SearchControls ctrl = new SearchControls();
             ctrl.setSearchScope(_defaultScope);
@@ -185,8 +248,7 @@ public class LDAPReader extends Job {
                         }
                     }
                 } catch (final NamingException e) {
-                    ctx = Engine.getInstance().reconnectDirContext();
-                    LOG.info("LDAP Fehler " + e.getExplanation());
+                    _log.info("LDAP Fehler " + e.getExplanation());
                 }
                 answer.close();
 
@@ -197,10 +259,10 @@ public class LDAPReader extends Job {
 
             } catch (final NameNotFoundException nnfe){
                 Engine.getInstance().reconnectDirContext();
-                LOG.info("Falscher LDAP Name oder so." + nnfe.getExplanation());
+                _log.info("Falscher LDAP Name oder so." + nnfe.getExplanation());
             } catch (final NamingException e) {
                 Engine.getInstance().reconnectDirContext();
-                LOG.info("Falscher LDAP Suchpfad. " + e.getExplanation());
+                _log.info("Falscher LDAP Suchpfad. " + e.getExplanation());
             }
 
         }

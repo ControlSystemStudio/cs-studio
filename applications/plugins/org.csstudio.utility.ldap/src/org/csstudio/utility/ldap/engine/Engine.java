@@ -28,6 +28,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Vector;
 
+import javax.annotation.Nonnull;
 import javax.naming.CompositeName;
 import javax.naming.Name;
 import javax.naming.NameParser;
@@ -190,7 +191,7 @@ public final class Engine extends Job {
     }
 
     private DirContext _ctx = null;
-    private static Engine _thisEngine = null;
+    private static Engine INSTANCE = null;
 
     private boolean _doWrite = false;
 
@@ -200,9 +201,13 @@ public final class Engine extends Job {
     private LdapReferences _ldapReferences = null;
     private Vector<WriteRequest> _writeVector = new Vector<WriteRequest>();
 
-    boolean addVectorOK = true;
+    private boolean _addVectorOK = true;
 
-    private Engine(final String name) {
+    /**
+     * Constructor.
+     * @param name the name
+     */
+    private Engine(@Nonnull final String name) {
         super(name);
         this._ldapReferences = new LdapReferences();
         /*
@@ -284,20 +289,18 @@ public final class Engine extends Job {
     }
 
     /**
-     *
      * @return get an instance of our singleton.
      */
+    @Nonnull
     public static Engine getInstance() {
-        if (_thisEngine == null) {
-            synchronized (Engine.class) {
-                if (_thisEngine == null) {
-                    _thisEngine = new Engine("LdapEngine");
-                    _thisEngine.setSystem(true);
-                    _thisEngine.schedule();
-                }
+        synchronized (Engine.class) {
+            if (INSTANCE == null) {
+                INSTANCE = new Engine("LdapEngine");
+                INSTANCE.setSystem(true);
+                INSTANCE.schedule();
             }
         }
-        return _thisEngine;
+        return INSTANCE;
     }
 
     synchronized public void addLdapWriteRequest(final String attribute, final String channel, final String value) {
@@ -320,19 +323,19 @@ public final class Engine extends Job {
          *  when the buffer have minimum 10% free space
          */
         if (bufferSize > (maxBuffersize-_reStartSendDiff)) {
-            if (addVectorOK) {
+            if (_addVectorOK) {
                 System.out.println("Engine.addLdapWriteRequest writeVector > " + maxBuffersize
                                    + " - cannot store more!");
                 _log.warn("writeVector > " + maxBuffersize + " - cannot store more!");
                 _reStartSendDiff = (int)(LDAP_MAX_BUFFER_SIZE*0.1);
-                addVectorOK = false;
+                _addVectorOK = false;
             }
         } else {
-            if (!addVectorOK) {
+            if (!_addVectorOK) {
                 System.out.println("Engine.addLdapWriteRequest writeVector - continue writing");
                 _log.warn("writeVector < " + maxBuffersize + " - resume writing");
                 _reStartSendDiff = 0;
-                addVectorOK = true;
+                _addVectorOK = true;
             }
             _writeVector.add(writeRequest);
         }

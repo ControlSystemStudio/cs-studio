@@ -30,8 +30,6 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
 import javax.naming.Context;
 import javax.naming.NamingException;
@@ -47,6 +45,8 @@ import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
 /**
+ * The LDAP Connector.
+ *
  * @author hrickens
  * @author $Author$
  * @version $Revision$
@@ -87,7 +87,7 @@ public class LDAPConnector {
      *
      * @return the LDAP Connection
      */
-    @CheckForNull
+    @Nonnull
     public final DirContext getDirContext() {
         return _ctx;
     }
@@ -96,7 +96,7 @@ public class LDAPConnector {
      * @return the DirContext
      * @throws NamingException
      */
-    @CheckReturnValue
+    @Nonnull
     public final DirContext reconnect() throws NamingException {
         try {
             _ctx = createInitialContext(_prefsMap);
@@ -110,7 +110,7 @@ public class LDAPConnector {
             );
             throw e;
         }
-        return getDirContext();
+        return _ctx;
 
     }
 
@@ -121,7 +121,7 @@ public class LDAPConnector {
      *
      * @return env with the settings from PreferencPage
      */
-    @CheckReturnValue
+    @Nonnull
     private Map<PreferenceKey, String> getUIenv() {
 
         final IEclipsePreferences prefs = new DefaultScope().getNode(Activator.PLUGIN_ID);
@@ -163,7 +163,7 @@ public class LDAPConnector {
     }
 
 
-    @CheckReturnValue
+    @Nonnull
     private InitialLdapContext createInitialContext(@Nonnull final Map<PreferenceKey, String> prefsMap) throws NamingException {
 
         final Hashtable<Object, String> env = new Hashtable<Object, String>();

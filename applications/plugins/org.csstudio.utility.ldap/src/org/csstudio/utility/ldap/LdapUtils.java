@@ -21,6 +21,9 @@
  */
 package org.csstudio.utility.ldap;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttributes;
 
@@ -59,9 +62,14 @@ public class LdapUtils {
 
     public static final String ATTR_FIELD_RESPONSIBLE_PERSON = "epicsResponsibleName";
 
-    public static final String[] FORBIDDEN_SUBSTRINGS = new String[] {
-        "/","\\","+","@","$"
-    };
+    public static final Set<String> FORBIDDEN_SUBSTRINGS = new HashSet<String>();
+    static {
+        FORBIDDEN_SUBSTRINGS.add("/");
+        FORBIDDEN_SUBSTRINGS.add("\\");
+        FORBIDDEN_SUBSTRINGS.add("+");
+        FORBIDDEN_SUBSTRINGS.add("@");
+        FORBIDDEN_SUBSTRINGS.add("$");
+    }
 
 
 

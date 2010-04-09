@@ -4,6 +4,7 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
 import javax.naming.directory.SearchResult;
 
 import org.apache.log4j.Logger;
@@ -21,7 +22,7 @@ import org.csstudio.utility.ldap.model.LdapContentModel;
  */
 public class LdapSeachResultObserver implements Observer {
 
-    private final Logger LOGGER = CentralLogger.getInstance().getLogger(this);
+    private final Logger _log = CentralLogger.getInstance().getLogger(this);
     private LdapContentModel _model;
 
     private boolean _modelReady = false;
@@ -38,7 +39,7 @@ public class LdapSeachResultObserver implements Observer {
      * Constructor.
      * @param model the content model to be filled by the observable.
      */
-    public LdapSeachResultObserver(final LdapContentModel model) {
+    public LdapSeachResultObserver(@Nonnull final LdapContentModel model) {
 
         _model = model;
     }
@@ -62,11 +63,11 @@ public class LdapSeachResultObserver implements Observer {
      * {@link LdapContentModel}.
      */
     @Override
-    public synchronized void update(final Observable o, final Object arg) {
+    public final synchronized void update(final Observable o, final Object arg) {
         if (!(o instanceof LdapSearchResult)) {
             throw new IllegalArgumentException("Observed object must be of type " + LdapSearchResult.class.getName());
         }
-        LOGGER.info("Observer update: fill LDAP model.");
+        _log.info("Observer update: fill LDAP model.");
 
         final LdapSearchResult result = (LdapSearchResult) o;
         _model.setCurrentLdapSearchResult(result);
@@ -93,10 +94,10 @@ public class LdapSeachResultObserver implements Observer {
             }
         }
 
-        LOGGER.info("LDAP entries retrieved: " + answerSet.size());
+        _log.info("LDAP entries retrieved: " + answerSet.size());
 
         setModelReady(true);
-        LOGGER.info("Observer update finished.");
+        _log.info("Observer update finished.");
     }
 
     /**

@@ -30,6 +30,14 @@ import org.csstudio.utility.ldap.model.LdapContentModel;
 import org.csstudio.utility.ldap.model.Record;
 import org.csstudio.utility.ldap.reader.LdapSeachResultObserver;
 
+/**
+ * LDAP Service.
+ *
+ * @author bknerr
+ * @author $Author$
+ * @version $Revision$
+ * @since 08.04.2010
+ */
 public interface LdapService {
 
     /**
@@ -43,11 +51,14 @@ public interface LdapService {
                                 String filter);
 
     /**
-     * @param ldapDataObserver
-     * @param searchRoot
-     * @param filter
-     * @param searchScope
-     * @return
+     * Retrieves LDAP entries for the given query and search scope and fills the
+     * content model of the search result observer.
+     *
+     * @param ldapDataObserver observer
+     * @param searchRoot search root
+     * @param filter the query filter
+     * @param searchScope the search scope
+     * @return the enriched (or new) content model
      */
     LdapContentModel getEntries(LdapSeachResultObserver ldapDataObserver,
                                 String searchRoot,

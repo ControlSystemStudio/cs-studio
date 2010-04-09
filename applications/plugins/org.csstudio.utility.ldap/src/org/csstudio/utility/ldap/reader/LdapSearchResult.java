@@ -35,7 +35,13 @@ import org.csstudio.utility.namespace.utility.ControlSystemItem;
 import org.csstudio.utility.namespace.utility.NameSpaceSearchResult;
 import org.csstudio.utility.namespace.utility.ProcessVariable;
 
-
+/**
+ *
+ * @author bknerr
+ * @author $Author$
+ * @version $Revision$
+ * @since 08.04.2010
+ */
 public class LdapSearchResult extends NameSpaceSearchResult {
 
     private Set<SearchResult> _answerSet = Collections.emptySet();
