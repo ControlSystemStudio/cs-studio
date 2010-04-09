@@ -169,4 +169,18 @@ public class ADLControl extends WidgetPart{
 		ret[3] = new ADLResource(ADLResource.CONNECTION_STATE, _connectionState);
 		return ret;
     }
+
+    /** 
+     * @return background Color
+     */
+    public String getBackgroundColor(){
+    	return _bclr;
+    }
+
+    /** 
+     * @return background Color
+     */
+    public String getForegroundColor(){
+    	return _clr;
+    }
 }

@@ -193,5 +193,19 @@ public class ADLMonitor extends WidgetPart{
 		return ret;
 	}
 
+    /** 
+     * @return background Color
+     */
+    public String getBackgroundColor(){
+    	return _bclr;
+    }
+
+    /** 
+     * @return background Color
+     */
+    public String getForegroundColor(){
+    	return _clr;
+    }
+
 }
 
