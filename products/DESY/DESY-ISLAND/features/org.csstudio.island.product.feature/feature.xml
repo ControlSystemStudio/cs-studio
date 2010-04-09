@@ -21,10 +21,6 @@
          version="0.0.0"/>
 
    <includes
-         id="org.eclipse.p2helios.feature"
-         version="0.0.0"/>
-
-   <includes
          id="org.csstudio.platform.island.feature.product"
          version="0.0.0"/>
 
