@@ -10,12 +10,17 @@ import org.csstudio.utility.adlparser.internationalization.Messages;
 
 public class TextWidget extends ADLAbstractWidget {
 	private String textix;
+	private String alignment;
+	private String clrmod;
+	private String format;
+	
 	public TextWidget(ADLWidget adlWidget) {
 		super(adlWidget);
 		try {
 			for (ADLWidget childWidget : adlWidget.getObjects()) {
 	        	if (childWidget.getType().equals("basic attribute")){
 	        		_adlBasicAttribute = new ADLBasicAttribute(childWidget);
+	        		System.out.println("TextWidget Color " + _adlBasicAttribute.getClr());
 	        		if (_adlBasicAttribute != null){
 	        			_hasBasicAttribute = true;
 	        		}
@@ -43,6 +48,15 @@ public class TextWidget extends ADLAbstractWidget {
 				if (row[0].equals("textix")){
 					setTextix(row[1].replaceAll("\"", "").trim());
 				}
+				else if (row[0].equals("textix")){
+					setAlignment(row[1].replaceAll("\"", ""));
+				}
+				else if (row[0].equals("clrmod")){
+					setClrmod(row[1].replaceAll("\"", ""));
+				}
+				else if (row[0].equals("format")){
+					setFormat(row[1].replaceAll("\"", ""));
+				}
 			}
 		}
 		catch (WrongADLFormatException ex) {
@@ -58,6 +72,48 @@ public class TextWidget extends ADLAbstractWidget {
 	 */
 	public String getTextix() {
 		return textix;
+	}
+
+	/**
+	 * @param alignment the alignment to set
+	 */
+	private void setAlignment(String alignment) {
+		this.alignment = alignment;
+	}
+
+	/**
+	 * @return the alignment
+	 */
+	public String getAlignment() {
+		return alignment;
+	}
+
+	/**
+	 * @param clrmod the clrmod to set
+	 */
+	public void setClrmod(String clrmod) {
+		this.clrmod = clrmod;
+	}
+
+	/**
+	 * @return the clrmod
+	 */
+	public String getClrmod() {
+		return clrmod;
+	}
+
+	/**
+	 * @param format the format to set
+	 */
+	public void setFormat(String format) {
+		this.format = format;
+	}
+
+	/**
+	 * @return the format
+	 */
+	public String getFormat() {
+		return format;
 	}
 	
 }
