@@ -12,13 +12,7 @@ public class TextUpdateWidget extends ADLAbstractWidget {
 		super(adlWidget);
 		try {
 			for (ADLWidget childWidget : adlWidget.getObjects()) {
-	        	if (childWidget.getType().equals("basic attribute")){
-	        		_adlBasicAttribute = new ADLBasicAttribute(childWidget);
-	        		if (_adlBasicAttribute != null){
-	        			_hasBasicAttribute = true;
-	        		}
-	        	}
-	        	else if (childWidget.getType().equals("object")){
+	        	if (childWidget.getType().equals("object")){
 	        		_adlObject = new ADLObject(childWidget);
 	        		if (_adlObject != null){
 	        			_hasObject = true;
