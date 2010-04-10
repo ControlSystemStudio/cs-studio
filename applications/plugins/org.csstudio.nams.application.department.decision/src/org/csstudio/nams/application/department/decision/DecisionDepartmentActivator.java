@@ -65,6 +65,8 @@ import org.csstudio.nams.service.preferenceservice.declaration.PreferenceService
 import org.csstudio.nams.service.regelwerkbuilder.declaration.RegelwerkBuilderService;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.statistic.Collector;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.osgi.framework.BundleActivator;
@@ -440,11 +442,24 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 		return IApplication.EXIT_OK;
 	}
 
+	/**
+	 * Connects the application to the XMPP server.
+	 * 
+	 * ATTENTION: It does not use the preference service of NAMS, because the service
+	 *            uses the qualifier org.csstudio.ams.
+	 *            
+	 *            Have to be changed in the future!!!
+	 */
     public void connectToXMPPServer()
     {
-        String xmppUser = "ams-department-decision";
-        String xmppPassword = "ams";
-        String xmppServer = "krynfs.desy.de";
+        IPreferencesService pref = Platform.getPreferencesService();
+        String xmppServer = pref.getString(DecisionDepartmentActivator.PLUGIN_ID, "xmppServer", "krynfs.desy.de", null);
+        String xmppUser = pref.getString(DecisionDepartmentActivator.PLUGIN_ID, "xmppUser", "anonymous", null);
+        String xmppPassword = pref.getString(DecisionDepartmentActivator.PLUGIN_ID, "xmppPassword", "anonymous", null);
+
+//        String xmppUser = "ams-department-decision";
+//        String xmppPassword = "ams";
+//        String xmppServer = "krynfs.desy.de";
 
         try
         {
