@@ -288,6 +288,22 @@ public class RelatedDisplayItem extends WidgetPart {
         return _label;
     }
 
+    /**
+     * 
+     * @return the filename of the Related Display Item.
+     */
+    public final String getName() {
+        return _name;
+    }
+
+    /**
+     * 
+     * @return the arguments(macros) of the Related Display Item.
+     */
+    public final String getArgs() {
+        return _args;
+    }
+
 @Override
 public Object[] getChildren() {
 	Object[] ret = new Object[3];
@@ -297,4 +313,7 @@ public Object[] getChildren() {
 	
 	return ret;
 }
+
+
+
 }
