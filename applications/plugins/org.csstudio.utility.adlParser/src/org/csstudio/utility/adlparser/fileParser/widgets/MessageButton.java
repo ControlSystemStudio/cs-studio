@@ -8,10 +8,9 @@ import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLObject;
 import org.csstudio.utility.adlparser.internationalization.Messages;
 
 public class MessageButton extends ADLAbstractWidget {
-	private String label;
-	private String alignment;
-	private String clrmod;
-	private String format;
+	private String label = new String();;
+	private String press_msg = new String();
+	private String release_msg = new String();
 
 	public MessageButton(ADLWidget adlWidget) {
 		super(adlWidget);
@@ -41,14 +40,11 @@ public class MessageButton extends ADLAbstractWidget {
 				if (row[0].equals("label")){
 					setLabel(row[1].replaceAll("\"", "").trim());
 				}
-				else if (row[0].equals("alingment")){
-					setAlignment(row[1].replaceAll("\"", ""));
+				else if (row[0].equals("press_msg")){
+					setPress_msg(row[1].replaceAll("\"", ""));
 				}
-				else if (row[0].equals("clrmod")){
-					setClrmod(row[1].replaceAll("\"", ""));
-				}
-				else if (row[0].equals("format")){
-					setFormat(row[1].replaceAll("\"", ""));
+				else if (row[0].equals("release_msg")){
+					setRelease_msg(row[1].replaceAll("\"", ""));
 				}
 			}
 		}
@@ -72,45 +68,31 @@ public class MessageButton extends ADLAbstractWidget {
 	}
 
 	/**
-	 * @param clrmod the clrmod to set
+	 * @param press_msg the press_msg to set
 	 */
-	public void setClrmod(String clrmod) {
-		this.clrmod = clrmod;
+	public void setPress_msg(String press_msg) {
+		this.press_msg = press_msg;
 	}
 
 	/**
-	 * @return the clrmod
+	 * @return the press_msg
 	 */
-	public String getClrmod() {
-		return clrmod;
+	public String getPress_msg() {
+		return press_msg;
 	}
 
 	/**
-	 * @param alignment the alignment to set
+	 * @param release_msg the release_msg to set
 	 */
-	public void setAlignment(String alignment) {
-		this.alignment = alignment;
+	public void setRelease_msg(String release_msg) {
+		this.release_msg = release_msg;
 	}
 
 	/**
-	 * @return the alignment
+	 * @return the release_msg
 	 */
-	public String getAlignment() {
-		return alignment;
-	}
-
-	/**
-	 * @param format the format to set
-	 */
-	public void setFormat(String format) {
-		this.format = format;
-	}
-
-	/**
-	 * @return the format
-	 */
-	public String getFormat() {
-		return format;
+	public String getRelease_msg() {
+		return release_msg;
 	}
 
 }
