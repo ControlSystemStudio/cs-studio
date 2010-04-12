@@ -44,6 +44,7 @@ public class SixteenBinaryBarEditPart extends AbstractWidgetEditPart {
 	 */
 	@Override
 	protected void registerPropertyChangeHandlers() {
+	    super.registerPropertyChangeHandlers();
 		// orientation
 		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,

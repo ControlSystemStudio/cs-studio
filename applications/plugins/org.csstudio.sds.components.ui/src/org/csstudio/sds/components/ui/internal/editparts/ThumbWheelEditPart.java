@@ -136,6 +136,7 @@ public class ThumbWheelEditPart extends AbstractWidgetEditPart {
 	 */
 	@Override
 	protected void registerPropertyChangeHandlers() {
+	    super.registerPropertyChangeHandlers();
 		// decimal wheels
 		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,

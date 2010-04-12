@@ -456,6 +456,7 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements I
 	 */
 	@Override
 	protected void registerPropertyChangeHandlers() {
+	    super.registerPropertyChangeHandlers();
 		// input text
 		IWidgetPropertyChangeHandler textHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue, final Object newValue, final IFigure refreshableFigure) {

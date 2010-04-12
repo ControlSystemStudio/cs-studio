@@ -40,6 +40,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.ui.progress.UIJob;
 
 /**
@@ -223,6 +224,19 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart
 		setPropertyChangeHandler(SimpleSliderModel.PROP_ORIENTATION,
 				orientationHandler);
 
+		// Color
+        IWidgetPropertyChangeHandler colorHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue, final IFigure refreshableFigure) {
+                SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
+                slider.setPopulateEvents(false);
+                slider.setForegroundColor( (Color) newValue);
+                slider.setPopulateEvents(true);
+                return true;
+            }
+        };
+        setPropertyChangeHandler(SimpleSliderModel.PROP_COLOR_FOREGROUND,
+                                 colorHandler);
 	}
 
 	/**

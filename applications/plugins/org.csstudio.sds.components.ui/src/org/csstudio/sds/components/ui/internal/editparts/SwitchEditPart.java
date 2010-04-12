@@ -67,6 +67,7 @@ public final class SwitchEditPart extends AbstractWidgetEditPart {
 	 */
 	@Override
 	protected void registerPropertyChangeHandlers() {
+	    super.registerPropertyChangeHandlers();
 		// background transparency
 		IWidgetPropertyChangeHandler handle = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue, final Object newValue,

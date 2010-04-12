@@ -69,6 +69,7 @@ public final class ArcEditPart extends AbstractWidgetEditPart {
 	 * Register color property change handlers.
 	 */
 	protected void registerColorPropertyHandlers() {
+	    super.registerPropertyChangeHandlers();
 		// fill
 		setPropertyChangeHandler(ArcModel.PROP_FILLCOLOR, new ColorChangeHander<RefreshableArcFigure>(){
 			@Override

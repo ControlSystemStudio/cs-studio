@@ -204,6 +204,7 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 	 */
 	@Override
 	protected void registerPropertyChangeHandlers() {
+	    super.registerPropertyChangeHandlers();
 		//
 		RefreshableActionButtonFigure figure = getCastedFigure();
 		this.configureButtonListener(figure);

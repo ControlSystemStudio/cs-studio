@@ -60,6 +60,7 @@ public final class PolylineEditPart extends AbstractWidgetEditPart {
 	 */
 	@Override
 	protected void registerPropertyChangeHandlers() {
+	    super.registerPropertyChangeHandlers();
 		// line width
 		IWidgetPropertyChangeHandler lineWidthHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,

@@ -240,6 +240,7 @@ public final class MeterEditPart extends AbstractWidgetEditPart {
 	 */
 	@Override
 	protected void registerPropertyChangeHandlers() {
+	    super.registerPropertyChangeHandlers();
 		// register handlers to deal with resizes
 		IWidgetPropertyChangeHandler handle = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure) {

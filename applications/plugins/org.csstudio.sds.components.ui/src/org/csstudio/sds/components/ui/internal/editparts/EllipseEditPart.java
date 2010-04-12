@@ -47,6 +47,7 @@ public final class EllipseEditPart extends AbstractWidgetEditPart {
 		ellipse.setOrientation(model.getOrientation());
 		ellipse.setFill(model.getFillLevel());
 		ellipse.setTransparent(model.getTransparent());
+		ellipse.setTransparent(model.getCrossedOut());
 		
 		return ellipse;
 
@@ -57,6 +58,7 @@ public final class EllipseEditPart extends AbstractWidgetEditPart {
 	 */
 	@Override
 	protected void registerPropertyChangeHandlers() {
+	    super.registerPropertyChangeHandlers();
 		// fill
 		IWidgetPropertyChangeHandler fillHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
@@ -90,7 +92,6 @@ public final class EllipseEditPart extends AbstractWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(EllipseModel.PROP_TRANSPARENT, transparentHandler);
-		
 	}
 
 }
