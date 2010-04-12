@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: ADL to BOY converter
+Bundle-SymbolicName: org.csstudio.opibuilder.adl2boy; singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.csstudio.opibuilder.adl2boy.ADL2BOYPlugin
+Bundle-Vendor: John Hammonds
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.core.resources;bundle-version="3.5.1",
+ org.csstudio.opibuilder;bundle-version="1.0.0",
+ org.csstudio.utility.adlParser;bundle-version="1.0.0",
+ org.csstudio.opibuilder.widgets;bundle-version="1.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
