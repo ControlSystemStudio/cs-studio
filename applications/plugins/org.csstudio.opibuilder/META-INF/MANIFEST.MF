@@ -36,6 +36,7 @@ Export-Package: org.csstudio.opibuilder,
  org.csstudio.opibuilder.preferences,
  org.csstudio.opibuilder.properties,
  org.csstudio.opibuilder.properties.support,
+ org.csstudio.opibuilder.scriptUtil,
  org.csstudio.opibuilder.util,
  org.csstudio.opibuilder.visualparts,
  org.csstudio.opibuilder.widgetActions
