@@ -14,7 +14,11 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
-/** StringFieldEditor for Passwords
+/** StringFieldEditor for Passwords or the like which are stored in
+ *  {@link SecureStorage}.
+ *  <p>
+ *  Corollary: When using the PasswordFieldEditor to edit a preference setting,
+ *  you <u>must</u> use {@link SecureStorage} to read the preference setting.
  *  <p>
  *  Copied StringFieldEditor sources, stripped,
  *  replaced Text style with password option.
