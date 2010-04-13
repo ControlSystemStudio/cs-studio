@@ -1,12 +1,12 @@
 /**
- * 
+ *
  */
 package org.epics.css.dal.simple;
 
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -31,44 +31,43 @@ import org.epics.css.dal.spi.Plugs;
 import com.cosylab.util.CommonException;
 
 /**
- * Simple DAL main object for access to DAL in request style. 
- * DAL offers here functionality trough addressed synchronous and 
- * asynchronous interface. 
- * 
+ * Simple DAL main object for access to DAL in request style.
+ * DAL offers here functionality trough addressed synchronous and
+ * asynchronous interface.
+ *
  * @author ikriznar
  *
  */
 public class SimpleDALBroker {
-	
+
 	private class PropertiesCleanupTask extends TimerTask {
 
 		@Override
 		public void run() {
-			ArrayList<String> toRemove = new ArrayList<String>();
+			final List<String> toRemove = new ArrayList<String>();
 			synchronized (properties) {
 				PropertyHolder holder;
-				for (Iterator<String> iterator = properties.keySet().iterator(); iterator.hasNext();) {
-					String key = (String) iterator.next();
+				for (final String key : properties.keySet()) {
 					holder = properties.get(key);
-					if (holder.expires > 0 && holder.expires < System.currentTimeMillis() && !holder.property.hasDynamicValueListeners()) {
+					if ((holder.expires > 0) && (holder.expires < System.currentTimeMillis()) && !holder.property.hasDynamicValueListeners()) {
 						toRemove.add(key);
 					}
 				}
-				for (String key : toRemove) {
+				for (final String key : toRemove) {
 					holder = properties.remove(key);
 					factory.destroy(holder.property);
 				}
 			}
 		}
-		
+
 	}
-	
+
 	/**
 	 * @author ikriznar
 	 *
 	 */
 	public class PropertyHolder {
-		public PropertyHolder(DynamicValueProperty<?> p) {
+		public PropertyHolder(final DynamicValueProperty<?> p) {
 			this.property=p;
 		}
 		DynamicValueProperty<?> property;
@@ -80,13 +79,13 @@ public class SimpleDALBroker {
 		public long expires;
 
 	}
-	
+
 	public class UninitializedPropertyHolder extends PropertyHolder {
-		
+
 		boolean propertyInitialized = false;
 		RemoteException re;
 		InstantiationException ie;
-		
+
 		public UninitializedPropertyHolder() {
 			super(null);
 			expires = -1;
@@ -95,21 +94,24 @@ public class SimpleDALBroker {
 
 	private static SimpleDALBroker broker;
 
-	private static String createKey(ConnectionParameters cparam) {
-		StringBuilder sb = new StringBuilder();
+	private static String createKey(final ConnectionParameters cparam) {
+		final StringBuilder sb = new StringBuilder();
 		sb.append(cparam.getRemoteInfo().getConnectionType()+",");
 		sb.append(cparam.getRemoteInfo().getRemoteName()+",");
-		DataFlavor df = cparam.getConnectionType();
-		if (df == null) sb.append("null");
-		else sb.append(df.toString());
+		final DataFlavor df = cparam.getConnectionType();
+		if (df == null) {
+            sb.append("null");
+        } else {
+            sb.append(df.toString());
+        }
 		return sb.toString();
 	}
 
 	public static SimpleDALBroker getInstance() {
 		return newInstance(null);
 	}
-	
-	public static SimpleDALBroker newInstance(AbstractApplicationContext ctx) {
+
+	public static SimpleDALBroker newInstance(final AbstractApplicationContext ctx) {
 		if (ctx==null) {
 			if (broker == null) {
 				broker = new SimpleDALBroker(new DefaultApplicationContext("SimpleDALContext"));
@@ -119,56 +121,56 @@ public class SimpleDALBroker {
 		return new SimpleDALBroker(ctx);
 	}
 
-	
-	private AbstractApplicationContext ctx;
-	private HashMap<String, PropertyHolder> properties;
+
+	private final AbstractApplicationContext _ctx;
+	private final HashMap<String, PropertyHolder> properties;
 	/**
-	 * Time duration which property is alive after has been last used. 
+	 * Time duration which property is alive after has been last used.
 	 * After this time it could be deleted.
 	 */
-	private long timeToLive = 60000;
+	private final long timeToLive = 60000;
 	private DefaultPropertyFactoryBroker factory;
-	
+
 	private static final long CLEANUP_INTERVAL = 60000;
-	private Timer cleanupTimer;
-	
-	private SimpleDALBroker(AbstractApplicationContext ctx) {
-		this.ctx=ctx;
+	private final Timer cleanupTimer;
+
+	private SimpleDALBroker(final AbstractApplicationContext ctx) {
+		this._ctx=ctx;
 		properties= new HashMap<String, PropertyHolder>();
 		cleanupTimer = new Timer("Cleanup Timer");
 		cleanupTimer.scheduleAtFixedRate(new PropertiesCleanupTask(), CLEANUP_INTERVAL, CLEANUP_INTERVAL);
-		
+
 		ctx.addLifecycleListener(new LifecycleListener() {
 
-			public void destroyed(LifecycleEvent event) {
+			public void destroyed(final LifecycleEvent event) {
 				// TODO implement?
 			}
 
-			public void destroying(LifecycleEvent event) {
+			public void destroying(final LifecycleEvent event) {
 				// TODO implement?
 				cleanupTimer.cancel();
 			}
 
-			public void initialized(LifecycleEvent event) {
+			public void initialized(final LifecycleEvent event) {
 				// not important
 			}
 
-			public void initializing(LifecycleEvent event) {
+			public void initializing(final LifecycleEvent event) {
 				// not important
 			}
 		});
 	}
 
-	private PropertyHolder getPropertyHolder(ConnectionParameters cparam) throws InstantiationException, CommonException {
+	private PropertyHolder getPropertyHolder(final ConnectionParameters cparam) throws InstantiationException, CommonException {
 		return getPropertyHolder(cparam, System.currentTimeMillis()+timeToLive);
 	}
-	
-	private PropertyHolder getPropertyHolder(ConnectionParameters cparam, long expires) throws InstantiationException, CommonException {
-		
+
+	private PropertyHolder getPropertyHolder(final ConnectionParameters cparam, final long expires) throws InstantiationException, CommonException {
+
 		PropertyHolder ph;
 		UninitializedPropertyHolder uph = null;
-		String key = createKey(cparam);
-		
+		final String key = createKey(cparam);
+
 		synchronized (properties) {
 			ph= properties.get(key);
 			if (ph == null) {
@@ -176,7 +178,7 @@ public class SimpleDALBroker {
 				properties.put(key, uph);
 			}
 		}
-		
+
 		if (ph==null) {
 			DynamicValueProperty<?> property;
 			try {
@@ -191,7 +193,7 @@ public class SimpleDALBroker {
 					property = getFactory().
 					getProperty(cparam.getRemoteInfo());
 				}
-			} catch (RemoteException e) {
+			} catch (final RemoteException e) {
 				uph.re = e;
 				synchronized (properties) {
 					properties.remove(key);
@@ -201,7 +203,7 @@ public class SimpleDALBroker {
 					uph.notifyAll();
 				}
 				throw e;
-			} catch (InstantiationException e) {
+			} catch (final InstantiationException e) {
 				uph.ie = e;
 				synchronized (properties) {
 					properties.remove(key);
@@ -228,21 +230,27 @@ public class SimpleDALBroker {
 					while (!uph.propertyInitialized) {
 						uph.wait();
 					}
-				} catch (InterruptedException e) {
+				} catch (final InterruptedException e) {
 					throw new CommonException(this, "Thread has been interrupted.", e);
 				}
 			}
 			synchronized (properties) {
 				ph= properties.get(key);
 				if (ph == null) {
-					if (uph.re != null) throw uph.re;
-					if (uph.ie != null) throw uph.ie;
+					if (uph.re != null) {
+                        throw uph.re;
+                    }
+					if (uph.ie != null) {
+                        throw uph.ie;
+                    }
 					throw new CommonException(this, "Internal error.");
 				}
-				if (ph instanceof UninitializedPropertyHolder) throw new CommonException(this, "Internal error.");
+				if (ph instanceof UninitializedPropertyHolder) {
+                    throw new CommonException(this, "Internal error.");
+                }
 			}
 		}
-		
+
 		ph.expires = expires;
 		return ph;
 	}
@@ -258,25 +266,25 @@ public class SimpleDALBroker {
 		}
 		return size;
 	}
-	
+
 	private DefaultPropertyFactoryBroker getFactory() {
 		if (factory == null) {
 			factory = DefaultPropertyFactoryBroker.getInstance();
-			factory.initialize(ctx, LinkPolicy.ASYNC_LINK_POLICY);
+			factory.initialize(_ctx, LinkPolicy.ASYNC_LINK_POLICY);
 		}
 		return factory;
 	}
 
 	/**
 	 * Value is read and returned synchronously.
-	 * 
+	 *
 	 * @param cparam connection parameter to remote value
 	 * @return remote value
-	 * @throws InstantiationException 
-	 * @throws CommonException 
+	 * @throws InstantiationException
+	 * @throws CommonException
 	 */
-	public Object getValue(ConnectionParameters cparam) throws InstantiationException, CommonException {
-		PropertyHolder ph= getPropertyHolder(cparam);
+	public Object getValue(final ConnectionParameters cparam) throws InstantiationException, CommonException {
+		final PropertyHolder ph= getPropertyHolder(cparam);
 		blockUntillConnected(ph.property);
 		if (cparam.getRemoteInfo().getCharacteristic()!=null) {
 			return ph.property.getCharacteristic(cparam.getRemoteInfo().getCharacteristic());
@@ -284,17 +292,17 @@ public class SimpleDALBroker {
 		return ph.property.getValue();
 	}
 
-	public <T> T getValue(RemoteInfo rinfo, Class<T> type) throws InstantiationException, CommonException {
-		PropertyHolder ph= getPropertyHolder(new ConnectionParameters(rinfo, type));
+	public <T> T getValue(final RemoteInfo rinfo, final Class<T> type) throws InstantiationException, CommonException {
+		final PropertyHolder ph= getPropertyHolder(new ConnectionParameters(rinfo, type));
 		blockUntillConnected(ph.property);
 		if (rinfo.getCharacteristic()!=null) {
-			Object o= ph.property.getCharacteristic(rinfo.getCharacteristic());
+			final Object o= ph.property.getCharacteristic(rinfo.getCharacteristic());
 			if (o!=null) {
 				return type.cast(o);
 			}
 			return null;
 		}
-		
+
 		Object o=null;
 		if (type == AnyData.class) {
 			o= ph.property.getData();
@@ -306,9 +314,9 @@ public class SimpleDALBroker {
 		}
 		return null;
 	}
-	
-	public Object getValue(RemoteInfo rinfo) throws InstantiationException, CommonException {
-		PropertyHolder ph= getPropertyHolder(new ConnectionParameters(rinfo));
+
+	public Object getValue(final RemoteInfo rinfo) throws InstantiationException, CommonException {
+		final PropertyHolder ph= getPropertyHolder(new ConnectionParameters(rinfo));
 		blockUntillConnected(ph.property);
 		if (rinfo.getCharacteristic()!=null) {
 			return ph.property.getCharacteristic(rinfo.getCharacteristic());
@@ -316,8 +324,8 @@ public class SimpleDALBroker {
 		return ph.property.getValue();
 	}
 
-	public <T> Request<T> getValueAsync(ConnectionParameters cparam, ResponseListener<T> callback) throws InstantiationException, CommonException {
-		PropertyHolder ph= getPropertyHolder(cparam);
+	public <T> Request<T> getValueAsync(final ConnectionParameters cparam, final ResponseListener<T> callback) throws InstantiationException, CommonException {
+		final PropertyHolder ph= getPropertyHolder(cparam);
 		if (cparam.getRemoteInfo().getCharacteristic()!=null) {
 			return (Request<T>)ph.property.getCharacteristicAsynchronously(
 					cparam.getRemoteInfo().getCharacteristic(),
@@ -325,73 +333,73 @@ public class SimpleDALBroker {
 		}
 
 		if (cparam.getDataType().getJavaType() == AnyData.class) {
-			RequestImpl<T> r= new RequestImpl<T>(ph.property, callback);
+			final RequestImpl<T> r= new RequestImpl<T>(ph.property, callback);
 			r.addResponse(new ResponseImpl<T>(ph.property, r, (T)ph.property.getData(), "", true, null, null, new Timestamp(), true));
 			return r;
 		}
-		return ((DynamicValueProperty<T>)ph.property).getAsynchronous((ResponseListener<T>)callback);
+		return ((DynamicValueProperty<T>)ph.property).getAsynchronous(callback);
 	}
-	
-	public void setValue(RemoteInfo rinfo, Object value) throws Exception {
-		PropertyHolder ph= getPropertyHolder(new ConnectionParameters(rinfo, value.getClass()));
+
+	public void setValue(final RemoteInfo rinfo, final Object value) throws Exception {
+		final PropertyHolder ph= getPropertyHolder(new ConnectionParameters(rinfo, value.getClass()));
 		blockUntillConnected(ph.property);
 		ph.property.setValueAsObject(value);
 	}
-	
-	public <T> Request<T> setValueAsync(ConnectionParameters cparam, Object value, ResponseListener<T> callback) throws Exception {
-		PropertyHolder ph = getPropertyHolder(cparam);
+
+	public <T> Request<T> setValueAsync(final ConnectionParameters cparam, final Object value, final ResponseListener<T> callback) throws Exception {
+		final PropertyHolder ph = getPropertyHolder(cparam);
 		return ((DynamicValueProperty<T>) ph.property).setAsynchronous((T)value, callback);
 	}
-	
-	public void registerListener(ConnectionParameters cparam, ChannelListener listener) throws InstantiationException, CommonException {
-		PropertyHolder ph= getPropertyHolder(cparam, 0);
+
+	public void registerListener(final ConnectionParameters cparam, final ChannelListener listener) throws InstantiationException, CommonException {
+		final PropertyHolder ph= getPropertyHolder(cparam, 0);
 		if (cparam.getRemoteInfo().getCharacteristic()!=null) {
 			return;
 		}
-		
+
 		ph.property.addListener(listener);
 	}
 
-	public void deregisterListener(ConnectionParameters cparam, ChannelListener listener) throws InstantiationException, CommonException {
-		PropertyHolder ph= getPropertyHolder(cparam, 1);
+	public void deregisterListener(final ConnectionParameters cparam, final ChannelListener listener) throws InstantiationException, CommonException {
+		final PropertyHolder ph= getPropertyHolder(cparam, 1);
 		if (cparam.getRemoteInfo().getCharacteristic()!=null) {
 			return;
 		}
-		
+
 		ph.property.removeListener(listener);
 	}
-	
-	public void registerListener(ConnectionParameters cparam, DynamicValueListener listener) throws InstantiationException, CommonException {
-		PropertyHolder ph= getPropertyHolder(cparam, 0);
+
+	public void registerListener(final ConnectionParameters cparam, final DynamicValueListener listener) throws InstantiationException, CommonException {
+		final PropertyHolder ph= getPropertyHolder(cparam, 0);
 		if (cparam.getRemoteInfo().getCharacteristic()!=null) {
 			return;
 		}
-		
+
 		ph.property.addDynamicValueListener(listener);
 	}
 
-	public void deregisterListener(ConnectionParameters cparam, DynamicValueListener listener) throws InstantiationException, CommonException {
-		PropertyHolder ph= getPropertyHolder(cparam, 1);
+	public void deregisterListener(final ConnectionParameters cparam, final DynamicValueListener listener) throws InstantiationException, CommonException {
+		final PropertyHolder ph= getPropertyHolder(cparam, 1);
 		if (cparam.getRemoteInfo().getCharacteristic()!=null) {
 			return;
 		}
-		
+
 		ph.property.removeDynamicValueListener(listener);
 	}
-	
-	public void registerListener(ConnectionParameters cparam, PropertyChangeListener listener) throws InstantiationException, CommonException {
-		PropertyHolder ph= getPropertyHolder(cparam, 0);
-		
+
+	public void registerListener(final ConnectionParameters cparam, final PropertyChangeListener listener) throws InstantiationException, CommonException {
+		final PropertyHolder ph= getPropertyHolder(cparam, 0);
+
 		ph.property.addPropertyChangeListener(listener);
 	}
 
-	public void deregisterListener(ConnectionParameters cparam, PropertyChangeListener listener) throws InstantiationException, CommonException {
-		PropertyHolder ph= getPropertyHolder(cparam, 1);
-		
+	public void deregisterListener(final ConnectionParameters cparam, final PropertyChangeListener listener) throws InstantiationException, CommonException {
+		final PropertyHolder ph= getPropertyHolder(cparam, 1);
+
 		ph.property.removePropertyChangeListener(listener);
 	}
-	
-	private void blockUntillConnected(DynamicValueProperty<?> property) throws ConnectionException {
-		LinkBlocker.blockUntillConnected(property, Plugs.getConnectionTimeout(ctx.getConfiguration(), 30000) * 2, true);
+
+	private void blockUntillConnected(final DynamicValueProperty<?> property) throws ConnectionException {
+		LinkBlocker.blockUntillConnected(property, Plugs.getConnectionTimeout(_ctx.getConfiguration(), 30000) * 2, true);
 	}
 }
