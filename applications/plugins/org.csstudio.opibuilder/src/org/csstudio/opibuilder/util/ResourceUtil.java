@@ -60,8 +60,11 @@ public class ResourceUtil {
 					throw new Exception();
 			} catch (Exception e1) {
 				try {
-					//try from URL				
-					URL url = new URL(path.toString());
+					//try from URL					
+					String urlString = path.toString();
+					if(!urlString.contains("://")) //$NON-NLS-1$
+						urlString = urlString.replaceFirst(":/", "://"); //$NON-NLS-1$ //$NON-NLS-2$
+					URL url = new URL(urlString);
 					result = url.openStream();
 					return result;
 				} catch (Exception e2) {
