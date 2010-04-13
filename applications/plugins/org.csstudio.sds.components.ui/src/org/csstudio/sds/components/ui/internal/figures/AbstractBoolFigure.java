@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.sds.ui.figures.CrossedPaintHelper;
 import org.csstudio.sds.ui.figures.ICrossedFigure;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;

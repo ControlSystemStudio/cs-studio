@@ -22,6 +22,7 @@
 package org.csstudio.sds.components.ui.internal.figures;
 
 import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.sds.ui.figures.CrossedPaintHelper;
 import org.csstudio.sds.ui.figures.ICrossedFigure;
 import org.eclipse.draw2d.Button;
 import org.eclipse.draw2d.Graphics;

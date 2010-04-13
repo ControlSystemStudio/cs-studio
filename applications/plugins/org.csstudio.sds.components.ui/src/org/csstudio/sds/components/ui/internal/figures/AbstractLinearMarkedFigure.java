@@ -2,6 +2,7 @@ package org.csstudio.sds.components.ui.internal.figures;
 
 
 import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.sds.ui.figures.CrossedPaintHelper;
 import org.csstudio.swt.xygraph.linearscale.LinearScale;
 import org.csstudio.swt.xygraph.linearscale.LinearScaledMarker;
 import org.eclipse.swt.graphics.Color;

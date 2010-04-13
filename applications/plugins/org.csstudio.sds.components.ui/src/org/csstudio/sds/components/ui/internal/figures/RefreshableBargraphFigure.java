@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.csstudio.sds.ui.figures.BorderAdapter;
+import org.csstudio.sds.ui.figures.CrossedPaintHelper;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.ui.figures.ICrossedFigure;
 import org.eclipse.draw2d.ColorConstants;
