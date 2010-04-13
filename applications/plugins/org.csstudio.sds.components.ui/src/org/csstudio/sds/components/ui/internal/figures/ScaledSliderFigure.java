@@ -114,6 +114,13 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 		});	
 	}
 
+	@Override
+    public void paint(Graphics graphics) {
+        super.paint(graphics);
+        Rectangle figureBounds = getBounds().getCopy();
+        getCrossedPaintHelper().paintCross(graphics, figureBounds);
+    }
+	
 	/**
 	 * Add a slider listener.
 	 * 

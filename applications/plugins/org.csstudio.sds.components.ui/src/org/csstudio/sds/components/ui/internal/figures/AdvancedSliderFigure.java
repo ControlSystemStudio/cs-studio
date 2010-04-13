@@ -29,7 +29,7 @@ import java.util.List;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.ui.figures.BorderAdapter;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
-import org.eclipse.core.runtime.IAdaptable;
+import org.csstudio.sds.ui.figures.ICrossedFigure;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Ellipse;
 import org.eclipse.draw2d.FigureListener;
@@ -59,7 +59,7 @@ import org.eclipse.swt.SWT;
  * 
  * @author Sven Wende, Joerg Rathlev
  */
-public final class AdvancedSliderFigure extends Panel implements IAdaptable {
+public final class AdvancedSliderFigure extends Panel implements ICrossedFigure {
 	/**
 	 * Insets for the whole figure.
 	 */
@@ -186,11 +186,13 @@ public final class AdvancedSliderFigure extends Panel implements IAdaptable {
 	 */
 	private ValueLabelPanel _valueLabelPanel;
 
+    private CrossedPaintHelper _crossedPaintHelper;
+
 	/**
 	 * Standard constructor.
 	 */
 	public AdvancedSliderFigure() {
-
+        _crossedPaintHelper = new CrossedPaintHelper();
 		_sliderListeners = new ArrayList<ISliderListener>();
 
 		setLayoutManager(new XYLayout());
@@ -229,6 +231,13 @@ public final class AdvancedSliderFigure extends Panel implements IAdaptable {
 
 	}
 
+	@Override
+	public void paint(Graphics graphics) {
+	    super.paint(graphics);
+        Rectangle figureBounds = getBounds().getCopy();
+	    _crossedPaintHelper.paintCross(graphics, figureBounds);
+	}
+	
 	/**
 	 * Calculate the layout constraints for the scale panel.
 	 * 
@@ -914,5 +923,10 @@ public final class AdvancedSliderFigure extends Panel implements IAdaptable {
 		 */
 		void sliderValueChanged(double newValue);
 	}
+
+    @Override
+    public void setCrossedOut(boolean newValue) {
+        _crossedPaintHelper.setCrossed(newValue);
+    }
 
 }

@@ -33,9 +33,9 @@ import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.ui.figures.BorderAdapter;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
+import org.csstudio.sds.ui.figures.ICrossedFigure;
 import org.csstudio.sds.util.ChannelReferenceValidationException;
 import org.csstudio.sds.util.ChannelReferenceValidationUtil;
-import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FigureListener;
@@ -69,7 +69,7 @@ import org.eclipse.swt.graphics.Color;
  * @author Joerg Rathlev
  * @author based on waveform by Kai Meyer and Sven Wende
  */
-public abstract class AbstractChartFigure extends Figure implements IAdaptable {
+public abstract class AbstractChartFigure extends Figure implements ICrossedFigure {
 
 	// TODO: format all comments
 	// TODO: check all method names for "waveform" etc.
@@ -252,6 +252,8 @@ public abstract class AbstractChartFigure extends Figure implements IAdaptable {
 	 * The aliases of this waveform.
 	 */
 	private Map<String, String> _aliases;
+
+    private CrossedPaintHelper _crossedPaintHelper;
 	
 	/**
 	 * Creates a new chart figure.
@@ -263,7 +265,7 @@ public abstract class AbstractChartFigure extends Figure implements IAdaptable {
 		if (numberOfDataSeries < 0) {
 			throw new IllegalArgumentException("numberOfDataSeries must be >= 0");
 		}
-		
+	      _crossedPaintHelper = new CrossedPaintHelper();
 		_numberOfDataSeries = numberOfDataSeries;
 
 		_plotColor = new Color[_numberOfDataSeries];
@@ -276,6 +278,14 @@ public abstract class AbstractChartFigure extends Figure implements IAdaptable {
 		addRefreshLayoutListener();
 	}
 
+	@Override
+	public void paint(Graphics graphics) {
+	    super.paint(graphics);
+        Rectangle bound = getBounds().getCopy();
+        _crossedPaintHelper.paintCross(graphics, bound);
+
+	}
+	
 	/**
 	 * Registers a figure listener that listens for movement events and
 	 * refreshes the layout of the subfigures when the figure has moved. 
@@ -1039,6 +1049,11 @@ public abstract class AbstractChartFigure extends Figure implements IAdaptable {
 			return 0;
 		}
 	}
+	
+	@Override
+	public void setCrossedOut(boolean newValue) {
+	    _crossedPaintHelper.setCrossed(newValue);
+	}
 
 	/**
 	 * Calculates the height of the x-axis.
@@ -1638,6 +1653,7 @@ public abstract class AbstractChartFigure extends Figure implements IAdaptable {
 				_scaleHyphen.setForegroundColor(fg);
 				_textLabel.setForegroundColor(fg);
 			}
+			
 			
 			/**
 			 * Refreshes the Label.

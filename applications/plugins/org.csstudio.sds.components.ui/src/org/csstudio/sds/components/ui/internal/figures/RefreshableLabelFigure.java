@@ -25,8 +25,8 @@ import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.components.ui.internal.utils.TextPainter;
 import org.csstudio.sds.ui.figures.BorderAdapter;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
+import org.csstudio.sds.ui.figures.ICrossedFigure;
 import org.csstudio.sds.util.AntialiasingUtil;
-import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.PositionConstants;
@@ -42,7 +42,7 @@ import org.eclipse.swt.graphics.Font;
  * @author jbercic
  * 
  */
-public final class RefreshableLabelFigure extends Shape implements IAdaptable {
+public final class RefreshableLabelFigure extends Shape implements ICrossedFigure {
 	
 	/**
 	 * A border adapter, which covers all border drawing.
@@ -83,6 +83,8 @@ public final class RefreshableLabelFigure extends Shape implements IAdaptable {
 	 * Is the background transparent or not?
 	 */
 	private boolean _transparent=true;
+
+    private CrossedPaintHelper _crossedPaintHelper;
 	
 	/**
 	 * Fills the image. Nothing to do here.
@@ -96,6 +98,10 @@ public final class RefreshableLabelFigure extends Shape implements IAdaptable {
 	 */
 	protected void outlineShape(final Graphics gfx) {}
 	
+	
+	public RefreshableLabelFigure() {
+	    _crossedPaintHelper = new CrossedPaintHelper();
+    }
 	/**
 	 * The main drawing routine.
 	 * @param gfx The {@link Graphics} to use.
@@ -158,6 +164,7 @@ public final class RefreshableLabelFigure extends Shape implements IAdaptable {
 		} else {
 			TextPainter.drawRotatedText(gfx,_textValue,90.0-_rotation,textPoint.x,textPoint.y,alignment);
 		}
+		_crossedPaintHelper.paintCross(gfx, new Rectangle(0, 0, bound.width, bound.height));
 	}
 
 	/**
@@ -230,5 +237,10 @@ public final class RefreshableLabelFigure extends Shape implements IAdaptable {
 		}
 		return null;
 	}
+
+    @Override
+    public void setCrossedOut(boolean newValue) {
+        _crossedPaintHelper.setCrossed(newValue);    
+    }
 	
 }

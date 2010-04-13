@@ -79,9 +79,15 @@ public class RefreshableXMeterFigure extends AbstractRoundRampedFigure {
 		});	
 		
 	}
+	
+	@Override
+	public void paint(Graphics graphics) {
+	    super.paint(graphics);
+        Rectangle figureBounds = getBounds().getCopy();
+	    getCrossedPaintHelper().paintCross(graphics, figureBounds);
+	}
 	@Override
 	public void setBounds(Rectangle rect) {
-		
 		super.setBounds(rect);
 	}
 	

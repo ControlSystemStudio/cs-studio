@@ -20,6 +20,7 @@ public class AbstractLinearMarkedFigure extends AbstractMarkedWidgetFigure {
 	private static final String LO = "LO";
 	private static final String LOLO = "LOLO";
 	protected LinearScaledMarker marker;
+    private CrossedPaintHelper _crossedPaintHelper;
 
 	
 	public AbstractLinearMarkedFigure() {
@@ -149,4 +150,5 @@ public class AbstractLinearMarkedFigure extends AbstractMarkedWidgetFigure {
 		super.setLogScale(logScale);
 		marker.setDirty(true);
 	}
+
 }

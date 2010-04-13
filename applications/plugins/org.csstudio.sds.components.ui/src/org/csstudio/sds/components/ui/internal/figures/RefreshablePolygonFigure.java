@@ -23,7 +23,7 @@ package org.csstudio.sds.components.ui.internal.figures;
 
 import org.csstudio.sds.ui.figures.BorderAdapter;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
-import org.eclipse.core.runtime.IAdaptable;
+import org.csstudio.sds.ui.figures.ICrossedFigure;
 import org.eclipse.draw2d.AbstractBorder;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Graphics;
@@ -41,7 +41,7 @@ import org.eclipse.swt.graphics.Color;
  * 
  */
 public final class RefreshablePolygonFigure extends Polygon implements
-		IAdaptable, HandleBounds {
+    ICrossedFigure, HandleBounds {
 
 	/**
 	 * The fill grade (0 - 100%).
@@ -52,14 +52,25 @@ public final class RefreshablePolygonFigure extends Polygon implements
 	 * A border adapter, which covers all border handlings.
 	 */
 	private IBorderEquippedWidget _borderAdapter;
+
+    private CrossedPaintHelper _crossedPaintHelper;
 	
 	/**
 	 * Constructor.
 	 */
 	public RefreshablePolygonFigure() {
+	    _crossedPaintHelper = new CrossedPaintHelper();
 		setFill(true);
 		setBackgroundColor(ColorConstants.darkGreen);
 
+	}
+	
+	@Override
+	public void paint(Graphics graphics) {
+	    // TODO Auto-generated method stub
+	    super.paint(graphics);
+	    Rectangle figureBounds = getBounds();
+	    _crossedPaintHelper.paintCross(graphics, figureBounds);
 	}
 	
 	/**
@@ -67,7 +78,7 @@ public final class RefreshablePolygonFigure extends Polygon implements
 	 */
 	@Override
 	protected void fillShape(final Graphics graphics) {
-		Rectangle figureBounds = getBounds();
+	    Rectangle figureBounds = getBounds();
 
 		int newW = (int) Math.round(figureBounds.width * (getFill() / 100));
 
@@ -201,4 +212,9 @@ public final class RefreshablePolygonFigure extends Polygon implements
 			graphics.drawPolygon(getPoints());
 		}
 	}
+
+    @Override
+    public void setCrossedOut(boolean newValue) {
+        _crossedPaintHelper.setCrossed(newValue);        
+    }
 }

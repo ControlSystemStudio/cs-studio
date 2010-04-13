@@ -43,9 +43,9 @@ public class CrossedPaintHelper {
     
     public void paintCross(Graphics graphics, Rectangle figureBounds) {
         if (_crossed) {
-            graphics.pushState();
-            graphics.setBackgroundColor(new Color(null, 255, 0, 0));
-            graphics.setForegroundColor(new Color(null, 255, 0, 0));
+//            graphics.pushState();
+            graphics.setBackgroundColor(new Color(null, 255, 0, 255));
+            graphics.setForegroundColor(new Color(null, 255, 0, 255));
             graphics.setLineWidth(3);
             int x = figureBounds.x;
             int y = figureBounds.y;
@@ -54,7 +54,7 @@ public class CrossedPaintHelper {
             graphics.drawLine(x, y, w, h);
             graphics.setLineWidth(3);
             graphics.drawLine(w, y, x, h);
-            graphics.popState();
+//            graphics.popState();
         }
     }
     

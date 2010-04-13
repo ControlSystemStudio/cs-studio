@@ -23,7 +23,7 @@ package org.csstudio.sds.components.ui.internal.figures;
 
 import org.csstudio.sds.ui.figures.BorderAdapter;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
-import org.eclipse.core.runtime.IAdaptable;
+import org.csstudio.sds.ui.figures.ICrossedFigure;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.Polyline;
@@ -40,7 +40,7 @@ import org.eclipse.swt.SWT;
  * 
  */
 public final class RefreshablePolylineFigure extends Polyline implements
-		IAdaptable, HandleBounds {
+    ICrossedFigure, HandleBounds {
 
 	/**
 	 * The fill grade (0 - 100%).
@@ -58,10 +58,13 @@ public final class RefreshablePolylineFigure extends Polyline implements
 	private final int[] _lineStyles = new int[] { SWT.LINE_SOLID,
 			SWT.LINE_DASH, SWT.LINE_DOT, SWT.LINE_DASHDOT, SWT.LINE_DASHDOTDOT };
 
+    private CrossedPaintHelper _crossedPaintHelper;
+
 	/**
 	 * Constructor.
 	 */
 	public RefreshablePolylineFigure() {
+	    _crossedPaintHelper = new CrossedPaintHelper();
 		setFill(true);
 		setBackgroundColor(ColorConstants.darkGreen);
 	}
@@ -95,6 +98,7 @@ public final class RefreshablePolylineFigure extends Polyline implements
 			graphics.drawPolyline(points);
 			graphics.popState();
 		}
+		_crossedPaintHelper.paintCross(graphics, figureBounds);
 	}
 
 	/**
@@ -181,4 +185,9 @@ public final class RefreshablePolylineFigure extends Polyline implements
 		}
 		return null;
 	}
+
+    @Override
+    public void setCrossedOut(boolean newValue) {
+        _crossedPaintHelper.setCrossed(newValue);        
+    }
 }

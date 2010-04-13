@@ -30,8 +30,8 @@ import org.csstudio.sds.components.common.SwitchPlugins;
 import org.csstudio.sds.components.ui.internal.utils.Trigonometry;
 import org.csstudio.sds.ui.figures.BorderAdapter;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
+import org.csstudio.sds.ui.figures.ICrossedFigure;
 import org.csstudio.sds.util.AntialiasingUtil;
-import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.Shape;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -44,7 +44,7 @@ import org.eclipse.swt.graphics.RGB;
  * @author jbercic
  * 
  */
-public final class RefreshableSwitchFigure extends Shape implements IAdaptable {
+public final class RefreshableSwitchFigure extends Shape implements ICrossedFigure {
 	
 	/**
 	 * A border adapter, which covers all border handlings.
@@ -107,6 +107,12 @@ public final class RefreshableSwitchFigure extends Shape implements IAdaptable {
 	private boolean _resized=true;
 	
 	private boolean _transparent = true;
+
+    private CrossedPaintHelper _crossedPaintHelper;
+	
+	public RefreshableSwitchFigure() {
+	    _crossedPaintHelper = new CrossedPaintHelper();
+    }
 	
 	/**
 	 * Fills the background.
@@ -119,6 +125,8 @@ public final class RefreshableSwitchFigure extends Shape implements IAdaptable {
 			figureBounds.crop(this.getInsets());
 			gfx.fillRectangle(figureBounds);	
 		}
+		Rectangle figureBounds = getBounds().getCopy();
+		_crossedPaintHelper.paintCross(gfx, figureBounds);
 	}
 	
 	/**
@@ -283,4 +291,9 @@ public final class RefreshableSwitchFigure extends Shape implements IAdaptable {
 		}
 		return null;
 	}
+
+    @Override
+    public void setCrossedOut(boolean newValue) {
+        _crossedPaintHelper.setCrossed(newValue);        
+    }
 }

@@ -29,7 +29,7 @@ import java.util.Map;
 
 import org.csstudio.sds.ui.figures.BorderAdapter;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
-import org.eclipse.core.runtime.IAdaptable;
+import org.csstudio.sds.ui.figures.ICrossedFigure;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.FigureListener;
 import org.eclipse.draw2d.Graphics;
@@ -51,7 +51,7 @@ import org.eclipse.swt.graphics.Color;
  * 
  */
 public final class RefreshableBargraphFigure extends RectangleFigure implements
-		IAdaptable {
+		ICrossedFigure {
 	/**
 	 * Height of the text.
 	 */
@@ -152,12 +152,14 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	 * The boolean, which indicates, if only the fill value should be shown.
 	 */
 	private boolean _showOnlyValue = false;
+    private CrossedPaintHelper _crossedPaintHelper;
 	
 	/**
 	 * Constructor.
 	 */
 	public RefreshableBargraphFigure() {
 		super();
+        _crossedPaintHelper = new CrossedPaintHelper();
 		this.setSize(200, 30);
 		this.initLevelMap();
 		this.setLayoutManager(new XYLayout());
@@ -188,6 +190,13 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 		_levelMap.put(LABELS[3], Double.valueOf(0.9));
 	}
 
+	@Override
+	public void paint(Graphics graphics) {
+	    super.paint(graphics);
+	    Rectangle figureBounds = getBounds().getCopy();
+	    _crossedPaintHelper.paintCross(graphics, figureBounds);
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -1926,4 +1935,9 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 			}
 		}
 	}
+
+    @Override
+    public void setCrossedOut(boolean newValue) {
+        _crossedPaintHelper.setCrossed(newValue);        
+    }
 }

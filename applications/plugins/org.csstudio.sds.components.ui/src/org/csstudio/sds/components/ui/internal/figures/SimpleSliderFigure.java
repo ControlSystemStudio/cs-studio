@@ -36,14 +36,19 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.BorderLayout;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Ellipse;
+import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.Orientable;
 import org.eclipse.draw2d.Panel;
+import org.eclipse.draw2d.Polyline;
 import org.eclipse.draw2d.RangeModel;
 import org.eclipse.draw2d.SchemeBorder;
 import org.eclipse.draw2d.ScrollBar;
 import org.eclipse.draw2d.geometry.Dimension;
+import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 
 /**
  * A slider figure.
@@ -133,6 +138,10 @@ public final class SimpleSliderFigure extends Panel implements IAdaptable {
 	 * set on the scrollbar, eventing must be turned off.
 	 */
 	private boolean _populateEvents = true;
+
+    private Polyline _figure1 = new Polyline();
+
+    private Polyline _figure2 = new Polyline();
 
 	/**
 	 * Standard constructor.
@@ -429,6 +438,17 @@ public final class SimpleSliderFigure extends Panel implements IAdaptable {
 				: Orientable.VERTICAL);
 	}
 
+	@Override
+	public void setForegroundColor(Color fg) {
+	    _scrollBar.setForegroundColor(fg);
+//	    super.setForegroundColor(fg);
+	}
+	@Override
+	public void setBackgroundColor(Color bg) {
+	    _scrollBar.setBackgroundColor(bg);
+//	    super.setForegroundColor(fg);
+	}
+	
 	/**
 	 * Set the current slider value.
 	 * 
@@ -480,13 +500,13 @@ public final class SimpleSliderFigure extends Panel implements IAdaptable {
 	 * Updates the value labels text.
 	 */
 	private void updateValueText() {
-		if (isEnabled()) {
+//		if (isEnabled()) {
 			// update the value label text
 			NumberFormat format = NumberFormat.getInstance();
 			format.setMaximumFractionDigits(_decimalPlaces);
 			_valueLabel
 					.setText("" + format.format(_originalVal) + " [MAN: " + format.format(_originalManVal) + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		}
+//		}
 	}
 
 	/**
@@ -523,10 +543,35 @@ public final class SimpleSliderFigure extends Panel implements IAdaptable {
 	 */
 	@Override
 	public void setEnabled(final boolean value) {
-		_scrollBar.setEnabled(value);
-		super.setEnabled(value);
+		_scrollBar.setEnabled(true);
+//		if(!value) {
+		    _figure1.setStart(new Point(2,2));
+		    _figure1.setEnd(new Point(20,20));
+		    _figure1.setBackgroundColor(bgColor);
+		    _figure1.setBackgroundColor(fgColor);
+		    _figure1.setFill(true);
+		    _figure1.setLineCap(3);
+		    _figure1.setLineWidth(3);
+            this.add(_figure1);
+		    this.add(_figure2);
+		    this.updateScrollbar();
+	        // listen to figure movement events
+//		}else {
+//		    remove(_figure1);
+//		    remove(_figure2);
+//		}
 	}
 
+	@Override
+	protected void paintFigure(Graphics graphics) {
+	    graphics.setBackgroundColor(getBackgroundColor());
+        Rectangle bounds = this.getBounds().getCopy();
+        bounds.crop(this.getInsets());
+        graphics.fillRectangle(bounds);
+        graphics.setBackgroundColor(getBackgroundColor());
+        graphics.setForegroundColor(getForegroundColor());  
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */

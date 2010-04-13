@@ -99,6 +99,13 @@ public class KnobFigure extends AbstractRoundRampedFigure {
 		
 	}
 	
+	@Override
+	public void paint(Graphics graphics) {
+	    super.paint(graphics);
+        Rectangle figureBounds = getBounds().getCopy();
+	    getCrossedPaintHelper().paintCross(graphics, figureBounds);
+	}
+	
 
 	/**
 	 * Add a knob listener.
@@ -138,7 +145,9 @@ public class KnobFigure extends AbstractRoundRampedFigure {
 			graphics.setAlpha(DISABLED_ALPHA);
 			graphics.setBackgroundColor(GRAY_COLOR);
 			graphics.fillRectangle(bounds);
-		}		
+		}
+		Rectangle figureBounds = getBounds().getCopy();
+        getCrossedPaintHelper().paintCross(graphics, figureBounds);
 	}
 	
 	/**
@@ -310,6 +319,8 @@ public class KnobFigure extends AbstractRoundRampedFigure {
 			if(effect3D)
 				pattern.dispose();
 			graphics.setForegroundColor(thumbColor);
+			Rectangle figureBounds = getBounds().getCopy();
+	        getCrossedPaintHelper().paintCross(graphics, figureBounds);
 		}		
 	}
 	

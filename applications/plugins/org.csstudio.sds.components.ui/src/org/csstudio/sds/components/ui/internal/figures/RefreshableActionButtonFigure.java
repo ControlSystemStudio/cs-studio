@@ -22,10 +22,12 @@
 package org.csstudio.sds.components.ui.internal.figures;
 
 import org.csstudio.platform.ui.util.CustomMediaFactory;
-import org.eclipse.core.runtime.IAdaptable;
+import org.csstudio.sds.ui.figures.ICrossedFigure;
 import org.eclipse.draw2d.Button;
+import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.PositionConstants;
+import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 
@@ -36,7 +38,7 @@ import org.eclipse.swt.graphics.Font;
  * 
  */
 public final class RefreshableActionButtonFigure extends Button implements
-		IAdaptable {
+		ICrossedFigure {
 	
 	/**
 	 * Default label font.
@@ -53,17 +55,27 @@ public final class RefreshableActionButtonFigure extends Button implements
 	 * An Array, which contains the PositionConstants for Center, Top, Bottom, Left, Right.
 	 */
 	private final int[] _alignments = new int[] {PositionConstants.CENTER, PositionConstants.TOP, PositionConstants.BOTTOM, PositionConstants.LEFT, PositionConstants.RIGHT};
+
+    private CrossedPaintHelper _crossedPaintHelper;
 	
 
 	/**
 	 * Constructor.
 	 */
 	public RefreshableActionButtonFigure() {
+	    _crossedPaintHelper = new CrossedPaintHelper();
 		_label = new Label("");
 		setContents(_label);
 		setFont(FONT);
 	}
 
+	@Override
+	public void paint(Graphics graphics) {
+	    super.paint(graphics);
+       Rectangle bound=getBounds().getCopy();
+        _crossedPaintHelper.paintCross(graphics, bound);
+	}
+	
 	/**
 	 * This method is a tribute to unit tests, which need a way to test the
 	 * performance of the figure implementation. Implementors should produce
@@ -120,5 +132,10 @@ public final class RefreshableActionButtonFigure extends Button implements
 	public Object getAdapter(final Class adapter) {
 		return null;
 	}
+
+    @Override
+    public void setCrossedOut(boolean newValue) {
+        _crossedPaintHelper.setCrossed(newValue);
+    }
 	
 }

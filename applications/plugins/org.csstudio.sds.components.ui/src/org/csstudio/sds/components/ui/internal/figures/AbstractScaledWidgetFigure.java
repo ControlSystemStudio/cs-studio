@@ -3,9 +3,9 @@ package org.csstudio.sds.components.ui.internal.figures;
 import org.csstudio.sds.components.model.AbstractScaledWidgetModel;
 import org.csstudio.sds.ui.figures.BorderAdapter;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
+import org.csstudio.sds.ui.figures.ICrossedFigure;
 import org.csstudio.swt.xygraph.linearscale.AbstractScale;
 import org.csstudio.swt.xygraph.linearscale.Range;
-import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -17,7 +17,7 @@ import org.eclipse.draw2d.geometry.Rectangle;
  *
  */
 public abstract class AbstractScaledWidgetFigure extends Figure implements
-		IAdaptable {
+    ICrossedFigure {
 
 	protected AbstractScale scale;
 	
@@ -40,6 +40,8 @@ public abstract class AbstractScaledWidgetFigure extends Figure implements
 
 	/** A border adapter, which covers all border handlings. */
 	private IBorderEquippedWidget _borderAdapter;
+
+    private CrossedPaintHelper _crossedPaintHelper;
 	
 	@Override
 	public boolean isOpaque() {
@@ -49,6 +51,7 @@ public abstract class AbstractScaledWidgetFigure extends Figure implements
 	 * {@inheritDoc}
 	 */
 	public void paintFigure(final Graphics graphics) {		
+	    Rectangle figureBounds = getBounds().getCopy();
 		if (!transparent) {
 			graphics.setBackgroundColor(this.getBackgroundColor());
 			Rectangle bounds = this.getBounds().getCopy();
@@ -56,6 +59,7 @@ public abstract class AbstractScaledWidgetFigure extends Figure implements
 			graphics.fillRectangle(bounds);
 		}
 		super.paintFigure(graphics);
+        getCrossedPaintHelper().paintCross(graphics, figureBounds);
 	}
 	
 	/**
@@ -135,5 +139,17 @@ public abstract class AbstractScaledWidgetFigure extends Figure implements
 		}
 		return null;
 	}
-
+	
+	protected CrossedPaintHelper getCrossedPaintHelper() {
+        if(_crossedPaintHelper==null) {
+            _crossedPaintHelper = new CrossedPaintHelper();
+        }
+        return _crossedPaintHelper;
+    }
+	
+	@Override
+	public void setCrossedOut(boolean newValue) {
+	    getCrossedPaintHelper().setCrossed(newValue);
+	}
+	
 }

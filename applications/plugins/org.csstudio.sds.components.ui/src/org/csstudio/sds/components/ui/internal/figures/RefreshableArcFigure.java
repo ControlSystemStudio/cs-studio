@@ -23,8 +23,8 @@ package org.csstudio.sds.components.ui.internal.figures;
 
 import org.csstudio.sds.ui.figures.BorderAdapter;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
+import org.csstudio.sds.ui.figures.ICrossedFigure;
 import org.csstudio.sds.util.AntialiasingUtil;
-import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.AbstractBorder;
 import org.eclipse.draw2d.Border;
 import org.eclipse.draw2d.Graphics;
@@ -41,7 +41,7 @@ import org.eclipse.swt.graphics.Color;
  * @author jbercic
  * 
  */
-public final class RefreshableArcFigure extends Shape implements IAdaptable {
+public final class RefreshableArcFigure extends Shape implements ICrossedFigure {
     /**
      * start angle and length (in degrees) of the arc should it be drawn filled? (using fill_color)
      */
@@ -64,7 +64,13 @@ public final class RefreshableArcFigure extends Shape implements IAdaptable {
     private int border_width;
     
     private boolean filled;
+    
+    private CrossedPaintHelper _crossedPaintHelper;
 
+    public RefreshableArcFigure() {
+        _crossedPaintHelper = new CrossedPaintHelper();
+    }
+    
     /**
      * {@inheritDoc}
      */
@@ -111,8 +117,10 @@ public final class RefreshableArcFigure extends Shape implements IAdaptable {
      * The main drawing routine.
      */
     public void paintFigure(Graphics gfx) {
+        Rectangle figureBounds = getBounds().getCopy();
         AntialiasingUtil.getInstance().enableAntialiasing(gfx);
         super.paintFigure(gfx);
+        _crossedPaintHelper.paintCross(gfx, figureBounds);
     }
 
     public void setTransparent(final boolean newval) {
@@ -203,5 +211,10 @@ public final class RefreshableArcFigure extends Shape implements IAdaptable {
             gfx.drawOval(bounds2);
 
         }
+    }
+
+    @Override
+    public void setCrossedOut(boolean newValue) {
+        _crossedPaintHelper.setCrossed(newValue);        
     }
 }

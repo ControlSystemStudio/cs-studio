@@ -74,6 +74,13 @@ public class RefreshableThermoFigure extends AbstractLinearMarkedFigure {
 	}
 	
 	@Override
+    public void paint(Graphics graphics) {
+        super.paint(graphics);
+        Rectangle figureBounds = getBounds().getCopy();
+        getCrossedPaintHelper().paintCross(graphics, figureBounds);
+    }
+	
+	@Override
 	public boolean isOpaque() {
 		return false;
 	}	

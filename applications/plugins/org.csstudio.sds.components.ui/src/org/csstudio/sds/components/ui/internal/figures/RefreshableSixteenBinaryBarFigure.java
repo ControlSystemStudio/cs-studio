@@ -2,7 +2,7 @@ package org.csstudio.sds.components.ui.internal.figures;
 
 import org.csstudio.sds.ui.figures.BorderAdapter;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
-import org.eclipse.core.runtime.IAdaptable;
+import org.csstudio.sds.ui.figures.ICrossedFigure;
 import org.eclipse.draw2d.BorderLayout;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
@@ -11,6 +11,7 @@ import org.eclipse.draw2d.GridLayout;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.RectangleFigure;
+import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 
@@ -19,7 +20,7 @@ import org.eclipse.swt.graphics.Font;
  * 
  * @author Alen Vrecko, Joerg Rathlev
  */
-public class RefreshableSixteenBinaryBarFigure extends RectangleFigure implements IAdaptable {
+public class RefreshableSixteenBinaryBarFigure extends RectangleFigure implements ICrossedFigure {
 
 	/**
 	 * The orientation (horizontal==true | vertical==false).
@@ -55,10 +56,20 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure implement
 
 	private Color _labelColor;
 
+    private CrossedPaintHelper _crossedPaintHelper;
+
 	public RefreshableSixteenBinaryBarFigure() {
+	    _crossedPaintHelper = new CrossedPaintHelper();
 		createLayoutAndBoxes();
 	}
 
+	@Override
+	public void paint(Graphics graphics) {
+	    super.paint(graphics);
+        Rectangle bound = getBounds().getCopy();
+        _crossedPaintHelper.paintCross(graphics, bound);
+	}
+	
 	/**
 	 * Creates the layout and the boxes for this figure.
 	 */
@@ -295,7 +306,7 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure implement
 		@Override
 		protected void paintFigure(Graphics graphics) {
 			super.paintFigure(graphics);
-
+			Rectangle figureBounds = getBounds().getCopy();
 			setBackgroundColor(_isOn ? _onColor : _offColor);
 			graphics.fillRectangle(getClientArea());
 		}
@@ -345,5 +356,10 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure implement
 		}
 
 	}
+
+    @Override
+    public void setCrossedOut(boolean newValue) {
+        _crossedPaintHelper.setCrossed(newValue);        
+    }
 
 }

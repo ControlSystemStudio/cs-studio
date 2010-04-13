@@ -23,7 +23,7 @@ package org.csstudio.sds.components.ui.internal.figures;
 
 import org.csstudio.sds.ui.figures.BorderAdapter;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
-import org.eclipse.core.runtime.IAdaptable;
+import org.csstudio.sds.ui.figures.ICrossedFigure;
 import org.eclipse.draw2d.BorderLayout;
 import org.eclipse.draw2d.FigureListener;
 import org.eclipse.draw2d.Graphics;
@@ -39,7 +39,7 @@ import org.eclipse.draw2d.geometry.Rectangle;
  * @author Kai Meyer
  *
  */
-public final class RefreshableTriangleFigure extends RectangleFigure implements IAdaptable{
+public final class RefreshableTriangleFigure extends RectangleFigure implements ICrossedFigure{
 	/**
 	 * The fill grade (0 - 100%).
 	 */
@@ -63,8 +63,11 @@ public final class RefreshableTriangleFigure extends RectangleFigure implements 
 	 * A border adapter, which covers all border handlings.
 	 */
 	private IBorderEquippedWidget _borderAdapter;
+
+    private CrossedPaintHelper _crossedPaintHelper;
 	
 	public RefreshableTriangleFigure() {
+	    _crossedPaintHelper = new CrossedPaintHelper();
 //		_internalFigure = new InternalTriangle();
 //		this.add(_internalFigure, BorderLayout.CENTER);
 		
@@ -231,5 +234,10 @@ public final class RefreshableTriangleFigure extends RectangleFigure implements 
 			graphics.fillPolygon(points);
 		}
 	}
+
+    @Override
+    public void setCrossedOut(boolean newValue) {
+        _crossedPaintHelper.setCrossed(newValue);        
+    }
 
 }

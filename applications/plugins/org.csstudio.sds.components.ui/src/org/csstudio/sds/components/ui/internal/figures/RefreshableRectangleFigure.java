@@ -23,7 +23,7 @@ package org.csstudio.sds.components.ui.internal.figures;
 
 import org.csstudio.sds.ui.figures.BorderAdapter;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
-import org.eclipse.core.runtime.IAdaptable;
+import org.csstudio.sds.ui.figures.ICrossedFigure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.RectangleFigure;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -34,7 +34,7 @@ import org.eclipse.draw2d.geometry.Rectangle;
  * @author Sven Wende
  * 
  */
-public final class RefreshableRectangleFigure extends RectangleFigure implements IAdaptable {
+public final class RefreshableRectangleFigure extends RectangleFigure implements ICrossedFigure {
 	/**
 	 * The fill grade (0 - 100%).
 	 */
@@ -55,6 +55,11 @@ public final class RefreshableRectangleFigure extends RectangleFigure implements
 	 */
 	private IBorderEquippedWidget _borderAdapter;
 
+    private CrossedPaintHelper _crossedPaintHelper;
+
+	public RefreshableRectangleFigure() {
+	    _crossedPaintHelper = new CrossedPaintHelper();
+	}
 	/**
 	 * {@inheritDoc}
 	 */
@@ -76,6 +81,7 @@ public final class RefreshableRectangleFigure extends RectangleFigure implements
 			fillRectangle = new Rectangle(figureBounds.x,figureBounds.y+figureBounds.height-newH,figureBounds.width,newH);
 		}
 		graphics.fillRectangle(fillRectangle);
+		_crossedPaintHelper.paintCross(graphics, figureBounds);
 	}
 	
 	/**
@@ -168,5 +174,10 @@ public final class RefreshableRectangleFigure extends RectangleFigure implements
 		}
 		return null;
 	}
+
+    @Override
+    public void setCrossedOut(boolean newValue) {
+        _crossedPaintHelper.setCrossed(newValue);        
+    }
 
 }

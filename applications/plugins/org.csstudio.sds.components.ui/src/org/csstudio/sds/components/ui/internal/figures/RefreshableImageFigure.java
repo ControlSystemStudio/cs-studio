@@ -30,11 +30,11 @@ import org.csstudio.sds.components.ui.internal.utils.TextPainter;
 import org.csstudio.sds.ui.CheckedUiRunnable;
 import org.csstudio.sds.ui.figures.BorderAdapter;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
+import org.csstudio.sds.ui.figures.ICrossedFigure;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.draw2d.Figure;
@@ -57,7 +57,7 @@ import org.eclipse.swt.widgets.Display;
  * 
  */
 
-public final class RefreshableImageFigure extends Figure implements IAdaptable {
+public final class RefreshableImageFigure extends Figure implements ICrossedFigure {
 	
 	/**
 	 * A border adapter, which covers all border handlings.
@@ -143,7 +143,13 @@ public final class RefreshableImageFigure extends Figure implements IAdaptable {
 	private long lastUpdateTime;
 	private long interval_ms;
 	private ScheduledFuture<?> scheduledFuture;
+    private CrossedPaintHelper _crossedPaintHelper;
 
+	public RefreshableImageFigure() {
+	    _crossedPaintHelper = new CrossedPaintHelper();
+	    
+    }
+	
 	/**
 	 * We want to have local coordinates here.
 	 * @return True if here should used local coordinates
@@ -299,6 +305,7 @@ public final class RefreshableImageFigure extends Figure implements IAdaptable {
 						bound.x,bound.y,
 						cropedWidth,cropedHeight);
 		}
+		_crossedPaintHelper.paintCross(gfx, bound);
 	}
 	
 	/**
@@ -625,6 +632,11 @@ public final class RefreshableImageFigure extends Figure implements IAdaptable {
 			staticImage = null;
 		}
 	}
+
+    @Override
+    public void setCrossedOut(boolean newValue) {
+        _crossedPaintHelper.setCrossed(newValue);
+    }
 	
 	
 }

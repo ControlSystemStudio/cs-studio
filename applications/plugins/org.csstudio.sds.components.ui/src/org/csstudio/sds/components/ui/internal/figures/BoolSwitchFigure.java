@@ -715,4 +715,5 @@ class BoolSwitchLayout extends AbstractLayout {
 		
 		return support3D;
 	}
+
 }

@@ -4,17 +4,19 @@ import java.util.ArrayList;
 
 import org.csstudio.sds.ui.figures.BorderAdapter;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
-import org.eclipse.core.runtime.IAdaptable;
+import org.csstudio.sds.ui.figures.ICrossedFigure;
 import org.eclipse.draw2d.ActionEvent;
 import org.eclipse.draw2d.ActionListener;
 import org.eclipse.draw2d.ArrowButton;
 import org.eclipse.draw2d.BorderLayout;
 import org.eclipse.draw2d.Figure;
+import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.GridData;
 import org.eclipse.draw2d.GridLayout;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.RectangleFigure;
+import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 
@@ -25,7 +27,7 @@ import org.eclipse.swt.graphics.Font;
  * 
  */
 public class RefreshableThumbWheelFigure extends RectangleFigure implements
-		IAdaptable {
+    ICrossedFigure {
 
 	/**
 	 * A border adapter, which covers all border handlings.
@@ -55,7 +57,10 @@ public class RefreshableThumbWheelFigure extends RectangleFigure implements
 
 	private Font wheelFont;
 
+    private CrossedPaintHelper _crossedPaintHelper;
+
 	public RefreshableThumbWheelFigure(int integerWheels, int decimalDigits) {
+	    _crossedPaintHelper = new CrossedPaintHelper();
 		wholePartDigits = integerWheels;
 		decimalPartDigits = decimalDigits;
 	
@@ -64,6 +69,13 @@ public class RefreshableThumbWheelFigure extends RectangleFigure implements
 		createWidgets();
 	}
 
+	@Override
+	public void paint(Graphics graphics) {
+	    super.paint(graphics);
+	    Rectangle bound=getBounds().getCopy();
+	    _crossedPaintHelper.paintCross(graphics, bound);
+	}
+	
 	public boolean isTest() {
 		return test;
 	}
@@ -451,5 +463,10 @@ public class RefreshableThumbWheelFigure extends RectangleFigure implements
 		dot.setLabelFont(font);
 		minus.setLabelFont(font);
 	}
+
+    @Override
+    public void setCrossedOut(boolean newValue) {
+        _crossedPaintHelper.setCrossed(newValue);        
+    }
 
 }
