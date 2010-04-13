@@ -125,6 +125,7 @@ public class EngineModel
     /** @return Seconds into the future that should be ignored */
     public static long getIgnoredFutureSeconds()
     {
+        // TODO make configurable
         // 1 day
         return 24*60*60;
     }
