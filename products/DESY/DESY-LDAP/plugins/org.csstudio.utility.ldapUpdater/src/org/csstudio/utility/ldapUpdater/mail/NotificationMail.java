@@ -24,6 +24,9 @@ package org.csstudio.utility.ldapUpdater.mail;
 import java.io.IOException;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.csstudio.email.EMailSender;
 import org.csstudio.email.EmailUtils;
 
@@ -32,7 +35,7 @@ import org.csstudio.email.EmailUtils;
  *
  * @author bknerr 24.03.2010
  */
-public class NotificationMail {
+public final class NotificationMail {
     private static final String HOST = "smtp.desy.de";
     private static final String FROM = "DontReply@LDAPUpdater";
 
@@ -44,15 +47,17 @@ public class NotificationMail {
     }
 
     /**
+     * Sends an email of a certain notification type to the email receiver contained in the receiverString.
+     * These can be separated by any valid email separating symbol.
      *
-     * @param type
-     * @param receiverString
-     * @param additionalBody
-     * @return
+     * @param type the notification type
+     * @param receiverString a string containing email addresses
+     * @param additionalBody additional email body text
+     * @return true if all mails could be sent
      */
-    public static boolean sendMail(final NotificationType type,
-                                   final String receiverString,
-                                   final String additionalBody) {
+    public static boolean sendMail(@Nonnull final NotificationType type,
+                                   @Nonnull final String receiverString,
+                                   @Nullable final String additionalBody) {
         final Set<String> receivers = EmailUtils.extractEmailAddresses(receiverString);
         try {
             for (final String receiver : receivers) {
@@ -66,15 +71,15 @@ public class NotificationMail {
     }
 
 
-    private static void sendSingleMail(final NotificationType type,
-                                   final String receiver,
-                                   final String additionalBody) throws IOException {
+    private static void sendSingleMail(@Nonnull final NotificationType type,
+                                       @Nonnull final String receiver,
+                                       @Nullable final String additionalBody) throws IOException {
         EMailSender mailer = null;
             mailer = new EMailSender(HOST,
                                      FROM,
                                      receiver,
                                      type.getSubject());
-            mailer.addText(type.getText() + additionalBody);
+            mailer.addText(type.getText() + additionalBody != null ? additionalBody : "");
             mailer.close();
     }
 

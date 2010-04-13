@@ -34,6 +34,8 @@ import static org.csstudio.utility.ldap.LdapUtils.EPICS_CTRL_FIELD_VALUE;
 import static org.csstudio.utility.ldap.LdapUtils.FIELD_ASSIGNMENT;
 import static org.csstudio.utility.ldap.LdapUtils.OU_FIELD_NAME;
 import static org.csstudio.utility.ldap.LdapUtils.any;
+import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceKey.IOC_DBL_DUMP_PATH;
+import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferences.getValueFromPreferences;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -173,7 +175,7 @@ public final class LdapUpdater {
                                               any(ECON_FIELD_NAME),
                                               SearchControls.ONELEVEL_SCOPE);
 
-            final Map<String, IOC> iocMapFromFS = IOCFilesDirTree.findIOCFiles(1);
+            final Map<String, IOC> iocMapFromFS = IOCFilesDirTree.findIOCFiles(getValueFromPreferences(IOC_DBL_DUMP_PATH), 1);
 
             LdapAccess.tidyUpLDAPFromIOCList(new LdapContentModel(result), iocMapFromFS);
 
@@ -208,7 +210,7 @@ public final class LdapUpdater {
 
             validateHistoryFileEntriesVsLDAPEntries(model, historyFileModel);
 
-            final Map<String, IOC> iocMap = IOCFilesDirTree.findIOCFiles(1);
+            final Map<String, IOC> iocMap = IOCFilesDirTree.findIOCFiles(getValueFromPreferences(IOC_DBL_DUMP_PATH), 1);
 
             LdapAccess.updateLDAPFromIOCList(model, iocMap, historyFileModel);
 

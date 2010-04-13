@@ -21,6 +21,8 @@
  */
 package org.csstudio.utility.ldapUpdater.mail;
 
+import javax.annotation.Nonnull;
+
 import org.csstudio.utility.ldap.LdapUtils;
 
 /**
@@ -45,21 +47,27 @@ public enum NotificationType {
     /**
      * Constructor.
      */
+    //CHECKSTYLE:OFF
     private NotificationType(final String subject, final String text) {
+    //CHECKSTYLE:ON
         _subject = subject;
         _text= text;
     }
 
     /**
+     * Getter.
      * @return the static subject
      */
+    @Nonnull
     public String getSubject() {
         return SUBJECT_PREFIX + " " + _subject;
     }
 
     /**
-     * @return the static text
+     * Getter.
+     * @return the static body text
      */
+    @Nonnull
     public String getText() {
         return _text;
     }

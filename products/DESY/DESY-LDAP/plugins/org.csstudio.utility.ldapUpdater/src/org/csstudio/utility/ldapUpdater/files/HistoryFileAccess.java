@@ -33,15 +33,26 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.annotation.Nonnull;
+
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldapUpdater.LdapUpdater;
 
+/**
+ * Class to access the dedicated history file that holds the time stamps of the last update times
+ * for any IOC file.
+ *
+ * @author bknerr
+ * @author $Author$
+ * @version $Revision$
+ * @since 13.04.2010
+ */
 public class HistoryFileAccess {
 
     public static final String HISTORY_DAT_FILE = "history.dat";
 
-    private final Logger LOGGER = CentralLogger.getInstance().getLogger(this);
+    private  final Logger _log = CentralLogger.getInstance().getLogger(this);
 
     /**
      * Constructor.
@@ -50,6 +61,11 @@ public class HistoryFileAccess {
         // Empty
     }
 
+    /**
+     * Reads the history file and extracts the time stamp information
+     * @return a model of the file contents
+     */
+    @Nonnull
     public HistoryFileContentModel readFile() {
 
         HistoryFileContentModel model = new HistoryFileContentModel();
@@ -72,25 +88,28 @@ public class HistoryFileAccess {
                     final Matcher m = p.matcher(line);
                     if(!m.matches()) {
                         final String emsg = "Error during file parsing in " + HISTORY_DAT_FILE + ", row: " + "\"" + line + "\"" ;
-                        LOGGER.error(emsg);
+                        _log.error(emsg);
                         throw new RuntimeException(emsg);
                     }
                     model = storeRecentRecordEntry(m.group(1), Long.parseLong(m.group(3)), model);
                 }
             }
         } catch (final FileNotFoundException e) {
-            LOGGER.error ("Error : File not Found(r) : " + LDAP_HIST_PATH.getDescription() + HISTORY_DAT_FILE );
+            _log.error ("Error : File not Found(r) : " + LDAP_HIST_PATH.getDescription() + HISTORY_DAT_FILE );
         } catch (final IOException e) {
-            LOGGER.error ("I/O-Exception while handling " + LDAP_HIST_PATH.getDescription() + HISTORY_DAT_FILE );
+            _log.error ("I/O-Exception while handling " + LDAP_HIST_PATH.getDescription() + HISTORY_DAT_FILE );
         }
 
-        LOGGER.info("IOC names in history-file : " + model.getEntrySet().size());
+        _log.info("IOC names in history-file : " + model.getEntrySet().size());
 
         return model;
 
     }
 
-    private HistoryFileContentModel storeRecentRecordEntry(final String record, final Long lastUpdated, final HistoryFileContentModel model) {
+    @Nonnull
+    private HistoryFileContentModel storeRecentRecordEntry(@Nonnull final String record,
+                                                           @Nonnull final Long lastUpdated,
+                                                           @Nonnull final HistoryFileContentModel model) {
         final Long storedLastUpdated = model.getTimeForRecord(record);
         if ((storedLastUpdated == null) || (storedLastUpdated < lastUpdated)) {
             model.setEntry(record, lastUpdated);
@@ -102,12 +121,12 @@ public class HistoryFileAccess {
      * append a line to the history file.
      *
      * @param iocName the name of ioc to be inserted in the history file
-     * @param numOfRecordsWritten
-     * @param numOfRecordsInFile
-     * @param numOfRecordsInLDAP
+     * @param numOfRecordsWritten .
+     * @param numOfRecordsInFile .
+     * @param numOfRecordsInLDAP .
      * @throws IOException when the history file could not be accessed
      */
-    public static void appendLineToHistfile(final String iocName,
+    public static void appendLineToHistfile(@Nonnull final String iocName,
                                             final int numOfRecordsWritten,
                                             final int numOfRecordsInFile,
                                             final int numOfRecordsInLDAP) throws IOException {

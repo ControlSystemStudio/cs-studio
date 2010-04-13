@@ -27,13 +27,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+
 /**
  * Model for the contents of the file that contains the time spans of the last
  * processing of an IOC file.
  *
  * @author bknerr
  */
-public class HistoryFileContentModel {
+public final class HistoryFileContentModel {
 
 	private final Map<String, Long> _historyMap = new HashMap<String, Long>();
 
@@ -44,22 +47,48 @@ public class HistoryFileContentModel {
 		// Empty
 	}
 
-	public void setEntry(final String name, final Long millis) {
+	/**
+	 * Setter for an entry.
+	 * @param name file name
+	 * @param millis time stamp of last processing
+	 */
+	public void setEntry(@Nonnull final String name, @Nonnull final Long millis) {
 		_historyMap.put(name.toUpperCase(), millis);
 	}
 
+	/**
+	 * Getter of the entry set.
+	 * @return the entry set
+	 */
+	@Nonnull
 	public Set<Entry<String,Long>> getEntrySet() {
 		return _historyMap.entrySet();
 	}
 
-	public Long getTimeForRecord(final String record) {
+	/**
+	 * Retrieves the timestamp for a record
+	 * @param record the record
+	 * @return the timestamp
+	 */
+	@CheckForNull
+	public Long getTimeForRecord(@Nonnull final String record) {
 		return _historyMap.get(record.toUpperCase());
 	}
 
-	public boolean contains(final String iocName) {
+	/**
+	 * Delegator if set contains the ioc entry
+	 * @param iocName the ioc
+	 * @return true if the set contains an entry for this ioc
+	 */
+	public boolean contains(@Nonnull final String iocName) {
 		return _historyMap.containsKey(iocName.toUpperCase());
 	}
 
+	/**
+	 * Yields a copy of the set of all contained ioc names.
+	 * @return the copied set of ioc names
+	 */
+	@Nonnull
 	public Set<String> getIOCNames() {
 		return new HashSet<String>(_historyMap.keySet());
 	}

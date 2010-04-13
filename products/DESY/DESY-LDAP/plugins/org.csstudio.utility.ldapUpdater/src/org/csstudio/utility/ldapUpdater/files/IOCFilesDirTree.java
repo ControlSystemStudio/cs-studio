@@ -16,6 +16,8 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.model.IOC;
@@ -31,10 +33,17 @@ import org.csstudio.utility.ldap.model.IOC;
  * modified by kv (Klaus Valett) - DESY - for recursion depth
  *
  */
-public class IOCFilesDirTree {
-    private static int _currentDepth = 0;
+public final class IOCFilesDirTree {
+    private static int CURRENTDEPTH = 0;
 
-    public static Logger LOG = CentralLogger.getInstance().getLogger(IOCFilesDirTree.class);
+    private static Logger LOG = CentralLogger.getInstance().getLogger(IOCFilesDirTree.class.getName());
+
+    /**
+     * Don't instantiate.
+     */
+    private IOCFilesDirTree() {
+        // Empty
+    }
 
     /**
      * doFile - process one regulr file.
@@ -43,7 +52,7 @@ public class IOCFilesDirTree {
      *            the current file to be analysed
      * @param iocMap
      * */
-    private static void doFile(final File f, final Map<String, IOC> iocMap) {
+    private static void doFile(@Nonnull final File f, @Nonnull final Map<String, IOC> iocMap) {
         final String fileName = splitFileNameFromCanonicalPath(f);
 
         if (!filterFileName(fileName, ".")) {
@@ -60,7 +69,7 @@ public class IOCFilesDirTree {
      * @param filterStrings the array of filters
      * @return true, if the name contains any of the given filterStrings
      */
-    private static boolean filterFileName(final String fileName, final String...filterStrings) {
+    private static boolean filterFileName(@Nonnull final String fileName, @Nonnull final String...filterStrings) {
 
         for (final String filter : filterStrings) {
             if (fileName.contains(filter)) {
@@ -70,20 +79,26 @@ public class IOCFilesDirTree {
         return false;
     }
 
-
-    public static Map<String, IOC> findIOCFiles(final int recursiveDepth) {
+    /**
+     * Finds all IOC files under in the directory traversing up to a given tree level depth.
+     * @param iocDblDumpPath the directory under which to look
+     * @param recursiveDepth .
+     * @return the map of identified files
+     */
+    @Nonnull
+    public static Map<String, IOC> findIOCFiles(@Nonnull final String iocDblDumpPath, final int recursiveDepth) {
 
         final Map<String, IOC> iocMap = new HashMap<String, IOC>();
 
         final IOCFilesDirTree dt = new IOCFilesDirTree();
-        final String iocDblDumpPath = getValueFromPreferences(IOC_DBL_DUMP_PATH);
 
         dt.doDir(recursiveDepth, iocDblDumpPath, iocMap);
 
         return iocMap;
     }
 
-    private static GregorianCalendar findLastModifiedDateForFile(final String iocName) {
+    @Nonnull
+    private static GregorianCalendar findLastModifiedDateForFile(@Nonnull final String iocName) {
         final GregorianCalendar dateTime = new GregorianCalendar();
         final String prefFileName = getValueFromPreferences(IOC_DBL_DUMP_PATH);
         final File filePath = new File(prefFileName);
@@ -91,7 +106,8 @@ public class IOCFilesDirTree {
         return dateTime;
     }
 
-    private static String splitFileNameFromCanonicalPath(final File f) {
+    @Nonnull
+    private static String splitFileNameFromCanonicalPath(@Nonnull final File f) {
         String fileName = "";
         try {
             final String cP = f.getCanonicalPath();
@@ -110,7 +126,7 @@ public class IOCFilesDirTree {
      *            the list of iocs to be filled by this recursive method
      * */
     @SuppressWarnings("static-access")
-    private void doDir(final int recDepth, final String s, final Map<String, IOC> iocMap) {
+    private void doDir(final int recDepth, @Nonnull final String s, @Nonnull final Map<String, IOC> iocMap) {
 
         final File f = new File(s);
         if (!f.exists()) {
@@ -119,14 +135,13 @@ public class IOCFilesDirTree {
         }
         if (f.isFile()) {
             doFile(f, iocMap);
-        }
-        else if (f.isDirectory()) {
-            if (_currentDepth >= recDepth) {
+        } else if (f.isDirectory()) {
+            if (CURRENTDEPTH >= recDepth) {
                 return;
             }
-            _currentDepth++;
+            CURRENTDEPTH++;
 
-            final String filePaths[] = f.list();
+            final String[] filePaths = f.list();
             for (final String filePath : filePaths) {
                 doDir(recDepth, s + f.separator + filePath, iocMap);
             }

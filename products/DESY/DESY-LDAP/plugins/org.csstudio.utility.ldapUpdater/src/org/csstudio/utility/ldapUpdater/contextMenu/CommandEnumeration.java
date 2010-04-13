@@ -21,6 +21,8 @@
  */
 package org.csstudio.utility.ldapUpdater.contextMenu;
 
+import javax.annotation.Nonnull;
+
 import org.csstudio.platform.management.CommandParameterEnumValue;
 import org.csstudio.platform.management.IDynamicParameterValues;
 
@@ -31,6 +33,14 @@ import org.csstudio.platform.management.IDynamicParameterValues;
  */
 public class CommandEnumeration implements IDynamicParameterValues {
 
+    /**
+     * Commands to modifiy IOCs from the LDAP context menu.
+     *
+     * @author bknerr
+     * @author $Author$
+     * @version $Revision$
+     * @since 13.04.2010
+     */
     public enum IocModificationCommand {
         DELETE("Delete IOC from LDAP (incl. all Records)."),
         TIDY_UP("Tidy up (removes all records not present in IOC file).");
@@ -40,13 +50,17 @@ public class CommandEnumeration implements IDynamicParameterValues {
         /**
          * Constructor.
          */
+        //CHECKSTYLE:OFF
         private IocModificationCommand(final String desc) {
+          //CHECKSTYLE:ON
             _description = desc;
         }
 
         /**
-         * @return the _description
+         * Getter.
+         * @return the description
          */
+        @Nonnull
         public String getDescription() {
             return _description;
         }
@@ -55,8 +69,10 @@ public class CommandEnumeration implements IDynamicParameterValues {
 
     /**
      * (@inheritDoc)
+     * @return the parameter enum values
      */
     @Override
+    @Nonnull
     public CommandParameterEnumValue[] getEnumerationValues() {
         final CommandParameterEnumValue[] params =
             new CommandParameterEnumValue[IocModificationCommand.values().length];
