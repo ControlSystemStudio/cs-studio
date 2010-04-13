@@ -32,16 +32,16 @@ import org.osgi.framework.BundleContext;
 public class Activator extends AbstractCssUiPlugin {
 
 	// The plug-in ID
-	public static final String PLUGIN_ID = "org.csstudio.utility.ui.ldap"; //$NON-NLS-1$
+	public static final String PLUGIN_ID = "org.csstudio.utility.ldap.ui"; //$NON-NLS-1$
 
 	// The shared instance
-	private static Activator plugin;
+	private static Activator INSTANCE;
 
 	/**
 	 * The constructor
 	 */
 	public Activator() {
-		plugin = this;
+	    // EMPTY
 	}
 
 	/*
@@ -59,7 +59,7 @@ public class Activator extends AbstractCssUiPlugin {
 	 */
 	@Override
     public void doStop(final BundleContext context) throws Exception {
-		plugin = null;
+		INSTANCE = null;
 //		super.stop(context);
 	}
 
@@ -69,7 +69,10 @@ public class Activator extends AbstractCssUiPlugin {
 	 * @return the shared instance
 	 */
 	public static Activator getDefault() {
-		return plugin;
+	    if (INSTANCE == null) {
+	        INSTANCE = new Activator();
+	    }
+		return INSTANCE;
 	}
 
 	@Override

@@ -58,7 +58,6 @@ public final class LdapAccess {
 
     private static final LdapService SERVICE = LdapServiceImpl.getInstance();
 
-
     private static class UpdateIOCResult {
         private final int _numOfRecsWritten;
         private final boolean _noError;

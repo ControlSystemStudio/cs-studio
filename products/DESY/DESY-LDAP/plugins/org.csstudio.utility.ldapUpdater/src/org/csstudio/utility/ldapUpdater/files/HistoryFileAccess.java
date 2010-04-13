@@ -38,27 +38,27 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldapUpdater.LdapUpdater;
 
 public class HistoryFileAccess {
-    
+
     public static final String HISTORY_DAT_FILE = "history.dat";
-    
+
     private final Logger LOGGER = CentralLogger.getInstance().getLogger(this);
-    
+
     /**
      * Constructor.
      */
     public HistoryFileAccess () {
         // Empty
     }
-    
+
     public HistoryFileContentModel readFile() {
-        
+
         HistoryFileContentModel model = new HistoryFileContentModel();
         BufferedReader fr;
-        
+
         try {
             final String path = getValueFromPreferences(LDAP_HIST_PATH);
             fr = new BufferedReader(new FileReader(path + HISTORY_DAT_FILE ));
-            
+
             String line;
             while ((line = fr.readLine()) != null) {
                 if (line.length() > 0) {
@@ -83,13 +83,13 @@ public class HistoryFileAccess {
         } catch (final IOException e) {
             LOGGER.error ("I/O-Exception while handling " + LDAP_HIST_PATH.getDescription() + HISTORY_DAT_FILE );
         }
-        
+
         LOGGER.info("IOC names in history-file : " + model.getEntrySet().size());
-        
+
         return model;
-        
+
     }
-    
+
     private HistoryFileContentModel storeRecentRecordEntry(final String record, final Long lastUpdated, final HistoryFileContentModel model) {
         final Long storedLastUpdated = model.getTimeForRecord(record);
         if ((storedLastUpdated == null) || (storedLastUpdated < lastUpdated)) {
@@ -97,10 +97,10 @@ public class HistoryFileAccess {
         }
         return model;
     }
-    
+
     /**
      * append a line to the history file.
-     * 
+     *
      * @param iocName the name of ioc to be inserted in the history file
      * @param numOfRecordsWritten
      * @param numOfRecordsInFile
@@ -111,14 +111,14 @@ public class HistoryFileAccess {
                                             final int numOfRecordsWritten,
                                             final int numOfRecordsInFile,
                                             final int numOfRecordsInLDAP) throws IOException {
-        
+
         final String histFilePath = getValueFromPreferences(LDAP_HIST_PATH) + HistoryFileAccess.HISTORY_DAT_FILE;
         final FileWriter fw =
             new FileWriter(histFilePath, true);
-        
+
         final long now = System.currentTimeMillis();
         final String dateTime = LdapUpdater.convertMillisToDateTimeString(now, LdapUpdater.DATETIME_FORMAT);
-        
+
         final String line = String.format("%1$-20sxxx%2$15s   %3$s   %4$-12s(%5$s)%6$s",
                                           iocName,
                                           String.valueOf(now / 1000),
@@ -126,10 +126,10 @@ public class HistoryFileAccess {
                                           String.valueOf(numOfRecordsWritten + "/" + numOfRecordsInFile),
                                           String.valueOf(numOfRecordsInLDAP),
                                           System.getProperty("line.separator" ));
-        
+
         fw.append ( line );
         fw.flush();
         fw.close();
     }
-    
+
 }
