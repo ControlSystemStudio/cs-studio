@@ -408,7 +408,6 @@ public class RDBArchiveReaderTest
         Timestamp last = null;
         while (result.next())
         {
-            @SuppressWarnings("unused")
             final Timestamp time = result.getTimestamp(1);
             if (last != null &&  time.before(last))
                 System.out.println("Time error!");
