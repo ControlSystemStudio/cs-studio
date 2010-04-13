@@ -1,5 +1,6 @@
 package org.csstudio.archivereader.rdb;
 
+import org.csstudio.platform.security.SecureStorage;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
@@ -29,7 +30,9 @@ public class Preferences
     
     public static String getPassword()
     {
-        return getString(PASSWORD, "");
+        // Must use SecureStorage for password because preference page
+        // uses PasswordFieldEditor 
+        return SecureStorage.retrieveSecureStorage(Activator.ID, PASSWORD);
     }
     
     public static String getStoredProcedure()

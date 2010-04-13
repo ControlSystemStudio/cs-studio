@@ -33,11 +33,11 @@ public class PreferencePage extends FieldEditorPreferencePage
     @Override
     protected void createFieldEditors()
     {
-        setMessage("RDB Archive Reader Settings");
+        setMessage(Messages.PreferenceTitle);
         final Composite parent = getFieldEditorParent();
-        addField(new StringFieldEditor(Preferences.USER, "User:", parent));
-        addField(new PasswordFieldEditor(Preferences.PASSWORD, "Password:", parent, Activator.ID));
-        addField(new StringFieldEditor(Preferences.SCHEMA, "Database Schema:", parent));
-        addField(new StringFieldEditor(Preferences.STORED_PROCEDURE, "Stored procedure:", parent));
+        addField(new StringFieldEditor(Preferences.USER, Messages.User, parent));
+        addField(new PasswordFieldEditor(Preferences.PASSWORD, Messages.Password, parent, Activator.ID));
+        addField(new StringFieldEditor(Preferences.SCHEMA, Messages.Schema, parent));
+        addField(new StringFieldEditor(Preferences.STORED_PROCEDURE, Messages.StoredProcedure, parent));
     }
 }
