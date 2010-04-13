@@ -22,6 +22,8 @@
 
 package org.csstudio.utility.ldapUpdater.action;
 
+import javax.annotation.Nonnull;
+
 import org.csstudio.platform.management.CommandParameters;
 import org.csstudio.platform.management.CommandResult;
 import org.csstudio.platform.management.IManagementCommand;
@@ -29,8 +31,11 @@ import org.csstudio.utility.ldapUpdater.LdapUpdaterServer;
 
 /**
  * Shuts down the LdapUpdater service.
-
+ *
  * @author bknerr
+ * @author $Author$
+ * @version $Revision$
+ * @since 12.04.2010
  */
 public class ShutdownLdapUpdaterAction implements IManagementCommand {
 
@@ -38,8 +43,12 @@ public class ShutdownLdapUpdaterAction implements IManagementCommand {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public CommandResult execute(CommandParameters parameters) {
-			LdapUpdaterServer.getRunningServer().stop();
+	@Nonnull
+    public final CommandResult execute(@Nonnull final CommandParameters parameters) {
+			final LdapUpdaterServer server = LdapUpdaterServer.getRunningServer();
+			if (server != null) {
+			    server.stop();
+			}
 			return CommandResult.createSuccessResult();
 		}
 	}

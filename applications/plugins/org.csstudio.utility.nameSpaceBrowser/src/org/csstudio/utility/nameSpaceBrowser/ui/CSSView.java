@@ -224,7 +224,7 @@ public class CSSView extends Composite implements Observer {
 
         init();
 
-        // FIXME (bknerr) : Antipattern - herein 'this' pointer is used although object is not completely constructed
+        // FIXME (bknerr) : Antipattern - here, the 'this' pointer is used although object is not completely constructed
         _resultList.addObserver(this);
     }
 
@@ -481,6 +481,7 @@ public class CSSView extends Composite implements Observer {
         _nameSpace.setFilter(_cssParameter.filter);
         //_nameSpace.setResult(_resultList);
         _nameSpace.setSelection(selection);
+
         _nameSpace.start();
 
         //        listViewer.getList().addKeyListener(new KeyListener() {

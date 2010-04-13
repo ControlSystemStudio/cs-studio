@@ -24,6 +24,9 @@
  */
 package org.csstudio.utility.nameSpaceBrowser.utility;
 
+import java.util.List;
+
+import org.csstudio.utility.namespace.utility.ControlSystemItem;
 import org.csstudio.utility.namespace.utility.NameSpaceSearchResult;
 
 /**
@@ -74,8 +77,9 @@ public abstract class NameSpace {
 		return _resultList;
 	}
 
-    public void updateResultList(final NameSpaceSearchResult res) {
-        _resultList.setCSIResultList(res.getCSIResultList());
+    public void updateResultList(final List<ControlSystemItem> list) {
+        // FIXME (bknerr) : deprecated structure for css view
+        _resultList.setCSIResultList(list);
     }
 
 

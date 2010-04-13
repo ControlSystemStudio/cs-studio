@@ -34,6 +34,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import javax.annotation.Nonnull;
+
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.LdapUtils;
@@ -41,7 +43,7 @@ import org.csstudio.utility.ldap.engine.Engine;
 import org.csstudio.utility.ldap.model.IOC;
 import org.csstudio.utility.ldap.model.LdapContentModel;
 import org.csstudio.utility.ldap.model.Record;
-import org.csstudio.utility.ldap.reader.LdapSeachResultObserver;
+import org.csstudio.utility.ldap.reader.LdapSearchResult;
 import org.csstudio.utility.ldapUpdater.files.HistoryFileAccess;
 import org.csstudio.utility.ldapUpdater.files.HistoryFileContentModel;
 import org.csstudio.utility.ldapUpdater.mail.NotificationMail;
@@ -168,7 +170,7 @@ public final class LdapAccess {
     }
 
 
-    private static UpdateIOCResult updateIOC(final LdapContentModel ldapContentModel,
+    private static UpdateIOCResult updateIOC(final LdapContentModel model,
                                              final IOC ioc) {
 
         final String iocName = ioc.getName();
@@ -183,7 +185,7 @@ public final class LdapAccess {
         for (final Record record : recordsFromFile) {
             final String recordName = record.getName();
 
-            if (ldapContentModel.getRecord(ioc.getGroup(), iocName, recordName) == null) { // does not yet exist
+            if (model.getRecord(ioc.getGroup(), iocName, recordName) == null) { // does not yet exist
                 LOGGER.info("New Record: " + iocName + " " + recordName);
 
                 if (!LdapUtils.filterLDAPNames(recordName)) {
@@ -209,7 +211,7 @@ public final class LdapAccess {
         // TODO (bknerr) : what to do with success variable ?
         return new UpdateIOCResult(recordsFromFile.size(),
                                    numOfRecsWritten,
-                                   ldapContentModel.getRecords(iocName).size(), true);
+                                   model.getRecords(iocName).size(), true);
     }
 
 
@@ -218,21 +220,19 @@ public final class LdapAccess {
      * the directory, where the IOC files reside. The contents of the ioc list are firstly checked
      * whether they are more recent than those stored in the history file, if not so the ioc file
      * has already been processed. If so, the LDAP is updated with the newer content of the ioc
-     * files conservatively, i.e. by adding references to existing files, but not removing entries
+     * files conservatively, i.e. by adding references to records, but not removing entries
      * from the LDAP in case the corresponding file does not exist in the ioc directory.
-     *
-     * @param service
-     * @param ldapDataObserver
-     * @param ldapContentModel
+
+     * @param model the current LDAP content model
      * @param iocMap
      *            the list of ioc filenames as found in the ioc directory
      * @param historyFileModel
      *            the contents of the history file
      * @throws InterruptedException
      */
-    public static void updateLDAPFromIOCList(final LdapSeachResultObserver ldapDataObserver,
-                                             final Map<String, IOC> iocMap,
-                                             final HistoryFileContentModel historyFileModel) throws InterruptedException {
+    public static void updateLDAPFromIOCList(@Nonnull final LdapContentModel model,
+                                             @Nonnull final Map<String, IOC> iocMap,
+                                             @Nonnull final HistoryFileContentModel historyFileModel) throws InterruptedException {
 
         for (final Entry<String, IOC> iocFromFS : iocMap.entrySet()) {
 
@@ -246,7 +246,7 @@ public final class LdapAccess {
                 }
             } // else means 'new IOC file in directory'
 
-            final IOC iocFromLDAP = ldapDataObserver.getLdapModel().getIOC(iocName);
+            final IOC iocFromLDAP = model.getIOC(iocName);
             if (iocFromLDAP == null) {
                 LOGGER.warn("IOC "
                             + iocName
@@ -255,7 +255,8 @@ public final class LdapAccess {
                 continue;
             }
 
-            final LdapContentModel model = SERVICE.getRecords(ldapDataObserver, iocFromLDAP.getGroup(), iocFromLDAP.getName());
+            final LdapSearchResult searchResult = SERVICE.retrieveRecords(iocFromLDAP.getGroup(), iocFromLDAP.getName());
+            model.addSearchResult(searchResult);
 
             final UpdateIOCResult updateResult = updateIOC(model, iocFromLDAP);
 

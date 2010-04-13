@@ -21,6 +21,8 @@
  */
 package org.csstudio.utility.ldapUpdater.action;
 
+import javax.annotation.Nonnull;
+
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.management.CommandParameters;
 import org.csstudio.platform.management.CommandResult;
@@ -30,8 +32,8 @@ import org.csstudio.utility.ldapUpdater.LdapUpdater;
 /**
  * Command to start the tidy up mechanism for LDAP.
  * This action scans the IOC file directory for existing IOC record files and compares to the IOC entries in the LDAP system.
- * IOC names found in the LDAP that are not present in the directory are removed from LDAP including all records.  
- * 
+ * IOC names found in the LDAP that are not present in the directory are removed from LDAP including all records.
+ *
  * @author bknerr
  */
 public class TidyUpLdapAction implements IManagementCommand {
@@ -40,9 +42,10 @@ public class TidyUpLdapAction implements IManagementCommand {
 	 * @see org.csstudio.platform.management.IManagementCommand#execute(org.csstudio.platform.management.CommandParameters)
 	 */
 	@Override
-	public CommandResult execute(CommandParameters parameters) {
-		
-	      LdapUpdater ldapUpdater = LdapUpdater.getInstance();
+	@Nonnull
+    public final CommandResult execute(@Nonnull final CommandParameters parameters) {
+
+	      final LdapUpdater ldapUpdater = LdapUpdater.getInstance();
 	        try {
 	            if (!ldapUpdater.isBusy()){
 	                ldapUpdater.tidyUpLdapFromIOCFiles();
@@ -50,9 +53,9 @@ public class TidyUpLdapAction implements IManagementCommand {
 	                return CommandResult.createMessageResult("ldapUpdater is busy for max. 150 s (was probably started by timer). Try later!");
 	            }
 
-	        } catch (Exception e) {
+	        } catch (final Exception e) {
 	            e.printStackTrace();
-	            CentralLogger.getInstance().error (this, "\"" + e.getCause() + "\"" + "-" + "Exception while running ldapUpdater" );        
+	            CentralLogger.getInstance().error (this, "\"" + e.getCause() + "\"" + "-" + "Exception while running ldapUpdater" );
 	        }
 	        return CommandResult.createSuccessResult();
 	}

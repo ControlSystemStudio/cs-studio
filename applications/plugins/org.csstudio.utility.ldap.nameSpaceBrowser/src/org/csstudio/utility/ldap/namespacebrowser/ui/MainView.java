@@ -90,8 +90,8 @@ public class MainView extends ViewPart {
 
 
 		final NameSpaceLDAP nameSpaceLDAP = new NameSpaceLDAP();
-		final LdapSearchResult resultList = new LdapSearchResult();
-		nameSpaceLDAP.setResult(resultList);
+		final LdapSearchResult searchResult = new LdapSearchResult();
+		nameSpaceLDAP.setResult(searchResult);
 
 		cssview =
 		    new CSSView(c,
@@ -102,7 +102,7 @@ public class MainView extends ViewPart {
 		                OU_FIELD_NAME + FIELD_ASSIGNMENT + EPICS_CTRL_FIELD_VALUE,
 		                headlines,
 		                0,
-		                resultList);
+		                searchResult);
 
 
 	}

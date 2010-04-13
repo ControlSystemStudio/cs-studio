@@ -23,9 +23,9 @@ package org.csstudio.utility.ldap.reader;
 
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.Set;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.naming.NameNotFoundException;
 import javax.naming.NamingEnumeration;
@@ -74,53 +74,69 @@ public class LDAPReader extends Job {
 
     private int _defaultScope = DEFAULT_SCOPE;
 
-    private final Logger _log = CentralLogger.getInstance().getLogger(this);
+    private static final Logger LOG = CentralLogger.getInstance().getLogger(LDAPReader.class.getName());
 
     private String _searchRoot;
     private String _filter;
-
-    private LdapSearchResult _resultList;
+    private final LdapSearchResult _searchResult;
 
     /**
      * Used the connection settings from org.csstudio.utility.ldap.ui
      * (used with UI)
      *
-     * @param name
-     * @param filter
-     * @param searchScope
-     * @param resultList the list for the result {@link LdapSearchResult}
+     * @param root the search root
+     * @param filter the search filter
+     * @param searchScope the search scope
      */
-    public LDAPReader(final String name,
-                      final String filter,
-                      final int searchScope,
-                      final LdapSearchResult resultList){
+    public LDAPReader(@Nonnull final String root,
+                      @Nonnull final String filter,
+                      @Nonnull final int searchScope){
         super("LDAPReader");
-        setBasics(name, filter, resultList);
+        setBasics(root, filter);
         setDefaultScope(searchScope);
+        _searchResult = new LdapSearchResult();
     }
-
 
     /**
      * Constructor.
      *
      * @param name the search root
      * @param filter the search filter
-     * @param resultList the list for the result {@link LdapSearchResult}
+     * @param searchScope the search scope
+     * @param result the search result, typically used in the callback method
      * @param callBack callback to invoke custom method on sucessful LDAP read
      */
-    public LDAPReader(final String name,
-                      final String filter,
-                      final LdapSearchResult resultList,
+    public LDAPReader(@Nonnull final String name,
+                      @Nonnull final String filter,
+                      final int searchScope,
+                      @Nonnull final LdapSearchResult result,
                       @Nonnull final JobCompletedCallBack callBack){
         super("LDAPReader");
-        setBasics(name, filter, resultList);
+        setBasics(name, filter);
+        setDefaultScope(searchScope);
+        _searchResult = result;
         setJobCompletedCallBack(callBack);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param name the search root
+     * @param filter the search filter
+     * @param result the result, typically used in the callback method
+     * @param callBack callback to invoke custom method on sucessful LDAP read
+     */
+    public LDAPReader(@Nonnull final String name,
+                      @Nonnull final String filter,
+                      @Nonnull final LdapSearchResult result,
+                      @Nonnull final JobCompletedCallBack callBack){
+        this(name, filter, DEFAULT_SCOPE, result, callBack);
     }
 
     /**
      * @param callBack
      */
-    private void setJobCompletedCallBack(final JobCompletedCallBack callBack) {
+    private void setJobCompletedCallBack(@Nonnull final JobCompletedCallBack callBack) {
         addJobChangeListener(new JobChangeAdapter() {
             @Override
             public void done(@Nonnull final IJobChangeEvent event) {
@@ -132,107 +148,12 @@ public class LDAPReader extends Job {
     }
 
 
-
-    /**
-     * Need connection settings. (For Headless use)
-     *
-     * @param name
-     * @param filter
-     * @param searchScope
-     * @param resultList the list for the result {@link LdapSearchResult}
-     * @param env connection settings.
-     */
-
-    public LDAPReader(final String name, final String filter, final int searchScope, final LdapSearchResult resultList, final Hashtable<Object,String> env){
-        super("LDAPReader");
-        setBasics(name, filter, resultList);
-        setDefaultScope(searchScope);
-    }
-
-    /**
-     *
-     * @param name
-     * @param filter
-     * @param searchScope
-     * @param resultList
-     * @param env value for<br>
-     * 	0: Context.PROVIDER_URL<br>
-     *  1: Context.SECURITY_PROTOCOL<br>
-     *  2: Context.SECURITY_AUTHENTICATION<br>
-     *  3: Context.SECURITY_PRINCIPAL<br>
-     *  4: Context.SECURITY_CREDENTIALS<br>
-     *
-     */
-    public LDAPReader(final String searchRoot, final String filter, final int searchScope, final LdapSearchResult resultList, final String[] env){
-        super("LDAPReader");
-        setBasics(searchRoot, filter, resultList);
-        setDefaultScope(searchScope);
-    }
-
-    /**
-     * Used the connection settings from org.csstudio.utility.ldap.ui
-     * (used with UI)
-     *
-     * @param name
-     * @param filter
-     * @param ldapResultList the list for the result {@link LdapSearchResult}
-     */
-    public LDAPReader(final String name, final String filter, final LdapSearchResult ldapResultList){
-        super("LDAPReader");
-        setBasics(name, filter, ldapResultList);
-    }
-
-    /**
-     * Need connection settings. (For Headless use)
-     *
-     * @param name
-     * @param filter
-     * @param resultList
-     * @param env value for<br>
-     * 	0: Context.PROVIDER_URL<br>
-     *  1: Context.SECURITY_PROTOCOL<br>
-     *  2: Context.SECURITY_AUTHENTICATION<br>
-     *  3: Context.SECURITY_PRINCIPAL<br>
-     *  4: Context.SECURITY_CREDENTIALS<br>
-     *
-     */
-    public LDAPReader(final String name, final String filter,  final LdapSearchResult resultList, final String[] env){
-        super("LDAPReader");
-        setBasics(name, filter, resultList);
-    }
-    /**
-     * Used the connection settings from org.csstudio.utility.ldap.ui
-     * (used with UI)
-     *
-     * @param nameUFilter<br> 0: name<br>1: = filter<br>
-     * @param searchScope set the Scope {@link SearchControls}
-     * @param ergebnisListe the list for the result {@link LdapSearchResult}
-     */
-
-    public LDAPReader(final String[] nameUFilter, final int searchScope, final LdapSearchResult resultList){
-
-        super("LDAPReader");
-
-        setBasics(nameUFilter[0], nameUFilter[1], resultList);
-        setDefaultScope(searchScope);
-    }
-    /**
-     * Used the connection settings from org.csstudio.utility.ldap.ui
-     * (used with UI)
-     *
-     * @param nameUFilter<br> 0: name<br>1: = filter<br>
-     * @param resultList
-     */
-    public LDAPReader(final String[] nameUFilter, final LdapSearchResult resultList){
-        super("LDAPReader");
-        setBasics(nameUFilter[0], nameUFilter[1], resultList);
-    }
-
     @Override
-    protected IStatus run(final IProgressMonitor monitor ) {
+    protected final IStatus run(@Nonnull final IProgressMonitor monitor ) {
         monitor.beginTask("LDAP Reader", IProgressMonitor.UNKNOWN);
+
         final DirContext ctx = Engine.getInstance().getLdapDirContext();
-        if(ctx !=null){
+        if(ctx != null){
             final SearchControls ctrl = new SearchControls();
             ctrl.setSearchScope(_defaultScope);
             try{
@@ -248,43 +169,83 @@ public class LDAPReader extends Job {
                         }
                     }
                 } catch (final NamingException e) {
-                    _log.info("LDAP Fehler " + e.getExplanation());
+                    LOG.info("LDAP Fehler " + e.getExplanation());
                 }
                 answer.close();
 
-                _resultList.setResult(_searchRoot, _filter, answerSet);
+                _searchResult.setResult(_searchRoot, _filter, answerSet);
 
                 monitor.done();
                 return Status.OK_STATUS;
 
             } catch (final NameNotFoundException nnfe){
                 Engine.getInstance().reconnectDirContext();
-                _log.info("Falscher LDAP Name oder so." + nnfe.getExplanation());
+                LOG.info("Falscher LDAP Name oder so." + nnfe.getExplanation());
             } catch (final NamingException e) {
                 Engine.getInstance().reconnectDirContext();
-                _log.info("Falscher LDAP Suchpfad. " + e.getExplanation());
+                LOG.info("Falscher LDAP Suchpfad. " + e.getExplanation());
             }
 
         }
         monitor.setCanceled(true);
-        _resultList.setResult(_searchRoot, _filter, Collections.<SearchResult>emptySet());
+        _searchResult.setResult(_searchRoot, _filter, Collections.<SearchResult>emptySet());
         return Status.CANCEL_STATUS;
     }
 
-    /**
-     * @param searchRoot
-     * @param filter
-     * @param resultList
-     * @param ctx
-     */
-    private void setBasics(final String searchRoot, final String filter, final LdapSearchResult resultList) {
-        _resultList = resultList;
+    private void setBasics(@Nonnull final String searchRoot,
+                           @Nonnull final String filter) {
         _searchRoot = searchRoot;
         _filter = filter;
     }
 
-    public LdapSearchResult getResultList() {
-        return _resultList;
+    /**
+     * Returns the search result of the last LDAP lookup.
+     * @return the search result object, might be null.
+     */
+    @CheckForNull
+    public LdapSearchResult getSearchResult() {
+        return _searchResult;
+    }
+
+
+    /**
+     * Retrieves a search result from LDAP synchronously (without being scheduled as job).
+     *
+     * @param searchRoot search root
+     * @param filter search filter
+     * @return the search result
+     */
+    @CheckForNull
+    public static final LdapSearchResult getSynchronousSearchResult(@Nonnull final String searchRoot,
+                                                                    @Nonnull final String filter) {
+
+        final DirContext ctx = Engine.getInstance().getLdapDirContext();
+        if(ctx !=null){
+            final SearchControls ctrl = new SearchControls();
+            ctrl.setSearchScope(DEFAULT_SCOPE);
+            try{
+                final LdapSearchResult result = new LdapSearchResult();
+                final Set<SearchResult> answerSet = new HashSet<SearchResult>();
+
+                final NamingEnumeration<SearchResult> answer = ctx.search(searchRoot, filter, ctrl);
+                while(answer.hasMore()){
+                    answerSet.add(answer.next());
+                }
+                answer.close();
+
+                result.setResult(searchRoot, filter, answerSet);
+
+                return result;
+
+            } catch (final NameNotFoundException nnfe){
+                Engine.getInstance().reconnectDirContext();
+                LOG.info("Falscher LDAP Name oder so." + nnfe.getExplanation());
+            } catch (final NamingException e) {
+                Engine.getInstance().reconnectDirContext();
+                LOG.info("Falscher LDAP Suchpfad. " + e.getExplanation());
+            }
+        }
+        return null;
     }
 
     /**

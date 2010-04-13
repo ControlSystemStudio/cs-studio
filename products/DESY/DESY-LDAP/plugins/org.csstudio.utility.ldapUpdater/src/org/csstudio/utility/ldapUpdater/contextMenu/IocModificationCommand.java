@@ -21,6 +21,8 @@
  */
 package org.csstudio.utility.ldapUpdater.contextMenu;
 
+import javax.annotation.Nonnull;
+
 /**
  * Enum of available IOC management commands for the context menu of the LDAP Updater
  *
@@ -35,10 +37,14 @@ public enum IocModificationCommand {
     /**
      * Constructor.
      */
-    private IocModificationCommand(final String description) {
+    private IocModificationCommand(@Nonnull final String description) {
         _description = description;
     }
-
+    /**
+     * The command description.
+     * @return description
+     */
+    @Nonnull
     public String getDescription() {
         return _description;
     }

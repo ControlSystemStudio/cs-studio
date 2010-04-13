@@ -24,6 +24,7 @@
  */
 package org.csstudio.utility.ldap.preference;
 
+import javax.annotation.Nonnull;
 import javax.naming.Context;
 
 /**
@@ -46,10 +47,15 @@ public enum PreferenceKey {
     /**
      * Constructor.
      */
-    private PreferenceKey(final String contextId) {
+    private PreferenceKey(@Nonnull final String contextId) {
         _contextId = contextId;
     }
 
+    /**
+     * The corresponding LDAP context id of this property.
+     * @return the context id
+     */
+    @Nonnull
     public String getContextId() {
         return _contextId;
     }

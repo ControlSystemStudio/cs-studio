@@ -58,12 +58,12 @@ import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
 /**
- * TODO (hrickens) : Docu
+ * TODO (bknerr) :
  *
  * @author bknerr
  * @author $Author$
  * @version $Revision$
- * @since 07.04.2010
+ * @since 12.04.2010
  */
 public final class Engine extends Job {
 
@@ -916,65 +916,10 @@ public final class Engine extends Job {
     }
 
 
-    // public void setLdapValueOld ( String channel, String severity, String
-    // status, String timeStamp) {
-    // ModificationItem epicsStatus, epicsSeverity, epicsTimeStamp,
-    // epicsAcknowledgeTimeStamp ;
-    // ModificationItem[] modItem = null;
-    // int i = 0;
-    //
-    // String channelName = "eren=" + channel;
-    //
-    // //
-    // // change severity if value is entered
-    // //
-    // if ((severity != null)&& (severity.length() > 0)) {
-    // epicsSeverity = new ModificationItem( DirContext.REPLACE_ATTRIBUTE, new
-    // BasicAttribute( "epicsAlarmSeverity", severity));
-    // modItem[i++] = epicsSeverity;
-    // }
-    //
-    // //
-    // // change status if value is entered
-    // //
-    // if ((status != null) && (status.length() > 0)) {
-    // epicsStatus = new ModificationItem( DirContext.REPLACE_ATTRIBUTE, new
-    // BasicAttribute("epicsAlarmStatus", status));
-    // }
-    //
-    // //
-    // // change alarm time stamp
-    // //
-    // if ((timeStamp != null) && (timeStamp.length() > 0)) {
-    // epicsTimeStamp = new ModificationItem( DirContext.REPLACE_ATTRIBUTE, new
-    // BasicAttribute("epicsAlarmTimeStamp", timeStamp));
-    // }
-    //
-    // //
-    // // change time stamp acknowledged time
-    // //
-    // SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:S");
-    // java.util.Date currentDate = new java.util.Date();
-    // String eventTime = sdf.format(currentDate);
-    //
-    // epicsAcknowledgeTimeStamp = new ModificationItem(
-    // DirContext.REPLACE_ATTRIBUTE, new
-    // BasicAttribute("epicsAlarmAcknTimeStamp", eventTime));
-    //
-    // try {
-    // _ctx.modifyAttributes(channelName, modItem);
-    // } catch (NamingException e) {
-    // // TODO Auto-generated catch block
-    // e.printStackTrace();
-    // }
-    //
-    //
-    // }
-
     private class WriteRequest {
-        private String _attribute = null;
-        private String _channel = null;
-        private String _value = null;
+        private final String _attribute;
+        private final String _channel;
+        private final String _value;
 
         public WriteRequest(final String attribute, final String channel, final String value) {
 

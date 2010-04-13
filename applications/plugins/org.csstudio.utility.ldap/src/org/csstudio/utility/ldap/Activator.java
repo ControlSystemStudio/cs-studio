@@ -21,6 +21,9 @@
  */
  package org.csstudio.utility.ldap;
 //
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.csstudio.platform.AbstractCssPlugin;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -30,27 +33,19 @@ import org.osgi.framework.BundleContext;
 /**
  * The activator class controls the plug-in life cycle
  */
-public class Activator extends AbstractCssPlugin {
-//public class Activator extends Plugin {
+public final class Activator extends AbstractCssPlugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.csstudio.utility.ldap";
 
 	//	 The shared instance
-	private static Activator plugin;
-
-	/**
-	 * The constructor
-	 */
-	public Activator() {
-		plugin = this;
-	}
+	private static Activator INSTANCE;
 
 	/* (non-Javadoc)
 	 * @see org.csstudio.platform.AbstractCssPlugin#doStart(org.osgi.framework.BundleContext)
 	 */
 	@Override
-	protected void doStart(final BundleContext context) throws Exception {
+	protected void doStart(@Nullable final BundleContext context) throws Exception {
 	    // Empty
 	}
 
@@ -58,7 +53,7 @@ public class Activator extends AbstractCssPlugin {
 	 * @see org.csstudio.platform.AbstractCssPlugin#doStop(org.osgi.framework.BundleContext)
 	 */
 	@Override
-	protected void doStop(final BundleContext context) throws Exception {
+	protected void doStop(@Nullable final BundleContext context) throws Exception {
 	    // Empty
 	}
 
@@ -66,38 +61,55 @@ public class Activator extends AbstractCssPlugin {
 	 * @see org.csstudio.platform.AbstractCssPlugin#getPluginId()
 	 */
 	@Override
+	@Nonnull
 	public String getPluginId() {
 		return PLUGIN_ID;
 	}
 
+	/**
+	 * Returns the singleton instance.
+	 *
+	 * @return the instance
+ 	 */
+	@Nonnull
 	public static Activator getDefault() {
-		return plugin;
+	    if (INSTANCE == null) {
+	        INSTANCE  = new Activator();
+	    }
+		return INSTANCE;
 	}
 
-    /** Add informational message to the plugin log. */
-    public static void logInfo(final String message)
-    {
+    /**
+     * Add informational message to the plugin log.
+     * @param message info message
+     */
+    public static void logInfo(@Nonnull final String message) {
         getDefault().log(IStatus.INFO, message, null);
     }
 
-    /** Add error message to the plugin log. */
-    public static void logError(final String message)
-    {
+    /**
+     * Add error message to the plugin log.
+     * @param message error message
+     */
+    public static void logError(@Nonnull final String message) {
         getDefault().log(IStatus.ERROR, message, null);
     }
 
-    /** Add an exception to the plugin log. */
-    public static void logException(final String message, final Exception e)
-    {
+    /**
+     * Add an exception to the plugin log.
+     * @param message error message
+     * @param e exception
+     */
+    public static void logException(@Nonnull final String message, @Nullable final Exception e) {
         getDefault().log(IStatus.ERROR, message, e);
     }
 
     /** Add a message to the log.
-     * @param type
+     * @param severity the severity; one of <code>OK</code>, <code>ERROR</code>,
+     * <code>INFO</code>, <code>WARNING</code>,  or <code>CANCEL</code>
      * @param message
      */
-    private void log(final int type, final String message, final Exception e)
-    {
-        getLog().log(new Status(type, PLUGIN_ID, IStatus.OK, message, e));
+    private void log(final int severity, @Nonnull final String message, @Nullable final Exception e) {
+        getLog().log(new Status(severity, PLUGIN_ID, IStatus.OK, message, e));
     }
 }

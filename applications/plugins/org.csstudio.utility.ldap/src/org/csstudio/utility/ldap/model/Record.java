@@ -23,44 +23,55 @@ package org.csstudio.utility.ldap.model;
 
 import java.io.Serializable;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * Class type for IOC records.
- * 
+ *
  * @author bknerr
  */
 public class Record implements Serializable {
-    
+
     private static final long serialVersionUID = 1L;
-    
-    private String _name;
-    
-    public Record(final String name) {
+
+    private final String _name;
+
+    /**
+     * Constructor.
+     * @param name .
+     */
+    public Record(@Nonnull final String name) {
         _name = name;
     }
-    
-    public void setName(final String name) {
-        _name = name;
-    }
-    
-    public String getName() {
+
+    /**
+     * Getter.
+     * @return the name
+     */
+    @Nonnull
+    public final String getName() {
         return _name;
     }
-    
+
     /**
      * (@inheritDoc)
+     * @return the hash code
      */
     @Override
-    public int hashCode() {
+    public final int hashCode() {
         final int prime = 31;
         final int result = prime + ( (_name == null) ? 0 : _name.hashCode());
         return result;
     }
-    
+
     /**
      * (@inheritDoc)
+     * @param obj the object to be compared
+     * @return true if the other object is of type record and its name equals this name
      */
     @Override
-    public boolean equals(final Object obj) {
+    public final boolean equals(@Nullable final Object obj) {
         if (this == obj) {
             return true;
         }
@@ -80,6 +91,6 @@ public class Record implements Serializable {
         }
         return true;
     }
-    
-    
+
+
 }

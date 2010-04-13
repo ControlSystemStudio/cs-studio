@@ -11,8 +11,12 @@
 package org.csstudio.config.authorizeid;
 
 import java.util.ArrayList;
+import java.util.List;
 
-import org.csstudio.utility.ldap.reader.LDAPSyncReader;
+import javax.naming.directory.SearchResult;
+
+import org.csstudio.utility.ldap.reader.LDAPReader;
+import org.csstudio.utility.ldap.reader.LdapSearchResult;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.InputDialog;
@@ -34,9 +38,9 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 /**
- * This is a modification of {@link InputDialog} class. 
- * {@link InputDialog} has one label and one text field, 
- * but {@code CustomInputDialog} is customized to have two labels 
+ * This is a modification of {@link InputDialog} class.
+ * {@link InputDialog} has one label and one text field,
+ * but {@code CustomInputDialog} is customized to have two labels
  * and two text fields.
  * @author Rok Povsic
  */
@@ -44,17 +48,17 @@ public class CustomInputDialog extends Dialog {
     /**
      * The title of the dialog.
      */
-    private String _title;
+    private final String _title;
 
     /**
      * The message to display, or <code>null</code> if none.
      */
-    private String _message1;
-    
+    private final String _message1;
+
     /**
      * The message to display, or <code>null</code> if none.
      */
-    private String _message2;
+    private final String _message2;
 
     /**
      * The input value; the empty string by default.
@@ -70,7 +74,7 @@ public class CustomInputDialog extends Dialog {
      * Input text widget.
      */
     private ComboViewer _eaigCombo;
-    
+
     /**
      * Input text widget 2.
      */
@@ -80,14 +84,14 @@ public class CustomInputDialog extends Dialog {
      * Error message label widget.
      */
     private Text errorMessageText;
-    
+
     /**
      * Error message string.
      */
     private String errorMessage;
-    
+
     //TODO: Define at the Preference Page
-    private String string_search_root = "ou=Css,ou=EpicsAuthorize"; //$NON-NLS-1$
+    private final String string_search_root = "ou=Css,ou=EpicsAuthorize"; //$NON-NLS-1$
     /**
      * Search for this.
      */
@@ -101,10 +105,10 @@ public class CustomInputDialog extends Dialog {
 
     private String _valueEaig;
 
-    private String _eaigSel;
+    private final String _eaigSel;
 
-    private String _eairSel;
-    
+    private final String _eairSel;
+
     private static final String SPLIT_FILTER = "[=,]"; //$NON-NLS-1$
 
     /**
@@ -113,7 +117,7 @@ public class CustomInputDialog extends Dialog {
      * <p>
      * Note that the <code>open</code> method blocks for input dialogs.
      * </p>
-     * 
+     *
      * @param parentShell
      *            the parent shell, or <code>null</code> to create a top-level
      *            shell
@@ -124,11 +128,11 @@ public class CustomInputDialog extends Dialog {
      * @param initialValue
      *            the initial input value, or <code>null</code> if none
      *            (equivalent to the empty string)
-     * @param eairSel The Selection for the eair Combo 
+     * @param eairSel The Selection for the eair Combo
      * @param eaigSel The Selection for the eaig Combo
      */
-    public CustomInputDialog(Shell parentShell, String dialogTitle,
-            String dialogMessage1, String dialogMessage2, String eaigSel, String eairSel) {
+    public CustomInputDialog(final Shell parentShell, final String dialogTitle,
+            final String dialogMessage1, final String dialogMessage2, final String eaigSel, final String eairSel) {
         super(parentShell);
         _title = dialogTitle;
         _message1 = dialogMessage1;
@@ -140,9 +144,10 @@ public class CustomInputDialog extends Dialog {
     /*
      * (non-Javadoc) Method declared on Dialog.
      */
-    protected void buttonPressed(int buttonId) {
+    @Override
+    protected void buttonPressed(final int buttonId) {
         if (buttonId == IDialogConstants.OK_ID) {
-            String tmp = (String)((StructuredSelection)_eaigCombo.getSelection()).getFirstElement();
+            final String tmp = (String)((StructuredSelection)_eaigCombo.getSelection()).getFirstElement();
             _valueEaig = tmp.split(SPLIT_FILTER)[1];
             _valueEair = _eairCombo.getItem(_eairCombo.getSelectionIndex());
         } else {
@@ -154,10 +159,11 @@ public class CustomInputDialog extends Dialog {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.jface.window.Window#configureShell(org.eclipse.swt.widgets.Shell)
      */
-    protected void configureShell(Shell shell) {
+    @Override
+    protected void configureShell(final Shell shell) {
         super.configureShell(shell);
         if (_title != null) {
 			shell.setText(_title);
@@ -166,10 +172,11 @@ public class CustomInputDialog extends Dialog {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.jface.dialogs.Dialog#createButtonsForButtonBar(org.eclipse.swt.widgets.Composite)
      */
-    protected void createButtonsForButtonBar(Composite parent) {
+    @Override
+    protected void createButtonsForButtonBar(final Composite parent) {
         // create OK and Cancel buttons by default
         okButton = createButton(parent, IDialogConstants.OK_ID,
                 IDialogConstants.OK_LABEL, true);
@@ -178,13 +185,23 @@ public class CustomInputDialog extends Dialog {
         //do this here because setting the text will set enablement on the ok
         // button
         _eaigCombo.getCombo().setFocus();
-        LDAPSyncReader lSR = new LDAPSyncReader(string_search_root,eaigFilter);
-        ArrayList<String> answerString = lSR.getAnswerString();
 
-        if (answerString != null) {
-            _eaigCombo.setInput(answerString);
-            if(_eaigSel!=null){
-                for (String string : answerString) {
+        final LdapSearchResult result = LDAPReader.getSynchronousSearchResult(string_search_root, eagnFilter);
+
+        final List<String> list = new ArrayList<String>(result.getAnswerSet().size());
+
+        for (final SearchResult row : result.getAnswerSet()) {
+            final String name = new String(row.getName());
+            if(name.trim().length() > 0){
+                list.add(name + "," + string_search_root);
+            }
+        }
+
+        if (!list.isEmpty()) {
+            _eaigCombo.setInput(list);
+            if (_eaigSel!=null) {
+
+                for (final String string : list) {
                     if(string.split(SPLIT_FILTER)[1].equals(_eaigSel)){
                         _eaigCombo.setSelection(new StructuredSelection(string));
                     }
@@ -198,14 +215,15 @@ public class CustomInputDialog extends Dialog {
     /*
      * (non-Javadoc) Method declared on Dialog.
      */
-    protected Control createDialogArea(Composite parent) {
+    @Override
+    protected Control createDialogArea(final Composite parent) {
         // create composite
-        Composite composite = (Composite) super.createDialogArea(parent);
+        final Composite composite = (Composite) super.createDialogArea(parent);
         // create message
         if (_message1 != null) {
-            Label label = new Label(composite, SWT.WRAP);
+            final Label label = new Label(composite, SWT.WRAP);
             label.setText(_message1);
-            GridData data = new GridData(GridData.GRAB_HORIZONTAL
+            final GridData data = new GridData(GridData.GRAB_HORIZONTAL
                     | GridData.GRAB_VERTICAL | GridData.HORIZONTAL_ALIGN_FILL
                     | GridData.VERTICAL_ALIGN_CENTER);
             data.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
@@ -216,9 +234,9 @@ public class CustomInputDialog extends Dialog {
         _eaigCombo = new ComboViewer(composite, SWT.SINGLE | SWT.BORDER | SWT.READ_ONLY);
         _eaigCombo.setLabelProvider(new LabelProvider(){
             @Override
-            public String getText(Object element) {
+            public String getText(final Object element) {
                 if (element instanceof String) {
-                    String ldapPath = (String) element;
+                    final String ldapPath = (String) element;
                     if(ldapPath.indexOf('=')>0){
                         return ldapPath.split(SPLIT_FILTER)[1];
                     }
@@ -226,40 +244,51 @@ public class CustomInputDialog extends Dialog {
                 }
                 return super.getText(element);
             }
-            
+
         });
         _eaigCombo.setContentProvider(new ArrayContentProvider());
         _eaigCombo.getCombo().setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
                 | GridData.HORIZONTAL_ALIGN_FILL));
         _eaigCombo.addSelectionChangedListener(new ISelectionChangedListener(){
 
-            public void selectionChanged(SelectionChangedEvent event) {
-                String firstElement = (String) ((StructuredSelection)_eaigCombo.getSelection()).getFirstElement();
-                LDAPSyncReader lSR = new LDAPSyncReader(firstElement, eagnFilter);
-                ArrayList<String> answerString = lSR.getAnswerString();
-                ArrayList<String> cleanString = new ArrayList<String>();
+            public void selectionChanged(final SelectionChangedEvent event) {
+                final String firstElement = (String) ((StructuredSelection)_eaigCombo.getSelection()).getFirstElement();
+
+
+                final LdapSearchResult result = LDAPReader.getSynchronousSearchResult(firstElement, eagnFilter);
+
+                final List<String> list = new ArrayList<String>(result.getAnswerSet().size());
+
+                for (final SearchResult row : result.getAnswerSet()) {
+                    final String name = new String(row.getName());
+                    if(name.trim().length() > 0){
+                        list.add(name + "," + string_search_root);
+                    }
+                }
+
+                final List<String> cleanString = new ArrayList<String>();
                 int selIndex =0;
-                for(int i=0;i<answerString.size();i++){
-                    String string = answerString.get(i); 
-                    String[] split = string.split(SPLIT_FILTER);
-                    if(split.length>3){
-                        String tmp = split[1];
+                for(int i=0; i < list.size(); i++){
+                    final String string = list.get(i);
+                    final String[] split = string.split(SPLIT_FILTER);
+                    if(split.length > 3){
+                        final String tmp = split[1];
                         cleanString.add(tmp);
                         if(tmp.equals(_eairSel)){
-                            selIndex= i;
+                            selIndex = i;
                         }
                     }
                 }
                 _eairCombo.setItems(cleanString.toArray(new String[0]));
                 _eairCombo.select(selIndex);
             }
-            
+
         });
-        
+
         if (_message2 != null) {
-            Label label = new Label(composite, SWT.WRAP);
+            final Label label = new Label(composite, SWT.WRAP);
             label.setText(_message2);
-            GridData data = new GridData(GridData.GRAB_HORIZONTAL
+            final GridData data = new GridData(GridData.GRAB_HORIZONTAL
                     | GridData.GRAB_VERTICAL | GridData.HORIZONTAL_ALIGN_FILL
                     | GridData.VERTICAL_ALIGN_CENTER);
             data.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
@@ -269,7 +298,7 @@ public class CustomInputDialog extends Dialog {
         _eairCombo = new Combo(composite, SWT.SINGLE | SWT.BORDER |SWT.READ_ONLY);
         _eairCombo.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
                 | GridData.HORIZONTAL_ALIGN_FILL));
-        
+
         errorMessageText = new Text(composite, SWT.READ_ONLY | SWT.WRAP);
         errorMessageText.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
                 | GridData.HORIZONTAL_ALIGN_FILL));
@@ -285,17 +314,18 @@ public class CustomInputDialog extends Dialog {
 
     /**
      * Returns the error message label.
-     * 
+     *
      * @return the error message label
      * @deprecated use setErrorMessage(String) instead
      */
+    @Deprecated
     protected Label getErrorMessageLabel() {
         return null;
     }
 
     /**
      * Returns the ok button.
-     * 
+     *
      * @return the ok button
      */
     protected Button getOkButton() {
@@ -304,16 +334,16 @@ public class CustomInputDialog extends Dialog {
 
     /**
      * Returns the text area.
-     * 
+     *
      * @return the text area
      */
     protected ComboViewer getText() {
         return _eaigCombo;
     }
-    
+
     /**
      * Returns the text area 2.
-     * 
+     *
      * @return the text area 2
      */
     protected Combo getText2() {
@@ -322,16 +352,16 @@ public class CustomInputDialog extends Dialog {
 
     /**
      * Returns the string typed into this input dialog.
-     * 
+     *
      * @return the input string
      */
     public String getValue() {
         return _valueEaig;
     }
-    
+
     /**
      * Returns the string typed into this input dialog.
-     * 
+     *
      * @return the input string
      */
     public String getValue2() {
@@ -341,26 +371,26 @@ public class CustomInputDialog extends Dialog {
     /**
      * Sets or clears the error message.
      * If not <code>null</code>, the OK button is disabled.
-     * 
+     *
      * @param errorMessage
      *            the error message, or <code>null</code> to clear
      * @since 3.0
      */
-    public void setErrorMessage(String errorMessage) {
+    public void setErrorMessage(final String errorMessage) {
     	this.errorMessage = errorMessage;
-    	if (errorMessageText != null && !errorMessageText.isDisposed()) {
+    	if ((errorMessageText != null) && !errorMessageText.isDisposed()) {
     		errorMessageText.setText(errorMessage == null ? " \n " : errorMessage); //$NON-NLS-1$
     		// Disable the error message text control if there is no error, or
     		// no error text (empty or whitespace only).  Hide it also to avoid
     		// color change.
     		// See https://bugs.eclipse.org/bugs/show_bug.cgi?id=130281
-    		boolean hasError = errorMessage != null && (StringConverter.removeWhiteSpaces(errorMessage)).length() > 0;
+    		final boolean hasError = (errorMessage != null) && ((StringConverter.removeWhiteSpaces(errorMessage)).length() > 0);
     		errorMessageText.setEnabled(hasError);
     		errorMessageText.setVisible(hasError);
     		errorMessageText.getParent().update();
     		// Access the ok button by id, in case clients have overridden button creation.
     		// See https://bugs.eclipse.org/bugs/show_bug.cgi?id=113643
-    		Control button = getButton(IDialogConstants.OK_ID);
+    		final Control button = getButton(IDialogConstants.OK_ID);
     		if (button != null) {
     			button.setEnabled(errorMessage == null);
     		}

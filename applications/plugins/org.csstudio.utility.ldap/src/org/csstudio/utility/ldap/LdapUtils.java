@@ -24,6 +24,8 @@ package org.csstudio.utility.ldap;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttributes;
 
@@ -40,12 +42,13 @@ import org.csstudio.platform.util.StringUtil;
  * @version $Revision$
  * @since 11.03.2010
  */
-public class LdapUtils {
+public final class LdapUtils {
 
     private static final Logger LOG = CentralLogger.getInstance().getLogger(LdapUtils.class.getName());
 
     public static final String OU_FIELD_NAME = "ou";
     public static final String EPICS_CTRL_FIELD_VALUE = "EpicsControls";
+    public static final String EPICS_AUTH_ID_FIELD_VALUE = "EpicsAuthorizeID";
 
     public static final String FIELD_SEPARATOR = ",";
     public static final String FIELD_ASSIGNMENT = "=";
@@ -56,6 +59,9 @@ public class LdapUtils {
     public static final String ECON_FIELD_NAME = "econ";
     public static final String ECOM_FIELD_NAME = "ecom";
     public static final String ECOM_FIELD_VALUE = "EPICS-IOC";
+
+    public static final String EAIN_FIELD_NAME = "eain";
+
 
     public static final String ATTR_FIELD_OBJECT_CLASS = "objectClass";
     public static final String ATTR_VAL_OBJECT_CLASS = "epicsRecord";
@@ -76,9 +82,10 @@ public class LdapUtils {
     /**
      * Returns a filter for 'any' match of the field name (e.g. '<fieldName>=*').
      * @param fieldName the field to match any
-     * @return
+     * @return .
      */
-    public static final String any(final String fieldName) {
+    @Nonnull
+    public static String any(@Nonnull final String fieldName) {
         return fieldName + FIELD_ASSIGNMENT + FIELD_WILDCARD;
     }
 
@@ -86,10 +93,11 @@ public class LdapUtils {
      * Returns the attributes for a new entry with the given object class and
      * name.
      *
-     * @param an array of Strings that represent key value pairs, consecutively (1st=key, 2nd=value, 3rd=key, 4th=value, etc.)
+     * @param keysAndValues an array of Strings that represent key value pairs, consecutively (1st=key, 2nd=value, 3rd=key, 4th=value, etc.)
      * @return the attributes for the new entry.
      */
-    public static Attributes attributesForLdapEntry(final String... keysAndValues) {
+    @Nonnull
+    public static Attributes attributesForLdapEntry(@Nonnull final String... keysAndValues) {
         if (keysAndValues.length % 2 > 0) {
             LOG.error("Ldap Attributes: For key value pairs the length of String array has to be multiple of 2!");
             throw new IllegalArgumentException("Length of parameter keysAndValues has to be multiple of 2.");
@@ -105,10 +113,11 @@ public class LdapUtils {
     /**
      * Assembles and LDAP query from field and value pairs.
      *
-     * @param fieldsAndValues
+     * @param fieldsAndValues an array of Strings that represent key value pairs, consecutively (1st=key, 2nd=value, 3rd=key, 4th=value, etc.)
      * @return the String with <field1>=<value1>, <field2>=<value2> assignements.
      */
-    public static String createLdapQuery(final String... fieldsAndValues) {
+    @Nonnull
+    public static String createLdapQuery(@Nonnull final String... fieldsAndValues) {
         if (fieldsAndValues.length % 2 > 0) {
             LOG.error("Ldap Attributes: For field and value pairs the length of String array has to be multiple of 2!");
             throw new IllegalArgumentException("Length of parameter fieldsAndValues has to be multiple of 2.");
@@ -131,7 +140,7 @@ public class LdapUtils {
      * @param recordName the name to filter
      * @return true, if the forbidden substring is contained, false otherwise (even for empty and null strings)
      */
-    public static boolean filterLDAPNames(final String recordName) {
+    public static boolean filterLDAPNames(@Nonnull final String recordName) {
         if (!StringUtil.hasLength(recordName)) {
             return false;
         }
@@ -153,7 +162,9 @@ public class LdapUtils {
      *            the name of the process variable.
      * @return the name of the record in the LDAP directory.
      */
-    public static String pvNameToRecordName(final String pv) {
+    @Nonnull
+    public static String pvNameToRecordName(@Nonnull final String pv) {
+        // TODO (bknerr) : does this epics check really belong here
         if (pv.contains(".") && isEpicsDefaultControlSystem()) {
             return pv.substring(0, pv.indexOf("."));
         }
@@ -167,12 +178,20 @@ public class LdapUtils {
      *         <code>false</code> otherwise.
      */
     private static boolean isEpicsDefaultControlSystem() {
-        final ControlSystemEnum controlSystem = ProcessVariableAdressFactory
-        .getInstance().getDefaultControlSystem();
+        final ControlSystemEnum controlSystem =
+            ProcessVariableAdressFactory.getInstance().getDefaultControlSystem();
         return controlSystem == ControlSystemEnum.EPICS;
         //              || controlSystem == ControlSystemEnum.DAL_EPICS;
     }
 
+    /**
+     * Query result parser for 'name in namespace' row.
+     *
+     * @author bknerr
+     * @author $Author$
+     * @version $Revision$
+     * @since 09.04.2010
+     */
     public static class LdapQueryResult {
 
         private String _eren;
@@ -181,48 +200,89 @@ public class LdapUtils {
 
         /**
          * Constructor.
-         * @param efan
-         * @param econ
-         * @param eren
+         * @param efan .
+         * @param econ .
+         * @param eren .
          */
-        public LdapQueryResult(final String efan,
-                               final String econ,
-                               final String eren) {
+        public LdapQueryResult(@Nonnull final String efan,
+                               @Nonnull final String econ,
+                               @Nonnull final String eren) {
             _efan = efan;
             _econ = econ;
             _eren = eren;
         }
 
+        /**
+         * Constructor.
+         */
         public LdapQueryResult() {
             // Empty
         }
 
-        public String getEren() {
+        /**
+         * Getter.
+         * @return eren
+         */
+        @CheckForNull
+        public final String getEren() {
             return _eren;
         }
 
-        public String getEcon() {
+        /**
+         * Getter.
+         * @return econ
+         */
+        @CheckForNull
+        public final String getEcon() {
             return _econ;
         }
 
-        public String getEfan() {
+        /**
+         * Getter.
+         * @return efan
+         */
+        @CheckForNull
+        public final String getEfan() {
             return _efan;
         }
 
-        public void setEcon(final String econ) {
+        /**
+         * Setter.
+         * @param econ .
+         */
+        public final void setEcon(@Nonnull final String econ) {
             _econ = econ;
         }
 
-        public void setEfan(final String efan) {
+        /**
+         * Setter.
+         * @param efan .
+         */
+        public final void setEfan(@Nonnull final String efan) {
             _efan = efan;
         }
 
-        public void setEren(final String eren) {
+        /**
+         * Setter.
+         * @param eren .
+         */
+        public final void setEren(@Nonnull final String eren) {
             _eren = eren;
         }
     }
 
-    public static LdapQueryResult parseLdapQueryResult(final String ldapPath) {
+    /**
+     * Parses a string for fields :
+     * 'efan=<valefan>'
+     * 'econ=<valecon>'
+     * 'eren=<valeren>'
+     * and puts the results <valX> if present into the query result.
+     *
+     * @param ldapPath the line containing a row of a query result
+     * @return the query result object
+     */
+    @Nonnull
+    public static LdapQueryResult parseLdapQueryResult(@Nonnull final String ldapPath) {
 
         final String[] fields = ldapPath.split(FIELD_SEPARATOR);
 

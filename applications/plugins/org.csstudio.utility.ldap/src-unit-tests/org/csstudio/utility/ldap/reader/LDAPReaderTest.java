@@ -26,7 +26,9 @@ import static org.csstudio.utility.ldap.LdapUtils.EPICS_CTRL_FIELD_VALUE;
 import static org.csstudio.utility.ldap.LdapUtils.FIELD_ASSIGNMENT;
 import static org.csstudio.utility.ldap.LdapUtils.OU_FIELD_NAME;
 import static org.csstudio.utility.ldap.LdapUtils.any;
-import static org.junit.Assert.fail;
+
+import javax.naming.directory.SearchControls;
+
 import junit.framework.Assert;
 
 import org.csstudio.utility.ldap.model.LdapContentModel;
@@ -44,44 +46,18 @@ public class LDAPReaderTest {
     private final LdapService _service = LdapServiceImpl.getInstance();
 
     /**
-     * Test method for {@link org.csstudio.utility.ldap.reader.LDAPReader#LDAPReader(java.lang.String[],
-     * org.csstudio.utility.ldap.LdapSearchResult.utility.LdapResultList)}.
+     * Test method for {@link org.csstudio.utility.ldap.reader.LDAPReader}.
 	 */
 	@Test
-	public void testLDAPServiceFacilityLookup() {
-	    final LdapContentModel model =
-	        _service.getEntries(new LdapSeachResultObserver(),
-	                            OU_FIELD_NAME + FIELD_ASSIGNMENT + EPICS_CTRL_FIELD_VALUE,
-	                            any(EFAN_FIELD_NAME));
+    public final void testLDAPServiceFacilityLookup() {
+
+	    final LdapSearchResult result =
+	        _service.retrieveSearchResult(OU_FIELD_NAME + FIELD_ASSIGNMENT + EPICS_CTRL_FIELD_VALUE,
+	                                      any(EFAN_FIELD_NAME),
+	                                      SearchControls.SUBTREE_SCOPE);
+
+	    final LdapContentModel model = new LdapContentModel(result);
 
 		Assert.assertTrue(!model.getFacilities().isEmpty());
 	}
-
-	/**
-	 * Test method for {@link org.csstudio.utility.ldap.reader.LDAPReader#LDAPReader(java.lang.String[],
-	 * int, org.csstudio.utility.ldap.LdapSearchResult.utility.ResultList)}.
-	 */
-	@Test
-	public void testLDAPReaderStringArrayIntResultList() {
-		fail("Not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link org.csstudio.utility.ldap.reader.LDAPReader#LDAPReader(java.lang.String,
-	 * java.lang.String, org.csstudio.utility.ldap.LdapSearchResult.utility.ResultList)}.
-	 */
-	@Test
-	public void testLDAPReaderStringStringResultList() {
-		fail("Not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link org.csstudio.utility.ldap.reader.LDAPReader#LDAPReader(java.lang.String,
-	 * java.lang.String, int, org.csstudio.utility.ldap.LdapSearchResult.utility.ResultList)}.
-	 */
-	@Test
-	public void testLDAPReaderStringStringIntResultList() {
-		fail("Not yet implemented");
-	}
-
 }

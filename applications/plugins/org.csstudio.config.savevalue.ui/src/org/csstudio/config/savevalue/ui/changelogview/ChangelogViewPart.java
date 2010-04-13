@@ -36,6 +36,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.naming.directory.SearchControls;
+
 import org.csstudio.config.savevalue.service.ChangelogDeletionService;
 import org.csstudio.config.savevalue.service.ChangelogEntry;
 import org.csstudio.config.savevalue.service.ChangelogService;
@@ -46,7 +48,7 @@ import org.csstudio.config.savevalue.ui.RemoteMethodCallJob;
 import org.csstudio.config.savevalue.ui.SaveValueDialog;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.model.LdapContentModel;
-import org.csstudio.utility.ldap.reader.LdapSeachResultObserver;
+import org.csstudio.utility.ldap.reader.LdapSearchResult;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -335,10 +337,13 @@ public class ChangelogViewPart extends ViewPart {
 				monitor.beginTask(Messages.ChangelogViewPart_GET_IOC_JOB,
 						IProgressMonitor.UNKNOWN);
 
+				final LdapSearchResult result =
+				    _ldapService.retrieveSearchResult(OU_FIELD_NAME + FIELD_ASSIGNMENT + EPICS_CTRL_FIELD_VALUE,
+				                                      any(ECON_FIELD_NAME),
+				                                      SearchControls.SUBTREE_SCOPE);
+				final LdapContentModel model = new LdapContentModel(result);
 
-				final LdapContentModel model = _ldapService.getEntries(new LdapSeachResultObserver(),
-				                                                       OU_FIELD_NAME + FIELD_ASSIGNMENT + EPICS_CTRL_FIELD_VALUE,
-				                                                       any(ECON_FIELD_NAME));
+
 				final List<String> iocNames = new ArrayList<String>(model.getIOCNames());
 
 				Collections.sort(iocNames);

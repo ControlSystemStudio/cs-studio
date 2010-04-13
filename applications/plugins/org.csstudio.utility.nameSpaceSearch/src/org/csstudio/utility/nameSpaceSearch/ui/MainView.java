@@ -23,8 +23,6 @@ package org.csstudio.utility.nameSpaceSearch.ui;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Observable;
-import java.util.Observer;
 
 import javax.naming.directory.SearchResult;
 
@@ -33,6 +31,7 @@ import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
 import org.csstudio.utility.ldap.reader.LDAPReader;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
+import org.csstudio.utility.ldap.reader.LDAPReader.JobCompletedCallBack;
 import org.csstudio.utility.nameSpaceSearch.Activator;
 import org.csstudio.utility.nameSpaceSearch.Messages;
 import org.csstudio.utility.nameSpaceSearch.preference.PreferenceConstants;
@@ -80,7 +79,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
  * @version $Revision$
  * @since 05.03.2008
  */
-public class MainView extends ViewPart implements Observer{
+public class MainView extends ViewPart {
     /**
      * The Class Id.
      */
@@ -178,7 +177,6 @@ public class MainView extends ViewPart implements Observer{
 
     public MainView() {
         _ldapSearchResult = new LdapSearchResult();
-        _ldapSearchResult.addObserver(this);
     }
 
     /**
@@ -302,14 +300,20 @@ public class MainView extends ViewPart implements Observer{
             _headline.put("econ", Messages.MainView_Controller); //$NON-NLS-1$ //$NON-NLS-2$
             _headline.put("eren", Messages.MainView_Record); //$NON-NLS-1$ //$NON-NLS-2$
         }
-        _ldapr = new LDAPReader(Activator.getDefault().getPluginPreferences().getString(PreferenceConstants.P_STRING_SEARCH_ROOT),
-                filter, _ldapSearchResult);
-//        _ldapr.addJobChangeListener(new JobChangeAdapter() {
-//            public void done(IJobChangeEvent event) {
-//            if (event.getResult().isOK())
-//                MainView.this._ergebnisListe.notifyView();
-//            }
-//         });
+        _ldapr =
+            new LDAPReader(Activator.getDefault().getPluginPreferences().getString(PreferenceConstants.P_STRING_SEARCH_ROOT),
+                           filter,
+                           _ldapSearchResult,
+                           new JobCompletedCallBack() {
+                                @Override
+                                public void onLdapReadComplete() {
+                                    _disp.syncExec(new Runnable() {
+                                        public void run() {
+                                            getText();
+                                        }
+                                    });
+                                }
+                           });
         _ldapr.schedule();
         _resultTableView.getTable().layout();
     }
@@ -518,11 +522,4 @@ public class MainView extends ViewPart implements Observer{
         return _searchText;
     }
 
-    public void update(final Observable arg0, final Object arg1) {
-        _disp.syncExec(new Runnable() {
-            public void run() {
-                getText();
-            }
-        });
-    }
 }

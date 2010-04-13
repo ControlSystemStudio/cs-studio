@@ -22,27 +22,31 @@
 
 package org.csstudio.utility.ldapUpdater.action;
 
-import org.csstudio.platform.logging.CentralLogger;
+import javax.annotation.Nonnull;
+
 import org.csstudio.platform.management.CommandParameters;
 import org.csstudio.platform.management.CommandResult;
 import org.csstudio.platform.management.IManagementCommand;
 import org.csstudio.utility.ldapUpdater.LdapUpdater;
 
+/**
+ * Starts the LDAP update from the context menu.
+ *
+ * @author bknerr
+ * @author $Author$
+ * @version $Revision$
+ * @since 09.04.2010
+ */
 public class UpdateLdapAction implements IManagementCommand {
-    
+
     @Override
-    public CommandResult execute(CommandParameters parameters) {
-        LdapUpdater ldapUpdater = LdapUpdater.getInstance();
-        try {
-            if (!ldapUpdater.isBusy()){
-                ldapUpdater.updateLdapFromIOCFiles();
-            }else{
-                return CommandResult.createMessageResult("ldapUpdater is busy for max. 150 s (was probably started by timer). Try later!");
-            }
-            
-        } catch (Exception e) {
-            e.printStackTrace();
-            CentralLogger.getInstance().error (this, "\"" + e.getCause() + "\"" + "-" + "Exception while running ldapUpdater" );
+    @Nonnull
+    public final CommandResult execute(@Nonnull final CommandParameters parameters) {
+        final LdapUpdater ldapUpdater = LdapUpdater.getInstance();
+        if (!ldapUpdater.isBusy()){
+            ldapUpdater.updateLdapFromIOCFiles();
+        }else{
+            return CommandResult.createMessageResult("ldapUpdater is busy for max. 150 s (was probably started by timer). Try later!");
         }
         return CommandResult.createSuccessResult();
     }

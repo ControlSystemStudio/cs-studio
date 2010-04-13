@@ -41,6 +41,7 @@ import java.util.Set;
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
+import javax.naming.directory.SearchControls;
 
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
@@ -49,15 +50,21 @@ import org.csstudio.utility.ldap.model.IOC;
 import org.csstudio.utility.ldap.model.LdapContentModel;
 import org.csstudio.utility.ldap.model.Record;
 import org.csstudio.utility.ldap.reader.LDAPReader;
-import org.csstudio.utility.ldap.reader.LdapSeachResultObserver;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
 
 import service.LdapService;
 
+/**
+ * Service implementation for the LDAP access.
+ *
+ * @author bknerr
+ * @author $Author$
+ * @version $Revision$
+ * @since 09.04.2010
+ */
+public final class LdapServiceImpl implements LdapService {
 
-public class LdapServiceImpl implements LdapService {
-
-    private final Logger LOGGER = CentralLogger.getInstance().getLogger(this);
+    private final Logger _log = CentralLogger.getInstance().getLogger(this);
 
     private static LdapService INSTANCE;
 
@@ -73,46 +80,37 @@ public class LdapServiceImpl implements LdapService {
      * {@inheritDoc}
      */
     @Override
-    public LdapContentModel getEntries(final LdapSeachResultObserver ldapDataObserver,
-                                       final String searchRoot,
-                                       final String filter) {
-        return getEntries(ldapDataObserver, searchRoot, filter, LDAPReader.DEFAULT_SCOPE);
-    }
+    public LdapSearchResult retrieveSearchResult(final String searchRoot,
+                                                 final String filter,
+                                                 final int searchScope) {
 
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public LdapContentModel getEntries(final LdapSeachResultObserver ldapDataObserver,
-                                       final String searchRoot,
-                                       final String filter,
-                                       final int searchScope)
-    {
-
-        ldapDataObserver.setModelReady(false);
-        createLdapReaderAndLookup(ldapDataObserver, searchRoot, filter, searchScope);
+        final LDAPReader job = createLdapReaderAndScheduleJob(searchRoot, filter, searchScope);
 
         try {
-            // TODO (bknerr) : timeout
-            while(!ldapDataObserver.isModelReady()){ Thread.sleep(100);} // observer finished update of the model
-            LOGGER.info("LDAP Read Done");
+            // FIXME (bknerr) : timeout !!!
+            job.join();
         } catch (final InterruptedException e) {
             e.printStackTrace();
             Thread.currentThread().interrupt();
         }
-        return ldapDataObserver.getLdapModel();
+
+        return job.getSearchResult();
     }
+
+
+
 
     @Override
     public IOC getIOCForRecordName(final String recordName) {
         if ((recordName == null) || recordName.isEmpty()) {
             return null;
         }
-        final LdapContentModel model =
-            getEntries(new LdapSeachResultObserver(),
-                       OU_FIELD_NAME + FIELD_ASSIGNMENT + EPICS_CTRL_FIELD_VALUE,
-                       EREN_FIELD_NAME + FIELD_ASSIGNMENT + recordName);
+
+        final LdapSearchResult result =
+            retrieveSearchResult(OU_FIELD_NAME + FIELD_ASSIGNMENT + EPICS_CTRL_FIELD_VALUE,
+                                 EREN_FIELD_NAME + FIELD_ASSIGNMENT + recordName,
+                                 SearchControls.SUBTREE_SCOPE);
+        final LdapContentModel model = new LdapContentModel(result);
 
         final Set<IOC> iocs = model.getIOCs();
 
@@ -129,16 +127,15 @@ public class LdapServiceImpl implements LdapService {
      * {@inheritDoc}
      */
     @Override
-    public LdapContentModel getRecords(final LdapSeachResultObserver ldapDataObserver,
-                                       final String facilityName,
-                                       final String iocName) throws InterruptedException {
+    public LdapSearchResult retrieveRecords(final String facilityName,
+                                            final String iocName) throws InterruptedException {
 
         final String query = createLdapQuery(ECON_FIELD_NAME, iocName,
                                              ECOM_FIELD_NAME, ECOM_FIELD_VALUE,
                                              EFAN_FIELD_NAME, facilityName,
                                              OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE);
 
-        return getEntries(ldapDataObserver, query, any(EREN_FIELD_NAME));
+        return retrieveSearchResult(query, any(EREN_FIELD_NAME), SearchControls.ONELEVEL_SCOPE);
     }
 
 
@@ -162,10 +159,10 @@ public class LdapServiceImpl implements LdapService {
                                    EREN_FIELD_NAME, recordName);
         try {
             context.bind(query, null, afe);
-            LOGGER.info( "Record written: " + query);
+            _log.info( "Record written: " + query);
         } catch (final NamingException e) {
-            LOGGER.warn( "Naming Exception while trying to bind: " + query);
-            LOGGER.warn(e.getExplanation());
+            _log.warn( "Naming Exception while trying to bind: " + query);
+            _log.warn(e.getExplanation());
             return false;
         }
         return true;
@@ -189,7 +186,8 @@ public class LdapServiceImpl implements LdapService {
                                      final Set<Record> validRecords)  {
 
         try {
-            final LdapContentModel model = getRecords(new LdapSeachResultObserver(), facilityName, iocName);
+            final LdapSearchResult searchResult = retrieveRecords(facilityName, iocName);
+            final LdapContentModel model = new LdapContentModel(searchResult);
 
             final IOC ioc = model.getIOC(facilityName, iocName);
             final Set<Record> ldapRecords = ioc.getRecordValues();
@@ -199,7 +197,7 @@ public class LdapServiceImpl implements LdapService {
             // for all remaining records
             for (final Record record : ldapRecords) {
                 removeRecordEntryFromLdap(Engine.getInstance().getLdapDirContext(), ioc, record);
-                LOGGER.info("Tidying: Record " + record.getName() + " removed.");
+                _log.info("Tidying: Record " + record.getName() + " removed.");
             }
         } catch (final InterruptedException e) {
             e.printStackTrace();
@@ -218,11 +216,12 @@ public class LdapServiceImpl implements LdapService {
 
         LdapContentModel model = null;
         try {
-            model = getRecords(new LdapSeachResultObserver(), facilityName, iocName);
+            model = new LdapContentModel(retrieveRecords(facilityName, iocName));
         } catch (final InterruptedException e) {
             e.printStackTrace();
             Thread.currentThread().interrupt();
         }
+
 
         final IOC ioc = model.getIOC(facilityName, iocName);
 
@@ -259,25 +258,27 @@ public class LdapServiceImpl implements LdapService {
     private void removeEntryFromLdap(final DirContext context, final String query) {
         try {
             context.unbind(query);
-            LOGGER.info("Entry removed from LDAP: " + query);
+            _log.info("Entry removed from LDAP: " + query);
         } catch (final NamingException e) {
-            LOGGER.warn("Naming Exception while trying to unbind: " + query);
-            LOGGER.warn(e.getExplanation());
+            _log.warn("Naming Exception while trying to unbind: " + query);
+            _log.warn(e.getExplanation());
         }
     }
 
 
-
-    private void createLdapReaderAndLookup(final LdapSeachResultObserver ldapDataObserver,
-                                           final String searchRoot,
-                                           final String filter,
-                                           final int searchScope) {
-        final LdapSearchResult list = new LdapSearchResult();
-        list.addObserver(ldapDataObserver);
-
-        final LDAPReader ldapr = new LDAPReader(searchRoot, filter, searchScope, list);
+    private LDAPReader createLdapReaderAndScheduleJob(final String searchRoot,
+                                                 final String filter,
+                                                 final int searchScope) {
+        final LDAPReader ldapr =
+            new LDAPReader(searchRoot,
+                           filter,
+                           searchScope
+            );
         ldapr.schedule();
+
+        return ldapr;
     }
+
 
     /**
      * @return The service instance.

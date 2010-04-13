@@ -35,11 +35,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+import javax.naming.directory.SearchControls;
+
 import org.csstudio.platform.management.CommandParameterEnumValue;
 import org.csstudio.platform.management.IDynamicParameterValues;
 import org.csstudio.utility.ldap.model.IOC;
 import org.csstudio.utility.ldap.model.LdapContentModel;
-import org.csstudio.utility.ldap.reader.LdapSeachResultObserver;
+import org.csstudio.utility.ldap.reader.LdapSearchResult;
 
 import service.LdapService;
 import service.impl.LdapServiceImpl;
@@ -54,21 +57,18 @@ public class IocEnumeration implements IDynamicParameterValues {
     private final LdapService _service = LdapServiceImpl.getInstance();
 
 
-    /**
-     * (@inheritDoc)
-     */
     @Override
+    @Nonnull
     public CommandParameterEnumValue[] getEnumerationValues() {
 
-        final LdapContentModel ldapContentModel = new LdapContentModel();
-        final LdapSeachResultObserver ldapDataObserver = new LdapSeachResultObserver(ldapContentModel);
+        final LdapSearchResult result =
+            _service.retrieveSearchResult(OU_FIELD_NAME + FIELD_ASSIGNMENT + EPICS_CTRL_FIELD_VALUE,
+                                          any(ECON_FIELD_NAME),
+                                          SearchControls.SUBTREE_SCOPE);
 
-        Set<IOC> iocs = Collections.emptySet();
-        final LdapContentModel model =
-            _service.getEntries(ldapDataObserver,
-                                OU_FIELD_NAME + FIELD_ASSIGNMENT + EPICS_CTRL_FIELD_VALUE,
-                                any(ECON_FIELD_NAME));
-        iocs = model.getIOCs();
+
+        final LdapContentModel model = new LdapContentModel(result);
+        final Set<IOC> iocs = model.getIOCs();
 
         final List<CommandParameterEnumValue> params = new ArrayList<CommandParameterEnumValue>(iocs.size());
         for (final IOC ioc : iocs) {
@@ -80,7 +80,7 @@ public class IocEnumeration implements IDynamicParameterValues {
 
         Collections.sort(params, new Comparator<CommandParameterEnumValue>() {
             @Override
-            public int compare(final CommandParameterEnumValue arg0, final CommandParameterEnumValue arg1) {
+            public int compare(@Nonnull final CommandParameterEnumValue arg0, @Nonnull final CommandParameterEnumValue arg1) {
                 return arg0.getLabel().compareToIgnoreCase(arg1.getLabel());
             }
         });

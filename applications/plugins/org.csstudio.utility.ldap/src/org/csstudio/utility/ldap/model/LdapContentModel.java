@@ -27,8 +27,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import javax.annotation.Nonnull;
 import javax.naming.directory.Attributes;
+import javax.naming.directory.SearchResult;
 
+import org.csstudio.platform.util.StringUtil;
+import org.csstudio.utility.ldap.LdapUtils;
+import org.csstudio.utility.ldap.LdapUtils.LdapQueryResult;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
 
 
@@ -48,6 +53,15 @@ public class LdapContentModel {
      */
     public LdapContentModel() {
         // Empty.
+    }
+
+
+    /**
+     * Constructor.
+     * @param searchResult the current search result
+     */
+    public LdapContentModel(@Nonnull final LdapSearchResult searchResult) {
+        addSearchResult(searchResult);
     }
 
 
@@ -149,6 +163,40 @@ public class LdapContentModel {
     }
     public void setCurrentLdapSearchResult(final LdapSearchResult res) {
         _currentSearchResult = res;
+    }
+
+
+    /**
+     * Adds a given search result to the current LDAP content model.
+     *
+     * @param searchResult the search result .
+     */
+    public void addSearchResult(@Nonnull final LdapSearchResult searchResult) {
+
+        // FIXME (bknerr) : still necessary?
+        setCurrentLdapSearchResult(searchResult);
+
+        final Set<SearchResult> answerSet = searchResult.getAnswerSet();
+
+        for (final SearchResult entry : answerSet) {
+            entry.setRelative(false);
+
+            final LdapQueryResult ldapEntry = LdapUtils.parseLdapQueryResult(entry.getNameInNamespace());
+            final String efan = ldapEntry.getEfan();
+            if (StringUtil.hasLength(efan)) {
+                addFacility(efan);
+
+                final String econ = ldapEntry.getEcon();
+                if (StringUtil.hasLength(econ)) {
+                    addIOC(efan, econ, entry.getAttributes());
+
+                    final String eren = ldapEntry.getEren();
+                    if (StringUtil.hasLength(eren)) {
+                        addRecord(efan, econ, eren);
+                    }
+                }
+            }
+        }
     }
 
 }

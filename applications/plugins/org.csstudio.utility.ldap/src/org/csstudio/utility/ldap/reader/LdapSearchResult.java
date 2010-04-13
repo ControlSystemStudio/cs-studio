@@ -26,6 +26,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
 import javax.naming.directory.SearchResult;
 
 import org.csstudio.utility.ldap.Activator;
@@ -116,22 +118,46 @@ public class LdapSearchResult extends NameSpaceSearchResult {
         notifyObservers();
     }
 
-    public void setResult(final String root, final String filter, final Set<SearchResult> answerSet) {
+    /**
+     * Sets the current result contents for these parameters
+     * @param root the search root
+     * @param filter the search filter
+     * @param answerSet the corresponding result set
+     */
+    public void setResult(@Nonnull final String root,
+                          @Nonnull final String filter,
+                          @Nonnull final Set<SearchResult> answerSet) {
         _searchroot = root;
         _filter = filter;
         _answerSet = answerSet;
 
+        // FIXME (bknerr) : probably not necessary anymore
         notifyView();
     }
 
+    /**
+     * Getter.
+     * @return the result set
+     */
+    @Nonnull
     public Set<SearchResult> getAnswerSet() {
         return _answerSet;
     }
 
+    /**
+     * Search root of the current result
+     * @return the current search root, may be null
+     */
+    @CheckForNull
     public String getSearchRoot() {
         return _searchroot;
     }
 
+    /**
+     * Filter of the current result.
+     * @return the filter
+     */
+    @CheckForNull
     public String getFilter() {
         return _filter;
     }
@@ -141,7 +167,8 @@ public class LdapSearchResult extends NameSpaceSearchResult {
      * {@inheritDoc}
      */
     @Override
-    public final void setCSIResultList(final List<ControlSystemItem> resultList) {
+    public final void setCSIResultList(@Nonnull final List<ControlSystemItem> resultList) {
+        // FIXME (bknerr) : Deprecated structure for css view
         _csiResult = new ArrayList<ControlSystemItem>(resultList);
         notifyView();
     }

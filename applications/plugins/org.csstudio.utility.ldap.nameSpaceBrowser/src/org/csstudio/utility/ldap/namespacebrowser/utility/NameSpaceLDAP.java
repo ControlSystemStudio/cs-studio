@@ -26,9 +26,7 @@ package org.csstudio.utility.ldap.namespacebrowser.utility;
 
 import javax.naming.directory.SearchControls;
 
-import org.csstudio.utility.ldap.model.LdapContentModel;
 import org.csstudio.utility.ldap.namespacebrowser.Activator;
-import org.csstudio.utility.ldap.reader.LdapSeachResultObserver;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
 import org.csstudio.utility.nameSpaceBrowser.utility.NameSpace;
 import org.csstudio.utility.namespace.utility.NameSpaceSearchResult;
@@ -52,20 +50,23 @@ public class NameSpaceLDAP extends NameSpace {
 	@Override
 	public void start() {
 		try{
-			//LDAPReader ldapr;
             final NameSpaceSearchResult nameSpaceResultList = getNameSpaceResultList();
             if (nameSpaceResultList instanceof LdapSearchResult) {
 
-                LdapContentModel model;
+                LdapSearchResult result;
                 if(getSelection().endsWith("=*,")) {
-        		    model = _service.getEntries(new LdapSeachResultObserver(), getName(), getFilter(), SearchControls.SUBTREE_SCOPE);
+                    result = _service.retrieveSearchResult(getName(),
+                                                           getFilter(),
+                                                           SearchControls.SUBTREE_SCOPE);
                 } else {
-                    model = _service.getEntries(new LdapSeachResultObserver(), getName(), getFilter(), SearchControls.ONELEVEL_SCOPE);
+                    result = _service.retrieveSearchResult(getName(),
+                                                           getFilter(),
+                                                           SearchControls.ONELEVEL_SCOPE);
                 }
-                updateResultList(model.getCurrentLdapSearchResult());
+                updateResultList(result.getCSIResultList());
 
             } else{
-                // TODO: Was soll gemacht werden wenn das 'getNameSpaceResultList() instanceof ErgebnisListe' nicht stimmt.
+                // TODO: Was soll gemacht werden wenn das 'getNameSpaceResultList() instanceof LdapSearchResult' nicht stimmt.
                 Activator.logError(Messages.getString("CSSView.exp.IAE.2")); //$NON-NLS-1$
             }
         }catch (final IllegalArgumentException e) {

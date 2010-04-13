@@ -23,12 +23,12 @@ package service;
 
 import java.util.Set;
 
+import javax.annotation.Nonnull;
 import javax.naming.directory.DirContext;
 
 import org.csstudio.utility.ldap.model.IOC;
-import org.csstudio.utility.ldap.model.LdapContentModel;
 import org.csstudio.utility.ldap.model.Record;
-import org.csstudio.utility.ldap.reader.LdapSeachResultObserver;
+import org.csstudio.utility.ldap.reader.LdapSearchResult;
 
 /**
  * LDAP Service.
@@ -40,86 +40,78 @@ import org.csstudio.utility.ldap.reader.LdapSeachResultObserver;
  */
 public interface LdapService {
 
-    /**
-     * @param ldapDataObserver the observer that fills the LDAPContent Model
-     * @param searchRoot the search root for the LDAP lookup
-     * @param filter the search filter the search filter for the LDAP lookup
-     * @return the content model enriched with the results from the current lookup
-     */
-    LdapContentModel getEntries(LdapSeachResultObserver ldapDataObserver,
-                                String searchRoot,
-                                String filter);
 
     /**
-     * Retrieves LDAP entries for the given query and search scope and fills the
-     * content model of the search result observer.
-     *
-     * @param ldapDataObserver observer
-     * @param searchRoot search root
-     * @param filter the query filter
-     * @param searchScope the search scope
-     * @return the enriched (or new) content model
-     */
-    LdapContentModel getEntries(LdapSeachResultObserver ldapDataObserver,
-                                String searchRoot,
-                                String filter,
-                                int searchScope);
-
-
-    /**
-     * @param ldapDataObserver
-     * @param facilityName
-     * @param iocName
-     * @return
+     * Retrieves the LDAP entries for the records belonging to the given facility and IOC.
+     * @param facilityName facility
+     * @param iocName ioc
+     * @return the seach result
      * @throws InterruptedException
      */
-    LdapContentModel getRecords(LdapSeachResultObserver ldapDataObserver,
-                                String facilityName,
-                                String iocName) throws InterruptedException;
+    LdapSearchResult retrieveRecords(@Nonnull String facilityName,
+                                     @Nonnull String iocName) throws InterruptedException;
 
     /**
-     * @param context
-     * @param ioc
-     * @param recordName
-     * @return
+     * Creates a new Record in LDAP.
+     * @param context the directory context
+     * @param ioc the ioc
+     * @param recordName the record
+     * @return true if the new record could be created, false otherwise
      */
-    boolean createLDAPRecord(DirContext context, IOC ioc, String recordName);
+    boolean createLDAPRecord(@Nonnull DirContext context, @Nonnull IOC ioc, @Nonnull String recordName);
 
     /**
-     * @param context
-     * @param iocName
-     * @param facilityName
-     * @param validRecords
+     * Removes all records for the given IOC from LDAP that are not contained in the valid records set.
+     * @param context .
+     * @param iocName .
+     * @param facilityName .
+     * @param validRecords .
      */
-    void tidyUpIocEntryInLdap(DirContext context, String iocName, String facilityName, Set<Record> validRecords);
+    void tidyUpIocEntryInLdap(@Nonnull DirContext context, String iocName, String facilityName, Set<Record> validRecords);
 
     /**
-     * @param context
-     * @param ioc
+     * Removes the IOC entry from the LDAP context.
+     *
+     * @param context .
+     * @param ioc .
      */
     void removeIocEntryFromLdap(DirContext context, IOC ioc);
 
     /**
-     * @param context
-     * @param iocName
-     * @param facilityName
+     * Removes the IOC entry from the LDAP context.
+     * @param context .
+     * @param iocName .
+     * @param facilityName .
      */
-    void removeIocEntryFromLdap(DirContext context, String iocName, String facilityName);
+    void removeIocEntryFromLdap(@Nonnull DirContext context,  String iocName, String facilityName);
 
 
     /**
-     * @param context
-     * @param ioc
-     * @param record
+     * Removes the record entry from the LDAP context.
+     * @param context .
+     * @param ioc .
+     * @param record .
      */
-    void removeRecordEntryFromLdap(DirContext context, IOC ioc, Record record);
+    void removeRecordEntryFromLdap(@Nonnull DirContext context,  IOC ioc,  Record record);
 
 
     /**
-     * @param recordName
-     * @return
+     * Retrieves the IOC object from LDAP to which the given record belongs to.
+     * @param recordName .
+     * @return the IOC containing this record
      */
-    IOC getIOCForRecordName(String recordName);
+    IOC getIOCForRecordName(@Nonnull String recordName);
+
+
+    /**
+     * Retrieves LDAP entries for the given query and search scope.
+     *
+     * @param searchRoot search root
+     * @param filter the query filter
+     * @param searchScope the search scope
+     * @return the search result
+     */
+    LdapSearchResult retrieveSearchResult(String searchRoot, String filter, int searchScope);
 
 
 }

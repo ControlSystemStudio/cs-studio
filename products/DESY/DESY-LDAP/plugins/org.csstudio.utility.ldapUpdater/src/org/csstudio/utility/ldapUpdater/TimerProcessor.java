@@ -22,23 +22,42 @@
 
 package org.csstudio.utility.ldapUpdater;
 
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
 
+/**
+ * The timer processor to schedule the LdapUpdater.
+ *
+ * @author bknerr
+ * @author $Author$
+ * @version $Revision$
+ * @since 13.04.2010
+ */
 public class TimerProcessor {
 
-    private static long _delay;
-    private static long _interval;
-    private static long LDAP_RECHECK = 10000; // every 10 seconds
+    private final Date _schedule;
+    private final long _interval;
 
+    private static long LDAP_RECHECK = 10000; // every 10 seconds
     private static long LDAP_TIMEOUT = 300000; // until 300 seconds are over
 
-    static class ProcessOnTime extends TimerTask {
+    /**
+     * The task.
+     *
+     * @author bknerr
+     * @author $Author$
+     * @version $Revision$
+     * @since 13.04.2010
+     */
+    private static class ProcessOnTime extends TimerTask {
 
-        private static final Logger LOGGER = CentralLogger.getInstance().getLogger(ProcessOnTime.class);
+        private static final Logger LOGGER = CentralLogger.getInstance().getLogger(ProcessOnTime.class.getName());
 
         @Override
         public void run() {
@@ -72,25 +91,24 @@ public class TimerProcessor {
         }
     }
 
-
-    public static void setDelay(final long delay) {
-        TimerProcessor._delay = delay;
-    }
-
-    public static void setInterval(final long interval) {
-        TimerProcessor._interval = interval;
-    }
-
-    TimerProcessor( final long delay, final long interval) {
-        TimerProcessor._delay = delay;
-        TimerProcessor._interval = interval;
+    /**
+     * Constructor.
+     * @param schedule date of the first schedule
+     * @param interval recurring interval
+     */
+    public TimerProcessor(@Nonnull final Date schedule, final long interval) {
+        _schedule = schedule;
+        _interval = interval;
 
         execute();
     }
 
+    /**
+     * Triggers the task with the set schedule and interval
+     */
     public void execute() {
         final Timer timer = new Timer();
         final TimerTask processOnTime = new ProcessOnTime();
-        timer.scheduleAtFixedRate(processOnTime, _delay, _interval);
+        timer.scheduleAtFixedRate(processOnTime, _schedule, _interval);
     }
 }

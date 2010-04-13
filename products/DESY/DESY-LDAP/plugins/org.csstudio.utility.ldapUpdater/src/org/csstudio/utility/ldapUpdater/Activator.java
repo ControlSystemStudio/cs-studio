@@ -21,6 +21,8 @@
  */
 package org.csstudio.utility.ldapUpdater;
 
+import javax.annotation.Nonnull;
+
 import org.csstudio.platform.AbstractCssPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -28,42 +30,47 @@ import org.osgi.framework.BundleContext;
  * The activator class controls the plug-in life cycle
  */
 public class Activator extends AbstractCssPlugin {
-    
+
     // The plug-in ID
     public static final String PLUGIN_ID = "org.csstudio.utility.ldapUpdater";
-    
+
     // The shared instance
-    private static Activator plugin;
-    
+    private static Activator INSTANCE;
+
     /**
      * Returns the shared instance
      *
      * @return the shared instance
      */
+    @Nonnull
     public static Activator getDefault() {
-        return plugin;
+        if (INSTANCE == null) {
+            INSTANCE = new Activator();
+        }
+        return INSTANCE;
     }
-    
+
     /**
-     * Constructor.
+     * Don't instantiate.
+     * Called by framework.
      */
     public Activator() {
-        plugin = this;
+        // EMPTY.
     }
-    
+
     @Override
-    protected void doStart(BundleContext context) throws Exception {
+    protected void doStart(@Nonnull final BundleContext context) throws Exception {
         // Empty
     }
-    
+
     @Override
-    protected void doStop(BundleContext context) throws Exception {
-        plugin = null;
+    protected void doStop(@Nonnull final BundleContext context) throws Exception {
+        INSTANCE = null;
     }
-    
+
     @Override
     public String getPluginId() {
         return PLUGIN_ID;
     }
-    
+
 }

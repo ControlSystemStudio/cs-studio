@@ -31,13 +31,11 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
  */
 public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#initializeDefaultPreferences()
+    /**
+     * (@inheritDoc)
      */
     @Override
-    public void initializeDefaultPreferences() {
+    public final void initializeDefaultPreferences() {
         final IEclipsePreferences prefs = new DefaultScope().getNode(Activator.PLUGIN_ID);
 
         prefs.put(PreferenceKey.P_STRING_USER_DN.name(), "uid=css_user,ou=people,o=DESY,c=DE"); //$NON-NLS-1$

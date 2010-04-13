@@ -30,6 +30,9 @@ import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreference
 import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceKey.XMPP_SERVER;
 import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceKey.XMPP_USER;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.csstudio.utility.ldapUpdater.Activator;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
@@ -43,11 +46,10 @@ import org.eclipse.core.runtime.preferences.IScopeContext;
  *
  * @author bknerr 25.03.2010
  */
-public class LdapUpdaterPreferences extends
-AbstractPreferenceInitializer {
+public class LdapUpdaterPreferences extends AbstractPreferenceInitializer {
 
     @Override
-    public void initializeDefaultPreferences() {
+    public final void initializeDefaultPreferences() {
         final IEclipsePreferences prefs =
             new DefaultScope().getNode(Activator.getDefault().getPluginId());
 
@@ -62,19 +64,39 @@ AbstractPreferenceInitializer {
 
     }
 
-    public static String getValueFromPreferences(final LdapUpdaterPreferenceKey prefKey) {
+    /**
+     * Retrieves value from preferences.
+     * @param prefKey the preference key
+     * @return the value
+     */
+    public static String getValueFromPreferences(@Nonnull final LdapUpdaterPreferenceKey prefKey) {
         return getValueFromPreferences(Activator.getDefault(), prefKey, "", null);
     }
 
-    public static String getValueFromPreferences(final LdapUpdaterPreferenceKey prefKey,
-                                                 final String defaultValue) {
+    /**
+     * Retrieves value from preferences.
+     * @param prefKey the preference key
+     * @param defaultValue the default value, if there isn't any value set.
+     * @return the value
+     */
+    @Nonnull
+    public static String getValueFromPreferences(@Nonnull final LdapUpdaterPreferenceKey prefKey,
+                                                 @Nonnull final String defaultValue) {
         return getValueFromPreferences(Activator.getDefault(), prefKey, defaultValue, null);
     }
 
-    public static String getValueFromPreferences(final Activator activator,
-                                                 final LdapUpdaterPreferenceKey prefKey,
-                                                 final String defaultValue,
-                                                 final IScopeContext[] contexts) {
+    /**
+     * Retrieves value from preferences.
+     * @param activator .
+     * @param prefKey the preference key
+     * @param defaultValue .
+     * @param contexts preference contexts
+     * @return the value
+     */
+    public static String getValueFromPreferences(@Nonnull final Activator activator,
+                                                 @Nonnull final LdapUpdaterPreferenceKey prefKey,
+                                                 @Nullable final String defaultValue,
+                                                 @Nullable final IScopeContext[] contexts) {
         final IPreferencesService prefs = Platform.getPreferencesService();
         return prefs.getString(activator.getPluginId(),
                                prefKey.getDescription(), defaultValue, contexts);
