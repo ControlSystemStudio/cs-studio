@@ -106,7 +106,7 @@ public class TimerProcessor {
     /**
      * Triggers the task with the set schedule and interval
      */
-    public void execute() {
+    public final void execute() {
         final Timer timer = new Timer();
         final TimerTask processOnTime = new ProcessOnTime();
         timer.scheduleAtFixedRate(processOnTime, _schedule, _interval);

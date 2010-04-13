@@ -30,6 +30,7 @@ import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreference
 import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceKey.XMPP_SERVER;
 import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceKey.XMPP_USER;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -69,6 +70,7 @@ public class LdapUpdaterPreferences extends AbstractPreferenceInitializer {
      * @param prefKey the preference key
      * @return the value
      */
+    @CheckForNull
     public static String getValueFromPreferences(@Nonnull final LdapUpdaterPreferenceKey prefKey) {
         return getValueFromPreferences(Activator.getDefault(), prefKey, "", null);
     }
@@ -79,7 +81,7 @@ public class LdapUpdaterPreferences extends AbstractPreferenceInitializer {
      * @param defaultValue the default value, if there isn't any value set.
      * @return the value
      */
-    @Nonnull
+    @CheckForNull
     public static String getValueFromPreferences(@Nonnull final LdapUpdaterPreferenceKey prefKey,
                                                  @Nonnull final String defaultValue) {
         return getValueFromPreferences(Activator.getDefault(), prefKey, defaultValue, null);
@@ -93,6 +95,7 @@ public class LdapUpdaterPreferences extends AbstractPreferenceInitializer {
      * @param contexts preference contexts
      * @return the value
      */
+    @CheckForNull
     public static String getValueFromPreferences(@Nonnull final Activator activator,
                                                  @Nonnull final LdapUpdaterPreferenceKey prefKey,
                                                  @Nullable final String defaultValue,

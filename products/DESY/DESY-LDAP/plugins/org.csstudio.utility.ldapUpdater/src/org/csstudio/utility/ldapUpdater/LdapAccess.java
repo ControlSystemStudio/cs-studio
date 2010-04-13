@@ -53,11 +53,26 @@ import org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceKey;
 import service.LdapService;
 import service.impl.LdapServiceImpl;
 
-
+/**
+ * LDAP Updater access class to encapsulate specific updater access.
+ *
+ * @author bknerr
+ * @author $Author$
+ * @version $Revision$
+ * @since 13.04.2010
+ */
 public final class LdapAccess {
 
     private static final LdapService SERVICE = LdapServiceImpl.getInstance();
 
+    /**
+     * Update Result.
+     *
+     * @author bknerr
+     * @author $Author$
+     * @version $Revision$
+     * @since 13.04.2010
+     */
     private static class UpdateIOCResult {
         private final int _numOfRecsWritten;
         private final boolean _noError;
@@ -92,7 +107,7 @@ public final class LdapAccess {
         }
     }
 
-    private final static Logger LOGGER = CentralLogger.getInstance().getLogger(LdapAccess.class.getCanonicalName());
+    private static final Logger LOGGER = CentralLogger.getInstance().getLogger(LdapAccess.class.getCanonicalName());
 
 
     /**
@@ -105,8 +120,10 @@ public final class LdapAccess {
 
     /**
      * TODO (bknerr) : should be encapsulated in a file access class - does not belong here.
+     * @param pathToFile the file with records
      */
-    private static Set<Record> getRecordsFromFile(final String pathToFile) {
+    @Nonnull
+    private static Set<Record> getRecordsFromFile(@Nonnull final String pathToFile) {
         final Set<Record> records = new HashSet<Record>();
         try {
             final BufferedReader br = new BufferedReader(new FileReader(pathToFile));
@@ -123,7 +140,7 @@ public final class LdapAccess {
         return Collections.emptySet();
     }
 
-    private static boolean isIOCFileNewerThanHistoryEntry(final IOC ioc, final HistoryFileContentModel historyFileModel) {
+    private static boolean isIOCFileNewerThanHistoryEntry(@Nonnull final IOC ioc, @Nonnull final HistoryFileContentModel historyFileModel) {
         final long timeFromFile = ioc.getDateTime().getTimeInMillis() / 1000;
         final long timeFromHistoryFile = historyFileModel.getTimeForRecord(ioc.getName());
         return timeFromFile > timeFromHistoryFile;
@@ -131,14 +148,14 @@ public final class LdapAccess {
 
 
     /**
-     * @param service
-     * @param ldapDataObserver
-     * @param ldapContentModel
-     * @param iocFilePath
-     * @param iocList
+     * Tidies LDAP conservatively.
+     * Gets an IOC map of valid existing IOCs and removes any entry in LDAP which is not contained in this map.
+     *
+     * @param ldapContentModel current LDAP contents
+     * @param iocMapFromFS valid IOCs
      */
-    public static void tidyUpLDAPFromIOCList(final LdapContentModel ldapContentModel,
-                                             final Map<String, IOC> iocMapFromFS){
+    public static void tidyUpLDAPFromIOCList(@Nonnull final LdapContentModel ldapContentModel,
+                                             @Nonnull final Map<String, IOC> iocMapFromFS){
 
         for (final String iocNameFromLdap : ldapContentModel.getIOCNames()) {
 
@@ -158,19 +175,20 @@ public final class LdapAccess {
     }
 
     /**
-     *
-     * @param iocName
-     * @return
+     * Retrieves valid records for an IOC from the IOC file.
+     * @param iocName the ioc file name
+     * @return a set of contained records
      */
-    public static Set<Record> getValidRecordsForIOC(final String iocName) {
+    @Nonnull
+    public static Set<Record> getValidRecordsForIOC(@Nonnull final String iocName) {
         final String iocFilePath = getValueFromPreferences(IOC_DBL_DUMP_PATH);
         final Set<Record> fileRecords = getRecordsFromFile(iocFilePath + iocName);
         return fileRecords;
     }
 
-
-    private static UpdateIOCResult updateIOC(final LdapContentModel model,
-                                             final IOC ioc) {
+    @Nonnull
+    private static UpdateIOCResult updateIOC(@Nonnull final LdapContentModel model,
+                                             @Nonnull final IOC ioc) {
 
         final String iocName = ioc.getName();
         int numOfRecsWritten = 0;

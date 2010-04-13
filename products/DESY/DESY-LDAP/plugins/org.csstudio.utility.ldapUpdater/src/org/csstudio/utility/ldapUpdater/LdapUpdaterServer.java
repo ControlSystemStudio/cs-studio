@@ -44,9 +44,17 @@ import org.remotercp.common.servicelauncher.ServiceLauncher;
 import org.remotercp.ecf.ECFConstants;
 import org.remotercp.login.connection.HeadlessConnection;
 
+/**
+ * LDAP Updater server.
+ *
+ * @author bknerr
+ * @author $Author$
+ * @version $Revision$
+ * @since 13.04.2010
+ */
 public class LdapUpdaterServer implements IApplication {
 
-    private final Logger LOG = CentralLogger.getInstance().getLogger(this);
+    private final Logger _log = CentralLogger.getInstance().getLogger(this);
 
     private volatile boolean _stopped;
 
@@ -81,19 +89,22 @@ public class LdapUpdaterServer implements IApplication {
         final long intervalSec = Long.parseLong(intervalString);
 
 
-        final Calendar date = Calendar.getInstance(TimeZone.getTimeZone("ECT"));
+        final TimeZone timeZone = TimeZone.getTimeZone("ECT");
+        final Calendar cal = Calendar.getInstance(timeZone);
 
-        final int hour = startTimeSec / 3600;
-        date.set(Calendar.HOUR, hour);
+        System.out.println(cal.getTime());
+
+        final int hour = (startTimeSec) / 3600;
+        cal.set(Calendar.HOUR, hour);
         final int minutes = (startTimeSec / 60) % 60;
-        date.set(Calendar.MINUTE, minutes);
+        cal.set(Calendar.MINUTE, minutes);
         final int seconds = startTimeSec % 3600;
-        date.set(Calendar.SECOND, seconds);
-        date.set(Calendar.MILLISECOND, 0);
+        cal.set(Calendar.SECOND, seconds);
+        cal.set(Calendar.MILLISECOND, 0);
 
-        final String delayStr = new SimpleDateFormat("HH:mm:ss").format(date.getTime());
+        final String delayStr = new SimpleDateFormat("HH:mm:ss").format(cal.getTime());
 
-        LOG.info("Autostart scheduled at " + delayStr + " (UTC) every " + intervalSec + " seconds");
+        _log.info("Autostart scheduled at " + delayStr +  " (ECT) every " + intervalSec + " seconds");
 
 
         final String username = getValueFromPreferences(XMPP_USER, "anonymous");
@@ -105,7 +116,7 @@ public class LdapUpdaterServer implements IApplication {
         ServiceLauncher.startRemoteServices();
 
 
-        new TimerProcessor(date.getTime(), intervalSec * 1000);
+        new TimerProcessor(cal.getTime(), intervalSec * 1000);
 
         synchronized (this) {
             while (!_stopped) {
@@ -120,7 +131,7 @@ public class LdapUpdaterServer implements IApplication {
      */
     @Override
     public final synchronized void stop() {
-        LOG.debug("stop() was called, stopping server.");
+        _log.debug("stop() was called, stopping server.");
         _stopped = true;
         notifyAll();
     }

@@ -48,6 +48,7 @@ public enum PreferenceKey {
      * Constructor.
      * Known eclipse bug with annotations in enum constructor:
      * {@link https://bugs.eclipse.org/bugs/show_bug.cgi?id=285701}
+     * @param contextId the corresponding value from the Context interface
      */
     //CHECKSTYLE:OFF
     private PreferenceKey(final String contextId) {

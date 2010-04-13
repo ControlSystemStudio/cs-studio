@@ -37,8 +37,6 @@ public class AutomatTine extends Automat {
 
 	// State machines parameter
 	private NameSpaceBrowserState _currentState = NameSpaceBrowserState.START;
-	private final String storeName="";
-
 	/* (non-Javadoc)
 	 * @see org.csstudio.utility.nameSpaceBrowser.utility.Automat#event(org.csstudio.utility.nameSpaceBrowser.utility.Automat.Ereignis, java.lang.String)
 	 */
