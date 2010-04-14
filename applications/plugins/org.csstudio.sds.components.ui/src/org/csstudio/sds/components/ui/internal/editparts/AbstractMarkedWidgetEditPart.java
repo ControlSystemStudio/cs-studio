@@ -1,18 +1,16 @@
 package org.csstudio.sds.components.ui.internal.editparts;
 
 import org.csstudio.sds.components.model.AbstractMarkedWidgetModel;
-import org.csstudio.sds.components.model.AbstractScaledWidgetModel;
 import org.csstudio.sds.components.ui.internal.figures.AbstractMarkedWidgetFigure;
-import org.csstudio.sds.ui.editparts.AbstractBaseEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.graphics.Color;
 
 /**
  * Base editPart controller for a widget based on {@link AbstractMarkedWidgetModel}.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetEditPart{
 
@@ -20,45 +18,45 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
 	 * Sets those properties on the figure that are defined in the
 	 * {@link AbstractMarkedWidgetFigure} base class. This method is provided for the
 	 * convenience of subclasses, which can call this method in their
-	 * implementation of {@link AbstractBaseEditPart#doCreateFigure()}.
-	 * 
+	 * implementation of {@link org.csstudio.sds.ui.editparts.AbstractBaseEditPart#doCreateFigure()}.
+	 *
 	 * @param figure
 	 *            the figure.
 	 * @param model
 	 *            the model.
 	 */
 	protected final void initializeCommonFigureProperties(
-			final AbstractMarkedWidgetFigure figure, final AbstractMarkedWidgetModel model) {		
+			final AbstractMarkedWidgetFigure figure, final AbstractMarkedWidgetModel model) {
 
 		super.initializeCommonFigureProperties(figure, model);
 		figure.setShowMarkers(model.isShowMarkers());
-		
+
 		figure.setLoloLevel(model.getLoloLevel());
 		figure.setLoLevel(model.getLoLevel());
 		figure.setHiLevel(model.getHiLevel());
 		figure.setHihiLevel(model.getHihiLevel());
-		
+
 		figure.setShowLolo(model.isShowLolo());
 		figure.setShowLo(model.isShowLo());
 		figure.setShowHi(model.isShowHi());
 		figure.setShowHihi(model.isShowHihi());
-		
+
 		figure.setLoloColor(getModelColor(AbstractMarkedWidgetModel.PROP_LOLO_COLOR));
 		figure.setLoColor(getModelColor(AbstractMarkedWidgetModel.PROP_LO_COLOR));
 		figure.setHiColor(getModelColor(AbstractMarkedWidgetModel.PROP_HI_COLOR));
 		figure.setHihiColor(getModelColor(AbstractMarkedWidgetModel.PROP_HIHI_COLOR));
-		
-		
-	}	
-	
+
+
+	}
+
 	/**
 	 * Registers property change handlers for the properties defined in
-	 * {@link AbstractScaledWidgetModel}. This method is provided for the convenience
+	 * {@link org.csstudio.sds.components.model.AbstractScaledWidgetModel}. This method is provided for the convenience
 	 * of subclasses, which can call this method in their implementation of
 	 * {@link #registerPropertyChangeHandlers()}.
 	 */
 	@Override
-	protected final void registerCommonPropertyChangeHandlers() {		
+	protected final void registerCommonPropertyChangeHandlers() {
 		super.registerCommonPropertyChangeHandlers();
 		setShowMarkersHandler();
 		setLoloLevelHandler();
@@ -68,63 +66,63 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
 		setShowLoloHandler();
 		setShowLoHandler();
 		setShowHiHandler();
-		setShowHihiHandler();		
+		setShowHihiHandler();
 		setLoloColorHandler();
-		setLoColorHandler();		
+		setLoColorHandler();
 		setHiColorHandler();
-		setHihiColorHandler();	
+		setHihiColorHandler();
 	}
 
     /**
-     * 
+     *
      */
     private void setHihiColorHandler() {
         setPropertyChangeHandler(AbstractMarkedWidgetModel.PROP_HIHI_COLOR,  new ColorChangeHander<AbstractMarkedWidgetFigure>(){
 			@Override
-			protected void doHandle(AbstractMarkedWidgetFigure figure, Color color) {
+			protected void doHandle(final AbstractMarkedWidgetFigure figure, final Color color) {
 				figure.setHihiColor(color);
 			}
 		});
     }
 
     /**
-     * 
+     *
      */
     private void setHiColorHandler() {
         setPropertyChangeHandler(AbstractMarkedWidgetModel.PROP_HI_COLOR,  new ColorChangeHander<AbstractMarkedWidgetFigure>(){
 			@Override
-			protected void doHandle(AbstractMarkedWidgetFigure figure, Color color) {
+			protected void doHandle(final AbstractMarkedWidgetFigure figure, final Color color) {
 				figure.setHiColor(color);
 			}
 		});
     }
 
     /**
-     * 
+     *
      */
     private void setLoColorHandler() {
         setPropertyChangeHandler(AbstractMarkedWidgetModel.PROP_LO_COLOR,  new ColorChangeHander<AbstractMarkedWidgetFigure>(){
 			@Override
-			protected void doHandle(AbstractMarkedWidgetFigure figure, Color color) {
+			protected void doHandle(final AbstractMarkedWidgetFigure figure, final Color color) {
 				figure.setLoColor(color);
 			}
 		});
     }
 
     /**
-     * 
+     *
      */
     private void setLoloColorHandler() {
         setPropertyChangeHandler(AbstractMarkedWidgetModel.PROP_LOLO_COLOR, new ColorChangeHander<AbstractMarkedWidgetFigure>(){
 			@Override
-			protected void doHandle(AbstractMarkedWidgetFigure figure, Color color) {
+			protected void doHandle(final AbstractMarkedWidgetFigure figure, final Color color) {
 				figure.setLoloColor(color);
 			}
 		});
     }
 
     /**
-     * 
+     *
      */
     private void setShowHihiHandler() {
         IWidgetPropertyChangeHandler showHihiHandler = new IWidgetPropertyChangeHandler() {
@@ -140,7 +138,7 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
     }
 
     /**
-     * 
+     *
      */
     private void setShowHiHandler() {
         IWidgetPropertyChangeHandler showHiHandler = new IWidgetPropertyChangeHandler() {
@@ -156,7 +154,7 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
     }
 
     /**
-     * 
+     *
      */
     private void setShowLoHandler() {
         IWidgetPropertyChangeHandler showLoHandler = new IWidgetPropertyChangeHandler() {
@@ -172,7 +170,7 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
     }
 
     /**
-     * 
+     *
      */
     private void setShowLoloHandler() {
         IWidgetPropertyChangeHandler showLoloHandler = new IWidgetPropertyChangeHandler() {
@@ -188,7 +186,7 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
     }
 
     /**
-     * 
+     *
      */
     private void setHihiLevelHandler() {
         IWidgetPropertyChangeHandler hihiHandler = new IWidgetPropertyChangeHandler() {
@@ -204,7 +202,7 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
     }
 
     /**
-     * 
+     *
      */
     private void setHiLevelHandler() {
         IWidgetPropertyChangeHandler hiHandler = new IWidgetPropertyChangeHandler() {
@@ -220,7 +218,7 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
     }
 
     /**
-     * 
+     *
      */
     private void setLoLevelHandler() {
         IWidgetPropertyChangeHandler loHandler = new IWidgetPropertyChangeHandler() {
@@ -236,7 +234,7 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
     }
 
     /**
-     * 
+     *
      */
     private void setLoloLevelHandler() {
         //LoLo Level
@@ -253,7 +251,7 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
     }
 
     /**
-     * 
+     *
      */
     private void setShowMarkersHandler() {
         IWidgetPropertyChangeHandler showMarkersHandler = new IWidgetPropertyChangeHandler() {
