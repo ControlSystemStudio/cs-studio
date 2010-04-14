@@ -115,8 +115,12 @@ public class PreferencesHelper {
 			IPath path = null;
 			MacrosInput macrosInput = new MacrosInput(new LinkedHashMap<String, String>(), true);
 			for(int i= 0; i<items.length; i++){
-				if(i == 0)
-					path = new Path(items[i]);
+				if(i == 0){
+					String urlString = items[i];
+					if(!items[i].contains("://") && items[i].contains(":/")) //$NON-NLS-1$
+						urlString = urlString.replaceFirst(":/", "://"); //$NON-NLS-1$ //$NON-NLS-2$
+					path = new Path(urlString);
+				}
 				else{
 					String[] macro = StringUtil.splitIgnoreInQuotes(items[i], MACRO_SEPARATOR, true);
 					if(macro.length == 2)
