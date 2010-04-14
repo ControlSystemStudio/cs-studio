@@ -424,7 +424,7 @@ public class Axis extends LinearScale{
 	/**
 	 * @param xyGraph the xyGraph to set
 	 */
-	public void setXyGraph(XYGraph xyGraph) {
+	public void setXyGraph(final XYGraph xyGraph) {
 		this.xyGraph = xyGraph;
 	}	
 	@Override
@@ -432,7 +432,7 @@ public class Axis extends LinearScale{
 		return title;
 	}
 
-	public void dataChanged(IDataProvider dataProvider) {
+	public void dataChanged(final IDataProvider dataProvider) {
 		if(autoScale)
 			performAutoScale(false);
 	}
@@ -443,18 +443,32 @@ public class Axis extends LinearScale{
 	 * increasing the threshold.
 	 * @param autoScaleThreshold the autoScaleThreshold to set
 	 */
-	public void setAutoScaleThreshold(double autoScaleThreshold) {
+	public void setAutoScaleThreshold(final double autoScaleThreshold) {
 		if(autoScaleThreshold > 1 || autoScaleThreshold <0)
-			throw new RuntimeException("The autoScaleThreshold must be a value in range [0,1]!");
+			throw new RuntimeException("The autoScaleThreshold must be a value in range [0,1]!"); //$NON-NLS-1$
 		this.autoScaleThreshold = autoScaleThreshold;
 	}
 	
 	/**
 	 * @param zoomType the zoomType to set
 	 */
-	public void setZoomType(ZoomType zoomType) {
+	public void setZoomType(final ZoomType zoomType)
+	{
 		this.zoomType = zoomType;
-		if(zoomType == ZoomType.PANNING)
+		// Set zoom's cursor if axis allows that type of zoom
+		if (zoomType == ZoomType.PANNING
+//		        ||
+//		    zoomType == ZoomType.ZOOM_IN ||    
+//            zoomType == ZoomType.ZOOM_OUT ||
+//            (isHorizontal() &&
+//             (zoomType == ZoomType.ZOOM_IN_HORIZONTALLY ||
+//              zoomType == ZoomType.ZOOM_OUT_HORIZONTALLY)
+//            ) ||
+//            (!isHorizontal() &&
+//             (zoomType == ZoomType.ZOOM_OUT_VERTICALLY ||
+//              zoomType == ZoomType.ZOOM_IN_VERTICALLY
+//             ))
+             )
 			setCursor(zoomType.getCursor());
 		else
 			setCursor(ZoomType.NONE.getCursor());
@@ -535,8 +549,32 @@ public class Axis extends LinearScale{
 
 	}
 	
-	
-	/**
+	/** Zoom axis
+	 *  @param center Axis position at the 'center' of the zoom
+	 *  @param factor Zoom factor. Positive to zoom 'in', negative 'out'.
+	 */
+	public void zoomInOut(final double center, final double factor)
+    {
+	    final double t1, t2;
+	    if (isLogScaleEnabled())
+	    {
+	        final double l = Math.log10(getRange().getUpper()) - 
+                    Math.log10(getRange().getLower());
+	        final double r1 = (Math.log10(center) - Math.log10(getRange().getLower()))/l;
+	        final double r2 = (Math.log10(getRange().getUpper()) - Math.log10(center))/l;
+            t1 = Math.pow(10, Math.log10(getRange().getLower()) + r1 * factor * l);
+            t2 = Math.pow(10, Math.log10(getRange().getUpper()) - r2 * factor * l);
+        }else{
+            final double l = getRange().getUpper() - getRange().getLower();
+            final double r1 = (center - getRange().getLower())/l;
+            final double r2 = (getRange().getUpper() - center)/l;
+            t1 = getRange().getLower() + r1 * factor * l;
+            t2 = getRange().getUpper() - r2 * factor * l;              
+        }
+        setRange(t1, t2);
+    }
+
+    /**
 	 * @param grid the grid to set
 	 */
 	public void setGrid(Grid grid) {
@@ -567,7 +605,8 @@ public class Axis extends LinearScale{
 		public void mouseDoubleClicked(MouseEvent me) {}
 
 		public void mousePressed(MouseEvent me) {
-			if(zoomType == ZoomType.PANNING){
+			if (zoomType == ZoomType.PANNING)
+			{
 				setCursor(grabbing);
 				armed = true;				
 				start = me.getLocation();
@@ -576,7 +615,8 @@ public class Axis extends LinearScale{
 				command = new AxisPanningCommand(Axis.this);
 				command.savePreviousStates();
 				me.consume();
-			}			
+			}
+			
 		}
 
 		public void mouseReleased(MouseEvent me) {
@@ -592,9 +632,5 @@ public class Axis extends LinearScale{
 			xyGraph.getOperationsManager().addCommand(command);		
 			me.consume();
 		}
-		
 	}
-	
-	
-
 }
