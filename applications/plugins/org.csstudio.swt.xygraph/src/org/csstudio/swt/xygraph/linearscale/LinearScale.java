@@ -77,7 +77,7 @@ public class LinearScale extends AbstractScale {
 		}else
 			margin = (int) Math.ceil(Math.max(FigureUtilities.getTextExtents(
 					format(getRange().getLower()), getFont()).height, 
-					FigureUtilities.getTextExtents(format(getRange().getUpper()), getFont()).height)/2.0);;
+					FigureUtilities.getTextExtents(format(getRange().getUpper()), getFont()).height)/2.0);
 	}
 	
 	/**
@@ -291,6 +291,7 @@ public class LinearScale extends AbstractScale {
     /*
      * @see IAxisTick#setFont(Font)
      */
+    @Override
     public void setFont(Font font) {
         if (font != null && font.isDisposed()) {
             SWT.error(SWT.ERROR_INVALID_ARGUMENT);
@@ -303,6 +304,7 @@ public class LinearScale extends AbstractScale {
 	/*
      * @see IAxisTick#setForeground(Color)
      */
+    @Override
     public void setForegroundColor(Color color) {
     	tickMarks.setForegroundColor(color);
         tickLabels.setForegroundColor(color);
@@ -323,6 +325,7 @@ public class LinearScale extends AbstractScale {
 	/**
      * Updates the tick, recalculate all parameters, such as margin, length...
      */
+    @Override
     public void updateTick() {
     	if(isDirty()){
 	    	length = isHorizontal() ? 
