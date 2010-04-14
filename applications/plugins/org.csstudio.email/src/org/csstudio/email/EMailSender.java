@@ -16,6 +16,7 @@ import sun.net.smtp.SmtpClient;
  *  body for strange characters.
  *
  *  @author Kay Kasemir
+ *  @author Bastian Knerr - documented specific exception types
  */
 @SuppressWarnings("nls")
 public class EMailSender
@@ -29,22 +30,22 @@ public class EMailSender
     /** Stream for the message content */
     final private PrintStream message;
 
+    /** @return <code>true</code> if EMail seems to be supported (SMTP host configured) */
     public static boolean isEmailSupported()
     {
         return Preferences.getSMTP_Host().length() > 0;
     }
-
 
     /** Initialize
      *  @param host SMTP Host
      *  @param from Sender's email
      *  @param to   Receiver's email
      *  @param subject Message subject
-     * @throws IOException on I/O error
+     *  @throws IOException on I/O error
      */
     public EMailSender(final String host, final String from, final String to,
                        final String subject) throws IOException
-                       {
+    {
         smtp = new SmtpClient(host);
         smtp.from(from);
         smtp.to(to);
@@ -89,15 +90,17 @@ public class EMailSender
         message.println();
     }
 
-    /** @param filename Name of image file to attach
+    /** @param filename Name of image file to attach. Must contain file ending like ".png" or ".jpg".
+     *                  Unclear which file types beyond PNG and JPG are supported.
      *  @throws IOException on File I/O error
      *  @throws FileNotFoundException a file not found error
      */
     public void attachImage(final String filename) throws FileNotFoundException, Exception
     {
         final int end = filename.lastIndexOf('.');
-        if (end < 0) {
-            throw new Exception("Missing file ending");
+        if (end < 0)
+        {
+            throw new Exception("Missing file ending, required to determine image type");
         }
         final String type = filename.substring(end + 1).toLowerCase();
         message.println("--" + boundary);
