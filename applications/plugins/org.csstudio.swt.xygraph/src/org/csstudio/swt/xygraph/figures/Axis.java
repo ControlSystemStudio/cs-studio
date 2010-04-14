@@ -33,7 +33,7 @@ import org.eclipse.swt.widgets.Display;
  * The axis figure.
  * 
  * @author Xihui Chen
- *
+ * @author Kay Kasemir - Axis zoom/pan tweaks
  */
 public class Axis extends LinearScale{
     /** The ratio of the shrink/expand area for one zoom. */
@@ -533,34 +533,40 @@ public class Axis extends LinearScale{
 		return getTickLablesSide() == LabelSide.Primary;
 	}
 	
-	private void pan(){
-		double t1, t2, m;
-		int i=0;
-		Range temp;
-		if(isHorizontal())	{
-			t1 = getPositionValue(start.x, false);
-			t2 = getPositionValue(end.x, false);
-		}else{
-			t1 = getPositionValue(start.y, false);
-			t2 = getPositionValue(end.y, false);
-		}
-			
-			temp = startRange;
-			if(isLogScaleEnabled()){
-				m = Math.log10(t2) - Math.log10(t1);
-				t1 = Math.pow(10,Math.log10(temp.getLower()) - m);
-				t2 = Math.pow(10,Math.log10(temp.getUpper()) - m);
-			}else {
-				m = t2-t1;
-				t1 = temp.getLower() - m;
-				t2 = temp.getUpper() - m;
-			}
-			setRange(t1, t2);
-			i++;
-
+	/** Pan axis according to start/end from mouse listener */
+	private void pan()
+	{
+		if(isHorizontal())
+		    pan(startRange,
+		        getPositionValue(start.x, false), getPositionValue(end.x, false));
+		else
+            pan(startRange,
+                getPositionValue(start.y, false), getPositionValue(end.y, false));
 	}
 	
-	/** Zoom axis
+	/** Pan the axis
+	 *  @param temp Original axis range before the panning started
+	 *  @param t1 Start of the panning move
+	 *  @param t2 End of the panning move
+	 */
+	void pan(final Range temp, double t1, double t2)
+    {
+        if (isLogScaleEnabled())
+        {
+            final double m = Math.log10(t2) - Math.log10(t1);
+            t1 = Math.pow(10,Math.log10(temp.getLower()) - m);
+            t2 = Math.pow(10,Math.log10(temp.getUpper()) - m);
+        }
+        else
+        {
+            final double m = t2-t1;
+            t1 = temp.getLower() - m;
+            t2 = temp.getUpper() - m;
+        }
+        setRange(t1, t2);
+    }
+
+    /** Zoom axis
 	 *  @param center Axis position at the 'center' of the zoom
 	 *  @param factor Zoom factor. Positive to zoom 'in', negative 'out'.
 	 */
@@ -601,6 +607,8 @@ public class Axis extends LinearScale{
 
 
 	/** Listener to mouse events, performs panning and some zooms */
+	// TODO This is a simpler version of PlotArea.PlotAreaZoomer
+	//      Can they become the same, or use same abstract base?
 	class AxisMouseListener extends MouseMotionListener.Stub implements MouseListener
 	{
 		private AxisPanOrZoomCommand command;

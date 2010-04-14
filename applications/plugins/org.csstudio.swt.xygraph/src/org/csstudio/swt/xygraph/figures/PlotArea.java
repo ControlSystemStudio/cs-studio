@@ -23,6 +23,7 @@ import org.eclipse.swt.widgets.Display;
 
 /**The plot area figure.
  * @author Xihui Chen
+ * @author Kay Kasemir - Axis zoom/pan tweaks
  */
 public class PlotArea extends Figure {
     
@@ -266,46 +267,28 @@ public class PlotArea extends Figure {
 		return annotationList;
 	}
 
-	private void pan(){
-		double t1, t2, m;
-		int i=0;
-		Range temp;
-		for(Axis axis : xyGraph.getXAxisList()){
-			t1 = axis.getPositionValue(start.x, false);
-			t2 = axis.getPositionValue(end.x, false);
-			temp = xAxisStartRangeList.get(i);
-			if(axis.isLogScaleEnabled()){
-				m = Math.log10(t2) - Math.log10(t1);
-				t1 = Math.pow(10,Math.log10(temp.getLower()) - m);
-				t2 = Math.pow(10,Math.log10(temp.getUpper()) - m);
-			}else {
-				m = t2-t1;
-				t1 = temp.getLower() - m;
-				t2 = temp.getUpper() - m;
-			}
-			axis.setRange(t1, t2);
-			i++;
+    /** Pan axis according to start/end from mouse listener */
+	private void pan()
+	{
+	    List<Axis> axes = xyGraph.getXAxisList();
+        for (int i=0; i<axes.size(); ++i)
+		{
+            final Axis axis = axes.get(i);
+		    axis.pan(xAxisStartRangeList.get(i),
+			         axis.getPositionValue(start.x, false),
+			         axis.getPositionValue(end.x, false));
 		}
-		i=0;
-		for(Axis axis : xyGraph.getYAxisList()){			
-			t1 = axis.getPositionValue(start.y, false);
-			t2 = axis.getPositionValue(end.y, false);
-			temp = yAxisStartRangeList.get(i);
-			if(axis.isLogScaleEnabled()){				
-				m = Math.log10(t2) - Math.log10(t1);
-				t1 = Math.pow(10.0,Math.log10(temp.getLower()) - m);
-				t2 = Math.pow(10.0,(Math.log10(temp.getUpper()) - m));
-			}
-			else{
-				m = t2-t1;
-				t1 = temp.getLower() - m;
-				t2 = temp.getUpper() - m;
-			}
-			axis.setRange(t1, t2);
-			i++;
+        axes = xyGraph.getYAxisList();
+        for (int i=0; i<axes.size(); ++i)
+		{
+            final Axis axis = axes.get(i);
+		    axis.pan(yAxisStartRangeList.get(i),
+		             axis.getPositionValue(start.y, false),
+		             axis.getPositionValue(end.y, false));
 		}
 	}
 
+	/** Listener to mouse events, performs panning and some zooms */
 	class PlotAreaZoomer extends MouseMotionListener.Stub implements MouseListener{	
 		
 		private ZoomCommand command;
