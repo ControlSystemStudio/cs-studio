@@ -27,7 +27,7 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
 	 * @param model
 	 *            the model.
 	 */
-	protected void initializeCommonFigureProperties(
+	protected final void initializeCommonFigureProperties(
 			final AbstractMarkedWidgetFigure figure, final AbstractMarkedWidgetModel model) {		
 
 		super.initializeCommonFigureProperties(figure, model);
@@ -57,22 +57,189 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
 	 * of subclasses, which can call this method in their implementation of
 	 * {@link #registerPropertyChangeHandlers()}.
 	 */
-	protected void registerCommonPropertyChangeHandlers() {		
+	@Override
+	protected final void registerCommonPropertyChangeHandlers() {		
 		super.registerCommonPropertyChangeHandlers();
-		//showMarkers
-		IWidgetPropertyChangeHandler showMarkersHandler = new IWidgetPropertyChangeHandler() {
+		setShowMarkersHandler();
+		setLoloLevelHandler();
+		setLoLevelHandler();
+		setHiLevelHandler();
+		setHihiLevelHandler();
+		setShowLoloHandler();
+		setShowLoHandler();
+		setShowHiHandler();
+		setShowHihiHandler();		
+		setLoloColorHandler();
+		setLoColorHandler();		
+		setHiColorHandler();
+		setHihiColorHandler();	
+	}
+
+    /**
+     * 
+     */
+    private void setHihiColorHandler() {
+        setPropertyChangeHandler(AbstractMarkedWidgetModel.PROP_HIHI_COLOR,  new ColorChangeHander<AbstractMarkedWidgetFigure>(){
+			@Override
+			protected void doHandle(AbstractMarkedWidgetFigure figure, Color color) {
+				figure.setHihiColor(color);
+			}
+		});
+    }
+
+    /**
+     * 
+     */
+    private void setHiColorHandler() {
+        setPropertyChangeHandler(AbstractMarkedWidgetModel.PROP_HI_COLOR,  new ColorChangeHander<AbstractMarkedWidgetFigure>(){
+			@Override
+			protected void doHandle(AbstractMarkedWidgetFigure figure, Color color) {
+				figure.setHiColor(color);
+			}
+		});
+    }
+
+    /**
+     * 
+     */
+    private void setLoColorHandler() {
+        setPropertyChangeHandler(AbstractMarkedWidgetModel.PROP_LO_COLOR,  new ColorChangeHander<AbstractMarkedWidgetFigure>(){
+			@Override
+			protected void doHandle(AbstractMarkedWidgetFigure figure, Color color) {
+				figure.setLoColor(color);
+			}
+		});
+    }
+
+    /**
+     * 
+     */
+    private void setLoloColorHandler() {
+        setPropertyChangeHandler(AbstractMarkedWidgetModel.PROP_LOLO_COLOR, new ColorChangeHander<AbstractMarkedWidgetFigure>(){
+			@Override
+			protected void doHandle(AbstractMarkedWidgetFigure figure, Color color) {
+				figure.setLoloColor(color);
+			}
+		});
+    }
+
+    /**
+     * 
+     */
+    private void setShowHihiHandler() {
+        IWidgetPropertyChangeHandler showHihiHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				AbstractMarkedWidgetFigure figure = (AbstractMarkedWidgetFigure) refreshableFigure;
-				figure.setShowMarkers((Boolean) newValue);
+				figure.setShowHihi((Boolean) newValue);
 				return true;
 			}
 		};
-		setPropertyChangeHandler(AbstractMarkedWidgetModel.PROP_SHOW_MARKERS, showMarkersHandler);
-		
-		
-		//LoLo Level
+		setPropertyChangeHandler(AbstractMarkedWidgetModel.PROP_SHOW_HIHI, showHihiHandler);
+    }
+
+    /**
+     * 
+     */
+    private void setShowHiHandler() {
+        IWidgetPropertyChangeHandler showHiHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				AbstractMarkedWidgetFigure figure = (AbstractMarkedWidgetFigure) refreshableFigure;
+				figure.setShowHi((Boolean) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(AbstractMarkedWidgetModel.PROP_SHOW_HI, showHiHandler);
+    }
+
+    /**
+     * 
+     */
+    private void setShowLoHandler() {
+        IWidgetPropertyChangeHandler showLoHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				AbstractMarkedWidgetFigure figure = (AbstractMarkedWidgetFigure) refreshableFigure;
+				figure.setShowLo((Boolean) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(AbstractMarkedWidgetModel.PROP_SHOW_LO, showLoHandler);
+    }
+
+    /**
+     * 
+     */
+    private void setShowLoloHandler() {
+        IWidgetPropertyChangeHandler showLoloHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				AbstractMarkedWidgetFigure figure = (AbstractMarkedWidgetFigure) refreshableFigure;
+				figure.setShowLolo((Boolean) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(AbstractMarkedWidgetModel.PROP_SHOW_LOLO, showLoloHandler);
+    }
+
+    /**
+     * 
+     */
+    private void setHihiLevelHandler() {
+        IWidgetPropertyChangeHandler hihiHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				AbstractMarkedWidgetFigure figure = (AbstractMarkedWidgetFigure) refreshableFigure;
+				figure.setHihiLevel((Double) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(AbstractMarkedWidgetModel.PROP_HIHI_LEVEL, hihiHandler);
+    }
+
+    /**
+     * 
+     */
+    private void setHiLevelHandler() {
+        IWidgetPropertyChangeHandler hiHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				AbstractMarkedWidgetFigure figure = (AbstractMarkedWidgetFigure) refreshableFigure;
+				figure.setHiLevel((Double) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(AbstractMarkedWidgetModel.PROP_HI_LEVEL, hiHandler);
+    }
+
+    /**
+     * 
+     */
+    private void setLoLevelHandler() {
+        IWidgetPropertyChangeHandler loHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				AbstractMarkedWidgetFigure figure = (AbstractMarkedWidgetFigure) refreshableFigure;
+				figure.setLoLevel((Double) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(AbstractMarkedWidgetModel.PROP_LO_LEVEL, loHandler);
+    }
+
+    /**
+     * 
+     */
+    private void setLoloLevelHandler() {
+        //LoLo Level
 		IWidgetPropertyChangeHandler loloHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
@@ -83,126 +250,23 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
 			}
 		};
 		setPropertyChangeHandler(AbstractMarkedWidgetModel.PROP_LOLO_LEVEL, loloHandler);
+    }
 
-		//Lo Level
-		IWidgetPropertyChangeHandler loHandler = new IWidgetPropertyChangeHandler() {
+    /**
+     * 
+     */
+    private void setShowMarkersHandler() {
+        IWidgetPropertyChangeHandler showMarkersHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				AbstractMarkedWidgetFigure figure = (AbstractMarkedWidgetFigure) refreshableFigure;
-				figure.setLoLevel((Double) newValue);
+				figure.setShowMarkers((Boolean) newValue);
 				return true;
 			}
 		};
-		setPropertyChangeHandler(AbstractMarkedWidgetModel.PROP_LO_LEVEL, loHandler);
-		
-		//Hi Level
-		IWidgetPropertyChangeHandler hiHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				AbstractMarkedWidgetFigure figure = (AbstractMarkedWidgetFigure) refreshableFigure;
-				figure.setHiLevel((Double) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(AbstractMarkedWidgetModel.PROP_HI_LEVEL, hiHandler);
-		
-		//HiHi Level
-		IWidgetPropertyChangeHandler hihiHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				AbstractMarkedWidgetFigure figure = (AbstractMarkedWidgetFigure) refreshableFigure;
-				figure.setHihiLevel((Double) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(AbstractMarkedWidgetModel.PROP_HIHI_LEVEL, hihiHandler);
-		
-		//show lolo
-		IWidgetPropertyChangeHandler showLoloHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				AbstractMarkedWidgetFigure figure = (AbstractMarkedWidgetFigure) refreshableFigure;
-				figure.setShowLolo((Boolean) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(AbstractMarkedWidgetModel.PROP_SHOW_LOLO, showLoloHandler);
-		
-		//show lo
-		IWidgetPropertyChangeHandler showLoHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				AbstractMarkedWidgetFigure figure = (AbstractMarkedWidgetFigure) refreshableFigure;
-				figure.setShowLo((Boolean) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(AbstractMarkedWidgetModel.PROP_SHOW_LO, showLoHandler);
-		
-		//show Hi
-		IWidgetPropertyChangeHandler showHiHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				AbstractMarkedWidgetFigure figure = (AbstractMarkedWidgetFigure) refreshableFigure;
-				figure.setShowHi((Boolean) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(AbstractMarkedWidgetModel.PROP_SHOW_HI, showHiHandler);
-		
-		//show Hihi
-		IWidgetPropertyChangeHandler showHihiHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				AbstractMarkedWidgetFigure figure = (AbstractMarkedWidgetFigure) refreshableFigure;
-				figure.setShowHihi((Boolean) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(AbstractMarkedWidgetModel.PROP_SHOW_HIHI, showHihiHandler);		
-		
-		
-		//Lolo color
-		setPropertyChangeHandler(AbstractMarkedWidgetModel.PROP_LOLO_COLOR, new ColorChangeHander<AbstractMarkedWidgetFigure>(){
-			@Override
-			protected void doHandle(AbstractMarkedWidgetFigure figure, Color color) {
-				figure.setLoloColor(color);
-			}
-		});
-		
-		//Lo color
-		setPropertyChangeHandler(AbstractMarkedWidgetModel.PROP_LO_COLOR,  new ColorChangeHander<AbstractMarkedWidgetFigure>(){
-			@Override
-			protected void doHandle(AbstractMarkedWidgetFigure figure, Color color) {
-				figure.setLoColor(color);
-			}
-		});		
-		
-		//Hi color
-		setPropertyChangeHandler(AbstractMarkedWidgetModel.PROP_HI_COLOR,  new ColorChangeHander<AbstractMarkedWidgetFigure>(){
-			@Override
-			protected void doHandle(AbstractMarkedWidgetFigure figure, Color color) {
-				figure.setHiColor(color);
-			}
-		});
-		
-		//Hihi color
-		setPropertyChangeHandler(AbstractMarkedWidgetModel.PROP_HIHI_COLOR,  new ColorChangeHander<AbstractMarkedWidgetFigure>(){
-			@Override
-			protected void doHandle(AbstractMarkedWidgetFigure figure, Color color) {
-				figure.setHihiColor(color);
-			}
-		});	
-		
-		
-	}
+		setPropertyChangeHandler(AbstractMarkedWidgetModel.PROP_SHOW_MARKERS, showMarkersHandler);
+    }
 
 
 }

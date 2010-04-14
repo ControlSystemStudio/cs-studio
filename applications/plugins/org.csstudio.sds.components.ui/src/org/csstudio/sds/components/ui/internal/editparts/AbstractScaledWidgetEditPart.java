@@ -48,95 +48,21 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractWidgetEditPar
 	 */
 	protected void registerCommonPropertyChangeHandlers() {
 	    super.registerPropertyChangeHandlers();
-		// value
-		IWidgetPropertyChangeHandler valueHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				AbstractScaledWidgetFigure figure = (AbstractScaledWidgetFigure) refreshableFigure;
-				figure.setValue((Double) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_VALUE, valueHandler);
-		
-		//minimum
-		IWidgetPropertyChangeHandler minimumHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				AbstractScaledWidgetFigure figure = (AbstractScaledWidgetFigure) refreshableFigure;
-				figure.setRange((Double) newValue, ((AbstractScaledWidgetModel)getModel()).getMaximum());
-				return true;
-			}
-		};
-		setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_MIN, minimumHandler);
-		
-		//maximum
-		IWidgetPropertyChangeHandler maximumHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				AbstractScaledWidgetFigure figure = (AbstractScaledWidgetFigure) refreshableFigure;
-				figure.setRange(((AbstractScaledWidgetModel)getModel()).getMinimum(), (Double) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_MAX, maximumHandler);
-		
-		//major tick step hint
-		IWidgetPropertyChangeHandler majorTickHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				AbstractScaledWidgetFigure figure = (AbstractScaledWidgetFigure) refreshableFigure;
-				figure.setMajorTickMarkStepHint((Double) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_MAJOR_TICK_STEP_HINT, majorTickHandler);
-	
-		
-		
-		//logScale
-		IWidgetPropertyChangeHandler logScaleHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				AbstractScaledWidgetFigure figure = (AbstractScaledWidgetFigure) refreshableFigure;
-				figure.setLogScale((Boolean) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_LOG_SCALE, logScaleHandler);
-		
-		//showScale
-		IWidgetPropertyChangeHandler showScaleHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				AbstractScaledWidgetFigure figure = (AbstractScaledWidgetFigure) refreshableFigure;
-				figure.setShowScale((Boolean) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_SHOW_SCALE, showScaleHandler);
-		
-	
-		//showMinorTicks
-		IWidgetPropertyChangeHandler showMinorTicksHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				AbstractScaledWidgetFigure figure = (AbstractScaledWidgetFigure) refreshableFigure;
-				figure.setShowMinorTicks((Boolean) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_SHOW_MINOR_TICKS, showMinorTicksHandler);
-		
-		//Transparent
-		IWidgetPropertyChangeHandler transparentHandler = new IWidgetPropertyChangeHandler() {
+		setValueHandler();
+		setMinRangeHandler();
+		setMaxRangeHandler();
+		setMajorTickMarkStepHintHandler();
+		setLogScaleHandler();
+		setShowScaleHandler();
+		setShowMinorTicksHandler();
+		setTransparentHandler();
+	}
+
+    /**
+     * 
+     */
+    private void setTransparentHandler() {
+        IWidgetPropertyChangeHandler transparentHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IFigure refreshableFigure) {
@@ -146,7 +72,118 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractWidgetEditPar
 			}
 		};
 		setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_TRANSPARENT, transparentHandler);
-		
-	}
+    }
+
+    /**
+     * 
+     */
+    private void setShowMinorTicksHandler() {
+        IWidgetPropertyChangeHandler showMinorTicksHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				AbstractScaledWidgetFigure figure = (AbstractScaledWidgetFigure) refreshableFigure;
+				figure.setShowMinorTicks((Boolean) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_SHOW_MINOR_TICKS, showMinorTicksHandler);
+    }
+
+    /**
+     * 
+     */
+    private void setShowScaleHandler() {
+        IWidgetPropertyChangeHandler showScaleHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				AbstractScaledWidgetFigure figure = (AbstractScaledWidgetFigure) refreshableFigure;
+				figure.setShowScale((Boolean) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_SHOW_SCALE, showScaleHandler);
+    }
+
+    /**
+     * 
+     */
+    private void setLogScaleHandler() {
+        IWidgetPropertyChangeHandler logScaleHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				AbstractScaledWidgetFigure figure = (AbstractScaledWidgetFigure) refreshableFigure;
+				figure.setLogScale((Boolean) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_LOG_SCALE, logScaleHandler);
+    }
+
+    /**
+     * 
+     */
+    private void setMajorTickMarkStepHintHandler() {
+        IWidgetPropertyChangeHandler majorTickHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				AbstractScaledWidgetFigure figure = (AbstractScaledWidgetFigure) refreshableFigure;
+				figure.setMajorTickMarkStepHint((Double) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_MAJOR_TICK_STEP_HINT, majorTickHandler);
+    }
+
+    /**
+     * 
+     */
+    private void setMaxRangeHandler() {
+        IWidgetPropertyChangeHandler maximumHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				AbstractScaledWidgetFigure figure = (AbstractScaledWidgetFigure) refreshableFigure;
+				figure.setRange(((AbstractScaledWidgetModel)getModel()).getMinimum(), (Double) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_MAX, maximumHandler);
+    }
+
+    /**
+     * 
+     */
+    private void setMinRangeHandler() {
+        IWidgetPropertyChangeHandler minimumHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				AbstractScaledWidgetFigure figure = (AbstractScaledWidgetFigure) refreshableFigure;
+				figure.setRange((Double) newValue, ((AbstractScaledWidgetModel)getModel()).getMaximum());
+				return true;
+			}
+		};
+		setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_MIN, minimumHandler);
+    }
+
+    /**
+     * 
+     */
+    private void setValueHandler() {
+        IWidgetPropertyChangeHandler valueHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				AbstractScaledWidgetFigure figure = (AbstractScaledWidgetFigure) refreshableFigure;
+				figure.setValue((Double) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_VALUE, valueHandler);
+    }
 
 }

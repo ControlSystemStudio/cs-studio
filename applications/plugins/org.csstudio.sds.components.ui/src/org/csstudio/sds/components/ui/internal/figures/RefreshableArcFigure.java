@@ -46,8 +46,8 @@ public final class RefreshableArcFigure extends Shape implements ICrossedFigure 
     /**
      * start angle and length (in degrees) of the arc should it be drawn filled? (using fill_color)
      */
-    private int start_angle = 0, angle = 90;
-    private Color fill_color;
+    private int _startAngle = 0, _angle = 90;
+    private Color _fillColor;
 
     /**
      * A border adapter, which covers all border handlings.
@@ -57,17 +57,21 @@ public final class RefreshableArcFigure extends Shape implements ICrossedFigure 
     /**
      * Is the background transparent or not?
      */
-    private boolean transparent = true;
+    private boolean _transparent = true;
 
     /**
      * Border properties.
      */
-    private int border_width;
+    private int _borderWidth;
     
-    private boolean filled;
+    private boolean _filled;
     
     private CrossedPaintHelper _crossedPaintHelper;
 
+    /**
+     * 
+     * Constructor.
+     */
     public RefreshableArcFigure() {
         _crossedPaintHelper = new CrossedPaintHelper();
     }
@@ -75,43 +79,48 @@ public final class RefreshableArcFigure extends Shape implements ICrossedFigure 
     /**
      * {@inheritDoc}
      */
+    @Override
     protected boolean useLocalCoordinates() {
         return true;
     }
 
     /**
      * Fills the arc.
+     * (@inheritDoc)
      */
-    protected void fillShape(Graphics gfx) {
+    @Override
+    protected void fillShape(final Graphics gfx) {
         // Fix HR: The background paint over the fillArc.
         // (The fillShape paint first then the outlineShape).
-        filled = true;
-        if (transparent == false) {
+        _filled = true;
+        if (!_transparent) {
             gfx.setBackgroundColor(getBackgroundColor());
-            gfx.fillOval(getBounds().getCropped(new Insets(border_width/2)));
+            gfx.fillOval(getBounds().getCropped(new Insets(_borderWidth/2)));
         }
-        gfx.setBackgroundColor(fill_color);
+        gfx.setBackgroundColor(_fillColor);
         gfx.fillArc(getBounds()
-                .getCropped(new Insets(lineWidth / 2 + lineWidth % 2 + border_width)), start_angle,
-                angle);
+                .getCropped(new Insets(lineWidth / 2 + lineWidth % 2 + _borderWidth)), _startAngle,
+                _angle);
     }
 
     /**
      * Draws the arc.
+     * (@inheritDoc)
      */
-    protected void outlineShape(Graphics gfx) {
-        if (filled == false && transparent == false) {
+    @Override
+    protected void outlineShape(final Graphics gfx) {
+        if (!_filled&& !_transparent) {
             gfx.setBackgroundColor(getBackgroundColor());
-            gfx.fillOval(getBounds().getCropped(new Insets(border_width/2)));
+            gfx.fillOval(getBounds().getCropped(new Insets(_borderWidth/2)));
         }
         if (lineWidth > 0) {
             gfx.setLineWidth(lineWidth);
             gfx.setLineCap(SWT.CAP_FLAT);
             gfx.setLineJoin(SWT.JOIN_MITER);
             gfx.drawArc(getBounds().getCropped(
-                    new Insets(lineWidth / 2 - lineWidth % 2 + border_width)), start_angle, angle);
+                    new Insets(lineWidth / 2 - lineWidth % 2 + _borderWidth)), _startAngle, _angle);
         }
-        filled = false;
+        _filled = false;
     }
 
     /**
@@ -125,44 +134,45 @@ public final class RefreshableArcFigure extends Shape implements ICrossedFigure 
     }
 
     public void setTransparent(final boolean newval) {
-        transparent = newval;
+        _transparent = newval;
     }
 
     public boolean getTransparent() {
-        return transparent;
+        return _transparent;
     }
 
     public void setBorderWidth(final int newval) {
-        border_width = newval;
+        _borderWidth = newval;
     }
 
     public int getBorderWidth() {
-        return border_width;
+        return _borderWidth;
     }
 
     public void setStartAngle(final int newval) {
-        start_angle = newval;
+        _startAngle = newval;
     }
 
     public int getStartAngle() {
-        return start_angle;
+        return _startAngle;
     }
 
     public void setAngle(final int newval) {
-        angle = newval;
+        _angle = newval;
     }
 
     public int getAngle() {
-        return angle;
+        return _angle;
     }
 
     public void setFillColor(final Color color) {
-        fill_color = color;
+        _fillColor = color;
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     @SuppressWarnings("unchecked")
     public Object getAdapter(final Class adapter) {
         if (adapter == IBorderEquippedWidget.class) {

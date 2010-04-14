@@ -109,89 +109,45 @@ abstract class AbstractChartEditPart extends AbstractWidgetEditPart {
 	 */
 	private void registerAxesChangeHandlers() {
 		// max
-		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				AbstractChartFigure figure = (AbstractChartFigure) refreshableFigure;
-				figure.setMax((Double)newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(WaveformModel.PROP_MAX, handler);
-
+	    setPropMaxHandler();
 		// min
-		handler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				AbstractChartFigure figure = (AbstractChartFigure) refreshableFigure;
-				figure.setMin((Double)newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(WaveformModel.PROP_MIN, handler);
-
+		setPropMinHandler();
 		// autoscale
-		handler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				AbstractChartFigure figure = (AbstractChartFigure) refreshableFigure;
-				figure.setAutoScale((Boolean)newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(WaveformModel.PROP_AUTOSCALE, handler);
-		
+		setPropAutoScaleHandler();
 		// labeled ticks
-		IWidgetPropertyChangeHandler showValuesHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				AbstractChartFigure figure = (AbstractChartFigure) refreshableFigure;
-				figure.setShowValues((Boolean) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(WaveformModel.PROP_LABELED_TICKS, showValuesHandler);
-		
+		setPropLabeledTicksHandler();
 		// grid lines
-		IWidgetPropertyChangeHandler ledgerLinesHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				AbstractChartFigure figure = (AbstractChartFigure) refreshableFigure;
-				figure.setShowGridLines((Integer) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(WaveformModel.PROP_SHOW_GRID_LINES, ledgerLinesHandler);
-		
+		setPropShowGridLinesHandler();
 		// show axes
-		IWidgetPropertyChangeHandler scaleHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				AbstractChartFigure figure = (AbstractChartFigure) refreshableFigure;
-				figure.setShowScale((Integer) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(WaveformModel.PROP_SHOW_AXES, scaleHandler);
-		
+		setPropShowAxesHandler();
 		// y-axis scaling
-		IWidgetPropertyChangeHandler yAxisScalingHandler = new IWidgetPropertyChangeHandler() {
+		setPropYAxisScalingHandler();
+		// x-axis scaling
+		setPropXAxisScalingHandler();
+		// y-axis label
+		setPropYAxisLabelHandler();
+	}
+
+    /**
+     * 
+     */
+    private void setPropYAxisLabelHandler() {
+        IWidgetPropertyChangeHandler yAxisLabelHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue, final Object newValue,
 					final IFigure refreshableFigure) {
 				AbstractChartFigure figure = (AbstractChartFigure) refreshableFigure;
-				figure.setYAxisScaling((Integer) newValue);
+				figure.setYAxisLabel((String) newValue);
 				return true;
 			}
 		};
-		setPropertyChangeHandler(WaveformModel.PROP_Y_AXIS_SCALING, yAxisScalingHandler);
+		setPropertyChangeHandler(WaveformModel.PROP_Y_AXIS_LABEL, yAxisLabelHandler);
+    }
 
-		// x-axis label
+    /**
+     * 
+     */
+    private void setPropXAxisScalingHandler() {
+        // x-axis label
 		IWidgetPropertyChangeHandler xAxisLabelHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue, final Object newValue,
 					final IFigure refreshableFigure) {
@@ -201,59 +157,125 @@ abstract class AbstractChartEditPart extends AbstractWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(WaveformModel.PROP_X_AXIS_LABEL, xAxisLabelHandler);
+    }
 
-		// y-axis label
-		IWidgetPropertyChangeHandler yAxisLabelHandler = new IWidgetPropertyChangeHandler() {
+    /**
+     * 
+     */
+    private void setPropYAxisScalingHandler() {
+        IWidgetPropertyChangeHandler yAxisScalingHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue, final Object newValue,
 					final IFigure refreshableFigure) {
 				AbstractChartFigure figure = (AbstractChartFigure) refreshableFigure;
-				figure.setYAxisLabel((String) newValue);
+				figure.setYAxisScaling((Integer) newValue);
 				return true;
 			}
 		};
-		setPropertyChangeHandler(WaveformModel.PROP_Y_AXIS_LABEL, yAxisLabelHandler);
-	}
+		setPropertyChangeHandler(WaveformModel.PROP_Y_AXIS_SCALING, yAxisScalingHandler);
+    }
+
+    /**
+     * 
+     */
+    private void setPropShowAxesHandler() {
+        IWidgetPropertyChangeHandler scaleHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				AbstractChartFigure figure = (AbstractChartFigure) refreshableFigure;
+				figure.setShowScale((Integer) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(WaveformModel.PROP_SHOW_AXES, scaleHandler);
+    }
+
+    /**
+     * 
+     */
+    private void setPropShowGridLinesHandler() {
+        IWidgetPropertyChangeHandler ledgerLinesHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				AbstractChartFigure figure = (AbstractChartFigure) refreshableFigure;
+				figure.setShowGridLines((Integer) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(WaveformModel.PROP_SHOW_GRID_LINES, ledgerLinesHandler);
+    }
+
+    /**
+     * 
+     */
+    private void setPropLabeledTicksHandler() {
+        IWidgetPropertyChangeHandler showValuesHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				AbstractChartFigure figure = (AbstractChartFigure) refreshableFigure;
+				figure.setShowValues((Boolean) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(WaveformModel.PROP_LABELED_TICKS, showValuesHandler);
+    }
+
+    /**
+     */
+    private void setPropAutoScaleHandler() {
+        IWidgetPropertyChangeHandler handler;
+        handler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				AbstractChartFigure figure = (AbstractChartFigure) refreshableFigure;
+				figure.setAutoScale((Boolean)newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(WaveformModel.PROP_AUTOSCALE, handler);
+    }
+
+    /**
+     */
+    private void setPropMaxHandler() {
+        IWidgetPropertyChangeHandler handler;
+        handler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                                        final Object newValue,
+                                        final IFigure refreshableFigure) {
+                AbstractChartFigure figure = (AbstractChartFigure) refreshableFigure;
+                figure.setMax((Double)newValue);
+                return true;
+            }
+        };
+        setPropertyChangeHandler(WaveformModel.PROP_MAX, handler);
+    }
+    /**
+     */
+    private void setPropMinHandler() {
+        IWidgetPropertyChangeHandler handler;
+        handler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				AbstractChartFigure figure = (AbstractChartFigure) refreshableFigure;
+				figure.setMin((Double)newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(WaveformModel.PROP_MIN, handler);
+    }
 
 	/**
 	 * Registers change handlers for the drawing style properties.
 	 */
 	private void registerDrawingStyleChangeHandlers() {
-		// line chart
-		IWidgetPropertyChangeHandler connectionLinesHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				AbstractChartFigure figure = (AbstractChartFigure) refreshableFigure;
-				figure.setLineChart((Boolean) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(WaveformModel.PROP_LINE_CHART, connectionLinesHandler);
-
-		// plot line width
-		IWidgetPropertyChangeHandler lineWidthHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				AbstractChartFigure figure = (AbstractChartFigure) refreshableFigure;
-				figure.setGraphLineWidth((Integer) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(WaveformModel.PROP_PLOT_LINE_WIDTH, lineWidthHandler);
-		
-		// transparent
-		IWidgetPropertyChangeHandler transparentHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				AbstractChartFigure figure = (AbstractChartFigure) refreshableFigure;
-				figure.setTransparent((Boolean) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(WaveformModel.PROP_TRANSPARENT, transparentHandler);
-		
+		setPropLineChartHandler();
+		setPropLineWidthHandler();
+		setPropTransparentHandler();
 		// border width and style
 		IWidgetPropertyChangeHandler borderHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
@@ -267,8 +289,27 @@ abstract class AbstractChartEditPart extends AbstractWidgetEditPart {
 		setPropertyChangeHandler(BargraphModel.PROP_BORDER_WIDTH, borderHandler);
 		setPropertyChangeHandler(BargraphModel.PROP_BORDER_STYLE, borderHandler);
 		
-		// data point drawing style
-		IWidgetPropertyChangeHandler drawingStyleHandler = new IWidgetPropertyChangeHandler() {
+		setDataPointDrawingStyleHandler();
+		setGridLinesColorHandler();		
+	}
+
+    /**
+     * 
+     */
+    private void setGridLinesColorHandler() {
+        setPropertyChangeHandler(WaveformModel.PROP_GRID_LINE_COLOR, new ColorChangeHander<AbstractChartFigure>() {
+			@Override
+			protected void doHandle(AbstractChartFigure figure, Color color) {
+				figure.setGridLinesColor(color);
+			}
+		});
+    }
+
+    /**
+     * 
+     */
+    private void setDataPointDrawingStyleHandler() {
+        IWidgetPropertyChangeHandler drawingStyleHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue, final Object newValue,
 					final IFigure refreshableFigure) {
 				AbstractChartFigure figure = (AbstractChartFigure) refreshableFigure;
@@ -277,15 +318,55 @@ abstract class AbstractChartEditPart extends AbstractWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(WaveformModel.PROP_DATA_POINT_DRAWING_STYLE, drawingStyleHandler);
-		
-		// grid line color
-		setPropertyChangeHandler(WaveformModel.PROP_GRID_LINE_COLOR, new ColorChangeHander<AbstractChartFigure>() {
-			@Override
-			protected void doHandle(AbstractChartFigure figure, Color color) {
-				figure.setGridLinesColor(color);
+    }
+
+    /**
+     * 
+     */
+    private void setPropTransparentHandler() {
+        IWidgetPropertyChangeHandler transparentHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				AbstractChartFigure figure = (AbstractChartFigure) refreshableFigure;
+				figure.setTransparent((Boolean) newValue);
+				return true;
 			}
-		});		
-	}
+		};
+		setPropertyChangeHandler(WaveformModel.PROP_TRANSPARENT, transparentHandler);
+    }
+
+    /**
+     * 
+     */
+    private void setPropLineWidthHandler() {
+        IWidgetPropertyChangeHandler lineWidthHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				AbstractChartFigure figure = (AbstractChartFigure) refreshableFigure;
+				figure.setGraphLineWidth((Integer) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(WaveformModel.PROP_PLOT_LINE_WIDTH, lineWidthHandler);
+    }
+
+    /**
+     * 
+     */
+    private void setPropLineChartHandler() {
+        IWidgetPropertyChangeHandler connectionLinesHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				AbstractChartFigure figure = (AbstractChartFigure) refreshableFigure;
+				figure.setLineChart((Boolean) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(WaveformModel.PROP_LINE_CHART, connectionLinesHandler);
+    }
 	
 	/**
 	 * Registers change handlers for the plot color properties.

@@ -201,6 +201,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public synchronized void paintFigure(final Graphics graphics) {
 		if (!_transparent) {
 			graphics.setBackgroundColor(this.getBackgroundColor());
@@ -285,54 +286,75 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 		_scale.setIncrement((_maximum-_minimum)/Math.max(1, _scaleSectionCount));
 		_scale.setStartValue(_minimum);
 		if (_orientationHorizontal) {
-			_scale.setReferencePositions(_barRectangle.x);
-			int length = _barRectangle.width/Math.max(1, _scaleSectionCount);
-			if (_scaleSectionCount==1) {
-				length--;
-			}
-			_scale.setLength(length);
-			_scale.setRegion(_barRectangle.x, _barRectangle.x+_barRectangle.width+5);
-			int height = _scaleWideness;
-			if (_showValues) {
-				height = height + TEXTHEIGHT;
-			}
-			if (_showScale == BOTTOM_RIGHT) {
-				return new Rectangle(0, _barRectangle.y + _barRectangle.height
-						- _scaleWideness/2 - 1, bounds.width, height);
-			}
-			if (_showScale == TOP_LEFT) {
-				int y = _barRectangle.y-_scaleWideness/2;
-				if (_showValues) {
-					y = y - TEXTHEIGHT;
-				}
-				return new Rectangle(0, y, bounds.width, height);
-			}
+			return getHorizontalScaleConstraint(bounds);
 		} else {
-			int length = _barRectangle.height/Math.max(1, _scaleSectionCount);
-			if (_scaleSectionCount==1) {
-				length--;
-			}
-			_scale.setLength(length);
-			_scale.setReferencePositions(_barRectangle.y+_barRectangle.height);
-			_scale.setRegion(_barRectangle.y-5, _barRectangle.y+_barRectangle.height);
-			int width = _scaleWideness;
-			if (_showValues) {
-				width = width + _textWidth;
-			}
-			if (_showScale == BOTTOM_RIGHT) {
-				return new Rectangle(_barRectangle.x + _barRectangle.width
-						- _scaleWideness/2, 0, width, bounds.height);
-			}
-			if (_showScale == TOP_LEFT) {
-				int x = _barRectangle.x-_scaleWideness/2;
-				if (_showValues) {
-					x = x- _textWidth;
-				}
-				return new Rectangle(x, 0, width, bounds.height);
-			}
+			return getVerticalScaleConstraint(bounds);
 		}
-		return new Rectangle(0, 0, 0, 0);
 	}
+
+    /**
+     * Gets the constraints for the Vertical Scale.
+     * @param bounds
+     *            The bounds for the Vertical Scale
+     * @return Rectangle The Constraints for the Vertical Scale
+     */
+    private Rectangle getVerticalScaleConstraint(final Rectangle bounds) {
+        int length = _barRectangle.height/Math.max(1, _scaleSectionCount);
+        if (_scaleSectionCount==1) {
+        	length--;
+        }
+        _scale.setLength(length);
+        _scale.setReferencePositions(_barRectangle.y+_barRectangle.height);
+        _scale.setRegion(_barRectangle.y-5, _barRectangle.y+_barRectangle.height);
+        int width = _scaleWideness;
+        if (_showValues) {
+        	width = width + _textWidth;
+        }
+        if (_showScale == BOTTOM_RIGHT) {
+        	return new Rectangle(_barRectangle.x + _barRectangle.width
+        			- _scaleWideness/2, 0, width, bounds.height);
+        }
+        if (_showScale == TOP_LEFT) {
+        	int x = _barRectangle.x-_scaleWideness/2;
+        	if (_showValues) {
+        		x = x- _textWidth;
+        	}
+        	return new Rectangle(x, 0, width, bounds.height);
+        }
+        return new Rectangle(0, 0, 0, 0);
+    }
+
+    /**
+     * Gets the constraints for the Horizontal Scale.
+     * @param bounds
+     *            The bounds for the Horizontal Scale
+     * @return Rectangle The Constraints for the Horizontal Scale
+     */
+    private Rectangle getHorizontalScaleConstraint(final Rectangle bounds) {
+        _scale.setReferencePositions(_barRectangle.x);
+        int length = _barRectangle.width/Math.max(1, _scaleSectionCount);
+        if (_scaleSectionCount==1) {
+        	length--;
+        }
+        _scale.setLength(length);
+        _scale.setRegion(_barRectangle.x, _barRectangle.x+_barRectangle.width+5);
+        int height = _scaleWideness;
+        if (_showValues) {
+        	height = height + TEXTHEIGHT;
+        }
+        if (_showScale == BOTTOM_RIGHT) {
+        	return new Rectangle(0, _barRectangle.y + _barRectangle.height
+        			- _scaleWideness/2 - 1, bounds.width, height);
+        }
+        if (_showScale == TOP_LEFT) {
+        	int y = _barRectangle.y-_scaleWideness/2;
+        	if (_showValues) {
+        		y = y - TEXTHEIGHT;
+        	}
+        	return new Rectangle(0, y, bounds.width, height);
+        }
+        return new Rectangle(0, 0, 0, 0);
+    }
 
 	/**
 	 * Calculate the real length of this bargraph. The value is calculated, to
@@ -356,72 +378,92 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	private Rectangle getBarRectangle() {
 		Rectangle bounds = this.getBounds().getCopy();
 		bounds.crop(this.getInsets());
-		int yCorrection = 0;
-		int heightCorrection = 0;
-		int xCorrection = 0;
-		int widthCorrection = 0;
 		if (_orientationHorizontal) {
-			if (_showMarks == TOP_LEFT) {
-				yCorrection = (TEXTHEIGHT+_tickMarkWideness);
-				xCorrection = (TEXTWIDTH / 2);
-			} else if (_showMarks == BOTTOM_RIGHT) {
-				heightCorrection = (TEXTHEIGHT+_tickMarkWideness);
-				xCorrection = (TEXTWIDTH / 2);
-			}
-			if (_showScale == TOP_LEFT) {
-				if (yCorrection==0) {
-					yCorrection = _scaleWideness/2;
-					if (_showValues) {
-						yCorrection = yCorrection + TEXTHEIGHT;
-						xCorrection = (_textWidth / 2);
-					}
-				}
-			}
-			if (_showScale == BOTTOM_RIGHT) {
-				if (heightCorrection==0) {
-					heightCorrection = _scaleWideness/2;
-					if (_showValues) {
-						heightCorrection = heightCorrection + TEXTHEIGHT;
-						xCorrection = (_textWidth / 2);
-					}
-				}
-			}
-			return new Rectangle(xCorrection, yCorrection, this
-					.calculateRealLength(bounds.width - 2 * xCorrection),
-					bounds.height - (yCorrection + heightCorrection));
+		    return getHorizontalBarRectangle(bounds);
+		} else {
+		    return getVerticalBarRectangle(bounds);
 		}
-		if (_showMarks == TOP_LEFT) {
-			xCorrection = TEXTWIDTH;
-			yCorrection = (TEXTHEIGHT+_tickMarkWideness) / 2;
-		}
-		if (_showMarks == BOTTOM_RIGHT) {
-			widthCorrection = TEXTWIDTH;
-			yCorrection = (TEXTHEIGHT+_tickMarkWideness) / 2;
-		}
-		if (_showScale == TOP_LEFT) {
-			if (xCorrection==0) {
-				xCorrection = _scaleWideness/2;
-				if (_showValues) {
-					xCorrection = xCorrection + _textWidth;
-					yCorrection = (TEXTHEIGHT+_scaleWideness) / 2;
-				}
-			}
-		}
-		if (_showScale == BOTTOM_RIGHT) {
-			if (widthCorrection==0) {
-				widthCorrection = _scaleWideness/2;
-				if (_showValues) {
-					widthCorrection = widthCorrection + _textWidth;
-					yCorrection = (TEXTHEIGHT+_scaleWideness) / 2;
-				}
-			}
-		}
-		return new Rectangle(xCorrection, yCorrection, bounds.width
-				- (xCorrection + widthCorrection), this
-				.calculateRealLength(bounds.height - 2 * yCorrection));
+		
 	}
 
 	/**
+     * Gets the rectangle for the vertical bargraph.
+     * @return Rectangle The rectangle for the vertical bargraph
+     */
+	private Rectangle getVerticalBarRectangle(Rectangle bounds) {
+	    int yCorrection = 0;
+        int xCorrection = 0;
+        int widthCorrection = 0;
+        if (_showMarks == TOP_LEFT) {
+            xCorrection = TEXTWIDTH;
+            yCorrection = (TEXTHEIGHT+_tickMarkWideness) / 2;
+        }
+        if (_showMarks == BOTTOM_RIGHT) {
+            widthCorrection = TEXTWIDTH;
+            yCorrection = (TEXTHEIGHT+_tickMarkWideness) / 2;
+        }
+        if (_showScale == TOP_LEFT) {
+            if (xCorrection==0) {
+                xCorrection = _scaleWideness/2;
+                if (_showValues) {
+                    xCorrection = xCorrection + _textWidth;
+                    yCorrection = (TEXTHEIGHT+_scaleWideness) / 2;
+                }
+            }
+        }
+        if (_showScale == BOTTOM_RIGHT) {
+            if (widthCorrection==0) {
+                widthCorrection = _scaleWideness/2;
+                if (_showValues) {
+                    widthCorrection = widthCorrection + _textWidth;
+                    yCorrection = (TEXTHEIGHT+_scaleWideness) / 2;
+                }
+            }
+        }
+        return new Rectangle(xCorrection, yCorrection, bounds.width
+                - (xCorrection + widthCorrection), this
+                .calculateRealLength(bounds.height - 2 * yCorrection));
+    }
+
+	/**
+     * Gets the rectangle for the horizontal bargraph.
+     * @return Rectangle The rectangle for the horizontal bargraph
+     */
+    private Rectangle getHorizontalBarRectangle(Rectangle bounds) {
+	    int yCorrection = 0;
+        int heightCorrection = 0;
+        int xCorrection = 0;
+        if (_showMarks == TOP_LEFT) {
+            yCorrection = (TEXTHEIGHT+_tickMarkWideness);
+            xCorrection = (TEXTWIDTH / 2);
+        } else if (_showMarks == BOTTOM_RIGHT) {
+            heightCorrection = (TEXTHEIGHT+_tickMarkWideness);
+            xCorrection = (TEXTWIDTH / 2);
+        }
+        if (_showScale == TOP_LEFT) {
+            if (yCorrection==0) {
+                yCorrection = _scaleWideness/2;
+                if (_showValues) {
+                    yCorrection = yCorrection + TEXTHEIGHT;
+                    xCorrection = (_textWidth / 2);
+                }
+            }
+        }
+        if (_showScale == BOTTOM_RIGHT) {
+            if (heightCorrection==0) {
+                heightCorrection = _scaleWideness/2;
+                if (_showValues) {
+                    heightCorrection = heightCorrection + TEXTHEIGHT;
+                    xCorrection = (_textWidth / 2);
+                }
+            }
+        }
+        return new Rectangle(xCorrection, yCorrection, this
+                .calculateRealLength(bounds.width - 2 * xCorrection),
+                bounds.height - (yCorrection + heightCorrection));
+    }
+
+    /**
 	 * Gets the weight (0.0 - 1.0) for the value.
 	 * @param value
 	 *            The value, which weight should be calculated.
@@ -660,11 +702,10 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	}
 	
 	public void approximateTextWidth() {
-		float height = 14;
+		float width = 14;
 		if (this.getFont()!=null && this.getFont().getFontData().length>0 && this.getFont().getFontData()[0]!=null) {
-			height = this.getFont().getFontData()[0].height;	
+		    width = this.getFont().getFontData()[0].height;	
 		}
-		float width = height;
 		NumberFormat format = NumberFormat.getInstance();
 		format.setMaximumFractionDigits(2); 
 		int minLength = (int) (format.format(_minimum).length()*width);
@@ -779,6 +820,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	public Object getAdapter(final Class adapter) {
 		if (adapter == IBorderEquippedWidget.class) {
@@ -1396,86 +1438,102 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 				this.removeAll();
 				return;
 			}
-			int index = 0;
-			int pos = _refPos;
 			if (_isHorizontal) {
-				int height = _wideness;
-				if (_showValues) {
-					height = TEXTHEIGHT + _wideness;
-				}
-				double value = _startValue;
-				while (pos <= this.getBounds().width && pos <= _end) {
-					if (pos>=_begin) {
-						if (index>=_posScaleMarkers.size()) {
-							this.addScaleMarker(index, _posScaleMarkers);
-						}
-						this.setConstraint(_posScaleMarkers.get(index), new Rectangle(pos-_textWidth/2,0,_textWidth,height));
-						this.refreshScaleMarker(_posScaleMarkers.get(index), value, ((index>0 || _showFirst) && _showValues));
-						index++;
-					}
-					value = value + _increment;
-					pos = pos + _length;
-				}
-				this.removeScaleMarkers(index, _posScaleMarkers);
-				if (_showNegativSections) {
-					pos = _refPos - _length;
-					index = 0;
-					value = _startValue - _increment;
-					while (pos > 0 && pos >= _begin) {
-						if (pos<=_end) {
-							if (index>=_negScaleMarkers.size()) {
-								this.addScaleMarker(index, _negScaleMarkers);
-							}
-							this.setConstraint(_negScaleMarkers.get(index), new Rectangle(pos-_textWidth/2,0,_textWidth,height));
-							this.refreshScaleMarker(_negScaleMarkers.get(index), value, _showValues);
-							index++;	
-						}
-						value = value - _increment;
-						pos = pos - _length;
-					}	
-					this.removeScaleMarkers(index, _negScaleMarkers);
-				}
+			    refreshHorizontalConstraints();
 			} else {
-				pos = pos - 1;
-				int width = _wideness;
-				if (_showValues) {
-					width = _textWidth + _wideness;
-				}
-				double value = _startValue;
-				while (pos >= 0 && pos >= _begin) {
-					if (pos<=_end) {
-						if (index>=_posScaleMarkers.size()) {
-							this.addScaleMarker(index, _posScaleMarkers);
-						}
-						this.setConstraint(_posScaleMarkers.get(index), new Rectangle(0,pos-TEXTHEIGHT/2,width,TEXTHEIGHT));
-						this.refreshScaleMarker(_posScaleMarkers.get(index), value, ((index>0 || _showFirst) && _showValues)); 
-						index++;
-					}
-					value = value + _increment;
-					pos = pos - _length;
-				}
-				this.removeScaleMarkers(index, _posScaleMarkers);
-				if (_showNegativSections) {
-					
-					pos = _refPos + _length - 1;
-					index = 0;
-					value = _startValue - _increment;
-					while (pos < this.getBounds().height && pos <= _end) {
-						if (pos>=_begin) {
-							if (index>=_negScaleMarkers.size()) {
-								this.addScaleMarker(index, _negScaleMarkers);
-							}
-							this.setConstraint(_negScaleMarkers.get(index), new Rectangle(0,pos-TEXTHEIGHT/2,width,TEXTHEIGHT));
-							this.refreshScaleMarker(_negScaleMarkers.get(index), value, _showValues);
-							index++;	
-						}
-						value = value - _increment;
-						pos = pos + _length;
-					}	
-					this.removeScaleMarkers(index, _negScaleMarkers);
-				}
+			    refreshVerticalConstraints();
 			}
 		}
+
+		/**
+         * Refreshes the Constraints at Vertical orientation.
+         */
+        private void refreshVerticalConstraints() {
+            int index = 0;
+            int pos = _refPos;
+            pos = pos - 1;
+            int width = _wideness;
+            if (_showValues) {
+                width = _textWidth + _wideness;
+            }
+            double value = _startValue;
+            while (pos >= 0 && pos >= _begin) {
+                if (pos<=_end) {
+                    if (index>=_posScaleMarkers.size()) {
+                        this.addScaleMarker(index, _posScaleMarkers);
+                    }
+                    this.setConstraint(_posScaleMarkers.get(index), new Rectangle(0,pos-TEXTHEIGHT/2,width,TEXTHEIGHT));
+                    this.refreshScaleMarker(_posScaleMarkers.get(index), value, ((index>0 || _showFirst) && _showValues)); 
+                    index++;
+                }
+                value = value + _increment;
+                pos = pos - _length;
+            }
+            this.removeScaleMarkers(index, _posScaleMarkers);
+            if (_showNegativSections) {
+                
+                pos = _refPos + _length - 1;
+                index = 0;
+                value = _startValue - _increment;
+                while (pos < this.getBounds().height && pos <= _end) {
+                    if (pos>=_begin) {
+                        if (index>=_negScaleMarkers.size()) {
+                            this.addScaleMarker(index, _negScaleMarkers);
+                        }
+                        this.setConstraint(_negScaleMarkers.get(index), new Rectangle(0,pos-TEXTHEIGHT/2,width,TEXTHEIGHT));
+                        this.refreshScaleMarker(_negScaleMarkers.get(index), value, _showValues);
+                        index++;    
+                    }
+                    value = value - _increment;
+                    pos = pos + _length;
+                }   
+                this.removeScaleMarkers(index, _negScaleMarkers);
+            }
+        }
+
+        /**
+         * Refreshes the Constraints at horizontal orientation.
+         */
+        private void refreshHorizontalConstraints() {
+            int index = 0;
+            int pos = _refPos;
+            int height = _wideness;
+            if (_showValues) {
+            	height = TEXTHEIGHT + _wideness;
+            }
+            double value = _startValue;
+            while (pos <= this.getBounds().width && pos <= _end) {
+            	if (pos>=_begin) {
+            		if (index>=_posScaleMarkers.size()) {
+            			this.addScaleMarker(index, _posScaleMarkers);
+            		}
+            		this.setConstraint(_posScaleMarkers.get(index), new Rectangle(pos-_textWidth/2,0,_textWidth,height));
+            		this.refreshScaleMarker(_posScaleMarkers.get(index), value, ((index>0 || _showFirst) && _showValues));
+            		index++;
+            	}
+            	value = value + _increment;
+            	pos = pos + _length;
+            }
+            this.removeScaleMarkers(index, _posScaleMarkers);
+            if (_showNegativSections) {
+            	pos = _refPos - _length;
+            	index = 0;
+            	value = _startValue - _increment;
+            	while (pos > 0 && pos >= _begin) {
+            		if (pos<=_end) {
+            			if (index>=_negScaleMarkers.size()) {
+            				this.addScaleMarker(index, _negScaleMarkers);
+            			}
+            			this.setConstraint(_negScaleMarkers.get(index), new Rectangle(pos-_textWidth/2,0,_textWidth,height));
+            			this.refreshScaleMarker(_negScaleMarkers.get(index), value, _showValues);
+            			index++;	
+            		}
+            		value = value - _increment;
+            		pos = pos - _length;
+            	}	
+            	this.removeScaleMarkers(index, _negScaleMarkers);
+            }
+        }
 
 		/**
 		 * Refreshes the given ScaleMarker.
@@ -1609,27 +1667,6 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 			_showNegativSections = showNegativ;
 		}
 
-		/**
-		 * Sets the wideness of this scale.
-		 * 
-		 * @param wideness
-		 *            The wideness of this scale
-		 */
-		public void setWideness(final int wideness) {
-			_wideness = wideness;
-			this.refreshConstraints();
-		}
-		
-		/**
-		 * Sets, if the first Marker should be shown.
-		 * @param showFirst
-		 * 				True if the first Marker should be shown, false otherwise
-		 */
-		public void setShowFirstMarker(final boolean showFirst) {
-			_showFirst = showFirst;
-			this.refreshConstraints();
-		}
-		
 		/**
 		 * Sets, if the values of the Markers should be shown.
 		 * @param showValues
