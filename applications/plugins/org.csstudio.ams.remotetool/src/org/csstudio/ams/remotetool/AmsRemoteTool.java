@@ -27,11 +27,14 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
+import org.csstudio.ams.remotetool.internal.PreferenceKeys;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.management.CommandDescription;
 import org.csstudio.platform.management.CommandParameters;
 import org.csstudio.platform.management.CommandResult;
 import org.csstudio.platform.management.IManagementCommandService;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.presence.roster.IRoster;
 import org.eclipse.ecf.presence.roster.IRosterEntry;
@@ -266,9 +269,10 @@ public class AmsRemoteTool implements IApplication
     
     public void connectToXMPPServer()
     {
-        String xmppUser = "ams-remotetool";
-        String xmppPassword = "ams";
-        String xmppServer = "krynfs.desy.de";
+        IPreferencesService pref = Platform.getPreferencesService();
+        String xmppServer = pref.getString(Activator.PLUGIN_ID, PreferenceKeys.P_XMPP_SERVER, "localhost", null);
+        String xmppUser = pref.getString(Activator.PLUGIN_ID, PreferenceKeys.P_XMPP_USER, "anonymous", null);
+        String xmppPassword = pref.getString(Activator.PLUGIN_ID, PreferenceKeys.P_XMPP_PASSWORD, "anonymous", null);
 
         try
         {
@@ -283,7 +287,7 @@ public class AmsRemoteTool implements IApplication
 
     public void usage()
     {
-        logger.info(this, "AmsRemoteTool, Markus Moeller, MKS 2, (C)2009");
+        logger.info(this, "AmsRemoteTool, Markus Moeller, MKS 2, (C)2010");
         logger.info(this, "This application stops an AMS process via XMPP action call.");
         logger.info(this, "Options:");
         logger.info(this, "-host - Name of the computer on which the AMS application is running.");
