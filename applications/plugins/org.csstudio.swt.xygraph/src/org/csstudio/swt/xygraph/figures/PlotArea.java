@@ -25,11 +25,6 @@ import org.eclipse.swt.widgets.Display;
  * @author Xihui Chen
  */
 public class PlotArea extends Figure {
-    /** The ratio of the shrink/expand area for one zoom. */
-    final private static double ZOOM_RATIO = 0.1;
-    
-    /** The auto zoom interval in ms.*/
-    final private static int ZOOM_SPEED = 200;
     
     final private XYGraph xyGraph;
 	final private List<Trace> traceList = new ArrayList<Trace>();
@@ -382,21 +377,14 @@ public class PlotArea extends Figure {
 				start = me.getLocation();
 				end = new Point();
 				// Start timer that will zoom while mouse button is pressed
-				Display.getCurrent().timerExec(ZOOM_SPEED, new Runnable(){
-					public void run() {	
-						if(armed){
-						    switch (zoomType)
-						    {
-						    case ZOOM_IN:              zoomInOut(true, true,  ZOOM_RATIO); break;
-						    case ZOOM_IN_HORIZONTALLY: zoomInOut(true, false, ZOOM_RATIO); break;
-						    case ZOOM_IN_VERTICALLY:   zoomInOut(false, true, ZOOM_RATIO); break;
-						    case ZOOM_OUT: 			   zoomInOut(true, true, -ZOOM_RATIO); break;
-						    case ZOOM_OUT_HORIZONTALLY:zoomInOut(true, false,-ZOOM_RATIO); break;
-						    case ZOOM_OUT_VERTICALLY:  zoomInOut(false, true,-ZOOM_RATIO); break;
-						    default:                   // NOP
-						    }
-							Display.getCurrent().timerExec(ZOOM_SPEED, this);
-						}
+				Display.getCurrent().timerExec(Axis.ZOOM_SPEED, new Runnable()
+				{
+					public void run()
+					{	
+						if (!armed)
+						    return;
+					    performInOutZoom();
+						Display.getCurrent().timerExec(Axis.ZOOM_SPEED, this);
 					}
 				});
 				break;
@@ -412,8 +400,9 @@ public class PlotArea extends Figure {
 		}
 
 		@Override
-		public void mouseExited(MouseEvent me) {
-			//make sure the zoomIn/Out timer could be stopped
+		public void mouseExited(final MouseEvent me)
+		{
+			// Treat like releasing the button to stop zoomIn/Out timer
 		    switch (zoomType)
             {
             case ZOOM_IN:
@@ -442,23 +431,13 @@ public class PlotArea extends Figure {
 			case PANNING:
 				pan();					
 				break;	
-			case ZOOM_IN:             
-			    zoomInOut(true, true,  2*ZOOM_RATIO);
-			     break;
+			case ZOOM_IN:  
             case ZOOM_IN_HORIZONTALLY:
-                zoomInOut(true, false, 2*ZOOM_RATIO);
-                break;
             case ZOOM_IN_VERTICALLY:
-                zoomInOut(false, true, 2*ZOOM_RATIO);
-                break;
             case ZOOM_OUT:
-                zoomInOut(true, true, -2*ZOOM_RATIO);
-                break;
             case ZOOM_OUT_HORIZONTALLY:
-                zoomInOut(true, false,-2*ZOOM_RATIO);
-                break;
             case ZOOM_OUT_VERTICALLY:
-                zoomInOut(false, true,-2*ZOOM_RATIO);
+                performInOutZoom();
                 break;
 			default:
 				break;
@@ -466,12 +445,28 @@ public class PlotArea extends Figure {
 			
 			if(zoomType != ZoomType.NONE && command != null){
 				command.saveAfterStates();
-				xyGraph.getOperationsManager().addCommand(command);				
+				xyGraph.getOperationsManager().addCommand(command);		
+				command = null;
 			}		
 			armed = false;
 			end = null; 
 			start = null;			
 			PlotArea.this.repaint();
 		}
+
+		/** Perform the in or out zoom according to zoomType */
+        private void performInOutZoom()
+        {
+            switch (zoomType)
+            {
+            case ZOOM_IN:              zoomInOut(true, true,  Axis.ZOOM_RATIO); break;
+            case ZOOM_IN_HORIZONTALLY: zoomInOut(true, false, Axis.ZOOM_RATIO); break;
+            case ZOOM_IN_VERTICALLY:   zoomInOut(false, true, Axis.ZOOM_RATIO); break;
+            case ZOOM_OUT:             zoomInOut(true, true, -Axis.ZOOM_RATIO); break;
+            case ZOOM_OUT_HORIZONTALLY:zoomInOut(true, false,-Axis.ZOOM_RATIO); break;
+            case ZOOM_OUT_VERTICALLY:  zoomInOut(false, true,-Axis.ZOOM_RATIO); break;
+            default:                   // NOP
+            }
+        }
 	}
 }

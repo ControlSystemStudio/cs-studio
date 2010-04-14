@@ -6,7 +6,7 @@ import java.util.List;
 import org.csstudio.swt.xygraph.dataprovider.IDataProvider;
 import org.csstudio.swt.xygraph.linearscale.LinearScale;
 import org.csstudio.swt.xygraph.linearscale.Range;
-import org.csstudio.swt.xygraph.undo.AxisPanningCommand;
+import org.csstudio.swt.xygraph.undo.AxisPanOrZoomCommand;
 import org.csstudio.swt.xygraph.undo.ZoomType;
 import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
 import org.csstudio.swt.xygraph.util.XYGraphMediaFactory.CURSOR_TYPE;
@@ -36,6 +36,11 @@ import org.eclipse.swt.widgets.Display;
  *
  */
 public class Axis extends LinearScale{
+    /** The ratio of the shrink/expand area for one zoom. */
+    final static double ZOOM_RATIO = 0.1;
+    
+    /** The auto zoom interval in ms.*/
+    final static int ZOOM_SPEED = 200;
 	
 	private static final Color GRAY_COLOR = XYGraphMediaFactory.getInstance().getColor(
 			XYGraphMediaFactory.COLOR_GRAY);
@@ -86,7 +91,7 @@ public class Axis extends LinearScale{
 			setOrientation(Orientation.VERTICAL);
 		listeners = new ArrayList<IAxisListener>();
 		
-		AxisPanner panner = new AxisPanner();
+		AxisMouseListener panner = new AxisMouseListener();
 		addMouseListener(panner);
 		addMouseMotionListener(panner);
 		grabbing = XYGraphMediaFactory.getCursor(CURSOR_TYPE.GRABBING);	
@@ -449,6 +454,24 @@ public class Axis extends LinearScale{
 		this.autoScaleThreshold = autoScaleThreshold;
 	}
 	
+	/** @param zoom Zoom Type
+	 *  @return <code>true</code> if the zoom type is applicable to this axis
+ 	 */
+	private boolean isValidZoomType(final ZoomType zoom)
+	{
+	    return zoom == ZoomType.PANNING   ||
+               zoom == ZoomType.ZOOM_IN   ||    
+               zoom == ZoomType.ZOOM_OUT  ||
+               (isHorizontal() &&
+                (zoom == ZoomType.ZOOM_IN_HORIZONTALLY ||
+                 zoom == ZoomType.ZOOM_OUT_HORIZONTALLY)
+               ) ||
+               (!isHorizontal() &&
+                (zoom == ZoomType.ZOOM_OUT_VERTICALLY ||
+                 zoom == ZoomType.ZOOM_IN_VERTICALLY)
+               );
+	}
+
 	/**
 	 * @param zoomType the zoomType to set
 	 */
@@ -456,19 +479,7 @@ public class Axis extends LinearScale{
 	{
 		this.zoomType = zoomType;
 		// Set zoom's cursor if axis allows that type of zoom
-		if (zoomType == ZoomType.PANNING
-//		        ||
-//		    zoomType == ZoomType.ZOOM_IN ||    
-//            zoomType == ZoomType.ZOOM_OUT ||
-//            (isHorizontal() &&
-//             (zoomType == ZoomType.ZOOM_IN_HORIZONTALLY ||
-//              zoomType == ZoomType.ZOOM_OUT_HORIZONTALLY)
-//            ) ||
-//            (!isHorizontal() &&
-//             (zoomType == ZoomType.ZOOM_OUT_VERTICALLY ||
-//              zoomType == ZoomType.ZOOM_IN_VERTICALLY
-//             ))
-             )
+		if (isValidZoomType(zoomType))
 			setCursor(zoomType.getCursor());
 		else
 			setCursor(ZoomType.NONE.getCursor());
@@ -589,48 +600,118 @@ public class Axis extends LinearScale{
 	}
 
 
-	class AxisPanner extends MouseMotionListener.Stub implements MouseListener {
-		
-		private AxisPanningCommand command;
+	/** Listener to mouse events, performs panning and some zooms */
+	class AxisMouseListener extends MouseMotionListener.Stub implements MouseListener
+	{
+		private AxisPanOrZoomCommand command;
 		
 		@Override
-		public void mouseDragged(MouseEvent me) {
-			if(!armed)
+		public void mouseDragged(final MouseEvent me)
+		{
+			if (! (armed  &&  zoomType == ZoomType.PANNING))
 				return;
 			end = me.getLocation();
 			pan();
 			me.consume();				
 		}
 
-		public void mouseDoubleClicked(MouseEvent me) {}
+		public void mouseDoubleClicked(final MouseEvent me) {}
 
-		public void mousePressed(MouseEvent me) {
-			if (zoomType == ZoomType.PANNING)
-			{
+		public void mousePressed(final MouseEvent me)
+		{
+            // Only react to 'main' mouse button, only react to 'real' zoom
+            if (me.button != 1 || ! isValidZoomType(zoomType))
+                return;
+            armed = true;
+            
+            //get start position
+            switch (zoomType)
+            {
+            case PANNING:
 				setCursor(grabbing);
-				armed = true;				
 				start = me.getLocation();
 				end = null;
 				startRange = getRange();
-				command = new AxisPanningCommand(Axis.this);
-				command.savePreviousStates();
-				me.consume();
+				break;
+				
+            case ZOOM_IN:
+            case ZOOM_IN_HORIZONTALLY:
+            case ZOOM_IN_VERTICALLY:
+            case ZOOM_OUT:
+            case ZOOM_OUT_HORIZONTALLY:
+            case ZOOM_OUT_VERTICALLY:
+                start = me.getLocation();
+                end = new Point();
+                // Start timer that will zoom while mouse button is pressed
+                Display.getCurrent().timerExec(ZOOM_SPEED, new Runnable()
+                {
+                    public void run()
+                    {   
+                        if (!armed)
+                            return;
+                        performInOutZoom();
+                        Display.getCurrent().timerExec(ZOOM_SPEED, this);
+                    }
+                });
+                break;
+
+            default:
+                break;
 			}
-			
+
+            command = new AxisPanOrZoomCommand(zoomType.getDescription(), Axis.this);
+            command.savePreviousStates();
+            me.consume();
+	    }
+
+		@Override
+		public void mouseExited(final MouseEvent me)
+		{
+            // Treat like releasing the button to stop zoomIn/Out timer
+		    switch (zoomType)
+            {
+            case ZOOM_IN:
+            case ZOOM_IN_HORIZONTALLY:
+            case ZOOM_IN_VERTICALLY:
+            case ZOOM_OUT:
+            case ZOOM_OUT_HORIZONTALLY:
+            case ZOOM_OUT_VERTICALLY:
+                mouseReleased(me);
+            default:
+            }
 		}
 
-		public void mouseReleased(MouseEvent me) {
-			if(zoomType != ZoomType.PANNING || !armed || 
-					end == null || start == null || command == null) 
+		public void mouseReleased(final MouseEvent me)
+		{
+            armed = false;
+            if (zoomType == ZoomType.PANNING)
+                setCursor(zoomType.getCursor());
+			if (end == null || start == null || command == null) 
 				return;
 			
-			setCursor(zoomType.getCursor());
-			armed = false;
 			start = null;
 			end = null;
 			command.saveAfterStates();
 			xyGraph.getOperationsManager().addCommand(command);		
+			command = null;
 			me.consume();
 		}
+
+		/** Perform the in or out zoom according to zoomType */
+        private void performInOutZoom()
+        {
+            final int pixel_pos = isHorizontal() ? start.x : start.y;
+            final double center = getPositionValue(pixel_pos, false);
+            switch (zoomType)
+            {
+            case ZOOM_IN:              zoomInOut(center, ZOOM_RATIO); break;
+            case ZOOM_IN_HORIZONTALLY: zoomInOut(center, ZOOM_RATIO); break;
+            case ZOOM_IN_VERTICALLY:   zoomInOut(center, ZOOM_RATIO); break;
+            case ZOOM_OUT:             zoomInOut(center, -ZOOM_RATIO); break;
+            case ZOOM_OUT_HORIZONTALLY:zoomInOut(center, -ZOOM_RATIO); break;
+            case ZOOM_OUT_VERTICALLY:  zoomInOut(center, -ZOOM_RATIO); break;
+            default:                   // NOP
+            }
+        }
 	}
 }
