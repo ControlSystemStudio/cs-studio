@@ -104,10 +104,24 @@ ol
     margin-bottom: 0;
 }
 
+/* List without bullet */
 ul.plain
 {
     list-style-type: none;
 }
+
+/* List without bullets, using <img.> for icon */
+ul.plain_icons
+{
+    list-style-type: none;
+    margin-left: 5ex;
+}
+ul.plain_icons img
+{
+    position: absolute;
+    left: 3ex;
+}
+
 
 em
 {

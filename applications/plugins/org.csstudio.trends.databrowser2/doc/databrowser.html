@@ -1,3 +1,4 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <LINK href="db.css" rel="stylesheet" type="text/css">
@@ -131,7 +132,7 @@ then select "Show Toolbar".
 <p>
 Tool tips with brief explanations will appear if you hover the mouse pointer
 over a toolbar button for a few seconds. Explanation of toolbar buttons:
-<ul class="plain">
+<ul class="plain_icons">
 <li><img src="Configure.png" width=16 height=16/> Configure Settings:
     Opens dialog for configuring the plot.<br>
     Note that these are runtime settings which include things like font settings
@@ -144,25 +145,30 @@ over a toolbar button for a few seconds. Explanation of toolbar buttons:
 </ul>
 </p>
 <p>
-<ul class="plain">
+<ul class="plain_icons">
 <li><img src="stagger.png" width=16 height=16/> Stagger Axes:
     Arranges the value axes such that the traces on different axes don't
     overlap.
 <li><img src="RubberbandZoom.png" width=16 height=16/> Rubberband Zoom:
     Click into plot, hold mouse pointer to drag a 'rubberband' rectangle,
-    release to zoom into that area.
+    release to zoom into that area.<br>
+    Can also be used on a value axis or the time axis to select a start/end
+    range on the axis.
 <li><img src="HorizontalZoom.png" width=16 height=16/> Horizontal Zoom:
     Click into plot at desired start time, hold mouse pointer to drag a
     'rubberband' rectangle to the desired end time,
-    release to zoom into that area.
+    release to zoom into that area.<br>
+    Can also be used on the time axis to select a start/end time.
 <li><img src="VerticalZoom.png" width=16 height=16/> Vertical Zoom:
-    Like Vertical Zoom for vertical (value) axes.
+    Like Vertical Zoom for vertical (value) axes.<br>
+    Can also be used on a value axis to select a start/end range for that axis.
 <li><img src="ZoomInHoriz.png" width=16 height=16/> Zoom In Horizontally:
     Click and hold mouse pointer to zoom into time axis.
 <li><img src="ZoomOutHoriz.png" width=16 height=16/> Zoom Out ...:
     Click and hold mouse pointer to zoom out of time axis.
 <li><img src="ZoomInVert.png" width=16 height=16/> Zoom In Vertically:
-    Click and hold mouse pointer to zoom into value axes.
+    Click and hold mouse pointer to zoom into value axes.<br>
+    Can also be used on a particular value axis zoom into that value axis.
 <li><img src="ZoomOutVert.png" width=16 height=16/> Zoom Out ...:
     Click and hold mouse pointer to zoom out of value axes.
 <li><img src="Panning.png" width=16 height=16/> Panning:
@@ -175,14 +181,14 @@ over a toolbar button for a few seconds. Explanation of toolbar buttons:
 </ul>
 </p>
 <p>
-<ul class="plain">
+<ul class="plain_icons">
 <li><img src="Undo.png" width=16 height=16/> Undo:
     Undo the last operation. Click again to undo the previous operation, the one
     before that and so on.
 <li><img src="Redo.png" width=16 height=16/> Redo:
     Un-do the last undo, i.e. re-do.
 </ul>
-<ul class="plain">
+<ul class="plain_icons">
 <li><img src="Camera.png" width=16 height=16/> Save Snapshot:
     Prompts for file name under which an image of the current plot is saved.
 <li><img src="../icons/scroll_on.gif" width=16 height=16/> Enable/Disable Scrolling:
