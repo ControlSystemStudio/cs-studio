@@ -7,6 +7,7 @@ import org.csstudio.swt.xygraph.dataprovider.IDataProvider;
 import org.csstudio.swt.xygraph.linearscale.LinearScale;
 import org.csstudio.swt.xygraph.linearscale.Range;
 import org.csstudio.swt.xygraph.undo.AxisPanOrZoomCommand;
+import org.csstudio.swt.xygraph.undo.SaveStateCommand;
 import org.csstudio.swt.xygraph.undo.ZoomType;
 import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
 import org.csstudio.swt.xygraph.util.XYGraphMediaFactory.CURSOR_TYPE;
@@ -460,14 +461,17 @@ public class Axis extends LinearScale{
 	private boolean isValidZoomType(final ZoomType zoom)
 	{
 	    return zoom == ZoomType.PANNING   ||
+	           zoom == ZoomType.RUBBERBAND_ZOOM ||
                zoom == ZoomType.ZOOM_IN   ||    
                zoom == ZoomType.ZOOM_OUT  ||
                (isHorizontal() &&
-                (zoom == ZoomType.ZOOM_IN_HORIZONTALLY ||
+                (zoom == ZoomType.HORIZONTAL_ZOOM ||
+                 zoom == ZoomType.ZOOM_IN_HORIZONTALLY ||
                  zoom == ZoomType.ZOOM_OUT_HORIZONTALLY)
                ) ||
                (!isHorizontal() &&
-                (zoom == ZoomType.ZOOM_OUT_VERTICALLY ||
+                (zoom == ZoomType.VERTICAL_ZOOM ||
+                 zoom == ZoomType.ZOOM_OUT_VERTICALLY ||
                  zoom == ZoomType.ZOOM_IN_VERTICALLY)
                );
 	}
@@ -611,15 +615,35 @@ public class Axis extends LinearScale{
 	//      Can they become the same, or use same abstract base?
 	class AxisMouseListener extends MouseMotionListener.Stub implements MouseListener
 	{
-		private AxisPanOrZoomCommand command;
+		private SaveStateCommand command;
 		
 		@Override
 		public void mouseDragged(final MouseEvent me)
 		{
-			if (! (armed  &&  zoomType == ZoomType.PANNING))
+			if (! armed)
 				return;
-			end = me.getLocation();
-			pan();
+			switch (zoomType)
+			{
+            case RUBBERBAND_ZOOM:
+                // Treat rubberband zoom on axis like horiz/vert. zoom
+                if (isHorizontal())
+                    end = new Point(me.getLocation().x, bounds.y + bounds.height);
+                else
+                    end = new Point(bounds.x + bounds.width, me.getLocation().y);
+                break;
+			case HORIZONTAL_ZOOM:
+                end = new Point(me.getLocation().x, bounds.y + bounds.height);
+                break;
+            case VERTICAL_ZOOM:
+                end = new Point(bounds.x + bounds.width, me.getLocation().y);
+                break;
+            case PANNING:
+                end = me.getLocation();
+                pan();
+                break;
+            default:
+                break;
+			}
 			me.consume();				
 		}
 
@@ -631,17 +655,27 @@ public class Axis extends LinearScale{
             if (me.button != 1 || ! isValidZoomType(zoomType))
                 return;
             armed = true;
-            
             //get start position
             switch (zoomType)
             {
+            case RUBBERBAND_ZOOM:
+                start = me.getLocation();
+                end = null;
+                break;
+            case HORIZONTAL_ZOOM:
+                start = new Point(me.getLocation().x, bounds.y);
+                end = null;
+                break;
+            case VERTICAL_ZOOM:
+                start = new Point(bounds.x, me.getLocation().y);
+                end = null;
+                break;				
             case PANNING:
-				setCursor(grabbing);
-				start = me.getLocation();
-				end = null;
-				startRange = getRange();
-				break;
-				
+                setCursor(grabbing);
+                start = me.getLocation();
+                end = null;
+                startRange = getRange();
+                break;
             case ZOOM_IN:
             case ZOOM_IN_HORIZONTALLY:
             case ZOOM_IN_VERTICALLY:
@@ -662,13 +696,12 @@ public class Axis extends LinearScale{
                     }
                 });
                 break;
-
             default:
                 break;
 			}
 
+            //add command for undo operation
             command = new AxisPanOrZoomCommand(zoomType.getDescription(), Axis.this);
-            command.savePreviousStates();
             me.consume();
 	    }
 
@@ -691,20 +724,50 @@ public class Axis extends LinearScale{
 
 		public void mouseReleased(final MouseEvent me)
 		{
+		    if (! armed)
+		        return;
             armed = false;
             if (zoomType == ZoomType.PANNING)
                 setCursor(zoomType.getCursor());
 			if (end == null || start == null || command == null) 
 				return;
 			
-			start = null;
-			end = null;
-			command.saveAfterStates();
+			switch (zoomType)
+			{
+            case RUBBERBAND_ZOOM:
+            case HORIZONTAL_ZOOM:
+            case VERTICAL_ZOOM:
+                performStartEndZoom();
+                break;
+            case PANNING:
+                pan();                  
+                break;  
+            case ZOOM_IN:  
+            case ZOOM_IN_HORIZONTALLY:
+            case ZOOM_IN_VERTICALLY:
+            case ZOOM_OUT:
+            case ZOOM_OUT_HORIZONTALLY:
+            case ZOOM_OUT_VERTICALLY:
+                performInOutZoom();
+                break;
+            default:
+                break;
+			}
+			command.saveState();
 			xyGraph.getOperationsManager().addCommand(command);		
 			command = null;
-			me.consume();
+            start = null;
+            end = null;
 		}
 
+		/** Perform the zoom to mouse start/end */
+        private void performStartEndZoom()
+        {
+            final double t1 = getPositionValue(isHorizontal() ? start.x : start.y, false);
+            final double t2 = getPositionValue(isHorizontal() ? end.x   : end.y,   false);
+            setRange(t1, t2);
+        }
+		
 		/** Perform the in or out zoom according to zoomType */
         private void performInOutZoom()
         {

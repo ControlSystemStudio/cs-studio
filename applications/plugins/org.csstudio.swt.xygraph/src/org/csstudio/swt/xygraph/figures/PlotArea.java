@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.swt.xygraph.linearscale.Range;
+import org.csstudio.swt.xygraph.undo.SaveStateCommand;
 import org.csstudio.swt.xygraph.undo.ZoomCommand;
 import org.csstudio.swt.xygraph.undo.ZoomType;
 import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
@@ -289,9 +290,9 @@ public class PlotArea extends Figure {
 	}
 
 	/** Listener to mouse events, performs panning and some zooms */
-	class PlotAreaZoomer extends MouseMotionListener.Stub implements MouseListener{	
-		
-		private ZoomCommand command;
+	class PlotAreaZoomer extends MouseMotionListener.Stub implements MouseListener
+	{	
+		private SaveStateCommand command;
 		
 		@Override
 		public void mouseDragged(final MouseEvent me) {
@@ -350,7 +351,6 @@ public class PlotArea extends Figure {
 				for(Axis axis : xyGraph.getYAxisList())
 					yAxisStartRangeList.add(axis.getRange());
 				break;
-				
 			case ZOOM_IN:
             case ZOOM_IN_HORIZONTALLY:
             case ZOOM_IN_VERTICALLY:
@@ -378,7 +378,6 @@ public class PlotArea extends Figure {
 			//add command for undo operation
 			command = new ZoomCommand(zoomType.getDescription(), 
 					xyGraph.getXAxisList(), xyGraph.getYAxisList());
-			command.savePreviousStates();
 			me.consume();			
 		}
 
@@ -399,13 +398,18 @@ public class PlotArea extends Figure {
             }
 		}
 		
-		public void mouseReleased(final MouseEvent me) {
+		public void mouseReleased(final MouseEvent me)
+		{
+            if (! armed)
+                return;
+            armed = false;
 			if(zoomType == ZoomType.PANNING)
 				setCursor(zoomType.getCursor());
-			if(!armed || end == null || start == null)
+			if(end == null || start == null)
 				return;
 			
-			switch (zoomType) {
+			switch (zoomType)
+			{
 			case RUBBERBAND_ZOOM:
 			case HORIZONTAL_ZOOM:
 			case VERTICAL_ZOOM:
@@ -413,7 +417,7 @@ public class PlotArea extends Figure {
 				break;
 			case PANNING:
 				pan();					
-				break;	
+				break;
 			case ZOOM_IN:  
             case ZOOM_IN_HORIZONTALLY:
             case ZOOM_IN_VERTICALLY:
@@ -427,13 +431,12 @@ public class PlotArea extends Figure {
 			}
 			
 			if(zoomType != ZoomType.NONE && command != null){
-				command.saveAfterStates();
+				command.saveState();
 				xyGraph.getOperationsManager().addCommand(command);		
 				command = null;
 			}		
-			armed = false;
-			end = null; 
 			start = null;			
+            end = null; 
 			PlotArea.this.repaint();
 		}
 

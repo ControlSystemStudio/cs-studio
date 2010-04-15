@@ -514,15 +514,14 @@ public class XYGraph extends Figure{
 	 * Perform forced autoscale to all axes.
 	 */
 	public void performAutoScale(){
-		ZoomCommand command = new ZoomCommand("Auto Scale", xAxisList, yAxisList);
-		command.savePreviousStates();		
+	    final ZoomCommand command = new ZoomCommand("Auto Scale", xAxisList, yAxisList);
 		for(Axis axis : xAxisList){
 			axis.performAutoScale(true);
 		}
 		for(Axis axis : yAxisList){
 			axis.performAutoScale(true);
 		}
-		command.saveAfterStates();
+		command.saveState();
 		operationsManager.addCommand(command);
 	}
 
@@ -534,7 +533,6 @@ public class XYGraph extends Figure{
         final double GAP = 0.1;
 
         final ZoomCommand command = new ZoomCommand("Stagger Axes", null, yAxisList);
-        command.savePreviousStates();
         
         // Arrange all axes so they don't overlap by assigning 1/Nth of
         // the vertical range to each one
@@ -591,7 +589,7 @@ public class XYGraph extends Figure{
                 yaxis.setRange(low, high);
         }
         
-        command.saveAfterStates();
+        command.saveState();
         operationsManager.addCommand(command);
     }
 }

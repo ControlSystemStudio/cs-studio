@@ -7,20 +7,19 @@ import org.csstudio.swt.xygraph.linearscale.Range;
  * @author Xihui Chen
  * @author Kay Kasemir (changed from AxisPanningCommand)
  */
-public class AxisPanOrZoomCommand implements IUndoableCommand
+public class AxisPanOrZoomCommand extends SaveStateCommand
 {
-    final private String name;
-
-	private Axis axis;
+    final private Axis axis;
 	
-	private Range beforeRange;
+	final private Range beforeRange;
 	
 	private Range afterRange;
 	
 	public AxisPanOrZoomCommand(final String name, final Axis axis)
 	{
-	    this.name = name;
+	    super(name);
 		this.axis = axis;
+        beforeRange = axis.getRange();
 	}
 
 	public void redo()
@@ -33,19 +32,9 @@ public class AxisPanOrZoomCommand implements IUndoableCommand
 		axis.setRange(beforeRange);
 	}
 	
-	public void savePreviousStates()
-	{
-		beforeRange = axis.getRange();
-	}
-	
-	public void saveAfterStates()
+	@Override
+    public void saveState()
 	{
 		afterRange = axis.getRange();
-	}
-	
-	@Override
-	public String toString()
-	{
-		return name;
 	}
 }
