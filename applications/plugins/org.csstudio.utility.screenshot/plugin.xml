@@ -19,7 +19,7 @@
                menubarPath="css/utility/"
                style="push"
                toolbarPath="Normal/additions"
-               tooltip="Opens the screenshot window.">
+               tooltip="Opens the screenshot window (Shortcut CTRL+ALT+S).">
          </action>
       </actionSet>
    </extension>
