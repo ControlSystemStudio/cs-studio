@@ -1,6 +1,8 @@
 package org.csstudio.opibuilder.runmode;
 
+import org.csstudio.opibuilder.persistence.URLPath;
 import org.csstudio.opibuilder.util.MacrosInput;
+import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
@@ -39,7 +41,11 @@ public class RunnerInputFactory implements IElementFactory {
 
         // Get a handle to the IFile...which can be a handle
         // to a resource that does not exist in workspace
-        IPath path = new Path(pathString);
+        IPath path;
+        if(ResourceUtil.isURL(pathString))
+        	path = new URLPath(pathString);
+        else
+        	path = new Path(pathString);
         MacrosInput macrosInput = null;
         String macroString = memento.getString(TAG_MACRO);
         if(macroString != null)

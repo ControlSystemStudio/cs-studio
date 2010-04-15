@@ -131,5 +131,9 @@ public class ResourceUtil {
 			return null;
 	}
 
+	
+	public static boolean isURL(String url){
+		return url.contains("://");
+	}
 
 }

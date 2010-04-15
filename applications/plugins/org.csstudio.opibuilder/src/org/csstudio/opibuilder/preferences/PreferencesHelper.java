@@ -5,7 +5,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
+import org.csstudio.opibuilder.persistence.URLPath;
 import org.csstudio.opibuilder.util.MacrosInput;
+import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.util.StringUtil;
 import org.eclipse.core.runtime.IPath;
@@ -117,9 +119,10 @@ public class PreferencesHelper {
 			for(int i= 0; i<items.length; i++){
 				if(i == 0){
 					String urlString = items[i];
-					if(!items[i].contains("://") && items[i].contains(":/")) //$NON-NLS-1$
-						urlString = urlString.replaceFirst(":/", "://"); //$NON-NLS-1$ //$NON-NLS-2$
-					path = new Path(urlString);
+					if(ResourceUtil.isURL(items[i])) //$NON-NLS-1$
+						path = new URLPath(items[i]);
+					else
+						path = new Path(urlString);
 				}
 				else{
 					String[] macro = StringUtil.splitIgnoreInQuotes(items[i], MACRO_SEPARATOR, true);
