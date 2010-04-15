@@ -1,5 +1,6 @@
 package org.csstudio.swt.xygraph.undo;
 
+import org.csstudio.swt.xygraph.Messages;
 import org.csstudio.swt.xygraph.figures.Annotation;
 import org.csstudio.swt.xygraph.figures.XYGraph;
 
@@ -27,7 +28,7 @@ public class AddAnnotationCommand implements IUndoableCommand {
 	
 	@Override
 	public String toString() {
-		return "Add Annotation";
+		return Messages.Annotation_Add;
 	}
 
 }

@@ -2,6 +2,7 @@ package org.csstudio.swt.xygraph.toolbar;
 
 import java.util.List;
 
+import org.csstudio.swt.xygraph.Messages;
 import org.csstudio.swt.xygraph.figures.Annotation;
 import org.csstudio.swt.xygraph.figures.Trace;
 import org.csstudio.swt.xygraph.figures.XYGraph;
@@ -28,7 +29,7 @@ public class AddAnnotationDialog extends Dialog {
 		// Unique annotation names help when trying to edit/delete annotations.
 		// Default name: Annotation 1, Annotation 2, ...
 		final int num = xyGraph.getPlotArea().getAnnotationList().size();
-        final String name = NLS.bind("Annotation {0}", (num+1));
+        final String name = NLS.bind(Messages.Annotation_DefaultNameFmt, (num+1));
         
         // If there are traces, default to 'snapping' to the first trace
         final Annotation annotation;
@@ -46,7 +47,7 @@ public class AddAnnotationDialog extends Dialog {
 	@Override
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
-		newShell.setText("Add Annotation");
+		newShell.setText(Messages.Annotation_Add);
 	}
 	
 	@Override
