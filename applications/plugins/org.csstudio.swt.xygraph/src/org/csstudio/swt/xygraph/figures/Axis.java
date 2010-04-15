@@ -45,15 +45,16 @@ public class Axis extends LinearScale{
 	
 	private static final Color GRAY_COLOR = XYGraphMediaFactory.getInstance().getColor(
 			XYGraphMediaFactory.COLOR_GRAY);
-	private String title;
 	
+    private String title;
+
+    final private List<Trace> traceList = new ArrayList<Trace>();
+    
 	private XYGraph xyGraph;
 	private Grid grid;
 	
 	private Font titleFont;
-	
-	private List<Trace> traceList;
-	
+		
 	private boolean autoScale = false;
 	
 	private boolean showMajorGrid = false;
@@ -70,7 +71,8 @@ public class Axis extends LinearScale{
 	
 	private double autoScaleThreshold =0.01;
 	
-	private List<IAxisListener> listeners;
+	final private List<IAxisListener> listeners = new ArrayList<IAxisListener>();
+
 	private ZoomType zoomType = ZoomType.NONE;
 	
 	private Point start;
@@ -83,16 +85,13 @@ public class Axis extends LinearScale{
 	 * @param title title of the axis
 	 * @param yAxis true if this is the Y-Axis, false if this is the X-Axis.
 	 */
-	public Axis(String title, boolean yAxis) {
-		
+	public Axis(final String title, final boolean yAxis) {
 		super();
-		traceList = new ArrayList<Trace>();
 		this.title = title;
 		if(yAxis)
 			setOrientation(Orientation.VERTICAL);
-		listeners = new ArrayList<IAxisListener>();
 		
-		AxisMouseListener panner = new AxisMouseListener();
+		final AxisMouseListener panner = new AxisMouseListener();
 		addMouseListener(panner);
 		addMouseMotionListener(panner);
 		grabbing = XYGraphMediaFactory.getCursor(CURSOR_TYPE.GRABBING);	
@@ -115,13 +114,13 @@ public class Axis extends LinearScale{
 			listener.axisRevalidated(this);
 	}
 	
-	private void fireAxisRangeChanged(Range old_range, Range new_range){
+	private void fireAxisRangeChanged(final Range old_range, final Range new_range){
 		for(IAxisListener listener : listeners)
 			listener.axisRangeChanged(this, old_range, new_range);
 	}
 	
 	@Override
-	public void setRange(double lower, double upper) {
+	public void setRange(final double lower, final double upper) {
 		Range old_range = getRange();
 		super.setRange(lower, upper);
 		fireAxisRangeChanged(old_range, getRange());
@@ -134,14 +133,14 @@ public class Axis extends LinearScale{
 	}
 	
 	@Override
-	public void setForegroundColor(Color color) {
+	public void setForegroundColor(final Color color) {
 		super.setForegroundColor(color);
 		if(xyGraph != null)
 			xyGraph.repaint();
 	}
 	@Override
-	public Dimension getPreferredSize(int wHint, int hHint) {
-		Dimension d = super.getPreferredSize(wHint, hHint);		
+	public Dimension getPreferredSize(final int wHint, final int hHint) {
+	    final Dimension d = super.getPreferredSize(wHint, hHint);		
 		if(isHorizontal())
 			d.height += FigureUtilities.getTextExtents(title, titleFont).height + GAP;
 		else
@@ -150,12 +149,12 @@ public class Axis extends LinearScale{
 	}
 	
 	@Override
-	protected void paintClientArea(Graphics graphics) {	
+	protected void paintClientArea(final Graphics graphics) {	
 		super.paintClientArea(graphics);
 		
 		graphics.pushState();
 		graphics.setFont(titleFont);		
-		Dimension titleSize = FigureUtilities.getTextExtents(title, titleFont);
+		final Dimension titleSize = FigureUtilities.getTextExtents(title, titleFont);
 		if(isHorizontal()){
 			if(getTickLablesSide() == LabelSide.Primary)
 				graphics.drawText(title, 
@@ -166,13 +165,13 @@ public class Axis extends LinearScale{
 						bounds.x + bounds.width/2 - titleSize.width/2,
 						bounds.y);
 		}else{	
-			int w = titleSize.height;
-			int h = titleSize.width +1;
+		    final int w = titleSize.height;
+		    final int h = titleSize.width +1;
 			Image image = new Image(Display.getCurrent(),w, h);			
 				try {
-					GC gc = new GC(image);	
-					Color titleColor = graphics.getForegroundColor();
-					RGB transparentRGB = new RGB(240, 240, 240);
+				    final GC gc = new GC(image);	
+				    final Color titleColor = graphics.getForegroundColor();
+				    RGB transparentRGB = new RGB(240, 240, 240);
 					if(xyGraph !=null)
 						if(!xyGraph.isTransparent())
 							transparentRGB = xyGraph.getBackgroundColor().getRGB();	
@@ -181,7 +180,7 @@ public class Axis extends LinearScale{
 					gc.fillRectangle(image.getBounds());
 					gc.setForeground(titleColor);
 					gc.setFont(titleFont);
-					Transform tr = new Transform(Display.getCurrent());
+					final Transform tr = new Transform(Display.getCurrent());
 					if(getTickLablesSide() == LabelSide.Primary){
 						tr.translate(0, h);
 						tr.rotate(-90);
@@ -194,7 +193,7 @@ public class Axis extends LinearScale{
 					gc.drawText(title, 0, 0);
 					tr.dispose();
 					gc.dispose();
-					ImageData imageData = image.getImageData();				
+					final ImageData imageData = image.getImageData();				
 					image.dispose();
 					imageData.transparentPixel = imageData.palette.getPixel(transparentRGB);
 					image = new Image(Display.getCurrent(), imageData);				
@@ -225,7 +224,7 @@ public class Axis extends LinearScale{
         {
             if (trace.getDataProvider() == null)
                 continue;
-            Range range;
+            final Range range;
             if (isHorizontal())
                 range = trace.getDataProvider().getXDataMinMax();
             else
@@ -260,7 +259,7 @@ public class Axis extends LinearScale{
 	 *  
 	 *  @see #autoScaleThreshold
 	 */
-	public boolean performAutoScale(boolean force){
+	public boolean performAutoScale(final boolean force){
 		if((force || autoScale) && traceList.size() >0){
 		    // Get range of data in all traces
             final Range range = getTraceDataRange();
@@ -270,9 +269,9 @@ public class Axis extends LinearScale{
 			double tempMax = range.getUpper();
 			
 			// Get current axis range, determine how 'different' they are
-    		double max = getRange().getUpper();
-    		double min = getRange().getLower();
-    		double thr = (max - min)*autoScaleThreshold;
+			final double max = getRange().getUpper();
+			final double min = getRange().getLower();
+			final double thr = (max - min)*autoScaleThreshold;
     		
     		//if both the changes are lower than threshold, return
     		if(((tempMin - min)>=0 && (tempMin - min)<thr)
@@ -302,7 +301,7 @@ public class Axis extends LinearScale{
 	/**Add a trace to the axis.
 	 * @param trace the trace to be added.
 	 */
-	public void addTrace(Trace trace){
+	public void addTrace(final Trace trace){
 		if(traceList.contains(trace))
 			return;
 		traceList.add(trace);
@@ -313,8 +312,8 @@ public class Axis extends LinearScale{
 	 * @param trace
 	 * @return true if this axis contained the specified trace
 	 */	
-	public boolean removeTrace(Trace trace){
-		boolean r = traceList.remove(trace);
+	public boolean removeTrace(final Trace trace){
+	    final boolean r = traceList.remove(trace);
 		performAutoScale(false);
 		return r;
 	}
@@ -323,7 +322,7 @@ public class Axis extends LinearScale{
 	/**
 	 * @param title the title to set
 	 */
-	public void setTitle(String title) {
+	public void setTitle(final String title) {
 		this.title = title;
 	}
 
@@ -344,7 +343,7 @@ public class Axis extends LinearScale{
 	/**
 	 * @param autoScale the autoScale to set
 	 */
-	public void setAutoScale(boolean autoScale) {
+	public void setAutoScale(final boolean autoScale) {
 		this.autoScale = autoScale;
 		performAutoScale(false);
 	}
@@ -359,7 +358,7 @@ public class Axis extends LinearScale{
 	/**
 	 * @param showMajorGrid the showMajorGrid to set
 	 */
-	public void setShowMajorGrid(boolean showMajorGrid) {
+	public void setShowMajorGrid(final boolean showMajorGrid) {
 		this.showMajorGrid = showMajorGrid;
 	}
 
@@ -373,7 +372,7 @@ public class Axis extends LinearScale{
 	/**
 	 * @param showMinorGrid the showMinorGrid to set
 	 */
-	public void setShowMinorGrid(boolean showMinorGrid) {
+	public void setShowMinorGrid(final boolean showMinorGrid) {
 		this.showMinorGrid = showMinorGrid;
 	}
 
@@ -387,7 +386,7 @@ public class Axis extends LinearScale{
 	/**
 	 * @param majorGridColor the majorGridColor to set
 	 */
-	public void setMajorGridColor(Color majorGridColor) {
+	public void setMajorGridColor(final Color majorGridColor) {
 		this.majorGridColor = majorGridColor;
 	}
 
@@ -401,14 +400,14 @@ public class Axis extends LinearScale{
 	/**
 	 * @param minorGridColor the minorGridColor to set
 	 */
-	public void setMinorGridColor(Color minorGridColor) {
+	public void setMinorGridColor(final Color minorGridColor) {
 		this.minorGridColor = minorGridColor;
 	}
 
 	/**
 	 * @param titleFont the titleFont to set
 	 */
-	public void setTitleFont(Font titleFont) {
+	public void setTitleFont(final Font titleFont) {
 		this.titleFont = titleFont;
 	}
 
@@ -423,7 +422,7 @@ public class Axis extends LinearScale{
 	/**
 	 * @param dashGridLine the dashGridLine to set
 	 */
-	public void setDashGridLine(boolean dashGridLine) {
+	public void setDashGridLine(final boolean dashGridLine) {
 		this.dashGridLine = dashGridLine;
 	}
 
@@ -574,7 +573,7 @@ public class Axis extends LinearScale{
 	 *  @param center Axis position at the 'center' of the zoom
 	 *  @param factor Zoom factor. Positive to zoom 'in', negative 'out'.
 	 */
-	public void zoomInOut(final double center, final double factor)
+	void zoomInOut(final double center, final double factor)
     {
 	    final double t1, t2;
 	    if (isLogScaleEnabled())
@@ -610,52 +609,21 @@ public class Axis extends LinearScale{
 	}
 
 
-	/** Listener to mouse events, performs panning and some zooms */
-	// TODO This is a simpler version of PlotArea.PlotAreaZoomer
-	//      Can they become the same, or use same abstract base?
+	/** Listener to mouse events, performs panning and some zooms
+	 *  Is very similar to the PlotMouseListener, but unclear
+	 *  how easy/useful it would be to base them on the same code.
+	 */
 	class AxisMouseListener extends MouseMotionListener.Stub implements MouseListener
 	{
 		private SaveStateCommand command;
 		
-		@Override
-		public void mouseDragged(final MouseEvent me)
-		{
-			if (! armed)
-				return;
-			switch (zoomType)
-			{
-            case RUBBERBAND_ZOOM:
-                // Treat rubberband zoom on axis like horiz/vert. zoom
-                if (isHorizontal())
-                    end = new Point(me.getLocation().x, bounds.y + bounds.height);
-                else
-                    end = new Point(bounds.x + bounds.width, me.getLocation().y);
-                break;
-			case HORIZONTAL_ZOOM:
-                end = new Point(me.getLocation().x, bounds.y + bounds.height);
-                break;
-            case VERTICAL_ZOOM:
-                end = new Point(bounds.x + bounds.width, me.getLocation().y);
-                break;
-            case PANNING:
-                end = me.getLocation();
-                pan();
-                break;
-            default:
-                break;
-			}
-			me.consume();				
-		}
-
-		public void mouseDoubleClicked(final MouseEvent me) {}
-
 		public void mousePressed(final MouseEvent me)
-		{
+        {
             // Only react to 'main' mouse button, only react to 'real' zoom
-            if (me.button != 1 || ! isValidZoomType(zoomType))
+            if (me.button != 1  ||  !isValidZoomType(zoomType))
                 return;
             armed = true;
-            //get start position
+            // get start position
             switch (zoomType)
             {
             case RUBBERBAND_ZOOM:
@@ -698,14 +666,45 @@ public class Axis extends LinearScale{
                 break;
             default:
                 break;
-			}
-
+        	}
+        
             //add command for undo operation
             command = new AxisPanOrZoomCommand(zoomType.getDescription(), Axis.this);
             me.consume();
-	    }
+        }
 
-		@Override
+        public void mouseDoubleClicked(final MouseEvent me) { /* Ignored */ }
+
+        @Override
+		public void mouseDragged(final MouseEvent me)
+		{
+			if (! armed)
+				return;
+			switch (zoomType)
+			{
+            case RUBBERBAND_ZOOM:
+                // Treat rubberband zoom on axis like horiz/vert. zoom
+                if (isHorizontal())
+                    end = new Point(me.getLocation().x, bounds.y + bounds.height);
+                else
+                    end = new Point(bounds.x + bounds.width, me.getLocation().y);
+                break;
+			case HORIZONTAL_ZOOM:
+                end = new Point(me.getLocation().x, bounds.y + bounds.height);
+                break;
+            case VERTICAL_ZOOM:
+                end = new Point(bounds.x + bounds.width, me.getLocation().y);
+                break;
+            case PANNING:
+                end = me.getLocation();
+                pan();
+                break;
+            default:
+                break;
+			}
+		}
+
+        @Override
 		public void mouseExited(final MouseEvent me)
 		{
             // Treat like releasing the button to stop zoomIn/Out timer
