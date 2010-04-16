@@ -312,7 +312,6 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements I
 
 	private final class InvalidFormatDialog extends Dialog {
 		private String _text;
-		private String _pvName;
 
 		private InvalidFormatDialog(Shell parentShell) {
 			super(parentShell);
@@ -363,10 +362,6 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements I
 
 		public void setText(String text) {
 			_text = text;
-		}
-
-		public void setPVName(String pvName) {
-			_pvName = pvName;
 		}
 
 	}
