@@ -12,11 +12,13 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IObjectActionDelegate;
@@ -47,9 +49,9 @@ public class SimpleSliderIncrementAction extends Action implements IObjectAction
     public final void run(final IAction action) {
         if (_widgetModel != null) {
             String title = "Change increment";
-            String message = "Enter the new increment for the selected SimpleSlider";
+//            String message = "Enter the new increment for the selected SimpleSlider";
+            String message = "Enter the new increment";
             String initialValue = String.valueOf(_widgetModel.getIncrement());
-
             InputDialog incDialog = new IncInputDialog(null,
                                                        title,
                                                        message,
@@ -116,6 +118,7 @@ public class SimpleSliderIncrementAction extends Action implements IObjectAction
 
         @Override
         protected Control createDialogArea(final Composite parent) {
+//            getShell().setSize(300,200);
             final Composite createDialogArea = (Composite) super.createDialogArea(parent);
             final Composite chooserComposite = new Composite(createDialogArea, SWT.NONE);
             chooserComposite.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, false));
@@ -141,6 +144,9 @@ public class SimpleSliderIncrementAction extends Action implements IObjectAction
             button.setText("10.0");
             button.addSelectionListener(getListener(getText(), "10.0"));
 
+            getShell().setSize(200,200);
+            Point cL = Display.getCurrent().getCursorLocation();
+            getShell().setLocation(cL.x,cL.y-100);
             return createDialogArea;
         }
 
