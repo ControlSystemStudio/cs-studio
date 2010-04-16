@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="AmsJmsConnector" id="org.csstudio.ams.connector.jms.AmsJmsConnectorProduct" application="org.csstudio.ams.connector.jms.AmsJMSConnectorId" useFeatures="false" includeLaunchers="true">
+<product name="AmsJmsConnector" id="org.csstudio.ams.connector.jms.AmsJmsConnectorProduct" application="org.csstudio.ams.connector.jms.AmsJMSConnectorId" useFeatures="true" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -127,6 +127,10 @@
       <plugin id="org.remotercp.libs"/>
       <plugin id="org.remotercp.util"/>
    </plugins>
+
+   <features>
+      <feature id="org.csstudio.ams.connector.jms.feature" version="1.0.0"/>
+   </features>
 
 
 </product>
