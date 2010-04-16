@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -40,6 +41,7 @@ import org.csstudio.ams.Log;
 import org.csstudio.ams.SynchObject;
 import org.csstudio.ams.Utils;
 import org.csstudio.ams.connector.email.internal.EMailConnectorPreferenceKey;
+import org.csstudio.ams.internal.AmsPreferenceKey;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -65,23 +67,29 @@ public class EMailConnectorStart implements IApplication
     
     private static EMailConnectorStart _instance = null;
 
-    private Context             extContext                  = null;
-    private ConnectionFactory   extFactory                  = null;
-    private Connection          extConnection               = null;
-    private Session             extSession                  = null;
+    private Context extContext = null;
+    private ConnectionFactory extFactory = null;
+    private Connection extConnection= null;
+    private Session extSession = null;
     
-    private MessageProducer     extPublisherStatusChange    = null;
+    private MessageProducer extPublisherStatusChange = null;
     
-    private SynchObject         sObj                        = null;
-    private int                 lastStatus                  = 0;
+    private SynchObject sObj = null;
+    private String managementPassword; 
+    private int lastStatus = 0;
     private boolean bStop;
     private boolean restart;
     
     public EMailConnectorStart()
     {
         _instance = this;
-        
         sObj = new SynchObject(STAT_INIT, System.currentTimeMillis());
+        
+        IPreferencesService pref = Platform.getPreferencesService();
+        managementPassword = pref.getString(AmsActivator.PLUGIN_ID, AmsPreferenceKey.P_AMS_MANAGEMENT_PASSWORD, "", null);
+        if(managementPassword == null) {
+            managementPassword = "";
+        }
     }
 
     public static EMailConnectorStart getInstance()
@@ -94,18 +102,36 @@ public class EMailConnectorStart implements IApplication
         return;
     }
 
+    /**
+     * 
+     */
     public synchronized void setRestart()
     {
         restart = true;
         bStop = true;
     }
 
+    /**
+     * 
+     */
     public synchronized void setShutdown()
     {
         restart = false;
         bStop = true;
     }
 
+    /**
+     * 
+     * @return
+     */
+    public synchronized String getPassword()
+    {
+        return managementPassword;
+    }
+    
+    /**
+     * 
+     */
     public Object start(IApplicationContext context) throws Exception
     {
         Log.log(this, Log.INFO, "start");
@@ -219,6 +245,9 @@ public class EMailConnectorStart implements IApplication
             return EXIT_OK;
     }
 
+    /**
+     * 
+     */
     public void connectToXMPPServer()
     {
     	IPreferencesService pref = Platform.getPreferencesService();

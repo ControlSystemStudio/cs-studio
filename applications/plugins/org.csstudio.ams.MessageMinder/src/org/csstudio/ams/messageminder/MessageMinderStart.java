@@ -26,6 +26,8 @@
 
 package org.csstudio.ams.messageminder;
 
+import org.csstudio.ams.AmsActivator;
+import org.csstudio.ams.internal.AmsPreferenceKey;
 import org.csstudio.ams.messageminder.preference.MessageMinderPreferenceKey;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.Platform;
@@ -50,7 +52,17 @@ public final class MessageMinderStart implements IApplication {
     private MessageGuardCommander _commander;
     private static MessageMinderStart _instance;
     public final static boolean CREATE_DURABLE = true;
+    private String managementPassword;
 
+    public MessageMinderStart()
+    {
+        IPreferencesService pref = Platform.getPreferencesService();
+        managementPassword = pref.getString(AmsActivator.PLUGIN_ID, AmsPreferenceKey.P_AMS_MANAGEMENT_PASSWORD, "", null);
+        if(managementPassword == null) {
+            managementPassword = "";
+        }
+    }
+    
     /* (non-Javadoc)
      * @see org.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.IApplicationContext)
      */
@@ -120,8 +132,15 @@ public final class MessageMinderStart implements IApplication {
         }
     }
 
+    /**
+     * 
+     * @return
+     */
+    public synchronized String getPassword() {
+        return managementPassword;
+    }
+    
     public static MessageMinderStart getInstance() {
         return _instance;
     }
-
 }

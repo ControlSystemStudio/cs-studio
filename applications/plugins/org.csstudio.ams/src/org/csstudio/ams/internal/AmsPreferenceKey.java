@@ -52,6 +52,9 @@ public class AmsPreferenceKey
 	// filter key field of message
 	public static final String P_FILTER_KEYFIELDS = "filterKeyFields";
 
+	// AMS management password
+	public static final String P_AMS_MANAGEMENT_PASSWORD = "managementPassword";
+
 	// jms communication - external
 	public static final String P_JMS_EXTERN_CONNECTION_FACTORY_CLASS = "jmsExternConnectionFactoryClass";
 	public static final String P_JMS_EXTERN_PROVIDER_URL_1 = "jmsExternProviderUrl1";

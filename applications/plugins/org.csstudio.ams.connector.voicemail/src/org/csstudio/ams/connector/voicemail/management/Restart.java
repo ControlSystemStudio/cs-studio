@@ -23,7 +23,6 @@
 
 package org.csstudio.ams.connector.voicemail.management;
 
-import org.csstudio.ams.Messages;
 import org.csstudio.ams.connector.voicemail.VoicemailConnectorStart;
 import org.csstudio.platform.management.CommandParameters;
 import org.csstudio.platform.management.CommandResult;
@@ -40,15 +39,19 @@ public class Restart implements IManagementCommand
      */
     public CommandResult execute(CommandParameters parameters)
     {
-        String password = (String)parameters.get("Password");
-        if(password == null)
+        String param = (String)parameters.get("Password");
+        String password = VoicemailConnectorStart.getInstance().getPassword();
+        
+        if((param == null) && (password.length() > 0))
         {
             return CommandResult.createFailureResult("\nParameter not available.");
         }
 
-        if(password.compareTo(Messages.Pref_Password_ShutdownAction) != 0)
-        {
-            return CommandResult.createFailureResult("\nInvalid password");
+        if(password.length() > 0) {
+            if(param.compareTo(password) != 0)
+            {
+                return CommandResult.createFailureResult("\nInvalid password");
+            }
         }
 
         VoicemailConnectorStart.getInstance().setRestart();

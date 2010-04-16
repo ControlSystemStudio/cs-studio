@@ -1,6 +1,6 @@
 
 /* 
- * Copyright (c) 2009 Stiftung Deutsches Elektronen-Synchrotron, 
+ * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
@@ -19,43 +19,45 @@
  * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
- */
-
-package org.csstudio.ams.connector.jms.management;
-
-import org.csstudio.ams.connector.jms.JMSConnectorStart;
-import org.csstudio.platform.management.CommandParameters;
-import org.csstudio.platform.management.CommandResult;
-import org.csstudio.platform.management.IManagementCommand;
-
-/**
- * @author Markus Moeller
  *
  */
-public class Stop implements IManagementCommand
-{
-    /* (non-Javadoc)
-     * @see org.csstudio.platform.management.IManagementCommand#execute(org.csstudio.platform.management.CommandParameters)
-     */
-    public CommandResult execute(CommandParameters parameters)
-    {
-        String param = (String)parameters.get("Password");
-        String password = JMSConnectorStart.getInstance().getPassword();
 
-        if((param == null) && (password.length() > 0))
-        {
-            return CommandResult.createFailureResult("ERROR: [1] - Parameter not available.");
-        }
+package org.csstudio.nams.service.preferenceservice.declaration;
 
-        if(password.length() > 0) {
-            if(param.compareTo(password) != 0)
-            {
-                return CommandResult.createFailureResult("ERROR: [2] - Invalid password");
-            }
-        }
+import org.csstudio.nams.service.preferenceservice.Messages;
 
-        JMSConnectorStart.getInstance().setShutdown();
+/**
+ * TODO (mmoeller) : 
+ * 
+ * @author mmoeller
+ * @version 
+ * @since 16.04.2010
+ */
+public enum PreferenceServiceManagementKeys implements HoldsAPreferenceId {
+    P_AMS_MANAGEMENT_PASSWORD("managementPassword");
 
-        return CommandResult.createMessageResult("OK: [0] - JmsConnector is stopping now...");
+    private String _key;
+    private String _description;
+
+    private PreferenceServiceManagementKeys(final String key) {
+        this(
+                key,
+                Messages.PreferenceServiceJMSKeys_fallback_message_on_missing_label);
+    }
+
+    private PreferenceServiceManagementKeys(final String key, final String description) {
+        this._key = key;
+        this._description = ((description != null && description.length() > 0) ? description
+                : Messages.PreferenceServiceJMSKeys_fallback_message_on_missing_label);
+    }
+
+    @Override
+    public String getDescription() {
+        return this._description;
+    }
+
+    @Override
+    public String getPreferenceStoreId() {
+        return this._key;
     }
 }

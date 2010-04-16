@@ -13,4 +13,9 @@ public interface RemotelyStoppable {
 	 *            The logger to log infos and errors to, not null.
 	 */
 	public void stopRemotely(Logger logger);
+	
+	/**
+	 * Returns the remote management password
+	 */
+	public String getPassword();
 }

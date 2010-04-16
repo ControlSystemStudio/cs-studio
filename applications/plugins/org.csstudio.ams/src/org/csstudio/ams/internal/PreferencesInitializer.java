@@ -92,6 +92,9 @@ public final class PreferencesInitializer extends AbstractPreferenceInitializer 
                 AmsConstants.MSGPROP_REINSERTED
         );
 
+        // AMS management password
+        node.put(AmsPreferenceKey.P_AMS_MANAGEMENT_PASSWORD, "");
+
         /* OpenJMS
         // jms communication - external
         node.put(SampleService.P_JMS_EXTERN_CONNECTION_FACTORY_CLASS, "org.exolab.jms.jndi.InitialContextFactory");

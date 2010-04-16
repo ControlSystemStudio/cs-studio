@@ -65,20 +65,28 @@ public class Stop implements IManagementCommand
      */
     public CommandResult execute(CommandParameters parameters)
     {
-        String value = (String)parameters.get("Password");
-        if(Stop.ADMIN_PASSWORD.equals(value))
+        String param = (String)parameters.get("Password");
+        String password = thingToBeStopped.getPassword();
+        
+        if(password.length() > 0)
         {
-            Stop.thingToBeStopped
-                    .stopRemotely(Stop.logger);
-            
-            Stop.logger.logInfoMessage(this,
-                    Stop.ACTION_LOGIN_SUCCEDED);
+            if(param.equals(password))
+            {
+                Stop.thingToBeStopped.stopRemotely(Stop.logger);
+                Stop.logger.logInfoMessage(this, Stop.ACTION_LOGIN_SUCCEDED);
+                
+                return CommandResult.createMessageResult(Stop.ACTION_LOGIN_SUCCEDED);
+            }
+        }
+        else
+        {
+            Stop.thingToBeStopped.stopRemotely(Stop.logger);
+            Stop.logger.logInfoMessage(this, Stop.ACTION_LOGIN_SUCCEDED);
             
             return CommandResult.createMessageResult(Stop.ACTION_LOGIN_SUCCEDED);
         }
         
-        Stop.logger.logWarningMessage(this,
-                Stop.ACTION_LOGIN_FAILED);
+        Stop.logger.logWarningMessage(this, Stop.ACTION_LOGIN_FAILED);
         
         return CommandResult.createMessageResult(Stop.ACTION_LOGIN_FAILED);
     }

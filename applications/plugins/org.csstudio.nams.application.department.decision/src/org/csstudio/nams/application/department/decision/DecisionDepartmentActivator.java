@@ -62,6 +62,7 @@ import org.csstudio.nams.service.messaging.exceptions.MessagingException;
 import org.csstudio.nams.service.preferenceservice.declaration.PreferenceService;
 import org.csstudio.nams.service.preferenceservice.declaration.PreferenceServiceDatabaseKeys;
 import org.csstudio.nams.service.preferenceservice.declaration.PreferenceServiceJMSKeys;
+import org.csstudio.nams.service.preferenceservice.declaration.PreferenceServiceManagementKeys;
 import org.csstudio.nams.service.regelwerkbuilder.declaration.RegelwerkBuilderService;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.statistic.Collector;
@@ -186,6 +187,8 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 	 */
 	private static LocalStoreConfigurationService localStoreConfigurationService;
 
+	private static String managementPassword;
+		
 	/**
 	 * Versucht via dem Distributor eine Synchronisation auszufürehn. Das
 	 * Ergebnis gibt an, ob weitergearbeitet werden soll.
@@ -772,6 +775,12 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 
 		DecisionDepartmentActivator.executionService = injectedExecutionService;
 
+        DecisionDepartmentActivator.managementPassword = DecisionDepartmentActivator.preferenceService
+        .getString(PreferenceServiceManagementKeys.P_AMS_MANAGEMENT_PASSWORD);
+        if(managementPassword == null) {
+            managementPassword = "";
+        }
+
 		Stop.staticInject(DecisionDepartmentActivator.logger);
 
 		DecisionDepartmentActivator.logger.logInfoMessage(this, "plugin "
@@ -947,9 +956,20 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 		consumersConsumer.close();
 	}
 
+	/**
+	 * 
+	 */
     public synchronized void stopRemotely(Logger logger)
     {
         this.stop();
         logger.logDebugMessage(this, "DecisionDepartmentActivator.stopRemotely(): After this.stop()");
+    }
+    
+    /**
+     * 
+     * @return
+     */
+    public synchronized String getPassword() {
+        return DecisionDepartmentActivator.managementPassword;
     }
 }

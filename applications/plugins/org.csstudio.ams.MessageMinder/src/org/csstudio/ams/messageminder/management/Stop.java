@@ -23,7 +23,6 @@
 
 package org.csstudio.ams.messageminder.management;
 
-import org.csstudio.ams.Messages;
 import org.csstudio.ams.messageminder.MessageMinderStart;
 import org.csstudio.platform.management.CommandParameters;
 import org.csstudio.platform.management.CommandResult;
@@ -40,15 +39,19 @@ public class Stop implements IManagementCommand
      */
     public CommandResult execute(CommandParameters parameters)
     {
-        String password = (String)parameters.get("Password");
-        if(password == null)
+        String param = (String)parameters.get("Password");
+        String password = MessageMinderStart.getInstance().getPassword();
+
+        if((param == null) && (password.length() > 0))
         {
             return CommandResult.createFailureResult("ERROR: [1] - Parameter not available.");
         }
 
-        if(password.compareTo(Messages.Pref_Password_ShutdownAction) != 0)
-        {
-            return CommandResult.createFailureResult("ERROR: [2] - Invalid password");
+        if(password.length() > 0) {
+            if(param.compareTo(password) != 0)
+            {
+                return CommandResult.createFailureResult("ERROR: [2] - Invalid password");
+            }
         }
 
         MessageMinderStart.getInstance().setRun(false);

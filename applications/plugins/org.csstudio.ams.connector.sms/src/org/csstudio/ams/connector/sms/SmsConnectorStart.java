@@ -40,6 +40,7 @@ import org.csstudio.ams.Log;
 import org.csstudio.ams.SynchObject;
 import org.csstudio.ams.Utils;
 import org.csstudio.ams.connector.sms.internal.SmsConnectorPreferenceKey;
+import org.csstudio.ams.internal.AmsPreferenceKey;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -78,6 +79,7 @@ public class SmsConnectorStart implements IApplication
     private MessageProducer extPublisherStatusChange = null;
     
     private SynchObject sObj = null;
+    private String managementPassword; 
     private int lastStatus = 0;
     
     private boolean bStop = false;
@@ -88,6 +90,12 @@ public class SmsConnectorStart implements IApplication
         _me = this;
         sObj = new SynchObject(STAT_INIT, System.currentTimeMillis());
         bStop = false;
+        
+        IPreferencesService pref = Platform.getPreferencesService();
+        managementPassword = pref.getString(AmsActivator.PLUGIN_ID, AmsPreferenceKey.P_AMS_MANAGEMENT_PASSWORD, "", null);
+        if(managementPassword == null) {
+            managementPassword = "";
+        }
     }
 
     public Object start(IApplicationContext context) throws Exception
@@ -296,6 +304,15 @@ public class SmsConnectorStart implements IApplication
     {
         restart = false;
         bStop = true;
+    }
+
+    /**
+     * 
+     * @return
+     */
+    public synchronized String getPassword()
+    {
+        return managementPassword;
     }
 
     public int getStatus()

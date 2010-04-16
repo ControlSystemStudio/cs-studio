@@ -40,6 +40,7 @@ import org.csstudio.ams.Log;
 import org.csstudio.ams.SynchObject;
 import org.csstudio.ams.Utils;
 import org.csstudio.ams.connector.voicemail.internal.VoicemailConnectorPreferenceKey;
+import org.csstudio.ams.internal.AmsPreferenceKey;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -76,13 +77,19 @@ public class VoicemailConnectorStart implements IApplication
     private int lastStatus = 0;
     
     private boolean bStop;
+    private String managementPassword; 
     private boolean restart;
 
     public VoicemailConnectorStart()
     {
         _instance = this;
-
         sObj = new SynchObject(STAT_INIT, System.currentTimeMillis());
+        
+        IPreferencesService pref = Platform.getPreferencesService();
+        managementPassword = pref.getString(AmsActivator.PLUGIN_ID, AmsPreferenceKey.P_AMS_MANAGEMENT_PASSWORD, "", null);
+        if(managementPassword == null) {
+            managementPassword = "";
+        }
     }
     
     public void stop()
@@ -107,6 +114,15 @@ public class VoicemailConnectorStart implements IApplication
         bStop = true;
     }
     
+    /**
+     * 
+     * @return
+     */
+    public synchronized String getPassword()
+    {
+        return managementPassword;
+    }
+
     @SuppressWarnings("static-access")
     public Object start(IApplicationContext context) throws Exception
     {
