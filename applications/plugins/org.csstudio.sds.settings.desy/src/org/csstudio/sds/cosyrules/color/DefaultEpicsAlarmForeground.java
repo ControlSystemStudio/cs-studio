@@ -66,7 +66,6 @@ public class DefaultEpicsAlarmForeground implements IRule{
                  return ColorAndFontUtil.toHex(0,178,238);
              }
          }
-         System.out.println(arguments + "\r\n " + arguments[0]);
          return ColorAndFontUtil.toHex(138,43,226);    }
 
 }
