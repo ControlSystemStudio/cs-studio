@@ -437,7 +437,7 @@ public final class SimpleSliderFigure extends Panel implements ICrossedFigure {
 
     @Override
     public void setForegroundColor(final Color fg) {
-        _scrollBar.setForegroundColor(fg);
+        _scrollBar.setAlarmColor(fg);
         // super.setForegroundColor(fg);
     }
 
@@ -543,30 +543,8 @@ public final class SimpleSliderFigure extends Panel implements ICrossedFigure {
     public void setEnabled(final boolean value) {
         _enable = value;
 
-        // Im edit: Knop ja,    Move ja   l gr r gr
-        // Im run:  Knop nein,  Move nein l no r gr
-//        _scrollBar.setEnabled(true);
-//        super.setEnabled(true);
-
-        // Im edit: Knop ja,    Move nein l gr r gr
-        // Im run:  Knop nein,  Move nein l no r gr
-//        _scrollBar.setEnabled(value);
         _scrollBar.setEnabled(true);
         super.setEnabled(value);
-//
-        // Im edit: Knop nein, Move nein l gr r gr
-        // Im run:  Knop nein, Move nein l no r gr
-//        _scrollBar.setEnabled(false);
-//        super.setEnabled(true);
-//
-        // Im edit: Knop nein, Move nein l gr r gr
-        // Im run:  Knop nein, Move nein l no r gr
-//        _scrollBar.setEnabled(false);
-//        super.setEnabled(false);
-
-//        _scrollBar.setEnabled(value);
-//        super.setEnabled(value);
-
     }
 
     @Override
@@ -628,7 +606,17 @@ public final class SimpleSliderFigure extends Panel implements ICrossedFigure {
 
         public void enableButtons(final boolean enable) {
             getButtonUp().setEnabled(enable);
+            if(enable) {
+                getThumb().setBackgroundColor(new Color(null, 25,25,25));
+            } else {
+                getThumb().setBackgroundColor(new Color(null, 155,155,155));
+            }
             getButtonDown().setEnabled(enable);
+        }
+
+        public void setAlarmColor(final Color color) {
+            getButtonDown().setBackgroundColor(color);
+            getButtonUp().setBackgroundColor(color);
         }
     }
 }
