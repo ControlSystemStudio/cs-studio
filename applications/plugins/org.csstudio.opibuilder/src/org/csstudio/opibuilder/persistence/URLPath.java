@@ -87,7 +87,8 @@ public class URLPath implements IPath {
 	/* (Intentionally not included in javadoc)
 	 * Clones this object.
 	 */
-	public Object clone() {
+	@Override
+    public Object clone() {
 		try {
 			return super.clone();
 		} catch (CloneNotSupportedException e) {
@@ -191,7 +192,7 @@ public class URLPath implements IPath {
 		}
 		List<String> segList = Arrays.asList(segments());
 		for (String s : segList) {
-			if(s.equals(ELLIPSIS) || s.equals("."))
+			if(s.equals(ELLIPSIS) || s.equals(".")) //$NON-NLS-1$
 				segList.remove(s);
 		}	
 		URLPath result = new URLPath(device, segList.toArray(new String[0]),
