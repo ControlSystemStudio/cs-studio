@@ -10,6 +10,7 @@ import org.csstudio.opibuilder.persistence.URLPath;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -29,7 +30,8 @@ public class ResourceUtilTest {
 		assertEquals("../c/d.txt", path4.toString());
 	}
 	
-	//@Test
+	@Test
+	@Ignore
 	public void testURLPathToInputStream() throws Exception{
 		BufferedReader in = new BufferedReader(
 				new InputStreamReader(ResourceUtil.pathToInputStream(URL_PATH)));
@@ -39,7 +41,8 @@ public class ResourceUtilTest {
 		in.close();
     }
 	
-	//@Test
+	@Test
+    @Ignore
 	public void testLOCALPathToInputStream() throws Exception{
 		BufferedReader in = new BufferedReader(
 				new InputStreamReader(ResourceUtil.pathToInputStream(LOCAL_PATH)));
