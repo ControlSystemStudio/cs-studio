@@ -34,7 +34,7 @@ import org.eclipse.swt.widgets.Display;
 
 /**
  * Edit part for the strip chart widget.
- * 
+ *
  * @author Joerg Rathlev
  */
 public final class StripChartEditPart extends AbstractChartEditPart {
@@ -43,22 +43,22 @@ public final class StripChartEditPart extends AbstractChartEditPart {
 	 * The delay before the first value is sent to the figure, in milliseconds.
 	 */
 	private static final long FIRST_UPDATE_DELAY = 2000;
-	
+
 	/**
 	 * The current value of each channel.
 	 */
 	private double[] _currentValue;
-	
+
 	/**
 	 * The figure that is managed by this edit part.
 	 */
 	private StripChartFigure _figure;
-	
+
 	/**
 	 * The timer which runs the update at the specified interval.
 	 */
 	private Timer _updateTimer;
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -78,7 +78,7 @@ public final class StripChartEditPart extends AbstractChartEditPart {
 
 	/**
 	 * Returns the number of data values that are recorded for each data series.
-	 * 
+	 *
 	 * @param model
 	 *            the model.
 	 * @return the number of data values that are recorded.
@@ -89,7 +89,7 @@ public final class StripChartEditPart extends AbstractChartEditPart {
 
 	/**
 	 * Initializes the x-axis properties of the figure.
-	 * 
+	 *
 	 * @param model
 	 *            the model.
 	 */
@@ -99,7 +99,7 @@ public final class StripChartEditPart extends AbstractChartEditPart {
 
 	/**
 	 * Initializes the current values.
-	 * 
+	 *
 	 * @param model
 	 *            the model.
 	 */
@@ -113,10 +113,10 @@ public final class StripChartEditPart extends AbstractChartEditPart {
 			_figure.setPlotEnabled(i, model.isPlotEnabled(i));
 		}
 	}
-	
+
 	/**
 	 * Creates the update task if the display is in run mode.
-	 * 
+	 *
 	 * @param model
 	 *            the model.
 	 */
@@ -134,13 +134,14 @@ public final class StripChartEditPart extends AbstractChartEditPart {
 	 */
 	@Override
 	protected void registerPropertyChangeHandlers() {
+	    super.registerPropertyChangeHandlers();
 		registerCommonPropertyChangeHandlers();
 		registerDataPropertyChangeHandlers();
 	}
-	
+
 	/**
 	 * Sets the current value of the specified data series.
-	 * 
+	 *
 	 * @param index
 	 *            the index of the data series.
 	 * @param value
@@ -159,19 +160,19 @@ public final class StripChartEditPart extends AbstractChartEditPart {
 		 * Change handler for the waveform data properties.
 		 */
 		class DataChangeHandler implements IWidgetPropertyChangeHandler {
-			
+
 			private final int _index;
 
 			/**
 			 * Constructor.
-			 * 
+			 *
 			 * @param index
 			 *            the index of the data array.
 			 */
 			DataChangeHandler(final int index) {
 				_index = index;
 			}
-			
+
 			/**
 			 * {@inheritDoc}
 			 */
@@ -182,24 +183,24 @@ public final class StripChartEditPart extends AbstractChartEditPart {
 				return false;
 			}
 		}
-		
+
 		/**
 		 * Change handler for the plot enablement properties.
 		 */
 		class EnablePlotChangeHandler implements IWidgetPropertyChangeHandler {
-			
+
 			private final int _index;
 
 			/**
 			 * Constructor.
-			 * 
+			 *
 			 * @param index
 			 *            the index of the data array.
 			 */
 			EnablePlotChangeHandler(final int index) {
 				_index = index;
 			}
-			
+
 			/**
 			 * {@inheritDoc}
 			 */
@@ -211,7 +212,7 @@ public final class StripChartEditPart extends AbstractChartEditPart {
 				return true;
 			}
 		}
-		
+
 		StripChartModel model = (StripChartModel) getWidgetModel();
 		for (int i = 0; i < model.numberOfDataSeries(); i++) {
 			setPropertyChangeHandler(StripChartModel.valuePropertyId(i),
@@ -220,7 +221,7 @@ public final class StripChartEditPart extends AbstractChartEditPart {
 					new EnablePlotChangeHandler(i));
 		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -231,12 +232,12 @@ public final class StripChartEditPart extends AbstractChartEditPart {
 		}
 		super.deactivate();
 	}
-	
+
 	/**
 	 * Task that forwards the current values of all channels to the figure.
 	 */
 	private class UpdateTask extends TimerTask {
-		
+
 		/**
 		 * Forwards the current values of all channels to the figure.
 		 */
