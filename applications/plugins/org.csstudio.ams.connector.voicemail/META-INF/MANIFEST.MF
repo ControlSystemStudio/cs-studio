@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Voice Mail Plug-in
 Bundle-SymbolicName: org.csstudio.ams.connector.voicemail;singleton:=true
-Bundle-Version: 1.0.3
+Bundle-Version: 1.1.0
 Bundle-Activator: org.csstudio.ams.connector.voicemail.VoicemailConnectorPlugin
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5

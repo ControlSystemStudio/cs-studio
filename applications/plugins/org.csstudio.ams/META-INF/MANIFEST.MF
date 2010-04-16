@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Ams Plug-in
 Bundle-SymbolicName: org.csstudio.ams; singleton:=true
-Bundle-Version: 1.0.4
+Bundle-Version: 1.1.0
 Bundle-Activator: org.csstudio.ams.AmsActivator
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
