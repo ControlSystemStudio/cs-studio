@@ -117,6 +117,12 @@ public class SimpleSliderIncrementAction extends Action implements IObjectAction
         }
 
         @Override
+        protected Control createButtonBar(final Composite parent) {
+            Control createButtonBar = super.createButtonBar(parent);
+            getShell().setSize(200,250);
+            return createButtonBar;
+        }
+        @Override
         protected Control createDialogArea(final Composite parent) {
 //            getShell().setSize(300,200);
             final Composite createDialogArea = (Composite) super.createDialogArea(parent);
@@ -143,8 +149,6 @@ public class SimpleSliderIncrementAction extends Action implements IObjectAction
             button.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
             button.setText("10.0");
             button.addSelectionListener(getListener(getText(), "10.0"));
-
-            getShell().setSize(200,200);
             Point cL = Display.getCurrent().getCursorLocation();
             getShell().setLocation(cL.x,cL.y-100);
             return createDialogArea;
