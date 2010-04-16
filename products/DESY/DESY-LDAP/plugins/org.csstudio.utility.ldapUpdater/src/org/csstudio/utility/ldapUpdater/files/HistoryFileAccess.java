@@ -95,9 +95,9 @@ public class HistoryFileAccess {
                 }
             }
         } catch (final FileNotFoundException e) {
-            _log.error ("Error : File not Found(r) : " + LDAP_HIST_PATH.getDescription() + HISTORY_DAT_FILE );
+            _log.error ("Error : File not Found(r) : " + getValueFromPreferences(LDAP_HIST_PATH) + HISTORY_DAT_FILE );
         } catch (final IOException e) {
-            _log.error ("I/O-Exception while handling " + LDAP_HIST_PATH.getDescription() + HISTORY_DAT_FILE );
+            _log.error ("I/O-Exception while handling " + getValueFromPreferences(LDAP_HIST_PATH) + HISTORY_DAT_FILE );
         }
 
         _log.info("IOC names in history-file : " + model.getEntrySet().size());
