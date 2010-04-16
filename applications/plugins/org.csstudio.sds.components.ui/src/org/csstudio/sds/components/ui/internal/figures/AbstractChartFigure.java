@@ -1050,8 +1050,7 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 			return 0;
 		}
 	}
-	
-	@Override
+
 	public void setCrossedOut(boolean newValue) {
 	    _crossedPaintHelper.setCrossed(newValue);
 	}

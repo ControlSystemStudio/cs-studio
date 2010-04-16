@@ -465,7 +465,6 @@ public class RefreshableThumbWheelFigure extends RectangleFigure implements
 		minus.setLabelFont(font);
 	}
 
-    @Override
     public void setCrossedOut(boolean newValue) {
         _crossedPaintHelper.setCrossed(newValue);        
     }

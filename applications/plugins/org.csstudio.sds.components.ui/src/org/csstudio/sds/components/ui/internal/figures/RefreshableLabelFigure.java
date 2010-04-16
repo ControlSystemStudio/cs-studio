@@ -239,7 +239,6 @@ public final class RefreshableLabelFigure extends Shape implements ICrossedFigur
 		return null;
 	}
 
-    @Override
     public void setCrossedOut(boolean newValue) {
         _crossedPaintHelper.setCrossed(newValue);    
     }

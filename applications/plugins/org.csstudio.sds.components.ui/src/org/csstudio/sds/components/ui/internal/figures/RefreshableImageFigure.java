@@ -634,7 +634,6 @@ public final class RefreshableImageFigure extends Figure implements ICrossedFigu
 		}
 	}
 
-    @Override
     public void setCrossedOut(boolean newValue) {
         _crossedPaintHelper.setCrossed(newValue);
     }

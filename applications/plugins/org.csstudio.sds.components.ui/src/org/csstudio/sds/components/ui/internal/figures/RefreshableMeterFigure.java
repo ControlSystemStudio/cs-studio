@@ -1033,7 +1033,6 @@ public final class RefreshableMeterFigure extends Shape implements ICrossedFigur
         }
     }
     
-    @Override
     public void setCrossedOut(boolean newValue) {
         _crossedPaintHelper.setCrossed(newValue);
     }

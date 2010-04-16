@@ -293,7 +293,6 @@ public final class RefreshableSwitchFigure extends Shape implements ICrossedFigu
 		return null;
 	}
 
-    @Override
     public void setCrossedOut(boolean newValue) {
         _crossedPaintHelper.setCrossed(newValue);        
     }

@@ -198,12 +198,10 @@ public class AbstractBoolFigure extends Figure implements ICrossedFigure {
         boolLabel.setFont(f);
     }
     
-    @Override
     public Object getAdapter(Class adapter) {
         return null;
     }
     
-    @Override
     public void setCrossedOut(boolean newValue) {
         _crossedPaintHelper.setCrossed(newValue);
     }

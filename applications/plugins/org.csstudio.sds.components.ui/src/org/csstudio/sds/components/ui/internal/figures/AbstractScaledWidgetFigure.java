@@ -147,8 +147,7 @@ public abstract class AbstractScaledWidgetFigure extends Figure implements
         }
         return _crossedPaintHelper;
     }
-	
-	@Override
+
 	public void setCrossedOut(boolean newValue) {
 	    getCrossedPaintHelper().setCrossed(newValue);
 	}

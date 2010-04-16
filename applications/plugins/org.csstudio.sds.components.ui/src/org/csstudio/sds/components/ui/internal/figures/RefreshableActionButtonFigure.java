@@ -134,7 +134,6 @@ public final class RefreshableActionButtonFigure extends Button implements
 		return null;
 	}
 
-    @Override
     public void setCrossedOut(boolean newValue) {
         _crossedPaintHelper.setCrossed(newValue);
     }

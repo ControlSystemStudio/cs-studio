@@ -177,7 +177,6 @@ public class SimpleSliderIncrementAction extends Action implements IObjectAction
             _value = value;
         }
 
-        @Override
         public void widgetSelected(final SelectionEvent e) {
             setInc();
         }
@@ -186,7 +185,6 @@ public class SimpleSliderIncrementAction extends Action implements IObjectAction
             _text.setText(_value);
         }
 
-        @Override
         public void widgetDefaultSelected(final SelectionEvent e) {
             setInc();
         }

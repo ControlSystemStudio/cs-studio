@@ -820,7 +820,6 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	@SuppressWarnings("unchecked")
 	public Object getAdapter(final Class adapter) {
 		if (adapter == IBorderEquippedWidget.class) {
@@ -1974,7 +1973,6 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 		}
 	}
 
-    @Override
     public void setCrossedOut(boolean newValue) {
         _crossedPaintHelper.setCrossed(newValue);        
     }

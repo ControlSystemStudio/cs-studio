@@ -588,7 +588,6 @@ public final class SimpleSliderFigure extends Panel implements ICrossedFigure {
         void sliderValueChanged(double newValue);
     }
 
-    @Override
     public void setCrossedOut(final boolean newValue) {
         _crossedPaintHelper.setCrossed(newValue);
     }

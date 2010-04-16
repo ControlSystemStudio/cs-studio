@@ -358,7 +358,6 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure implement
 
 	}
 
-    @Override
     public void setCrossedOut(boolean newValue) {
         _crossedPaintHelper.setCrossed(newValue);        
     }

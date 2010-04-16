@@ -172,7 +172,6 @@ public final class RefreshableArcFigure extends Shape implements ICrossedFigure 
     /**
      * {@inheritDoc}
      */
-    @Override
     @SuppressWarnings("unchecked")
     public Object getAdapter(final Class adapter) {
         if (adapter == IBorderEquippedWidget.class) {
@@ -224,7 +223,6 @@ public final class RefreshableArcFigure extends Shape implements ICrossedFigure 
         }
     }
 
-    @Override
     public void setCrossedOut(boolean newValue) {
         _crossedPaintHelper.setCrossed(newValue);        
     }

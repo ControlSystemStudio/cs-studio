@@ -187,7 +187,6 @@ public final class RefreshablePolylineFigure extends Polyline implements
 		return null;
 	}
 
-    @Override
     public void setCrossedOut(boolean newValue) {
         _crossedPaintHelper.setCrossed(newValue);        
     }

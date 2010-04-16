@@ -214,7 +214,6 @@ public final class RefreshablePolygonFigure extends Polygon implements
 		}
 	}
 
-    @Override
     public void setCrossedOut(boolean newValue) {
         _crossedPaintHelper.setCrossed(newValue);        
     }

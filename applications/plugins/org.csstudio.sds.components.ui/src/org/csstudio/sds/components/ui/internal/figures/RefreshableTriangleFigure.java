@@ -236,7 +236,6 @@ public final class RefreshableTriangleFigure extends RectangleFigure implements 
 		}
 	}
 
-    @Override
     public void setCrossedOut(boolean newValue) {
         _crossedPaintHelper.setCrossed(newValue);        
     }
