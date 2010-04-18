@@ -30,7 +30,6 @@ import java.util.regex.Pattern;
 
 import org.csstudio.platform.ExecutionService;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
-import org.csstudio.platform.util.PerformanceUtil;
 
 /**
  * Represents a local channel.
@@ -86,8 +85,6 @@ public final class LocalChannel {
 				}
 			}
 		}
-
-		PerformanceUtil.getInstance().constructorCalled(this);
 	}
 
 	public Object getValue() {
@@ -142,9 +139,4 @@ public final class LocalChannel {
 		}
 	}
 
-	@Override
-	protected void finalize() throws Throwable {
-		super.finalize();
-		PerformanceUtil.getInstance().finalizedCalled(this);
-	}
 }

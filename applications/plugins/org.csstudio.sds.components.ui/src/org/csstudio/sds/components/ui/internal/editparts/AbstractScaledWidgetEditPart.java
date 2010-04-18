@@ -47,7 +47,6 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractWidgetEditPar
 	 * {@link #registerPropertyChangeHandlers()}.
 	 */
 	protected void registerCommonPropertyChangeHandlers() {
-	    super.registerPropertyChangeHandlers();
 		setValueHandler();
 		setMinRangeHandler();
 		setMaxRangeHandler();

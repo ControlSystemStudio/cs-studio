@@ -46,7 +46,6 @@ public class BooleanSwitchEditPart extends AbstractWidgetEditPart {
 	 */
 	@Override
 	protected void registerPropertyChangeHandlers() {
-	    super.registerPropertyChangeHandlers();
 		// value
 		IWidgetPropertyChangeHandler valueHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,

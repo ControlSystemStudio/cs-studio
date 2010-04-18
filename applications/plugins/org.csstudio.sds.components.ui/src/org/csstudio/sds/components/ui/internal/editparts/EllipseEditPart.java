@@ -56,7 +56,6 @@ public final class EllipseEditPart extends AbstractWidgetEditPart {
 	 */
 	@Override
 	protected void registerPropertyChangeHandlers() {
-	    super.registerPropertyChangeHandlers();
 		// fill
 		IWidgetPropertyChangeHandler fillHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,

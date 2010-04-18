@@ -131,7 +131,6 @@ public final class WaveformFigure extends AbstractChartFigure {
 		if (data.length > _longestDataLength) {
 			_longestDataLength = data.length;
 		} else {
-			// TODO: Refactor!
 			_longestDataLength = 0;
 			for (double[] dataArray : _data) {
 				if (dataArray.length > _longestDataLength) {

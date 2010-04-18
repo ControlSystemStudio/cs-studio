@@ -136,7 +136,6 @@ public class ThumbWheelEditPart extends AbstractWidgetEditPart {
 	 */
 	@Override
     protected final void registerPropertyChangeHandlers() {
-	    super.registerPropertyChangeHandlers();
 		// decimal wheels
 		setPropertyChangeHandler(ThumbWheelModel.PROP_DECIMAL_DIGITS_PART,
 		                         getPropDecimalDigitdPart());

@@ -162,7 +162,6 @@ public final class MenuButtonEditPart extends AbstractWidgetEditPart implements
      */
     @Override
     protected void registerPropertyChangeHandlers() {
-        super.registerPropertyChangeHandlers();
         // label
         IWidgetPropertyChangeHandler labelHandler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue, final Object newValue,

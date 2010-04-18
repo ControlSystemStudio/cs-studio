@@ -115,7 +115,6 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart
 	 */
 	@Override
 	protected void registerPropertyChangeHandlers() {
-	    super.registerPropertyChangeHandlers();
 		// value
 		IWidgetPropertyChangeHandler valHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,

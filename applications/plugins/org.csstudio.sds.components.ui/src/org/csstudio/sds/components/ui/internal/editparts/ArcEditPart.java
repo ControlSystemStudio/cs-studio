@@ -66,20 +66,6 @@ public final class ArcEditPart extends AbstractWidgetEditPart {
 	}
 	
 	/**
-	 * Register color property change handlers.
-	 */
-	protected void registerColorPropertyHandlers() {
-	    super.registerPropertyChangeHandlers();
-		// fill
-		setPropertyChangeHandler(ArcModel.PROP_FILLCOLOR, new ColorChangeHander<RefreshableArcFigure>(){
-			@Override
-			protected void doHandle(RefreshableArcFigure figure, Color color) {
-				figure.setFillColor(color);
-			}
-		});
-	}
-	
-	/**
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -150,6 +136,12 @@ public final class ArcEditPart extends AbstractWidgetEditPart {
 		};
 		setPropertyChangeHandler(ArcModel.PROP_FILLED, handle);
 		
-		registerColorPropertyHandlers();
+		// fill
+		setPropertyChangeHandler(ArcModel.PROP_FILLCOLOR, new ColorChangeHander<RefreshableArcFigure>(){
+			@Override
+			protected void doHandle(RefreshableArcFigure figure, Color color) {
+				figure.setFillColor(color);
+			}
+		});
 	}
 }

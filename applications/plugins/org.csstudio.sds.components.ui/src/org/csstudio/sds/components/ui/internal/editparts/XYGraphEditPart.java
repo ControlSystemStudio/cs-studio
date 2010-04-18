@@ -27,7 +27,6 @@ public class XYGraphEditPart extends AbstractWidgetEditPart {
 
 	@Override
 	protected void registerPropertyChangeHandlers() {
-	    super.registerPropertyChangeHandlers();
 	}
 
 }

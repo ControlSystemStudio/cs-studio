@@ -67,7 +67,6 @@ public final class WaveformEditPart extends AbstractChartEditPart {
 	 */
 	@Override
 	protected void registerPropertyChangeHandlers() {
-	    super.registerPropertyChangeHandlers();
 		registerCommonPropertyChangeHandlers();
 		registerDataPropertyChangeHandlers();
 	}

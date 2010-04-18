@@ -106,7 +106,6 @@ public final class LabelEditPart extends AbstractWidgetEditPart {
 	 * Registers handlers for changes of the different value properties.
 	 */
 	protected void registerValueChangeHandlers() {
-	    super.registerPropertyChangeHandlers();
 		IWidgetPropertyChangeHandler handle = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure) {
 				RefreshableLabelFigure labelFigure = (RefreshableLabelFigure) figure;

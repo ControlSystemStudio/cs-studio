@@ -134,7 +134,6 @@ public final class StripChartEditPart extends AbstractChartEditPart {
 	 */
 	@Override
 	protected void registerPropertyChangeHandlers() {
-	    super.registerPropertyChangeHandlers();
 		registerCommonPropertyChangeHandlers();
 		registerDataPropertyChangeHandlers();
 	}

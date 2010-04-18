@@ -160,7 +160,6 @@ public final class PolyPointDragTracker extends SimpleDragTracker {
 	@Override
 	protected Request createSourceRequest() {
 		ChangeBoundsRequest request = new ChangeBoundsRequest();
-		// TODO: swende: ugly
 
 		request.setEditParts(getTargetEditPart());
 		PointList points = ((AbstractPolyModel) _owner.getModel())
