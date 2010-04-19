@@ -83,7 +83,7 @@ public class EditADLHandler implements IHandler {
 				for (ADLWidget adlWidget : root.getObjects()){
 					String widgetType = adlWidget.getType();
 					if (widgetType.equals("display")){
-						displayModel = (DisplayModel)(new Display2Model(adlWidget, colorMap)).getWidgetModel();
+						displayModel = (DisplayModel)(new Display2Model(adlWidget, colorMap, null)).getWidgetModel();
 					}
 				}
 				TranslatorUtils.ConvertChildren(root.getObjects(), displayModel, colorMap);
