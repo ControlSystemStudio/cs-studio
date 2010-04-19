@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<folder id="9e28d384-8758-4c16-be6a-7d41e4378454" name="MyDCT" dbd="/DCT Demo Project Minimal/test.dbd" ioc="">
+  <folder id="2be9dd26-2dab-449c-a61f-364029fe66e0" name="Prototypes" index="0">
+    <prototype id="de550f45-7331-473e-95bc-23dfa6967561" name="Sawtooth" index="0">
+      <parameter name="dispMin" value="" />
+      <parameter name="dispMax" value="" />
+      <parameter name="lolo" value="" />
+      <parameter name="hihi" value="" />
+      <parameter name="lo" value="" />
+      <parameter name="hi" value="" />
+      <parameter name="minVal" value="" />
+      <parameter name="maxVal" value="" />
+      <parameter name="name" value="" />
+      <parameter name="increment" value="" />
+      <record id="9eff68e1-3b95-49e1-8dda-3d0d971b4b83" name="SawCalc" epicsname="$(name)" disabled="{inherited}" type="calc">
+        <field name="HSV" value="MINOR" />
+        <field name="LOLO" value="$(lolo)" />
+        <field name="LLSV" value="MAJOR" />
+        <field name="LSV" value="MINOR" />
+        <field name="HHSV" value="MAJOR" />
+        <field name="HIGH" value="$(hi)" />
+        <field name="EGU" value="Counts" />
+        <field name="LOPR" value="$(dispMin)" />
+        <field name="SCAN" value="1 second" />
+        <field name="HIHI" value="$(hihi)" />
+        <field name="INPB" value="$(increment)" />
+        <field name="INPA" value="$(name).VAL NPP MS" />
+        <field name="PHAS" value="1" />
+        <field name="DESC" value="$" />
+        <field name="LOW" value="$(lo)" />
+        <field name="CALC" value="A&lt;D?A+B:C" />
+        <field name="INPD" value="$(maxVal)" />
+        <field name="HOPR" value="$(dispMax)" />
+        <field name="INPC" value="$(minVal)" />
+      </record>
+    </prototype>
+  </folder>
+  <folder id="3a4ff49d-d435-4b64-a180-e5cd6937da92" name="Instances" index="1">
+    <instance id="cc7b92f1-f0a0-43fa-8fb3-7462232c2608" parent="de550f45-7331-473e-95bc-23dfa6967561" name="Sawtooth 10-75 Step 1" index="0">
+      <parameter name="lo" value="20" />
+      <parameter name="dispMin" value="0" />
+      <parameter name="increment" value="1" />
+      <parameter name="maxVal" value="75" />
+      <parameter name="dispMax" value="100" />
+      <parameter name="lolo" value="15" />
+      <parameter name="minVal" value="10" />
+      <parameter name="name" value="SawCalc0" />
+      <parameter name="hi" value="65" />
+      <parameter name="hihi" value="70" />
+      <record id="7ca0d341-62d9-4d0d-96fc-0ce543a7b084" name="{inherited}" epicsname="{inherited}" disabled="{inherited}" type="calc" parent="9eff68e1-3b95-49e1-8dda-3d0d971b4b83" />
+    </instance>
+    <instance id="51012834-efc0-41fe-bb98-1d1b1f57fcd0" parent="de550f45-7331-473e-95bc-23dfa6967561" name="Sawtooth 10-75 Step 1" index="1">
+      <parameter name="lo" value="20" />
+      <parameter name="dispMin" value="0" />
+      <parameter name="increment" value="10" />
+      <parameter name="maxVal" value="75" />
+      <parameter name="dispMax" value="100" />
+      <parameter name="lolo" value="15" />
+      <parameter name="minVal" value="10" />
+      <parameter name="name" value="SawCalc1" />
+      <parameter name="hi" value="65" />
+      <parameter name="hihi" value="70" />
+      <record id="a9e2ea80-a0e5-408b-a1f4-b9a071ac8baa" name="{inherited}" epicsname="{inherited}" disabled="{inherited}" type="calc" parent="9eff68e1-3b95-49e1-8dda-3d0d971b4b83" />
+    </instance>
+  </folder>
+</folder>
+
