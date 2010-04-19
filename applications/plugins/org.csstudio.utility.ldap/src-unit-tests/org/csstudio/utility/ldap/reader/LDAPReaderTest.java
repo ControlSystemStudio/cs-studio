@@ -32,10 +32,10 @@ import javax.naming.directory.SearchControls;
 import junit.framework.Assert;
 
 import org.csstudio.utility.ldap.model.LdapContentModel;
+import org.csstudio.utility.ldap.service.LdapService;
+import org.csstudio.utility.ldap.service.impl.LdapServiceImpl;
 import org.junit.Test;
 
-import service.LdapService;
-import service.impl.LdapServiceImpl;
 
 /**
  * @author hrickens

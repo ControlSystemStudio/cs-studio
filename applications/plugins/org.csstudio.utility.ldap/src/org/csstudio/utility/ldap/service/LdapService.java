@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package service;
+package org.csstudio.utility.ldap.service;
 
 import java.util.Set;
 
@@ -46,6 +46,7 @@ public interface LdapService {
      * @param facilityName facility
      * @param iocName ioc
      * @return the seach result
+     *
      * @throws InterruptedException
      */
     LdapSearchResult retrieveRecords(@Nonnull String facilityName,

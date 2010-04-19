@@ -22,14 +22,14 @@ import org.csstudio.platform.simpledal.ProcessVariableConnectionServiceFactory;
 import org.csstudio.platform.simpledal.ValueType;
 import org.csstudio.utility.ldap.LdapUtils;
 import org.csstudio.utility.ldap.model.IOC;
+import org.csstudio.utility.ldap.service.LdapService;
+import org.csstudio.utility.ldap.service.impl.LdapServiceImpl;
 import org.csstudio.utility.recordproperty.Messages;
 import org.csstudio.utility.recordproperty.RecordPropertyEntry;
 import org.csstudio.utility.recordproperty.rdb.config.OracleSettings;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
-import service.LdapService;
-import service.impl.LdapServiceImpl;
 
 /**
  * RecordPropertyGetRDB gets data (record fields) from RDB, DAL and RMI.

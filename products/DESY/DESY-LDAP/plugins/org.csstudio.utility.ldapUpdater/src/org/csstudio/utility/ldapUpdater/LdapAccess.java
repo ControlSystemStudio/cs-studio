@@ -44,14 +44,14 @@ import org.csstudio.utility.ldap.model.IOC;
 import org.csstudio.utility.ldap.model.LdapContentModel;
 import org.csstudio.utility.ldap.model.Record;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
+import org.csstudio.utility.ldap.service.LdapService;
+import org.csstudio.utility.ldap.service.impl.LdapServiceImpl;
 import org.csstudio.utility.ldapUpdater.files.HistoryFileAccess;
 import org.csstudio.utility.ldapUpdater.files.HistoryFileContentModel;
 import org.csstudio.utility.ldapUpdater.mail.NotificationMail;
 import org.csstudio.utility.ldapUpdater.mail.NotificationType;
 import org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceKey;
 
-import service.LdapService;
-import service.impl.LdapServiceImpl;
 
 /**
  * LDAP Updater access class to encapsulate specific updater access.
@@ -157,7 +157,7 @@ public final class LdapAccess {
     public static void tidyUpLDAPFromIOCList(@Nonnull final LdapContentModel ldapContentModel,
                                              @Nonnull final Map<String, IOC> iocMapFromFS){
 
-        for (final String iocNameFromLdap : ldapContentModel.getIOCNames()) {
+        for (final String iocNameFromLdap : ldapContentModel.getIOCNameKeys()) {
 
             final IOC iocFromLdap = ldapContentModel.getIOC(iocNameFromLdap);
             if (iocMapFromFS.containsKey(iocNameFromLdap)) {

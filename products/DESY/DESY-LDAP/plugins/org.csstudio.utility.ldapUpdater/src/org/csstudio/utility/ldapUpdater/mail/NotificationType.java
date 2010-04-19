@@ -34,10 +34,10 @@ public enum NotificationType {
 
     UNALLOWED_CHARS("Forbidden character in LDAP entry",
                     "The LDAP entry contains at least one forbidden character\n" +
-                    "any of :" + LdapUtils.FORBIDDEN_SUBSTRINGS + ")"),
+                    "(not permitted are: " + LdapUtils.FORBIDDEN_SUBSTRINGS + ")"),
 
-    UNKNOWN_IOCS_IN_LDAP("IOCs in LDAP not backed by an IOC file.",
-                         "The LDAP contains IOC entries, for which a corresponding IOC file could not be identified.");
+    UNKNOWN_IOCS_IN_LDAP("IOC file missing!",
+                         "The LDAP contains IOC entries, for which a corresponding IOC file could not be identified:");
 
     private static final String SUBJECT_PREFIX = "[LDAP Updater]";
 
@@ -51,7 +51,7 @@ public enum NotificationType {
     private NotificationType(final String subject, final String text) {
     //CHECKSTYLE:ON
         _subject = subject;
-        _text= text;
+        _text = text;
     }
 
     /**

@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
@@ -85,11 +86,25 @@ public class Facility {
     }
 
     /**
+     * The name keys of the contained IOCs.
+     * @return a copy of the keyset of the currently contained IOCs (IOC name in UPPERCASE)
+     */
+    @Nonnull
+    public Set<String> getIocNameKeys() {
+        return new HashSet<String>(_iocs.keySet());
+    }
+
+    /**
      * The names of the contained IOCs.
      * @return a copy of the name set of the currently contained IOCs
      */
+    @Nonnull
     public Set<String> getIocNames() {
-        return new HashSet<String>(_iocs.keySet());
+        final Set<String> names = new HashSet<String>(_iocs.keySet());
+        for (final IOC ioc : _iocs.values()) {
+            names.add(ioc.getName());
+        }
+        return names;
     }
 
     /**

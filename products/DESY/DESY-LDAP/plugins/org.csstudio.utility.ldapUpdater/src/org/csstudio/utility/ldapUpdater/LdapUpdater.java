@@ -39,9 +39,13 @@ import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreference
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import javax.annotation.Nonnull;
 import javax.naming.directory.SearchControls;
@@ -52,14 +56,14 @@ import org.csstudio.utility.ldap.LdapUtils;
 import org.csstudio.utility.ldap.model.IOC;
 import org.csstudio.utility.ldap.model.LdapContentModel;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
+import org.csstudio.utility.ldap.service.LdapService;
+import org.csstudio.utility.ldap.service.impl.LdapServiceImpl;
 import org.csstudio.utility.ldapUpdater.files.HistoryFileAccess;
 import org.csstudio.utility.ldapUpdater.files.HistoryFileContentModel;
 import org.csstudio.utility.ldapUpdater.files.IOCFilesDirTree;
 import org.csstudio.utility.ldapUpdater.mail.NotificationMail;
 import org.csstudio.utility.ldapUpdater.mail.NotificationType;
 
-import service.LdapService;
-import service.impl.LdapServiceImpl;
 
 /**
  * Updates the IOC information in the LDAP directory.
@@ -73,8 +77,8 @@ public final class LdapUpdater {
 
     public static final String DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
-    private static final String UPDATE_ACTION_NAME = "LDAP Update Action.";
-    private static final String TIDYUP_ACTION_NAME = "LDAP Tidy Up Action.";
+    private static final String UPDATE_ACTION_NAME = "LDAP Update Action";
+    private static final String TIDYUP_ACTION_NAME = "LDAP Tidy Up Action";
 
     private static LdapUpdater INSTANCE;
 
@@ -83,11 +87,9 @@ public final class LdapUpdater {
      * @return the singleton instance of this class
      */
     @Nonnull
-    public static LdapUpdater getInstance() {
-        synchronized (LdapUpdater.class) {
-            if ( INSTANCE == null) {
-                INSTANCE = new LdapUpdater();
-            }
+    public static synchronized LdapUpdater getInstance() {
+        if ( INSTANCE == null) {
+            INSTANCE = new LdapUpdater();
         }
         return INSTANCE;
     }
@@ -136,8 +138,8 @@ public final class LdapUpdater {
         final String now = convertMillisToDateTimeString(endTime, DATETIME_FORMAT);
 
         final StringBuilder builder = new StringBuilder();
-        builder.append(actionName).append(" ends at").append(now).append("  (").append(endTime).append(")\n")
-        .append("time used : ").append(deltaTime/1000.).append("s\n")
+        builder.append(actionName).append(" ends at ").append(now).append("  (").append(endTime).append(")\n")
+        .append("Time used : ").append(deltaTime/1000.).append("s\n")
         .append("End.\n")
         .append("-------------------------------------------------------------------\n");
         _log.info( builder.toString() );
@@ -150,7 +152,7 @@ public final class LdapUpdater {
         final StringBuilder strBuilder = new StringBuilder();
         strBuilder.append("\n-------------------------------------------------------------------\n" )
         .append(action)
-        .append(" start at ").append(now).append("  ( ")
+        .append(" starts at ").append(now).append("  ( ")
         .append(startTime).append(" )");
         _log.info(strBuilder.toString() );
         return startTime;
@@ -227,19 +229,35 @@ public final class LdapUpdater {
     private void validateHistoryFileEntriesVsLDAPEntries(@Nonnull final LdapContentModel ldapContentModel,
                                                          @Nonnull final HistoryFileContentModel historyFileModel) {
 
-        Set<String> iocsFromLDAP = ldapContentModel.getIOCNames();
-        final Set<String> iocsFromHistFile = historyFileModel.getIOCNames();
+        Set<String> iocsFromLDAP = ldapContentModel.getIOCNameKeys();
+        final Set<String> iocsFromHistFile = historyFileModel.getIOCNameKeys();
 
         iocsFromLDAP.removeAll(iocsFromHistFile);
-        for (final String ioc : iocsFromLDAP) {
-            _log.warn("IOC " + ioc + " from LDAP is not present in history file!");
+
+
+        final Map<String, List<String>> missingIOCsPerPerson = new HashMap<String, List<String>>();
+
+        for (final String iocNameKey : iocsFromLDAP) {
+            _log.warn("IOC " + iocNameKey + " from LDAP is not present in history file!");
+
+            final IOC ioc = ldapContentModel.getIOC(iocNameKey);
+            final String person = ioc.getResponsible();
+            if (!missingIOCsPerPerson.containsKey(person)) {
+                missingIOCsPerPerson.put(person, new ArrayList<String>());
+            }
+            missingIOCsPerPerson.get(person).add(ioc.getName());
+        }
+
+        final String iocFilePath = getValueFromPreferences(IOC_DBL_DUMP_PATH);
+        for (final Entry<String, List<String>> entry : missingIOCsPerPerson.entrySet()) {
             NotificationMail.sendMail(NotificationType.UNKNOWN_IOCS_IN_LDAP,
-                                      ldapContentModel.getIOC(ioc).getResponsible(),
-                                      ":\n\n" + ioc);
+                                      entry.getKey(),
+                                      "\n(in directory " + iocFilePath + ")" +
+                                      "\n\n" + entry.getValue());
         }
 
 
-        iocsFromLDAP = ldapContentModel.getIOCNames();
+        iocsFromLDAP = ldapContentModel.getIOCNameKeys();
         iocsFromHistFile.removeAll(iocsFromLDAP);
         for (final String ioc : iocsFromHistFile) {
             _log.warn("IOC " + ioc + " found in history file is not present in LDAP!");

@@ -48,6 +48,7 @@ import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.statistic.Collector;
 import org.csstudio.utility.ldap.Activator;
+import org.csstudio.utility.ldap.LdapUtils;
 import org.csstudio.utility.ldap.connection.LDAPConnector;
 import org.csstudio.utility.ldap.engine.LdapReferences.Entry;
 import org.csstudio.utility.ldap.preference.PreferenceKey;
@@ -167,7 +168,7 @@ public final class Engine extends Job {
                     scope = "Unknown scope";
 
             }
-            return String.format("Path: %s - Filter: %s", _path, _filter, scope);
+            return String.format("Path: %s - Filter: %s", _path, _filter);
         }
     }
 
@@ -253,7 +254,7 @@ public final class Engine extends Job {
         // TODO:
         /*
          * create message ONCE retry forever if ctx == null BUT do NOT block
-         * caller (calling sigleton) submit ctx = new
+         * caller (calling singleton) submit ctx = new
          * LDAPConnector().getDirContext(); to 'background process'
          *
          */
@@ -455,7 +456,8 @@ public final class Engine extends Job {
      *            the value was set.
      */
     synchronized public void setAttribute(final String recordPath,
-                                          final ChannelAttribute attribute, final String value) {
+                                          final ChannelAttribute attribute,
+                                          final String value) {
         assert (recordPath != null) && (attribute != null) && (value != null) : "The recordPath, attribute and/or value are NULL";
         if (getLdapDirContext() != null) {
             AttributeSet attributeSet = helpAttribute(recordPath);
@@ -476,10 +478,11 @@ public final class Engine extends Job {
                         && (attributeSet.getPath() != null)) {
                     ldapChannelName = attributeSet.getFilter() + "," + attributeSet.getPath();
                     final BasicAttribute ba = new BasicAttribute(attribute.name(), value);
-                    final ModificationItem[] modItemTemp = new ModificationItem[] { new ModificationItem(
-                                                                                                         DirContext.REPLACE_ATTRIBUTE, ba) };
+                    final List<ModificationItem> modItems = new ArrayList<ModificationItem>();
+                    modItems.add(new ModificationItem(DirContext.REPLACE_ATTRIBUTE, ba));
+
                     final String channel = ldapChannelName.split("[=,]")[0];
-                    modifyAttributes(ldapChannelName, modItemTemp, channel, new GregorianCalendar());
+                    modifyAttributes(ldapChannelName, modItems, channel, new GregorianCalendar());
                     // _ctx.modifyAttributes(ldapChannelName,modItemTemp);
                 } else {
                     _log.warn("Set attribute faild. Record: " + recordPath + " with attriebute: "
@@ -634,11 +637,9 @@ public final class Engine extends Job {
 
     private void performLdapWrite() {
         final int maxNumberOfWritesProcessed = 200;
-        ModificationItem[] modItem = new ModificationItem[maxNumberOfWritesProcessed];
+        List<ModificationItem> modItems = new ArrayList<ModificationItem>(maxNumberOfWritesProcessed);
         int i = 0;
-        String channel;
-        channel = null;
-        i = 0;
+        String currentChannel = null;
 
         while (_writeVector.size() > 0) {
 
@@ -646,31 +647,34 @@ public final class Engine extends Job {
             // return first element and remove it from list
             //
             final WriteRequest writeReq = _writeVector.remove(0);
+
             //
             // prepare LDAP request for all entries matching the same channel
             //
-            if (channel == null) {
+            final String nextChannel = writeReq.getChannel();
+
+            if (currentChannel == null) {
                 // first time setting
-                channel = writeReq.getChannel();
+                currentChannel = nextChannel;
             }
-            if (!channel.equals(writeReq.getChannel())) {
+            if (!currentChannel.equals(nextChannel)) {
                 // System.out.print("write: ");
                 // TODO this hard coded string must be removed to the
                 // preferences
-                changeValue("eren", channel, modItem);
-                // System.out.println(" finisch!!!");
-                modItem = new ModificationItem[maxNumberOfWritesProcessed];
+                changeValue(LdapUtils.EREN_FIELD_NAME, currentChannel, modItems);
+                // System.out.println(" finished!!!");
+                modItems = new ArrayList<ModificationItem>(maxNumberOfWritesProcessed);
                 i = 0;
                 //
                 // define next channel name
                 //
-                channel = writeReq.getChannel();
+                currentChannel = nextChannel;
             }
             //
             // combine all items that are related to the same channel
             //
             final BasicAttribute ba = new BasicAttribute(writeReq.getAttribute(), writeReq.getValue());
-            modItem[i++] = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, ba);
+            modItems.add(new ModificationItem(DirContext.REPLACE_ATTRIBUTE, ba));
 
             if ((_writeVector.size() > 100) && ((_writeVector.size() % 100) == 0)) {
                 System.out.println("Engine.performLdapWrite buffer size: " + _writeVector.size());
@@ -684,7 +688,7 @@ public final class Engine extends Job {
             try {
                 // System.out.println("Vector leer jetzt den Rest zum LDAP
                 // Server schreiben");
-                changeValue("eren", channel, modItem);
+                changeValue("eren", currentChannel, modItems);
             } catch (final Exception e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -705,24 +709,10 @@ public final class Engine extends Job {
      * @param channel
      * @param modItemTemp
      */
-    private void changeValue(final String string, final String channel, final ModificationItem[] modItem) {
-        int j = 0;
-        int n;
+    private void changeValue(final String string, final String channel, final List<ModificationItem> modItems) {
         List<String> namesInNamespace = Collections.emptyList();
         GregorianCalendar startTime = null;
 
-        // Delete null values and make right size
-        for (; j < modItem.length; j++) {
-            if (modItem[j] == null) {
-                break;
-            }
-        }
-        // System.out.println("Enter Engine.changeValue with: " + channel);
-        final ModificationItem modItemTemp[] = new ModificationItem[j];
-        for (n = 0; n < j; n++) {
-            modItemTemp[n] = modItem[n];
-        }
-        //
         // set start time
         //
         startTime = new GregorianCalendar();
@@ -730,7 +720,6 @@ public final class Engine extends Job {
         //
         // is channel name already in ldearReference hash table?
         //
-
         if (_ldapReferences.hasEntry(channel)) {
             // if ( false) { // test case with no hash table
             //
@@ -740,11 +729,9 @@ public final class Engine extends Job {
             // System.out.println ("Engine.changeValue : found entry for
             // channel: " + channel);
             namesInNamespace = this._ldapReferences.getEntry(channel).getNamesInNamespace();
-            for (int index = 0; index < namesInNamespace.size(); index++) {
-                final String ldapChannelName = namesInNamespace.get(index);
-                modifyAttributes(ldapChannelName, modItemTemp, channel, startTime);
+            for (final String ldapChannelName : namesInNamespace) {
+                modifyAttributes(ldapChannelName, modItems, channel, startTime);
             }
-
         } else {
             //
             // search for channel in ldap server
@@ -752,8 +739,10 @@ public final class Engine extends Job {
             final SearchControls ctrl = new SearchControls();
             ctrl.setSearchScope(SearchControls.SUBTREE_SCOPE);
             try {
-                final NamingEnumeration<SearchResult> results = getLdapDirContext().search("", string + "=" + channel,
-                                                                                           ctrl);
+                final NamingEnumeration<SearchResult> results =
+                    getLdapDirContext().search("",
+                                               string + "=" + channel,
+                                               ctrl);
                 // System.out.println ("Engine.changeValue : Time to search
                 // channel: " + gregorianTimeDifference ( startTime, new
                 // GregorianCalendar()));
@@ -766,7 +755,7 @@ public final class Engine extends Job {
                 while (results.hasMore()) {
                     final String ldapChannelName = results.next().getNameInNamespace();
                     namesInNamespace.add(ldapChannelName);
-                    modifyAttributes(ldapChannelName, modItemTemp, channel, startTime);
+                    modifyAttributes(ldapChannelName, modItems, channel, startTime);
                 }
 
             } catch (final NamingException e1) {
@@ -787,20 +776,18 @@ public final class Engine extends Job {
             }
         }
         //
-        // calcualte time difference
+        // calculate time difference
         //
         // System.out.println ("Engine.changeValue : Time to write to
         // LDAP-total: " + gregorianTimeDifference ( startTime, new
         // GregorianCalendar()));
     }
 
-    /**
-     * @param localLdapChannelName
-     * @param modItemTemp
-     * @param startTime
-     */
-    private void modifyAttributes(final String ldapChannelName, final ModificationItem[] modItemTemp,
-                                  final String channel, final GregorianCalendar startTime) {
+
+    private void modifyAttributes(final String ldapChannelName,
+                                  final List<ModificationItem> modItems,
+                                  final String channel,
+                                  final GregorianCalendar startTime) {
         //
         // TODO put 'endsWith' into preference page
         //
@@ -811,11 +798,12 @@ public final class Engine extends Job {
         }
         try {
             channelName = channelName.replace("/", "\\/");
-            getLdapDirContext().modifyAttributes(channelName, modItemTemp);
+            getLdapDirContext().modifyAttributes(channelName,
+                                                 modItems.toArray(new ModificationItem[modItems.size()]));
             _ldapWriteTimeCollector.setInfo(channel);
             _ldapWriteTimeCollector.setValue(gregorianTimeDifference(startTime,
                                                                      new GregorianCalendar())
-                                                                     / modItemTemp.length);
+                                                                     / modItems.size());
             // System.out.println ("Engine.changeValue : Time to write to LDAP:
             // (" + channel + ")" + gregorianTimeDifference ( startTime, new
             // GregorianCalendar()));

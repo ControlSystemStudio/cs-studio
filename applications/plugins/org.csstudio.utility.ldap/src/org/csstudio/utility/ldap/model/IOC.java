@@ -40,7 +40,7 @@ public class IOC implements Serializable {
 
     public static final String NO_GROUP = "<no group>";
 
-    public static final String DEFAULT_RESPONSIBLE_PERSON = "klaus.valett@desy.de";
+    public static final String DEFAULT_RESPONSIBLE_PERSON = "bastian.knerr@desy.de";
 
     private static final long serialVersionUID = 1L;
 

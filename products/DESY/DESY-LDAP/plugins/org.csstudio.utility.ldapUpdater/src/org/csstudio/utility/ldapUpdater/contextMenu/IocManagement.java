@@ -32,10 +32,10 @@ import org.csstudio.platform.management.CommandParameters;
 import org.csstudio.platform.management.CommandResult;
 import org.csstudio.platform.management.IManagementCommand;
 import org.csstudio.utility.ldap.engine.Engine;
+import org.csstudio.utility.ldap.service.LdapService;
+import org.csstudio.utility.ldap.service.impl.LdapServiceImpl;
 import org.csstudio.utility.ldapUpdater.LdapAccess;
 
-import service.LdapService;
-import service.impl.LdapServiceImpl;
 
 /**
  * IOC Management Commands for the context menu of the LDAP Updater product.

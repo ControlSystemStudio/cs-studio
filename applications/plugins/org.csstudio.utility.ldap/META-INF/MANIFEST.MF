@@ -16,7 +16,7 @@ Export-Package: org.csstudio.utility.ldap,
  org.csstudio.utility.ldap.model,
  org.csstudio.utility.ldap.preference,
  org.csstudio.utility.ldap.reader,
- service,
- service.impl
+ org.csstudio.utility.ldap.service,
+ org.csstudio.utility.ldap.service.impl
 Import-Package: org.eclipse.ecf.core.util
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

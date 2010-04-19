@@ -43,9 +43,9 @@ import org.csstudio.platform.management.IDynamicParameterValues;
 import org.csstudio.utility.ldap.model.IOC;
 import org.csstudio.utility.ldap.model.LdapContentModel;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
+import org.csstudio.utility.ldap.service.LdapService;
+import org.csstudio.utility.ldap.service.impl.LdapServiceImpl;
 
-import service.LdapService;
-import service.impl.LdapServiceImpl;
 
 /**
  * Enumeration of IOCs as retrieved from LDAP for the management commands.

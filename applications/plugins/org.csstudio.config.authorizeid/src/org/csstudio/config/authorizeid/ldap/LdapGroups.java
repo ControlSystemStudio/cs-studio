@@ -12,9 +12,9 @@ import javax.naming.directory.SearchResult;
 
 import org.csstudio.utility.ldap.reader.LDAPReader;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
+import org.csstudio.utility.ldap.service.LdapService;
+import org.csstudio.utility.ldap.service.impl.LdapServiceImpl;
 
-import service.LdapService;
-import service.impl.LdapServiceImpl;
 
 public class LdapGroups {
 

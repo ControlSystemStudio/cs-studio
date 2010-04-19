@@ -71,8 +71,8 @@ public class HistoryFileAccess {
         HistoryFileContentModel model = new HistoryFileContentModel();
         BufferedReader fr;
 
+        final String path = getValueFromPreferences(LDAP_HIST_PATH);
         try {
-            final String path = getValueFromPreferences(LDAP_HIST_PATH);
             fr = new BufferedReader(new FileReader(path + HISTORY_DAT_FILE ));
 
             String line;

@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package service.impl;
+package org.csstudio.utility.ldap.service.impl;
 
 import static org.csstudio.utility.ldap.LdapUtils.ATTR_FIELD_OBJECT_CLASS;
 import static org.csstudio.utility.ldap.LdapUtils.ATTR_VAL_OBJECT_CLASS;
@@ -38,6 +38,8 @@ import static org.csstudio.utility.ldap.LdapUtils.createLdapQuery;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
@@ -51,8 +53,8 @@ import org.csstudio.utility.ldap.model.LdapContentModel;
 import org.csstudio.utility.ldap.model.Record;
 import org.csstudio.utility.ldap.reader.LDAPReader;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
+import org.csstudio.utility.ldap.service.LdapService;
 
-import service.LdapService;
 
 /**
  * Service implementation for the LDAP access.
@@ -76,12 +78,10 @@ public final class LdapServiceImpl implements LdapService {
         // Empty
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public LdapSearchResult retrieveSearchResult(final String searchRoot,
-                                                 final String filter,
+    @CheckForNull
+    public LdapSearchResult retrieveSearchResult(@Nonnull final String searchRoot,
+                                                 @Nonnull final String filter,
                                                  final int searchScope) {
 
         final LDAPReader job = createLdapReaderAndScheduleJob(searchRoot, filter, searchScope);
@@ -99,10 +99,13 @@ public final class LdapServiceImpl implements LdapService {
 
 
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public IOC getIOCForRecordName(final String recordName) {
-        if ((recordName == null) || recordName.isEmpty()) {
+    @CheckForNull
+    public IOC getIOCForRecordName(@Nonnull final String recordName) {
+        if (recordName.isEmpty()) {
             return null;
         }
 
@@ -127,6 +130,7 @@ public final class LdapServiceImpl implements LdapService {
      * {@inheritDoc}
      */
     @Override
+    @CheckForNull
     public LdapSearchResult retrieveRecords(final String facilityName,
                                             final String iocName) throws InterruptedException {
 
@@ -172,7 +176,7 @@ public final class LdapServiceImpl implements LdapService {
      * {@inheritDoc}
      */
     @Override
-    public void removeIocEntryFromLdap(final DirContext context, final IOC ioc) {
+    public void removeIocEntryFromLdap(@Nonnull final DirContext context, @Nonnull final IOC ioc) {
         removeIocEntryFromLdap(context, ioc.getName(), ioc.getGroup());
     }
 
@@ -180,10 +184,10 @@ public final class LdapServiceImpl implements LdapService {
      * {@inheritDoc}
      */
     @Override
-    public void tidyUpIocEntryInLdap(final DirContext context,
-                                     final String iocName,
-                                     final String facilityName,
-                                     final Set<Record> validRecords)  {
+    public void tidyUpIocEntryInLdap(@Nonnull final DirContext context,
+                                     @Nonnull final String iocName,
+                                     @Nonnull final String facilityName,
+                                     @Nonnull final Set<Record> validRecords)  {
 
         try {
             final LdapSearchResult searchResult = retrieveRecords(facilityName, iocName);
@@ -283,7 +287,7 @@ public final class LdapServiceImpl implements LdapService {
     /**
      * @return The service instance.
      */
-    public static LdapService getInstance() {
+    public static synchronized LdapService getInstance() {
         if (INSTANCE == null) {
             INSTANCE = new LdapServiceImpl();
         }

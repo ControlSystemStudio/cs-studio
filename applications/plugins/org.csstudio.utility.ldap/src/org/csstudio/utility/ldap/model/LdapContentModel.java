@@ -113,6 +113,18 @@ public class LdapContentModel {
     }
 
     /**
+     * Returns a copy of the set of all IOC name keys (of all facilities).
+     * @return a copy of the set of all IOC name keys.
+     */
+    public Set<String> getIOCNameKeys() {
+        final Set<String> names = new HashSet<String>();
+        for (final Facility fac : _facilities.values()) {
+            names.addAll(fac.getIocNameKeys());
+        }
+        return names;
+    }
+
+    /**
      * Returns a copy of the set of all IOC names (of all facilities).
      * @return a copy of the set of all IOC names.
      */

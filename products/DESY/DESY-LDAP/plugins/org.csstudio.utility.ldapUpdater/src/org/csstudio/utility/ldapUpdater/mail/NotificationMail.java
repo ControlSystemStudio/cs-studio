@@ -79,7 +79,8 @@ public final class NotificationMail {
                                      FROM,
                                      receiver,
                                      type.getSubject());
-            mailer.addText(type.getText() + additionalBody != null ? additionalBody : "");
+
+            mailer.addText(type.getText() + (additionalBody != null ? additionalBody : ""));
             mailer.close();
     }
 

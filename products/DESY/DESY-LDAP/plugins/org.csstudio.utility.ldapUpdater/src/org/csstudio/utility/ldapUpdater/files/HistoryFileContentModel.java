@@ -89,7 +89,7 @@ public final class HistoryFileContentModel {
 	 * @return the copied set of ioc names
 	 */
 	@Nonnull
-	public Set<String> getIOCNames() {
+	public Set<String> getIOCNameKeys() {
 		return new HashSet<String>(_historyMap.keySet());
 	}
 }

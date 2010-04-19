@@ -28,11 +28,11 @@ import javax.naming.directory.SearchControls;
 
 import org.csstudio.utility.ldap.namespacebrowser.Activator;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
+import org.csstudio.utility.ldap.service.LdapService;
+import org.csstudio.utility.ldap.service.impl.LdapServiceImpl;
 import org.csstudio.utility.nameSpaceBrowser.utility.NameSpace;
 import org.csstudio.utility.namespace.utility.NameSpaceSearchResult;
 
-import service.LdapService;
-import service.impl.LdapServiceImpl;
 
 /**
  * @author hrickens
