@@ -22,16 +22,16 @@
 /*
  * $Id$
  */
-package org.csstudio.utility.adlconverter.utility.widgetparts;
+package org.csstudio.utility.adlparser.fileParser.widgetParts;
 
-import org.csstudio.sds.internal.rules.ParameterDescriptor;
-import org.csstudio.sds.model.AbstractWidgetModel;
-import org.csstudio.sds.model.DynamicsDescriptor;
-import org.csstudio.utility.adlconverter.internationalization.Messages;
-import org.csstudio.utility.adlconverter.utility.ADLHelper;
-import org.csstudio.utility.adlconverter.utility.ADLWidget;
-import org.csstudio.utility.adlconverter.utility.FileLine;
-import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
+//**import org.csstudio.sds.internal.rules.ParameterDescriptor;
+//**import org.csstudio.sds.model.AbstractWidgetModel;
+//**import org.csstudio.sds.model.DynamicsDescriptor;
+import org.csstudio.utility.adlparser.internationalization.Messages;
+//**import org.csstudio.utility.adlparser.fileParser.ADLHelper;
+import org.csstudio.utility.adlparser.fileParser.ADLWidget;
+import org.csstudio.utility.adlparser.fileParser.FileLine;
+import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
 
 /**
  * @author hrickens
@@ -43,7 +43,7 @@ public class ADLSensitive extends WidgetPart {
     /**
      * The channel.
      */
-    private String[] _chan;
+    private String _chan;
     /**
      * The used rule to set the Sensitive.
      */
@@ -60,30 +60,30 @@ public class ADLSensitive extends WidgetPart {
      * @param parentWidgetModel The Widget that set the parameter from ADLWidget.
      * @throws WrongADLFormatException Wrong ADL format or untreated parameter found.
      */
-    public ADLSensitive(final ADLWidget sensitive, final AbstractWidgetModel parentWidgetModel) throws WrongADLFormatException {
-        super(sensitive, parentWidgetModel);
+    public ADLSensitive(final ADLWidget sensitive) throws WrongADLFormatException {
+        super(sensitive);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    final void generateElements() {
-        if(_chan!=null&&_chan[0].length()>0){
-            _postfix = ADLHelper.setChan(_widgetModel,_chan);
-        }else{
-            _postfix="";
-        }
-        if(_sensitiveMode!=null && _sensitiveMode.equals("if not zero")){ //$NON-NLS-1$
-            DynamicsDescriptor adlBooleanDynamicAttribute = new DynamicsDescriptor("org.css.sds.color.if_not_zero"); //$NON-NLS-1$
-            adlBooleanDynamicAttribute.addInputChannel(new ParameterDescriptor("$channel$"+_postfix,"")); //$NON-NLS-1$
-            _widgetModel.setDynamicsDescriptor(AbstractWidgetModel.PROP_ENABLED, adlBooleanDynamicAttribute);
-        }else if(_sensitiveMode!=null && _sensitiveMode.equals("if zero")){ //$NON-NLS-1$
-            DynamicsDescriptor adlBooleanDynamicAttribute = new DynamicsDescriptor("org.css.sds.color.if_zero"); //$NON-NLS-1$
-            adlBooleanDynamicAttribute.addInputChannel(new ParameterDescriptor("$channel$"+_postfix,"")); //$NON-NLS-1$
-            _widgetModel.setDynamicsDescriptor(AbstractWidgetModel.PROP_ENABLED, adlBooleanDynamicAttribute);
-        }
-    }
+//**    /**
+  //**     * {@inheritDoc}
+  //**     */
+  //**    @Override
+  //**    final void generateElements() {
+  //**        if(_chan!=null&&_chan[0].length()>0){
+  //**            _postfix = ADLHelper.setChan(_widgetModel,_chan);
+  //**        }else{
+  //**            _postfix="";
+  //**        }
+  //**        if(_sensitiveMode!=null && _sensitiveMode.equals("if not zero")){ //$NON-NLS-1$
+  //**            DynamicsDescriptor adlBooleanDynamicAttribute = new DynamicsDescriptor("org.css.sds.color.if_not_zero"); //$NON-NLS-1$
+  //**            adlBooleanDynamicAttribute.addInputChannel(new ParameterDescriptor("$channel$"+_postfix,"")); //$NON-NLS-1$
+  //**            _widgetModel.setDynamicsDescriptor(AbstractWidgetModel.PROP_ENABLED, adlBooleanDynamicAttribute);
+  //**        }else if(_sensitiveMode!=null && _sensitiveMode.equals("if zero")){ //$NON-NLS-1$
+  //**            DynamicsDescriptor adlBooleanDynamicAttribute = new DynamicsDescriptor("org.css.sds.color.if_zero"); //$NON-NLS-1$
+  //**            adlBooleanDynamicAttribute.addInputChannel(new ParameterDescriptor("$channel$"+_postfix,"")); //$NON-NLS-1$
+  //**            _widgetModel.setDynamicsDescriptor(AbstractWidgetModel.PROP_ENABLED, adlBooleanDynamicAttribute);
+  //**        }
+  //**    }
 
     /**
      * {@inheritDoc}
@@ -108,9 +108,10 @@ public class ADLSensitive extends WidgetPart {
 //                throw new Exception("This "+parameter+" is a wrong ADL Menu Item");
 //            }
             if(row[0].trim().toLowerCase().equals("chan")){ //$NON-NLS-1$
-                _chan=ADLHelper.cleanString(row[1]);
+//**                _chan=ADLHelper.cleanString(row[1]);
+        	    _chan=row[1].replaceAll("\"", "");
             }else if(row[0].trim().toLowerCase().equals("sensitive_mode")){ //$NON-NLS-1$
-                _sensitiveMode=ADLHelper.cleanString(row[1])[0];
+                _sensitiveMode = row[1].replaceAll("\"", "");
             }else {
                 throw new WrongADLFormatException(Messages.ADLSensitive_WrongADLFormatException_Begin+fileLine+Messages.ADLSensitive_WrongADLFormatException_End);
             }
@@ -124,6 +125,12 @@ public class ADLSensitive extends WidgetPart {
     public String getPostfix() {
         return _postfix;
     }
+
+	@Override
+	public Object[] getChildren() {
+		// TODO Auto-generated method stub
+		return null;
+	}
     
     
 
