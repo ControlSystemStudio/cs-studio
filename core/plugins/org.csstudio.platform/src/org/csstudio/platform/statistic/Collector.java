@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
  package org.csstudio.platform.statistic;
@@ -28,19 +28,19 @@ import java.util.GregorianCalendar;
 
 public class Collector {
 	private static 	Collector 	thisCollector = null;
-	
+
 	private AlarmHandler alarmHandler = null;
 	private BackgroundCollector	dummyBackgroundCollector = null;
-	
+
 	private Double 		count 			= 0.0;
 	private StoredData	actualValue		= null;
 	private StoredData	lowestValue		= null;
 	private StoredData	highestValue	= null;
 	private Double		totalSum		= 0.0;
 	private Double		meanValueAbsolute = null;
-	//FIXME: Es muss sicher gestellt werde das meanValuerelative 
-	//     initalisiert wird. Entweder durch einen Default wert 
-	//     oder der Construtor muss angepasst werden. 
+	//FIXME: Es muss sicher gestellt werde das meanValuerelative
+	//     initalisiert wird. Entweder durch einen Default wert
+	//     oder der Construtor muss angepasst werden.
 	private	Double		meanValuerelative = null;
 	private Double		meanValueRelativeFactor = 20.0;
 	private String		descriptor		= "desc. not set";
@@ -54,7 +54,7 @@ public class Collector {
 	public Double getHardLimit() {
 		return hardLimit;
 	}
-	
+
 	public String getHardLimitAsString() {
 		if ( hardLimit == -1.0) {
 			return "not set";
@@ -62,12 +62,12 @@ public class Collector {
 			return hardLimit.toString();
 		}
 	}
-	
-	public void setHardLimit(int hardLimit) {
+
+	public void setHardLimit(final int hardLimit) {
 		this.hardLimit = new Double(hardLimit);
 	}
 
-	public void setHardLimit(Double hardLimit) {
+	public void setHardLimit(final Double hardLimit) {
 		this.hardLimit = hardLimit;
 	}
 
@@ -81,12 +81,12 @@ public class Collector {
 		/*
 		 * add entry to CollectorSupervisor
 		 */
-		CollectorSupervisor.getInstance().addCollector( this);
+		CollectorSupervisor.getInstance().addCollector( this); // FIXME (mclausen) : antipattern
 		/*
 		 * add alarm handler
 		 */
 		alarmHandler = new AlarmHandler();
-		
+
 		/*
 		 * if background collector has not been started yet - do so
 		 */
@@ -94,7 +94,7 @@ public class Collector {
 			dummyBackgroundCollector = BackgroundCollector.getInstance();
 		}
 	}
-	
+
 	/*
 	 * TODO - delete !?
 	 * getInstance not necessary!
@@ -113,8 +113,8 @@ public class Collector {
 		CollectorSupervisor.getInstance().addCollector( thisCollector);
 		return thisCollector;
 	}
-	
-	public void setValue ( Double value) {
+
+	public void setValue ( final Double value) {
 		/*
 		 * set value
 		 */
@@ -160,27 +160,27 @@ public class Collector {
 			continuousPrinter();
 		}
 	}
-	
-	public void setValue ( int value) {
-		Double newValue = new Double(value);
+
+	public void setValue ( final int value) {
+		final Double newValue = new Double(value);
 		setValue ( newValue);
 	}
-	
+
 	public void incrementValue () {
 		/*
 		 * use synchronized method
 		 */
 		incDecValue ( true);
 	}
-	
+
 	public void decrementValue () {
 		/*
 		 * use synchronized method
 		 */
 		incDecValue ( false);
 	}
-	
-	private synchronized void incDecValue ( boolean increment) {
+
+	private synchronized void incDecValue ( final boolean increment) {
 		if ( increment) {
 			Double newValue = actualValue.getValue();
 			newValue++;
@@ -191,9 +191,9 @@ public class Collector {
 			setValue ( newValue);
 		}
 	}
-	
+
 	public void continuousPrinter () {
-		
+
 		System.out.println ("\nApplication: " + getApplication());
 		System.out.println ("Descriptor: " + getDescriptor());
 		System.out.println ("Counter: " + getCount());
@@ -206,11 +206,11 @@ public class Collector {
 		System.out.println ("Alarm Limit (rel) : " + getAlarmHandler().getHighRelativeLimit());
 		System.out.println ("Hard Limit : " + getHardLimitAsString());
 	}
-	
+
 	public String getCollectorStatus () {
-		
+
 		String result = "";
-		
+
 		result += ("\n\nApplication: " + getApplication());
 		result += ("\nDescriptor: " + getDescriptor());
 		result += ("\nCounter: " + getCount());
@@ -224,14 +224,14 @@ public class Collector {
 		result += ("Hard Limit : " + getHardLimitAsString());
 		return result;
 	}
-	
+
 public String getCollectorStatusAsXml () {
 		/*
 		 * the big TODO!
 		 * create XML output in order to pass it over XML to another CSS instance
 		 */
 		String result = "<TODO XML start string - nothing defined so far!/>";
-		
+
 		result += ("\n<Application>" + getApplication());
 		result += ("\n<Descriptor>" + getDescriptor());
 		result += ("\n<Counter>" + getCount());
@@ -249,19 +249,19 @@ public String getCollectorStatusAsXml () {
 		return actualValue;
 	}
 
-	public void setActualValue(StoredData actualValue) {
+	public void setActualValue(final StoredData actualValue) {
 		this.actualValue = actualValue;
 	}
 
 	public void incrementCount() {
 		count ++;
 	}
-	
+
 	public Double getCount() {
 		return count;
 	}
 
-	synchronized public void setCount(Double count) {
+	synchronized public void setCount(final Double count) {
 		this.count = count;
 	}
 
@@ -269,7 +269,7 @@ public String getCollectorStatusAsXml () {
 		return descriptor;
 	}
 
-	public void setDescriptor(String descriptor) {
+	public void setDescriptor(final String descriptor) {
 		this.descriptor = descriptor;
 		alarmHandler.setDescriptor(descriptor);
 	}
@@ -278,7 +278,7 @@ public String getCollectorStatusAsXml () {
 		return highestValue;
 	}
 
-	public void setHighestValue(StoredData highestValue) {
+	public void setHighestValue(final StoredData highestValue) {
 		this.highestValue = highestValue;
 	}
 
@@ -286,7 +286,7 @@ public String getCollectorStatusAsXml () {
 		return lowestValue;
 	}
 
-	public void setLowestValue(StoredData lowestValue) {
+	public void setLowestValue(final StoredData lowestValue) {
 		this.lowestValue = lowestValue;
 	}
 
@@ -294,7 +294,7 @@ public String getCollectorStatusAsXml () {
 		return meanValueAbsolute;
 	}
 
-	public void setMeanValueAbsolute(Double meanValueAbsolute) {
+	public void setMeanValueAbsolute(final Double meanValueAbsolute) {
 		this.meanValueAbsolute = meanValueAbsolute;
 	}
 
@@ -302,7 +302,7 @@ public String getCollectorStatusAsXml () {
 		return meanValuerelative;
 	}
 
-	public void setMeanValuerelative(Double meanValuerelative) {
+	public void setMeanValuerelative(final Double meanValuerelative) {
 		this.meanValuerelative = meanValuerelative;
 	}
 
@@ -310,7 +310,7 @@ public String getCollectorStatusAsXml () {
 		return meanValueRelativeFactor;
 	}
 
-	public void setMeanValueRelativeFactor(Double meanValueRelativeFactor) {
+	public void setMeanValueRelativeFactor(final Double meanValueRelativeFactor) {
 		this.meanValueRelativeFactor = meanValueRelativeFactor;
 	}
 
@@ -318,11 +318,11 @@ public String getCollectorStatusAsXml () {
 		return totalSum;
 	}
 
-	public void setTotalSum(Double totalSum) {
+	public void setTotalSum(final Double totalSum) {
 		this.totalSum = totalSum;
 	}
-	
-	public void sumUpTotalSum ( Double value) {
+
+	public void sumUpTotalSum ( final Double value) {
 		this.totalSum = totalSum + value;
 	}
 
@@ -330,7 +330,7 @@ public String getCollectorStatusAsXml () {
 		return continuousPrint;
 	}
 
-	public void setContinuousPrint(boolean continuousPrint) {
+	public void setContinuousPrint(final boolean continuousPrint) {
 		this.continuousPrint = continuousPrint;
 	}
 
@@ -338,7 +338,7 @@ public String getCollectorStatusAsXml () {
 		return continuousPrintCount;
 	}
 
-	public void setContinuousPrintCount(Double continuousPrintCount) {
+	public void setContinuousPrintCount(final Double continuousPrintCount) {
 		this.continuousPrintCount = continuousPrintCount;
 	}
 
@@ -346,7 +346,7 @@ public String getCollectorStatusAsXml () {
 		return application;
 	}
 
-	public void setApplication(String application) {
+	public void setApplication(final String application) {
 		this.application = application;
 		alarmHandler.setApplication(application);
 	}
@@ -355,28 +355,28 @@ public String getCollectorStatusAsXml () {
 		return alarmHandler;
 	}
 
-	public void setAlarmHandler(AlarmHandler alarmHandler) {
+	public void setAlarmHandler(final AlarmHandler alarmHandler) {
 		this.alarmHandler = alarmHandler;
 	}
-	
+
 	public String getInfo() {
 		return info;
 	}
 
-	public void setInfo(String info) {
+	public void setInfo(final String info) {
 		this.info = info;
 	}
-	
+
 	/**
 	 * Convert Gregorian date into string.
 	 * actually format is yyyy-MM-dd HH:mm:ss.SSS
-	 * 
+	 *
 	 * @param gregorsDate The Date to convert do default String format
 	 * @return The Date as String
 	 */
-	public static String dateToString ( GregorianCalendar gregorsDate) {
-		Date d = gregorsDate.getTime();
-		SimpleDateFormat df = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss.SSS" );
+	public static String dateToString ( final GregorianCalendar gregorsDate) {
+		final Date d = gregorsDate.getTime();
+		final SimpleDateFormat df = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss.SSS" );
 	    return df.format(d);
 	}
 
