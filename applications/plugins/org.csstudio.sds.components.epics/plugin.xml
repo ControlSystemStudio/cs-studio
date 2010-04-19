@@ -177,6 +177,42 @@
             id="behavior.desy.stripChart.default"
             widgetTypeId="org.csstudio.sds.components.StripChart">
       </behavior>
+      <behavior
+            class="org.csstudio.sds.behavior.desy.AdvancedSliderAlarmBehavior"
+            description="DESY Alarm Advanced Slider"
+            id="behavior.desy.advancedslider.alarmdefault"
+            widgetTypeId="org.csstudio.sds.components.AdvancedSlider">
+      </behavior>
+      <behavior
+            class="org.csstudio.sds.behavior.desy.AdvancedSliderConnectionBehavior"
+            description="DESY Connection Advanced Slider"
+            id="behavior.desy.advancedslider.connectiondefault"
+            widgetTypeId="org.csstudio.sds.components.AdvancedSlider">
+      </behavior>
+      <behavior
+            class="org.csstudio.sds.behavior.desy.BargraphAlarmBehavior"
+            description="DESY Alarm Bargraph"
+            id="behavior.desy.bargraph.alarmdefault"
+            widgetTypeId="org.csstudio.sds.components.Bargraph">
+      </behavior>
+      <behavior
+            class="org.csstudio.sds.behavior.desy.BargraphConnectionBehavior"
+            description="DESY Connection Bargraph"
+            id="behavior.desy.bargraph.connectiondefault"
+            widgetTypeId="org.csstudio.sds.components.Bargraph">
+      </behavior>
+      <behavior
+            class="org.csstudio.sds.behavior.desy.SimpleSliderAlarmBehavior"
+            description="DESY Alarm Simple Slider"
+            id="behavior.desy.simpleslider.alarmdefault"
+            widgetTypeId="org.csstudio.sds.components.SimpleSlider">
+      </behavior>
+      <behavior
+            class="org.csstudio.sds.behavior.desy.SimpleSliderConnectionBehavior"
+            description="DESY Connection SimpleSlider"
+            id="behavior.desy.simpleslider.connectiondefault"
+            widgetTypeId="org.csstudio.sds.components.SimpleSlider">
+      </behavior>
    </extension>
    
 </plugin>
