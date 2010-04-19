@@ -82,6 +82,7 @@ public class ADLControl extends WidgetPart{
     @Override
     final void init() {
         _connectionState = false;
+        _chan = new String();
     }
     
     /**
@@ -182,5 +183,12 @@ public class ADLControl extends WidgetPart{
      */
     public String getForegroundColor(){
     	return _clr;
+    }
+
+    /** 
+     * @return control channel
+     */
+    public String getChan(){
+    	return _chan;
     }
 }
