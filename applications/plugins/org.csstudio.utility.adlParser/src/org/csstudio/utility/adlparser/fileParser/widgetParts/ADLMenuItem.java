@@ -22,27 +22,27 @@
 /*
  * $Id$
  */
-package org.csstudio.utility.adlconverter.utility.widgetparts;
+package org.csstudio.utility.adlparser.fileParser.widgetParts;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.sds.model.AbstractWidgetModel;
-import org.csstudio.sds.model.ActionData;
-import org.csstudio.sds.model.properties.actions.CommitValueActionModel;
-import org.csstudio.sds.model.properties.actions.CommitValueActionModelFactory;
-import org.csstudio.sds.model.properties.actions.OpenDataBrowserActionModel;
-import org.csstudio.sds.model.properties.actions.OpenDataBrowserActionModelFactory;
-import org.csstudio.sds.model.properties.actions.OpenDisplayActionModel;
-import org.csstudio.sds.model.properties.actions.OpenDisplayActionModelFactory;
-import org.csstudio.utility.adlconverter.Activator;
-import org.csstudio.utility.adlconverter.internationalization.Messages;
-import org.csstudio.utility.adlconverter.ui.preferences.ADLConverterPreferenceConstants;
-import org.csstudio.utility.adlconverter.utility.ADLHelper;
-import org.csstudio.utility.adlconverter.utility.ADLWidget;
-import org.csstudio.utility.adlconverter.utility.FileLine;
-import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
+//**import org.csstudio.sds.model.AbstractWidgetModel;
+//**import org.csstudio.sds.model.ActionData;
+//**import org.csstudio.sds.model.properties.actions.CommitValueActionModel;
+//**import org.csstudio.sds.model.properties.actions.CommitValueActionModelFactory;
+//**import org.csstudio.sds.model.properties.actions.OpenDataBrowserActionModel;
+//**import org.csstudio.sds.model.properties.actions.OpenDataBrowserActionModelFactory;
+//**import org.csstudio.sds.model.properties.actions.OpenDisplayActionModel;
+//**import org.csstudio.sds.model.properties.actions.OpenDisplayActionModelFactory;
+import org.csstudio.utility.adlparser.Activator;
+import org.csstudio.utility.adlparser.internationalization.Messages;
+//**import org.csstudio.utility.adlparser.ui.preferences.ADLConverterPreferenceConstants;
+//**import org.csstudio.utility.adlparser.fileParser.ADLHelper;
+import org.csstudio.utility.adlparser.fileParser.ADLWidget;
+import org.csstudio.utility.adlparser.fileParser.FileLine;
+import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 
@@ -89,19 +89,19 @@ public class ADLMenuItem extends WidgetPart {
      * @throws WrongADLFormatException
      *             Wrong ADL format or untreated parameter found.
      */
-    public ADLMenuItem(final ADLWidget menuItem, final AbstractWidgetModel parentWidgetModel)
+    public ADLMenuItem(final ADLWidget menuItem)
             throws WrongADLFormatException {
-        super(menuItem, parentWidgetModel);
+        super(menuItem);
     }
 
     /**
      * {@inheritDoc}
      */
     final void init() {
-        _path = Activator.getDefault().getPreferenceStore().getString(
-                ADLConverterPreferenceConstants.P_STRING_Path_Target);
-        _trendPath = Activator.getDefault().getPreferenceStore().getString(
-                ADLConverterPreferenceConstants.P_STRING_Path_Target_Strip_Tool);
+//**        _path = Activator.getDefault().getPreferenceStore().getString(
+    	//**                ADLConverterPreferenceConstants.P_STRING_Path_Target);
+    	//**        _trendPath = Activator.getDefault().getPreferenceStore().getString(
+    	//**                ADLConverterPreferenceConstants.P_STRING_Path_Target_Strip_Tool);
     }
 
     /**
@@ -136,90 +136,96 @@ public class ADLMenuItem extends WidgetPart {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    final void generateElements() {
-        _widgetModel.setLayer(Messages.ADLDisplayImporter_ADLDynamicLayerName);
-        _widgetModel.setCursorId("cursor.system.hand");
-        if (_type.equals("\"New Display\"")) { //$NON-NLS-1$
-            ActionData actionData = _widgetModel.getActionData();
-            if (actionData == null) {
-                actionData = new ActionData();
-            }
+  //**    /**
+  //**     * {@inheritDoc}
+  //**     */
+  //**    @Override
+  //**    final void generateElements() {
+  //**        _widgetModel.setLayer(Messages.ADLDisplayImporter_ADLDynamicLayerName);
+  //**        _widgetModel.setCursorId("cursor.system.hand");
+  //**        if (_type.equals("\"New Display\"")) { //$NON-NLS-1$
+  //**            ActionData actionData = _widgetModel.getActionData();
+  //**            if (actionData == null) {
+  //**                actionData = new ActionData();
+  //**            }
+  //**
+  //**            // new Open Shell Action
+  //**            OpenDisplayActionModelFactory factory = new OpenDisplayActionModelFactory();
+  //**            OpenDisplayActionModel action = (OpenDisplayActionModel) factory.createWidgetActionModel();
+  //**            action.setEnabled(true);
+  //**
+  //**           if (_label != null) {
+  //**                action.getProperty(OpenDisplayActionModel.PROP_DESCRIPTION).setPropertyValue(
+  //**                        _label.replaceAll("\"", "")); //$NON-NLS-1$ //$NON-NLS-2$
+  //**            }
+  //**
+  //**            // Set the Resource
+  //**            if (_path != null) {
+  //**                IPath path = new Path(_path);
+  //**                _command = ADLHelper.cleanFilePath(_command);
+  //**                path = path.append(_command.replaceAll("\"", "").replace(".adl", ".css-sds")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+  //**                // TODO: set the correct Path
+  //**                action.getProperty(OpenDisplayActionModel.PROP_RESOURCE).setPropertyValue(path);
+  //**            }
+  //**
+  //**            if (_args != null) {
+  //**                Map<String, String> map = new HashMap<String, String>();
+  //**                String[] params = _args.split(","); // TODO: es werde teilweise mehrere Argumente über geben.  Momenatan wird aber nur das erste ausgewertet. //$NON-NLS-1$
+  //**                // copierte art
+  //**                for (int i = 0; i < params.length; i++) {
+  //**                    String[] param = params[i].split("=");//$NON-NLS-1$
+  //**                    if (param.length == 2) {
+  //**                        if(i==0) {
+  //**                            ADLHelper.setChan(_widgetModel,param);
+  //**                        }
+  //**                        map.put(param[0].trim(), param[1].trim());
+  //**                    } else {
+  //**                        if (params[i].trim().length() > 0) {
+  //**                            CentralLogger.getInstance().info(this,
+  //**                                    Messages.RelatedDisplayItem_Parameter_Error + params[i]);
+  //**                        }
+  //**                    }
+  //**                }
+  //**
+  //**                action.getProperty(OpenDisplayActionModel.PROP_ALIASES).setPropertyValue(map);
+  //**            }
+  //**            actionData.addAction(action);
+  //**            _widgetModel.setPropertyValue(AbstractWidgetModel.PROP_ACTIONDATA, actionData);
+  //**        } else if (_type.equals("\"System script\"")) { //$NON-NLS-1$
+  //**            ActionData actionData = _widgetModel.getActionData();
+  //**            if (actionData == null) {
+  //**                actionData = new ActionData();
+  //**            }
+  //**            if (_command.contains("StripHistoryToolAAPI")) {
+  //**//                OpenDisplayActionModelFactory factory = new OpenDisplayActionModelFactory(); 
+  //**                OpenDataBrowserActionModelFactory factory = new OpenDataBrowserActionModelFactory();
+  //**                OpenDataBrowserActionModel action = (OpenDataBrowserActionModel) factory.createWidgetActionModel();
+  //**                action.getProperty(OpenDataBrowserActionModel.PROP_DESCRIPTION).setPropertyValue(_label.replace('"', ' ').trim());
+  //**                String[] cleanString = ADLHelper.cleanString(_args);
+  //**                IPath path = new Path(_trendPath.concat(cleanString[0]));
+  //**                action.getProperty(OpenDataBrowserActionModel.PROP_RESOURCE).setPropertyValue(path);
+  //**                actionData.addAction(action);
+  //**            } else {
+  //**                CommitValueActionModelFactory factory = new CommitValueActionModelFactory();
+  //**                CommitValueActionModel action = (CommitValueActionModel) factory
+  //**                        .createWidgetActionModel();
+  //**
+  //**                action.getProperty(CommitValueActionModel.PROP_VALUE).setPropertyValue(
+  //**                        new Path(_label.replaceAll("\"", ""))); //$NON-NLS-1$ //$NON-NLS-2$
+  //**//                actionData.addAction(action);
+  //**
+  //**                action.getProperty(CommitValueActionModel.PROP_DESCRIPTION).setPropertyValue(
+  //**                        new Path(_label.replaceAll("\"", ""))); //$NON-NLS-1$ //$NON-NLS-2$
+  //**                actionData.addAction(action);
+  //**            }
+  //**            _widgetModel.setPropertyValue(AbstractWidgetModel.PROP_ACTIONDATA, actionData);
+  //**        }
+  //**
+  //**    }
 
-            // new Open Shell Action
-            OpenDisplayActionModelFactory factory = new OpenDisplayActionModelFactory();
-            OpenDisplayActionModel action = (OpenDisplayActionModel) factory.createWidgetActionModel();
-            action.setEnabled(true);
-
-            if (_label != null) {
-                action.getProperty(OpenDisplayActionModel.PROP_DESCRIPTION).setPropertyValue(
-                        _label.replaceAll("\"", "")); //$NON-NLS-1$ //$NON-NLS-2$
-            }
-
-            // Set the Resource
-            if (_path != null) {
-                IPath path = new Path(_path);
-                _command = ADLHelper.cleanFilePath(_command);
-                path = path.append(_command.replaceAll("\"", "").replace(".adl", ".css-sds")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-                // TODO: set the correct Path
-                action.getProperty(OpenDisplayActionModel.PROP_RESOURCE).setPropertyValue(path);
-            }
-
-            if (_args != null) {
-                Map<String, String> map = new HashMap<String, String>();
-                String[] params = _args.split(","); // TODO: es werde teilweise mehrere Argumente über geben.  Momenatan wird aber nur das erste ausgewertet. //$NON-NLS-1$
-                // copierte art
-                for (int i = 0; i < params.length; i++) {
-                    String[] param = params[i].split("=");//$NON-NLS-1$
-                    if (param.length == 2) {
-                        if(i==0) {
-                            ADLHelper.setChan(_widgetModel,param);
-                        }
-                        map.put(param[0].trim(), param[1].trim());
-                    } else {
-                        if (params[i].trim().length() > 0) {
-                            CentralLogger.getInstance().info(this,
-                                    Messages.RelatedDisplayItem_Parameter_Error + params[i]);
-                        }
-                    }
-                }
-
-                action.getProperty(OpenDisplayActionModel.PROP_ALIASES).setPropertyValue(map);
-            }
-            actionData.addAction(action);
-            _widgetModel.setPropertyValue(AbstractWidgetModel.PROP_ACTIONDATA, actionData);
-        } else if (_type.equals("\"System script\"")) { //$NON-NLS-1$
-            ActionData actionData = _widgetModel.getActionData();
-            if (actionData == null) {
-                actionData = new ActionData();
-            }
-            if (_command.contains("StripHistoryToolAAPI")) {
-//                OpenDisplayActionModelFactory factory = new OpenDisplayActionModelFactory(); 
-                OpenDataBrowserActionModelFactory factory = new OpenDataBrowserActionModelFactory();
-                OpenDataBrowserActionModel action = (OpenDataBrowserActionModel) factory.createWidgetActionModel();
-                action.getProperty(OpenDataBrowserActionModel.PROP_DESCRIPTION).setPropertyValue(_label.replace('"', ' ').trim());
-                String[] cleanString = ADLHelper.cleanString(_args);
-                IPath path = new Path(_trendPath.concat(cleanString[0]));
-                action.getProperty(OpenDataBrowserActionModel.PROP_RESOURCE).setPropertyValue(path);
-                actionData.addAction(action);
-            } else {
-                CommitValueActionModelFactory factory = new CommitValueActionModelFactory();
-                CommitValueActionModel action = (CommitValueActionModel) factory
-                        .createWidgetActionModel();
-
-                action.getProperty(CommitValueActionModel.PROP_VALUE).setPropertyValue(
-                        new Path(_label.replaceAll("\"", ""))); //$NON-NLS-1$ //$NON-NLS-2$
-//                actionData.addAction(action);
-
-                action.getProperty(CommitValueActionModel.PROP_DESCRIPTION).setPropertyValue(
-                        new Path(_label.replaceAll("\"", ""))); //$NON-NLS-1$ //$NON-NLS-2$
-                actionData.addAction(action);
-            }
-            _widgetModel.setPropertyValue(AbstractWidgetModel.PROP_ACTIONDATA, actionData);
-        }
-
-    }
+	@Override
+	public Object[] getChildren() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
