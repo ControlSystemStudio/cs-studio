@@ -25,6 +25,19 @@ public class Display2Model extends AbstractADL2Model {
 			displayModel.setForegroundColor(colorMap[displayForeColor]);
 			
 		}
+		if ( adlDisp.is_gridOn()){
+			displayModel.setPropertyValue(DisplayModel.PROP_SHOW_GRID, true);
+		}
+		else {
+			displayModel.setPropertyValue(DisplayModel.PROP_SHOW_GRID, false);
+		}
+		if ( adlDisp.is_snapToGrid()){
+			displayModel.setPropertyValue(DisplayModel.PROP_SNAP_GEOMETRY, true);
+		}
+		else {
+			displayModel.setPropertyValue(DisplayModel.PROP_SNAP_GEOMETRY, false);
+		}
+		displayModel.setPropertyValue(DisplayModel.PROP_GRID_SPACE, adlDisp.get_gridSpacing());
 		
 	}
 
