@@ -2,6 +2,7 @@ package org.csstudio.opibuilder.adl2boy.translator;
 
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
+import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.widgets.model.AbstractShapeModel;
 import org.csstudio.opibuilder.widgets.model.GroupingContainerModel;
 import org.csstudio.opibuilder.widgets.model.RectangleModel;
@@ -33,10 +34,13 @@ public class Rectangle2Model extends AbstractADL2Model {
 			else if (rectWidget.getAdlBasicAttribute().getFill().equals("outline")) {
 				System.out.println("RECTANGLE has fill is outline");
 				rectangleModel.setPropertyValue(RectangleModel.PROP_TRANSPARENT, true);
-				RGB fColor = (RGB)rectangleModel.getPropertyValue(AbstractWidgetModel.PROP_COLOR_FOREGROUND);
+				OPIColor fColor = (OPIColor)rectangleModel.getPropertyValue(AbstractWidgetModel.PROP_COLOR_FOREGROUND);
 				rectangleModel.setPropertyValue(AbstractShapeModel.PROP_LINE_COLOR, fColor);
 				if ( rectWidget.getAdlBasicAttribute().getStyle().equals("solid") ) {
 					rectangleModel.setPropertyValue(RectangleModel.PROP_LINE_STYLE, "Solid");
+				}
+				if ( rectWidget.getAdlBasicAttribute().getStyle().equals("dash") ) {
+					rectangleModel.setPropertyValue(RectangleModel.PROP_LINE_STYLE, "Dash");
 					
 				}
 			}
