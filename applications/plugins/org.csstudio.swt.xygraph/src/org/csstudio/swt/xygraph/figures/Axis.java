@@ -80,7 +80,8 @@ public class Axis extends LinearScale{
 	private boolean armed;
 	private Range startRange;
 	private Cursor grabbing;
-	
+	private Color revertBackColor;
+
 	/**Constructor
 	 * @param title title of the axis
 	 * @param yAxis true if this is the Y-Axis, false if this is the X-Axis.
@@ -97,6 +98,13 @@ public class Axis extends LinearScale{
 		grabbing = XYGraphMediaFactory.getCursor(CURSOR_TYPE.GRABBING);	
 		titleFont = XYGraphMediaFactory.getInstance().getFont(
 				new FontData("Arial", 9, SWT.BOLD)); //$NON-NLS-1$
+		if(getBackgroundColor() != null){
+			RGB backRGB = getBackgroundColor().getRGB();
+			revertBackColor = XYGraphMediaFactory.getInstance().getColor(255- backRGB.red, 
+					255 - backRGB.green, 255 - backRGB.blue);
+		}else
+			revertBackColor = XYGraphMediaFactory.getInstance().getColor(100,100,100);
+		
 	}
 
 	public void addListener(final IAxisListener listener){
@@ -138,6 +146,14 @@ public class Axis extends LinearScale{
 		if(xyGraph != null)
 			xyGraph.repaint();
 	}
+	@Override
+	public void setBackgroundColor(Color bg) {
+		RGB backRGB = bg.getRGB();
+		revertBackColor = XYGraphMediaFactory.getInstance().getColor(255- backRGB.red, 
+				255 - backRGB.green, 255 - backRGB.blue);		
+		super.setBackgroundColor(bg);
+	}
+	
 	@Override
 	public Dimension getPreferredSize(final int wHint, final int hHint) {
 	    final Dimension d = super.getPreferredSize(wHint, hHint);		
@@ -210,6 +226,23 @@ public class Axis extends LinearScale{
 				}
 		}
 		graphics.popState();		
+		
+		// Show the start/end cursor or the 'rubberband' of a zoom operation?
+		if(armed && end != null && start != null){
+			switch (zoomType) {
+			case RUBBERBAND_ZOOM:
+			case HORIZONTAL_ZOOM:
+			case VERTICAL_ZOOM:
+				graphics.setLineStyle(SWT.LINE_DOT);
+				graphics.setLineWidth(1);				
+				graphics.setForegroundColor(revertBackColor);
+				graphics.drawRectangle(start.x, start.y, end.x - start.x-1, end.y - start.y-1);
+				break;
+	
+			default:
+				break;
+			}
+		}
 	}	
 	
 	/** @return Range that reflects the minimum and maximum value of all
@@ -627,7 +660,10 @@ public class Axis extends LinearScale{
             switch (zoomType)
             {
             case RUBBERBAND_ZOOM:
-                start = me.getLocation();
+            	if(isHorizontal())
+            		start = new Point(me.getLocation().x, bounds.y);
+            	else
+            		start = new Point(bounds.x, me.getLocation().y);
                 end = null;
                 break;
             case HORIZONTAL_ZOOM:
@@ -702,6 +738,7 @@ public class Axis extends LinearScale{
             default:
                 break;
 			}
+			Axis.this.repaint();
 		}
 
         @Override
