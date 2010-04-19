@@ -27,7 +27,7 @@ package org.csstudio.sds.behavior.desy;
 import java.util.Arrays;
 import java.util.List;
 
-import org.csstudio.sds.components.model.TextInputModel;
+import org.csstudio.sds.model.LabelModel;
 import org.epics.css.dal.simple.MetaData;
 
 /**
@@ -36,22 +36,21 @@ import org.epics.css.dal.simple.MetaData;
  * @version $Revision$
  * @since 26.03.2010
  */
-public class TextInputBehavior extends AbstractDesyAlarmBehavior<TextInputModel> {
+public class LabelAlarmBehavior extends AbstractDesyAlarmBehavior<LabelModel> {
 
-    private String _normalBackgroundColor;
 
     @Override
     protected String[] doGetInvisiblePropertyIds() {
         List<String> asList = Arrays.asList(super.doGetInvisiblePropertyIds());
-        asList.add(TextInputModel.PROP_INPUT_TEXT);
-        asList.add(TextInputModel.PROP_ACTIONDATA);
-        asList.add(TextInputModel.PROP_PERMISSSION_ID);
+        asList.add(LabelModel.PROP_TEXTVALUE);
+        asList.add(LabelModel.PROP_ACTIONDATA);
+        asList.add(LabelModel.PROP_PERMISSSION_ID);
         return asList.toArray(new String[0]);
     }
 
     @Override
-    protected void doProcessMetaDataChange(final TextInputModel widget, final MetaData metaData) {
+    protected void doProcessMetaDataChange(final LabelModel widget, final MetaData metaData) {
         // do nothing
-
     }
-}
+
+  }

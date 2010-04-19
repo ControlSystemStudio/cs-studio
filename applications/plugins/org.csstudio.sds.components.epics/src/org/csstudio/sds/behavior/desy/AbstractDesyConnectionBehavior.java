@@ -18,6 +18,7 @@
  */
 package org.csstudio.sds.behavior.desy;
 
+import org.csstudio.sds.components.model.TextInputModel;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.LabelModel;
 import org.epics.css.dal.context.ConnectionState;
@@ -26,6 +27,8 @@ import org.epics.css.dal.simple.Severity;
 
 /**
  * TODO (hrickens) :
+ *
+ * TODO: Setzen der Cursereigenschaften (CA)
  *
  * @author hrickens
  * @author $Author$
@@ -43,7 +46,8 @@ public abstract class AbstractDesyConnectionBehavior<W extends AbstractWidgetMod
     @Override
     protected String[] doGetInvisiblePropertyIds() {
         return new String[] { AbstractWidgetModel.PROP_NAME,
-                AbstractWidgetModel.PROP_COLOR_BACKGROUND, AbstractWidgetModel.PROP_CROSSED_OUT };
+                AbstractWidgetModel.PROP_COLOR_BACKGROUND, AbstractWidgetModel.PROP_CROSSED_OUT,
+                TextInputModel.PROP_CURSOR };
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -19,39 +19,37 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-/*
- * $Id$
- */
 package org.csstudio.sds.behavior.desy;
 
 import java.util.Arrays;
 import java.util.List;
 
-import org.csstudio.sds.components.model.TextInputModel;
+import org.csstudio.sds.model.LabelModel;
 import org.epics.css.dal.simple.MetaData;
 
 /**
+ * TODO (hrickens) :
+ *
  * @author hrickens
  * @author $Author$
  * @version $Revision$
- * @since 26.03.2010
+ * @since 19.04.2010
  */
-public class TextInputBehavior extends AbstractDesyAlarmBehavior<TextInputModel> {
+public class LabeConnectionBehavior extends AbstractDesyConnectionBehavior<LabelModel> {
 
-    private String _normalBackgroundColor;
 
     @Override
     protected String[] doGetInvisiblePropertyIds() {
         List<String> asList = Arrays.asList(super.doGetInvisiblePropertyIds());
-        asList.add(TextInputModel.PROP_INPUT_TEXT);
-        asList.add(TextInputModel.PROP_ACTIONDATA);
-        asList.add(TextInputModel.PROP_PERMISSSION_ID);
+        asList.add(LabelModel.PROP_TEXTVALUE);
+        asList.add(LabelModel.PROP_ACTIONDATA);
+        asList.add(LabelModel.PROP_PERMISSSION_ID);
         return asList.toArray(new String[0]);
     }
 
     @Override
-    protected void doProcessMetaDataChange(final TextInputModel widget, final MetaData metaData) {
-        // do nothing
-
+    protected void doProcessMetaDataChange(final LabelModel widget, final MetaData metaData) {
+        // do noting
     }
+
 }

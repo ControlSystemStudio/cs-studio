@@ -148,9 +148,15 @@
             widgetTypeId="org.csstudio.sds.components.BooleanSwitch">
       </behavior>
       <behavior
-            class="org.csstudio.sds.behavior.desy.LabelBehavior"
-            description="DESY Dyn Default"
+            class="org.csstudio.sds.behavior.desy.LabelAlarmBehavior"
+            description="DESY Alarm Default"
             id="behavior.desy.label.default"
+            widgetTypeId="org.csstudio.sds.components.Label">
+      </behavior>
+      <behavior
+            class="org.csstudio.sds.behavior.desy.LabeConnectionBehavior"
+            description="DESY Alarm Default"
+            id="behavior.desy.label.connectiondefault"
             widgetTypeId="org.csstudio.sds.components.Label">
       </behavior>
       <behavior
