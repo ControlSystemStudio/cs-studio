@@ -5,7 +5,7 @@ import org.csstudio.sds.util.ColorAndFontUtil;
 import org.epics.css.dal.simple.Severity;
 
 public class SeverityUtil {
-	public static String determineColorBySeverity(Severity severity) {
+	public static String determineColorBySeverity(final Severity severity) {
 		assert severity != null;
 
 		String color = "#000000";
@@ -27,11 +27,11 @@ public class SeverityUtil {
 		return color;
 	}
 
-	public static BorderStyleEnum determineBorderStyleBySeverity(Severity severity) {
+	public static BorderStyleEnum determineBorderStyleBySeverity(final Severity severity) {
 		return severity.isOK()?BorderStyleEnum.NONE:BorderStyleEnum.LINE;
 	}
-	
-	public static int determineBorderWidthBySeverity(Severity severity) {
-		return severity.isOK()?0:3;
+
+	public static int determineBorderWidthBySeverity(final Severity severity) {
+		return (severity.isOK()||severity.isInvalid())?0:3;
 	}
 }
