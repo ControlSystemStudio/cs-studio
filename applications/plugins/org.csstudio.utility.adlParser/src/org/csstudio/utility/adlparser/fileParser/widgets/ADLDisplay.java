@@ -9,6 +9,9 @@ import org.csstudio.utility.adlparser.internationalization.Messages;
 public class ADLDisplay extends ADLAbstractWidget {
 	private String _clr;
 	private String _bclr;
+	private boolean _snapToGrid = false;
+	private boolean _gridOn = false;
+	private int _gridSpacing = 5;
 	
 	public ADLDisplay(ADLWidget adlWidget) {
 		super(adlWidget);
@@ -35,6 +38,12 @@ public class ADLDisplay extends ADLAbstractWidget {
 	                set_clr(row[1].trim());
 	            }else if(row[0].trim().toLowerCase().equals("bclr")){ //$NON-NLS-1$
 	                set_bclr(row[1].trim());
+	            }else if(row[0].trim().toLowerCase().equals("gridSpacing")){ //$NON-NLS-1$
+	                set_gridSpacing(Integer.parseInt(row[1].trim()));
+	            }else if(row[0].trim().toLowerCase().equals("gridOn")){ //$NON-NLS-1$
+	                set_gridOn(Boolean.parseBoolean(row[1].trim()));
+	            }else if(row[0].trim().toLowerCase().equals("snapToGrid")){ //$NON-NLS-1$
+	                set_snapToGrid(Boolean.parseBoolean(row[1].trim()));
 	            }else {
 	                throw new WrongADLFormatException(Messages.ADLMonitor_WrongADLFormatException_Parameter_Begin+row[0]+Messages.ADLMonitor_WrongADLFormatException_Parameter_End+parameter);
 	            }
@@ -46,6 +55,7 @@ public class ADLDisplay extends ADLAbstractWidget {
 		}
 	}
 
+	
 	/**
 	 * @param _clr the _clr to set
 	 */
@@ -72,6 +82,48 @@ public class ADLDisplay extends ADLAbstractWidget {
 	 */
 	public String get_bclr() {
 		return _bclr;
+	}
+
+	/**
+	 * @param _snapToGrid the _snapToGrid to set
+	 */
+	public void set_snapToGrid(boolean _snapToGrid) {
+		this._snapToGrid = _snapToGrid;
+	}
+
+	/**
+	 * @return the _snapToGrid
+	 */
+	public boolean is_snapToGrid() {
+		return _snapToGrid;
+	}
+
+	/**
+	 * @param _gridOn the _gridOn to set
+	 */
+	public void set_gridOn(boolean _gridOn) {
+		this._gridOn = _gridOn;
+	}
+
+	/**
+	 * @return the _gridOn
+	 */
+	public boolean is_gridOn() {
+		return _gridOn;
+	}
+
+	/**
+	 * @param _gridSpacing the _gridSpacing to set
+	 */
+	public void set_gridSpacing(int _gridSpacing) {
+		this._gridSpacing = _gridSpacing;
+	}
+
+	/**
+	 * @return the _gridSpacing
+	 */
+	public int get_gridSpacing() {
+		return _gridSpacing;
 	}
 
 	
