@@ -31,6 +31,7 @@ import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreference
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
 import javax.annotation.CheckForNull;
@@ -71,7 +72,7 @@ public class LdapUpdaterServer implements IApplication {
      */
     @CheckForNull
     public static LdapUpdaterServer getRunningServer() {
-        return INSTANCE;
+        return INSTANCE; // FIXME (bknerr) : Antipattern - Is it required by the framework?
     }
 
     /**
@@ -81,16 +82,16 @@ public class LdapUpdaterServer implements IApplication {
     public final Object start(@Nullable final IApplicationContext context)
     throws Exception {
 
-        INSTANCE = this;
+        INSTANCE = this; // FIXME (bknerr) : Antipattern - Is it required by the framework?
 
-        final String startSecString = getValueFromPreferences(LDAP_AUTO_START);
-        final String intervalString = getValueFromPreferences(LDAP_AUTO_INTERVAL);
+        final String startSecString = getValueFromPreferences(LDAP_AUTO_START, "0");
+        final String intervalString = getValueFromPreferences(LDAP_AUTO_INTERVAL, "43200");
         final int startTimeSec = Integer.parseInt(startSecString);
         final long intervalSec = Long.parseLong(intervalString);
 
 
         final TimeZone timeZone = TimeZone.getTimeZone("ECT");
-        final Calendar cal = Calendar.getInstance(timeZone);
+        final Calendar cal = new GregorianCalendar(timeZone);
 
         System.out.println(cal.getTime());
 

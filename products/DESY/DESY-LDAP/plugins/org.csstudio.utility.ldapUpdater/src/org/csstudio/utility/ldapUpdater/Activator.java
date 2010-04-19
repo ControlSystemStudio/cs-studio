@@ -34,9 +34,19 @@ public class Activator extends AbstractCssPlugin {
     // The plug-in ID
     public static final String PLUGIN_ID = "org.csstudio.utility.ldapUpdater";
 
-    // The shared instance
-    private static Activator INSTANCE;
 
+    /**
+     * ActivatorHolder is loaded on the first execution of Activator.getDefault()
+     * or the first access to ActivatorHolder.INSTANCE, not before.
+     */
+    private static final class ActivatorHolder {
+
+        private static final Activator INSTANCE = new Activator();
+
+        private ActivatorHolder() {
+            // Empty
+        }
+    }
     /**
      * Returns the shared instance
      *
@@ -44,10 +54,7 @@ public class Activator extends AbstractCssPlugin {
      */
     @Nonnull
     public static Activator getDefault() {
-        if (INSTANCE == null) {
-            INSTANCE = new Activator();
-        }
-        return INSTANCE;
+        return ActivatorHolder.INSTANCE;
     }
 
     /**
@@ -65,8 +72,9 @@ public class Activator extends AbstractCssPlugin {
 
     @Override
     protected void doStop(@Nonnull final BundleContext context) throws Exception {
-        INSTANCE = null;
+        // Empty
     }
+
 
     @Override
     public String getPluginId() {

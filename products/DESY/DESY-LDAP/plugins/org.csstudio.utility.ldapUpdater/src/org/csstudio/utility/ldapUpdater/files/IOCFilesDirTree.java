@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TimeZone;
 
 import javax.annotation.Nonnull;
 
@@ -34,7 +35,6 @@ import org.csstudio.utility.ldap.model.IOC;
  *
  */
 public final class IOCFilesDirTree {
-    private static int CURRENTDEPTH = 0;
 
     private static Logger LOG = CentralLogger.getInstance().getLogger(IOCFilesDirTree.class.getName());
 
@@ -87,19 +87,20 @@ public final class IOCFilesDirTree {
      */
     @Nonnull
     public static Map<String, IOC> findIOCFiles(@Nonnull final String iocDblDumpPath, final int recursiveDepth) {
+        final int currentDepth = 0;
 
         final Map<String, IOC> iocMap = new HashMap<String, IOC>();
 
         final IOCFilesDirTree dt = new IOCFilesDirTree();
 
-        dt.doDir(recursiveDepth, iocDblDumpPath, iocMap);
+        dt.doDir(currentDepth, recursiveDepth, iocDblDumpPath, iocMap);
 
         return iocMap;
     }
 
     @Nonnull
     private static GregorianCalendar findLastModifiedDateForFile(@Nonnull final String iocName) {
-        final GregorianCalendar dateTime = new GregorianCalendar();
+        final GregorianCalendar dateTime = new GregorianCalendar(TimeZone.getTimeZone("ETC"));
         final String prefFileName = getValueFromPreferences(IOC_DBL_DUMP_PATH);
         final File filePath = new File(prefFileName);
         dateTime.setTimeInMillis(new File(filePath,iocName).lastModified());
@@ -125,8 +126,12 @@ public final class IOCFilesDirTree {
      * @param iocMap
      *            the list of iocs to be filled by this recursive method
      * */
-    @SuppressWarnings("static-access")
-    private void doDir(final int recDepth, @Nonnull final String s, @Nonnull final Map<String, IOC> iocMap) {
+    private void doDir(final int currentDepth,
+                       final int recDepth,
+                       @Nonnull final String s,
+                       @Nonnull final Map<String, IOC> iocMap) {
+
+        int depth = currentDepth;
 
         final File f = new File(s);
         if (!f.exists()) {
@@ -136,14 +141,14 @@ public final class IOCFilesDirTree {
         if (f.isFile()) {
             doFile(f, iocMap);
         } else if (f.isDirectory()) {
-            if (CURRENTDEPTH >= recDepth) {
+            if (depth >= recDepth) {
                 return;
             }
-            CURRENTDEPTH++;
+            depth++;
 
             final String[] filePaths = f.list();
             for (final String filePath : filePaths) {
-                doDir(recDepth, s + f.separator + filePath, iocMap);
+                doDir(depth, recDepth, s + File.separator + filePath, iocMap);
             }
         } else {
             System.out.println("is unknown: " + f.getName());

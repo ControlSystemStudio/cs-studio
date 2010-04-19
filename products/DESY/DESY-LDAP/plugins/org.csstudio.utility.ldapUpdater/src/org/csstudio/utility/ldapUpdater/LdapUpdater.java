@@ -80,18 +80,29 @@ public final class LdapUpdater {
     private static final String UPDATE_ACTION_NAME = "LDAP Update Action";
     private static final String TIDYUP_ACTION_NAME = "LDAP Tidy Up Action";
 
-    private static LdapUpdater INSTANCE;
+    /**
+     * LdapUpdaterHolder is loaded on the first execution of LdapUpdater.getInstance()
+     * or the first access to LdapUpdaterHolder.INSTANCE, not before.
+     *
+     * @author bknerr
+     * @author $Author$
+     * @version $Revision$
+     * @since 19.04.2010
+     */
+    private static final class LdapUpdaterHolder {
+        private LdapUpdaterHolder() {
+            // Don't instantiate.
+        }
+        private static final LdapUpdater INSTANCE = new LdapUpdater();
+    }
 
     /**
      * Factory method for creating a singleton instance.
      * @return the singleton instance of this class
      */
     @Nonnull
-    public static synchronized LdapUpdater getInstance() {
-        if ( INSTANCE == null) {
-            INSTANCE = new LdapUpdater();
-        }
-        return INSTANCE;
+    public static LdapUpdater getInstance() {
+        return LdapUpdaterHolder.INSTANCE;
     }
 
     /**
@@ -177,9 +188,13 @@ public final class LdapUpdater {
                                               any(ECON_FIELD_NAME),
                                               SearchControls.ONELEVEL_SCOPE);
 
-            final Map<String, IOC> iocMapFromFS = IOCFilesDirTree.findIOCFiles(getValueFromPreferences(IOC_DBL_DUMP_PATH), 1);
-
-            LdapAccess.tidyUpLDAPFromIOCList(new LdapContentModel(result), iocMapFromFS);
+            final String dumpPath = getValueFromPreferences(IOC_DBL_DUMP_PATH);
+            if (dumpPath != null) {
+                final Map<String, IOC> iocMapFromFS = IOCFilesDirTree.findIOCFiles(dumpPath, 1);
+                LdapAccess.tidyUpLDAPFromIOCList(new LdapContentModel(result), iocMapFromFS);
+            } else {
+                _log.warn("No preference for IOC dump path could be found. Tidy up cancelled!");
+            }
 
         } finally {
             _busy = false;
@@ -212,9 +227,13 @@ public final class LdapUpdater {
 
             validateHistoryFileEntriesVsLDAPEntries(model, historyFileModel);
 
-            final Map<String, IOC> iocMap = IOCFilesDirTree.findIOCFiles(getValueFromPreferences(IOC_DBL_DUMP_PATH), 1);
-
-            LdapAccess.updateLDAPFromIOCList(model, iocMap, historyFileModel);
+            final String dumpPath = getValueFromPreferences(IOC_DBL_DUMP_PATH);
+            if (dumpPath != null) {
+                final Map<String, IOC> iocMap = IOCFilesDirTree.findIOCFiles(dumpPath, 1);
+                LdapAccess.updateLDAPFromIOCList(model, iocMap, historyFileModel);
+            } else {
+                _log.warn("No preference for IOC dump path could be found. Update cancelled!");
+            }
 
         } catch (final InterruptedException e) {
             e.printStackTrace();

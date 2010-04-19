@@ -69,7 +69,7 @@ public class HistoryFileAccess {
     public HistoryFileContentModel readFile() {
 
         HistoryFileContentModel model = new HistoryFileContentModel();
-        BufferedReader fr;
+        BufferedReader fr = null;
 
         final String path = getValueFromPreferences(LDAP_HIST_PATH);
         try {
@@ -94,12 +94,20 @@ public class HistoryFileAccess {
                     model = storeRecentRecordEntry(m.group(1), Long.parseLong(m.group(3)), model);
                 }
             }
+            fr.close();
         } catch (final FileNotFoundException e) {
             _log.error ("Error : File not Found(r) : " + getValueFromPreferences(LDAP_HIST_PATH) + HISTORY_DAT_FILE );
         } catch (final IOException e) {
             _log.error ("I/O-Exception while handling " + getValueFromPreferences(LDAP_HIST_PATH) + HISTORY_DAT_FILE );
+        } finally {
+            try {
+                if (fr != null) {
+                    fr.close();
+                }
+            } catch (final IOException e) {
+                _log.error ("I/O-Exception while closing " + getValueFromPreferences(LDAP_HIST_PATH) + HISTORY_DAT_FILE );
+            }
         }
-
         _log.info("IOC names in history-file : " + model.getEntrySet().size());
 
         return model;

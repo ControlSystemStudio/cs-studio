@@ -131,6 +131,7 @@ public final class LdapAccess {
             while ((strLine = br.readLine()) != null)   {
                 records.add(new Record(strLine));
             }
+            br.close();
             return records;
         } catch (final FileNotFoundException e) {
             LOGGER.error("Could not find file: " + pathToFile + "\n" + e.getMessage());

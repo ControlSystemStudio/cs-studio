@@ -28,6 +28,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 
 /**
  * Stores information about an IOC.
@@ -48,7 +51,7 @@ public class IOC implements Serializable {
     /**
      * The name of this IOC.
      */
-    private String _name;
+    private final String _name;
 
     /**
      * The group of this IOC.
@@ -89,9 +92,14 @@ public class IOC implements Serializable {
      * @param name the name of the IOC.
      * @param group the group of the IOC.
      * @param physicalName the physical name of the IOC.
-     * @param dateTime
+     * @param dateTime time stamp of last update
+     * @param resp responsible person for this IOC
      */
-    public IOC(final String name, final String group, final String physicalName, final GregorianCalendar dateTime, final String resp) {
+    public IOC(@Nonnull final String name,
+               @Nullable final String group,
+               @Nullable final String physicalName,
+               @Nullable final GregorianCalendar dateTime,
+               @Nullable final String resp) {
         _name = name;
         _group = group;
         _physicalName = physicalName;
@@ -124,12 +132,9 @@ public class IOC implements Serializable {
      * Returns the name of this IOC.
      * @return the name of this IOC.
      */
+    @Nonnull
     public final String getName() {
         return _name;
-    }
-
-    public void setName(final String name) {
-        _name = name;
     }
 
     /**
