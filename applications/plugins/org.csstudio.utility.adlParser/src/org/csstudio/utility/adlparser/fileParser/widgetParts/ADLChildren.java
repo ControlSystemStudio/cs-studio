@@ -22,35 +22,12 @@
 /*
  * $Id$
  */
-package org.csstudio.utility.adlconverter.utility.widgetparts;
+package org.csstudio.utility.adlparser.fileParser.widgetParts;
 
 import java.util.ArrayList;
 
-import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.sds.model.AbstractWidgetModel;
-import org.csstudio.utility.adlconverter.internationalization.Messages;
-import org.csstudio.utility.adlconverter.utility.ADLWidget;
-import org.csstudio.utility.adlconverter.utility.widgets.ActionButton;
-import org.csstudio.utility.adlconverter.utility.widgets.Arc;
-import org.csstudio.utility.adlconverter.utility.widgets.Bargraph;
-import org.csstudio.utility.adlconverter.utility.widgets.ChoiceButton;
-import org.csstudio.utility.adlconverter.utility.widgets.Ellipse;
-import org.csstudio.utility.adlconverter.utility.widgets.GroupingContainer;
-import org.csstudio.utility.adlconverter.utility.widgets.Image;
-import org.csstudio.utility.adlconverter.utility.widgets.Label;
-import org.csstudio.utility.adlconverter.utility.widgets.Meter;
-import org.csstudio.utility.adlconverter.utility.widgets.Polygon;
-import org.csstudio.utility.adlconverter.utility.widgets.Polyline;
-import org.csstudio.utility.adlconverter.utility.widgets.Rectangle;
-import org.csstudio.utility.adlconverter.utility.widgets.RelatedDisplay;
-import org.csstudio.utility.adlconverter.utility.widgets.SixteenBinaryBar;
-import org.csstudio.utility.adlconverter.utility.widgets.StripChart;
-import org.csstudio.utility.adlconverter.utility.widgets.Symbol;
-import org.csstudio.utility.adlconverter.utility.widgets.Textinput;
-import org.csstudio.utility.adlconverter.utility.widgets.Valuator;
-import org.csstudio.utility.adlconverter.utility.widgets.Waveform;
-import org.csstudio.utility.adlconverter.utility.widgets.Widget;
-import org.eclipse.core.runtime.IPath;
+import org.csstudio.utility.adlparser.internationalization.Messages;
+import org.csstudio.utility.adlparser.fileParser.ADLWidget;
 
 /**
  * @author hrickens
@@ -63,132 +40,22 @@ public class ADLChildren {
     /**
      * ADL Grouping Container Children's.
      */
-    private ArrayList<Widget> _childrens = new ArrayList<Widget>();
+    private ArrayList<ADLWidget> _childrens;
 
     /**
      * @param adlChildren 
      */
-    public ADLChildren(final ADLWidget adlChildren, AbstractWidgetModel displayModel, IPath targetPath) {
-        ADLWidget storedBasicAttribute=null;
-        ADLWidget storedDynamicAttribute=null;
+    public ADLChildren(final ADLWidget adlChildren) {
+        assert adlChildren.isType("children") : Messages.ADLObject_AssertError_Begin+adlChildren.getType()+Messages.ADLObject_AssertError_End+"\r\n"+adlChildren; //$NON-NLS-1$
 
-        for (ADLWidget adlWidget : adlChildren.getObjects()) {
-            try {
-                if (adlWidget.getType().equals("arc")) { //$NON-NLS-1$
-                    _childrens.add(new Arc(adlWidget, displayModel, storedBasicAttribute, storedDynamicAttribute));
-                    storedBasicAttribute = null;
-                    storedDynamicAttribute = null;
-                } else if (adlWidget.getType().equals("bar")) { //$NON-NLS-1$
-                    _childrens.add(new Bargraph(adlWidget, storedBasicAttribute, storedDynamicAttribute));
-                    storedBasicAttribute = null;
-                    storedDynamicAttribute = null;
-                } else if(adlWidget.getType().equals("byte")){ //$NON-NLS-1$
-                    _childrens.add(new SixteenBinaryBar(adlWidget, storedBasicAttribute, storedDynamicAttribute));
-                    storedBasicAttribute = null;
-                    storedDynamicAttribute = null;
-                } else if (adlWidget.getType().equals("cartesian plot")) { //$NON-NLS-1$
-                    _childrens.add(new Waveform(adlWidget, storedBasicAttribute, storedDynamicAttribute));
-                    storedBasicAttribute = null;
-                    storedDynamicAttribute = null;
-                }else if (adlWidget.getType().equals("choice button")) { //$NON-NLS-1$
-                    _childrens.add(new ChoiceButton(adlWidget, storedBasicAttribute, storedDynamicAttribute));
-                    storedBasicAttribute = null;
-                    storedDynamicAttribute = null;
-                } else if (adlWidget.getType().equals("composite")) { //$NON-NLS-1$
-                    _childrens.add(new GroupingContainer(adlWidget, storedBasicAttribute, storedDynamicAttribute, targetPath));
-                    storedBasicAttribute = null;
-                    storedDynamicAttribute = null;
-                } else if (adlWidget.getType().equals("dynamic symbol")) { //$NON-NLS-1$
-                    _childrens.add(new Symbol(adlWidget, storedBasicAttribute, storedDynamicAttribute));
-                    storedBasicAttribute = null;
-                    storedDynamicAttribute = null;
-                } else if (adlWidget.getType().equals("file")) { //$NON-NLS-1$
-                    // TODO: FILE --> Name and Version
-                    storedBasicAttribute = null;
-                    storedDynamicAttribute = null;
-                } else if (adlWidget.getType().equals("image")) { //$NON-NLS-1$
-                    _childrens.add(new Image(adlWidget, displayModel, storedBasicAttribute, storedDynamicAttribute, targetPath));
-                    storedBasicAttribute = null;
-                    storedDynamicAttribute = null;
-                } else if (adlWidget.getType().equals("indicator")) { //$NON-NLS-1$
-                    _childrens.add(new Bargraph(adlWidget, storedBasicAttribute, storedDynamicAttribute));
-                    storedBasicAttribute = null;
-                    storedDynamicAttribute = null;
-                } else if (adlWidget.getType().equals("menu")) { //$NON-NLS-1$
-                    _childrens.add(new RelatedDisplay(adlWidget, storedBasicAttribute, storedDynamicAttribute));
-                    storedBasicAttribute = null;
-                    storedDynamicAttribute = null;
-                } else if (adlWidget.getType().equals("message button")) { //$NON-NLS-1$
-                    _childrens.add(new ActionButton(adlWidget, storedBasicAttribute, storedDynamicAttribute));
-                    storedBasicAttribute = null;
-                    storedDynamicAttribute = null;
-                } else if (adlWidget.getType().equals("meter")) { //$NON-NLS-1$
-                    _childrens.add(new Meter(adlWidget, storedBasicAttribute, storedDynamicAttribute));
-                    storedBasicAttribute = null;
-                    storedDynamicAttribute = null;
-                } else if (adlWidget.getType().equals("oval")) { //$NON-NLS-1$
-                    _childrens.add(new Ellipse(adlWidget, displayModel, storedBasicAttribute, storedDynamicAttribute));
-                    storedBasicAttribute = null;
-                    storedDynamicAttribute = null;
-                } else if (adlWidget.getType().equals("polygon")) { //$NON-NLS-1$
-                    _childrens.add(new Polygon(adlWidget, displayModel, storedBasicAttribute, storedDynamicAttribute));
-                    storedBasicAttribute = null;
-                    storedDynamicAttribute = null;
-                } else if (adlWidget.getType().equals("polyline")) { //$NON-NLS-1$
-                    Polyline polyline = new Polyline(adlWidget, displayModel, storedBasicAttribute, storedDynamicAttribute);
-                    _childrens.add(polyline);
-                    polyline = null;
-                    storedBasicAttribute = null;
-                    storedDynamicAttribute = null;
-                } else if (adlWidget.getType().equals("rectangle")) { //$NON-NLS-1$
-                    _childrens.add(new Rectangle(adlWidget, displayModel, storedBasicAttribute, storedDynamicAttribute));
-                    storedBasicAttribute = null;
-                    storedDynamicAttribute = null;
-                } else if (adlWidget.getType().equals("related display")) { //$NON-NLS-1$
-                    _childrens.add(new RelatedDisplay(adlWidget, storedBasicAttribute, storedDynamicAttribute));
-                    storedBasicAttribute = null;
-                    storedDynamicAttribute = null;
-                } else if (adlWidget.getType().equals("strip chart")) { //$NON-NLS-1$
-                    _childrens.add(new StripChart(adlWidget, storedBasicAttribute, storedDynamicAttribute));
-                    storedBasicAttribute = null;
-                    storedDynamicAttribute = null;
-                } else if (adlWidget.getType().equals("text")) { //$NON-NLS-1$
-                    _childrens.add(new Label(adlWidget, displayModel, storedBasicAttribute, storedDynamicAttribute));
-                    storedBasicAttribute = null;
-                    storedDynamicAttribute = null;
-                } else if (adlWidget.getType().equals("text update")) { //$NON-NLS-1$
-                    _childrens.add(new Label(adlWidget, displayModel, storedBasicAttribute, storedDynamicAttribute));
-                    storedBasicAttribute = null;
-                    storedDynamicAttribute = null;
-                } else if (adlWidget.getType().equals("text entry")) { //$NON-NLS-1$
-                    _childrens.add(new Textinput(adlWidget, storedBasicAttribute, storedDynamicAttribute));
-                    storedBasicAttribute = null;
-                    storedDynamicAttribute = null;
-                } else if (adlWidget.getType().equals("valuator")) { //$NON-NLS-1$
-                    _childrens.add(new Valuator(adlWidget, storedBasicAttribute, storedDynamicAttribute));
-                    storedBasicAttribute = null;
-                    storedDynamicAttribute = null;
-                } else if (adlWidget.getType().equals("basic attribute")) { //$NON-NLS-1$
-                    storedBasicAttribute = adlWidget;
-                } else if (adlWidget.getType().equals("dynamic attribute")) { //$NON-NLS-1$
-                    storedDynamicAttribute = adlWidget;
-                } else {
-                    CentralLogger.getInstance().info(this,
-                            Messages.ADLDisplayImporter_WARN_UNHANDLED_TYPE + adlWidget.getType()+ "(ObjectNo:"+adlWidget.getObjectNr()+" Widget: "+adlWidget);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+    	_childrens = adlChildren.getObjects();
         
     }
-
-    
     
     /**
      * @return the ADL Grouping Container Children's.
      */
-    public final Widget[] getAdlChildrens() {
-        return _childrens.toArray(new Widget[0]);
+    public final ArrayList<ADLWidget> getAdlChildrens() {
+        return _childrens;
     }
 }
