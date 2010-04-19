@@ -166,12 +166,6 @@
             widgetTypeId="org.csstudio.sds.components.MenuButton">
       </behavior>
       <behavior
-            class="org.csstudio.sds.behavior.desy.TextInputBehavior"
-            description="DESY Default"
-            id="behavior.desy.textInput.default"
-            widgetTypeId="org.csstudio.sds.components.TextInput">
-      </behavior>
-      <behavior
             class="org.csstudio.sds.behavior.desy.StripChartBehavior"
             description="DESY Default"
             id="behavior.desy.stripChart.default"
