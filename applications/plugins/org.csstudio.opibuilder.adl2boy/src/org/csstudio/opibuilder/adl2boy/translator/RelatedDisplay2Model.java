@@ -60,7 +60,7 @@ public class RelatedDisplay2Model extends AbstractADL2Model {
 				}
 			}
 		}
-		menuModel.setPropertyValue(MenuButtonModel.PROP_LABEL, true);
+		menuModel.setPropertyValue(MenuButtonModel.PROP_LABEL, rdWidget.getLabel());
 	}
 
 	@Override
