@@ -213,6 +213,18 @@
             id="behavior.desy.simpleslider.connectiondefault"
             widgetTypeId="org.csstudio.sds.components.SimpleSlider">
       </behavior>
+      <behavior
+            class="org.csstudio.sds.behavior.desy.TextinputAlarmBehavior"
+            description="DESY Alarm Textinput"
+            id="behavior.desy.textinput.alarmdefault"
+            widgetTypeId="org.csstudio.sds.components.Textinput">
+      </behavior>
+      <behavior
+            class="org.csstudio.sds.behavior.desy.TextinputConnectionBehavior"
+            description="DESY Connection Textinput"
+            id="behavior.desy.textinput.connectiondefault"
+            widgetTypeId="org.csstudio.sds.components.Textinput">
+      </behavior>
    </extension>
    
 </plugin>
