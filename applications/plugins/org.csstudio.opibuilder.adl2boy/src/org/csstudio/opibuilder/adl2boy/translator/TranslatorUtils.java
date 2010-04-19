@@ -13,11 +13,11 @@ public class TranslatorUtils {
 			try {
 				String widgetType = adlWidget.getType();
 				if (widgetType.equals("arc")){
-					parentModel.addChild((new Arc2Model(adlWidget, colorMap)).getWidgetModel());
+					new Arc2Model(adlWidget, colorMap, parentModel);
 					printNotCompletelyHandledMessage(widgetType);
 				}
 				else if (widgetType.equals("bar")){
-					parentModel.addChild((new Bar2Model(adlWidget, colorMap)).getWidgetModel());
+					new Bar2Model(adlWidget, colorMap, parentModel);
 					printNotCompletelyHandledMessage(widgetType);
 				
 				}
@@ -26,7 +26,7 @@ public class TranslatorUtils {
 					
 				}
 				else if (widgetType.equals("cartesian plot")){
-					parentModel.addChild((new CartesianPlot2Model(adlWidget, colorMap)).getWidgetModel());
+					new CartesianPlot2Model(adlWidget, colorMap,parentModel);
 					printNotCompletelyHandledMessage(widgetType);
 					
 				}
@@ -35,7 +35,7 @@ public class TranslatorUtils {
 					
 				}
 				else if (widgetType.equals("composite")){
-					parentModel.addChild((new Composite2Model(adlWidget, colorMap)).getWidgetModel());
+					new Composite2Model(adlWidget, colorMap, parentModel);
 					printNotCompletelyHandledMessage(widgetType);
 					
 				}
@@ -48,7 +48,7 @@ public class TranslatorUtils {
 					
 				}
 				else if (widgetType.equals("image")){
-					parentModel.addChild((new Image2Model(adlWidget, colorMap)).getWidgetModel());
+					new Image2Model(adlWidget, colorMap, parentModel);
 					printNotCompletelyHandledMessage(widgetType);
 					
 				}
@@ -57,12 +57,12 @@ public class TranslatorUtils {
 					
 				}
 				else if (widgetType.equals("menu")){
-					parentModel.addChild((new Menu2Model(adlWidget, colorMap)).getWidgetModel());
+					new Menu2Model(adlWidget, colorMap, parentModel);
 					printNotCompletelyHandledMessage(widgetType);
 					
 				}
 				else if (widgetType.equals("message button")){
-					parentModel.addChild((new MessageButton2Model(adlWidget, colorMap)).getWidgetModel());
+					new MessageButton2Model(adlWidget, colorMap, parentModel);
 					printNotCompletelyHandledMessage(widgetType);
 					
 				}
@@ -71,22 +71,22 @@ public class TranslatorUtils {
 					
 				}
 				else if (widgetType.equals("meter")){
-					parentModel.addChild((new Meter2Model(adlWidget, colorMap)).getWidgetModel());
+					new Meter2Model(adlWidget, colorMap, parentModel);
 					printNotHandledMessage(widgetType);
 						
 				}
 				else if (widgetType.equals("oval")){
-					parentModel.addChild((new Oval2Model(adlWidget, colorMap)).getWidgetModel());
+					new Oval2Model(adlWidget, colorMap, parentModel);
 					printNotCompletelyHandledMessage(widgetType);
 					
 				}
 				else if (widgetType.equals("polygon")){
-					parentModel.addChild((new Polygon2Model(adlWidget, colorMap)).getWidgetModel());
+					new Polygon2Model(adlWidget, colorMap, parentModel);
 					printNotCompletelyHandledMessage(widgetType);
 					
 				}
 				else if (widgetType.equals("polyline")){
-					parentModel.addChild((new PolyLine2Model(adlWidget, colorMap)).getWidgetModel());
+					new PolyLine2Model(adlWidget, colorMap, parentModel);
 					printNotCompletelyHandledMessage(widgetType);
 					
 				}
@@ -95,12 +95,12 @@ public class TranslatorUtils {
 					
 				}
 				else if (widgetType.equals("rectangle")){
-					parentModel.addChild((new Rectangle2Model(adlWidget, colorMap)).getWidgetModel());
+					new Rectangle2Model(adlWidget, colorMap, parentModel);
 					printNotCompletelyHandledMessage(widgetType);
 					
 				}
 				else if (widgetType.equals("related display")){
-					parentModel.addChild((new RelatedDisplay2Model(adlWidget, colorMap)).getWidgetModel());
+					new RelatedDisplay2Model(adlWidget, colorMap, parentModel);
 					printNotCompletelyHandledMessage(widgetType);
 					
 				}
@@ -109,22 +109,22 @@ public class TranslatorUtils {
 					
 				}
 				else if (widgetType.equals("text")){
-					parentModel.addChild((new Text2Model(adlWidget, colorMap)).getWidgetModel());
+					new Text2Model(adlWidget, colorMap, parentModel);
 					printNotCompletelyHandledMessage(widgetType);
 					
 				}
 				else if (widgetType.equals("text update")){
-					parentModel.addChild((new TextUpdate2Model(adlWidget, colorMap)).getWidgetModel());
+					new TextUpdate2Model(adlWidget, colorMap, parentModel);
 					printNotCompletelyHandledMessage(widgetType);
 					
 				}
 				else if (widgetType.equals("text entry")){
-					parentModel.addChild((new TextEntry2Model(adlWidget, colorMap)).getWidgetModel());
+					new TextEntry2Model(adlWidget, colorMap, parentModel);
 					printNotHandledMessage(widgetType);
 					
 				}
 				else if (widgetType.equals("valuator")){
-					parentModel.addChild((new Valuator2Model(adlWidget, colorMap)).getWidgetModel());
+					new Valuator2Model(adlWidget, colorMap, parentModel);
 					printNotCompletelyHandledMessage(widgetType);
 					
 				}
@@ -154,4 +154,48 @@ public class TranslatorUtils {
 		System.out.println("EditHandler: " + type + " is not completely handled");
 	}
 
+	public static int convertTextHeightToFontSize(int h){
+		if (h < 9) {
+			return 6;
+		}
+		else if (h < 10 ){
+			return 6;
+		}
+		else if (h < 13) {
+			return 8;
+		}
+		else if (h < 14) {
+			return 9;
+		}
+		else if (h < 15) {
+			return 10;
+		}
+		else if (h < 16) {
+			return 12;
+		}
+		else if (h < 20) {
+			return 14;
+		}
+		else if (h < 21) {
+			return 16;
+		}
+		else if (h < 24) {
+			return 18;
+		}
+		else if (h < 26) {
+			return 18;
+		}
+		else if (h < 27) {
+			return 20;
+		}
+		else if (h < 35) {
+			return 24;
+		}
+		else if (h < 36) {
+			return 26;
+		}
+		else {
+			return 30;
+		}
+	}
 }

@@ -1,5 +1,6 @@
 package org.csstudio.opibuilder.adl2boy.translator;
 
+import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
@@ -9,8 +10,8 @@ import org.eclipse.swt.graphics.RGB;
 public class Display2Model extends AbstractADL2Model {
 	DisplayModel displayModel = new DisplayModel();
 	
-	public Display2Model(ADLWidget adlWidget, RGB[] colorMap) {
-		super(adlWidget, colorMap);
+	public Display2Model(ADLWidget adlWidget, RGB[] colorMap, AbstractContainerModel parentModel) {
+		super(adlWidget, colorMap, parentModel);
 		ADLDisplay adlDisp = new ADLDisplay(adlWidget);
 		int displayForeColor = 0;
 		int displayBackColor = 0;

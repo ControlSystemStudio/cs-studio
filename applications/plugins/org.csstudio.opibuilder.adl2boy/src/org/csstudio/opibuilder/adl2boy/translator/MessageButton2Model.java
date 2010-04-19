@@ -1,5 +1,6 @@
 package org.csstudio.opibuilder.adl2boy.translator;
 
+import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.widgetActions.ActionsInput;
 import org.csstudio.opibuilder.widgetActions.WritePVAction;
@@ -11,9 +12,9 @@ import org.eclipse.swt.graphics.RGB;
 public class MessageButton2Model extends AbstractADL2Model {
 	ActionButtonModel buttonModel = new ActionButtonModel();
 
-	public MessageButton2Model(ADLWidget adlWidget, RGB[] colorMap) {
-		super(adlWidget, colorMap);
-		System.out.println("Creating a message Button");
+	public MessageButton2Model(ADLWidget adlWidget, RGB[] colorMap, AbstractContainerModel parentModel) {
+		super(adlWidget, colorMap, parentModel);
+		parentModel.addChild(buttonModel, true);
 		MessageButton messageButtonWidget = new MessageButton(adlWidget);
 		if (messageButtonWidget != null) {
 			setADLObjectProps(messageButtonWidget, buttonModel);

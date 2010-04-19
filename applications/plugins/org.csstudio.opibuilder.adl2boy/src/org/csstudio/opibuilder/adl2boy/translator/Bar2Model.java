@@ -1,5 +1,6 @@
 package org.csstudio.opibuilder.adl2boy.translator;
 
+import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.widgets.model.AbstractMarkedWidgetModel;
 import org.csstudio.opibuilder.widgets.model.TankModel;
@@ -10,9 +11,10 @@ import org.eclipse.swt.graphics.RGB;
 public class Bar2Model extends AbstractADL2Model {
 	TankModel tankModel = new TankModel();
 
-	public Bar2Model(ADLWidget adlWidget, RGB[] colorMap) {
-		super(adlWidget, colorMap);
+	public Bar2Model(ADLWidget adlWidget, RGB[] colorMap, AbstractContainerModel parentModel) {
+		super(adlWidget, colorMap, parentModel);
 		BarMonitor barWidget = new BarMonitor(adlWidget);
+		parentModel.addChild(tankModel, true);
 		if (barWidget != null) {
 			setADLObjectProps(barWidget, tankModel);
 			setADLControlProps(barWidget, tankModel);

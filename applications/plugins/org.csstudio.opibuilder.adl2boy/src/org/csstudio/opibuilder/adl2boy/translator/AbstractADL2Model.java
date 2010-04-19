@@ -1,5 +1,6 @@
 package org.csstudio.opibuilder.adl2boy.translator;
 
+import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
@@ -14,7 +15,7 @@ public abstract class AbstractADL2Model {
 	AbstractWidgetModel widgetModel;
 	RGB colorMap[] = new RGB[0];
 	
-	public AbstractADL2Model(final ADLWidget adlWidget, RGB colorMap[]) {
+	public AbstractADL2Model(final ADLWidget adlWidget, RGB colorMap[], AbstractContainerModel parentWidget) {
 		this.colorMap = colorMap;
 	}
 
@@ -57,6 +58,15 @@ public abstract class AbstractADL2Model {
 					widgetModel.setBackgroundColor(colorMap[Integer.parseInt(basAttr.getClr())]);
 				}
 			}
+			else {
+				if (colorForeground) {
+					widgetModel.setForegroundColor(widgetModel.getParent().getForegroundColor());
+				}
+				else {
+					widgetModel.setBackgroundColor(widgetModel.getParent().getBackgroundColor());
+				}
+				
+			}
 		}
 	}
 	/** set the properties contained in the ADL basic properties section in the 
@@ -71,10 +81,17 @@ public abstract class AbstractADL2Model {
 			if ((foreClr != null) && (!(foreClr.equals(""))) ){
 				widgetModel.setForegroundColor(colorMap[Integer.parseInt(foreClr)]);
 			}
+			else { 
+				widgetModel.setForegroundColor(widgetModel.getParent().getForegroundColor());
+			}
 			String backClr = control.getBackgroundColor();
 			if ((backClr != null) && (!(backClr.equals(""))) ){
 				widgetModel.setBackgroundColor(colorMap[Integer.parseInt(backClr)]);
 			}
+			else { 
+				widgetModel.setBackgroundColor(widgetModel.getParent().getBackgroundColor());
+			}
+			
 			String channel = control.getChan();
 			if ((channel != null) && (!(channel.equals(""))) ){
 				widgetModel.setPropertyValue(AbstractPVWidgetModel.PROP_PVNAME, channel);
@@ -93,9 +110,15 @@ public abstract class AbstractADL2Model {
 			if ((foreClr != null) && (!(foreClr.equals(""))) ){
 				widgetModel.setForegroundColor(colorMap[Integer.parseInt(foreClr)]);
 			}
+			else { 
+				widgetModel.setForegroundColor(widgetModel.getParent().getForegroundColor());
+			}
 			String backClr = monitor.getBackgroundColor();
 			if ((backClr != null) && (!(backClr.equals(""))) ){
 				widgetModel.setBackgroundColor(colorMap[Integer.parseInt(backClr)]);
+			}
+			else { 
+				widgetModel.setBackgroundColor(widgetModel.getParent().getBackgroundColor());
 			}
 			String channel = monitor.getChan();
 			if ((channel != null) && (!(channel.equals(""))) ){

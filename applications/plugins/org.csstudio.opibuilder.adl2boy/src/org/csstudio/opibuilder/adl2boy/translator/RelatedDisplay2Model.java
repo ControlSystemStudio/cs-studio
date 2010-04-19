@@ -1,5 +1,6 @@
 package org.csstudio.opibuilder.adl2boy.translator;
 
+import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.util.MacrosInput;
 import org.csstudio.opibuilder.widgetActions.ActionsInput;
@@ -15,8 +16,9 @@ import org.eclipse.swt.graphics.RGB;
 public class RelatedDisplay2Model extends AbstractADL2Model {
 	MenuButtonModel menuModel = new MenuButtonModel();
 
-	public RelatedDisplay2Model(ADLWidget adlWidget, RGB[] colorMap) {
-		super(adlWidget, colorMap);
+	public RelatedDisplay2Model(ADLWidget adlWidget, RGB[] colorMap, AbstractContainerModel parentModel) {
+		super(adlWidget, colorMap, parentModel);
+		parentModel.addChild(menuModel, true);
 		RelatedDisplay rdWidget = new RelatedDisplay(adlWidget);
 		if (rdWidget != null) {
 			setADLObjectProps(rdWidget, menuModel);
