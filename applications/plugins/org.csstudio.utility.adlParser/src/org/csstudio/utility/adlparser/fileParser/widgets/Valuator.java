@@ -29,6 +29,11 @@ public class Valuator extends ADLAbstractWidget {
 		catch (WrongADLFormatException ex) {
 			
 		}
+		//TODO Add PV Limits to Valuator
+		//TODO Add Label to Valuator
+		//TODO Add Direction to Valuator
+		//TODO Add ColorMode to Valuator
+		//TODO Add Increment to Valuator
 	}
 
 }

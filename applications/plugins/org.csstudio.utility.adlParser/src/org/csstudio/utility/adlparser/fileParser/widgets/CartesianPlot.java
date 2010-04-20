@@ -20,9 +20,17 @@ public class CartesianPlot extends ADLAbstractWidget {
 	        }
 		}
 		catch (WrongADLFormatException ex) {
-			
+			ex.printStackTrace();
 		}
-		// TODO ADLParser Finish Cartesian Plot parsing
+		// TODO Add Title to CartesianPlot
+		// TODO Add X & Y Labels to CartesianPlot
+		// TODO Add Plot Style to CartesianPlot
+		// TODO Add Trace data to CartesianPlot
+		// TODO Add Axis Data to CartesianPlot
+		// TODO Add CountNum or channel to CartesianPlot
+		// TODO Add Trigger Channel to CartesianPlot
+		// TODO Add EraseChannel to CartesianPlot
+		// TODO Add EraseMode to CartesianPlot
 	}
 
 }

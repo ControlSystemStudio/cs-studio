@@ -12,14 +12,7 @@ public class Image extends ADLAbstractWidget {
 		super(adlWidget);
 		try {
 			for (ADLWidget childWidget : adlWidget.getObjects()) {
-	        	if (childWidget.getType().equals("basic attribute")){
-	        		_adlBasicAttribute = new ADLBasicAttribute(childWidget);
-	        		System.out.println("TextWidget Color " + _adlBasicAttribute.getClr());
-	        		if (_adlBasicAttribute != null){
-	        			_hasBasicAttribute = true;
-	        		}
-	        	}
-	        	else if (childWidget.getType().equals("object")){
+	        	if (childWidget.getType().equals("object")){
 	        		_adlObject = new ADLObject(childWidget);
 	        		if (_adlObject != null){
 	        			_hasObject = true;
@@ -37,6 +30,10 @@ public class Image extends ADLAbstractWidget {
 		catch (WrongADLFormatException ex) {
 			
 		}
+		//TODO Add ImageType to Image
+		//TODO Add ImageName to Image
+		//TODO Add ImageCalc to Image
+		
 	}
 
 }

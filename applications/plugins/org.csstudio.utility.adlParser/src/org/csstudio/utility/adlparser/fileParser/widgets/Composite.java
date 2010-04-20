@@ -49,6 +49,8 @@ public class Composite extends ADLAbstractWidget {
 		catch (WrongADLFormatException ex) {
 			ex.printStackTrace();
 		}
+		//TODO Add Dynamic properties to Composite
+		//TODO Add Composite File to Composite
 	}
 
 	/**

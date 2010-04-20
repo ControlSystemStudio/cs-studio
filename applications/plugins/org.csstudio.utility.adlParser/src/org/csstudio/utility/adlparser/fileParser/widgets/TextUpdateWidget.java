@@ -28,8 +28,12 @@ public class TextUpdateWidget extends ADLAbstractWidget {
 	        }
 		}
 		catch (WrongADLFormatException ex) {
-			
+			ex.printStackTrace();
 		}
+		//TODO Add PVLimits to TextUpdateWidget
+		//TODO Add Format to TextUpdateWidget
+		//TODO Add ColorMode to TextUpdateWidget
+		
 	}
 
 }

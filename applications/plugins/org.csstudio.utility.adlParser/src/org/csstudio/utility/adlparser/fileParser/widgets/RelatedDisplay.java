@@ -50,8 +50,9 @@ public class RelatedDisplay extends ADLAbstractWidget {
 			}
 		}
 		catch (WrongADLFormatException ex) {
-			
+			ex.printStackTrace();
 		}
+		//TODO Add Label Visual to RelatedDisplay
 	}
 
 

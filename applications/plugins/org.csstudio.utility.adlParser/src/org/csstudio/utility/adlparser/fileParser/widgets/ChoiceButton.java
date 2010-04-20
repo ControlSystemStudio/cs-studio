@@ -6,7 +6,10 @@ public class ChoiceButton extends ADLAbstractWidget {
 
 	public ChoiceButton(ADLWidget adlWidget) {
 		super(adlWidget);
-		// TODO Auto-generated constructor stub
+		// TODO Add ADLObject to ChoiceButton
+		// TODO Add ADLControl to ChoiceButton
+		// TODO Add Color mode to ChoiceButton
+		// TODO Add Stacking to ChoiceButton
 	}
 
 }

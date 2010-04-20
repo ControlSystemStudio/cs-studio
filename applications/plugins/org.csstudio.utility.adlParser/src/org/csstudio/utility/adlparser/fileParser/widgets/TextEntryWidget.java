@@ -30,6 +30,10 @@ public class TextEntryWidget extends ADLAbstractWidget {
 		catch (WrongADLFormatException ex) {
 			
 		}
+		//TODO Add PVLimits to TextEntry
+		//TODO Add Format to TextEntry
+		//TODO Add ColorMode to TextEntry
+		
 	}
 
 }

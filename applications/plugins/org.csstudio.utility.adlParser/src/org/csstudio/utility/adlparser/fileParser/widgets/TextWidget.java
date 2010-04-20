@@ -48,7 +48,7 @@ public class TextWidget extends ADLAbstractWidget {
 				if (row[0].equals("textix")){
 					setTextix(row[1].replaceAll("\"", "").trim());
 				}
-				else if (row[0].equals("textix")){
+				else if (row[0].equals("alignment")){
 					setAlignment(row[1].replaceAll("\"", ""));
 				}
 				else if (row[0].equals("clrmod")){

@@ -35,6 +35,7 @@ public class Arc extends ADLAbstractWidget {
 	        		}
 	        	}
 	        }
+			//TODO Add Begin angle and path angle
 		}
 		catch (WrongADLFormatException ex) {
 			

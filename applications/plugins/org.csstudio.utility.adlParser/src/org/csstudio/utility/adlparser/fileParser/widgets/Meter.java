@@ -29,6 +29,9 @@ public class Meter extends ADLAbstractWidget {
 		catch (WrongADLFormatException ex) {
 			
 		}
+		//TODO Add PV Limits to Meter
+		//TODO Add Label to Meter
+		//TODO Add ColorMode to Meter
 	}
 
 }

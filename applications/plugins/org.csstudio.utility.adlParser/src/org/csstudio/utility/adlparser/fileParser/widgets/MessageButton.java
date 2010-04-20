@@ -51,6 +51,7 @@ public class MessageButton extends ADLAbstractWidget {
 		catch (WrongADLFormatException ex) {
 			
 		}
+		//TODO Add Color mode to MessageButton
 	}
 
 	/**

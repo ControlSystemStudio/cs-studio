@@ -33,6 +33,11 @@ public class BarMonitor extends ADLAbstractWidget {
 		catch (WrongADLFormatException ex) {
 			
 		}
+		//Add PVLimits to BarMonitor
+		//Add Label to BarMonitor
+		//Add Direction to BarMonitor
+		//Add Color mode to BarMonitor
+
 	}
 
 }

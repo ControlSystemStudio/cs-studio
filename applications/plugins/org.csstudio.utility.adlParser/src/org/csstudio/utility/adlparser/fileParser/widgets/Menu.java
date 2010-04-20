@@ -27,8 +27,8 @@ public class Menu extends ADLAbstractWidget {
 	        }
 		}
 		catch (WrongADLFormatException ex) {
-			
+			ex.printStackTrace();
 		}
+		// TODO Add ColorMode to Menu
 	}
-
 }
