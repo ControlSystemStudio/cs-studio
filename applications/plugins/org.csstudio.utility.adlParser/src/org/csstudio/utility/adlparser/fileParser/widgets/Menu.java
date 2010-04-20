@@ -34,7 +34,7 @@ public class Menu extends ADLAbstractWidget {
 				if (row.length < 2){
 					throw new WrongADLFormatException(Messages.Label_WrongADLFormatException_Parameter_Begin + bodyPart + Messages.Label_WrongADLFormatException_Parameter_End);
 				}
-				if (FileLine.argEquals(row[0], "color mode")){
+				if (FileLine.argEquals(row[0], "clrmod")){
 					setColor_mode(FileLine.getTrimmedValue(row[1]));
 				}
 			}

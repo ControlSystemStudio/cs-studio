@@ -47,7 +47,7 @@ public class MessageButton extends ADLAbstractWidget {
 				else if (FileLine.argEquals(row[0], "release_msg")){
 					setRelease_msg(FileLine.getTrimmedValue(row[1]));
 				}
-				else if (FileLine.argEquals(row[0], "color mode")){
+				else if (FileLine.argEquals(row[0], "clrmod")){
 					setColor_mode(FileLine.getTrimmedValue(row[1]));
 				}
 			}
