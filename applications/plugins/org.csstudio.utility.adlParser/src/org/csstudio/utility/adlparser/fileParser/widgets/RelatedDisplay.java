@@ -11,6 +11,7 @@ import org.csstudio.utility.adlparser.internationalization.Messages;
 
 public class RelatedDisplay extends ADLAbstractWidget {
 	private String label;
+	private String visual;
 	private int bclr;
 	private int clr;
 	private ArrayList<RelatedDisplayItem> rdItems = new ArrayList<RelatedDisplayItem>();
@@ -49,6 +50,9 @@ public class RelatedDisplay extends ADLAbstractWidget {
 					setBclr(FileLine.getIntValue(row[1]));
 				    set_isBackColorDefined(true);
 				}
+				else if (FileLine.argEquals(row[0], "visual")){
+					setVisual(FileLine.getTrimmedValue(row[1]));
+				}
 			}
 			for (ADLWidget item : adlWidget.getObjects()){
 				if (item.getType().startsWith("display[")){
@@ -59,7 +63,6 @@ public class RelatedDisplay extends ADLAbstractWidget {
 		catch (WrongADLFormatException ex) {
 			ex.printStackTrace();
 		}
-		//TODO Add Label Visual to RelatedDisplay
 	}
 
 
@@ -148,6 +151,22 @@ public class RelatedDisplay extends ADLAbstractWidget {
 	 */
 	public boolean isForeColorDefined() {
 		return _isForeColorDefined;
+	}
+
+
+	/**
+	 * @param visual the visual to set
+	 */
+	public void setVisual(String visual) {
+		this.visual = visual;
+	}
+
+
+	/**
+	 * @return the visual
+	 */
+	public String getVisual() {
+		return visual;
 	}
 }
 
