@@ -20,7 +20,6 @@ public class TextWidget extends ADLAbstractWidget {
 			for (ADLWidget childWidget : adlWidget.getObjects()) {
 	        	if (childWidget.getType().equals("basic attribute")){
 	        		_adlBasicAttribute = new ADLBasicAttribute(childWidget);
-	        		System.out.println("TextWidget Color " + _adlBasicAttribute.getClr());
 	        		if (_adlBasicAttribute != null){
 	        			_hasBasicAttribute = true;
 	        		}

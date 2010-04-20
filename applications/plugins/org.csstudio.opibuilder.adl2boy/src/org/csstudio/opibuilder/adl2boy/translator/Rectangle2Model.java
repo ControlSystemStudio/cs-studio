@@ -24,7 +24,6 @@ public class Rectangle2Model extends AbstractADL2Model {
 		//check fill parameters
 		if ( rectWidget.hasADLBasicAttribute() ) {
 			if (rectWidget.getAdlBasicAttribute().getFill().equals("solid") ) {
-				System.out.println("RECTANGLE fill is solid");				
 				rectangleModel.setPropertyValue(RectangleModel.PROP_TRANSPARENT, false);
 				rectangleModel.setPropertyValue(RectangleModel.PROP_FILL_LEVEL, 100);
 				rectangleModel.setPropertyValue(RectangleModel.PROP_HORIZONTAL_FILL, true);
