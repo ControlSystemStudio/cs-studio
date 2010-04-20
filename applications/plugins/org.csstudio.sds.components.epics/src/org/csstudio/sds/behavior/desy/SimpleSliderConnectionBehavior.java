@@ -19,17 +19,47 @@
 package org.csstudio.sds.behavior.desy;
 
 import org.csstudio.sds.components.model.SimpleSliderModel;
+import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.MetaData;
 
-public class SimpleSliderConnectionBehavior extends AbstractDesyConnectionBehavior<SimpleSliderModel> {
+/**
+ *
+ * Default DESY-Behavior for the {@link SimpleSliderModel} widget with Connection state.
+ *
+ * @author hrickens
+ * @author $Author$
+ * @version $Revision$
+ * @since 20.04.2010
+ */
+public class SimpleSliderConnectionBehavior extends
+        AbstractDesyConnectionBehavior<SimpleSliderModel> {
 
-    @Override
-    protected String[] doGetInvisiblePropertyIds() {
-        return super.doGetInvisiblePropertyIds();
+    /**
+     * Constructor.
+     */
+    public SimpleSliderConnectionBehavior() {
+        addInvisiblePropertyId(SimpleSliderModel.PROP_VALUE);
+        addInvisiblePropertyId(SimpleSliderModel.PROP_MAX);
+        addInvisiblePropertyId(SimpleSliderModel.PROP_MIN);
     }
 
     @Override
-    protected void doProcessMetaDataChange(final SimpleSliderModel widget, final MetaData metaData) {
-        // do noting
+    protected void doProcessValueChange(final SimpleSliderModel widget, final AnyData anyData) {
+        // .. update slider value
+        widget.setPropertyValue(SimpleSliderModel.PROP_VALUE, anyData.doubleValue());
+    }
+
+    @Override
+    protected void doProcessMetaDataChange(final SimpleSliderModel widget, final MetaData meta) {
+        if (meta != null) {
+            // .. update min / max
+            widget.setPropertyValue(SimpleSliderModel.PROP_MAX, meta.getDisplayHigh());
+            widget.setPropertyValue(SimpleSliderModel.PROP_MIN, meta.getDisplayLow());
+        }
+    }
+
+    @Override
+    protected String[] doGetSettablePropertyIds() {
+        return new String[] { SimpleSliderModel.PROP_VALUE };
     }
 }

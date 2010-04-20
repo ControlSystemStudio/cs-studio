@@ -21,13 +21,24 @@ package org.csstudio.sds.behavior.desy;
 import org.csstudio.sds.components.model.TextInputModel;
 import org.epics.css.dal.simple.MetaData;
 
+/**
+ *
+ * Default DESY-Behavior for the {@link TextInputModel} widget with Connection state
+ *
+ * @author hrickens
+ * @author $Author$
+ * @version $Revision$
+ * @since 20.04.2010
+ */
 public class TextinputConnectionBehavior extends AbstractDesyConnectionBehavior<TextInputModel> {
 
     /**
      * Constructor.
      */
     public TextinputConnectionBehavior() {
-        // TODO Auto-generated constructor stub
+        addInvisiblePropertyId(TextInputModel.PROP_INPUT_TEXT);
+        addInvisiblePropertyId(TextInputModel.PROP_ACTIONDATA);
+        addInvisiblePropertyId(TextInputModel.PROP_PERMISSSION_ID);
     }
 
     @Override

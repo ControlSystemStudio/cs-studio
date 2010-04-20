@@ -28,6 +28,9 @@ import org.csstudio.sds.model.LabelModel;
 import org.epics.css.dal.simple.MetaData;
 
 /**
+ *
+ * Default DESY-Behavior for the {@link LabelModel} widget with Connection state and Alarms.
+ *
  * @author hrickens
  * @author $Author$
  * @version $Revision$

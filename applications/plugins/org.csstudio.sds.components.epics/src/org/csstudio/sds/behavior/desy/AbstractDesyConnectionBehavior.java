@@ -37,6 +37,9 @@ import org.epics.css.dal.simple.Severity;
  * @author $Author$
  * @version $Revision$
  * @since 19.04.2010
+ *
+ * @param <W>
+ *            The Widget model that have this Behavior
  */
 public abstract class AbstractDesyConnectionBehavior<W extends AbstractWidgetModel> extends
         AbstractDesyBehavior<W> {
@@ -55,14 +58,19 @@ public abstract class AbstractDesyConnectionBehavior<W extends AbstractWidgetMod
     }
 
     /**
-     * (@inheritDoc)
+     *
+     * {@inheritDoc}
      */
     @Override
     protected String[] doGetInvisiblePropertyIds() {
         return _invisiblePropertyIds.toArray(new String[0]);
     }
 
-    protected void addInvisiblePropertyId(final String id) {
+    /**
+     *
+     * @param id Invisible Property Id
+     */
+    protected final void addInvisiblePropertyId(final String id) {
         _invisiblePropertyIds.add(id);
     }
 

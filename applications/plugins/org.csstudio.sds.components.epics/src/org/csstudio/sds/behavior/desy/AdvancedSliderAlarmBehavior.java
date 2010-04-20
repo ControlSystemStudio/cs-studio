@@ -21,11 +21,23 @@ package org.csstudio.sds.behavior.desy;
 import org.csstudio.sds.components.model.AdvancedSliderModel;
 import org.epics.css.dal.simple.MetaData;
 
+/**
+ *
+ * Default DESY-Behavior for the {@link AdvancedSliderModel} widget with Connection state and Alarms.
+ *
+ * @author hrickens
+ * @author $Author$
+ * @version $Revision$
+ * @since 20.04.2010
+ */
 public class AdvancedSliderAlarmBehavior extends AbstractDesyAlarmBehavior<AdvancedSliderModel> {
 
-    @Override
-    protected String[] doGetInvisiblePropertyIds() {
-        return super.doGetInvisiblePropertyIds();
+    /**
+     * Constructor.
+     */
+    public AdvancedSliderAlarmBehavior() {
+        // add Invisible P0roperty Id here
+        // addInvisiblePropertyId
     }
 
     @Override

@@ -130,34 +130,10 @@
          name="DESY Default"
          point="org.csstudio.sds.behaviors">
       <behavior
-            class="org.csstudio.sds.behavior.desy.BargraphBehavior"
-            description="DESY Default"
-            id="behavior.desy.bargraph.default"
-            widgetTypeId="org.csstudio.sds.components.Bargraph">
-      </behavior>
-      <behavior
-            class="org.csstudio.sds.behavior.desy.SimpleSliderBehavior"
-            description="DESY Default"
-            id="behavior.desy.simpleslider.default"
-            widgetTypeId="org.csstudio.sds.components.SimpleSlider">
-      </behavior>
-      <behavior
             class="org.csstudio.sds.behavior.desy.BooleanSwitchBehavior"
             description="DESY Default"
             id="behavior.desy.booleanswitch.default"
             widgetTypeId="org.csstudio.sds.components.BooleanSwitch">
-      </behavior>
-      <behavior
-            class="org.csstudio.sds.behavior.desy.LabelAlarmBehavior"
-            description="DESY Alarm Default"
-            id="behavior.desy.label.default"
-            widgetTypeId="org.csstudio.sds.components.Label">
-      </behavior>
-      <behavior
-            class="org.csstudio.sds.behavior.desy.LabeConnectionBehavior"
-            description="DESY Alarm Default"
-            id="behavior.desy.label.connectiondefault"
-            widgetTypeId="org.csstudio.sds.components.Label">
       </behavior>
       <behavior
             class="org.csstudio.sds.behavior.desy.MenuButtonBehavior"
@@ -194,6 +170,18 @@
             description="DESY Connection Bargraph"
             id="behavior.desy.bargraph.connectiondefault"
             widgetTypeId="org.csstudio.sds.components.Bargraph">
+      </behavior>
+      <behavior
+            class="org.csstudio.sds.behavior.desy.LabelAlarmBehavior"
+            description="DESY Alarm Default"
+            id="behavior.desy.label.alarmdefault"
+            widgetTypeId="org.csstudio.sds.components.Label">
+      </behavior>
+      <behavior
+            class="org.csstudio.sds.behavior.desy.LabeConnectionBehavior"
+            description="DESY Alarm Default"
+            id="behavior.desy.label.connectiondefault"
+            widgetTypeId="org.csstudio.sds.components.Label">
       </behavior>
       <behavior
             class="org.csstudio.sds.behavior.desy.SimpleSliderAlarmBehavior"

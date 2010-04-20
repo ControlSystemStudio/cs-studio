@@ -29,6 +29,9 @@ import org.epics.css.dal.simple.Severity;
  * @author $Author$
  * @version $Revision$
  * @since 19.04.2010
+ *
+ * @param <W>
+ *            The Widget model that have this Behavior
  */
 public abstract class AbstractDesyAlarmBehavior<W extends AbstractWidgetModel> extends
         AbstractDesyConnectionBehavior<W> {
@@ -42,6 +45,11 @@ public abstract class AbstractDesyAlarmBehavior<W extends AbstractWidgetModel> e
         addInvisiblePropertyId(LabelModel.PROP_BORDER_WIDTH);
     }
 
+    /**
+     *
+     * {@inheritDoc}
+     */
+    @Override
     protected void doProcessValueChange(final W model, final org.epics.css.dal.simple.AnyData anyData) {
         Severity severity = anyData.getSeverity();
         if (severity != null) {
@@ -50,8 +58,7 @@ public abstract class AbstractDesyAlarmBehavior<W extends AbstractWidgetModel> e
             } else {
                 model.setPropertyValue(AbstractWidgetModel.PROP_CROSSED_OUT, false);
             }
-            model.setPropertyValue(LabelModel.PROP_BORDER_COLOR, SeverityUtil
-                                   .determineColorBySeverity(severity));
+            model.setPropertyValue(LabelModel.PROP_BORDER_COLOR, determineColorBySeverity(severity));
             model.setPropertyValue(LabelModel.PROP_BORDER_STYLE, SeverityUtil
                                    .determineBorderStyleBySeverity(severity).getIndex());
             model.setPropertyValue(LabelModel.PROP_BORDER_WIDTH, SeverityUtil
