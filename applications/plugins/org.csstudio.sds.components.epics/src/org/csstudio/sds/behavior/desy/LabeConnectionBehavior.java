@@ -21,9 +21,6 @@
  */
 package org.csstudio.sds.behavior.desy;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.csstudio.sds.model.LabelModel;
 import org.epics.css.dal.simple.MetaData;
 
@@ -38,13 +35,13 @@ import org.epics.css.dal.simple.MetaData;
 public class LabeConnectionBehavior extends AbstractDesyConnectionBehavior<LabelModel> {
 
 
-    @Override
-    protected String[] doGetInvisiblePropertyIds() {
-        List<String> asList = Arrays.asList(super.doGetInvisiblePropertyIds());
-        asList.add(LabelModel.PROP_TEXTVALUE);
-        asList.add(LabelModel.PROP_ACTIONDATA);
-        asList.add(LabelModel.PROP_PERMISSSION_ID);
-        return asList.toArray(new String[0]);
+    /**
+     * Constructor.
+     */
+    public LabeConnectionBehavior() {
+        addInvisiblePropertyId(LabelModel.PROP_TEXTVALUE);
+        addInvisiblePropertyId(LabelModel.PROP_ACTIONDATA);
+        addInvisiblePropertyId(LabelModel.PROP_PERMISSSION_ID);
     }
 
     @Override

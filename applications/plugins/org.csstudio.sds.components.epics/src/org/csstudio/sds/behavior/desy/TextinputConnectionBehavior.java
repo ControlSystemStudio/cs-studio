@@ -5,9 +5,11 @@ import org.epics.css.dal.simple.MetaData;
 
 public class TextinputConnectionBehavior extends AbstractDesyConnectionBehavior<TextInputModel> {
 
-    @Override
-    protected String[] doGetInvisiblePropertyIds() {
-        return super.doGetInvisiblePropertyIds();
+    /**
+     * Constructor.
+     */
+    public TextinputConnectionBehavior() {
+        // TODO Auto-generated constructor stub
     }
 
     @Override
