@@ -1,11 +1,15 @@
 package org.csstudio.utility.adlparser.fileParser.widgets;
 
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
+import org.csstudio.utility.adlparser.fileParser.FileLine;
 import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLMonitor;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLObject;
+import org.csstudio.utility.adlparser.internationalization.Messages;
 
 public class Meter extends ADLAbstractWidget {
+	private String color_mode = new String("static");
+	private String label = new String("none");
 
 	public Meter(ADLWidget adlWidget) {
 		super(adlWidget);
@@ -25,13 +29,51 @@ public class Meter extends ADLAbstractWidget {
 	        		}
 	        	}
 	        }
+			for (FileLine fileLine : adlWidget.getBody()){
+				String bodyPart = fileLine.getLine();
+				String[] row = bodyPart.trim().split("=");
+				if (row.length < 2){
+					throw new WrongADLFormatException(Messages.Label_WrongADLFormatException_Parameter_Begin + bodyPart + Messages.Label_WrongADLFormatException_Parameter_End);
+				}
+				if (FileLine.argEquals(row[0], "clrmod")){
+					setColor_mode(FileLine.getTrimmedValue(row[1]));
+				}
+				if (FileLine.argEquals(row[0], "label")){
+					setLabel(FileLine.getTrimmedValue(row[1]));
+				}
+			}
 		}
 		catch (WrongADLFormatException ex) {
 			
 		}
 		//TODO Add PV Limits to Meter
-		//TODO Add Label to Meter
-		//TODO Add ColorMode to Meter
 	}
 
+	/**
+	 * @param color_mode the color_mode to set
+	 */
+	private void setColor_mode(String color_mode) {
+		this.color_mode = color_mode;
+	}
+
+	/**
+	 * @return the color_mode
+	 */
+	public String getColor_mode() {
+		return color_mode;
+	}
+
+	/**
+	 * @param label the label to set
+	 */
+	private void setLabel(String label) {
+		this.label = label;
+	}
+
+	/**
+	 * @return the label
+	 */
+	public String getLabel() {
+		return label;
+	}
 }
