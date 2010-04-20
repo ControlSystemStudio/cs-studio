@@ -80,7 +80,7 @@ public class ADLPoints extends WidgetPart{
                 throw new WrongADLFormatException(Messages.ADLPoints_WrongADLFormatException_Begin+points+Messages.ADLPoints_WrongADLFormatException_End);
             }
             
-            _pointsList.addPoint(Integer.parseInt(row[0]),Integer.parseInt(row[1]));
+            _pointsList.addPoint(FileLine.getIntValue(row[0]),FileLine.getIntValue(row[1]));
         }
     }
 

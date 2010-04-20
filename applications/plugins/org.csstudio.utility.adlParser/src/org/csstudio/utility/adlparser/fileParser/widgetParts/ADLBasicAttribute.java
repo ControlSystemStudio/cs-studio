@@ -51,32 +51,31 @@ public class ADLBasicAttribute extends WidgetPart{
      * @throws WrongADLFormatException Wrong ADL format or untreated parameter found.    
      */
 	//TODO Strip out old code lines that refer to SDS implementations
-	//TODO Change _clr and _width to int
-	//TODO Add LineParser routines to get commonly used entries 
 	public ADLBasicAttribute(final ADLWidget adlBasicAttribute) throws WrongADLFormatException {
         super(adlBasicAttribute);
     }
 
     /** The Color of (front?) Object. */
-    private String _clr;
+    private int _clr;
     /** width of the Border. */
-    private String _width;
+    private int _width;
     /** The style of border. */
     private String _style;
     /** Is type of fill.*/
     private String _fill;
 
+    private boolean _isColorDefined;
     
     /**
      * {@inheritDoc}
      */
     @Override
     void init() {
-    	_clr = new String();
-    	_width = new String();
+    	_clr = 0;
+    	_width = 0;
     	_style =  new String("solid");
     	_fill = new String("solid");
-    	/* Not to initialization*/
+    	set_isColorDefined(false);
     }
     
     /**
@@ -101,14 +100,15 @@ public class ADLBasicAttribute extends WidgetPart{
             if(row.length!=2){
                 throw new WrongADLFormatException(Messages.ADLBasicAttribute_WrongADLFormatException_Begin+parameter+Messages.ADLBasicAttribute_WrongADLFormatException_End);
             }
-            if(row[0].trim().toLowerCase().equals("clr")){ //$NON-NLS-1$
-                _clr=row[1].trim();
-            }else if(row[0].trim().toLowerCase().equals("width")){ //$NON-NLS-1$
-                _width=row[1].trim().replaceAll("\"", "");
-            }else if(row[0].trim().toLowerCase().equals("style")){ //$NON-NLS-1$
-                _style=row[1].trim().replaceAll("\"", "");
-            }else if(row[0].trim().toLowerCase().equals("fill")){ //$NON-NLS-1$
-                _fill=row[1].trim().replaceAll("\"", "");
+            if(FileLine.argEquals(row[0],"clr")){ //$NON-NLS-1$
+                _clr=FileLine.getIntValue(row[1]);
+                set_isColorDefined(true);
+            }else if(FileLine.argEquals(row[0],"width")){ //$NON-NLS-1$
+                _width=FileLine.getIntValue(row[1]);
+            }else if(FileLine.argEquals(row[0],"style")){ //$NON-NLS-1$
+                _style=FileLine.getTrimmedValue(row[1]);
+            }else if(FileLine.argEquals(row[0],"fill")){ //$NON-NLS-1$
+                _fill=FileLine.getTrimmedValue(row[1]);
             }else {
                 throw new WrongADLFormatException(Messages.ADLBasicAttribute_WrongADLFormatException_Parameter_Begin+parameter+Messages.ADLBasicAttribute_WrongADLFormatException_Parameter_End);
             }
@@ -168,7 +168,7 @@ public class ADLBasicAttribute extends WidgetPart{
   //**    }
 
     /** @return the Color */
-    public final String getClr() {
+    public final int getClr() {
         return _clr;
     }
 
@@ -178,7 +178,7 @@ public class ADLBasicAttribute extends WidgetPart{
   //**    }
 
     /** @return the width */
-    public final String getWidth() {
+    public final int getWidth() {
         return _width;
     }
 
@@ -218,11 +218,25 @@ public class ADLBasicAttribute extends WidgetPart{
      */
     public Object[] getChildren(){
     	Object[] ret = new Object[4];
-    	ret[0] = new ADLResource(ADLResource.FOREGROUND_COLOR, _clr);
-    	ret[1] = new ADLResource(ADLResource.LINE_WIDTH, _width);
+    	ret[0] = new ADLResource(ADLResource.FOREGROUND_COLOR, new Integer(_clr));
+    	ret[1] = new ADLResource(ADLResource.LINE_WIDTH, new Integer(_width));
     	ret[2] = new ADLResource(ADLResource.STYLE, _style);
     	ret[3] = new ADLResource(ADLResource.FILL, _fill);
     	
     	return ret;
     }
+
+	/**
+	 * @param _isColorDefined the _isColorDefined to set
+	 */
+	public void set_isColorDefined(boolean _isColorDefined) {
+		this._isColorDefined = _isColorDefined;
+	}
+
+	/**
+	 * @return the _isColorDefined
+	 */
+	public boolean isColorDefined() {
+		return _isColorDefined;
+	}
 }

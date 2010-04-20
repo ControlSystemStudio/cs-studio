@@ -42,13 +42,11 @@ import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
  */
 public class ADLDynamicAttribute extends WidgetPart{
 	//TODO Strip out old code lines that refer to SDS implementations
-	//TODO Change _clr and _width to int
-	//TODO Add LineParser routines to get commonly used entries 
 
     /**
      * The Color.
      */
-    private String _clr;
+    private int _clr;
     /**
      * Visibility of the Widget.
      */
@@ -77,6 +75,7 @@ public class ADLDynamicAttribute extends WidgetPart{
      * If the Dynamic Attribute a color Attribute.
      */
     private boolean _color;
+    private boolean _isColorDefined;
 
     /**
      * The default constructor.
@@ -94,7 +93,7 @@ public class ADLDynamicAttribute extends WidgetPart{
      */
     @Override
     void init() {
-        /* Not to initialization*/
+        set_isColorDefined(false);
     }
     
     /**
@@ -126,18 +125,19 @@ public class ADLDynamicAttribute extends WidgetPart{
             head=head.trim().toLowerCase();
             System.out.println("Head, val:(" + head + ")," + row[0]);
             if(head.equals("clr")){ //$NON-NLS-1$
-                _clr=row[0];
+                _clr=FileLine.getIntValue(row[0]);
+                set_isColorDefined(true);
             }else if(head.equals("vis")){ //$NON-NLS-1$
-                _vis=row[0];
+                _vis=FileLine.getTrimmedValue(row[0]);
             }else if(head.equals("chan")){ //$NON-NLS-1$
-                _chan=row[0];
+                _chan=FileLine.getTrimmedValue(row[0]);
 //**                if(_chan[0].contains("[")) {
 //**                    uninit();
 //**                }
             }else if(head.equals("chanb")){ //$NON-NLS-1$
 //                CentralLogger.getInstance().debug(this, "chanB"+adlDynamicAttribute.toString());
             }else if(head.equals("colorrule")){ //$NON-NLS-1$
-                _colorRule=row[0];
+                _colorRule=FileLine.getTrimmedValue(row[0]);
             }else if(head.equals("calc")){ //$NON-NLS-1$
 //                CentralLogger.getInstance().debug(this, "calc"+adlDynamicAttribute.toString());
             }else {
@@ -242,5 +242,19 @@ public class ADLDynamicAttribute extends WidgetPart{
 		ret[2] = new ADLResource(ADLResource.CHANNEL, _chan);
 		ret[3] = new ADLResource(ADLResource.COLOR_RULE, _colorRule);
 		return ret;
+	}
+
+	/**
+	 * @param _isColorDefined the _isColorDefined to set
+	 */
+	private void set_isColorDefined(boolean _isColorDefined) {
+		this._isColorDefined = _isColorDefined;
+	}
+
+	/**
+	 * @return the _isColorDefined
+	 */
+	public boolean isColorDefined() {
+		return _isColorDefined;
 	}
 }

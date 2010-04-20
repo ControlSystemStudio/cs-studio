@@ -41,8 +41,6 @@ import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
  */
 public class ADLSensitive extends WidgetPart {
 	//TODO Strip out old code lines that refer to SDS implementations
-	//TODO Change _clr and _width to int
-	//TODO Add LineParser routines to get commonly used entries 
     /**
      * The channel.
      */
@@ -110,11 +108,11 @@ public class ADLSensitive extends WidgetPart {
 //            if(row.length!=2){
 //                throw new Exception("This "+parameter+" is a wrong ADL Menu Item");
 //            }
-            if(row[0].trim().toLowerCase().equals("chan")){ //$NON-NLS-1$
+            if(FileLine.argEquals(row[0], "chan")){ //$NON-NLS-1$
 //**                _chan=ADLHelper.cleanString(row[1]);
-        	    _chan=row[1].replaceAll("\"", "");
-            }else if(row[0].trim().toLowerCase().equals("sensitive_mode")){ //$NON-NLS-1$
-                _sensitiveMode = row[1].replaceAll("\"", "");
+        	    _chan=FileLine.getTrimmedValue(row[1]);
+            }else if(FileLine.argEquals(row[0], "sensitive_mode")){ //$NON-NLS-1$
+                _sensitiveMode = FileLine.getTrimmedValue(row[1]);
             }else {
                 throw new WrongADLFormatException(Messages.ADLSensitive_WrongADLFormatException_Begin+fileLine+Messages.ADLSensitive_WrongADLFormatException_End);
             }

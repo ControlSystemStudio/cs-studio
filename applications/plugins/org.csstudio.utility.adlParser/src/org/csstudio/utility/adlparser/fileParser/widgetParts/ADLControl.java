@@ -42,16 +42,14 @@ import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
  */
 public class ADLControl extends WidgetPart{
 	//TODO Strip out old code lines that refer to SDS implementations
-	//TODO Change _clr and _width to int
-	//TODO Add LineParser routines to get commonly used entries 
     /**
      * The foreground color.
      */
-    private String _clr;
+    private int _clr;
     /**
      * The background color.
      */
-    private String _bclr;
+    private int _bclr;
     /**
      * The channel.
      */
@@ -65,6 +63,8 @@ public class ADLControl extends WidgetPart{
   //**     * The Record property/Feldname.
   //**     */
   //**    private String _postfix;
+    private boolean _isBackColorDefined;
+    private boolean _isForeColorDefined;
      
 
     /**
@@ -85,6 +85,8 @@ public class ADLControl extends WidgetPart{
     final void init() {
         _connectionState = false;
         _chan = new String();
+        set_isForeColorDefined(false);
+        set_isBackColorDefined(false);
     }
     
     /**
@@ -103,15 +105,17 @@ public class ADLControl extends WidgetPart{
             if(row.length!=2){
                 throw new WrongADLFormatException(Messages.ADLControl_WrongADLFormatException_Begin+parameter+Messages.ADLControl_WrongADLFormatException_End);
             }
-            if(row[0].trim().toLowerCase().equals("clr")){ //$NON-NLS-1$
-                _clr=row[1].trim();
-            }else if(row[0].trim().toLowerCase().equals("bclr")){ //$NON-NLS-1$
-                _bclr=row[1].trim();
-            }else if(row[0].trim().toLowerCase().equals("chan")){ // chan and ctrl means both the same.  //$NON-NLS-1$
-            	_chan = row[1].replaceAll("\"", "");
+            if(FileLine.argEquals(row[0], "clr")){ //$NON-NLS-1$
+                _clr=FileLine.getIntValue(row[1]);
+                set_isForeColorDefined(true);
+            }else if(FileLine.argEquals(row[0], "bclr")){ //$NON-NLS-1$
+                _bclr=FileLine.getIntValue(row[1]);
+                set_isBackColorDefined(true);
+            }else if(FileLine.argEquals(row[0], "chan")){ // chan and ctrl means both the same.  //$NON-NLS-1$
+            	_chan = FileLine.getTrimmedValue(row[1]);
             	//**                _chan=ADLHelper.cleanString(row[1]);
-            }else if(row[0].trim().toLowerCase().equals("ctrl")){ //$NON-NLS-1$
-            	_chan = row[1].replaceAll("\"", "");
+            }else if(FileLine.argEquals(row[0], "ctrl")){ //$NON-NLS-1$
+            	_chan = FileLine.getTrimmedValue(row[1]);
 //**                _chan=ADLHelper.cleanString(row[1]);
             }else {
                 throw new WrongADLFormatException(Messages.ADLControl_WrongADLFormatException_Parameter_Begin+parameter+Messages.ADLControl_WrongADLFormatException_Parameter_End);
@@ -176,14 +180,14 @@ public class ADLControl extends WidgetPart{
     /** 
      * @return background Color
      */
-    public String getBackgroundColor(){
+    public int getBackgroundColor(){
     	return _bclr;
     }
 
     /** 
      * @return background Color
      */
-    public String getForegroundColor(){
+    public int getForegroundColor(){
     	return _clr;
     }
 
@@ -193,4 +197,32 @@ public class ADLControl extends WidgetPart{
     public String getChan(){
     	return _chan;
     }
+
+	/**
+	 * @param _isBackColorDefined the _isBackColorDefined to set
+	 */
+	public void set_isBackColorDefined(boolean _isBackColorDefined) {
+		this._isBackColorDefined = _isBackColorDefined;
+	}
+
+	/**
+	 * @return the _isBackColorDefined
+	 */
+	public boolean isBackColorDefined() {
+		return _isBackColorDefined;
+	}
+
+	/**
+	 * @param _isForeColorDefined the _isForeColorDefined to set
+	 */
+	public void set_isForeColorDefined(boolean _isForeColorDefined) {
+		this._isForeColorDefined = _isForeColorDefined;
+	}
+
+	/**
+	 * @return the _isForeColorDefined
+	 */
+	public boolean isForeColorDefined() {
+		return _isForeColorDefined;
+	}
 }

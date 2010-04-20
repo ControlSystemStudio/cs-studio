@@ -54,8 +54,6 @@ import org.eclipse.core.runtime.Path;
  */
 public class ADLMenuItem extends WidgetPart {
 	//TODO Strip out old code lines that refer to SDS implementations
-	//TODO Change _clr and _width to int
-	//TODO Add LineParser routines to get commonly used entries 
 
     /**
      * The displayed text and description of the Action.
@@ -123,13 +121,13 @@ public class ADLMenuItem extends WidgetPart {
             // if(row.length!=2){
             // throw new Exception("This "+parameter+" is a wrong ADL Menu Item");
             // }
-            if (row[0].trim().toLowerCase().equals("label")) { //$NON-NLS-1$
-                _label = row[1].trim();
-            } else if (row[0].trim().toLowerCase().equals("type")) { //$NON-NLS-1$
-                _type = row[1].trim();
-            } else if (row[0].trim().toLowerCase().equals("command")) { //$NON-NLS-1$
-                _command = row[1].trim();
-            } else if (row[0].trim().toLowerCase().equals("args")) { //$NON-NLS-1$
+            if (FileLine.argEquals(row[0], "label")) { //$NON-NLS-1$
+                _label = FileLine.getTrimmedValue(row[1]);
+            } else if (FileLine.argEquals(row[0], "type")) { //$NON-NLS-1$
+                _type = FileLine.getTrimmedValue(row[1]);
+            } else if (FileLine.argEquals(row[0], "command")) { //$NON-NLS-1$
+                _command = FileLine.getTrimmedValue(row[1]);
+            } else if (FileLine.argEquals(row[0], "args")) { //$NON-NLS-1$
                 _args = parameter.substring(parameter.indexOf("=") + 1).replaceAll("\"", "").trim(); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             } else {
                 throw new WrongADLFormatException(

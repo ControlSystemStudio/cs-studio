@@ -23,7 +23,6 @@ public class ADLLimits extends WidgetPart {
 	public ADLLimits(ADLWidget widgetPart) throws WrongADLFormatException {
 		super(widgetPart);
 		//TODO Strip out old code lines that refer to SDS implementations
-		//TODO Add LineParser routines to get commonly used entries 
 	}
 
 	@Override
@@ -60,58 +59,58 @@ public class ADLLimits extends WidgetPart {
             }
             row[1] = row[1].replaceAll("\"", "").trim();
             System.out.println(row[0] + ", " + row[1]);
-            if (row[0].trim().toLowerCase().equals("loprsrc")){
+            if (FileLine.argEquals(row[0], "loprsrc")){
             	if (row[1].startsWith("$")){
             		//TODO ADLLimits Figure out what to do with macro in loprSrc
             		_loprSrc = "Channel";
             	}
             	else {
-            		_loprSrc = row[1].toString();
+            		_loprSrc = FileLine.getTrimmedValue(row[1]);
             	}
             }
-            if (row[0].trim().toLowerCase().equals("loprdefault")){
+            if (FileLine.argEquals(row[0], "loprdefault")){
             	if (row[1].startsWith("$")){
             		//TODO ADLLimits Figure out what to do with macro in loprSrc
             		_loprDefault = 0;
             	}
             	else {
-            		_loprDefault = Float.parseFloat(row[1]);
+            		_loprDefault = FileLine.getFloatValue(row[1]);
             	}
             }
-            if (row[0].trim().toLowerCase().equals("hoprsrc")){
+            if (FileLine.argEquals(row[0], "hoprsrc")){
             	if (row[1].startsWith("$")){
             		//TODO ADLLimits Figure out what to do with macro in hoprSrc
             		_hoprSrc = "Channel";
             	}
             	else {
-            		_hoprSrc = row[1].toString();
+            		_hoprSrc = FileLine.getTrimmedValue(row[1]);
             	}
             }
-            if (row[0].trim().toLowerCase().equals("hoprdefault")){
+            if (FileLine.argEquals(row[0], "hoprdefault")){
             	if (row[1].startsWith("$")){
             		//TODO ADLLimits Figure out what to do with macro in hoprSrc
             		_hoprDefault = 0;
             	}
             	else {
-            		_hoprDefault = Float.parseFloat(row[1]);
+            		_hoprDefault = FileLine.getFloatValue(row[1]);
             	}
             }
-            if (row[0].trim().toLowerCase().equals("precsrc")){
+            if (FileLine.argEquals(row[0], "precsrc")){
             	if (row[1].startsWith("$")){
             		//TODO ADLLimits Figure out what to do with macro in precSrc
             		_precSrc = "Channel";
             	}
             	else {
-            		_precSrc = row[1].toString();
+            		_precSrc = FileLine.getTrimmedValue(row[1]);
             	}
             }
-            if (row[0].trim().toLowerCase().equals("precdefault")){
+            if (FileLine.argEquals(row[0], "precdefault")){
             	if (row[1].startsWith("$")){
             		//TODO Figure out what to do with macro in precDefault
             		_precDefault = 0;
             	}
             	else {
-            		_precDefault = Float.parseFloat(row[1]);
+            		_precDefault = FileLine.getFloatValue(row[1]);
             	}
             }
         }

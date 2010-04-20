@@ -39,17 +39,15 @@ import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
  */
 public class ADLMonitor extends WidgetPart{
 	//TODO Strip out old code lines that refer to SDS implementations
-	//TODO Change _bclr to int
-	//TODO Add LineParser routines to get commonly used entries 
 
     /**
      * The foreground Color (also Font color).
      */
-    private String _clr;
+    private int _clr;
     /**
      * The background Color.
      */
-    private String _bclr;
+    private int _bclr;
     /**
      * The Channel.
      */
@@ -58,6 +56,8 @@ public class ADLMonitor extends WidgetPart{
   //**     * The Record property/Feldname.
   //**     */
   //**    private String _postfix="";
+    private boolean _isBackColorDefined;
+    private boolean _isForeColorDefined;
 
     /**
      * The default constructor.
@@ -75,7 +75,8 @@ public class ADLMonitor extends WidgetPart{
      */
     @Override
     void init() {
-        /* Not to initialization*/
+        set_isBackColorDefined(false);
+        set_isForeColorDefined(false);
     }
     
     /**
@@ -94,19 +95,21 @@ public class ADLMonitor extends WidgetPart{
             if(row.length!=2){
                 throw new WrongADLFormatException(Messages.ADLMonitor_WrongADLFormatException_Begin+parameter+Messages.ADLMonitor_WrongADLFormatException_End);
             }
-            if(row[0].trim().toLowerCase().equals("clr")){ //$NON-NLS-1$
-                _clr=row[1].trim();
-            }else if(row[0].trim().toLowerCase().equals("bclr")){ //$NON-NLS-1$
-                _bclr=row[1].trim();
-            }else if(row[0].trim().toLowerCase().equals("chan")){   // chan and rdbk means both the same. Readback channel. //$NON-NLS-1$
+            if(FileLine.argEquals(row[0], "clr")){ //$NON-NLS-1$
+                _clr=FileLine.getIntValue(row[1]);
+                set_isForeColorDefined(true);
+            }else if(FileLine.argEquals(row[0], "bclr")){ //$NON-NLS-1$
+                _bclr=FileLine.getIntValue(row[1]);
+                set_isBackColorDefined(true);
+            }else if(FileLine.argEquals(row[0], "chan")){   // chan and rdbk means both the same. Readback channel. //$NON-NLS-1$
 //**                _chan=ADLHelper.cleanString(row[1]);
-            	_chan = row[1].replaceAll("\"", "");
+            	_chan = FileLine.getTrimmedValue(row[1]);
 
             	//**                if(_chan[0].contains("[")) {
 //**                    uninit();
 //**                }
-            }else if(row[0].trim().toLowerCase().equals("rdbk")){ //$NON-NLS-1$
-            	_chan = row[1].replaceAll("\"", "");
+            }else if(FileLine.argEquals(row[0], "rdbk")){ //$NON-NLS-1$
+            	_chan = FileLine.getTrimmedValue(row[1]);
             	//**                _chan=ADLHelper.cleanString(row[1]);
             }else {
                 throw new WrongADLFormatException(Messages.ADLMonitor_WrongADLFormatException_Parameter_Begin+row[0]+Messages.ADLMonitor_WrongADLFormatException_Parameter_End+parameter);
@@ -147,38 +150,6 @@ public class ADLMonitor extends WidgetPart{
 
     /**
      * 
-     * @return the backgoundcolor.
-     */
-    public final String getBclr() {
-        return _bclr;
-    }
-
-    /**
-     * 
-     * @param bclr set the background color.
-     */
-    public final void setBclr(final String bclr) {
-        _bclr = bclr;
-    }
-
-    /**
-     * 
-     * @return get the foreground color.
-     */
-    public final String getClr() {
-        return _clr;
-    }
-
-    /**
-     * 
-     * @param clr set the foreground color.
-     */
-    public final void setClr(final String clr) {
-        _clr = clr;
-    }
-
-    /**
-     * 
      * @return get the Channel.
      */
     public final String getChan() {
@@ -199,16 +170,44 @@ public class ADLMonitor extends WidgetPart{
     /** 
      * @return background Color
      */
-    public String getBackgroundColor(){
+    public int getBackgroundColor(){
     	return _bclr;
     }
 
     /** 
      * @return background Color
      */
-    public String getForegroundColor(){
+    public int getForegroundColor(){
     	return _clr;
     }
+
+	/**
+	 * @param _isBackColorDefined the _isBackColorDefined to set
+	 */
+	private void set_isBackColorDefined(boolean _isBackColorDefined) {
+		this._isBackColorDefined = _isBackColorDefined;
+	}
+
+	/**
+	 * @return the _isBackColorDefined
+	 */
+	public boolean isBackColorDefined() {
+		return _isBackColorDefined;
+	}
+
+	/**
+	 * @param _isForeColorDefined the _isForeColorDefined to set
+	 */
+	private void set_isForeColorDefined(boolean _isForeColorDefined) {
+		this._isForeColorDefined = _isForeColorDefined;
+	}
+
+	/**
+	 * @return the _isForeColorDefined
+	 */
+	public boolean isForeColorDefined() {
+		return _isForeColorDefined;
+	}
 
 }
 

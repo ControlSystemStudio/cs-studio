@@ -40,7 +40,6 @@ import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
  */
 public class ADLObject extends WidgetPart{
 	//TODO Strip out old code lines that refer to SDS implementations
-	//TODO Add LineParser routines to get commonly used entries 
 
     /** The x-coordinate of the Object.*/
     private int _x;
@@ -86,25 +85,25 @@ public class ADLObject extends WidgetPart{
                 throw new WrongADLFormatException(Messages.ADLObject_WrongADLFormatException_Begin+parameter+Messages.ADLObject_WrongADLFormatException_End);
             }
             row[1] = row[1].replaceAll("\"", "").trim(); 
-            if(row[0].trim().toLowerCase().equals("x")){ //$NON-NLS-1$
+            if(FileLine.argEquals(row[0], "x")){ //$NON-NLS-1$
                 if(row[1].startsWith("$")){
                     //TODO: ADLObject --> Dynamic x coordinate
                     _x=0;
                 }else{
                     _x=Integer.parseInt(row[1]);
                 }
-            }else if(row[0].trim().toLowerCase().equals("y")){ //$NON-NLS-1$
+            }else if(FileLine.argEquals(row[0], "y")){ //$NON-NLS-1$
                 if(row[1].startsWith("$")){
                     //TODO: ADLObject --> Dynamic y coordinate
                     _y=0;
                 }else {
                     _y=Integer.parseInt(row[1]);
                 }
-            }else if(row[0].trim().toLowerCase().equals("width")){ //$NON-NLS-1$
+            }else if(FileLine.argEquals(row[0], "width")){ //$NON-NLS-1$
                 _width=Integer.parseInt(row[1]);
-            }else if(row[0].trim().toLowerCase().equals("height")){ //$NON-NLS-1$
+            }else if(FileLine.argEquals(row[0], "height")){ //$NON-NLS-1$
                 _height=Integer.parseInt(row[1]);
-            }else if(row[0].trim().toLowerCase().equals("groupid")){ //$NON-NLS-1$
+            }else if(FileLine.argEquals(row[0], "groupid")){ //$NON-NLS-1$
                 // TODO: ADLObject->groupid
                 CentralLogger.getInstance().info(this, "Unhandel Parameter: "+fileLine);
             }else {
