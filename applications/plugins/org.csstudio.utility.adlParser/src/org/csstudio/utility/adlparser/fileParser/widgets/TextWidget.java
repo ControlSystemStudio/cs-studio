@@ -45,17 +45,17 @@ public class TextWidget extends ADLAbstractWidget {
 				if (row.length < 2){
 					throw new WrongADLFormatException(Messages.Label_WrongADLFormatException_Parameter_Begin + bodyPart + Messages.Label_WrongADLFormatException_Parameter_End);
 				}
-				if (row[0].equals("textix")){
-					setTextix(row[1].replaceAll("\"", "").trim());
+				if (FileLine.argEquals(row[0], "textix")){
+					setTextix(FileLine.getTrimmedValue(row[1]));
 				}
-				else if (row[0].equals("alignment")){
-					setAlignment(row[1].replaceAll("\"", ""));
+				else if (FileLine.argEquals(row[0], "alignment")){
+					setAlignment(FileLine.getTrimmedValue(row[1]));
 				}
-				else if (row[0].equals("clrmod")){
-					setClrmod(row[1].replaceAll("\"", ""));
+				else if (FileLine.argEquals(row[0], "clrmod")){
+					setClrmod(FileLine.getTrimmedValue(row[1]));
 				}
-				else if (row[0].equals("format")){
-					setFormat(row[1].replaceAll("\"", ""));
+				else if (FileLine.argEquals(row[0], "format")){
+					setFormat(FileLine.getTrimmedValue(row[1]));
 				}
 			}
 		}

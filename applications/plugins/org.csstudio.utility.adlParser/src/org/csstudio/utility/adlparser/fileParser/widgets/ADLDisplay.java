@@ -7,14 +7,19 @@ import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLObject;
 import org.csstudio.utility.adlparser.internationalization.Messages;
 
 public class ADLDisplay extends ADLAbstractWidget {
-	private String _clr;
-	private String _bclr;
+	private int _clr;
+	private int _bclr;
 	private boolean _snapToGrid = false;
 	private boolean _gridOn = false;
 	private int _gridSpacing = 5;
+    private boolean _isBackColorDefined;
+    private boolean _isForeColorDefined;
 	
 	public ADLDisplay(ADLWidget adlWidget) {
 		super(adlWidget);
+		set_isBackColorDefined(false);
+		set_isForeColorDefined(false);
+		
 		try {
 			for (ADLWidget childWidget : adlWidget.getObjects()) {
 	        	if (childWidget.getType().equals("object")){
@@ -34,16 +39,18 @@ public class ADLDisplay extends ADLAbstractWidget {
 	            if(row.length!=2){
 	                throw new WrongADLFormatException(Messages.ADLMonitor_WrongADLFormatException_Begin+parameter+Messages.ADLMonitor_WrongADLFormatException_End);
 	            }
-	            if(row[0].trim().toLowerCase().equals("clr")){ //$NON-NLS-1$
-	                set_clr(row[1].trim());
-	            }else if(row[0].trim().toLowerCase().equals("bclr")){ //$NON-NLS-1$
-	                set_bclr(row[1].trim());
-	            }else if(row[0].trim().toLowerCase().equals("gridSpacing")){ //$NON-NLS-1$
-	                set_gridSpacing(Integer.parseInt(row[1].trim()));
-	            }else if(row[0].trim().toLowerCase().equals("gridOn")){ //$NON-NLS-1$
-	                set_gridOn(Boolean.parseBoolean(row[1].trim()));
-	            }else if(row[0].trim().toLowerCase().equals("snapToGrid")){ //$NON-NLS-1$
-	                set_snapToGrid(Boolean.parseBoolean(row[1].trim()));
+	            if(FileLine.argEquals(row[0], "clr")){ //$NON-NLS-1$
+	                set_clr(FileLine.getIntValue(row[1]));
+	        		set_isForeColorDefined(true);
+	            }else if(FileLine.argEquals(row[0], "bclr")){ //$NON-NLS-1$
+	                set_bclr(FileLine.getIntValue(row[1]));
+	        		set_isBackColorDefined(true);
+	            }else if(FileLine.argEquals(row[0], "gridSpacing")){ //$NON-NLS-1$
+	                set_gridSpacing(FileLine.getIntValue(row[1]));
+	            }else if(FileLine.argEquals(row[0], "gridOn")){ //$NON-NLS-1$
+	                set_gridOn(FileLine.getBooleanValue(row[1]));
+	            }else if(FileLine.argEquals(row[0], "snapToGrid")){ //$NON-NLS-1$
+	                set_snapToGrid(FileLine.getBooleanValue(row[1]));
 	            }else {
 	                throw new WrongADLFormatException(Messages.ADLMonitor_WrongADLFormatException_Parameter_Begin+row[0]+Messages.ADLMonitor_WrongADLFormatException_Parameter_End+parameter);
 	            }
@@ -51,41 +58,11 @@ public class ADLDisplay extends ADLAbstractWidget {
 		}
 		
 		catch (WrongADLFormatException ex) {
-		//TODO Change type for _clr & _bclr to int
-		//TODO Change line parsing for commonly used lines to common parser
 			
 		}
 	}
 
 	
-	/**
-	 * @param _clr the _clr to set
-	 */
-	public void set_clr(String _clr) {
-		this._clr = _clr;
-	}
-
-	/**
-	 * @return the _clr
-	 */
-	public String get_clr() {
-		return _clr;
-	}
-
-	/**
-	 * @param _bclr the _bclr to set
-	 */
-	public void set_bclr(String _bclr) {
-		this._bclr = _bclr;
-	}
-
-	/**
-	 * @return the _bclr
-	 */
-	public String get_bclr() {
-		return _bclr;
-	}
-
 	/**
 	 * @param _snapToGrid the _snapToGrid to set
 	 */
@@ -126,6 +103,70 @@ public class ADLDisplay extends ADLAbstractWidget {
 	 */
 	public int get_gridSpacing() {
 		return _gridSpacing;
+	}
+
+
+	/**
+	 * @param _clr the _clr to set
+	 */
+	private void set_clr(int _clr) {
+		this._clr = _clr;
+	}
+
+
+	/**
+	 * @return the _clr
+	 */
+	public int getForegroundColor() {
+		return _clr;
+	}
+
+
+	/**
+	 * @param _bclr the _bclr to set
+	 */
+	private void set_bclr(int _bclr) {
+		this._bclr = _bclr;
+	}
+
+
+	/**
+	 * @return the _bclr
+	 */
+	public int getBackgroundColor() {
+		return _bclr;
+	}
+
+
+	/**
+	 * @param _isBackColorDefined the _isBackColorDefined to set
+	 */
+	private void set_isBackColorDefined(boolean _isBackColorDefined) {
+		this._isBackColorDefined = _isBackColorDefined;
+	}
+
+
+	/**
+	 * @return the _isBackColorDefined
+	 */
+	public boolean isBackColorDefined() {
+		return _isBackColorDefined;
+	}
+
+
+	/**
+	 * @param _isForeColorDefined the _isForeColorDefined to set
+	 */
+	private void set_isForeColorDefined(boolean _isForeColorDefined) {
+		this._isForeColorDefined = _isForeColorDefined;
+	}
+
+
+	/**
+	 * @return the _isForeColorDefined
+	 */
+	public boolean isForeColorDefined() {
+		return _isForeColorDefined;
 	}
 
 	

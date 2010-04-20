@@ -37,14 +37,14 @@ public class MessageButton extends ADLAbstractWidget {
 				if (row.length < 2){
 					throw new WrongADLFormatException(Messages.Label_WrongADLFormatException_Parameter_Begin + bodyPart + Messages.Label_WrongADLFormatException_Parameter_End);
 				}
-				if (row[0].equals("label")){
-					setLabel(row[1].replaceAll("\"", "").trim());
+				if (FileLine.argEquals(row[0], "label")){
+					setLabel(FileLine.getTrimmedValue(row[1]));
 				}
-				else if (row[0].equals("press_msg")){
-					setPress_msg(row[1].replaceAll("\"", ""));
+				else if (FileLine.argEquals(row[0], "press_msg")){
+					setPress_msg(FileLine.getTrimmedValue(row[1]));
 				}
-				else if (row[0].equals("release_msg")){
-					setRelease_msg(row[1].replaceAll("\"", ""));
+				else if (FileLine.argEquals(row[0], "release_msg")){
+					setRelease_msg(FileLine.getTrimmedValue(row[1]));
 				}
 			}
 		}

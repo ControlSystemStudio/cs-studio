@@ -11,12 +11,17 @@ import org.csstudio.utility.adlparser.internationalization.Messages;
 
 public class RelatedDisplay extends ADLAbstractWidget {
 	private String label;
-	private String bclr;
-	private String clr;
+	private int bclr;
+	private int clr;
 	private ArrayList<RelatedDisplayItem> rdItems = new ArrayList<RelatedDisplayItem>();
+    private boolean _isBackColorDefined;
+    private boolean _isForeColorDefined;
 	
 	public RelatedDisplay(ADLWidget adlWidget) {
 		super(adlWidget);
+	    set_isForeColorDefined(false);
+	    set_isBackColorDefined(false);
+
 		try {
 			for (ADLWidget childWidget : adlWidget.getObjects()) {
 	        	if (childWidget.getType().equals("object")){
@@ -33,14 +38,16 @@ public class RelatedDisplay extends ADLAbstractWidget {
 				if (row.length < 2){
 					throw new WrongADLFormatException(Messages.Label_WrongADLFormatException_Parameter_Begin + bodyPart + Messages.Label_WrongADLFormatException_Parameter_End);
 				}
-				if (row[0].equals("label")){
-					setLabel(row[1].replaceAll("\"", "").trim());
+				if (FileLine.argEquals(row[0], "label")){
+					setLabel(FileLine.getTrimmedValue(row[1]));
 				}
-				else if (row[0].equals("clr")){
-					setClr(row[1].replaceAll("\"", ""));
+				else if (FileLine.argEquals(row[0], "clr")){
+					setClr(FileLine.getIntValue(row[1]));
+				    set_isForeColorDefined(true);
 				}
-				else if (row[0].equals("bclr")){
-					setBclr(row[1].replaceAll("\"", ""));
+				else if (FileLine.argEquals(row[0], "bclr")){
+					setBclr(FileLine.getIntValue(row[1]));
+				    set_isBackColorDefined(true);
 				}
 			}
 			for (ADLWidget item : adlWidget.getObjects()){
@@ -73,28 +80,28 @@ public class RelatedDisplay extends ADLAbstractWidget {
 	/**
 	 * @param clr the foreground color
 	 */
-	public void setClr(String clr) {
+	public void setClr(int clr) {
 		this.clr = clr;
 	}
 
 	/**
 	 * @return the foreground color
 	 */
-	public String getClr() {
+	public int getForegroundColor() {
 		return clr;
 	}
 
 	/**
 	 * @param bclr the background color
 	 */
-	public void setBclr(String bclr) {
+	public void setBclr (int bclr) {
 		this.bclr = bclr;
 	}
 
 	/**
 	 * @return the background color
 	 */
-	public String getBclr() {
+	public int getBackgroundColor() {
 		return bclr;
 	}
 	/**
@@ -109,6 +116,38 @@ public class RelatedDisplay extends ADLAbstractWidget {
 			return retItems;
 		}
 		return null;
+	}
+
+
+	/**
+	 * @param _isBackColorDefined the _isBackColorDefined to set
+	 */
+	private void set_isBackColorDefined(boolean _isBackColorDefined) {
+		this._isBackColorDefined = _isBackColorDefined;
+	}
+
+
+	/**
+	 * @return the _isBackColorDefined
+	 */
+	public boolean isBackColorDefined() {
+		return _isBackColorDefined;
+	}
+
+
+	/**
+	 * @param _isForeColorDefined the _isForeColorDefined to set
+	 */
+	private void set_isForeColorDefined(boolean _isForeColorDefined) {
+		this._isForeColorDefined = _isForeColorDefined;
+	}
+
+
+	/**
+	 * @return the _isForeColorDefined
+	 */
+	public boolean isForeColorDefined() {
+		return _isForeColorDefined;
 	}
 }
 

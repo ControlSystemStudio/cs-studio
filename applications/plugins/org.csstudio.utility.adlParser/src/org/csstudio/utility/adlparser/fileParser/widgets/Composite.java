@@ -38,8 +38,8 @@ public class Composite extends ADLAbstractWidget {
 	            if(row.length<2){
 	                throw new WrongADLFormatException(Messages.Label_WrongADLFormatException_Parameter_Begin+obj+Messages.Label_WrongADLFormatException_Parameter_End);
 	            }
-	            if(row[0].equals("composite file")){ //$NON-NLS-1$
-	                set_compositeFile(row[1].trim().replaceAll("\"", ""));
+	            if(FileLine.argEquals(row[0], "composite file")){ //$NON-NLS-1$
+	                set_compositeFile(FileLine.getTrimmedValue(row[1]));
 	                if (!(_compositeFile.equals(""))){
 	                	_hasCompositeFile = false;
 	                }
