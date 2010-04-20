@@ -54,7 +54,7 @@ public class BarMonitor extends ADLAbstractWidget {
 					setDirection(FileLine.getTrimmedValue(row[1]));
 				}
 				else if (FileLine.argEquals(row[0], "fillmod")){
-					setDirection(FileLine.getTrimmedValue(row[1]));
+					setFill_mode(FileLine.getTrimmedValue(row[1]));
 				}
 			}
 		}
