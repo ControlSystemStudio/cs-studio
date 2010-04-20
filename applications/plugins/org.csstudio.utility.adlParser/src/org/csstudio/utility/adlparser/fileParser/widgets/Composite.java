@@ -7,11 +7,12 @@ import org.csstudio.utility.adlparser.fileParser.FileLine;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
 import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLChildren;
+import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLDynamicAttribute;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLObject;
 
 public class Composite extends ADLAbstractWidget {
 	private String _compositeFile = new String();
-	private boolean _hasCompositeFile = true;
+	private boolean _hasCompositeFile = false;
 	private ArrayList<ADLWidget> _children;
 	
 	public Composite(ADLWidget adlWidget) {
@@ -31,6 +32,12 @@ public class Composite extends ADLAbstractWidget {
 	        			_children = adlChildren.getAdlChildrens();
 	        		}
 	        	}
+	        	else if (childWidget.getType().equals("dynamic attribute")){
+	        		_adlDynamicAttribute = new ADLDynamicAttribute(childWidget);
+	        		if (_adlDynamicAttribute != null){
+	        			_hasDynamicAttribute = true;
+	        		}
+	        	}
 	        }
 	        for (FileLine fileLine : adlWidget.getBody()) {
 	            String obj = fileLine.getLine();
@@ -43,14 +50,13 @@ public class Composite extends ADLAbstractWidget {
 	                if (!(_compositeFile.equals(""))){
 	                	_hasCompositeFile = false;
 	                }
+	            	_hasCompositeFile = true;
 	            }
 	        }
 		}
 		catch (WrongADLFormatException ex) {
 			ex.printStackTrace();
 		}
-		//TODO Add Dynamic properties to Composite
-		//TODO Add Composite File to Composite
 	}
 
 	/**
