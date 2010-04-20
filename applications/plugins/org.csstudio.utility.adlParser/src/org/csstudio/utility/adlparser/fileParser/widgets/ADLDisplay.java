@@ -51,6 +51,8 @@ public class ADLDisplay extends ADLAbstractWidget {
 		}
 		
 		catch (WrongADLFormatException ex) {
+		//TODO Change type for _clr & _bclr to int
+		//TODO Change line parsing for commonly used lines to common parser
 			
 		}
 	}

@@ -22,7 +22,8 @@ public class ADLLimits extends WidgetPart {
 	
 	public ADLLimits(ADLWidget widgetPart) throws WrongADLFormatException {
 		super(widgetPart);
-		// TODO Auto-generated constructor stub
+		//TODO Strip out old code lines that refer to SDS implementations
+		//TODO Add LineParser routines to get commonly used entries 
 	}
 
 	@Override

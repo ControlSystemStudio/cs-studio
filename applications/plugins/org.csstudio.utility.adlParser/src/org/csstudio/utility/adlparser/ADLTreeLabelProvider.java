@@ -19,6 +19,7 @@ public class ADLTreeLabelProvider implements ILabelProvider {
 
 	@Override
 	public Image getImage(Object element) {
+		//TODO switch to use WidgetParts and Widgets to get more complete entries
 		ImageDescriptor descriptor = null;
 		Image image = null;
 		if (element instanceof ADLWidget){
@@ -96,6 +97,7 @@ public class ADLTreeLabelProvider implements ILabelProvider {
 
 	@Override
 	public String getText(Object element) {
+		//TODO switch to use WidgetParts and Widgets to get more complete entries
 		if (element instanceof ADLWidget){
 			ADLWidget rootWidget = (ADLWidget)element;
 			return rootWidget.getType();

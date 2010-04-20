@@ -50,7 +50,10 @@ public class ADLBasicAttribute extends WidgetPart{
      * @param parentWidgetModel The Widget that set the parameter from ADLWidget.
      * @throws WrongADLFormatException Wrong ADL format or untreated parameter found.    
      */
-    public ADLBasicAttribute(final ADLWidget adlBasicAttribute) throws WrongADLFormatException {
+	//TODO Strip out old code lines that refer to SDS implementations
+	//TODO Change _clr and _width to int
+	//TODO Add LineParser routines to get commonly used entries 
+	public ADLBasicAttribute(final ADLWidget adlBasicAttribute) throws WrongADLFormatException {
         super(adlBasicAttribute);
     }
 
@@ -71,8 +74,8 @@ public class ADLBasicAttribute extends WidgetPart{
     void init() {
     	_clr = new String();
     	_width = new String();
-    	_style =  new String();
-    	_fill = new String();
+    	_style =  new String("solid");
+    	_fill = new String("solid");
     	/* Not to initialization*/
     }
     
@@ -101,11 +104,11 @@ public class ADLBasicAttribute extends WidgetPart{
             if(row[0].trim().toLowerCase().equals("clr")){ //$NON-NLS-1$
                 _clr=row[1].trim();
             }else if(row[0].trim().toLowerCase().equals("width")){ //$NON-NLS-1$
-                _width=row[1].trim();
+                _width=row[1].trim().replaceAll("\"", "");
             }else if(row[0].trim().toLowerCase().equals("style")){ //$NON-NLS-1$
-                _style=row[1].trim();
+                _style=row[1].trim().replaceAll("\"", "");
             }else if(row[0].trim().toLowerCase().equals("fill")){ //$NON-NLS-1$
-                _fill=row[1].trim();
+                _fill=row[1].trim().replaceAll("\"", "");
             }else {
                 throw new WrongADLFormatException(Messages.ADLBasicAttribute_WrongADLFormatException_Parameter_Begin+parameter+Messages.ADLBasicAttribute_WrongADLFormatException_Parameter_End);
             }
@@ -201,17 +204,10 @@ public class ADLBasicAttribute extends WidgetPart{
   //**    }
     
     /** @return the fill */
-    public final Double getFill() {
-        try{
-            return Double.parseDouble(_fill);
-        } catch (NumberFormatException nfe) {
-            if(_fill.equals("\"solid\"")){
-                return 100d;
-            }else{
-                return 0d;
-            }
-        }
+    public final String getFill() {
+    	return _fill;
     }
+    
 //**    /** @param fill set the fill */
     //**    public final void setFill(final String fill) {
   //**        _fill = fill;

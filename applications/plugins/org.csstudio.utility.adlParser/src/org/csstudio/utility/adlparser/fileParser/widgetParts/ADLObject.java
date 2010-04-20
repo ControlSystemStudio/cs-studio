@@ -39,6 +39,8 @@ import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
  * @since 04.09.2007
  */
 public class ADLObject extends WidgetPart{
+	//TODO Strip out old code lines that refer to SDS implementations
+	//TODO Add LineParser routines to get commonly used entries 
 
     /** The x-coordinate of the Object.*/
     private int _x;

@@ -40,6 +40,9 @@ import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
  * @since 08.11.2007
  */
 public class ADLSensitive extends WidgetPart {
+	//TODO Strip out old code lines that refer to SDS implementations
+	//TODO Change _clr and _width to int
+	//TODO Add LineParser routines to get commonly used entries 
     /**
      * The channel.
      */

@@ -41,6 +41,9 @@ import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
  * @since 11.09.2007
  */
 public class ADLDynamicAttribute extends WidgetPart{
+	//TODO Strip out old code lines that refer to SDS implementations
+	//TODO Change _clr and _width to int
+	//TODO Add LineParser routines to get commonly used entries 
 
     /**
      * The Color.

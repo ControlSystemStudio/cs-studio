@@ -38,6 +38,9 @@ import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
  * @since 12.09.2007
  */
 public class ADLMonitor extends WidgetPart{
+	//TODO Strip out old code lines that refer to SDS implementations
+	//TODO Change _bclr to int
+	//TODO Add LineParser routines to get commonly used entries 
 
     /**
      * The foreground Color (also Font color).

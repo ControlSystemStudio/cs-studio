@@ -53,6 +53,9 @@ import org.eclipse.core.runtime.Path;
  * @since 21.09.2007
  */
 public class ADLMenuItem extends WidgetPart {
+	//TODO Strip out old code lines that refer to SDS implementations
+	//TODO Change _clr and _width to int
+	//TODO Add LineParser routines to get commonly used entries 
 
     /**
      * The displayed text and description of the Action.

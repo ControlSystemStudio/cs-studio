@@ -38,6 +38,8 @@ import org.eclipse.draw2d.geometry.PointList;
  * @since 07.09.2007
  */
 public class ADLPoints extends WidgetPart{
+	//TODO Strip out old code lines that refer to SDS implementations
+	//TODO Add LineParser routines to get commonly used entries 
     /**
      * List with all coordinate points.
      */

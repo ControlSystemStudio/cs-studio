@@ -14,6 +14,7 @@ public class ADLTreeContentProvider extends TreeNodeContentProvider {
 
 	@Override
 	public Object[] getChildren(Object parentElement) {
+		//TODO switch to use WidgetParts and Widgets to get more complete entries
 		if (parentElement instanceof ADLWidget){
 			rootWidget = (ADLWidget)parentElement;
 			return ADLWidgetUtils.getADLWidgetChildren(rootWidget);
@@ -30,6 +31,7 @@ public class ADLTreeContentProvider extends TreeNodeContentProvider {
 
 	@Override
 	public boolean hasChildren(Object element) {
+		//TODO switch to use WidgetParts and Widgets to get more complete entries
 		if (element instanceof ADLWidget){
 			rootWidget = (ADLWidget)element;
 			if ((ADLWidgetUtils.getADLWidgetChildren(rootWidget)).length > 0 ){
@@ -51,6 +53,7 @@ public class ADLTreeContentProvider extends TreeNodeContentProvider {
 
 	@Override
 	public Object[] getElements(Object inputElement) {
+		//TODO switch to use WidgetParts and Widgets to get more complete entries
 		if (inputElement instanceof ADLWidget){
 			rootWidget = (ADLWidget)inputElement;
 			return ADLWidgetUtils.getADLWidgetChildren(rootWidget);

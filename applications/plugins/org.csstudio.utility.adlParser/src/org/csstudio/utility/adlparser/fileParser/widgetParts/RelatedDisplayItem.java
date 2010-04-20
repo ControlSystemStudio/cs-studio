@@ -55,6 +55,8 @@ import org.eclipse.core.runtime.Path;
  * @since 20.09.2007
  */
 public class RelatedDisplayItem extends WidgetPart {
+	//TODO Strip out old code lines that refer to SDS implementations
+	//TODO Add LineParser routines to get commonly used entries 
 
     /**
      * The Button Label Text.
