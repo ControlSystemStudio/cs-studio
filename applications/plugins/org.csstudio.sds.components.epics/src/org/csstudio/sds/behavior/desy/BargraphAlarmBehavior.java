@@ -18,19 +18,108 @@
  */
 package org.csstudio.sds.behavior.desy;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.csstudio.sds.components.model.BargraphModel;
+import org.csstudio.sds.model.AbstractWidgetModel;
+import org.epics.css.dal.context.ConnectionState;
+import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.MetaData;
 
+/**
+ *
+ * Default DESY-Behavior for the {@link BargraphModel} widget with Connection state and Alarms.
+ *
+ * @author hrickens
+ * @author $Author$
+ * @version $Revision$
+ * @since 20.04.2010
+ */
 public class BargraphAlarmBehavior extends AbstractDesyAlarmBehavior<BargraphModel> {
 
-    @Override
-    protected String[] doGetInvisiblePropertyIds() {
-        return super.doGetInvisiblePropertyIds();
+    private final Map<ConnectionState, Boolean> _transparencyByConnectionState;
+
+    /**
+     * Constructor.
+     */
+    public BargraphAlarmBehavior() {
+        _transparencyByConnectionState = new HashMap<ConnectionState, Boolean>();
+        _transparencyByConnectionState.put(ConnectionState.CONNECTED, true);
+        _transparencyByConnectionState.put(ConnectionState.CONNECTION_LOST, false);
+        _transparencyByConnectionState.put(ConnectionState.INITIAL, false);
+        // add Invisible Property Id here
+        addInvisiblePropertyId(BargraphModel.PROP_MIN);
+        addInvisiblePropertyId(BargraphModel.PROP_MAX);
+        addInvisiblePropertyId(BargraphModel.PROP_HIHI_LEVEL);
+        addInvisiblePropertyId(BargraphModel.PROP_HI_LEVEL);
+        addInvisiblePropertyId(BargraphModel.PROP_LOLO_LEVEL);
+        addInvisiblePropertyId(BargraphModel.PROP_LO_LEVEL);
+        addInvisiblePropertyId(BargraphModel.PROP_DEFAULT_FILL_COLOR);
+        addInvisiblePropertyId(BargraphModel.PROP_FILLBACKGROUND_COLOR);
+        addInvisiblePropertyId(BargraphModel.PROP_FILL);
+        addInvisiblePropertyId(BargraphModel.PROP_TRANSPARENT);
+        addInvisiblePropertyId(BargraphModel.PROP_ACTIONDATA);
+        addInvisiblePropertyId(BargraphModel.PROP_BORDER_STYLE);
     }
 
     @Override
-    protected void doProcessMetaDataChange(final BargraphModel widget, final MetaData metaData) {
-        // do nothing
+    protected void doInitialize(final BargraphModel widget) {
+        // .. border
+        widget.setPropertyValue(AbstractWidgetModel.PROP_BORDER_STYLE,
+                                determineBorderStyle(ConnectionState.INITIAL));
+        widget.setPropertyValue(AbstractWidgetModel.PROP_BORDER_WIDTH,
+                                determineBorderWidth(ConnectionState.INITIAL));
+        widget.setPropertyValue(AbstractWidgetModel.PROP_BORDER_COLOR,
+                                determineBorderColor(ConnectionState.INITIAL));
+    }
+
+    @Override
+    protected void doProcessValueChange(final BargraphModel widget, final AnyData anyData) {
+        // .. fill level (influenced by current value)
+        widget.setPropertyValue(BargraphModel.PROP_FILL, anyData.doubleValue());
+
+        // .. fill color (influenced by severity)
+        widget.setPropertyValue(BargraphModel.PROP_DEFAULT_FILL_COLOR,
+                determineColorBySeverity(anyData.getSeverity()));
+    }
+
+    @Override
+    protected void doProcessConnectionStateChange(final BargraphModel widget,
+            final org.epics.css.dal.context.ConnectionState connectionState) {
+        // .. border
+        widget.setPropertyValue(AbstractWidgetModel.PROP_BORDER_STYLE,
+                determineBorderStyle(connectionState));
+        widget.setPropertyValue(AbstractWidgetModel.PROP_BORDER_WIDTH,
+                determineBorderWidth(connectionState));
+        widget.setPropertyValue(AbstractWidgetModel.PROP_BORDER_COLOR,
+                determineBorderColor(connectionState));
+
+        // .. background colors
+        widget.setPropertyValue(BargraphModel.PROP_FILLBACKGROUND_COLOR,
+                determineBackgroundColor(connectionState));
+        widget.setPropertyValue(BargraphModel.PROP_COLOR_BACKGROUND,
+                determineBackgroundColor(connectionState));
+
+        // .. transparency
+        Boolean transparent = _transparencyByConnectionState.get(connectionState);
+
+        if (transparent != null) {
+            widget.setPropertyValue(BargraphModel.PROP_TRANSPARENT, transparent);
+        }
+    }
+
+    @Override
+    protected void doProcessMetaDataChange(final BargraphModel widget, final MetaData meta) {
+        if (meta != null) {
+            // .. limits
+            widget.setPropertyValue(BargraphModel.PROP_MIN, meta.getDisplayLow());
+            widget.setPropertyValue(BargraphModel.PROP_MAX, meta.getDisplayHigh());
+            widget.setPropertyValue(BargraphModel.PROP_HIHI_LEVEL, meta.getAlarmHigh());
+            widget.setPropertyValue(BargraphModel.PROP_HI_LEVEL, meta.getWarnHigh());
+            widget.setPropertyValue(BargraphModel.PROP_LOLO_LEVEL, meta.getAlarmLow());
+            widget.setPropertyValue(BargraphModel.PROP_LO_LEVEL, meta.getWarnLow());
+        }
     }
 
 }
