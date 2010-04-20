@@ -78,6 +78,8 @@ public abstract class AbstractDesyConnectionBehavior<W extends AbstractWidgetMod
     protected void doInitialize(final W widget) {
         _normalBackgroundColor = widget.getPropertyInternal(LabelModel.PROP_COLOR_BACKGROUND)
                 .getPropertyValue().toString();
+        widget.setPropertyValue(AbstractWidgetModel.PROP_COLOR_BACKGROUND,
+                                determineBorderColor(ConnectionState.INITIAL));
     }
 
     @Override

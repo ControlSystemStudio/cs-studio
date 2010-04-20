@@ -77,12 +77,9 @@ public class BargraphConnectionBehavior extends AbstractDesyConnectionBehavior<B
 
     @Override
     protected void doProcessValueChange(final BargraphModel widget, final AnyData anyData) {
+        super.doProcessValueChange(widget, anyData);
         // .. fill level (influenced by current value)
         widget.setPropertyValue(BargraphModel.PROP_FILL, anyData.doubleValue());
-
-        // .. fill color (influenced by severity)
-        widget.setPropertyValue(BargraphModel.PROP_DEFAULT_FILL_COLOR,
-                determineColorBySeverity(anyData.getSeverity()));
     }
 
     @Override

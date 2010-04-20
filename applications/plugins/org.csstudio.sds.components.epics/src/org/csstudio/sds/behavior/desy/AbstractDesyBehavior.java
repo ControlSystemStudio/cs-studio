@@ -170,12 +170,15 @@ public abstract class AbstractDesyBehavior<W extends AbstractWidgetModel> extend
      * @param severity The Severity
      * @return the DESY default color for the given {@link Severity}
      */
-    protected final String determineColorBySeverity(final Severity severity) {
+    protected final String determineColorBySeverity(final Severity severity, final String defColor) {
         String color = "#000000";
 
         if (severity != null) {
             if (severity.isOK()) {
                 // .. green
+                if(defColor!=null) {
+                    return defColor;
+                }
                 color = ColorAndFontUtil.toHex(0, 216, 0);
             } else if (severity.isMinor()) {
                 // .. yellow
@@ -187,33 +190,6 @@ public abstract class AbstractDesyBehavior<W extends AbstractWidgetModel> extend
                 // .. white
                 color = ColorAndFontUtil.toHex(255, 255, 255);
             }
-        }
-
-        return color;
-    }
-
-    /**
-     * Extracted from {@link org.csstudio.sds.cosyrules.color.Alarm}.
-     * Give a DESY default Color for the given double severity representation.
-     *
-     * @param severity The Severity as double
-     * @return the DESY default color for the given severity
-      */
-    public static String determineColorBySeverity(final double severity) {
-        String color = "#000000";
-
-        if (Math.abs(severity - 0.0) < 0.00001) {
-            // .. green
-            color = ColorAndFontUtil.toHex(0, 216, 0);
-        } else if (Math.abs(severity - 1.0) < 0.00001) {
-            // .. yellow
-            color = ColorAndFontUtil.toHex(251, 243, 74);
-        } else if (Math.abs(severity - 2.0) < 0.00001) {
-            // .. red
-            color = ColorAndFontUtil.toHex(253, 0, 0);
-        } else if ( (severity >= 3.0) && (severity <= 255.0)) {
-            // .. white
-            color = ColorAndFontUtil.toHex(255, 255, 255);
         }
 
         return color;

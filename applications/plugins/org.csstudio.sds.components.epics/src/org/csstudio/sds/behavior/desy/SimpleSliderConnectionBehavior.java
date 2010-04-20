@@ -31,8 +31,7 @@ import org.epics.css.dal.simple.MetaData;
  * @version $Revision$
  * @since 20.04.2010
  */
-public class SimpleSliderConnectionBehavior extends
-        AbstractDesyConnectionBehavior<SimpleSliderModel> {
+public class SimpleSliderConnectionBehavior extends AbstractDesyConnectionBehavior<SimpleSliderModel> {
 
     /**
      * Constructor.
@@ -44,9 +43,10 @@ public class SimpleSliderConnectionBehavior extends
     }
 
     @Override
-    protected void doProcessValueChange(final SimpleSliderModel widget, final AnyData anyData) {
+    protected void doProcessValueChange(final SimpleSliderModel model, final AnyData anyData) {
+        super.doProcessValueChange(model, anyData);
         // .. update slider value
-        widget.setPropertyValue(SimpleSliderModel.PROP_VALUE, anyData.doubleValue());
+        model.setPropertyValue(SimpleSliderModel.PROP_VALUE, anyData.doubleValue());
     }
 
     @Override

@@ -18,9 +18,12 @@
  */
 package org.csstudio.sds.behavior.desy;
 
+import org.csstudio.sds.components.model.BargraphModel;
 import org.csstudio.sds.components.model.SimpleSliderModel;
+import org.csstudio.sds.model.AbstractWidgetModel;
 import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.MetaData;
+import org.epics.css.dal.simple.Severity;
 
 /**
  *
@@ -33,6 +36,8 @@ import org.epics.css.dal.simple.MetaData;
  */
 public class SimpleSliderAlarmBehavior extends AbstractDesyAlarmBehavior<SimpleSliderModel> {
 
+    private String _defColor;
+
     /**
      * Constructor.
      */
@@ -42,10 +47,31 @@ public class SimpleSliderAlarmBehavior extends AbstractDesyAlarmBehavior<SimpleS
         addInvisiblePropertyId(SimpleSliderModel.PROP_MIN);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    protected void doProcessValueChange(final SimpleSliderModel widget, final AnyData anyData) {
+    protected void doInitialize(final SimpleSliderModel widget) {
+        super.doInitialize(widget);
+        _defColor = widget.getColor(BargraphModel.PROP_COLOR_FOREGROUND);
+    }
+
+    @Override
+    protected void doProcessValueChange(final SimpleSliderModel model, final AnyData anyData) {
         // .. update slider value
-        widget.setPropertyValue(SimpleSliderModel.PROP_VALUE, anyData.doubleValue());
+        model.setPropertyValue(SimpleSliderModel.PROP_VALUE, anyData.doubleValue());
+        Severity severity = anyData.getSeverity();
+        if (severity != null) {
+            if (severity.isInvalid()) {
+                model.setPropertyValue(AbstractWidgetModel.PROP_CROSSED_OUT, true);
+            } else {
+                model.setPropertyValue(AbstractWidgetModel.PROP_CROSSED_OUT, false);
+            }
+            model.setPropertyValue(SimpleSliderModel.PROP_COLOR_FOREGROUND,
+                                   determineColorBySeverity(severity, _defColor));
+            model.setPropertyValue(SimpleSliderModel.PROP_COLOR_BACKGROUND,
+                                   determineColorBySeverity(severity, _defColor));
+        }
     }
 
     @Override

@@ -179,7 +179,7 @@
       </behavior>
       <behavior
             class="org.csstudio.sds.behavior.desy.LabeConnectionBehavior"
-            description="DESY Alarm Default"
+            description="DESY Connection Default"
             id="behavior.desy.label.connectiondefault"
             widgetTypeId="org.csstudio.sds.components.Label">
       </behavior>

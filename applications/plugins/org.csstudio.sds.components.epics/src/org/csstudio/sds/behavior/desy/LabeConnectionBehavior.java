@@ -22,6 +22,7 @@
 package org.csstudio.sds.behavior.desy;
 
 import org.csstudio.sds.model.LabelModel;
+import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.MetaData;
 
 /**
@@ -42,6 +43,17 @@ public class LabeConnectionBehavior extends AbstractDesyConnectionBehavior<Label
         addInvisiblePropertyId(LabelModel.PROP_TEXTVALUE);
         addInvisiblePropertyId(LabelModel.PROP_ACTIONDATA);
         addInvisiblePropertyId(LabelModel.PROP_PERMISSSION_ID);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doProcessValueChange(final LabelModel model, final AnyData anyData) {
+        super.doProcessValueChange(model, anyData);
+        // .. fill level (influenced by current value)
+        model.setPropertyValue(LabelModel.PROP_TEXTVALUE, anyData.stringValue());
+
     }
 
     @Override

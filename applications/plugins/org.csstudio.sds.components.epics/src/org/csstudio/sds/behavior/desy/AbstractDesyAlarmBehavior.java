@@ -19,7 +19,8 @@
 package org.csstudio.sds.behavior.desy;
 
 import org.csstudio.sds.model.AbstractWidgetModel;
-import org.csstudio.sds.model.LabelModel;
+import org.epics.css.dal.context.ConnectionState;
+import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.Severity;
 
 /**
@@ -36,13 +37,33 @@ import org.epics.css.dal.simple.Severity;
 public abstract class AbstractDesyAlarmBehavior<W extends AbstractWidgetModel> extends
         AbstractDesyConnectionBehavior<W> {
 
+    private String _defColor;
+
     /**
      * Constructor.
      */
     public AbstractDesyAlarmBehavior() {
-        addInvisiblePropertyId(LabelModel.PROP_BORDER_COLOR);
-        addInvisiblePropertyId(LabelModel.PROP_BORDER_STYLE);
-        addInvisiblePropertyId(LabelModel.PROP_BORDER_WIDTH);
+        addInvisiblePropertyId(AbstractWidgetModel.PROP_BORDER_COLOR);
+        addInvisiblePropertyId(AbstractWidgetModel.PROP_BORDER_STYLE);
+        addInvisiblePropertyId(AbstractWidgetModel.PROP_BORDER_WIDTH);
+    }
+
+    protected void doInitialize(final W widget) {
+        super.doInitialize(widget);
+//        _defColor = widget.getColor(AbstractWidgetModel.PROP_BORDER_COLOR);
+    };
+
+    @Override
+    protected void doProcessConnectionStateChange(final W widget,
+                                                  final ConnectionState connectionState) {
+        super.doProcessConnectionStateChange(widget, connectionState);
+//        widget.setPropertyValue(LabelModel.PROP_COLOR_BACKGROUND,determineBackgroundColor(connectionState));
+//        if ( (connectionState != null) && (connectionState == ConnectionState.CONNECTED)) {
+//            widget.setPropertyValue(LabelModel.PROP_COLOR_BACKGROUND, _normalBackgroundColor);
+//        } else {
+//            widget.setPropertyValue(LabelModel.PROP_COLOR_BACKGROUND,
+//                                    determineBackgroundColor(connectionState));
+//        }
     }
 
     /**
@@ -50,7 +71,7 @@ public abstract class AbstractDesyAlarmBehavior<W extends AbstractWidgetModel> e
      * {@inheritDoc}
      */
     @Override
-    protected void doProcessValueChange(final W model, final org.epics.css.dal.simple.AnyData anyData) {
+    protected void doProcessValueChange(final W model, final AnyData anyData) {
         Severity severity = anyData.getSeverity();
         if (severity != null) {
             if (severity.isInvalid()) {
@@ -58,10 +79,10 @@ public abstract class AbstractDesyAlarmBehavior<W extends AbstractWidgetModel> e
             } else {
                 model.setPropertyValue(AbstractWidgetModel.PROP_CROSSED_OUT, false);
             }
-            model.setPropertyValue(LabelModel.PROP_BORDER_COLOR, determineColorBySeverity(severity));
-            model.setPropertyValue(LabelModel.PROP_BORDER_STYLE, SeverityUtil
+            model.setPropertyValue(AbstractWidgetModel.PROP_BORDER_COLOR, determineColorBySeverity(severity, _defColor));
+            model.setPropertyValue(AbstractWidgetModel.PROP_BORDER_STYLE, SeverityUtil
                                    .determineBorderStyleBySeverity(severity).getIndex());
-            model.setPropertyValue(LabelModel.PROP_BORDER_WIDTH, SeverityUtil
+            model.setPropertyValue(AbstractWidgetModel.PROP_BORDER_WIDTH, SeverityUtil
                                    .determineBorderWidthBySeverity(severity));
         }
     };

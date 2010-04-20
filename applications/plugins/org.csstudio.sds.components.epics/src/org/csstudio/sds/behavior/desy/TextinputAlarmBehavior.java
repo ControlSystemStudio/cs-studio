@@ -25,6 +25,7 @@
 package org.csstudio.sds.behavior.desy;
 
 import org.csstudio.sds.components.model.TextInputModel;
+import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.MetaData;
 
 /**
@@ -42,6 +43,16 @@ public class TextinputAlarmBehavior extends AbstractDesyAlarmBehavior<TextInputM
         addInvisiblePropertyId(TextInputModel.PROP_INPUT_TEXT);
         addInvisiblePropertyId(TextInputModel.PROP_ACTIONDATA);
         addInvisiblePropertyId(TextInputModel.PROP_PERMISSSION_ID);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doProcessValueChange(final TextInputModel model, final AnyData anyData) {
+        super.doProcessValueChange(model, anyData);
+        // .. fill level (influenced by current value)
+        model.setPropertyValue(TextInputModel.PROP_INPUT_TEXT, anyData.stringValue());
     }
 
     @Override
