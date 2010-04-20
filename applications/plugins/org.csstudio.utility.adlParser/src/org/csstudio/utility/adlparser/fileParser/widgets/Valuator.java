@@ -1,11 +1,18 @@
 package org.csstudio.utility.adlparser.fileParser.widgets;
 
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
+import org.csstudio.utility.adlparser.fileParser.FileLine;
 import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLControl;
+import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLLimits;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLObject;
+import org.csstudio.utility.adlparser.internationalization.Messages;
 
 public class Valuator extends ADLAbstractWidget {
+	private String color_mode = new String("static");
+	private String direction = new String("right");
+	private String label = new String("none");
+	private float increment = 1.0f;
 
 	public Valuator(ADLWidget adlWidget) {
 		super(adlWidget);
@@ -24,16 +31,87 @@ public class Valuator extends ADLAbstractWidget {
 	        		}
 	        		
 	        	}
+	        	else if (childWidget.getType().equals("limits")){
+	        		_adlLimits = new ADLLimits(childWidget);
+	        		if (_adlLimits != null){
+	        			_hasLimits = true;
+	        		}
+	        	}
 	        }
+			for (FileLine fileLine : adlWidget.getBody()){
+				String bodyPart = fileLine.getLine();
+				String[] row = bodyPart.trim().split("=");
+				if (row.length < 2){
+					throw new WrongADLFormatException(Messages.Label_WrongADLFormatException_Parameter_Begin + bodyPart + Messages.Label_WrongADLFormatException_Parameter_End);
+				}
+				if (FileLine.argEquals(row[0], "clrmod")){
+					setColor_mode(FileLine.getTrimmedValue(row[1]));
+				}
+				else if (FileLine.argEquals(row[0], "label")){
+					setLabel(FileLine.getTrimmedValue(row[1]));
+				}
+				else if (FileLine.argEquals(row[0], "direction")){
+					setDirection(FileLine.getTrimmedValue(row[1]));
+				}
+				else if (FileLine.argEquals(row[0], "dPrecision")){
+					setIncrement(FileLine.getFloatValue(row[1]));
+				}
+			}
 		}
 		catch (WrongADLFormatException ex) {
 			
 		}
-		//TODO Add PV Limits to Valuator
-		//TODO Add Label to Valuator
-		//TODO Add Direction to Valuator
-		//TODO Add ColorMode to Valuator
-		//TODO Add Increment to Valuator
 	}
 
+	/**
+	 * @param color_mode the color_mode to set
+	 */
+	private void setColor_mode(String color_mode) {
+		this.color_mode = color_mode;
+	}
+
+	/**
+	 * @return the color_mode
+	 */
+	public String getColor_mode() {
+		return color_mode;
+	}
+	/**
+	 * @param direction the direction to set
+	 */
+	private void setDirection(String direction) {
+		this.direction = direction;
+	}
+	/**
+	 * @return the direction
+	 */
+	public String getDirection() {
+		return direction;
+	}
+	/**
+	 * @param label the label to set
+	 */
+	private void setLabel(String label) {
+		this.label = label;
+	}
+	/**
+	 * @return the label
+	 */
+	public String getLabel() {
+		return label;
+	}
+
+	/**
+	 * @param increment the increment to set
+	 */
+	private void setIncrement(float increment) {
+		this.increment = increment;
+	}
+
+	/**
+	 * @return the increment
+	 */
+	public float getIncrement() {
+		return increment;
+	}
 }
