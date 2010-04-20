@@ -1,12 +1,28 @@
 package org.csstudio.utility.adlparser.fileParser.widgets;
 
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
+import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
+import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLObject;
 
 public class StripChart extends ADLAbstractWidget {
 
 	public StripChart(ADLWidget adlWidget) {
 		super(adlWidget);
-		// TODO Add ADLObject to StripChart
+		try {
+			for (ADLWidget childWidget : adlWidget.getObjects()) {
+	        	if (childWidget.getType().equals("object")){
+	        		_adlObject = new ADLObject(childWidget);
+	        		if (_adlObject != null){
+	        			_hasObject = true;
+	        		}
+	        		
+	        	}
+	        }
+		}
+		
+		catch (WrongADLFormatException ex) {
+			ex.printStackTrace();
+		}
 		//TODO Add Title to StripChart
 		//TODO Add X & Y Label to StripChart
 		//TODO Add Foreground & Background colors to StripChart
