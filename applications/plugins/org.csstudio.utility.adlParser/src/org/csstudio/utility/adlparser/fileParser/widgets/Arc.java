@@ -54,7 +54,6 @@ public class Arc extends ADLAbstractWidget {
 	                throw new WrongADLFormatException(Messages.ADLMonitor_WrongADLFormatException_Parameter_Begin+row[0]+Messages.ADLMonitor_WrongADLFormatException_Parameter_End+parameter);
 	            }
 
-			//TODO Add Begin angle and path angle
 	        }
 		}
 		catch (WrongADLFormatException ex) {
