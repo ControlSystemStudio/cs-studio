@@ -18,6 +18,9 @@
  */
 package org.csstudio.sds.behavior.desy;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.csstudio.sds.components.model.TextInputModel;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.LabelModel;
@@ -39,15 +42,28 @@ public abstract class AbstractDesyConnectionBehavior<W extends AbstractWidgetMod
         AbstractDesyBehavior<W> {
 
     private String _normalBackgroundColor;
+    private final Set<String> _invisiblePropertyIds = new HashSet<String>();
+
+    /**
+     * Constructor.
+     */
+    public AbstractDesyConnectionBehavior() {
+        addInvisiblePropertyId(AbstractWidgetModel.PROP_NAME);
+        addInvisiblePropertyId(AbstractWidgetModel.PROP_COLOR_BACKGROUND);
+        addInvisiblePropertyId(AbstractWidgetModel.PROP_CROSSED_OUT);
+        addInvisiblePropertyId(TextInputModel.PROP_CURSOR);
+    }
 
     /**
      * (@inheritDoc)
      */
     @Override
     protected String[] doGetInvisiblePropertyIds() {
-        return new String[] { AbstractWidgetModel.PROP_NAME,
-                AbstractWidgetModel.PROP_COLOR_BACKGROUND, AbstractWidgetModel.PROP_CROSSED_OUT,
-                TextInputModel.PROP_CURSOR };
+        return _invisiblePropertyIds.toArray(new String[0]);
+    }
+
+    protected void addInvisiblePropertyId(final String id) {
+        _invisiblePropertyIds.add(id);
     }
 
     @Override

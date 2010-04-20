@@ -38,8 +38,6 @@ import org.epics.css.dal.simple.MetaData;
  */
 public class TextInputBehavior extends AbstractDesyAlarmBehavior<TextInputModel> {
 
-    private String _normalBackgroundColor;
-
     @Override
     protected String[] doGetInvisiblePropertyIds() {
         List<String> asList = Arrays.asList(super.doGetInvisiblePropertyIds());

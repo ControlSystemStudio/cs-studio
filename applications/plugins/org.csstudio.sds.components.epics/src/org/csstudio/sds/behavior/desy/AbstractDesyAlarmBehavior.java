@@ -18,9 +18,6 @@
  */
 package org.csstudio.sds.behavior.desy;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.LabelModel;
 import org.epics.css.dal.simple.Severity;
@@ -36,13 +33,13 @@ import org.epics.css.dal.simple.Severity;
 public abstract class AbstractDesyAlarmBehavior<W extends AbstractWidgetModel> extends
         AbstractDesyConnectionBehavior<W> {
 
-    @Override
-    protected String[] doGetInvisiblePropertyIds() {
-        List<String> asList = Arrays.asList(super.doGetInvisiblePropertyIds());
-        asList.add(LabelModel.PROP_BORDER_COLOR);
-        asList.add(LabelModel.PROP_BORDER_STYLE);
-        asList.add(LabelModel.PROP_BORDER_WIDTH);
-        return asList.toArray(new String[0]);
+    /**
+     * Constructor.
+     */
+    public AbstractDesyAlarmBehavior() {
+        addInvisiblePropertyId(LabelModel.PROP_BORDER_COLOR);
+        addInvisiblePropertyId(LabelModel.PROP_BORDER_STYLE);
+        addInvisiblePropertyId(LabelModel.PROP_BORDER_WIDTH);
     }
 
     protected void doProcessValueChange(final W model, final org.epics.css.dal.simple.AnyData anyData) {
