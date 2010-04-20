@@ -22,11 +22,11 @@ public class RelatedDisplay2Model extends AbstractADL2Model {
 		RelatedDisplay rdWidget = new RelatedDisplay(adlWidget);
 		if (rdWidget != null) {
 			setADLObjectProps(rdWidget, menuModel);
-			if ((rdWidget.getClr() != null) && !rdWidget.getClr().equals("")){
-				menuModel.setForegroundColor( colorMap[Integer.parseInt(rdWidget.getClr())] );
+			if (rdWidget.isForeColorDefined() ){
+				menuModel.setForegroundColor( colorMap[rdWidget.getForegroundColor()] );
 			}
-			if ((rdWidget.getBclr() != null) && !rdWidget.getClr().equals("")){
-				menuModel.setBackgroundColor( colorMap[Integer.parseInt(rdWidget.getBclr())] );
+			if (rdWidget.isBackColorDefined()){
+				menuModel.setBackgroundColor( colorMap[rdWidget.getBackgroundColor()] );
 			}
 			RelatedDisplayItem[] rdDisplays = rdWidget.getRelatedDisplayItems();
 			if ( rdDisplays.length > 0){
