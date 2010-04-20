@@ -3,6 +3,7 @@ package org.csstudio.utility.adlparser.fileParser.widgets;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
 import org.csstudio.utility.adlparser.fileParser.FileLine;
 import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
+import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLLimits;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLMonitor;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLObject;
 import org.csstudio.utility.adlparser.internationalization.Messages;
@@ -28,6 +29,12 @@ public class Meter extends ADLAbstractWidget {
 	        			_hasMonitor = true;
 	        		}
 	        	}
+	        	else if (childWidget.getType().equals("limits")){
+	        		_adlLimits = new ADLLimits(childWidget);
+	        		if (_adlLimits != null){
+	        			_hasLimits = true;
+	        		}
+	        	}
 	        }
 			for (FileLine fileLine : adlWidget.getBody()){
 				String bodyPart = fileLine.getLine();
@@ -46,7 +53,6 @@ public class Meter extends ADLAbstractWidget {
 		catch (WrongADLFormatException ex) {
 			
 		}
-		//TODO Add PV Limits to Meter
 	}
 
 	/**
