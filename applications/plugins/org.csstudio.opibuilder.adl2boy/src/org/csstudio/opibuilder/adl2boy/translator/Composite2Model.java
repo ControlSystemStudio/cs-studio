@@ -37,6 +37,8 @@ public class Composite2Model extends AbstractADL2Model {
 			((GroupingContainerModel)(containerModel)).setPropertyValue(GroupingContainerModel.PROP_SHOW_SCROLLBAR, false);
 			FixChildPositions();
 		}
+		//Add Dynamic Properties to Composite2Model
+		//Add Composite File to Composite2Model
 	}
 
 	@Override

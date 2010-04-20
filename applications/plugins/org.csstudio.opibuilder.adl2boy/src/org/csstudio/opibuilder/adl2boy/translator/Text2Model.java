@@ -30,6 +30,9 @@ public class Text2Model extends AbstractADL2Model {
 		FontData newFontData = new FontData(fontData.getName(), fontData.getHeight(), fontData.getStyle());
 		newFontData.setHeight(fontSize);
 		labelModel.setPropertyValue(LabelModel.PROP_FONT, newFontData);
+
+		//TODO Figure out dynamic properties on Text2Model
+		//TODO Add Alignment to Text2Model
 	}
 
 	@Override

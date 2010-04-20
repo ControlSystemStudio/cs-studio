@@ -17,6 +17,13 @@ public class CartesianPlot2Model extends AbstractADL2Model {
 		if (plotWidget != null) {
 			setADLObjectProps(plotWidget, graphModel);
 		}
+		//TODO Add Point Style to CartesianPlot2Model
+		//TODO Add PlotMode to CartesianPlot2Model
+		//TODO Add Trace data to CartesianPlot2Model
+		//TODO Add Count Num or Channel to CartesianPlot2Model
+		//TODO Add TriggerChannel to CartesianPlot2Model
+		//TODO Add EraseChannel to CartesianPlot2Model
+		//TODO Add EraseMode to CartesianPlot2Model
 	}
 
 	@Override

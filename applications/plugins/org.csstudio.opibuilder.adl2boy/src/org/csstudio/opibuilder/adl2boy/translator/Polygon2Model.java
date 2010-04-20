@@ -19,6 +19,8 @@ public class Polygon2Model extends AbstractADL2Model {
 			setADLBasicAttributeProps(polygonWidget, polygonModel, false);
 		}
 		polygonModel.setPoints(polygonWidget.getAdlPoints().getPointsList(), true);
+		//TODO Add basic properties to Polygon2Model
+		//TODO Add dynamic properties to Polygon2Model
 	}
 
 	@Override

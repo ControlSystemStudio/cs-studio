@@ -48,6 +48,7 @@ public class Rectangle2Model extends AbstractADL2Model {
 				
 			}
 		}
+		//TODO Add Dynamic properties to Rectangle2Model
 	}
 
 	@Override

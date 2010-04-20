@@ -9,7 +9,7 @@ public class Line2Model extends AbstractADL2Model {
 
 	public Line2Model(ADLWidget adlWidget, RGB[] colorMap, AbstractContainerModel parentModel) {
 		super(adlWidget, colorMap, parentModel);
-		// TODO Auto-generated constructor stub
+		// TODO Figure out how to map Line to Polyline
 	}
 
 	@Override

@@ -61,6 +61,8 @@ public class RelatedDisplay2Model extends AbstractADL2Model {
 			}
 		}
 		menuModel.setPropertyValue(MenuButtonModel.PROP_LABEL, rdWidget.getLabel());
+		//TODO Add Visual property to RelatedDisplay2Model
+		//TODO Add remove parent display to RelatedDisplay2Model
 	}
 
 	@Override

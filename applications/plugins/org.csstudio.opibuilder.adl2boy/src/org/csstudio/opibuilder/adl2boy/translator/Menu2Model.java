@@ -20,6 +20,7 @@ public class Menu2Model extends AbstractADL2Model {
 			setADLControlProps(menuWidget, menuModel);
 		}
 		menuModel.setPropertyValue(MenuButtonModel.PROP_ACTIONS_FROM_PV, true);
+		//TODO add color Mode to Menu2Model
 	}
 
 	@Override

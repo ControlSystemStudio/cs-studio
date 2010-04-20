@@ -18,6 +18,11 @@ public class Valuator2Model extends AbstractADL2Model {
 			setADLObjectProps(valuatorWidget, sliderModel);
 			setADLControlProps(valuatorWidget, sliderModel);
 		}
+		//TODO Add PV Limits to Valuator2Model
+		//TODO Add Label info to Valuator2Model
+		//TODO Add Direction to Valuator2Model
+		//TODO Add ColorMode to Valuator2Model
+		//TODO Add Increment to Valuator2Model
 	}
 
 	@Override

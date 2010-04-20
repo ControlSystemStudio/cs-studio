@@ -18,6 +18,9 @@ public class Meter2Model extends AbstractADL2Model {
 			setADLObjectProps(meterWidget, meterModel);
 			setADLMonitorProps(meterWidget, meterModel);
 		}
+		//TODO Add PV Limits to Meter2Model
+		//TODO Add Label to Meter2Model
+		//TODO Add color mode to Meter2Model
 	}
 
 	@Override

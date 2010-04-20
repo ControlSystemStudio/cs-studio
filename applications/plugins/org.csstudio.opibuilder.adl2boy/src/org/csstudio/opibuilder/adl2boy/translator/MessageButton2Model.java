@@ -43,6 +43,7 @@ public class MessageButton2Model extends AbstractADL2Model {
 			buttonModel.setPropertyValue(ActionButtonModel.PROP_RELEASED_ACTION_INDEX, actionIndex);
 			actionIndex++;
 		}
+		//TODO Add Color mode to Menu2Model
 	}
 
 	@Override

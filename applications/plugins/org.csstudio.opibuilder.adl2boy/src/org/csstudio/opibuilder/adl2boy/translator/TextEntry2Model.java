@@ -21,13 +21,15 @@ public class TextEntry2Model extends AbstractADL2Model {
 			setADLObjectProps(textEntryWidget, textInModel);
 			setADLControlProps(textEntryWidget, textInModel);
 		}
-//		textInModel.setPropertyValue(LabelModel.PROP_TRANSPARENT, true);
 		OPIFont font = textInModel.getFont();
 		int fontSize = TranslatorUtils.convertTextHeightToFontSize(textInModel.getHeight());
 		FontData fontData = font.getFontData();
 		FontData newFontData = new FontData(fontData.getName(), fontData.getHeight(), fontData.getStyle());
 		newFontData.setHeight(fontSize);
 		textInModel.setPropertyValue(LabelModel.PROP_FONT, newFontData);
+		//TODO Add limits to TextEntry2Model
+		//TODO Add format to TextEntry2Model
+		//TODO Add color mode to TextEntry2Model
 	}
 
 	@Override

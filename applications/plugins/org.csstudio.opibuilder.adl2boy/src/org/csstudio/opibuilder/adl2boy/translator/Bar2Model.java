@@ -25,6 +25,11 @@ public class Bar2Model extends AbstractADL2Model {
 		tankModel.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_HI, false);
 		tankModel.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_HI, false);
 		tankModel.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_HI, false);
+		//TODO Add PVLimits to Bar2Model
+		//TODO Add Label info to Bar2Model
+		//TODO Add BarDirection and fill mode to Bar2Model
+		//TODO Add ColorMode to Bar2Model
+		
 	}
 
 	@Override

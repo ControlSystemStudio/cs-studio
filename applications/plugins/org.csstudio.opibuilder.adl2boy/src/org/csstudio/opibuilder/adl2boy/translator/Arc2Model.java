@@ -18,6 +18,9 @@ public class Arc2Model extends AbstractADL2Model {
 			setADLObjectProps(arcWidget, arcModel);
 			setADLBasicAttributeProps(arcWidget, arcModel, false);
 		}
+		//TODO Add Dynamic Properties to Arc2Model
+		//TODO Add Basic Properties to Arc2Model
+		//TODO Add Begin and Path Angle to Arc2Model
 	}
 
 	@Override
