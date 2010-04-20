@@ -50,12 +50,12 @@ public abstract class AbstractADL2Model {
 		if (adlWidget.hasADLBasicAttribute()){
 			ADLBasicAttribute basAttr = adlWidget.getAdlBasicAttribute();
 			System.out.println("Trying to load color " + basAttr.getClr() );
-			if ((basAttr.getClr() != null) && (!(basAttr.getClr().equals(""))) ){
+			if (basAttr.isColorDefined()) {
 				if (colorForeground) {
-					widgetModel.setForegroundColor(colorMap[Integer.parseInt(basAttr.getClr())]);
+					widgetModel.setForegroundColor(colorMap[basAttr.getClr()]);
 				}
 				else {
-					widgetModel.setBackgroundColor(colorMap[Integer.parseInt(basAttr.getClr())]);
+					widgetModel.setBackgroundColor(colorMap[basAttr.getClr()]);
 				}
 			}
 			else {
@@ -77,16 +77,14 @@ public abstract class AbstractADL2Model {
 	protected void setADLControlProps(ADLAbstractWidget adlWidget, AbstractWidgetModel widgetModel){
 		if (adlWidget.hasADLControl()){
 			ADLControl control = adlWidget.getAdlControl();
-			String foreClr = control.getForegroundColor();
-			if ((foreClr != null) && (!(foreClr.equals(""))) ){
-				widgetModel.setForegroundColor(colorMap[Integer.parseInt(foreClr)]);
+			if (control.isForeColorDefined() ){
+				widgetModel.setForegroundColor(colorMap[control.getForegroundColor()]);
 			}
 			else { 
 				widgetModel.setForegroundColor(widgetModel.getParent().getForegroundColor());
 			}
-			String backClr = control.getBackgroundColor();
-			if ((backClr != null) && (!(backClr.equals(""))) ){
-				widgetModel.setBackgroundColor(colorMap[Integer.parseInt(backClr)]);
+			if (control.isBackColorDefined() ){
+				widgetModel.setBackgroundColor(colorMap[control.getBackgroundColor()]);
 			}
 			else { 
 				widgetModel.setBackgroundColor(widgetModel.getParent().getBackgroundColor());
@@ -106,16 +104,14 @@ public abstract class AbstractADL2Model {
 	protected void setADLMonitorProps(ADLAbstractWidget adlWidget, AbstractWidgetModel widgetModel){
 		if (adlWidget.hasADLMonitor()){
 			ADLMonitor monitor = adlWidget.getAdlMonitor();
-			String foreClr = monitor.getForegroundColor();
-			if ((foreClr != null) && (!(foreClr.equals(""))) ){
-				widgetModel.setForegroundColor(colorMap[Integer.parseInt(foreClr)]);
+			if (monitor.isForeColorDefined() ){
+				widgetModel.setForegroundColor(colorMap[monitor.getForegroundColor()]);
 			}
 			else { 
 				widgetModel.setForegroundColor(widgetModel.getParent().getForegroundColor());
 			}
-			String backClr = monitor.getBackgroundColor();
-			if ((backClr != null) && (!(backClr.equals(""))) ){
-				widgetModel.setBackgroundColor(colorMap[Integer.parseInt(backClr)]);
+			if (monitor.isBackColorDefined() ){
+				widgetModel.setBackgroundColor(colorMap[monitor.getBackgroundColor()]);
 			}
 			else { 
 				widgetModel.setBackgroundColor(widgetModel.getParent().getBackgroundColor());
