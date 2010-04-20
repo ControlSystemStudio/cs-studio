@@ -47,7 +47,7 @@ public class TextWidget extends ADLAbstractWidget {
 				if (FileLine.argEquals(row[0], "textix")){
 					setTextix(FileLine.getTrimmedValue(row[1]));
 				}
-				else if (FileLine.argEquals(row[0], "alignment")){
+				else if (FileLine.argEquals(row[0], "align")){
 					setAlignment(FileLine.getTrimmedValue(row[1]));
 				}
 				else if (FileLine.argEquals(row[0], "clrmod")){
