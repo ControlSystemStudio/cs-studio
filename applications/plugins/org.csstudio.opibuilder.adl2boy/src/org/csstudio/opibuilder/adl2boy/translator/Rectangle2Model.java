@@ -23,7 +23,6 @@ public class Rectangle2Model extends AbstractADL2Model {
 		}
 		//check fill parameters
 		if ( rectWidget.hasADLBasicAttribute() ) {
-			System.out.println("RECTANGLE has basic attributes");
 			if (rectWidget.getAdlBasicAttribute().getFill().equals("solid") ) {
 				System.out.println("RECTANGLE fill is solid");				
 				rectangleModel.setPropertyValue(RectangleModel.PROP_TRANSPARENT, false);
@@ -32,7 +31,6 @@ public class Rectangle2Model extends AbstractADL2Model {
 				
 			}
 			else if (rectWidget.getAdlBasicAttribute().getFill().equals("outline")) {
-				System.out.println("RECTANGLE has fill is outline");
 				rectangleModel.setPropertyValue(RectangleModel.PROP_TRANSPARENT, true);
 				OPIColor fColor = (OPIColor)rectangleModel.getPropertyValue(AbstractWidgetModel.PROP_COLOR_FOREGROUND);
 				rectangleModel.setPropertyValue(AbstractShapeModel.PROP_LINE_COLOR, fColor);
@@ -43,10 +41,9 @@ public class Rectangle2Model extends AbstractADL2Model {
 					rectangleModel.setPropertyValue(RectangleModel.PROP_LINE_STYLE, "Dash");
 					
 				}
+				rectangleModel.setPropertyValue(RectangleModel.PROP_LINE_WIDTH, rectWidget.getAdlBasicAttribute().getWidth());
 			}
-			else {
-				
-			}
+			
 		}
 		//TODO Add Dynamic properties to Rectangle2Model
 	}
