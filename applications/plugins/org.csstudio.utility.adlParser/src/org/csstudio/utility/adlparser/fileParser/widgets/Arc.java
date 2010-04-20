@@ -9,6 +9,8 @@ import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLObject;
 import org.csstudio.utility.adlparser.internationalization.Messages;
 
 public class Arc extends ADLAbstractWidget {
+	private int _begin = 0;
+	private int _path = 5760;         //default 90 degrees
 
 	public Arc(ADLWidget adlWidget) {
 		super(adlWidget);
@@ -35,11 +37,57 @@ public class Arc extends ADLAbstractWidget {
 	        		}
 	        	}
 	        }
+	        for (FileLine fileLine : adlWidget.getBody()) {
+	            String parameter = fileLine.getLine();
+	            if(parameter.trim().startsWith("//")){ //$NON-NLS-1$
+	                continue;
+	            }
+	            String[] row = parameter.split("="); //$NON-NLS-1$
+	            if(row.length!=2){
+	                throw new WrongADLFormatException(Messages.ADLMonitor_WrongADLFormatException_Begin+parameter+Messages.ADLMonitor_WrongADLFormatException_End);
+	            }
+	            if(FileLine.argEquals(row[0], "begin")){ //$NON-NLS-1$
+	            	set_begin(FileLine.getIntValue(row[1]));
+	            }else if(FileLine.argEquals(row[0], "path")){ //$NON-NLS-1$
+	            	set_path(FileLine.getIntValue(row[1]));
+	            }else {
+	                throw new WrongADLFormatException(Messages.ADLMonitor_WrongADLFormatException_Parameter_Begin+row[0]+Messages.ADLMonitor_WrongADLFormatException_Parameter_End+parameter);
+	            }
+
 			//TODO Add Begin angle and path angle
+	        }
 		}
 		catch (WrongADLFormatException ex) {
 			
 		}
+	}
+
+	/**
+	 * @param _begin the _begin to set
+	 */
+	private void set_begin(int _begin) {
+		this._begin = _begin;
+	}
+
+	/**
+	 * @return the _begin
+	 */
+	public int get_begin() {
+		return _begin;
+	}
+
+	/**
+	 * @param _path the _path to set
+	 */
+	private void set_path(int _path) {
+		this._path = _path;
+	}
+
+	/**
+	 * @return the _path
+	 */
+	public int get_path() {
+		return _path;
 	}
 
 }
