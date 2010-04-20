@@ -22,10 +22,6 @@
 package org.csstudio.sds.behavior.desy;
 
 import org.csstudio.sds.components.model.StripChartModel;
-import org.csstudio.sds.model.AbstractWidgetModel;
-import org.csstudio.sds.model.BorderStyleEnum;
-import org.epics.css.dal.context.ConnectionState;
-import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.MetaData;
 
 /**
@@ -40,30 +36,16 @@ public class StripChartBehavior extends AbstractDesyConnectionBehavior<StripChar
      * Constructor.
      */
     public StripChartBehavior() {
-        addInvisiblePropertyId(AbstractWidgetModel.PROP_NAME);
         addInvisiblePropertyId(StripChartModel.PROP_ACTIONDATA);
-        addInvisiblePropertyId(StripChartModel.PROP_CURSOR);
-        addInvisiblePropertyId(StripChartModel.PROP_BORDER_COLOR);
-        addInvisiblePropertyId(StripChartModel.PROP_BORDER_STYLE);
-        addInvisiblePropertyId(StripChartModel.PROP_BORDER_WIDTH);
     }
 
-    @Override
-    protected void doInitialize(final StripChartModel widget) {
-        widget.setPropertyValue(StripChartModel.PROP_BORDER_STYLE, BorderStyleEnum.RAISED);
-    }
-
-    @Override
-    protected void doProcessConnectionStateChange(final StripChartModel widget,
-                                                  final ConnectionState connectionState) {
-    }
-
+    /**
+    		* {@inheritDoc}
+    		*/
     @Override
     protected void doProcessMetaDataChange(final StripChartModel widget, final MetaData metaData) {
-    }
+        // TODO Auto-generated method stub
 
-    @Override
-    protected void doProcessValueChange(final StripChartModel model, final AnyData anyData) {
     }
 
 }
