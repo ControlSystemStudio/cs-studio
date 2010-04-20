@@ -43,7 +43,17 @@ public class MessageButton2Model extends AbstractADL2Model {
 			buttonModel.setPropertyValue(ActionButtonModel.PROP_RELEASED_ACTION_INDEX, actionIndex);
 			actionIndex++;
 		}
-		//TODO Add Color mode to Menu2Model
+		String color_mode = messageButtonWidget.getColor_mode();
+		if ( color_mode.equals("static") ){
+			buttonModel.setPropertyValue(ActionButtonModel.PROP_FORECOLOR_ALARMSENSITIVE, false);
+		}
+		else if (color_mode.equals("alarm") ){
+			buttonModel.setPropertyValue(ActionButtonModel.PROP_FORECOLOR_ALARMSENSITIVE, true);
+		}
+		else if (color_mode.equals("discrete") ){
+			buttonModel.setPropertyValue(ActionButtonModel.PROP_FORECOLOR_ALARMSENSITIVE, false);
+			//TODO MessageButton2Model Figure out what to do if colorMode is discrete
+		}
 	}
 
 	@Override
