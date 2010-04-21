@@ -69,7 +69,7 @@ public abstract class ADLAbstractWidget {
 	}
 	
 	public boolean hasADLPlotcom(){
-		return _hasLimits;
+		return _hasPlotcom;
 	}
 	
 
