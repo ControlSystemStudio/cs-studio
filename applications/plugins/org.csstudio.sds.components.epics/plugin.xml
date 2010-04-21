@@ -213,6 +213,18 @@
             id="behavior.desy.actionbutton.connectiondefault"
             widgetTypeId="org.csstudio.sds.components.ActionButton">
       </behavior>
+      <behavior
+            class="org.csstudio.sds.behavior.desy.TankAlarmBehavior"
+            description="DESY Alarm Tank"
+            id="behavior.desy.tank.alarmdefault"
+            widgetTypeId="org.csstudio.sds.components.Tank">
+      </behavior>
+      <behavior
+            class="org.csstudio.sds.behavior.desy.TankConnectionBehavior"
+            description="DESY Connection Tank"
+            id="behavior.desy.tank.connectiondefault"
+            widgetTypeId="org.csstudio.sds.components.Tank">
+      </behavior>
    </extension>
    
 </plugin>
