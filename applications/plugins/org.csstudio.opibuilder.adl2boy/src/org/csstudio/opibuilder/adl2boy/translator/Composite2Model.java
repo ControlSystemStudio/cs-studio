@@ -33,7 +33,7 @@ public class Composite2Model extends AbstractADL2Model {
 		if (!compositeWidget.hasCompositeFile()) {
 		}
 		else {
-			TranslatorUtils.ConvertChildren(compositeWidget.getChildren(), containerModel, colorMap);
+			TranslatorUtils.ConvertChildren(compositeWidget.getChildWidgets(), containerModel, colorMap);
 			((GroupingContainerModel)(containerModel)).setPropertyValue(GroupingContainerModel.PROP_SHOW_SCROLLBAR, false);
 			FixChildPositions();
 		}
