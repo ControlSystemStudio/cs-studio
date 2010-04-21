@@ -59,7 +59,7 @@ public class TextWidget extends ADLAbstractWidget {
 			}
 		}
 		catch (WrongADLFormatException ex) {
-			
+			ex.printStackTrace();
 		}
 	}
 
