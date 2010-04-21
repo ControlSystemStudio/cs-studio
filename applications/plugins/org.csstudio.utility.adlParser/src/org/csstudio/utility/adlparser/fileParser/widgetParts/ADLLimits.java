@@ -40,7 +40,8 @@ public class ADLLimits extends WidgetPart {
 
 	@Override
 	void init() {
-		_loprSrc = new String("Channel");
+        name = new String("limits");
+        _loprSrc = new String("Channel");
 		_hoprSrc = new String("Channel");
 		_precSrc = new String("Channel");
 	}

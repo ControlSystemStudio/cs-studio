@@ -66,6 +66,7 @@ public class ADLObject extends WidgetPart{
      */
     @Override
     void init() {
+        name = new String("object");
         /* Not to initialization*/
     }
     

@@ -96,6 +96,7 @@ public class RelatedDisplayItem extends WidgetPart {
      */
     @Override
     final void init() {
+        name = new String("related display item");
     	//_path = Activator.getDefault().getPreferenceStore().getString(ADLConverterPreferenceConstants.P_STRING_Path_Target);
     }
     

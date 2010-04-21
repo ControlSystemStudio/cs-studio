@@ -46,6 +46,7 @@ public class ADLPlotcom extends WidgetPart {
 
 	@Override
 	void init() {
+        name = new String("plotcom");
 		title = "";
 		xLabel = "";
 		yLabel = "";

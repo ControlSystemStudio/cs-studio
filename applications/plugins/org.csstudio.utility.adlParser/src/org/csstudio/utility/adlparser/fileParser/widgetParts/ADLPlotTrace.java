@@ -22,6 +22,7 @@ public class ADLPlotTrace extends WidgetPart {
 
 	@Override
 	void init() {
+        name = new String("trace");
 		setxData(new String());
 		setyData(new String());
 		setDataColor(0);

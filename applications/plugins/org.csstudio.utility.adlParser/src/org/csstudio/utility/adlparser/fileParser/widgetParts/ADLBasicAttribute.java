@@ -53,7 +53,7 @@ public class ADLBasicAttribute extends WidgetPart{
 	//TODO Strip out old code lines that refer to SDS implementations
 	public ADLBasicAttribute(final ADLWidget adlBasicAttribute) throws WrongADLFormatException {
         super(adlBasicAttribute);
-    }
+	}
 
     /** The Color of (front?) Object. */
     private int _clr;
@@ -71,7 +71,8 @@ public class ADLBasicAttribute extends WidgetPart{
      */
     @Override
     void init() {
-    	_clr = 0;
+        name = new String("basic attribute");
+        _clr = 0;
     	_width = 0;
     	_style =  new String("solid");
     	_fill = new String("solid");

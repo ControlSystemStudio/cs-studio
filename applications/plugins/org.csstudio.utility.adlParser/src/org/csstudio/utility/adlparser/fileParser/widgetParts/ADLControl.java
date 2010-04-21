@@ -83,6 +83,7 @@ public class ADLControl extends WidgetPart{
      */
     @Override
     final void init() {
+        name = new String("control");
         _connectionState = false;
         _chan = new String();
         set_isForeColorDefined(false);

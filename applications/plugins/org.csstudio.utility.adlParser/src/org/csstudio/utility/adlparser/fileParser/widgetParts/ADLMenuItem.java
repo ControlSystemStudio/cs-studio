@@ -99,6 +99,7 @@ public class ADLMenuItem extends WidgetPart {
      * {@inheritDoc}
      */
     final void init() {
+        name = new String("menu item");
 //**        _path = Activator.getDefault().getPreferenceStore().getString(
     	//**                ADLConverterPreferenceConstants.P_STRING_Path_Target);
     	//**        _trendPath = Activator.getDefault().getPreferenceStore().getString(

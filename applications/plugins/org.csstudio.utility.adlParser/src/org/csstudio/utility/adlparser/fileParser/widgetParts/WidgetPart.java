@@ -47,7 +47,7 @@ public abstract class WidgetPart {
 //**    protected AbstractWidgetModel _widgetModel;
     
 //**    protected AbstractWidgetModel _parentWidgetModel;
-
+	protected String name = new String();
     /**
      * The default constructor.
      * 
@@ -98,5 +98,8 @@ public abstract class WidgetPart {
   //**        _widgetModel.setDynamicsDescriptor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, null);
   //**    }
 
+    public String getName(){
+    	return name;
+    }
  
 }

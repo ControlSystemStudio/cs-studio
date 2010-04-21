@@ -22,6 +22,7 @@ public class ADLPlotData extends WidgetPart {
 
 	@Override
 	void init() {
+        name = new String("plot data");
 		axisStyle = new String("linear");
 		rangeStyle = new String("from channel");
 	}

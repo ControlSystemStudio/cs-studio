@@ -61,6 +61,7 @@ public class ADLPoints extends WidgetPart{
      */
     @Override
     void init() {
+        name = new String("points");
         /* Not to initialization*/
     }
     

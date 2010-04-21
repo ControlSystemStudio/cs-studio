@@ -93,6 +93,7 @@ public class ADLDynamicAttribute extends WidgetPart{
      */
     @Override
     void init() {
+        name = new String("dynamic attribute");
         set_isColorDefined(false);
     }
     
@@ -115,7 +116,6 @@ public class ADLDynamicAttribute extends WidgetPart{
         _color=false;
 
         for (FileLine parameter : adlDynamicAttribute.getBody()) {
-            System.out.println(parameter);
             if(parameter.getLine().trim().startsWith("//")){ //$NON-NLS-1$
                 continue;
             }
@@ -123,7 +123,6 @@ public class ADLDynamicAttribute extends WidgetPart{
 //            String[] row=ADLHelper.cleanString(parameter.getLine().substring(head.length()+1));
             String[] row = {parameter.getLine().replaceAll("\"", "").substring(head.length()+1)};
             head=head.trim().toLowerCase();
-            System.out.println("Head, val:(" + head + ")," + row[0]);
             if(head.equals("clr")){ //$NON-NLS-1$
                 _clr=FileLine.getIntValue(row[0]);
                 set_isColorDefined(true);
@@ -235,7 +234,6 @@ public class ADLDynamicAttribute extends WidgetPart{
 
 	@Override
 	public Object[] getChildren() {
-    	System.out.println("processing DynamicAttribute object getChildren");
     	Object[] ret = new Object[4];
 		ret[0] = new ADLResource(ADLResource.FOREGROUND_COLOR, _clr);
 		ret[1] = new ADLResource(ADLResource.VISIBILITY, _vis);

@@ -36,6 +36,7 @@ public class ADLPen extends WidgetPart {
 
 	@Override
 	void init() {
+        name = new String("pen");
 		_adlLimit = null;
 		_hasLimits = false;
 		lineColor = 0;

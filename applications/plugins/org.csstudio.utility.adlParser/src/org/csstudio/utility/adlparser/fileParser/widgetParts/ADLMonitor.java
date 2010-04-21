@@ -75,6 +75,7 @@ public class ADLMonitor extends WidgetPart{
      */
     @Override
     void init() {
+        name = new String("monitor");
         set_isBackColorDefined(false);
         set_isForeColorDefined(false);
     }
@@ -158,12 +159,10 @@ public class ADLMonitor extends WidgetPart{
 
 	@Override
 	public Object[] getChildren() {
-    	System.out.println("processing monitor object getChildren");
 		Object[] ret = new Object[3];
 		ret[0] = new ADLResource(ADLResource.FOREGROUND_COLOR, _clr);
 		ret[1] = new ADLResource(ADLResource.BACKGROUND_COLOR, _bclr);
 		ret[2] = new ADLResource(ADLResource.CHANNEL, _chan);
-//**		ret[3] = new ADLResource(ADLResource.POSTFIX, _postfix);
 		return ret;
 	}
 

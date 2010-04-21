@@ -90,7 +90,10 @@ public class ADLSensitive extends WidgetPart {
      * {@inheritDoc}
      */
     @Override
-    void init() {}
+    void init() {
+        name = new String("sensitive");
+
+    }
 
     /**
      * {@inheritDoc}
