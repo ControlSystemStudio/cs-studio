@@ -29,6 +29,25 @@ public class ADLResource {
 	public static final String HOPR_DEFAULT = "HOPR Default";
 	public static final String PREC_SRC = "PREC Source";
 	public static final String PREC_DEFAULT = "PREC Default";
+	public static final String PLOT_TITLE = "title";
+	public static final String PLOT_XLABEL = "x label";
+	public static final String PLOT_YLABEL = "y label";
+	public static final String PEN_COLOR = "color";
+	public static final String ADL_OBJECT = "object";
+	public static final String ADL_MONITOR = "monitor";
+	public static final String ADL_CONTROL = "control";
+	public static final String ADL_BASIC_ATTRIBUTE = "basic attribute";
+	public static final String ADL_CHILDREN = "children";
+	public static final String ADL_DYNAMIC_ATTRIBUTES = "dynamic attributes";
+	public static final String ADL_LIMITS = "limits";
+	public static final String ADL_MENU_ITEM = "menu item";
+	public static final String ADL_PEN = "pen";
+	public static final String ADL_PLOTCOM = "plotcom";
+	public static final String ADL_PLOTDATA = "plot data";
+	public static final String ADL_PLOT_TRACE = "trace";
+	public static final String ADL_POINTS = "points";
+	public static final String ADL_SENSITIVE = "sensitive";
+	public static final String ADL_RELATED_DISPLAY_ITEM = "trace";
 	
 	public ADLResource (String name, Object value){
 		this._name = name;
