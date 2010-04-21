@@ -207,6 +207,12 @@
             id="behavior.desy.textinput.connectiondefault"
             widgetTypeId="org.csstudio.sds.components.Textinput">
       </behavior>
+      <behavior
+            class="org.csstudio.sds.behavior.desy.ActionButtonBehavior"
+            description="DESY Connection ActionButton"
+            id="behavior.desy.actionbutton.connectiondefault"
+            widgetTypeId="org.csstudio.sds.components.ActionButton">
+      </behavior>
    </extension>
    
 </plugin>
