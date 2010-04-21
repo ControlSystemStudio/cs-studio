@@ -170,8 +170,8 @@ public class ADLControl extends WidgetPart{
      */
     public Object[] getChildren(){
     	Object[] ret = new Object[4];
-		ret[0] = new ADLResource(ADLResource.FOREGROUND_COLOR, _clr);
-		ret[1] = new ADLResource(ADLResource.BACKGROUND_COLOR, _bclr);
+		ret[0] = new ADLResource(ADLResource.FOREGROUND_COLOR, new Integer(_clr));
+		ret[1] = new ADLResource(ADLResource.BACKGROUND_COLOR, new Integer(_bclr));
 		ret[2] = new ADLResource(ADLResource.CHANNEL, _chan);
 		ret[3] = new ADLResource(ADLResource.CONNECTION_STATE, _connectionState);
 		return ret;
