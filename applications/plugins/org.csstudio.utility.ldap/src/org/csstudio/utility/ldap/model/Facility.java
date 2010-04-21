@@ -34,7 +34,7 @@ import javax.naming.directory.Attributes;
 
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.utility.ldap.LdapUtils;
+import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
 
 /**
  *
@@ -67,14 +67,14 @@ public class Facility {
             _iocs.put(econKey, ioc);
         }
         if (attributes != null) {
-            final Attribute emailAddressAttr = attributes.get(LdapUtils.ATTR_FIELD_RESPONSIBLE_PERSON);
+            final Attribute emailAddressAttr = attributes.get(LdapFieldsAndAttributes.ATTR_FIELD_RESPONSIBLE_PERSON);
             if (emailAddressAttr != null) {
                 try {
                     ioc.setResponsible((String)emailAddressAttr.get());
                 } catch (final NoSuchElementException nsee) {
-                    LOG.warn("Attribute " + LdapUtils.ATTR_FIELD_RESPONSIBLE_PERSON + " has not any values set.");
+                    LOG.warn("Attribute " + LdapFieldsAndAttributes.ATTR_FIELD_RESPONSIBLE_PERSON + " has not any values set.");
                 } catch (final NamingException ne) {
-                    LOG.warn("Attribute " + LdapUtils.ATTR_FIELD_RESPONSIBLE_PERSON + " could not be retrieved.\n" + ne.getExplanation());
+                    LOG.warn("Attribute " + LdapFieldsAndAttributes.ATTR_FIELD_RESPONSIBLE_PERSON + " could not be retrieved.\n" + ne.getExplanation());
                 }
             }
         }

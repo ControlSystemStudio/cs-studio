@@ -1,8 +1,8 @@
 package org.csstudio.config.authorizeid.ldap;
 
-import static org.csstudio.utility.ldap.LdapUtils.EPICS_AUTH_ID_FIELD_VALUE;
-import static org.csstudio.utility.ldap.LdapUtils.FIELD_ASSIGNMENT;
-import static org.csstudio.utility.ldap.LdapUtils.OU_FIELD_NAME;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EPICS_AUTH_ID_FIELD_VALUE;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.OU_FIELD_NAME;
 import static org.csstudio.utility.ldap.LdapUtils.any;
 
 import java.util.ArrayList;

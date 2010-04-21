@@ -21,8 +21,8 @@
  */
 package org.csstudio.utility.ldapUpdater.contextMenu;
 
-import static org.csstudio.utility.ldap.LdapUtils.ECON_FIELD_NAME;
-import static org.csstudio.utility.ldap.LdapUtils.EFAN_FIELD_NAME;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ECON_FIELD_NAME;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EFAN_FIELD_NAME;
 
 import java.util.Map;
 

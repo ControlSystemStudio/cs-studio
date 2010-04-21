@@ -21,8 +21,6 @@
  */
 package org.csstudio.utility.ldap;
 
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -46,39 +44,6 @@ public final class LdapUtils {
 
     private static final Logger LOG = CentralLogger.getInstance().getLogger(LdapUtils.class.getName());
 
-    public static final String OU_FIELD_NAME = "ou";
-    public static final String EPICS_CTRL_FIELD_VALUE = "EpicsControls";
-    public static final String EPICS_AUTH_ID_FIELD_VALUE = "EpicsAuthorizeID";
-
-    public static final String FIELD_SEPARATOR = ",";
-    public static final String FIELD_ASSIGNMENT = "=";
-    public static final String FIELD_WILDCARD = "*";
-
-    public static final String EREN_FIELD_NAME = "eren";
-    public static final String EFAN_FIELD_NAME = "efan";
-    public static final String ECON_FIELD_NAME = "econ";
-    public static final String ECOM_FIELD_NAME = "ecom";
-    public static final String ECOM_FIELD_VALUE = "EPICS-IOC";
-
-    public static final String EAIN_FIELD_NAME = "eain";
-
-
-    public static final String ATTR_FIELD_OBJECT_CLASS = "objectClass";
-    public static final String ATTR_VAL_OBJECT_CLASS = "epicsRecord";
-
-    public static final String ATTR_FIELD_RESPONSIBLE_PERSON = "epicsResponsibleName";
-
-    public static final Set<String> FORBIDDEN_SUBSTRINGS = new HashSet<String>();
-    static {
-        FORBIDDEN_SUBSTRINGS.add("/");
-        FORBIDDEN_SUBSTRINGS.add("\\");
-        FORBIDDEN_SUBSTRINGS.add("+");
-        FORBIDDEN_SUBSTRINGS.add("@");
-        FORBIDDEN_SUBSTRINGS.add("$");
-    }
-
-
-
     /**
      * Returns a filter for 'any' match of the field name (e.g. '<fieldName>=*').
      * @param fieldName the field to match any
@@ -86,7 +51,7 @@ public final class LdapUtils {
      */
     @Nonnull
     public static String any(@Nonnull final String fieldName) {
-        return fieldName + FIELD_ASSIGNMENT + FIELD_WILDCARD;
+        return fieldName + LdapFieldsAndAttributes.FIELD_ASSIGNMENT + LdapFieldsAndAttributes.FIELD_WILDCARD;
     }
 
     /**
@@ -125,8 +90,8 @@ public final class LdapUtils {
 
         final StringBuilder query = new StringBuilder();
         for (int i = 0; i < fieldsAndValues.length; i+=2) {
-            query.append(fieldsAndValues[i]).append(FIELD_ASSIGNMENT).append(fieldsAndValues[i + 1])
-            .append(FIELD_SEPARATOR);
+            query.append(fieldsAndValues[i]).append(LdapFieldsAndAttributes.FIELD_ASSIGNMENT).append(fieldsAndValues[i + 1])
+            .append(LdapFieldsAndAttributes.FIELD_SEPARATOR);
         }
         if (query.length() >= 1) {
             query.delete(query.length() - 1, query.length());
@@ -144,7 +109,7 @@ public final class LdapUtils {
         if (!StringUtil.hasLength(recordName)) {
             return false;
         }
-        for (final String s : FORBIDDEN_SUBSTRINGS) {
+        for (final String s : LdapFieldsAndAttributes.FORBIDDEN_SUBSTRINGS) {
             if (recordName.contains(s)) {
                 return true;
             }
@@ -284,13 +249,13 @@ public final class LdapUtils {
     @Nonnull
     public static LdapQueryResult parseLdapQueryResult(@Nonnull final String ldapPath) {
 
-        final String[] fields = ldapPath.split(FIELD_SEPARATOR);
+        final String[] fields = ldapPath.split(LdapFieldsAndAttributes.FIELD_SEPARATOR);
 
         final LdapQueryResult entry = new LdapQueryResult();
 
-        final String econPrefix = ECON_FIELD_NAME + FIELD_ASSIGNMENT;
-        final String efanPrefix = EFAN_FIELD_NAME + FIELD_ASSIGNMENT;
-        final String erenPrefix = EREN_FIELD_NAME + FIELD_ASSIGNMENT;
+        final String econPrefix = LdapFieldsAndAttributes.ECON_FIELD_NAME + LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
+        final String efanPrefix = LdapFieldsAndAttributes.EFAN_FIELD_NAME + LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
+        final String erenPrefix = LdapFieldsAndAttributes.EREN_FIELD_NAME + LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
 
         for (final String field : fields) {
             final String trimmedString = field.trim();

@@ -48,7 +48,7 @@ import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.statistic.Collector;
 import org.csstudio.utility.ldap.Activator;
-import org.csstudio.utility.ldap.LdapUtils;
+import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
 import org.csstudio.utility.ldap.connection.LDAPConnector;
 import org.csstudio.utility.ldap.engine.LdapReferences.Entry;
 import org.csstudio.utility.ldap.preference.PreferenceKey;
@@ -661,7 +661,7 @@ public final class Engine extends Job {
                 // System.out.print("write: ");
                 // TODO this hard coded string must be removed to the
                 // preferences
-                changeValue(LdapUtils.EREN_FIELD_NAME, currentChannel, modItems);
+                changeValue(LdapFieldsAndAttributes.EREN_FIELD_NAME, currentChannel, modItems);
                 // System.out.println(" finished!!!");
                 modItems = new ArrayList<ModificationItem>(maxNumberOfWritesProcessed);
                 i = 0;

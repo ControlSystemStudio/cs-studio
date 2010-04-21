@@ -24,9 +24,15 @@
  */
 package org.csstudio.utility.ldap.namespacebrowser.utility;
 
-import static org.csstudio.utility.ldap.LdapUtils.FIELD_SEPARATOR;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ECOM_FIELD_NAME;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ECON_FIELD_NAME;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EFAN_FIELD_NAME;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EREN_FIELD_NAME;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.FIELD_SEPARATOR;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.FIELD_WILDCARD;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.OU_FIELD_NAME;
 
-import org.csstudio.utility.ldap.LdapUtils;
 import org.csstudio.utility.nameSpaceBrowser.utility.Automat;
 import org.csstudio.utility.nameSpaceBrowser.utility.CSSViewParameter;
 
@@ -54,46 +60,46 @@ public class LDAP2Automat extends Automat {
 
 	    final CSSViewParameter parameter = new CSSViewParameter();
 
-	    final String[] selectionFields = selection.split(LdapUtils.FIELD_ASSIGNMENT);
+	    final String[] selectionFields = selection.split(FIELD_ASSIGNMENT);
 	    final String levelIdentifier = selectionFields[0];
 
 	    if (_storeName.contains(levelIdentifier)) { // navigation to the same or a higher level
 	        // Delete everything from _storeName from the beginning of the string to current level
-	        final String regexp = "(.*)" + levelIdentifier + LdapUtils.FIELD_ASSIGNMENT + "[^,]*,";
+	        final String regexp = "(.*)" + levelIdentifier + FIELD_ASSIGNMENT + "[^,]*,";
 	        _storeName = _storeName.replaceFirst(regexp, "");
 	    }
 
 
-		if(selection.startsWith("ou=")){
+		if(selection.startsWith(OU_FIELD_NAME + FIELD_ASSIGNMENT)){
 		    _root = selection;
 
 		    parameter.name = _root;
-			parameter.filter = "efan=*";
+			parameter.filter = EFAN_FIELD_NAME + FIELD_ASSIGNMENT + FIELD_WILDCARD;
 			parameter.newCSSView = true;
 
 			_currentState = NameSpaceBrowserState.CONTROLLER;
 
-		} else if(selection.startsWith("efan=")){
-		    if (selection.contains("*")) { // [All] efans selected
+		} else if(selection.startsWith(EFAN_FIELD_NAME + FIELD_ASSIGNMENT)){
+		    if (selection.contains(FIELD_WILDCARD)) { // [All] efans selected
 		        parameter.name = _root;
 		    } else {                       // <efan> selected
-		        parameter.name = "ecom=EPICS-IOC" + FIELD_SEPARATOR +
+		        parameter.name = ECOM_FIELD_NAME + FIELD_ASSIGNMENT + "EPICS-IOC" + FIELD_SEPARATOR +
 		                         selection + FIELD_SEPARATOR +
 		                         _root;
 		    }
 
-			parameter.filter = "econ=*";
+			parameter.filter = ECON_FIELD_NAME + FIELD_ASSIGNMENT + FIELD_WILDCARD;
 			parameter.newCSSView=true;
 
 			_currentState=NameSpaceBrowserState.CONTROLLER;
 
-		} else if(selection.startsWith("econ=")){
-            if(selection.contains("*")){ // [All] econs selected
+		} else if(selection.startsWith(ECON_FIELD_NAME + FIELD_ASSIGNMENT)){
+            if(selection.contains(FIELD_WILDCARD)){ // [All] econs selected
                 parameter.name = _storeName;
             } else{                      // <econ> selected
                 parameter.name = selection + FIELD_SEPARATOR +_storeName;
             }
-			parameter.filter = "eren=*";
+			parameter.filter = EREN_FIELD_NAME + FIELD_ASSIGNMENT + FIELD_WILDCARD;
 			parameter.newCSSView = false;
 
 			_currentState = NameSpaceBrowserState.RECORD;

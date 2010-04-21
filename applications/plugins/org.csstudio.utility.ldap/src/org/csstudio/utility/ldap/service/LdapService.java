@@ -23,6 +23,7 @@ package org.csstudio.utility.ldap.service;
 
 import java.util.Set;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.naming.directory.DirContext;
 
@@ -49,6 +50,7 @@ public interface LdapService {
      *
      * @throws InterruptedException
      */
+    @CheckForNull
     LdapSearchResult retrieveRecords(@Nonnull String facilityName,
                                      @Nonnull String iocName) throws InterruptedException;
 

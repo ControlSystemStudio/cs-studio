@@ -23,7 +23,7 @@ package org.csstudio.utility.ldapUpdater.mail;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.utility.ldap.LdapUtils;
+import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
 
 /**
  * Mail templates for notification purposes of the LDAP update process.
@@ -34,7 +34,7 @@ public enum NotificationType {
 
     UNALLOWED_CHARS("Forbidden character in LDAP entry",
                     "The LDAP entry contains at least one forbidden character\n" +
-                    "(not permitted are: " + LdapUtils.FORBIDDEN_SUBSTRINGS + ")"),
+                    "(not permitted are: " + LdapFieldsAndAttributes.FORBIDDEN_SUBSTRINGS + ")"),
 
     UNKNOWN_IOCS_IN_LDAP("IOC file missing!",
                          "The LDAP contains IOC entries, for which a corresponding IOC file could not be identified:");
