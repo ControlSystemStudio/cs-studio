@@ -35,6 +35,7 @@
 package org.csstudio.sds.behavior.desy;
 
 import org.csstudio.sds.components.model.TankModel;
+import org.epics.css.dal.context.ConnectionState;
 import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.MetaData;
 
@@ -47,6 +48,9 @@ import org.epics.css.dal.simple.MetaData;
  * @since 21.04.2010
  */
 public class TankConnectionBehavior extends AbstractDesyConnectionBehavior<TankModel> {
+
+    private String _defFillColor;
+    private String _defFillBackColor;
 
     /**
      * Constructor.
@@ -69,17 +73,49 @@ public class TankConnectionBehavior extends AbstractDesyConnectionBehavior<TankM
      * {@inheritDoc}
      */
     @Override
-    protected void doProcessValueChange(final TankModel model, final AnyData anyData) {
-        super.doProcessValueChange(model, anyData);
-
+    protected void doInitialize(final TankModel widget) {
+        super.doInitialize(widget);
+        _defFillColor = widget.getColor(TankModel.PROP_FILL_COLOR);
+        _defFillBackColor = widget.getColor(TankModel.PROP_FILLBACKGROUND_COLOR);
     }
+
     /**
      * {@inheritDoc}
      */
     @Override
-    protected void doProcessMetaDataChange(final TankModel widget, final MetaData metaData) {
-        // TODO Auto-generated method stub
+    protected void doProcessValueChange(final TankModel model, final AnyData anyData) {
+        super.doProcessValueChange(model, anyData);
+        // .. fill level (influenced by current value)
+        model.setPropertyValue(TankModel.PROP_VALUE, anyData.doubleValue());
+    }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doProcessConnectionStateChange(final TankModel widget, final ConnectionState connectionState) {
+//        super.doProcessConnectionStateChange(widget, connectionState);
+        String fillBackColor = (connectionState==ConnectionState.CONNECTED)?_defFillBackColor  : determineBackgroundColor(connectionState);
+        widget.setPropertyValue(TankModel.PROP_FILLBACKGROUND_COLOR, fillBackColor);
+        String fillColor = (connectionState==ConnectionState.CONNECTED)?_defFillColor  : determineBackgroundColor(connectionState);
+        widget.setPropertyValue(TankModel.PROP_FILL_COLOR, fillColor);
+
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doProcessMetaDataChange(final TankModel widget, final MetaData meta) {
+        if (meta != null) {
+            // .. limits
+            widget.setPropertyValue(TankModel.PROP_MIN, meta.getDisplayLow());
+            widget.setPropertyValue(TankModel.PROP_MAX, meta.getDisplayHigh());
+            widget.setPropertyValue(TankModel.PROP_HIHI_LEVEL, meta.getAlarmHigh());
+            widget.setPropertyValue(TankModel.PROP_HI_LEVEL, meta.getWarnHigh());
+            widget.setPropertyValue(TankModel.PROP_LOLO_LEVEL, meta.getAlarmLow());
+            widget.setPropertyValue(TankModel.PROP_LO_LEVEL, meta.getWarnLow());
+        }
     }
 
 }
