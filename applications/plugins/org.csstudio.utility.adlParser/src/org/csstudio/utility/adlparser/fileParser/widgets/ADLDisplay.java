@@ -58,7 +58,7 @@ public class ADLDisplay extends ADLAbstractWidget {
 		}
 		
 		catch (WrongADLFormatException ex) {
-			
+			ex.printStackTrace();
 		}
 	}
 
