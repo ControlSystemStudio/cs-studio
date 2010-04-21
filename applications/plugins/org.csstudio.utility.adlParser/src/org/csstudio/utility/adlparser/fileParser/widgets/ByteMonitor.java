@@ -1,12 +1,20 @@
 package org.csstudio.utility.adlparser.fileParser.widgets;
 
+import org.csstudio.utility.adlparser.Activator;
+import org.csstudio.utility.adlparser.IImageKeys;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
 import org.csstudio.utility.adlparser.fileParser.FileLine;
 import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLMonitor;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLObject;
 import org.csstudio.utility.adlparser.internationalization.Messages;
+import org.eclipse.jface.resource.ImageDescriptor;
 
+/**
+ * 
+ * @author hammonds
+ *
+ */
 public class ByteMonitor extends ADLAbstractWidget {
 	private String color_mode = new String("static");
 	private String direction = new String("right");
@@ -15,6 +23,8 @@ public class ByteMonitor extends ADLAbstractWidget {
 
 	public ByteMonitor(ADLWidget adlWidget) {
 		super(adlWidget);
+		name = new String("bar");
+		descriptor = Activator.getImageDescriptor(IImageKeys.ADL_BYTE_MONITOR);
 		try {
 			for (ADLWidget childWidget : adlWidget.getObjects()) {
 	        	if (childWidget.getType().equals("object")){
@@ -103,6 +113,11 @@ public class ByteMonitor extends ADLAbstractWidget {
 	 */
 	public int getEndBit() {
 		return endBit;
+	}
+	@Override
+	public Object[] getChildren() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

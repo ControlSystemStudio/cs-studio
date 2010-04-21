@@ -2,6 +2,8 @@ package org.csstudio.utility.adlparser.fileParser.widgets;
 
 import java.util.ArrayList;
 
+import org.csstudio.utility.adlparser.Activator;
+import org.csstudio.utility.adlparser.IImageKeys;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
 import org.csstudio.utility.adlparser.fileParser.FileLine;
 import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
@@ -10,12 +12,19 @@ import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLPen;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLPlotcom;
 import org.csstudio.utility.adlparser.internationalization.Messages;
 
+/**
+ * 
+ * @author hammonds
+ *
+ */
 public class StripChart extends ADLAbstractWidget {
 	private String units = new String("second");
 	private int period = 60;
 	private ArrayList<ADLPen> pens = new ArrayList<ADLPen>();
 	public StripChart(ADLWidget adlWidget) {
 		super(adlWidget);
+		name = new String("strip chart");
+		descriptor = Activator.getImageDescriptor(IImageKeys.ADL_STRIP_CHART);
 		try {
 			for (ADLWidget childWidget : adlWidget.getObjects()) {
 	        	if (childWidget.getType().equals("object")){
@@ -88,6 +97,12 @@ public class StripChart extends ADLAbstractWidget {
 	 */
 	public ArrayList<ADLPen> getPens() {
 		return pens;
+	}
+
+	@Override
+	public Object[] getChildren() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

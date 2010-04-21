@@ -10,7 +10,13 @@ import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLObject;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLPlotcom;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLPoints;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.RelatedDisplayItem;
+import org.eclipse.jface.resource.ImageDescriptor;
 
+/**
+ * 
+ * @author hammonds
+ *
+ */
 public abstract class ADLAbstractWidget {
 	protected ADLObject _adlObject= null;
 	protected ADLBasicAttribute _adlBasicAttribute= null;
@@ -32,9 +38,20 @@ public abstract class ADLAbstractWidget {
 	protected boolean _hasLimits = false;
 	protected boolean _hasPlotcom = false;
 	
+	protected ImageDescriptor descriptor = null;
+	protected String name = new String();
+
 	public ADLAbstractWidget(final ADLWidget adlWidget){
 		
 	}
+	
+	public final ImageDescriptor getImageDescriptor(){
+		return descriptor;
+	}
+	public final String getName(){
+		return name;
+	}
+    abstract public Object[] getChildren();
 	
 	public boolean hasADLObject(){
 		return _hasObject;

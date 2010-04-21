@@ -2,6 +2,8 @@ package org.csstudio.utility.adlparser.fileParser.widgets;
 
 import java.util.ArrayList;
 
+import org.csstudio.utility.adlparser.Activator;
+import org.csstudio.utility.adlparser.IImageKeys;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
 import org.csstudio.utility.adlparser.fileParser.FileLine;
 import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
@@ -9,6 +11,11 @@ import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLObject;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.RelatedDisplayItem;
 import org.csstudio.utility.adlparser.internationalization.Messages;
 
+/**
+ * 
+ * @author hammonds
+ *
+ */
 public class RelatedDisplay extends ADLAbstractWidget {
 	private String label;
 	private String visual;
@@ -20,7 +27,9 @@ public class RelatedDisplay extends ADLAbstractWidget {
 	
 	public RelatedDisplay(ADLWidget adlWidget) {
 		super(adlWidget);
-	    set_isForeColorDefined(false);
+		name = new String("related display");
+		descriptor = Activator.getImageDescriptor(IImageKeys.ADL_RELATED_DISPLAY);
+		set_isForeColorDefined(false);
 	    set_isBackColorDefined(false);
 
 		try {
@@ -167,6 +176,13 @@ public class RelatedDisplay extends ADLAbstractWidget {
 	 */
 	public String getVisual() {
 		return visual;
+	}
+
+
+	@Override
+	public Object[] getChildren() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
 

@@ -10,6 +10,11 @@ import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLChildren;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLDynamicAttribute;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLObject;
 
+/**
+ * 
+ * @author hammonds
+ *
+ */
 public class Composite extends ADLAbstractWidget {
 	private String _compositeFile = new String();
 	private boolean _hasCompositeFile = false;
@@ -17,6 +22,8 @@ public class Composite extends ADLAbstractWidget {
 	
 	public Composite(ADLWidget adlWidget) {
 		super(adlWidget);
+		name = new String("composite");
+		descriptor = null;
 		try {
 			for (ADLWidget childWidget : adlWidget.getObjects()) {
 	        	if (childWidget.getType().equals("object")){
@@ -24,7 +31,6 @@ public class Composite extends ADLAbstractWidget {
 	        		if (_adlObject != null){
 	        			_hasObject = true;
 	        		}
-	        		
 	        	}
 	        	else if (childWidget.getType().equals("children")){
 	        		ADLChildren adlChildren = new ADLChildren(childWidget);
@@ -85,7 +91,13 @@ public class Composite extends ADLAbstractWidget {
 	 * 
 	 * @return
 	 */
-	public ArrayList<ADLWidget> getChildren() {
+	public ArrayList<ADLWidget> getChildWidgets() {
 		return _children;
+	}
+
+	@Override
+	public Object[] getChildren() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

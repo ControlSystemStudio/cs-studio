@@ -5,7 +5,13 @@ import org.csstudio.utility.adlparser.fileParser.FileLine;
 import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLObject;
 import org.csstudio.utility.adlparser.internationalization.Messages;
+import org.eclipse.jface.resource.ImageDescriptor;
 
+/**
+ * 
+ * @author hammonds
+ *
+ */
 public class ADLDisplay extends ADLAbstractWidget {
 	private int _clr;
 	private int _bclr;
@@ -19,7 +25,8 @@ public class ADLDisplay extends ADLAbstractWidget {
 		super(adlWidget);
 		set_isBackColorDefined(false);
 		set_isForeColorDefined(false);
-		
+		name = new String("display");
+		descriptor = null;
 		try {
 			for (ADLWidget childWidget : adlWidget.getObjects()) {
 	        	if (childWidget.getType().equals("object")){
@@ -167,6 +174,13 @@ public class ADLDisplay extends ADLAbstractWidget {
 	 */
 	public boolean isForeColorDefined() {
 		return _isForeColorDefined;
+	}
+
+
+	@Override
+	public Object[] getChildren() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	

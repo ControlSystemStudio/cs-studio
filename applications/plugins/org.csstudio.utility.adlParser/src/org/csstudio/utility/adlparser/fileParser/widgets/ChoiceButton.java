@@ -1,14 +1,23 @@
 package org.csstudio.utility.adlparser.fileParser.widgets;
 
+import org.csstudio.utility.adlparser.Activator;
+import org.csstudio.utility.adlparser.IImageKeys;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
 import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLControl;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLObject;
 
+/**
+ * 
+ * @author hammonds
+ *
+ */
 public class ChoiceButton extends ADLAbstractWidget {
 
 	public ChoiceButton(ADLWidget adlWidget) {
 		super(adlWidget);
+		name = new String("choice button");
+		descriptor = Activator.getImageDescriptor(IImageKeys.ADL_CHOICE_BUTTON);
 		try {
 			for (ADLWidget childWidget : adlWidget.getObjects()) {
 	        	if (childWidget.getType().equals("object")){
@@ -31,6 +40,12 @@ public class ChoiceButton extends ADLAbstractWidget {
 		}
 		// TODO Add Color mode to ChoiceButton
 		// TODO Add Stacking to ChoiceButton
+	}
+
+	@Override
+	public Object[] getChildren() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
