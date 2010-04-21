@@ -7,6 +7,7 @@ import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLDynamicAttribute
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLLimits;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLMonitor;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLObject;
+import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLPlotcom;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLPoints;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.RelatedDisplayItem;
 
@@ -19,6 +20,7 @@ public abstract class ADLAbstractWidget {
 	protected RelatedDisplayItem[] _relatedDisplayItem = null;
 	protected ADLDynamicAttribute _adlDynamicAttribute = null;
 	protected ADLLimits _adlLimits = null;
+	protected ADLPlotcom _adlPlotcom = null;
 	
 	protected boolean _hasBasicAttribute = false;
 	protected boolean _hasObject = false;
@@ -28,6 +30,7 @@ public abstract class ADLAbstractWidget {
 	protected boolean _hasRelatedDisplayItem = false;
 	protected boolean _hasDynamicAttribute = false;
 	protected boolean _hasLimits = false;
+	protected boolean _hasPlotcom = false;
 	
 	public ADLAbstractWidget(final ADLWidget adlWidget){
 		
@@ -62,6 +65,10 @@ public abstract class ADLAbstractWidget {
 	}
 	
 	public boolean hasADLLimits(){
+		return _hasLimits;
+	}
+	
+	public boolean hasADLPlotcom(){
 		return _hasLimits;
 	}
 	
@@ -120,6 +127,13 @@ public abstract class ADLAbstractWidget {
 	 */
 	public ADLLimits getAdlLimits(){
 		return _adlLimits;
+	}
+
+	/**
+	 * @return ADLPlotcom
+	 */
+	public ADLPlotcom getAdlPlotcom(){
+		return _adlPlotcom;
 	}
 
 }	
