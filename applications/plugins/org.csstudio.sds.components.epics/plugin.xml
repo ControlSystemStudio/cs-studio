@@ -225,6 +225,174 @@
             id="behavior.desy.tank.connectiondefault"
             widgetTypeId="org.csstudio.sds.components.Tank">
       </behavior>
+      <behavior
+            class="org.csstudio.sds.behavior.desy.RectangelAlarmBehavior"
+            description="DESY Alarm Rectangel"
+            id="behavior.desy.rectangel.alarmdefault"
+            widgetTypeId="org.csstudio.sds.components.Rectangle">
+      </behavior>
+      <behavior
+            class="org.csstudio.sds.behavior.desy.RectangelConnectionBehavior"
+            description="DESY Connection Rectangel"
+            id="behavior.desy.rectangel.connectiondefault"
+            widgetTypeId="org.csstudio.sds.components.Rectangle">
+      </behavior>
+      <behavior
+            class="org.csstudio.sds.behavior.desy.EllipseAlarmBehavior"
+            description="DESY Alarm Ellipse"
+            id="behavior.desy.ellipse.alarmdefault"
+            widgetTypeId="org.csstudio.sds.components.Ellipse">
+      </behavior>
+      <behavior
+            class="org.csstudio.sds.behavior.desy.EllipseConnectionBehavior"
+            description="DESY Connection Ellipse"
+            id="behavior.desy.ellipse.connectiondefault"
+            widgetTypeId="org.csstudio.sds.components.Ellipse">
+      </behavior>
+      <behavior
+            class="org.csstudio.sds.behavior.desy.PolygonAlarmBehavior"
+            description="DESY Alarm Polygon"
+            id="behavior.desy.polygon.alarmdefault"
+            widgetTypeId="org.csstudio.sds.components.Polygon">
+      </behavior>
+      <behavior
+            class="org.csstudio.sds.behavior.desy.PolygonConnectionBehavior"
+            description="DESY Connection Polygon"
+            id="behavior.desy.polygon.connectiondefault"
+            widgetTypeId="org.csstudio.sds.components.Polygon">
+      </behavior>
+      <behavior
+            class="org.csstudio.sds.behavior.desy.PolylineAlarmBehavior"
+            description="DESY Alarm Polyline"
+            id="behavior.desy.polyline.alarmdefault"
+            widgetTypeId="org.csstudio.sds.components.Polyline">
+      </behavior>
+      <behavior
+            class="org.csstudio.sds.behavior.desy.PolylineConnectionBehavior"
+            description="DESY Connection Polyline"
+            id="behavior.desy.polyline.connectiondefault"
+            widgetTypeId="org.csstudio.sds.components.Polyline">
+      </behavior>
+      <behavior
+            class="org.csstudio.sds.behavior.desy.SixteenBinaryBarAlarmBehavior"
+            description="DESY Alarm Sixteen Binary Bar"
+            id="behavior.desy.sixteenbinarybar.alarmdefault"
+            widgetTypeId="org.csstudio.sds.components.SixteenBinaryBar">
+      </behavior>
+      <behavior
+            class="org.csstudio.sds.behavior.desy.SixteenBinaryBarConnectionBehavior"
+            description="DESY Connection Sixteen Binary Bar"
+            id="behavior.desy.sixteenbinarybar.connectiondefault"
+            widgetTypeId="org.csstudio.sds.components.SixteenBinaryBar">
+      </behavior>
+      <behavior
+            class="org.csstudio.sds.behavior.desy.ThumbWheelAlarmBehavior"
+            description="DESY Alarm Thumb Wheel"
+            id="behavior.desy.thumbwheel.alarmdefault"
+            widgetTypeId="org.csstudio.sds.components.ThumbWheel">
+      </behavior>
+      <behavior
+            class="org.csstudio.sds.behavior.desy.ThumbWheelConnectionBehavior"
+            description="DESY Connection Thumb Wheel"
+            id="behavior.desy.thumbwheel.connectiondefault"
+            widgetTypeId="org.csstudio.sds.components.ThumbWheel">
+      </behavior>
+      <behavior
+            class="org.csstudio.sds.behavior.desy.ThermometerAlarmBehavior"
+            description="DESY Alarm Thermometer"
+            id="behavior.desy.thermometer.alarmdefault"
+            widgetTypeId="org.csstudio.sds.components.Thermometer">
+      </behavior>
+      <behavior
+            class="org.csstudio.sds.behavior.desy.ThermometerConnectionBehavior"
+            description="DESY Connection Thermometer"
+            id="behavior.desy.thermometer.connectiondefault"
+            widgetTypeId="org.csstudio.sds.components.Thermometer">
+      </behavior>
+      <behavior
+            class="org.csstudio.sds.behavior.desy.ScaledSliderAlarmBehavior"
+            description="DESY Alarm Scaled Slider"
+            id="behavior.desy.scaledslider.alarmdefault"
+            widgetTypeId="org.csstudio.sds.components.ScaledSlider">
+      </behavior>
+      <behavior
+            class="org.csstudio.sds.behavior.desy.ScaledSliderConnectionBehavior"
+            description="DESY Connection Scaled Slider"
+            id="behavior.desy.scaledslider.connectiondefault"
+            widgetTypeId="org.csstudio.sds.components.ScaledSlider">
+      </behavior>
+      <behavior
+            class="org.csstudio.sds.behavior.desy.GaugeAlarmBehavior"
+            description="DESY Alarm Gauge"
+            id="behavior.desy.gauge.alarmdefault"
+            widgetTypeId="org.csstudio.sds.components.Gauge">
+      </behavior>
+      <behavior
+            class="org.csstudio.sds.behavior.desy.GaugeConnectionBehavior"
+            description="DESY Connection Gauge"
+            id="behavior.desy.Gauge.connectiondefault"
+            widgetTypeId="org.csstudio.sds.components.Gauge">
+      </behavior>
+      <behavior
+            class="org.csstudio.sds.behavior.desy.XMeterAlarmBehavior"
+            description="DESY Alarm XMeter"
+            id="behavior.desy.xmeter.alarmdefault"
+            widgetTypeId="org.csstudio.sds.components.XMeter">
+      </behavior>
+      <behavior
+            class="org.csstudio.sds.behavior.desy.XMeterConnectionBehavior"
+            description="DESY Connection XMeter"
+            id="behavior.desy.xmeter.connectiondefault"
+            widgetTypeId="org.csstudio.sds.components.XMeter">
+      </behavior>
+      <behavior
+            class="org.csstudio.sds.behavior.desy.KnobAlarmBehavior"
+            description="DESY Alarm Knob"
+            id="behavior.desy.knob.alarmdefault"
+            widgetTypeId="org.csstudio.sds.components.Knob">
+      </behavior>
+      <behavior
+            class="org.csstudio.sds.behavior.desy.KnobConnectionBehavior"
+            description="DESY Connection Knob"
+            id="behavior.desy.knob.connectiondefault"
+            widgetTypeId="org.csstudio.sds.components.Knob">
+      </behavior>
+      <behavior
+            class="org.csstudio.sds.behavior.desy.ArcAlarmBehavior"
+            description="DESY Alarm Arc"
+            id="behavior.desy.arc.alarmdefault"
+            widgetTypeId="org.csstudio.sds.components.Arc">
+      </behavior>
+      <behavior
+            class="org.csstudio.sds.behavior.desy.ArcConnectionBehavior"
+            description="DESY Connection Arc"
+            id="behavior.desy.arc.connectiondefault"
+            widgetTypeId="org.csstudio.sds.components.Arc">
+      </behavior>
+      <behavior
+            class="org.csstudio.sds.behavior.desy.ImageAlarmBehavior"
+            description="DESY Alarm Image"
+            id="behavior.desy.image.alarmdefault"
+            widgetTypeId="org.csstudio.sds.components.Image">
+      </behavior>
+      <behavior
+            class="org.csstudio.sds.behavior.desy.ImageConnectionBehavior"
+            description="DESY Connection Image"
+            id="behavior.desy.image.connectiondefault"
+            widgetTypeId="org.csstudio.sds.components.Image">
+      </behavior>
+      <behavior
+            class="org.csstudio.sds.behavior.desy.SwitchAlarmBehavior"
+            description="DESY Alarm Switch"
+            id="behavior.desy.switch.alarmdefault"
+            widgetTypeId="org.csstudio.sds.components.Switch">
+      </behavior>
+      <behavior
+            class="org.csstudio.sds.behavior.desy.SwitchConnectionBehavior"
+            description="DESY Connection Switch"
+            id="behavior.desy.switch.connectiondefault"
+            widgetTypeId="org.csstudio.sds.components.Switch">
+      </behavior>
    </extension>
    
 </plugin>
