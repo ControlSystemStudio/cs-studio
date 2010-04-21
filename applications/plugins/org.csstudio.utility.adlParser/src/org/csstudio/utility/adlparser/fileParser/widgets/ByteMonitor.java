@@ -1,11 +1,17 @@
 package org.csstudio.utility.adlparser.fileParser.widgets;
 
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
+import org.csstudio.utility.adlparser.fileParser.FileLine;
 import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLMonitor;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLObject;
+import org.csstudio.utility.adlparser.internationalization.Messages;
 
 public class ByteMonitor extends ADLAbstractWidget {
+	private String color_mode = new String("static");
+	private String direction = new String("right");
+	private int startBit = 15;
+	private int endBit = 0;
 
 	public ByteMonitor(ADLWidget adlWidget) {
 		super(adlWidget);
@@ -25,14 +31,78 @@ public class ByteMonitor extends ADLAbstractWidget {
 	        		}
 	        	}
 			}
+			for (FileLine fileLine : adlWidget.getBody()){
+				String bodyPart = fileLine.getLine();
+				String[] row = bodyPart.trim().split("=");
+				if (row.length < 2){
+					throw new WrongADLFormatException(Messages.Label_WrongADLFormatException_Parameter_Begin + bodyPart + Messages.Label_WrongADLFormatException_Parameter_End);
+				}
+				if (FileLine.argEquals(row[0], "clrmod")){
+					setColor_mode(FileLine.getTrimmedValue(row[1]));
+				}
+				else if (FileLine.argEquals(row[0], "direction")){
+					setDirection(FileLine.getTrimmedValue(row[1]));
+				}
+				else if (FileLine.argEquals(row[0], "sbit")){
+					setStartBit(FileLine.getIntValue(row[1]));
+				}
+				else if (FileLine.argEquals(row[0], "ebit")){
+					setEndBit(FileLine.getIntValue(row[1]));
+				}
+			}
 		}
 		catch (WrongADLFormatException ex) {
 			ex.printStackTrace();
 		}
+	}
+	/**
+	 * @param color_mode the color_mode to set
+	 */
+	private void setColor_mode(String color_mode) {
+		this.color_mode = color_mode;
+	}
 
-		// TODO Add Direction to ByteMonitor
-		// TODO Add ColorMode to ByteMonitor
-		// TODO Add start bit & end bit to Byte Monitor
+	/**
+	 * @return the color_mode
+	 */
+	public String getColor_mode() {
+		return color_mode;
+	}
+	/**
+	 * @param direction the direction to set
+	 */
+	private void setDirection(String direction) {
+		this.direction = direction;
+	}
+	/**
+	 * @return the direction
+	 */
+	public String getDirection() {
+		return direction;
+	}
+	/**
+	 * @param startBit the startBit to set
+	 */
+	private void setStartBit(int startBit) {
+		this.startBit = startBit;
+	}
+	/**
+	 * @return the startBit
+	 */
+	public int getStartBit() {
+		return startBit;
+	}
+	/**
+	 * @param endBit the endBit to set
+	 */
+	private void setEndBit(int endBit) {
+		this.endBit = endBit;
+	}
+	/**
+	 * @return the endBit
+	 */
+	public int getEndBit() {
+		return endBit;
 	}
 
 }
