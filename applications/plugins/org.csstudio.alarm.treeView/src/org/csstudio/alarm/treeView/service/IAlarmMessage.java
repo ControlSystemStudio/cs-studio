@@ -20,8 +20,6 @@
  */
 package org.csstudio.alarm.treeView.service;
 
-import java.util.Map;
-
 /**
  * Is used by the AlarmService to represent a message from DAL or JMS resp.
  * 
@@ -31,5 +29,5 @@ import java.util.Map;
  * @since 21.04.2010
  */
 public interface IAlarmMessage {
-    Map<String, String> getMap();
+    String getString(String key) throws AlarmMessageException;
 }

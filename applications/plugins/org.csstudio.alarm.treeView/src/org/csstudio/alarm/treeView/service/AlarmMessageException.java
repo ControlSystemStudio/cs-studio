@@ -21,29 +21,31 @@
 package org.csstudio.alarm.treeView.service;
 
 /**
- * This exception announces a problem with the connection
+ * This exception announces a problem with the parsing of the message.
  * 
  * @author jpenning
  * @author $Author$
  * @version $Revision$
  * @since 21.04.2010
  */
-public class AlarmConnectionException extends Exception {
-    private static final long serialVersionUID = -6008674229748613308L;
+public class AlarmMessageException extends Exception {
     
-    public AlarmConnectionException(final String message, final Throwable cause) {
+    public AlarmMessageException() {
+        super();
+    }
+    
+    public AlarmMessageException(final String message, final Throwable cause) {
         super(message, cause);
     }
     
-    public AlarmConnectionException(final String message) {
+    public AlarmMessageException(final String message) {
         super(message);
     }
     
-    public AlarmConnectionException(final Throwable cause) {
+    public AlarmMessageException(final Throwable cause) {
         super(cause);
     }
     
-    public AlarmConnectionException() {
-        super();
-    }
+    private static final long serialVersionUID = 3758742931828763985L;
+    
 }

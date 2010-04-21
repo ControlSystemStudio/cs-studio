@@ -38,6 +38,6 @@ public interface IAlarmConnection {
                                       IAlarmListener listener,
                                       String[] topics) throws AlarmConnectionException;
     
-    void disconnect() throws AlarmConnectionException;
+    void disconnect();
     
 }

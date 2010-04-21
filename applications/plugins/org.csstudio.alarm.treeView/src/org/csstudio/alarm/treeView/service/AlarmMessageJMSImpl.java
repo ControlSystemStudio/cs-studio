@@ -20,48 +20,40 @@
  */
 package org.csstudio.alarm.treeView.service;
 
-import org.csstudio.platform.utility.jms.IConnectionMonitor;
+import javax.jms.JMSException;
+import javax.jms.MapMessage;
+
+import org.csstudio.platform.logging.CentralLogger;
 
 /**
- * This is a callback (called by connection state changes) for the JMS implementation of the
- * AlarmService.
- * 
- * This is built as a class based adapter.
+ * JMS based implementation of the message abstraction of the AlarmService
  * 
  * @author jpenning
  * @author $Author$
  * @version $Revision$
  * @since 21.04.2010
  */
-public class AlarmConnectionMonitorJMSImpl implements IAlarmConnectionMonitor, IConnectionMonitor {
+public class AlarmMessageJMSImpl implements IAlarmMessage {
+    private final CentralLogger _log = CentralLogger.getInstance();
     
-    /**
-     * {@inheritDoc}
-     */
-    public void onConnect() {
-        // TODO Hier kommmt die Nutz-Implementierung rein.
-        // Das kann auch per Template Method gebaut werden.
+    private final MapMessage mapMessage;
+    
+    public AlarmMessageJMSImpl(final MapMessage mapMessage) {
+        this.mapMessage = mapMessage;
     }
     
     /**
      * {@inheritDoc}
      */
-    public void onDisconnect() {
-        // TODO Hier kommmt die Nutz-Implementierung rein.
-    }
-    
-    /**
-     * Is adapted to the IAlarmConnectionMonitor
-     */
-    public void onConnected() {
-        onConnect();
-    }
-    
-    /**
-     * Is adapted to the IAlarmConnectionMonitor
-     */
-    public void onDisconnected() {
-        onDisconnect();
+    public String getString(final String key) throws AlarmMessageException {
+        String result = null;
+        try {
+            result = mapMessage.getString(key);
+        } catch (JMSException e) {
+            _log.error(this, "Error analyzing JMS message", e);
+            throw new AlarmMessageException(e);
+        }
+        return result;
     }
     
 }

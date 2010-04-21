@@ -17,18 +17,15 @@
  * HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
-package org.csstudio.alarm.treeView.jms;
+package org.csstudio.alarm.treeView.service;
 
 import java.util.Date;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import javax.jms.JMSException;
-import javax.jms.MapMessage;
-import javax.jms.Message;
-import javax.jms.MessageListener;
-
 import org.csstudio.alarm.treeView.EventtimeUtil;
+import org.csstudio.alarm.treeView.jms.AlarmTreeUpdater;
+import org.csstudio.alarm.treeView.jms.PendingUpdate;
 import org.csstudio.alarm.treeView.model.Severity;
 import org.csstudio.platform.logging.CentralLogger;
 
@@ -38,7 +35,7 @@ import org.csstudio.platform.logging.CentralLogger;
  * 
  * @author Joerg Rathlev
  */
-public class AlarmMessageListener implements MessageListener {
+public class AlarmMessageListener implements IAlarmListener {
     
     /**
      * The logger used by this listener.
@@ -159,7 +156,7 @@ public class AlarmMessageListener implements MessageListener {
     /**
      * Creates a new alarm message listener.
      */
-    protected AlarmMessageListener() {
+    public AlarmMessageListener() {
         _worker = new QueueWorker();
         _worker.start();
     }
@@ -182,34 +179,22 @@ public class AlarmMessageListener implements MessageListener {
     }
     
     /**
-     * Called when a JMS message is received. The message is interpreted as an alarm message. If the
+     * Called when a message is received. The message is interpreted as an alarm message. If the
      * message contains valid information, the respective updates of the alarm tree are triggered.
-     * 
-     * @param message
-     *            the JMS message.
      */
-    public void onMessage(final Message message) {
+    public void onMessage(final IAlarmMessage message) {
         _log.debug(this, "received: " + message);
-        if (message instanceof MapMessage) {
-            try {
-                processAlarmMessage((MapMessage) message);
-            } catch (JMSException e) {
-                _log.error(this, "error processing JMS message", e);
-            }
-        } else {
-            _log.warn(this, "received message which is not a MapMessage: " + message);
+        try {
+            processAlarmMessage(message);
+        } catch (AlarmMessageException e) {
+            _log.error(this, "error processing message", e);
         }
     }
     
     /**
      * Processes an alarm message.
-     * 
-     * @param message
-     *            the alarm message.
-     * @throws JMSException
-     *             if a JMS error occurs.
      */
-    private void processAlarmMessage(final MapMessage message) throws JMSException {
+    private void processAlarmMessage(final IAlarmMessage message) throws AlarmMessageException {
         String name = message.getString("NAME");
         if (isAcknowledgement(message)) {
             _log.debug(this, "received ack: name=" + name);
@@ -245,19 +230,15 @@ public class AlarmMessageListener implements MessageListener {
     
     /**
      * Returns whether the given message is an alarm acknowledgement.
-     * 
-     * @param message
-     *            the message.
-     * @return <code>true</code> if the message is an alarm acknowledgement, <code>false</code>
-     *         otherwise.
      */
-    private boolean isAcknowledgement(final MapMessage message) {
+    private boolean isAcknowledgement(final IAlarmMessage message) {
+        String ack = null;
         try {
-            String ack = message.getString("ACK");
-            return ack != null && ack.equals("TRUE");
-        } catch (JMSException e) {
-            return false;
+            ack = message.getString("ACK");
+        } catch (AlarmMessageException e) {
+            // ok, ack will be null
         }
+        return ack != null && ack.equals("TRUE");
     }
     
 }
