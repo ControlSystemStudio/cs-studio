@@ -26,7 +26,7 @@ import org.epics.css.dal.simple.MetaData;
 import org.epics.css.dal.simple.Severity;
 
 /**
- * TODO (hrickens) :
+ * Default DESY-Behavior for the {@link TankModel} widget with Connection state and Alarms.
  *
  * @author hrickens
  * @author $Author$
@@ -50,6 +50,11 @@ public class TankAlarmBehavior extends AbstractDesyAlarmBehavior<TankModel> {
         addInvisiblePropertyId(TankModel.PROP_TRANSPARENT);
         addInvisiblePropertyId(TankModel.PROP_ACTIONDATA);
         addInvisiblePropertyId(TankModel.PROP_BORDER_STYLE);
+        addInvisiblePropertyId(TankModel.PROP_SHOW_HI);
+        addInvisiblePropertyId(TankModel.PROP_SHOW_HIHI);
+        addInvisiblePropertyId(TankModel.PROP_SHOW_LO);
+        addInvisiblePropertyId(TankModel.PROP_SHOW_LOLO);
+        addInvisiblePropertyId(TankModel.PROP_VALUE);
     }
 
     /**
@@ -78,7 +83,6 @@ public class TankAlarmBehavior extends AbstractDesyAlarmBehavior<TankModel> {
      */
     @Override
     protected void doProcessConnectionStateChange(final TankModel widget, final ConnectionState connectionState) {
-//        super.doProcessConnectionStateChange(widget, connectionState);
         widget.setPropertyValue(TankModel.PROP_FILLBACKGROUND_COLOR, determineBackgroundColor(connectionState));
         widget.setPropertyValue(TankModel.PROP_FILL_COLOR, determineBackgroundColor(connectionState));
 
@@ -94,10 +98,18 @@ public class TankAlarmBehavior extends AbstractDesyAlarmBehavior<TankModel> {
             // .. limits
             widget.setPropertyValue(TankModel.PROP_MIN, meta.getDisplayLow());
             widget.setPropertyValue(TankModel.PROP_MAX, meta.getDisplayHigh());
+
             widget.setPropertyValue(TankModel.PROP_HIHI_LEVEL, meta.getAlarmHigh());
+            widget.setPropertyValue(TankModel.PROP_SHOW_HIHI, !Double.isNaN(meta.getAlarmHigh()));
+
             widget.setPropertyValue(TankModel.PROP_HI_LEVEL, meta.getWarnHigh());
+            widget.setPropertyValue(TankModel.PROP_SHOW_HI, !Double.isNaN(meta.getWarnHigh()));
+
             widget.setPropertyValue(TankModel.PROP_LOLO_LEVEL, meta.getAlarmLow());
+            widget.setPropertyValue(TankModel.PROP_SHOW_LOLO, !Double.isNaN(meta.getAlarmLow()));
+
             widget.setPropertyValue(TankModel.PROP_LO_LEVEL, meta.getWarnLow());
+            widget.setPropertyValue(TankModel.PROP_SHOW_LO, !Double.isNaN(meta.getWarnLow()));
         }
    }
 

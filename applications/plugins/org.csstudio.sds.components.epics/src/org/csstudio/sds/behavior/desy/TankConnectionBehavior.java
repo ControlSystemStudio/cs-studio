@@ -40,7 +40,7 @@ import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.MetaData;
 
 /**
- * TODO (hrickens) :
+ * Default DESY-Behavior for the {@link TankModel} widget with Connection state.
  *
  * @author hrickens
  * @author $Author$
