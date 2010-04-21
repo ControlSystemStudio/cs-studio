@@ -28,6 +28,7 @@ import java.util.ArrayList;
 
 import org.csstudio.utility.adlparser.internationalization.Messages;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
+import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
 
 /**
  * @author hrickens
@@ -35,7 +36,7 @@ import org.csstudio.utility.adlparser.fileParser.ADLWidget;
  * @version $Revision$
  * @since 21.09.2007
  */
-public class ADLChildren {
+public class ADLChildren extends WidgetPart {
 
     /**
      * ADL Grouping Container Children's.
@@ -44,12 +45,11 @@ public class ADLChildren {
 
     /**
      * @param adlChildren 
+     * @throws WrongADLFormatException 
+     * @throws WrongADLFormatException 
      */
-    public ADLChildren(final ADLWidget adlChildren) {
-        assert adlChildren.isType("children") : Messages.ADLObject_AssertError_Begin+adlChildren.getType()+Messages.ADLObject_AssertError_End+"\r\n"+adlChildren; //$NON-NLS-1$
-
-    	_childrens = adlChildren.getObjects();
-        
+    public ADLChildren(ADLWidget adlChildren) throws WrongADLFormatException {
+    	super(adlChildren);
     }
     
     /**
@@ -58,4 +58,23 @@ public class ADLChildren {
     public final ArrayList<ADLWidget> getAdlChildrens() {
         return _childrens;
     }
+
+	@Override
+	public Object[] getChildren() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	void init() {
+        name = new String("children");
+ 	}
+
+	@Override
+	void parseWidgetPart(ADLWidget adlChildren) throws WrongADLFormatException {
+    	assert adlChildren.isType("children") : Messages.ADLObject_AssertError_Begin+adlChildren.getType()+Messages.ADLObject_AssertError_End+"\r\n"+adlChildren; //$NON-NLS-1$
+
+    	_childrens = adlChildren.getObjects();
+		
+	}
 }
