@@ -38,8 +38,8 @@ public class ADLPlotcom extends WidgetPart {
 		ret[0] = new ADLResource(ADLResource.FOREGROUND_COLOR, new Integer(_clr));
 		ret[1] = new ADLResource(ADLResource.BACKGROUND_COLOR, new Integer(_bclr));
 		ret[2] = new ADLResource(ADLResource.CHANNEL, title);
-		ret[3] = new ADLResource(ADLResource.CONNECTION_STATE, xLabel);
-		ret[4] = new ADLResource(ADLResource.CONNECTION_STATE, yLabel);
+		ret[3] = new ADLResource(ADLResource.PLOT_XLABEL, xLabel);
+		ret[4] = new ADLResource(ADLResource.PLOT_YLABEL, yLabel);
 		
 		return ret;
 	}
