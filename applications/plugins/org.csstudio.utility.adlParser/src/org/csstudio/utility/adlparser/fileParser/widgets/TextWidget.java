@@ -1,7 +1,10 @@
 package org.csstudio.utility.adlparser.fileParser.widgets;
 
+import java.util.ArrayList;
+
 import org.csstudio.utility.adlparser.Activator;
 import org.csstudio.utility.adlparser.IImageKeys;
+import org.csstudio.utility.adlparser.fileParser.ADLResource;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
 import org.csstudio.utility.adlparser.fileParser.FileLine;
 import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
@@ -16,10 +19,10 @@ import org.csstudio.utility.adlparser.internationalization.Messages;
  *
  */
 public class TextWidget extends ADLAbstractWidget {
-	private String textix;
-	private String alignment;
-	private String clrmod;
-	private String format;
+	private String textix = new String();
+	private String alignment = new String();
+	private String color_mode = new String();
+	private String format = new String();
 	
 	public TextWidget(ADLWidget adlWidget) {
 		super(adlWidget);
@@ -59,8 +62,8 @@ public class TextWidget extends ADLAbstractWidget {
 				else if (FileLine.argEquals(row[0], "align")){
 					setAlignment(FileLine.getTrimmedValue(row[1]));
 				}
-				else if (FileLine.argEquals(row[0], "clrmod")){
-					setClrmod(FileLine.getTrimmedValue(row[1]));
+				else if (FileLine.argEquals(row[0], "color_mode")){
+					setColor_mode(FileLine.getTrimmedValue(row[1]));
 				}
 				else if (FileLine.argEquals(row[0], "format")){
 					setFormat(FileLine.getTrimmedValue(row[1]));
@@ -99,15 +102,15 @@ public class TextWidget extends ADLAbstractWidget {
 	/**
 	 * @param clrmod the clrmod to set
 	 */
-	public void setClrmod(String clrmod) {
-		this.clrmod = clrmod;
+	public void setColor_mode(String clrmod) {
+		this.color_mode = clrmod;
 	}
 
 	/**
 	 * @return the clrmod
 	 */
-	public String getClrmod() {
-		return clrmod;
+	public String getColor_mode() {
+		return color_mode;
 	}
 
 	/**
@@ -126,8 +129,15 @@ public class TextWidget extends ADLAbstractWidget {
 
 	@Override
 	public Object[] getChildren() {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<Object> ret = new ArrayList<Object>();
+		if (_adlObject != null) ret.add( _adlObject);
+		if (_adlBasicAttribute != null) ret.add( _adlBasicAttribute);
+		if (_adlDynamicAttribute != null) ret.add( _adlDynamicAttribute);
+		if (!(color_mode.equals(""))) ret.add(new ADLResource(ADLResource.COLOR_MODE, color_mode));
+		if (!(alignment.equals(""))) ret.add(new ADLResource(ADLResource.TEXT_ALIGNMENT, alignment));
+		if (!(format.equals(""))) ret.add(new ADLResource(ADLResource.TEXT_FORMAT, format));
+		if (!(textix.equals(""))) ret.add(new ADLResource(ADLResource.TEXT_TEXTIX, textix));
+		return ret.toArray();
 	}
 	
 }
