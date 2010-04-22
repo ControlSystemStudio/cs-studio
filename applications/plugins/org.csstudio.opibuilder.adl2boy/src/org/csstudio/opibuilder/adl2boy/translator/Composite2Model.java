@@ -15,7 +15,7 @@ public class Composite2Model extends AbstractADL2Model {
 		super(adlWidget, colorMap, parentModel);
 		Composite compositeWidget = new Composite(adlWidget);
 
-		if (!compositeWidget.hasCompositeFile()) {
+		if (compositeWidget.hasCompositeFile()) {
 			containerModel = new LinkingContainerModel();
 		}
 		else {
@@ -30,7 +30,7 @@ public class Composite2Model extends AbstractADL2Model {
 				setADLObjectProps(compositeWidget, containerModel);
 			}
 		}
-		if (!compositeWidget.hasCompositeFile()) {
+		if (compositeWidget.hasCompositeFile()) {
 		}
 		else {
 			TranslatorUtils.ConvertChildren(compositeWidget.getChildWidgets(), containerModel, colorMap);
