@@ -1,9 +1,13 @@
 package org.csstudio.utility.adlparser;
 
+import java.util.ArrayList;
+
 import org.csstudio.utility.adlparser.fileParser.ADLResource;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
 import org.csstudio.utility.adlparser.fileParser.ADLWidgetUtils;
+import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLChildren;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.WidgetPart;
+import org.csstudio.utility.adlparser.fileParser.widgets.ADLAbstractWidget;
 import org.eclipse.jface.viewers.TreeNodeContentProvider;
 
 public class ADLTreeContentProvider extends TreeNodeContentProvider {
@@ -17,7 +21,14 @@ public class ADLTreeContentProvider extends TreeNodeContentProvider {
 		//TODO switch to use WidgetParts and Widgets to get more complete entries
 		if (parentElement instanceof ADLWidget){
 			rootWidget = (ADLWidget)parentElement;
-			return ADLWidgetUtils.getADLWidgetChildren(rootWidget);
+			Object widgets[] = ADLWidgetUtils.adlWidgetArray2ObjectArray(rootWidget.getObjects());
+			return widgets;
+		}
+		else if (parentElement instanceof ADLAbstractWidget){
+			return ((ADLAbstractWidget)parentElement).getChildren();
+		}
+		else if (parentElement instanceof ADLChildren){
+			return ADLWidgetUtils.adlWidgetArray2ObjectArray( ((ADLChildren)parentElement).getAdlChildrens());
 		}
 		else if (parentElement instanceof WidgetPart){
 			return ((WidgetPart)parentElement).getChildren();
@@ -26,7 +37,10 @@ public class ADLTreeContentProvider extends TreeNodeContentProvider {
 			Object [] ret = { ((ADLResource)parentElement).getValue() };
 			return  ret;
 		}
-		return new Object[0];
+		else {
+			Object [] ret = { ((ADLResource)parentElement).getValue() };
+			return  ret;
+		}
 	}
 
 	@Override
@@ -34,7 +48,14 @@ public class ADLTreeContentProvider extends TreeNodeContentProvider {
 		//TODO switch to use WidgetParts and Widgets to get more complete entries
 		if (element instanceof ADLWidget){
 			rootWidget = (ADLWidget)element;
-			if ((ADLWidgetUtils.getADLWidgetChildren(rootWidget)).length > 0 ){
+			if ( (ADLWidgetUtils.adlWidgetArray2ObjectArray(rootWidget.getObjects())).length > 0 ){
+				return true;
+			}
+		}
+		else if (element instanceof ADLAbstractWidget ){
+			ADLAbstractWidget adlWidget = (ADLAbstractWidget)element;
+			System.out.println(adlWidget.toString() + " " + adlWidget.getChildren().length);
+			if (adlWidget.getChildren().length > 0 ){
 				return true;
 			}
 		}
@@ -48,7 +69,20 @@ public class ADLTreeContentProvider extends TreeNodeContentProvider {
 		else if (element instanceof ADLResource){
 			return true;
 		}
-		return false;
+		else if(element instanceof ArrayList){
+			int numADLWidgets = 0;
+			try {
+				ArrayList<ADLWidget>widgetList = (ArrayList<ADLWidget>)element;
+				if( widgetList.size() > 0) {
+					return true;
+				}
+			}
+			catch (ClassCastException ex){
+				ex.printStackTrace();
+			}
+		}
+
+	return false;
 	}
 
 	@Override
@@ -56,7 +90,10 @@ public class ADLTreeContentProvider extends TreeNodeContentProvider {
 		//TODO switch to use WidgetParts and Widgets to get more complete entries
 		if (inputElement instanceof ADLWidget){
 			rootWidget = (ADLWidget)inputElement;
-			return ADLWidgetUtils.getADLWidgetChildren(rootWidget);
+			return ADLWidgetUtils.adlWidgetArray2ObjectArray(rootWidget.getObjects());
+		}
+		else if (inputElement instanceof ADLAbstractWidget){
+			return ((ADLAbstractWidget)inputElement).getChildren();
 		}
 		else if (inputElement instanceof WidgetPart){
 			return ((WidgetPart)inputElement).getChildren();
