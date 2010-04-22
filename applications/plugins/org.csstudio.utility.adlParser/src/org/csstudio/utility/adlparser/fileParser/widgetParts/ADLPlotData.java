@@ -1,5 +1,8 @@
 package org.csstudio.utility.adlparser.fileParser.widgetParts;
 
+import java.util.ArrayList;
+
+import org.csstudio.utility.adlparser.fileParser.ADLResource;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
 import org.csstudio.utility.adlparser.fileParser.FileLine;
 import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
@@ -17,7 +20,12 @@ public class ADLPlotData extends WidgetPart {
 
 	@Override
 	public Object[] getChildren() {
-		return null;
+		ArrayList<Object> ret = new ArrayList<Object>();
+		ret.add(new ADLResource(ADLResource.PLOT_AXIS_STYLE, axisStyle));
+		ret.add(new ADLResource(ADLResource.PLOT_RANGE_STYLE, rangeStyle));
+		ret.add(new ADLResource(ADLResource.PLOT_RANGE_MIN, new Float(minRange)));
+		ret.add(new ADLResource(ADLResource.PLOT_RANGE_MAX, new Float(maxRange)));
+		return ret.toArray();
 	}
 
 	@Override

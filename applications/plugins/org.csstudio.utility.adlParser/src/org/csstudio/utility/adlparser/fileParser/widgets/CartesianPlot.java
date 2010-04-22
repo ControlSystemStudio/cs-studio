@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.csstudio.utility.adlparser.Activator;
 import org.csstudio.utility.adlparser.IImageKeys;
+import org.csstudio.utility.adlparser.fileParser.ADLResource;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
 import org.csstudio.utility.adlparser.fileParser.FileLine;
 import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
@@ -12,7 +13,6 @@ import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLPlotData;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLPlotTrace;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLPlotcom;
 import org.csstudio.utility.adlparser.internationalization.Messages;
-import org.eclipse.jface.resource.ImageDescriptor;
 
 /**
  * 
@@ -208,8 +208,24 @@ public class CartesianPlot extends ADLAbstractWidget {
 
 	@Override
 	public Object[] getChildren() {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<Object> ret = new ArrayList<Object>();
+		if (_adlObject != null) ret.add( _adlObject);
+		if (_adlPlotcom != null) ret.add( _adlPlotcom);
+		if (!count.equals("")) ret.add(new ADLResource(ADLResource.PLOT_COUNT, count));
+		if (!erase.equals("")) ret.add(new ADLResource(ADLResource.PLOT_ERASE, erase));
+		if (!trigger.equals("")) ret.add(new ADLResource(ADLResource.PLOT_TRIGGER, trigger));
+		ret.add(new ADLResource(ADLResource.PLOT_ERASE_MODE, eraseMode));
+		ret.add(new ADLResource(ADLResource.PLOT_STYLE, plotStyle));
+		ret.add(new ADLResource(ADLResource.PLOT_MODE, plotMode));
+		if ( xAxisData!=null ) ret.add(new ADLResource(ADLResource.X_AXIS_DATA, xAxisData));
+		if ( y1AxisData!=null ) ret.add(new ADLResource(ADLResource.Y1_AXIS_DATA, y1AxisData));
+		if ( y2AxisData!=null ) ret.add(new ADLResource(ADLResource.Y2_AXIS_DATA, y2AxisData));
+		for (ADLPlotTrace trace : traces){
+			if (trace!=null){
+				ret.add(trace);
+			}
+		}
+		return ret.toArray();
 	}
 
 }

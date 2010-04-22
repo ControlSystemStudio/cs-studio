@@ -1,7 +1,10 @@
 package org.csstudio.utility.adlparser.fileParser.widgets;
 
+import java.util.ArrayList;
+
 import org.csstudio.utility.adlparser.Activator;
 import org.csstudio.utility.adlparser.IImageKeys;
+import org.csstudio.utility.adlparser.fileParser.ADLResource;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
 import org.csstudio.utility.adlparser.fileParser.FileLine;
 import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
@@ -105,8 +108,14 @@ public class Image extends ADLAbstractWidget {
 
 	@Override
 	public Object[] getChildren() {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<Object> ret = new ArrayList<Object>();
+		if (_adlObject != null) ret.add( _adlObject);
+		if (_adlDynamicAttribute != null) ret.add( _adlDynamicAttribute);
+		if (!(imageName.equals(""))) ret.add(new ADLResource(ADLResource.IMAGE_NAME, imageName));
+		if (!(imageType.equals(""))) ret.add(new ADLResource(ADLResource.IMAGE_TYPE, imageType));
+		if (!(imageCalc.equals(""))) ret.add(new ADLResource(ADLResource.IMAGE_CALC, imageCalc));
+
+		return ret.toArray();
 	}
 
 }

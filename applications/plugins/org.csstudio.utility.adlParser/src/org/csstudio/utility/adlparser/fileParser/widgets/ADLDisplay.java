@@ -1,5 +1,8 @@
 package org.csstudio.utility.adlparser.fileParser.widgets;
 
+import java.util.ArrayList;
+
+import org.csstudio.utility.adlparser.fileParser.ADLResource;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
 import org.csstudio.utility.adlparser.fileParser.FileLine;
 import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
@@ -20,7 +23,7 @@ public class ADLDisplay extends ADLAbstractWidget {
 	private int _gridSpacing = 5;
     private boolean _isBackColorDefined;
     private boolean _isForeColorDefined;
-	
+    
 	public ADLDisplay(ADLWidget adlWidget) {
 		super(adlWidget);
 		set_isBackColorDefined(false);
@@ -179,8 +182,14 @@ public class ADLDisplay extends ADLAbstractWidget {
 
 	@Override
 	public Object[] getChildren() {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<Object> ret = new ArrayList<Object>();
+		if (_hasObject) ret.add( _adlObject);
+		if (_isBackColorDefined) ret.add(new ADLResource(ADLResource.BACKGROUND_COLOR,new Integer(_bclr)) );
+		if (_isForeColorDefined) ret.add(new ADLResource(ADLResource.FOREGROUND_COLOR,new Integer(_bclr)) );
+		ret.add(new ADLResource(ADLResource.SNAP_TO_GRID, new Boolean(_snapToGrid)) );
+		ret.add(new ADLResource(ADLResource.GRID_ON, new Boolean(_gridOn)));
+		ret.add(new ADLResource(ADLResource.GRID_SPACING, new Integer(_gridSpacing)));
+		return ret.toArray();
 	}
 
 	

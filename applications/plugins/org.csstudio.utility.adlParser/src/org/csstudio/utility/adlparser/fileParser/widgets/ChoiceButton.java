@@ -1,5 +1,7 @@
 package org.csstudio.utility.adlparser.fileParser.widgets;
 
+import java.util.ArrayList;
+
 import org.csstudio.utility.adlparser.Activator;
 import org.csstudio.utility.adlparser.IImageKeys;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
@@ -44,8 +46,10 @@ public class ChoiceButton extends ADLAbstractWidget {
 
 	@Override
 	public Object[] getChildren() {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<Object> ret = new ArrayList<Object>();
+		if (_hasObject) ret.add( _adlObject);
+		if (_hasControl) ret.add( _adlControl);
+		return ret.toArray();
 	}
 
 }

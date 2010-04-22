@@ -1,5 +1,8 @@
 package org.csstudio.utility.adlparser.fileParser.widgetParts;
 
+import java.util.ArrayList;
+
+import org.csstudio.utility.adlparser.fileParser.ADLResource;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
 import org.csstudio.utility.adlparser.fileParser.FileLine;
 import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
@@ -16,8 +19,11 @@ public class ADLPlotTrace extends WidgetPart {
 
 	@Override
 	public Object[] getChildren() {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<Object> ret = new ArrayList<Object>();
+		if (!xData.equals(""))ret.add(new ADLResource(ADLResource.PLOT_XDATA, xData));
+		if (!yData.equals(""))ret.add(new ADLResource(ADLResource.PLOT_YDATA, yData));
+		ret.add(new ADLResource(ADLResource.PLOT_DATA_COLOR, new Integer(dataColor)));
+		return ret.toArray();
 	}
 
 	@Override

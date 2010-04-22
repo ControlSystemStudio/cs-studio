@@ -3,6 +3,7 @@ package org.csstudio.utility.adlparser.fileParser.widgets;
 import java.util.ArrayList;
 
 import org.csstudio.utility.adlparser.internationalization.Messages;
+import org.csstudio.utility.adlparser.fileParser.ADLResource;
 import org.csstudio.utility.adlparser.fileParser.FileLine;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
 import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
@@ -18,7 +19,8 @@ import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLObject;
 public class Composite extends ADLAbstractWidget {
 	private String _compositeFile = new String();
 	private boolean _hasCompositeFile = false;
-	private ArrayList<ADLWidget> _children;
+	private ADLChildren _adlChildren = null;
+//	private ArrayList<ADLWidget> _children;
 	
 	public Composite(ADLWidget adlWidget) {
 		super(adlWidget);
@@ -33,10 +35,7 @@ public class Composite extends ADLAbstractWidget {
 	        		}
 	        	}
 	        	else if (childWidget.getType().equals("children")){
-	        		ADLChildren adlChildren = new ADLChildren(childWidget);
-	        		if (adlChildren != null){
-	        			_children = adlChildren.getAdlChildrens();
-	        		}
+	        		_adlChildren = new ADLChildren(childWidget);
 	        	}
 	        	else if (childWidget.getType().equals("dynamic attribute")){
 	        		_adlDynamicAttribute = new ADLDynamicAttribute(childWidget);
@@ -92,12 +91,19 @@ public class Composite extends ADLAbstractWidget {
 	 * @return
 	 */
 	public ArrayList<ADLWidget> getChildWidgets() {
-		return _children;
+		if (_adlChildren != null){
+			return _adlChildren.getAdlChildrens();
+		}
+		else return null;
 	}
 
 	@Override
 	public Object[] getChildren() {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<Object> ret = new ArrayList<Object>();
+		if (_adlObject != null ) ret.add( _adlObject);
+		if (_adlDynamicAttribute != null) ret.add( _adlDynamicAttribute);
+		if (_adlChildren != null ) ret.add(_adlChildren);
+		if (!_compositeFile.equals("")) ret.add(new ADLResource(ADLResource.COMPOSITE_FILE, _compositeFile));
+		return ret.toArray();
 	}
 }

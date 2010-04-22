@@ -1,7 +1,10 @@
 package org.csstudio.utility.adlparser.fileParser.widgets;
 
+import java.util.ArrayList;
+
 import org.csstudio.utility.adlparser.Activator;
 import org.csstudio.utility.adlparser.IImageKeys;
+import org.csstudio.utility.adlparser.fileParser.ADLResource;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
 import org.csstudio.utility.adlparser.fileParser.FileLine;
 import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
@@ -9,7 +12,6 @@ import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLBasicAttribute;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLDynamicAttribute;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLObject;
 import org.csstudio.utility.adlparser.internationalization.Messages;
-import org.eclipse.jface.resource.ImageDescriptor;
 
 /**
  * 
@@ -101,8 +103,13 @@ public class Arc extends ADLAbstractWidget {
 
 	@Override
 	public Object[] getChildren() {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<Object> ret = new ArrayList<Object>();
+		if (_hasObject) ret.add( _adlObject);
+		if (_hasBasicAttribute) ret.add( _adlBasicAttribute);
+		if (_hasDynamicAttribute) ret.add( _adlDynamicAttribute);
+		ret.add(new ADLResource(ADLResource.ARC_BEGIN_ANGLE, new Integer(_begin)));
+		ret.add(new ADLResource(ADLResource.ARC_PATH_ANGLE, new Integer(_path)));
+		return ret.toArray();
 	}
 
 }
