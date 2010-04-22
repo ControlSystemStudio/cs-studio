@@ -52,7 +52,7 @@ public class Composite extends ADLAbstractWidget {
 	            }
 	            if(FileLine.argEquals(row[0], "composite file")){ //$NON-NLS-1$
 	                set_compositeFile(FileLine.getTrimmedValue(row[1]));
-	                if (!(_compositeFile.equals(""))){
+	                if (_compositeFile.equals("")){
 	                	_hasCompositeFile = false;
 	                }
 	            	_hasCompositeFile = true;
