@@ -226,7 +226,7 @@
             widgetTypeId="org.csstudio.sds.components.Tank">
       </behavior>
       <behavior
-            class="org.csstudio.sds.behavior.desy.RectangelAlarmBehavior"
+            class="org.csstudio.sds.behavior.desy.EllipseAlarmBehavior"
             description="DESY Alarm Rectangel"
             id="behavior.desy.rectangel.alarmdefault"
             widgetTypeId="org.csstudio.sds.components.Rectangle">

@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.sds.components.ui.internal.figures;
@@ -38,9 +38,9 @@ import org.eclipse.swt.graphics.Color;
 
 /**
  * An arc figure.
- * 
+ *
  * @author jbercic
- * 
+ *
  */
 public final class RefreshableArcFigure extends Shape implements ICrossedFigure {
     /**
@@ -63,19 +63,19 @@ public final class RefreshableArcFigure extends Shape implements ICrossedFigure 
      * Border properties.
      */
     private int _borderWidth;
-    
+
     private boolean _filled;
-    
-    private CrossedPaintHelper _crossedPaintHelper;
+
+    private final CrossedPaintHelper _crossedPaintHelper;
 
     /**
-     * 
+     *
      * Constructor.
      */
     public RefreshableArcFigure() {
         _crossedPaintHelper = new CrossedPaintHelper();
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -100,7 +100,7 @@ public final class RefreshableArcFigure extends Shape implements ICrossedFigure 
         gfx.setBackgroundColor(_fillColor);
         gfx.fillArc(getBounds()
                 .getCropped(new Insets(lineWidth / 2 + lineWidth % 2 + _borderWidth)), _startAngle,
-                _angle);
+                -1*_angle);
     }
 
     /**
@@ -118,7 +118,7 @@ public final class RefreshableArcFigure extends Shape implements ICrossedFigure 
             gfx.setLineCap(SWT.CAP_FLAT);
             gfx.setLineJoin(SWT.JOIN_MITER);
             gfx.drawArc(getBounds().getCropped(
-                    new Insets(lineWidth / 2 - lineWidth % 2 + _borderWidth)), _startAngle, _angle);
+                    new Insets(lineWidth / 2 - lineWidth % 2 + _borderWidth)), _startAngle, -1*_angle);
         }
         _filled = false;
     }
@@ -126,7 +126,7 @@ public final class RefreshableArcFigure extends Shape implements ICrossedFigure 
     /**
      * The main drawing routine.
      */
-    public void paintFigure(Graphics gfx) {
+    public void paintFigure(final Graphics gfx) {
         Rectangle figureBounds = getBounds().getCopy();
         AntialiasingUtil.getInstance().enableAntialiasing(gfx);
         super.paintFigure(gfx);
@@ -177,12 +177,12 @@ public final class RefreshableArcFigure extends Shape implements ICrossedFigure 
         if (adapter == IBorderEquippedWidget.class) {
             if (_borderAdapter == null) {
                 _borderAdapter = new BorderAdapter(this) {
-                    
+
                     @Override
-                    protected AbstractBorder createShapeBorder(int borderWidth, Color borderColor) {
+                    protected AbstractBorder createShapeBorder(final int borderWidth, final Color borderColor) {
                         if (borderWidth>0) {
                             ArcBorder border = new ArcBorder(borderWidth, borderColor);
-                            return border;  
+                            return border;
                         }
                         return null;
                     }
@@ -194,25 +194,25 @@ public final class RefreshableArcFigure extends Shape implements ICrossedFigure 
     }
 
     @Override
-    public void setBorder(Border border) {
+    public void setBorder(final Border border) {
         super.setBorder(border);
     }
-    
+
     private final class ArcBorder extends AbstractBorder {
 
         private final Color _borderColor;
         private final int _borderWidth;
 
-        public ArcBorder(int borderWidth,Color borderColor) {
+        public ArcBorder(final int borderWidth,final Color borderColor) {
             _borderColor = borderColor;
             _borderWidth = borderWidth;
         }
 
-        public Insets getInsets(IFigure arg0) {
+        public Insets getInsets(final IFigure arg0) {
             return new Insets(_borderWidth);
         }
 
-        public void paint(IFigure figure, Graphics gfx, Insets arg2) {
+        public void paint(final IFigure figure, final Graphics gfx, final Insets arg2) {
             gfx.setBackgroundColor(_borderColor);
             gfx.setForegroundColor(_borderColor);
             gfx.setLineWidth(_borderWidth);
@@ -223,7 +223,7 @@ public final class RefreshableArcFigure extends Shape implements ICrossedFigure 
         }
     }
 
-    public void setCrossedOut(boolean newValue) {
-        _crossedPaintHelper.setCrossed(newValue);        
+    public void setCrossedOut(final boolean newValue) {
+        _crossedPaintHelper.setCrossed(newValue);
     }
 }

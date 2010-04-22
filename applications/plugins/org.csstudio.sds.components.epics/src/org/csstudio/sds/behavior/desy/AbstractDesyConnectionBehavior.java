@@ -74,6 +74,10 @@ public abstract class AbstractDesyConnectionBehavior<W extends AbstractWidgetMod
         _invisiblePropertyIds.add(id);
     }
 
+    protected final void removeInvisiblePropertyId(final String id) {
+        _invisiblePropertyIds.remove(id);
+    }
+
     @Override
     protected void doInitialize(final W widget) {
         _normalBackgroundColor = widget.getPropertyInternal(LabelModel.PROP_COLOR_BACKGROUND)

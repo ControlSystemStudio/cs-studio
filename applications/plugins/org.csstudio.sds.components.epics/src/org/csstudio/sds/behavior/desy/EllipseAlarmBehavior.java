@@ -19,6 +19,8 @@
 package org.csstudio.sds.behavior.desy;
 
 import org.csstudio.sds.components.model.EllipseModel;
+import org.csstudio.sds.model.AbstractWidgetModel;
+import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.MetaData;
 
 /**
@@ -30,18 +32,44 @@ import org.epics.css.dal.simple.MetaData;
  * @version $Revision$
  * @since 20.04.2010
  */
-public class EllipseAlarmBehavior extends AbstractDesyAlarmBehavior<EllipseModel> {
+public class EllipseAlarmBehavior extends AbstractDesyAlarmBehavior<AbstractWidgetModel> {
 
     /**
      * Constructor.
      */
     public EllipseAlarmBehavior() {
         // add Invisible P0roperty Id here
-        // addInvisiblePropertyId
+        addInvisiblePropertyId(EllipseModel.PROP_ACTIONDATA);
+        addInvisiblePropertyId(EllipseModel.PROP_FILL);
+        addInvisiblePropertyId(EllipseModel.PROP_ORIENTATION);
+        addInvisiblePropertyId(EllipseModel.PROP_TRANSPARENT);
+        addInvisiblePropertyId(EllipseModel.PROP_COLOR_FOREGROUND);
+        addInvisiblePropertyId(EllipseModel.PROP_COLOR_BACKGROUND);
+        addInvisiblePropertyId(EllipseModel.PROP_COLOR_BACKGROUND);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    protected void doProcessMetaDataChange(final EllipseModel widget, final MetaData metaData) {
+    protected void doInitialize(final AbstractWidgetModel widget) {
+        super.doInitialize(widget);
+        widget.setPropertyValue(EllipseModel.PROP_FILL, 0);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doProcessValueChange(final AbstractWidgetModel model, final AnyData anyData) {
+//        super.doProcessValueChange(model, anyData);
+        model.setPropertyValue(AbstractWidgetModel.PROP_COLOR_BACKGROUND, determineColorBySeverity(anyData.getSeverity(), null));
+    }
+
+
+
+    @Override
+    protected void doProcessMetaDataChange(final AbstractWidgetModel widget, final MetaData metaData) {
         // do nothing
     }
 

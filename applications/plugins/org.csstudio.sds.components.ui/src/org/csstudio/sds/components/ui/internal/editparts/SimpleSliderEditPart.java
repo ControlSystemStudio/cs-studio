@@ -225,16 +225,15 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart
 				orientationHandler);
 
 		// Color
-        IWidgetPropertyChangeHandler colorHandler = new IWidgetPropertyChangeHandler() {
-            public boolean handleChange(final Object oldValue,
-                    final Object newValue, final IFigure refreshableFigure) {
-                SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
-                slider.setPopulateEvents(false);
-                slider.setForegroundColor( (Color) newValue);
-                slider.setPopulateEvents(true);
-                return true;
+		ColorChangeHander<SimpleSliderFigure> colorHandler = new ColorChangeHander<SimpleSliderFigure>() {
+
+            @Override
+            protected void doHandle(final SimpleSliderFigure figure, final Color color) {
+//                figure.setPopulateEvents(false);
+                figure.setForegroundColor(color);
+//                figure.setPopulateEvents(true);
             }
-        };
+		};
         setPropertyChangeHandler(SimpleSliderModel.PROP_COLOR_FOREGROUND,
                                  colorHandler);
 	}

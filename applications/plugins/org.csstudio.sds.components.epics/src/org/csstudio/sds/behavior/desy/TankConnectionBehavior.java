@@ -67,6 +67,11 @@ public class TankConnectionBehavior extends AbstractDesyConnectionBehavior<TankM
         addInvisiblePropertyId(TankModel.PROP_TRANSPARENT);
         addInvisiblePropertyId(TankModel.PROP_ACTIONDATA);
         addInvisiblePropertyId(TankModel.PROP_BORDER_STYLE);
+        addInvisiblePropertyId(TankModel.PROP_SHOW_HI);
+        addInvisiblePropertyId(TankModel.PROP_SHOW_HIHI);
+        addInvisiblePropertyId(TankModel.PROP_SHOW_LO);
+        addInvisiblePropertyId(TankModel.PROP_SHOW_LOLO);
+        addInvisiblePropertyId(TankModel.PROP_VALUE);
     }
 
     /**
@@ -111,10 +116,18 @@ public class TankConnectionBehavior extends AbstractDesyConnectionBehavior<TankM
             // .. limits
             widget.setPropertyValue(TankModel.PROP_MIN, meta.getDisplayLow());
             widget.setPropertyValue(TankModel.PROP_MAX, meta.getDisplayHigh());
+
             widget.setPropertyValue(TankModel.PROP_HIHI_LEVEL, meta.getAlarmHigh());
+            widget.setPropertyValue(TankModel.PROP_SHOW_HIHI, !Double.isNaN(meta.getAlarmHigh()));
+
             widget.setPropertyValue(TankModel.PROP_HI_LEVEL, meta.getWarnHigh());
+            widget.setPropertyValue(TankModel.PROP_SHOW_HI, !Double.isNaN(meta.getWarnHigh()));
+
             widget.setPropertyValue(TankModel.PROP_LOLO_LEVEL, meta.getAlarmLow());
+            widget.setPropertyValue(TankModel.PROP_SHOW_LOLO, !Double.isNaN(meta.getAlarmLow()));
+
             widget.setPropertyValue(TankModel.PROP_LO_LEVEL, meta.getWarnLow());
+            widget.setPropertyValue(TankModel.PROP_SHOW_LO, !Double.isNaN(meta.getWarnLow()));
         }
     }
 

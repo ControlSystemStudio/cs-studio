@@ -19,6 +19,8 @@
 package org.csstudio.sds.behavior.desy;
 
 import org.csstudio.sds.components.model.ArcModel;
+import org.csstudio.sds.components.model.EllipseModel;
+import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.MetaData;
 
 /**
@@ -32,17 +34,47 @@ import org.epics.css.dal.simple.MetaData;
  */
 public class ArcAlarmBehavior extends AbstractDesyAlarmBehavior<ArcModel> {
 
+    private double _multi;
+
     /**
      * Constructor.
      */
     public ArcAlarmBehavior() {
         // add Invisible P0roperty Id here
-        // addInvisiblePropertyId
+        addInvisiblePropertyId(EllipseModel.PROP_ACTIONDATA);
+        removeInvisiblePropertyId(EllipseModel.PROP_COLOR_BACKGROUND);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doInitialize(final ArcModel widget) {
+        super.doInitialize(widget);
+        widget.setPropertyValue(ArcModel.PROP_ANGLE, 360);
+        widget.setPropertyValue(ArcModel.PROP_STARTANGLE, 0);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doProcessValueChange(final ArcModel model, final AnyData anyData) {
+//        super.doProcessValueChange(model, anyData);
+        model.setPropertyValue(ArcModel.PROP_ANGLE, _multi * anyData.doubleValue());
+        if(model.getFill()) {
+            model.setPropertyValue(ArcModel.PROP_FILLCOLOR, determineColorBySeverity(anyData.getSeverity(),null));
+        }else {
+            model.setPropertyValue(ArcModel.PROP_COLOR_FOREGROUND, determineColorBySeverity(anyData.getSeverity(),null));
+        }
     }
 
     @Override
     protected void doProcessMetaDataChange(final ArcModel widget, final MetaData metaData) {
-        // do nothing
-    }
+        if (metaData != null) {
+            _multi = 360 / (metaData.getDisplayHigh() - metaData.getDisplayLow());
+        }
 
+        // do noting
+    }
 }
