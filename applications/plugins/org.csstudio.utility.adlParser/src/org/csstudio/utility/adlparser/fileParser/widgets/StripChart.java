@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.csstudio.utility.adlparser.Activator;
 import org.csstudio.utility.adlparser.IImageKeys;
+import org.csstudio.utility.adlparser.fileParser.ADLResource;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
 import org.csstudio.utility.adlparser.fileParser.FileLine;
 import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
@@ -40,7 +41,7 @@ public class StripChart extends ADLAbstractWidget {
 	        			_hasPlotcom = true;
 	        		}
 	        	}
-	        	if (childWidget.getType().equals("plotcom")){
+	        	if (childWidget.getType().startsWith("pen[")){
 	        		pens.add(new ADLPen(childWidget));
 	        	}
 	        }
@@ -101,8 +102,17 @@ public class StripChart extends ADLAbstractWidget {
 
 	@Override
 	public Object[] getChildren() {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<Object> ret = new ArrayList<Object>();
+		if (_adlObject != null) ret.add( _adlObject);
+		if (_adlPlotcom != null) ret.add( _adlPlotcom);
+		for (ADLPen pen : pens){
+			if (pen!=null){
+				ret.add(pen);
+			}
+		}
+		if (!(units.equals(""))) ret.add(new ADLResource(ADLResource.UNITS, units));
+		ret.add(new ADLResource(ADLResource.PERIOD, new Integer(period)));
+		return ret.toArray();
 	}
 
 }

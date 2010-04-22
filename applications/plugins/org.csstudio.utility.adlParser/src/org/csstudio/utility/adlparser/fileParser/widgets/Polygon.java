@@ -1,5 +1,7 @@
 package org.csstudio.utility.adlparser.fileParser.widgets;
 
+import java.util.ArrayList;
+
 import org.csstudio.utility.adlparser.Activator;
 import org.csstudio.utility.adlparser.IImageKeys;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
@@ -57,8 +59,12 @@ public class Polygon extends ADLAbstractWidget {
 
 	@Override
 	public Object[] getChildren() {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<Object> ret = new ArrayList<Object>();
+		if (_adlObject != null) ret.add( _adlObject);
+		if (_adlBasicAttribute != null) ret.add( _adlBasicAttribute);
+		if (_adlDynamicAttribute != null) ret.add( _adlDynamicAttribute);
+		if (_adlPoints != null) ret.add( _adlPoints);
+		return ret.toArray();
 	}
 
 }
