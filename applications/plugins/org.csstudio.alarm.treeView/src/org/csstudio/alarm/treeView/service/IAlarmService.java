@@ -28,7 +28,7 @@ package org.csstudio.alarm.treeView.service;
  * - listening to alarm and log messages<br>
  * 
  * The JMS implementation also allows for<br>
- * - selection of topics from the JMS server<br>
+ * - selection of topics, which are actually topics from the JMS server<br>
  * - sending acknowledges<br>
  * 
  * @author jpenning
@@ -37,5 +37,9 @@ package org.csstudio.alarm.treeView.service;
  * @since 21.04.2010
  */
 public interface IAlarmService {
+    
+    /**
+     * @return the currently available implementation of the alarm connection
+     */
     IAlarmConnection newAlarmConnection();
 }

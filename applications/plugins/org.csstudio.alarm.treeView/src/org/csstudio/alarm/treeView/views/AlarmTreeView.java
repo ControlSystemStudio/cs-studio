@@ -29,8 +29,7 @@ import java.util.Set;
 
 import org.csstudio.alarm.table.SendAcknowledge;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
-import org.csstudio.alarm.treeView.jms.JmsConnectionException;
-import org.csstudio.alarm.treeView.jms.JmsConnector;
+import org.csstudio.alarm.treeView.jms.AlarmTreeUpdater;
 import org.csstudio.alarm.treeView.ldap.DirectoryEditException;
 import org.csstudio.alarm.treeView.ldap.DirectoryEditor;
 import org.csstudio.alarm.treeView.ldap.LdapDirectoryReader;
@@ -132,7 +131,9 @@ public class AlarmTreeView extends ViewPart {
         }
     }
     
-    // TODO jp Use new impl
+    /**
+     * Object based adapter from AlarmTreeConnectionMonitor to IAlarmConnectionMonitor
+     */
     private final class AlarmTreeConnectionMonitorNew implements IAlarmConnectionMonitor {
         
         private final AlarmTreeConnectionMonitor connectionMonitor;
@@ -528,9 +529,8 @@ public class AlarmTreeView extends ViewPart {
     private Action _reloadAction;
     
     /**
-     * The subscriber to the JMS alarm topic.
+     * The subscriber to the alarm topic.
      */
-    private JmsConnector _jmsConnector;
     private IAlarmConnection _connection;
     private AlarmMessageListener _alarmListener;
     
@@ -623,11 +623,6 @@ public class AlarmTreeView extends ViewPart {
      * Whether the filter is active.
      */
     private boolean _isFilterActive;
-    
-    /**
-     * The connection monitor instance which monitors the JMS connection of this tree view.
-     */
-    private AlarmTreeConnectionMonitor _connectionMonitor;
     
     /**
      * The logger used by this view.
@@ -726,8 +721,7 @@ public class AlarmTreeView extends ViewPart {
         
         getSite().setSelectionProvider(_viewer);
         
-        // TODO jp switch implementations
-        startJmsConnection();
+        startConnection();
         
         _viewer.addSelectionChangedListener(new ISelectionChangedListener() {
             public void selectionChanged(final SelectionChangedEvent event) {
@@ -741,8 +735,8 @@ public class AlarmTreeView extends ViewPart {
     /**
      * Starts the connection.
      */
-    private void startJmsConnectionNew() {
-        _log.debug(this, "Starting JMS connection.");
+    private void startConnection() {
+        _log.debug(this, "Starting connection.");
         
         if (_connection != null) {
             // There is still an old connection. This shouldn't happen.
@@ -759,7 +753,7 @@ public class AlarmTreeView extends ViewPart {
                 monitor.beginTask("Connecting via alarm service", IProgressMonitor.UNKNOWN);
                 // TODO jp Get the service via ServiceRegistry
                 _connection = new AlarmServiceJMSImpl().newAlarmConnection();
-                AlarmTreeConnectionMonitorNew alarmTreeConnectionMonitorNew = new AlarmTreeConnectionMonitorNew(_connectionMonitor);
+                AlarmTreeConnectionMonitorNew alarmTreeConnectionMonitorNew = new AlarmTreeConnectionMonitorNew(new AlarmTreeConnectionMonitor());
                 _alarmListener = new AlarmMessageListener();
                 
                 try {
@@ -771,37 +765,6 @@ public class AlarmTreeView extends ViewPart {
             }
         };
         progressService.schedule(connectionJob, 0, true);
-    }
-    
-    /**
-     * Starts the JMS connection.
-     */
-    private void startJmsConnection() {
-        _log.debug(this, "Starting JMS connection.");
-        if (_jmsConnector != null) {
-            // There is still an old connection. This shouldn't happen.
-            _jmsConnector.disconnect();
-            _log.warn(this, "There was an active JMS connection when starting a new connection");
-        }
-        
-        final IWorkbenchSiteProgressService progressService = (IWorkbenchSiteProgressService) getSite()
-                .getAdapter(IWorkbenchSiteProgressService.class);
-        Job jmsConnectionJob = new Job("Connecting to JMS brokers") {
-            @Override
-            protected IStatus run(final IProgressMonitor monitor) {
-                monitor.beginTask("Connecting to JMS servers", IProgressMonitor.UNKNOWN);
-                _jmsConnector = new JmsConnector();
-                _connectionMonitor = new AlarmTreeConnectionMonitor();
-                _jmsConnector.addConnectionMonitor(_connectionMonitor);
-                try {
-                    _jmsConnector.connect();
-                } catch (JmsConnectionException e) {
-                    throw new RuntimeException("Could not connect to JMS brokers.", e);
-                }
-                return Status.OK_STATUS;
-            }
-        };
-        progressService.schedule(jmsConnectionJob, 0, true);
     }
     
     /**
@@ -847,9 +810,7 @@ public class AlarmTreeView extends ViewPart {
                     @Override
                     public void done(final IJobChangeEvent event) {
                         // Apply updates to the new tree
-                        _jmsConnector.setUpdateTarget(rootNode);
-                        // TODO jp: setting the rootNode to the alarm listener
-                        // _alarmListener.setUpdater(new AlarmTreeUpdater(rootNode));
+                        _alarmListener.setUpdater(new AlarmTreeUpdater(rootNode));
                         
                         getSite().getShell().getDisplay().asyncExec(new Runnable() {
                             public void run() {
@@ -864,9 +825,7 @@ public class AlarmTreeView extends ViewPart {
         
         // Set the tree to which updates are applied to null. This means updates
         // will be queued for later application.
-        _jmsConnector.setUpdateTarget(null);
-        // TODO jp: setting the rootNode to the alarm listener
-        // _alarmListener.setUpdater(null);
+        _alarmListener.setUpdater(null);
         
         // The directory is read in the background. Until then, set the viewer's
         // input to a placeholder object.
@@ -874,25 +833,6 @@ public class AlarmTreeView extends ViewPart {
         
         // Start the directory reader job.
         progressService.schedule(directoryReader, 0, true);
-    }
-    
-    /**
-     * Stops the alarm queue subscriber.
-     */
-    private void disposeJmsListener() {
-        // Remove the connection monitor, so that it doesn't try to display an
-        // error message in this disposed view when the connection is closed.
-        _jmsConnector.removeConnectionMonitor(_connectionMonitor);
-        _connectionMonitor = null;
-        
-        _jmsConnector.disconnect();
-    }
-    
-    /**
-     * Stops the alarm queue subscriber.
-     */
-    private void disposeJmsListenerNew() {
-        _connection.disconnect();
     }
     
     /**
@@ -946,7 +886,7 @@ public class AlarmTreeView extends ViewPart {
      */
     @Override
     public final void dispose() {
-        disposeJmsListener();
+        _connection.disconnect();
         super.dispose();
     }
     

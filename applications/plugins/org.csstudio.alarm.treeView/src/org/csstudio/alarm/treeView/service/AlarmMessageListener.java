@@ -174,7 +174,7 @@ public class AlarmMessageListener implements IAlarmListener {
     /**
      * Stops this listener. Once stopped, the listener cannot be restarted.
      */
-    void stop() {
+    public void stop() {
         _worker.stop();
     }
     

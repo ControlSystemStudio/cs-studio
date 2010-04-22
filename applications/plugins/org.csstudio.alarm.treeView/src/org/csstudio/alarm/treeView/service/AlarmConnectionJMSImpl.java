@@ -50,13 +50,14 @@ public final class AlarmConnectionJMSImpl implements IAlarmConnection {
     
     private final CentralLogger _log = CentralLogger.getInstance();
     
-    private MessageListener _listener;
+    private AlarmListenerAdapter _listener;
     private IMessageListenerSession _listenerSession;
     
+    // TODO jp CopyOnWrite is missing?!
     private AlarmConnectionMonitorAdapter _monitor;
     
     /**
-     * Constructor must only be called from the AlarmService.
+     * Constructor must be called only from the AlarmService.
      */
     AlarmConnectionJMSImpl() {
     }
@@ -68,13 +69,12 @@ public final class AlarmConnectionJMSImpl implements IAlarmConnection {
     public void disconnect() {
         _log.debug(this, "Closing JMS connections.");
         
-        // Remove the connection monitor, so that it is not called when the connection is closed.
+        // Remove the connection monitor, so it will not be called when the connection is closed.
         _listenerSession.removeMonitor(_monitor);
         
         _listenerSession.close();
         
-        // TODO jp stop not available in interface MessageListener
-        // _listener.stop();
+        _listener.getAlarmListener().stop();
     }
     
     /**
@@ -84,6 +84,7 @@ public final class AlarmConnectionJMSImpl implements IAlarmConnection {
                                     final @NotNull IAlarmListener listener) throws AlarmConnectionException {
         
         IPreferencesService prefs = Platform.getPreferencesService();
+        // TODO jp The default topics are read from the AlarmTree-Plugin
         String[] topics = prefs.getString(AlarmTreePlugin.PLUGIN_ID,
                                           PreferenceConstants.JMS_TOPICS,
                                           "",
@@ -130,6 +131,10 @@ public final class AlarmConnectionJMSImpl implements IAlarmConnection {
         public void onMessage(final Message message) {
             // TODO jp cast?
             alarmListener.onMessage(new AlarmMessageJMSImpl((MapMessage) message));
+        }
+        
+        public IAlarmListener getAlarmListener() {
+            return alarmListener;
         }
         
     }

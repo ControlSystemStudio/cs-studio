@@ -29,5 +29,13 @@ package org.csstudio.alarm.treeView.service;
  * @since 21.04.2010
  */
 public interface IAlarmMessage {
+    
+    /**
+     * The message essentially is a map from String to String. Here you get the value for the key.
+     * 
+     * @param key
+     * @return value
+     * @throws AlarmMessageException
+     */
     String getString(String key) throws AlarmMessageException;
 }

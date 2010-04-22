@@ -29,5 +29,19 @@ package org.csstudio.alarm.treeView.service;
  * @since 21.04.2010
  */
 public interface IAlarmListener {
+    
+    /**
+     * This is called when a message is received. You have to provide a listener implementation and
+     * register it via the alarm connection.
+     * 
+     * @see IAlarmConnection.
+     * @param message
+     */
     void onMessage(IAlarmMessage message);
+    
+    /**
+     * Is called when the connection is disconnected. May be used to end concurrent processing of
+     * messages.
+     */
+    void stop();
 }
