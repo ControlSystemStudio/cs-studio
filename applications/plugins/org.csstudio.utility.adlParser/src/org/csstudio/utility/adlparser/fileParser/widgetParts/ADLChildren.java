@@ -61,8 +61,9 @@ public class ADLChildren extends WidgetPart {
 
 	@Override
 	public Object[] getChildren() {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<Object> ret = new ArrayList<Object>();
+		if (_childrens != null)ret.add(_childrens);
+		return ret.toArray();
 	}
 
 	@Override
