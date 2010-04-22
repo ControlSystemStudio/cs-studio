@@ -48,8 +48,13 @@ public class PreferencesHelper {
      * @return the color file path. null if not specified.
      */
     public static IPath getColorFilePath(){
-    	if(getString(COLOR_FILE) != null)
-    		return new Path(getString(COLOR_FILE));
+    	String colorFilePath = getString(COLOR_FILE);
+    	if(colorFilePath != null){
+    		if(ResourceUtil.isURL(colorFilePath))
+    			return new URLPath(colorFilePath);
+    		else
+    			return new Path(colorFilePath);
+    	}
     	return null;
     }
 	
@@ -58,8 +63,13 @@ public class PreferencesHelper {
      * @return the color file path. null if not specified.
      */
     public static IPath getFontFilePath(){
-    	if(getString(FONT_FILE) != null)
-    		return new Path(getString(FONT_FILE));
+    	String fontFilePath = getString(FONT_FILE);
+    	if(fontFilePath != null){
+    		if(ResourceUtil.isURL(fontFilePath))
+    			return new URLPath(fontFilePath);
+    		else
+    			return new Path(fontFilePath);
+    	}
     	return null;
     }
     

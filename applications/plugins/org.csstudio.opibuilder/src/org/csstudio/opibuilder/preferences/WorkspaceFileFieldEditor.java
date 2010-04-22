@@ -1,9 +1,6 @@
 package org.csstudio.opibuilder.preferences;
 
 import org.csstudio.platform.ui.dialogs.ResourceSelectionDialog;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.preference.StringButtonFieldEditor;
@@ -79,18 +76,7 @@ public class WorkspaceFileFieldEditor extends StringButtonFieldEditor {
 	
 	@Override
 	protected boolean checkState() {
-		String pathString = getTextControl().getText();
-		if(pathString==null || pathString.trim().equals(""))
-			return true;
-		IPath path = Path.fromPortableString(pathString);
-		IResource r = ResourcesPlugin.getWorkspace().getRoot().findMember(path);
-		if(r != null && r instanceof IFile){
-			clearErrorMessage();
-			return true;
-		}else{
-			showErrorMessage("The file doesn't exist!");
-			return false;
-		}
+		return true;
 			
 	}
 

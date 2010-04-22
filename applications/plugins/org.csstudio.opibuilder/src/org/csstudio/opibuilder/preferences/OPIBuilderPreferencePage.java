@@ -18,7 +18,7 @@ import org.eclipse.ui.preferences.ScopedPreferenceStore;
 public class OPIBuilderPreferencePage extends FieldEditorPreferencePage
 		implements IWorkbenchPreferencePage {
 
-	 private static final String RESTART_MESSAGE = "Changes only takes effect after restart.";
+	// private static final String RESTART_MESSAGE = "Changes only takes effect after restart.";
 	private static final String PREF_QUALIFIER_ID = OPIBuilderPlugin.PLUGIN_ID;
 	
 	public OPIBuilderPreferencePage() {
@@ -40,13 +40,11 @@ public class OPIBuilderPreferencePage extends FieldEditorPreferencePage
 		WorkspaceFileFieldEditor colorEditor = 
 			new WorkspaceFileFieldEditor(PreferencesHelper.COLOR_FILE, 
 					"color file: ", new String[]{"def"}, parent);//$NON-NLS-2$
-		colorEditor.setTooltip(RESTART_MESSAGE);
 		addField(colorEditor);  
 		
 		WorkspaceFileFieldEditor fontEditor =
 			new WorkspaceFileFieldEditor(PreferencesHelper.FONT_FILE, 
 				"font file: ", new String[]{"def"}, parent);//$NON-NLS-2$
-		fontEditor.setTooltip(RESTART_MESSAGE);
 		addField(fontEditor);
 		
 		IntegerFieldEditor guiRefreshCycleEditor = 
