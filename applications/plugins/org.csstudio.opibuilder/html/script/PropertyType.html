@@ -1,0 +1,125 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=Cp1252"/>
+    <link rel="stylesheet" href="../default.css" type="text/css" />
+    <title>
+     Property Type
+    </title>
+  </head>
+  <body>
+
+    <h2>
+      Property Type
+    </h2>
+    
+    
+    <p>There are several different type of widget properties, 
+    such as Boolean, Double, Color, Font and so on.
+    The method  <code>widgetController.setPropertyValue(prop_id, value)</code> only accepts certain 
+    value types corresponding to the property type. Here is the list of the acceptable value types for
+    each type of property. <b>Property Value Type</b> is the type of the object returned from
+    <code>widgetController.getPropertyValue(prop_id)</code>.
+    </p>
+<HR>    
+    <A NAME="BooleanProperty"><!-- --></A><H3>
+Boolean Property</H3>
+<DD>
+<DL>
+<DT><B>Acceptable Value Type</B></DT><DD>boolean</DD><br>
+<B>Property Value Type</B><DD>Boolean</DD><br>
+<B>Examples:</B>
+	<pre class="example_code">
+	widgetController.setPropertyValue("enable", false); 
+	widgetController.setPropertyValue("visible", true); 	</pre>
+
+</DL>
+<HR>
+
+    <A NAME="IntegerProperty"><!-- --></A><H3>
+Integer Property</H3>
+<DD>
+<DL>
+<DT><B>Acceptable Value Type</B></DT><DD>int, double</DD><br>
+<B>Property Value Type</B><DD>Integer</DD><br>
+<B>Examples:</B>
+	<pre class="example_code">
+	widgetController.setPropertyValue("x", 10); </pre>
+
+</DL>
+<HR>
+
+
+    <A NAME="DoubleProperty"><!-- --></A><H3>
+Double Property</H3>
+<DD>
+<DL>
+<DT><B>Acceptable Value Type</B></DT><DD>double, int</DD><br>
+<B>Property Value Type</B><DD>Double</DD><br>
+<B>Examples:</B>
+	<pre class="example_code">
+	widgetController.setPropertyValue("fill_level", 35.6);</pre>
+
+</DL>
+
+<HR>    
+    <A NAME="StringProperty"><!-- --></A><H3>
+String Property</H3>
+<DD>
+<DL>
+<DT><B>Acceptable Value Type</B></DT><DD>String</DD>
+<dd>any object(the method <code>toString()</code> will be automatically called)</DD><br>
+<B>Property Value Type</B><DD>String</DD><br>
+<B>Examples:</B>
+	<pre class="example_code">
+	widgetController.setPropertyValue("text", "Hello, World!");</pre>
+
+</DL>
+<HR>
+
+
+<A NAME="Color Property"><!-- --></A><H3>
+Color Property</H3>
+<DD>
+<DL>
+<DT><B>Acceptable Value Type</B></DT><DD>RGB</DD>
+<dd>String(must be predefined in Color Macro file)</DD><br>
+<B>Property Value Type</B><DD><a href = "OPIColor.html">OPIColor</a></DD><br>
+<B>Examples:</B>
+	<pre class="example_code">
+	importPackage(Packages.org.csstudio.opibuilder.scriptUtil);
+	
+	var ORANGE = ColorFontUtil.getColorFromRGB(255,255,0);
+	widgetController.setPropertyValue("foreground_color",ORANGE);
+	widgetController.setPropertyValue("background_color", "Major"); //"Major" is a color macro	
+</pre>
+
+</DL>
+<HR>
+
+<A NAME="Font Property"><!-- --></A><H3>
+Font Property</H3>
+<DD>
+<DL>
+<DT><B>Acceptable Value Type</B></DT><DD>FontData</DD>
+<dd>String(must be predefined in Font Macro file)</DD><br>
+<B>Property Value Type</B><DD><a href = "OPIFont.html">OPIFont</a></DD><br>
+<B>Examples:</B>
+	<pre class="example_code">
+	importPackage(Packages.org.csstudio.opibuilder.scriptUtil);
+		
+	var bigFont = ColorFontUtil.getFont("Times New Roman", 20, 1);
+	widgetController.setPropertyValue("font", bigFont);	
+</pre>
+
+</DL>
+<HR>
+
+
+
+
+
+
+  
+ 
+  </body>
+</html>

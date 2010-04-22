@@ -1,0 +1,160 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=Cp1252"/>
+    <link rel="stylesheet" href="../default.css" type="text/css" />
+    <title>
+     Access Widget in Script
+    </title>
+  </head>
+  <body>
+
+    <h2>
+      Access Widget in Script
+    </h2>
+    
+    <h3>    widgetController    </h3>
+    <p>The widget to which a script is attached can be accessed in the script via <b>widgetController</b> object. 
+     <b>widgetController</b> object provided the methods to get or set any of its properties, host external objects or special methods to a speific widget.  
+    </p>
+ 
+ <h3>Common methods to all widgets</h3>
+   <ul>
+    <li><a href = "#getPropertyValue(java.lang.String)">getPropertyValue(prop_id) </a></li>
+    <li><a href = "#setPropertyValue(java.lang.String, java.lang.Object)">setPropertyValue(prop_id, value)</a></li>
+    <li><a href = "#setExternalObject(java.lang.String, java.lang.Object)">setExternalObject(name, var)</a></li>
+    <li><a href = "#getExternalObject(java.lang.String)">getExternalObject(name)</a></li>
+    <li><a href = "#executeAction(int)">executeAction(index)</a></li>
+    </ul>
+ <h3>Common methods to all container widgets</h3>
+ Container widgets includes Display, Grouping Container, Linking Container and Tabbed Container.
+   <ul>
+    <li><a href = "#getChild(java.lang.String)">getChild(name)</a></li>    
+   </ul>
+<HR>
+   <A NAME="getPropertyValue(java.lang.String)"><!-- --></A><H3>getPropertyValue</H3>
+<PRE>
+public java.lang.Object <B>getPropertyValue</B>(java.lang.String&nbsp;prop_id)</PRE>
+<DL>
+<DD>Get property value of the widget.
+
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>prop_id</CODE> - the property id. In most cases, it is the lower case of the property name. 
+<DT><B>Returns:</B><DD>the property value.</DL>
+
+
+<b>Example:</b><br>
+	<pre class="example_code">var x = widgetController.getPropertyValue("x"); //get x position of the widget</pre>
+</DD>
+</DL>
+ <HR>
+ 
+ <A NAME="setPropertyValue(java.lang.String, java.lang.Object)"><!-- --></A><H3>
+setPropertyValue</H3>
+<PRE>
+public void <B>setPropertyValue</B>(java.lang.String&nbsp;prop_id,
+                             java.lang.Object&nbsp;value)</PRE>
+<DL>
+<DD>Set the property value of the widget.
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>prop_id</CODE> - the property id.  In most cases, it is the lower case of the property name.
+<DD><CODE>value</CODE> - the value. It must be the allowed input type corresponding to the property type. 
+<b>See</b> <a href = "PropertyType.html">Property Type</a></DL>
+<b>Example:</b><br>
+	<pre class="example_code">widgetController.setPropertyValue("x", 20); //set x position of the widget to 20.</pre>
+</DD>
+</DL>
+<HR>
+ 
+
+<A NAME="setExternalObject(java.lang.String, java.lang.Object)"><!-- --></A><H3>
+setExternalObject</H3>
+<PRE>
+public void <B>setExternalObject</B>(java.lang.String&nbsp;name,
+                              java.lang.Object&nbsp;var)</PRE>
+<DL>
+<DD>Add/modify an external object from javascript.
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>name</CODE> - the name of the object.<DD><CODE>var</CODE> - the object.</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="getExternalObject(java.lang.String)"><!-- --></A><H3>
+getExternalObject</H3>
+<PRE>
+public java.lang.Object <B>getExternalObject</B>(java.lang.String&nbsp;name)</PRE>
+<DL>
+<DD>Get the external object by name.
+<P>
+<DD><DL>
+
+<DT><B>Returns:</B><DD>the external object. null if no such an object was set before.</DL>
+<b>Example:</b>
+<p>This is an example which uses these two methods to remember if the dialog has been
+poped before.</p>
+<pre class = "example_code">
+importPackage(Packages.org.eclipse.jface.dialogs);
+importPackage(Packages.org.csstudio.platform.data);
+importPackage(Packages.java.lang);
+
+var flagName = "popped";
+
+if(widgetController.getExternalObject(flagName) == null){
+	widgetController.setExternalObject(flagName, false);	
+}
+
+var b = widgetController.getExternalObject(flagName);
+
+if(ValueUtil.getDouble(pvArray[0].getValue()) > 80){		
+		if( b == false){
+			widgetController.setExternalObject(flagName, true);
+			MessageDialog.openWarning(
+				null, "Warning", "The temperature you set is too high!");
+		}
+		
+}else if (b == true){
+	widgetController.setExternalObject(flagName, false);
+}
+</pre>
+</DD>
+</DL>
+<HR>
+
+ <A NAME="executeAction(int)"><!-- --></A><H3>
+executeAction</H3>
+<PRE>
+public void <B>executeAction</B>(int&nbsp;index)</PRE>
+<DL>
+<DD>Run a widget action which is attached to the widget.
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>index</CODE> - the index of the action in the actions list.</DL>
+</DD>
+</DL>
+<HR>
+ 
+ 
+ <h2>Common methods to all container widgets</h2>
+ <HR>
+   <A NAME="getChild(java.lang.String)"><!-- --></A><H3>getChild</H3>
+<PRE>
+public AbstractBaseEditPart <B>getChild</B>(java.lang.String&nbsp;name)</PRE>
+<DL>
+<DD>Get a child of this container by name.
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>name</CODE> - the name of the child widget
+<DT><B>Returns:</B><DD>the widgetController of the child. Or null if the widget doesn't exist.</DL>
+
+
+<b>Example:</b><br>
+	<pre class="example_code">var child = widgetController.getChild("gauge_2"); //get the gauge widget whose name is gauge_2
+child.setPropertyValue("enable", false); //child is a widgetController</pre>
+</DD>
+</DL>
+ <HR>
+ 
+  </body>
+</html>
