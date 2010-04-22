@@ -112,7 +112,6 @@ public class ADLPoints extends WidgetPart{
 
 	@Override
 	public Object[] getChildren() {
-		// TODO Auto-generated method stub
 		Object[] ret = new Object[_pointsList.size()];
 		for (int ii=0; ii<_pointsList.size(); ii++){
 			ret[ii] = _pointsList.getPoint(ii);
