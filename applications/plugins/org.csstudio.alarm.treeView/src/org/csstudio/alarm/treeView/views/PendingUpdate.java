@@ -17,7 +17,7 @@
  * HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
-package org.csstudio.alarm.treeView.jms;
+package org.csstudio.alarm.treeView.views;
 
 import java.util.Date;
 

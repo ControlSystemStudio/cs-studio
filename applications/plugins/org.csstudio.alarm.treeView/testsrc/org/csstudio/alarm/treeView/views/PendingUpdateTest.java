@@ -1,8 +1,10 @@
-package org.csstudio.alarm.treeView.jms;
+package org.csstudio.alarm.treeView.views;
 
 import java.util.Date;
 
 import org.csstudio.alarm.treeView.model.Severity;
+import org.csstudio.alarm.treeView.views.AlarmTreeUpdater;
+import org.csstudio.alarm.treeView.views.PendingUpdate;
 import org.junit.Test;
 import org.mockito.Mockito;
 

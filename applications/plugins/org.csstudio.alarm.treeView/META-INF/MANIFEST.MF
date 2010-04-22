@@ -9,13 +9,11 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.views,
  org.csstudio.platform,
  org.csstudio.platform.ui,
- org.csstudio.platform.libs.jms,
  org.csstudio.alarm.table,
  org.csstudio.sds.ui,
  org.csstudio.utility.ldap,
  org.junit4;bundle-version="4.5.0"
 Eclipse-LazyStart: true
 Bundle-Vendor: DESY
-Import-Package: org.csstudio.platform.utility.jms,
- org.csstudio.platform.utility.jms.sharedconnection,
+Import-Package: org.csstudio.alarm.service.declaration,
  org.eclipse.core.resources

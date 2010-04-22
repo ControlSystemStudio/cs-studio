@@ -1,11 +1,11 @@
 package org.csstudio.alarm.treeView;
 
-import org.csstudio.alarm.treeView.jms.PendingUpdateTest;
 import org.csstudio.alarm.treeView.ldap.LdapNameUtilsTest;
 import org.csstudio.alarm.treeView.ldap.TreeBuilderTest;
 import org.csstudio.alarm.treeView.model.AlarmTest;
 import org.csstudio.alarm.treeView.model.ProcessVariableNodeTest;
 import org.csstudio.alarm.treeView.model.SeverityTest;
+import org.csstudio.alarm.treeView.views.PendingUpdateTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;

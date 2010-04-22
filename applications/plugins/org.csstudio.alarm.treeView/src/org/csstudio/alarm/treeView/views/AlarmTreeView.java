@@ -27,9 +27,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.csstudio.alarm.service.declaration.AlarmConnectionException;
+import org.csstudio.alarm.service.declaration.IAlarmConnection;
+import org.csstudio.alarm.service.declaration.IAlarmConnectionMonitor;
 import org.csstudio.alarm.table.SendAcknowledge;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
-import org.csstudio.alarm.treeView.jms.AlarmTreeUpdater;
 import org.csstudio.alarm.treeView.ldap.DirectoryEditException;
 import org.csstudio.alarm.treeView.ldap.DirectoryEditor;
 import org.csstudio.alarm.treeView.ldap.LdapDirectoryReader;
@@ -39,16 +41,11 @@ import org.csstudio.alarm.treeView.model.ObjectClass;
 import org.csstudio.alarm.treeView.model.ProcessVariableNode;
 import org.csstudio.alarm.treeView.model.Severity;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
-import org.csstudio.alarm.treeView.service.AlarmConnectionException;
 import org.csstudio.alarm.treeView.service.AlarmMessageListener;
-import org.csstudio.alarm.treeView.service.AlarmServiceJMSImpl;
-import org.csstudio.alarm.treeView.service.IAlarmConnection;
-import org.csstudio.alarm.treeView.service.IAlarmConnectionMonitor;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableNameTransfer;
 import org.csstudio.platform.ui.util.EditorUtil;
-import org.csstudio.platform.utility.jms.IConnectionMonitor;
 import org.csstudio.sds.ui.runmode.RunModeService;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -132,36 +129,13 @@ public class AlarmTreeView extends ViewPart {
     }
     
     /**
-     * Object based adapter from AlarmTreeConnectionMonitor to IAlarmConnectionMonitor
+     * Monitors the connection to the backend system and displays a message in the tree view if the
+     * connection fails. When the connection is established or restored, triggers loading the
+     * current state from the LDAP directory.
      */
-    private final class AlarmTreeConnectionMonitorNew implements IAlarmConnectionMonitor {
-        
-        private final AlarmTreeConnectionMonitor connectionMonitor;
-        
-        public AlarmTreeConnectionMonitorNew(final AlarmTreeConnectionMonitor monitor) {
-            this.connectionMonitor = monitor;
-        }
+    private final class AlarmTreeConnectionMonitor implements IAlarmConnectionMonitor {
         
         public void onConnect() {
-            connectionMonitor.onConnected();
-        }
-        
-        public void onDisconnect() {
-            connectionMonitor.onDisconnected();
-        }
-        
-    }
-    
-    /**
-     * Monitors the connection to the JMS backend system and displays a message in the tree view if
-     * the JMS connection fails. When the JMS connection is established or restored, triggers
-     * loading the current state from the LDAP directory.
-     */
-    private final class AlarmTreeConnectionMonitor implements IConnectionMonitor {
-        /**
-         * {@inheritDoc}
-         */
-        public void onConnected() {
             Display.getDefault().asyncExec(new Runnable() {
                 public void run() {
                     hideMessage();
@@ -174,10 +148,7 @@ public class AlarmTreeView extends ViewPart {
             });
         }
         
-        /**
-         * {@inheritDoc}
-         */
-        public void onDisconnected() {
+        public void onDisconnect() {
             Display.getDefault().asyncExec(new Runnable() {
                 public void run() {
                     setMessage(SWT.ICON_WARNING,
@@ -188,6 +159,7 @@ public class AlarmTreeView extends ViewPart {
                 }
             });
         }
+        
     }
     
     /**
@@ -751,13 +723,12 @@ public class AlarmTreeView extends ViewPart {
             @Override
             protected IStatus run(final IProgressMonitor monitor) {
                 monitor.beginTask("Connecting via alarm service", IProgressMonitor.UNKNOWN);
-                // TODO jp Get the service via ServiceRegistry
-                _connection = new AlarmServiceJMSImpl().newAlarmConnection();
-                AlarmTreeConnectionMonitorNew alarmTreeConnectionMonitorNew = new AlarmTreeConnectionMonitorNew(new AlarmTreeConnectionMonitor());
+                _connection = AlarmTreePlugin.getDefault().getAlarmService().newAlarmConnection();
                 _alarmListener = new AlarmMessageListener();
                 
                 try {
-                    _connection.connectWithListener(alarmTreeConnectionMonitorNew, _alarmListener);
+                    _connection.connectWithListener(new AlarmTreeConnectionMonitor(),
+                                                    _alarmListener);
                 } catch (AlarmConnectionException e) {
                     throw new RuntimeException("Could not connect via alarm service", e);
                 }

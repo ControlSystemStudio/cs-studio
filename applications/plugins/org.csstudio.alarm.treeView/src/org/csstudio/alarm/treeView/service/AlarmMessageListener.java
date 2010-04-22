@@ -23,10 +23,13 @@ import java.util.Date;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import org.csstudio.alarm.service.declaration.AlarmMessageException;
+import org.csstudio.alarm.service.declaration.IAlarmListener;
+import org.csstudio.alarm.service.declaration.IAlarmMessage;
 import org.csstudio.alarm.treeView.EventtimeUtil;
-import org.csstudio.alarm.treeView.jms.AlarmTreeUpdater;
-import org.csstudio.alarm.treeView.jms.PendingUpdate;
 import org.csstudio.alarm.treeView.model.Severity;
+import org.csstudio.alarm.treeView.views.AlarmTreeUpdater;
+import org.csstudio.alarm.treeView.views.PendingUpdate;
 import org.csstudio.platform.logging.CentralLogger;
 
 /**
