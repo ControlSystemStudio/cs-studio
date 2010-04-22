@@ -35,19 +35,58 @@ public class OPIFont{
 		preDefined = true;
 	}
 
-	public String getFontName() {
+	/**Returns the Macro Name of the OPIFont.
+	 * @return the predefined font macro name or 
+	 * flattened font data string if it is not predefined.
+	 */
+	public String getFontMacroName() {
 		return fontName;
 	}
 	
 	/**
-	 * @return the rgb value of the color. null if the predefined color does not exist.
+	 * Returns the name of the Font.
+	 * On platforms that support font foundries, the return value will
+	 * be the foundry followed by a dash ("-") followed by the face name.
+	 *
+	 * @return the name of the font
+	 *
+	 */
+	public String getFontName(){
+		return fontData.getName();
+	}
+	
+	/**
+	 * Returns the height of the font in points.
+	 *
+	 * @return the height of the font.
+	 *
+	 */
+	public int getHeight(){
+		return fontData.getHeight();
+	}
+	
+	/**
+	 * Returns the style of the receiver which is a bitwise OR of 
+	 * one or more of the <code>SWT</code> constants NORMAL(0), BOLD(2)
+	 * and ITALIC(1).
+	 *
+	 * @return the style of the font.
+	 * 
+	 */
+	public int getStyle(){
+		return fontData.getStyle();
+	}
+	
+	
+	/**
+	 * @return the fontData of the Font. null if the predefined color does not exist.
 	 */
 	public FontData getFontData() {
 		return fontData;
 	}
 	
 	/**
-	 * @return true if this color is predefined in color file, false otherwise.
+	 * @return true if this font is predefined in font file, false otherwise.
 	 */
 	public boolean isPreDefined() {
 		return preDefined;

@@ -42,7 +42,7 @@ public class OPIFontDialog extends Dialog {
 		setShellStyle(getShellStyle() | SWT.RESIZE);
 		this.title = dialogTitle;
 		if(font.isPreDefined())
-			this.opiFont = MediaService.getInstance().getOPIFont(font.getFontName());
+			this.opiFont = MediaService.getInstance().getOPIFont(font.getFontMacroName());
 		else
 			this.opiFont = new OPIFont(font.getFontData());
 	}
@@ -98,7 +98,7 @@ public class OPIFontDialog extends Dialog {
 				if(fontdata != null){
 					opiFont = new OPIFont(fontdata);
 					preDefinedFontsViewer.setSelection(null);
-					outputTextLabel.setText(opiFont.getFontName());
+					outputTextLabel.setText(opiFont.getFontMacroName());
 					outputTextLabel.setFont(CustomMediaFactory.getInstance().getFont(fontdata));
 					getShell().layout(true, true);
 				}
@@ -116,7 +116,7 @@ public class OPIFontDialog extends Dialog {
 
 		outputTextLabel = new Label(group, SWT.None);
 		outputTextLabel.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
-		outputTextLabel.setText(opiFont.getFontName());
+		outputTextLabel.setText(opiFont.getFontMacroName());
 		outputTextLabel.setFont(
 				CustomMediaFactory.getInstance().getFont(opiFont.getFontData()));
 		
@@ -161,7 +161,7 @@ public class OPIFontDialog extends Dialog {
 		if(!selection.isEmpty() 
 				&& selection.getFirstElement() instanceof OPIFont){
 			opiFont = (OPIFont)selection.getFirstElement();
-			outputTextLabel.setText(opiFont.getFontName());
+			outputTextLabel.setText(opiFont.getFontMacroName());
 			outputTextLabel.setFont(CustomMediaFactory.getInstance().getFont(opiFont.getFontData()));
 			getShell().layout(true, true);
 		}

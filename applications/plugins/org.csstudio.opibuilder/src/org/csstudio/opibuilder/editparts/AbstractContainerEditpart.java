@@ -71,6 +71,10 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
 		installEditPolicy("Snap Feedback", new SnapFeedbackPolicy()); //$NON-NLS-1$
 	}
 	
+	/**Get a child of this container by name.
+	 * @param name the name of the child widget
+	 * @return the widgetController of the child. null if the child doesn't exist.
+	 */
 	@SuppressWarnings("unchecked")
 	public AbstractBaseEditPart getChild(String name){
 		List children = getChildren();

@@ -55,6 +55,10 @@ public class OPIColor implements IAdaptable {
 		preDefined = true;
 	}
 
+	/**
+	 * @return the name of color if it is a predefined color macro;
+	 * otherwise, it is a string of the RGB values.
+	 */
 	public String getColorName() {
 		return colorName;
 	}
@@ -123,7 +127,7 @@ public class OPIColor implements IAdaptable {
 	}
 	
 	/**Get the color image for this color. 
-	 * @return
+	 * @return the color image
 	 */
 	public Image getImage(){	
 		Image image = imageRegistry.get(getID());

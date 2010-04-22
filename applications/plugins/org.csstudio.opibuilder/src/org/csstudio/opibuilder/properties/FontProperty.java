@@ -101,7 +101,7 @@ public class FontProperty extends AbstractWidgetProperty {
 					"" + fontData.getStyle()); //$NON-NLS-1$
 		}else{
 			fontElement = new Element(XML_ELEMENT_FONTNAME);
-			fontElement.setText(opiFont.getFontName());
+			fontElement.setText(opiFont.getFontMacroName());
 		}
 		
 		propElement.addContent(fontElement);		

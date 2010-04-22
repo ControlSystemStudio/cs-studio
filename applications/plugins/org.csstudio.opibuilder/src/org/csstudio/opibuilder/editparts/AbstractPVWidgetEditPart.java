@@ -433,7 +433,7 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 	}
 	
 	/**Get value from one of the attached PVs.
-	 * @param pvPropId the property id of the PV.
+	 * @param pvPropId the property id of the PV. It is "pv_name" for the main PV.
 	 * @return the {@link IValue} of the PV.
 	 */
 	public IValue getPVValue(String pvPropId){
@@ -504,7 +504,7 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 	
 	/**Get the value of the widget. 
 	 * @return the value of the widget. It is not the value of the attached PV 
-	 * even though they are equals in most cases. {@link #getPVValue(String)  
+	 * even though they are equals in most cases. {@link #getPVValue(String)}  
 	 */
 	public abstract Object getValue();
 	

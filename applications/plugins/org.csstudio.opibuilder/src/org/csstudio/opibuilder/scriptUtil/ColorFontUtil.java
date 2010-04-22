@@ -1,5 +1,6 @@
 package org.csstudio.opibuilder.scriptUtil;
 
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 
 /**Utility class to facilitate Javascript programming
@@ -7,7 +8,7 @@ import org.eclipse.swt.graphics.RGB;
  * @author Xihui Chen
  *
  */
-public class ColorUtil {
+public class ColorFontUtil {
 
 	/** the color of black */
 	final static public RGB BLACK = new RGB(0, 0, 0);
@@ -80,6 +81,24 @@ public class ColorUtil {
 	*/
 	public final static RGB getColorFromHSB(float hue, float saturation, float brightness){
 		return new RGB(hue, saturation, brightness);
+	}
+	
+	/**	 
+	 * Get a new font data given a font name,
+	 * the height of the desired font in points, 
+	 * and a font style.
+	 *
+	 * @param name the name of the font (must not be null)
+	 * @param height the font height in points
+	 * @param style A bitwise combination of NORMAL(0), BOLD(1) and ITALIC(2).
+	 *
+	 * @exception IllegalArgumentException <ul>
+	 *    <li>ERROR_NULL_ARGUMENT - when the font name is null</li>
+	 *    <li>ERROR_INVALID_ARGUMENT - if the height is negative</li>
+	 * </ul>
+	 */
+	public final static FontData getFont(String name, int height, int style){
+		return new FontData(name, height, style);
 	}
 	
 }
