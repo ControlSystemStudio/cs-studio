@@ -22,6 +22,7 @@ import org.csstudio.sds.components.model.EllipseModel;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.MetaData;
+import org.epics.css.dal.simple.Severity;
 
 /**
  *
@@ -64,6 +65,14 @@ public class EllipseAlarmBehavior extends AbstractDesyAlarmBehavior<AbstractWidg
     protected void doProcessValueChange(final AbstractWidgetModel model, final AnyData anyData) {
 //        super.doProcessValueChange(model, anyData);
         model.setPropertyValue(AbstractWidgetModel.PROP_COLOR_BACKGROUND, determineColorBySeverity(anyData.getSeverity(), null));
+        Severity severity = anyData.getSeverity();
+        if (severity != null) {
+            if (severity.isInvalid()) {
+                model.setPropertyValue(AbstractWidgetModel.PROP_CROSSED_OUT, true);
+            } else {
+                model.setPropertyValue(AbstractWidgetModel.PROP_CROSSED_OUT, false);
+            }
+        }
     }
 
 

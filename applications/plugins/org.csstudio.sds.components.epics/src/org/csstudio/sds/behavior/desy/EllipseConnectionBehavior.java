@@ -19,7 +19,11 @@
 package org.csstudio.sds.behavior.desy;
 
 import org.csstudio.sds.components.model.EllipseModel;
+import org.csstudio.sds.model.AbstractWidgetModel;
+import org.epics.css.dal.context.ConnectionState;
+import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.MetaData;
+import org.epics.css.dal.simple.Severity;
 
 /**
  *
@@ -30,18 +34,66 @@ import org.epics.css.dal.simple.MetaData;
  * @version $Revision$
  * @since 20.04.2010
  */
-public class EllipseConnectionBehavior extends AbstractDesyConnectionBehavior<EllipseModel> {
+public class EllipseConnectionBehavior extends AbstractDesyConnectionBehavior<AbstractWidgetModel> {
+
+    private String _defColor;
 
     /**
      * Constructor.
      */
     public EllipseConnectionBehavior() {
         // add Invisible Property Id here
-        // addInvisiblePropertyId
+        addInvisiblePropertyId(EllipseModel.PROP_ACTIONDATA);
+        addInvisiblePropertyId(EllipseModel.PROP_FILL);
+        addInvisiblePropertyId(EllipseModel.PROP_ORIENTATION);
+        addInvisiblePropertyId(EllipseModel.PROP_TRANSPARENT);
+        addInvisiblePropertyId(EllipseModel.PROP_COLOR_FOREGROUND);
+        addInvisiblePropertyId(EllipseModel.PROP_COLOR_BACKGROUND);
+        addInvisiblePropertyId(EllipseModel.PROP_COLOR_BACKGROUND);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doInitialize(final AbstractWidgetModel widget) {
+        super.doInitialize(widget);
+        _defColor = widget.getColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doProcessValueChange(final AbstractWidgetModel model, final AnyData anyData) {
+//        super.doProcessValueChange(model, anyData);
+//        model.setPropertyValue(AbstractWidgetModel.PROP_COLOR_BACKGROUND, determineColorBySeverity(anyData.getSeverity(), null));
+        Severity severity = anyData.getSeverity();
+        if (severity != null) {
+            if (severity.isInvalid()) {
+                model.setPropertyValue(AbstractWidgetModel.PROP_CROSSED_OUT, true);
+            } else {
+                model.setPropertyValue(AbstractWidgetModel.PROP_CROSSED_OUT, false);
+            }
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doProcessConnectionStateChange(final AbstractWidgetModel widget,
+                                                  final ConnectionState connectionState) {
+        super.doProcessConnectionStateChange(widget, connectionState);
+        if (connectionState!=ConnectionState.CONNECTED) {
+            widget.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, determineBackgroundColor(connectionState));
+        } else {
+            widget.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, _defColor);
+        }
     }
 
     @Override
-    protected void doProcessMetaDataChange(final EllipseModel widget, final MetaData metaData) {
+    protected void doProcessMetaDataChange(final AbstractWidgetModel widget, final MetaData metaData) {
         // do noting
     }
 }

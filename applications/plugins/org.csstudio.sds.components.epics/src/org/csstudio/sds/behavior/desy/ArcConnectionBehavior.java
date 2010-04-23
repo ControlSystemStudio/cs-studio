@@ -20,6 +20,7 @@ package org.csstudio.sds.behavior.desy;
 
 import org.csstudio.sds.components.model.ArcModel;
 import org.csstudio.sds.components.model.EllipseModel;
+import org.epics.css.dal.context.ConnectionState;
 import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.MetaData;
 
@@ -66,6 +67,20 @@ public class ArcConnectionBehavior extends AbstractDesyConnectionBehavior<ArcMod
             model.setPropertyValue(ArcModel.PROP_FILLCOLOR, determineColorBySeverity(anyData.getSeverity(),null));
         }else {
             model.setPropertyValue(ArcModel.PROP_COLOR_FOREGROUND, determineColorBySeverity(anyData.getSeverity(),null));
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doProcessConnectionStateChange(final ArcModel widget, final ConnectionState connectionState) {
+        super.doProcessConnectionStateChange(widget, connectionState);
+        if(connectionState != ConnectionState.CONNECTED) {
+            widget.setColor(ArcModel.PROP_FILLCOLOR,determineBackgroundColor(connectionState));
+        }
+        if(!widget.getFill()) {
+            widget.setPropertyValue(ArcModel.PROP_TRANSPARENT, connectionState == ConnectionState.CONNECTED);
         }
     }
 

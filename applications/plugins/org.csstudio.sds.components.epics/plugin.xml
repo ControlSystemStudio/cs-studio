@@ -232,7 +232,7 @@
             widgetTypeId="org.csstudio.sds.components.Rectangle">
       </behavior>
       <behavior
-            class="org.csstudio.sds.behavior.desy.RectangelConnectionBehavior"
+            class="org.csstudio.sds.behavior.desy.EllipseConnectionBehavior"
             description="DESY Connection Rectangel"
             id="behavior.desy.rectangel.connectiondefault"
             widgetTypeId="org.csstudio.sds.components.Rectangle">
