@@ -49,14 +49,14 @@ public class ComboProperty extends AbstractWidgetProperty {
 		Integer acceptedValue = null;
 
 		// check type
-		if (!(value instanceof Integer)) {
+		if (!(value instanceof Number)) {			
 			try {
 				acceptedValue = Integer.parseInt(value.toString());
 			} catch (NumberFormatException e) {
 				acceptedValue = null;
 			}
 		} else {
-			acceptedValue = (Integer) value;
+			acceptedValue = ((Number) value).intValue();
 		}
 
 		// check range

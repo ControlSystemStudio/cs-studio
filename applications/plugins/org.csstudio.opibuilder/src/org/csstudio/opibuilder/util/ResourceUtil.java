@@ -6,11 +6,13 @@ import java.io.InputStream;
 import java.net.URL;
 
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
+import org.csstudio.opibuilder.persistence.URLPath;
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPathEditorInput;
 import org.eclipse.ui.ide.FileStoreEditorInput;
@@ -131,9 +133,21 @@ public class ResourceUtil {
 			return null;
 	}
 
+	/**Returns IPath from String.
+	 * @param input the path string.
+	 * @return {@link URLPath} if input is an URL; returns {@link Path} otherwise.
+	 */
+	public static IPath getPathFromString(String input){
+		if(input == null)
+			return null;
+		if(isURL(input))
+			return new URLPath(input);
+		else
+			return new Path(input);
+	}
+	
 	
 	public static boolean isURL(String url){
 		return url.contains("://");
-	}
-
+	}	
 }

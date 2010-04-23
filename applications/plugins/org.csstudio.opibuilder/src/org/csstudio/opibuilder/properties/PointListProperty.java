@@ -44,8 +44,8 @@ public class PointListProperty extends AbstractWidgetProperty {
 		PointList acceptableValue = null;
 		if(value instanceof PointList){
 			acceptableValue = (PointList)value;			
-		}
-		
+		}else if (value instanceof int[])
+			acceptableValue = new PointList((int[]) value);
 		return acceptableValue;
 	}
 

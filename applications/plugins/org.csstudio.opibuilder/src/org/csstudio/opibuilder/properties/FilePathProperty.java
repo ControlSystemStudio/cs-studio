@@ -57,21 +57,25 @@ public class FilePathProperty extends AbstractWidgetProperty {
 			return null;
 		Object acceptedValue = null;
 		
-		if (value instanceof IPath) {
-			IPath path = (IPath) value;
+		if (value instanceof IPath || value instanceof String) {
+			IPath path;
+			if(value instanceof String)
+				path = ResourceUtil.getPathFromString((String) value);
+			else 
+				path = (IPath) value;
 			if (fileExtensions!=null && fileExtensions.length>0) {
 				for (String extension : fileExtensions) {
 					if (extension.equalsIgnoreCase(path.getFileExtension())) {
-						acceptedValue = value; 
+						acceptedValue = path; 
 					}
 					if(extension.equals("*"))
-						acceptedValue = value; 
+						acceptedValue = path; 
 				}
 			} else {
-				acceptedValue = value;
+				acceptedValue = path;
 			}
 			if (path.isEmpty()) {
-				acceptedValue = value;
+				acceptedValue = path;
 			}
 		}
 		
