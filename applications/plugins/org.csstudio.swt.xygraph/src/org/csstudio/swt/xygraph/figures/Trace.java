@@ -33,6 +33,8 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
      *  keep it in variable
      */
     final private static boolean use_advanced_graphics = Preferences.useAdvancedGraphics();
+    
+    
 	
 	/** The way how the trace will be drawn.
 	 *  @author Xihui Chen
@@ -185,6 +187,7 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 	private ErrorBarType yErrorBarType = ErrorBarType.BOTH;
 	private ErrorBarType xErrorBarType = ErrorBarType.BOTH;
 	private int errorBarCapWidth = 4;
+	private boolean errorBarColorSetFlag = false; 
 	
 	/** Color used for error bars.
 	 *  If <code>null</code>, traceColor is used
@@ -210,7 +213,7 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 	
 	private void drawErrorBar(Graphics graphics, Point dpPos, ISample dp){
 		graphics.pushState();
-		graphics.setForegroundColor(getErrorBarColor());
+		graphics.setForegroundColor(errorBarColor);
 		graphics.setLineStyle(SWT.LINE_SOLID);
 		graphics.setLineWidth(1);
 		Point ep;
@@ -261,12 +264,12 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 		Color lighter = null;
 		if (use_advanced_graphics)
 		{
-	        graphics.setBackgroundColor(getErrorBarColor());
+	        graphics.setBackgroundColor(errorBarColor);
 		    graphics.setAlpha(areaAlpha);
 		}
 		else
 		{
-	        final float[] hsb = getErrorBarColor().getRGB().getHSB();
+	        final float[] hsb = errorBarColor.getRGB().getHSB();
 		    lighter = new Color(Display.getCurrent(),
 	                new RGB(hsb[0], hsb[1]*areaAlpha/255, 1.0f));
             graphics.setBackgroundColor(lighter);
@@ -838,6 +841,8 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 	public void setTraceColor(final Color traceColor)
 	{
 		this.traceColor = traceColor;
+		if(!errorBarColorSetFlag)
+			errorBarColor = traceColor;
 	}
 	
 	/**
@@ -1076,6 +1081,7 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 	public void setErrorBarColor(final Color errorBarColor)
 	{
 		this.errorBarColor = errorBarColor;
+		errorBarColorSetFlag = true;
 	}
 
 
@@ -1154,8 +1160,7 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 	/** @return Color used for error bars or 'area' */
 	public Color getErrorBarColor()
 	{
-	    // If undefined, default to trace color
-		return (errorBarColor == null) ? traceColor : errorBarColor;
+		return errorBarColor;
 	}
 
 
