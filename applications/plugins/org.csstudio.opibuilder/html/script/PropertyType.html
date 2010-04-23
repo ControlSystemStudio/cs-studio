@@ -20,6 +20,56 @@
     each type of property. <b>Property Value Type</b> is the type of the object returned from
     <code>widgetController.getPropertyValue(prop_id)</code>.
     </p>
+    
+    <table BORDER="1" WIDTH="80%" CELLPADDING="3" CELLSPACING="0">
+	    <TR BGCOLOR="#CCCCFF" >
+			<TD ALIGN="left"><B>Property Type</B></TD>
+			<TD ALIGN="left"><B>Example Properties</B></TD>
+		</TR>
+    	<tr>
+    		<td><a href = "#BooleanProperty">Boolean Property</a></td>
+    		<td>Enabled, Visible</td>
+    	</tr>
+    	<tr>
+    		<td><a href = "#IntegerProperty">Integer Property</a></td>
+    		<td>Height, Width, X, Y</td>
+    	</tr>
+    	<tr>
+    		<td><a href = "#DoubleProperty">Double Property</a></td>
+    		<td>Meter.Level HIHI, Meter.Maximum</td>
+    	</tr>
+    	<tr>
+    		<td><a href = "#ComboProperty">Combo Property</a></td>
+    		<td>Border Style</td>
+    	</tr>
+    	<tr>
+    		<td><a href = "#StringProperty">String Property</a></td>
+    		<td>Name, PV Name, Text</td>
+    	</tr>
+    	<tr>
+    		<td><a href = "#ColorProperty">Color Property</a></td>
+    		<td>Background Color, Foreground Color</td>
+    	</tr>
+    	
+    	<tr>
+    		<td><a href = "#FontProperty">Font Property</a></td>
+    		<td>Font</td>
+    	</tr>
+    	<tr>
+    		<td><a href = "#FilePathProperty">File Path Property</a></td>
+    		<td>Image.Image File, Linking Container.OPI File</td>
+    	</tr>
+    	<tr>
+    		<td><a href = "#PointListProperty">PointList Property</a></td>
+    		<td>Polyline.Points, Polygon.Points</td>
+    	</tr>
+    	<tr>
+    		<td><a href = "#ColorMapProperty">ColorMap Property</a></td>
+    		<td>IntensityGraph.Color Map</td>
+    	</tr>
+    </table>
+
+    
 <HR>    
     <A NAME="BooleanProperty"><!-- --></A><H3>
 Boolean Property</H3>
@@ -60,13 +110,29 @@ Double Property</H3>
 	widgetController.setPropertyValue("fill_level", 35.6);</pre>
 
 </DL>
+<HR>
+
+    <A NAME="ComboProperty"><!-- --></A><H3>
+Combo Property</H3>
+<DD>
+<DL>
+<DT><B>Acceptable Value Type</B></DT><DD>int - it is the index of the item in the combo box of the property</DD><br>
+<B>Property Value Type</B><DD>Integer</DD><br>
+<B>Examples:</B>
+	<pre class="example_code">
+	//set border style to line style
+	widgetController.setPropertyValue("border_style", 1); </pre>
+
+</DL>
+
+
 
 <HR>    
     <A NAME="StringProperty"><!-- --></A><H3>
 String Property</H3>
 <DD>
 <DL>
-<DT><B>Acceptable Value Type</B></DT><DD>String</DD>
+<DT><B>Acceptable Value Type</B></DT><DD>String - allow macros in string</DD>
 <dd>any object(the method <code>toString()</code> will be automatically called)</DD><br>
 <B>Property Value Type</B><DD>String</DD><br>
 <B>Examples:</B>
@@ -77,7 +143,7 @@ String Property</H3>
 <HR>
 
 
-<A NAME="Color Property"><!-- --></A><H3>
+<A NAME="ColorProperty"><!-- --></A><H3>
 Color Property</H3>
 <DD>
 <DL>
@@ -96,7 +162,7 @@ Color Property</H3>
 </DL>
 <HR>
 
-<A NAME="Font Property"><!-- --></A><H3>
+<A NAME="FontProperty"><!-- --></A><H3>
 Font Property</H3>
 <DD>
 <DL>
@@ -114,11 +180,84 @@ Font Property</H3>
 </DL>
 <HR>
 
+<A NAME="FilePathProperty"><!-- --></A><H3>
+File Path Property</H3>
+<DD>
+<DL>
+<DT><B>Acceptable Value Type</B></DT><DD>String - allow url start with <code>http://</code> or 
+<code>ftp://</code></DD><br>
+<dd>org.eclipse.core.runtime.IPath</DD><br>
+<B>Property Value Type</B><DD>org.eclipse.core.runtime.IPath</DD><br>
+<B>Examples:</B>
+	<pre class="example_code">
+	//load image from relative path
+	widgetController.getWidgetModel().setPropertyValue("image_file", "../pictures/fish.gif");
+	//load image from url
+	widgetController.getWidgetModel().setPropertyValue("image_file", "http://neutrons.ornl.gov/images/sns_aerial.jpg");
+	//load image from absolute workspace path
+	widgetController.getWidgetModel().setPropertyValue("image_file", "/BOY Examples/widgets/DynamicSymbols/Scared.jpg");
+	//load image from local file system
+	widgetController.getWidgetModel().setPropertyValue("image_file", "C:\\Users\\5hz\\Pictures\\me.gif");	
+</pre>
+</DL>
+<HR>
+
+<A NAME="PointListProperty"><!-- --></A><H3>
+PointList Property</H3>
+<DD>
+<DL>
+<DT><B>Acceptable Value Type</B></DT><DD>int[]</DD><br>
+<dd>org.eclipse.draw2d.geometry.PointList</DD><br>
+<B>Property Value Type</B><DD>org.eclipse.draw2d.geometry.PointList</DD><br>
+<B>Examples:</B>
+	<pre class="example_code">
+	importPackage(Packages.org.csstudio.opibuilder.scriptUtil);
+	
+	var jsArray = new Array(20,260,34,56,320,230);
+	//set the points for a polygon/polyline widget
+	widgetController.setPropertyValue("points", DataUtil.toJavaIntArray(jsArray));	</pre>
+
+</DL>
+<HR>
 
 
+<A NAME="ColorMapProperty"><!-- --></A><H3>
+ColorMap Property</H3>
+<DD>
+<DL>
+<DT><B>Acceptable Value Type</B></DT><DD>org.csstudio.opibuilder.datadefinition.ColorMap</DD><br>
+<B>Property Value Type</B><DD>org.csstudio.opibuilder.datadefinition.ColorMap</DD><br>
+<B>Examples:</B>
+	<pre class="example_code">
+	importPackage(Packages.org.csstudio.opibuilder.scriptUtil);
+	importPackage(Packages.org.csstudio.opibuilder.datadefinition);
+	
+	var value = PVUtil.getString(pvArray[0]);
+	var colorMap;
+	if(value == "Cool")
+		colorMap = new ColorMap(ColorMap.PredefinedColorMap.Cool, true, true);
+	else if(value == "Hot")
+		colorMap = new ColorMap(ColorMap.PredefinedColorMap.Hot, true, true);
+	else if(value == "JET")
+		colorMap = new ColorMap(ColorMap.PredefinedColorMap.JET, true, true);
+	else if(value == "GrayScale")
+		colorMap = new ColorMap(ColorMap.PredefinedColorMap.GrayScale, true, true);
+	else if(value == "ColorSpectrum")
+		colorMap = new ColorMap(ColorMap.PredefinedColorMap.ColorSpectrum, true, true);
+	else if(value == "Shaded")
+		colorMap = new ColorMap(ColorMap.PredefinedColorMap.Shaded, true, true);	
+	
+	//set colormap of IntensityGraph			
+	widgetController.getChild("IntensityGraph").setPropertyValue(
+			"color_map", colorMap);	</pre>
 
+</DL>
+<HR>
 
-
+<p><b>Actions Property</b>, <b>Macros Property</b> and <b>Script Property</b> are not changeable from script becaues 
+they are only loaded once during the initialization of widget.
+</p>
+<HR>
   
  
   </body>
