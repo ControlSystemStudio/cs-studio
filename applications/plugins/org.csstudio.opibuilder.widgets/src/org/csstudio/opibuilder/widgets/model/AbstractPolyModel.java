@@ -229,7 +229,8 @@ public abstract class AbstractPolyModel extends AbstractShapeModel {
 		if (propertyID.equals(AbstractPolyModel.PROP_POINTS)) {
 			if (value instanceof PointList) {
 				this.setPoints((PointList) value, true);
-			}
+			}else if (value instanceof int[])
+				this.setPoints(new PointList((int[]) value), true);
 		} 
 		else if (propertyID.equals(AbstractWidgetModel.PROP_XPOS) ||
 				propertyID.equals(AbstractWidgetModel.PROP_YPOS) ||
