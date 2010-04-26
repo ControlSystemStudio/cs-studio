@@ -15,7 +15,22 @@
   <topic label="Widget Properties" href="html/Widget Properties.html"/>
   <topic label="PV Connectivity" href="html/PV Connectivity.html"/>
   <topic label="Action" href="html/Actions.html"/>
-  <topic label="Script" href="html/Script.html"/>
+  <topic href="html/Script.html" label="Script">
+     <topic href="html/script/AccessWidget.html" label="Access Widget">
+     </topic>
+     <topic href="html/script/AccessPV.html" label="Access PV">
+     </topic>
+     <topic href="html/script/PropertyType.html" label="Property Type">
+     </topic>
+     <topic href="html/script/ScriptUtil.html" label="Script Utililty APIs">
+        <topic href="html/script/ScriptUtil/PVUtil.html" label="PVUtil">
+        </topic>
+        <topic href="html/script/ScriptUtil/ColorFontUtil.html" label="ColorFontUtil">
+        </topic>
+        <topic href="html/script/ScriptUtil/DataUtil.html" label="DataUtil">
+        </topic>
+     </topic>
+  </topic>
   <topic label="Macro" href="html/Macro.html"/>
     <topic label="Color and Font Macro" href="html/Color_Font_Macro.html"/>
 </topic>

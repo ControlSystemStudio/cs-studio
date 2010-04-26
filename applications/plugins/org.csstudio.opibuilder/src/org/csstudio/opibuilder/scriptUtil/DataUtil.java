@@ -6,7 +6,7 @@ import org.mozilla.javascript.NativeArray;
 /**Utility class to facilitate Javascript programming
  * for data operation. The basic data type such as int, double, boolean and string are 
  * exchangeable between JavaScript and Java, which means these types of JavaScript variables
- * can be directly used as parameters of Java methods. But <b>array</b> is not exchangeable between 
+ * can be directly used as parameters of Java methods, but <b>array</b> is not exchangeable between 
  * JavaScript and Java. This utility class provides methods to create Java array or convert
  * JavaScript array to Java array.  
  * @author Xihui Chen

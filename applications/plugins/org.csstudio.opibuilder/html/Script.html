@@ -3,150 +3,52 @@
     <meta http-equiv="Content-Type" content="text/html; charset=Cp1252"/>
     <link rel="stylesheet" href="default.css" type="text/css" />
     <title>
-      Script
+      Script Introduction
     </title>
   </head>
   <body>
 
     <h1>
-      Script
+      Attaching JavaScripts to Widgets
     </h1>
     <p>
-To obtain more flexible hehaviors than just setting from properties sheet, you can attach scripts to widgets.
-The script is JavaScript file, but more than plain javascript file, you can set PVs as input and set the properties of the widget in the script. The script execution is triggered by the PV inputs.
- That means, any PV value change will trigger the execution of the script. In the script, the value or severity of the input PVs are accessible. 
+To obtain more flexible hehaviors than just setting from properties sheet, you can attach scripts to widgets or OPI.
+The script grammar is JavaScript, but more than plain javascript, 
+you can set PVs as input and change properties of widgets in the script. 
+The script execution is triggered by input PVs.
+That means the change of PV value will trigger the execution of script. In script, the value or severity of the input PVs are accessible. 
 </p>
+<p>Besides, all Java APIs are accessible in script by importing the package of java.lang.</p>
+
 <h3>
 Steps to attach scripts to a widget:
 </h3>
 <ol>
-	<li>Select "Scripts" property in the property sheet view.
+	<li>Select <b>Scripts</b> property in  property sheet view.
 	</li>
-	<li>In the "Attach Scripts" Dialog, you can add more than one script. For each script, you can specify more than one PV as the input.
+	<li>In <b>Attach Scripts</b> Dialog, you can add more than one script. For each script, you can specify more than one PV as the input.
+	<p>
+	<img src="script/img/ScriptDialog.PNG" alt="Script Configuration Dialog" />
+	</p>
 	</li>
 	<li>Run OPI to see the result.
 	</li>
 </ol>
 
-  <h3>Access input PVs and the widget</h3>
-  <p>The most common things in the script would be read the PV value and set the properties of the widget.</p>
-	<h4>Read PV Value
-	</h4>
-	<p>The input PVs are accessible from pvArray, in which the PVs have the same order as the input.</p>
-	<h5>Get double value</h5>
-	<pre class="example_code">importPackage(Packages.org.csstudio.platform.data);
-var value0 = ValueUtil.getDouble(pvArray[0].getValue());
-var value1 = ValueUtil.getDouble(pvArray[1].getValue()); </pre>
-	<h5>Get double array value</h5>
-	<pre class="example_code">importPackage(Packages.org.csstudio.platform.data);
-var value0 = ValueUtil.getDoubleArray(pvArray[0].getValue());</pre>
-	<h5>Get String value</h5>
-	<pre class="example_code">importPackage(Packages.org.csstudio.platform.data);
-var value0 = ValueUtil.getString(pvArray[0].getValue());</pre>
-<h5>Get Severity</h5>
-	<pre class="example_code">importPackage(Packages.org.csstudio.platform.data);
-var severity = pvArray[0].getValue().getSeverity();</pre>
-<p>The available methods of Severity:</p>
-<pre class="example_code">boolean severity.isOK();
-boolean severity.isMajor();
-boolean severity.isMinor();
-boolean severity.isInvalid();</pre>
+<h3>JavaScript Grammar Tutorial</h3>
+<p>
+There are lots of free JavaScript Tutorial available from Internet, for example <a href = "http://www.w3schools.com/JS/default.asp">w3schools JS Tutorial.</a>
+You only need to read the JavaScript grammar part. The other parts are not appliable in BOY.   
+</p>
 
-
-	<h4>Write PV Value
-	</h4>
-	<p>Only the input PVs are writable in the script.</p>
-	<pre class="example_code">importPackage(Packages.org.csstudio.platform.data);
-pvArray[0].setValue(0);	</pre>
-
-
-	<h4>Set Widget Properties in Script
-	</h4>
-	<p>The property could be set by setPropertyValue(prop_id, value) function.</p>
-	<pre class="example_code">widgetController.setPropertyValue("x", 20);</pre>
-<h3>Other Utility Functions</h3>
-<p>The script will be executed with the whole Eclipse and CSS libraries, so that all the libraries can be accessed in the script.
-Followings are some examples:</p>
-<h4>Color</h4>
-<h5>Use Predefined Color</h5>
-<pre class="example_code">importPackage(Packages.org.csstudio.platform.ui.util);
-var RED = CustomMediaFactory.COLOR_RED;
-var ORANGE = CustomMediaFactory.COLOR_ORANGE;
-var GREEN = CustomMediaFactory.COLOR_GREEN;
-widgetController.setPropertyValue("foreground_color", ORANGE);
-</pre>
-<h5>Use RGB Color</h5>
-<pre class="example_code">importPackage(Packages.org.eclipse.swt.graphics);
-var RED = new RGB(0,0,0);
-RED.red = 255;
-RED.green = 0;
-RED.blue = 0;
-widgetController.setPropertyValue("foreground_color", RED);
-</pre>
-<h4>Dialog</h4>
-<pre class="example_code">importPackage(Packages.org.eclipse.jface.dialogs);
-MessageDialog.openInformation(
-			null, "Dialog from JavaScript", "Button Pushed.");</pre>
-  <p></p>
-  <h3>Available Methods of widgetController</h3>
-  <h4>Set Property Value</h4>
-  <pre class = "example_code">/**Set the property value of the widget. 
-* <b>prop_id</b> the property id. 
-* <b>value</b> the value.
-*/
-void setPropertyValue(String propID, Object value);</pre>
-  <h4>Get Property Value</h4>
-  <pre class = "example_code">/**Get property value of the widget.
-* <b>prop_id</b> the property id.
-* <b>return</b> the property value.
-*/
-Object getPropertyValue(String propID);</pre>
-   <h4>Execute Action</h4>
-  <pre class = "example_code">/**Run a widget action which is attached to the widget.
-* <b>index</b> the index of the action in the actions list.
-*/
-void executeAction(int index);</pre>
-    <h4>Register Objects to widgetController</h4>    
-    <h5>Set External Object</h5>
-  <pre class = "example_code">/**Register an object to the widgetController. 
-* The widgetController will maintaine this object,
-* so it can be accessed in the following script execution. 
-* This function can help the script <b>"remember"</b> objects. 
-* <b>name</b> the name of the object.
-* <b>var</b> the object.
-*/
-void setExternalObject(String name, Object var);</pre>
-    <h5>Get External Object</h5>
-  <pre class = "example_code">/**Get external object by its name.
-* <b>return</b> the external object. null if no such an object was set before.
-*/
-Object getExternalObject(String name);</pre>
-<p>This is an example which uses these two methods to remember if the dialog has been
-poped before.</p>
-<pre class = "example_code">
-importPackage(Packages.org.eclipse.jface.dialogs);
-importPackage(Packages.org.csstudio.platform.data);
-importPackage(Packages.java.lang);
-
-var flagName = "popped";
-
-if(widgetController.getExternalObject(flagName) == null){
-	widgetController.setExternalObject(flagName, false);	
-}
-
-var b = widgetController.getExternalObject(flagName);
-
-if(ValueUtil.getDouble(pvArray[0].getValue()) > 80){		
-		if( b == false){
-			widgetController.setExternalObject(flagName, true);
-			MessageDialog.openWarning(
-				null, "Warning", "The temperature you set is too high!");
-		}
-		
-}else if (b == true){
-	widgetController.setExternalObject(flagName, false);
-}
-</pre>
-
+<h3>JavaScript Objects</h3>
+<p>Please notice that the JavaScript in BOY is not executed in an environment of browser, so the 
+objects such as <code>document</code> and methods such as <code>alert()</code>, <code>confirm()</code> 
+are not available here, but the JavaScript Objects such as <code>Date</code>, <code>Array</code>, 
+<code>Math</code> are still available. This is an example showing the current datetime on a Label widget.
+<pre class="example_code">
+widgetController.setPropertyValue("text", new Date().toString());</pre>
+</p>
+  
   </body>
 </html>

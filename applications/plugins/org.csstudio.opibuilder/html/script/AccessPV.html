@@ -19,7 +19,7 @@
     </p>
     
     <p>In script, you can read/write the input PVs and get the timestamp or severitis of the PVs via the utility APIs 
-    provided in <a href ="PVUtil.html">PVUtil</a> 
+    provided in <a href ="ScriptUtil/PVUtil.html">PVUtil</a> 
     </p>
     
     <h3>Examples:</h3> 
@@ -30,7 +30,16 @@ importPackage(Packages.org.csstudio.opibuilder.scriptUtil);
 var value = PVUtil.getDouble(pvArray[0]);
 widgetController.getWidgetModel().setPropertyValue("start_angle", value);</pre>
 
-    <h4>2. Get severity of PV</h4>
+ <h4>2. Write PV Value
+	</h4>
+	<p>Only the input PVs are allowed to write in the script. If writing a PV is forbidden 
+	by PV security, an exception will be returned and shown in console. The method PV.setValue(data) accepts
+	Double, Double[], Integer, String, maybe more.	</p>
+	
+	<pre class="example_code">importPackage(Packages.org.csstudio.platform.data);
+pvArray[0].setValue(0);	</pre>
+
+    <h4>3. Get severity of PV</h4>
 	<pre class="example_code">
 importPackage(Packages.org.csstudio.opibuilder.scriptUtil);
 
@@ -58,6 +67,7 @@ switch(severity){
 }
 
 widgetController.getWidgetModel().setPropertyValue("foreground_color",color);</pre>
+
  
   </body>
 </html>
