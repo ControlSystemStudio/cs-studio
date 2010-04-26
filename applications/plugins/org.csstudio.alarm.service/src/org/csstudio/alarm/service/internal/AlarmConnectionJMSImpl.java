@@ -20,6 +20,9 @@
  */
 package org.csstudio.alarm.service.internal;
 
+import java.util.Arrays;
+
+import javax.annotation.Nonnull;
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
@@ -34,8 +37,6 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.utility.jms.IConnectionMonitor;
 import org.csstudio.platform.utility.jms.sharedconnection.IMessageListenerSession;
 import org.csstudio.platform.utility.jms.sharedconnection.SharedJmsConnections;
-
-import com.sun.istack.internal.NotNull;
 
 /**
  * This is the JMS based implementation of the AlarmConnection.
@@ -62,10 +63,18 @@ public final class AlarmConnectionJMSImpl implements IAlarmConnection {
     AlarmConnectionJMSImpl() {
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public boolean canHandleTopics() {
         return true;
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void disconnect() {
         _log.debug(this, "Disconnecting from JMS.");
         
@@ -80,8 +89,9 @@ public final class AlarmConnectionJMSImpl implements IAlarmConnection {
     /**
      * {@inheritDoc}
      */
-    public void connectWithListener(final @NotNull IAlarmConnectionMonitor connectionMonitor,
-                                    final @NotNull IAlarmListener listener) throws AlarmConnectionException {
+    @Override
+    public void connectWithListener(@Nonnull final IAlarmConnectionMonitor connectionMonitor,
+                                    @Nonnull final IAlarmListener listener) throws AlarmConnectionException {
         
         // TODO jp The default topics should be preference based
         String[] topics = "ALARM,ACK".split(",");
@@ -91,10 +101,11 @@ public final class AlarmConnectionJMSImpl implements IAlarmConnection {
     /**
      * {@inheritDoc}
      */
-    public void connectWithListenerForTopics(final @NotNull IAlarmConnectionMonitor connectionMonitor,
-                                             final @NotNull IAlarmListener listener,
-                                             final @NotNull String[] topics) throws AlarmConnectionException {
-        _log.debug(this, "Connecting to JMS for topics " + topics + ".");
+    @Override
+    public void connectWithListenerForTopics(@Nonnull final IAlarmConnectionMonitor connectionMonitor,
+                                             @Nonnull final IAlarmListener listener,
+                                             @Nonnull final String[] topics) throws AlarmConnectionException {
+        _log.debug(this, "Connecting to JMS for topics " + Arrays.toString(topics) + ".");
         
         try {
             _listener = new AlarmListenerAdapter(listener);
@@ -118,7 +129,7 @@ public final class AlarmConnectionJMSImpl implements IAlarmConnection {
      * 
      * Adapts the IAlarmListener to the MessageListener expected by JMS.
      */
-    private final static class AlarmListenerAdapter implements MessageListener {
+    private static final class AlarmListenerAdapter implements MessageListener {
         
         private final IAlarmListener alarmListener;
         
@@ -142,11 +153,11 @@ public final class AlarmConnectionJMSImpl implements IAlarmConnection {
      * 
      * Adapts the IAlarmConnectionMonitor to the IConnectionMonitor expected by JMS.
      */
-    private final static class AlarmConnectionMonitorAdapter implements IConnectionMonitor {
+    private static final class AlarmConnectionMonitorAdapter implements IConnectionMonitor {
         
         private final IAlarmConnectionMonitor monitor;
         
-        public AlarmConnectionMonitorAdapter(@NotNull final IAlarmConnectionMonitor monitor) {
+        public AlarmConnectionMonitorAdapter(@Nonnull final IAlarmConnectionMonitor monitor) {
             this.monitor = monitor;
         }
         

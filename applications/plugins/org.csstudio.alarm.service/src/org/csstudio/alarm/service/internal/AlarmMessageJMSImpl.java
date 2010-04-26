@@ -40,6 +40,12 @@ public class AlarmMessageJMSImpl implements IAlarmMessage {
     
     private final MapMessage mapMessage;
     
+    /**
+     * Constructor.
+     * 
+     * @param mapMessage
+     *            this message will be evaluated by subsequent calls to getString
+     */
     public AlarmMessageJMSImpl(final MapMessage mapMessage) {
         this.mapMessage = mapMessage;
     }
@@ -47,6 +53,7 @@ public class AlarmMessageJMSImpl implements IAlarmMessage {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getString(final String key) throws AlarmMessageException {
         String result = null;
         try {

@@ -34,8 +34,8 @@ public interface IAlarmListener {
      * This is called when a message is received. You have to provide a listener implementation and
      * register it via the alarm connection.
      * 
-     * @see IAlarmConnection.
      * @param message
+     *            .
      */
     void onMessage(IAlarmMessage message);
     

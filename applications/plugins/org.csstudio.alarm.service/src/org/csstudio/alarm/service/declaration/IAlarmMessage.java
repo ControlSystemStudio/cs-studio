@@ -20,6 +20,8 @@
  */
 package org.csstudio.alarm.service.declaration;
 
+import javax.annotation.Nonnull;
+
 /**
  * Is used by the AlarmService to represent a message from DAL or JMS resp.
  * 
@@ -34,8 +36,9 @@ public interface IAlarmMessage {
      * The message essentially is a map from String to String. Here you get the value for the key.
      * 
      * @param key
+     *            .
      * @return value
      * @throws AlarmMessageException
      */
-    String getString(String key) throws AlarmMessageException;
+    String getString(@Nonnull final String key) throws AlarmMessageException;
 }

@@ -33,10 +33,17 @@ import org.csstudio.alarm.service.declaration.IAlarmService;
  */
 public class AlarmServiceJMSImpl implements IAlarmService {
     
+    /**
+     * Constructor.
+     */
     public AlarmServiceJMSImpl() {
         // Nothing to do
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public IAlarmConnection newAlarmConnection() {
         return new AlarmConnectionJMSImpl();
     }

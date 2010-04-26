@@ -29,7 +29,13 @@ package org.csstudio.alarm.service.declaration;
  * @since 21.04.2010
  */
 public interface IAlarmConnectionMonitor {
+    /**
+     * Is called, when the connection is connected.
+     */
     void onConnect();
     
+    /**
+     * Is called, when the connection is disconnected.
+     */
     void onDisconnect();
 }

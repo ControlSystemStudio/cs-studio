@@ -20,6 +20,8 @@
  */
 package org.csstudio.alarm.service.declaration;
 
+import javax.annotation.Nonnull;
+
 /**
  * Is used by the AlarmService to represent a connection into JMS or DAL resp.. It abstracts the
  * process of connecting and disconnecting.
@@ -41,10 +43,13 @@ public interface IAlarmConnection {
      * connection state. You have to provide a listener to receive messages.
      * 
      * @param connectionMonitor
+     *            .
      * @param listener
+     *            .
      * @throws AlarmConnectionException
      */
-    void connectWithListener(IAlarmConnectionMonitor connectionMonitor, IAlarmListener listener) throws AlarmConnectionException;
+    void connectWithListener(@Nonnull final IAlarmConnectionMonitor connectionMonitor,
+                             @Nonnull final IAlarmListener listener) throws AlarmConnectionException;
     
     /**
      * Connects to the underlying system. You have to provide a connectionMonitor to track
@@ -52,13 +57,16 @@ public interface IAlarmConnection {
      * topics, which are actually the names of the JMS topics.
      * 
      * @param connectionMonitor
+     *            .
      * @param listener
+     *            .
      * @param topics
+     *            .
      * @throws AlarmConnectionException
      */
-    void connectWithListenerForTopics(IAlarmConnectionMonitor connectionMonitor,
-                                      IAlarmListener listener,
-                                      String[] topics) throws AlarmConnectionException;
+    void connectWithListenerForTopics(@Nonnull final IAlarmConnectionMonitor connectionMonitor,
+                                      @Nonnull final IAlarmListener listener,
+                                      @Nonnull final String[] topics) throws AlarmConnectionException;
     
     /**
      * Disconnect from the underlying system, freeing resources.

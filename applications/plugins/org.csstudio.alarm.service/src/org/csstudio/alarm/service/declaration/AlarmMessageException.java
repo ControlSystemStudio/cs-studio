@@ -30,18 +30,41 @@ package org.csstudio.alarm.service.declaration;
  */
 public class AlarmMessageException extends Exception {
     
+    /**
+     * Constructor.
+     */
     public AlarmMessageException() {
         super();
     }
     
+    /**
+     * Constructor.
+     * 
+     * @param message
+     *            .
+     * @param cause
+     *            .
+     */
     public AlarmMessageException(final String message, final Throwable cause) {
         super(message, cause);
     }
     
+    /**
+     * Constructor.
+     * 
+     * @param message
+     *            .
+     */
     public AlarmMessageException(final String message) {
         super(message);
     }
     
+    /**
+     * Constructor.
+     * 
+     * @param cause
+     *            .
+     */
     public AlarmMessageException(final Throwable cause) {
         super(cause);
     }
