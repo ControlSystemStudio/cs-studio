@@ -26,6 +26,7 @@ package org.csstudio.ams.connector.sms;
 import java.util.Hashtable;
 
 import org.csstudio.platform.statistic.Collector;
+import org.smslib.AGateway;
 import org.smslib.IGatewayStatusNotification;
 import org.smslib.AGateway.GatewayStatuses;
 
@@ -61,14 +62,11 @@ public class GatewayStatusNotification implements IGatewayStatusNotification
         }
     }
     
-    /**
-     * @see org.smslib.IGatewayStatusNotification#process(java.lang.String, org.smslib.AGateway.GatewayStatuses, org.smslib.AGateway.GatewayStatuses)
-     */
-    public void process(String gatewayId, GatewayStatuses oldStatus, GatewayStatuses newStatus)
-    {
-        if((gatewayRestart.containsKey(gatewayId)) && (newStatus == GatewayStatuses.RESTART))
+    @Override
+    public void process(AGateway gateway, GatewayStatuses oldStatus, GatewayStatuses newStatus) {
+        if((gatewayRestart.containsKey(gateway.getGatewayId())) && (newStatus == GatewayStatuses.RESTART))
         {
-            gatewayRestart.get(gatewayId).incrementValue();
+            gatewayRestart.get(gateway.getGatewayId()).incrementValue();
         }
     }
 }

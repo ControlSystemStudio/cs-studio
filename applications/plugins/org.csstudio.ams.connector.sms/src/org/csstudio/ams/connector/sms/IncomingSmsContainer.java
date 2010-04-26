@@ -24,6 +24,8 @@
 package org.csstudio.ams.connector.sms;
 
 import java.util.TreeSet;
+
+import org.smslib.AGateway;
 import org.smslib.IInboundMessageNotification;
 import org.smslib.InboundMessage;
 import org.smslib.Message.MessageTypes;
@@ -42,8 +44,8 @@ public class IncomingSmsContainer implements IInboundMessageNotification
         content = new TreeSet<InboundMessage>();
     }
     
-    public void process(String gatewayId, MessageTypes type, InboundMessage msg)
-    {
+    @Override
+    public void process(AGateway gateway, MessageTypes type, InboundMessage msg) {
         if(type == MessageTypes.INBOUND)
         {
             content.add(msg);
