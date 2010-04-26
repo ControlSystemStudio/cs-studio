@@ -97,8 +97,8 @@ public class MainView extends ViewPart {
 
 	private void createTable(Composite parent) {
 
-		int style = SWT.SINGLE | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL
-				| SWT.FULL_SELECTION | SWT.HIDE_SELECTION;
+//		int style = SWT.SINGLE | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL
+//				| SWT.FULL_SELECTION | SWT.HIDE_SELECTION;
 
 		final Table table = new Table(parent, SWT.HIDE_SELECTION
 				| SWT.FULL_SELECTION | SWT.MULTI | SWT.BORDER);
@@ -167,20 +167,21 @@ public class MainView extends ViewPart {
 		newColumnTableColumn_8.setWidth(100);
 		newColumnTableColumn_8.setText("Object subfunction");
 
+//		precess id is now comined with seq number
+//		final TableColumn newColumnTableColumn_9 = new TableColumn(table,
+//				SWT.CENTER, 12);
+//		newColumnTableColumn_9.setWidth(100);
+//		newColumnTableColumn_9.setText("Process Part");
+
 		final TableColumn newColumnTableColumn_9 = new TableColumn(table,
 				SWT.CENTER, 12);
-		newColumnTableColumn_9.setWidth(100);
-		newColumnTableColumn_9.setText("Process Part");
+		newColumnTableColumn_9.setWidth(40);
+		newColumnTableColumn_9.setText("Seq No");
 
 		final TableColumn newColumnTableColumn_10 = new TableColumn(table,
-				SWT.CENTER, 13);
-		newColumnTableColumn_10.setWidth(30);
-		newColumnTableColumn_10.setText("Seq No");
-
-		final TableColumn newColumnTableColumn_11 = new TableColumn(table,
 				SWT.NONE);
-		newColumnTableColumn_11.setWidth(100);
-		newColumnTableColumn_11.setText("Description");
+		newColumnTableColumn_10.setWidth(100);
+		newColumnTableColumn_10.setText("Description");
 
 		viewer = new TableViewer(table);
 
@@ -305,10 +306,11 @@ public class MainView extends ViewPart {
 				return sortOrderMultiplyer * compareObjects(first, second, 1);
 			case 11:
 				return sortOrderMultiplyer * compareObjects(first, second, 2);
-			case 12:
-				return sortOrderMultiplyer
-						* first.getProcess().getName().compareTo(
-								second.getProcess().getName());
+//		      precess id is now comined with seq number
+//			case 12:
+//				return sortOrderMultiplyer
+//						* first.getProcess().getName().compareTo(
+//								second.getProcess().getName());
 			case 13:
 				return sortOrderMultiplyer
 						* Double.compare(first.getSeqKryoNumber(), second
@@ -387,7 +389,8 @@ public class MainView extends ViewPart {
 	}
 
 	private void initializeToolBar() {
-		IToolBarManager toolBarManager = getViewSite().getActionBars()
+		@SuppressWarnings("unused")
+        IToolBarManager toolBarManager = getViewSite().getActionBars()
 				.getToolBarManager();
 	}
 

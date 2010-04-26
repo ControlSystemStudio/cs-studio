@@ -38,7 +38,7 @@ public class FilterComposite extends Composite {
 	private Combo subplant2;
 	private Combo subplant1;
 	private Combo plant;
-	private Combo process;
+//	private Combo process;
 	private Combo subfunction;
 	private Text processNo;
 	private Combo object;
@@ -68,7 +68,7 @@ public class FilterComposite extends Composite {
 		bridge.registerObject(object);
 		bridge.registerFunction(function);
 		bridge.registerSubfunction(subfunction);
-		bridge.registerProcess(process);
+//		bridge.registerProcess(process);
 		bridge.registerKryoNumber(processNo);
 
 		bridge.setLogic(logic);
@@ -261,28 +261,28 @@ public class FilterComposite extends Composite {
 
 		subfunction = new Combo(composite_12, SWT.READ_ONLY);
 
+//		final Composite composite_13 = new Composite(basicBottom, SWT.NONE);
+//		composite_13.setLayout(new RowLayout(SWT.VERTICAL));
+//
+//		final Label processLabel = new Label(composite_13, SWT.NONE);
+//		processLabel.setText("Process");
+//
+//		process = new Combo(composite_13, SWT.READ_ONLY);
+//
+//		process.addKeyListener(adapter);
+
 		final Composite composite_13 = new Composite(basicBottom, SWT.NONE);
 		composite_13.setLayout(new RowLayout(SWT.VERTICAL));
 
-		final Label processLabel = new Label(composite_13, SWT.NONE);
-		processLabel.setText("Process");
-
-		process = new Combo(composite_13, SWT.READ_ONLY);
-
-		process.addKeyListener(adapter);
-
-		final Composite composite_14 = new Composite(basicBottom, SWT.NONE);
-		composite_14.setLayout(new RowLayout(SWT.VERTICAL));
-
-		final Label sequenceNoLabel = new Label(composite_14, SWT.NONE);
+		final Label sequenceNoLabel = new Label(composite_13, SWT.NONE);
 		sequenceNoLabel.setText("Sequence No");
 
-		processNo = new Text(composite_14, SWT.BORDER);
+		processNo = new Text(composite_13, SWT.BORDER);
 		processNo.addKeyListener(adapter);
 		final RowData rd_processNo = new RowData();
 		rd_processNo.width = 80;
 		processNo.setLayoutData(rd_processNo);
-		processNo.setTextLimit(2);
+		processNo.setTextLimit(4);
 		stackLayout.topControl = basicPanel;
 
 		composite_16 = new Composite(this, SWT.NONE);

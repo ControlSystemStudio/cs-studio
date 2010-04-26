@@ -11,17 +11,18 @@ public class KryoNameEntry {
 	private String name = "";
 	private int plantId = -1;
 	private int objectId = -1;
-	private String processId;
+//  precess id is now comined with seq number
+//	private String processId;
 	private int seqKryoNumber = -1;
 	private String label;
 
 	public KryoNameEntry(int id, String name, int plantId, int objectId,
-			String processId, int seqKryoNumber, String label) {
+			int seqKryoNumber, String label) {
 		this.id = id;
 		this.name = name;
 		this.plantId = plantId;
 		this.objectId = objectId;
-		this.processId = processId;
+//		this.processId = processId;
 		this.seqKryoNumber = seqKryoNumber;
 		this.label = label;
 	}
@@ -50,9 +51,9 @@ public class KryoNameEntry {
 		return objectId;
 	}
 
-	public String getProcessId() {
-		return processId;
-	}
+//	public String getProcessId() {
+//		return processId;
+//	}
 
 	public int getSeqKryoNumber() {
 		return seqKryoNumber;
@@ -78,9 +79,9 @@ public class KryoNameEntry {
 		this.objectId = objectId;
 	}
 
-	public void setProcessId(String processId) {
-		this.processId = processId;
-	}
+//	public void setProcessId(String processId) {
+//		this.processId = processId;
+//	}
 
 	public void setSeqKryoNumber(int seqKryoNumber) {
 		this.seqKryoNumber = seqKryoNumber;

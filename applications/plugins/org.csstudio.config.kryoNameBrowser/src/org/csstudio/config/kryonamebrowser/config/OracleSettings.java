@@ -16,7 +16,7 @@ public class OracleSettings implements Settings {
     }
 
     public String getPassword() {
-        return "KRYKLOGT";
+        return "KRYKLOG";
     }
 
     public Driver getDriver() {
@@ -24,7 +24,7 @@ public class OracleSettings implements Settings {
     }
 
     public String getUsername() {
-        return "KRYKLOGT";
+        return "KRYKLOG";
     }
 
 }

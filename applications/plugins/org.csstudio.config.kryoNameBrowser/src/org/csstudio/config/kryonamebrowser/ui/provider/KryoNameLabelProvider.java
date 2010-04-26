@@ -3,7 +3,6 @@ package org.csstudio.config.kryonamebrowser.ui.provider;
 import java.util.List;
 
 import org.csstudio.config.kryonamebrowser.model.entry.KryoObjectEntry;
-import org.csstudio.config.kryonamebrowser.model.entry.KryoPlantEntry;
 import org.csstudio.config.kryonamebrowser.model.resolved.KryoNameResolved;
 import org.csstudio.config.kryonamebrowser.model.resolved.KryoPlantResolved;
 import org.eclipse.jface.viewers.ILabelProviderListener;
@@ -45,11 +44,11 @@ public class KryoNameLabelProvider implements ITableLabelProvider {
 			return getObjectName(resolved.getObjects(), 1);
 		case 11:
 			return getObjectName(resolved.getObjects(), 2);
+//		case 12:
+//			return resolved.getProcess().getName();
 		case 12:
-			return resolved.getProcess().getName();
-		case 13:
 			return "" + resolved.getSeqKryoNumber();
-		case 14:
+		case 13:
 			String label = resolved.getLabel();
 			if (label == null || (label.length() == 0)) {
 				return "";

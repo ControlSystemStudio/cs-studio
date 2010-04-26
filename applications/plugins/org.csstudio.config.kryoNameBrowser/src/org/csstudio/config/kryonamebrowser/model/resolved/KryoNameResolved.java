@@ -1,12 +1,9 @@
 package org.csstudio.config.kryonamebrowser.model.resolved;
 
-import org.csstudio.config.kryonamebrowser.model.entry.KryoObjectEntry;
-import org.csstudio.config.kryonamebrowser.model.entry.KryoPlantEntry;
-import org.csstudio.config.kryonamebrowser.model.entry.KryoProcessEntry;
-
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
+
+import org.csstudio.config.kryonamebrowser.model.entry.KryoObjectEntry;
 
 public class KryoNameResolved {
 
@@ -18,18 +15,19 @@ public class KryoNameResolved {
 
     private List<KryoObjectEntry> objects = new ArrayList<KryoObjectEntry>();
 
-    private KryoProcessEntry process;
+//  now combined with sequential number
+//  private KryoProcessEntry process;
 
     private int id = -1;
 
     private int seqKryoNumber = -1;
 
-    public KryoNameResolved(String name, String label, int id, int seqKryoNumber, KryoProcessEntry process) {
+    public KryoNameResolved(String name, String label, int id, int seqKryoNumber) {
         this.name = name;
         this.label = label;
         this.id = id;
         this.seqKryoNumber = seqKryoNumber;
-        this.process = process;
+//        this.process = process;
     }
 
     public KryoNameResolved() {
@@ -52,9 +50,9 @@ public class KryoNameResolved {
         return objects;
     }
 
-    public KryoProcessEntry getProcess() {
-        return process;
-    }
+//    public KryoProcessEntry getProcess() {
+//        return process;
+//    }
 
     public int getId() {
         return id;
@@ -80,9 +78,9 @@ public class KryoNameResolved {
 		this.objects = objects;
 	}
 
-	public void setProcess(KryoProcessEntry process) {
-		this.process = process;
-	}
+//	public void setProcess(KryoProcessEntry process) {
+//		this.process = process;
+//	}
 
 	public void setId(int id) {
 		this.id = id;

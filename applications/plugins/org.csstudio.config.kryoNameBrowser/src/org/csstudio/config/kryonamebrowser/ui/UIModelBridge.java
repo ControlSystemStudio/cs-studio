@@ -8,7 +8,6 @@ import org.csstudio.config.kryonamebrowser.logic.KryoNameBrowserLogic;
 import org.csstudio.config.kryonamebrowser.model.entry.KryoNameEntry;
 import org.csstudio.config.kryonamebrowser.model.entry.KryoObjectEntry;
 import org.csstudio.config.kryonamebrowser.model.entry.KryoPlantEntry;
-import org.csstudio.config.kryonamebrowser.model.entry.KryoProcessEntry;
 import org.csstudio.config.kryonamebrowser.model.resolved.KryoNameResolved;
 import org.csstudio.config.kryonamebrowser.model.resolved.KryoPlantResolved;
 import org.eclipse.swt.events.ModifyEvent;
@@ -39,7 +38,7 @@ public class UIModelBridge {
 	private Combo object;
 	private Combo function;
 	private Combo subfunction;
-	private Combo process;
+//	private Combo process;
 	private Text number;
 	private Text description;
 
@@ -78,10 +77,10 @@ public class UIModelBridge {
 		this.subfunction = combo;
 	}
 
-	public void registerProcess(Combo combo) {
-		this.process = combo;
-
-	}
+//	public void registerProcess(Combo combo) {
+//		this.process = combo;
+//
+//	}
 
 	public void registerKryoNumber(Text text) {
 		this.number = text;
@@ -139,19 +138,19 @@ public class UIModelBridge {
 				subfunction, new Combo[] {}));
 		object.setEnabled(true);
 
-		populateProcess(process);
-		process.addSelectionListener(new SelectionListener() {
-
-			public void widgetDefaultSelected(SelectionEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-
-			public void widgetSelected(SelectionEvent e) {
-				fireListeners();
-
-			}
-		});
+//		populateProcess(process);
+//		process.addSelectionListener(new SelectionListener() {
+//
+//			public void widgetDefaultSelected(SelectionEvent e) {
+//				// TODO Auto-generated method stub
+//
+//			}
+//
+//			public void widgetSelected(SelectionEvent e) {
+//				fireListeners();
+//
+//			}
+//		});
 
 		Text[] text = new Text[] { plantNo, subplant1No, subplant2No,
 				subplant3No, number };
@@ -170,34 +169,35 @@ public class UIModelBridge {
 
 	}
 
-	private void populateProcess(Combo plant2) {
-		try {
-			List<KryoProcessEntry> choices = logic.findProcessChoices();
-			plant2.setData(choices);
-
-			if (choices.size() == 0) {
-				plant2.setText("");
-				plant2.setEnabled(false);
-				return;
-			}
-
-			String[] items = new String[choices.size() + 1];
-
-			items[0] = "";
-			int i = 1;
-
-			for (KryoProcessEntry entry : choices) {
-				items[i] = entry.getName() + " (" + entry.getId() + ")";
-				i++;
-			}
-
-			plant2.setItems(items);
-
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-
-	}
+//	precessid is now combined with seq_number
+//	private void populateProcess(Combo plant2) {
+//		try {
+//			List<KryoProcessEntry> choices = logic.findProcessChoices();
+//			plant2.setData(choices);
+//
+//			if (choices.size() == 0) {
+//				plant2.setText("");
+//				plant2.setEnabled(false);
+//				return;
+//			}
+//
+//			String[] items = new String[choices.size() + 1];
+//
+//			items[0] = "";
+//			int i = 1;
+//
+//			for (KryoProcessEntry entry : choices) {
+//				items[i] = entry.getName() + " (" + entry.getId() + ")";
+//				i++;
+//			}
+//
+//			plant2.setItems(items);
+//
+//		} catch (SQLException e) {
+//			throw new RuntimeException(e);
+//		}
+//
+//	}
 
 	private void populatePlant(Combo plant2, KryoPlantEntry parent) {
 		try {
@@ -447,7 +447,8 @@ public class UIModelBridge {
 
 		// get process if applicable
 
-		example.setProcess((KryoProcessEntry) getEntry(process));
+//      precess id is now comined with seq number
+//		example.setProcess((KryoProcessEntry) getEntry(process));
 
 		example.setSeqKryoNumber(getNo(number));
 
@@ -477,9 +478,9 @@ public class UIModelBridge {
 					example.getObjects().size() - 1).getId());
 		}
 
-		KryoProcessEntry process = example.getProcess();
+//		KryoProcessEntry process = example.getProcess();
 
-		newEntry.setProcessId(process != null ? process.getId() : null);
+//		newEntry.setProcessId(process != null ? process.getId() : null);
 
 		newEntry.setSeqKryoNumber(example.getSeqKryoNumber());
 
@@ -518,10 +519,13 @@ public class UIModelBridge {
 			builder.append(kOEntry.getLabel());
 		}
 
-		KryoProcessEntry process = example.getProcess();
-		builder.append(process != null ? process.getId() : "");
-		builder.append(example.getSeqKryoNumber() < 10 ? "0"
-				+ example.getSeqKryoNumber() : example.getSeqKryoNumber());
+//		KryoProcessEntry process = example.getProcess();
+//		builder.append(process != null ? process.getId() : "");
+		StringBuffer seqKryoNumber = new StringBuffer(String.valueOf(example.getSeqKryoNumber()));
+		while (seqKryoNumber.length() < 4) {
+		    seqKryoNumber.insert(0, "0");
+		}
+		builder.append(seqKryoNumber);
 
 		return builder.toString();
 
@@ -666,26 +670,26 @@ public class UIModelBridge {
 
 		}
 
-		populateProcess(process);
-
-		String[] items = process.getItems();
-
-		for (int i = 0; i < items.length; i++) {
-			if (items[i].equals(resolved.getProcess().getName() + " ("
-					+ resolved.getProcess().getId() + ")")) {
-				process.select(i);
-			}
-		}
+//		populateProcess(process);
+//
+//		String[] items = process.getItems();
+//
+//		for (int i = 0; i < items.length; i++) {
+//			if (items[i].equals(resolved.getProcess().getName() + " ("
+//					+ resolved.getProcess().getId() + ")")) {
+//				process.select(i);
+//			}
+//		}
 
 		number.setText("" + resolved.getSeqKryoNumber());
 
 		description.setText(resolved.getLabel());
 
 		if (shouldEnable) {
-			process.setEnabled(true);
+//			process.setEnabled(true);
 			number.setEnabled(true);
 		} else {
-			process.setEnabled(false);
+//			process.setEnabled(false);
 			number.setEnabled(false);
 		}
 

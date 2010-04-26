@@ -35,7 +35,7 @@ public abstract class KryoNameDialog extends TitleAreaDialog {
 
 	// package private
 	Text desc;
-	Combo process;
+//	Combo process;
 	Combo subfunction;
 	Combo function;
 	Combo object;
@@ -193,22 +193,22 @@ public abstract class KryoNameDialog extends TitleAreaDialog {
 		gridLayout_2.numColumns = 3;
 		proc.setLayout(gridLayout_2);
 
-		final Label label_1 = new Label(proc, SWT.NONE);
-		new Label(proc, SWT.NONE);
+//		final Label label_1 = new Label(proc, SWT.NONE);
+//		new Label(proc, SWT.NONE);
 
 		final Label noLabel_1 = new Label(proc, SWT.NONE);
 		noLabel_1.setText("Kryo Num");
 
-		final Label processLabel = new Label(proc, SWT.NONE);
-		processLabel.setText("Process");
-
-		process = new Combo(proc, SWT.READ_ONLY);
-		final GridData gd_process = new GridData(SWT.FILL, SWT.CENTER, true,
-				false);
-		process.setLayoutData(gd_process);
+//		final Label processLabel = new Label(proc, SWT.NONE);
+//		processLabel.setText("Process");
+//
+//		process = new Combo(proc, SWT.READ_ONLY);
+//		final GridData gd_process = new GridData(SWT.FILL, SWT.CENTER, true,
+//				false);
+//		process.setLayoutData(gd_process);
 
 		kryoNum = new Text(proc, SWT.BORDER);
-		kryoNum.setTextLimit(2);
+		kryoNum.setTextLimit(4);
 		final GridData gd_kryoNum = new GridData(SWT.FILL, SWT.CENTER, true,
 				false);
 		kryoNum.setLayoutData(gd_kryoNum);
@@ -240,7 +240,7 @@ public abstract class KryoNameDialog extends TitleAreaDialog {
 		bridge.registerSubfunction(subfunction);
 		bridge.registerDescription(desc);
 		bridge.registerKryoNumber(kryoNum);
-		bridge.registerProcess(process);
+//		bridge.registerProcess(process);
 		bridge.setLogic(logic);
 		bridge.bind();
 
