@@ -33,7 +33,7 @@ public class ArchivesTableHandler  implements ILazyContentProvider
         table_viewer = archives_table;
         TableViewerColumn col;
         // Archive Name Column ----------
-        col = AutoSizeColumn.make(archives_table, Messages.ArchiveName, 100, 50);
+        col = AutoSizeColumn.make(archives_table, Messages.ArchiveName, 100, 20);
         col.setLabelProvider(new CellLabelProvider()
         {
             @Override
