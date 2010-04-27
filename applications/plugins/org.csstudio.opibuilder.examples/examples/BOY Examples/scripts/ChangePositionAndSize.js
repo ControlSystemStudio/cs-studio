@@ -1,14 +1,17 @@
-importPackage(Packages.org.eclipse.swt.graphics);
-importPackage(Packages.org.csstudio.platform.ui.util);
-importPackage(Packages.org.csstudio.platform.data);
+importPackage(Packages.org.csstudio.opibuilder.scriptUtil);
 
-var RED = CustomMediaFactory.COLOR_RED;
-var GREEN = CustomMediaFactory.COLOR_GREEN;
-var value = ValueUtil.getDouble(pvArray[0].getValue());
+var RED = ColorFontUtil.RED;
+var GREEN = ColorFontUtil.GREEN;
+
+var value = PVUtil.getDouble(pvArray[0]);
+
+
 var width = 5*value;
-var oldY = widgetController.getWidgetModel().getLocation().y;
-var oldHeight = widgetController.getWidgetModel().getSize().height;
+var oldY = widgetController.getPropertyValue("y");
+var oldHeight = widgetController.getPropertyValue("height");
 
-widgetController.getWidgetModel().setLocation(value*20,  500 - width/2);
-widgetController.getWidgetModel().setSize(width,width);	
+widgetController.setPropertyValue("x", value*20);
+widgetController.setPropertyValue("y",  500 - width/2);
+widgetController.setPropertyValue("width",width);
+widgetController.setPropertyValue("height",width);	
 		

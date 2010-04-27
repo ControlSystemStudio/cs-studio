@@ -467,6 +467,7 @@ $(pv_value)</tooltip>
     <foreground_color>
       <color red="0" green="0" blue="0" />
     </foreground_color>
+    <released__action_index>0</released__action_index>
     <widget_type>Boolean Button</widget_type>
     <enabled>true</enabled>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
@@ -984,6 +985,7 @@ $(pv_value)</tooltip>
     <foreground_color>
       <color red="0" green="0" blue="0" />
     </foreground_color>
+    <released__action_index>0</released__action_index>
     <widget_type>Image Boolean Button</widget_type>
     <enabled>true</enabled>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
@@ -1011,23 +1013,35 @@ $(pv_value)</tooltip>
     <x>506</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <scripts />
+    <height>28</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Action Button_2</name>
+    <pv_name />
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="128" />
+    </foreground_color>
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
     <text>Back</text>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="9" style="1" />
     </font>
     <width>79</width>
     <push_action_index>0</push_action_index>
+    <border_style>0</border_style>
     <image />
-    <scripts />
     <toggle_button>false</toggle_button>
-    <height>28</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <name>Action Button_2</name>
-    <pv_name />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
     <y>561</y>
     <actions hook="true">
       <action type="OPEN_DISPLAY">
@@ -1036,16 +1050,11 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>true</replace>
+        <description />
       </action>
     </actions>
     <tooltip />
     <x>712</x>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
-    <foreground_color>
-      <color red="0" green="0" blue="128" />
-    </foreground_color>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ImageBoolButton" version="1.0">
     <border_alarm_sensitive>true</border_alarm_sensitive>
@@ -1235,7 +1244,7 @@ $(pv_value)</tooltip>
       <font>
         <fontdata fontName="Arial" height="9" style="0" />
       </font>
-      <width>40</width>
+      <width>81</width>
       <border_style>0</border_style>
       <label>Bit 1</label>
       <bit>1</bit>
@@ -1243,7 +1252,7 @@ $(pv_value)</tooltip>
       <border_color>
         <color red="0" green="128" blue="255" />
       </border_color>
-      <y>26</y>
+      <y>24</y>
       <actions hook="false" />
       <tooltip>$(pv_name)
 $(pv_value)</tooltip>
@@ -1270,7 +1279,7 @@ $(pv_value)</tooltip>
       <font>
         <fontdata fontName="Arial" height="9" style="0" />
       </font>
-      <width>40</width>
+      <width>73</width>
       <border_style>0</border_style>
       <label>Bit 0</label>
       <bit>0</bit>
@@ -1287,7 +1296,7 @@ $(pv_value)</tooltip>
     <widget typeId="org.csstudio.opibuilder.widgets.checkbox" version="1.0">
       <border_alarm_sensitive>true</border_alarm_sensitive>
       <visible>true</visible>
-      <auto_size>true</auto_size>
+      <auto_size>false</auto_size>
       <scripts />
       <height>15</height>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -1305,7 +1314,7 @@ $(pv_value)</tooltip>
       <font>
         <fontdata fontName="Arial" height="9" style="0" />
       </font>
-      <width>40</width>
+      <width>81</width>
       <border_style>0</border_style>
       <label>Bit 3</label>
       <bit>3</bit>
@@ -1322,9 +1331,9 @@ $(pv_value)</tooltip>
     <widget typeId="org.csstudio.opibuilder.widgets.checkbox" version="1.0">
       <border_alarm_sensitive>true</border_alarm_sensitive>
       <visible>true</visible>
-      <auto_size>true</auto_size>
+      <auto_size>false</auto_size>
       <scripts />
-      <height>15</height>
+      <height>19</height>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <name>Check Box_2</name>
       <pv_name>loc://boolTest</pv_name>
@@ -1340,7 +1349,7 @@ $(pv_value)</tooltip>
       <font>
         <fontdata fontName="Arial" height="9" style="0" />
       </font>
-      <width>40</width>
+      <width>81</width>
       <border_style>0</border_style>
       <label>Bit 2</label>
       <bit>2</bit>
@@ -1348,7 +1357,7 @@ $(pv_value)</tooltip>
       <border_color>
         <color red="0" green="128" blue="255" />
       </border_color>
-      <y>52</y>
+      <y>48</y>
       <actions hook="false" />
       <tooltip>$(pv_name)
 $(pv_value)</tooltip>
@@ -1356,23 +1365,35 @@ $(pv_value)</tooltip>
     </widget>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <scripts />
+    <height>28</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Action Button</name>
+    <pv_name />
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="128" />
+    </foreground_color>
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
     <text>Go Home</text>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="9" style="1" />
     </font>
     <width>79</width>
     <push_action_index>0</push_action_index>
+    <border_style>0</border_style>
     <image>../pictures/home-16x16.png</image>
-    <scripts />
     <toggle_button>false</toggle_button>
-    <height>28</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <name>Action Button</name>
-    <pv_name />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
     <y>568</y>
     <actions hook="true">
       <action type="OPEN_DISPLAY">
@@ -1381,15 +1402,10 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>true</replace>
+        <description />
       </action>
     </actions>
     <tooltip />
     <x>20</x>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
-    <foreground_color>
-      <color red="0" green="0" blue="128" />
-    </foreground_color>
   </widget>
 </display>

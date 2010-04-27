@@ -1,11 +1,8 @@
-importPackage(Packages.java.lang);
-importPackage(Packages.java.lang.reflect);
-importPackage(Packages.org.csstudio.platform.data);
-importPackage(Packages.org.eclipse.swt.graphics);
+importPackage(Packages.org.csstudio.opibuilder.scriptUtil);
 
-var simuData = java.lang.reflect.Array.newInstance(java.lang.Double.TYPE, 65536);
-var value = ValueUtil.getDouble(pvArray[0].getValue());
-var dataSrc = ValueUtil.getString(pvArray[1].getValue());
+var simuData = DataUtil.getDoubleArray(65536);
+var value = PVUtil.getDouble(pvArray[0]);
+var dataSrc = PVUtil.getString(pvArray[1]);
 
 if(dataSrc == "Linear Sine Wave"){
 	for(var i=0; i<256; i++){

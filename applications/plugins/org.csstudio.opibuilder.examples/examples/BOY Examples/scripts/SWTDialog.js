@@ -4,9 +4,9 @@ importPackage(Packages.org.eclipse.swt.events);
 importPackage(Packages.org.eclipse.swt.layout);
 importPackage(Packages.org.eclipse.jface.dialogs);
 importPackage(Packages.java.lang);
-importPackage(Packages.org.csstudio.platform.data);
+importPackage(Packages.org.csstudio.opibuilder.scriptUtil);
 
-if(ValueUtil.getDouble(pvArray[0].getValue()) == 100){
+if(PVUtil.getDouble(pvArray[0]) == 100){
 	execute();
 }
 

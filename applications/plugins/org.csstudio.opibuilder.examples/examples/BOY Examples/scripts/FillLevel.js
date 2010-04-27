@@ -1,8 +1,4 @@
-importPackage(Packages.org.eclipse.swt.graphics);
-importPackage(Packages.java.lang);
-importPackage(Packages.org.csstudio.platform.ui.util);
-importPackage(Packages.org.csstudio.platform.data);
+importPackage(Packages.org.csstudio.opibuilder.scriptUtil);
 
-
-var value = ValueUtil.getDouble(pvArray[0].getValue());
-widgetController.getWidgetModel().setFillLevel(value);
+var value = PVUtil.getDouble(pvArray[0]);
+widgetController.setPropertyValue("fill_level",value);

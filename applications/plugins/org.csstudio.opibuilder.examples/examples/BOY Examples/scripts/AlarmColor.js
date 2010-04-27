@@ -1,14 +1,9 @@
-importPackage(Packages.org.eclipse.swt.graphics);
-importPackage(Packages.java.lang);
-importPackage(Packages.org.csstudio.platform.ui.util);
 importPackage(Packages.org.csstudio.opibuilder.scriptUtil);
 
-
-
-var RED = ColorUtil.RED;
-var ORANGE = ColorUtil.getColorFromRGB(255,255,0);
-var GREEN = ColorUtil.getColorFromHSB(120.0,1.0,1.0);
-var PINK = ColorUtil.PINK;
+var RED = ColorFontUtil.RED;
+var ORANGE = ColorFontUtil.getColorFromRGB(255,255,0);
+var GREEN = ColorFontUtil.getColorFromHSB(120.0,1.0,1.0);
+var PINK = ColorFontUtil.PINK;
 
 var severity = PVUtil.getSeverity(pvArray[0]);
 var color;

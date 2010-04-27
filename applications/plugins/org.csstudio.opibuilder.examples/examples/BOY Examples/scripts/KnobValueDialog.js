@@ -1,6 +1,5 @@
 importPackage(Packages.org.eclipse.jface.dialogs);
-importPackage(Packages.org.csstudio.platform.data);
-importPackage(Packages.java.lang);
+importPackage(Packages.org.csstudio.opibuilder.scriptUtil);
 
 var flagName = "popped";
 
@@ -10,7 +9,7 @@ if(widgetController.getExternalObject(flagName) == null){
 
 var b = widgetController.getExternalObject(flagName);
 
-if(ValueUtil.getDouble(pvArray[0].getValue()) > 80){		
+if(PVUtil.getDouble(pvArray[0]) > 80){		
 		if( b == false){
 			widgetController.setExternalObject(flagName, true);
 			MessageDialog.openWarning(

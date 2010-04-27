@@ -1,4 +1,4 @@
-importPackage(Packages.org.csstudio.platform.data);
+importPackage(Packages.org.csstudio.opibuilder.scriptUtil);
 
-var url = ValueUtil.getString(pvArray[0].getValue());
+var url = PVUtil.getString(pvArray[0]);
 widgetController.setPropertyValue("url", url);

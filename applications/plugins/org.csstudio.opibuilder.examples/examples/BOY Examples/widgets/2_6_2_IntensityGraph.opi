@@ -260,7 +260,7 @@
       <fontdata fontName="Arial" height="9" style="1" />
     </y_axis_title_font>
     <x_axis_visible>true</x_axis_visible>
-    <name>WaveGraph</name>
+    <name>IntensityGraph</name>
     <y_axis_axis_color>
       <color red="0" green="0" blue="0" />
     </y_axis_axis_color>

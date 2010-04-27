@@ -1,6 +1,6 @@
-importPackage(Packages.org.csstudio.platform.data);
+importPackage(Packages.org.csstudio.opibuilder.scriptUtil);
 
-var src = ValueUtil.getString(pvArray[0].getValue());
+var src = PVUtil.getString(pvArray[0]);
 if(src == "Open OPI")
 	widgetController.executeAction(0);
 else if(src == "Play Sound")

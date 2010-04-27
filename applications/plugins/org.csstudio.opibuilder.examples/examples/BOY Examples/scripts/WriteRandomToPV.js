@@ -1,4 +1,3 @@
-importPackage(Packages.org.csstudio.platform.data);
 
 var loadingPV = pvArray[1];
 var random = Math.random();
