@@ -22,75 +22,86 @@
 
 package org.csstudio.alarm.treeView.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * The object class of a tree item. The enumeration constants defined in this
  * class store information about the name of the object class in the directory,
  * which attribute to use to construct the name of a directory entry, and the
  * value of the epicsCssType attribute in the directory.
- * 
+ *
  * @author Joerg Rathlev
  */
-public enum ObjectClass {
+public enum LdapObjectClass {
 
 	/**
 	 * The facility object class (efan).
 	 */
 	FACILITY("epicsFacility", "efan", "facility"),
-	
+
 	/**
 	 * The component object class (ecom).
 	 */
 	COMPONENT("epicsComponent", "ecom", "component"),
-	
+
 	/**
-	 * The subcomponent object class (esco). 
+	 * The subcomponent object class (esco).
 	 */
 	SUBCOMPONENT("epicsSubComponent", "esco", "subComponent"),
-	
+
 	/**
-	 * The IOC object class (econ). 
+	 * The IOC object class (econ).
 	 */
 	IOC("epicsController", "econ", "ioc"),
-	
+
 	/**
 	 * The record object class (eren).
 	 */
 	RECORD("epicsRecord", "eren", "record");
-	
+
+
+	private static final Map<String, LdapObjectClass> CACHE_BY_RDN =
+	    new HashMap<String, LdapObjectClass>();
+
 	static {
 		// Initialize the _nestedClass attribute
 		FACILITY._nestedClass = COMPONENT;
 		COMPONENT._nestedClass = SUBCOMPONENT;
 		SUBCOMPONENT._nestedClass = SUBCOMPONENT;
+
+        for (final LdapObjectClass oc : LdapObjectClass.values()) {
+            CACHE_BY_RDN.put(oc.getRdnAttribute(), oc);
+        }
 	}
-	
+
 	/**
 	 * The name of this object class in the directory.
 	 */
 	private final String _objectClass;
-	
+
 	/**
 	 * The name of the attribute to use for the RDN of entries of this class in
-	 * the directory. 
+	 * the directory.
 	 */
 	private final String _rdn;
-	
+
 	/**
 	 * The value for the epicsCssType attribute for entries of this class in the
 	 * directory.
 	 */
 	private final String _cssType;
-	
+
 	/**
 	 * The object class of a container nested within a container of this object
 	 * class. <code>null</code> if this object class is not a container or if
 	 * there is no standard nested class for this class.
 	 */
-	private ObjectClass _nestedClass;
+	private LdapObjectClass _nestedClass;
 
 	/**
 	 * Creates a new object class.
-	 * 
+	 *
 	 * @param objectClass
 	 *            the name of this object class in the directory.
 	 * @param rdn
@@ -98,13 +109,14 @@ public enum ObjectClass {
 	 * @param cssType
 	 *            the value for the epicsCssType attribute in the directory.
 	 */
-	private ObjectClass(final String objectClass, final String rdn,
-			final String cssType) {
+	private LdapObjectClass(final String objectClass,
+	                        final String rdn,
+	                        final String cssType) {
 		_objectClass = objectClass;
 		_rdn = rdn;
 		_cssType = cssType;
 	}
-	
+
 	/**
 	 * Returns the name of this object class in the directory.
 	 * @return the name of this object class in the directory.
@@ -112,7 +124,7 @@ public enum ObjectClass {
 	public String getObjectClassName() {
 		return _objectClass;
 	}
-	
+
 	/**
 	 * Returns the name of the attribute to use for the RDN.
 	 * @return the name of the attribute to use for the RDN.
@@ -120,7 +132,7 @@ public enum ObjectClass {
 	public String getRdnAttribute() {
 		return _rdn;
 	}
-	
+
 	/**
 	 * Returns the value to use for the epicsCssType attribute of entries of
 	 * this object class.
@@ -129,18 +141,29 @@ public enum ObjectClass {
 	public String getCssType() {
 		return _cssType;
 	}
-	
+
 	/**
 	 * Returns the object class that a container entry nested within this an
 	 * entry of this object class should have. If this object class is not a
 	 * container class or if there is no recommended class for nested
 	 * containers, this method returns <code>null</code>.
-	 * 
+	 *
 	 * @return the recommended object class for a container within a container
 	 *         of this object class. <code>null</code> if there is no
 	 *         recommended class.
 	 */
-	public ObjectClass getNestedContainerClass() {
+	public LdapObjectClass getNestedContainerClass() {
 		return _nestedClass;
 	}
+
+    /**
+     * Returns the object class of an LDAP rdn attribute (efan, eren, ...).
+     *
+     * @param name
+     *            the name.
+     * @return the object class.
+     */
+    public static LdapObjectClass getObjectClassByRdn(final String rdn) {
+        return CACHE_BY_RDN.get(rdn);
+    }
 }

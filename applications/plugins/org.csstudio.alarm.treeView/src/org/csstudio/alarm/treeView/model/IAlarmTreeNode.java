@@ -92,7 +92,7 @@ public interface IAlarmTreeNode {
 	 * 
 	 * @return the object class of this node in the directory.
 	 */
-	ObjectClass getObjectClass();
+	LdapObjectClass getObjectClass();
 
 	/**
 	 * Returns the URL of this node's help page.

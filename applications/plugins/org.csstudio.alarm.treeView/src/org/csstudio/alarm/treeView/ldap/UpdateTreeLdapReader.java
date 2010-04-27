@@ -22,8 +22,6 @@
 
 package org.csstudio.alarm.treeView.ldap;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Collections;
 
 import javax.naming.CompositeName;
@@ -33,15 +31,13 @@ import javax.naming.NameClassPair;
 import javax.naming.NameParser;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
-import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
-import org.csstudio.alarm.treeView.model.AbstractAlarmTreeNode;
-import org.csstudio.alarm.treeView.model.ObjectClass;
+import org.csstudio.alarm.treeView.model.LdapObjectClass;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.alarm.treeView.preferences.PreferenceConstants;
 import org.csstudio.platform.logging.CentralLogger;
@@ -55,19 +51,19 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 /**
  * This job reads the complete directory structure and adds missing nodes
- * to the tree. It is intended to be run after the {@link LdapDirectoryReader}
+ * to the tree. It is intended to be run after the {@link AlarmTreeBuilder}
  * job. This job adds to the tree nodes which do not contain any eren entries
  * and reads the attributes of all nodes.
- * 
+ *
  * @author Joerg Rathlev
  */
-public class LdapDirectoryStructureReader extends Job {
+public class UpdateTreeLdapReader extends Job {
 
 	/**
 	 * The logger that is used by this class.
 	 */
 	private static final CentralLogger LOG = CentralLogger.getInstance();
-	
+
 	/**
 	 * The root below which the direcoty is searched.
 	 */
@@ -83,25 +79,25 @@ public class LdapDirectoryStructureReader extends Job {
 	 * The root of the tree on which this job works.
 	 */
 	private final SubtreeNode _treeRoot;
-	
+
 	/**
 	 * The facility names which are read from the directory.
 	 */
 	private String[] _facilityNames;
 
-	
+
 	/**
 	 * Creates a new Directory Structure Reader.
-	 * 
+	 *
 	 * @param treeRoot
 	 *            the root node of the tree which will be updated by this job.
 	 */
-	public LdapDirectoryStructureReader(final SubtreeNode treeRoot) {
+	public UpdateTreeLdapReader(final SubtreeNode treeRoot) {
 		super("LDAP Directory Structure Reader");
 		_treeRoot = treeRoot;
-		
-		IPreferencesService prefs = Platform.getPreferencesService();
-		String facilitiesPref = prefs.getString(AlarmTreePlugin.PLUGIN_ID,
+
+		final IPreferencesService prefs = Platform.getPreferencesService();
+		final String facilitiesPref = prefs.getString(AlarmTreePlugin.PLUGIN_ID,
 				PreferenceConstants.FACILITIES, "", null);
 		if (facilitiesPref.equals("")) {
 			_facilityNames = new String[0];
@@ -109,16 +105,16 @@ public class LdapDirectoryStructureReader extends Job {
 			_facilityNames = facilitiesPref.split(";");
 		}
 	}
-	
-	
+
+
 	/**
 	 * Gets the directory context from the LDAP engine.
 	 */
 	private void initializeDirectoryContext() {
 		_directory = Engine.getInstance().getLdapDirContext();
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -126,13 +122,13 @@ public class LdapDirectoryStructureReader extends Job {
 	protected final IStatus run(final IProgressMonitor monitor) {
 		monitor.beginTask("Updating Alarm Tree structure", IProgressMonitor.UNKNOWN);
 		try {
-			long startTime = System.currentTimeMillis();
+			final long startTime = System.currentTimeMillis();
 			initializeDirectoryContext();
 			ensureAtLeastTestFacilityIsShown();
-			for (String facility : _facilityNames) {
+			for (final String facility : _facilityNames) {
 				updateStructureOfFacility(facility);
 			}
-			long endTime = System.currentTimeMillis();
+			final long endTime = System.currentTimeMillis();
 			LOG.debug(this, "Directory structure reader time: " + (endTime-startTime) + "ms");
 		} finally {
 			monitor.done();
@@ -150,20 +146,20 @@ public class LdapDirectoryStructureReader extends Job {
 
 	/**
 	 * Reads the structure of the subtree for the given facility.
-	 * 
+	 *
 	 * @param facility
 	 *            the facility.
 	 */
 	private void updateStructureOfFacility(final String facility) {
 		try {
-			LdapName efanName = new LdapName(Collections.singletonList(
+			final LdapName efanName = new LdapName(Collections.singletonList(
 					new Rdn("efan", facility)));
-			LdapName fullEfanName = (LdapName) new LdapName(ALARM_ROOT)
+			final LdapName fullEfanName = (LdapName) new LdapName(ALARM_ROOT)
 					.addAll(efanName);
-			
-			SubtreeNode efanNode = updateNode(_treeRoot, efanName, fullEfanName);
+
+			final SubtreeNode efanNode = updateNode(_treeRoot, efanName, fullEfanName);
 			updateStructureOfSubTree(fullEfanName, efanNode);
-		} catch (InvalidNameException e) {
+		} catch (final InvalidNameException e) {
 			LOG.error(this, "Error when updating facility subtree in Alarm Tree", e);
 		}
 	}
@@ -171,7 +167,7 @@ public class LdapDirectoryStructureReader extends Job {
 
 	/**
 	 * Recursively updates the structure of the given tree.
-	 * 
+	 *
 	 * @param treeName
 	 *            the LDAP name of the root node of the tree.
 	 * @param tree
@@ -180,21 +176,22 @@ public class LdapDirectoryStructureReader extends Job {
 	private void updateStructureOfSubTree(final LdapName treeName,
 			final SubtreeNode tree) {
 		try {
-			NameParser nameParser = _directory.getNameParser(treeName);
-			NamingEnumeration<NameClassPair> results = _directory.list(treeName);
+			final NameParser nameParser = _directory.getNameParser(treeName);
+			final NamingEnumeration<NameClassPair> results = _directory.list(treeName);
 			while (results.hasMore()) {
-				NameClassPair entry = results.next();
-				Name cname = new CompositeName(entry.getName());
-				LdapName entryName = (LdapName) nameParser.parse(cname.get(0));
-				
+				final NameClassPair entry = results.next();
+				final Name cname = new CompositeName(entry.getName());
+				final LdapName entryName = (LdapName) nameParser.parse(cname.get(0));
+
 				// The update job readas only structural nodes, no eren nodes.
-				if (LdapNameUtils.objectClass(entryName) != ObjectClass.RECORD) {
-					LdapName fullEntryName = (LdapName) ((LdapName) entryName.clone()).addAll(0, treeName);
-					SubtreeNode node = updateNode(tree, entryName, fullEntryName);
+		        final Rdn rdn = entryName.getRdn(entryName.size() - 1);
+				if (!LdapObjectClass.getObjectClassByRdn(rdn.getType()).equals(LdapObjectClass.RECORD)) {
+				    final LdapName fullEntryName = (LdapName) ((LdapName) entryName.clone()).addAll(0, treeName);
+					final SubtreeNode node = updateNode(tree, entryName, fullEntryName);
 					updateStructureOfSubTree(fullEntryName, node);
 				}
 			}
-		} catch (NamingException e) {
+		} catch (final NamingException e) {
 			LOG.error(this,
 					"Error getting list of objects from LDAP directory " +
 					"for rootDN=" + treeName, e);
@@ -204,7 +201,7 @@ public class LdapDirectoryStructureReader extends Job {
 
 	/**
 	 * Updates and returns the node with the given name.
-	 * 
+	 *
 	 * @param tree
 	 *            the tree in which the node is located.
 	 * @param relativeName
@@ -215,74 +212,13 @@ public class LdapDirectoryStructureReader extends Job {
 	 */
 	private SubtreeNode updateNode(final SubtreeNode tree,
 			final LdapName relativeName, final LdapName fullName) {
-		SubtreeNode node = TreeBuilder.findCreateSubtreeNode(tree, relativeName);
+		final SubtreeNode node = TreeBuilder.findCreateSubtreeNode(tree, relativeName);
 		try {
-			Attributes attrs = _directory.getAttributes(fullName);
-			setEpicsAttributes(node, attrs);
-		} catch (NamingException e) {
+			final Attributes attrs = _directory.getAttributes(fullName);
+			AlarmTreeBuilder.setEpicsAttributes(node, attrs);
+		} catch (final NamingException e) {
 			LOG.error(this, "Could not read attributes for node " + fullName, e);
 		}
 		return node;
-	}
-	
-
-	/**
-	 * Sets the EPICS attributes of the given node based on the given
-	 * attributes.
-	 * 
-	 * @param node
-	 *            the node.
-	 * @param attrs
-	 *            the attributes.
-	 * @throws NamingException
-	 *             if an LDAP error occurs.
-	 */
-	// TODO: refactor (code duplication, see LdapDirectoryReader)
-	private void setEpicsAttributes(final AbstractAlarmTreeNode node,
-			final Attributes attrs) throws NamingException {
-		Attribute alarmDisplayAttr = attrs.get("epicsCssAlarmDisplay");
-		if (alarmDisplayAttr != null) {
-			String display = (String) alarmDisplayAttr.get();
-			if (display != null) {
-				node.setCssAlarmDisplay(display);
-			}
-		}
-		
-		Attribute helpPageAttr = attrs.get("epicsHelpPage");
-		if (helpPageAttr != null) {
-			String helpPage = (String) helpPageAttr.get();
-			if (helpPage != null && helpPage.matches("^http://.+")) {
-				try {
-					node.setHelpPage(new URL(helpPage));
-				} catch (MalformedURLException e) {
-					LOG.warn(this, "epicsHelpPage attribute for node "
-							+ node + " contains a malformed URL");
-				}
-			}
-		}
-		
-		Attribute helpGuidanceAttr = attrs.get("epicsHelpGuidance");
-		if (helpGuidanceAttr != null) {
-			String helpGuidance = (String) helpGuidanceAttr.get();
-			if (helpGuidance != null) {
-				node.setHelpGuidance(helpGuidance);
-			}
-		}
-		
-		Attribute displayAttr = attrs.get("epicsCssDisplay");
-		if (displayAttr != null) {
-			String display = (String) displayAttr.get();
-			if (display != null) {
-				node.setCssDisplay(display);
-			}
-		}
-		
-		Attribute chartAttr = attrs.get("epicsCssStripChart");
-		if (chartAttr != null) {
-			String chart = (String) chartAttr.get();
-			if (chart != null) {
-				node.setCssStripChart(chart);
-			}
-		}
 	}
 }

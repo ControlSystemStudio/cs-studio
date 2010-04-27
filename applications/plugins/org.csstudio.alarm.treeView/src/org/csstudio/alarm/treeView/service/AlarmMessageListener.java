@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, Member of the Helmholtz
  * Association, (DESY), HAMBURG, GERMANY.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. WITHOUT WARRANTY OF ANY
  * KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
@@ -35,84 +35,84 @@ import org.csstudio.platform.logging.CentralLogger;
 /**
  * Listens for alarm messages and prepares the necessary updates to the tree in response to those
  * messages. If no alarm tree is present, updates are queued internally for later application.
- * 
+ *
  * @author Joerg Rathlev
  */
 public class AlarmMessageListener implements IAlarmListener {
-    
+
     /**
      * The logger used by this listener.
      */
     private final CentralLogger _log = CentralLogger.getInstance();
-    
+
     /**
      * The worker used by this listener.
      */
-    private final QueueWorker _worker;
-    
+    private final QueueWorker _queueWorker;
+
     /**
      * Applies the pending updates to the tree.
      */
     private final class QueueWorker implements Runnable {
-        
+
         /**
          * The worker thread which runs this runnable. This is set to <code>null</code> when this
          * runnable should stop.
          */
         private volatile Thread _worker;
-        
+
         /**
          * The queued updates.
          */
         private final BlockingQueue<PendingUpdate> _pendingUpdates;
-        
+
         /**
          * The alarm tree updater which will be used by this worker. If set to <code>null</code>,
          * this worker waits until an updater is set.
          */
         private AlarmTreeUpdater _updater;
-        
+
         /**
          * Creates a new queue worker.
          */
         QueueWorker() {
             _pendingUpdates = new LinkedBlockingQueue<PendingUpdate>();
         }
-        
+
         /**
          * Takes pending updates from the queue and applies them.
          */
         public void run() {
-            Thread thisThread = Thread.currentThread();
+            final Thread thisThread = Thread.currentThread();
             while (_worker == thisThread) {
                 try {
-                    PendingUpdate update = _pendingUpdates.take();
-                    
+                    final PendingUpdate update = _pendingUpdates.take();
+
                     // synchronize access to the updater
                     synchronized (this) {
                         // wait until we have an updater
-                        while (_updater == null && _worker == thisThread) {
+                        while ((_updater == null) && (_worker == thisThread)) {
                             wait();
                         }
-                        
+
                         _log.debug(this, "applying update: " + update);
                         update.apply(_updater);
                     }
-                } catch (InterruptedException e) {
+                } catch (final InterruptedException e) {
                     // nothing to do
                 }
             }
         }
-        
+
         /**
          * Adds a pending update to this worker's queue.
-         * 
+         *
          * @param update
          *            the update.
          */
         void enqueue(final PendingUpdate update) {
             _pendingUpdates.add(update);
-            
+
             /*
              * Implementation note: This method will be called by a thread owned by the JMS
              * implementation. Pending updates are handed over to the updater via the queue and the
@@ -125,11 +125,11 @@ public class AlarmMessageListener implements IAlarmListener {
              * lot more complex.
              */
         }
-        
+
         /**
          * Sets the updater that will be used by this worker. If the updater is set to
          * <code>null</code>, this worker will suspend until an updater is set.
-         * 
+         *
          * @param updater
          *            the updater.
          */
@@ -137,7 +137,7 @@ public class AlarmMessageListener implements IAlarmListener {
             _updater = updater;
             notify();
         }
-        
+
         /**
          * Starts this worker.
          */
@@ -145,42 +145,42 @@ public class AlarmMessageListener implements IAlarmListener {
             _worker = new Thread(this, "Alarm Tree Queue Worker");
             _worker.start();
         }
-        
+
         /**
          * Stops this worker.
          */
         void stop() {
-            Thread t = _worker;
+            final Thread t = _worker;
             _worker = null;
             t.interrupt();
         }
     }
-    
+
     /**
      * Creates a new alarm message listener.
      */
     public AlarmMessageListener() {
-        _worker = new QueueWorker();
-        _worker.start();
+        _queueWorker = new QueueWorker();
+        _queueWorker.start();
     }
-    
+
     /**
      * Sets the updater which this listener will use.
-     * 
+     *
      * @param updater
      *            the updater which this listener will use.
      */
     public void setUpdater(final AlarmTreeUpdater updater) {
-        _worker.setUpdater(updater);
+        _queueWorker.setUpdater(updater);
     }
-    
+
     /**
      * Stops this listener. Once stopped, the listener cannot be restarted.
      */
     public void stop() {
-        _worker.stop();
+        _queueWorker.stop();
     }
-    
+
     /**
      * Called when a message is received. The message is interpreted as an alarm message. If the
      * message contains valid information, the respective updates of the alarm tree are triggered.
@@ -189,29 +189,29 @@ public class AlarmMessageListener implements IAlarmListener {
         _log.debug(this, "received: " + message);
         try {
             processAlarmMessage(message);
-        } catch (AlarmMessageException e) {
+        } catch (final AlarmMessageException e) {
             _log.error(this, "error processing message", e);
         }
     }
-    
+
     /**
      * Processes an alarm message.
      */
     private void processAlarmMessage(final IAlarmMessage message) throws AlarmMessageException {
-        String name = message.getString("NAME");
+        final String name = message.getString("NAME");
         if (isAcknowledgement(message)) {
             _log.debug(this, "received ack: name=" + name);
-            _worker.enqueue(PendingUpdate.createAcknowledgementUpdate(name));
+            _queueWorker.enqueue(PendingUpdate.createAcknowledgementUpdate(name));
         } else {
-            String severityValue = message.getString("SEVERITY");
+            final String severityValue = message.getString("SEVERITY");
             if (severityValue == null) {
                 _log.warn(this,
                           "Received alarm message which did not contain SEVERITY! Message ignored. Message was: "
                                   + message);
                 return;
             }
-            Severity severity = Severity.parseSeverity(severityValue);
-            String eventtimeValue = message.getString("EVENTTIME");
+            final Severity severity = Severity.parseSeverity(severityValue);
+            final String eventtimeValue = message.getString("EVENTTIME");
             Date eventtime = null;
             if (eventtimeValue != null) {
                 eventtime = EventtimeUtil.parseTimestamp(eventtimeValue);
@@ -219,18 +219,17 @@ public class AlarmMessageListener implements IAlarmListener {
             if (eventtime == null) {
                 // eventtime is null if the message did not contain an EVENTTIME
                 // field or if the EVENTTIME could not be parsed.
-                _log
-                        .warn(this,
-                              "Received alarm message which did not contain a valid EVENTTIME, using current time instead. Message was: "
+                _log.warn(this,
+                          "Received alarm message which did not contain a valid EVENTTIME, using current time instead. Message was: "
                                       + message);
                 eventtime = new Date();
             }
             _log.debug(this, "received alarm: name=" + name + ", severity=" + severity
                     + ", eventtime=" + eventtime);
-            _worker.enqueue(PendingUpdate.createAlarmUpdate(name, severity, eventtime));
+            _queueWorker.enqueue(PendingUpdate.createAlarmUpdate(name, severity, eventtime));
         }
     }
-    
+
     /**
      * Returns whether the given message is an alarm acknowledgement.
      */
@@ -238,10 +237,10 @@ public class AlarmMessageListener implements IAlarmListener {
         String ack = null;
         try {
             ack = message.getString("ACK");
-        } catch (AlarmMessageException e) {
+        } catch (final AlarmMessageException e) {
             // ok, ack will be null
         }
-        return ack != null && ack.equals("TRUE");
+        return (ack != null) && ack.equals("TRUE");
     }
-    
+
 }

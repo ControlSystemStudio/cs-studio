@@ -29,7 +29,7 @@ import static org.junit.Assert.assertTrue;
 
 import javax.naming.ldap.LdapName;
 
-import org.csstudio.alarm.treeView.model.ObjectClass;
+import org.csstudio.alarm.treeView.model.LdapObjectClass;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.junit.Before;
 import org.junit.Test;
@@ -57,8 +57,8 @@ public class TreeBuilderTest {
 	@Before
 	public void setUp() throws Exception {
 		_tree = new SubtreeNode("root");
-		_a = new SubtreeNode(_tree, "a", ObjectClass.FACILITY);
-		_b = new SubtreeNode(_a, "b", ObjectClass.COMPONENT);
+		_a = new SubtreeNode(_tree, "a", LdapObjectClass.FACILITY);
+		_b = new SubtreeNode(_a, "b", LdapObjectClass.COMPONENT);
 		
 		_nameB = new LdapName("ecom=b,efan=a");
 	}

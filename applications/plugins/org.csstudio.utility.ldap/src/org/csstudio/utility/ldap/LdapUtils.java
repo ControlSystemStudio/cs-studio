@@ -79,7 +79,7 @@ public final class LdapUtils {
      * Assembles and LDAP query from field and value pairs.
      *
      * @param fieldsAndValues an array of Strings that represent key value pairs, consecutively (1st=key, 2nd=value, 3rd=key, 4th=value, etc.)
-     * @return the String with <field1>=<value1>, <field2>=<value2> assignements.
+     * @return the String with <field1>=<value1>, <field2>=<value2> assignments.
      */
     @Nonnull
     public static String createLdapQuery(@Nonnull final String... fieldsAndValues) {

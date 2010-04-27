@@ -33,7 +33,7 @@ import javax.naming.directory.SearchResult;
 import org.csstudio.utility.ldap.Activator;
 import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
 import org.csstudio.utility.ldap.Messages;
-import org.csstudio.utility.ldap.reader.LDAPReader.LdapSearch;
+import org.csstudio.utility.ldap.reader.LDAPReader.LdapSearchParams;
 import org.csstudio.utility.namespace.utility.ControlSystemItem;
 import org.csstudio.utility.namespace.utility.NameSpaceSearchResult;
 import org.csstudio.utility.namespace.utility.ProcessVariable;
@@ -49,7 +49,7 @@ public class LdapSearchResult extends NameSpaceSearchResult {
 
     private Set<SearchResult> _answerSet = Collections.emptySet();
 
-    private LdapSearch _searchParams;
+    private LdapSearchParams _searchParams;
 
     private List<ControlSystemItem> _csiResult;
 
@@ -122,7 +122,7 @@ public class LdapSearchResult extends NameSpaceSearchResult {
      * @param searchParams the search root, the search filter, and search controls
      * @param answerSet the corresponding result set
      */
-    public void setResult(@Nonnull final LdapSearch searchParams,
+    public void setResult(@Nonnull final LdapSearchParams searchParams,
                           @Nonnull final Set<SearchResult> answerSet) {
         _searchParams = searchParams;
         _answerSet = answerSet;
@@ -145,7 +145,7 @@ public class LdapSearchResult extends NameSpaceSearchResult {
      * @return the current search root, may be null
      */
     @CheckForNull
-    public LdapSearch getSearchParams() {
+    public LdapSearchParams getSearchParams() {
         return _searchParams;
     }
 

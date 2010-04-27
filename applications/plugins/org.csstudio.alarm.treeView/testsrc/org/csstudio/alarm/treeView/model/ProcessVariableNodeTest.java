@@ -30,7 +30,7 @@ public class ProcessVariableNodeTest {
     public void testGetters() throws InterruptedException {
         assertEquals("A node", _node.getName());
         assertSame(_subtreeNode, _node.getParent());
-        assertEquals(ObjectClass.RECORD, _node.getObjectClass());
+        assertEquals(LdapObjectClass.RECORD, _node.getObjectClass());
         assertEquals(IProcessVariable.TYPE_ID, _node.getTypeId());
         assertEquals("A node", _node.toString());
     }

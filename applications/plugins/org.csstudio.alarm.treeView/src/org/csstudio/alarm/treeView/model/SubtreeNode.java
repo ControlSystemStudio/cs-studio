@@ -57,7 +57,7 @@ public class SubtreeNode extends AbstractAlarmTreeNode implements IAdaptable, IA
 	/**
 	 * The object class of this node in the directory.
 	 */
-	private ObjectClass _objectClass;
+	private LdapObjectClass _objectClass;
 	
 	/**
 	 * The highest severity of the child nodes.
@@ -76,7 +76,7 @@ public class SubtreeNode extends AbstractAlarmTreeNode implements IAdaptable, IA
 	 * @param name the name of this node.
 	 * @param objectClass the object class of this node.
 	 */
-	public SubtreeNode(final SubtreeNode parent, final String name, final ObjectClass objectClass) {
+	public SubtreeNode(final SubtreeNode parent, final String name, final LdapObjectClass objectClass) {
 		if (name == null) {
 			throw new NullPointerException("name must not be null");
 		}
@@ -124,7 +124,7 @@ public class SubtreeNode extends AbstractAlarmTreeNode implements IAdaptable, IA
 	/**
 	 * {@inheritDoc}
 	 */
-	public final ObjectClass getObjectClass() {
+	public final LdapObjectClass getObjectClass() {
 		return _objectClass;
 	}
 	
@@ -135,7 +135,7 @@ public class SubtreeNode extends AbstractAlarmTreeNode implements IAdaptable, IA
 	 * @return the object class recommended for subtree children of this node.
 	 *         <code>null</code> if there is no recommended class.
 	 */
-	public final ObjectClass getRecommendedChildSubtreeClass() {
+	public final LdapObjectClass getRecommendedChildSubtreeClass() {
 		return _objectClass.getNestedContainerClass();
 	}
 

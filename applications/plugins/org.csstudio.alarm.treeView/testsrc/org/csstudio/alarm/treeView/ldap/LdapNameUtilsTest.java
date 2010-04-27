@@ -22,11 +22,12 @@
 
 package org.csstudio.alarm.treeView.ldap;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import javax.naming.ldap.LdapName;
+import javax.naming.ldap.Rdn;
 
-import org.csstudio.alarm.treeView.model.ObjectClass;
+import org.csstudio.alarm.treeView.model.LdapObjectClass;
 import org.junit.Test;
 
 
@@ -34,35 +35,37 @@ import org.junit.Test;
  * @author Joerg Rathlev
  */
 public class LdapNameUtilsTest {
-	
+
 	@Test
 	public void testSimpleNameOfSingleRdnName() throws Exception {
-		LdapName name = new LdapName("foo=bar");
+		final LdapName name = new LdapName("foo=bar");
 		assertEquals("bar", LdapNameUtils.simpleName(name));
 	}
-	
+
 	@Test
 	public void testSimpleNameOfHierarchicalLdapName() throws Exception {
-		LdapName name = new LdapName("foo=bar,ou=Test,dc=example,dc=com");
+		final LdapName name = new LdapName("foo=bar,ou=Test,dc=example,dc=com");
 		assertEquals("bar", LdapNameUtils.simpleName(name));
 	}
-	
+
 	@Test
 	public void testSimpleNameOfNameWithSpecialCharacters() throws Exception {
-		LdapName name = new LdapName("foo=name/with\\=special\\,characters");
+		final LdapName name = new LdapName("foo=name/with\\=special\\,characters");
 		assertEquals("name/with=special,characters", LdapNameUtils.simpleName(name));
 	}
-	
+
 	@Test
 	public void testObjectClassOfSingleRdnName() throws Exception {
-		LdapName name = new LdapName("efan=foobar");
-		assertEquals(ObjectClass.FACILITY, LdapNameUtils.objectClass(name));
+		final LdapName name = new LdapName("efan=foobar");
+		final Rdn rdn = name.getRdn(name.size() - 1);
+		assertEquals(LdapObjectClass.FACILITY, LdapObjectClass.getObjectClassByRdn(rdn.getType()));
 	}
-	
+
 	@Test
 	public void testObjectClassOfHierarchicalLdapName() throws Exception {
-		LdapName name = new LdapName("eren=foobar,ou=Test,dc=example,dc=com");
-		assertEquals(ObjectClass.RECORD, LdapNameUtils.objectClass(name));
+		final LdapName name = new LdapName("eren=foobar,ou=Test,dc=example,dc=com");
+		final Rdn rdn = name.getRdn(name.size() - 1);
+		assertEquals(LdapObjectClass.RECORD, LdapObjectClass.getObjectClassByRdn(rdn.getType()));
 	}
 
 }

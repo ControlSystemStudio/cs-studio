@@ -28,10 +28,11 @@ import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.ldap.LdapName;
+import javax.naming.ldap.Rdn;
 
 import org.csstudio.alarm.treeView.EventtimeUtil;
 import org.csstudio.alarm.treeView.model.Alarm;
-import org.csstudio.alarm.treeView.model.ObjectClass;
+import org.csstudio.alarm.treeView.model.LdapObjectClass;
 import org.csstudio.alarm.treeView.model.ProcessVariableNode;
 import org.csstudio.alarm.treeView.model.Severity;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
@@ -40,7 +41,7 @@ import org.csstudio.alarm.treeView.model.SubtreeNode;
  * Utility class for building the tree model. The methods of this class only
  * create tree itemsin the object model of the tree. No LDAP entries are created
  * or modified by this class.
- * 
+ *
  * @author Joerg Rathlev
  */
 final class TreeBuilder {
@@ -49,13 +50,14 @@ final class TreeBuilder {
 	 * Private constructor.
 	 */
 	private TreeBuilder() {
+	    // EMPTY
 	}
 
-	
+
 	/**
 	 * Finds a node with the given name in the given tree. If the node does
 	 * not exist yet, it is created.
-	 * 
+	 *
 	 * @param root
 	 *            the root node of the tree to search.
 	 * @param name
@@ -64,21 +66,23 @@ final class TreeBuilder {
 	 */
 	static SubtreeNode findCreateSubtreeNode(final SubtreeNode root,
 			final LdapName name) {
-		SubtreeNode directParent = findCreateParentNode(root, name);
-		String simpleName = LdapNameUtils.simpleName(name);
-		ObjectClass oClass = LdapNameUtils.objectClass(name);
+		final SubtreeNode directParent = findCreateParentNode(root, name);
+		final String simpleName = LdapNameUtils.simpleName(name);
+
+		final Rdn rdn = name.getRdn(name.size() - 1);
+		final LdapObjectClass oClass = LdapObjectClass.getObjectClassByRdn(rdn.getType());
 		SubtreeNode result = (SubtreeNode) directParent.getChild(simpleName);
 		if (result == null) {
 			result = new SubtreeNode(directParent, simpleName, oClass);
 		}
 		return result;
 	}
-	
+
 
 	/**
 	 * Finds the parent node of the node with the specified name. If the parent
 	 * node does not exist, it is created.
-	 * 
+	 *
 	 * @param root
 	 *            the root node of the tree which is searched.
 	 * @param name
@@ -88,8 +92,8 @@ final class TreeBuilder {
 	static SubtreeNode findCreateParentNode(final SubtreeNode root,
 			final LdapName name) {
 		if (name.size() > 1) {
-			LdapName parentName = (LdapName) name.getPrefix(name.size() - 1);
-			SubtreeNode parent = findCreateSubtreeNode(root, parentName);
+			final LdapName parentName = (LdapName) name.getPrefix(name.size() - 1);
+			final SubtreeNode parent = findCreateSubtreeNode(root, parentName);
 			return parent;
 		} else {
 			return root;
@@ -99,7 +103,7 @@ final class TreeBuilder {
 
 	/**
 	 * Sets the alarm state of the given node based on the given attributes.
-	 * 
+	 *
 	 * @param node
 	 *            the node.
 	 * @param attrs
@@ -109,16 +113,16 @@ final class TreeBuilder {
 	 */
 	static void setAlarmState(final ProcessVariableNode node, final Attributes attrs)
 			throws NamingException {
-		Attribute severityAttr = attrs.get("epicsAlarmSeverity");
-		Attribute eventtimeAttr = attrs.get("epicsAlarmTimeStamp");
-		Attribute highUnAcknAttr = attrs.get("epicsAlarmHighUnAckn");
+		final Attribute severityAttr = attrs.get("epicsAlarmSeverity");
+		final Attribute eventtimeAttr = attrs.get("epicsAlarmTimeStamp");
+		final Attribute highUnAcknAttr = attrs.get("epicsAlarmHighUnAckn");
 		if (severityAttr != null) {
-			String severity = (String) severityAttr.get();
-			if (severity != null) {
-				Severity s = Severity.parseSeverity(severity);
+			final String severityVal = (String) severityAttr.get();
+			if (severityVal != null) {
+				final Severity s = Severity.parseSeverity(severityVal);
 				Date t = null;
 				if (eventtimeAttr != null) {
-					String eventtimeStr = (String) eventtimeAttr.get();
+					final String eventtimeStr = (String) eventtimeAttr.get();
 					if (eventtimeStr != null) {
 						t = EventtimeUtil.parseTimestamp(eventtimeStr);
 					}
@@ -131,7 +135,7 @@ final class TreeBuilder {
 		}
 		Severity unack = Severity.NO_ALARM;
 		if (highUnAcknAttr != null) {
-			String severity = (String) highUnAcknAttr.get();
+			final String severity = (String) highUnAcknAttr.get();
 			if (severity != null) {
 				unack = Severity.parseSeverity(severity);
 			}

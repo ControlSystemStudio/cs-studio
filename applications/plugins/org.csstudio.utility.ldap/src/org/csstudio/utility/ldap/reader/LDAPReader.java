@@ -62,7 +62,7 @@ public class LDAPReader extends Job {
      * @version $Revision$
      * @since 26.04.2010
      */
-    public static final class LdapSearch {
+    public static final class LdapSearchParams {
 
         private final String _searchRoot;
 
@@ -75,8 +75,8 @@ public class LDAPReader extends Job {
          * @param searchRoot .
          * @param filter .
          */
-        public LdapSearch(@Nonnull final String searchRoot,
-                          @Nonnull final String filter) {
+        public LdapSearchParams(@Nonnull final String searchRoot,
+                                @Nonnull final String filter) {
             this(searchRoot, filter, DEFAULT_SCOPE);
         }
 
@@ -86,7 +86,7 @@ public class LDAPReader extends Job {
          * @param filter .
          * @param scope the search controls
          */
-        public LdapSearch(@Nonnull final String searchRoot,
+        public LdapSearchParams(@Nonnull final String searchRoot,
                           @Nonnull final String filter,
                           @Nonnull final int scope) {
             _searchRoot = searchRoot;
@@ -132,7 +132,7 @@ public class LDAPReader extends Job {
 
     private static final Logger LOG = CentralLogger.getInstance().getLogger(LDAPReader.class.getName());
 
-    private final LdapSearch _searchParams;
+    private final LdapSearchParams _searchParams;
 
     private final LdapSearchResult _searchResult;
 
@@ -148,7 +148,7 @@ public class LDAPReader extends Job {
                       @Nonnull final String filter,
                       @Nonnull final int searchScope){
         super("LDAPReader");
-        _searchParams = new LdapSearch(searchRoot, filter);
+        _searchParams = new LdapSearchParams(searchRoot, filter);
         setDefaultScope(searchScope);
         _searchResult = new LdapSearchResult();
     }
@@ -156,19 +156,21 @@ public class LDAPReader extends Job {
     /**
      * Constructor.
      *
+     * @param name name of the reader
      * @param searchRoot the search root
      * @param filter the search filter
      * @param searchScope the search scope
      * @param result the search result, typically used in the callback method
      * @param callBack callback to invoke custom method on sucessful LDAP read
      */
-    public LDAPReader(@Nonnull final String searchRoot,
+    public LDAPReader(@Nonnull final String name,
+                      @Nonnull final String searchRoot,
                       @Nonnull final String filter,
                       final int searchScope,
                       @Nonnull final LdapSearchResult result,
                       @Nonnull final IJobCompletedCallBack callBack){
-        super("LDAPReader");
-        _searchParams = new LdapSearch(searchRoot, filter);
+        super(name);
+        _searchParams = new LdapSearchParams(searchRoot, filter);
         setDefaultScope(searchScope);
         _searchResult = result;
         setJobCompletedCallBack(callBack);
@@ -186,7 +188,7 @@ public class LDAPReader extends Job {
                       @Nonnull final String filter,
                       @Nonnull final LdapSearchResult result,
                       @Nonnull final IJobCompletedCallBack callBack){
-        this(searchRoot, filter, DEFAULT_SCOPE, result, callBack);
+        this("LDAPReader", searchRoot, filter, DEFAULT_SCOPE, result, callBack);
     }
 
     /**
@@ -205,32 +207,27 @@ public class LDAPReader extends Job {
 
 
     @Override
-    protected final IStatus run(@Nonnull final IProgressMonitor monitor ) {
+    protected final IStatus run(@Nonnull final IProgressMonitor monitor) {
         monitor.beginTask("LDAP Reader", IProgressMonitor.UNKNOWN);
 
         final DirContext ctx = Engine.getInstance().getLdapDirContext();
         if(ctx != null){
             final SearchControls ctrl = new SearchControls();
             ctrl.setSearchScope(_searchParams.getScope());
-            try{
+
+            NamingEnumeration<SearchResult> answer = null;
+            try {
+                answer = ctx.search(_searchParams.getSearchRoot(),
+                                    _searchParams.getFilter(),
+                                    ctrl);
                 final Set<SearchResult> answerSet = new HashSet<SearchResult>();
-
-                final NamingEnumeration<SearchResult> answer = ctx.search(_searchParams.getSearchRoot(),
-                                                                          _searchParams.getFilter(),
-                                                                          ctrl);
-                try {
-                    while(answer.hasMore()){
-                        final SearchResult result = answer.next();
-                        answerSet.add(result);
-                        if(monitor.isCanceled()) {
-                            return Status.CANCEL_STATUS;
-                        }
+                while(answer.hasMore()){
+                    final SearchResult result = answer.next();
+                    answerSet.add(result);
+                    if(monitor.isCanceled()) {
+                        return Status.CANCEL_STATUS;
                     }
-                } catch (final NamingException e) {
-                    LOG.info("LDAP Fehler " + e.getExplanation());
                 }
-                answer.close();
-
                 _searchResult.setResult(_searchParams, answerSet);
 
                 monitor.done();
@@ -241,12 +238,20 @@ public class LDAPReader extends Job {
                 LOG.info("Falscher LDAP Name oder so." + nnfe.getExplanation());
             } catch (final NamingException e) {
                 Engine.getInstance().reconnectDirContext();
-                LOG.info("Falscher LDAP Suchpfad. " + e.getExplanation());
+                LOG.info("LDAP Suche Fehler: " + e.getExplanation());
+            } finally {
+                try {
+                    if (answer != null) {
+                        answer.close();
+                    }
+                } catch (final NamingException e) {
+                    LOG.warn("Error closing search results", e);
+                }
             }
-
         }
-        monitor.setCanceled(true);
         _searchResult.setResult(_searchParams, Collections.<SearchResult>emptySet());
+
+        monitor.setCanceled(true);
         return Status.CANCEL_STATUS;
     }
 
@@ -268,29 +273,25 @@ public class LDAPReader extends Job {
      * @return the search result
      */
     @CheckForNull
-    public static final LdapSearchResult getSynchronousSearchResult(@Nonnull final String searchRoot,
-                                                                    @Nonnull final String filter) {
+    public static final LdapSearchResult getSearchResultSynchronously(@Nonnull final LdapSearchParams params) {
 
         final DirContext ctx = Engine.getInstance().getLdapDirContext();
-        if(ctx !=null){
-            final LdapSearch ldapSearch = new LdapSearch(searchRoot, filter, DEFAULT_SCOPE);
-
+        if(ctx != null){
             final SearchControls ctrl = new SearchControls();
-            ctrl.setSearchScope(ldapSearch.getScope());
-            try{
-                final LdapSearchResult result = new LdapSearchResult();
-                final Set<SearchResult> answerSet = new HashSet<SearchResult>();
+            ctrl.setSearchScope(params.getScope());
+            NamingEnumeration<SearchResult> answer = null;
+            try {
+                answer = ctx.search(params.getSearchRoot(),
+                                    params.getFilter(),
+                                    ctrl);
 
-                final NamingEnumeration<SearchResult> answer = ctx.search(ldapSearch.getSearchRoot(),
-                                                                          ldapSearch.getFilter(),
-                                                                          ctrl);
+                final Set<SearchResult> answerSet = new HashSet<SearchResult>();
                 while(answer.hasMore()){
                     answerSet.add(answer.next());
                 }
-                answer.close();
 
-                result.setResult(ldapSearch, answerSet);
-
+                final LdapSearchResult result = new LdapSearchResult();
+                result.setResult(params, answerSet);
                 return result;
 
             } catch (final NameNotFoundException nnfe){
@@ -299,6 +300,14 @@ public class LDAPReader extends Job {
             } catch (final NamingException e) {
                 Engine.getInstance().reconnectDirContext();
                 LOG.info("Falscher LDAP Suchpfad. " + e.getExplanation());
+            } finally {
+                try {
+                    if (answer != null) {
+                        answer.close();
+                    }
+                } catch (final NamingException e) {
+                    LOG.warn("Error closing search results: ", e);
+                }
             }
         }
         return null;

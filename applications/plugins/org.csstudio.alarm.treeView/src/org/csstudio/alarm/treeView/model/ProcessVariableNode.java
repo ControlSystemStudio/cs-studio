@@ -74,8 +74,8 @@ public class ProcessVariableNode extends AbstractAlarmTreeNode
 	/**
 	 * {@inheritDoc}
 	 */
-	public final ObjectClass getObjectClass() {
-		return ObjectClass.RECORD;
+	public final LdapObjectClass getObjectClass() {
+		return LdapObjectClass.RECORD;
 	}
 	
 	/**

@@ -21,41 +21,26 @@
  */
 package org.csstudio.alarm.treeView.ldap;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.naming.ldap.LdapName;
-
-import org.csstudio.alarm.treeView.model.ObjectClass;
 
 
 /**
  * Utility functions for working with names from an LDAP directory.
- * 
+ *
  * @author Joerg Rathlev, Jurij Kodre
  */
 public final class LdapNameUtils {
-    
-    private static final Map<String, ObjectClass> objectClass;
-    static {
-        objectClass = new HashMap<String, ObjectClass>();
-        objectClass.put("efan", ObjectClass.FACILITY);
-        objectClass.put("ecom", ObjectClass.COMPONENT);
-        objectClass.put("esco", ObjectClass.SUBCOMPONENT);
-        objectClass.put("econ", ObjectClass.IOC);
-        objectClass.put("eren", ObjectClass.RECORD);
-    }
-    
+
     /**
      * Constructor.
      */
     private LdapNameUtils() {
         // Empty
     }
-    
+
     /**
      * Removes double quotes from a string.
-     * 
+     *
      * @param toClean
      *            the string to be cleaned.
      * @return the cleaned string.
@@ -74,10 +59,10 @@ public final class LdapNameUtils {
         }
         return tc.toString();
     }
-    
+
     /**
      * Returns the simple name of the given name.
-     * 
+     *
      * @param name
      *            the name.
      * @return the simple name.
@@ -89,14 +74,17 @@ public final class LdapNameUtils {
     public static String simpleName(final String name){
         final int pos1 = name.indexOf("=");
         int pos2= name.indexOf(",");
-        if (pos2 ==-1 ) {pos2=name.length();} //if comma is not present, we must take last character
+        if (pos2 ==-1 ) {
+            //if comma is not present, we must take last character
+            pos2=name.length();
+        }
         return name.substring(pos1+1,pos2);
     }
-    
+
     /**
      * Returns the simple name of an object identified by the given LDAP name.
      * The simple name is the value of the least significant Rdn.
-     * 
+     *
      * @param name
      *            the LDAP name.
      * @return the simple name.
@@ -104,15 +92,5 @@ public final class LdapNameUtils {
     public static String simpleName(final LdapName name) {
         return (String) name.getRdn(name.size() - 1).getValue();
     }
-    
-    /**
-     * Returns the object class of an LDAP name.
-     * 
-     * @param name
-     *            the name.
-     * @return the object class.
-     */
-    public static ObjectClass objectClass(final LdapName name) {
-        return objectClass.get(name.getRdn(name.size() - 1).getType());
-    }
+
 }

@@ -17,6 +17,7 @@ import javax.naming.directory.SearchResult;
 
 import org.csstudio.utility.ldap.reader.LDAPReader;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
+import org.csstudio.utility.ldap.reader.LDAPReader.LdapSearchParams;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.InputDialog;
@@ -186,7 +187,9 @@ public class CustomInputDialog extends Dialog {
         // button
         _eaigCombo.getCombo().setFocus();
 
-        final LdapSearchResult result = LDAPReader.getSynchronousSearchResult(string_search_root, eagnFilter);
+        final LdapSearchResult result =
+            LDAPReader.getSearchResultSynchronously(new LdapSearchParams(string_search_root,
+                                                                         eagnFilter));
 
         final List<String> list = new ArrayList<String>(result.getAnswerSet().size());
 
@@ -255,7 +258,9 @@ public class CustomInputDialog extends Dialog {
                 final String firstElement = (String) ((StructuredSelection)_eaigCombo.getSelection()).getFirstElement();
 
 
-                final LdapSearchResult result = LDAPReader.getSynchronousSearchResult(firstElement, eagnFilter);
+                final LdapSearchResult result =
+                    LDAPReader.getSearchResultSynchronously(new LdapSearchParams(firstElement,
+                                                                                 eagnFilter));
 
                 final List<String> list = new ArrayList<String>(result.getAnswerSet().size());
 

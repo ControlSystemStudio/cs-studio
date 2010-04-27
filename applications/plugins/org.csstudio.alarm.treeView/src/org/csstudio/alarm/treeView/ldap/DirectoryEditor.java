@@ -43,7 +43,7 @@ import javax.naming.ldap.Rdn;
 import org.csstudio.alarm.treeView.model.AbstractAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.AlarmTreeNodePropertyId;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
-import org.csstudio.alarm.treeView.model.ObjectClass;
+import org.csstudio.alarm.treeView.model.LdapObjectClass;
 import org.csstudio.alarm.treeView.model.ProcessVariableNode;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.platform.logging.CentralLogger;
@@ -454,9 +454,9 @@ public final class DirectoryEditor {
 			final SubtreeNode parent, final String recordName)
 			throws DirectoryEditException {
 		try {
-			Rdn rdn = new Rdn(ObjectClass.RECORD.getRdnAttribute(), recordName);
+			Rdn rdn = new Rdn(LdapObjectClass.RECORD.getRdnAttribute(), recordName);
 			LdapName fullName = (LdapName) ((LdapName) fullLdapName(parent).clone()).add(rdn);
-			Attributes attrs = baseAttributesForEntry(ObjectClass.RECORD, rdn);
+			Attributes attrs = baseAttributesForEntry(LdapObjectClass.RECORD, rdn);
 			addAlarmAttributes(attrs, recordName);
 			createEntry(fullName, attrs);
 			ProcessVariableNode node = new ProcessVariableNode(parent, recordName);
@@ -482,9 +482,9 @@ public final class DirectoryEditor {
 	 */
 	public static void createComponent(final SubtreeNode parent,
 			final String componentName) throws DirectoryEditException {
-		ObjectClass oclass = parent.getRecommendedChildSubtreeClass();
+		LdapObjectClass oclass = parent.getRecommendedChildSubtreeClass();
 		if (oclass == null) {
-			oclass = ObjectClass.COMPONENT;
+			oclass = LdapObjectClass.COMPONENT;
 		}
 		createEntry(fullLdapName(parent), componentName, oclass);
 		new SubtreeNode(parent, componentName, oclass);
@@ -504,7 +504,7 @@ public final class DirectoryEditor {
 	 *             if the entry could not be created.
 	 */
 	private static void createEntry(final LdapName parentName, final String name,
-			final ObjectClass objectClass) throws DirectoryEditException {
+			final LdapObjectClass objectClass) throws DirectoryEditException {
 		try {
 			Rdn rdn = new Rdn(objectClass.getRdnAttribute(), name);
 			LdapName fullName = (LdapName) ((LdapName) parentName.clone()).add(rdn);
@@ -575,7 +575,7 @@ public final class DirectoryEditor {
 	 *            the relative name of the entry.
 	 * @return the attributes for the new entry.
 	 */
-	private static Attributes baseAttributesForEntry(ObjectClass objectClass,
+	private static Attributes baseAttributesForEntry(LdapObjectClass objectClass,
 			Rdn rdn) {
 		Attributes result = rdn.toAttributes();
 		result.put("objectClass", objectClass.getObjectClassName());
