@@ -1,4 +1,5 @@
-CREATE OR REPLACE PACKAGE               archive_reader_pkg
+create or replace
+PACKAGE archive_reader_pkg
 AS
    /******************************************************************************
       NAME:       archive_reader
@@ -16,38 +17,44 @@ AS
    /* Get data for a 'browser', a tool that shows data to a user,
       in a way that's somehow optimized over fetching each raw sample
       by returning a reduced number of min/max/average samples.
-      
+
       Will _not_ return the exact number of requested samples.
       Uses that number to determine how many average samples to compute,
       but there may be less samples in the raw data, or additional samples
       without numeric values.
       If the data cannot be reduced because the data type is String,
       return raw data.
-      
+
       Parameters:
       p_chan_id        Channel ID
       p_start_time     Start time
       p_end_time       End time
       p_reduction_nbr  Requested number of samples
-      
+
       Result:
       Depends on wether it's raw or averaged data.
    */
+
+   user_cancel   EXCEPTION;
+   PRAGMA EXCEPTION_INIT (user_cancel, -1013);
+
    FUNCTION get_browser_data (p_chan_id         IN NUMBER,
-                             p_start_time      IN TIMESTAMP_UNCONSTRAINED,
-                             p_end_time        IN TIMESTAMP_UNCONSTRAINED,
-                             p_reduction_nbr   IN NUMBER)
+                              p_start_time      IN TIMESTAMP_UNCONSTRAINED,
+                              p_end_time        IN TIMESTAMP_UNCONSTRAINED,
+                              p_reduction_nbr   IN NUMBER)
       RETURN SYS_REFCURSOR;
 
-   FUNCTION get_browser_data_by_array (p_chan_id         IN NUMBER,
-                                      p_start_time      IN TIMESTAMP_UNCONSTRAINED,
-                                      p_end_time        IN TIMESTAMP_UNCONSTRAINED,
-                                      p_reduction_nbr   IN NUMBER)
+   FUNCTION get_browser_data_by_array (
+      p_chan_id         IN NUMBER,
+      p_start_time      IN TIMESTAMP_UNCONSTRAINED,
+      p_end_time        IN TIMESTAMP_UNCONSTRAINED,
+      p_reduction_nbr   IN NUMBER)
       RETURN SYS_REFCURSOR;
 
-   FUNCTION get_count_by_date_range (p_chan_id      IN NUMBER,
-                                     p_start_time   IN TIMESTAMP_UNCONSTRAINED,
-                                     p_end_time     IN TIMESTAMP_UNCONSTRAINED)
+   FUNCTION get_count_by_date_range (
+      p_chan_id      IN NUMBER,
+      p_start_time   IN TIMESTAMP_UNCONSTRAINED,
+      p_end_time     IN TIMESTAMP_UNCONSTRAINED)
       RETURN NUMBER;
 
    FUNCTION get_parallel_degree (p_start_time   IN TIMESTAMP_UNCONSTRAINED,
@@ -67,12 +74,11 @@ AS
                              p_start_time   IN TIMESTAMP_UNCONSTRAINED,
                              p_end_time     IN TIMESTAMP_UNCONSTRAINED)
       RETURN BOOLEAN;
-
 END archive_reader_pkg;
 /
 
-
-CREATE OR REPLACE PACKAGE BODY               archive_reader_pkg
+create or replace
+PACKAGE BODY archive_reader_pkg
 AS
    /******************************************************************************
       NAME:       archive_reader_pkg
@@ -178,21 +184,22 @@ ORDER BY smpl_time
 
    ******************************************************************************/
    FUNCTION get_browser_data (p_chan_id         IN NUMBER,
-                             p_start_time      IN TIMESTAMP_UNCONSTRAINED,
-                             p_end_time        IN TIMESTAMP_UNCONSTRAINED,
-                             p_reduction_nbr   IN NUMBER)
+                              p_start_time      IN TIMESTAMP_UNCONSTRAINED,
+                              p_end_time        IN TIMESTAMP_UNCONSTRAINED,
+                              p_reduction_nbr   IN NUMBER)
       RETURN SYS_REFCURSOR
    IS
-      v_start_time            TIMESTAMP_UNCONSTRAINED;
-      v_count                 NUMBER;
-      v_datatype              VARCHAR2 (9);
-      c_browser_data          SYS_REFCURSOR;
-      l_return_raw_data       NUMBER := 0;
-      l_cursor_stmt           VARCHAR2 (32767);
-      l_cursor_width_bucket_1 VARCHAR2 (400) := 'WITH base_result
+      v_start_time              TIMESTAMP_UNCONSTRAINED;
+      v_count                   NUMBER;
+      v_datatype                VARCHAR2 (9);
+      c_browser_data            SYS_REFCURSOR;
+      l_return_raw_data         NUMBER := 0;
+      l_cursor_stmt             VARCHAR2 (32767);
+      l_cursor_width_bucket_1   VARCHAR2 (400) := 'WITH base_result
         AS (';
 
-      l_cursor_base_query VARCHAR2 (400) := '
+      l_cursor_base_query       VARCHAR2 (400)
+                                   := '
        smpl_time,
        severity_id,
        status_id,
@@ -203,7 +210,8 @@ ORDER BY smpl_time
   WHERE channel_id = :1
     AND smpl_time BETWEEN :2 AND :3';
 
-      l_cursor_width_bucket_2 VARCHAR2 (2000) := '
+      l_cursor_width_bucket_2   VARCHAR2 (2000)
+         := '
 )
   SELECT -1 wb,
        smpl_time,
@@ -243,21 +251,18 @@ ORDER BY smpl_time';
       --
       -- Verify the parameters
       --
-      IF opr$oracle.global_utils.is_numeric (p_chan_id) = FALSE
-      THEN
+      IF opr$oracle.global_utils.is_numeric (p_chan_id) = FALSE THEN
          raise_application_error (
             -20010,
             'The channel id must be numeric and not null');
       END IF;
 
-      IF p_start_time IS NULL OR p_end_time IS NULL
-      THEN
+      IF p_start_time IS NULL OR p_end_time IS NULL THEN
          raise_application_error (-20010,
                                   'The start and end time must be specified');
       END IF;
 
-      IF opr$oracle.global_utils.is_numeric (p_reduction_nbr) = FALSE
-      THEN
+      IF opr$oracle.global_utils.is_numeric (p_reduction_nbr) = FALSE THEN
          raise_application_error (
             -20010,
             'The reduction number be numeric and not null');
@@ -273,20 +278,19 @@ ORDER BY smpl_time';
       -- Determine how many records are in the time range.
       --
       v_count := get_count_by_date_range (p_chan_id, p_start_time, p_end_time);
-      
+
       --- If there is less data than requested, return raw data.
       --- This includes the case of no data at all.
-      IF v_count < p_reduction_nbr
-      THEN
+      IF v_count < p_reduction_nbr THEN
          l_return_raw_data := 1;
       ELSE
          --
          -- Find out what datatype the channel value is.
          --
-         v_datatype := get_sample_datatype (p_chan_id, v_start_time, p_end_time);
-  
-         IF v_datatype IS NOT NULL
-         THEN
+         v_datatype :=
+            get_sample_datatype (p_chan_id, v_start_time, p_end_time);
+
+         IF v_datatype IS NOT NULL THEN
             l_cursor_width_bucket_2 :=
                REPLACE (l_cursor_width_bucket_2, '<tag>', v_datatype);
          ELSE
@@ -294,9 +298,10 @@ ORDER BY smpl_time';
             l_return_raw_data := 1;
          END IF;
       END IF;
-      
+
       -- Construct the basic query for raw data
-      l_cursor_base_query := get_parallel_degree (p_start_time, p_end_time)
+      l_cursor_base_query :=
+         get_parallel_degree (p_start_time, p_end_time)
          || l_cursor_base_query;
 
       -- Combine into the complex query that creates 'buckets'
@@ -305,18 +310,17 @@ ORDER BY smpl_time';
          || l_cursor_base_query
          || l_cursor_width_bucket_2;
 
-      DBMS_APPLICATION_INFO.SET_MODULE (
-         module_name   => 'archive_reader_pkg.get_browser_data',
-         action_name   => 'Run main query');
+      DBMS_APPLICATION_INFO.
+       SET_MODULE (module_name   => 'archive_reader_pkg.get_browser_data',
+                   action_name   => 'Run main query');
+
       BEGIN
-         IF l_return_raw_data = 1
-         THEN
+         IF l_return_raw_data = 1 THEN
             -- Return data from the base query, i.e. raw data, but(!) sort it by time
             l_cursor_stmt := l_cursor_base_query || ' ORDER BY smpl_time';
+
             OPEN c_browser_data FOR l_cursor_stmt
-               USING p_chan_id,
-                     v_start_time,
-                     p_end_time;
+               USING p_chan_id, v_start_time, p_end_time;
          ELSE
             -- Get the min, max and average for the calculated window of records
             OPEN c_browser_data FOR l_cursor_stmt
@@ -328,36 +332,37 @@ ORDER BY smpl_time';
                      p_reduction_nbr;
          END IF;
       EXCEPTION
-         WHEN NO_DATA_FOUND
-         THEN
+         WHEN NO_DATA_FOUND THEN
             raise_application_error (
                -20010,
                'No records found which match the critieria');
-         WHEN OTHERS
-         THEN
+         WHEN USER_CANCEL THEN
+            RAISE;
+         WHEN OTHERS THEN
             opr$oracle.global_utils.v_program :=
                'CHAN_ARCH_SNS.archive_reader_pkg.get_browser_data-Browser data cursor';
             opr$oracle.global_utils.v_errornum := SQLCODE;
             opr$oracle.global_utils.v_errortxt := SUBSTR (SQLERRM, 1, 200);
-            opr$oracle.global_utils.log_error (
-               opr$oracle.global_utils.v_program,
-               opr$oracle.global_utils.v_errornum,
-               opr$oracle.global_utils.v_errortxt);
+            opr$oracle.global_utils.
+             log_error (opr$oracle.global_utils.v_program,
+                        opr$oracle.global_utils.v_errornum,
+                        opr$oracle.global_utils.v_errortxt);
             RAISE;
       END;
 
       RETURN c_browser_data;
    EXCEPTION
-      WHEN OTHERS
-      THEN
+      WHEN USER_CANCEL THEN
+         RAISE;
+      WHEN OTHERS THEN
          opr$oracle.global_utils.v_program :=
             'CHAN_ARCH_SNS.archive_reader_pkg.get_browser_data';
          opr$oracle.global_utils.v_errornum := SQLCODE;
          opr$oracle.global_utils.v_errortxt := SUBSTR (SQLERRM, 1, 200);
-         opr$oracle.global_utils.log_error (
-            opr$oracle.global_utils.v_program,
-            opr$oracle.global_utils.v_errornum,
-            opr$oracle.global_utils.v_errortxt);
+         opr$oracle.global_utils.
+          log_error (opr$oracle.global_utils.v_program,
+                     opr$oracle.global_utils.v_errornum,
+                     opr$oracle.global_utils.v_errortxt);
          RAISE;
    END get_browser_data;
 
@@ -374,14 +379,15 @@ ORDER BY smpl_time';
                   This is left here for comparison, it's not used by CSS
    ******************************************************************************/
 
-   FUNCTION get_browser_data_by_array (p_chan_id         IN NUMBER,
-                                      p_start_time      IN TIMESTAMP_UNCONSTRAINED,
-                                      p_end_time        IN TIMESTAMP_UNCONSTRAINED,
-                                      p_reduction_nbr   IN NUMBER)
+   FUNCTION get_browser_data_by_array (
+      p_chan_id         IN NUMBER,
+      p_start_time      IN TIMESTAMP_UNCONSTRAINED,
+      p_end_time        IN TIMESTAMP_UNCONSTRAINED,
+      p_reduction_nbr   IN NUMBER)
       RETURN SYS_REFCURSOR
    IS
       a_aggr              proj_types.sample_aggr_tab := proj_types.sample_aggr_tab ();
-      
+
       v_start_time        TIMESTAMP_UNCONSTRAINED;
 
       c_sample            SYS_REFCURSOR;
@@ -407,8 +413,8 @@ ORDER BY smpl_time';
 
       l_count             NUMBER := 0;
 
-      l_cursor_text VARCHAR2 (2000)
-            := ' channel_id, smpl_time, severity_id, 
+      l_cursor_text       VARCHAR2 (2000)
+         := ' channel_id, smpl_time, severity_id, 
                  status_id, num_val, float_val, str_val
               FROM chan_arch.sample
              WHERE channel_id = :1
@@ -421,21 +427,18 @@ ORDER BY smpl_time';
       --
       -- Verify the parameters
       --
-      IF opr$oracle.global_utils.is_numeric (p_chan_id) = FALSE
-      THEN
+      IF opr$oracle.global_utils.is_numeric (p_chan_id) = FALSE THEN
          raise_application_error (
             -20010,
             'The channel id must be numeric or not null');
       END IF;
 
-      IF p_start_time IS NULL OR p_end_time IS NULL
-      THEN
+      IF p_start_time IS NULL OR p_end_time IS NULL THEN
          raise_application_error (-20010,
                                   'The start and end time must be specified');
       END IF;
 
-      IF opr$oracle.global_utils.is_numeric (p_reduction_nbr) = FALSE
-      THEN
+      IF opr$oracle.global_utils.is_numeric (p_reduction_nbr) = FALSE THEN
          raise_application_error (
             -20010,
             'The reduction number be numeric or not null');
@@ -460,7 +463,8 @@ ORDER BY smpl_time';
       l_cursor_stmt :=
          get_parallel_degree (p_start_time, p_end_time) || l_cursor_text;
 
-      DBMS_APPLICATION_INFO.SET_MODULE (
+      DBMS_APPLICATION_INFO.
+       SET_MODULE (
          module_name   => 'archive_reader_pkg.get_browser_data_by_array',
          action_name   => 'Aggregate browser data');
 
@@ -477,65 +481,58 @@ ORDER BY smpl_time';
 
          FETCH c_sample INTO l_sample;
 
-         IF l_count > p_reduction_nbr
-         THEN
+         IF l_count > p_reduction_nbr THEN
             WHILE c_sample%FOUND
             LOOP
-               IF l_sample.str_val IS NOT NULL
-               THEN
+               IF l_sample.str_val IS NOT NULL THEN
                   a_aggr.EXTEND;
                   a_aggr (x) :=
                      proj_types.sample_aggr_typ (NULL,
-                                      NULL,
-                                      NULL,
-                                      NULL,
-                                      NULL,
-                                      NULL,
-                                      NULL,
-                                      NULL);
+                                                 NULL,
+                                                 NULL,
+                                                 NULL,
+                                                 NULL,
+                                                 NULL,
+                                                 NULL,
+                                                 NULL);
                   a_aggr (x).bucket_val := -1;
                   a_aggr (x).smpl_time := l_sample.smpl_time;
                   a_aggr (x).str_val := l_sample.str_val;
                ELSE
                   l_min_val := l_sample.float_val;
 
-                  IF l_sample.float_val > l_max_val
-                  THEN
+                  IF l_sample.float_val > l_max_val THEN
                      l_max_val := l_sample.float_val;
                   END IF;
 
-                  IF l_sample.float_val < l_min_val
-                  THEN
+                  IF l_sample.float_val < l_min_val THEN
                      l_min_val := l_sample.float_val;
                   END IF;
 
-                  IF l_sample.severity_id > l_max_svrty
-                  THEN
+                  IF l_sample.severity_id > l_max_svrty THEN
                      l_max_svrty := l_sample.severity_id;
                   END IF;
 
-                  IF l_sample.status_id > l_max_status
-                  THEN
+                  IF l_sample.status_id > l_max_status THEN
                      l_max_status := l_sample.status_id;
                   END IF;
 
                   l_record_count := l_record_count + 1;
                   l_float_val := l_float_val + l_sample.float_val;
 
-                  IF l_record_count = l_bucket_width
-                  THEN
+                  IF l_record_count = l_bucket_width THEN
                      l_bucket_count := l_bucket_count + 1;
                      x := x + 1;
                      a_aggr.EXTEND;
                      a_aggr (x) :=
                         proj_types.sample_aggr_typ (NULL,
-                                         NULL,
-                                         NULL,
-                                         NULL,
-                                         NULL,
-                                         NULL,
-                                         NULL,
-                                         NULL);
+                                                    NULL,
+                                                    NULL,
+                                                    NULL,
+                                                    NULL,
+                                                    NULL,
+                                                    NULL,
+                                                    NULL);
                      l_avg_val := l_float_val / l_record_count;
 
                      a_aggr (x).bucket_val := l_bucket_count;
@@ -565,13 +562,13 @@ ORDER BY smpl_time';
                x := x + 1;
                a_aggr (x) :=
                   proj_types.sample_aggr_typ (NULL,
-                                   NULL,
-                                   NULL,
-                                   NULL,
-                                   NULL,
-                                   NULL,
-                                   NULL,
-                                   NULL);
+                                              NULL,
+                                              NULL,
+                                              NULL,
+                                              NULL,
+                                              NULL,
+                                              NULL,
+                                              NULL);
                a_aggr (x).min_val := l_sample.float_val;
                a_aggr (x).max_val := l_sample.float_val;
                a_aggr (x).avg_val := l_sample.float_val;
@@ -593,22 +590,22 @@ ORDER BY smpl_time';
 
          CLOSE c_sample;
       EXCEPTION
-         WHEN NO_DATA_FOUND
-         THEN
+         WHEN NO_DATA_FOUND THEN
             raise_application_error (
                -20010,
                'No records found which match the critieria');
-         WHEN OTHERS
-         THEN
+         WHEN USER_CANCEL THEN
+            RAISE;
+         WHEN OTHERS THEN
             opr$oracle.global_utils.v_program :=
                'CHAN_ARCH_SNS.archive_reader_pkg.get_browser_data_by_array-Browser data cursor';
             opr$oracle.global_utils.v_errornum := SQLCODE;
             opr$oracle.global_utils.v_errortxt :=
                SUBSTR (SQLERRM, 1, 200) || ' ' || l_cursor_stmt;
-            opr$oracle.global_utils.log_error (
-               opr$oracle.global_utils.v_program,
-               opr$oracle.global_utils.v_errornum,
-               opr$oracle.global_utils.v_errortxt);
+            opr$oracle.global_utils.
+             log_error (opr$oracle.global_utils.v_program,
+                        opr$oracle.global_utils.v_errornum,
+                        opr$oracle.global_utils.v_errortxt);
             RAISE;
       END;
 
@@ -620,16 +617,17 @@ ORDER BY smpl_time';
 
       RETURN c_sr_browser_data;
    EXCEPTION
-      WHEN OTHERS
-      THEN
+      WHEN USER_CANCEL THEN
+         RAISE;
+      WHEN OTHERS THEN
          opr$oracle.global_utils.v_program :=
             'CHAN_ARCH_SNS.archive_reader_pkg.get_browser_data_by_array';
          opr$oracle.global_utils.v_errornum := SQLCODE;
          opr$oracle.global_utils.v_errortxt := SUBSTR (SQLERRM, 1, 200);
-         opr$oracle.global_utils.log_error (
-            opr$oracle.global_utils.v_program,
-            opr$oracle.global_utils.v_errornum,
-            opr$oracle.global_utils.v_errortxt);
+         opr$oracle.global_utils.
+          log_error (opr$oracle.global_utils.v_program,
+                     opr$oracle.global_utils.v_errornum,
+                     opr$oracle.global_utils.v_errortxt);
          RAISE;
    END get_browser_data_by_array;
 
@@ -638,65 +636,69 @@ ORDER BY smpl_time';
                                  p_end_time     IN TIMESTAMP_UNCONSTRAINED)
       RETURN VARCHAR2
    IS
-      v_number NUMBER;
+      v_number          NUMBER;
       v_parallel_text   VARCHAR2 (100);
    BEGIN
-      DBMS_APPLICATION_INFO.SET_MODULE (
-         module_name   => 'archive_reader_pkg.get_parallel_degree',
-         action_name   => 'Determine degree of parallelism');
+      DBMS_APPLICATION_INFO.
+       SET_MODULE (module_name   => 'archive_reader_pkg.get_parallel_degree',
+                   action_name   => 'Determine degree of parallelism');
 
       --
       -- How many days are in our time range ?
       --
       v_number := CAST (p_end_time AS DATE) - CAST (p_start_time AS DATE);
+
       -- Original days vs. parallel: >12  16 , >8  12,  >4  8, >=4 4
       CASE
-         WHEN v_number >= 30
-         THEN
-            v_parallel_text := 'SELECT /*+ PARALLEL_INDEX(sample, pk_sample, 16) */';
-         WHEN v_number >= 14
-         THEN
-            v_parallel_text := 'SELECT /*+ PARALLEL_INDEX(sample, pk_sample, 12) */';
-         WHEN v_number >= 7
-         THEN
-            v_parallel_text := 'SELECT /*+ PARALLEL_INDEX(sample, pk_sample, 8) */';
-         WHEN v_number >= 2
-         THEN
-            v_parallel_text := 'SELECT /*+ PARALLEL_INDEX(sample, pk_sample, 4) */';
+         WHEN v_number >= 30 THEN
+            v_parallel_text :=
+               'SELECT /*+ PARALLEL_INDEX(sample, pk_sample, 16) */';
+         WHEN v_number >= 14 THEN
+            v_parallel_text :=
+               'SELECT /*+ PARALLEL_INDEX(sample, pk_sample, 12) */';
+         WHEN v_number >= 7 THEN
+            v_parallel_text :=
+               'SELECT /*+ PARALLEL_INDEX(sample, pk_sample, 8) */';
+         WHEN v_number >= 2 THEN
+            v_parallel_text :=
+               'SELECT /*+ PARALLEL_INDEX(sample, pk_sample, 4) */';
          ELSE
             v_parallel_text := 'SELECT ';
       END CASE;
 
       RETURN v_parallel_text;
    EXCEPTION
-      WHEN OTHERS
-      THEN
+      WHEN USER_CANCEL THEN
+         RAISE;
+      WHEN OTHERS THEN
          opr$oracle.global_utils.v_program :=
             'CHAN_ARCH_SNS.archive_reader_pkg.get_parallel_degree';
          opr$oracle.global_utils.v_errornum := SQLCODE;
          opr$oracle.global_utils.v_errortxt := SUBSTR (SQLERRM, 1, 200);
-         opr$oracle.global_utils.log_error (
-            opr$oracle.global_utils.v_program,
-            opr$oracle.global_utils.v_errornum,
-            opr$oracle.global_utils.v_errortxt);
+         opr$oracle.global_utils.
+          log_error (opr$oracle.global_utils.v_program,
+                     opr$oracle.global_utils.v_errornum,
+                     opr$oracle.global_utils.v_errortxt);
          RAISE;
    END get_parallel_degree;
 
    --
    -- Count the number of sample records with in an time range.
    --
-   FUNCTION get_count_by_date_range (p_chan_id      IN NUMBER,
-                                     p_start_time   IN TIMESTAMP_UNCONSTRAINED,
-                                     p_end_time     IN TIMESTAMP_UNCONSTRAINED)
+   FUNCTION get_count_by_date_range (
+      p_chan_id      IN NUMBER,
+      p_start_time   IN TIMESTAMP_UNCONSTRAINED,
+      p_end_time     IN TIMESTAMP_UNCONSTRAINED)
       RETURN NUMBER
    IS
-     v_sql_stmt   VARCHAR2 (4000);
-     v_count      NUMBER;
-     l_count_text VARCHAR2 (1000)
-            := ' COUNT(channel_id) from chan_arch.sample where channel_id = :1
+      v_sql_stmt     VARCHAR2 (4000);
+      v_count        NUMBER;
+      l_count_text   VARCHAR2 (1000)
+         := ' COUNT(channel_id) from chan_arch.sample where channel_id = :1
        AND smpl_time BETWEEN :2 AND :3';
    BEGIN
-      DBMS_APPLICATION_INFO.SET_MODULE (
+      DBMS_APPLICATION_INFO.
+       SET_MODULE (
          module_name   => 'archive_reader_pkg.get_count_by_date_range',
          action_name   => 'Count records in time range');
 
@@ -711,16 +713,17 @@ ORDER BY smpl_time';
             INTO v_count
             USING p_chan_id, p_start_time, p_end_time;
       EXCEPTION
-         WHEN OTHERS
-         THEN
+         WHEN USER_CANCEL THEN
+            RAISE;
+         WHEN OTHERS THEN
             opr$oracle.global_utils.v_program :=
                'CHAN_ARCH_SNS.archive_reader_pkg.get_count_by_date_range';
             opr$oracle.global_utils.v_errornum := SQLCODE;
             opr$oracle.global_utils.v_errortxt := SUBSTR (SQLERRM, 1, 200);
-            opr$oracle.global_utils.log_error (
-               opr$oracle.global_utils.v_program,
-               opr$oracle.global_utils.v_errornum,
-               opr$oracle.global_utils.v_errortxt);
+            opr$oracle.global_utils.
+             log_error (opr$oracle.global_utils.v_program,
+                        opr$oracle.global_utils.v_errornum,
+                        opr$oracle.global_utils.v_errortxt);
             RAISE;
       END;
 
@@ -735,12 +738,13 @@ ORDER BY smpl_time';
                                    p_start_time   IN TIMESTAMP_UNCONSTRAINED)
       RETURN TIMESTAMP_UNCONSTRAINED
    IS
-      l_time         TIMESTAMP_UNCONSTRAINED;
-      l_sql_stmt VARCHAR2 (1000)
-            := 'SELECT smpl_time FROM (SELECT smpl_time FROM chan_arch.sample WHERE channel_id = :1
+      l_time       TIMESTAMP_UNCONSTRAINED;
+      l_sql_stmt   VARCHAR2 (1000)
+         := 'SELECT smpl_time FROM (SELECT smpl_time FROM chan_arch.sample WHERE channel_id = :1
        AND smpl_time <= :2 ORDER BY smpl_time desc ) WHERE ROWNUM = 1';
    BEGIN
-      DBMS_APPLICATION_INFO.SET_MODULE (
+      DBMS_APPLICATION_INFO.
+       SET_MODULE (
          module_name   => 'archive_reader_pkg.get_actual_start_time',
          action_name   => 'Find the actual start time closet to the request start time');
 
@@ -749,23 +753,23 @@ ORDER BY smpl_time';
             INTO l_time
             USING p_chan_id, p_start_time;
       EXCEPTION
-         WHEN NO_DATA_FOUND
-         THEN
+         WHEN NO_DATA_FOUND THEN
             -- Use original start time if no sample found before then
             l_time := p_start_time;
-         WHEN OTHERS
-         THEN
+         WHEN USER_CANCEL THEN
+            RAISE;
+         WHEN OTHERS THEN
             opr$oracle.global_utils.v_program :=
                'CHAN_ARCH_SNS.archive_reader_pkg.get_actual_start_time';
             opr$oracle.global_utils.v_errornum := SQLCODE;
             opr$oracle.global_utils.v_errortxt := SUBSTR (SQLERRM, 1, 200);
-            opr$oracle.global_utils.log_error (
-               opr$oracle.global_utils.v_program,
-               opr$oracle.global_utils.v_errornum,
-               opr$oracle.global_utils.v_errortxt);
+            opr$oracle.global_utils.
+             log_error (opr$oracle.global_utils.v_program,
+                        opr$oracle.global_utils.v_errornum,
+                        opr$oracle.global_utils.v_errortxt);
             RAISE;
       END;
-      
+
       RETURN l_time;
    END get_actual_start_time;
 
@@ -786,46 +790,45 @@ ORDER BY smpl_time';
                                  p_end_time     IN TIMESTAMP_UNCONSTRAINED)
       RETURN VARCHAR2
    IS
-      l_float_val chan_arch.sample.float_val%TYPE;
-      l_num_val   chan_arch.sample.num_val%TYPE;
-      l_datatype  VARCHAR2 (10);
-      l_sql_stmt  VARCHAR2 (1000)
-        := 'SELECT float_val, num_val FROM
+      l_float_val   chan_arch.sample.float_val%TYPE;
+      l_num_val     chan_arch.sample.num_val%TYPE;
+      l_datatype    VARCHAR2 (10);
+      l_sql_stmt    VARCHAR2 (1000)
+         := 'SELECT float_val, num_val FROM
              (SELECT float_val, num_val FROM chan_arch.sample
                 WHERE channel_id = :1
                 AND smpl_time BETWEEN :2 AND :3
                 AND ((float_val IS NOT NULL) OR (num_val IS NOT NULL))
              ) WHERE ROWNUM=1';
-     -- Original only used first sample, possibly missing numeric data that followed:
-     -- SELECT num_val, float_val, str_val FROM chan_arch.sample WHERE channel_id = :1
+   -- Original only used first sample, possibly missing numeric data that followed:
+   -- SELECT num_val, float_val, str_val FROM chan_arch.sample WHERE channel_id = :1
    BEGIN
-      DBMS_APPLICATION_INFO.SET_MODULE (
-         module_name   => 'archive_reader_pkg.get_sample_datatype',
-         action_name   => 'Determine the sample dataype');
+      DBMS_APPLICATION_INFO.
+       SET_MODULE (module_name   => 'archive_reader_pkg.get_sample_datatype',
+                   action_name   => 'Determine the sample dataype');
 
       BEGIN
          EXECUTE IMMEDIATE l_sql_stmt
             INTO l_float_val, l_num_val
             USING p_chan_id, p_start_time, p_end_time;
       EXCEPTION
-         WHEN OTHERS
-         THEN
+         WHEN USER_CANCEL THEN
+            RAISE;
+         WHEN OTHERS THEN
             opr$oracle.global_utils.v_program :=
                'CHAN_ARCH_SNS.archive_reader_pkg.get_sample_datatype';
             opr$oracle.global_utils.v_errornum := SQLCODE;
             opr$oracle.global_utils.v_errortxt := SUBSTR (SQLERRM, 1, 200);
-            opr$oracle.global_utils.log_error (
-               opr$oracle.global_utils.v_program,
-               opr$oracle.global_utils.v_errornum,
-               opr$oracle.global_utils.v_errortxt);
+            opr$oracle.global_utils.
+             log_error (opr$oracle.global_utils.v_program,
+                        opr$oracle.global_utils.v_errornum,
+                        opr$oracle.global_utils.v_errortxt);
             RAISE;
       END;
 
-      IF l_float_val IS NOT NULL
-      THEN
+      IF l_float_val IS NOT NULL THEN
          l_datatype := 'float_val';
-      ELSIF l_num_val IS NOT NULL
-      THEN
+      ELSIF l_num_val IS NOT NULL THEN
          l_datatype := 'num_val';
       ELSE
          l_datatype := 'str_val';
@@ -842,16 +845,16 @@ ORDER BY smpl_time';
                              p_end_time     IN TIMESTAMP_UNCONSTRAINED)
       RETURN BOOLEAN
    IS
-      v_sql_stmt   VARCHAR2 (4000);
-      l_count      NUMBER (1);
-      l_count_text VARCHAR2 (1000)
-            := ' COUNT(channel_id) from chan_arch.array_val where channel_id = :1
+      v_sql_stmt     VARCHAR2 (4000);
+      l_count        NUMBER (1);
+      l_count_text   VARCHAR2 (1000)
+         := ' COUNT(channel_id) from chan_arch.array_val where channel_id = :1
        AND smpl_time > :2
        AND smpl_time < :3 AND ROWNUM=1';
    BEGIN
-      DBMS_APPLICATION_INFO.SET_MODULE (
-         module_name   => 'archive_reader_pkg.is_sample_array',
-         action_name   => 'Determine if sample is a waveform');
+      DBMS_APPLICATION_INFO.
+       SET_MODULE (module_name   => 'archive_reader_pkg.is_sample_array',
+                   action_name   => 'Determine if sample is a waveform');
 
       v_sql_stmt :=
          get_parallel_degree (p_start_time, p_end_time) || l_count_text;
@@ -861,27 +864,24 @@ ORDER BY smpl_time';
             INTO l_count
             USING p_chan_id, p_start_time, p_end_time;
       EXCEPTION
-         WHEN OTHERS
-         THEN
+         WHEN USER_CANCEL THEN
+            RAISE;
+         WHEN OTHERS THEN
             opr$oracle.global_utils.v_program :=
                'CHAN_ARCH_SNS.archive_reader_pkg.is_sample_array';
             opr$oracle.global_utils.v_errornum := SQLCODE;
             opr$oracle.global_utils.v_errortxt := SUBSTR (SQLERRM, 1, 200);
-            opr$oracle.global_utils.log_error (
-               opr$oracle.global_utils.v_program,
-               opr$oracle.global_utils.v_errornum,
-               opr$oracle.global_utils.v_errortxt);
+            opr$oracle.global_utils.
+             log_error (opr$oracle.global_utils.v_program,
+                        opr$oracle.global_utils.v_errornum,
+                        opr$oracle.global_utils.v_errortxt);
             RAISE;
       END;
 
-      IF l_count > 0
-      THEN
+      IF l_count > 0 THEN
          RETURN TRUE;
       ELSE
          RETURN FALSE;
       END IF;
    END is_sample_array;
-
-
 END archive_reader_pkg;
-/
