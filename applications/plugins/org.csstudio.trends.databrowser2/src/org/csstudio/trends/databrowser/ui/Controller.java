@@ -166,9 +166,14 @@ public class Controller implements ArchiveFetchJobListener
             }
 
             public void droppedName(final String name)
-            {   // Offer potential PV name in dialog so user can edit/cancel
+            { 
+                // Offer potential PV name in dialog so user can edit/cancel
                 final AddPVAction add = new AddPVAction(plot.getOperationsManager(), shell, model, false);
-                add.runWithSuggestedName(name, null);
+                // Allow passing in many names, assuming that white space separates them
+                final String[] names = name.split("[\\r\\n\\t ]+"); //$NON-NLS-1$
+                for (String n : names)
+                    if (! add.runWithSuggestedName(n, null))
+                        break;
             }
 
             public void droppedPVName(final String name, final IArchiveDataSource archive)
