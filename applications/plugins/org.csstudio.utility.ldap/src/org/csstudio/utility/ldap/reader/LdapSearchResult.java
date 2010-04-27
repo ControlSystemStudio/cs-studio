@@ -33,6 +33,7 @@ import javax.naming.directory.SearchResult;
 import org.csstudio.utility.ldap.Activator;
 import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
 import org.csstudio.utility.ldap.Messages;
+import org.csstudio.utility.ldap.reader.LDAPReader.LdapSearch;
 import org.csstudio.utility.namespace.utility.ControlSystemItem;
 import org.csstudio.utility.namespace.utility.NameSpaceSearchResult;
 import org.csstudio.utility.namespace.utility.ProcessVariable;
@@ -48,9 +49,7 @@ public class LdapSearchResult extends NameSpaceSearchResult {
 
     private Set<SearchResult> _answerSet = Collections.emptySet();
 
-    private String _searchroot;
-
-    private String _filter;
+    private LdapSearch _searchParams;
 
     private List<ControlSystemItem> _csiResult;
 
@@ -120,15 +119,12 @@ public class LdapSearchResult extends NameSpaceSearchResult {
 
     /**
      * Sets the current result contents for these parameters
-     * @param root the search root
-     * @param filter the search filter
+     * @param searchParams the search root, the search filter, and search controls
      * @param answerSet the corresponding result set
      */
-    public void setResult(@Nonnull final String root,
-                          @Nonnull final String filter,
+    public void setResult(@Nonnull final LdapSearch searchParams,
                           @Nonnull final Set<SearchResult> answerSet) {
-        _searchroot = root;
-        _filter = filter;
+        _searchParams = searchParams;
         _answerSet = answerSet;
 
         // FIXME (bknerr) : probably not necessary anymore
@@ -149,17 +145,8 @@ public class LdapSearchResult extends NameSpaceSearchResult {
      * @return the current search root, may be null
      */
     @CheckForNull
-    public String getSearchRoot() {
-        return _searchroot;
-    }
-
-    /**
-     * Filter of the current result.
-     * @return the filter
-     */
-    @CheckForNull
-    public String getFilter() {
-        return _filter;
+    public LdapSearch getSearchParams() {
+        return _searchParams;
     }
 
     /**

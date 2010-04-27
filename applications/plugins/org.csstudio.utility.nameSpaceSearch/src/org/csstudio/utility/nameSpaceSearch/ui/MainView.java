@@ -31,7 +31,7 @@ import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
 import org.csstudio.utility.ldap.reader.LDAPReader;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
-import org.csstudio.utility.ldap.reader.LDAPReader.JobCompletedCallBack;
+import org.csstudio.utility.ldap.reader.LDAPReader.IJobCompletedCallBack;
 import org.csstudio.utility.nameSpaceSearch.Activator;
 import org.csstudio.utility.nameSpaceSearch.Messages;
 import org.csstudio.utility.nameSpaceSearch.preference.PreferenceConstants;
@@ -304,7 +304,7 @@ public class MainView extends ViewPart {
             new LDAPReader(Activator.getDefault().getPluginPreferences().getString(PreferenceConstants.P_STRING_SEARCH_ROOT),
                            filter,
                            _ldapSearchResult,
-                           new JobCompletedCallBack() {
+                           new IJobCompletedCallBack() {
                                 @Override
                                 public void onLdapReadComplete() {
                                     _disp.syncExec(new Runnable() {

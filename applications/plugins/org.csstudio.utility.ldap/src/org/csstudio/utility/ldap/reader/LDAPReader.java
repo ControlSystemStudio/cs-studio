@@ -54,7 +54,63 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
  */
 public class LDAPReader extends Job {
 
-    public static final int DEFAULT_SCOPE = SearchControls.SUBTREE_SCOPE;
+    /**
+     * Search specifier for an LDAP lookup
+     *
+     * @author bknerr
+     * @author $Author$
+     * @version $Revision$
+     * @since 26.04.2010
+     */
+    public static final class LdapSearch {
+
+        private final String _searchRoot;
+
+        private final String _filter;
+
+        private int _scope;
+
+        /**
+         * Constructor.
+         * @param searchRoot .
+         * @param filter .
+         */
+        public LdapSearch(@Nonnull final String searchRoot,
+                          @Nonnull final String filter) {
+            this(searchRoot, filter, DEFAULT_SCOPE);
+        }
+
+        /**
+         * Constructor.
+         * @param searchRoot .
+         * @param filter .
+         * @param scope the search controls
+         */
+        public LdapSearch(@Nonnull final String searchRoot,
+                          @Nonnull final String filter,
+                          @Nonnull final int scope) {
+            _searchRoot = searchRoot;
+            _filter = filter;
+            _scope = scope;
+        }
+        @Nonnull
+        public String getSearchRoot() {
+            return _searchRoot;
+        }
+        @Nonnull
+        public String getFilter() {
+            return _filter;
+        }
+        @Nonnull
+        public int getScope() {
+            return _scope;
+        }
+
+        public void setScope(final int scope) {
+            _scope = scope;
+        }
+    }
+
 
     /**
      * Callback interface to invoke a custom method on a successful LDAP read.
@@ -64,35 +120,35 @@ public class LDAPReader extends Job {
      * @version $Revision$
      * @since 08.04.2010
      */
-    public interface JobCompletedCallBack {
+    public interface IJobCompletedCallBack {
         /**
          * Callback method.
          */
         void onLdapReadComplete();
     }
 
+    public static final int DEFAULT_SCOPE = SearchControls.SUBTREE_SCOPE;
 
-    private int _defaultScope = DEFAULT_SCOPE;
 
     private static final Logger LOG = CentralLogger.getInstance().getLogger(LDAPReader.class.getName());
 
-    private String _searchRoot;
-    private String _filter;
+    private final LdapSearch _searchParams;
+
     private final LdapSearchResult _searchResult;
 
     /**
      * Used the connection settings from org.csstudio.utility.ldap.ui
      * (used with UI)
      *
-     * @param root the search root
+     * @param searchRoot the search root
      * @param filter the search filter
      * @param searchScope the search scope
      */
-    public LDAPReader(@Nonnull final String root,
+    public LDAPReader(@Nonnull final String searchRoot,
                       @Nonnull final String filter,
                       @Nonnull final int searchScope){
         super("LDAPReader");
-        setBasics(root, filter);
+        _searchParams = new LdapSearch(searchRoot, filter);
         setDefaultScope(searchScope);
         _searchResult = new LdapSearchResult();
     }
@@ -100,19 +156,19 @@ public class LDAPReader extends Job {
     /**
      * Constructor.
      *
-     * @param name the search root
+     * @param searchRoot the search root
      * @param filter the search filter
      * @param searchScope the search scope
      * @param result the search result, typically used in the callback method
      * @param callBack callback to invoke custom method on sucessful LDAP read
      */
-    public LDAPReader(@Nonnull final String name,
+    public LDAPReader(@Nonnull final String searchRoot,
                       @Nonnull final String filter,
                       final int searchScope,
                       @Nonnull final LdapSearchResult result,
-                      @Nonnull final JobCompletedCallBack callBack){
+                      @Nonnull final IJobCompletedCallBack callBack){
         super("LDAPReader");
-        setBasics(name, filter);
+        _searchParams = new LdapSearch(searchRoot, filter);
         setDefaultScope(searchScope);
         _searchResult = result;
         setJobCompletedCallBack(callBack);
@@ -121,22 +177,22 @@ public class LDAPReader extends Job {
     /**
      * Constructor.
      *
-     * @param name the search root
+     * @param searchRoot the search root
      * @param filter the search filter
      * @param result the result, typically used in the callback method
      * @param callBack callback to invoke custom method on sucessful LDAP read
      */
-    public LDAPReader(@Nonnull final String name,
+    public LDAPReader(@Nonnull final String searchRoot,
                       @Nonnull final String filter,
                       @Nonnull final LdapSearchResult result,
-                      @Nonnull final JobCompletedCallBack callBack){
-        this(name, filter, DEFAULT_SCOPE, result, callBack);
+                      @Nonnull final IJobCompletedCallBack callBack){
+        this(searchRoot, filter, DEFAULT_SCOPE, result, callBack);
     }
 
     /**
      * @param callBack
      */
-    private void setJobCompletedCallBack(@Nonnull final JobCompletedCallBack callBack) {
+    private void setJobCompletedCallBack(@Nonnull final IJobCompletedCallBack callBack) {
         addJobChangeListener(new JobChangeAdapter() {
             @Override
             public void done(@Nonnull final IJobChangeEvent event) {
@@ -155,11 +211,13 @@ public class LDAPReader extends Job {
         final DirContext ctx = Engine.getInstance().getLdapDirContext();
         if(ctx != null){
             final SearchControls ctrl = new SearchControls();
-            ctrl.setSearchScope(_defaultScope);
+            ctrl.setSearchScope(_searchParams.getScope());
             try{
                 final Set<SearchResult> answerSet = new HashSet<SearchResult>();
 
-                final NamingEnumeration<SearchResult> answer = ctx.search(_searchRoot, _filter, ctrl);
+                final NamingEnumeration<SearchResult> answer = ctx.search(_searchParams.getSearchRoot(),
+                                                                          _searchParams.getFilter(),
+                                                                          ctrl);
                 try {
                     while(answer.hasMore()){
                         final SearchResult result = answer.next();
@@ -173,7 +231,7 @@ public class LDAPReader extends Job {
                 }
                 answer.close();
 
-                _searchResult.setResult(_searchRoot, _filter, answerSet);
+                _searchResult.setResult(_searchParams, answerSet);
 
                 monitor.done();
                 return Status.OK_STATUS;
@@ -188,14 +246,8 @@ public class LDAPReader extends Job {
 
         }
         monitor.setCanceled(true);
-        _searchResult.setResult(_searchRoot, _filter, Collections.<SearchResult>emptySet());
+        _searchResult.setResult(_searchParams, Collections.<SearchResult>emptySet());
         return Status.CANCEL_STATUS;
-    }
-
-    private void setBasics(@Nonnull final String searchRoot,
-                           @Nonnull final String filter) {
-        _searchRoot = searchRoot;
-        _filter = filter;
     }
 
     /**
@@ -221,19 +273,23 @@ public class LDAPReader extends Job {
 
         final DirContext ctx = Engine.getInstance().getLdapDirContext();
         if(ctx !=null){
+            final LdapSearch ldapSearch = new LdapSearch(searchRoot, filter, DEFAULT_SCOPE);
+
             final SearchControls ctrl = new SearchControls();
-            ctrl.setSearchScope(DEFAULT_SCOPE);
+            ctrl.setSearchScope(ldapSearch.getScope());
             try{
                 final LdapSearchResult result = new LdapSearchResult();
                 final Set<SearchResult> answerSet = new HashSet<SearchResult>();
 
-                final NamingEnumeration<SearchResult> answer = ctx.search(searchRoot, filter, ctrl);
+                final NamingEnumeration<SearchResult> answer = ctx.search(ldapSearch.getSearchRoot(),
+                                                                          ldapSearch.getFilter(),
+                                                                          ctrl);
                 while(answer.hasMore()){
                     answerSet.add(answer.next());
                 }
                 answer.close();
 
-                result.setResult(searchRoot, filter, answerSet);
+                result.setResult(ldapSearch, answerSet);
 
                 return result;
 
@@ -253,6 +309,6 @@ public class LDAPReader extends Job {
      * @param defaultScope set the given Scope.
      */
     private void setDefaultScope(final int defaultScope) {
-        _defaultScope = defaultScope;
+        _searchParams.setScope(defaultScope);
     }
 }
