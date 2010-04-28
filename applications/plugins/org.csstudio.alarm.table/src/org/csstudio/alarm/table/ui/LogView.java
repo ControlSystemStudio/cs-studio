@@ -1,20 +1,18 @@
 /*
  * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, Member of the Helmholtz Association,
- * (DESY), HAMBURG, GERMANY.
- * 
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. WITHOUT WARRANTY OF ANY
- * KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
- * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
- * DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE IN ANY RESPECT, THE USER ASSUMES
- * THE COST OF ANY NECESSARY SERVICING, REPAIR OR CORRECTION. THIS DISCLAIMER OF WARRANTY
- * CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER
- * EXCEPT UNDER THIS DISCLAIMER. DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES,
- * ENHANCEMENTS, OR MODIFICATIONS. THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION,
- * MODIFICATION, USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY AT
- * HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
+ * (DESY), HAMBURG, GERMANY. THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+ * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE IN ANY RESPECT,
+ * THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR CORRECTION. THIS DISCLAIMER OF
+ * WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. NO USE OF ANY SOFTWARE IS AUTHORIZED
+ * HEREUNDER EXCEPT UNDER THIS DISCLAIMER. DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT,
+ * UPDATES, ENHANCEMENTS, OR MODIFICATIONS. THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE
+ * REDISTRIBUTION, MODIFICATION, USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE
+ * DISTRIBUTION OF THIS PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY
+ * FIND A COPY AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
 package org.csstudio.alarm.table.ui;
@@ -27,6 +25,8 @@ import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.dataModel.LogMessageList;
 import org.csstudio.alarm.table.dataModel.MessageList;
 import org.csstudio.alarm.table.internal.localization.Messages;
+import org.csstudio.alarm.table.jms.AlarmListener;
+import org.csstudio.alarm.table.jms.IAlarmTableListener;
 import org.csstudio.alarm.table.preferences.TopicSet;
 import org.csstudio.alarm.table.preferences.TopicSetColumnService;
 import org.csstudio.alarm.table.preferences.log.LogViewPreferenceConstants;
@@ -67,7 +67,6 @@ import org.eclipse.ui.views.IViewRegistry;
  * View with table for all log messages from JMS.
  * 
  * @author jhatje
- * 
  */
 public class LogView extends ViewPart {
     
@@ -87,11 +86,16 @@ public class LogView extends ViewPart {
     public MessageTable _messageTable = null;
     
     /**
-     * Stateful service maintaining connections and message lists.
-     * 
-     * There are two service implementations available, one for the log views, one for the alarm
-     * views. Each is a singleton, all views belonging together share the state. You have to
-     * override defineTopicSetService accordingly.
+     * Listener for the incoming messages.
+     */
+    private final IAlarmTableListener _alarmListener = new AlarmListener(JmsLogsPlugin.getDefault()
+            .getAlarmSoundService());
+    
+    /**
+     * Stateful service maintaining connections and message lists. There are two service
+     * implementations available, one for the log views, one for the alarm views. Each is a
+     * singleton, all views belonging together share the state. You have to override
+     * defineTopicSetService accordingly.
      */
     private ITopicsetService _topicsetService = null;
     
@@ -158,9 +162,7 @@ public class LogView extends ViewPart {
     /**
      * Initialization of {@link MessageTable} with {@link TableViewer}, column names etc for startup
      * of this view. If the user selects another topic set this method is also executed and the
-     * previous table will be disposed.
-     * 
-     * This method must be overridden by subclasses.
+     * previous table will be disposed. This method must be overridden by subclasses.
      * 
      * @param parent
      * @param _columnNames
@@ -225,8 +227,7 @@ public class LogView extends ViewPart {
      * The log view operates on a topic set service for log views. This method must be called to set
      * the appropriate one.
      * 
-     * @param topicSetService
-     *            .
+     * @param topicSetService .
      */
     protected void setTopicSetService(final ITopicsetService topicSetService) {
         _topicsetService = topicSetService;
@@ -253,9 +254,8 @@ public class LogView extends ViewPart {
     
     /**
      * Factory method for creating the appropriate message list. Is used as a template method in
-     * getOrCreateCurrentMessageList.
-     * 
-     * This should be overridden when a different type of MessageList is required by the view.
+     * getOrCreateCurrentMessageList. This should be overridden when a different type of MessageList
+     * is required by the view.
      * 
      * @return the newly created message list
      */
@@ -264,18 +264,27 @@ public class LogView extends ViewPart {
     }
     
     /**
-     * Returns the existing message list for the current topic set or creates a new one. If no
-     * message list was present, a connection is implicitly created too.
+     * Read access for subclasses
      * 
-     * This is intended to be called in initializeMessageTable. Be sure to override
-     * createMessageList.
+     * @return the alarm listener
+     */
+    protected IAlarmTableListener getAlarmListener() {
+        return _alarmListener;
+    }
+    
+    /**
+     * Returns the existing message list for the current topic set or creates a new one. If no
+     * message list was present, a connection is implicitly created too. This is intended to be
+     * called in initializeMessageTable. Be sure to override createMessageList.
      * 
      * @return the message list
      */
     protected final MessageList getOrCreateCurrentMessageList() {
         TopicSet topicSet = _topicSetColumnService.getJMSTopics(_currentTopicSet);
         if (!_topicsetService.hasTopicSet(topicSet)) {
-            _topicsetService.createAndConnectForTopicSet(topicSet, createMessageList());
+            _topicsetService.createAndConnectForTopicSet(topicSet,
+                                                         createMessageList(),
+                                                         _alarmListener);
         }
         return _topicsetService.getMessageListForTopicSet(topicSet);
     }

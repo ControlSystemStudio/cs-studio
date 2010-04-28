@@ -89,13 +89,12 @@ public class MessageListService implements IMessageListService {
     /**
      * The connection to the message system will be created and immediately connected.
      * 
-     * @param messageList
-     *            this list is set to the listener as the destination for the messages
+     * @param messageList this list is set to the listener as the destination for the messages
      */
     private void createConnectionAndConnectWithListener(final MessageList messageList) {
         _alarmConnection = JmsLogsPlugin.getDefault().getAlarmService().newAlarmConnection();
         try {
-            AlarmListener alarmListener = new AlarmListener();
+            AlarmListener alarmListener = null;
             _alarmConnection.connectWithListener(new AlarmConnectionMonitor(), alarmListener);
             alarmListener.setMessageList(messageList);
         } catch (AlarmConnectionException e) {

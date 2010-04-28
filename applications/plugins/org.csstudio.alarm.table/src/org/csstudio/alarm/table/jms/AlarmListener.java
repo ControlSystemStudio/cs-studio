@@ -1,30 +1,28 @@
 /*
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, Member of the Helmholtz
- * Association, (DESY), HAMBURG, GERMANY.
- * 
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. WITHOUT WARRANTY OF ANY
- * KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
- * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
- * DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE IN ANY RESPECT, THE USER ASSUMES
- * THE COST OF ANY NECESSARY SERVICING, REPAIR OR CORRECTION. THIS DISCLAIMER OF WARRANTY
- * CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER
- * EXCEPT UNDER THIS DISCLAIMER. DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES,
- * ENHANCEMENTS, OR MODIFICATIONS. THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION,
- * MODIFICATION, USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY AT
- * HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
+ * Association, (DESY), HAMBURG, GERMANY. THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN
+ * "../AS IS" BASIS. WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO
+ * EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH
+ * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE IN
+ * ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR CORRECTION. THIS
+ * DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. NO USE OF ANY SOFTWARE IS
+ * AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER. DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE,
+ * SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS. THE FULL LICENSE SPECIFYING FOR THE SOFTWARE
+ * THE REDISTRIBUTION, MODIFICATION, USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE
+ * DISTRIBUTION OF THIS PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY
+ * FIND A COPY AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
 package org.csstudio.alarm.table.jms;
 
 import org.csstudio.alarm.service.declaration.AlarmMessageException;
-import org.csstudio.alarm.service.declaration.IAlarmListener;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.dataModel.BasicMessage;
 import org.csstudio.alarm.table.dataModel.MessageList;
+import org.csstudio.alarm.table.service.IAlarmSoundService;
 import org.csstudio.platform.logging.CentralLogger;
 
 /**
@@ -33,7 +31,7 @@ import org.csstudio.platform.logging.CentralLogger;
  * 
  * @author Joerg Penning
  */
-public class AlarmListener implements IAlarmListener {
+public class AlarmListener implements IAlarmTableListener {
     
     /**
      * The logger used by this listener.
@@ -46,15 +44,24 @@ public class AlarmListener implements IAlarmListener {
     private MessageList _messageList;
     
     /**
+     * Service for playing sounds
+     */
+    private final IAlarmSoundService _alarmSoundService;
+    
+    private boolean _soundEnabled = false;
+    
+    /**
      * Creates a new alarm message listener.
      */
-    public AlarmListener() {
+    public AlarmListener(final IAlarmSoundService alarmSoundService) {
+        _alarmSoundService = alarmSoundService;
     }
     
     /**
      * Stops this listener. Once stopped, the listener cannot be restarted.
      */
     public void stop() {
+        // Nothing to do
     }
     
     /**
@@ -84,17 +91,25 @@ public class AlarmListener implements IAlarmListener {
                                                       + message.getString("NAME") + " ACK: "
                                                       + message.getString("ACK"));
             _messageList.addMessage(new BasicMessage(message.getMap()));
+            if (_soundEnabled) {
+                _alarmSoundService.playAlarmSound(message.getString("SEVERITY"));
+            }
         }
     }
     
     /**
      * Set the messageList which is the destination for the messages
      * 
-     * @param messageList
-     *            .
+     * @param messageList .
      */
     public void setMessageList(final MessageList messageList) {
         _messageList = messageList;
+    }
+    
+    @Override
+    public void enableSound(final boolean enabled) {
+        _soundEnabled = enabled;
+        
     }
     
 }
