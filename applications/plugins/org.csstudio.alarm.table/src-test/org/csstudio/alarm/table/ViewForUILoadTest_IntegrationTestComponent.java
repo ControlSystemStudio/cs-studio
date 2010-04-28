@@ -1,7 +1,5 @@
 package org.csstudio.alarm.table;
 
-import javax.jms.Message;
-
 import org.csstudio.alarm.table.ui.LogView;
 
 public class ViewForUILoadTest_IntegrationTestComponent extends LogView {

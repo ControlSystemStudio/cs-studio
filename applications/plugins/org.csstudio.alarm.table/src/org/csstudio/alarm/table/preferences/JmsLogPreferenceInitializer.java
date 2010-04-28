@@ -22,7 +22,6 @@
  package org.csstudio.alarm.table.preferences;
 
 import org.csstudio.alarm.table.JmsLogsPlugin;
-import org.csstudio.platform.libs.jms.preferences.PreferenceConstants;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
 

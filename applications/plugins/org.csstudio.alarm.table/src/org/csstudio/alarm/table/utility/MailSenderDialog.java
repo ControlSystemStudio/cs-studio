@@ -24,7 +24,6 @@
 package org.csstudio.alarm.table.utility;
 
 import org.csstudio.alarm.table.JmsLogsPlugin;
-import org.csstudio.platform.security.SecurityFacade;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.swt.SWT;

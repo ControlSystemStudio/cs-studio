@@ -24,16 +24,9 @@ package org.csstudio.alarm.table.preferences.archive;
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.internal.localization.Messages;
 import org.csstudio.alarm.table.preferences.PreferenceColumnTableEditor;
-import org.csstudio.alarm.table.preferences.PreferenceTopicTableEditor;
-import org.csstudio.alarm.table.preferences.alarm.AlarmViewPreferenceConstants;
-
-import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
-import org.eclipse.jface.preference.ListEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
-import org.eclipse.jface.window.Window;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
