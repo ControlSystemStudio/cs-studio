@@ -132,19 +132,19 @@ public final class AlarmConnectionJMSImpl implements IAlarmConnection {
      */
     private static final class AlarmListenerAdapter implements MessageListener {
 
-        private final IAlarmListener alarmListener;
+        private final IAlarmListener _alarmListener;
 
         public AlarmListenerAdapter(final IAlarmListener alarmListener) {
-            this.alarmListener = alarmListener;
+            this._alarmListener = alarmListener;
         }
 
         public void onMessage(final Message message) {
             // TODO jp cast?
-            alarmListener.onMessage(new AlarmMessageJMSImpl((MapMessage) message));
+            _alarmListener.onMessage(new AlarmMessageJMSImpl((MapMessage) message));
         }
 
         public IAlarmListener getAlarmListener() {
-            return alarmListener;
+            return _alarmListener;
         }
 
     }
@@ -156,18 +156,18 @@ public final class AlarmConnectionJMSImpl implements IAlarmConnection {
      */
     private static final class AlarmConnectionMonitorAdapter implements IConnectionMonitor {
 
-        private final IAlarmConnectionMonitor monitor;
+        private final IAlarmConnectionMonitor _monitor;
 
         public AlarmConnectionMonitorAdapter(@Nonnull final IAlarmConnectionMonitor monitor) {
-            this.monitor = monitor;
+            this._monitor = monitor;
         }
 
         public void onConnected() {
-            monitor.onConnect();
+            _monitor.onConnect();
         }
 
         public void onDisconnected() {
-            monitor.onDisconnect();
+            _monitor.onDisconnect();
         }
 
     }

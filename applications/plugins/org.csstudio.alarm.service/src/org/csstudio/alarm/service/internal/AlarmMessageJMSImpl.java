@@ -42,8 +42,7 @@ import org.csstudio.platform.logging.CentralLogger;
 public class AlarmMessageJMSImpl implements IAlarmMessage {
     private final CentralLogger _log = CentralLogger.getInstance();
     
-    // TODO jp underscore fehlt
-    private final MapMessage mapMessage;
+    private final MapMessage _mapMessage;
     
     /**
      * Constructor.
@@ -52,7 +51,7 @@ public class AlarmMessageJMSImpl implements IAlarmMessage {
      *            this message will be evaluated by subsequent calls to getString
      */
     public AlarmMessageJMSImpl(final MapMessage mapMessage) {
-        this.mapMessage = mapMessage;
+        this._mapMessage = mapMessage;
     }
     
     /**
@@ -62,7 +61,7 @@ public class AlarmMessageJMSImpl implements IAlarmMessage {
     public String getString(final String key) throws AlarmMessageException {
         String result = null;
         try {
-            result = mapMessage.getString(key);
+            result = _mapMessage.getString(key);
         } catch (JMSException e) {
             _log.error(this, "Error analyzing JMS message", e);
             throw new AlarmMessageException(e);
@@ -76,10 +75,10 @@ public class AlarmMessageJMSImpl implements IAlarmMessage {
         Map<String, String> result = new HashMap<String, String>();
         try {
             @SuppressWarnings("unchecked")
-            Enumeration<String> mapNames = mapMessage.getMapNames();
+            Enumeration<String> mapNames = _mapMessage.getMapNames();
             while (mapNames.hasMoreElements()) {
                 String key = mapNames.nextElement();
-                result.put(key.toUpperCase(), mapMessage.getString(key));
+                result.put(key.toUpperCase(), _mapMessage.getString(key));
             }
         } catch (JMSException e) {
             _log.error(this, "Error creating map from JMS message", e);
