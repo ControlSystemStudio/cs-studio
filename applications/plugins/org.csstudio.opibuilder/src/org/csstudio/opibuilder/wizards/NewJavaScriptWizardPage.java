@@ -20,7 +20,7 @@ public class NewJavaScriptWizardPage extends WizardNewFileCreationPage {
 	
 	@Override
 	protected InputStream getInitialContents() {
-		String s = "importPackage(Packages.org.csstudio.platform.data);\n";
+		String s = "importPackage(Packages.org.csstudio.opibuilder.scriptUtil);\n"; //$NON-NLS-1$
 		InputStream result = new ByteArrayInputStream(s.getBytes());
 		return result;
 	}
