@@ -18,37 +18,44 @@
  * 
  * $Id$
  */
-package org.csstudio.alarm.service.declaration;
+package org.csstudio.alarm.table.jms;
 
-import java.util.Map;
-
-import javax.annotation.Nonnull;
+import org.csstudio.alarm.service.declaration.IAlarmConnectionMonitor;
+import org.eclipse.swt.widgets.Display;
 
 /**
- * Is used by the AlarmService to represent a message from DAL or JMS resp.
+ * Monitors the connection state and displays messages as appropriate.
  * 
  * @author jpenning
  * @author $Author$
  * @version $Revision$
- * @since 21.04.2010
+ * @since 26.04.2010
  */
-public interface IAlarmMessage {
+public class AlarmConnectionMonitor implements IAlarmConnectionMonitor {
     
     /**
-     * The message essentially is a map from String to String. Here you get the value for the key.
-     * 
-     * @param key
-     *            .
-     * @return value
-     * @throws AlarmMessageException
+     * {@inheritDoc}
      */
-    String getString(@Nonnull final String key) throws AlarmMessageException;
+    @Override
+    public void onConnect() {
+        Display.getDefault().asyncExec(new Runnable() {
+            public void run() {
+                // TODO jp NYI
+            }
+        });
+        
+    }
     
     /**
-     * The message essentially is a map from String to String. Here you get the whole map.
-     * 
-     * @return the map
-     * @throws AlarmMessageException
+     * {@inheritDoc}
      */
-    Map<String, String> getMap() throws AlarmMessageException;
+    @Override
+    public void onDisconnect() {
+        Display.getDefault().asyncExec(new Runnable() {
+            public void run() {
+                // TODO jp NYI
+            }
+        });
+    }
+    
 }

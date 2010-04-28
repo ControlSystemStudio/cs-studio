@@ -25,3 +25,4 @@ Export-Package: com.sun.mail.handlers,
 Bundle-ClassPath: lib/jl1.0.jar,
  .,
  lib/mailapi.jar
+Import-Package: org.csstudio.alarm.service.declaration

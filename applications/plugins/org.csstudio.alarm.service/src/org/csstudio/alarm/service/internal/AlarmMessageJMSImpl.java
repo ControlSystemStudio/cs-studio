@@ -20,6 +20,10 @@
  */
 package org.csstudio.alarm.service.internal;
 
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 
@@ -38,6 +42,7 @@ import org.csstudio.platform.logging.CentralLogger;
 public class AlarmMessageJMSImpl implements IAlarmMessage {
     private final CentralLogger _log = CentralLogger.getInstance();
     
+    // TODO jp underscore fehlt
     private final MapMessage mapMessage;
     
     /**
@@ -65,4 +70,21 @@ public class AlarmMessageJMSImpl implements IAlarmMessage {
         return result;
     }
     
+    @Override
+    public Map<String, String> getMap() throws AlarmMessageException {
+        // TODO jp performance: cache the result map
+        Map<String, String> result = new HashMap<String, String>();
+        try {
+            @SuppressWarnings("unchecked")
+            Enumeration<String> mapNames = mapMessage.getMapNames();
+            while (mapNames.hasMoreElements()) {
+                String key = mapNames.nextElement();
+                result.put(key.toUpperCase(), mapMessage.getString(key));
+            }
+        } catch (JMSException e) {
+            _log.error(this, "Error creating map from JMS message", e);
+            throw new AlarmMessageException(e);
+        }
+        return result;
+    }
 }

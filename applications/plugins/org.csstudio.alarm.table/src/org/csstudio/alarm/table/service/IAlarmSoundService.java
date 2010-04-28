@@ -18,37 +18,23 @@
  * 
  * $Id$
  */
-package org.csstudio.alarm.service.declaration;
-
-import java.util.Map;
-
-import javax.annotation.Nonnull;
+package org.csstudio.alarm.table.service;
 
 /**
- * Is used by the AlarmService to represent a message from DAL or JMS resp.
+ * Service for playing alarm sounds based on severity of alarms.
  * 
  * @author jpenning
  * @author $Author$
  * @version $Revision$
- * @since 21.04.2010
+ * @since 27.04.2010
  */
-public interface IAlarmMessage {
+public interface IAlarmSoundService {
     
     /**
-     * The message essentially is a map from String to String. Here you get the value for the key.
+     * Play a sound dependent on the severity
      * 
-     * @param key
-     *            .
-     * @return value
-     * @throws AlarmMessageException
+     * @param severity
      */
-    String getString(@Nonnull final String key) throws AlarmMessageException;
-    
-    /**
-     * The message essentially is a map from String to String. Here you get the whole map.
-     * 
-     * @return the map
-     * @throws AlarmMessageException
-     */
-    Map<String, String> getMap() throws AlarmMessageException;
+    // TODO jp use enum instead of string
+    void playAlarmSound(String severity);
 }

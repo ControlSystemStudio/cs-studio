@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, Member of the Helmholtz Association,
- * (DESY), HAMBURG, GERMANY.
+ * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron, Member of the Helmholtz
+ * Association, (DESY), HAMBURG, GERMANY.
  * 
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. WITHOUT WARRANTY OF ANY
  * KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -15,13 +15,12 @@
  * MODIFICATION, USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY AT
  * HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
+ * 
+ * $Id$
  */
-package org.csstudio.alarm.table.jms;
+package org.csstudio.alarm.table.service;
 
 import java.util.HashMap;
-
-import javax.jms.MapMessage;
-import javax.jms.Message;
 
 import org.csstudio.alarm.table.preferences.JmsLogPreferenceConstants;
 import org.csstudio.alarm.table.preferences.JmsLogPreferencePage;
@@ -30,56 +29,40 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.preference.IPreferenceStore;
 
 /**
- * Add to base class the option to play an alarm sound.
+ * Implementation of the alarm sound service
  * 
- * @author jhatje
- * 
+ * @author jpenning
+ * @author $Author$
+ * @version $Revision$
+ * @since 27.04.2010
  */
-public class JmsAlarmMessageReceiver extends JmsMessageReceiver {
+public class AlarmSoundService implements IAlarmSoundService {
     
-    private boolean _playAlarmSound = true;
+    private final CentralLogger _log = CentralLogger.getInstance();
     
     private HashMap<String, String> _severityColorMapping;
     
-    public JmsAlarmMessageReceiver() {
-        super();
+    public AlarmSoundService() {
         mapSeverityToColor();
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void onMessage(final Message message) {
-        super.onMessage(message);
-        if ( (message != null) && (message instanceof MapMessage)) {
-            CentralLogger.getInstance().debug(this, "alarm sound enabled: " + _playAlarmSound);
-            if (_playAlarmSound) {
-                try {
-                    playAlarmSound((MapMessage) message);
-                } catch (Exception e) {
-                    CentralLogger.getInstance().error(this,
-                                                      "Error playing alarm sound " + e.toString());
-                }
+    public void playAlarmSound(final String severity) {
+        _log.debug(this, "playAlarmSound " + severity);
+        
+        if (_severityColorMapping.containsKey(severity)) {
+            String mp3Path = _severityColorMapping.get(severity);
+            if ( (mp3Path != null) && (!mp3Path.equals(""))) {
+                _log.debug(this, "play sound file: " + mp3Path);
+                Functions.playMp3(mp3Path);
             }
         } else {
-            CentralLogger.getInstance().error(this, "invalid message format");
+            _log.warn(this, "Cannot play sound file for severity " + severity
+                    + ". No mapping defined.");
         }
-    }
-    
-    /**
-     * Plays a mp3 file set in the preferences if a alarm message with severity MAJOR is received.
-     * 
-     * @param newMessage
-     */
-    private void playAlarmSound(final MapMessage newMessage) throws Exception {
-        String mp3Path = null;
-        mp3Path = _severityColorMapping.get(newMessage.getString("SEVERITY"));
-        if ( (mp3Path != null) && (!mp3Path.equals(""))) {
-            CentralLogger.getInstance().debug(this, "play sound file: " + mp3Path);
-            Functions.playMp3(mp3Path);
-        }
-    }
-    
-    public void setPlayAlarmSound(final boolean playAlarmSound) {
-        this._playAlarmSound = playAlarmSound;
     }
     
     /**
@@ -88,10 +71,6 @@ public class JmsAlarmMessageReceiver extends JmsMessageReceiver {
      */
     private void mapSeverityToColor() {
         IPreferenceStore store = new JmsLogPreferencePage().getPreferenceStore();
-        //
-        // if we connect to the ALARM topic - we get alarms
-        // we do not have to check for the type!
-        // if ((jmsm.getProperty("TYPE").equalsIgnoreCase("Alarm"))) {
         _severityColorMapping = new HashMap<String, String>();
         
         _severityColorMapping.put(store.getString(JmsLogPreferenceConstants.KEY0), store
@@ -116,4 +95,5 @@ public class JmsAlarmMessageReceiver extends JmsMessageReceiver {
                 .getString(JmsLogPreferenceConstants.SOUND9));
         
     }
+    
 }
