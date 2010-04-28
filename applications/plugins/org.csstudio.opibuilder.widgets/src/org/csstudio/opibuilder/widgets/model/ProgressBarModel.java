@@ -3,6 +3,7 @@ package org.csstudio.opibuilder.widgets.model;
 
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.ColorProperty;
+import org.csstudio.opibuilder.properties.DoubleProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.eclipse.swt.graphics.RGB;
@@ -27,6 +28,10 @@ public class ProgressBarModel extends AbstractMarkedWidgetModel{
 	public static final String PROP_FILLBACKGROUND_COLOR = "color_fillbackground"; //$NON-NLS-1$
 	
 	public static final String PROP_SHOW_LABEL = "show_label"; //$NON-NLS-1$
+	
+	public static final String PROP_ORIGIN = "origin"; //$NON-NLS-1$
+
+	public static final String PROP_ORIGIN_IGNORED= "origin_ignored"; //$NON-NLS-1$
 	
 	/** The default value of the default fill color property. */
 	private static final RGB DEFAULT_FILL_COLOR = new RGB(0,0,255);
@@ -68,6 +73,12 @@ public class ProgressBarModel extends AbstractMarkedWidgetModel{
 		
 		addProperty(new ColorProperty(PROP_FILLBACKGROUND_COLOR, "Color Fillbackground",
 				WidgetPropertyCategory.Display,DEFAULT_FILLBACKGROUND_COLOR));
+		
+		addProperty(new DoubleProperty(PROP_ORIGIN, "Origin", WidgetPropertyCategory.Behavior,
+				0));
+			
+		addProperty(new BooleanProperty(PROP_ORIGIN_IGNORED, "Origine Ignored", 
+				WidgetPropertyCategory.Behavior , true));	
 	
 		setPropertyValue(PROP_LO_COLOR, new OPIColor(255, 128, 0));
 		setPropertyValue(PROP_HI_COLOR, new OPIColor(255, 128, 0));
@@ -110,5 +121,14 @@ public class ProgressBarModel extends AbstractMarkedWidgetModel{
 	public RGB getFillbackgroundColor() {
 		return getRGBFromColorProperty(PROP_FILLBACKGROUND_COLOR);
 	}
+
+	public double getOrigin() {
+		return (Double)getPropertyValue(PROP_ORIGIN);
+	}
+	
+	public boolean isOriginIgnored(){
+		return (Boolean)getPropertyValue(PROP_ORIGIN_IGNORED);
+	}
+	
 	
 }

@@ -50,7 +50,8 @@ public class ProgressBarFigure extends AbstractLinearMarkedFigure {
 	private Label label;
 
 
-
+	private double origin = 0; //the start point of the bar.
+	private boolean originIgnored;
 	
 	public ProgressBarFigure() {
 		
@@ -151,6 +152,14 @@ public class ProgressBarFigure extends AbstractLinearMarkedFigure {
 		updateLabelText();
 		revalidate();
 	}
+	
+	public void setOrigin(double origin) {		
+		this.origin = origin;
+	}
+	
+	public void setOriginIgnored(boolean originIgnored) {
+		this.originIgnored = originIgnored;
+	}
 
 	@Override
 	public void setRange(double min, double max) {
@@ -200,6 +209,14 @@ public class ProgressBarFigure extends AbstractLinearMarkedFigure {
 			
 			graphics.setAntialias(SWT.ON);			
 			int valuePosition = ((LinearScale) scale).getValuePosition(value, false);
+			double tempOrigin;
+			if(originIgnored)
+				tempOrigin = minimum;
+			else
+				tempOrigin = origin;
+			int originPosition = ((LinearScale) scale).getValuePosition(tempOrigin, false);
+			int fillLength = valuePosition - originPosition;			
+
 			boolean support3D = GraphicsUtil.testPatternSupported(graphics);
 			if(effect3D && support3D) {		
 				//fill background
@@ -240,19 +257,15 @@ public class ProgressBarFigure extends AbstractLinearMarkedFigure {
 				graphics.setBackgroundColor(fillColor);
 				graphics.setForegroundColor(fillColor);
 				if(horizontal){
-					int fillWidth = valuePosition - bounds.x;			
-					Rectangle valueRectangle =new Rectangle(bounds.x + 1,
-						bounds.y + 1, fillWidth-1, bounds.height-2) ;
+					Rectangle valueRectangle =new Rectangle(originPosition,
+						bounds.y + 1, fillLength, bounds.height-2) ;
 					graphics.fillRectangle(valueRectangle);
 					graphics.setBackgroundPattern(backGroundPattern);
-					graphics.fillRectangle(valueRectangle);
-			
-					
+					graphics.fillRectangle(valueRectangle);					
 					
 				}else {
-					int fillHeight = bounds.height - (valuePosition - bounds.y) - getLineWidth();				
 					Rectangle valueRectangle = new Rectangle(bounds.x +1,
-							valuePosition, bounds.width-2, fillHeight);
+							originPosition, bounds.width-2, fillLength);
 					graphics.fillRectangle(valueRectangle);
 					graphics.setBackgroundPattern(backGroundPattern);
 					graphics.fillRectangle(valueRectangle);
@@ -270,15 +283,15 @@ public class ProgressBarFigure extends AbstractLinearMarkedFigure {
 				super.fillShape(graphics);				
 				graphics.setBackgroundColor(fillColor);
 				if(horizontal)
-					graphics.fillRectangle(new Rectangle(bounds.x,
+					graphics.fillRectangle(new Rectangle(originPosition,
 							bounds.y, 						
-							valuePosition - bounds.x+1, 
+							fillLength, 
 							bounds.height));
 				else
 					graphics.fillRectangle(new Rectangle(bounds.x,
-							valuePosition,
+							originPosition,
 							bounds.width,
-							bounds.height - (valuePosition - bounds.y)));
+							fillLength));
 				graphics.setForegroundColor(outlineColor);
 //				graphics.setForegroundColor(GRAY_COLOR);
 //				outlineShape(graphics);

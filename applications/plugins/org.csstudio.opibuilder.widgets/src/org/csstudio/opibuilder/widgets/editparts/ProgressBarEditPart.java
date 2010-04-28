@@ -33,6 +33,8 @@ public final class ProgressBarEditPart extends AbstractMarkedWidgetEditPart {
 		bar.setFillBackgroundColor(model.getFillbackgroundColor());
 		bar.setHorizontal(model.isHorizontal());
 		bar.setShowLabel(model.isShowLabel());
+		bar.setOrigin(model.getOrigin());
+		bar.setOriginIgnored(model.isOriginIgnored());
 		return bar;
 
 	}
@@ -48,6 +50,24 @@ public final class ProgressBarEditPart extends AbstractMarkedWidgetEditPart {
 	@Override
 	protected void registerPropertyChangeHandlers() {
 		registerCommonPropertyChangeHandlers();
+		
+		IWidgetPropertyChangeHandler originHandler = new IWidgetPropertyChangeHandler() {
+			
+			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+				((ProgressBarFigure)figure).setOrigin((Double)newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(ProgressBarModel.PROP_ORIGIN, originHandler);
+		
+	IWidgetPropertyChangeHandler originIgnoredHandler = new IWidgetPropertyChangeHandler() {
+			
+			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+				((ProgressBarFigure)figure).setOriginIgnored((Boolean)newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(ProgressBarModel.PROP_ORIGIN_IGNORED, originIgnoredHandler);
 		
 		//fillColor
 		IWidgetPropertyChangeHandler fillColorHandler = new IWidgetPropertyChangeHandler() {
