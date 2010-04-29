@@ -91,7 +91,7 @@ public class TankConnectionBehavior extends AbstractDesyConnectionBehavior<TankM
     protected void doProcessValueChange(final TankModel model, final AnyData anyData) {
         super.doProcessValueChange(model, anyData);
         // .. fill level (influenced by current value)
-        model.setPropertyValue(TankModel.PROP_VALUE, anyData.doubleValue());
+        model.setPropertyValue(TankModel.PROP_VALUE, anyData.numberValue());
     }
 
     /**
@@ -129,6 +129,11 @@ public class TankConnectionBehavior extends AbstractDesyConnectionBehavior<TankM
             widget.setPropertyValue(TankModel.PROP_LO_LEVEL, meta.getWarnLow());
             widget.setPropertyValue(TankModel.PROP_SHOW_LO, !Double.isNaN(meta.getWarnLow()));
         }
+    }
+
+    @Override
+    protected String[] doGetSettablePropertyIds() {
+        return new String[] { TankModel.PROP_VALUE };
     }
 
 }

@@ -19,6 +19,7 @@
 package org.csstudio.sds.behavior.desy;
 
 import org.csstudio.sds.components.model.XMeterModel;
+import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.MetaData;
 
 /**
@@ -36,13 +37,52 @@ public class XMeterAlarmBehavior extends AbstractDesyAlarmBehavior<XMeterModel> 
      * Constructor.
      */
     public XMeterAlarmBehavior() {
-        // add Invisible P0roperty Id here
-        // addInvisiblePropertyId
+        // add Invisible Property Id here
+        addInvisiblePropertyId(XMeterModel.PROP_MIN);
+        addInvisiblePropertyId(XMeterModel.PROP_MAX);
+        addInvisiblePropertyId(XMeterModel.PROP_HIHI_LEVEL);
+        addInvisiblePropertyId(XMeterModel.PROP_HI_LEVEL);
+        addInvisiblePropertyId(XMeterModel.PROP_LOLO_LEVEL);
+        addInvisiblePropertyId(XMeterModel.PROP_LO_LEVEL);
+        addInvisiblePropertyId(XMeterModel.PROP_TRANSPARENT);
+        addInvisiblePropertyId(XMeterModel.PROP_ACTIONDATA);
+        addInvisiblePropertyId(XMeterModel.PROP_BORDER_STYLE);
+        addInvisiblePropertyId(XMeterModel.PROP_SHOW_HI);
+        addInvisiblePropertyId(XMeterModel.PROP_SHOW_HIHI);
+        addInvisiblePropertyId(XMeterModel.PROP_SHOW_LO);
+        addInvisiblePropertyId(XMeterModel.PROP_SHOW_LOLO);
+        addInvisiblePropertyId(XMeterModel.PROP_VALUE);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doProcessValueChange(final XMeterModel model, final AnyData anyData) {
+        super.doProcessValueChange(model, anyData);
+        // .. fill level (influenced by current value)
+        model.setPropertyValue(XMeterModel.PROP_VALUE, anyData.numberValue());
     }
 
     @Override
-    protected void doProcessMetaDataChange(final XMeterModel widget, final MetaData metaData) {
-        // do nothing
+    protected void doProcessMetaDataChange(final XMeterModel widget, final MetaData meta) {
+        if (meta != null) {
+            // .. limits
+            widget.setPropertyValue(XMeterModel.PROP_MIN, meta.getDisplayLow());
+            widget.setPropertyValue(XMeterModel.PROP_MAX, meta.getDisplayHigh());
+
+            widget.setPropertyValue(XMeterModel.PROP_HIHI_LEVEL, meta.getAlarmHigh());
+            widget.setPropertyValue(XMeterModel.PROP_SHOW_HIHI, !Double.isNaN(meta.getAlarmHigh()));
+
+            widget.setPropertyValue(XMeterModel.PROP_HI_LEVEL, meta.getWarnHigh());
+            widget.setPropertyValue(XMeterModel.PROP_SHOW_HI, !Double.isNaN(meta.getWarnHigh()));
+
+            widget.setPropertyValue(XMeterModel.PROP_LOLO_LEVEL, meta.getAlarmLow());
+            widget.setPropertyValue(XMeterModel.PROP_SHOW_LOLO, !Double.isNaN(meta.getAlarmLow()));
+
+            widget.setPropertyValue(XMeterModel.PROP_LO_LEVEL, meta.getWarnLow());
+            widget.setPropertyValue(XMeterModel.PROP_SHOW_LO, !Double.isNaN(meta.getWarnLow()));
+        }
     }
 
 }

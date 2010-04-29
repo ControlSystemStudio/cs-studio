@@ -262,18 +262,6 @@
             widgetTypeId="org.csstudio.sds.components.Polygon">
       </behavior>
       <behavior
-            class="org.csstudio.sds.behavior.desy.PolylineAlarmBehavior"
-            description="DESY Alarm Polyline"
-            id="behavior.desy.polyline.alarmdefault"
-            widgetTypeId="org.csstudio.sds.components.Polyline">
-      </behavior>
-      <behavior
-            class="org.csstudio.sds.behavior.desy.PolylineConnectionBehavior"
-            description="DESY Connection Polyline"
-            id="behavior.desy.polyline.connectiondefault"
-            widgetTypeId="org.csstudio.sds.components.Polyline">
-      </behavior>
-      <behavior
             class="org.csstudio.sds.behavior.desy.SixteenBinaryBarAlarmBehavior"
             description="DESY Alarm Sixteen Binary Bar"
             id="behavior.desy.sixteenbinarybar.alarmdefault"

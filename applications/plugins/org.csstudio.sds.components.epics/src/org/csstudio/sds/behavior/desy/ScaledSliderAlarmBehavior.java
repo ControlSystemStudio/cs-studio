@@ -35,6 +35,7 @@
 package org.csstudio.sds.behavior.desy;
 
 import org.csstudio.sds.components.model.ScaledSliderModel;
+import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.MetaData;
 
 /**
@@ -53,6 +54,15 @@ public class ScaledSliderAlarmBehavior extends AbstractDesyAlarmBehavior<ScaledS
     public ScaledSliderAlarmBehavior() {
         // add Invisible Property Id here
         // addInvisiblePropertyId
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doProcessValueChange(final ScaledSliderModel model, final AnyData anyData) {
+        super.doProcessValueChange(model, anyData);
+        model.setPropertyValue(ScaledSliderModel.PROP_VALUE, anyData.numberValue());
     }
 
     /**

@@ -19,6 +19,8 @@
 package org.csstudio.sds.behavior.desy;
 
 import org.csstudio.sds.components.model.PolygonModel;
+import org.csstudio.sds.util.ColorAndFontUtil;
+import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.MetaData;
 
 /**
@@ -37,7 +39,31 @@ public class PolygonConnectionBehavior extends AbstractDesyConnectionBehavior<Po
      */
     public PolygonConnectionBehavior() {
         // add Invisible Property Id here
-        // addInvisiblePropertyId
+         addInvisiblePropertyId(PolygonModel.PROP_FILL);
+         addInvisiblePropertyId(PolygonModel.PROP_COLOR_FOREGROUND);
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doProcessValueChange(final PolygonModel model, final AnyData anyData) {
+        super.doProcessValueChange(model, anyData);
+        int arguments = anyData.numberValue().intValue();
+        if(arguments>=15) {
+            model.setColor(PolygonModel.PROP_COLOR_FOREGROUND, ColorAndFontUtil.toHex(255,255,255));
+        } else if(arguments>=3) {
+            model.setColor(PolygonModel.PROP_COLOR_FOREGROUND, ColorAndFontUtil.toHex(249,218,60));
+        } else if(arguments>=2) {
+            model.setColor(PolygonModel.PROP_COLOR_FOREGROUND, ColorAndFontUtil.toHex(30,187,0));
+        } else if(arguments>=1) {
+            model.setColor(PolygonModel.PROP_COLOR_FOREGROUND, ColorAndFontUtil.toHex(42,99,228));
+        } else if(arguments>=0) {
+            model.setColor(PolygonModel.PROP_COLOR_FOREGROUND, ColorAndFontUtil.toHex(253,0,0));
+        } else {
+            model.setColor(PolygonModel.PROP_COLOR_FOREGROUND, ColorAndFontUtil.toHex(0,0,0));
+        }
     }
 
     @Override

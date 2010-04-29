@@ -19,6 +19,7 @@
 package org.csstudio.sds.behavior.desy;
 
 import org.csstudio.sds.components.model.SixteenBinaryBarModel;
+import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.MetaData;
 
 /**
@@ -37,11 +38,22 @@ public class SixteenBinaryBarConnectionBehavior extends AbstractDesyConnectionBe
      */
     public SixteenBinaryBarConnectionBehavior() {
         // add Invisible Property Id here
-        // addInvisiblePropertyId
+        addInvisiblePropertyId(SixteenBinaryBarModel.PROP_ACTIONDATA);
+        addInvisiblePropertyId(SixteenBinaryBarModel.PROP_VALUE);
+        addInvisiblePropertyId(SixteenBinaryBarModel.PROP_COLOR_FOREGROUND);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doProcessValueChange(final SixteenBinaryBarModel model, final AnyData anyData) {
+        super.doProcessValueChange(model, anyData);
+        model.setPropertyValue(SixteenBinaryBarModel.PROP_VALUE, anyData.numberValue());
     }
 
     @Override
     protected void doProcessMetaDataChange(final SixteenBinaryBarModel widget, final MetaData metaData) {
-        // do noting
+
     }
 }

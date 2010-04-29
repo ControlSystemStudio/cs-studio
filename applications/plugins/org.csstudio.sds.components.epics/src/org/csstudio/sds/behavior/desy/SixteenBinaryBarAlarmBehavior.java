@@ -19,6 +19,7 @@
 package org.csstudio.sds.behavior.desy;
 
 import org.csstudio.sds.components.model.SixteenBinaryBarModel;
+import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.MetaData;
 
 /**
@@ -36,8 +37,19 @@ public class SixteenBinaryBarAlarmBehavior extends AbstractDesyAlarmBehavior<Six
      * Constructor.
      */
     public SixteenBinaryBarAlarmBehavior() {
-        // add Invisible P0roperty Id here
-        // addInvisiblePropertyId
+        // add Invisible Property Id here
+        addInvisiblePropertyId(SixteenBinaryBarModel.PROP_ACTIONDATA);
+        addInvisiblePropertyId(SixteenBinaryBarModel.PROP_VALUE);
+        addInvisiblePropertyId(SixteenBinaryBarModel.PROP_COLOR_FOREGROUND);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doProcessValueChange(final SixteenBinaryBarModel model, final AnyData anyData) {
+        super.doProcessValueChange(model, anyData);
+        model.setPropertyValue(SixteenBinaryBarModel.PROP_VALUE, anyData.numberValue());
     }
 
     @Override
