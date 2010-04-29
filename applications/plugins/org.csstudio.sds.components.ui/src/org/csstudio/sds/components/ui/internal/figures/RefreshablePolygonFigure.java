@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
+/*
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.sds.components.ui.internal.figures;
@@ -37,9 +37,9 @@ import org.eclipse.swt.graphics.Color;
 
 /**
  * A polygon figure.
- * 
+ *
  * @author Sven Wende & Stefan Hofer
- * 
+ *
  */
 public final class RefreshablePolygonFigure extends Polygon implements
     ICrossedFigure, HandleBounds {
@@ -54,8 +54,8 @@ public final class RefreshablePolygonFigure extends Polygon implements
 	 */
 	private IBorderEquippedWidget _borderAdapter;
 
-    private CrossedPaintHelper _crossedPaintHelper;
-	
+    private final CrossedPaintHelper _crossedPaintHelper;
+
 	/**
 	 * Constructor.
 	 */
@@ -65,15 +65,37 @@ public final class RefreshablePolygonFigure extends Polygon implements
 		setBackgroundColor(ColorConstants.darkGreen);
 
 	}
-	
+
 	@Override
-	public void paint(Graphics graphics) {
-	    // TODO Auto-generated method stub
+	public void paint(final Graphics graphics) {
 	    super.paint(graphics);
-	    Rectangle figureBounds = getBounds();
+	    Rectangle figureBounds = new Rectangle(getBounds());
+	    if(figureBounds.width<figureBounds.height) {
+	        if(figureBounds.width>12) {
+	            figureBounds.y = figureBounds.y+5;
+	            figureBounds.height = figureBounds.height-10;
+	        } else if(figureBounds.width>6) {
+	            figureBounds.y = figureBounds.y+2;
+	            figureBounds.height = figureBounds.height-4;
+	        }
+	    } else {
+    	    if(figureBounds.width>12) {
+    	        figureBounds.x = figureBounds.x+5;
+    	        figureBounds.width = figureBounds.width-10;
+    	    } else if(figureBounds.width>6) {
+    	        figureBounds.x = figureBounds.x+2;
+    	        figureBounds.width = figureBounds.width-4;
+    	    }
+	    }
+//	    if(figureBounds.height>10) {
+//	        figureBounds.height = figureBounds.height+5;
+//	    } else if(figureBounds.height>5) {
+//	        figureBounds.height = figureBounds.height+3;
+//	    }
 	    _crossedPaintHelper.paintCross(graphics, figureBounds);
+//	    figureBounds = null;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -108,7 +130,7 @@ public final class RefreshablePolygonFigure extends Polygon implements
 	 * This method is a tribute to unit tests, which need a way to test the
 	 * performance of the figure implementation. Implementors should produce
 	 * some random changes and refresh the figure, when this method is called.
-	 * 
+	 *
 	 */
 	public void randomNoiseRefresh() {
 		setFill(Math.random() * 100);
@@ -124,7 +146,7 @@ public final class RefreshablePolygonFigure extends Polygon implements
 
 	/**
 	 * Sets the fill grade.
-	 * 
+	 *
 	 * @param fill
 	 *            the fill grade.
 	 */
@@ -134,7 +156,7 @@ public final class RefreshablePolygonFigure extends Polygon implements
 
 	/**
 	 * Gets the fill grade.
-	 * 
+	 *
 	 * @return the fill grade
 	 */
 	public double getFill() {
@@ -162,7 +184,7 @@ public final class RefreshablePolygonFigure extends Polygon implements
 		}
 		return null;
 	}
-	
+
 	/**
 	 * The Border for this {@link RefreshablePolygonFigure}.
 	 * @author Kai MEyer
@@ -177,7 +199,7 @@ public final class RefreshablePolygonFigure extends Polygon implements
 		 * The width of the border.
 		 */
 		private int _borderWidth = 1;
-		
+
 		/**
 		 * Constructor.
 		 * @param borderWidth
@@ -186,7 +208,7 @@ public final class RefreshablePolygonFigure extends Polygon implements
 		public PolygonBorder(final int borderWidth) {
 			_borderWidth = borderWidth;
 		}
-		
+
 		/**
 		 * Sets the Color of the border.
 		 * @param borderColor
@@ -214,7 +236,7 @@ public final class RefreshablePolygonFigure extends Polygon implements
 		}
 	}
 
-    public void setCrossedOut(boolean newValue) {
-        _crossedPaintHelper.setCrossed(newValue);        
+    public void setCrossedOut(final boolean newValue) {
+        _crossedPaintHelper.setCrossed(newValue);
     }
 }
