@@ -21,7 +21,7 @@
  */
 package org.csstudio.utility.ldap.ui.preference;
 
-import org.csstudio.utility.ldap.Activator;
+import org.csstudio.utility.ldap.LdapActivator;
 import org.csstudio.utility.ldap.Messages;
 import org.csstudio.utility.ldap.preference.PreferenceKey;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -37,7 +37,7 @@ public class PreferencePage extends FieldEditorPreferencePage
 	public PreferencePage() {
 		super(GRID);
 		setPreferenceStore(new ScopedPreferenceStore(new InstanceScope(),
-				Activator.getDefault().getBundle().getSymbolicName()));
+				LdapActivator.getDefault().getBundle().getSymbolicName()));
 		setDescription(Messages.getString("PreferencePage.LDAP")); //$NON-NLS-1$
 	}
 

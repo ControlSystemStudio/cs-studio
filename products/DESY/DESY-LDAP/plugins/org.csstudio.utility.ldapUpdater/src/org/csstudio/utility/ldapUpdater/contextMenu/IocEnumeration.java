@@ -43,8 +43,8 @@ import org.csstudio.platform.management.IDynamicParameterValues;
 import org.csstudio.utility.ldap.model.IOC;
 import org.csstudio.utility.ldap.model.LdapContentModel;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
-import org.csstudio.utility.ldap.service.LdapService;
-import org.csstudio.utility.ldap.service.impl.LdapServiceImpl;
+import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.ldapUpdater.Activator;
 
 
 /**
@@ -54,17 +54,16 @@ import org.csstudio.utility.ldap.service.impl.LdapServiceImpl;
  */
 public class IocEnumeration implements IDynamicParameterValues {
 
-    private final LdapService _service = LdapServiceImpl.getInstance();
-
-
     @Override
     @Nonnull
     public CommandParameterEnumValue[] getEnumerationValues() {
 
+        final ILdapService service = Activator.getDefault().getLdapService();
+
         final LdapSearchResult result =
-            _service.retrieveSearchResult(OU_FIELD_NAME + FIELD_ASSIGNMENT + EPICS_CTRL_FIELD_VALUE,
-                                          any(ECON_FIELD_NAME),
-                                          SearchControls.SUBTREE_SCOPE);
+            service.retrieveSearchResultSynchronously(OU_FIELD_NAME + FIELD_ASSIGNMENT + EPICS_CTRL_FIELD_VALUE,
+                                                      any(ECON_FIELD_NAME),
+                                                      SearchControls.SUBTREE_SCOPE);
 
 
         final LdapContentModel model = new LdapContentModel(result);

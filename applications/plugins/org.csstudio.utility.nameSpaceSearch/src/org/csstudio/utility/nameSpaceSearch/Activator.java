@@ -22,6 +22,7 @@
 package org.csstudio.utility.nameSpaceSearch;
 
 import org.csstudio.platform.ui.AbstractCssUiPlugin;
+import org.csstudio.utility.ldap.service.ILdapService;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -33,28 +34,36 @@ public class Activator extends AbstractCssUiPlugin {
 	public static final String PLUGIN_ID = "org.csstudio.utility.nameSpaceSearch"; //$NON-NLS-1$
 
 	// The shared instance
-	private static Activator plugin;
+	private static Activator INSTANCE;
+
+	private ILdapService _ldapService;
 
 	/**
 	 * The constructor
 	 */
 	public Activator() {
-		plugin = this;
-	}
+        if (INSTANCE != null) {
+            throw new IllegalStateException("Activator " + PLUGIN_ID + " does already exist.");
+        }
+        INSTANCE = this; // Antipattern is required by the framework!
+    }
 
 	/*
 	 * (non-Javadoc)
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
 	 */
-	public void doStart(BundleContext context) throws Exception {
+	@Override
+    public void doStart(final BundleContext context) throws Exception {
+	    _ldapService = getService(context, ILdapService.class);
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
 	 */
-	public void doStop(BundleContext context) throws Exception {
-		plugin = null;
+	@Override
+    public void doStop(final BundleContext context) throws Exception {
+		INSTANCE = null;
 	}
 
 	/**
@@ -63,12 +72,19 @@ public class Activator extends AbstractCssUiPlugin {
 	 * @return the shared instance
 	 */
 	public static Activator getDefault() {
-		return plugin;
+		return INSTANCE;
 	}
 
 	@Override
 	public String getPluginId() {
 		return PLUGIN_ID;
 	}
+
+    /**
+     * @return the LDAP service
+     */
+    public ILdapService getLdapService() {
+        return _ldapService;
+    }
 
 }

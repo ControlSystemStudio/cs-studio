@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, Member of the Helmholtz
  * Association, (DESY), HAMBURG, GERMANY.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. WITHOUT WARRANTY OF ANY
  * KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
@@ -26,42 +26,43 @@ import org.osgi.framework.BundleContext;
 
 /**
  * The activator class of the LdapTree-Plug-In. This manages the plug-in's lifecycle.
- * 
+ *
  * @author Joerg Rathlev
  */
 public class AlarmTreePlugin extends AbstractCssUiPlugin {
-    
+
     /**
      * The plug-in id.
      */
     public static final String PLUGIN_ID = "org.csstudio.alarm.treeView";
-    
-    /**
-     * Shared instance of this class.
-     */
-    private static AlarmTreePlugin _plugin;
-    
+
     /**
      * The alarm service
      */
     private IAlarmService _alarmService;
-    
+
+    private static AlarmTreePlugin INSTANCE;
+
     /**
      * Returns the shared instance.
-     * 
+     *
      * @return the shared instance.
      */
     public static AlarmTreePlugin getDefault() {
-        return _plugin;
+        return INSTANCE;
     }
-    
+
     /**
-     * The constructor.
+     * Don't instantiate.
+     * Called by framework.
      */
     public AlarmTreePlugin() {
-        _plugin = this;
+        if (INSTANCE != null) {
+            throw new IllegalStateException("Activator " + PLUGIN_ID + " does already exist.");
+        }
+        INSTANCE = this; // Antipattern is required by the framework!
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -69,18 +70,18 @@ public class AlarmTreePlugin extends AbstractCssUiPlugin {
     protected void doStart(final BundleContext context) throws Exception {
         _alarmService = getService(context, IAlarmService.class);
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
     protected final void doStop(final BundleContext context) throws Exception {
-        _plugin = null;
+        // EMPTY
     }
-    
+
     /**
      * Returns an image descriptor for the image file at the given plug-in relative path.
-     * 
+     *
      * @param path
      *            the path
      * @return the image descriptor
@@ -88,7 +89,7 @@ public class AlarmTreePlugin extends AbstractCssUiPlugin {
     public static ImageDescriptor getImageDescriptor(final String path) {
         return AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID, path);
     }
-    
+
     /**
      * @return this plug-in's id.
      */
@@ -96,12 +97,12 @@ public class AlarmTreePlugin extends AbstractCssUiPlugin {
     public final String getPluginId() {
         return PLUGIN_ID;
     }
-    
+
     /**
      * @return the alarm service or null
      */
     public IAlarmService getAlarmService() {
         return _alarmService;
     }
-    
+
 }

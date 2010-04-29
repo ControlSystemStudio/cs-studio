@@ -37,10 +37,10 @@ import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
-import org.csstudio.alarm.treeView.model.LdapObjectClass;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.alarm.treeView.preferences.PreferenceConstants;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.utility.ldap.LdapObjectClass;
 import org.csstudio.utility.ldap.engine.Engine;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -185,7 +185,7 @@ public class UpdateTreeLdapReader extends Job {
 
 				// The update job readas only structural nodes, no eren nodes.
 		        final Rdn rdn = entryName.getRdn(entryName.size() - 1);
-				if (!LdapObjectClass.getObjectClassByRdn(rdn.getType()).equals(LdapObjectClass.RECORD)) {
+				if (!LdapObjectClass.getObjectClassByRdnType(rdn.getType()).equals(LdapObjectClass.RECORD)) {
 				    final LdapName fullEntryName = (LdapName) ((LdapName) entryName.clone()).addAll(0, treeName);
 					final SubtreeNode node = updateNode(tree, entryName, fullEntryName);
 					updateStructureOfSubTree(fullEntryName, node);
@@ -211,11 +211,12 @@ public class UpdateTreeLdapReader extends Job {
 	 * @return the updated node.
 	 */
 	private SubtreeNode updateNode(final SubtreeNode tree,
-			final LdapName relativeName, final LdapName fullName) {
-		final SubtreeNode node = TreeBuilder.findCreateSubtreeNode(tree, relativeName);
+	                               final LdapName relativeName,
+	                               final LdapName fullName) {
+		final SubtreeNode node = AlarmTreeBuilder.findCreateSubtreeNode(tree, relativeName);
 		try {
 			final Attributes attrs = _directory.getAttributes(fullName);
-			AlarmTreeBuilder.setEpicsAttributes(node, attrs);
+			AlarmTreeNodeModifier.setEpicsAttributes(node, attrs);
 		} catch (final NamingException e) {
 			LOG.error(this, "Could not read attributes for node " + fullName, e);
 		}

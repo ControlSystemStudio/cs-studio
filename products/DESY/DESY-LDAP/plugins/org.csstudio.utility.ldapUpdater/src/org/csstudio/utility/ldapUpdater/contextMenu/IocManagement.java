@@ -32,8 +32,8 @@ import org.csstudio.platform.management.CommandParameters;
 import org.csstudio.platform.management.CommandResult;
 import org.csstudio.platform.management.IManagementCommand;
 import org.csstudio.utility.ldap.engine.Engine;
-import org.csstudio.utility.ldap.service.LdapService;
-import org.csstudio.utility.ldap.service.impl.LdapServiceImpl;
+import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.ldapUpdater.Activator;
 import org.csstudio.utility.ldapUpdater.LdapAccess;
 
 
@@ -43,9 +43,6 @@ import org.csstudio.utility.ldapUpdater.LdapAccess;
  * @author bknerr 17.03.2010
  */
 public class IocManagement implements IManagementCommand {
-
-    private final LdapService _service = LdapServiceImpl.getInstance();
-
 
     /**
      * {@inheritDoc}
@@ -67,15 +64,15 @@ public class IocManagement implements IManagementCommand {
 
         final String iocName = map.get(ECON_FIELD_NAME);
         final String facilityName = map.get(EFAN_FIELD_NAME);
-
+        final ILdapService service = Activator.getDefault().getLdapService();
         switch (IocModificationCommand.valueOf(command)) {
-            case DELETE :  _service.removeIocEntryFromLdap(Engine.getInstance().getLdapDirContext(), iocName, facilityName);
-                break;
-            case TIDY_UP :  _service.tidyUpIocEntryInLdap(Engine.getInstance().getLdapDirContext(),
-                                                          iocName,
-                                                          facilityName,
-                                                          LdapAccess.getValidRecordsForIOC(iocName));
-                break;
+            case DELETE :  service.removeIocEntryFromLdap(Engine.getInstance().getLdapDirContext(), iocName, facilityName);
+            break;
+            case TIDY_UP : service.tidyUpIocEntryInLdap(Engine.getInstance().getLdapDirContext(),
+                                                        iocName,
+                                                        facilityName,
+                                                        LdapAccess.getValidRecordsForIOC(iocName));
+            break;
             default : throw new AssertionError("Unknown Ioc Modification Command: " + command);
         }
     }

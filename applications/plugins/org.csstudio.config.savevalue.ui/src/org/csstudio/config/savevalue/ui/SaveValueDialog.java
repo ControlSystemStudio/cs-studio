@@ -37,8 +37,7 @@ import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.platform.security.User;
 import org.csstudio.utility.ldap.LdapUtils;
 import org.csstudio.utility.ldap.model.IOC;
-import org.csstudio.utility.ldap.service.LdapService;
-import org.csstudio.utility.ldap.service.impl.LdapServiceImpl;
+import org.csstudio.utility.ldap.service.ILdapService;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.dialogs.Dialog;
@@ -67,8 +66,6 @@ import org.eclipse.swt.widgets.Text;
  * @author Joerg Rathlev
  */
 public class SaveValueDialog extends Dialog {
-
-    private  final LdapService _service = LdapServiceImpl.getInstance();
 
 	/**
 	 * The logger.
@@ -286,7 +283,9 @@ public class SaveValueDialog extends Dialog {
 	 */
 	private boolean findIoc(final String pv) {
 		_log.debug(this, "Trying to find IOC for process variable: " + pv); //$NON-NLS-1$
-		final IOC ioc = _service.getIOCForRecordName(LdapUtils.pvNameToRecordName(pv));
+	    final ILdapService service = Activator.getDefault().getLdapService();
+
+		final IOC ioc = service.getIOCForRecordName(LdapUtils.pvNameToRecordName(pv));
 
 		if (ioc == null) {
 			_log.error(this, "No IOC was found for PV: " + pv); //$NON-NLS-1$

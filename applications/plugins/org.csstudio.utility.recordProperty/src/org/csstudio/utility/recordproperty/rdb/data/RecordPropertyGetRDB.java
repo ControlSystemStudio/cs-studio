@@ -22,8 +22,8 @@ import org.csstudio.platform.simpledal.ProcessVariableConnectionServiceFactory;
 import org.csstudio.platform.simpledal.ValueType;
 import org.csstudio.utility.ldap.LdapUtils;
 import org.csstudio.utility.ldap.model.IOC;
-import org.csstudio.utility.ldap.service.LdapService;
-import org.csstudio.utility.ldap.service.impl.LdapServiceImpl;
+import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.recordproperty.Activator;
 import org.csstudio.utility.recordproperty.Messages;
 import org.csstudio.utility.recordproperty.RecordPropertyEntry;
 import org.csstudio.utility.recordproperty.rdb.config.OracleSettings;
@@ -81,7 +81,6 @@ public class RecordPropertyGetRDB {
 	 */
 	private final CentralLogger _log = CentralLogger.getInstance();
 
-	private final LdapService _ldapService = LdapServiceImpl.getInstance();
 
 	/**
 	 * Gets all possible data that can be collected.
@@ -322,8 +321,9 @@ public class RecordPropertyGetRDB {
 		Registry reg;
 
 		try {
-			final IOC ioc =
-			    _ldapService.getIOCForRecordName(LdapUtils.pvNameToRecordName(record));
+	        final ILdapService service = Activator.getDefault().getLdapService();
+
+			final IOC ioc = service.getIOCForRecordName(LdapUtils.pvNameToRecordName(record));
 			nameIOC = ioc == null ? "" : ioc.getName();
 
 			final IPreferencesService prefs = Platform.getPreferencesService();

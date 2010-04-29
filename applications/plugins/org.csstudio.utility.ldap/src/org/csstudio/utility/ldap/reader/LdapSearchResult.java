@@ -30,7 +30,7 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.naming.directory.SearchResult;
 
-import org.csstudio.utility.ldap.Activator;
+import org.csstudio.utility.ldap.LdapActivator;
 import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
 import org.csstudio.utility.ldap.Messages;
 import org.csstudio.utility.ldap.reader.LDAPReader.LdapSearchParams;
@@ -87,7 +87,7 @@ public class LdapSearchResult extends NameSpaceSearchResult {
             final String[] token = cleanList.split("[,=]"); //$NON-NLS-1$
             if(token.length<2) {
                 if(!token[0].equals("no entry found")){
-                    Activator.logError(Messages.getString("CSSView.Error1")+row+"'");//$NON-NLS-1$ //$NON-NLS-2$
+                    LdapActivator.logError(Messages.getString("CSSView.Error1")+row+"'");//$NON-NLS-1$ //$NON-NLS-2$
                 }
                 break;
 

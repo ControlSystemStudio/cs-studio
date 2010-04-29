@@ -22,6 +22,16 @@
 package org.csstudio.utility.ldap.service.impl;
 
 
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ATTR_VAL_OBJECT_CLASS;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ECOM_EPCIS_IOC_FIELD_VALUE;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ECOM_FIELD_NAME;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ECON_FIELD_NAME;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EFAN_FIELD_NAME;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EPICS_CTRL_FIELD_VALUE;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EREN_FIELD_NAME;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.OU_FIELD_NAME;
 import static org.csstudio.utility.ldap.LdapUtils.any;
 import static org.csstudio.utility.ldap.LdapUtils.attributesForLdapEntry;
 import static org.csstudio.utility.ldap.LdapUtils.createLdapQuery;
@@ -31,6 +41,7 @@ import java.util.Set;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
@@ -45,7 +56,9 @@ import org.csstudio.utility.ldap.model.LdapContentModel;
 import org.csstudio.utility.ldap.model.Record;
 import org.csstudio.utility.ldap.reader.LDAPReader;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
-import org.csstudio.utility.ldap.service.LdapService;
+import org.csstudio.utility.ldap.reader.LDAPReader.IJobCompletedCallBack;
+import org.csstudio.utility.ldap.reader.LDAPReader.LdapSearchParams;
+import org.csstudio.utility.ldap.service.ILdapService;
 
 
 /**
@@ -56,51 +69,35 @@ import org.csstudio.utility.ldap.service.LdapService;
  * @version $Revision$
  * @since 09.04.2010
  */
-public final class LdapServiceImpl implements LdapService {
+public final class LdapServiceImpl implements ILdapService {
 
     private final Logger _log = CentralLogger.getInstance().getLogger(this);
 
-    /**
-     * Service holder for lazy synchronized instantiation.
-     *
-     * @author bknerr
-     * @author $Author$
-     * @version $Revision$
-     * @since 20.04.2010
-     */
-    private static final class LdapServiceImplHolder {
 
-        private static final LdapService INSTANCE = new LdapServiceImpl();
+    @Override
+    @CheckForNull
+    public LDAPReader createLdapReaderJob(@Nonnull final LdapSearchParams params,
+                                          @Nullable final LdapSearchResult result,
+                                          @Nullable final IJobCompletedCallBack callBack) {
 
-        private LdapServiceImplHolder() {
-            // Empty
-        }
-    }
+            final LDAPReader ldapr =
+                new LDAPReader.Builder(params.getSearchRoot(), params.getFilter()).
+                                       setScope(params.getScope()).
+                                       setSearchResult(result).
+                                       setJobCompletedCallBack(callBack).
+                                       build();
 
-    /**
-     * Constructor.
-     */
-    private LdapServiceImpl() {
-        // Empty
+            return ldapr;
     }
 
     @Override
     @CheckForNull
-    public LdapSearchResult retrieveSearchResult(@Nonnull final String searchRoot,
-                                                 @Nonnull final String filter,
-                                                 final int searchScope) {
+    public LdapSearchResult retrieveSearchResultSynchronously(@Nonnull final String searchRoot,
+                                                              @Nonnull final String filter,
+                                                              final int searchScope) {
 
-        final LDAPReader job = createLdapReaderAndScheduleJob(searchRoot, filter, searchScope);
+        return LDAPReader.getSearchResultSynchronously(new LdapSearchParams(searchRoot, filter, searchScope));
 
-        try {
-            // FIXME (bknerr) : timeout !!!
-            job.join();
-        } catch (final InterruptedException e) {
-            e.printStackTrace();
-            Thread.currentThread().interrupt();
-        }
-
-        return job.getSearchResult();
     }
 
 
@@ -116,9 +113,9 @@ public final class LdapServiceImpl implements LdapService {
         }
 
         final LdapSearchResult result =
-            retrieveSearchResult(LdapFieldsAndAttributes.OU_FIELD_NAME + LdapFieldsAndAttributes.FIELD_ASSIGNMENT + LdapFieldsAndAttributes.EPICS_CTRL_FIELD_VALUE,
-                                 LdapFieldsAndAttributes.EREN_FIELD_NAME + LdapFieldsAndAttributes.FIELD_ASSIGNMENT + recordName,
-                                 SearchControls.SUBTREE_SCOPE);
+            retrieveSearchResultSynchronously(OU_FIELD_NAME + FIELD_ASSIGNMENT + EPICS_CTRL_FIELD_VALUE,
+                                              EREN_FIELD_NAME + FIELD_ASSIGNMENT + recordName,
+                                              SearchControls.SUBTREE_SCOPE);
         final LdapContentModel model = new LdapContentModel(result);
 
         final Set<IOC> iocs = model.getIOCs();
@@ -140,12 +137,12 @@ public final class LdapServiceImpl implements LdapService {
     public LdapSearchResult retrieveRecords(@Nonnull final String facilityName,
                                             @Nonnull final String iocName) throws InterruptedException {
 
-        final String query = createLdapQuery(LdapFieldsAndAttributes.ECON_FIELD_NAME, iocName,
-                                             LdapFieldsAndAttributes.ECOM_FIELD_NAME, LdapFieldsAndAttributes.ECOM_FIELD_VALUE,
-                                             LdapFieldsAndAttributes.EFAN_FIELD_NAME, facilityName,
-                                             LdapFieldsAndAttributes.OU_FIELD_NAME, LdapFieldsAndAttributes.EPICS_CTRL_FIELD_VALUE);
+        final String query = createLdapQuery(ECON_FIELD_NAME, iocName,
+                                             ECOM_FIELD_NAME, ECOM_EPCIS_IOC_FIELD_VALUE,
+                                             EFAN_FIELD_NAME, facilityName,
+                                             OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE);
 
-        return retrieveSearchResult(query, any(LdapFieldsAndAttributes.EREN_FIELD_NAME), SearchControls.ONELEVEL_SCOPE);
+        return retrieveSearchResultSynchronously(query, any(EREN_FIELD_NAME), SearchControls.ONELEVEL_SCOPE);
     }
 
 
@@ -158,15 +155,15 @@ public final class LdapServiceImpl implements LdapService {
                                     @Nonnull final IOC ioc,
                                     @Nonnull final String recordName) {
 
-        final String query = createLdapQuery(LdapFieldsAndAttributes.EREN_FIELD_NAME, recordName,
-                                             LdapFieldsAndAttributes.ECON_FIELD_NAME, ioc.getName(),
-                                             LdapFieldsAndAttributes.ECOM_FIELD_NAME, LdapFieldsAndAttributes.ECOM_FIELD_VALUE,
-                                             LdapFieldsAndAttributes.EFAN_FIELD_NAME, ioc.getGroup(),
-                                             LdapFieldsAndAttributes.OU_FIELD_NAME, LdapFieldsAndAttributes.EPICS_CTRL_FIELD_VALUE);
+        final String query = createLdapQuery(EREN_FIELD_NAME, recordName,
+                                             ECON_FIELD_NAME, ioc.getName(),
+                                             ECOM_FIELD_NAME, ECOM_EPCIS_IOC_FIELD_VALUE,
+                                             EFAN_FIELD_NAME, ioc.getGroup(),
+                                             OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE);
 
         final Attributes afe =
-            attributesForLdapEntry(LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS, LdapFieldsAndAttributes.ATTR_VAL_OBJECT_CLASS,
-                                   LdapFieldsAndAttributes.EREN_FIELD_NAME, recordName);
+            attributesForLdapEntry(ATTR_FIELD_OBJECT_CLASS, ATTR_VAL_OBJECT_CLASS,
+                                   EREN_FIELD_NAME, recordName);
         try {
             context.bind(query, null, afe);
             _log.info( "Record written: " + query);
@@ -243,7 +240,7 @@ public final class LdapServiceImpl implements LdapService {
         }
 
         final String query = createLdapQuery(LdapFieldsAndAttributes.ECON_FIELD_NAME, iocName,
-                                             LdapFieldsAndAttributes.ECOM_FIELD_NAME, LdapFieldsAndAttributes.ECOM_FIELD_VALUE,
+                                             LdapFieldsAndAttributes.ECOM_FIELD_NAME, LdapFieldsAndAttributes.ECOM_EPCIS_IOC_FIELD_VALUE,
                                              LdapFieldsAndAttributes.EFAN_FIELD_NAME, facilityName,
                                              LdapFieldsAndAttributes.OU_FIELD_NAME, LdapFieldsAndAttributes.EPICS_CTRL_FIELD_VALUE);
         removeEntryFromLdap(context, query);
@@ -259,7 +256,7 @@ public final class LdapServiceImpl implements LdapService {
 
         final String query = createLdapQuery(LdapFieldsAndAttributes.EREN_FIELD_NAME, record.getName(),
                                              LdapFieldsAndAttributes.ECON_FIELD_NAME, ioc.getName(),
-                                             LdapFieldsAndAttributes.ECOM_FIELD_NAME, LdapFieldsAndAttributes.ECOM_FIELD_VALUE,
+                                             LdapFieldsAndAttributes.ECOM_FIELD_NAME, LdapFieldsAndAttributes.ECOM_EPCIS_IOC_FIELD_VALUE,
                                              LdapFieldsAndAttributes.EFAN_FIELD_NAME, ioc.getGroup(),
                                              LdapFieldsAndAttributes.OU_FIELD_NAME, LdapFieldsAndAttributes.EPICS_CTRL_FIELD_VALUE);
         removeEntryFromLdap(context, query);
@@ -279,33 +276,4 @@ public final class LdapServiceImpl implements LdapService {
             _log.warn(e.getExplanation());
         }
     }
-
-
-    @Nonnull
-    private LDAPReader createLdapReaderAndScheduleJob(@Nonnull final String searchRoot,
-                                                      @Nonnull final String filter,
-                                                      final int searchScope) {
-        final LDAPReader ldapr =
-            new LDAPReader(searchRoot,
-                           filter,
-                           searchScope
-            );
-        ldapr.schedule();
-
-        return ldapr;
-    }
-
-
-    /**
-     * Returns the singleton.
-     * @return The service instance.
-     */
-    @Nonnull
-    public static LdapService getInstance() {
-        return LdapServiceImplHolder.INSTANCE;
-
-    }
-
-
-
 }

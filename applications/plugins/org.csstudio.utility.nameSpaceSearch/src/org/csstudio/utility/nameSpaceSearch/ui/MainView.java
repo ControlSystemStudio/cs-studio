@@ -32,9 +32,12 @@ import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
 import org.csstudio.utility.ldap.reader.LDAPReader;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
 import org.csstudio.utility.ldap.reader.LDAPReader.IJobCompletedCallBack;
+import org.csstudio.utility.ldap.reader.LDAPReader.LdapSearchParams;
+import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.nameSpaceSearch.Activator;
 import org.csstudio.utility.nameSpaceSearch.Messages;
 import org.csstudio.utility.nameSpaceSearch.preference.PreferenceConstants;
+import org.eclipse.core.runtime.Preferences;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -84,6 +87,9 @@ public class MainView extends ViewPart {
      * The Class Id.
      */
     public static final String ID = MainView.class.getName();
+
+    private final Preferences _pluginPreferences = Activator.getDefault().getPluginPreferences();
+
     private Text _searchText;
     private TableViewer _resultTableView;
     private boolean _lastSortBackward;
@@ -115,48 +121,53 @@ public class MainView extends ViewPart {
      * @version $Revision$
      * @since 20.02.2008
      */
-    class MyTableLabelProvider implements ITableLabelProvider{
+    class MyTableLabelProvider implements ITableLabelProvider {
         // No Image
-        public Image getColumnImage(final Object element, final int columnIndex) {return null;}
+        public Image getColumnImage(final Object element, final int columnIndex) {
+            return null;
+        }
 
-
-		public String getColumnText(final Object element, final int columnIndex) {
+        public String getColumnText(final Object element, final int columnIndex) {
             if (element instanceof ProcessVariable) {
                 final ProcessVariable pv = (ProcessVariable) element;
                 try{
-                	if(pv.getPath()!=null){
-                		return pv.getPath()[columnIndex].split("=")[1]; //$NON-NLS-1$
-                	}else{
-                		return "";
-                	}
+                    if(pv.getPath()!=null){
+                        return pv.getPath()[columnIndex].split("=")[1]; //$NON-NLS-1$
+                    }
+                    return "";
                 }catch (final ArrayIndexOutOfBoundsException e) {
                     return "";
                 }
 
             }
             if (element instanceof ArrayList) {
-            	@SuppressWarnings("unchecked")
+                @SuppressWarnings("unchecked")
                 final
                 Object o = ((ArrayList)element).get(columnIndex);
                 if (o instanceof IControlSystemItem) {
                     return ((IProcessVariable)o).getName();
                 }
-                return "AL: "+o.toString(); //$NON-NLS-1$
+                return "AL: " + o.toString(); //$NON-NLS-1$
             }
-            return "toStr: "+element.toString(); //$NON-NLS-1$
+            return "toStr: " + element.toString(); //$NON-NLS-1$
 
         }
 
-        public void addListener(final ILabelProviderListener listener) {}
+        public void addListener(final ILabelProviderListener listener) {
+            // EMPTY
+        }
 
-        public void dispose() {}
+        public void dispose() {
+            // EMPTY
+        }
 
         public boolean isLabelProperty(final Object element, final String property) {
             return false;
         }
 
-        public void removeListener(final ILabelProviderListener listener) {}
-
+        public void removeListener(final ILabelProviderListener listener) {
+            // EMPTY
+        }
     }
 
     class myContentProvider implements IStructuredContentProvider{
@@ -169,11 +180,16 @@ public class MainView extends ViewPart {
             return (Object[])inputElement;
         }
 
-        public void dispose() {     }
+        public void dispose() {
+            // EMPTY
+        }
 
-        public void inputChanged(final Viewer viewer, final Object oldInput, final Object newInput) {     }
+        public void inputChanged(final Viewer viewer, final Object oldInput, final Object newInput) {
+            // EMPTY
+        }
 
     }
+
 
     public MainView() {
         _ldapSearchResult = new LdapSearchResult();
@@ -288,8 +304,9 @@ public class MainView extends ViewPart {
         _resultTableView.refresh();
         // ersetzt mehrfach vorkommende '*' durch einen. Da die LDAP abfrage damit nicht zurecht kommt.
         search = search.replaceAll("\\*\\**", WILDCARD); //$NON-NLS-1$ //$NON-NLS-2$
-        String filter = Activator.getDefault().getPluginPreferences().getString(PreferenceConstants.P_STRING_RECORD_ATTRIBUTE)+
-        "="+search; //$NON-NLS-1$
+        String filter = _pluginPreferences.getString(PreferenceConstants.P_STRING_RECORD_ATTRIBUTE) +
+                        "=" +
+                        search; //$NON-NLS-1$
         if(search.compareTo(WILDCARD)!=0) {
             filter = filter.concat(WILDCARD); //$NON-NLS-1$
         }
@@ -300,20 +317,23 @@ public class MainView extends ViewPart {
             _headline.put("econ", Messages.MainView_Controller); //$NON-NLS-1$ //$NON-NLS-2$
             _headline.put("eren", Messages.MainView_Record); //$NON-NLS-1$ //$NON-NLS-2$
         }
-        _ldapr =
-            new LDAPReader(Activator.getDefault().getPluginPreferences().getString(PreferenceConstants.P_STRING_SEARCH_ROOT),
-                           filter,
-                           _ldapSearchResult,
-                           new IJobCompletedCallBack() {
-                                @Override
-                                public void onLdapReadComplete() {
-                                    _disp.syncExec(new Runnable() {
-                                        public void run() {
-                                            getText();
-                                        }
-                                    });
-                                }
-                           });
+
+        final LdapSearchParams params = new LdapSearchParams(_pluginPreferences.getString(PreferenceConstants.P_STRING_SEARCH_ROOT),
+                                                             filter);
+        final ILdapService service = Activator.getDefault().getLdapService();
+        _ldapr = service.createLdapReaderJob(params,
+                                             _ldapSearchResult,
+                                             new IJobCompletedCallBack() {
+                                                 @Override
+                                                 public void onLdapReadComplete() {
+                                                     _disp.syncExec(new Runnable() {
+                                                         public void run() {
+                                                             getText();
+                                                         }
+                                                     });
+                                                 }
+                                             });
+
         _ldapr.schedule();
         _resultTableView.getTable().layout();
     }

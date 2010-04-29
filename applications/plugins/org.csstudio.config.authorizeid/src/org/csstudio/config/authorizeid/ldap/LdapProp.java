@@ -11,20 +11,22 @@ import java.util.List;
 
 import javax.naming.directory.SearchResult;
 
+import org.csstudio.config.authorizeid.AuthorizeIdActivator;
 import org.csstudio.config.authorizeid.AuthorizeIdEntry;
 import org.csstudio.utility.ldap.reader.LDAPReader;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
-import org.csstudio.utility.ldap.service.LdapService;
-import org.csstudio.utility.ldap.service.impl.LdapServiceImpl;
+import org.csstudio.utility.ldap.service.ILdapService;
 
-
+/**
+ * Retrieve props from LDAP.
+ *
+ * @author bknerr
+ * @author $Author$
+ * @version $Revision$
+ * @since 29.04.2010
+ */
 public class LdapProp {
 
-	private final int time_for_timeout = 10; // multiply this by 10 (if you set 10, it will be 100 miliseconds)
-
-	private final LdapService _service = LdapServiceImpl.getInstance();
-
-	List<AuthorizeIdEntry> al = new ArrayList<AuthorizeIdEntry>();
 
 	/**
 	 * Return attributes from LDAP.
@@ -34,13 +36,17 @@ public class LdapProp {
 	 */
 	public AuthorizeIdEntry[] getProp(final String eain, final String ou) {
 
+	    final ILdapService service = AuthorizeIdActivator.getDefault().getLdapService();
+
+
 		final LdapSearchResult result =
-		    _service.retrieveSearchResult(createLdapQuery(EAIN_FIELD_NAME, eain,
+		    service.retrieveSearchResultSynchronously(createLdapQuery(EAIN_FIELD_NAME, eain,
 		                                                  OU_FIELD_NAME, ou,
 		                                                  OU_FIELD_NAME, EPICS_AUTH_ID_FIELD_VALUE),
 		                                  any(EAIN_FIELD_NAME),
 		                                  LDAPReader.DEFAULT_SCOPE);
 
+		final List<AuthorizeIdEntry> al = new ArrayList<AuthorizeIdEntry>();
 		for (final SearchResult row : result.getAnswerSet()) {
 		    final String name = row.getName();
 
@@ -54,34 +60,6 @@ public class LdapProp {
 		    }
 		}
 
-
-//
-//        int times = 0;
-//
-//        // makes sure there is enough time for LDAP to provide data
-//        while(true) {
-//        	// if al is not empty, it goes through
-//        	if(!al.isEmpty()) {
-//        		break;
-//        	}
-//
-//        	// after two seconds, it breaks the loop
-//        	if(times > time_for_timeout) {
-//        		break;
-//        	}
-//
-//	        try {
-//				Thread.sleep(10);
-//			} catch (final InterruptedException e) {
-//				e.printStackTrace();
-//			}
-//
-//			times++;
-//        }
-
-		// change ArrayList to Array
-		final AuthorizeIdEntry[] returnArray = al.toArray(new AuthorizeIdEntry[al.size()]);
-
-		return returnArray;
+		return al.toArray(new AuthorizeIdEntry[al.size()]);
 	}
 }

@@ -22,6 +22,7 @@
  package org.csstudio.utility.ldap.namespacebrowser;
 
 import org.csstudio.platform.ui.AbstractCssUiPlugin;
+import org.csstudio.utility.ldap.service.ILdapService;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.osgi.framework.BundleContext;
@@ -35,16 +36,19 @@ public class Activator extends AbstractCssUiPlugin {
 	public static final String PLUGIN_ID = "org.csstudio.utility.ldap.nameSpaceBrowser";
 
 	// The shared instance
-	private static Activator plugin;
+	private static Activator INSTANCE;
+
+	private ILdapService _ldapService;
 
 	/**
 	 * The constructor
 	 */
 	public Activator() {
-		plugin = this;
-	}
-
-
+        if (INSTANCE != null) {
+            throw new IllegalStateException("Application " + PLUGIN_ID + " does already exist.");
+        }
+        INSTANCE = this; // Antipattern is required by the framework!
+    }
 
 	/*
 	 * (non-Javadoc)
@@ -53,6 +57,7 @@ public class Activator extends AbstractCssUiPlugin {
 	@Override
     public void doStart(final BundleContext context) throws Exception {
 //		super.start(context);
+	    _ldapService = getService(context, ILdapService.class);
 	}
 
 	/*
@@ -62,7 +67,7 @@ public class Activator extends AbstractCssUiPlugin {
 	@Override
     public void doStop(final BundleContext context) throws Exception {
 //		super.stop(context);
-		plugin = null;
+		INSTANCE = null; // TODO (bknerr) : ??? necessary for ???
 	}
 
 	/**
@@ -71,7 +76,7 @@ public class Activator extends AbstractCssUiPlugin {
 	 * @return the shared instance
 	 */
 	public static Activator getDefault() {
-		return plugin;
+		return INSTANCE;
 	}
 
 	@Override
@@ -104,5 +109,14 @@ public class Activator extends AbstractCssUiPlugin {
     private void log(final int type, final String message, final Exception e)
     {
         getLog().log(new Status(type, PLUGIN_ID, IStatus.OK, message, e));
+    }
+
+
+
+    /**
+     * @return the LDAP service
+     */
+    public ILdapService getLdapService() {
+        return _ldapService;
     }
 }

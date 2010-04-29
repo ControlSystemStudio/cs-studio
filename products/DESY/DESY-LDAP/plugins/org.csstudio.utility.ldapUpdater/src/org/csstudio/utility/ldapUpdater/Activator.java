@@ -21,9 +21,11 @@
  */
 package org.csstudio.utility.ldapUpdater;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.platform.AbstractCssPlugin;
+import org.csstudio.utility.ldap.service.ILdapService;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -34,19 +36,22 @@ public class Activator extends AbstractCssPlugin {
     // The plug-in ID
     public static final String PLUGIN_ID = "org.csstudio.utility.ldapUpdater";
 
+    private ILdapService _ldapService;
+
+    // The shared instance
+    private static Activator INSTANCE;
 
     /**
-     * ActivatorHolder is loaded on the first execution of Activator.getDefault()
-     * or the first access to ActivatorHolder.INSTANCE, not before.
+     * Don't instantiate.
+     * Called by framework.
      */
-    private static final class ActivatorHolder {
-
-        private static final Activator INSTANCE = new Activator();
-
-        private ActivatorHolder() {
-            // Empty
+    public Activator() {
+        if (INSTANCE != null) {
+            throw new IllegalStateException("Activator " + PLUGIN_ID + " does already exist.");
         }
+        INSTANCE = this; // Antipattern is required by the framework!
     }
+
     /**
      * Returns the shared instance
      *
@@ -54,20 +59,12 @@ public class Activator extends AbstractCssPlugin {
      */
     @Nonnull
     public static Activator getDefault() {
-        return ActivatorHolder.INSTANCE;
-    }
-
-    /**
-     * Don't instantiate.
-     * Called by framework.
-     */
-    public Activator() {
-        // EMPTY.
+        return INSTANCE;
     }
 
     @Override
     protected void doStart(@Nonnull final BundleContext context) throws Exception {
-        // Empty
+        _ldapService = getService(context, ILdapService.class);
     }
 
     @Override
@@ -77,8 +74,17 @@ public class Activator extends AbstractCssPlugin {
 
 
     @Override
+    @Nonnull
     public String getPluginId() {
         return PLUGIN_ID;
+    }
+
+    /**
+     * @return the LDAP service
+     */
+    @CheckForNull
+    public ILdapService getLdapService() {
+        return _ldapService;
     }
 
 }

@@ -21,10 +21,16 @@
  */
  package org.csstudio.utility.ldap;
 //
+import java.util.Dictionary;
+import java.util.Hashtable;
+
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.csstudio.platform.AbstractCssPlugin;
+import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.ldap.service.impl.LdapServiceImpl;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.osgi.framework.BundleContext;
@@ -33,20 +39,38 @@ import org.osgi.framework.BundleContext;
 /**
  * The activator class controls the plug-in life cycle
  */
-public final class Activator extends AbstractCssPlugin {
+public final class LdapActivator extends AbstractCssPlugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.csstudio.utility.ldap";
 
-	//	 The shared instance
-	private static Activator INSTANCE;
+	private static LdapActivator INSTANCE;
+
+	private ILdapService _ldapService;
+
+
+    /**
+     * Don't instantiate.
+     * Called by framework.
+     */
+    public LdapActivator() {
+        if (INSTANCE != null) {
+            throw new IllegalStateException("Activator " + PLUGIN_ID + " does already exist.");
+        }
+        INSTANCE = this; // Antipattern is required by the framework!
+    }
 
 	/* (non-Javadoc)
 	 * @see org.csstudio.platform.AbstractCssPlugin#doStart(org.osgi.framework.BundleContext)
 	 */
 	@Override
 	protected void doStart(@Nullable final BundleContext context) throws Exception {
-	    // Empty
+	    final Dictionary<String, Object> props = new Hashtable<String, Object>();
+        props.put("service.vendor", "DESY");
+        props.put("service.description", "LDAP service implementation");
+	    context.registerService(ILdapService.class.getName(), new LdapServiceImpl(), props);
+
+	    _ldapService = getService(context, ILdapService.class);
 	}
 
 	/* (non-Javadoc)
@@ -72,10 +96,7 @@ public final class Activator extends AbstractCssPlugin {
 	 * @return the instance
  	 */
 	@Nonnull
-	public static Activator getDefault() {
-	    if (INSTANCE == null) {
-	        INSTANCE  = new Activator();
-	    }
+	public static LdapActivator getDefault() {
 		return INSTANCE;
 	}
 
@@ -111,5 +132,13 @@ public final class Activator extends AbstractCssPlugin {
      */
     private void log(final int severity, @Nonnull final String message, @Nullable final Exception e) {
         getLog().log(new Status(severity, PLUGIN_ID, IStatus.OK, message, e));
+    }
+
+    /**
+     * @return the LDAP service
+     */
+    @CheckForNull
+    public ILdapService getLdapService() {
+        return _ldapService;
     }
 }

@@ -47,7 +47,7 @@ import javax.naming.ldap.Rdn;
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.statistic.Collector;
-import org.csstudio.utility.ldap.Activator;
+import org.csstudio.utility.ldap.LdapActivator;
 import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
 import org.csstudio.utility.ldap.connection.LDAPConnector;
 import org.csstudio.utility.ldap.engine.LdapReferences.Entry;
@@ -274,7 +274,7 @@ public final class Engine extends Job {
              * sleep before we check for work again
              */
             try {
-                final IEclipsePreferences prefs = new DefaultScope().getNode(Activator.PLUGIN_ID);
+                final IEclipsePreferences prefs = new DefaultScope().getNode(LdapActivator.PLUGIN_ID);
                 final String protocol = prefs.get(PreferenceKey.SECURITY_PROTOCOL.name(), "");
                 if (protocol.trim().length() > 0) {
                     intSleepTimer = new Integer(protocol);
@@ -517,8 +517,7 @@ public final class Engine extends Job {
             ctrl.setSearchScope(SearchControls.SUBTREE_SCOPE);
             ctrl.setTimeLimit(1000);
             try {
-                final NamingEnumeration<SearchResult> results = context.search(
-                                                                               "ou=EpicsControls",
+                final NamingEnumeration<SearchResult> results = context.search("ou=EpicsControls",
                                                                                "(&(objectClass=epicsController)" +
                                                                                "(|(epicsIPAddress=" + ipAddress + ")" +
                                                                                "(epicsIPAddressR=" + ipAddress + ")))",

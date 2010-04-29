@@ -22,6 +22,7 @@
 package org.csstudio.config.savevalue.ui;
 
 import org.csstudio.platform.ui.AbstractCssUiPlugin;
+import org.csstudio.utility.ldap.service.ILdapService;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -37,20 +38,26 @@ public class Activator extends AbstractCssUiPlugin {
 	/**
 	 * The shared instance.
 	 */
-	private static Activator _plugin;
-	
+	private static Activator INSTANCE;
+
+	private ILdapService _ldapService;
+
 	/**
 	 * The constructor.
 	 */
 	public Activator() {
-	}
+        if (INSTANCE != null) {
+            throw new IllegalStateException("Activator " + PLUGIN_ID + " does already exist.");
+        }
+        INSTANCE = this; // Antipattern is required by the framework!
+    }
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public final void doStart(final BundleContext context) throws Exception {
-		_plugin = this;
+		_ldapService = getService(context, ILdapService.class);
 	}
 
 	/**
@@ -58,7 +65,7 @@ public class Activator extends AbstractCssUiPlugin {
 	 */
 	@Override
 	public final void doStop(final BundleContext context) throws Exception {
-		_plugin = null;
+		INSTANCE = null;
 	}
 
 	/**
@@ -67,7 +74,7 @@ public class Activator extends AbstractCssUiPlugin {
 	 * @return the shared instance.
 	 */
 	public static Activator getDefault() {
-		return _plugin;
+		return INSTANCE;
 	}
 
 	/**
@@ -77,4 +84,11 @@ public class Activator extends AbstractCssUiPlugin {
 	public final String getPluginId() {
 		return PLUGIN_ID;
 	}
+
+    /**
+     * @return the LDAP service
+     */
+    public ILdapService getLdapService() {
+        return _ldapService;
+    }
 }

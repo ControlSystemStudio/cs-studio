@@ -49,10 +49,12 @@ public final class LdapFieldsAndAttributes {
     public static final String EFAN_FIELD_NAME = "efan";
     public static final String ECON_FIELD_NAME = "econ";
     public static final String ECOM_FIELD_NAME = "ecom";
-    public static final String ECOM_FIELD_VALUE = "EPICS-IOC";
+    public static final String ECOM_EPCIS_IOC_FIELD_VALUE = "EPICS-IOC";
+    public static final String ESCO_FIELD_NAME = "esco";
     public static final String EAIN_FIELD_NAME = "eain";
 
     public static final String ATTR_FIELD_OBJECT_CLASS = "objectClass";
+    public static final String ATTR_FIELD_CSS_TYPE = "epicsCssType";
     public static final String ATTR_VAL_OBJECT_CLASS = "epicsRecord";
     public static final String ATTR_FIELD_RESPONSIBLE_PERSON = "epicsResponsibleName";
 

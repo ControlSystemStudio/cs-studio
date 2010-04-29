@@ -20,10 +20,14 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
-package org.csstudio.alarm.treeView.model;
+package org.csstudio.utility.ldap;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+
 
 /**
  * The object class of a tree item. The enumeration constants defined in this
@@ -38,31 +42,32 @@ public enum LdapObjectClass {
 	/**
 	 * The facility object class (efan).
 	 */
-	FACILITY("epicsFacility", "efan", "facility"),
+	FACILITY("epicsFacility", LdapFieldsAndAttributes.EFAN_FIELD_NAME, "facility"),
 
 	/**
 	 * The component object class (ecom).
 	 */
-	COMPONENT("epicsComponent", "ecom", "component"),
+	COMPONENT("epicsComponent", LdapFieldsAndAttributes.ECOM_FIELD_NAME, "component"),
 
 	/**
 	 * The subcomponent object class (esco).
 	 */
-	SUBCOMPONENT("epicsSubComponent", "esco", "subComponent"),
+	SUBCOMPONENT("epicsSubComponent", LdapFieldsAndAttributes.ESCO_FIELD_NAME, "subComponent"),
 
 	/**
 	 * The IOC object class (econ).
 	 */
-	IOC("epicsController", "econ", "ioc"),
+	IOC("epicsController", LdapFieldsAndAttributes.ECON_FIELD_NAME, "ioc"),
 
 	/**
 	 * The record object class (eren).
 	 */
-	RECORD("epicsRecord", "eren", "record");
+	RECORD("epicsRecord", LdapFieldsAndAttributes.EREN_FIELD_NAME, "record");
 
 
-	private static final Map<String, LdapObjectClass> CACHE_BY_RDN =
+	private static final Map<String, LdapObjectClass> CACHE_BY_RDN_TYPE =
 	    new HashMap<String, LdapObjectClass>();
+
 
 	static {
 		// Initialize the _nestedClass attribute
@@ -71,20 +76,20 @@ public enum LdapObjectClass {
 		SUBCOMPONENT._nestedClass = SUBCOMPONENT;
 
         for (final LdapObjectClass oc : LdapObjectClass.values()) {
-            CACHE_BY_RDN.put(oc.getRdnAttribute(), oc);
+            CACHE_BY_RDN_TYPE.put(oc.getRdnType(), oc);
         }
 	}
 
 	/**
 	 * The name of this object class in the directory.
 	 */
-	private final String _objectClass;
+	private final String _objectClassName;
 
 	/**
 	 * The name of the attribute to use for the RDN of entries of this class in
 	 * the directory.
 	 */
-	private final String _rdn;
+	private final String _rdnType;
 
 	/**
 	 * The value for the epicsCssType attribute for entries of this class in the
@@ -102,18 +107,20 @@ public enum LdapObjectClass {
 	/**
 	 * Creates a new object class.
 	 *
-	 * @param objectClass
+	 * @param objectClassName
 	 *            the name of this object class in the directory.
-	 * @param rdn
+	 * @param rdnType
 	 *            the name of the attribute to use for the RDN.
 	 * @param cssType
 	 *            the value for the epicsCssType attribute in the directory.
 	 */
-	private LdapObjectClass(final String objectClass,
-	                        final String rdn,
+	//CHECKSTYLE:OFF
+	private LdapObjectClass(final String objectClassName,
+	                        final String rdnType,
 	                        final String cssType) {
-		_objectClass = objectClass;
-		_rdn = rdn;
+	//CHECKSTYLE:ON
+		_objectClassName = objectClassName;
+		_rdnType = rdnType;
 		_cssType = cssType;
 	}
 
@@ -121,16 +128,18 @@ public enum LdapObjectClass {
 	 * Returns the name of this object class in the directory.
 	 * @return the name of this object class in the directory.
 	 */
+	@Nonnull
 	public String getObjectClassName() {
-		return _objectClass;
+		return _objectClassName;
 	}
 
 	/**
 	 * Returns the name of the attribute to use for the RDN.
 	 * @return the name of the attribute to use for the RDN.
 	 */
-	public String getRdnAttribute() {
-		return _rdn;
+	@Nonnull
+	public String getRdnType() {
+		return _rdnType;
 	}
 
 	/**
@@ -138,6 +147,7 @@ public enum LdapObjectClass {
 	 * this object class.
 	 * @return the value to use for the epicsCssType attribute.
 	 */
+	@Nonnull
 	public String getCssType() {
 		return _cssType;
 	}
@@ -152,6 +162,7 @@ public enum LdapObjectClass {
 	 *         of this object class. <code>null</code> if there is no
 	 *         recommended class.
 	 */
+	@CheckForNull
 	public LdapObjectClass getNestedContainerClass() {
 		return _nestedClass;
 	}
@@ -159,11 +170,12 @@ public enum LdapObjectClass {
     /**
      * Returns the object class of an LDAP rdn attribute (efan, eren, ...).
      *
-     * @param name
-     *            the name.
-     * @return the object class.
+     * @param rdn
+     *            the rdn
+     * @return the object class
      */
-    public static LdapObjectClass getObjectClassByRdn(final String rdn) {
-        return CACHE_BY_RDN.get(rdn);
+	@CheckForNull
+    public static LdapObjectClass getObjectClassByRdnType(@Nonnull final String rdn) {
+        return CACHE_BY_RDN_TYPE.get(rdn);
     }
 }

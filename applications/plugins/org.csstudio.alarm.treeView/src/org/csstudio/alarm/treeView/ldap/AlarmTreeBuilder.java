@@ -23,12 +23,8 @@
 
 import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EFAN_FIELD_NAME;
 import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EPICS_ALARM_CFG_FIELD_VALUE;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EREN_FIELD_NAME;
 import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.OU_FIELD_NAME;
-import static org.csstudio.utility.ldap.LdapUtils.any;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,14 +41,16 @@ import javax.naming.directory.BasicAttributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapName;
+import javax.naming.ldap.Rdn;
 
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
-import org.csstudio.alarm.treeView.model.AbstractAlarmTreeNode;
-import org.csstudio.alarm.treeView.model.LdapObjectClass;
+import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.ProcessVariableNode;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.alarm.treeView.preferences.PreferenceConstants;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
+import org.csstudio.utility.ldap.LdapObjectClass;
 import org.csstudio.utility.ldap.LdapUtils;
 import org.csstudio.utility.ldap.engine.Engine;
 import org.csstudio.utility.ldap.reader.LDAPReader;
@@ -85,95 +83,33 @@ public final class AlarmTreeBuilder {
     }
 
 	/**
-	 * Evaluates the attributes (if any) of an object found in the
-	 * directory. If there is an alarm, triggers the alarm for the node
-	 * in the alarm tree.
-	 *
-	 * @param result the object found in the directory.
-	 * @param node the node on which the alarm must be triggered.
-	 * @throws NamingException if something bad happens...
-	 */
-	private static void evaluateAttributes(@Nonnull final SearchResult result,
-	                                       @Nonnull final ProcessVariableNode node) throws NamingException {
-		final Attributes attrs = result.getAttributes();
-		TreeBuilder.setAlarmState(node, attrs);
-		setEpicsAttributes(node, attrs);
-	}
-
-
-	/**
-	 * Sets the EPICS attributes of the given node based on the given
-	 * attributes.
-	 *
-	 * @param node
-	 *            the node.
-	 * @param attrs
-	 *            the attributes.
-	 * @throws NamingException
-	 *             if an error occurs.
-	 */
-	public static void setEpicsAttributes(@Nonnull final AbstractAlarmTreeNode node,
-	                                       @Nonnull final Attributes attrs) throws NamingException {
-
-		final Attribute alarmDisplayAttr = attrs.get("epicsCssAlarmDisplay");
-		if (alarmDisplayAttr != null) {
-			final String display = (String) alarmDisplayAttr.get();
-			if (display != null) {
-				node.setCssAlarmDisplay(display);
-			}
-		}
-
-		final Attribute helpPageAttr = attrs.get("epicsHelpPage");
-		if (helpPageAttr != null) {
-			final String helpPage = (String) helpPageAttr.get();
-			if ((helpPage != null) && helpPage.matches("^http://.+")) {
-				try {
-					node.setHelpPage(new URL(helpPage));
-				} catch (final MalformedURLException e) {
-					LOG.warn(AlarmTreeBuilder.class.getName(), "epicsHelpPage attribute for node "
-							+ node + " contains a malformed URL");
-				}
-			}
-		}
-
-		final Attribute helpGuidanceAttr = attrs.get("epicsHelpGuidance");
-		if (helpGuidanceAttr != null) {
-			final String helpGuidance = (String) helpGuidanceAttr.get();
-			if (helpGuidance != null) {
-				node.setHelpGuidance(helpGuidance);
-			}
-		}
-
-		final Attribute displayAttr = attrs.get("epicsCssDisplay");
-		if (displayAttr != null) {
-			final String display = (String) displayAttr.get();
-			if (display != null) {
-				node.setCssDisplay(display);
-			}
-		}
-
-		final Attribute chartAttr = attrs.get("epicsCssStripChart");
-		if (chartAttr != null) {
-			final String chart = (String) chartAttr.get();
-			if (chart != null) {
-				node.setCssStripChart(chart);
-			}
-		}
-	}
-
-
-	/**
 	 * Creates a new node with the given name and inserts it into the tree.
 	 * @param name the object's relative name. This name will be used to determine
 	 *        where in the tree to put the object.
-	 * @return the tree item for the given object.
+	 * @param objectClass the node's object class
+	 * @throws NamingException
 	 */
-	private static ProcessVariableNode createTreeNode(@Nonnull final LdapName name,
-	                                                  @Nonnull final SubtreeNode treeRoot) {
-        final SubtreeNode parentNode = TreeBuilder.findCreateParentNode(treeRoot, name);
-		final String sname = LdapNameUtils.simpleName(name);
-		final ProcessVariableNode node = new ProcessVariableNode(parentNode, sname);
-		return node;
+	private static void createTreeNode(@Nonnull final LdapName name,
+	                                   @Nonnull final SubtreeNode treeRoot,
+	                                   @Nonnull final Attributes attributes) throws NamingException {
+
+	    final SubtreeNode parentNode = findCreateParentNode(treeRoot, name);
+
+	    final Attribute attr = attributes.get(LdapFieldsAndAttributes.ATTR_FIELD_CSS_TYPE);
+        if ((attr != null) && (name.size() > 0)) {
+            final Rdn rdn = name.getRdn(name.size() - 1);
+            final LdapObjectClass objectClass = LdapObjectClass.getObjectClassByRdnType(rdn.getType());
+
+            final IAlarmTreeNode node;
+            final String sname = LdapNameUtils.simpleName(name);
+
+            if(LdapObjectClass.RECORD.equals(objectClass)) {
+                node = new ProcessVariableNode.Builder(sname).setParent(parentNode).build();
+                AlarmTreeNodeModifier.evaluateAttributes(attributes, (ProcessVariableNode) node);
+            } else if (objectClass != null) {
+                node = new SubtreeNode.Builder(sname, objectClass).setParent(parentNode).build();
+            }
+        }
 	}
 
 
@@ -232,10 +168,10 @@ public final class AlarmTreeBuilder {
 
         for (final String facility : facilityNames) {
             final LdapSearchResult result =
-                LDAPReader.getSearchResultSynchronously(
-                                new LdapSearchParams(LdapUtils.createLdapQuery(EFAN_FIELD_NAME, facility,
-                                                                               OU_FIELD_NAME, EPICS_ALARM_CFG_FIELD_VALUE),
-                                                     any(EREN_FIELD_NAME)));
+                LDAPReader.getSearchResultSynchronously(new LdapSearchParams(LdapUtils.createLdapQuery(EFAN_FIELD_NAME, facility,
+                                                                                                       OU_FIELD_NAME, EPICS_ALARM_CFG_FIELD_VALUE),
+                                                        "(objectClass=*)")
+                );
 
             results.add(result);
             if ((monitor != null) && monitor.isCanceled()) {
@@ -268,16 +204,13 @@ public final class AlarmTreeBuilder {
 
                 final LdapName name = (LdapName) nameParser.parse(row.getNameInNamespace());
 
+                // TODO (bknerr) : remove from here to LdapNameUtils in package LDAP
+                // remove any hierarchy level before 'efan=...'
+                while ((name.size() > 0) && !name.get(0).startsWith(LdapFieldsAndAttributes.EFAN_FIELD_NAME)) {
+                    name.remove(0);
+                }
 
-                name.remove(0); // removes DE
-                name.remove(0); // removes whatever
-                name.remove(0);
-
-                final ProcessVariableNode node = AlarmTreeBuilder.createTreeNode(name, rootNode);
-
-                // Read the object's alarm status, and trigger an alarm on the node
-                // that was just created if there is an alarm.
-                AlarmTreeBuilder.evaluateAttributes(row, node);
+                AlarmTreeBuilder.createTreeNode(name, rootNode, row.getAttributes());
             }
             if ((monitor != null) && monitor.isCanceled()) {
                 return true;
@@ -285,6 +218,54 @@ public final class AlarmTreeBuilder {
         }
         return false;
     }
+
+
+    /**
+     * Finds a node with the given name in the given tree. If the node does
+     * not exist yet, it is created.
+     *
+     * @param root
+     *            the root node of the tree to search.
+     * @param name
+     *            the LDAP name of the node to search.
+     * @return the node.
+     */
+    static SubtreeNode findCreateSubtreeNode(final SubtreeNode root,
+            final LdapName name) {
+        final SubtreeNode directParent = findCreateParentNode(root, name);
+        final String simpleName = LdapNameUtils.simpleName(name);
+
+        final Rdn rdn = name.getRdn(name.size() - 1);
+        SubtreeNode result = (SubtreeNode) directParent.getChild(simpleName);
+        if (result == null) {
+            final LdapObjectClass oClass = LdapObjectClass.getObjectClassByRdnType(rdn.getType());
+            result = new SubtreeNode.Builder(simpleName, oClass).setParent(directParent).build();
+        }
+        return result;
+    }
+
+
+    /**
+     * Finds the parent node of the node with the specified name. If the parent
+     * node does not exist, it is created.
+     *
+     * @param root
+     *            the root node of the tree which is searched.
+     * @param name
+     *            the name of the node whose parent is to be found.
+     * @return the parent node of the node with the specified name.
+     */
+    static SubtreeNode findCreateParentNode(final SubtreeNode root,
+                                            final LdapName name) {
+        if (name.size() > 1) {
+            final LdapName parentName = (LdapName) name.getPrefix(name.size() - 1);
+            final SubtreeNode parent = findCreateSubtreeNode(root, parentName);
+            return parent;
+        }
+        return root;
+    }
+
+
 
     /**
      * Retrieves the alarm tree information for the facilities given in the

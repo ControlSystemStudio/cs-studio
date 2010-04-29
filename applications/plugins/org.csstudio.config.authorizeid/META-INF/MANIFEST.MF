@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Authorizeid Plug-in
 Bundle-SymbolicName: org.csstudio.config.authorizeid;singleton:=true
 Bundle-Version: 1.0.0
-Bundle-Activator: org.csstudio.config.authorizeid.Activator
+Bundle-Activator: org.csstudio.config.authorizeid.AuthorizeIdActivator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.csstudio.platform,

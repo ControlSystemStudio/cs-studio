@@ -27,7 +27,7 @@ import static org.junit.Assert.assertEquals;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
-import org.csstudio.alarm.treeView.model.LdapObjectClass;
+import org.csstudio.utility.ldap.LdapObjectClass;
 import org.junit.Test;
 
 
@@ -58,14 +58,14 @@ public class LdapNameUtilsTest {
 	public void testObjectClassOfSingleRdnName() throws Exception {
 		final LdapName name = new LdapName("efan=foobar");
 		final Rdn rdn = name.getRdn(name.size() - 1);
-		assertEquals(LdapObjectClass.FACILITY, LdapObjectClass.getObjectClassByRdn(rdn.getType()));
+		assertEquals(LdapObjectClass.FACILITY, LdapObjectClass.getObjectClassByRdnType(rdn.getType()));
 	}
 
 	@Test
 	public void testObjectClassOfHierarchicalLdapName() throws Exception {
 		final LdapName name = new LdapName("eren=foobar,ou=Test,dc=example,dc=com");
 		final Rdn rdn = name.getRdn(name.size() - 1);
-		assertEquals(LdapObjectClass.RECORD, LdapObjectClass.getObjectClassByRdn(rdn.getType()));
+		assertEquals(LdapObjectClass.RECORD, LdapObjectClass.getObjectClassByRdnType(rdn.getType()));
 	}
 
 }

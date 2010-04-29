@@ -27,6 +27,7 @@ import java.util.Set;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.naming.NameNotFoundException;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
@@ -137,72 +138,94 @@ public class LDAPReader extends Job {
     private final LdapSearchResult _searchResult;
 
     /**
-     * Used the connection settings from org.csstudio.utility.ldap.ui
-     * (used with UI)
+     * The builder for the LDAPReader class.
      *
-     * @param searchRoot the search root
-     * @param filter the search filter
-     * @param searchScope the search scope
+     * @author bknerr
+     * @author $Author$
+     * @version $Revision$
+     * @since 28.04.2010
      */
-    public LDAPReader(@Nonnull final String searchRoot,
-                      @Nonnull final String filter,
-                      @Nonnull final int searchScope){
+    public static class Builder {
+
+        private final LdapSearchParams _searchParams;
+        private LdapSearchResult _searchResult;
+        private IJobCompletedCallBack _callBack;
+
+        /**
+         * Constructor with required parameters.
+         *
+         * @param searchRoot the root
+         * @param filter the filter
+         */
+        public Builder(@Nonnull final String searchRoot,
+                       @Nonnull final String filter) {
+            _searchParams = new LdapSearchParams(searchRoot, filter);
+        }
+
+        /**
+         * Setter.
+         * @param scope the search scope of {@link javax.naming.directory.SearchControls}
+         * @return
+         */
+        @Nonnull
+        public Builder setScope(final int scope) {
+            _searchParams.setScope(scope);
+            return this;
+        }
+
+        /**
+         * Setter.
+         * @param result reference to an existing search result
+         * @return the builder for chaining
+         */
+        @Nonnull
+        public Builder setSearchResult(@Nonnull final LdapSearchResult result) {
+            _searchResult = result;
+            return this;
+        }
+
+        /**
+         * Setter.
+         * @param callBack called on job completion
+         * @return the builder for chaining
+         */
+        @Nonnull
+        public Builder setJobCompletedCallBack(@Nonnull final IJobCompletedCallBack callBack) {
+            _callBack = callBack;
+            return this;
+        }
+
+        /**
+         * Eventually constructs an LDAPReader instance.
+         * @return the LDAP reader job
+         */
+        @Nonnull
+        public LDAPReader build() {
+            return new LDAPReader(this);
+        }
+    }
+
+
+    private LDAPReader(@Nonnull final Builder builder){
         super("LDAPReader");
-        _searchParams = new LdapSearchParams(searchRoot, filter);
-        setDefaultScope(searchScope);
-        _searchResult = new LdapSearchResult();
+        _searchParams = builder._searchParams;
+        _searchResult = builder._searchResult;
+        setJobCompletedCallBack(builder._callBack);
     }
 
-    /**
-     * Constructor.
-     *
-     * @param name name of the reader
-     * @param searchRoot the search root
-     * @param filter the search filter
-     * @param searchScope the search scope
-     * @param result the search result, typically used in the callback method
-     * @param callBack callback to invoke custom method on sucessful LDAP read
-     */
-    public LDAPReader(@Nonnull final String name,
-                      @Nonnull final String searchRoot,
-                      @Nonnull final String filter,
-                      final int searchScope,
-                      @Nonnull final LdapSearchResult result,
-                      @Nonnull final IJobCompletedCallBack callBack){
-        super(name);
-        _searchParams = new LdapSearchParams(searchRoot, filter);
-        setDefaultScope(searchScope);
-        _searchResult = result;
-        setJobCompletedCallBack(callBack);
-    }
 
-    /**
-     * Constructor.
-     *
-     * @param searchRoot the search root
-     * @param filter the search filter
-     * @param result the result, typically used in the callback method
-     * @param callBack callback to invoke custom method on sucessful LDAP read
-     */
-    public LDAPReader(@Nonnull final String searchRoot,
-                      @Nonnull final String filter,
-                      @Nonnull final LdapSearchResult result,
-                      @Nonnull final IJobCompletedCallBack callBack){
-        this("LDAPReader", searchRoot, filter, DEFAULT_SCOPE, result, callBack);
-    }
 
-    /**
-     * @param callBack
-     */
-    private void setJobCompletedCallBack(@Nonnull final IJobCompletedCallBack callBack) {
-        addJobChangeListener(new JobChangeAdapter() {
-            @Override
-            public void done(@Nonnull final IJobChangeEvent event) {
-                if (event.getResult().isOK()) {
-                    callBack.onLdapReadComplete();
+    private void setJobCompletedCallBack(@Nullable final IJobCompletedCallBack callBack) {
+        if (callBack != null) {
+            addJobChangeListener(new JobChangeAdapter() {
+                @Override
+                public void done(@Nonnull final IJobChangeEvent event) {
+                    if (event.getResult().isOK()) {
+                        callBack.onLdapReadComplete();
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
 
@@ -267,6 +290,7 @@ public class LDAPReader extends Job {
 
     /**
      * Retrieves a search result from LDAP synchronously (without being scheduled as job).
+     * This method blocks until the LDAP read has been performed.
      *
      * @param searchRoot search root
      * @param filter search filter

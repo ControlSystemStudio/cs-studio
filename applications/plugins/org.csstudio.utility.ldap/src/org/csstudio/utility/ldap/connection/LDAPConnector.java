@@ -39,7 +39,7 @@ import javax.naming.ldap.InitialLdapContext;
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.util.StringUtil;
-import org.csstudio.utility.ldap.Activator;
+import org.csstudio.utility.ldap.LdapActivator;
 import org.csstudio.utility.ldap.preference.PreferenceKey;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
@@ -124,7 +124,7 @@ public class LDAPConnector {
     @Nonnull
     private Map<PreferenceKey, String> getUIenv() {
 
-        final IEclipsePreferences prefs = new DefaultScope().getNode(Activator.PLUGIN_ID);
+        final IEclipsePreferences prefs = new DefaultScope().getNode(LdapActivator.PLUGIN_ID);
 
         final String url = prefs.get(PreferenceKey.P_STRING_URL.name(), "");
         final String proto = prefs.get(PreferenceKey.SECURITY_PROTOCOL.name(), "");
@@ -151,7 +151,7 @@ public class LDAPConnector {
         }
 
         _log.debug("++++++++++++++++++++++++++++++++++++++++++++++");
-        _log.debug("+ PLUGIN_ID: " + Activator.PLUGIN_ID);
+        _log.debug("+ PLUGIN_ID: " + LdapActivator.PLUGIN_ID);
         _log.debug("+ P_STRING_URL: " + url);
         _log.debug("+ SECURITY_PROTOCOL: " + proto);
         _log.debug("+ SECURITY_AUTHENTICATION: " + auth);

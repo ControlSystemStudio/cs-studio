@@ -55,14 +55,25 @@ import org.remotercp.login.connection.HeadlessConnection;
  */
 public class LdapUpdaterServer implements IApplication {
 
+    /**
+     * The running instance of this server.
+     */
+    private static LdapUpdaterServer INSTANCE;
+
     private final Logger _log = CentralLogger.getInstance().getLogger(this);
 
     private volatile boolean _stopped;
 
     /**
-     * The running instance of this server.
+     * Constructor.
      */
-    private static LdapUpdaterServer INSTANCE;
+    public LdapUpdaterServer() {
+        if (INSTANCE != null) {
+            throw new IllegalStateException("Application LdAP Updater Server does already exist.");
+        }
+        INSTANCE = this; // Antipattern is required by the framework!
+    }
+
 
     /**
      * Returns a reference to the currently running server instance. Note: it
@@ -72,7 +83,7 @@ public class LdapUpdaterServer implements IApplication {
      */
     @CheckForNull
     public static LdapUpdaterServer getRunningServer() {
-        return INSTANCE; // FIXME (bknerr) : Antipattern - Is it required by the framework?
+        return INSTANCE;
     }
 
     /**
@@ -81,12 +92,9 @@ public class LdapUpdaterServer implements IApplication {
     @Override
     public final Object start(@Nullable final IApplicationContext context)
     throws Exception {
-
-        INSTANCE = this; // FIXME (bknerr) : Antipattern - Is it required by the framework?
-
         final String startSecString = getValueFromPreferences(LDAP_AUTO_START, "0");
         final String intervalString = getValueFromPreferences(LDAP_AUTO_INTERVAL, "43200");
-        final int startTimeSec = Integer.parseInt(startSecString);
+        final int startTimeSec = Integer.parseInt(startSecString == null ? "0" : startSecString);
         final long intervalSec = Long.parseLong(intervalString);
 
 

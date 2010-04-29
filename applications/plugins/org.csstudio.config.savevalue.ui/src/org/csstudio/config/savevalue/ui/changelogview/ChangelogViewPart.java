@@ -48,8 +48,7 @@ import org.csstudio.config.savevalue.ui.SaveValueDialog;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.model.LdapContentModel;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
-import org.csstudio.utility.ldap.service.LdapService;
-import org.csstudio.utility.ldap.service.impl.LdapServiceImpl;
+import org.csstudio.utility.ldap.service.ILdapService;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -227,8 +226,6 @@ public class ChangelogViewPart extends ViewPart {
 
 	}
 
-	private final LdapService _ldapService = LdapServiceImpl.getInstance();
-
 	/**
 	 * The logger.
 	 */
@@ -335,11 +332,11 @@ public class ChangelogViewPart extends ViewPart {
 			protected IStatus run(final IProgressMonitor monitor) {
 				monitor.beginTask(Messages.ChangelogViewPart_GET_IOC_JOB,
 						IProgressMonitor.UNKNOWN);
-
+				final ILdapService service = Activator.getDefault().getLdapService();
 				final LdapSearchResult result =
-				    _ldapService.retrieveSearchResult(OU_FIELD_NAME + FIELD_ASSIGNMENT + EPICS_CTRL_FIELD_VALUE,
-				                                      any(ECON_FIELD_NAME),
-				                                      SearchControls.SUBTREE_SCOPE);
+				    service.retrieveSearchResultSynchronously(OU_FIELD_NAME + FIELD_ASSIGNMENT + EPICS_CTRL_FIELD_VALUE,
+				                                              any(ECON_FIELD_NAME),
+				                                              SearchControls.SUBTREE_SCOPE);
 				final LdapContentModel model = new LdapContentModel(result);
 
 

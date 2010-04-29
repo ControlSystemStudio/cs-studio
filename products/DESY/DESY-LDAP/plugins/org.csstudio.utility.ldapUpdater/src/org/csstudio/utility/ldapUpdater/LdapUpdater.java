@@ -56,8 +56,7 @@ import org.csstudio.utility.ldap.LdapUtils;
 import org.csstudio.utility.ldap.model.IOC;
 import org.csstudio.utility.ldap.model.LdapContentModel;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
-import org.csstudio.utility.ldap.service.LdapService;
-import org.csstudio.utility.ldap.service.impl.LdapServiceImpl;
+import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldapUpdater.files.HistoryFileAccess;
 import org.csstudio.utility.ldapUpdater.files.HistoryFileContentModel;
 import org.csstudio.utility.ldapUpdater.files.IOCFilesDirTree;
@@ -123,10 +122,7 @@ public final class LdapUpdater {
 
     private final Logger _log = CentralLogger.getInstance().getLogger(this);
 
-    private final LdapService _service = LdapServiceImpl.getInstance();
-
     private volatile boolean _busy = false;
-
 
     /**
      * Don't instantiate with constructor.
@@ -183,10 +179,11 @@ public final class LdapUpdater {
         final long startTime = logHeader(TIDYUP_ACTION_NAME);
 
         try {
+            final ILdapService service = Activator.getDefault().getLdapService();
             final LdapSearchResult result =
-                _service.retrieveSearchResult(OU_FIELD_NAME + FIELD_ASSIGNMENT + EPICS_CTRL_FIELD_VALUE,
-                                              any(ECON_FIELD_NAME),
-                                              SearchControls.ONELEVEL_SCOPE);
+                service.retrieveSearchResultSynchronously(OU_FIELD_NAME + FIELD_ASSIGNMENT + EPICS_CTRL_FIELD_VALUE,
+                                                          any(ECON_FIELD_NAME),
+                                                          SearchControls.ONELEVEL_SCOPE);
 
             final String dumpPath = getValueFromPreferences(IOC_DBL_DUMP_PATH);
             if (dumpPath != null) {
@@ -219,10 +216,11 @@ public final class LdapUpdater {
         final HistoryFileContentModel historyFileModel = histFileReader.readFile(); /* liest das history file */
 
         try {
+            final ILdapService service = Activator.getDefault().getLdapService();
             final LdapSearchResult searchResult =
-                _service.retrieveSearchResult(LdapUtils.createLdapQuery(OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE),
-                                              any(ECON_FIELD_NAME),
-                                              SearchControls.SUBTREE_SCOPE);
+                service.retrieveSearchResultSynchronously(LdapUtils.createLdapQuery(OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE),
+                                                          any(ECON_FIELD_NAME),
+                                                          SearchControls.SUBTREE_SCOPE);
             final LdapContentModel model = new LdapContentModel(searchResult);
 
             validateHistoryFileEntriesVsLDAPEntries(model, historyFileModel);

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, Member of the Helmholtz
  * Association, (DESY), HAMBURG, GERMANY.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. WITHOUT WARRANTY OF ANY
  * KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
@@ -33,19 +33,19 @@ import org.eclipse.ui.PlatformUI;
 
 /**
  * Applies updates to a tree of alarm nodes.
- * 
+ *
  * @author Joerg Rathlev
  */
 public class AlarmTreeUpdater {
-    
+
     /**
      * The tree which is updated by this updater.
      */
     private final SubtreeNode _tree;
-    
+
     /**
      * Creates a new updater.
-     * 
+     *
      * @param tree
      *            the tree to be updated by this updater.
      */
@@ -53,13 +53,13 @@ public class AlarmTreeUpdater {
         if (tree == null) {
             throw new NullPointerException("tree must not be null");
         }
-        
+
         _tree = tree;
     }
-    
+
     /**
      * Updates the tree when an alarm message was received.
-     * 
+     *
      * @param name
      *            the name of the process variable for which the alarm was received.
      * @param severity
@@ -68,28 +68,28 @@ public class AlarmTreeUpdater {
      *            the eventtime of the alarm.
      */
     void applyAlarm(final String name, final Severity severity, final Date eventtime) {
-        List<ProcessVariableNode> nodes = findNodes(name);
-        for (ProcessVariableNode node : nodes) {
-            Alarm alarm = new Alarm(name, severity, eventtime);
+        final List<ProcessVariableNode> nodes = findNodes(name);
+        for (final ProcessVariableNode node : nodes) {
+            final Alarm alarm = new Alarm(name, severity, eventtime);
             node.updateAlarm(alarm);
         }
         refreshView();
     }
-    
+
     /**
      * Updates the tree when an acknowledgement message was received.
-     * 
+     *
      * @param name
      *            the name of the process variable to which the acknowledgement applies.
      */
     void applyAcknowledgement(final String name) {
-        List<ProcessVariableNode> nodes = findNodes(name);
-        for (ProcessVariableNode node : nodes) {
+        final List<ProcessVariableNode> nodes = findNodes(name);
+        for (final ProcessVariableNode node : nodes) {
             node.removeHighestUnacknowledgedAlarm();
         }
         refreshView();
     }
-    
+
     /**
      * Refreshes the alarm tree view.
      */
@@ -97,19 +97,19 @@ public class AlarmTreeUpdater {
         Display.getDefault().asyncExec(new Runnable() {
             public void run() {
                 // FIXME: improve this!
-                IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+                final IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
                         .getActivePage();
-                IViewPart view = page.findView(AlarmTreeView.getID());
+                final IViewPart view = page.findView(AlarmTreeView.getID());
                 if (view instanceof AlarmTreeView) {
                     ((AlarmTreeView) view).refresh();
                 }
             }
         });
     }
-    
+
     /**
      * Returns a list of the alarm nodes with the given process variable name.
-     * 
+     *
      * @param name
      *            the process variable name.
      * @return a list of alarm nodes. If no nodes are found, returns an empty list.
@@ -117,5 +117,5 @@ public class AlarmTreeUpdater {
     private List<ProcessVariableNode> findNodes(final String name) {
         return _tree.findProcessVariableNodes(name);
     }
-    
+
 }

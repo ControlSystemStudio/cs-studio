@@ -28,8 +28,7 @@ import javax.naming.directory.SearchControls;
 
 import org.csstudio.utility.ldap.namespacebrowser.Activator;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
-import org.csstudio.utility.ldap.service.LdapService;
-import org.csstudio.utility.ldap.service.impl.LdapServiceImpl;
+import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.nameSpaceBrowser.utility.NameSpace;
 import org.csstudio.utility.namespace.utility.NameSpaceSearchResult;
 
@@ -42,7 +41,6 @@ import org.csstudio.utility.namespace.utility.NameSpaceSearchResult;
  */
 public class NameSpaceLDAP extends NameSpace {
 
-    private final LdapService _service = LdapServiceImpl.getInstance();
 
 	/* (non-Javadoc)
 	 * @see org.csstudio.utility.nameSpaceBrowser.utility.NameSpace#start()
@@ -52,14 +50,15 @@ public class NameSpaceLDAP extends NameSpace {
 		try{
             final NameSpaceSearchResult nameSpaceResultList = getNameSpaceResultList();
             if (nameSpaceResultList instanceof LdapSearchResult) {
+                final ILdapService service = Activator.getDefault().getLdapService();
 
                 LdapSearchResult result;
                 if(getSelection().endsWith("=*,")) {
-                    result = _service.retrieveSearchResult(getName(),
+                    result = service.retrieveSearchResultSynchronously(getName(),
                                                            getFilter(),
                                                            SearchControls.SUBTREE_SCOPE);
                 } else {
-                    result = _service.retrieveSearchResult(getName(),
+                    result = service.retrieveSearchResultSynchronously(getName(),
                                                            getFilter(),
                                                            SearchControls.ONELEVEL_SCOPE);
                 }

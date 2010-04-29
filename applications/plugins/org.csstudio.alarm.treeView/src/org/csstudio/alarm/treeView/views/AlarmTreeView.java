@@ -39,8 +39,8 @@ import org.csstudio.alarm.treeView.ldap.AlarmTreeBuilder;
 import org.csstudio.alarm.treeView.ldap.DirectoryEditException;
 import org.csstudio.alarm.treeView.ldap.DirectoryEditor;
 import org.csstudio.alarm.treeView.ldap.UpdateTreeLdapReader;
+import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
-import org.csstudio.alarm.treeView.model.LdapObjectClass;
 import org.csstudio.alarm.treeView.model.ProcessVariableNode;
 import org.csstudio.alarm.treeView.model.Severity;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
@@ -50,6 +50,7 @@ import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableNameTransfer;
 import org.csstudio.platform.ui.util.EditorUtil;
 import org.csstudio.sds.ui.runmode.RunModeService;
+import org.csstudio.utility.ldap.LdapObjectClass;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
@@ -250,7 +251,7 @@ public class AlarmTreeView extends ViewPart {
             if (nodes.isEmpty()) {
                 return false;
             }
-            final SubtreeNode firstParent = nodes.get(0).getParent();
+            final IAlarmSubtreeNode firstParent = nodes.get(0).getParent();
             for (final IAlarmTreeNode node : nodes) {
                 if (node.getParent() != firstParent) {
                     return false;
@@ -377,16 +378,15 @@ public class AlarmTreeView extends ViewPart {
         /**
          * Returns whether the first node is a direct or indirect child of the second node.
          */
-        private boolean isChild(final SubtreeNode child, final IAlarmTreeNode parent) {
-            final SubtreeNode directParent = child.getParent();
+        private boolean isChild(final IAlarmSubtreeNode directParent2, final IAlarmTreeNode parent) {
+            final IAlarmSubtreeNode directParent = directParent2.getParent();
             if (directParent == null) {
                 return false;
             }
             if (directParent == parent) {
                 return true;
-            } else {
-                return isChild(directParent, parent);
             }
+            return isChild(directParent, parent);
         }
 
         public void dragEnter(final DropTargetEvent event) {
@@ -770,7 +770,7 @@ public class AlarmTreeView extends ViewPart {
         _log.debug("Starting directory reader.");
         final IWorkbenchSiteProgressService progressService = (IWorkbenchSiteProgressService) getSite()
                 .getAdapter(IWorkbenchSiteProgressService.class);
-        final SubtreeNode rootNode = new SubtreeNode("ROOT");
+        final SubtreeNode rootNode = new SubtreeNode.Builder("ROOT", null).build();
 
         final Job directoryReaderJob = new Job("LDAPDirectoryReader") {
             @Override
@@ -1360,7 +1360,7 @@ public class AlarmTreeView extends ViewPart {
                 final Object selected = selection.getFirstElement();
                 if (selected instanceof IAlarmTreeNode) {
                     final IAlarmTreeNode nodeToDelete = (IAlarmTreeNode) selected;
-                    final SubtreeNode parent = nodeToDelete.getParent();
+                    final IAlarmSubtreeNode parent = nodeToDelete.getParent();
                     try {
                         DirectoryEditor.delete(nodeToDelete);
                         _viewer.refresh(parent);

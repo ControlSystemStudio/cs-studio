@@ -25,11 +25,15 @@ import java.util.Set;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.naming.directory.DirContext;
 
 import org.csstudio.utility.ldap.model.IOC;
 import org.csstudio.utility.ldap.model.Record;
+import org.csstudio.utility.ldap.reader.LDAPReader;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
+import org.csstudio.utility.ldap.reader.LDAPReader.IJobCompletedCallBack;
+import org.csstudio.utility.ldap.reader.LDAPReader.LdapSearchParams;
 
 /**
  * LDAP Service.
@@ -39,8 +43,7 @@ import org.csstudio.utility.ldap.reader.LdapSearchResult;
  * @version $Revision$
  * @since 08.04.2010
  */
-public interface LdapService {
-
+public interface ILdapService {
 
     /**
      * Retrieves the LDAP entries for the records belonging to the given facility and IOC.
@@ -70,7 +73,7 @@ public interface LdapService {
      * @param facilityName .
      * @param validRecords .
      */
-    void tidyUpIocEntryInLdap(@Nonnull DirContext context, String iocName, String facilityName, Set<Record> validRecords);
+    void tidyUpIocEntryInLdap(@Nonnull DirContext context, @Nonnull String iocName,@Nonnull String facilityName,@Nonnull Set<Record> validRecords);
 
     /**
      * Removes the IOC entry from the LDAP context.
@@ -78,7 +81,7 @@ public interface LdapService {
      * @param context .
      * @param ioc .
      */
-    void removeIocEntryFromLdap(DirContext context, IOC ioc);
+    void removeIocEntryFromLdap(@Nonnull DirContext context,@Nonnull IOC ioc);
 
     /**
      * Removes the IOC entry from the LDAP context.
@@ -86,7 +89,7 @@ public interface LdapService {
      * @param iocName .
      * @param facilityName .
      */
-    void removeIocEntryFromLdap(@Nonnull DirContext context,  String iocName, String facilityName);
+    void removeIocEntryFromLdap(@Nonnull DirContext context,@Nonnull  String iocName,@Nonnull String facilityName);
 
 
     /**
@@ -95,7 +98,7 @@ public interface LdapService {
      * @param ioc .
      * @param record .
      */
-    void removeRecordEntryFromLdap(@Nonnull DirContext context,  IOC ioc,  Record record);
+    void removeRecordEntryFromLdap(@Nonnull DirContext context,@Nonnull  IOC ioc,@Nonnull  Record record);
 
 
     /**
@@ -103,18 +106,34 @@ public interface LdapService {
      * @param recordName .
      * @return the IOC containing this record
      */
+    @CheckForNull
     IOC getIOCForRecordName(@Nonnull String recordName);
 
 
     /**
-     * Retrieves LDAP entries for the given query and search scope.
+     * Retrieves LDAP entries for the given query and search scope synchronously.
+     * Blocks until the LDAP read has been performed!
      *
      * @param searchRoot search root
      * @param filter the query filter
      * @param searchScope the search scope
      * @return the search result
      */
-    LdapSearchResult retrieveSearchResult(String searchRoot, String filter, int searchScope);
+    @CheckForNull
+    LdapSearchResult retrieveSearchResultSynchronously(@Nonnull String searchRoot, @Nonnull String filter, int searchScope);
+
+    /**
+     * Returns an LDAPReader job that can be scheduled by the user arbitrarily.
+     *
+     * @param params the LDAP search params
+     * @param result the
+     * @param callBack called on job completion
+     * @return the LDAP reader job
+     */
+    @Nonnull
+    LDAPReader createLdapReaderJob(@Nonnull LdapSearchParams params,
+                                   @Nullable LdapSearchResult result,
+                                   @Nullable IJobCompletedCallBack callBack);
 
 
 }

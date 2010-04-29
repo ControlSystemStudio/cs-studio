@@ -29,8 +29,8 @@ import static org.junit.Assert.assertTrue;
 
 import javax.naming.ldap.LdapName;
 
-import org.csstudio.alarm.treeView.model.LdapObjectClass;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
+import org.csstudio.utility.ldap.LdapObjectClass;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -43,11 +43,11 @@ public class TreeBuilderTest {
 	private SubtreeNode _a;
 	private SubtreeNode _b;
 	private LdapName _nameB;
-	
+
 	/**
 	 * <p>Initializes a tree for testing. The tree will have the following
 	 * structure:</p>
-	 * 
+	 *
 	 * <pre>
 	 * root           [SubtreeNode]
 	 *   +--a         [SubtreeNode, efan=a]
@@ -56,69 +56,69 @@ public class TreeBuilderTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		_tree = new SubtreeNode("root");
-		_a = new SubtreeNode(_tree, "a", LdapObjectClass.FACILITY);
-		_b = new SubtreeNode(_a, "b", LdapObjectClass.COMPONENT);
-		
+		_tree = new SubtreeNode.Builder("root", null).build();
+		_a = new SubtreeNode.Builder("a", LdapObjectClass.FACILITY).setParent(_tree).build();
+		_b = new SubtreeNode.Builder("b", LdapObjectClass.COMPONENT).setParent(_a).build();
+
 		_nameB = new LdapName("ecom=b,efan=a");
 	}
-	
+
 	@Test
 	public void testDirectoryNames() throws Exception {
 		assertEquals(new LdapName("efan=a"), _a.getLdapName());
 		assertEquals(new LdapName("ecom=b,efan=a"), _b.getLdapName());
 	}
-	
+
 	@Test
 	public void testDirectoryNameOfNodeWithSpecialCharacters() throws Exception {
-		LdapName name = new LdapName("ecom=c\\=1\\,2,efan=a");
-		SubtreeNode node = TreeBuilder.findCreateSubtreeNode(_tree, name);
+		final LdapName name = new LdapName("ecom=c\\=1\\,2,efan=a");
+		final SubtreeNode node = AlarmTreeBuilder.findCreateSubtreeNode(_tree, name);
 		assertEquals(name, node.getLdapName());
 	}
-	
+
 	@Test
 	public void testFindExistingSubtreeNode() throws Exception {
-		SubtreeNode node = TreeBuilder.findCreateSubtreeNode(_tree, _nameB);
+		final SubtreeNode node = AlarmTreeBuilder.findCreateSubtreeNode(_tree, _nameB);
 		assertSame(_b, node);
 	}
-	
+
 	@Test
 	public void testCreateNewSubtreeNode() throws Exception {
-		LdapName name = new LdapName("ecom=c,efan=a");
-		SubtreeNode node = TreeBuilder.findCreateSubtreeNode(_tree, name);
+		final LdapName name = new LdapName("ecom=c,efan=a");
+		final SubtreeNode node = AlarmTreeBuilder.findCreateSubtreeNode(_tree, name);
 		assertNotNull(node);
 		assertSame(node, _a.getChild("c"));
 		assertSame(_a, node.getParent());
 		assertEquals(name, node.getLdapName());
 	}
-	
+
 	@Test
 	public void testCreateSubtreeNodeWithSpecialCharacters() throws Exception {
-		LdapName name = new LdapName("ecom=c\\=1\\,2,efan=a");
-		SubtreeNode node = TreeBuilder.findCreateSubtreeNode(_tree, name);
+		final LdapName name = new LdapName("ecom=c\\=1\\,2,efan=a");
+		final SubtreeNode node = AlarmTreeBuilder.findCreateSubtreeNode(_tree, name);
 		assertNotNull(node);
 		assertSame(node, _a.getChild("c=1,2"));
 		assertSame(_a, node.getParent());
 	}
-	
+
 	@Test
 	public void testFindParentOfPv() throws Exception {
-		LdapName name = new LdapName("eren=pv:1,efan=a");
-		SubtreeNode parent = TreeBuilder.findCreateParentNode(_tree, name);
+		final LdapName name = new LdapName("eren=pv:1,efan=a");
+		final SubtreeNode parent = AlarmTreeBuilder.findCreateParentNode(_tree, name);
 		assertSame(_a, parent);
 	}
-	
+
 	@Test
 	public void testFindParentOfPvWithSpecialCharacters() throws Exception {
-		LdapName name = new LdapName("eren=pv\\=1\\,2,efan=a");
-		SubtreeNode parent = TreeBuilder.findCreateParentNode(_tree, name);
+		final LdapName name = new LdapName("eren=pv\\=1\\,2,efan=a");
+		final SubtreeNode parent = AlarmTreeBuilder.findCreateParentNode(_tree, name);
 		assertSame(_a, parent);
 	}
-	
+
 	@Test
 	public void testCreateParentForPv() throws Exception {
-		LdapName name = new LdapName("efen=pv:2,ecom=c,efan=a");
-		SubtreeNode parent = TreeBuilder.findCreateParentNode(_tree, name);
+		final LdapName name = new LdapName("efen=pv:2,ecom=c,efan=a");
+		final SubtreeNode parent = AlarmTreeBuilder.findCreateParentNode(_tree, name);
 		assertTrue(_a.getChild("c") instanceof SubtreeNode);
 		assertSame(_a, parent.getParent());
 		assertEquals(new LdapName("ecom=c,efan=a"), parent.getLdapName());

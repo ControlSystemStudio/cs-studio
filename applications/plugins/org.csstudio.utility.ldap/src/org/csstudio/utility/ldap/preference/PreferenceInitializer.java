@@ -21,7 +21,7 @@
  */
 package org.csstudio.utility.ldap.preference;
 
-import org.csstudio.utility.ldap.Activator;
+import org.csstudio.utility.ldap.LdapActivator;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
@@ -36,7 +36,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
      */
     @Override
     public final void initializeDefaultPreferences() {
-        final IEclipsePreferences prefs = new DefaultScope().getNode(Activator.PLUGIN_ID);
+        final IEclipsePreferences prefs = new DefaultScope().getNode(LdapActivator.PLUGIN_ID);
 
         prefs.put(PreferenceKey.P_STRING_USER_DN.name(), "uid=css_user,ou=people,o=DESY,c=DE"); //$NON-NLS-1$
         prefs.put(PreferenceKey.P_STRING_USER_PASSWORD.name(), "cssPass"); //$NON-NLS-1$

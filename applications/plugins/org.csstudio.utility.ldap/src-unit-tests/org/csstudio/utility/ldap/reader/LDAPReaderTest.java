@@ -27,10 +27,10 @@ import javax.naming.directory.SearchControls;
 
 import junit.framework.Assert;
 
+import org.csstudio.utility.ldap.LdapActivator;
 import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
 import org.csstudio.utility.ldap.model.LdapContentModel;
-import org.csstudio.utility.ldap.service.LdapService;
-import org.csstudio.utility.ldap.service.impl.LdapServiceImpl;
+import org.csstudio.utility.ldap.service.ILdapService;
 import org.junit.Test;
 
 
@@ -40,21 +40,21 @@ import org.junit.Test;
  */
 public class LDAPReaderTest {
 
-    private final LdapService _service = LdapServiceImpl.getInstance();
+    final ILdapService service = LdapActivator.getDefault().getLdapService();
 
     /**
      * Test method for {@link org.csstudio.utility.ldap.reader.LDAPReader}.
-	 */
-	@Test
+     */
+    @Test
     public final void testLDAPServiceFacilityLookup() {
 
-	    final LdapSearchResult result =
-	        _service.retrieveSearchResult(LdapFieldsAndAttributes.OU_FIELD_NAME + LdapFieldsAndAttributes.FIELD_ASSIGNMENT + LdapFieldsAndAttributes.EPICS_CTRL_FIELD_VALUE,
-	                                      any(LdapFieldsAndAttributes.EFAN_FIELD_NAME),
-	                                      SearchControls.SUBTREE_SCOPE);
+        final LdapSearchResult result =
+            service.retrieveSearchResultSynchronously(LdapFieldsAndAttributes.OU_FIELD_NAME + LdapFieldsAndAttributes.FIELD_ASSIGNMENT + LdapFieldsAndAttributes.EPICS_CTRL_FIELD_VALUE,
+                                                      any(LdapFieldsAndAttributes.EFAN_FIELD_NAME),
+                                                      SearchControls.SUBTREE_SCOPE);
 
-	    final LdapContentModel model = new LdapContentModel(result);
+        final LdapContentModel model = new LdapContentModel(result);
 
-		Assert.assertTrue(!model.getFacilities().isEmpty());
-	}
+        Assert.assertTrue(!model.getFacilities().isEmpty());
+    }
 }
