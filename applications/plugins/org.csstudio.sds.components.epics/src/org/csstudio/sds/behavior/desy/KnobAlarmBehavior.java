@@ -19,6 +19,7 @@
 package org.csstudio.sds.behavior.desy;
 
 import org.csstudio.sds.components.model.KnobModel;
+import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.MetaData;
 
 /**
@@ -36,13 +37,59 @@ public class KnobAlarmBehavior extends AbstractDesyAlarmBehavior<KnobModel> {
      * Constructor.
      */
     public KnobAlarmBehavior() {
-        // add Invisible P0roperty Id here
-        // addInvisiblePropertyId
+     // add Invisible Property Id here
+        addInvisiblePropertyId(KnobModel.PROP_MIN);
+        addInvisiblePropertyId(KnobModel.PROP_MAX);
+        addInvisiblePropertyId(KnobModel.PROP_HIHI_LEVEL);
+        addInvisiblePropertyId(KnobModel.PROP_HI_LEVEL);
+        addInvisiblePropertyId(KnobModel.PROP_LOLO_LEVEL);
+        addInvisiblePropertyId(KnobModel.PROP_LO_LEVEL);
+        addInvisiblePropertyId(KnobModel.PROP_TRANSPARENT);
+        addInvisiblePropertyId(KnobModel.PROP_ACTIONDATA);
+        addInvisiblePropertyId(KnobModel.PROP_BORDER_STYLE);
+        addInvisiblePropertyId(KnobModel.PROP_SHOW_HI);
+        addInvisiblePropertyId(KnobModel.PROP_SHOW_HIHI);
+        addInvisiblePropertyId(KnobModel.PROP_SHOW_LO);
+        addInvisiblePropertyId(KnobModel.PROP_SHOW_LOLO);
+        addInvisiblePropertyId(KnobModel.PROP_VALUE);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doProcessValueChange(final KnobModel model, final AnyData anyData) {
+        super.doProcessValueChange(model, anyData);
+        // .. fill level (influenced by current value)
+        model.setPropertyValue(KnobModel.PROP_VALUE, anyData.numberValue());
     }
 
     @Override
-    protected void doProcessMetaDataChange(final KnobModel widget, final MetaData metaData) {
-        // do nothing
+    protected void doProcessMetaDataChange(final KnobModel widget, final MetaData meta) {
+        if (meta != null) {
+            // .. limits
+            widget.setPropertyValue(KnobModel.PROP_MIN, meta.getDisplayLow());
+            widget.setPropertyValue(KnobModel.PROP_MAX, meta.getDisplayHigh());
+
+            widget.setPropertyValue(KnobModel.PROP_HIHI_LEVEL, meta.getAlarmHigh());
+            widget.setPropertyValue(KnobModel.PROP_SHOW_HIHI, !Double.isNaN(meta.getAlarmHigh()));
+
+            widget.setPropertyValue(KnobModel.PROP_HI_LEVEL, meta.getWarnHigh());
+            widget.setPropertyValue(KnobModel.PROP_SHOW_HI, !Double.isNaN(meta.getWarnHigh()));
+
+            widget.setPropertyValue(KnobModel.PROP_LOLO_LEVEL, meta.getAlarmLow());
+            widget.setPropertyValue(KnobModel.PROP_SHOW_LOLO, !Double.isNaN(meta.getAlarmLow()));
+
+            widget.setPropertyValue(KnobModel.PROP_LO_LEVEL, meta.getWarnLow());
+            widget.setPropertyValue(KnobModel.PROP_SHOW_LO, !Double.isNaN(meta.getWarnLow()));
+        }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String[] doGetSettablePropertyIds() {
+        return new String[] { KnobModel.PROP_VALUE };
+    }
 }

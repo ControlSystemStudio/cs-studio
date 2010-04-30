@@ -34,8 +34,13 @@
 		*/
 package org.csstudio.sds.behavior.desy;
 
+import org.csstudio.sds.components.model.AbstractMarkedWidgetModel;
 import org.csstudio.sds.components.model.ThermometerModel;
+import org.csstudio.sds.model.AbstractWidgetModel;
+import org.epics.css.dal.context.ConnectionState;
+import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.MetaData;
+import org.epics.css.dal.simple.Severity;
 
 /**
  * Default DESY-Behavior for the {@link ThermometerModel} widget with Connection state and Alarms.
@@ -48,22 +53,119 @@ import org.epics.css.dal.simple.MetaData;
  */
 public class ThermometerAlarmBehavior extends AbstractDesyAlarmBehavior<ThermometerModel> {
 
+    private String _defFillColor;
+    private String _defFillBackColor;
+
     /**
      * Constructor.
      */
     public ThermometerAlarmBehavior() {
-        // add Invisible P0roperty Id here
-        // addInvisiblePropertyId
-     }
+        addInvisiblePropertyId(AbstractMarkedWidgetModel.PROP_MIN);
+        addInvisiblePropertyId(AbstractMarkedWidgetModel.PROP_MAX);
+        addInvisiblePropertyId(AbstractMarkedWidgetModel.PROP_HIHI_LEVEL);
+        addInvisiblePropertyId(AbstractMarkedWidgetModel.PROP_HI_LEVEL);
+        addInvisiblePropertyId(AbstractMarkedWidgetModel.PROP_LOLO_LEVEL);
+        addInvisiblePropertyId(AbstractMarkedWidgetModel.PROP_LO_LEVEL);
+        addInvisiblePropertyId(ThermometerModel.PROP_FILL_COLOR);
+        addInvisiblePropertyId(ThermometerModel.PROP_FILLBACKGROUND_COLOR);
+        addInvisiblePropertyId(AbstractMarkedWidgetModel.PROP_TRANSPARENT);
+        addInvisiblePropertyId(AbstractMarkedWidgetModel.PROP_ACTIONDATA);
+        addInvisiblePropertyId(AbstractMarkedWidgetModel.PROP_BORDER_STYLE);
+        addInvisiblePropertyId(AbstractMarkedWidgetModel.PROP_SHOW_HI);
+        addInvisiblePropertyId(AbstractMarkedWidgetModel.PROP_SHOW_HIHI);
+        addInvisiblePropertyId(AbstractMarkedWidgetModel.PROP_SHOW_LO);
+        addInvisiblePropertyId(AbstractMarkedWidgetModel.PROP_SHOW_LOLO);
+        addInvisiblePropertyId(AbstractMarkedWidgetModel.PROP_VALUE);
+    }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected void doProcessMetaDataChange(final ThermometerModel widget, final MetaData metaData) {
-        // TODO Auto-generated method stub
-
+    protected void doInitialize(final ThermometerModel widget) {
+        super.doInitialize(widget);
+        _defFillColor = widget.getColor(ThermometerModel.PROP_FILL_COLOR);
+        _defFillBackColor = widget.getColor(ThermometerModel.PROP_FILLBACKGROUND_COLOR);
     }
 
 
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doProcessValueChange(final ThermometerModel model, final AnyData anyData) {
+//        super.doProcessValueChange(model, anyData);
+        // .. fill level (influenced by current value)
+        model.setPropertyValue(AbstractMarkedWidgetModel.PROP_VALUE, anyData.numberValue());
+        // .. fill color (influenced by severity)
+        model.setPropertyValue(ThermometerModel.PROP_FILL_COLOR,
+                determineColorBySeverity(anyData.getSeverity(), null));
+        Severity severity = anyData.getSeverity();
+        if (severity != null) {
+            if (severity.isInvalid()) {
+                model.setPropertyValue(AbstractWidgetModel.PROP_CROSSED_OUT, true);
+            } else {
+                model.setPropertyValue(AbstractWidgetModel.PROP_CROSSED_OUT, false);
+            }
+        }
+    }
+//    /**
+//     * {@inheritDoc}
+//     */
+//    @Override
+//    protected void doProcessValueChange(final ThermometerModel model, final AnyData anyData) {
+//        super.doProcessValueChange(model, anyData);
+//        // .. fill level (influenced by current value)
+//        model.setPropertyValue(AbstractMarkedWidgetModel.PROP_VALUE, anyData.numberValue());
+//        model.setPropertyValue(ThermometerModel.PROP_FILL_COLOR,
+//                determineColorBySeverity(anyData.getSeverity(), null));
+//        Severity severity = anyData.getSeverity();
+//        if (severity != null) {
+//            if (severity.isInvalid()) {
+//                model.setPropertyValue(AbstractWidgetModel.PROP_CROSSED_OUT, true);
+//            } else {
+//                model.setPropertyValue(AbstractWidgetModel.PROP_CROSSED_OUT, false);
+//            }
+//        }
+//    }
+
+    @Override
+    protected void doProcessConnectionStateChange(final ThermometerModel widget, final ConnectionState connectionState) {
+//        super.doProcessConnectionStateChange(widget, connectionState);
+        String fillBackColor = (connectionState==ConnectionState.CONNECTED)?_defFillBackColor  : determineBackgroundColor(connectionState);
+        widget.setPropertyValue(ThermometerModel.PROP_FILLBACKGROUND_COLOR, fillBackColor);
+        String fillColor = (connectionState==ConnectionState.CONNECTED)?_defFillColor  : determineBackgroundColor(connectionState);
+        widget.setPropertyValue(ThermometerModel.PROP_FILL_COLOR, fillColor);
+
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doProcessMetaDataChange(final ThermometerModel widget, final MetaData meta) {
+        if (meta != null) {
+            // .. limits
+            widget.setPropertyValue(AbstractMarkedWidgetModel.PROP_MIN, meta.getDisplayLow());
+            widget.setPropertyValue(AbstractMarkedWidgetModel.PROP_MAX, meta.getDisplayHigh());
+
+            widget.setPropertyValue(AbstractMarkedWidgetModel.PROP_HIHI_LEVEL, meta.getAlarmHigh());
+            widget.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_HIHI, !Double.isNaN(meta.getAlarmHigh()));
+
+            widget.setPropertyValue(AbstractMarkedWidgetModel.PROP_HI_LEVEL, meta.getWarnHigh());
+            widget.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_HI, !Double.isNaN(meta.getWarnHigh()));
+
+            widget.setPropertyValue(AbstractMarkedWidgetModel.PROP_LOLO_LEVEL, meta.getAlarmLow());
+            widget.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_LOLO, !Double.isNaN(meta.getAlarmLow()));
+
+            widget.setPropertyValue(AbstractMarkedWidgetModel.PROP_LO_LEVEL, meta.getWarnLow());
+            widget.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_LO, !Double.isNaN(meta.getWarnLow()));
+        }
+    }
+
+    @Override
+    protected String[] doGetSettablePropertyIds() {
+        return new String[] { AbstractMarkedWidgetModel.PROP_VALUE };
+    }
 }

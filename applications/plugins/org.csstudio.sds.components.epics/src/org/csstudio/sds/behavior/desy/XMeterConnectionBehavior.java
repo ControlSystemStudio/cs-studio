@@ -41,8 +41,6 @@ public class XMeterConnectionBehavior extends AbstractDesyConnectionBehavior<XMe
         addInvisiblePropertyId(XMeterModel.PROP_HI_LEVEL);
         addInvisiblePropertyId(XMeterModel.PROP_LOLO_LEVEL);
         addInvisiblePropertyId(XMeterModel.PROP_LO_LEVEL);
-        // addInvisiblePropertyId(XMeterModel.PROP_FILL_COLOR);
-        // addInvisiblePropertyId(XMeterModel.PROP_FILLBACKGROUND_COLOR);
         addInvisiblePropertyId(XMeterModel.PROP_TRANSPARENT);
         addInvisiblePropertyId(XMeterModel.PROP_ACTIONDATA);
         addInvisiblePropertyId(XMeterModel.PROP_BORDER_STYLE);

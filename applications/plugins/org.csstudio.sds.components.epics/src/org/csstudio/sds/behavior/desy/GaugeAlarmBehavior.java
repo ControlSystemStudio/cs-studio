@@ -19,6 +19,7 @@
 package org.csstudio.sds.behavior.desy;
 
 import org.csstudio.sds.components.model.GaugeModel;
+import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.MetaData;
 
 /**
@@ -36,13 +37,51 @@ public class GaugeAlarmBehavior extends AbstractDesyAlarmBehavior<GaugeModel> {
      * Constructor.
      */
     public GaugeAlarmBehavior() {
-        // add Invisible P0roperty Id here
-        // addInvisiblePropertyId
+        // add Invisible Property Id here
+        addInvisiblePropertyId(GaugeModel.PROP_MIN);
+        addInvisiblePropertyId(GaugeModel.PROP_MAX);
+        addInvisiblePropertyId(GaugeModel.PROP_HIHI_LEVEL);
+        addInvisiblePropertyId(GaugeModel.PROP_HI_LEVEL);
+        addInvisiblePropertyId(GaugeModel.PROP_LOLO_LEVEL);
+        addInvisiblePropertyId(GaugeModel.PROP_LO_LEVEL);
+        addInvisiblePropertyId(GaugeModel.PROP_TRANSPARENT);
+        addInvisiblePropertyId(GaugeModel.PROP_ACTIONDATA);
+        addInvisiblePropertyId(GaugeModel.PROP_BORDER_STYLE);
+        addInvisiblePropertyId(GaugeModel.PROP_SHOW_HI);
+        addInvisiblePropertyId(GaugeModel.PROP_SHOW_HIHI);
+        addInvisiblePropertyId(GaugeModel.PROP_SHOW_LO);
+        addInvisiblePropertyId(GaugeModel.PROP_SHOW_LOLO);
+        addInvisiblePropertyId(GaugeModel.PROP_VALUE);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doProcessValueChange(final GaugeModel model, final AnyData anyData) {
+        super.doProcessValueChange(model, anyData);
+        // .. fill level (influenced by current value)
+        model.setPropertyValue(GaugeModel.PROP_VALUE, anyData.numberValue());
     }
 
     @Override
-    protected void doProcessMetaDataChange(final GaugeModel widget, final MetaData metaData) {
-        // do nothing
-    }
+    protected void doProcessMetaDataChange(final GaugeModel widget, final MetaData meta) {
+        if (meta != null) {
+            // .. limits
+            widget.setPropertyValue(GaugeModel.PROP_MIN, meta.getDisplayLow());
+            widget.setPropertyValue(GaugeModel.PROP_MAX, meta.getDisplayHigh());
 
+            widget.setPropertyValue(GaugeModel.PROP_HIHI_LEVEL, meta.getAlarmHigh());
+            widget.setPropertyValue(GaugeModel.PROP_SHOW_HIHI, !Double.isNaN(meta.getAlarmHigh()));
+
+            widget.setPropertyValue(GaugeModel.PROP_HI_LEVEL, meta.getWarnHigh());
+            widget.setPropertyValue(GaugeModel.PROP_SHOW_HI, !Double.isNaN(meta.getWarnHigh()));
+
+            widget.setPropertyValue(GaugeModel.PROP_LOLO_LEVEL, meta.getAlarmLow());
+            widget.setPropertyValue(GaugeModel.PROP_SHOW_LOLO, !Double.isNaN(meta.getAlarmLow()));
+
+            widget.setPropertyValue(GaugeModel.PROP_LO_LEVEL, meta.getWarnLow());
+            widget.setPropertyValue(GaugeModel.PROP_SHOW_LO, !Double.isNaN(meta.getWarnLow()));
+        }
+    }
 }

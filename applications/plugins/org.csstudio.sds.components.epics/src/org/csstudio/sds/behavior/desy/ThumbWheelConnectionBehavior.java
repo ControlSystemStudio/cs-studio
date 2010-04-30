@@ -19,6 +19,7 @@
 package org.csstudio.sds.behavior.desy;
 
 import org.csstudio.sds.components.model.ThumbWheelModel;
+import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.MetaData;
 
 /**
@@ -40,8 +41,22 @@ public class ThumbWheelConnectionBehavior extends AbstractDesyConnectionBehavior
         // addInvisiblePropertyId
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doProcessValueChange(final ThumbWheelModel model, final AnyData anyData) {
+        super.doProcessValueChange(model, anyData);
+        model.setPropertyValue(ThumbWheelModel.PROP_VALUE, anyData.numberValue());
+    }
+
     @Override
     protected void doProcessMetaDataChange(final ThumbWheelModel widget, final MetaData metaData) {
         // do noting
+    }
+
+    @Override
+    protected String[] doGetSettablePropertyIds() {
+        return new String[] { ThumbWheelModel.PROP_VALUE };
     }
 }

@@ -34,6 +34,7 @@
 		*/
 package org.csstudio.sds.behavior.desy;
 
+import org.csstudio.sds.components.model.AbstractMarkedWidgetModel;
 import org.csstudio.sds.components.model.TankModel;
 import org.epics.css.dal.context.ConnectionState;
 import org.epics.css.dal.simple.AnyData;
@@ -56,22 +57,22 @@ public class TankConnectionBehavior extends AbstractDesyConnectionBehavior<TankM
      * Constructor.
      */
     public TankConnectionBehavior() {
-        addInvisiblePropertyId(TankModel.PROP_MIN);
-        addInvisiblePropertyId(TankModel.PROP_MAX);
-        addInvisiblePropertyId(TankModel.PROP_HIHI_LEVEL);
-        addInvisiblePropertyId(TankModel.PROP_HI_LEVEL);
-        addInvisiblePropertyId(TankModel.PROP_LOLO_LEVEL);
-        addInvisiblePropertyId(TankModel.PROP_LO_LEVEL);
+        addInvisiblePropertyId(AbstractMarkedWidgetModel.PROP_MIN);
+        addInvisiblePropertyId(AbstractMarkedWidgetModel.PROP_MAX);
+        addInvisiblePropertyId(AbstractMarkedWidgetModel.PROP_HIHI_LEVEL);
+        addInvisiblePropertyId(AbstractMarkedWidgetModel.PROP_HI_LEVEL);
+        addInvisiblePropertyId(AbstractMarkedWidgetModel.PROP_LOLO_LEVEL);
+        addInvisiblePropertyId(AbstractMarkedWidgetModel.PROP_LO_LEVEL);
         addInvisiblePropertyId(TankModel.PROP_FILL_COLOR);
         addInvisiblePropertyId(TankModel.PROP_FILLBACKGROUND_COLOR);
-        addInvisiblePropertyId(TankModel.PROP_TRANSPARENT);
-        addInvisiblePropertyId(TankModel.PROP_ACTIONDATA);
-        addInvisiblePropertyId(TankModel.PROP_BORDER_STYLE);
-        addInvisiblePropertyId(TankModel.PROP_SHOW_HI);
-        addInvisiblePropertyId(TankModel.PROP_SHOW_HIHI);
-        addInvisiblePropertyId(TankModel.PROP_SHOW_LO);
-        addInvisiblePropertyId(TankModel.PROP_SHOW_LOLO);
-        addInvisiblePropertyId(TankModel.PROP_VALUE);
+        addInvisiblePropertyId(AbstractMarkedWidgetModel.PROP_TRANSPARENT);
+        addInvisiblePropertyId(AbstractMarkedWidgetModel.PROP_ACTIONDATA);
+        addInvisiblePropertyId(AbstractMarkedWidgetModel.PROP_BORDER_STYLE);
+        addInvisiblePropertyId(AbstractMarkedWidgetModel.PROP_SHOW_HI);
+        addInvisiblePropertyId(AbstractMarkedWidgetModel.PROP_SHOW_HIHI);
+        addInvisiblePropertyId(AbstractMarkedWidgetModel.PROP_SHOW_LO);
+        addInvisiblePropertyId(AbstractMarkedWidgetModel.PROP_SHOW_LOLO);
+        addInvisiblePropertyId(AbstractMarkedWidgetModel.PROP_VALUE);
     }
 
     /**
@@ -114,20 +115,20 @@ public class TankConnectionBehavior extends AbstractDesyConnectionBehavior<TankM
     protected void doProcessMetaDataChange(final TankModel widget, final MetaData meta) {
         if (meta != null) {
             // .. limits
-            widget.setPropertyValue(TankModel.PROP_MIN, meta.getDisplayLow());
-            widget.setPropertyValue(TankModel.PROP_MAX, meta.getDisplayHigh());
+            widget.setPropertyValue(AbstractMarkedWidgetModel.PROP_MIN, meta.getDisplayLow());
+            widget.setPropertyValue(AbstractMarkedWidgetModel.PROP_MAX, meta.getDisplayHigh());
 
-            widget.setPropertyValue(TankModel.PROP_HIHI_LEVEL, meta.getAlarmHigh());
-            widget.setPropertyValue(TankModel.PROP_SHOW_HIHI, !Double.isNaN(meta.getAlarmHigh()));
+            widget.setPropertyValue(AbstractMarkedWidgetModel.PROP_HIHI_LEVEL, meta.getAlarmHigh());
+            widget.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_HIHI, !Double.isNaN(meta.getAlarmHigh()));
 
-            widget.setPropertyValue(TankModel.PROP_HI_LEVEL, meta.getWarnHigh());
-            widget.setPropertyValue(TankModel.PROP_SHOW_HI, !Double.isNaN(meta.getWarnHigh()));
+            widget.setPropertyValue(AbstractMarkedWidgetModel.PROP_HI_LEVEL, meta.getWarnHigh());
+            widget.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_HI, !Double.isNaN(meta.getWarnHigh()));
 
-            widget.setPropertyValue(TankModel.PROP_LOLO_LEVEL, meta.getAlarmLow());
-            widget.setPropertyValue(TankModel.PROP_SHOW_LOLO, !Double.isNaN(meta.getAlarmLow()));
+            widget.setPropertyValue(AbstractMarkedWidgetModel.PROP_LOLO_LEVEL, meta.getAlarmLow());
+            widget.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_LOLO, !Double.isNaN(meta.getAlarmLow()));
 
-            widget.setPropertyValue(TankModel.PROP_LO_LEVEL, meta.getWarnLow());
-            widget.setPropertyValue(TankModel.PROP_SHOW_LO, !Double.isNaN(meta.getWarnLow()));
+            widget.setPropertyValue(AbstractMarkedWidgetModel.PROP_LO_LEVEL, meta.getWarnLow());
+            widget.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_LO, !Double.isNaN(meta.getWarnLow()));
         }
     }
 
