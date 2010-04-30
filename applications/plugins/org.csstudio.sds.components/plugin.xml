@@ -262,6 +262,30 @@
             skipOnLoad="false"
             widgetId="org.csstudio.sds.components.BooleanSwitch">
       </widgetPropertyPostProcessor>
+      <widgetPropertyPostProcessor
+            class="org.csstudio.sds.components.model.eventing.AbstractMarkedWidgetShowHiHiPostProcessor"
+            propertyId="showHIHI"
+            skipOnLoad="false"
+            widgetId="org.csstudio.sds.components.Gauge,org.csstudio.sds.components.Knob,org.csstudio.sds.components.ScaledSlider,org.csstudio.sds.components.Tank,org.csstudio.sds.components.Thermometer,org.csstudio.sds.components.XMeter">
+      </widgetPropertyPostProcessor>
+      <widgetPropertyPostProcessor
+            class="org.csstudio.sds.components.model.eventing.AbstractMarkedWidgetShowHiPostProcessor"
+            propertyId="showHI"
+            skipOnLoad="false"
+            widgetId="org.csstudio.sds.components.Gauge,org.csstudio.sds.components.Knob,org.csstudio.sds.components.ScaledSlider,org.csstudio.sds.components.Tank,org.csstudio.sds.components.Thermometer,org.csstudio.sds.components.XMeter">
+      </widgetPropertyPostProcessor>
+      <widgetPropertyPostProcessor
+            class="org.csstudio.sds.components.model.eventing.AbstractMarkedWidgetShowLoLoPostProcessor"
+            propertyId="showLOLO"
+            skipOnLoad="false"
+            widgetId="org.csstudio.sds.components.Gauge,org.csstudio.sds.components.Knob,org.csstudio.sds.components.ScaledSlider,org.csstudio.sds.components.Tank,org.csstudio.sds.components.Thermometer,org.csstudio.sds.components.XMeter">
+      </widgetPropertyPostProcessor>
+      <widgetPropertyPostProcessor
+            class="org.csstudio.sds.components.model.eventing.AbstractMarkedWidgetShowLoPostProcessor"
+            propertyId="showLO"
+            skipOnLoad="false"
+            widgetId="org.csstudio.sds.components.Gauge,org.csstudio.sds.components.Knob,org.csstudio.sds.components.ScaledSlider,org.csstudio.sds.components.Tank,org.csstudio.sds.components.Thermometer,org.csstudio.sds.components.XMeter">
+      </widgetPropertyPostProcessor>
    </extension>
 
 </plugin>
