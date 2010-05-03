@@ -21,6 +21,9 @@ package org.csstudio.sds.behavior.desy;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.csstudio.sds.components.model.TextInputModel;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.LabelModel;
@@ -70,16 +73,16 @@ public abstract class AbstractDesyConnectionBehavior<W extends AbstractWidgetMod
      *
      * @param id Invisible Property Id
      */
-    protected final void addInvisiblePropertyId(final String id) {
+    protected final void addInvisiblePropertyId(@Nonnull final String id) {
         _invisiblePropertyIds.add(id);
     }
 
-    protected final void removeInvisiblePropertyId(final String id) {
+    protected final void removeInvisiblePropertyId(@Nonnull final String id) {
         _invisiblePropertyIds.remove(id);
     }
 
     @Override
-    protected void doInitialize(final W widget) {
+    protected void doInitialize(@Nonnull final W widget) {
         _normalBackgroundColor = widget.getPropertyInternal(LabelModel.PROP_COLOR_BACKGROUND)
                 .getPropertyValue().toString();
         widget.setPropertyValue(AbstractWidgetModel.PROP_COLOR_BACKGROUND,
@@ -87,8 +90,8 @@ public abstract class AbstractDesyConnectionBehavior<W extends AbstractWidgetMod
     }
 
     @Override
-    protected void doProcessConnectionStateChange(final W widget,
-                                                  final ConnectionState connectionState) {
+    protected void doProcessConnectionStateChange(@Nonnull final W widget,
+                                                  @Nullable final ConnectionState connectionState) {
         if ( (connectionState != null) && (connectionState == ConnectionState.CONNECTED)) {
             widget.setPropertyValue(LabelModel.PROP_COLOR_BACKGROUND, _normalBackgroundColor);
         } else {
@@ -98,7 +101,7 @@ public abstract class AbstractDesyConnectionBehavior<W extends AbstractWidgetMod
     }
 
     @Override
-    protected void doProcessValueChange(final W model, final AnyData anyData) {
+    protected void doProcessValueChange(@Nonnull final W model,@Nonnull final AnyData anyData) {
         Severity severity = anyData.getSeverity();
         if ( (severity != null) && severity.isInvalid()) {
             model.setPropertyValue(AbstractWidgetModel.PROP_CROSSED_OUT, true);

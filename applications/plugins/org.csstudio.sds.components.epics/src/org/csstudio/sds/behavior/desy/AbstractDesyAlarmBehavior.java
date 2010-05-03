@@ -18,6 +18,9 @@
  */
 package org.csstudio.sds.behavior.desy;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.epics.css.dal.context.ConnectionState;
 import org.epics.css.dal.simple.AnyData;
@@ -48,22 +51,15 @@ public abstract class AbstractDesyAlarmBehavior<W extends AbstractWidgetModel> e
         addInvisiblePropertyId(AbstractWidgetModel.PROP_BORDER_WIDTH);
     }
 
-    protected void doInitialize(final W widget) {
+    @Override
+    protected void doInitialize(@Nonnull final W widget) {
         super.doInitialize(widget);
-//        _defColor = widget.getColor(AbstractWidgetModel.PROP_BORDER_COLOR);
-    };
+    }
 
     @Override
-    protected void doProcessConnectionStateChange(final W widget,
-                                                  final ConnectionState connectionState) {
+    protected void doProcessConnectionStateChange(@Nonnull final W widget,
+                                                  @Nullable final ConnectionState connectionState) {
         super.doProcessConnectionStateChange(widget, connectionState);
-//        widget.setPropertyValue(LabelModel.PROP_COLOR_BACKGROUND,determineBackgroundColor(connectionState));
-//        if ( (connectionState != null) && (connectionState == ConnectionState.CONNECTED)) {
-//            widget.setPropertyValue(LabelModel.PROP_COLOR_BACKGROUND, _normalBackgroundColor);
-//        } else {
-//            widget.setPropertyValue(LabelModel.PROP_COLOR_BACKGROUND,
-//                                    determineBackgroundColor(connectionState));
-//        }
     }
 
     /**
@@ -71,7 +67,7 @@ public abstract class AbstractDesyAlarmBehavior<W extends AbstractWidgetModel> e
      * {@inheritDoc}
      */
     @Override
-    protected void doProcessValueChange(final W model, final AnyData anyData) {
+    protected void doProcessValueChange(@Nonnull final W model,@Nonnull final AnyData anyData) {
         Severity severity = anyData.getSeverity();
         if (severity != null) {
             if (severity.isInvalid()) {
@@ -85,5 +81,5 @@ public abstract class AbstractDesyAlarmBehavior<W extends AbstractWidgetModel> e
             model.setPropertyValue(AbstractWidgetModel.PROP_BORDER_WIDTH, SeverityUtil
                                    .determineBorderWidthBySeverity(severity));
         }
-    };
+    }
 }
