@@ -18,7 +18,11 @@
  */
 package org.csstudio.sds.behavior.desy;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.csstudio.sds.components.model.AdvancedSliderModel;
+import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.MetaData;
 
 /**
@@ -37,11 +41,30 @@ public class AdvancedSliderConnectionBehavior extends AbstractDesyConnectionBeha
      */
     public AdvancedSliderConnectionBehavior() {
         // add Invisible Property Id here
-        // addInvisiblePropertyId
+         addInvisiblePropertyId(AdvancedSliderModel.PROP_MAX);
+         addInvisiblePropertyId(AdvancedSliderModel.PROP_MIN);
+         addInvisiblePropertyId(AdvancedSliderModel.PROP_VALUE);
     }
 
     @Override
-    protected void doProcessMetaDataChange(final AdvancedSliderModel widget, final MetaData metaData) {
-        // do noting
+    protected void doProcessValueChange(@Nonnull final AdvancedSliderModel model,@Nonnull final AnyData anyData) {
+        super.doProcessValueChange(model, anyData);
+        // .. update slider value
+        model.setPropertyValue(AdvancedSliderModel.PROP_VALUE, anyData.doubleValue());
+    }
+
+    @Override
+    protected void doProcessMetaDataChange(@Nonnull final AdvancedSliderModel widget,@Nullable final MetaData meta) {
+        if (meta != null) {
+            // .. update min / max
+            widget.setPropertyValue(AdvancedSliderModel.PROP_MAX, meta.getDisplayHigh());
+            widget.setPropertyValue(AdvancedSliderModel.PROP_MIN, meta.getDisplayLow());
+        }
+    }
+
+    @Override
+    @Nonnull
+    protected String[] doGetSettablePropertyIds() {
+        return new String[] { AdvancedSliderModel.PROP_VALUE };
     }
 }
