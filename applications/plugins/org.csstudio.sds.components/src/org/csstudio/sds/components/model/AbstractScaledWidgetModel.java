@@ -5,7 +5,7 @@ import org.csstudio.sds.model.WidgetPropertyCategory;
 
 /**
  * This class defines a common widget model for any widget which has a scale.
- * 
+ *
  * @author Xihui Chen
  */
 public abstract class AbstractScaledWidgetModel extends AbstractWidgetModel {
@@ -17,13 +17,13 @@ public abstract class AbstractScaledWidgetModel extends AbstractWidgetModel {
 	public static final String PROP_VALUE = "value"; //$NON-NLS-1$
 
 	/** The ID of the minimum property. */
-	public static final String PROP_MIN = "minimum"; //$NON-NLS-1$		
+	public static final String PROP_MIN = "minimum"; //$NON-NLS-1$
 
 	/** The ID of the maximum property. */
-	public static final String PROP_MAX = "maximum"; //$NON-NLS-1$		
+	public static final String PROP_MAX = "maximum"; //$NON-NLS-1$
 
 	/** The ID of the major tick step hint property. */
-	public static final String PROP_MAJOR_TICK_STEP_HINT = "majorTickStepHint"; //$NON-NLS-1$		
+	public static final String PROP_MAJOR_TICK_STEP_HINT = "majorTickStepHint"; //$NON-NLS-1$
 
 	/** The ID of the show minor ticks property. */
 	public static final String PROP_SHOW_MINOR_TICKS = "showMinorTicks"; //$NON-NLS-1$
@@ -32,7 +32,7 @@ public abstract class AbstractScaledWidgetModel extends AbstractWidgetModel {
 	public static final String PROP_SHOW_SCALE = "showScale"; //$NON-NLS-1$
 
 	/** The ID of the log scale property. */
-	public static final String PROP_LOG_SCALE = "logScale"; //$NON-NLS-1$	
+	public static final String PROP_LOG_SCALE = "logScale"; //$NON-NLS-1$
 
 	/** The default value of the value property. */
 	private static final double DEFAULT_VALUE = 50;
@@ -53,18 +53,19 @@ public abstract class AbstractScaledWidgetModel extends AbstractWidgetModel {
 
 		addDoubleProperty(PROP_VALUE, "Value", WidgetPropertyCategory.BEHAVIOR, DEFAULT_VALUE);
 
-		addDoubleProperty(PROP_MIN, "Minimum", WidgetPropertyCategory.BEHAVIOR, DEFAULT_MIN);
+		addDoubleProperty(PROP_MAX, "Maximum", WidgetPropertyCategory.SCALE, DEFAULT_MAX);
 
-		addDoubleProperty(PROP_MAX, "Maximum", WidgetPropertyCategory.BEHAVIOR, DEFAULT_MAX);
+		addDoubleProperty(PROP_MIN, "Minimum", WidgetPropertyCategory.SCALE, DEFAULT_MIN);
 
-		addDoubleProperty(PROP_MAJOR_TICK_STEP_HINT, "Major Tick Step Hint", WidgetPropertyCategory.DISPLAY, DEFAULT_MAJOR_TICK_STEP_HINT, 1,
-				1000);
+		addBooleanProperty(PROP_SHOW_SCALE, "Show Scale", WidgetPropertyCategory.SCALE, true);
 
-		addBooleanProperty(PROP_SHOW_MINOR_TICKS, "Show Minor Ticks", WidgetPropertyCategory.DISPLAY, true);
+		addBooleanProperty(PROP_LOG_SCALE, "Log Scale", WidgetPropertyCategory.SCALE, false);
 
-		addBooleanProperty(PROP_SHOW_SCALE, "Show Scale", WidgetPropertyCategory.DISPLAY, true);
+		addDoubleProperty(PROP_MAJOR_TICK_STEP_HINT, "Major Tick Step Hint", WidgetPropertyCategory.SCALE, DEFAULT_MAJOR_TICK_STEP_HINT, 1,
+		                  1000);
 
-		addBooleanProperty(PROP_LOG_SCALE, "Log Scale", WidgetPropertyCategory.DISPLAY, false);
+		addBooleanProperty(PROP_SHOW_MINOR_TICKS, "Show Minor Ticks", WidgetPropertyCategory.SCALE, true);
+
 
 	}
 
@@ -119,7 +120,7 @@ public abstract class AbstractScaledWidgetModel extends AbstractWidgetModel {
 
 	/**
 	 * Returns, if this widget should have a transparent background.
-	 * 
+	 *
 	 * @return boolean True, if it should have a transparent background, false
 	 *         otherwise
 	 */

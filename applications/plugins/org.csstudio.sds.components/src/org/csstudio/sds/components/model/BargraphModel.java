@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
+/*
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.sds.components.model;
@@ -26,9 +26,9 @@ import org.csstudio.sds.model.WidgetPropertyCategory;
 
 /**
  * This class defines an bargraph widget model.
- * 
+ *
  * @author Kai Meyer
- * 
+ *
  */
 public final class BargraphModel extends AbstractWidgetModel {
 
@@ -170,30 +170,30 @@ public final class BargraphModel extends AbstractWidgetModel {
 	@Override
 	protected void configureProperties() {
 		addDoubleProperty(PROP_FILL, "Value", WidgetPropertyCategory.BEHAVIOR, DEFAULT_FILL);
-		
+
 		// Colors
 		addColorProperty(PROP_DEFAULT_FILL_COLOR, "Fill Color", WidgetPropertyCategory.DISPLAY, DEFAULT_FILL_COLOR, AbstractWidgetModel.PROP_COLOR_BACKGROUND);
 		addColorProperty(PROP_FILLBACKGROUND_COLOR, "Color Fillbackground", WidgetPropertyCategory.DISPLAY, DEFAULT_FILLBACKGROUND_COLOR, PROP_DEFAULT_FILL_COLOR);
 		addBooleanProperty(PROP_TRANSPARENT, "Transparent Background", WidgetPropertyCategory.DISPLAY, true);
-		
+
 		// Levels
-		addDoubleProperty(PROP_MAX, "Maximum", WidgetPropertyCategory.BEHAVIOR, DEFAULT_LEVELS[6]);
-		addDoubleProperty(PROP_HIHI_LEVEL, "Level HIHI", WidgetPropertyCategory.BEHAVIOR, DEFAULT_LEVELS[5]);
-		addDoubleProperty(PROP_HI_LEVEL, "Level HI", WidgetPropertyCategory.BEHAVIOR, DEFAULT_LEVELS[4]);
-		addDoubleProperty(PROP_LO_LEVEL, "Level LO", WidgetPropertyCategory.BEHAVIOR, DEFAULT_LEVELS[2]);
-		addDoubleProperty(PROP_LOLO_LEVEL, "Level LOLO", WidgetPropertyCategory.BEHAVIOR, DEFAULT_LEVELS[1]);
-		addDoubleProperty(PROP_MIN, "Minimum", WidgetPropertyCategory.BEHAVIOR, DEFAULT_LEVELS[0]);
-		
+		addDoubleProperty(PROP_MAX, "Maximum", WidgetPropertyCategory.SCALE, DEFAULT_LEVELS[6]);
+		addDoubleProperty(PROP_MIN, "Minimum", WidgetPropertyCategory.SCALE, DEFAULT_LEVELS[0]);
+		addArrayOptionProperty(PROP_SHOW_SCALE, "Scale", WidgetPropertyCategory.SCALE, SHOW_LABELS, DEFAULT_SHOW_SCALE);
+		addDoubleProperty(PROP_HIHI_LEVEL, "Level HIHI", WidgetPropertyCategory.SCALE, DEFAULT_LEVELS[5]);
+		addDoubleProperty(PROP_HI_LEVEL, "Level HI", WidgetPropertyCategory.SCALE, DEFAULT_LEVELS[4]);
+		addDoubleProperty(PROP_LO_LEVEL, "Level LO", WidgetPropertyCategory.SCALE, DEFAULT_LEVELS[2]);
+		addDoubleProperty(PROP_LOLO_LEVEL, "Level LOLO", WidgetPropertyCategory.SCALE, DEFAULT_LEVELS[1]);
+
 		// Show_Value
-		addBooleanProperty(PROP_SHOW_ONLY_VALUE, "Show only value", WidgetPropertyCategory.DISPLAY, false);
+		addBooleanProperty(PROP_SHOW_ONLY_VALUE, "Show only value", WidgetPropertyCategory.SCALE, false);
 
 		addBooleanProperty(PROP_ORIENTATION, "Horizontal Orientation", WidgetPropertyCategory.DISPLAY, DEFAULT_ORIENTATION_HORIZONTAL);
-		addArrayOptionProperty(PROP_SHOW_MARKS, "Tickmarks", WidgetPropertyCategory.DISPLAY, SHOW_LABELS, DEFAULT_SHOW_MARKS);
-		
-		addArrayOptionProperty(PROP_SHOW_SCALE, "Scale", WidgetPropertyCategory.DISPLAY, SHOW_LABELS, DEFAULT_SHOW_SCALE);
+		addArrayOptionProperty(PROP_SHOW_MARKS, "Tickmarks", WidgetPropertyCategory.SCALE, SHOW_LABELS, DEFAULT_SHOW_MARKS);
+
 		addIntegerProperty(PROP_SCALE_SECTION_COUNT, "Scale Sections", WidgetPropertyCategory.DISPLAY, DEFAULT_SECTION_COUNT, 1, Integer.MAX_VALUE);
-		addBooleanProperty(PROP_SHOW_VALUES, "Scale Caption", WidgetPropertyCategory.DISPLAY, DEFAULT_SHOW_VALUES);
-		
+		addBooleanProperty(PROP_SHOW_VALUES, "Scale Caption", WidgetPropertyCategory.SCALE, DEFAULT_SHOW_VALUES);
+
 	}
 
 	/**
@@ -230,7 +230,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 
 	/**
 	 * Gets the fill level.
-	 * 
+	 *
 	 * @return double The fill level
 	 */
 	public double getFillLevel() {
@@ -239,7 +239,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 
 	/**
 	 * Gets the orientation.
-	 * 
+	 *
 	 * @return the orientation
 	 */
 	public boolean getOrientation() {
@@ -248,7 +248,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 
 	/**
 	 * Gets the minimum value for this model.
-	 * 
+	 *
 	 * @return double The minimum value
 	 */
 	public double getMinimum() {
@@ -257,7 +257,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 
 	/**
 	 * Gets the lolo level for this model.
-	 * 
+	 *
 	 * @return double The lolo level
 	 */
 	public double getLoloLevel() {
@@ -266,7 +266,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 
 	/**
 	 * Gets the lo level for this model.
-	 * 
+	 *
 	 * @return double The lo level
 	 */
 	public double getLoLevel() {
@@ -275,7 +275,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 
 	/**
 	 * Gets the hi level for this model.
-	 * 
+	 *
 	 * @return double The hi level
 	 */
 	public double getHiLevel() {
@@ -284,7 +284,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 
 	/**
 	 * Gets the minimum value for this model.
-	 * 
+	 *
 	 * @return double The minimum value
 	 */
 	public double getHihiLevel() {
@@ -293,7 +293,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 
 	/**
 	 * Gets the maximum value for this model.
-	 * 
+	 *
 	 * @return double The maximum value
 	 */
 	public double getMaximum() {
@@ -302,7 +302,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 
 	/**
 	 * Gets, if the values should be shown or not.
-	 * 
+	 *
 	 * @return boolean true, if the values should be shown, false otherwise
 	 */
 	public boolean isShowValues() {
@@ -311,7 +311,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 
 	/**
 	 * Gets, if the marks should be shown or not.
-	 * 
+	 *
 	 * @return int 0 = don't show, 1 = show Bottom/Right, 2 = show Top/Left
 	 */
 	public int getShowMarks() {
@@ -320,7 +320,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 
 	/**
 	 * Gets, if the scale should be shown or not.
-	 * 
+	 *
 	 * @return int 0 = don't show, 1 = show Bottom/Right, 2 = show Top/Left
 	 */
 	public int getShowScale() {
@@ -329,7 +329,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 
 	/**
 	 * Gets the count of section in the scale.
-	 * 
+	 *
 	 * @return int The count of sections in the scale
 	 */
 	public int getScaleSectionCount() {
@@ -338,7 +338,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 
 	/**
 	 * Return if only the current value should be showed.
-	 * 
+	 *
 	 * @return True if only the value should be shown, false otherwise
 	 */
 	public boolean getShowOnlyValue() {
@@ -347,7 +347,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 
 	/**
 	 * Returns, if this widget should have a transparent background.
-	 * 
+	 *
 	 * @return boolean True, if it should have a transparent background, false
 	 *         otherwise
 	 */
