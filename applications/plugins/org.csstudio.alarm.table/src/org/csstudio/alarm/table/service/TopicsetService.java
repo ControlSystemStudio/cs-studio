@@ -47,21 +47,22 @@ public class TopicsetService implements ITopicsetService {
     @Override
     public void createAndConnectForTopicSet(final TopicSet topicSet,
                                             final MessageList messageList,
-                                            final IAlarmTableListener alarmListener) {
+                                            final IAlarmTableListener alarmTableListener) {
         assert !hasTopicSet(topicSet) : "Failed: !hasTopicSet(" + topicSet.getName() + ")";
         assert messageList != null : "Failed: messageList != null";
-        assert alarmListener != null : "Failed: alarmListener != null";
+        assert alarmTableListener != null : "Failed: alarmTableListener != null";
         
         Element element = new Element();
         element._connection = JmsLogsPlugin.getDefault().getAlarmService().newAlarmConnection();
         element._messageList = messageList;
+        element._alarmTableListener = alarmTableListener;
         try {
             // TODO jp liste übergeben statt array
             element._connection.connectWithListenerForTopics(new AlarmConnectionMonitor(),
-                                                             alarmListener,
+                                                             element._alarmTableListener,
                                                              topicSet.getTopics()
                                                                      .toArray(new String[0]));
-            alarmListener.setMessageList(element._messageList);
+            element._alarmTableListener.setMessageList(element._messageList);
         } catch (AlarmConnectionException e) {
             // TODO jp error handling when connection fails: should be delivered to calling view
             e.printStackTrace();
@@ -100,6 +101,12 @@ public class TopicsetService implements ITopicsetService {
         return _topicSetMap.get(topicSet.getName())._messageList;
     }
     
+    @Override
+    public IAlarmTableListener getAlarmTableListenerForTopicSet(final TopicSet topicSet) {
+        assert hasTopicSet(topicSet) : "Failed: hasTopicSet(" + topicSet.getName() + ")";
+        return _topicSetMap.get(topicSet.getName())._alarmTableListener;
+    }
+    
     /**
      * {@inheritDoc}
      */
@@ -114,5 +121,6 @@ public class TopicsetService implements ITopicsetService {
     private static final class Element {
         IAlarmConnection _connection;
         MessageList _messageList;
+        IAlarmTableListener _alarmTableListener;
     }
 }

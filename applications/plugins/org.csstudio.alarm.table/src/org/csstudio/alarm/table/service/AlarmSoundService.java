@@ -18,7 +18,9 @@
 package org.csstudio.alarm.table.service;
 
 import java.io.BufferedInputStream;
-import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -28,7 +30,11 @@ import javazoom.jl.player.Player;
 import org.csstudio.alarm.table.preferences.JmsLogPreferenceConstants;
 import org.csstudio.alarm.table.preferences.JmsLogPreferencePage;
 import org.csstudio.platform.logging.CentralLogger;
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.osgi.framework.Bundle;
 
 /**
  * Implementation of the alarm sound service
@@ -68,15 +74,10 @@ public class AlarmSoundService implements IAlarmSoundService {
             return;
         }
         
-        // The first caller fills the queue. As long as the sound is played, all others will pass
-        // by.
-        synchronized (this) {
-            if (_queue.isEmpty()) {
-                CentralLogger.getInstance().debug(this, "player will start");
-                _queue.add(severity);
-            } else {
-                _log.debug(this, "playAlarmSound for " + severity + ": ignored, already playing");
-            }
+        if (_queue.offer(severity)) {
+            _log.debug(this, "sound for severity " + severity + " has been queued");
+        } else {
+            _log.debug(this, "sound for severity " + severity + " has been ignored");
         }
     }
     
@@ -126,38 +127,57 @@ public class AlarmSoundService implements IAlarmSoundService {
     }
     
     private Thread createPlayerThread() {
-        return new Thread() {
-            private Player _mp3Player;
-            private BufferedInputStream _bufferedInputStream;
+        return new Thread("AlarmSoundService") {
             
             @Override
             public void run() {
+                Player mp3Player = null;
+                BufferedInputStream bufferedInputStream = null;
+                
                 while (true) {
                     try {
+                        // Remove entries which occurred during previous playtime
+                        _queue.clear();
+                        
                         // Wait for entry
                         String severity = _queue.take();
-                        CentralLogger.getInstance().debug(this, "player started");
+                        _log.debug(this, "player started");
                         
-                        _bufferedInputStream = new BufferedInputStream(new FileInputStream(getMp3Path(severity)));
-                        _mp3Player = new Player(_bufferedInputStream);
-                        _mp3Player.play();
+                        bufferedInputStream = new BufferedInputStream(getSoundStreamForSeverity(severity));
+                        mp3Player = new Player(bufferedInputStream);
+                        mp3Player.play();
                     } catch (Exception e) {
-                        CentralLogger.getInstance().warn(this, "player stopped on error ", e);
+                        _log.warn(this, "player stopped on error ", e);
                     } finally {
-                        CentralLogger.getInstance().debug(this, "player has finished");
-                        _queue.clear();
+                        _log.debug(this, "player has finished");
                         try {
-                            if (_bufferedInputStream != null) {
-                                _bufferedInputStream.close();
+                            if (bufferedInputStream != null) {
+                                bufferedInputStream.close();
                             }
-                            if (_mp3Player != null) {
-                                _mp3Player.close();
+                            if (mp3Player != null) {
+                                mp3Player.close();
                             }
                         } catch (Exception e2) {
+                            _log.warn(this, "error while closing ressources", e2);
                             // can't help it
                         }
                     }
                 }
+            }
+            
+            /**
+             * The sound ressource is located in the product bundle.
+             * 
+             * @param severity
+             * @return
+             * @throws IOException
+             */
+            private InputStream getSoundStreamForSeverity(final String severity) throws IOException {
+                String mp3Path = getMp3Path(severity);
+                Bundle bundle = Platform.getProduct().getDefiningBundle();
+                URL url = FileLocator.find(bundle, new Path(mp3Path), null);
+                InputStream stream = url.openStream();
+                return stream;
             };
         };
     }

@@ -77,6 +77,14 @@ public interface ITopicsetService {
     IAlarmConnection getAlarmConnectionForTopicSet(TopicSet topicSet);
     
     /**
+     * Precondition: hasTopicSet(topicSet)
+     * 
+     * @param topicSet .
+     * @return the alarm table listener for the given topic set
+     */
+    IAlarmTableListener getAlarmTableListenerForTopicSet(TopicSet topicSet);
+    
+    /**
      * This service is intended to be local to a view. It keeps track of the connections, so they
      * can be disconnected here at once. This is usually called from whithin the views dispose
      * method.

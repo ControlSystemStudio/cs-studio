@@ -20,17 +20,21 @@ package org.csstudio.alarm.table.ui;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.csstudio.alarm.service.declaration.AlarmMessageException;
+import org.csstudio.alarm.service.declaration.IAlarmListener;
+import org.csstudio.alarm.service.declaration.IAlarmMessage;
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.SendAcknowledge;
 import org.csstudio.alarm.table.dataModel.AlarmMessage;
 import org.csstudio.alarm.table.dataModel.AlarmMessageList;
 import org.csstudio.alarm.table.dataModel.MessageList;
 import org.csstudio.alarm.table.internal.localization.Messages;
+import org.csstudio.alarm.table.jms.IAlarmTableListener;
 import org.csstudio.alarm.table.preferences.JmsLogPreferenceConstants;
 import org.csstudio.alarm.table.preferences.TopicSetColumnService;
 import org.csstudio.alarm.table.preferences.alarm.AlarmViewPreferenceConstants;
+import org.csstudio.alarm.table.service.IAlarmSoundService;
 import org.csstudio.alarm.table.ui.messagetable.AlarmMessageTable;
-import org.csstudio.alarm.table.utility.Functions;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.security.SecurityFacade;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -48,12 +52,6 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.IViewReference;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PlatformUI;
 
 /**
  * Add to the base class {@link LogView}: acknowledge button and combo box, send method for jms
@@ -65,14 +63,6 @@ import org.eclipse.ui.PlatformUI;
  * @version $Revision$
  * @since 06.06.2007
  */
-/**
- * TODO (jpenning) :
- * 
- * @author jpenning
- * @author $Author$
- * @version $Revision$
- * @since 27.04.2010
- */
 public class AlarmView extends LogView {
     
     public static final String ID = AlarmView.class.getName();
@@ -82,6 +72,8 @@ public class AlarmView extends LogView {
     private Button soundEnableButton;
     
     private Button _ackButton;
+    
+    private final SoundHandler _soundHandler = new SoundHandler();
     
     /**
      * Creates the view for the alarm log table.
@@ -133,20 +125,26 @@ public class AlarmView extends LogView {
             
             @Override
             public void widgetDefaultSelected(final SelectionEvent e) {
-                // TODO Auto-generated method stub
-                
+                // Nothing to do
             }
         });
         
-        // Set initial state
-        getAlarmListener().enableSound(soundEnableButton.getSelection());
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void dispose() {
+        super.dispose();
+        _messageTable = null;
+        _soundHandler.enableSound(false);
     }
     
     /**
      * {@inheritDoc}
      */
     protected void initializeMessageTable() {
-        
         // Initialize JMS message list
         if (_columnMapping != null) {
             _columnMapping.saveColumn(AlarmViewPreferenceConstants.P_STRINGAlarm,
@@ -206,6 +204,8 @@ public class AlarmView extends LogView {
         
         _parent.layout();
         
+        // Set initial state for playing sounds based on the state of the sound enable button
+        _soundHandler.enableSound(soundEnableButton.getSelection());
     }
     
     @Override
@@ -315,55 +315,13 @@ public class AlarmView extends LogView {
         soundEnableButton = new Button(soundButtonGroup, SWT.TOGGLE);
         soundEnableButton.setLayoutData(new RowData(60, 21));
         soundEnableButton.setText(Messages.AlarmView_soundButtonEnable);
-        if (Functions.is_sound()) {
-            soundEnableButton.setSelection(true);
-        }
+        
+        // TODO jp Set initial state for playing sounds based on saved state
+        soundEnableButton.setSelection(true);
         
         soundEnableButton.addSelectionListener(new SelectionListener() {
             public void widgetSelected(final SelectionEvent e) {
-                getAlarmListener().enableSound(soundEnableButton.getSelection());
-                understandingViews();
-            }
-            
-            private void understandingViews() {
-                IWorkbench workbench = PlatformUI.getWorkbench();
-                IWorkbenchWindow[] workbenchWindows = workbench.getWorkbenchWindows();
-                for (IWorkbenchWindow iWorkbenchWindow : workbenchWindows) {
-                    System.out.println("WorkbenchWindows: " + iWorkbenchWindow.toString());
-                    IWorkbenchPage[] iWorkbenchPages = iWorkbenchWindow.getPages();
-                    for (IWorkbenchPage iWorkbenchPage : iWorkbenchPages) {
-                        System.out.println("WorkbenchPages: " + iWorkbenchPage.toString()
-                                + ", Label: " + iWorkbenchPage.getLabel());
-                        // IEditorReference[] editorReferences = iWorkbenchPage
-                        // .getEditorReferences();
-                        // for (IEditorReference iEditorReference : editorReferences) {
-                        // System.out.println("EditorReferences, id: "
-                        // + iEditorReference.getId() + ", name: "
-                        // + iEditorReference.getName() + ", title: "
-                        // + iEditorReference.getTitle());
-                        // }
-                        IViewReference[] viewReferences = iWorkbenchPage.getViewReferences();
-                        for (IViewReference iViewReference : viewReferences) {
-                            System.out.println("ViewReference, id: " + iViewReference.getId()
-                                    + ", sec.id: " + iViewReference.getSecondaryId() + ", name: "
-                                    + iViewReference.getPartName() + ", title: "
-                                    + iViewReference.getTitle());
-                            IViewPart viewPart = iViewReference.getView(false);
-                            if (viewPart != null) {
-                                System.out.println("ViewPart: " + viewPart.toString() + ", title: "
-                                        + viewPart.getTitle());
-                            } else {
-                                System.out.println("ViewPart is null");
-                            }
-                        }
-                    }
-                }
-                IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-                System.out.println("active WorkbenchWindow: " + window.toString());
-                IWorkbenchPage page = window.getActivePage();
-                System.out.println("active WorkbenchPage: " + page.toString() + ", Label: "
-                        + page.getLabel());
-                
+                _soundHandler.enableSound(soundEnableButton.getSelection());
             }
             
             public void widgetDefaultSelected(final SelectionEvent e) {
@@ -372,12 +330,65 @@ public class AlarmView extends LogView {
         });
     }
     
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void dispose() {
-        super.dispose();
-        _messageTable = null;
+    private final class SoundHandler {
+        
+        /**
+         * Service for playing sounds
+         */
+        private final IAlarmSoundService _alarmSoundService = JmsLogsPlugin.getDefault()
+                .getAlarmSoundService();
+        
+        /**
+         * This listener listens to incoming messages for playing sounds. Each sound handler uses
+         * only one sound playing listener and registers it at the appropriate alarm table listener.
+         */
+        private IAlarmListener _soundPlayingListener = null;
+        
+        /**
+         * Keep track where the sound playing listener is registered
+         */
+        private final List<IAlarmTableListener> _alarmTableListener = new ArrayList<IAlarmTableListener>();
+        
+        public SoundHandler() {
+            // Nothing to do
+        }
+        
+        private IAlarmListener getSoundPlayingListener() {
+            if (_soundPlayingListener == null) {
+                _soundPlayingListener = new IAlarmListener() {
+                    
+                    @Override
+                    public void stop() {
+                        // Nothing to do
+                    }
+                    
+                    @Override
+                    public void onMessage(final IAlarmMessage message) {
+                        try {
+                            _alarmSoundService.playAlarmSound(message.getString("SEVERITY"));
+                        } catch (AlarmMessageException e) {
+                            CentralLogger.getInstance().warn(this, "Error reading message", e);
+                        }
+                    }
+                };
+            }
+            return _soundPlayingListener;
+        }
+        
+        public void enableSound(final boolean yes) {
+            // Built in a robust way: Deregister always, even if not present. Register at the
+            // current alarm table listener.
+            for (IAlarmTableListener alarmTableListener : _alarmTableListener) {
+                alarmTableListener.deRegisterAlarmListener(getSoundPlayingListener());
+            }
+            
+            if (yes) {
+                IAlarmTableListener currentAlarmTableListener = getAlarmTableListener();
+                _alarmTableListener.add(currentAlarmTableListener);
+                currentAlarmTableListener.registerAlarmListener(getSoundPlayingListener());
+            }
+        }
+        
     }
+    
 }

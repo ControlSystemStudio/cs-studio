@@ -1,20 +1,18 @@
 /*
  * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, Member of the Helmholtz Association,
- * (DESY), HAMBURG, GERMANY.
- * 
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. WITHOUT WARRANTY OF ANY
- * KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
- * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
- * DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE IN ANY RESPECT, THE USER ASSUMES
- * THE COST OF ANY NECESSARY SERVICING, REPAIR OR CORRECTION. THIS DISCLAIMER OF WARRANTY
- * CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER
- * EXCEPT UNDER THIS DISCLAIMER. DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES,
- * ENHANCEMENTS, OR MODIFICATIONS. THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION,
- * MODIFICATION, USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY AT
- * HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
+ * (DESY), HAMBURG, GERMANY. THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+ * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE IN ANY RESPECT,
+ * THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR CORRECTION. THIS DISCLAIMER OF
+ * WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. NO USE OF ANY SOFTWARE IS AUTHORIZED
+ * HEREUNDER EXCEPT UNDER THIS DISCLAIMER. DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT,
+ * UPDATES, ENHANCEMENTS, OR MODIFICATIONS. THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE
+ * REDISTRIBUTION, MODIFICATION, USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE
+ * DISTRIBUTION OF THIS PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY
+ * FIND A COPY AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
 package org.csstudio.alarm.table;
@@ -22,7 +20,6 @@ package org.csstudio.alarm.table;
 import org.csstudio.alarm.dbaccess.archivedb.ILogMessageArchiveAccess;
 import org.csstudio.alarm.dbaccess.archivedb.IMessageTypes;
 import org.csstudio.alarm.service.declaration.IAlarmService;
-import org.csstudio.alarm.table.dataModel.IMessageListService;
 import org.csstudio.alarm.table.jms.ISendMapMessage;
 import org.csstudio.alarm.table.jms.SendMapMessage;
 import org.csstudio.alarm.table.preferences.ISeverityMapping;
@@ -67,10 +64,6 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
     
     private ISendMapMessage _sendMapMessage;
     
-    private ServiceReference _serviceReferenceMessageListService;
-    
-    private IMessageListService _messageListService;
-    
     /**
      * Stateful service shared by the log views
      */
@@ -95,6 +88,9 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
      * The constructor.
      */
     public JmsLogsPlugin() {
+        if (plugin != null) {
+            throw new IllegalStateException("Attempt to call plugin constructor more than once.");
+        }
         plugin = this;
     }
     
@@ -113,19 +109,6 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
         _topicsetServiceForLogViews = new TopicsetService();
         _topicsetServiceForAlarmViews = new TopicsetService();
         _alarmSoundService = new AlarmSoundService();
-        
-        IMessageListService messageListService = new MessageListService();
-        
-        @SuppressWarnings("unused")
-        ServiceRegistration messageListServiceRegistration = context
-                .registerService(IMessageListService.class.getName(), messageListService, null);
-        
-        _serviceReferenceMessageListService = context.getServiceReference(IMessageListService.class
-                .getName());
-        if (_serviceReferenceMessageListService != null) {
-            _messageListService = (IMessageListService) context
-                    .getService(_serviceReferenceMessageListService);
-        }
         
         ISeverityMapping severityMapping = new SeverityMapping();
         
@@ -170,7 +153,6 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
     public void doStop(final BundleContext context) throws Exception {
         context.ungetService(_serviceReferenceMessageTypes);
         context.ungetService(_serviceReferenceArchiveAccess);
-        context.ungetService(_serviceReferenceMessageListService);
         context.ungetService(_serviceReferenceSendMapMessage);
         context.ungetService(_serviceReferenceSeverityMapping);
         
@@ -187,8 +169,7 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
     /**
      * Returns an image descriptor for the image file at the given plug-in relative path.
      * 
-     * @param path
-     *            the path
+     * @param path the path
      * @return the image descriptor
      */
     public static ImageDescriptor getImageDescriptor(final String path) {
@@ -234,10 +215,6 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
     
     public ISendMapMessage getSendMapMessage() {
         return _sendMapMessage;
-    }
-    
-    public IMessageListService getMessageListService() {
-        return _messageListService;
     }
     
     /**

@@ -21,8 +21,8 @@ import org.csstudio.alarm.service.declaration.IAlarmListener;
 import org.csstudio.alarm.table.dataModel.MessageList;
 
 /**
- * Listener for alarm tables use a message list as destination for the incoming messages. They can
- * also be asked to play an alarm sound when a message comes in.
+ * Listener for alarm tables use a message list as destination for the incoming messages. The
+ * listener allows for registration of another listener. This provides for view-based actions.
  * 
  * @author jpenning
  * @author $Author$
@@ -39,10 +39,17 @@ public interface IAlarmTableListener extends IAlarmListener {
     public void setMessageList(final MessageList messageList);
     
     /**
-     * Set enabled to true, if sound shall be played when a message comes in.
+     * Register an alarm listener, which is called when a message comes in.
      * 
-     * @param enabled .
+     * @param alarmListener
      */
-    void enableSound(boolean enabled);
+    void registerAlarmListener(IAlarmListener alarmListener);
+    
+    /**
+     * Deregister an alarm listener. If listener is not present, nothing happens.
+     * 
+     * @param alarmListener
+     */
+    void deRegisterAlarmListener(IAlarmListener alarmListener);
     
 }

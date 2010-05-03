@@ -86,12 +86,6 @@ public class LogView extends ViewPart {
     public MessageTable _messageTable = null;
     
     /**
-     * Listener for the incoming messages.
-     */
-    private final IAlarmTableListener _alarmListener = new AlarmListener(JmsLogsPlugin.getDefault()
-            .getAlarmSoundService());
-    
-    /**
      * Stateful service maintaining connections and message lists. There are two service
      * implementations available, one for the log views, one for the alarm views. Each is a
      * singleton, all views belonging together share the state. You have to override
@@ -264,27 +258,33 @@ public class LogView extends ViewPart {
     }
     
     /**
-     * Read access for subclasses
+     * Read access for subclasses<br>
+     * The alarm table listener may only be retrieved after a connection has been established, see
+     * getOrCreateCurrentMessageList.
      * 
-     * @return the alarm listener
+     * @return the alarm table listener
      */
-    protected IAlarmTableListener getAlarmListener() {
-        return _alarmListener;
+    protected IAlarmTableListener getAlarmTableListener() {
+        return _topicsetService.getAlarmTableListenerForTopicSet(_topicSetColumnService
+                .getJMSTopics(_currentTopicSet));
     }
     
     /**
      * Returns the existing message list for the current topic set or creates a new one. If no
-     * message list was present, a connection is implicitly created too. This is intended to be
-     * called in initializeMessageTable. Be sure to override createMessageList.
+     * message list was present, a connection and an alarm table listener is implicitly created too.
+     * This is intended to be called in initializeMessageTable. Be sure to override
+     * createMessageList.
      * 
      * @return the message list
      */
     protected final MessageList getOrCreateCurrentMessageList() {
         TopicSet topicSet = _topicSetColumnService.getJMSTopics(_currentTopicSet);
         if (!_topicsetService.hasTopicSet(topicSet)) {
+            IAlarmTableListener alarmTableListener = new AlarmListener(JmsLogsPlugin.getDefault()
+                    .getAlarmSoundService());
             _topicsetService.createAndConnectForTopicSet(topicSet,
                                                          createMessageList(),
-                                                         _alarmListener);
+                                                         alarmTableListener);
         }
         return _topicsetService.getMessageListForTopicSet(topicSet);
     }

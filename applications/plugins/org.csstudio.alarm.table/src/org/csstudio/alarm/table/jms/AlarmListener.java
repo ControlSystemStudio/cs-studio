@@ -17,17 +17,20 @@
 
 package org.csstudio.alarm.table.jms;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.csstudio.alarm.service.declaration.AlarmMessageException;
+import org.csstudio.alarm.service.declaration.IAlarmListener;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
-import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.dataModel.BasicMessage;
 import org.csstudio.alarm.table.dataModel.MessageList;
 import org.csstudio.alarm.table.service.IAlarmSoundService;
 import org.csstudio.platform.logging.CentralLogger;
 
 /**
- * Listens for alarm messages and prepares the necessary updates to the tree in response to those
- * messages. If no alarm tree is present, updates are queued internally for later application.
+ * Listens for alarm messages and adds incoming messages to the internally hold message list.
+ * Clients may register further listeners to provide view-based operations, e.g. sound.
  * 
  * @author Joerg Penning
  */
@@ -44,17 +47,15 @@ public class AlarmListener implements IAlarmTableListener {
     private MessageList _messageList;
     
     /**
-     * Service for playing sounds
+     * Registered listeners will be notified when a message comes in
      */
-    private final IAlarmSoundService _alarmSoundService;
-    
-    private boolean _soundEnabled = false;
+    private final List<IAlarmListener> _listeners = new ArrayList<IAlarmListener>();
     
     /**
      * Creates a new alarm message listener.
      */
     public AlarmListener(final IAlarmSoundService alarmSoundService) {
-        _alarmSoundService = alarmSoundService;
+        // TODO jp remove ctor
     }
     
     /**
@@ -71,45 +72,52 @@ public class AlarmListener implements IAlarmTableListener {
     public void onMessage(final IAlarmMessage message) {
         _log.debug(this, "received: " + message);
         try {
-            processAlarmMessage(message);
+            // TODO jp Kann hier null kommen?
+            if (message == null) {
+                _log.error(this, "Error processing message (was null)");
+            } else {
+                processAlarmMessage(message);
+                callListeners(message);
+            }
         } catch (AlarmMessageException e) {
             _log.error(this, "Error processing message", e);
         }
     }
     
-    /**
-     * Processes an alarm message.
-     */
-    private void processAlarmMessage(final IAlarmMessage message) throws AlarmMessageException {
-        // TODO jp Kann hier null kommen?
-        if (message == null) {
-            JmsLogsPlugin.logError("Message == null");
-        } else {
-            CentralLogger.getInstance().debug(this,
-                                              "Received map message: EVENTTIME: "
-                                                      + message.getString("EVENTTIME") + " NAME: "
-                                                      + message.getString("NAME") + " ACK: "
-                                                      + message.getString("ACK"));
-            _messageList.addMessage(new BasicMessage(message.getMap()));
-            if (_soundEnabled) {
-                _alarmSoundService.playAlarmSound(message.getString("SEVERITY"));
-            }
+    private void callListeners(final IAlarmMessage message) {
+        for (IAlarmListener listener : _listeners) {
+            listener.onMessage(message);
         }
     }
     
+    private void processAlarmMessage(final IAlarmMessage message) throws AlarmMessageException {
+        _log.debug(this, "Received map message: EVENTTIME: " + message.getString("EVENTTIME")
+                + " NAME: " + message.getString("NAME") + " ACK: " + message.getString("ACK"));
+        _messageList.addMessage(new BasicMessage(message.getMap()));
+    }
+    
     /**
-     * Set the messageList which is the destination for the messages
-     * 
-     * @param messageList .
+     * {@inheritDoc}
      */
+    @Override
     public void setMessageList(final MessageList messageList) {
         _messageList = messageList;
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void enableSound(final boolean enabled) {
-        _soundEnabled = enabled;
-        
+    public void registerAlarmListener(final IAlarmListener alarmListener) {
+        _listeners.add(alarmListener);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void deRegisterAlarmListener(final IAlarmListener alarmListener) {
+        _listeners.remove(alarmListener);
     }
     
 }
