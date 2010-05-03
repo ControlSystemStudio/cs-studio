@@ -286,6 +286,33 @@
             skipOnLoad="false"
             widgetId="org.csstudio.sds.components.Gauge,org.csstudio.sds.components.Knob,org.csstudio.sds.components.ScaledSlider,org.csstudio.sds.components.Tank,org.csstudio.sds.components.Thermometer,org.csstudio.sds.components.XMeter">
       </widgetPropertyPostProcessor>
+      <widgetPropertyPostProcessor
+            class="org.csstudio.sds.components.model.eventing.AbstractMarkedWidgetShowScalePostProcessor"
+            propertyId="showScale"
+            skipOnLoad="false"
+            widgetId="org.csstudio.sds.components.Gauge,org.csstudio.sds.components.Knob,org.csstudio.sds.components.ScaledSlider,org.csstudio.sds.components.Tank,org.csstudio.sds.components.Thermometer,org.csstudio.sds.components.XMeter">
+      </widgetPropertyPostProcessor>
+      <widgetPropertyPostProcessor
+            class="org.csstudio.sds.components.model.eventing.AbstractMarkedWidgetShowMarkersPostProcessor"
+            propertyId="showMarkers"
+            skipOnLoad="false"
+            widgetId="org.csstudio.sds.components.Gauge,org.csstudio.sds.components.Knob,org.csstudio.sds.components.ScaledSlider,org.csstudio.sds.components.Tank,org.csstudio.sds.components.Thermometer,org.csstudio.sds.components.XMeter">
+      </widgetPropertyPostProcessor>
+      <widgetPropertyPostProcessor
+            class="org.csstudio.sds.components.model.eventing.AbstractMarkedWidgetLogScalePostProcessor"
+            propertyId="logScale"
+            skipOnLoad="false"
+            widgetId="org.csstudio.sds.components.Gauge,org.csstudio.sds.components.Knob,org.csstudio.sds.components.ScaledSlider,org.csstudio.sds.components.Tank,org.csstudio.sds.components.Thermometer,org.csstudio.sds.components.XMeter">
+      </widgetPropertyPostProcessor>
+   </extension>
+   <extension
+         point="org.csstudio.sds.widgetBooleanPropertyPostProcessors">
+      <widgetBooleanPropertyPostProcessor
+            disablePropertyIds="showScale"
+            propertyId="showScale"
+            skipOnLoad="false"
+            widgetId="org.csstudio.sds.components.Gauge,org.csstudio.sds.components.Knob,org.csstudio.sds.components.ScaledSlider,org.csstudio.sds.components.Tank,org.csstudio.sds.components.Thermometer,org.csstudio.sds.components.XMeter">
+      </widgetBooleanPropertyPostProcessor>
    </extension>
 
 </plugin>
