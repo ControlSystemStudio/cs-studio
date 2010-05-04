@@ -305,14 +305,5 @@
             widgetId="org.csstudio.sds.components.Gauge,org.csstudio.sds.components.Knob,org.csstudio.sds.components.ScaledSlider,org.csstudio.sds.components.Tank,org.csstudio.sds.components.Thermometer,org.csstudio.sds.components.XMeter">
       </widgetPropertyPostProcessor>
    </extension>
-   <extension
-         point="org.csstudio.sds.widgetBooleanPropertyPostProcessors">
-      <widgetBooleanPropertyPostProcessor
-            disablePropertyIds="showScale"
-            propertyId="showScale"
-            skipOnLoad="false"
-            widgetId="org.csstudio.sds.components.Gauge,org.csstudio.sds.components.Knob,org.csstudio.sds.components.ScaledSlider,org.csstudio.sds.components.Tank,org.csstudio.sds.components.Thermometer,org.csstudio.sds.components.XMeter">
-      </widgetBooleanPropertyPostProcessor>
-   </extension>
 
 </plugin>
