@@ -69,7 +69,7 @@ public class AlarmView extends LogView {
     
     private static final String SECURITY_ID = "operating"; //$NON-NLS-1$
     
-    private Button soundEnableButton;
+    private Button _soundEnableButton;
     
     private Button _ackButton;
     
@@ -205,7 +205,7 @@ public class AlarmView extends LogView {
         _parent.layout();
         
         // Set initial state for playing sounds based on the state of the sound enable button
-        _soundHandler.enableSound(soundEnableButton.getSelection());
+        _soundHandler.enableSound(_soundEnableButton.getSelection());
     }
     
     @Override
@@ -312,16 +312,16 @@ public class AlarmView extends LogView {
         RowLayout layout = new RowLayout();
         soundButtonGroup.setLayout(layout);
         
-        soundEnableButton = new Button(soundButtonGroup, SWT.TOGGLE);
-        soundEnableButton.setLayoutData(new RowData(60, 21));
-        soundEnableButton.setText(Messages.AlarmView_soundButtonEnable);
+        _soundEnableButton = new Button(soundButtonGroup, SWT.TOGGLE);
+        _soundEnableButton.setLayoutData(new RowData(60, 21));
+        _soundEnableButton.setText(Messages.AlarmView_soundButtonEnable);
         
         // TODO jp Set initial state for playing sounds based on saved state
-        soundEnableButton.setSelection(true);
+        _soundEnableButton.setSelection(true);
         
-        soundEnableButton.addSelectionListener(new SelectionListener() {
+        _soundEnableButton.addSelectionListener(new SelectionListener() {
             public void widgetSelected(final SelectionEvent e) {
-                _soundHandler.enableSound(soundEnableButton.getSelection());
+                _soundHandler.enableSound(_soundEnableButton.getSelection());
             }
             
             public void widgetDefaultSelected(final SelectionEvent e) {
@@ -330,6 +330,15 @@ public class AlarmView extends LogView {
         });
     }
     
+    /**
+     * Sound is played dependent of the state of the sound enable button. If it is enabled, the
+     * so-called sound playing listener (encapsulated here) is registered at the alarm table
+     * listener for the current topic set. If it gets disabled, the sound playing listener is
+     * deregistered. If the current topic set is changed, the sound playing listener gets
+     * deregistered and then registered at the now-current alarm table listener.<br>
+     * Because we have to know where we are currently registered, the current alarm table listener
+     * is recorded in here.
+     */
     private final class SoundHandler {
         
         /**
@@ -347,7 +356,7 @@ public class AlarmView extends LogView {
         /**
          * Keep track where the sound playing listener is registered
          */
-        private final List<IAlarmTableListener> _alarmTableListener = new ArrayList<IAlarmTableListener>();
+        private IAlarmTableListener _currentAlarmTableListener = null;
         
         public SoundHandler() {
             // Nothing to do
@@ -376,16 +385,18 @@ public class AlarmView extends LogView {
         }
         
         public void enableSound(final boolean yes) {
-            // Built in a robust way: Deregister always, even if not present. Register at the
-            // current alarm table listener.
-            for (IAlarmTableListener alarmTableListener : _alarmTableListener) {
-                alarmTableListener.deRegisterAlarmListener(getSoundPlayingListener());
+            // Built in a robust way: Deregister always, register at the current alarm table
+            // listener.
+            if (_currentAlarmTableListener != null) {
+                _currentAlarmTableListener.deRegisterAlarmListener(getSoundPlayingListener());
+                _currentAlarmTableListener = null;
+                CentralLogger.getInstance().debug(this, "Sound deregistered");
             }
             
             if (yes) {
-                IAlarmTableListener currentAlarmTableListener = getAlarmTableListener();
-                _alarmTableListener.add(currentAlarmTableListener);
-                currentAlarmTableListener.registerAlarmListener(getSoundPlayingListener());
+                _currentAlarmTableListener = getAlarmTableListener();
+                _currentAlarmTableListener.registerAlarmListener(getSoundPlayingListener());
+                CentralLogger.getInstance().debug(this, "Sound registered");
             }
         }
         
