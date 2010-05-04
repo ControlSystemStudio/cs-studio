@@ -12,39 +12,37 @@
  * SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS. THE FULL LICENSE SPECIFYING FOR THE SOFTWARE
  * THE REDISTRIBUTION, MODIFICATION, USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE
  * DISTRIBUTION OF THIS PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY
- * FIND A COPY AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM $Id: IAlarmMessage.java,v 1.3 2010/04/28
- * 07:44:08 jpenning Exp $
+ * FIND A COPY AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM $Id: AlarmServiceJMSImpl.java,v 1.2
+ * 2010/04/26 09:35:21 jpenning Exp $
  */
-package org.csstudio.alarm.service.declaration;
+package org.csstudio.alarm.service.internal;
 
-import java.util.Map;
-
-import javax.annotation.Nonnull;
+import org.csstudio.alarm.service.declaration.IAlarmConnection;
+import org.csstudio.alarm.service.declaration.IAlarmService;
 
 /**
- * Is used by the AlarmService to represent a message from DAL or JMS resp.
+ * DAL based implementation of the AlarmService.
  * 
  * @author jpenning
  * @author $Author$
  * @version $Revision$
  * @since 21.04.2010
  */
-public interface IAlarmMessage {
+public class AlarmServiceDALImpl implements IAlarmService {
     
     /**
-     * The message essentially is a map from String to String. Here you get the value for the key.
-     * 
-     * @param key
-     * @return value
-     * @throws AlarmMessageException
+     * Constructor.
      */
-    String getString(@Nonnull final String key) throws AlarmMessageException;
+    public AlarmServiceDALImpl() {
+        // Nothing to do
+    }
     
     /**
-     * The message essentially is a map from String to String. Here you get the whole map.
-     * 
-     * @return the map
-     * @throws AlarmMessageException
+     * {@inheritDoc}
      */
-    Map<String, String> getMap() throws AlarmMessageException;
+    @Override
+    public IAlarmConnection newAlarmConnection() {
+        return new AlarmConnectionDALImpl();
+    }
+    
 }

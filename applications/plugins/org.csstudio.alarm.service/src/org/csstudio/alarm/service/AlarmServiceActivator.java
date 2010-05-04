@@ -21,6 +21,7 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 
 import org.csstudio.alarm.service.declaration.IAlarmService;
+import org.csstudio.alarm.service.internal.AlarmServiceDALImpl;
 import org.csstudio.alarm.service.internal.AlarmServiceJMSImpl;
 import org.csstudio.platform.logging.CentralLogger;
 import org.osgi.framework.BundleActivator;
@@ -45,14 +46,29 @@ public class AlarmServiceActivator implements BundleActivator {
     public void start(final BundleContext context) throws Exception {
         _log.debug(this, "Starting AlarmService");
         
-        Dictionary<String, String> properties = new Hashtable<String, String>();
-        properties.put("service.vendor", "DESY");
-        properties.put("service.description", "Alarm service with JMS or DAL implementation");
-        
         // Provide implementation for alarm service
         // TODO jp The implementation must be determined dynamically
+        registerJMSService(context);
+        // registerDALService(context);
+    }
+    
+    private void registerJMSService(final BundleContext context) {
+        Dictionary<String, String> properties = new Hashtable<String, String>();
+        properties.put("service.vendor", "DESY");
+        properties.put("service.description", "JMS implementation of the alarm service");
+        
         context.registerService(IAlarmService.class.getName(),
                                 new AlarmServiceJMSImpl(),
+                                properties);
+    }
+    
+    private void registerDALService(final BundleContext context) {
+        Dictionary<String, String> properties = new Hashtable<String, String>();
+        properties.put("service.vendor", "DESY");
+        properties.put("service.description", "DAL implementation of the alarm service");
+        
+        context.registerService(IAlarmService.class.getName(),
+                                new AlarmServiceDALImpl(),
                                 properties);
     }
     
