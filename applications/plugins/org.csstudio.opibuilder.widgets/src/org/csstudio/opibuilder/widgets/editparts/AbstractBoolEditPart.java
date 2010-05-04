@@ -1,5 +1,8 @@
 package org.csstudio.opibuilder.widgets.editparts;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
@@ -35,8 +38,11 @@ public abstract class AbstractBoolEditPart extends AbstractPVWidgetEditPart {
 	 */
 	protected void initializeCommonFigureProperties(
 			final AbstractBoolFigure figure, final AbstractBoolWidgetModel model) {
-		
-		figure.setBit(model.getBit());
+		if(model.getDataType() == 0)
+			figure.setBit(model.getBit());
+		else
+			figure.setBit(-1);
+		updatePropSheet(model.getDataType());
 		figure.setShowBooleanLabel(model.isShowBoolLabel());
 		figure.setOnLabel(model.getOnLabel());
 		figure.setOffLabel(model.getOffLabel());
@@ -46,6 +52,11 @@ public abstract class AbstractBoolEditPart extends AbstractPVWidgetEditPart {
 				model.getFont().getFontData()));
 		
 	}	
+	
+	@Override
+	public AbstractBoolWidgetModel getWidgetModel() {
+		return (AbstractBoolWidgetModel)getModel();
+	}
 	
 	/**
 	 * Registers property change handlers for the properties defined in
@@ -62,9 +73,11 @@ public abstract class AbstractBoolEditPart extends AbstractPVWidgetEditPart {
 				if(newValue == null)
 					return false;
 				AbstractBoolFigure figure = (AbstractBoolFigure) refreshableFigure;
-				figure.setValue(ValueUtil.getDouble((IValue)newValue));
+				updateFromValue(newValue, figure);					
 				return true;
 			}
+
+			
 		};
 		setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVVALUE, handler);
 		
@@ -73,12 +86,49 @@ public abstract class AbstractBoolEditPart extends AbstractPVWidgetEditPart {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IFigure refreshableFigure) {
+				if(getWidgetModel().getDataType() != 0)
+					return false;
 				AbstractBoolFigure figure = (AbstractBoolFigure) refreshableFigure;
 				figure.setBit((Integer) newValue);
+				updateFromValue(getPVValue(AbstractPVWidgetModel.PROP_PVNAME), figure);					
 				return true;
 			}
 		};
 		setPropertyChangeHandler(AbstractBoolWidgetModel.PROP_BIT, handler);
+		
+		//data type
+	    final IWidgetPropertyChangeHandler	dataTypeHandler = new IWidgetPropertyChangeHandler() {
+			
+			public boolean handleChange(Object oldValue, Object newValue, IFigure refreshableFigure) {
+				AbstractBoolFigure figure = (AbstractBoolFigure) refreshableFigure;
+				if((Integer)newValue == 0)
+					figure.setBit(getWidgetModel().getBit());
+				else
+					figure.setBit(-1);		
+				updateFromValue(getPVValue(AbstractPVWidgetModel.PROP_PVNAME), figure);		
+				updatePropSheet((Integer)newValue);
+				return true;
+			}
+		};
+		getWidgetModel().getProperty(AbstractBoolWidgetModel.PROP_DATA_TYPE).
+			addPropertyChangeListener(new PropertyChangeListener() {
+				
+				public void propertyChange(PropertyChangeEvent evt) {
+					dataTypeHandler.handleChange(evt.getOldValue(), evt.getNewValue(), getFigure());
+				}
+			});
+
+		//on state
+		handler = new IWidgetPropertyChangeHandler() {
+			
+			public boolean handleChange(Object oldValue, Object newValue, IFigure refreshableFigure) {
+				AbstractBoolFigure figure = (AbstractBoolFigure) refreshableFigure;					
+				updateFromValue(getPVValue(AbstractPVWidgetModel.PROP_PVNAME), figure);					
+				return true;
+			}
+		};
+		setPropertyChangeHandler(AbstractBoolWidgetModel.PROP_ON_STATE, handler);
+		
 		
 		// show bool label
 		handler = new IWidgetPropertyChangeHandler() {
@@ -171,5 +221,32 @@ public abstract class AbstractBoolEditPart extends AbstractPVWidgetEditPart {
 	public Boolean getValue() {
 		return ((AbstractBoolFigure)getFigure()).getBoolValue();
 	}
+	/**
+	 * @param newValue
+	 * @param figure
+	 */
+	private void updateFromValue(final Object newValue,
+			AbstractBoolFigure figure) {
+		if(newValue == null || !(newValue instanceof IValue))
+			return;
+		if(getWidgetModel().getDataType() == 0)
+			figure.setValue(ValueUtil.getDouble((IValue)newValue));
+		else {
+			if(newValue !=null && newValue instanceof IValue && ValueUtil.getString((IValue)newValue).equals(
+					getWidgetModel().getOnState()))
+				figure.setValue(1);
+			else
+				figure.setValue(0);
+		}
+	}
 	
+	private void updatePropSheet(final int dataType) {
+		getWidgetModel().setPropertyVisible(
+				AbstractBoolWidgetModel.PROP_BIT, dataType == 0);
+		getWidgetModel().setPropertyVisible(
+				AbstractBoolWidgetModel.PROP_ON_STATE, dataType == 1);
+		getWidgetModel().setPropertyVisible(
+				AbstractBoolWidgetModel.PROP_OFF_STATE, dataType == 1);
+		
+	}
 }

@@ -3,6 +3,7 @@ package org.csstudio.opibuilder.widgets.model;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.ColorProperty;
+import org.csstudio.opibuilder.properties.ComboProperty;
 import org.csstudio.opibuilder.properties.FontProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
@@ -38,6 +39,16 @@ public abstract class AbstractBoolWidgetModel extends AbstractPVWidgetModel {
 	/** The ID of the off color property. */
 	public static final String PROP_SHOW_BOOL_LABEL = "show_boolean_label"; //$NON-NLS-1$
 	
+	/** The ID of the boolean value source property. */
+	public static final String PROP_DATA_TYPE = "data_type"; //$NON-NLS-1$
+	
+	/** The ID of the on state property. */
+	public static final String PROP_ON_STATE = "on_state"; //$NON-NLS-1$
+	
+	/** The ID of the off state property. */
+	public static final String PROP_OFF_STATE = "off_state"; //$NON-NLS-1$
+	
+	
 	/**
 	 * The ID of the font property.
 	 */
@@ -72,6 +83,13 @@ public abstract class AbstractBoolWidgetModel extends AbstractPVWidgetModel {
 		addProperty(new FontProperty(PROP_FONT, "Font",
 				WidgetPropertyCategory.Display, new FontData(
 						"Arial", 9, SWT.NONE))); //$NON-NLS-1$
+		addProperty(new ComboProperty(PROP_DATA_TYPE, "Data Type",
+				WidgetPropertyCategory.Behavior, new String[]{"Bit", "Enum"}, 0));
+		addProperty(new StringProperty(PROP_ON_STATE, "On State", 
+				WidgetPropertyCategory.Behavior, ""));
+		addProperty(new StringProperty(PROP_OFF_STATE, "Off State",
+				WidgetPropertyCategory.Behavior, ""));
+		
 	}
 	
 
@@ -126,4 +144,18 @@ public abstract class AbstractBoolWidgetModel extends AbstractPVWidgetModel {
 	public OPIFont getFont() {
 		return (OPIFont) getProperty(PROP_FONT).getPropertyValue();
 	}
+	
+	public int getDataType(){
+		return (Integer)getPropertyValue(PROP_DATA_TYPE);
+	}
+	
+	public String getOnState(){
+		return (String)getPropertyValue(PROP_ON_STATE);
+	}
+	
+	public String getOffState(){
+		return (String)getPropertyValue(PROP_OFF_STATE);
+	}
+	
+	
 }

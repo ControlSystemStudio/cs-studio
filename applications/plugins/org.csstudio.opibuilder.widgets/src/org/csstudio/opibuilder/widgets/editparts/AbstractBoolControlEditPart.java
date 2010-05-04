@@ -43,8 +43,13 @@ public abstract class AbstractBoolControlEditPart extends AbstractBoolEditPart {
 				ExecutionMode.RUN_MODE));
 		figure.addBoolControlListener(new IBoolControlListener() {
 			public void valueChanged(final double newValue) {
-				if (getExecutionMode() == ExecutionMode.RUN_MODE)
-					setPVValue(AbstractBoolControlModel.PROP_PVNAME, newValue);
+				if (getExecutionMode() == ExecutionMode.RUN_MODE){
+					if(getWidgetModel().getDataType() == 0)
+						setPVValue(AbstractBoolControlModel.PROP_PVNAME, newValue);
+					else
+						setPVValue(AbstractBoolWidgetModel.PROP_PVNAME, newValue<=0.01 ? 
+								getWidgetModel().getOffState() : getWidgetModel().getOnState());
+				}
 			}
 		});		
 		markAsControlPV(AbstractBoolControlModel.PROP_PVNAME);
