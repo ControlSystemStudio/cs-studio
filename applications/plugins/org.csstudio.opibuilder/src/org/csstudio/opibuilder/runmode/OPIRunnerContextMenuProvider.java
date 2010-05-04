@@ -3,6 +3,7 @@ package org.csstudio.opibuilder.runmode;
 
 import java.util.List;
 
+import org.csstudio.opibuilder.actions.FullScreenAction;
 import org.csstudio.opibuilder.actions.WidgetActionMenuAction;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
@@ -51,6 +52,8 @@ public final class OPIRunnerContextMenuProvider extends ContextMenuProvider {
 			getActivePage().getActiveEditor().getAdapter(ActionRegistry.class);
 	
 		menu.appendToGroup(GEFActionConstants.GROUP_EDIT, actionRegistry.getAction(ActionFactory.PRINT.getId()));
+		menu.appendToGroup(GEFActionConstants.GROUP_EDIT, actionRegistry.getAction(FullScreenAction.ID));
+
 		MenuManager cssMenu = new MenuManager("CSS", "css");
 		cssMenu.add(new Separator("additions")); //$NON-NLS-1$
 		menu.add(cssMenu);		
