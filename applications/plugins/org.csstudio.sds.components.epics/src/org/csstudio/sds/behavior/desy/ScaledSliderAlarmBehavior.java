@@ -34,9 +34,8 @@
 		*/
 package org.csstudio.sds.behavior.desy;
 
+import org.csstudio.sds.components.model.AbstractMarkedWidgetModel;
 import org.csstudio.sds.components.model.ScaledSliderModel;
-import org.epics.css.dal.simple.AnyData;
-import org.epics.css.dal.simple.MetaData;
 
 /**
  * Default DESY-Behavior for the {@link ScaledSliderModel} widget with Connection state and Alarms.
@@ -46,32 +45,13 @@ import org.epics.css.dal.simple.MetaData;
  * @version $Revision$
  * @since 21.04.2010
  */
-public class ScaledSliderAlarmBehavior extends AbstractDesyAlarmBehavior<ScaledSliderModel> {
-
-    /**
-     * Constructor.
-     */
-    public ScaledSliderAlarmBehavior() {
-        // add Invisible Property Id here
-        // addInvisiblePropertyId
-    }
+public class ScaledSliderAlarmBehavior extends MarkedWidgetDesyAlarmBehavior<ScaledSliderModel> {
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected void doProcessValueChange(final ScaledSliderModel model, final AnyData anyData) {
-        super.doProcessValueChange(model, anyData);
-        model.setPropertyValue(ScaledSliderModel.PROP_VALUE, anyData.numberValue());
+    protected String[] doGetSettablePropertyIds() {
+        return new String[] { AbstractMarkedWidgetModel.PROP_VALUE };
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void doProcessMetaDataChange(final ScaledSliderModel widget, final MetaData metaData) {
-        // TODO Auto-generated method stub
-
-    }
-
 }

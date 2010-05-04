@@ -18,13 +18,12 @@
  */
 package org.csstudio.sds.behavior.desy;
 
-import org.csstudio.sds.components.model.AbstractMarkedWidgetModel;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.csstudio.sds.components.model.TankModel;
-import org.csstudio.sds.model.AbstractWidgetModel;
 import org.epics.css.dal.context.ConnectionState;
 import org.epics.css.dal.simple.AnyData;
-import org.epics.css.dal.simple.MetaData;
-import org.epics.css.dal.simple.Severity;
 
 /**
  * Default DESY-Behavior for the {@link TankModel} widget with Connection state and Alarms.
@@ -34,84 +33,37 @@ import org.epics.css.dal.simple.Severity;
  * @version $Revision$
  * @since 21.04.2010
  */
-public class TankAlarmBehavior extends AbstractDesyAlarmBehavior<TankModel> {
+public class TankAlarmBehavior extends MarkedWidgetDesyAlarmBehavior<TankModel> {
 
     /**
      * Constructor.
      */
     public TankAlarmBehavior() {
-        addInvisiblePropertyId(AbstractMarkedWidgetModel.PROP_MIN);
-        addInvisiblePropertyId(AbstractMarkedWidgetModel.PROP_MAX);
-        addInvisiblePropertyId(AbstractMarkedWidgetModel.PROP_HIHI_LEVEL);
-        addInvisiblePropertyId(AbstractMarkedWidgetModel.PROP_HI_LEVEL);
-        addInvisiblePropertyId(AbstractMarkedWidgetModel.PROP_LOLO_LEVEL);
-        addInvisiblePropertyId(AbstractMarkedWidgetModel.PROP_LO_LEVEL);
+        // add Invisible Property Id here
         addInvisiblePropertyId(TankModel.PROP_FILL_COLOR);
         addInvisiblePropertyId(TankModel.PROP_FILLBACKGROUND_COLOR);
-        addInvisiblePropertyId(AbstractMarkedWidgetModel.PROP_TRANSPARENT);
-        addInvisiblePropertyId(AbstractMarkedWidgetModel.PROP_ACTIONDATA);
-        addInvisiblePropertyId(AbstractMarkedWidgetModel.PROP_BORDER_STYLE);
-        addInvisiblePropertyId(AbstractMarkedWidgetModel.PROP_SHOW_HI);
-        addInvisiblePropertyId(AbstractMarkedWidgetModel.PROP_SHOW_HIHI);
-        addInvisiblePropertyId(AbstractMarkedWidgetModel.PROP_SHOW_LO);
-        addInvisiblePropertyId(AbstractMarkedWidgetModel.PROP_SHOW_LOLO);
-        addInvisiblePropertyId(AbstractMarkedWidgetModel.PROP_VALUE);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected void doProcessValueChange(final TankModel model, final AnyData anyData) {
-//        super.doProcessValueChange(model, anyData);
+    protected void doProcessValueChange(@Nonnull final TankModel model,@Nonnull final AnyData anyData) {
         // .. fill level (influenced by current value)
-        model.setPropertyValue(AbstractMarkedWidgetModel.PROP_VALUE, anyData.doubleValue());
-     // .. fill color (influenced by severity)
+        super.doProcessValueChange(model, anyData);
+        // .. fill color (influenced by severity)
         model.setPropertyValue(TankModel.PROP_FILL_COLOR,
                 determineColorBySeverity(anyData.getSeverity(), null));
-        Severity severity = anyData.getSeverity();
-        if (severity != null) {
-            if (severity.isInvalid()) {
-                model.setPropertyValue(AbstractWidgetModel.PROP_CROSSED_OUT, true);
-            } else {
-                model.setPropertyValue(AbstractWidgetModel.PROP_CROSSED_OUT, false);
-            }
-        }
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected void doProcessConnectionStateChange(final TankModel widget, final ConnectionState connectionState) {
+    protected void doProcessConnectionStateChange(@Nonnull final TankModel widget,@Nullable final ConnectionState connectionState) {
         widget.setPropertyValue(TankModel.PROP_FILLBACKGROUND_COLOR, determineBackgroundColor(connectionState));
         widget.setPropertyValue(TankModel.PROP_FILL_COLOR, determineBackgroundColor(connectionState));
 
     }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void doProcessMetaDataChange(final TankModel widget, final MetaData meta) {
-        if (meta != null) {
-            // .. limits
-            widget.setPropertyValue(AbstractMarkedWidgetModel.PROP_MIN, meta.getDisplayLow());
-            widget.setPropertyValue(AbstractMarkedWidgetModel.PROP_MAX, meta.getDisplayHigh());
-
-            widget.setPropertyValue(AbstractMarkedWidgetModel.PROP_HIHI_LEVEL, meta.getAlarmHigh());
-            widget.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_HIHI, !Double.isNaN(meta.getAlarmHigh()));
-
-            widget.setPropertyValue(AbstractMarkedWidgetModel.PROP_HI_LEVEL, meta.getWarnHigh());
-            widget.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_HI, !Double.isNaN(meta.getWarnHigh()));
-
-            widget.setPropertyValue(AbstractMarkedWidgetModel.PROP_LOLO_LEVEL, meta.getAlarmLow());
-            widget.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_LOLO, !Double.isNaN(meta.getAlarmLow()));
-
-            widget.setPropertyValue(AbstractMarkedWidgetModel.PROP_LO_LEVEL, meta.getWarnLow());
-            widget.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_LO, !Double.isNaN(meta.getWarnLow()));
-        }
-   }
 
 }

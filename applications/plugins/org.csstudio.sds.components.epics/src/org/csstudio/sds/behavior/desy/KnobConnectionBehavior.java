@@ -18,9 +18,12 @@
  */
 package org.csstudio.sds.behavior.desy;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import org.csstudio.sds.components.model.AbstractMarkedWidgetModel;
 import org.csstudio.sds.components.model.KnobModel;
-import org.epics.css.dal.simple.AnyData;
-import org.epics.css.dal.simple.MetaData;
+import org.epics.css.dal.context.ConnectionState;
 
 /**
  *
@@ -31,58 +34,28 @@ import org.epics.css.dal.simple.MetaData;
  * @version $Revision$
  * @since 20.04.2010
  */
-public class KnobConnectionBehavior extends AbstractDesyConnectionBehavior<KnobModel> {
+public class KnobConnectionBehavior extends MarkedWidgetDesyConnectionBehavior<KnobModel> {
+
+
+    private String _defFillColor;
 
     /**
-     * Constructor.
+     * {@inheritDoc}
      */
-    public KnobConnectionBehavior() {
-     // add Invisible Property Id here
-        addInvisiblePropertyId(KnobModel.PROP_MIN);
-        addInvisiblePropertyId(KnobModel.PROP_MAX);
-        addInvisiblePropertyId(KnobModel.PROP_HIHI_LEVEL);
-        addInvisiblePropertyId(KnobModel.PROP_HI_LEVEL);
-        addInvisiblePropertyId(KnobModel.PROP_LOLO_LEVEL);
-        addInvisiblePropertyId(KnobModel.PROP_LO_LEVEL);
-        addInvisiblePropertyId(KnobModel.PROP_TRANSPARENT);
-        addInvisiblePropertyId(KnobModel.PROP_ACTIONDATA);
-        addInvisiblePropertyId(KnobModel.PROP_BORDER_STYLE);
-        addInvisiblePropertyId(KnobModel.PROP_SHOW_HI);
-        addInvisiblePropertyId(KnobModel.PROP_SHOW_HIHI);
-        addInvisiblePropertyId(KnobModel.PROP_SHOW_LO);
-        addInvisiblePropertyId(KnobModel.PROP_SHOW_LOLO);
-        addInvisiblePropertyId(KnobModel.PROP_VALUE);
+    @Override
+    protected void doInitialize(@Nonnull final KnobModel widget) {
+        super.doInitialize(widget);
+        _defFillColor = widget.getColor(KnobModel.PROP_KNOB_COLOR);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected void doProcessValueChange(final KnobModel model, final AnyData anyData) {
-        super.doProcessValueChange(model, anyData);
-        // .. fill level (influenced by current value)
-        model.setPropertyValue(KnobModel.PROP_VALUE, anyData.numberValue());
-    }
+    protected void doProcessConnectionStateChange(@Nonnull final KnobModel widget, @Nullable final ConnectionState connectionState) {
+        String fillColor = (connectionState==ConnectionState.CONNECTED)?_defFillColor  : determineBackgroundColor(connectionState);
+        widget.setPropertyValue(KnobModel.PROP_KNOB_COLOR, fillColor);
 
-    @Override
-    protected void doProcessMetaDataChange(final KnobModel widget, final MetaData meta) {
-        if (meta != null) {
-            // .. limits
-            widget.setPropertyValue(KnobModel.PROP_MIN, meta.getDisplayLow());
-            widget.setPropertyValue(KnobModel.PROP_MAX, meta.getDisplayHigh());
-
-            widget.setPropertyValue(KnobModel.PROP_HIHI_LEVEL, meta.getAlarmHigh());
-            widget.setPropertyValue(KnobModel.PROP_SHOW_HIHI, !Double.isNaN(meta.getAlarmHigh()));
-
-            widget.setPropertyValue(KnobModel.PROP_HI_LEVEL, meta.getWarnHigh());
-            widget.setPropertyValue(KnobModel.PROP_SHOW_HI, !Double.isNaN(meta.getWarnHigh()));
-
-            widget.setPropertyValue(KnobModel.PROP_LOLO_LEVEL, meta.getAlarmLow());
-            widget.setPropertyValue(KnobModel.PROP_SHOW_LOLO, !Double.isNaN(meta.getAlarmLow()));
-
-            widget.setPropertyValue(KnobModel.PROP_LO_LEVEL, meta.getWarnLow());
-            widget.setPropertyValue(KnobModel.PROP_SHOW_LO, !Double.isNaN(meta.getWarnLow()));
-        }
     }
 
     /**
@@ -90,6 +63,6 @@ public class KnobConnectionBehavior extends AbstractDesyConnectionBehavior<KnobM
      */
     @Override
     protected String[] doGetSettablePropertyIds() {
-        return new String[] { KnobModel.PROP_VALUE };
+        return new String[] { AbstractMarkedWidgetModel.PROP_VALUE };
     }
 }

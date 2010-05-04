@@ -16,9 +16,8 @@
  */
 package org.csstudio.sds.behavior.desy;
 
+import org.csstudio.sds.components.model.AbstractMarkedWidgetModel;
 import org.csstudio.sds.components.model.ScaledSliderModel;
-import org.epics.css.dal.simple.AnyData;
-import org.epics.css.dal.simple.MetaData;
 
 /**
  * Default DESY-Behavior for the {@link ScaledSliderModel} widget with Connection state.
@@ -29,61 +28,15 @@ import org.epics.css.dal.simple.MetaData;
  * @since 21.04.2010
  */
 public class ScaledSliderConnectionBehavior extends
-        AbstractDesyConnectionBehavior<ScaledSliderModel> {
+        MarkedWidgetDesyConnectionBehavior<ScaledSliderModel> {
 
-    /**
-     * Constructor.
-     */
-    public ScaledSliderConnectionBehavior() {
-        addInvisiblePropertyId(ScaledSliderModel.PROP_MIN);
-        addInvisiblePropertyId(ScaledSliderModel.PROP_MAX);
-        addInvisiblePropertyId(ScaledSliderModel.PROP_HIHI_LEVEL);
-        addInvisiblePropertyId(ScaledSliderModel.PROP_SHOW_HIHI);
-        addInvisiblePropertyId(ScaledSliderModel.PROP_HI_LEVEL);
-        addInvisiblePropertyId(ScaledSliderModel.PROP_SHOW_HI);
-        addInvisiblePropertyId(ScaledSliderModel.PROP_LOLO_LEVEL);
-        addInvisiblePropertyId(ScaledSliderModel.PROP_SHOW_LOLO);
-        addInvisiblePropertyId(ScaledSliderModel.PROP_LO_LEVEL);
-        addInvisiblePropertyId(ScaledSliderModel.PROP_SHOW_LO);
-        // addInvisiblePropertyId(ScaledSliderModel.PROP_DEFAULT_FILL_COLOR);
-        addInvisiblePropertyId(ScaledSliderModel.PROP_FILLBACKGROUND_COLOR);
-        addInvisiblePropertyId(ScaledSliderModel.PROP_VALUE);
-        addInvisiblePropertyId(ScaledSliderModel.PROP_TRANSPARENT);
-        addInvisiblePropertyId(ScaledSliderModel.PROP_ACTIONDATA);
-        addInvisiblePropertyId(ScaledSliderModel.PROP_BORDER_STYLE);
-    }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected void doProcessValueChange(final ScaledSliderModel model, final AnyData anyData) {
-        super.doProcessValueChange(model, anyData);
-        model.setPropertyValue(ScaledSliderModel.PROP_VALUE, anyData.numberValue());
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void doProcessMetaDataChange(final ScaledSliderModel widget, final MetaData meta) {
-        if (meta != null) {
-         // .. limits
-            widget.setPropertyValue(ScaledSliderModel.PROP_MIN, meta.getDisplayLow());
-            widget.setPropertyValue(ScaledSliderModel.PROP_MAX, meta.getDisplayHigh());
-
-            widget.setPropertyValue(ScaledSliderModel.PROP_HIHI_LEVEL, meta.getAlarmHigh());
-            widget.setPropertyValue(ScaledSliderModel.PROP_SHOW_HIHI, !Double.isNaN(meta.getAlarmHigh()));
-
-            widget.setPropertyValue(ScaledSliderModel.PROP_HI_LEVEL, meta.getWarnHigh());
-            widget.setPropertyValue(ScaledSliderModel.PROP_SHOW_HI, !Double.isNaN(meta.getWarnHigh()));
-
-            widget.setPropertyValue(ScaledSliderModel.PROP_LOLO_LEVEL, meta.getAlarmLow());
-            widget.setPropertyValue(ScaledSliderModel.PROP_SHOW_LOLO, !Double.isNaN(meta.getAlarmLow()));
-
-            widget.setPropertyValue(ScaledSliderModel.PROP_LO_LEVEL, meta.getWarnLow());
-            widget.setPropertyValue(ScaledSliderModel.PROP_SHOW_LO, !Double.isNaN(meta.getWarnLow()));
-        }
+    protected String[] doGetSettablePropertyIds() {
+        return new String[] { AbstractMarkedWidgetModel.PROP_VALUE };
     }
 
 }

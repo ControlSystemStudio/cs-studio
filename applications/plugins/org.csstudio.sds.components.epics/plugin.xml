@@ -310,25 +310,25 @@
             widgetTypeId="org.csstudio.sds.components.ScaledSlider">
       </behavior>
       <behavior
-            class="org.csstudio.sds.behavior.desy.GaugeAlarmBehavior"
+            class="org.csstudio.sds.behavior.desy.MarkedWidgetDesyAlarmBehavior"
             description="DESY Alarm Gauge"
             id="behavior.desy.gauge.alarmdefault"
             widgetTypeId="org.csstudio.sds.components.Gauge">
       </behavior>
       <behavior
-            class="org.csstudio.sds.behavior.desy.GaugeConnectionBehavior"
+            class="org.csstudio.sds.behavior.desy.MarkedWidgetDesyConnectionBehavior"
             description="DESY Connection Gauge"
             id="behavior.desy.gauge.connectiondefault"
             widgetTypeId="org.csstudio.sds.components.Gauge">
       </behavior>
       <behavior
-            class="org.csstudio.sds.behavior.desy.XMeterAlarmBehavior"
+            class="org.csstudio.sds.behavior.desy.MarkedWidgetDesyAlarmBehavior"
             description="DESY Alarm XMeter"
             id="behavior.desy.xmeter.alarmdefault"
             widgetTypeId="org.csstudio.sds.components.XMeter">
       </behavior>
       <behavior
-            class="org.csstudio.sds.behavior.desy.XMeterConnectionBehavior"
+            class="org.csstudio.sds.behavior.desy.MarkedWidgetDesyConnectionBehavior"
             description="DESY Connection XMeter"
             id="behavior.desy.xmeter.connectiondefault"
             widgetTypeId="org.csstudio.sds.components.XMeter">
