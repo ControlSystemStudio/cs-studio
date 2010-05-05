@@ -20,6 +20,7 @@ package org.csstudio.alarm.service.internal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 
@@ -30,6 +31,10 @@ import org.csstudio.alarm.service.declaration.IAlarmListener;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
 import org.csstudio.dal.DalPlugin;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.utility.ldap.model.LdapContentModel;
+import org.csstudio.utility.ldap.model.Record;
+import org.csstudio.utility.ldap.reader.LdapSearchResult;
+import org.csstudio.utility.ldap.service.ILdapService;
 import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.AnyDataChannel;
 import org.epics.css.dal.simple.ChannelListener;
@@ -49,18 +54,22 @@ import com.cosylab.util.CommonException;
  * @since 21.04.2010
  */
 public final class AlarmConnectionDALImpl implements IAlarmConnection {
+    private static final String COULD_NOT_RETRIEVE_FROM_LDAP = "Could not retrieve records from LDAP";
     private static final String COULD_NOT_CREATE_DAL_CONNECTION = "Could not create DAL connection";
     private static final String COULD_NOT_DEREGISTER_DAL_CONNECTION = "Could not deregister DAL connection";
     
     private final CentralLogger _log = CentralLogger.getInstance();
     
     private final List<ListenerItem> _listenerItems = new ArrayList<ListenerItem>();
+    private final ILdapService _ldapService;
     
     /**
      * Constructor must be called only from the AlarmService.
+     * 
+     * @param ldapService .
      */
-    AlarmConnectionDALImpl() {
-        // EMPTY
+    AlarmConnectionDALImpl(final ILdapService ldapService) {
+        _ldapService = ldapService;
     }
     
     /**
@@ -109,23 +118,47 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
                                              @Nonnull final String[] topics) throws AlarmConnectionException {
         _log.info(this, "Connecting to DAL for topics " + Arrays.toString(topics) + ".");
         
+        // TODO jp error handling currently removed
+        bla(connectionMonitor, listener);
+    }
+    
+    private void connectToPV(final IAlarmConnectionMonitor connectionMonitor,
+                             final IAlarmListener listener,
+                             final String pvName) {
         RemoteInfo remoteInfo = new RemoteInfo(RemoteInfo.DAL_TYPE_PREFIX + "EPICS",
-                                               "alarmTest:RAMPB_calc",
+                                               pvName,
                                                null,
                                                null);
         ListenerItem item = new ListenerItem();
         item._connectionParameters = new ConnectionParameters(remoteInfo, Double.class);
         item._channelListener = new ChannelListenerAdapter(listener, connectionMonitor);
-        _listenerItems.add(item);
+        
         try {
             DalPlugin.getDefault().getSimpleDALBroker()
-                    .registerListener(item._connectionParameters, item._channelListener);
+            .registerListener(item._connectionParameters, item._channelListener);
         } catch (InstantiationException e) {
             _log.error(this, COULD_NOT_CREATE_DAL_CONNECTION, e);
-            throw new AlarmConnectionException(COULD_NOT_CREATE_DAL_CONNECTION, e);
         } catch (CommonException e) {
             _log.error(this, COULD_NOT_CREATE_DAL_CONNECTION, e);
-            throw new AlarmConnectionException(COULD_NOT_CREATE_DAL_CONNECTION, e);
+        }
+        _listenerItems.add(item);
+    }
+    
+    private void bla(final IAlarmConnectionMonitor connectionMonitor, final IAlarmListener listener) {
+        LdapSearchResult result = null;
+        try {
+            result = _ldapService.retrieveRecordsForIOC("TEST", "berndTest");
+        } catch (InterruptedException e) {
+            _log.error(this, COULD_NOT_RETRIEVE_FROM_LDAP, e);
+        }
+        
+        if (result != null) {
+            final LdapContentModel model = new LdapContentModel(result);
+            Set<Record> records = model.getRecords("berndTest");
+            for (Record record : records) {
+                _log.debug(this, record.getName());
+                connectToPV(connectionMonitor, listener, record.getName());
+            }
         }
     }
     
@@ -140,6 +173,7 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
         
         // TODO jp connection monitor ignored in DAL impl
         // TODO jp message analyzing unsufficient in DAL impl
+        // TODO jp sync issue: may these methods be called by different threads?
         
         public ChannelListenerAdapter(final IAlarmListener alarmListener,
                                       final IAlarmConnectionMonitor connectionMonitor) {
@@ -156,20 +190,16 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
             _alarmListener.onMessage(message);
             
             CentralLogger.getInstance()
-                    .debug(this,
-                           "Channel Data Update Received (" + (data != null ? data : "no value")
-                                   + "; " + (meta != null ? meta : "no metadata") + ")");
+            .debug(this,
+                   "Channel Data Update Received (" + (data != null ? data : "no value")
+                   + "; " + (meta != null ? meta : "no metadata") + ")");
         }
         
         @Override
         public void channelStateUpdate(final AnyDataChannel channel) {
-            AnyData data = channel.getData();
-            MetaData meta = data != null ? data.getMetaData() : null;
-            CentralLogger.getInstance()
-                    .debug(this,
-                           "Channel State Update Received (" + (data != null ? data : "no value")
-                                   + "; " + (meta != null ? meta : "no metadata") + ")");
-            
+            CentralLogger.getInstance().debug(this,
+                                              "Channel State Update Received: "
+                                              + channel.getStateInfo());
         }
         
     }

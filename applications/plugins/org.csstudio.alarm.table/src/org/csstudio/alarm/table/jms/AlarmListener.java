@@ -25,7 +25,6 @@ import org.csstudio.alarm.service.declaration.IAlarmListener;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
 import org.csstudio.alarm.table.dataModel.BasicMessage;
 import org.csstudio.alarm.table.dataModel.MessageList;
-import org.csstudio.alarm.table.service.IAlarmSoundService;
 import org.csstudio.platform.logging.CentralLogger;
 
 /**
@@ -54,8 +53,8 @@ public class AlarmListener implements IAlarmTableListener {
     /**
      * Creates a new alarm message listener.
      */
-    public AlarmListener(final IAlarmSoundService alarmSoundService) {
-        // TODO jp remove ctor
+    public AlarmListener() {
+        // Nothing to do
     }
     
     /**

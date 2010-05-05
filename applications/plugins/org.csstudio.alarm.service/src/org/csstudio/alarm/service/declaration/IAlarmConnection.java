@@ -46,6 +46,8 @@ public interface IAlarmConnection {
     void connectWithListener(@Nonnull final IAlarmConnectionMonitor connectionMonitor,
                              @Nonnull final IAlarmListener listener) throws AlarmConnectionException;
     
+    // TODO jp Do not use String-Array for parameter topics
+    
     /**
      * Connects to the underlying system. You have to provide a connectionMonitor to track
      * connection state. You have to provide a listener to receive messages. You have to provide

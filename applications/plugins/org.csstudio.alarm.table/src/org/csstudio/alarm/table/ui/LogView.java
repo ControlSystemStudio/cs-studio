@@ -21,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Timer;
 
+import org.csstudio.alarm.service.declaration.AlarmConnectionException;
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.dataModel.LogMessageList;
 import org.csstudio.alarm.table.dataModel.MessageList;
@@ -273,18 +274,27 @@ public class LogView extends ViewPart {
      * Returns the existing message list for the current topic set or creates a new one. If no
      * message list was present, a connection and an alarm table listener is implicitly created too.
      * This is intended to be called in initializeMessageTable. Be sure to override
-     * createMessageList.
+     * createMessageList.<br>
+     * In case of error a message is displayed and a default list is returned.
      * 
      * @return the message list
      */
     protected final MessageList getOrCreateCurrentMessageList() {
         TopicSet topicSet = _topicSetColumnService.getJMSTopics(_currentTopicSet);
         if (!_topicsetService.hasTopicSet(topicSet)) {
-            IAlarmTableListener alarmTableListener = new AlarmListener(JmsLogsPlugin.getDefault()
-                    .getAlarmSoundService());
-            _topicsetService.createAndConnectForTopicSet(topicSet,
-                                                         createMessageList(),
-                                                         alarmTableListener);
+            IAlarmTableListener alarmTableListener = new AlarmListener();
+            try {
+                _topicsetService.createAndConnectForTopicSet(topicSet,
+                                                             createMessageList(),
+                                                             alarmTableListener);
+            } catch (AlarmConnectionException e) {
+                // TODO jp error should be shown in view
+                CentralLogger.getInstance().error(this,
+                                                  "Connecting for topicSet " + topicSet.getName()
+                                                          + " failed",
+                                                  e);
+                return createMessageList();
+            }
         }
         return _topicsetService.getMessageListForTopicSet(topicSet);
     }
@@ -518,9 +528,7 @@ public class LogView extends ViewPart {
      */
     @Override
     public void dispose() {
-        // TODO jp disconnect is missing
-        // _topicsetService.disconnectAll();
-        _messageTable = null;
         super.dispose();
+        _messageTable = null;
     }
 }

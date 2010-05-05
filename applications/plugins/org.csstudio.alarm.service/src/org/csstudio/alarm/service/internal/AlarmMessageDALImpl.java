@@ -76,7 +76,7 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
         
         switch (key) {
             case ACK:
-                result = "<ack omitted>"; // TODO jp
+                result = "<ack omitted>"; // TODO jp ack omitted
                 break;
             case EVENTTIME:
                 result = _anyData.getTimestamp().toString(); // TODO jp: ok?

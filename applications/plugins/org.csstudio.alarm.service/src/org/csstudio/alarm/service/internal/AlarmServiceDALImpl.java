@@ -17,8 +17,11 @@
  */
 package org.csstudio.alarm.service.internal;
 
+import javax.annotation.Nonnull;
+
 import org.csstudio.alarm.service.declaration.IAlarmConnection;
 import org.csstudio.alarm.service.declaration.IAlarmService;
+import org.csstudio.utility.ldap.service.ILdapService;
 
 /**
  * DAL based implementation of the AlarmService.
@@ -31,10 +34,17 @@ import org.csstudio.alarm.service.declaration.IAlarmService;
 public class AlarmServiceDALImpl implements IAlarmService {
     
     /**
-     * Constructor.
+     * The LDAP service
      */
-    public AlarmServiceDALImpl() {
-        // Nothing to do
+    private final ILdapService _ldapService;
+    
+    /**
+     * Constructor.
+     * 
+     * @param ldapService .
+     */
+    public AlarmServiceDALImpl(@Nonnull final ILdapService ldapService) {
+        _ldapService = ldapService;
     }
     
     /**
@@ -42,7 +52,7 @@ public class AlarmServiceDALImpl implements IAlarmService {
      */
     @Override
     public IAlarmConnection newAlarmConnection() {
-        return new AlarmConnectionDALImpl();
+        return new AlarmConnectionDALImpl(_ldapService);
     }
     
 }

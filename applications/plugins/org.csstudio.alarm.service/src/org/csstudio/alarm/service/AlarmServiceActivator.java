@@ -24,8 +24,10 @@ import org.csstudio.alarm.service.declaration.IAlarmService;
 import org.csstudio.alarm.service.internal.AlarmServiceDALImpl;
 import org.csstudio.alarm.service.internal.AlarmServiceJMSImpl;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.utility.ldap.service.ILdapService;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 
 /**
  * The activator decides, which implementation is used for the alarm service.
@@ -40,11 +42,18 @@ public class AlarmServiceActivator implements BundleActivator {
     private final CentralLogger _log = CentralLogger.getInstance();
     
     /**
+     * The LDAP service
+     */
+    private ILdapService _ldapService;
+    
+    /**
      * {@inheritDoc}
      */
     @Override
     public void start(final BundleContext context) throws Exception {
         _log.debug(this, "Starting AlarmService");
+        
+        _ldapService = getService(context, ILdapService.class);
         
         // Provide implementation for alarm service
         // TODO jp The implementation must be determined dynamically
@@ -68,7 +77,7 @@ public class AlarmServiceActivator implements BundleActivator {
         properties.put("service.description", "DAL implementation of the alarm service");
         
         context.registerService(IAlarmService.class.getName(),
-                                new AlarmServiceDALImpl(),
+                                new AlarmServiceDALImpl(_ldapService),
                                 properties);
     }
     
@@ -80,4 +89,16 @@ public class AlarmServiceActivator implements BundleActivator {
         _log.debug(this, "Stopping AlarmService");
     }
     
+    /**
+     * Get the implementation of the service
+     * 
+     * @param context
+     * @param typeOfService
+     * @return service implementation or null
+     */
+    @SuppressWarnings("unchecked")
+    protected <T> T getService(final BundleContext context, final Class<T> typeOfService) {
+        ServiceReference reference = context.getServiceReference(typeOfService.getName());
+        return (T) (reference == null ? null : context.getService(reference));
+    }
 }

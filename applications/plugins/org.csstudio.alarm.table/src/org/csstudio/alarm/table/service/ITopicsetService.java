@@ -17,6 +17,7 @@
  */
 package org.csstudio.alarm.table.service;
 
+import org.csstudio.alarm.service.declaration.AlarmConnectionException;
 import org.csstudio.alarm.service.declaration.IAlarmConnection;
 import org.csstudio.alarm.table.dataModel.MessageList;
 import org.csstudio.alarm.table.jms.IAlarmTableListener;
@@ -55,10 +56,11 @@ public interface ITopicsetService {
      * @param topicSet the topic set the connection is created for
      * @param messageList destination for the message listener
      * @param alarmListener callback for the messages
+     * @throws AlarmConnectionException
      */
     void createAndConnectForTopicSet(TopicSet topicSet,
                                      MessageList messageList,
-                                     IAlarmTableListener alarmListener);
+                                     IAlarmTableListener alarmListener) throws AlarmConnectionException;
     
     /**
      * Precondition: hasTopicSet(topicSet)

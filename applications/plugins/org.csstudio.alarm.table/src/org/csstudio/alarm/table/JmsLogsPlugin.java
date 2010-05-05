@@ -106,7 +106,7 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
     public void doStart(final BundleContext context) throws Exception {
         _alarmService = getService(context, IAlarmService.class);
         
-        // TODO jp might be registered as an OSGI service
+        // Might be registered as OSGI services
         _topicsetServiceForLogViews = new TopicsetService("for log views");
         _topicsetServiceForAlarmViews = new TopicsetService("for alarm views");
         _alarmSoundService = new AlarmSoundService();

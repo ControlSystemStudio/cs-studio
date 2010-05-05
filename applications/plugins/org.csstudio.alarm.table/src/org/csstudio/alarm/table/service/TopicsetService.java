@@ -54,7 +54,7 @@ public class TopicsetService implements ITopicsetService {
     @Override
     public void createAndConnectForTopicSet(final TopicSet topicSet,
                                             final MessageList messageList,
-                                            final IAlarmTableListener alarmTableListener) {
+                                            final IAlarmTableListener alarmTableListener) throws AlarmConnectionException {
         assert !hasTopicSet(topicSet) : "Failed: !hasTopicSet(" + topicSet.getName() + ")";
         assert messageList != null : "Failed: messageList != null";
         assert alarmTableListener != null : "Failed: alarmTableListener != null";
@@ -63,17 +63,11 @@ public class TopicsetService implements ITopicsetService {
         element._connection = JmsLogsPlugin.getDefault().getAlarmService().newAlarmConnection();
         element._messageList = messageList;
         element._alarmTableListener = alarmTableListener;
-        try {
-            // TODO jp liste übergeben statt array
-            element._connection.connectWithListenerForTopics(new AlarmConnectionMonitor(),
-                                                             element._alarmTableListener,
-                                                             topicSet.getTopics()
-                                                                     .toArray(new String[0]));
-            element._alarmTableListener.setMessageList(element._messageList);
-        } catch (AlarmConnectionException e) {
-            // TODO jp error handling when connection fails: should be delivered to calling view
-            e.printStackTrace();
-        }
+        element._connection.connectWithListenerForTopics(new AlarmConnectionMonitor(),
+                                                         element._alarmTableListener,
+                                                         topicSet.getTopics()
+                                                                 .toArray(new String[0]));
+        element._alarmTableListener.setMessageList(element._messageList);
         
         _topicSetMap.put(topicSet.getName(), element);
         
