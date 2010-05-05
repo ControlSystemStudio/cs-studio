@@ -41,14 +41,17 @@ import org.csstudio.ams.Log;
  */
 public class AmsPreferenceKey
 {
-	// database settings
+	// Configuration database settings
+    public static final String P_CONFIG_DATABASE_TYPE = "configDatabaseType";
 	public static final String P_CONFIG_DATABASE_CONNECTION = "configDatabaseConnection";
 	public static final String P_CONFIG_DATABASE_USER = "configDatabaseUser";
 	public static final String P_CONFIG_DATABASE_PASSWORD = "configDatabasePassword";
+	
+    // Application database settings
 	public static final String P_APP_DATABASE_CONNECTION = "appDatabaseConnection";
 	public static final String P_APP_DATABASE_USER = "appDatabaseUser";
 	public static final String P_APP_DATABASE_PASSWORD = "appDatabasePassword";
-
+	
 	// filter key field of message
 	public static final String P_FILTER_KEYFIELDS = "filterKeyFields";
 

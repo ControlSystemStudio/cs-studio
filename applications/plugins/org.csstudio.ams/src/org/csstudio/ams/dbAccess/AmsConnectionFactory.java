@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,7 +20,8 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.ams.dbAccess;
+
+package org.csstudio.ams.dbAccess;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -32,20 +34,30 @@ import org.csstudio.ams.Log;
 import org.csstudio.ams.Utils;
 import org.csstudio.ams.internal.AmsPreferenceKey;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.hsqldb.jdbcDriver;
 
 public class AmsConnectionFactory 
 {
 	public static Connection getConfigurationDB() throws ClassNotFoundException, SQLException 
 	{
-		//DriverManager.setLogWriter(new java.io.PrintWriter(System.out));		
-		DriverManager.registerDriver(new OracleDriver());
-		
 		IPreferenceStore store = AmsActivator.getDefault().getPreferenceStore();
 
+		String dbType = store.getString(AmsPreferenceKey.P_CONFIG_DATABASE_TYPE);
 		String dbCon = store.getString(AmsPreferenceKey.P_CONFIG_DATABASE_CONNECTION);
 		String user = store.getString(AmsPreferenceKey.P_CONFIG_DATABASE_USER); 
 		String pwd = store.getString(AmsPreferenceKey.P_CONFIG_DATABASE_PASSWORD);
 
+        //DriverManager.setLogWriter(new java.io.PrintWriter(System.out));      
+        if(dbType.toUpperCase().indexOf("ORACLE") > -1)
+        {
+            DriverManager.registerDriver(new OracleDriver());
+        }
+        else if(dbType.toUpperCase().indexOf("HSQL") > -1)
+        {
+            DriverManager.registerDriver(new jdbcDriver());
+        }
+        
+        Log.log(Log.INFO, "try getConfigurationDB for DB " + dbType);
 		Log.log(Log.INFO, "try getConfigurationDB to " + dbCon);
 		Log.log(Log.INFO, "try getConfigurationDB user " + user);
 		
