@@ -26,7 +26,9 @@ import java.util.Set;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.naming.InvalidNameException;
 import javax.naming.directory.DirContext;
+import javax.naming.ldap.LdapName;
 
 import org.csstudio.utility.ldap.model.IOC;
 import org.csstudio.utility.ldap.model.Record;
@@ -54,8 +56,18 @@ public interface ILdapService {
      * @throws InterruptedException
      */
     @CheckForNull
-    LdapSearchResult retrieveRecords(@Nonnull String facilityName,
+    LdapSearchResult retrieveRecordsForIOC(@Nonnull String facilityName,
                                      @Nonnull String iocName) throws InterruptedException;
+
+    /**
+     * Retrieves the LDAP entries for the records belonging to the given facility and IOC.
+     * @param fullName the complete LDAP name for this ioc
+     *
+     * @throws InterruptedException
+     * @throws InvalidNameException
+     */
+    @CheckForNull
+    LdapSearchResult retrieveRecordsForIOC(@Nonnull LdapName fullName) throws InterruptedException, InvalidNameException;
 
     /**
      * Creates a new Record in LDAP.
@@ -67,6 +79,14 @@ public interface ILdapService {
     boolean createLDAPRecord(@Nonnull DirContext context, @Nonnull IOC ioc, @Nonnull String recordName);
 
     /**
+     * Creates a new Record in LDAP.
+     * @param context the directory context
+     * @param newComponentName the record
+     * @return true if the new record could be created, false otherwise
+     */
+    boolean createLDAPComponent(@Nonnull DirContext ldapDirContext, @Nonnull LdapName newComponentName);
+
+    /**
      * Removes all records for the given IOC from LDAP that are not contained in the valid records set.
      * @param context .
      * @param iocName .
@@ -74,14 +94,6 @@ public interface ILdapService {
      * @param validRecords .
      */
     void tidyUpIocEntryInLdap(@Nonnull DirContext context, @Nonnull String iocName,@Nonnull String facilityName,@Nonnull Set<Record> validRecords);
-
-    /**
-     * Removes the IOC entry from the LDAP context.
-     *
-     * @param context .
-     * @param ioc .
-     */
-    void removeIocEntryFromLdap(@Nonnull DirContext context,@Nonnull IOC ioc);
 
     /**
      * Removes the IOC entry from the LDAP context.
@@ -120,7 +132,7 @@ public interface ILdapService {
      * @return the search result
      */
     @CheckForNull
-    LdapSearchResult retrieveSearchResultSynchronously(@Nonnull String searchRoot, @Nonnull String filter, int searchScope);
+    LdapSearchResult retrieveSearchResultSynchronously(@Nonnull LdapName searchRoot, @Nonnull String filter, int searchScope);
 
     /**
      * Returns an LDAPReader job that can be scheduled by the user arbitrarily.
@@ -134,6 +146,8 @@ public interface ILdapService {
     LDAPReader createLdapReaderJob(@Nonnull LdapSearchParams params,
                                    @Nullable LdapSearchResult result,
                                    @Nullable IJobCompletedCallBack callBack);
+
+
 
 
 }

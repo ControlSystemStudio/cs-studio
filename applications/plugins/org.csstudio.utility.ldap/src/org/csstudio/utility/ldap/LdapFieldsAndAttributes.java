@@ -37,26 +37,26 @@ import java.util.Set;
 public final class LdapFieldsAndAttributes {
 
     public static final String OU_FIELD_NAME = "ou";
+
     public static final String EPICS_CTRL_FIELD_VALUE = "EpicsControls";
     public static final String EPICS_AUTH_ID_FIELD_VALUE = "EpicsAuthorizeID";
-    public static final String EPICS_ALARM_CFG_FIELD_VALUE = "EpicsAlarmCfg";
-
     public static final String FIELD_SEPARATOR = ",";
     public static final String FIELD_ASSIGNMENT = "=";
     public static final String FIELD_WILDCARD = "*";
 
-    public static final String EREN_FIELD_NAME = "eren";
     public static final String EFAN_FIELD_NAME = "efan";
-    public static final String ECON_FIELD_NAME = "econ";
     public static final String ECOM_FIELD_NAME = "ecom";
-    public static final String ECOM_EPCIS_IOC_FIELD_VALUE = "EPICS-IOC";
-    public static final String ESCO_FIELD_NAME = "esco";
-    public static final String EAIN_FIELD_NAME = "eain";
+    public static final String ECON_FIELD_NAME = "econ";
+    public static final String EREN_FIELD_NAME = "eren";
+    public static final String ECOM_EPICS_IOC_FIELD_VALUE = "EPICS-IOC";
 
-    public static final String ATTR_FIELD_OBJECT_CLASS = "objectClass";
-    public static final String ATTR_FIELD_CSS_TYPE = "epicsCssType";
+    public static final String EAIN_FIELD_NAME = "eain";
+    public static final String EAIG_FIELD_NAME = "eaig";
+
     public static final String ATTR_VAL_OBJECT_CLASS = "epicsRecord";
     public static final String ATTR_FIELD_RESPONSIBLE_PERSON = "epicsResponsibleName";
+
+    public static final String ATTR_FIELD_OBJECT_CLASS = "objectClass";
 
     public static final Set<String> FORBIDDEN_SUBSTRINGS = new HashSet<String>();
     static {

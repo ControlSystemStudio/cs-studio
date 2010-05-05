@@ -10,11 +10,17 @@ package org.csstudio.utility.ldapUpdater.files;
 import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceKey.IOC_DBL_DUMP_PATH;
 import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferences.getValueFromPreferences;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.TimeZone;
 
 import javax.annotation.Nonnull;
@@ -22,6 +28,8 @@ import javax.annotation.Nonnull;
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.model.IOC;
+import org.csstudio.utility.ldap.model.Record;
+import org.csstudio.utility.ldapUpdater.LdapAccess;
 
 
 /**
@@ -153,5 +161,29 @@ public final class IOCFilesDirTree {
         } else {
             System.out.println("is unknown: " + f.getName());
         }
+    }
+
+    /**
+     * TODO (bknerr) : should be encapsulated in a file access class - does not belong here.
+     * @param pathToFile the file with records
+     */
+    @Nonnull
+    public
+    static Set<Record> getRecordsFromFile(@Nonnull final String pathToFile) {
+        final Set<Record> records = new HashSet<Record>();
+        try {
+            final BufferedReader br = new BufferedReader(new FileReader(pathToFile));
+            String strLine;
+            while ((strLine = br.readLine()) != null)   {
+                records.add(new Record(strLine));
+            }
+            br.close();
+            return records;
+        } catch (final FileNotFoundException e) {
+            LdapAccess.LOGGER.error("Could not find file: " + pathToFile + "\n" + e.getMessage());
+        } catch (final IOException e) {
+            LdapAccess.LOGGER.error("Error while reading from file: " + e.getMessage());
+        }
+        return Collections.emptySet();
     }
 }

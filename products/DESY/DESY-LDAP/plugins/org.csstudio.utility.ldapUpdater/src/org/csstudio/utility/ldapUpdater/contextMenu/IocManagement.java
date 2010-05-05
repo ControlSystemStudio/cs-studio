@@ -35,6 +35,7 @@ import org.csstudio.utility.ldap.engine.Engine;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldapUpdater.Activator;
 import org.csstudio.utility.ldapUpdater.LdapAccess;
+import org.csstudio.utility.ldapUpdater.contextMenu.CommandEnumeration.IocModificationCommand;
 
 
 /**
@@ -64,9 +65,13 @@ public class IocManagement implements IManagementCommand {
 
         final String iocName = map.get(ECON_FIELD_NAME);
         final String facilityName = map.get(EFAN_FIELD_NAME);
+
         final ILdapService service = Activator.getDefault().getLdapService();
+
         switch (IocModificationCommand.valueOf(command)) {
-            case DELETE :  service.removeIocEntryFromLdap(Engine.getInstance().getLdapDirContext(), iocName, facilityName);
+            case DELETE :  service.removeIocEntryFromLdap(Engine.getInstance().getLdapDirContext(),
+                                                          iocName,
+                                                          facilityName);
             break;
             case TIDY_UP : service.tidyUpIocEntryInLdap(Engine.getInstance().getLdapDirContext(),
                                                         iocName,

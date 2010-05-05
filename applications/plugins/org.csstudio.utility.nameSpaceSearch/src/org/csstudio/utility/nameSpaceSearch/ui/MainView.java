@@ -21,6 +21,9 @@
  */
 package org.csstudio.utility.nameSpaceSearch.ui;
 
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EPICS_CTRL_FIELD_VALUE;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.OU_FIELD_NAME;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -29,6 +32,7 @@ import javax.naming.directory.SearchResult;
 import org.csstudio.platform.model.IControlSystemItem;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
+import org.csstudio.utility.ldap.LdapUtils;
 import org.csstudio.utility.ldap.reader.LDAPReader;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
 import org.csstudio.utility.ldap.reader.LDAPReader.IJobCompletedCallBack;
@@ -318,7 +322,7 @@ public class MainView extends ViewPart {
             _headline.put("eren", Messages.MainView_Record); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
-        final LdapSearchParams params = new LdapSearchParams(_pluginPreferences.getString(PreferenceConstants.P_STRING_SEARCH_ROOT),
+        final LdapSearchParams params = new LdapSearchParams(LdapUtils.createLdapQuery(OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE),
                                                              filter);
         final ILdapService service = Activator.getDefault().getLdapService();
         _ldapr = service.createLdapReaderJob(params,

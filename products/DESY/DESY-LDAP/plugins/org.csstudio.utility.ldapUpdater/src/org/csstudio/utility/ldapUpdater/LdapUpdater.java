@@ -31,7 +31,6 @@ package org.csstudio.utility.ldapUpdater;
 
 import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ECON_FIELD_NAME;
 import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EPICS_CTRL_FIELD_VALUE;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
 import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.OU_FIELD_NAME;
 import static org.csstudio.utility.ldap.LdapUtils.any;
 import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceKey.IOC_DBL_DUMP_PATH;
@@ -48,13 +47,17 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import javax.annotation.Nonnull;
+import javax.naming.NamingException;
+import javax.naming.directory.Attribute;
 import javax.naming.directory.SearchControls;
 
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
 import org.csstudio.utility.ldap.LdapUtils;
+import org.csstudio.utility.ldap.model.ContentModel;
+import org.csstudio.utility.ldap.model.ILdapComponent;
 import org.csstudio.utility.ldap.model.IOC;
-import org.csstudio.utility.ldap.model.LdapContentModel;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldapUpdater.files.HistoryFileAccess;
@@ -76,24 +79,7 @@ public final class LdapUpdater {
 
     public static final String DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
-    private static final String UPDATE_ACTION_NAME = "LDAP Update Action";
-    private static final String TIDYUP_ACTION_NAME = "LDAP Tidy Up Action";
-
-    /**
-     * LdapUpdaterHolder is loaded on the first execution of LdapUpdater.getInstance()
-     * or the first access to LdapUpdaterHolder.INSTANCE, not before.
-     *
-     * @author bknerr
-     * @author $Author$
-     * @version $Revision$
-     * @since 19.04.2010
-     */
-    private static final class LdapUpdaterHolder {
-        private LdapUpdaterHolder() {
-            // Don't instantiate.
-        }
-        private static final LdapUpdater INSTANCE = new LdapUpdater();
-    }
+    public static final String DEFAULT_RESPONSIBLE_PERSON = "bastian.knerr@desy.de";
 
     /**
      * Factory method for creating a singleton instance.
@@ -118,6 +104,27 @@ public final class LdapUpdater {
         final String now = formatter.format(calendar.getTime());
         return now;
     }
+
+    private static final String UPDATE_ACTION_NAME = "LDAP Update Action";
+    private static final String TIDYUP_ACTION_NAME = "LDAP Tidy Up Action";
+
+    /**
+     * LdapUpdaterHolder is loaded on the first execution of LdapUpdater.getInstance()
+     * or the first access to LdapUpdaterHolder.INSTANCE, not before.
+     * And synchronization is hence provided for free.
+     *
+     * @author bknerr
+     * @author $Author$
+     * @version $Revision$
+     * @since 19.04.2010
+     */
+    private static final class LdapUpdaterHolder {
+        private LdapUpdaterHolder() {
+            // Don't instantiate.
+        }
+        private static final LdapUpdater INSTANCE = new LdapUpdater();
+    }
+
 
 
     private final Logger _log = CentralLogger.getInstance().getLogger(this);
@@ -181,14 +188,15 @@ public final class LdapUpdater {
         try {
             final ILdapService service = Activator.getDefault().getLdapService();
             final LdapSearchResult result =
-                service.retrieveSearchResultSynchronously(OU_FIELD_NAME + FIELD_ASSIGNMENT + EPICS_CTRL_FIELD_VALUE,
+                service.retrieveSearchResultSynchronously(LdapUtils.createLdapQuery(OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE),
                                                           any(ECON_FIELD_NAME),
                                                           SearchControls.ONELEVEL_SCOPE);
 
             final String dumpPath = getValueFromPreferences(IOC_DBL_DUMP_PATH);
             if (dumpPath != null) {
                 final Map<String, IOC> iocMapFromFS = IOCFilesDirTree.findIOCFiles(dumpPath, 1);
-                LdapAccess.tidyUpLDAPFromIOCList(new LdapContentModel(result), iocMapFromFS);
+                LdapAccess.tidyUpLDAPFromIOCList(new ContentModel<LdapEpicsControlsObjectClass>(result, LdapEpicsControlsObjectClass.ROOT),
+                                                 iocMapFromFS);
             } else {
                 _log.warn("No preference for IOC dump path could be found. Tidy up cancelled!");
             }
@@ -221,7 +229,10 @@ public final class LdapUpdater {
                 service.retrieveSearchResultSynchronously(LdapUtils.createLdapQuery(OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE),
                                                           any(ECON_FIELD_NAME),
                                                           SearchControls.SUBTREE_SCOPE);
-            final LdapContentModel model = new LdapContentModel(searchResult);
+
+            final ContentModel<LdapEpicsControlsObjectClass> model =
+                new ContentModel<LdapEpicsControlsObjectClass>(searchResult, LdapEpicsControlsObjectClass.ROOT);
+
 
             validateHistoryFileEntriesVsLDAPEntries(model, historyFileModel);
 
@@ -243,26 +254,35 @@ public final class LdapUpdater {
     }
 
 
-    private void validateHistoryFileEntriesVsLDAPEntries(@Nonnull final LdapContentModel ldapContentModel,
+    private void validateHistoryFileEntriesVsLDAPEntries(@Nonnull final ContentModel<LdapEpicsControlsObjectClass> ldapModel,
                                                          @Nonnull final HistoryFileContentModel historyFileModel) {
 
-        Set<String> iocsFromLDAP = ldapContentModel.getIOCNameKeys();
+        Set<String> iocsFromLDAP = ldapModel.getKeys(LdapEpicsControlsObjectClass.IOC);
+
         final Set<String> iocsFromHistFile = historyFileModel.getIOCNameKeys();
 
         iocsFromLDAP.removeAll(iocsFromHistFile);
 
-
         final Map<String, List<String>> missingIOCsPerPerson = new HashMap<String, List<String>>();
 
-        for (final String iocNameKey : iocsFromLDAP) {
-            _log.warn("IOC " + iocNameKey + " from LDAP is not present in history file!");
+        try {
+            for (final String iocNameKey : iocsFromLDAP) {
+                _log.warn("IOC " + iocNameKey + " from LDAP is not present in history file!");
 
-            final IOC ioc = ldapContentModel.getIOC(iocNameKey);
-            final String person = ioc.getResponsible();
-            if (!missingIOCsPerPerson.containsKey(person)) {
-                missingIOCsPerPerson.put(person, new ArrayList<String>());
+                final ILdapComponent<LdapEpicsControlsObjectClass> ioc = ldapModel.get(LdapEpicsControlsObjectClass.IOC, iocNameKey);
+                final Attribute personAttr = ioc.getAttribute(LdapFieldsAndAttributes.ATTR_FIELD_RESPONSIBLE_PERSON);
+                String person = DEFAULT_RESPONSIBLE_PERSON;
+                if ((personAttr != null) && (personAttr.get() != null)) {
+                    person = (String) personAttr.get();
+                }
+                if (!missingIOCsPerPerson.containsKey(person)) {
+                    missingIOCsPerPerson.put(person, new ArrayList<String>());
+                }
+                missingIOCsPerPerson.get(person).add(ioc.getName());
             }
-            missingIOCsPerPerson.get(person).add(ioc.getName());
+        } catch (final NamingException e) {
+            // TODO (bknerr)
+            e.printStackTrace();
         }
 
         final String iocFilePath = getValueFromPreferences(IOC_DBL_DUMP_PATH);
@@ -274,7 +294,7 @@ public final class LdapUpdater {
         }
 
 
-        iocsFromLDAP = ldapContentModel.getIOCNameKeys();
+        iocsFromLDAP = ldapModel.getKeys(LdapEpicsControlsObjectClass.IOC);
         iocsFromHistFile.removeAll(iocsFromLDAP);
         for (final String ioc : iocsFromHistFile) {
             _log.warn("IOC " + ioc + " found in history file is not present in LDAP!");

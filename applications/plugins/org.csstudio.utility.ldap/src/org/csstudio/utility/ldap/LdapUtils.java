@@ -22,10 +22,25 @@
 package org.csstudio.utility.ldap;
 
 
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ECON_FIELD_NAME;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EFAN_FIELD_NAME;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EREN_FIELD_NAME;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.FIELD_SEPARATOR;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.FIELD_WILDCARD;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.FORBIDDEN_SUBSTRINGS;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.naming.InvalidNameException;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttributes;
+import javax.naming.ldap.LdapName;
+import javax.naming.ldap.Rdn;
 
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
@@ -51,7 +66,7 @@ public final class LdapUtils {
      */
     @Nonnull
     public static String any(@Nonnull final String fieldName) {
-        return fieldName + LdapFieldsAndAttributes.FIELD_ASSIGNMENT + LdapFieldsAndAttributes.FIELD_WILDCARD;
+        return fieldName + FIELD_ASSIGNMENT + FIELD_WILDCARD;
     }
 
     /**
@@ -82,22 +97,26 @@ public final class LdapUtils {
      * @return the String with <field1>=<value1>, <field2>=<value2> assignments.
      */
     @Nonnull
-    public static String createLdapQuery(@Nonnull final String... fieldsAndValues) {
+    public static LdapName createLdapQuery(@Nonnull final String... fieldsAndValues) {
         if (fieldsAndValues.length % 2 > 0) {
             LOG.error("Ldap Attributes: For field and value pairs the length of String array has to be multiple of 2!");
             throw new IllegalArgumentException("Length of parameter fieldsAndValues has to be multiple of 2.");
         }
 
-        final StringBuilder query = new StringBuilder();
+        final List<Rdn> rdns = new ArrayList<Rdn>(fieldsAndValues.length >> 1);
         for (int i = 0; i < fieldsAndValues.length; i+=2) {
-            query.append(fieldsAndValues[i]).append(LdapFieldsAndAttributes.FIELD_ASSIGNMENT).append(fieldsAndValues[i + 1])
-            .append(LdapFieldsAndAttributes.FIELD_SEPARATOR);
-        }
-        if (query.length() >= 1) {
-            query.delete(query.length() - 1, query.length());
-        }
 
-        return query.toString();
+            try {
+                final Rdn rdn = new Rdn(fieldsAndValues[i] + FIELD_ASSIGNMENT + fieldsAndValues[i + 1]);
+                rdns.add(rdn);
+            } catch (final InvalidNameException e) {
+                // TODO (bknerr) :
+                e.printStackTrace();
+            }
+        }
+        Collections.reverse(rdns);
+        final LdapName name = new LdapName(rdns);
+        return name;
     }
 
     /**
@@ -109,7 +128,7 @@ public final class LdapUtils {
         if (!StringUtil.hasLength(recordName)) {
             return false;
         }
-        for (final String s : LdapFieldsAndAttributes.FORBIDDEN_SUBSTRINGS) {
+        for (final String s : FORBIDDEN_SUBSTRINGS) {
             if (recordName.contains(s)) {
                 return true;
             }
@@ -249,13 +268,13 @@ public final class LdapUtils {
     @Nonnull
     public static LdapQueryResult parseLdapQueryResult(@Nonnull final String ldapPath) {
 
-        final String[] fields = ldapPath.split(LdapFieldsAndAttributes.FIELD_SEPARATOR);
+        final String[] fields = ldapPath.split(FIELD_SEPARATOR);
 
         final LdapQueryResult entry = new LdapQueryResult();
 
-        final String econPrefix = LdapFieldsAndAttributes.ECON_FIELD_NAME + LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
-        final String efanPrefix = LdapFieldsAndAttributes.EFAN_FIELD_NAME + LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
-        final String erenPrefix = LdapFieldsAndAttributes.EREN_FIELD_NAME + LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
+        final String econPrefix = ECON_FIELD_NAME + FIELD_ASSIGNMENT;
+        final String efanPrefix = EFAN_FIELD_NAME + FIELD_ASSIGNMENT;
+        final String erenPrefix = EREN_FIELD_NAME + FIELD_ASSIGNMENT;
 
         for (final String field : fields) {
             final String trimmedString = field.trim();

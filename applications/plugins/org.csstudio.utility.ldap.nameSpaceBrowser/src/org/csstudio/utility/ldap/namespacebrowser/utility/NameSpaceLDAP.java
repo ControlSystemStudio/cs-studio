@@ -24,8 +24,15 @@
  */
 package org.csstudio.utility.ldap.namespacebrowser.utility;
 
+import javax.naming.CompositeName;
+import javax.naming.NameParser;
+import javax.naming.NamingException;
 import javax.naming.directory.SearchControls;
+import javax.naming.ldap.LdapName;
 
+import org.apache.log4j.Logger;
+import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.utility.ldap.engine.Engine;
 import org.csstudio.utility.ldap.namespacebrowser.Activator;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
@@ -41,6 +48,7 @@ import org.csstudio.utility.namespace.utility.NameSpaceSearchResult;
  */
 public class NameSpaceLDAP extends NameSpace {
 
+    private final Logger _log = CentralLogger.getInstance().getLogger(this);
 
 	/* (non-Javadoc)
 	 * @see org.csstudio.utility.nameSpaceBrowser.utility.NameSpace#start()
@@ -52,15 +60,19 @@ public class NameSpaceLDAP extends NameSpace {
             if (nameSpaceResultList instanceof LdapSearchResult) {
                 final ILdapService service = Activator.getDefault().getLdapService();
 
+                final NameParser parser = Engine.getInstance().getLdapDirContext().getNameParser(new CompositeName());
+
+                final LdapName searchRoot = (LdapName) parser.parse(getName());
+
                 LdapSearchResult result;
                 if(getSelection().endsWith("=*,")) {
-                    result = service.retrieveSearchResultSynchronously(getName(),
-                                                           getFilter(),
-                                                           SearchControls.SUBTREE_SCOPE);
+                    result = service.retrieveSearchResultSynchronously(searchRoot,
+                                                                       getFilter(),
+                                                                       SearchControls.SUBTREE_SCOPE);
                 } else {
-                    result = service.retrieveSearchResultSynchronously(getName(),
-                                                           getFilter(),
-                                                           SearchControls.ONELEVEL_SCOPE);
+                    result = service.retrieveSearchResultSynchronously(searchRoot,
+                                                                       getFilter(),
+                                                                       SearchControls.ONELEVEL_SCOPE);
                 }
                 updateResultList(result.getCSIResultList());
 
@@ -68,8 +80,10 @@ public class NameSpaceLDAP extends NameSpace {
                 // TODO: Was soll gemacht werden wenn das 'getNameSpaceResultList() instanceof LdapSearchResult' nicht stimmt.
                 Activator.logError(Messages.getString("CSSView.exp.IAE.2")); //$NON-NLS-1$
             }
-        }catch (final IllegalArgumentException e) {
+        } catch (final IllegalArgumentException e) {
             Activator.logException(Messages.getString("CSSView.exp.IAE.1"), e); //$NON-NLS-1$
+        } catch (final NamingException ne) {
+            _log.error("Error while parsing search root " + getName() + " as LDAP name.", ne);
         }
 	}
 }

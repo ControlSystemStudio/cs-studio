@@ -45,16 +45,7 @@ public class LdapContentModel {
 
     private final Map<String, Facility> _facilities = new HashMap<String, Facility>();
 
-
     private LdapSearchResult _currentSearchResult;
-
-    /**
-     * Constructor.
-     */
-    public LdapContentModel() {
-        // Empty.
-    }
-
 
     /**
      * Constructor.
@@ -65,8 +56,12 @@ public class LdapContentModel {
     }
 
 
+
+
     public Facility addFacility(final String efan) {
+
         final String efanKey = efan.toUpperCase();
+
         if (!_facilities.containsKey(efanKey)) {
             _facilities.put(efanKey, new Facility(efan));
         }
@@ -209,6 +204,7 @@ public class LdapContentModel {
                 }
             }
         }
+
     }
 
 }

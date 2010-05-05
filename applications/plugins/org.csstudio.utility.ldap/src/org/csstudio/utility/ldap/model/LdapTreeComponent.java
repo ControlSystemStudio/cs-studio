@@ -1,0 +1,160 @@
+/*
+ * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron,
+ * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
+ *
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
+ * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
+ * OR MODIFICATIONS.
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
+ * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
+ *
+ * $Id$
+ */
+package org.csstudio.utility.ldap.model;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.Map.Entry;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.naming.directory.Attributes;
+import javax.naming.ldap.LdapName;
+
+/**
+ * TODO (bknerr) :
+ *
+ * @author bknerr
+ * @author $Author$
+ * @version $Revision$
+ * @param <T>
+ * @since 30.04.2010
+ */
+public class LdapTreeComponent<T extends Enum<T>> extends LdapComponent<T>
+    implements ILdapTreeComponent<T> {
+
+    private final Set<T> _subComponentTypes;
+
+    private final Map<String, ILdapComponent<T>> _children = new HashMap<String, ILdapComponent<T>>();
+
+    /**
+     * Constructor.
+     *
+     * @param name component name
+     * @param type component type
+     * @param subComponentTypes types of its children components
+     * @param parent reference to its parent, might be <code>null</code> for ROOT
+     * @param attributes
+     * @param fullName
+     */
+    public LdapTreeComponent(@Nonnull final String name,
+                             @Nonnull final T type,
+                             @Nonnull final Set<T> subComponentTypes,
+                             @Nullable final ILdapTreeComponent<T> parent,
+                             @Nullable final Attributes attributes,
+                             @Nullable final LdapName fullName) {
+        super(name, type, parent, attributes, fullName);
+        _subComponentTypes = subComponentTypes;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public Set<T> getSubComponentTypes() {
+        return _subComponentTypes;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void addChild(@Nonnull final ILdapComponent<T> child) {
+        // TODO (bknerr) : as soon as the LDAP structure has been updated,
+        // check here for permitted subtypes before adding children
+        if(!_subComponentTypes.contains(child.getType())) {
+            throw new IllegalArgumentException("The child type " + child.getType() + " is not permitted for this component!");
+        }
+
+        final String nameKey = child.getName().toUpperCase();
+        if (!_children.containsKey(nameKey)) {
+            _children.put(nameKey, child);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public Collection<ILdapComponent<T>> getDirectChildren() {
+        return _children.values();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public Map<String, ILdapComponent<T>> getChildrenByType(@Nonnull final T type) {
+        if (_children.isEmpty()) {
+            return Collections.emptyMap();
+        }
+
+        final Map<String, ILdapComponent<T>> resultMap = new HashMap<String, ILdapComponent<T>>();
+
+        for (final Entry<String, ILdapComponent<T>> child : _children.entrySet()) {
+            final ILdapComponent<T> component = child.getValue();
+            if (component.getType().equals(type)) {
+                resultMap.put(child.getKey(), component.clone());
+            }
+            if (component.hasChildren()) {
+                resultMap.putAll(((ILdapTreeComponent<T>)component).getChildrenByType(type));
+            }
+        }
+        return resultMap;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean hasChildren() {
+        return !_children.isEmpty();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public ILdapComponent<T> getChild(@Nonnull final String name) {
+        return _children.get(name.toUpperCase());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void removeChild(@Nonnull final String name) {
+        if (_children.containsKey(name.toUpperCase())) {
+            _children.remove(name.toUpperCase());
+        }
+    }
+
+}

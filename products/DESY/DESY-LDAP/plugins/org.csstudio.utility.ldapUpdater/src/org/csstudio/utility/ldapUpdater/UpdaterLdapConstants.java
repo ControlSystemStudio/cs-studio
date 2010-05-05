@@ -18,35 +18,30 @@
  * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
+ *
+ * $Id$
  */
-package org.csstudio.utility.ldapUpdater.contextMenu;
-
-import javax.annotation.Nonnull;
+package org.csstudio.utility.ldapUpdater;
 
 /**
- * Enum of available IOC management commands for the context menu of the LDAP Updater
+ * Constants for LDAP field names, popular values, and forbidden symbols in LDAP entry names.
  *
- * @author bknerr 17.03.2010
+ * @author bknerr
+ * @author $Author$
+ * @version $Revision$
+ * @since 05.05.2010
  */
-public enum IocModificationCommand {
-    DELETE("delete"),
-    TIDY_UP("tidyUp");
+public final class UpdaterLdapConstants {
 
-    private final String _description;
+
+
+
+
 
     /**
-     * Constructor.
+     * Don't instantiate.
      */
-    private IocModificationCommand(@Nonnull final String description) {
-        _description = description;
+    private UpdaterLdapConstants() {
+        // Empty
     }
-    /**
-     * The command description.
-     * @return description
-     */
-    @Nonnull
-    public String getDescription() {
-        return _description;
-    }
-
 }

@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -59,14 +60,9 @@ public class IOC implements Serializable {
     private String _group = NO_GROUP;
 
     /**
-     * The physical name of this IOC.
-     */
-    private String _physicalName;
-
-    /**
      * The date time of last change.
      */
-    private GregorianCalendar _dateTime;
+    private GregorianCalendar _lastUpdated;
     /**
      * The email address of the responsible person for this IOC.
      */
@@ -78,12 +74,22 @@ public class IOC implements Serializable {
     private final Map<String, Record> _records = new HashMap<String, Record>();
 
 
-    public IOC(final String name, final GregorianCalendar dateTime) {
-        this(name, "<no group>", "<no physicalname>", dateTime, DEFAULT_RESPONSIBLE_PERSON);
+    /**
+     * Constructor.
+     * @param name .
+     * @param dateTime time of last record update from file
+     */
+    public IOC(@Nonnull final String name, @Nonnull final GregorianCalendar dateTime) {
+        this(name, NO_GROUP, dateTime, DEFAULT_RESPONSIBLE_PERSON);
     }
 
-    public IOC(final String econ, final String efan) {
-        this(econ, efan, "<no physicalname>", null, DEFAULT_RESPONSIBLE_PERSON);
+    /**
+     * Constructor.
+     * @param econ the IOC name
+     * @param efan the facility name
+     */
+    public IOC(@Nonnull final String econ, @Nonnull final String efan) {
+        this(econ, efan, null, DEFAULT_RESPONSIBLE_PERSON);
     }
 
     /**
@@ -97,34 +103,33 @@ public class IOC implements Serializable {
      */
     public IOC(@Nonnull final String name,
                @Nullable final String group,
-               @Nullable final String physicalName,
                @Nullable final GregorianCalendar dateTime,
                @Nullable final String resp) {
         _name = name;
         _group = group;
-        _physicalName = physicalName;
-        _dateTime = dateTime;
+        _lastUpdated = dateTime;
         setResponsible(resp);
     }
 
-
-    public GregorianCalendar getDateTime() {
-        return _dateTime;
+    @CheckForNull
+    public GregorianCalendar getLastUpdated() {
+        return _lastUpdated;
     }
 
-    public void setDateTime(final GregorianCalendar date) {
-        _dateTime = date;
+    public void setLastUpdated(@Nonnull final GregorianCalendar date) {
+        _lastUpdated = date;
     }
 
     /**
      * Returns the group of this IOC.
      * @return the group of this IOC.
      */
+    @Nonnull
     public final String getGroup() {
         return _group;
     }
 
-    public void setGroup(final String group) {
+    public void setGroup(@Nonnull final String group) {
         _group = group;
     }
 
@@ -138,57 +143,49 @@ public class IOC implements Serializable {
     }
 
     /**
-     * Returns the physical name of this IOC.
-     * @return the physical name of this IOC.
-     */
-    public final String getPhysicalName() {
-        return _physicalName;
-    }
-
-    public final void setPhysicalName(final String physicalName) {
-        _physicalName = physicalName;
-    }
-
-    /**
      * Returns a copy of the set of records for this IOC.
      *
      * @return a copy of the records
      */
+    @Nonnull
     public Set<Record> getRecordValues() {
         return new HashSet<Record>(_records.values());
     }
 
+    @Nonnull
     public Map<String, Record> getRecords() {
         return new HashMap<String, Record>(_records);
     }
 
-    public Record getRecord(final String eren) {
+    @CheckForNull
+    public Record getRecord(@Nonnull final String eren) {
         return _records.get(eren.toUpperCase());
     }
-
-
-
 
     /**
      * {@inheritDoc}
      */
     @Override
     public final String toString() {
-        return "IOC(name=" + _name + ", group=" + _group + ", phys=" + _physicalName + ")";
+        return "IOC(name=" + _name +
+                    ", group=" + _group +
+                    ", responsible=" + _responsible +
+                    ", last update=" + _lastUpdated + ")";
     }
 
-    public void addRecord(final String eren) {
+    public void addRecord(@Nonnull final String eren) {
         final String erenKey = eren.toUpperCase();
         if (!_records.containsKey(erenKey)) {
             _records.put(erenKey, new Record(eren));
         }
     }
 
+    @Nonnull
     public String getResponsible() {
         return _responsible;
     }
 
-    public void setResponsible(final String responsible) {
+    public void setResponsible(@Nonnull final String responsible) {
         _responsible = responsible;
     }
 

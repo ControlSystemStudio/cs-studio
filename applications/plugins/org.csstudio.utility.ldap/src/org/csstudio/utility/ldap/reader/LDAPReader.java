@@ -34,6 +34,7 @@ import javax.naming.NamingException;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
+import javax.naming.ldap.LdapName;
 
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
@@ -65,18 +66,19 @@ public class LDAPReader extends Job {
      */
     public static final class LdapSearchParams {
 
-        private final String _searchRoot;
+        private final LdapName _searchRoot;
 
         private final String _filter;
 
         private int _scope;
+
 
         /**
          * Constructor.
          * @param searchRoot .
          * @param filter .
          */
-        public LdapSearchParams(@Nonnull final String searchRoot,
+        public LdapSearchParams(@Nonnull final LdapName searchRoot,
                                 @Nonnull final String filter) {
             this(searchRoot, filter, DEFAULT_SCOPE);
         }
@@ -87,15 +89,15 @@ public class LDAPReader extends Job {
          * @param filter .
          * @param scope the search controls
          */
-        public LdapSearchParams(@Nonnull final String searchRoot,
-                          @Nonnull final String filter,
-                          @Nonnull final int scope) {
+        public LdapSearchParams(@Nonnull final LdapName searchRoot,
+                                @Nonnull final String filter,
+                                @Nonnull final int scope) {
             _searchRoot = searchRoot;
             _filter = filter;
             _scope = scope;
         }
         @Nonnull
-        public String getSearchRoot() {
+        public LdapName getSearchRoot() {
             return _searchRoot;
         }
         @Nonnull
@@ -157,7 +159,7 @@ public class LDAPReader extends Job {
          * @param searchRoot the root
          * @param filter the filter
          */
-        public Builder(@Nonnull final String searchRoot,
+        public Builder(@Nonnull final LdapName searchRoot,
                        @Nonnull final String filter) {
             _searchParams = new LdapSearchParams(searchRoot, filter);
         }

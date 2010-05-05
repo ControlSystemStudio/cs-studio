@@ -24,7 +24,7 @@ package org.csstudio.utility.ldap.service.impl;
 
 import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
 import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ATTR_VAL_OBJECT_CLASS;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ECOM_EPCIS_IOC_FIELD_VALUE;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ECOM_EPICS_IOC_FIELD_VALUE;
 import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ECOM_FIELD_NAME;
 import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ECON_FIELD_NAME;
 import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EFAN_FIELD_NAME;
@@ -42,14 +42,16 @@ import java.util.Set;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.naming.InvalidNameException;
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.SearchControls;
+import javax.naming.ldap.LdapName;
 
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
+import org.csstudio.utility.ldap.LdapUtils;
 import org.csstudio.utility.ldap.engine.Engine;
 import org.csstudio.utility.ldap.model.IOC;
 import org.csstudio.utility.ldap.model.LdapContentModel;
@@ -92,7 +94,7 @@ public final class LdapServiceImpl implements ILdapService {
 
     @Override
     @CheckForNull
-    public LdapSearchResult retrieveSearchResultSynchronously(@Nonnull final String searchRoot,
+    public LdapSearchResult retrieveSearchResultSynchronously(@Nonnull final LdapName searchRoot,
                                                               @Nonnull final String filter,
                                                               final int searchScope) {
 
@@ -113,8 +115,8 @@ public final class LdapServiceImpl implements ILdapService {
         }
 
         final LdapSearchResult result =
-            retrieveSearchResultSynchronously(OU_FIELD_NAME + FIELD_ASSIGNMENT + EPICS_CTRL_FIELD_VALUE,
-                                              EREN_FIELD_NAME + FIELD_ASSIGNMENT + recordName,
+            retrieveSearchResultSynchronously(LdapUtils.createLdapQuery(OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE),
+                                                                        EREN_FIELD_NAME + FIELD_ASSIGNMENT + recordName,
                                               SearchControls.SUBTREE_SCOPE);
         final LdapContentModel model = new LdapContentModel(result);
 
@@ -134,13 +136,26 @@ public final class LdapServiceImpl implements ILdapService {
      */
     @Override
     @CheckForNull
-    public LdapSearchResult retrieveRecords(@Nonnull final String facilityName,
-                                            @Nonnull final String iocName) throws InterruptedException {
+    public LdapSearchResult retrieveRecordsForIOC(@Nonnull final LdapName fullIocName) throws InterruptedException, InvalidNameException {
+        if (fullIocName.size() > 0) {
+            final LdapName filter = (LdapName) fullIocName.remove(0);
+            return retrieveSearchResultSynchronously(fullIocName, filter.toString(), SearchControls.ONELEVEL_SCOPE);
+        }
+        return null;
+    }
 
-        final String query = createLdapQuery(ECON_FIELD_NAME, iocName,
-                                             ECOM_FIELD_NAME, ECOM_EPCIS_IOC_FIELD_VALUE,
-                                             EFAN_FIELD_NAME, facilityName,
-                                             OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @CheckForNull
+    public LdapSearchResult retrieveRecordsForIOC(@Nonnull final String facilityName,
+                                                  @Nonnull final String iocName) throws InterruptedException {
+
+        final LdapName query = createLdapQuery(ECON_FIELD_NAME, iocName,
+                                               ECOM_FIELD_NAME, ECOM_EPICS_IOC_FIELD_VALUE,
+                                               EFAN_FIELD_NAME, facilityName,
+                                               OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE);
 
         return retrieveSearchResultSynchronously(query, any(EREN_FIELD_NAME), SearchControls.ONELEVEL_SCOPE);
     }
@@ -155,11 +170,11 @@ public final class LdapServiceImpl implements ILdapService {
                                     @Nonnull final IOC ioc,
                                     @Nonnull final String recordName) {
 
-        final String query = createLdapQuery(EREN_FIELD_NAME, recordName,
-                                             ECON_FIELD_NAME, ioc.getName(),
-                                             ECOM_FIELD_NAME, ECOM_EPCIS_IOC_FIELD_VALUE,
-                                             EFAN_FIELD_NAME, ioc.getGroup(),
-                                             OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE);
+        final LdapName query = createLdapQuery(EREN_FIELD_NAME, recordName,
+                                               ECON_FIELD_NAME, ioc.getName(),
+                                               ECOM_FIELD_NAME, ECOM_EPICS_IOC_FIELD_VALUE,
+                                               EFAN_FIELD_NAME, ioc.getGroup(),
+                                               OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE);
 
         final Attributes afe =
             attributesForLdapEntry(ATTR_FIELD_OBJECT_CLASS, ATTR_VAL_OBJECT_CLASS,
@@ -175,12 +190,22 @@ public final class LdapServiceImpl implements ILdapService {
         return true;
     }
 
+
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public void removeIocEntryFromLdap(@Nonnull final DirContext context, @Nonnull final IOC ioc) {
-        removeIocEntryFromLdap(context, ioc.getName(), ioc.getGroup());
+    public boolean createLDAPComponent(@Nonnull final DirContext context, @Nonnull final LdapName newComponentName) {
+        try {
+            context.bind(newComponentName, null, null);
+            _log.info( "Record written: " + newComponentName.toString());
+        } catch (final NamingException e) {
+            _log.warn( "Naming Exception while trying to bind: " + newComponentName.toString());
+            _log.warn(e.getExplanation());
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -193,7 +218,7 @@ public final class LdapServiceImpl implements ILdapService {
                                      @Nonnull final Set<Record> validRecords)  {
 
         try {
-            final LdapSearchResult searchResult = retrieveRecords(facilityName, iocName);
+            final LdapSearchResult searchResult = retrieveRecordsForIOC(facilityName, iocName);
             final LdapContentModel model = new LdapContentModel(searchResult);
 
             final IOC ioc = model.getIOC(facilityName, iocName);
@@ -225,7 +250,7 @@ public final class LdapServiceImpl implements ILdapService {
 
         LdapContentModel model = null;
         try {
-            model = new LdapContentModel(retrieveRecords(facilityName, iocName));
+            model = new LdapContentModel(retrieveRecordsForIOC(facilityName, iocName));
         } catch (final InterruptedException e) {
             e.printStackTrace();
             Thread.currentThread().interrupt();
@@ -239,10 +264,10 @@ public final class LdapServiceImpl implements ILdapService {
             removeRecordEntryFromLdap(context, ioc , record);
         }
 
-        final String query = createLdapQuery(LdapFieldsAndAttributes.ECON_FIELD_NAME, iocName,
-                                             LdapFieldsAndAttributes.ECOM_FIELD_NAME, LdapFieldsAndAttributes.ECOM_EPCIS_IOC_FIELD_VALUE,
-                                             LdapFieldsAndAttributes.EFAN_FIELD_NAME, facilityName,
-                                             LdapFieldsAndAttributes.OU_FIELD_NAME, LdapFieldsAndAttributes.EPICS_CTRL_FIELD_VALUE);
+        final LdapName query = createLdapQuery(ECON_FIELD_NAME, iocName,
+                                               ECOM_FIELD_NAME, ECOM_EPICS_IOC_FIELD_VALUE,
+                                               EFAN_FIELD_NAME, facilityName,
+                                               OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE);
         removeEntryFromLdap(context, query);
     }
 
@@ -254,11 +279,11 @@ public final class LdapServiceImpl implements ILdapService {
                                           @Nonnull final IOC ioc,
                                           @Nonnull final Record record) {
 
-        final String query = createLdapQuery(LdapFieldsAndAttributes.EREN_FIELD_NAME, record.getName(),
-                                             LdapFieldsAndAttributes.ECON_FIELD_NAME, ioc.getName(),
-                                             LdapFieldsAndAttributes.ECOM_FIELD_NAME, LdapFieldsAndAttributes.ECOM_EPCIS_IOC_FIELD_VALUE,
-                                             LdapFieldsAndAttributes.EFAN_FIELD_NAME, ioc.getGroup(),
-                                             LdapFieldsAndAttributes.OU_FIELD_NAME, LdapFieldsAndAttributes.EPICS_CTRL_FIELD_VALUE);
+        final LdapName query = createLdapQuery(EREN_FIELD_NAME, record.getName(),
+                                               ECON_FIELD_NAME, ioc.getName(),
+                                               ECOM_FIELD_NAME, ECOM_EPICS_IOC_FIELD_VALUE,
+                                               EFAN_FIELD_NAME, ioc.getGroup(),
+                                               OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE);
         removeEntryFromLdap(context, query);
     }
 
@@ -267,7 +292,7 @@ public final class LdapServiceImpl implements ILdapService {
      * @param query
      */
     private void removeEntryFromLdap(@Nonnull final DirContext context,
-                                     @Nonnull final String query) {
+                                     @Nonnull final LdapName query) {
         try {
             context.unbind(query);
             _log.info("Entry removed from LDAP: " + query);
@@ -276,4 +301,5 @@ public final class LdapServiceImpl implements ILdapService {
             _log.warn(e.getExplanation());
         }
     }
+
 }
