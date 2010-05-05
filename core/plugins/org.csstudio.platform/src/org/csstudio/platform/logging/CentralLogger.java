@@ -267,6 +267,9 @@ public final class CentralLogger {
         return Logger.getLogger(className);
     }
 
+    public Logger getLogger(final Class<?> clazz) {
+        return Logger.getLogger(clazz.getCanonicalName());
+    }
 
 	/**
 	 * Log a message with log level <i>info</i>. The reference to the calling
