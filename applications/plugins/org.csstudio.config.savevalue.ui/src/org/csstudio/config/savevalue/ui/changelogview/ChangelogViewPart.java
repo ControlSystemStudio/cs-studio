@@ -23,7 +23,6 @@
 package org.csstudio.config.savevalue.ui.changelogview;
 import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ECON_FIELD_NAME;
 import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EPICS_CTRL_FIELD_VALUE;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
 import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.OU_FIELD_NAME;
 import static org.csstudio.utility.ldap.LdapUtils.any;
 
@@ -46,6 +45,7 @@ import org.csstudio.config.savevalue.ui.Messages;
 import org.csstudio.config.savevalue.ui.RemoteMethodCallJob;
 import org.csstudio.config.savevalue.ui.SaveValueDialog;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.utility.ldap.LdapUtils;
 import org.csstudio.utility.ldap.model.LdapContentModel;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
@@ -334,11 +334,11 @@ public class ChangelogViewPart extends ViewPart {
 						IProgressMonitor.UNKNOWN);
 				final ILdapService service = Activator.getDefault().getLdapService();
 				final LdapSearchResult result =
-				    service.retrieveSearchResultSynchronously(OU_FIELD_NAME + FIELD_ASSIGNMENT + EPICS_CTRL_FIELD_VALUE,
+				    service.retrieveSearchResultSynchronously(LdapUtils.createLdapQuery(OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE),
 				                                              any(ECON_FIELD_NAME),
 				                                              SearchControls.SUBTREE_SCOPE);
-				final LdapContentModel model = new LdapContentModel(result);
 
+				final LdapContentModel model = new LdapContentModel(result);
 
 				final List<String> iocNames = new ArrayList<String>(model.getIOCNames());
 
