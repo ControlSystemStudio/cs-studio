@@ -35,7 +35,6 @@ import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DisplayModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
-import org.csstudio.sds.util.ColorAndFontUtil;
 import org.csstudio.utility.adlconverter.Activator;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.ui.preferences.ADLConverterPreferenceConstants;
@@ -44,7 +43,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.TextLayout;
 
 /**
@@ -72,7 +70,7 @@ public final class ADLHelper {
 
     /**
      * Convert a adl color value to a RGB.
-     * 
+     *
      * @param clr
      *            the adl color value.
      * @return the converted RGB
@@ -80,7 +78,7 @@ public final class ADLHelper {
     public static String getRGB(final String clr) {
         String color = clr.replaceAll("\"", "");
         int colorID = Integer.parseInt(color);
-        if (_rgbColor ==null || 0 > colorID || colorID >= _rgbColor.length) {
+        if ((_rgbColor ==null) || (0 > colorID) || (colorID >= _rgbColor.length)) {
             return null;
         }
 
@@ -100,7 +98,7 @@ public final class ADLHelper {
 
         String[] anz = colorMap.getBody().get(0).getLine()
                 .replaceAll("\\{", "").trim().toLowerCase().split("="); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        if (!anz[0].equals("ncolors") || anz.length != 2) { //$NON-NLS-1$
+        if (!anz[0].equals("ncolors") || (anz.length != 2)) { //$NON-NLS-1$
             throw new WrongADLFormatException(Messages.ADLHelper_WrongADLFormatException_Begin
                     + colorMap.getBody().get(0) + Messages.ADLHelper_WrongADLFormatException_End);
         }
@@ -110,7 +108,7 @@ public final class ADLHelper {
             int i = 0;
             _rgbColor = new RGBColor[Integer.parseInt(anz[1])];
             for (ADLWidget dlColorObj : colorMap.getObjects()) {
-                if(dlColorObj.isType("dl_color")&&i<_rgbColor.length){
+                if(dlColorObj.isType("dl_color")&&(i<_rgbColor.length)){
                     int r = 0;
                     int g = 0;
                     int b = 0;
@@ -137,7 +135,7 @@ public final class ADLHelper {
             }
         } else if (colors.isType("colors")) { //$NON-NLS-1$
             _rgbColor = new RGBColor[Integer.parseInt(anz[1])];
-            for (int j = 0; j < colors.getBody().size() && j < _rgbColor.length; j++) {
+            for (int j = 0; (j < colors.getBody().size()) && (j < _rgbColor.length); j++) {
                 _rgbColor[j] = new RGBColor(colors.getBody().get(j).getLine().replaceAll(",", "").trim()); //$NON-NLS-1$ //$NON-NLS-2$
             }
         } else {
@@ -148,16 +146,19 @@ public final class ADLHelper {
 
     /**
      * Remove all ",Whitspace and change $(name) to $channel$.
-     * 
+     *
      * @param dirtyString
      *            The string to clean it.
      * @return the cleaned string.
      */
     public static String[] cleanString(final String dirtyString) {
-        String delimiter = ""; //$NON-NLS-1$
+        String  delimiter = dirtyString.replaceAll("\"", "").trim(); // use variable
+        if(delimiter.endsWith(".adl")||delimiter.endsWith(".stc")) {
+            return cleanFileName(delimiter);
+        }
+
         String[] tempString; // 0=record, 1=_pid, 2=.LOLO
         String[] cleanString;
-        delimiter = dirtyString.replaceAll("\"", "").trim(); // use variable
                                                                 // delimiter in
                                                                 // wrong
                                                                 // context.
@@ -172,24 +173,14 @@ public final class ADLHelper {
             cleanString[0] = ""; //$NON-NLS-1$
         }
         for (int i = 0; i < tempString.length; i++) {
-            if (i > tempString.length - 2 && dirtyString.contains(".")) { //$NON-NLS-1$
+            if ((i > tempString.length - 2) && dirtyString.contains(".")) { //$NON-NLS-1$
                 delimiter = "."; //$NON-NLS-1$
             }
             String string = tempString[i];
             cleanString[0] = cleanString[0] + delimiter + string;
             cleanString[i + 1] = string;
         }
-        if (cleanString[0].endsWith(".adl")) { //$NON-NLS-1$
-            if(cleanString[0].startsWith(PATH_REMOVE_PART)) {
-                cleanString[0] = cleanString[0].replaceAll(PATH_REMOVE_PART, ""); //$NON-NLS-1$ //$NON-NLS-2$
-            }
-            cleanString[0] = cleanString[0].replaceAll("\\.adl", ".css-sds"); //$NON-NLS-1$ //$NON-NLS-2$
-        }else if (cleanString[0].endsWith(".stc")) { //$NON-NLS-1$
-            if(cleanString[0].startsWith(STRIP_TOOL_PATH_REMOVE_PART)) {
-                cleanString[0] = cleanString[0].replaceAll(STRIP_TOOL_PATH_REMOVE_PART, ""); //$NON-NLS-1$ //$NON-NLS-2$
-            }
-            cleanString[0] = cleanString[0].replace(".stc",".css-plt"); //$NON-NLS-1$ //$NON-NLS-2$
-        }else if (cleanString[0].endsWith(".HOPR")) { //$NON-NLS-1$
+        if (cleanString[0].endsWith(".HOPR")) { //$NON-NLS-1$
             cleanString[0] = cleanString[0].replaceAll("\\.HOPR", "[graphMax]");
         }else if (cleanString[0].endsWith(".LOPR")) { //$NON-NLS-1$
             cleanString[0] = cleanString[0].replaceAll("\\.LOPR", "[graphMin]");
@@ -235,7 +226,27 @@ public final class ADLHelper {
     }
 
     /**
-     * 
+     * @param dirtyString
+     * @return
+     */
+    private static String[] cleanFileName(final String dirtyString2) {
+        String dirtyString = dirtyString2;
+        if (dirtyString.endsWith(".adl")) { //$NON-NLS-1$
+            if(dirtyString.startsWith(PATH_REMOVE_PART)) {
+                dirtyString = dirtyString.replaceAll(PATH_REMOVE_PART, ""); //$NON-NLS-1$ //$NON-NLS-2$
+            }
+            dirtyString = dirtyString.replaceAll("\\.adl", ".css-sds"); //$NON-NLS-1$ //$NON-NLS-2$
+        }else if (dirtyString.endsWith(".stc")) { //$NON-NLS-1$
+            if(dirtyString.startsWith(STRIP_TOOL_PATH_REMOVE_PART)) {
+                dirtyString = dirtyString.replaceAll(STRIP_TOOL_PATH_REMOVE_PART, ""); //$NON-NLS-1$ //$NON-NLS-2$
+            }
+            dirtyString = dirtyString.replace(".stc",".css-plt"); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+        return new String[] {dirtyString};
+    }
+
+    /**
+     *
      * @param dynamicsDescriptor
      *            set at this dynamicsDescriptor the ConnectionState.
      */
@@ -249,7 +260,7 @@ public final class ADLHelper {
     /**
      * Calculate the best fit font size for a horizontal text in a rectangle
      * area. (e.g. Label)
-     * 
+     *
      * @param font
      *            The font name.
      * @param text
@@ -260,7 +271,7 @@ public final class ADLHelper {
      *            The width high in px that the text can have.
      * @param style
      *            The font style "0" = none. "1" = bold,
-     * 
+     *
      * @return the 'optimal' font size.
      */
     public static int getFontSize(final String font, final String text, final int maxHigh,
@@ -270,12 +281,12 @@ public final class ADLHelper {
             fontSize = 10;
         }
 
-        if (text != null && text.length() > 0) {
+        if ((text != null) && (text.length() > 0)) {
             TextLayout tl = new TextLayout(null);
             tl.setText(text);
             Font f = CustomMediaFactory.getInstance().getFont(font, fontSize, 0);
             tl.setFont(f);
-            while (maxWidth < tl.getBounds().width && fontSize > MIN_FONT_SIZE) {
+            while ((maxWidth < tl.getBounds().width) && (fontSize > MIN_FONT_SIZE)) {
                 fontSize--;
                 f = CustomMediaFactory.getInstance().getFont(font, fontSize, 0);
                 tl.setFont(f);
@@ -286,7 +297,7 @@ public final class ADLHelper {
     }
 
     /**
-     * @param widgetModel the widget model to set the chan. 
+     * @param widgetModel the widget model to set the chan.
      * @param chan
      *            the was set to Primery PV and as channel alias
      * @return the Channel field.
@@ -294,23 +305,24 @@ public final class ADLHelper {
     public static String setChan(final AbstractWidgetModel widgetModel, final String[] chan) {
     	return setChan(widgetModel, chan, "");
     }
-    
-    
+
+
     public static String setChan(final AbstractWidgetModel widgetModel, final String[] chan, final String which) {
         String postfix = ""; //$NON-NLS-1$
         if (chan[0].length() == 0) {
             return ""; //$NON-NLS-1$
-        } 
-        if (chan.length > 2 && chan[1].startsWith("$")) { //$NON-NLS-1$
+        }
+        if ((chan.length > 2) && chan[1].startsWith("$")) { //$NON-NLS-1$
         	CentralLogger.getInstance().debug(ADLHelper.class, Arrays.toString(chan));
-            widgetModel.setAliasValue("channel".concat(which), chan[0]); //$NON-NLS-1$            
+            widgetModel.setAliasValue("channel".concat(which), chan[0]); //$NON-NLS-1$
         } else {
             CentralLogger.getInstance().debug(ADLHelper.class, Arrays.toString(chan));
-            widgetModel.setAliasValue("channel".concat(which), chan[1]); //$NON-NLS-1$            
+            widgetModel.setAliasValue("channel".concat(which), chan[1]); //$NON-NLS-1$
         }
         widgetModel.setLayer(Messages.ADLDisplayImporter_ADLDynamicLayerName);
-        if(which.equals(""))
-        	widgetModel.setPrimarPv("$channel$");
+        if(which.equals("")) {
+            widgetModel.setPrimarPv("$channel$");
+        }
         // if(chan.length>2&&chan[chan.length-1].startsWith(".")){ //$NON-NLS-1$
         // postfix = chan[chan.length-1];
         // }
@@ -325,15 +337,15 @@ public final class ADLHelper {
     /**
      * Test the proportion of a Widget to the parent (Display) and exceed the width or
      * high a 1/4 from parent set the widget to the background layer.
-     * 
+     *
      * @param widget The widget to test the size.
      * @param parent the parent to compare.
      */
     public static void checkAndSetLayer(final AbstractWidgetModel widget,
             final AbstractWidgetModel parent) {
         if (parent instanceof DisplayModel) {
-            if ((parent.getWidth() / 4) < widget.getWidth()
-                    || (parent.getHeight() / 4) < widget.getHeight()) {
+            if (((parent.getWidth() / 4) < widget.getWidth())
+                    || ((parent.getHeight() / 4) < widget.getHeight())) {
                 widget.setLayer(Messages.ADLDisplayImporter_ADLBackgroundLayerDes);
             }
         }
@@ -343,15 +355,16 @@ public final class ADLHelper {
     /**
      * Some paths in adl files starts with /applic/graphic that is an error
      * in SDS.
-     * 
+     *
      * @param path
      * @return
      */
     public static String cleanFilePath(String path) {
         String source = Activator.getDefault().getPreferenceStore().getString(ADLConverterPreferenceConstants.P_STRING_Path_Remove_Absolut_Part);
-        if(source == null || source.equals(""))
+        if((source == null) || source.equals("")) {
             return path;
-        
+        }
+
         do {
             path = path.replace(source, "");
             source = source.substring(source.indexOf('/', 1));
@@ -359,48 +372,50 @@ public final class ADLHelper {
         return path;
     }
 
-    
-    public static void setPath(ADLWidget wid){
+
+    public static void setPath(final ADLWidget wid){
         for(FileLine line : wid.getBody()){
             String[] row = line.getLine().trim().split("=");
             if(row[0].equals("name")){
                 _fullpath = row[1].replaceAll("\"", "");
                 return;
-            }           
-        }       
+            }
+        }
     }
-    
+
     public static String getPath(){
         return _fullpath;
     }
 
-    public static String getFolderPath(){ 
+    public static String getFolderPath(){
         String[] tmp = _fullpath.split("/");
         String folder = "";
-        for(int i = 0; i < tmp.length -1 ; i++)
+        for(int i = 0; i < tmp.length -1 ; i++) {
             folder = folder.concat(tmp[i]).concat("/");
-        
+        }
+
         return folder;
     }
 
-    public static void setTargetPath(String path){
+    public static void setTargetPath(final String path){
     	targetpath = path;
-    	//targetpath = ResourcesPlugin.getWorkspace().getRoot().getRawLocation().append(path).toString();    	
+    	//targetpath = ResourcesPlugin.getWorkspace().getRoot().getRawLocation().append(path).toString();
     }
-    
+
     public static String getTargetPath(){
     	return targetpath;
     }
 
-    
+
     /**
      * Helper method for findWidgetPath
      */
-    private static String checkDisplayPath(String path, String name){
+    private static String checkDisplayPath(String path, final String name){
     	path = path.trim();
-    	if(path.endsWith("/"))
-    		path = path.substring(0, path.length()-1);
-    	
+    	if(path.endsWith("/")) {
+            path = path.substring(0, path.length()-1);
+        }
+
     	// Both file formats are checked, to ensure that if multiple displays are being
     	// converted out of order, this method doesn't break by failing to find
     	// the yet to be converted <filename>.adl display.
@@ -408,78 +423,90 @@ public final class ADLHelper {
     	File file2 = new File(path + "/" + name + ".css-sds");
     	Path path1 = new Path(path + "/" + name + ".adl");
     	Path path2 = new Path(path + "/" + name + ".css-sds");
-    	
+
     	IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-    	if(file1.exists() || file2.exists())
-    		return path.replaceAll(root.getRawLocation().toString(), "");
-    	if(root.exists(path1) || root.exists(path2))
-    		return root.getFullPath().append(path).toString();
-    	 
+    	if(file1.exists() || file2.exists()) {
+            return path.replaceAll(root.getRawLocation().toString(), "");
+        }
+    	if(root.exists(path1) || root.exists(path2)) {
+            return root.getFullPath().append(path).toString();
+        }
+
     	return null;
     }
 
     /**
      * Helper method for findWidgetPath
      */
-    private static String checkImagePath(String path, String name){
+    private static String checkImagePath(String path, final String name){
     	path = path.trim();
-    	if(path.endsWith("/"))
-    		path = path.substring(0, path.length()-1);
-    	
+    	if(path.endsWith("/")) {
+            path = path.substring(0, path.length()-1);
+        }
+
     	File file = new File(path + "/" + name);
     	Path path1 = new Path(path + "/" + name);
-    	
+
     	IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-    	if(file.exists())
-    		return path.replaceAll(root.getRawLocation().toString(), "");
-    	if(root.exists(path1))
-    		return root.getFullPath().append(path).toString();
-    	 
+    	if(file.exists()) {
+            return path.replaceAll(root.getRawLocation().toString(), "");
+        }
+    	if(root.exists(path1)) {
+            return root.getFullPath().append(path).toString();
+        }
+
     	return null;
     }
 
-    
+
     /**
      * First checks the parent path of the calling display, then the workspace path, then
      * each of the display paths provided in the preferences for the source file
-     * of this widget.  Returns the FIRST directory where the display/image exists. 
+     * of this widget.  Returns the FIRST directory where the display/image exists.
      */
     public static String findWidgetPath(String name) {
     	String parent = getTargetPath();
     	String path = null;
     	String allpaths = Activator.getDefault().getPreferenceStore().getString(ADLConverterPreferenceConstants.P_STRING_Display_Paths);
     	String[] displaypaths = allpaths.split(",");
-    	if(name.startsWith("/"))
-    		name = name.substring(1,name.length());
+    	if(name.startsWith("/")) {
+            name = name.substring(1,name.length());
+        }
 
     	if(name.endsWith(".css-sds")){
     		name = name.replaceAll(".css-sds", "");
-    		
+
     		path = checkDisplayPath(parent, name);
-    		if(path != null)
-    			return path;
+    		if(path != null) {
+                return path;
+            }
     		path = checkDisplayPath("", name);
-    		if(path != null)
-    			return path;
-    		
+    		if(path != null) {
+                return path;
+            }
+
     		for(String dpath : displaypaths){
     			path = checkDisplayPath(dpath, name);
-    			if(path != null)
-    				return path;
+    			if(path != null) {
+                    return path;
+                }
     		}
     	}
     	if(name.endsWith(".gif")){
     		path = checkImagePath(parent, name);
-    		if(path != null)
-    			return path;
+    		if(path != null) {
+                return path;
+            }
     		path = checkImagePath("", name);
-    		if(path != null)
-    			return path;
-    		
+    		if(path != null) {
+                return path;
+            }
+
     		for(String dpath : displaypaths){
     			path = checkImagePath(dpath, name);
-    			if(path != null)
-    				return path;
+    			if(path != null) {
+                    return path;
+                }
     		}
     	}
     	// Return the default if nothing else is found
