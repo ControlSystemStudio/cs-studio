@@ -2,7 +2,6 @@ package org.csstudio.config.authorizeid.ldap;
 
 import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EAIN_FIELD_NAME;
 import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EPICS_AUTH_ID_FIELD_VALUE;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
 import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.OU_FIELD_NAME;
 import static org.csstudio.utility.ldap.LdapUtils.any;
 
@@ -12,6 +11,7 @@ import java.util.List;
 import javax.naming.directory.SearchResult;
 
 import org.csstudio.config.authorizeid.AuthorizeIdActivator;
+import org.csstudio.utility.ldap.LdapUtils;
 import org.csstudio.utility.ldap.reader.LDAPReader;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
@@ -36,7 +36,7 @@ public class LdapEain {
 	    final ILdapService service = AuthorizeIdActivator.getDefault().getLdapService();
 
 	    final LdapSearchResult result =
-	        service.retrieveSearchResultSynchronously(OU_FIELD_NAME + FIELD_ASSIGNMENT + EPICS_AUTH_ID_FIELD_VALUE,
+	        service.retrieveSearchResultSynchronously(LdapUtils.createLdapQuery(OU_FIELD_NAME, EPICS_AUTH_ID_FIELD_VALUE),
 	                                                  any(EAIN_FIELD_NAME),
 	                                                  LDAPReader.DEFAULT_SCOPE);
 
@@ -44,7 +44,7 @@ public class LdapEain {
 	    for (final SearchResult searchResult : result.getAnswerSet()) {
 	        String row = searchResult.getName();
 	        // TODO (rpovsic) : unsafe access - NPEs
-	        if(row.substring(0, 4).equals("eain")) {
+	        if(row.substring(0, 4).equals(EAIN_FIELD_NAME)) {
 	            row = row.substring(5);
 
 	            al.add(row.split(",")[0]);

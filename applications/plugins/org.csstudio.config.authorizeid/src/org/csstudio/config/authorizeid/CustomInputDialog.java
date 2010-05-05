@@ -13,8 +13,17 @@ package org.csstudio.config.authorizeid;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.naming.CompositeName;
+import javax.naming.NameParser;
+import javax.naming.NamingException;
 import javax.naming.directory.SearchResult;
+import javax.naming.ldap.LdapName;
 
+import org.apache.log4j.Logger;
+import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
+import org.csstudio.utility.ldap.LdapUtils;
+import org.csstudio.utility.ldap.engine.Engine;
 import org.csstudio.utility.ldap.reader.LDAPReader;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
 import org.csstudio.utility.ldap.reader.LDAPReader.LdapSearchParams;
@@ -46,6 +55,9 @@ import org.eclipse.swt.widgets.Text;
  * @author Rok Povsic
  */
 public class CustomInputDialog extends Dialog {
+
+    private final Logger _log = CentralLogger.getInstance().getLogger(this);
+
     /**
      * The title of the dialog.
      */
@@ -92,7 +104,12 @@ public class CustomInputDialog extends Dialog {
     private String errorMessage;
 
     //TODO: Define at the Preference Page
-    private final String string_search_root = "ou=Css,ou=EpicsAuthorize"; //$NON-NLS-1$
+    private final String _stringSearchRoot = "ou=Css,ou=EpicsAuthorize"; //$NON-NLS-1$
+
+    private final LdapName _searchRoot = LdapUtils.createLdapQuery(LdapFieldsAndAttributes.OU_FIELD_NAME, "Css",
+                                                                   LdapFieldsAndAttributes.OU_FIELD_NAME, "EpicsAuthorize"); //$NON-NLS-1$
+
+
     /**
      * Search for this.
      */
@@ -188,7 +205,7 @@ public class CustomInputDialog extends Dialog {
         _eaigCombo.getCombo().setFocus();
 
         final LdapSearchResult result =
-            LDAPReader.getSearchResultSynchronously(new LdapSearchParams(string_search_root,
+            LDAPReader.getSearchResultSynchronously(new LdapSearchParams(_searchRoot,
                                                                          eagnFilter));
 
         final List<String> list = new ArrayList<String>(result.getAnswerSet().size());
@@ -196,7 +213,7 @@ public class CustomInputDialog extends Dialog {
         for (final SearchResult row : result.getAnswerSet()) {
             final String name = new String(row.getName());
             if(name.trim().length() > 0){
-                list.add(name + "," + string_search_root);
+                list.add(name + "," + _stringSearchRoot);
             }
         }
 
@@ -257,35 +274,41 @@ public class CustomInputDialog extends Dialog {
             public void selectionChanged(final SelectionChangedEvent event) {
                 final String firstElement = (String) ((StructuredSelection)_eaigCombo.getSelection()).getFirstElement();
 
+                NameParser nameParser;
+                LdapName ldapName = null;
+                try {
+                    nameParser = Engine.getInstance().getLdapDirContext().getNameParser(new CompositeName());
+                    ldapName = (LdapName) nameParser.parse(firstElement);
+                    final LdapSearchResult result =
+                        LDAPReader.getSearchResultSynchronously(new LdapSearchParams(ldapName,
+                                                                                     eagnFilter));
 
-                final LdapSearchResult result =
-                    LDAPReader.getSearchResultSynchronously(new LdapSearchParams(firstElement,
-                                                                                 eagnFilter));
+                    final List<String> list = new ArrayList<String>(result.getAnswerSet().size());
 
-                final List<String> list = new ArrayList<String>(result.getAnswerSet().size());
-
-                for (final SearchResult row : result.getAnswerSet()) {
-                    final String name = new String(row.getName());
-                    if(name.trim().length() > 0){
-                        list.add(name + "," + string_search_root);
-                    }
-                }
-
-                final List<String> cleanString = new ArrayList<String>();
-                int selIndex =0;
-                for(int i=0; i < list.size(); i++){
-                    final String string = list.get(i);
-                    final String[] split = string.split(SPLIT_FILTER);
-                    if(split.length > 3){
-                        final String tmp = split[1];
-                        cleanString.add(tmp);
-                        if(tmp.equals(_eairSel)){
-                            selIndex = i;
+                    for (final SearchResult row : result.getAnswerSet()) {
+                        final String name = new String(row.getName());
+                        if(name.trim().length() > 0){
+                            list.add(name + "," + _stringSearchRoot);
                         }
+                        final List<String> cleanString = new ArrayList<String>();
+                        int selIndex =0;
+                        for(int i=0; i < list.size(); i++){
+                            final String string = list.get(i);
+                            final String[] split = string.split(SPLIT_FILTER);
+                            if(split.length > 3){
+                                final String tmp = split[1];
+                                cleanString.add(tmp);
+                                if(tmp.equals(_eairSel)){
+                                    selIndex = i;
+                                }
+                            }
+                        }
+                        _eairCombo.setItems(cleanString.toArray(new String[0]));
+                        _eairCombo.select(selIndex);
                     }
+                } catch (final NamingException e) {
+                    _log.error("Could not parse first selected element into valid LDAP name", e);
                 }
-                _eairCombo.setItems(cleanString.toArray(new String[0]));
-                _eairCombo.select(selIndex);
             }
 
         });

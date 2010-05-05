@@ -1,5 +1,6 @@
 package org.csstudio.config.authorizeid.ldap;
 
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EAIG_FIELD_NAME;
 import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EAIN_FIELD_NAME;
 import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EPICS_AUTH_ID_FIELD_VALUE;
 import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.OU_FIELD_NAME;
@@ -16,6 +17,7 @@ import org.csstudio.config.authorizeid.AuthorizeIdEntry;
 import org.csstudio.utility.ldap.reader.LDAPReader;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
+
 
 /**
  * Retrieve props from LDAP.
@@ -39,18 +41,18 @@ public class LdapProp {
 	    final ILdapService service = AuthorizeIdActivator.getDefault().getLdapService();
 
 
-		final LdapSearchResult result =
-		    service.retrieveSearchResultSynchronously(createLdapQuery(EAIN_FIELD_NAME, eain,
-		                                                  OU_FIELD_NAME, ou,
-		                                                  OU_FIELD_NAME, EPICS_AUTH_ID_FIELD_VALUE),
-		                                  any(EAIN_FIELD_NAME),
-		                                  LDAPReader.DEFAULT_SCOPE);
+	    final LdapSearchResult result =
+	        service.retrieveSearchResultSynchronously(createLdapQuery(EAIN_FIELD_NAME, eain,
+	                                                                  OU_FIELD_NAME, ou,
+	                                                                  OU_FIELD_NAME, EPICS_AUTH_ID_FIELD_VALUE),
+	                                                  any(EAIN_FIELD_NAME),
+	                                                  LDAPReader.DEFAULT_SCOPE);
 
 		final List<AuthorizeIdEntry> al = new ArrayList<AuthorizeIdEntry>();
 		for (final SearchResult row : result.getAnswerSet()) {
 		    final String name = row.getName();
 
-		    if(name.substring(0, 4).equals("eaig")) {
+		    if(name.substring(0, 4).equals(EAIG_FIELD_NAME)) {
 		        // TODO (rpovsic) : unsafe access - NPEs
 		        final String eaig = name.substring(5).split("\\+")[0];
 		        final String eair = name.split("=")[3].split(",")[0];
