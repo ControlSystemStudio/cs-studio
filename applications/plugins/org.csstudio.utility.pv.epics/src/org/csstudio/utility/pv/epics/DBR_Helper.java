@@ -66,6 +66,8 @@ public class DBR_Helper
             return plain ? DBRType.INT : DBRType.CTRL_INT;
         else if (type.isSHORT())
             return plain ? DBRType.SHORT : DBRType.CTRL_INT;
+        else if (type.isBYTE())
+            return plain ? DBRType.BYTE : DBRType.CTRL_BYTE;
         else if (type.isENUM())
             return plain ? DBRType.SHORT : DBRType.CTRL_ENUM;
         // default: get as string
