@@ -10,7 +10,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.actions.ActionFactory;
 
 
-/**The action to print display.
+/**The action to make CSS full screen.
  * @author Xihui Chen
  *
  */
@@ -30,7 +30,7 @@ public class FullScreenAction extends WorkbenchPartAction {
 			OPIBuilderPlugin.PLUGIN_ID, "icons/exitfullscreen.png");
 	
 	/**
-	 * Constructor for PrintAction.
+	 * Constructor.
 	 * @param part The workbench part associated with this PrintAction
 	 */
 	public FullScreenAction(IWorkbenchPart part) {
