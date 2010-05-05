@@ -38,6 +38,7 @@ import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.ldap.AlarmTreeBuilder;
 import org.csstudio.alarm.treeView.ldap.DirectoryEditException;
 import org.csstudio.alarm.treeView.ldap.DirectoryEditor;
+import org.csstudio.alarm.treeView.ldap.LdapEpicsAlarmCfgObjectClass;
 import org.csstudio.alarm.treeView.ldap.UpdateTreeLdapReader;
 import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
@@ -50,7 +51,6 @@ import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableNameTransfer;
 import org.csstudio.platform.ui.util.EditorUtil;
 import org.csstudio.sds.ui.runmode.RunModeService;
-import org.csstudio.utility.ldap.LdapObjectClass;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
@@ -686,8 +686,11 @@ public class AlarmTreeView extends ViewPart {
 
         _viewer = new TreeViewer(parent, SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
         _viewer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
         _viewer.setContentProvider(new AlarmTreeContentProvider());
+
         _viewer.setLabelProvider(new AlarmTreeLabelProvider());
+
         _viewer.setComparator(new ViewerComparator());
 
         _currentAlarmFilter = new CurrentAlarmFilter();
@@ -770,7 +773,7 @@ public class AlarmTreeView extends ViewPart {
         _log.debug("Starting directory reader.");
         final IWorkbenchSiteProgressService progressService = (IWorkbenchSiteProgressService) getSite()
                 .getAdapter(IWorkbenchSiteProgressService.class);
-        final SubtreeNode rootNode = new SubtreeNode.Builder("ROOT", null).build();
+        final SubtreeNode rootNode = new SubtreeNode.Builder("ROOT", LdapEpicsAlarmCfgObjectClass.ROOT).build();
 
         final Job directoryReaderJob = new Job("LDAPDirectoryReader") {
             @Override
@@ -1077,11 +1080,14 @@ public class AlarmTreeView extends ViewPart {
     private void updateCreateComponentActionText() {
         final SubtreeNode node = (SubtreeNode) ((IStructuredSelection) _viewer.getSelection())
                 .getFirstElement();
-        final LdapObjectClass oclass = node.getRecommendedChildSubtreeClass();
-        if (oclass == LdapObjectClass.SUBCOMPONENT) {
-            _createComponentAction.setText("Create Subcomponent");
-        } else {
-            _createComponentAction.setText("Create Component");
+        final Set<LdapEpicsAlarmCfgObjectClass> oclasses = node.getRecommendedChildSubtreeClasses();
+        for (final LdapEpicsAlarmCfgObjectClass oclass : oclasses) {
+            if (oclass == LdapEpicsAlarmCfgObjectClass.SUBCOMPONENT) {
+                _createComponentAction.setText("Create Subcomponent");
+            } else {
+                _createComponentAction.setText("Create Component");
+            }
+            break;
         }
     }
 

@@ -57,7 +57,17 @@ public interface IAlarmSubtreeNode extends IAlarmTreeNode {
      *
      * @param child the child node to add.
      */
-    void addChild(@Nonnull final IAlarmTreeNode child);
+    void addSubtreeChild(@Nonnull final IAlarmSubtreeNode child);
+
+    /**
+     * Adds the specified child node to the list of this node's children. Note:
+     * it is not checked whether the parent node of the child is correctly set
+     * to this node. This method is intended to be called only by constructors
+     * of nodes.
+     *
+     * @param child the child node to add.
+     */
+    void addPVChild(@Nonnull final IAlarmTreeNode child);
 
     /**
      * Returns the name of this node in the LDAP directory.

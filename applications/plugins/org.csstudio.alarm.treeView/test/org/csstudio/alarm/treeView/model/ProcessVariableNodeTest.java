@@ -9,8 +9,8 @@ import static org.junit.Assert.assertTrue;
 import java.net.URL;
 import java.util.Date;
 
+import org.csstudio.alarm.treeView.ldap.LdapEpicsAlarmCfgObjectClass;
 import org.csstudio.platform.model.IProcessVariable;
-import org.csstudio.utility.ldap.LdapObjectClass;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -23,7 +23,7 @@ public class ProcessVariableNodeTest {
 
     @Before
     public void setUp() {
-        _subtreeNode = new SubtreeNode.Builder("SubTree", null).build();
+        _subtreeNode = new SubtreeNode.Builder("SubTree", LdapEpicsAlarmCfgObjectClass.ROOT).build();
         _node = new ProcessVariableNode.Builder("A node").setParent(_subtreeNode).build();
     }
 
@@ -31,7 +31,7 @@ public class ProcessVariableNodeTest {
     public void testGetters() throws InterruptedException {
         assertEquals("A node", _node.getName());
         assertSame(_subtreeNode, _node.getParent());
-        assertEquals(LdapObjectClass.RECORD, _node.getObjectClass());
+        assertEquals(LdapEpicsAlarmCfgObjectClass.RECORD, _node.getObjectClass());
         assertEquals(IProcessVariable.TYPE_ID, _node.getTypeId());
         assertEquals("A node", _node.toString());
     }

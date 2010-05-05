@@ -24,8 +24,8 @@
 
 import javax.annotation.Nonnull;
 
+import org.csstudio.alarm.treeView.ldap.LdapEpicsAlarmCfgObjectClass;
 import org.csstudio.platform.model.IProcessVariable;
-import org.csstudio.utility.ldap.LdapObjectClass;
 
 /**
  * A tree node that represents a process variable.
@@ -82,12 +82,11 @@ public class ProcessVariableNode extends AbstractAlarmTreeNode
         public ProcessVariableNode build() {
             final ProcessVariableNode node = new ProcessVariableNode(_name);
             if (_parent != null) {
-                _parent.addChild(node);
+                _parent.addPVChild(node);
             }
             return node;
         }
     }
-
 
 	private ProcessVariableNode(final String name) {
 		this._name = name;
@@ -98,8 +97,8 @@ public class ProcessVariableNode extends AbstractAlarmTreeNode
 	/**
 	 * {@inheritDoc}
 	 */
-	public final LdapObjectClass getObjectClass() {
-		return LdapObjectClass.RECORD;
+	public final LdapEpicsAlarmCfgObjectClass getObjectClass() {
+		return LdapEpicsAlarmCfgObjectClass.RECORD;
 	}
 
 	/**

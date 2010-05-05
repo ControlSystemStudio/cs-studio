@@ -40,7 +40,6 @@ import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.alarm.treeView.preferences.PreferenceConstants;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.utility.ldap.LdapObjectClass;
 import org.csstudio.utility.ldap.engine.Engine;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -185,7 +184,14 @@ public class UpdateTreeLdapReader extends Job {
 
 				// The update job readas only structural nodes, no eren nodes.
 		        final Rdn rdn = entryName.getRdn(entryName.size() - 1);
-				if (!LdapObjectClass.getObjectClassByRdnType(rdn.getType()).equals(LdapObjectClass.RECORD)) {
+		        final LdapEpicsAlarmCfgObjectClass oclass = tree.getObjectClass().getObjectClassByRdnType(rdn.getType());
+
+		        if (oclass == null) {
+		            System.out.println("Here");
+		            final LdapEpicsAlarmCfgObjectClass oclass2 = tree.getObjectClass().getObjectClassByRdnType(rdn.getType());
+		        }
+
+		        if (!oclass.equals(LdapEpicsAlarmCfgObjectClass.RECORD)) {
 				    final LdapName fullEntryName = (LdapName) ((LdapName) entryName.clone()).addAll(0, treeName);
 					final SubtreeNode node = updateNode(tree, entryName, fullEntryName);
 					updateStructureOfSubTree(fullEntryName, node);
@@ -195,6 +201,8 @@ public class UpdateTreeLdapReader extends Job {
 			LOG.error(this,
 					"Error getting list of objects from LDAP directory " +
 					"for rootDN=" + treeName, e);
+		} catch (final NullPointerException e) {
+		    System.out.println("Got you");
 		}
 	}
 

@@ -21,8 +21,8 @@
  */
  package org.csstudio.alarm.treeView.ldap;
 
+import static org.csstudio.alarm.treeView.ldap.AlarmTreeLdapConstants.EPICS_ALARM_CFG_FIELD_VALUE;
 import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EFAN_FIELD_NAME;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EPICS_ALARM_CFG_FIELD_VALUE;
 import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.OU_FIELD_NAME;
 
 import java.util.ArrayList;
@@ -35,7 +35,6 @@ import javax.naming.CompositeName;
 import javax.naming.NameNotFoundException;
 import javax.naming.NameParser;
 import javax.naming.NamingException;
-import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttributes;
 import javax.naming.directory.DirContext;
@@ -49,8 +48,7 @@ import org.csstudio.alarm.treeView.model.ProcessVariableNode;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.alarm.treeView.preferences.PreferenceConstants;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
-import org.csstudio.utility.ldap.LdapObjectClass;
+import org.csstudio.utility.ldap.LdapNameUtils;
 import org.csstudio.utility.ldap.LdapUtils;
 import org.csstudio.utility.ldap.engine.Engine;
 import org.csstudio.utility.ldap.reader.LDAPReader;
@@ -61,10 +59,9 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 /**
- * This job reads the record entries (eren) from the LDAP directory and creates
- * the nodes representing them in the tree. The parent nodes are also created,
- * but their attributes are not read by this job. Empty nodes which do not
- * contain any eren objects are not created by this job.
+ * This class provides the Alarm Tree Mgmt methods to build the alarm tree.
+ * On the {@link #build(SubtreeNode, IProgressMonitor)} method the full tree is
+ * build including all nodes, whether they contain eren nodes or not.
  *
  * @author Joerg Rathlev, Jurij Kodre
  */
@@ -95,19 +92,20 @@ public final class AlarmTreeBuilder {
 
 	    final SubtreeNode parentNode = findCreateParentNode(treeRoot, name);
 
-	    final Attribute attr = attributes.get(LdapFieldsAndAttributes.ATTR_FIELD_CSS_TYPE);
-        if ((attr != null) && (name.size() > 0)) {
+        if (name.size() > 0) {
             final Rdn rdn = name.getRdn(name.size() - 1);
-            final LdapObjectClass objectClass = LdapObjectClass.getObjectClassByRdnType(rdn.getType());
+            final LdapEpicsAlarmCfgObjectClass objectClass = treeRoot.getObjectClass().getObjectClassByRdnType(rdn.getType());
 
             final IAlarmTreeNode node;
             final String sname = LdapNameUtils.simpleName(name);
 
-            if(LdapObjectClass.RECORD.equals(objectClass)) {
+            if(LdapEpicsAlarmCfgObjectClass.RECORD.equals(objectClass)) {
                 node = new ProcessVariableNode.Builder(sname).setParent(parentNode).build();
                 AlarmTreeNodeModifier.evaluateAttributes(attributes, (ProcessVariableNode) node);
             } else if (objectClass != null) {
                 node = new SubtreeNode.Builder(sname, objectClass).setParent(parentNode).build();
+            } else {
+                System.out.println(AlarmTreeBuilder.class.getCanonicalName() + " object class is null for " + name.toString() + " and " + treeRoot.getName());
             }
         }
 	}
@@ -134,16 +132,16 @@ public final class AlarmTreeBuilder {
 
     private static void ensureTestFacilityExists(@Nonnull final DirContext ctx) {
         try {
-            final String testFacilityName = LdapUtils.createLdapQuery(EFAN_FIELD_NAME, "TEST",
-                                                                      OU_FIELD_NAME,EPICS_ALARM_CFG_FIELD_VALUE);
+            final LdapName testFacilityName = LdapUtils.createLdapQuery(EFAN_FIELD_NAME, "TEST",
+                                                                        OU_FIELD_NAME,EPICS_ALARM_CFG_FIELD_VALUE);
             try {
                 ctx.lookup(testFacilityName);
             } catch (final NameNotFoundException e) {
                 LOG.info(AlarmTreeBuilder.class.getName(), "TEST facility does not exist in LDAP, creating it.");
                 final Attributes attrs = new BasicAttributes();
                 attrs.put(EFAN_FIELD_NAME, "TEST");
-                attrs.put("objectClass", LdapObjectClass.FACILITY.getObjectClassName());
-                attrs.put("epicsCssType", LdapObjectClass.FACILITY.getCssType());
+                attrs.put("objectClass", LdapEpicsAlarmCfgObjectClass.FACILITY.getDescription());
+                attrs.put("epicsCssType", LdapEpicsAlarmCfgObjectClass.FACILITY.getCssType());
                 ctx.bind(testFacilityName, null, attrs);
             }
         } catch (final NamingException e) {
@@ -170,8 +168,7 @@ public final class AlarmTreeBuilder {
             final LdapSearchResult result =
                 LDAPReader.getSearchResultSynchronously(new LdapSearchParams(LdapUtils.createLdapQuery(EFAN_FIELD_NAME, facility,
                                                                                                        OU_FIELD_NAME, EPICS_ALARM_CFG_FIELD_VALUE),
-                                                        "(objectClass=*)")
-                );
+                                                        "(objectClass=*)"));
 
             results.add(result);
             if ((monitor != null) && monitor.isCanceled()) {
@@ -206,7 +203,7 @@ public final class AlarmTreeBuilder {
 
                 // TODO (bknerr) : remove from here to LdapNameUtils in package LDAP
                 // remove any hierarchy level before 'efan=...'
-                while ((name.size() > 0) && !name.get(0).startsWith(LdapFieldsAndAttributes.EFAN_FIELD_NAME)) {
+                while ((name.size() > 0) && !name.get(0).startsWith(EFAN_FIELD_NAME)) {
                     name.remove(0);
                 }
 
@@ -238,7 +235,7 @@ public final class AlarmTreeBuilder {
         final Rdn rdn = name.getRdn(name.size() - 1);
         SubtreeNode result = (SubtreeNode) directParent.getChild(simpleName);
         if (result == null) {
-            final LdapObjectClass oClass = LdapObjectClass.getObjectClassByRdnType(rdn.getType());
+            final LdapEpicsAlarmCfgObjectClass oClass = root.getObjectClass().getObjectClassByRdnType(rdn.getType());
             result = new SubtreeNode.Builder(simpleName, oClass).setParent(directParent).build();
         }
         return result;

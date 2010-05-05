@@ -28,7 +28,7 @@ import javax.naming.directory.DirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
-import org.csstudio.alarm.treeView.ldap.LdapNameUtils;
+import org.csstudio.utility.ldap.LdapNameUtils;
 import org.csstudio.utility.ldap.engine.Engine;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;

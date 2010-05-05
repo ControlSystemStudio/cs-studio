@@ -70,7 +70,7 @@ public final class AlarmTreeNodeModifier {
      * @throws NamingException if something bad happens...
      */
     public static void evaluateAttributes(@Nonnull final Attributes attrs,
-                                           @Nonnull final ProcessVariableNode node) throws NamingException {
+                                          @Nonnull final ProcessVariableNode node) throws NamingException {
         setAlarmState(node, attrs);
         setEpicsAttributes(node, attrs);
     }

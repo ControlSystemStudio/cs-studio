@@ -23,6 +23,7 @@
 package org.csstudio.alarm.treeView.ldap;
 
 import java.net.URL;
+import java.util.Set;
 
 import javax.naming.InvalidNameException;
 import javax.naming.Name;
@@ -45,7 +46,6 @@ import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.ProcessVariableNode;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.utility.ldap.LdapObjectClass;
 import org.csstudio.utility.ldap.engine.Engine;
 
 /**
@@ -454,9 +454,9 @@ public final class DirectoryEditor {
 			final SubtreeNode parent, final String recordName)
 			throws DirectoryEditException {
 		try {
-			final Rdn rdn = new Rdn(LdapObjectClass.RECORD.getRdnType(), recordName);
+			final Rdn rdn = new Rdn(LdapEpicsAlarmCfgObjectClass.RECORD.getRdnType(), recordName);
 			final LdapName fullName = (LdapName) ((LdapName) fullLdapName(parent).clone()).add(rdn);
-			final Attributes attrs = baseAttributesForEntry(LdapObjectClass.RECORD, rdn);
+			final Attributes attrs = baseAttributesForEntry(LdapEpicsAlarmCfgObjectClass.RECORD, rdn);
 			addAlarmAttributes(attrs, recordName);
 			createEntry(fullName, attrs);
 			final ProcessVariableNode node = new ProcessVariableNode.Builder(recordName).setParent(parent).build();
@@ -482,12 +482,12 @@ public final class DirectoryEditor {
 	 */
 	public static void createComponent(final SubtreeNode parent,
 	                                   final String componentName) throws DirectoryEditException {
-		LdapObjectClass oclass = parent.getRecommendedChildSubtreeClass();
-		if (oclass == null) {
-			oclass = LdapObjectClass.COMPONENT;
+		final Set<LdapEpicsAlarmCfgObjectClass> oclasses = parent.getRecommendedChildSubtreeClasses();
+		if (oclasses.isEmpty()) {
+			createEntry(fullLdapName(parent), componentName, LdapEpicsAlarmCfgObjectClass.RECORD);
 		}
-		createEntry(fullLdapName(parent), componentName, oclass);
 
+		final LdapEpicsAlarmCfgObjectClass oclass = oclasses.iterator().next();
 		new SubtreeNode.Builder(componentName, oclass).setParent(parent).build();
 	}
 
@@ -504,8 +504,9 @@ public final class DirectoryEditor {
 	 * @throws DirectoryEditException
 	 *             if the entry could not be created.
 	 */
-	private static void createEntry(final LdapName parentName, final String name,
-			final LdapObjectClass objectClass) throws DirectoryEditException {
+	private static void createEntry(final LdapName parentName,
+	                                final String name,
+	                                final LdapEpicsAlarmCfgObjectClass objectClass) throws DirectoryEditException {
 		try {
 			final Rdn rdn = new Rdn(objectClass.getRdnType(), name);
 			final LdapName fullName = (LdapName) ((LdapName) parentName.clone()).add(rdn);
@@ -528,8 +529,8 @@ public final class DirectoryEditor {
 	 * @throws DirectoryEditException
 	 *             if the entry could not be created.
 	 */
-	private static void createEntry(final LdapName name, final Attributes attributes)
-			throws DirectoryEditException {
+	private static void createEntry(final LdapName name,
+	                                final Attributes attributes) throws DirectoryEditException {
 		try {
 			LOG.debug(DirectoryEditor.class,
 					"Creating entry " + name + " with attributes " + attributes);
@@ -576,10 +577,10 @@ public final class DirectoryEditor {
 	 *            the relative name of the entry.
 	 * @return the attributes for the new entry.
 	 */
-	private static Attributes baseAttributesForEntry(final LdapObjectClass objectClass,
+	private static Attributes baseAttributesForEntry(final LdapEpicsAlarmCfgObjectClass objectClass,
 			final Rdn rdn) {
 		final Attributes result = rdn.toAttributes();
-		result.put("objectClass", objectClass.getObjectClassName());
+		result.put("objectClass", objectClass.getDescription());
 		result.put("epicsCssType", objectClass.getCssType());
 		return result;
 	}

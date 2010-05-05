@@ -26,7 +26,7 @@ import java.net.URL;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.utility.ldap.LdapObjectClass;
+import org.csstudio.alarm.treeView.ldap.LdapEpicsAlarmCfgObjectClass;
 
 
 /**
@@ -89,7 +89,7 @@ public interface IAlarmTreeNode {
 	 *
 	 * @return the object class of this node in the directory.
 	 */
-	LdapObjectClass getObjectClass();
+	LdapEpicsAlarmCfgObjectClass getObjectClass();
 
 	/**
 	 * Returns the URL of this node's help page.

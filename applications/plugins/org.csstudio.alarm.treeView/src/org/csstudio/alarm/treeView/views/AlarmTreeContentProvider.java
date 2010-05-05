@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
  package org.csstudio.alarm.treeView.views;
@@ -40,15 +40,16 @@ public class AlarmTreeContentProvider implements IStructuredContentProvider,
 	public AlarmTreeContentProvider() {
 		super();
 	}
-	
+
 	/**
 	 * Returns the root elements to display in the viewer when its input is
 	 * set to the given element. These elements will be presented as the root
 	 * elements in the tree view.
-	 * 
+	 *
 	 * @param inputElement the input element.
 	 * @return the array of elements to display in the viewer.
 	 */
+	@Override
 	public final Object[] getElements(final Object inputElement) {
 		if (inputElement instanceof SubtreeNode) {
 			return getChildren(inputElement);
@@ -59,49 +60,52 @@ public class AlarmTreeContentProvider implements IStructuredContentProvider,
 					"Invalid input element: " + inputElement);
 		}
 	}
-	
+
 	/**
 	 * Returns the parent of the object passed to this method.
 	 * @param child the child element.
 	 * @return the child element's parent, or {@code null} if it has none or if
 	 * the parent element cannot be computed.
 	 */
+	@Override
 	public final Object getParent(final Object child) {
 		if (child instanceof IAlarmTreeNode) {
 			return ((IAlarmTreeNode)child).getParent();
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Returns the children of the object passed to this method.
 	 * @param parent the input element.
 	 * @return the children of the input element.
 	 */
+	@Override
 	public final Object[] getChildren(final Object parent) {
 		if (parent instanceof SubtreeNode) {
 			return ((SubtreeNode) parent).getChildren();
-		} else {
-			return new Object[0];
 		}
+		return new Object[0];
 	}
-	
+
 	/**
 	 * Returns whether the given element has children.
 	 * @param parent the element
 	 * @return {@code true} if the given element has children, {@code false}
 	 * otherwise.
 	 */
+	@Override
 	public final boolean hasChildren(final Object parent) {
 		if (parent instanceof SubtreeNode) {
 			return ((SubtreeNode) parent).hasChildren();
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Disposes of this content provider.
 	 */
+	@Override
 	public void dispose() {
 		// nothing to do
 	}
@@ -109,6 +113,7 @@ public class AlarmTreeContentProvider implements IStructuredContentProvider,
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void inputChanged(final Viewer viewer, final Object oldInput, final Object newInput) {
 		// nothing to do
 	}
