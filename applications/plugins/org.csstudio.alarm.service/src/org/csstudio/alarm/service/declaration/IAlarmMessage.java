@@ -32,6 +32,13 @@ import javax.annotation.Nonnull;
 public interface IAlarmMessage {
     
     /**
+     * Set of keys for the alarm message.
+     */
+    enum Key {
+        ACK, EVENTTIME, NAME, SEVERITY, STATUS
+    }
+    
+    /**
      * The message essentially is a map from String to String. Here you get the value for the key.
      * 
      * @param key
@@ -39,6 +46,8 @@ public interface IAlarmMessage {
      * @throws AlarmMessageException
      */
     String getString(@Nonnull final String key) throws AlarmMessageException;
+    
+    String getString(@Nonnull final Key key) throws AlarmMessageException;
     
     /**
      * The message essentially is a map from String to String. Here you get the whole map.

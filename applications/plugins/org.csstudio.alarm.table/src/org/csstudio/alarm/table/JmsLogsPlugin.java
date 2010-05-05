@@ -28,6 +28,7 @@ import org.csstudio.alarm.table.service.AlarmSoundService;
 import org.csstudio.alarm.table.service.IAlarmSoundService;
 import org.csstudio.alarm.table.service.ITopicsetService;
 import org.csstudio.alarm.table.service.TopicsetService;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.AbstractCssUiPlugin;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -106,8 +107,8 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
         _alarmService = getService(context, IAlarmService.class);
         
         // TODO jp might be registered as an OSGI service
-        _topicsetServiceForLogViews = new TopicsetService();
-        _topicsetServiceForAlarmViews = new TopicsetService();
+        _topicsetServiceForLogViews = new TopicsetService("for log views");
+        _topicsetServiceForAlarmViews = new TopicsetService("for alarm views");
         _alarmSoundService = new AlarmSoundService();
         
         ISeverityMapping severityMapping = new SeverityMapping();
@@ -151,12 +152,26 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
      * This method is called when the plug-in is stopped
      */
     public void doStop(final BundleContext context) throws Exception {
+        CentralLogger.getInstance().info(this, "doStop");
+        safelyDisconnect(_topicsetServiceForAlarmViews);
+        safelyDisconnect(_topicsetServiceForLogViews);
+        
         context.ungetService(_serviceReferenceMessageTypes);
         context.ungetService(_serviceReferenceArchiveAccess);
         context.ungetService(_serviceReferenceSendMapMessage);
         context.ungetService(_serviceReferenceSeverityMapping);
         
         plugin = null;
+    }
+    
+    private void safelyDisconnect(final ITopicsetService topicsetService) {
+        try {
+            topicsetService.disconnectAll();
+        } catch (RuntimeException e) {
+            CentralLogger.getInstance().error(this,
+                                              "Error while disconnecting " + topicsetService,
+                                              e);
+        }
     }
     
     /**

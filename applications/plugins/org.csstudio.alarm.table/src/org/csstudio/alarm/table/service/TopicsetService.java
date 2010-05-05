@@ -20,6 +20,8 @@ package org.csstudio.alarm.table.service;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+
 import org.csstudio.alarm.service.declaration.AlarmConnectionException;
 import org.csstudio.alarm.service.declaration.IAlarmConnection;
 import org.csstudio.alarm.table.JmsLogsPlugin;
@@ -40,6 +42,11 @@ import org.csstudio.alarm.table.preferences.TopicSet;
 public class TopicsetService implements ITopicsetService {
     
     private final Map<String, Element> _topicSetMap = new HashMap<String, Element>();
+    private final String _name;
+    
+    public TopicsetService(@Nonnull final String name) {
+        _name = name;
+    }
     
     /**
      * {@inheritDoc}
@@ -113,6 +120,11 @@ public class TopicsetService implements ITopicsetService {
     @Override
     public boolean hasTopicSet(final TopicSet topicSet) {
         return _topicSetMap.containsKey(topicSet.getName());
+    }
+    
+    @Override
+    public String toString() {
+        return "Topicset-Service " + _name;
     }
     
     /**

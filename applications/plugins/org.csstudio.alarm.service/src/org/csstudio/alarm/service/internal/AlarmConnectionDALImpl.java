@@ -17,7 +17,9 @@
  */
 package org.csstudio.alarm.service.internal;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 
@@ -34,6 +36,7 @@ import org.epics.css.dal.simple.ChannelListener;
 import org.epics.css.dal.simple.ConnectionParameters;
 import org.epics.css.dal.simple.MetaData;
 import org.epics.css.dal.simple.RemoteInfo;
+import org.epics.css.dal.simple.SimpleDALBroker;
 
 import com.cosylab.util.CommonException;
 
@@ -47,8 +50,11 @@ import com.cosylab.util.CommonException;
  */
 public final class AlarmConnectionDALImpl implements IAlarmConnection {
     private static final String COULD_NOT_CREATE_DAL_CONNECTION = "Could not create DAL connection";
+    private static final String COULD_NOT_DEREGISTER_DAL_CONNECTION = "Could not deregister DAL connection";
     
     private final CentralLogger _log = CentralLogger.getInstance();
+    
+    private final List<ListenerItem> _listenerItems = new ArrayList<ListenerItem>();
     
     /**
      * Constructor must be called only from the AlarmService.
@@ -71,6 +77,18 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
     @Override
     public void disconnect() {
         _log.debug(this, "Disconnecting from DAL.");
+        for (ListenerItem item : _listenerItems) {
+            try {
+                SimpleDALBroker.getInstance().deregisterListener(item._connectionParameters,
+                                                                 item._channelListener);
+            } catch (InstantiationException e) {
+                _log.error(this, COULD_NOT_DEREGISTER_DAL_CONNECTION, e);
+            } catch (CommonException e) {
+                _log.error(this, COULD_NOT_DEREGISTER_DAL_CONNECTION, e);
+            }
+        }
+        _listenerItems.clear();
+        
     }
     
     /**
@@ -95,10 +113,13 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
                                                "alarmTest:RAMPB_calc",
                                                null,
                                                null);
-        ConnectionParameters cparam = new ConnectionParameters(remoteInfo, Double.class);
-        ChannelListener channelListener = new ChannelListenerAdapter(listener, connectionMonitor);
+        ListenerItem item = new ListenerItem();
+        item._connectionParameters = new ConnectionParameters(remoteInfo, Double.class);
+        item._channelListener = new ChannelListenerAdapter(listener, connectionMonitor);
+        _listenerItems.add(item);
         try {
-            DalPlugin.getDefault().getSimpleDALBroker().registerListener(cparam, channelListener);
+            DalPlugin.getDefault().getSimpleDALBroker()
+                    .registerListener(item._connectionParameters, item._channelListener);
         } catch (InstantiationException e) {
             _log.error(this, COULD_NOT_CREATE_DAL_CONNECTION, e);
             throw new AlarmConnectionException(COULD_NOT_CREATE_DAL_CONNECTION, e);
@@ -117,7 +138,8 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
         private final IAlarmListener _alarmListener;
         private final IAlarmConnectionMonitor _connectionMonitor;
         
-        // TODO jp ************ NYI
+        // TODO jp connection monitor ignored in DAL impl
+        // TODO jp message analyzing unsufficient in DAL impl
         
         public ChannelListenerAdapter(final IAlarmListener alarmListener,
                                       final IAlarmConnectionMonitor connectionMonitor) {
@@ -150,6 +172,14 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
             
         }
         
+    }
+    
+    /**
+     * These items are stored in a list for later disconnection.
+     */
+    private static final class ListenerItem {
+        ConnectionParameters _connectionParameters;
+        ChannelListener _channelListener;
     }
     
 }

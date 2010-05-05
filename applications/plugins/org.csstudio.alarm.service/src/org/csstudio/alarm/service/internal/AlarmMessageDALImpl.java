@@ -20,10 +20,13 @@ package org.csstudio.alarm.service.internal;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+
 import org.csstudio.alarm.service.declaration.AlarmMessageException;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
 import org.csstudio.platform.logging.CentralLogger;
 import org.epics.css.dal.simple.AnyData;
+import org.epics.css.dal.simple.Severity;
 
 /**
  * DAL based implementation of the message abstraction of the AlarmService
@@ -34,6 +37,8 @@ import org.epics.css.dal.simple.AnyData;
  * @since 21.04.2010
  */
 public class AlarmMessageDALImpl implements IAlarmMessage {
+    private static final String ERROR_MESSAGE = "Error analyzing DAL message";
+    
     private final CentralLogger _log = CentralLogger.getInstance();
     
     private final AnyData _anyData;
@@ -51,32 +56,74 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
      * {@inheritDoc}
      */
     @Override
-    public String getString(final String key) throws AlarmMessageException {
+    public String getString(@Nonnull final String keyAsString) throws AlarmMessageException {
+        Key key = null;
+        try {
+            key = Key.valueOf(keyAsString);
+        } catch (IllegalArgumentException e) {
+            _log.error(this, ERROR_MESSAGE);
+            throw new AlarmMessageException(ERROR_MESSAGE);
+        }
+        return getString(key);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getString(final Key key) throws AlarmMessageException {
         String result = null;
-        if (key.equals("ACK")) {
-            result = "<ack omitted>"; // TODO jp
-        } else if (key.equals("SEVERITY")) {
-            result = _anyData.getSeverity().toString();
-        } else if (key.equals("EVENTTIME")) {
-            result = _anyData.getTimestamp().toString(); // TODO jp: ok?
-        } else if (key.equals("NAME")) {
-            result = _anyData.getMetaData().getName();
-        } else {
-            String errorMessage = "Error analyzing DAL message";
-            _log.error(this, errorMessage);
-            throw new AlarmMessageException(errorMessage);
+        
+        switch (key) {
+            case ACK:
+                result = "<ack omitted>"; // TODO jp
+                break;
+            case EVENTTIME:
+                result = _anyData.getTimestamp().toString(); // TODO jp: ok?
+                break;
+            case NAME:
+                result = _anyData.getMetaData().getName();
+                break;
+            case SEVERITY:
+                result = getSeverityAsString(_anyData.getSeverity());
+                break;
+            case STATUS:
+                result = getStatusAsString(_anyData.getStatus());
+                break;
+            default:
+                _log.error(this, ERROR_MESSAGE);
+                throw new AlarmMessageException(ERROR_MESSAGE);
+        }
+        return result;
+    }
+    
+    private String getStatusAsString(final String status) {
+        // TODO jp NYI
+        return status;
+    }
+    
+    private String getSeverityAsString(final Severity severity) {
+        String result = null;
+        
+        if (severity.hasValue()) {
+            result = "UNDEFINED";
+        } else if (severity.isMajor()) {
+            result = "MAJOR";
+        } else if (severity.isMinor()) {
+            result = "MAJOR";
+        } else if (severity.isOK()) {
+            result = "NO ALARM";
         }
         return result;
     }
     
     @Override
     public Map<String, String> getMap() throws AlarmMessageException {
-        // TODO jp performance: cache the result map. NYI
+        // TODO jp performance: cache the result map.
         Map<String, String> result = new HashMap<String, String>();
-        result.put("ACK", getString("ACK"));
-        result.put("SEVERITY", getString("SEVERITY"));
-        result.put("EVENTTIME", getString("EVENTTIME"));
-        result.put("NAME", getString("NAME"));
+        for (Key key : Key.values()) {
+            result.put(key.name(), getString(key));
+        }
         return result;
     }
 }
