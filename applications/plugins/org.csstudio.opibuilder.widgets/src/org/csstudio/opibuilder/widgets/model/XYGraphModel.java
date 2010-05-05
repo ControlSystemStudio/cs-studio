@@ -128,7 +128,11 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 	
 	/** The ID of the show toolbar property. */
 	public static final String PROP_SHOW_TOOLBAR = "show_toolbar"; //$NON-NLS-1$
-		
+	
+	public static final String PROP_TRIGGER_PV = "trigger_pv"; //$NON-NLS-1$
+
+	public static final String PROP_TRIGGER_PV_VALUE = "trigger_pv_value"; //$NON-NLS-1$
+
 	/** The default color of the plot area background color property. */
 	private static final RGB DEFAULT_PLOTAREA_BACKCOLOR = new RGB(255,255,255);
 
@@ -185,6 +189,9 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 
 	@Override
 	protected void configureProperties() {
+		addPVProperty(new StringProperty(PROP_TRIGGER_PV, "Trigger PV",
+				WidgetPropertyCategory.Behavior, ""), 
+				new PVValueProperty(PROP_TRIGGER_PV_VALUE, null));
 		addProperty(new StringProperty(PROP_TITLE, "Title",
 				WidgetPropertyCategory.Display, ""));	
 		addProperty(new FontProperty(PROP_TITLE_FONT, "Title Font",
@@ -205,6 +212,7 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 				WidgetPropertyCategory.Behavior, 1, 0, MAX_TRACES_AMOUNT));	
 		addAxisProperties();
 		addTraceProperties();
+		setPropertyVisible(PROP_PVNAME, false);
 		
 	}
 	

@@ -19,7 +19,6 @@ public class CircularBufferDataProvider extends AbstractDataProvider{
 		X("X"),
 		Y("Y"),
 		TRIGGER("Trigger");
-		//PERIODICALLY_SAMPLE("Sample at regular intervals");		
 				
 		private UpdateMode(String description) {
 			 this.description = description;
@@ -87,7 +86,6 @@ public class CircularBufferDataProvider extends AbstractDataProvider{
 	
 	private int updateDelay = 0;
 	private boolean duringDelay = false;
-	private boolean updateTriggered = false;
 	
 	private boolean concatenate_data = true;
 	
@@ -197,13 +195,7 @@ public class CircularBufferDataProvider extends AbstractDataProvider{
 				addDataPoint();
 			break;
 		case TRIGGER:
-			if(updateTriggered && (chronological || 
-					(!chronological && (currentXDataChanged || currentYDataChanged)))){
-				addDataPoint();
-				updateTriggered = false;				
-			}
-				
-			break;		
+
 		default:
 			break;
 		}
@@ -282,15 +274,8 @@ public class CircularBufferDataProvider extends AbstractDataProvider{
 		case Y:			
 			if(currentYDataArrayChanged)
 				addDataArray();
-			break;
+			break;	
 		case TRIGGER:
-			if(updateTriggered && (chronological || 
-					(!chronological && (currentXDataArrayChanged || currentYDataArrayChanged)))){
-				addDataArray();
-				updateTriggered = false;
-			}
-				
-			break;		
 		default:
 			break;
 		}
@@ -359,14 +344,22 @@ public class CircularBufferDataProvider extends AbstractDataProvider{
 	public void setUpdateMode(UpdateMode updateMode) {
 		this.updateMode = updateMode;
 	}
+	
+	/**
+	 * @return the update mode.
+	 */
+	public UpdateMode getUpdateMode() {
+		return updateMode;
+	}
 
 	/**In TRIGGER update mode, the trace data could be updated by this method 
 	 * @param triggerValue the triggerValue to set
 	 */
 	public void triggerUpdate() {
-		updateTriggered = true;
-		tryToAddDataPoint();
-		tryToAddDataArray();
+		if(currentYDataArray.length > 0)
+			addDataArray();
+		else
+			addDataPoint();
 	}
 
 	@Override

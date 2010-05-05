@@ -101,6 +101,7 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 	protected void registerPropertyChangeHandlers() {
 		registerAxisPropertyChangeHandlers();
 		registerTracePropertyChangeHandlers();
+		
 		//Title
 		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
@@ -186,7 +187,24 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 				return true;
 			}
 		};
-		setPropertyChangeHandler(XYGraphModel.PROP_SHOW_TOOLBAR, handler);			
+		setPropertyChangeHandler(XYGraphModel.PROP_SHOW_TOOLBAR, handler);		
+		
+		//trigger pv value
+		handler = new IWidgetPropertyChangeHandler() {
+			
+			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+				for(int i=0; i<getWidgetModel().getTracesAmount(); i++){
+					CircularBufferDataProvider dataProvider =
+						(CircularBufferDataProvider)traceList.get(i).getDataProvider();
+				  if( dataProvider.getUpdateMode() == UpdateMode.TRIGGER){
+					  dataProvider.triggerUpdate();
+				  }
+				}
+				return false;
+			}
+		};
+		
+		setPropertyChangeHandler(XYGraphModel.PROP_TRIGGER_PV_VALUE, handler);
 		
 		registerAxesAmountChangeHandler();
 		registerTraceAmountChangeHandler();
