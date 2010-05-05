@@ -66,6 +66,7 @@ public final class ADLHelper {
      * The default Constructor.
      */
     private ADLHelper() {
+        // Static Constructor.
     }
 
     /**
@@ -359,17 +360,18 @@ public final class ADLHelper {
      * @param path
      * @return
      */
-    public static String cleanFilePath(String path) {
+    public static String cleanFilePath(final String path) {
+        String copyPath = path;
         String source = Activator.getDefault().getPreferenceStore().getString(ADLConverterPreferenceConstants.P_STRING_Path_Remove_Absolut_Part);
         if((source == null) || source.equals("")) {
-            return path;
+            return copyPath;
         }
 
         do {
-            path = path.replace(source, "");
+            copyPath = copyPath.replace(source, "");
             source = source.substring(source.indexOf('/', 1));
         } while(source.lastIndexOf('/')>0);
-        return path;
+        return copyPath;
     }
 
 
@@ -410,26 +412,26 @@ public final class ADLHelper {
     /**
      * Helper method for findWidgetPath
      */
-    private static String checkDisplayPath(String path, final String name){
-    	path = path.trim();
-    	if(path.endsWith("/")) {
-            path = path.substring(0, path.length()-1);
+    private static String checkDisplayPath(final String path, final String name){
+    	String copyPath = path.trim();
+    	if(copyPath.endsWith("/")) {
+            copyPath = copyPath.substring(0, copyPath.length()-1);
         }
 
     	// Both file formats are checked, to ensure that if multiple displays are being
     	// converted out of order, this method doesn't break by failing to find
     	// the yet to be converted <filename>.adl display.
-    	File file1 = new File(path + "/" + name + ".adl");
-    	File file2 = new File(path + "/" + name + ".css-sds");
-    	Path path1 = new Path(path + "/" + name + ".adl");
-    	Path path2 = new Path(path + "/" + name + ".css-sds");
+    	File file1 = new File(copyPath + "/" + name + ".adl");
+    	File file2 = new File(copyPath + "/" + name + ".css-sds");
+    	Path path1 = new Path(copyPath + "/" + name + ".adl");
+    	Path path2 = new Path(copyPath + "/" + name + ".css-sds");
 
     	IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
     	if(file1.exists() || file2.exists()) {
-            return path.replaceAll(root.getRawLocation().toString(), "");
+            return copyPath.replaceAll(root.getRawLocation().toString(), "");
         }
     	if(root.exists(path1) || root.exists(path2)) {
-            return root.getFullPath().append(path).toString();
+            return root.getFullPath().append(copyPath).toString();
         }
 
     	return null;
@@ -438,21 +440,21 @@ public final class ADLHelper {
     /**
      * Helper method for findWidgetPath
      */
-    private static String checkImagePath(String path, final String name){
-    	path = path.trim();
-    	if(path.endsWith("/")) {
-            path = path.substring(0, path.length()-1);
+    private static String checkImagePath(final String path, final String name){
+    	String copyPath = path.trim();
+    	if(copyPath.endsWith("/")) {
+            copyPath = copyPath.substring(0, copyPath.length()-1);
         }
 
-    	File file = new File(path + "/" + name);
-    	Path path1 = new Path(path + "/" + name);
+    	File file = new File(copyPath + "/" + name);
+    	Path path1 = new Path(copyPath + "/" + name);
 
     	IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
     	if(file.exists()) {
-            return path.replaceAll(root.getRawLocation().toString(), "");
+            return copyPath.replaceAll(root.getRawLocation().toString(), "");
         }
     	if(root.exists(path1)) {
-            return root.getFullPath().append(path).toString();
+            return root.getFullPath().append(copyPath).toString();
         }
 
     	return null;
@@ -464,46 +466,47 @@ public final class ADLHelper {
      * each of the display paths provided in the preferences for the source file
      * of this widget.  Returns the FIRST directory where the display/image exists.
      */
-    public static String findWidgetPath(String name) {
+    public static String findWidgetPath(final String name) {
+        String copyName = name;
     	String parent = getTargetPath();
     	String path = null;
     	String allpaths = Activator.getDefault().getPreferenceStore().getString(ADLConverterPreferenceConstants.P_STRING_Display_Paths);
     	String[] displaypaths = allpaths.split(",");
-    	if(name.startsWith("/")) {
-            name = name.substring(1,name.length());
+    	if(copyName.startsWith("/")) {
+            copyName = copyName.substring(1,copyName.length());
         }
 
-    	if(name.endsWith(".css-sds")){
-    		name = name.replaceAll(".css-sds", "");
+    	if(copyName.endsWith(".css-sds")){
+    		copyName = copyName.replaceAll(".css-sds", "");
 
-    		path = checkDisplayPath(parent, name);
+    		path = checkDisplayPath(parent, copyName);
     		if(path != null) {
                 return path;
             }
-    		path = checkDisplayPath("", name);
+    		path = checkDisplayPath("", copyName);
     		if(path != null) {
                 return path;
             }
 
     		for(String dpath : displaypaths){
-    			path = checkDisplayPath(dpath, name);
+    			path = checkDisplayPath(dpath, copyName);
     			if(path != null) {
                     return path;
                 }
     		}
     	}
-    	if(name.endsWith(".gif")){
-    		path = checkImagePath(parent, name);
+    	if(copyName.endsWith(".gif")){
+    		path = checkImagePath(parent, copyName);
     		if(path != null) {
                 return path;
             }
-    		path = checkImagePath("", name);
+    		path = checkImagePath("", copyName);
     		if(path != null) {
                 return path;
             }
 
     		for(String dpath : displaypaths){
-    			path = checkImagePath(dpath, name);
+    			path = checkImagePath(dpath, copyName);
     			if(path != null) {
                     return path;
                 }
