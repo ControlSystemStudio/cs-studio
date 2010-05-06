@@ -96,6 +96,9 @@ public class AlarmView extends LogView {
         GridLayout grid = new GridLayout();
         grid.numColumns = 1;
         _parent.setLayout(grid);
+        
+        createMessageArea(_parent);
+        
         Composite logTableManagementComposite = new Composite(_parent, SWT.NONE);
         
         RowLayout layout = new RowLayout();
@@ -273,9 +276,9 @@ public class AlarmView extends LogView {
                         // ComboBox selection for all messages or for a special
                         // severity
                         if (ackCombo.getItem(ackCombo.getSelectionIndex()).equals(message
-                                .getProperty("SEVERITY")) //$NON-NLS-1$
-                                || (ackCombo.getItem(ackCombo.getSelectionIndex())
-                                        .equals(Messages.AlarmView_acknowledgeAllDropDown))) {
+                                                                                  .getProperty("SEVERITY")) //$NON-NLS-1$
+                                                                                  || (ackCombo.getItem(ackCombo.getSelectionIndex())
+                                                                                          .equals(Messages.AlarmView_acknowledgeAllDropDown))) {
                             // add the message only if it is not yet
                             // acknowledged.
                             if (message.isAcknowledged() == false) {
@@ -290,10 +293,10 @@ public class AlarmView extends LogView {
                 }
                 CentralLogger.getInstance().debug(this,
                                                   "Number of msg in list to send: "
-                                                          + msgList.size());
+                                                  + msgList.size());
                 CentralLogger.getInstance().debug(this,
                                                   "Number of msg in table: "
-                                                          + _tableViewer.getTable().getItemCount());
+                                                  + _tableViewer.getTable().getItemCount());
                 
                 SendAcknowledge sendAck = SendAcknowledge.newFromJMSMessage(msgList);
                 sendAck.schedule();
@@ -345,7 +348,7 @@ public class AlarmView extends LogView {
          * Service for playing sounds
          */
         private final IAlarmSoundService _alarmSoundService = JmsLogsPlugin.getDefault()
-                .getAlarmSoundService();
+        .getAlarmSoundService();
         
         /**
          * This listener listens to incoming messages for playing sounds. Each sound handler uses

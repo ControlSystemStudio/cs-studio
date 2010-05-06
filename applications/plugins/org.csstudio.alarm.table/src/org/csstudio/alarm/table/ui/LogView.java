@@ -52,6 +52,7 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.TableColumn;
@@ -110,6 +111,11 @@ public class LogView extends ViewPart {
      */
     TableViewer _tableViewer;
     
+    /**
+     * The message area at the top of the table view
+     */
+    private MessageArea _messageArea;
+    
     Composite _parent;
     
     Composite _tableComposite;
@@ -140,6 +146,8 @@ public class LogView extends ViewPart {
         GridLayout grid = new GridLayout();
         grid.numColumns = 1;
         parent.setLayout(grid);
+        
+        createMessageArea(_parent);
         
         Composite logTableManagementComposite = new Composite(parent, SWT.NONE);
         RowLayout layout = new RowLayout();
@@ -204,7 +212,7 @@ public class LogView extends ViewPart {
         
         MessageList messageList = getOrCreateCurrentMessageList();
         _messageTable = new MessageTable(_tableViewer, _topicSetColumnService
-                .getColumnSet(_currentTopicSet), messageList);
+                                         .getColumnSet(_currentTopicSet), messageList);
         _messageTable.makeContextMenu(getSite());
         setCurrentTimeToRunningSince(messageList.getStartTime());
         
@@ -248,6 +256,15 @@ public class LogView extends ViewPart {
     }
     
     /**
+     * Creation of the message area. This must be called by each subclass in createPartControl.
+     * 
+     * @param parent
+     */
+    protected final void createMessageArea(final Composite parent) {
+        _messageArea = new MessageArea(parent);
+    }
+    
+    /**
      * Factory method for creating the appropriate message list. Is used as a template method in
      * getOrCreateCurrentMessageList. This should be overridden when a different type of MessageList
      * is required by the view.
@@ -267,7 +284,7 @@ public class LogView extends ViewPart {
      */
     protected IAlarmTableListener getAlarmTableListener() {
         return _topicsetService.getAlarmTableListenerForTopicSet(_topicSetColumnService
-                .getJMSTopics(_currentTopicSet));
+                                                                 .getJMSTopics(_currentTopicSet));
     }
     
     /**
@@ -287,12 +304,18 @@ public class LogView extends ViewPart {
                 _topicsetService.createAndConnectForTopicSet(topicSet,
                                                              createMessageList(),
                                                              alarmTableListener);
+                _messageArea.hide();
             } catch (AlarmConnectionException e) {
-                // TODO jp error should be shown in view
                 CentralLogger.getInstance().error(this,
                                                   "Connecting for topicSet " + topicSet.getName()
-                                                          + " failed",
+                                                  + " failed",
                                                   e);
+                _messageArea.showMessage(SWT.ICON_WARNING,
+                                         "Connection error",
+                                         "Some or all of the information displayed "
+                                         + "may be outdated. The alarm tree is currently "
+                                         + "not connected to all alarm servers.");
+                // Returns a dummy message list which will never get any input
                 return createMessageList();
             }
         }
@@ -302,8 +325,8 @@ public class LogView extends ViewPart {
     private Integer getMaximumNumberOfMessages() {
         ScopedPreferenceStore prefStore = new ScopedPreferenceStore(new InstanceScope(),
                                                                     JmsLogsPlugin.getDefault()
-                                                                            .getBundle()
-                                                                            .getSymbolicName());
+                                                                    .getBundle()
+                                                                    .getSymbolicName());
         String maximumNumberOfMessagesPref = prefStore.getString(LogViewPreferenceConstants.MAX);
         Integer result = 200; // Default
         try {
@@ -311,7 +334,7 @@ public class LogView extends ViewPart {
         } catch (NumberFormatException e) {
             CentralLogger.getInstance().warn(this,
                                              "Invalid value format for maximum number"
-                                                     + " of messages in preferences");
+                                             + " of messages in preferences");
         }
         return result;
     }
@@ -390,7 +413,7 @@ public class LogView extends ViewPart {
                 super.widgetSelected(e);
                 String oldTopicSet = _currentTopicSet;
                 _currentTopicSet = _topicSetColumnService.getTopicSets().get(topicSetsCombo
-                        .getSelectionIndex()).getName();
+                                                                             .getSelectionIndex()).getName();
                 if (!oldTopicSet.equals(_currentTopicSet)) {
                     _messageTable.setMessageUpdatePause(false);
                     _pauseButton.setSelection(false);
@@ -477,11 +500,31 @@ public class LogView extends ViewPart {
         showPropertyViewAction.setToolTipText(Messages.LogView_propertiesToolTip);
         
         IViewRegistry viewRegistry = getSite().getWorkbenchWindow().getWorkbench()
-                .getViewRegistry();
+        .getViewRegistry();
         IViewDescriptor viewDesc = viewRegistry.find(PROPERTY_VIEW_ID);
         showPropertyViewAction.setImageDescriptor(viewDesc.getImageDescriptor());
         IActionBars bars = getViewSite().getActionBars();
+        
         bars.getToolBarManager().add(showPropertyViewAction);
+        
+        createMessageAreaToggleAction(bars);
+    }
+    
+    private void createMessageAreaToggleAction(final IActionBars bars) {
+        Action displayMessageArea = new Action() {
+            @Override
+            public void run() {
+                if (_messageArea.isVisible()) {
+                    _messageArea.hide();
+                } else {
+                    _messageArea.show();
+                }
+            }
+        };
+        // TODO jp Chose fancy icon for the tool bar
+        displayMessageArea.setText(Messages.LogView_messageArea);
+        displayMessageArea.setToolTipText(Messages.LogView_messageAreaToolTip);
+        bars.getToolBarManager().add(displayMessageArea);
     }
     
     /**
@@ -505,7 +548,7 @@ public class LogView extends ViewPart {
             CentralLogger.getInstance().debug(this, "No topic set from previous session"); //$NON-NLS-1$
         } else {
             CentralLogger.getInstance()
-                    .debug(this, "Get topic set from previous session: " + _currentTopicSet); //$NON-NLS-1$
+            .debug(this, "Get topic set from previous session: " + _currentTopicSet); //$NON-NLS-1$
         }
     }
     
@@ -518,7 +561,7 @@ public class LogView extends ViewPart {
         if ( (memento != null) && (_currentTopicSet != null)) {
             CentralLogger.getInstance().debug(this,
                                               "Save latest topic set in IMemento: "
-                                                      + _currentTopicSet);
+                                              + _currentTopicSet);
             memento.putString("previousTopicSet", _currentTopicSet); //$NON-NLS-1$
         }
     }
@@ -530,5 +573,99 @@ public class LogView extends ViewPart {
     public void dispose() {
         super.dispose();
         _messageTable = null;
+    }
+    
+    /**
+     * Encapsulation of the message area. It is located below the tree view.<br>
+     * TODO jp This is a copy of the inner class of the AlarmTreeView.
+     */
+    private static final class MessageArea {
+        /**
+         * The message area which can display error messages inside the view part.
+         */
+        private final Composite _messageAreaComposite;
+        
+        /**
+         * The icon displayed in the message area.
+         */
+        private final Label _messageAreaIcon;
+        
+        /**
+         * The message displayed in the message area.
+         */
+        private final Label _messageAreaMessage;
+        
+        /**
+         * The description displayed in the message area.
+         */
+        private final Label _messageAreaDescription;
+        
+        public MessageArea(final Composite parent) {
+            _messageAreaComposite = new Composite(parent, SWT.NONE);
+            final GridData messageAreaLayoutData = new GridData(SWT.FILL, SWT.FILL, true, false);
+            messageAreaLayoutData.exclude = true;
+            _messageAreaComposite.setVisible(false);
+            _messageAreaComposite.setLayoutData(messageAreaLayoutData);
+            _messageAreaComposite.setLayout(new GridLayout(2, false));
+            
+            _messageAreaIcon = new Label(_messageAreaComposite, SWT.NONE);
+            _messageAreaIcon.setLayoutData(new GridData(SWT.BEGINNING,
+                                                        SWT.BEGINNING,
+                                                        false,
+                                                        false,
+                                                        1,
+                                                        2));
+            _messageAreaIcon.setImage(Display.getCurrent().getSystemImage(SWT.ICON_WARNING));
+            
+            _messageAreaMessage = new Label(_messageAreaComposite, SWT.WRAP);
+            _messageAreaMessage.setText(Messages.LogView_defaultMessageText);
+            // Be careful if changing the GridData below! The label will not wrap
+            // correctly for some settings.
+            _messageAreaMessage.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+            
+            _messageAreaDescription = new Label(_messageAreaComposite, SWT.WRAP);
+            _messageAreaDescription.setText(Messages.LogView_defaultMessageDescription);
+            // Be careful if changing the GridData below! The label will not wrap
+            // correctly for some settings.
+            _messageAreaDescription
+            .setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+        }
+        
+        /**
+         * Sets the message displayed in the message area of this view part.
+         * 
+         * @param icon the icon to be displayed next to the message. Must be one of
+         *            <code>SWT.ICON_ERROR</code>, <code>SWT.ICON_INFORMATION</code>,
+         *            <code>SWT.ICON_WARNING</code>, <code>SWT.ICON_QUESTION</code>.
+         * @param message the message.
+         * @param description a descriptive text.
+         */
+        public void showMessage(final int icon, final String message, final String description) {
+            _messageAreaIcon.setImage(Display.getCurrent().getSystemImage(icon));
+            _messageAreaMessage.setText(message);
+            _messageAreaDescription.setText(description);
+            _messageAreaComposite.layout();
+            
+            show();
+        }
+        
+        public void show() {
+            _messageAreaComposite.setVisible(true);
+            ((GridData) _messageAreaComposite.getLayoutData()).exclude = false;
+            _messageAreaComposite.getParent().layout();
+        }
+        
+        /**
+         * Hides the message displayed in this view part.
+         */
+        public void hide() {
+            _messageAreaComposite.setVisible(false);
+            ((GridData) _messageAreaComposite.getLayoutData()).exclude = true;
+            _messageAreaComposite.getParent().layout();
+        }
+        
+        public boolean isVisible() {
+            return _messageAreaComposite.isVisible();
+        }
     }
 }

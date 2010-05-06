@@ -80,6 +80,9 @@ public class AmsVerifyView extends LogView {
         GridLayout grid = new GridLayout();
         grid.numColumns = 1;
         parent.setLayout(grid);
+        
+        createMessageArea(_parent);
+        
         Composite logTableManagementComposite = new Composite(parent, SWT.NONE);
         
         RowLayout layout = new RowLayout();
@@ -140,7 +143,7 @@ public class AmsVerifyView extends LogView {
         
         MessageList messageList = getOrCreateCurrentMessageList(); // Uses LogMessageList
         _messageTable = new MessageTable(_tableViewer, _topicSetColumnService
-                .getColumnSet(getCurrentTopicSet()), messageList);
+                                         .getColumnSet(getCurrentTopicSet()), messageList);
         _messageTable.makeContextMenu(getSite());
         
         _columnMapping = new ExchangeableColumnWidthPreferenceMapping(_tableViewer,
@@ -247,7 +250,7 @@ public class AmsVerifyView extends LogView {
             mapMessage.setString("NAME", "AMSCOMMONTEST"); //$NON-NLS-1$ //$NON-NLS-2$
             
             JmsLogsPlugin.logInfo("Verify Ams system with " //$NON-NLS-1$
-                    + textPropertyValue); //$NON-NLS-2$
+                                  + textPropertyValue); //$NON-NLS-2$
             sender.sendMessage("ALARM"); //$NON-NLS-1$
         } catch (Exception e) {
             CentralLogger.getInstance().error(this, "Send message error: " + e.toString()); //$NON-NLS-1$
