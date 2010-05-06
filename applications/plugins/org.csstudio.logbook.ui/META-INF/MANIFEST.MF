@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Logbook GUI
 Bundle-SymbolicName: org.csstudio.logbook.ui;singleton:=true
-Bundle-Version: 1.0.1
+Bundle-Version: 1.0.1.qualifier
 Bundle-Activator: org.csstudio.logbook.ui.Activator
 Bundle-Vendor: Kay Kasemir
 Bundle-Localization: plugin
