@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: PACE
 Bundle-SymbolicName: org.csstudio.display.pace;singleton:=true
-Bundle-Version: 1.0.6
+Bundle-Version: 1.0.6.qualifier
 Bundle-Localization: plugin
 Require-Bundle: org.junit4,
  org.eclipse.jface,
