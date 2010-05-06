@@ -25,11 +25,11 @@ BASIS.
 WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING
 BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
 FOR PARTICULAR PURPOSE AND NON-INFRINGEMENT.
-For details, see http://www.eclipse.org/legal/epl-v10.htm
+For details, see http://www.eclipse.org/legal/epl-v10.html
    </license>
 
    <url>
-      <update label="SNS CSS Update Site" url="http://ics-web.sns.ornl.gov/css/updates"/>
+      <update label="SNS CSS Update Site" url="http://ics-web.sns.ornl.gov/css/updates/"/>
    </url>
 
    <requires>
@@ -274,27 +274,6 @@ For details, see http://www.eclipse.org/legal/epl-v10.htm
 
    <plugin
          id="org.csstudio.logbook.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.archivereader"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.archivereader.channelarchiver"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.archivereader.rdb"
          download-size="0"
          install-size="0"
          version="0.0.0"

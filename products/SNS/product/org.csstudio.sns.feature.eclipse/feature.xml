@@ -39,12 +39,90 @@ IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY AT HTTP://WWW.DESY.DE/LEGAL/L
    </license>
 
    <url>
-      <update label="SNS CSS Update Site" url="http://ics-web.sns.ornl.gov/css/updates"/>
+      <update label="SNS CSS Update Site" url="http://ics-web.sns.ornl.gov/css/updates/"/>
    </url>
 
    <includes
          id="org.eclipse.rcp"
          version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.equinox.p2.user.ui"
+         version="0.0.0"/>
+
+   <requires>
+      <import plugin="org.eclipse.core.resources" version="3.4.0" match="compatible"/>
+      <import plugin="org.eclipse.core.filesystem" version="1.1.0" match="compatible"/>
+      <import plugin="org.eclipse.core.runtime" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.core.filesystem" version="1.0.0" match="compatible"/>
+      <import plugin="org.eclipse.equinox.common" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.equinox.registry" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.osgi" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.help.base" version="3.4.0" match="compatible"/>
+      <import plugin="org.eclipse.core.runtime" version="3.5.0" match="compatible"/>
+      <import plugin="org.apache.jasper" version="5.5.17" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.equinox.jsp.jasper.registry" version="1.0.100" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.equinox.http.registry" version="1.0.200" match="greaterOrEqual"/>
+      <import plugin="com.ibm.icu"/>
+      <import plugin="org.eclipse.ui" version="3.5.0" match="compatible"/>
+      <import plugin="org.eclipse.ui.forms" version="3.4.0" match="compatible"/>
+      <import plugin="org.apache.lucene" version="1.9.1" match="compatible"/>
+      <import plugin="org.apache.lucene.analysis" version="1.9.1" match="compatible"/>
+      <import plugin="org.eclipse.core.runtime" version="3.3.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.help" version="3.3.0" match="compatible"/>
+      <import plugin="org.eclipse.core.runtime" version="3.1.0" match="compatible"/>
+      <import plugin="org.eclipse.core.runtime" version="3.3.0" match="compatible"/>
+      <import plugin="org.eclipse.update.configurator" version="3.1.100" match="compatible"/>
+      <import plugin="org.eclipse.equinox.common" version="3.5.0" match="compatible"/>
+      <import plugin="org.eclipse.text" version="3.5.0" match="compatible"/>
+      <import plugin="org.eclipse.jface" version="3.5.0" match="compatible"/>
+      <import plugin="org.eclipse.ui" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.update.core" version="3.1.0" match="compatible"/>
+      <import plugin="org.eclipse.update.configurator" version="3.1.0" match="compatible"/>
+      <import plugin="org.eclipse.ui.forms" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.compare.core" version="3.5.0" match="compatible"/>
+      <import plugin="org.eclipse.core.expressions" version="3.4.100" match="compatible"/>
+      <import plugin="org.eclipse.jface.text" version="3.5.0" match="compatible"/>
+      <import plugin="org.eclipse.help" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.help" version="3.4.0" match="compatible"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor" version="3.5.0" match="compatible"/>
+      <import plugin="org.eclipse.core.expressions" version="3.4.0" match="compatible"/>
+      <import plugin="org.eclipse.core.variables" version="3.2.0" match="compatible"/>
+      <import plugin="org.hamcrest.core" version="1.1.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.runtime" version="3.4.0" match="compatible"/>
+      <import plugin="org.eclipse.core.net" version="1.0.0" match="compatible"/>
+      <import plugin="org.eclipse.equinox.security" version="1.0.0" match="compatible"/>
+      <import plugin="org.eclipse.equinox.common" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.equinox.preferences" version="3.2.200" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.osgi" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.equinox.registry" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.variables" version="3.1.0" match="compatible"/>
+      <import plugin="org.eclipse.jface.text" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.equinox.p2.engine" version="1.0.100" match="compatible"/>
+      <import plugin="org.eclipse.equinox.p2.metadata" version="1.0.0" match="compatible"/>
+      <import plugin="org.eclipse.equinox.p2.core" version="1.0.100" match="compatible"/>
+      <import plugin="org.eclipse.ui.ide" version="3.5.0" match="compatible"/>
+      <import plugin="org.eclipse.core.resources" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.ui.navigator" version="3.4.0" match="compatible"/>
+      <import plugin="org.eclipse.ui.views.properties.tabbed" version="3.5.0" match="compatible"/>
+      <import plugin="org.eclipse.ui.forms" version="3.3.0" match="compatible"/>
+      <import plugin="org.eclipse.ui.views" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.ui" version="3.3.0" match="compatible"/>
+      <import plugin="org.eclipse.core.filesystem" version="1.2.0" match="compatible"/>
+      <import plugin="org.eclipse.draw2d" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.ui.workbench" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.jface" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.swt" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.core.filebuffers" version="3.5.0" match="compatible"/>
+      <import plugin="org.eclipse.core.resources" version="3.5.0" match="compatible"/>
+      <import plugin="org.eclipse.equinox.preferences" version="3.2.200" match="compatible"/>
+      <import plugin="org.eclipse.ui" version="3.4.0" match="compatible"/>
+      <import plugin="org.eclipse.equinox.registry" version="3.3.0"/>
+      <import plugin="org.eclipse.core.expressions" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.core.expressions" version="3.4.100" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.expressions" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.commands" version="3.5.0" match="compatible"/>
+   </requires>
 
    <plugin
          id="org.apache.lucene"
@@ -462,13 +540,6 @@ IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY AT HTTP://WWW.DESY.DE/LEGAL/L
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.equinox.p2.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.mortbay.jetty.server"
          download-size="0"
          install-size="0"
@@ -490,28 +561,7 @@ IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY AT HTTP://WWW.DESY.DE/LEGAL/L
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.equinox.p2.engine"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.p2.metadata"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.hamcrest.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.p2.metadata.repository"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -573,27 +623,6 @@ IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY AT HTTP://WWW.DESY.DE/LEGAL/L
 
    <plugin
          id="org.eclipse.equinox.concurrent"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.p2.artifact.repository"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.p2.jarprocessor"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.p2.repository"
          download-size="0"
          install-size="0"
          version="0.0.0"

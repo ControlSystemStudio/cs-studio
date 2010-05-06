@@ -31,18 +31,48 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
    </url>
 
    <requires>
-      <import feature="org.csstudio.sns.feature.core" version="1.0.7"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.csstudio.platform.ui"/>
+      <import plugin="org.eclipse.ui.views"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.csstudio.utility.pv"/>
+      <import plugin="org.csstudio.platform"/>
+      <import plugin="org.csstudio.apputil"/>
+      <import plugin="org.csstudio.apputil.ui"/>
+      <import plugin="org.junit4"/>
+      <import plugin="org.eclipse.help"/>
+      <import plugin="org.eclipse.help.appserver"/>
+      <import plugin="org.eclipse.help.base"/>
+      <import plugin="org.eclipse.help.ui"/>
+      <import plugin="org.eclipse.help.webapp"/>
+      <import plugin="org.eclipse.ui.views" version="3.3.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.resources" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.platform" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.platform.ui" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.apputil.ui" version="1.0.3" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.platform.utility.rdb" version="1.2.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.diag.pvfields" version="1.0.1" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pv" version="1.0.8" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.swt"/>
+      <import plugin="org.eclipse.jface"/>
+      <import plugin="org.eclipse.ui" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.platform.ui" version="1.1.1" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.apputil" version="1.0.11" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.apputil.ui" version="1.1.1" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.logbook"/>
+      <import plugin="org.junit4" version="4.5.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.runtime" version="3.5.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.resources" version="3.5.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui" version="3.5.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.platform.utility.rdb" version="1.2.2" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.apputil" version="1.0.9" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.logbook" version="1.0.2" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.workbench" version="3.4.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
          id="org.csstudio.utility.clock"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.trends.databrowser2"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -64,34 +94,6 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
 
    <plugin
          id="org.csstudio.diag.epics.pvtree"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.swt.chart"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.apputil"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.apputil.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.diag.postanalyser"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -162,13 +164,6 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
 
    <plugin
          id="org.csstudio.display.rdbtable"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.swt.xygraph"
          download-size="0"
          install-size="0"
          version="0.0.0"
