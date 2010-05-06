@@ -37,6 +37,7 @@ import org.csstudio.alarm.table.dataModel.AlarmMessage;
 import org.csstudio.alarm.table.dataModel.BasicMessage;
 import org.csstudio.alarm.table.jms.ISendMapMessage;
 import org.csstudio.platform.CSSPlatformInfo;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.platform.security.User;
 import org.csstudio.utility.ldap.engine.Engine;
@@ -157,7 +158,7 @@ public class SendAcknowledge extends Job {
                 Engine.getInstance().addLdapWriteRequest(
                         "epicsAlarmHighUnAckn", message.getName(), "");
                 if ((user != null) && (message != null)) {
-                    JmsLogsPlugin.logInfo(user.getUsername()
+                    CentralLogger.getInstance().debug(this, user.getUsername()
                             + " send Ack message, MsgName: "
                             + message.getName()
                             + " MsgTime: " + message.getProperty("EVENTTIME")); //$NON-NLS-2$

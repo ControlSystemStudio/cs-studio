@@ -187,7 +187,7 @@ public class AlarmMessageList extends MessageList {
      */
     protected AlarmMessage setAcknowledge(final AlarmMessage newMessage) {
 
-        CentralLogger.getInstance().info(
+        CentralLogger.getInstance().debug(
                 this,
                 "AlarmView Ack message received, MsgName: "
                         + newMessage.getProperty("NAME") + " MsgTime: "

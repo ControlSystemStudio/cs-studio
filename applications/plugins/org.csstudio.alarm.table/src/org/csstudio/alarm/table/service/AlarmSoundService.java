@@ -66,7 +66,7 @@ public class AlarmSoundService implements IAlarmSoundService {
      */
     @Override
     public void playAlarmSound(final String severity) {
-        _log.info(this, "playAlarmSound for severity " + severity);
+        _log.debug(this, "playAlarmSound for severity " + severity);
         
         // Guard
         if (!isMappingDefinedForSeverity(severity)) {
