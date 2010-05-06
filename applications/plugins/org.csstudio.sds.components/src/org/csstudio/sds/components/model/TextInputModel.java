@@ -76,7 +76,7 @@ public final class TextInputModel extends AbstractWidgetModel {
 	/**
 	 * Type of the displayed text.
 	 */
-	public static final String PROP_VALUE_TYPE = "value_type";
+	public static final String PROP_TEXT_TYPE = "value_type";
 	/**
 	 * The ID of the <i>double type</i> property.
 	 */
@@ -107,7 +107,7 @@ public final class TextInputModel extends AbstractWidgetModel {
 		addArrayOptionProperty(PROP_TEXT_ALIGNMENT, "Text Alignment", WidgetPropertyCategory.DISPLAY, TextAlignmentEnum.getDisplayNames(),
 				TextAlignmentEnum.CENTER.getIndex());
 		addBooleanProperty(PROP_TRANSPARENT, "Transparent Background", WidgetPropertyCategory.DISPLAY, true);
-		addArrayOptionProperty(PROP_VALUE_TYPE, "Value Type", WidgetPropertyCategory.BEHAVIOR, TextTypeEnum.getDisplayNames(),
+		addArrayOptionProperty(PROP_TEXT_TYPE, "Value Type", WidgetPropertyCategory.BEHAVIOR, TextTypeEnum.getDisplayNames(),
 				TextTypeEnum.DOUBLE.getIndex());
 		addIntegerProperty(PROP_PRECISION, "Decimal places", WidgetPropertyCategory.BEHAVIOR, 2, 0, 10);
 	}
@@ -160,7 +160,7 @@ public final class TextInputModel extends AbstractWidgetModel {
 	public TextTypeEnum getValueType() {
 		TextTypeEnum result = TextTypeEnum.TEXT;
 
-		int index = (Integer) getArrayOptionProperty(PROP_VALUE_TYPE);
+		int index = (Integer) getArrayOptionProperty(PROP_TEXT_TYPE);
 
 		if (index >= 0 && index < TextTypeEnum.values().length) {
 			result = TextTypeEnum.values()[index];

@@ -304,6 +304,17 @@
             skipOnLoad="false"
             widgetId="org.csstudio.sds.components.Gauge,org.csstudio.sds.components.Knob,org.csstudio.sds.components.ScaledSlider,org.csstudio.sds.components.Tank,org.csstudio.sds.components.Thermometer,org.csstudio.sds.components.XMeter">
       </widgetPropertyPostProcessor>
+      <widgetPropertyPostProcessor
+            class="org.csstudio.sds.components.model.eventing.TextInputValueTypePostProcessor"
+            propertyId="value_type"
+            skipOnLoad="false"
+            widgetId="org.csstudio.sds.components.Textinput">
+      </widgetPropertyPostProcessor>
+      <widgetPropertyPostProcessor
+            class="org.csstudio.sds.components.model.eventing.LabelValueTypePostProcessor"
+            propertyId="value_type"
+            skipOnLoad="false"
+            widgetId="org.csstudio.sds.components.Label">
+      </widgetPropertyPostProcessor>
    </extension>
-
-</plugin>
+   </plugin>
