@@ -448,12 +448,12 @@ public class MeterWidget extends Canvas implements DisposeListener,
         // but SWT didn't do that on all platforms, so we draw the arc ourselves.
         // Linux: OK
         // OS X : Rendering errors
-        if (false)
-            path.addArc(x0 - x_radius, y0 - y_radius,
-                     2*x_radius, 2*y_radius,
-                     start_angle, end_angle-start_angle);
-        else
-        {
+//        if (false)
+//            path.addArc(x0 - x_radius, y0 - y_radius,
+//                     2*x_radius, 2*y_radius,
+//                     start_angle, end_angle-start_angle);
+//        else
+//        {
             final double d_rad = Math.toRadians(5);
             final double start_rad = Math.toRadians(start_angle);
             final double end_rad = Math.toRadians(end_angle);
@@ -466,6 +466,6 @@ public class MeterWidget extends Canvas implements DisposeListener,
             }
             path.lineTo((float)(x0 + x_radius*Math.cos(end_rad)),
                             (float)(y0 - y_radius*Math.sin(end_rad)));
-        }
+//        }
     }
 }

@@ -1,6 +1,5 @@
 package org.csstudio.apputil.ui.dialog;
 
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
