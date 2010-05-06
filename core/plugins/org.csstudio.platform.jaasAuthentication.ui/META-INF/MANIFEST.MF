@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: JAAS Authentication UI
 Bundle-SymbolicName: org.csstudio.platform.jaasAuthentication.ui;singleton:=true
-Bundle-Version: 1.0.0
+Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.csstudio.jaasauthentication.ui.Activator
 Bundle-Vendor: SNS
 Bundle-Localization: plugin

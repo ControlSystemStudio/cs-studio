@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Converter
 Bundle-SymbolicName: org.csstudio.opibuilder.converter;singleton:=true
-Bundle-Version: 1.0.0
+Bundle-Version: 1.0.0.qualifier
 Bundle-ClassPath: converter.jar,
  src/test/resources,
  lib/log4j-1.2.14.jar
