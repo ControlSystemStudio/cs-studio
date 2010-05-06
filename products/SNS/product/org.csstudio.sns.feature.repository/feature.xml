@@ -3,7 +3,7 @@
       id="org.csstudio.sns.feature.repository"
       label="Repository Access (CVS)"
       version="2.0.0.qualifier"
-      provider-name="SNS">
+      provider-name="SNS, Kay Kasemir">
 
    <description>
       Support for repository access: CVS, ...
