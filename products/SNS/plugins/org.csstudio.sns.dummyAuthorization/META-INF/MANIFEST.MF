@@ -2,8 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: dummyAuthorization Plug-in
 Bundle-SymbolicName: org.csstudio.sns.dummyAuthorization;singleton:=true
-Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: org.csstudio.sns.dummyauthorization.Activator
+Bundle-Version: 1.0.1.qualifier
 Bundle-Vendor: SNS
 Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.platform
