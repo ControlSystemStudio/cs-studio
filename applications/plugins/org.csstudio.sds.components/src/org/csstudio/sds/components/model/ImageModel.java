@@ -92,14 +92,14 @@ public final class ImageModel extends AbstractWidgetModel {
 	protected void configureProperties() {
 		// addProperty(PROP_FILENAME, new
 		// StringProperty("File Name",WidgetPropertyCategory.Image,""));
-		addResourceProperty(PROP_FILENAME, "File", WidgetPropertyCategory.IMAGE, new Path(""), FILE_EXTENSIONS);
-		addIntegerProperty(PROP_TOPCROP, "Crop Top", WidgetPropertyCategory.IMAGE, 0);
-		addIntegerProperty(PROP_BOTTOMCROP, "Crop Bottom", WidgetPropertyCategory.IMAGE, 0);
-		addIntegerProperty(PROP_LEFTCROP, "Crop Left", WidgetPropertyCategory.IMAGE, 0);
-		addIntegerProperty(PROP_RIGHTCROP, "Crop Right", WidgetPropertyCategory.IMAGE, 0);
-		addBooleanProperty(PROP_STRETCH, "Stretch to Fit", WidgetPropertyCategory.IMAGE, false);
-		addBooleanProperty(PROP_AUTOSIZE, "Auto Size", WidgetPropertyCategory.IMAGE, true);
-		addBooleanProperty(PROP_STOP_ANIMATION, "Stop Animation", WidgetPropertyCategory.IMAGE, false);
+		addResourceProperty(PROP_FILENAME, "File", WidgetPropertyCategory.IMAGE, new Path(""), FILE_EXTENSIONS, false);
+		addIntegerProperty(PROP_TOPCROP, "Crop Top", WidgetPropertyCategory.IMAGE, 0, false);
+		addIntegerProperty(PROP_BOTTOMCROP, "Crop Bottom", WidgetPropertyCategory.IMAGE, 0, false);
+		addIntegerProperty(PROP_LEFTCROP, "Crop Left", WidgetPropertyCategory.IMAGE, 0, false);
+		addIntegerProperty(PROP_RIGHTCROP, "Crop Right", WidgetPropertyCategory.IMAGE, 0, false);
+		addBooleanProperty(PROP_STRETCH, "Stretch to Fit", WidgetPropertyCategory.IMAGE, false, false);
+		addBooleanProperty(PROP_AUTOSIZE, "Auto Size", WidgetPropertyCategory.IMAGE, true, false);
+		addBooleanProperty(PROP_STOP_ANIMATION, "Stop Animation", WidgetPropertyCategory.IMAGE, false, false);
 	}
 
 	/**

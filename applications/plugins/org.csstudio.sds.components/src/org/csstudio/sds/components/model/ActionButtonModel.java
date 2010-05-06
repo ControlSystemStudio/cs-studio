@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
+/*
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.sds.components.model;
@@ -28,10 +28,10 @@ import org.csstudio.sds.util.ColorAndFontUtil;
 
 /**
  * An action button widget model.
- * 
+ *
  * @author Sven Wende
  * @version $Revision$
- * 
+ *
  */
 public final class ActionButtonModel extends AbstractWidgetModel {
 	/**
@@ -99,14 +99,19 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addStringProperty(PROP_LABEL, "Label Text", WidgetPropertyCategory.DISPLAY, ""); //$NON-NLS-1$
-		addFontProperty(PROP_FONT, "Font", WidgetPropertyCategory.DISPLAY, ColorAndFontUtil.toFontString("Arial", 8)); //$NON-NLS-1$
-		addArrayOptionProperty(PROP_TEXT_ALIGNMENT, "Text Alignment", WidgetPropertyCategory.DISPLAY, TextAlignmentEnum.getDisplayNames(),
-				TextAlignmentEnum.CENTER.getIndex());
-		addIntegerProperty(PROP_ACTION_PRESSED_INDEX, "Action Index (pressed)", WidgetPropertyCategory.ACTIONS, -1, -1, Integer.MAX_VALUE, AbstractWidgetModel.PROP_ACTIONDATA);
-		addIntegerProperty(PROP_ACTION_RELEASED_INDEX, "Action Index (released)", WidgetPropertyCategory.ACTIONS, 0, -1, Integer.MAX_VALUE,PROP_ACTION_PRESSED_INDEX);
-		addBooleanProperty(PROP_TOGGLE_BUTTON, "Toggle Button", WidgetPropertyCategory.BEHAVIOR, DEFAULT_TOGGLE_BUTTON);
-		
+	    // Display
+		addStringProperty(PROP_LABEL, "Label Text", WidgetPropertyCategory.DISPLAY, "", false); //$NON-NLS-1$
+		addBooleanProperty(PROP_TOGGLE_BUTTON, "Toggle Button", WidgetPropertyCategory.DISPLAY, DEFAULT_TOGGLE_BUTTON, false);
+
+		// Format
+		addFontProperty(PROP_FONT, "Font", WidgetPropertyCategory.FORMAT, ColorAndFontUtil.toFontString("Arial", 8), false); //$NON-NLS-1$
+		addArrayOptionProperty(PROP_TEXT_ALIGNMENT, "Text Alignment", WidgetPropertyCategory.FORMAT, TextAlignmentEnum.getDisplayNames(),
+				TextAlignmentEnum.CENTER.getIndex(), false);
+
+		// Action
+		addIntegerProperty(PROP_ACTION_PRESSED_INDEX, "Action Index (pressed)", WidgetPropertyCategory.ACTIONS, -1, -1, Integer.MAX_VALUE, false, AbstractWidgetModel.PROP_ACTIONDATA);
+		addIntegerProperty(PROP_ACTION_RELEASED_INDEX, "Action Index (released)", WidgetPropertyCategory.ACTIONS, 0, -1, Integer.MAX_VALUE,false, PROP_ACTION_PRESSED_INDEX);
+
 		// .. hide properties
 		hideProperty(PROP_BORDER_COLOR, getTypeID());
 		hideProperty(PROP_BORDER_STYLE, getTypeID());
@@ -130,7 +135,7 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	/**
 	 * Return the index of the selected WidgetAction from the ActionData. The
 	 * Action is running when the button is released.
-	 * 
+	 *
 	 * @return The index
 	 */
 	public int getChoosenReleasedActionIndex() {
@@ -140,7 +145,7 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	/**
 	 * Return the index of the selected WidgetAction from the ActionData. The
 	 * Action is running when the button is pressed.
-	 * 
+	 *
 	 * @return The index
 	 */
 	public int getChoosenPressedActionIndex() {
@@ -149,7 +154,7 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 
 	/**
 	 * Return the label text.
-	 * 
+	 *
 	 * @return The label text.
 	 */
 	public String getLabel() {
@@ -158,7 +163,7 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 
 	/**
 	 * Returns the alignment for the text.
-	 * 
+	 *
 	 * @return int 0 = Center, 1 = Top, 2 = Bottom, 3 = Left, 4 = Right
 	 */
 	public int getTextAlignment() {
@@ -167,7 +172,7 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 
 	/**
 	 * Returns whether the button is a toggle button.
-	 * 
+	 *
 	 * @return false = Push, true=Toggle
 	 */
 	public boolean isToggleButton() {

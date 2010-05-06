@@ -73,10 +73,10 @@ public final class MenuButtonModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addStringProperty(PROP_LABEL, "Label Text", WidgetPropertyCategory.DISPLAY, ""); //$NON-NLS-1$
-		addFontProperty(PROP_FONT, "Font", WidgetPropertyCategory.DISPLAY, ColorAndFontUtil.toFontString("Arial", 8)); //$NON-NLS-1$
+		addStringProperty(PROP_LABEL, "Label Text", WidgetPropertyCategory.DISPLAY, "", false); //$NON-NLS-1$
+		addFontProperty(PROP_FONT, "Font", WidgetPropertyCategory.DISPLAY, ColorAndFontUtil.toFontString("Arial", 8), false); //$NON-NLS-1$
 		addArrayOptionProperty(PROP_TEXT_ALIGNMENT, "Text Alignment", WidgetPropertyCategory.DISPLAY, TextAlignmentEnum.getDisplayNames(),
-				TextAlignmentEnum.CENTER.getIndex());
+				TextAlignmentEnum.CENTER.getIndex(), false);
 		// addProperty(PROP_ACTIONDATA, new ActionDataProperty("Action Data",
 		// WidgetPropertyCategory.Behaviour, new ActionData()));
 	}

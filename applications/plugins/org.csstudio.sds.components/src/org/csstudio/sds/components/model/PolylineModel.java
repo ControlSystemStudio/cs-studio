@@ -60,9 +60,9 @@ public final class PolylineModel extends AbstractPolyModel {
 	@Override
 	protected void configureProperties() {
 		super.configureProperties();
-		addIntegerProperty(PROP_LINE_WIDTH, "Line Width", WidgetPropertyCategory.DISPLAY, 1, 1, 100);
+		addIntegerProperty(PROP_LINE_WIDTH, "Line Width", WidgetPropertyCategory.DISPLAY, 1, 1, 100, false);
 		addArrayOptionProperty(PROP_LINE_STYLE, "Line Style", WidgetPropertyCategory.DISPLAY, new String[] { "Solid", "Dash", "Dot", "DashDot",
-				"DashDotDot" }, 0);
+				"DashDotDot" }, 0, false);
 		
 		// .. hide properties
 		hideProperty(AbstractWidgetModel.PROP_BORDER_COLOR, getTypeID());

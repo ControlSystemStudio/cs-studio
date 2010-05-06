@@ -65,23 +65,23 @@ public abstract class AbstractMarkedWidgetModel extends AbstractScaledWidgetMode
 	protected void configureProperties() {
 
 		super.configureProperties();
-		addBooleanProperty(PROP_SHOW_MARKERS, "Show Markers", WidgetPropertyCategory.SCALE, true);
+		addBooleanProperty(PROP_SHOW_MARKERS, "Show Markers", WidgetPropertyCategory.SCALE, true, false);
 
-		addDoubleProperty(PROP_LOLO_LEVEL, "Level LOLO", WidgetPropertyCategory.SCALE, DEFAULT_LEVELS[0]);
-		addBooleanProperty(PROP_SHOW_LOLO, "Show LOLO", WidgetPropertyCategory.SCALE, true);
-		addColorProperty(PROP_LOLO_COLOR, "Color LOLO ", WidgetPropertyCategory.SCALE, DEFAULT_LOLO_COLOR);
+		addDoubleProperty(PROP_LOLO_LEVEL, "Level LOLO", WidgetPropertyCategory.SCALE, DEFAULT_LEVELS[0], false);
+		addBooleanProperty(PROP_SHOW_LOLO, "Show LOLO", WidgetPropertyCategory.SCALE, true, false);
+		addColorProperty(PROP_LOLO_COLOR, "Color LOLO ", WidgetPropertyCategory.SCALE, DEFAULT_LOLO_COLOR, false);
 
-		addDoubleProperty(PROP_LO_LEVEL, "Level LO", WidgetPropertyCategory.SCALE, DEFAULT_LEVELS[1]);
-		addBooleanProperty(PROP_SHOW_LO, "Show LO", WidgetPropertyCategory.SCALE, true);
-		addColorProperty(PROP_LO_COLOR, "Color LO", WidgetPropertyCategory.SCALE, DEFAULT_LO_COLOR);
+		addDoubleProperty(PROP_LO_LEVEL, "Level LO", WidgetPropertyCategory.SCALE, DEFAULT_LEVELS[1], false);
+		addBooleanProperty(PROP_SHOW_LO, "Show LO", WidgetPropertyCategory.SCALE, true, false);
+		addColorProperty(PROP_LO_COLOR, "Color LO", WidgetPropertyCategory.SCALE, DEFAULT_LO_COLOR, false);
 
-		addDoubleProperty(PROP_HI_LEVEL, "Level HI", WidgetPropertyCategory.SCALE, DEFAULT_LEVELS[2]);
-		addBooleanProperty(PROP_SHOW_HI, "Show HI", WidgetPropertyCategory.SCALE, true);
-		addColorProperty(PROP_HI_COLOR, "Color HI", WidgetPropertyCategory.SCALE, DEFAULT_HI_COLOR);
+		addDoubleProperty(PROP_HI_LEVEL, "Level HI", WidgetPropertyCategory.SCALE, DEFAULT_LEVELS[2], false);
+		addBooleanProperty(PROP_SHOW_HI, "Show HI", WidgetPropertyCategory.SCALE, true, false);
+		addColorProperty(PROP_HI_COLOR, "Color HI", WidgetPropertyCategory.SCALE, DEFAULT_HI_COLOR, false);
 
-		addDoubleProperty(PROP_HIHI_LEVEL, "Level HIHI", WidgetPropertyCategory.SCALE, DEFAULT_LEVELS[3]);
-		addBooleanProperty(PROP_SHOW_HIHI, "Show HIHI", WidgetPropertyCategory.SCALE, true);
-		addColorProperty(PROP_HIHI_COLOR, "Color HIHI", WidgetPropertyCategory.SCALE, DEFAULT_HIHI_COLOR);
+		addDoubleProperty(PROP_HIHI_LEVEL, "Level HIHI", WidgetPropertyCategory.SCALE, DEFAULT_LEVELS[3], false);
+		addBooleanProperty(PROP_SHOW_HIHI, "Show HIHI", WidgetPropertyCategory.SCALE, true, false);
+		addColorProperty(PROP_HIHI_COLOR, "Color HIHI", WidgetPropertyCategory.SCALE, DEFAULT_HIHI_COLOR, false);
 	}
 
 	/**

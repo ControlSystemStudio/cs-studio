@@ -78,20 +78,20 @@ public class ThumbWheelModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addDoubleProperty(PROP_VALUE, "Value", WidgetPropertyCategory.BEHAVIOR, 0);
-		addIntegerProperty(PROP_WHOLE_DIGITS_PART, "Whole digits", WidgetPropertyCategory.DISPLAY, 5);
-		addDoubleProperty(PROP_MIN, "Min", WidgetPropertyCategory.BEHAVIOR, Double.NaN);
-		addDoubleProperty(PROP_MAX, "Max", WidgetPropertyCategory.BEHAVIOR, Double.NaN);
+		addDoubleProperty(PROP_VALUE, "Value", WidgetPropertyCategory.BEHAVIOR, 0, false);
+		addIntegerProperty(PROP_WHOLE_DIGITS_PART, "Whole digits", WidgetPropertyCategory.DISPLAY, 5, false);
+		addDoubleProperty(PROP_MIN, "Min", WidgetPropertyCategory.BEHAVIOR, Double.NaN, false);
+		addDoubleProperty(PROP_MAX, "Max", WidgetPropertyCategory.BEHAVIOR, Double.NaN, false);
 
 		// FIXME: 18.02.2010: swende: Ist für PROP_WHOLE_DIGITS_PART bereits angemeldet!? Von Jörg oder CosyLab zu prüfen!
-		addIntegerProperty(PROP_WHOLE_DIGITS_PART, "Integer digits", WidgetPropertyCategory.BEHAVIOR, 5);
-		addIntegerProperty(PROP_DECIMAL_DIGITS_PART, "Decimal digits", WidgetPropertyCategory.BEHAVIOR, 5);
+		addIntegerProperty(PROP_WHOLE_DIGITS_PART, "Integer digits", WidgetPropertyCategory.BEHAVIOR, 5, false);
+		addIntegerProperty(PROP_DECIMAL_DIGITS_PART, "Decimal digits", WidgetPropertyCategory.BEHAVIOR, 5, false);
 
-		addFontProperty(PROP_FONT, "Wheel Fonts", WidgetPropertyCategory.DISPLAY, ColorAndFontUtil.toFontString("Arial", 9));
+		addFontProperty(PROP_FONT, "Wheel Fonts", WidgetPropertyCategory.DISPLAY, ColorAndFontUtil.toFontString("Arial", 9), false);
 
-		addColorProperty(PROP_INTERNAL_FRAME_COLOR, "Internal frame color", WidgetPropertyCategory.DISPLAY, "#000000");
+		addColorProperty(PROP_INTERNAL_FRAME_COLOR, "Internal frame color", WidgetPropertyCategory.DISPLAY, "#000000", false);
 
-		addIntegerProperty(PROP_INTERNAL_FRAME_THICKNESS, "Internal frame thickness", WidgetPropertyCategory.DISPLAY, 0);
+		addIntegerProperty(PROP_INTERNAL_FRAME_THICKNESS, "Internal frame thickness", WidgetPropertyCategory.DISPLAY, 0, false);
 
 	}
 

@@ -277,7 +277,7 @@ public final class LabelEditPart extends AbstractWidgetEditPart {
 				return true;
 			}
 		};
-		setPropertyChangeHandler(LabelModel.PROP_ROTATION, handle);
+		setPropertyChangeHandler(LabelModel.PROP_TEXT_ROTATION, handle);
 
 		// changes to the x offset property
 		handle = new IWidgetPropertyChangeHandler() {

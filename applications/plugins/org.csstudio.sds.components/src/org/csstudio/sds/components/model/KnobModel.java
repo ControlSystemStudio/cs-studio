@@ -54,17 +54,17 @@ public class KnobModel extends AbstractMarkedWidgetModel {
 	@Override
 	protected void configureProperties() {
 		super.configureProperties();
-		addColorProperty(PROP_KNOB_COLOR, "Knob Color", WidgetPropertyCategory.DISPLAY, DEFAULT_KNOB_COLOR);
+		addColorProperty(PROP_KNOB_COLOR, "Knob Color", WidgetPropertyCategory.DISPLAY, DEFAULT_KNOB_COLOR, false);
 
-		addBooleanProperty(PROP_EFFECT3D, "3D Effect", WidgetPropertyCategory.DISPLAY, true);
+		addBooleanProperty(PROP_EFFECT3D, "3D Effect", WidgetPropertyCategory.DISPLAY, true, false);
 
-		addBooleanProperty(PROP_SHOW_VALUE_LABEL, "Show Value Label", WidgetPropertyCategory.DISPLAY, true);
+		addBooleanProperty(PROP_SHOW_VALUE_LABEL, "Show Value Label", WidgetPropertyCategory.DISPLAY, true, false);
 
-		addColorProperty(PROP_THUMB_COLOR, "Thumb Color", WidgetPropertyCategory.DISPLAY, DEFAULT_THUMB_COLOR);
+		addColorProperty(PROP_THUMB_COLOR, "Thumb Color", WidgetPropertyCategory.DISPLAY, DEFAULT_THUMB_COLOR, false);
 
-		addBooleanProperty(PROP_RAMP_GRADIENT, "Ramp Gradient", WidgetPropertyCategory.DISPLAY, true);
+		addBooleanProperty(PROP_RAMP_GRADIENT, "Ramp Gradient", WidgetPropertyCategory.DISPLAY, true, false);
 
-		addDoubleProperty(PROP_INCREMENT, "Increment", WidgetPropertyCategory.BEHAVIOR, 1.0);
+		addDoubleProperty(PROP_INCREMENT, "Increment", WidgetPropertyCategory.BEHAVIOR, 1.0, false);
 
 		setPropertyDescription(PROP_SHOW_MARKERS, "Show Ramp");
 	}

@@ -80,8 +80,8 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addPointlistProperty(PROP_POINTS, "Points", WidgetPropertyCategory.POSITION, new PointList());
-		addDoubleProperty(PROP_FILL, "Value", WidgetPropertyCategory.BEHAVIOR, 100.0, 0.0, 100.0);
+		addPointlistProperty(PROP_POINTS, "Points", WidgetPropertyCategory.POSITION, new PointList(), false);
+		addDoubleProperty(PROP_FILL, "Value", WidgetPropertyCategory.BEHAVIOR, 100.0, 0.0, 100.0, false);
 	}
 
 	/**

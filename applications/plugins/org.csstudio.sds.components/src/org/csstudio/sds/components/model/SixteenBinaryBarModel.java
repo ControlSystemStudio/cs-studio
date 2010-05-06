@@ -6,9 +6,9 @@ import org.csstudio.sds.util.ColorAndFontUtil;
 
 /**
  * Represents the model for the Sixteen Binary Bar.
- * 
+ *
  * @author Alen Vrecko
- * 
+ *
  */
 public class SixteenBinaryBarModel extends AbstractWidgetModel {
 
@@ -34,7 +34,7 @@ public class SixteenBinaryBarModel extends AbstractWidgetModel {
 
 	public static final String PROP_BITS_FROM = "bitRangeFrom"; //$NON-NLS-1$
 
-	public static final String PROP_BITS_TO = "bitRangeTo"; //$NON-NLS-1$ 
+	public static final String PROP_BITS_TO = "bitRangeTo"; //$NON-NLS-1$
 
 	private static final int DEFAULT_HEIGHT = 50;
 
@@ -68,22 +68,24 @@ public class SixteenBinaryBarModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addIntegerProperty(PROP_VALUE, "Value", WidgetPropertyCategory.BEHAVIOR, 0);
-		addBooleanProperty(PROP_HORIZONTAL, "Horizontal Orientation", WidgetPropertyCategory.DISPLAY, DEFAULT_ORIENTATION_HORIZONTAL);
-		addBooleanProperty(PROP_SHOW_LABELS, "Show labels", WidgetPropertyCategory.DISPLAY, false);
-		addFontProperty(PROP_LABEL_FONT, "Label fonts", WidgetPropertyCategory.DISPLAY, ColorAndFontUtil.toFontString("Arial", 9));
-		addIntegerProperty(PROP_INTERNAL_FRAME_THICKNESS, "Internal frame thickness", WidgetPropertyCategory.DISPLAY, 1);
-
+	    // Display
+		addIntegerProperty(PROP_VALUE, "Value", WidgetPropertyCategory.DISPLAY, 0, false);
+		addBooleanProperty(PROP_HORIZONTAL, "Horizontal Orientation", WidgetPropertyCategory.DISPLAY, DEFAULT_ORIENTATION_HORIZONTAL, false);
+		addIntegerProperty(PROP_INTERNAL_FRAME_THICKNESS, "Internal frame thickness", WidgetPropertyCategory.DISPLAY, 1, false);
 		// The maximum bit range that can be handled by this widget is 0..31.
 		// More than 32 bits are not possible because the value property is an
 		// integer property.
-		addIntegerProperty(PROP_BITS_FROM, "Bit range (from)", WidgetPropertyCategory.BEHAVIOR, 0, 0, 31);
-		addIntegerProperty(PROP_BITS_TO, "Bit range (to)", WidgetPropertyCategory.BEHAVIOR, 15, 0, 31);
+		addIntegerProperty(PROP_BITS_FROM, "Bit range (from)", WidgetPropertyCategory.DISPLAY, 0, 0, 31, false);
+		addIntegerProperty(PROP_BITS_TO, "Bit range (to)", WidgetPropertyCategory.DISPLAY, 15, 0, 31, false);
 
-		addColorProperty(PROP_ON_COLOR, "On color", WidgetPropertyCategory.DISPLAY, "#00ff00");
-		addColorProperty(PROP_OFF_COLOR, "Off color", WidgetPropertyCategory.DISPLAY, "#c0c0c0");
-		addColorProperty(PROP_LABEL_COLOR, "Label text color", WidgetPropertyCategory.DISPLAY, "#000000");
-		addColorProperty(PROP_INTERNAL_FRAME_COLOR, "Internal Frame Color", WidgetPropertyCategory.DISPLAY, "#000000");
+		// Format
+		addBooleanProperty(PROP_SHOW_LABELS, "Show labels", WidgetPropertyCategory.FORMAT, false, false);
+		addFontProperty(PROP_LABEL_FONT, "Label fonts", WidgetPropertyCategory.FORMAT, ColorAndFontUtil.toFontString("Arial", 9), false);
+		addColorProperty(PROP_ON_COLOR, "On color", WidgetPropertyCategory.FORMAT, "#00ff00", false);
+		addColorProperty(PROP_OFF_COLOR, "Off color", WidgetPropertyCategory.FORMAT, "#c0c0c0", false);
+		addColorProperty(PROP_LABEL_COLOR, "Label text color", WidgetPropertyCategory.FORMAT, "#000000", false);
+		addColorProperty(PROP_INTERNAL_FRAME_COLOR, "Internal Frame Color", WidgetPropertyCategory.FORMAT, "#000000", false);
+
 
 	}
 

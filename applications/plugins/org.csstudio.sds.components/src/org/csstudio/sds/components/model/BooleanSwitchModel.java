@@ -56,15 +56,15 @@ public class BooleanSwitchModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addBooleanProperty(PROP_VALUE, "Value", WidgetPropertyCategory.BEHAVIOR, false);
-		addDoubleProperty(PROP_ON_STATE_VALUE, "On value", WidgetPropertyCategory.BEHAVIOR, 1, -Double.MAX_VALUE, Double.MAX_VALUE);
-		addDoubleProperty(PROP_OFF_STATE_VALUE, "Off value", WidgetPropertyCategory.BEHAVIOR, 0, -Double.MAX_VALUE, Double.MAX_VALUE);
-		addColorProperty(PROP_ON_COLOR, "On color", WidgetPropertyCategory.DISPLAY, "#64FF64");
-		addColorProperty(PROP_OFF_COLOR, "Off color", WidgetPropertyCategory.DISPLAY, "#B4B4B4");
-		addBooleanProperty(PROP_LABEL_VISIBLE, "Show Label", WidgetPropertyCategory.DISPLAY, false);
-		addStringProperty(PROP_ON_LABEL, "On Label", WidgetPropertyCategory.DISPLAY, "ON");
-		addStringProperty(PROP_OFF_LABEL, "Off Label", WidgetPropertyCategory.DISPLAY, "OFF");
-		addBooleanProperty(PROP_3D_EFFECT, "3d effect", WidgetPropertyCategory.DISPLAY, true);
+		addBooleanProperty(PROP_VALUE, "Value", WidgetPropertyCategory.BEHAVIOR, false, false);
+		addDoubleProperty(PROP_ON_STATE_VALUE, "On value", WidgetPropertyCategory.BEHAVIOR, 1, -Double.MAX_VALUE, Double.MAX_VALUE, false);
+		addDoubleProperty(PROP_OFF_STATE_VALUE, "Off value", WidgetPropertyCategory.BEHAVIOR, 0, -Double.MAX_VALUE, Double.MAX_VALUE, false);
+		addColorProperty(PROP_ON_COLOR, "On color", WidgetPropertyCategory.DISPLAY, "#64FF64", false);
+		addColorProperty(PROP_OFF_COLOR, "Off color", WidgetPropertyCategory.DISPLAY, "#B4B4B4", false);
+		addBooleanProperty(PROP_LABEL_VISIBLE, "Show Label", WidgetPropertyCategory.DISPLAY, false, false);
+		addStringProperty(PROP_ON_LABEL, "On Label", WidgetPropertyCategory.DISPLAY, "ON", false);
+		addStringProperty(PROP_OFF_LABEL, "Off Label", WidgetPropertyCategory.DISPLAY, "OFF", false);
+		addBooleanProperty(PROP_3D_EFFECT, "3d effect", WidgetPropertyCategory.DISPLAY, true, false);
 
 		// .. hide properties
 		hideProperty(PROP_BORDER_COLOR, getTypeID());
