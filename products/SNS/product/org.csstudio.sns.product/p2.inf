@@ -1,0 +1,3 @@
+instructions.configure=\
+  addRepository(type:0,name: SNS update-site,location:http${#58}//ics-web.sns.ornl.gov/css/updates/);\
+  addRepository(type:1,name: SNS update-site,location:http${#58}//ics-web.sns.ornl.gov/css/updates/);
