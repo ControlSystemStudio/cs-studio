@@ -38,6 +38,7 @@ import org.junit.Test;
  * @version $Revision$
  * @since 06.04.2010
  */
+@SuppressWarnings("nls")
 public class EmailUtilsTest {
 
     private static String[] ADDRESSES = {
