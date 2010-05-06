@@ -237,7 +237,7 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements I
 			@Override
 			public void keyPressed(final KeyEvent e) {
 				if (e.keyCode == SWT.CR || e.keyCode == SWT.KEYPAD_CR) {
-					int option = getWidgetModel().getArrayOptionProperty(TextInputModel.PROP_VALUE_TYPE);
+					int option = getWidgetModel().getArrayOptionProperty(TextInputModel.PROP_TEXT_TYPE);
 
 					TextTypeEnum propertyValue = TextTypeEnum.values()[option];
 					if (!propertyValue.isValidFormat(text.getText())) {
@@ -266,7 +266,7 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements I
 
 			public void verifyText(VerifyEvent e) {
 				e.doit = true;
-				int option = getWidgetModel().getArrayOptionProperty(TextInputModel.PROP_VALUE_TYPE);
+				int option = getWidgetModel().getArrayOptionProperty(TextInputModel.PROP_TEXT_TYPE);
 				TextTypeEnum propertyValue = TextTypeEnum.values()[option];
 				e.doit = propertyValue.isValidChars(e.character, e.text, e.start);
 
@@ -496,7 +496,7 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements I
 				return true;
 			}
 		};
-		setPropertyChangeHandler(TextInputModel.PROP_VALUE_TYPE, handle);
+		setPropertyChangeHandler(TextInputModel.PROP_TEXT_TYPE, handle);
 
 		// precision
 		IWidgetPropertyChangeHandler precisionHandler = new IWidgetPropertyChangeHandler() {

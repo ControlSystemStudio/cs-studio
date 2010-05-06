@@ -91,13 +91,13 @@ public class Textinput extends Widget {
                 _widget.setPropertyValue(TextInputModel.PROP_TEXT_ALIGNMENT, id);
             }else if(row[0].equals("format")){ //$NON-NLS-1$
                 if(row[1].equals("\"string\"")){ //$NON-NLS-1$
-                    _widget.setPropertyValue(TextInputModel.PROP_VALUE_TYPE, TextTypeEnum.TEXT);
+                    _widget.setPropertyValue(TextInputModel.PROP_TEXT_TYPE, TextTypeEnum.TEXT);
                 }else if(row[1].equals("\"exponential\"")){ //$NON-NLS-1$
-                    _widget.setPropertyValue(TextInputModel.PROP_VALUE_TYPE, TextTypeEnum.EXP);
+                    _widget.setPropertyValue(TextInputModel.PROP_TEXT_TYPE, TextTypeEnum.EXP);
                 }else if(row[1].equals("\"decimal\"")){ //$NON-NLS-1$
-                    _widget.setPropertyValue(TextInputModel.PROP_VALUE_TYPE, TextTypeEnum.DOUBLE);
+                    _widget.setPropertyValue(TextInputModel.PROP_TEXT_TYPE, TextTypeEnum.DOUBLE);
                 }else if(row[1].equals("\"hexadecimal\"")){ //$NON-NLS-1$
-                    _widget.setPropertyValue(TextInputModel.PROP_VALUE_TYPE, TextTypeEnum.HEX);
+                    _widget.setPropertyValue(TextInputModel.PROP_TEXT_TYPE, TextTypeEnum.HEX);
                 }else{
                     CentralLogger.getInstance().debug(this, Messages.Textinput_Format_Debug+fileLine);
                 }

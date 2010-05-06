@@ -113,7 +113,7 @@ public final class LabelEditPart extends AbstractWidgetEditPart {
 				return true;
 			}
 		};
-		setPropertyChangeHandler(LabelModel.PROP_VALUE_TYPE, handle);
+		setPropertyChangeHandler(LabelModel.PROP_TEXT_TYPE, handle);
 
 		// text value
 		handle = new IWidgetPropertyChangeHandler() {
