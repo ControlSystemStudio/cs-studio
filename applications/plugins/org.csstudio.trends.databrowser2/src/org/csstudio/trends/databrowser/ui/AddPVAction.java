@@ -49,8 +49,9 @@ public class AddPVAction extends Action
     /** Run the 'add PV' dialog with optional defaults
      *  @param name Suggested PV name, for example from drag-n-drop
      *  @param archive Archive data source for the new PV
+     *  @return <code>true</code> if PV name was added, <code>false</code> if canceled by user
      */
-    public void runWithSuggestedName(final String name, final IArchiveDataSource archive)
+    public boolean runWithSuggestedName(final String name, final IArchiveDataSource archive)
     {
         // Prompt for PV name
         final String existing_names[] = new String[model.getItemCount()];
@@ -65,7 +66,7 @@ public class AddPVAction extends Action
         final AddPVDialog dlg = new AddPVDialog(shell, existing_names, axes, formula);
         dlg.setName(name);
         if (dlg.open() != AddPVDialog.OK)
-            return;
+            return false;
         
         // Did user select axis?
         AxisConfig axis;
@@ -84,7 +85,7 @@ public class AddPVAction extends Action
             final AddModelItemCommand command = AddModelItemCommand.forFormula(
                         shell, operations_manager, model, dlg.getName(), axis);
             if (command == null)
-                return;
+                return false;
             // Open configuration dialog
             final FormulaItem formula = (FormulaItem) command.getItem();
             final EditFormulaDialog edit =
@@ -94,5 +95,6 @@ public class AddPVAction extends Action
         else
             AddModelItemCommand.forPV(shell, operations_manager, model,
                 dlg.getName(), dlg.getScanPeriod(), axis, archive);
+        return true;
     }
 }
