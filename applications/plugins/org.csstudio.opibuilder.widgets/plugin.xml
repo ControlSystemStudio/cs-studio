@@ -274,6 +274,24 @@
             typeId="org.csstudio.opibuilder.widgets.combo">
       </widget>
       <widget
+            category="Controls"
+            description="Make a single choice in a radio box group."
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.RadioBoxEditpart"
+            icon="icons/RadioButton_Checked.png"
+            model_class="org.csstudio.opibuilder.widgets.model.RadioBoxModel"
+            name="Radio Box"
+            typeId="org.csstudio.opibuilder.widgets.radioBox">
+      </widget>
+      <widget
+            category="Controls"
+            description="Make a single choice in a button group."
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.ChoiceButtonEditpart"
+            icon="icons/ChoiceButton.png"
+            model_class="org.csstudio.opibuilder.widgets.model.ChoiceButtonModel"
+            name="Choice Button"
+            typeId="org.csstudio.opibuilder.widgets.choiceButton">
+      </widget>
+      <widget
             category="Others"
             description="A container widget which can group other widgets."
             editpart_class="org.csstudio.opibuilder.widgets.editparts.GroupingContainerEditPart"

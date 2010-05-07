@@ -1,16 +1,18 @@
 
 
-import java.util.Calendar;
+import java.util.Arrays;
 
 import org.csstudio.opibuilder.datadefinition.ColorMap;
 import org.csstudio.opibuilder.datadefinition.ColorMap.PredefinedColorMap;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.widgets.figures.BoolButtonFigure;
 import org.csstudio.opibuilder.widgets.figures.BoolSwitchFigure;
+import org.csstudio.opibuilder.widgets.figures.ChoiceButtonFigure;
 import org.csstudio.opibuilder.widgets.figures.GaugeFigure;
 import org.csstudio.opibuilder.widgets.figures.IntensityGraphFigure;
 import org.csstudio.opibuilder.widgets.figures.LEDFigure;
 import org.csstudio.opibuilder.widgets.figures.LabelFigure;
+import org.csstudio.opibuilder.widgets.figures.RadioBoxFigure;
 import org.csstudio.opibuilder.widgets.figures.TabFigure;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.Figure;
@@ -20,6 +22,7 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.junit.Test;
 
 /**
  * To avoid to start CSS frequently to see the 
@@ -30,14 +33,16 @@ import org.eclipse.swt.widgets.Shell;
  * @author Xihui Chen
  *
  */
+
 public class WidgetFigureTest {
-	public static void main(String[] args) {
+	@Test
+	public void mainTest() {
 		final Shell shell = new Shell();
 		shell.setSize(800, 500);
 	    shell.open();
-	    
+	   // shell.setBackground(CustomMediaFactory.getInstance().getColor(0,0,0));
 		final LightweightSystem lws = new LightweightSystem(shell);
-		GaugeFigureTest testFigure = new GaugeFigureTest();
+		RadioBoxFigureTest testFigure = new RadioBoxFigureTest();
 		lws.setContents(testFigure);
 		
 	    shell.setText("Widget Figure Test");
@@ -46,7 +51,6 @@ public class WidgetFigureTest {
 	      if (!display.readAndDispatch())
 	        display.sleep();
 	    }
-	    System.out.println(Calendar.getInstance().getTime());
 	}
 }
 
@@ -280,6 +284,49 @@ class GaugeFigureTest extends Figure {
 	@Override
 	protected void layout() {
 		gaugeFigure.setBounds(bounds.getCopy().shrink(20, 20));
+		super.layout();
+	}
+	
+	
+	
+	
+}
+
+
+
+class ChoiceButtonFigureTest extends Figure {
+		
+		private ChoiceButtonFigure choiceButton;
+
+		public ChoiceButtonFigureTest() {
+			choiceButton = new ChoiceButtonFigure();
+			choiceButton.setStates(Arrays.asList(new String[]{"", "", ""}));
+			//choiceButton.setBackgroundColor(CustomMediaFactory.getInstance().getColor(0,255,0));
+			//choiceButton.setCheckedColor(new RGB(255,0,0));
+			add(choiceButton);		
+		}
+		@Override
+		protected void layout() {
+			choiceButton.setBounds(bounds.getCopy().shrink(20, 20));
+			super.layout();
+		}
+		
+		
+}
+
+class RadioBoxFigureTest extends Figure {
+	
+	private RadioBoxFigure radioBox;
+
+	public RadioBoxFigureTest() {
+		radioBox = new RadioBoxFigure();
+		radioBox.setStates(Arrays.asList(new String[]{"HELLO", "second", "third"}));
+		radioBox.setBackgroundColor(CustomMediaFactory.getInstance().getColor(255,255,255));
+		add(radioBox);		
+	}
+	@Override
+	protected void layout() {
+		radioBox.setBounds(bounds.getCopy().shrink(20, 20));
 		super.layout();
 	}
 	
