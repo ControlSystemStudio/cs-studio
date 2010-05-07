@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.csstudio.sns.feature.snscore"
+      label="Core CSS Components specific to SNS"
+      version="1.3.0.qualifier"
+      provider-name="SNS, Kay Kasemir">
+
+   <description>
+      Core CSS components for SNS used by many applications:
+SNS ELog, ...
+   </description>
+
+   <copyright>
+      Copyright (c) 2010 Oak Ridge National Laboratory,
+OAK RIDGE, TN, USA.
+   </copyright>
+
+   <license url="http://www.eclipse.org/legal/epl-v10.html">
+      You must accept this license agreement in order to install and
+use this
+software.
+THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN &quot;../AS IS&quot;
+BASIS. 
+WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING
+BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR PARTICULAR PURPOSE AND NON-INFRINGEMENT.
+For details, see http://www.eclipse.org/legal/epl-v10.html
+   </license>
+
+   <url>
+      <update label="SNS CSS Update Site" url="http://ics-web.sns.ornl.gov/css/updates/"/>
+   </url>
+
+   <requires>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.csstudio.logbook"/>
+      <import plugin="org.junit4"/>
+      <import plugin="org.csstudio.platform.utility.rdb" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.ui.intro"/>
+      <import plugin="org.csstudio.platform.ui"/>
+      <import plugin="org.csstudio.platform.workspace"/>
+      <import plugin="org.csstudio.startup" version="1.1.2" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.startuphelper" version="1.1.2" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.sns.startuphelper" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.platform" version="1.1.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.platform.ui" version="1.1.1" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.platform.workspace" version="1.1.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui" version="3.4.0" match="greaterOrEqual"/>
+   </requires>
+
+   <plugin
+         id="org.csstudio.logbook.sns"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.sns.product"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.sns.startuphelper"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>
