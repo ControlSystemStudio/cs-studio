@@ -17,6 +17,7 @@
  */
 package org.csstudio.alarm.service.internal;
 
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,6 +26,7 @@ import javax.annotation.Nonnull;
 import org.csstudio.alarm.service.declaration.AlarmMessageException;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
 import org.csstudio.platform.logging.CentralLogger;
+import org.epics.css.dal.Timestamp.Format;
 import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.Severity;
 
@@ -73,26 +75,76 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
     @Override
     public String getString(final Key key) throws AlarmMessageException {
         String result = null;
+
         
         switch (key) {
-            case ACK:
-                result = "<ack omitted>"; // TODO jp ack omitted
-                break;
+//            case ACK:
+//                result = "<ack omitted>"; // TODO jp ack omitted
+//                // Comment there's currently NO support for Ack in DAL
+//                // We can leave it in - just in case...
+//                break;
             case EVENTTIME:
-                result = _anyData.getTimestamp().toString(); // TODO jp: ok?
+                // result = _anyData.getTimestamp().toString(); // TODO jp: ok?
+                // We need to convert the time in timestamp into this format:
+                // 2010-05-07 09:40:39.131
+//                SimpleDateFormat sdf = new SimpleDateFormat( JMS_DATE_FORMAT);
+            	if (_anyData.getTimestamp() == null) {
+                	result = "noTimeStamp";
+                	return result; 
+                }
+    	        result = _anyData.getTimestamp().toString( Format.Full);
                 break;
             case NAME:
+            	if (_anyData.getMetaData() == null) {
+                	result = "noMetaData";
+                	return result; 
+                }
                 result = _anyData.getMetaData().getName();
                 break;
             case SEVERITY:
+            	if (_anyData.getMetaData() == null) {
+                	result = "noMetaData";
+                	return result; 
+                }
                 result = getSeverityAsString(_anyData.getSeverity());
                 break;
             case STATUS:
-                result = getStatusAsString(_anyData.getStatus());
+                // result = getStatusAsString(_anyData.getStatus());
+            	// getStatus() already returns the staus 'as string'
+            	result = _anyData.getStatus();
+                break;
+            case FACILITY:
+                // TODO MCL: there's currently no facility available from DAL
+            	// this could be retrieved from LDAP - necessary ?? 
+            	result = "NN";
+                break;
+            case HOST:
+                // TODO MCL: we can get the host name from the DAL connection - available?
+            	if (_anyData.getMetaData() == null) {
+                	result = "noMetaData";
+                	return result; 
+                }
+            	_anyData.getMetaData().getHostname();
+                break;
+//            case TEXT:
+//              // TODO MCL: this is actually the descriptor information from the channel
+//            	// this is not available by default - it could be retrieved from the channel - as an additional DAL request
+//            	// ... maybe too much effort ...
+//                break;
+            case TYPE:
+                // TODO MCL: the type is an event-alarm from the IOC as a result ...
+            	// we'll have to add this to the MAP manually - as a default value ...
+            	result = "event";
+                break;
+            case VALUE:
+                result = _anyData.stringValue();
+                break;
+            case APPLICATION_ID:
+                result = Application_ID;
                 break;
             default:
-                _log.error(this, ERROR_MESSAGE);
-                throw new AlarmMessageException(ERROR_MESSAGE);
+                _log.error(this, ERROR_MESSAGE + "key" + key);
+//                throw new AlarmMessageException(ERROR_MESSAGE);
         }
         return result;
     }
@@ -105,15 +157,21 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
     private String getSeverityAsString(final Severity severity) {
         String result = null;
         
+        if (severity == null) {
+        	return "noMetaData";
+        }
+        
         if (severity.hasValue()) {
-            result = "UNDEFINED";
+            result = severity.toString();
         } else if (severity.isMajor()) {
             result = "MAJOR";
         } else if (severity.isMinor()) {
             result = "MAJOR";
         } else if (severity.isOK()) {
             result = "NO ALARM";
-        }
+        } else if (severity.isInvalid()) {
+            result = "INVALID";
+        } 
         return result;
     }
     

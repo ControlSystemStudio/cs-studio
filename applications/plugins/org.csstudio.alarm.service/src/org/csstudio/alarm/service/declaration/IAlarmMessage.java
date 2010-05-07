@@ -35,8 +35,27 @@ public interface IAlarmMessage {
      * Set of keys for the alarm message.
      */
     enum Key {
-        ACK, EVENTTIME, NAME, SEVERITY, STATUS
+        EVENTTIME, NAME, SEVERITY, STATUS, FACILITY, HOST, TYPE, VALUE, APPLICATION_ID
     }
+    
+    /**
+     * Set of keys for the alarm message - currently NOT supported
+     * beware!!! SEVERITY_OLD translates into the TAG: SEVERITY-OLD !!!
+     * the same applies for STATUS_OLD and HOST_PHYS
+     */
+    enum NoKey {
+        ACK, SEVERITY_OLD, STATUS_OLD, HOST_PHYS, TEXT
+    }
+    
+    /**
+     * format of the time string
+     */
+    public static String JMS_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
+    
+    /**
+     * application ID for this application
+     */
+    public static String Application_ID = "CSS_AlarmService";
     
     /**
      * The message essentially is a map from String to String. Here you get the value for the key.
