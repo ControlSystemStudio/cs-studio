@@ -11,6 +11,7 @@ import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.swt.xygraph.figures.Axis;
 import org.csstudio.swt.xygraph.linearscale.Range;
 import org.eclipse.draw2d.Figure;
+import org.eclipse.draw2d.FigureUtilities;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
@@ -27,7 +28,6 @@ import org.eclipse.swt.graphics.PaletteData;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Label;
 
 /**An intensity graph figure.
  * @author Xihui Chen
@@ -465,11 +465,10 @@ public class IntensityGraphFigure extends Figure {
 						return;
 					String text = "(" + xAxis.format(xCordinate) + ", " + yAxis.format(yCordinate) + ", "+ 
 						yAxis.format(croppedDataArray[(dataLocation.y)*croppedDataWidth + dataLocation.x]) + ")";
-					GC mgc = new GC(new Label(Display.getCurrent().getActiveShell(), SWT.None));
-					Point size = mgc.textExtent(text);
-					mgc.dispose();
-					Image image = new Image(Display.getCurrent(),
-							size.x + CURSOR_SIZE, size.y + CURSOR_SIZE);
+					Dimension size = FigureUtilities.getTextExtents(
+							text, Display.getDefault().getSystemFont());
+					Image image = new Image(Display.getDefault(),
+							size.width + CURSOR_SIZE, size.height + CURSOR_SIZE);
 					
 					GC gc = new GC(image);
 					//gc.setAlpha(0);
