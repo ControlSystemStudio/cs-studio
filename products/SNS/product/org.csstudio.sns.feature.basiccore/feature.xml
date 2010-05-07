@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.sns.feature.basiccore"
       label="Core CSS Components for Basic EPICS product"
-      version="1.0.0.qualifier"
+      version="1.3.0.qualifier"
       provider-name="SNS, Kay Kasemir">
 
    <description>
