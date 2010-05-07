@@ -80,7 +80,7 @@ public class DataBrowserEditor extends EditorPart
     private Plot plot;
     
     /** Controller that links model and plot */
-    private Controller controller;
+    private Controller controller = null;
 
     /** @see #isDirty() */
     private boolean is_dirty = false;
@@ -303,7 +303,11 @@ public class DataBrowserEditor extends EditorPart
     @Override
     public void dispose()
     {
-        controller.stop();
+        if (controller != null)
+        {
+            controller.stop();
+            controller = null;
+        }
         super.dispose();
     }
 
