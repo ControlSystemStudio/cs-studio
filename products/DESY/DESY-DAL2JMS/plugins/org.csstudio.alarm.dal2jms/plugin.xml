@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         id="application"
+         point="org.eclipse.core.runtime.applications">
+      <application
+            cardinality="singleton-global"
+            thread="main"
+            visible="true">
+         <run
+               class="org.csstudio.alarm.dal2jms.Dal2JmsApplication">
+         </run>
+      </application>
+   </extension>
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.csstudio.alarm.configtool.application"
+            name="dal2jms">
+         <property
+               name="appName"
+               value="dal2jms">
+         </property>
+      </product>
+   </extension>
+
+</plugin>
