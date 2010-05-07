@@ -8,7 +8,7 @@
 
    <description>
       Core CSS components used by many applications:
-EPICS Channel Access, ELog, Archives, ...
+EPICS Channel Access, ...
    </description>
 
    <copyright>
@@ -52,16 +52,10 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.csstudio.platform" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.help.appserver"/>
       <import plugin="org.eclipse.help.base"/>
-      <import plugin="org.eclipse.ui.intro"/>
-      <import plugin="org.csstudio.startup" version="1.1.2" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.startuphelper" version="1.1.2" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.sns.startuphelper" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.apputil" version="1.0.11" match="compatible"/>
-      <import plugin="org.csstudio.platform.utility.rdb" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.startup" version="1.1.2" match="greaterOrEqual"/>
       <import plugin="org.csstudio.platform" version="1.1.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.platform.ui" version="1.1.1" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.platform.workspace" version="1.1.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.equinox.preferences"/>
       <import plugin="org.eclipse.jface"/>
       <import plugin="org.eclipse.ui.workbench"/>
@@ -139,12 +133,6 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.sns.product"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
          id="org.csstudio.utility.sysmon"
          download-size="0"
          install-size="0"
@@ -167,13 +155,6 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
 
    <plugin
          id="org.csstudio.logbook"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.logbook.sns"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -244,13 +225,6 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
 
    <plugin
          id="org.csstudio.startup"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.sns.startuphelper"
          download-size="0"
          install-size="0"
          version="0.0.0"

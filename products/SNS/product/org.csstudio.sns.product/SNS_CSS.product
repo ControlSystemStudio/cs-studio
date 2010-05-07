@@ -50,13 +50,13 @@ See http://ics-web.sns.ornl.gov/css
    <vm>
    </vm>
 
-
    <plugins>
    </plugins>
 
    <features>
       <feature id="org.csstudio.sns.feature.eclipse" version="1.2.0.qualifier"/>
       <feature id="org.csstudio.sns.feature.core" version="1.3.0.qualifier"/>
+      <feature id="org.csstudio.sns.feature.snscore" version="1.3.0.qualifier"/>
       <feature id="org.csstudio.sns.feature.applications" version="1.3.0.qualifier"/>
       <feature id="org.csstudio.sns.feature.databrowser" version="2.0.0.qualifier"/>
       <feature id="org.csstudio.sns.feature.opi" version="2.0.0.qualifier"/>
