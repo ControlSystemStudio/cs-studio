@@ -32,10 +32,10 @@ import org.csstudio.platform.management.CommandParameters;
 import org.csstudio.platform.management.CommandResult;
 import org.csstudio.platform.management.IManagementCommand;
 import org.csstudio.utility.ldap.engine.Engine;
-import org.csstudio.utility.ldap.service.ILdapService;
-import org.csstudio.utility.ldapUpdater.Activator;
 import org.csstudio.utility.ldapUpdater.LdapAccess;
 import org.csstudio.utility.ldapUpdater.contextMenu.CommandEnumeration.IocModificationCommand;
+import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterService;
+import org.csstudio.utility.ldapUpdater.service.impl.LdapUpdaterServiceImpl;
 
 
 /**
@@ -44,6 +44,8 @@ import org.csstudio.utility.ldapUpdater.contextMenu.CommandEnumeration.IocModifi
  * @author bknerr 17.03.2010
  */
 public class IocManagement implements IManagementCommand {
+
+    private static final ILdapUpdaterService LDAP_UPDATER_SERVICE = new LdapUpdaterServiceImpl();
 
     /**
      * {@inheritDoc}
@@ -66,17 +68,16 @@ public class IocManagement implements IManagementCommand {
         final String iocName = map.get(ECON_FIELD_NAME);
         final String facilityName = map.get(EFAN_FIELD_NAME);
 
-        final ILdapService service = Activator.getDefault().getLdapService();
 
         switch (IocModificationCommand.valueOf(command)) {
-            case DELETE :  service.removeIocEntryFromLdap(Engine.getInstance().getLdapDirContext(),
-                                                          iocName,
-                                                          facilityName);
+            case DELETE :  LDAP_UPDATER_SERVICE.removeIocEntryFromLdap(Engine.getInstance().getLdapDirContext(),
+                                                                       iocName,
+                                                                       facilityName);
             break;
-            case TIDY_UP : service.tidyUpIocEntryInLdap(Engine.getInstance().getLdapDirContext(),
-                                                        iocName,
-                                                        facilityName,
-                                                        LdapAccess.getValidRecordsForIOC(iocName));
+            case TIDY_UP : LDAP_UPDATER_SERVICE.tidyUpIocEntryInLdap(Engine.getInstance().getLdapDirContext(),
+                                                                     iocName,
+                                                                     facilityName,
+                                                                     LdapAccess.getValidRecordsForIOC(iocName));
             break;
             default : throw new AssertionError("Unknown Ioc Modification Command: " + command);
         }

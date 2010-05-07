@@ -46,14 +46,16 @@ import org.csstudio.utility.ldap.model.ContentModel;
 import org.csstudio.utility.ldap.model.ILdapComponent;
 import org.csstudio.utility.ldap.model.ILdapTreeComponent;
 import org.csstudio.utility.ldap.model.IOC;
+import org.csstudio.utility.ldap.model.LdapEpicsControlsObjectClass;
 import org.csstudio.utility.ldap.model.Record;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
-import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldapUpdater.files.HistoryFileAccess;
 import org.csstudio.utility.ldapUpdater.files.HistoryFileContentModel;
 import org.csstudio.utility.ldapUpdater.files.IOCFilesDirTree;
 import org.csstudio.utility.ldapUpdater.mail.NotificationMail;
 import org.csstudio.utility.ldapUpdater.mail.NotificationType;
+import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterService;
+import org.csstudio.utility.ldapUpdater.service.impl.LdapUpdaterServiceImpl;
 
 
 /**
@@ -110,7 +112,7 @@ public final class LdapAccess {
 
     public static final Logger LOGGER = CentralLogger.getInstance().getLogger(LdapAccess.class);
 
-    private static final ILdapService LDAP_SERVICE = Activator.getDefault().getLdapService();
+    private static final ILdapUpdaterService LDAP_UPDATER_SERVICE = new LdapUpdaterServiceImpl();
 
     /**
      * Don't instantiate.
@@ -147,13 +149,13 @@ public final class LdapAccess {
 
             if (iocMapFromFS.containsKey(entry.getKey())) {
 
-                LDAP_SERVICE.tidyUpIocEntryInLdap(Engine.getInstance().getLdapDirContext(),
+                LDAP_UPDATER_SERVICE.tidyUpIocEntryInLdap(Engine.getInstance().getLdapDirContext(),
                                                   iocName,
                                                   facName,
                                                   LdapAccess.getValidRecordsForIOC(iocFromLdap.getName()));
 
             } else { // LDAP entry is not contained in current IOC directory - is considered obsolete!
-                LDAP_SERVICE.removeIocEntryFromLdap(Engine.getInstance().getLdapDirContext(), iocName, facName);
+                LDAP_UPDATER_SERVICE.removeIocEntryFromLdap(Engine.getInstance().getLdapDirContext(), iocName, facName);
             }
         }
     }
@@ -198,7 +200,8 @@ public final class LdapAccess {
                     newLdapName.add(new Rdn(LdapFieldsAndAttributes.EREN_FIELD_NAME, recordName));
 
                     // TODO (bknerr) : Stopping or proceeding? Transaction rollback? Hist file update ?
-                    if (!LDAP_SERVICE.createLDAPComponent(Engine.getInstance().getLdapDirContext(), newLdapName)) {
+                    if (!LDAP_UPDATER_SERVICE.createLDAPRecord(Engine.getInstance().getLdapDirContext(),
+                                                               newLdapName)) {
                         LOGGER.error("Error while updating LDAP record for " + recordName +
                         "\nProceed with next record.");
                     } else {
@@ -285,7 +288,7 @@ public final class LdapAccess {
 
             LdapSearchResult searchResult;
             try {
-                searchResult = LDAP_SERVICE.retrieveRecordsForIOC(iocFromLDAP.getLdapName());
+                searchResult = LDAP_UPDATER_SERVICE.retrieveRecordsForIOC(iocFromLDAP.getLdapName());
                 model.addSearchResult(searchResult);
 
                 final UpdateIOCResult updateResult = updateIOC(model, iocFromLDAP);

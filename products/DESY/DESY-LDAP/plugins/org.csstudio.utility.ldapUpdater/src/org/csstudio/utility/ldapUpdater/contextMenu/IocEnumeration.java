@@ -44,10 +44,10 @@ import org.csstudio.utility.ldap.LdapNameUtils;
 import org.csstudio.utility.ldap.LdapUtils;
 import org.csstudio.utility.ldap.model.ContentModel;
 import org.csstudio.utility.ldap.model.ILdapComponent;
+import org.csstudio.utility.ldap.model.LdapEpicsControlsObjectClass;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldapUpdater.Activator;
-import org.csstudio.utility.ldapUpdater.LdapEpicsControlsObjectClass;
 
 
 /**

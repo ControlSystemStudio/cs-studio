@@ -23,14 +23,20 @@
  */
 package org.csstudio.utility.ldapUpdater;
 
+import org.junit.Test;
+
 /**
- * TODO (bknerr) : 
- * 
+ * TODO (bknerr) :
+ *
  * @author bknerr
  * @author $Author$
  * @version $Revision$
  * @since 06.05.2010
  */
 public class LdapAccessTest {
-    
+
+    @Test
+    public void testLDAP() {
+
+    }
 }
