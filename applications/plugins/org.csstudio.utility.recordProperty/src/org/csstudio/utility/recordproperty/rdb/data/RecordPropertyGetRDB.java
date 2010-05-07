@@ -1,5 +1,10 @@
 package org.csstudio.utility.recordproperty.rdb.data;
 
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EPICS_CTRL_FIELD_VALUE;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EREN_FIELD_NAME;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.OU_FIELD_NAME;
+
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -9,6 +14,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.naming.NamingException;
+import javax.naming.directory.SearchControls;
+import javax.naming.directory.SearchResult;
+import javax.naming.ldap.LdapName;
 
 import org.csstudio.config.savevalue.service.ChangelogEntry;
 import org.csstudio.config.savevalue.service.ChangelogService;
@@ -20,8 +30,10 @@ import org.csstudio.platform.simpledal.ConnectionException;
 import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
 import org.csstudio.platform.simpledal.ProcessVariableConnectionServiceFactory;
 import org.csstudio.platform.simpledal.ValueType;
+import org.csstudio.utility.ldap.LdapNameUtils;
 import org.csstudio.utility.ldap.LdapUtils;
-import org.csstudio.utility.ldap.model.IOC;
+import org.csstudio.utility.ldap.model.LdapEpicsControlsObjectClass;
+import org.csstudio.utility.ldap.reader.LdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.recordproperty.Activator;
 import org.csstudio.utility.recordproperty.Messages;
@@ -46,35 +58,35 @@ public class RecordPropertyGetRDB {
 	private String fieldName;
 	private String valueRdb;
 	private DBConnect connect;
-	private DBConnect connectForFieldNames;
+	private DBConnect _connectForFieldNames;
 
-	private String fieldType;
+	private String _fieldType;
 
 	/**
 	 * If DAL does not have any data, it prints this.
 	 */
-	private String value = Messages.RecordPropertyView_NA;
+	private String _value = Messages.RecordPropertyView_NA;
 
 	/**
 	 * Record name, that you have to get data of
 	 */
-	private String record;
+	private String _record;
 
-	private String nameIOC;
-	private ChangelogEntry[] entryRMI;
-	private String valueRMI;
+	private String _nameIOC;
+	private ChangelogEntry[] _entryRMI;
+	private String _valueRMI;
 
 	/**
 	 * A string that is displayed when no access.
 	 */
-	private final String na = Messages.RecordPropertyView_NA;
+	private final String _na = Messages.RecordPropertyView_NA;
 
 	/**
 	 * Get if RDB is offline.
 	 */
-	private String rtype;
+	private String _rtype;
 
-	RecordPropertyEntry[] stringArray;
+	RecordPropertyEntry[] _stringArray;
 
 	/**
 	 * The logger.
@@ -85,19 +97,19 @@ public class RecordPropertyGetRDB {
 	/**
 	 * Gets all possible data that can be collected.
 	 *
-	 * @param _record
+	 * @param rec
 	 *            name of the record
 	 * @return stringArray
 	 */
-	public RecordPropertyEntry[] getData(final String _record) {
-		record = _record;
+	public RecordPropertyEntry[] getData(final String rec) {
+		_record = rec;
 
-		record = validateRecord(record);
+		_record = validateRecord(_record);
 
 		if (getRtypeFromDAL()) {
 			// nothing is to be done here
 		} else {
-			if (!getRtypeFromRecordName(record).equals("not-valid")) {
+			if (!getRtypeFromRecordName(_record).equals("not-valid")) {
 				// nothing is to be done here
 			} else {
 				// nothing is printed, everything is empty
@@ -114,7 +126,7 @@ public class RecordPropertyGetRDB {
 			}
 		}
 
-		return stringArray;
+		return _stringArray;
 
 	}
 
@@ -136,14 +148,14 @@ public class RecordPropertyGetRDB {
 				while (resultSetFieldNames.next()) {
 					if (fieldName.equals(resultSetFieldNames
 							.getString("FIELD_NAME"))) {
-						fieldType = resultSetFieldNames.getString("FIELD_TYPE");
+						_fieldType = resultSetFieldNames.getString("FIELD_TYPE");
 
 						final String badType = "15";
 
-						if (!fieldType.equals(badType)) {
+						if (!_fieldType.equals(badType)) {
 							getDataFromDAL();
 						} else {
-							value = na;
+							_value = _na;
 						}
 						break;
 					}
@@ -151,31 +163,31 @@ public class RecordPropertyGetRDB {
 
 				// If IOC(RMI)(4th column) does not have any data, it prints
 				// this.
-				valueRMI = na;
+				_valueRMI = _na;
 
 				// Search if record.fieldName matches one in IOC(RMI) and sets
 				// it.
-				for (final ChangelogEntry element : entryRMI) {
-					if ((record + "." + fieldName).equals(element
+				for (final ChangelogEntry element : _entryRMI) {
+					if ((_record + "." + fieldName).equals(element
 							.getPvName())) {
-						valueRMI = element.getValue();
+						_valueRMI = element.getValue();
 						break;
 					}
 				}
 
 				// Adds new line to table
 				final RecordPropertyEntry entry = new RecordPropertyEntry(fieldName,
-						valueRdb, value, valueRMI);
+						valueRdb, _value, _valueRMI);
 				data.add(entry);
 
 				// Set value back to 'not found', to overwrite last value.
-				value = na;
+				_value = _na;
 			}
 		} catch (final SQLException e) {
 			e.printStackTrace();
 		}
 
-		stringArray = data
+		_stringArray = data
 				.toArray(new RecordPropertyEntry[data.size()]);
 
 		connect.closeConnection();
@@ -191,12 +203,12 @@ public class RecordPropertyGetRDB {
 		final IProcessVariableConnectionService _connectionService = ProcessVariableConnectionServiceFactory
 				.getDefault().createProcessVariableConnectionService();
 
-		final IProcessVariableAddress pv = _addressFactory.createProcessVariableAdress("dal-epics://" + record
+		final IProcessVariableAddress pv = _addressFactory.createProcessVariableAdress("dal-epics://" + _record
 				+ ".RTYP");
 
 		try {
-			rtype = _connectionService.readValueSynchronously(pv, ValueType.STRING);
-			System.out.println(rtype);
+			_rtype = _connectionService.readValueSynchronously(pv, ValueType.STRING);
+			System.out.println(_rtype);
 			return true;
 		} catch (final ConnectionException e) {
 			return false;
@@ -217,7 +229,7 @@ public class RecordPropertyGetRDB {
 							+ "from instance_values iv, type_val tv, instance_records tmp "
 							+ "where (iv.instance_record_id = tmp.instance_record_id) and "
 							+ "(tmp.instance_record = '"
-							+ record
+							+ _record
 							+ "') and "
 							+ "(iv.type_id = tv.type_id) and (iv.field_index = tv.field_index) "
 							+ "group by tv.field_name||tv.prompt), "
@@ -225,7 +237,7 @@ public class RecordPropertyGetRDB {
 							+ "from type_val tv, project_values pv, instance_records tmp "
 							+ "where (pv.prototype_record_id = tmp.prototype_record_id) and "
 							+ "(tmp.instance_record = '"
-							+ record
+							+ _record
 							+ "') and "
 							+ "(tv.type_id = pv.type_id) and (tv.field_index = pv.field_index) "
 							+ "group by tv.field_name||tv.prompt "
@@ -235,7 +247,7 @@ public class RecordPropertyGetRDB {
 							+ "from type_val tv, instance_records tmp "
 							+ "where (tv.type_id = tmp.type_id) and "
 							+ "(tmp.instance_record = '"
-							+ record
+							+ _record
 							+ "') "
 							+ "group by tv.field_name||tv.prompt "
 							+ "minus "
@@ -248,7 +260,7 @@ public class RecordPropertyGetRDB {
 							+ "from instance_values iv, type_val tv, instance_records tmp "
 							+ "where (iv.instance_record_id = tmp.instance_record_id) and "
 							+ "(tmp.instance_record = '"
-							+ record
+							+ _record
 							+ "') and "
 							+ "(iv.type_id = tv.type_id) and (iv.field_index = tv.field_index) "
 							+ "union "
@@ -256,7 +268,7 @@ public class RecordPropertyGetRDB {
 							+ "from type_val tv, project_values pv, instance_records tmp "
 							+ "where (pv.prototype_record_id = tmp.prototype_record_id) and "
 							+ "(tmp.instance_record = '"
-							+ record
+							+ _record
 							+ "') and "
 							+ "(tv.type_id = pv.type_id) and (tv.field_index = pv.field_index) and "
 							+ "(tv.field_name||tv.prompt in (select checkValue from LVL1)) "
@@ -264,7 +276,7 @@ public class RecordPropertyGetRDB {
 							+ "select 2 lvl, tv.field_index, tv.field_name, tv.prompt, tv.default_value as value "
 							+ "from type_val tv, instance_records tmp "
 							+ "where (tv.type_id = tmp.type_id) and (tmp.instance_record = '"
-							+ record
+							+ _record
 							+ "') and "
 							+ "(tv.field_name||tv.prompt in (select checkValue from LVL2)) "
 							+ "order by field_index ");
@@ -273,7 +285,7 @@ public class RecordPropertyGetRDB {
 					.executeQuery("select tv.field_name, tv.field_type from epics_version ev, "
 							+ "rec_type rt, type_val tv where ev.epics_id = '4061' and "
 							+ "ev.epics_id = rt.epics_id and rt.record_type = '"
-							+ rtype + "' and " + "rt.type_id = tv.type_id");
+							+ _rtype + "' and " + "rt.type_id = tv.type_id");
 
 			// Check weather the result set is empty
 			if (!resultSet.isBeforeFirst()) {
@@ -304,12 +316,12 @@ public class RecordPropertyGetRDB {
 				.createProcessVariableConnectionService();
 
 		try {
-			value = _connectionService.readValueSynchronously(_addressFactory
-					.createProcessVariableAdress("dal-epics://" + record + "."
+			_value = _connectionService.readValueSynchronously(_addressFactory
+					.createProcessVariableAdress("dal-epics://" + _record + "."
 							+ fieldName), ValueType.STRING);
 		} catch (final ConnectionException e) {
 			CentralLogger.getInstance().getLogger(this).info(
-					"Field value not found: " + record + "." + fieldName);
+					"Field value not found: " + _record + "." + fieldName);
 			e.printStackTrace();
 		}
 	}
@@ -323,8 +335,25 @@ public class RecordPropertyGetRDB {
 		try {
 	        final ILdapService service = Activator.getDefault().getLdapService();
 
-			final IOC ioc = service.getIOCForRecordName(LdapUtils.pvNameToRecordName(record));
-			nameIOC = ioc == null ? "" : ioc.getName();
+	        final LdapSearchResult result = service.retrieveSearchResultSynchronously(LdapUtils.createLdapQuery(OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE),
+	                                                                                  EREN_FIELD_NAME + FIELD_ASSIGNMENT + LdapUtils.pvNameToRecordName(_record),
+	                                                                                  SearchControls.SUBTREE_SCOPE);
+	        if (!result.getAnswerSet().isEmpty()) {
+	            final SearchResult row = result.getAnswerSet().iterator().next();
+	            LdapName ldapName;
+	            try {
+	                ldapName = LdapNameUtils.parseSearchResult(row);
+	                final String iocName = LdapNameUtils.getValueOfRdnType(ldapName, LdapEpicsControlsObjectClass.IOC.getRdnType());
+	                if (iocName == null) {
+	                    _log.error(this, "No IOC was found for PV: " + _record); //$NON-NLS-1$
+	                    _nameIOC = "";
+	                }
+	                _nameIOC = iocName;
+	            } catch (final NamingException e) {
+	                _log.error("Naming exception while parsing the search result for " + _record + " from LDAP.", e);
+	                _nameIOC = "";
+	            }
+	        }
 
 			final IPreferencesService prefs = Platform.getPreferencesService();
 			final String registryHost = prefs.getString(
@@ -335,7 +364,7 @@ public class RecordPropertyGetRDB {
 
 			final ChangelogService cs = (ChangelogService) reg
 					.lookup("SaveValue.changelog"); //$NON-NLS-1$
-			entryRMI = cs.readChangelog(nameIOC);
+			_entryRMI = cs.readChangelog(_nameIOC);
 
 		} catch (final RemoteException e) {
 			_log.error(this, "Could not connect to RMI registry", e); //$NON-NLS-1$
@@ -354,16 +383,16 @@ public class RecordPropertyGetRDB {
 	 * Gets field names from RDB (SQL).
 	 */
 	private boolean getFieldNamesFromRDBsql() {
-		connectForFieldNames = new DBConnect(new OracleSettings());
+		_connectForFieldNames = new DBConnect(new OracleSettings());
 
-		connectForFieldNames.openConnection();
+		_connectForFieldNames.openConnection();
 
 		try {
-			resultSetFieldNames = connectForFieldNames
+			resultSetFieldNames = _connectForFieldNames
 					.executeQuery("select tv.field_name, tv.field_type from epics_version ev, "
 							+ "rec_type rt, type_val tv where ev.epics_id = '4061' and "
 							+ "ev.epics_id = rt.epics_id and rt.record_type = '"
-							+ rtype + "' and " + "rt.type_id = tv.type_id");
+							+ _rtype + "' and " + "rt.type_id = tv.type_id");
 
 			return true;
 
@@ -384,43 +413,43 @@ public class RecordPropertyGetRDB {
 			// Goes through every row and gets data.
 			while (resultSetFieldNames.next()) {
 				fieldName = resultSetFieldNames.getString("FIELD_NAME");
-				fieldType = resultSetFieldNames.getString("FIELD_TYPE");
+				_fieldType = resultSetFieldNames.getString("FIELD_TYPE");
 
 				final String badType = "15";
 
-				if (!fieldType.equals(badType)) {
+				if (!_fieldType.equals(badType)) {
 					getDataFromDAL();
 				} else {
-					value = na;
+					_value = _na;
 				}
 
 				// If IOC(RMI)(4th column) does not have any data, it prints
 				// this.
-				valueRMI = na;
+				_valueRMI = _na;
 
 				// Search if record.fieldName matches one in IOC(RMI) and sets
 				// it.
-				for (final ChangelogEntry element : entryRMI) {
-					if ((record + "." + fieldName).equals(element
+				for (final ChangelogEntry element : _entryRMI) {
+					if ((_record + "." + fieldName).equals(element
 							.getPvName())) {
-						valueRMI = element.getValue();
+						_valueRMI = element.getValue();
 						break;
 					}
 				}
 
 				// Adds new line to table
 				final RecordPropertyEntry entry = new RecordPropertyEntry(fieldName,
-						"", value, valueRMI);
+						"", _value, _valueRMI);
 				data.add(entry);
 
 				// Set value back to 'not found', to overwrite last value.
-				value = na;
+				_value = _na;
 			}
 		} catch (final SQLException e) {
 			e.printStackTrace();
 		}
 
-		stringArray = data
+		_stringArray = data
 				.toArray(new RecordPropertyEntry[data.size()]);
 
 		connect.closeConnection();
