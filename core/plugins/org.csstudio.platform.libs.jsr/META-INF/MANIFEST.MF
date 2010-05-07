@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Jsr305
-Bundle-SymbolicName: org.csstudio.platform.libs.jsr;singleton:=true
+Bundle-SymbolicName: org.csstudio.platform.libs.annotations;singleton:=true
 Bundle-Version: 1.0.0
 Export-Package: javax.annotation,
  javax.annotation.concurrent,
