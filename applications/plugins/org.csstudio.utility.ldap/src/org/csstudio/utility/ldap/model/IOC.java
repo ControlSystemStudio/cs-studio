@@ -40,6 +40,7 @@ import javax.annotation.Nullable;
  * @version $Revision$
  * @since 30.04.2008
  */
+@Deprecated
 public class IOC implements Serializable {
 
     public static final String NO_GROUP = "<no group>";

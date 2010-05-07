@@ -21,17 +21,13 @@
  */
 package org.csstudio.utility.ldap.service;
 
-import java.util.Set;
-
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.naming.InvalidNameException;
+import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
 import javax.naming.ldap.LdapName;
 
-import org.csstudio.utility.ldap.model.IOC;
-import org.csstudio.utility.ldap.model.Record;
 import org.csstudio.utility.ldap.reader.LDAPReader;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
 import org.csstudio.utility.ldap.reader.LDAPReader.IJobCompletedCallBack;
@@ -48,79 +44,24 @@ import org.csstudio.utility.ldap.reader.LDAPReader.LdapSearchParams;
 public interface ILdapService {
 
     /**
-     * Retrieves the LDAP entries for the records belonging to the given facility and IOC.
-     * @param facilityName facility
-     * @param iocName ioc
-     * @return the seach result
-     *
-     * @throws InterruptedException
-     */
-    @CheckForNull
-    LdapSearchResult retrieveRecordsForIOC(@Nonnull String facilityName,
-                                     @Nonnull String iocName) throws InterruptedException;
-
-    /**
-     * Retrieves the LDAP entries for the records belonging to the given facility and IOC.
-     * @param fullName the complete LDAP name for this ioc
-     *
-     * @throws InterruptedException
-     * @throws InvalidNameException
-     */
-    @CheckForNull
-    LdapSearchResult retrieveRecordsForIOC(@Nonnull LdapName fullName) throws InterruptedException, InvalidNameException;
-
-    /**
-     * Creates a new Record in LDAP.
-     * @param context the directory context
-     * @param ioc the ioc
-     * @param recordName the record
-     * @return true if the new record could be created, false otherwise
-     */
-    boolean createLDAPRecord(@Nonnull DirContext context, @Nonnull IOC ioc, @Nonnull String recordName);
-
-    /**
      * Creates a new Record in LDAP.
      * @param context the directory context
      * @param newComponentName the record
+     * @param attributes the attributes of the new ldap component
      * @return true if the new record could be created, false otherwise
      */
-    boolean createLDAPComponent(@Nonnull DirContext ldapDirContext, @Nonnull LdapName newComponentName);
+    boolean createComponent(@Nonnull DirContext ldapDirContext,
+                            @Nonnull LdapName newComponentName,
+                            @Nullable Attributes attributes);
+
 
     /**
-     * Removes all records for the given IOC from LDAP that are not contained in the valid records set.
+     * Removes the leaf component from the LDAP context.
+     * Attention, the component may not have children components!
      * @param context .
-     * @param iocName .
-     * @param facilityName .
-     * @param validRecords .
+     * @param query .
      */
-    void tidyUpIocEntryInLdap(@Nonnull DirContext context, @Nonnull String iocName,@Nonnull String facilityName,@Nonnull Set<Record> validRecords);
-
-    /**
-     * Removes the IOC entry from the LDAP context.
-     * @param context .
-     * @param iocName .
-     * @param facilityName .
-     */
-    void removeIocEntryFromLdap(@Nonnull DirContext context,@Nonnull  String iocName,@Nonnull String facilityName);
-
-
-    /**
-     * Removes the record entry from the LDAP context.
-     * @param context .
-     * @param ioc .
-     * @param record .
-     */
-    void removeRecordEntryFromLdap(@Nonnull DirContext context,@Nonnull  IOC ioc,@Nonnull  Record record);
-
-
-    /**
-     * Retrieves the IOC object from LDAP to which the given record belongs to.
-     * @param recordName .
-     * @return the IOC containing this record
-     */
-    @CheckForNull
-    IOC getIOCForRecordName(@Nonnull String recordName);
-
+    boolean removeComponent(@Nonnull DirContext context, @Nonnull LdapName query);
 
     /**
      * Retrieves LDAP entries for the given query and search scope synchronously.
@@ -132,7 +73,9 @@ public interface ILdapService {
      * @return the search result
      */
     @CheckForNull
-    LdapSearchResult retrieveSearchResultSynchronously(@Nonnull LdapName searchRoot, @Nonnull String filter, int searchScope);
+    LdapSearchResult retrieveSearchResultSynchronously(@Nonnull LdapName searchRoot,
+                                                       @Nonnull String filter,
+                                                       int searchScope);
 
     /**
      * Returns an LDAPReader job that can be scheduled by the user arbitrarily.
@@ -146,8 +89,6 @@ public interface ILdapService {
     LDAPReader createLdapReaderJob(@Nonnull LdapSearchParams params,
                                    @Nullable LdapSearchResult result,
                                    @Nullable IJobCompletedCallBack callBack);
-
-
 
 
 }

@@ -22,40 +22,16 @@
 package org.csstudio.utility.ldap.service.impl;
 
 
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ATTR_VAL_OBJECT_CLASS;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ECOM_EPICS_IOC_FIELD_VALUE;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ECOM_FIELD_NAME;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ECON_FIELD_NAME;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EFAN_FIELD_NAME;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EPICS_CTRL_FIELD_VALUE;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EREN_FIELD_NAME;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.OU_FIELD_NAME;
-import static org.csstudio.utility.ldap.LdapUtils.any;
-import static org.csstudio.utility.ldap.LdapUtils.attributesForLdapEntry;
-import static org.csstudio.utility.ldap.LdapUtils.createLdapQuery;
-
-import java.util.Map;
-import java.util.Set;
-
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.naming.InvalidNameException;
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
-import javax.naming.directory.SearchControls;
 import javax.naming.ldap.LdapName;
 
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.utility.ldap.LdapUtils;
-import org.csstudio.utility.ldap.engine.Engine;
-import org.csstudio.utility.ldap.model.IOC;
-import org.csstudio.utility.ldap.model.LdapContentModel;
-import org.csstudio.utility.ldap.model.Record;
 import org.csstudio.utility.ldap.reader.LDAPReader;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
 import org.csstudio.utility.ldap.reader.LDAPReader.IJobCompletedCallBack;
@@ -76,6 +52,9 @@ public final class LdapServiceImpl implements ILdapService {
     private final Logger _log = CentralLogger.getInstance().getLogger(this);
 
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @CheckForNull
     public LDAPReader createLdapReaderJob(@Nonnull final LdapSearchParams params,
@@ -92,6 +71,9 @@ public final class LdapServiceImpl implements ILdapService {
             return ldapr;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @CheckForNull
     public LdapSearchResult retrieveSearchResultSynchronously(@Nonnull final LdapName searchRoot,
@@ -103,102 +85,15 @@ public final class LdapServiceImpl implements ILdapService {
     }
 
 
-
     /**
      * {@inheritDoc}
      */
     @Override
-    @CheckForNull
-    public IOC getIOCForRecordName(@Nonnull final String recordName) {
-        if (recordName.isEmpty()) {
-            return null;
-        }
-
-        final LdapSearchResult result =
-            retrieveSearchResultSynchronously(LdapUtils.createLdapQuery(OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE),
-                                                                        EREN_FIELD_NAME + FIELD_ASSIGNMENT + recordName,
-                                              SearchControls.SUBTREE_SCOPE);
-        final LdapContentModel model = new LdapContentModel(result);
-
-        final Set<IOC> iocs = model.getIOCs();
-
-        if (iocs.size() > 1) {
-            throw new IllegalStateException("For record name " + recordName + " more than one IOC could be identified!");
-        }
-        if (iocs.isEmpty()) {
-            return null;
-        }
-        return iocs.iterator().next();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @CheckForNull
-    public LdapSearchResult retrieveRecordsForIOC(@Nonnull final LdapName fullIocName) throws InterruptedException, InvalidNameException {
-        if (fullIocName.size() > 0) {
-            final LdapName filter = (LdapName) fullIocName.remove(0);
-            return retrieveSearchResultSynchronously(fullIocName, filter.toString(), SearchControls.ONELEVEL_SCOPE);
-        }
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @CheckForNull
-    public LdapSearchResult retrieveRecordsForIOC(@Nonnull final String facilityName,
-                                                  @Nonnull final String iocName) throws InterruptedException {
-
-        final LdapName query = createLdapQuery(ECON_FIELD_NAME, iocName,
-                                               ECOM_FIELD_NAME, ECOM_EPICS_IOC_FIELD_VALUE,
-                                               EFAN_FIELD_NAME, facilityName,
-                                               OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE);
-
-        return retrieveSearchResultSynchronously(query, any(EREN_FIELD_NAME), SearchControls.ONELEVEL_SCOPE);
-    }
-
-
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean createLDAPRecord(@Nonnull final DirContext context,
-                                    @Nonnull final IOC ioc,
-                                    @Nonnull final String recordName) {
-
-        final LdapName query = createLdapQuery(EREN_FIELD_NAME, recordName,
-                                               ECON_FIELD_NAME, ioc.getName(),
-                                               ECOM_FIELD_NAME, ECOM_EPICS_IOC_FIELD_VALUE,
-                                               EFAN_FIELD_NAME, ioc.getGroup(),
-                                               OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE);
-
-        final Attributes afe =
-            attributesForLdapEntry(ATTR_FIELD_OBJECT_CLASS, ATTR_VAL_OBJECT_CLASS,
-                                   EREN_FIELD_NAME, recordName);
+    public boolean createComponent(@Nonnull final DirContext context,
+                                   @Nonnull final LdapName newComponentName,
+                                   @Nullable final Attributes attributes) {
         try {
-            context.bind(query, null, afe);
-            _log.info( "Record written: " + query);
-        } catch (final NamingException e) {
-            _log.warn( "Naming Exception while trying to bind: " + query);
-            _log.warn(e.getExplanation());
-            return false;
-        }
-        return true;
-    }
-
-
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean createLDAPComponent(@Nonnull final DirContext context, @Nonnull final LdapName newComponentName) {
-        try {
-            context.bind(newComponentName, null, null);
+            context.bind(newComponentName, null, attributes);
             _log.info( "Record written: " + newComponentName.toString());
         } catch (final NamingException e) {
             _log.warn( "Naming Exception while trying to bind: " + newComponentName.toString());
@@ -209,97 +104,20 @@ public final class LdapServiceImpl implements ILdapService {
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}}
      */
     @Override
-    public void tidyUpIocEntryInLdap(@Nonnull final DirContext context,
-                                     @Nonnull final String iocName,
-                                     @Nonnull final String facilityName,
-                                     @Nonnull final Set<Record> validRecords)  {
-
-        try {
-            final LdapSearchResult searchResult = retrieveRecordsForIOC(facilityName, iocName);
-            final LdapContentModel model = new LdapContentModel(searchResult);
-
-            final IOC ioc = model.getIOC(facilityName, iocName);
-            final Set<Record> ldapRecords = ioc.getRecordValues();
-
-            ldapRecords.removeAll(validRecords); // removes all that are valid (that are in the IOC file)
-
-            // for all remaining records
-            for (final Record record : ldapRecords) {
-                removeRecordEntryFromLdap(Engine.getInstance().getLdapDirContext(), ioc, record);
-                _log.info("Tidying: Record " + record.getName() + " removed.");
-            }
-        } catch (final InterruptedException e) {
-            e.printStackTrace();
-            Thread.currentThread().interrupt();
-        }
-
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @SuppressWarnings("null")
-    @Override
-    public void removeIocEntryFromLdap(@Nonnull final DirContext context,
-                                       @Nonnull final String iocName,
-                                       @Nonnull final String facilityName) {
-
-
-        LdapContentModel model = null;
-        try {
-            model = new LdapContentModel(retrieveRecordsForIOC(facilityName, iocName));
-        } catch (final InterruptedException e) {
-            e.printStackTrace();
-            Thread.currentThread().interrupt();
-        }
-
-
-        final IOC ioc = model.getIOC(facilityName, iocName);
-
-        final Map<String, Record> records = ioc.getRecords();
-        for (final Record record : records.values()) {
-            removeRecordEntryFromLdap(context, ioc , record);
-        }
-
-        final LdapName query = createLdapQuery(ECON_FIELD_NAME, iocName,
-                                               ECOM_FIELD_NAME, ECOM_EPICS_IOC_FIELD_VALUE,
-                                               EFAN_FIELD_NAME, facilityName,
-                                               OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE);
-        removeEntryFromLdap(context, query);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void removeRecordEntryFromLdap(@Nonnull final DirContext context,
-                                          @Nonnull final IOC ioc,
-                                          @Nonnull final Record record) {
-
-        final LdapName query = createLdapQuery(EREN_FIELD_NAME, record.getName(),
-                                               ECON_FIELD_NAME, ioc.getName(),
-                                               ECOM_FIELD_NAME, ECOM_EPICS_IOC_FIELD_VALUE,
-                                               EFAN_FIELD_NAME, ioc.getGroup(),
-                                               OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE);
-        removeEntryFromLdap(context, query);
-    }
-
-    /**
-     * @param context
-     * @param query
-     */
-    private void removeEntryFromLdap(@Nonnull final DirContext context,
-                                     @Nonnull final LdapName query) {
+    public boolean removeComponent(@Nonnull final DirContext context,
+                                   @Nonnull final LdapName query) {
         try {
             context.unbind(query);
             _log.info("Entry removed from LDAP: " + query);
         } catch (final NamingException e) {
             _log.warn("Naming Exception while trying to unbind: " + query);
             _log.warn(e.getExplanation());
+            return false;
         }
+        return true;
     }
 
 }

@@ -48,8 +48,6 @@ public interface ILdapComponent<T extends Enum<T>> {
     @CheckForNull
     ILdapTreeComponent<T> getParent();
 
-    @Nonnull
-    ILdapComponent<T> clone();
 
     boolean hasChildren();
 

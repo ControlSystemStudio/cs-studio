@@ -31,9 +31,7 @@ import java.util.Set;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import javax.naming.CompositeName;
 import javax.naming.InvalidNameException;
-import javax.naming.NameParser;
 import javax.naming.NamingException;
 import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapName;
@@ -43,7 +41,8 @@ import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.ILdapObjectClass;
 import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
-import org.csstudio.utility.ldap.engine.Engine;
+import org.csstudio.utility.ldap.LdapNameUtils;
+import org.csstudio.utility.ldap.LdapNameUtils.Direction;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
 
 /**
@@ -61,11 +60,13 @@ public class ContentModel<T extends Enum<T> & ILdapObjectClass<T>> {
 
     private final T _objectClassRoot;
 
-    private final ILdapTreeComponent<T> _treeRoot;
+    private ILdapTreeComponent<T> _treeRoot;
 
 //    private final Map<T, Boolean> _cacheTypeDirty;
 
     private final Map<T, Map<String, ILdapComponent<T>>> _cacheByType;
+
+    private Map<String, ILdapComponent<T>> _cacheByLdapName;
 
 
     /**
@@ -83,12 +84,17 @@ public class ContentModel<T extends Enum<T> & ILdapObjectClass<T>> {
 
         _objectClassRoot = objectClassRoot;
 
-        _treeRoot = new LdapTreeComponent<T>(objectClassRoot.getDescription(),
-                                             objectClassRoot,
-                                             objectClassRoot.getNestedContainerClasses() ,
-                                             null,
-                                             null,
-                                             null);
+        try {
+            _treeRoot = new LdapTreeComponent<T>(objectClassRoot.getDescription(),
+                                                 objectClassRoot,
+                                                 objectClassRoot.getNestedContainerClasses() ,
+                                                 null,
+                                                 null,
+                                                 null);
+        } catch (final InvalidNameException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
         addSearchResult(searchResult);
     }
@@ -117,17 +123,15 @@ public class ContentModel<T extends Enum<T> & ILdapObjectClass<T>> {
      */
     public void addSearchResult(@Nonnull final LdapSearchResult searchResult) {
 
+        _cacheByLdapName = new HashMap<String, ILdapComponent<T>>();
+
         final Set<SearchResult> answerSet = searchResult.getAnswerSet();
-        NameParser nameParser;
         try {
-            nameParser = Engine.getInstance().getLdapDirContext().getNameParser(new CompositeName());
             for (final SearchResult row : answerSet) {
-                final LdapName fullName = (LdapName) nameParser.parse(row.getNameInNamespace());
-                // TODO (bknerr) : remove from here to LdapNameUtils in package LDAP
-                // remove any hierarchy level before 'efan=...'
-                while ((fullName.size() > 0) && !fullName.get(0).startsWith(LdapFieldsAndAttributes.EFAN_FIELD_NAME)) {
-                    fullName.remove(0);
-                }
+
+                final LdapName fullName = LdapNameUtils.removeRdns(LdapNameUtils.parseSearchResult(row),
+                                                                   LdapFieldsAndAttributes.EFAN_FIELD_NAME,
+                                                                   Direction.FORWARD);
 
                 createLdapComponent(row, fullName, _treeRoot);
             }
@@ -140,52 +144,72 @@ public class ContentModel<T extends Enum<T> & ILdapObjectClass<T>> {
         }
     }
 
-    private void createLdapComponent(final SearchResult row,
-                                                      final LdapName fullName,
-                                                      final ILdapTreeComponent<T> root) {
-        ILdapTreeComponent<T> lastComponent = root;
+    private void createLdapComponent(@Nonnull final SearchResult row,
+                                     @Nonnull final LdapName fullName,
+                                     @Nonnull final ILdapTreeComponent<T> root) throws InvalidNameException {
+        ILdapTreeComponent<T> parent = root;
+
+
+        final LdapName currentFullName = new LdapName("");
+
 
         for (int i = 0; i < fullName.size(); i++) {
+
             final Rdn rdn = fullName.getRdn(i);
-            final T oc = _objectClassRoot.getObjectClassByRdnType(rdn.getType());
+            currentFullName.add(rdn);
+
+
+            // Check whether this component exists already
+            if (_cacheByLdapName.containsKey(currentFullName.toString())) {
+                if (i < fullName.size() - 1) { // another name component follows => has children
+                    parent = (ILdapTreeComponent<T>) _cacheByLdapName.get(currentFullName.toString());
+                }
+                System.out.println("EXISTS");
+                continue; // YES
+            }
+            // NO
 
             final ILdapComponent<T> newChild;
-            if (oc.getNestedContainerClasses().isEmpty()) {
+            final T oc = _objectClassRoot.getObjectClassByRdnType(rdn.getType());
+
+            if (i == fullName.size() - 1) { // does not have children components
                 newChild = new LdapComponent<T>((String) rdn.getValue(),
                                                 oc,
-                                                lastComponent,
+                                                parent,
                                                 row.getAttributes(),
-                                                fullName);
-                addChild(lastComponent, newChild);
-                break;
-            }
-            newChild = new LdapTreeComponent<T>((String) rdn.getValue(),
-                                                oc,
-                                                oc.getNestedContainerClasses(),
-                                                lastComponent,
-                                                row.getAttributes(),
-                                                fullName);
-            addChild(lastComponent, newChild);
+                                                currentFullName);
+                addChild(parent, newChild);
+            } else {
+                newChild = new LdapTreeComponent<T>((String) rdn.getValue(),
+                        oc,
+                        oc.getNestedContainerClasses(),
+                        parent,
+                        row.getAttributes(),
+                        currentFullName);
+                addChild(parent, newChild);
 
-            lastComponent = (ILdapTreeComponent<T>) newChild;
+                parent = (ILdapTreeComponent<T>) newChild;
+            }
+            // CACHING
+            _cacheByLdapName.put(newChild.getLdapName().toString(), newChild);
         }
     }
 
 
-    private void addChild(@Nonnull final ILdapTreeComponent<T> lastComponent, @Nonnull final ILdapComponent<T> newChild) {
+    private void addChild(@Nonnull final ILdapTreeComponent<T> parent, @Nonnull final ILdapComponent<T> newChild) {
 
+        parent.addChild(newChild);
+
+        // MORE CACHING
         final T type = newChild.getType();
-        Map<String, ILdapComponent<T>> childrenByType = _cacheByType.get(type);
-
-        if (childrenByType == null) {
-            childrenByType = new HashMap<String, ILdapComponent<T>>();
+        if (!_cacheByType.containsKey(type)) {
+            _cacheByType.put(type, new HashMap<String, ILdapComponent<T>>());
         }
+        final Map<String, ILdapComponent<T>> childrenByType = _cacheByType.get(type);
 
-        final String nameKey = newChild.getName().toUpperCase();
-        if (childrenByType.get(nameKey) == null) {
-            childrenByType.put(nameKey, newChild);
-            lastComponent.addChild(newChild);
-            _cacheByType.put(type, childrenByType);
+        final String nameKey = newChild.getLdapName().toString();
+        if (!childrenByType.containsKey(nameKey)) {
+            childrenByType.put(nameKey, newChild); // updates the current map in cache by type
         }
     }
 
@@ -221,5 +245,11 @@ public class ContentModel<T extends Enum<T> & ILdapObjectClass<T>> {
 
         final Map<String, ILdapComponent<T>> children = _cacheByType.get(type);
         return children;
+    }
+
+    @Nonnull
+    public ILdapTreeComponent<T> getRoot() {
+        return _treeRoot;
+
     }
 }

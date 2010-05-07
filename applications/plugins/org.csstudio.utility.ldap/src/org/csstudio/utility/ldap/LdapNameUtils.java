@@ -23,8 +23,17 @@ package org.csstudio.utility.ldap;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.naming.CompositeName;
+import javax.naming.InvalidNameException;
+import javax.naming.NameParser;
+import javax.naming.NamingException;
+import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
+
+import org.apache.log4j.Logger;
+import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.utility.ldap.engine.Engine;
 
 
 /**
@@ -34,11 +43,41 @@ import javax.naming.ldap.Rdn;
  */
 public final class LdapNameUtils {
 
+    private static final Logger LOG = CentralLogger.getInstance().getLogger(LdapNameUtils.class);
     /**
      * Constructor.
      */
     private LdapNameUtils() {
         // Empty
+    }
+
+    /**
+     * Static Parser Holder.
+     *
+     * @author bknerr
+     * @author $Author$
+     * @version $Revision$
+     * @since 05.05.2010
+     */
+    private static final class ParserHolder {
+
+        @CheckForNull
+        private static NameParser createParser() {
+            try {
+                return Engine.getInstance().getLdapDirContext().getNameParser(new CompositeName());
+            } catch (final NamingException e) {
+                LOG.error("LDAP NameParser could not be created.", e);
+            }
+            return null;
+        }
+
+        private static final NameParser PARSER = createParser();
+        /**
+         * Don't instantiate.
+         */
+        private ParserHolder() {
+            // EMPTY
+        }
     }
 
     /**
@@ -107,5 +146,66 @@ public final class LdapNameUtils {
             }
         }
         return null;
+    }
+
+
+    /**
+     * Parses a given SearchResult entry from LDAP into an LdapName object.
+     * @param row a search result row
+     * @return the ldap composite name
+     * @throws NamingException
+     */
+    @CheckForNull
+    public static LdapName parseSearchResult(@Nonnull final SearchResult row) throws NamingException {
+        if (ParserHolder.PARSER == null) {
+            return null;
+        }
+        return (LdapName) ParserHolder.PARSER.parse(row.getNameInNamespace());
+    }
+
+
+    /**
+     * A direction indicator for some of this class' modification methods.
+     *
+     * @author bknerr
+     * @author $Author$
+     * @version $Revision$
+     * @since 07.05.2010
+     */
+    public enum Direction {
+      FORWARD,
+      BACKWARD;
+    }
+
+    /**
+     * Removes those Rdns starting from direction that start with the given string.
+     * (excluding) the very rdn.
+     *
+     * @param fullName the LDAP name to be modified
+     * @param fieldNamePrefix the field
+     * @param dir forward or backward
+     * @return a new name object, might be empty if the string could not be found
+     * @throws InvalidNameException
+     */
+    @Nonnull
+    public static LdapName removeRdns(@Nonnull final LdapName fullName,
+                                      @Nonnull final String fieldNamePrefix,
+                                      @Nonnull final Direction dir) throws InvalidNameException {
+        final LdapName name = new LdapName(fullName.getRdns());
+        switch (dir) {
+            case FORWARD :
+                while ((name.size() > 0) && !name.get(0).startsWith(fieldNamePrefix)) {
+                    name.remove(0);
+                }
+                break;
+            case BACKWARD :
+                while ((name.size() > 0) && !name.get(name.size() - 1).startsWith(fieldNamePrefix)) {
+                    name.remove(name.size() - 1);
+                }
+                break;
+            default:
+        }
+
+        return name;
     }
 }

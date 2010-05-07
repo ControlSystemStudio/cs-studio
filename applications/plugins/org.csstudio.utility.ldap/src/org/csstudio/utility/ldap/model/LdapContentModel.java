@@ -41,6 +41,7 @@ import org.csstudio.utility.ldap.reader.LdapSearchResult;
  *
  * @author bknerr
  */
+@Deprecated
 public class LdapContentModel {
 
     private final Map<String, Facility> _facilities = new HashMap<String, Facility>();

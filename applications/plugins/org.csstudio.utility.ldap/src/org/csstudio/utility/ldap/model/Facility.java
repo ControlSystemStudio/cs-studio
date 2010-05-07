@@ -41,6 +41,7 @@ import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
  *
  * @author bknerr
  */
+@Deprecated
 public class Facility {
     private final Logger LOG = CentralLogger.getInstance().getLogger(this);
 

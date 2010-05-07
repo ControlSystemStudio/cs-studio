@@ -32,6 +32,7 @@ import java.util.Map.Entry;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.naming.InvalidNameException;
 import javax.naming.directory.Attributes;
 import javax.naming.ldap.LdapName;
 
@@ -60,13 +61,14 @@ public class LdapTreeComponent<T extends Enum<T>> extends LdapComponent<T>
      * @param parent reference to its parent, might be <code>null</code> for ROOT
      * @param attributes
      * @param fullName
+     * @throws InvalidNameException
      */
     public LdapTreeComponent(@Nonnull final String name,
                              @Nonnull final T type,
                              @Nonnull final Set<T> subComponentTypes,
                              @Nullable final ILdapTreeComponent<T> parent,
                              @Nullable final Attributes attributes,
-                             @Nullable final LdapName fullName) {
+                             @Nullable final LdapName fullName) throws InvalidNameException {
         super(name, type, parent, attributes, fullName);
         _subComponentTypes = subComponentTypes;
     }
@@ -85,13 +87,13 @@ public class LdapTreeComponent<T extends Enum<T>> extends LdapComponent<T>
      */
     @Override
     public void addChild(@Nonnull final ILdapComponent<T> child) {
-        // TODO (bknerr) : as soon as the LDAP structure has been updated,
-        // check here for permitted subtypes before adding children
+
         if(!_subComponentTypes.contains(child.getType())) {
             throw new IllegalArgumentException("The child type " + child.getType() + " is not permitted for this component!");
         }
 
-        final String nameKey = child.getName().toUpperCase();
+        final String nameKey = child.getName();
+
         if (!_children.containsKey(nameKey)) {
             _children.put(nameKey, child);
         }
@@ -118,13 +120,13 @@ public class LdapTreeComponent<T extends Enum<T>> extends LdapComponent<T>
 
         final Map<String, ILdapComponent<T>> resultMap = new HashMap<String, ILdapComponent<T>>();
 
-        for (final Entry<String, ILdapComponent<T>> child : _children.entrySet()) {
-            final ILdapComponent<T> component = child.getValue();
-            if (component.getType().equals(type)) {
-                resultMap.put(child.getKey(), component.clone());
+        for (final Entry<String, ILdapComponent<T>> childEntry : _children.entrySet()) {
+            final ILdapComponent<T> child = childEntry.getValue();
+            if (child.getType().equals(type)) {
+                resultMap.put(child.getLdapName().toString(), child);
             }
-            if (component.hasChildren()) {
-                resultMap.putAll(((ILdapTreeComponent<T>)component).getChildrenByType(type));
+            if (child.hasChildren()) {
+                resultMap.putAll(((ILdapTreeComponent<T>)child).getChildrenByType(type));
             }
         }
         return resultMap;
@@ -144,7 +146,7 @@ public class LdapTreeComponent<T extends Enum<T>> extends LdapComponent<T>
     @Override
     @Nonnull
     public ILdapComponent<T> getChild(@Nonnull final String name) {
-        return _children.get(name.toUpperCase());
+        return _children.get(name);
     }
 
     /**
@@ -152,8 +154,8 @@ public class LdapTreeComponent<T extends Enum<T>> extends LdapComponent<T>
      */
     @Override
     public void removeChild(@Nonnull final String name) {
-        if (_children.containsKey(name.toUpperCase())) {
-            _children.remove(name.toUpperCase());
+        if (_children.containsKey(name)) {
+            _children.remove(name);
         }
     }
 

@@ -26,6 +26,7 @@ package org.csstudio.utility.ldap.model;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.naming.InvalidNameException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.ldap.LdapName;
@@ -56,17 +57,18 @@ public class LdapComponent<T extends Enum<T>> implements ILdapComponent<T> {
      * Constructor.
      * @param attributes
      * @param fullName
+     * @throws InvalidNameException
      */
     public LdapComponent(@Nonnull final String name,
                          @Nonnull final T type,
                          @Nullable final ILdapTreeComponent<T> parent,
                          @Nullable final Attributes attributes,
-                         @Nullable final LdapName fullName) {
+                         @Nullable final LdapName fullName) throws InvalidNameException {
         _name = name;
         _type = type;
         _parent = parent;
         _attributes = attributes;
-        _ldapName = fullName;
+        _ldapName = new LdapName(fullName == null ? "" : fullName.toString());
     }
 
     /**
@@ -94,16 +96,6 @@ public class LdapComponent<T extends Enum<T>> implements ILdapComponent<T> {
     @CheckForNull
     public ILdapTreeComponent<T> getParent() {
         return _parent;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public ILdapComponent<T> clone() {
-        final LdapComponent<T> clone = new LdapComponent<T>(_name, _type, _parent, _attributes, _ldapName);
-        return clone;
     }
 
     /**

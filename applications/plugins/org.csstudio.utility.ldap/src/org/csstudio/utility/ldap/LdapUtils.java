@@ -265,6 +265,7 @@ public final class LdapUtils {
      * @param ldapPath the line containing a row of a query result
      * @return the query result object
      */
+    @Deprecated
     @Nonnull
     public static LdapQueryResult parseLdapQueryResult(@Nonnull final String ldapPath) {
 

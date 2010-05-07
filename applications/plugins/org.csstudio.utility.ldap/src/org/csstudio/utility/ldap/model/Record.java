@@ -31,6 +31,7 @@ import javax.annotation.Nullable;
  *
  * @author bknerr
  */
+@Deprecated
 public class Record implements Serializable {
 
     private static final long serialVersionUID = 1L;
