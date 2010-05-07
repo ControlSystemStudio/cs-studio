@@ -21,7 +21,6 @@ public class OPIRunnerPerspective implements IPerspectiveFactory {
 		
         bottom.addPlaceholder(ID_CONSOLE_VIEW);
 		layout.addShowViewShortcut(ID_CONSOLE_VIEW);
-		layout.addFastView(ID_CONSOLE_VIEW);
 	}
 
 }
