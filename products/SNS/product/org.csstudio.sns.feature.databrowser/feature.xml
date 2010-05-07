@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.csstudio.sns.feature.databrowser"
-      label="Databrowser"
+      label="Data Browser"
       version="2.0.0.qualifier"
       provider-name="SNS, Kay Kasemir">
 
@@ -9,7 +9,7 @@
       Data Browser, &quot;Strip Chart&quot; and archive data viewer
    </description>
 
-   <copyright url="http://www.example.com/copyright">
+   <copyright>
       Copyright (c) 2010 Oak Ridge National Laboratory,
 OAK RIDGE, TN, USA.
    </copyright>
@@ -25,6 +25,10 @@ BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
 FOR PARTICULAR PURPOSE AND NON-INFRINGEMENT.
 For details, see http://www.eclipse.org/legal/epl-v10.html
    </license>
+
+   <url>
+      <update label="SNS CSS Update Site" url="http://ics-web.sns.ornl.gov/css/updates/"/>
+   </url>
 
    <requires>
       <import plugin="org.junit4"/>
