@@ -17,7 +17,7 @@
          id="product"
          point="org.eclipse.core.runtime.products">
       <product
-            application="org.csstudio.alarm.configtool.application"
+            application="org.csstudio.alarm.dal2jms.application"
             name="dal2jms">
          <property
                name="appName"

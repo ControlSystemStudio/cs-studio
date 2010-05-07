@@ -41,7 +41,7 @@ public class Activator extends AbstractCssPlugin {
 	@Override
 	public void doStop(BundleContext context) throws Exception {
 		plugin = null;
-		super.stop(context);
+//		super.stop(context);
 	}
 
 	/**

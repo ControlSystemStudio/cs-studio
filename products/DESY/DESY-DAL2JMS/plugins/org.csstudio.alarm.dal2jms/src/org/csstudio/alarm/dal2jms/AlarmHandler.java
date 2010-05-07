@@ -35,6 +35,7 @@
 package org.csstudio.alarm.dal2jms;
 
 import org.csstudio.alarm.service.declaration.AlarmConnectionException;
+import org.csstudio.alarm.service.declaration.AlarmMessageException;
 import org.csstudio.alarm.service.declaration.IAlarmConnection;
 import org.csstudio.alarm.service.declaration.IAlarmListener;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
@@ -61,7 +62,12 @@ public class AlarmHandler {
                 @Override
                 public void onMessage(IAlarmMessage message) {
                     // TODO Auto-generated method stub
-                    
+                    try {
+						System.out.println(message.getMap().toString());
+					} catch (AlarmMessageException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
                 }
 
                 @Override
