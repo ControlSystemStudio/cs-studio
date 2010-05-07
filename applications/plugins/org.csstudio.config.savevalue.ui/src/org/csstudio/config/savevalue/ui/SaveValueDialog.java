@@ -21,11 +21,21 @@
  */
 package org.csstudio.config.savevalue.ui;
 
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EPICS_CTRL_FIELD_VALUE;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EREN_FIELD_NAME;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.OU_FIELD_NAME;
+
 import java.net.SocketTimeoutException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+
+import javax.naming.NamingException;
+import javax.naming.directory.SearchControls;
+import javax.naming.directory.SearchResult;
+import javax.naming.ldap.LdapName;
 
 import org.csstudio.config.savevalue.service.SaveValueRequest;
 import org.csstudio.config.savevalue.service.SaveValueResult;
@@ -35,8 +45,10 @@ import org.csstudio.platform.CSSPlatformInfo;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.platform.security.User;
+import org.csstudio.utility.ldap.LdapNameUtils;
 import org.csstudio.utility.ldap.LdapUtils;
-import org.csstudio.utility.ldap.model.IOC;
+import org.csstudio.utility.ldap.model.LdapEpicsControlsObjectClass;
+import org.csstudio.utility.ldap.reader.LdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -283,15 +295,28 @@ public class SaveValueDialog extends Dialog {
 	 */
 	private boolean findIoc(final String pv) {
 		_log.debug(this, "Trying to find IOC for process variable: " + pv); //$NON-NLS-1$
-	    final ILdapService service = Activator.getDefault().getLdapService();
 
-		final IOC ioc = service.getIOCForRecordName(LdapUtils.pvNameToRecordName(pv));
+		final ILdapService service = Activator.getDefault().getLdapService();
 
-		if (ioc == null) {
-			_log.error(this, "No IOC was found for PV: " + pv); //$NON-NLS-1$
-			return false;
-		}
-		 _iocName = ioc.getName();
+	    final LdapSearchResult result = service.retrieveSearchResultSynchronously(LdapUtils.createLdapQuery(OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE),
+	                                                                        EREN_FIELD_NAME + FIELD_ASSIGNMENT + LdapUtils.pvNameToRecordName(pv),
+	                                                                        SearchControls.SUBTREE_SCOPE);
+	    if (!result.getAnswerSet().isEmpty()) {
+	        final SearchResult row = result.getAnswerSet().iterator().next();
+	        LdapName ldapName;
+            try {
+                ldapName = LdapNameUtils.parseSearchResult(row);
+                final String iocName = LdapNameUtils.getValueOfRdnType(ldapName, LdapEpicsControlsObjectClass.IOC.getRdnType());
+                if (iocName == null) {
+                    _log.error(this, "No IOC was found for PV: " + pv); //$NON-NLS-1$
+                    return false;
+                }
+                _iocName = iocName;
+            } catch (final NamingException e) {
+                _log.error("Naming exception while parsing the search result for " + pv + " from LDAP.", e);
+                return false;
+            }
+	    }
         _log.debug(this, "IOC found: " + _iocName); //$NON-NLS-1$
 		return true;
 	}
