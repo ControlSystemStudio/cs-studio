@@ -69,22 +69,32 @@ public class SixteenBinaryBarModel extends AbstractWidgetModel {
 	@Override
 	protected void configureProperties() {
 	    // Display
-		addIntegerProperty(PROP_VALUE, "Value", WidgetPropertyCategory.DISPLAY, 0, false);
-		addBooleanProperty(PROP_HORIZONTAL, "Horizontal Orientation", WidgetPropertyCategory.DISPLAY, DEFAULT_ORIENTATION_HORIZONTAL, false);
-		addIntegerProperty(PROP_INTERNAL_FRAME_THICKNESS, "Internal frame thickness", WidgetPropertyCategory.DISPLAY, 1, false);
+		addIntegerProperty(PROP_VALUE, "Value",
+		                   WidgetPropertyCategory.DISPLAY, 0,
+		                   true, PROP_TOOLTIP);
+		addBooleanProperty(PROP_HORIZONTAL, "Horizontal Orientation",
+		                   WidgetPropertyCategory.DISPLAY, DEFAULT_ORIENTATION_HORIZONTAL,
+		                   false,PROP_VALUE);
+		addIntegerProperty(PROP_INTERNAL_FRAME_THICKNESS, "Internal frame thickness",
+		                   WidgetPropertyCategory.DISPLAY, 1,
+		                   false,PROP_HORIZONTAL);
 		// The maximum bit range that can be handled by this widget is 0..31.
 		// More than 32 bits are not possible because the value property is an
 		// integer property.
-		addIntegerProperty(PROP_BITS_FROM, "Bit range (from)", WidgetPropertyCategory.DISPLAY, 0, 0, 31, false);
-		addIntegerProperty(PROP_BITS_TO, "Bit range (to)", WidgetPropertyCategory.DISPLAY, 15, 0, 31, false);
+		addIntegerProperty(PROP_BITS_FROM, "Bit range (from)",
+		                   WidgetPropertyCategory.DISPLAY, 0, 0, 31,
+		                   false,PROP_INTERNAL_FRAME_THICKNESS);
+		addIntegerProperty(PROP_BITS_TO, "Bit range (to)",
+		                   WidgetPropertyCategory.DISPLAY, 15, 0, 31,
+		                   false,PROP_BITS_FROM);
 
 		// Format
-		addBooleanProperty(PROP_SHOW_LABELS, "Show labels", WidgetPropertyCategory.FORMAT, false, false);
-		addFontProperty(PROP_LABEL_FONT, "Label fonts", WidgetPropertyCategory.FORMAT, ColorAndFontUtil.toFontString("Arial", 9), false);
-		addColorProperty(PROP_ON_COLOR, "On color", WidgetPropertyCategory.FORMAT, "#00ff00", false);
-		addColorProperty(PROP_OFF_COLOR, "Off color", WidgetPropertyCategory.FORMAT, "#c0c0c0", false);
-		addColorProperty(PROP_LABEL_COLOR, "Label text color", WidgetPropertyCategory.FORMAT, "#000000", false);
-		addColorProperty(PROP_INTERNAL_FRAME_COLOR, "Internal Frame Color", WidgetPropertyCategory.FORMAT, "#000000", false);
+		addBooleanProperty(PROP_SHOW_LABELS, "Show labels", WidgetPropertyCategory.FORMAT, false, true,PROP_COLOR_FOREGROUND);
+		addFontProperty(PROP_LABEL_FONT, "Label fonts", WidgetPropertyCategory.FORMAT, ColorAndFontUtil.toFontString("Arial", 9), false,PROP_SHOW_LABELS);
+		addColorProperty(PROP_ON_COLOR, "On color", WidgetPropertyCategory.FORMAT, "#00ff00", false,PROP_LABEL_FONT);
+		addColorProperty(PROP_OFF_COLOR, "Off color", WidgetPropertyCategory.FORMAT, "#c0c0c0", false,PROP_ON_COLOR);
+		addColorProperty(PROP_LABEL_COLOR, "Label text color", WidgetPropertyCategory.FORMAT, "#000000", false,PROP_OFF_COLOR);
+		addColorProperty(PROP_INTERNAL_FRAME_COLOR, "Internal Frame Color", WidgetPropertyCategory.FORMAT, "#000000", false,PROP_LABEL_COLOR);
 
 
 	}

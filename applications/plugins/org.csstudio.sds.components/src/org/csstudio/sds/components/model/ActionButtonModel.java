@@ -100,13 +100,13 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	@Override
 	protected void configureProperties() {
 	    // Display
-		addStringProperty(PROP_LABEL, "Label Text", WidgetPropertyCategory.DISPLAY, "", false); //$NON-NLS-1$
-		addBooleanProperty(PROP_TOGGLE_BUTTON, "Toggle Button", WidgetPropertyCategory.DISPLAY, DEFAULT_TOGGLE_BUTTON, false);
+		addStringProperty(PROP_LABEL, "Label Text", WidgetPropertyCategory.DISPLAY, "", true, PROP_TOOLTIP); //$NON-NLS-1$
+		addBooleanProperty(PROP_TOGGLE_BUTTON, "Toggle Button", WidgetPropertyCategory.DISPLAY, DEFAULT_TOGGLE_BUTTON, false,PROP_LABEL);
 
 		// Format
-		addFontProperty(PROP_FONT, "Font", WidgetPropertyCategory.FORMAT, ColorAndFontUtil.toFontString("Arial", 8), false); //$NON-NLS-1$
+		addFontProperty(PROP_FONT, "Font", WidgetPropertyCategory.FORMAT, ColorAndFontUtil.toFontString("Arial", 8), false, PROP_COLOR_FOREGROUND); //$NON-NLS-1$
 		addArrayOptionProperty(PROP_TEXT_ALIGNMENT, "Text Alignment", WidgetPropertyCategory.FORMAT, TextAlignmentEnum.getDisplayNames(),
-				TextAlignmentEnum.CENTER.getIndex(), false);
+				TextAlignmentEnum.CENTER.getIndex(), false, PROP_FONT);
 
 		// Action
 		addIntegerProperty(PROP_ACTION_PRESSED_INDEX, "Action Index (pressed)", WidgetPropertyCategory.ACTIONS, -1, -1, Integer.MAX_VALUE, false, AbstractWidgetModel.PROP_ACTIONDATA);

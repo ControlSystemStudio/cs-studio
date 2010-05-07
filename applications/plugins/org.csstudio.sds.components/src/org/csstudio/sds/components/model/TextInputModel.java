@@ -97,31 +97,31 @@ public final class TextInputModel extends AbstractWidgetModel {
     @Override
     protected void configureProperties() {
         // Display
-        addStringProperty(PROP_INPUT_TEXT, "Input Text", WidgetPropertyCategory.DISPLAY, "", false); //$NON-NLS-1$
+        addStringProperty(PROP_INPUT_TEXT, "Input Text", WidgetPropertyCategory.DISPLAY, "", true,PROP_TOOLTIP); //$NON-NLS-1$
         addArrayOptionProperty(PROP_TEXT_ALIGNMENT,
                                "Text Alignment",
                                WidgetPropertyCategory.DISPLAY,
                                TextAlignmentEnum.getDisplayNames(),
-                               TextAlignmentEnum.CENTER.getIndex(), false);
+                               TextAlignmentEnum.CENTER.getIndex(), false, PROP_INPUT_TEXT );
         addArrayOptionProperty(PROP_TEXT_TYPE,
                                "Value Type",
                                WidgetPropertyCategory.DISPLAY,
                                TextTypeEnum.getDisplayNames(),
-                               TextTypeEnum.DOUBLE.getIndex(), false);
-        // Format
-        addFontProperty(PROP_FONT,
-                        "Font", WidgetPropertyCategory.FORMAT, ColorAndFontUtil.toFontString("Arial", 8), false); //$NON-NLS-1$
-        addBooleanProperty(PROP_TRANSPARENT,
-                           "Transparent Background",
-                           WidgetPropertyCategory.FORMAT,
-                           true,
-                           false, AbstractWidgetModel.PROP_COLOR_BACKGROUND);
+                               TextTypeEnum.DOUBLE.getIndex(), false, PROP_TEXT_ALIGNMENT);
         addIntegerProperty(PROP_PRECISION,
                            "Decimal places",
                            WidgetPropertyCategory.DISPLAY,
                            2,
                            0,
-                           10, false);
+                           10, false,PROP_TEXT_TYPE);
+        // Format
+        addFontProperty(PROP_FONT,
+                        "Font", WidgetPropertyCategory.FORMAT, ColorAndFontUtil.toFontString("Arial", 8), false, PROP_COLOR_FOREGROUND); //$NON-NLS-1$
+        addBooleanProperty(PROP_TRANSPARENT,
+                           "Transparent Background",
+                           WidgetPropertyCategory.FORMAT,
+                           true,
+                           true, AbstractWidgetModel.PROP_COLOR_BACKGROUND);
     }
 
     /**
