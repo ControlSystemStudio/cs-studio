@@ -105,8 +105,15 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 
 				public boolean testAttribute(Object target, String name,
 						String value) {
-					if(getExecutionMode() == ExecutionMode.EDIT_MODE)
+					if(name.equals("executionMode") &&  //$NON-NLS-1$
+							value.equals("EDIT_MODE") && //$NON-NLS-1$
+							getExecutionMode() == ExecutionMode.EDIT_MODE)
 						return true;
+					if(name.equals("executionMode") && //$NON-NLS-1$
+							value.equals("RUN_MODE") && //$NON-NLS-1$
+							getExecutionMode() == ExecutionMode.RUN_MODE)
+						return true;
+					
 					return false;
 				}
 			
@@ -677,6 +684,11 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 					NLS.bind("No action at index {0} is configured for {1}", 
 					index, getWidgetModel().getName()));
 		}
+	}
+	
+		@Override
+	public String toString() {
+		return getWidgetModel().getName();
 	}
 	
 }

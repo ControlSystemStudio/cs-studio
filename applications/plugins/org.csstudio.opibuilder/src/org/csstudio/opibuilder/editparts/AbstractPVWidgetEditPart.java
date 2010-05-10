@@ -428,7 +428,7 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 	 * @param pvPropId
 	 * @return the corresponding pv for the pvPropId. null if the pv desn't exist.
 	 */
-	protected PV getPV(String pvPropId){
+	public PV getPV(String pvPropId){
 		return pvMap.get(pvPropId);
 	}
 	
@@ -507,5 +507,6 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 	 * even though they are equals in most cases. {@link #getPVValue(String)}  
 	 */
 	public abstract Object getValue();
+	
 	
 }
