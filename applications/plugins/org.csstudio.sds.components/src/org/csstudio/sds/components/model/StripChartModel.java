@@ -26,7 +26,7 @@ import org.csstudio.sds.model.WidgetPropertyCategory;
 
 /**
  * Model for strip chart widgets.
- * 
+ *
  * @author Joerg Rathlev
  */
 public final class StripChartModel extends AbstractChartModel {
@@ -82,15 +82,15 @@ public final class StripChartModel extends AbstractChartModel {
 
 		// The value properties.
 		for (int i = 0; i < numberOfDataSeries(); i++) {
+		    // By default, enable the plot for the first value, and disable
+		    // all other plots:
+		    boolean enableByDefault = (i == 0);
+		    addBooleanProperty(enablePlotPropertyId(i), "Enable plot #" + (i + 1), WidgetPropertyCategory.DISPLAY, enableByDefault, true,plotColorPropertyId(i));
 			// The value property is a double property because the strip chart
 			// reads only individual values from the channel. They will be
 			// aggregated into an array by the edit part.
-			addDoubleProperty(valuePropertyId(i), "Value #" + (i + 1), WidgetPropertyCategory.BEHAVIOR, 0.0, false);
+			addDoubleProperty(valuePropertyId(i), "Value #" + (i + 1), WidgetPropertyCategory.DISPLAY, 0.0, false,enablePlotPropertyId(i));
 
-			// By default, enable the plot for the first value, and disable
-			// all other plots:
-			boolean enableByDefault = (i == 0);
-			addBooleanProperty(enablePlotPropertyId(i), "Enable plot #" + (i + 1), WidgetPropertyCategory.DISPLAY, enableByDefault, false);
 		}
 
 		// The minimum range (size) of the x-axis is one second; the maximum is
@@ -105,7 +105,7 @@ public final class StripChartModel extends AbstractChartModel {
 
 	/**
 	 * Returns the current value of the value property with the specified index.
-	 * 
+	 *
 	 * @param index
 	 *            the value property index. The valid range for the index is
 	 *            <code>0 &lt;= index &lt; NUMBER_OF_CHANNELS</code>.
@@ -120,7 +120,7 @@ public final class StripChartModel extends AbstractChartModel {
 	/**
 	 * Returns whether the data series with the specified index should be
 	 * plotted.
-	 * 
+	 *
 	 * @param index
 	 *            the data index.
 	 * @return <code>true</code> if the plot is enabled, <code>false</code>
@@ -134,7 +134,7 @@ public final class StripChartModel extends AbstractChartModel {
 
 	/**
 	 * Returns the timespan displayed on the x-axis in seconds.
-	 * 
+	 *
 	 * @return x-axis timespan in seconds.
 	 */
 	public double getXAxisTimespan() {
@@ -143,7 +143,7 @@ public final class StripChartModel extends AbstractChartModel {
 
 	/**
 	 * Returns the update interval in seconds.
-	 * 
+	 *
 	 * @return the update interval in seconds.
 	 */
 	public double getUpdateInterval() {
@@ -161,7 +161,7 @@ public final class StripChartModel extends AbstractChartModel {
 	/**
 	 * Returns the property ID of the value property for the data series with
 	 * the specified index.
-	 * 
+	 *
 	 * @param index
 	 *            the value index. The valid range for the index is
 	 *            <code>0 &lt;= index &lt; NUMBER_OF_CHANNELS</code>.
@@ -170,7 +170,7 @@ public final class StripChartModel extends AbstractChartModel {
 	 *             if the index is invalid.
 	 */
 	public static String valuePropertyId(final int index) {
-		if (index < 0 || index >= NUMBER_OF_CHANNELS) {
+		if ((index < 0) || (index >= NUMBER_OF_CHANNELS)) {
 			throw new IndexOutOfBoundsException("Invalid index: " + index);
 		}
 
@@ -180,7 +180,7 @@ public final class StripChartModel extends AbstractChartModel {
 	/**
 	 * Returns the property ID of the enable plot property for the data series
 	 * with the specified index.
-	 * 
+	 *
 	 * @param index
 	 *            the value index. The valid range for the index is
 	 *            <code>0 &lt;= index &lt; NUMBER_OF_CHANNELS</code>.
@@ -189,7 +189,7 @@ public final class StripChartModel extends AbstractChartModel {
 	 *             if the index is invalid.
 	 */
 	public static String enablePlotPropertyId(final int index) {
-		if (index < 0 || index >= NUMBER_OF_CHANNELS) {
+		if ((index < 0) || (index >= NUMBER_OF_CHANNELS)) {
 			throw new IndexOutOfBoundsException("Invalid index: " + index);
 		}
 

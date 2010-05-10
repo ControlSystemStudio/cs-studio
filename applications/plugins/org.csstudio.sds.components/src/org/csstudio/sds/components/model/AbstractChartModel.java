@@ -142,13 +142,13 @@ public abstract class AbstractChartModel extends AbstractWidgetModel {
 			addColorProperty(plotColorPropertyId(i), "Plot color #" + (i + 1), WidgetPropertyCategory.DISPLAY, getDefaultColor(i), false,prop);
 			prop = plotColorPropertyId(i);
 		}
-		addColorProperty(PROP_GRID_LINE_COLOR, "Grid line color", WidgetPropertyCategory.DISPLAY, "#D2D2D2", false);
-		addBooleanProperty(PROP_LABELED_TICKS, "Labeled ticks", WidgetPropertyCategory.DISPLAY, true, false);
-		addIntegerProperty(PROP_PLOT_LINE_WIDTH, "Graph line width", WidgetPropertyCategory.DISPLAY, 1, 1, 100, false);
+		addBooleanProperty(PROP_LABELED_TICKS, "Labeled ticks", WidgetPropertyCategory.DISPLAY, true, true, PROP_TOOLTIP);
+		addColorProperty(PROP_GRID_LINE_COLOR, "Grid line color", WidgetPropertyCategory.DISPLAY, "#D2D2D2", false, PROP_LABELED_TICKS);
+		addIntegerProperty(PROP_PLOT_LINE_WIDTH, "Graph line width", WidgetPropertyCategory.DISPLAY, 1, 1, 100, false, PROP_GRID_LINE_COLOR);
 		addArrayOptionProperty(PROP_DATA_POINT_DRAWING_STYLE, "Data point drawing style", WidgetPropertyCategory.DISPLAY, DRAWING_STYLE_OPTIONS,
-				2, false);
+				2, false, PROP_PLOT_LINE_WIDTH);
 		// Format
-		addBooleanProperty(PROP_TRANSPARENT, "Transparent background", WidgetPropertyCategory.FORMAT, false, false);
+		addBooleanProperty(PROP_TRANSPARENT, "Transparent background", WidgetPropertyCategory.FORMAT, false, true, PROP_COLOR_BACKGROUND );
 		//Scale
 		addArrayOptionProperty(PROP_SHOW_AXES, "Show axes", WidgetPropertyCategory.SCALE, AXES_OPTIONS, 3, false);
 		addArrayOptionProperty(PROP_SHOW_GRID_LINES, "Grid lines", WidgetPropertyCategory.SCALE, AXES_OPTIONS, 0, false);

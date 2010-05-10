@@ -4,9 +4,9 @@ import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
 
 /**
- * 
+ *
  * @author Kai Meyer (C1 WPS)
- * 
+ *
  */
 public class BooleanSwitchModel extends AbstractWidgetModel {
 
@@ -56,9 +56,9 @@ public class BooleanSwitchModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addBooleanProperty(PROP_VALUE, "Value", WidgetPropertyCategory.BEHAVIOR, false, false);
-		addDoubleProperty(PROP_ON_STATE_VALUE, "On value", WidgetPropertyCategory.BEHAVIOR, 1, -Double.MAX_VALUE, Double.MAX_VALUE, false);
-		addDoubleProperty(PROP_OFF_STATE_VALUE, "Off value", WidgetPropertyCategory.BEHAVIOR, 0, -Double.MAX_VALUE, Double.MAX_VALUE, false);
+		addBooleanProperty(PROP_VALUE, "Value", WidgetPropertyCategory.DISPLAY, false, true,PROP_TOOLTIP );
+		addDoubleProperty(PROP_ON_STATE_VALUE, "On value", WidgetPropertyCategory.BEHAVIOR, 1, -Double.MAX_VALUE, Double.MAX_VALUE, false, PROP_VALUE);
+		addDoubleProperty(PROP_OFF_STATE_VALUE, "Off value", WidgetPropertyCategory.BEHAVIOR, 0, -Double.MAX_VALUE, Double.MAX_VALUE, false, PROP_ON_STATE_VALUE);
 		addColorProperty(PROP_ON_COLOR, "On color", WidgetPropertyCategory.DISPLAY, "#64FF64", false);
 		addColorProperty(PROP_OFF_COLOR, "Off color", WidgetPropertyCategory.DISPLAY, "#B4B4B4", false);
 		addBooleanProperty(PROP_LABEL_VISIBLE, "Show Label", WidgetPropertyCategory.DISPLAY, false, false);
@@ -94,7 +94,7 @@ public class BooleanSwitchModel extends AbstractWidgetModel {
 
 	/**
 	 * Returns the On/Off state off the switch.
-	 * 
+	 *
 	 * @return <code>true</code> if on, <code>false</code> otherwise
 	 */
 	public boolean getValue() {
@@ -103,17 +103,17 @@ public class BooleanSwitchModel extends AbstractWidgetModel {
 
 	/**
 	 * Sets the On/Off state.
-	 * 
+	 *
 	 * @param newValue
 	 *            the new state
 	 */
-	public void setValue(boolean newValue) {
+	public void setValue(final boolean newValue) {
 		setPropertyManualValue(PROP_VALUE, newValue);
 	}
 
 	/**
 	 * Returns if the 3d effect is enabled.
-	 * 
+	 *
 	 * @return <code>true</code> if enabled, <code>false</code> otherwise
 	 */
 	public boolean get3dEffect() {
@@ -122,7 +122,7 @@ public class BooleanSwitchModel extends AbstractWidgetModel {
 
 	/**
 	 * Returns if the On/Off-labels should be shown.
-	 * 
+	 *
 	 * @return <code>true</code> if enabled, <code>false</code> otherwise
 	 */
 	public boolean getShowLabels() {
@@ -131,7 +131,7 @@ public class BooleanSwitchModel extends AbstractWidgetModel {
 
 	/**
 	 * Returns the label for the On-state.
-	 * 
+	 *
 	 * @return The text for the label
 	 */
 	public String getOnLabel() {
@@ -140,7 +140,7 @@ public class BooleanSwitchModel extends AbstractWidgetModel {
 
 	/**
 	 * Returns the label for the On-state.
-	 * 
+	 *
 	 * @return The text for the label
 	 */
 	public String getOffLabel() {

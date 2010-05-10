@@ -27,7 +27,7 @@ import org.csstudio.sds.util.ColorAndFontUtil;
 
 /**
  * A thumb wheel widget model.
- * 
+ *
  * @author Alen Vrecko, Jozef Stefan Institute
  * @author Joerg Rathlev, Universitaet Hamburg
  */
@@ -78,20 +78,17 @@ public class ThumbWheelModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addDoubleProperty(PROP_VALUE, "Value", WidgetPropertyCategory.BEHAVIOR, 0, false);
-		addIntegerProperty(PROP_WHOLE_DIGITS_PART, "Whole digits", WidgetPropertyCategory.DISPLAY, 5, false);
-		addDoubleProperty(PROP_MIN, "Min", WidgetPropertyCategory.BEHAVIOR, Double.NaN, false);
-		addDoubleProperty(PROP_MAX, "Max", WidgetPropertyCategory.BEHAVIOR, Double.NaN, false);
-
+//		addIntegerProperty(PROP_WHOLE_DIGITS_PART, "Whole digits", WidgetPropertyCategory.DISPLAY, 5, false, PROP_VALUE);
+	    addDoubleProperty(PROP_VALUE, "Value", WidgetPropertyCategory.DISPLAY, 0, true, PROP_TOOLTIP);
+	    addDoubleProperty(PROP_MAX, "Max", WidgetPropertyCategory.DISPLAY, Double.NaN, false, PROP_VALUE);
+		addDoubleProperty(PROP_MIN, "Min", WidgetPropertyCategory.DISPLAY, Double.NaN, false, PROP_MAX);
 		// FIXME: 18.02.2010: swende: Ist für PROP_WHOLE_DIGITS_PART bereits angemeldet!? Von Jörg oder CosyLab zu prüfen!
-		addIntegerProperty(PROP_WHOLE_DIGITS_PART, "Integer digits", WidgetPropertyCategory.BEHAVIOR, 5, false);
-		addIntegerProperty(PROP_DECIMAL_DIGITS_PART, "Decimal digits", WidgetPropertyCategory.BEHAVIOR, 5, false);
+		addIntegerProperty(PROP_WHOLE_DIGITS_PART, "Integer digits", WidgetPropertyCategory.DISPLAY, 5, false, PROP_MIN);
+		addIntegerProperty(PROP_DECIMAL_DIGITS_PART, "Decimal digits", WidgetPropertyCategory.DISPLAY, 5, false, PROP_WHOLE_DIGITS_PART);
 
-		addFontProperty(PROP_FONT, "Wheel Fonts", WidgetPropertyCategory.DISPLAY, ColorAndFontUtil.toFontString("Arial", 9), false);
-
-		addColorProperty(PROP_INTERNAL_FRAME_COLOR, "Internal frame color", WidgetPropertyCategory.DISPLAY, "#000000", false);
-
-		addIntegerProperty(PROP_INTERNAL_FRAME_THICKNESS, "Internal frame thickness", WidgetPropertyCategory.DISPLAY, 0, false);
+		addFontProperty(PROP_FONT, "Wheel Fonts", WidgetPropertyCategory.BEHAVIOR, ColorAndFontUtil.toFontString("Arial", 9), false);
+		addColorProperty(PROP_INTERNAL_FRAME_COLOR, "Internal frame color", WidgetPropertyCategory.BEHAVIOR, "#000000", false);
+		addIntegerProperty(PROP_INTERNAL_FRAME_THICKNESS, "Internal frame thickness", WidgetPropertyCategory.BEHAVIOR, 0, false);
 
 	}
 
@@ -111,7 +108,7 @@ public class ThumbWheelModel extends AbstractWidgetModel {
 		return getIntegerProperty(PROP_WHOLE_DIGITS_PART);
 	}
 
-	public void setWholePartDigits(int val) {
+	public void setWholePartDigits(final int val) {
 		setPropertyValue(PROP_WHOLE_DIGITS_PART, val);
 	}
 
@@ -119,7 +116,7 @@ public class ThumbWheelModel extends AbstractWidgetModel {
 		return getIntegerProperty(PROP_DECIMAL_DIGITS_PART);
 	}
 
-	public void setDecimalPartDigits(int val) {
+	public void setDecimalPartDigits(final int val) {
 		setPropertyValue(PROP_DECIMAL_DIGITS_PART, val);
 	}
 
@@ -139,7 +136,7 @@ public class ThumbWheelModel extends AbstractWidgetModel {
 		return getDoubleProperty(PROP_MAX);
 	}
 
-	public void setManualValue(double val) {
+	public void setManualValue(final double val) {
 		setPropertyValue(PROP_VALUE, val);
 	}
 

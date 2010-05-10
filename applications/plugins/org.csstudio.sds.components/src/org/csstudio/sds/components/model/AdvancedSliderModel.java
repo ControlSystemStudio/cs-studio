@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
+/*
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.sds.components.model;
@@ -26,10 +26,10 @@ import org.csstudio.sds.model.WidgetPropertyCategory;
 
 /**
  * An ellipse widget model.
- * 
+ *
  * @author Sven Wende, Alexander Will
  * @version $Revision$
- * 
+ *
  */
 public final class AdvancedSliderModel extends AbstractWidgetModel {
 
@@ -75,7 +75,7 @@ public final class AdvancedSliderModel extends AbstractWidgetModel {
 
 	/**
 	 * Standard constructor.
-	 * 
+	 *
 	 */
 	public AdvancedSliderModel() {
 		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
@@ -94,15 +94,15 @@ public final class AdvancedSliderModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addDoubleProperty(PROP_VALUE, "Slider Value", WidgetPropertyCategory.BEHAVIOR, 50.0, false);
-		addDoubleProperty(PROP_MIN, "Min", WidgetPropertyCategory.BEHAVIOR, 0.0, false);
-		addDoubleProperty(PROP_MAX, "Max", WidgetPropertyCategory.BEHAVIOR, 100.0, false);
+		addDoubleProperty(PROP_VALUE, "Slider Value", WidgetPropertyCategory.DISPLAY, 50.0, true, PROP_TOOLTIP);
+		addDoubleProperty(PROP_MIN, "Min", WidgetPropertyCategory.DISPLAY, 0.0, false, PROP_VALUE);
+		addDoubleProperty(PROP_MAX, "Max", WidgetPropertyCategory.DISPLAY, 100.0, false, PROP_MIN);
 		// The increment is limited to the range 0.001..1000 because the
 		// scrollbar control used internally by the widget causes problems
 		// if the value range of the scrollbar gets too large, probably because
 		// it uses integer numbers internally.
-		addDoubleProperty(PROP_INCREMENT, "Increment", WidgetPropertyCategory.BEHAVIOR, 1, 0.001, 1000.0, false);
-		addArrayOptionProperty(PROP_ORIENTATION, "Orientation", WidgetPropertyCategory.DISPLAY, new String[] { "Horizontal", "Vertical" }, 0, false);
+		addDoubleProperty(PROP_INCREMENT, "Increment", WidgetPropertyCategory.DISPLAY, 1, 0.001, 1000.0, false, PROP_MAX);
+		addArrayOptionProperty(PROP_ORIENTATION, "Orientation", WidgetPropertyCategory.FORMAT, new String[] { "Horizontal", "Vertical" }, 0, false);
 	}
 
 	/**
@@ -123,7 +123,7 @@ public final class AdvancedSliderModel extends AbstractWidgetModel {
 
 	/**
 	 * Return the min value.
-	 * 
+	 *
 	 * @return The min value.
 	 */
 	public double getMin() {
@@ -132,7 +132,7 @@ public final class AdvancedSliderModel extends AbstractWidgetModel {
 
 	/**
 	 * Return the max value.
-	 * 
+	 *
 	 * @return The max value.
 	 */
 	public double getMax() {
@@ -141,7 +141,7 @@ public final class AdvancedSliderModel extends AbstractWidgetModel {
 
 	/**
 	 * Return the increment value.
-	 * 
+	 *
 	 * @return The increment value.
 	 */
 	public double getIncrement() {
@@ -150,7 +150,7 @@ public final class AdvancedSliderModel extends AbstractWidgetModel {
 
 	/**
 	 * Return the current slider value.
-	 * 
+	 *
 	 * @return The current slider value.
 	 */
 	public double getValue() {
@@ -159,7 +159,7 @@ public final class AdvancedSliderModel extends AbstractWidgetModel {
 
 	/**
 	 * Return whether the slider has a horizontal or a vertical orientation.
-	 * 
+	 *
 	 * @return True if the slider has a horizontal orientation.
 	 */
 	public boolean isHorizontal() {
