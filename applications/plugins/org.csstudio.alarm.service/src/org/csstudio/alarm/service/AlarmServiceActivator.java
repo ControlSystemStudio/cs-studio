@@ -57,8 +57,8 @@ public class AlarmServiceActivator implements BundleActivator {
         
         // Provide implementation for alarm service
         // TODO jp The implementation must be determined dynamically
-//        registerJMSService(context);
-        registerDALService(context);
+        registerJMSService(context);
+//        registerDALService(context);
     }
     
     private void registerJMSService(final BundleContext context) {
