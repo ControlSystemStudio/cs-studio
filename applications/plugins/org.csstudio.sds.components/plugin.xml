@@ -316,5 +316,11 @@
             skipOnLoad="false"
             widgetId="org.csstudio.sds.components.Label">
       </widgetPropertyPostProcessor>
+      <widgetPropertyPostProcessor
+            class="org.csstudio.sds.components.model.eventing.StripChartPlotPostProcessor"
+            propertyId="enable_plot*"
+            skipOnLoad="false"
+            widgetId="org.csstudio.sds.components.StripChart">
+      </widgetPropertyPostProcessor>
    </extension>
    </plugin>

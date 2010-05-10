@@ -27,7 +27,7 @@ import org.csstudio.sds.model.WidgetPropertyCategory;
 
 /**
  * Abstract base class for widgets that draw a chart.
- * 
+ *
  * @author Joerg Rathlev
  */
 public abstract class AbstractChartModel extends AbstractWidgetModel {
@@ -135,38 +135,53 @@ public abstract class AbstractChartModel extends AbstractWidgetModel {
 	// CheckStyle won't believe it, but there is nothing wrong here.
 	@Override
 	protected void configureProperties() {
-		addArrayOptionProperty(PROP_SHOW_AXES, "Show axes", WidgetPropertyCategory.DISPLAY, AXES_OPTIONS, 3, false);
-		addArrayOptionProperty(PROP_SHOW_GRID_LINES, "Grid lines", WidgetPropertyCategory.DISPLAY, AXES_OPTIONS, 0, false);
-		addBooleanProperty(PROP_LINE_CHART, "Line chart", WidgetPropertyCategory.DISPLAY, false, false);
+	    // Display
+	    addStringProperty(PROP_LABEL, "Label", WidgetPropertyCategory.DISPLAY, "", true, PROP_TOOLTIP);
+	    String prop = PROP_LABEL;
 		for (int i = 0; i < numberOfDataSeries(); i++) {
-			addColorProperty(plotColorPropertyId(i), "Plot color #" + (i + 1), WidgetPropertyCategory.DISPLAY, "#000000", false);
+			addColorProperty(plotColorPropertyId(i), "Plot color #" + (i + 1), WidgetPropertyCategory.DISPLAY, getDefaultColor(i), false,prop);
+			prop = plotColorPropertyId(i);
 		}
 		addColorProperty(PROP_GRID_LINE_COLOR, "Grid line color", WidgetPropertyCategory.DISPLAY, "#D2D2D2", false);
-		addDoubleProperty(PROP_MIN, "Minimum", WidgetPropertyCategory.DISPLAY, -100.0, false);
-		addDoubleProperty(PROP_MAX, "Maximum", WidgetPropertyCategory.DISPLAY, 100.0, false);
-		addBooleanProperty(PROP_AUTOSCALE, "Automatic scaling", WidgetPropertyCategory.DISPLAY, false, false);
 		addBooleanProperty(PROP_LABELED_TICKS, "Labeled ticks", WidgetPropertyCategory.DISPLAY, true, false);
 		addIntegerProperty(PROP_PLOT_LINE_WIDTH, "Graph line width", WidgetPropertyCategory.DISPLAY, 1, 1, 100, false);
-		addBooleanProperty(PROP_TRANSPARENT, "Transparent background", WidgetPropertyCategory.DISPLAY, false, false);
 		addArrayOptionProperty(PROP_DATA_POINT_DRAWING_STYLE, "Data point drawing style", WidgetPropertyCategory.DISPLAY, DRAWING_STYLE_OPTIONS,
 				2, false);
-		addArrayOptionProperty(PROP_Y_AXIS_SCALING, "Y-axis scaling", WidgetPropertyCategory.DISPLAY, AXIS_SCALING_OPTIONS, 0, false);
-		addStringProperty(PROP_LABEL, "Label", WidgetPropertyCategory.DISPLAY, "", false);
-		addStringProperty(PROP_X_AXIS_LABEL, "X-axis label", WidgetPropertyCategory.DISPLAY, "", false);
-		addStringProperty(PROP_Y_AXIS_LABEL, "Y-axis label", WidgetPropertyCategory.DISPLAY, "", false);
+		// Format
+		addBooleanProperty(PROP_TRANSPARENT, "Transparent background", WidgetPropertyCategory.FORMAT, false, false);
+		//Scale
+		addArrayOptionProperty(PROP_SHOW_AXES, "Show axes", WidgetPropertyCategory.SCALE, AXES_OPTIONS, 3, false);
+		addArrayOptionProperty(PROP_SHOW_GRID_LINES, "Grid lines", WidgetPropertyCategory.SCALE, AXES_OPTIONS, 0, false);
+		addBooleanProperty(PROP_LINE_CHART, "Line chart", WidgetPropertyCategory.SCALE, false, false);
+		addDoubleProperty(PROP_MIN, "Minimum", WidgetPropertyCategory.SCALE, -100.0, false);
+		addDoubleProperty(PROP_MAX, "Maximum", WidgetPropertyCategory.SCALE, 100.0, false);
+		addBooleanProperty(PROP_AUTOSCALE, "Automatic scaling", WidgetPropertyCategory.SCALE, false, false);
+		addArrayOptionProperty(PROP_Y_AXIS_SCALING, "Y-axis scaling", WidgetPropertyCategory.SCALE, AXIS_SCALING_OPTIONS, 0, false);
+		addStringProperty(PROP_X_AXIS_LABEL, "X-axis label", WidgetPropertyCategory.SCALE, "", false);
+		addStringProperty(PROP_Y_AXIS_LABEL, "Y-axis label", WidgetPropertyCategory.SCALE, "", false);
 	}
 
 	/**
+     * @param i
+     * @return
+     */
+    private static String getDefaultColor(final int colorChooser) {
+        final String[] colors = new String[] {"#0000FF","#008000","#ff0000","#ffff00","#ff8800","#8000ff","#00E0FF","#00ff00"} ;
+        int i = colorChooser%colors.length;
+        return colors[i];
+    }
+
+    /**
 	 * Returns the number of data series that this model supports. Subclasses
 	 * must implement this method so that it returns a constant value.
-	 * 
+	 *
 	 * @return the number of data series that this model supports.
 	 */
 	public abstract int numberOfDataSeries();
 
 	/**
 	 * Returns whether automatic scaling for the y-axis is enabled.
-	 * 
+	 *
 	 * @return boolean <code>true</code> if automatic scaling is enabled,
 	 *         <code>false</code> otherwise.
 	 */
@@ -176,7 +191,7 @@ public abstract class AbstractChartModel extends AbstractWidgetModel {
 
 	/**
 	 * Returns the minimum value.
-	 * 
+	 *
 	 * @return double The minimum value
 	 */
 	public final double getMin() {
@@ -185,7 +200,7 @@ public abstract class AbstractChartModel extends AbstractWidgetModel {
 
 	/**
 	 * Returns the maximum value.
-	 * 
+	 *
 	 * @return double The maximum value
 	 */
 	public final double getMax() {
@@ -194,7 +209,7 @@ public abstract class AbstractChartModel extends AbstractWidgetModel {
 
 	/**
 	 * Returns whether the ticks should be labeled.
-	 * 
+	 *
 	 * @return boolean <code>true</code> if the ticks should be labeled,
 	 *         <code>false</code> otherwise.
 	 */
@@ -204,7 +219,7 @@ public abstract class AbstractChartModel extends AbstractWidgetModel {
 
 	/**
 	 * Returns which axes should be shown.
-	 * 
+	 *
 	 * @return 0 for none, 1 for x-axis, 2 for y-axis, 3 for both.
 	 */
 	public final int getShowAxes() {
@@ -213,7 +228,7 @@ public abstract class AbstractChartModel extends AbstractWidgetModel {
 
 	/**
 	 * Returns for which axes grid lines should be shown.
-	 * 
+	 *
 	 * @return 0 for none, 1 for x-axis, 2 for y-axis, 3 for both.
 	 */
 	public final int getShowGridLines() {
@@ -222,7 +237,7 @@ public abstract class AbstractChartModel extends AbstractWidgetModel {
 
 	/**
 	 * Returns whether the chart should be drawn as a line chart.
-	 * 
+	 *
 	 * @return <code>true</code> if the chart should be drawn as a line chart,
 	 *         <code>false</code> if only the data points should be drawn.
 	 */
@@ -232,7 +247,7 @@ public abstract class AbstractChartModel extends AbstractWidgetModel {
 
 	/**
 	 * Returns the width of the lines of the chart.
-	 * 
+	 *
 	 * @return the width of the lines in pixels.
 	 */
 	public final int getPlotLineWidth() {
@@ -241,7 +256,7 @@ public abstract class AbstractChartModel extends AbstractWidgetModel {
 
 	/**
 	 * Returns whether the background of the chart is transparent.
-	 * 
+	 *
 	 * @return <code>true</code> if the background is transparent,
 	 *         <code>false</code> otherwise.
 	 */
@@ -252,7 +267,7 @@ public abstract class AbstractChartModel extends AbstractWidgetModel {
 	/**
 	 * Returns the data point drawing style. 0 = single pixel, 1 = small plus
 	 * sign, 2 = small square, 3 = diamond.
-	 * 
+	 *
 	 * @return the data point drawing style.
 	 */
 	public final int getDataPointDrawingStyle() {
@@ -261,7 +276,7 @@ public abstract class AbstractChartModel extends AbstractWidgetModel {
 
 	/**
 	 * Returns the setting of the y-axis scaling property.
-	 * 
+	 *
 	 * @return the y-axis scaling. 0 = linear, 1 = logarithmic.
 	 */
 	public final int getYAxisScaling() {
@@ -270,7 +285,7 @@ public abstract class AbstractChartModel extends AbstractWidgetModel {
 
 	/**
 	 * Returns the label.
-	 * 
+	 *
 	 * @return the label.
 	 */
 	public final String getLabel() {
@@ -279,7 +294,7 @@ public abstract class AbstractChartModel extends AbstractWidgetModel {
 
 	/**
 	 * Returns the x-axis label.
-	 * 
+	 *
 	 * @return the x-axis label.
 	 */
 	public final String getXAxisLabel() {
@@ -288,7 +303,7 @@ public abstract class AbstractChartModel extends AbstractWidgetModel {
 
 	/**
 	 * Returns the y-axis label.
-	 * 
+	 *
 	 * @return the y-axis label.
 	 */
 	public final String getYAxisLabel() {
@@ -300,7 +315,7 @@ public abstract class AbstractChartModel extends AbstractWidgetModel {
 	 * Returns the property ID of the data color property for the data with the
 	 * specified index.
 	 * </p>
-	 * 
+	 *
 	 * <p>
 	 * The valid range of the index depends on the concrete widget type and is
 	 * defined by the concrete subclass. Clients must not call this method with
@@ -308,7 +323,7 @@ public abstract class AbstractChartModel extends AbstractWidgetModel {
 	 * with an invalid index, it will return a property ID which is not defined
 	 * for the concrete widget type.
 	 * </p>
-	 * 
+	 *
 	 * @param index
 	 *            the data index.
 	 * @return the property ID.
