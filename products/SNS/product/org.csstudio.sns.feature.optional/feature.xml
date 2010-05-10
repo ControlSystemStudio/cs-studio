@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.sns.feature.optional"
       label="SNS Control Room Tools"
-      version="1.2.0.qualifier"
+      version="2.0.0.qualifier"
       provider-name="SNS, Kay Kasemir">
 
    <description>

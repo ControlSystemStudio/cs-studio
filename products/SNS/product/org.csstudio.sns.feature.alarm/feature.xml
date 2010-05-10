@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.sns.feature.alarm"
       label="Alarm Handler UI"
-      version="1.0.0.qualifier"
+      version="2.0.0.qualifier"
       provider-name="SNS, Kay Kasemir">
 
    <description>
