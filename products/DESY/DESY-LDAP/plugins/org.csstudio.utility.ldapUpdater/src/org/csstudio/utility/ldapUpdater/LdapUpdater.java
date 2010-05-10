@@ -47,6 +47,7 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import javax.annotation.Nonnull;
+import javax.naming.InvalidNameException;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.SearchControls;
@@ -177,8 +178,10 @@ public final class LdapUpdater {
     /**
      * Scans the IOC file directory on /applic and the contents of the IOC files.
      * Removes any record from LDAP that is not found in any of the IOC files.
+     * @throws InterruptedException
+     * @throws InvalidNameException
      */
-    public void tidyUpLdapFromIOCFiles() {
+    public void tidyUpLdapFromIOCFiles() throws InvalidNameException, InterruptedException {
         if ( _busy ) {
             return;
         }

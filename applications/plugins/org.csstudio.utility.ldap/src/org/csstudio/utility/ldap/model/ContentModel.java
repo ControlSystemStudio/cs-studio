@@ -120,11 +120,7 @@ public class ContentModel<T extends Enum<T> & ILdapObjectClass<T>> {
         try {
             for (final SearchResult row : answerSet) {
 
-                final LdapName fullName = LdapNameUtils.removeRdns(LdapNameUtils.parseSearchResult(row),
-                                                                   LdapFieldsAndAttributes.EFAN_FIELD_NAME,
-                                                                   Direction.FORWARD);
-
-                createLdapComponent(row, fullName, _treeRoot);
+                createLdapComponent(row, LdapNameUtils.parseSearchResult(row), _treeRoot);
             }
         } catch (final IndexOutOfBoundsException iooe) {
           _log.error("Tried to remove a name component with index out of bounds.", iooe);
@@ -140,20 +136,23 @@ public class ContentModel<T extends Enum<T> & ILdapObjectClass<T>> {
                                      @Nonnull final ILdapTreeComponent<T> root) throws InvalidNameException {
         ILdapTreeComponent<T> parent = root;
 
+        final LdapName partialName = LdapNameUtils.removeRdns(fullName,
+                                                              LdapFieldsAndAttributes.EFAN_FIELD_NAME,
+                                                              Direction.FORWARD);
 
-        final LdapName currentFullName = new LdapName("");
+        final LdapName currentPartialName = new LdapName("");
 
 
-        for (int i = 0; i < fullName.size(); i++) {
+        for (int i = 0; i < partialName.size(); i++) {
 
-            final Rdn rdn = fullName.getRdn(i);
-            currentFullName.add(rdn);
+            final Rdn rdn = partialName.getRdn(i);
+            currentPartialName.add(rdn);
 
 
             // Check whether this component exists already
-            if (_cacheByLdapName.containsKey(currentFullName.toString())) {
-                if (i < fullName.size() - 1) { // another name component follows => has children
-                    parent = (ILdapTreeComponent<T>) _cacheByLdapName.get(currentFullName.toString());
+            if (_cacheByLdapName.containsKey(currentPartialName.toString())) {
+                if (i < partialName.size() - 1) { // another name component follows => has children
+                    parent = (ILdapTreeComponent<T>) _cacheByLdapName.get(currentPartialName.toString());
                 }
                 continue; // YES
             }
@@ -167,7 +166,7 @@ public class ContentModel<T extends Enum<T> & ILdapObjectClass<T>> {
                                         oc.getNestedContainerClasses(),
                                         parent,
                                         row.getAttributes(),
-                                        currentFullName);
+                                        currentPartialName);
             addChild(parent, newChild);
 
             parent = newChild;

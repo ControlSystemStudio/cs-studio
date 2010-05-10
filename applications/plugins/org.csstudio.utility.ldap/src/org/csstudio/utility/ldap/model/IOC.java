@@ -34,13 +34,12 @@ import javax.annotation.Nullable;
 
 
 /**
- * Stores information about an IOC.
+ * Stores information about an IOC that has been retrieved from the file system.
  *
  * @author $Author$
  * @version $Revision$
  * @since 30.04.2008
  */
-@Deprecated
 public class IOC implements Serializable {
 
     public static final String NO_GROUP = "<no group>";

@@ -70,7 +70,7 @@ import org.csstudio.utility.ldapUpdater.service.impl.LdapUpdaterServiceImpl;
  */
 public final class LdapAccess {
 
-    private static LdapName NAME_SUFFIX = null;
+    public static LdapName NAME_SUFFIX = null;
     static {
         try {
             final Rdn ou = new Rdn(LdapFieldsAndAttributes.OU_FIELD_NAME, LdapFieldsAndAttributes.EPICS_CTRL_FIELD_VALUE);
@@ -151,9 +151,11 @@ public final class LdapAccess {
      *
      * @param contentModel current LDAP contents
      * @param iocMapFromFS valid IOCs
+     * @throws InterruptedException
+     * @throws InvalidNameException
      */
     public static void tidyUpLDAPFromIOCList(@Nonnull final ContentModel<LdapEpicsControlsObjectClass> contentModel,
-                                             @Nonnull final Map<String, IOC> iocMapFromFS){
+                                             @Nonnull final Map<String, IOC> iocMapFromFS) throws InvalidNameException, InterruptedException{
 
         final Set<Entry<String, ILdapComponent<LdapEpicsControlsObjectClass>>> childrenByTypeSet =
             contentModel.getChildrenByTypeAndSimpleName(LdapEpicsControlsObjectClass.IOC).entrySet();

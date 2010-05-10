@@ -32,7 +32,6 @@ import javax.naming.InvalidNameException;
 import javax.naming.directory.DirContext;
 import javax.naming.ldap.LdapName;
 
-import org.csstudio.utility.ldap.model.IOC;
 import org.csstudio.utility.ldap.model.Record;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
 
@@ -92,24 +91,8 @@ public interface ILdapUpdaterService {
      * @param context .
      * @param iocName .
      * @param facilityName .
+     * @throws InvalidNameException
+     * @throws InterruptedException
      */
-    void removeIocEntryFromLdap(@Nonnull DirContext context,@Nonnull  String iocName,@Nonnull String facilityName);
-
-
-    /**
-     * Removes the record entry from the LDAP context.
-     * @param context .
-     * @param ioc .
-     * @param record .
-     */
-    void removeRecordEntryFromLdap(@Nonnull DirContext context,@Nonnull  IOC ioc, @Nonnull  Record record);
-
-
-    /**
-     * Retrieves the IOC object from LDAP to which the given record belongs to.
-     * @param recordName .
-     * @return the IOC containing this record
-     */
-    @CheckForNull
-    IOC getIOCForRecordName(@Nonnull String recordName);
+    void removeIocEntryFromLdap(@Nonnull DirContext context,@Nonnull  String iocName,@Nonnull String facilityName) throws InvalidNameException, InterruptedException;
 }
