@@ -248,6 +248,8 @@ public final class LdapUpdater {
         } catch (final InterruptedException e) {
             e.printStackTrace();
             Thread.currentThread().interrupt();
+        } catch (final Exception e) {
+            e.printStackTrace();
         } finally {
             _busy = false;
         }
@@ -258,7 +260,7 @@ public final class LdapUpdater {
     private void validateHistoryFileEntriesVsLDAPEntries(@Nonnull final ContentModel<LdapEpicsControlsObjectClass> ldapModel,
                                                          @Nonnull final HistoryFileContentModel historyFileModel) {
 
-        Set<String> iocsFromLDAP = ldapModel.getKeys(LdapEpicsControlsObjectClass.IOC);
+        Set<String> iocsFromLDAP = ldapModel.getSimpleNames(LdapEpicsControlsObjectClass.IOC);
 
         final Set<String> iocsFromHistFile = historyFileModel.getIOCNameKeys();
 
@@ -270,16 +272,18 @@ public final class LdapUpdater {
             for (final String iocNameKey : iocsFromLDAP) {
                 _log.warn("IOC " + iocNameKey + " from LDAP is not present in history file!");
 
-                final ILdapComponent<LdapEpicsControlsObjectClass> ioc = ldapModel.get(LdapEpicsControlsObjectClass.IOC, iocNameKey);
-                final Attribute personAttr = ioc.getAttribute(LdapFieldsAndAttributes.ATTR_FIELD_RESPONSIBLE_PERSON);
-                String person = DEFAULT_RESPONSIBLE_PERSON;
-                if ((personAttr != null) && (personAttr.get() != null)) {
-                    person = (String) personAttr.get();
+                final ILdapComponent<LdapEpicsControlsObjectClass> ioc = ldapModel.getByTypeAndSimpleName(LdapEpicsControlsObjectClass.IOC, iocNameKey);
+                if (ioc != null) {
+                    final Attribute personAttr = ioc.getAttribute(LdapFieldsAndAttributes.ATTR_FIELD_RESPONSIBLE_PERSON);
+                    String person = DEFAULT_RESPONSIBLE_PERSON;
+                    if ((personAttr != null) && (personAttr.get() != null)) {
+                        person = (String) personAttr.get();
+                    }
+                    if (!missingIOCsPerPerson.containsKey(person)) {
+                        missingIOCsPerPerson.put(person, new ArrayList<String>());
+                    }
+                    missingIOCsPerPerson.get(person).add(ioc.getName());
                 }
-                if (!missingIOCsPerPerson.containsKey(person)) {
-                    missingIOCsPerPerson.put(person, new ArrayList<String>());
-                }
-                missingIOCsPerPerson.get(person).add(ioc.getName());
             }
         } catch (final NamingException e) {
             // TODO (bknerr)
@@ -295,7 +299,7 @@ public final class LdapUpdater {
         }
 
 
-        iocsFromLDAP = ldapModel.getKeys(LdapEpicsControlsObjectClass.IOC);
+        iocsFromLDAP = ldapModel.getSimpleNames(LdapEpicsControlsObjectClass.IOC);
         iocsFromHistFile.removeAll(iocsFromLDAP);
         for (final String ioc : iocsFromHistFile) {
             _log.warn("IOC " + ioc + " found in history file is not present in LDAP!");

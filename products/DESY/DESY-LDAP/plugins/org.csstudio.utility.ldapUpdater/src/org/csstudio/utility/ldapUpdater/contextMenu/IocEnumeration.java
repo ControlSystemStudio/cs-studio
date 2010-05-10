@@ -71,7 +71,8 @@ public class IocEnumeration implements IDynamicParameterValues {
         final ContentModel<LdapEpicsControlsObjectClass> model =
             new ContentModel<LdapEpicsControlsObjectClass>(result, LdapEpicsControlsObjectClass.ROOT);
 
-        final Map<String, ILdapComponent<LdapEpicsControlsObjectClass>> iocs = model.getChildrenByType(LdapEpicsControlsObjectClass.IOC);
+        final Map<String, ILdapComponent<LdapEpicsControlsObjectClass>> iocs =
+            model.getChildrenByTypeAndLdapName(LdapEpicsControlsObjectClass.IOC);
 
         final List<CommandParameterEnumValue> params = new ArrayList<CommandParameterEnumValue>(iocs.size());
 

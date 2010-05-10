@@ -24,6 +24,8 @@ package org.csstudio.utility.ldapUpdater;
 import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceKey.IOC_DBL_DUMP_PATH;
 import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferences.getValueFromPreferences;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
@@ -67,6 +69,20 @@ import org.csstudio.utility.ldapUpdater.service.impl.LdapUpdaterServiceImpl;
  * @since 13.04.2010
  */
 public final class LdapAccess {
+
+    private static LdapName NAME_SUFFIX = null;
+    static {
+        try {
+            final Rdn ou = new Rdn(LdapFieldsAndAttributes.OU_FIELD_NAME, LdapFieldsAndAttributes.EPICS_CTRL_FIELD_VALUE);
+            final List<Rdn> list = new ArrayList<Rdn>();
+            list.add(ou);
+            NAME_SUFFIX = new LdapName(list);
+        } catch (final InvalidNameException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
 
     /**
      * Update Result.
@@ -139,7 +155,10 @@ public final class LdapAccess {
     public static void tidyUpLDAPFromIOCList(@Nonnull final ContentModel<LdapEpicsControlsObjectClass> contentModel,
                                              @Nonnull final Map<String, IOC> iocMapFromFS){
 
-        for (final Entry<String, ILdapComponent<LdapEpicsControlsObjectClass>> entry : contentModel.getChildrenByType(LdapEpicsControlsObjectClass.IOC).entrySet()) {
+        final Set<Entry<String, ILdapComponent<LdapEpicsControlsObjectClass>>> childrenByTypeSet =
+            contentModel.getChildrenByTypeAndSimpleName(LdapEpicsControlsObjectClass.IOC).entrySet();
+
+        for (final Entry<String, ILdapComponent<LdapEpicsControlsObjectClass>> entry : childrenByTypeSet) {
 
             final ILdapComponent<LdapEpicsControlsObjectClass> iocFromLdap = entry.getValue();
 
@@ -189,7 +208,7 @@ public final class LdapAccess {
             final String recordName = record.getName();
 
             final ILdapComponent<LdapEpicsControlsObjectClass> recordComponent =
-                model.get(LdapEpicsControlsObjectClass.RECORD, recordName);
+                model.getByTypeAndSimpleName(LdapEpicsControlsObjectClass.RECORD, recordName);
 
             if (recordComponent == null) { // does not yet exist
                 LOGGER.info("New Record: " + iocName + " " + recordName);
@@ -201,7 +220,7 @@ public final class LdapAccess {
 
                     // TODO (bknerr) : Stopping or proceeding? Transaction rollback? Hist file update ?
                     if (!LDAP_UPDATER_SERVICE.createLDAPRecord(Engine.getInstance().getLdapDirContext(),
-                                                               newLdapName)) {
+                                                               (LdapName) newLdapName.addAll(0, NAME_SUFFIX))) {
                         LOGGER.error("Error while updating LDAP record for " + recordName +
                         "\nProceed with next record.");
                     } else {
@@ -217,10 +236,16 @@ public final class LdapAccess {
 
         // TODO (bknerr) : what to do with success variable ?
         final ILdapTreeComponent<LdapEpicsControlsObjectClass> iLdapComponent =
-            (ILdapTreeComponent<LdapEpicsControlsObjectClass>) model.get(LdapEpicsControlsObjectClass.IOC, iocName);
+            (ILdapTreeComponent<LdapEpicsControlsObjectClass>) model.getByTypeAndSimpleName(LdapEpicsControlsObjectClass.IOC, iocName);
+
+        int numOfChildren = -1;
+        if (iLdapComponent != null) {
+            numOfChildren = iLdapComponent.getDirectChildren().size();
+        }
+
         return new UpdateIOCResult(recordsFromFile.size(),
                                    numOfRecsWritten,
-                                   iLdapComponent.getDirectChildren().size(), true);
+                                   numOfChildren, true);
     }
 
 
@@ -276,7 +301,7 @@ public final class LdapAccess {
 
             //final IOC iocFromLDAP = ldapContentModel.getIOC(iocName);
             final ILdapComponent<LdapEpicsControlsObjectClass> iocFromLDAP =
-                model.get(LdapEpicsControlsObjectClass.IOC, iocName.toUpperCase());
+                model.getByTypeAndSimpleName(LdapEpicsControlsObjectClass.IOC, iocName);
 
             if (iocFromLDAP == null) {
                 LOGGER.warn("IOC "
@@ -288,7 +313,7 @@ public final class LdapAccess {
 
             LdapSearchResult searchResult;
             try {
-                searchResult = LDAP_UPDATER_SERVICE.retrieveRecordsForIOC(iocFromLDAP.getLdapName());
+                searchResult = LDAP_UPDATER_SERVICE.retrieveRecordsForIOC(NAME_SUFFIX, iocFromLDAP.getLdapName());
                 model.addSearchResult(searchResult);
 
                 final UpdateIOCResult updateResult = updateIOC(model, iocFromLDAP);

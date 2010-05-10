@@ -27,6 +27,7 @@ import java.util.Set;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.naming.InvalidNameException;
 import javax.naming.directory.DirContext;
 import javax.naming.ldap.LdapName;
@@ -74,7 +75,7 @@ public interface ILdapUpdaterService {
      * @throws InvalidNameException
      */
     @CheckForNull
-    LdapSearchResult retrieveRecordsForIOC(@Nonnull LdapName fullName) throws InterruptedException, InvalidNameException;
+    LdapSearchResult retrieveRecordsForIOC(@Nullable final LdapName ldapSuffix, @Nonnull LdapName fullName) throws InterruptedException, InvalidNameException;
 
 
     /**

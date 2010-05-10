@@ -42,6 +42,7 @@ import java.util.Set;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.naming.InvalidNameException;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
@@ -126,12 +127,16 @@ public class LdapUpdaterServiceImpl implements ILdapUpdaterService {
      */
     @Override
     @CheckForNull
-    public LdapSearchResult retrieveRecordsForIOC(@Nonnull final LdapName fullIocName) throws InterruptedException, InvalidNameException {
+    public LdapSearchResult retrieveRecordsForIOC(@Nullable final LdapName ldapSuffix, @Nonnull final LdapName fullIocName) throws InterruptedException, InvalidNameException {
         if (fullIocName.size() > 0) {
-            final LdapName filter = (LdapName) fullIocName.remove(0);
-            return _ldapService.retrieveSearchResultSynchronously(fullIocName,
-                                                                  filter.toString(),
+            final LdapName query = new LdapName(fullIocName.getRdns());
+            if (ldapSuffix != null) {
+                query.addAll(0, ldapSuffix.getRdns());
+            }
+            return _ldapService.retrieveSearchResultSynchronously(query,
+                                                                  any(EREN_FIELD_NAME),
                                                                   SearchControls.ONELEVEL_SCOPE);
+
         }
         return null;
     }

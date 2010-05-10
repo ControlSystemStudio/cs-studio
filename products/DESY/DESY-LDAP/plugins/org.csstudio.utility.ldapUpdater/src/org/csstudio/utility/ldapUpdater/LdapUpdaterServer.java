@@ -98,6 +98,7 @@ public class LdapUpdaterServer implements IApplication {
         final long intervalSec = Long.parseLong(intervalString);
 
 
+
         final TimeZone timeZone = TimeZone.getTimeZone("ECT");
         final Calendar cal = new GregorianCalendar(timeZone);
 
@@ -132,6 +133,7 @@ public class LdapUpdaterServer implements IApplication {
                 wait();
             }
         }
+
         return IApplication.EXIT_OK;
     }
 

@@ -60,8 +60,8 @@ public class LdapUpdaterPreferences extends AbstractPreferenceInitializer {
         prefs.put(XMPP_USER.getDescription(), "LDAP_Updater");
         prefs.put(XMPP_PASSWD.getDescription(), "LDAP_Updater");
         prefs.put(XMPP_SERVER.getDescription(), "krynfs.desy.de");
-        prefs.put(LDAP_AUTO_START.getDescription(), "1000*3600");
-        prefs.put(LDAP_AUTO_INTERVAL.getDescription(), "1000*3600*24");
+        prefs.put(LDAP_AUTO_START.getDescription(), "46800");
+        prefs.put(LDAP_AUTO_INTERVAL.getDescription(), "43200");
 
     }
 

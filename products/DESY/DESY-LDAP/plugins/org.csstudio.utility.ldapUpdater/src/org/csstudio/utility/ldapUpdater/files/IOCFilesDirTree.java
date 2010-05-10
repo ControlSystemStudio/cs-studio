@@ -54,7 +54,7 @@ public final class IOCFilesDirTree {
     }
 
     /**
-     * doFile - process one regulr file.
+     * doFile - process one regular file.
      *
      * @param f
      *            the current file to be analysed

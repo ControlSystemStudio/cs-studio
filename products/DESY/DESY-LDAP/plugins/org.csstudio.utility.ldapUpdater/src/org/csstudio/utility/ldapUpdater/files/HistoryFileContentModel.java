@@ -53,7 +53,7 @@ public final class HistoryFileContentModel {
 	 * @param millis time stamp of last processing
 	 */
 	public void setEntry(@Nonnull final String name, @Nonnull final Long millis) {
-		_historyMap.put(name.toUpperCase(), millis);
+		_historyMap.put(name, millis);
 	}
 
 	/**
@@ -72,7 +72,7 @@ public final class HistoryFileContentModel {
 	 */
 	@CheckForNull
 	public Long getTimeForRecord(@Nonnull final String record) {
-		return _historyMap.get(record.toUpperCase());
+		return _historyMap.get(record);
 	}
 
 	/**
@@ -81,7 +81,7 @@ public final class HistoryFileContentModel {
 	 * @return true if the set contains an entry for this ioc
 	 */
 	public boolean contains(@Nonnull final String iocName) {
-		return _historyMap.containsKey(iocName.toUpperCase());
+		return _historyMap.containsKey(iocName);
 	}
 
 	/**
