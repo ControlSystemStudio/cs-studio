@@ -124,6 +124,6 @@ public class LdapComponent<T extends Enum<T>> implements ILdapComponent<T> {
     @Override
     @CheckForNull
     public LdapName getLdapName() {
-        return _ldapName;
+        return (LdapName) _ldapName.clone();
     }
 }

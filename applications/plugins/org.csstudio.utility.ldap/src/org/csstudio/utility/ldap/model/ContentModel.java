@@ -62,11 +62,12 @@ public class ContentModel<T extends Enum<T> & ILdapObjectClass<T>> {
 
     private ILdapTreeComponent<T> _treeRoot;
 
-//    private final Map<T, Boolean> _cacheTypeDirty;
+    private final Map<T, Map<String, ILdapComponent<T>>> _cacheByTypeAndLdapName;
 
-    private final Map<T, Map<String, ILdapComponent<T>>> _cacheByType;
+    private final Map<T, Map<String, ILdapComponent<T>>> _cacheByTypeAndSimpleName;
 
-    private Map<String, ILdapComponent<T>> _cacheByLdapName;
+    private final Map<String, ILdapComponent<T>> _cacheByLdapName;
+
 
 
     /**
@@ -77,10 +78,11 @@ public class ContentModel<T extends Enum<T> & ILdapObjectClass<T>> {
     public ContentModel(@Nonnull final LdapSearchResult searchResult,
                         @Nonnull final T objectClassRoot) {
 
-//        _cacheTypeDirty = initCacheDirtyMap(objectClassRoot.getDeclaringClass());
+        _cacheByLdapName = new HashMap<String, ILdapComponent<T>>();
 
-        _cacheByType = initCacheByType(objectClassRoot.getDeclaringClass());
+        _cacheByTypeAndLdapName = initCacheByType(objectClassRoot.getDeclaringClass());
 
+        _cacheByTypeAndSimpleName = initCacheByType(objectClassRoot.getDeclaringClass());
 
         _objectClassRoot = objectClassRoot;
 
@@ -106,16 +108,6 @@ public class ContentModel<T extends Enum<T> & ILdapObjectClass<T>> {
     }
 
 
-//    @Nonnull
-//    private Map<T, Boolean> initCacheDirtyMap(@Nonnull final Class<T> enumClass) {
-//        final EnumMap<T, Boolean> dirtyMap = new EnumMap<T, Boolean>(enumClass);
-//        for (final T type : enumClass.getEnumConstants()) {
-//            dirtyMap.put(type, Boolean.TRUE);
-//        }
-//        return dirtyMap;
-//    }
-
-
     /**
      * Adds a given search result to the current LDAP content model.
      *
@@ -123,7 +115,6 @@ public class ContentModel<T extends Enum<T> & ILdapObjectClass<T>> {
      */
     public void addSearchResult(@Nonnull final LdapSearchResult searchResult) {
 
-        _cacheByLdapName = new HashMap<String, ILdapComponent<T>>();
 
         final Set<SearchResult> answerSet = searchResult.getAnswerSet();
         try {
@@ -164,32 +155,22 @@ public class ContentModel<T extends Enum<T> & ILdapObjectClass<T>> {
                 if (i < fullName.size() - 1) { // another name component follows => has children
                     parent = (ILdapTreeComponent<T>) _cacheByLdapName.get(currentFullName.toString());
                 }
-                System.out.println("EXISTS");
                 continue; // YES
             }
             // NO
 
-            final ILdapComponent<T> newChild;
             final T oc = _objectClassRoot.getObjectClassByRdnType(rdn.getType());
 
-            if (i == fullName.size() - 1) { // does not have children components
-                newChild = new LdapComponent<T>((String) rdn.getValue(),
-                                                oc,
-                                                parent,
-                                                row.getAttributes(),
-                                                currentFullName);
-                addChild(parent, newChild);
-            } else {
-                newChild = new LdapTreeComponent<T>((String) rdn.getValue(),
-                        oc,
-                        oc.getNestedContainerClasses(),
-                        parent,
-                        row.getAttributes(),
-                        currentFullName);
-                addChild(parent, newChild);
+            final ILdapTreeComponent<T> newChild =
+                new LdapTreeComponent<T>((String) rdn.getValue(),
+                                        oc,
+                                        oc.getNestedContainerClasses(),
+                                        parent,
+                                        row.getAttributes(),
+                                        currentFullName);
+            addChild(parent, newChild);
 
-                parent = (ILdapTreeComponent<T>) newChild;
-            }
+            parent = newChild;
             // CACHING
             _cacheByLdapName.put(newChild.getLdapName().toString(), newChild);
         }
@@ -202,54 +183,76 @@ public class ContentModel<T extends Enum<T> & ILdapObjectClass<T>> {
 
         // MORE CACHING
         final T type = newChild.getType();
-        if (!_cacheByType.containsKey(type)) {
-            _cacheByType.put(type, new HashMap<String, ILdapComponent<T>>());
+        if (!_cacheByTypeAndLdapName.containsKey(type)) {
+            _cacheByTypeAndLdapName.put(type, new HashMap<String, ILdapComponent<T>>());
         }
-        final Map<String, ILdapComponent<T>> childrenByType = _cacheByType.get(type);
+        final Map<String, ILdapComponent<T>> childrenByLdapName = _cacheByTypeAndLdapName.get(type);
 
         final String nameKey = newChild.getLdapName().toString();
-        if (!childrenByType.containsKey(nameKey)) {
-            childrenByType.put(nameKey, newChild); // updates the current map in cache by type
+        if (!childrenByLdapName.containsKey(nameKey)) {
+            childrenByLdapName.put(nameKey, newChild); // updates the current map in cache by type
         }
+
+        // AND EVEN MORE CACHING
+        if (!_cacheByTypeAndSimpleName.containsKey(type)) {
+            _cacheByTypeAndSimpleName.put(type, new HashMap<String, ILdapComponent<T>>());
+        }
+        final Map<String, ILdapComponent<T>> childrenBySimpleName = _cacheByTypeAndSimpleName.get(type);
+
+        final String simpleName = newChild.getName();
+        if (!childrenBySimpleName.containsKey(simpleName)) {
+            childrenBySimpleName.put(simpleName, newChild); // updates the current map in cache by type
+        }
+
     }
 
-
-
     /**
-     * Performs a recursive search over the full tree and gathers all children by the same type.
-     * Attention, the children are mapped by their name identifier. It has to be unique over the
-     * complete tree, otherwise this function hashes children with equal names to a single map entry.
+     * Accesses the type cache.
      * @param type the type of the children
      * @return a copy of the keys of the children featuring the given type
      */
     @Nonnull
-    public Set<String> getKeys(@Nonnull final T type) {
-        final Map<String, ILdapComponent<T>> children = getChildrenByType(type);
+    public Set<String> getSimpleNames(@Nonnull final T type) {
+        final Map<String, ILdapComponent<T>> children = _cacheByTypeAndSimpleName.get(type);
+
         return new HashSet<String>(children.keySet());
+    }
+
+    @CheckForNull
+    public Map<String, ILdapComponent<T>> getChildrenByTypeAndLdapName(@Nonnull final T type) {
+        return _cacheByTypeAndLdapName.get(type);
     }
 
 
     @CheckForNull
-    public ILdapComponent<T> get(@Nonnull final T type, @Nonnull final String key) {
-        final Map<String, ILdapComponent<T>> childrenByType = getChildrenByType(type);
-        return childrenByType.get(key);
+    public Map<String, ILdapComponent<T>> getChildrenByTypeAndSimpleName(@Nonnull final T type) {
+        return _cacheByTypeAndSimpleName.get(type);
     }
 
 
-    @Nonnull
-    public Map<String, ILdapComponent<T>> getChildrenByType(@Nonnull final T type) {
-//        if (_cacheTypeDirty.get(type)) {
-//            _cacheByType.put(type, _treeRoot.getChildrenByType(type));
-//            _cacheTypeDirty.put(type, Boolean.FALSE);
-//        }
-
-        final Map<String, ILdapComponent<T>> children = _cacheByType.get(type);
-        return children;
+    @CheckForNull
+    public ILdapComponent<T> getByTypeAndLdapName(@Nonnull final T type, @Nonnull final String key) {
+        final Map<String, ILdapComponent<T>> children = _cacheByTypeAndLdapName.get(type);
+        return children != null ? children.get(key) : null;
     }
+
+
+    @CheckForNull
+    public ILdapComponent<T> getByTypeAndSimpleName(@Nonnull final T type, @Nonnull final String key) {
+        final Map<String, ILdapComponent<T>> children = _cacheByTypeAndSimpleName.get(type);
+        return children != null ? children.get(key) : null;
+    }
+
 
     @Nonnull
     public ILdapTreeComponent<T> getRoot() {
         return _treeRoot;
+    }
 
+    public void clear() {
+        _treeRoot = null;
+        _cacheByLdapName.clear();
+        _cacheByTypeAndLdapName.clear();
+        _cacheByTypeAndSimpleName.clear();
     }
 }

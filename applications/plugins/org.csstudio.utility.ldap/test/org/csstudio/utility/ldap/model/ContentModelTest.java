@@ -23,9 +23,11 @@
  */
 package org.csstudio.utility.ldap.model;
 
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ECOM_FIELD_NAME;
 import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ECON_FIELD_NAME;
 import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EFAN_FIELD_NAME;
 import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EPICS_CTRL_FIELD_VALUE;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EREN_FIELD_NAME;
 import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.OU_FIELD_NAME;
 import static org.csstudio.utility.ldap.LdapUtils.any;
 import static org.csstudio.utility.ldap.LdapUtils.createLdapQuery;
@@ -53,7 +55,10 @@ import org.junit.Test;
  */
 public class ContentModelTest {
 
-    private static ContentModel<LdapEpicsControlsObjectClass> MODEL;
+    private static ContentModel<LdapEpicsControlsObjectClass> MODEL_ONE;
+
+    private static ContentModel<LdapEpicsControlsObjectClass> MODEL_TWO;
+
     private static final ILdapService SERVICE = LdapActivator.getDefault().getLdapService();
 
     private static final Map<LdapEpicsControlsObjectClass, Integer> RESULT_CHILDREN_BY_TYPE =
@@ -67,36 +72,77 @@ public class ContentModelTest {
     @BeforeClass
     public static void modelSetup() {
 
-        final LdapSearchResult searchResult = SERVICE.retrieveSearchResultSynchronously(createLdapQuery(EFAN_FIELD_NAME, "TEST",
-                                                                                                         OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE),
-                                                                                         any(ECON_FIELD_NAME),
-                                                                                         SearchControls.SUBTREE_SCOPE);
-       MODEL = new ContentModel<LdapEpicsControlsObjectClass>(searchResult, LdapEpicsControlsObjectClass.ROOT);
+        LdapSearchResult searchResult = SERVICE.retrieveSearchResultSynchronously(createLdapQuery(EFAN_FIELD_NAME, "TEST",
+                                                                                                  OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE),
+                                                                                                  any(ECON_FIELD_NAME),
+                                                                                                  SearchControls.SUBTREE_SCOPE);
+        if (searchResult != null) {
+            MODEL_ONE = new ContentModel<LdapEpicsControlsObjectClass>(searchResult, LdapEpicsControlsObjectClass.ROOT);
+        } else {
+            Assert.fail("Model setup failed. Search result is null.");
+        }
 
+        searchResult = SERVICE.retrieveSearchResultSynchronously(createLdapQuery(ECON_FIELD_NAME, "testLDAP",
+                                                                                 ECOM_FIELD_NAME, "EPICS-IOC",
+                                                                                 EFAN_FIELD_NAME, "TEST",
+                                                                                 OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE),
+                                                                                 any(EREN_FIELD_NAME),
+                                                                                 SearchControls.SUBTREE_SCOPE);
+        if (searchResult != null) {
+            MODEL_TWO = new ContentModel<LdapEpicsControlsObjectClass>(searchResult, LdapEpicsControlsObjectClass.ROOT);
+        } else {
+            Assert.fail("Model setup failed. Search result is null.");
+        }
     }
 
     @Test
-    public void testGetChildrenByTypeCache() {
+    public void testGetChildrenByLdapNameCache() {
 
-        Map<String, ILdapComponent<LdapEpicsControlsObjectClass>> childrenByType = MODEL.getChildrenByType(LdapEpicsControlsObjectClass.FACILITY);
+        Map<String, ILdapComponent<LdapEpicsControlsObjectClass>> childrenByType = MODEL_ONE.getChildrenByTypeAndLdapName(LdapEpicsControlsObjectClass.FACILITY);
         Assert.assertEquals(childrenByType.size(), RESULT_CHILDREN_BY_TYPE.get(LdapEpicsControlsObjectClass.FACILITY).intValue());
 
-        childrenByType = MODEL.getChildrenByType(LdapEpicsControlsObjectClass.COMPONENT);
+        childrenByType = MODEL_ONE.getChildrenByTypeAndLdapName(LdapEpicsControlsObjectClass.COMPONENT);
         Assert.assertEquals(childrenByType.size(), RESULT_CHILDREN_BY_TYPE.get(LdapEpicsControlsObjectClass.COMPONENT).intValue());
 
-        childrenByType = MODEL.getChildrenByType(LdapEpicsControlsObjectClass.IOC);
+        childrenByType = MODEL_ONE.getChildrenByTypeAndLdapName(LdapEpicsControlsObjectClass.IOC);
         Assert.assertEquals(childrenByType.size(), RESULT_CHILDREN_BY_TYPE.get(LdapEpicsControlsObjectClass.IOC).intValue());
     }
 
     @Test
     public void testGetChildrenByTypeOnRootComponent() {
-        int size = MODEL.getRoot().getChildrenByType(LdapEpicsControlsObjectClass.FACILITY).size();
+        int size = MODEL_ONE.getRoot().getChildrenByType(LdapEpicsControlsObjectClass.FACILITY).size();
         Assert.assertEquals(size, RESULT_CHILDREN_BY_TYPE.get(LdapEpicsControlsObjectClass.FACILITY).intValue());
 
-        size = MODEL.getRoot().getChildrenByType(LdapEpicsControlsObjectClass.COMPONENT).size();
+        size = MODEL_ONE.getRoot().getChildrenByType(LdapEpicsControlsObjectClass.COMPONENT).size();
         Assert.assertEquals(size, RESULT_CHILDREN_BY_TYPE.get(LdapEpicsControlsObjectClass.COMPONENT).intValue());
 
-        size = MODEL.getRoot().getChildrenByType(LdapEpicsControlsObjectClass.IOC).size();
+        size = MODEL_ONE.getRoot().getChildrenByType(LdapEpicsControlsObjectClass.IOC).size();
         Assert.assertEquals(size, RESULT_CHILDREN_BY_TYPE.get(LdapEpicsControlsObjectClass.IOC).intValue());
+    }
+
+    @Test
+    public void testBothNameCaches() {
+
+        ILdapComponent<LdapEpicsControlsObjectClass> comp = MODEL_TWO.getByTypeAndSimpleName(LdapEpicsControlsObjectClass.IOC, "testLDAP");
+
+        Assert.assertEquals(createLdapQuery(ECON_FIELD_NAME, "testLDAP",
+                                            ECOM_FIELD_NAME, "EPICS-IOC",
+                                            EFAN_FIELD_NAME, "TEST"), comp.getLdapName());
+
+        Assert.assertEquals(createLdapQuery(ECOM_FIELD_NAME, "EPICS-IOC",
+                                            EFAN_FIELD_NAME, "TEST"), comp.getParent().getLdapName());
+
+
+        comp = MODEL_TWO.getByTypeAndSimpleName(LdapEpicsControlsObjectClass.RECORD, "testLdap:alive");
+
+        Assert.assertEquals(createLdapQuery(EREN_FIELD_NAME, "testLdap:alive",
+                                            ECON_FIELD_NAME, "testLDAP",
+                                            ECOM_FIELD_NAME, "EPICS-IOC",
+                                            EFAN_FIELD_NAME, "TEST"), comp.getLdapName());
+
+        Assert.assertEquals(createLdapQuery(ECON_FIELD_NAME, "testLDAP",
+                                            ECOM_FIELD_NAME, "EPICS-IOC",
+                                            EFAN_FIELD_NAME, "TEST"), comp.getParent().getLdapName());
+
     }
 }
