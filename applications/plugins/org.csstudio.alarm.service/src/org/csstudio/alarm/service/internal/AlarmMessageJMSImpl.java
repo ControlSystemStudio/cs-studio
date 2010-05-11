@@ -90,4 +90,11 @@ public class AlarmMessageJMSImpl implements IAlarmMessage {
         }
         return result;
     }
+
+	@Override
+	public MapMessage getMapMessage(MapMessage message)
+			throws AlarmMessageException, JMSException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
