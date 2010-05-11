@@ -46,11 +46,19 @@ public class FormulaTest extends TestCase
         f = new Formula("-12/-3");
         assertEquals(4.0, f.eval(), epsilon);
 
+        // Order, quotes
         f = new Formula("1 + 2 * 3 - 4");
         assertEquals(3.0, f.eval(), epsilon);
 
         f = new Formula("(1 + 2) * (3 - 4)");
         assertEquals(-3.0, f.eval(), epsilon);
+        
+        // quotes
+        f = new Formula("-(3.14)");
+        assertEquals(-3.14, f.eval(), epsilon);
+
+        f = new Formula("-(-3.14)");
+        assertEquals(+3.14, f.eval(), epsilon);
     }
 
     @Test
