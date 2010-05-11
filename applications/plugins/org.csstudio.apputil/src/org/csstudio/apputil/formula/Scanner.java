@@ -69,6 +69,7 @@ class Scanner
         return buf.toString();
     }
 
+    @SuppressWarnings("nls")
     @Override
     public String toString()
     {
