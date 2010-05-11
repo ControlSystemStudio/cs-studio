@@ -20,6 +20,8 @@ package org.csstudio.alarm.service.declaration;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
+import javax.jms.JMSException;
+import javax.jms.MapMessage;
 
 /**
  * Is used by the AlarmService to represent a message from DAL or JMS resp.
@@ -33,6 +35,7 @@ public interface IAlarmMessage {
     
     /**
      * Set of keys for the alarm message.
+     * TODO: MCL support for '-' in enums like in APPLICATION-ID and change APPLICATION_ID
      */
     enum Key {
         EVENTTIME, NAME, SEVERITY, STATUS, FACILITY, HOST, TYPE, VALUE, APPLICATION_ID
@@ -75,4 +78,6 @@ public interface IAlarmMessage {
      * @throws AlarmMessageException
      */
     Map<String, String> getMap() throws AlarmMessageException;
+
+	MapMessage getMapMessage(MapMessage message) throws AlarmMessageException, JMSException;
 }
