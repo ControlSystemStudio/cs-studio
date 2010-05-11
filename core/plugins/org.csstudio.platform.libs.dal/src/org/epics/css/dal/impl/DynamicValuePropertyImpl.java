@@ -47,6 +47,7 @@ import org.epics.css.dal.context.Linkable;
 import org.epics.css.dal.context.PropertyContext;
 import org.epics.css.dal.context.PropertyFamily;
 import org.epics.css.dal.proxy.DirectoryProxy;
+import org.epics.css.dal.proxy.MonitorProxy;
 import org.epics.css.dal.proxy.PropertyProxy;
 import org.epics.css.dal.proxy.Proxy;
 import org.epics.css.dal.proxy.ProxyEvent;
@@ -721,11 +722,20 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 	/* (non-Javadoc)
 	 * @see org.epics.css.dal.DynamicValueProperty#createNewExpertMonitor(org.epics.css.dal.DynamicValueListener, java.util.Map)
 	 */
-	public ExpertMonitor createNewExpertMonitor(DynamicValueListener<T, SimpleProperty<T>> listener,
+	public <E extends SimpleProperty<T>, M extends ExpertMonitor,DynamicValueMonitor> M createNewExpertMonitor(DynamicValueListener<T, E> listener,
 	    Map<String, Object> parameters) throws RemoteException
 	{
-		// TODO Auto-generated method stub
-		return null;
+		if (proxy == null) throw new IllegalStateException("Proxy is null");
+		
+		MonitorProxyWrapper<T, E> mpw = new MonitorProxyWrapper<T, E>((E) this, listener);
+		MonitorProxy mp = null;
+		mp = proxy.createMonitor(mpw,parameters);
+		mpw.initialize(mp);
+		synchronized (monitors) {
+			monitors.add(mpw);
+		}
+
+		return (M)mpw;
 	}
 
 	/* (non-Javadoc)

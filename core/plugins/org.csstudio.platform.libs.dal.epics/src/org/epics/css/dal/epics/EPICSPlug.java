@@ -141,6 +141,12 @@ public class EPICSPlug extends AbstractPlug
 	public static final String PROPERTY_MAX_THREADS = "EPICSPlug.property.max_threads";
 	
 	/**
+	 * Parameter name for expert monitor creation. 
+	 * Value is of type Integer and provides mask value for EPICS monitor creation.
+	 */
+	public static final String PARAMETER_MONITOR_MASK = "EPICSPlug.monitor.mask";
+	
+	/**
 	 * Defines if a common <code>Executor</code> from this <code>EPICSPlug</code> should be used instead of
 	 * individual <code>Executor<code>s in <code>PropertyProxyImpl</code>s.
 	 * 

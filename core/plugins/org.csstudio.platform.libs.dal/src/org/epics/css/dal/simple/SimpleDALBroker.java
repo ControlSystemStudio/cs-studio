@@ -7,11 +7,14 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import org.epics.css.dal.DynamicValueListener;
+import org.epics.css.dal.DynamicValueMonitor;
 import org.epics.css.dal.DynamicValueProperty;
+import org.epics.css.dal.ExpertMonitor;
 import org.epics.css.dal.RemoteException;
 import org.epics.css.dal.Request;
 import org.epics.css.dal.ResponseListener;
@@ -48,7 +51,7 @@ public class SimpleDALBroker {
 			synchronized (properties) {
 				PropertyHolder holder;
 				for (Iterator<String> iterator = properties.keySet().iterator(); iterator.hasNext();) {
-					String key = (String) iterator.next();
+					String key = iterator.next();
 					holder = properties.get(key);
 					if (holder.expires > 0 && holder.expires < System.currentTimeMillis() && !holder.property.hasDynamicValueListeners()) {
 						toRemove.add(key);
@@ -361,7 +364,7 @@ public class SimpleDALBroker {
 	 * @throws CommonException if error
 	 */
 	public Object getValue(String property) throws InstantiationException, CommonException {
-		return getValue(RemoteInfo.remoteInfoFromString(property,RemoteInfo.DAL_TYPE_PREFIX+getFactory().getDefaultPlugType()));
+		return getValue(RemoteInfo.fromString(property,RemoteInfo.DAL_TYPE_PREFIX+getFactory().getDefaultPlugType()));
 	}
 
 	/**
@@ -461,8 +464,90 @@ public class SimpleDALBroker {
 		
 		ph.property.removePropertyChangeListener(listener);
 	}
-	
+
+	/**
+	 * Registers listener to special ExpertMonitor, which can be created by plug specific parameters. 
+	 * 
+	 * @param cparam connection parameters for remote property
+	 * @param listener listener which should receive value and status updated 
+	 * @param paremeters plug specific parameters intended for ExpertMonitor
+	 * @throws InstantiationException if fails
+	 * @throws CommonException if fails
+	 */
+	public void registerListener(ConnectionParameters cparam, DynamicValueListener listener, Map<String,Object> parameters) throws InstantiationException, CommonException {
+		PropertyHolder ph= getPropertyHolder(cparam, 0);
+		if (cparam.getRemoteInfo().getCharacteristic()!=null) {
+			return;
+		}
+		
+		if (parameters == null || parameters.size()==0) {
+			ph.property.addDynamicValueListener(listener);
+		} else {
+			blockUntillConnected(ph.property);
+			ph.property.createNewExpertMonitor(listener, parameters);
+		}
+	}
+
+	/**
+	 * Deregisters listener to special ExpertMonitor, which was created by plug specific parameters. 
+	 * 
+	 * @param cparam connection parameters for remote property
+	 * @param listener listener which should receive value and status updated 
+	 * @param paremeters plug specific parameters which were used to create ExpertMonitor
+	 * @throws InstantiationException if fails
+	 * @throws CommonException if fails
+	 */
+	public void deregisterListener(ConnectionParameters cparam, DynamicValueListener listener, Map<String,Object> parameters) throws InstantiationException, CommonException {
+		PropertyHolder ph= getPropertyHolder(cparam, 0);
+		if (cparam.getRemoteInfo().getCharacteristic()!=null) {
+			return;
+		}
+		
+		if (parameters == null || parameters.size()==0) {
+			ph.property.removeDynamicValueListener(listener);
+		} else {
+			DynamicValueMonitor[] mon= ph.property.getMonitors();
+			for (DynamicValueMonitor m : mon) {
+				if (m instanceof ExpertMonitor && parameters.equals(((ExpertMonitor)m).getParameters())) {
+					m.destroy();
+					return;
+				}
+			}
+		}
+		
+	}
+
 	private void blockUntillConnected(DynamicValueProperty<?> property) throws ConnectionException {
 		LinkBlocker.blockUntillConnected(property, Plugs.getConnectionTimeout(ctx.getConfiguration(), 30000) * 2, true);
 	}
+	
+	/**
+	 * Return default plug type, which is used for all remote names, which does not 
+	 * explicitly declare plug or connection type.
+	 * 
+	 * <p>
+	 * By default (if not set) plug type equals to Simulator.
+	 * </p>
+	 * 
+	 *  @return default plug type
+	 */
+	public String getDefaultPlugType() {
+		return getFactory().getDefaultPlugType();
+	}
+
+	/**
+	 * Sets default plug type, which is used for all remote names, which does not 
+	 * explicitly declare plug or connection type. 
+	 * 
+	 * <p>
+	 * So far supported values are: EPICS, TINE, Simulator.
+	 * By default (if not set) plug type equals to Simulator.
+	 * </p>
+	 * 
+	 * @param defautl plug type.
+	 */
+	public void setDefaultPlugType(String plugType) {
+		getFactory().setDefaultPlugType(plugType);
+	}
+
 }

@@ -39,10 +39,31 @@ public class DefaultPropertyFactoryBroker implements PropertyFactoryBroker {
 		
 	}
 	
+	/**
+	 * Return default plug type, which is used for all remote names, which does not 
+	 * explicitly declare plug or connection type.
+	 * 
+	 * <p>
+	 * By default (if not set) plug type equals to Simulator.
+	 * </p>
+	 * 
+	 *  @return default plug type
+	 */
 	public String getDefaultPlugType() {
 		return defaultPlugType;
 	}
 
+	/**
+	 * Sets default plug type, which is used for all remote names, which does not 
+	 * explicitly declare plug or connection type. 
+	 * 
+	 * <p>
+	 * So far supported values are: EPICS, TINE, Simulator.
+	 * By default (if not set) plug type equals to Simulator.
+	 * </p>
+	 * 
+	 * @param defautl plug type.
+	 */
 	public void setDefaultPlugType(String plugType) {
 		defaultPlugType = plugType;
 	}
@@ -80,14 +101,14 @@ public class DefaultPropertyFactoryBroker implements PropertyFactoryBroker {
 			Class<? extends DynamicValueProperty<?>> type, LinkListener<?> l)
 			throws InstantiationException, RemoteException {
 		return asyncLinkProperty(
-				RemoteInfo.remoteInfoFromString(name,RemoteInfo.DAL_TYPE_PREFIX+defaultPlugType),
+				RemoteInfo.fromString(name,RemoteInfo.DAL_TYPE_PREFIX+defaultPlugType),
 				type,
 				l);
 	}
 
 	public DynamicValueProperty<?> getProperty(String uniqueName)
 			throws InstantiationException, RemoteException {
-		return getProperty(RemoteInfo.remoteInfoFromString(uniqueName,RemoteInfo.DAL_TYPE_PREFIX+defaultPlugType));
+		return getProperty(RemoteInfo.fromString(uniqueName,RemoteInfo.DAL_TYPE_PREFIX+defaultPlugType));
 	}
 
 	public DynamicValueProperty<?> getProperty(RemoteInfo ri)
@@ -99,7 +120,7 @@ public class DefaultPropertyFactoryBroker implements PropertyFactoryBroker {
 			Class<P> type, LinkListener<?> l) throws InstantiationException,
 			RemoteException {
 		return getProperty(
-				RemoteInfo.remoteInfoFromString(uniqueName,RemoteInfo.DAL_TYPE_PREFIX+defaultPlugType),
+				RemoteInfo.fromString(uniqueName,RemoteInfo.DAL_TYPE_PREFIX+defaultPlugType),
 				type,
 				l);
 	}

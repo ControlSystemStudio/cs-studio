@@ -31,6 +31,8 @@ import org.epics.css.dal.DynamicValueCondition;
 import org.epics.css.dal.DynamicValueEvent;
 import org.epics.css.dal.DynamicValueListener;
 import org.epics.css.dal.DynamicValueMonitor;
+import org.epics.css.dal.ExpertMonitor;
+import org.epics.css.dal.RemoteException;
 import org.epics.css.dal.Response;
 import org.epics.css.dal.ResponseEvent;
 import org.epics.css.dal.ResponseListener;
@@ -47,7 +49,7 @@ import com.cosylab.util.ListenerList;
  *
  */
 public class MonitorProxyWrapper<T, P extends SimpleProperty<T>> implements ResponseListener<T>,
-	DynamicValueMonitor, Suspendable
+	ExpertMonitor, DynamicValueMonitor, Suspendable
 {
 	private DynamicValueListener<T, P> dvl;
 	private ListenerList dvls;
@@ -322,8 +324,7 @@ public class MonitorProxyWrapper<T, P extends SimpleProperty<T>> implements Resp
 		//	return;
 		//}
 
-		// TODO: propery remove this monitor from parent and call destroy on proxy
-		//property.removeMonitor(this);
+		((SimplePropertyImpl)property).removeMonitor(this);
 		if (proxy != null) {
 			proxy.destroy();
 		}
@@ -362,7 +363,23 @@ public class MonitorProxyWrapper<T, P extends SimpleProperty<T>> implements Resp
 			plistners.clear();
 		}
 		MonitorProxy p= proxy;
+		if (proxy != null) {
+			proxy.destroy();
+		}
 		return p;
+	}
+	
+	public Map<String, Object> getParameters() {
+		if (proxy instanceof ExpertMonitor) {
+			return ((ExpertMonitor)proxy).getParameters();
+		}
+		return null;
+	}
+	
+	public void setParameters(Map<String, Object> param) throws RemoteException {
+		if (proxy instanceof ExpertMonitor) {
+			((ExpertMonitor)proxy).setParameters(param);
+		}
 	}
 
 }

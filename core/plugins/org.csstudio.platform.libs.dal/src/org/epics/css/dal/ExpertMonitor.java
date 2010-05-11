@@ -34,7 +34,7 @@ import java.util.Map;
  * @author ikriznar
  *
  */
-public interface ExpertMonitor extends DynamicValueMonitor
+public interface ExpertMonitor extends SimpleMonitor
 {
 	/**
 	 * Returns currently acctive parameters. They are system implementation dependant.

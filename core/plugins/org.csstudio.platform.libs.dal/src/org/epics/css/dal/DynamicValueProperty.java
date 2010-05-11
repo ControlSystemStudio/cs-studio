@@ -77,7 +77,7 @@ public interface DynamicValueProperty<T> extends SimpleProperty<T>,
 	 *
 	 * @see ValueUpdateable#getSupportedParameters()
 	 */
-	public ExpertMonitor createNewExpertMonitor(DynamicValueListener<T, SimpleProperty<T>> listener,
+	public <E extends SimpleProperty<T>, M extends ExpertMonitor,DynamicValueMonitor> M createNewExpertMonitor(DynamicValueListener<T, E> listener,
 	    Map<String, Object> parameters) throws RemoteException;
 }
 

@@ -80,7 +80,6 @@ import org.epics.css.dal.proxy.PropertyProxy;
 import org.epics.css.dal.proxy.ProxyEvent;
 import org.epics.css.dal.proxy.ProxyListener;
 import org.epics.css.dal.proxy.SyncPropertyProxy;
-import org.epics.css.dal.simple.RemoteInfo;
 import org.epics.css.dal.simple.impl.DataUtil;
 
 import com.cosylab.epics.caj.CAJChannel;
@@ -93,1019 +92,1019 @@ import com.cosylab.util.BitCondition;
  * 
  */
 public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
-PropertyProxy<T>, SyncPropertyProxy<T>, DirectoryProxy,
-ConnectionListener, GetListener {
-    
-    /** C_CONDITION_WHEN_CLEARED characteristic for pattern channel */
-    public static BitCondition[] patternWhenCleared = new BitCondition[] {
-        BitCondition.UNUSED, BitCondition.UNUSED, BitCondition.UNUSED,
-        BitCondition.UNUSED, BitCondition.UNUSED, BitCondition.UNUSED,
-        BitCondition.UNUSED, BitCondition.UNUSED, BitCondition.UNUSED,
-        BitCondition.UNUSED, BitCondition.UNUSED, BitCondition.UNUSED,
-        BitCondition.UNUSED, BitCondition.UNUSED, BitCondition.UNUSED,
-        BitCondition.UNUSED
-    };
-    
-    /** C_CONDITION_WHEN_SET characteristic for pattern channel */
-    public static BitCondition[] patternWhenSet = new BitCondition[] {
-        BitCondition.OK, BitCondition.OK, BitCondition.OK,
-        BitCondition.OK, BitCondition.OK, BitCondition.OK,
-        BitCondition.OK, BitCondition.OK, BitCondition.OK,
-        BitCondition.OK, BitCondition.OK, BitCondition.OK,
-        BitCondition.OK, BitCondition.OK, BitCondition.OK,
-        BitCondition.OK
-    };
-    
-    /** C_BIT_DESCRIPTION characteristic for pattern channel */
-    public static String[] patternBitDescription = new String[] {
-        "bit 0", "bit 1", "bit 2", "bit 3", "bit 4", "bit 5", "bit 6",
-        "bit 7", "bit 8", "bit 9", "bit 10", "bit 11", "bit 12", "bit 13",
-        "bit 14", "bit 15"
-    };
-    
-    /** C_BIT_MASK characteristic for pattern channel */
-    public static BitSet patternBitMask = new BitSet(16);
-    {
-        patternBitMask.set(0, 16);
-    }
-    
-    protected Channel channel;
-    
-    protected DynamicValueCondition condition;
-    
-    protected List<MonitorProxyImpl> monitors = new ArrayList<MonitorProxyImpl>(1);
-    
-    protected DynamicValueState dbrState = DynamicValueState.NORMAL;
-    
-    protected DynamicValueState connState = DynamicValueState.LINK_NOT_AVAILABLE;
-    
-    protected String condDesc;
-    
-    protected EPICSPlug plug;
-    
-    protected Map<String, Object> characteristics = new CharacteristicsMap();
-    
-    protected DBRType type;
-    
-    protected Class<T> dataType;
-    
-    protected int elementCount;
-    
-    private ThreadPoolExecutor executor;
-    
-    private class CharacteristicsMap extends HashMap<String,Object>
-    {
-        private static final long serialVersionUID = 4768445313261300685L;
-        
-        public Object put (final String key, final Object value)
-        {
-            Object obj = super.put(key, value);
-            if (value!=null) {
-                if (value.equals(obj)) {
-                    return obj;
-                }
-            } else if (obj==null) {
-                return obj;
-            }
-            fireCharacteristicsChanged(new PropertyChangeEvent(PropertyProxyImpl.this,key,obj,value));
-            return obj;
-        }
-    }
-    /**
-     * Create a new proprty instance (channel).
-     * @param plug plug hosting this property.
-     * @param name name of the property.
-     * @param dataType java data type to work with.
-     * @param type channel type to work with.
-     * @throws RemoteException thrown on failure.
-     */
-    public PropertyProxyImpl(final EPICSPlug plug, final String name, final Class<T> dataType, final DBRType type) throws RemoteException {
-        super(name);
-        this.plug = plug;
-        
-        if (type.getValue() >= DBR_STS_String.TYPE.getValue())
-            throw new IllegalArgumentException("type must be value-only type");
-        
-        synchronized (this) {
-            this.type = type;
-            this.dataType = dataType;
-            condition = new DynamicValueCondition(EnumSet.of(DynamicValueState.LINK_NOT_AVAILABLE), 0, null);
-            // create channel
-            try {
-                this.channel = plug.getContext().createChannel(name, this);
-            } catch (Throwable th) {
-                throw new RemoteException(this, "Failed create CA channel", th);
-            }
-        }
-        
-        
-    }
-    
-    /*
-     * @see org.epics.css.dal.proxy.AbstractProxyImpl#destroy()
-     */
-    @Override
-    public synchronized void destroy() {
-        super.destroy();
-        
-        // destroy all monitors
-        destroyMonitors();
-        
-        if (channel.getConnectionState() != Channel.CLOSED) { // FIXME workaround because CAJChannel.removeConnectionListener throws IllegalStateException: "Channel closed."
-            try {
-                channel.removeConnectionListener(this);
-            } catch (IllegalStateException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (CAException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
-        // destory channel
-        channel.dispose();
-        
-        setConnectionState(ConnectionState.DESTROYED);
-    }
-    
-    /**
-     * Add monitor.
-     * @param monitor monitor to be added.
-     */
-    void addMonitor(final MonitorProxyImpl monitor)
-    {
-        synchronized (monitors) {
-            monitors.add(monitor);
-        }
-    }
-    
-    /**
-     * Remove monitor.
-     * @param monitor monitor to be removed.
-     */
-    void removeMonitor(final MonitorProxyImpl monitor)
-    {
-        synchronized (monitors) {
-            monitors.remove(monitor);
-        }
-    }
-    
-    /**
-     * Destroy all monitors.
-     */
-    private void destroyMonitors()
-    {
-        MonitorProxyImpl[] array;
-        synchronized (monitors) {
-            array = new MonitorProxyImpl[monitors.size()];
-            monitors.toArray(array);
-        }
-        
-        // destroy all
-        for (MonitorProxyImpl element : array)
-            element.destroy();
-    }
-    
-    /*
-     * @see org.epics.css.dal.proxy.PropertyProxy#getValueAsync(org.epics.css.dal.ResponseListener)
-     */
-    public Request<T> getValueAsync(final ResponseListener<T> callback)
-    throws DataExchangeException {
-        GetRequest<T> r = new GetRequest<T>(this, callback);
-        try {
-            channel.get(type, channel.getElementCount(), r);
-            plug.flushIO();
-        } catch (Exception e) {
-            r.addResponse(new ResponseImpl<T>(this, r, null, "value", false, e,
-                    condition, null, true));
-        }
-        return r;
-    }
-    
-    /*
-     * @see org.epics.css.dal.proxy.PropertyProxy#setValueAsync(T, org.epics.css.dal.ResponseListener)
-     */
-    public Request<T> setValueAsync(final T value, final ResponseListener<T> callback)
-    throws DataExchangeException {
-        PutRequest<T> r = new PutRequest<T>(this, callback, value);
-        try {
-            Object o = PlugUtilities.toDBRValue(value, channel.getFieldType());
-            if (channel instanceof CAJChannel)
-                ((CAJChannel) channel).put(PlugUtilities.toDBRType(value.getClass()), Array.getLength(o), o, r);
-            else {
-                // TODO workaround until Channel supports put(DBRType, int, Object, PutListener)
-                PlugUtilities.put(channel, o, r);
-            }
-            plug.flushIO();
-        } catch (Exception e) {
-            r.addResponse(new ResponseImpl<T>(this, r, value, "value", false, e,
-                    condition, null, true));
-        }
-        return r;
-    }
-    
-    /**
-     * Get listener implementation to implement sync. get.
-     */
-    private class GetListenerImpl implements GetListener {
-        volatile GetEvent event = null;
-        
-        public synchronized void getCompleted(final GetEvent ev) {
-            event = ev;
-            this.notifyAll();
-        }
-    }
-    /**
-     * Connection listener implementation to implement sync. get.
-     */
-    private class ConnectionListenerImpl implements ConnectionListener {
-        volatile ConnectionEvent event= null;
-        
-        public synchronized void connectionChanged(final ConnectionEvent arg0) {
-            event=arg0;
-            this.notifyAll();
-        }
-        
-    }
-    
-    /*
-     * @see org.epics.css.dal.proxy.SyncPropertyProxy#getValueSync()
-     */
-    public T getValueSync() throws DataExchangeException {
-        try
-        {
-            
-            GetListenerImpl listener = new GetListenerImpl();
-            synchronized (listener) {
-                channel.get(type, channel.getElementCount(), listener);
-                plug.flushIO();
-                
-                try {
-                    listener.wait((long) (plug.getTimeout() * 1000));
-                } catch (InterruptedException e) {
-                    // noop
-                }
-            }
-            
-            final GetEvent event = listener.event;
-            if (event == null)
-                throw new TimeoutException("Get timeout.");
-            
-            // status check
-            if (event.getStatus() != CAStatus.NORMAL)
-                throw new CAStatusException(event.getStatus(), "Get failed.");
-            
-            // sanity check
-            if (event.getDBR() == null)
-                throw new DataExchangeException(this, "Get failed.");
-            
-            return toJavaValue(event.getDBR());
-        } catch (CAException e) {
-            throw new DataExchangeException(this, "Get failed.", e);
-        } catch (TimeoutException e) {
-            throw new DataExchangeException(this, "Get failed with timeout.", e);
-        }
-    }
-    
-    /*
-     * @see org.epics.css.dal.proxy.SyncPropertyProxy#setValueSync(java.lang.Object)
-     */
-    public void setValueSync(final Object value) throws DataExchangeException {
-        try {
-            Object o = PlugUtilities.toDBRValue(value, channel.getFieldType());
-            if (channel instanceof CAJChannel)
-                ((CAJChannel) channel).put(PlugUtilities.toDBRType(value.getClass()), Array.getLength(o), o);
-            else {
-                // TODO workaround until Channel supports put(DBRType, int, Object)
-                PlugUtilities.put(channel, o);
-            }
-            // put does not affect on pendIO
-            plug.flushIO();
-        } catch (CAException e) {
-            throw new DataExchangeException(this, "Set failed.", e);
-        }
-    }
-    
-    
-    /*
-     * @see org.epics.css.dal.proxy.PropertyProxy#isSettable()
-     */
-    public boolean isSettable() {
-        return channel.getWriteAccess();
-    }
-    
-    /*
-     * @see org.epics.css.dal.proxy.PropertyProxy#createMonitor(org.epics.css.dal.ResponseListener)
-     */
-    public synchronized MonitorProxy createMonitor(final ResponseListener<T> callback, final RemoteInfo.ChangeType changeType)
-    throws RemoteException {
-        if (getConnectionState() == ConnectionState.DESTROYED)
-            throw new RemoteException(this, "Proxy destroyed.");
-        
-        try {
-            MonitorProxyImpl<T> m = new MonitorProxyImpl<T>(plug, this, callback, changeType);
-            monitors.add(m);
-            return m;
-        } catch (Throwable th) {
-            throw new RemoteException(this, "Failed to create new monitor.", th);
-        }
-    }
-    
-    /*
-     * @see org.epics.css.dal.proxy.PropertyProxy#getCondition()
-     */
-    public DynamicValueCondition getCondition() {
-        return condition;
-    }
-    
-    /**
-     * Intended for only within plug.
-     * 
-     * @param s new condition state.
-     */
-    protected void setCondition(final DynamicValueCondition s) {
-        condition = s;
-        String name = CharacteristicInfo.C_SEVERITY_INFO.getName();
-        if (characteristics.get(name) != null) {
-            characteristics.put(name, s);
-        }
-        fireCondition();
-    }
-    
-    
-    protected void fireCharacteristicsChanged(final PropertyChangeEvent ev)
-    {
-        ProxyListener[] l = (ProxyListener[])proxyListeners.toArray();
-        
-        for (ProxyListener element : l) {
-            try {
-                element.characteristicsChange(ev);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-    
-    /**
-     * Fires new condition event.
-     */
-    protected void fireCondition() {
-        if (proxyListeners == null) {
-            return;
-        }
-        
-        ProxyListener<T>[] l = (ProxyListener<T>[]) proxyListeners.toArray();
-        ProxyEvent<PropertyProxy<T>> ev = new ProxyEvent<PropertyProxy<T>>(this,
-                condition, connectionState, null);
-        
-        for (ProxyListener<T> element : l) {
-            try {
-                element.dynamicValueConditionChange(ev);
-            } catch (Throwable th) {
-                th.printStackTrace();
-            }
-        }
-    }
-    
-    /*
-     * @see DirectoryProxy#getCommandNames()
-     */
-    public String[] getCommandNames() throws DataExchangeException {
-        throw new UnsupportedOperationException("Property does not support commands.");
-    }
-    
-    /*
-     * @see DirectoryProxy#getCommandParameterTypes(String)
-     */
-    public Class[] getCommandParameterTypes(final String commandName) throws DataExchangeException {
-        throw new UnsupportedOperationException("Property does not support commands.");
-    }
-    
-    /*
-     * @see org.epics.css.dal.proxy.DirectoryProxy#getPropertyNames()
-     */
-    public String[] getPropertyNames() {
-        throw new UnsupportedOperationException("This is not device proxy.");
-    }
-    
-    /*
-     * @see org.epics.css.dal.proxy.DirectoryProxy#getPropertyType(java.lang.String)
-     */
-    public Class<? extends SimpleProperty<?>> getPropertyType(final String propertyName) {
-        throw new UnsupportedOperationException("This is not device proxy.");
-    }
-    
-    /**
-     * Characteristics async get listener.
-     * @see gov.aps.jca.event.GetListener#getCompleted(gov.aps.jca.event.GetEvent)
-     */
-    public  void getCompleted(final GetEvent ev) {
-        if (ev.getStatus() == CAStatus.NORMAL)
-            createCharacteristics(ev.getDBR());
-        else
-            createDefaultCharacteristics();
-        
-    }
-    
-    /**
-     * Creates default characteristics.
-     */
-    protected void createDefaultCharacteristics() {
-        createDefaultCharacteristics(true);
-    }
-    
-    /**
-     * Creates default characteristics.
-     */
-    protected void createDefaultCharacteristics(final boolean notify) {
-        synchronized (characteristics) {
-            characteristics.put(PropertyCharacteristics.C_DESCRIPTION, "EPICS Channel '" + name + "'");
-            characteristics.put(PropertyCharacteristics.C_DISPLAY_NAME, name);
-            characteristics.put(PropertyCharacteristics.C_POSITION, new Double(0));
-            characteristics.put(PropertyCharacteristics.C_PROPERTY_TYPE, "property");
-            characteristics.put(NumericPropertyCharacteristics.C_SCALE_TYPE, "linear");
-            
-            characteristics.put(SequencePropertyCharacteristics.C_SEQUENCE_LENGTH, new Integer(elementCount));
-            
-            if (channel!=null) {
-                DBRType ft= channel.getFieldType();
-                characteristics.put("fieldType",ft);
-                
-                if (ft.isENUM()) {
-                    characteristics.put(NumericPropertyCharacteristics.C_RESOLUTION, 0xF);
-                } else if (ft.isBYTE()) {
-                    characteristics.put(NumericPropertyCharacteristics.C_RESOLUTION, 0x8);
-                } else if (ft.isSHORT()) {
-                    characteristics.put(NumericPropertyCharacteristics.C_RESOLUTION, 0xFF);
-                } else {
-                    characteristics.put(NumericPropertyCharacteristics.C_RESOLUTION, 0xFFFF);
-                }
-                
-            } else {
-                characteristics.put(NumericPropertyCharacteristics.C_RESOLUTION, 0xFFFF);
-            }
-            
-            if (channel != null && getConnectionState() == ConnectionState.CONNECTED) {
-                characteristics.put(PropertyCharacteristics.C_ACCESS_TYPE,AccessType.getAccess(channel.getReadAccess(),channel.getWriteAccess()));
-                characteristics.put(PropertyCharacteristics.C_HOSTNAME, channel.getHostName());
-                characteristics.put(EpicsPropertyCharacteristics.EPICS_NUMBER_OF_ELEMENTS, channel.getElementCount());
-            } else {
-                characteristics.put(PropertyCharacteristics.C_ACCESS_TYPE,AccessType.NONE);
-                characteristics.put(PropertyCharacteristics.C_HOSTNAME,"unknown");
-                characteristics.put(EpicsPropertyCharacteristics.EPICS_NUMBER_OF_ELEMENTS,1);
-            }
-            characteristics.put(PropertyCharacteristics.C_DATATYPE,PlugUtilities.getDataType(null));
-            
-            //characteristics.put(NumericPropertyCharacteristics.C_SCALE_TYPE, );
-            
-            characteristics.put(PatternPropertyCharacteristics.C_CONDITION_WHEN_SET, patternWhenSet);
-            characteristics.put(PatternPropertyCharacteristics.C_CONDITION_WHEN_CLEARED, patternWhenCleared);
-            
-            characteristics.put(PatternPropertyCharacteristics.C_BIT_MASK, patternBitMask);
-            characteristics.put(PatternPropertyCharacteristics.C_BIT_DESCRIPTIONS, patternBitDescription);
-            
-            if (notify)
-                characteristics.notifyAll();
-        }
-    }
-    
-    /**
-     * Creates characteristics from given DBR.
-     * @param dbr DBR containign characteristics.
-     */
-    protected void createCharacteristics(final DBR dbr)
-    {
-        synchronized (characteristics) {
-            createDefaultCharacteristics(false);
-            
-            
-            if (dbr.isCTRL())
-            {
-                CTRL gr = (CTRL)dbr;
-                characteristics.put(NumericPropertyCharacteristics.C_UNITS, gr.getUnits());
-                characteristics.put(EpicsPropertyCharacteristics.EPICS_UNITS, gr.getUnits());
-                
-                // Integer -> Long needed here
-                if (dbr.isINT())
-                {
-                    characteristics.put(NumericPropertyCharacteristics.C_MINIMUM, new Long(gr.getLowerCtrlLimit().longValue()));
-                    characteristics.put(NumericPropertyCharacteristics.C_MAXIMUM, new Long(gr.getUpperCtrlLimit().longValue()));
-                    
-                    characteristics.put(NumericPropertyCharacteristics.C_GRAPH_MIN, new Long(gr.getLowerDispLimit().longValue()));
-                    characteristics.put(NumericPropertyCharacteristics.C_GRAPH_MAX, new Long(gr.getUpperDispLimit().longValue()));
-                    
-                    characteristics.put(NumericPropertyCharacteristics.C_WARNING_MIN, new Long(gr.getLowerWarningLimit().longValue()));
-                    characteristics.put(NumericPropertyCharacteristics.C_WARNING_MAX, new Long(gr.getUpperWarningLimit().longValue()));
-                    
-                    characteristics.put(NumericPropertyCharacteristics.C_ALARM_MIN, new Long(gr.getLowerAlarmLimit().longValue()));
-                    characteristics.put(NumericPropertyCharacteristics.C_ALARM_MAX, new Long(gr.getUpperAlarmLimit().longValue()));
-                    
-                    
-                }
-                else
-                {
-                    characteristics.put(NumericPropertyCharacteristics.C_MINIMUM, gr.getLowerCtrlLimit());
-                    characteristics.put(NumericPropertyCharacteristics.C_MAXIMUM, gr.getUpperCtrlLimit());
-                    
-                    characteristics.put(NumericPropertyCharacteristics.C_GRAPH_MIN, gr.getLowerDispLimit());
-                    characteristics.put(NumericPropertyCharacteristics.C_GRAPH_MAX, gr.getUpperDispLimit());
-                    
-                    characteristics.put(NumericPropertyCharacteristics.C_WARNING_MIN, gr.getLowerWarningLimit());
-                    characteristics.put(NumericPropertyCharacteristics.C_WARNING_MAX, gr.getUpperWarningLimit());
-                    
-                    characteristics.put(NumericPropertyCharacteristics.C_ALARM_MIN, gr.getLowerAlarmLimit());
-                    characteristics.put(NumericPropertyCharacteristics.C_ALARM_MAX, gr.getUpperAlarmLimit());
-                }
-                
-                characteristics.put(EpicsPropertyCharacteristics.EPICS_MIN, characteristics.get(NumericPropertyCharacteristics.C_MINIMUM));
-                characteristics.put(EpicsPropertyCharacteristics.EPICS_MAX, characteristics.get(NumericPropertyCharacteristics.C_MAXIMUM));
-                
-                characteristics.put(EpicsPropertyCharacteristics.EPICS_OPR_MIN, characteristics.get(NumericPropertyCharacteristics.C_GRAPH_MIN));
-                characteristics.put(EpicsPropertyCharacteristics.EPICS_OPR_MAX, characteristics.get(NumericPropertyCharacteristics.C_GRAPH_MAX));
-                
-                characteristics.put(EpicsPropertyCharacteristics.EPICS_WARNING_MAX, characteristics.get(NumericPropertyCharacteristics.C_WARNING_MAX));
-                characteristics.put(EpicsPropertyCharacteristics.EPICS_WARNING_MIN, characteristics.get(NumericPropertyCharacteristics.C_WARNING_MIN));
-                
-                characteristics.put(EpicsPropertyCharacteristics.EPICS_ALARM_MAX, characteristics.get(NumericPropertyCharacteristics.C_ALARM_MAX));
-                characteristics.put(EpicsPropertyCharacteristics.EPICS_ALARM_MIN, characteristics.get(NumericPropertyCharacteristics.C_ALARM_MIN));
-                
-                //				int resolution = ((Number) characteristics.get(NumericPropertyCharacteristics.C_RESOLUTION)).intValue();
-                //				characteristics.put(CharacteristicInfo.C_META_DATA.getName(), DataUtil.createNumericMetaData(
-                //						gr.getLowerDispLimit().doubleValue(), gr.getUpperDispLimit().doubleValue(),
-                //						gr.getLowerWarningLimit().doubleValue(), gr.getUpperWarningLimit().doubleValue(),
-                //						gr.getLowerAlarmLimit().doubleValue(), gr.getUpperAlarmLimit().doubleValue(),
-                //						resolution, gr.getUnits()));
-                
-            } else {
-                characteristics.put(NumericPropertyCharacteristics.C_UNITS, "N/A");
-            }
-            
-            if (dbr.isPRECSION())
-            {
-                short precision = ((PRECISION)dbr).getPrecision();
-                characteristics.put(NumericPropertyCharacteristics.C_FORMAT, "%."  + precision + "f");
-            }
-            else if (dbr.isSTRING())
-                characteristics.put(NumericPropertyCharacteristics.C_FORMAT, "%s");
-            else
-                characteristics.put(NumericPropertyCharacteristics.C_FORMAT, "%d");
-            
-            if (dbr.isLABELS())
-            {
-                String[] labels = ((LABELS)dbr).getLabels();
-                characteristics.put(EnumPropertyCharacteristics.C_ENUM_DESCRIPTIONS, labels);
-                
-                characteristics.put(PatternPropertyCharacteristics.C_BIT_DESCRIPTIONS, labels);
-                
-                // create array of values (Long values)
-                Object[] values = new Object[labels.length];
-                for (int i = 0; i < values.length; i++)
-                    values[i] = new Long(i);
-                
-                characteristics.put(EnumPropertyCharacteristics.C_ENUM_VALUES, values);
-                
-                //				characteristics.put(CharacteristicInfo.C_META_DATA.getName(), DataUtil.createEnumeratedMetaData(labels,values));
-                
-            }
-            
-            characteristics.put(PropertyCharacteristics.C_ACCESS_TYPE,channel != null ? AccessType.getAccess(channel.getReadAccess(),channel.getWriteAccess()) : AccessType.NONE);
-            characteristics.put(PropertyCharacteristics.C_HOSTNAME,channel != null ? channel.getHostName() : "unknown");
-            characteristics.put(EpicsPropertyCharacteristics.EPICS_NUMBER_OF_ELEMENTS, channel != null ? channel.getElementCount() : 1);
-            characteristics.put(PropertyCharacteristics.C_DATATYPE,PlugUtilities.getDataType(dbr.getType()));
-            if(dbr.isSTS()) {
-                DynamicValueCondition condition = createCondition((STS)dbr,false);
-                characteristics.put(CharacteristicInfo.C_SEVERITY_INFO.getName(), condition);
-            } else {
-                characteristics.put(CharacteristicInfo.C_SEVERITY_INFO.getName(), getCondition());
-            }
-            createSpecificCharacteristics(dbr);
-            
-            characteristics.put(CharacteristicInfo.C_META_DATA.getName(), DataUtil.createMetaData(characteristics));
-            
-            characteristics.notifyAll();
-        }
-    }
-    
-    protected void createSpecificCharacteristics(final DBR dbr) {
-        // specific prosy implementation may override this and provide own characteristic initialization
-    }
-    
-    /**
-     * Initiate characteristics search.
-     */
-    protected void initializeCharacteristics()
-    {
-        if (channel.getConnectionState() != Channel.CONNECTED)
-            return;
-        
-        elementCount = channel.getElementCount();
-        
-        // convert to CTRL value
-        final int CTRL_OFFSET = 28;
-        DBRType ctrlType = DBRType.forValue(type.getValue() + CTRL_OFFSET);
-        characteristicsRequestTimestamp = System.currentTimeMillis();
-        try {
-            channel.get(ctrlType, 1, this);
-            plug.flushIO();
-        } catch (Throwable th) {
-            createDefaultCharacteristics();
-        }
-    }
-    
-    protected static final long CHARACTERISTICS_TIMEOUT = 5000;
-    protected long characteristicsRequestTimestamp = System.currentTimeMillis();
-    
-    /*
-     * @see DirectoryProxy#getCharacteristicNames()
-     */
-    public String[] getCharacteristicNames() throws DataExchangeException {
-        synchronized (characteristics)
-        {
-            // characteristics not iniialized yet... wait
-            if (characteristics.size() == 0)
-            {
-                initializeCharacteristics();
-                long timeToWait = CHARACTERISTICS_TIMEOUT - (System.currentTimeMillis() - characteristicsRequestTimestamp);
-                if (timeToWait > 0)
-                {
-                    try {
-                        characteristics.wait(timeToWait);
-                    } catch (InterruptedException e) {
-                        // noop
-                    }
-                }
-                
-                // nothing yet... create default ones
-                if (characteristics.size() == 0)
-                    createDefaultCharacteristics();
-            }
-            
-            // get names
-            String[] names = new String[characteristics.size()];
-            characteristics.keySet().toArray(names);
-            return names;
-        }
-    }
-    
-    /*
-     * @see DirectoryProxy#getCharacteristic(String)
-     */
-    public Object getCharacteristic(final String characteristicName)
-    throws DataExchangeException {
-        if (characteristicName == null)
-            return null;
-        synchronized (characteristics)
-        {
-            // characteristics not iniialized yet... wait
-            if (characteristics.size() == 0)
-            {
-                initializeCharacteristics();
-                long timeToWait = CHARACTERISTICS_TIMEOUT - (System.currentTimeMillis() - characteristicsRequestTimestamp);
-                if (timeToWait > 0)
-                {
-                    try {
-                        characteristics.wait(timeToWait);
-                    } catch (InterruptedException e) {
-                        // noop
-                    }
-                }
-                
-                // nothing yet... create default ones
-                if (characteristics.size() == 0)
-                    createDefaultCharacteristics();
-            }
-            
-            Object ch = characteristics.get(characteristicName);
-            if (ch == null && characteristicName.length() <= 4) {
-                ch = getCharacteristicFromField(characteristicName);
-                characteristics.put(characteristicName, ch);
-            }
-            return PropertyUtilities.verifyCharacteristic(this, characteristicName, ch);
-        }
-    }
-    
-    private Object getCharacteristicFromField(final String characteristicName) {
-        if (channel.getConnectionState() != Channel.CONNECTED)
-            return null;
-        
-        GetListenerImpl listener = new GetListenerImpl();
+		PropertyProxy<T>, SyncPropertyProxy<T>, DirectoryProxy,
+		ConnectionListener, GetListener {
+	
+	/** C_CONDITION_WHEN_CLEARED characteristic for pattern channel */
+	public static BitCondition[] patternWhenCleared = new BitCondition[] {
+			BitCondition.UNUSED, BitCondition.UNUSED, BitCondition.UNUSED,
+			BitCondition.UNUSED, BitCondition.UNUSED, BitCondition.UNUSED,
+			BitCondition.UNUSED, BitCondition.UNUSED, BitCondition.UNUSED,
+			BitCondition.UNUSED, BitCondition.UNUSED, BitCondition.UNUSED,
+			BitCondition.UNUSED, BitCondition.UNUSED, BitCondition.UNUSED,
+			BitCondition.UNUSED
+		};
+
+	/** C_CONDITION_WHEN_SET characteristic for pattern channel */
+	public static BitCondition[] patternWhenSet = new BitCondition[] {
+			BitCondition.OK, BitCondition.OK, BitCondition.OK, 
+			BitCondition.OK, BitCondition.OK, BitCondition.OK, 
+			BitCondition.OK, BitCondition.OK, BitCondition.OK,
+			BitCondition.OK, BitCondition.OK, BitCondition.OK, 
+			BitCondition.OK, BitCondition.OK, BitCondition.OK,
+			BitCondition.OK
+		};
+
+	/** C_BIT_DESCRIPTION characteristic for pattern channel */
+	public static String[] patternBitDescription = new String[] {
+			"bit 0", "bit 1", "bit 2", "bit 3", "bit 4", "bit 5", "bit 6",
+			"bit 7", "bit 8", "bit 9", "bit 10", "bit 11", "bit 12", "bit 13",
+			"bit 14", "bit 15"
+		};
+
+	/** C_BIT_MASK characteristic for pattern channel */
+	public static BitSet patternBitMask = new BitSet(16);
+	{
+		patternBitMask.set(0, 16);
+	}
+
+	protected Channel channel;
+
+	protected DynamicValueCondition condition;
+
+	protected List<MonitorProxyImpl> monitors = new ArrayList<MonitorProxyImpl>(1);
+
+	protected DynamicValueState dbrState = DynamicValueState.NORMAL;
+
+	protected DynamicValueState connState = DynamicValueState.LINK_NOT_AVAILABLE;
+
+	protected String condDesc;
+
+	protected EPICSPlug plug;
+	
+	protected Map<String, Object> characteristics = new CharacteristicsMap();
+	
+	protected DBRType type;
+	
+	protected Class<T> dataType;
+
+	protected int elementCount;
+	
+	private ThreadPoolExecutor executor;
+	
+	private class CharacteristicsMap extends HashMap<String,Object>
+	{
+		private static final long serialVersionUID = 4768445313261300685L;
+
+		public Object put (String key, Object value)
+		{
+			Object obj = super.put(key, value);
+			if (value!=null) {
+				if (value.equals(obj)) {
+					return obj;
+				}
+			} else if (obj==null) {
+				return obj;
+			}
+			fireCharacteristicsChanged(new PropertyChangeEvent(PropertyProxyImpl.this,key,obj,value));
+			return obj;
+		}
+	}
+	/**
+	 * Create a new proprty instance (channel).
+	 * @param plug plug hosting this property.
+	 * @param name name of the property.
+	 * @param dataType java data type to work with.
+	 * @param type channel type to work with.
+	 * @throws RemoteException thrown on failure.
+	 */
+	public PropertyProxyImpl(EPICSPlug plug, String name, Class<T> dataType, DBRType type) throws RemoteException {
+		super(name);
+		this.plug = plug;
+
+		if (type.getValue() >= DBR_STS_String.TYPE.getValue())
+			throw new IllegalArgumentException("type must be value-only type");
+		
+		synchronized (this) {
+			this.type = type;
+			this.dataType = dataType;
+			condition = new DynamicValueCondition(EnumSet.of(DynamicValueState.LINK_NOT_AVAILABLE), 0, null);
+			// create channel
+			try {
+				this.channel = plug.getContext().createChannel(name, this);
+			} catch (Throwable th) {
+				throw new RemoteException(this, "Failed create CA channel", th);
+			}
+		}
+
+		
+	}
+
+	/*
+	 * @see org.epics.css.dal.proxy.AbstractProxyImpl#destroy()
+	 */
+	@Override
+	public synchronized void destroy() {
+		super.destroy();
+
+		// destroy all monitors
+		destroyMonitors();
+		
+		if (channel.getConnectionState() != Channel.CLOSED) { // FIXME workaround because CAJChannel.removeConnectionListener throws IllegalStateException: "Channel closed."
+			try {
+				channel.removeConnectionListener(this);
+			} catch (IllegalStateException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (CAException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		// destory channel
+		channel.dispose();
+		
+		setConnectionState(ConnectionState.DESTROYED);
+	}
+
+	/**
+	 * Add monitor.
+	 * @param monitor monitor to be added.
+	 */
+	void addMonitor(MonitorProxyImpl monitor)
+	{
+		synchronized (monitors) {
+			monitors.add(monitor);
+		}
+	}
+	
+	/**
+	 * Remove monitor.
+	 * @param monitor monitor to be removed.
+	 */
+	void removeMonitor(MonitorProxyImpl monitor)
+	{
+		synchronized (monitors) {
+			monitors.remove(monitor);
+		}
+	}
+
+	/**
+	 * Destroy all monitors.
+	 */
+	private void destroyMonitors()
+	{
+		MonitorProxyImpl[] array;
+		synchronized (monitors) {
+			array = new MonitorProxyImpl[monitors.size()];
+			monitors.toArray(array);
+		}
+		
+		// destroy all
+		for (int i = 0; i < array.length; i++)
+			array[i].destroy();
+	}
+	
+	/*
+	 * @see org.epics.css.dal.proxy.PropertyProxy#getValueAsync(org.epics.css.dal.ResponseListener)
+	 */
+	public Request<T> getValueAsync(ResponseListener<T> callback)
+			throws DataExchangeException {
+		GetRequest<T> r = new GetRequest<T>(this, callback);
+		try {
+			channel.get(type, channel.getElementCount(), r);
+			plug.flushIO();
+		} catch (Exception e) {
+			r.addResponse(new ResponseImpl<T>(this, r, null, "value", false, e,
+					condition, null, true));
+		}
+		return r;
+	}
+
+	/*
+	 * @see org.epics.css.dal.proxy.PropertyProxy#setValueAsync(T, org.epics.css.dal.ResponseListener)
+	 */
+	public Request<T> setValueAsync(T value, ResponseListener<T> callback)
+			throws DataExchangeException {
+		PutRequest<T> r = new PutRequest<T>(this, callback, value);
+		try {
+			Object o = PlugUtilities.toDBRValue(value, channel.getFieldType());
+			if (channel instanceof CAJChannel) 
+				((CAJChannel) channel).put(PlugUtilities.toDBRType(value.getClass()), Array.getLength(o), o, r);
+			else {
+				// TODO workaround until Channel supports put(DBRType, int, Object, PutListener)
+				PlugUtilities.put(channel, o, r);
+			}
+			plug.flushIO();
+		} catch (Exception e) {
+			r.addResponse(new ResponseImpl<T>(this, r, value, "value", false, e,
+					condition, null, true));
+		}
+		return r;
+	}
+
+	/**
+	 * Get listener implementation to implement sync. get.  
+	 */
+	private class GetListenerImpl implements GetListener {
+		volatile GetEvent event = null;
+
+		public synchronized void getCompleted(GetEvent ev) {
+			event = ev;
+			this.notifyAll();
+		}
+	}
+	/**
+	 * Connection listener implementation to implement sync. get.  
+	 */
+	private class ConnectionListenerImpl implements ConnectionListener {
+		volatile ConnectionEvent event= null;
+
+		public synchronized void connectionChanged(ConnectionEvent arg0) {
+			event=arg0;
+			this.notifyAll();
+		}
+
+	}
+	
+	/*
+	 * @see org.epics.css.dal.proxy.SyncPropertyProxy#getValueSync()
+	 */
+	public T getValueSync() throws DataExchangeException {
+		try 
+		{
+
+			GetListenerImpl listener = new GetListenerImpl();
+	         synchronized (listener) {
+				channel.get(type, channel.getElementCount(), listener);
+				plug.flushIO();
+
+				try {
+					listener.wait((long) (plug.getTimeout() * 1000));
+				} catch (InterruptedException e) {
+					// noop
+				}
+			}
+
+			final GetEvent event = listener.event;
+			if (event == null)
+				throw new TimeoutException("Get timeout.");
+
+			// status check
+			if (event.getStatus() != CAStatus.NORMAL)
+				throw new CAStatusException(event.getStatus(), "Get failed.");
+
+			// sanity check
+			if (event.getDBR() == null)
+				throw new DataExchangeException(this, "Get failed.");
+			
+			return toJavaValue(event.getDBR());
+		} catch (CAException e) {
+			throw new DataExchangeException(this, "Get failed.", e);
+		} catch (TimeoutException e) {
+			throw new DataExchangeException(this, "Get failed with timeout.", e);
+		}
+	}
+
+	/*
+	 * @see org.epics.css.dal.proxy.SyncPropertyProxy#setValueSync(java.lang.Object)
+	 */
+	public void setValueSync(Object value) throws DataExchangeException {
+		try {
+			Object o = PlugUtilities.toDBRValue(value, channel.getFieldType());
+			if (channel instanceof CAJChannel) 
+				((CAJChannel) channel).put(PlugUtilities.toDBRType(value.getClass()), Array.getLength(o), o);
+			else {
+				// TODO workaround until Channel supports put(DBRType, int, Object)
+				PlugUtilities.put(channel, o);
+			}
+			// put does not affect on pendIO
+			plug.flushIO();
+		} catch (CAException e) {
+			throw new DataExchangeException(this, "Set failed.", e);
+		}
+	}
+
+
+	/*
+	 * @see org.epics.css.dal.proxy.PropertyProxy#isSettable()
+	 */
+	public boolean isSettable() {
+		return channel.getWriteAccess();
+	}
+
+	/*
+	 * @see org.epics.css.dal.proxy.PropertyProxy#createMonitor(org.epics.css.dal.ResponseListener)
+	 */
+	public synchronized MonitorProxy createMonitor(ResponseListener<T> callback, Map<String,Object> param)
+			throws RemoteException {
+
+		if (getConnectionState() == ConnectionState.DESTROYED)
+			throw new RemoteException(this, "Proxy destroyed.");
+		try {
+			MonitorProxyImpl<T> m = new MonitorProxyImpl<T>(plug, this, callback, param);
+			monitors.add(m);
+			return m;
+		} catch (Throwable th) {
+			throw new RemoteException(this, "Failed to create new monitor.", th);
+		}
+	}
+
+	/*
+	 * @see org.epics.css.dal.proxy.PropertyProxy#getCondition()
+	 */
+	public DynamicValueCondition getCondition() {
+		return condition;
+	}
+
+	/**
+	 * Intended for only within plug.
+	 * 
+	 * @param s new condition state.
+	 */
+	protected void setCondition(DynamicValueCondition s) {
+		condition = s;
+		String name = CharacteristicInfo.C_SEVERITY_INFO.getName();
+		if (characteristics.get(name) != null) {
+			characteristics.put(name, s);
+		}
+		fireCondition();
+	}
+
+	
+	protected void fireCharacteristicsChanged(PropertyChangeEvent ev)
+	{
+		ProxyListener[] l = (ProxyListener[])proxyListeners.toArray();
+
+		for (int i = 0; i < l.length; i++) {
+			try {
+				l[i].characteristicsChange(ev);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	/**
+	 * Fires new condition event.
+	 */
+	protected void fireCondition() {
+		if (proxyListeners == null) {
+			return;
+		}
+
+		ProxyListener<T>[] l = (ProxyListener<T>[]) proxyListeners.toArray();
+		ProxyEvent<PropertyProxy<T>> ev = new ProxyEvent<PropertyProxy<T>>(this,
+				condition, connectionState, null);
+
+		for (int i = 0; i < l.length; i++) {
+			try {
+				l[i].dynamicValueConditionChange(ev);
+			} catch (Throwable th) {
+				th.printStackTrace();
+			}
+		}
+	}
+
+	/*
+	 * @see DirectoryProxy#getCommandNames()
+	 */
+	public String[] getCommandNames() throws DataExchangeException {
+		throw new UnsupportedOperationException("Property does not support commands.");
+	}
+
+	/*
+	 * @see DirectoryProxy#getCommandParameterTypes(String)
+	 */
+	public Class[] getCommandParameterTypes(String commandName) throws DataExchangeException {
+		throw new UnsupportedOperationException("Property does not support commands.");
+	}
+
+	/*
+	 * @see org.epics.css.dal.proxy.DirectoryProxy#getPropertyNames()
+	 */
+	public String[] getPropertyNames() {
+		throw new UnsupportedOperationException("This is not device proxy.");
+	}
+
+	/*
+	 * @see org.epics.css.dal.proxy.DirectoryProxy#getPropertyType(java.lang.String)
+	 */
+	public Class<? extends SimpleProperty<?>> getPropertyType(String propertyName) {
+		throw new UnsupportedOperationException("This is not device proxy.");
+	}
+
+	/**
+	 * Characteristics async get listener.
+	 * @see gov.aps.jca.event.GetListener#getCompleted(gov.aps.jca.event.GetEvent)
+	 */
+	public  void getCompleted(GetEvent ev) {
+		if (ev.getStatus() == CAStatus.NORMAL)
+			createCharacteristics(ev.getDBR());
+		else
+			createDefaultCharacteristics();
+			
+	}
+
+	/**
+	 * Creates default characteristics.
+	 */
+	protected void createDefaultCharacteristics() {
+		createDefaultCharacteristics(true);
+	}
+
+	/**
+	 * Creates default characteristics.
+	 */
+	protected void createDefaultCharacteristics(boolean notify) {
+		synchronized (characteristics) {
+			characteristics.put(PropertyCharacteristics.C_DESCRIPTION, "EPICS Channel '" + name + "'");
+			characteristics.put(PropertyCharacteristics.C_DISPLAY_NAME, name);
+			characteristics.put(PropertyCharacteristics.C_POSITION, new Double(0));
+			characteristics.put(PropertyCharacteristics.C_PROPERTY_TYPE, "property");
+			characteristics.put(NumericPropertyCharacteristics.C_SCALE_TYPE, "linear");
+
+			characteristics.put(SequencePropertyCharacteristics.C_SEQUENCE_LENGTH, new Integer(elementCount));
+
+			if (channel!=null) {
+				DBRType ft= channel.getFieldType();
+				characteristics.put("fieldType",ft);
+				
+				if (ft.isENUM()) {
+				characteristics.put(NumericPropertyCharacteristics.C_RESOLUTION, 0xF);
+				} else if (ft.isBYTE()) {
+					characteristics.put(NumericPropertyCharacteristics.C_RESOLUTION, 0x8);
+				} else if (ft.isSHORT()) {
+					characteristics.put(NumericPropertyCharacteristics.C_RESOLUTION, 0xFF);
+				} else {
+					characteristics.put(NumericPropertyCharacteristics.C_RESOLUTION, 0xFFFF);
+				}
+				
+			} else {
+				characteristics.put(NumericPropertyCharacteristics.C_RESOLUTION, 0xFFFF);
+			}
+			
+			if (channel != null && getConnectionState() == ConnectionState.CONNECTED) {
+				characteristics.put(PropertyCharacteristics.C_ACCESS_TYPE,AccessType.getAccess(channel.getReadAccess(),channel.getWriteAccess()));
+				characteristics.put(PropertyCharacteristics.C_HOSTNAME, channel.getHostName());
+				characteristics.put(EpicsPropertyCharacteristics.EPICS_NUMBER_OF_ELEMENTS, channel.getElementCount());
+			} else {
+				characteristics.put(PropertyCharacteristics.C_ACCESS_TYPE,AccessType.NONE);
+				characteristics.put(PropertyCharacteristics.C_HOSTNAME,"unknown");
+				characteristics.put(EpicsPropertyCharacteristics.EPICS_NUMBER_OF_ELEMENTS,1);
+			}
+			characteristics.put(PropertyCharacteristics.C_DATATYPE,PlugUtilities.getDataType(null));
+
+			//characteristics.put(NumericPropertyCharacteristics.C_SCALE_TYPE, );
+
+			characteristics.put(PatternPropertyCharacteristics.C_CONDITION_WHEN_SET, patternWhenSet);
+			characteristics.put(PatternPropertyCharacteristics.C_CONDITION_WHEN_CLEARED, patternWhenCleared);
+
+			characteristics.put(PatternPropertyCharacteristics.C_BIT_MASK, patternBitMask);
+			characteristics.put(PatternPropertyCharacteristics.C_BIT_DESCRIPTIONS, patternBitDescription);
+			
+			if (notify)
+				characteristics.notifyAll();
+		}
+	}
+
+	/**
+	 * Creates characteristics from given DBR.
+	 * @param dbr DBR containign characteristics.
+	 */
+	protected void createCharacteristics(DBR dbr)
+	{
+		synchronized (characteristics) {
+			createDefaultCharacteristics(false);
+	
+
+			if (dbr.isCTRL())
+			{
+				CTRL gr = (CTRL)dbr;
+				characteristics.put(NumericPropertyCharacteristics.C_UNITS, gr.getUnits());
+				characteristics.put(EpicsPropertyCharacteristics.EPICS_UNITS, gr.getUnits());
+				
+				// Integer -> Long needed here
+				if (dbr.isINT())
+				{
+					characteristics.put(NumericPropertyCharacteristics.C_MINIMUM, new Long(gr.getLowerCtrlLimit().longValue()));
+					characteristics.put(NumericPropertyCharacteristics.C_MAXIMUM, new Long(gr.getUpperCtrlLimit().longValue()));
+
+					characteristics.put(NumericPropertyCharacteristics.C_GRAPH_MIN, new Long(gr.getLowerDispLimit().longValue()));
+					characteristics.put(NumericPropertyCharacteristics.C_GRAPH_MAX, new Long(gr.getUpperDispLimit().longValue()));
+					
+					characteristics.put(NumericPropertyCharacteristics.C_WARNING_MIN, new Long(gr.getLowerWarningLimit().longValue()));
+					characteristics.put(NumericPropertyCharacteristics.C_WARNING_MAX, new Long(gr.getUpperWarningLimit().longValue()));
+					
+					characteristics.put(NumericPropertyCharacteristics.C_ALARM_MIN, new Long(gr.getLowerAlarmLimit().longValue()));
+					characteristics.put(NumericPropertyCharacteristics.C_ALARM_MAX, new Long(gr.getUpperAlarmLimit().longValue()));
+					
+										
+				}
+				else
+				{
+					characteristics.put(NumericPropertyCharacteristics.C_MINIMUM, gr.getLowerCtrlLimit());
+					characteristics.put(NumericPropertyCharacteristics.C_MAXIMUM, gr.getUpperCtrlLimit());
+
+					characteristics.put(NumericPropertyCharacteristics.C_GRAPH_MIN, gr.getLowerDispLimit());
+					characteristics.put(NumericPropertyCharacteristics.C_GRAPH_MAX, gr.getUpperDispLimit());
+
+					characteristics.put(NumericPropertyCharacteristics.C_WARNING_MIN, gr.getLowerWarningLimit());
+					characteristics.put(NumericPropertyCharacteristics.C_WARNING_MAX, gr.getUpperWarningLimit());
+
+					characteristics.put(NumericPropertyCharacteristics.C_ALARM_MIN, gr.getLowerAlarmLimit());
+					characteristics.put(NumericPropertyCharacteristics.C_ALARM_MAX, gr.getUpperAlarmLimit());
+				}
+				
+				characteristics.put(EpicsPropertyCharacteristics.EPICS_MIN, characteristics.get(NumericPropertyCharacteristics.C_MINIMUM));
+				characteristics.put(EpicsPropertyCharacteristics.EPICS_MAX, characteristics.get(NumericPropertyCharacteristics.C_MAXIMUM));
+				
+				characteristics.put(EpicsPropertyCharacteristics.EPICS_OPR_MIN, characteristics.get(NumericPropertyCharacteristics.C_GRAPH_MIN));
+				characteristics.put(EpicsPropertyCharacteristics.EPICS_OPR_MAX, characteristics.get(NumericPropertyCharacteristics.C_GRAPH_MAX));
+				
+				characteristics.put(EpicsPropertyCharacteristics.EPICS_WARNING_MAX, characteristics.get(NumericPropertyCharacteristics.C_WARNING_MAX));
+				characteristics.put(EpicsPropertyCharacteristics.EPICS_WARNING_MIN, characteristics.get(NumericPropertyCharacteristics.C_WARNING_MIN));
+				
+				characteristics.put(EpicsPropertyCharacteristics.EPICS_ALARM_MAX, characteristics.get(NumericPropertyCharacteristics.C_ALARM_MAX));
+				characteristics.put(EpicsPropertyCharacteristics.EPICS_ALARM_MIN, characteristics.get(NumericPropertyCharacteristics.C_ALARM_MIN));
+				
+//				int resolution = ((Number) characteristics.get(NumericPropertyCharacteristics.C_RESOLUTION)).intValue();
+//				characteristics.put(CharacteristicInfo.C_META_DATA.getName(), DataUtil.createNumericMetaData(
+//						gr.getLowerDispLimit().doubleValue(), gr.getUpperDispLimit().doubleValue(), 
+//						gr.getLowerWarningLimit().doubleValue(), gr.getUpperWarningLimit().doubleValue(), 
+//						gr.getLowerAlarmLimit().doubleValue(), gr.getUpperAlarmLimit().doubleValue(), 
+//						resolution, gr.getUnits()));
+				
+			} else {
+				characteristics.put(NumericPropertyCharacteristics.C_UNITS, "N/A");
+			}
+			
+			if (dbr.isPRECSION())
+			{
+				short precision = ((PRECISION)dbr).getPrecision();
+				characteristics.put(NumericPropertyCharacteristics.C_FORMAT, "%."  + precision + "f");
+			}
+			else if (dbr.isSTRING())
+				characteristics.put(NumericPropertyCharacteristics.C_FORMAT, "%s");
+			else
+				characteristics.put(NumericPropertyCharacteristics.C_FORMAT, "%d");
+			
+			if (dbr.isLABELS())
+			{
+				String[] labels = ((LABELS)dbr).getLabels();
+				characteristics.put(EnumPropertyCharacteristics.C_ENUM_DESCRIPTIONS, labels);
+
+				characteristics.put(PatternPropertyCharacteristics.C_BIT_DESCRIPTIONS, labels);
+
+				// create array of values (Long values)
+				Object[] values = new Object[labels.length];
+				for (int i = 0; i < values.length; i++)
+					values[i] = new Long(i);
+				
+				characteristics.put(EnumPropertyCharacteristics.C_ENUM_VALUES, values);
+				
+//				characteristics.put(CharacteristicInfo.C_META_DATA.getName(), DataUtil.createEnumeratedMetaData(labels,values));
+
+			}
+			
+			characteristics.put(PropertyCharacteristics.C_ACCESS_TYPE,channel != null ? AccessType.getAccess(channel.getReadAccess(),channel.getWriteAccess()) : AccessType.NONE);
+			characteristics.put(PropertyCharacteristics.C_HOSTNAME,channel != null ? channel.getHostName() : "unknown");
+			characteristics.put(EpicsPropertyCharacteristics.EPICS_NUMBER_OF_ELEMENTS, channel != null ? channel.getElementCount() : 1);
+			characteristics.put(PropertyCharacteristics.C_DATATYPE,PlugUtilities.getDataType(dbr.getType()));
+			if(dbr.isSTS()) {
+				DynamicValueCondition condition = createCondition((STS)dbr,false);
+				characteristics.put(CharacteristicInfo.C_SEVERITY_INFO.getName(), condition);
+			} else {
+				characteristics.put(CharacteristicInfo.C_SEVERITY_INFO.getName(), getCondition());
+			}
+			createSpecificCharacteristics(dbr);
+
+			characteristics.put(CharacteristicInfo.C_META_DATA.getName(), DataUtil.createMetaData(characteristics));
+			
+			characteristics.notifyAll();
+		}
+	}
+	
+	protected void createSpecificCharacteristics(DBR dbr) {
+		// specific prosy implementation may override this and provide own characteristic initialization
+	}
+
+	/**
+	 * Initiate characteristics search.
+	 */
+	protected void initializeCharacteristics()
+	{
+		if (channel.getConnectionState() != Channel.CONNECTED)
+			return;
+		
+		elementCount = channel.getElementCount();
+		
+		// convert to CTRL value
+		final int CTRL_OFFSET = 28;
+		DBRType ctrlType = DBRType.forValue(type.getValue() + CTRL_OFFSET);
+		characteristicsRequestTimestamp = System.currentTimeMillis();		
+		try {
+			channel.get(ctrlType, 1, this);
+			plug.flushIO();
+		} catch (Throwable th) {
+			createDefaultCharacteristics();
+		}
+	}
+	
+	protected static final long CHARACTERISTICS_TIMEOUT = 5000;
+	protected long characteristicsRequestTimestamp = System.currentTimeMillis();
+	
+	/*
+	 * @see DirectoryProxy#getCharacteristicNames()
+	 */
+	public String[] getCharacteristicNames() throws DataExchangeException {
+		synchronized (characteristics)
+		{
+			// characteristics not iniialized yet... wait
+			if (characteristics.size() == 0)
+			{
+				initializeCharacteristics();
+				long timeToWait = CHARACTERISTICS_TIMEOUT - (System.currentTimeMillis() - characteristicsRequestTimestamp);
+				if (timeToWait > 0)
+				{
+					try {
+						characteristics.wait(timeToWait);
+					} catch (InterruptedException e) {
+						// noop
+					}
+				}
+				
+				// nothing yet... create default ones
+				if (characteristics.size() == 0)
+					createDefaultCharacteristics();
+			}
+			
+			// get names
+			String[] names = new String[characteristics.size()];
+			characteristics.keySet().toArray(names);
+			return names;
+		}
+	}
+
+	/*
+	 * @see DirectoryProxy#getCharacteristic(String)
+	 */
+	public Object getCharacteristic(String characteristicName)
+			throws DataExchangeException {
+		if (characteristicName == null)
+			return null;
+		synchronized (characteristics)
+		{
+			// characteristics not iniialized yet... wait
+			if (characteristics.size() == 0)
+			{
+				initializeCharacteristics();
+				long timeToWait = CHARACTERISTICS_TIMEOUT - (System.currentTimeMillis() - characteristicsRequestTimestamp);
+				if (timeToWait > 0)
+				{
+					try {
+						characteristics.wait(timeToWait);
+					} catch (InterruptedException e) {
+						// noop
+					}
+				}
+				
+				// nothing yet... create default ones
+				if (characteristics.size() == 0)
+					createDefaultCharacteristics();
+			}
+			
+			Object ch = characteristics.get(characteristicName);
+			if (ch == null && characteristicName.length() <= 4) {
+				ch = getCharacteristicFromField(characteristicName);
+				characteristics.put(characteristicName, ch);
+			}
+			return PropertyUtilities.verifyCharacteristic(this, characteristicName, ch);
+		}
+	}
+	
+	private Object getCharacteristicFromField(String characteristicName) {
+		if (channel.getConnectionState() != Channel.CONNECTED)
+			return null;
+		
+		GetListenerImpl listener = new GetListenerImpl();
         synchronized (listener) {
-            try {
-                CAJChannel ch=null;
-                ConnectionListenerImpl conn= new ConnectionListenerImpl();
-                synchronized (conn) {
-                    ch = (CAJChannel)plug.getContext().createChannel(name+"."+characteristicName,conn);
-                    if (ch.getConnectionState() != Channel.CONNECTED) {
-                        try {
-                            conn.wait((long) (plug.getTimeout() * 1000));
-                        } catch (InterruptedException e) {
-                            // noop
-                        }
-                    }
-                }
-                ch.get(1, listener);
-                plug.flushIO();
-                try {
-                    listener.wait((long) (plug.getTimeout() * 1000));
-                } catch (InterruptedException e) {
-                    // noop
-                }
-                ch.dispose();
-            } catch (IllegalStateException e1) {
-                e1.printStackTrace();
-            } catch (CAException e1) {
-                e1.printStackTrace();
-            }
-        }
-        
-        final GetEvent event = listener.event;
-        if (event == null || event.getStatus() != CAStatus.NORMAL || event.getDBR() == null) {
-            return null;
-        }
-        
-        return event.getDBR().getValue();
-    }
-    
-    
-    /*
-     * @see DirectoryProxy#getCharacteristics(String[], ResponseListener)
-     */
-    public Request<? extends Object> getCharacteristics(final String[] characteristics,
-                                                        final ResponseListener<? extends Object> callback) throws DataExchangeException {
-        final RequestImpl<Object> r = new RequestImpl<Object>(this, (ResponseListener<Object>) callback);
-        Runnable getCharsAsync = new Runnable () {
-            
-            public void run() {
-                for (String characteristic : characteristics) {
-                    Object value;
-                    try {
-                        value= PropertyUtilities.verifyCharacteristic(PropertyProxyImpl.this, characteristic, getCharacteristic(characteristic));
-                        r.addResponse(new ResponseImpl<Object>(PropertyProxyImpl.this, r,	value, characteristic,
-                                value != null, null, condition, null, true));
-                        
-                    } catch (DataExchangeException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-                }
-            }
-            
-        };
-        execute(getCharsAsync);
-        
-        return r;
-    }
-    
-    /**
-     * Convert DBR to Java value.
-     * @param dbr DBR to convert.
-     * @return converted Java value.
-     */
-    public final T toJavaValue(final DBR dbr) {
-        return PlugUtilities.toJavaValue(dbr, dataType, channel.getFieldType());
-    }
-    
-    /**
-     * Get CA channel.
-     * @return channel.
-     */
-    protected Channel getChannel() {
-        return channel;
-    }
-    
-    /**
-     * Get DBR type (used to query data).
-     * @return DBR type.
-     */
-    protected DBRType getType() {
-        return type;
-    }
-    
-    /**
-     * Update conditions.
-     * @param dbr status DBR.
-     */
-    void updateConditionWithDBRStatus(final STS dbr) {
-        createCondition(dbr, true);
-    }
-    
-    /**
-     * Creates the condition and notifies the listeners if requested.
-     * 
-     * @param dbr status DBR.
-     * @param notify if true the listeners will be notified about the change
-     * 			of condition otherwise the condition will be created and returned
-     */
-    private DynamicValueCondition createCondition(final STS dbr, final boolean notify) {
-        
-        Status st = dbr.getStatus();
-        Severity se = dbr.getSeverity();
-        
-        condDesc = st.getName();
-        
-        DynamicValueState dbrState = this.dbrState;
-        
-        if (se == Severity.NO_ALARM) {
-            dbrState = DynamicValueState.NORMAL;
-        } else if (se == Severity.MINOR_ALARM) {
-            dbrState = DynamicValueState.WARNING;
-        } else if (se == Severity.MAJOR_ALARM) {
-            dbrState = DynamicValueState.ALARM;
-        } else if (se == Severity.INVALID_ALARM) {
-            dbrState = DynamicValueState.ERROR;
-        }
-        
-        Timestamp timestamp = null;
-        //((TIME)dbr).getTimeStamp() != null - could happen
-        if (dbr instanceof TIME && ((TIME)dbr).getTimeStamp() != null) {
-            timestamp = PlugUtilities.convertTimestamp(((TIME) dbr).getTimeStamp());
-        }
-        
-        if (notify) {
-            return checkStates(dbrState, connState, timestamp);
-        } else {
-            return createCondition(dbrState, connState, timestamp);
-        }
-    }
-    
-    /*
-     * @see gov.aps.jca.event.ConnectionListener#connectionChanged(gov.aps.jca.event.ConnectionEvent)
-     */
-    public synchronized void connectionChanged(final ConnectionEvent event) {
-        Runnable connChangedRunnable = new Runnable () {
-            
-            public void run() {
-                //				 Maps JCA states to DAL states
-                gov.aps.jca.Channel.ConnectionState c= channel.getConnectionState();
-                if (c==null) {
-                    System.err.println(PropertyProxyImpl.class.getName()+": JCA connection state for "+channel.getName()+" is NULL, connection event ignored!");
-                    return;
-                }
-                if (c == gov.aps.jca.Channel.ConnectionState.CLOSED) {
-                    setConnectionState(ConnectionState.DESTROYED);
-                } else if (c == gov.aps.jca.Channel.ConnectionState.CONNECTED) {
-                    boolean init= getConnectionState()==ConnectionState.CONNECTION_LOST;
-                    setConnectionState(ConnectionState.CONNECTED);
-                    if (init) {
-                        initializeCharacteristics();
-                    }
-                } else if (c == gov.aps.jca.Channel.ConnectionState.DISCONNECTED) {
-                    setConnectionState(ConnectionState.CONNECTION_LOST);
-                } else if (c == gov.aps.jca.Channel.ConnectionState.NEVER_CONNECTED) {
-                    setConnectionState(ConnectionState.CONNECTING);
-                }
-            }
-            
-        };
-        
-        if (getPlug().getMaxThreads() == 0) {
-            execute(connChangedRunnable);
-        }
-        else if (!getExecutor().isShutdown()) {
-            execute(connChangedRunnable);
-        }
-    }
-    
-    /*
-     * @see org.epics.css.dal.proxy.AbstractProxyImpl#setConnectionState(org.epics.css.dal.context.ConnectionState)
-     */
-    @Override
-    protected void setConnectionState(final ConnectionState s) {
-        super.setConnectionState(s);
-        DynamicValueState connState = this.connState;
-        if (s == ConnectionState.CONNECTED) {
-            connState = DynamicValueState.NORMAL;
-            checkStates(dbrState, connState, null);
-        } else if (s == ConnectionState.DISCONNECTED) {
-            connState = DynamicValueState.LINK_NOT_AVAILABLE;
-            checkStates(dbrState, connState, null);
-        } else if (s == ConnectionState.CONNECTION_LOST) {
-            connState = DynamicValueState.LINK_NOT_AVAILABLE;
-            checkStates(dbrState, connState, null);
-        } else if (s == ConnectionState.DESTROYED) {
-            connState = DynamicValueState.LINK_NOT_AVAILABLE;
-            checkStates(dbrState, connState, null);
-            if (getPlug().getMaxThreads() != 0 && !getPlug().isUseCommonExecutor()) {
-                getExecutor().shutdown();
-                try {
-                    if (!getExecutor().awaitTermination(1, TimeUnit.SECONDS))
-                        getExecutor().shutdownNow();
-                } catch (InterruptedException ie) {  }
-            }
-        }
-    }
-    
-    /**
-     * Check states.
-     * @param timestamp
-     */
-    private DynamicValueCondition checkStates(final DynamicValueState dbrState, final DynamicValueState connState, final Timestamp timestamp) {
-        // noop check (state already reported)
-        DynamicValueCondition condition = createCondition(dbrState,connState,timestamp);
-        if (condition != null) {
-            setCondition(condition);
-        }
-        return condition;
-    }
-    
-    private DynamicValueCondition createCondition(final DynamicValueState dbrState, final DynamicValueState connState, final Timestamp timestamp) {
-        if (this.dbrState == dbrState && this.connState == connState
-                && equal(condDesc, condition.getDescription())) {
-            return getCondition();
-        }
-        
-        this.dbrState = dbrState;
-        this.connState = connState;
-        
-        EnumSet<DynamicValueState> en = null;
-        
-        if (dbrState == connState && connState == DynamicValueState.NORMAL) {
-            en = EnumSet.of(DynamicValueState.NORMAL);
-        } else {
-            if (dbrState != DynamicValueState.NORMAL) {
-                en = EnumSet.of(dbrState);
-            }
-            if (connState != DynamicValueState.NORMAL) {
-                if (en == null) {
-                    en = EnumSet.of(connState);
-                } else {
-                    en.add(connState);
-                }
-            }
-        }
-        
-        return new DynamicValueCondition(en, timestamp, condDesc);
-    }
-    
-    /*
-     * @see org.epics.css.dal.proxy.DirectoryProxy#refresh()
-     */
-    public void refresh() {
-        // TODO should this be sync, since initializCharacetistics is async
-        initializeCharacteristics();
-    }
-    
-    /**
-     * Get <code>EPICSPlug</code> instance.
-     * @return <code>EPICSPlug</code> instance.
-     */
-    public EPICSPlug getPlug()
-    {
-        return plug;
-    }
-    
-    /**
-     * Executes a <code>Runnable</code>. The <code>Runnable</code> is run in the same thread if
-     * {@link EPICSPlug#PROPERTY_MAX_THREADS} is equal to 0. Otherwise it is delegated to the
-     * <code>Executor</code> ({@link #getExecutor()}).
-     * 
-     * @param r the <code>Runnable</code> to run
-     */
-    protected void execute(final Runnable r) {
-        if (getPlug().getMaxThreads() > 0) {
-            getExecutor().execute(r);
-        }
-        else {
-            r.run();
-        }
-    }
-    
-    /**
-     * This method should be called only if {@link EPICSPlug#PROPERTY_MAX_THREADS} is
-     * a number greater than 0.
-     * <p>
-     * If {@link EPICSPlug#PROPERTY_USE_COMMON_EXECUTOR} is set to <code>true</code> the
-     * <code>Executor</code> from {@link EPICSPlug#getExecutor()} is returned. Otherwise
-     * a new </code>ThreadPoolExecutor</code> is created.
-     * </p>
-     * 
-     * @return the executor
-     * @throws IllegalStateException if maximum number of threads defined by {@link EPICSPlug}
-     * is equal to 0.
-     */
-    public ThreadPoolExecutor getExecutor() {
-        if (executor==null) {
-            synchronized (this) {
-                if (getPlug().getMaxThreads() == 0) throw new IllegalStateException("Maximum number of threads must be greater than 0.");
-                if (getPlug().isUseCommonExecutor()) executor = getPlug().getExecutor();
-                else {
-                    executor= new ThreadPoolExecutor(getPlug().getCoreThreads(),getPlug().getMaxThreads(),Long.MAX_VALUE, TimeUnit.NANOSECONDS,
-                                                     new LinkedBlockingQueue<Runnable>());
-                    executor.prestartAllCoreThreads();
-                }
-            }
-        }
-        return executor;
-    }
-    
-    private static boolean equal(final String s1, final String s2) {
-        if (s1 == null || s2 == null) {
-            if (s1 == s2) {
-                return true;
-            }
-            return false;
-        }
-        return s1.equals(s2);
-    }
-    
+        	try {
+        		CAJChannel ch=null;
+        		ConnectionListenerImpl conn= new ConnectionListenerImpl();
+        		synchronized (conn) {
+    				ch = (CAJChannel)plug.getContext().createChannel(name+"."+characteristicName,conn);
+    				if (ch.getConnectionState() != Channel.CONNECTED) {
+	    				try {
+	    					conn.wait((long) (plug.getTimeout() * 1000));
+	    				} catch (InterruptedException e) {
+	    					// noop
+	    				}
+    				}
+				}
+				ch.get(1, listener);
+				plug.flushIO();
+				try {
+					listener.wait((long) (plug.getTimeout() * 1000));
+				} catch (InterruptedException e) {
+					// noop
+				}
+				ch.dispose();
+			} catch (IllegalStateException e1) {
+				e1.printStackTrace();
+			} catch (CAException e1) {
+				e1.printStackTrace();
+			}			
+		}
+
+		final GetEvent event = listener.event;
+		if (event == null || event.getStatus() != CAStatus.NORMAL || event.getDBR() == null) {
+			return null;
+		}		
+				
+		return event.getDBR().getValue();
+	}
+	
+	
+	/*
+	 * @see DirectoryProxy#getCharacteristics(String[], ResponseListener)
+	 */
+	public Request<? extends Object> getCharacteristics(final String[] characteristics,
+			ResponseListener<? extends Object> callback) throws DataExchangeException {
+		final RequestImpl<Object> r = new RequestImpl<Object>(this, (ResponseListener<Object>) callback);
+		Runnable getCharsAsync = new Runnable () {
+
+			public void run() {
+				for (int i = 0; i < characteristics.length; i++) {
+					Object value;
+					try {
+						value= PropertyUtilities.verifyCharacteristic(PropertyProxyImpl.this, characteristics[i], getCharacteristic(characteristics[i]));
+						r.addResponse(new ResponseImpl<Object>(PropertyProxyImpl.this, r,	value, characteristics[i],
+								value != null, null, condition, null, true));
+
+					} catch (DataExchangeException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+			
+		};
+		execute(getCharsAsync);
+		
+		return r;
+	}
+	
+	/**
+	 * Convert DBR to Java value.
+	 * @param dbr DBR to convert.
+	 * @return converted Java value.
+	 */
+	public final T toJavaValue(DBR dbr) {
+		return PlugUtilities.toJavaValue(dbr, dataType, channel.getFieldType());
+	}
+	
+	/**
+	 * Get CA channel.
+	 * @return channel.
+	 */
+	protected Channel getChannel() {
+		return channel;
+	}
+
+	/**
+	 * Get DBR type (used to query data).
+	 * @return DBR type.
+	 */
+	protected DBRType getType() {
+		return type;
+	}
+	
+	/**
+	 * Update conditions.
+	 * @param dbr status DBR.
+	 */
+	void updateConditionWithDBRStatus(STS dbr) {
+		createCondition(dbr, true);
+	}
+
+	/**
+	 * Creates the condition and notifies the listeners if requested.
+	 * 
+	 * @param dbr status DBR.
+	 * @param notify if true the listeners will be notified about the change 
+	 * 			of condition otherwise the condition will be created and returned
+	 */
+	private DynamicValueCondition createCondition(STS dbr, boolean notify) {
+
+		Status st = dbr.getStatus();
+		Severity se = dbr.getSeverity();
+
+		condDesc = st.getName();
+		
+		DynamicValueState dbrState = this.dbrState;
+		
+		if (se == Severity.NO_ALARM) {
+			dbrState = DynamicValueState.NORMAL;
+		} else if (se == Severity.MINOR_ALARM) {
+			dbrState = DynamicValueState.WARNING;
+		} else if (se == Severity.MAJOR_ALARM) {
+			dbrState = DynamicValueState.ALARM;
+		} else if (se == Severity.INVALID_ALARM) {
+			dbrState = DynamicValueState.ERROR;
+		}
+
+		Timestamp timestamp = null;
+		//((TIME)dbr).getTimeStamp() != null - could happen
+		if (dbr instanceof TIME && ((TIME)dbr).getTimeStamp() != null) {
+			timestamp = PlugUtilities.convertTimestamp(((TIME) dbr).getTimeStamp());
+		}
+
+		if (notify) {
+			return checkStates(dbrState, connState, timestamp);
+		} else {
+			return createCondition(dbrState, connState, timestamp);
+		}
+	}
+
+	/*
+	 * @see gov.aps.jca.event.ConnectionListener#connectionChanged(gov.aps.jca.event.ConnectionEvent)
+	 */
+	public synchronized void connectionChanged(ConnectionEvent event) {
+		Runnable connChangedRunnable = new Runnable () {
+
+			public void run() {
+//				 Maps JCA states to DAL states
+				gov.aps.jca.Channel.ConnectionState c= channel.getConnectionState();
+				if (c==null) {
+					System.err.println(PropertyProxyImpl.class.getName()+": JCA connection state for "+channel.getName()+" is NULL, connection event ignored!");
+					return;
+				} 
+				if (c == gov.aps.jca.Channel.ConnectionState.CLOSED) {
+					setConnectionState(ConnectionState.DESTROYED);
+				} else if (c == gov.aps.jca.Channel.ConnectionState.CONNECTED) {
+					boolean init= getConnectionState()==ConnectionState.CONNECTION_LOST;
+					setConnectionState(ConnectionState.CONNECTED);
+					if (init) {
+						initializeCharacteristics();
+					}
+				} else if (c == gov.aps.jca.Channel.ConnectionState.DISCONNECTED) {
+					setConnectionState(ConnectionState.CONNECTION_LOST);
+				} else if (c == gov.aps.jca.Channel.ConnectionState.NEVER_CONNECTED) {
+					setConnectionState(ConnectionState.CONNECTING);
+				}		
+			}
+			
+		};
+		
+		if (getPlug().getMaxThreads() == 0) {
+			execute(connChangedRunnable);
+		}
+		else if (!getExecutor().isShutdown()) {
+			execute(connChangedRunnable);
+		}
+	}
+
+	/*
+	 * @see org.epics.css.dal.proxy.AbstractProxyImpl#setConnectionState(org.epics.css.dal.context.ConnectionState)
+	 */
+	@Override
+	protected void setConnectionState(ConnectionState s) {
+		super.setConnectionState(s);
+		DynamicValueState connState = this.connState;
+		if (s == ConnectionState.CONNECTED) {
+			connState = DynamicValueState.NORMAL;
+			checkStates(dbrState, connState, null);
+		} else if (s == ConnectionState.DISCONNECTED) {
+			connState = DynamicValueState.LINK_NOT_AVAILABLE;
+			checkStates(dbrState, connState, null);
+		} else if (s == ConnectionState.CONNECTION_LOST) {
+			connState = DynamicValueState.LINK_NOT_AVAILABLE;
+			checkStates(dbrState, connState, null);
+		} else if (s == ConnectionState.DESTROYED) {
+			connState = DynamicValueState.LINK_NOT_AVAILABLE;
+			checkStates(dbrState, connState, null);
+			if (getPlug().getMaxThreads() != 0 && !getPlug().isUseCommonExecutor()) {
+				getExecutor().shutdown();
+		        try {
+		            if (!getExecutor().awaitTermination(1, TimeUnit.SECONDS))
+		                getExecutor().shutdownNow();
+		        } catch (InterruptedException ie) {  }
+			}
+		}
+	}
+
+	/**
+	 * Check states.
+	 * @param timestamp
+	 */
+	private DynamicValueCondition checkStates(DynamicValueState dbrState, DynamicValueState connState, Timestamp timestamp) {
+		// noop check (state already reported)
+		DynamicValueCondition condition = createCondition(dbrState,connState,timestamp);
+		if (condition != null) {
+			setCondition(condition);
+		}
+		return condition;
+	}
+	
+	private DynamicValueCondition createCondition(DynamicValueState dbrState, DynamicValueState connState, Timestamp timestamp) {
+		if (this.dbrState == dbrState && this.connState == connState
+				&& equal(condDesc, condition.getDescription())) {
+			return getCondition();
+		}
+
+		this.dbrState = dbrState;
+		this.connState = connState;
+		
+		EnumSet<DynamicValueState> en = null;
+
+		if (dbrState == connState && connState == DynamicValueState.NORMAL) {
+			en = EnumSet.of(DynamicValueState.NORMAL);
+		} else {
+			if (dbrState != DynamicValueState.NORMAL) {
+				en = EnumSet.of(dbrState);
+			}
+			if (connState != DynamicValueState.NORMAL) {
+				if (en == null) {
+					en = EnumSet.of(connState);
+				} else {
+					en.add(connState);
+				}
+			}
+		}
+		
+		return new DynamicValueCondition(en, timestamp, condDesc);
+	}
+
+	/*
+	 * @see org.epics.css.dal.proxy.DirectoryProxy#refresh()
+	 */
+	public void refresh() {
+		// TODO should this be sync, since initializCharacetistics is async
+		initializeCharacteristics();
+	}
+
+	/**
+	 * Get <code>EPICSPlug</code> instance.
+	 * @return <code>EPICSPlug</code> instance.
+	 */
+	public EPICSPlug getPlug()
+	{
+		return plug;
+	}
+
+	/**
+	 * Executes a <code>Runnable</code>. The <code>Runnable</code> is run in the same thread if
+	 * {@link EPICSPlug#PROPERTY_MAX_THREADS} is equal to 0. Otherwise it is delegated to the
+	 * <code>Executor</code> ({@link #getExecutor()}).
+	 * 
+	 * @param r the <code>Runnable</code> to run
+	 */
+	protected void execute(Runnable r) {
+		if (getPlug().getMaxThreads() > 0) {
+			getExecutor().execute(r);
+		}
+		else {
+			r.run();
+		}
+	}
+	
+	/**
+	 * This method should be called only if {@link EPICSPlug#PROPERTY_MAX_THREADS} is
+	 * a number greater than 0. 
+	 * <p>
+	 * If {@link EPICSPlug#PROPERTY_USE_COMMON_EXECUTOR} is set to <code>true</code> the 
+	 * <code>Executor</code> from {@link EPICSPlug#getExecutor()} is returned. Otherwise
+	 * a new </code>ThreadPoolExecutor</code> is created.
+	 * </p>
+	 * 
+	 * @return the executor
+	 * @throws IllegalStateException if maximum number of threads defined by {@link EPICSPlug}
+	 * is equal to 0.
+	 */
+	public ThreadPoolExecutor getExecutor() {
+		if (executor==null) {
+			synchronized (this) {
+				if (getPlug().getMaxThreads() == 0) throw new IllegalStateException("Maximum number of threads must be greater than 0.");
+				if (getPlug().isUseCommonExecutor()) executor = getPlug().getExecutor();
+				else {
+					executor= new ThreadPoolExecutor(getPlug().getCoreThreads(),getPlug().getMaxThreads(),Long.MAX_VALUE, TimeUnit.NANOSECONDS,
+			                new LinkedBlockingQueue<Runnable>());
+					executor.prestartAllCoreThreads();
+				}				
+			}
+		}
+		return executor;
+	}
+	
+	private static boolean equal(String s1, String s2) {
+		if (s1 == null || s2 == null) {
+			if (s1 == s2) {
+				return true;
+			}
+			return false;
+		}
+		return s1.equals(s2);
+	}
+	
 }

@@ -33,9 +33,12 @@ import gov.aps.jca.dbr.TIME;
 import gov.aps.jca.event.MonitorEvent;
 import gov.aps.jca.event.MonitorListener;
 
+import java.util.Map;
 import java.util.TimerTask;
 
 import org.epics.css.dal.DataExchangeException;
+import org.epics.css.dal.ExpertMonitor;
+import org.epics.css.dal.RemoteException;
 import org.epics.css.dal.Request;
 import org.epics.css.dal.ResponseListener;
 import org.epics.css.dal.Timestamp;
@@ -43,7 +46,6 @@ import org.epics.css.dal.context.ConnectionState;
 import org.epics.css.dal.impl.RequestImpl;
 import org.epics.css.dal.impl.ResponseImpl;
 import org.epics.css.dal.proxy.MonitorProxy;
-import org.epics.css.dal.simple.RemoteInfo;
 
 /**
  * Simulation implementation of MonitorProxy.
@@ -51,313 +53,302 @@ import org.epics.css.dal.simple.RemoteInfo;
  * @author Igor Kriznar (igor.kriznarATcosylab.com)
  */
 public class MonitorProxyImpl<T> extends RequestImpl<T> implements MonitorProxy,
-Runnable, MonitorListener {
-    
-    /**
-     * Default timer trigger (in ms).
-     */
-    protected static final long DEFAULT_TIMER_TRIGGER = 1000;
-    
-    /**
-     * Property (parent) proxy impl.
-     */
-    protected PropertyProxyImpl<T> proxy;
-    
-    /**
-     * Timer trigger (in ms).
-     */
-    protected long timerTrigger = 1000;
-    
-    /**
-     * Heartbeat flag.
-     */
-    protected boolean heartbeat = false;
-    
-    /**
-     * Timer task.
-     */
-    protected TimerTask task;
-    
-    /**
-     * Destroy flag.
-     */
-    protected volatile boolean destroyed = false;
-    
-    /**
-     * Last received value add timestamp.
-     */
-    protected ResponseImpl<T> response;
-    
-    /**
-     * CA monitor implementation.
-     */
-    protected Monitor monitor;
-    
-    /**
-     * EPICS plug.
-     */
-    protected EPICSPlug plug;
-    
-    public MonitorProxyImpl(final EPICSPlug plug, final PropertyProxyImpl<T> proxy, final ResponseListener<T> l, final RemoteInfo.ChangeType changeType)
-    throws CAException {
-        super(proxy, l);
-        this.proxy = proxy;
-        this.plug = plug;
-        
-        // TODO jp Use enum for changeType
-        monitor = proxy.getChannel().addMonitor(
-                                                PlugUtilities.toTimeDBRType(proxy.getType()),
-                                                proxy.getChannel().getElementCount(),
-                                                getChangeTypeForMonitor(changeType), this);
-        
-        // TODO jp Flush only after a fixed time, not after each added monitor
-        // See e.g. org.csstudio.utility.pv.epics.JCACommandThread.run()
-        
-        plug.flushIO();
-        
-        proxy.addMonitor(this);
-        
-        resetTimer();
-    }
-    
-    private int getChangeTypeForMonitor(final RemoteInfo.ChangeType changeType)
-    {
-        int result = 0; // TODO jp CT Sollte aus den Prefs geholt werden
-        switch (changeType) {
-            case ALARM:
-                result = Monitor.ALARM;
-                break;
-            case ARCHIVE:
-                result = Monitor.LOG;
-                break;
-            case DISPLAY:
-                result = Monitor.VALUE;
-                break;
-            case UNDEFINED:
-            default:
-                result = Monitor.VALUE | Monitor.ALARM;
-                break;
-        }
-        return result;
-    }
-    
-    /**
-     * Creates new instance.
-     * 
-     * @param proxy parent proxy object
-     * @param l listener for notifications
-     */
-    public MonitorProxyImpl(final EPICSPlug plug, final PropertyProxyImpl<T> proxy, final ResponseListener<T> l)
-    throws CAException {
-        this(plug, proxy, l, RemoteInfo.ChangeType.UNDEFINED);
-    }
-    
-    /*
-     * @see org.epics.css.dal.proxy.MonitorProxy#getRequest()
-     */
-    public Request<T> getRequest() {
-        return this;
-    }
-    
-    /*
-     * @see org.epics.css.dal.SimpleMonitor#getTimerTrigger()
-     */
-    public long getTimerTrigger() throws DataExchangeException {
-        return timerTrigger;
-    }
-    
-    /*
-     * @see org.epics.css.dal.SimpleMonitor#setTimerTrigger(long)
-     */
-    public void setTimerTrigger(final long trigger) throws DataExchangeException,
-    UnsupportedOperationException {
-        
-        // valid trigger check
-        if (trigger <= 0)
-            throw new IllegalArgumentException("trigger < 0");
-        
-        // noop check
-        if (trigger == timerTrigger)
-            return;
-        
-        timerTrigger = trigger;
-        resetTimer();
-    }
-    
-    /*
-     * @see org.epics.css.dal.SimpleMonitor#setHeartbeat(boolean)
-     */
-    public void setHeartbeat(final boolean heartbeat) throws DataExchangeException,
-    UnsupportedOperationException {
-        
-        // noop check
-        if (heartbeat == this.heartbeat)
-            return;
-        
-        this.heartbeat = heartbeat;
-        resetTimer();
-    }
-    
-    /*
-     * @see org.epics.css.dal.SimpleMonitor#isHeartbeat()
-     */
-    public boolean isHeartbeat() {
-        return heartbeat;
-    }
-    
-    /*
-     * @see org.epics.css.dal.SimpleMonitor#getDefaultTimerTrigger()
-     */
-    public long getDefaultTimerTrigger() throws DataExchangeException {
-        return DEFAULT_TIMER_TRIGGER;
-    }
-    
-    /*
-     * @see org.epics.css.dal.SimpleMonitor#isDefault()
-     */
-    public boolean isDefault() {
-        return true;
-    }
-    
-    /**
-     * Fire value event.
-     */
-    private void fireValueEvent() {
-        
-        // noop check
-        if (destroyed || proxy == null || response == null || response.getValue() == null
-                || proxy.getConnectionState() != ConnectionState.CONNECTED) {
-            return;
-        }
-        
-        final ResponseImpl<T> r= response;
-        proxy.getExecutor().execute(new Runnable() {
-            public void run() {
-                addResponse(r);
-            }
-        });
-    }
-    
-    /**
-     * Fires value change event if monitor is not in heartbeat mode.
-     */
-    public void fireValueChange() {
-        if (!heartbeat) {
-            fireValueEvent();
-        }
-    }
-    
-    /**
-     * Run method executed at schedulet time intervals.
-     */
-    public void run() {
-        fireValueEvent();
-    }
-    
-    /**
-     * Reset timer.
-     */
-    private synchronized void resetTimer() {
-        
-        if (destroyed)
-            throw new IllegalStateException("monitor destroyed");
-        
-        if (task != null) {
-            task.cancel();
-        }
-        
-        if (heartbeat) {
-            task = plug.schedule(this, 0, timerTrigger);
-        }
-    }
-    
-    /*
-     * @see org.epics.css.dal.SimpleMonitor#destroy()
-     */
-    public synchronized void destroy() {
-        
-        if (destroyed)
-            return;
-        
-        if (task != null) {
-            task.cancel();
-        }
-        
-        proxy.removeMonitor(this);
-        
-        // destroy remote instance
-        if (monitor != null) {
-            try {
-                monitor.clear();
-            } catch (CAException e) {
-                // noop
-            } catch (RuntimeException e) {
-                //might happen in the CA - disconnect monitor and it should eventually be gc
-                throw e;
-            } finally {
-                monitor.removeMonitorListener(this);
-                destroyed = true;
-            }
-        }
-        destroyed = true;
-    }
-    
-    /*
-     * @see org.epics.css.dal.SimpleMonitor#isDestroyed()
-     */
-    public boolean isDestroyed() {
-        return destroyed;
-    }
-    
-    /*
-     * @see gov.aps.jca.event.MonitorListener#monitorChanged(gov.aps.jca.event.MonitorEvent)
-     */
-    public void monitorChanged(final MonitorEvent ev) {
-        
-        DBR dbr = ev.getDBR();
-        
-        if(dbr==null || dbr.getValue()==null) {
-            
-            final ResponseImpl<T> r= response= new ResponseImpl<T>(proxy, this, null,
-                    "value", false, new NullPointerException("Invalid value."), proxy.getCondition(), new Timestamp(), false);
-            
-            plug.getExecutor().execute(new Runnable() {
-                public void run() {
-                    addResponse(r);
-                }
-            });
-            
-            return;
-        }
-        
-        if (dbr.isSTS()) {
-            proxy.updateConditionWithDBRStatus((STS) dbr);
-        }
-        
-        response= new ResponseImpl<T> (
-                proxy,
-                this,
-                proxy.toJavaValue(dbr),
-                "value",
-                true,
-                null,
-                proxy.getCondition(),
-                (dbr.isTIME() && ((TIME) dbr).getTimeStamp() != null) ?
-                        PlugUtilities.convertTimestamp(((TIME) dbr).getTimeStamp()):
-                            new Timestamp(),
-                            false);
-        
-        // notify
-        fireValueChange();
-    }
-    
-    /*
-     * @see org.epics.css.dal.proxy.MonitorProxy#refresh()
-     */
-    public void refresh() {
-        // noop
-    }
-    
+		Runnable, MonitorListener, ExpertMonitor {
+
+	/**
+	 * Default timer trigger (in ms).
+	 */
+	protected static final long DEFAULT_TIMER_TRIGGER = 1000;
+
+	/**
+	 * Property (parent) proxy impl.
+	 */
+	protected PropertyProxyImpl<T> proxy;
+
+	/**
+	 * Timer trigger (in ms).
+	 */
+	protected long timerTrigger = 1000;
+
+	/**
+	 * Heartbeat flag.
+	 */
+	protected boolean heartbeat = false;
+
+	/**
+	 * Timer task.
+	 */
+	protected TimerTask task;
+
+	/**
+	 * Destroy flag.
+	 */
+	protected volatile boolean destroyed = false;
+
+	/**
+	 * Last received value add timestamp.
+	 */
+	protected ResponseImpl<T> response;
+
+	/**
+	 * CA monitor implementation.
+	 */
+	protected Monitor monitor;
+
+	/**
+	 * EPICS plug.
+	 */
+	protected EPICSPlug plug;
+	
+	/**
+	 * Special parameters for expert monitor
+	 */
+	protected Map<String,Object> parameters;
+
+	/**
+	 * Creates new instance.
+	 * 
+	 * @param proxy parent proxy object
+	 * @param l listener for notifications
+	 */
+	public MonitorProxyImpl(EPICSPlug plug, PropertyProxyImpl<T> proxy, ResponseListener<T> l, Map<String,Object> param)
+			throws CAException {
+		super(proxy, l);
+		this.proxy = proxy;
+		this.plug = plug;
+		this.parameters=param;
+		
+		int mask= Monitor.ALARM | Monitor.VALUE;
+		
+		if (param!=null && param.get(EPICSPlug.PARAMETER_MONITOR_MASK) instanceof Integer) {
+			mask= (Integer)param.get(EPICSPlug.PARAMETER_MONITOR_MASK);
+		}
+		
+		monitor = proxy.getChannel().addMonitor(
+				PlugUtilities.toTimeDBRType(proxy.getType()),
+				proxy.getChannel().getElementCount(),
+				mask, this);
+		plug.flushIO();
+
+		proxy.addMonitor(this);
+		
+		resetTimer();
+	}
+
+	/*
+	 * @see org.epics.css.dal.proxy.MonitorProxy#getRequest()
+	 */
+	public Request<T> getRequest() {
+		return this;
+	}
+
+	/*
+	 * @see org.epics.css.dal.SimpleMonitor#getTimerTrigger()
+	 */
+	public long getTimerTrigger() throws DataExchangeException {
+		return timerTrigger;
+	}
+
+	/*
+	 * @see org.epics.css.dal.SimpleMonitor#setTimerTrigger(long)
+	 */
+	public void setTimerTrigger(long trigger) throws DataExchangeException,
+			UnsupportedOperationException {
+		
+		// valid trigger check
+		if (trigger <= 0)
+			throw new IllegalArgumentException("trigger < 0");
+
+		// noop check
+		if (trigger == timerTrigger)
+			return;
+		
+		timerTrigger = trigger;
+		resetTimer();
+	}
+
+	/*
+	 * @see org.epics.css.dal.SimpleMonitor#setHeartbeat(boolean)
+	 */
+	public void setHeartbeat(boolean heartbeat) throws DataExchangeException,
+			UnsupportedOperationException {
+		
+		// noop check
+		if (heartbeat == this.heartbeat)
+			return;
+
+		this.heartbeat = heartbeat;
+		resetTimer();
+	}
+
+	/*
+	 * @see org.epics.css.dal.SimpleMonitor#isHeartbeat()
+	 */
+	public boolean isHeartbeat() {
+		return heartbeat;
+	}
+
+	/*
+	 * @see org.epics.css.dal.SimpleMonitor#getDefaultTimerTrigger()
+	 */
+	public long getDefaultTimerTrigger() throws DataExchangeException {
+		return DEFAULT_TIMER_TRIGGER;
+	}
+
+	/*
+	 * @see org.epics.css.dal.SimpleMonitor#isDefault()
+	 */
+	public boolean isDefault() {
+		return true;
+	}
+
+	/**
+	 * Fire value event.
+	 */
+	private void fireValueEvent() {
+		
+		// noop check
+		if (destroyed || proxy == null || response == null || response.getValue() == null
+				|| proxy.getConnectionState() != ConnectionState.CONNECTED) {
+			return;
+		}
+		
+		final ResponseImpl<T> r= response;
+		proxy.getExecutor().execute(new Runnable() {
+			public void run() {
+				addResponse(r);
+			}
+		});
+	}
+
+	/**
+	 * Fires value change event if monitor is not in heartbeat mode.
+	 */
+	public void fireValueChange() {
+		if (!heartbeat) {
+			fireValueEvent();
+		}
+	}
+
+	/**
+	 * Run method executed at schedulet time intervals.
+	 */
+	public void run() {
+		fireValueEvent();
+	}
+
+	/**
+	 * Reset timer.
+	 */
+	private synchronized void resetTimer() {
+		
+		if (destroyed)
+			throw new IllegalStateException("monitor destroyed");
+		
+		if (task != null) {
+			task.cancel();
+		}
+
+		if (heartbeat) {
+			task = plug.schedule(this, 0, timerTrigger);
+		}
+	}
+
+	/*
+	 * @see org.epics.css.dal.SimpleMonitor#destroy()
+	 */
+	public synchronized void destroy() {
+		
+		if (destroyed)
+			return;
+		
+		if (task != null) {
+			task.cancel();
+		}
+		
+		proxy.removeMonitor(this);
+		
+		// destroy remote instance
+		if (monitor != null) {
+			try {
+				monitor.clear();
+			} catch (CAException e) {
+				// noop
+			} catch (RuntimeException e) {
+				//might happen in the CA - disconnect monitor and it should eventually be gc
+				throw e;
+			} finally {
+				monitor.removeMonitorListener(this);
+				destroyed = true;
+			}
+		}
+		destroyed = true;
+	}
+
+	/*
+	 * @see org.epics.css.dal.SimpleMonitor#isDestroyed()
+	 */
+	public boolean isDestroyed() {
+		return destroyed;
+	}
+
+	/*
+	 * @see gov.aps.jca.event.MonitorListener#monitorChanged(gov.aps.jca.event.MonitorEvent)
+	 */
+	public void monitorChanged(MonitorEvent ev) {
+
+		DBR dbr = ev.getDBR();
+		
+		if(dbr==null || dbr.getValue()==null) {
+			
+			final ResponseImpl<T> r= response= new ResponseImpl<T>(proxy, this, null,
+				        "value", false, new NullPointerException("Invalid value."), proxy.getCondition(), new Timestamp(), false);
+
+			plug.getExecutor().execute(new Runnable() {
+				public void run() {
+					addResponse(r);
+				}
+			});
+			
+			return;
+		}
+		
+		if (dbr.isSTS()) {
+			proxy.updateConditionWithDBRStatus((STS) dbr);
+		}
+
+		response= new ResponseImpl<T> (
+				proxy, 
+				this, 
+				proxy.toJavaValue(dbr), 
+				"value", 
+				true, 
+				null, 
+				proxy.getCondition(), 
+				(dbr.isTIME() && ((TIME) dbr).getTimeStamp() != null) ? 
+						PlugUtilities.convertTimestamp(((TIME) dbr).getTimeStamp()): 
+							new Timestamp(),
+				false);
+		
+		// notify 
+		fireValueChange();
+	}
+
+	/*
+	 * @see org.epics.css.dal.proxy.MonitorProxy#refresh()
+	 */
+	public void refresh() {
+		// noop
+	}
+	
+	public Map<String, Object> getParameters() {
+		return parameters;
+	}
+	
+	public void setParameters(Map<String, Object> param) throws RemoteException {
+		// not really supported, can we change parameters of existing monitor?
+	}
+
 }
 
 /* __oOo__ */

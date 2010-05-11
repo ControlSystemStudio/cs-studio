@@ -118,6 +118,13 @@ public interface ValueUpdateable<T>
 	public DynamicValueMonitor getDefaultMonitor();
 
 	/**
+	 * Returns all by this property created monitors.
+	 *
+	 * @return common all created or active monitors
+	 */
+	public DynamicValueMonitor[] getMonitors();
+
+	/**
 	 * Creates new monitor which controls updates for single value
 	 * listener independantly from default monitor.
 	 *

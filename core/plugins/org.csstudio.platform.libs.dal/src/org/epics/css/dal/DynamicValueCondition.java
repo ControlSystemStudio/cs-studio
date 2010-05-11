@@ -233,42 +233,19 @@ public class DynamicValueCondition implements Severity
 	
 	@Override
 	public String toString() {
-//		The result of the following was:
-//			[ALARM], 2010-05-10T16:59:46.786747944, HIHI_ALARM
-//		
-//		StringBuilder sb= new StringBuilder(256);
-//		sb.append(states.toString());
-//		if (timestamp!=null) {
-//			sb.append(", ");
-//			sb.append(timestamp);
-//		} else {
-//			sb.append(", no-time");
-//		}
-//		if (description!=null) {
-//			sb.append(", ");
-//			sb.append(description);
-//		}
-//		return sb.toString();
-//		
-//		The result of the following is: HIHI_ALARM
-//		
-		if (description==null) {
-			return "NO_STATUS";
+		StringBuilder sb= new StringBuilder(256);
+		sb.append(states.toString());
+		if (timestamp!=null) {
+			sb.append(", ");
+			sb.append(timestamp);
 		} else {
-			return description;
+			sb.append(", no-time");
 		}
-			
-	}
-	
-	public String statusToString() {
-		String result;
-
 		if (description!=null) {
-			result = description;
-		} else {
-			result = "NO_STATUS";
+			sb.append(", ");
+			sb.append(description);
 		}
-		return result;
+		return sb.toString();
 	}
 
 	public boolean hasValue() {
