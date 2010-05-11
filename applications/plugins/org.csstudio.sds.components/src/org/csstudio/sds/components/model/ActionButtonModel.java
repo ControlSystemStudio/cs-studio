@@ -21,6 +21,7 @@
  */
 package org.csstudio.sds.components.model;
 
+import org.csstudio.sds.model.AbstractTextTypeWidgetModel;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.TextAlignmentEnum;
 import org.csstudio.sds.model.TextTypeEnum;
@@ -34,7 +35,7 @@ import org.csstudio.sds.util.ColorAndFontUtil;
  * @version $Revision$
  *
  */
-public final class ActionButtonModel extends AbstractWidgetModel {
+public final class ActionButtonModel extends AbstractTextTypeWidgetModel {
 	/**
 	 * The ID of the label property.
 	 */
@@ -59,11 +60,6 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	 * The ID of the ToggelButton property.
 	 */
 	public static final String PROP_TOGGLE_BUTTON = "toggleButton"; //$NON-NLS-1$
-	/**
-     * Type of the displayed text.
-     */
-    public static final String PROP_TEXT_TYPE = "value_type";
-
 	/**
 	 * The ID of this widget model.
 	 */
@@ -109,6 +105,8 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 		addBooleanProperty(PROP_TOGGLE_BUTTON, "Toggle Button", WidgetPropertyCategory.DISPLAY, DEFAULT_TOGGLE_BUTTON, false,PROP_LABEL);
         addArrayOptionProperty(PROP_TEXT_TYPE, "Value Type", WidgetPropertyCategory.DISPLAY, TextTypeEnum.getDisplayNames(),
                                TextTypeEnum.DOUBLE.getIndex(), false, PROP_TOGGLE_BUTTON);
+        addIntegerProperty(PROP_PRECISION, "Decimal places", WidgetPropertyCategory.DISPLAY, 2, 0, 10, false,PROP_TEXT_TYPE);
+
 
 		// Format
 		addFontProperty(PROP_FONT, "Font", WidgetPropertyCategory.FORMAT, ColorAndFontUtil.toFontString("Arial", 8), false, PROP_COLOR_FOREGROUND); //$NON-NLS-1$
@@ -178,23 +176,6 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	}
 
 	/**
-     * Returns the type of the text (Double or String).
-     *
-     * @return The type of the text
-     */
-    public TextTypeEnum getValueType() {
-        TextTypeEnum result = TextTypeEnum.TEXT;
-
-        int index = getArrayOptionProperty(PROP_TEXT_TYPE);
-
-        if ((index >= 0) && (index < TextTypeEnum.values().length)) {
-            result = TextTypeEnum.values()[index];
-        }
-
-        return result;
-    }
-
-	/**
 	 * Returns whether the button is a toggle button.
 	 *
 	 * @return false = Push, true=Toggle
@@ -202,4 +183,12 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	public boolean isToggleButton() {
 		return getBooleanProperty(PROP_TOGGLE_BUTTON);
 	}
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getStringValueID() {
+        return PROP_LABEL;
+    }
 }

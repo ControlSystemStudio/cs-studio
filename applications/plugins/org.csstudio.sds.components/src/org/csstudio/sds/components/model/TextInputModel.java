@@ -16,6 +16,7 @@
  */
 package org.csstudio.sds.components.model;
 
+import org.csstudio.sds.model.AbstractTextTypeWidgetModel;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.TextAlignmentEnum;
 import org.csstudio.sds.model.TextTypeEnum;
@@ -28,7 +29,7 @@ import org.csstudio.sds.util.ColorAndFontUtil;
  * @author Alexander Will, Kai Meyer
  * @version $Revision$
  */
-public final class TextInputModel extends AbstractWidgetModel {
+public final class TextInputModel extends AbstractTextTypeWidgetModel {
     /**
      * The ID of the text input.
      */
@@ -43,11 +44,6 @@ public final class TextInputModel extends AbstractWidgetModel {
      * The ID of the text alignment property.
      */
     public static final String PROP_TEXT_ALIGNMENT = "textAlignment"; //$NON-NLS-1$
-
-    /**
-     * The ID of the precision property.
-     */
-    public static final String PROP_PRECISION = "precision"; //$NON-NLS-1$
 
     /**
      * The ID of this widget model.
@@ -67,10 +63,6 @@ public final class TextInputModel extends AbstractWidgetModel {
      * The ID of the <i>transparent</i> property.
      */
     public static final String PROP_TRANSPARENT = "transparent";
-    /**
-     * Type of the displayed text.
-     */
-    public static final String PROP_TEXT_TYPE = "value_type";
     /**
      * The ID of the <i>double type</i> property.
      */
@@ -164,28 +156,11 @@ public final class TextInputModel extends AbstractWidgetModel {
     }
 
     /**
-     * Returns the type of the text (Double or String).
-     *
-     * @return The type of the text
+     * {@inheritDoc}
      */
-    public TextTypeEnum getValueType() {
-        TextTypeEnum result = TextTypeEnum.TEXT;
-
-        int index = getArrayOptionProperty(PROP_TEXT_TYPE);
-
-        if ( (index >= 0) && (index < TextTypeEnum.values().length)) {
-            result = TextTypeEnum.values()[index];
-        }
-
-        return result;
+    @Override
+    public String getStringValueID() {
+        return PROP_INPUT_TEXT;
     }
 
-    /**
-     * Return the precision.
-     *
-     * @return The precision.
-     */
-    public int getPrecision() {
-        return getIntegerProperty(PROP_PRECISION);
-    }
 }

@@ -16,9 +16,9 @@
  */
 package org.csstudio.sds.components.model.eventing;
 
-import static org.csstudio.sds.model.LabelModel.PROP_PRECISION;
+import static org.csstudio.sds.model.AbstractTextTypeWidgetModel.PROP_PRECISION;
+import static org.csstudio.sds.model.AbstractTextTypeWidgetModel.PROP_TEXT_TYPE;
 import static org.csstudio.sds.model.LabelModel.PROP_TEXTVALUE;
-import static org.csstudio.sds.model.LabelModel.PROP_TEXT_TYPE;
 
 import org.csstudio.sds.eventhandling.AbstractWidgetPropertyPostProcessor;
 import org.csstudio.sds.model.LabelModel;

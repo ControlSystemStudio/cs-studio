@@ -1,27 +1,26 @@
-/* 
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
+/*
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.sds.components.ui.internal.editparts;
 
-import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
 import org.csstudio.platform.data.INumericMetaData;
@@ -38,11 +37,8 @@ import org.csstudio.sds.components.model.TextInputModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableLabelFigure;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.TextTypeEnum;
-import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.ExecutionMode;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
-import org.csstudio.sds.util.ChannelReferenceValidationException;
-import org.csstudio.sds.util.ChannelReferenceValidationUtil;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPolicy;
@@ -78,14 +74,14 @@ import org.eclipse.swt.widgets.Text;
 /**
  * EditPart controller for <code>TextInputModel</code> elements with support for
  * direct editing.
- * 
+ *
  * EditPart controller for the TextInput widget. The controller mediates between
  * {@link TextInputModel} and {@link RefreshableLabelFigure}.
- * 
+ *
  * @author Alexander Will
- * 
+ *
  */
-public final class TextInputEditPart extends AbstractWidgetEditPart implements IProcessVariableWithSamples {
+public final class TextInputEditPart extends AbstractTextTypeWidgetEditPart implements IProcessVariableWithSamples {
 	/**
 	 * The actual figure will be surrounded with a small frame that can be used
 	 * to drag the figure around (even if the cell editor is activated).
@@ -98,7 +94,7 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements I
 	 */
 	private static final int INPUT_FIELD_BRIGHTNESS = 10;
 
-	private NumberFormat numberFormat = NumberFormat.getInstance();
+	private final NumberFormat numberFormat = NumberFormat.getInstance();
 
 	/**
 	 * {@inheritDoc}
@@ -136,7 +132,7 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements I
 
 		// entering a value is only allowed in run mode and when the widget is
 		// enabled
-		if (type != null && (type.equals(RequestConstants.REQ_OPEN) || type.equals(RequestConstants.REQ_DIRECT_EDIT))) {
+		if ((type != null) && (type.equals(RequestConstants.REQ_OPEN) || type.equals(RequestConstants.REQ_DIRECT_EDIT))) {
 			// if (getExecutionMode() == ExecutionMode.RUN_MODE &&
 			// getCastedModel().isEnabled()) {
 			performDirectEdit();
@@ -221,7 +217,7 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements I
 
 	/**
 	 * Create the cell editor for direct editing.
-	 * 
+	 *
 	 * @return The cell editor for direct editing.
 	 */
 	private CellEditor createCellEditor() {
@@ -236,7 +232,7 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements I
 		text.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(final KeyEvent e) {
-				if (e.keyCode == SWT.CR || e.keyCode == SWT.KEYPAD_CR) {
+				if ((e.keyCode == SWT.CR) || (e.keyCode == SWT.KEYPAD_CR)) {
 					int option = getWidgetModel().getArrayOptionProperty(TextInputModel.PROP_TEXT_TYPE);
 
 					TextTypeEnum propertyValue = TextTypeEnum.values()[option];
@@ -264,7 +260,7 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements I
 		});
 		text.addVerifyListener(new VerifyListener() {
 
-			public void verifyText(VerifyEvent e) {
+			public void verifyText(final VerifyEvent e) {
 				e.doit = true;
 				int option = getWidgetModel().getArrayOptionProperty(TextInputModel.PROP_TEXT_TYPE);
 				TextTypeEnum propertyValue = TextTypeEnum.values()[option];
@@ -293,7 +289,7 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements I
 
 	/**
 	 * Locate the given cell editor .
-	 * 
+	 *
 	 * @param cellEditor
 	 *            A cell editor.
 	 */
@@ -313,7 +309,7 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements I
 	private final class InvalidFormatDialog extends Dialog {
 		private String _text;
 
-		private InvalidFormatDialog(Shell parentShell) {
+		private InvalidFormatDialog(final Shell parentShell) {
 			super(parentShell);
 			setShellStyle(SWT.MODELESS | SWT.CLOSE | SWT.MAX | SWT.TITLE | SWT.BORDER | SWT.RESIZE);
 			this.setText("Titel");
@@ -329,7 +325,7 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements I
 		}
 
 		@Override
-		protected Control createDialogArea(Composite parent) {
+		protected Control createDialogArea(final Composite parent) {
 			Composite composite = (Composite) super.createDialogArea(parent);
 			composite.setLayout(new GridLayout(2, false));
 			Label label = new Label(composite, SWT.NONE);
@@ -343,7 +339,7 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements I
 		}
 
 		@Override
-		protected Control createButtonBar(Composite parent) {
+		protected Control createButtonBar(final Composite parent) {
 			Control createButtonBar = super.createButtonBar(parent);
 			getButton(IDialogConstants.OK_ID).setText("Copy");
 			return createButtonBar;
@@ -360,7 +356,7 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements I
 			super.okPressed();
 		}
 
-		public void setText(String text) {
+		public void setText(final String text) {
 			_text = text;
 		}
 
@@ -373,17 +369,17 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements I
 		/**
 		 * The entered input text.
 		 */
-		private String _text;
+		private final String _text;
 		private final ExecutionMode _executionMode;
 		private String _oldValue;
 
 		/**
 		 * Standard constructor.
-		 * 
+		 *
 		 * @param text
 		 *            The entered input text.
 		 */
-		public DirectEditCommand(final String text, ExecutionMode executionMode) {
+		public DirectEditCommand(final String text, final ExecutionMode executionMode) {
 			_text = text;
 			_executionMode = executionMode;
 		}
@@ -396,9 +392,9 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements I
 			execute(_text);
 		}
 
-		private void execute(String newText) {
+		private void execute(final String newText) {
 			_oldValue = getWidgetModel().getStringProperty(TextInputModel.PROP_INPUT_TEXT);
-			
+
 			if (_executionMode == ExecutionMode.RUN_MODE) {
 				// In RUN mode set the manual value, because the connected
 				// channel sets the
@@ -443,6 +439,7 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements I
 		 */
 		@Override
 		protected void showCurrentEditValue(final DirectEditRequest request) {
+		    // do nothing
 		}
 	}
 
@@ -451,6 +448,7 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements I
 	 */
 	@Override
 	protected void registerPropertyChangeHandlers() {
+	    super.registerPropertyChangeHandlers();
 		// input text
 		IWidgetPropertyChangeHandler textHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue, final Object newValue, final IFigure refreshableFigure) {
@@ -464,7 +462,7 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements I
 		// font
 		setPropertyChangeHandler(TextInputModel.PROP_FONT, new FontChangeHander<RefreshableLabelFigure>() {
 			@Override
-			protected void doHandle(RefreshableLabelFigure figure, Font font) {
+			protected void doHandle(final RefreshableLabelFigure figure, final Font font) {
 				figure.setFont(font);
 			}
 		});
@@ -488,130 +486,92 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements I
 			}
 		};
 		setPropertyChangeHandler(TextInputModel.PROP_TRANSPARENT, transparentHandler);
-		// type
-		IWidgetPropertyChangeHandler handle = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure) {
-				RefreshableLabelFigure labelFigure = (RefreshableLabelFigure) figure;
-				labelFigure.setTextValue(determineLabel(null));
-				return true;
-			}
-		};
-		setPropertyChangeHandler(TextInputModel.PROP_TEXT_TYPE, handle);
-
-		// precision
-		IWidgetPropertyChangeHandler precisionHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue, final Object newValue, final IFigure refreshableFigure) {
-				RefreshableLabelFigure label = (RefreshableLabelFigure) refreshableFigure;
-				label.setTextValue(determineLabel(TextInputModel.PROP_PRECISION));
-				return true;
-			}
-		};
-		setPropertyChangeHandler(TextInputModel.PROP_PRECISION, precisionHandler);
-
-		// aliases
-		IWidgetPropertyChangeHandler aliasHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue, final Object newValue, final IFigure refreshableFigure) {
-				RefreshableLabelFigure label = (RefreshableLabelFigure) refreshableFigure;
-				label.setTextValue(determineLabel(TextInputModel.PROP_ALIASES));
-				return true;
-			}
-		};
-		setPropertyChangeHandler(TextInputModel.PROP_ALIASES, aliasHandler);
-
-		// primary pv
-		IWidgetPropertyChangeHandler pvHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue, final Object newValue, final IFigure refreshableFigure) {
-				RefreshableLabelFigure label = (RefreshableLabelFigure) refreshableFigure;
-				label.setTextValue(determineLabel(TextInputModel.PROP_PRIMARY_PV));
-				return true;
-			}
-		};
-		setPropertyChangeHandler(TextInputModel.PROP_PRIMARY_PV, pvHandler);
 	}
 
-	private String determineLabel(String updatedPropertyId) {
-		TextInputModel model = (TextInputModel) getWidgetModel();
-
-		TextTypeEnum type = model.getValueType();
-		String text = model.getInputText();
-
-		String toprint = "none";
-
-		switch (type) {
-		case TEXT:
-			if (updatedPropertyId == null || updatedPropertyId.equals(TextInputModel.PROP_INPUT_TEXT)) {
-				toprint = text;
-			}
-			break;
-		case DOUBLE:
-			if (updatedPropertyId == null || updatedPropertyId.equals(TextInputModel.PROP_INPUT_TEXT)
-					|| updatedPropertyId.equals(TextInputModel.PROP_PRECISION)) {
-				try {
-					try {
-						double d = Double.parseDouble(text);
-						numberFormat.setMaximumFractionDigits(model.getPrecision());
-						numberFormat.setMinimumFractionDigits(model.getPrecision());
-						toprint = numberFormat.format(d);
-					} catch (NumberFormatException e) {
-						toprint = text;
-					}
-
-				} catch (Exception e) {
-					toprint = text;
-				}
-			}
-			break;
-		case ALIAS:
-			if (updatedPropertyId == null || updatedPropertyId.equals(TextInputModel.PROP_ALIASES)
-					|| updatedPropertyId.equals(TextInputModel.PROP_PRIMARY_PV)) {
-				try {
-					toprint = ChannelReferenceValidationUtil.createCanonicalName(model.getPrimaryPV(), model.getAllInheritedAliases());
-				} catch (ChannelReferenceValidationException e) {
-					toprint = model.getPrimaryPV();
-				}
-			}
-			break;
-		case HEX:
-			if (updatedPropertyId == null || updatedPropertyId.equals(TextInputModel.PROP_INPUT_TEXT)) {
-				try {
-					long l = Long.parseLong(text);
-					toprint = Long.toHexString(l);
-				} catch (Exception e1) {
-					try {
-						double d = Double.parseDouble(text);
-						toprint = Double.toHexString(d);
-					} catch (Exception e2) {
-						toprint = text;
-					}
-				}
-			}
-			break;
-		case EXP:
-			if (updatedPropertyId == null || updatedPropertyId.equals(TextInputModel.PROP_INPUT_TEXT)
-					|| updatedPropertyId.equals(TextInputModel.PROP_PRECISION)) {
-				try {
-					String pattern = "0.";
-					for (int i = 0; i < model.getPrecision(); i++) {
-						if (i == 0) {
-							pattern = pattern.concat("0");
-						} else {
-							pattern = pattern.concat("#");
-						}
-					}
-					pattern = pattern.concat("E00");
-					DecimalFormat expFormat = new DecimalFormat(pattern);
-					double d = Double.parseDouble(text);
-					toprint = expFormat.format(d);
-				} catch (Exception e) {
-					toprint = text;
-				}
-			}
-			break;
-		default:
-			toprint = "unknown value type";
-		}
-		return toprint;
-	}
+//	@Override
+//    protected String determineLabel(final String updatedPropertyId) {
+//		TextInputModel model = (TextInputModel) getWidgetModel();
+//
+//		TextTypeEnum type = model.getValueType();
+//		String text = model.getInputText();
+//
+//		String toprint = "none";
+//
+//		switch (type) {
+//		case TEXT:
+//			if ((updatedPropertyId == null) || updatedPropertyId.equals(TextInputModel.PROP_INPUT_TEXT)) {
+//				toprint = text;
+//			}
+//			break;
+//		case DOUBLE:
+//			if ((updatedPropertyId == null) || updatedPropertyId.equals(TextInputModel.PROP_INPUT_TEXT)
+//					|| updatedPropertyId.equals(TextInputModel.PROP_PRECISION)) {
+//				try {
+//					try {
+//						double d = Double.parseDouble(text);
+//						numberFormat.setMaximumFractionDigits(model.getPrecision());
+//						numberFormat.setMinimumFractionDigits(model.getPrecision());
+//						toprint = numberFormat.format(d);
+//					} catch (NumberFormatException e) {
+//						toprint = text;
+//					}
+//
+//				} catch (Exception e) {
+//					toprint = text;
+//				}
+//			}
+//			break;
+//		case ALIAS:
+//			if ((updatedPropertyId == null) || updatedPropertyId.equals(TextInputModel.PROP_ALIASES)
+//					|| updatedPropertyId.equals(TextInputModel.PROP_PRIMARY_PV)) {
+//				try {
+//					toprint = ChannelReferenceValidationUtil.createCanonicalName(model.getPrimaryPV(), model.getAllInheritedAliases());
+//				} catch (ChannelReferenceValidationException e) {
+//					toprint = model.getPrimaryPV();
+//				}
+//			}
+//			break;
+//		case HEX:
+//			if ((updatedPropertyId == null) || updatedPropertyId.equals(TextInputModel.PROP_INPUT_TEXT)) {
+//				try {
+//					long l = Long.parseLong(text);
+//					toprint = Long.toHexString(l);
+//				} catch (Exception e1) {
+//					try {
+//						double d = Double.parseDouble(text);
+//						toprint = Double.toHexString(d);
+//					} catch (Exception e2) {
+//						toprint = text;
+//					}
+//				}
+//			}
+//			break;
+//		case EXP:
+//			if ((updatedPropertyId == null) || updatedPropertyId.equals(TextInputModel.PROP_INPUT_TEXT)
+//					|| updatedPropertyId.equals(TextInputModel.PROP_PRECISION)) {
+//				try {
+//					String pattern = "0.";
+//					for (int i = 0; i < model.getPrecision(); i++) {
+//						if (i == 0) {
+//							pattern = pattern.concat("0");
+//						} else {
+//							pattern = pattern.concat("#");
+//						}
+//					}
+//					pattern = pattern.concat("E00");
+//					DecimalFormat expFormat = new DecimalFormat(pattern);
+//					double d = Double.parseDouble(text);
+//					toprint = expFormat.format(d);
+//				} catch (Exception e) {
+//					toprint = text;
+//				}
+//			}
+//			break;
+//		default:
+//			toprint = "unknown value type";
+//		}
+//		return toprint;
+//	}
 
 	/**
 	 * {@inheritDoc}

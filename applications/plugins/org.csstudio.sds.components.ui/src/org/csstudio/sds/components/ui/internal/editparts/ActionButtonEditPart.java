@@ -21,8 +21,6 @@
  */
 package org.csstudio.sds.components.ui.internal.editparts;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.List;
 
 import org.csstudio.platform.logging.CentralLogger;
@@ -30,14 +28,10 @@ import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.components.model.ActionButtonModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableActionButtonFigure;
 import org.csstudio.sds.model.AbstractWidgetModel;
-import org.csstudio.sds.model.TextTypeEnum;
 import org.csstudio.sds.model.properties.actions.AbstractWidgetActionModel;
-import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.ExecutionMode;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.csstudio.sds.ui.widgetactionhandler.WidgetActionHandlerService;
-import org.csstudio.sds.util.ChannelReferenceValidationException;
-import org.csstudio.sds.util.ChannelReferenceValidationUtil;
 import org.eclipse.draw2d.ButtonModel;
 import org.eclipse.draw2d.ChangeEvent;
 import org.eclipse.draw2d.ChangeListener;
@@ -65,7 +59,7 @@ import org.eclipse.swt.widgets.Text;
  * @author Sven Wende
  *
  */
-public final class ActionButtonEditPart extends AbstractWidgetEditPart {
+public final class ActionButtonEditPart extends AbstractTextTypeWidgetEditPart {
     /**
      * The actual figure will be surrounded with a small frame that can be used to drag the figure
      * around (even if the cell editor is activated).
@@ -77,8 +71,6 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
      * recognized.
      */
     private static final int INPUT_FIELD_BRIGHTNESS = 10;
-
-    private final NumberFormat _numberFormat = NumberFormat.getInstance();
 
 	/**
 	 * {@inheritDoc}
@@ -113,6 +105,7 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
      *
      * @return the casted {@link ActionButtonModel}
      */
+	@Override
     protected ActionButtonModel getCastedModel() {
         return (ActionButtonModel) getModel();
     }
@@ -145,8 +138,8 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 	 *            The figure of the widget
 	 */
 	private void configureButtonListener(
-			final RefreshableActionButtonFigure figure) {
-		figure.addChangeListener(new ChangeListener() {
+			final RefreshableActionButtonFigure buttonFigure) {
+	    buttonFigure.addChangeListener(new ChangeListener() {
 			public void handleStateChanged(final ChangeEvent event) {
 				final String propertyName = event.getPropertyName();
 				CentralLogger.getInstance().debug(this, "ChangeEvent received, event.property=" + propertyName);
@@ -154,7 +147,7 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 				// If the display is not in run mode or the button is not armed,
 				// don't do anything.
 				if ((getExecutionMode() != ExecutionMode.RUN_MODE)
-						|| !figure.getModel().isArmed()) {
+						|| !buttonFigure.getModel().isArmed()) {
 					return;
 				}
 
@@ -171,7 +164,7 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 				final ActionButtonModel widget = (ActionButtonModel) getWidgetModel();
 				if (widget.isToggleButton()) {
 					if (ButtonModel.SELECTED_PROPERTY.equals(propertyName)) {
-						if (figure.getModel().isSelected()) {
+						if (buttonFigure.getModel().isSelected()) {
 							actionIndex = widget.getChoosenPressedActionIndex();
 							CentralLogger.getInstance().debug(this, "toggle=true, selected=true => using pressed action index: " + actionIndex);
 						} else {
@@ -181,7 +174,7 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 					}
 				} else {
 					if (ButtonModel.PRESSED_PROPERTY.equals(propertyName)) {
-						if (figure.getModel().isPressed()) {
+						if (buttonFigure.getModel().isPressed()) {
 							actionIndex = widget.getChoosenPressedActionIndex();
 							CentralLogger.getInstance().debug(this, "toggle=false, pressed=true => using pressed action index: " + actionIndex);
 						} else {
@@ -220,18 +213,19 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 	 */
 	@Override
 	protected void registerPropertyChangeHandlers() {
+	    super.registerPropertyChangeHandlers();
 		//
-		RefreshableActionButtonFigure figure = getCastedFigure();
-		this.configureButtonListener(figure);
+		RefreshableActionButtonFigure buttonFigure = getCastedFigure();
+		this.configureButtonListener(buttonFigure);
 
 		// label
 		IWidgetPropertyChangeHandler labelHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
-				RefreshableActionButtonFigure figure = getCastedFigure();
+				RefreshableActionButtonFigure rabFigure = getCastedFigure();
 //				figure.setText(newValue.toString());
 //				figure.setText(determineLabel(ActionButtonModel.PROP_LABEL));
-				figure.setText(determineLabel(null));
+				rabFigure.setText(determineLabel(null));
 				return true;
 			}
 		};
@@ -240,8 +234,8 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 		// font
 		setPropertyChangeHandler(ActionButtonModel.PROP_FONT, new FontChangeHander<RefreshableActionButtonFigure>(){
 			@Override
-			protected void doHandle(final RefreshableActionButtonFigure figure, final Font font) {
-				figure.setFont(font);
+			protected void doHandle(final RefreshableActionButtonFigure rabFigure, final Font font) {
+				rabFigure.setFont(font);
 			}
 		});
 
@@ -249,8 +243,8 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler alignmentHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
-				RefreshableActionButtonFigure figure = (RefreshableActionButtonFigure) refreshableFigure;
-				figure.setTextAlignment((Integer) newValue);
+				RefreshableActionButtonFigure rabFigure = (RefreshableActionButtonFigure) refreshableFigure;
+				rabFigure.setTextAlignment((Integer) newValue);
 				return true;
 			}
 		};
@@ -261,13 +255,25 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler buttonStyleHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
-				RefreshableActionButtonFigure figure = (RefreshableActionButtonFigure) refreshableFigure;
-				figure.setStyle((Boolean) newValue);
+				RefreshableActionButtonFigure rabFigure = (RefreshableActionButtonFigure) refreshableFigure;
+				rabFigure.setStyle((Boolean) newValue);
 				return true;
 			}
 		};
 		setPropertyChangeHandler(ActionButtonModel.PROP_TOGGLE_BUTTON,
 				buttonStyleHandler);
+
+//		IWidgetPropertyChangeHandler actionDataHandler = new IWidgetPropertyChangeHandler() {
+//
+//            @Override
+//            public boolean handleChange(final Object oldValue, final Object newValue, final IFigure refreshableFigure) {
+//                RefreshableActionButtonFigure rabFigure = (RefreshableActionButtonFigure) refreshableFigure;
+//                System.out.println("Test Toggle Button");
+//                return false;
+//            }
+//        };
+//        setPropertyChangeHandler(ActionButtonModel.PROP_ACTIONDATA,
+//                                 buttonStyleHandler);
 	}
 
 	/**
@@ -328,88 +334,6 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 	        text.selectAll();
 
 	        return result;
-	    }
-
-	    private String determineLabel(final String updatedPropertyId) {
-	        ActionButtonModel model = getCastedModel();
-
-	        TextTypeEnum type = model.getValueType();
-	        String text = model.getLabel();
-
-	        String toprint = "none";
-
-	        switch (type) {
-	        case TEXT:
-	            if ((updatedPropertyId == null) || updatedPropertyId.equals(ActionButtonModel.PROP_LABEL)) {
-	                toprint = text;
-	            }
-	            break;
-	        case DOUBLE:
-	            if ((updatedPropertyId == null) || updatedPropertyId.equals(ActionButtonModel.PROP_LABEL)
-	                    /*|| updatedPropertyId.equals(ActionButtonModel.PROP_PRECISION)*/) {
-	                try {
-	                    double d = Double.parseDouble(text);
-	                    // TODO: getPrecision from model
-	                    _numberFormat.setMaximumFractionDigits(2);
-	                    _numberFormat.setMinimumFractionDigits(2);
-	                    toprint = _numberFormat.format(d);
-	                } catch (Exception e) {
-	                    toprint = text;
-	                }
-	            }
-	            break;
-	        case ALIAS:
-	            if ((updatedPropertyId == null) || updatedPropertyId.equals(ActionButtonModel.PROP_ALIASES)
-	                    || updatedPropertyId.equals(ActionButtonModel.PROP_PRIMARY_PV)) {
-	                try {
-	                    toprint = ChannelReferenceValidationUtil.createCanonicalName(model.getPrimaryPV(), model.getAllInheritedAliases());
-	                } catch (ChannelReferenceValidationException e) {
-	                    toprint = model.getPrimaryPV();
-	                }
-	            }
-	            break;
-	        case HEX:
-	            if ((updatedPropertyId == null) || updatedPropertyId.equals(ActionButtonModel.PROP_LABEL)) {
-	                try {
-	                    long l = Long.parseLong(text);
-	                    toprint = Long.toHexString(l);
-	                } catch (Exception e1) {
-	                    try {
-	                        double d = Double.parseDouble(text);
-	                        toprint = Double.toHexString(d);
-	                    } catch (Exception e2) {
-	                        toprint = text;
-	                    }
-	                }
-	            }
-	            break;
-	        case EXP:
-	            if ((updatedPropertyId == null) || updatedPropertyId.equals(ActionButtonModel.PROP_LABEL)
-	                    /*|| updatedPropertyId.equals(ActionButtonModel.PROP_PRECISION)*/) {
-	                try {
-	                    String pattern = "0.";
-	                    // TODO: getPrecision() from model
-	                    for (int i = 0; i < 2; i++) {
-	                        if (i == 0) {
-	                            pattern = pattern.concat("0");
-	                        } else {
-	                            pattern = pattern.concat("#");
-	                        }
-	                    }
-	                    pattern = pattern.concat("E00");
-	                    DecimalFormat expFormat = new DecimalFormat(pattern);
-	                    double d = Double.parseDouble(text);
-	                    toprint = expFormat.format(d);
-	                } catch (Exception e) {
-	                    toprint = text;
-	                }
-	            }
-	            break;
-	        default:
-
-	            toprint = "unknown value type";
-	        }
-	        return toprint;
 	    }
 
 	    /**
