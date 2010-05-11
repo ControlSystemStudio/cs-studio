@@ -21,6 +21,12 @@
  */
 
 package org.csstudio.alarm.treeView.ldap;
+import static org.csstudio.alarm.treeView.ldap.AlarmTreeLdapConstants.ECOM_FIELD_NAME;
+import static org.csstudio.alarm.treeView.ldap.AlarmTreeLdapConstants.ECON_FIELD_NAME;
+import static org.csstudio.alarm.treeView.ldap.AlarmTreeLdapConstants.EFAN_FIELD_NAME;
+import static org.csstudio.alarm.treeView.ldap.AlarmTreeLdapConstants.EREN_FIELD_NAME;
+import static org.csstudio.alarm.treeView.ldap.AlarmTreeLdapConstants.ESCO_FIELD_NAME;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -29,9 +35,12 @@ import java.util.Set;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.naming.InvalidNameException;
+import javax.naming.ldap.LdapName;
+import javax.naming.ldap.Rdn;
 
 import org.csstudio.utility.ldap.ILdapObjectClass;
-import static org.csstudio.alarm.treeView.ldap.AlarmTreeLdapConstants.*;
+import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
 
 
 /**
@@ -43,7 +52,7 @@ import static org.csstudio.alarm.treeView.ldap.AlarmTreeLdapConstants.*;
  * @author Joerg Rathlev
  */
 public enum LdapEpicsAlarmCfgObjectClass implements ILdapObjectClass<LdapEpicsAlarmCfgObjectClass> {
-    ROOT("root", "ROOT", "root"),
+    ROOT("organizationUnit", LdapFieldsAndAttributes.OU_FIELD_NAME, "ou"),
 
     /**
      * The facility object class (efan).
@@ -202,8 +211,9 @@ public enum LdapEpicsAlarmCfgObjectClass implements ILdapObjectClass<LdapEpicsAl
      * {@inheritDoc}
      */
     @Override
-    public LdapEpicsAlarmCfgObjectClass getRoot() {
-        return ROOT;
+    public LdapName getRootValue() throws InvalidNameException {
+        final Rdn rdn = new Rdn(LdapFieldsAndAttributes.OU_FIELD_NAME, AlarmTreeLdapConstants.EPICS_ALARM_CFG_FIELD_VALUE);
+        return new LdapName(Collections.singletonList(rdn));
     }
 
 }
