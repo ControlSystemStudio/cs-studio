@@ -40,12 +40,15 @@ import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
+import org.csstudio.alarm.service.declaration.AlarmTreeLdapConstants;
+import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
 import org.csstudio.alarm.treeView.model.AbstractAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.AlarmTreeNodePropertyId;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.ProcessVariableNode;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
 import org.csstudio.utility.ldap.engine.Engine;
 
 /**
@@ -55,12 +58,6 @@ import org.csstudio.utility.ldap.engine.Engine;
  * @author Joerg Rathlev
  */
 public final class DirectoryEditor {
-
-	/**
-	 * The root below which the direcoty is edited.
-	 */
-	// TODO: refactor (code duplication, see LdapDirectoryReader)
-	private static final String ALARM_ROOT = "ou=EpicsAlarmCfg";
 
 	private static final String CONTROLS_ROOT = "ou=EpicsControls";
 
@@ -456,8 +453,8 @@ public final class DirectoryEditor {
 		try {
 			final Rdn rdn = new Rdn(LdapEpicsAlarmCfgObjectClass.RECORD.getRdnType(), recordName);
 			final LdapName fullName = (LdapName) ((LdapName) fullLdapName(parent).clone()).add(rdn);
-			final Attributes attrs = baseAttributesForEntry(LdapEpicsAlarmCfgObjectClass.RECORD, rdn);
-			addAlarmAttributes(attrs, recordName);
+			Attributes attrs = baseAttributesForEntry(LdapEpicsAlarmCfgObjectClass.RECORD, rdn);
+			attrs = addAlarmAttributes(attrs, recordName);
 			createEntry(fullName, attrs);
 			final ProcessVariableNode node = new ProcessVariableNode.Builder(recordName).setParent(parent).build();
 			AlarmTreeNodeModifier.setAlarmState(node, attrs);
@@ -487,7 +484,7 @@ public final class DirectoryEditor {
 			createEntry(fullLdapName(parent), componentName, LdapEpicsAlarmCfgObjectClass.RECORD);
 		}
 
-		final LdapEpicsAlarmCfgObjectClass oclass = oclasses.iterator().next();
+		final LdapEpicsAlarmCfgObjectClass oclass = LdapEpicsAlarmCfgObjectClass.COMPONENT;
 		new SubtreeNode.Builder(componentName, oclass).setParent(parent).build();
 	}
 
@@ -554,10 +551,10 @@ public final class DirectoryEditor {
 	private static LdapName fullLdapName(final IAlarmTreeNode node)
 			throws DirectoryEditException {
 		try {
-			final LdapName name = new LdapName(ALARM_ROOT);
+			final LdapName name = new LdapName("");
 			if (node instanceof ProcessVariableNode) {
 				name.addAll(node.getParent().getLdapName());
-				name.add(new Rdn("eren", node.getName()));
+				name.add(new Rdn(AlarmTreeLdapConstants.EREN_FIELD_NAME, node.getName()));
 			} else {
 				name.addAll(((SubtreeNode) node).getLdapName());
 			}
@@ -580,7 +577,7 @@ public final class DirectoryEditor {
 	private static Attributes baseAttributesForEntry(final LdapEpicsAlarmCfgObjectClass objectClass,
 			final Rdn rdn) {
 		final Attributes result = rdn.toAttributes();
-		result.put("objectClass", objectClass.getDescription());
+		result.put(LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS, objectClass.getDescription());
 		result.put("epicsCssType", objectClass.getCssType());
 		return result;
 	}
@@ -595,8 +592,8 @@ public final class DirectoryEditor {
 	 *            the name of the record.
 	 * @throws NamingException
 	 */
-	private static void addAlarmAttributes(final Attributes target,
-			final String recordName) throws NamingException {
+	private static Attributes addAlarmAttributes(final Attributes target,
+	                                             final String recordName) throws NamingException {
 		final Name searchRootName = new LdapName(CONTROLS_ROOT);
 
 		final SearchControls ctrl = new SearchControls();
@@ -628,5 +625,6 @@ public final class DirectoryEditor {
 				LOG.warn(DirectoryEditor.class, "Error closing search results", e);
 			}
 		}
+		return target;
 	}
 }

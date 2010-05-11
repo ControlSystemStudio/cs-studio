@@ -29,6 +29,7 @@ import static org.junit.Assert.assertTrue;
 
 import javax.naming.ldap.LdapName;
 
+import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.junit.Before;
 import org.junit.Test;

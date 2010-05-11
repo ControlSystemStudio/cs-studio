@@ -20,7 +20,11 @@ package org.csstudio.alarm.service;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
+import javax.annotation.Nonnull;
+
+import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
 import org.csstudio.alarm.service.declaration.IAlarmService;
+import org.csstudio.alarm.service.internal.AlarmConfigurationServiceImpl;
 import org.csstudio.alarm.service.internal.AlarmServiceDALImpl;
 import org.csstudio.alarm.service.internal.AlarmServiceJMSImpl;
 import org.csstudio.platform.logging.CentralLogger;
@@ -31,56 +35,67 @@ import org.osgi.framework.ServiceReference;
 
 /**
  * The activator decides, which implementation is used for the alarm service.
- * 
+ *
  * @author jpenning
  * @author $Author$
  * @version $Revision$
  * @since 26.04.2010
  */
 public class AlarmServiceActivator implements BundleActivator {
-    
+
     private final CentralLogger _log = CentralLogger.getInstance();
-    
-    /**
-     * The LDAP service
-     */
-    private ILdapService _ldapService;
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
     public void start(final BundleContext context) throws Exception {
         _log.debug(this, "Starting AlarmService");
-        
-        _ldapService = getService(context, ILdapService.class);
-        
+
+        registerAlarmConfigurationService(context, getService(context, ILdapService.class));
+
         // Provide implementation for alarm service
         // TODO jp The implementation must be determined dynamically
         registerJMSService(context);
-        //        registerDALService(context);
+        //registerDALService(context, getService(context, IAlarmConfigurationService.class));
     }
-    
+
+    /**
+     * @param context
+     * @param iLdapService
+     */
+    private void registerAlarmConfigurationService(@Nonnull final BundleContext context, @Nonnull final ILdapService ldapService) {
+        final Dictionary<String, String> properties = new Hashtable<String, String>();
+        properties.put("service.vendor", "DESY");
+        properties.put("service.description", "Alarm configuration service implementation.");
+
+        context.registerService(IAlarmConfigurationService.class.getName(),
+                                new AlarmConfigurationServiceImpl(ldapService),
+                                properties);
+
+    }
+
     private void registerJMSService(final BundleContext context) {
-        Dictionary<String, String> properties = new Hashtable<String, String>();
+        final Dictionary<String, String> properties = new Hashtable<String, String>();
         properties.put("service.vendor", "DESY");
         properties.put("service.description", "JMS implementation of the alarm service");
-        
+
         context.registerService(IAlarmService.class.getName(),
                                 new AlarmServiceJMSImpl(),
                                 properties);
     }
-    
-    private void registerDALService(final BundleContext context) {
-        Dictionary<String, String> properties = new Hashtable<String, String>();
+
+    private void registerDALService(@Nonnull final BundleContext context,
+                                    @Nonnull final IAlarmConfigurationService alarmConfigService) {
+        final Dictionary<String, String> properties = new Hashtable<String, String>();
         properties.put("service.vendor", "DESY");
         properties.put("service.description", "DAL implementation of the alarm service");
-        
+
         context.registerService(IAlarmService.class.getName(),
-                                new AlarmServiceDALImpl(_ldapService),
+                                new AlarmServiceDALImpl(alarmConfigService),
                                 properties);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -88,17 +103,17 @@ public class AlarmServiceActivator implements BundleActivator {
     public void stop(@SuppressWarnings("unused") final BundleContext context) throws Exception {
         _log.debug(this, "Stopping AlarmService");
     }
-    
+
     /**
      * Get the implementation of the service
-     * 
+     *
      * @param context
      * @param typeOfService
      * @return service implementation or null
      */
     @SuppressWarnings("unchecked")
     protected <T> T getService(final BundleContext context, final Class<T> typeOfService) {
-        ServiceReference reference = context.getServiceReference(typeOfService.getName());
+        final ServiceReference reference = context.getServiceReference(typeOfService.getName());
         return (T) (reference == null ? null : context.getService(reference));
     }
 }

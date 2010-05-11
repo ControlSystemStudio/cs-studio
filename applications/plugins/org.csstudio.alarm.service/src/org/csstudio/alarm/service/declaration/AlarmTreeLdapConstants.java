@@ -21,7 +21,7 @@
  *
  * $Id$
  */
-package org.csstudio.alarm.treeView.ldap;
+package org.csstudio.alarm.service.declaration;
 
 /**
  * Constants for LDAP field names, popular values, and forbidden symbols in LDAP entry names.

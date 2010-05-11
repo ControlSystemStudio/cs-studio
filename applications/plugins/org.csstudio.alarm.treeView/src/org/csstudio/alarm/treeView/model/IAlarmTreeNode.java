@@ -26,7 +26,7 @@ import java.net.URL;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.alarm.treeView.ldap.LdapEpicsAlarmCfgObjectClass;
+import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
 
 
 /**

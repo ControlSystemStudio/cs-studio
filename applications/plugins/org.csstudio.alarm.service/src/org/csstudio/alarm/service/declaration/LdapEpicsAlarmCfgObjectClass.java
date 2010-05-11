@@ -20,12 +20,12 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
-package org.csstudio.alarm.treeView.ldap;
-import static org.csstudio.alarm.treeView.ldap.AlarmTreeLdapConstants.ECOM_FIELD_NAME;
-import static org.csstudio.alarm.treeView.ldap.AlarmTreeLdapConstants.ECON_FIELD_NAME;
-import static org.csstudio.alarm.treeView.ldap.AlarmTreeLdapConstants.EFAN_FIELD_NAME;
-import static org.csstudio.alarm.treeView.ldap.AlarmTreeLdapConstants.EREN_FIELD_NAME;
-import static org.csstudio.alarm.treeView.ldap.AlarmTreeLdapConstants.ESCO_FIELD_NAME;
+package org.csstudio.alarm.service.declaration;
+import static org.csstudio.alarm.service.declaration.AlarmTreeLdapConstants.ECOM_FIELD_NAME;
+import static org.csstudio.alarm.service.declaration.AlarmTreeLdapConstants.ECON_FIELD_NAME;
+import static org.csstudio.alarm.service.declaration.AlarmTreeLdapConstants.EFAN_FIELD_NAME;
+import static org.csstudio.alarm.service.declaration.AlarmTreeLdapConstants.EREN_FIELD_NAME;
+import static org.csstudio.alarm.service.declaration.AlarmTreeLdapConstants.ESCO_FIELD_NAME;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -93,6 +93,7 @@ public enum LdapEpicsAlarmCfgObjectClass implements ILdapObjectClass<LdapEpicsAl
         SUBCOMPONENT._nestedClasses.add(SUBCOMPONENT);
 
         COMPONENT._nestedClasses.addAll(SUBCOMPONENT._nestedClasses);
+        COMPONENT._nestedClasses.add(RECORD);
         COMPONENT._nestedClasses.add(COMPONENT);
 
         FACILITY._nestedClasses.addAll(COMPONENT._nestedClasses);

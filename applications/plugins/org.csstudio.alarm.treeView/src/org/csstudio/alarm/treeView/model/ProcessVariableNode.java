@@ -24,7 +24,7 @@
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.alarm.treeView.ldap.LdapEpicsAlarmCfgObjectClass;
+import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
 import org.csstudio.platform.model.IProcessVariable;
 
 /**

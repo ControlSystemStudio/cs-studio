@@ -18,6 +18,7 @@
  */
 package org.csstudio.alarm.treeView;
 
+import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
 import org.csstudio.alarm.service.declaration.IAlarmService;
 import org.csstudio.platform.ui.AbstractCssUiPlugin;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -42,6 +43,8 @@ public class AlarmTreePlugin extends AbstractCssUiPlugin {
     private IAlarmService _alarmService;
 
     private static AlarmTreePlugin INSTANCE;
+
+    private IAlarmConfigurationService _alarmConfigurationService;
 
     /**
      * Returns the shared instance.
@@ -69,6 +72,7 @@ public class AlarmTreePlugin extends AbstractCssUiPlugin {
     @Override
     protected void doStart(final BundleContext context) throws Exception {
         _alarmService = getService(context, IAlarmService.class);
+        _alarmConfigurationService = getService(context, IAlarmConfigurationService.class);
     }
 
     /**
@@ -104,5 +108,13 @@ public class AlarmTreePlugin extends AbstractCssUiPlugin {
     public IAlarmService getAlarmService() {
         return _alarmService;
     }
+
+    /**
+     * @return the alarm configuration service or null
+     */
+    public IAlarmConfigurationService getAlarmConfigurationService() {
+        return _alarmConfigurationService;
+    }
+
 
 }

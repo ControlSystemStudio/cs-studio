@@ -21,29 +21,26 @@
  */
  package org.csstudio.alarm.treeView.ldap;
 
-import static org.csstudio.alarm.treeView.ldap.AlarmTreeLdapConstants.EPICS_ALARM_CFG_FIELD_VALUE;
+import static org.csstudio.alarm.service.declaration.AlarmTreeLdapConstants.EPICS_ALARM_CFG_FIELD_VALUE;
 import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EFAN_FIELD_NAME;
 import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.OU_FIELD_NAME;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.naming.CompositeName;
 import javax.naming.NameNotFoundException;
-import javax.naming.NameParser;
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttributes;
 import javax.naming.directory.DirContext;
-import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
+import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
+import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
-import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.ProcessVariableNode;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.alarm.treeView.preferences.PreferenceConstants;
@@ -51,6 +48,9 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.LdapNameUtils;
 import org.csstudio.utility.ldap.LdapUtils;
 import org.csstudio.utility.ldap.engine.Engine;
+import org.csstudio.utility.ldap.model.ContentModel;
+import org.csstudio.utility.ldap.model.ILdapComponent;
+import org.csstudio.utility.ldap.model.ILdapTreeComponent;
 import org.csstudio.utility.ldap.reader.LDAPReader;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
 import org.csstudio.utility.ldap.reader.LDAPReader.LdapSearchParams;
@@ -79,42 +79,10 @@ public final class AlarmTreeBuilder {
         // Empty
     }
 
-	/**
-	 * Creates a new node with the given name and inserts it into the tree.
-	 * @param name the object's relative name. This name will be used to determine
-	 *        where in the tree to put the object.
-	 * @param objectClass the node's object class
-	 * @throws NamingException
-	 */
-	private static void createTreeNode(@Nonnull final LdapName name,
-	                                   @Nonnull final SubtreeNode treeRoot,
-	                                   @Nonnull final Attributes attributes) throws NamingException {
-
-	    final SubtreeNode parentNode = findCreateParentNode(treeRoot, name);
-
-        if (name.size() > 0) {
-            final Rdn rdn = name.getRdn(name.size() - 1);
-            final LdapEpicsAlarmCfgObjectClass objectClass = treeRoot.getObjectClass().getObjectClassByRdnType(rdn.getType());
-
-            final IAlarmTreeNode node;
-            final String sname = LdapNameUtils.simpleName(name);
-
-            if(LdapEpicsAlarmCfgObjectClass.RECORD.equals(objectClass)) {
-                node = new ProcessVariableNode.Builder(sname).setParent(parentNode).build();
-                AlarmTreeNodeModifier.evaluateAttributes(attributes, (ProcessVariableNode) node);
-            } else if (objectClass != null) {
-                node = new SubtreeNode.Builder(sname, objectClass).setParent(parentNode).build();
-            } else {
-                System.out.println(AlarmTreeBuilder.class.getCanonicalName() + " object class is null for " + name.toString() + " and " + treeRoot.getName());
-            }
-        }
-	}
-
-
     private static String[] retrieveFacilityNames() {
         final IPreferencesService prefs = Platform.getPreferencesService();
         final String facilitiesPref = prefs.getString(AlarmTreePlugin.PLUGIN_ID,
-                PreferenceConstants.FACILITIES, "", null);
+                                                      PreferenceConstants.FACILITIES, "", null);
         String[] facilityNames;
         if (facilitiesPref.equals("")) {
             facilityNames = new String[0];
@@ -160,9 +128,11 @@ public final class AlarmTreeBuilder {
      *         facilities or <code>null</code>
      */
     @CheckForNull
-    private static List<LdapSearchResult> retrieveFacilitySubTrees(@Nonnull final String[] facilityNames,
-                                                                   @Nullable final IProgressMonitor monitor) {
-        final List<LdapSearchResult> results = new ArrayList<LdapSearchResult>(facilityNames.length);
+    private static ContentModel<LdapEpicsAlarmCfgObjectClass> retrieveFacilitySubTrees(@Nonnull final String[] facilityNames,
+                                                                                       @Nullable final IProgressMonitor monitor) {
+
+        final ContentModel<LdapEpicsAlarmCfgObjectClass> model =
+            new ContentModel<LdapEpicsAlarmCfgObjectClass>(LdapEpicsAlarmCfgObjectClass.ROOT);
 
         for (final String facility : facilityNames) {
             final LdapSearchResult result =
@@ -170,49 +140,46 @@ public final class AlarmTreeBuilder {
                                                                                                        OU_FIELD_NAME, EPICS_ALARM_CFG_FIELD_VALUE),
                                                         "(objectClass=*)"));
 
-            results.add(result);
+            model.addSearchResult(result);
             if ((monitor != null) && monitor.isCanceled()) {
                 return null;
             }
         }
-        return results;
+        return model;
     }
-
 
     /**
      * Creates the initial alarm tree with all subtrees that end with records.
      * Can be canceled.
-     *
-     * @param rootNode .
-     * @param results the ldap search results for the subtrees
-     * @param ctx ldap context
-     * @param monitor the job monitor providing the cancellation info
-     * @return false if it has been canceled, true otherwise
+     * @param parentNode
+     * @param modelNode
+     * @param ctx
+     * @param monitor
+     * @return
      * @throws NamingException
      */
-    private static boolean createInitialAlarmTree(@Nonnull final SubtreeNode rootNode,
-                                                  @Nonnull final List<LdapSearchResult> results,
-                                                  @Nonnull final DirContext ctx,
-                                                  @Nullable final IProgressMonitor monitor) throws NamingException {
-        final NameParser nameParser = ctx.getNameParser(new CompositeName());
-        // retrieve results from all reads
-        for (final LdapSearchResult searchResult : results) {
-            for (final SearchResult row : searchResult.getAnswerSet()) {
+    private static boolean createAlarmSubtree(@Nonnull final SubtreeNode parentNode,
+                                              @Nonnull final ILdapTreeComponent<LdapEpicsAlarmCfgObjectClass> modelNode,
+                                              @Nonnull final DirContext ctx,
+                                              @Nullable final IProgressMonitor monitor) throws NamingException {
 
-                final LdapName name = (LdapName) nameParser.parse(row.getNameInNamespace());
+        final String simpleName = modelNode.getName();
 
-                // TODO (bknerr) : remove from here to LdapNameUtils in package LDAP
-                // remove any hierarchy level before 'efan=...'
-                while ((name.size() > 0) && !name.get(0).startsWith(EFAN_FIELD_NAME)) {
-                    name.remove(0);
+        if (LdapEpicsAlarmCfgObjectClass.RECORD.equals(modelNode.getType())) {
+            final ProcessVariableNode newNode = new ProcessVariableNode.Builder(simpleName).setParent(parentNode).build();
+            // TODO (bknerr) : set alarm state has to be removed here
+            AlarmTreeNodeModifier.evaluateAttributes(modelNode.getAttributes(), newNode);
+        } else {
+            final SubtreeNode newNode = new SubtreeNode.Builder(simpleName, modelNode.getType()).setParent(parentNode).build();
+            for (final ILdapComponent<LdapEpicsAlarmCfgObjectClass> child : modelNode.getDirectChildren()) {
+                createAlarmSubtree(newNode, (ILdapTreeComponent<LdapEpicsAlarmCfgObjectClass>) child, ctx, monitor);
+
+                if ((monitor != null) && monitor.isCanceled()) {
+                    return true;
                 }
-
-                AlarmTreeBuilder.createTreeNode(name, rootNode, row.getAttributes());
-            }
-            if ((monitor != null) && monitor.isCanceled()) {
-                return true;
             }
         }
+
         return false;
     }
 
@@ -283,12 +250,15 @@ public final class AlarmTreeBuilder {
 
         final String[] facilityNames = retrieveFacilityNames();
 
-        final List<LdapSearchResult> results = retrieveFacilitySubTrees(facilityNames, monitor);
-        if (results == null) {
-            return true;
-        }
+        final IAlarmConfigurationService configService = AlarmTreePlugin.getDefault().getAlarmConfigurationService();
 
-        return createInitialAlarmTree(rootNode, results, ctx, monitor);
+        final ContentModel<LdapEpicsAlarmCfgObjectClass> model =
+            configService.retrieveInitialContentModel(Arrays.asList(facilityNames));
+
+        for (final ILdapComponent<LdapEpicsAlarmCfgObjectClass> node : model.getRoot().getDirectChildren()) {
+            createAlarmSubtree(rootNode, (ILdapTreeComponent<LdapEpicsAlarmCfgObjectClass>) node, ctx, monitor);
+        }
+        return true;
     }
 
 }

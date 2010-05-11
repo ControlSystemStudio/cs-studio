@@ -27,6 +27,7 @@ import static org.junit.Assert.assertEquals;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
+import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
 import org.csstudio.utility.ldap.LdapNameUtils;
 import org.junit.Test;
 

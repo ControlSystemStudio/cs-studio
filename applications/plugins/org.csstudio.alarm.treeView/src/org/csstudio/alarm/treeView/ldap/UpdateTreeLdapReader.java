@@ -36,10 +36,13 @@ import javax.naming.directory.DirContext;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
+import org.csstudio.alarm.service.declaration.AlarmTreeLdapConstants;
+import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.alarm.treeView.preferences.PreferenceConstants;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
 import org.csstudio.utility.ldap.engine.Engine;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -151,10 +154,11 @@ public class UpdateTreeLdapReader extends Job {
 	 */
 	private void updateStructureOfFacility(final String facility) {
 		try {
-			final LdapName efanName = new LdapName(Collections.singletonList(
-					new Rdn("efan", facility)));
-			final LdapName fullEfanName = (LdapName) new LdapName(ALARM_ROOT)
-					.addAll(efanName);
+			final LdapName efanName =
+			    new LdapName(Collections.singletonList(new Rdn(AlarmTreeLdapConstants.EFAN_FIELD_NAME, facility)));
+			final LdapName fullEfanName =
+			    (LdapName) new LdapName(Collections.singletonList(new Rdn(LdapFieldsAndAttributes.OU_FIELD_NAME, AlarmTreeLdapConstants.EPICS_ALARM_CFG_FIELD_VALUE)))
+            	.addAll(efanName);
 
 			final SubtreeNode efanNode = updateNode(_treeRoot, efanName, fullEfanName);
 			updateStructureOfSubTree(fullEfanName, efanNode);
@@ -173,7 +177,7 @@ public class UpdateTreeLdapReader extends Job {
 	 *            the tree.
 	 */
 	private void updateStructureOfSubTree(final LdapName treeName,
-			final SubtreeNode tree) {
+	                                      final SubtreeNode tree) {
 		try {
 			final NameParser nameParser = _directory.getNameParser(treeName);
 			final NamingEnumeration<NameClassPair> results = _directory.list(treeName);
@@ -184,11 +188,10 @@ public class UpdateTreeLdapReader extends Job {
 
 				// The update job readas only structural nodes, no eren nodes.
 		        final Rdn rdn = entryName.getRdn(entryName.size() - 1);
-		        final LdapEpicsAlarmCfgObjectClass oclass = tree.getObjectClass().getObjectClassByRdnType(rdn.getType());
+		        LdapEpicsAlarmCfgObjectClass oclass = tree.getObjectClass().getObjectClassByRdnType(rdn.getType());
 
 		        if (oclass == null) {
-		            System.out.println("Here");
-		            final LdapEpicsAlarmCfgObjectClass oclass2 = tree.getObjectClass().getObjectClassByRdnType(rdn.getType());
+		            oclass = LdapEpicsAlarmCfgObjectClass.COMPONENT;
 		        }
 
 		        if (!oclass.equals(LdapEpicsAlarmCfgObjectClass.RECORD)) {
@@ -202,7 +205,7 @@ public class UpdateTreeLdapReader extends Job {
 					"Error getting list of objects from LDAP directory " +
 					"for rootDN=" + treeName, e);
 		} catch (final NullPointerException e) {
-		    System.out.println("Got you");
+		    System.out.println(this.getName() + " NPE ");
 		}
 	}
 

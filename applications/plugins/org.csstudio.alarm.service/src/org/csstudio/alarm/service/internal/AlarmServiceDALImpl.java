@@ -19,40 +19,40 @@ package org.csstudio.alarm.service.internal;
 
 import javax.annotation.Nonnull;
 
+import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
 import org.csstudio.alarm.service.declaration.IAlarmConnection;
 import org.csstudio.alarm.service.declaration.IAlarmService;
-import org.csstudio.utility.ldap.service.ILdapService;
 
 /**
  * DAL based implementation of the AlarmService.
- * 
+ *
  * @author jpenning
  * @author $Author$
  * @version $Revision$
  * @since 21.04.2010
  */
 public class AlarmServiceDALImpl implements IAlarmService {
-    
+
     /**
-     * The LDAP service
+     * The configuration service
      */
-    private final ILdapService _ldapService;
-    
+    private final IAlarmConfigurationService _alarmConfigService;
+
     /**
      * Constructor.
-     * 
-     * @param ldapService .
+     *
+     * @param alarmConfigService .
      */
-    public AlarmServiceDALImpl(@Nonnull final ILdapService ldapService) {
-        _ldapService = ldapService;
+    public AlarmServiceDALImpl(@Nonnull final IAlarmConfigurationService alarmConfigService) {
+        _alarmConfigService = alarmConfigService;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
     public IAlarmConnection newAlarmConnection() {
-        return new AlarmConnectionDALImpl(_ldapService);
+        return new AlarmConnectionDALImpl(_alarmConfigService);
     }
-    
+
 }

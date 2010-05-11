@@ -9,7 +9,7 @@ import static org.junit.Assert.assertTrue;
 import java.net.URL;
 import java.util.Date;
 
-import org.csstudio.alarm.treeView.ldap.LdapEpicsAlarmCfgObjectClass;
+import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
 import org.csstudio.platform.model.IProcessVariable;
 import org.junit.Before;
 import org.junit.Test;

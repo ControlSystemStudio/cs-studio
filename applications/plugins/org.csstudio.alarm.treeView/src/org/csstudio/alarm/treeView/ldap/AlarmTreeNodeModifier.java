@@ -48,6 +48,26 @@ import org.csstudio.platform.logging.CentralLogger;
  */
 public final class AlarmTreeNodeModifier {
 
+    // TODO (bknerr) : if used anywhere else in this package, encapsulate
+    // in static package visible class
+
+    private static final String EPICS_ALARM_HIGH_UN_ACKN = "epicsAlarmHighUnAckn";
+
+    private static final String EPICS_ALARM_TIME_STAMP = "epicsAlarmTimeStamp";
+
+    private static final String EPICS_ALARM_SEVERITY = "epicsAlarmSeverity";
+
+    private static final String EPICS_CSS_STRIP_CHART = "epicsCssStripChart";
+
+    private static final String EPICS_CSS_DISPLAY = "epicsCssDisplay";
+
+    private static final String EPICS_HELP_PAGE = "epicsHelpPage";
+
+    private static final String EPICS_HELP_GUIDANCE = "epicsHelpGuidance";
+
+    private static final String EPICS_CSS_ALARM_DISPLAY = "epicsCssAlarmDisplay";
+
+
     /**
      * The logger that is used by this class.
      */
@@ -89,7 +109,7 @@ public final class AlarmTreeNodeModifier {
     public static void setEpicsAttributes(@Nonnull final AbstractAlarmTreeNode node,
                                           @Nonnull final Attributes attrs) throws NamingException {
 
-        final Attribute alarmDisplayAttr = attrs.get("epicsCssAlarmDisplay");
+        final Attribute alarmDisplayAttr = attrs.get(EPICS_CSS_ALARM_DISPLAY);
         if (alarmDisplayAttr != null) {
             final String display = (String) alarmDisplayAttr.get();
             if (display != null) {
@@ -97,20 +117,20 @@ public final class AlarmTreeNodeModifier {
             }
         }
 
-        final Attribute helpPageAttr = attrs.get("epicsHelpPage");
+        final Attribute helpPageAttr = attrs.get(EPICS_HELP_PAGE);
         if (helpPageAttr != null) {
             final String helpPage = (String) helpPageAttr.get();
             if ((helpPage != null) && helpPage.matches("^http://.+")) {
                 try {
                     node.setHelpPage(new URL(helpPage));
                 } catch (final MalformedURLException e) {
-                    LOG.warn(AlarmTreeBuilder.class.getName(), "epicsHelpPage attribute for node "
+                    LOG.warn(AlarmTreeBuilder.class.getName(), EPICS_HELP_PAGE + " attribute for node "
                             + node + " contains a malformed URL");
                 }
             }
         }
 
-        final Attribute helpGuidanceAttr = attrs.get("epicsHelpGuidance");
+        final Attribute helpGuidanceAttr = attrs.get(EPICS_HELP_GUIDANCE);
         if (helpGuidanceAttr != null) {
             final String helpGuidance = (String) helpGuidanceAttr.get();
             if (helpGuidance != null) {
@@ -118,7 +138,7 @@ public final class AlarmTreeNodeModifier {
             }
         }
 
-        final Attribute displayAttr = attrs.get("epicsCssDisplay");
+        final Attribute displayAttr = attrs.get(EPICS_CSS_DISPLAY);
         if (displayAttr != null) {
             final String display = (String) displayAttr.get();
             if (display != null) {
@@ -126,7 +146,7 @@ public final class AlarmTreeNodeModifier {
             }
         }
 
-        final Attribute chartAttr = attrs.get("epicsCssStripChart");
+        final Attribute chartAttr = attrs.get(EPICS_CSS_STRIP_CHART);
         if (chartAttr != null) {
             final String chart = (String) chartAttr.get();
             if (chart != null) {
@@ -147,24 +167,24 @@ public final class AlarmTreeNodeModifier {
      */
     static void setAlarmState(final ProcessVariableNode node, final Attributes attrs)
             throws NamingException {
-        final Attribute severityAttr = attrs.get("epicsAlarmSeverity");
-        final Attribute eventtimeAttr = attrs.get("epicsAlarmTimeStamp");
-        final Attribute highUnAcknAttr = attrs.get("epicsAlarmHighUnAckn");
+        final Attribute severityAttr = attrs.get(EPICS_ALARM_SEVERITY);
+        final Attribute eventtimeAttr = attrs.get(EPICS_ALARM_TIME_STAMP);
+        final Attribute highUnAcknAttr = attrs.get(EPICS_ALARM_HIGH_UN_ACKN);
         if (severityAttr != null) {
             final String severityVal = (String) severityAttr.get();
             if (severityVal != null) {
-                final Severity s = Severity.parseSeverity(severityVal);
-                Date t = null;
+                final Severity sev = Severity.parseSeverity(severityVal);
+                Date date = null;
                 if (eventtimeAttr != null) {
                     final String eventtimeStr = (String) eventtimeAttr.get();
                     if (eventtimeStr != null) {
-                        t = EventtimeUtil.parseTimestamp(eventtimeStr);
+                        date = EventtimeUtil.parseTimestamp(eventtimeStr);
                     }
                 }
-                if (t == null) {
-                    t = new Date();
+                if (date == null) {
+                    date = new Date();
                 }
-                node.updateAlarm(new Alarm(node.getName(), s, t));
+                node.updateAlarm(new Alarm(node.getName(), sev, date));
             }
         }
         Severity unack = Severity.NO_ALARM;
