@@ -232,6 +232,7 @@ public class FormulaTest extends TestCase
     	vars[0].setValue(10);
     	assertEquals(0.0, f.eval(), epsilon);
 
+    	// PV with special characters
         f = new Formula("'IOC2049-102:BMIT:enabled' >= 10", true);
         vars = f.getVariables();
         assertEquals(1, vars.length);
@@ -243,5 +244,15 @@ public class FormulaTest extends TestCase
         
         assertTrue(f.hasSubnode("IOC2049-102:BMIT:enabled"));
         assertFalse(f.hasSubnode("Fred"));
+        
+        // ITER example PV that starts with number
+        f = new Formula("'51RS1-COS-1:OPSTATE' != 3", true);
+        vars = f.getVariables();
+        assertEquals(1, vars.length);
+        assertEquals("51RS1-COS-1:OPSTATE", vars[0].getName());
+        vars[0].setValue(3);
+        assertEquals(0.0, f.eval(), epsilon);
+        vars[0].setValue(4);
+        assertEquals(1.0, f.eval(), epsilon);
     }
 }
