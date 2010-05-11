@@ -554,8 +554,8 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 				characteristics.put(PropertyCharacteristics.C_HOSTNAME,"unknown");
 				characteristics.put(EpicsPropertyCharacteristics.EPICS_NUMBER_OF_ELEMENTS,1);
 			}
-
 			characteristics.put(PropertyCharacteristics.C_DATATYPE,PlugUtilities.getDataType(null));
+
 			//characteristics.put(NumericPropertyCharacteristics.C_SCALE_TYPE, );
 
 			characteristics.put(PatternPropertyCharacteristics.C_CONDITION_WHEN_SET, patternWhenSet);
@@ -1083,7 +1083,7 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 	 * @throws IllegalStateException if maximum number of threads defined by {@link EPICSPlug}
 	 * is equal to 0.
 	 */
-	private ThreadPoolExecutor getExecutor() {
+	public ThreadPoolExecutor getExecutor() {
 		if (executor==null) {
 			synchronized (this) {
 				if (getPlug().getMaxThreads() == 0) throw new IllegalStateException("Maximum number of threads must be greater than 0.");

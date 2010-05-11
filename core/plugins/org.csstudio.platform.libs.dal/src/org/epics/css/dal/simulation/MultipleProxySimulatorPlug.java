@@ -266,7 +266,7 @@ public class MultipleProxySimulatorPlug extends SimulatorPlug {
 
 			setValueSync(value);
 
-			RequestImpl<E> r = new RequestImpl<E>(this, callback);
+			RequestImpl<E> r = new RequestImpl(this, callback);
 			r.addResponse(new ResponseImpl<E>(this, r, value, "", true, null,
 			        condition, null, true));
 

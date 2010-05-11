@@ -27,6 +27,7 @@ package org.epics.css.dal.device;
 
 import org.epics.css.dal.CharacteristicContext;
 import org.epics.css.dal.commands.AsynchronousCommandContext;
+import org.epics.css.dal.context.DeviceFamily;
 import org.epics.css.dal.context.Identifiable;
 import org.epics.css.dal.context.LifecycleReporter;
 import org.epics.css.dal.context.Linkable;
@@ -52,6 +53,15 @@ public interface AbstractDevice extends AsynchronousCommandContext,
 	 * @return String DVUN for this property
 	 */
 	public String getUniqueName();
+	
+	/**
+	 * Returns parent device context, only 
+	 * <code>DeviceFamily</code> exists at the moment.
+	 *
+	 * @return parent context
+	 */
+	public DeviceFamily<?> getParentContext();
+
 }
 
 /* __oOo__ */

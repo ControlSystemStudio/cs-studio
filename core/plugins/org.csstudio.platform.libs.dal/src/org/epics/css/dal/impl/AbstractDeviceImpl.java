@@ -39,9 +39,11 @@ import org.epics.css.dal.Response;
 import org.epics.css.dal.ResponseEvent;
 import org.epics.css.dal.ResponseListener;
 import org.epics.css.dal.SimpleProperty;
+import org.epics.css.dal.commands.AsynchronousCommand;
 import org.epics.css.dal.commands.Command;
 import org.epics.css.dal.context.ConnectionEvent;
 import org.epics.css.dal.context.ConnectionState;
+import org.epics.css.dal.context.DeviceFamily;
 import org.epics.css.dal.context.Identifier;
 import org.epics.css.dal.context.IdentifierUtilities;
 import org.epics.css.dal.context.LifecycleReporterSupport;
@@ -142,6 +144,7 @@ public class AbstractDeviceImpl extends LifecycleReporterSupport
 	protected Response lastResponse = null;
 	private int suspended = 0;
 	private boolean isdebug = false;
+	protected DeviceFamily deviceFamily;
 
 	/**
 	 * Do not access this field diretly.
@@ -155,10 +158,11 @@ public class AbstractDeviceImpl extends LifecycleReporterSupport
 	/**
 	     *
 	     */
-	public AbstractDeviceImpl(String name)
+	public AbstractDeviceImpl(String name, DeviceFamily deviceFamily)
 	{
 		super();
 		this.name = name;
+		this.deviceFamily=deviceFamily;
 	}
 
 	/**
@@ -273,6 +277,16 @@ public class AbstractDeviceImpl extends LifecycleReporterSupport
 
 		return c;
 	}
+	
+	
+	public AsynchronousCommand getCommandAsync(String name) throws RemoteException {
+		Command c= getCommand(name);
+		if (c instanceof AsynchronousCommand) {
+			return (AsynchronousCommand)c;
+		}
+		return null;
+	}
+
 
 	/* (non-Javadoc)
 	 * @see org.epics.css.dal.commands.CommandContext#getCommandNames()
@@ -774,6 +788,10 @@ public class AbstractDeviceImpl extends LifecycleReporterSupport
 	public String getPlugType() {
 		// TODO: missing implementation
 		return null;
+	}
+	
+	public DeviceFamily<?> getParentContext() {
+		return deviceFamily;
 	}
 
 }

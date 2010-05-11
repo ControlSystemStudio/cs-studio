@@ -317,9 +317,10 @@ public class MonitorProxyWrapper<T, P extends SimpleProperty<T>> implements Resp
 	public void destroy()
 	{
 		// TODO: if this is default monitor for property, throw exception
-		if (dvls != null) {
-			return;
-		}
+		// TODO: ike: so what
+		///if (dvls != null) {
+		//	return;
+		//}
 
 		// TODO: propery remove this monitor from parent and call destroy on proxy
 		//property.removeMonitor(this);
@@ -351,6 +352,17 @@ public class MonitorProxyWrapper<T, P extends SimpleProperty<T>> implements Resp
 	public boolean isSuspended() {
 		if (!(proxy instanceof Suspendable)) throw new UnsupportedOperationException("Monitor proxy doesn't support suspend/resume operations!");
 		return suspendCount > 0;
+	}
+
+	public MonitorProxy releaseProxy(boolean destroy) {
+		if (destroy) {
+			destroy();
+			dvls=null;
+			dvl=null;
+			plistners.clear();
+		}
+		MonitorProxy p= proxy;
+		return p;
 	}
 
 }

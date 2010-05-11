@@ -36,6 +36,7 @@ import org.epics.css.dal.group.PropertyGroupConstrain;
 import org.epics.css.dal.proxy.AbstractPlug;
 import org.epics.css.dal.proxy.DirectoryProxy;
 import org.epics.css.dal.proxy.PropertyProxy;
+import org.epics.css.dal.proxy.Proxy;
 import org.epics.css.dal.spi.PropertyFactory;
 
 
@@ -97,8 +98,13 @@ public class PropertyFamilyImpl
 		if (!contains(prop)) return;
 		this.remove((DynamicValueProperty<?>) prop); 
 		AbstractPlug plug = (AbstractPlug)pf.getPlug();
-		PropertyProxy<?> proxy = ((DataAccessImpl<?>)prop).getProxy();
-		plug.releaseProxy(proxy);
+		Proxy[] proxy = ((DataAccessImpl<?>)prop).releaseProxy(true);
+		if (proxy!=null && proxy[0]!=null) {
+			plug.releaseProxy(proxy[0]);
+		}
+		if (proxy!=null && proxy[1]!=null && proxy[0]!=proxy[1]) {
+			plug.releaseProxy(proxy[1]);
+		}
 	}
 
 	/* (non-Javadoc)

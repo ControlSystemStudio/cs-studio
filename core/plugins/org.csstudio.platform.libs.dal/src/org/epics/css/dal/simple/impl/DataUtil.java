@@ -160,10 +160,6 @@ public class DataUtil {
     public static AnyData createAnyData(DynamicValueProperty<?> property) {
     	Class<?> type = property.getDataType();
     	
-    	if (property.getLatestValueResponse() == null) {
-    		return new UninitializedAnyDataImpl(property);
-    	}
-    	
     	if (type.equals(Double.class)) return new DoubleAnyDataImpl((DynamicValueProperty<Double>) property);
     	if (type.equals(Long.class)) return new LongAnyDataImpl((DynamicValueProperty<Long>) property);
     	if (type.equals(String.class)) return new StringAnyDataImpl((DynamicValueProperty<String>) property);

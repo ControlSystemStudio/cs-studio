@@ -162,7 +162,7 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl
 
 		setValueSync(value);
 
-		RequestImpl<T> r = new RequestImpl<T>(this, callback);
+		RequestImpl<T> r = new RequestImpl(this, callback);
 		r.addResponse(new ResponseImpl<T>(this, r, value, "", true, null,
 		        condition, null, true));
 

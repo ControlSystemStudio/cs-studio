@@ -787,7 +787,7 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 		return DataUtil.createAnyData(this);
 	}
 	
-	public void setValueAsObject(Object new_value) throws Exception {
+	public void setValueAsObject(Object new_value) throws RemoteException {
 		setValue(DataUtil.castTo(new_value, getDataType()));
 	}
 
@@ -827,6 +827,29 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 		setConnectionState(ConnectionState.DISCONNECTED);
 		setConnectionState(ConnectionState.DESTROYED);
 	}
+	
+	@Override
+	public Proxy[] releaseProxy(boolean destroy) {
+		if (destroy) {
+			setConnectionState(ConnectionState.DESTROYED);
+			linkListeners.clear();
+			responseListeners.clear();
+		} else {
+			setConnectionState(ConnectionState.DISCONNECTING);
+		}
+		if (this.proxy != null) {
+			this.proxy.removeProxyListener(proxyListener);
+			if (this.directoryProxy != null && this.directoryProxy != this.proxy) {
+				this.directoryProxy.removeProxyListener(proxyListener);
+			}
+		}
+		Proxy[] p= super.releaseProxy(destroy);
+		if (!destroy) {
+			setConnectionState(ConnectionState.DISCONNECTED);
+		}
+		return p;
+	}
+
 } /* __oOo__ */
 
 

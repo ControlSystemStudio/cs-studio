@@ -107,6 +107,14 @@ public abstract class AbstractDeviceFactory extends AbstractFactorySupport
 	    Class<D> type, LinkListener<? extends Linkable> l)
 		throws InstantiationException, RemoteException
 	{
+		return createDevice(uniqueName, type, l);
+	}
+	
+	private <D extends AbstractDevice> D createDevice(String uniqueName,
+		    Class<D> type, LinkListener<? extends Linkable> l)
+			throws InstantiationException, RemoteException
+		{
+
 		if (family.contains(uniqueName)) {
 			return type.cast(family.get(uniqueName));
 		}
@@ -115,8 +123,8 @@ public abstract class AbstractDeviceFactory extends AbstractFactorySupport
 			// Creates device implementation
 			Class<? extends AbstractDevice> impClass = getPlugInstance()
 				.getDeviceImplementationClass(type,uniqueName);
-			AbstractDeviceImpl device = (AbstractDeviceImpl)impClass.getConstructor(String.class)
-				.newInstance(uniqueName);
+			AbstractDeviceImpl device = (AbstractDeviceImpl)impClass.getConstructor(String.class,DeviceFamily.class)
+				.newInstance(uniqueName,family);
 
 			if (l != null) {
 				device.addLinkListener(l);
@@ -229,8 +237,8 @@ public abstract class AbstractDeviceFactory extends AbstractFactorySupport
 				// Creates device implementation
 				Class<? extends AbstractDevice> impClass = getPlugInstance()
 					.getDeviceImplementationClass(type,name.getRemoteName());
-				device = (AbstractDeviceImpl)impClass.getConstructor(String.class)
-					.newInstance(name.getRemoteName());
+				device = (AbstractDeviceImpl)impClass.getConstructor(String.class,DeviceFamily.class)
+					.newInstance(name.getRemoteName(),family);
 
 				connect(name.getRemoteName(), type, impClass,  device);
 

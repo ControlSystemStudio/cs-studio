@@ -31,6 +31,7 @@ import org.epics.css.dal.DynamicValueProperty;
 import org.epics.css.dal.PatternProperty;
 import org.epics.css.dal.PatternPropertyCharacteristics;
 import org.epics.css.dal.RemoteException;
+import org.epics.css.dal.context.DeviceFamily;
 import org.epics.css.dal.context.LinkBlocker;
 import org.epics.css.dal.device.PowerSupply;
 import org.epics.css.dal.directory.Attributes;
@@ -67,9 +68,9 @@ public class PowerSupplyImpl extends AbstractDeviceImpl implements PowerSupply
 	private static BitSet statusOff;
 	private static BitSet statusOn;
 
-	public PowerSupplyImpl(String name)
+	public PowerSupplyImpl(String name, DeviceFamily deviceFamily)
 	{
-		super(name);
+		super(name,deviceFamily);
 	}
 
 	/*

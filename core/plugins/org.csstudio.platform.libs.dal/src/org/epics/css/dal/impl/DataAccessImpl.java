@@ -43,11 +43,11 @@ import com.cosylab.util.ListenerList;
  */
 public abstract class DataAccessImpl<T> implements DataAccess<T>
 {
-	protected PropertyProxy<T> proxy;
-	protected SyncPropertyProxy<T> sproxy;
-	protected Class<T> valClass;
-	private ListenerList dvListeners;
-	protected T lastValue;
+	protected PropertyProxy<T> proxy=null;
+	protected SyncPropertyProxy<T> sproxy=null;
+	protected Class<T> valClass=null;
+	private ListenerList dvListeners=null;
+	protected T lastValue=null;
 
 	/**
 	     * Constructor.

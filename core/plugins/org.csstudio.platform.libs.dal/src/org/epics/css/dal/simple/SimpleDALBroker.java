@@ -56,7 +56,7 @@ public class SimpleDALBroker {
 				}
 				for (String key : toRemove) {
 					holder = properties.remove(key);
-					factory.destroy(holder.property);
+					getFactory().destroy(holder.property);
 				}
 			}
 		}
@@ -95,10 +95,16 @@ public class SimpleDALBroker {
 
 	private static SimpleDALBroker broker;
 
-	private static String createKey(ConnectionParameters cparam) {
+	private static String createKey(ConnectionParameters cparam, String defaultPlugType) {
 		StringBuilder sb = new StringBuilder();
-		sb.append(cparam.getRemoteInfo().getConnectionType()+",");
-		sb.append(cparam.getRemoteInfo().getRemoteName()+",");
+		if (cparam.getRemoteInfo().getPlugType()==null) {
+			sb.append(defaultPlugType);
+		} else {
+			sb.append(cparam.getRemoteInfo().getPlugType());
+		}
+		sb.append(',');
+		sb.append(cparam.getRemoteInfo().getRemoteName());
+		sb.append(',');
 		DataFlavor df = cparam.getConnectionType();
 		if (df == null) sb.append("null");
 		else sb.append(df.toString());
@@ -167,7 +173,7 @@ public class SimpleDALBroker {
 		
 		PropertyHolder ph;
 		UninitializedPropertyHolder uph = null;
-		String key = createKey(cparam);
+		String key = createKey(cparam,getFactory().getDefaultPlugType());
 		
 		synchronized (properties) {
 			ph= properties.get(key);
@@ -268,7 +274,11 @@ public class SimpleDALBroker {
 	}
 
 	/**
+	 * Returns remote value.
 	 * Value is read and returned synchronously.
+	 * The remote connection to remote object is closed not sooner 
+	 * then one minute and no later than two minutes after 
+	 * last time the connection was used.
 	 * 
 	 * @param cparam connection parameter to remote value
 	 * @return remote value
@@ -284,6 +294,18 @@ public class SimpleDALBroker {
 		return ph.property.getValue();
 	}
 
+	/**
+	 * Returns remote value with synchronous call.
+	 * The remote connection to remote object is closed not sooner 
+	 * then one minute and no later than two minutes after 
+	 * last time the connection was used.
+	 * 
+	 * @param rinfo connection information to remote value
+	 * @param type Java data type for expected remote value
+	 * @return returned value already cast to requested data type, can be <code>null</code>
+	 * @throws InstantiationException if error
+	 * @throws CommonException if error
+	 */
 	public <T> T getValue(RemoteInfo rinfo, Class<T> type) throws InstantiationException, CommonException {
 		PropertyHolder ph= getPropertyHolder(new ConnectionParameters(rinfo, type));
 		blockUntillConnected(ph.property);
@@ -307,6 +329,17 @@ public class SimpleDALBroker {
 		return null;
 	}
 	
+	/**
+	 * Return remote value with synchronous call.
+	 * The remote connection to remote object is closed not sooner 
+	 * then one minute and no later than two minutes after 
+	 * last time the connection was used.
+	 * 
+	 * @param rinfo connection information to remote value
+	 * @return returned value, can be <code>null</code>
+	 * @throws InstantiationException if error
+	 * @throws CommonException if error
+	 */
 	public Object getValue(RemoteInfo rinfo) throws InstantiationException, CommonException {
 		PropertyHolder ph= getPropertyHolder(new ConnectionParameters(rinfo));
 		blockUntillConnected(ph.property);
@@ -316,6 +349,33 @@ public class SimpleDALBroker {
 		return ph.property.getValue();
 	}
 
+	/**
+	 * Return remote value with synchronous call.
+	 * The remote connection to remote object is closed not sooner 
+	 * then one minute and no later than two minutes after 
+	 * last time the connection was used.
+	 * 
+	 * @param property name of remote property
+	 * @return returned value, can be <code>null</code>
+	 * @throws InstantiationException if error
+	 * @throws CommonException if error
+	 */
+	public Object getValue(String property) throws InstantiationException, CommonException {
+		return getValue(RemoteInfo.remoteInfoFromString(property,RemoteInfo.DAL_TYPE_PREFIX+getFactory().getDefaultPlugType()));
+	}
+
+	/**
+	 * Asynchronously requests remote value.
+	 * The remote connection to remote object is closed not sooner 
+	 * then one minute and no later than two minutes after 
+	 * last time the connection was used.
+	 * 
+	 * @param cparam complete connection parameters to remote value
+	 * @param callback callback which will be notified when remote value is returned
+	 * @return request object, which identifies and controls response returned to callback.
+	 * @throws InstantiationException if error
+	 * @throws CommonException if error
+	 */
 	public <T> Request<T> getValueAsync(ConnectionParameters cparam, ResponseListener<T> callback) throws InstantiationException, CommonException {
 		PropertyHolder ph= getPropertyHolder(cparam);
 		if (cparam.getRemoteInfo().getCharacteristic()!=null) {
@@ -332,7 +392,18 @@ public class SimpleDALBroker {
 		return ((DynamicValueProperty<T>)ph.property).getAsynchronous((ResponseListener<T>)callback);
 	}
 	
-	public void setValue(RemoteInfo rinfo, Object value) throws Exception {
+	/**
+	 * Sends new value to remote object.
+	 * The remote connection to remote object is closed not sooner 
+	 * then one minute and no later than two minutes after 
+	 * last time the connection was used.
+	 *  
+	 * @param rinfo connection information about remote entity
+	 * @param value new value to be set
+	 * @throws CommonException if fails 
+	 * @throws InstantiationException if fails
+	 */
+	public void setValue(RemoteInfo rinfo, Object value) throws InstantiationException, CommonException  {
 		PropertyHolder ph= getPropertyHolder(new ConnectionParameters(rinfo, value.getClass()));
 		blockUntillConnected(ph.property);
 		ph.property.setValueAsObject(value);

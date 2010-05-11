@@ -90,8 +90,10 @@ public interface Response<T>
 	public Exception getError();
 
 	/**
-	 * Returns the source of the response.
+	 * Returns the source of the response, same as in associated Request.
 	 *
+	 * @see Request#getSource()
+	 * 
 	 * @return response source
 	 */
 	public Identifiable getSource();

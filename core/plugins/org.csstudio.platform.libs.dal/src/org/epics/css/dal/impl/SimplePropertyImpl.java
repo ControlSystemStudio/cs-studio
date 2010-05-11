@@ -38,7 +38,6 @@ import org.epics.css.dal.DynamicValueListener;
 import org.epics.css.dal.DynamicValueMonitor;
 import org.epics.css.dal.IllegalViewException;
 import org.epics.css.dal.RemoteException;
-import org.epics.css.dal.SimpleMonitor;
 import org.epics.css.dal.SimpleProperty;
 import org.epics.css.dal.StringAccess;
 import org.epics.css.dal.Timestamp;
@@ -70,7 +69,7 @@ public abstract class SimplePropertyImpl<T> extends DataAccessImpl<T>
 	protected Hashtable<Class<? extends DataAccess<?>>,Class<? extends DataAccess<?>>> dataAccessTypes = new Hashtable<Class<? extends DataAccess<?>>,Class<? extends DataAccess<?>>>();
 	protected DirectoryProxy directoryProxy;
 	protected MonitorProxyWrapper<T, ? extends SimpleProperty<T>> defaultMonitor;
-	protected List<SimpleMonitor> monitors = new ArrayList<SimpleMonitor>();
+	protected List<MonitorProxyWrapper> monitors = new ArrayList<MonitorProxyWrapper>();
 	protected ListenerList propertyListener = new ListenerList(PropertyChangeListener.class);
 	protected String name;
 	protected Identifier identifier;
@@ -338,7 +337,7 @@ public abstract class SimplePropertyImpl<T> extends DataAccessImpl<T>
 					this, (P)this, lastValue, getCondition(),
 					lastValueUpdateTimestamp, "Initial update.");
 			l.conditionChange(e);
-			if (lastValue != null) {
+			if (lastValue != null && lastValueSuccess) {
 				l.valueChanged(e);
 			}
 		}
@@ -403,6 +402,8 @@ public abstract class SimplePropertyImpl<T> extends DataAccessImpl<T>
 				e.printStackTrace();
 			}
 		}
+		// catch the identifier
+		getIdentifier();
 	}
 
 	/* (non-Javadoc)
@@ -482,10 +483,16 @@ public abstract class SimplePropertyImpl<T> extends DataAccessImpl<T>
 	 */
 	@Override
 	public Proxy[] releaseProxy(boolean destroy) {
-		Proxy[] proxies = super.releaseProxy(destroy);
-		directoryProxy = null;
-		defaultMonitor = null;
-		return proxies;
+		for (MonitorProxyWrapper monitor : monitors) {
+			monitor.releaseProxy(destroy);
+		}
+		Proxy[] tmp = new Proxy[]{super.releaseProxy(destroy)[0],directoryProxy};
+		directoryProxy=null;
+		if (destroy) {
+			monitors.clear();
+			propertyListener.clear();
+		}
+		return tmp;
 	}
 	
 	public ChannelListener[] getListeners() {

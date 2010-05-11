@@ -34,6 +34,7 @@ import org.epics.css.dal.context.Connectable;
 import org.epics.css.dal.context.ConnectionException;
 import org.epics.css.dal.context.ConnectionListener;
 import org.epics.css.dal.context.ConnectionState;
+import org.epics.css.dal.context.DeviceFamily;
 import org.epics.css.dal.context.LinkBlocker;
 import org.epics.css.dal.context.PropertyContext;
 import org.epics.css.dal.proxy.AbstractPlug;
@@ -69,16 +70,16 @@ public class DeviceBean extends AbstractDeviceImpl implements Connectable
 	     */
 	public DeviceBean()
 	{
-		super(null);
+		super(null,null);
 	}
 
 	/**
 	     * Creates new named instance of device bean.
 	     * @param name device name
 	     */
-	public DeviceBean(String name)
+	public DeviceBean(String name, DeviceFamily deviceFamily)
 	{
-		super(name);
+		super(name,deviceFamily);
 	}
 
 	/* (non-Javadoc)

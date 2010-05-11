@@ -86,6 +86,7 @@ public interface DeviceProxy extends Proxy
 		throws RemoteException;
 
 	public void refresh();
+
 }
 
 /* __oOo__ */

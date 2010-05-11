@@ -24,6 +24,8 @@ package org.epics.css.dal.spi;
 
 import java.util.Properties;
 
+import org.epics.css.dal.simulation.SimulatorUtilities;
+
 
 /**
  * Helper class which helps manage different plug implementations.<p>This
@@ -112,6 +114,7 @@ public final class Plugs
 	private Plugs(Properties properties)
 	{
 		this.properties = properties;
+		SimulatorUtilities.configureSimulatorPlug(properties);
 	}
 
 	/**

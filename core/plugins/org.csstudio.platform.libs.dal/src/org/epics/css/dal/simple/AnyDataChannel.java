@@ -1,6 +1,7 @@
 package org.epics.css.dal.simple;
 
 import org.epics.css.dal.DynamicValueProperty;
+import org.epics.css.dal.RemoteException;
 
 /** A control system PV.
  *  <p>
@@ -110,7 +111,7 @@ public interface AnyDataChannel
      *  @param new_value Value to write to PV
      *  @throws Exception on error
      */
-    public void setValueAsObject(Object new_value) throws Exception;
+    public void setValueAsObject(Object new_value) throws RemoteException;
     
     /**
      * Gets the <code>DynamicValueProperty</code> this channel is associated with.

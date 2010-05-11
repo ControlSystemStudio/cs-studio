@@ -44,8 +44,6 @@ import org.epics.css.dal.impl.RequestImpl;
 import org.epics.css.dal.impl.ResponseImpl;
 import org.epics.css.dal.proxy.MonitorProxy;
 
-import com.cosylab.epics.caj.CAJMonitor;
-
 /**
  * Simulation implementation of MonitorProxy.
  * 
@@ -85,25 +83,15 @@ public class MonitorProxyImpl<T> extends RequestImpl<T> implements MonitorProxy,
 	protected volatile boolean destroyed = false;
 
 	/**
-	 * Timestamp of last received value.
+	 * Last received value add timestamp.
 	 */
-	protected Timestamp timestamp;
-
-	/**
-	 * Last received value.
-	 */
-	protected T value;
+	protected ResponseImpl<T> response;
 
 	/**
 	 * CA monitor implementation.
 	 */
 	protected Monitor monitor;
 
-	/**
-	 * Value synchronization object.
-	 */
-	protected Object valueSync = new Object();
-	
 	/**
 	 * EPICS plug.
 	 */
@@ -205,17 +193,17 @@ public class MonitorProxyImpl<T> extends RequestImpl<T> implements MonitorProxy,
 	private void fireValueEvent() {
 		
 		// noop check
-		if (destroyed || proxy == null || value == null
+		if (destroyed || proxy == null || response == null || response.getValue() == null
 				|| proxy.getConnectionState() != ConnectionState.CONNECTED) {
 			return;
 		}
 		
-		synchronized (valueSync)
-		{
-			ResponseImpl<T> r = new ResponseImpl<T>(proxy, this, value, "value", true,
-					null, proxy.getCondition(), timestamp, false);
-			addResponse(r);
-		}
+		final ResponseImpl<T> r= response;
+		proxy.getExecutor().execute(new Runnable() {
+			public void run() {
+				addResponse(r);
+			}
+		});
 	}
 
 	/**
@@ -297,10 +285,16 @@ public class MonitorProxyImpl<T> extends RequestImpl<T> implements MonitorProxy,
 		DBR dbr = ev.getDBR();
 		
 		if(dbr==null || dbr.getValue()==null) {
-			timestamp = new Timestamp();
-			value = null;
-			addResponse(new ResponseImpl<T>(proxy, this, value,
-			        "value", false, new NullPointerException("Invalid value."), proxy.getCondition(), timestamp, false));			
+			
+			final ResponseImpl<T> r= response= new ResponseImpl<T>(proxy, this, null,
+				        "value", false, new NullPointerException("Invalid value."), proxy.getCondition(), new Timestamp(), false);
+
+			plug.getExecutor().execute(new Runnable() {
+				public void run() {
+					addResponse(r);
+				}
+			});
+			
 			return;
 		}
 		
@@ -308,15 +302,18 @@ public class MonitorProxyImpl<T> extends RequestImpl<T> implements MonitorProxy,
 			proxy.updateConditionWithDBRStatus((STS) dbr);
 		}
 
-		synchronized (valueSync) {
-			if (dbr.isTIME() && ((TIME) dbr).getTimeStamp() != null) {
-				timestamp = PlugUtilities.convertTimestamp(((TIME) dbr).getTimeStamp());
-			} else {
-				timestamp = new Timestamp();
-			}
-
-			value = proxy.toJavaValue(dbr);
-		}
+		response= new ResponseImpl<T> (
+				proxy, 
+				this, 
+				proxy.toJavaValue(dbr), 
+				"value", 
+				true, 
+				null, 
+				proxy.getCondition(), 
+				(dbr.isTIME() && ((TIME) dbr).getTimeStamp() != null) ? 
+						PlugUtilities.convertTimestamp(((TIME) dbr).getTimeStamp()): 
+							new Timestamp(),
+				false);
 		
 		// notify 
 		fireValueChange();

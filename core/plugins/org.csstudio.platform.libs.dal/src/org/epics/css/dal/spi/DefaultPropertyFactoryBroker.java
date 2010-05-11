@@ -13,6 +13,7 @@ import org.epics.css.dal.context.PlugContext;
 import org.epics.css.dal.context.PropertyFamily;
 import org.epics.css.dal.impl.DefaultApplicationContext;
 import org.epics.css.dal.simple.RemoteInfo;
+import org.epics.css.dal.simulation.SimulatorPlug;
 
 public class DefaultPropertyFactoryBroker implements PropertyFactoryBroker {
 	
@@ -20,7 +21,7 @@ public class DefaultPropertyFactoryBroker implements PropertyFactoryBroker {
 	
 	private HashMap<String, PropertyFactory> factories = new HashMap<String, PropertyFactory>();
 	private String[] supportedTypes = null;
-	private String defaultPlugType;
+	private String defaultPlugType=SimulatorPlug.PLUG_TYPE;
 	private AbstractApplicationContext ctx;
 	private LinkPolicy linkPolicy;
 
@@ -47,6 +48,9 @@ public class DefaultPropertyFactoryBroker implements PropertyFactoryBroker {
 	}
 
 	private PropertyFactory getPropertyFactory(String type) {
+		if (type==null) {
+			type=defaultPlugType;
+		}
 		PropertyFactory f = factories.get(type);
 		if (f != null) return f;
 		try {

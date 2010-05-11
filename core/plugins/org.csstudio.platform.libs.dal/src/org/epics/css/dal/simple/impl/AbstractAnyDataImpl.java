@@ -5,6 +5,7 @@ import org.epics.css.dal.DataExchangeException;
 import org.epics.css.dal.DynamicValueProperty;
 import org.epics.css.dal.Response;
 import org.epics.css.dal.Timestamp;
+import org.epics.css.dal.impl.ResponseImpl;
 import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.AnyDataChannel;
 import org.epics.css.dal.simple.MetaData;
@@ -19,7 +20,12 @@ public abstract class AbstractAnyDataImpl<T> implements AnyData {
 	
 	public AbstractAnyDataImpl(DynamicValueProperty<T> property, long beamID) {
 		this.property = property;
-		this.response = property.getLatestValueResponse();
+		Response<T> r= property.getLatestValueResponse();
+		if (r==null) {
+			response= new ResponseImpl<T>(property, null, this.property.getLatestReceivedValue(), "value", false, null, property.getCondition(), null, true);
+		} else {
+			this.response = r; 
+		}
 		metaData = extractMetaData();
 		this.beamID=beamID;
 	}

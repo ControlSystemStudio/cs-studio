@@ -101,7 +101,6 @@ public class ResponseImpl<T> implements Response<T>
 	public Number getNumber()
 	{
 		return DataUtil.castToNumber(value);
-//		return (Number)value;
 	}
 
 	/* (non-Javadoc)

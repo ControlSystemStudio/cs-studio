@@ -167,10 +167,44 @@ public final class RemoteInfo
 		return sb.toString();
 	}
 	
-	public static RemoteInfo remoteInfoFromString(String name) {
-		return remoteInfoFromString(name,null);
+	/**
+	 * If string is URI formated, like connectionType://remoteName#characteristic?query or DAL-plugType://remoteName#characteristic?query,
+	 * then it is properly parsed into RemoteInfo.
+	 * 
+	 *  
+	 * @param name remote name or URI
+	 * @return new remote info
+	 */
+	public static RemoteInfo fromString(String name) {
+		return fromString(name,null);
 	}
+	
+	/**
+	 * @see RemoteInfo#fromString(String)
+	 * @deprecated use fromString(String)
+	 */
+	public static RemoteInfo remoteInfoFromString(String name) {
+		return fromString(name,null);
+	}
+
+	/**
+	 * @see RemoteInfo#fromString(String, String)
+	 * @deprecated use fromString(String, String)
+	 */
 	public static RemoteInfo remoteInfoFromString(String name, String defaultType) {
+		return fromString(name, defaultType);
+	}
+
+	/**
+	 * If string is URI formated, like connectionType://remoteName#characteristic?query or DAL-plugType://remoteName#characteristic?query,
+	 * then it is properly parsed into RemoteInfo.
+	 * 
+	 *  
+	 * @param name remote name or URI
+	 * @param defaultType default connection type
+	 * @return new remote info
+	 */
+	public static RemoteInfo fromString(String name, String defaultType) {
 		final String type, remoteName;
 		String characteristic = null, query = null;
 		int sep = name.indexOf('?');
