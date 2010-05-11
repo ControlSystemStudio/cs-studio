@@ -7,8 +7,7 @@
       plugin="org.csstudio.sns.product">
 
    <description>
-      Core CSS components used by many applications:
-EPICS Channel Access, ...
+      Core CSS components used by many applications: EPICS Channel Access, ...
    </description>
 
    <copyright>

@@ -6,8 +6,7 @@
       provider-name="Kay Kasemir">
 
    <description>
-      Components from Eclipse without which the world will come to
-an end
+      Components from Eclipse without which the world will come to an end
    </description>
 
    <copyright>
@@ -65,6 +64,7 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.eclipse.core.runtime" version="3.1.0" match="compatible"/>
       <import plugin="org.eclipse.core.runtime" version="3.3.0" match="compatible"/>
       <import plugin="org.eclipse.update.configurator" version="3.1.100" match="compatible"/>
+      <import plugin="org.eclipse.core.resources" version="3.5.0" match="compatible"/>
       <import plugin="org.eclipse.core.commands" version="3.5.0" match="compatible"/>
       <import plugin="org.eclipse.equinox.common" version="3.5.0" match="compatible"/>
       <import plugin="org.eclipse.text" version="3.5.0" match="compatible"/>
@@ -107,10 +107,12 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.eclipse.jface" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.swt" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.core.filebuffers" version="3.5.0" match="compatible"/>
-      <import plugin="org.eclipse.core.resources" version="3.5.0" match="compatible"/>
       <import plugin="org.eclipse.equinox.preferences" version="3.2.200" match="compatible"/>
       <import plugin="org.eclipse.ui" version="3.4.0" match="compatible"/>
       <import plugin="org.eclipse.equinox.registry" version="3.3.0"/>
+      <import plugin="org.eclipse.ui.ide" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.update.core" version="3.0.0" match="compatible"/>
+      <import plugin="org.eclipse.core.net" version="1.1.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin

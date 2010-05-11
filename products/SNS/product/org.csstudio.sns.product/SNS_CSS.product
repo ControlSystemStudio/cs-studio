@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="SNS CSS" id="org.csstudio.sns.product.product" application="org.csstudio.sns.product.application" version="1.3.0.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="SNS CSS" id="org.csstudio.sns.product.product" application="org.csstudio.sns.product.application" version="2.0.0.qualifier" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/org.csstudio.sns.product/icons/about.gif"/>
@@ -49,6 +49,21 @@ See http://ics-web.sns.ornl.gov/css
 
    <vm>
    </vm>
+
+   <license>
+        <url>http://www.eclipse.org/legal/epl-v10.html</url>
+        <text>
+   You must accept this license agreement in order to install and
+use this
+software.
+THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN &quot;../AS IS&quot;
+BASIS. 
+WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING
+BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR PARTICULAR PURPOSE AND NON-INFRINGEMENT.
+For details, see http://www.eclipse.org/legal/epl-v10.html
+         </text>
+   </license>
 
    <plugins>
    </plugins>
