@@ -97,8 +97,6 @@ public class LdapUpdaterServer implements IApplication {
         final int startTimeSec = Integer.parseInt(startSecString == null ? "0" : startSecString);
         final long intervalSec = Long.parseLong(intervalString);
 
-
-
         final TimeZone timeZone = TimeZone.getTimeZone("ECT");
         final Calendar cal = new GregorianCalendar(timeZone);
 

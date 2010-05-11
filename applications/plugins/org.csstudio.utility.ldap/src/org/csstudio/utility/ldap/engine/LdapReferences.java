@@ -28,18 +28,23 @@ import java.util.Vector;
 
 import org.csstudio.platform.logging.CentralLogger;
 
+/**
+ * TODO (bknerr) :
+ *
+ * @author bknerr
+ * @author $Author$
+ * @version $Revision$
+ * @since 10.05.2010
+ */
 public class LdapReferences {
 
-    public Hashtable<String, Entry> ldapEntries = null;
+    private Hashtable<String, Entry> _ldapEntries = new Hashtable<String, Entry>();
 
     public LdapReferences() {
-        //
-        // initialize hash table
-        //
-        ldapEntries = new Hashtable<String, Entry>();
+        // EMPTY
     }
 
-    public class Entry {
+    public static class Entry {
 
         private GregorianCalendar _timeCreated = null;
         private GregorianCalendar _lastTimeUsed = null;
@@ -80,14 +85,11 @@ public class LdapReferences {
     }
 
     public Hashtable<String, Entry> getLdapEntries() {
-        //
-        // return hash table
-        //
-        return ldapEntries;
+        return _ldapEntries;
     }
 
     public void setLdapEntries(final Hashtable<String, Entry> entries) {
-        this.ldapEntries = entries;
+        this._ldapEntries = entries;
     }
 
     public void newLdapEntry (final String channelName,
@@ -96,14 +98,14 @@ public class LdapReferences {
         // insert new entry
         //
         final Entry newEntry = new Entry ( namesInNamespace);
-        this.ldapEntries.put( channelName, newEntry);
+        this._ldapEntries.put( channelName, newEntry);
     }
 
     public Entry getEntry ( final String channelName) {
         //
         // find and return entry in hastable
         //
-        return this.ldapEntries.get( channelName);
+        return this._ldapEntries.get( channelName);
     }
 
     public void changeLdapEntry ( final String channelName, final Vector<String> namesInNamespace) {
@@ -111,10 +113,10 @@ public class LdapReferences {
         // insert new entry
         //
         if ( hasEntry( channelName)) {
-            final Entry actualEntry =  this.ldapEntries.get( channelName);
+            final Entry actualEntry =  this._ldapEntries.get( channelName);
             actualEntry.replaceNamesInNamespace(namesInNamespace);
-            this.ldapEntries.remove(channelName);
-            this.ldapEntries.put( channelName, actualEntry);
+            this._ldapEntries.remove(channelName);
+            this._ldapEntries.put( channelName, actualEntry);
         } else {
             CentralLogger.getInstance().warn( this, "no entry for: " + channelName + " in ldapEntries hashTable");
         }
@@ -125,15 +127,15 @@ public class LdapReferences {
         //
         // find ldap entry by searchig for the channel name
         //
-        return ldapEntries.containsKey( channelName);
+        return _ldapEntries.containsKey( channelName);
     }
 
     public void clearAll(){
-        ldapEntries.clear();
+        _ldapEntries.clear();
     }
 
     public void clear(final String channelName){
-        ldapEntries.remove(channelName);
+        _ldapEntries.remove(channelName);
     }
 
 }

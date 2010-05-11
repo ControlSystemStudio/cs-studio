@@ -26,6 +26,7 @@ package org.csstudio.utility.ldap.model;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.naming.directory.Attribute;
+import javax.naming.directory.Attributes;
 import javax.naming.ldap.LdapName;
 
 /**
@@ -56,4 +57,8 @@ public interface ILdapComponent<T extends Enum<T>> {
 
     @Nonnull
     LdapName getLdapName();
+
+
+    @CheckForNull
+    Attributes getAttributes();
 }

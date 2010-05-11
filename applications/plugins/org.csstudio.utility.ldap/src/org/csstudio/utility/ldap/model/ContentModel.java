@@ -58,15 +58,15 @@ public class ContentModel<T extends Enum<T> & ILdapObjectClass<T>> {
 
     private final Logger _log = CentralLogger.getInstance().getLogger(this);
 
-    private final T _objectClassRoot;
+    private T _objectClassRoot;
 
     private ILdapTreeComponent<T> _treeRoot;
 
-    private final Map<T, Map<String, ILdapComponent<T>>> _cacheByTypeAndLdapName;
+    private Map<T, Map<String, ILdapComponent<T>>> _cacheByTypeAndLdapName;
 
-    private final Map<T, Map<String, ILdapComponent<T>>> _cacheByTypeAndSimpleName;
+    private Map<T, Map<String, ILdapComponent<T>>> _cacheByTypeAndSimpleName;
 
-    private final Map<String, ILdapComponent<T>> _cacheByLdapName;
+    private Map<String, ILdapComponent<T>> _cacheByLdapName;
 
 
 
@@ -78,6 +78,24 @@ public class ContentModel<T extends Enum<T> & ILdapObjectClass<T>> {
     public ContentModel(@Nonnull final LdapSearchResult searchResult,
                         @Nonnull final T objectClassRoot) {
 
+        initFields(objectClassRoot);
+        addSearchResult(searchResult);
+    }
+
+
+    /**
+     * Constructor.
+     * @param objectClassRoot .
+     */
+    public ContentModel(@Nonnull final T objectClassRoot) {
+        initFields(objectClassRoot);
+    }
+
+
+    /**
+     * @param objectClassRoot
+     */
+    private void initFields(@Nonnull final T objectClassRoot) {
         _cacheByLdapName = new HashMap<String, ILdapComponent<T>>();
 
         _cacheByTypeAndLdapName = initCacheByType(objectClassRoot.getDeclaringClass());
@@ -92,13 +110,10 @@ public class ContentModel<T extends Enum<T> & ILdapObjectClass<T>> {
                                                  objectClassRoot.getNestedContainerClasses() ,
                                                  null,
                                                  null,
-                                                 null);
+                                                 objectClassRoot.getRootValue());
         } catch (final InvalidNameException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            _log.error("Error creating root node in content model.", e);
         }
-
-        addSearchResult(searchResult);
     }
 
 

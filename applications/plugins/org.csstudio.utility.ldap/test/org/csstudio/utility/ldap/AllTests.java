@@ -21,48 +21,34 @@
  *
  * $Id$
  */
-package org.csstudio.utility.ldap.model;
+package org.csstudio.utility.ldap;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
+import org.csstudio.utility.ldap.model.ContentModelTest;
+import org.csstudio.utility.ldap.reader.LDAPReaderTest;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
 
 /**
- * TODO (bknerr) :
+ * TODO (bknerr) : Das muss anders gehen.
+ * Test database.
+ */
+@RunWith(Suite.class)
+@SuiteClasses( {
+    LdapNameUtilsTest.class,
+    LDAPReaderTest.class,
+    ContentModelTest.class
+})
+
+/**
+ * TODO (bknerr) : Das muss anders gehen.
  *
  * @author bknerr
  * @author $Author$
  * @version $Revision$
- * @since 30.04.2010
- * @param <T> Enum type of possible LDAP structural components
+ * @since 11.05.2010
  */
-public interface ILdapTreeComponent<T extends Enum<T>> extends ILdapComponent<T> {
-
-    /**
-     * Retrieves the list of children of the current component (but without children subtrees).
-     * @return a collection of direct children components
-     */
-    @Nonnull
-    Collection<ILdapComponent<T>> getDirectChildren();
-
-    /**
-     * Retrieves a child component with the given nameKey
-     * @param name
-     * @return
-     */
-    @CheckForNull
-    ILdapComponent<T> getChild(@Nonnull String nameKey);
-
-    void addChild(@Nonnull ILdapComponent<T> child);
-
-    void removeChild(@Nonnull String name);
-
-    @Nonnull
-    Set<T> getSubComponentTypes();
-
-    @Nonnull
-    Map<String, ILdapComponent<T>> getChildrenByType(@Nonnull T type);
+public class AllTests {
+    // public? well, should be refactored anyway
 }

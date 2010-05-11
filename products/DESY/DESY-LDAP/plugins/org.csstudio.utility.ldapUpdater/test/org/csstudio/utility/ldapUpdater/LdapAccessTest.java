@@ -37,6 +37,6 @@ public class LdapAccessTest {
 
     @Test
     public void testLDAP() {
-
+        // Empty
     }
 }

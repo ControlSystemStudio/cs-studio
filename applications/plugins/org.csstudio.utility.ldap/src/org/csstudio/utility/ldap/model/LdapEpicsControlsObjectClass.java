@@ -31,6 +31,9 @@ import java.util.Set;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.naming.InvalidNameException;
+import javax.naming.ldap.LdapName;
+import javax.naming.ldap.Rdn;
 
 import org.csstudio.utility.ldap.ILdapObjectClass;
 import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
@@ -46,7 +49,7 @@ import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
  * @since 03.05.2010
  */
 public enum LdapEpicsControlsObjectClass implements ILdapObjectClass<LdapEpicsControlsObjectClass> {
-    ROOT("ROOT", "root"),
+    ROOT(LdapFieldsAndAttributes.OU_FIELD_NAME, "root"),
 
     /**
      * The facility object class (efan).
@@ -171,8 +174,9 @@ public enum LdapEpicsControlsObjectClass implements ILdapObjectClass<LdapEpicsCo
      * {@inheritDoc}
      */
     @Override
-    public LdapEpicsControlsObjectClass getRoot() {
-        return ROOT;
+    public LdapName getRootValue() throws InvalidNameException {
+        final Rdn rdn = new Rdn(LdapFieldsAndAttributes.OU_FIELD_NAME, LdapFieldsAndAttributes.EPICS_CTRL_FIELD_VALUE);
+        return new LdapName(Collections.singletonList(rdn));
     }
 }
 

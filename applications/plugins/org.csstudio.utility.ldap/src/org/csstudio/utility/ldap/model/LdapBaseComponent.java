@@ -40,7 +40,7 @@ import javax.naming.ldap.LdapName;
  * @since 30.04.2010
  * @param <T> der Enum type
  */
-public class LdapComponent<T extends Enum<T>> implements ILdapComponent<T> {
+public class LdapBaseComponent<T extends Enum<T>> implements ILdapComponent<T> {
 
     private final String _name;
 
@@ -59,7 +59,7 @@ public class LdapComponent<T extends Enum<T>> implements ILdapComponent<T> {
      * @param fullName
      * @throws InvalidNameException
      */
-    public LdapComponent(@Nonnull final String name,
+    public LdapBaseComponent(@Nonnull final String name,
                          @Nonnull final T type,
                          @Nullable final ILdapTreeComponent<T> parent,
                          @Nullable final Attributes attributes,
@@ -125,5 +125,13 @@ public class LdapComponent<T extends Enum<T>> implements ILdapComponent<T> {
     @CheckForNull
     public LdapName getLdapName() {
         return (LdapName) _ldapName.clone();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Attributes getAttributes() {
+        return (Attributes) _attributes.clone();
     }
 }

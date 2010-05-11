@@ -45,7 +45,7 @@ import javax.naming.ldap.LdapName;
  * @param <T>
  * @since 30.04.2010
  */
-public class LdapTreeComponent<T extends Enum<T>> extends LdapComponent<T>
+public class LdapTreeComponent<T extends Enum<T>> extends LdapBaseComponent<T>
     implements ILdapTreeComponent<T> {
 
     private final Set<T> _subComponentTypes;
