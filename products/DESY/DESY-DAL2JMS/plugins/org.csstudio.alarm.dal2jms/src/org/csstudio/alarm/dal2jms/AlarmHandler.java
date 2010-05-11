@@ -34,6 +34,11 @@
 		*/
 package org.csstudio.alarm.dal2jms;
 
+
+import javax.jms.JMSException;
+import javax.jms.MapMessage;
+import javax.jms.Session;
+
 import org.csstudio.alarm.service.declaration.AlarmConnectionException;
 import org.csstudio.alarm.service.declaration.AlarmMessageException;
 import org.csstudio.alarm.service.declaration.IAlarmConnection;
@@ -52,6 +57,10 @@ import org.csstudio.alarm.service.declaration.IAlarmMessage;
 public class AlarmHandler {
    
     IAlarmConnection _connection;
+    
+	public final static int	JMS_MESSAGE_TYPE_ALARM		= 1;
+	public final static int	JMS_MESSAGE_TYPE_LOG		= 2;
+	public final static int	JMS_MESSAGE_TYPE_PUT_LOG	= 3;
 
     public AlarmHandler() {
 
@@ -64,7 +73,18 @@ public class AlarmHandler {
                     // TODO Auto-generated method stub
                     try {
 						System.out.println(message.getMap().toString());
+						
+						Session session = JmsMessage.getInstance().createJmsSession();
+						MapMessage mapMessage = message.getMapMessage ( session.createMapMessage());
+						if ( mapMessage != null) {
+							JmsMessage.getInstance().sendMessage( JMS_MESSAGE_TYPE_ALARM, mapMessage);
+						} else {
+							System.out.println("INVALID message !");
+						}
 					} catch (AlarmMessageException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (JMSException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
@@ -81,6 +101,5 @@ public class AlarmHandler {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-    }
-        
+    }       
 }

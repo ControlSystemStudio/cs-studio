@@ -12,3 +12,5 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.platform.libs.dal.tine;bundle-version="1.1.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: javax.jms,
+ org.csstudio.platform.utility.jms.sharedconnection
