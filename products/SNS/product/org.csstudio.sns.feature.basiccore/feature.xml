@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.csstudio.sns.feature.basiccore"
-      label="Core CSS Components for Basic EPICS product"
+      label="Core CSS Components for &apos;Basic&apos; product"
       version="2.0.0.qualifier"
       provider-name="SNS, Kay Kasemir">
 
