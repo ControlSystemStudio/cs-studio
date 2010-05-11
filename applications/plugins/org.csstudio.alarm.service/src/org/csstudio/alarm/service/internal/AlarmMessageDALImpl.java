@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
+import javax.jms.JMSException;
+import javax.jms.MapMessage;
 
 import org.csstudio.alarm.service.declaration.AlarmMessageException;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
@@ -78,21 +80,13 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
 
         
         switch (key) {
-//            case ACK:
-//                result = "<ack omitted>"; // TODO jp ack omitted
-//                // Comment there's currently NO support for Ack in DAL
-//                // We can leave it in - just in case...
-//                break;
             case EVENTTIME:
-                // result = _anyData.getTimestamp().toString(); // TODO jp: ok?
-                // We need to convert the time in timestamp into this format:
-                // 2010-05-07 09:40:39.131
-//                SimpleDateFormat sdf = new SimpleDateFormat( JMS_DATE_FORMAT);
             	if (_anyData.getTimestamp() == null) {
                 	result = "noTimeStamp";
                 	return result; 
                 }
-    	        result = _anyData.getTimestamp().toString( Format.Full);
+            	SimpleDateFormat sdf = new SimpleDateFormat( JMS_DATE_FORMAT);
+            	result = sdf.format(_anyData.getTimestamp().getMilliseconds());
                 break;
             case NAME:
             	if (_anyData.getMetaData() == null) {
@@ -109,9 +103,38 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
                 result = getSeverityAsString(_anyData.getSeverity());
                 break;
             case STATUS:
-                // result = getStatusAsString(_anyData.getStatus());
-            	// getStatus() already returns the staus 'as string'
-            	result = _anyData.getStatus();
+               /**
+                * getStatus() is actually calling: getSeverity().toString()
+                * toString was implemented in DynamicValueCondition as: 
+                * 
+				//		StringBuilder sb= new StringBuilder(256);
+				//		sb.append(states.toString());
+				//		if (timestamp!=null) {
+				//			sb.append(", ");
+				//			sb.append(timestamp);
+				//		} else {
+				//			sb.append(", no-time");
+				//		}
+				//		if (description!=null) {
+				//			sb.append(", ");
+				//			sb.append(description);
+				//		}
+				//		return sb.toString();
+				 * 
+				 * resulting message: STATUS=[ALARM], 2010-05-10T16:59:46.786747944, HIHI_ALARM
+				 * 
+				 * this was modified to actually create what we need:
+				 * 
+				//		if (description==null) {
+				//			return "NO_STATUS";
+				//		} else {
+				//			return description;
+				//		}
+				 * 
+				 * resulting message: STATUS=HIHI_ALARM
+				 * 
+                */
+            	result = _anyData.getStatus();  
                 break;
             case FACILITY:
                 // TODO MCL: there's currently no facility available from DAL
@@ -124,7 +147,12 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
                 	result = "noMetaData";
                 	return result; 
                 }
-            	_anyData.getMetaData().getHostname();
+            	String hostName = _anyData.getMetaData().getHostname();
+            	if ( hostName != null) {
+            		result = hostName;
+            	} else {
+            		result = "hostUndefined";
+            	}
                 break;
 //            case TEXT:
 //              // TODO MCL: this is actually the descriptor information from the channel
@@ -149,29 +177,24 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
         return result;
     }
     
-    private String getStatusAsString(final String status) {
-        // TODO jp NYI
-        return status;
-    }
-    
     private String getSeverityAsString(final Severity severity) {
         String result = null;
         
         if (severity == null) {
         	return "noMetaData";
+        } else if (severity.hasValue()) {
+            result = severity.toString();
         }
         
-        if (severity.hasValue()) {
-            result = severity.toString();
-        } else if (severity.isMajor()) {
+        if (severity.isMajor()) {
             result = "MAJOR";
         } else if (severity.isMinor()) {
-            result = "MAJOR";
+            result = "MINOR";
         } else if (severity.isOK()) {
-            result = "NO ALARM";
+            result = "NO_ALARM";
         } else if (severity.isInvalid()) {
             result = "INVALID";
-        } 
+        }
         return result;
     }
     
@@ -183,5 +206,23 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
             result.put(key.name(), getString(key));
         }
         return result;
+    }
+    
+    @Override
+    public MapMessage getMapMessage(MapMessage message) throws AlarmMessageException, JMSException {
+        // TODO jp performance: cache the result map.
+        for (Key key : Key.values()) {
+        	/*
+        	 * if the value is noTimeStamp or Uninitialized or noMetaData
+        	 * return null -> do NOT create message !
+        	 */
+        	String value = getString(key);
+        	if ( value!=null && !value.equals("noTimeStamp")&& !value.equals("Uninitialized") && !value.equals("noMetaData")) {
+        		message.setString(key.name(), value);
+        	} else {
+        		return null;
+        	}
+        }
+        return message;
     }
 }
