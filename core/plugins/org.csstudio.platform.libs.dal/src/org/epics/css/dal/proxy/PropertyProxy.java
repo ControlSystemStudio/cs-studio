@@ -27,6 +27,7 @@ import org.epics.css.dal.DynamicValueCondition;
 import org.epics.css.dal.RemoteException;
 import org.epics.css.dal.Request;
 import org.epics.css.dal.ResponseListener;
+import org.epics.css.dal.simple.RemoteInfo;
 
 
 /**
@@ -36,58 +37,58 @@ import org.epics.css.dal.ResponseListener;
  */
 public interface PropertyProxy<T> extends Proxy
 {
-	/**
-	 * Asynchronously gets remote property value.
-	 *
-	 * @param callback The callback that receives the response
-	 *
-	 * @return a Request, which identifies incoming responses.
-	 *
-	 * @throws DataExchangeException if remote operation fails
-	 */
-	public Request<T> getValueAsync(ResponseListener<T> callback)
-		throws DataExchangeException;
-
-	/**
-	 * Asynchronously sets value on remote property.
-	 *
-	 * @param value new value.
-	 * @param callback The callback that receives the response.
-	 *
-	 * @return a Request, which identifies incoming responses.
-	 *
-	 * @throws DataExchangeException if remote operation fails
-	 */
-	public Request<T> setValueAsync(T value, ResponseListener<T> callback)
-		throws DataExchangeException;
-
-	/**
-	 * Returns whether the value can be set on remote object presented
-	 * by this proxy.
-	 *
-	 * @return <code>true</code> if value can be set.
-	 */
-	public boolean isSettable();
-
-	/**
-	 * Creates new value subscription and returns monitor proxy, which
-	 * controls the subscription.
-	 *
-	 * @param callback The callback that receives the response.
-	 *
-	 * @return monitor proxy, which controls the subscription.
-	 *
-	 * @throws RemoteException if operation fails
-	 */
-	public MonitorProxy createMonitor(ResponseListener<T> callback)
-		throws RemoteException;
-
-	/**
-	 * Returns remote condition of this dynamic value representation.
-	 *
-	 * @return remote condition
-	 */
-	public DynamicValueCondition getCondition();
+    /**
+     * Asynchronously gets remote property value.
+     *
+     * @param callback The callback that receives the response
+     *
+     * @return a Request, which identifies incoming responses.
+     *
+     * @throws DataExchangeException if remote operation fails
+     */
+    public Request<T> getValueAsync(ResponseListener<T> callback)
+    throws DataExchangeException;
+    
+    /**
+     * Asynchronously sets value on remote property.
+     *
+     * @param value new value.
+     * @param callback The callback that receives the response.
+     *
+     * @return a Request, which identifies incoming responses.
+     *
+     * @throws DataExchangeException if remote operation fails
+     */
+    public Request<T> setValueAsync(T value, ResponseListener<T> callback)
+    throws DataExchangeException;
+    
+    /**
+     * Returns whether the value can be set on remote object presented
+     * by this proxy.
+     *
+     * @return <code>true</code> if value can be set.
+     */
+    public boolean isSettable();
+    
+    /**
+     * Creates new value subscription and returns monitor proxy, which
+     * controls the subscription.
+     *
+     * @param callback The callback that receives the response.
+     * @param changeType TODO
+     *
+     * @return monitor proxy, which controls the subscription.
+     *
+     * @throws RemoteException if operation fails
+     */
+    public MonitorProxy createMonitor(ResponseListener<T> callback, RemoteInfo.ChangeType changeType) throws RemoteException;
+    
+    /**
+     * Returns remote condition of this dynamic value representation.
+     *
+     * @return remote condition
+     */
+    public DynamicValueCondition getCondition();
 }
 
 /* __oOo__ */

@@ -29,6 +29,7 @@ import org.epics.css.dal.Request;
 import org.epics.css.dal.ResponseListener;
 import org.epics.css.dal.context.ConnectionState;
 import org.epics.css.dal.context.Identifier;
+import org.epics.css.dal.simple.RemoteInfo;
 
 
 /**
@@ -37,137 +38,137 @@ import org.epics.css.dal.context.Identifier;
  *
  * @author Igor Kriznar (igor.kriznarATcosylab.com)
  * @version $id$
-  *
+ *
  * @param <T> exact data type
  */
 public class PropertyProxyWrapper<T> implements SyncPropertyProxy<T>
 {
-	private PropertyProxy<T> proxy;
-
-	/**
-	 * Creates a new PropertyProxyWrapper object.
-	 *
-	 * @param proxy Proxy to wrap
-	 */
-	public PropertyProxyWrapper(PropertyProxy<T> proxy)
-	{
-		this.proxy = proxy;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.proxy.SyncPropertyProxy#getValueSync()
-	 */
-	public T getValueSync() throws DataExchangeException
-	{
-		return new GetValueInterceptor<T>().executeAndWait(proxy);
-	}
-
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.proxy.SyncPropertyProxy#setValueSync(T)
-	 */
-	public void setValueSync(T value) throws DataExchangeException
-	{
-		new SetValueInterceptor<T>().executeAndWait(proxy, value);
-	}
-
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.proxy.PropertyProxy#destroy()
-	 */
-	public void destroy()
-	{
-		proxy.destroy();
-	}
-
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.proxy.PropertyProxy#getValueAsync(java.lang.String, org.epics.css.dal.ResponseListener)
-	 */
-	public Request<T> getValueAsync(ResponseListener<T> callback)
-		throws DataExchangeException
-	{
-		return proxy.getValueAsync(callback);
-	}
-
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.proxy.PropertyProxy#setValueAsync(java.lang.String, T, org.epics.css.dal.ResponseListener)
-	 */
-	public Request<T> setValueAsync(T value, ResponseListener<T> callback)
-		throws DataExchangeException
-	{
-		return proxy.setValueAsync(value, callback);
-	}
-
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.proxy.PropertyProxy#getUniqueName()
-	 */
-	public String getUniqueName()
-	{
-		return proxy.getUniqueName();
-	}
-
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.proxy.PropertyProxy#isSettable()
-	 */
-	public boolean isSettable()
-	{
-		return proxy.isSettable();
-	}
-
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.proxy.PropertyProxy#createMonitor(org.epics.css.dal.ResponseListener)
-	 */
-	public MonitorProxy createMonitor(ResponseListener<T> callback)
-		throws RemoteException
-	{
-		return proxy.createMonitor(callback);
-	}
-
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.proxy.Proxy#addProxyListener(org.epics.css.dal.proxy.ProxyListener)
-	 */
-	public void addProxyListener(ProxyListener<?> l)
-	{
-		proxy.addProxyListener(l);
-	}
-
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.proxy.Proxy#removeProxyListener(org.epics.css.dal.proxy.ProxyListener)
-	 */
-	public void removeProxyListener(ProxyListener<?> l)
-	{
-		proxy.removeProxyListener(l);
-	}
-
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.proxy.PropertyProxy#getCondition()
-	 */
-	public DynamicValueCondition getCondition()
-	{
-		return proxy.getCondition();
-	}
-
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.proxy.Proxy#getConnectionState()
-	 */
-	public ConnectionState getConnectionState()
-	{
-		return proxy.getConnectionState();
-	}
-
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.context.Identifiable#getIdentifier()
-	 */
-	public Identifier getIdentifier()
-	{
-		return proxy.getIdentifier();
-	}
-
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.context.Identifiable#isDebug()
-	 */
-	public boolean isDebug()
-	{
-		return proxy.isDebug();
-	}
+    private final PropertyProxy<T> proxy;
+    
+    /**
+     * Creates a new PropertyProxyWrapper object.
+     *
+     * @param proxy Proxy to wrap
+     */
+    public PropertyProxyWrapper(final PropertyProxy<T> proxy)
+    {
+        this.proxy = proxy;
+    }
+    
+    /* (non-Javadoc)
+     * @see org.epics.css.dal.proxy.SyncPropertyProxy#getValueSync()
+     */
+    public T getValueSync() throws DataExchangeException
+    {
+        return new GetValueInterceptor<T>().executeAndWait(proxy);
+    }
+    
+    /* (non-Javadoc)
+     * @see org.epics.css.dal.proxy.SyncPropertyProxy#setValueSync(T)
+     */
+    public void setValueSync(final T value) throws DataExchangeException
+    {
+        new SetValueInterceptor<T>().executeAndWait(proxy, value);
+    }
+    
+    /* (non-Javadoc)
+     * @see org.epics.css.dal.proxy.PropertyProxy#destroy()
+     */
+    public void destroy()
+    {
+        proxy.destroy();
+    }
+    
+    /* (non-Javadoc)
+     * @see org.epics.css.dal.proxy.PropertyProxy#getValueAsync(java.lang.String, org.epics.css.dal.ResponseListener)
+     */
+    public Request<T> getValueAsync(final ResponseListener<T> callback)
+    throws DataExchangeException
+    {
+        return proxy.getValueAsync(callback);
+    }
+    
+    /* (non-Javadoc)
+     * @see org.epics.css.dal.proxy.PropertyProxy#setValueAsync(java.lang.String, T, org.epics.css.dal.ResponseListener)
+     */
+    public Request<T> setValueAsync(final T value, final ResponseListener<T> callback)
+    throws DataExchangeException
+    {
+        return proxy.setValueAsync(value, callback);
+    }
+    
+    /* (non-Javadoc)
+     * @see org.epics.css.dal.proxy.PropertyProxy#getUniqueName()
+     */
+    public String getUniqueName()
+    {
+        return proxy.getUniqueName();
+    }
+    
+    /* (non-Javadoc)
+     * @see org.epics.css.dal.proxy.PropertyProxy#isSettable()
+     */
+    public boolean isSettable()
+    {
+        return proxy.isSettable();
+    }
+    
+    /* (non-Javadoc)
+     * @see org.epics.css.dal.proxy.PropertyProxy#createMonitor(org.epics.css.dal.ResponseListener)
+     */
+    public MonitorProxy createMonitor(final ResponseListener<T> callback, final RemoteInfo.ChangeType changeType)
+    throws RemoteException
+    {
+        return proxy.createMonitor(callback, changeType);
+    }
+    
+    /* (non-Javadoc)
+     * @see org.epics.css.dal.proxy.Proxy#addProxyListener(org.epics.css.dal.proxy.ProxyListener)
+     */
+    public void addProxyListener(final ProxyListener<?> l)
+    {
+        proxy.addProxyListener(l);
+    }
+    
+    /* (non-Javadoc)
+     * @see org.epics.css.dal.proxy.Proxy#removeProxyListener(org.epics.css.dal.proxy.ProxyListener)
+     */
+    public void removeProxyListener(final ProxyListener<?> l)
+    {
+        proxy.removeProxyListener(l);
+    }
+    
+    /* (non-Javadoc)
+     * @see org.epics.css.dal.proxy.PropertyProxy#getCondition()
+     */
+    public DynamicValueCondition getCondition()
+    {
+        return proxy.getCondition();
+    }
+    
+    /* (non-Javadoc)
+     * @see org.epics.css.dal.proxy.Proxy#getConnectionState()
+     */
+    public ConnectionState getConnectionState()
+    {
+        return proxy.getConnectionState();
+    }
+    
+    /* (non-Javadoc)
+     * @see org.epics.css.dal.context.Identifiable#getIdentifier()
+     */
+    public Identifier getIdentifier()
+    {
+        return proxy.getIdentifier();
+    }
+    
+    /* (non-Javadoc)
+     * @see org.epics.css.dal.context.Identifiable#isDebug()
+     */
+    public boolean isDebug()
+    {
+        return proxy.isDebug();
+    }
 }
 
 /* __oOo__ */

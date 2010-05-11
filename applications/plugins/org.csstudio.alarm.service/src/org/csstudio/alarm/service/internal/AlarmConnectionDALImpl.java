@@ -60,12 +60,12 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
     private static final String COULD_NOT_RETRIEVE_FROM_LDAP = "Could not retrieve records from LDAP";
     private static final String COULD_NOT_CREATE_DAL_CONNECTION = "Could not create DAL connection";
     private static final String COULD_NOT_DEREGISTER_DAL_CONNECTION = "Could not deregister DAL connection";
-
+    
     private final CentralLogger _log = CentralLogger.getInstance();
-
+    
     private final List<ListenerItem> _listenerItems = new ArrayList<ListenerItem>();
     private final ILdapService _ldapService;
-
+    
     /**
      * Constructor must be called only from the AlarmService.
      *
@@ -74,7 +74,7 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
     AlarmConnectionDALImpl(final ILdapService ldapService) {
         _ldapService = ldapService;
     }
-
+    
     /**
      * {@inheritDoc}
      */
@@ -82,7 +82,7 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
     public boolean canHandleTopics() {
         return false;
     }
-
+    
     /**
      * {@inheritDoc}
      */
@@ -100,9 +100,9 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
             }
         }
         _listenerItems.clear();
-
+        
     }
-
+    
     /**
      * {@inheritDoc}
      */
@@ -111,7 +111,7 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
                                     @Nonnull final IAlarmListener listener) throws AlarmConnectionException {
         connectWithListenerForTopics(connectionMonitor, listener, new String[0]);
     }
-
+    
     /**
      * {@inheritDoc}
      */
@@ -120,22 +120,22 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
                                              @Nonnull final IAlarmListener listener,
                                              @Nonnull final String[] topics) throws AlarmConnectionException {
         _log.info(this, "Connecting to DAL for topics " + Arrays.toString(topics) + ".");
-
+        
         // TODO jp error handling currently removed
         bla(connectionMonitor, listener);
     }
-
+    
     private void connectToPV(final IAlarmConnectionMonitor connectionMonitor,
                              final IAlarmListener listener,
                              final String pvName) {
         final RemoteInfo remoteInfo = new RemoteInfo(RemoteInfo.DAL_TYPE_PREFIX + "EPICS",
-                                               pvName,
-                                               null,
-                                               null);
+                                                     pvName,
+                                                     null,
+                                                     null, RemoteInfo.ChangeType.ALARM);
         final ListenerItem item = new ListenerItem();
         item._connectionParameters = new ConnectionParameters(remoteInfo, Double.class);
         item._channelListener = new ChannelListenerAdapter(listener, connectionMonitor);
-
+        
         try {
             DalPlugin.getDefault().getSimpleDALBroker()
             .registerListener(item._connectionParameters, item._channelListener);
@@ -146,7 +146,7 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
         }
         _listenerItems.add(item);
     }
-
+    
     private void bla(final IAlarmConnectionMonitor connectionMonitor, final IAlarmListener listener) {
         LdapSearchResult result = null;
         try {
@@ -157,7 +157,7 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
+        
         if (result != null) {
             final LdapContentModel model = new LdapContentModel(result);
             final Set<Record> records = model.getRecords("berndTest");
@@ -167,7 +167,7 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
             }
         }
     }
-
+    
     /**
      * Object-based adapter.<br>
      * Adapts the IAlarmListener and the IAlarmConnectionMonitor to the ChannelListener expected by
@@ -176,40 +176,40 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
     private static final class ChannelListenerAdapter implements ChannelListener {
         private final IAlarmListener _alarmListener;
         private final IAlarmConnectionMonitor _connectionMonitor;
-
+        
         // TODO jp connection monitor ignored in DAL impl
         // TODO jp message analyzing unsufficient in DAL impl
         // TODO jp sync issue: may these methods be called by different threads?
-
+        
         public ChannelListenerAdapter(final IAlarmListener alarmListener,
                                       final IAlarmConnectionMonitor connectionMonitor) {
             _alarmListener = alarmListener;
             _connectionMonitor = connectionMonitor;
         }
-
+        
         @Override
         public void channelDataUpdate(final AnyDataChannel channel) {
             final AnyData data = channel.getData();
             final MetaData meta = data != null ? data.getMetaData() : null;
-
+            
             final IAlarmMessage message = new AlarmMessageDALImpl(data);
             _alarmListener.onMessage(message);
-
+            
             CentralLogger.getInstance()
             .debug(this,
                    "Channel Data Update Received (" + (data != null ? data : "no value")
                    + "; " + (meta != null ? meta : "no metadata") + ")");
         }
-
+        
         @Override
         public void channelStateUpdate(final AnyDataChannel channel) {
             CentralLogger.getInstance().debug(this,
                                               "Channel State Update Received: "
                                               + channel.getStateInfo());
         }
-
+        
     }
-
+    
     /**
      * These items are stored in a list for later disconnection.
      */
@@ -217,5 +217,5 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
         ConnectionParameters _connectionParameters;
         ChannelListener _channelListener;
     }
-
+    
 }

@@ -91,7 +91,7 @@ public class AlarmListener implements IAlarmTableListener {
     
     private void processAlarmMessage(final IAlarmMessage message) throws AlarmMessageException {
         _log.debug(this, "Received map message: EVENTTIME: " + message.getString("EVENTTIME")
-                + " NAME: " + message.getString("NAME") + " ACK: " + message.getString("ACK"));
+                   + " NAME: " + message.getString("NAME")); // + " ACK: " + message.getString("ACK"));
         _messageList.addMessage(new BasicMessage(message.getMap()));
     }
     
