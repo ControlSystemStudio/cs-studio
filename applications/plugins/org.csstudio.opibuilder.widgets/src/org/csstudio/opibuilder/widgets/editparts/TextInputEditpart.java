@@ -33,7 +33,7 @@ public class TextInputEditpart extends TextIndicatorEditPart {
 	
 	@Override
 	public void activate() {
-		markAsControlPV(AbstractPVWidgetModel.PROP_PVNAME);
+		markAsControlPV(AbstractPVWidgetModel.PROP_PVNAME, AbstractPVWidgetModel.PROP_PVVALUE);
 		super.activate();
 	}
 	

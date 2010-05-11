@@ -56,6 +56,7 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 	private String currentDisconnectPVName = "";
 
 	private String controlPVPropId = null;
+	private String controlPVValuePropId = null;
 	
 	private Border saveBorder;
 	private Color saveForeColor, saveBackColor;
@@ -406,12 +407,14 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 		if(pv != null){
 			try {
 				pv.setValue(value);
-				if(updateSuppressTimer == null || timerTask == null)
-					initUpdateSuppressTimer();
-				if(!updateSuppressTimer.isDue())
-					updateSuppressTimer.reset();
-				else
-					startUpdateSuppressTimer();				
+				if(pvPropId.equals(controlPVPropId) && controlPVValuePropId != null){ //activate suppress timer
+					if(updateSuppressTimer == null || timerTask == null)
+						initUpdateSuppressTimer();
+					if(!updateSuppressTimer.isDue())
+						updateSuppressTimer.reset();
+					else
+						startUpdateSuppressTimer();	
+				}
 			} catch (final Exception e) {
 				UIBundlingThread.getInstance().addRunnable(new Runnable(){
 					public void run() {
@@ -447,8 +450,9 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 	/**For PV Control widgets, mark this PV as control PV.
 	 * @param pvPropId the propId of the PV.
 	 */
-	protected void markAsControlPV(String pvPropId){
+	protected void markAsControlPV(String pvPropId, String pvValuePropId){
 		controlPVPropId  = pvPropId;
+		controlPVValuePropId = pvValuePropId;
 		initUpdateSuppressTimer();
 	}
 
@@ -462,7 +466,7 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 			timerTask = new Runnable() {				
 				public void run() {
 					AbstractWidgetProperty pvValueProperty = 
-						getWidgetModel().getProperty(AbstractPVWidgetModel.PROP_PVVALUE);
+						getWidgetModel().getProperty(controlPVValuePropId);
 					//recover update
 					if(pvValueListeners != null){
 						for(PropertyChangeListener listener: pvValueListeners){
@@ -482,7 +486,7 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 	 */
 	protected synchronized void startUpdateSuppressTimer(){
 		AbstractWidgetProperty pvValueProperty = 
-			getWidgetModel().getProperty(AbstractPVWidgetModel.PROP_PVVALUE);
+			getWidgetModel().getProperty(controlPVValuePropId);
 		pvValueListeners = pvValueProperty.getAllPropertyChangeListeners();
 		pvValueProperty.removeAllPropertyChangeListeners();
 		updateSuppressTimer.start(timerTask, UPDATE_SUPPRESS_TIME);

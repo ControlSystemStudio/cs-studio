@@ -2,6 +2,7 @@ package org.csstudio.opibuilder.widgets.editparts;
 
 
 import org.csstudio.opibuilder.editparts.ExecutionMode;
+import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.widgets.figures.ScaledSliderFigure;
@@ -41,7 +42,7 @@ public final class ScaledSliderEditPart extends AbstractMarkedWidgetEditPart {
 			}
 		});	
 		
-		markAsControlPV(ScaledSliderModel.PROP_PVNAME);
+		markAsControlPV(ScaledSliderModel.PROP_PVNAME, AbstractPVWidgetModel.PROP_PVVALUE);
 		return slider;
 
 	}

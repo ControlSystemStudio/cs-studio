@@ -5,6 +5,7 @@ import java.beans.PropertyChangeListener;
 
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
+import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.widgets.figures.AbstractBoolControlFigure;
 import org.csstudio.opibuilder.widgets.figures.AbstractBoolFigure;
@@ -52,7 +53,7 @@ public abstract class AbstractBoolControlEditPart extends AbstractBoolEditPart {
 				}
 			}
 		});		
-		markAsControlPV(AbstractBoolControlModel.PROP_PVNAME);
+		markAsControlPV(AbstractBoolControlModel.PROP_PVNAME, AbstractPVWidgetModel.PROP_PVVALUE);
 	}	
 	
 	/**

@@ -35,7 +35,7 @@ public class CheckBoxEditPart extends AbstractPVWidgetEditPart {
 					setPVValue(AbstractPVWidgetModel.PROP_PVNAME, newValue);
 			}
 		});		
-		markAsControlPV(AbstractPVWidgetModel.PROP_PVNAME);
+		markAsControlPV(AbstractPVWidgetModel.PROP_PVNAME, AbstractPVWidgetModel.PROP_PVVALUE);
 		figure.setRunMode(getExecutionMode().equals(
 				ExecutionMode.RUN_MODE));
 		

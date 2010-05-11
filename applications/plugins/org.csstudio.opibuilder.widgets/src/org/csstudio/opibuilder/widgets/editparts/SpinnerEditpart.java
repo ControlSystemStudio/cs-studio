@@ -66,7 +66,7 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 	
 	@Override
 	public void activate() {
-		markAsControlPV(AbstractPVWidgetModel.PROP_PVNAME);
+		markAsControlPV(AbstractPVWidgetModel.PROP_PVNAME, AbstractPVWidgetModel.PROP_PVVALUE);
 		super.activate();
 	}
 	

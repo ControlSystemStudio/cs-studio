@@ -74,7 +74,7 @@ public final class ComboEditPart extends AbstractPVWidgetEditPart {
 		
 		updateCombo(items);
 		
-		markAsControlPV(AbstractPVWidgetModel.PROP_PVNAME);
+		markAsControlPV(AbstractPVWidgetModel.PROP_PVNAME, AbstractPVWidgetModel.PROP_PVVALUE);
 
 		//hook the context menu to combo
 		combo.setMenu(getViewer().getContextMenu().createContextMenu(getViewer().getControl()));

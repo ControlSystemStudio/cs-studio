@@ -77,7 +77,7 @@ public final class ActionButtonEditPart extends AbstractPVWidgetEditPart {
 				}
 			});
 		}
-		markAsControlPV(AbstractPVWidgetModel.PROP_PVNAME);
+		markAsControlPV(AbstractPVWidgetModel.PROP_PVNAME, AbstractPVWidgetModel.PROP_PVVALUE);
 		return buttonFigure;
 	}
 

@@ -100,7 +100,7 @@ public class ScrollbarEditPart extends AbstractPVWidgetEditPart {
 			});
 		}
 		
-		markAsControlPV(AbstractPVWidgetModel.PROP_PVNAME);
+		markAsControlPV(AbstractPVWidgetModel.PROP_PVNAME, AbstractPVWidgetModel.PROP_PVVALUE);
 		return scrollBar;
 	}
 

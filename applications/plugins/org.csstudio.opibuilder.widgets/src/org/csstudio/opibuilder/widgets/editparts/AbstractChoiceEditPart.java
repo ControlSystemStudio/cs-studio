@@ -65,7 +65,7 @@ public abstract class AbstractChoiceEditPart extends AbstractPVWidgetEditPart {
 			}
 		});
 		
-		markAsControlPV(AbstractPVWidgetModel.PROP_PVNAME);
+		markAsControlPV(AbstractPVWidgetModel.PROP_PVNAME, AbstractPVWidgetModel.PROP_PVVALUE);
 
 		return choiceFigure;
 	}
