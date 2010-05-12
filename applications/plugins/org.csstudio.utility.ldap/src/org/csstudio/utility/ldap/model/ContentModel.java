@@ -185,15 +185,16 @@ public class ContentModel<T extends Enum<T> & ILdapObjectClass<T>> {
             addChild(parent, newChild);
 
             parent = newChild;
-            // CACHING
-            _cacheByLdapName.put(newChild.getLdapName().toString(), newChild);
         }
     }
 
 
-    private void addChild(@Nonnull final ILdapTreeComponent<T> parent, @Nonnull final ILdapComponent<T> newChild) {
+    public void addChild(@Nonnull final ILdapTreeComponent<T> parent, @Nonnull final ILdapComponent<T> newChild) {
 
         parent.addChild(newChild);
+
+        // CACHING
+        _cacheByLdapName.put(newChild.getLdapName().toString(), newChild);
 
         // MORE CACHING
         final T type = newChild.getType();

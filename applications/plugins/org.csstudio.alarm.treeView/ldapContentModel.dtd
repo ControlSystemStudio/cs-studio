@@ -1,5 +1,4 @@
-<!ELEMENT root (ou)>
-<!ELEMENT ou (efan*)>
+<!ELEMENT root (efan*)>
 <!ELEMENT efan (ecom* , eren*)>
 <!ELEMENT ecom (ecom* , eren*)>
 <!ELEMENT eren (#PCDATA)>

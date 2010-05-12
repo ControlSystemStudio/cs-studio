@@ -27,18 +27,34 @@ import static org.csstudio.alarm.service.declaration.AlarmTreeLdapConstants.EPIC
 import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EFAN_FIELD_NAME;
 import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.OU_FIELD_NAME;
 
+import java.io.DataInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.naming.InvalidNameException;
+import javax.naming.directory.BasicAttributes;
 import javax.naming.directory.SearchControls;
+import javax.naming.ldap.LdapName;
+import javax.naming.ldap.Rdn;
 
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
 import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
 import org.csstudio.utility.ldap.LdapUtils;
 import org.csstudio.utility.ldap.model.ContentModel;
+import org.csstudio.utility.ldap.model.ILdapTreeComponent;
+import org.csstudio.utility.ldap.model.LdapTreeComponent;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
-
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.JDOMException;
+import org.jdom.filter.ElementFilter;
+import org.jdom.input.SAXBuilder;
 /**
  * Alarm configuration service implementation
  *
@@ -73,12 +89,114 @@ public class AlarmConfigurationServiceImpl implements IAlarmConfigurationService
             final LdapSearchResult result =
                 _ldapService.retrieveSearchResultSynchronously(LdapUtils.createLdapQuery(EFAN_FIELD_NAME, facility,
                                                                                          OU_FIELD_NAME, EPICS_ALARM_CFG_FIELD_VALUE),
-                                                               "(objectClass=*)",
-                                                               SearchControls.SUBTREE_SCOPE);
+                                                                                         "(objectClass=*)",
+                                                                                         SearchControls.SUBTREE_SCOPE);
 
             model.addSearchResult(result);
         }
         return model;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @CheckForNull
+    public ContentModel<LdapEpicsAlarmCfgObjectClass> retrieveInitialContentModelFromFile(@Nonnull final String filePath) {
+
+        return loadProject(filePath);
+    }
+
+    private ContentModel<LdapEpicsAlarmCfgObjectClass> loadProject(final String filePath) {
+
+        try {
+            final FileInputStream fstream = new FileInputStream(filePath);
+            // Convert our input stream to a
+            // DataInputStream
+            final DataInputStream in = new DataInputStream(fstream);
+
+            final SAXBuilder builder = new SAXBuilder();
+            final Document doc = builder.build(in);
+
+            return createContentModelFromFile(doc);
+
+        } catch (final FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (final JDOMException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (final IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * @param doc
+     */
+    private ContentModel<LdapEpicsAlarmCfgObjectClass> createContentModelFromFile(final Document doc) {
+
+        final ContentModel<LdapEpicsAlarmCfgObjectClass> model =
+            new ContentModel<LdapEpicsAlarmCfgObjectClass>(LdapEpicsAlarmCfgObjectClass.ROOT);
+
+        final Element rootElement = doc.getRootElement();
+
+        // Leave out the root element
+        final List<Element> elements = rootElement.getContent(new ElementFilter());
+        for (final Element child :  elements) {
+            processElement(model, child, model.getRoot());
+        }
+        return model;
+    }
+
+    /**
+     * Recursive
+     * @param model
+     * @param element
+     * @param iLdapTreeComponent
+     */
+    private void processElement(final ContentModel<LdapEpicsAlarmCfgObjectClass> model,
+                                final Element element,
+                                final ILdapTreeComponent<LdapEpicsAlarmCfgObjectClass> ldapParent) {
+
+
+        final String type = element.getName();
+        final LdapEpicsAlarmCfgObjectClass oc = LdapEpicsAlarmCfgObjectClass.ROOT.getObjectClassByRdnType(type);
+        final String name = element.getAttributeValue("name");
+
+        try {
+
+            final List<Rdn> rdns = new ArrayList<Rdn>(ldapParent.getLdapName().getRdns());
+            rdns.add(new Rdn(type, name));
+            final LdapName fullName = new LdapName(rdns);
+
+            if (model.getByTypeAndLdapName(oc, fullName.toString()) == null) {
+                final ILdapTreeComponent<LdapEpicsAlarmCfgObjectClass> newLdapChild =
+                    new LdapTreeComponent<LdapEpicsAlarmCfgObjectClass>(name,
+                            oc,
+                            oc.getNestedContainerClasses(),
+                            ldapParent,
+                            new BasicAttributes(),
+                            fullName);
+                System.out.println("new " + fullName.toString());
+                model.addChild(ldapParent, newLdapChild);
+            }
+            final ILdapTreeComponent<LdapEpicsAlarmCfgObjectClass> ldapComponent =
+                (ILdapTreeComponent<LdapEpicsAlarmCfgObjectClass>) model.getByTypeAndLdapName(oc, fullName.toString());
+
+            final List<Element> children = element.getContent( new ElementFilter() );
+
+            // cycle through all immediate elements under the rootElement
+            for (final Element child : children) {
+                processElement(model, child, ldapComponent);
+            }
+        } catch (final InvalidNameException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (final Exception e) {
+            System.out.println("hallo");
+        }
+    }
 }

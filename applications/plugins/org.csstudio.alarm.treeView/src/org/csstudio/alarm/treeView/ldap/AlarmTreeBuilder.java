@@ -27,7 +27,6 @@ import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.OU_FIELD_NAME;
 
 import java.util.Arrays;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.naming.NameNotFoundException;
@@ -51,9 +50,6 @@ import org.csstudio.utility.ldap.engine.Engine;
 import org.csstudio.utility.ldap.model.ContentModel;
 import org.csstudio.utility.ldap.model.ILdapComponent;
 import org.csstudio.utility.ldap.model.ILdapTreeComponent;
-import org.csstudio.utility.ldap.reader.LDAPReader;
-import org.csstudio.utility.ldap.reader.LdapSearchResult;
-import org.csstudio.utility.ldap.reader.LDAPReader.LdapSearchParams;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -115,37 +111,6 @@ public final class AlarmTreeBuilder {
         } catch (final NamingException e) {
             LOG.error("Failed to create TEST facility in LDAP", e);
         }
-    }
-
-    /**
-     * Returns either the search results for those subtrees of which the leafs
-     * are records or <code>null</code>
-     * if the calling job has been canceled.
-     *
-     * @param facilityNames .
-     * @param monitor .
-     * @return either a list of search results for the subtrees of the given
-     *         facilities or <code>null</code>
-     */
-    @CheckForNull
-    private static ContentModel<LdapEpicsAlarmCfgObjectClass> retrieveFacilitySubTrees(@Nonnull final String[] facilityNames,
-                                                                                       @Nullable final IProgressMonitor monitor) {
-
-        final ContentModel<LdapEpicsAlarmCfgObjectClass> model =
-            new ContentModel<LdapEpicsAlarmCfgObjectClass>(LdapEpicsAlarmCfgObjectClass.ROOT);
-
-        for (final String facility : facilityNames) {
-            final LdapSearchResult result =
-                LDAPReader.getSearchResultSynchronously(new LdapSearchParams(LdapUtils.createLdapQuery(EFAN_FIELD_NAME, facility,
-                                                                                                       OU_FIELD_NAME, EPICS_ALARM_CFG_FIELD_VALUE),
-                                                        "(objectClass=*)"));
-
-            model.addSearchResult(result);
-            if ((monitor != null) && monitor.isCanceled()) {
-                return null;
-            }
-        }
-        return model;
     }
 
     /**
@@ -248,12 +213,12 @@ public final class AlarmTreeBuilder {
 
         ensureTestFacilityExists(ctx);
 
-        final String[] facilityNames = retrieveFacilityNames();
-
         final IAlarmConfigurationService configService = AlarmTreePlugin.getDefault().getAlarmConfigurationService();
-
+        final String[] facilityNames = retrieveFacilityNames();
         final ContentModel<LdapEpicsAlarmCfgObjectClass> model =
             configService.retrieveInitialContentModel(Arrays.asList(facilityNames));
+//      final ContentModel<LdapEpicsAlarmCfgObjectClass> model =
+//      configService.retrieveInitialContentModelFromFile("D:\\development\\bknerr\\workspace\\org.csstudio.alarm.treeView\\EpicsAlarmCfg.xml");
 
         for (final ILdapComponent<LdapEpicsAlarmCfgObjectClass> node : model.getRoot().getDirectChildren()) {
             createAlarmSubtree(rootNode, (ILdapTreeComponent<LdapEpicsAlarmCfgObjectClass>) node, ctx, monitor);

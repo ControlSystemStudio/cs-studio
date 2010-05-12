@@ -31,7 +31,7 @@ import org.csstudio.utility.ldap.model.ContentModel;
 
 
 /**
- * TODO (bknerr) :
+ * Alarm configuration service.
  *
  * @author bknerr
  * @author $Author$
@@ -40,7 +40,23 @@ import org.csstudio.utility.ldap.model.ContentModel;
  */
 public interface IAlarmConfigurationService {
 
+    /**
+     * Retrieves the initial content model for the given facilities.
+     *
+     * @param facilityNames the list of the simple names of the facilities.
+     * @return the content model
+     */
     @Nonnull
     ContentModel<LdapEpicsAlarmCfgObjectClass> retrieveInitialContentModel(@Nonnull final List<String> facilityNames);
+
+
+    /**
+     * Retrieves the initial content model for the given file.
+     *
+     * @param the filePath to the xml file
+     * @return the content model
+     */
+    @Nonnull
+    ContentModel<LdapEpicsAlarmCfgObjectClass> retrieveInitialContentModelFromFile(@Nonnull final String filePath);
 
 }
