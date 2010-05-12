@@ -57,7 +57,7 @@ public class AlarmServiceActivator implements BundleActivator {
         // Provide implementation for alarm service
         // TODO jp The implementation must be determined dynamically
         registerJMSService(context);
-        //registerDALService(context, getService(context, IAlarmConfigurationService.class));
+//        registerDALService(context, getService(context, IAlarmConfigurationService.class));
     }
 
     /**

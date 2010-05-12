@@ -19,8 +19,9 @@ package org.csstudio.alarm.service.internal;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Nonnull;
 
@@ -34,9 +35,10 @@ import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
 import org.csstudio.dal.DalPlugin;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.model.ContentModel;
+import org.epics.css.dal.DynamicValueAdapter;
+import org.epics.css.dal.DynamicValueCondition;
+import org.epics.css.dal.DynamicValueEvent;
 import org.epics.css.dal.simple.AnyData;
-import org.epics.css.dal.simple.AnyDataChannel;
-import org.epics.css.dal.simple.ChannelListener;
 import org.epics.css.dal.simple.ConnectionParameters;
 import org.epics.css.dal.simple.MetaData;
 import org.epics.css.dal.simple.RemoteInfo;
@@ -88,7 +90,8 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
         for (final ListenerItem item : _listenerItems) {
             try {
                 SimpleDALBroker.getInstance().deregisterListener(item._connectionParameters,
-                                                                 item._channelListener);
+                                                                 item._dynamicValueAdapter,
+                                                                 item._parameters);
             } catch (final InstantiationException e) {
                 _log.error(this, COULD_NOT_DEREGISTER_DAL_CONNECTION, e);
             } catch (final CommonException e) {
@@ -122,77 +125,91 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
     }
 
     private void connectToPV(final IAlarmConnectionMonitor connectionMonitor,
-                             final IAlarmListener listener,
-                             final String pvName) {
+                                final IAlarmListener listener,
+                                final String pvName) {
+
+        // TODO jp CT remove changetype from remote info
         final RemoteInfo remoteInfo = new RemoteInfo(RemoteInfo.DAL_TYPE_PREFIX + "EPICS",
                                                      pvName,
                                                      null,
-                                                     null, RemoteInfo.ChangeType.ALARM);
+                                                     null);
+
         final ListenerItem item = new ListenerItem();
-        item._connectionParameters = new ConnectionParameters(remoteInfo, Double.class);
-        item._channelListener = new ChannelListenerAdapter(listener, connectionMonitor);
+        item._connectionParameters = new ConnectionParameters(remoteInfo);
+        item._dynamicValueAdapter = new DynamicValueListenerAdaper(listener, connectionMonitor);
+        item._parameters = new HashMap<String, Object>();
+        item._parameters.put("EPICSPlug.monitor.mask", 4); // EPICSPlug.PARAMETER_MONITOR_MASK = Monitor.ALARM
 
         try {
             DalPlugin.getDefault().getSimpleDALBroker()
-            .registerListener(item._connectionParameters, item._channelListener);
-        } catch (final InstantiationException e) {
+                    .registerListener(item._connectionParameters,
+                                      item._dynamicValueAdapter,
+                                      item._parameters);
+        } catch (InstantiationException e) {
             _log.error(this, COULD_NOT_CREATE_DAL_CONNECTION, e);
-        } catch (final CommonException e) {
+        } catch (CommonException e) {
             _log.error(this, COULD_NOT_CREATE_DAL_CONNECTION, e);
         }
+
         _listenerItems.add(item);
     }
 
-
     private void bla(final IAlarmConnectionMonitor connectionMonitor, final IAlarmListener listener) {
 
-        final ContentModel<LdapEpicsAlarmCfgObjectClass> model = _alarmConfigService.retrieveInitialContentModel(Collections.<String>emptyList());
+        List<String> facilitiesAsString = new ArrayList<String>();
+        facilitiesAsString.add("Test");
+        final ContentModel<LdapEpicsAlarmCfgObjectClass> model = _alarmConfigService
+                .retrieveInitialContentModel(facilitiesAsString);
 
         for (final String recordName : model.getSimpleNames(LdapEpicsAlarmCfgObjectClass.RECORD)) {
-            _log.debug(this, recordName);
-            connectToPV(connectionMonitor, listener, recordName);
+            _log.debug(this, "Connecting to " + recordName + " (currently disabled)");
+            //            connectToPV(connectionMonitor, listener, recordName);
         }
+        connectToPV(connectionMonitor, listener, "alarmTest:RAMPA_calc");
+        connectToPV(connectionMonitor, listener, "alarmTest:RAMPB_calc");
+        connectToPV(connectionMonitor, listener, "alarmTest:RAMPC_calc");
     }
 
-
     /**
-     * Object-based adapter.<br>
-     * Adapts the IAlarmListener and the IAlarmConnectionMonitor to the ChannelListener expected by
-     * DAL.
+     * Object-based adapter.
+     * Adapts the IAlarmListener and the IAlarmConnectionMonitor
+     * to the DynamicValueListener expected by DAL.
      */
-    private static final class ChannelListenerAdapter implements ChannelListener {
+    private static class DynamicValueListenerAdaper extends DynamicValueAdapter {
+
         private final IAlarmListener _alarmListener;
         private final IAlarmConnectionMonitor _connectionMonitor;
 
-        // TODO jp connection monitor ignored in DAL impl
-        // TODO jp message analyzing unsufficient in DAL impl
-        // TODO jp sync issue: may these methods be called by different threads?
-
-        public ChannelListenerAdapter(final IAlarmListener alarmListener,
-                                      final IAlarmConnectionMonitor connectionMonitor) {
+        public DynamicValueListenerAdaper(final IAlarmListener alarmListener,
+                                          final IAlarmConnectionMonitor alarmConnectionMonitor) {
             _alarmListener = alarmListener;
-            _connectionMonitor = connectionMonitor;
+            _connectionMonitor = alarmConnectionMonitor;
         }
 
         @Override
-        public void channelDataUpdate(final AnyDataChannel channel) {
-            final AnyData data = channel.getData();
-            final MetaData meta = data != null ? data.getMetaData() : null;
+        public void conditionChange(final DynamicValueEvent event) {
+            processEvent("conditionChange", event);
+        }
+
+        @Override
+        public void valueChanged(final DynamicValueEvent event) {
+            // processEvent("valueChanged", event);
+        }
+
+        private void processEvent(final String text, final DynamicValueEvent event) {
+            DynamicValueCondition condition = event.getCondition();
+            AnyData data = event.getData();
+            MetaData meta = data != null ? data.getMetaData() : null;
 
             final IAlarmMessage message = new AlarmMessageDALImpl(data);
             _alarmListener.onMessage(message);
 
             CentralLogger.getInstance()
-            .debug(this,
-                   "Channel Data Update Received (" + (data != null ? data : "no value")
-                   + "; " + (meta != null ? meta : "no metadata") + ")");
-        }
-
-        @Override
-        public void channelStateUpdate(final AnyDataChannel channel) {
-            CentralLogger.getInstance().debug(this,
-                                              "Channel State Update Received: "
-                                              + channel.getStateInfo());
+                    .debug(this,
+                           text + " received " + condition + " for "
+                                   + event.getProperty().getUniqueName()
+                                   + (data != null ? data : "no value") + "; "
+                                   + (meta != null ? meta : "no metadata") + ")");
         }
 
     }
@@ -202,7 +219,8 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
      */
     private static final class ListenerItem {
         ConnectionParameters _connectionParameters;
-        ChannelListener _channelListener;
+        DynamicValueAdapter _dynamicValueAdapter;
+        Map<String, Object> _parameters;
     }
 
 }

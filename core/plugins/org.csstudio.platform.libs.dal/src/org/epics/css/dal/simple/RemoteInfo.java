@@ -68,8 +68,6 @@ public final class RemoteInfo
 
 	private DataFlavor typeHint;
 
-    private final ChangeType changeType;
-
     /**
      * The EPICS based implementation allows for selection of the type of changes which should be
      * monitored. Other implementations ignore this.
@@ -91,25 +89,6 @@ public final class RemoteInfo
                       final String remoteName,
                       final String characteristic,
                       final String query) {
-        this(connectionType, remoteName, characteristic, query, ChangeType.UNDEFINED);
-    }
-
-    /**
-     * Creates a new remote info with all provided components.
-     *
-     * @param connectionType type of remote info,
-     * @param remoteName name of remote target, must not be <code>null</code>
-     * @param characteristic name of characteristic, can be <code>null</code>
-     * @param query query part of remote name
-     * @param changeType hint for the implementation to register for certain changes. Might not be
-     *            implemented by all implementations.
-     * @throws NullPointerException if remote name is null
-     */
-    public RemoteInfo(final String connectionType,
-                      final String remoteName,
-                      final String characteristic,
-                      final String query,
-                      final ChangeType changeType) {
         if (remoteName == null) {
             throw new NullPointerException("The remoteName is null.");
         }
@@ -118,16 +97,6 @@ public final class RemoteInfo
         this.remoteName = remoteName;
         this.characteristic = characteristic;
         this.query = query;
-        this.changeType = changeType;
-    }
-
-    /**
-     * Hint for the implementation to connect only for a specific type of changes.
-     *
-     * @return type of changes
-     */
-    public ChangeType getChangeType() {
-        return changeType;
     }
 
 	/**
